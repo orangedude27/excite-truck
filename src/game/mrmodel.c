@@ -595,20 +595,20 @@ s32 fn_802C5E7C(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_802C5EB8(void *arg0, u32 arg1) {
-    s32 count = *(s32 *)((char *)arg0 + 0x10);
+s32 fn_802C5EB8(void *resource, u32 tag) {
+    /* Searches the resource's tagged chunk list for an entry whose first field matches tag and returns it, or 0 if not found. */
+    s32 count = *(s32 *)((char *)resource + 0x10);
     u32 *result = NULL;
     s32 i;
     for (i = 0; count > i; i++) {
-        u32 *entry = *(u32 **)(*(char **)((char *)arg0 + 0x14) + i * 4);
-        if (*entry == arg1) {
+        u32 *entry = *(u32 **)(*(char **)((char *)resource + 0x14) + i * 4);
+        if (*entry == tag) {
             result = entry;
             break;
         }
     }
     return (s32)result;
 }
-#pragma scheduling invalid_target
 void *fn_802C5EFC(int id) {
     /* Find an active 0x10-byte entry in lbl_804C13A8's table whose id matches:
        returns the entry pointer, or NULL if not found. */
