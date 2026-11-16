@@ -428,11 +428,14 @@ void fn_801C3D88(void *arg0) {
 
 void fn_801C9834(void);
 void fn_801C4AD0(void) {
+    /* Reset the debug overlay: clear the timeline, filter flags and pending
+     * timer (lbl_80437E24, -999 = inactive), reset the time base, then rescan
+     * the event-type table via fn_801C9834. */
     lbl_8055E7E9 = 0;
     lbl_8055E7E8 = 0;
     lbl_8055E7E2 = 0;
     lbl_8055E7E3 = 0;
-    lbl_8055E7F0 = 0;
+    sTimelineCount = 0;
     lbl_8055E804 = 0;
     lbl_8055E808 = 0;
     lbl_8055E7E4 = lbl_80562970;
