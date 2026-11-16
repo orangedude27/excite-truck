@@ -177,11 +177,13 @@ void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4) {
 }
 #pragma peephole on
 #pragma scheduling on
+/* Resets a canvas's clip rectangle to the whole surface: {0, 0, width, height}. */
 void fn_802C3014(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 0x14) = 0;
-    *(s32 *)((u8 *)arg0 + 0x18) = 0;
-    *(s32 *)((u8 *)arg0 + 0x1C) = *(s32 *)((u8 *)arg0 + 8);
-    *(s32 *)((u8 *)arg0 + 0x20) = *(s32 *)((u8 *)arg0 + 0xC);
+    GxCanvas *canvas = arg0;
+    canvas->minX = 0;
+    canvas->minY = 0;
+    canvas->maxX = canvas->width;
+    canvas->maxY = canvas->height;
 }
 
 s32 fn_802C3034(s32 value) {
