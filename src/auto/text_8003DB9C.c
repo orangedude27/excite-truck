@@ -5427,11 +5427,13 @@ void GXSetTevOrder(int stage, int texCoord, int texMap, int color) {
     __GXData[0x5fc / 4] |= 1;
 }
 
-void GXSetNumTevStages(u8 count) {
-    unsigned int dec = count - 1;
-    unsigned int reg = __GXData[0x254 / 4];
-    reg = __rlwimi(reg, dec, 10, 18, 21);
-    __GXData[0x254 / 4] = reg;
+/* Set the number of TEV stages: store (numStages - 1) in the four-bit field at
+   __GXData+0x254 and mark the TEV state dirty at __GXData+0x5FC. */
+void GXSetNumTevStages(u8 numStages) {
+    unsigned int stagesMinusOne = numStages - 1;
+    unsigned int tevReg = __GXData[0x254 / 4];
+    tevReg = __rlwimi(tevReg, stagesMinusOne, 10, 18, 21);
+    __GXData[0x254 / 4] = tevReg;
     __GXData[0x5FC / 4] |= 4;
 }
 
