@@ -557,17 +557,13 @@ void fn_802CAD68(void) {
 
 #pragma dont_inline fn_802CAD74
 void fn_802CAD74(register int arg0) {
-retry:
     if (arg0 == lbl_8055FCB8)
         return;
     lbl_8055FCB8 = arg0;
-    if (arg0 == -1)
-        goto retry_prev;
-    goto process;
-retry_prev:
-    arg0 = *(volatile int *)&lbl_8055FCB4;
-    goto retry;
-process:
+    if (arg0 == -1) {
+        ((void (*)(int))fn_802CAD74)(*(volatile int *)&lbl_8055FCB4);
+        return;
+    }
     {
         int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
         int value;
