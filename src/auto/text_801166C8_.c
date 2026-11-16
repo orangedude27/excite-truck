@@ -2321,15 +2321,11 @@ extern s32 fn_80119DD0(void *, u32, s32, s32, s32, void *);
 extern void fn_8011A6A0(void *);
 extern void TRKGetFreeBuffer(void *);
 void *fn_8011A168(void *arg0) {
-    s32 *src = (s32 *)arg0;
-    if (arg0 == NULL) {
+    if (arg0 == 0) {
         lbl_8055DEE0 = 0;
         *((s32 *)&lbl_8055DEE0 + 1) = 0;
     } else {
-        s32 first = src[0];
-        s32 second = src[1];
-        lbl_8055DEE0 = first;
-        lbl_8055DEE4 = second;
+        *(Pair8011A168 *)&lbl_8055DEE0 = *(Pair8011A168 *)arg0;
     }
     return &fn_80119DD0;
 }
