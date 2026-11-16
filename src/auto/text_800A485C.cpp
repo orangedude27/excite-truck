@@ -19345,12 +19345,15 @@ extern "C" s32 update__Q310homebutton3gui9ComponentFiffUlUlUlPv(void *self, int 
 #pragma pop
 extern "C" u8 fn_800CFDB4(void *arg0) { return *((u8 *)((u8 *)arg0 + 0x24)); }
 
-extern "C" void fn_800CFDBC(void *arg0, s32 arg1, void *arg2) {
-    if (arg1 & *(s32 *)((u8 *)arg0 + 0x1C)) {
-        *(f32 *)((u8 *)arg0 + 0xC) = *(f32 *)arg2;
-        *(f32 *)((u8 *)arg0 + 0x10) = *(f32 *)((u8 *)arg2 + 4);
-        *(f32 *)((u8 *)arg0 + 0x14) = *(f32 *)((u8 *)arg2 + 8);
-        *((u8 *)arg0 + 0x18) = 1;
+extern "C" void fn_800CFDBC(void *component, s32 propertyMask, void *values) {
+    /* If any bit of propertyMask is enabled in the component's mask at +0x1C,
+     * copy the three floats at values into its vector (+0xC..+0x14) and mark
+     * the component changed at +0x18. */
+    if (propertyMask & *(s32 *)((u8 *)component + 0x1C)) {
+        *(f32 *)((u8 *)component + 0xC) = *(f32 *)values;
+        *(f32 *)((u8 *)component + 0x10) = *(f32 *)((u8 *)values + 4);
+        *(f32 *)((u8 *)component + 0x14) = *(f32 *)((u8 *)values + 8);
+        *((u8 *)component + 0x18) = 1;
     }
 }
 
