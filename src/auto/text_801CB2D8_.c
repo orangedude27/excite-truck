@@ -350,9 +350,10 @@ void *__dt__Q34nw4r2ef6EffectFv_801CBCA4(void *arg0, int arg1) {
 }
 
 void fn_801CBD04(void *arg0) {
-    void *buf = *(void **)arg0;
-    if (buf != NULL) {
-        fn_80128668(buf);
+    /* If the object owns a buffer at offset 0, free it and clear the pointer. */
+    void *ownedBuffer = *(void **)arg0;
+    if (ownedBuffer != NULL) {
+        fn_80128668(ownedBuffer);
         *(void **)arg0 = NULL;
     }
 }
