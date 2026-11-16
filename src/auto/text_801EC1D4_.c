@@ -489,74 +489,74 @@ long fn_801ECC8C(unsigned int vehicleRender) {
 }
 
 #pragma dont_inline on
-void fn_801ECCE0(long arg0, long arg1) {
-    void *list[8];
-    void *sel;
-    unsigned idx;
-    int i, n;
-    int s50, s94;
-    unsigned who;
-    if (*(int *)(arg0 + 0x40) != 0) return;
+void fn_801ECCE0(long renderObj, long pass) {
+    void *otherVehicles[8];
+    void *selected;
+    unsigned selectedIndex;
+    int i, count;
+    int savedState0, savedState1;
+    unsigned objectGroup;
+    if (*(int *)(renderObj + 0x40) != 0) return;
     for (i = 0; lbl_80488648[i] != 0 && i < 8; i++) {
-        if ((unsigned)arg1 != fn_801ECC8C(lbl_80488648[i])) fn_801ECB80((void *)lbl_80488648[i]);
+        if ((unsigned)pass != fn_801ECC8C(lbl_80488648[i])) fn_801ECB80((void *)lbl_80488648[i]);
     }
-    idx = fn_801E866C(-1);
-    sel = idx < 8 ? (void *)lbl_80488648[idx] : 0;
-    n = 0;
+    selectedIndex = fn_801E866C(-1);
+    selected = selectedIndex < 8 ? (void *)lbl_80488648[selectedIndex] : 0;
+    count = 0;
     for (i = 0; lbl_80488648[i] != 0 && i < 8; i++) {
-        if ((void *)lbl_80488648[i] != sel) {
-            list[n] = (void *)lbl_80488648[i];
-            n++;
+        if ((void *)lbl_80488648[i] != selected) {
+            otherVehicles[count] = (void *)lbl_80488648[i];
+            count++;
         }
     }
     lbl_80488668[2] = ((float (*)(float))fn_802C99E8)(lbl_80562E90);
-    s50 = fn_802C9950(((int *)lbl_80488668)[0]);
-    s94 = fn_802C9994(((int *)lbl_80488668)[1]);
+    savedState0 = fn_802C9950(((int *)lbl_80488668)[0]);
+    savedState1 = fn_802C9994(((int *)lbl_80488668)[1]);
     {
-        int j;
-        for (j = 0; j < n; j++) {
-            void *item = list[j];
-            who = fn_801ECC8C((long)item);
-            if (who != (unsigned)arg1) {
-                if (who != 0) fn_802AB770(*(int *)((char *)item + 0x40));
-                fn_801ECF58(item);
-                if (who != 0) fn_802AB994();
+        int k;
+        for (k = 0; k < count; k++) {
+            void *vehicle = otherVehicles[k];
+            objectGroup = fn_801ECC8C((long)vehicle);
+            if (objectGroup != (unsigned)pass) {
+                if (objectGroup != 0) fn_802AB770(*(int *)((char *)vehicle + 0x40));
+                fn_801ECF58(vehicle);
+                if (objectGroup != 0) fn_802AB994();
             }
         }
     }
     {
-        int j;
-        for (j = 0; j < n; j++) {
-            void *item = list[j];
-            who = fn_801ECC8C((long)item);
-            if (who != (unsigned)arg1) {
-                if (who != 0) fn_802AB770(*(int *)((char *)item + 0x40));
-                fn_801ECFE0(item);
-                if (who != 0) fn_802AB994();
+        int k;
+        for (k = 0; k < count; k++) {
+            void *vehicle = otherVehicles[k];
+            objectGroup = fn_801ECC8C((long)vehicle);
+            if (objectGroup != (unsigned)pass) {
+                if (objectGroup != 0) fn_802AB770(*(int *)((char *)vehicle + 0x40));
+                fn_801ECFE0(vehicle);
+                if (objectGroup != 0) fn_802AB994();
             }
         }
     }
     {
-        int j;
-        for (j = 0; j < n; j++) {
-            void *item = list[j];
-            who = fn_801ECC8C((long)item);
-            if (who != (unsigned)arg1) {
-                if (who != 0) fn_802AB770(*(int *)((char *)item + 0x40));
-                fn_801ED2D0(item);
-                if (who != 0) fn_802AB994();
+        int k;
+        for (k = 0; k < count; k++) {
+            void *vehicle = otherVehicles[k];
+            objectGroup = fn_801ECC8C((long)vehicle);
+            if (objectGroup != (unsigned)pass) {
+                if (objectGroup != 0) fn_802AB770(*(int *)((char *)vehicle + 0x40));
+                fn_801ED2D0(vehicle);
+                if (objectGroup != 0) fn_802AB994();
             }
         }
     }
-    who = fn_801ECC8C((long)sel);
-    if (who != (unsigned)arg1) {
-        if (who != 0) fn_802AB770(*(int *)((char *)sel + 0x40));
-        fn_801ED354(sel);
-        if (who != 0) fn_802AB994();
+    objectGroup = fn_801ECC8C((long)selected);
+    if (objectGroup != (unsigned)pass) {
+        if (objectGroup != 0) fn_802AB770(*(int *)((char *)selected + 0x40));
+        fn_801ED354(selected);
+        if (objectGroup != 0) fn_802AB994();
     }
     ((float (*)(float))fn_802C99E8)(lbl_80488668[2]);
-    fn_802C9994(s94);
-    fn_802C9950(s50);
+    fn_802C9994(savedState1);
+    fn_802C9950(savedState0);
 }
 void fn_801ECF58(void *arg0) {
     long useAltFlag;
