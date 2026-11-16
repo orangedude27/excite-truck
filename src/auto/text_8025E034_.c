@@ -585,15 +585,18 @@ extern "C" void fn_8025F274(void) {
         virtual int test2c();
     };
     register int i;
-    register int j;
-    register void *value;
+    struct { int j; } loop;
+    int &j = loop.j;
+    struct { void *value; } item;
+    void *&value = item.value;
     register int found;
     register int offset;
+    int secondOffset;
     i = 0;
     goto L_check;
 L_outer:
-    offset = 0;
     j = 0;
+    offset = 0;
     do {
         if (i >= ((Container *)(*(void **)((char *)lbl_8055F3D4 + offset + 4)))->count())
             goto L_first_retry;
@@ -614,18 +617,18 @@ L_first_done:
     if (found == 0)
         fn_80214A9C(i + 0x10);
     j = 0;
-    offset = 0;
+    secondOffset = 0;
     do {
-        if (i >= ((Container *)(*(void **)((char *)lbl_8055F3D4 + offset + 4)))->count())
+        if (i >= ((Container *)(*(void **)((char *)lbl_8055F3D4 + secondOffset + 4)))->count())
             goto L_second_retry;
-        value = ((Container *)(*(void **)((char *)lbl_8055F3D4 + offset + 4)))->get(i);
+        value = ((Container *)(*(void **)((char *)lbl_8055F3D4 + secondOffset + 4)))->get(i);
         if (((Item *)value)->test24() == 0)
             goto L_second_retry;
         found = 1;
         goto L_second_done;
 L_second_retry:
         j++;
-        offset += 4;
+        secondOffset += 4;
     } while (j < 3);
     found = 0;
 L_second_done:
