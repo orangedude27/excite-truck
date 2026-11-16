@@ -669,8 +669,9 @@ extern "C" void fn_801B89B4(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f28();
 }
 #pragma cplusplus on
-extern "C" void fn_801B89C8(void *arg0) {
-    ((Dummy_801B8318 *)lbl_8055E744)->f29(arg0);
+extern "C" void fn_801B89C8(void *obj) {
+    /* Forward obj to the arena-event master (lbl_8055E744) via its f29 vtable slot. */
+    ((Dummy_801B8318 *)lbl_8055E744)->f29(obj);
 }
 #pragma cplusplus off
 int fn_801B89E0(void) {
