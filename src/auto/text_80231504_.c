@@ -245,13 +245,16 @@ static inline s32 fn_80231AF0_escape(char *text, f32 w, f32 *adv) {
 }
 static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32 half, f32 *adv) {
     s32 i;
+    s32 eo;
     s32 flag;
     *adv = w;
     flag = lbl_8055F050;
     if (*text == '\\') {
-        for (i = 0; i < ((Fn80231AF0_Table *)lbl_80497F14)->count; i++) {
-            Fn80231AF0_Entry *e = &((Fn80231AF0_Table *)lbl_80497F14)->entries[i];
-            if (fn_8002B1D8(text + 1, e->name, strlen(((Fn80231AF0_Table *)lbl_80497F14)->entries[i].name)) == 0) {
+        eo = 0;
+        i = 0;
+        while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
+            Fn80231AF0_Entry *e = (Fn80231AF0_Entry *)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
+            if (fn_8002B1D8(text + 1, e->name, strlen(*(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo))) == 0) {
                 Fn80231D84_Rec *r;
                 f32 extra = lbl_8056368C;
                 r = &((Fn80231D84_Table *)lbl_8049846C)->recs[((Fn80231D84_Table *)lbl_8049846C)->count++];
