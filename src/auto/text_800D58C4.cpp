@@ -2070,7 +2070,9 @@ extern "C" s32 fn_800D9344(void *arg0) {
 extern "C" s32 fn_800D9364(void *arg0) {
     MatGXBits_800D8B28 *c = (MatGXBits_800D8B28 *)((u8 *)arg0 + 0x4C);
     u8 *base = *(u8 **)((u8 *)arg0 + 0x58);
-    return (s32)((c->gen * 4 + c->tex * 32) + (base + c->srt * 0x14));
+    u32 left = c->gen * 4 + c->tex * 32;
+    u8 *right = base + c->srt * 0x14;
+    return (s32)(left + right);
 }
 
 extern "C" s32 fn_800D938C(void* arg0) {
@@ -3629,20 +3631,25 @@ extern "C" void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void* self, unsigned long fla
         virtual void d4();
         virtual void call();
     };
-    u8* head = (u8*)self + 0x20;
-    u8* link = *(u8**)((u8*)self + 0x20);
+    u8* pane = (u8*)self;
+    struct { void *node; } cursor;
+    cursor.node = *(void**)(pane + 0x20);
+    void *&link = cursor.node;
+    struct { void *end; } sentinel;
+    sentinel.end = pane + 0x20;
+    void *&head = sentinel.end;
     while (link != head) {
         if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-        if (!*(u8*)(link + 0xE)) {
+        if (!*(u8*)((u8*)link + 0xE)) {
             if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            AnimCallback* anim = (AnimCallback*)*(void**)(link + 8);
+            AnimCallback* anim = (AnimCallback*)*(void**)((u8*)link + 8);
             if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            anim->call(*(u16*)(link + 0xC), self);
+            anim->call(*(u16*)((u8*)link + 0xC), self);
         }
-        link = *(u8**)link;
+        link = *(void**)link;
     }
-    if ((*(u8*)((u8*)self + 0xCF) & 1) == 0 && (flags & 1)) return;
-    UpdateCallback* obj = (UpdateCallback*)*(void**)((u8*)self + 0x28);
+    if ((*(u8*)(pane + 0xCF) & 1) == 0 && (flags & 1)) return;
+    UpdateCallback* obj = (UpdateCallback*)*(void**)(pane + 0x28);
     if (obj) obj->call();
 }
 
