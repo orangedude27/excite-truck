@@ -43,6 +43,20 @@ typedef enum {
 
 typedef void (*SICallback)(s32 chan, u32 status);
 
+/**
+ * The SI driver's main transfer context (the SDK's static `Si` in SIBios.c).
+ * .chan is the channel of the transfer in flight, or SI_CHAN_NONE when the
+ * driver is idle; .poll is the SIEnablePolling/SIDisablePolling bit mask.
+ */
+#define SI_SIMAIN_DEFINED
+typedef struct SIMain {
+    s32 chan;            // at 0x0
+    u32 poll;            // at 0x4
+    u32 inSize;          // at 0x8
+    void* inAddr;        // at 0xC
+    SICallback callback; // at 0x10
+} SIMain;
+
 void SIInit(void);
 u32 SISetXY(u32 lines, u32 times);
 BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
