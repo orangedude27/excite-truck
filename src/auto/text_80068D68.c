@@ -5901,8 +5901,7 @@ s32 BTA_EnableBluetooth(void *p_cback) {
     return 1;
 }
 
-/* Disable the BTA device manager: post a BTA_DM_API_DISABLE_EVT (0x101)
- * message with no payload to the BTA task. */
+/* Disable the BTA device manager: post a BTA_DM_API_DISABLE_EVT (0x101) message with no payload to the BTA task. */
 void fn_80073AF8(void) {
     void *msg = GKI_getbuf(8);
     if (msg != 0) {
