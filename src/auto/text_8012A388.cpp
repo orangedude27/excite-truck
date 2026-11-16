@@ -2658,11 +2658,12 @@ extern "C" void fn_8012E5E4(void *list, void *targetNode) {
     *(void **)((u8 *)list + 0xC) = targetNode;
 }
 
-extern "C" void fn_8012E630(void *arg0) {
-    fn_8012D3D8(*(s32 *)((u8 *)arg0 + 0x4C));
-    fn_8012D8A8(*(s32 *)((u8 *)arg0 + 0x4C));
-    *(s32 *)((u8 *)arg0 + 0x4C) = 0;
-    *((u8 *)arg0 + 0xC) = 0;
+/* Tear down the resource handle at +0x4C and clear the node's handle/state fields. */
+extern "C" void fn_8012E630(void *node) {
+    fn_8012D3D8(*(s32 *)((u8 *)node + 0x4C));
+    fn_8012D8A8(*(s32 *)((u8 *)node + 0x4C));
+    *(s32 *)((u8 *)node + 0x4C) = 0;
+    *((u8 *)node + 0xC) = 0;
 }
 
   extern "C" s32 fn_8012E674(void *arg0) {
