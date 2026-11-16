@@ -56,6 +56,13 @@ extern void *lbl_8055F448;
 extern void fn_80235380(void *);
 extern void fn_80128670(void *);
 extern void *lbl_8055C458;
+static inline void fn_802640A0_init(int *p, int v, void *addr) {
+    p[2] = 0;
+    p[1] = v;
+    p[0] = (int)addr;
+    p[3] = 0;
+    p[4] = 0;
+}
 extern void fn_80236914(void);
 extern void fn_80264098(void *, int);
 extern void *fn_80264A54(void);
