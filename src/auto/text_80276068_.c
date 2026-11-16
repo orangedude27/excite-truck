@@ -598,14 +598,16 @@ void fn_80277828(void) {
         strcpy(((struct CameraEntry *)lbl_8055F59C)->name, &lbl_8055C644);
     }
 }
-int fn_80277960(void *arg0, void *arg1, float *arg2) {
+int fn_80277960(void *name, void *outCamera, float *outParam) {
+    /* Look up the named camera record and copy its matrix, translation vector
+     * and trailing float into the caller's outputs; return whether it was found. */
     struct Matrix { unsigned int words[9]; };
     struct Vector { unsigned int words[3]; };
-    unsigned char *p = (unsigned char *)fn_80276A44(arg0);
-    if (p != 0) {
-        *(struct Matrix *)arg1 = *(struct Matrix *)(p + 4);
-        *(struct Vector *)((unsigned char *)arg1 + 0x24) = *(struct Vector *)(p + 0x28);
-        *arg2 = *(float *)(p + 0x34);
+    unsigned char *entry = (unsigned char *)fn_80276A44(name);
+    if (entry != 0) {
+        *(struct Matrix *)outCamera = *(struct Matrix *)(entry + 4);
+        *(struct Vector *)((unsigned char *)outCamera + 0x24) = *(struct Vector *)(entry + 0x28);
+        *outParam = *(float *)(entry + 0x34);
         return 1;
     }
     return 0;
