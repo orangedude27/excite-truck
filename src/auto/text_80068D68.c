@@ -11899,9 +11899,10 @@ void fn_800725B4(void *arg0) {
     memcpy(*(void **)(lbl_803C0B98 + 0x74), arg0, 0x1C);
 }
 
-void fn_800725FC(void *arg0) {
+/* Allocate a 0x18-byte BTE buffer and copy the 0x18-byte device record into it. */
+void fn_800725FC(void *deviceRecord) {
     *(void **)(lbl_803C0B98 + 0x74) = GKI_getbuf(0x18);
-    memcpy(*(void **)(lbl_803C0B98 + 0x74), arg0, 0x18);
+    memcpy(*(void **)(lbl_803C0B98 + 0x74), deviceRecord, 0x18);
 }
 
 extern u8 lbl_803C0B98[];
