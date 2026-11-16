@@ -589,13 +589,14 @@ void *fn_8027B834(void *arg0) {
 #pragma pop
 
 #pragma scheduling invalid_target
-void *fn_8027B878(long arg0) {
-    long a = fn_8000DA10() * 0x3B10;
-    char *p = lbl_804A4380 + a;
-    long b = arg0 * 0xBD0;
-    p += b;
-    p += 0x2370;
-    return p;
+/* Returns the slot at index `slotIndex` within the current player's 0x3B10-byte block in lbl_804A4380, offset by 0x2370. */
+void *fn_8027B878(long slotIndex) {
+    long playerOffset = fn_8000DA10() * 0x3B10;
+    char *playerBase = lbl_804A4380 + playerOffset;
+    long slotOffset = slotIndex * 0xBD0;
+    playerBase += slotOffset;
+    playerBase += 0x2370;
+    return playerBase;
 }
 #pragma scheduling on
 void fn_8027B8C0(void* alarm) {
