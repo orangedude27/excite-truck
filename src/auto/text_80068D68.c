@@ -4492,7 +4492,7 @@ void uusb_issue_intr_read(void) {
 
 void uusb_WriteCtrlDataCB(s32 arg0, BT_HDR *arg1) {
     extern char lbl_803142C8[];
-    extern s32 IUSB_WriteCtrlMsgAsync();
+    extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
     register s32 status = arg0;
     register char *report = lbl_803142C8;
     if (lbl_803BD1E0.at_0x28 != 0)
