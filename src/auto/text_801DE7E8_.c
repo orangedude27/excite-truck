@@ -606,19 +606,23 @@ event_done:
 }
 
 #pragma small_data off
-void fn_801DF380(int arg0, int arg1, int arg2, int arg3) {
-    char *base;
+void fn_801DF380(int argValue, int message, int callback, int object) {
+#define sPopupQueue lbl_804873B8
+    char *queueEntries;
     int index;
     char *entry;
-    base = *(char **)lbl_804873B8;
-    index = *(int *)(lbl_804873B8 + 4);
-    *(int *)(lbl_804873B8 + 4) = index + 1;
-    entry = base + index * 0x1C;
-    *(int *)(entry + 0x18) = arg2;
-    *(int *)(entry + 0x10) = arg3;
-    *(int *)(entry + 0x8) = arg0;
-    *(int *)(entry + 0x4) = arg1;
+    /* RealName: PushPopup - append a PopupEntry (arg, message, callback, object)
+     * to the run-time popup queue, advancing its count. */
+    queueEntries = *(char **)sPopupQueue;
+    index = *(int *)(sPopupQueue + 4);
+    *(int *)(sPopupQueue + 4) = index + 1;
+    entry = queueEntries + index * 0x1C;
+    *(int *)(entry + 0x18) = callback;
+    *(int *)(entry + 0x10) = object;
+    *(int *)(entry + 0x8) = argValue;
+    *(int *)(entry + 0x4) = message;
     *(unsigned char *)entry = 0;
+#undef sPopupQueue
 }
 #pragma small_data on
 extern void *memcpy(void *, const void *, unsigned int);
