@@ -455,12 +455,14 @@ void fn_8000AA38(void* arg0) {
     base[0x58] = 0;
 }
 
-void fn_8000AA9C(void* arg0) {
-    s8 c = ((u8*)arg0)[0];
-    if (c == 0) {
+void fn_8000AA9C(void* carName) {
+    /* If carName is a non-empty car-name string, load the effect set named by
+     * it with ".car" appended (the load twin of fn_8000AABC). */
+    s8 firstChar = ((u8*)carName)[0];
+    if (firstChar == 0) {
         return;
     }
-    fn_8000A688(fn_8012DDA8, (s32)arg0);
+    fn_8000A688(fn_8012DDA8, (s32)carName);
 }
 
 /* If carName is a non-empty car-name string, release the effect loaded under
