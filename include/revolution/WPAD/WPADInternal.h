@@ -176,15 +176,44 @@ typedef struct WPADCB {
           union {
           WPADCommand extCmdQueueList[12]; // at 0x5F8
           struct {
-              u8 UNK_0x5F8[0x1CA];
+              u8 UNK_0x5F8[0x180];    // at 0x5F8 extCmdQueue.buffer: 8 commands
+              WPADInfo info;          // at 0x778 fields of the last status report
+              WPADInfo infoNext;      // at 0x790 report waiting to be applied to info
+              u8 UNK_0x7A8[0x1A];     // at 0x7A8
               // Extension calibration read out of WM_REG_EXTENSION_CONFIG,
               // same layout as extConfig below, filled in by the read callback.
-              WPADExtConfig extCalib;   // at 0x7C2
-              WPADCallback readCB;       // at 0x7DC callback of a register read
-              u8 UNK_0x7E0[0x21];
+              WPADExtConfig extCalib; // at 0x7C2
+              WPADCallback readCB;    // at 0x7DC callback of a register read
+              // The three sampler slots: 0x7E0 is the one
+              // WPADSetSamplingCallback() swaps, 0x7E8 runs after every
+              // copy-out (fn_80060AFC), 0x7E4 has a setter of its own.
+              WPADSamplingCallback readSamplingCB; // at 0x7E0
+              WPADSamplingCallback UNK_0x7E4;      // at 0x7E4
+              WPADSamplingCallback copyOutCB;      // at 0x7E8
+              // WPADSetAutoSamplingBuf() ring buffer, filled by fn_80060AFC.
+              WPADStatus* autoSamplingBuf; // at 0x7EC
+              u32 autoSamplingIndex;       // at 0x7F0 next slot written
+              u32 autoSamplingSize;        // at 0x7F4 number of slots
+              u32 readFormat;              // at 0x7F8 WPADSetDataFormat()
+              s32 readStatus;              // at 0x7FC error WPADRead() reports
+              u8 UNK_0x800;                // at 0x800
               u8 UNK_0x801; // extension kind: 1 = FS, 2 = CL, 0xfb/0xfc/0xfd = none
               u8 UNK_0x802;
-              u8 UNK_0x803[0x35];
+              s8 extDevHandle;    // at 0x803 BTE handle of this connection
+              u16 dpdObjSize;     // at 0x804 size stored in every DPD object
+              u8 rxBufSel;        // at 0x806 which rxBufs[] the next report fills
+              u8 UNK_0x807;       // at 0x807
+              u32 UNK_0x808;      // at 0x808
+              u8 radioLow;        // at 0x80C poor radio quality, WPADiRadioSensitivity
+              u8 radioLowCount;   // at 0x80D frames spent near its threshold
+              u8 pendingCmdCount; // at 0x80E queued commands not answered yet
+              u8 UNK_0x80F[5];    // at 0x80F
+              u32 UNK_0x814;      // at 0x814
+              u32 connected;      // at 0x818 the link is open
+              u32 handshakeDone;  // at 0x81C handshake finished; WPADRead() may run
+              u32 UNK_0x820;      // at 0x820
+              u8 UNK_0x824[0xC];  // at 0x824
+              s64 lastRxTime;     // at 0x830 last report; the sleep timer counts from it
           };
       };
     WPADInfo wpInfo;                   // at 0x838
