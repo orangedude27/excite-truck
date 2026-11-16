@@ -17492,6 +17492,11 @@ extern "C" const s8 lbl_802F44D8[];
 #pragma push
 #pragma use_lmw_stmw on
 extern "C" void fn_800C3DA0(void *arg0, const u8 *data, s32 flags, s16 *out, s16 *prev, s16 *out2, s16 frameBits, s16 index, s16 *keep, s8 pass, u8 row, s16 *outA, s16 *outB, s16 *outC, s16 *outD, s16 *outE) {
+/* Decode one row/pass of compressed coefficients from the bitstream 'data' into
+   out[21] and the 12x3 matrix out2. 'flags' selects a coefficient layout; 'index'
+   splits into four groups with bit widths b0..b3 and sizes n0..n3 that are read
+   (or copied from 'prev' when 'keep' is set) through the bit reader fn_800BDEB4.
+   outA..outE carry per-row state (bit usage, mode/submode and flags). */
 #define ROWS ((s16 (*)[3])out2)
     Fn800C08A8Context *ctx = (Fn800C08A8Context *)arg0;
     s32 i;
