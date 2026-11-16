@@ -731,13 +731,16 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
 }
 
 #pragma push
-void fn_801D411C(void *arg0) {
-    register char *p = (char *)arg0;
+void fn_801D411C(void *actor) {
+    /* Reset an actor's motion state: signal its associated object, clear the motion and
+       scratch floats, build the default matrix at +0x1F4 and copy it to +0x3C, then reset
+       the state/flags. */
+    register char *base = (char *)actor;
     float sp8;
     float sp10;
     float spc;
-    if (*(int *)(p + 0x230) == 2 && *(void **)(p + 0x228) != 0) {
-        fn_801A4868(*(void **)(p + 0x228), 1);
+    if (*(int *)(base + 0x230) == 2 && *(void **)(base + 0x228) != 0) {
+        fn_801A4868(*(void **)(base + 0x228), 1);
     }
     {
         register float neg1000;
@@ -745,49 +748,49 @@ void fn_801D411C(void *arg0) {
         register float zero;
         zero = lbl_80562AB8;
         one = lbl_80562AAC;
-        *(volatile float *)(p + 0x220) = zero;
+        *(volatile float *)(base + 0x220) = zero;
         neg1000 = lbl_80562ABC;
-        *(volatile float *)(p + 0x118) = zero;
-        *(volatile float *)(p + 0x11C) = zero;
-        *(volatile float *)(p + 0x120) = zero;
-        *(volatile float *)(p + 0x124) = zero;
-        *(volatile float *)(p + 0x128) = zero;
-        *(volatile float *)(p + 0x12C) = zero;
-        *(volatile float *)(p + 0x130) = zero;
-        *(volatile float *)(p + 0x134) = zero;
-        *(volatile float *)(p + 0x138) = zero;
-        *(volatile float *)(p + 0x13C) = zero;
-        *(volatile float *)(p + 0x140) = zero;
-        *(volatile float *)(p + 0x144) = zero;
-        *(volatile float *)(p + 0x16C) = zero;
-        *(volatile float *)(p + 0x170) = zero;
-        *(volatile float *)(p + 0x174) = zero;
-        *(volatile float *)(p + 0x178) = zero;
-        *(volatile float *)(p + 0x17C) = zero;
-        *(volatile float *)(p + 0x180) = zero;
-        *(volatile float *)(p + 0x1F4) = one;
-        *(volatile float *)(p + 0x1F8) = zero;
-        *(volatile float *)(p + 0x1FC) = zero;
-        *(volatile float *)(p + 0x200) = zero;
-        *(volatile float *)(p + 0x204) = one;
-        *(volatile float *)(p + 0x208) = zero;
-        *(volatile float *)(p + 0x20C) = zero;
-        *(volatile float *)(p + 0x210) = zero;
-        *(volatile float *)(p + 0x214) = one;
-        *(volatile float *)(p + 0x218) = zero;
-        *(volatile float *)(p + 0x21C) = neg1000;
-        *(volatile float *)(p + 0x220) = zero;
+        *(volatile float *)(base + 0x118) = zero;
+        *(volatile float *)(base + 0x11C) = zero;
+        *(volatile float *)(base + 0x120) = zero;
+        *(volatile float *)(base + 0x124) = zero;
+        *(volatile float *)(base + 0x128) = zero;
+        *(volatile float *)(base + 0x12C) = zero;
+        *(volatile float *)(base + 0x130) = zero;
+        *(volatile float *)(base + 0x134) = zero;
+        *(volatile float *)(base + 0x138) = zero;
+        *(volatile float *)(base + 0x13C) = zero;
+        *(volatile float *)(base + 0x140) = zero;
+        *(volatile float *)(base + 0x144) = zero;
+        *(volatile float *)(base + 0x16C) = zero;
+        *(volatile float *)(base + 0x170) = zero;
+        *(volatile float *)(base + 0x174) = zero;
+        *(volatile float *)(base + 0x178) = zero;
+        *(volatile float *)(base + 0x17C) = zero;
+        *(volatile float *)(base + 0x180) = zero;
+        *(volatile float *)(base + 0x1F4) = one;
+        *(volatile float *)(base + 0x1F8) = zero;
+        *(volatile float *)(base + 0x1FC) = zero;
+        *(volatile float *)(base + 0x200) = zero;
+        *(volatile float *)(base + 0x204) = one;
+        *(volatile float *)(base + 0x208) = zero;
+        *(volatile float *)(base + 0x20C) = zero;
+        *(volatile float *)(base + 0x210) = zero;
+        *(volatile float *)(base + 0x214) = one;
+        *(volatile float *)(base + 0x218) = zero;
+        *(volatile float *)(base + 0x21C) = neg1000;
+        *(volatile float *)(base + 0x220) = zero;
         *(volatile float *)&spc = zero;
         *(volatile float *)&sp10 = zero;
         *(volatile float *)&sp8 = zero;
-        *(volatile float *)(p + 0x30) = zero;
-        *(volatile float *)(p + 0x34) = zero;
-        *(volatile float *)(p + 0x38) = zero;
-        fn_8017A57C(arg0);
-        *(struct Mtx48 *)(p + 0x3C) = *(struct Mtx48 *)(p + 0x1F4);
-        fn_8017A580(arg0);
-        *(int *)(p + 0x24) = 0;
-        *(int *)(p + 0x1EC) = -1;
+        *(volatile float *)(base + 0x30) = zero;
+        *(volatile float *)(base + 0x34) = zero;
+        *(volatile float *)(base + 0x38) = zero;
+        fn_8017A57C(actor);
+        *(struct Mtx48 *)(base + 0x3C) = *(struct Mtx48 *)(base + 0x1F4);
+        fn_8017A580(actor);
+        *(int *)(base + 0x24) = 0;
+        *(int *)(base + 0x1EC) = -1;
     }
 }
 #pragma pop
