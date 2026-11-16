@@ -4956,7 +4956,7 @@ void GXSetTevColorIn(s32 stage, s32 aSel, s32 bSel, s32 cSel, s32 dSel) {
         WGPIPE.i = colorIn;
         tev[GX_TEV_COLOR_COMBINER / 4] = colorIn;
     }
-    *(unsigned short *)((unsigned char *)base + 2) = 0;
+    ((GXDrawData *)base)->lastWriteWasXF = FALSE; /* the FIFO's last write was a BP one */
 }
 
 /* Set the four alpha input sources for one TEV stage: pack the selectors into
