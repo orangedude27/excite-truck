@@ -119,9 +119,12 @@ void fn_801282F4(void) {
     lbl_8055DF81 = (u32)((-value) & ~value) >> 31;
 }
 
+#define heapRingPrimary   lbl_8041E140
+#define heapRingSecondary lbl_8041E160
+/* Bytes currently allocated from the primary (0) or secondary (1) heap ring, else 0. */
 s32 fn_80128314(s32 arg0) {
-    if (arg0 == 0) return ((s32 *)lbl_8041E140)[1];
-    if (arg0 == 1) return ((s32 *)lbl_8041E160)[1];
+    if (arg0 == 0) return ((s32 *)heapRingPrimary)[1];
+    if (arg0 == 1) return ((s32 *)heapRingSecondary)[1];
     return 0;
 }
 
