@@ -1104,16 +1104,17 @@ char __GXIsGPFifoReady(void) {
 }
 #pragma dont_inline reset
 
-void GXGetGPStatus(char *a, char *b, char *c, char *d, char *e) {
-    unsigned int *data = __GXData;
+/* Reads the graphics processor status register into the overrun/underrun/idle/breakpoint flags. */
+void GXGetGPStatus(char *overhi, char *underlow, char *readIdle, char *cmdIdle, char *brkpt) {
+    unsigned int *gxData = __GXData;
     unsigned short *cp = __cpReg;
-    unsigned int value = *cp;
-    data[3] = value;
-    *a = value & 1;
-    *b = (data[3] >> 1) & 1;
-    *c = (data[3] >> 2) & 1;
-    *d = (data[3] >> 3) & 1;
-    *e = (data[3] >> 4) & 1;
+    unsigned int status = *cp;
+    gxData[3] = status;
+    *overhi = status & 1;
+    *underlow = (gxData[3] >> 1) & 1;
+    *readIdle = (gxData[3] >> 2) & 1;
+    *cmdIdle = (gxData[3] >> 3) & 1;
+    *brkpt = (gxData[3] >> 4) & 1;
 }
 
 extern unsigned int lbl_8055D954;
