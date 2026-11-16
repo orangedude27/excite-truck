@@ -181,27 +181,26 @@ void fn_80017A2C(void *list, s32 exclusionList) {
     fn_80017AC8(list);
 }
 void fn_80017AC8(void* arg0) {
-    s32 offset = 0;
-    s32 i = 0;
     extern s32 fn_80129D18(s32);
+    register s32* arr = (s32*)arg0;
+    register s32 offset = 0;
+    register s32 i = 0;
+    register s32 left;
+    register s32* items;
     goto check;
 loop:
     {
-        s32 left;
-        s32 right;
-        s32* items;
-        s32 index;
-        index = fn_80129D18(1);
-        items = *(s32**)arg0;
-        i++;
+        s32 index = ((s32 (*)(s32, s32))fn_80129D18)(1, arr[1]);
+        items = (s32*)arr[0];
         left = *(s32*)((char*)items + offset);
-        right = items[index];
-        *(s32*)((char*)items + offset) = right;
+        i++;
+        *(s32*)((char*)items + offset) = items[index];
         offset += 4;
         items[index] = left;
     }
 check:
-    if (i < *(s32*)((char*)arg0 + 4)) goto loop;
+    left = arr[1];
+    if (i < left) goto loop;
 }
 
 extern s32 fn_800165D4(void);
