@@ -452,7 +452,20 @@ s32 fn_801C3D5C(void) {
 }
 
 void fn_801C3D88(void *arg0) {
-    memset((void *)lbl_8055E7F8, 0, 0xC300);
+    s32 i;
+    u8 *base = (u8 *)lbl_8055E7F8;
+    memset(base, 0, 0xC300);
+    for (i = 0; i < 4; i++) {
+        u8 *p = base + i * 0x1860;
+        *(f32 *)(p + 0x000) = lbl_80562994;
+        *(f32 *)(p + 0x30c) = lbl_80562994;
+        *(f32 *)(p + 0x618) = lbl_80562994;
+        *(f32 *)(p + 0x924) = lbl_80562994;
+        *(f32 *)(p + 0xc30) = lbl_80562994;
+        *(f32 *)(p + 0xf3c) = lbl_80562994;
+        *(f32 *)(p + 0x1248) = lbl_80562994;
+        *(f32 *)(p + 0x1554) = lbl_80562994;
+    }
     (void)arg0;
 }
 
@@ -1889,11 +1902,12 @@ void fn_801C791C(void) {
     lbl_8055E848 = 2;
 }
 
+/* Debug-menu callback: restore the idle menu action and clear the curve mode, returning the idle handler. */
 void (*fn_801C7944(void))(void) {
-    lbl_8055E83A = 1;
+    sTextFieldFlag = 1;
     lbl_8055E848 = 0;
-    lbl_8055E868 = fn_801C6CB0;
-    return fn_801C6CB0;
+    sMenuAction = menu_action_idle;
+    return menu_action_idle;
 }
 
 #pragma scheduling on
