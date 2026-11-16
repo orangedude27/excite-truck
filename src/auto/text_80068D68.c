@@ -12246,7 +12246,9 @@ void bta_dm_search_cancel_transac_cmpl(void) {
 }
 
 void fn_80072728(void) {
-    ((void (*)(u32, u32))*(u32 *)lbl_803C0B98)(4, 0);
+    /* BTA DM search: dispatch event 4 (discovery cancelled) with no data to the
+     * search callback held at bta_dm_search_cb.p_search_cback (+0x00). */
+    ((DmSearchCallback)*(u32 *)lbl_803C0B98)(4, 0);
 }
 
 extern u16 lbl_80560D10;
