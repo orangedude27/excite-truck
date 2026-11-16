@@ -25541,9 +25541,10 @@ extern "C" s32 VFiPFSTR_StrNCmp(s32 arg0_, const void *arg1_, s32 arg2_, s32 arg
 }
 
 extern "C" void VFipf_memcpy(void *, const void *, u32);
-extern "C" void fn_800A52A0(void *arg0, const void *arg1) {
-    VFipf_memcpy((u8 *)arg0 + 0x1648, arg1, 0xB);
-    *((u8 *)arg0 + 0x1653) = 0;
+extern "C" void fn_800A52A0(void *volume, const void *name) {
+    /* Set a volume's name: copy at most 11 bytes, then NUL-terminate at byte 12. */
+    VFipf_memcpy(VF_VOLUME(volume)->name, name, 0xB);
+    VF_VOLUME(volume)->name[0xB] = 0;
 }
 
 #pragma dont_inline reset
