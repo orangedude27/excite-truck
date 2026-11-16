@@ -167,6 +167,7 @@ typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
 typedef float f32;
+#define NULL 0
 #define M2C_FIELD(p, T, off) (*(T)((char*)(p) + (off)))
 typedef void **(*M2C_F1)(void **, int);
 typedef int (*M2C_F2)(void **);
