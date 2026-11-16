@@ -1578,13 +1578,15 @@ void fn_8018160C(void *arg0) {
     }
 }
 
-void fn_80181700(void *arg0, int arg1) {
-    int val;
-    *(unsigned char *)((char *)arg0 + 0x350) = arg1;
-    if (arg1 != 0) return;
-    val = *(int *)((char *)arg0 + 8);
-    if (val < 0) return;
-    ((void (*)(int))fn_802E8518)(val);
+/* Store the control flag at +0x350; when it is cleared, recenter the steering
+ * of the (non-negative) axis index kept at +0x8. */
+void fn_80181700(void *self, int flag) {
+    int stackHead;
+    *(unsigned char *)((char *)self + 0x350) = flag;
+    if (flag != 0) return;
+    stackHead = *(int *)((char *)self + 8);
+    if (stackHead < 0) return;
+    ((void (*)(int))fn_802E8518)(stackHead);
 }
 
 /* Stop the sound/event on a slot when it is valid and its owner is not type 0x11. */
