@@ -1805,8 +1805,9 @@ f32 fn_80011DC0(s32 arg0) {
     return lbl_80350F28[arg0][0];
 }
 
-f32 fn_80011DD4(s32 arg0) {
-    return lbl_80350F28[arg0][1];
+f32 fn_80011DD4(s32 regionId) {
+    /* Left edge of layout region regionId (the [region][1] column of lbl_80350F28). */
+    return lbl_80350F28[regionId][1];
 }
 
 f32 fn_80011DEC(s32 arg0) {
@@ -1905,7 +1906,7 @@ void fn_80011F64(void) {
     s32 *var_r28;
     s32 *var_r28_2;
     s32 var_r29_2;
-    u32 var_ctr;
+    register u32 var_ctr;
     void *temp_r4;
     void *temp_r4_2;
     void *temp_r4_3;
@@ -1957,7 +1958,8 @@ void fn_80011F64(void) {
                 }
             }
             temp_r3 += 3;
-        } while (--var_ctr != 0);
+            var_ctr--;
+        } while (var_ctr != 0);
     }
     lbl_8055D4AC = temp_r3;
 }
