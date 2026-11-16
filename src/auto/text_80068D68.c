@@ -19489,6 +19489,7 @@ void l2c_link_segments_xmitted(BT_HDR *p_msg) {
     }
 }
 
+/* RealName: l2c_start_link_timer_for_bd_addr (tentative). Starts the L2CAP link timer for the link control block matching bd_addr when it exists and its link state (+8) is idle/zero. */
 void fn_8008C464(u8 *bd_addr) {
     void *lcb = l2cu_find_lcb_by_bd_addr(bd_addr);
     if (lcb != 0 && *(u32 *)((u8 *)lcb + 8) == 0)
