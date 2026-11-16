@@ -186,52 +186,81 @@ body2:
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_802BBBC8(void) {
-    extern int lbl_80564CF8;
-    extern int lbl_80564CFC;
-    extern int lbl_804C0098[];
-    extern int lbl_804C00B0[];
-    extern signed char lbl_8055CF30;
-    extern signed char lbl_8055FA90;
-    extern char lbl_8034AAB8[];
-    extern char lbl_8034AAC4[];
-    extern void fn_801345D8(char *, int, char *, ...);
-    extern void fn_802E317C(char *, ...);
-    extern int fn_802CA294(int);
-    extern signed char fn_802B05E4(void);
-    char sp10[0x20];
-    int args[2];
-    register int *var_r27;
-    register int *var_r26;
-    register int var_r25;
-    register signed char *colors;
-    int temp_r3;
-    int var_r3;
+    #define sLayerPathFmt lbl_8034AAB8
+    #define sNoTextureFmt lbl_8034AAC4
+    #define sMatMapPrefix lbl_80564CF8
+    #define sMatMap2Prefix lbl_80564CFC
+    #define sLayerHandles lbl_804C0098
+    #define sLayerTextures lbl_804C00B0
+    #define sChannelSuffixes lbl_8055CF30
+    #define sSoftWaterMapPresent lbl_8055FA90
+    #define sFormatPath fn_801345D8
+    #define sPanic fn_802E317C
+    #define sGetTextureIndex fn_802CA294
+    #define sLoadTexture fn_802BB87C
+    #define sIsSoftWaterMapPresent fn_802B05E4
+    /* Loads the six material-map layers (matmap/matmap2 times b/g/r), saving each
+     * layer's file handle and the texture index it maps to, panicking when a layer
+     * texture is missing; finally caches the soft-water-map present flag. */
+    extern int sMatMapPrefix;
+    extern int sMatMap2Prefix;
+    extern int sLayerHandles[];
+    extern int sLayerTextures[];
+    extern signed char sChannelSuffixes;
+    extern signed char sSoftWaterMapPresent;
+    extern char sLayerPathFmt[];
+    extern char sNoTextureFmt[];
+    extern void sFormatPath(char *, int, char *, ...);
+    extern void sPanic(char *, ...);
+    extern int sGetTextureIndex(int);
+    extern signed char sIsSoftWaterMapPresent(void);
+    char path[0x20];
+    int prefixes[2];
+    register int *handleOut;
+    register int *textureOut;
+    register int layer;
+    register signed char *suffix;
+    int handle;
+    int texture;
 
-    args[0] = lbl_80564CF8;
-    var_r27 = lbl_804C0098;
-    var_r26 = lbl_804C00B0;
-    args[1] = lbl_80564CFC;
-    var_r25 = 0;
-    colors = &lbl_8055CF30;
-    for (; var_r25 < 6;) {
-        fn_801345D8(sp10, 0x20, lbl_8034AAB8, args[var_r25 / 3], colors[var_r25 % 3]);
-        temp_r3 = fn_802BB87C((int)sp10);
-        *var_r27 = temp_r3;
-        if (temp_r3 == -2) {
-            fn_802E317C(lbl_8034AAC4, var_r25);
+    prefixes[0] = sMatMapPrefix;
+    handleOut = sLayerHandles;
+    textureOut = sLayerTextures;
+    prefixes[1] = sMatMap2Prefix;
+    layer = 0;
+    suffix = &sChannelSuffixes;
+    for (; layer < 6;) {
+        sFormatPath(path, 0x20, sLayerPathFmt, prefixes[layer / 3], suffix[layer % 3]);
+        handle = sLoadTexture((int)path);
+        *handleOut = handle;
+        if (handle == -2) {
+            sPanic(sNoTextureFmt, layer);
         }
-        temp_r3 = *var_r27;
-        if (temp_r3 == -2) {
-            var_r3 = 0;
+        handle = *handleOut;
+        if (handle == -2) {
+            texture = 0;
         } else {
-            var_r3 = fn_802CA294(temp_r3);
+            texture = sGetTextureIndex(handle);
         }
-        var_r25 += 1;
-        *var_r26 = var_r3;
-        var_r27++;
-        var_r26++;
+        layer += 1;
+        *textureOut = texture;
+        handleOut++;
+        textureOut++;
     }
-    lbl_8055FA90 = fn_802B05E4();
+    sSoftWaterMapPresent = sIsSoftWaterMapPresent();
+    #undef sLayerPathFmt
+    #undef sNoTextureFmt
+    #undef sMatMapPrefix
+    #undef sMatMap2Prefix
+    #undef sLayerHandles
+    #undef sLayerTextures
+    #undef sChannelSuffixes
+    #undef sSoftWaterMapPresent
+    #undef sFormatPath
+    #undef sPanic
+    #undef sGetTextureIndex
+    #undef sLoadTexture
+    #undef sIsSoftWaterMapPresent
 }
 #pragma pop
 #pragma push
@@ -264,8 +293,8 @@ unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
     short y;
     int x2;
     int y2;
-    register int invalid;
-    register int result;
+    unsigned char invalid;
+    unsigned char result;
 
     if ((unsigned char)lbl_8055FA90 != 0)
         return (unsigned char)(~((arg2 - 1) | (1 - arg2)) >> 31);
@@ -284,13 +313,13 @@ unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
             y2 = (short)fn_802BB93C(arg1);
             x2 = (short)fn_802BB928(arg0);
             value = *slot;
-            result = (unsigned char)(((unsigned int)((int (*)(void *, int, int))fn_802D972C)(
+            return (unsigned char)(((unsigned int)((int (*)(void *, int, int))fn_802D972C)(
                 (void *)value, x2, y2)) >> 8);
         } else {
             result = (unsigned char)(~((arg2 - 2) | (2 - arg2)) >> 31);
         }
     }
-    return (unsigned char)result;
+    return result;
 }
 #pragma pop
   extern int lbl_804C0098[];
