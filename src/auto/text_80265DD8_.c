@@ -961,6 +961,7 @@ void fn_80267420(void) {
 #pragma processor 750
 void fn_80267680(void) {
     extern float lbl_80563C54, lbl_80563C58, lbl_80563C5C, lbl_80563C60, lbl_80563C64;
+    extern double lbl_80563C38;
     extern int lbl_8055F494;
     extern float lbl_8055F48C;
     extern void fn_802733C8(void);
@@ -970,9 +971,13 @@ void fn_80267680(void) {
     extern void fn_80268B94(int);
     extern void fn_80270484(void);
     char *p;
-    volatile float matrix[12];
+    struct StackData {
+        volatile float matrix[12];
+        union { double value; unsigned int word[2]; } conv;
+    } stack;
     int i;
     float bottom, limit;
+    double bias;
     float start, angle, one, zero;
     fn_802733C8();
     zero = lbl_80563C20;
@@ -980,6 +985,9 @@ void fn_80267680(void) {
     p = lbl_80499080;
     angle = lbl_80563C54;
     start = lbl_80563C58;
+    bias = lbl_80563C38;
+    limit = lbl_80563C5C;
+    bottom = lbl_80563C60;
     for (i = 0; i < 4; i++) {
         *(float *)(p + 8) = zero;
         *(float *)(p + 0xC) = zero;
@@ -999,26 +1007,26 @@ void fn_80267680(void) {
         fn_80265E08(p + 0x160);
         fn_80266150(p + 0x178);
         *(float *)(p + 0x158) = start;
-        *(float *)(p + 0x15C) = (float)i;
-        limit = lbl_80563C5C;
-        bottom = lbl_80563C60;
+        stack.conv.word[0] = 0x43300000;
+        stack.conv.word[1] = (unsigned int)i ^ 0x80000000U;
+        *(float *)(p + 0x15C) = (float)(stack.conv.value - bias);
         *(float *)(p + 0x198) = zero;
         *(float *)(p + 0x19C) = zero;
         *(int *)(p + 0x14C) = -1;
         *(int *)(p + 0x150) = -1;
         if (fn_801796B4() == 0) {
-            matrix[0] = one;
-            matrix[1] = zero;
-            matrix[2] = zero;
-            matrix[3] = zero;
-            matrix[4] = one;
-            matrix[5] = zero;
-            matrix[6] = zero;
-            matrix[7] = zero;
-            matrix[8] = one;
-            matrix[9] = zero;
-            matrix[10] = zero;
-            matrix[11] = zero;
+            stack.matrix[0] = one;
+            stack.matrix[1] = zero;
+            stack.matrix[2] = zero;
+            stack.matrix[3] = zero;
+            stack.matrix[4] = one;
+            stack.matrix[5] = zero;
+            stack.matrix[6] = zero;
+            stack.matrix[7] = zero;
+            stack.matrix[8] = one;
+            stack.matrix[9] = zero;
+            stack.matrix[10] = zero;
+            stack.matrix[11] = zero;
             fn_80276BE4((int)(p + 0x1A4), (int)(p + 0x1D4));
         }
         fn_801E9DC4((int *)(p + 0x1EC));
@@ -2098,7 +2106,7 @@ void fn_8026A394(void *arg0) {
    unsigned int one;
    float factor;
    float scale;
-   float threshold;
+   register float threshold;
    float zero;
    float copy;
    unsigned int value1;
