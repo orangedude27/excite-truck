@@ -622,7 +622,11 @@ int fn_8027DE98(int index) {
 }
 #pragma dont_inline reset
 
-void fn_8027DEAC(void* alarm) {
+/* OS alarm callback: refresh the value tied to the currently selected ident.
+   Reads the active index with fn_8000DA10 and reads that entry's first word
+   from the 8-byte-record table at lbl_804B2FD8 via fn_8027DE98. The alarm
+   itself is unused. */
+void fn_8027DEAC(void *alarm) {
     fn_8027DE98(fn_8000DA10(alarm));
 }
 
