@@ -79,6 +79,9 @@ typedef int lbl_804B34B0_t;
 #pragma push
 #pragma small_data off
 void fn_8028DFB0(void) {
+    /* Commit the current emitter from the primary sort list (lbl_804B34B0_arr):
+       if it has entries, finalize/sort the list and record its first item as
+       the current one (lbl_8055F740), then clear the pending flag (lbl_8055F744). */
     if (*((int *)((char *)&lbl_804B34B0_arr[0] + 0x100)) > 0) {
         fn_8028F2EC();
         lbl_8055F740 = lbl_804B34B0_arr[0];
