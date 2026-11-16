@@ -1352,8 +1352,10 @@ void fn_802C77F0(void *arg0, f32 *arg1) {
     fn_802C7760(arg0, arg1, arg1 + 1, arg1 + 2, arg1 + 3, arg1 + 4, arg1 + 5);
 }
 
-float fn_802C7808(int arg0) {
-    return *(float *)((char *)(*(void **)((char *)fn_802C5390(arg0) + 4)) + 0x1C);
+/* Return the model instance's view tolerance (+0x1C of its group list) - the
+ * threshold passed to the visibility/culling test in fn_802C94A0. */
+float fn_802C7808(int instanceId) {
+    return *(float *)((char *)(*(void **)((char *)fn_802C5390(instanceId) + 4)) + 0x1C);
 }
 
 s32 fn_802C7830(char *arg0, s32 is_digit, signed char c) {
