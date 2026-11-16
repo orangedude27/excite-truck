@@ -360,8 +360,9 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
 #pragma pop
 #pragma cplusplus off
 #pragma scheduling on
-void DBPrintf_8013B490(const char *fmt, ...) {
-#pragma unused(fmt)
+/* Debug printf stub (no-op). */
+void DBPrintf_8013B490(const char *format, ...) {
+#pragma unused(format)
 }
 
 extern void fn_8013AC78(int, int *);
