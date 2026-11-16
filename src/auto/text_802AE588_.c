@@ -168,10 +168,11 @@ extern char lbl_8034A048[];
 extern char lbl_8034A064[];
 void fn_802AE644(void) { fn_802AE64C(lbl_8055F984); }
 
+/* If the object holds a buffer pointer at offset 0, free it and clear the field. */
 void fn_802AE64C(void *arg0) {
-    void *buf = *(void **)arg0;
-    if (buf != NULL) {
-        fn_80128670(buf);
+    void *buffer = *(void **)arg0;
+    if (buffer != NULL) {
+        fn_80128670(buffer);
         *(void **)arg0 = NULL;
     }
 }
