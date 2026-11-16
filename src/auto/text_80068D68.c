@@ -5043,13 +5043,15 @@ void fn_80070AF0(s32 shutdownCallback) {
 }
 
 typedef int (*ShutdownCallbackFn)(int);
-int fn_80070B24(int arg0) {
+/* If a shutdown callback is installed at gShutdownCallback, invoke it with 0 for a
+ * nonnegative status or 1 for a negative one; otherwise return the status unchanged. */
+int fn_80070B24(int status) {
     ShutdownCallbackFn callback = (ShutdownCallbackFn)lbl_8055DC74;
 
     if (callback == 0) {
-        return arg0;
+        return status;
     }
-    if ((s8)arg0 >= 0) {
+    if ((s8)status >= 0) {
         return callback(0);
     }
     return callback(1);
