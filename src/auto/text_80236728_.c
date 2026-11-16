@@ -78,12 +78,23 @@ extern char lbl_80340910[];
 #pragma push
 #pragma scheduling invalid_target
 void fn_80236728(void) {
-    if ((unsigned char)lbl_8055F0C4 != 0) {
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80340910);
+#define sUiAnimeHead lbl_8055F0BC
+#define sUiAnimeTail lbl_8055F0C0
+#define sUiAnimeStarted lbl_8055F0C4
+#define sUiAnimeStartedTwiceMsg lbl_80340910
+#define Panic_802E317C fn_802E317C
+    /* Initialize the uiAnime system, panicking if it was already started. */
+    if ((unsigned char)sUiAnimeStarted != 0) {
+        ((void (*)(const char *, ...))Panic_802E317C)(sUiAnimeStartedTwiceMsg);
     }
-    lbl_8055F0BC = 0;
-    lbl_8055F0C0 = 0;
-    lbl_8055F0C4 = 1;
+    sUiAnimeHead = 0;
+    sUiAnimeTail = 0;
+    sUiAnimeStarted = 1;
+#undef sUiAnimeHead
+#undef sUiAnimeTail
+#undef sUiAnimeStarted
+#undef sUiAnimeStartedTwiceMsg
+#undef Panic_802E317C
 }
 #pragma pop
 void fn_80236774(void) {
