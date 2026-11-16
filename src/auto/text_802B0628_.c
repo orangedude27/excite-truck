@@ -909,11 +909,13 @@ void *fn_802B1C1C(void *arg0, int arg1) {
     return &lbl_8034A270;
 }
 
-int fn_802B1C50(void *arg0, int arg1, int arg2) {
-    if (arg1 >= 0 && arg1 < *(int *)((char *)arg0 + 0x10)) {
-        unsigned int base = *(unsigned int *)((char *)arg0 + 0xC);
-        unsigned int addr = base + (unsigned int)(arg1 << 7);
-        addr += (unsigned int)(arg2 << 2);
+int fn_802B1C50(void *table, int rowIndex, int variant) {
+    /* Fetch one of the two ids stored at +0x74 / +0x78 of a 0x80-byte surface
+       row, chosen by variant (0 or 1); return 0 when the row is out of range. */
+    if (rowIndex >= 0 && rowIndex < *(int *)((char *)table + 0x10)) {
+        unsigned int rows = *(unsigned int *)((char *)table + 0xC);
+        unsigned int addr = rows + (unsigned int)(rowIndex << 7);
+        addr += (unsigned int)(variant << 2);
         return *(int *)(addr + 0x74);
     }
     return 0;
