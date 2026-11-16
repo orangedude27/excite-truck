@@ -13,58 +13,39 @@ extern int lbl_80498860[];
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_802445FC(int arg0, int arg1, int arg2) {
-    struct Context {
-        volatile char *label;
-        volatile int padding[4];
-        volatile int zero;
-        volatile int result;
-        volatile int input;
-        volatile int zero2;
-        volatile int limit;
-        volatile float value;
-    } context;
-    struct Config {
-        volatile int zero;
-        volatile int count;
-        volatile char **context;
-        volatile int zero2;
-        volatile int zero3;
-        volatile int setting[5];
-    } config;
-    struct Args {
-        int first;
-        volatile int config;
-        int third;
-        int fourth;
-        int fifth;
-    } args;
-    int *v;
-
-    context.result = fn_80012870();
-    context.label = lbl_80342DC8;
-    context.zero = 0;
-    context.input = arg2;
-    context.zero2 = 0;
-    context.limit = 1000;
-    context.value = fn_8020A5F0();
-    v = lbl_802FA320;
-    args.config = v[1];
-    config.count = 5;
-    config.zero = 0;
-    config.context = &context.label;
-    config.zero2 = 0;
-    config.zero3 = 0;
-    config.setting[0] = lbl_80498860[0];
-    config.setting[1] = lbl_80498860[1];
-    config.setting[2] = lbl_80498860[2];
-    config.setting[3] = lbl_80498860[3];
-    config.setting[4] = lbl_80498860[4];
-    args.first = v[0];
-    args.third = v[2];
-    args.fourth = v[3];
-    args.fifth = v[4];
-    args.config = (int)&config;
-    fn_802146BC((int *)&args, -999, -999, 1, v[4], v[3], v[2], v[0]);
+    int work[0x1B];
+    int *ctx;
+    int v0, v1, v2, v3, v4;
+    work[22] = fn_80012870();
+    work[16] = (int)lbl_80342DC8;
+    ctx = &work[16];
+    work[21] = 0;
+    work[23] = arg2;
+    work[24] = 0;
+    work[25] = 1000;
+    *(float *)&work[26] = fn_8020A5F0();
+    v1 = lbl_802FA320[1];
+    work[1] = v1;
+    work[11] = lbl_80498860[0];
+    work[12] = lbl_80498860[1];
+    work[7] = 5;
+    work[13] = lbl_80498860[2];
+    work[14] = lbl_80498860[3];
+    work[15] = lbl_80498860[4];
+    v0 = lbl_802FA320[0];
+    work[0] = v0;
+    v2 = lbl_802FA320[2];
+    work[2] = v2;
+    v3 = lbl_802FA320[3];
+    work[3] = v3;
+    v4 = lbl_802FA320[4];
+    work[4] = v4;
+    work[6] = 0;
+    work[8] = (int)ctx;
+    work[9] = 0;
+    work[10] = 0;
+    work[1] = (int)&work[6];
+    fn_802146BC(work, -999, -999, 1, v4, v3, v2, v1 - v1 + v0);
 }
 #pragma pop
 #pragma scheduling on
@@ -87,11 +68,14 @@ void fn_80244738(void) {
     fn_800216C4();
 }
 
+/* Load race.res and cache timing/state on the arg object. */
 void fn_8024477C(void *arg0) {
     extern int lbl_80342E28[];
-    fn_8012E81C(&lbl_80342E28);
+#define raceResName lbl_80342E28
+    fn_8012E81C(&raceResName);
     fn_80021464(*(int *)((char *)arg0 + 0x18), *(int *)((char *)arg0 + 0x1C));
     *(int *)((char *)arg0 + 0x20) = fn_802E2C20();
+#undef raceResName
 }
 
 extern int lbl_80342E28[];
@@ -103,6 +87,20 @@ void fn_802447C4(void *arg0) {
     fn_8002167C();
     fn_8020A634();
     fn_8020A5F8(*(float *)((char *)arg0 + 0x28));
+}
+
+void fn_802447FC(void *arg0) {
+    float val;
+    int elapsed;
+    float blend;
+    elapsed = fn_802E2C20() - *(int *)((char *)arg0 + 0x20);
+    val = lbl_805637F0 - ((float)elapsed / (float)*(int *)((char *)arg0 + 0x24));
+    blend = lbl_805637F4;
+    blend = blend > val ? blend : val;
+    fn_8020A5F8(*(float *)((char *)arg0 + 0x28) * blend);
+    if (elapsed > *(int *)((char *)arg0 + 0x24) && fn_802ECC10() == 0) {
+        fn_80221F94(arg0, 0);
+    }
 }
 
 void fn_802448BC(void *arg0) {
