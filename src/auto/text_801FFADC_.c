@@ -4,7 +4,13 @@
 extern void *lbl_8055EC88;
 extern int lbl_8055EC90;
 void fn_8000D838(void *);
+/* Registers this module's static-destructor record and sets its 32-bit aRGB
+ * value to 0xFFFF0000 (opaque red). */
 void fn_801FFADC(void) {
-    fn_8000D838(&lbl_8055EC88);
-    lbl_8055EC90 = 0xFFFF0000;
+#define sDtorRecord lbl_8055EC88 /* static-destructor record for this module */
+#define sColor lbl_8055EC90      /* 32-bit aRGB value */
+    fn_8000D838(&sDtorRecord);
+    sColor = 0xFFFF0000;
+#undef sColor
+#undef sDtorRecord
 }
