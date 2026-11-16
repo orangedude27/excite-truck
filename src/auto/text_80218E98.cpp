@@ -627,18 +627,19 @@ extern "C" void fn_80218E98(void *arg0, void *arg1) {
     dst[3] = fourth;
 }
 
-extern "C" void fn_80218EBC(void *arg0, void *arg1) {
-    s32 fourth, third, second, first;
-    volatile s32 *src = (volatile s32 *)arg1;
-    s32 *dst = (s32 *)((u8 *)arg0 + 0x14);
-    first = src[0];
-    second = src[1];
-    third = src[2];
-    fourth = src[3];
-    dst[0] = first;
-    dst[1] = second;
-    dst[2] = third;
-    dst[3] = fourth;
+extern "C" void fn_80218EBC(void *drawObj, void *savedRect) {
+    /* Restore a drawing object's clip rectangle (the four s32 words at +0x14) from a saved buffer; inverse of fn_80218E98. */
+    s32 bottom, right, top, left;
+    volatile s32 *src = (volatile s32 *)savedRect;
+    s32 *dst = (s32 *)((u8 *)drawObj + 0x14);
+    left = src[0];
+    top = src[1];
+    right = src[2];
+    bottom = src[3];
+    dst[0] = left;
+    dst[1] = top;
+    dst[2] = right;
+    dst[3] = bottom;
 }
 
 /* Clip the drawing object's rectangle to the one given: the object keeps only the part
