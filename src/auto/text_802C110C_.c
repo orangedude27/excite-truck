@@ -310,9 +310,8 @@ int fn_802C1500(int arg0, int arg1) {
         char padding[0x58];
     };
     int index = lbl_8055FB2C;
-    int *list = (int *)lbl_8055FB30;
     lbl_8055FB2C = index + 1;
-    list[index] = arg0;
+    ((int *)lbl_8055FB30)[index] = arg0;
     if (((struct Entry *)lbl_804C0810)[arg1].first < 0) {
         ((struct Entry *)lbl_804C0810)[arg1].first = index;
         ((struct Entry *)lbl_804C0810)[arg1].second = index;
@@ -600,27 +599,22 @@ extern void fn_802BDFF4(void *, int);
 #pragma push
 #pragma processor 750
 void fn_802C1928(void) {
-    {
-        f32 zero = lbl_80564E58;
-        f32 *values = (f32 *)((char *)&lbl_804C1050 + 4);
-        values[0] = zero;
-        values[2] = zero;
-        values[4] = zero;
-        values[6] = zero;
-        values[8] = zero;
-        values[10] = zero;
-        values[12] = zero;
-        values[14] = zero;
-    }
-    {
-        char *entry = (char *)&lbl_804C0E10;
-        int j = 0;
-        do {
-            fn_802C1180(entry);
-            j++;
-            entry += 0x48;
-        } while (j < 8);
-    }
+    f32 *values = (f32 *)((char *)&lbl_804C1050 + 4);
+    values[0] = -1000.0f;
+    values[2] = -1000.0f;
+    values[4] = -1000.0f;
+    values[6] = -1000.0f;
+    values[8] = -1000.0f;
+    values[10] = -1000.0f;
+    values[12] = -1000.0f;
+    values[14] = -1000.0f;
+    char *entry = (char *)&lbl_804C0E10;
+    int j = 0;
+    do {
+        fn_802C1180(entry);
+        j++;
+        entry += 0x48;
+    } while (j < 8);
     {
         register f32 delta = lbl_80564E74;
         register int count = 0;
