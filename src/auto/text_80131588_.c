@@ -141,6 +141,8 @@ extern char lbl_8032B818[]; /* "Bad vector value \"%s\" for \"%s\" i" */
 extern char lbl_8032B840[]; /* "Bad real64 value \"%s\" for \"%s\" i" */
 #pragma push
 #pragma scheduling invalid_target
+/* Non-PC stub: logs "Attempt to call ValueFileLoadHumanReadable() from
+   non-PC platform" (lbl_8032B510) via fn_802E30C8, then returns 0. */
 s32 fn_8013181C(void) {
     fn_802E30C8(lbl_8032B510);
     return 0;
