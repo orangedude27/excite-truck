@@ -302,13 +302,16 @@ void fn_802CD320(void *arg0, int arg1) {
     (*itemsPtr)[(*countPtr)++] = arg1;
 }
 #pragma pop
-void fn_802CD33C(void *arg0, int arg1, int arg2) {
-    if (arg2 != 0) {
-        unsigned short *p = (unsigned short *)(*(char **)((char *)arg0 + 0x24) + (arg1 << 5) + 0x12);
-        *p &= ~0x40;
+void fn_802CD33C(void *list, int entryIndex, int clearFlag) {
+    /* RealName: MlistSetEntryFlag. Sets bit 0x40 in the u16 flags at +0x12 of
+     * material-list entry entryIndex (32-byte entries in the table at +0x24);
+     * a nonzero clearFlag clears the bit instead. */
+    if (clearFlag != 0) {
+        unsigned short *flags = (unsigned short *)(*(char **)((char *)list + 0x24) + (entryIndex << 5) + 0x12);
+        *flags &= ~0x40;
     } else {
-        unsigned short *p = (unsigned short *)(*(char **)((char *)arg0 + 0x24) + (arg1 << 5) + 0x12);
-        *p |= 0x40;
+        unsigned short *flags = (unsigned short *)(*(char **)((char *)list + 0x24) + (entryIndex << 5) + 0x12);
+        *flags |= 0x40;
     }
 }
 
