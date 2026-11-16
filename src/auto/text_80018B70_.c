@@ -414,8 +414,8 @@ found:
 __declspec(section ".data") extern void *lbl_803580A4;
 __declspec(section ".data") extern void *lbl_802FD2A0;
 static inline s32 fn_80019258_find_inl(const char *name) {
-    s32 i;
     s32 offset;
+    s32 i;
     for (i = 0, offset = 0; i < *(volatile s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, i++) {
         if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) == 0)
             return i;
@@ -427,26 +427,9 @@ static inline s32 fn_80019258_find_inl(const char *name) {
 #pragma small_data off
 #pragma scheduling invalid_target
 int fn_80019258(const char *name, int *out0, int *out1, int unused) {
-    register s32 i;
-    register s32 offset;
-    register const char *name_r;
-    register char *p;
-    name_r = name;
-    i = 0;
-    offset = 0;
-    goto check;
-loop:
-    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name_r) != 0)
-        goto advance;
-    goto found;
-advance:
-    offset += 0x10;
-    i++;
-check:
-    if (i < *(volatile s32 *)((char *)&lbl_803580A4 + 4))
-        goto loop;
-    i = -1;
-found:
+    s32 i;
+    char *p;
+    i = fn_80019258_find_inl(name);
     p = (char *)lbl_803580A4 + i * 0x10 + 4;
     if (i < 0)
         p = 0;
