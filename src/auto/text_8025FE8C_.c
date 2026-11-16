@@ -1294,12 +1294,14 @@ firstCheck:
 #pragma scheduling on
 #pragma cplusplus reset
 
-void fn_80262120(void *arg0) {
+void fn_80262120(void *vec) {
+    /* Init an inline-buffer vector: data points at the inline storage (+0xC),
+     * length starts at 0, capacity is 3; the zero temp is kept for store order. */
     s32 zero;
-    *(s32 *)arg0 = (s32)((u8 *)arg0 + 0xC);
-    *(s32 *)((u8 *)arg0 + 8) = 3;
+    *(s32 *)vec = (s32)((u8 *)vec + 0xC);
+    *(s32 *)((u8 *)vec + 8) = 3;
     zero = 0;
-    *(s32 *)((u8 *)arg0 + 4) = zero;
+    *(s32 *)((u8 *)vec + 4) = zero;
 }
 
 #pragma scheduling invalid_target
