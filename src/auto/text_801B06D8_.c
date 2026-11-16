@@ -108,6 +108,13 @@ struct Dummy_801B1FEC {
     virtual void d1();
     virtual void func(s32, s32, s32, void *, s32 *);
 };
+/* Interface onto the active deity/AI-truck controller (gPrimaryObject):
+ * evaluate is the +0x10 vtable slot (d0/d1 fill +0x8/+0xC). */
+struct DeityNodeEvaluator {
+    virtual void d0();
+    virtual void d1();
+    virtual void evaluate(s32, s32, s32, void *, s32 *);
+};
 struct Dummy_801B3084 {
     virtual void d0();
     virtual void d1();
