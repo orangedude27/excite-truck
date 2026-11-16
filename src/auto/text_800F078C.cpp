@@ -26,16 +26,10 @@ struct SoundInstanceManager {
     struct LinkList activeList; /* 0x04 sounds now playing, best priority first */
 };
 
-/* nw4hbm::snd::detail::SeqSound::SeqLoadCallback: the SoundArchivePlayer's
- * hook that finishes an asynchronous sequence-data load.  Prepare() hands it
- * the sound and the completion function; a sound that goes away first uses
- * the 0x10 slot to drop its pending request. */
-struct SeqLoadCallback {
-    virtual void v0() = 0; /* 0x08 */
-    virtual void Bind(void (*func)(int, const void *, unsigned long, void *),
-                      void *sound, unsigned long arg) = 0;   /* 0x0C */
-    virtual void Cancel(unsigned long arg) = 0;               /* 0x10 */
-};
+/* nw4hbm::snd::detail::AsyncCallbackFunc: what an asynchronous load calls once
+ * the data is there (success 1) or could not be read (success 0). */
+typedef void (*AsyncCallbackFunc)(int success, const void *data,
+                                  unsigned long size, void *arg);
 
 /* Virtual interface carried by every sound object; the two leading
  * destructor slots put the first method at 0x08. */
@@ -47,6 +41,17 @@ struct SoundInterface {
 /* nw4hbm::snd::detail::SeqSound: a sequence (BGM) sound playing through a
  * SeqPlayer (at 0xD8); only the fields this file touches are named. */
 struct SeqSound {
+    /* nw4hbm::snd::detail::SeqSound::SeqLoadCallback: the SoundArchivePlayer's
+     * hook that finishes an asynchronous sequence-data load.  Prepare() hands it
+     * the sound and the completion function; a sound that goes away first uses
+     * the 0x10 slot to drop its pending request. */
+    struct SeqLoadCallback {
+        virtual void v0() = 0;                         /* 0x08 */
+        virtual void PrepareSeq(AsyncCallbackFunc func, void *sound,
+                                unsigned long id) = 0; /* 0x0C */
+        virtual void Cancel(unsigned long id) = 0;     /* 0x10 */
+    };
+
     void *vtable;                                   /* 0x000 */
     u8 pad_004[0x0B8 - 0x004];
     struct LinkNode link;                           /* 0x0B8 node in activeList */
@@ -57,6 +62,7 @@ struct SeqSound {
     unsigned long asyncCallbackArg;                 /* 0x1F0 argument for that callback */
     void Shutdown();
     void SetPlayerPriority(int);
+    void Prepare(const struct SeqLoadCallback *callback, unsigned long id);
 };
 
 }}}
@@ -148,15 +154,9 @@ extern "C" void Setup__Q46nw4hbm3snd6detail8SeqSoundFPQ46nw4hbm3snd6detail17SeqT
         virtual void slot19() = 0;
         virtual void method() = 0;
     };
-    struct PanicMsgs {
-        char file;
-        char pad[0x13];
-        char msg57[0x2C];
-        char msg58[4];
-    };
-    PanicMsgs *panicBase = (PanicMsgs *)lbl_80324060;
-    if (arg4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&panicBase->file, 0x57, panicBase->msg57);
-    if (*(s32 *)((u8 *)arg0 + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(&panicBase->file, 0x58, panicBase->msg58);
+    char *panicBase = (char *)lbl_80324060;
+    if (arg4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&((char (*)[1])panicBase)[0][0], 0x57, panicBase + 0x14);
+    if (*(s32 *)((u8 *)arg0 + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(&((char (*)[1])panicBase)[0][0], 0x58, panicBase + 0x40);
     ((VtableProxy *)arg0)->method();
     Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqTrackAllocatorUliPQ46nw4hbm3snd6detail14NoteOnCallback((u8 *)arg0 + 0xD8, (unsigned long)arg1, (int)arg2, arg3, arg4);
 }
@@ -204,16 +204,16 @@ extern "C" void NotifyLoadAsyncEndSeqData__Q46nw4hbm3snd6detail8SeqSoundFbPCvlPv
         virtual void s1();
         virtual void s2();
         virtual void s3();
-        virtual void s4(int);
+        virtual void s4(int x);
     };
     const char *f = (const char *)lbl_80324060;
-    if (arg3 == 0) Panic__Q26nw4hbm2dbFPCciPCce(f + 0, 0x9A, f + 0xA0);
+    if (arg3 == 0) Panic__Q26nw4hbm2dbFPCciPCce(f + 0, 154, f + 160);
     *(u8 *)((u8 *)arg3 + 0x1E8) = 0;
     if (arg0 == 0) {
         ((Vt *)arg3)->s4(0);
         return;
     }
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(f + 0, 0x70, f + 0x74);
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(f + 0, 112, f + 116);
     SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl((u8 *)arg3 + 0xD8, arg1, (s32)arg2);
 }
 #pragma pop
