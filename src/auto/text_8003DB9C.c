@@ -907,10 +907,11 @@ void GXSetCPUFifo(void *arg0) {
     } piWord;
     GXFifoObjInternal *source;
     GXFifoObjInternal *fifo;
-    GXFifoObjInternal *fifoElse;
+    struct { GXFifoObjInternal *ptr; } tail;
     int intStatus;
-    register unsigned int *gd;
-    unsigned int tmp;
+    unsigned int *gd;
+    struct { unsigned int value; } temp;
+    unsigned int *gdElse;
 
     intStatus = OSDisableInterrupts();
     if (arg0 == 0) {
@@ -938,34 +939,34 @@ void GXSetCPUFifo(void *arg0) {
         __piReg[5] = piWord.word;
 
         gd = __GXData;
-        tmp = gd[4] | 3u;
-        gd[4] = tmp;
-        __cpReg[2] = (unsigned short)tmp;
-        tmp = (gd[2] | 4u) & 0xFFFFFFF7u;
-        gd[2] = tmp;
-        __cpReg[1] = (unsigned short)tmp;
-        tmp = gd[2] | 0x10u;
-        gd[2] = tmp;
-        __cpReg[1] = (unsigned short)tmp;
+        temp.value = gd[4] | 3u;
+        gd[4] = temp.value;
+        __cpReg[2] = (unsigned short)temp.value;
+        temp.value = (gd[2] | 4u) & 0xFFFFFFF7u;
+        gd[2] = temp.value;
+        __cpReg[1] = (unsigned short)temp.value;
+        temp.value = gd[2] | 0x10u;
+        gd[2] = temp.value;
+        __cpReg[1] = (unsigned short)temp.value;
     } else {
         ((unsigned char *)fifo)[0x22] = 0;
         if ((unsigned char)lbl_8055D960 != 0) {
             gd = __GXData;
-            tmp = gd[2] & 0xFFFFFFEFu;
-            gd[2] = tmp;
-            __cpReg[1] = (unsigned short)tmp;
+            temp.value = gd[2] & 0xFFFFFFEFu;
+            gd[2] = temp.value;
+            __cpReg[1] = (unsigned short)temp.value;
             lbl_8055D960 = 0;
         }
-        gd = __GXData;
-        tmp = gd[2] & 0xFFFFFFF3u;
-        gd[2] = tmp;
-        __cpReg[1] = (unsigned short)tmp;
+        gdElse = __GXData;
+        temp.value = gdElse[2] & 0xFFFFFFF3u;
+        gdElse[2] = temp.value;
+        __cpReg[1] = (unsigned short)temp.value;
 
-        fifoElse = (GXFifoObjInternal *)lbl_8037C0E4;
+        tail.ptr = (GXFifoObjInternal *)lbl_8037C0E4;
         __piReg[3] = (*(unsigned int *)lbl_8037C0E4) & 0x3FFFFFFFu;
-        __piReg[4] = (unsigned int)fifoElse->top & 0x3FFFFFFFu;
+        __piReg[4] = (unsigned int)tail.ptr->top & 0x3FFFFFFFu;
         piWord.word = 0;
-        piWord.bits.payload = (unsigned int)fifoElse->wrPtr >> 5;
+        piWord.bits.payload = (unsigned int)tail.ptr->wrPtr >> 5;
         __piReg[5] = piWord.word;
     }
     PPCSync();
@@ -1976,7 +1977,7 @@ void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list) {
     unsigned int *vatC = &vatBase[0x5C / 4];
 
     for (; list->attr != 0xFF; list++) {
-        int attr = list->attr;
+        int attr = *(volatile int *)&list->attr;
         unsigned char shift = list->shift;
         int compType = list->compType;
         int compCnt = list->compCnt;
