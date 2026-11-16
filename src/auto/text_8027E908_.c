@@ -1694,7 +1694,7 @@ extern "C" int lbl_802FA848;
 extern "C" int lbl_804B2FF8;
 extern "C" float lbl_80564204, lbl_805641FC, lbl_80564200, lbl_80564208;
 extern "C" unsigned char lbl_80348738[];
-extern "C" char lbl_8055C818[];
+extern "C" char lbl_8055C818[8];
 extern "C" void *lbl_8055F698;
 extern "C" void fn_801308F4(char *, int, const char *);
 extern "C" void *__AXGetStackHead(void);
@@ -3190,7 +3190,6 @@ static inline void fn_80285CB8_post(void *entry, const char *name) {
 #pragma cplusplus off
 #pragma auto_inline off
 void fn_80285CB8(unsigned char *b) {
-    extern char lbl_8055C86C;
     extern unsigned int lbl_804B30D8[];
     extern float lbl_8056420C, lbl_80564210, lbl_80564214, lbl_80564218,
                  lbl_8056422C, lbl_80564244;
@@ -3199,9 +3198,6 @@ void fn_80285CB8(unsigned char *b) {
     extern float fn_80214D48(void);
     extern void fn_80214BE4(int, int, int);
     extern void fn_801308F4(char *, int, const char *);
-    extern void fn_801345D8(char *, int, const char *, ...);
-    extern void fn_80236954(char *);
-    extern void fn_8027F204(char *);
     extern void *fn_8027ED70(void);
     extern void *__AXGetStackHead(void);
     extern int stricmp(const char *, ...);
@@ -3216,7 +3212,7 @@ void fn_80285CB8(unsigned char *b) {
     int count;
     char *d;
     const char *s;
-    char tmp0[0x64], tmp1[0x64], tmp2[0x64], tmp3[0x64], other[0x14];
+    char other[0x14];
 
     if (*(int *)(b + 0x20) != *(int *)(b + 0x24)) {
         if (*(int *)(b + 0x20) == 0)
@@ -3295,9 +3291,10 @@ void fn_80285CB8(unsigned char *b) {
             virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
             virtual void use(const char *);
         };
+        int mode;
+        char *stack;
         int v28;
         if (*(void **)(b + 0x60) != 0) {
-            int mode;
             fn_801308F4((char *)(b + 0x6C), 0x1E, (*(Child **)(b + 0x60))->text());
             d = (char *)(b + 0x6C);
             count = 0x1E;
@@ -3320,42 +3317,29 @@ void fn_80285CB8(unsigned char *b) {
             }
             if (b[0x98] == 0 && (*(Child **)(b + 0x60))->flagA() != 0) {
                 ((Drawer *)((void *(*)(void))fn_8027ED70)())->use(base + 0x1BC);
-                fn_801345D8(tmp0, 0x64, &lbl_8055C86C, base + 0xB00,
-                            fn_80283814_find((void **)lbl_804B30D8[0], b, lbl_804B30D8[1]) + 1);
-                fn_80236954(tmp0);
-                fn_8027F204(tmp0);
+                fn_80285CB8_post(b, base + 0xB00);
             }
             if (b[0x99] == 0 && (*(Child **)(b + 0x60))->flagB() != 0) {
                 ((Drawer *)((void *(*)(void))fn_8027ED70)())->use(base + 0x1E0);
-                fn_801345D8(tmp1, 0x64, &lbl_8055C86C, base + 0xB10,
-                            fn_80283814_find((void **)lbl_804B30D8[0], b, lbl_804B30D8[1]) + 1);
-                fn_80236954(tmp1);
-                fn_8027F204(tmp1);
+                fn_80285CB8_post(b, base + 0xB10);
             }
             if ((*(Child **)(b + 0x60))->flagA() != 0) *(int *)(b + 0x9C) = 1;
             else *(int *)(b + 0x9C) = 0;
             mode = (*(Child **)(b + 0x60))->mode();
             if (mode >= 0 && mode < 5) {
-                const char *stack = (const char *)__AXGetStackHead();
+                stack = (char *)__AXGetStackHead();
                 if (((int (*)(const char *, const char *))stricmp)(stack, (char *)(b + 0x8A)) != 0) {
                     if (mode == 0) {
                         ((Drawer *)((void *(*)(void))fn_8027ED70)())->use(base + 0x1A0);
-                        fn_801345D8(tmp2, 0x64, &lbl_8055C86C, base + 0xB24,
-                                    fn_80283814_find((void **)lbl_804B30D8[0], b, lbl_804B30D8[1]) + 1);
-                        fn_80236954(tmp2);
-                        fn_8027F204(tmp2);
+                        fn_80285CB8_post(b, base + 0xB24);
                     } else {
                         ((Drawer *)((void *(*)(void))fn_8027ED70)())->use(base + 0x180);
-                        fn_801345D8(tmp3, 0x64, &lbl_8055C86C, base + 0xB30,
-                                    fn_80283814_find((void **)lbl_804B30D8[0], b, lbl_804B30D8[1]) + 1);
-                        fn_80236954(tmp3);
-                        fn_8027F204(tmp3);
+                        fn_80285CB8_post(b, base + 0xB30);
                     }
                 }
                 d = (char *)(b + 0x8A);
                 count = 10;
-                s = stack;
-                while ((*d++ = *s++) != 0) {
+                while ((*d++ = *stack++) != 0) {
                     if (--count <= 0) { d[-1] = 0; break; }
                 }
             }
