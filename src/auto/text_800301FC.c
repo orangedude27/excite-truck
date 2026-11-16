@@ -582,8 +582,10 @@ extern u8 lbl_8035DAA0[];
 extern u8 lbl_8035BFA0[];
 extern s32 lbl_8055D6F8;
 extern s32 lbl_8055D6F4;
-void __AXGetAuxAInputDpl2(void **arg0) {
-    *arg0 = lbl_8035DAA0 + lbl_8055D6F8 * 0x480 + 0x180;
+void __AXGetAuxAInputDpl2(void **out) {
+    /* Return a pointer into the current write-ring slot of the AUX-A Dolby Pro
+     * Logic 2 input buffer lbl_8035DAA0 (0x480 bytes/slot), at byte offset 0x180. */
+    *out = lbl_8035DAA0 + lbl_8055D6F8 * 0x480 + 0x180;
 }
 
 void __AXGetAuxAOutputDpl2R(void **arg0) {
