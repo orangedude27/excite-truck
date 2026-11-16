@@ -164,10 +164,37 @@ void fn_801E7C1C(long arg0) {
 #pragma scheduling invalid_target
 #pragma push
 #pragma opt_propagation off
-extern "C" void fn_801E7C28(void *arg0) {
-    class Dummy_801E7C28 {
+extern "C" void fn_801E7C28(void *sceneData) {
+    /* WorldEndCommon: the counterpart of fn_801E7984 (WorldBeginCommon).  Ends the
+     * race.  Opens a "WorldEndCommon" progress record, stops the physics and the
+     * effects, lets every object in the world object table run its first virtual
+     * method before the object and wobject tables are freed, clears the world's
+     * own state, then shuts the remaining race subsystems down in the reverse
+     * order fn_801E7984 started them. */
+    #define stageStrings        lbl_80339BA0  /* this stage's progress strings */
+    #define MSG_WORLD_END       0x7C          /*   "WorldEndCommon" */
+    #define MSG_PHYSICS_STOP    0x8C          /*   "PhysicsStop" */
+    #define MSG_DEL_WOBJECT     0x98          /*   "del wobject" */
+    #define MSG_GHOST_SAVE      0xA4          /*   "ghost save" */
+    #define MSG_PHYSICS_END_AGAIN 0xB0        /*   "+physics end" */
+    #define MSG_PHYSICS_END     0xC0          /*   "PhysicsEnd" */
+    #define MSG_EFX_END         lbl_8055AF1C  /*   "EfxEnd" */
+    #define objectTable         lbl_8055EB3C  /* world:objects[], appended by fn_801E87B8 */
+    #define objectCount         lbl_8055EB34  /*   entries in use */
+    #define wobjectTable        lbl_8055EB40  /* world:wobjects[], appended by fn_801E87D4 */
+    #define wobjectCount        lbl_8055EB38  /*   entries in use */
+    #define frameData           lbl_8055EB04  /* current frame's per-player array */
+    #define worldReady          lbl_8055EB10  /* the world is usable */
+    #define sceneOwnedElsewhere lbl_8055EB11  /* set by fn_801E7C1C: scene is not ours to free */
+    #define worldStarted        lbl_8055EB12
+    #define frameStepped        lbl_8055EB20  /* at least one frame was stepped */
+    #define sceneEntryCount     lbl_8055EB30  /* fn_800167F4() as taken at world start */
+    #define PROGRESS_STEP       lbl_80562DB0  /* 100.0f added per stage */
+    #define WORLD_END_TARGET    lbl_80562DAC  /* 8500.0f */
+    #define PHYSICS_END_TARGET  lbl_80562DA0  /* 500.0f */
+    class WorldObject {
     public:
-        virtual void invoke(long);
+        virtual void finalizeObject(long); /* first virtual method, vtable+8 */
     };
     extern void fn_802ECC18(long);
     extern void fn_80203FE8(void);
@@ -217,21 +244,21 @@ extern "C" void fn_801E7C28(void *arg0) {
     extern char lbl_8055EB12;
     extern char lbl_8055EB20;
     extern void *lbl_8055EB30;
-    char *strings = lbl_80339BA0;
-    long offset;
-    long count;
-    Dummy_801E7C28 *obj;
+    char *strings = stageStrings;
+    long byteOffset;
+    long index;
+    WorldObject *obj;
 
     fn_802ECC18(0);
     fn_801E797C();
     fn_80203FE8();
     fn_802025D8();
     fn_802C2C6C();
-    fn_800124DC(strings + 0x7C, 1, 1, lbl_80562DAC);
+    fn_800124DC(strings + MSG_WORLD_END, 1, 1, WORLD_END_TARGET);
     fn_801EA390();
-    fn_8001255C(strings + 0x8C, lbl_80562DB0);
+    fn_8001255C(strings + MSG_PHYSICS_STOP, PROGRESS_STEP);
     fn_801766C4();
-    fn_8001255C(&lbl_8055AF1C, lbl_80562DB0);
+    fn_8001255C(&MSG_EFX_END, PROGRESS_STEP);
     fn_802878A8();
     fn_8013490C();
     fn_80265D90();
@@ -239,24 +266,24 @@ extern "C" void fn_801E7C28(void *arg0) {
     fn_801E9BE4();
     fn_801F9F08();
     fn_801B832C();
-    for (count = 0, offset = 0; count < lbl_8055EB34; offset += 4, count++) {
-        obj = (Dummy_801E7C28 *)*(long *)((char *)lbl_8055EB3C + offset);
+    for (index = 0, byteOffset = 0; index < objectCount; byteOffset += 4, index++) {
+        obj = (WorldObject *)*(long *)((char *)objectTable + byteOffset);
         if (obj != 0)
-            obj->invoke(1);
+            obj->finalizeObject(1);
     }
-    fn_80128670(lbl_8055EB3C);
-    lbl_8055EB3C = 0;
-    fn_8001255C(strings + 0x98, lbl_80562DB0);
-    fn_80128670(lbl_8055EB40);
-    lbl_8055EB40 = 0;
+    fn_80128670(objectTable);
+    objectTable = 0;
+    fn_8001255C(strings + MSG_DEL_WOBJECT, PROGRESS_STEP);
+    fn_80128670(wobjectTable);
+    wobjectTable = 0;
     fn_801DCE10();
-    lbl_8055EB38 = 0;
-    lbl_8055EB34 = 0;
-    lbl_8055EB20 = 0;
-    lbl_8055EB04 = 0;
-    lbl_8055EB12 = 0;
-    lbl_8055EB30 = 0;
-    fn_8001255C(strings + 0xA4, lbl_80562DB0);
+    wobjectCount = 0;
+    objectCount = 0;
+    frameStepped = 0;
+    frameData = 0;
+    worldStarted = 0;
+    sceneEntryCount = 0;
+    fn_8001255C(strings + MSG_GHOST_SAVE, PROGRESS_STEP);
     fn_801AF598();
     fn_801EA56C();
     fn_801EA3B8();
@@ -266,22 +293,43 @@ extern "C" void fn_801E7C28(void *arg0) {
     fn_802C7A00();
     fn_801FC900();
     fn_802877D0();
-    if ((unsigned char)lbl_8055EB11 == 0) {
-        fn_8000D7F4(arg0);
+    if ((unsigned char)sceneOwnedElsewhere == 0) {
+        fn_8000D7F4(sceneData);
     }
     fn_80136768();
-    fn_8001255C(strings + 0xB0, lbl_80562DB0);
+    fn_8001255C(strings + MSG_PHYSICS_END_AGAIN, PROGRESS_STEP);
     fn_801765B8();
     fn_80205208();
-    fn_8001255C(strings + 0xC0, lbl_80562DA0);
+    fn_8001255C(strings + MSG_PHYSICS_END, PHYSICS_END_TARGET);
     fn_801EF184();
     fn_801EA318();
     fn_801EA1DC();
-    { int z = 0; lbl_8055EB10 = (char)z; }
+    { int notReady = 0; worldReady = (char)notReady; }
     fn_8013A074();
     fn_8020449C();
     fn_802E3D00();
     fn_8000D878();
+    #undef stageStrings
+    #undef MSG_WORLD_END
+    #undef MSG_PHYSICS_STOP
+    #undef MSG_DEL_WOBJECT
+    #undef MSG_GHOST_SAVE
+    #undef MSG_PHYSICS_END_AGAIN
+    #undef MSG_PHYSICS_END
+    #undef MSG_EFX_END
+    #undef objectTable
+    #undef objectCount
+    #undef wobjectTable
+    #undef wobjectCount
+    #undef frameData
+    #undef worldReady
+    #undef sceneOwnedElsewhere
+    #undef worldStarted
+    #undef frameStepped
+    #undef sceneEntryCount
+    #undef PROGRESS_STEP
+    #undef WORLD_END_TARGET
+    #undef PHYSICS_END_TARGET
 }
 #pragma pop
 #pragma scheduling on
