@@ -34,6 +34,9 @@ s32 fn_801DDEAC(void) {
 }
 #pragma push
 #pragma scheduling invalid_target
+/* Each 28-byte sParamTable record is seven words:
+ *   +0x00 name (const char*), +0x04 unit (const char*), +0x08 value pointer (f32*),
+ *   +0x0C current value, +0x10 min, +0x14 max, +0x18 slider step. */
 void fn_801DDED0(s32 arg0, f32* arg1, s32 arg2, f32 farg0, f32 farg1, f32 farg2) {
     u32* entry;
     s32 idx = lbl_8055E9C4;
