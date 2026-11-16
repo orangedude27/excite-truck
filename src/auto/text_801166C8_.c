@@ -5109,6 +5109,11 @@ got_memory:
     return (void *)result;
 }
 
+/* Free hook installed by AXFXSetHooks_8011FFB8 alongside the alloc hook
+   lbl_8055DEF8; fn_8011FFC4 records it in the header of every block it takes
+   from that hook so it can still be released after the hook is replaced. */
+typedef void (*FreeHook)(void *block);
+
 void fn_80120084(void *arg0) {
     u8 *ptr = arg0;
     if (ptr == 0) return;
