@@ -50,10 +50,13 @@ struct Obj {
 extern void *lbl_8055F7B0;
 void fn_80297A84(void);
 extern void fn_80297A30(void);
+/* Initialize the static-shadow module: clear the listener list, allocate the shadow record array, and seed the shadow-volume handle with its sentinel. */
 void fn_802978B8(void) {
+#define shadowVolumeHandle lbl_8055F7B0
     fn_80297998();
     fn_80297A30();
-    lbl_8055F7B0 = (void*)0x50000000;
+    shadowVolumeHandle = (void*)0x50000000;
+#undef shadowVolumeHandle
 }
 
 void fn_802978E4(void) {
@@ -241,11 +244,13 @@ void fn_80297C3C(void *unused, void *arg1, int arg2, float farg0, float farg1) {
     register int count;
     register unsigned int *record;
     register unsigned int *source;
-    register unsigned int temp_r0;
     register unsigned int temp_r3;
+    register unsigned int temp_r0;
+
     count = lbl_8055F7AC;
-    if (count >= 0x80)
+    if (0x80 <= count)
         return;
+
     record = (unsigned int *)lbl_8055F7A8 + count * 0x10;
     source = (unsigned int *)arg1;
     record[0] = (unsigned int)fn_802C6FC0(unused, 0, 0);
