@@ -2122,8 +2122,9 @@ enum {
     BAR_COLOR_AMBER    = (s32)0xFFE5A703,
     BAR_COLOR_GREEN    = (s32)0xFF278F27
 };
-s32 fn_8000DFA8(s32 arg0) {
-    return lbl_802FC2A8[arg0 * 3 + 1];
+/* Return word 1 of the 3-word record `index` in the glyph-index table lbl_802FC2A8 (fn_8000DFC0 returns word 2); used by the text layout code. */
+s32 fn_8000DFA8(s32 index) {
+    return lbl_802FC2A8[index * 3 + 1];
 }
 
 s32 fn_8000DFC0(s32 arg0) {
