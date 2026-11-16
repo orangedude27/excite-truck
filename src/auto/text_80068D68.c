@@ -1159,9 +1159,12 @@ void DBPrintf_80068D68(const char *fmt, ...) {
 }
 
 extern char lbl_803131A4[];
-s32 fn_80068DB8(void *arg0) {
-    DBPrintf_8006CFA8(lbl_803131A4);
-    return (*(s32 (**)(void *))(lbl_80392960 + 0x674))(arg0);
+/* Logs and dispatches an application memory allocation through the WUD callback table. */
+s32 fn_80068DB8(void *size) {
+#define sAppMemAllocLog lbl_803131A4
+    DBPrintf_8006CFA8(sAppMemAllocLog);
+    return (*(s32 (**)(void *))(lbl_80392960 + 0x674))(size);
+#undef sAppMemAllocLog
 }
 
 extern char lbl_803131B4[];
