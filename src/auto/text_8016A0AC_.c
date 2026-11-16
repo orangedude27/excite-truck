@@ -675,7 +675,15 @@ s32 fn_8016AC90(s32 unused) {
 #pragma pop
 void fn_8016B4F0(u8* arg0) { *arg0 = 0; }
 
-u8* fn_8016B4FC(u8* arg0, s32 arg1) { if(arg0) { *arg0=0; if(arg1>0) fn_80128668(arg0); } return arg0; }
+/* RealName: unknown (pool element dtor/init helper; clears first byte and optionally frees when flag > 0) */
+u8 *fn_8016B4FC(u8 *ptr, s32 shouldFree) {
+    /* Clear the object and, when requested, release its storage. */
+    if (ptr) {
+        *ptr = 0;
+        if (shouldFree > 0) fn_80128668(ptr);
+    }
+    return ptr;
+}
 
 void fn_8016B544(u8* arg0) { *arg0 = 0; }
 
