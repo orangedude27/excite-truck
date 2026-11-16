@@ -21,7 +21,6 @@ extern int lbl_8055FE78, lbl_8055FE7C, lbl_8055FE80;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_802DACD4(void) {
- struct StringStart { volatile char first; };
  register const char *message=lbl_8034C918;
  volatile int b,c,d;
  int font;
@@ -31,7 +30,7 @@ void fn_802DACD4(void) {
  } else {
   font=0x120F00;
  }
- lbl_8055FE78=fn_801284E8((void *)&((volatile struct StringStart *)message)->first,font);
+ lbl_8055FE78=((int (*)(const char *, int))fn_801284E8)(message,font);
  font=OSInitFont();
  if (OSGetFontEncode()==0x120F00) fn_802E30C8(message+0xC);
  if (font==0) {
@@ -64,6 +63,7 @@ void fn_802DACD4(void) {
 #pragma pop
 #pragma scheduling on
 
+/* Free debug font/text resources initialized by fn_802DACD4, if present. */
 void fn_802DAE18(void) {
     if (lbl_8055FE78 != 0) {
         fn_802D8FB4(lbl_8055FE80);
@@ -81,102 +81,74 @@ void OSGetFontWidth(char *, int *);
 void fn_802C32B8(int, int, unsigned int);
 
 int fn_802DAE64(int arg0, int arg1, char *arg2) {
-    int sp18;
-    int sp14;
-    int sp10;
-    int spC;
+    int sp18, sp14, sp10;
+    void *spC;
     int sp8;
-    int temp_r4;
-    int temp_r4_2;
-    int temp_r6;
-    int var_r24;
-    int var_r25;
-    int var_r26;
-    int var_r26_2;
-    int var_r27_2;
-    unsigned short temp_r0_2;
-    unsigned int temp_r3_2;
-    unsigned int temp_r3_3;
-    unsigned int temp_r3_4;
-    unsigned int temp_r4_3;
-    unsigned int temp_r4_4;
-    char *var_r27;
-    char *var_r29;
-    unsigned char temp_r0;
-    unsigned char temp_r3;
-    unsigned char temp_r3_5;
-    unsigned char var_r0;
+    register int zero;
+    register int ydst;
+    register char *p;
+    register unsigned char *base;
+    register int row;
+    register int col;
+    register int y;
+    register int x;
+    int w;
+    char *q;
+    int tx, ty, idx;
+    unsigned char b, nib;
+    unsigned int color, packed;
 
     sp18 = 0;
-    var_r25 = arg1;
+    y = arg1;
     sp14 = 0;
     sp10 = 0;
     spC = 0;
     if (arg0 >= 0) {
-        var_r24 = 0x46;
+        x = 0x46;
     } else {
-        temp_r4 = arg0 >> 0x1F;
-        var_r24 = (temp_r4 ^ arg0) - temp_r4;
+        x = arg0 < 0 ? -arg0 : arg0;
     }
-    var_r29 = arg2;
-loop_22:
-    temp_r3 = *var_r29;
-    if ((signed char)temp_r3 != 0) {
-        if ((signed char)temp_r3 == 0x20) {
-            var_r26 = var_r24;
-            var_r27 = var_r29 + 1;
-loop_7:
-            temp_r0 = *var_r27;
-            if (((signed char)temp_r0 != 0) && ((signed char)temp_r0 != 0x20)) {
-                sp8 = 0;
-                OSGetFontWidth(var_r27, &sp8);
-                var_r27 += 1;
-                var_r26 += sp8;
-                goto loop_7;
+    zero = 0;
+    for (p = arg2; *p != 0; x += sp10, p++) {
+        if (*p == 0x20) {
+            w = x;
+            q = p + 1;
+            while (*q != 0 && *q != 0x20) {
+                sp8 = zero;
+                OSGetFontWidth(q, &sp8);
+                q++;
+                w += sp8;
             }
-            if (var_r26 > 0x23A) {
-                var_r24 = 0x46;
-                var_r25 += 0x20;
-            } else {
-                goto block_11;
+            if (w > 0x23A) {
+                x = 0x46;
+                y += 0x20;
+                continue;
             }
-        } else {
-block_11:
-            OSGetFontTexture(var_r29, (int *)&spC, &sp18, &sp14, &sp10);
-            var_r27_2 = 0;
-            do {
-                var_r26_2 = 0;
-loop_18:
-                if (var_r26_2 < sp10) {
-                    temp_r6 = var_r26_2 + sp18;
-                    temp_r4_2 = var_r27_2 + sp14;
-                    temp_r4_3 = (unsigned int)temp_r4_2 >> 0x1F;
-                    temp_r3_2 = (temp_r4_2 << 0x1D) - temp_r4_3;
-                    temp_r4_4 = (unsigned int)temp_r6 >> 0x1F;
-                    temp_r3_3 = (temp_r6 << 0x1D) - temp_r4_4;
-                    temp_r3_4 = (((temp_r6 / 8) + ((int)((temp_r4_2 / 8) << 9) / 8)) << 6)
-                        + (((((temp_r3_2 << 3) | (temp_r3_2 >> 0x1D)) + temp_r4_3) * 8)
-                        + (((temp_r3_3 << 3) | (temp_r3_3 >> 0x1D)) + temp_r4_4));
-                    temp_r3_5 = *((unsigned char *)spC + (int)(((temp_r3_4 >> 0x1F) + temp_r3_4) >> 1));
-                    var_r0 = temp_r3_5 & 0xF;
-                    if (!(var_r26_2 & 1)) {
-                        var_r0 = (temp_r3_5 >> 4) & 0xF;
-                    }
-                    if (var_r0 != 0) {
-                        temp_r0_2 = ((((var_r0 * 0xC) + 0x10) << 8) & 0xFFFF00) | 0x80;
-                        fn_802C32B8(var_r26_2 + var_r24, var_r27_2 + var_r25,
-                            (temp_r0_2 & ~0xFF800000) | ((temp_r0_2 << 0x10) & 0xFF800000));
-                    }
-                    var_r26_2 += 1;
-                    goto loop_18;
-                }
-                var_r27_2 += 1;
-            } while (var_r27_2 < 0x18);
-            var_r24 += sp10;
         }
-        var_r29 += 1;
-        goto loop_22;
+        OSGetFontTexture(p, (int *)&spC, &sp18, &sp14, &sp10);
+        base = spC;
+        row = 0;
+        do {
+            ydst = row + y;
+            col = 0;
+            while (col < sp10) {
+                ty = row + sp14;
+                tx = col + sp18;
+                idx = (((tx / 8) + (((ty / 8) << 9) / 8)) << 6) + ((ty % 8) * 8 + (tx % 8));
+                b = base[idx / 2];
+                nib = b & 0xF;
+                if (!(col & 1)) nib = (b >> 4) & 0xF;
+                if (nib != 0) {
+                    color = (((nib * 12 + 16) << 8) & 0xFFFF00) | 0x80;
+                    packed = (color << 16) | (color & 0xFFFF);
+                    fn_802C32B8(col + x, ydst, packed);
+                }
+                col++;
+            }
+            row++;
+        } while (row < 0x18);
     }
+    return 0;
 }
 #pragma pop
 #pragma scheduling on
@@ -206,7 +178,7 @@ void fn_802DB03C(char *arg0) {
         char text[0x400];
     } local;
     unsigned char *pixels;
-    register unsigned char *cursor;
+    unsigned char *cursor;
     int row;
     int column;
     register char *p;
@@ -216,8 +188,7 @@ void fn_802DB03C(char *arg0) {
     local.outputA = 0;
     local.outputB = 0;
     pixels = (unsigned char *)fn_802D2F78(&local.outputA, &local.outputB);
-    cursor = pixels;
-    row = 0;
+    row = (cursor = pixels, 0);
     for (; row < local.outputB; row++) {
         for (column = 0; column < local.outputA; column++) {
             *cursor++ = 0x10;
@@ -247,6 +218,37 @@ void fn_802DB03C(char *arg0) {
     }
     fn_802DAE64(0x140, 0x78, local.text);
     fn_802D2FD8();
+}
+
+__declspec(section ".sdata") extern char lbl_8055D140[];
+extern void fn_802CED50(int, int, int, int);
+void fn_802DB168(void) {
+    struct { unsigned char kind, format; unsigned char pad[2]; void *buffer; int width, height, size; int pad2[2]; int width2, height2; } config;
+    int width = 0, height = 0;
+    unsigned char *base = fn_802D2F78(&width, &height);
+    unsigned char *cursor = base;
+    int row;
+    for (row = 0; row < height; row++) {
+        int col;
+        for (col = 0; col < width; col++) {
+            cursor[0] = 0x10;
+            cursor[1] = 0x80;
+            cursor += 2;
+        }
+    }
+    memset(&config, 0, 0x24);
+    config.kind = 4;
+    config.format = 0x80;
+    config.buffer = base;
+    config.width = width;
+    config.height = height;
+    config.size = width * 2;
+    config.width2 = width;
+    config.height2 = height;
+    fn_802C3034(&config, 0x80, width, height);
+    fn_802DAE64(-0x1C2, 0x17C, lbl_8055D140);
+    fn_802D2FD8();
+    fn_802CED50(0x1C2, 0x17C, 0x78, 0x1E);
 }
 
 typedef struct {
