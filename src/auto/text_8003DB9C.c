@@ -3065,7 +3065,26 @@ void GXEnableTexOffsets(s32 coordId, s32 lineOfs, s32 pointOfs) {
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXSetCullMode(unsigned int mode) { unsigned int field; union { unsigned int reg; struct { unsigned int pad : 16; unsigned int cull : 2; unsigned int rest : 14; } fields; } data; field = ((mode << 1) & 2); field |= (mode >> 1) & 1; data.reg = __GXData[0x254 / 4]; data.fields.cull = field; __GXData[0x254 / 4] = data.reg; __GXData[0x5FC / 4] |= 4; }
+/* Set the hardware cull mode: swap the low two bits of mode into the cull field
+ * of the gen-mode word at 0x254 and mark gen-mode dirty (bit 2 at 0x5FC). */
+void GXSetCullMode(unsigned int mode) {
+    unsigned int bits;
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad : 16;
+            unsigned int cull : 2;
+            unsigned int rest : 14;
+        } fields;
+    } data;
+
+    bits = ((mode << 1) & 2);
+    bits |= (mode >> 1) & 1;
+    data.reg = __GXData[0x254 / 4];
+    data.fields.cull = bits;
+    __GXData[0x254 / 4] = data.reg;
+    __GXData[0x5FC / 4] |= 4;
+}
 
 /* Set the coplanar clipping mode: update bit 12 of the shadowed CP control register,
    then write the mask/value pair for the coplanar register (0x61) to the graphics FIFO. */
