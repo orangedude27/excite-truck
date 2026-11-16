@@ -25361,6 +25361,7 @@ extern "C" s32 fn_800A4A8C(s32 arg0) {
 }
 #pragma pop
 extern "C" char *fn_800A4AAC(char *dst, char *src) {
+    /* strcpy: copy the NUL-terminated string src into dst (including the terminator) and return dst. */
     char *d = dst;
     while ((*d = *src) != 0) {
         src++;
