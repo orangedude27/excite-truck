@@ -2303,7 +2303,7 @@ extern "C" s32 fn_801FB244(s32 object, s32 deleteFlag) {
     return object;
 }
 
-extern "C" f32 fn_801EA0E8(f32, f32, f32, f32, f32, f32);
+extern "C" f64 fn_801EA0E8(f32, f32, f32, f32, f32, f32);
 extern "C" void fn_801F7D10(void *, void *, void *);
 extern "C" void fn_801FB284(void *arg0, void *arg1) {
     f32 temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f3_2, temp_f4, temp_f5, temp_f6, temp_f6_2;
