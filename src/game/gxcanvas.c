@@ -1304,9 +1304,10 @@ s32 fn_802C4EE4(s32 *width) {
     return 0;
 }
 
-s32 fn_802C4EFC(s32* arg0) {
-    if (arg0 != NULL) {
-        return arg0[1];
+/* Return a stamp's height (rows per frame), or 0 for a null stamp. */
+s32 fn_802C4EFC(Stamp *stamp) {
+    if (stamp != NULL) {
+        return stamp->height;
     }
     return 0;
 }
