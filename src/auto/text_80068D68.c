@@ -9226,8 +9226,10 @@ void btm_read_local_name_complete(UINT8 *p, UINT16 evt_len) {
     }
 }
 
-tBTM_STATUS fn_8007A240(void (*arg0)(void *, void *)) {
-    if (arg0 != 0) arg0(lbl_803C0F78 + 0x630, lbl_803C0F78);
+/* BTM_ReadLocalDeviceAddr: hand the local BD_ADDR (btm_cb+0x630) and the BTM
+ * control block to cb, if one was supplied, then report success. */
+tBTM_STATUS fn_8007A240(void (*cb)(void *, void *)) {
+    if (cb != 0) cb(lbl_803C0F78 + 0x630, lbl_803C0F78);
     return 0;
 }
 
