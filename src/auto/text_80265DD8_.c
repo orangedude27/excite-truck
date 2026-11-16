@@ -2053,10 +2053,11 @@ extern float lbl_80563C9C;
 extern char lbl_80499950[];
 #pragma push
 #pragma scheduling invalid_target
-int fn_8026A27C(int arg0) {
-    int value = lbl_80499E50[arg0];
-    lbl_80499E50[arg0] = 0;
-    return value;
+/* Fetch and clear the pending track-selection delta for the given player slot. */
+int fn_8026A27C(int slotIndex) {
+    int pendingDelta = lbl_80499E50[slotIndex];
+    lbl_80499E50[slotIndex] = 0;
+    return pendingDelta;
 }
 #pragma pop
 void fn_8026A298(int arg0) {
