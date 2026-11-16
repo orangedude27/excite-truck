@@ -376,11 +376,12 @@ check:
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
-void fn_8023BF4C(void *arg0) {
-    fn_8023B9EC(*(s32 *)((u8 *)arg0 + 0),
-                *(s32 *)((u8 *)arg0 + 4),
-                *(s32 *)((u8 *)arg0 + 0xC),
-                *(s32 *)((u8 *)arg0 + 8), 0);
+void fn_8023BF4C(void *args) {
+    /* Unpack a debug-command Args block (list, found at +4, arg2 at +8, arg0 at +0xC) and forward it to the command runner. */
+    fn_8023B9EC(*(s32 *)((u8 *)args + 0),
+                *(s32 *)((u8 *)args + 4),
+                *(s32 *)((u8 *)args + 0xC),
+                *(s32 *)((u8 *)args + 8), 0);
 }
 
 /* lbl_8055BB30: how many players the debug console asked the next race to run
