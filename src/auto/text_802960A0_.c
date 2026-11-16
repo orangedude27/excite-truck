@@ -60,6 +60,7 @@ extern "C" void fn_802960A0(float *pos, unsigned int color, int tex, float s, do
 }
 
 #define kFrameName lbl_8055C9B8  // .sdata: "frame", the name of an opening frame entry
+// True when a parsed list entry's name is "frame" (case-insensitive).
 extern "C" int fn_802962CC(void *node) {
     class NameNode {
     public:
