@@ -242,6 +242,7 @@ void fn_802A4C20(void) {
 }
 
 #pragma dont_inline on
+/* Updates the stored time value and refreshes the active subsystems. */
 void fn_802A4C60(void) {
     lbl_8055F8A0 = fn_802A4A50();
     if (lbl_8055F88C != 0) fn_802A6A7C(lbl_8055F88C);
@@ -453,71 +454,61 @@ int sprintf(char *, const char *, ...);
 #pragma scheduling on
 #pragma cplusplus on
 extern "C" void fn_802A50F8(void) {
-    struct Init { s32 a, b; f32 c[28]; };
-    struct Frame { u8 pad[0x18]; struct Init init; u8 unkTail[0x10]; };
+    struct Init { s32 a, b; f32 c[32]; };
     struct Lookup {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3();
-        virtual void f4();
-        virtual void f5();
-        virtual void f6();
-        virtual void f7();
-        virtual void f8();
-        virtual void f9();
-        virtual void f10();
-        virtual void f11();
-        virtual void f12();
-        virtual void f13();
-        virtual void f14();
-        virtual void f15();
-        virtual void f16();
-        virtual void f17();
-        virtual void f18();
-        virtual void f19();
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+        virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
         virtual void f20();
         virtual void *get(const char *);
     };
-    struct Frame frame;
-    char name[4];
-    void *obj;
-    s32 i;
-    u8 *entry;
+    char name[32];
+    struct Init init;
     u8 *base;
+    u8 *entry;
+    s32 i;
+    void *section;
+    void *track;
+    f32 one, half, zero, scale;
     base = lbl_80349BF0;
-    fn_8028E61C(&frame.init);
-    frame.init.a = 0;
-    frame.init.b = 0x100;
-    frame.init.c[0] = lbl_80564868;
-    frame.init.c[1] = lbl_8056485C;
-    frame.init.c[2] = lbl_8056486C;
-    frame.init.c[3] = lbl_8056486C;
-    frame.init.c[4] = lbl_8056486C;
-    frame.init.c[5] = lbl_8056485C;
-    frame.init.c[6] = lbl_8056485C;
-    frame.init.c[7] = lbl_8056485C;
-    frame.init.c[10] = lbl_8056485C;
-    ((s32 *)&frame.init)[17] = 5;
-    frame.init.c[19] = lbl_80564870;
-    frame.init.c[18] = lbl_80564870;
-    frame.init.c[21] = lbl_8056485C;
-    frame.init.c[20] = lbl_80564874;
-    frame.init.c[27] = lbl_8056485C;
-    frame.init.c[25] = lbl_8056485C;
-    frame.init.c[23] = lbl_8056485C;
-    lbl_8055F894 = fn_8028E2F8(&frame.init, base + 0x80, base + 0x1c, lbl_80564870, lbl_8056486C, lbl_8056485C, lbl_80564868);
+    fn_8028E61C(&init);
+    zero = lbl_8056485C;
+    half = lbl_8056486C;
+    one = lbl_80564870;
+    scale = lbl_80564868;
+    init.a = 0;
+    init.b = 0x100;
+    init.c[0] = scale;
+    init.c[1] = zero;
+    init.c[2] = half;
+    init.c[3] = half;
+    init.c[4] = half;
+    init.c[5] = zero;
+    init.c[6] = zero;
+    init.c[7] = zero;
+    init.c[10] = zero;
+    ((s32 *)&init)[17] = 5;
+    init.c[19] = one;
+    init.c[18] = one;
+    init.c[21] = zero;
+    init.c[20] = lbl_80564874;
+    init.c[27] = zero;
+    init.c[25] = zero;
+    init.c[23] = zero;
+    lbl_8055F894 = fn_8028E2F8(&init, base + 0x80, base + 0x1c, one, half, zero, scale);
     entry = lbl_804BCFB8;
-    for (i = 0; i < fn_80287B14(); ++i, entry += 0xC4) {
-        obj = fn_80288208(i);
+    for (i = 0; i < fn_80287B14(); entry += 0xC4, ++i) {
+        track = fn_80288208(i);
         *(s32 *)(entry + 0xC0) = 0;
-        if (((s32 (*)(void *, s32))fn_80287E20)(obj, (s32)&lbl_8055CBE8)) {
-            obj = fn_80287E80(obj, (s32)&lbl_8055CBE8);
+        if (((s32 (*)(void *, s32))fn_80287E20)(track, (s32)&lbl_8055CBE8)) {
+            section = fn_80287E80(track, (s32)&lbl_8055CBE8);
             *(s32 *)(entry + 0xC0) = 0;
             while (*(s32 *)(entry + 0xC0) < 4) {
                 void *value;
                 sprintf(name, (char *)(base + 0x8c), *(s32 *)(entry + 0xC0) + 1);
-                value = ((Lookup *)obj)->get(name);
+                value = ((Lookup *)section)->get(name);
                 if (!fn_802A4FA8((float *)(entry + *(s32 *)(entry + 0xC0) * 0x30), value)) break;
                 *(s32 *)(entry + 0xC0) = *(s32 *)(entry + 0xC0) + 1;
             }
