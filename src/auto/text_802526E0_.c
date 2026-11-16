@@ -167,8 +167,14 @@ void fn_80252BF0(void) {
 #pragma dont_inline reset
 
 void fn_80252C78(void) {
-    lbl_8055F308 = 1;
-    lbl_8055F2F8 -= 1;
+    /* Release the most recently allocated camera slot: flag the camera state
+     * dirty and rewind the next-slot index by one. */
+    #define camerasDirty lbl_8055F308
+    #define nextCameraSlot lbl_8055F2F8
+    camerasDirty = 1;
+    nextCameraSlot -= 1;
+    #undef camerasDirty
+    #undef nextCameraSlot
 }
 
 extern void fn_801BEDA8(int *, int *, int *, int *, int *);
