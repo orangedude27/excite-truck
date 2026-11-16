@@ -844,12 +844,16 @@ void fn_801E882C(void) {
     lbl_8055EB08 = 1;
 }
 
+#define sPlayerConfigs lbl_8055EB04
+
 int fn_801E8838(void) {
     if (lbl_8055EB04 != 0) {
         return *(int *)((char *)lbl_8055EB04 + 0xDB0);
     }
     return 0xFF;
 }
+
+#undef sPlayerConfigs
 
 float fn_801E8854(long playerIndex) {
     /* Return the float field at offset 0x54 of the indexed player's camera/viewport config; a negative index selects the current player. */
