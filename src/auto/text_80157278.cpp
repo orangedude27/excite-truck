@@ -2200,15 +2200,17 @@ extern "C" void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3) {
 // the running game clock, saved here as the tracker's start time.
 #define MOVE_SPEED_EPS  lbl_80558DC4  // .sdata: 2^-23, "is the player moving" tolerance
 #define GAME_TIME       lbl_8055E3C8  // .sbss: current game time, advanced every frame
-extern "C" void fn_8015A7D8(void* arg0, void* arg1) {
-    s32 flag;
-    if (((u8*)arg0)[0x2D1] != 0) {
+// Latch a tree-run bonus tracker's "started" flag and save the current time as its
+// start time the first frame the player's speed rises above the movement tolerance.
+extern "C" void fn_8015A7D8(void* tracker, void* player) {
+    s32 moving;
+    if (((u8*)tracker)[0x2D1] != 0) {
         return;
     }
-    flag = (*(f32*)((u8*)arg1 + 0x25BC) > lbl_80558DC4[0]);
-    if (flag) {
-        ((u8*)arg0)[0x2D1] = 1;
-        *(f32*)((u8*)arg0 + 0x2D4) = lbl_8055E3C8;
+    moving = (*(f32*)((u8*)player + 0x25BC) > MOVE_SPEED_EPS[0]);
+    if (moving) {
+        ((u8*)tracker)[0x2D1] = 1;
+        *(f32*)((u8*)tracker + 0x2D4) = GAME_TIME;
     }
 }
 
