@@ -627,8 +627,10 @@ void __AXGetAuxBOutput(void **arg0) {
     *arg0 = lbl_8035CD20 + lbl_8055D6F4 * 0x480;
 }
 
-void __AXGetAuxBInputDpl2(void **arg0) {
-    *arg0 = lbl_8035DAA0 + lbl_8055D6F8 * 0x480 + 0x300;
+void __AXGetAuxBInputDpl2(void **out) {
+    /* Return a pointer into the current write-ring slot of the AUX-B Dolby Pro
+     * Logic 2 input buffer lbl_8035DAA0 (0x480 bytes/slot), at byte offset 0x300. */
+    *out = lbl_8035DAA0 + lbl_8055D6F8 * 0x480 + 0x300;
 }
 
 extern u8 lbl_8035CD20[];
