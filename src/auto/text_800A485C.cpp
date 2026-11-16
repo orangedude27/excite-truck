@@ -13568,9 +13568,11 @@ return result;
 }
 
 extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
-    s32 returnValue = 0;
     const char *messages = lbl_8031B838;
+    s32 returnValue = 0;
     s32 handle;
+    void *context;
+
     if (lbl_80559248 < 0) {
         returnValue = (s32)0xC1000000;
     } else {
@@ -13578,28 +13580,36 @@ extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
             OSReport(messages + 0x498);
             return -4;
         }
-        if (*arg1 == 0) {
+
+        context = *arg1;
+        if (context == 0) {
             OSReport(messages + 0x4BC);
             return -4;
         }
+
         {
             const char *pathTable = (const char *)lbl_80407580;
             handle = IOS_Open(pathTable + ((u32)arg0 << 5), 0);
             if (handle < 0) {
                 if (handle == -2) {
-                    OSReport(messages + 0x2DC, pathTable + (arg0 * 0x20));
+                    OSReport(messages + 0x2DC,
+                             pathTable + (arg0 * 0x20));
                 } else if (handle == -6) {
-                    OSReport(messages + 0x2F0, pathTable + (arg0 * 0x20));
+                    OSReport(messages + 0x2F0,
+                             pathTable + (arg0 * 0x20));
                 } else {
-                    OSReport(messages + 0x304, pathTable + (arg0 * 0x20), handle);
+                    OSReport(messages + 0x304,
+                             pathTable + (arg0 * 0x20), handle);
                 }
             }
         }
+
         *(s32 *)*arg1 = handle;
         if (*(s32 *)*arg1 < 0) {
             returnValue = -1;
             OSReport(messages + 0x4E0);
         }
+
         *(s32 *)((u8 *)*arg1 + 0x24) = 0;
         *(s32 *)((u8 *)*arg1 + 0x18) = 0x4000;
         *(s32 *)((u8 *)*arg1 + 0x20) = 0;
@@ -22271,6 +22281,17 @@ extern "C" void fn_800C7E6C(void *arg0) {
 }
 
 extern "C" s32 lbl_80559718;
+static inline int fn_800C7F8C_Find(int key, int value) {
+    s32 *entry = lbl_802F4588;
+    int j = 0;
+    int k;
+    for (k = 0; k < 37; k++, entry += 4, j++) {
+        if (key == entry[0] && entry[1] == value) return j;
+        j++;
+        if (key == entry[2] && entry[3] == value) return j;
+    }
+    return -1;
+}
 extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
     s32 *state=(s32*)arg1;
     u8 *cursor=(u8*)arg0;
