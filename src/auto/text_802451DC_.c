@@ -438,18 +438,23 @@ extern "C" void fn_80245CC8(void *object) {
 #pragma cplusplus reset
 
 #pragma cplusplus on
-extern "C" void fn_80245D2C(void *arg0) {
-    unsigned char result;
-    *(unsigned char *)((char *)arg0 + 0x1C) = 0;
-    result = *(unsigned char *)((char *)arg0 + 0x1D);
-    if (result == 0) {
-        struct Dummy {
+/* Close/deactivate this UI/dialog object: clear active flag (offset 0x1C),
+ * if the layout/subobject was not successfully loaded (0x1D == 0) invoke
+ * virtual slot 1 on the embedded subobject at offset +4, then notify the
+ * UI system (fn_80214D50) with reason 4. */
+extern "C" void fn_80245D2C(void *object) {
+    unsigned char layoutLoaded;
+
+    *(unsigned char *)((char *)object + 0x1C) = 0;
+    layoutLoaded = *(unsigned char *)((char *)object + 0x1D);
+    if (layoutLoaded == 0) {
+        struct VSubobject {
             virtual void f0();
             virtual void f1();
             virtual void f2();
             virtual void f3();
         };
-        ((Dummy *)((char *)arg0 + 4))->f1();
+        ((VSubobject *)((char *)object + 4))->f1();
     }
     fn_80214D50(4);
 }
