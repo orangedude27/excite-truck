@@ -600,17 +600,16 @@ extern "C" void *fn_80293034(void *arg0, void *arg1, int arg2) {
         virtual void v5();
         virtual void v6();
         virtual void v7();
-        virtual float value(const char *);
+        virtual float value(const char *, float);
     };
-    float v;
     *(void **)arg0 = lbl_80349294;
     fn_80293374(arg0, (void *)arg2);
     fn_802935A0(arg0);
-    v = lbl_805644D4;
-    *(float *)((char *)arg0 + 4) = v;
-    if (arg1) {
-        v = ((EffectArg *)arg1)->value((const char *)&lbl_8055C988);
-        *(float *)((char *)arg0 + 4) = v;
+    float defaultValue = lbl_805644D4;
+    *(float *)((char *)arg0 + 4) = defaultValue;
+    if (arg1 != 0) {
+        *(float *)((char *)arg0 + 4) =
+            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988, defaultValue);
     }
     *(int *)((char *)arg0 + 0x2FAC) = 0;
     return arg0;
