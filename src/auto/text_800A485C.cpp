@@ -9546,48 +9546,52 @@ extern "C" s32 VFiPFPATH_GetLengthFromUnicode(const u16 *text) {
 }
 
 #define fn_800A4B9C_CALL fn_800A4B9C
-extern "C" int VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
-    struct Locals {
+/* Convert a UTF-16 path into a NUL-terminated normal (single-byte) filename.
+ * With the Unicode flag set, each character becomes '.', ' ' or '_'; otherwise
+ * the library's conversion callback at lbl_803D2140+0x4C encodes each character,
+ * reporting bytes written and UTF-16 units consumed via fn_800A4BF4. */
+extern "C" int VFiPFPATH_transformFromUnicodeToNormal(u16 *normalName, u16 *unicodeName) {
+    struct ConvertScratch {
         s16 inputLength;
         s16 outputLength;
         u16 space;
         u16 zeroSpace;
         u16 dot;
         u16 zeroDot;
-    } local;
+    } state;
 
     struct { u8 *p; } cursor;
-    cursor.p = (u8 *)arg0;
-    u8 *&out = cursor.p;
+    cursor.p = (u8 *)normalName;
+    u8 *&dst = cursor.p;
 
     if (((u32)lbl_803D2140[0x60 / 4] & 2U) == 2U) {
         u16 *scan;
-        local.dot = 0x2E;
-        local.zeroDot = 0;
-        local.space = 0x20;
-        local.zeroSpace = 0;
-        for (scan = arg1; *scan != 0; scan++) {
-            if (fn_800A4B9C_CALL(arg1, &local.dot, 1) == 0) {
-                *out = 0x2E;
-            } else if (fn_800A4B9C_CALL(arg1, &local.space, 1) == 0) {
-                *out = 0x20;
+        state.dot = 0x2E;
+        state.zeroDot = 0;
+        state.space = 0x20;
+        state.zeroSpace = 0;
+        for (scan = unicodeName; *scan != 0; scan++) {
+            if (fn_800A4B9C_CALL(unicodeName, &state.dot, 1) == 0) {
+                *dst = 0x2E;
+            } else if (fn_800A4B9C_CALL(unicodeName, &state.space, 1) == 0) {
+                *dst = 0x20;
             } else {
-                *out = 0x5F;
+                *dst = 0x5F;
             }
-            out++;
-            arg1++;
+            dst++;
+            unicodeName++;
         }
     } else {
         s32 offset = 0;
-        while (arg1[offset] != 0) {
-            s32 result = ((s32 (*)(u8 *, u8 *))lbl_803D2140[0x4C / 4])((u8 *)arg1 + offset * 2, out);
-            fn_800A4BF4(result, (u16 *)&local.outputLength, &local.inputLength);
-            out += local.outputLength;
-            offset += local.inputLength >> 1;
+        while (unicodeName[offset] != 0) {
+            s32 result = ((s32 (*)(u8 *, u8 *))lbl_803D2140[0x4C / 4])((u8 *)unicodeName + offset * 2, dst);
+            fn_800A4BF4(result, (u16 *)&state.outputLength, &state.inputLength);
+            dst += state.outputLength;
+            offset += state.inputLength >> 1;
         }
     }
 
-    *out = 0;
+    *dst = 0;
     return 0;
 }
 
