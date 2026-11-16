@@ -11650,8 +11650,9 @@ extern "C" s32 fn_800B7C90(void) {
 }
 
 extern "C" s32 fn_800B7CBC(void) {
-    s32 result = ((s32 (*)(void))fn_800B7684)();
-    return (-result | result) >> 31;
+    // Returns an all-ones mask when the handler's result is nonzero, zero otherwise.
+    s32 value = ((s32 (*)(void))fn_800B7684)();
+    return (-value | value) >> 31;
 }
 
 extern "C" s32 fn_800B76A8(s32, s32);
