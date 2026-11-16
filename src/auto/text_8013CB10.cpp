@@ -2995,10 +2995,11 @@ done:
     ;
 }
 extern "C" void fn_80142B60(void *arg0) {
-    u8 *p = (u8 *)arg0;
-    p[0x49] = 1;
-    p[0x4B] = 0;
-    p[0x4A] = 0;
+    /* Mark a UI widget for refresh: raise the update flag at +0x49 and clear the two state bytes at +0x4A/+0x4B. */
+    u8 *widget = (u8 *)arg0;
+    widget[0x49] = 1;
+    widget[0x4B] = 0;
+    widget[0x4A] = 0;
 }
 
 /* If `value` differs from the object's float field at +4, store it and flag the object changed at +0x4E. */
@@ -4152,7 +4153,7 @@ extern "C" int fn_801433A8(unsigned char *self, int unused, int event) {
             ++i;
         }
     } else if (event == 0x65) {
-        int i = 0, offset = 0;
+        int offset = 0, i = 0;
         while (i < *(int *)(self + 0xC)) {
             (*(EventChild433A8 **)((unsigned char *)*(void **)(self + 8) + offset))->end();
             offset += 4;
@@ -4174,9 +4175,8 @@ extern "C" int fn_801433A8(unsigned char *self, int unused, int event) {
         direction[1] = *(float *)(object + 0x120);
         unsigned char *vectors = *(unsigned char **)(*(unsigned char **)(*(unsigned char **)(self + 0x64) + 4) + 4);
         float scale = lbl_80561498 * PSQUATMultiply(vectors, vectors + 0xC);
-        float y2 = direction[1] * direction[1];
-        float x2 = direction[0] * direction[0];
-        float length = (float)fn_8002F234(x2 + y2);
+        float sum = direction[1] * direction[1] + direction[0] * direction[0];
+        float length = (float)fn_8002F234(sum);
         if (!((float)__fabs(length) <= lbl_80558DC4[0])) {
             float ratio = scale / length;
             direction[0] *= ratio;
@@ -4187,22 +4187,26 @@ extern "C" int fn_801433A8(unsigned char *self, int unused, int event) {
     }
     if (event == 0x58) {
         if (((EventReceiver433A8 *)self)->active()) {
-            if (*(int *)(self + 0x134) == 2) self[0x13D] = 1;
-        } else if (*(int *)(self + 0x134) != 0 && *(int *)(self + 0x134) == 1 && self[0x144] == 0) {
-            float time = *(float *)(self + 0x138);
-            if (time > lbl_805614A4 && lbl_8055E3C8 - time < lbl_805614AC) {
-                self[0x144] = 1;
-                if (*(int *)(self + 0x140)) fn_802AE118(*(int *)(self + 0x140));
-                unsigned char *child = *(unsigned char **)(self + 0x148);
-                if (child) { child[0x4A] = 1; child[0x4C] = 0; }
-                child = *(unsigned char **)(self + 0x14C);
-                if (child) { child[0x4A] = 1; child[0x4C] = 0; }
-                child = *(unsigned char **)(self + 0x15C);
-                if (child) { child[0x4A] = 1; child[0x4C] = 0; }
-                child = *(unsigned char **)(self + 0x160);
-                if (child) { child[0x4A] = 1; child[0x4C] = 0; }
-                self[0x13C] = 0;
-                *(float *)(self + 0x138) = lbl_8055E3C8 - lbl_805614AC;
+            if (*(volatile int *)(self + 0x134) == 2) self[0x13D] = 1;
+        } else if (*(volatile int *)(self + 0x134) != 0) {
+            float now = lbl_8055E3C8;
+            if (*(volatile int *)(self + 0x134) == 1 && self[0x144] == 0) {
+                float time = *(float *)(self + 0x138);
+                if (time > lbl_805614A4 && now - time < lbl_805614AC) {
+                    float last = lbl_8055E3C8;
+                    self[0x144] = 1;
+                    if (*(int *)(self + 0x140)) fn_802AE118(*(int *)(self + 0x140));
+                    unsigned char *child = *(unsigned char **)(self + 0x148);
+                    if (child) { child[0x4A] = 1; child[0x4C] = 0; }
+                    child = *(unsigned char **)(self + 0x14C);
+                    if (child) { child[0x4A] = 1; child[0x4C] = 0; }
+                    child = *(unsigned char **)(self + 0x15C);
+                    if (child) { child[0x4A] = 1; child[0x4C] = 0; }
+                    child = *(unsigned char **)(self + 0x160);
+                    if (child) { child[0x4A] = 1; child[0x4C] = 0; }
+                    self[0x13C] = 0;
+                    *(float *)(self + 0x138) = last - lbl_805614AC;
+                }
             }
         }
     }
