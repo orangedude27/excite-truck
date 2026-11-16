@@ -321,11 +321,13 @@ int fn_80193524(void *first, void *second) {
     return result;
 }
 #pragma processor gekko
-void fn_801935EC(void *arg0) {
-    float value = lbl_80562144;
-    *(float *)((unsigned char *)arg0 + 0x224) = value;
-    *(float *)((unsigned char *)arg0 + 0x228) = value;
-    *(float *)((unsigned char *)arg0 + 0x22C) = lbl_8055E3C8;
+/* Clears a sound object's accumulator fields at 0x224/0x228 to zero and stamps
+ * 0x22C with the current game time (lbl_8055E3C8), resetting its timing state. */
+void fn_801935EC(void *sound) {
+    float zero = lbl_80562144;
+    *(float *)((unsigned char *)sound + 0x224) = zero;
+    *(float *)((unsigned char *)sound + 0x228) = zero;
+    *(float *)((unsigned char *)sound + 0x22C) = lbl_8055E3C8;
 }
 
 #pragma push
