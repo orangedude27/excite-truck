@@ -293,10 +293,17 @@ extern "C" void *fn_8023D134(void *panel, s32 shouldDelete) {
 #pragma scheduling on
 #pragma cplusplus off
 void fn_8023D1C0(void) {
-    /* Open the sound settings menu: flag it loading, build the "sound.lyt" layout, then flag it ready. */
-    lbl_8055BB68 = 0;
-    fn_8023CC84(lbl_803415CC);
-    lbl_8055BB68 = 2;
+    /* Open the sound settings menu: flag it as loading, build the "sound.lyt"
+     * layout, then flag it as ready. */
+    #define SOUND_MENU_STATE  lbl_8055BB68  /* s32 menu state: 0 = loading, 2 = ready */
+    #define SOUND_LAYOUT_NAME lbl_803415CC  /* "sound.lyt" */
+    #define CreateSoundMenu   fn_8023CC84   /* builds the sound settings layout/menu */
+    SOUND_MENU_STATE = 0;
+    CreateSoundMenu(SOUND_LAYOUT_NAME);
+    SOUND_MENU_STATE = 2;
+    #undef SOUND_MENU_STATE
+    #undef SOUND_LAYOUT_NAME
+    #undef CreateSoundMenu
 }
 
 void fn_8023D1F8(void) {}
