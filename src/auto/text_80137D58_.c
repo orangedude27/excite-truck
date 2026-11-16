@@ -27,7 +27,7 @@ enum IdealResExtType {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-void fn_80137D58(void *arg0, int arg_sp0) {
+extern "C" void fn_80137D58(void *arg0, int arg_sp0) {
     volatile int sp18, sp14, sp10, spC, sp8;
     volatile unsigned char *p = (volatile unsigned char *)arg0;
     register unsigned char temp_r0, temp_r0_2, temp_r0_4, temp_r0_5; register unsigned int temp_r0_3;
@@ -359,34 +359,34 @@ void *fn_8013846C(void *);
 #pragma dont_inline on
 void fn_801384A0(void *arg0, int arg1) {
     char sp[0x70];
-    register int value;
-    register int max;
-    register int *node;
-    register void *head;
+    int value;
+    int max;
+    void *node;
+    void *head;
     fn_80135DC4(sp, 1, arg1);
     head = *(void **)((char *)arg0 + 0x1C);
     fn_80135F64(sp, head, (char *)head + 8, 0, 0);
-    node = *(int **)((char *)arg0 + 0x1C);
+    node = *(void **)((char *)arg0 + 0x1C);
     do {
         fn_80136068(sp, node, 0);
         *(float *)((char *)node + 0x2C) = *(float *)(sp + 0x40);
         *(int *)((char *)node + 0x10) = *(int *)((char *)*(void **)(sp + 4) + 0x10);
-        node = *(int **)((char *)node + 0x14);
-    } while (node != *(int **)((char *)arg0 + 0x1C));
-    node = (int *)fn_80138438(node);
+        node = *(void **)((char *)node + 0x14);
+    } while (node != *(void **)((char *)arg0 + 0x1C));
+    node = fn_80138438(node);
     head = fn_8013846C(node);
     *(int *)((char *)head + 0x10) = 0;
-    node = (int *)head;
+    node = head;
     max = 0;
     do {
-        value = node[4];
+        value = *(int *)((char *)node + 0x10);
         if (max > value) {
             value = max;
-            node[4] = value;
         }
+        *(int *)((char *)node + 0x10) = value;
         max = value;
-        node = *(int **)((char *)node + 0x14);
-    } while ((void *)node != head);
+        node = *(void **)((char *)node + 0x14);
+    } while (node != head);
     if (*(void **)(sp + 0x50) != 0) fn_80128670(*(void **)(sp + 0x50));
     *(void **)(sp + 0x50) = 0;
     fn_8013530C(sp, 0);
