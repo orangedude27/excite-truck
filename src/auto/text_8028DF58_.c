@@ -188,6 +188,16 @@ test:
     if (i < base->count) goto body;
 }
 #pragma pop
+
+/* The particle system's frame time (seconds; fn_801E7E18 returns the time
+ * float at the head of the frame data block) and the flag the game's own
+ * error strings call allow_particle_add: it is set for the duration of a
+ * particle update pass, so adds made outside it can be reported
+ * ("particle: added particle outside of ParticlePreUpdate() and
+ * ParticlePostUpdate()"). */
+#define gParticleTime     lbl_8055F738
+#define gAllowParticleAdd lbl_8055F73C
+
 void fn_8028E1A4(void) {
     lbl_8055F738 = fn_801E7E18();
     lbl_8055F73C = 1;
