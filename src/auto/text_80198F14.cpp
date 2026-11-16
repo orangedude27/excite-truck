@@ -5134,10 +5134,11 @@ extern "C" void fn_801A4780(s32* field, s32 base) {
     }
 }
 
-extern "C" void fn_801A4798(s32* arg0, s32 arg1) {
-    s32 val = *arg0;
-    if (val != 0) {
-        *arg0 = val + arg1;
+extern "C" void fn_801A4798(s32* pOffset, s32 base) {
+    /* Relocate a stored offset: add base to *pOffset, but leave a zero (null) offset untouched. */
+    s32 offset = *pOffset;
+    if (offset != 0) {
+        *pOffset = offset + base;
     }
 }
 
