@@ -2301,11 +2301,12 @@ void GXGetVtxAttrFmtv(void) {
     do {
         now = OSGetTime();
     } while (now - start <= 5);
-    if (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0) {
-        __GXCleanGPFifo();
-        __GXInitRevisionBits();
-        data[0x5FC / 4] = 0;
-    } else {
+    if (((unsigned int)__GXIsGPFifoReady() & 0xFF) == 0)
+        return;
+    __GXCleanGPFifo();
+    __GXInitRevisionBits();
+    data[0x5FC / 4] = 0;
+    if (data[0x5FC / 4] != 0) {
         __GXSetDirtyState();
     }
     *(volatile unsigned int *)0xCC008000 = 0;
