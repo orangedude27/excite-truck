@@ -96,10 +96,23 @@ void fn_802782C4(void) {
 
 #pragma scheduling invalid_target
 void fn_80278318(void) {
-    fn_802E30C8(lbl_803475B4, lbl_8055E3C4);
-    lbl_8055F5B8 = 0;
-    lbl_8055F5BA = 0;
-    lbl_8055F5B9 = 0;
+#define sRecording       lbl_8055F5B8 /* 1 while keyframes are being captured */
+#define sPlayPending     lbl_8055F5B9 /* a movie is queued to play back */
+#define sPlayingBack     lbl_8055F5BA /* 1 while the captured movie plays */
+#define sCurrentTick     lbl_8055E3C4 /* global tick/frame counter */
+#define sMsgEndRecord    lbl_803475B4 /* "script: end recording on tick %d" */
+
+    /* End the script movie recording: log the final tick and clear the record/playback flags. */
+    fn_802E30C8(sMsgEndRecord, sCurrentTick);
+    sRecording = 0;
+    sPlayingBack = 0;
+    sPlayPending = 0;
+
+#undef sRecording
+#undef sPlayPending
+#undef sPlayingBack
+#undef sCurrentTick
+#undef sMsgEndRecord
 }
 #pragma scheduling on
 char fn_80278358(void) {
@@ -240,18 +253,23 @@ void fn_8027847C(void *arg0) {
         if (*(unsigned char *)&lbl_8055F5BA) {
             int now2 = lbl_8055E3C4;
             int tmp = lbl_8055F5C4;
-            if (now2 != tmp) {
-                tmp = lbl_8055F5C0;
-                lbl_8055F5C4 = now2;
-                frame = now2 - tmp;
-                if (frame >= 0 && frame <= lbl_8055F5BC - tmp && tmp <= lbl_8055F5BC && frame % 2 == 0) {
-                    fn_802E30C8(base+0xa8,frame);
-                    fn_801345D8(buffer,256,base+0xd0,lbl_804A15D0,frame/2);
-                    fn_802D08B4(2,2,1);
-                    fn_802D07E4(buffer,1);
-                }
-            }
+            int end, length;
+            if (now2 == tmp) goto frame_done;
+            tmp = *(volatile int *)&lbl_8055F5C0;
+            lbl_8055F5C4 = now2;
+            frame = now2 - tmp;
+            if (frame < 0) goto frame_done;
+            end = *(volatile int *)&lbl_8055F5BC;
+            length = end - tmp;
+            if (frame > length) goto frame_done;
+            if (tmp > end) goto frame_done;
+            if (frame % 2 != 0) goto frame_done;
+            fn_802E30C8(base+0xa8,frame);
+            fn_801345D8(buffer,256,base+0xd0,lbl_804A15D0,frame/2);
+            fn_802D08B4(2,2,1);
+            fn_802D07E4(buffer,1);
         }
+frame_done:;
     } else {
         float *m=(float *)(obj+0x58);
         float end, zero, one;
