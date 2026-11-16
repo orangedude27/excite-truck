@@ -130,9 +130,11 @@ void fn_8023D4B8(int arg0) {
     fn_8023DBCC();
     fn_8022D7C4(ctx, 0);
 }
+#pragma dont_inline on
 void* fn_8023D6FC(void) {
     return lbl_8055F18C;
 }
+#pragma dont_inline reset
 
 extern void fn_801333E8(long, void *, char *);
 extern void fn_80133460(void);
@@ -175,6 +177,63 @@ void fn_8023D70C(void) {
         index++;
     } while (index < 5);
 }
+
+void fn_8023D7CC(void) {
+    char *base = lbl_803416A8;
+    int index;
+    int choice;
+    fn_80137D10();
+    index = 0;
+    do {
+        fn_8023DA64((void *)index, 1, 0);
+        choice = (int)fn_8023D6FC();
+        switch (choice) {
+        case 0:
+            fn_802E8664(1);
+            fn_8013358C(index + 8, (int)lbl_8055BBD0, lbl_8055BC68);
+            fn_8013358C(index + 8, (int)lbl_8055BC70, (void *)&lbl_8055BC08);
+            fn_8013358C(index + 8, (int)(base + 0x1B4), (void *)&lbl_8055BC08);
+            fn_8013358C(index + 8, (int)(base + 0x1CC), (void *)&lbl_8055BC08);
+            break;
+        case 2:
+            ((void (*)(void *, ...))fn_802E30C8)(base + 0x3C0);
+            fn_802E8664(1);
+            fn_8013358C(index + 8, (int)(base + 0x1E4), base + 0x400);
+            fn_8013358C(index + 8, (int)(base + 0x208), base + 0x40C);
+            fn_8013358C(index + 8, (int)(base + 0x1B4), base + 0x254);
+            fn_8013358C(index + 8, (int)(base + 0x1CC), base + 0x260);
+            fn_8013358C(index + 8, (int)lbl_8055BBD0, base + 0x278);
+            fn_8013358C(index + 8, (int)lbl_8055BBB8, base + 0x418);
+            break;
+        case 3:
+            ((void (*)(void *, ...))fn_802E30C8)(base + 0x424);
+            fn_802E8664(0);
+            fn_8013358C(index + 8, (int)lbl_8055BBB8, base + 0x468);
+            fn_8013358C(index + 8, (int)lbl_8055BBD0, base + 0x278);
+            fn_8013358C(index + 8, (int)lbl_8055BBC0, base + 0x29C);
+            fn_8013358C(index + 8, (int)(base + 0x184), lbl_8055BC78);
+            fn_8013358C(index + 8, (int)(base + 0x16C), lbl_8055BC80);
+            break;
+        case 1:
+            fn_802E8664(0);
+            fn_8013358C(index + 8, (int)(base + 0x1E4), lbl_8055BC18);
+            fn_8013358C(index + 8, (int)(base + 0x208), base + 0x290);
+            fn_8013358C(index + 8, (int)(base + 0x184), lbl_8055BC78);
+            fn_8013358C(index + 8, (int)(base + 0x16C), lbl_8055BC80);
+            fn_8013358C(index + 8, (int)(base + 0x1B4), (void *)&lbl_8055BC08);
+            fn_8013358C(index + 8, (int)(base + 0x1CC), (void *)&lbl_8055BC08);
+            fn_8013358C(index + 8, (int)lbl_8055BBB8, base + 0x468);
+            fn_8013358C(index + 8, (int)lbl_8055BBD0, base + 0x278);
+            fn_8013358C(index + 8, (int)lbl_8055BBC0, base + 0x29C);
+            break;
+        default:
+            fn_802E317C(base + 0x474, (int)fn_8023D6FC());
+            break;
+        }
+        index++;
+    } while (index < 4);
+}
+
 #pragma scheduling on
 #pragma use_lmw_stmw on
 #pragma dont_inline on
