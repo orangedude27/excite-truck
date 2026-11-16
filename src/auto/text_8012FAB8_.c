@@ -381,10 +381,10 @@ void fn_80130568(char *arg0) {
     }
 }
 
-#pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_801305C4(char *arg0, int arg1, Rec10 *arg2, int arg3, float farg0) {
-    int prec;
-    if ((prec = arg2->f3) == 0) {
+    register int prec = arg2->f3;
+    if (prec == 0) {
         fn_801345D8(arg0, arg1, &lbl_80559AA0, 1, (int)(farg0 * arg2->f2));
     } else {
         fn_801345D8(arg0, arg1, &lbl_80559AA8, 1, prec, farg0 * arg2->f2);
@@ -400,7 +400,7 @@ void fn_801305C4(char *arg0, int arg1, Rec10 *arg2, int arg3, float farg0) {
         break;
     }
 }
-#pragma dont_inline reset
+#pragma scheduling on
 
 void fn_8013072C(char *arg0, int arg1, int arg2) {
     int sign = arg2 >> 31;
@@ -605,6 +605,18 @@ static inline void time_append2(char *dstp, int sizep, char *str) {
     }
 }
 
+static inline int time_sep_lookup(TimeSepEnt *e, char ch, char *out, int size) {
+    int found = 0;
+    unsigned int i;
+    for (i = 0; found == 0 && i < 13; i++) {
+        if (ch == e[i].c) {
+            time_append_sizefirst(out, size, e[i].s);
+            found = 1;
+        }
+    }
+    return found;
+}
+
 void fn_80130980(char *out, int size, int level, float t);
 void fn_80130978(char *arg0, int arg1, float t) { fn_80130980(arg0, arg1, 3, t); }
 
@@ -617,10 +629,8 @@ void fn_80130980(char *out, int size, int level, float t) {
     char s18[12];
     char s10[8];
     TimeSepTab tbl;
-    char tmp[2];
     int mins, hundredths, tenths, secs, hours;
     int hasPrev;
-    int found;
     char *src;
     char *p;
     char c;
@@ -688,16 +698,15 @@ void fn_80130980(char *out, int size, int level, float t) {
     fn_801345D8(out, size, lbl_80559AF0, 1);
     tbl = lbl_802F8E78;
     for (p = buf; *p != 0; p++) {
-        found = 0;
-        for (i = 0; found == 0 && i < 13; i++) {
+        hasPrev = 0;
+        for (i = 0; hasPrev == 0 && i < 13; i++) {
             if (*p == tbl.e[i].c) {
                 time_append_sizefirst(out, size, tbl.e[i].s);
-                found = 1;
+                hasPrev = 1;
             }
         }
-        if (!found) {
-            tmp[0] = tmp[1] = 0;
-            *(short *)tmp = 0;
+        if (!hasPrev) {
+            char tmp[2] = {0};
             tmp[0] = *p;
             time_append_sizefirst(out, size, tmp);
         }
