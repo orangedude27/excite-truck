@@ -12,6 +12,9 @@ extern void fn_8000D838(void *);
 extern void __register_global_object(void *, void *, void *, int);
 #pragma scheduling invalid_target
 void fn_80160C2C(void) {
+    /* Global constructor: register a static-destructor record, set a capacity sentinel,
+     * initialize a small inline-storage object (data -> +12, count = 0, capacity = 0x14),
+     * and register its destructor fn_80160C8C via __register_global_object. */
     fn_8000D838(&lbl_8055E2C0);
     lbl_8055E2C8 = 0xFFFF0000;
     *(void **)&lbl_8042FD84 = (char *)&lbl_8042FD84 + 12;
