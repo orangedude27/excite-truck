@@ -977,11 +977,16 @@ void fn_8023B4F8(void *widget) {
 }
 #pragma pop
 
-void fn_8023B574(void *arg0) {
-    if (*(unsigned char *)((char *)arg0 + 0x18) != 0) {
-        fn_80214AF0(0x1D);
+void fn_8023B574(void *option) {
+#define UIShowGroup fn_80214AF0
+#define UIHideGroup fn_80214A9C
+    /* Show or hide UI group 29 depending on this option's status byte at +0x18. */
+    if (*(unsigned char *)((char *)option + 0x18) != 0) {
+        UIShowGroup(0x1D);
     } else {
-        fn_80214A9C(0x1D);
+        UIHideGroup(0x1D);
     }
+#undef UIHideGroup
+#undef UIShowGroup
 }
 
