@@ -141,9 +141,10 @@ void fn_8001B9F4(void) {
     fn_8002F634(&lbl_803583C8, fn_8001BA10, 0x14, 0x10);
 }
 #pragma scheduling reset
-s32 fn_8001BA10(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+s32 fn_8001BA10(s32 ptr, s32 count) {
+    /* Free ptr via the mode-3 pool allocator when it is non-null and count is positive; return ptr unchanged. */
+    if (ptr != 0 && count > 0) fn_80128668();
+    return ptr;
 }
 
 void fn_8001BA50(void *arg0) {
