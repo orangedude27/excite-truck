@@ -4,6 +4,7 @@
 typedef signed char s8;
 typedef signed int s32;
 typedef float f32;
+static inline f32 GetChannelSweep(void *channel);
 
 extern "C" char lbl_803228E8[];
 extern "C" char lbl_803228F8[];
