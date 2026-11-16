@@ -266,6 +266,13 @@ extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12Li
     extern "C" s32 OSSendMessage(void*, void*, u32);
 extern "C" void OSInitMutex(void*);
 extern "C" const char lbl_80326768[];
+/* The snd_StrmPlayer.cpp string pool: the file string followed by its messages. */
+struct StrmPlayerMsgPool {
+    char file[0x238];
+    char msg238[0x30];
+    char msg268[0x30];
+    char msg298[0x40];
+};
 extern "C" const char lbl_803269A0[];
 extern "C" const char lbl_8032677C[];
 extern "C" const char lbl_80326C1C[];
