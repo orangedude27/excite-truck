@@ -9157,10 +9157,11 @@ extern "C" s32 fn_802298AC(void *self) {
     return (*(*(u8 **)((char *)self + 0x254)) != 0) | status;
 }
 
-extern "C" int fn_802298DC(void *arg0) {
-    int *p = *(int **)((char *)arg0 + 0x254);
-    if (p != 0) {
-        return *p;
+extern "C" int fn_802298DC(void *widget) {
+    /* Return the value pointed to by the widget's +0x254 field, or 0 if unset. */
+    int *valuePtr = *(int **)((char *)widget + 0x254);
+    if (valuePtr != 0) {
+        return *valuePtr;
     }
     return 0;
 }
