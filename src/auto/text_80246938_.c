@@ -705,8 +705,11 @@ s32 fn_802476FC(void) {
 extern s32 lbl_8055BEA8;
 extern s32 lbl_8055BEBC;
 s32 fn_80214D04(void);
+/* Store the active UI window's menu index as the global selected menu item. */
 void fn_80247768(void) {
-    lbl_8055BEAC = (void*)fn_80214D04();
+#define gSelectedMenuItem lbl_8055BEAC
+    gSelectedMenuItem = (void*)fn_80214D04();
+#undef gSelectedMenuItem
 }
 
 extern void *lbl_8055BEB0;
