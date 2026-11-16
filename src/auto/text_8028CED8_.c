@@ -48,11 +48,12 @@ void fn_8028CF50(void) {
     }
 }
 
+/* Update the subsystem each frame only while it is active and the frame delta is non-zero. */
 void fn_8028CF64(void) {
     if (lbl_8055F714 != 0) {
-        float value = fn_801E7E24();
-        float abs = (float)__fabs((double)value);
-        if (!(abs <= lbl_80558DC4[0]))
+        float frameDelta = fn_801E7E24();
+        float absFrameDelta = (float)__fabs((double)frameDelta);
+        if (!(absFrameDelta <= lbl_80558DC4[0]))
             fn_8028D728();
     }
 }
