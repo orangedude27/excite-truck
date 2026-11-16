@@ -178,8 +178,14 @@ void fn_80288A74(void **entries, int count) {
     }
 }
 #pragma pop
-int fn_80288B40(int arg0) {
-    fn_80289084(); fn_80289154(arg0); fn_80289268(arg0); fn_80289394(arg0); return arg0;
+/* fn_80288B40: initializes this object's sub-components by invoking their
+ * setup routines in order, then returns the object pointer. */
+int fn_80288B40(int obj) {
+    fn_80289084();
+    fn_80289154(obj);
+    fn_80289268(obj);
+    fn_80289394(obj);
+    return obj;
 }
 
 int fn_80287B5C(void);
