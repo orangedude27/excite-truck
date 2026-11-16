@@ -21950,14 +21950,39 @@ void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
     } else ((void (*)(void *, u32, u8 *))fn_800916F4)(port, 0xC, arg1);
 }
 
+#pragma push
+#pragma opt_propagation off
+/* rfc_find_lcid_mcb, inlined into the RFCOMM_* L2CAP callbacks; msgs is the
+ * file's trace string pool (lbl_803196B8). */
+static inline void *rfc_find_lcid_mcb_inl(u32 lcid, char *msgs) {
+    s32 index = (s32)lcid - 0x40;
+    void *p_mcb;
+    u16 mcb_lcid;
+    if (index >= 10) {
+        if (lbl_803C4828[0x414] >= 1)
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, msgs + 0, lcid);
+        return NULL;
+    }
+    p_mcb = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
+    if (p_mcb != NULL) {
+        mcb_lcid = *(u16 *)((u8 *)p_mcb + 0x68);
+        if (mcb_lcid != lcid) {
+            if (lbl_803C4828[0x414] >= 2)
+                ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, msgs + 0x1C, lcid, mcb_lcid);
+            p_mcb = NULL;
+        }
+    }
+    return p_mcb;
+}
+
 void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
+    register volatile char *trace_msg = (volatile char *)lbl_803196B8;
     s32 index = (s32)arg0 - 0x40;
-    char *trace_msg = lbl_803196B8;
     void *port;
     u16 port_lcid;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg + 0, arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, (char *)trace_msg, arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -21965,19 +21990,19 @@ void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
             port_lcid = *(u16 *)((u8 *)port + 0x68);
             if (port_lcid != arg0) {
                 if (lbl_803C4828[0x414] >= 2)
-                    ((void (*)(u32, void *, u32))fn_8007096C)(0x90001, trace_msg + 0x1C, arg0);
+                    ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, (char *)trace_msg + 0x1C, arg0, port_lcid);
                 port = NULL;
             }
         }
     }
     if (port == NULL) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg + 0x8C, arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, (char *)trace_msg + 0x8C, arg0);
     } else {
         ((void (*)(void *, u32, u8 *))fn_800916F4)(port, 0xB, arg1);
     }
 }
-
+#pragma pop
 void fn_800911DC(void) {
 
 }
