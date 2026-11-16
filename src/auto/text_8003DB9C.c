@@ -3506,20 +3506,35 @@ void GXSetDispCopyGamma(s32 arg0) {
     ((GXDispCopyGammaReg *)&__GXData[0x23c / 4])->gamma = arg0;
 }
 
+typedef struct {
+    unsigned char pad_000[0x220];
+    unsigned int cmode0;                   /* 0x220 colour and alpha compare modes */
+    unsigned char pad_224[4];
+    unsigned int zmode;                    /* 0x228 depth test and write modes */
+    unsigned int peCtrl;                   /* 0x22C pixel type and z-update control */
+    unsigned int dispSrc;                  /* 0x230 copy source */
+    unsigned int dispSize;                 /* 0x234 copy size */
+    unsigned int dispStride;               /* 0x238 copy stride */
+    unsigned int dispCtrl;                 /* 0x23C display copy control */
+} GXDispCopyData;
+#define GXDispRegs (*(GXDispCopyData *)__GXData)
+
 void GXCopyDisp(unsigned int source, int clear) {
     volatile unsigned int *gx;
     volatile unsigned int *reg;
     unsigned int value;
+    unsigned int zmode;
     unsigned int sourceValue;
-    int changed;
+    register int changed;
 
     if (clear != 0) {
+        u32 marker = 0x61;
         gx = __GXData;
-        value = gx[0x228 / 4];
-        GXCopyWGFifo.u8 = 0x61;
-        GXCopyWGFifo.u32 = value | 0xF;
+        zmode = gx[0x228 / 4] | 0xF;
+        GXCopyWGFifo.u8 = marker;
+        GXCopyWGFifo.u32 = zmode;
         value = gx[0x220 / 4];
-        GXCopyWGFifo.u8 = 0x61;
+        GXCopyWGFifo.u8 = marker;
         GXCopyWGFifo.u32 = value & ~3u;
     }
 
@@ -3573,7 +3588,7 @@ void GXCopyDisp(unsigned int source, int clear) {
         GXCopyWGFifo.u8 = 0x61;
         GXCopyWGFifo.u32 = *reg;
     }
-    *(volatile unsigned short *)((volatile unsigned char *)gx + 2) = 0;
+    *(volatile unsigned short *)((volatile unsigned char *)__GXData + 2) = 0;
 }
 
 /* The GX data block (__GXData) holds every BP register GX has set so that it can
