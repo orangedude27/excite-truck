@@ -1785,10 +1785,11 @@ int fn_801D6C34(int arg0) {
     return ((int *)arg0)[1];
 }
 
-int fn_801D6C3C(int arg0) {
-    if (((int *)arg0)[1] == 1) {
-        ((int *)arg0)[4] = lbl_8055E3C4;
-        ((int *)arg0)[1] = 2;
+/* If the timer object is idle (state 1), stamp its start field with the current global tick (lbl_8055E3C4), switch it to the active state (2) and report success. */
+int fn_801D6C3C(int self) {
+    if (((int *)self)[1] == 1) {
+        ((int *)self)[4] = lbl_8055E3C4;
+        ((int *)self)[1] = 2;
         return 1;
     }
     return 0;
