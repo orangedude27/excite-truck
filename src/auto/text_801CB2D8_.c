@@ -127,8 +127,15 @@ void fn_801CB3F8(void) {
 }
 
 void fn_801CB464(void) {
-    if (fn_80019BA8() || fn_80161C38()) return;
-    fn_801CCBA4();
+#define BootOptionBit_400 fn_80019BA8
+#define ChallengeSubTask_Active fn_80161C38
+#define StatManager_Pause fn_801CCBA4
+    /* Pause the stat manager unless a boot option or an active challenge sub-task blocks it. */
+    if (BootOptionBit_400() || ChallengeSubTask_Active()) return;
+    StatManager_Pause();
+#undef BootOptionBit_400
+#undef ChallengeSubTask_Active
+#undef StatManager_Pause
 }
 
 extern void fn_801CCBB4(void);
@@ -638,10 +645,10 @@ void fn_801CC594(void *arg0) {
     s32 minusOne;
     void *entry;
     void *object;
+    void *field;
     f32 floatE4;
     f32 floatFC;
     f32 floatA08;
-    void *field;
     if (base[0x10] != 0) return;
     index = 0;
     offset = 0;
@@ -704,7 +711,7 @@ void fn_801CC594(void *arg0) {
     *(f32 *)(base + 0x5FC) = floatFC;
     *(f32 *)(base + 0x600) = floatFC;
     *(f32 *)(base + 0x604) = floatFC;
-    field = *(void **)(base + 0x2C8);
+    field = *(void * volatile *)(base + 0x2C8);
     *(f32 *)(base + 0x608) = floatE4;
     *(f32 *)(base + 0x60C) = floatFC;
     *(f32 *)(base + 0x610) = floatFC;
