@@ -372,50 +372,52 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
 }
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802C595C(char *dst, int size, const char *name, int id) {
-    int offset;
-    int i;
+void fn_802C595C(char *outName, int maxLen, const char *lookupName, int id) {
+    /* Resolve a resource name through the (name,id) override table, bounded-copying
+       the replacement into outName, or the original name when there is no override. */
+    int entryOffset;
+    int entryIndex;
     char *entry;
-    register const unsigned char *src;
-    unsigned char c;
-    i = 0;
-    offset = 0;
+    register const unsigned char *copySrc;
+    unsigned char ch;
+    entryIndex = 0;
+    entryOffset = 0;
     goto table_check;
 table_loop:
-    entry = (char *)(unsigned long)lbl_804C13B4[2] + offset;
-    if (stricmp(name, entry) == 0) {
+    entry = (char *)(unsigned long)lbl_804C13B4[2] + entryOffset;
+    if (stricmp(lookupName, entry) == 0) {
         if (id == *(int *)(entry + 0x10)) {
-            src = (const unsigned char *)(entry + 0x14);
+            copySrc = (const unsigned char *)(entry + 0x14);
             goto copy_body;
 copy_check:
-            if (--size <= 0) {
-                dst[-1] = 0;
+            if (--maxLen <= 0) {
+                outName[-1] = 0;
                 goto done;
             }
 copy_body:
-            c = *src++;
-            *dst++ = c;
-            if ((signed char)c == 0) goto done;
+            ch = *copySrc++;
+            *outName++ = ch;
+            if ((signed char)ch == 0) goto done;
             goto copy_check;
         }
     }
 table_next:
-    offset += 0x2C;
-    i++;
+    entryOffset += 0x2C;
+    entryIndex++;
 table_check:
-    if (i < lbl_804C13B4[0]) goto table_loop;
+    if (entryIndex < lbl_804C13B4[0]) goto table_loop;
     else goto fallback_copy;
 fallback_copy:
     goto fallback_body;
 fallback_check:
-    if (--size <= 0) {
-        dst[-1] = 0;
+    if (--maxLen <= 0) {
+        outName[-1] = 0;
         goto done;
     }
 fallback_body:
-    c = *name++;
-    *dst++ = c;
-    if ((signed char)c == 0) goto done;
+    ch = *lookupName++;
+    *outName++ = ch;
+    if ((signed char)ch == 0) goto done;
     goto fallback_check;
 done:
     return;
@@ -436,10 +438,10 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     struct Entry *entry;
     register s32 savedArg0 = arg0;
     s32 count = lbl_804C13A8[0];
-    struct Entry *match = 0;
     struct Entry *freeEntry = 0;
-    s32 zero = 0;
-    s32 one = 1;
+    struct Entry *match = 0;
+    int one = 1;
+    int zero = 0;
     s32 i;
 
     entry = (struct Entry *)(unsigned long)lbl_804C13A8[2];
@@ -457,10 +459,10 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     if (match == 0) {
         if (freeEntry == 0) {
             if (count < lbl_804C13A8[1]) {
-                s32 next = *(volatile s32 *)&lbl_804C13A8[0];
+                int next = *(volatile int *)&lbl_804C13A8[0];
                 void *base = *(void * volatile *)&lbl_804C13A8[2];
-                freeEntry = (struct Entry *)((char *)base + next * 0x10);
                 lbl_804C13A8[0] = next + 1;
+                freeEntry = (struct Entry *)((char *)base + next * 0x10);
             } else {
                 freeEntry = 0;
             }
