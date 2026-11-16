@@ -1066,7 +1066,7 @@ float fn_801DDC8C(float farg0, float farg1)
   if (layerIndex >= 0)
   {
     layer = ((char *) (*((int *) (((char *) state) + (((((((((0x20 & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF) & 0xFFFFFFFF))))) + (layerIndex * 0x810);
- do { do { tblIdx = *((int *) (layer + 0x808)); sample = *((unsigned short *) (((remX * 64) + (remZ * 2)) + (unsigned int)layer + 8)); next = *((int *) (layer + 0x80C)); value = (*((float *) (layer + 0))) + ((*((float *) (layer + 4))) * ((float) sample)); result += value * lbl_804425DC[tblIdx]; if (next < 0) { break; } layer = ((char *) (*((int *) (((char *) state) + 0x20)))) + (next * 0x810); } while (1); return result; } while (0);
+ do { do { tblIdx = *((int *) (layer + 0x808)); sample = ((GroundLayer *)layer)->samples[remX][remZ]; next = *((int *) (layer + 0x80C)); value = (*((float *) (layer + 0))) + ((*((float *) (layer + 4))) * ((float) sample)); result += value * lbl_804425DC[tblIdx]; if (next < 0) { break; } layer = ((char *) (*((int *) (((char *) state) + 0x20)))) + (next * 0x810); } while (1); return result; } while (0);
   }
   else
   {
