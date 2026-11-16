@@ -119,48 +119,50 @@ int fn_801D32E0(int configName, int typeId, int position, int orientation, int s
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma pool_strings off
-extern "C" void fn_801D334C(void *arg0, void *arg1) {
-    Fn801D334CObj *obj = (Fn801D334CObj *)arg1;
-    struct Fn801D334CData *data = (struct Fn801D334CData *)arg0;
-    f32 mz;
-    f32 temp_f2;
-    int mode;
-    data->max_life = obj->getFloat("max_life");
-    data->mass = obj->getFloat((const char *)&lbl_8055AC30);
-    data->mx = obj->getFloat((const char *)&lbl_8055AC38);
-    data->my = obj->getFloat((const char *)&lbl_8055AC3C);
-    mz = obj->getFloat((const char *)&lbl_8055AC40);
-    temp_f2 = 9.81f;
-    temp_f2 *= data->mass;
-    data->mz = mz;
-    data->spring = obj->getFloatDef((const char *)&lbl_8055AC44, 1.5f * (temp_f2 / 0.03f));
-    data->friction = obj->getFloatDef("friction", 1.0f);
-    if (obj->hasKey("surf_type") != 0) {
-        data->surf_type = fn_801D04D0(obj->getString("surf_type"));
+/* Reads a mut_phob physics object's configuration (mass, size, spring,
+   friction, surface, effect and collision shape) from a config object. */
+extern "C" void fn_801D334C(void *outConfig, void *configSource) {
+    PhobConfigSource *source = (PhobConfigSource *)configSource;
+    struct PhobConfig *config = (struct PhobConfig *)outConfig;
+    f32 mzValue;
+    f32 weight;
+    int type;
+    config->max_life = source->getFloat("max_life");
+    config->mass = source->getFloat((const char *)&lbl_8055AC30);
+    config->mx = source->getFloat((const char *)&lbl_8055AC38);
+    config->my = source->getFloat((const char *)&lbl_8055AC3C);
+    mzValue = source->getFloat((const char *)&lbl_8055AC40);
+    weight = 9.81f;
+    weight *= config->mass;
+    config->mz = mzValue;
+    config->spring = source->getFloatDef((const char *)&lbl_8055AC44, 1.5f * (weight / 0.03f));
+    config->friction = source->getFloatDef("friction", 1.0f);
+    if (source->hasKey("surf_type") != 0) {
+        config->surf_type = fn_801D04D0(source->getString("surf_type"));
     } else {
-        data->surf_type = 100;
+        config->surf_type = 100;
     }
-    data->ground_test = obj->getByte("ground_test", 1);
-    data->effect_id = obj->getInt("effect_id", -1);
-    mode = fn_801D37C4(obj->getString((const char *)&lbl_8055AC4C));
-    data->mode = mode;
-    switch (mode) {
+    config->ground_test = source->getByte("ground_test", 1);
+    config->effect_id = source->getInt("effect_id", -1);
+    type = fn_801D37C4(source->getString((const char *)&lbl_8055AC4C));
+    config->mode = type;
+    switch (type) {
     case 0:
-        data->f2c = obj->getFloat((const char *)&lbl_8055AC54);
+        config->primarySize = source->getFloat((const char *)&lbl_8055AC54);
         break;
     case 1:
-        data->f2c = obj->getFloat((const char *)&lbl_8055AC54);
-        data->f30 = obj->getFloat((const char *)&lbl_8055AC58);
+        config->primarySize = source->getFloat((const char *)&lbl_8055AC54);
+        config->secondarySize = source->getFloat((const char *)&lbl_8055AC58);
         break;
     case 2:
-        data->f2c = obj->getFloat((const char *)&lbl_8055AC54);
-        data->f30 = obj->getFloat((const char *)&lbl_8055AC5C);
+        config->primarySize = source->getFloat((const char *)&lbl_8055AC54);
+        config->secondarySize = source->getFloat((const char *)&lbl_8055AC5C);
         break;
     case 3:
-        data->f2c = obj->getFloat((const char *)&lbl_8055AC58);
+        config->primarySize = source->getFloat((const char *)&lbl_8055AC58);
         break;
     default:
-        fn_802E317C("mut_phob: invalid type %d", mode);
+        fn_802E317C("mut_phob: invalid type %d", type);
         break;
     }
 }
