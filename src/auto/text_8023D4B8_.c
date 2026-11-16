@@ -178,60 +178,71 @@ void fn_8023D70C(void) {
     } while (index < 5);
 }
 
+/* Initialize the four control-option slots: apply default bindings to each, read the
+   selected control scheme (0..3) and set that scheme's option names/bindings; log an
+   error for an unrecognized scheme. */
 void fn_8023D7CC(void) {
-    char *base = lbl_803416A8;
-    int index;
-    int choice;
+#define sOptionData          lbl_803416A8
+#define ApplyControlDefaults fn_8023DA64
+#define GetControlScheme     fn_8023D6FC
+#define SetControlOption     fn_8013358C
+    char *optionData = sOptionData;
+    int slotIndex;
+    int scheme;
     fn_80137D10();
-    index = 0;
+    slotIndex = 0;
     do {
-        fn_8023DA64((void *)index, 1, 0);
-        choice = (int)fn_8023D6FC();
-        switch (choice) {
+        ApplyControlDefaults((void *)slotIndex, 1, 0);
+        scheme = (int)GetControlScheme();
+        switch (scheme) {
         case 0:
             fn_802E8664(1);
-            fn_8013358C(index + 8, (int)lbl_8055BBD0, lbl_8055BC68);
-            fn_8013358C(index + 8, (int)lbl_8055BC70, (void *)&lbl_8055BC08);
-            fn_8013358C(index + 8, (int)(base + 0x1B4), (void *)&lbl_8055BC08);
-            fn_8013358C(index + 8, (int)(base + 0x1CC), (void *)&lbl_8055BC08);
+            SetControlOption(slotIndex + 8, (int)lbl_8055BBD0, lbl_8055BC68);
+            SetControlOption(slotIndex + 8, (int)lbl_8055BC70, (void *)&lbl_8055BC08);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), (void *)&lbl_8055BC08);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), (void *)&lbl_8055BC08);
             break;
         case 2:
-            ((void (*)(void *, ...))fn_802E30C8)(base + 0x3C0);
+            ((void (*)(void *, ...))fn_802E30C8)(optionData + 0x3C0);
             fn_802E8664(1);
-            fn_8013358C(index + 8, (int)(base + 0x1E4), base + 0x400);
-            fn_8013358C(index + 8, (int)(base + 0x208), base + 0x40C);
-            fn_8013358C(index + 8, (int)(base + 0x1B4), base + 0x254);
-            fn_8013358C(index + 8, (int)(base + 0x1CC), base + 0x260);
-            fn_8013358C(index + 8, (int)lbl_8055BBD0, base + 0x278);
-            fn_8013358C(index + 8, (int)lbl_8055BBB8, base + 0x418);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1E4), optionData + 0x400);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x208), optionData + 0x40C);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), optionData + 0x254);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), optionData + 0x260);
+            SetControlOption(slotIndex + 8, (int)lbl_8055BBD0, optionData + 0x278);
+            SetControlOption(slotIndex + 8, (int)lbl_8055BBB8, optionData + 0x418);
             break;
         case 3:
-            ((void (*)(void *, ...))fn_802E30C8)(base + 0x424);
+            ((void (*)(void *, ...))fn_802E30C8)(optionData + 0x424);
             fn_802E8664(0);
-            fn_8013358C(index + 8, (int)lbl_8055BBB8, base + 0x468);
-            fn_8013358C(index + 8, (int)lbl_8055BBD0, base + 0x278);
-            fn_8013358C(index + 8, (int)lbl_8055BBC0, base + 0x29C);
-            fn_8013358C(index + 8, (int)(base + 0x184), lbl_8055BC78);
-            fn_8013358C(index + 8, (int)(base + 0x16C), lbl_8055BC80);
+            SetControlOption(slotIndex + 8, (int)lbl_8055BBB8, optionData + 0x468);
+            SetControlOption(slotIndex + 8, (int)lbl_8055BBD0, optionData + 0x278);
+            SetControlOption(slotIndex + 8, (int)lbl_8055BBC0, optionData + 0x29C);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x184), lbl_8055BC78);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x16C), lbl_8055BC80);
             break;
         case 1:
             fn_802E8664(0);
-            fn_8013358C(index + 8, (int)(base + 0x1E4), lbl_8055BC18);
-            fn_8013358C(index + 8, (int)(base + 0x208), base + 0x290);
-            fn_8013358C(index + 8, (int)(base + 0x184), lbl_8055BC78);
-            fn_8013358C(index + 8, (int)(base + 0x16C), lbl_8055BC80);
-            fn_8013358C(index + 8, (int)(base + 0x1B4), (void *)&lbl_8055BC08);
-            fn_8013358C(index + 8, (int)(base + 0x1CC), (void *)&lbl_8055BC08);
-            fn_8013358C(index + 8, (int)lbl_8055BBB8, base + 0x468);
-            fn_8013358C(index + 8, (int)lbl_8055BBD0, base + 0x278);
-            fn_8013358C(index + 8, (int)lbl_8055BBC0, base + 0x29C);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1E4), lbl_8055BC18);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x208), optionData + 0x290);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x184), lbl_8055BC78);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x16C), lbl_8055BC80);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), (void *)&lbl_8055BC08);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), (void *)&lbl_8055BC08);
+            SetControlOption(slotIndex + 8, (int)lbl_8055BBB8, optionData + 0x468);
+            SetControlOption(slotIndex + 8, (int)lbl_8055BBD0, optionData + 0x278);
+            SetControlOption(slotIndex + 8, (int)lbl_8055BBC0, optionData + 0x29C);
             break;
         default:
-            fn_802E317C(base + 0x474, (int)fn_8023D6FC());
+            fn_802E317C(optionData + 0x474, (int)GetControlScheme());
             break;
         }
-        index++;
-    } while (index < 4);
+        slotIndex++;
+    } while (slotIndex < 4);
+#undef SetControlOption
+#undef GetControlScheme
+#undef ApplyControlDefaults
+#undef sOptionData
 }
 
 #pragma scheduling on
