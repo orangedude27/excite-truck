@@ -113,7 +113,12 @@ done2:
     return 0;
 }
 void fn_80249720(void) {
-    lbl_8055BF34 = (void*)fn_80214D04();
+#define sSavedMenuIndex lbl_8055BF34
+#define GetMenuIndex    fn_80214D04
+    /* Save the active UI window's current menu index so it can be restored later (fn_80249744). */
+    sSavedMenuIndex = (void*)GetMenuIndex();
+#undef sSavedMenuIndex
+#undef GetMenuIndex
 }
 
 void fn_80249744(void) {
