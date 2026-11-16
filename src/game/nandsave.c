@@ -132,12 +132,17 @@ void fn_802E883C(void) {
 #undef nandSaveInit
 #undef nandSaveRefCount
 
+#define nandSaveRefCount lbl_8056002C
+#define nandSaveShutdown fn_802E870C
+/* Leaves the NAND-save subsystem: decrement the use count and shut it down when the last user exits (count reaches 0). */
 void fn_802E8874(void) {
-    lbl_8056002C -= 1;
-    if (lbl_8056002C == 0) {
-        fn_802E870C();
+    nandSaveRefCount -= 1;
+    if (nandSaveRefCount == 0) {
+        nandSaveShutdown();
     }
 }
+#undef nandSaveShutdown
+#undef nandSaveRefCount
 
 /* Dispatches a NAND-save request table entry by index, bracketing it with the save subsystem refcount. */
 int fn_802E888C(int requestIndex) {
