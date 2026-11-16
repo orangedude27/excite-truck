@@ -2512,11 +2512,17 @@ done:
 
 extern float lbl_80562144, lbl_80562170, lbl_80562194, lbl_8055A488;
 #pragma scheduling on
-int fn_8019703C(void *arg0, void *arg1) {
+/* Consider a sensed candidate for an AI driver's two best-target slots. A candidate
+   is eligible when the driver state value (+0x270) exceeds xLimit, |candidateY| is
+   within base*(1+coefficient), and driveFlags bit 0 is clear. Positive candidateY
+   competes for the "ahead" slot at +0xA0 (lowest score wins); negative for the
+   "behind" slot at +0x78 (highest score wins). The winner's 7-word record is copied
+   in, its valid flag set, y/z/id saved at +0xCC..+0xDC, and a per-sign count bumped. */
+int fn_8019703C(void *driver, void *candidate) {
     float xLimit;
-    float x;
-    float z;
-    float y;
+    float stateValue;
+    float candidateZ;
+    float candidateY;
     float coefficient;
     float base;
     float absoluteY;
@@ -2525,80 +2531,80 @@ int fn_8019703C(void *arg0, void *arg1) {
     unsigned int word6;
     unsigned int byte5;
     unsigned int word4, word3, word2, word1, word0;
-    unsigned int positionWord;
-    int update;
-    int xValid;
-    int yValid;
-    int flags;
+    unsigned int candidateId;
+    int recordUpdated;
+    int stateValid;
+    int candidateInRange;
+    int driveFlags;
 
-    x = *(float *)((char *)arg0 + 0x270);
-    update = 0;
+    stateValue = *(float *)((char *)driver + 0x270);
+    recordUpdated = 0;
     xLimit = lbl_80562170;
-    z = *(float *)((char *)arg1 + 8);
-    y = *(float *)((char *)arg1 + 4);
-    xValid = x > xLimit;
+    candidateZ = *(float *)((char *)candidate + 8);
+    candidateY = *(float *)((char *)candidate + 4);
+    stateValid = stateValue > xLimit;
     coefficient = lbl_80562194;
     base = lbl_8055A488;
-    absoluteY = (float)__fabs((double)y);
+    absoluteY = (float)__fabs((double)candidateY);
     threshold = base + coefficient * base;
-    yValid = absoluteY < threshold;
-    flags = *(unsigned int *)((char *)arg0 + 0x2D0);
+    candidateInRange = absoluteY < threshold;
+    driveFlags = *(unsigned int *)((char *)driver + 0x2D0);
 
-    if ((flags & 1) == 0 && xValid != 0 && yValid != 0) {
-        if (y > lbl_80562144) {
-            score = *(float *)((char *)arg0 + 0x278) + y;
-            if (score < *(float *)((char *)arg0 + 0xBC)) {
-                word0 = *(unsigned int *)((char *)arg1 + 0);
-                word1 = *(unsigned int *)((char *)arg1 + 4);
-                word2 = *(unsigned int *)((char *)arg1 + 8);
-                word3 = *(unsigned int *)((char *)arg1 + 0xC);
-                word4 = *(unsigned int *)((char *)arg1 + 0x10);
-                byte5 = *(unsigned char *)((char *)arg1 + 0x14);
-                word6 = *(unsigned int *)((char *)arg1 + 0x18);
-                *(float *)((char *)arg0 + 0xBC) = score;
-                *(unsigned int *)((char *)arg0 + 0xA0) = word0;
-                *(unsigned int *)((char *)arg0 + 0xA4) = word1;
-                *(unsigned int *)((char *)arg0 + 0xA8) = word2;
-                *(unsigned int *)((char *)arg0 + 0xAC) = word3;
-                *(unsigned int *)((char *)arg0 + 0xB0) = word4;
-                *(unsigned char *)((char *)arg0 + 0xB4) = byte5;
-                *(unsigned int *)((char *)arg0 + 0xB8) = word6;
-                *(unsigned char *)((char *)arg0 + 0x9C) = 1;
-                update = 1;
+    if ((driveFlags & 1) == 0 && stateValid != 0 && candidateInRange != 0) {
+        if (candidateY > lbl_80562144) {
+            score = *(float *)((char *)driver + 0x278) + candidateY;
+            if (score < *(float *)((char *)driver + 0xBC)) {
+                word0 = *(unsigned int *)((char *)candidate + 0);
+                word1 = *(unsigned int *)((char *)candidate + 4);
+                word2 = *(unsigned int *)((char *)candidate + 8);
+                word3 = *(unsigned int *)((char *)candidate + 0xC);
+                word4 = *(unsigned int *)((char *)candidate + 0x10);
+                byte5 = *(unsigned char *)((char *)candidate + 0x14);
+                word6 = *(unsigned int *)((char *)candidate + 0x18);
+                *(float *)((char *)driver + 0xBC) = score;
+                *(unsigned int *)((char *)driver + 0xA0) = word0;
+                *(unsigned int *)((char *)driver + 0xA4) = word1;
+                *(unsigned int *)((char *)driver + 0xA8) = word2;
+                *(unsigned int *)((char *)driver + 0xAC) = word3;
+                *(unsigned int *)((char *)driver + 0xB0) = word4;
+                *(unsigned char *)((char *)driver + 0xB4) = byte5;
+                *(unsigned int *)((char *)driver + 0xB8) = word6;
+                *(unsigned char *)((char *)driver + 0x9C) = 1;
+                recordUpdated = 1;
             }
         } else {
-            score = *(float *)((char *)arg0 + 0x278) + y;
-            if (score > *(float *)((char *)arg0 + 0x94)) {
-                word6 = *(unsigned int *)((char *)arg1 + 0);
-                byte5 = *(unsigned int *)((char *)arg1 + 4);
-                word4 = *(unsigned int *)((char *)arg1 + 8);
-                word3 = *(unsigned int *)((char *)arg1 + 0xC);
-                word2 = *(unsigned int *)((char *)arg1 + 0x10);
-                word1 = *(unsigned char *)((char *)arg1 + 0x14);
-                word0 = *(unsigned int *)((char *)arg1 + 0x18);
-                *(float *)((char *)arg0 + 0x94) = score;
-                *(unsigned int *)((char *)arg0 + 0x78) = word6;
-                *(unsigned int *)((char *)arg0 + 0x7C) = byte5;
-                *(unsigned int *)((char *)arg0 + 0x80) = word4;
-                *(unsigned int *)((char *)arg0 + 0x84) = word3;
-                *(unsigned int *)((char *)arg0 + 0x88) = word2;
-                *(unsigned char *)((char *)arg0 + 0x8C) = word1;
-                *(unsigned int *)((char *)arg0 + 0x90) = word0;
-                *(unsigned char *)((char *)arg0 + 0x74) = 1;
-                update = 1;
+            score = *(float *)((char *)driver + 0x278) + candidateY;
+            if (score > *(float *)((char *)driver + 0x94)) {
+                word6 = *(unsigned int *)((char *)candidate + 0);
+                byte5 = *(unsigned int *)((char *)candidate + 4);
+                word4 = *(unsigned int *)((char *)candidate + 8);
+                word3 = *(unsigned int *)((char *)candidate + 0xC);
+                word2 = *(unsigned int *)((char *)candidate + 0x10);
+                word1 = *(unsigned char *)((char *)candidate + 0x14);
+                word0 = *(unsigned int *)((char *)candidate + 0x18);
+                *(float *)((char *)driver + 0x94) = score;
+                *(unsigned int *)((char *)driver + 0x78) = word6;
+                *(unsigned int *)((char *)driver + 0x7C) = byte5;
+                *(unsigned int *)((char *)driver + 0x80) = word4;
+                *(unsigned int *)((char *)driver + 0x84) = word3;
+                *(unsigned int *)((char *)driver + 0x88) = word2;
+                *(unsigned char *)((char *)driver + 0x8C) = word1;
+                *(unsigned int *)((char *)driver + 0x90) = word0;
+                *(unsigned char *)((char *)driver + 0x74) = 1;
+                recordUpdated = 1;
             }
         }
     }
-    if (update) {
-        positionWord = *(unsigned int *)((char *)arg1 + 0x18);
-        *(float *)((char *)arg0 + 0xCC) = y;
-        *(float *)((char *)arg0 + 0xD8) = z;
-        *(unsigned int *)((char *)arg0 + 0xDC) = positionWord;
+    if (recordUpdated) {
+        candidateId = *(unsigned int *)((char *)candidate + 0x18);
+        *(float *)((char *)driver + 0xCC) = candidateY;
+        *(float *)((char *)driver + 0xD8) = candidateZ;
+        *(unsigned int *)((char *)driver + 0xDC) = candidateId;
     }
-    if (y > lbl_80562144)
-        ++*(int *)((char *)arg0 + 0xC0);
+    if (candidateY > lbl_80562144)
+        ++*(int *)((char *)driver + 0xC0);
     else
-        ++*(int *)((char *)arg0 + 0x98);
+        ++*(int *)((char *)driver + 0x98);
     return 0;
 }
 /* Advance interpolation factor at +0x25C and lerp the 2D point in/out toward (base+0x48/0x4C + base+0x58/0x5C * speed) when enabled (0x260 != 0, 0x268 != 1). */
