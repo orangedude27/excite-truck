@@ -24863,20 +24863,21 @@ done:
 }
 
 #pragma scheduling off
-extern "C" s32 fn_800A4B08(u8 *arg0, u8 *arg1, s32 count) {
+/* Compares up to count bytes of two strings; returns the difference of the first differing bytes, or 0 if equal within count. */
+extern "C" s32 fn_800A4B08(u8 *left, u8 *right, s32 count) {
     while (count != 0) {
-        u8 right;
-        u8 left = *arg0;
-        if (left == 0) goto differ;
-        right = *arg1;
-        if (right == 0) goto differ;
-        if (left == right) goto equal;
+        u8 rightByte;
+        u8 leftByte = *left;
+        if (leftByte == 0) goto differ;
+        rightByte = *right;
+        if (rightByte == 0) goto differ;
+        if (leftByte == rightByte) goto equal;
     differ:
-        right = *(volatile u8 *)arg1;
-        return left - right;
+        rightByte = *(volatile u8 *)right;
+        return leftByte - rightByte;
     equal:
-        arg0++;
-        arg1++;
+        left++;
+        right++;
         count--;
     }
     return 0;
