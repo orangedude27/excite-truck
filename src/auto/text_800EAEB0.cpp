@@ -2110,28 +2110,149 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void)
     return lbl_804127A8;
 }
 
+struct Allocator_Setup {
+    virtual void unused0();
+    virtual void *AllocTrack(void *);
+    virtual void FreeTrack(void *);
+};
+
+static inline void Stop_inlined(void *player, const char *file) {
+    if (*(u8 *)((u8 *)player + 0x15) != 0) {
+        u32 temp = OSDisableInterrupts();
+        s32 state;
+        if (*(u8 *)((u8 *)player + 0x17) != 0) {
+            if (player == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233, (const char *)lbl_80324030);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void *)lbl_80412A6C, (u8 *)player + 0x100);
+        }
+        if (*(u8 *)((u8 *)player + 0x15) != 0) {
+            state = (s32)player;
+            if (player != 0) state += 8;
+            void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+            UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)state);
+        }
+        OSRestoreInterrupts(temp);
+        u8 *entry = (u8 *)player;
+        state = 0;
+        temp = 0;
+        s32 valid;
+        void *seq;
+        do {
+            valid = 0;
+            if (state >= 0 && state < 16) valid = 1;
+            if (valid == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(file, 0x2FD, file + 0x14, state, 0, 16);
+            seq = state > 15 ? (void *)temp : *(void **)(entry + 0x9C);
+            if (seq != 0) {
+                Close__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
+                void *manager = *(void **)((u8 *)player + 0x98);
+                ((Allocator_Setup *)manager)->FreeTrack(*(void **)(entry + 0x9C));
+                *(void **)(entry + 0x9C) = (void *)temp;
+            }
+            ++state;
+            entry += 4;
+        } while (state < 16);
+        *(u8 *)((u8 *)player + 0x15) = 0;
+    }
+}
+
 #pragma push
 #pragma use_lmw_stmw off
-void nw4hbm::snd::detail::RemoteSpeakerManager::Setup() {
-    u8 *p;
-    s32 i;
-    if (((u8 *)this)[0] == 0) {
-        p = (u8 *)this + 0x38;
-        i = 0;
+#pragma dont_inline GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv
+extern "C" int Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqTrackAllocatorUliPQ46nw4hbm3snd6detail14NoteOnCallback(void *self, void *allocator, u32 mask, s32 param, void *callback) {
+    struct Allocator {
+        virtual void unused0();
+        virtual void *AllocTrack(void *);
+        virtual void FreeTrack(void *);
+    };
+    void *player = self;
+    const char *file = (const char *)lbl_80323B28;
+    u32 level = OSDisableInterrupts();
+    if (*(u8 *)((u8 *)player + 0x15) != 0) {
+        u32 temp = OSDisableInterrupts();
+        s32 state;
+        if (*(u8 *)((u8 *)player + 0x17) != 0) {
+            if (player == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233, (const char *)lbl_80324030);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void *)lbl_80412A6C, (u8 *)player + 0x100);
+        }
+        if (*(u8 *)((u8 *)player + 0x15) != 0) {
+            state = (s32)player;
+            if (player != 0) state += 8;
+            void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+            UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)state);
+        }
+        OSRestoreInterrupts(temp);
+        u8 *entry = (u8 *)player;
+        state = 0;
+        temp = 0;
+        s32 valid;
+        void *seq;
         do {
-            fn_800EE568(p);
-            i++;
-            p += 0xA0;
-        } while (i < 4);
-        OSCreateAlarm((void *)((u8 *)this + 8));
-        u64 time = OSGetTime();
-        u32 ticks = *(volatile u32 *)0x800000F8;
-        u32 q = (ticks >> 2) / 125000;
-        u32 period = q * 0x0065B9AB;
-        u32 interval = period / 8000;
-        OSSetPeriodicAlarm((void *)((u8 *)this + 8), q, (u32)(time >> 32), (u32)time, 0, interval, (void *)&fn_800EEBA8);
-        ((u8 *)this)[0] = 1;
+            valid = 0;
+            if (state >= 0 && state < 16) valid = 1;
+            if (valid == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(file, 0x2FD, file + 0x14, state, 0, 16);
+            seq = state > 15 ? (void *)temp : *(void **)(entry + 0x9C);
+            if (seq != 0) {
+                Close__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
+                void *manager = *(void **)((u8 *)player + 0x98);
+                ((Allocator *)manager)->FreeTrack(*(void **)(entry + 0x9C));
+                *(void **)(entry + 0x9C) = (void *)temp;
+            }
+            ++state;
+            entry += 4;
+        } while (state < 16);
+        *(u8 *)((u8 *)player + 0x15) = 0;
     }
+    InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail14NoteOnCallback(player, param, callback);
+    {
+        u32 bits = mask;
+        s32 ok = 1;
+        u8 *entry = (u8 *)player;
+        s32 idx = 0;
+        while (bits != 0) {
+            if (bits & 1) {
+                void *track = ((Allocator *)allocator)->AllocTrack(player);
+                if (track == 0) {
+                    ok = 0;
+                    break;
+                }
+                if (idx <= 15) {
+                    *(void **)(entry + 0x9C) = track;
+                    SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(track, idx);
+                }
+            }
+            bits >>= 1;
+            entry += 4;
+            idx++;
+        }
+        if (ok == 0) {
+            idx = 0;
+            while (mask != 0) {
+                if (mask & 1) {
+                    void *track = idx > 15 ? (void *)0 : *(void **)((u8 *)player + 0x9C);
+                    if (track != 0) ((Allocator *)allocator)->FreeTrack(track);
+                }
+                mask >>= 1;
+                player = (u8 *)player + 4;
+                idx++;
+            }
+            Warning__Q26nw4hbm2dbFPCciPCce(file, 0xC6, file + 0x54);
+            OSRestoreInterrupts(level);
+            return 1;
+        }
+    }
+    {
+        s32 reg = (s32)player;
+        if (player != 0) reg += 8;
+        void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+        RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)reg);
+    }
+    *(void **)((u8 *)player + 0x98) = allocator;
+    *(u8 *)((u8 *)player + 0x15) = 1;
+    OSRestoreInterrupts(level);
+    return 0;
 }
 #pragma pop
 
