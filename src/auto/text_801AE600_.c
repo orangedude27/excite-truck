@@ -585,39 +585,43 @@ extern void fn_80128670(void *);
 extern void fn_80128668();
 #pragma scheduling invalid_target
 void fn_801AF598(void) {
-    register unsigned int i;
+    /* Tear down the heap-backed end-of-race tables allocated by fn_801AEF28:
+       destroy the RecordMgr, free each of the 8 CarLapTables (their lap arrays
+       and the table structs), then the table array, and finally the
+       RaceResultTable and its records. */
+    register unsigned int slotIndex;
     register int **slot;
-    register int *entry;
-    register int **array;
-    int value = lbl_8055E628;
+    register int *lapTable;
+    register int **carLapTable;
+    int recordMgr = lbl_8055E628;
     int zero = 0;
     lbl_8055E635 = 0;
-    fn_801AFA5C(value);
-    array = (int **)lbl_8055E620;
+    fn_801AFA5C(recordMgr);
+    carLapTable = (int **)lbl_8055E620;
     lbl_8055E628 = zero;
-    if (array != 0) {
-        slot = array;
-        for (i = 0; i < 8U; i++, slot++) {
-            entry = *slot;
-            if (entry != 0) {
-                if (entry != 0) {
-                    fn_80128670((void *)*entry);
-                    *entry = zero;
-                    fn_80128668(entry);
+    if (carLapTable != 0) {
+        slot = carLapTable;
+        for (slotIndex = 0; slotIndex < 8U; slotIndex++, slot++) {
+            lapTable = *slot;
+            if (lapTable != 0) {
+                if (lapTable != 0) {
+                    fn_80128670((void *)*lapTable);
+                    *lapTable = zero;
+                    fn_80128668(lapTable);
                 }
                 *(volatile int **)slot = 0;
             }
         }
-        fn_80128668(array);
+        fn_80128668(carLapTable);
     }
     {
-        register int **last;
-        last = (int **)lbl_8055E624;
+        register int **raceResultTable;
+        raceResultTable = (int **)lbl_8055E624;
         lbl_8055E620 = 0;
-        if (last != 0) {
-            fn_80128670((void *)*last);
-            *last = 0;
-            fn_80128668(last);
+        if (raceResultTable != 0) {
+            fn_80128670((void *)*raceResultTable);
+            *raceResultTable = 0;
+            fn_80128668(raceResultTable);
         }
     }
     lbl_8055E624 = 0;
