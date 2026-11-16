@@ -19103,13 +19103,14 @@ extern "C" void fn_800CF3B4(void *spec, s32 mode, f32 first, f32 second, f32 thi
 }
 
 #pragma dont_inline fn_800CF3EC
-extern "C" void fn_800CF3EC(void *arg0) {
-    f32 val;
-    if (*(s32 *)((u8 *)arg0 + 0x18) == 1)
-        val = *(f32 *)((u8 *)arg0 + 4);
+extern "C" void fn_800CF3EC(void *spec) {
+    f32 current;
+    /* Refresh the spec's current value (+0xC) from its first/second values according to its mode (+0x18). */
+    if (*(s32 *)((u8 *)spec + 0x18) == 1)
+        current = *(f32 *)((u8 *)spec + 4);
     else
-        val = *(f32 *)((u8 *)arg0 + 8);
-    *(f32 *)((u8 *)arg0 + 0xC) = val;
+        current = *(f32 *)((u8 *)spec + 8);
+    *(f32 *)((u8 *)spec + 0xC) = current;
 }
 
 void homebutton::FrameController::calc() {
