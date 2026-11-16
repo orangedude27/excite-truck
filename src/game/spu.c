@@ -354,7 +354,6 @@ void fn_802E5478(void) {
     extern unsigned char lbl_804FC690[];
     extern char lbl_8055D1E0;
     extern char lbl_8055FFA5;
-    extern float lbl_804FC680[4];
     extern void fn_801282F4(void);
     extern void fn_801282EC(int);
     extern int fn_801284E8(char *, int);
@@ -372,12 +371,13 @@ void fn_802E5478(void) {
     extern long long OSGetTime(void);
     extern void OSSetPeriodicAlarm(void *, long long, long long, void *);
     extern void fn_802E5438(void);
+    register float *vec;
+    float one;
     char *msg = lbl_8034D210;
     int off, i;
     int voice, tmp;
     char *buf;
     long long now;
-    float one;
 
     ((void (*)(char *, ...))fn_802E30C8)(msg + 0x1BC);
     lbl_8055FF8C = (void *)1;
@@ -422,10 +422,11 @@ void fn_802E5478(void) {
     now = OSGetTime();
     OSSetPeriodicAlarm(lbl_804FC690, now, (unsigned int)(((*(unsigned int *)0x800000F8 >> 2) / 125000 * 0x65B9AB) / 8000), (void *)fn_802E52EC);
     one = lbl_80565128;
-    lbl_804FC680[0] = one;
-    lbl_804FC680[1] = one;
-    lbl_804FC680[2] = one;
-    lbl_804FC680[3] = one;
+    vec = (float *)lbl_804FC680;
+    vec[0] = one;
+    vec[1] = one;
+    vec[2] = one;
+    vec[3] = one;
     fn_802E2E0C((void *)fn_802E540C, &lbl_8055D1E0);
     lbl_8055FFA5 = 1;
     ((void (*)(void))fn_802E5438)();
