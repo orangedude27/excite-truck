@@ -14447,17 +14447,18 @@ void btu_hcif_hdl_command_status(s32 opcode, UINT8 status, UINT8 *p_cmd) {
 }
 
 void btu_hcif_command_status_evt(UINT8 *p, UINT16 len) {
-    UINT8 status;
+    register void *buf;
+    register UINT8 status;
     UINT16 opcode;
-    UINT16 queued_opcode;
-    void *buf;
     UINT8 *cmd;
     UINT8 *cmd_base;
+    UINT16 queued_opcode;
+
     status = p[0];
     *(UINT16 *)(lbl_803C0A50 + 0x80) = p[1];
-    opcode = (UINT16)(p[2] + (p[3] << 8));
     buf = 0;
     cmd = 0;
+    opcode = (UINT16)(p[2] + (p[3] << 8));
     if (opcode != 0xC03 && opcode != 0xC35 && opcode != 0) {
         buf = GKI_dequeue((BUFFER_Q *)(lbl_803C0A50 + 0x70));
         if (buf != 0) {
@@ -16651,10 +16652,11 @@ void hidh_search_callback(UINT16 sdp_result) {
                                                        lbl_803C3C38 + 0x38c);
 }
 
+/* Initialize the HID host control block to its default state. */
 void fn_800869CC(void) {
-    u8 *p = lbl_803C3C38;
-    memset(p, 0, 0x404);
-    p[0x401] = 0;
+    u8 *cb = lbl_803C3C38;
+    memset(cb, 0, 0x404);
+    cb[0x401] = 0;
 }
 
 extern u8 lbl_803C3C38[];
