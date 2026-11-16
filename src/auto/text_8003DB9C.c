@@ -3065,7 +3065,25 @@ void GXEnableTexOffsets(s32 coordId, s32 lineOfs, s32 pointOfs) {
 
 void GXSetCullMode(unsigned int mode) { unsigned int field; union { unsigned int reg; struct { unsigned int pad : 16; unsigned int cull : 2; unsigned int rest : 14; } fields; } data; field = ((mode << 1) & 2); field |= (mode >> 1) & 1; data.reg = __GXData[0x254 / 4]; data.fields.cull = field; __GXData[0x254 / 4] = data.reg; __GXData[0x5FC / 4] |= 4; }
 
-void GXSetCoPlanar(s32 enable) { union { unsigned int reg; struct { unsigned int pad0 : 12; unsigned int coplanar : 1; unsigned int pad1 : 19; } fields; } u; u.reg = __GXData[0x254 / 4]; u.fields.coplanar = enable; __GXData[0x254 / 4] = u.reg; *(volatile unsigned char *)0xCC008000 = 0x61; *(volatile unsigned int *)0xCC008000 = 0xFE080000; *(volatile unsigned char *)0xCC008000 = 0x61; *(volatile unsigned int *)0xCC008000 = __GXData[0x254 / 4]; }
+/* Set the coplanar clipping mode: update bit 12 of the shadowed CP control register,
+   then write the mask/value pair for the coplanar register (0x61) to the graphics FIFO. */
+void GXSetCoPlanar(s32 enable) {
+    union {
+        unsigned int value;
+        struct {
+            unsigned int pad0 : 12;
+            unsigned int coplanar : 1;
+            unsigned int pad1 : 19;
+        } bits;
+    } reg;
+    reg.value = __GXData[0x254 / 4];
+    reg.bits.coplanar = enable;
+    __GXData[0x254 / 4] = reg.value;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = 0xFE080000;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = __GXData[0x254 / 4];
+}
 
 /* GXDrawCylinder(from, to, insetX, insetY)
  *
