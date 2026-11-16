@@ -3832,14 +3832,18 @@ extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTrans
     if (obj != 0)
         obj->setEnable(anim, enable);
     if (recursive) {
-        void *node = *(void **)((u8 *)self + 0x14);
-        void *end = (u8 *)self + 0x14;
+        PaneObj* pane = (PaneObj*)self;
+        struct { PaneLinkNode* node; } cursor;
+        cursor.node = pane->mChildList.next;
+        PaneLinkNode*& node = cursor.node;
+        struct { PaneLinkNode* end; } sentinel;
+        sentinel.end = &pane->mChildList;
+        PaneLinkNode*& end = sentinel.end;
         while (node != end) {
-            if (node == 0)
+            if (!node)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            AnimEnableDispatch *item = (AnimEnableDispatch *)((u8 *)node - 4);
-            item->setRecursive(anim, enable, recursive);
-            node = *(void **)node;
+            ((AnimEnableDispatch*)((char*)node - 4))->setRecursive(anim, enable, recursive);
+            node = node->next;
         }
     }
 }
