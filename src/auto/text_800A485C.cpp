@@ -8720,12 +8720,11 @@ extern "C" void *fn_800B224C(void *fileObj, void *info) {
     return 0;
 }
 
+#pragma opt_pointer_aliasing off
 extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     union Tok { s32 w[4]; f64 d[2]; };
     Tok cur;
     Tok prev;
-    Tok *psrc;
-    Tok *pdst;
     s32 var;
     s32 userData;
     s32 r;
@@ -8768,16 +8767,12 @@ extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     ((s32 *)arg1)[0] = ((s32 *)arg0)[0];
     ((s32 *)arg1)[1] = var;
     if (arg2 != 0) {
-        psrc = &prev;
-        pdst = (Tok *)arg2;
-        pdst->w[0] = psrc->w[0];
-        pdst->w[1] = psrc->w[1];
-        pdst->w[2] = psrc->w[2];
-        pdst->w[3] = psrc->w[3];
+        s32 i;
+        for (i = 0; i < 4; i++) ((s32 *)arg2)[i] = prev.w[i];
     }
     return 0;
 }
-
+#pragma opt_pointer_aliasing on
 extern "C" u8 lbl_802EEEE0[];
 static inline u32 Fn800B25CCWide2(u16 *w) {
     u32 r;
@@ -11265,32 +11260,35 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32*);
 extern "C" s32 fn_800A4BF4(s32, u16*, s16*);
 extern "C" s32 fn_800B72E4(void) { return 0; }
 
-extern "C" s32 VFiPFAPI_ParseOpenModeString(char *arg0) {
-    s32 mode;
+extern "C" s32 VFiPFAPI_ParseOpenModeString(char *modeString) {
+    s32 flags;
     s32 index;
-    signed char first;
-    signed char next;
-    signed char tail;
-    if (arg0 == 0) return 10;
-    first = arg0[0];
+    signed char firstChar;
+    signed char nextChar;
+    signed char tailChar;
+    /* Maps a C-style open-mode string ("r"/"w"/"a", optional "b" and "+") to the
+     * file API's access flags: 1 write, 2 read, 4 append, 8 read/write; 0 for a
+     * malformed string and 10 for a null one. */
+    if (modeString == 0) return 10;
+    firstChar = modeString[0];
     index = 1;
-    switch (first) {
-    case 'r': mode = 2; break;
-    case 'w': mode = 1; break;
-    case 'a': mode = 4; break;
+    switch (firstChar) {
+    case 'r': flags = 2; break;
+    case 'w': flags = 1; break;
+    case 'a': flags = 4; break;
     default: return 0;
     }
-    if (arg0[1] == 'b') index = 2;
-    next = arg0[index++];
-    switch (next) {
-    case 0: return mode;
+    if (modeString[1] == 'b') index = 2;
+    nextChar = modeString[index++];
+    switch (nextChar) {
+    case 0: return flags;
     case 't': goto zero;
     default: goto zero;
     zero: return 0;
     case '+':
-        tail = arg0[index];
-        switch (tail) {
-        case 0: return mode | 8;
+        tailChar = modeString[index];
+        switch (tailChar) {
+        case 0: return flags | 8;
         default: return 0;
         }
     }
@@ -17863,14 +17861,14 @@ void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
   struct W17 { s32 v; } w17;
   s32 &var_r16 = w16.v;
   s32 &var_r17 = w17.v;
-  s32 var_r29;
-  s32 var_r28;
-  s32 var_r27;
-  s32 var_r26;
-  s32 var_r25;
-  s32 var_r24;
-  s8 inner;
-  s32 var_r22;
+  register s32 var_r29;
+  register s32 var_r28;
+  register s32 var_r27;
+  register s32 var_r26;
+  register s32 var_r25;
+  register s32 var_r24;
+  register s8 inner;
+  register s32 var_r22;
   void *new_var;
   var_r29 = 0x480;
   if ((*((s32 *) (((u8 *) arg0) + 4))) == 1)
