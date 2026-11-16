@@ -1013,12 +1013,12 @@ float fn_801DDC8C(float worldX, float worldZ)
   float layerHeight;
   float height;
   char *layer;
-  if (ground[4] == 0)
+  if (((GroundDesc *)ground)->tiled == 0)
   {
     return lbl_80562B84;
   }
-  gridX = *((float *) (((char *) ground) + 8)) * (worldX + *((float *) (((char *) ground) + 0)));
-  gridZ = *((float *) (((char *) ground) + 12)) * (worldZ + *((float *) (((char *) ground) + 4)));
+  gridX = ((GroundDesc *)ground)->scaleX * (worldX + ((GroundDesc *)ground)->offsetX);
+  gridZ = ((GroundDesc *)ground)->scaleZ * (worldZ + ((GroundDesc *)ground)->offsetZ);
   roundedX = (gridX < lbl_80562B84) ? (gridX - lbl_80562B64) : (lbl_80562B64 + gridX);
   cellX = (int) roundedX;
   roundedZ = (gridZ < lbl_80562B84) ? (gridZ - lbl_80562B64) : (lbl_80562B64 + gridZ);
@@ -1054,7 +1054,7 @@ float fn_801DDC8C(float worldX, float worldZ)
     }
     else
     {
-      node = ((char *) (*((int *) (((char *) ground) + 0x18)))) + (tileId * 0x894);
+      node = (char *) ((GroundDesc *)ground)->nodes + (tileId * 0x894);
     }
   }
   if (node == 0)
@@ -1065,7 +1065,7 @@ float fn_801DDC8C(float worldX, float worldZ)
   height = lbl_80562B84;
   if (firstLayer >= 0)
   {
-    layer = *(char **)((char *)ground + 0x20) + firstLayer * 0x810;
+    layer = (char *) ((GroundDesc *)ground)->layers + firstLayer * 0x810;
  do { do { weightIndex = *((int *) (layer + 0x808)); sample = ((GroundLayer *)layer)->samples[cellInTileX][cellInTileZ]; nextLayer = *((int *) (layer + 0x80C)); layerHeight = (*((float *) (layer + 0))) + ((*((float *) (layer + 4))) * ((float) sample)); height += layerHeight * lbl_804425DC[weightIndex]; if (nextLayer < 0) { break; } layer = ((char *) (*((int *) (((char *) ground) + 0x20)))) + (nextLayer * 0x810); } while (1); return height; } while (0);
   }
   else
