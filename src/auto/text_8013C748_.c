@@ -212,7 +212,9 @@ int fn_8013C9A4(void) {
 typedef int *(*CarClassEntryLookup)(void);
 
 int fn_8013C9C8(void) {
-    return *(int *)((int *(*)())fn_8013C800)();
+    /* Return the first field of the car-class registry entry returned by fn_8013C800. */
+    CarClassEntryLookup getEntry = (CarClassEntryLookup)fn_8013C800;
+    return *getEntry();
 }
 
 void *fn_8013C770();
