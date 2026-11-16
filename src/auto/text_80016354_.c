@@ -218,12 +218,17 @@ void fn_800167FC(void *arg0) {
     lbl_8055D554 = arg0;
 }
 
-int fn_80016804(int arg0, int arg1) {
-    if (arg1 < (int)lbl_8055D554 &&
-        arg0 == *(int *)(lbl_803577F0 + arg1 * 0x5C + 4)) {
+int fn_80016804(int id, int index) {
+#define RecordCount lbl_8055D554
+#define PrimaryRecords lbl_803577F0
+    /* Return 1 if the primary-table record at index has id, else 0. */
+    if (index < (int)RecordCount &&
+        id == *(int *)(PrimaryRecords + index * 0x5C + 4)) {
         return 1;
     }
     return 0;
+#undef RecordCount
+#undef PrimaryRecords
 }
 
 extern unsigned char lbl_803577F0[];
