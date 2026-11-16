@@ -162,6 +162,7 @@ extern "C" char lbl_80339F7C[];
 extern "C" char lbl_80339FA0[];
 #pragma cplusplus on
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
     u8 *var_r31;
     u8 *var_r30;
