@@ -126,6 +126,9 @@ void fn_80007F04(void) {
 }
 #pragma dont_inline reset
 
+/* Bootstrap init for the race-event subsystem (paired with fn_80007F68's teardown):
+ * parse the "excite_beta_race" config into the event table, reset the per-controller
+ * state, then load/set up event resource 0x12F. */
 void fn_80007F40(void) {
     fn_80007DA0();
     fn_80279464();
