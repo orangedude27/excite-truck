@@ -133,21 +133,24 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
     return channel;
 }
 
-extern "C" int __dt__Q46nw4hbm3snd6detail14ChannelManagerFv(int arg0, int arg1) {
-    if (arg0 != 0) {
-        if (arg0 != 0) {
-            if (arg0 + 0xC != 0) {
-                __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)(arg0 + 12), 0);
+// nw4hbm::snd::detail::ChannelManager::~ChannelManager(): destroy the `active`
+// and `idle` LinkListImpl members (at +0xC and +0x0), then free the manager
+// itself with the sound allocator when deleteFlag > 0.
+extern "C" int __dt__Q46nw4hbm3snd6detail14ChannelManagerFv(int manager, int deleteFlag) {
+    if (manager != 0) {
+        if (manager != 0) {
+            if (manager + 0xC != 0) {
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)(manager + 12), 0);
             }
-            if (arg0 != 0) {
-                __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)arg0, 0);
+            if (manager != 0) {
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)manager, 0);
             }
         }
-        if (arg1 > 0) {
-            fn_80128668((void *)arg0);
+        if (deleteFlag > 0) {
+            fn_80128668((void *)manager);
         }
     }
-    return arg0;
+    return manager;
 }
 
 extern "C" void __register_global_object(void*, void*, void*, void*, void*, void*);
