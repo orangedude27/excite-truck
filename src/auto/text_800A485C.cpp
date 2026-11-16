@@ -7850,7 +7850,8 @@ extern "C" void *fn_800B0F1C(void *volumeObject, void *entryObject, s32 unused) 
 
 extern "C" s32 VFiPFPATH_parseShortName(void *, void *);
 
-extern "C" s32 fn_800B51FC(void *, s32);
+typedef void fn_800B51FC_arg_t;
+extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *, s32);
 
 /* A file's entry as the file code holds it (0x240 bytes, VFiPFEntryCopy240
  * copies one).  The FAT directory entry it stands for starts at +0x20E:
@@ -10097,20 +10098,20 @@ extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
 }
 #pragma pop
 extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
+    s8 *p = (s8 *)arg0 + 7;
     u32 digits = 7;
     u32 divisor = 10;
     u32 place = 1;
-    ((u8 *)arg0) += 7;
     while (digits > 1 && arg1 != 0) {
         u32 rem = (u32)arg1 % divisor;
         if (rem != 0) {
             arg1 -= rem;
             rem /= place;
-            *(u8 *)arg0 += (s8)rem;
+            *p += (s8)rem;
         }
         divisor *= 10;
         digits--;
-        ((u8 *)arg0)--;
+        p--;
         place *= 10;
     }
     return 0;
