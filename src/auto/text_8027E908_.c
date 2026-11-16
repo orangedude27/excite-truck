@@ -1243,9 +1243,11 @@ extern "C" int fn_802808D0(void) {
     index = 0;
     base = lbl_804B3048.items;
     p = base;
-    for (; index < count; index++, p++) {
+    while (index < count) {
         if (*p == (void *)lbl_8055F688)
             goto found_item;
+        index++;
+        p++;
     }
     index = -1;
 found_item:
@@ -1265,9 +1267,11 @@ found_item:
                 register count = lbl_804B3048.count;
                 index = 0;
                 p = lbl_804B3048.items;
-                for (; index < count; index++, p++) {
+                while (index < count) {
                     if (*p == (void *)lbl_8055F688)
                         goto found_item_2;
+                    index++;
+                    p++;
                 }
                 index = -1;
 found_item_2:
@@ -2278,9 +2282,12 @@ extern void *lbl_8055F698;
 extern int lbl_8055F69C;
 extern unsigned char lbl_80348678[];
 extern unsigned int lbl_804B30D8[];
-int fn_802837D4(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_802837D4(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 static inline int fn_80283814_find(void **p, void *value, int count) {
