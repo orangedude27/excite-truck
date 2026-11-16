@@ -259,8 +259,12 @@ extern void fn_802E30C8(const char *, ...);
 extern void fn_80235380(void *);
 #pragma scheduling invalid_target
 void fn_8023509C(void) {
-    if (lbl_8055F084 != 0)
+    /* Abort with "gArt started twice" if the art-resource tracking list is
+     * already non-empty, i.e. gArt was initialized more than once. */
+    #define ART_TRACKER lbl_8055F084
+    if (ART_TRACKER != 0)
         fn_802E317C(lbl_803406FC);
+    #undef ART_TRACKER
 }
 #pragma scheduling on
 void fn_802350BC(void) {
