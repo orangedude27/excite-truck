@@ -2538,15 +2538,11 @@ void fn_801D77EC(void *list, unsigned int item) {
 
 #pragma cplusplus on
 extern "C" char lbl_803385D0[];
-struct D7874_ObjA { virtual void *v0(); };
-struct D7874_ObjB {
-    virtual void v0(); virtual void v1(); virtual void v2();
-    virtual void v3(); virtual void v4(); virtual void v5();
-    virtual int v6(char *, int);
-};
 #pragma cplusplus on
 extern "C" void fn_801D7874(void *arg0, void *arg1) {
-    struct ObjA { virtual void *v0(); };
+    struct ObjA {
+        virtual void *v0();
+    };
     struct ObjB {
         virtual void v0();
         virtual void v1();
@@ -2556,10 +2552,10 @@ extern "C" void fn_801D7874(void *arg0, void *arg1) {
         virtual void v5();
         virtual int v6(char *, int);
     };
-    struct ObjA *b = (struct ObjA *)arg1;
-    void *node = b->v0();
+
+    void *node = ((ObjA *)arg1)->v0();
     int match;
-    if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && ((struct ObjB *)node)->v6(lbl_803385D0, -1) == *(int *)((char *)arg0 + 0xc)) {
+    if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && ((ObjB *)node)->v6(lbl_803385D0, -1) == *(int *)((char *)arg0 + 0xc)) {
         match = 1;
     } else {
         match = 0;
@@ -2568,10 +2564,9 @@ extern "C" void fn_801D7874(void *arg0, void *arg1) {
         int count = *(int *)((char *)arg0 + 0x74);
         void **items = *(void ***)((char *)arg0 + 0x70);
         *(int *)((char *)arg0 + 0x74) = count + 1;
-        items[count] = b;
+        items[count] = arg1;
     }
 }
-#pragma cplusplus reset
 
 #pragma pop
 
