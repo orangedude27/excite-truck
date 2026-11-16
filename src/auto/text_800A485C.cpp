@@ -9541,41 +9541,35 @@ extern "C" int VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
         u16 zeroDot;
     } local;
 
-    u8 *table = (u8 *)lbl_803D2140;
-    u8 *out = (u8 *)arg0;
-    u16 *src = arg1;
+    struct { u8 *p; } cursor;
+    cursor.p = (u8 *)arg0;
+    u8 *&out = cursor.p;
 
-    if ((*(u32 *)(table + 0x60) & 2) == 2) {
+    if (((u32)lbl_803D2140[0x60 / 4] & 2U) == 2U) {
         u16 *scan;
         local.dot = 0x2E;
         local.zeroDot = 0;
         local.space = 0x20;
         local.zeroSpace = 0;
-        scan = src;
-        goto check;
-        do {
-            if (fn_800A4B9C_CALL(src, &local.dot, 1) == 0) {
+        for (scan = arg1; *scan != 0; scan++) {
+            if (fn_800A4B9C_CALL(arg1, &local.dot, 1) == 0) {
                 *out = 0x2E;
-            } else if (fn_800A4B9C_CALL(src, &local.space, 1) == 0) {
+            } else if (fn_800A4B9C_CALL(arg1, &local.space, 1) == 0) {
                 *out = 0x20;
             } else {
                 *out = 0x5F;
             }
             out++;
-            src++;
-            scan++;
-        check:;
-        } while (*scan != 0);
+            arg1++;
+        }
     } else {
         s32 offset = 0;
-        goto check2;
-        do {
-            s32 result = ((s32 (*)(u8 *, u8 *))(*(u32 **)(table + 0x4C)))((u8 *)src + (offset << 1), out);
+        while (arg1[offset] != 0) {
+            s32 result = ((s32 (*)(u8 *, u8 *))lbl_803D2140[0x4C / 4])((u8 *)arg1 + offset * 2, out);
             fn_800A4BF4(result, (u16 *)&local.outputLength, &local.inputLength);
             out += local.outputLength;
             offset += local.inputLength >> 1;
-        check2:;
-        } while (src[offset] != 0);
+        }
     }
 
     *out = 0;
