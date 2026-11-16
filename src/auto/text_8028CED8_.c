@@ -45,12 +45,19 @@ void fn_8028CED8(void) {
 #undef SkidSystem_UpdateCallback
 }
 
+/* RealName: SkidSystem_Shutdown (guess). When active, release the skid system's buffers and entries, then mark it inactive. */
 void fn_8028CF18(void) {
-    if (lbl_8055F714 != 0) {
-        fn_8028D4A0();
-        fn_8028D25C();
-        lbl_8055F714 = 0;
+#define sSkidSystemActive      lbl_8055F714
+#define SkidSystem_ReleaseBuffers fn_8028D4A0
+#define SkidSystem_ReleaseEntries fn_8028D25C
+    if (sSkidSystemActive != 0) {
+        SkidSystem_ReleaseBuffers();
+        SkidSystem_ReleaseEntries();
+        sSkidSystemActive = 0;
     }
+#undef SkidSystem_ReleaseEntries
+#undef SkidSystem_ReleaseBuffers
+#undef sSkidSystemActive
 }
 
 void fn_8028CF50(void) {
@@ -406,6 +413,7 @@ void fn_8028D7C0(int arg0) {
     register int *group;
     register int inner;
     register int *item;
+
     bias = lbl_805643F8;
     scale = lbl_805643F4;
     table = (int *)((char *)&lbl_804B3400 + arg0 * 0x1C);
@@ -419,9 +427,14 @@ void fn_8028D7C0(int arg0) {
             item = (int *)((char *)group[0] + offset);
             {
                 double raw;
+                float value;
                 *(unsigned int *)&raw = 0x43300000;
-                *((unsigned int *)&raw + 1) = *(unsigned short *)((char *)item + 0x24);
-                fn_801E53A8(item, (char *)item + 0xC, (char *)item + 0x18, *((unsigned char *)item + 0x26) != 0, (float)(raw - bias) * scale);
+                *((unsigned int *)&raw + 1) =
+                    *(unsigned short *)((char *)item + 0x24);
+                value = (float)(raw - bias);
+                fn_801E53A8(item, (char *)item + 0xC, (char *)item + 0x18,
+                            *((unsigned char *)item + 0x26) != 0,
+                            scale * value);
             }
             offset += 0x28;
             inner++;
