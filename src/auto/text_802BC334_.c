@@ -113,13 +113,15 @@ int fn_802BC4E0(void *__restrict node) {
 double fn_8002F234(float, float);
 #pragma push
 #pragma processor 750
-float fn_802BC540(void *arg0, float farg0) {
-    float x = *(float *)arg0;
-    float z = *(float *)((char *)arg0 + 8);
-    float xx = x * x;
-    float zz = z * z;
-    float s = xx + zz;
-    return farg0 * (float)fn_8002F234(s, z);
+// Scaled XZ-plane length of a Vec at `vec`: returns scale * sqrt(x*x + z*z),
+// using the IEEE sqrt helper (the second argument it is passed is ignored).
+float fn_802BC540(void *vec, float scale) {
+    float x = *(float *)vec;
+    float z = *(float *)((char *)vec + 8);
+    float xSquared = x * x;
+    float zSquared = z * z;
+    float lengthSquared = xSquared + zSquared;
+    return scale * (float)fn_8002F234(lengthSquared, z);
 }
 #pragma pop
 void PSVECCrossProduct(Vec *, Vec *, Vec *);
