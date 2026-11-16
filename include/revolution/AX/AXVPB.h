@@ -79,6 +79,13 @@ typedef struct _AXVPB {
 s32 __AXGetNumVoices(void);
 void __AXServiceVPB(AXVPB* vpb);
 void __AXDumpVPB(AXVPB* vpb);
+/* DSP cycles __AXSyncPBs charges a running voice on top of its sample-rate
+ * conversion: the mixer setup, plus the LPF and the biquad while they are on.
+ * Every group of five mixer-control bits the voice uses adds the matching
+ * __AXMixerCtrlCycles entry. */
+#define AX_SYNC_MIXER_CYCLES  0x8C
+#define AX_SYNC_LPF_CYCLES    0x22B
+#define AX_SYNC_BIQUAD_CYCLES 0x22B
 void __AXSyncPBs(u32 baseCycles);
 AXPB* __AXGetPBs(void);
 void __AXSetPBDefault(AXVPB* vpb);
