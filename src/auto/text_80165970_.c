@@ -1206,7 +1206,14 @@ unsigned char fn_80167544(int index) {
 #undef gSystemData
 }
 
-unsigned char fn_80167594(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x5E)); }
+/* Returns the byte at offset 0x5E of the indexed 0x88-byte entry, or 0 if unavailable. */
+unsigned char fn_80167594(int index) {
+    void *systemData;
+    if (!((int (*)(void))fn_801667F0)())
+        return 0;
+    systemData = *(void **)&lbl_8055E32C;
+    return *((unsigned char *)((char *)*(void **)systemData + index * 0x88 + 0x5E));
+}
 
 /* RealName: Unknown_GetByte5F
  * If the global state is valid, returns the byte at offset +0x5F of the
