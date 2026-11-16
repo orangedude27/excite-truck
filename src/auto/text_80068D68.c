@@ -26928,8 +26928,11 @@ tCONN_CB *sdpu_allocate_ccb(void) {
 }
 
 void fn_80099F58(void *arg0) {
-    fn_80070F90((u8 *)arg0 + 8);
-    *(u8 *)arg0 = 0;
+#define ccb ((tCONN_CB_BUILD_VIEW *)arg0)
+    /* Deactivate an SDP connection control block: stop its GKI timer and reset its state to idle. */
+    fn_80070F90(&ccb->timer_entry);
+    ccb->con_state = 0;
+#undef ccb
 }
 
 #pragma unroll off
