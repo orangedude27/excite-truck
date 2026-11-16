@@ -21936,8 +21936,9 @@ extern "C" s32 fn_800D53FC(void *arg0, void *arg1, const char *arg2) {
     return 1;
 }
 #pragma pop
-extern "C" void fn_800D54E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    fn_800D51F4(arg0 + 4, arg0 + 0x30, arg1, arg2, arg3, arg1);
+extern "C" void fn_800D54E0(s32 archive, s32 subDirFourCC, s32 fileName, s32 outSize) {
+    /* Load a file from this archive: pass its stored ARC handle (+4) and root directory (+0x30) to the resolver. */
+    fn_800D51F4(archive + 4, archive + 0x30, subDirFourCC, fileName, outSize, subDirFourCC);
 }
 
 extern "C" s32 fn_800D5500(void *obj, const char *name) {
