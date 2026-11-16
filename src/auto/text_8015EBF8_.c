@@ -1090,6 +1090,7 @@ s32 fn_801602BC(s32 *arg0, s32 arg1) {
 s32 fn_801602CC(void *arg0) {
     return ((s32 *)arg0)[1];
 }
+#pragma dont_inline reset
 
 extern float fn_80160588(void *, void *, void *);
 extern float fn_801605C8(void *, void *, void *);
