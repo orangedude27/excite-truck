@@ -1526,23 +1526,19 @@ void fn_801ACA48(void *arg0) {
 
 extern float lbl_80558DC4, lbl_8055E460, lbl_805624AC;
 struct Pair_801ACB30 { int a, b; };
-#pragma always_inline on
 static inline void transform_801ACB30(const float *m, const float *src, volatile float *dst) {
-    float x, y, z;
-    if (dst == src) {
-        x = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
-        y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+    if (src == dst) {
+        float x = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        float y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        float z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
         dst[0] = x; dst[1] = y; dst[2] = z;
     } else {
-        dst[0] = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
         dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
         dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     }
-    x = dst[0] + m[9]; y = dst[1] + m[10]; z = dst[2] + m[11];
-    dst[0] = x; dst[1] = y; dst[2] = z;
+    dst[0] += m[9]; dst[1] += m[10]; dst[2] += m[11];
 }
-#pragma always_inline reset
 void fn_801ACB30(void *arg0, int arg1) {
     char *p = (char *)arg0;
     float *out = (float *)(arg1 + *(int *)(p + 8));
