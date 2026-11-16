@@ -305,8 +305,8 @@ void *fn_8022F638(char *arg0, unsigned char arg1, unsigned char arg2, int arg3, 
         *((unsigned char *)node + 0x9d) = arg2;
         width = 0x2d0;
         e8 = lbl_805635E8;
-        height = 0x1e0;
         *((unsigned char *)node + 0x9c) = arg1;
+        height = 0x1e0;
         ec = lbl_805635EC;
         *(float *)((char *)node + 0xa0) = e8;
         f0 = lbl_805635F0;
@@ -587,11 +587,18 @@ void fn_8022FF90(void *quad) {
     *(float *)((char *)quad + 0x98) = zero;
 }
 
-void fn_8022FFE8(int arg0) {
+void fn_8022FFE8(int quad) {
+#define wanderScrollDrift fn_8022FB6C
+#define frameScale fn_80214D48
+#define applyScrollDrift fn_8022FD9C
+    /* Update one OverlayQuad for a frame: wander its scroll/drift values, then apply them with the global frame scale and re-orthonormalize its basis. */
     float scale;
-    fn_8022FB6C((void *)arg0);
-    scale = fn_80214D48();
-    fn_8022FD9C((void *)arg0, scale);
+    wanderScrollDrift((void *)quad);
+    scale = frameScale();
+    applyScrollDrift((void *)quad, scale);
+#undef wanderScrollDrift
+#undef frameScale
+#undef applyScrollDrift
 }
 
 int fn_80230020(void) {
