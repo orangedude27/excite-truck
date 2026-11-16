@@ -26,9 +26,10 @@ void fn_801292CC(int bankId) {
 #pragma scheduling on
 
 void fn_80129324(void) {
-    fn_802E30C8(lbl_8032A59C);
-    fn_802E75FC(lbl_8055DFA8);
-    lbl_8055DFA8 = 0;
+    /* Unload the loaded stream bank ("SpuQueueUnloadBank!"): log the unload, hand the bank handle to the stream-bank manager, then clear it. */
+    spuLogPrint(gUnloadBankLog);
+    spuUnloadBank(gLoadedBankId);
+    gLoadedBankId = 0;
 }
 
 void fn_80129360(int a, int b) { fn_802E765C(lbl_8055DFA8,a,b); }
