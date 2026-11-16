@@ -382,8 +382,9 @@ extern "C" void fn_801B85CC(void) {
 }
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_801B85E0(void *a, void *b, void *c, void *d) {
-    ((Dummy_801B8874 *)lbl_8055E744)->d34(a, b, c, d);
+extern "C" void fn_801B85E0(void *arg0, void *arg1, void *arg2, void *arg3) {
+    /* Forward four arguments to slot d34 of the current arena master object. */
+    ((Dummy_801B8874 *)lbl_8055E744)->d34(arg0, arg1, arg2, arg3);
 }
 #pragma scheduling on
 extern "C" void fn_801B8610(void *a, void *b) {
