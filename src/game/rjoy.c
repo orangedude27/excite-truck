@@ -680,12 +680,16 @@ void fn_802E85F4(int padIndex) {
 #pragma pop
 void fn_802E8664(void) {}
 
+/* lbl_80505978 is the table of 0x638-byte Wiimote/controller state records;
+ * byte 0 of a record is its connected flag. */
+#define gWiimoteStateTable lbl_80505978
 void *fn_802E8668(int index) {
     unsigned char offset = lbl_80505978[index * 0x638];
     if (offset != 0)
         return lbl_80505978 + index * 0x638 + 0xC8;
     return 0;
 }
+#undef gWiimoteStateTable
 
 int fn_802E8690(int index) {
     return *(unsigned int *)(lbl_80505978 + index * 0x638 + 0x124) == 1;
