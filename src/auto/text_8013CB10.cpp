@@ -4033,10 +4033,15 @@ extern "C" s32 fn_8014444C(void) { return 0; }
 extern "C" s32 fn_80144454(void) { return 0; }
 
 extern "C" s32 fn_8013D1F0(s32);
+static inline s32 fn_8014445C_calc(s32 v) {
+    return ((v >> 1) - (v & 0xA)) < 0;
+}
 #pragma dont_inline on
 extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
     s32 v = fn_8013D1F0(arg1) ^ 0xA;
-    return ((v >> 1) - (v & 0xA)) < 0;
+    s32 h = v >> 1;
+    s32 m = v & 0xA;
+    return (h - m) < 0;
 }
 #pragma dont_inline off
 extern "C" s32 fn_80144494(s32 arg0, s32 arg1) { return arg1; }
