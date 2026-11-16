@@ -10534,11 +10534,12 @@ void btm_pm_reset(void)
     }
 }
 
+/* Allocates/resets a per-ACL-link power manager control block in btm_cb. */
 void btm_pm_sm_alloc(u8 index) {
-    u8 *entry;
-    entry = lbl_803C0F78 + 0x4cc + index * 0x22;
-    memset(entry, 0, 0x22);
-    entry[0x20] = 0;
+    tBTM_PM_MCB_VIEW *p_cb;
+    p_cb = (tBTM_PM_MCB_VIEW *)(lbl_803C0F78 + 0x4cc + index * 0x22);
+    memset(p_cb, 0, 0x22);
+    p_cb->state = 0;
 }
 
 extern u8 lbl_802EEBE8[];
