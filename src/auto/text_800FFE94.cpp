@@ -392,9 +392,10 @@ extern "C" void fn_80100908(void* object, float value) {
     OSRestoreInterrupts(level);
 }
 
-extern "C" void fn_80100948(void* arg0, float arg1) {
+extern "C" void fn_80100948(void* object, float value) {
+    /* Set the SeqPlayer float parameter at offset 0x2C with interrupts disabled. */
     OSDisableInterrupts();
-    *(float*)((char*)arg0 + 0x2C) = arg1;
+    *(float*)((char*)object + 0x2C) = value;
     ((void (*)(void))OSRestoreInterrupts)();
 }
 
