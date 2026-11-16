@@ -1348,6 +1348,7 @@ extern "C" void fn_80162178(void *arg0, s32 arg1) {
     }
 }
 #pragma cplusplus off
+/* Shows popup 8 when the DSP capability flag read by fn_801C5B60 is clear. */
 void fn_80162214(void) {
     if (fn_801C5B60() == 0) {
         fn_801DF074(8, 0);
