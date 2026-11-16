@@ -180,7 +180,10 @@ void fn_80270B74(void) {
 #pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
-void fn_80270C04(void *arg0, int arg1) {
+void fn_80270C04(void *context, int options) {
+    /* Dump the debug record list: print a header, then for each of lbl_8055F550 0x60-byte records
+       at lbl_8049EDC8 store its pointer into a 0x1C-byte slot of the table at lbl_8049F9D8,
+       optionally printing each record's detail via fn_80272738 when bit 8 of options is set. */
     extern char lbl_80346B00[];
     extern char lbl_8049EDC8[];
     extern char lbl_8049F9D8[];
@@ -188,38 +191,38 @@ void fn_80270C04(void *arg0, int arg1) {
     extern unsigned char lbl_8055F564;
     extern void fn_80272738(void *, void *);
     register char *table;
-    register char *name = lbl_80346B00;
+    register char *strings = lbl_80346B00;
     register char *record;
-    register unsigned char flag;
-    int count;
+    register unsigned char printDetails;
+    int recordCount;
 
     fn_80270B74();
-    count = lbl_8055F550;
-    if (count == 0)
+    recordCount = lbl_8055F550;
+    if (recordCount == 0)
         return;
-    flag = (arg1 >> 8) & 1;
-    lbl_8055F564 = flag;
-    DBPrintf_80270B00(name + 0x1E0, count);
+    printDetails = (options >> 8) & 1;
+    lbl_8055F564 = printDetails;
+    DBPrintf_80270B00(strings + 0x1E0, recordCount);
     record = lbl_8049EDC8;
     table = lbl_8049F9D8;
-    arg1 = 0;
-    while (arg1 < lbl_8055F550) {
+    options = 0;
+    while (options < lbl_8055F550) {
         char *slot;
-        DBPrintf_80270B00(name + 0x1F8, arg1);
-        DBPrintf_80270B00(name + 0x208);
+        DBPrintf_80270B00(strings + 0x1F8, options);
+        DBPrintf_80270B00(strings + 0x208);
         *(char **)(table + lbl_8055F554 * 0x1C) = record;
         slot = table + lbl_8055F554 * 0x1C;
-        if (flag != 0)
-            fn_80272738(slot, arg0);
+        if (printDetails != 0)
+            fn_80272738(slot, context);
         record += 0x60;
-        arg1++;
+        options++;
         lbl_8055F554++;
     }
     if (lbl_8055F554 == 0) {
-        DBPrintf_80270B00(name + 0x224);
+        DBPrintf_80270B00(strings + 0x224);
         *(int *)lbl_8049F9D8 = (int)lbl_8049EDC8;
-        if (flag != 0)
-            fn_80272738(lbl_8049F9D8, arg0);
+        if (printDetails != 0)
+            fn_80272738(lbl_8049F9D8, context);
         lbl_8055F554 = 1;
     }
 }
@@ -638,9 +641,10 @@ f32 fn_802715F0(void *arg0) {
     f32 c;
     f32 a;
     a = *(f32 *)((u8 *)arg0 + 0x18);
-    b = lbl_80563F4C;
     c = lbl_8055F544;
-    c = (c < b * a) ? b * a : c;
+    b = lbl_80563F4C;
+    b *= a;
+    c = (c < b) ? b : c;
     c = (c > lbl_8055F540) ? c : lbl_8055F540;
     return c;
 }
