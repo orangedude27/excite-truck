@@ -476,14 +476,14 @@ extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg
 extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
     float values[3];
     int count;
-    int i;
     int val;
+    struct { int i; } counter;
     void *slot = (char *)arg0 + 0x2724;
     void *candidate = 0;
     void *other = 0;
     void *record = arg0;
 
-    for (count = 4, i = 0; count > 0; count--, i++) {
+    for (count = 4, counter.i = 0; count > 0; count--, counter.i++) {
         val = *(int *)((char *)record + 0x2744);
         if (val != 0 && (unsigned int)val != key)
             other = slot;
@@ -649,7 +649,8 @@ extern "C" void fn_801A5ED8(void *arg0) {
 #pragma cplusplus off
   
 #pragma cplusplus on
-extern "C" int fn_801A5F44(void *arg0, int arg1) {
+extern "C" int fn_801A5F44(void *owner, int index) {
+    /* Resolves a 0x44-biased index through the subobject held at +0x270C and returns the result, also biased by 0x44. */
     class VTable {
     public:
         virtual void f0();
@@ -658,8 +659,8 @@ extern "C" int fn_801A5F44(void *arg0, int arg1) {
         virtual void f3();
         virtual void *f4(int);
     };
-    VTable *obj = (VTable *)*(void **)((char *)arg0 + 0x270C);
-    return (int)((char *)obj->f4(arg1 + 0x44) + 0x44);
+    VTable *obj = (VTable *)*(void **)((char *)owner + 0x270C);
+    return (int)((char *)obj->f4(index + 0x44) + 0x44);
 }
 #pragma cplusplus on
 #pragma use_lmw_stmw off
