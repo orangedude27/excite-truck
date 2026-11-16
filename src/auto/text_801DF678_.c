@@ -193,16 +193,17 @@ extern float fn_802C9A50(void);
 extern void fn_80148100(void *);
 #pragma push
 #pragma processor 750
-void fn_801DFFB4(void) {
+#pragma cplusplus on
+extern "C" void fn_801DFFB4(void) {
     register int index;
     register float f31;
     register float f30;
     float x;
-    float one;
-    float ratio;
     float t;
+    float ratio;
+    float one;
+    register void *object;
     void *manager;
-    void *object;
     void *(*fn)(void *, const char *);
 
     manager = lbl_8055EA04;
@@ -217,14 +218,13 @@ void fn_801DFFB4(void) {
 
         if (!((float)__fabs((double)f30) <= lbl_80558DC4)) {
             object = *(void **)((char *)manager + 0xE4);
-            fn = (void *(*)(void *, const char *))(*(void ***)object)[5];
-            object = fn(object, lbl_80339738);
+            object = ((MenuResource_801DFFB4 *)object)->find(lbl_80339738);
             t = f31 * lbl_80562C30;
             one = lbl_80562C20;
             ratio = (f30 - t) / (lbl_80562C4C - t);
-            ratio = (ratio < one) ? ratio : one;
-            ratio = (ratio > lbl_80562C1C) ? ratio : lbl_80562C1C;
-            *(int *)((char *)object + 0x18) = ((int)(ratio * lbl_80562C28 + lbl_80562C1C) << 24) | 0xFFFFFF;
+            one = (one < ratio) ? one : ratio;
+            one = (one > lbl_80562C1C) ? one : lbl_80562C1C;
+            *(int *)((char *)object + 0x18) = ((int)(one * lbl_80562C28 + lbl_80562C1C) << 24) | 0xFFFFFF;
             x = fn_802C9A50();
             *(float *)((char *)object + 0x10) = (float)lbl_8055CFF0 / x;
             fn_80148100(object);
