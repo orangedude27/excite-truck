@@ -222,8 +222,9 @@ f32 fn_801C34F4(f32 arg0) {
     return (lbl_80562988 * arg0) / lbl_8056298C;
 }
 
-s32 fn_801C3508(s32 arg0, s32 arg1) {
-    return (arg0 & (1 << arg1)) != 0;
+/* Return nonzero when `player` is set in the player bitmask `mask`. */
+s32 fn_801C3508(s32 mask, s32 player) {
+    return (mask & (1 << player)) != 0;
 }
 
 #pragma dont_inline on
