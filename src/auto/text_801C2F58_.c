@@ -1456,17 +1456,21 @@ void fn_801C7698(void) {
         offset = index * 0x30C;
         if (value + *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) < lbl_80562970) {
             sprintf(lbl_80437FC0, lbl_80336F0C);
+            goto skip;
         } else {
-            do {
-                *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) =
-                    fn_801C3450(value + *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset));
-                index++;
-                offset += 0x30C;
-            } while (index < lbl_8055E7F0);
-            qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
-                  (int (*)(const void *, const void *))fn_801C3B7C);
+            goto loop;
         }
+    loop:
+        do {
+            *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) =
+                fn_801C3450(value + *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset));
+            index++;
+            offset += 0x30C;
+        } while (index < lbl_8055E7F0);
+        qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
+              (int (*)(const void *, const void *))fn_801C3B7C);
     }
+skip:
     fn_801C957C(0);
 }
 #pragma pop
@@ -1774,6 +1778,12 @@ void fn_801C7F64(void) {
     set_text_entry(0);
     sMenuAction = menu_action_idle;
     sTextFieldFlag = 1;
+}
+
+static inline void fn_801C7FE4_copyVec(Vec *dst, const Vec *src) {
+    dst->x = src->x;
+    dst->y = src->y;
+    dst->z = src->z;
 }
 
 #pragma push
@@ -2742,7 +2752,7 @@ s32 fn_801C9708(s32 arg0) {
             register u32 length = strlen(lbl_804380F0);
             if (length < 0xFF) {
                 lbl_804380F0[length] = (char)arg0;
-                lbl_804380F0[length + 1] = 0;
+                *((volatile char *)length + (u32)lbl_804380F0 + 1) = 0;
             }
         }
         break;
