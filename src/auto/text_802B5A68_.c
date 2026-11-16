@@ -234,8 +234,10 @@ s32 fn_802B5D94(s32 arg0) {
 }
 
 u32 fn_802B5DA0(void) {
-    s32 temp_r3 = ((s32 (*)())fn_802B5D94)();
-    return (u32)((-1 - temp_r3) | (temp_r3 + 1)) >> 31;
+    /* Branchless "parsed value != -1" test on fn_802B5D94's result: 1 when the
+       "object" property parsed successfully, 0 when it returned -1. */
+    s32 parsedValue = ((s32 (*)())fn_802B5D94)();
+    return (u32)((-1 - parsedValue) | (parsedValue + 1)) >> 31;
 }
 
 #pragma pop
