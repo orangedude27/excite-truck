@@ -2091,14 +2091,17 @@ extern "C" s32 fn_800D9330(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x58) + ((*(u32 *)((u8 *)arg0 + 0x4C) >> 0x17) & 0x1E0);
 }
 
-extern "C" s32 fn_800D9344(void *arg0) {
-    volatile u32 *p = (volatile u32 *)((u8 *)arg0 + 0x4C);
-    u32 x = *p;
-    s32 y = *(volatile s32 *)((u8 *)arg0 + 0x58);
-    u32 n = (x >> 0x18) & 0xF;
-    u32 b = (x >> 0x17) & 0x1E0;
-    s32 t = y + n * 0x14;
-    return t + b;
+/* Return (as an integer byte address) the start of the texGen area in the
+   material's GX memory block at +0x58: block + texSRTNum*0x14 + texObjBytes,
+   sized by the capacity counts at +0x4C. */
+extern "C" s32 fn_800D9344(void *self) {
+    volatile u32 *pCap = (volatile u32 *)((u8 *)self + 0x4C);
+    u32 cap = *pCap;
+    s32 block = *(volatile s32 *)((u8 *)self + 0x58);
+    u32 texSRTNum = (cap >> 0x18) & 0xF;
+    u32 texObjBytes = (cap >> 0x17) & 0x1E0;
+    s32 pastSRT = block + texSRTNum * 0x14;
+    return pastSRT + texObjBytes;
 }
 
 // Address of the material's channel-control entry inside the GX memory block it holds
