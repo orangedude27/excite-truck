@@ -529,19 +529,22 @@ void fn_802CAC54(int arg0) {
     }
 }
 #pragma scheduling on
-void fn_802CAD28(int arg0) {
-    int *p;
-    int value;
-    if (arg0 == -1)
+void fn_802CAD28(int slotIndex) {
+    int *slot;
+    int refCount;
+#define gTextureSlots lbl_8055FCB0
+    /* Release a texture slot reference; on the last one, drop its resource handle and GPU texture object. */
+    if (slotIndex == -1)
         return;
-    p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
-    value = --p[0];
-    if (value != 0)
+    slot = (int *)(gTextureSlots + slotIndex * 0x4C);
+    refCount = --slot[0];
+    if (refCount != 0)
         return;
-    if (p[0x2C / 4] == 0)
+    if (slot[0x2C / 4] == 0)
         return;
-    p[0x2C / 4] = 0;
-    ((void (*)(int))fn_802D8FB4)(p[0x28 / 4]);
+    slot[0x2C / 4] = 0;
+    ((void (*)(int))fn_802D8FB4)(slot[0x28 / 4]);
+#undef gTextureSlots
 }
 
 void fn_802CAD68(void) {
