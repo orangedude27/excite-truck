@@ -981,6 +981,8 @@ void fn_8026562C(void *timer) {
 }
 
 int fn_80265688(void) {
+    /* Gate on fn_80265B5C: when a transition is pending, submit -1 and
+     * report 1; otherwise raise the ready flag and report 0. */
     if (fn_80265B5C() != 0) {
         fn_802168BC(-1);
         return 1;
