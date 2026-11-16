@@ -962,8 +962,10 @@ extern "C" s32 fn_80161B94(void) {
 }
 
 #pragma cplusplus on
+/* Return whether the active challenge sub-task reports its challenge over (its
+ * finish delay elapsed), via virtual slot 0x24; 0 when no sub-task is active. */
 extern "C" int fn_80161BB8(void) {
-    struct Dummy {
+    struct ChallengeSubTask {
         virtual void v0();
         virtual void v1();
         virtual void v2();
@@ -971,11 +973,11 @@ extern "C" int fn_80161BB8(void) {
         virtual void v4();
         virtual void v5();
         virtual void v6();
-        virtual int v7();
+        virtual int isOver();
     };
-    Dummy *p = (Dummy *)lbl_8055E300;
-    if (p != 0) {
-        return p->v7();
+    ChallengeSubTask *subTask = (ChallengeSubTask *)lbl_8055E300;
+    if (subTask != 0) {
+        return subTask->isOver();
     }
     return 0;
 }
