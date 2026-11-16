@@ -630,16 +630,19 @@ VIRetraceCallback fn_800591AC(VIRetraceCallback cb)
     return oldcb;
 }
 
-VIRetraceCallback AIRegisterDMACallback_800591F0(VIRetraceCallback cb)
+/* Registers the post-retrace (AI DMA) callback and returns the previous one. */
+VIRetraceCallback AIRegisterDMACallback_800591F0(VIRetraceCallback callback)
 {
-    BOOL enabled;
-    VIRetraceCallback oldcb;
+#define s_postRetraceCallback lbl_8055DBA8
+    BOOL interrupts;
+    VIRetraceCallback oldCallback;
 
-    oldcb = lbl_8055DBA8;
-    enabled = OSDisableInterrupts();
-    lbl_8055DBA8 = cb;
-    OSRestoreInterrupts(enabled);
-    return oldcb;
+    oldCallback = s_postRetraceCallback;
+    interrupts = OSDisableInterrupts();
+    s_postRetraceCallback = callback;
+    OSRestoreInterrupts(interrupts);
+    return oldCallback;
+#undef s_postRetraceCallback
 }
 
 // Return a pointer/offset into lbl_80311738 based on the given index.
