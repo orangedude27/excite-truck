@@ -336,9 +336,10 @@ void fn_802396BC(void *state) {
     }
 }
 
-void fn_8023976C(u32 arg0) {
-    if (*(u32 *)(arg0 + 0x14) != 0) {
-        ((void (*)(u32, u32))fn_80238FCC)(arg0, *(u32 *)(arg0 + 8));
+void fn_8023976C(u32 state) {
+    /* If an SWF animation is loaded (+0x14), draw its current frame (index at +0x8). */
+    if (*(u32 *)(state + 0x14) != 0) {
+        ((void (*)(u32, u32))fn_80238FCC)(state, *(u32 *)(state + 8));
     }
 }
 
