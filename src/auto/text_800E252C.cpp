@@ -3920,9 +3920,11 @@ public:
     virtual void s5C();
     virtual PrepPlayerVt *getPlayer();  // vtable 0x60
 };
-extern "C" void fn_800E9070(VfObj *this_) {
-    VfObj *first = this_->vf23();
-    first->vf6();
+extern "C" int fn_800E9070(PrepSoundVt *sound) {
+    /* BasicSound vtable slot 0x2C: ask the player this sound plays through
+     * whether its data is loaded, so the sound is ready to start. */
+    PrepPlayerVt *player = sound->getPlayer();
+    return player->isPrepared();
 }
 
 extern "C" int fn_800E90AC(void *arg0) {
