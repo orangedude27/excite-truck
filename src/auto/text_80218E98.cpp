@@ -5780,6 +5780,7 @@ extern "C" void fn_80222A3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
 }
 #pragma pop
 extern "C" void fn_80222AFC(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
+    /* Compute an axis-aligned bounding box at (arg1,arg2) with size from arg0+8/+C (floats). */
     *arg3 = arg1;
     *arg4 = arg2;
     *arg5 = *arg3 + (s32) *(f32 *)((u8 *)arg0 + 8);
