@@ -2,7 +2,13 @@
 // Recovered TU window 0x802E72B8..0x802E7570 (see docs/attribution_analysis.md).
 // Static-init thunk fn_802E7570 (+ .ctors slot 0x802ED60C) remains in
 // auto/text_802E7570_.c pending a promotion pass.
-extern void fn_802E3990(void);
+  typedef struct {
+      int startSector;
+      int endSector;
+      int size;
+      char name[0x80];
+  } StreamEntry;
+  extern void fn_802E3990(void);
 extern int fn_802E3734(int *);
 extern int fn_802E72C8(int);
 extern int fn_802E36D8(void *);
