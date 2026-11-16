@@ -3045,12 +3045,14 @@ extern "C" void fn_8021D154(void *widget) {
     }
 }
 
-extern "C" s32 fn_8021D1B0(void *arg0) {
-    s32 *p = *(s32 **)((u8 *)arg0 + 0x2BC);
-    if (p == 0)
+extern "C" s32 fn_8021D1B0(void *widget) {
+    /* Status query: 0 if no status pointer is set, 4 if the +0x1B flag is clear,
+     * otherwise 1 when the pointed-to status equals the +0x2C0 expected value. */
+    s32 *statusPtr = *(s32 **)((u8 *)widget + 0x2BC);
+    if (statusPtr == 0)
         return 0;
-    if (*(u8 *)((u8 *)arg0 + 0x1B) != 0)
-        return *p == *(s32 *)((u8 *)arg0 + 0x2C0);
+    if (*(u8 *)((u8 *)widget + 0x1B) != 0)
+        return *statusPtr == *(s32 *)((u8 *)widget + 0x2C0);
     return 4;
 }
 
