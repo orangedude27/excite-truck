@@ -88,18 +88,20 @@ extern float lbl_80561490;
 #define DEFAULT_CURV_DIST lbl_8056148C /* 60.0 */
 #pragma dont_inline on
 void fn_8013BD30(void *arg0) {
-    float e, d, c, b, a;
-    float *p = (float *)arg0;
-    a = lbl_80561480;
-    b = lbl_80561484;
-    c = lbl_80561488;
-    d = lbl_8056148C;
-    e = lbl_80561490;
-    p[0] = a;
-    p[1] = b;
-    p[2] = c;
-    p[4] = d;
-    p[3] = e;
+    /* Fill a resource's line parameters with the defaults: min_t=0.5, max_t=1.5,
+     * min_dist=13, curv_t=0, curv_dist=60. */
+    float curvT, curvDist, minDist, maxT, minT;
+    float *params = (float *)arg0;
+    minT = DEFAULT_MIN_T;
+    maxT = DEFAULT_MAX_T;
+    minDist = DEFAULT_MIN_DIST;
+    curvDist = DEFAULT_CURV_DIST;
+    curvT = DEFAULT_CURV_T;
+    params[0] = minT;
+    params[1] = maxT;
+    params[2] = minDist;
+    params[4] = curvDist;
+    params[3] = curvT;
 }
 #pragma dont_inline reset
 
