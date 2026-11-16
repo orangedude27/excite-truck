@@ -46,6 +46,7 @@ void fn_801EA28C(s32 arg0, f32 farg0) {
 #pragma dont_inline off
 
 #pragma dont_inline reset
+/* Recompute the derived scale, then refresh the projection/FOV view parameters with the fixed near/far/fov constants. */
 void fn_801EA2E8(void) {
     fn_801EA1FC();
     fn_802C974C(lbl_80562E40, lbl_80562E48, lbl_80562E4C);
