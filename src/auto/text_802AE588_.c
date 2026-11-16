@@ -255,10 +255,11 @@ int fn_802AE7AC(void) {
   }
   #pragma dont_inline reset
   
-  void fn_802AE7C0(void) {
-      fn_802C9950(0x555766);
-      fn_802C9994(0xFFF5D9);
-  }
+void fn_802AE7C0(void) {
+    /* Set the two packed RGB colors in the GX draw state: a muted blue-gray (0x555766) and a cream white (0xFFF5D9). */
+    fn_802C9950(0x555766);
+    fn_802C9994(0xFFF5D9);
+}
   
 #pragma dont_inline on
 #pragma cplusplus on
