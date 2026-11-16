@@ -328,11 +328,12 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
     PSVECCrossProduct((const Vec*)(a + 0x24), (const Vec*)(a + 0xC), (Vec*)(a + 0x18));
 }
 #pragma pop
-extern "C" void* fn_801FCED8(void* arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668(arg0);
+extern "C" void* fn_801FCED8(void* object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_801FCF18(void* arg0, int arg1, int arg2) {
