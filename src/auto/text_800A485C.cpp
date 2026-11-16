@@ -8110,16 +8110,12 @@ extern "C" s32 VFiPFFILE_p_fread(void *, void *buffer, u32 count, u32 size, void
 
 extern "C" s32 fn_800A9470(void *,void *);
 extern "C" s32 VFiPFFILE_p_finfo(void *arg0, void *arg1) {
-    s32 temp_r3;
-    s32 temp_r5;
+    s32 temp_r3, temp_r5;
     u32 size;
     void *file;
     *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x34) = (u8 *)arg0 + 0xC;
-    if (arg0 == 0) {
-        file = 0;
-    } else {
-        file = *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
-    }
+    if (arg0 == 0) file = 0;
+    else file = *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
     *(s32 *)arg1 = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x264);
     *(s32 *)((u8 *)arg1 + 4) = *(s32 *)((u8 *)arg0 + 0x1C);
     size = *(u16 *)file << *((u8 *)file + 0x21);
@@ -24875,7 +24871,7 @@ extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void);
 extern "C" void fn_800FA350(void);
 extern "C" void fn_800CF170(void *arg0) {
     class HandleDispatch { public: virtual void stop2(s32); };
-    struct StopVT { u8 pad[8]; void (*stop)(void *, s32); };
+    class PlayerDispatch { u32 pad[2]; public: virtual void stop(s32); };
     if (*(void **)((u8 *)arg0 + 0x5C4) != 0) {
         fn_800EB36C(*(void **)((u8 *)arg0 + 0x5C4));
         ((HandleDispatch *)*(void **)((u8 *)arg0 + 0x5C4))->stop2(-1);
@@ -24894,9 +24890,7 @@ extern "C" void fn_800CF170(void *arg0) {
     }
     if (*(void **)((u8 *)arg0 + 0x5C0) != 0) {
         ((void (*)(void *))Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv)(*(void **)((u8 *)arg0 + 0x5C0));
-        void *player = *(void **)((u8 *)arg0 + 0x5C0);
-        StopVT *vt = *(StopVT **)((u8 *)player + 8);
-        vt->stop(player, -1);
+        ((PlayerDispatch *)*(void **)((u8 *)arg0 + 0x5C0))->stop(-1);
     }
     if (*(void **)((u8 *)arg0 + 0x5D4) != 0)
         if (*(void **)((u8 *)arg0 + 0x5D4) != 0)
