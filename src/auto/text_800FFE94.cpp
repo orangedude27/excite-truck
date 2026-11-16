@@ -514,9 +514,10 @@ extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus
     return *(float*)((char*)self + (auxBus * 4) + 0x7C);
 }
 
-extern "C" void fn_80100F60(void* arg0, float arg1) {
+extern "C" void fn_80100F60(void* object, float value) {
+    /* Set the float field at offset 0x48 of object with interrupts disabled. */
     int level = OSDisableInterrupts();
-    *(float*)((char*)arg0 + 0x48) = arg1;
+    *(float*)((char*)object + 0x48) = value;
     OSRestoreInterrupts(level);
 }
 
