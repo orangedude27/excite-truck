@@ -809,6 +809,28 @@ extern void DCFlushRange(void *, u32);
 extern void *__AXFXGetLfoSinTable_8003313C(void);
 extern void *__AXGetStudio_800324C4(void);
 extern u8 lbl_802FEDA0[];
+/* Item tags of the MetroTRK gdev CC audio-state message written by
+ * CircleBufferReadBytes: a list of 16-bit words, every item a tag followed by
+ * its value as a high and a low half word. */
+enum {
+    CC_TAG_STUDIO = 0,           /* the AX studio, __AXGetStudio() */
+    CC_TAG_BLOCK_0 = 1,          /* voice block address; one tag per audio mode */
+    CC_TAG_BLOCK_1 = 2,
+    CC_TAG_BLOCK_2 = 3,
+    CC_TAG_LFO_SIN = 4,          /* __AXFXGetLfoSinTable() */
+    CC_TAG_AUX_BEGIN = 5,        /* no value: the AUX buffers below follow */
+    CC_TAG_AUX_A = 6,            /* stereo: AUX-A input + output */
+    CC_TAG_AUX_B = 7,            /* stereo: AUX-B input + output */
+    CC_TAG_AUX_C = 8,            /* stereo: AUX-C input + output */
+    CC_TAG_AUX_A_DPL2 = 9,       /* Dolby Pro Logic II: AUX-A input + 5 outputs */
+    CC_TAG_AUX_B_DPL2 = 10,      /* Dolby Pro Logic II: AUX-B input + 5 outputs */
+    CC_TAG_WAVE_TABLE = 0xA,     /* address of the 4032-byte sine table lbl_802FEDA0 */
+    CC_TAG_MASK = 0xB,           /* the 0x8000 "all channels" mask */
+    CC_TAG_BUFFERS_STEREO = 0xC, /* voice block + AI DMA buffer, stereo mode */
+    CC_TAG_BUFFERS_DPL2 = 0xD,   /* voice block + AI DMA buffer, DPL2 mode */
+    CC_TAG_RING_LISTS = 0xE,     /* the four sound ring lists */
+    CC_TAG_END = 0xF             /* no value: closes the message */
+};
 #pragma dont_inline on
 void CircleBufferReadBytes(u32 arg0, u32 arg1, void *arg2) {
     void *sp8;
