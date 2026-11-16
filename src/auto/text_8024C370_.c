@@ -119,7 +119,7 @@ extern int lbl_8055F2C4;
 extern char lbl_80343F78[];
 extern char lbl_80343F68[];
 int fn_80131234(const char *);
-int fn_80215214(int, int);
+int fn_80215214(void *, void *, int);
 #pragma dont_inline on
 int fn_8024C550(void) {
     fn_802E6FBC();
@@ -581,7 +581,11 @@ extern char lbl_80343FF0[];
 int fn_8024CEF0(void) {
     if (((int (*)(void))fn_8000DBAC)() != 0)
         return 1;
-    return ((int (*)(void *, void *, int))fn_80215214)(lbl_80343FF0, lbl_80343FC4, 0);
+    {
+        void *b = lbl_80343FC4;
+        void *a = lbl_80343FF0;
+        return ((int (*)(void *, void *, int))fn_80215214)(a, b, 0);
+    }
 }
 #pragma scheduling invalid_target
 int fn_8024CF38(int *arg0) {
