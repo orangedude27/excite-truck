@@ -48,46 +48,47 @@ extern const char lbl_802FD270[];
 extern "C" void fn_8001880C(void) {
     char buf1[0x14];
     char buf2[0x14];
-    char* base = lbl_802FD1B0;
-    Item_8001880C* item;
-    int idx;
-    int count;
     int off;
-    int* rec;
+    struct Tbl8001880C* base = (struct Tbl8001880C*)lbl_802FD1B0;
     int* p;
+    register int idx __asm("r27");
+    int count;
+    Item_8001880C* item1;
+    Item_8001880C* item2;
+    int* rec;
     u32 n;
 
     lbl_8055D570 = 1;
-    lbl_8055D574 = (s32)fn_80131808(base + 0);
-    idx = 0;
+    lbl_8055D574 = (s32)fn_80131808(base->f0);
     lbl_8055D57C = 0;
-    while ((item = ((Dir_8001880C*)lbl_8055D574)->getAt(idx)) != 0) {
-        if (stricmp(item->getName(), base + 0x10) == 0 && item->hasKey(lbl_80558C28) != 0) {
+    idx = 0;
+    while ((item1 = ((Dir_8001880C*)lbl_8055D574)->getAt(idx)) != 0) {
+        if (stricmp(item1->getName(), base->f10) == 0 && item1->hasKey(lbl_80558C28) != 0) {
             lbl_8055D57C++;
         }
         idx++;
     }
-    lbl_8055D578 = (s32)fn_8012850C(lbl_8055D57C * 0x2C, base + 0x1C);
+    lbl_8055D578 = (s32)fn_8012850C(lbl_8055D57C * 0x2C, base->f1C);
     off = 0;
     count = 0;
-    while ((item = ((Dir_8001880C*)lbl_8055D574)->getAt(count)) != 0) {
-        if (stricmp(item->getName(), base + 0x10) == 0 && item->hasKey(lbl_80558C28) != 0) {
+    while ((item2 = ((Dir_8001880C*)lbl_8055D574)->getAt(count)) != 0) {
+        if (stricmp(item2->getName(), base->f10) == 0 && item2->hasKey(lbl_80558C28) != 0) {
             rec = (int*)(lbl_8055D578 + off);
             off += 0x2C;
             memset(rec, 0, 0x2C);
-            rec[0] = item->getA(lbl_80558C28);
+            rec[0] = item2->getA(lbl_80558C28);
             p = rec;
             n = 0;
             while (1) {
-                fn_801345D8(buf1, 0x14, base + 0x28, n + 1);
-                fn_801345D8(buf2, 0x14, base + 0x38, n + 1);
-                if (item->hasKey(buf1) == 0 || item->hasKey(buf2) == 0) break;
-                if (n >= 5) fn_802E317C(base + 0x48, rec[0], 5);
-                p[1] = item->getA(buf1);
-                *(p += 2) = item->getB(buf2);
+                fn_801345D8(buf1, 0x14, base->f28, n + 1);
+                fn_801345D8(buf2, 0x14, base->f38, n + 1);
+                if (item2->hasKey(buf1) == 0 || item2->hasKey(buf2) == 0) break;
+                if (n >= 5) fn_802E317C(base->f48, rec[0], 5);
+                p[1] = item2->getA(buf1);
+                *(p += 2) = item2->getB(buf2);
                 n++;
             }
-            if (n == 0) fn_802E317C(base + 0x7C, rec[0]);
+            if (n == 0) fn_802E317C(base->f7C, rec[0]);
         }
         count++;
     }
@@ -112,10 +113,38 @@ s32 fn_80018A8C(const char *arg0) {
 
 #pragma cplusplus reset
 
+#pragma cplusplus reset
 void fn_80018B24(void) {
-    lbl_8055D570 = 0;
-    fn_80128670(lbl_8055D578);
-    lbl_8055D578 = 0;
-    lbl_8055D57C = 0;
-    fn_80131818(lbl_8055D574);
+    /* RealName: CarStats_Shutdown
+     * Tears down the car stats table that fn_8001880C built out of the
+     * "car_stats.val" parameter file: marks the table unused, frees the
+     * record array off the "car_stats" heap, clears the table pointer and
+     * its count, and releases the parameter directory it was read from. */
+    struct CarStat {
+        char *chassisName; /* 0x00: value of the item's "chassis" key */
+        struct {
+            char *name;    /* 0x04: "stat_name_%d" */
+            s32 value;     /* 0x08: "stat_value_%d" */
+        } stat[5];         /* 0x04..0x2C: five stats per chassis */
+    };                     /* sizeof == 0x2C, the table's record size */
+
+#define carStatsInUse lbl_8055D570 /* cleared once the table is released */
+#define carStatDir    lbl_8055D574 /* directory of "car_stats.val" */
+#define carStatTable  lbl_8055D578 /* CarStat records, carStatCount of them */
+#define carStatCount  lbl_8055D57C /* records in carStatTable */
+#define MemFree       fn_80128670  /* free off the heap the block came from */
+#define ParamRelease  fn_80131818  /* drop a loaded parameter directory */
+
+    carStatsInUse = 0;
+    MemFree(carStatTable);
+    carStatTable = 0;
+    carStatCount = 0;
+    ParamRelease(carStatDir);
+
+#undef carStatsInUse
+#undef carStatDir
+#undef carStatTable
+#undef carStatCount
+#undef MemFree
+#undef ParamRelease
 }
