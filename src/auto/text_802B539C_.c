@@ -333,10 +333,11 @@ outer_test:
 #pragma dont_inline off
 #pragma cplusplus off
 
-void* fn_802B59A4(unsigned int index) {
-    unsigned int count = lbl_804BE4AC.count;
-    char* entries = lbl_804BE4AC.entries;
-    return entries + (index % count) * 0x30;
+/* Return the material set at `index`, wrapping around the set list. */
+void *fn_802B59A4(unsigned int index) {
+    unsigned int count = UMatSetList.count;
+    struct UMatSet *entries = UMatSetList.entries;
+    return &entries[index % count];
 }
 
 #pragma scheduling reset
