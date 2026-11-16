@@ -250,9 +250,10 @@ static inline void fn_80266388_multiply(float *out, const float *a, const float 
  out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
  }
 }
-void* fn_80265DD8(void* arg0) {
-    fn_80265E08(arg0);
-    return arg0;
+/* Zero a state block via fn_80265E08 and return its pointer (camera block initializer). */
+void* fn_80265DD8(void* block) {
+    fn_80265E08(block);
+    return block;
 }
 
 #pragma dont_inline on
