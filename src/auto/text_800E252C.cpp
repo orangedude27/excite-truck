@@ -2084,18 +2084,18 @@ extern "C" void fn_800E550C(void *arg0, float arg1) {
 }
 
 extern "C" void fn_800E5550(void *arg0, float arg1) {
-    float value;
+    float clamped;
     if (arg1 > lbl_80560F38) {
-        value = lbl_80560F38;
+        clamped = lbl_80560F38;
     } else if (arg1 < lbl_80560F3C) {
-        value = lbl_80560F3C;
+        clamped = lbl_80560F3C;
     } else {
-        value = arg1;
+        clamped = arg1;
     }
     float *field = (float *)((char *)arg0 + 0x138);
-    if (value != *field) {
+    if (clamped != *field) {
         unsigned char *flags = (unsigned char *)arg0 + 0x123;
-        *field = value;
+        *field = clamped;
         *flags |= 0x40;
     }
 }
