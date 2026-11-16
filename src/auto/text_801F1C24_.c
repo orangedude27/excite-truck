@@ -261,11 +261,12 @@ extern const char lbl_8033A66C[];
 extern const char lbl_8033A7D0[];
 #pragma scheduling invalid_target
 void *fn_801F20C8(void) {
-    void **p = (void **)fn_801284F8(4, (void *)lbl_8033A66C);
-    if (p != 0) {
-        *p = (void *)lbl_8033A7D0;
+    void **object = (void **)fn_801284F8(4, (void *)lbl_8033A66C);
+    /* Allocate an "OptTerrain" object and point it at its vtable. */
+    if (object != 0) {
+        *object = (void *)lbl_8033A7D0;
     }
-    return p;
+    return object;
 }
 #pragma scheduling on
 
