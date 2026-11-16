@@ -1535,6 +1535,16 @@ func_exit:
     return done;
 }
 
+/* Resource request fields used by fn_8012D024 (offsets into the request). */
+#define LOAD_REQ_NAME_INDEX 0xBC
+#define LOAD_REQ_STATUS 0xB8
+#define LOAD_REQ_HANDLE 0xB4
+#define LOAD_REQ_LOADED_VALUE 0xC0
+#define LOAD_REQ_DIRECTORY 0xC8
+#define LOAD_REQ_TIMESTAMP 0xCC
+#define LOAD_REQ_NAME 0x4
+#define LOAD_REQ_PATH 0x24
+
 extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
     s32 done = 0;
     s32 temp;
