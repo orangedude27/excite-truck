@@ -18164,35 +18164,36 @@ extern void l2cu_process_our_cfg_req(void *, void *);
 extern void l2cu_send_peer_config_req(tL2C_CCB_VIEW *, tL2CAP_CFG_INFO *);
 extern void fn_8008EE40(void *, void *);
 extern void fn_8008EF90(void *, void *);
-void fn_80089E40(void *p_ccb, u8 event, void *p_data) {
-    u32 state = *(u32 *)((u8 *)p_ccb + 4);
-    switch (state) {
+void fn_80089E40(void *ccb, u8 event, void *eventData) {
+    /* Dispatch an L2CAP channel event to the handler for the CCB's current state. */
+    u32 channelState = *(u32 *)((u8 *)ccb + 4);
+    switch (channelState) {
     case 0:
-        l2c_csm_closed(p_ccb, event, p_data);
+        l2c_csm_closed(ccb, event, eventData);
         break;
     case 1:
-        l2c_csm_orig_w4_sec_comp(p_ccb, event, p_data);
+        l2c_csm_orig_w4_sec_comp(ccb, event, eventData);
         break;
     case 2:
-        l2c_csm_term_w4_sec_comp(p_ccb, event, p_data);
+        l2c_csm_term_w4_sec_comp(ccb, event, eventData);
         break;
     case 3:
-        l2c_csm_w4_l2cap_connect_rsp((tL2C_CCB_VIEW *)p_ccb, event, p_data);
+        l2c_csm_w4_l2cap_connect_rsp((tL2C_CCB_VIEW *)ccb, event, eventData);
         break;
     case 4:
-        l2c_csm_w4_l2ca_connect_rsp(p_ccb, event, p_data);
+        l2c_csm_w4_l2ca_connect_rsp(ccb, event, eventData);
         break;
     case 5:
-        l2c_csm_config(p_ccb, event, p_data);
+        l2c_csm_config(ccb, event, eventData);
         break;
     case 6:
-        l2c_csm_open((tL2C_CCB_VIEW *)p_ccb, event, p_data);
+        l2c_csm_open((tL2C_CCB_VIEW *)ccb, event, eventData);
         break;
     case 7:
-        l2c_csm_w4_l2cap_disconnect_rsp(p_ccb, event, p_data);
+        l2c_csm_w4_l2cap_disconnect_rsp(ccb, event, eventData);
         break;
     case 8:
-        l2c_csm_w4_l2ca_disconnect_rsp(p_ccb, event, p_data);
+        l2c_csm_w4_l2ca_disconnect_rsp(ccb, event, eventData);
         break;
     default:
         break;
@@ -21933,13 +21934,20 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
 }
 #pragma pop
 void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
+    struct MsgPool {
+        char msg0[0x1C];
+        char msg1[0x1C];
+        char msg2[0x1C];
+        char msg3[0x1C];
+        char msg4[0x1C];
+    };
     s32 index = (s32)arg0 - 0x40;
-    char (*trace_msg)[0x1C] = (char (*)[0x1C])lbl_803196B8;
+    struct MsgPool *trace_msg = (struct MsgPool *)lbl_803196B8;
     void *port;
     u16 port_lcid;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg[0], arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg->msg0, arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -21947,27 +21955,27 @@ void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
             port_lcid = *(u16 *)((u8 *)port + 0x68);
             if (port_lcid != arg0) {
                 if (lbl_803C4828[0x414] >= 2)
-                    ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, trace_msg[1], arg0, port_lcid);
+                    ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, trace_msg->msg1, arg0, port_lcid);
                 port = NULL;
             }
         }
     }
     if (port == NULL) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg[4], arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg->msg4, arg0);
     } else {
         ((void (*)(void *, u32, u8 *))fn_800916F4)(port, 0xC, arg1);
     }
 }
 
 void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
-    char *trace_msg = lbl_803196B8;
     s32 index = (s32)arg0 - 0x40;
+    char *trace_msg = lbl_803196B8;
     void *port;
     u16 port_lcid;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg, arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, &trace_msg[index - index], arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
