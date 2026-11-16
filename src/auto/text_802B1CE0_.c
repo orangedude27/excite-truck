@@ -404,18 +404,21 @@ extern "C" void fn_802B224C(void *arg0) {
 }
 
 #pragma cplusplus off
-void **fn_802B2384(void *arg0, void **arg1) {
-    int *p = (int *)arg0;
-    unsigned int count;
-    int val;
-    int *entry;
-    count = p[1];
-    val = *(int *)arg1;
-    entry = (int *)((char *)p[0] + count * 4);
-    p[1] = count + 1;
-    *entry = val;
-    return (void **)entry;
+#pragma push
+#pragma optimization_level 3
+#pragma opt_pointer_aliasing on
+void **fn_802B2384(void *arg0, void **__restrict arg1) {
+    int idx;
+    void **base;
+    int next;
+    idx = ((int *)arg0)[1];
+    base = *(void ***)arg0;
+    next = idx + 1;
+    ((int *)arg0)[1] = next;
+    base[idx] = *arg1;
+    return &base[idx];
 }
+#pragma pop
 
 extern char lbl_8034A2E8[];
 extern char lbl_8055CDD8;
