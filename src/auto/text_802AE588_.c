@@ -235,6 +235,10 @@ void fn_802BA348(void);
 void fn_802C29A0(void);
 void fn_802BAE50(void);
 #pragma scheduling invalid_target
+/* World-grid startup: reset the state flag (fn_802BA004), build the fallback
+ * grid-entry list when the "swlmap.tex" present flag (fn_802B05E4) is clear,
+ * then finish node accounting (fn_802C29A0) and build/sort the water list
+ * (fn_802BAE50). */
 void fn_802AE774(void) {
     fn_802BA004();
     if (((int (*)(void))fn_802B05E4)() == 0) {
