@@ -484,7 +484,7 @@ extern u8 lbl_803C3AF0[];
 extern char lbl_80317700[];
 extern void fn_80086468(void *);
 u8 btm_sec_start_authorization(u8 *p);
-static inline BOOLEAN btm_sec_are_all_trusted_inl(u32 *p_mask) {
+static __inline BOOLEAN btm_sec_are_all_trusted_inl(u32 *p_mask) {
     if (p_mask[0] != 0xFFFFFFFF)
         return 0;
     if (p_mask[1] != 0xFFFFFFFF)
