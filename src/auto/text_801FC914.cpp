@@ -1389,10 +1389,11 @@ extern "C" void fn_801FF168(void) {
 }
 
 #pragma small_data off
-extern "C" void fn_801FF16C(void *arg0) {
+extern "C" void fn_801FF16C(void *obj) {
+    /* Apply the current delta (if nonzero) to the subobject at offset 0xE08. */
     float value = fn_801E7E24();
     if (!((float)__fabs((double)value) <= lbl_80558DC4)) {
-        fn_801FF3AC((char *)arg0 + 0xE08, value);
+        fn_801FF3AC((char *)obj + 0xE08, value);
     }
 }
 extern "C" int fn_801FF1BC(void) { return 3; }
