@@ -1079,10 +1079,24 @@ void *__dt__Q34nw4r2ef6EffectFv_80293A88(void *this, int shouldDelete) {
 void fn_80293AE8(void* arg0) { *(int*)((u8*)arg0 + 0x4c2c) = 0; }
 
 extern void fn_80293F20(void*);
-void fn_80293AF4(void* arg0) {
-    float value = fn_801E7E24(arg0);
-    float abs = (float)__fabs((double)value);
-    if (!(abs <= lbl_80558DC4)) fn_80293F20(arg0);
+/* ChunkSys_ter_calc: the "ter" chunk effect's calc virtual, slot +0x10 of its
+ * vtable lbl_80349278.  Advances the terrain-debris chunks one frame, but only
+ * when time actually passed: every chunk is moved by the frame time, so with
+ * the frame time at zero the update would just rewrite every record in place. */
+void fn_80293AF4(ChunkSys *effect) {
+#define Frame_getFrameTime fn_801E7E24 /* fw::Frame::getFrameTime(): this frame's
+                                        * delta time, clamped by fn_801E7E48; the
+                                        * getter itself takes no argument */
+#define FRAME_EPSILON lbl_80558DC4     /* 0x34000000, 2^-23: a span at or below
+                                        * this is taken for no time at all */
+#define ChunkSys_ter_update fn_80293F20 /* integrates every chunk record of the
+                                         * "ter" system (count at +0x4C2C) */
+    float frameTime = Frame_getFrameTime((void *)effect);
+    float absTime = (float)__fabs((double)frameTime);
+    if (!(absTime <= FRAME_EPSILON)) ChunkSys_ter_update((void *)effect);
+#undef Frame_getFrameTime
+#undef FRAME_EPSILON
+#undef ChunkSys_ter_update
 }
 
 void fn_80293B44(void *arg0) {
