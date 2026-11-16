@@ -297,7 +297,7 @@ void fn_802BEAB0(void) {
 
 extern f32 fn_801DCF48(s32, f32, f32);
 extern f64 ceil(f64);
-extern f64 lbl_80564D70;
+f64 lbl_80564D70 = 4503599629517952.0;
 extern f32 lbl_80564D50;
 extern f32 lbl_80564D54;
 extern f32 lbl_80564D5C;
@@ -308,9 +308,9 @@ extern f32 lbl_80564D68;
 #pragma processor 750
 void fn_802BEB70(void)
 {
-  s32 size;
-  s32 start;
   s32 step;
+  s32 start;
+  s32 size;
   int new_var;
   s16 x;
   s16 y;
@@ -359,10 +359,8 @@ void fn_802BEB70(void)
       height += correction;
     }
     new_var2 = lbl_80564D60;
-    ;
-    correction = height;
     new_var = 14;
-    *((s32 *) (((char *) cell) + 8)) = ((*((s32 *) (((char *) cell) + 8))) & 0xFF803FFF) | (((s32) correction) << new_var);
+    *((s32 *) (((char *) cell) + 8)) = ((*((s32 *) (((char *) cell) + 8))) & 0xFF803FFF) | (((s32) height) << new_var);
     rounded = ((f32) ceil(new_var2)) - subtract_value;
     raw = *((s32 *) (((char *) cell) + 8));
     *((s32 *) (((char *) cell) + 8)) = (raw & 0xFFFFC3FF) | (((s32) rounded) << 10);
