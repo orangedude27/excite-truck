@@ -31,8 +31,10 @@ typedef struct {
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-s32 fn_8024497C(void* arg0) {
-    fn_80236900(arg0);
+/* Menu callback: resume the UI animation tail by clearing its suspend flag via
+ * fn_80236900 (the argument is ignored); returns 1 to report it was handled. */
+s32 fn_8024497C(void *unused) {
+    fn_80236900(unused);
     return 1;
 }
 
