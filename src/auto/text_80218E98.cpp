@@ -5373,10 +5373,14 @@ extern "C" void fn_80221970(void *arg0) {
 #pragma pop
 
 #pragma pop
-extern "C" void fn_80221E7C(void *arg0) {
-    void *temp = *(void **)((u8 *)arg0 + 0x14);
-    if (temp != 0 && *(u8 *)((u8 *)temp + 0x1A) != 0)
-        *(u8 *)((u8 *)temp + 0x234) = 1;
+/**
+ * Marks the child widget held at parent+0x14 as needing a redraw, but only
+ * if it is currently active (flag at +0x1A); the dirty flag is at +0x234.
+ */
+extern "C" void fn_80221E7C(void *parent) {
+    void *widget = *(void **)((u8 *)parent + 0x14);
+    if (widget != 0 && *(u8 *)((u8 *)widget + 0x1A) != 0)
+        *(u8 *)((u8 *)widget + 0x234) = 1;
 }
 
 #pragma dont_inline on
