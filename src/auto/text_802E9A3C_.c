@@ -182,8 +182,10 @@ extern int fn_800B7B34(signed char);
 extern int fn_802EA5D4(void *, int);
 #pragma push
 #pragma scheduling invalid_target
-void fn_802E9CAC(int arg0) {
-    OSReport((const char *)&lbl_8034E390, arg0);
+/* RealName: Mp3SdCardRemovedCallback_802E9CAC */
+void fn_802E9CAC(int eventArg) {
+    /* Log SD card removal, clear the ready flag, and bump the callback counter. */
+    OSReport((const char *)&lbl_8034E390, eventArg);
     *(volatile char *)&lbl_80560061 = 0;
     ++*(volatile int *)&lbl_80560068;
 }
