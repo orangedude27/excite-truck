@@ -1677,8 +1677,9 @@ struct StaticGob {
     StaticGob *next;  // +0x44 next GOB in the list
 };
 
-extern "C" s32 fn_801F9BD0(s32 **arg0, s32 **arg1) {
-    return (*arg0)[15] - (*arg1)[15];
+/* qsort comparator: order StaticGob nodes by their GOB id (+0x3C). */
+extern "C" s32 fn_801F9BD0(StaticGob **arg0, StaticGob **arg1) {
+    return (*arg0)->gobId - (*arg1)->gobId;
 }
 
 #pragma scheduling invalid_target
