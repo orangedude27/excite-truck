@@ -1,6 +1,15 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma cplusplus on
+class MenuResource_801DFFB4 {
+public:
+    virtual void v0() = 0;
+    virtual void v1() = 0;
+    virtual void v2() = 0;
+    virtual void* find(const char*) = 0;
+};
+#pragma cplusplus off
 extern int lbl_804348E8[4];
 extern double fn_8002EFB4(void);
 extern void fn_801476D8(int, int);
