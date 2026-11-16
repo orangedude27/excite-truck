@@ -28,19 +28,16 @@ extern s32 fn_80005580(s32);
 #pragma push
 #pragma processor 750
 void fn_800053CC(void) {
-    f32 sp8;
-    f32 spC;
-    if (fn_801298E8(&sp8, 0) != 0) {
-        f32 f1;
-        f32 f30;
-        f32 f29;
-        f32 f31;
-        f1 = sp8 * sp8 + spC * spC;
-        f30 = lbl_80560114 * sp8;
-        f31 = lbl_80560110;
-        f29 = lbl_80560118 * spC;
-        fn_8002F234();
-        fn_80010B80(0x800000FF, f30, f29, f31, f31);
+    float buf[25];
+    if (fn_801298E8(buf, 0) != 0) {
+        float t5 = buf[0] * buf[0];
+        float t01 = buf[1] * buf[1];
+        float sum = t5 + t01;
+        float t31 = lbl_80560110;
+        float t30 = lbl_80560114 * buf[0];
+        float t29 = lbl_80560118 * buf[1];
+        fn_8002F234(sum, lbl_80560118, buf[0], lbl_80560114, t5);
+        fn_80010B80(0x800000FF, t30, t29, t31, t31);
     }
 }
 #pragma pop
@@ -94,22 +91,17 @@ s32 fn_80005564(void) {
 }
 
 #pragma dont_inline on
-s32 fn_80005580(s32 a3) {
-    s32 flags = ((s32 *)fn_801E87A8())[1];
-    s32 obj = fn_801E86F8(a3);
-    u8 *state = (u8 *)fn_801EA9CC();
-    if (fn_801B8570(obj) == 0) {
-        return 1;
-    }
-    if (flags & 0x100) {
-        s32 result;
-        result = 0;
-        if (*(s32 *)(state + 0x30) != 3) {
-            if (state[0x34] != 0) {
-                result = 1;
-            }
+s32 fn_80005580(s32 a) {
+    s32 f = ((s32 *)fn_801E87A8())[1];
+    s32 o = fn_801E86F8(a);
+    unsigned char *st = (unsigned char *)fn_801EA9CC();
+    if (fn_801B8570(o) == 0) return 1;
+    if (f & 0x100) {
+        s32 r = 0;
+        if (*(s32 *)(st + 48) != 3) {
+            if (st[52] != 0) r = 1;
         }
-        return result;
+        return r;
     }
     return 0;
 }
@@ -138,6 +130,7 @@ s32 fn_8000561C(void) {
 
 #pragma cplusplus on
 extern "C" void fn_80005678(void) {
+    /* Tail-call slot 0x38 of the vtable of the interface object held at +0x58 of the global lbl_8034EEB8. */
     struct TargetIface {
         virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
         virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
