@@ -1118,15 +1118,16 @@ extern "C" void fn_800EC848(void **head, void *node) {
 #pragma dont_inline on
 #pragma push
 #pragma small_data on
-extern "C" void fn_800EC890(void *arg0) {
+extern "C" void fn_800EC890(void *param) {
+    /* Init a SeqTrack parameter block: two floats at +0/+4, a cleared counter at +8 and the ready flag at +0xC. */
     f32 second;
     f32 first;
     first = lbl_80561018;
     second = lbl_8056101C;
-    *(f32 *)arg0 = first;
-    *(u8 *)((u8 *)arg0 + 0xC) = 1;
-    *(f32 *)((u8 *)arg0 + 4) = second;
-    *(s32 *)((u8 *)arg0 + 8) = 0;
+    *(f32 *)param = first;
+    *(u8 *)((u8 *)param + 0xC) = 1;
+    *(f32 *)((u8 *)param + 4) = second;
+    *(s32 *)((u8 *)param + 8) = 0;
 }
 #pragma pop
 #pragma dont_inline reset
