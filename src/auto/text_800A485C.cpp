@@ -10195,7 +10195,7 @@ struct VFiPFVolume {
     s32 cacheSectors;                 /* 0x163C sectors read at a time */
     u32 sectorsPerCluster;            /* 0x1640 read/write granularity */
     s32 pageOwner;                    /* 0x1644 id a page claimed for a file gets */
-    u8 pad1648[0x1654 - 0x1648];
+    char name[0x1654 - 0x1648];              /* 0x1648 NUL-terminated volume name (max 11 chars) */
     CacheSlot cache[4];               /* 0x1654 the four cached pages */
     u32 fatBlocks;                    /* 0x1F74 words of the FAT bitmap per block */
     void *fatList;                    /* 0x1F78 the FAT bitmap blocks */
