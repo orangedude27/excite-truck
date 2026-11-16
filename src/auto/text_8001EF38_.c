@@ -307,11 +307,13 @@ s32 fn_8001F41C(const char* arg) {
 }
 
 #pragma scheduling off
-void fn_8001F490(s32 arg) {
-    if (arg == 2)
+/* ACHV archive-block callback: when notified with event 0 or 2, clear the whole
+   achievements statistics array (all four per-profile blocks). */
+void fn_8001F490(s32 event) {
+    if (event == 2)
         goto reset;
-    if (arg < 2) {
-        if (arg == 0)
+    if (event < 2) {
+        if (event == 0)
             goto reset;
         return;
     }
