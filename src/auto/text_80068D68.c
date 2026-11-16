@@ -14043,10 +14043,12 @@ void btm_sec_collision_timeout(void) {
     }
 }
 
-s32 fn_8008128C(void *arg0) {
-    void *dev = btm_find_dev(arg0);
-    if (dev != NULL) {
-        return (s32)dev + 0x10;
+/* BTM_ReadTrustedMask: return a pointer to the trusted-service mask at +0x10 of
+ * the security record for bdAddr, or NULL if the device is unknown. */
+s32 fn_8008128C(void *bdAddr) {
+    void *p_dev_rec = btm_find_dev(bdAddr);
+    if (p_dev_rec != NULL) {
+        return (s32)p_dev_rec + 0x10;
     }
     return 0;
 }
