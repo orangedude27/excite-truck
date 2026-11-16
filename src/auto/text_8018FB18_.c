@@ -849,8 +849,9 @@ void fn_80190388(void *arg0)
 }
 #pragma use_lmw_stmw reset
 #pragma pop
-s32 fn_80190B60(void *arg0) {
-    s32 bit = (*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 4) & 1;
+s32 fn_80190B60(void *obj) {
+    /* Return bit 4 of the packed flags byte at +7 of the child object referenced by obj+8, normalized to 0/1. */
+    s32 bit = (*(u8 *)((char *)*(void **)((char *)obj + 8) + 7) >> 4) & 1;
     return (s32)((u32)(-bit | bit) >> 31);
 }
 
