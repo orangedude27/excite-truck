@@ -14,17 +14,16 @@ void fn_801EEFC8(void) {
     memset(lbl_80488678, 0, 0x120);
 }
 #pragma scheduling invalid_target
-/* Registers handler arg0 for event type arg1 & 0xFF: first free slot of that
- * type's 4-slot row; does nothing when the row is full. */
-void fn_801EEFDC(int arg0, unsigned int arg1) {
+/* Registers handler for event type (eventType & 0xFF): stores it in the first free slot of that type's 4-slot row; does nothing when the row is full. */
+void fn_801EEFDC(int handler, unsigned int eventType) {
     unsigned int *p;
     unsigned int *base;
     int i;
-    base = (unsigned int *)(lbl_80488678 + ((arg1 & 0xFF) << 4));
+    base = (unsigned int *)(lbl_80488678 + ((eventType & 0xFF) << 4));
     p = base;
     for (i = 0; i < 4; p++, i++) {
         if (*p == 0) {
-            base[i] = arg0;
+            base[i] = handler;
             return;
         }
     }
