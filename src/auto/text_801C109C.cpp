@@ -415,12 +415,18 @@ void fn_801C1B60(int arg0);
 extern "C" void fn_801C1218(void *);
 extern "C" void fn_801C1364(int);
 extern "C" void fn_801C1320(void*);
+#define IntegrateParticles fn_801C1218  // advance particle positions from velocity/acceleration
+#define SolveConstraints   fn_801C1364  // two passes of link/distance constraint corrections
+#define WriteOutputs       fn_801C1320  // fill the output vectors
 #pragma dont_inline on
 extern "C" void fn_801C1B60(int arg0) {
     fn_801C1218((void *)arg0);
     fn_801C1364(arg0);
     fn_801C1320((void*)arg0);
 }
+#undef IntegrateParticles
+#undef SolveConstraints
+#undef WriteOutputs
 #pragma dont_inline reset
 #pragma force_active reset
 extern "C" void fn_801C1B9C(void) {
