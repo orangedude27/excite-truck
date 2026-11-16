@@ -10097,7 +10097,7 @@ extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
     #undef PATH_END_INDEX
 }
 #pragma pop
-extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
+extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1) {
     s8 *p = (s8 *)arg0 + 7;
     u32 digits = 7;
     u32 divisor = 10;
