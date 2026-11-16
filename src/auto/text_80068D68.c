@@ -5021,9 +5021,11 @@ void fn_800709B4(u32 traceMask, void *format) {
     }
 }
 
-void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6) {
+/* BTE LogMsg_6: forward a trace message to LogMsg only when the BTE target
+ * mode (lbl_8055DC70) is serial-app (0); the six trace parameters go unused. */
+void fn_800709CC(u32 traceMask, void *format, s32 p1, s32 p2, u16 p3, u16 p4, u8 p5, u16 p6) {
     if (lbl_8055DC70 == 0) {
-        LogMsg(code, msg);
+        LogMsg(traceMask, format);
     }
 }
 
