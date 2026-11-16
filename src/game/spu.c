@@ -331,9 +331,17 @@ void fn_802E52EC(void) {
     if (sent) AXRmtAdvancePtr(0x28);
 }
 #pragma pop
-int fn_802E540C(int arg0) {
-    if (arg0 == 1) TRKReadBuffer_ui32();
+int fn_802E540C(int request) {
+#define KERNEL_RESET_NOTIFY 1
+#define spuResetTeardown TRKReadBuffer_ui32
+    /* Reset callback registered under "Spu" in fn_802E5478: when the reset is
+     * actually on, tear down the TRK/AX debugger state; never cancels a reset. */
+    if (request == KERNEL_RESET_NOTIFY) {
+        spuResetTeardown();
+    }
     return 0;
+#undef spuResetTeardown
+#undef KERNEL_RESET_NOTIFY
 }
 
 extern void fn_802E6248(int, float);
