@@ -3527,9 +3527,11 @@ extern "C" void fn_801D89C0(void *arg0, void *arg1) {
 }
 #pragma cplusplus reset
 #pragma pop
-int fn_801D8AA4(void *arg0) {
+int fn_801D8AA4(void *ringMaster) {
+    /* Return 1 if this RingMaster_ASE's "length" field (+0x30) is negative;
+       lbl_80562ADC is the shared 0.0f constant. */
     extern float lbl_80562ADC;
-    return *(float *)((char *)arg0 + 0x30) < lbl_80562ADC;
+    return *(float *)((char *)ringMaster + 0x30) < lbl_80562ADC;
 }
 
 #pragma cplusplus on
