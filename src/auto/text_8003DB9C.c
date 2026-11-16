@@ -5933,13 +5933,15 @@ void GXLoadNrmMtxImm(const f32 mtx[3][4], u32 id) {
 }
 #pragma pop
 
-/* Assign through the register's low-six-bit field to match rlwimi directly. */
-void GXSetCurrentMtx(s32 arg0) {
+/* Select the current matrix for subsequent vertex transforms: write the 6-bit
+ * matrix id into the matrix index register (through its low-six-bit field so the
+ * compiler emits a single rlwimi) and mark the matrix state dirty to be flushed. */
+void GXSetCurrentMtx(s32 id) {
     struct {
-        unsigned int unused : 26;
+        unsigned int pad : 26;
         unsigned int matrix : 6;
-    } *reg = (void *)&__GXData[0x20];
-    reg->matrix = arg0;
+    } *mtxReg = (void *)&__GXData[0x20];
+    mtxReg->matrix = id;
     __GXData[0x17F] |= 0x04000000;
 }
 
