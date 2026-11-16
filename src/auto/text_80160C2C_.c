@@ -10,6 +10,14 @@ extern int lbl_8042FD84[];
 extern void fn_80160C8C(void);
 extern void fn_8000D838(void *);
 extern void __register_global_object(void *, void *, void *, int);
+
+#define registerStaticDestructor fn_8000D838
+#define gStaticDtorRecord lbl_8055E2C0
+#define gObjectCapacitySentinel lbl_8055E2C8
+#define gGlobalObject lbl_8042FD84
+#define gObjectRegistry lbl_8042FD78
+#define destroyGlobalObject fn_80160C8C
+
 #pragma scheduling invalid_target
 void fn_80160C2C(void) {
     /* Global constructor: register a static-destructor record, set a capacity sentinel,
