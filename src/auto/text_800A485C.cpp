@@ -882,10 +882,11 @@ extern "C" s32 fn_800A5958(void *loader, s32 *outRecord) {
 extern "C" s32 fn_800A5990(s32 arg0) {
     return fn_800A61D0((void *)arg0);
 }
-extern "C" s32 fn_800A5994(void *arg0, s32 p1, s32 *arg2) {
+/* Register a handle for loader with the given parameter, store it through outHandle, and return the status code. */
+extern "C" s32 fn_800A5994(void *loader, s32 param, s32 *outHandle) {
     s32 result;
-    *arg2 = 0;
-    result = fn_800A7090(arg0, p1, arg2);
+    *outHandle = 0;
+    result = fn_800A7090(loader, param, outHandle);
     return result & ((-result | result) >> 31);
 }
 
