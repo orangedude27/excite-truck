@@ -82,15 +82,17 @@ void fn_8029C22C(void) {
 }
 
 void fn_8029C25C(void) {
-    int *p;
-    int i;
     float v = fn_801E7E24();
     if (!((float)__fabs((double)v) <= lbl_80558DC4)) {
-        p = (int *)&lbl_804B5010;
-        for (i = 0; i < lbl_8055F7F0; i++) {
-            fn_8029D574(*p);
-            p++;
-        }
+        register int *p = (int *)&lbl_804B5010;
+        int i = 0;
+        goto check;
+    loop:
+        fn_8029D574(*p);
+        p++;
+        i++;
+    check:
+        if (i < lbl_8055F7F0) goto loop;
     }
 }
 
@@ -279,8 +281,8 @@ void fn_8029C664(void) {
     extern void fn_802E317C(const char *, ...);
     float a[3], b[3], radiusA, radiusB;
     float margin;
-    int *base, *p, *q;
-    int i, j;
+    register int *base, *p, *q;
+    register int i, j;
     margin = lbl_80564648;
     p = lbl_804B5010;
     base = p;
@@ -538,6 +540,8 @@ extern "C" void fn_8029CBA0(void) {
 #pragma cplusplus reset
 #pragma pop
 void fn_8029CD14(void) {
+    /* Water subsystem shutdown: if the cached water effect is still allocated,
+       destroy its emitter (fn_8028E398) and clear the handle. */
     if (lbl_8055F7F8 != 0) {
         ((void (*)(int))fn_8028E398)(lbl_8055F7F8);
         lbl_8055F7F8 = 0;
