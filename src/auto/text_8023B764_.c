@@ -298,14 +298,15 @@ extern int fn_8024A4CC(int *, int *, int *);
 extern int fn_80137C74(void);
 extern void fn_80137C80(int);
 extern void fn_80137C78(int);
+/* Call fn_80137C80 for each index from 0 up to (but not including) fn_80137C74(), then call fn_80137C78(1). */
 void fn_8023BDEC(void) {
-    int i = 0;
+    int index = 0;
     goto check;
 body:
-    fn_80137C80(i);
-    i++;
+    fn_80137C80(index);
+    index++;
 check:
-    if (i < fn_80137C74()) goto body;
+    if (index < fn_80137C74()) goto body;
     fn_80137C78(1);
 }
 
