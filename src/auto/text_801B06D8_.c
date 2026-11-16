@@ -383,6 +383,7 @@ s32 fn_801B0DE8(s32 arg0) { return arg0 + 4; }
 
 #pragma cplusplus on
 extern "C" s32 fn_801B0DF0(s32 arg0) {
+    /* Returns nonzero if the deity/AI-truck slot's resource is a PCAR record (magic 0x50434152 at +0x10). */
     struct Dummy {
         virtual void *d0(void *);
         virtual void *d1(void *);
@@ -392,9 +393,9 @@ extern "C" s32 fn_801B0DF0(s32 arg0) {
         virtual void *d5(void *);
         virtual void *d6(void *);
     };
-    Dummy *obj = (Dummy *)((u8 *)lbl_8055E684 + (arg0 << 7));
-    void *result = obj->d6(lbl_8055E684);
-    return *(u32 *)((u8 *)result + 0x10) == 0x50434152;
+    Dummy *slot = (Dummy *)((u8 *)lbl_8055E684 + (arg0 << 7));
+    void *resource = slot->d6(lbl_8055E684);
+    return *(u32 *)((u8 *)resource + 0x10) == 0x50434152;
 }
 #pragma cplusplus reset
 extern s32 fn_801B2F40(s32);
