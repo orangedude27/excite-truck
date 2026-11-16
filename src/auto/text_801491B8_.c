@@ -1611,64 +1611,67 @@ extern "C" void *fn_8014E154(void *object, s32 shouldFree) {
 
 #pragma cplusplus on
 #pragma use_lmw_stmw off
-extern "C" void *fn_8014E1D0(void *arg0, s32 arg1) {
-    struct Obj {
+/* Initialize one race place-bonus entry: load its item list and config values
+ * from the place-bonus data table, or fall back to an empty one-item list. */
+extern "C" void *fn_8014E1D0(void *entryPtr, s32 unused) {
+    struct PlaceBonusEntry {
         char pad[0x74];
         void **items;
         s32 count;
-        s32 unk7c;
-        s32 valueA;
-        s32 valueB;
+        s32 selectedIndex;
+        s32 configValueA;
+        s32 configValueB;
     };
     register u8 *strings = lbl_8032D358;
-    register Obj *obj = (Obj *)arg0;
+    register PlaceBonusEntry *entry = (PlaceBonusEntry *)entryPtr;
     s32 i;
-    s32 n;
+    s32 lastIndex;
     Iter_8014E1D0 *iter;
-    s32 ok;
+    s32 found;
     void *table;
     char name[0x64];
-    s32 off;
+    s32 offset;
     void **items;
-    obj->items = 0;
-    obj->count = 0;
-    obj->unk7c = -1;
-    obj->valueA = 1;
-    obj->valueB = 1;
+
+    entry->items = 0;
+    entry->count = 0;
+    entry->selectedIndex = -1;
+    entry->configValueA = 1;
+    entry->configValueB = 1;
     table = fn_80131808(strings + 0x4c8);
     if (table != 0) {
-        ok = 0;
+        found = 0;
         iter = (Iter_8014E1D0 *)((Iter_8014E1D0 *)table)->open((char *)(strings + 0x4d8));
         if (iter != 0) {
-            ok = 1;
-            obj->count = 1;
+            found = 1;
+            entry->count = 1;
             for (;;) {
-                ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(name, 0x64, (char *)(strings + 0x4e4), obj->count);
+                ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(name, 0x64, (char *)(strings + 0x4e4), entry->count);
                 if (iter->has(name) == 0)
                     break;
-                obj->count++;
+                entry->count++;
             }
-            obj->items = (void **)fn_8012850C((obj->count + 1) * 4, strings + 0x4f0);
-            for (i = 0, off = 0; i < (n = obj->count - 1); i++, off += 4) {
+            entry->items = (void **)fn_8012850C((entry->count + 1) * 4, strings + 0x4f0);
+            for (i = 0, offset = 0; i < (lastIndex = entry->count - 1); i++, offset += 4) {
                 ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(name, 0x64, (char *)(strings + 0x4e4), i + 1);
-                *(void **)((u8 *)obj->items + off) = iter->next(name);
+                *(void **)((u8 *)entry->items + offset) = iter->next(name);
             }
-            obj->items[n] = 0;
-            obj->valueA = iter->get((char *)(strings + 0x500), obj->valueA);
-            obj->valueB = iter->get((char *)(strings + 0x50c), obj->valueB);
+            entry->items[lastIndex] = 0;
+            entry->configValueA = iter->get((char *)(strings + 0x500), entry->configValueA);
+            entry->configValueB = iter->get((char *)(strings + 0x50c), entry->configValueB);
         }
-        if (ok)
+        if (found)
             ((void (*)(char *, ...))fn_802E30C8)((char *)(strings + 0x518));
         fn_80131818(table);
     }
-    if (obj->items == 0) {
+    if (entry->items == 0) {
         ((void (*)(char *, ...))fn_802E30C8)((char *)(strings + 0x54c));
         items = (void **)fn_8012850C(4, strings + 0x4f0);
-        obj->items = items;
+        entry->items = items;
         *items = 0;
-        obj->count = 1;
+        entry->count = 1;
     }
-    return arg0;
+    return entryPtr;
 }
 #pragma use_lmw_stmw reset
 #pragma cplusplus off
