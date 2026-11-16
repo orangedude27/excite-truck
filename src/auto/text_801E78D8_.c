@@ -837,15 +837,21 @@ float fn_801E8894(long arg0) {
     return *(float *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x50);
 }
 
-void fn_801E88B4(long *arg0, long *arg1, long *arg2, long *arg3, long arg4) {
-    long index = arg4;
-    char *base;
-    if (index < 0) index = (long)lbl_8055AF0C;
-    base = (char *)lbl_8055EB04 + index * 0xE0;
-    *arg0 = *(long *)(base + 0x3C);
-    *arg1 = *(long *)(base + 0x40);
-    *arg2 = *(long *)(base + 0x44);
-    *arg3 = *(long *)(base + 0x48);
+/* Read a player's viewport rectangle (left/top/right/bottom) out of the
+   per-player camera config table; a negative index means the current player. */
+void fn_801E88B4(long *outLeft, long *outTop, long *outRight, long *outBottom, long playerIndex) {
+#define CurrentPlayerIndex lbl_8055AF0C /* -1 sentinel: use the current player */
+#define sPlayerConfigs lbl_8055EB04 /* array of 0xE0-byte per-player camera/viewport configs */
+    long index = playerIndex;
+    char *playerBase;
+    if (index < 0) index = (long)CurrentPlayerIndex;
+    playerBase = (char *)sPlayerConfigs + index * 0xE0;
+    *outLeft = *(long *)(playerBase + 0x3C);
+    *outTop = *(long *)(playerBase + 0x40);
+    *outRight = *(long *)(playerBase + 0x44);
+    *outBottom = *(long *)(playerBase + 0x48);
+#undef CurrentPlayerIndex
+#undef sPlayerConfigs
 }
 
 #pragma scheduling invalid_target
@@ -904,48 +910,82 @@ void fn_801E89FC(void) {
     PSVECNormalize(lbl_804881D8, lbl_804881D8);
     lbl_804881D8[3] = fn_80129DC4(0, lbl_80562DBC, lbl_80562DE0);
 }
-void fn_801E8A84(void) {
-    extern float lbl_80562DE4, lbl_80562DE8;
-    extern float lbl_80562DEC, lbl_80562DF0;
-    float value;
-    float scale;
-    lbl_804881D8[0] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
-    lbl_804881D8[1] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
-    lbl_804881D8[2] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
-    if (lbl_804881D8[1] > lbl_80562DDC) {
-        scale = (lbl_804881D8[1] - lbl_80562DDC) * lbl_80562DB4;
-        if (lbl_804881D8[0] > lbl_80562DBC)
-            value = lbl_80562DD4;
-        else
-            value = lbl_80562DC0;
-        lbl_804881D8[0] = lbl_804881D8[0] + scale * value;
-        lbl_804881D8[1] = lbl_80562DDC;
-        if (lbl_804881D8[2] > lbl_80562DBC)
-            value = lbl_80562DD4;
-        else
-            value = lbl_80562DC0;
-        lbl_804881D8[2] = lbl_804881D8[2] + scale * value;
-    } else if (lbl_804881D8[1] < lbl_80562DD8) {
-        scale = (lbl_80562DD8 - lbl_804881D8[1]) * lbl_80562DB4;
-        if (lbl_804881D8[0] > lbl_80562DBC)
-            value = lbl_80562DD4;
-        else
-            value = lbl_80562DC0;
-        lbl_804881D8[0] = lbl_804881D8[0] + scale * value;
-        lbl_804881D8[1] = lbl_80562DD8;
-        if (lbl_804881D8[2] > lbl_80562DBC)
-            value = lbl_80562DD4;
-        else
-            value = lbl_80562DC0;
-        lbl_804881D8[2] = lbl_804881D8[2] + scale * value;
-    }
-    PSVECNormalize(lbl_804881D8, lbl_804881D8);
-    value = lbl_804881D8[3] + fn_80129DC4(0, lbl_80562DEC, lbl_80562DF0);
-    value = (value < lbl_80562DE0) ? lbl_80562DE0 : value;
-    value = (value > lbl_80562DBC) ? lbl_80562DBC : value;
-    lbl_804881D8[3] = value;
-}
 #pragma scheduling on
+void fn_801E8A84(void)
+{
+  float new_var3;
+  extern float lbl_80562DE4;
+  extern float lbl_80562DE8;
+  extern float lbl_80562DEC;
+  unsigned short new_var2;
+  extern float lbl_80562DF0;
+  float new_var;
+  float scale;
+  float new_var4;
+  float value;
+  lbl_804881D8[0] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
+  lbl_804881D8[1] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
+  lbl_804881D8[2] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
+  if (lbl_804881D8[1] > lbl_80562DDC)
+  {
+    new_var3 = lbl_804881D8[1] - lbl_80562DDC;
+    scale = new_var3 * lbl_80562DB4;
+    new_var4 = lbl_804881D8[0];
+    if (new_var4 > lbl_80562DBC)
+    {
+      value = lbl_80562DD4;
+    }
+    else
+    {
+      value = lbl_80562DC0;
+    }
+    lbl_804881D8[0] = lbl_804881D8[0] + (scale * value);
+    new_var = lbl_804881D8[2];
+    lbl_804881D8[1] = lbl_80562DDC;
+    if (new_var > lbl_80562DBC)
+    {
+      value = lbl_80562DD4;
+    }
+    else
+    {
+      value = lbl_80562DC0;
+    }
+    lbl_804881D8[new_var2 = 2] = lbl_804881D8[2] + (scale * value);
+  }
+  else
+    if (lbl_804881D8[1] < lbl_80562DD8)
+  {
+    new_var3 = lbl_80562DD8 - lbl_804881D8[1];
+    scale = new_var3 * lbl_80562DB4;
+    new_var4 = lbl_804881D8[0];
+    if (new_var4 > lbl_80562DBC)
+    {
+      value = lbl_80562DD4;
+    }
+    else
+    {
+      value = lbl_80562DC0;
+    }
+    lbl_804881D8[0] = lbl_804881D8[0] + (scale * value);
+    new_var = lbl_804881D8[2];
+    lbl_804881D8[1] = lbl_80562DD8;
+    if (new_var > lbl_80562DBC)
+    {
+      value = lbl_80562DD4;
+    }
+    else
+    {
+      value = lbl_80562DC0;
+    }
+    lbl_804881D8[2] = lbl_804881D8[2] + (scale * value);
+  }
+  PSVECNormalize(lbl_804881D8, lbl_804881D8);
+  value = lbl_804881D8[3] + fn_80129DC4(0, lbl_80562DEC, lbl_80562DF0);
+  value = (lbl_80562DE0 < value) ? lbl_80562DE0 : value;
+  value = (value > lbl_80562DBC) ? value : lbl_80562DBC;
+  lbl_804881D8[3] = value;
+  scale = scale + 0;
+}
 void fn_801E8C84(float *arg0) {
     float scale = lbl_804881D8[3];
     arg0[0] = lbl_804881D8[0] * scale;
