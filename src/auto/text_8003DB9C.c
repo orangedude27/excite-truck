@@ -3111,6 +3111,8 @@ void GXDrawCylinder(void *srcMode, void *dstMode, int insetX, int insetY) {
 }
 
 void GXSetDispCopySrc(s32 left, s32 top, s32 width, s32 height) {
+    /* Set the source rectangle for a display copy: upper-left corner (left,top) and
+     * size (width,height), packed into the two GX display-copy source commands. */
     union {
         u32 value;
         struct {
