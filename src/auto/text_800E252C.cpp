@@ -1466,82 +1466,116 @@ extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(char *);
 extern "C" int fn_800E6B24(void *);
 #pragma use_lmw_stmw off
-extern "C" void fn_800E4764(void *arg0) {
-#define B(off) (*(unsigned char *)((char *)arg0 + (off)))
-#define I(off) (*(int *)((char *)arg0 + (off)))
+extern "C" void fn_800E4764(void *voice_) {
+#define B(off) (*(unsigned char *)((char *)voice_ + (off)))
+#define I(off) (*(int *)((char *)voice_ + (off)))
+#define CHANNEL_COUNT I(0x104)
+#define VOICE_OUT_COUNT I(0x108)
+#define ACTIVE B(0x11C)
+#define STARTED B(0x11D)
+#define PLAYING B(0x11E)
+#define PAUSE B(0x11F)
+#define PAUSED B(0x120)
+#define MUTE B(0x122)
+#define UPDATE_FLAGS B(0x123)
+#define AX_UPDATE_START 0x01
+#define AX_UPDATE_PAUSE 0x02
+#define AX_UPDATE_SRC 0x08
+#define AX_UPDATE_VOLUME 0x10
+#define AX_UPDATE_MIX 0x20
+#define AX_UPDATE_LPF 0x40
+    /* Applies one AxVoice's pending AX update requests - start, pause/mute,
+       source rate, volume, mix and low-pass filter - to its AX voices, clearing
+       each flag once applied; when playback has finished, reports it through the
+       status callback and clears the active state. */
     int j, i;
     char *col;
     char *row;
-    if (B(0x11C) != 0) {
-        if (B(0x11E) != 0 && IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(arg0) != 0) {
-            void (*cb)(void *, int, int) = *(void (**)(void *, int, int))((char *)arg0 + 0x10C);
+    if (ACTIVE != 0) {
+        if (PLAYING != 0 && IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(voice_) != 0) {
+            void (*cb)(void *, int, int) = *(void (**)(void *, int, int))((char *)voice_ + 0x10C);
             if (cb != 0) {
-                cb(arg0, 0, I(0x110));
+                cb(voice_, 0, I(0x110));
             }
-            B(0x11E) = 0;
-            B(0x11D) = 0;
+            PLAYING = 0;
+            STARTED = 0;
         }
-        if ((B(0x123) & 1) && B(0x11D) != 0 && B(0x11E) == 0) {
-            UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(arg0, 1);
-            row = (char *)arg0;
-            for (i = 0; i < I(0x104); row += 0x10, i++) {
+        if ((UPDATE_FLAGS & AX_UPDATE_START) && STARTED != 0 && PLAYING == 0) {
+            UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(voice_, 1);
+            row = (char *)voice_;
+            for (i = 0; i < CHANNEL_COUNT; row += 0x10, i++) {
                 col = row;
-                for (j = 0; j < I(0x108); col += 4, j++) {
+                for (j = 0; j < VOICE_OUT_COUNT; col += 4, j++) {
                     if (*(void **)(col + 0xC) != 0) AXSetVoiceState(*(void **)(col + 0xC), 1);
                 }
             }
-            B(0x11E) = 1;
-            B(0x123) = B(0x123) & 0xFE;
-            B(0x123) = B(0x123) & ~8;
+            PLAYING = 1;
+            UPDATE_FLAGS = UPDATE_FLAGS & ~AX_UPDATE_START;
+            UPDATE_FLAGS = UPDATE_FLAGS & ~AX_UPDATE_SRC;
         }
-        if (B(0x11E) != 0) {
-            if ((B(0x123) & 2) && B(0x11D) != 0) {
+        if (PLAYING != 0) {
+            if ((UPDATE_FLAGS & AX_UPDATE_PAUSE) && STARTED != 0) {
                 char *row;
                 char *col;
                 int i, j;
-                if (B(0x11F) != 0 || B(0x122) != 0 || *(unsigned char *)((char *)Instance__15EmissionManagerFv() + 0x6C33) != 0) {
-                    row = (char *)arg0;
-                    for (j = 0; j < I(0x104); row += 0x10, j++) {
+                if (PAUSE != 0 || MUTE != 0 || *(unsigned char *)((char *)Instance__15EmissionManagerFv() + 0x6C33) != 0) {
+                    row = (char *)voice_;
+                    for (j = 0; j < CHANNEL_COUNT; row += 0x10, j++) {
                         col = row;
-                        for (i = 0; i < I(0x108); col += 4, i++) {
+                        for (i = 0; i < VOICE_OUT_COUNT; col += 4, i++) {
                             if (*(void **)(col + 0xC) != 0) AXSetVoiceState(*(void **)(col + 0xC), 0);
                         }
                     }
-                    B(0x120) = 1;
+                    PAUSED = 1;
                 } else {
                     char *row;
                     char *col;
                     int i, j;
-                    col = (char *)arg0;
-                    for (j = 0; j < I(0x104); col += 0x10, j++) {
+                    col = (char *)voice_;
+                    for (j = 0; j < CHANNEL_COUNT; col += 0x10, j++) {
                         row = col;
-                        for (i = 0; i < I(0x108); row += 4, i++) {
+                        for (i = 0; i < VOICE_OUT_COUNT; row += 4, i++) {
                             if (*(void **)(row + 0xC) != 0) AXSetVoiceState(*(void **)(row + 0xC), 1);
                         }
                     }
-                    B(0x120) = 0;
+                    PAUSED = 0;
                 }
-                B(0x123) = B(0x123) & ~2;
+                UPDATE_FLAGS = UPDATE_FLAGS & ~AX_UPDATE_PAUSE;
             }
-            if (B(0x123) & 8) {
-                UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(arg0, 0);
-                B(0x123) = B(0x123) & ~8;
+            if (UPDATE_FLAGS & AX_UPDATE_SRC) {
+                UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(voice_, 0);
+                UPDATE_FLAGS = UPDATE_FLAGS & ~AX_UPDATE_SRC;
             }
-            if ((B(0x123) & 0x10) && fn_800E6B24(arg0) == 0) {
-                B(0x123) = B(0x123) & ~0x10;
+            if ((UPDATE_FLAGS & AX_UPDATE_VOLUME) && fn_800E6B24(voice_) == 0) {
+                UPDATE_FLAGS = UPDATE_FLAGS & ~AX_UPDATE_VOLUME;
             }
-            if (B(0x123) & 0x20) {
-                UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(arg0);
-                B(0x123) = B(0x123) & ~0x20;
+            if (UPDATE_FLAGS & AX_UPDATE_MIX) {
+                UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(voice_);
+                UPDATE_FLAGS = UPDATE_FLAGS & ~AX_UPDATE_MIX;
             }
-            if (B(0x123) & 0x40) {
-                UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv((char *)arg0);
-                B(0x123) = B(0x123) & ~0x40;
+            if (UPDATE_FLAGS & AX_UPDATE_LPF) {
+                UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv((char *)voice_);
+                UPDATE_FLAGS = UPDATE_FLAGS & ~AX_UPDATE_LPF;
             }
         }
     }
 #undef B
 #undef I
+#undef CHANNEL_COUNT
+#undef VOICE_OUT_COUNT
+#undef ACTIVE
+#undef STARTED
+#undef PLAYING
+#undef PAUSE
+#undef PAUSED
+#undef MUTE
+#undef UPDATE_FLAGS
+#undef AX_UPDATE_START
+#undef AX_UPDATE_PAUSE
+#undef AX_UPDATE_SRC
+#undef AX_UPDATE_VOLUME
+#undef AX_UPDATE_MIX
+#undef AX_UPDATE_LPF
 }
 #pragma use_lmw_stmw reset
 extern "C" int TRKInitializeMessageBuffers(unsigned int, void (*)(void *), void *);
