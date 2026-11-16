@@ -21961,51 +21961,85 @@ int port_get_signal_changes(void *port, int oldSignals, int newSignals) {
 extern char lbl_80319688[];
 void RFCOMM_FlowReq(void *, u8, u8);
 void rfc_send_credit(void *, u8, u8);
-void port_flow_control_peer(void *arg0, s32 arg1, u16 arg2) {
-    u8 *port = (u8 *)arg0;
-    void *mcb = *(void **)(port + 0x6C);
+void port_flow_control_peer(void *p_port, s32 enable, u16 num_credits) {
+    /* BTE port_rfc.c: apply the peer's flow-control state to a port.  With a
+     * credit-based mux, account credits received from the peer and hand more
+     * back once they run low; with port-based flow, send FCON/FCOFF as the RX
+     * queue crosses its thresholds.  (lbl_/fn_ names kept: rename_symbol is
+     * unavailable for game symbols.)  Named tPORT/tRFC_MCB field offsets:
+     *   0x9A credit_rx, 0x9C credit_rx_max, 0x9E credit_rx_low,
+     *   0x3C rx_flow, 0x3D rx_hold, 0x94 data callback,
+     *   0x38 RX queue count, 0x40 RX queue bytes. */
+    #define PFC_CREDIT_RX_OFS  0x9A
+    #define PFC_CREDIT_MAX_OFS 0x9C
+    #define PFC_CREDIT_LOW_OFS 0x9E
+    #define PFC_RX_FLOW_OFS    0x3C
+    #define PFC_RX_HOLD_OFS    0x3D
+    #define PFC_DATA_CBACK_OFS 0x94
+    #define PFC_RX_QCOUNT_OFS  0x38
+    #define PFC_RX_QBYTES_OFS  0x40
+    #define PFC_MCB_FLOW_OFS   0x72
+    #define PFC_DLCI_OFS       0x0D
+    #define PFC_TRACE_OFS      0x414
+    #define PFC_CREDIT_MODE    2
+
+    u8 *port = (u8 *)p_port;
+    void *mcb = *(void **)(port + PORT_MCB);
     if (mcb == 0) return;
-    if (*(u8 *)((u8 *)mcb + 0x72) == 2) {
-        if (arg1 != 0) {
+    if (*(u8 *)((u8 *)mcb + PFC_MCB_FLOW_OFS) == PFC_CREDIT_MODE) {
+        if (enable != 0) {
             u16 cur;
             u16 tmp;
-            if (arg2 > *(u16 *)(port + 0x9A)) *(u16 *)(port + 0x9A) = 0;
-            else *(u16 *)(port + 0x9A) -= arg2;
-            cur = *(u16 *)(port + 0x9A);
-            if (cur > *(u16 *)(port + 0x9E)) return;
-            if (port[0x3D] != 0) return;
-            if (*(u16 *)(port + 0x9C) <= cur) return;
-            rfc_send_credit(*(void **)(port + 0x6C), port[0x0D], (u8)(*(u16 *)(port + 0x9C) - cur));
-            tmp = *(u16 *)(port + 0x9C);
-            port[0x3C] = 0;
-            *(u16 *)(port + 0x9A) = tmp;
+            if (num_credits > *(u16 *)(port + PFC_CREDIT_RX_OFS)) *(u16 *)(port + PFC_CREDIT_RX_OFS) = 0;
+            else *(u16 *)(port + PFC_CREDIT_RX_OFS) -= num_credits;
+            cur = *(u16 *)(port + PFC_CREDIT_RX_OFS);
+            if (cur > *(u16 *)(port + PFC_CREDIT_LOW_OFS)) return;
+            if (port[PFC_RX_HOLD_OFS] != 0) return;
+            if (*(u16 *)(port + PFC_CREDIT_MAX_OFS) <= cur) return;
+            rfc_send_credit(*(void **)(port + PORT_MCB), port[PFC_DLCI_OFS], (u8)(*(u16 *)(port + PFC_CREDIT_MAX_OFS) - cur));
+            tmp = *(u16 *)(port + PFC_CREDIT_MAX_OFS);
+            port[PFC_RX_FLOW_OFS] = 0;
+            *(u16 *)(port + PFC_CREDIT_RX_OFS) = tmp;
         } else {
-            if (*(void **)(port + 0x94) != 0) {
-                port[0x3C] = 1;
+            if (*(void **)(port + PFC_DATA_CBACK_OFS) != 0) {
+                port[PFC_RX_FLOW_OFS] = 1;
                 return;
             }
-            if (*(u16 *)(port + 0x38) >= *(u16 *)(port + 0x9C)) port[0x3C] = 1;
+            if (*(u16 *)(port + PFC_RX_QCOUNT_OFS) >= *(u16 *)(port + PFC_CREDIT_MAX_OFS)) port[PFC_RX_FLOW_OFS] = 1;
         }
-    } else if (arg1 != 0) {
-        if (port[0x3C] == 0) return;
-        if (*(u32 *)(port + 0x40) >= 0x1388U) return;
-        if (*(u16 *)(port + 0x38) >= 8U) return;
-        port[0x3C] = 0;
-        if (port[0x3D] != 0) return;
-        RFCOMM_FlowReq(mcb, port[0x0D], 1);
+    } else if (enable != 0) {
+        if (port[PFC_RX_FLOW_OFS] == 0) return;
+        if (*(u32 *)(port + PFC_RX_QBYTES_OFS) >= 0x1388U) return;
+        if (*(u16 *)(port + PFC_RX_QCOUNT_OFS) >= 8U) return;
+        port[PFC_RX_FLOW_OFS] = 0;
+        if (port[PFC_RX_HOLD_OFS] != 0) return;
+        RFCOMM_FlowReq(mcb, port[PFC_DLCI_OFS], 1);
     } else {
-        if (*(void **)(port + 0x94) != 0) {
-            port[0x3C] = 1;
-            RFCOMM_FlowReq(mcb, port[0x0D], 0);
+        if (*(void **)(port + PFC_DATA_CBACK_OFS) != 0) {
+            port[PFC_RX_FLOW_OFS] = 1;
+            RFCOMM_FlowReq(mcb, port[PFC_DLCI_OFS], 0);
             return;
         }
-        if (*(u32 *)(port + 0x40) > 0x1F40U || *(u16 *)(port + 0x38) > 0x10U) {
-            if (port[0x3C] != 0) return;
-            if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319688);
-            port[0x3C] = 1;
-            RFCOMM_FlowReq(*(void **)(port + 0x6C), port[0x0D], 0);
+        if (*(u32 *)(port + PFC_RX_QBYTES_OFS) > 0x1F40U || *(u16 *)(port + PFC_RX_QCOUNT_OFS) > 0x10U) {
+            if (port[PFC_RX_FLOW_OFS] != 0) return;
+            if (rfc_cb[PFC_TRACE_OFS] >= 4) fn_8007093C(0x90003, lbl_80319688);
+            port[PFC_RX_FLOW_OFS] = 1;
+            RFCOMM_FlowReq(*(void **)(port + PORT_MCB), port[PFC_DLCI_OFS], 0);
         }
     }
+
+    #undef PFC_CREDIT_RX_OFS
+    #undef PFC_CREDIT_MAX_OFS
+    #undef PFC_CREDIT_LOW_OFS
+    #undef PFC_RX_FLOW_OFS
+    #undef PFC_RX_HOLD_OFS
+    #undef PFC_DATA_CBACK_OFS
+    #undef PFC_RX_QCOUNT_OFS
+    #undef PFC_RX_QBYTES_OFS
+    #undef PFC_MCB_FLOW_OFS
+    #undef PFC_DLCI_OFS
+    #undef PFC_TRACE_OFS
+    #undef PFC_CREDIT_MODE
 }
 
 extern void RFCOMM_ConnectInd(BD_ADDR, UINT16, UINT16, UINT8);
@@ -25999,12 +26033,12 @@ void sdp_init(void) {
     *(u16 *)(cb + 0x22) = 0xFFFF;
     *(u16 *)(cb + 0x462C) = 0xF0;
     *(u16 *)(cb + 0x462E) = 0x15;
-    if (!BTM_SetSecurityLevel(0, lbl_8031A188, 0, 0, 1, 0, 0)) {
+    if (!BTM_SetSecurityLevel(0, log + 0, 0, 0, 1, 0, 0)) {
         if (cb[0x4630] >= 1)
             fn_8007093C(0xA0000, log + 0x14);
         return;
     }
-    if (!BTM_SetSecurityLevel(1, lbl_8031A188, 0, 0, 1, 0, 0)) {
+    if (!BTM_SetSecurityLevel(1, log + 0, 0, 0, 1, 0, 0)) {
         if (cb[0x4630] >= 1)
             fn_8007093C(0xA0000, log + 0x38);
         return;
