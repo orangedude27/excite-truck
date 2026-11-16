@@ -1130,6 +1130,16 @@ void fn_802D007C(float arg0) {
     lbl_804C5700[0] = 1;
 }
 #pragma pop
+
+static inline void setAmbientColor_802D0160(unsigned char a, unsigned char b, unsigned char c, unsigned char d) {
+    extern char lbl_804C97D0;
+    volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
+    p[4] = a;
+    p[5] = b;
+    p[6] = c;
+    p[7] = d;
+    p[0x5C] = 1;
+}
 void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     unsigned char *p = (unsigned char *)&lbl_804C97D0;
@@ -1761,8 +1771,8 @@ int fn_802D0EC8(int arg0) {
 }
 
 #pragma push
-#pragma opt_propagation off
 #pragma dont_inline on
+#pragma optimization_level 3
 void fn_802D0EEC(void) {
     extern unsigned int lbl_8055FD74;
     extern unsigned int lbl_8055FD28;
@@ -1781,21 +1791,22 @@ void fn_802D0EEC(void) {
     extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
 
     float lightPos[3];
-    unsigned char whiteColor[4];
-    unsigned char blackColor[4];
+    volatile unsigned char whiteColor[4];
+    volatile unsigned char blackColor[4];
     int tevWord;
-    unsigned char tevColor[4];
-    unsigned char fogColor[4];
+    volatile unsigned char tevColor[4];
+    volatile unsigned char fogColor[4];
     int lightColorWord;
     int matColor0;
-    unsigned char matColor2[4];
-    unsigned char ambColor0[4];
+    volatile unsigned char matColor2[4];
+    volatile unsigned char ambColor0[4];
     int ambient2Color;
-    unsigned char lightColor[4];
-    unsigned int diff;
-    unsigned char *base;
-    unsigned char *record;
-    unsigned char *fog;
+    volatile unsigned char lightColor[4];
+    register unsigned int diff;
+    register unsigned char *base;
+    register unsigned char *record;
+    register unsigned char *fog;
+    unsigned char *pB0;
     int lo, hi;
     int fogType;
     float scale;
@@ -1842,37 +1853,38 @@ void fn_802D0EEC(void) {
                 lo = fn_802D0EC8((int)lbl_8055FD86 & 0xFF);
                 GXSetBlendMode(1, fn_802D0EC8(hi), lo, 5);
             }
-            base[0xB0] = 1;
             lbl_8055FD88 = lbl_8055FD86;
+            base[0xB0] = 1;
         }
         if (diff & 0x100)
             base[0xB0] = 1;
         lbl_8055FD74 = (unsigned int)lbl_8055FD1C;
     }
 
-    if (lbl_8055FD24 != lbl_8055FD91)
+    if (lbl_8055FD24 != lbl_8055FD91) {
         GXSetAlphaCompare(4, lbl_8055FD24, 1, 0, 0);
-    lbl_8055FD91 = lbl_8055FD24;
+        lbl_8055FD91 = lbl_8055FD24;
+    }
 
     if (lbl_8055FD86 != lbl_8055FD88) {
         if (lbl_8055FD86 == lbl_8055FD08) {
             GXSetBlendMode(0, 0, 0, 5);
         } else {
-            hi = (int)lbl_8055FD86 >> 8;
-            lo = fn_802D0EC8((int)lbl_8055FD86 & 0xFF);
-            GXSetBlendMode(1, fn_802D0EC8(hi), lo, 5);
+            int hi2 = (int)lbl_8055FD86 >> 8;
+            diff = fn_802D0EC8((int)lbl_8055FD86 & 0xFF);
+            GXSetBlendMode(1, fn_802D0EC8(hi2), diff, 5);
         }
-        base[0xB0] = 1;
         lbl_8055FD88 = lbl_8055FD86;
+        base[0xB0] = 1;
     }
 
     if (lbl_8055FE58 != 0) {
-        packed = fn_802CEA1C(lbl_804DB458[1]);
+        packed = ((unsigned int (*)(unsigned int))fn_802CEA1C)(lbl_804DB458[1]);
         tevColor[3] = packed;
         tevColor[0] = packed >> 24;
         tevColor[1] = packed >> 16;
         tevColor[2] = packed >> 8;
-        ((void (*)(int, void *))GXSetTevColor)(3, tevColor);
+        ((void (*)(int, void *))GXSetTevColor)(3, (void *)tevColor);
         lbl_8055FE58 = 0;
     }
 
@@ -1887,7 +1899,7 @@ void fn_802D0EEC(void) {
         if (base[0x4160] != 0)
             fogType = 2;
         ((void (*)(int, unsigned char *, void *, float, float, float, float))GXSetFog)(
-            fogType, fogColor, fog, *(float *)(fog + 8), *(float *)(fog + 0xC),
+            fogType, (unsigned char *)fogColor, fog, *(float *)(fog + 8), *(float *)(fog + 0xC),
             *(float *)(fog + 0x14), *(float *)(fog + 0x18));
     }
 
@@ -1925,23 +1937,23 @@ void fn_802D0EEC(void) {
         matColor2[0] = packed >> 24;
         matColor2[1] = packed >> 16;
         matColor2[2] = packed >> 8;
-        GXSetChanMatColor_Internal(2, matColor2);
+        GXSetChanMatColor_Internal(2, (void *)matColor2);
         ambColor0[0] = record[4];
         ambColor0[1] = record[5];
         ambColor0[2] = record[6];
         ambColor0[3] = record[7];
-        GXSetChanAmbColor_Internal(0, ambColor0);
+        GXSetChanAmbColor_Internal(0, (void *)ambColor0);
         ambient2Color = *(int *)blackColor;
         GXSetChanAmbColor_Internal(2, &ambient2Color);
     }
 
     if ((unsigned int)(unsigned char)lbl_8055FD25 != (unsigned int)lbl_8055FD85 ||
         lbl_8055FD84 != 0) {
-        int flag = *(int *)(base + 0xB4);
+        pB0 = base + 0xB0;
         lbl_8055FD85 = lbl_8055FD25;
         lbl_8055FD84 = 0;
-        if (flag == 0)
-            base[0xB0] = 1;
+        if (*(int *)(pB0 + 4) == 0)
+            *pB0 = 1;
         GXSetNumChans(1);
         if ((unsigned char)lbl_8055FD25 != 0) {
             GXSetChanCtrl(0, 1, 0, 0, 1, 2, 2);
