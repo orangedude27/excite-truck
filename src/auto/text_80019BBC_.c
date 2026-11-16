@@ -611,6 +611,7 @@ extern void fn_802C8E00(int, int, float, float, float, float, float);
 extern void fn_802C8E48(void);
 extern double fn_8002F234(double);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
+static inline float lerpf(float a, float b, float t) { return a + t * (b - a); }
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma push
@@ -653,17 +654,12 @@ void fn_8001B478(int arg0, float farg0) {
         if ((i % 4) == 0) {
             float *s = (float *)head;
             float *e = *(float **)((char *)head + 0x14);
-            float directionX, directionY, positionX, positionY;
             float d2 = e[2] - s[2];
             float d3 = e[3] - s[3];
-            directionX = s[2] + t * d2;
-            directionY = s[3] + t * d3;
-            positionX = s[0] + t * (e[0] - s[0]);
-            positionY = s[1] + t * (e[1] - s[1]);
-            a[0] = directionX;
-            a[1] = directionY;
-            a[2] = positionX;
-            a[3] = positionY;
+            a[0] = s[2] + t * d2;
+            a[1] = s[3] + t * d3;
+            a[2] = s[0] + t * (e[0] - s[0]);
+            a[3] = s[1] + t * (e[1] - s[1]);
             ratio2 = a[0] * a[0] + a[1] * a[1];
             inv = x / (float)fn_8002F234(ratio2);
             ratio2 = a[0] * inv;
