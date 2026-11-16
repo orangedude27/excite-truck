@@ -35,8 +35,9 @@ extern float lbl_805613BC;
 extern float lbl_805613B8;
 void fn_80138F38(void *);
 #pragma dont_inline on
-int fn_80138BE4(float arg0, float arg1) {
-    return (arg0 * arg1) < lbl_805613B8;
+/* Return nonzero when a*b is negative, i.e. the two values have opposite signs (opposite_signs in the motion-crossing solver). */
+int fn_80138BE4(float a, float b) {
+    return (a * b) < ZERO;
 }
 #pragma dont_inline reset
 
