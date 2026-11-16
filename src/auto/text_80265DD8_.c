@@ -408,9 +408,11 @@ void *fn_80266120(void *cursor) {
 
 #pragma scheduling off
 void fn_80266150(void *arg0) {
-    int zero = 0;
-    float f0 = lbl_80563C2C;
+    int zero;
+    float f0;
     float f1;
+    zero = 0;
+    f0 = lbl_80563C2C;
     *(int *)((char *)arg0 + 4) = zero;
     *(int *)((char *)arg0 + 0) = zero;
     f1 = lbl_8055C4C0;
@@ -2227,9 +2229,10 @@ void fn_8026A51C(void) {
     ((void (*)(void))fn_802693F4)();
 }
 
-float fn_8026A520(int arg0) {
-    if (arg0 >= 0 && (unsigned int)arg0 < 8U) {
-        return lbl_80499980[arg0];
+/* Return the crash-volume timer for the given camera index, or 0.0 when the index is out of range. */
+float fn_8026A520(int cameraIndex) {
+    if (cameraIndex >= 0 && (unsigned int)cameraIndex < 8U) {
+        return lbl_80499980[cameraIndex];
     }
     return lbl_80563C20;
 }
