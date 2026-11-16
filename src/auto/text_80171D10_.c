@@ -2040,12 +2040,14 @@ extern "C" int fn_801758CC(void *obj, int unused, int actionId) {
 #pragma cplusplus reset
 #pragma pop
 
-int fn_80175A38(void *arg0, float *arg1, float *arg2, int arg3, int arg4, int *arg5) {
-    char *p = (char *)arg0 + arg3 * 0x24;
-    *arg5 = 0x21F;
-    arg1[0] = *(float *)(p + 0x18);
-    arg1[1] = *(float *)(p + 0x1C);
-    *arg2 = *(float *)(p + 0x20);
+/* Copy a 0x24-byte table record's X/Y (+0x18/+0x1C) into outVec and its value
+ * (+0x20) into outValue, write the 0x21F tag, and report success (1). */
+int fn_80175A38(void *table, float *outVec, float *outValue, int index, int unused, int *outTag) {
+    char *p = (char *)table + index * 0x24;
+    *outTag = 0x21F;
+    outVec[0] = *(float *)(p + 0x18);
+    outVec[1] = *(float *)(p + 0x1C);
+    *outValue = *(float *)(p + 0x20);
     return 1;
 }
 
