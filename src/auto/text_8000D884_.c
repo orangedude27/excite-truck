@@ -180,8 +180,11 @@ int fn_8000DB8C(int slot) {
 #undef gIdentInfoSlots
 }
 
-int fn_8000DBAC(int arg0) {
-    return *(int *)((char *)lbl_8055D46C + arg0 * 0x18 + 4) == 0;
+/* Return nonzero when IdentInfo slot 'slot' is unloaded / not ready (state 0). */
+int fn_8000DBAC(int slot) {
+#define gIdentInfoSlots lbl_8055D46C
+    return *(int *)((char *)gIdentInfoSlots + slot * 0x18 + 4) == 0;
+#undef gIdentInfoSlots
 }
 
 extern int lbl_8055D460;
