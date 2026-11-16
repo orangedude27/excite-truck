@@ -10828,32 +10828,6 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 st
     }
 }
 
-static inline void btm_pm_cont_switch_inl(int offset, u8 *link, u16 handle, u8 status) {
-    u8 *addr;
-    u8 *dev;
-    if (link[0x14f] == 1) {
-        addr = link + 0x3c;
-        dev = (u8 *)btm_find_dev(addr);
-        if (dev != 0 && (dev[0x76] & 4)) {
-            if (btsnd_hcic_set_conn_encrypt(handle, 0)) {
-                link[0x14f] = 2;
-                return;
-            }
-        } else {
-            if (btsnd_hcic_switch_role(addr, (lbl_803C0F78 + offset)[0x14e] == 0)) {
-                link[0x14f] = 0;
-                return;
-            }
-        }
-        link[0x14f] = 0;
-        if (*(void (**)(void *))(lbl_803C0F78 + 0x62c) != 0) {
-            lbl_803C0F78[0x624] = status;
-            (*(void (**)(void *))(lbl_803C0F78 + 0x62c))(lbl_803C0F78 + 0x624);
-            *(void (**)(void *))(lbl_803C0F78 + 0x62c) = 0;
-        }
-    }
-}
-
 #pragma push
 #pragma dont_inline off
 void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
@@ -10887,7 +10861,7 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
         if (reg[0x558] & 2)
             (*(void (**)(u8 *, u8, u16, u8))(reg + 0x554))(acl + 0x3c, mode, interval, status);
     }
-    btm_pm_cont_switch_inl(offset, (u8 *)((u32)lbl_803C0F78 + offset), handle, status);
+    btm_pm_cont_rswitch_inl((u8 *)((u32)lbl_803C0F78 + offset), lbl_803C0F78 + offset, handle, status);
 }
 #pragma pop
 void fn_8007D4C4(void) {
