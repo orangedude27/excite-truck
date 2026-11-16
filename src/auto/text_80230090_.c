@@ -404,7 +404,13 @@ void fn_80230AD8(s32 displayListIndex) {
 }
 
 void fn_80230B38(void* alarm) {
-    fn_802C2B48(fn_802C855C(alarm));
+#define ShutdownRenderMode fn_802C855C
+#define FlushFrame         fn_802C2B48
+    /* Finalize callback: shut down the current render mode, then flush the
+       pending frame. The alarm argument is unused. */
+    FlushFrame(ShutdownRenderMode(alarm));
+#undef ShutdownRenderMode
+#undef FlushFrame
 }
 
 /* RealName: InitDefaultViewMatrix
