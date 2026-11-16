@@ -159,9 +159,11 @@ void fn_80135354(Unk_80135278 *arg0) {
 }
 
 #pragma dont_inline on
-void fn_80135390(Unk_80135278 *arg0) {
-    fn_80135354(arg0);
-    arg0->unk_30 = 0;
+/* RealName: PathFollower_Reset. Reinitialize a path follower: reset its sample
+ * and tuning fields via fn_80135354, then clear the field at +0x30. */
+void fn_80135390(Unk_80135278 *follower) {
+    fn_80135354(follower);
+    follower->unk_30 = 0;
 }
 #pragma dont_inline off
 
