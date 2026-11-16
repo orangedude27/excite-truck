@@ -291,10 +291,12 @@ extern "C" void fn_8028A92C(void) {
 #pragma scheduling on
 #pragma cplusplus off
 void fn_8028A9BC(void) {
-    fn_8028BD60(lbl_8055F6F0);
-    fn_8028BD60(lbl_8055F6F4);
-    fn_8028CA70(lbl_8055F6F8);
-    fn_8028AB14();
+    /* Effect-subsystem draw pass: advance the two paint-splat emitters and the
+       rotating trail emitter, then play and retire finished explosion spawns. */
+    drawSplatEmitter(gPaintEmitterA);
+    drawSplatEmitter(gPaintEmitterB);
+    drawTrailEmitter(gTrailEmitter);
+    updateSpawnQueue();
 }
 
 #pragma cplusplus on
