@@ -4983,9 +4983,13 @@ extern void fn_80070B54();
 extern void fn_80082548();
 extern u8 fn_80073B30(void);
 int fn_800709FC(void) {
-    u64 now;
-    u32 hi;
-    u32 lo;
+    /* Bring up the BTE/BTA Bluetooth stack: initialise GKI and the HCISU
+     * interface, start the HCI SU task, wait for the reset flag to clear, run
+     * BTA sys init, arm a periodic alarm that switches to the btu message
+     * handler fiber, then poll until the BTM layer reports ready. */
+    u64 startTime;
+    u32 timeHi;
+    u32 timeLo;
     lbl_8055DC74 = 0;
     GKI_init();
     fn_8006EB88();
@@ -4999,12 +5003,12 @@ wait_delay:
 wait_check:
     if (lbl_80558FF0 != 0) { goto wait_delay; }
     fn_80070B54();
-    now = __OSGetSystemTime();
-    lo = (u32)now;
-    hi = (u32)(now >> 32u);
+    startTime = __OSGetSystemTime();
+    timeLo = (u32)startTime;
+    timeHi = (u32)(startTime >> 32u);
     OSCreateAlarm(&lbl_803C0A20);
     ((void (*)(void *, u64, u64, void (*)(void)))OSSetPeriodicAlarm)(
-        &lbl_803C0A20, now,
+        &lbl_803C0A20, startTime,
         (u64)(((*(u32 *)0x800000F8 >> 2) / 500u) & 0x07FFFFFEu), fn_800709E4);
     ((void (*)(s32))fn_8006EACC)(0);
     goto poll_check;
