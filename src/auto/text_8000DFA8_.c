@@ -2060,24 +2060,26 @@ s32 fn_8000DFC0(s32 arg0) {
 }
 
 #pragma push
-#pragma processor 750
+#pragma processor gekko
 #pragma scheduling on
 void fn_8000DFD8(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
-    s32 *p = (s32 *)arg0;
-    s32 count = p[0xD];
-    if (count > 0 && p[0xE] == 9) {
-        ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
-            (u32)(((s32)(lbl_80560258 * (f32)count) << 24) | 0x00FDB300),
-            arg2, arg3 + lbl_80560254 * lbl_8056025C,
-            lbl_80560250, lbl_80560254);
+    s32 count;
+    count = *(s32 *)((char *)arg0 + 0x34);
+    if (count > 0) {
+        if (*(s32 *)((char *)arg0 + 0x38) == 9) {
+            ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
+                (u32)(((s32)(lbl_80560258 * (f32)count) << 24) | 0x00FDB300),
+                arg2, arg3 + lbl_80560254 * lbl_8056025C,
+                lbl_80560250, lbl_80560254);
+        }
     }
     ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
         (u32)-1, arg2, arg3 + lbl_80560254 * lbl_8056025C,
-        ((f32)p[0xC] * lbl_80560250) / lbl_80560260,
+        ((f32)*(s32 *)((char *)arg0 + 0x30) * lbl_80560250) / lbl_80560260,
         lbl_80560254);
     ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
         (u32)arg1, arg2, arg3 + lbl_80560254 * lbl_8056025C,
-        ((f32)p[0xB] * lbl_80560250) / lbl_80560260,
+        ((f32)*(s32 *)((char *)arg0 + 0x2C) * lbl_80560250) / lbl_80560260,
         lbl_80560254);
     ((void (*)(s32, s32, const char *, void *, f32, ...))fn_80010074)(
         -1, 0x14, (const char *)&lbl_80558AA4, arg0,
