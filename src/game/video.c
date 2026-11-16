@@ -913,16 +913,17 @@ s32 fn_802E11A4(const char *arg0, u8 arg1) {
     return saved;
 }
 #pragma pop
-void fn_802E1290(void *arg0) {
+/* Log and unload a movie: destroy it, run movie teardown, and close its handle. */
+void fn_802E1290(void *movie) {
     extern void fn_802E30C8(const char *, ...);
     extern void *fn_802E0BA4(void);
     extern void fn_802E0BE0(void);
     extern void fn_802E0E60();
     extern char lbl_8034CBD0[];
     fn_802E30C8(lbl_8034CBD0);
-    ((void (*)(void *))fn_802E0BA4)(arg0);
+    ((void (*)(void *))fn_802E0BA4)(movie);
     fn_802E0E60();
-    ((void (*)(void *))fn_802E0BE0)(arg0);
+    ((void (*)(void *))fn_802E0BE0)(movie);
 }
 
 #pragma push
