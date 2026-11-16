@@ -191,13 +191,15 @@ void fn_80270C04(void *arg0, int arg1) {
     register char *name = lbl_80346B00;
     register char *record;
     register unsigned char flag;
+    int count;
 
     fn_80270B74();
-    if (lbl_8055F550 == 0)
+    count = lbl_8055F550;
+    if (count == 0)
         return;
     flag = (arg1 >> 8) & 1;
     lbl_8055F564 = flag;
-    DBPrintf_80270B00(name + 0x1E0);
+    DBPrintf_80270B00(name + 0x1E0, count);
     record = lbl_8049EDC8;
     table = lbl_8049F9D8;
     arg1 = 0;
@@ -337,9 +339,9 @@ int fn_80270EC4(void *arg0, int arg1) {
     extern int lbl_8055F554;
     extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
     struct SortEntry entries[64];
-    register char *name = lbl_80346B00;
-    register int flags = arg1;
-    register int category, groupOffset, one, zero, count, byteOffset, i;
+    char *name = lbl_80346B00;
+    int flags = arg1;
+    int category, groupOffset, one, zero, count, byteOffset, i;
     fn_80270C04(arg0, flags);
     if ((flags & 0x100) != 0) {
         category = 0;
@@ -372,19 +374,15 @@ int fn_80270EC4(void *arg0, int arg1) {
             if (count > 0) {
                 int j;
                 int last;
-                void *basePtr;
-                char *entriesPtr;
-                float threshold;
                 qsort(entries, count, 8, (int (*)(const void *, const void *))fn_80270D4C);
-                basePtr = *(void **)((char *)arg0 + 0x2C);
-                entriesPtr = (char *)entries;
                 last = count - 1;
-                threshold = *(float *)((char *)basePtr + groupOffset + 8);
-                for (j = 0; j < last; j++) {
-                    fn_80270DB0(&entries[j], &entries[j + 1], threshold);
+                {
+                    float threshold = *(float *)((char *)*(void **)((char *)arg0 + 0x2C) + groupOffset + 8);
+                    for (j = 0; j < last; j++) {
+                        fn_80270DB0(&entries[j], &entries[j + 1], threshold);
+                    }
+                    fn_80270DB0(&entries[last], &entries[0], threshold);
                 }
-                fn_80270DB0(&entries[last], &entries[0], threshold);
-                (void)entriesPtr;
             }
             category++;
             groupOffset += 4;
@@ -1072,18 +1070,14 @@ void fn_80272354(void *obj) {
 }
 
 #pragma scheduling invalid_target
-void fn_802723B4(void *arg0, void *arg1) {
-    void *slot;
-    void *object;
-    register float factor;
-    register float base;
-    ((void (*)(void **, void *))fn_80136468)(&slot, arg0);
-    object = slot;
-    factor = *(float *)((char *)&slot + 4);
-    base = *(float *)object;
-    *(float *)arg1 = base + (*(float *)*(void **)((char *)object + 0x14) - base) * factor;
-    base = *(float *)((char *)object + 4);
-    *(float *)((char *)arg1 + 4) = base + (*(float *)((char *)*(void **)((char *)object + 0x14) + 4) - base) * factor;
+void fn_802723B4(void *arg0, void *arg1, float t) {
+    struct Result { void *node; float fraction; s32 mode; } result;
+    float *node;
+    fn_80136468((void **)&result, arg0, t);
+    node = result.node;
+    t = result.fraction;
+    ((float *)arg1)[0] = node[0] + t * (((float *)*(void **)((char *)node + 0x14))[0] - node[0]);
+    ((float *)arg1)[1] = node[1] + t * (((float *)*(void **)((char *)node + 0x14))[1] - node[1]);
 }
 #pragma scheduling on
 extern float lbl_8055F560, lbl_80563F40, lbl_80563F48;
@@ -1452,8 +1446,8 @@ extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     };
     float height;
     int result;
-
-    *arg2 = lbl_80563F48;
+    float init = lbl_80563F48;
+    *arg2 = init;
     if (*(int *)((char *)*(void **)arg0 + 0x58) == 0) return 0;
     if (arg3 != -1 && arg3 != *(int *)((char *)*(void **)arg0 + 0x5C)) return 0;
     result = 1;
