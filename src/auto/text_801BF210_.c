@@ -598,9 +598,11 @@ void fn_801C00B8(void *arg0, float *arg1) {
 
 long fn_801C00F0(void *arg0) { return *(long *)((char *)arg0 + 0x18); }
 
-long fn_801C00F8(void *arg0, long arg1) {
-    if (arg1 >= 0 && arg1 < *(long *)((char *)arg0 + 0x24))
-        return *(long *)((char *)arg0 + arg1 * 4 + 0x14);
+long fn_801C00F8(void *obj, long index) {
+    // Bounds-checked lookup of an entry in the pointer array embedded at +0x14 of obj (its length is at +0x24);
+    // returns 0 when index is out of range.
+    if (index >= 0 && index < *(long *)((char *)obj + 0x24))
+        return *(long *)((char *)obj + index * 4 + 0x14);
     return 0;
 }
 
