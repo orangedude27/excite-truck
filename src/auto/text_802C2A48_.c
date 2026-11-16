@@ -93,19 +93,26 @@ void fn_802C2B48(void) {
     fn_802E4C18(0);
 }
 
-void fn_802C2B78(float arg0, float arg1, float arg2) {
-    float f;
-    double d;
-    *(float *)lbl_804C1328 = arg0;
-    *(float *)(lbl_804C1328 + 4) = arg1;
-    *(float *)(lbl_804C1328 + 8) = arg2;
-    if (lbl_804C1328[0xC] != 0) {
-        d = arg2;
-        f = d;
+void fn_802C2B78(float startValue, float endValue, float steps) {
+#define gViewScaleRange lbl_804C1328
+#define gZeroFloat lbl_80564ED8
+#define SetupFloatInterpolation fn_802D0014
+    /* Stores the view scale range (start, end, steps) and starts interpolating from start to end over that many steps when range scrolling is enabled, otherwise snapping straight to end. */
+    float delta;
+    double stepsDouble;
+    *(float *)gViewScaleRange = startValue;
+    *(float *)(gViewScaleRange + 4) = endValue;
+    *(float *)(gViewScaleRange + 8) = steps;
+    if (gViewScaleRange[0xC] != 0) {
+        stepsDouble = steps;
+        delta = stepsDouble;
     } else {
-        f = lbl_80564ED8;
+        delta = gZeroFloat;
     }
-    fn_802D0014(*(float *)lbl_804C1328, *(float *)(lbl_804C1328 + 4), f);
+    SetupFloatInterpolation(*(float *)gViewScaleRange, *(float *)(gViewScaleRange + 4), delta);
+#undef SetupFloatInterpolation
+#undef gZeroFloat
+#undef gViewScaleRange
 }
 
 /* Gets the stored view scale range values (start, end, rate). */
