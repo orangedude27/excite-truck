@@ -142,7 +142,10 @@ extern "C" void fn_801A5300(void *self, void **newSubobject) {
 }
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void *fn_801A538C(void *arg0, int arg1) {
+extern "C" void *fn_801A538C(void *self, int shouldDelete) {
+    /* Destructor for the object owning the subobject at +0x270C: reset its vtable,
+       detach and destroy the subobject, clear the pointer, chain to the base
+       destructor, and optionally delete this object. */
     class Obj {
     public:
         virtual void f0(int);
@@ -155,21 +158,21 @@ extern "C" void *fn_801A538C(void *arg0, int arg1) {
         virtual void f7();
         virtual void f8();
     };
-    void *obj;
-    if (arg0 != 0) {
-        *(void **)arg0 = &lbl_80333C48;
-        fn_80265D3C(arg0);
-        obj = *(void **)((char *)arg0 + 0x270C);
-        ((Obj *)obj)->f8();
-        obj = *(void **)((char *)arg0 + 0x270C);
-        if (obj != 0)
-            ((Obj *)obj)->f0(1);
-        *(void **)((char *)arg0 + 0x270C) = 0;
-        fn_801836E0(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+    void *subObject;
+    if (self != 0) {
+        *(void **)self = &lbl_80333C48;
+        fn_80265D3C(self);
+        subObject = *(void **)((char *)self + 0x270C);
+        ((Obj *)subObject)->f8();
+        subObject = *(void **)((char *)self + 0x270C);
+        if (subObject != 0)
+            ((Obj *)subObject)->f0(1);
+        *(void **)((char *)self + 0x270C) = 0;
+        fn_801836E0(self, 0);
+        if (shouldDelete > 0)
+            fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 #pragma scheduling on
 #pragma pop
