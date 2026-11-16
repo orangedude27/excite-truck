@@ -241,8 +241,6 @@ select_event:
 #pragma scheduling on
 extern int fn_8027DB40(int);
 extern int fn_8024DAE0(int, int, int, int, int);
-typedef struct VTbl_8023BC24 { void *slot[2]; void (*fn2)(void *, int); } VTbl_8023BC24;
-typedef struct Obj_8023BC24 { VTbl_8023BC24 *vt; } Obj_8023BC24;
 #pragma push
 #pragma cplusplus on
 extern "C" int fn_8023BC24(int ignored, int arg1, int arg2) {
