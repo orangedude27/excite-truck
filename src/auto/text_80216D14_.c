@@ -464,7 +464,7 @@ extern "C" void fn_80217734(void *menuGroup, int screenX, int screenY) {
     if (hitWidget != 0) hitWidget->OnPointerMove(localX, localY);
 }
 #pragma pop
-extern "C" void fn_80217834(void *arg0) {
+extern "C" void fn_80217834(void *menuGroup) {
     class Dummy_80217834 {
     public:
         virtual void m0();
@@ -487,8 +487,10 @@ extern "C" void fn_80217834(void *arg0) {
         virtual void m17();
         virtual void call();
     };
-    Dummy_80217834 *obj = *(Dummy_80217834 **)((char *)arg0 + 0x448);
-    if (obj != 0) obj->call();
+    /* Invoke the +0x50 callback on the widget the pointer is over
+     * (menuGroup+0x448), if there is one. */
+    Dummy_80217834 *hoveredWidget = *(Dummy_80217834 **)((char *)menuGroup + 0x448);
+    if (hoveredWidget != 0) hoveredWidget->call();
 }
 #pragma cplusplus off
 
