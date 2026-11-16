@@ -263,16 +263,18 @@ void *fn_8001BC38(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 }
 #pragma pop
 s32 fn_8001BCF0(void *arg0) {
-    s32 var_r5 = 0;
-    u8 *ptr = (u8 *)(((s32 *)arg0)[6] + ((s32 *)arg0)[3] * 0xC);
-    if (ptr[0x10] != 0)
+    /* Return 1 if the record's backing-data entry has its flag byte (+0x10)
+     * set, or the record carries an explicit override (+0x20); else 0. */
+    s32 flagged = 0;
+    u8 *entry = (u8 *)(((s32 *)arg0)[6] + ((s32 *)arg0)[3] * 0xC);
+    if (entry[0x10] != 0)
         goto yes;
     if (((u8 *)arg0)[0x20] == 0)
         goto done;
 yes:
-    var_r5 = 1;
+    flagged = 1;
 done:
-    return var_r5;
+    return flagged;
 }
 
 s32 fn_8001BD28(void *arg0) {
