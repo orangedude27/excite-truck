@@ -2904,8 +2904,10 @@ extern "C" s32 fn_80142870(void *arg0, void *arg1) {
     return 0;
 }
 
-extern "C" void fn_80142948(void *arg0) {
-    *(f32 *)((u8 *)arg0 + 4) = fn_8001DAE8(arg0);
+extern "C" void fn_80142948(void *timer) {
+    /* Record the current game time (fn_8001DAE8) as this timer's start stamp at
+       offset +4; fn_80142978 measures elapsed time against the duration at +0. */
+    *(f32 *)((u8 *)timer + 4) = fn_8001DAE8(timer);
 }
 
 extern "C" s32 fn_80142978(void *timer) {
