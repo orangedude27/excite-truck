@@ -1239,12 +1239,28 @@ check:
 
 #pragma scheduling on
 void fn_802CBD7C();
-void fn_802CBD30(void **arg0, void **arg1, void *arg2) {
-    fn_802CBD7C(arg1, arg2);
-    *(void **)((char *)arg2 + 0x10) = *arg0;
-    *arg0 = arg2;
-}
+#pragma use_lmw_stmw on
+#pragma scheduling on
+/* Move one texture node from a list of the texture manager to another: unlink it
+ * from the list whose head pointer is at srcHead, then push it on the front of the
+ * list whose head pointer is at destHead.  The manager keeps the textures it holds
+ * loaded in the list at +0xC and the spare nodes in the list at +0x10, both chained
+ * through the node's +0x10 link; tex_unlink_node reports
+ * "tex:unlink_node: can't find node!" if the node was not on srcHead's list. */
+void fn_802CBD30(void **destHead, void **srcHead, void *node) {
+    /* One node of those two lists (fn_802CBC3C and fn_802CC10C build and retire them). */
+    typedef struct TexNode {
+        /* 0x00 */ char *name;        /* the texture table entry's name (+0x04) */
+        /* 0x04 */ int texHandle;     /* the entry's +0x40; released by fn_802CB3F4 */
+        /* 0x08 */ int priority;      /* kept while above the eviction limit */
+        /* 0x0C */ void *request;     /* the load waiting on this texture, or 0 */
+        /* 0x10 */ struct TexNode *next; /* the link this rewires */
+    } TexNode;
 
+    fn_802CBD7C(srcHead, node);
+    ((TexNode *)node)->next = *(TexNode **)destHead;
+    *destHead = node;
+}
 void fn_802CBD7C(void **, void *, void *);
 extern char lbl_8034BA04[];
 void fn_802CBD7C(register void **link, void *target, void *current) {
