@@ -11479,11 +11479,15 @@ extern "C" void __AXDSPInitCallback_800B7860(void) {
     lbl_8055DD10 = 0;
 }
 
-extern "C" FN786C_RET fn_800B786C(void *arg0) {
-    fn_800B8048(*(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x288));
-    if (*(u16 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x27E) == 0 && *(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x280) == 0 && (int)lbl_8055DD10 != 0) {
-        fn_800B7FC4(*(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x288));
-        *(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x288) = 0;
+extern "C" FN786C_RET fn_800B786C(void *file) {
+    /* On write completion, release the stream's prfile2 semaphore; when the stream
+       has no queued write bytes or pending work left, delete the semaphore, clear
+       its handle and decrement the global semaphore count. */
+    fn_800B8048(*(int *)(VF_HANDLE_STREAM(file) + 0x288));
+    if (VF_STREAM_WRITE_BYTES(VF_HANDLE_STREAM(file)) == 0 &&
+        *(int *)(VF_HANDLE_STREAM(file) + 0x280) == 0 && (int)lbl_8055DD10 != 0) {
+        fn_800B7FC4(*(int *)(VF_HANDLE_STREAM(file) + 0x288));
+        *(int *)(VF_HANDLE_STREAM(file) + 0x288) = 0;
         lbl_8055DD10 = (void *)((int)lbl_8055DD10 - 1);
     }
     return 0;
