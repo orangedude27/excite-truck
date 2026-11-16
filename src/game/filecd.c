@@ -419,8 +419,9 @@ int fn_802E45AC(void *arg0, void *arg1, int arg2) {
     return 1;
 }
 #pragma scheduling on
-int fn_802E461C(void *arg0) {
-    return DVDGetCommandBlockStatus((char *)arg0 + 4) == 0;
+int fn_802E461C(void *file) {
+    /* FileDisk::isReadDone — true when the DVD command block is idle (status 0). */
+    return DVDGetCommandBlockStatus((char *)file + 4) == 0;
 }
 
 #pragma scheduling invalid_target
