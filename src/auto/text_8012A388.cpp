@@ -2554,22 +2554,24 @@ check_status:
 #define QUEUE_TAIL    4
 #define QUEUE_NODE_NEXT 4
 
-extern "C" void *fn_8012E3D4(void *arg0) {
-    void *temp_r0;
-    void *temp_r4;
-    void *var_r5;
-    temp_r4 = *(void **)arg0;
-    var_r5 = 0;
-    if (temp_r4 != 0) {
-        temp_r0 = *(void **)((u8 *)temp_r4 + 4);
-        var_r5 = temp_r4;
-        *(void **)arg0 = temp_r0;
-        if (temp_r0 == 0) {
-            *(void **)((u8 *)arg0 + 4) = arg0;
+extern "C" void *fn_8012E3D4(void *queue) {
+    void *next;
+    void *node;
+    void *result;
+    /* Pop the front node: advance the head, reset the tail when the queue empties,
+     * clear the removed node's link, and return that node (or 0 if empty). */
+    node = *(void **)queue;
+    result = 0;
+    if (node != 0) {
+        next = *(void **)((u8 *)node + QUEUE_NODE_NEXT);
+        result = node;
+        *(void **)queue = next;
+        if (next == 0) {
+            *(void **)((u8 *)queue + QUEUE_TAIL) = queue;
         }
-        *(void **)((u8 *)temp_r4 + 4) = 0;
+        *(void **)((u8 *)node + QUEUE_NODE_NEXT) = 0;
     }
-    return var_r5;
+    return result;
 }
 
 /* (Re)starts a queued resource request -- the handle a loader's queue node keeps
