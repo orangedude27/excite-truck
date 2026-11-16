@@ -514,7 +514,27 @@ void fn_802E9010(void) {
     }
 }
 #pragma pop
-void fn_802E9118(void *arg0) { fn_8012C4D8(*(int*)((char*)arg0+0x260)); *(int*)((char*)arg0+0x260)=0; *(int*)((char*)arg0+0x264)=0; *(int*)((char*)arg0+0x268)=0; *(int*)((char*)arg0+0x26c)=0; *(int*)arg0=0; }
+void fn_802E9118(void *arg0) {
+#define mHandle ((char *)arg0 + 0x260)
+#define mField264 ((char *)arg0 + 0x264)
+#define mField268 ((char *)arg0 + 0x268)
+#define mField26C ((char *)arg0 + 0x26C)
+#define mState ((int *)arg0)
+#define ReleaseHandle fn_8012C4D8
+    /* Release the stored handle and clear the associated fields/state. */
+    ReleaseHandle(*(int *)mHandle);
+    *(int *)mHandle = 0;
+    *(int *)mField264 = 0;
+    *(int *)mField268 = 0;
+    *(int *)mField26C = 0;
+    *mState = 0;
+#undef mHandle
+#undef mField264
+#undef mField268
+#undef mField26C
+#undef mState
+#undef ReleaseHandle
+}
 
 void fn_802E9160(void *arg0) {
     /* Abort/fail the async NAND save: release its buffer, clear state fields, and mark state 1. */
