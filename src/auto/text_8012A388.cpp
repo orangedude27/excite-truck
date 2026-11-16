@@ -3357,16 +3357,17 @@ extern "C" void fn_8012C958(void *arg0) {
 }
 
 extern "C" void *fn_8012C9C8(void) {
+    /* Lazily create the shared AsyncResourceSet pool, then pop a block from it and bump the active-use count on success. */
     if (lbl_8055E00C == 0) {
-        void *p = fn_801284F8(0x20, lbl_8032AC88);
-        if (p != 0)
-            p = fn_8012A13C(p, lbl_8032AC88, 0x20, 0xD0);
-        lbl_8055E010 = (void **)p;
+        void *pool = fn_801284F8(0x20, lbl_8032AC88);
+        if (pool != 0)
+            pool = fn_8012A13C(pool, lbl_8032AC88, 0x20, 0xD0);
+        lbl_8055E010 = (void **)pool;
     }
-    void *result = fn_8012A2D8(lbl_8055E010);
-    if (result != 0)
+    void *item = fn_8012A2D8(lbl_8055E010);
+    if (item != 0)
         lbl_8055E00C += 1;
-    return result;
+    return item;
 }
   
   extern "C" void fn_80127464(void);
