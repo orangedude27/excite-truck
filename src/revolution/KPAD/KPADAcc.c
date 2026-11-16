@@ -113,6 +113,11 @@ static f32 clamp_acc(f32 acc, f32 clamp) {
 }
 
 void read_kpad_acc(KPADInsideStatus* kp, KPADUnifiedWpadStatus* uwp, u32 dev_type, s32 chan) {
+    /* Read the unified controller's accelerometer into the KPAD status. Calibrates per-axis
+       g-scales from the controller's reported 1G vector (lbl_80560BE4 == 1.0), falls back to
+       defaults 0.01 (core, lbl_80560C04) / 0.005 (FS, lbl_80560C08), clamps hard_acc to
+       3.4 (lbl_80558EEC) or 2.1 (lbl_80558EF0), then filters acc, its speed/value, the
+       vertical and horizon vectors, and the FS extension accelerometer. */
     KPADStatus* sp = &kp->status;
     Vec vec;
     s32 probe_res;
