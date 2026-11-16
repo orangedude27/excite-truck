@@ -268,6 +268,9 @@ extern "C" void fn_802980A0(void) {
     }
 }
 
+#define gEffectSystem lbl_8055F7C8  // race visual/effect subsystem, ticked by fn_80298BBC
+#define gBackfireMan  lbl_8055F7D8  // "BackfireMan" exhaust-torch manager, ticked by fn_8029BA8C
+#define gEffectDraw   lbl_8055F7C4  // effect draw-list object drawn by fn_80299628
     extern "C" void fn_80298124(void) {
         fn_80298BBC(lbl_8055F7C8);
         fn_8029BA8C(lbl_8055F7D8);
