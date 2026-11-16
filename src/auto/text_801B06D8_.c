@@ -124,7 +124,6 @@ s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
     register f32 increment;
     register f32 start;
     register f32 step;
-    s32 enabled;
     step = lbl_805625BC;
     increment = lbl_805625C0;
     start = step;
@@ -134,6 +133,7 @@ s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
         f32 dy = *(f32 *)((u8 *)arg1 + 4) * step;
         f32 x = *(f32 *)arg0 + dx;
         f32 y = *(f32 *)((u8 *)arg0 + 4) + dy;
+        register s32 enabled;
         sp14 = start;
         sp8 = x;
         spC = y;
@@ -141,9 +141,7 @@ s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
         sp18 = y;
         if (fn_802B04D4((f32 *)&sp10, dy, x, dx)) return 1;
         enabled = lbl_8055E66C;
-        if (enabled != 0) {
-            if (fn_80139EC4(sp8, spC) != 0) return 1;
-        }
+        if (enabled && ((s32 (*)(s32, f32, f32))fn_80139EC4)(enabled, sp8, spC)) return 1;
         step += increment;
     }
     return 0;
@@ -765,11 +763,12 @@ extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
         virtual void complete(s32, s32);
     };
     u8 *state = (u8 *)arg0;
-    s32 one;
-    register s32 copied;
+    s32 count;
+    s32 next;
+    s32 total;
     s32 resource;
     if (*(state + 0x78) == 0 && *(state + 0x79) == 0) {
-        s32 count = *(s32 *)(state + 0x14);
+        count = *(s32 *)(state + 0x14);
         if (count == *(s32 *)(state + 0x68)) {
             if (count > 0) {
                 register f32 threshold;
@@ -786,36 +785,33 @@ extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
                 *(f32 *)(state + 0x70) = farg0;
                 ((Progress *)*(void **)(state + 0x5C))->update();
                 fn_8000D7F8(*(s32 *)(state + 0x60), delta);
-                count = *(s32 *)(state + 0x14) + 1;
-                *(s32 *)(state + 0x14) = count;
-                if (count > *(s32 *)&lbl_8055E694) {
-                    *(s32 *)&lbl_8055E694 = count;
-                    if (count == (s32)lbl_8055E680 + 1)
+                next = *(s32 *)(state + 0x14) + 1;
+                *(s32 *)(state + 0x14) = next;
+                if (next > *(s32 *)&lbl_8055E694) {
+                    *(s32 *)&lbl_8055E694 = next;
+                    if (next == (s32)lbl_8055E680 + 1)
                         lbl_8055E698 = 1;
                 }
-                {
-                    copied = *(s32 *)(state + 0x14);
-                    *(s32 *)(state + 0x68) = copied;
-                    if (copied == (s32)lbl_8055E680 + 1) {
-                        fn_802E30C8(lbl_80335AD8, *(s32 *)(state + 0x60), farg0);
-                        one = 1;
-                        resource = *(s32 *)(state + 0x5C);
-                        *(state + 0x79) = one;
-                        *(s32 *)(state + 0x28) = 3;
-                        fn_8018B0D0(resource, 3);
-                        ((Manager *)fn_801B83A0())->complete(
-                            *(s32 *)(state + 0x5C), *(s32 *)(state + 8));
-                        fn_801CB55C(*(s32 *)(state + 0x60), *(s32 *)(state + 8));
-                        fn_801CB360(*(s32 *)(state + 0x60));
-                        if (*(s32 *)((u8 *)*(void **)(state + 0x5C) + 0x10) == 0x50434152) {
-                            lbl_8055E69C += 1;
-                            if (lbl_8055E69C == lbl_8055E67C) {
-                                s32 offset, i;
-                                fn_802E30C8(lbl_80335B04);
-                                for (i = 0, offset = 0; i < (s32)lbl_8055E678; i++, offset += 0x80) {
-                                    u8 *base = (u8 *)lbl_8055E684;
-                                    *(base + offset + 0x78) = one;
-                                }
+                total = *(s32 *)(state + 0x14);
+                *(s32 *)(state + 0x68) = total;
+                if (total == (s32)lbl_8055E680 + 1) {
+                    fn_802E30C8(lbl_80335AD8, *(s32 *)(state + 0x60), farg0);
+                    resource = *(s32 *)(state + 0x5C);
+                    *(state + 0x79) = 1;
+                    *(s32 *)(state + 0x28) = 3;
+                    fn_8018B0D0(resource, 3);
+                    ((Manager *)fn_801B83A0())->complete(
+                        *(s32 *)(state + 0x5C), *(s32 *)(state + 8));
+                    fn_801CB55C(*(s32 *)(state + 0x60), *(s32 *)(state + 8));
+                    fn_801CB360(*(s32 *)(state + 0x60));
+                    if (*(s32 *)((u8 *)*(void **)(state + 0x5C) + 0x10) == 0x50434152) {
+                        lbl_8055E69C += 1;
+                        if (lbl_8055E69C == lbl_8055E67C) {
+                            s32 offset, i;
+                            fn_802E30C8(lbl_80335B04);
+                            for (i = 0, offset = 0; i < (s32)lbl_8055E678; i++, offset += 0x80) {
+                                u8 *base = (u8 *)lbl_8055E684;
+                                *(base + offset + 0x78) = 1;
                             }
                         }
                     }
@@ -1832,6 +1828,7 @@ extern "C" void fn_801B2D28(void *arg0) {
     u8 *dst;
     s32 index;
     s32 value;
+
     memset((u8 *)arg0 + 0x560, 0, 0x1C);
     ((Header *)arg0)->resource = fn_801B307C();
     *(s32 *)((u8 *)arg0 + 0x564) = fn_801B2F40(0);
@@ -1842,6 +1839,7 @@ extern "C" void fn_801B2D28(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x578) = value;
     *(f32 *)((u8 *)arg0 + 0x56C) = lbl_8055E6A4;
     *(f32 *)((u8 *)arg0 + 0x570) = fn_801B306C();
+
     dst = (u8 *)arg0;
     index = 0;
     *(void **)((u8 *)arg0 + 0x568) = lbl_8055E680;
@@ -1849,8 +1847,10 @@ extern "C" void fn_801B2D28(void *arg0) {
     while (index < (s32)lbl_8055E678) {
         Item *obj = (Item *)((u8 *)lbl_8055E684 + offset);
         void *result = obj->get();
-        void *tail30;
-        void *tail34;
+        struct { u32 value; } first, second;
+        u32& tail30 = first.value;
+        u32& tail34 = second.value;
+
         *(u32 *)(dst + 0x3A0) = *(u32 *)((u8 *)result + 0x00);
         *(u32 *)(dst + 0x3A4) = *(u32 *)((u8 *)result + 0x04);
         *(u32 *)(dst + 0x3A8) = *(u32 *)((u8 *)result + 0x08);
@@ -1863,14 +1863,15 @@ extern "C" void fn_801B2D28(void *arg0) {
         *(u32 *)(dst + 0x3C4) = *(u32 *)((u8 *)result + 0x24);
         *(u8 *)(dst + 0x3C8) = *(u8 *)((u8 *)result + 0x28);
         *(f32 *)(dst + 0x3CC) = *(f32 *)((u8 *)result + 0x2C);
-        tail30 = *(void **)((u8 *)result + 0x30);
-        tail34 = *(void **)((u8 *)result + 0x34);
-        *(void **)(dst + 0x3D0) = tail30;
-        *(void **)(dst + 0x3D4) = tail34;
+        tail30 = *(u32 *)((u8 *)result + 0x30);
+        tail34 = *(u32 *)((u8 *)result + 0x34);
+        *(u32 *)(dst + 0x3D0) = tail30;
+        *(u32 *)(dst + 0x3D4) = tail34;
         dst += 0x38;
         offset += 0x80;
         ++index;
     }
+
     if (fn_801E89EC() == 0) {
         if (lbl_8055E6A0 != 0) {
             f32 end;
