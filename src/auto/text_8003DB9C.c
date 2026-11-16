@@ -4935,7 +4935,8 @@ void GXSetIndTexOrder(s32 arg0, s32 arg1, s32 arg2) {
     *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
-void GXSetNumIndStages(unsigned int value) {
+// Sets the number of indirect texture stages in the GX register and marks the register dirty.
+void GXSetNumIndStages(unsigned int nIndStages) {
     union {
         unsigned int reg;
         struct {
@@ -4943,11 +4944,11 @@ void GXSetNumIndStages(unsigned int value) {
             unsigned int stages : 3;
             unsigned int rest : 16;
         } fields;
-    } data;
+    } ind;
 
-    data.reg = __GXData[0x254 / 4];
-    data.fields.stages = value;
-    __GXData[0x254 / 4] = data.reg;
+    ind.reg = __GXData[0x254 / 4];
+    ind.fields.stages = nIndStages;
+    __GXData[0x254 / 4] = ind.reg;
     __GXData[0x5FC / 4] |= 6;
 }
 
