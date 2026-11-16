@@ -1256,20 +1256,21 @@ void GXEnableBreakPt(u32 address) {
     ((void (*)(s32))OSRestoreInterrupts)(interruptState);
 }
 
+/* Disable the GX breakpoint and clear its saved address while interrupts are disabled. */
 void GXDisableBreakPt(void) {
-    int intStatus;
-    unsigned int value;
-    unsigned int cleared;
-    unsigned int *data;
-    intStatus = OSDisableInterrupts();
-    data = __GXData;
-    value = data[2];
-    value = __rlwinm(value, 0, 31, 29);
-    cleared = __rlwinm(value, 0, 27, 25);
-    data[2] = cleared;
-    *(unsigned short *)((char *)__cpReg + 2) = (unsigned short)cleared;
+    int savedInterruptState;
+    unsigned int cpStatus;
+    unsigned int clearedCpStatus;
+    unsigned int *gxData;
+    savedInterruptState = OSDisableInterrupts();
+    gxData = __GXData;
+    cpStatus = gxData[2];
+    cpStatus = __rlwinm(cpStatus, 0, 31, 29);
+    clearedCpStatus = __rlwinm(cpStatus, 0, 27, 25);
+    gxData[2] = clearedCpStatus;
+    *(unsigned short *)((char *)__cpReg + 2) = (unsigned short)clearedCpStatus;
     lbl_8055D950 = 0;
-    ((void (*)(int))OSRestoreInterrupts)(intStatus);
+    ((void (*)(int))OSRestoreInterrupts)(savedInterruptState);
 }
 
 extern GXFifoIntrHandler __OSSetInterruptHandler(int, GXFifoIntrHandler);
