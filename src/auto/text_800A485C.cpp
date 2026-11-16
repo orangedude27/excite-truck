@@ -7458,11 +7458,10 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *cursor, s32 byteCount, s32 s
     return ok;
 }
 
-extern "C" s32 fn_800B0868(void *arg0, s32 arg1, u32 length, u32 *arg3) {
+extern "C" s32 fn_800B0868(VFiPFCursor *cur, s32 arg1, u32 length, u32 *arg3) {
     extern s32 fn_800AE620(void *, u32, s32, void *);
     extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32);
     extern s32 VFiPFFILE_Cursor_AdvanceToRead(void *, s32, s32);
-    VFiPFCursor *cur = (VFiPFCursor *)arg0;
     VFiPFVol *vol, *fat;
     s32 result;
     s32 sp8;
