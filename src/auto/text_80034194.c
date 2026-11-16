@@ -697,15 +697,17 @@ void __DSP_remove_task(void *task) {
 #define FST_ENTRY_SIZE 12
 
 #pragma dont_inline on
+/* Initialize the DVD file-system globals from the boot header: record the
+ * low-memory base and FST pointer, then derive the string table from the entry count. */
 void __DVDFSInit(void) {
     u8 *fst;
-    BootInfo_8055D844 = (void *)0x80000000;
-    fst = *(u8 **)0x80000038;
+    BootInfo_8055D844 = (void *)BOOT_INFO_BASE;
+    fst = *(u8 **)FST_PTR_ADDR;
     FstStart_8055D840 = fst;
     if (fst == 0)
         return;
     MaxEntryNum_8055D838 = *(u32 *)(fst + 8);
-    FstStringStart_8055D83C = fst + MaxEntryNum_8055D838 * 12;
+    FstStringStart_8055D83C = fst + MaxEntryNum_8055D838 * FST_ENTRY_SIZE;
 }
 #pragma dont_inline off
 
