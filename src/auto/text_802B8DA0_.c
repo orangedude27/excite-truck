@@ -906,11 +906,12 @@ void fn_802B9F38(void **managerSlot) {
     }
 }
 #pragma pop
-void fn_802B9FC0(void *arg0) {
-    void *buf = *(void **)arg0;
-    if (buf != NULL) {
-        fn_80128670(buf);
-        *(void **)arg0 = NULL;
+/* Free the owned data buffer at offset 0 of the manager, if present, and clear the pointer. */
+void fn_802B9FC0(void *manager) {
+    void *buffer = *(void **)manager;
+    if (buffer != NULL) {
+        fn_80128670(buffer);
+        *(void **)manager = NULL;
     }
 }
 
