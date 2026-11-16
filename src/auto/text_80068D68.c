@@ -20348,7 +20348,6 @@ void l2cu_send_peer_connect_rsp(void *p_ccb, u16 result, u16 status) {
 void l2cu_reject_connection(void *p_lcb, u16 remote_cid, u8 rem_id, u16 result) {
     u8 *packet;
     void *p_buf;
-    u8 zero = 0;
     p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 8, 3, rem_id);
     if (p_buf == NULL) {
         if (lbl_803C4040[0] >= 2) {
@@ -20357,15 +20356,15 @@ void l2cu_reject_connection(void *p_lcb, u16 remote_cid, u8 rem_id, u16 result) 
         return;
     }
     packet = p_buf;
-    packet[0x14] = zero;
-    packet[0x15] = zero;
-    packet[0x16] = remote_cid;
-    packet[0x17] = remote_cid >> 8;
-    packet[0x18] = result;
-    packet[0x19] = result >> 8;
-    packet[0x1A] = zero;
-    packet[0x1B] = zero;
-    ((void (*)(void *, u8, void *, u8, u8))l2c_link_check_send_pkts)(p_lcb, zero, p_buf, remote_cid >> 8, zero);
+    packet[0x14] = 0;
+    packet[0x15] = 0;
+    packet[0x16] = (u8)remote_cid;
+    packet[0x17] = (u8)(remote_cid >> 8);
+    packet[0x18] = (u8)result;
+    packet[0x19] = (u8)(result >> 8);
+    packet[0x1A] = 0;
+    packet[0x1B] = 0;
+    ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, p_buf);
 }
 
 /* Build and send an L2CAP "configuration request" message to the peer, asking
