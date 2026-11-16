@@ -8256,14 +8256,19 @@ void fn_80125014(void *arg0) {
 
 void fn_80125098(void *arg0) {
     f32 f0, f1, f2, f3;
+    f32 diff0, sum0, diff1, sum1;
     f3 = *(f32 *)((u8 *)arg0 + 0);
     f1 = *(f32 *)((u8 *)arg0 + 8);
     f2 = *(f32 *)((u8 *)arg0 + 4);
     f0 = *(f32 *)((u8 *)arg0 + 12);
-    *(f32 *)((u8 *)arg0 + 4) = f2 - f0;
-    *(f32 *)((u8 *)arg0 + 8) = f3 - f1;
-    *(f32 *)((u8 *)arg0 + 0) = f3 + f1;
-    *(f32 *)((u8 *)arg0 + 12) = f2 + f0;
+    diff0 = f3 - f1;
+    sum0 = f3 + f1;
+    diff1 = f2 - f0;
+    sum1 = f2 + f0;
+    *(f32 *)((u8 *)arg0 + 8) = diff0;
+    *(f32 *)((u8 *)arg0 + 0) = sum0;
+    *(f32 *)((u8 *)arg0 + 4) = sum1;
+    *(f32 *)((u8 *)arg0 + 12) = diff1;
 }
 
 #pragma push
