@@ -17,6 +17,7 @@ extern char DriveInfo[];
 extern BOOL __OSInIPL;
 extern const char lbl_80558F0C[4];
 
+extern void *memcpy(void *, const void *, unsigned int);
 extern void **OSExceptionTable_8055D9D0;
 extern void OSReport(const char *, ...);
 extern u32 OSGetConsoleType(void);
@@ -223,87 +224,92 @@ static inline void ClearMEM2Range(void *mem, u32 size) {
 #pragma push
 #pragma scheduling invalid_target
 void ClearArena(void) {
-    unsigned int reset;
+    unsigned int reset = OSGetResetCode();
     unsigned int base;
     unsigned int flush;
     unsigned int size;
-    reset = OSGetResetCode();
+
     if ((reset >> 31) == 0) {
         size = OSGetArenaHi();
         size -= OSGetArenaLo();
         base = OSGetArenaLo();
-        if (size <= 0x40000U)
+        if (size <= 0x40000)
             goto clear0_small;
-        flush = size - 0x40000U;
-        flush = base + flush;
+        flush = size - 0x40000;
+        flush = flush - (0U - base);
         goto clear0_join;
     clear0_small:
         flush = base;
     clear0_join:
         DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000U);
+        DCFlushRange(flush, 0x40000);
         return;
     }
-    if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000U) != 0) {
+
+    if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000) != 0) {
         size = OSGetArenaHi();
         size -= OSGetArenaLo();
         base = OSGetArenaLo();
-        if (size <= 0x40000U)
+        if (size <= 0x40000)
             goto clear1_small;
-        flush = size - 0x40000U;
-        flush = base + flush;
+        flush = size - 0x40000;
+        flush = flush - (0U - base);
         goto clear1_join;
     clear1_small:
         flush = base;
     clear1_join:
         DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000U);
+        DCFlushRange(flush, 0x40000);
         return;
     }
+
     if (OSGetArenaLo() >= __OSRebootParams[3])
         return;
+
     if (OSGetArenaHi() <= __OSRebootParams[3]) {
         size = OSGetArenaHi();
         size -= OSGetArenaLo();
         base = OSGetArenaLo();
-        if (size <= 0x40000U)
+        if (size <= 0x40000)
             goto clear2_small;
-        flush = size - 0x40000U;
-        flush = base + flush;
+        flush = size - 0x40000;
+        flush = flush - (0U - base);
         goto clear2_join;
     clear2_small:
         flush = base;
     clear2_join:
         DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000U);
+        DCFlushRange(flush, 0x40000);
         return;
     }
+
     size = __OSRebootParams[3] - OSGetArenaLo();
     base = OSGetArenaLo();
-    if (size <= 0x40000U)
+    if (size <= 0x40000)
         goto clear3_small;
-    flush = size - 0x40000U;
-    flush = base + flush;
+    flush = size - 0x40000;
+    flush = flush - (0U - base);
     goto clear3_join;
 clear3_small:
     flush = base;
 clear3_join:
     DCZeroRange((void *)base, size);
-    DCFlushRange(flush, 0x40000U);
+    DCFlushRange(flush, 0x40000);
+
     base = __OSRebootParams[4];
     if (OSGetArenaHi() > base) {
         size = OSGetArenaHi();
         size -= base;
-        if (size <= 0x40000U)
+        if (size <= 0x40000)
             goto clear4_small;
-        flush = size - 0x40000U;
-        flush = base + flush;
+        flush = size - 0x40000;
+        flush = flush - (0U - base);
         goto clear4_join;
     clear4_small:
         flush = base;
     clear4_join:
         DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000U);
+        DCFlushRange(flush, 0x40000);
     }
 }
 #pragma pop
