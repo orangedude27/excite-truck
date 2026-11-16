@@ -329,7 +329,10 @@ extern "C" f32 __fabsf(f32);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-struct S28_80142118 { s32 v[7]; };
+/* 28-byte zone/item-group state block: seven raw words copied by value
+ * between a saved slot and the live state (fn_80142118, e.g. +0x48 -> +0x64). */
+struct ZoneState28 { s32 word[7]; };
+typedef struct ZoneState28 S28_80142118;
 
 struct TVec2 { f32 x; f32 y; };
 struct Fn801436E0TextStyle { u32 a, b, c, d; f32 size; u32 f, g, h; };
