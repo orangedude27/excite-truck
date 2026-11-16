@@ -4212,11 +4212,12 @@ extern "C" s32 fn_800F81AC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" s32 fn_800F81EC(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_800F81EC(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_800F822C(s32 arg0) {
@@ -7571,10 +7572,11 @@ extern "C" const char lbl_80326C58[];
 extern "C" void NotifyAsyncEnd__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFb(void *self, bool success) {
     u32 token;
     void *list1;
-    u32 successSave;
     void *node;
     void *list2;
     void *iterator;
+    struct { u32 v; } successBox;
+    u32 &successSave = successBox.v;
     successSave = success;
     token = OSDisableInterrupts();
     list1 = (u8 *)*(void **)((u8 *)self + 4) + 0xA0;
