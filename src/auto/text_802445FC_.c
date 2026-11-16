@@ -88,10 +88,18 @@ __declspec(section ".sdata") extern float lbl_805637F0;
 __declspec(section ".sdata") extern float lbl_805637F4;
 __declspec(section ".sdata") extern double lbl_805637F8;
 
-void fn_802447C4(void *arg0) {
-    fn_8002167C();
-    fn_8020A634();
-    fn_8020A5F8(*(float *)((char *)arg0 + 0x28));
+void fn_802447C4(void *fadeState) {
+#define HideOverlay fn_8002167C
+#define ClearMusicPlayFlag fn_8020A634
+#define SetPlayerMusicVolume fn_8020A5F8
+    /* Start a race music fade: hide the tips/results overlay, clear the
+     * "music: play!" flag and set player music volume to the state's start value. */
+    HideOverlay();
+    ClearMusicPlayFlag();
+    SetPlayerMusicVolume(*(float *)((char *)fadeState + 0x28));
+#undef SetPlayerMusicVolume
+#undef ClearMusicPlayFlag
+#undef HideOverlay
 }
 
 void fn_802447FC(void *arg0) {
