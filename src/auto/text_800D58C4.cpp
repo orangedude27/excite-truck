@@ -2073,11 +2073,15 @@ extern "C" s32 fn_800D9344(void *arg0) {
 }
 
 extern "C" s32 fn_800D9364(void *arg0) {
-    MatGXBits_800D8B28 *c = (MatGXBits_800D8B28 *)((u8 *)arg0 + 0x4C);
-    u8 *base = *(u8 **)((u8 *)arg0 + 0x58);
-    u32 left = c->gen * 4 + c->tex * 32;
-    u8 *right = base + c->srt * 0x14;
-    return (s32)(left + right);
+    volatile u32 *p = (volatile u32 *)((u8 *)arg0 + 0x4C);
+    u32 x = *p;
+    s32 y = *(volatile s32 *)((u8 *)arg0 + 0x58);
+    u32 n = (x >> 0x18) & 0xF;
+    u32 a = (x >> 0x12) & 0x3C;
+    u32 b = (x >> 0x17) & 0x1E0;
+    s32 t = y + n * 0x14;
+    s32 u = a + b;
+    return u + t;
 }
 
 extern "C" s32 fn_800D938C(void* arg0) {
