@@ -6210,6 +6210,7 @@ void fn_8007403C(void) {
     }
 }
 
+/* Deregister the BTA DM power-manager status callback (mask 4 = BTM_PM_DEREG); the pm-id slot is bta_dm_cb + 0x95. */
 void fn_800740A4(void) {
     BTM_PmRegister(4, lbl_803C0C14 + 0x95, 0);
 }
