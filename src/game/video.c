@@ -761,16 +761,17 @@ void fn_802E0D44(u32 size) {
     }
 }
 
-void fn_802E0E60(arg0)
-void *arg0;
+/* RealName: Video_FreeBinkIfLoaded (tentative). If the Bink handle at object+4 is set, cleans up associated subobject at +0x50 via fn_802E1728, frees the Bink via fn_80118DC0 (BinkClose), and clears the handle. */
+void fn_802E0E60(object)
+void *object;
 {
-    s32 *field;
+    s32 *binkHandle;
 
-    field = (s32 *)((u8 *)arg0 + 4);
-    if (*field != 0) {
-        fn_802E1728((u8 *)arg0 + 0x50);
-        fn_80118DC0((void *)*field);
-        *field = 0;
+    binkHandle = (s32 *)((u8 *)object + 4);
+    if (*binkHandle != 0) {
+        fn_802E1728((u8 *)object + 0x50);
+        fn_80118DC0((void *)*binkHandle);
+        *binkHandle = 0;
     }
 }
 
