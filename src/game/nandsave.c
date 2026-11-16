@@ -279,12 +279,17 @@ void fn_802E8CA8(void) {
     fn_802E2E0C((void *)fn_802E8C6C, &lbl_8055D250);
 }
 
+/* Shut down NAND save: wait for async end, detach save pump, and free the async buffer. */
 void fn_802E8D2C(void) {
-    ((int (*)(void *, void (*)(void)))fn_802E95E0)(lbl_8034DF00, fn_802E8838);
+#define sMemCardEndOpName lbl_8034DF00
+#define sNandSaveAsyncBuffer lbl_80560020
+    ((int (*)(void *, void (*)(void)))fn_802E95E0)(sMemCardEndOpName, fn_802E8838);
     fn_80127D58((void *)fn_802E9010);
     fn_802E6B94();
-    fn_80128670(lbl_80560020);
-    lbl_80560020 = 0;
+    fn_80128670(sNandSaveAsyncBuffer);
+    sNandSaveAsyncBuffer = 0;
+#undef sMemCardEndOpName
+#undef sNandSaveAsyncBuffer
 }
 
 extern void *lbl_80560024;
