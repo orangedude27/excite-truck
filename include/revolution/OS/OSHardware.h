@@ -232,10 +232,10 @@ typedef enum {
     MI_REG_0x18,    //!< 0xCC004018
     MI_REG_0x1A,    //!< 0xCC00401A
     MI_INTMR,       //!< 0xCC00401C
-    MI_INTSR,       //!< 0xCC00401E
-    MI_REG_0x20,    //!< 0xCC004020
-    MI_ADDRLO,      //!< 0xCC004022
-    MI_ADDRHI,      //!< 0xCC004024
+    MI_INTSR,       //!< 0xCC00401E interrupt cause (MI_INTSR_*)
+    MI_REG_0x20,    //!< 0xCC004020 protection interrupt; written 0 to acknowledge it
+    MI_ADDRLO,      //!< 0xCC004022 bits 0-15 of the address that caused the interrupt
+    MI_ADDRHI,      //!< 0xCC004024 that address's bits 16-25 in its low 10 bits
     MI_REG_0x26,    //!< 0xCC004026
     MI_REG_0x28,    //!< 0xCC004028
     // . . .
