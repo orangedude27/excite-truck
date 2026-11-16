@@ -557,14 +557,18 @@ void usr_puts_serial(void) {
     lbl_8055D720 = 0;
 }
 
-void TRKDispatchMessage(void **arg0) {
+void TRKDispatchMessage(void **out) {
+    /* Return the current AUX-A DSP input buffer through *out, or NULL when no
+     * AUX-A callback is registered. lbl_8055D728 = AUX-A callback,
+     * lbl_8055D6F8 = DSP write ring index, lbl_8035BFA0 = AUX-A buffer array
+     * (0x480 bytes per ring slot). */
     extern u8 lbl_8035BFA0[];
     extern s32 lbl_8055D6F8;
     if (lbl_8055D728 != 0) {
-        *arg0 = lbl_8035BFA0 + lbl_8055D6F8 * 0x480;
+        *out = lbl_8035BFA0 + lbl_8055D6F8 * 0x480;
         return;
     }
-    *arg0 = 0;
+    *out = 0;
 }
 
 void __AXGetAuxAOutput(void **arg0) {
