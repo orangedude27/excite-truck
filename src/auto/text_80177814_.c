@@ -512,6 +512,8 @@ void fn_80178224(void) {
 }
 
 #pragma scheduling on
+/* Allocate the 0xD0-byte "PhobStatic" MemorySoundArchive and construct it.
+   The freshly allocated object reaches the fn_8017ACCC constructor in r3. */
 void fn_80178258(void) {
     if (fn_801284F8(0xD0, &lbl_8033192C) != 0) {
         fn_8017ACCC();
