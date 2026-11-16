@@ -6184,6 +6184,17 @@ extern "C" s32 VFiPFFAT_GetClusterSpecified(void *fileInfo, u32 startCluster, u3
 }
 
 extern "C" s32 fn_800ADD84(void *, s32, s32, s32, u32 *, s32 *);
+static inline s32 fn_800AE3A8FindCluster(void *arg0, s32 arg1, s32 arg2, u32 *arg3) {
+    s32 spC;
+    u32 sp8;
+    s32 res;
+    *arg3 = (u32)-1;
+    res = fn_800ADD84(arg0, arg1, 2, arg2, &sp8, &spC);
+    if (res != 0) return res;
+    if (sp8 >= 2 && sp8 < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x34) + 2)
+        *arg3 = sp8;
+    return 0;
+}
 extern "C" s32 fn_800AE3A8(void *arg0, s32 arg1, s32 arg2, u32 *arg3) {
     s32 spC;
     u32 sp8;
@@ -6205,12 +6216,14 @@ extern "C" s32 fn_800AE3A8(void *arg0, s32 arg1, s32 arg2, u32 *arg3) {
     }
     *arg3 = (u32)-1;
     var_r3 = fn_800ADD84(arg0, arg1, 2, arg2, &sp8, &spC);
-    if (var_r3 == 0) {
-        if ((sp8 >= 2) && (sp8 < (u32)(*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x34) + 2))) {
-            *arg3 = sp8;
-        }
-        var_r3 = 0;
+    if (var_r3 == 0) goto ok;
+    goto check;
+ok:
+    if ((sp8 >= 2) && (sp8 < (u32)(*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x34) + 2))) {
+        *arg3 = sp8;
     }
+    var_r3 = 0;
+check:
     if (var_r3 != 0) {
         return var_r3;
     }
