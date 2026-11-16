@@ -1297,10 +1297,12 @@ void fn_801F387C(void *unused, int arg1) {
     tmp = words[3].b[1]; words[3].b[1] = words[3].b[2]; words[3].b[2] = tmp;
 }
 
-void fn_801F3920(void *arg0) {
+void fn_801F3920(void *params) {
     extern int fn_80297990(int);
-    if (*(unsigned char *)((char *)arg0 + 4) != 0) {
-        fn_80297990(*(int *)((char *)arg0 + 8));
+    /* Install the shadow-volume handle from the parameter block (+8) when its
+     * flag byte (+4) is set, otherwise reset it to the invalid-handle sentinel. */
+    if (*(unsigned char *)((char *)params + 4) != 0) {
+        fn_80297990(*(int *)((char *)params + 8));
     } else {
         fn_80297990(0x80000000);
     }
