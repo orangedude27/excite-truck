@@ -378,47 +378,45 @@ void fn_802C595C(char *dst, int size, const char *name, int id) {
     char *entry;
     register const unsigned char *src;
     unsigned char c;
-
     i = 0;
     offset = 0;
     goto table_check;
-
 table_loop:
     entry = (char *)(unsigned long)lbl_804C13B4[2] + offset;
     if (stricmp(name, entry) == 0) {
         if (id == *(int *)(entry + 0x10)) {
             src = (const unsigned char *)(entry + 0x14);
-            do {
-                if (--size <= 0) {
-                    dst[-1] = 0;
-                    goto done;
-                }
-                c = *src++;
-                *dst++ = c;
-            } while ((signed char)c != 0);
-            goto done;
+            goto copy_body;
+copy_check:
+            if (--size <= 0) {
+                dst[-1] = 0;
+                goto done;
+            }
+copy_body:
+            c = *src++;
+            *dst++ = c;
+            if ((signed char)c == 0) goto done;
+            goto copy_check;
         }
     }
-
 table_next:
     offset += 0x2C;
     i++;
-
 table_check:
-    if (i < lbl_804C13B4[0]) {
-        goto table_loop;
-    }
-
+    if (i < lbl_804C13B4[0]) goto table_loop;
+    else goto fallback_copy;
 fallback_copy:
-    do {
-        if (--size <= 0) {
-            dst[-1] = 0;
-            goto done;
-        }
-        c = *name++;
-        *dst++ = c;
-    } while ((signed char)c != 0);
-
+    goto fallback_body;
+fallback_check:
+    if (--size <= 0) {
+        dst[-1] = 0;
+        goto done;
+    }
+fallback_body:
+    c = *name++;
+    *dst++ = c;
+    if ((signed char)c == 0) goto done;
+    goto fallback_check;
 done:
     return;
 }
@@ -951,7 +949,6 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
     char *scan = (char *)(unsigned long)lbl_804C139C[2];
     char *found = 0;
     char *empty = 0;
-    char *entry;
     int i;
 
     for (i = 0; i < count; i++) {
@@ -1015,13 +1012,11 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
                 }
             }
         }
-        entry = empty;
-    } else {
-        entry = found;
+        found = empty;
     }
 
-    (*(int *)entry)++;
-    return (int)(entry - (char *)(unsigned long)lbl_804C139C[2]) / 0x10;
+    (*(int *)found)++;
+    return (int)(found - (char *)(unsigned long)lbl_804C139C[2]) / 0x10;
 }
 
 #pragma push
