@@ -2798,8 +2798,10 @@ extern "C" void fn_8012E81C(s32 arg0) {
 }
 #pragma pop
 
-extern "C" s32 fn_8012E938(s32 arg0) {
-    return fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0;
+extern "C" s32 fn_8012E938(s32 name) {
+    /* Return nonzero if a resource set with this directory name is already
+       registered in the global resource-manager list (lbl_8055E000). */
+    return fn_8012BD3C(lbl_8055E000, (const char *)name) != 0;
 }
 
 /* Ensures the resource named by arg0 is loaded via the external-TOC manager: locates its owning set/mount, then waits for that resource to become ready. */
