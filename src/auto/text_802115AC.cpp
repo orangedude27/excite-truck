@@ -2569,9 +2569,10 @@ extern "C" void fn_80215904(void *wrapper) {
     ((VfObj *)*(void **)((char *)wrapper + 0x244))->vf5();
 }
 
-extern "C" void fn_80215944(void *arg0) {
+extern "C" void fn_80215944(void *wrapper) {
+    /* Tick the shared widget state, then forward vf6 to the widget held at +0x244 of the wrapper. */
     fn_80219354();
-    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf6();
+    ((VfObj *)*(void **)((char *)wrapper + 0x244))->vf6();
 }
 
 extern "C" void fn_80215984(void *arg0) {
