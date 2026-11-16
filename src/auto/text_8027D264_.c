@@ -219,9 +219,12 @@ void *fn_8027D5B8(void *thisPtr) {
     return thisPtr;
 }
 #pragma scheduling on
-int fn_8027D634(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_8027D634(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 /* Constructs an nw4r::ef::Effect object (vtable variant at lbl_80347CF8):
