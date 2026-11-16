@@ -658,7 +658,7 @@ void fn_801F602C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     float var_f1, var_f1_2, var_f1_3, var_f1_4;
     float var_f0, var_f0_2, var_f0_3, var_f0_4;
     int temp_r0, temp_r0_2, temp_r0_3, temp_r0_4;
-    float var_f29, var_f28, var_f27, var_f26, temp_f0_5, var_f1_5;
+    float var_f29, var_f28, var_f27, var_f26, var_f1_5, temp_f0_5;
     int var_r0, var_r0_2, var_r0_3, var_r0_4, var_r3, var_r3_2, var_r3_3, var_r3_4;
     var_f31 = PSQUATMultiply((void *)(arg1 + 0x30), (void *)(arg1 + 0x48));
     temp_f1 = PSQUATMultiply((void *)arg1, (void *)(arg1 + 0x18));
@@ -1028,7 +1028,6 @@ FN_801F6A08_RETURN fn_801F6A08(void *object, int shouldFree) {
 
 extern float fn_801E7E24(void);
 extern unsigned char fn_802CDB20(int, int);
-#pragma scheduling invalid_target
 #pragma push
 #pragma processor 750
 void fn_801F6A98(void *arg0, int arg1) {
@@ -1055,9 +1054,9 @@ loop:
         sp[4] = b - offset;
         sp[5] = c;
         fn_801F63F0(entry, sp + 3, *(float *)((char *)entry + 0x44));
+        fn_801F65D0(entry);
+        fn_801F6728(entry);
     }
-    fn_801F65D0(entry);
-    fn_801F6728(entry);
     *(unsigned char *)((char *)entry + 0x38) = fn_802CDB20(arg1, *(int *)((char *)entry + 0x34));
     entry = (char *)entry + 0x48;
     i++;
