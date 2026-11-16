@@ -66,11 +66,12 @@ extern "C" int fn_802B5448(void *arg0) {
 }
 #pragma cplusplus on
 extern "C" int fn_802B5488(void *arg0) {
-    class Obj {
+    /* Returns nonzero if the item's vtable name is "global_parameters". */
+    class UMatNamedItem {
     public:
         virtual const char *getName();
     };
-    return stricmp(lbl_8034A510, ((Obj *)arg0)->getName()) == 0;
+    return stricmp(lbl_8034A510, ((UMatNamedItem *)arg0)->getName()) == 0;
 }
 extern const char lbl_8034A524[];
 extern "C" int fn_802B54CC(void *arg0) {
