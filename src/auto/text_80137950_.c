@@ -194,10 +194,11 @@ int __AXGetStackHead_80137CFC(int index) { return lbl_8042F798[index]; }
 
 #pragma dont_inline fn_80137C84
 void fn_80137D10(void) {
-    int i = 0;
+    /* Initialize the 4-entry table by setting each slot's mapping to its own index (via fn_80137C84). */
+    int index = 0;
     do {
-        fn_80137C84(i, i);
-        i++;
-    } while (i < 4);
+        fn_80137C84(index, index);
+        index++;
+    } while (index < 4);
 }
 
