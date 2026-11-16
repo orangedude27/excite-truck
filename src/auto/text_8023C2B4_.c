@@ -298,7 +298,8 @@ void fn_8023C98C(void *sequence) {
     *index = (*index + 1) % count;
 }
 
-s32 fn_8023C9B0(void *arg0) {
-    return ((s32 *)*(char **)((char *)arg0 + 0x10))[*(s32 *)(*(char **)((char *)arg0 + 0x18))];
+// Return the item in the sequence's +0x10 table at its current cursor index (+0x18).
+s32 fn_8023C9B0(void *sequence) {
+    return ((s32 *)*(char **)((char *)sequence + 0x10))[*(s32 *)(*(char **)((char *)sequence + 0x18))];
 }
 
