@@ -3504,13 +3504,14 @@ extern "C" void fn_8015D270(void* self, void* param) {
     }
 }
 
-extern "C" void fn_8015D318(Unk801577F0* arg0, f32 arg1, s32 unused, s32 arg2) {
-    if (arg2 == 5) {
-        f32 value;
-        if (arg1 < lbl_80561754) value = arg1 - lbl_80561760;
-        else value = lbl_80561760 + arg1;
-        s32 conv = (s32)value;
-        *(volatile s32*)&arg0->m26c += conv;
+/* RealName: AccumulateFloatToM26CWhenMode5 (tentative). When arg2==5, converts arg1 to s32 with +/-0.5 rounding and adds it to m26c (accumulated counter at +0x26C). */
+extern "C" void fn_8015D318(Unk801577F0* object, f32 value, s32 unused, s32 mode) {
+    if (mode == 5) {
+        f32 roundedValue;
+        if (value < lbl_80561754) roundedValue = value - lbl_80561760;
+        else roundedValue = lbl_80561760 + value;
+        s32 delta = (s32)roundedValue;
+        *(volatile s32*)&object->m26c += delta;
     }
 }
 
