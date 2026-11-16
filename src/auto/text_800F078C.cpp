@@ -188,11 +188,12 @@ extern "C" void Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCQ56nw4hbm3snd6detail8Se
     };
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324060, 0x80, (const char *)lbl_80324074);
     if (arg1 != 0) {
-        ((const SeqLoadCallback *)arg1)->Invoke(NotifyLoadAsyncEndSeqData__Q46nw4hbm3snd6detail8SeqSoundFbPCvlPv, arg0, arg2);
-    }
+        ((const SeqLoadCallback *)arg1)->Invoke(
+            NotifyLoadAsyncEndSeqData__Q46nw4hbm3snd6detail8SeqSoundFbPCvlPv, arg0, arg2);
     *(void **)((u8 *)arg0 + 0x1EC) = (void *)arg1;
     *(unsigned long *)((u8 *)arg0 + 0x1F0) = arg2;
     *(volatile u8 *)((u8 *)arg0 + 0x1E8) = 1;
+    }
 }
 
 #pragma push
