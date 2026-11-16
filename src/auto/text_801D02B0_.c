@@ -31,10 +31,11 @@ typedef struct { float f[3]; signed char b0; unsigned char b1; short pad; int i;
       lbl_8055E8C0 = 0;
   }
   
-void *fn_801D04A8(int arg0) {
-    if (arg0 < 0 || arg0 >= 8)
-        arg0 = 0;
-    return &lbl_80338098[arg0 * 0x14];
+/* Return surface record `index` from the 8-entry table, clamping out-of-range indices to 0. */
+SurfRec *fn_801D04A8(int index) {
+    if (index < 0 || index >= 8)
+        index = 0;
+    return &((SurfRec *)lbl_80338098)[index];
 }
   
 #pragma push
