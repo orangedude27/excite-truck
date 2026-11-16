@@ -48,6 +48,13 @@ extern unsigned char lbl_8055D645;
 extern int lbl_8055D638;
 extern int lbl_8055D63C;
 extern int lbl_8055D640;
+/* Tips/results overlay state, started by fn_8001FEE8 and advanced by fn_800207B0. */
+#define TIPS_START_MS  lbl_8055D63C /* overlay start time, drives the fade-in */
+#define TIPS_CAMERA_MS lbl_8055D638 /* time the current tips camera entry began */
+#define TIPS_WAIT_MS   lbl_8055D640 /* last tick while the overlay is paused */
+#define OVERLAY_ON     lbl_8055D644 /* the overlay is being shown */
+#define OVERLAY_PAUSED lbl_8055D645 /* overlay waits for a pause/jump condition to clear */
+#define GetTimeMs      fn_802E2C20
 extern unsigned char lbl_8055D670;
 extern int lbl_8055D64C;
 extern unsigned int lbl_8055E044;
