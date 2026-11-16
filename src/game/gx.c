@@ -2496,6 +2496,9 @@ void fn_802D2218(void) {
     }
 }
 #pragma pop
+/* Refresh the GX pipeline for the frame: rebuild the perspective projection,
+ * set the viewport/scissor, set up the 2D overlay pass, and flush pending
+ * render-state changes (blend mode, fog, lights, TEV colors). */
 void fn_802D2614(void) {
     fn_802D14D8();
     fn_802D1678();
