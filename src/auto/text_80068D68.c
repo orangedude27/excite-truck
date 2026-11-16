@@ -5042,9 +5042,9 @@ void fn_80070AF0(s32 shutdownCallback) {
 #undef gShutdownCallback
 }
 
-typedef int (*Fn80070B24Callback)(int);
+typedef int (*ShutdownCallbackFn)(int);
 int fn_80070B24(int arg0) {
-    Fn80070B24Callback callback = (Fn80070B24Callback)lbl_8055DC74;
+    ShutdownCallbackFn callback = (ShutdownCallbackFn)lbl_8055DC74;
 
     if (callback == 0) {
         return arg0;
