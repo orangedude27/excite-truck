@@ -666,10 +666,10 @@ extern "C" void *AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6
     return chan;
 }
 
-extern "C" void fn_800EAD00(void *arg0) {
-    if (arg0 != 0) {
-        *(int *)((char *)arg0 + 0xD8) = 0;
-        *(int *)((char *)arg0 + 0xDC) = 0;
+extern "C" void fn_800EAD00(void *channel) {
+    if (channel != 0) {
+        *(int *)((char *)channel + 0xD8) = 0;
+        *(int *)((char *)channel + 0xDC) = 0;
     }
 }
 
