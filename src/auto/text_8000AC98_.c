@@ -863,14 +863,15 @@ check:
 }
 
 void fn_8000BD64(void) {
-    float value2 = lbl_80560204;
-    float value1 = lbl_805601FC;
-    *(volatile float *)lbl_8034F5F8 = value1;
-    ((volatile float *)lbl_8034F5F8)[2] = value2;
-    ((volatile float *)lbl_8034F5F8)[1] = value2;
-    *(volatile float *)lbl_8034F604 = value1;
-    ((volatile float *)lbl_8034F604)[2] = value2;
-    ((volatile float *)lbl_8034F604)[1] = value2;
+    /* Game-loop startup: reset the two module-level 3-float vectors to (1000.0, 0.0, 0.0). */
+    float zeroValue = lbl_80560204;
+    float highValue = lbl_805601FC;
+    *(volatile float *)lbl_8034F5F8 = highValue;
+    ((volatile float *)lbl_8034F5F8)[2] = zeroValue;
+    ((volatile float *)lbl_8034F5F8)[1] = zeroValue;
+    *(volatile float *)lbl_8034F604 = highValue;
+    ((volatile float *)lbl_8034F604)[2] = zeroValue;
+    ((volatile float *)lbl_8034F604)[1] = zeroValue;
 }
 
 void fn_8000BD98(void) {
