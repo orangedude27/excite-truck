@@ -108,10 +108,18 @@ int fn_801F1CF0(int arg0) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_801F1D68(void) {
-    void **slot = (void **)fn_801284F8(4, (void *)&lbl_8055B118);
+#define RegisterClassSlot fn_801284F8
+#define GenericTag lbl_8055B118
+#define GenericVtable lbl_8033A9E8
+    /* Register the "Generic" class: look up its 4-byte slot in the class
+       registry and install its vtable there. */
+    void **slot = (void **)RegisterClassSlot(4, (void *)&GenericTag);
     if (slot != 0) {
-        *slot = (void *)&lbl_8033A9E8;
+        *slot = (void *)&GenericVtable;
     }
+#undef RegisterClassSlot
+#undef GenericTag
+#undef GenericVtable
 }
 
 void *fn_801F1DA4(void) {
