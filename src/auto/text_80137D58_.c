@@ -585,7 +585,14 @@ void *fn_80138968(int arg0) {
 }
 #pragma dont_inline reset
 
-void fn_80138AD8(void **arg0) { void *p=*arg0; fn_8013C428(*(int*)((char*)p+0x28),p); fn_8012C4D8(*arg0); *arg0=0; }
+/* RealName: ReleaseCachedObjectRef_80138AD8 */
+void fn_80138AD8(void **objectSlot) {
+    /* Release one reference to a cached object, free it, and clear the slot. */
+    void *object = *objectSlot;
+    fn_8013C428(*(int *)((char *)object + 0x28), object);
+    fn_8012C4D8(*objectSlot);
+    *objectSlot = 0;
+}
 
 void *fn_80138B1C(void *arg0) { void *p=*(void **)((char*)arg0+0x24); void *result=0; while(p){ if(*(int*)p==0){result=p;break;} p=*(void **)((char*)p+4); } return result; }
 
