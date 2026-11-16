@@ -12825,15 +12825,18 @@ extern "C" s32 fn_800BA160(s32 arg0) {
 #pragma small_data off
 extern "C" u32 lbl_8031C2B8[];
 extern "C" u32 lbl_802F3F54[];
-extern "C" s32 fn_800BA194(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 a4;
-    s32 val;
-    a4 = arg4;
-    if (arg0 == 0 || arg1 == 0 || a4 == 0) {
+/* Validate the handle, destination buffer and output pointer, then read
+ * `count` sectors of the device's sector size starting at `lba` into `addr`
+ * via fn_800BA49C (which also reports the sectors done through `outPtr`). */
+extern "C" s32 fn_800BA194(s32 handle, s32 addr, s32 lba, s32 count, s32 outPtr) {
+    s32 outCheck;
+    s32 sectorSize;
+    outCheck = outPtr;
+    if (handle == 0 || addr == 0 || outCheck == 0) {
         return 1;
     }
-    val = *(s32 *)(lbl_80407300 + 4);
-    return fn_800BA49C(arg3, arg1, arg2, val, (s32 *)arg4);
+    sectorSize = *(s32 *)(lbl_80407300 + 4);
+    return fn_800BA49C(count, addr, lba, sectorSize, (s32 *)outPtr);
 }
 
 extern "C" s32 fn_800BA688(void *, s32, s32, s32, s32 *);
