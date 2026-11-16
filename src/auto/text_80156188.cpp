@@ -572,6 +572,7 @@ extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
     s32 offset;
     s32 j;
     s32 offset2;
+    s32 zero = 0;
     if (arg0 != 0) {
         Obj *self = (Obj *)arg0;
         self->vtable = lbl_8032E424;
@@ -590,22 +591,19 @@ extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
             offset2 += 4;
             j++;
         }
-        {
-            s32 zero = 0;
-            self->itemCount = zero;
-            if ((s32)self + 0x90 != 0) {
-                if ((s32)self + 0x90 != 0) {
-                    self->items = 0;
-                    self->itemCount = zero;
-                    self->itemCapacity = zero;
-                }
+        self->itemCount = zero;
+        if (&self->items != 0) {
+            if (&self->items != 0) {
+                self->items = 0;
+                self->itemCount = zero;
+                self->itemCapacity = zero;
             }
-            if ((s32)self + 4 != 0) {
-                if ((s32)self + 4 != 0) {
-                    self->first = 0;
-                    self->firstCount = 0;
-                    *(s32 *)((char *)self + 0xC) = 0;
-                }
+        }
+        if (&self->first != 0) {
+            if (&self->first != 0) {
+                self->first = 0;
+                self->firstCount = zero;
+                *(s32 *)((char *)self + 0xC) = zero;
             }
         }
         if (arg1 > 0)
