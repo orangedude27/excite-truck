@@ -856,7 +856,14 @@ int fn_802CB128(int arg0, int arg1, int arg2, int arg3) {
     p[10] = fn_802CA4E0(p[11], (int)&lbl_8055D064, 1, 0, p[13]);
     return ((char *)p - (char *)lbl_8055FCB0) / 0x4C;
 }
-void fn_802CB228(int arg0) { int *entry = (int *)(lbl_8055FCB0 + arg0 * 0x4C); ((void (*)(int))fn_802D8FB4)(entry[0x28 / 4]); fn_80128668(entry[0x2C / 4]); entry[0x2C / 4] = 0; entry[0] = 0; }
+/* Release a texture slot: destroy its GPU texture object, free its resource handle, and clear the slot. */
+void fn_802CB228(int slotIndex) {
+    int *slot = (int *)(lbl_8055FCB0 + slotIndex * 0x4C);
+    ((void (*)(int))fn_802D8FB4)(slot[0x28 / 4]);
+    fn_80128668(slot[0x2C / 4]);
+    slot[0x2C / 4] = 0;
+    slot[0] = 0;
+}
 
 unsigned short fn_802CB3FC(int arg0) {
     int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
