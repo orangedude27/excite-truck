@@ -3299,7 +3299,9 @@ void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
     reg->formatLow = fmt;
 }
 
-void GXSetDispCopyFrame2Field(s32 value) {
+void GXSetDispCopyFrame2Field(s32 mode) {
+    /* Set the 2-bit frame-to-field mode in the display-copy control register (0x23C)
+     * and clear the corresponding field in the register at 0x24C. */
     union {
         unsigned int reg;
         struct {
@@ -3310,7 +3312,7 @@ void GXSetDispCopyFrame2Field(s32 value) {
     } data;
     unsigned int *gx = __GXData;
     data.reg = gx[0x23C / 4];
-    data.fields.field = value;
+    data.fields.field = mode;
     gx[0x23C / 4] = data.reg;
     gx[0x24C / 4] &= 0xFFFFCFFF;
 }
