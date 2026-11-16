@@ -12150,8 +12150,10 @@ void bta_dm_sdp_result(u8 *p_data) {
     }
 }
 
+typedef void (*DmSearchCallback)(u32 event, u32 data);
 void fn_80072434(void) {
-    ((void (*)(u32, u32))*(u32 *)lbl_803C0B98)(3, 0);
+    /* BTA DM search: notify the registered search callback that discovery is complete. */
+    ((DmSearchCallback)*(u32 *)lbl_803C0B98)(3, 0);
 }
 
 /* Report a service discovery result to the search callback, then post a search-complete event. */
