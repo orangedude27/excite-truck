@@ -387,10 +387,12 @@ extern int fn_802D0514(int);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_802CDAFC(void *arg0, int arg1) {
-    int a = *(int *)((char *)arg0 + 0x18);
-    unsigned b = *(int *)((char *)arg0 + 0x10);
-    lbl_8055DFC4[arg1 + a + b + 1] = 0;
+void fn_802CDAFC(void *object, int objectIndex) {
+    /* Clear this object's per-object flag byte in the shared draw context, the
+     * same byte fn_802CDB20 tests. */
+    int offset18 = *(int *)((char *)object + 0x18);
+    unsigned offset10 = *(int *)((char *)object + 0x10);
+    gDrawContext[objectIndex + offset18 + offset10 + 1] = 0;
 }
 
 #pragma push
