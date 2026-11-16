@@ -539,9 +539,11 @@ int fn_8022DF7C(void *gauge) {
     return *(int *)((char *)gauge + 0xC) != *valuePtr;
 }
 
-int fn_8022DF9C(void *arg0) {
-    int *ptr = *(int **)((char *)arg0 + 4);
-    return *(int *)((char *)arg0 + 8) != *ptr;
+/* Returns nonzero while an int gauge's value has not reached its min (+0x08),
+ * i.e. stepping the gauge down would still change the value. */
+int fn_8022DF9C(void *gauge) {
+    int *valuePtr = *(int **)((char *)gauge + 4);
+    return *(int *)((char *)gauge + 8) != *valuePtr;
 }
 
 #pragma scheduling invalid_target
