@@ -7669,6 +7669,32 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
     return 0;
 }
 
+/* The stream a file is opened on (volume + 0x40 + index * 0x29C) and the volume
+ * fields that hand it its cluster-chain table; the same names are given again
+ * with the file code further down this file.  A stream is a plain byte pointer
+ * here, as everywhere in this file: a typed access makes CodeWarrior keep
+ * &stream->field in a register and the whole function's allocation shifts. */
+#define VF_STREAM_FLAGS(s)          (*(u32 *)((u8 *)(s)))            /* 0x00 VF_STREAM_* */
+#define VF_STREAM_ENTRY(s)          ((u8 *)(s) + 0x3C)               /* 0x3C the loaded directory entry */
+#define VF_STREAM_WRITE_STATE(s)    (*(u16 *)((u8 *)(s) + 0x27C))    /* 0x27C VF_WRITE_* */
+#define VF_STREAM_WRITE_BYTES(s)    (*(u16 *)((u8 *)(s) + 0x27E))    /* 0x27E bytes queued for writing */
+#define VF_STREAM_WRITE_FILE(s)     (*(void **)((u8 *)(s) + 0x284))  /* 0x284 the handle that queued them */
+#define VF_STREAM_OPEN_COUNT(s)     (*(u16 *)((u8 *)(s) + 0x298))    /* 0x298 handles open on it */
+#define VF_STREAM_IN_USE            1U  /* the slot holds a stream */
+#define VF_STREAM_OPEN              2U  /* and is still open */
+
+/* The volume's pool of cluster-chain tables: with bit 0 set every stream gets
+ * its own VF_VOL_CHAIN_WORDS words of it, cleared, starting at
+ * pool + index * words * 4 (the stream's VF_CHAIN_TABLE). */
+#define VF_VOL_CHAIN_FLAGS(v)       (*(u16 *)((u8 *)(v) + 0x1FB0))   /* 0x1FB0 bit 0: streams get a table */
+#define VF_VOL_CHAIN_PAGE_SIZE(v)   (*(u16 *)((u8 *)(v) + 0x1FB2))   /* 0x1FB2 entries a page holds, less one */
+#define VF_VOL_CHAIN_POOL(v)        (*(u32 *)((u8 *)(v) + 0x1FB4))   /* 0x1FB4 the pool */
+#define VF_VOL_CHAIN_WORDS(v)       (*(u32 *)((u8 *)(v) + 0x1FB8))   /* 0x1FB8 words one stream's table takes */
+
+/* Two more fields of the file entry object (see VF_ENTRY_* above). */
+#define VF_ENTRY_SIZE(e)            (*(u32 *)((u8 *)(e) + 0x228))    /* 0x228 the file's size */
+#define VF_ENTRY_FIRST_CLUSTER(e)   (*(u32 *)((u8 *)(e) + 0x234))    /* 0x234 the cluster its chain starts at */
+
 extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
     s32 chosenIndex = 0;
     u8 *chosen = 0;
