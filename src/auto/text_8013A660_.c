@@ -7,7 +7,7 @@ extern char lbl_8042F858[];
 extern int lbl_802F9360[];
 extern char lbl_8032C374[];
 extern char lbl_8032C364[];
-extern float lbl_80561434;
+extern const float lbl_80561434;
 extern float lbl_80561440;
 extern float lbl_80561448;
 extern float lbl_80561460;
