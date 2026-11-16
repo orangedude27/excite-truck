@@ -1083,16 +1083,21 @@ int fn_801D5A24(int arg0) {
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
-int fn_801D5A2C(void *arg0, int arg1, int arg2) {
-    void **entries = (void **)lbl_804423A4[0];
-    int count = lbl_804423A4[1];
+int fn_801D5A2C(void *actionSequence, int testArg1, int testArg2) {
+#define gActionSequenceList lbl_804423A4
+#define ActionSequence_test fn_801D5014
+    /* If the action sequence is registered, test its sub-elements with the two arguments; otherwise return 0. */
+    void **entries = (void **)gActionSequenceList[0];
+    int count = gActionSequenceList[1];
     int i;
     for (i = 0; i < count; i++) {
-        if (entries[i] == arg0) {
-            return ((int (*)(void *, int, int))fn_801D5014)(arg0, arg1, arg2);
+        if (entries[i] == actionSequence) {
+            return ((int (*)(void *, int, int))ActionSequence_test)(actionSequence, testArg1, testArg2);
         }
     }
     return 0;
+#undef ActionSequence_test
+#undef gActionSequenceList
 }
 
 /* Return the "has_rumble" flag (+0x22) of an action sequence if it is registered
