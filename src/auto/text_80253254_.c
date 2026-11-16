@@ -1302,10 +1302,11 @@ void *fn_802556BC(void *obj, s32 param_120) {
     return obj;
 }
 
-s32 fn_80255718(s32 arg0, s32 arg1) {
+s32 fn_80255718(s32 ptr, s32 count) {
     extern s32 fn_80128668(void);
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+    /* Free ptr via the mode-3 pool allocator when it is non-null and count is positive; return ptr unchanged. */
+    if (ptr != 0 && count > 0) fn_80128668();
+    return ptr;
 }
 
 #pragma use_lmw_stmw off
