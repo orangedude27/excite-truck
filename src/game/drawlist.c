@@ -1011,6 +1011,7 @@ void fn_802C9A1C(float *arg0) {
     fn_802C99D8();
 }
 #pragma dont_inline reset
+#undef globalDirection
 void *fn_802C9A40(void) {
     return lbl_804C1440;
 }
