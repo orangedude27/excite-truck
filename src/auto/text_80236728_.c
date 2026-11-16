@@ -1124,7 +1124,6 @@ void fn_802383FC(TrailMgr *mgr) {
     }
 }
 #pragma pop
-extern void fn_80237AA0();
 extern void fn_80236960();
 extern float lbl_805636E0;
 extern void fn_8002F6AC(void *, void (*)(void));
