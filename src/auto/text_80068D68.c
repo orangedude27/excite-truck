@@ -9395,6 +9395,9 @@ void *fn_8007A394(void) { return lbl_803C0F78 + 0x648; }
 
 void *fn_8007A3A4(void) { return lbl_803C0F78 + 0x640; }
 
+/* btm_cb.dev_status_cb: the WUD device-status callback slot (+0x568). */
+#define vsb_p_dev_status_cb(b) (*(s32 *)((b) + 0x568))
+
 s32 fn_8007A3B4(s32 value) { s32 old = *(s32 *)(lbl_803C0F78 + 0x568); *(s32 *)(lbl_803C0F78 + 0x568) = value; return old; }
 
 tBTM_STATUS BTM_VendorSpecificCommand(UINT16 opcode, UINT8 param_len, UINT8 *p_param_buf, tBTM_VSC_CMPL_CB *p_cb)
