@@ -255,9 +255,10 @@ extern "C" int fn_8023BC24(int ignored, int paramA, int paramB) {
     return result;
 }
 #pragma pop
-int fn_8023BCAC(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_8023BCAC(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668();
+    return object;
 }
 
 extern u8 lbl_8055F291;
