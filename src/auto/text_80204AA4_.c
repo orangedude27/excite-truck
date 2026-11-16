@@ -43,8 +43,17 @@ int fn_80204BB4(const char *arg0) {
 
 #pragma cplusplus on
 #pragma dont_inline on
+/* Build the 0x14-byte "difficulty" info block for the current scene (scene type,
+ * property group, current difficulty value, stage value and contest name) and
+ * publish it through lbl_8055ED5C. */
 extern "C" void fn_80204BB8(void)
 {
+    #define DIFFICULTY_READY  lbl_8055ED58   /* info block is valid */
+    #define DIFFICULTY_INFO   lbl_8055ED5C   /* published info block */
+    #define DIFFICULTY_TAG    lbl_8033BBD8   /* "difficulty" allocation tag */
+    #define DIFFICULTY_VAL    lbl_8033BBE4   /* "difficulty.val" property group */
+    #define INFO_SIZE         0x14
+
     class PropertyGroup { public: virtual void *get(int) = 0; };
     class Stage { public:
         virtual void unused0() = 0;
@@ -68,45 +77,51 @@ extern "C" void fn_80204BB8(void)
         virtual void unused18() = 0;
         virtual void unused19() = 0;
         virtual void unused20() = 0;
-        virtual int get(int) = 0;
+        virtual int get(int) = 0; /* slot 0x17 */
     };
     void *scene;
-    void **group;
-    void *alloc;
-    int index;
-    int type;
-    void *entry;
-    void *cur;
-    void **name;
-    Stage *stage;
-    int value;
-    lbl_8055ED58 = 1;
-    lbl_8055ED5C = 0;
+    void **groupSlot;
+    void *info;
+    int stageIndex;
+    int sceneType;
+    void *typeEntry;
+    void *groupValue;
+    void **nameSlot;
+    Stage *stageProps;
+    int stageValue;
+    DIFFICULTY_READY = 1;
+    DIFFICULTY_INFO = 0;
     scene = fn_801E87A8();
-    alloc = fn_801284F8(0x14, lbl_8033BBD8);
-    if (alloc == 0) goto done;
-    index = *(int *)scene;
-    type = *(int *)((char *)scene + 8);
-    *(int *)alloc = type;
-    *(int *)((char *)alloc + 4) = 0;
-    group = (void **)((char *)alloc + 4);
-    *(int *)((char *)alloc + 8) = 0;
-    *(int *)((char *)alloc + 12) = 0;
-    *(int *)((char *)alloc + 16) = 0;
-    *group = fn_80131808(lbl_8033BBE4);
-    entry = fn_80204B18(type);
-    cur = ((PropertyGroup *)*group)->get(*(int *)((char *)entry + 8));
-    *(void **)((char *)alloc + 8) = cur;
-    if (index >= 0 && index < fn_80012854()) {
-        stage = *(Stage **)((char *)((void *(*)(int))fn_8001285C)(index) + 0x20);
-        value = stage->get(*(int *)((char *)entry + 8));
-        if (((unsigned int)(-value | value) >> 31) != 0)
-            *(int *)((char *)alloc + 12) = stage->get(*(int *)((char *)entry + 8));
-        name = (void **)((char *)alloc + 16);
-        *name = ((void *(*)(int))fn_80204AA4)(index);
+    info = fn_801284F8(INFO_SIZE, DIFFICULTY_TAG);
+    if (info == 0) goto done;
+    stageIndex = *(int *)scene;
+    sceneType = *(int *)((char *)scene + 8);
+    *(int *)info = sceneType;
+    *(int *)((char *)info + 4) = 0;
+    groupSlot = (void **)((char *)info + 4);
+    *(int *)((char *)info + 8) = 0;
+    *(int *)((char *)info + 12) = 0;
+    *(int *)((char *)info + 16) = 0;
+    *groupSlot = fn_80131808(DIFFICULTY_VAL);
+    typeEntry = fn_80204B18(sceneType);
+    groupValue = ((PropertyGroup *)*groupSlot)->get(*(int *)((char *)typeEntry + 8));
+    *(void **)((char *)info + 8) = groupValue;
+    if (stageIndex >= 0 && stageIndex < fn_80012854()) {
+        stageProps = *(Stage **)((char *)((void *(*)(int))fn_8001285C)(stageIndex) + 0x20);
+        stageValue = stageProps->get(*(int *)((char *)typeEntry + 8));
+        if (((unsigned int)(-stageValue | stageValue) >> 31) != 0)
+            *(int *)((char *)info + 12) = stageProps->get(*(int *)((char *)typeEntry + 8));
+        nameSlot = (void **)((char *)info + 16);
+        *nameSlot = ((void *(*)(int))fn_80204AA4)(stageIndex);
     }
 done:
-    lbl_8055ED5C = (int *)alloc;
+    DIFFICULTY_INFO = (int *)info;
+
+    #undef DIFFICULTY_READY
+    #undef DIFFICULTY_INFO
+    #undef DIFFICULTY_TAG
+    #undef DIFFICULTY_VAL
+    #undef INFO_SIZE
 }
 #pragma dont_inline reset
 #pragma cplusplus reset
