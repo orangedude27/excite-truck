@@ -11516,8 +11516,9 @@ extern "C" void fn_800B7E38(u32 arg0) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_800B7E5C(s8 arg0) {
-    s32 temp_r3 = fn_800B76E8(arg0);
+extern "C" s32 fn_800B7E5C(s8 slot) {
+    /* Normalize the slot status to -1, 0, or 1. */
+    s32 temp_r3 = fn_800B76E8(slot);
     s32 result;
     if (temp_r3 == -1) {
         result = -1;
