@@ -1353,10 +1353,13 @@ void fn_802B0254(void) {
     }
 }
 #pragma dont_inline reset
-void fn_802B0288(void *arg0) {
-    if ((void *)lbl_8055F970 != arg0)
-        fn_802B4E44(*(int *)((char *)arg0 + 8));
-    lbl_8055F970 = (int)arg0;
+void fn_802B0288(void *matSet) {
+    /* Switch the active material set; when it changes, reload the skagbag field caches for its data container (+8). */
+#define activeMatSet lbl_8055F970
+    if ((void *)activeMatSet != matSet)
+        fn_802B4E44(*(int *)((char *)matSet + 8));
+    activeMatSet = (int)matSet;
+#undef activeMatSet
 }
 
 extern int fn_802AE7AC(void);
