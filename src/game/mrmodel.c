@@ -485,13 +485,14 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
 
 extern void fn_802CAC54(int);
 extern s8 lbl_8055FC21;
-void fn_802C5BA0(int *arg0) {
-    u16 temp;
-    fn_802CAC54(*arg0);
-    temp = *(u16 *)((char *)arg0 + 4);
-    temp--;
-    *(u16 *)((char *)arg0 + 4) = temp;
-    if (temp == 0) {
+/* Release a reference to a model texture entry: decrement its refcount and mark the model cache dirty when it reaches zero. */
+void fn_802C5BA0(int *entry) {
+    u16 refCount;
+    fn_802CAC54(*entry);
+    refCount = *(u16 *)((char *)entry + 4);
+    refCount--;
+    *(u16 *)((char *)entry + 4) = refCount;
+    if (refCount == 0) {
         lbl_8055FC21 = 1;
     }
 }
