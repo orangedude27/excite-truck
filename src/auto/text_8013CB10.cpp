@@ -2413,9 +2413,10 @@ extern "C" void fn_80141574(char *arg0) {
     }
 }
 
-extern "C" void fn_80141C84(void *arg0, s32 arg1) {
-    u8 *p = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
-    *(s32 *)(p + 0x88) = *(s32 *)(p + 0x10C);
+extern "C" void fn_80141C84(void *owner, s32 index) {
+    /* Refresh the indexed item record's s32 field at +0x88 from the value stored at +0x10C (records live at owner+0xB8, stride 0x12C). */
+    u8 *record = *(u8 **)((u8 *)owner + 0xB8) + index * ITEM_RECORD_STRIDE;
+    *(s32 *)(record + 0x88) = *(s32 *)(record + 0x10C);
 }
 
 extern "C" double floor(double);
