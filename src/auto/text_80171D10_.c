@@ -918,6 +918,7 @@ extern "C" void *fn_80172E64(CrushMaster *self, int deleteFlag) {
     }
     return self;
 }
+
 extern "C" void fn_80173424(CrushRoundState *round) {
     /* Put the crush-mode round state (CrushMaster + 0x1AC) back to its idle
        values: state 0, timer -1.0, counters cleared, every animation cue of the
