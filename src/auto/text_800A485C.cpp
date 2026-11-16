@@ -6482,14 +6482,20 @@ extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
     {
         s32 acc = 0;
-        arg2 = (s32)page;
-        arg0 = (void *)*(s32 *)((u8 *)arg2 + 0x18);
-        for (cur = 0; (u16)cur < *(u8 *)(ctx + 0x22); cur++) {
-            s32 e = fn_800B5618(ctx, *(void **)((u8 *)arg2 + 8), (u32)arg0, 0, *(u16 *)ctx);
+        struct { void *value; } positionLocal;
+        void *&position = positionLocal.value;
+        struct { s32 value; } countLocal;
+        s32 &i = countLocal.value;
+        struct { u8 *value; } flushPage;
+        u8 *&pg = flushPage.value;
+        pg = (u8 *)page;
+        position = (void *)*(s32 *)(pg + 0x18);
+        for (i = 0; (u16)i < *(u8 *)(ctx + 0x22); i++) {
+            s32 e = fn_800B5618(ctx, *(void **)(pg + 8), (u32)position, 0, *(u16 *)ctx);
             if (e != 0 && acc == 0) {
                 acc = e;
             }
-            arg0 = (u8 *)arg0 + *(s32 *)(ctx + 0xC);
+            position = (u8 *)position + *(s32 *)(ctx + 0xC);
         }
         err = acc;
         if (err != 0) {
@@ -6863,50 +6869,48 @@ extern "C" s32 fn_800AF5A0(void *arg0, s32 arg1, s32 *arg2) {
     u16 offset;
     s32 result;
     u32 retry = 1;
-    u16 flags = *(u16 *)((u8 *)arg0 + 0x18);
-    u16 scaled = arg1 + (arg1 >> 1);
-
-    index = (u16)(*(u32 *)((u8 *)arg0 + 0x28) +
-                  (scaled >> *(u8 *)((u8 *)arg0 + 0x20)));
-    offset = (u16)(scaled & (*(u16 *)arg0 - 1));
+    s32 *output = arg2;
+    void *object = arg0;
+    s32 cluster = arg1;
+    u16 flags = *(u16 *)((u8 *)object + 0x18);
+    u16 scaled = cluster + (cluster >> 1);
+    index = (u16)(*(u32 *)((u8 *)object + 0x28) + (scaled >> *(u8 *)((u8 *)object + 0x20)));
+    offset = (u16)(scaled & (*(u16 *)object - 1));
     if (flags & 0x80)
         retry = flags & 7;
 loop:
-    if ((s32)offset < (s32)(*(u16 *)arg0 - 1)) {
-        result = fn_800B5260(arg0, buf, (u16)index, offset, 2);
+    if ((s32)offset < (s32)(*(u16 *)object - 1)) {
+        result = ((s32 (*)(void *, void *, u32, u16, s32))fn_800B5260)(object, buf, (u16)index, offset, 2);
     } else {
-        result = fn_800B5260(arg0, buf, (u16)index, offset, 1);
+        result = ((s32 (*)(void *, void *, u32, u16, s32))fn_800B5260)(object, buf, (u16)index, offset, 1);
         if (result == 0)
-            result = fn_800B5260(arg0, buf + 1, (u16)index + 1, 0, 1);
+            result = ((s32 (*)(void *, void *, u32, u16, s32))fn_800B5260)(object, buf + 1, (u16)index + 1, 0, 1);
     }
     if (result == 0x1000) {
-        s32 (*callback)(void *) =
-            *(s32 (**)(void *))((u8 *)arg0 + 0x1FC0);
+        s32 (*callback)(void *) = *(s32 (**)(void *))((u8 *)object + 0x1FC0);
         if (callback != 0) {
-            s32 callbackResult = callback(*(void **)((u8 *)arg0 + 0x1F84));
+            s32 callbackResult = callback(*(void **)((u8 *)object + 0x1F84));
             if (callbackResult == 0)
                 goto retryCheck;
-            if (callbackResult == 1 &&
-                *(u8 *)((u8 *)arg0 + 0x22) >= 2 &&
-                retry < *(u8 *)((u8 *)arg0 + 0x22)) {
+            if (callbackResult == 1 && *(u8 *)((u8 *)object + 0x22) >= 2 && retry < *(u8 *)((u8 *)object + 0x22)) {
                 retry++;
-                index += *(u32 *)((u8 *)arg0 + 0xC);
+                index += *(u32 *)((u8 *)object + 0xC);
                 goto retryCheck;
             }
         }
     }
     if (result != 0) {
-        *arg2 = -1;
+        *output = -1;
         return result;
     }
 retryCheck:
     if (result == 0) {
         u16 val = *(u16 *)buf;
         u16 v = ((val & 0xFF00) >> 8) | ((val & 0x00FF) << 8);
-        if (arg1 & 1)
-            *arg2 = (v >> 4) & 0xFFF;
+        if (cluster & 1)
+            *output = (v >> 4) & 0xFFF;
         else
-            *arg2 = v & 0xFFF;
+            *output = v & 0xFFF;
         return 0;
     }
     goto loop;
@@ -22905,9 +22909,9 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
 void homebutton::HomeButton::calc_battery(int n) {
     u8 *self = (u8 *)this;
     void *obj;
-    register s32 *ids = (s32 *)((u8 *)lbl_8031E370 + n * 16);
-    register u8 *rec = self + n * 0x18;
-    register s32 i, index;
+    s32 *ids = (s32 *)((u8 *)lbl_8031E370 + n * 16);
+    u8 *rec = self + n * 0x18;
+    s32 i, index;
     for (i = 0; i < 4; i++) {
         u8 *pane;
         if (i < rec[0x16C]) {
