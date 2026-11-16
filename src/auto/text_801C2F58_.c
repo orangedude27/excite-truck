@@ -1481,6 +1481,8 @@ skip:
 extern u8 lbl_8055E83E;
 extern u8 lbl_8055E841;
 extern s32 lbl_8055E844;
+#define sSampleRandom lbl_8055E841 /* nonzero: append a random sample (-1) instead of a numbered one */
+#define sSampleNumber lbl_8055E844 /* numeric sound-sample index typed into sInputLine */
 extern char lbl_8055E83A;
 extern char lbl_8055E83C;
 extern void (*lbl_8055E868)(void);
