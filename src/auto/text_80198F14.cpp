@@ -2710,12 +2710,15 @@ extern "C" void fn_8019FF88(void* arg0) {
     ((void (*)(void))fn_8019EBC0)();
 }
 
-extern "C" void fn_8019FF8C(void* arg0) {
+extern "C" void fn_8019FF8C(void* object) {
+    /* Reset runtime state (fn_8019F03C clears +0x34..+0x4C) then copy the base
+       offset at +0x54..+0x5C into the current offset at +0x28..+0x30 and clear
+       the active flag at +0x78. */
     fn_8019F03C();
-    *(f32*)((u8*)arg0 + 0x28) = *(f32*)((u8*)arg0 + 0x54);
-    *(f32*)((u8*)arg0 + 0x2C) = *(f32*)((u8*)arg0 + 0x58);
-    *(f32*)((u8*)arg0 + 0x30) = *(f32*)((u8*)arg0 + 0x5C);
-    *(u8*)((u8*)arg0 + 0x78) = 0;
+    *(f32*)((u8*)object + 0x28) = *(f32*)((u8*)object + 0x54);
+    *(f32*)((u8*)object + 0x2C) = *(f32*)((u8*)object + 0x58);
+    *(f32*)((u8*)object + 0x30) = *(f32*)((u8*)object + 0x5C);
+    *(u8*)((u8*)object + 0x78) = 0;
 }
 
 #pragma small_data off
