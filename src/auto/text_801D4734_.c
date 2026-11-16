@@ -2538,6 +2538,12 @@ void fn_801D77EC(void *list, unsigned int item) {
 
 #pragma cplusplus on
 extern "C" char lbl_803385D0[];
+struct D7874_ObjA { virtual void *v0(); };
+struct D7874_ObjB {
+    virtual void v0(); virtual void v1(); virtual void v2();
+    virtual void v3(); virtual void v4(); virtual void v5();
+    virtual int v6(char *, int);
+};
 #pragma cplusplus on
 extern "C" void fn_801D7874(void *arg0, void *arg1) {
     struct ObjA { virtual void *v0(); };
