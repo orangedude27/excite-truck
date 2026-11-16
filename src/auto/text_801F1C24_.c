@@ -1072,13 +1072,14 @@ void *__dt__Q28PSSystem7SeqHeapFv_801F3460(void *this_, int shouldDelete) {
     return this_;
 }
 #pragma small_data on
-void fn_801F34C4(void *arg0, int arg1) {
+/* Copies a transform record's id and x/y/z values from the indexed source data. */
+void fn_801F34C4(void *dest, int sourceIndex) {
     extern int *fn_801F1CE8(int);
-    int *p = fn_801F1CE8(arg1);
-    *(int *)((char *)arg0 + 0x10) = p[0];
-    *(float *)((char *)arg0 + 4) = ((float *)p)[1];
-    *(float *)((char *)arg0 + 8) = ((float *)p)[2];
-    *(float *)((char *)arg0 + 0xC) = ((float *)p)[3];
+    int *source = fn_801F1CE8(sourceIndex);
+    *(int *)((char *)dest + 0x10) = source[0];
+    *(float *)((char *)dest + 4) = ((float *)source)[1];
+    *(float *)((char *)dest + 8) = ((float *)source)[2];
+    *(float *)((char *)dest + 0xC) = ((float *)source)[3];
 }
 
 #pragma push
