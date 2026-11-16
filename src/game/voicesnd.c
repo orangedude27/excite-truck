@@ -246,7 +246,13 @@ void fn_8020AA0C(void *self) {
     *((unsigned char *)self + 0x3E) = 0;
 }
 
-int fn_8020AA98(void *arg0) { volatile int *p = (volatile int *)((char *)arg0 + 4); if (*p == 1 && *((unsigned char *)arg0 + 0x3E) != 0) return 2; return *p; }
+/* Return a voice sound's effective state: a playing sound (1) whose mute flag
+ * is set is reported as muted (2); otherwise its raw state is returned. */
+int fn_8020AA98(void *arg0) {
+    volatile int *state = (volatile int *)((char *)arg0 + 4);
+    if (*state == 1 && *((unsigned char *)arg0 + 0x3E) != 0) return 2;
+    return *state;
+}
 
 extern const char lbl_8033C3B4[];
 extern const char lbl_8033C3C0[];
