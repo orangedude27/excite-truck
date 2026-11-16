@@ -1305,13 +1305,25 @@ void fn_802B0144(void) {
     fn_802AEB3C();
 }
 
+/* Bracketed scene/state transition: set up GPU state, then load the active
+ * material set's cached field data and caches around an intermediate update. */
 void fn_802B016C(void) {
-    fn_802DBE4C();
-    fn_802B14B4(lbl_8055F974);
+#define matFieldData lbl_8055F974 /* active material set +0x4 */
+#define matCacheData lbl_8055F978 /* active material set +0x8 */
+#define BeginScene   fn_802DBE4C
+#define EndScene     fn_802DBECC
+
+    BeginScene();
+    fn_802B14B4(matFieldData);
     fn_802BDD54();
-    fn_802B2D94(lbl_8055F978);
+    fn_802B2D94(matCacheData);
     fn_802B4E30();
-    fn_802DBECC();
+    EndScene();
+
+#undef matFieldData
+#undef matCacheData
+#undef BeginScene
+#undef EndScene
 }
 
 #pragma dont_inline on
