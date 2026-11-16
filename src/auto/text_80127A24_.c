@@ -11,7 +11,10 @@ extern int fn_80127AA0(void);
 extern int fn_80127464(int);
 extern int fn_80127AB8(void *);
 void fn_80127A24(void) {
-    ((int (*)(void))fn_80127464)();
+    typedef int (*FlushFn)(void);
+    // Flush pending alarm work through fn_80127464, then clear the 16-entry record ring (lbl_8041DF58)
+    // by resetting its read (lbl_8055DF50) and write (lbl_8055DF54) indices.
+    ((FlushFn)fn_80127464)();
     lbl_8055DF54 = 0;
     lbl_8055DF50 = 0;
 }
