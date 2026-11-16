@@ -182,10 +182,23 @@ void fn_8020C2AC(void) {
 }
 #pragma pop
 void fn_8020C41C(void) {
-    fn_8021037C();
-    lbl_8055EE38 = fn_80207848(lbl_8033C5FC, 1);
-    lbl_8055EE45 = 0;
-    lbl_8055EE46 = 0;
+#define InitTrackMusic fn_8021037C
+#define CreateSound fn_80207848
+#define kGoallineSfx lbl_8033C5FC
+#define gGoallineSound lbl_8055EE38
+#define gTrackSelection lbl_8055EE45
+#define gTrackSelectionLocked lbl_8055EE46
+    /* Initializes pre-race music: sets up the track sounds and creates the goalline SFX, then resets track-selection state. */
+    InitTrackMusic();
+    gGoallineSound = CreateSound(kGoallineSfx, 1);
+    gTrackSelection = 0;
+    gTrackSelectionLocked = 0;
+#undef gTrackSelectionLocked
+#undef gTrackSelection
+#undef gGoallineSound
+#undef kGoallineSfx
+#undef CreateSound
+#undef InitTrackMusic
 }
 #pragma scheduling on
 extern s32 fn_8012E498(s32 *);
