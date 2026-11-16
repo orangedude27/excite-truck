@@ -178,7 +178,15 @@ extern "C" float fn_80204CFC(const char *arg0) {
     return (float)atof((const char *)value);
 }
 #pragma cplusplus reset
-int fn_80204EA0(const char *arg0) {
+#pragma cplusplus on
+class Res80204EA0 {
+public:
+    virtual void unused0();
+    virtual int has(void *);
+    virtual void unused2();
+    virtual int get(void *);
+};
+extern "C" int fn_80204EA0(const char *arg0) {
     char buf[0x64];
     int *p;
     int result = 0;
