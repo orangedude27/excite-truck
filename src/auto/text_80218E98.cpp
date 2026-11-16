@@ -8486,9 +8486,10 @@ extern "C" void *fn_802286E4(void *widget, void *config, s32 field244) {
 #pragma pop
 extern "C" void *memset(void *, int, unsigned long);
 extern "C" void *lbl_8033DD20[];
-extern "C" s32 fn_8022882C(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668((void *)arg0);
-    return arg0;
+extern "C" s32 fn_8022882C(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668((void *)object);
+    return object;
 }
 
 extern "C" void *fn_8022886C(void *textBox, s32 unused, s32 modelView, s32 field244) {
