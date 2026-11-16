@@ -89,7 +89,8 @@ void fn_80207960(void) {
 }
 #pragma dont_inline reset
 
-/* True for the UI sound class, the one fn_80208858 flags to the device. */
+/* Return nonzero only for the UI sound class; fn_80208858 uses this to flag
+   UI voices separately from the positional sound classes. */
 signed long fn_80207964(signed long sndClass) {
     switch (sndClass) {
     case SNDCLASS_UI:
