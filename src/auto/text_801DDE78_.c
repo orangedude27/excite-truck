@@ -13,6 +13,8 @@ extern void* lbl_8055E9C8;
 extern void* lbl_8055E9CC;
 extern u32 lbl_80339478[];
 extern u32 lbl_80486F30[];
+#define sParamCount lbl_8055E9C4 /* number of records gathered in sParamTable */
+#define sParamTable lbl_80486F30 /* 28-byte tunable-parameter records */
 s32 fn_80145E70(void*);
 extern u32 lbl_804348E8[];
 s32 fn_80179630(s32);
@@ -249,7 +251,6 @@ void fn_801DE154(void) {
     fn_80011A2C();
 }
 
-#pragma push
 #pragma scheduling invalid_target
 s32 fn_801DE5C4(s32 arg0) {
     f32 *value;
@@ -319,7 +320,7 @@ s32 fn_801DE5C4(s32 arg0) {
     if (changed) lbl_8055E9CC = (void *)fn_802E2C20();
     return 0;
 }
-#pragma pop
+#pragma scheduling on
 
 typedef void (*ThunkFn)(s32, s32, s32);
 void fn_801DE788(s32 arg_unused, s32 arg_a, s32 arg_b, s32 arg_c) {
