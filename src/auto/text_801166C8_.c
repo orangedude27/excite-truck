@@ -9400,9 +9400,11 @@ void fn_80127468(OSAlarm *alarm, OSContext *ctx) {
     fn_80127F70(fn_802ECC74(alarm));
 }
 
-void fn_8012748C(s32 arg0) {
-    fn_80127398(arg0);
-    fn_802E300C(arg0);
+/* Platform exit hook: run the registered exit callbacks for this group, then
+ * log "PlatExitProcess(%d)" with the same value. */
+void fn_8012748C(s32 exitCode) {
+    fn_80127398(exitCode);
+    fn_802E300C(exitCode);
 }
 extern f64 lbl_80561198;
 extern f64 lbl_805611A8;
