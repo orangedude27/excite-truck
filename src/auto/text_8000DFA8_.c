@@ -2040,9 +2040,15 @@ s32 fn_800122B4(s32 number, s32 outBuffer) {
 }
 
 void fn_8000F158(void) {
-    fn_802328D4(lbl_8055D498);
+    /* Shut down UI text: release the big-text texture, free the active font and
+       text queue, then clear the cached default UI font handle. */
+#define bigTextTextureHandle lbl_8055D498
+#define defaultUiFontHandle  lbl_8055D490
+    fn_802328D4(bigTextTextureHandle);
     fn_80234470();
-    lbl_8055D490 = 0;
+    defaultUiFontHandle = 0;
+#undef defaultUiFontHandle
+#undef bigTextTextureHandle
 }
 
 extern void fn_801310B4(void *, s32, s32);
