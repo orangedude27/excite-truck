@@ -186,10 +186,16 @@ f32 fn_801EA0E8(f32 arg0, f32 arg1) {
     return lbl_80562E2C;
 }
 #pragma scheduling on
-void fn_801EA140(void *arg0) {
-    struct V { s32 a, b, c; };
-    struct V data = *(struct V *)arg0;
-    ((s32 (*)(void *, void *, s32, s32, s32))fn_801DCE14)(0, &data, (s32)arg0, 0, 0);
+/* Forwards a 3-word point through fn_801DCE14 with a null context, using a stack copy of the point. */
+void fn_801EA140(void *point) {
+    struct Vec3i {
+        s32 x;
+        s32 y;
+        s32 z;
+    };
+    struct Vec3i pointCopy = *(struct Vec3i *)point;
+
+    ((s32 (*)(void *, void *, s32, s32, s32))fn_801DCE14)(0, &pointCopy, (s32)point, 0, 0);
 }
 
 #pragma scheduling invalid_target
