@@ -22281,6 +22281,7 @@ extern "C" void fn_800C7E6C(void *arg0) {
 }
 
 extern "C" s32 lbl_80559718;
+#pragma always_inline on
 static inline int fn_800C7F8C_Find(int key, int value) {
     s32 *entry = lbl_802F4588;
     int j = 0;
@@ -22292,6 +22293,7 @@ static inline int fn_800C7F8C_Find(int key, int value) {
     }
     return -1;
 }
+#pragma always_inline reset
 extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
     s32 *state=(s32*)arg1;
     u8 *cursor=(u8*)arg0;
