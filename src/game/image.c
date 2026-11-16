@@ -91,5 +91,13 @@ void fn_802C5310(void* arg0) { if (arg0 != 0) fn_802353F4(); }
 
 void fn_802C5320(void* arg0, void* arg1) { if (arg0 != 0) fn_802354A0(arg0, arg1, -1); }
 
-void fn_802C5334(void* arg0, int arg1, float arg2, float arg3, float arg4, float arg5, float arg6, float arg7, float arg8, float arg9, float arg10) { if (arg0 != 0) ((void (*)(void*, int, int, float, float, float, float, float, float, float, float))fn_80235758)(arg0, arg1, -1, arg2, arg3, arg5, arg6, arg7, arg8, arg9, arg10); }
+/* Guarded image-draw wrapper: if artSet is non-null, draw picture `pictureIndex`
+   as a textured quad with color -1 (use the texture's own tint). The caller's
+   third float (unusedZ) is discarded; the rest are forwarded to the drawer. */
+void fn_802C5334(void* artSet, int pictureIndex, float x, float y, float unusedZ,
+                 float width, float height, float u0, float v0, float u1, float v1) {
+    if (artSet != 0)
+        ((void (*)(void*, int, int, float, float, float, float, float, float, float, float))fn_80235758)(
+            artSet, pictureIndex, -1, x, y, width, height, u0, v0, u1, v1);
+}
 
