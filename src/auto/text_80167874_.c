@@ -555,6 +555,7 @@ first_body:
     {
         register u8 *object;
         register f32 y;
+        register f32 sum;
 
         record = (u8 *)(u32)*(u32 *)manager + offset;
         fn_801E9E30(0, (f32 *)(record + 4));
@@ -562,7 +563,8 @@ first_body:
         i += 1;
         y = *(f32 *)(record + 8);
         offset += 0x18;
-        *(f32 *)(record + 8) = *(f32 *)(record + 0x10) + (y + *(f32 *)(object + 0x18));
+        sum = y + *(f32 *)(object + 0x18);
+        *(f32 *)(record + 8) = sum + *(volatile f32 *)(record + 0x10);
         *(u8 *)(record + 0x14) = zero;
     }
 first_check:
