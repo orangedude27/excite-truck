@@ -816,20 +816,23 @@ extern "C" void fn_802994C0(void *container, unsigned int index) {
     *(float *)((char *)entry + 0x38) = fn_801E7E18();
 }
 
-extern "C" void fn_80299504(void* arg0) {
-    float value = lbl_8056459C;
-    *(int*)arg0 = -1;
-    *(int*)((char*)arg0 + 0x34) = 0;
-    *(float*)((char*)arg0 + 0x38) = value;
-    *(int*)((char*)arg0 + 0x40) = -1;
-    *(int*)((char*)arg0 + 0x74) = 0;
-    *(float*)((char*)arg0 + 0x78) = value;
-    *(int*)((char*)arg0 + 0x80) = -1;
-    *(int*)((char*)arg0 + 0xB4) = 0;
-    *(float*)((char*)arg0 + 0xB8) = value;
-    *(int*)((char*)arg0 + 0xC0) = -1;
-    *(int*)((char*)arg0 + 0xF4) = 0;
-    *(float*)((char*)arg0 + 0xF8) = value;
+extern "C" void fn_80299504(void* manager) {
+    /* RealName: ResetAnimationEntries (symbols can't be renamed yet).
+     * Reset the four 0x40-byte animation entries to id = -1, state = 0
+     * and a start time of 0.0f. */
+    float value = lbl_8056459C; /* 0.0f */
+    *(int*)manager = -1;
+    *(int*)((char*)manager + 0x34) = 0;
+    *(float*)((char*)manager + 0x38) = value;
+    *(int*)((char*)manager + 0x40) = -1;
+    *(int*)((char*)manager + 0x74) = 0;
+    *(float*)((char*)manager + 0x78) = value;
+    *(int*)((char*)manager + 0x80) = -1;
+    *(int*)((char*)manager + 0xB4) = 0;
+    *(float*)((char*)manager + 0xB8) = value;
+    *(int*)((char*)manager + 0xC0) = -1;
+    *(int*)((char*)manager + 0xF4) = 0;
+    *(float*)((char*)manager + 0xF8) = value;
 }
 
 #pragma scheduling invalid_target
