@@ -1448,11 +1448,13 @@ extern "C" void fn_802BAD9C(s32 arg0) {
 }
 #pragma cplusplus reset
 
-void fn_802BAE30(void *arg0) {
-    *(volatile int *)((char *)arg0 + 4) = 0;
-    *(volatile int *)((char *)arg0 + 0) = 0;
-    *(volatile int *)((char *)arg0 + 8) = 3;
-    *(volatile unsigned char *)((char *)arg0 + 0xC) = 1;
+/* Initialize a freshly allocated 0x44-byte pool entry: zero the words at +0
+ * and +4, set the word at +8 to 3 and the byte at +0xC to 1. */
+void fn_802BAE30(void *entry) {
+    *(volatile int *)((char *)entry + 4) = 0;
+    *(volatile int *)((char *)entry + 0) = 0;
+    *(volatile int *)((char *)entry + 8) = 3;
+    *(volatile unsigned char *)((char *)entry + 0xC) = 1;
 }
 
 extern char lbl_8034AA00[];
