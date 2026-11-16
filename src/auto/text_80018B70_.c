@@ -561,11 +561,12 @@ s32 fn_80019088(void) {
 }
 
 __declspec(section ".data") extern void *lbl_802FD2DC;
+/* RealName: InitUnlocks. Load the unlock/properties manager from common.res/unlock.val, build its item tables, and clear the reset-requested flag. */
 void fn_80018F40(void) {
-    lbl_8055D58C = fn_80131808(&lbl_802FD2DC);
+    sUnlockManager = fn_80131808(&sUnlockValPath);
     fn_80018BA4();
     fn_80018CCC();
-    lbl_8055D588 = 0;
+    sResetRequested = 0;
 }
 void fn_80018B74(void) {
     fn_8001EF60(0);
