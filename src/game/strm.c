@@ -41,11 +41,12 @@ void fn_802E7318(void) {
     lbl_8055FFE0 = 1;
 }
 
+#pragma scheduling invalid_target
 void fn_802E7330(void) {
     lbl_8055FFE0 = 0;
-    fn_802E30C8("StrmEnd: used %d of %d entries, %d sectors", lbl_8055FFD8, 0x100, lbl_8055FFDC);
+    fn_802E30C8(lbl_8034D7D8, lbl_8055FFD8, 0x100, lbl_8055FFDC);
 }
-
+#pragma scheduling on
 extern int stricmp(const char *, const char *);
 extern int fn_802E37C4(void);
 extern int fn_802E72B8(int);
