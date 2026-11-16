@@ -15052,21 +15052,22 @@ block61:
 extern "C" void fn_800BEDE0(void *arg0, void *arg1) {
     u32 rate;
     s16 mode;
-    *(s32 *)arg1 = *(u32 *)((u8 *)arg0 + 4) == 0u;
-    rate = 0xAC44u;
+    *(s32 *)arg1 = *(u32 *)((u8 *)arg0 + 4) == 0;
+    rate = 0xAC44;
     mode = *(s16 *)((u8 *)arg0 + 0x1C);
     if (mode == 0) {
+        rate = 0xAC44;
     } else if (mode == 1) {
-        rate = 0xBB80u;
+        rate = 0xBB80;
     } else if (mode == 2) {
-        rate = 0x7D00u;
+        rate = 0x7D00;
     }
     if (*(s32 *)arg1 == 0)
-        rate = (u32)((s32)(rate + (rate >> 31u)) >> 1);
-    *(u32 *)((u8 *)arg1 + 4u) = rate;
-    *(s32 *)((u8 *)arg1 + 8u) = (s8)*(u8 *)arg0;
-    *(s32 *)((u8 *)arg1 + 16u) = *(s32 *)((u8 *)arg0 + 0xED74);
-    *(s32 *)((u8 *)arg1 + 12u) = *(s32 *)((u8 *)arg0 + 0xED70);
+        rate = (u32)(((s32)((rate >> 31)) + (s32)rate) >> 1);
+    *(u32 *)((u8 *)arg1 + 4) = rate;
+    *(s32 *)((u8 *)arg1 + 8) = (s8)*(u8 *)arg0;
+    *(s32 *)((u8 *)arg1 + 0x10) = *(s32 *)((u8 *)arg0 + 0xED74);
+    *(s32 *)((u8 *)arg1 + 0xC) = *(s32 *)((u8 *)arg0 + 0xED70);
 }
 
 extern "C" s16 fn_800BDD7C(s32, s32, s32 *);
@@ -22296,7 +22297,7 @@ extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
             }
             s32 *entry=lbl_802F4588;
             j=0;
-            for(k=0;k<37;entry+=4,k++,j++) {
+            for(k=0;k<37;k++,entry+=4,j++) {
                 if(i+31==entry[0] && entry[1]==17) goto found1;
                 j++;
                 if(i+31==entry[2] && entry[3]==17) goto found1;
@@ -22316,7 +22317,7 @@ found1:
             }
             s32 *entry=lbl_802F4588;
             j=0;
-            for(k=0;k<37;entry+=4,k++,j++) {
+            for(k=0;k<37;k++,entry+=4,j++) {
                 if(i+31==entry[0] && entry[1]==16) goto found0;
                 j++;
                 if(i+31==entry[2] && entry[3]==16) goto found0;
