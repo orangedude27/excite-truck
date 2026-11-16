@@ -15963,10 +15963,11 @@ int btsnd_hcic_reject_esco_conn(void *p_buf, u8 *bd_addr, u8 reason) {
     return btu_hcif_send_cmd(buf);
 }
 
-BOOLEAN btsnd_hcic_hold_mode_real(UINT16 handle, UINT16 max_hold_period, UINT16 min_hold_period) {
-    u8 *p = GKI_getpoolbuf(2);
-    if (p == NULL)
-        return FALSE;
+s32 btsnd_hcic_hold_mode(u8 *p, u16 handle, u16 max_interval, u16 min_interval) {
+    if (p == NULL) {
+        p = GKI_getpoolbuf(2);
+        if (p == NULL) return 0;
+    }
     *(u16 *)(p + 2) = 9;
     *(u16 *)(p + 4) = 0;
     p[8] = 1;
@@ -15974,12 +15975,12 @@ BOOLEAN btsnd_hcic_hold_mode_real(UINT16 handle, UINT16 max_hold_period, UINT16 
     p[10] = 6;
     p[11] = handle;
     p[12] = handle >> 8;
-    p[13] = max_hold_period;
-    p[14] = max_hold_period >> 8;
-    p[15] = min_hold_period;
-    p[16] = min_hold_period >> 8;
+    p[13] = max_interval;
+    p[14] = max_interval >> 8;
+    p[15] = min_interval;
+    p[16] = min_interval >> 8;
     btu_hcif_send_cmd(p);
-    return TRUE;
+    return 1;
 }
 
 /* Build and send an HCI Sniff_Mode command for the given connection handle. */
