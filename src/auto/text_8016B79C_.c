@@ -113,7 +113,7 @@ typedef struct { s32 w[12]; } Blk8016C768;
 // the index back as how many entries were filled in.
 typedef struct { s32 data; s32 index; s32 count; s32 data2; } List8016C768;
 #pragma cplusplus on
-class UiLayout8016 { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void *lookup(const void *); virtual void d4(); virtual void *lookupDraw(const void *); };
+class UiLayout8016 { public: virtual void d0(); virtual void *lookup(const void *); virtual void d4(); virtual void *lookupDraw(const void *); };
 #pragma cplusplus reset
 typedef struct UiDraw8016 { u32 unk; f32 x, y, z, width, height; u32 color; } UiDraw8016;
 typedef struct UiText8016 { u32 unk; f32 x, y, z, width, height; u32 color; u32 extra; } UiText8016;
