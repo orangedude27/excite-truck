@@ -855,11 +855,13 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
 #pragma cplusplus off
 extern f32 lbl_805619A0;
 #pragma scheduling invalid_target
-void fn_8016CD10(void *arg0) {
-    f32 value = lbl_805619A0;
-    *(u8 *)((u8 *)arg0 + 0x30) = 0;
-    *(u8 *)((u8 *)arg0 + 0x31) = 0;
-    *(f32 *)((u8 *)arg0 + 0x34) = value;
+void fn_8016CD10(void *record) {
+    /* Array-element constructor: clear the two flag bytes at +0x30/+0x31 and
+       set the float at +0x34 to the shared default value (80.0). */
+    f32 defaultValue = lbl_805619A0;
+    *(u8 *)((u8 *)record + 0x30) = 0;
+    *(u8 *)((u8 *)record + 0x31) = 0;
+    *(f32 *)((u8 *)record + 0x34) = defaultValue;
 }
 #pragma scheduling on
 void fn_8016CD28(void *record) {
@@ -3444,16 +3446,16 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
         virtual void p0(); virtual void p1(); virtual void p2();
         virtual s32 m3();
     };
-    s32 index;
-    void *holder;
-    s32 result;
-    void *obj;
-    s32 r25;
-    void *data;
-    void *item;
-    s32 d;
-    s32 r4v;
-    s32 cond;
+    register void *obj;
+    register void *holder;
+    u32 result;
+    register s32 index;
+    register s32 d;
+    register void *data;
+    register void *item;
+    register s32 r25;
+    register s32 r4v;
+    register s32 cond;
     volatile f32 sp1C, sp18, sp14, sp10, spC, sp8;
     f32 x, y, dx, dy;
     f32 v;
@@ -3486,8 +3488,8 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
                     r25 = ((f32)fn_8002F234(dx * dx + dy * dy, y, x, dx, dy) > *(f32 *)((u8 *)item + 0x34));
                     d = (PSVECDotProduct((u8 *)item + 0x18, (u8 *)data + 0x54, *(f32 *)((u8 *)item + 0x34)) < lbl_80561980);
                     if (*(s32 *)((u8 *)holder + 0x10) == *(s32 *)((u8 *)*(void **)((u8 *)holder + 4) + 4) - 1 && r25) {
-                        *(u8 *)((u8 *)(*(s32 **)*(void **)((u8 *)holder + 4)) + *(s32 *)((u8 *)holder + 0x10) * 0x38 + 0x30) = 0;
                         result = 0;
+                        *(u8 *)((u8 *)(*(s32 **)*(void **)((u8 *)holder + 4)) + *(s32 *)((u8 *)holder + 0x10) * 0x38 + 0x30) = 0;
                     } else {
                         if (r25 || d) {
                             if (*(u8 *)((u8 *)obj + 8) == 0) {
