@@ -5913,11 +5913,18 @@ void fn_80073AF8(void) {
 
 u8 fn_80079514(void);
 u8 fn_80073B30(void) {
+#define GkiSchedLock   fn_8006EAD0
+#define BtmIsDeviceUp  fn_80079514
+#define GkiSchedUnlock fn_8006EAD4
     u8 result;
-    fn_8006EAD0();
-    result = fn_80079514();
-    fn_8006EAD4();
+    /* BTA_DmIsDeviceUp: read the BTM device-up state with the scheduler locked. */
+    GkiSchedLock();
+    result = BtmIsDeviceUp();
+    GkiSchedUnlock();
     return result;
+#undef GkiSchedUnlock
+#undef BtmIsDeviceUp
+#undef GkiSchedLock
 }
 
 /*******************************************************************************
