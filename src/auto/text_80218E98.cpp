@@ -989,7 +989,7 @@ extern "C" void fn_80219510(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
-    void* __restrict p = *(void**)((u8*)arg0 + 0x2C);
+    void* p = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
         s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
         s32 old1 = *(s32*)((u8*)p + 0x454);
@@ -9453,10 +9453,12 @@ extern "C" s32 fn_80229DC0(s32 arg0) {
 }
 
 #pragma peephole off
-extern "C" void fn_80229DC8(void *arg0, s32 unused, s32 arg2) {
-    *(u32 *)((u8 *)arg0 + 0x260) = 0;
-    *(u8 *)((u8 *)arg0 + 0x268) = 1;
-    ((Fn80229DE8Dispatch2 *)arg0)->Call(unused, arg2);
+extern "C" void fn_80229DC8(void *self, s32 unused, s32 value) {
+    /* Reset the sound object's bookkeeping flags at +0x260/+0x268, then dispatch
+     * its virtual Call with both arguments passed through unchanged. */
+    *(u32 *)((u8 *)self + 0x260) = 0;
+    *(u8 *)((u8 *)self + 0x268) = 1;
+    ((Fn80229DE8Dispatch2 *)self)->Call(unused, value);
 }
 #pragma peephole reset
 /* Reset the object's bookkeeping flags at +0x260 and +0x268, then dispatch its
