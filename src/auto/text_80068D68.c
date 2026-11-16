@@ -21099,7 +21099,7 @@ BOOLEAN l2cu_create_conn(void *arg0) {
 }
 
 extern char lbl_80319218[];
-void l2cu_create_conn_after_switch(void *arg0) {
+l2c_conn_ret l2cu_create_conn_after_switch(void *arg0) {
     UINT8 temp_r4;
     UINT32 allow_switch;
     UINT32 var_r7;
