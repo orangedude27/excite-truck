@@ -804,21 +804,21 @@ extern double cos(double);
 extern void fn_802D0368(float, float, float, float);
 #pragma scheduling invalid_target
 void fn_802C9648(float scale) {
-    /* Scale the current view X/Y parameters by a factor, saving the originals in
-       the view backup slot, then reapply the projection with the scaled values. */
-    float f0;
-    float f2;
-    float f3;
-    float f4;
-    f3 = lbl_8055FC38;
-    f4 = lbl_8055FC3C;
-    f0 = f3 * scale;
-    f2 = f4 * scale;
-    lbl_804C144C[0] = f3;
-    lbl_804C144C[1] = f4;
-    lbl_8055FC38 = f0;
-    lbl_8055FC3C = f2;
-    fn_802C974C(f0, f2, lbl_804C144C[2]);
+    /* Scale the current view X/Y parameters, saving the originals in the view
+       backup slot, then reapply the projection with the scaled values. */
+    float newX;
+    float newY;
+    float oldX;
+    float oldY;
+    oldX = lbl_8055FC38;
+    oldY = lbl_8055FC3C;
+    newX = oldX * scale;
+    newY = oldY * scale;
+    lbl_804C144C[0] = oldX;
+    lbl_804C144C[1] = oldY;
+    lbl_8055FC38 = newX;
+    lbl_8055FC3C = newY;
+    fn_802C974C(newX, newY, lbl_804C144C[2]);
 }
 #pragma scheduling on
 void fn_802C967C(void) {
