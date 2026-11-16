@@ -19283,8 +19283,10 @@ void homebutton::gui::Manager::addComponent(homebutton::gui::Component *componen
 
 extern "C" void fn_800CFBB8(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x28) = arg1; }
 
-extern "C" s32 fn_800CFBC0(void *arg0, s32 arg1) {
-    void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((char *)arg0 + 8, arg1 & 0xffff);
+extern "C" s32 fn_800CFBC0(void *manager, s32 index) {
+    /* Return, as an s32, the component stored at +4 of the index-th entry in the
+     * manager's component list (the nw4r List at +8). */
+    void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((char *)manager + 8, index & 0xffff);
     return *(s32 *)((char *)entry + 4);
 }
 
