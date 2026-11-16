@@ -39,6 +39,10 @@ extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f3
     if ((!c2) && (((u32)(p) & 0xF8000000) != 0xD0000000U)) c1 = 0; \
     if ((!c1) && (((u32)(p) & 0xFFFFC000) != 0xE0000000U)) c0 = 0; \
     if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, line, msg + off, p); }
+/* nw4hbm::db::Panic: the declaration above takes no varargs, so the calls go
+ * through this cast (the file's pointer checks use it the same way). */
+#define PANIC ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)
+
 struct Vec2f { f32 x, y; };
 struct CWBuf { u8 b[0x60]; };
 extern "C" unsigned long lbl_80559800;
