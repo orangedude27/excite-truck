@@ -60,9 +60,10 @@ void fn_801EAB80(void *arg0, long arg1) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_801EAB90(void *arg0, int arg1) {
-    int offset = *(int *)((char *)arg0 + 0x34);
-    ((Dummy_801EAB90 *)arg0)->m6(arg1 + offset);
+extern "C" void fn_801EAB90(void *obj, int value) {
+    /* Forward value plus this object's +0x34 offset to its virtual slot 8. */
+    int offset = *(int *)((char *)obj + 0x34);
+    ((Dummy_801EAB90 *)obj)->m6(value + offset);
 }
 #pragma cplusplus off
 void fn_801EABA8(void *arg0, void *arg1) {
