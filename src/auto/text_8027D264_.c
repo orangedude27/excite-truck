@@ -481,6 +481,7 @@ extern void fn_802E6BD8(int, int, void *, int, void *);
 extern void fn_8000DBC8(void *);
 extern void fn_8027D96C(int);
 extern void fn_8027D9A4(int, int);
+/* Register the career-result save block (ID 'PCBR') and its load/slot-clear callback. */
 void fn_8027DAF4(void) {
     fn_802E6BD8(0x50435252, 1, &lbl_804B2FD8, 0x20, fn_8027D96C);
     fn_8000DBC8(fn_8027D9A4);
