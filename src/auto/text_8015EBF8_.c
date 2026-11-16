@@ -66,12 +66,13 @@ int fn_8015ECC0(void *arg0) {
 #pragma auto_inline off
 #pragma push
 #pragma cplusplus on
+/* True when a named scene object's virtual name is "circle" (case-insensitive). */
 extern "C" int fn_8015ED18(void **node) {
     class NameNode {
     public:
         virtual char *getName();
     };
-    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055A070) == 0;
+    return stricmp(((NameNode *)node)->getName(), (const char *)CIRCLE_NAME) == 0;
 }
 #pragma cplusplus reset
 #pragma pop
