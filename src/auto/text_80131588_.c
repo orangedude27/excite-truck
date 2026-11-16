@@ -831,20 +831,23 @@ extern "C" unsigned long long fn_80132A48(void *arg0, s32 arg1, void *arg2) {
 }
 #pragma cplusplus on
 extern "C" void fn_80132AE4(void *arg0, void *arg1, s32 arg2, void *arg3) {
+    typedef struct { s32 a[9]; } Matrix;
+    typedef struct { Matrix matrix; struct Unk80132968Vector vector; } Value;
     class A {
     public:
         virtual void f0(); virtual s32 f1(s32);
+        virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5();
+        virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9();
+        virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13();
+        virtual void f14(); virtual Value f15(s32);
     };
-    typedef struct { s32 a[9]; } Matrix;
-    typedef struct { Matrix matrix; struct Unk80132968Vector vector; } Value;
-    Value value;
-    Value *source = (Value *)arg3;
-    if (((A *)arg1)->f1(arg2) != 0) {
-        ((void (**)(Value *, void *, s32))(*(void ***)arg1))[17](&value, arg1, arg2);
+    const Value *source = (Value *)arg3;
+    if (((A *)arg1)->f1(arg2)) {
+        const Value &value = ((A *)arg1)->f15(arg2);
         source = &value;
     }
-    ((Value *)arg0)->matrix = (*source).matrix;
-    ((Value *)arg0)->vector = (*source).vector;
+    ((Value *)arg0)->matrix = source->matrix;
+    ((Value *)arg0)->vector = source->vector;
 }
 #pragma cplusplus off
 typedef float f32;
