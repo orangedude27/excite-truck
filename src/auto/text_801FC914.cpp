@@ -1027,9 +1027,10 @@ extern "C" void fn_801FE510(void *unused, void *head) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_801FE550(void *arg0) {
-    *(char **)arg0 = lbl_8033B760;
-    *(int *)((char *)arg0 + 0x94) = 0;
+extern "C" void fn_801FE550(void *path) {
+    /* Constructor for a 0x98-byte HermitePathTMH object: install its vtable and clear field +0x94. */
+    *(char **)path = lbl_8033B760;
+    *(int *)((char *)path + 0x94) = 0;
 }
 #pragma push
 #pragma use_lmw_stmw off
@@ -1115,6 +1116,7 @@ extern "C" void fn_801FE7E8(void* arg0) {
         ++i;
     }
 }
+#pragma scheduling reset
 extern const char lbl_8055B3C8[5];
 extern const char lbl_8055B3D0[6];
 extern const char lbl_8055B3D8[7];
