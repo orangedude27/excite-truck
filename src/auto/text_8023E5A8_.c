@@ -827,10 +827,11 @@ extern unsigned char lbl_80342238[];
 extern unsigned char lbl_80342248[];
 extern void fn_80215214(void *, void *, int);
 #pragma scheduling invalid_target
+/* Opens the "Are you sure?" confirmation dialog for the "Don't Ever Save" option. */
 void fn_8023F9E8(void) {
-    void *first = lbl_80342238;
-    void *second = lbl_80342248;
-    fn_80215214(first, second, 0);
+    void *choiceLabel = lbl_80342238;
+    void *prompt = lbl_80342248;
+    fn_80215214(choiceLabel, prompt, 0);
 }
 #pragma scheduling on
 extern s32 lbl_8055F1B4;
