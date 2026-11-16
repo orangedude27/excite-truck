@@ -357,10 +357,11 @@ extern "C" void fn_802E3990(s32 arg0) {
     ((Obj *)entry)->v3();
 }
 #pragma cplusplus off
-s32 fn_802E39D0(s32 arg0, s32 arg1, s32 arg2) {
-    s32 sp8 = arg2;
-    fn_802E3898(arg0, (const char *)arg1, &sp8);
-    return sp8 == arg2;
+/* Reads exactly `count` bytes from file `fileId` into `buffer`; returns nonzero on success. */
+s32 fn_802E39D0(s32 fileId, s32 buffer, s32 count) {
+    s32 bytesRead = count;
+    fn_802E3898(fileId, (const char *)buffer, &bytesRead);
+    return bytesRead == count;
 }
 
 #pragma cplusplus on
