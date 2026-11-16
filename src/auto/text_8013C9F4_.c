@@ -25,11 +25,13 @@ void fn_8013CA3C(void) {
 
 }
 
-long fn_8013CA40(long arg0, long arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* CodeWarrior deleting-destructor helper: free object via Mem_freeObject (fn_80128668)
+   when deleteFlag > 0, then return object. */
+long fn_8013CA40(long object, long deleteFlag) {
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 long fn_8013CA80(void) {
