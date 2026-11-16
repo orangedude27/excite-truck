@@ -1512,8 +1512,13 @@ long fn_801796CC(long arg0, long arg1, long arg2) {
 }
 
 extern int lbl_80431874[];
-long fn_801796EC(long arg0, long arg1, long arg2) {
-    return fn_8017873C((long*)&lbl_80431874, arg0, arg1, arg2, arg0);
+long fn_801796EC(long eventType, long payload, long size) {
+    /* Append a tagged EFX event record (type + payload) to the primary event-log buffer; returns the offset used. */
+    #define AppendEvent fn_8017873C /* appends a tagged payload to a growable event buffer */
+    #define sEventBuffer lbl_80431874 /* primary EFX event-log buffer */
+    return AppendEvent((long*)&sEventBuffer, eventType, payload, size, eventType);
+    #undef sEventBuffer
+    #undef AppendEvent
 }
 
 float fn_8017970C(void) {
