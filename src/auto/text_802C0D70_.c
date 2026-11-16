@@ -109,12 +109,13 @@ void fn_802C0F4C(void) {
     fn_802C0E68(*(s32 *)lbl_8055FB18);
 }
 #pragma scheduling on
-void fn_802C0FD4(int *queue) {
+/* Release a handle slot if it holds a valid handle, then mark the slot empty. */
+void fn_802C0FD4(int *slot) {
     s32 handle;
-    handle = *queue;
+    handle = *slot;
     if (handle != -1) {
         fn_802C6CF8(handle);
-        *queue = -1;
+        *slot = -1;
     }
 }
 
