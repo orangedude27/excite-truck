@@ -398,9 +398,19 @@ void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
 }
 
 #pragma scheduling invalid_target
+/* RealName: Achievements_CommitPendingSessionStats (merge pending session stats into active block, then clear pending)
+ * Merges lbl_8035AF38 (pending session achievements/statistics block) into
+ * lbl_8035A718 (active achievements block) and resets the pending block.
+ */
 void fn_8001F724(void) {
-    ((void (*)())fn_8001F5BC)(lbl_8035A718, lbl_8035AF38);
-    memset(lbl_8035AF38, 0, 0x820);
+#define AchMergeBlocks fn_8001F5BC
+#define sActiveAchievementsBlock lbl_8035A718
+#define sPendingAchievementsBlock lbl_8035AF38
+    ((void (*)())AchMergeBlocks)(sActiveAchievementsBlock, sPendingAchievementsBlock);
+    memset(sPendingAchievementsBlock, 0, 0x820);
+#undef AchMergeBlocks
+#undef sActiveAchievementsBlock
+#undef sPendingAchievementsBlock
 }
 #pragma scheduling on
 
