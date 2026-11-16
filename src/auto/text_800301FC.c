@@ -621,10 +621,12 @@ void __AXGetAuxAInput(void **out) {
     *out = 0;
 }
 
-void __AXGetAuxBOutput(void **arg0) {
+void __AXGetAuxBOutput(void **out) {
     extern u8 lbl_8035CD20[];
     extern s32 lbl_8055D6F4;
-    *arg0 = lbl_8035CD20 + lbl_8055D6F4 * 0x480;
+    /* Return the current read-ring slot of the AUX-B output buffer lbl_8035CD20
+     * (0x480 bytes per slot) through *out. */
+    *out = lbl_8035CD20 + lbl_8055D6F4 * 0x480;
 }
 
 void __AXGetAuxBInputDpl2(void **out) {
