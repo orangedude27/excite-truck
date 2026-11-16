@@ -331,6 +331,7 @@ extern "C" void fn_800FB358(void *);
 extern "C" s32 fn_800FB374(s32, s32);
 extern "C" void fn_800F0E64(void **arg0) {
     void *p = *arg0;
+    /* Clear the sound's back-reference (if it still points here), then the handle. */
     if (p && *(void **)((char *)p + 0x1E0) == arg0)
         *(void **)((char *)p + 0x1E0) = 0;
     if (*arg0)
