@@ -1844,10 +1844,12 @@ f32 fn_80011E70(void) {
     return value * lbl_8056025C;
 }
 
+/* Vertical centre of the whole-screen layout box lbl_80350EC4, stored as
+ * {top, left, right, bottom}: (top + bottom) * 0.5 (lbl_8056025C). */
 f32 fn_80011E90(void) {
-    f32 value;
-    value = lbl_80350EC4[0] + lbl_80350EC4[3];
-    return value * lbl_8056025C;
+    f32 verticalCenter;
+    verticalCenter = lbl_80350EC4[0] + lbl_80350EC4[3];
+    return verticalCenter * lbl_8056025C;
 }
 
 f32 fn_80011EB0(s32 arg0) {
