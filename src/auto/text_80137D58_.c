@@ -534,12 +534,12 @@ extern char lbl_8032BF20[];
 extern char lbl_8032BF70[];
 #pragma dont_inline on
 void *fn_80138968(int arg0) {
+    struct Words { unsigned int wb; unsigned int wa; };
     struct {
         unsigned char b1;
         unsigned char b2;
         unsigned char pad[2];
-        unsigned int wb;
-        unsigned int wa;
+        struct Words words;
         int valid;
         unsigned int size;
     } local;
@@ -550,20 +550,20 @@ void *fn_80138968(int arg0) {
         ok = 0;
         if (local.valid != 0) {
             if (local.size == 0x1E) {
-                unsigned int a = ((unsigned int *)obj)[0];
-                unsigned int b = ((unsigned int *)obj)[1];
-                local.wa = b;
-                local.wb = a;
+                unsigned int a = ((volatile unsigned int *)obj)[1];
+                unsigned int b = ((volatile unsigned int *)obj)[0];
+                local.words.wa = a;
+                local.words.wb = b;
                 if (local.b2) {
-                    unsigned char *p = (unsigned char *)&local.wa;
-                    unsigned char *q = (unsigned char *)&local.wb;
+                    unsigned char *p = (unsigned char *)&local.words.wa;
+                    unsigned char *q = (unsigned char *)&local.words.wb;
                     unsigned char t1, t3, t2, t4;
                     t1 = p[0]; p[0] = p[3]; p[3] = t1;
                     t2 = p[1]; p[1] = p[2]; p[2] = t2;
                     t3 = q[0]; q[0] = q[3]; q[3] = t3;
                     t4 = q[1]; q[1] = q[2]; q[2] = t4;
                 }
-                if (local.wa == 0x3C && local.wb == 0x30) {
+                if (local.words.wa == 0x3C && local.words.wb == 0x30) {
                     if (local.b2) {
                         fn_801381B4(obj);
                         fn_80138594(obj);
@@ -571,7 +571,7 @@ void *fn_80138968(int arg0) {
                     *(int *)((char *)obj + 0x28) = fn_8013BFE8(arg0);
                     ok = 1;
                 } else {
-                    fn_802E30C8(lbl_8032BF20, local.wa, 0x3C, local.wb, 0x30, local.b2);
+                    fn_802E30C8(lbl_8032BF20, local.words.wa, 0x3C, local.words.wb, 0x30, local.b2);
                 }
             } else {
                 fn_802E30C8(lbl_8032BF70, local.size, 0x1E);
