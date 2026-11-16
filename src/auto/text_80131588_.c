@@ -44,8 +44,8 @@ typedef struct Unk131588 {
 
 extern Unk131588 *fn_80131588(void *, s32);
 extern Unk131588 *fn_8012C370();
-typedef void fn_80131960_ret;
-#define fn_80131960_RETURN(x)
+typedef void *fn_80131960_ret;
+#define fn_80131960_RETURN(x) return (fn_80131960_ret)(x)
 extern fn_80131960_ret fn_80131960(void *, void *);
 extern char lbl_8032B4D0[], lbl_8032B4F8[], lbl_8032B558[], lbl_8032B6B8[], lbl_8032B6E4[], lbl_8032B714[];
 extern void fn_802E317C(const char*, ...);
