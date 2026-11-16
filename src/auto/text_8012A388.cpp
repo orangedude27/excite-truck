@@ -228,9 +228,14 @@ extern "C" void fn_8012A648(void) {
 #pragma scheduling reset
 #pragma dont_inline on
 extern "C" void fn_8012A67C(void) {
-    lbl_8055E004 = 0;
-    delete (Unk8012A570 *)lbl_8055E008;
-    lbl_8055E008 = 0;
+#define poolRefCount lbl_8055E004
+#define poolObject lbl_8055E008
+    /* Clear the shared pool's reference count and destroy/release its object. */
+    poolRefCount = 0;
+    delete (Unk8012A570 *)poolObject;
+    poolObject = 0;
+#undef poolRefCount
+#undef poolObject
 }
 
 #pragma push
