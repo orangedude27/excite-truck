@@ -1262,9 +1262,15 @@ extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this
 extern u8 lbl_803230E8[];
 extern u8 lbl_8032318C[];
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char* file, int line, const char* fmt, ...);
+/* Report the nw4hbm warning that MemorySoundArchive could not open an external
+ * stream (snd_MemorySoundArchive.cpp line 189), then return failure (null). */
 extern "C" s32 fn_800ECE24(void) {
-    Warning__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803230E8, 0xBD, (const char*)lbl_8032318C);
+#define kSourceFile lbl_803230E8
+#define kCannotOpenMsg lbl_8032318C
+    Warning__Q26nw4hbm2dbFPCciPCce((const char*)kSourceFile, 0xBD, (const char*)kCannotOpenMsg);
     return 0;
+#undef kCannotOpenMsg
+#undef kSourceFile
 }
 
 extern "C" s32 fn_800ECE60(void) {
