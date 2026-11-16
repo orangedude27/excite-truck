@@ -3633,9 +3633,10 @@ extern "C" void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3sn
 #pragma pop
 extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void *);
 extern "C" void fn_800F7110(void *self, unsigned long taskId) {
+    /* Cancel a pending sound task by id through the global sound TaskManager. */
     unsigned long id = taskId;
-    void* manager = ((void* (*)(void))fn_800FDE60)();
-    ((void (*)(void*, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(manager, id);
+    void *taskManager = ((void * (*)(void))fn_800FDE60)();
+    ((void (*)(void *, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(taskManager, id);
 }
 
 /* Resolve bank and wave data for a sequence note-on and create the sound; returns the created sound or NULL. */
