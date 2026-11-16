@@ -1249,21 +1249,23 @@ extern f32 lbl_80564888;
 s32 fn_802A711C(void *, f32, f32, f32);
 #pragma scheduling off
 s32 fn_802A6A44(s32 *arg0) {
-    f32 d = lbl_80564858;
-    f32 a = lbl_8056485C;
-    f32 c = lbl_80564850;
-    f32 b = lbl_80564888;
-    f32 *p = (f32 *)arg0;
-    p[5] = a;
-    p[6] = c;
-    p[7] = b;
-    p[8] = d;
-    p[9] = d;
-    p[10] = d;
-    p[14] = d;
-    p[15] = a;
-    p[16] = d;
-    return fn_802A711C(arg0, b, c, a);
+    f32 zero = lbl_80564858;
+    f32 unit = lbl_8056485C;
+    f32 half = lbl_80564850;
+    f32 rangeMax = lbl_80564888;
+    f32 *config = (f32 *)arg0;
+    /* Set up an effect's random-sample config (scale, primary range and
+     * defaults) and generate its entries. */
+    config[5] = unit;
+    config[6] = half;
+    config[7] = rangeMax;
+    config[8] = zero;
+    config[9] = zero;
+    config[10] = zero;
+    config[14] = zero;
+    config[15] = unit;
+    config[16] = zero;
+    return fn_802A711C(arg0, rangeMax, half, unit);
 }
 #pragma scheduling on
 extern f32 lbl_805648A4;
