@@ -26,9 +26,11 @@ extern int fn_8024683C(void);
 extern int fn_80244550(int);
 extern int lbl_8055F1E0;
 #pragma scheduling invalid_target
-int fn_8023FA50(int *arg0) {
+int fn_8023FA50(int *outStatus) {
+    /* If lbl_8055F1E0 indicates an unavailable/invalid state (fn_80244550),
+       set *outStatus to -2 and return 1; otherwise return 0. */
     if (fn_80244550(lbl_8055F1E0) != 0) {
-        *arg0 = -2;
+        *outStatus = -2;
         return 1;
     }
     return 0;
@@ -47,8 +49,19 @@ int fn_8023FAD4(char *arg0, int arg1) {
     W5 h;
     void *obj;
     int r;
-    int i;
     char *s = lbl_80342278;
+    int c0 = 0;
+    int c8a = 8;
+    int c8b = 8;
+    int c5 = 5;
+    int c10 = 10;
+    int c2 = 2;
+    int c6 = 6;
+    int cm1 = -1;
+    int c1b = 0x1b;
+    int c4 = 4;
+    int c3 = 3;
+    int c1 = 1;
 
     fn_80028E00(lbl_8055BD38);
     obj = fn_801284F8(0x38, s + 0x10);
@@ -57,43 +70,47 @@ int fn_8023FAD4(char *arg0, int arg1) {
     }
     *(void **)&lbl_8055F1E0 = obj;
     fn_8022D228(buf, 10, 0x20);
-    for (i = 0; i < 10; i++) {
-        fn_8022D350(buf, s + 0x20, 0);
+    {
+        int i = 0;
+        do {
+            fn_8022D350(buf, s + 0x20, 0);
+            i++;
+        } while (i < 10);
     }
     l[0] = (unsigned int)lbl_8055BAC0;
-    l[1] = 8;
+    l[1] = c8a;
     l[2] = (unsigned int)fn_8023FA9C;
-    l[3] = 0;
-    l[4] = 0;
+    l[3] = c0;
+    l[4] = c0;
     l[5] = (unsigned int)lbl_8055BD40;
-    l[6] = 3;
+    l[6] = c3;
     l[7] = (unsigned int)lbl_8055BD3C;
-    l[8] = 4;
-    l[9] = 0;
+    l[8] = c4;
+    l[9] = c0;
     l[10] = (unsigned int)(s + 0x2c);
-    l[11] = 5;
+    l[11] = c5;
     l[12] = *(unsigned int *)&lbl_8055F1E0;
-    l[13] = 0;
-    l[14] = 0;
+    l[13] = c0;
+    l[14] = c0;
     l[15] = (unsigned int)(s + 0x38);
-    l[16] = 10;
+    l[16] = c10;
     l[17] = (unsigned int)buf;
-    l[18] = 0;
-    l[19] = 0;
+    l[18] = c0;
+    l[19] = c0;
     l[20] = (unsigned int)lbl_8055BAB8;
-    l[21] = 8;
+    l[21] = c8b;
     l[22] = (unsigned int)fn_80236914;
-    l[23] = 2;
-    l[24] = 0;
+    l[23] = c2;
+    l[24] = c0;
     l[25] = (unsigned int)lbl_8055B860;
-    l[26] = 6;
-    l[27] = 0;
-    l[28] = -1;
-    l[29] = 0x1b;
+    l[26] = c6;
+    l[27] = c0;
+    l[28] = cm1;
+    l[29] = c1b;
     *(W5 *)&l[30] = *(W5 *)lbl_804987F8;
     h = *(W5 *)lbl_802FA2E8;
     h.w[1] = (unsigned int)l;
-    r = fn_802146BC(&h, -999, -999, 1) != -1;
+    r = fn_802146BC(&h, -999, -999, c1) != cm1;
     if (*(void **)&lbl_8055F1E0 != 0) {
         void *o = *(void **)&lbl_8055F1E0;
         (*(void (**)(void *, int))(*(char **)o + 8))(o, 1);
