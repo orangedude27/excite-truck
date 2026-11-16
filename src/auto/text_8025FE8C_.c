@@ -931,15 +931,17 @@ void fn_80261A7C(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 0x10) = 0;
 }
 
+/* Iterates over count entries stored at offset 0xC of lbl_8055F420 and calls
+ * fn_80214A9C for each with argument (index + 10). */
 void fn_80261AA0(void) {
-    s32 i;
-    i = 0;
+    s32 index;
+    index = 0;
     goto check;
 loop:
-    fn_80214A9C(i + 10);
-    i++;
+    fn_80214A9C(index + 10);
+    index++;
 check:
-    if (i < *(s32 *)(lbl_8055F420 + 0xC)) goto loop;
+    if (index < *(s32 *)(lbl_8055F420 + 0xC)) goto loop;
 }
 
 extern void fn_801345D8(char *, s32, const char *, ...);
