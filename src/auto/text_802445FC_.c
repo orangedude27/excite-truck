@@ -52,9 +52,12 @@ void fn_802445FC(int arg0, int arg1, int arg2) {
 #pragma opt_propagation reset
 #pragma opt_dead_assignments reset
 
-int fn_802446F8(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_802446F8(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 /* Sets up a display-list context, initializes and draws it with opaque black, then tears it down. */
