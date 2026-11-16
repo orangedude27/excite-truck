@@ -3,6 +3,8 @@
 // assert string "kernel.cpp". Static-init thunk fn_802E3020 (+ .ctors slot
 // 0x802ED5E8) remains in auto/text_802E3020_.c pending a promotion pass.
 
+#pragma ppc_psq_save off
+
 typedef struct { char data[0x20]; } GXTexObj;
 extern void GXInitTexObj(GXTexObj *, void *, unsigned short, unsigned short, int, int, int, int);
 extern void GXInitTexObjLOD(GXTexObj *, int, int, int, int, int, float, float, float);
@@ -250,12 +252,210 @@ fail:
 }
 
 void fn_802E1DA4(void *arg0, unsigned int arg1, unsigned int arg2, float f0, float f1, float f2, float f3, float f4) {
-    (void)arg1; (void)arg2; (void)f0; (void)f1; (void)f2; (void)f3;
-    if (f4 == lbl_805650F0) {
-        *(int *)arg0 = 1;
-    } else {
-        *(int *)arg0 = 0;
+    extern float lbl_8056510C, lbl_80565110, lbl_80565114, lbl_80565118, lbl_8056511C;
+    extern unsigned short lbl_805650F8, lbl_805650FA, lbl_805650FC, lbl_805650FE;
+    extern unsigned char lbl_80565100, lbl_80565101, lbl_80565102, lbl_80565103;
+    extern unsigned char lbl_80565104, lbl_80565105, lbl_80565106, lbl_80565107;
+    extern unsigned char lbl_80565108, lbl_80565109, lbl_8056510A, lbl_8056510B;
+    extern int lbl_802FAE40[];
+    extern float lbl_802FAE60[], lbl_804DB740[], lbl_804DB760[];
+    extern void GXSetVtxAttrFmt(int, int, int, int, int);
+    extern void GXClearVtxDesc(void);
+    extern void GXLoadTexObj(void *, int);
+    extern void GXSetVtxDesc(int, int);
+    extern void GXSetNumChans(int);
+    extern void GXSetNumTexGens(int);
+    extern void GXSetNumTevStages(int);
+    extern void GXSetNumIndStages(int);
+    extern void GXSetIndTexOrder(int, int, int);
+    extern void GXSetBlendMode(int, int, int, int);
+    extern void GXSetTevIndirect(int, int, int, int, int, int, int, int, int, int);
+    extern void GXSetTevOrder(int, int, int, int);
+    extern void GXSetTevColorIn(int, int, int, int, int);
+    extern void GXSetTevColorOp(int, int, int, int, int, int);
+    extern void GXSetTevAlphaIn(int, int, int, int, int);
+    extern void GXSetTevAlphaOp(int, int, int, int, int, int);
+    extern void GXSetTevKColorSel(int, int);
+    extern void GXSetTevKAlphaSel(int, int);
+    extern void GXSetTevSwapMode(int, int, int);
+    extern void GXSetTevColorS10(int, unsigned short *, unsigned short, unsigned short, unsigned short);
+    extern void GXSetTevKColor(int, unsigned char *, unsigned char, unsigned char, unsigned char);
+    extern void GXSetTevSwapModeTable(int, int, int, int, int);
+    extern void GXSetIndTexMtx(int, int *, int);
+    extern void GXSetTexCoordGen2(int, int, int, int, int, int, ...);
+    extern void GXLoadTexMtxImm(float *, int, int);
+    extern void GXBegin(int, int, int);
+    int r31;
+    unsigned char r30;
+    short p1, p2, p3, p4;
+
+    if (f4 >= lbl_8056510C) r30 = 0xFF;
+    else if (f4 <= lbl_80565110) r30 = 0;
+    else r30 = (unsigned char)(lbl_80565114 + lbl_80565118 * f4);
+    switch (*(int *)((char *)arg0 + 0x140)) {
+    default: r31 = 1; break;
+    case 0: r31 = 0; break;
     }
+    *(int *)((char *)arg0 + *(int *)((char *)arg0 + 0x114) * 4 + 0x1D0) = 1;
+    GXSetVtxAttrFmt(0, 9, 1, 3, 0);
+    GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+    GXSetVtxAttrFmt(0, 0xE, 1, 4, 0);
+    GXClearVtxDesc();
+    GXLoadTexObj((char *)arg0 + (*(int *)((char *)arg0 + 0x114) << 7), 0);
+    GXLoadTexObj((char *)arg0 + 0x190, 1);
+    GXLoadTexObj((char *)arg0 + 0x1B0, 2);
+    GXLoadTexObj((char *)arg0 + (*(int *)((char *)arg0 + 0x114) << 7) + 0x20, 3);
+    GXLoadTexObj((char *)arg0 + (*(int *)((char *)arg0 + 0x114) << 7) + 0x40, 4);
+    GXSetVtxDesc(9, 1);
+    GXSetVtxDesc(0xB, 1);
+    GXSetVtxDesc(0xD, 1);
+    GXSetVtxDesc(0xE, 1);
+    if (r31) GXLoadTexObj((char *)arg0 + (*(int *)((char *)arg0 + 0x114) << 7) + 0x60, 5);
+    GXSetNumChans(1);
+    GXSetNumTexGens(4);
+    GXSetNumTevStages(4);
+    GXSetNumIndStages(3);
+    GXSetIndTexOrder(0, 1, 1);
+    GXSetIndTexOrder(1, 2, 2);
+    if (r31) {
+        GXSetBlendMode(1, 4, 5, 0);
+    } else if (r30 != 0xFF) {
+        GXSetBlendMode(1, 4, 5, 0);
+    } else {
+        GXSetBlendMode(1, 1, 0, 0);
+    }
+    GXSetTevIndirect(0, 1, 0, 7, 1, 0, 0, 0, 0, 0);
+    GXSetTevOrder(0, 0, 4, 0xFF);
+    GXSetTevColorIn(0, 0xF, 8, 0xE, 2);
+    GXSetTevColorOp(0, 0, 0, 0, 0, 0);
+    GXSetTevAlphaIn(0, 7, 4, 6, 1);
+    GXSetTevAlphaOp(0, 1, 0, 0, 0, 0);
+    GXSetTevKColorSel(0, 0xC);
+    GXSetTevKAlphaSel(0, 0x1C);
+    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevIndirect(1, 1, 0, 7, 1, 0, 0, 0, 0, 0);
+    GXSetTevOrder(1, 0, 3, 0xFF);
+    GXSetTevColorIn(1, 0xF, 8, 0xE, 0);
+    GXSetTevColorOp(1, 0, 0, 1, 0, 0);
+    GXSetTevAlphaIn(1, 7, 4, 6, 0);
+    GXSetTevAlphaOp(1, 1, 0, 0, 0, 0);
+    GXSetTevKColorSel(1, 0xD);
+    GXSetTevKAlphaSel(1, 0x1D);
+    GXSetTevSwapMode(1, 0, 0);
+    GXSetTevIndirect(2, 0, 0, 7, 1, 0, 0, 0, 0, 0);
+    GXSetTevOrder(2, 3, 0, 0xFF);
+    GXSetTevColorIn(2, 0xF, 8, 0xC, 0);
+    GXSetTevColorOp(2, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(2, 4, 7, 7, 0);
+    GXSetTevAlphaOp(2, 0, 0, 0, 1, 0);
+    GXSetTevSwapMode(2, 0, 0);
+    if (r31) {
+        GXSetTevIndirect(3, 0, 0, 7, 1, 0, 0, 0, 0, 0);
+        GXSetTevOrder(3, 3, 5, 4);
+        GXSetTevColorIn(3, 1, 0, 0xE, 0xF);
+        GXSetTevColorOp(3, 0, 0, 0, 1, 0);
+        GXSetTevAlphaIn(3, 7, 4, 5, 7);
+        GXSetTevAlphaOp(3, 0, 0, 0, 1, 0);
+        GXSetTevSwapMode(3, 0, 0);
+        GXSetTevKColorSel(3, 0xE);
+    } else {
+        GXSetTevOrder(3, 0xFF, 0xFF, 4);
+        GXSetTevColorIn(3, 1, 0, 0xE, 0xF);
+        GXSetTevColorOp(3, 0, 0, 0, 1, 0);
+        GXSetTevAlphaIn(3, 7, 6, 5, 7);
+        GXSetTevAlphaOp(3, 0, 0, 0, 1, 0);
+        GXSetTevSwapMode(3, 0, 0);
+        GXSetTevKColorSel(3, 0xE);
+    }
+    {
+        unsigned short c0 = lbl_805650F8, c1 = lbl_805650FA, c2 = lbl_805650FC, c3 = lbl_805650FE;
+        GXSetTevColorS10(1, &c0, lbl_805650FC, lbl_805650FA, lbl_805650F8);
+    }
+    {
+        unsigned char c0 = lbl_80565100, c1 = lbl_80565101, c2 = lbl_80565102, c3 = lbl_80565103;
+        GXSetTevKColor(0, &c0, lbl_80565102, lbl_80565101, lbl_80565100);
+    }
+    {
+        unsigned char c0 = lbl_80565104, c1 = lbl_80565105, c2 = lbl_80565106, c3 = lbl_80565107;
+        GXSetTevKColor(1, &c0, lbl_80565106, lbl_80565105, lbl_80565104);
+    }
+    {
+        unsigned char c0 = lbl_80565108, c1 = lbl_80565109, c2 = lbl_8056510A, c3 = lbl_8056510B;
+        GXSetTevKColor(2, &c0, lbl_8056510A, lbl_80565109, lbl_80565108);
+    }
+    GXSetTevSwapModeTable(0, 0, 1, 2, 3);
+    GXSetIndTexMtx(1, lbl_802FAE40, 4);
+    {
+        float ta, tb, tc, td, te, tf;
+        te = (float)*(unsigned int *)((char *)arg0 + 0x108);
+        tf = (float)(*(unsigned int *)((char *)arg0 + 0x104) >> 3) / (float)*(unsigned int *)((char *)arg0 + 0x180);
+        td = te / (float)*(unsigned int *)((char *)arg0 + 0x184);
+        lbl_804DB740[0] = tf;
+        tc = (float)(*(unsigned int *)((char *)arg0 + 0x10C) >> 3);
+        lbl_804DB740[5] = td;
+        ta = (float)*(unsigned int *)((char *)arg0 + 0x110);
+        tb = tc / (float)*(unsigned int *)((char *)arg0 + 0x188);
+        lbl_804DB760[0] = tb;
+        lbl_804DB760[5] = ta / (float)*(unsigned int *)((char *)arg0 + 0x18C);
+        GXSetTexCoordGen2(0, 1, 4, 0x1E, 0, 0x7D, lbl_804DB760, lbl_804DB740, ta, tb, tc, td, te, tf);
+    }
+    GXSetTexCoordGen2(1, 1, 4, 0x21, 0, 0x7D);
+    GXSetTexCoordGen2(2, 1, 4, 0x24, 0, 0x7D);
+    GXSetTexCoordGen2(3, 1, 5, 0x27, 0, 0x7D);
+    GXLoadTexMtxImm(lbl_802FAE60, 0x1E, 1);
+    GXLoadTexMtxImm(lbl_804DB740, 0x21, 1);
+    GXLoadTexMtxImm(lbl_804DB760, 0x24, 1);
+    GXLoadTexMtxImm(lbl_802FAE60, 0x27, 1);
+    GXBegin(0x80, 0, 4);
+    p1 = (short)f0;
+    p2 = (short)f1;
+    p3 = (short)(p1 + (int)((float)arg1 * f2));
+    p4 = (short)(p2 + (int)((float)arg2 * f3));
+    *(volatile short *)0xCC008000 = p1;
+    *(volatile short *)0xCC008000 = p2;
+    *(volatile short *)0xCC008000 = 0;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile float *)0xCC008000 = lbl_805650F0;
+    *(volatile float *)0xCC008000 = lbl_805650F0;
+    *(volatile float *)0xCC008000 = lbl_805650F0;
+    *(volatile float *)0xCC008000 = lbl_805650F0;
+    *(volatile short *)0xCC008000 = p3;
+    *(volatile short *)0xCC008000 = p2;
+    *(volatile short *)0xCC008000 = 0;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile float *)0xCC008000 = lbl_8056511C;
+    *(volatile float *)0xCC008000 = lbl_805650F0;
+    *(volatile float *)0xCC008000 = lbl_8056511C;
+    *(volatile float *)0xCC008000 = lbl_805650F0;
+    *(volatile short *)0xCC008000 = p3;
+    *(volatile short *)0xCC008000 = p4;
+    *(volatile short *)0xCC008000 = 0;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile float *)0xCC008000 = lbl_8056511C;
+    *(volatile float *)0xCC008000 = lbl_8056511C;
+    *(volatile float *)0xCC008000 = lbl_8056511C;
+    *(volatile float *)0xCC008000 = lbl_8056511C;
+    *(volatile short *)0xCC008000 = p1;
+    *(volatile short *)0xCC008000 = p4;
+    *(volatile short *)0xCC008000 = 0;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile unsigned char *)0xCC008000 = r30;
+    *(volatile float *)0xCC008000 = lbl_805650F0;
+    *(volatile float *)0xCC008000 = lbl_8056511C;
+    *(volatile float *)0xCC008000 = lbl_805650F0;
+    *(volatile float *)0xCC008000 = lbl_8056511C;
 }
 
 #pragma pop
