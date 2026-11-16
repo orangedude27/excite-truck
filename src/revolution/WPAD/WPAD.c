@@ -4497,13 +4497,13 @@ s32 fn_80062278(s32 chan, void* pData, u16 len) {
     return 0;
 }
 #pragma pop
-// fn_80062460: get controller status
+/* Return the DPD-enabled state for the given WPAD channel. */
 u32 fn_80062460(s32 chan) {
-    WPADCB* p = lbl_8038F4F0[chan];
+    WPADCB *cb = lbl_8038F4F0[chan];
     BOOL enabled = OSDisableInterrupts();
-    u32 val = *(u32*)((u8*)p + 0x778);
+    u32 dpdEnabled = *(u32 *)((u8 *)cb + 0x778);
     OSRestoreInterrupts(enabled);
-    return val;
+    return dpdEnabled;
 }
 
 // fn_800624A4: WPAD callback handler (large - stub)
