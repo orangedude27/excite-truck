@@ -839,22 +839,32 @@ s32 fn_8014ADD8(void *arg0) {
     return ((void **)arg0)[1] != 0;
 }
 
-void fn_8014AE1C(void *arg0, void *arg1) {
-    volatile s32 *head = (volatile s32 *)arg0;
-    volatile s32 *node = (volatile s32 *)arg1;
-    void *next;
-    s32 first;
-    node[0x11C / 4] = 0;
-    node[0x120 / 4] = head[1];
-    next = (void *)head[1];
-    if (next != 0) {
-        *(void **)((u8 *)next + 0x11C) = arg1;
+void fn_8014AE1C(void *list, void *newNode) {
+    /* Append newNode to the tail of a doubly-linked list: link it after the old
+     * last node, then update the header's last (and first when empty) pointers. */
+    #define NODE_NEXT  (0x11C / 4)  /* s32 index of a node's next pointer */
+    #define NODE_PREV  (0x120 / 4)  /* s32 index of a node's previous pointer */
+    #define HEAD_FIRST 0            /* s32 index of the header's first-node pointer */
+    #define HEAD_LAST  1            /* s32 index of the header's last-node pointer */
+    volatile s32 *head = (volatile s32 *)list;
+    volatile s32 *nodeLinks = (volatile s32 *)newNode;
+    void *oldLast;
+    s32 oldFirst;
+    nodeLinks[NODE_NEXT] = 0;
+    nodeLinks[NODE_PREV] = head[HEAD_LAST];
+    oldLast = (void *)head[HEAD_LAST];
+    if (oldLast != 0) {
+        *(void **)((u8 *)oldLast + 0x11C) = newNode;
     }
-    first = head[0];
-    head[1] = (s32)arg1;
-    if (first == 0) {
-        head[0] = (s32)arg1;
+    oldFirst = head[HEAD_FIRST];
+    head[HEAD_LAST] = (s32)newNode;
+    if (oldFirst == 0) {
+        head[HEAD_FIRST] = (s32)newNode;
     }
+    #undef HEAD_LAST
+    #undef HEAD_FIRST
+    #undef NODE_PREV
+    #undef NODE_NEXT
 }
 
 extern f32 lbl_8055E3C8;
@@ -2177,10 +2187,12 @@ extern char lbl_8032DB40[];
 #pragma optimization_level 3
 #pragma opt_pointer_aliasing on
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
+    register s32 next;
     s32 value = *arg1;
     s32 index = ((s32 *)arg0)[1];
     s32 *data = *(s32 **)arg0;
-    ((s32 *)arg0)[1] = index + 1;
+    next = index + 1;
+    ((s32 *)arg0)[1] = next;
     data[index] = value;
     return &data[index];
 }
