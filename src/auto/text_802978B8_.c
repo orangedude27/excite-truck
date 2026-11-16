@@ -136,6 +136,8 @@ extern "C" void fn_802979A4(void) {
     }
 }
 #pragma cplusplus off
+#define gListenerCount lbl_8055F7A4 /* number of registered shadow listeners */
+#define gListenerList  lbl_804B4F10 /* array of registered listener pointers */
 void fn_80297A08(int arg0) {
     int index = lbl_8055F7A4;
     if (index >= 0x40) return;
