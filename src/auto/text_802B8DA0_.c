@@ -597,8 +597,8 @@ extern short lbl_802FAB60[];
 #pragma scheduling invalid_target
 int fn_802B9920(int arg0) {
     short s = (short)(arg0 + 0x200);
-    s = (short)(s % 32);
-    return lbl_802FAB60[s];
+    short idx = (short)(s % 32);
+    return lbl_802FAB60[idx];
 }
 #pragma scheduling on
 #pragma pop
@@ -1326,11 +1326,12 @@ extern "C" void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
 #pragma cplusplus reset
 #pragma pop
 
-void fn_802BAA50(void *arg0) {
-    float a = *(float *)arg0;
-    float b = *((float *)arg0 + 1);
-    *(float *)arg0 = b;
-    *((float *)arg0 + 1) = -a;
+void fn_802BAA50(void *vec) {
+    /* Rotate a 2D float vector 90 degrees in place: (x, y) becomes (y, -x). */
+    float x = *(float *)vec;
+    float y = *((float *)vec + 1);
+    *(float *)vec = y;
+    *((float *)vec + 1) = -x;
 }
 
 #pragma cplusplus on
