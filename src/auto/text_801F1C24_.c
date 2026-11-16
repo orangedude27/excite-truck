@@ -1313,11 +1313,12 @@ int fn_801F3AB0(void) {
     return fn_802E317C(lbl_8033AB5C);
 }
 
-int fn_801F3AC0(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_801F3AC0(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 void fn_801F3B00(void *self, int source) {
