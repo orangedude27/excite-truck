@@ -68,6 +68,17 @@ extern "C" int Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveDa
 extern "C" int fn_800E519C(void *);
 extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, int);
 extern "C" void *fn_80128668(void *);
+
+/* Meaningful names for the globals the Channel constructor touches. */
+#define sDefaultChannelVolume lbl_80560FC0
+#define sChannelManagerInitialized lbl_8055DE28
+#define sChannelManager lbl_80412778
+#define sChannelManagerDtorRecord lbl_8040EC78
+#define sInstanceManagerFile lbl_80322B0C
+#define sNullObjMsg lbl_80322AE4
+#define sLinkListFile lbl_80322AD8
+#define sNullPtrMsg lbl_80322AB4
+
 extern "C" void *__ct__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
     register void *object asm("r29") = arg0;
     int zero = 0;
