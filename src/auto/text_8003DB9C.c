@@ -2670,6 +2670,7 @@ void GXInitLightDistAttn(unsigned int arg0) {
     ((GXDistAttnReg *)&__peReg[1])->distanceAttn = arg0;
 }
 
+/* Pack x (1 bit), y (3 bits) and z (1 bit) into the low halfword of PE register 0. */
 void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z) {
     union {
         unsigned int reg;
