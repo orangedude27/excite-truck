@@ -541,13 +541,15 @@ int fn_801D9948(int *arg0) {
     *head = 0;
 }
 #pragma use_lmw_stmw on
+// Reset every morph-group blend weight to the default (zero) value,
+// then clear the frozen-update flag so morph weights can be updated again.
 void fn_801D9A08(void) {
-    void *node = lbl_8055E96C;
+    void *node = morphGroupList;
     while (node != 0) {
-        fn_801D9AB8(node, lbl_80562B2C);
+        fn_801D9AB8(node, dtbZeroWeight);
         node = *(void **)((char *)node + 0x54);
     }
-    lbl_8055E968 = 0;
+    morphUpdateFrozen = 0;
 }
 
 /* Finds the morph-group node in the lbl_8055E96C list whose name matches arg0. */
