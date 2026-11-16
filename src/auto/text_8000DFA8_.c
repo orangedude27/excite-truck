@@ -1238,9 +1238,17 @@ void fn_80010EF0(void);
 void fn_80010F08(void);
 void fn_80010F20(void);
 void fn_80010EC8(void) {
-    fn_80010EF0();
-    fn_80010F08();
-    fn_80010F20();
+#define ResetHudList_0 fn_80010EF0 /* clears the lbl_80350F88 list */
+#define ResetHudList_1 fn_80010F08 /* clears the lbl_80351214 list */
+#define ResetHudList_2 fn_80010F20 /* clears the lbl_803514A0 list */
+    /* Empty all three HUD display lists: clear each list's entry count and
+     * active flag. Counterpart to fn_8001123C, which draws all three. */
+    ResetHudList_0();
+    ResetHudList_1();
+    ResetHudList_2();
+#undef ResetHudList_0
+#undef ResetHudList_1
+#undef ResetHudList_2
 }
 
 typedef struct Unk80350F88Entry {
