@@ -2033,12 +2033,16 @@ void *fn_801CEB0C(void *object, s32 freeFlag) {
     }
     return object;
 }
+/* RealName: unknown (rename_symbol unavailable). Frees the owned buffer pointer
+ * stored at *slot (if non-NULL) via fn_80128668, then clears the slot. */
 void fn_801CEB94(void *arg0) {
+#define FreeOwnedBuffer fn_80128668
     void *buf = *(void **)arg0;
     if (buf != NULL) {
-        fn_80128668(buf);
+        FreeOwnedBuffer(buf);
         *(void **)arg0 = NULL;
     }
+#undef FreeOwnedBuffer
 }
 
 /* Check/apply a float value against up to three handles stored at +0x0, +0x8, +0xC: requires +0x0 to pass fn_8001BF34, applies fn_8001BF0C to it, and optional handles at +0x8/+0xC must also pass fn_8001BF34 when non-null. */
