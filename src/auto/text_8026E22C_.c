@@ -39,6 +39,28 @@ extern float __fabsf(float);
 extern double fabs(double);
 extern double __fabs(double);
 #pragma scheduling invalid_target
+void fn_8026E22C(float *out, float *a, float *b, float t) {
+    float q[4], av[4], bv[4];
+    mtx_to_quat((float (*)[3])a, av);
+    mtx_to_quat((float (*)[3])b, bv);
+    fn_8012F57C(q, av, bv, t);
+    {
+        float x = q[0], y = q[1], z = q[2], w = q[3];
+        float xx = x * (2 * x), yy = y * (2 * y), zz = z * (2 * z);
+        float xy = x * (2 * y), xz = x * (2 * z), yz = y * (2 * z);
+        float wx = w * (2 * x), wy = w * (2 * y), wz = w * (2 * z);
+        out[0] = 1.0f - (yy + zz);
+        out[4] = 1.0f - (xx + zz);
+        out[8] = 1.0f - (xx + yy);
+        out[1] = xy + wz; out[3] = xy - wz;
+        out[2] = xz - wy; out[6] = xz + wy;
+        out[5] = yz - wx; out[7] = yz + wx;
+        out[9] = a[9] + t * (b[9] - a[9]);
+        out[10] = a[10] + t * (b[10] - a[10]);
+        out[11] = a[11] + t * (b[11] - a[11]);
+    }
+}
+
 void fn_8026E688(f32* arg0, f32* arg1, f32* arg2, f32* arg3) {
     volatile f32 delta[3];
     f32 z[3];
@@ -105,8 +127,9 @@ void fn_8026E688(f32* arg0, f32* arg1, f32* arg2, f32* arg3) {
     matrix[6] = z[0]; matrix[7] = z[1]; matrix[8] = z[2];
 }
 
-void fn_8026E850(f32* arg0, f32* arg1, f32* arg2, f32* arg3) {
-    fn_8026E688(arg2 + 22, arg0, arg1, arg3);
+void fn_8026E850(f32* from, f32* to, f32* obj, f32* up) {
+    /* Build the look-at orientation matrix at obj+0x58 (22 floats in), pointing from `from` to `to` with `up`. */
+    fn_8026E688(obj + 22, from, to, up);
 }
 
 #pragma scheduling on
