@@ -211,12 +211,17 @@ f32 fn_801931AC(f32 numerator, f32 from, f32 to, f32 denominator) {
 #undef kZero
 }
 
-float fn_801931EC(float a, float b) {
-    float t = lbl_80562140 - a / b;
-    float floor = lbl_8055E558;
-    t = (lbl_80562140 < t) ? lbl_80562140 : t;
-    if (t > floor) return t;
-    return floor;
+/* Return 1 - numerator/denominator, clamped between a minimum weight and 1. */
+float fn_801931EC(float numerator, float denominator) {
+#define kOne lbl_80562140
+#define kMinWeight lbl_8055E558
+    float t = kOne - numerator / denominator;
+    float minWeight = kMinWeight;
+    t = (kOne < t) ? kOne : t;
+    if (t > minWeight) return t;
+    return minWeight;
+#undef kOne
+#undef kMinWeight
 }
 
 #pragma processor 750
