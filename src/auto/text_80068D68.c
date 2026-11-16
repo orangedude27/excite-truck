@@ -5617,10 +5617,11 @@ static UINT8 bta_dm_authentication_complete_cback(BD_ADDR bd_addr, DEV_CLASS dev
     return 0;
 }
 
-void fn_8007301C(void *arg0) {
-    void (**callback)(s32, void *);
-    callback = (void (**)(s32, void *))(lbl_803C0C14 + 0x50);
-    if (*callback != 0) (*callback)(0, arg0);
+void fn_8007301C(void *pSecEvent) {
+    /* Invoke the registered BTA Device Manager security callback (bta_dm_cb.p_sec_cback) with event 0 and pSecEvent, if one is registered. */
+    void (**pSecCback)(int, void *);
+    pSecCback = (void (**)(int, void *))&bta_dm_cb_p_sec_cback;
+    if (*pSecCback != 0) (*pSecCback)(0, pSecEvent);
 }
 
 void fn_80073044(u8 *pData) {
