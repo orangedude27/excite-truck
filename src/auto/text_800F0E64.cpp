@@ -5055,6 +5055,9 @@ allocation_done:
     SoundPlayer_InsertPriorityList(player, sound);
     return sound;
 }
+#pragma push
+#pragma dont_inline off
+#pragma auto_inline off
 extern "C" const char lbl_80325F10[];
 extern "C" const char lbl_80325F38[];
 extern "C" const char lbl_80325F50[];
