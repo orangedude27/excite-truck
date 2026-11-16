@@ -998,11 +998,11 @@ void fn_801E8A84(void)
   lbl_804881D8[3] = value;
   scale = scale + 0;
 }
-void fn_801E8C84(float *arg0) {
-    float scale = lbl_804881D8[3];
-    arg0[0] = lbl_804881D8[0] * scale;
-    arg0[1] = lbl_804881D8[1] * scale;
-    arg0[2] = lbl_804881D8[2] * scale;
+void fn_801E8C84(float *outVec) {
+    float magnitude = lbl_804881D8[3];
+    outVec[0] = lbl_804881D8[0] * magnitude;
+    outVec[1] = lbl_804881D8[1] * magnitude;
+    outVec[2] = lbl_804881D8[2] * magnitude;
 }
 
 void fn_801E8CB8(float *arg0, float *arg1) {
