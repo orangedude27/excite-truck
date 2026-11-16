@@ -3619,11 +3619,14 @@ UINT8 GKI_create_pool(UINT16 size, UINT16 count, UINT8 permission, void *p_mem_p
         gki_init_free_queue(xx, size, count, p_mem_pool);
         gki_add_to_pool_list(xx);
 
-        if (xx < GKI_NUM_TOTAL_BUF_POOLS) {
-            if (permission == 1)
-                p_cb->pool_access_mask |= 1 << xx;
-            else
-                p_cb->pool_access_mask &= ~(1 << xx);
+        {
+            tGKI_COM_CB *p_cb2 = &gki_cb.com;
+            if (xx < GKI_NUM_TOTAL_BUF_POOLS) {
+                if (permission == 1)
+                    p_cb2->pool_access_mask = (UINT16)(p_cb2->pool_access_mask | (1 << xx));
+                else
+                    p_cb2->pool_access_mask = (UINT16)(p_cb2->pool_access_mask & ~(1 << xx));
+            }
         }
 
         p_cb->curr_total_no_of_pools++;
