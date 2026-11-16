@@ -270,14 +270,17 @@ extern char lbl_803392F0[];
 #pragma push
 #pragma processor 750
 void fn_801DACA0(void *arg0, float arg1) {
-    float value = lbl_80562B54;
+    float value;
     int offset;
     int count;
-    void *entry = 0;
+    void *entry;
     struct Ctx801DACA0 *ctx;
+
+    value = lbl_80562B54;
     if (arg1 < value)
         value = ((struct Obj801DACA0 *)arg0)->get();
     ctx = (struct Ctx801DACA0 *)arg0;
+
     count = 0;
     offset = 0;
     while (count < ctx->count) {
@@ -293,11 +296,12 @@ void fn_801DACA0(void *arg0, float arg1) {
     }
 }
 #pragma scheduling on
-int fn_801DAD7C(void *arg0) {
-    int count = *(int *)((char *)arg0 + 8);
+/* Return 1 only if none of the context's items have the active flag (+0x18) set. */
+int fn_801DAD7C(void *ctx) {
+    int count = *(int *)((char *)ctx + 8);
     int index;
     for (index = 0; index < count; index++) {
-        void **items = *(void ***)((char *)arg0 + 4);
+        void **items = *(void ***)((char *)ctx + 4);
         if (*((unsigned char *)items[index] + 0x18) != 0) {
             return 0;
         }
