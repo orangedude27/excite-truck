@@ -1271,7 +1271,7 @@ extern "C" s32 fn_80191108(void *container, s32 offset) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_801B6660(s32);
+extern "C" void fn_801B6660(void);
 #pragma use_lmw_stmw off
 extern "C" void fn_80191178(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, f32 farg0) {
     class Dummy {
@@ -1293,7 +1293,7 @@ extern "C" void fn_80191178(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4
     ((Dummy *)*(void **)((u8 *)arg0 + 8))->v5(arg1 + sp14, arg2 + sp10, &spC, &sp8, value);
     *arg3 = sp14 + spC;
     *arg4 = sp10 + sp8;
-    fn_801B6660(sp10);
+    fn_801B6660();
     *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x20) + 0x260C) = 0;
 }
 #pragma use_lmw_stmw reset
