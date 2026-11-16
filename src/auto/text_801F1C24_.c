@@ -964,23 +964,25 @@ void fn_801F2E88(void *arg0, void *arg1) {
 #pragma pop
 
 #pragma pop
-void fn_801F3124(unsigned int *arg0, unsigned int *arg1) {
-    unsigned int d, c, b, a;
-    float f, e;
-    volatile unsigned int *src = (volatile unsigned int *)arg1;
-    volatile float *fsrc = (volatile float *)((char *)arg1 + 16);
-    a = src[0];
-    b = src[1];
-    c = src[2];
-    d = src[3];
-    e = fsrc[0];
-    f = fsrc[1];
-    arg0[0] = a;
-    arg0[1] = b;
-    arg0[2] = c;
-    arg0[3] = d;
-    ((float *)arg0)[4] = e;
-    ((float *)arg0)[5] = f;
+/* Copy one 24-byte billboard vertex template (four attribute words followed by two UV
+   floats) from the source record into the destination vertex. */
+void fn_801F3124(unsigned int *dst, unsigned int *srcRecord) {
+    unsigned int word3, word2, word1, word0;
+    float float1, float0;
+    volatile unsigned int *srcWords = (volatile unsigned int *)srcRecord;
+    volatile float *srcFloats = (volatile float *)((char *)srcRecord + 16);
+    word0 = srcWords[0];
+    word1 = srcWords[1];
+    word2 = srcWords[2];
+    word3 = srcWords[3];
+    float0 = srcFloats[0];
+    float1 = srcFloats[1];
+    dst[0] = word0;
+    dst[1] = word1;
+    dst[2] = word2;
+    dst[3] = word3;
+    ((float *)dst)[4] = float0;
+    ((float *)dst)[5] = float1;
 }
 
 void fn_801F3158(float *arg0, float *arg1) {
