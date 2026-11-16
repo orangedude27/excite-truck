@@ -72,11 +72,70 @@ void fn_802526E0(void *arg0) {
     out[8] = temp_f6;
     PSVECCrossProduct((void *)(out + 6), (void *)out, (void *)(out + 3));
 }
+
+#pragma push
+#pragma processor 750
+void fn_8025280C(void *arg0,f32 amount) {
+    Quaternion position, lateral, result, temp, lateralTemp;
+    Vec normal, forward, right, velocity, up;
+    Vec2 direction, unit, perpendicular;
+    f32 length, scale, height, a, b, a3, b3;
+    f32 *self=arg0;
+    position.x=self[0]; position.y=self[1]; position.z=self[2];
+    direction.x=position.x; direction.y=position.z;
+    if(direction.x*direction.x+direction.y*direction.y<lbl_805639D4) {
+        direction.x=lbl_805639D4; direction.y=lbl_805639CC;
+    }
+    length=(f32)fn_8002F234(direction.x*direction.x+direction.y*direction.y);
+    if (!((f32)__fabs(length)<=lbl_80558DC4[0])) {
+        scale=lbl_805639C8/length;
+        direction.x*=scale; direction.y*=scale;
+    }
+    position.x=direction.x; position.z=direction.y;
+    temp.x=position.x; temp.y=position.y; temp.z=position.z;
+    self[0]=temp.x; self[1]=temp.y; self[2]=temp.z; self[3]=temp.w;
+    unit.x=direction.x; unit.y=direction.y;
+    length=(f32)fn_8002F234(unit.x*unit.x+unit.y*unit.y);
+    scale=lbl_805639D4/length;
+    unit.x*=scale; unit.y*=scale;
+    *(f64 *)&perpendicular=*(f64 *)&unit;
+    perpendicular.x=-unit.y; perpendicular.y=unit.x;
+    length=(f32)fn_8002F234(perpendicular.x*perpendicular.x+perpendicular.y*perpendicular.y);
+    if (!((f32)__fabs(length)<=lbl_80558DC4[0])) {
+        scale=amount/length;
+        perpendicular.x*=scale; perpendicular.y*=scale;
+    }
+    lateral.x=perpendicular.x; lateral.y=self[0x54/4]; lateral.z=perpendicular.y;
+    lateralTemp.x=lateral.x; lateralTemp.y=lateral.y; lateralTemp.z=lateral.z;
+    self[20]=lateralTemp.x; self[21]=lateralTemp.y; self[22]=lateralTemp.z; self[23]=lateralTemp.w;
+    forward.x=self[12]; forward.y=self[13]; forward.z=self[14];
+    velocity.x=self[24]; velocity.y=self[25]; velocity.z=self[26];
+    up.x=self[8]; up.y=self[9]; up.z=self[10];
+    right.x=self[4]; right.y=self[5]; right.z=self[6];
+    velocity.y=lbl_805639DC*(forward.x*unit.x+forward.z*unit.y);
+    height=position.y-((f32 (*)(void *, f32, f32))fn_801DCF48)(&normal,position.x,position.z);
+    height=lbl_805639CC>height?lbl_805639CC:height;
+    if(height>lbl_805639E0) {
+        a=PSVECDotProduct(&normal,&forward);
+        b=-PSVECDotProduct(&normal,&right);
+        a3=a*a*a; b3=b*b*b;
+        velocity.x=(velocity.x+right.x*a3+forward.x*b3)*lbl_805639E4;
+        velocity.y=(velocity.y+right.y*a3+forward.y*b3)*lbl_805639E4;
+        velocity.z=(velocity.z+right.z*a3+forward.z*b3)*lbl_805639E4;
+    }
+    result.x=velocity.x; result.y=velocity.y; result.z=velocity.z;
+    self[24]=result.x; self[25]=result.y; self[26]=result.z; self[27]=result.w;
+}
 #pragma pop
-void fn_80252B88(s32 arg0) {
-    u8 sp8[0x28];
-    fn_802526E0(sp8);
-    fn_801BE400(arg0, sp8, lbl_805639E8);
+
+#pragma pop
+void fn_80252B88(s32 slotIndex) {
+    u8 basis[0x28];
+    /* Builds a camera slot's orientation basis and initializes its render
+     * state: fills a 3x4 transform with fn_802526E0, then passes it and the
+     * 30.0 scale (lbl_805639E8) to fn_801BE400 for the given slot. */
+    fn_802526E0(basis);
+    fn_801BE400(slotIndex, basis, lbl_805639E8);
 }
 
 void fn_80252BC8(void) {
