@@ -85,8 +85,11 @@ extern f32 lbl_8056197C;
 void fn_8016A0AC(void) {
 }
 
-void fn_8016A0B0(void* alarm) {
-    fn_8016AC90(fn_8016A8F8(alarm));
+/* Once the scene's objects exist, register their names (fn_8016A8F8) and
+   rebuild the course/path graph (fn_8016AC90). The forwarded argument is an
+   unused callback context; both callees ignore it. */
+void fn_8016A0B0(void* unused) {
+    fn_8016AC90(fn_8016A8F8(unused));
 }
 
 extern void fn_8002F6AC(void*, void *(*)(void*, s32));
