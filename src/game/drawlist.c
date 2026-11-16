@@ -468,9 +468,10 @@ void fn_802C8B08(unsigned int *dst) {
 }
 
 extern void fn_802CAD74(void);
+/* Mode-2 draw-list setup: select the texture slot passed through in r3 (fn_802CAD74), then set the render mode to 2. */
 void fn_802C8B70(void) {
     fn_802CAD74();
-    lbl_8055FC70 = 2;
+    sRenderMode = 2;
 }
 
 #pragma dont_inline on
