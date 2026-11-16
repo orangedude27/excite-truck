@@ -7,14 +7,19 @@ extern int fn_8000D838(void*);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_8023C26C(void) {
-    int v;
-    fn_8000D838(&lbl_8055F130);
-    lbl_80498770[0] = 0;
-    v = 123;
-    lbl_80498770[1] = v;
-    lbl_80498770[2] = 0;
-    lbl_80498770[3] = 0;
-    lbl_80498770[4] = 0;
+    /* InitializeModuleState: initialize state block and reset runtime fields (index 1 = 123). */
+#define moduleInitState lbl_8055F130
+#define moduleState     lbl_80498770
+    int initialValue;
+    fn_8000D838(&moduleInitState);
+    moduleState[0] = 0;
+    initialValue = 123;
+    moduleState[1] = initialValue;
+    moduleState[2] = 0;
+    moduleState[3] = 0;
+    moduleState[4] = 0;
+#undef moduleInitState
+#undef moduleState
 }
 #pragma opt_propagation reset
 #pragma scheduling on
