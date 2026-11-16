@@ -618,9 +618,10 @@ void fn_802E09EC(void) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Reset the TEV swap selectors to swap 0 for the first two stages. */
 void fn_802E0B68(void) {
-    GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
-    GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
 #pragma pop
 #pragma dont_inline on
