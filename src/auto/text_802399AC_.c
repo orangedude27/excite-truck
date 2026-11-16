@@ -68,6 +68,7 @@ extern s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, s32, float);
 
 extern void* lbl_8055BAC8;
 s32 fn_80214D04(void);
+/* Return nonzero when the current player's secondary list (index 1) is valid. */
 s32 fn_802399AC(void) {
     return fn_8027B9EC(1) != 0;
 }
