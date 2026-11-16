@@ -627,7 +627,6 @@ void fn_80232024(u8 **arg0) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma dont_inline on
-extern volatile u8 lbl_8055F074;
 extern void fn_80233BF0(u8 *, u8 *, f32 *, f32 *, s32, f32, f32);
 extern void fn_80233DD8(s32 *, s32);
 extern void fn_80233E34(s32 *, s32, s32);
@@ -655,7 +654,7 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     spC = farg0;
     sp10 = farg1;
     sp14 = arg2;
-    lbl_8055F074 = (arg2 == (s32)0xFF000000);
+    *(u8 *)&lbl_8055F074 = (arg2 == 0xFF000000);
     ((void (*)(u8 **, u8 **))fn_80232024)((u8 **)&sp8, (u8 **)&sp14);
     var_r31 = 1;
     if (*(u32 *)((u8 *)arg1 + 8) != 0)
