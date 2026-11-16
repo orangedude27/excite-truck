@@ -283,7 +283,12 @@ enum { MOTOR_STATE_WORKING, MOTOR_STATE_PENDING_STOP, MOTOR_STATE_STOPPED };
 #define stateBusy            fn_80038368 // the drive's busy state: run the block's command
 #define CoverAlarmHandler    fn_8003801C // the alarm that polls the cover register
 #define __DVDStoreErrorCode  fn_8003A1A0 // write a drive error code, then carry on
-#define cbForStoreErrorCode1 fn_80035C64 // carried on from the code just written
+ #define cbForStoreErrorCode1 fn_80035C64 // carried on from the code just written
+
+ // Cover-register read helpers used by the poll alarm and its callback.
+ #define DVDLowPrepareCoverRegister fn_8003BB58 // queue a cover-register read with the given callback
+ #define cbForCoverReg              fn_80037E94 // called when that cover-register read lands
+
 
 // The __ErrorInfo ring (dvderror.h): the next free entry of its info[] array,
 // and how many drive error interrupts have been counted in a row.
