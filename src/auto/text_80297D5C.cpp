@@ -2436,9 +2436,17 @@ extern "C" void fn_8029BEF8(void *out) {
     *(void**)out = ((void* (*)(void*, void*, void*))fn_8028E2F8)(raw + 0x18, lbl_80349450, lbl_8055CA80);
 }
 #pragma scheduling on
-int fn_8029BFF8(void* arg0) {
-    fn_8029BA94(lbl_8055F7D8, arg0);
+int fn_8029BFF8(void* payload) {
+#define backfireTable lbl_8055F7D8
+#define updateBackfireRecord fn_8029BA94
+    /* Per-frame backfire event handler registered for event type 4 by the
+     * BackfireMan constructor: interpret the payload as a backfire request and
+     * apply it to the matching record of the global backfire table, then report
+     * the 16 payload bytes consumed. */
+    updateBackfireRecord(backfireTable, payload);
     return 0x10;
+#undef updateBackfireRecord
+#undef backfireTable
 }
 
 extern void* lbl_8055F7D4;
