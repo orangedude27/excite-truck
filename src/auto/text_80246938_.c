@@ -733,7 +733,6 @@ void fn_8024778C(void) {
         var_r31 += 1;
     } while (var_r31 < 3);
 }
-#pragma pop
 extern void* lbl_8055BEB0;
 extern s32 lbl_8055BEB4;
 void fn_80247880(void) {
