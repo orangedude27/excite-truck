@@ -461,6 +461,11 @@ void fn_8022DF00(void *arg0, int *arg1, int *arg2) {
     *arg2 = 4;
 }
 
+/* An int gauge: +0x04 int *value it owns, +0x08 min, +0x0C max, +0x10 a printf
+ * format for the value (fn_8022DB34).  fn_8022DF14 / fn_8022DF48 step it up and
+ * down inside [min, max], fn_8022DF7C / fn_8022DF9C test value != max / min,
+ * fn_8022DFBC normalizes it and fn_8022E014 interpolates into it.
+ * (The float gauges next door keep their value pointer at +0x18 instead.) */
 void fn_8022DF14(void *arg0) {
     int cur;
     int hi;
