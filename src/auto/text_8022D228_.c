@@ -525,8 +525,11 @@ void fn_8022E014(void *obj, float t) {
     *(int *)*(int **)((char *)obj + 4) = base + (int)(t * (float)(*(int *)((char *)obj + 0xC) - base));
 }
 
-int fn_8022E064(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_8022E064(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
