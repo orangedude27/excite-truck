@@ -61,9 +61,10 @@ void fn_80278214(void) {
 #pragma pop
 void fn_80278284(void) {}
 
+// Free the captured script-movie keyframe list and reset its count.
 void fn_80278288(void) {
-    if (lbl_8055F5B0 != 0) fn_80128670(lbl_8055F5B0 - 0x10);
-    lbl_8055F5B0 = 0; lbl_8055F5B4 = 0;
+    if (gKeyframeList != 0) Mem_Free(gKeyframeList - 0x10);
+    gKeyframeList = 0; gKeyframeCount = 0;
 }
 
 /* Starts capturing the cscript movie: turns recording on, clears the captured
