@@ -1643,24 +1643,27 @@ extern "C" s32 fn_8010D4B0(void *self, void *arg0, s32 arg1, void *arg2) {
 
 extern "C" f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(s32);
 extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
-extern "C" f32 fn_8010D9E4(s32 arg0) {
-    s32 var_r5 = 1, var_r6 = 1, var_r7 = 1, var_r8 = 1, var_r9 = 1, var_r10 = 1;
-    u32 temp_r11;
-    s32 var_r30, font;
-    temp_r11 = (u32)(arg0 & 0xFF000000);
-    if (temp_r11 != 0x80000000 && ((u32)(arg0 & 0xFF800000)) != 0x81000000) var_r10 = 0;
-    if (var_r10 == 0 && ((u32)(arg0 & 0xF8000000)) != 0x90000000) var_r9 = 0;
-    if (var_r9 == 0 && temp_r11 != 0xC0000000) var_r8 = 0;
-    if (var_r8 == 0 && ((u32)(arg0 & 0xFF800000)) != 0xC1000000) var_r7 = 0;
-    if (var_r7 == 0 && ((u32)(arg0 & 0xF8000000)) != 0xD0000000) var_r6 = 0;
-    if (var_r6 == 0 && ((u32)(arg0 & 0xFFFFC000)) != 0xE0000000) var_r5 = 0;
-    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0xF1, lbl_80329578, arg0);
-    font = GetFont__Q36nw4hbm2ut10CharWriterCFv(arg0);
+extern "C" f32 fn_8010D9E4(s32 writer) {
+    /* Check the CharWriter handle's NW4HBM pointer tag, then return its stored
+     * spacing plus the font's cell height scaled by the writer's horizontal
+     * scale. */
+    s32 tagOk5 = 1, tagOk4 = 1, tagOk3 = 1, tagOk2 = 1, tagOk1 = 1, tagOk0 = 1;
+    u32 tagByte;
+    s32 cellHeight, font;
+    tagByte = (u32)(writer & 0xFF000000);
+    if (tagByte != 0x80000000 && ((u32)(writer & 0xFF800000)) != 0x81000000) tagOk0 = 0;
+    if (tagOk0 == 0 && ((u32)(writer & 0xF8000000)) != 0x90000000) tagOk1 = 0;
+    if (tagOk1 == 0 && tagByte != 0xC0000000) tagOk2 = 0;
+    if (tagOk2 == 0 && ((u32)(writer & 0xFF800000)) != 0xC1000000) tagOk3 = 0;
+    if (tagOk3 == 0 && ((u32)(writer & 0xF8000000)) != 0xD0000000) tagOk4 = 0;
+    if (tagOk4 == 0 && ((u32)(writer & 0xFFFFC000)) != 0xE0000000) tagOk5 = 0;
+    if (tagOk5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0xF1, lbl_80329578, writer);
+    font = GetFont__Q36nw4hbm2ut10CharWriterCFv(writer);
     if (font) {
         struct V { virtual int a0()=0; virtual int a1()=0; virtual int a2()=0; virtual int a3()=0; virtual int a4()=0; virtual int a5()=0; virtual int a6()=0; virtual int a7()=0; virtual int a8()=0; virtual int a9()=0; virtual int a10()=0; virtual int a11()=0; virtual int a12()=0; };
-        var_r30 = ((V*)font)->a11();
-    } else var_r30 = 0;
-    return *(f32*)(arg0 + 0x50) + (f32)var_r30 * GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(arg0);
+        cellHeight = ((V*)font)->a11();
+    } else cellHeight = 0;
+    return *(f32*)(writer + 0x50) + (f32)cellHeight * GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(writer);
 }
 
 extern "C" const char lbl_80329560[];
