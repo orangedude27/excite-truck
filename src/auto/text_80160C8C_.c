@@ -2685,8 +2685,9 @@ s32 fn_801645D8(void *arg0, s32 arg1) {
     return 0;
 }
 
-s32 fn_80164634(void *arg0) {
-    return *(float *)((char *)arg0 + 0x98) > *(float *)((char *)arg0 + 0x84);
+s32 fn_80164634(void *hud) {
+    /* HUD timer: true once the elapsed value (+0x98) has passed its limit (+0x84). */
+    return *(float *)((char *)hud + 0x98) > *(float *)((char *)hud + 0x84);
 }
 
 extern void *fn_80131810(void *);
