@@ -12854,10 +12854,12 @@ extern "C" s32 fn_800BA1CC(s32 handle, s32 addr, s32 lba, s32 count, s32 outPtr)
     return fn_800BA688((void *)count, addr, lba, sectorSize, (s32 *)outPtr);
 }
 
-extern "C" s32 fn_800BA204(s32 arg0) {
+extern "C" s32 fn_800BA204(s32 handle) {
     u32 flags;
 
-    if (arg0 == 0) {
+    /* Clear the device's "initialized" flag (bit 1) in the global SD/IOS state
+     * block for a valid handle; a null handle is rejected with 1. */
+    if (handle == 0) {
         return 1;
     }
     flags = *(volatile u32 *)lbl_80407300;
