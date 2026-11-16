@@ -3,8 +3,6 @@
 
 #include <types.h>
 #include <revolution/GX/GXTypes.h>  // GXCullMode, for the draw passes below
-static inline f32 MaxF32(f32 a, f32 b) { return (a < b) ? b : a; }
-static inline f32 MinF32(f32 a, f32 b) { return (a > b) ? b : a; }
 struct VT_C { void *v0; void *v4; void *v8; int (*fC)(void *, void *); };
 struct VT_20 { void *v0; void *v4; void *v8; void *vc; void *v10; void *v14; void *v18; void *v1c; int (*f20)(void *, void *, int); };
 __declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], lbl_8055B2B8[], lbl_8055B2C0[];
