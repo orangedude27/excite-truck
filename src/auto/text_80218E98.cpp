@@ -1584,30 +1584,13 @@ extern "C" s32 fn_8021A9A4(void *arg0) {
         second = 1;
     return (s32)(((unsigned int)((-second) | second)) >> 31) | first;
 }
-#pragma scheduling on
+#pragma dont_inline off
 extern "C" void fn_8021AA18(void *arg0) {
     struct State { u32 a[12]; f32 x, y, z; } state;
     u32 *src = (u32 *)fn_8022EDC4();
-    u32 t0; u32 t1;
-    t1 = src[0];
     s32 selected = 0;
-    t0 = src[1];
-    state.a[0] = t1;
-    state.a[1] = t0;
-    t0 = src[2]; t1 = src[3];
-    state.a[2] = t0;
-    state.a[3] = t1;
-    t0 = src[4]; t1 = src[5];
-    state.a[4] = t0;
-    state.a[5] = t1;
-    t1 = src[6]; t0 = src[7];
-    state.a[6] = t1;
-    state.a[7] = t0;
-    state.a[8] = src[8];
-    t1 = src[9]; t0 = src[10];
-    state.a[9] = t1;
-    state.a[10] = t0;
-    state.a[11] = src[11];
+    CopyMatrix_8021AA18(state.a, src);
+    CopyVector_8021AA18(state.a + 9, src + 9);
     state.x = ((f32 *)src)[12];
     state.y = ((f32 *)src)[13];
     state.z = ((f32 *)src)[14];
@@ -1627,7 +1610,7 @@ extern "C" void fn_8021AA18(void *arg0) {
         *(s32 *)(p + 0x248), *(s32 *)(p + 0x24C), *(s32 *)(p + 0x250), w, delta, h);
     fn_8022EDB8();
 }
-
+#pragma dont_inline reset
 extern "C" s32 fn_8021AB88(void) { return 0; }
 
 /* The cursor-icon widget's own key handling defers to its owning menu group
