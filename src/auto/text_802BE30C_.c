@@ -167,15 +167,17 @@ void fn_802BE780(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_802BE7C4(s32 arg0, s32 arg1, s32 arg2) {
-    s32 denominator;
-    s32 value;
-    arg1 -= arg2;
-    denominator = arg2 * 2;
-    arg1 = (arg1 + 0x200) / denominator;
-    value = 0x400 / denominator;
-    arg0 = (arg0 - arg2 + 0x200) / denominator;
-    return arg0 + arg1 * value;
+/* Map world coordinates (x, y) to a linear cell index in the square FanInfo grid for
+ * this cell size; the grid covers -0x200..0x200 on each axis. */
+s32 fn_802BE7C4(s32 x, s32 y, s32 cellSize) {
+    s32 cellSpan;
+    s32 cellsPerRow;
+    y -= cellSize;
+    cellSpan = cellSize * 2;
+    y = (y + 0x200) / cellSpan;
+    cellsPerRow = 0x400 / cellSpan;
+    x = (x - cellSize + 0x200) / cellSpan;
+    return x + y * cellsPerRow;
 }
 #pragma scheduling on
 void fn_802BE7F4(void) {}
