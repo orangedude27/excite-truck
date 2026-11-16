@@ -5151,11 +5151,12 @@ extern "C" s32 fn_801A512C(void) {
     return 0;
 }
 
-extern "C" s32 fn_801A5134(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_801A5134(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" s32 fn_801A5174(void* arg0) {
