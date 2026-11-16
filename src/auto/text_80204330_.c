@@ -31,7 +31,15 @@ void fn_80204330(void) {
 }
 #pragma dont_inline off
 
-int fn_80204354(void) { return fn_802E2C20() - (int)lbl_8055ED48; }
+int fn_80204354(void) {
+#define getCurrentTime fn_802E2C20
+#define sGuiTimestamp  lbl_8055ED48
+    /* Return the milliseconds elapsed since the GUI timestamp was set;
+     * fn_80204330 stamps it with the current time when the screen opens. */
+    return getCurrentTime() - (int)sGuiTimestamp;
+#undef sGuiTimestamp
+#undef getCurrentTime
+}
 
 int fn_802E2C20(void);
 extern int fn_80145E70(void*);
