@@ -5149,26 +5149,26 @@ extern "C" void fn_80220F90(void *arg0, s32 arg1, s32 arg2) {
     *(s8 *)((u8 *)arg0 + 0x250) = 0;
 }
 #pragma scheduling on
-extern "C" void fn_802213A4(void *bar, s32 pointerX, s32 pointerY) {
+extern "C" void fn_802213A4(void *scrollBar, s32 pointerX, s32 pointerY) {
     /* While dragging a scroll bar, turn the pointer position into a content
      * offset using the track length and clamp it to [0, total - page size]. */
-    void *child;
-    s32 offset;
-    if (*(u8 *)((u8 *)bar + 0x250) == 0) return;
-    if (*(s32 *)((u8 *)bar + 0x254) == 0) {
-        child = *(void **)((u8 *)bar + 0x244);
-        offset = (s32)(((f32)*(s32 *)child / (f32)(*(s32 *)((u8 *)bar + 0x10) - *(s32 *)((u8 *)bar + 8))) * (f32)(pointerY + *(s32 *)((u8 *)bar + 0x25C)));
-        *(s32 *)((u8 *)child + 8) = offset;
-        if (offset > *(s32 *)child - *(s32 *)((u8 *)child + 4)) *(s32 *)((u8 *)child + 8) = *(s32 *)child - *(s32 *)((u8 *)child + 4);
-        if (*(s32 *)((u8 *)child + 8) < 0) *(s32 *)((u8 *)child + 8) = 0;
+    void *scrollState;
+    s32 newOffset;
+    if (*(u8 *)((u8 *)scrollBar + 0x250) == 0) return;
+    if (*(s32 *)((u8 *)scrollBar + 0x254) == 0) {
+        scrollState = *(void **)((u8 *)scrollBar + 0x244);
+        newOffset = (s32)(((f32)*(s32 *)scrollState / (f32)(*(s32 *)((u8 *)scrollBar + 0x10) - *(s32 *)((u8 *)scrollBar + 8))) * (f32)(pointerY + *(s32 *)((u8 *)scrollBar + 0x25C)));
+        *(s32 *)((u8 *)scrollState + 8) = newOffset;
+        if (newOffset > *(s32 *)scrollState - *(s32 *)((u8 *)scrollState + 4)) *(s32 *)((u8 *)scrollState + 8) = *(s32 *)scrollState - *(s32 *)((u8 *)scrollState + 4);
+        if (*(s32 *)((u8 *)scrollState + 8) < 0) *(s32 *)((u8 *)scrollState + 8) = 0;
     } else {
-        s32 total = *(s32 *)(*(void **)((u8 *)bar + 0x244));
-        f32 ratio = (f32)total / (f32)((Vf78 *)bar)->get();
-        offset = (s32)(ratio * (f32)(pointerX + *(s32 *)((u8 *)bar + 0x258)));
-        child = *(void **)((u8 *)bar + 0x244);
-        *(s32 *)((u8 *)child + 8) = offset;
-        if (offset > *(s32 *)child - *(s32 *)((u8 *)child + 4)) *(s32 *)((u8 *)child + 8) = *(s32 *)child - *(s32 *)((u8 *)child + 4);
-        if (*(s32 *)((u8 *)child + 8) < 0) *(s32 *)((u8 *)child + 8) = 0;
+        s32 totalSize = *(s32 *)(*(void **)((u8 *)scrollBar + 0x244));
+        f32 unitsPerPixel = (f32)totalSize / (f32)((Vf78 *)scrollBar)->get();
+        newOffset = (s32)(unitsPerPixel * (f32)(pointerX + *(s32 *)((u8 *)scrollBar + 0x258)));
+        scrollState = *(void **)((u8 *)scrollBar + 0x244);
+        *(s32 *)((u8 *)scrollState + 8) = newOffset;
+        if (newOffset > *(s32 *)scrollState - *(s32 *)((u8 *)scrollState + 4)) *(s32 *)((u8 *)scrollState + 8) = *(s32 *)scrollState - *(s32 *)((u8 *)scrollState + 4);
+        if (*(s32 *)((u8 *)scrollState + 8) < 0) *(s32 *)((u8 *)scrollState + 8) = 0;
     }
 }
 
