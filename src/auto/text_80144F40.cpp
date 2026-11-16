@@ -2119,14 +2119,15 @@ extern "C" void *lbl_8032D1D8;
 extern "C" f32 fn_801452B4(f32);
 extern "C" f32 lbl_805615D4;
 extern "C" void fn_801470B0(s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
-extern "C" void fn_80148100(void *arg0) {
-    f32 farg0 = *(f32 *)((u8 *)arg0 + 4);
-    f32 farg1 = *(f32 *)((u8 *)arg0 + 8);
-    f32 farg2 = *(f32 *)((u8 *)arg0 + 0x10);
-    f32 farg3 = *(f32 *)((u8 *)arg0 + 0x14);
-    s32 arg2 = *(s32 *)((u8 *)arg0 + 0x18);
-    s32 arg3 = *(s32 *)((u8 *)arg0 + 0xC);
-    fn_801470B0(arg2, -1, arg3, farg0, farg1, farg2, farg3,
+extern "C" void fn_80148100(void *pane) {
+    /* Draw an untextured quad from the 2D pane descriptor at `pane`: x/y/width/height, coordinate mode and draw state. */
+    f32 x = *(f32 *)((u8 *)pane + 4);
+    f32 y = *(f32 *)((u8 *)pane + 8);
+    f32 width = *(f32 *)((u8 *)pane + 0x10);
+    f32 height = *(f32 *)((u8 *)pane + 0x14);
+    s32 drawState = *(s32 *)((u8 *)pane + 0x18);
+    s32 mode = *(s32 *)((u8 *)pane + 0xC);
+    fn_801470B0(drawState, -1, mode, x, y, width, height,
         lbl_805615D4, lbl_805615D4, lbl_805615D4, lbl_805615D4);
 }
 
