@@ -853,4 +853,3 @@ extern "C" void fn_80208858(void *soundMgr, signed long soundName, signed long s
     }
 }
 #pragma pop
-typedef struct { signed long a, b, c; } Trio80207C50;
