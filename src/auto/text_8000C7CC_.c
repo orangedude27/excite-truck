@@ -120,10 +120,12 @@ void fn_8000D000(s32 paramA, s32 paramB, s32 paramC) {
 #undef FindFreeAudioSlot
 }
 void fn_8000D000(s32, s32, s32);
+#define sAudioFlagD lbl_8055D407
 void fn_8000D048(void) {
     ((void (*)(void))fn_8000D000)();
     lbl_8055D407 = 1;
 }
+#undef sAudioFlagD
 
 void fn_8000CE60(void) {
     /* Initialize pause/menu UI state and create its mixer, layout and sound resources. */
