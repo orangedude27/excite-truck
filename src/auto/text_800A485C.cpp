@@ -514,6 +514,8 @@ extern "C" s32 fn_800A7610(void *);
 extern "C" s32 fn_800A76A0(void *);
 extern "C" void *lbl_8055DD94;
 extern "C" u32 lbl_8055DD90;
+#define gArenaEnd lbl_8055DD90    /* start + size - 4: high-water mark for bump allocations */
+#define gArenaCursor lbl_8055DD94 /* next free address, rounded up to a 4-byte boundary */
 extern "C" void fn_800C4BD8(s32 *, s32, u32);
 extern "C" void fn_800C4B5C(s32, s32);
 extern "C" void *fn_800C4B8C(s32);
