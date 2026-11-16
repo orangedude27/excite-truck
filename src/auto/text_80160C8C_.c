@@ -1161,10 +1161,15 @@ extern s32 fn_80012854();
 extern const char lbl_8032F738[];
 
 int fn_80161ECC(void) {
-    int i = 0;
-    while (fn_80161E40(i) >= 0)
-        i++;
-    return i;
+    /* Counts how many consecutive tutorial indices are valid (stops at the first invalid index). */
+#define Tutorial_GetIndex fn_80161E40
+    int index = 0;
+
+    while (Tutorial_GetIndex(index) >= 0)
+        index++;
+
+#undef Tutorial_GetIndex
+    return index;
 }
 
 #pragma push
