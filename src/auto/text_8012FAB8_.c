@@ -340,17 +340,6 @@ void fn_80130518(void) {
     lbl_8055E048 = 0;
 }
 
-extern char *strchr(const char *, int);
-void fn_80130568(char *arg0) {
-    char *base = arg0;
-    if (*(char *)lbl_8055E050 != '.') {
-        *arg0 = *(char *)lbl_8055E050;
-        while ((arg0 = strchr(base, '.')) != 0) {
-            *arg0 = *(char *)lbl_8055E050;
-        }
-    }
-}
-
 extern void *lbl_80559AA0;
 extern void *lbl_80559AA8;
 extern void fn_801345D8(void *, ...);
@@ -377,6 +366,17 @@ static inline void format_append(char *dstp, int sizep, char *str) {
         if (c != 0)
             goto count_check;
     done:;
+    }
+}
+
+extern char *strchr(const char *, int);
+void fn_80130568(char *arg0) {
+    char *base = arg0;
+    if (*(char *)lbl_8055E050 != '.') {
+        *arg0 = *(char *)lbl_8055E050;
+        while ((arg0 = strchr(base, '.')) != 0) {
+            *arg0 = *(char *)lbl_8055E050;
+        }
     }
 }
 
