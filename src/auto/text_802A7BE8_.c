@@ -116,6 +116,56 @@ extern s32 fn_8027AC80(void);
 extern s32 fn_800122B4(u32, void *);
 void qsort(void *, u32, u32, s32 (*)(s32 *, s32 *));
 void fn_802339A8(s32 a, f32 b, s32 c, f32 d, ...);
+
+/* ---- what fn_802A7EEC draws its markers from ----
+   Its cars are the records of the CarMgrEntry table of
+   src/auto/text_801EA4C4_.c (fn_801EA9A0(index) is one record); fn_801EA9DC
+   refreshes 0x0C-0x40 of a record from the live car object every frame. */
+struct CarRecord {
+    u8 field00[4];              /* 0x00 */
+    s32 index;                  /* 0x04 this record's number */
+    void *object;               /* 0x08 the live car object the marker follows */
+    s32 field0C;                /* 0x0C */
+    s32 rank;                   /* 0x10 place in the race, drawn as "2nd" */
+    u8 field14[0x30 - 0x14];
+    s32 field30;                /* 0x30 no marker for the car while this is set */
+    u8 field34[0xAC - 0x34];
+    s32 team;                   /* 0xAC the team entry this car belongs to */
+};
+
+/* The live car object behind CarRecord.object: fn_802C8E70 projects the
+   position at 0x24 and bit 0x40 of the flags at 0x6E hides its marker. */
+struct CarObject {
+    u8 field00[0x24];
+    u32 xBits;                  /* 0x24 world position, as float bits */
+    u32 yBits;                  /* 0x28 */
+    u32 zBits;                  /* 0x2C */
+    u8 field30[0x6E - 0x30];
+    u16 flags;                  /* 0x6E */
+};
+
+/* One entry of the global list fn_8027ABF8 searches by key (lbl_804A433C):
+   fn_8027AC50 asks about its 0xF0, fn_8027AC64 answers its 0xF8 when that is
+   set, and fn_8027AC80 looks its 0xE8 up in the same list. */
+struct TeamEntry {
+    u8 field00[0xE8];
+    s32 team;                   /* 0xE8 */
+    s32 mode;                   /* 0xF0 */
+    s32 otherTeam;              /* 0xF8 */
+};
+
+/* The UI font and the marker constants (the game's .sdata2 pool). */
+#define sRankFont         lbl_8055F8BC   /* loaded from "uifnt_o.gtx" */
+#define STR_PERCENT_S     lbl_8055CC30   /* "%s" */
+#define MARKER_ONE        lbl_805648F4   /* 1.0f: clamp low end, and the "1 -" of every fade */
+#define MARKER_SLOPE      lbl_805648F8   /* -1.0f: fades fall as the distance grows */
+#define MARKER_MARGIN     lbl_805648FC   /* 0.0f: clamp high end, and the on-screen margin */
+#define MARKER_ALPHA_255  lbl_80564900   /* 255.0f: what the alpha is scaled to */
+#define MARKER_LIFT       lbl_80564910   /* 2.0f: how far above the car the marker sits */
+#define MARKER_NEAR_SQ    lbl_80564914   /* 100.0f: squared distance a label starts to fade */
+#define MARKER_FAR_SQ     lbl_80564918   /* 7056.0f = 84*84: squared distance it is gone */
+#define MARKER_TEXT_SCALE lbl_8056491C   /* 0.42f: the label's scale */
+#define MARKER_TEAM_RANGE lbl_80564920   /* 3.0f: team icons fade over 3x MARKER_FAR_SQ */
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
