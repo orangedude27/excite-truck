@@ -645,6 +645,11 @@ void fn_802E0BA8(void) {
 /* BinkMovie teardown helpers: a no-op free hook and the heap-block free. */
 #define videoFreeHook   fn_802E0BA4
 #define freeVideoObject fn_80128668
+/**
+ * Final teardown of a BinkMovie: run the (currently no-op) free hook, then
+ * release the movie object's heap block. The incoming movie pointer stays in
+ * r3 and is passed straight through to both calls.
+ */
 void fn_802E0BE0(void) {
     videoFreeHook();
     freeVideoObject();
