@@ -4915,6 +4915,8 @@ void bte_hcisu_task(void) {
 }
 
 extern u32 fn_8009B0E0(void);
+/* Close the registered BTE HCI transport interface (lbl_8055DC68) by invoking
+ * its close callback, if one is registered. */
 void fn_80070820(void) {
     if (lbl_8055DC68 != NULL && lbl_8055DC68->close != NULL) {
         ((void (*)(void))lbl_8055DC68->close)();
