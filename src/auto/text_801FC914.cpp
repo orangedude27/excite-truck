@@ -1013,11 +1013,12 @@ extern "C" int fn_801FE88C(void *, void *);
 extern const char lbl_8033B638[];
 extern const char lbl_8033B654[];
 extern char lbl_8033B760[];
-extern "C" void fn_801FE510(void *arg0, void *arg1) {
-    void *p = arg1;
-    while (p != 0) {
-        fn_802C7040(*(int *)((char *)p + 4));
-        p = *(void **)((char *)p + 0xC);
+extern "C" void fn_801FE510(void *unused, void *head) {
+    /* Walks a linked list of model-instance nodes, updating each one's visibility/distance via fn_802C7040. Node layout: +4 instance id, +0xC next. */
+    void *node = head;
+    while (node != 0) {
+        fn_802C7040(*(int *)((char *)node + 4));
+        node = *(void **)((char *)node + 0xC);
     }
 }
 
