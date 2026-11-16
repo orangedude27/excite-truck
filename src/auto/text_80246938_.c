@@ -887,6 +887,7 @@ void fn_80247A0C(void) {
     } while (2 > var_r31);
 }
 #pragma pop
+// Caches the active UI window's current-menu index into the global menu-index state.
 void fn_80247AAC(void) {
     lbl_8055BEB4 = (s32) (void*)fn_80214D04();
 }
