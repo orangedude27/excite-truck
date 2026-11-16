@@ -5513,10 +5513,11 @@ extern "C" void fn_801A5190(void* owner) {
     part->v14();
 }
 
-extern "C" s32 fn_801A51B0(void* arg0) {
-    void* obj = *(void**)((u8*)arg0 + 0x3C);
-    if (obj != NULL) {
-        return *(s32*)((u8*)obj + 0x20);
+extern "C" s32 fn_801A51B0(void* owner) {
+    /* Return the +0x20 field of the sub-object held at +0x3C of 'owner', or -1 if absent. */
+    void* part = *(void**)((u8*)owner + 0x3C);
+    if (part != NULL) {
+        return *(s32*)((u8*)part + 0x20);
     }
     return -1;
 }
