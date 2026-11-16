@@ -1233,11 +1233,16 @@ void fn_8017D330(void) {
 
 }
 
+/**
+ * Destroys the ext_imp_tab pool created by fn_8017D2CC: reset its allocation
+ * count and capacity, then free the backing storage (pointing one 0x10-byte
+ * heap header before the entry array).
+ */
 void fn_8017D334(void) {
-    int value = lbl_8055E490;
-    lbl_8055E488 = 0;
-    lbl_8055E48C = 0;
-    if (value != 0) fn_80128670((char*)value - 0x10);
+    int storage = gExtImpTabPool;
+    gExtImpTabCount = 0;
+    gExtImpTabCapacity = 0;
+    if (storage != 0) freeHeapBlock((char*)storage - 0x10);
 }
 
 void fn_8017D358(void) {
