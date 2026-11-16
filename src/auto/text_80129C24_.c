@@ -25,11 +25,14 @@ typedef struct RngState {
 } RngState;
 
 void fn_80129C24(void) {
-    int i = 0;
+#define InitRngSlot fn_80129C64
+    int slotIndex = 0;
+    /* Initialize all seven RNG state blocks with their default seed pair. */
     do {
-        fn_80129C64(i);
-        i++;
-    } while (i < 7);
+        InitRngSlot(slotIndex);
+        slotIndex++;
+    } while (slotIndex < 7);
+#undef InitRngSlot
 }
 
 void fn_80129C60(void) {
