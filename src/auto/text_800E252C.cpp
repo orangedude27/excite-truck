@@ -3250,33 +3250,33 @@ extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(vo
 #pragma pop
 extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *self, const void *start, const void *end) {
     unsigned int irq;
-    int count;
+    int i;
     char *voice;
     int found;
-    int i;
     void *address;
     unsigned int lock;
     unsigned int nested;
     void *manager;
     int outer;
+    int innerIndex;
     int active;
-    char *row;
-    int inner;
-    char *slot;
+    unsigned char *row;
+    unsigned char *slot;
     void *item;
     void (*callback)(void *, int, void *);
 
     irq = OSDisableInterrupts();
     if (*((u8 *)self + 0x11C) != 0) {
-        count = *(int *)((char *)self + 0x104);
+        i = *(int *)((char *)self + 0x104);
         voice = (char *)self;
         found = 0;
-        for (i = count; i > 0; --i) {
+        while (i > 0) {
             address = *(void **)(voice + 0x2C);
             if (start <= address && address <= end) {
                 found = 1;
             }
             voice += 0x34;
+            i--;
         }
         if (found != 0) {
             lock = OSDisableInterrupts();
@@ -3291,16 +3291,16 @@ extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *se
                     OSRestoreInterrupts(nested);
                 }
                 if (active != 0) {
-                    row = (char *)self;
+                    row = (unsigned char *)self;
                     outer = 0;
                     while (outer < *(int *)((char *)self + 0x104)) {
                         slot = row;
-                        inner = 0;
-                        while (inner < *(int *)((char *)self + 0x108)) {
+                        innerIndex = 0;
+                        while (innerIndex < *(int *)((char *)self + 0x108)) {
                             item = *(void **)(slot + 0xC);
                             if (item != 0) AXSetVoiceState(item, 0);
                             slot += 4;
-                            inner++;
+                            innerIndex++;
                         }
                         row += 0x10;
                         outer++;
