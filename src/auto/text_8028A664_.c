@@ -906,7 +906,7 @@ s32 fn_8028BC1C(s32 arg0, s32 arg1) {
 
 extern f32 lbl_8056432C;
 #pragma push
-#pragma scheduling off
+#pragma scheduling on
 void fn_8028BC88(s32 arg0) {
     f32 zero, one;
     one = lbl_8056432C;
@@ -1070,8 +1070,7 @@ void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
 
 extern f32 fn_801E7E24(void);
 extern f32 lbl_80564328, lbl_8056432C, lbl_80564338, lbl_805643B8;
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8028BFEC(s32 arg0) {
     struct Entry { f32 x, y, z, vx, vy, vz, age; };
     struct List { struct Entry *data; s32 count; s32 pad; f32 time; };
@@ -1101,8 +1100,8 @@ void fn_8028BFEC(s32 arg0) {
             vz = in->vz * f8;
             temp[0] = vx;
             temp[2] = vz;
-            temp[1] = vy;
             out->x = in->x + vx * time;
+            temp[1] = vy;
             out->y = in->y + vy * time;
             out->z = in->z + vz * time;
             out->vx = vx;
@@ -1114,11 +1113,6 @@ void fn_8028BFEC(s32 arg0) {
     }
     list->count = ((s32)out - (s32)list->data) / 28;
 }
-
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
     f32 m[9];
     f32 tmp[9];
@@ -1262,7 +1256,6 @@ void fn_8028C938(s32 arg0) {
     volatile f32 temp_z;
     volatile f32 temp_y;
     volatile f32 temp_x;
-
     elapsed = fn_801E7E18() - lbl_805643D0;
     step = fn_801E7E24();
     scale = lbl_805643B8 * step;
@@ -1277,12 +1270,12 @@ void fn_8028C938(s32 arg0) {
             vx = in->vx * factor;
             vy = (in->vy * factor) - delta;
             vz = in->vz * factor;
-            temp_x = vx;
-            temp_y = vy;
-            temp_z = vz;
             out->x = in->x + vx * step;
             out->y = in->y + vy * step;
             out->z = in->z + vz * step;
+            temp_x = vx;
+            temp_z = vz;
+            temp_y = vy;
             out->vx = vx;
             out->vy = vy;
             out->vz = vz;
