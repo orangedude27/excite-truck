@@ -552,6 +552,8 @@ void fn_802A52FC(f32 arg0) {
     lbl_8055F888 = result;
 }
 void fn_802A5270(f32);
+#define SpawnRainSystem fn_802A5270 /* creates the "rain system" effect (resource 0x44) */
+#define SpawnSnowSystem fn_802A52FC /* creates the "snow system" effect (resource 0xBC) */
 s32 fn_802A5384(s32 arg0) {
     s32 value = *(s32 *)arg0;
 
@@ -1554,89 +1556,98 @@ extern f32 lbl_80564850, lbl_80564858, lbl_8056485C, lbl_805648C4;
 f32 fn_802C9A50(void);
 void fn_802A70E4(void *, f32 *);
 #pragma scheduling invalid_target
-void fn_802A71C4(void *arg0) {
-    volatile u8 *p = (volatile u8 *)arg0;
-    f32 divisor;
-    f32 dt;
-    f32 threshold;
-    f32 speed;
-    f32 scale;
-    f32 one;
-    f32 curve;
-    f32 a;
-    f32 factor;
-    f32 x;
-    f32 y;
-    f32 ax;
-    f32 ay;
-    volatile f32 yStack;
-    volatile f32 xStack;
-    f32 rx;
-    f32 ry;
-    f32 start;
-    f32 end;
-    f32 newx;
-    divisor = fn_802C9A50();
-    dt = *(volatile f32 *)(p + 0x14);
-    threshold = *(volatile f32 *)(p + 0x34);
-    speed = dt / divisor;
-    if (threshold >= lbl_805648C4) {
-        scale = lbl_80564850;
-        one = lbl_8056485C;
-        do {
-            curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
-            a = scale * curve;
-            factor = scale - a;
-            x = *(volatile f32 *)(p + 0x38) * factor;
-            y = *(volatile f32 *)(p + 0x3C) * factor;
-            xStack = x;
-            yStack = y;
-            ax = (f32)__fabs((double)x);
-            ay = (f32)__fabs((double)y);
-            ax = one - ax;
-            ay = one - ay;
-            rx = fn_80287BC8(-ax, ax);
-            ry = fn_80287BC8(-ay, ay);
-            end = *(volatile f32 *)(p + 0x1C);
-            start = *(volatile f32 *)(p + 0x18);
-            newx = start + curve * (end - start);
-            {
-                f32 v[3];
-                v[2] = newx;
-                v[1] = dt * newx * (yStack + ry);
-                v[0] = speed * newx * (xStack + rx);
-                fn_802A70E4(arg0, v);
-            }
-        } while (*(volatile s32 *)(p + 4) < *(volatile s32 *)(p + 8));
-    } else {
-        do {
-            curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
-            {
-                f32 squared = curve * curve;
-                f32 localThreshold = *(volatile f32 *)(p + 0x34);
-                f32 localEnd = *(volatile f32 *)(p + 0x1C);
-                f32 negativeThreshold = -localThreshold;
-                f32 localStart = *(volatile f32 *)(p + 0x18);
-                f32 curveDelta = squared - curve;
-                f32 endDelta = localEnd - localStart;
-                f32 bend = negativeThreshold * curveDelta;
-                f32 factor2 = curve + bend;
-                f32 distance = factor2 * endDelta;
-                newx = localStart + distance;
-            }
-            rx = fn_80287BC8(-newx, newx);
-            ry = fn_80287BC8(-newx, newx);
-            {
-                f32 v[3];
-                v[2] = newx;
-                v[0] = speed * rx;
-                v[1] = dt * ry;
-                fn_802A70E4(arg0, v);
-            }
-        } while (*(volatile s32 *)(p + 4) < *(volatile s32 *)(p + 8));
+void fn_802A71C4(void *arg0)
+{
+  volatile u8 *p = (volatile u8 *) arg0;
+  f32 divisor;
+  f32 dt;
+  volatile f32 *new_var;
+  f32 threshold;
+  f32 speed;
+  f32 scale;
+  f32 one;
+  f32 curve;
+  f32 a;
+  f32 factor;
+  f32 x;
+  f32 y;
+  f32 ax;
+  f32 ay;
+  volatile f32 yStack;
+  volatile f32 xStack;
+  f32 rx;
+  f32 ry;
+  f32 start;
+  f32 end;
+  f32 newx;
+  divisor = fn_802C9A50();
+  dt = *((volatile f32 *) (p + 0x14));
+  threshold = *((volatile f32 *) (p + 0x34));
+  speed = dt / divisor;
+  if (threshold >= lbl_805648C4)
+  {
+    scale = lbl_80564850;
+    one = lbl_8056485C;
+    while (((*((volatile s32 *) (p + 4))) ^ 0) < (*((volatile s32 *) (p + 8))))
+    {
+      curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
+      a = scale * curve;
+      factor = scale - a;
+      x = (*((volatile f32 *) (p + 0x38))) * factor;
+      ay = *((volatile f32 *) (p + 0x3C));
+      y = ay * factor;
+      xStack = x;
+      yStack = y;
+      ax = (f32) __fabs((double) x);
+      ay = (f32) __fabs((double) y);
+      ax = one - ax;
+      ay = one - ay;
+      rx = fn_80287BC8(-ax, ax);
+      ry = fn_80287BC8(-ay, ay);
+      end = (end = *((volatile f32 *) (p + 0x1C)));
+      new_var = (volatile f32 *) (p + 0x18);
+      start = *new_var;
+      newx = start + (curve * (end - start));
+      {
+        f32 v[3];
+        v[2] = newx;
+        v[1] = (dt * newx) * (yStack + ry);
+        v[0] = (speed * newx) * (xStack + rx);
+        fn_802A70E4(arg0, v);
+      }
     }
+  }
+  else
+  {
+    while ((*((volatile s32 *) (p + 4))) < (*((volatile s32 *) (p + 8))))
+    {
+      curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
+      {
+        f32 squared = curve * curve;
+        f32 localThreshold = *((volatile f32 *) (p + 0x34));
+        f32 localEnd = end;
+        f32 negativeThreshold = -localThreshold;
+        f32 localStart = *new_var;
+        f32 curveDelta = squared - curve;
+        f32 endDelta = localEnd - localStart;
+        f32 bend = curveDelta * negativeThreshold;
+        f32 factor2;
+        f32 distance = (curve + bend) * endDelta;
+        newx = localStart + distance;
+      }
+      rx = fn_80287BC8(-newx, newx);
+      ry = fn_80287BC8(-(newx * 1.0f), newx);
+      {
+        f32 v[3];
+        v[2] = newx;
+        v[0] = speed * rx;
+        v[1] = dt * ry;
+        fn_802A70E4(arg0, v);
+      }
+    }
+  }
 }
-
+#pragma scheduling on
 extern char lbl_80349CB8[];
 extern char lbl_80349CC8[];
 extern char lbl_8055CBF8, lbl_8055CBFC, lbl_8055CC04, lbl_8055CC0C, lbl_8055CC10, lbl_8055CC14, lbl_8055CC18, lbl_8055CC20, lbl_8055CC28;
@@ -1737,8 +1748,7 @@ void *fn_802A7614(void *obj, s32 doDelete) {
 }
 
 extern f32 lbl_80564858, lbl_805648C8;
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 s32 fn_802A7680(s32 arg0) {
     u8 *object = (u8 *)arg0;
     f32 amplitude = lbl_805648C8;
@@ -1748,12 +1758,14 @@ s32 fn_802A7680(s32 arg0) {
         f32 angle;
         f32 y;
         f32 z;
-        f32 x;
         f32 angle2;
+        f32 x;
+        f32 t;
         u32 addr;
         angle = *(f32 *)(object + 0x18);
         z = *(f32 *)(object + 0x14) + fn_80287BC8(amplitude * -angle, amplitude * angle);
-        y = *(f32 *)(object + 0x10) + fn_80287BC8(lbl_80564858, *(f32 *)(object + 0x1C));
+        t = fn_80287BC8(lbl_80564858, *(f32 *)(object + 0x1C));
+        y = *(f32 *)(object + 0x10) + t;
         angle2 = *(f32 *)(object + 0x18);
         x = *(f32 *)(object + 0xC) + fn_80287BC8(amplitude * -angle2, amplitude * angle2);
         addr = *(u32 *)object + offset;
@@ -1765,7 +1777,6 @@ s32 fn_802A7680(s32 arg0) {
     }
     *(f32 *)(object + 0x3C) = lbl_80564858;
 }
-#pragma pop
 extern f32 PSVECSquareDistance(const void *, const void *);
 extern double fn_8002F234(double);
 extern void *fn_801E8718(s32);
