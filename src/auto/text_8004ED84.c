@@ -916,50 +916,56 @@ int ExpandFontSheet(void *font0, void *src0, void *dst0) {
 
 extern int ExpandFontSheet(void *, void *, void *);
 int OSInitFont(void *arg0) {
+#define FontDataAnsi lbl_8055DA54
+#define FontDataSjis lbl_8055DA50
+
     void *font;
     int result;
     void *base;
 
     switch (OSGetFontEncode()) {
     case 0:
-        lbl_8055DA54 = arg0;
+        FontDataAnsi = arg0;
         result = ReadFont((int)((char *)arg0 + 0x1D120), 0, (int)arg0);
         if (result == 0) return 0;
-        base = lbl_8055DA54;
+        base = FontDataAnsi;
         result = *(int *)((char *)base + 0x24);
         *(int *)((char *)base + 0x24) = (result + 0x1F) & ~0x1F;
-        ExpandFontSheet(lbl_8055DA54, (char *)base + result, (char *)lbl_8055DA54 + *(int *)((char *)lbl_8055DA54 + 0x24));
+        ExpandFontSheet(FontDataAnsi, (char *)base + result, (char *)FontDataAnsi + *(int *)((char *)FontDataAnsi + 0x24));
         break;
     case 1:
-        lbl_8055DA50 = arg0;
+        FontDataSjis = arg0;
         result = ReadFont((int)((char *)arg0 + 0xD3F00), 1, (int)arg0);
         if (result == 0) return 0;
-        base = lbl_8055DA50;
+        base = FontDataSjis;
         result = *(int *)((char *)base + 0x24);
         *(int *)((char *)base + 0x24) = (result + 0x1F) & ~0x1F;
-        ExpandFontSheet(lbl_8055DA50, (char *)base + result, (char *)lbl_8055DA50 + *(int *)((char *)lbl_8055DA50 + 0x24));
+        ExpandFontSheet(FontDataSjis, (char *)base + result, (char *)FontDataSjis + *(int *)((char *)FontDataSjis + 0x24));
         break;
     case 3:
     case 4:
     case 5:
         font = (char *)arg0 + 0xF4020;
-        lbl_8055DA54 = arg0;
+        FontDataAnsi = arg0;
         result = ReadFont((int)font, 0, (int)arg0);
         if (result == 0) return 0;
-        base = lbl_8055DA54;
+        base = FontDataAnsi;
         result = *(int *)((char *)base + 0x24);
         *(int *)((char *)base + 0x24) = (result + 0x1F) & ~0x1F;
-        ExpandFontSheet(lbl_8055DA54, (char *)base + result, (char *)lbl_8055DA54 + *(int *)((char *)lbl_8055DA54 + 0x24));
-        lbl_8055DA50 = (void *)((char *)lbl_8055DA54 + 0x20120);
-        result = ReadFont((int)font, 1, (int)lbl_8055DA50);
+        ExpandFontSheet(FontDataAnsi, (char *)base + result, (char *)FontDataAnsi + *(int *)((char *)FontDataAnsi + 0x24));
+        FontDataSjis = (void *)((char *)FontDataAnsi + 0x20120);
+        result = ReadFont((int)font, 1, (int)FontDataSjis);
         if (result == 0) return 0;
-        base = lbl_8055DA50;
+        base = FontDataSjis;
         result = *(int *)((char *)base + 0x24);
         *(int *)((char *)base + 0x24) = (result + 0x1F) & ~0x1F;
-        ExpandFontSheet(lbl_8055DA50, (char *)base + result, (char *)lbl_8055DA50 + *(int *)((char *)lbl_8055DA50 + 0x24));
+        ExpandFontSheet(FontDataSjis, (char *)base + result, (char *)FontDataSjis + *(int *)((char *)FontDataSjis + 0x24));
         break;
     }
     return 1;
+
+#undef FontDataAnsi
+#undef FontDataSjis
 }
 
 /* Looks the first character of `str` up in the loaded font and says where to
