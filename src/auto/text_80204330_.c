@@ -27,7 +27,12 @@ extern char lbl_80488BD0[];
 struct Entry80204 { int unk_0x0, unk_0x4, unk_0x8; float unk_0xc, unk_0x10, unk_0x14; };
 #pragma dont_inline on
 void fn_80204330(void) {
-    lbl_8055ED48 = (void*)fn_802E2C20();
+#define getCurrentTime fn_802E2C20
+#define sGuiTimestamp  lbl_8055ED48
+    /* Stamp the GUI timestamp with the current time when the screen opens. */
+    sGuiTimestamp = (void*)getCurrentTime();
+#undef sGuiTimestamp
+#undef getCurrentTime
 }
 #pragma dont_inline off
 
