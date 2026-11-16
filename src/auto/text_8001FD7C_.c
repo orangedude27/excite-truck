@@ -830,7 +830,8 @@ unsigned char fn_800216F4(void) {
 }
 
 int fn_800216FC(void) {
-    if (lbl_8055D644 != 0)
+    /* Nonzero while the results/tips overlay is up and its fade-out (fn_80020184) has not finished. */
+    if (OVERLAY_ACTIVE != 0)
         return fn_80020184() > 0;
     return 0;
 }
