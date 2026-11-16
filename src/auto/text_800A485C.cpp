@@ -3155,11 +3155,17 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
     u32 current;
     s32 i;
     struct Local { u32 sp8; u32 spC; u32 sp10; } local;
+
     *out = 0;
     context = (u8 *)*(u32 *)((u8 *)arg0 + 8);
-    if ((*(u32 *)context & 1) == 0 || (*(u32 *)context & 2) == 0) return 0x26;
-    if (arg0 == 0) entry = 0;
-    else entry = *(void **)(context + 0x268);
+    if ((*(u32 *)context & 1) == 0 || (*(u32 *)context & 2) == 0)
+        return 0x26;
+
+    if (arg0 == 0)
+        entry = 0;
+    else
+        entry = *(void **)(context + 0x268);
+
     count = *(u32 *)(context + 0x270);
     size = (u32)*(u16 *)entry << *((u8 *)entry + 0x21);
     if (count != 0) {
@@ -3167,19 +3173,30 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
         u32 remainder = first % size;
         s32 steps = *(s32 *)(context + 0x14);
         s32 sign = -((s32)remainder) | (s32)remainder;
-        aligned = first + (u32)((sign >> 31) & (s32)(size - remainder));
-        if (steps != 0) { range = (u32)(steps + 1) * size; goto finish; }
+        aligned = first + (u32)((size - remainder) & (sign >> 31));
+
+        if (steps != 0) {
+            range = (u32)(steps + 1) * size;
+            goto finish;
+        }
+
         if (first != 0) {
-            error = fn_800AF2CC(context + 4, count, first, (s32 *)&local.sp10, &local.spC, (s32)context);
-            if (error != 0) return error;
-        } else { local.spC = count; }
+            error = fn_800AF2CC(context + 4, count, first,
+                                (s32 *)&local.sp10, &local.spC, (s32)context);
+            if (error != 0)
+                return error;
+        } else {
+            local.spC = count;
+        }
         chainEnd = (u32)fn_800AF584(entry);
         current = local.spC;
         i = 0;
         while (current != chainEnd) {
             i++;
-            error = VFiPFFAT_TraceClustersChain(entry, (s32)current, (s32 *)&local.sp8);
-            if (error != 0) return error;
+            error = VFiPFFAT_TraceClustersChain(entry, (s32)current,
+                                                (s32 *)&local.sp8);
+            if (error != 0)
+                return error;
             current = local.sp8;
             local.spC = current;
         }
@@ -10773,12 +10790,12 @@ s32 fn_800B6928(s8 arg0) {
     fn_800B77C0(base + 0x64);
     if (index < 0 || index >= 0x1A) {
         fn_800B783C((u8 *)lbl_803D2140 + 0x64);
-        index = 0;
+        entry = 0;
     } else {
         fn_800B783C(base + 0x64);
+        record = (u32)base + index * 0x1FC8;
+        entry = (Entry *)(record + 0xA0);
     }
-    record = (u32)base + index * 0x1FC8;
-    entry = (Entry *)(record + 0xA0);
     flags = entry->flags;
     if (flags & 8) {
         *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 10;
@@ -13478,10 +13495,12 @@ extern "C" s32 fn_800BBCF4(void) {
     return result;
 }
 
-extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
+#pragma push
+#pragma processor 750
+extern "C" s32 fn_800BBEA4(register IosDevice *dev, register s32 arg1, s32 *arg2, s32 arg3) {
     // prologue mr order quirk: target mr r26,r4 then mr r25,r3
     const char *str = lbl_8031B838;
-    s32 cmd = arg1;
+    register s32 cmd = arg1;
     s32 r30 = 3;
     s32 field10 = dev->field10;
     s32 res;
@@ -13553,7 +13572,7 @@ end:
     }
     return res;
 }
-
+#pragma pop
 typedef s32 (*FnBB0A8)(s32,s32,s32,s32,s32,s32,s32,s32);
 extern "C" s32 fn_800BABD0(void *, s32, s32 *, s32);
 extern "C" s32 fn_800BACC4(void *, s32, s32 *, s32);
@@ -19016,16 +19035,16 @@ s32 homebutton::gui::Manager::update(int arg1, f32 farg0, f32 farg1, unsigned lo
             if ((*(ObjDispatch **)((u8 *)item + 4))->check()) last = *(ObjDispatch **)((u8 *)item + 4);
             result = 1;
         }
-        index++;
+        ++index;
         if ((u8 *)this + 8 == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
     }
-    if (last) {
-        if (arg2) {
+    if (last != 0) {
+        if (arg2 != 0) {
             last->prepare(arg2, sp14);
             ((MgrDispatch *)this)->apply(last->d6(), 0, arg5);
         }
-        if (arg4) {
+        if (arg4 != 0) {
             last->prepare(arg4, sp8);
             ((MgrDispatch *)this)->apply(last->d6(), 5, arg5);
         }
