@@ -731,9 +731,9 @@ typedef struct SObj { SVT *vt; } SObj;
 #pragma push
 #pragma processor 750
 void fn_80237AA0(arg0, arg1, arg2)
-int arg0; float *arg1; float arg2;
+int arg0; float *arg1; double arg2;
 {
-    float var_f31 = arg2;
+    double var_f31 = arg2;
     float var_f1, var_f2;
     unsigned char var_r4;
     SObj *p;
