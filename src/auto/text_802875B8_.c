@@ -352,8 +352,11 @@ void fn_80287A6C(s32 mode) {
     fn_80298124(mode); fn_8029F300(); fn_802A7C68(); fn_802AB6D4();
 }
 
-void fn_80287AF0(void* alarm) {
-    fn_8028A9F4(fn_80292864(alarm));
+/* Runs the virtual method 3 update pass over both global object collections:
+   fn_80292864 walks the main object list, fn_8028A9F4 handles the effect object
+   and the 8-slot table. The forwarded argument is unused by both callees. */
+void fn_80287AF0(void* unused) {
+    fn_8028A9F4(fn_80292864(unused));
 }
 
 s32 fn_80287B14(void) {
