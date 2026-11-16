@@ -337,8 +337,10 @@ s32 fn_80149380(void *object) {
 }
 
 #pragma cplusplus on
-extern "C" s32 fn_801493C0(Dummy_80149274 *arg0) {
-    return arg0->d2() & 0xFF7F7F7F;
+extern "C" s32 fn_801493C0(Dummy_80149274 *colorSource) {
+    /* Return the source's packed color with the high bit cleared on each of the
+     * three low (RGB) bytes, converting 8-bit channels to 7-bit. */
+    return colorSource->d2() & 0xFF7F7F7F;
 }
 #pragma cplusplus off
 /* Adjusts the byte field at offset 0x18 of an indexed sub-object by a delta and clamps it to [0, 255]. */
