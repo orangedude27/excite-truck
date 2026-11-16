@@ -1545,10 +1545,13 @@ func_exit:
 #define LOAD_REQ_NAME 0x4
 #define LOAD_REQ_PATH 0x24
 
-extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
-    s32 done = 0;
+extern "C" s32 fn_8012D024(void *request, s32 nameList, s32 arg2) {
+    /* Tries each candidate name in nameList, opening the first record that resolves to
+       a stream; on success copies its name/path into the request, initializes it and
+       sets an expiry time. Returns 1 on success, 0 when the list runs out; arg2 is unused. */
+    s32 loaded = 0;
     s32 temp;
-    u8 *self = (u8 *)arg0;
+    u8 *req = (u8 *)request;
     u8 byte;
     u8 *source;
     s32 limit;
@@ -1560,23 +1563,23 @@ extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
     s32 size;
     u8 *parser;
     do {
-        parser = ((u8 *(*)(void *, void *, s32))fn_8012B314)((void *)arg1, parseBuffer,
-                                                              *(s32 *)(self + 0xBC));
+        parser = ((u8 *(*)(void *, void *, s32))fn_8012B314)((void *)nameList, parseBuffer,
+                                                              *(s32 *)(req + LOAD_REQ_NAME_INDEX));
         if (!parser)
             goto func_exit;
-        done = 0;
+        loaded = 0;
         temp = ((s32 (*)(void *, s32 *))fn_8012AC28)(parser, &size);
         if (temp != -1) {
-            s32 value = *(s32 *)(self + 0xCC);
-            *(s32 *)(self + 0xC0) = value;
-            if (value > *(s32 *)(self + 0xC0))
+            s32 timestamp = *(s32 *)(req + LOAD_REQ_TIMESTAMP);
+            *(s32 *)(req + LOAD_REQ_LOADED_VALUE) = timestamp;
+            if (timestamp > *(s32 *)(req + LOAD_REQ_LOADED_VALUE))
                 goto parse_next;
-            s32 handle = ((s32 (*)(s32, void *, s32))fn_802E748C)(temp, *(void **)(self + 0xC8), value);
-            *(s32 *)(self + 0xB4) = handle;
+            s32 handle = ((s32 (*)(s32, void *, s32))fn_802E748C)(temp, *(void **)(req + LOAD_REQ_DIRECTORY), timestamp);
+            *(s32 *)(req + LOAD_REQ_HANDLE) = handle;
             if (handle != -1) {
-                *(s32 *)(self + 0xB8) = 2;
-                source = (u8 *)arg1;
-                destination = self + 4;
+                *(s32 *)(req + LOAD_REQ_STATUS) = 2;
+                source = (u8 *)nameList;
+                destination = req + LOAD_REQ_NAME;
                 limit = 32;
                 goto copy_name_body;
             copy_name_limit:
@@ -1592,7 +1595,7 @@ extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
                     goto copy_name_limit;
             copy_name_done:
                 source = (u8 *)parser;
-                destination2 = self + 0x24;
+                destination2 = req + LOAD_REQ_PATH;
                 limit2 = 64;
                 goto copy_path_body;
             copy_path_limit:
@@ -1607,25 +1610,25 @@ extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
                 if ((s8)byte2 != 0)
                     goto copy_path_limit;
             copy_path_done:
-                *(s32 *)(self + 0xAC) = 0;
-                *(s32 *)(self + 0x64) = 0;
-                memset(self + 0x6C, 0, 0x34);
-                *(s32 *)(self + 0xA0) = 1;
-                done = 1;
-                *(s32 *)(self + 0xA4) = 0;
-                *(s32 *)(self + 0xA8) = temp;
-                *(u8 *)(self + 0xB0) = 1;
-                *(s32 *)(self + 0x68) = 0;
-                *(u8 *)(self + 0xB1) = 0;
-                s32 base = fn_802E2C20();
-                *(s32 *)self = base + *(s32 *)(self + 0xC0) / 3000 + 0x1F4;
+                *(s32 *)(req + 0xAC) = 0;
+                *(s32 *)(req + 0x64) = 0;
+                memset(req + 0x6C, 0, 0x34);
+                *(s32 *)(req + 0xA0) = 1;
+                loaded = 1;
+                *(s32 *)(req + 0xA4) = 0;
+                *(s32 *)(req + 0xA8) = temp;
+                *(u8 *)(req + 0xB0) = 1;
+                *(s32 *)(req + 0x68) = 0;
+                *(u8 *)(req + 0xB1) = 0;
+                s32 now = fn_802E2C20();
+                *(s32 *)req = now + *(s32 *)(req + LOAD_REQ_LOADED_VALUE) / 3000 + 0x1F4;
             }
         }
     parse_next:
-        *(s32 *)(self + 0xBC) = *(s32 *)(self + 0xBC) + 1;
-    } while (!done);
+        *(s32 *)(req + LOAD_REQ_NAME_INDEX) = *(s32 *)(req + LOAD_REQ_NAME_INDEX) + 1;
+    } while (!loaded);
 func_exit:
-    return done;
+    return loaded;
 }
 
 extern "C" s32 fn_802E748C(s32 arg0, s32 arg1, void *arg2);
