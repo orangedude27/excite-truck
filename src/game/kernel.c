@@ -7,17 +7,7 @@ typedef struct { char data[0x20]; } GXTexObj;
 extern void GXInitTexObj(GXTexObj *, void *, unsigned short, unsigned short, int, int, int, int);
 extern void GXInitTexObjLOD(GXTexObj *, int, int, int, int, int, float, float, float);
 extern float lbl_805650F0;
-/* GX FIFO write-gather pipe (see revolution/GX/GXHardware.h). */
-extern volatile union {
-    char c;
-    unsigned char uc;
-    short s;
-    unsigned short us;
-    int i;
-    unsigned int ui;
-    void *p;
-    float f;
-} WGPIPE : 0xCC008000;
+#include <revolution/GX/GXVert.h>
 extern int lbl_804DB780[];
 extern void DCStoreRange(void *, int);
 extern void DCFlushRange(void *, int);
@@ -262,6 +252,7 @@ fail:
 
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling on
 void fn_802E1DA4(void *arg0, unsigned int arg1, unsigned int arg2, float f0, float f1, float f2, float f3, float f4) {
     extern float lbl_8056510C, lbl_80565110, lbl_80565114, lbl_80565118, lbl_8056511C;
     extern int lbl_802FAE40[];
@@ -435,50 +426,50 @@ void fn_802E1DA4(void *arg0, unsigned int arg1, unsigned int arg2, float f0, flo
     p2 = (short)f1;
     p3 = p1 + (short)((float)arg1 * f2);
     p4 = p2 + (short)((float)arg2 * f3);
-    *(volatile short *)0xCC008000 = p1;
-    *(volatile short *)0xCC008000 = p2;
-    *(volatile short *)0xCC008000 = 0;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile float *)0xCC008000 = lbl_805650F0;
-    *(volatile float *)0xCC008000 = lbl_805650F0;
-    *(volatile float *)0xCC008000 = lbl_805650F0;
-    *(volatile float *)0xCC008000 = lbl_805650F0;
-    *(volatile short *)0xCC008000 = p3;
-    *(volatile short *)0xCC008000 = p2;
-    *(volatile short *)0xCC008000 = 0;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile float *)0xCC008000 = lbl_8056511C;
-    *(volatile float *)0xCC008000 = lbl_805650F0;
-    *(volatile float *)0xCC008000 = lbl_8056511C;
-    *(volatile float *)0xCC008000 = lbl_805650F0;
-    *(volatile short *)0xCC008000 = p3;
-    *(volatile short *)0xCC008000 = p4;
-    *(volatile short *)0xCC008000 = 0;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile float *)0xCC008000 = lbl_8056511C;
-    *(volatile float *)0xCC008000 = lbl_8056511C;
-    *(volatile float *)0xCC008000 = lbl_8056511C;
-    *(volatile float *)0xCC008000 = lbl_8056511C;
-    *(volatile short *)0xCC008000 = p1;
-    *(volatile short *)0xCC008000 = p4;
-    *(volatile short *)0xCC008000 = 0;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile unsigned char *)0xCC008000 = r30;
-    *(volatile float *)0xCC008000 = lbl_805650F0;
-    *(volatile float *)0xCC008000 = lbl_8056511C;
-    *(volatile float *)0xCC008000 = lbl_805650F0;
-    *(volatile float *)0xCC008000 = lbl_8056511C;
+    WGPIPE.s = p1;
+    WGPIPE.s = p2;
+    WGPIPE.s = 0;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.f = lbl_805650F0;
+    WGPIPE.f = lbl_805650F0;
+    WGPIPE.f = lbl_805650F0;
+    WGPIPE.f = lbl_805650F0;
+    WGPIPE.s = p3;
+    WGPIPE.s = p2;
+    WGPIPE.s = 0;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.f = lbl_8056511C;
+    WGPIPE.f = lbl_805650F0;
+    WGPIPE.f = lbl_8056511C;
+    WGPIPE.f = lbl_805650F0;
+    WGPIPE.s = p3;
+    WGPIPE.s = p4;
+    WGPIPE.s = 0;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.f = lbl_8056511C;
+    WGPIPE.f = lbl_8056511C;
+    WGPIPE.f = lbl_8056511C;
+    WGPIPE.f = lbl_8056511C;
+    WGPIPE.s = p1;
+    WGPIPE.s = p4;
+    WGPIPE.s = 0;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.uc = r30;
+    WGPIPE.f = lbl_805650F0;
+    WGPIPE.f = lbl_8056511C;
+    WGPIPE.f = lbl_805650F0;
+    WGPIPE.f = lbl_8056511C;
 }
 void fn_802E27A0(void *arg0) {
     DCStoreRange(*(void **)((char *)arg0 + *(int *)((char *)arg0 + 0x114) * 0x30 + 0x11C),
