@@ -507,15 +507,26 @@ float fn_80230DF4(float a, float b) {
 #pragma pop
 #pragma dont_inline reset
 
-float fn_80230E54(float a, float b) {
-    float value;
+/* Compute a mirrored [0,1] time phase: clamp the period to a small minimum,
+ * return the elapsed-period count directly for the first half, and delegate to
+ * the wrap-around calculation for the second half. */
+float fn_80230E54(float currentTime, float period) {
+#define kMinPeriod lbl_80563660
+#define kHalf lbl_8056365C
+#define sTimeBase lbl_8055F030
+#define computeWrappedPhase fn_80230DF4
+    float phase;
 
-    b = (b > lbl_80563660) ? b : lbl_80563660;
-    value = (a - lbl_8055F030) / b;
-    if (value < lbl_8056365C) {
-        return value;
+    period = (period > kMinPeriod) ? period : kMinPeriod;
+    phase = (currentTime - sTimeBase) / period;
+    if (phase < kHalf) {
+        return phase;
     }
-    return fn_80230DF4(a, b);
+    return computeWrappedPhase(currentTime, period);
+#undef computeWrappedPhase
+#undef sTimeBase
+#undef kHalf
+#undef kMinPeriod
 }
 
 #pragma dont_inline on
