@@ -262,15 +262,16 @@ void fn_801333E8(int section, int key, unsigned char *value) {
 __declspec(section ".sdata") extern const char lbl_80559B64[];
 __declspec(section ".sdata") extern const char lbl_80559B68[];
 #pragma scheduling invalid_target
-int fn_80133460(int arg0, int arg1, unsigned char arg2) {
-    char *sp8;
+int fn_80133460(int section, int key, unsigned char value) {
+    char *entryData;
     char *result;
-    fn_80133E10((void **)&sp8, arg0, arg1);
-    *(unsigned char *)(sp8 + 8) = arg2;
-    *(int *)(sp8 + 0xC) = arg2;
-    *(float *)(sp8 + 0x10) = (float)arg2;
-    strcpy(sp8 + 0x14, arg2 ? lbl_80559B64 : lbl_80559B68);
-    result = sp8;
+    /* Store a boolean setting in its (section,key) record: type 1, numeric/float value and a "yes"/"no" string. */
+    fn_80133E10((void **)&entryData, section, key);
+    *(unsigned char *)(entryData + 8) = value;
+    *(int *)(entryData + 0xC) = value;
+    *(float *)(entryData + 0x10) = (float)value;
+    strcpy(entryData + 0x14, value ? lbl_80559B64 : lbl_80559B68);
+    result = entryData;
     *(int *)result = 1;
     return (int)result;
 }
