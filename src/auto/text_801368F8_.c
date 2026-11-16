@@ -689,15 +689,16 @@ void fn_801377EC(void *arg0, s32 arg1, void *arg2) {
     *(f32 *)arg2 = x;
 }
 
-float fn_80137850(void *arg0)
+float fn_80137850(void *candidate)
 {
-  float new_var;
-  float *new_var2;
-  int index = (*((int *) (((char *) arg0) - (-0x18)))) * (*((int *) (lbl_8055E0D0 + 0xC)));
-  int base;
-  float *p = (float *) ((*((int *) (lbl_8055E0D0 + 0x10))) + index);
-  new_var2 = *((float **) arg0);
-  return p[0] + ((new_var = new_var2[1]) * p[2]);
+    float time;
+    float *relation;
+    int offset = (*(int *)((char *)candidate + 0x18)) * (*(int *)(lbl_8055E0D0 + 0xC));
+    int base;
+    float *row = (float *)(*(int *)(lbl_8055E0D0 + 0x10) + offset);
+    relation = *(float **)candidate;
+    /* Predict a car's future X from its proximity row: row.x + meetingTime * row.speed. */
+    return row[0] + ((time = relation[1]) * row[2]);
 }
 
 /* Allocate and initialize the global Proxer object for the given car count, storing it as the current and default instance. */
