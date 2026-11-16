@@ -243,16 +243,18 @@ extern int fn_8027DB40(int);
 extern int fn_8024DAE0(int, int, int, int, int);
 typedef struct VTbl_8023BC24 { void *slot[2]; void (*fn2)(void *, int); } VTbl_8023BC24;
 typedef struct Obj_8023BC24 { VTbl_8023BC24 *vt; } Obj_8023BC24;
-int fn_8023BC24(int ignored, int arg1, int arg2) {
-    Obj_8023BC24 *obj = (Obj_8023BC24 *)fn_8027DB40(1);
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_8023BC24(int ignored, int arg1, int arg2) {
+    struct Object { virtual void destroy(int); };
+    Object *obj = (Object *)fn_8027DB40(1);
     int result = fn_8024DAE0(arg1, arg2, 0, (int)obj, 0);
     if (obj != 0) {
-        void (**tbl)(void *, int) = (void (**)(void *, int))obj->vt;
-        tbl[2](obj, 1);
+        obj->destroy(1);
     }
     return result;
 }
-
+#pragma pop
 int fn_8023BCAC(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
