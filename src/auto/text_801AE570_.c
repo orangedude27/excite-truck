@@ -13,7 +13,8 @@ extern int lbl_8055E600;              /* state word right behind it */
 void fn_8000D838(void *);
 void fn_801AE570(void);
 
-__declspec(section ".ctors") funcptr_t D_802ED23C = fn_801AE570;
+#pragma section ".ctors$00"
+DECL_SECTION(".ctors$00") funcptr_t D_802ED23C = fn_801AE570;
 void fn_801AE570(void) {
 #define RegisterStaticDtor fn_8000D838
 #define s_dtorRecord       lbl_8055E5F8
