@@ -4006,12 +4006,12 @@ void fn_80060750(void* enable) {
     OSRestoreInterrupts(interrupts);
 }
 
-// fn_80060784: getter for lbl_8055DC14
+/* Returns the WPAD motor/rumble-enabled setting (lbl_8055DC14) atomically. */
 void* fn_80060784(void) {
-    BOOL enabled = OSDisableInterrupts();
-    void* val = lbl_8055DC14;
-    OSRestoreInterrupts(enabled);
-    return val;
+    BOOL interruptsEnabled = OSDisableInterrupts();
+    void* motorMode = lbl_8055DC14;
+    OSRestoreInterrupts(interruptsEnabled);
+    return motorMode;
 }
 
 /* Returns the data format for the given WPAD channel (field at +0x7F0), clamping -1 to 0. */
