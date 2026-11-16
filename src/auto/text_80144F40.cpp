@@ -576,9 +576,10 @@ extern "C" void fn_8014595C(void *list, const char *out) {
 }
 #pragma use_lmw_stmw reset
 #pragma dont_inline on
-extern "C" f32 fn_80145A08(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    f32 num = farg4 - farg0;
-    return farg2 + ((num / (farg1 - farg0)) * (farg3 - farg2));
+extern "C" f32 fn_80145A08(f32 x0, f32 x1, f32 y0, f32 y1, f32 x) {
+    /* Linearly interpolate: value at x on the line through (x0,y0) and (x1,y1). */
+    f32 num = x - x0;
+    return y0 + ((num / (x1 - x0)) * (y1 - y0));
 }
 #pragma dont_inline reset
 
