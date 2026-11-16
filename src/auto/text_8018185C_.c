@@ -2387,7 +2387,7 @@ void fn_8018ADEC(void *car) {
     *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)car + 0x1EC) * 0x9C) + 8) = -10;
 }
 
-/* Set this object's car-element +8 field to -10, indexing the 0x9C-byte entryset by the object's element index at +0x1EC. */
+/* Set this object's car-element +8 field to -10, indexing the 0x9C-byte entry set by the object's element index at +0x1EC. */
 void fn_8018AE08(void *object) {
     *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)object + 0x1EC) * 0x9C) + 8) = -10;
 }
