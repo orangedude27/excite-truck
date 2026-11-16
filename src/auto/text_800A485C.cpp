@@ -16300,6 +16300,7 @@ extern "C" void fn_800C2090(volatile s32 *, const volatile s32 *, const volatile
 extern "C" void fn_800C3088(volatile s32 *, const volatile s32 *, const volatile s32 *, const volatile s32 *);
 extern "C" const s32 lbl_802F3FB8[];
 extern "C" s32 lbl_8031D5C8[];
+struct TransformState800C { s8 channels; u8 pad1[0x9C7]; s32 rows; };
 /* Transform one six-sample row into out, then set out[1]/out[7] from its
  * differences rotated by the (cos, sin) pair in lbl_8031D5C8. */
 static inline void fn_800C0E7C_rotate(s32 *p, s32 *out) {
@@ -16310,6 +16311,8 @@ static inline void fn_800C0E7C_rotate(s32 *p, s32 *out) {
     out[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
     out[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
 }
+#pragma push
+#pragma use_lmw_stmw on
 extern "C" u32 fn_800C0E7C(void *arg0, void *arg1, void *arg2, void *arg3, s32 *arg4, void *arg5) {
     u8 *self = (u8 *)arg0;
     s32 (*a90)[36] = (s32 (*)[36])arg1;
@@ -16320,115 +16323,91 @@ extern "C" u32 fn_800C0E7C(void *arg0, void *arg1, void *arg2, void *arg3, s32 *
     s32 *a4b = a4 + 0x440;
     s32 m2[12], m1[12], m0[12];
     s16 ch;
-    s16 i;
-    int j;
-    s32 *z;
     for (ch = 0; ch < (s8)self[0]; flags++, a90 += 32, base += 0x900, ch++, a4b += 0x20, a4 += 0x20, a48 += 32) {
+        s16 i;
+        s32 (*p90)[36];
+        s32 (*p48)[18];
+        s32 *p4;
+        s32 *p4b;
+        s32 *z;
+        int j;
         if (*flags & 7) {
             if (*flags & 1) {
-                for (i = 0; i < *(s32 *)(self + 0x9C8); i++) {
-                    fn_800C18A0(&base[0x6C0 + i * 18], a90[i]);
+                p90 = a90; p4b = a4b; p4 = a4; p48 = a48;
+                for (i = 0; i < *(s32 *)(self + 0x9C8); p90++, p4b++, p4++, p48++, i++) {
+                    fn_800C18A0(&base[i * 16 + i * 2] + 0x6C0, *p90);
                     if (!(i & 1))
-                        fn_800C2590(a90[i], a48[i], &a4[i], &a4b[i]);
+                        fn_800C2590(*p90, *p48, p4, p4b);
                     else
-                        fn_800C280C(a90[i], a48[i], &a4[i], &a4b[i]);
-                    fn_800C2DBC(&a90[i][18], a48[i], &a48[i][17]);
+                        fn_800C280C(*p90, *p48, p4, p4b);
+                    fn_800C2DBC(&(*p90)[18], *p48, &(*p48)[17]);
                 }
             } else {
-                for (i = 0; i < *(s32 *)(self + 0x9C8); i++) {
-                    fn_800C18A0(&base[0x6C0 + i * 18], a90[i]);
+                p90 = a90; p4b = a4b; p4 = a4; p48 = a48;
+                for (i = 0; i < *(s32 *)(self + 0x9C8); i++, p90++, p4b++, p4++, p48++) {
+                    fn_800C18A0(&base[i * 16 + i * 2] + 0x6C0, *p90);
                     if (*flags & 2) {
                         if (!(i & 1))
-                            fn_800C2590(a90[i], a48[i], &a4[i], &a4b[i]);
+                            fn_800C2590(*p90, *p48, p4, p4b);
                         else
-                            fn_800C280C(a90[i], a48[i], &a4[i], &a4b[i]);
-                        fn_800C2F98(&a90[i][18], a48[i], &a48[i][17]);
+                            fn_800C280C(*p90, *p48, p4, p4b);
+                        fn_800C2F98(&(*p90)[18], *p48, &(*p48)[17]);
                     }
                     if (*flags & 4) {
                         if (!(i & 1))
-                            fn_800C2A88(a90[i], a48[i], &a4[i], &a4b[i]);
+                            fn_800C2A88(*p90, *p48, p4, p4b);
                         else
-                            fn_800C2C18(a90[i], a48[i], &a4[i], &a4b[i]);
-                        fn_800C2DBC(&a90[i][18], a48[i], &a48[i][17]);
+                            fn_800C2C18(*p90, *p48, p4, p4b);
+                        fn_800C2DBC(&(*p90)[18], *p48, &(*p48)[17]);
                     }
                 }
             }
         } else if (*flags & 8) {
             for (j = 0; j < 2; j++) {
-                fn_800C18A0(&base[0x6C0 + j * 18], a90[j]);
+                fn_800C18A0(&base[j * 16 + j * 2] + 0x6C0, a90[j]);
                 fn_800C21D8(a90[j], &a90[j][17]);
             }
             z = a90[*(s32 *)(self + 0x9C8) - 1];
             for (j = 0; j < 36; j++)
                 z[j] = 0;
             for (i = 2; i < *(s32 *)(self + 0x9C8) - 1; i++) {
-                s32 *p = &base[i * 6];
-                s32 v, w;
-                fn_800C1E88(p, lbl_802F3FB8, m0);
-                v = p[0] - p[3] - p[4];
-                w = p[1] - p[2] - p[5];
-                m0[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
-                m0[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
-                p += 0x240;
-                fn_800C1E88(p, lbl_802F3FB8, m1);
-                v = p[0] - p[3] - p[4];
-                w = p[1] - p[2] - p[5];
-                m1[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
-                m1[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
-                p += 0x240;
-                fn_800C1E88(p, lbl_802F3FB8, m2);
-                v = p[0] - p[3] - p[4];
-                w = p[1] - p[2] - p[5];
-                m2[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
-                m2[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
+                fn_800C0E7C_rotate(&base[i * 4 + i * 2], m0);
+                fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x240, m1);
+                fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x480, m2);
                 fn_800C3088(a90[i], m0, m1, m2);
             }
-            for (i = 0; i < *(s32 *)(self + 0x9C8); i++) {
+            p48 = a48; p90 = a90; p4 = a4;
+            for (i = 0; i < *(s32 *)(self + 0x9C8); p4++, p90++, i++, p48++) {
                 if (!(i & 1))
-                    fn_800C1F6C((u32 *)&a4[i], (u32 *)a90[i], (u32 *)a48[i]);
+                    fn_800C1F6C((u32 *)p4, (u32 *)*p90, (u32 *)*p48);
                 else
-                    fn_800C2090(&a4[i], a90[i], a48[i]);
+                    fn_800C2090(p4, *p90, *p48);
                 for (j = 0; j < 18; j++)
-                    a48[i][j] = a90[i][18 + j];
+                    (*p48)[j] = (*p90)[18 + j];
             }
         } else if (*flags & 0x10) {
             z = a90[*(s32 *)(self + 0x9C8) - 1];
             for (j = 0; j < 36; j++)
                 z[j] = 0;
             for (i = 0; i < *(s32 *)(self + 0x9C8) - 1; i++) {
-                s32 *p = &base[i * 6];
-                s32 v, w;
-                fn_800C1E88(p, lbl_802F3FB8, m0);
-                v = p[0] - p[3] - p[4];
-                w = p[1] - p[2] - p[5];
-                m0[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
-                m0[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
-                p += 0x240;
-                fn_800C1E88(p, lbl_802F3FB8, m1);
-                v = p[0] - p[3] - p[4];
-                w = p[1] - p[2] - p[5];
-                m1[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
-                m1[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
-                p += 0x240;
-                fn_800C1E88(p, lbl_802F3FB8, m2);
-                v = p[0] - p[3] - p[4];
-                w = p[1] - p[2] - p[5];
-                m2[1] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[0]) + fn_800C0E7C_fxmul(w, lbl_8031D5C8[1]);
-                m2[7] = fn_800C0E7C_fxmul(v, lbl_8031D5C8[1]) + fn_800C0E7C_fxmul(w, -lbl_8031D5C8[0]);
+                fn_800C0E7C_rotate(&base[i * 4 + i * 2], m0);
+                fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x240, m1);
+                fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x480, m2);
                 fn_800C3088(a90[i], m0, m1, m2);
             }
-            for (i = 0; i < *(s32 *)(self + 0x9C8); i++) {
+            p48 = a48; p90 = a90; p4 = a4;
+            for (i = 0; i < *(s32 *)(self + 0x9C8); p4++, p90++, i++, p48++) {
                 if (!(i & 1))
-                    fn_800C1F6C((u32 *)&a4[i], (u32 *)a90[i], (u32 *)a48[i]);
+                    fn_800C1F6C((u32 *)p4, (u32 *)*p90, (u32 *)*p48);
                 else
-                    fn_800C2090(&a4[i], a90[i], a48[i]);
+                    fn_800C2090(p4, *p90, *p48);
                 for (j = 0; j < 18; j++)
-                    a48[i][j] = a90[i][18 + j];
+                    (*p48)[j] = (*p90)[18 + j];
             }
         }
     }
 }
-
+#pragma pop
 extern "C" void fn_800C1984(s32 *, s32 *);
 extern "C" void fn_800C18A0(void *input, void *output) {
     /* Unpack 18 transformed samples: copy temp[9..17] to out[0..8] and
