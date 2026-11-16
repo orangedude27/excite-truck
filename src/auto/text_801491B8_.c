@@ -1407,9 +1407,12 @@ extern "C" void fn_8014DC08(void *arg0) {
     extern void fn_801CB5DC(void *, int, int);
     extern char lbl_8032D704[];
     extern float lbl_8055E3C8;
+    float total;
     Lists *list;
-    Node *pending, *node, *next, *p;
-    float total, diff;
+    Node *pending;
+    Node *node;
+    Node *next;
+    float diff;
     int a, b;
     void *obj;
     ((Callback *)*(void **)((char *)arg0 + 0x10))->call();
@@ -1431,10 +1434,8 @@ extern "C" void fn_8014DC08(void *arg0) {
     while (node) {
         if (!node->flag) {
             if (node->timed) total += (float)node->duration;
-            p = node->prev;
-            if (p) p->next = node->next; else list->active = node->next;
-            p = node->next;
-            if (p) p->prev = node->prev; else list->activeLast = node->prev;
+            if (node->prev) node->prev->next = node->next; else list->active = node->next;
+            if (node->next) node->next->prev = node->prev; else list->activeLast = node->prev;
             node->prev = 0;
             node->next = 0;
             node->prev = list->last;
@@ -2257,11 +2258,17 @@ void fn_80150BDC(void *arg0) {
 #pragma pop
 s32 fn_80151604(void) { return 0; }
 
+/* Return a status flag word: 0x5608 when the current race state is active,
+   otherwise 0x160B or 0x564B depending on the stored value, with bit 6 masked off. */
 s32 fn_8015160C(void) {
-    if (fn_80161C38() != 0) {
+#define raceStateActive fn_80161C38
+#define raceStateValue  fn_80179650
+    if (raceStateActive() != 0) {
         return 0x5608;
     }
-    return (fn_80179650() > 1 ? 0x160B : 0x564B) & 0xFFFFFFBF;
+    return (raceStateValue() > 1 ? 0x160B : 0x564B) & 0xFFFFFFBF;
+#undef raceStateActive
+#undef raceStateValue
 }
 
 #pragma cplusplus on
