@@ -939,12 +939,13 @@ void fn_801F3198(void *arg0) {
     PSVECNormalize(arg0, arg0);
 }
 
-void *fn_801F31A0(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        *(int *)((char *)arg0 + 0x3C) = 0;
-        if (arg1 > 0) fn_80128668();
+void *fn_801F31A0(void *obj, int shouldFree) {
+    /* Clear the object's field at +0x3C; optionally free the object. */
+    if (obj != 0) {
+        *(int *)((char *)obj + 0x3C) = 0;
+        if (shouldFree > 0) fn_80128668();
     }
-    return arg0;
+    return obj;
 }
 
 #pragma unroll off
