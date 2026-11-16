@@ -1100,8 +1100,8 @@ extern "C" void fn_80190EAC(void *arg0) {
     fn_80191084((int)arg0, fn_80191100(arg0));
     fn_801B6658();
     z = 0;
-    f1 = lbl_8056208C;
-    f0 = lbl_805620BC;
+    f1 = 0.0f;
+    f0 = 10.0f;
     *(volatile s8 *)((s8 *)arg0 + 0x34) = z;
     *(f32 *)((s8 *)arg0 + 0x30) = f1;
     *(s8 *)((s8 *)arg0 + 0x34) = 1;
