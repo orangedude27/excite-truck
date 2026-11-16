@@ -4,6 +4,9 @@
 // auto/text_802E72B0_.c pending a promotion pass.
 extern void *memcpy(void *, const void *, unsigned long);
 extern int lbl_8055FFC8;
+/* The buffer printed as "%s" by the "chunk: %s (%x) %d bytes" log: the 4-byte
+ * chunk ID followed by a NUL.  The symbol itself is a project placeholder. */
+#define chunkIdString lbl_8055FFC8
 extern unsigned char lbl_804FC8B0[];
 extern int lbl_8055FFC0;
 extern unsigned char lbl_8055FFC4;
@@ -82,8 +85,8 @@ void fn_802E6CA4(void) {}
 #pragma use_lmw_stmw off
 int fn_802E6CA8(void) {
     unsigned char *allocation;
-    char *messages = lbl_8034D678;
     int size;
+    char *messages;
     int payloadSize;
     unsigned char flags[10];
     int success;
@@ -98,6 +101,7 @@ int fn_802E6CA8(void) {
     unsigned char *flagIt;
     void (*callback)(int);
 
+    messages = lbl_8034D678;
     size = fn_802E7130();
     payloadSize = size - 0x20D0;
     allocation = (unsigned char *)fn_801284E8(messages + 0x40, size);
@@ -114,7 +118,7 @@ int fn_802E6CA8(void) {
     } else {
         temp = *(int *)(allocation + 0x204C);
         if (temp != payloadSize) {
-            fn_802E30C8(messages + 0x68, payloadSize);
+            fn_802E30C8(messages + 0x68, temp, payloadSize);
         } else if (*(unsigned int *)(allocation + 0x2040) != 0x4D435348 ||
                    *(unsigned int *)(allocation + 0x2044) != 4 ||
                    *(unsigned int *)(allocation + 0x2048) != 0x20D0 ||
@@ -182,15 +186,13 @@ second_check:
     fn_80128658(allocation);
     if (success == 0) {
         int anyMissing = 0;
+        int scanCount;
         flagIt = flags;
-        {
-            int scanCount = lbl_8055FFC0;
-            if (scanCount > 0) {
-                while (scanCount--) {
-                    if (*flagIt == 0) anyMissing = 1;
-                    flagIt++;
-                }
-            }
+        scanCount = lbl_8055FFC0;
+        while (scanCount > 0) {
+            if (*flagIt == 0) anyMissing = 1;
+            flagIt++;
+            scanCount--;
         }
         if (anyMissing != 0) {
             slot = lbl_804FC8B0;
