@@ -7681,17 +7681,13 @@ block_done:
     }
 }
 #pragma pop
+#pragma push
+#pragma dont_inline off
 void btm_acl_removed(u8 *addr) {
-    unsigned int i;
     u8 *entry;
     void (*callback)(u8 *, u32, u32, u32, u32);
-    entry = lbl_803C0F78 + 0x34;
-    for (i = 0; i < 4; i++, entry += 0x11C) {
-        if (entry[0x119] && memcmp(entry + 8, addr, 6) == 0)
-            goto found;
-    }
-    entry = 0;
-found:
+
+    entry = btm_bda_to_acl_inl(addr);
     if (entry != 0) {
         entry[0x119] = 0;
         callback = *(void (**)(u8 *, u32, u32, u32, u32))(lbl_803C0F78 + 0x4C8);
@@ -7699,7 +7695,7 @@ found:
             callback(addr, 0, 0, 0, 0);
     }
 }
-
+#pragma pop
 extern BOOLEAN l2c_link_hci_disc_comp(UINT16, UINT8);
 /* On device down, notify L2CAP of HCI disconnect for each active ACL link. */
 void btm_acl_device_down(void)
@@ -10471,7 +10467,6 @@ extern u8 lbl_80560D3C;
 extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
 tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_mode)
 {
-    register tBTM_PM_MODE mode;
     int ind;
     u32 acl_ind;
     UINT8 acl_index;
@@ -10479,10 +10474,13 @@ tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_
     UINT8 *p_cb;
     UINT8 *p_acl;
     UINT8 *p_features;
+    tBTM_PM_MODE mode;
+
     if (pm_id >= 2)
         pm_id = BTM_PM_SET_ONLY_ID;
     if (p_mode == NULL)
         return BTM_ILLEGAL_VALUE;
+
     mode = p_mode->mode & ~BTM_PM_MD_FORCE;
     acl_ind = 0;
     p_acl = lbl_803C0F78 + 0x34;
@@ -10501,6 +10499,7 @@ found:
     acl_index = (UINT8)acl_ind;
     if ((s32)acl_index == 4)
         return BTM_UNKNOWN_ADDR;
+
     p_cb = lbl_803C0F78 + acl_index * 0x22 + 0x4CC;
     if (mode != BTM_PM_MD_ACTIVE) {
         ind = mode - BTM_PM_MD_HOLD;
@@ -10510,12 +10509,14 @@ found:
         if (!(p_features[feature_offset] & feature_mask))
             return BTM_MODE_UNSUPPORTED;
     }
+
     if (mode == p_cb[0x20]) {
         if (mode == BTM_PM_MD_ACTIVE ||
             (p_mode->max >= *(UINT16 *)(p_cb + 0x1E) &&
              p_mode->min <= *(UINT16 *)(p_cb + 0x1E)))
             return BTM_SUCCESS;
     }
+
     if (pm_id != BTM_PM_SET_ONLY_ID &&
         ((lbl_803C0F78 + ((pm_id * 8) & 0x7F8))[0x558] & BTM_PM_REG_SET)) {
         UINT16 max = p_mode->max;
@@ -10533,6 +10534,7 @@ found:
         p_req[4] = *(UINT16 *)&p_mode->mode;
         p_cb[0x21] = TRUE;
     }
+
     if (p_cb[0x20] == 1 || p_cb[0x20] == 4 ||
         lbl_803C0F78[0x564] != 4)
         return 0xD;
