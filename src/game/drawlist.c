@@ -228,8 +228,9 @@ void fn_802C84EC(void) {
     fn_802C6080();
 }
 
+/* Prepare draw lists for a render frame: enter normal GX render mode, reset the 0x40 texture draw slots (fn_802CC60C) and register the GX draw-sync callback (fn_802CFCA0); paired with the fn_802C855C teardown. */
 void fn_802C8530(void) {
-    lbl_8055FC70 = 1;
+    sRenderMode = RENDER_MODE_NORMAL;
     fn_802CC60C();
     fn_802CFCA0();
 }
