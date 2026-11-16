@@ -19014,21 +19014,22 @@ void homebutton::GroupAnmController::do_calc() {
     }
 }
 #pragma pop
-extern "C" void fn_800CF3B4(void *arg0, s32 arg1, f32 arg2, f32 arg3, f32 arg4) {
-    f32 value;
+extern "C" void fn_800CF3B4(void *spec, s32 mode, f32 first, f32 second, f32 third) {
+    /* Initialize a value spec: store its parameters, zero the counter/flag fields, record the mode, and set the current value from first (mode 1) or second. */
+    f32 current;
 
-    *(s32 *)((u8 *)arg0 + 0x18) = arg1;
-    *(f32 *)((u8 *)arg0 + 4) = arg2;
-    *(f32 *)((u8 *)arg0 + 8) = arg3;
-    *(f32 *)((u8 *)arg0 + 0x10) = arg4;
-    *(s32 *)((u8 *)arg0 + 0x14) = 0;
-    *(u8 *)((u8 *)arg0 + 0x1C) = 0;
-    if (arg1 == 1) {
-        value = (f32)(f64)arg2;
+    *(s32 *)((u8 *)spec + 0x18) = mode;
+    *(f32 *)((u8 *)spec + 4) = first;
+    *(f32 *)((u8 *)spec + 8) = second;
+    *(f32 *)((u8 *)spec + 0x10) = third;
+    *(s32 *)((u8 *)spec + 0x14) = 0;
+    *(u8 *)((u8 *)spec + 0x1C) = 0;
+    if (mode == 1) {
+        current = (f32)(f64)first;
     } else {
-        value = (f32)(f64)arg3;
+        current = (f32)(f64)second;
     }
-    *(f32 *)((u8 *)arg0 + 0xC) = value;
+    *(f32 *)((u8 *)spec + 0xC) = current;
 }
 
 #pragma dont_inline fn_800CF3EC
