@@ -163,12 +163,14 @@ test:
 }
 #pragma dont_inline off
 #pragma pop
+/* RealName: GetTailPredecessorNode_8022EC7C */
 void *fn_8022EC7C(void) {
-    u32 *p = (u32 *)lbl_8055F004;
-    u32 *node = (u32 *)p[0];
+    /* Return the node whose next link is the list tail, or 0 if the list is empty. */
+    u32 *list = (u32 *)lbl_8055F004;
+    u32 *node = (u32 *)list[0];
     u32 tail;
     if (!node) return 0;
-    tail = p[1];
+    tail = list[1];
     if ((u32)node == tail) return 0;
     while (node[1] != tail) node = (u32 *)node[1];
     return node;
