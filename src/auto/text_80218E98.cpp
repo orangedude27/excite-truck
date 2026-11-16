@@ -9423,20 +9423,22 @@ extern "C" void fn_80229E1C(void *arg0, s32 unused, s32 arg2) {
     fn_8021E1C8(arg0, unused, arg2 - (end - start) - 3);
 }
 
-extern "C" void fn_80229E34(void *arg0) {
-    s32 temp_r0;
-    s32 temp_r4;
-    void *temp_r5;
+extern "C" void fn_80229E34(void *sound) {
+    /* Advance the +8 index of the sub-object stored at +0x248 by one,
+     * saturating it into the range [0, (+0)-(+4)]. */
+    s32 limit;
+    s32 next;
+    void *counter;
 
-    temp_r5 = *(void **)((u8 *)arg0 + 0x248);
-    temp_r4 = *(s32 *)((u8 *)temp_r5 + 8) + 1;
-    *(s32 *)((u8 *)temp_r5 + 8) = temp_r4;
-    temp_r0 = *(s32 *)((u8 *)temp_r5 + 0) - *(s32 *)((u8 *)temp_r5 + 4);
-    if (temp_r4 > temp_r0) {
-        *(s32 *)((u8 *)temp_r5 + 8) = temp_r0;
+    counter = *(void **)((u8 *)sound + 0x248);
+    next = *(s32 *)((u8 *)counter + 8) + 1;
+    *(s32 *)((u8 *)counter + 8) = next;
+    limit = *(s32 *)((u8 *)counter + 0) - *(s32 *)((u8 *)counter + 4);
+    if (next > limit) {
+        *(s32 *)((u8 *)counter + 8) = limit;
     }
-    if (*(s32 *)((u8 *)temp_r5 + 8) < 0) {
-        *(s32 *)((u8 *)temp_r5 + 8) = 0;
+    if (*(s32 *)((u8 *)counter + 8) < 0) {
+        *(s32 *)((u8 *)counter + 8) = 0;
     }
 }
 
