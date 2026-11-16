@@ -7,6 +7,7 @@ static void* IPCCurrentBufferHi = NULL;
 static void* IPCBufferLo = NULL;
 static void* IPCBufferHi = NULL;
 
+/* Initialize IPC buffer pointers from OS on first call. */
 void IPCInit(void) {
     if (!Initialized) {
         IPCBufferHi = __OSGetIPCBufferHi();
