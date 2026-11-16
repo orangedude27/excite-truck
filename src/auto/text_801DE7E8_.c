@@ -418,13 +418,23 @@ extern "C" void fn_801DEE3C(void) {
 
 #pragma scheduling invalid_target
 void fn_801DEF98(void) {
+    /* Load saved "popups_seen" flags, reset popup cursor and clear queued popup count. */
+#define sPopupsSeenFlags lbl_8055E9DC
+#define sPopupQueueIndex lbl_8055E9E0
+#define sPopupQueue      lbl_804873B8
+#define GetSaveDataBase  fn_8000DA10
+#define LoadIntOption    fn_801332D0
     extern char lbl_80339570_arr[];
-    int *p = (int *)lbl_80339570_arr;
-    fn_801332D0(fn_8000DA10() + 0xC, p, &lbl_8055E9DC);
-    lbl_8055E9E0 = 0;
-    *(int *)((char *)&lbl_804873B8 + 4) = 0;
+    int *popupsSeenKey = (int *)lbl_80339570_arr;
+    LoadIntOption(GetSaveDataBase() + 0xC, popupsSeenKey, &sPopupsSeenFlags);
+    sPopupQueueIndex = 0;
+    *(int *)((char *)&sPopupQueue + 4) = 0;
+#undef sPopupsSeenFlags
+#undef sPopupQueueIndex
+#undef sPopupQueue
+#undef GetSaveDataBase
+#undef LoadIntOption
 }
-#pragma scheduling on
 /* If enabled (lbl_8055E9E8), run the AX DSP init callback and apply level
  * lbl_80562BE8 to lbl_8055E9EC. Otherwise, when the 64-bit value at
  * lbl_8055ADF0/lbl_8055ADF4 is non-negative, run fn_801769EC, apply
