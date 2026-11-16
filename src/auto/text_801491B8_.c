@@ -2220,14 +2220,15 @@ extern char lbl_8032DB40[];
 #pragma push
 #pragma optimization_level 3
 #pragma opt_pointer_aliasing on
-s32 *fn_801500F8(void *arg0, s32 *__restrict arg1) {
-    s32 next;
-    s32 idx = ((s32 *)arg0)[1];
-    s32 *base = *(s32 **)arg0;
-    next = idx + 1;
-    ((s32 *)arg0)[1] = next;
-    base[idx] = *arg1;
-    return &base[idx];
+s32 *fn_801500F8(void *vec, s32 *__restrict pValue) {
+    /* Append a value to the growable s32 array at vec (+0 data pointer, +4 count): bump the count, store the value, return the new slot. */
+    s32 newIndex;
+    s32 index = ((s32 *)vec)[1];
+    s32 *data = *(s32 **)vec;
+    newIndex = index + 1;
+    ((s32 *)vec)[1] = newIndex;
+    data[index] = *pValue;
+    return &data[index];
 }
 #pragma cplusplus on
 extern "C" void *fn_8015011C(void *arg0, ...) {
