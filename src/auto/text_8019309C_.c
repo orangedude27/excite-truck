@@ -171,8 +171,9 @@ int fn_80193110(void *record, int playerId) {
     return 0;
 }
 
-void fn_80193138(void *unused, int index) {
-    void *entry = lbl_804349C0[index];
+/* Reset the +0x304 counter of the racer registered at slotIndex to 20, if any. */
+void fn_80193138(void *unused, int slotIndex) {
+    void *entry = lbl_804349C0[slotIndex];
     if (entry) *((unsigned char *)entry + 0x304) = 0x14;
 }
 
