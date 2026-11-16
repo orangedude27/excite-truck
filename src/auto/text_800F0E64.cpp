@@ -6896,7 +6896,12 @@ extern "C" void fn_800FC5B8(void *arg0, f32 value) {
 
 extern "C" f32 fn_800FC5F8(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x45C); }
 
-extern "C" void fn_800FC600(void *arg0, f32 value) { u32 token = OSDisableInterrupts(); *(f32 *)((u8 *)arg0 + 0x460) = value; OSRestoreInterrupts(token); }
+extern "C" void fn_800FC600(void *object, f32 value) {
+    /* Set the float field at offset 0x460 of object with interrupts disabled. */
+    u32 token = OSDisableInterrupts();
+    *(f32 *)((u8 *)object + 0x460) = value;
+    OSRestoreInterrupts(token);
+}
 
 extern "C" f32 fn_800FC640(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x460); }
 
