@@ -6964,10 +6964,11 @@ extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_8
     return *(f32 *)((u8 *)self + 0x464 + bus * 4);
 }
 
-extern "C" void fn_800FC76C(void *self, s32 value) {
-    u32 token = OSDisableInterrupts();
-    *(s32 *)((u8 *)self + 0x458) = value;
-    OSRestoreInterrupts(token);
+extern "C" void fn_800FC76C(void *player, s32 value) {
+    /* Set the integer field at offset 0x458 of this sound player with interrupts disabled. */
+    u32 irqState = OSDisableInterrupts();
+    *(s32 *)((u8 *)player + 0x458) = value;
+    OSRestoreInterrupts(irqState);
 }
 
 extern "C" s32 fn_800FC7AC(void *arg0) {
