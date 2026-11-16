@@ -10,6 +10,7 @@ extern char lbl_803497D8[];
 extern char lbl_803497E8[];
 #pragma scheduling invalid_target
 void fn_8029EF70(void) {
+    /* Load the line-effect texture handle; log an error if the handle is invalid. */
     lbl_8055CAE0 = fn_802CAC28(lbl_803497D8, 0);
     if (fn_8029EFF0(lbl_8055CAE0) == 0) {
         fn_802E30C8(lbl_803497E8);
