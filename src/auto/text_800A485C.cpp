@@ -20300,9 +20300,11 @@ extern "C" s32 getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(void* control
     return fn_800604E8(*(s32*)controller, (s32)info, (void*)&fn_800D1668);
 }
 
-extern "C" void fn_800D1668(s32 arg0, s32 arg1) {
-    if (arg1 == 0 && arg0 < 4) {
-        lbl_8055DDA8[arg0] = 1;
+extern "C" void fn_800D1668(s32 channel, s32 result) {
+    /* WPAD get-info async callback: on success (result 0) flag the channel's
+     * info as received; lbl_8055DDA8 holds one flag per controller channel. */
+    if (result == 0 && channel < 4) {
+        lbl_8055DDA8[channel] = 1;
     }
 }
 
