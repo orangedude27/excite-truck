@@ -3757,14 +3757,15 @@ void GXClearBoundingBox(void) {
     ((GXDrawData *)__GXData)->lastWriteWasXF = 0;
 }
 
-void GXInitLightAttn(void *arg0, float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
+void GXInitLightAttn(void *arg0, float aa, float ab, float ac, float ka, float kb, float kc) {
+    /* Set a light object's angle (aa,ab,ac) and distance (ka,kb,kc) attenuation. */
     float *p = (float *)((char *)arg0 + 0x10);
-    p[0] = farg0;
-    p[1] = farg1;
-    p[2] = farg2;
-    p[3] = farg3;
-    p[4] = farg4;
-    p[5] = farg5;
+    p[0] = aa;
+    p[1] = ab;
+    p[2] = ac;
+    p[3] = ka;
+    p[4] = kb;
+    p[5] = kc;
 }
 
 /* Computes distance attenuation coefficients (ka, kb, kc) for a light from distance and brightness. */
