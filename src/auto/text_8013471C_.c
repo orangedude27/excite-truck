@@ -51,8 +51,9 @@ extern void *fn_801792F8(void);
 #pragma dont_inline fn_8013472C
 #pragma push
   #pragma cplusplus on
+/* Cache the AI service interface for the current scene in lbl_8055E0AC. */
 extern "C" void fn_8013472C(void) {
-    struct Dummy {
+    struct SceneService {
         virtual void f0();
         virtual void f2();
         virtual void f1();
@@ -74,11 +75,11 @@ extern "C" void fn_8013472C(void) {
         virtual void f18();
         virtual void f19();
         virtual void f21();
-        virtual void *f22(u32 *);
+        virtual void *getService(u32 *);
         virtual void f20();
     };
-    register void *sub = *(void **)((u8 *)fn_8001285C(*fn_801E87A8()) + 0x20);
-    lbl_8055E0AC = ((Dummy *)sub)->f22(&lbl_80559BD8);
+    register void *service = *(void **)((u8 *)fn_8001285C(*fn_801E87A8()) + 0x20);
+    lbl_8055E0AC = ((SceneService *)service)->getService(&lbl_80559BD8);
 }
 #pragma cplusplus reset
 #pragma pop
