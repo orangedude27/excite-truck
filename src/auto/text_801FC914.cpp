@@ -1411,10 +1411,11 @@ extern "C" void fn_801FF1C4(void* arg0, int arg1, int arg2) {
 extern double __fabs(double);
 #pragma push
 #pragma small_data off
-extern "C" void fn_801FF260(void *arg0) {
+/* Applies the current non-zero input value to the object's sub-state at offset 0x1008. */
+extern "C" void fn_801FF260(void *obj) {
     float value = fn_801E7E24();
     if (!((float)__fabs((double)value) <= lbl_80558DC4)) {
-        fn_801FF6FC((char *)arg0 + 0x1008, value);
+        fn_801FF6FC((char *)obj + 0x1008, value);
     }
 }
 #pragma pop
