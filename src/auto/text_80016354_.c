@@ -261,17 +261,24 @@ void fn_800168B0(int driverNumber, int vehicleOverride) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80016928(int arg0, int arg1) {
+/* Set field 0x50 of the car definition entry matching `carDefId`. */
+void fn_80016928(int carDefId, int value) {
+#define sCarDefList  lbl_8055D540
+#define sCarDefCount lbl_8055D54C
+
     unsigned char *entry;
     unsigned char *base;
     int i = 0;
-    entry = base = lbl_8055D540;
-    for (i = 0; i < (int)lbl_8055D54C; entry += 0x5C, i++) {
-        if (arg0 == *(int *)(entry + 4)) {
-            *(int *)(base + i * 0x5C + 0x50) = arg1;
+    entry = base = sCarDefList;
+    for (i = 0; i < (int)sCarDefCount; entry += 0x5C, i++) {
+        if (carDefId == *(int *)(entry + 4)) {
+            *(int *)(base + i * 0x5C + 0x50) = value;
             return;
         }
     }
+
+#undef sCarDefList
+#undef sCarDefCount
 }
 #pragma push
 #pragma scheduling invalid_target
