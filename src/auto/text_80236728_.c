@@ -152,10 +152,13 @@ void fn_80236848(void) {
     node->next = 0;
 }
 
-void fn_802368B4(int arg0) {
-    if (((unsigned char *)lbl_8055F0C0)[arg0] == 0) {
-        lbl_8055F0C0[arg0] = 1;
+void fn_802368B4(int flagIndex) {
+    /* Set the indexed flag byte on the current uiAnime tail node if it is clear. */
+#define sUiAnimeTail lbl_8055F0C0
+    if (((unsigned char *)sUiAnimeTail)[flagIndex] == 0) {
+        sUiAnimeTail[flagIndex] = 1;
     }
+#undef sUiAnimeTail
 }
 
 void fn_802368D0(void) {
