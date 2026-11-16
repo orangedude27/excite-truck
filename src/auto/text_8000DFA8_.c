@@ -1914,17 +1914,18 @@ extern "C" void fn_800120BC(void) {
     lbl_8055D4AC = 0;
 }
 #pragma cplusplus reset
+/* Activates the current entry in lbl_8055D4AC's primary slot table, sets its active/state flags, and advances/wraps the table index. */
 void fn_80012158(void) {
-    u8 *obj;
-    s32 *base;
-    base = (s32 *)lbl_8055D4AC;
-    obj = *(u8 **)((u8 *)base + base[0] * 4 + 4);
-    if (obj == 0) return;
-    obj[0x49] = 1;
-    obj[0x4B] = 0;
-    obj[0x4A] = 0;
-    if (++base[0] < 3) return;
-    base[0] = 0;
+    u8 *object;
+    s32 *state;
+    state = (s32 *)lbl_8055D4AC;
+    object = *(u8 **)((u8 *)state + state[0] * 4 + 4);
+    if (object == 0) return;
+    object[0x49] = 1;
+    object[0x4B] = 0;
+    object[0x4A] = 0;
+    if (++state[0] < 3) return;
+    state[0] = 0;
 }
 
 void fn_800121A4(void) {
