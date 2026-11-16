@@ -1805,8 +1805,9 @@ extern "C" void fn_800D8840(Data_800D8840 *dst, const Data_800D8840 *src) {
     *dst = *src;
 }
 #pragma pop
-extern "C" void fn_800D886C(GXColor *arg0, const GXColor *arg1) {
-    *arg0 = *arg1;
+// Copies one RGBA color (used by nw4r lyt material setup) from src into dst.
+extern "C" void fn_800D886C(GXColor *dst, const GXColor *src) {
+    *dst = *src;
 }
 
 #pragma push
