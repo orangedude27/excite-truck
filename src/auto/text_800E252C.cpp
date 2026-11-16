@@ -1366,11 +1366,12 @@ extern "C" void __ct__Q46nw4hbm3snd6detail7AxVoiceFv(void *voice) {
     ((unsigned long *)voice)[0x28 / 4] = 0;
 }
 
-extern "C" int fn_800E4520(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" int fn_800E4520(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 #pragma use_lmw_stmw off
@@ -3872,8 +3873,8 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     float f31, f30, f28, f27, f26, f25, f24, f29;
     int voice, i, valid;
     float *aux;
-    char *pl2;
     char *pl;
+    char *pl2;
     if (UF(unsigned char, 0x66) != 0 && p->p18() != 0) {
         int c = UF(int, 0x6C);
         if (c == 0) {
