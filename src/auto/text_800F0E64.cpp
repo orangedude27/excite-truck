@@ -1888,6 +1888,16 @@ extern "C" u64 impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileRe
     return *(u64 *)&result;
 }
 #pragma pop
+// detail::SoundArchiveLoader::FileBuffer: a reusable 0x220-byte file-reading
+// buffer with an embedded mutex, the id it was set up for and the stream it is
+// currently reading (null while idle).
+struct SoundFileBufferLayout {
+    u8 mutexArea[0x18];    // 0x00 embedded OSMutex, initialised by OSInitMutex
+    s32 setupId;           // 0x18 id this buffer is set up for
+    u8 pad[0x21C - 0x1C];  // 0x1C
+    s32 currentStream;     // 0x21C stream being read; null when idle
+};
+
 extern "C" void *fn_800F41D0(void *arg0, s32 arg1) {
  *(s32*)((u8*)arg0 + 0x18) = arg1;
  *(s32*)((u8*)arg0 + 0x21C) = 0;
