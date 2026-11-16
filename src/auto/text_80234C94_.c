@@ -339,7 +339,7 @@ void *fn_8023512C(const char *arg0) {
     CopyStrB_8023512C(arg0, 0x80, full);
     if (fn_8012C33C(arg0) == 0) {
         fn_802E30C8(tbl + 0x120, arg0);
-        CopyStrB_8023512C(tbl + 0x140, 0x80, full);
+        CopyStrI_8023512C(tbl + 0x140, 0x80, full);
     }
     obj = ((void *(*)(char *))fn_80234E88)(full);
     if (obj != 0) {
@@ -353,7 +353,7 @@ void *fn_8023512C(const char *arg0) {
     obj[0x80 / 4] = 1;
     obj[0x88 / 4] = 0;
     CopyStrB_8023512C(full, 0x80, (char *)obj);
-    CopyStrB_8023512C(full, 0x80, name);
+    CopyStrI_8023512C(full, 0x80, name);
     dot = fn_80029004(name, 0x2E);
     if (dot != 0)
         *dot = 0;
