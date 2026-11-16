@@ -302,9 +302,10 @@ int fn_8026B734(int arg0, float *arg1) {
     return 0;
 }
 
-int fn_8026B768(int arg0, int arg1) {
-    if (lbl_8049A0E8[arg0 * 0x10] != 0) {
-        fn_8026A1F0(0xB, arg1, 0);
+/* If the given slot is active, apply action 0xB to the specified object and return 1. */
+int fn_8026B768(int slotIndex, int objectIndex) {
+    if (lbl_8049A0E8[slotIndex * 0x10] != 0) {
+        fn_8026A1F0(0xB, objectIndex, 0);
         return 1;
     }
     return 0;
