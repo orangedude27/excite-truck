@@ -1268,10 +1268,11 @@ s32 fn_8024B974(void *arg0) {
     return *(s32 *)((char *)arg0 + *(s32 *)((char *)arg0 + 0x10) * 0xC + 0x28);
 }
 
-void fn_8024B988(void *arg0) {
-    s32 count = *(s32 *)((char *)arg0 + 0x14);
-    s32 index = *(s32 *)((char *)arg0 + 0x10);
-    *(s32 *)((char *)arg0 + 0x10) = (count + index - 1) % count;
+void fn_8024B988(void *selector) {
+    /* Move the selection to the previous entry, wrapping to the last when at 0. */
+    s32 count = *(s32 *)((char *)selector + 0x14);
+    s32 index = *(s32 *)((char *)selector + 0x10);
+    *(s32 *)((char *)selector + 0x10) = (count + index - 1) % count;
 }
 
 void fn_8024B9AC(void *arg0) {
