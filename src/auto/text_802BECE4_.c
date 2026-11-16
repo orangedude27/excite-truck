@@ -152,8 +152,8 @@ float fn_802BF02C(float arg0, int arg1) {
     register u32 *dst = (u32 *)points;
     register struct Pair *p;
     register int i;
-    float lowX, highX, lowY, highY, numerator, denominator;
-    float min, t;
+    float lowX, highX, numerator, lowY, highY, denominator;
+    register float min, t;
     *dst++ = *src++;
     *dst++ = *src++;
     *dst++ = *src++;
@@ -180,9 +180,9 @@ float fn_802BF02C(float arg0, int arg1) {
             lowY = points[i - 1].y;
             denominator = highX - lowX;
             t = numerator / denominator;
-            t = (min > t) ? min : t;
-            t = (t > lbl_80564D90) ? lbl_80564D90 : t;
-            return lowY + t * (highY - lowY);
+            min = (min < t) ? min : t;
+            min = (min > lbl_80564D90) ? min : lbl_80564D90;
+            return lowY + min * (highY - lowY);
         }
     }
     return points[6].y;
