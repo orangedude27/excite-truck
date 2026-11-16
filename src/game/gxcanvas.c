@@ -861,10 +861,12 @@ void fn_802C40B8(void *canvas, s32 dstX, s32 dstY) {
         lbl_8055FC00, dstX, dstY);
 }
 
-void fn_802C40E8(void *arg0, s32 arg1, s32 arg2) {
-    fn_802C3850((s32)arg0, 0, 0,
-        *(s32 *)((u8 *)arg0 + 8), *(s32 *)((u8 *)arg0 + 0xC),
-        lbl_8055FC00, arg1, arg2);
+void fn_802C40E8(void *canvas, s32 dstX, s32 dstY) {
+    /* Copy the whole canvas (origin 0,0; width/height from +8/+0xC) to (dstX,dstY)
+       on the global canvas lbl_8055FC00 via the mode-aware copy dispatcher. */
+    fn_802C3850((s32)canvas, 0, 0,
+        *(s32 *)((u8 *)canvas + 8), *(s32 *)((u8 *)canvas + 0xC),
+        lbl_8055FC00, dstX, dstY);
 }
 
 #pragma scheduling invalid_target
