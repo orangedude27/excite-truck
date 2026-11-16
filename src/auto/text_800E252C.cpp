@@ -2481,6 +2481,8 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
 }
 #pragma use_lmw_stmw reset
 
+#pragma push
+#pragma dont_inline off
 namespace nw4hbm { namespace ut {
 /* Scoped interrupt disable (nw4hbm::ut::AutoInterruptLock). */
 class AutoInterruptLock {
@@ -2491,6 +2493,7 @@ private:
     int mOldState;
 };
 }}
+#pragma pop
 
 namespace nw4hbm { namespace snd { namespace detail {
 class AxVoice {
