@@ -1148,11 +1148,12 @@ f32 fn_8014C8B4(f32 inMin, f32 inMax, f32 outMin, f32 outMax, f32 value) {
     return outMin + t * (outMax - outMin);
 }
 
-float fn_8014C8F8(float farg0, float farg1, float farg2) {
-    float value = farg2;
-    value = value < farg0 ? value : farg0;
-    value = value > farg1 ? value : farg1;
-    return value;
+/* Clamp value to the inclusive range [min, max]. */
+float fn_8014C8F8(float value, float min, float max) {
+    float clamped = max;
+    clamped = clamped < value ? clamped : value;
+    clamped = clamped > min ? clamped : min;
+    return clamped;
 }
 
 /* RealName: CopyTextEntry */
