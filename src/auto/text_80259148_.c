@@ -943,6 +943,7 @@ extern double sin(double);
 typedef unsigned int u32;
 typedef float f32;
 extern f32 lbl_80563B1C;
+/* Return the midpoint of two adjacent floats: values[0] + (values[1] - values[0]) * 0.5, where lbl_80563B1C is the constant 0.5. */
 f32 fn_8025B0A8(void *pair) {
     f32 *values = (f32 *)pair;
     f32 delta = values[1] - values[0];
