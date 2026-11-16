@@ -3010,6 +3010,10 @@ void GXSetLineWidth(s32 width, s32 format) {
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
+/* Set the point rasterization size and format: pack the size (bits 16-23) and
+ * format (bits 10-12) into the point-size BP register shadowed at __GXData+0x7C,
+ * push it to the BP through the write-gather FIFO, and mark the last FIFO write
+ * as a BP one. */
 void GXSetPointSize(s32 size, s32 format) {
     union {
         unsigned int value;
@@ -3027,9 +3031,9 @@ void GXSetPointSize(s32 size, s32 format) {
     reg.bits.size = size;
     reg.bits.format = format;
     data[0x7C / 4] = reg.value;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = data[0x7C / 4];
-    *(volatile unsigned short *)((char *)data + 2) = 0;
+    WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
+    WGPIPE.i = data[0x7C / 4];
+    ((GXDrawData *)data)->lastWriteWasXF = FALSE;
 }
 
 void GXEnableTexOffsets(s32 coordId, s32 lineOfs, s32 pointOfs) {
