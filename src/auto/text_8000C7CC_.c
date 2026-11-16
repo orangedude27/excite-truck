@@ -90,17 +90,35 @@ s32 fn_8000CFA8(s32 object, s32 shouldDelete) {
 }
 
 #pragma scheduling invalid_target
-void fn_8000D000(s32 arg0, s32 arg1, s32 arg2) {
-    lbl_8055D408 = arg0;
-    lbl_8055D404 = 1;
-    lbl_8055D405 = 0;
-    lbl_8055D406 = 0;
-    lbl_8055D407 = 0;
-    lbl_8055D40C = arg1;
-    lbl_8055D400 = arg2;
-    lbl_8055D420 = fn_8000CCB8();
+void fn_8000D000(s32 paramA, s32 paramB, s32 paramC) {
+    /* InitAudioState: store initial audio params, set active flags, and cache free audio slot. */
+#define sAudioParamA lbl_8055D408
+#define sAudioActiveFlag lbl_8055D404
+#define sAudioFlagB lbl_8055D405
+#define sAudioFlagC lbl_8055D406
+#define sAudioFlagD lbl_8055D407
+#define sAudioParamB lbl_8055D40C
+#define sAudioParamC lbl_8055D400
+#define sAudioSlot lbl_8055D420
+#define FindFreeAudioSlot fn_8000CCB8
+    sAudioParamA = paramA;
+    sAudioActiveFlag = 1;
+    sAudioFlagB = 0;
+    sAudioFlagC = 0;
+    sAudioFlagD = 0;
+    sAudioParamB = paramB;
+    sAudioParamC = paramC;
+    sAudioSlot = FindFreeAudioSlot();
+#undef sAudioParamA
+#undef sAudioActiveFlag
+#undef sAudioFlagB
+#undef sAudioFlagC
+#undef sAudioFlagD
+#undef sAudioParamB
+#undef sAudioParamC
+#undef sAudioSlot
+#undef FindFreeAudioSlot
 }
-#pragma scheduling on
 void fn_8000D000(s32, s32, s32);
 void fn_8000D048(void) {
     ((void (*)(void))fn_8000D000)();
