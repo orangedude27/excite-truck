@@ -2,6 +2,12 @@
 // Recovered TU window 0x8020CA30..0x8020CF60+thunk (see docs/attribution_analysis.md).
 // Static-init thunk fn_8020CF60 (+ .ctors slot 0x802ED39C) remains in
 // auto/text_8020CF60_.c pending a promotion pass.
+// Roadsnd data: lbl_8033C650 is the container vtable {destroy, update};
+// lbl_8033C660 "roadsnd.val" names the parameter file, lbl_8033C66C "surftype" the
+// surface-type key and lbl_8033C678 "roadsnd: can't find %s" the missing-sound warning.
+// lbl_8055B5E0 "roadsnd" is the allocator tag; lbl_8055B5E8/lbl_8055B628 "sound" name
+// the item type and sound-id key; lbl_8055B5F0/B5F8/B600/B608/B610/B618/B620 are the
+// pitch3/pitch1/vol3/vol2/speed3/speed2/speed1 keys; lbl_80563300 is a ~4/9 speed scale.
 extern char lbl_8033C650[];
 typedef float f32;
 extern f32 lbl_80563304;
