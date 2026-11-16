@@ -873,7 +873,14 @@ void fn_8016CD28(void *record) {
     ((int *)record)[3] = 3;
 }
 
-s32 fn_8016CD4C(void *arg0) { s32 *base=*(s32 **)arg0; s32 index=((s32 *)arg0)[1]; ((s32 *)arg0)[1]=index+1; return (s32)base+index*0x14; }
+s32 fn_8016CD4C(void *arg0) {
+    /* Return the address of the next 0x14-byte "rc_object_files" array entry,
+       advancing this fixed-array allocator's hand-out index. */
+    s32 *base = (s32 *)((List8016C768 *)arg0)->data;
+    s32 index = ((List8016C768 *)arg0)->index;
+    ((List8016C768 *)arg0)->index = index + 1;
+    return (s32)base + index * 0x14;
+}
 
 /* Builds an "rc_object_files" set: allocates count entries of 0x14 bytes behind
  * the runtime's 0x10-byte array header and has the array constructor
