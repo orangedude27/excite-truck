@@ -592,8 +592,9 @@ void fn_801B5360(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_801B5364(int arg0, int arg1) {
-    *(int *)((char *)lbl_80435C70 + 0x208 + arg0 * 4) = arg1;
+void fn_801B5364(int eventCode, int handler) {
+    /* Register a replay-event handler pointer in slot eventCode (0-15) of the dispatch table. */
+    *(int *)((char *)lbl_80435C70 + 0x208 + eventCode * 4) = handler;
 }
 #pragma push
 #pragma scheduling invalid_target
