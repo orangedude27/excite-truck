@@ -32,15 +32,6 @@ struct CharStrmReaderMsgs {
 };
 extern "C" const char lbl_80327EE0[];
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
-struct BinFileDiagMsgs {
-    char file[0x18];
-    char msg1[0x38];
-    char msg2[0x38];
-    char msg3[0x18];
-    char msg4[0x30];
-    char msg5[0x1C];
-    char msg6[0x20];
-};
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int fn_80128668(void);
