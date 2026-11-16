@@ -519,27 +519,30 @@ extern "C" int fn_801DF110(void) {
         int (*callback)(int, int);
     };
     if (lbl_8055E9E8 != 0) {
-        if (fn_801769F8() != 0) {
-            char *base = lbl_804872B0;
-            struct Entry *entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
-            int (*callback)(int, int) = entry->callback;
-
-            if (callback != 0) {
-                callback(entry->arg2, entry->arg1);
-            } else {
-                fn_80011278(-1, lbl_80562BF8, lbl_80562BFC, lbl_80562C00, lbl_80562C04);
-                entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
-                fn_800103B8(-1, 0xC, lbl_80562BF4, lbl_80562BE8, lbl_80562C08, lbl_80562C0C, (const char *)&lbl_8055AE28, entry->arg1);
-                fn_8000FF88(-1, 0xC, (const char *)lbl_803395C4, lbl_80562BF4, lbl_80562BE8, lbl_80562C10);
-                fn_801DE890(lbl_8055E9E8);
-            }
-
-            entry = (struct Entry *)(lbl_804872B0 + lbl_8055E9E8 * 0x1C);
-            if (entry->object != 0)
-                ((Dummy *)entry->object)->call();
-            fn_80011A2C();
-            return 1;
+        if (fn_801769F8() == 0) {
+            goto return_one;
         }
+
+        char *base = lbl_804872B0;
+        struct Entry *entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
+        int (*callback)(int, int) = entry->callback;
+
+        if (callback != 0) {
+            callback(entry->arg2, entry->arg1);
+        } else {
+            fn_80011278(-1, lbl_80562BF8, lbl_80562BFC, lbl_80562C00, lbl_80562C04);
+            entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
+            fn_800103B8(-1, 0xC, lbl_80562BF4, lbl_80562BE8, lbl_80562C08, lbl_80562C0C, (const char *)&lbl_8055AE28, entry->arg1);
+            fn_8000FF88(-1, 0xC, (const char *)lbl_803395C4, lbl_80562BF4, lbl_80562BE8, lbl_80562C10);
+            fn_801DE890(lbl_8055E9E8);
+        }
+
+        entry = (struct Entry *)(lbl_804872B0 + lbl_8055E9E8 * 0x1C);
+        if (entry->object != 0)
+            ((Dummy *)entry->object)->call();
+        fn_80011A2C();
+return_one:
+        return 1;
     }
     return 0;
 }
