@@ -3715,19 +3715,22 @@ extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3s
 extern "C" const char lbl_80325110[];
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 GetWaveSoundData__Q46nw4hbm3snd18SoundArchivePlayer11WsdCallbackCFPQ46nw4hbm3snd6detail13WaveSoundInfoPQ46nw4hbm3snd6detail17WaveSoundNoteInfoPQ46nw4hbm3snd6detail8WaveDataPCviiUl(void *self, void *info, void *noteInfo, void *waveData, const void *file, int index, int noteIndex, unsigned long waveIndex) {
+s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(nw4hbm::snd::detail::WaveSoundInfo *info, nw4hbm::snd::detail::WaveSoundNoteInfo *noteInfo, nw4hbm::snd::detail::WaveData *waveData, const void *file, int index, int noteIndex, u32 waveIndex) const {
     struct BankReader { void *a; void *b; void *c; } reader;
-    unsigned long waveAddress;
-    if ((*(void **)(*(u8 **)((u8 *)self + 4) + 0x10) == 0 ? 0 : fn_800F273C(*(void **)(*(u8 **)((u8 *)self + 4) + 0x10))) == 0)
+    u32 waveAddress;
+    if ((*(void **)(*(u8 **)((u8 *)this + 4) + 0x10) == 0 ? 0 : fn_800F273C(*(void **)(*(u8 **)((u8 *)this + 4) + 0x10))) == 0)
         return 0;
-    if (*(unsigned long *)(*(u8 **)((u8 *)self + 4) + 0x10) == 0)
+    if (*(u32 *)(*(u8 **)((u8 *)this + 4) + 0x10) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2AC, lbl_80325110);
-    waveAddress = detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(*(void **)((u8 *)self + 4), waveIndex);
-    if (waveAddress == 0) return 0;
+    waveAddress = detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl_800F6490(*(void **)((u8 *)this + 4), waveIndex);
+    if (waveAddress == 0)
+        return 0;
     __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(&reader, file);
-    if (ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail13WaveSoundInfoi(&reader, info, index) == 0) return 0;
-    if (ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(&reader, noteInfo, index, noteIndex) == 0) return 0;
-    return ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(&reader, *(int *)noteInfo, waveData, (const void *)waveAddress);
+    if (ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail13WaveSoundInfoi(&reader, info, index) == 0)
+        return 0;
+    if (ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(&reader, noteInfo, index, noteIndex) == 0)
+        return 0;
+    return ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(&reader, *(s32 *)noteInfo, waveData, (const void *)waveAddress);
 }
 
 extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -3994,6 +3997,8 @@ extern "C" const char lbl_80325670[];
 struct __StrmLoadCommandRef;
 struct __StrmSoundArchiveRef;
 struct __StrmMutexRef;
+#pragma use_lmw_stmw off
+#pragma scheduling on
 extern "C" void *__ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUlliUllbRQ56nw4hbm3snd6detail10StrmPlayer11LoadCommandRCQ36nw4hbm3snd12SoundArchiveUlUlR7OSMutex(void *self, void *arg1, unsigned long arg2, long arg3, int arg4, unsigned long arg5, long arg6, bool arg7, __StrmLoadCommandRef &arg8, const __StrmSoundArchiveRef &arg9, unsigned long arg10, unsigned long arg11, __StrmMutexRef &arg12) {
     register const char *base = lbl_80324E88;
 
@@ -4015,14 +4020,13 @@ extern "C" void *__ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUll
     *(void **)((u8 *)self + 0x3c) = (void *)&arg12;
 
     if (((u32)arg1 & 31) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0x6c0 - 0x6c0], 0x762, base + 0x6c0, arg1);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x762, base + 0x6c0, arg1);
     if (((u32)arg2 & 31) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0x708 - 0x708], 0x763, base + 0x708, (u32)arg2);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x763, base + 0x708, (u32)arg2);
     if (((u32)arg3 & 3) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0x750 - 0x750], 0x764, base + 0x750, (u32)arg3);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x764, base + 0x750, (u32)arg3);
     return self;
 }
-#pragma pop
 
 extern "C" void DCInvalidateRange(s32, u32);
 extern "C" void DCFlushRange(s32, s32);
@@ -7636,13 +7640,14 @@ loop_check:
     *((u8*)stream + 0x51) = 1;
 }
 
-extern "C" int fn_800FD810(void* arg0, int arg1) {
-    void* temp_r6 = *(void**)((char*)arg0 + 4);
-    if (arg1 >= *(int*)((char*)temp_r6 + 0x4A0)) {
+extern "C" int fn_800FD810(void* player, int channel) {
+    /* Return the destination address for a channel's current stream block, or 0 if the channel index is out of range. */
+    void* stream = *(void**)((char*)player + 4);
+    if (channel >= *(int*)((char*)stream + 0x4A0)) {
         return 0;
     }
-    return *(int*)((char*)temp_r6 + arg1 * 0x38 + 0x4A8) +
-           *(int*)((char*)temp_r6 + 0x60) * *(int*)((char*)arg0 + 0x10);
+    return *(int*)((char*)stream + channel * 0x38 + 0x4A8) +
+           *(int*)((char*)stream + 0x60) * *(int*)((char*)player + 0x10);
 }
 
 extern "C" float fn_800FD848(void *arg0) { return *(float *)((char *)arg0 + 0x454); }
