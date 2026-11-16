@@ -1868,12 +1868,12 @@ void *fn_80007C04(void) {
 }
 
 extern int __cntlzw(unsigned int);
-void fn_80007C10(void *arg0) {
-    s32 value = fn_801769B8();
-    s32 normalized = (u32)__cntlzw(value) >> 5;
-    normalized = (u32)__cntlzw(normalized) >> 5;
-    ((s8 *)arg0)[4] = (s8)normalized;
-    ((s8 *)arg0)[5] = 0;
+void fn_80007C10(void *obj) {
+    s32 state = fn_801769B8();
+    s32 isNonZero = (u32)__cntlzw(state) >> 5;
+    isNonZero = (u32)__cntlzw(isNonZero) >> 5;
+    ((s8 *)obj)[4] = (s8)isNonZero;
+    ((s8 *)obj)[5] = 0;
 }
 
 extern s32 fn_801B8848(void);
