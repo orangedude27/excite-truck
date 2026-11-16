@@ -289,9 +289,11 @@ void fn_8023C964(void *sequence) {
     *index = (count + *index - 1) % count;
 }
 
-void fn_8023C98C(void *arg0) {
-    s32 *index = *(s32 **)((char *)arg0 + 0x18);
-    s32 count = *(s32 *)((char *)arg0 + 0x14);
+// Steps a sound-sequence's first cursor forward by one entry, wrapping around:
+// +0x14 is the entry count and +0x18 points at the cursor variable.
+void fn_8023C98C(void *sequence) {
+    s32 *index = *(s32 **)((char *)sequence + 0x18);
+    s32 count = *(s32 *)((char *)sequence + 0x14);
     *index = (*index + 1) % count;
 }
 
