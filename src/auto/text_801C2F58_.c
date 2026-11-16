@@ -2212,9 +2212,15 @@ extern char sInterludeWhoNotList[];
 extern char lbl_80336FDC[];
 extern void fn_801C7BA0(void);
 void fn_801C819C(void) {
-    lbl_8055E85C = lbl_80438268.x;
-    lbl_8055E860 = lbl_80438268.z;
-    fn_801C78D8();
+    /* Debug-menu callback: copy the debug reference position's x/z into the
+     * AI-think interlude position, then enter debug menu mode. */
+#define debugRefPosition lbl_80438268
+#define enterDebugMenuMode fn_801C78D8
+    sInterludeX = debugRefPosition.x;
+    sInterludeZ = debugRefPosition.z;
+    enterDebugMenuMode();
+#undef debugRefPosition
+#undef enterDebugMenuMode
 }
 
 extern char lbl_8055A964[7];
