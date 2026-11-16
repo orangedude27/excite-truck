@@ -3045,9 +3045,10 @@ extern "C" void fn_801D82A0(void *arg0) {
 }
 #pragma cplusplus reset
 
-void fn_801D832C(void *arg0) {
-    if (*(int *)((char *)arg0 + 0x40) != 0) {
-        *(int *)((char *)arg0 + 0x40) = 1;
+void fn_801D832C(void *self) {
+    /* If this object's state (+0x40) is nonzero, reset it to state 1. */
+    if (*(int *)((char *)self + 0x40) != 0) {
+        *(int *)((char *)self + 0x40) = 1;
     }
 }
 
