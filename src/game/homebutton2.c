@@ -32,9 +32,10 @@ void fn_80127464(void);
   s32 fn_8012850C(s32, void *);
   void fn_802E3804(s32, s32, s32);
   void fn_802E3734(s32 *);
-  s32 fn_802EC4BC(void) {
-      return fn_802E9A0C() == 1;
-  }
+/* Returns true when the console's configured aspect ratio is widescreen (16:9). */
+s32 fn_802EC4BC(void) {
+    return fn_802E9A0C() == SC_ASPECT_WIDE;
+}
   
 #pragma scheduling invalid_target
 #pragma dont_inline on
