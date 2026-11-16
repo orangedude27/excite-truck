@@ -1365,8 +1365,9 @@ void fn_801E96D8(long arg0) {
 
 #pragma pop
 void fn_801E9BE4(void) {
-    long value = lbl_8055AF10;
-    if (value != -1) fn_802C6CF8(value);
+    /* Release the current model, if one is loaded, then clear its handle. */
+    long modelHandle = lbl_8055AF10;
+    if (modelHandle != -1) fn_802C6CF8(modelHandle);
     lbl_8055AF10 = -1;
 }
 
