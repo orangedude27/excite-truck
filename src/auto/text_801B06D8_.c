@@ -118,31 +118,33 @@ extern char lbl_80335AD8[], lbl_80335B04[];
 extern f32 lbl_80558DC4;
 #pragma push
 #pragma processor 750
-s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
+s32 fn_801B06D8(void *origin, void *direction, s32 unused) {
+    /* Step a ray from origin along direction, returning 1 at the first collision
+       or enabled-area hit and 0 if the whole distance is clear. */
     volatile f32 sp18, sp14, sp10, spC, sp8;
-    register f32 limit;
-    register f32 increment;
-    register f32 start;
-    register f32 step;
-    step = lbl_805625BC;
-    increment = lbl_805625C0;
-    start = step;
-    limit = lbl_805625C4;
-    while (step < limit) {
-        f32 dx = *(f32 *)arg1 * step;
-        f32 dy = *(f32 *)((u8 *)arg1 + 4) * step;
-        f32 x = *(f32 *)arg0 + dx;
-        f32 y = *(f32 *)((u8 *)arg0 + 4) + dy;
-        register s32 enabled;
-        sp14 = start;
+    register f32 maxDist;
+    register f32 stepInc;
+    register f32 firstStep;
+    register f32 dist;
+    dist = lbl_805625BC;
+    stepInc = lbl_805625C0;
+    firstStep = dist;
+    maxDist = lbl_805625C4;
+    while (dist < maxDist) {
+        f32 dx = *(f32 *)direction * dist;
+        f32 dy = *(f32 *)((u8 *)direction + 4) * dist;
+        f32 x = *(f32 *)origin + dx;
+        f32 y = *(f32 *)((u8 *)origin + 4) + dy;
+        register s32 checkFlag;
+        sp14 = firstStep;
         sp8 = x;
         spC = y;
         sp10 = x;
         sp18 = y;
         if (fn_802B04D4((f32 *)&sp10, dy, x, dx)) return 1;
-        enabled = lbl_8055E66C;
-        if (enabled && ((s32 (*)(s32, f32, f32))fn_80139EC4)(enabled, sp8, spC)) return 1;
-        step += increment;
+        checkFlag = lbl_8055E66C;
+        if (checkFlag && ((s32 (*)(s32, f32, f32))fn_80139EC4)(checkFlag, sp8, spC)) return 1;
+        dist += stepInc;
     }
     return 0;
 }
