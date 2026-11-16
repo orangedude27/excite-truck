@@ -616,14 +616,15 @@ void GXInitLightAttnA_801BF188(void *arg0, float farg0, float farg1, float farg2
     ((float *)arg0)[2] = farg2;
 }
 
-void fn_801BF198(void *arg0, void *arg1) {
-    float temp_f0, temp_f1, temp_f2;
-    temp_f2 = ((float *)arg1)[2];
-    temp_f1 = ((float *)arg1)[1];
-    temp_f0 = ((float *)arg1)[0];
-    ((float *)arg0)[1] = temp_f1;
-    ((float *)arg0)[0] = temp_f0;
-    ((float *)arg0)[2] = temp_f2;
+/* Copy a 3-component (12-byte) float vector from src into dst. */
+void fn_801BF198(void *dst, void *src) {
+    float x, y, z;
+    z = ((float *)src)[2];
+    y = ((float *)src)[1];
+    x = ((float *)src)[0];
+    ((float *)dst)[1] = y;
+    ((float *)dst)[0] = x;
+    ((float *)dst)[2] = z;
 }
 
 void fn_801BF1B4(void) {
