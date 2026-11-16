@@ -243,12 +243,14 @@ extern int fn_8027DB40(int);
 extern int fn_8024DAE0(int, int, int, int, int);
 #pragma push
 #pragma cplusplus on
-extern "C" int fn_8023BC24(int ignored, int arg1, int arg2) {
+extern "C" int fn_8023BC24(int ignored, int paramA, int paramB) {
     struct Object { virtual void destroy(int); };
-    Object *obj = (Object *)fn_8027DB40(1);
-    int result = fn_8024DAE0(arg1, arg2, 0, (int)obj, 0);
-    if (obj != 0) {
-        obj->destroy(1);
+    /* Allocate a temporary effect object, run the fn_8024DAE0 state machine with it
+     * and the caller's two parameters, then release the object and return the result. */
+    Object *effect = (Object *)fn_8027DB40(1);
+    int result = fn_8024DAE0(paramA, paramB, 0, (int)effect, 0);
+    if (effect != 0) {
+        effect->destroy(1);
     }
     return result;
 }
