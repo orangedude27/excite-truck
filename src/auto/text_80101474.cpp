@@ -487,7 +487,7 @@ extern "C" unsigned short ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
     if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
     if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
-    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0,0x4C,base+0x18,arg0);
+    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4C,base+0x18,arg0);
     int g=1,h=1;
     unsigned int v=*(unsigned int *)arg0;
     int i=1,j=1,k=1,l=1;
@@ -498,9 +498,9 @@ extern "C" unsigned short ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
     if(i==0&&(v&0xF8000000U)!=0x90000000U+0x40000000U)h=0;
     if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
-    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0,0x4D,base+0x50);
+    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4D,base+0x50);
     unsigned char * volatile *pp=(unsigned char * volatile *)arg0;
-    if((**pp&0xC0)==0x80)Panic__Q26nw4hbm2dbFPCciPCce(base+0,0x4F,base+0x8C);
+    if((**pp&0xC0)==0x80)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4F,base+0x8C);
     unsigned char *ptr=*pp;
     unsigned char first=*ptr;
     if(!(first&0x80)){*pp=*pp+1;return first;}
@@ -509,7 +509,7 @@ extern "C" unsigned short ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void 
         *pp=*pp+2;
         return r;
     }
-    if((first&0xF0)!=0xE0)Panic__Q26nw4hbm2dbFPCciPCce(base+0,0x64,base+0xC4);
+    if((first&0xF0)!=0xE0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x64,base+0xC4);
     unsigned char *q=*pp;
     unsigned char *n=*pp+3;
     unsigned int r=((q[0]&0x1F)<<12)|((q[1]&0x3F)<<6)|(q[2]&0x3F);
@@ -539,14 +539,13 @@ extern "C" unsigned short ReadNextCharUTF16__Q36nw4hbm2ut14CharStrmReaderFv(void
     if (f7 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
     if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
     if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x82, file + 0x50);
-    r6 = *(unsigned int *)arg0;
-    if (r6 & 1) {
+    unsigned int align = *(unsigned int *)arg0;
+    if (align & 1) {
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x83, file + 0xFC);
     }
-    unsigned int v2 = *(unsigned int *)arg0;
-    unsigned short *p = *(unsigned short **)arg0;
+    const unsigned short *p = *(const unsigned short **)arg0;
     unsigned short ch = *p;
-    *(unsigned int *)arg0 = v2 + 2;
+    *(const unsigned short **)arg0 = *(const unsigned short **)arg0 + 1;
     return ch;
 }
 
@@ -685,11 +684,12 @@ nw4hbm::ut::CharWriter::CharWriter() {
     *(int *)(self + 0x3C) = 1;
 }
 
-extern "C" s32 fn_801033F0(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_801033F0(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(void *arg0, void *arg1) {
@@ -1042,42 +1042,119 @@ extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36n
     ((unsigned char *)charWriter)[7] = c7;
 }
 #pragma pop
-void nw4hbm::ut::CharWriter::SetGradationMode(GradationMode mode) {
-    const char *base = lbl_80328178;
-    unsigned int top = (unsigned int)this & 0xFF000000U;
-    unsigned char *self = (unsigned char *)this;
-    int a = 1, b = 1, c = 1, d = 1, e = 1, f = 1;
-    if (top != 0x80000000U && ((unsigned int)this & 0xFF800000U) != 0x81000000U) f = 0;
-    if (f == 0 && ((unsigned int)this & 0xF8000000U) != 0x90000000U) e = 0;
-    if (e == 0 && top != 0xC0000000U) d = 0;
-    if (d == 0 && ((unsigned int)this & 0xFF800000U) != 0xC1000000U) c = 0;
-    if (c == 0 && ((unsigned int)this & 0xF8000000U) != 0xD0000000U) b = 0;
-    if (b == 0 && ((unsigned int)this & 0xFFFFC000U) != 0xE0000000U) a = 0;
-    if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x163, &base[0x14], self);
-    int v = 0;
-    if ((int)mode >= 0 && (int)mode <= 2) v = 1;
-    if (v == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x164, &base[0xb8], (int)mode, 0, 2);
-    *(int *)(self + 0x20) = (int)mode;
-    int valid = 0;
-    if (top == 0x80000000U || ((unsigned int)self & 0xFF800000U) == 0x81000000U || ((unsigned int)self & 0xF8000000U) == 0x90000000U || top == 0xC0000000U || ((unsigned int)self & 0xFF800000U) == 0xC1000000U || ((unsigned int)self & 0xF8000000U) == 0xD0000000U || ((unsigned int)self & 0xFFFFC000U) == 0xE0000000U) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x4DA, &base[0x14], self);
-    self[8] = self[0x18]; self[9] = self[0x19]; self[0xA] = self[0x1A]; self[0xB] = self[0x1B];
-    unsigned char *source1, *source2, *source3;
-    if (*(int *)(self + 0x20) != 1) source1 = self + 0x18; else source1 = self + 0x1C;
-    self[0xC] = source1[0]; self[0xD] = source1[1]; self[0xE] = source1[2]; self[0xF] = source1[3];
-    if (*(int *)(self + 0x20) != 2) source2 = self + 0x18; else source2 = self + 0x1C;
-    self[0x10] = source2[0]; self[0x11] = source2[1]; self[0x12] = source2[2]; self[0x13] = source2[3];
-    if (*(int *)(self + 0x20) == 0) source3 = self + 0x18; else source3 = self + 0x1C;
-    self[0x14] = source3[0]; self[0x15] = source3[1]; self[0x16] = source3[2];
-    unsigned char bv = self[0x0B];
-    unsigned char fv = self[0x0F];
-    unsigned char v13 = self[0x13];
-    unsigned char v17 = source3[3];
-    int alpha = *(volatile unsigned char *)(self + 0x42);
-    self[0x0B] = (bv * alpha) / 255;
-    self[0x0F] = (fv * alpha) / 255;
-    self[0x13] = (v13 * alpha) / 255;
-    self[0x17] = (v17 * alpha) / 255;
+void nw4hbm::ut::CharWriter::SetGradationMode(GradationMode mode)
+{
+  int new_var2;
+  const char *base = lbl_80328178;
+  unsigned int top = ((unsigned int) this) & 0xFF000000U;
+  unsigned char *self = (unsigned char *) this;
+  int a = 1;
+  int b = 1;
+  int c = 1;
+  unsigned char *new_var;
+  int d = 1;
+  int e = 1;
+  int f = 1;
+  if ((top != 0x80000000U) && ((((unsigned int) this) & 0xFF800000U) != 0x81000000U))
+  {
+    f = 0;
+  }
+  if ((f == 0) && ((((unsigned int) this) & 0xF8000000U) != 0x90000000U))
+  {
+    e = 0;
+  }
+  if ((e == 0) && (top != 0xC0000000U))
+  {
+    d = 0;
+  }
+  if ((d == 0) && ((((unsigned int) this) & 0xFF800000U) != 0xC1000000U))
+  {
+    c = 0;
+  }
+  new_var2 = ((unsigned int) this) & 0xFFFFC000U;
+  if ((c == 0) && ((((unsigned int) this) & 0xF8000000U) != 0xD0000000U))
+  {
+    b = 0;
+  }
+  if ((b == 0) && (new_var2 != 0xE0000000U))
+  {
+    a = 0;
+  }
+  if (a == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(base, 0x163, base + 0x14, self);
+  }
+  int v = 0;
+  new_var = self;
+  if ((((int) mode) >= 0) && (((int) mode) <= 2))
+  {
+    v = 1;
+  }
+  if (v == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(base, 0x164, base + 0xb8, (int) mode, 0, 2);
+  }
+  *((int *) (self + 0x20)) = (int) mode;
+  int valid = 0;
+  if (((((((top == 0x80000000U) || ((((unsigned int) self) & 0xFF800000U) == 0x81000000U)) || ((((unsigned int) self) & 0xF8000000U) == 0x90000000U)) || (top == 0xC0000000U)) || ((((unsigned int) new_var) & 0xFF800000U) == 0xC1000000U)) || ((((unsigned int) new_var) & 0xF8000000U) == 0xD0000000U)) || ((((unsigned int) new_var) & 0xFFFFC000U) == 0xE0000000U))
+  {
+    valid = 1;
+  }
+  if (valid == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(base, 0x4DA, base + 0x14, self);
+  }
+  self[8] = new_var[0x18];
+  self[9] = self[0x19];
+  self[0xA] = self[0x1A];
+  self[0xB] = new_var[0x1B];
+  unsigned char *source1;
+  unsigned char *source2;
+  unsigned char *source3;
+  if ((*((int *) (new_var + 0x20))) != 1)
+  {
+    source1 = new_var + 0x18;
+  }
+  else
+  {
+    source1 = self + 0x1C;
+  }
+  self[0xC] = source1[0];
+  self[0xD] = source1[1];
+  self[0xE] = source1[2];
+  self[0xF] = source1[3];
+  if ((*((int *) (new_var + 0x20))) != 2)
+  {
+    source2 = new_var + 0x18;
+  }
+  else
+  {
+    source2 = new_var + 0x1C;
+  }
+  self[0x10] = source2[0];
+  self[0x11] = source2[1];
+  self[0x12] = source2[2];
+  self[0x13] = source2[3];
+  if ((*((int *) (new_var + 0x20))) == 0)
+  {
+    source3 = self + 0x18;
+  }
+  else
+  {
+    source3 = new_var + 0x1C;
+  }
+  self[0x14] = source3[0];
+  self[0x15] = source3[1];
+  self[0x16] = source3[2];
+  unsigned char bv = new_var[0x0B];
+  unsigned char fv = self[0x0F];
+  unsigned char v13 = self[0x13];
+  unsigned char v17 = source3[3];
+  int alpha = *((volatile unsigned char *) (new_var + 0x42));
+  self[0x0B] = (bv * alpha) / 255;
+  self[0x0F] = (fv * alpha) / 255;
+  self[0x13] = (v13 * alpha) / 255;
+  self[0x17] = (v17 * alpha) / 255;
 }
 
 void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color) {
@@ -1420,7 +1497,7 @@ float nw4hbm::ut::CharWriter::Print(unsigned short character) {
     unsigned int thisVal = (unsigned int)this;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = thisVal & 0xFF000000U;
-    int fontAddress;
+    unsigned int fontAddress;
     unsigned char glyph[0x18];
     float advance;
     float xOffset;
@@ -1431,16 +1508,16 @@ float nw4hbm::ut::CharWriter::Print(unsigned short character) {
     if (r7 == 0 && (thisVal & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && (thisVal & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
     if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(UT_CHARWRITER_CPP, 0x328, base + 0x14, this);
-    fontAddress = *(int *)((unsigned char *)this + 0x48);
+    fontAddress = *(unsigned int *)((unsigned char *)this + 0x48);
     {
         int r4 = 1, r5b = 1, r7b = 1, r8b = 1, r9b = 1, r10b = 1;
-        unsigned int top2 = (unsigned int)fontAddress & 0xFF000000U;
-        if (top2 != 0x80000000U && ((unsigned int)fontAddress & 0xFF800000U) != 0x81000000U) r10b = 0;
-        if (r10b == 0 && ((unsigned int)fontAddress & 0xF8000000U) != 0x90000000U) r9b = 0;
+        unsigned int top2 = fontAddress & 0xFF000000U;
+        if (top2 != 0x80000000U && (fontAddress & 0xFF800000U) != 0x81000000U) r10b = 0;
+        if (r10b == 0 && (fontAddress & 0xF8000000U) != 0x90000000U) r9b = 0;
         if (r9b == 0 && top2 != 0xC0000000U) r8b = 0;
-        if (r8b == 0 && ((unsigned int)fontAddress & 0xFF800000U) != 0xC1000000U) r7b = 0;
-        if (r7b == 0 && ((unsigned int)fontAddress & 0xF8000000U) != 0xD0000000U) r5b = 0;
-        if (r5b == 0 && ((unsigned int)fontAddress & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
+        if (r8b == 0 && (fontAddress & 0xFF800000U) != 0xC1000000U) r7b = 0;
+        if (r7b == 0 && (fontAddress & 0xF8000000U) != 0xD0000000U) r5b = 0;
+        if (r5b == 0 && (fontAddress & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
         if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(UT_CHARWRITER_CPP, 0x329, base + 0xF4);
     }
     if (character == 0xFFFF) Panic__Q26nw4hbm2dbFPCciPCce(UT_CHARWRITER_CPP, 0x32A, base + 0x1D0);
