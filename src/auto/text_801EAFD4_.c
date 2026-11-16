@@ -54,31 +54,33 @@ s32 fn_801EAFD4(void *arg0) {
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_801EB000(s32 *arg0, void *arg1) {
-    s32 *item;
+extern "C" void fn_801EB000(s32 *firstNode, void *context) {
+    /* Walk a node list depth-first: recurse into grouped/child nodes and dispatch
+       drawable nodes through the context callback. */
+    s32 *itemNode;
     s32 *node;
-    s32 *child;
-    s32 i;
-    node = arg0;
+    s32 *childNode;
+    s32 index;
+    node = firstNode;
     while (node != 0) {
         if (node[0] & 0x100) {
             fn_801EAFD4(node);
-            fn_801EB000((s32 *)node[2], arg1);
+            fn_801EB000((s32 *)node[2], context);
         } else {
             switch (node[0]) {
             case 0:
-                item = node;
-                i = 0;
-                while (i < node[5]) {
-                    fn_801EB000((s32 *)item[7], arg1);
-                    item += 2;
-                    i += 1;
+                itemNode = node;
+                index = 0;
+                while (index < node[5]) {
+                    fn_801EB000((s32 *)itemNode[7], context);
+                    itemNode += 2;
+                    index += 1;
                 }
                 break;
             case 4:
-                child = (s32 *)node[2];
-                if (child != 0) {
-                    ((EB000Context *)arg1)->dispatch(child, child[2], child[1]);
+                childNode = (s32 *)node[2];
+                if (childNode != 0) {
+                    ((EB000Context *)context)->dispatch(childNode, childNode[2], childNode[1]);
                 }
                 break;
             }
@@ -171,12 +173,14 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
     s32 var_r27;
     s32 var_r22 = 0;
     s32 var_r24 = 8;
+    u32 nt6;
     u8 temp_r5;
     u8 temp_r0;
-    u8 *temp_r3_11;
     u8 *temp_r27;
     void *temp_obj;
-    s32 nt6;
+    u8 *ptr4;
+    u8 ba4;
+    u8 bb4;
     while (var_r28 != 0) {
         temp_r5 = var_r28[0];
         var_r28[0] = var_r28[3];
@@ -185,7 +189,7 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
         var_r28[1] = var_r28[2];
         var_r28[2] = temp_r5;
         fn_801EB634(var_r28 + 4, (s32)arg1);
-        nt6 = *(s32 *)var_r28;
+        nt6 = *(u32 *)var_r28;
         switch (nt6) {
         case 0:
             temp_r5 = var_r28[8];
@@ -280,31 +284,33 @@ extern "C" void fn_801EB2D4(s32 arg0, register s32 arg1) {
             break;
         case 4:
             fn_801EB66C(var_r28 + 8, (s32)arg1);
-                        temp_r3_11 = (u8 *)*(u32 *)(var_r28 + 8);
-                        temp_r5 = temp_r3_11[0];
-                        temp_r3_11[0] = temp_r3_11[3];
-                        temp_r3_11[3] = temp_r5;
-                        temp_r5 = temp_r3_11[1];
-                        temp_r3_11[1] = temp_r3_11[2];
-                        temp_r3_11[2] = temp_r5;
-                        fn_801EB13C((void *)*(u32 *)(var_r28 + 8), temp_r5);
-                        if (*(s32 *)(*(s32 *)((u8 *)*(volatile s32 *)(var_r28 + 8) + 8)) <= 0) {
-                            *(s32 *)(var_r28 + 8) = var_r22;
-                        }
-                        temp_r27 = (u8 *)*(u32 *)(var_r28 + 8);
-                        if (temp_r27 != 0 && *(s32 *)temp_r27 == 1) {
-                            if (fn_801EB0F0(*(s32 *)(temp_r27 + 0x10)) != 0) {
-                                temp_obj = (void *)fn_801EB110(temp_r27);
-                                struct Dummy { virtual void f0(); virtual void f1(void *); };
-                                ((Dummy *)temp_obj)->f1(temp_r27);
-                            } else {
-                                fn_802E30C8(lbl_80339F7C, *(s32 *)(temp_r27 + 0x10));
-                                *(s32 *)(temp_r27 + 0x10) = var_r24;
-                            }
-                        }
+            ptr4 = (u8 *)*(u32 *)(var_r28 + 8);
+            ba4 = ptr4[0];
+            bb4 = ptr4[3];
+            ptr4[0] = bb4;
+            ptr4[3] = ba4;
+            ba4 = ptr4[1];
+            bb4 = ptr4[2];
+            ptr4[1] = bb4;
+            ptr4[2] = ba4;
+            fn_801EB13C((void *)*(u32 *)(var_r28 + 8), ba4);
+            if (*(s32 *)(*(s32 *)((u8 *)*(volatile s32 *)(var_r28 + 8) + 8)) <= 0) {
+                *(s32 *)(var_r28 + 8) = var_r22;
+            }
+            temp_r27 = (u8 *)*(u32 *)(var_r28 + 8);
+            if (temp_r27 != 0 && *(s32 *)temp_r27 == 1) {
+                if (fn_801EB0F0(*(s32 *)(temp_r27 + 0x10)) != 0) {
+                    temp_obj = (void *)fn_801EB110(temp_r27);
+                    struct Dummy { virtual void f0(); virtual void f1(void *); };
+                    ((Dummy *)temp_obj)->f1(temp_r27);
+                } else {
+                    fn_802E30C8(lbl_80339F7C, *(s32 *)(temp_r27 + 0x10));
+                    *(s32 *)(temp_r27 + 0x10) = var_r24;
+                }
+            }
             break;
         default:
-            fn_802E317C(lbl_80339FA0);
+            fn_802E317C((const char *)lbl_80339FA0);
             break;
         }
         var_r28 = (u8 *)*(u32 *)(var_r28 + 4);
