@@ -94,7 +94,9 @@ s32 *fn_802E336C(void) {
 
 #pragma cplusplus on
 extern "C" void fn_802E339C(void) {
-    class V {
+    /* Resolve the default file-system object via fn_802E333C(0) and call its
+       vtable method at offset 0x24 (slot 7), with no arguments. */
+    class FileSystem {
     public:
         virtual void a0();
         virtual void a1();
@@ -105,8 +107,8 @@ extern "C" void fn_802E339C(void) {
         virtual void a6();
         virtual void a7();
     };
-    V *obj = (V *)((s32 (*)(s32))fn_802E333C)(0);
-    obj->a7();
+    FileSystem *fileSystem = (FileSystem *)((s32 (*)(s32))fn_802E333C)(0);
+    fileSystem->a7();
 }
 #pragma cplusplus off
 s32 fn_802E33D0(void) { return 0; }
