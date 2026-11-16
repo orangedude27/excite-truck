@@ -612,9 +612,7 @@ extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma push
-#pragma cplusplus on
-static inline float lerpf(float a, float b, float t) { return a + t * (b - a); }
-extern "C" void fn_8001B478(int arg0, float farg0) {
+void fn_8001B478(int arg0, float farg0) {
     unsigned char sp20[0x38];
     int n, result, i;
     float y, x, t, step, texscale2, angle, ratio, inv, ratio2;
@@ -655,10 +653,14 @@ extern "C" void fn_8001B478(int arg0, float farg0) {
             float *e = *(float **)((char *)head + 0x14);
             float d2 = e[2] - s[2];
             float d3 = e[3] - s[3];
-            a[0] = s[2] + t * d2;
-            a[1] = s[3] + t * d3;
-            a[2] = s[0] + t * (e[0] - s[0]);
-            a[3] = s[1] + t * (e[1] - s[1]);
+            float a0 = s[2] + t * d2;
+            float a1 = s[3] + t * d3;
+            float a2 = s[0] + t * (e[0] - s[0]);
+            float a3 = s[1] + t * (e[1] - s[1]);
+            a[0] = a0;
+            a[1] = a1;
+            a[2] = a2;
+            a[3] = a3;
             ratio2 = a[0] * a[0] + a[1] * a[1];
             inv = x / (float)fn_8002F234(ratio2);
             ratio2 = a[0] * inv;
