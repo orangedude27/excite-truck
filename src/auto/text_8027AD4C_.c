@@ -627,8 +627,13 @@ long fn_8027B8E4(void *groupIndex, long player) {
 }
 #pragma dont_inline reset
 
-void fn_8027B94C(void *arg0) {
-    fn_8027B8E4(arg0, fn_8000DA10());
+void fn_8027B94C(void *groupIndex) {
+#define CurrentPlayer fn_8000DA10
+#define AreAllPlayerGroupEntriesValid fn_8027B8E4
+    /* Validate every entry of the current player's primary group list at groupIndex (result passes through r3 to callers). */
+    AreAllPlayerGroupEntriesValid(groupIndex, CurrentPlayer());
+#undef AreAllPlayerGroupEntriesValid
+#undef CurrentPlayer
 }
 
 #pragma dont_inline on
