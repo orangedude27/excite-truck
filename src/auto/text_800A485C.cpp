@@ -7458,19 +7458,18 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *cursor, s32 byteCount, s32 s
     return ok;
 }
 
-extern "C" s32 fn_800B0868(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
+extern "C" s32 fn_800B0868(void *arg0, s32 arg1, u32 length, u32 *arg3) {
     extern s32 fn_800AE620(void *, u32, s32, void *);
     extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32);
     extern s32 VFiPFFILE_Cursor_AdvanceToRead(void *, s32, s32);
     VFiPFCursor *cur = (VFiPFCursor *)arg0;
-    s32 sp8, result;
-    u32 length = arg2;
     VFiPFVol *vol, *fat;
+    s32 result;
+    s32 sp8;
     u32 avail;
     *arg3 = 0;
     if (cur->off == 0) return 0;
-    if (cur == 0) vol = 0;
-    else vol = cur->file->vol;
+    vol = cur == 0 ? 0 : cur->file->vol;
     avail = vol->sectorSize - cur->off;
     if (length > avail) length = avail;
     if (cur->pos + length > cur->file->size) {
@@ -7495,7 +7494,7 @@ extern "C" s32 fn_800B0868(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
             return 0x1b;
         }
     }
-    result = fn_800B5324((s32)vol, arg1, cur->off, length, &sp8, 1);
+    result = ((s32 (*)(void *, s32, u32, u16, u32, s32 *, s32))fn_800B5324)(vol, arg1, cur->cluster, cur->off, length, &sp8, 1);
     if (result != 0 && sp8 == 0) return result;
     *arg3 = sp8;
     VFiPFFILE_Cursor_AdvanceToRead(cur, sp8, cur->cluster);
@@ -7596,7 +7595,6 @@ extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
     return 0;
 }
 
-extern "C" s32 fn_800B0868(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0A60(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0C10(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) {
@@ -18467,10 +18465,13 @@ extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32, s32);
 extern "C" void *fn_800ECAEC(void *);
 extern "C" s32 fn_800ECB90(void *, s32);
 extern "C" void fn_800CEF60(void *, void *, s32);
+#pragma push
+#pragma opt_propagation off
 extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
-    struct Fn800C6774Msgs *file = (struct Fn800C6774Msgs *)lbl_8031D840;
-    void *base;
+    register const char *file = (const char *)lbl_8031D840;
+    register void *base;
     void *block;
+
     MEMInitAllocatorForFrmHeap((MEMAllocator *)lbl_804075F0,
                                MEMCreateFrmHeapEx(arg1, arg2, 0), 0x20);
     base = lbl_8055DD98;
@@ -18480,21 +18481,21 @@ extern "C" void fn_800C6774(s32 arg0, void *arg1, u32 arg2) {
     }
     InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(4, 3);
     block = MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0, 0x150);
-    if (block != NULL) {
-        if (block != NULL) {
+    if (block) {
+        if (block) {
             block = fn_800ECAEC(block);
         }
         *(void **)((u8 *)base + 0x5C8) = block;
     }
     if (*(void * volatile *)((u8 *)base + 0x5C8) == NULL) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file->file, (s32)0xEFC, file->msg4C);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, (s32)0xEFC, file + 0x4C);
     }
     if (fn_800ECB90(*(void * volatile *)((u8 *)base + 0x5C8), arg0) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file->file, (s32)0xF01, file->msg80);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, (s32)0xF01, file + 0x80);
     }
     fn_800CEF60(base, *(void * volatile *)((u8 *)base + 0x5C8), 0);
 }
-
+#pragma pop
 extern "C" void fn_800C687C(void) {
     fn_800CF170(lbl_8055DD98);
     MEMDestroyFrmHeap(*(MEMiHeapHead **)(lbl_804075F0 + 1));
