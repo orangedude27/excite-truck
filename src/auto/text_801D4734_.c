@@ -2490,26 +2490,28 @@ static inline int fn_801D77EC_Find(void *arg0, unsigned int arg1) {
     return -1;
 }
 
-void fn_801D77EC(void *arg0, unsigned int arg1) {
+void fn_801D77EC(void *list, unsigned int item) {
     int count;
-    int last;
+    int lastIndex;
     unsigned int *items;
-    int index = fn_801D77EC_Find(arg0, arg1);
+    /* Remove `item` from the list's pointer array (+0x70, length at +0x74):
+     * find its slot, move the last element into it, then shrink the count. */
+    int index = fn_801D77EC_Find(list, item);
 
     if (index == -1)
         return;
     if (index < 0)
         return;
-    count = *(int volatile *)((char *)arg0 + 0x74);
+    count = *(int volatile *)((char *)list + 0x74);
     if (index >= count)
         return;
-    last = count - 1;
-    if (index != last) {
-        items = *(unsigned int **)((char *)arg0 + 0x70);
-        items[index] = items[last];
+    lastIndex = count - 1;
+    if (index != lastIndex) {
+        items = *(unsigned int **)((char *)list + 0x70);
+        items[index] = items[lastIndex];
     }
-    count = *(int volatile *)((char *)arg0 + 0x74);
-    *(int *)((char *)arg0 + 0x74) = count - 1;
+    count = *(int volatile *)((char *)list + 0x74);
+    *(int *)((char *)list + 0x74) = count - 1;
 }
 
 #pragma cplusplus on
