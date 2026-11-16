@@ -134,7 +134,6 @@ void fn_802E883C(void) {
 
 #define nandSaveRefCount lbl_8056002C
 #define nandSaveShutdown fn_802E870C
-/* Leaves the NAND-save subsystem: decrement the use count and shut it down when the last user exits (count reaches 0). */
 void fn_802E8874(void) {
     nandSaveRefCount -= 1;
     if (nandSaveRefCount == 0) {
