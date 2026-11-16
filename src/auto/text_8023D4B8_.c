@@ -775,13 +775,16 @@ test:
     return self;
 }
 
-void fn_8023E504(void *arg0, int *arg1) {
-    int value = *(int *)((char *)arg0 + 0x10);
-    if (value == -1) {
-        *arg1 = 0;
+void fn_8023E504(void *config, int *out) {
+    /* Resolve the selected entry in a config: if its index at +0x10 is -1
+       (nothing selected), clear the output; otherwise look the entry up by
+       index and write the result through out. */
+    int bindingIndex = *(int *)((char *)config + 0x10);
+    if (bindingIndex == -1) {
+        *out = 0;
         return;
     }
-    fn_801A9050(arg1, value);
+    fn_801A9050(out, bindingIndex);
 }
 
 extern int lbl_80341C40[];
