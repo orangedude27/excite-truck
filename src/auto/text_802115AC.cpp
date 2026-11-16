@@ -279,10 +279,12 @@ extern "C" s32 fn_8021165C(s32 arg0, s32 arg1) {
 extern s32 lbl_8055EF1C;
 extern s32 lbl_8055EF20;
 #pragma optimization_level 0
-extern "C" s32 fn_80211660(s32 arg0) {
-    if (arg0 != 0) goto nonzero;
+extern "C" s32 fn_80211660(s32 artIndex) {
+    /* Select one of the two loaded menu-arrow art sets: index 0 returns the
+     * first handle (lbl_8055EF1C), any other value the second (lbl_8055EF20). */
+    if (artIndex != 0) goto selectSecond;
     return lbl_8055EF1C;
-nonzero:
+selectSecond:
     return lbl_8055EF20;
 }
 #pragma optimization_level reset
