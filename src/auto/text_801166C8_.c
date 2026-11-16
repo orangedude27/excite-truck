@@ -3665,11 +3665,12 @@ void fn_8011C2EC(s32 lockTick, void *lockObj) {
 }
 
 extern s32 fn_8011C0E0();
-void fn_8011C364(s32 arg0) {
-    if (arg0 != 0) {
+/* Cancels the OSAlarm embedded at +8 of the given object, then frees the object. */
+void fn_8011C364(s32 obj) {
+    if (obj != 0) {
         fn_8011C0E0();
-        OSCancelAlarm((OSAlarm *)(arg0 + 8));
-        fn_80120084(arg0);
+        OSCancelAlarm((OSAlarm *)(obj + 8));
+        fn_80120084(obj);
     }
 }
 
