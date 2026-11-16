@@ -3019,10 +3019,11 @@ extern "C" s32 VFiPFCACHE_FlushAllCaches(void *volume) {
 }
 
 extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0, void *unused1, void *unused2, void *unused3, void *unused4, void *node) {
-    u32 zero = 0;
-    s32 minusOne = -1;
-    u32 head;
+    void *head;
     u16 flags;
+    s32 minusOne = -1;
+    u32 zero = 0;
+
     goto first_test;
 first_body:
     if (node == 0) goto first_test;
@@ -3032,23 +3033,24 @@ first_body:
     *(volatile u32 *)((u8 *)node + 0x10) = zero;
     *(volatile s32 *)((u8 *)node + 0x18) = minusOne;
     *(volatile u32 *)((u8 *)node + 0x1C) = zero;
-    head = *(u32 volatile *)((u8 *)arg0 + 0x1630);
-    if (node == (void *)head) {
-        *(u32 volatile *)((u8 *)arg0 + 0x1630) = *(u32 volatile *)((u8 *)node + 0x20);
+    head = *(void * volatile *)((u8 *)arg0 + 0x1630);
+    if (node == head) {
+        *(void * volatile *)((u8 *)arg0 + 0x1630) = *(void * volatile *)((u8 *)node + 0x20);
         goto first_test;
     }
     if (node == *(void * volatile *)((u8 *)head + 0x24)) goto first_test;
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = *(void * volatile *)((u8 *)node + 0x20);
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x20) + 0x24) = *(void * volatile *)((u8 *)node + 0x24);
-    head = *(u32 volatile *)((u8 *)arg0 + 0x1630);
-    *(void * volatile *)((u8 *)node + 0x20) = (void *)head;
-    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(u32 volatile *)((u8 *)arg0 + 0x1630) + 0x24);
+    head = *(void * volatile *)((u8 *)arg0 + 0x1630);
+    *(void * volatile *)((u8 *)node + 0x20) = head;
+    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)arg0 + 0x1630) + 0x24);
     *(void * volatile *)((u8 *)head + 0x24) = node;
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = node;
 first_test:
     node = *(void * volatile *)((u8 *)arg0 + 0x1630);
     flags = *(volatile u16 *)node;
     if (flags & 1) goto first_body;
+
     zero = 0;
     minusOne = -1;
     goto second_test;
@@ -3060,17 +3062,17 @@ second_body:
     *(volatile u32 *)((u8 *)node + 0x10) = zero;
     *(volatile u32 *)((u8 *)node + 0x1C) = zero;
     *(volatile s32 *)((u8 *)node + 0x18) = minusOne;
-    head = *(u32 volatile *)((u8 *)arg0 + 0x1634);
-    if (node == (void *)head) {
-        *(u32 volatile *)((u8 *)arg0 + 0x1634) = *(u32 volatile *)((u8 *)node + 0x20);
+    head = *(void * volatile *)((u8 *)arg0 + 0x1634);
+    if (node == head) {
+        *(void * volatile *)((u8 *)arg0 + 0x1634) = *(void * volatile *)((u8 *)node + 0x20);
         goto second_test;
     }
     if (node == *(void * volatile *)((u8 *)head + 0x24)) goto second_test;
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = *(void * volatile *)((u8 *)node + 0x20);
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x20) + 0x24) = *(void * volatile *)((u8 *)node + 0x24);
-    head = *(u32 volatile *)((u8 *)arg0 + 0x1634);
-    *(void * volatile *)((u8 *)node + 0x20) = (void *)head;
-    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(u32 volatile *)((u8 *)arg0 + 0x1634) + 0x24);
+    head = *(void * volatile *)((u8 *)arg0 + 0x1634);
+    *(void * volatile *)((u8 *)node + 0x20) = head;
+    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)arg0 + 0x1634) + 0x24);
     *(void * volatile *)((u8 *)head + 0x24) = node;
     *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = node;
 second_test:
@@ -5237,7 +5239,7 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
     void *sp10;
     s32 spC;
     u32 sp8;
-    u32 base;
+    s32 base;
     s32 i;
     s32 ret;
 
@@ -9996,10 +9998,10 @@ extern "C" const u8 lbl_80560D9D;
 extern "C" s32 fn_800B5070(s32 arg0, s32 *out) {
     volatile u8 sp9;
     volatile u8 sp8;
+    s32 offset;
     s32 result;
     s32 index;
     s32 acc;
-    s32 offset;
     s16 value;
     s32 special;
     sp8 = lbl_80560D9C;
@@ -10013,11 +10015,11 @@ extern "C" s32 fn_800B5070(s32 arg0, s32 *out) {
             if (fn_800A4D44((void *)arg0) == 1U)
                 value = (s8)((u8 *)(u32)fn_800A4D74((void *)arg0, 1))[(s16)index] - 0x30;
             else
-                value = ((u16 *)(u32)fn_800A4D74((void *)arg0, 1))[offset / 2] - 0x30;
+                value = *(u16 *)((u8 *)(u32)fn_800A4D74((void *)arg0, 1) + offset) - 0x30;
             if (value < 0 || value > 9) break;
             acc *= 10;
             offset += 2;
-            ++index;
+            index++;
             acc += value;
         }
         if ((s16)index == 8) {
