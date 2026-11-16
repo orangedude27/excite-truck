@@ -948,21 +948,15 @@ extern "C" f32 fn_80161B70(void) {
 }
 #pragma cplusplus on
 extern "C" s32 fn_80161B94(void) {
-    struct Dummy {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual s32 v9();
+    /* Ask the active challenge sub-task for the value at vtable slot 0x2c (zero means clear/idle); default to 0 when none is active. */
+    struct ChallengeSubTask {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual s32 v9();
     };
-    Dummy *p = (Dummy *)lbl_8055E300;
-    if (p != 0) {
-        return p->v9();
+    ChallengeSubTask *subTask = (ChallengeSubTask *)lbl_8055E300;
+    if (subTask != 0) {
+        return subTask->v9();
     }
     return 0;
 }
