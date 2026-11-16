@@ -272,87 +272,93 @@ extern "C" s32 fn_80204CF0(void);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" u32 lbl_80558D00;
 #pragma scheduling invalid_target
-extern "C" void fn_8001E078(s32 arg0, s32 arg1, s32 arg2) {
-    class PaneContainer3 {
-    public:
-        virtual void dummy0();
-        virtual void dummy1();
-        virtual void *select(const char *);
-    };
+/*
+ * ScoreOverlay's score update - virtual slot +0xC of the vtable lbl_802FDC98
+ * that fn_8001DB54 builds the "ScoreOverlay" HUD widget with.  It picks the
+ * betalyt layout variant fn_801E85A4() asks for, selects the score art of the
+ * current difficulty from the "excite_artset" set, points the star art at the
+ * row the "star_color_1" pane carries, and writes value into the "score"
+ * pane - together with the "score_denominator" pane while fn_800167F4()
+ * reports one of the two plain score modes.
+ */
+extern "C" void fn_8001E078(void* overlay, s32 arg1, s32 value) {
     register char *strings = lbl_802FDB68;
-    register s32 rowValue;
-    register s32 entryValue;
-    register void **container;
-    s32 selection;
-    s32 mode;
+    register s32 colorRow;
+    register s32 texHandle;
+    register PaneContainer *layout;
+    s32 scoreArtIdx;
+    s32 difficulty;
     s32 status;
-    s32 test;
-    s32 half;
-    s32 masked;
+    s32 flipped;
+    s32 shifted;
+    s32 cleared;
     PaneData *pane;
-    PaneData data;
-    char buffer1[0x14];
-    char buffer2[0x14];
+    PaneData paneData;
+    char denomText[0x14];
+    char scoreText[0x14];
 
     if (fn_801E85A4() == 2)
-        container = lbl_8055D5F8;
+        layout = (PaneContainer*)lbl_8055D5F8;   // "betalyt_2.val"
     else
-        container = lbl_8055D5F4;
+        layout = (PaneContainer*)lbl_8055D5F4;   // "betalyt.val"
 
-    if (container != 0) {
-        mode = fn_80204CF0();
-        switch (mode) {
+    if (layout != 0) {
+        difficulty = fn_80204CF0();
+        switch (difficulty) {
         case 0:
-            selection = 0;
+            scoreArtIdx = 0;
             break;
         case 1:
-            selection = 2;
+            scoreArtIdx = 2;
             break;
         case 2:
-            selection = 4;
+            scoreArtIdx = 4;
             break;
         default:
-            fn_802E30C8(strings + 0x158, mode);
-            selection = 0;
+            fn_802E30C8(strings + 0x158 /* "stdoverlay: Couldn't find score art idx ..." */,
+                        difficulty);
+            scoreArtIdx = 0;
             break;
         }
-        fn_8014784C(container, strings + 0x1A0, strings + 0x1AC, selection);
-        entryValue = *(s32 *)((u8 *)arg0 + 4);
-        pane = (PaneData *)((PaneContainer *)container)->getPane(strings + 0x1BC);
-        rowValue = *(volatile s32 *)((u8 *)pane + 0x18);
-        fn_801476D8(((PaneContainer3 *)container)->select(strings + 0x1CC), rowValue, entryValue);
-        fn_801609C4(arg2);
-        pane = (PaneData *)((PaneContainer *)container)->getPane((const char *)&lbl_80558D00);
+        fn_8014784C(layout, strings + 0x1A0 /* "score_art" */,
+                    strings + 0x1AC /* "excite_artset" */, scoreArtIdx);
+        texHandle = *(s32 *)((u8 *)overlay + 4);
+        pane = (PaneData *)layout->getPane(strings + 0x1BC /* "star_color_1" */);
+        colorRow = *(volatile s32 *)((u8 *)pane + 0x18);
+        fn_801476D8(layout->select(strings + 0x1CC /* "score_star_art" */),
+                    colorRow, texHandle);
+        fn_801609C4(value);
+        pane = (PaneData *)layout->getPane((const char *)&lbl_80558D00 /* "score" */);
         if (pane != 0) {
             s32 tempW8;
             s32 tempW4;
-            data.w0 = pane->w0;
+            paneData.w0 = pane->w0;
             tempW4 = ((volatile PaneData *)pane)->w4;
             tempW8 = ((volatile PaneData *)pane)->w8;
-            data.w4 = tempW4;
-            data.w8 = tempW8;
-            data.wc = pane->wc;
-            data.f10 = pane->f10;
-            data.w14 = pane->w14;
-            data.w18 = pane->w18;
-            data.w1c = pane->w1c;
+            paneData.w4 = tempW4;
+            paneData.w8 = tempW8;
+            paneData.wc = pane->wc;
+            paneData.f10 = pane->f10;
+            paneData.w14 = pane->w14;
+            paneData.w18 = pane->w18;
+            paneData.w1c = pane->w1c;
             status = ((s32 (*)(void))fn_800167F4)();
-            test = status ^ 1;
-            half = test >> 1;
-            test &= status;
-            masked = test;
-            if (((u32)(half - masked) >> 31) == 0) {
-                ((PaneContainer *)container)->getPane(strings + 0x1DC);
+            flipped = status ^ 1;
+            shifted = flipped >> 1;
+            flipped &= status;
+            cleared = flipped;
+            if (((u32)(shifted - cleared) >> 31) == 0) { /* status is 0 or 1 */
+                layout->getPane(strings + 0x1DC /* "score_slash" */);
                 ((void (*)(void))fn_801476C4)();
-                fn_801308F4(buffer1, 0x14, fn_80160A90());
-                fn_801473F8(container, strings + 0x1E8, lbl_80558D08, buffer1);
+                fn_801308F4(denomText, 0x14, fn_80160A90());
+                fn_801473F8(layout, strings + 0x1E8 /* "score_denominator" */,
+                             lbl_80558D08 /* "%s" */, denomText);
             }
-            fn_801308F8(buffer2, 0x14, arg2);
-            fn_80147230(&data, lbl_80558D08, buffer2);
+            fn_801308F8(scoreText, 0x14, value);
+            fn_80147230(&paneData, lbl_80558D08 /* "%s" */, scoreText);
         }
     }
 }
-#pragma scheduling on
 extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
