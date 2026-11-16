@@ -45,6 +45,15 @@ typedef struct CamState {
     /* 0x360 */ float savedMatrix[12];
 } CamState;
 
+/* One 0x1C-byte record in the 32-element pool that fn_802739B8 allocates at
+ * base+0x5780: +0x00 is a cleared state word, +0x18 points at the callback
+ * table lbl_80347364. */
+typedef struct {
+    /* 0x00 */ int state;
+    /* 0x04 */ char pad04[0x14];
+    /* 0x18 */ char *callbacks;
+} PoolRecord;
+
 #pragma scheduling invalid_target
 void fn_80273A88(void) {
     /* Tear down the array at lbl_8049F9D8: 32 records of 0x1C bytes each, run through the per-element deleting destructor fn_80273978 (MSL runtime array_delete). */
