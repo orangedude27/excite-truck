@@ -1660,6 +1660,10 @@ void fn_801916F4(void *arg0) {
 
 extern char *strcpy(char *, const char *);
 extern unsigned char lbl_804A16E8[];
+/* Global table of 0xA0-byte car records this function fills from a car. */
+#define sCarTable lbl_804A16E8
+#define kInitZero lbl_8056208C  /* 0.0f */
+#define kInitOne  lbl_80562090  /* 1.0f */
 #pragma scheduling invalid_target
 int fn_80191758(void *arg0) {
     unsigned char *dst;
