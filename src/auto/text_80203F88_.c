@@ -108,9 +108,10 @@ extern void fn_801E9DC4(short *);
 extern int fn_801E9E78(void *, void *, int, int);
 extern void fn_802E30C8(const char *, ...);
 extern double __fabs(double);
-extern double lbl_80563160;
-#pragma paired_single off
-#pragma ppc_psq_save off
+double lbl_80563160 = 0x1.00008p+52;
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, s32 screenY) {
     Vec dir;
     Vec pos;
@@ -120,12 +121,21 @@ s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, 
     s16 localContext;
     f32 scale, dx, dy;
     f32 a, b, c, p, q, r, x, y, z;
-    f32 step, dist, minStep, maxDist, mult, tol;
+    register f32 step, dist, minStep, maxDist, mult, tol;
     s32 noHit, flagB, found;
+    union { f64 d; u32 w[2]; } cvt1, cvt2, cvt3;
+    f64 bias;
 
-    scale = (f32)(lbl_8055CFF0 / 2) / lbl_8055FC88;
-    dx = (f32)(screenX - lbl_8055CFF0 / 2);
-    dy = -(f32)(screenY - lbl_8055CFF4 / 2);
+    bias = lbl_80563160;
+    cvt1.w[0] = 0x43300000;
+    cvt1.w[1] = (u32)((lbl_8055CFF0 / 2) ^ 0x80000000);
+    scale = (f32)(cvt1.d - bias) / lbl_8055FC88;
+    cvt2.w[0] = 0x43300000;
+    cvt2.w[1] = (u32)((screenX - lbl_8055CFF0 / 2) ^ 0x80000000);
+    dx = (f32)(cvt2.d - bias);
+    cvt3.w[0] = 0x43300000;
+    cvt3.w[1] = (u32)((screenY - lbl_8055CFF4 / 2) ^ 0x80000000);
+    dy = -(f32)(cvt3.d - bias);
 
     a = m[6] * scale;
     b = m[7] * scale;
@@ -146,11 +156,11 @@ s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, 
     }
 
     step = lbl_80563148;
-    dist = step;
-    minStep = lbl_80563158;
-    maxDist = lbl_80563154;
-    mult = lbl_80563150;
     tol = lbl_8056314C;
+    dist = step;
+    mult = lbl_80563150;
+    maxDist = lbl_80563154;
+    minStep = lbl_80563158;
     flagB = 0;
 
     for (;;) {
@@ -205,8 +215,6 @@ s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, 
         return noHit == 0;
     }
 }
-#pragma paired_single reset
-#pragma ppc_psq_save reset
 void fn_80204004(void) {
 
 }
