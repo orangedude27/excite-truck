@@ -633,7 +633,10 @@ extern "C" s32 fn_801F812C(const char *typeName) {
 #pragma small_data on
 #pragma pop
 extern "C" const f32 lbl_80562FF0;
-extern "C" s32 fn_801F815C(const char *arg) { return stricmp(arg, lbl_8055B2C4) == 0; }
+extern "C" s32 fn_801F815C(const char *typeName) {
+    /* Non-zero when typeName names the "sound" object type, compared case-insensitively. */
+    return stricmp(typeName, lbl_8055B2C4) == 0;
+}
 
 /* Keys fn_801F8188 reads out of the parameter node (the game's object/parameter files). */
 #define OBJ_KEY_TYPE        ((const char *)lbl_8055B2CC)  /* "type": composite / animation / sound */
