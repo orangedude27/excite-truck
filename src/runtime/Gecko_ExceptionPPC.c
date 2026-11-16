@@ -41,18 +41,22 @@ int __register_fragment(const ExtabIndexInfo* eti, void* toc) {
     return -1;
 }
 
-void __unregister_fragment(int i) {
+/* Releases the fragment-table slot with the given id, clearing its exception-table
+ * index, TOC and in-use flag so a later __register_fragment can reuse it.  Invalid
+ * ids are ignored.  Called from __fini_cpp_exceptions() with the id returned by
+ * __register_fragment(). */
+void __unregister_fragment(int fragmentId) {
     FragmentInfo* frag;
 
-    if (i < 0) {
+    if (fragmentId < 0) {
         return;
     }
 
-    if (i >= NUM_FRAGMENT) {
+    if (fragmentId >= NUM_FRAGMENT) {
         return;
     }
 
-    frag = &fragmentInfo[i];
+    frag = &fragmentInfo[fragmentId];
     frag->eti = NULL;
     frag->toc = NULL;
     frag->regist = FALSE;
