@@ -328,6 +328,7 @@ void fn_8021662C(void) {
     }
 }
 
+// Renders one UI frame: run render/update steps, optionally the frame callback and extra update pass.
 void fn_802166B8(void) {
     fn_802C8530();
     fn_80216244();
