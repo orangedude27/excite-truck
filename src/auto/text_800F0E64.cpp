@@ -1898,11 +1898,13 @@ struct SoundFileBufferLayout {
     s32 currentStream;     // 0x21C stream being read; null when idle
 };
 
-extern "C" void *fn_800F41D0(void *arg0, s32 arg1) {
- *(s32*)((u8*)arg0 + 0x18) = arg1;
- *(s32*)((u8*)arg0 + 0x21C) = 0;
- OSInitMutex(arg0);
- return arg0;
+extern "C" void *fn_800F41D0(void *buffer, s32 setupId) {
+    /* Set up a SoundArchiveLoader file buffer: record the id it was set up for,
+       clear the current-stream pointer and initialise its embedded mutex. */
+    ((SoundFileBufferLayout *)buffer)->setupId = setupId;
+    ((SoundFileBufferLayout *)buffer)->currentStream = 0;
+    OSInitMutex(buffer);
+    return buffer;
 }
 
 /* Deleting-destructor helper: free `object` when `shouldDelete` is set, then return it. */
