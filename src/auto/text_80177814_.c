@@ -1418,10 +1418,13 @@ void fn_801795B0(void) {
     fn_801AED68();
 }
 
-void fn_801795D8(void *arg0, int arg1) {
-    ((void **)lbl_80430830)[arg1] = arg0;
-    if (*(int *)((char *)arg0 + 0x1F0) == 0x50) {
-        lbl_80430590[(*(unsigned char *)((char *)arg0 + 0x260) & 3)] = arg1;
+/* Register vehicle in the global object table at objIndex. Player/racer vehicles
+ * (type 0x50 at +0x1F0) are also indexed by their player slot (+0x260 & 3) in
+ * lbl_80430590 so they can be looked up by split-screen player. */
+void fn_801795D8(void *vehicle, int objIndex) {
+    ((void **)lbl_80430830)[objIndex] = vehicle;
+    if (*(int *)((char *)vehicle + 0x1F0) == 0x50) {
+        lbl_80430590[(*(unsigned char *)((char *)vehicle + 0x260) & 3)] = objIndex;
     }
 }
 
