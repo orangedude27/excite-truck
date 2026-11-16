@@ -2768,11 +2768,13 @@ int fn_80164868(void) {
     return 1;
 }
 
-void fn_80164870(void *arg0, s32 arg1) {
-    if (*(u8 *)((char *)arg0 + 0x10) == 0) {
-        *(s32 *)((char *)arg0 + 8) = arg1;
-        *(u8 *)((char *)arg0 + 0x10) = 1;
-        *(float *)((char *)arg0 + 0xC) = lbl_8055E3C8;
+/* Start this object's timer if it is not running yet: record the id and the
+   current play time (lbl_8055E3C8, seconds played), then mark it active. */
+void fn_80164870(void *timer, s32 id) {
+    if (*(u8 *)((char *)timer + 0x10) == 0) {
+        *(s32 *)((char *)timer + 8) = id;
+        *(u8 *)((char *)timer + 0x10) = 1;
+        *(float *)((char *)timer + 0xC) = lbl_8055E3C8;
     }
 }
 
