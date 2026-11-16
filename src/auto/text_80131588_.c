@@ -634,14 +634,14 @@ extern "C" void fn_80132410(void *arg0, void *arg1, const char *arg2) {
     public:
         virtual char *f0(); virtual void f1(); virtual void f2(); virtual char *f3(const char *);
     };
-    s32 values[3];
+    typedef struct { s32 x, y; } Pair;
+    typedef struct { Pair a; s32 z; } Vector;
+    Vector values;
     char *value = ((A *)arg1)->f3(arg2);
-    if (sscanf(value, lbl_8032B80C, &values[0], &values[1], &values[2]) != 3) {
+    if (sscanf(value, lbl_8032B80C, &values.a.x, &values.a.y, &values.z) != 3) {
         fn_802E317C(lbl_8032B7E4, value, arg2, ((A *)arg1)->f0());
     }
-    ((s32 *)arg0)[0] = values[0];
-    ((s32 *)arg0)[1] = values[1];
-    ((s32 *)arg0)[2] = values[2];
+    *(Vector *)arg0 = values;
 }
 #pragma small_data on
 #pragma cplusplus on
