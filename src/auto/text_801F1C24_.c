@@ -1514,14 +1514,16 @@ void fn_801F3E64(void) {
 #pragma push
 #pragma small_data off
 #pragma pop
-void fn_801F3E68(int arg0, unsigned char *arg1) {
-    unsigned char temp_r6 = arg1[0x2C];
-    unsigned char temp_r7 = arg1[0x2D];
-    arg1[0x2C] = arg1[0x2F];
-    arg1[0x2F] = temp_r6;
-    arg1[0x2D] = arg1[0x2E];
-    arg1[0x2E] = temp_r7;
-    *(unsigned int *)(arg1 + 0x2C) = 1 << (*(unsigned int *)(arg1 + 0x2C) - 1);
+void fn_801F3E68(int unused, unsigned char *buffer) {
+    unsigned char b0 = buffer[0x2C];
+    unsigned char b1 = buffer[0x2D];
+    /* Byte-swap the 4-byte field at +0x2C in place, then turn the resulting
+     * index into a single-bit mask (1 << (index - 1)). */
+    buffer[0x2C] = buffer[0x2F];
+    buffer[0x2F] = b0;
+    buffer[0x2D] = buffer[0x2E];
+    buffer[0x2E] = b1;
+    *(unsigned int *)(buffer + 0x2C) = 1 << (*(unsigned int *)(buffer + 0x2C) - 1);
 }
 void fn_801F3EA0(void) {
 
