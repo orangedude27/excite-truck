@@ -594,8 +594,11 @@ void __AXGetAuxAOutputDpl2R(void **out) {
     *out = lbl_8035BFA0 + lbl_8055D6F4 * 0x480 + 0x180;
 }
 
-void __AXGetAuxAOutputDpl2Ls(void **arg0) {
-    *arg0 = lbl_8035BFA0 + lbl_8055D6F4 * 0x480 + 0x300;
+// Returns the AUX-A Dolby Pro Logic II left-surround output buffer through *out:
+// the current ring slot (lbl_8055D6F4) of the 0x480-byte-per-slot AUX-A output
+// array (lbl_8035BFA0), plus the 0x300-byte Ls block offset.
+void __AXGetAuxAOutputDpl2Ls(void **out) {
+    *out = lbl_8035BFA0 + lbl_8055D6F4 * 0x480 + 0x300;
 }
 
 void __AXGetAuxAOutputDpl2Rs(void **arg0) {
