@@ -2940,6 +2940,9 @@ extern "C" void fn_801A0444(void* arg0, void* arg1) {
 
 extern f32 lbl_805623B8;
 extern f32 lbl_805623BC;
+/* fn_801A0160 is called, not inlined, and registers are saved with _savegpr */
+#pragma dont_inline on
+#pragma use_lmw_stmw off
 extern "C" void fn_801A0464(void *arg0, void *arg1) {
     u8 *self = (u8 *)arg0;
     u8 *other = (u8 *)arg1;
