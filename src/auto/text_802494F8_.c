@@ -1193,17 +1193,18 @@ void *fn_8024B73C(void *arg0, const char *arg1, void *arg2) {
     return arg0;
 }
 #pragma pop
-void fn_8024B830(void *arg0, s32 arg1) {
-    s32 offset;
-    s32 index;
-    *(s32 *)((char *)arg0 + 0x9C) = -1;
-    index = 0;
-    offset = 0;
-    while (index < *(s32 *)((char *)arg0 + 0x1C)) {
-        if (arg1 == **(s32 **)((char *)*(s32 **)((char *)arg0 + 0x18) + offset))
-            *(s32 *)((char *)arg0 + 0x9C) = index;
-        offset += 4;
-        index++;
+void fn_8024B830(void *container, s32 targetId) {
+    /* Find the entry whose id matches targetId and store its index at +0x9C, or -1 if not found. */
+    s32 byteOffset;
+    s32 entryIndex;
+    *(s32 *)((char *)container + 0x9C) = -1;
+    entryIndex = 0;
+    byteOffset = 0;
+    while (entryIndex < *(s32 *)((char *)container + 0x1C)) {
+        if (targetId == **(s32 **)((char *)*(s32 **)((char *)container + 0x18) + byteOffset))
+            *(s32 *)((char *)container + 0x9C) = entryIndex;
+        byteOffset += 4;
+        entryIndex++;
     }
 }
 
