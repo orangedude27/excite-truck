@@ -992,11 +992,12 @@ void fn_802B6AC0(void) {
 }
 #pragma pop
 __declspec(section ".sdata") extern s32 lbl_8055CEA0;
-s32 fn_802B6E00(s32 arg0, s32 arg1) {
-    s32 var_r0 = 0;
-    if ((arg0 < -0x200) || (arg0 > 0x200) || (arg1 < -0x200) || (arg1 > 0x200))
-        var_r0 = 1;
-    return var_r0;
+s32 fn_802B6E00(s32 x, s32 y) {
+    /* Return 1 if either coordinate lies outside [-0x200, 0x200], else 0. */
+    s32 outOfBounds = 0;
+    if ((x < -0x200) || (x > 0x200) || (y < -0x200) || (y > 0x200))
+        outOfBounds = 1;
+    return outOfBounds;
 }
 
 s32 fn_802B6E30(void) {
