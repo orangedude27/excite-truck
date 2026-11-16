@@ -205,7 +205,7 @@ extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
     temp_r3 = -temp_r4;
     temp_r3 &= ~temp_r4;
     temp_r3 >>= 31;
-    temp_r3 = temp_r4 & temp_r3;
+    temp_r3 &= temp_r4;
     if (temp_r3 < 0xFF) {
         var_r0 = temp_r3;
     }
@@ -780,29 +780,48 @@ found:
 #pragma scheduling on
 #pragma small_data off
 extern "C" void fn_80145E70(s32 arg0) {
-    struct Config { virtual void *getObject(const char *); virtual void a1(); virtual s32 has(const char *); };
-    struct Properties { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual s32 set(const char *, s32); };
-    u8 *object = (u8 *)fn_801284F8(0x50, &lbl_8032D0EC);
-    if (object == 0) return;
+    struct Config {
+        virtual void *getObject(const char *);
+        virtual void a1();
+        virtual s32 has(const char *);
+    };
+    struct Properties {
+        virtual void a0();
+        virtual void a1();
+        virtual void a2();
+        virtual void a3();
+        virtual void a4();
+        virtual void a5();
+        virtual s32 set(const char *, s32);
+    };
+    u8 *object;
+    object = (u8 *)fn_801284F8(0x50, &lbl_8032D0EC);
+    if (object == 0)
+        return;
     fn_80146C1C((void **)object);
     *(void **)object = &lbl_8032D1E8;
     fn_80146C08(object + 0x40, (s32)object);
     *(s32 *)(object + 0x2C) = 0;
-    *(s32 *)(object + 0x30) = 0;
-    *(s32 *)(object + 0x34) = 0;
-    *(s32 *)(object + 0x3C) = 0;
-    *(s32 *)(object + 0x48) = 0;
-    *(s32 *)(object + 0x4C) = 0;
-    object[4] = 0;
-    ((void (*)(u8 *, const s8 *, s32, s32))fn_80146BD4)(object + 5, (const s8 *)arg0, 0x20, 0);
+    {
+        u8 *dst = object + 5;
+        const s8 *src = (const s8 *)arg0;
+        *(s32 *)(object + 0x30) = 0;
+        *(s32 *)(object + 0x34) = 0;
+        *(s32 *)(object + 0x3C) = 0;
+        *(s32 *)(object + 0x48) = 0;
+        *(s32 *)(object + 0x4C) = 0;
+        object[4] = 0;
+        ((void (*)(u8 *, const s8 *, s32, s32))fn_80146BD4)(dst, src, 0x20, 0);
+    }
     *(void **)(object + 0x28) = fn_80131810(arg0);
     if (*(void **)(object + 0x28) != 0) {
         lbl_8055E208 = 1;
         if (((Config *)*(void **)(object + 0x28))->has(lbl_80559E20) != 0) {
             void *properties = ((Config *)*(void **)(object + 0x28))->getObject(lbl_80559E20);
             s32 value = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
-            s32 half = value >> 1;
-            value = half - (value & 1);
+            s32 shifted = value >> 1;
+            s32 bit = value & 1;
+            value = shifted - bit;
             lbl_8055E208 = (s8)((u32)value >> 31);
         }
         *(s32 *)(object + 0x2C) = (s32)((void *(*)(void *, const char *))fn_80145FEC)(*(void **)(object + 0x28), lbl_80559E30);
@@ -1234,11 +1253,11 @@ extern "C" void fn_80146824(void *arg0) {
     typedef void *(*AllocFn)(s32, const char *, s32, s32, s32, s32);
     Owner *owner = (Owner *)arg0;
     register Block *b2C = owner->block2C;
-    register Block *b34 = owner->block34;
     register Block *b30 = owner->block30;
+    register Block *b34 = owner->block34;
     register s32 n2C = b2C->count;
-    register s32 n34 = b34->count;
     register s32 n30 = b30->count;
+    register s32 n34 = b34->count;
     register s32 size2C = n2C * 2;
     register unsigned size30 = n30 * 4 - n30;
     register s32 size34 = n34 * 4 - n34;
@@ -2259,10 +2278,13 @@ extern "C" void *fn_801483D4(const char *name, void *table) {
 #pragma pop
 
 extern "C" void *fn_801484A4(const char *, void *);
-extern "C" s32 fn_80148464(void *arg0, const char *arg1) {
-    void *entry = fn_801484A4(arg1, *(void **)((u8 *)arg0 + 0x3C));
+/* Returns the resource stored in the named "gart_set" entry of this params object, or 0 if absent. */
+extern "C" s32 fn_80148464(void *params, const char *name) {
+#define findNamedEntry fn_801484A4
+    void *entry = findNamedEntry(name, *(void **)((u8 *)params + 0x3C));
     if (entry != NULL) return *(s32 *)((u8 *)entry + 8);
     return 0;
+#undef findNamedEntry
 }
 
 extern "C" int stricmp(const char *, const char *);
