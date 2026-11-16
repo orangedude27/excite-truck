@@ -708,40 +708,9 @@ void fn_80247768(void) {
 extern void *lbl_8055BEB0;
 extern s32 lbl_8055BEB8;
 extern s32 lbl_8055F26C;
-static inline void fn_8024778C_setMode(s32 mode) {
-    if (lbl_8055BEB8 != mode) {
-        lbl_8055BEB8 = mode;
-        switch (mode) {
-        case 2:
-            lbl_8055BEB0 = (void *)1;
-            break;
-        case 3:
-            lbl_8055BEB0 = (void *)2;
-            break;
-        default:
-            lbl_8055BEB0 = 0;
-            break;
-        }
-    }
-}
-#pragma push
-#pragma scheduling invalid_target
 void fn_8024778C(void) {
     s32 var_r31;
-    if (lbl_8055BEB8 != lbl_8055F26C) {
-        lbl_8055BEB8 = lbl_8055F26C;
-        switch (lbl_8055BEB8) {
-        case 2:
-            lbl_8055BEB0 = (void *)1;
-            break;
-        case 3:
-            lbl_8055BEB0 = (void *)2;
-            break;
-        default:
-            lbl_8055BEB0 = 0;
-            break;
-        }
-    }
+    fn_8024778C_setMode(lbl_8055F26C);
     fn_80214CB4((s32)lbl_8055BEB0);
     switch (lbl_8055F26C) {
     case 1:
