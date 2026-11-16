@@ -908,9 +908,11 @@ s64 fn_80178BBC(s32 *entry) {
     s64 scaled = *(s64 *)&entry[2] + (s64)delta * 0x412b;
     return fn_802E2C9C() - scaled;
 }
-s32 fn_80178C1C(s32 *arg0) {
-    s64 r3 = fn_80178BBC(arg0);
-    return (s32)__div2i(r3, 0x412b);
+s32 fn_80178C1C(s32 *entry) {
+    /* Convert an entry's remaining tick count into whole time units:
+     * fn_80178BBC returns ticks, and 0x412b ticks make one unit. */
+    s64 ticksRemaining = fn_80178BBC(entry);
+    return (s32)__div2i(ticksRemaining, 0x412b);
 }
 
 s32 fn_80178C4C(void *entry) {
