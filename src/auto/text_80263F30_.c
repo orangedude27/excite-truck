@@ -398,16 +398,16 @@ void fn_802645FC(void *obj) {
     extern float lbl_80563BF8;
     extern float lbl_8055C454;
     extern float lbl_80563BF0;
-    float b;
-    float a;
-    float c;
+    float riseValue;
+    float gateValue;
+    float timerValue;
     /* Initialize a credits/gate object: gate (+0x18) = 0.5, timer (+0x1C) = 1.5, rise (+0x20) = 0.0. */
-    a = lbl_80563BF8;
-    b = lbl_80563BF0;
-    *(float *)((char *)obj + 0x18) = a;
-    c = lbl_8055C454;
-    *(float *)((char *)obj + 0x1C) = c;
-    *(float *)((char *)obj + 0x20) = b;
+    gateValue = lbl_80563BF8;
+    riseValue = lbl_80563BF0;
+    *(float *)((char *)obj + 0x18) = gateValue;
+    timerValue = lbl_8055C454;
+    *(float *)((char *)obj + 0x1C) = timerValue;
+    *(float *)((char *)obj + 0x20) = riseValue;
 }
 #pragma dont_inline on
 void fn_80264618(void *obj) {
