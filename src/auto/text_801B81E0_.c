@@ -442,8 +442,9 @@ extern "C" int fn_801B8630(int arg0, int arg1, int arg2) {
     if (fn_80161BDC() != 0) return 1;
     return ((Dummy_801B8630 *)lbl_8055E744)->call(arg0, arg1, arg2);
 }
-extern "C" void fn_801B86A4(void *arg0) {
-    ((Dummy_801B8318 *)lbl_8055E744)->f41(arg0);
+/* Forwards an object to virtual slot f41 of the current arena-event master object. */
+extern "C" void fn_801B86A4(void *object) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f41(object);
 }
 #pragma cplusplus on
 /* Forward to a virtual handler, scale the float at +0x50 by lbl_8055A910, then call fn_8027DED8 with the original value. */
