@@ -23,6 +23,9 @@ void fn_802E46AC(void) {}
 #pragma dont_inline on
 #pragma dont_inline off
 void fn_802E46B0(void) {
+    /* Boot-time init of the screenshot/key-history subsystem: reset the last-input
+       timestamp, clear the recent-key history, invalidate the saved-state pointer
+       (a negative value means "no state captured"), then run the init hook. */
     lbl_8055FF5C = 0;
     fn_802E47E8();
     lbl_8055D1C0 = (void *)-1;
