@@ -588,10 +588,11 @@ extern float lbl_80562B2C;
 extern int strcmp(const char *, const char *);
 extern void fn_80178DBC(int, float);
 extern void fn_801D9AB8(void *, float);
-int fn_801D9B28(void *arg0, int arg1) {
-    void *node = *(void **)((char *)arg0 + 0x24);
+/* Returns 1 if the morph group's morph-region list contains a node whose region id matches `regionId`. */
+int fn_801D9B28(void *group, int regionId) {
+    void *node = *(void **)((char *)group + 0x24);
     while (node != 0) {
-        if (*(int *)((char *)node + 8) == arg1)
+        if (*(int *)((char *)node + 8) == regionId)
             return 1;
         node = *(void **)((char *)node + 0xC);
     }
