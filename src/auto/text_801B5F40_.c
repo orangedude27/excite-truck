@@ -162,6 +162,7 @@ extern void *fn_801B5F40(void);
 extern void __AXPushCallbackStack(void *);
 extern char lbl_80335F20[];
 void fn_801B63E0(void **head, s32 value) {
+    /* Allocate a node, store the value, and push it onto the front of the list. */
     void *node = fn_801B5F40();
     *(s32 *)node = value;
     *(void **)((u8 *)node + 4) = *head;
