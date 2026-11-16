@@ -899,17 +899,18 @@ void OSRegisterVersion(const char *ver) {
     OSReport(lbl_80558F0C, ver);
 }
 
+/* Return the 4-character application game name, using the IPL's game name when running in IPL mode. */
 const char *OSGetAppGamename(void) {
     extern const char *AppGameNameForSysMenu;
     extern char GameNameBuffer[5];
-    const char *name = (const char *)0x80003180;
+    const char *gameName = (const char *)0x80003180;
     if (__OSInIPL) {
-        name = AppGameNameForSysMenu;
+        gameName = AppGameNameForSysMenu;
     }
-    GameNameBuffer[0] = name[0];
-    GameNameBuffer[1] = name[1];
-    GameNameBuffer[2] = name[2];
-    GameNameBuffer[3] = name[3];
+    GameNameBuffer[0] = gameName[0];
+    GameNameBuffer[1] = gameName[1];
+    GameNameBuffer[2] = gameName[2];
+    GameNameBuffer[3] = gameName[3];
     GameNameBuffer[4] = 0;
     return GameNameBuffer;
 }
