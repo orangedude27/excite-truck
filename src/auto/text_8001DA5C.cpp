@@ -289,7 +289,7 @@ extern "C" void fn_8001E078(s32 arg0, s32 arg1, s32 arg2) {
     s32 half;
     s32 masked;
     PaneData *pane;
-    volatile PaneData data;
+    PaneData data;
     char buffer1[0x14];
     char buffer2[0x14];
 
@@ -323,11 +323,11 @@ extern "C" void fn_8001E078(s32 arg0, s32 arg1, s32 arg2) {
         fn_801609C4(arg2);
         pane = (PaneData *)((PaneContainer *)container)->getPane((const char *)&lbl_80558D00);
         if (pane != 0) {
-            s32 tempW4;
             s32 tempW8;
+            s32 tempW4;
             data.w0 = pane->w0;
-            tempW4 = pane->w4;
-            tempW8 = pane->w8;
+            tempW4 = ((volatile PaneData *)pane)->w4;
+            tempW8 = ((volatile PaneData *)pane)->w8;
             data.w4 = tempW4;
             data.w8 = tempW8;
             data.wc = pane->wc;
@@ -337,8 +337,9 @@ extern "C" void fn_8001E078(s32 arg0, s32 arg1, s32 arg2) {
             data.w1c = pane->w1c;
             status = ((s32 (*)(void))fn_800167F4)();
             test = status ^ 1;
-            masked = test & status;
             half = test >> 1;
+            test &= status;
+            masked = test;
             if (((u32)(half - masked) >> 31) == 0) {
                 ((PaneContainer *)container)->getPane(strings + 0x1DC);
                 ((void (*)(void))fn_801476C4)();
@@ -346,7 +347,7 @@ extern "C" void fn_8001E078(s32 arg0, s32 arg1, s32 arg2) {
                 fn_801473F8(container, strings + 0x1E8, lbl_80558D08, buffer1);
             }
             fn_801308F8(buffer2, 0x14, arg2);
-            fn_80147230((void *)&data, lbl_80558D08, buffer2);
+            fn_80147230(&data, lbl_80558D08, buffer2);
         }
     }
 }
