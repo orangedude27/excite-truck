@@ -838,6 +838,7 @@ check:
 
 #pragma push
 #pragma small_data off
+#pragma processor 750
 void *__dt__14CollisionSpaceFv_801F2E24(void *arg0, int arg1) {
     /* Scalar-deleting destructor for CollisionSpace: reset vtable, destroy owned subobject, and optionally free. */
     if (arg0 != 0) {
