@@ -342,8 +342,9 @@ void fn_80017DD4(s32 *arg0, s32 arg1, s32 *arg2) {
     }
 }
 #pragma scheduling reset
+/* Whether the fixed roster holds exactly one driver/vehicle entry. */
 s32 fn_80017F40(void) {
-    return fn_800167F4() == 1;
+    return GetBaseEntryCount() == 1;
 }
 
 extern void* fn_80012820(s32);
