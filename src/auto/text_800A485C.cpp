@@ -1798,11 +1798,13 @@ extern "C" s32 fn_800A71D8(void *arg0) {
     return (*(s32 *)((u8 *)arg0 + 0x14));
 }
 
-extern "C" s32 fn_800A71E0(s32 arg0, void *arg1) {
-    s32 temp_r3;
+/* Reads the device's info record into *info; forwards the copy helper's result
+ * through a sign mask (zero when it reports success). */
+extern "C" s32 fn_800A71E0(s32 device, void *info) {
+    s32 result;
 
-    temp_r3 = fn_800A6268(*(s32 *)((u8 *)arg0 + 4), arg1);
-    return temp_r3 & ((s32) (-temp_r3 | temp_r3) >> 0x1F);
+    result = fn_800A6268(*(s32 *)((u8 *)device + 4), info);
+    return result & ((s32)(-result | result) >> 0x1F);
 }
 
 extern "C" s32 fn_800A625C(void *, s32);
@@ -12024,11 +12026,15 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
         end = shortEnd;
     }
     result = end - start;
-    shifted = result >> countB;
     *arg1 = result;
-    if (shifted < 0xFF5) return 0;
-    if (shifted < 0xFFF5) return 1;
-    return 2;
+    shifted = result >> countB;
+    if (shifted < 0xFF5) {
+        return 0L;
+    } else if (shifted < 0xFFF5) {
+        return 1L;
+    } else {
+        return 2L;
+    }
 }
 
 extern "C" s32 fn_800B865C(u8 *buffer) {
@@ -19698,8 +19704,8 @@ check:
 #pragma push
 #pragma small_data on
 void homebutton::gui::PaneManager::setAllBoundingBoxComponentTriggerTarget(bool arg0) {
-    u8 *self = (u8 *)this;
-    void *list = self + 8;
+    register u8 *self = (u8 *)this;
+    u8 *list = self + 8;
     u32 index = 0;
     struct ParentDispatch { virtual void v0(); virtual void *parent(); };
     struct TriggerDispatch {
