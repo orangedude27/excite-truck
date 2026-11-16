@@ -873,9 +873,10 @@ extern "C" void fn_80168734(void *, f32, f32, f32, f32);
 extern "C" void *fn_80178A9C(void);
 extern "C" void *fn_80178AA4(void);
 
-extern "C" s32 fn_8013D890(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+extern "C" s32 fn_8013D890(s32 object, s32 deleteFlag) {
+    /* Deleting-destructor helper: free `object` (MemFree mode 3) when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668();
+    return object;
 }
 
 extern "C" s32 fn_8013DDD4(TObjC *, const char *);
