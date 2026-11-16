@@ -14,10 +14,11 @@ void *memchr(const void *src, int ch, unsigned int count) {
     return 0;
 }
 
-void *__memrchr(const unsigned char *arg0, int arg1, unsigned int arg2) {
-    const unsigned char *p = arg0 + arg2;
-    unsigned char c = (unsigned char)arg1;
-    unsigned int n = arg2 + 1;
+/* Reverse memchr: scan the last count bytes of src backwards for val and return a pointer to the last match, or NULL. */
+void *__memrchr(const unsigned char *src, int val, unsigned int count) {
+    const unsigned char *p = src + count;
+    unsigned char c = (unsigned char)val;
+    unsigned int n = count + 1;
     while (--n != 0) {
         if (*--p == c) return (void *)p;
     }
