@@ -208,6 +208,9 @@ int fn_8013C9A4(void) {
     return *(int *)((char *)entry + 4);
 }
 
+/* fn_8013C800 forwards to the car-class registry lookup that returns a 12-byte entry. */
+typedef int *(*CarClassEntryLookup)(void);
+
 int fn_8013C9C8(void) {
     return *(int *)((int *(*)())fn_8013C800)();
 }
