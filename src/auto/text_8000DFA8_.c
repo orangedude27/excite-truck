@@ -273,6 +273,7 @@ void fn_8000F440(void) {
     lbl_8055D4CC = fn_8023512C();
 }
 
+/* Releases the globally cached ArtSet (lbl_8055D4CC) on teardown, if one is loaded. */
 void fn_8000F464(void) {
     if (lbl_8055D4CC != 0) {
         fn_80235380(lbl_8055D4CC);
@@ -2063,15 +2064,12 @@ s32 fn_8000DFC0(s32 arg0) {
 #pragma processor 750
 #pragma scheduling on
 void fn_8000DFD8(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
-    s32 count;
-    count = *(s32 *)((char *)arg0 + 0x34);
-    if (count > 0) {
-        if (*(s32 *)((char *)arg0 + 0x38) == 9) {
-            ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
-                (u32)(((s32)(lbl_80560258 * (f32)count) << 24) | 0x00FDB300),
-                arg2, arg3 + lbl_80560254 * lbl_8056025C,
-                lbl_80560250, lbl_80560254);
-        }
+    s32 count = *(s32 *)((char *)arg0 + 0x34);
+    if (count > 0 && *(s32 *)((char *)arg0 + 0x38) == 9) {
+        ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
+            (u32)(((s32)(lbl_80560258 * (f32)count) << 24) | 0x00FDB300),
+            arg2, arg3 + lbl_80560254 * lbl_8056025C,
+            lbl_80560250, lbl_80560254);
     }
     ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
         (u32)-1, arg2, arg3 + lbl_80560254 * lbl_8056025C,
@@ -2091,11 +2089,13 @@ extern f32 lbl_80560250, lbl_80560254, lbl_80560258, lbl_8056025C, lbl_80560260,
 #pragma scheduling on
 void fn_8000E15C(void *arg0, s32 arg1, f32 arg2, f32 arg3) {
     s32 count = *(s32 *)((char *)arg0 + 0x34);
-    if (count > 0 && *(s32 *)((char *)arg0 + 0x38) == 9) {
-        ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
-            (u32)(((s32)(lbl_80560258 * (f32)count) << 24) | 0x00FDB300),
-            arg2, arg3 + lbl_80560254 * lbl_8056025C,
-            lbl_80560250, lbl_80560254);
+    if (count > 0) {
+        if (*(s32 *)((char *)arg0 + 0x38) == 9) {
+            ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
+                (u32)(((s32)(lbl_80560258 * (f32)count) << 24) | 0x00FDB300),
+                arg2, arg3 + lbl_80560254 * lbl_8056025C,
+                lbl_80560250, lbl_80560254);
+        }
     }
     ((void (*)(u32, f32, f32, f32, f32))fn_800109E4)(
         (u32)-1, arg2, arg3 + lbl_80560254 * lbl_8056025C,
