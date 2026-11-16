@@ -10804,8 +10804,8 @@ void btm_pm_proc_cmd_status(UINT8 status) {
 /* Continue a role switch / encryption change that waited for the mode change. */
 static inline void btm_pm_cont_switch_inl(int offset, u16 handle, u8 status) {
     u8 *addr;
-    u8 *dev;
     u8 *link = (u8 *)((u32)lbl_803C0F78 + offset);
+    u8 *dev;
     if (link[0x14f] == 1) {
         addr = link + 0x3c;
         dev = (u8 *)btm_find_dev(addr);
