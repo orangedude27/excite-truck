@@ -69,7 +69,6 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
     float in[3];
     float c, half;
     int i;
-
     fn_802C8BD0(lbl_8055EA6C);
     if (fn_802C8DBC(0x11) != 0) {
         c = lbl_80562CFC;
@@ -158,6 +157,7 @@ void fn_801E3C88(void) {
     fn_802C6CF8(lbl_8055EA64);
 }
 
+#pragma dont_inline fn_801E36F0
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
