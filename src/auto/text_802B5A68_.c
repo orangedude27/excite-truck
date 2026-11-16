@@ -866,7 +866,7 @@ void fn_802B6AC0(void) {
     s32 *state;
     s32 result;
     s32 mode;
-    s32 myindex;
+    s32 index;
     u32 row;
     u32 column;
     u32 height;
@@ -878,7 +878,6 @@ void fn_802B6AC0(void) {
     char *entryName;
     struct Entry *entry;
     struct Texture *texture;
-    char *suffix;
     val = fn_802E2C20();
     seconds = (float)val / lbl_80564C70;
     below = seconds - *(float *)((u8 *)&lbl_8055FA18 + 4) < lbl_8055FA18;
@@ -894,11 +893,11 @@ void fn_802B6AC0(void) {
     ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(scratch.imageBuffer, 0x40, lbl_8055CE88, mode);
     result = fn_802E3BB4(scratch.imageBuffer, scratch.path, 0x20);
     if ((u32)result + 0x10000U != 0xFFFFU) {
-        suffix = (char *)lbl_8055CE98;
+        register char *suffix = (char *)lbl_8055CE98;
         do {
-            myindex = state[1];
-            entry = (struct Entry *)(*(u32 *)&lbl_804BE7D8 + myindex * 0x128);
-            state[1] = myindex + 1;
+            index = state[1];
+            entry = (struct Entry *)(*(u32 *)&lbl_804BE7D8 + index * 0x128);
+            state[1] = index + 1;
             {
                 s32 remaining = 0x20;
                 char *dst = entry->name;
@@ -1023,12 +1022,13 @@ extern void fn_80204048();
 extern void fn_8020404C(void);
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
     f32 sp[4];
     f32 x, y, adjusted;
     s32 rounded;
     s16 xBase, yBase;
-    u32 scale, width, height;
+    u32 scale1, scale2, width, height;
     register u32 row, column;
 
     if (*(s32 *)((u8 *)arg1 + 0x20) != 0) {
@@ -1038,8 +1038,8 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
         else
             adjusted = lbl_80564C78 + x;
         rounded = (s32)adjusted;
-        scale = fn_802B6E30() - 1;
-        xBase = (s16)rounded & ~scale;
+        scale1 = fn_802B6E30() - 1;
+        xBase = (s16)rounded & ~scale1;
 
         y = *(f32 *)((u8 *)arg0 + 8) / lbl_80564C58;
         if (y < lbl_80564C74)
@@ -1047,8 +1047,8 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
         else
             adjusted = lbl_80564C78 + y;
         rounded = (s32)adjusted;
-        scale = fn_802B6E30() - 1;
-        yBase = (s16)rounded & ~scale;
+        scale2 = fn_802B6E30() - 1;
+        yBase = (s16)rounded & ~scale2;
         width = lbl_8055CEA0 * *(u32 *)((u8 *)arg1 + 0x20);
         height = lbl_8055CEA0 * *(u32 *)((u8 *)arg1 + 0x24);
         if (lbl_8055FA38 == 5) {
@@ -1781,19 +1781,24 @@ s32 fn_802B8310(s32 arg0) {
 void fn_802B83CC(void) {
     Struct804BFF80 *state = (Struct804BFF80 *)&lbl_804BFF80;
     Struct804BFF80 *callbackState;
+    Fn802B83CCEntry *entry;
     Fn802B83CCEntry *actionEntry;
     s32 difference;
     u32 i;
+
     if (state->str1[0] == 0)
         return;
     difference = state->unk0[1] - state->unk54[1];
     if (difference == 0)
         return;
+
     for (i = 0; i < 3; i++) {
-        if (lbl_8034A95C[i].name == 0 || strcmp(lbl_8034A95C[i].name, state->str1) != 0) {
-            if (lbl_8034A95C[i].predicate == 0 || lbl_8034A95C[i].predicate(state->str1) == 0)
+        entry = &lbl_8034A95C[i];
+        if (entry->name == 0 || strcmp(entry->name, state->str1) != 0) {
+            if (entry->predicate == 0 || entry->predicate(state->str1) == 0)
                 continue;
         }
+
         actionEntry = (Fn802B83CCEntry *)(volatile void *)&lbl_8034A95C[i];
         callbackState = (Struct804BFF80 *)&lbl_804BFF80;
         if (actionEntry->action(difference, callbackState->str1) != 0) {
