@@ -1628,8 +1628,9 @@ void fn_80158F34b(void* arg0, void* arg1) {
 }
 #pragma dont_inline off
 
-extern "C" s32 fn_80158F60(Unk8015A368C* arg0) {
-    return arg0->v21() > 0;
+extern "C" s32 fn_80158F60(Unk8015A368C* bonus) {
+    /* Returns whether the bonus tracker's current record index (v21) is positive. */
+    return bonus->v21() > 0;
 }
 
 #pragma push
