@@ -449,7 +449,6 @@ void fn_8013B6A4(int index, float value) {
 extern int lbl_802F9360[];
 extern char lbl_8032C374[];
 extern char lbl_8032C364[];
-extern float lbl_80561434;
 extern float lbl_80561440;
 extern float lbl_80561460;
 extern float lbl_80559C98;
@@ -488,7 +487,7 @@ float fn_8013B744(int index) {
 float fn_8013AA68(void *arg0, void *arg1, void *arg2, void *arg3) {
     int spC;
     float sp8;
-    float result = *(volatile float *)&lbl_80561434;
+    register float result = lbl_80561434;
     if (((int (*)(unkVtable **, int))fn_8013A760)((unkVtable **)arg0, (int)arg1) != 0) {
         ((void (*)(int *, float *, int))fn_8013B6C0)(&spC, &sp8, *(int *)((char *)arg3 + 0xC));
         ((void (*)(unkVtable **, char *, char *))fn_8013A7E8)((unkVtable **)arg0, (char *)arg1, (char *)arg2);
