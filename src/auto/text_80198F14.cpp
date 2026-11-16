@@ -2943,10 +2943,10 @@ extern f32 lbl_805623BC;
 /* Rotate src by the transpose-indexed 3x3 matrix m (box space back to world space);
  * the dst == &src check stays in the code, so both branches are emitted. */
 static inline void fn801A0464RotateVec(Vec *dst, const Vec &src, const f32 *m) {
-    f32 x = src.x;
-    f32 y = src.y;
-    f32 z = src.z;
     if (dst == &src) {
+        f32 x = src.x;
+        f32 y = src.y;
+        f32 z = src.z;
         f32 rx = (x * m[0] + y * m[3]) + z * m[6];
         f32 ry = (x * m[1] + y * m[4]) + z * m[7];
         f32 rz = (x * m[2] + y * m[5]) + z * m[8];
@@ -2954,11 +2954,18 @@ static inline void fn801A0464RotateVec(Vec *dst, const Vec &src, const f32 *m) {
         dst->y = ry;
         dst->z = rz;
     } else {
+        f32 x = src.x;
+        f32 y = src.y;
+        f32 z = src.z;
         dst->x = (y * m[3] + x * m[0]) + z * m[6];
         dst->y = (y * m[4] + x * m[1]) + z * m[7];
         dst->z = (y * m[5] + x * m[2]) + z * m[8];
     }
 }
+/* a Vec copied as three words (lwz/stw) */
+struct Fn801A0464Words {
+    u32 w[3];
+};
 
 /* registers are saved with _savegpr */
 #pragma use_lmw_stmw off
@@ -3003,7 +3010,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
         f32 dist2 = PSVECDotProduct(&delta, &delta);
         f32 r = *(f32 *)(self + 0x178) + *(f32 *)(other + 0x178);
         if (dist2 < r * r) {
-            fn_801A0160(other);
+            ((void (*)(void *))fn_801A0160)(other);
             u8 *ent = other;
             s32 i = 0;
             while (i < *(s32 *)(other + 0x174)) {
@@ -3037,7 +3044,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
             local.x = nx;
             local.y = ny;
             local.z = nz;
-            fn_801A0160(self);
+            ((void (*)(void *))fn_801A0160)(self);
             u8 *ent = self;
             s32 i = 0;
             while (i < *(s32 *)(self + 0x174)) {
@@ -3062,10 +3069,8 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
             box_done:
                 if (ok != 0) {
                     s32 e = *(s32 *)(obj + 0x1EC);
-                    volatile f32 *pout = (volatile f32 *)&out;
                     f32 eps;
                     f32 one = lbl_805622E0;
-                    volatile f32 *pq = (volatile f32 *)&q;
                     eps = lbl_805622D8;
                     s32 k = 0;
                     do {
@@ -3097,18 +3102,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
                         if (sz < c) c = sz;
                         q.z = (c > -sz) ? c : -sz;
                         bm = *(f32 **)(other + 0xC);
-                        x = pq[0];
-                        y = pq[1];
-                        z = pq[2];
-                        if (pout == pq) {
-                            pout[0] = (x * bm[0] + y * bm[3]) + z * bm[6];
-                            pout[1] = (x * bm[1] + y * bm[4]) + z * bm[7];
-                            pout[2] = (x * bm[2] + y * bm[5]) + z * bm[8];
-                        } else {
-                            pout[0] = (y * bm[3] + x * bm[0]) + z * bm[6];
-                            pout[1] = (y * bm[4] + x * bm[1]) + z * bm[7];
-                            pout[2] = (y * bm[5] + x * bm[2]) + z * bm[8];
-                        }
+                        fn801A0464RotateVec(&out, q, bm);
                         out.x += bm[9];
                         out.y += bm[10];
                         out.z += bm[11];
@@ -3130,10 +3124,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
             }
         }
     } else if (tag == 0x53504852 || tag == 0x464C5352) {
-        u8 *src = *(u8 **)(self + 0x17C);
-        ((u32 *)&center)[0] = *(u32 *)(src + 0x38);
-        ((u32 *)&center)[1] = *(u32 *)(src + 0x3C);
-        ((u32 *)&center)[2] = *(u32 *)(src + 0x40);
+        CornerV3Copy((CornerV3 *)&center, (CornerV3 *)(*(u8 **)(self + 0x17C) + 0x38));
         u8 *owner = *(u8 **)(self + 4);
         if (owner != 0) {
             center.x += *(f32 *)(owner + 0x30);
@@ -3148,7 +3139,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
     } else if (tag == 0x54554245) {
         fn_8019EA7C(other, *(void **)(self + 0x17C));
     } else if (tag == 0x52494E47) {
-        fn_801A0160(self);
+        ((void (*)(void *))fn_801A0160)(self);
         u8 *ent = self;
         s32 i = 0;
         while (i < *(s32 *)(self + 0x174)) {
@@ -3159,7 +3150,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
     } else if (tag == 0x52414744) {
         ((Fn801A401CDispatch *)other)->Call(self);
     } else if (tag == 0x504F4C59) {
-        fn_801A0160(self);
+        ((void (*)(void *))fn_801A0160)(self);
         u8 *ent = self;
         s32 i = 0;
         while (i < *(s32 *)(self + 0x174)) {
@@ -3197,7 +3188,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
             } while (k < 4);
         }
     } else if (tag == 0x504D5348) {
-        fn_801A0160(self);
+        ((void (*)(void *))fn_801A0160)(self);
         u8 *ent = self;
         s32 i = 0;
         while (i < *(s32 *)(self + 0x174)) {
@@ -3230,9 +3221,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
             do {
                 s32 j;
                 fn_801BEAEC(e, k, &tmp);
-                ((u32 *)&v)[0] = ((u32 *)&tmp)[0];
-                ((u32 *)&v)[1] = ((u32 *)&tmp)[1];
-                ((u32 *)&v)[2] = ((u32 *)&tmp)[2];
+                CornerV3Copy((CornerV3 *)&v, (CornerV3 *)&tmp);
                 v.x += *(f32 *)(obj + 0x48) * push;
                 v.y += *(f32 *)(obj + 0x4C) * push;
                 v.z += *(f32 *)(obj + 0x50) * push;
