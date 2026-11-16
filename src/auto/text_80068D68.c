@@ -6031,13 +6031,14 @@ u8 fn_80073E5C(u8 *bd_addr) {
 #define BTA_DM_API_REQUEST_EVT 0x10C
 #define bta_sys_sendmsg         fn_80071450
 
+/* Post a no-payload BTA device-manager API event (code 0x10C) to the BTA task. */
 void fn_80073EA4(void) {
-    s16 *buf;
+    s16 *msg;
 
-    buf = (s16 *)GKI_getbuf(8);
-    if (buf != 0) {
-        *buf = 0x10C;
-        fn_80071450(buf);
+    msg = (s16 *)GKI_getbuf(8);
+    if (msg != 0) {
+        *msg = 0x10C;
+        fn_80071450(msg);
     }
 }
 
