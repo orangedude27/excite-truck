@@ -25467,14 +25467,16 @@ extern "C" void fn_800A4D4C(void *arg0, void *arg1) {
     }
 }
 
-extern "C" s32 fn_800A4D74(void *arg0, u32 arg1) {
-    if (arg1 == 1) {
-        return ((s32 *)arg0)[0];
+// Selects one of the three name pointers stored in a VFiPF path-name record:
+// selector 1 gives the first form, 2 the second, and anything else the third.
+extern "C" s32 fn_800A4D74(void *pathName, u32 selector) {
+    if (selector == 1) {
+        return ((s32 *)pathName)[0];
     }
-    if (arg1 == 2) {
-        return ((s32 *)arg0)[1];
+    if (selector == 2) {
+        return ((s32 *)pathName)[1];
     }
-    return ((s32 *)arg0)[2];
+    return ((s32 *)pathName)[2];
 }
 
 extern "C" void VFiPFSTR_MoveStrPos(void *arg0, s16 arg1, s32 arg2) {
