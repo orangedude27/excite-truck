@@ -660,20 +660,7 @@ extern "C" char lbl_803229D0[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...) __attribute__((noreturn));
 extern "C" void Update__Q46nw4hbm3snd6detail7ChannelFb(void *, int);
 
-static inline f32 GetChannelSweep(void *channel) {
-    f32 value = lbl_80560FC0;
-    f32 sweep = *(f32 *)((char *)channel + 0xA8);
-    if (value == sweep)
-        return value;
-    s32 position = *(s32 *)((char *)channel + 0xAC);
-    s32 length = *(s32 *)((char *)channel + 0xB0);
-    if (position >= length)
-        return value;
-    value = sweep * (f32)(length - position);
-    if (length == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803228E8, 0x1B3, lbl_803228F8);
-    return value / (f32)*(s32 *)((char *)channel + 0xB0);
-}
+
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv(void) {
     char *manager;
