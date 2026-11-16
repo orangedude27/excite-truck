@@ -513,8 +513,10 @@ void fn_8015F554(void) {
 }
 
 void fn_8015F558(void) {
+    // Releases the module's two global parameter structures: the derived item-pointer array at
+    // lbl_8055E2A0 and the parameter-entry registry (gParamRegistry) at lbl_8055E29C.
     fn_8015F584(&lbl_8055E2A0);
-    fn_8015F5F4(&lbl_8055E29C);
+    fn_8015F5F4(&gParamRegistry);
 }
 
 void fn_8015F584(int *slot) {
@@ -890,7 +892,7 @@ extern int fn_80179650(void);
 extern void fn_80179630(int);
 extern void fn_8017960C(void);
 #pragma scheduling invalid_target
-s32 fn_8015FBCC(register void *arg0, register s32 arg1, register u8 arg2, register s32 arg3) {
+s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
     struct Hit table[64];
     u32 sp68[12];
     f32 sp50[6];
@@ -901,22 +903,22 @@ s32 fn_8015FBCC(register void *arg0, register s32 arg1, register u8 arg2, regist
     f32 sp20[2];
     f32 sp10[2];
     u8 sp8;
-    s32 ret = 0;
-    f32 lim, tmp, f1, fv;
+    f32 lim, f1, fv;
     s32 idx, t26, t27, t29, t31, t3;
     void *obj2, *sub;
     s32 *p26;
     struct Hit *hp;
     f32 *fp;
     int ctr, j, n;
+    s32 ret = 0;
 
     if ((void *)lbl_8055E2A0 != (void *)0) {
         obj2 = ((void *(*)(void *))(*(void ***) *(void **)((char *)arg0 + 0x270))[6])(*(void **)((char *)arg0 + 0x270));
         sub = *(void **)((char *)obj2 + 0x2C);
         idx = (*(s32 *)((char *)obj2 + 4) - *(s32 *)((char *)sub + 0x1C)) / 60;
         ((void (*)(void *, void *, void *, int))fn_8015FB28)(sp68, (char *)arg0 + 0x3C, sub, 0x88888889);
-        tmp = *(f32 *)((char *)arg0 + 0x25D4) * lbl_80561814;
-        lim = (lbl_80561818 <= tmp) ? tmp : lbl_80561818;
+        lim = *(f32 *)((char *)arg0 + 0x25D4) * lbl_80561814;
+        if (lim < lbl_80561818) lim = lbl_80561818;
         sp8 = arg2;
         p26 = (s32 *)((s32 **)lbl_8055E2A0)[0][idx];
         ((void (*)(void *, void *))fn_801606B8)(&sp8, *(void **)lbl_8055E2A0);
