@@ -1016,43 +1016,39 @@ nw4hbm::ut::CharStrmReader nw4hbm::ut::Font::GetCharStrmReader() const {
     s32 var_r9;
     s32 var_r10;
     u32 hi;
-    s32 font;
-    nw4hbm::ut::CharStrmReader result;
-    font = (s32)this;
-    hi = (u32)this & 0xFF000000;
+    s32 font = (s32)this;
+
+    hi = (u32)font & 0xFF000000;
     var_r5 = 1;
     var_r6 = 1;
     var_r7 = 1;
     var_r8 = 1;
     var_r9 = 1;
     var_r10 = 1;
-    if ((hi != 0x80000000U) && (((u32)this & 0xFF800000) != 0x81000000U)) {
+    if ((hi != 0x80000000U) && (((u32)font & 0xFF800000) != 0x81000000U)) {
         var_r10 = 0;
     }
-    if ((var_r10 == 0) && (((u32)this & 0xF8000000) != 0x90000000U)) {
+    if ((var_r10 == 0) && (((u32)font & 0xF8000000) != 0x90000000U)) {
         var_r9 = 0;
     }
     if ((var_r9 == 0) && (hi != 0xC0000000U)) {
         var_r8 = 0;
     }
-    if ((var_r8 == 0) && (((u32)this & 0xFF800000) != 0xC1000000U)) {
+    if ((var_r8 == 0) && (((u32)font & 0xFF800000) != 0xC1000000U)) {
         var_r7 = 0;
     }
-    if ((var_r7 == 0) && (((u32)this & 0xF8000000) != 0xD0000000U)) {
+    if ((var_r7 == 0) && (((u32)font & 0xF8000000) != 0xD0000000U)) {
         var_r6 = 0;
     }
-    if ((var_r6 == 0) && (((u32)this & 0xFFFFC000) != 0xE0000000U)) {
+    if ((var_r6 == 0) && (((u32)font & 0xFFFFC000) != 0xE0000000U)) {
         var_r5 = 0;
     }
     if (var_r5 == 0) {
         ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(
             (const char *)&lbl_80559804, 0x75, lbl_80320948, font);
     }
-    result.unk4 = *(s32 *)((u8 *)font + 4);
-    result.unk0 = 0;
-    result.unk8 = *(s32 *)((u8 *)font + 8);
-    result.unkC = *(s32 *)((u8 *)font + 0xC);
-    return result;
+
+    return nw4hbm::ut::CharStrmReader(*(nw4hbm::ut::CharStrmReader::ReadFunc *)((u8 *)font + 4));
 }
 extern "C" void AllocStringBuffer__Q36nw4hbm3lyt7TextBoxFUs(void *this_ptr, u16 len) {
     struct VTable { void (*slots[27])(void *); };
