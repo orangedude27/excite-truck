@@ -61,18 +61,22 @@ extern void fn_80231220(int, int, float, float, float, float, float, float, floa
 extern float lbl_80563B40, lbl_80563B44, lbl_80563B48;
 extern double lbl_80563B50;
 #pragma scheduling invalid_target
+#pragma paired_single off
 void fn_8025CC78(void* p, int arg1) {
     float spC, sp8, outC, out8, f29, f28, f27, f26, f25, f24;
+    float tmpA, tmpB;
     unsigned int color, packed;
-    int red, green, blue;
+    int blue, green, red;
     char* item;
     if (*(unsigned char*)((char*)p + 0x20) == 0)
         return;
     fn_80230C30(&spC, &sp8, *(int*)((char*)p + 4), *(int*)((char*)p + 8));
     f25 = (float)*(int*)((char*)p + 0xC);
+    tmpA = spC - lbl_80563B40;
+    tmpB = lbl_80563B40 + sp8;
     f24 = (float)*(int*)((char*)p + 0x10);
     fn_802354A0(*(int*)((char*)p + 0x28), *(unsigned char*)((char*)p + 0x2C), -1,
-        spC - lbl_80563B40, lbl_80563B40 + sp8, lbl_80563B44,
+        tmpA, tmpB, lbl_80563B44,
         lbl_80563B48 + f25, lbl_80563B48 + f24);
     item = (char*)**(void***)((char*)p + 0x18) + *(int*)((char*)p + 0x1C) * 0x38;
     out8 = sp8;
