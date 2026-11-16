@@ -9,6 +9,9 @@ extern int lbl_8055E780;
 extern int lbl_8055E788;
 #pragma scheduling invalid_target
 void fn_801BF1C4(void) {
+    /* Initialize the object pool at lbl_80436D48 (0x100 entries of 0x10 bytes,
+       constructed by fn_801BF210) and its lock/state globals lbl_8055E780/
+       lbl_8055E788. */
     fn_8000D838(&lbl_8055E780);
     lbl_8055E788 = 0xFFFF0000;
     fn_8002F53C(lbl_80436D48, fn_801BF210, 0, 0x10, 0x100);
