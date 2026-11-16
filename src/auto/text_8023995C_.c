@@ -12,13 +12,14 @@ extern s32 lbl_8055F0F8;
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_8023995C(void) {
-    s32 v;
-    s32 *p;
+    /* Initialize global UI/state block: reset slots, set default value 0x7B, set color 0x7F000000. */
+    s32 value;
+    s32 *state;
     fn_8000D838(&lbl_8055F0F0);
-    p = lbl_804986E0 + 1;
+    state = lbl_804986E0 + 1;
     lbl_804986E0[0] = 0;
-    v = 0x7B;
-    lbl_804986E0[1] = v;
+    value = 0x7B;
+    lbl_804986E0[1] = value;
     lbl_804986E0[2] = 0;
     lbl_804986E0[3] = 0;
     lbl_804986E0[4] = 0;
