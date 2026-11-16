@@ -15,10 +15,11 @@ static DVDWaitingQueue WaitingQueue[DVD_PRIO_MAX];
 
 
 void __DVDClearWaitingQueue(void) {
-    u32 i;
+    /* Reset each priority's waiting-queue head to an empty, self-linked list. */
+    u32 prio;
 
-    for (i = 0; i < DVD_PRIO_MAX; i++) {
-        DVDCommandBlock* head = (DVDCommandBlock*)&WaitingQueue[i];
+    for (prio = 0; prio < DVD_PRIO_MAX; prio++) {
+        DVDCommandBlock* head = (DVDCommandBlock*)&WaitingQueue[prio];
         head->next = head;
         head->prev = head;
     }
