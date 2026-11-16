@@ -540,65 +540,68 @@ extern "C" void fn_80167EEC(void) {
 }
 #pragma cplusplus reset
 void fn_80168020(void) {
+    /* Per-frame pickup refresh: lift each placed pickup by its model height and
+       record hit offset then clear its per-frame flag, clear each group's flag,
+       and reset the spin-matrix translation sentinels to -1. */
     register u8 *manager;
-    register s32 i;
-    register u8 *record;
-    register s32 offset;
+    register s32 recordIndex;
+    register u8 *pickup;
+    register s32 recordOffset;
     register s32 zero;
 
     manager = (u8 *)(u32)lbl_8055E354;
-    i = 0;
-    offset = 0;
+    recordIndex = 0;
+    recordOffset = 0;
     zero = 0;
-    goto first_check;
-first_body:
+    goto record_check;
+record_body:
     {
         register u8 *object;
         register f32 y;
         register f32 sum;
 
-        record = (u8 *)(u32)*(u32 *)manager + offset;
-        fn_801E9E30(0, (f32 *)(record + 4));
-        object = (u8 *)(u32)*(u32 *)record;
-        i += 1;
-        y = *(f32 *)(record + 8);
-        offset += 0x18;
+        pickup = (u8 *)(u32)*(u32 *)manager + recordOffset;
+        fn_801E9E30(0, (f32 *)(pickup + 4));
+        object = (u8 *)(u32)*(u32 *)pickup;
+        recordIndex += 1;
+        y = *(f32 *)(pickup + 8);
+        recordOffset += 0x18;
         sum = y + *(f32 *)(object + 0x18);
-        *(f32 *)(record + 8) = sum + *(volatile f32 *)(record + 0x10);
-        *(u8 *)(record + 0x14) = zero;
+        *(f32 *)(pickup + 8) = sum + *(volatile f32 *)(pickup + 0x10);
+        *(u8 *)(pickup + 0x14) = zero;
     }
-first_check:
-    if (i < *(s32 *)(manager + 4))
-        goto first_body;
+record_check:
+    if (recordIndex < *(s32 *)(manager + 4))
+        goto record_body;
 
     {
-        register s32 count = 0;
-        register s32 byteOffset = 0;
-        register s32 byteValue = 0;
-        goto second_check;
-second_body:
+        register s32 groupCount = 0;
+        register s32 groupOffset = 0;
+        register s32 clearByte = 0;
+        goto group_check;
+group_body:
         {
-            register u8 *entry = (u8 *)(u32)*(u32 *)(manager + 0x1D4CC) + byteOffset;
-            count += 1;
-            *(u8 *)(entry + 0x1D) = byteValue;
-            byteOffset += 0x20;
+            register u8 *group = (u8 *)(u32)*(u32 *)(manager + 0x1D4CC) + groupOffset;
+            groupCount += 1;
+            *(u8 *)(group + 0x1D) = clearByte;
+            groupOffset += 0x20;
         }
-second_check:
-        if (count < *(s32 *)(manager + 0x1D4D0))
-            goto second_body;
+group_check:
+        if (groupCount < *(s32 *)(manager + 0x1D4D0))
+            goto group_body;
     }
 
     {
-        register s32 value = -1;
-        register s32 *table = lbl_80430260 + 1;
-        *--table = value;
-        table[4] = value;
-        table[8] = value;
-        table[12] = value;
-        table[16] = value;
-        table[20] = value;
-        table[24] = value;
-        table[28] = value;
+        register s32 sentinel = -1;
+        register s32 *spinTable = lbl_80430260 + 1;
+        *--spinTable = sentinel;
+        spinTable[4] = sentinel;
+        spinTable[8] = sentinel;
+        spinTable[12] = sentinel;
+        spinTable[16] = sentinel;
+        spinTable[20] = sentinel;
+        spinTable[24] = sentinel;
+        spinTable[28] = sentinel;
     }
 }
 
@@ -1405,15 +1408,32 @@ extern "C" s32 fn_801699E4(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
             entry = &arg2->entries[arg2->entryCount - 1];
             entry->recordCount += 1;
         } else {
-            if (arg2->entryCount == 0 || arg2->entries[arg2->entryCount - 1].byte1C != 0) {
-                entry = &arg2->entries[arg2->entryCount++];
-                entry->byte1C = 0;
-                entry->recordStart = arg2->recordCount - 1;
-                entry->recordCount = 0;
-                entry->byte1D = 0;
+            s32 __c = arg2->entryCount;
+            if (__c == 0) {
+                goto mkEntry;
+            } else {
+                s32 __last = __c - 1;
+                volatile u8 *__e = (u8 *)arg2->entries + __last * 0x20 + 0x1C;
+                if (*__e == 0) {
+                    goto incEntry;
+                }
+            }
+mkEntry:;
+            {
+                DummyEntry *newEntry = &arg2->entries[arg2->entryCount++];
+                newEntry->byte1C = 0;
+                newEntry->recordStart = arg2->recordCount - 1;
+                newEntry->recordCount = 0;
+                newEntry->byte1D = 0;
+            }
+incEntry:;
+            {
+                s32 last3 = arg2->entryCount - 1;
+                u8 *base3 = (u8 *)arg2->entries;
+                u8 *e3 = base3 + last3 * 0x20;
+                (*(s32 *)(e3 + 0x18))++;
             }
             entry = &arg2->entries[arg2->entryCount - 1];
-            entry->recordCount += 1;
         }
         cursor += 2;
     }
