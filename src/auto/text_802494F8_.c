@@ -1330,9 +1330,10 @@ void fn_8024BAA0(void *arg0) {
     fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70, *(*(int **)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0x11C) * 2 + 1), (const char *)&lbl_8055BFF8);
 }
 #pragma scheduling on
-void fn_8024BB3C(void *arg0) {
-    s32 value = *(s32 *)((char *)arg0 + 0x10) - 1;
-    *(s32 *)((char *)arg0 + 0x10) = value & ((-value & ~value) >> 31);
+void fn_8024BB3C(void *sound) {
+    /* Decrement the counter at +0x10 in place, saturating at zero (max(value - 1, 0)). */
+    s32 decremented = *(s32 *)((char *)sound + 0x10) - 1;
+    *(s32 *)((char *)sound + 0x10) = decremented & ((-decremented & ~decremented) >> 31);
 }
 
 void fn_8024BB5C(void *arg0) {
