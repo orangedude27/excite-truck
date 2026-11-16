@@ -318,12 +318,22 @@ void fn_802E29AC(void) {
 }
 
 void fn_802E2A1C(void) {
-    int **p = (int **)((char *)lbl_804DB780 + 8);
-    if (*p == 0)
+#define StackGuardInfo lbl_804DB780
+#define STACK_GUARD_MAGIC 0x53ffeedd
+#define LogError fn_802E317C
+#define StackOverrunMsg lbl_8034CD48
+    int **guard = (int **)((char *)StackGuardInfo + 8);
+    /* Check the deepest stack-guard word: if one is configured and its magic
+     * value has been overwritten, log "STACK OVERRUN!". */
+    if (*guard == 0)
         return;
-    if (**p == 0x53ffeedd)
+    if (**guard == STACK_GUARD_MAGIC)
         return;
-    fn_802E317C(lbl_8034CD48);
+    LogError(StackOverrunMsg);
+#undef StackOverrunMsg
+#undef LogError
+#undef STACK_GUARD_MAGIC
+#undef StackGuardInfo
 }
 
 void fn_802E2A54(void) {}
