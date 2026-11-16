@@ -177,7 +177,7 @@ extern "C" s32 fn_8001DD2C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma scheduling off
+#pragma scheduling on
 extern "C" void fn_8001DD6C(void) {
     if (lbl_8055D604 != 0) ((CleanupEntry*)lbl_8055D604)->cleanup(1);
     lbl_8055D604 = 0;
