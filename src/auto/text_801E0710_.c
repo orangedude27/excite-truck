@@ -340,15 +340,14 @@ void *fn_801E07E8(void *self, s32 deleteFlag) {
 void fn_801E0864(void *arg0) {
     float b;
     float a;
-    BoostSlot_801E0710 *slot = (BoostSlot_801E0710 *)arg0;
     a = lbl_80562C78;
     b = lbl_80562C7C;
-    slot->areaId = -1;
-    slot->pad04 = 0;
-    slot->arrowColor = 0;
-    slot->lineColor = 0;
-    slot->speed = a;
-    slot->timer = b;
+    *(int *)arg0 = -1;
+    *((char *)arg0 + 4) = 0;
+    *(int *)((char *)arg0 + 0x10) = 0;
+    *(int *)((char *)arg0 + 0x14) = 0;
+    *(float *)((char *)arg0 + 8) = a;
+    *(float *)((char *)arg0 + 0xC) = b;
 }
 #pragma push
 #pragma processor 750
@@ -356,9 +355,9 @@ void fn_801E0864(void *arg0) {
 void fn_801E0890(void *arg0) {
     Obj_801E0890 *obj = (Obj_801E0890 *)arg0;
     u8 *ref = lbl_80339780;
-    Vec2_801E0890 sp8, sp10, sp18, sp20;
-    Vec2_801E0890 sp28, sp30, sp38, sp40;
-    Vec2_801E0890 t1, t2, t3, t4;
+    Vec2_801E0890 t4, t3, t2, t1;
+    Vec2_801E0890 sp40, sp38, sp30, sp28;
+    Vec2_801E0890 sp20, sp18, sp10, sp8;
     s32 best, j, i;
     s32 ok;
     void *item;
@@ -370,7 +369,6 @@ void fn_801E0890(void *arg0) {
     f32 k2, w1, d, k1, k3, v, w;
     void *p;
     Cell_801E0890 *cell;
-
     p = *(void **)((u8 *)fn_8001285C(*(s32 *)__AXFXGetLfoSinTable_801769CC()) + 0x20);
     ((void (*)(void *, void *, void *))(*(void ***)p)[6])(p, ref + 0x2C, ref + 0x3C);
     it = fn_80131810();
@@ -385,7 +383,7 @@ void fn_801E0890(void *arg0) {
             if (poly->n == 3) {
                 best = -1;
                 a = &poly->p[0];
-                for (i = 0; i < poly->n; i++, a++) {
+                for (i = 0; i < poly->n; a++, i++) {
                     if (best < 0 || (d = fn_80160BE0(a, &poly->p[i % poly->n]), fn_80160BE0(&poly->p[best], &poly->p[best % poly->n]) > d))
                         best = i;
                 }
@@ -490,11 +488,12 @@ void *fn_801E0F34(int count) {
     return block;
 }
 
-void fn_801E0F78(f32 *arg0, f32 *arg1, f32 *arg2, f32 arg3) {
-    f32 x = arg1[0] + arg2[0] * arg3;
-    f32 y = arg1[1] + arg2[1] * arg3;
-    arg0[0] = x;
-    arg0[1] = y;
+/* 2D vector scaled-add: dst = base + dir * scale, computed component-wise. */
+void fn_801E0F78(f32 *dst, f32 *base, f32 *dir, f32 scale) {
+    f32 outX = base[0] + dir[0] * scale;
+    f32 outY = base[1] + dir[1] * scale;
+    dst[0] = outX;
+    dst[1] = outY;
 }
 
 #pragma push
@@ -820,14 +819,16 @@ void fn_801E1710(void *arg0) {
     register f32 threshold;
     register f32 initialB;
     register f32 initialA;
-    register s32 c_ff7f;
-    register s32 c_ffff;
-    register s32 c_0;
+
+    register u32 c_ff7f;
+    register u32 c_ffff;
     register s32 c_neg100;
+    register u32 c_0;
     register s32 c_neg1;
     register u8 *base;
     register u8 *row;
     register s32 i;
+
     initialA = lbl_80562C78;
     base = (u8 *)arg0;
     initialB = lbl_80562C7C;
@@ -841,6 +842,7 @@ void fn_801E1710(void *arg0) {
     c_ff7f = 0xFF7F0000;
     c_ffff = 0xFFFF0000;
     c_neg100 = -0x100;
+
     for (; i < fn_801E85A4(); base += 4, row += 0x18, i++) {
         s32 value = *(s32 *)(base + 0x6C);
         if (value != *(s32 *)(row + 0x0C)) {
@@ -851,7 +853,7 @@ void fn_801E1710(void *arg0) {
             *(f32 *)(row + 0x18) = initialB;
             *(s32 *)(row + 0x0C) = value;
         }
-        if (*(s32 *)(row + 0x0C) != -1) {
+        if (*(s32 *)(row + 0x0C) != c_neg1) {
             f32 current2;
             int cond;
             int gt;
