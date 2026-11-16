@@ -29,8 +29,6 @@ typedef signed long long s64;
 typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
-struct ArchiveRef_800F2EDC { u8 type; u8 flags; u16 reserved; u32 offset; };
-struct ArchiveRefTable_800F2EDC { u32 count; ArchiveRef_800F2EDC refs[1]; };
 typedef int BOOL;
 extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer(void *self, int priority, void *external);
 extern "C" void* AllocImpl__Q44nw4r3snd6detail8PoolImplFv(void*);
@@ -1758,10 +1756,10 @@ extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ
     if (table == 0) return 0;
     if (arg1 >= *table) return 0;
     {
-        unsigned int off = arg1 * 8;
+        u32 off = arg1 * 8;
         ref = *(u8 **)((u8 *)arg0 + 0x28);
-        if (((u8 *)table)[off + 5] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559888, 0x6F, lbl_80324C2C);
-        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(((u8 *)table)[off + 4], *(u32 *)&((u8 *)table)[off + 8], ref);
+        if (*((u8 *)table + 5 + off) != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559888, 0x6F, lbl_80324C2C);
+        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)table + 4 + off), *(u32 *)((u8 *)table + 8 + off), ref);
     }
     if (entry == 0) return 0;
     ref = *(u8 **)((u8 *)arg0 + 0x28);
@@ -1770,10 +1768,10 @@ extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ
     if (group == 0) return 0;
     if (arg2 >= *group) return 0;
     {
-        unsigned int off = arg2 * 8;
+        u32 off = arg2 * 8;
         ref = *(u8 **)((u8 *)arg0 + 0x28);
-        if (((u8 *)group)[off + 5] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559880, 0x6F, lbl_80324C00);
-        table = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(((u8 *)group)[off + 4], *(u32 *)&((u8 *)group)[off + 8], ref);
+        if (*((u8 *)group + 5 + off) != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559880, 0x6F, lbl_80324C00);
+        table = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)group + 4 + off), *(u32 *)((u8 *)group + 8 + off), ref);
     }
     if (table == 0) return 0;
     *(u32 *)arg3 = table[0];
