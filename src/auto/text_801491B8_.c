@@ -2114,11 +2114,12 @@ extern "C" void *fn_8014EF00(void *object, s32 deleteFlag) {
 }
 #pragma cplusplus reset
 
-s32 fn_8014EFC0(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668((void *)arg0);
+s32 fn_8014EFC0(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668((void *)object);
     }
-    return arg0;
+    return object;
 }
 
 extern s32 fn_8014F088(s32, s32);
