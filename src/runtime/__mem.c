@@ -121,10 +121,11 @@ DECL_WEAK int memcmp(const void* s1, const void* s2, size_t n) {
     return 0;
 }
 
+/* Return the byte length of the NUL-terminated string s (excluding the terminator). */
 DECL_WEAK size_t strlen(const char* s) {
     const u8* p = (u8*)s - 1;
     size_t len = -1;
-    
+
     do {
         len++;
     } while (*++p);
