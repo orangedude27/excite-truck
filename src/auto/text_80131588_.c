@@ -965,11 +965,12 @@ extern "C" s32 fn_80132DA8(void *container) {
     return checksum;
 }
 #pragma cplusplus off
-s32 fn_80132E34(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80132E34(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern void fn_802E317C(const char*, ...);
