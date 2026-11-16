@@ -728,37 +728,59 @@ extern const char lbl_80322124[];
 extern const char lbl_80322100[];
 extern const char lbl_803220F4[];
 extern const char lbl_803220D0[];
-extern "C" void fn_800E2F84(void *self) {
-    char *base = (char *)self;
-    if (*(unsigned char *)(base + 0x6C30) != 0) {
-        AIRegisterDMACallback(*(void **)(base + 0x6C2C));
-        fn_800E4364(self, 0); fn_800E4364(self, 1); fn_800E4364(self, 2);
-        AXRegisterAuxACallback(*(int *)(base + 0x6CF0), *(int *)(base + 0x6CFC));
-        AXRegisterAuxBCallback(*(int *)(base + 0x6CF4), *(int *)(base + 0x6D00));
-        AXRegisterAuxCCallback(*(int *)(base + 0x6CF8), *(int *)(base + 0x6D04));
-        *(int *)(base + 0x6CF0) = 0; *(int *)(base + 0x6CFC) = 0;
-        *(int *)(base + 0x6CF4) = 0; *(int *)(base + 0x6D00) = 0;
-        *(int *)(base + 0x6CF8) = 0; *(int *)(base + 0x6D04) = 0;
-        *(int *)(base + 4) = 0;
-        while (*(int *)(base + 0x14) != 0) {
-            if (*(int *)(base + 0x14) == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322124, 0x1F1, lbl_80322100);
-            }
-            void *node = *(void **)(base + 0x18);
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
-            void *voice = (char *)node - 0x1A8;
-            if (voice == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220F4, 0x193, lbl_803220D0);
-            Stop__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
-            Free__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
-            void (*callback)(void *, int, void *) = *(void (**)(void *, int, void *))((char *)voice + 0x10C);
-            if (callback != 0) callback(voice, 2, *(void **)((char *)voice + 0x110));
-        }
-        while (*(int *)(base + 0x20) != 0) {
-            void *it = *(void **)(base + 0x24);
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(base + 0x20, &it);
-        }
-        *(unsigned char *)(base + 0x6C30) = 0;
+extern "C" void fn_800E2F84(void *self)
+{
+  char *base;
+  if ((*((unsigned char *) (base + 0x6C30))) != 0)
+  {
+    AIRegisterDMACallback(*((void **) (base + 0x6C2C)));
+    fn_800E4364(self, 0);
+    fn_800E4364(self, 1);
+    fn_800E4364(self, 2);
+    AXRegisterAuxACallback(*((int *) (base + 0x6CF0)), *((int *) (base + 0x6CFC)));
+    AXRegisterAuxBCallback(*((int *) (base + 0x6CF4)), *((int *) (base + 0x6D00)));
+    AXRegisterAuxCCallback(*((int *) (base + 0x6CF8)), *((int *) (base + 0x6D04)));
+    *((int *) (base + 0x6CF0)) = 0;
+    *((int *) (base + 0x6CFC)) = 0;
+    *((int *) (base + 0x6CF4)) = 0;
+    *((int *) (base + 0x6D00)) = 0;
+    *((int *) (base + 0x6CF8)) = 0;
+    *((int *) (base + 0x6D04)) = 0;
+    *((int *) (base + 4)) = 0;
+    while ((*((int *) (base + 0x14))) != 0)
+    {
+      if ((*((int *) (base + 0x14))) == 0)
+      {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322124, 0x1F1, lbl_80322100);
+      }
+      void *node = *((void **) (base + 0x18));
+      if (node == 0)
+      {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+      }
+      void *voice = ((char *) node) - 0x1A8;
+      if (voice == 0)
+      {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220F4, 0x193, lbl_803220D0);
+      }
+      Stop__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
+      Free__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
+      void (*callback)(void *, int, void *) = *((void (**)(void *, int, void *)) (((char *) voice) + 0x10C));
+      if (callback != 0)
+      {
+        callback(voice, 2, *((void **) (((char *) voice) + 0x110)));
+        base = (char *) self;
+      }
     }
+
+    while ((*((int *) (base + 0x20))) != 0)
+    {
+      void *it = *((void **) (base + 0x24));
+      Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(base + 0x20, &it);
+    }
+
+    *((unsigned char *) (base + 0x6C30)) = 0;
+  }
 }
 
 #pragma push
@@ -3653,14 +3675,9 @@ extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
 
 extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
     extern float lbl_80560FB4;
+    register int zero = 0;
     float base = lbl_80560FB0;
     float initialTarget = lbl_80560FB4;
-    int zero = 0;
-    int current;
-    int total;
-    float baseAgain = 0;
-    float finalTarget = 0;
-    int one = 0;
     *((unsigned char *)self + 0x67) = zero;
     *((unsigned char *)self + 0x68) = zero;
     *((unsigned char *)self + 0x64) = zero;
@@ -3677,13 +3694,16 @@ extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
     *(float *)((char *)self + 0x58) = initialTarget;
     *(int *)((char *)self + 0x5c) = zero;
     *(int *)((char *)self + 0x60) = zero;
-    current = *(int *)((char *)self + 0x50);
-    total = *(int *)((char *)self + 0x4c);
+    int current = *(int *)((char *)self + 0x50);
+    int total = *(int *)((char *)self + 0x4c);
     if (current >= total) {
         base = *(float *)((char *)self + 0x44);
     } else {
         base += (float)current * (*(float *)((char *)self + 0x48) - *(float *)((char *)self + 0x44)) / (float)total;
     }
+    float baseAgain;
+    float finalTarget;
+    int one;
     finalTarget = lbl_80560FB4;
     zero = 0;
     baseAgain = lbl_80560FB0;
@@ -3858,6 +3878,48 @@ extern "C" void FadeIn__Q44nw4r3snd6detail10BasicSoundFi(void* self, int frames)
 }
 
 typedef void (*vfn0_t)(void*);
+//
+// Views for BasicSound's vtable slot 0x2C (IsPrepared).  The sound asks its
+// player - the SeqPlayer / StrmPlayer / WavePlayer embedded at sound+0xD8,
+// which both the 0x5C and the 0x60 accessor return - whether its sound data is
+// all there, so it can start.  A StrmPlayer sets that flag (+0x4A) once the
+// last of its stream buffers has been read in.  MWCC puts the first declared
+// virtual at 0x08, so the numbered fillers stand for the slots unused here.
+class PrepPlayerVt {
+public:
+    virtual ~PrepPlayerVt();
+    virtual void p0C();
+    virtual void p10();
+    virtual void p14();
+    virtual int p18();
+    virtual int isPrepared();       // vtable 0x1C
+};
+class PrepSoundVt {
+public:
+    virtual ~PrepSoundVt();
+    virtual void s0C();
+    virtual void s10();
+    virtual void s14();
+    virtual void s18();
+    virtual void s1C();
+    virtual void s20();
+    virtual void s24();
+    virtual void s28();
+    virtual void s2C();
+    virtual void s30();
+    virtual void s34();
+    virtual void s38();
+    virtual void s3C();
+    virtual void s40();
+    virtual void s44();
+    virtual void s48();
+    virtual void s4C();
+    virtual void s50();
+    virtual void s54();
+    virtual void s58();
+    virtual void s5C();
+    virtual PrepPlayerVt *getPlayer();  // vtable 0x60
+};
 extern "C" void fn_800E9070(VfObj *this_) {
     VfObj *first = this_->vf23();
     first->vf6();
