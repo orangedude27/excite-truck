@@ -559,14 +559,17 @@ extern "C" void fn_80156B54(void) {
 extern "C" void fn_80128658(void*);
 extern u8 lbl_8032E424[];
 extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
-    struct Obj {
+    /* Deleting destructor for the config container: install the final vtable,
+       free every entry and owned object, clear both arrays, then free the
+       container itself when the delete flag is positive. */
+    struct ConfigObj {
         void *vtable;
-        void * volatile first;
-        volatile s32 firstCount;
+        void * volatile entries;
+        volatile s32 entryCount;
         u8 pad[0x84];
-        void ** volatile items;
-        volatile s32 itemCount;
-        volatile s32 itemCapacity;
+        void ** volatile objects;
+        volatile s32 objectCount;
+        volatile s32 objectCapacity;
     };
     s32 i;
     s32 offset;
@@ -574,35 +577,35 @@ extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
     s32 offset2;
     s32 zero = 0;
     if (arg0 != 0) {
-        Obj *self = (Obj *)arg0;
+        ConfigObj *self = (ConfigObj *)arg0;
         self->vtable = lbl_8032E424;
         i = 0;
         offset = 0;
-        while (i < self->firstCount) {
-            fn_c_linkage::fn_80138AD8((char *)self->first + offset);
+        while (i < self->entryCount) {
+            fn_c_linkage::fn_80138AD8((char *)self->entries + offset);
             offset += 8;
             i++;
         }
-        self->firstCount = 0;
+        self->entryCount = 0;
         j = 0;
         offset2 = 0;
-        while (j < self->itemCount) {
-            fn_c_linkage::fn_80128658(*(void **)((char *)self->items + offset2));
+        while (j < self->objectCount) {
+            fn_c_linkage::fn_80128658(*(void **)((char *)self->objects + offset2));
             offset2 += 4;
             j++;
         }
-        self->itemCount = zero;
-        if (&self->items != 0) {
-            if (&self->items != 0) {
-                self->items = 0;
-                self->itemCount = zero;
-                self->itemCapacity = zero;
+        self->objectCount = zero;
+        if (&self->objects != 0) {
+            if (&self->objects != 0) {
+                self->objects = 0;
+                self->objectCount = zero;
+                self->objectCapacity = zero;
             }
         }
-        if (&self->first != 0) {
-            if (&self->first != 0) {
-                self->first = 0;
-                self->firstCount = zero;
+        if (&self->entries != 0) {
+            if (&self->entries != 0) {
+                self->entries = 0;
+                self->entryCount = zero;
                 *(s32 *)((char *)self + 0xC) = zero;
             }
         }
