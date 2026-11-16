@@ -646,7 +646,7 @@ f32 fn_802715F0(void *arg0) {
     b = lbl_80563F4C;
     c = lbl_8055F544;
     b *= a;
-    c = (c < b) ? b : c;
+    c = (c < b) ? c : b;
     c = (c > lbl_8055F540) ? c : lbl_8055F540;
     return c;
 }
