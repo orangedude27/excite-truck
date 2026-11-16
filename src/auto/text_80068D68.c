@@ -2273,11 +2273,12 @@ void fn_8006A81C(void) {
     OSRestoreInterrupts(savedInterrupts);
 }
 
+/* RealName: WUDGetDisableChannel. Return the AFH channel to avoid (WUDCB +0x688), read with interrupts off. */
 s8 fn_8006A940(void) {
-    u32 saved = OSDisableInterrupts();
-    u8 val = lbl_80392960[0x688];
-    OSRestoreInterrupts(saved);
-    return (s8)val;
+    u32 enabled = OSDisableInterrupts();
+    u8 disableChannel = ((WUDCBView *)lbl_80392960)->disableChannel;
+    OSRestoreInterrupts(enabled);
+    return (s8)disableChannel;
 }
 
 extern u8 lbl_80392960[];
