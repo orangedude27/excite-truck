@@ -2940,10 +2940,28 @@ extern "C" void fn_801A0444(void* arg0, void* arg1) {
 
 extern f32 lbl_805623B8;
 extern f32 lbl_805623BC;
-/* fn_801A0160 is called, not inlined, and registers are saved with _savegpr */
-#pragma dont_inline on
+/* registers are saved with _savegpr */
 #pragma use_lmw_stmw off
 extern "C" void fn_801A0464(void *arg0, void *arg1) {
+    u8 buffer[0x300];
+    Vec boxDelta;
+    Vec local;
+    Vec corner;
+    Vec q;
+    Vec out;
+    Vec diff;
+    Vec center;
+    Vec polyPoint;
+    Vec nrm;
+    Vec hit;
+    Vec size;
+    Vec tmp;
+    Vec v;
+    Vec meshDelta;
+    Vec boxCenter;
+    Vec delta;
+    f32 depth;
+    s32 count;
     u8 *self = (u8 *)arg0;
     u8 *other = (u8 *)arg1;
     u32 tag = *(u32 *)(other + 0x18);
@@ -2959,12 +2977,12 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
         }
         f32 *a = *(f32 **)(self + 0xC);
         f32 *b = *(f32 **)(other + 0xC);
-        Vec d;
-        d.x = a[9] - b[9];
-        d.y = a[10] - b[10];
-        d.z = a[11] - b[11];
+        delta.x = a[9] - b[9];
+        delta.y = a[10] - b[10];
+        delta.z = a[11] - b[11];
+        f32 dist2 = PSVECDotProduct(&delta, &delta);
         f32 r = *(f32 *)(self + 0x178) + *(f32 *)(other + 0x178);
-        if (PSVECDotProduct(&d, &d) < r * r) {
+        if (dist2 < r * r) {
             fn_801A0160(other);
             u8 *ent = other;
             s32 i = 0;
@@ -2975,30 +2993,30 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
             }
         }
     } else if (tag == 0x424F5820) {
-        Vec center;
-        Vec d;
-        fn_801A1F44(&center, other);
+        fn_801A1F44(&boxCenter, other);
         f32 *a = *(f32 **)(self + 0xC);
-        d.x = a[9] - center.x;
-        d.y = a[10] - center.y;
-        d.z = a[11] - center.z;
-        if ((f32)__fabs((f64)PSVECDotProduct(&d, *(Vec **)(other + 0xC))) <
-                *(f32 *)(self + 0x178) + *(f32 *)(other + 0x24) &&
-            (f32)__fabs((f64)PSVECDotProduct(&d, (Vec *)(*(u8 **)(other + 0xC) + 0x18))) <
-                *(f32 *)(self + 0x178) + *(f32 *)(other + 0x2C)) {
+        boxDelta.x = a[9] - boxCenter.x;
+        boxDelta.y = a[10] - boxCenter.y;
+        boxDelta.z = a[11] - boxCenter.z;
+        f32 dist = (f32)__fabs((f64)PSVECDotProduct(&boxDelta, *(Vec **)(other + 0xC)));
+        if (dist < *(f32 *)(self + 0x178) + *(f32 *)(other + 0x24)) {
+            dist = (f32)__fabs((f64)PSVECDotProduct(&boxDelta, (Vec *)(*(u8 **)(other + 0xC) + 0x18)));
+            if (dist < *(f32 *)(self + 0x178) + *(f32 *)(other + 0x2C)) {
             f32 *m = *(f32 **)(other + 0xC);
             u8 *owner = *(u8 **)(self + 4);
-            Vec local;
-            f32 x, y, z;
+            f32 x, y, z, nx, ny, nz;
             local.x = *(f32 *)(owner + 0x60) - m[9];
             local.y = *(f32 *)(owner + 0x64) - m[10];
             local.z = *(f32 *)(owner + 0x68) - m[11];
             x = local.x;
             y = local.y;
             z = local.z;
-            local.x = z * m[2] + (x * m[0] + y * m[1]);
-            local.y = z * m[5] + (x * m[3] + y * m[4]);
-            local.z = z * m[8] + (x * m[6] + y * m[7]);
+            nx = z * m[2] + (x * m[0] + y * m[1]);
+            ny = z * m[5] + (x * m[3] + y * m[4]);
+            nz = z * m[8] + (x * m[6] + y * m[7]);
+            local.x = nx;
+            local.y = ny;
+            local.z = nz;
             fn_801A0160(self);
             u8 *ent = self;
             s32 i = 0;
@@ -3024,46 +3042,59 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
             box_done:
                 if (ok != 0) {
                     s32 e = *(s32 *)(obj + 0x1EC);
-                    Vec out;
-                    Vec q;
+                    volatile f32 *pout = (volatile f32 *)&out;
+                    f32 eps;
                     f32 one = lbl_805622E0;
-                    f32 eps = lbl_805622D8;
+                    volatile f32 *pq = (volatile f32 *)&q;
+                    eps = lbl_805622D8;
                     s32 k = 0;
                     do {
-                        Vec p;
-                        Vec diff;
                         f32 *bm;
-                        fn_801BEAEC(e, k, &p);
+                        fn_801BEAEC(e, k, &corner);
                         bm = *(f32 **)(other + 0xC);
-                        q.x = p.x - bm[9];
-                        q.y = p.y - bm[10];
-                        q.z = p.z - bm[11];
+                        q.x = corner.x - bm[9];
+                        q.y = corner.y - bm[10];
+                        q.z = corner.z - bm[11];
                         x = q.x;
                         y = q.y;
                         z = q.z;
-                        q.x = z * bm[2] + (x * bm[0] + y * bm[1]);
-                        q.y = z * bm[5] + (x * bm[3] + y * bm[4]);
-                        q.z = z * bm[8] + (x * bm[6] + y * bm[7]);
+                        nx = z * bm[2] + (x * bm[0] + y * bm[1]);
+                        ny = z * bm[5] + (x * bm[3] + y * bm[4]);
+                        nz = z * bm[8] + (x * bm[6] + y * bm[7]);
+                        q.x = nx;
+                        q.y = ny;
+                        q.z = nz;
                         f32 sx = *(f32 *)(other + 0x24);
                         f32 sy = *(f32 *)(other + 0x28);
                         f32 sz = *(f32 *)(other + 0x2C);
-                        f32 v = q.x;
-                        if (sx < v) v = sx;
-                        q.x = (v > -sx) ? v : -sx;
-                        v = q.y;
-                        if (sy < v) v = sy;
-                        q.y = (v > -sy) ? v : -sy;
-                        v = q.z;
-                        if (sz < v) v = sz;
-                        q.z = (v > -sz) ? v : -sz;
+                        f32 c = q.x;
+                        if (sx < c) c = sx;
+                        q.x = (c > -sx) ? c : -sx;
+                        c = q.y;
+                        if (sy < c) c = sy;
+                        q.y = (c > -sy) ? c : -sy;
+                        c = q.z;
+                        if (sz < c) c = sz;
+                        q.z = (c > -sz) ? c : -sz;
                         bm = *(f32 **)(other + 0xC);
-                        fn801A1F98Transform((volatile f32 *)&out, (volatile f32 *)&q, (volatile f32 *)&q, bm);
+                        x = pq[0];
+                        y = pq[1];
+                        z = pq[2];
+                        if (pout == pq) {
+                            pout[0] = (x * bm[0] + y * bm[3]) + z * bm[6];
+                            pout[1] = (x * bm[1] + y * bm[4]) + z * bm[7];
+                            pout[2] = (x * bm[2] + y * bm[5]) + z * bm[8];
+                        } else {
+                            pout[0] = (y * bm[3] + x * bm[0]) + z * bm[6];
+                            pout[1] = (y * bm[4] + x * bm[1]) + z * bm[7];
+                            pout[2] = (y * bm[5] + x * bm[2]) + z * bm[8];
+                        }
                         out.x += bm[9];
                         out.y += bm[10];
                         out.z += bm[11];
-                        diff.x = p.x - out.x;
-                        diff.y = p.y - out.y;
-                        diff.z = p.z - out.z;
+                        diff.x = corner.x - out.x;
+                        diff.y = corner.y - out.y;
+                        diff.z = corner.z - out.z;
                         f32 mag = PSVECMag(&diff);
                         if (mag > eps) {
                             f32 inv = one / mag;
@@ -3076,19 +3107,23 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
                     } while (k < 4);
                 }
             }
+            }
         }
     } else if (tag == 0x53504852 || tag == 0x464C5352) {
-        Vec c = *(Vec *)(*(u8 **)(self + 0x17C) + 0x38);
+        u8 *src = *(u8 **)(self + 0x17C);
+        ((u32 *)&center)[0] = *(u32 *)(src + 0x38);
+        ((u32 *)&center)[1] = *(u32 *)(src + 0x3C);
+        ((u32 *)&center)[2] = *(u32 *)(src + 0x40);
         u8 *owner = *(u8 **)(self + 4);
         if (owner != 0) {
-            c.x += *(f32 *)(owner + 0x30);
-            c.y += *(f32 *)(owner + 0x34);
-            c.z += *(f32 *)(owner + 0x38);
+            center.x += *(f32 *)(owner + 0x30);
+            center.y += *(f32 *)(owner + 0x34);
+            center.z += *(f32 *)(owner + 0x38);
         }
         if (*(u32 *)(other + 0x18) == 0x53504852) {
-            fn_8019BD54(other, *(void **)(self + 0x17C), (s32)&c, 0);
+            fn_8019BD54(other, *(void **)(self + 0x17C), (s32)&center, 0);
         } else {
-            fn_8019D06C(other, *(void **)(self + 0x17C), (s32)&c, 0);
+            fn_8019D06C(other, *(void **)(self + 0x17C), (s32)&center, 0);
         }
     } else if (tag == 0x54554245) {
         fn_8019EA7C(other, *(void **)(self + 0x17C));
@@ -3131,16 +3166,11 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
             s32 k = 0;
             f32 scale = lbl_805623B8;
             do {
-                Vec p;
-                Vec size;
-                Vec hit;
-                Vec nrm;
-                f32 depth;
-                fn_801BEAEC(e, k, &p);
+                fn_801BEAEC(e, k, &polyPoint);
                 size.x = *(f32 *)(obj + 0x3C) * scale;
                 size.y = *(f32 *)(obj + 0x40) * scale;
                 size.z = *(f32 *)(obj + 0x44) * scale;
-                if (fn_80198F64(&p, (int)other, &hit, &depth, &nrm, (float *)&size, lbl_805622E0)) {
+                if (fn_80198F64(&polyPoint, (int)other, &hit, &depth, &nrm, (float *)&size, lbl_805622E0)) {
                     fn_801BEB44(e, k, &hit, (f32 *)&nrm);
                 }
                 k++;
@@ -3172,17 +3202,17 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
         if (ok != 0) {
             s32 e = *(s32 *)(obj + 0x1EC);
             s32 k = 0;
+            f32 push;
             f32 one = lbl_805622E0;
             s32 maxCount = 0x40;
             f32 zero = lbl_805622D4;
-            f32 push = lbl_805623BC;
+            push = lbl_805623BC;
             do {
-                Vec tmp;
-                s32 count;
-                u8 buffer[0x300];
                 s32 j;
                 fn_801BEAEC(e, k, &tmp);
-                Vec v = tmp;
+                ((u32 *)&v)[0] = ((u32 *)&tmp)[0];
+                ((u32 *)&v)[1] = ((u32 *)&tmp)[1];
+                ((u32 *)&v)[2] = ((u32 *)&tmp)[2];
                 v.x += *(f32 *)(obj + 0x48) * push;
                 v.y += *(f32 *)(obj + 0x4C) * push;
                 v.z += *(f32 *)(obj + 0x50) * push;
@@ -3190,17 +3220,16 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
                 fn_801CF080(*(s32 *)(other + 0x24), &v, buffer, &count, *(s32 *)(other + 0xC), lbl_8056234C);
                 Vec *cur = (Vec *)buffer;
                 for (j = 0; j < count; j++) {
-                    Vec d;
-                    d.x = v.x - cur->x;
-                    d.y = v.y - cur->y;
-                    d.z = v.z - cur->z;
-                    f32 mag = PSVECMag(&d);
+                    meshDelta.x = v.x - cur->x;
+                    meshDelta.y = v.y - cur->y;
+                    meshDelta.z = v.z - cur->z;
+                    f32 mag = PSVECMag(&meshDelta);
                     if (mag > zero) {
                         f32 inv = one / mag;
-                        d.x *= inv;
-                        d.y *= inv;
-                        d.z *= inv;
-                        fn_801BEB44(e, k, (f32 *)cur, (f32 *)&d);
+                        meshDelta.x *= inv;
+                        meshDelta.y *= inv;
+                        meshDelta.z *= inv;
+                        fn_801BEB44(e, k, (f32 *)cur, (f32 *)&meshDelta);
                     }
                     cur++;
                 }
