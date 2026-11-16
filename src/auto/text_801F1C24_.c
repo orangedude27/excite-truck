@@ -1434,13 +1434,18 @@ extern int fn_802CD33C(int, int, int);
 extern int lbl_8033A7A0_arr[];
 void *fn_801F3EF8(void *arg0, int arg1) {
     extern int lbl_8033A7A0[];
+#define vtable_801F3EF8 lbl_8033A7A0
+#define DeleteObject fn_80128668
+    /* Construct/destroy helper: set vtable, optionally delete the object, and return it. */
     if (arg0 != 0) {
-        *(void * volatile *)arg0 = (void *)&lbl_8033A7A0[0];
+        *(void * volatile *)arg0 = (void *)&vtable_801F3EF8[0];
         if (arg1 > 0) {
-            fn_80128668();
+            DeleteObject();
         }
     }
     return arg0;
+#undef vtable_801F3EF8
+#undef DeleteObject
 }
 void fn_801F3F44(int arg0, volatile unsigned char *arg1) {
     unsigned char t;
