@@ -3783,6 +3783,9 @@ void GXInitLightPos(void *arg0, float farg0, float farg1, float farg2) {
     *(float *)((char *)arg0 + 0x30) = farg2;
 }
 
+/* Large magnitude (~1.7e26) used to push the light's position far along its
+ * direction so the light behaves as if placed at infinity. */
+#define GX_LIGHT_FAR_POS_SCALE lbl_80560B5C
 void GXGetLightDir_Internal(void *arg0, float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
  extern const float lbl_80560B5C;
  float c, b, a;
