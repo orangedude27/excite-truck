@@ -109,7 +109,6 @@ typedef struct CrushMaster {
     int radarTexture;           /* +0x198: the "ovradar.tex" texture */
     char pad19C[0x1AC - 0x19C];
     CrushRoundState round;      /* +0x1AC: the results overlay's state */
-    char pad2B0[4];
     Destroyable *preraceSound;  /* +0x2B4: the "chal_prerace.sfx" sound */
     unsigned char flag2B8;      /* +0x2B8 */
 } CrushMaster;
