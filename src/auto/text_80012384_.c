@@ -112,9 +112,10 @@ void fn_800125C4(void) {
     ((void(*)(const char *, float))fn_8001255C)(lbl_802FC600, lbl_80560350);
 }
 
-void fn_800125D4(const char *arg0) {
+/* Clear the active progress message and replace its text. */
+void fn_800125D4(const char *message) {
     register char *dst = lbl_80351790 + 1;
-    strncpy(dst, arg0, 0x7f);
+    strncpy(dst, message, 0x7f);
     lbl_80351790[0x80] = 0;
     lbl_80351790[0] = 0;
 }
