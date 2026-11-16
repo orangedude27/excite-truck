@@ -637,9 +637,10 @@ s32 fn_80135EF0(void *arg0, s32 resourceId) {
     return res;
 }
 #pragma scheduling reset
-void fn_80135F4C(void *arg0) {
-    int x = *(int *)(*(char **)((char *)arg0 + 0x2C) + 0x1C);
-    fn_80135F64((int)arg0, x, x + 8, 1, 0);
+void fn_80135F4C(void *follower) {
+    /* Read the path offset from the follower's resource and run the update over the 8-unit range starting there. */
+    int start = *(int *)(*(char **)((char *)follower + 0x2C) + 0x1C);
+    fn_80135F64((int)follower, start, start + 8, 1, 0);
 }
 
 #pragma dont_inline on
