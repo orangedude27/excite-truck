@@ -846,15 +846,31 @@ void fn_8012C4D8(void);
 void fn_802C13A4(void);
 void deleteThreads__6SystemFv_802BDCA4(void **);
 void fn_802BDC60(void) {
-    int flag;
-    fn_802BCF04();
-    flag = lbl_8055FAB8;
-    if (flag != 0) {
-        ((int (*)(int))fn_8012C4D8)(flag);
-        lbl_8055FAB8 = 0;
+    /* Shuts down the subsystem: finalizes it, releases the active handle if set, performs cleanup, and deletes the system thread object. */
+#define activeHandle lbl_8055FAB8
+#define systemThreadSlot lbl_8055FABC
+#define Subsystem_Finalize fn_802BCF04
+#define Handle_Release fn_8012C4D8
+#define Subsystem_Cleanup fn_802C13A4
+#define System_DeleteThreadSlot deleteThreads__6SystemFv_802BDCA4
+
+    int handle;
+
+    Subsystem_Finalize();
+    handle = activeHandle;
+    if (handle != 0) {
+        ((int (*)(int))Handle_Release)(handle);
+        activeHandle = 0;
     }
-    fn_802C13A4();
-    deleteThreads__6SystemFv_802BDCA4(&lbl_8055FABC);
+    Subsystem_Cleanup();
+    System_DeleteThreadSlot(&systemThreadSlot);
+
+#undef activeHandle
+#undef systemThreadSlot
+#undef Subsystem_Finalize
+#undef Handle_Release
+#undef Subsystem_Cleanup
+#undef System_DeleteThreadSlot
 }
 
 extern int lbl_8034AB38, lbl_8034AC48;
