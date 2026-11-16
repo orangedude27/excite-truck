@@ -8,6 +8,11 @@ extern void fn_801AE158(void *);
 extern int lbl_8055E490;
 extern int lbl_8055E488;
 extern int lbl_8055E48C;
+/* ext_imp_tab pool (0x28-byte entries) bookkeeping, initialized by fn_8017D2CC */
+#define gExtImpTabPool    lbl_8055E490
+#define gExtImpTabCount   lbl_8055E488
+#define gExtImpTabCapacity lbl_8055E48C
+#define freeHeapBlock     fn_80128670
 extern void fn_80128670(void*);
 extern void fn_8012850C(void*, void*);
 extern int fn_8002F37C(void*, int, int, int);
