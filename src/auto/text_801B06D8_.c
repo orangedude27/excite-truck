@@ -1930,6 +1930,7 @@ s32 fn_801B2F40(s32 arg0) {
 }
 
 typedef void (*VFnPtr)(void *);
+#define sDeitySlotBase lbl_8055E684 /* base of the 0x80-byte deity (AI truck) slot table */
 #pragma cplusplus on
 extern "C" s32 fn_801B2F54(s32 arg0) {
     struct Dummy {
