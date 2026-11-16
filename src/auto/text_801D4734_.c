@@ -982,22 +982,26 @@ void *fn_801D5860(const char *name) {
 }
 #pragma pop
 extern float lbl_80562B00;
-float fn_801D58DC(void *arg0) {
+float fn_801D58DC(void *sequence) {
+#define gActionSequenceList lbl_804423A4
+#define kActionSequenceDefaultValue lbl_80562B00
     void **entries;
     int count;
-    if (arg0 == 0) {
-        return lbl_80562B00;
+    if (sequence == 0) {
+        return kActionSequenceDefaultValue;
     }
-    entries = (void **)lbl_804423A4[0];
-    count = lbl_804423A4[1];
+    entries = (void **)gActionSequenceList[0];
+    count = gActionSequenceList[1];
     while (count > 0) {
-        if (entries[0] == arg0) {
-            return *(float *)((char *)arg0 + 0x1C);
+        if (entries[0] == sequence) {
+            return *(float *)((char *)sequence + 0x1C);
         }
         entries++;
         count--;
     }
-    return lbl_80562B00;
+    return kActionSequenceDefaultValue;
+#undef gActionSequenceList
+#undef kActionSequenceDefaultValue
 }
 
 /* Return the byte flag at offset 0x21 for obj if it is registered in lbl_804423A4, else 0. */
