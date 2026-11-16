@@ -224,15 +224,16 @@ void fn_8001FEB8(void) {
 }
 
 #pragma dont_inline on
+/* Start/reset the tips overlay: stamp both timers with the current time, clear the pause timer, mark the overlay active and not paused. */
 void fn_8001FEE8(void) {
 #pragma scheduling off
-    int temp_r3;
-    temp_r3 = fn_802E2C20();
-    lbl_8055D63C = temp_r3;
-    lbl_8055D638 = temp_r3;
-    lbl_8055D640 = 0;
-    lbl_8055D644 = 1;
-    lbl_8055D645 = 0;
+    int now;
+    now = GetTimeMs();
+    TIPS_START_MS = now;
+    TIPS_CAMERA_MS = now;
+    TIPS_WAIT_MS = 0;
+    OVERLAY_ON = 1;
+    OVERLAY_PAUSED = 0;
 #pragma scheduling on
 }
 #pragma dont_inline off
