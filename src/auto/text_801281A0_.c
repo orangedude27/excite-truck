@@ -115,8 +115,10 @@ void fn_801282E8(void) {
 void fn_801282EC(s32 arg0) { lbl_8055DF8C = arg0; }
 
 void fn_801282F4(void) {
-    s32 value = ((s32 *)lbl_8041E160)[2];
-    lbl_8055DF81 = (u32)((-value) & ~value) >> 31;
+    /* Select the secondary heap ring (lbl_8055DF81 = 1) when its size word is positive.
+       The bit trick (-v & ~v) >> 31 is 1 exactly when v > 0. */
+    s32 secondarySize = ((s32 *)lbl_8041E160)[2];
+    lbl_8055DF81 = (u32)((-secondarySize) & ~secondarySize) >> 31;
 }
 
 #define heapRingPrimary   lbl_8041E140
