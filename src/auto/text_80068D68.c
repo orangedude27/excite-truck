@@ -24667,15 +24667,19 @@ void rfc_check_mcb_active(void *p_mcb) {
 }
 
 /* Match note: widening the halfword state and guarding non-12 values preserves the signed checks and tail-call order. */
-void fn_80095518(void *arg0) {
-    s32 state = (s32)*(u16 *)((u8 *)arg0 + 0x14);
-    if (state != 12) {
-        if (state >= 12) return;
-        if (state < 11) return;
-        fn_800916F4(*(void **)((u8 *)arg0 + 0x10), 5, 0);
+void fn_80095518(void *p_tle) {
+    /* RFCOMM timer callback (BTE rfcomm_process_timeout): the TIMER_LIST_ENT's event
+       field (+0x14) holds the BTU timer type. For a port timer (12) dispatch a timeout
+       to the port state machine, and for an MFC timer (11) to the multiplexer state
+       machine (fn_800916F4); use the entry's param (+0x10) as the state-machine object. */
+    s32 timerType = (s32)*(u16 *)((u8 *)p_tle + 0x14);
+    if (timerType != 12) {
+        if (timerType >= 12) return;
+        if (timerType < 11) return;
+        fn_800916F4(*(void **)((u8 *)p_tle + 0x10), 5, 0);
         return;
     }
-    rfc_port_sm_execute(*(void **)((u8 *)arg0 + 0x10), 5, 0);
+    rfc_port_sm_execute(*(void **)((u8 *)p_tle + 0x10), 5, 0);
 }
 
 void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
