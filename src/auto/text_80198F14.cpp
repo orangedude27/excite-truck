@@ -2391,13 +2391,15 @@ extern "C" void fn_8019F1D4(void* arg0, void* arg1, void* arg2) {
     ((f32*)arg2)[2] = y2;
 }
 #pragma pop
-extern "C" void fn_8019F248(void *arg0) {
+extern "C" void fn_8019F248(void *shape) {
     extern f32 lbl_80562300;
     extern s32 lbl_8055E598;
     extern void fn_801E3FC8(void*, s32, f32);
-    f32 var_f1 = *(f32*)((u8*)arg0 + 0x24);
-    var_f1 = (var_f1 > lbl_80562300) ? var_f1 : lbl_80562300;
-    fn_801E3FC8((u8*)arg0 + 0x34, lbl_8055E598, var_f1);
+    /* Clamp the shape's +0x24 scale to a minimum of 0.2, then pass its +0x34
+       position and the clamped scale to fn_801E3FC8 via handle lbl_8055E598. */
+    f32 scale = *(f32*)((u8*)shape + 0x24);
+    scale = (scale > lbl_80562300) ? scale : lbl_80562300;
+    fn_801E3FC8((u8*)shape + 0x34, lbl_8055E598, scale);
 }
 
 extern "C" void fn_802E30C8(const char *, ...);
