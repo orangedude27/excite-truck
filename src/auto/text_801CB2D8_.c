@@ -132,6 +132,8 @@ void fn_801CB464(void) {
 }
 
 extern void fn_801CCBB4(void);
+/* If not blocked and in the default mode, clear the byte flag at offset 0x10
+ * of the game-state object (fn_801CCBB4). */
 void fn_801CB4A0(void) {
     if (fn_80019BA8() || fn_80161C38()) return;
     fn_801CCBB4();
