@@ -2129,8 +2129,10 @@ s32 fn_8000DFA8(s32 index) {
     return lbl_802FC2A8[index * 3 + 1];
 }
 
-s32 fn_8000DFC0(s32 arg0) {
-    return lbl_802FC2A8[arg0 * 3 + 2];
+/* Return the third word (offset +8) of the 12-byte attribute record for
+ * `index` in the lbl_802FC2A8 lookup table. */
+s32 fn_8000DFC0(s32 index) {
+    return lbl_802FC2A8[index * 3 + 2];
 }
 
 #pragma push
