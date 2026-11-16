@@ -36,6 +36,10 @@ struct F801B4AC4 {
     virtual void f4() = 0;      /* 0x18: stub */
     virtual void f5(int) = 0;   /* 0x1C: always 1 */
 };
+struct F801B49D4 {
+    virtual void f0() = 0;      /* 0x8 */
+    virtual int f1(int, int) = 0; /* 0xC: data offset -> pointer in the buffer */
+};
 struct F801B50B4 {
     virtual void f0() = 0;
     virtual void f1() = 0;
@@ -286,19 +290,22 @@ struct ReplayFrame {
 int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
     int index;
     int value;
-    int *entry;
+    register int *entry;
+    register void *obj;
     if (fn_801B4B44(arg0) == 0)
         return 0;
     index = ((int (*)(void *, int))fn_801B4C9C)(arg0, arg4);
     entry = ((int *(*)(void *, int))fn_801B4C58)(arg0, index);
     value = entry[2];
-    *arg1 = (void *)((int (*)(void *, int, int))(*(void ***) *(void **)((char *)arg0 + 4))[3])(*(void **)((char *)arg0 + 4), value, 0x2200);
+    obj = *(void **)((char *)arg0 + 4);
+    *arg1 = (void *)((int (*)(void *, int, int))(*(void ***)obj)[3])(obj, value, 0x2200);
     if (fn_801B4C1C((int)arg0, arg4) != 0) {
         *arg2 = *arg1;
     } else {
         entry = ((int *(*)(void *, int))fn_801B4C60)(arg0, index);
         value = entry[2];
-        *arg2 = (void *)((int (*)(void *, int, int))(*(void ***) *(void **)((char *)arg0 + 4))[3])(*(void **)((char *)arg0 + 4), value, 0x2200);
+        obj = *(void **)((char *)arg0 + 4);
+        *arg2 = (void *)((int (*)(void *, int, int))(*(void ***)obj)[3])(obj, value, 0x2200);
     }
     *arg3 = fn_801B4D10((int)arg0, arg4);
     return 1;
