@@ -134,12 +134,13 @@ extern int lbl_80507258[];
 extern int lbl_8055D224;
 extern int lbl_8056000C;
 #pragma scheduling invalid_target
-void fn_802E7A14(int arg0) {
-    int value;
+/* Registers a WPAD input handler for the given device and stores its handle. */
+void fn_802E7A14(int deviceIndex) {
+    int handle;
     fn_801282EC(0x80);
     fn_801282F4();
-    value = fn_801284E8(&lbl_8055D224, arg0);
-    lbl_80507258[lbl_8056000C++] = value;
+    handle = fn_801284E8(&lbl_8055D224, deviceIndex);
+    lbl_80507258[lbl_8056000C++] = handle;
 }
 #pragma scheduling on
 extern float lbl_805651A0, lbl_805651A4;
