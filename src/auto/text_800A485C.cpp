@@ -2928,13 +2928,13 @@ extern "C" s32 fn_800A900C(void *arg0, s32 arg1, s32 arg2) {
 extern "C" s32 fn_800A861C(void *, void *, s32, u32);
 extern "C" s32 VFiPFCACHE_SearchForPage(s32, s32, s32);
 extern "C" s32 fn_800A8AD4(void *, void *);
-// Writes a FAT sector via the cache and normalizes a nonzero error result to -1, returning 0x10 if the sector is out of range.
-extern "C" s32 VFiPFCACHE_WriteFATSectorAndFreeIfNeeded(void *arg0, s32 arg1, u32 arg2) {
-    s32 temp_r3;
-    if (arg2 >= *(u32 *)((u8 *)arg0 + 8))
+// Writes a FAT sector via the volume's FAT cache, returning 0 on success, 0x10 if out of range, or -1 on error.
+extern "C" s32 VFiPFCACHE_WriteFATSectorAndFreeIfNeeded(void *volume, s32 buffer, u32 sector) {
+    s32 result;
+    if (sector >= *(u32 *)((u8 *)volume + 8))
         return 0x10;
-    temp_r3 = fn_800A861C(arg0, (u8 *)arg0 + 0x1630, arg1, arg2);
-    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+    result = fn_800A861C(volume, (u8 *)volume + 0x1630, buffer, sector);
+    return result & ((s32)(-result | result) >> 31);
 }
 
 extern "C" s32 fn_800A8730(void *, u32 *, void *, u32, s32, s32 *);
