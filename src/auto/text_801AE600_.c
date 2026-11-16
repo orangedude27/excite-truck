@@ -84,8 +84,11 @@ typedef struct {
 
 int fn_801AE618(int arg0);
 #pragma dont_inline on
-int fn_801AE600(int arg0) {
-    return arg0 == 0x50;
+/* True for competitor id 0x50, the one racer the end-of-race tables keep lap
+   times for: fn_801AEF28 gives that competitor a CarLapTable slot and
+   fn_801AE79C looks its placing up.  (Not renameable yet: keep fn_801AE600.) */
+int fn_801AE600(int competitorId) {
+    return competitorId == 0x50;
 }
 #pragma dont_inline reset
 
