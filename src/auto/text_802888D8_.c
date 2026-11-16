@@ -130,6 +130,7 @@ void fn_80288A1C(void) {}
 
 #pragma push
 #pragma optimize_tail_call off
+/* Init callback: reads the global level float through its getter (value discarded). */
 void fn_80288A20(void) {
     fn_801E7E24();
 }
