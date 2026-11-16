@@ -984,6 +984,7 @@ extern "C" int fn_80161BB8(void) {
     return 0;
 }
 #pragma cplusplus on
+#define ChallengeSubTask_Call fn_80161BDC /* forward a request to the active challenge sub-task */
 extern "C" s32 fn_80161BDC(s32 arg0, s32 arg1, s32 arg2) {
     struct Dummy {
         virtual void v0();
