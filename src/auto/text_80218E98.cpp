@@ -9558,10 +9558,12 @@ extern "C" void fn_80229F1C(void *arg0) {
     }
 }
 
-extern "C" void fn_80229F38(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x18) = 0;
-    if ((s32)*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+// Deactivate a UI widget: clear its active flag (+0x18), and if it is still live
+// (+0x1A) mark it dirty (+0x234) so the screen redraws it.
+extern "C" void fn_80229F38(void *widget) {
+    *(u8 *)((u8 *)widget + 0x18) = 0;
+    if ((s32)*(u8 *)((u8 *)widget + 0x1A) != 0) {
+        *(u8 *)((u8 *)widget + 0x234) = 1;
     }
 }
 
