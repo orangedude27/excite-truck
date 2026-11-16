@@ -417,10 +417,11 @@ extern int lbl_80331C28[64];
 #define SoundArchiveBaseCtor fn_80179D08
 #define MemorySoundArchiveVtable lbl_80331C28
 #pragma scheduling off
-void** fn_8017ACCC(void** arg0) {
-    fn_80179D08(arg0);
-    *arg0 = &lbl_80331C28;
-    return arg0;
+/* Construct a MemorySoundArchive: run the base initializer, then install this class's vtable. */
+void** fn_8017ACCC(void** self) {
+    SoundArchiveBaseCtor(self);
+    *self = &MemorySoundArchiveVtable;
+    return self;
 }
 
 typedef struct { int a, b; } Pair8;
