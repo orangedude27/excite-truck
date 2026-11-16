@@ -80,6 +80,8 @@ void fn_801CB2D8(void) {
 }
 
 void fn_801CB320(void) {
+    /* Unless a global pause/block guard is set, reset the stats handler state
+       and refresh the flags of every active participant. */
     if (fn_80019BA8() || fn_80161C38()) return;
     fn_801CC918();
     fn_801CB3F8();
@@ -714,14 +716,18 @@ void **fn_801CC784(void *arg0) {
 
 extern void *memset(void *, int, unsigned long);
 void *fn_801CC7A0(void *arg0) {
-    unsigned char *base = (unsigned char *)arg0;
-    unsigned char *end = base + 0x14C;
-    long zero = 0;
-    unsigned char *p = base + 0x20;
-    *(long *)(base + 8) = 0;
-    *(long *)(base + 0xC) = 0;
-    *(long *)(base + 0x10) = 0;
-    *(long *)(base + 0x14) = 0;
+    unsigned char *end;
+    unsigned char *p;
+    long zero;
+    unsigned char *base;
+    zero = 0;
+    base = (unsigned char *)arg0;
+    end = base + 0x14C;
+    p = base + 0x20;
+    *(long *)(base + 8) = zero;
+    *(long *)(base + 0xC) = zero;
+    *(long *)(base + 0x10) = zero;
+    *(long *)(base + 0x14) = zero;
     do {
         memset(p, 0x7A, 3);
         p[3] = zero;
