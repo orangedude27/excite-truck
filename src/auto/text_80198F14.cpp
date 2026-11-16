@@ -4440,8 +4440,11 @@ extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
     }
 }
 
-extern "C" void fn_801A3174(void *arg0) {
-    ((void (*)(s32, s32, f32))fn_801E3FC8)(*(s32*)((u8*)arg0 + 0xC) + 0x24, lbl_8055E598, *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28));
+extern "C" void fn_801A3174(void *shape) {
+    /* Forward to fn_801E3FC8 (matrix/translation setup via handle lbl_8055E598):
+     * the child referenced at +0xC (its +0x24 position) and a scale formed by
+     * adding the two floats at +0x24 and +0x28 of this shape. */
+    ((void (*)(s32, s32, f32))fn_801E3FC8)(*(s32*)((u8*)shape + 0xC) + 0x24, lbl_8055E598, *(f32*)((u8*)shape + 0x24) + *(f32*)((u8*)shape + 0x28));
 }
 
 extern char lbl_80333778[];
