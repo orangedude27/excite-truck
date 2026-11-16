@@ -5,6 +5,10 @@ extern char lbl_8055F930[4];
 extern int fn_8000D838(void*);
 extern unsigned int lbl_8055F938;
 void fn_802AE2B4(void) {
+    /* Static initializer (the .ctors entry at 0x802ED544): hang this module's
+     * static-destructor node (lbl_8055F930) on the runtime's global chain via
+     * fn_8000D838 (tag 0x31, head at lbl_8055D450), then bring up the module's
+     * other static lbl_8055F938 to 0x7F000000 (1.7e38 when read as a float). */
     fn_8000D838(&lbl_8055F930);
     lbl_8055F938 = 0x7f000000;
 }
