@@ -87,12 +87,23 @@ void fn_8023895C(void) {
     lbl_8055F0D8 = 1;
     fn_802344C4(1);
 }
+/* Close the overlay/debug text pass: if any lines are still queued, render
+ * (flush) them now, then clear the pass-active flag and disable queuing.
+ * The matching opener is fn_8023895C. */
+#define text_queue_has_lines fn_802344B0
+#define text_queue_flush     fn_802346C8
+#define text_pass_active     lbl_8055F0D8
+#define text_queue_enable    fn_802344C4
 void fn_802389E4(void) {
-    if (fn_802344B0())
-        fn_802346C8();
-    lbl_8055F0D8 = 0;
-    fn_802344C4(0);
+    if (text_queue_has_lines())
+        text_queue_flush();
+    text_pass_active = 0;
+    text_queue_enable(0);
 }
+#undef text_queue_has_lines
+#undef text_queue_flush
+#undef text_pass_active
+#undef text_queue_enable
 #pragma scheduling on
 /* TextLineHeight - how far down one line of overlay text steps.
  *
