@@ -1206,9 +1206,12 @@ void fn_801F37A4(void) {
 void fn_801F37EC(void) {
     fn_802E317C(lbl_8033ABA0);
 }
-int fn_801F37FC(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_801F37FC(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 void fn_801F383C(void *dst, int src) {
