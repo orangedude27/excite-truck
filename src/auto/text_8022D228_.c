@@ -166,10 +166,11 @@ void *fn_8022D7C4(void *table, int shouldFree) {
 
 #pragma push
 #pragma dont_inline on
-char *fn_8022D82C(void *arg0, int arg1, int arg2) {
-    return *(char **)arg0 +
-           arg1 * *(int *)((char *)arg0 + 0x14) +
-           (*(int **)((char *)arg0 + 0x1C))[arg2];
+/* Returns a pointer to the text buffer cell at (row, column) of a UITable. */
+char *fn_8022D82C(void *table, int row, int column) {
+    return ((UITable *)table)->text +
+           row * ((UITable *)table)->rowSize +
+           ((UITable *)table)->columnStarts[column];
 }
 #pragma pop
 
