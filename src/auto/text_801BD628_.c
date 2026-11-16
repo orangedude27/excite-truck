@@ -473,12 +473,13 @@ extern int lbl_8055E798;
 extern int lbl_8055E79C;
 extern int lbl_8055E7A4;
 extern int lbl_8055E78C;
-void fn_801BEDA8(int *arg0, int *arg1, int *arg2, int *arg3, int *arg4) {
-    *arg0 = lbl_8055E794;
-    *arg1 = lbl_8055E798;
-    *arg2 = lbl_8055E79C;
-    *arg3 = lbl_8055E7A4;
-    *arg4 = lbl_8055E78C;
+void fn_801BEDA8(int *outStates, int *outAngles, int *outWheels, int *outExtra, int *outCount) {
+    /* Copy the four global parallel-array base pointers and their element count into the caller's outputs. */
+    *outStates = lbl_8055E794;
+    *outAngles = lbl_8055E798;
+    *outWheels = lbl_8055E79C;
+    *outExtra = lbl_8055E7A4;
+    *outCount = lbl_8055E78C;
 }
 
 extern char lbl_80436D48[];
