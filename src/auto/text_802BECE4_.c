@@ -667,60 +667,123 @@ extern "C" void *fn_802BFA58(void *object, int shouldDelete) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-/* Renders the six faces of the water environment-map cube texture: lazily
-   initializes the per-face view states, sets the face camera's projection and
-   draws the cube geometry into each face before restoring the render state. */
-extern "C" void fn_802BFB70(void *envMap_, int face, float angle) {
-    class Camera { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void unused(); virtual void getViewMatrix(void *, int, void *); };
-    float mainPerspective[3], mainViewport[4], lookDir[3], setupViewport[4], clearPerspective[3], adjustPerspective[3], adjustedAngle;
-    float viewMatrix[12], savedMatrix2[12], savedMatrix1[12], faceMatrix[12];
-    char *envMap = (char *)envMap_;
-    char *faces;
-    float fov;
-    *(float *)(envMap + 0x14) = fn_801E85A4() == 2 ? lbl_80564DB4 : lbl_80564D80;
-    faces = *(char **)(envMap + 4);
-    if (!*(unsigned char *)(faces + 0x1A8)) {
-        int i;
-        char *p = faces + 0x1C;
-        int *handles = (int *)faces;
-        for (i=0; i<6; i++, handles++, p+=0x30) {
-            fn_802CB274(*handles); fn_802C9294(*handles,0);
-            fn_802C9694(clearPerspective,lbl_80564D80,lbl_80564DB8,lbl_80564DBC);
-            fn_802C86F0(setupViewport,0,0,0x100,0x100);
-            fn_802C8B08(savedMatrix1); fn_802C8638(p); fn_802C88BC(3); fn_802C10C8();
-            fn_802C9294(-2,0); fn_802C8638(savedMatrix1); fn_802C8750(setupViewport,-1); fn_802C96DC(clearPerspective,-1);
+/* WaterEnvMap's virtual render method (vtable lbl_8034AE40, slot 1): draws the
+ * environment that every water surface reflects.  The six 256x256 render
+ * targets shared by all water objects (lbl_8055FB00) hold one cube face each
+ * and are cleared the first time through; the camera is then mirrored in the
+ * water plane, its field of view widened for split-screen, and a quad is
+ * rendered into each face from the camera position, followed by the sun
+ * billboard and the world and water-environment models. */
+extern "C" void fn_802BFB70(void *arg0, float *worldMtx, float angle) {
+#define kOne lbl_80564D80       /* 1.0f */
+#define kZero lbl_80564D90      /* 0.0f */
+#define kWideFovFactor lbl_80564DB4 /* 1.5f, two-player split screen */
+#define kHalf lbl_80564DAC      /* 0.5f */
+#define kTwo lbl_80564DB0       /* 2.0f */
+#define kFaceFar lbl_80564DB8   /* 2000.0f */
+#define kFaceFov lbl_80564DBC   /* pi/2 */
+#define kViewFar lbl_80564DC0   /* 3000.0f */
+#define kSunNear lbl_80564DC4   /* 0.1f */
+#define kSplashRadius lbl_80564DC8 /* 300.0f */
+    /* One cube face of the environment map: its model matrix. */
+    struct EnvFace {
+        float mtx[12];
+    };
+    /* A corner of the quad drawn into a face. */
+    struct EnvVertex {
+        float position[3];
+        int color;
+        float uv[2];
+    };
+    /* The cube-face table every water object shares (0x1B8 bytes, lbl_8055FB00,
+       reference count lbl_8055FAFC). */
+    struct EnvFaces {
+        int targets[6];           /* 0x00 one 256x256 render target per face */
+        int sunTexture;           /* 0x18 "env_sun.tex" */
+        struct EnvFace faces[6];  /* 0x1C */
+        struct EnvVertex quad[4]; /* 0x13C */
+        unsigned short indices[6]; /* 0x19C */
+        unsigned char facesCleared; /* 0x1A8 */
+    };
+    /* The water environment-map object itself (0x18 bytes). */
+    struct WaterEnvMap {
+        void *vtable;           /* 0x00 lbl_8034AE40 */
+        struct EnvFaces *faces; /* 0x04 shared cube-face table */
+        int target;             /* 0x08 this surface's own 256x256 target */
+        int worldModel;         /* 0x0C "worldmodel.mod" instance */
+        int envModel;           /* 0x10 "wenv_mod.mod" instance */
+        float fovFactor;        /* 0x14 field-of-view widening factor */
+    };
+    /* View-matrix builder, vtable slot 5 (fn_802BF600): mirrors the world matrix
+       in the water plane. */
+    class ViewBuilder {
+    public:
+        virtual void unused0();
+        virtual void unused1();
+        virtual void unused2();
+        virtual void unused3();
+        virtual void unused4();
+        virtual void buildView(float *out, float *world, float *up);
+    };
+    float savedView[3], savedViewport[4], up[3], savedViewport0[4], savedView0[3], savedViewSun[3], sunFov;
+    float viewMtx[12], savedMtx[12], savedMtx0[12], faceMtx[12];
+    struct WaterEnvMap *self = (struct WaterEnvMap *)arg0;
+    struct EnvFaces *faces;
+    float fovAngle;
+    self->fovFactor = fn_801E85A4() == 2 ? kWideFovFactor : kOne;
+    faces = self->faces;
+    if (!faces->facesCleared) {
+        int faceIndex;
+        struct EnvFace *face = faces->faces;
+        int *target = faces->targets;
+        for (faceIndex = 0; faceIndex < 6; faceIndex++, target++, face++) {
+            fn_802CB274(*target); fn_802C9294(*target, 0);
+            fn_802C9694(savedView0, kOne, kFaceFar, kFaceFov);
+            fn_802C86F0(savedViewport0, 0, 0, 0x100, 0x100);
+            fn_802C8B08(savedMtx0); fn_802C8638(face); fn_802C88BC(3); fn_802C10C8();
+            fn_802C9294(-2, 0); fn_802C8638(savedMtx0); fn_802C8750(savedViewport0, -1); fn_802C96DC(savedView0, -1);
         }
-        *(unsigned char *)(faces + 0x1a8) = 1;
+        faces->facesCleared = 1;
     }
-    fn_802CB274(*(int *)(envMap+8)); fn_802C9294(*(int *)(envMap+8),1);
-    lookDir[0]=lbl_80564D90; lookDir[1]=lbl_80564D80; lookDir[2]=lbl_80564D90;
-    ((Camera *)envMap_)->getViewMatrix(viewMatrix,face,lookDir);
-    fov=lbl_80564DB0 * (float)atan(*(float *)(envMap+0x14) * (float)fn_8002EF30(lbl_80564DAC * angle));
-    fn_802C9694(mainPerspective,lbl_80564D80,lbl_80564DC0,fov);
-    fn_802C86F0(mainViewport,0,0,0x100,0x100);
-    fn_802C8B08(savedMatrix2); fn_802C8638(viewMatrix); fn_802C88BC(2);
-    if (*(void **)(envMap+4)) {
-        int *handles;
-        char *p;
-        char *faces;
+    fn_802CB274(self->target); fn_802C9294(self->target, 1);
+    up[0] = kZero; up[1] = kOne; up[2] = kZero;
+    ((ViewBuilder *)arg0)->buildView(viewMtx, worldMtx, up);
+    fovAngle = kTwo * (float)atan(self->fovFactor * (float)fn_8002EF30(kHalf * angle));
+    fn_802C9694(savedView, kOne, kViewFar, fovAngle);
+    fn_802C86F0(savedViewport, 0, 0, 0x100, 0x100);
+    fn_802C8B08(savedMtx); fn_802C8638(viewMtx); fn_802C88BC(2);
+    if (self->faces) {
+        int *target;
+        struct EnvFace *face;
+        struct EnvFaces *faceTable;
         struct { int count; } counter;
         int &i = counter.count;
-        adjustedAngle=fov; faces=*(char **)(envMap+4);
-        ((void (*)(float *))fn_802C00A0)(&adjustedAngle);
-        fn_802C9694(adjustPerspective,lbl_80564DC4,lbl_80564DB0,adjustedAngle);
-        handles=(int *)faces; p=faces+0x1c;
-        for(i=0;i<6;i++,p+=0x30,handles++) {
-            fn_80144DC8(faceMatrix); fn_802C0054(faceMatrix,p);
-            fn_80144DAC(faceMatrix+9,viewMatrix+9);
-            fn_802C8B98(*handles,faceMatrix);
-            fn_802C8DB8(faces+0x13c,4,(unsigned short *)(faces+0x19c),6); fn_802C8D74();
+        sunFov = fovAngle; faceTable = self->faces;
+        ((void (*)(float *))fn_802C00A0)(&sunFov);
+        fn_802C9694(savedViewSun, kSunNear, kTwo, sunFov);
+        target = faceTable->targets; face = faceTable->faces;
+        for (i = 0; i < 6; i++, face++, target++) {
+            fn_80144DC8(faceMtx); fn_802C0054(faceMtx, face);
+            fn_80144DAC(faceMtx + 9, viewMtx + 9);
+            fn_802C8B98(*target, faceMtx);
+            fn_802C8DB8(&faceTable->quad[0], 4, faceTable->indices, 6); fn_802C8D74();
         }
-        fn_802BFE48(faces,viewMatrix,lbl_80564D80); fn_802C96DC(adjustPerspective,-1);
+        fn_802BFE48(faceTable, viewMtx, kOne); fn_802C96DC(savedViewSun, -1);
     }
-    fn_802C7040(*(int *)(envMap+0xc));
-    if (fn_801E85A4()==1) fn_802BDD8C(lbl_80564DC8);
-    if (*(int *)(envMap+0x10)!=-1) fn_802C7040(*(int *)(envMap+0x10));
-    fn_802C9294(-2,0); fn_802C8638(savedMatrix2); fn_802C8750(mainViewport,-1); fn_802C96DC(mainPerspective,-1);
+    fn_802C7040(self->worldModel);
+    if (fn_801E85A4() == 1) fn_802BDD8C(kSplashRadius);
+    if (self->envModel != -1) fn_802C7040(self->envModel);
+    fn_802C9294(-2, 0); fn_802C8638(savedMtx); fn_802C8750(savedViewport, -1); fn_802C96DC(savedView, -1);
+#undef kOne
+#undef kZero
+#undef kWideFovFactor
+#undef kHalf
+#undef kTwo
+#undef kFaceFar
+#undef kFaceFov
+#undef kViewFar
+#undef kSunNear
+#undef kSplashRadius
 }
 #pragma pop
 
