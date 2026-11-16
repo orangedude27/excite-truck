@@ -53,7 +53,8 @@ extern void fn_80039FC4(int);
 #define sNandErrorReportCallback lbl_8055D8D0
 #define sNandDvderrorFileInfo lbl_8037B640
 #define sDvderrorPath lbl_80302368
-void fn_80039F3C(int arg0) { if (lbl_8055D8D0 != 0) { lbl_8055D8D0(arg0 == 0 ? 1 : 2, 0); } }
+/* NAND close callback: report success (1) or failure (2) through the registered error-report callback, if any. */
+void fn_80039F3C(int result) { if (sNandErrorReportCallback != 0) { sNandErrorReportCallback(result == 0 ? 1 : 2, 0); } }
 
 /* NAND async step after writing dvderror.dat: close the file and report failure. */
 void fn_80039F68(int result) {
@@ -380,31 +381,17 @@ int DVDLowInit(void) {
 
         if (!lbl_8055D8EC) {
             DVDLowContext *base = (DVDLowContext *)lbl_8037B820;
-            const unsigned int magic = 0xFEEBDAED;
-            #pragma scheduling reset
-            base[0].callback = (void *)0;
-            base[0].WORD_0x4 = 0;
-            base[0].inUse = 0;
-            base[0].magic = magic;
-            base[0].id = 0;
-            base[1].callback = (void *)0;
-            base[1].WORD_0x4 = 0;
-            base[1].inUse = 0;
-            base[1].magic = magic;
-            base[1].id = 1;
-            base[2].callback = (void *)0;
-            base[2].WORD_0x4 = 0;
-            base[2].inUse = 0;
-            base[2].magic = magic;
-            base[2].id = 2;
-            base[3].callback = (void *)0;
-            base[3].WORD_0x4 = 0;
-            base[3].inUse = 0;
-            base[3].magic = magic;
-            base[3].id = 3;
+            int i;
+            unsigned int magic = 0xFEEBDAEDu;
+            for (i = 0; i < 4; i++) {
+                base[i].callback = (void *)0;
+                base[i].WORD_0x4 = 0u;
+                base[i].inUse = 0;
+                base[i].magic = magic;
+                base[i].id = i;
+            }
             lbl_8055D8E8 = 0;
             lbl_8055D8EC = 1;
-            #pragma scheduling 750
         }
     }
 
