@@ -189,11 +189,18 @@ void fn_801E222C(void) {
     }
 }
 
+/* Enables every solid in both active collision groups by marking each entry active. */
 void fn_801E2294(void) {
-    if (lbl_8055EA3C != 0)
-        ((void (*)(void *))fn_801A47C8)(lbl_8055EA3C);
-    if (lbl_8055EA40 != 0)
-        ((void (*)(void *))fn_801A47C8)(lbl_8055EA40);
+#define gPrimaryCollisionGroup lbl_8055EA3C
+#define gSecondaryCollisionGroup lbl_8055EA40
+#define CollisionGroup_enableAll fn_801A47C8
+    if (gPrimaryCollisionGroup != 0)
+        ((void (*)(void *))CollisionGroup_enableAll)(gPrimaryCollisionGroup);
+    if (gSecondaryCollisionGroup != 0)
+        ((void (*)(void *))CollisionGroup_enableAll)(gSecondaryCollisionGroup);
+#undef gPrimaryCollisionGroup
+#undef gSecondaryCollisionGroup
+#undef CollisionGroup_enableAll
 }
 
 /* Descends one quadtree (lbl_8055EA3C / lbl_8055EA40) towards p's x/z cell and
@@ -271,16 +278,15 @@ extern "C" void fn_801E22D0(void **arg0, s32 arg1) {
     void *grp;
     s32 j;
     void *it;
-    void *item;
-    void *g;
+    register void *item;
     void **node;
     void **cellp;
     void *hits[5];
     s32 cnt;
     f32 scale;
     s32 xi, zi;
-    s32 minX, maxX, minZ, maxZ;
-    s32 idx;
+    s32 minX, minZ, maxX, maxZ;
+    unsigned int idx;
     s32 i2, j2;
     void *p;
     for (i = 0; i < arg1; i++) {
@@ -311,23 +317,23 @@ extern "C" void fn_801E22D0(void **arg0, s32 arg1) {
                     node = *(void ***)((char *)node + 4);
                 }
             }
-            g = lbl_8055EA3C;
-            if (g != 0) {
+            item = lbl_8055EA3C;
+            if (item) {
                 minX = -0x2625A00;
                 maxX = 0x2625A00;
                 minZ = minX;
                 maxZ = maxX;
-                xi = (s32)(scale * ((f32 *)p)[24]);
+                register xi = (s32)(scale * ((f32 *)p)[24]);
                 zi = (s32)(scale * ((f32 *)p)[26]);
                 idx = 0;
                 for (;;) {
-                    u16 *range = (u16 *)((char *)*(void **)((char *)g + 0x10) + idx * 8);
+                    u16 *range = (u16 *)((char *)*(void **)((char *)item + 0x10) + idx * 8);
                     s32 end, k, midX, midZ;
                     k = range[0];
                     end = range[1];
                     for (; k < end; k++) {
-                        u16 tri = *(u16 *)((char *)*(void **)((char *)g + 0x0C) + k * 2);
-                        void *tobj = *(void **)((char *)*(void **)((char *)g + 4) + tri * 4);
+                        u16 tri = *(u16 *)((char *)*(void **)((char *)item + 0x0C) + k * 2);
+                        void *tobj = *(void **)((char *)*(void **)((char *)item + 4) + tri * 4);
                         if (*(u8 *)((char *)tobj + 0x40))
                             fn_801E2084(*(void **)((char *)tobj + 0x3C), p);
                     }
@@ -358,8 +364,8 @@ extern "C" void fn_801E22D0(void **arg0, s32 arg1) {
                     }
                 }
             }
-            g = lbl_8055EA40;
-            if (g != 0) {
+            item = lbl_8055EA40;
+            if ((s32)item != 0) {
                 minX = -0x2625A00;
                 maxX = 0x2625A00;
                 minZ = minX;
@@ -368,13 +374,13 @@ extern "C" void fn_801E22D0(void **arg0, s32 arg1) {
                 zi = (s32)(scale * ((f32 *)p)[26]);
                 idx = 0;
                 for (;;) {
-                    u16 *range = (u16 *)((char *)*(void **)((char *)g + 0x10) + idx * 8);
+                    u16 *range = (u16 *)((char *)*(void **)((char *)item + 0x10) + idx * 8);
                     s32 end, k, midX, midZ;
                     k = range[0];
                     end = range[1];
                     for (; k < end; k++) {
-                        u16 tri = *(u16 *)((char *)*(void **)((char *)g + 0x0C) + k * 2);
-                        void *tobj = *(void **)((char *)*(void **)((char *)g + 4) + tri * 4);
+                        u16 tri = *(u16 *)((char *)*(void **)((char *)item + 0x0C) + k * 2);
+                        void *tobj = *(void **)((char *)*(void **)((char *)item + 4) + tri * 4);
                         if (*(u8 *)((char *)tobj + 0x40))
                             fn_801E2084(*(void **)((char *)tobj + 0x3C), p);
                     }
