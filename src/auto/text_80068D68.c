@@ -5965,15 +5965,13 @@ void BTA_DmSearch(u8 *services, u32 duration, u32 mode) {
 }
 
 /* Cancel an in-progress device discovery: post a BTA_DM_API_SEARCH_CANCEL_EVT
- * message with no payload to the BTA task. */
+ * (event 0x201) message with no payload to the BTA task. */
 void fn_80073CA8(void) {
-    #define BTA_DM_API_SEARCH_CANCEL_EVT 0x201
     u16 *msg = GKI_getbuf(8);
     if (msg != 0) {
-        *msg = BTA_DM_API_SEARCH_CANCEL_EVT;
+        *msg = 0x201;
         fn_80071450(msg);
     }
-    #undef BTA_DM_API_SEARCH_CANCEL_EVT
 }
 
 /* Handles a PIN code reply: posts BTA_DM_API_PIN_REPLY_EVT with BD address, accept flag, and PIN. */
