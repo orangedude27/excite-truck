@@ -98,11 +98,12 @@ struct ModelElement {
 #pragma scheduling off
 void *fn_802C5390(int arg0) { u32 base = *(u32 *)((char *)lbl_804C139C + 8); return (void *)(base + (arg0 << 4)); }
 #pragma scheduling off
-int fn_802C53A8(arg0)
-int arg0;
+int fn_802C53A8(instanceId)
+int instanceId;
 {
-    int *base = *(int * volatile *)((char *)lbl_804C139C + 8);
-    return *(int *)((char *)base + (arg0 << 4) + 4);
+    /* Return the group list (+0x4) of a model instance by id, from the instance table's 0x10-byte records. */
+    int *instances = *(int * volatile *)((char *)lbl_804C139C + 8);
+    return *(int *)((char *)instances + (instanceId << 4) + 4);
 }
 #pragma scheduling invalid_target
 void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
