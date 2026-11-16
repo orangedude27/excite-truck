@@ -660,6 +660,8 @@ void fn_8001FBE4(s32 stat, const char *objectName, s32 amount) {
 #pragma pop
 
 extern s32 fn_801E8838(void);
+// TRUE when the race manager's state field at +0xDB0 is clear (no physics step
+// or transition in progress) — the gate that allows achievements to be recorded.
 s32 fn_8001FD24(void) {
     return fn_801E8838() == 0;
 }
