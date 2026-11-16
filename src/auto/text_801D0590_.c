@@ -183,11 +183,13 @@ static inline void DispatchList_RemoveAt2(int index) {
 }
 
 #pragma scheduling invalid_target
-void fn_801D0800(s32 arg0) {
+/* Register a dispatch sub-object by appending it to the second listener list
+ * (lbl_8043870C); fn_801D0824 removes it again. */
+void fn_801D0800(s32 listener) {
     DispatchList* list = lbl_8043870C;
     s32* items = (s32*)list->items;
     int count = list->count++;
-    items[count] = arg0;
+    items[count] = listener;
 }
 
 /* Take one listener out of the second listener list (lbl_8043870C), the
