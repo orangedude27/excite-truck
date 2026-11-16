@@ -9628,10 +9628,11 @@ void btm_return_link_keys_evt(tBTM_RETURN_LINK_KEYS_EVT *result) {
     }
 }
 
-void fn_8007ABE8(void *arg0) {
+void fn_8007ABE8(void *status) {
+    /* Invoke btm_cb's registered notification callback with the given status. */
     void (*callback)(void *) = *(void (**)(void *))(lbl_803C0F78 + 0x568);
     if (callback != 0)
-        callback(arg0);
+        callback(status);
 }
 
 /* btm_cb's service-discovery session, the 0x1020 bytes at btm_cb + 0x658: a
