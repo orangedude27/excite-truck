@@ -4307,6 +4307,8 @@ BOOL hcisu_h2_open(tHCI_CFG *pHciConfig) {
 }
 
 void fn_8006F220(void) {
+    /* Close the HCI-H2 USB transport: mark the control block inactive, close
+       the USB device, then run the final transport cleanup. */
     hcisu_h2_cb.at_0x1E = 0;
     UUSB_Close(&hcisu_h2_cb);
     fn_80070758();
@@ -8146,7 +8148,7 @@ update:
     *(u16 *)(lbl_803C0F78 + index * 0x11C + 0x3A) = clock_offset;
 }
 
-void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) { /* w5 */
+void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
     u32 i;
     u8 *entry;
     u8 *other;
@@ -8156,50 +8158,51 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) { /* w5 */
     u16 supervision_timeout;
     u32 (*callback)(void *);
     u32 trace_level;
+
     if (bd_addr != NULL)
         addr = bd_addr;
     else
         addr = lbl_803C0F78 + 0x27B4;
+
     entry = lbl_803C0F78 + 0x34;
     i = 0;
     for (;;) {
-        if (entry[0x119] == 0)
-            goto next1;
-        if (memcmp(entry + 8, addr, 6) != 0)
-            goto next1;
-        break;
-    next1:
-        i++;
-        entry += 0x11C;
-        if (i >= 4) {
-            entry = NULL;
+        if (entry[0x119] == 0 || memcmp(entry + 8, addr, 6) != 0) {
+            i++;
+            entry += 0x11C;
+            if (i >= 4) {
+                entry = NULL;
+                break;
+            }
+        } else {
             break;
         }
     }
+
     buffer = lbl_803C0F78 + 0x624;
     if (entry == NULL)
         return;
+
     buffer[0] = status;
     if (status == 0) {
         buffer[1] = role;
         memcpy(buffer + 2, addr, 6);
         entry[0x11A] = role;
     }
+
     if (bd_addr != NULL) {
         supervision_timeout = *(u16 *)(entry + 0x10E);
         other = lbl_803C0F78 + 0x34;
         j = 0;
         for (;;) {
-            if (other[0x119] == 0)
-                goto next2;
-            if (memcmp(other + 8, entry + 8, 6) != 0)
-                goto next2;
-            break;
-        next2:
-            j++;
-            other += 0x11C;
-            if (j >= 4) {
-                other = NULL;
+            if (other[0x119] == 0 || memcmp(other + 8, entry + 8, 6) != 0) {
+                j++;
+                other += 0x11C;
+                if (j >= 4) {
+                    other = NULL;
+                    break;
+                }
+            } else {
                 break;
             }
         }
@@ -8209,15 +8212,19 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) { /* w5 */
                 btsnd_hcic_write_policy_set_80085668(*(u16 *)other, supervision_timeout);
         }
     }
+
     if (entry[0x11B] == 3 && btsnd_hcic_set_conn_encrypt(*(u16 *)entry, 1) != FALSE)
         entry[0x11B] = 4;
+
     if (entry != NULL && entry[0x11B] == 5)
         entry[0x11B] = 0;
+
     callback = *(u32 (**)(void *))(lbl_803C0F78 + 0x62C);
     if (callback != NULL) {
         callback(buffer);
         *(u32 *)(lbl_803C0F78 + 0x62C) = 0;
     }
+
     trace_level = lbl_803C0F78[0x27C0];
     if (trace_level >= 4)
         fn_8007096C(0xD0003, lbl_80315EBC, buffer[1], buffer[0]);
