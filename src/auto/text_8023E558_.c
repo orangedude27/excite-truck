@@ -10,14 +10,15 @@ extern void fn_8000D838(void *);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+/* Initialize a small state block and reset its 5-word parameter array to {0, 0x7B, 0, 0, 0}. */
 void fn_8023E558(void) {
-    int v;
-    int *p;
+    int initialValue;
+    int *paramArray;
     fn_8000D838(&lbl_8055F180);
-    p = lbl_804987B8 + 1;
+    paramArray = lbl_804987B8 + 1;
     lbl_804987B8[0] = 0;
-    v = 0x7B;
-    lbl_804987B8[1] = v;
+    initialValue = 0x7B;
+    lbl_804987B8[1] = initialValue;
     lbl_804987B8[2] = 0;
     lbl_804987B8[3] = 0;
     lbl_804987B8[4] = 0;
