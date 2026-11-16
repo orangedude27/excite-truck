@@ -253,9 +253,9 @@ static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32
     if (*text == '\\') {
         eo = 0;
         i = 0;
-        while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
-            Fn80231AF0_Entry *e = (Fn80231AF0_Entry *)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
-            if (fn_8002B1D8(text + 1, e->name, strlen(*(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo))) == 0) {
+        while (i < table->count) {
+            Fn80231AF0_Entry *e = (Fn80231AF0_Entry *)((u8 *)table->entries + eo);
+            if (fn_8002B1D8(text + 1, e->name, strlen(*(const char **)((u8 *)table->entries + eo))) == 0) {
                 Fn80231D84_Rec *r;
                 f32 extra = lbl_8056368C;
                 r = &((Fn80231D84_Table *)lbl_8049846C)->recs[((Fn80231D84_Table *)lbl_8049846C)->count++];
