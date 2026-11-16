@@ -110,7 +110,11 @@ extern f32 lbl_80560264;
 extern void fn_802337A0(f32, s32, f32, s32, f32, f32, s32, f32, const char *, ...);
 extern UnkF22C *lbl_8055D4B0;
 extern void fn_802C6CF8(s32);
+/* Handle of the UI arrow model ("hlparrow.mod") fn_8000F188 loads at startup and
+ * fn_8000F1B4 unloads again. */
 extern s32 lbl_80558A94;
+/* mrModelLoad: load a MODL resource by path (variant/flags select within it) and
+ * create its instance; returns the handle mrModelUnload (fn_802C6CF8) releases. */
 extern s32 fn_802C6FC0(s32, s32, s32);
   extern void fn_80234470(void);
   extern s32 lbl_8055D498;
