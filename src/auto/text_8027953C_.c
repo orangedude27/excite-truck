@@ -5,6 +5,8 @@ extern float lbl_805640EC;
 extern float lbl_805640E8;
 #pragma push
 #pragma scheduling invalid_target
+/* Initialize the default vehicle "Drvr" record: clear the 0x64-byte block, set the
+ * leading enabled byte, then fill its 24 tuning floats with 0.0/1.0 defaults. */
 void fn_8027953C(void *arg0) {
     float zero, one;
     memset(arg0, 0, 0x64);
