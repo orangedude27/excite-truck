@@ -736,8 +736,9 @@ extern "C" void fn_80157560(VObj *arg0) {
 }
 #pragma pop
 
-extern "C" s32 fn_801577F0(Unk801577F0* arg0) {
-    return lbl_8032E540[arg0->GetType()];
+// Return the bonus-category name string for a tracker, indexed by its GetType() category.
+extern "C" s32 fn_801577F0(Unk801577F0* tracker) {
+    return gBonusCategoryNames[tracker->GetType()];
 }
 
 extern "C" s32 fn_8015782C(s32* arg0, s32 arg1) {
