@@ -896,7 +896,19 @@ int CPGPLinkCheck(void) {
 }
 
 #pragma use_lmw_stmw off
-void GXSetCPUFifo(void *arg0) {
+void GXSetCPUFifo(void *fifoObj) {
+    /* RVL SDK GXFifo.c: install the CPU (read) FIFO, or clear it when fifoObj
+     * is NULL.  Programs the PI FIFO registers and CP status for the
+     * linked/unlinked CPU-GP FIFO case, all under an interrupt lock.
+     * (lbl_ names kept: rename_symbol is unavailable for game symbols.)
+     *   CpuFifo      lbl_8037C0E4  __Fifo      CPU -> GX read FIFO object
+     *   CpuFifoBusy  lbl_8055D948  __FifoBusy  CPU FIFO installed flag
+     *   FifoLinked   lbl_8055D960              CPU/GP FIFOs share a buffer
+     */
+    #define CpuFifo      lbl_8037C0E4
+    #define CpuFifoBusy  lbl_8055D948
+    #define FifoLinked   lbl_8055D960
+
     union {
         unsigned int word;
         struct {
@@ -905,72 +917,76 @@ void GXSetCPUFifo(void *arg0) {
             unsigned int pad1 : 5;
         } bits;
     } piWord;
-    GXFifoObjInternal *source;
-    GXFifoObjInternal *fifo;
+    GXFifoObjInternal *newFifo;
+    GXFifoObjInternal *cpuFifo;
     struct { GXFifoObjInternal *ptr; } tail;
-    int intStatus;
-    unsigned int *gd;
+    int intState;
+    unsigned int *gxData;
     struct { unsigned int value; } temp;
-    unsigned int *gdElse;
+    unsigned int *gxDataElse;
 
-    intStatus = OSDisableInterrupts();
-    if (arg0 == 0) {
-        lbl_8055D948 = 0;
-        lbl_8055D960 = 0;
-        ((unsigned char *)lbl_8037C0E4)[0x22] = 0;
-        ((unsigned char *)lbl_8037C0E4)[0x21] = 0;
-        ((void (*)(int))OSRestoreInterrupts)(intStatus);
+    intState = OSDisableInterrupts();
+    if (fifoObj == 0) {
+        CpuFifoBusy = 0;
+        FifoLinked = 0;
+        ((unsigned char *)CpuFifo)[0x22] = 0;
+        ((unsigned char *)CpuFifo)[0x21] = 0;
+        ((void (*)(int))OSRestoreInterrupts)(intState);
         return;
     }
 
-    source = (GXFifoObjInternal *)arg0;
-    fifo = (GXFifoObjInternal *)lbl_8037C0E4;
-    *fifo = *source;
-    lbl_8055D948 = 1;
-    ((unsigned char *)fifo)[0x21] = 1;
+    newFifo = (GXFifoObjInternal *)fifoObj;
+    cpuFifo = (GXFifoObjInternal *)CpuFifo;
+    *cpuFifo = *newFifo;
+    CpuFifoBusy = 1;
+    ((unsigned char *)cpuFifo)[0x21] = 1;
 
     if ((CPGPLinkCheck() & 0xFF) != 0) {
-        lbl_8055D960 = 1;
-        ((unsigned char *)fifo)[0x22] = 1;
-        __piReg[3] = (*(unsigned int *)lbl_8037C0E4) & 0x3FFFFFFFu;
-        __piReg[4] = (unsigned int)fifo->top & 0x3FFFFFFFu;
+        FifoLinked = 1;
+        ((unsigned char *)cpuFifo)[0x22] = 1;
+        __piReg[3] = (*(unsigned int *)CpuFifo) & 0x3FFFFFFFu;
+        __piReg[4] = (unsigned int)cpuFifo->top & 0x3FFFFFFFu;
         piWord.word = 0;
-        piWord.bits.payload = (unsigned int)fifo->wrPtr >> 5;
+        piWord.bits.payload = (unsigned int)cpuFifo->wrPtr >> 5;
         __piReg[5] = piWord.word;
 
-        gd = __GXData;
-        temp.value = gd[4] | 3u;
-        gd[4] = temp.value;
+        gxData = __GXData;
+        temp.value = gxData[4] | 3u;
+        gxData[4] = temp.value;
         __cpReg[2] = (unsigned short)temp.value;
-        temp.value = (gd[2] | 4u) & 0xFFFFFFF7u;
-        gd[2] = temp.value;
+        temp.value = (gxData[2] | 4u) & 0xFFFFFFF7u;
+        gxData[2] = temp.value;
         __cpReg[1] = (unsigned short)temp.value;
-        temp.value = gd[2] | 0x10u;
-        gd[2] = temp.value;
+        temp.value = gxData[2] | 0x10u;
+        gxData[2] = temp.value;
         __cpReg[1] = (unsigned short)temp.value;
     } else {
-        ((unsigned char *)fifo)[0x22] = 0;
-        if ((unsigned char)lbl_8055D960 != 0) {
-            gd = __GXData;
-            temp.value = gd[2] & 0xFFFFFFEFu;
-            gd[2] = temp.value;
+        ((unsigned char *)cpuFifo)[0x22] = 0;
+        if ((unsigned char)FifoLinked != 0) {
+            gxData = __GXData;
+            temp.value = gxData[2] & 0xFFFFFFEFu;
+            gxData[2] = temp.value;
             __cpReg[1] = (unsigned short)temp.value;
-            lbl_8055D960 = 0;
+            FifoLinked = 0;
         }
-        gdElse = __GXData;
-        temp.value = gdElse[2] & 0xFFFFFFF3u;
-        gdElse[2] = temp.value;
+        gxDataElse = __GXData;
+        temp.value = gxDataElse[2] & 0xFFFFFFF3u;
+        gxDataElse[2] = temp.value;
         __cpReg[1] = (unsigned short)temp.value;
 
-        tail.ptr = (GXFifoObjInternal *)lbl_8037C0E4;
-        __piReg[3] = (*(unsigned int *)lbl_8037C0E4) & 0x3FFFFFFFu;
+        tail.ptr = (GXFifoObjInternal *)CpuFifo;
+        __piReg[3] = (*(unsigned int *)CpuFifo) & 0x3FFFFFFFu;
         __piReg[4] = (unsigned int)tail.ptr->top & 0x3FFFFFFFu;
         piWord.word = 0;
         piWord.bits.payload = (unsigned int)tail.ptr->wrPtr >> 5;
         __piReg[5] = piWord.word;
     }
     PPCSync();
-    ((void (*)(int))OSRestoreInterrupts)(intStatus);
+    ((void (*)(int))OSRestoreInterrupts)(intState);
+
+    #undef CpuFifo
+    #undef CpuFifoBusy
+    #undef FifoLinked
 }
 typedef struct GPFifoCopy {
     unsigned int w0, w1, w2, w3, w4, w5, w6, w7, w8;
