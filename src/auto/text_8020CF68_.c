@@ -197,12 +197,27 @@ void fn_8020D0CC(int arg0) {
     lbl_8055EE98 = lbl_80563320;
 }
 
+/* Initialize the volume options menu: allocate the "volume-dash" mixer
+ * volume handle, set it to full volume, clear menu callbacks, and load the
+ * "vollyt.val" layout object. */
 void fn_8020D178(void) {
-    lbl_8055EE74 = (int)fn_802090D4(lbl_8033C6B0);
-    fn_80209190(lbl_8055EE74, lbl_8056331C);
-    lbl_8055EE7C = 0;
-    lbl_8055EE80 = 0;
-    lbl_8055EEA0 = (int)fn_80145E70(lbl_8033C6BC);
+    #define s_volMenuHandle lbl_8055EE74
+    #define s_volMenuCallback lbl_8055EE7C
+    #define s_volMenuDrawCallback lbl_8055EE80
+    #define s_volMenuLayout lbl_8055EEA0
+    #define VOLUME_FULL lbl_8056331C
+
+    s_volMenuHandle = (int)fn_802090D4(lbl_8033C6B0);
+    fn_80209190(s_volMenuHandle, VOLUME_FULL);
+    s_volMenuCallback = 0;
+    s_volMenuDrawCallback = 0;
+    s_volMenuLayout = (int)fn_80145E70(lbl_8033C6BC);
+
+    #undef s_volMenuHandle
+    #undef s_volMenuCallback
+    #undef s_volMenuDrawCallback
+    #undef s_volMenuLayout
+    #undef VOLUME_FULL
 }
 
 #pragma cplusplus on
