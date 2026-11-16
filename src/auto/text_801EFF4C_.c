@@ -1014,6 +1014,7 @@ int fn_801F196C(int, int);
 #pragma small_data off
 #pragma pop
 int fn_801F196C();
+/* Return the wheel-entry pointer held in the (car, wheel) slot table lbl_80488798 for the current car/wheel indices. */
 int fn_801F1848(void) {
     return lbl_80488798[fn_801F196C()];
 }
