@@ -58,8 +58,10 @@ extern char lbl_8034DE6C[];
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_802E86D4(void) {
-    struct Dispatch { virtual void f0(); };
-    ((Dispatch *)lbl_80560024)->f0();
+    /* Start the NAND-save manager (virtual slot 0x8) and mark it initialized;
+     * fn_802E870C is the matching shutdown that clears the flag. */
+    struct NandSaveManager { virtual void start(); };
+    ((NandSaveManager *)lbl_80560024)->start();
     lbl_80560028 = 1;
 }
 #pragma cplusplus on
