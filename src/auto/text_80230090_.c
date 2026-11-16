@@ -386,11 +386,12 @@ void fn_80230A68(void *dst, s32 color, f32 x, f32 y, f32 z, f32 s, f32 t) {
 }
 
 #pragma dont_inline on
-void fn_80230AB8(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, u8 *arg4) {
-    *arg1 = (u8)(arg0 >> 24);
-    *arg2 = (u8)(arg0 >> 16);
-    *arg3 = (u8)(arg0 >> 8);
-    *arg4 = (u8)arg0;
+void fn_80230AB8(u32 packedColor, u8 *outRed, u8 *outGreen, u8 *outBlue, u8 *outAlpha) {
+    /* Unpack a 32-bit RGBA color into its four component bytes (R in the high byte). */
+    *outRed = (u8)(packedColor >> 24);
+    *outGreen = (u8)(packedColor >> 16);
+    *outBlue = (u8)(packedColor >> 8);
+    *outAlpha = (u8)packedColor;
 }
 #pragma dont_inline reset
 
