@@ -23,6 +23,16 @@ extern void fn_80236914(void);
 extern int fn_80214A9C(int);
 extern int fn_80214AF0(int);
 extern int fn_8024683C(void);
+
+/* The active UI window's group visibility helpers, and the wireless-controller
+ * warning check (shows a warning when a Wiimote is detected). */
+#define UIWindow_HideGroup          fn_80214A9C
+#define UIWindow_ShowGroup          fn_80214AF0
+#define checkAndShowWirelessWarning fn_8024683C
+
+/* UI groups toggled around the wireless warning. */
+#define UI_GROUP_MAIN_MENU 0xC
+#define UI_GROUP_WARNING   0x1F
 extern int fn_80244550(int);
 extern int lbl_8055F1E0;
 #pragma scheduling invalid_target
