@@ -4267,6 +4267,7 @@ block_268:
 }
 
 #pragma push
+#pragma optimize_for_size on
 extern "C" void fn_8010F430(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     extern const char lbl_80329530[];
     extern f32 lbl_80561178;
