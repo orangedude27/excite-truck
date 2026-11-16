@@ -796,11 +796,17 @@ float fn_801AF9EC(int arg0, float *arg1) {
 
 #pragma scheduling invalid_target
 void fn_801AFA20(void) {
-    /* Pass the check result through and set its failure value to minus one. */
-    int result = fn_801284F8(4, lbl_803359A0);
-    if (result != 0) {
-        ((void (*)(int *, int))fn_801AFA64)((int *)result, -1);
+#define kRecordMgrName lbl_803359A0
+#define createObject fn_801284F8
+#define RecordMgr_init fn_801AFA64
+    /* Allocate a RecordMgr object and clear its first field. */
+    int recordMgr = createObject(4, kRecordMgrName);
+    if (recordMgr != 0) {
+        ((void (*)(int *, int))RecordMgr_init)((int *)recordMgr, -1);
     }
+#undef kRecordMgrName
+#undef createObject
+#undef RecordMgr_init
 }
 #pragma scheduling on
 void fn_801AFA5C(int arg0) { fn_801AFA70(arg0, 1); }
