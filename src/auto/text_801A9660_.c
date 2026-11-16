@@ -1525,59 +1525,48 @@ void fn_801ACA48(void *arg0) {
 }
 
 extern float lbl_80558DC4, lbl_8055E460, lbl_805624AC;
+#pragma always_inline on
 static inline void transform_801ACB30(const float *m, const float *src, volatile float *dst) {
-    if (src == dst) {
-        float x = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
-        float y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        float z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+    float x, y, z;
+    if (dst == src) {
+        x = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
+        y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
         dst[0] = x; dst[1] = y; dst[2] = z;
     } else {
-        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[0] = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
         dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
         dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     }
-    dst[0] += m[9]; dst[1] += m[10]; dst[2] += m[11];
+    x = dst[0] + m[9]; y = dst[1] + m[10]; z = dst[2] + m[11];
+    dst[0] = x; dst[1] = y; dst[2] = z;
 }
+#pragma always_inline reset
 void fn_801ACB30(void *arg0, int arg1) {
     char *p = (char *)arg0;
     float *out = (float *)(arg1 + *(int *)(p + 8));
     register float t = lbl_8055E460 - lbl_805624AC;
+    float tmp[12], st[3], st2[3];
     int j, k;
     if ((float)__fabs(t) <= lbl_80558DC4) {
-        out[0] = *(float *)(p + 0x70);
-        out[1] = *(float *)(p + 0x74);
-        out[2] = *(float *)(p + 0x78);
-        out[3] = *(float *)(p + 0x7C);
-        out[4] = *(float *)(p + 0x80);
-        out[5] = *(float *)(p + 0x84);
-        out[6] = *(float *)(p + 0x88);
-        out[7] = *(float *)(p + 0x8C);
-        out[8] = *(float *)(p + 0x90);
-        out[9] = *(float *)(p + 0x94);
-        out[10] = *(float *)(p + 0x98);
-        out[11] = *(float *)(p + 0x9C);
+        int *srcw = (int *)(p + 0x70);
+        int *dstw = (int *)out;
+        for (j = 0; j < 12; j++) dstw[j] = srcw[j];
     } else {
+        float *a = (float *)(p + 0x70);
+        float *b = (float *)(p + 0xA0);
+        float *o = tmp;
         for (j = 0; j < 2; j++) {
-            float *a = (float *)(p + 0x70 + j * 0x18);
-            float *b = (float *)(p + 0xA0 + j * 0x18);
-            float *o = out + j * 6;
             for (k = 0; k < 6; k++) o[k] = b[k] + t * (a[k] - b[k]);
+            a += 6; b += 6; o += 6;
         }
+        for (j = 0; j < 12; j++) ((int *)out)[j] = ((int *)tmp)[j];
     }
     *(short *)(out + 12) = *(short *)(p + 0x6C);
     if (*(void **)(p + 0x23C)) {
-        float *v = (float *)(p + 0x244);
-        float st[3];
-        for (j = 0; j < 3; j++) {
-            st[j] = v[0] * *(float *)(p + 0x3C + j*4) + v[1] * *(float *)(p + 0x48 + j*4) + v[2] * *(float *)(p + 0x54 + j*4) + *(float *)(p + 0x60 + j*4);
-        }
-        {
-            float *q = (float *)(*(char **)(p + 0x23C));
-            for (j = 0; j < 3; j++) {
-                ((float *)(p + 8))[j] = q[0] * *(float *)((char *)q + 0x3C + j*4) + q[1] * *(float *)((char *)q + 0x48 + j*4) + q[2] * *(float *)((char *)q + 0x54 + j*4) + *(float *)((char *)q + 0x60 + j*4);
-            }
-        }
-        (void)st;
+        float *q = (float *)(*(char **)(p + 0x23C));
+        transform_801ACB30((float *)(p + 0x3C), (float *)(p + 0x244), st);
+        transform_801ACB30((float *)((char *)q + 0x3C), (float *)((char *)q + 0x244), st2);
     }
 }
 
@@ -1715,7 +1704,7 @@ void fn_801AD148(void *arg0, void *arg1, void *arg2, f32 farg0, f32 farg1) {
 #pragma scheduling on
 #pragma processor reset
 extern void fn_801AD0E0(void *, void *, void *, void *, f32, f32);
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 farg0) {
     Vec sp20;
     Vec sp14;
@@ -1741,7 +1730,6 @@ void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 f
     fn_801AD0E0(arg0, arg3, arg2, arg1, farg1, farg0);
     *(f32 *)((char *)arg0 + 0x28) = distance;
 }
-
 /* A spring between a point of a rigid body (+0x34) and a target point: a fixed
    world point (+0x00) when there is no second body (+0x0C == 0), or that body's
    world position of +0x00.  fn_801AD0E0/fn_801AD148/fn_801AD28C set one up and
@@ -1961,7 +1949,7 @@ void *fn_801AD6B0(void *arg0, int arg1) {
         initArg = arg0;
         *(void **)((u8 *)arg0 + 0x23C) = (char *)&lbl_80335744 + 0x54;
         if (initArg != 0) {
-            initArg = (u8 *)arg0 + 0x23C;
+            initArg = (u8 *)initArg + 0x23C;
         }
         fn_801D0934(initArg);
         *(int *)((u8 *)arg0 + 0x240) = 0;
@@ -1989,20 +1977,13 @@ void fn_801AD750(void *arg0, void *arg1) {
         fn_801D08C0(arg0);
     }
 }
-#pragma push
 #pragma peephole off
 void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
-    void *a;
-    void *b;
-    if (arg3 >= 8)
-        return;
-    if (arg0 == 0)
-        return;
-    a = (char *)arg0 + 0x23C;
-    b = arg2;
-    fn_801D0A24(a, b);
+    if (arg3 < 8 && arg0 != 0) {
+        fn_801D0A24((char *)arg0 + 0x23C, arg2);
+    }
 }
-#pragma pop
+#pragma peephole on
 unsigned char fn_801AD860(void *arg0) {
     return ((unsigned char *)arg0)[0x220];
 }
