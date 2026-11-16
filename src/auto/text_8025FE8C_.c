@@ -878,14 +878,16 @@ s32 fn_80261948(s32 *indexPtr) {
 }
 
 #pragma scheduling invalid_target
-void fn_80261980(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+/* Initialize a debug-menu item of kind 3: store the label pointer, the data
+ * value and one kind-specific word, and clear the last word (DbgMenuItem). */
+void fn_80261980(void *item, s32 name, s32 data, s32 a) {
     s32 zero;
-    *(s32 *)arg0 = arg1;
+    *(s32 *)item = name;
     zero = 0;
-    *(s32 *)((u8 *)arg0 + 4) = 3;
-    *(s32 *)((u8 *)arg0 + 8) = arg2;
-    *(s32 *)((u8 *)arg0 + 0xC) = arg3;
-    *(s32 *)((u8 *)arg0 + 0x10) = zero;
+    *(s32 *)((u8 *)item + 4) = 3;
+    *(s32 *)((u8 *)item + 8) = data;
+    *(s32 *)((u8 *)item + 0xC) = a;
+    *(s32 *)((u8 *)item + 0x10) = zero;
 }
 #pragma scheduling on
 extern s32 lbl_802FA6B4[];
