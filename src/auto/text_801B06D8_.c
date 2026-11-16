@@ -453,6 +453,8 @@ extern "C" s32 fn_801B0E40(s32 slotIndex, s32 *minRank) {
 }
 #pragma cplusplus reset
 s32 fn_801B0F18(void) {
+    /* Return the +0x4C value field of the deity/AI-truck slot selected by
+     * fn_80179630() out of the 0x80-byte-slot table lbl_8055E684. */
     return *(s32 *)((u8 *)lbl_8055E684 + (fn_80179630() << 7) + 0x4C);
 }
 
