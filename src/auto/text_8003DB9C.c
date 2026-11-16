@@ -5560,7 +5560,9 @@ void GXSetZMode(s32 enable, s32 func, s32 update) {
     ((GXDrawData *)data)->lastWriteWasXF = FALSE;
 }
 
-void GXSetZCompLoc(s32 enable) {
+/* Selects whether the depth comparison happens before (nonzero) or after texturing: updates the
+ * zCompLoc bit of the shadowed BP register in __GXData, then sends it to the BP through the FIFO. */
+void GXSetZCompLoc(s32 beforeTex) {
     union {
         unsigned int value;
         struct {
@@ -5571,7 +5573,7 @@ void GXSetZCompLoc(s32 enable) {
     } reg;
     unsigned int *data = __GXData;
     reg.value = data[0x22C / 4];
-    reg.bits.zCompLoc = enable;
+    reg.bits.zCompLoc = beforeTex;
     data[0x22C / 4] = reg.value;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = data[0x22C / 4];
