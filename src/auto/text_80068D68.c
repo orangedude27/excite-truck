@@ -5753,6 +5753,7 @@ void bta_dm_acl_change(u8 *arg0) {
 extern void fn_80070FA4(void *, const void *);
 extern void *GKI_getbuf(unsigned short);
 void fn_80073464(void) {
+    /* Disable-timer callback: report BTA_DM_DISABLE_EVT (event 1, no data) to the BTA DM callback held at +0x50. */
     ((void (**)(int, int)) (lbl_803C0C14 + 0x50))[0](1, 0);
 }
 
@@ -9778,8 +9779,7 @@ after_scan:
     b0 = *(volatile u8 *)(classInfo + 0);
     modeBit = discoverMode & 1;
     b1 = *(volatile u8 *)(classInfo + 1);
-    cls = (u16)((b0 << 8) & 0xFF00);
-    cls = (u16)(cls + (b1 & 0xE0));
+    cls = (u16)(((b0 << 8) & 0xFF00) + (b1 & 0xE0));
     if ((modeBit ^ ((cls >> 5) & 1)) != 0) {
         b2 = *(volatile u8 *)(classInfo + 2);
         newCls = (u16)(cls & ~0x20);
