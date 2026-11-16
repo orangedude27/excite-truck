@@ -186,11 +186,12 @@ extern "C" void *fn_80013E1C(s32 screen) {
     }
 }
 #pragma pop
-void fn_80013EAC(s32 arg0, s32 arg1, s32 arg2) {
-    void *obj = *(void **)((u8 *)lbl_803577E0[arg0] + 0x50);
+void fn_80013EAC(s32 screen, s32 count, s32 arg2) {
+    /* Set up the lap readout on a screen's RaceOverlay: get its "raceovr.val" layout, clamp the count to at least 1, then configure the label text. */
+    void *obj = *(void **)((u8 *)sRaceOverlays[screen] + 0x50);
     s32 value = 1;
-    if (arg1 >= 1) {
-        value = arg1;
+    if (count >= 1) {
+        value = count;
     }
     fn_80013BD0(obj, value, arg2, 0);
 }
@@ -341,22 +342,20 @@ extern "C" void *fn_80014524(void *object, s32 index) {
 }
 #pragma pop
 
-#pragma push
-#pragma cplusplus on
 #pragma scheduling invalid_target
 void fn_80014638(void *arg0) {
     f32 zero = lbl_80560368;
-    s32 a = 0;
     f32 one = lbl_80560398;
+    u8 zb = 0;
+    s32 zw = 0;
     s32 six = 6;
     *(s32 *)((u8 *)arg0 + 0x14) = six;
     *(f32 *)((u8 *)arg0 + 0x1C) = one;
-    *(u8 *)((u8 *)arg0 + 0x20) = a;
+    *(u8 *)((u8 *)arg0 + 0x20) = zb;
     *(f32 *)((u8 *)arg0 + 0x2C) = zero;
     *(f32 *)((u8 *)arg0 + 0x28) = zero;
-    *(s32 *)((u8 *)arg0 + 0x24) = a;
+    *(s32 *)((u8 *)arg0 + 0x24) = zw;
 }
-#pragma pop
 extern u8 lbl_802FCE18[];
 extern void fn_8001A04C(void *);
 extern void fn_802CAC54(s32);
@@ -491,12 +490,12 @@ void fn_800148A0(void *arg0) {
     char name[0x40];
     char first[0x40];
     char second[0x40];
+    void *info;
+    void *other;
     f32 value1;
     f32 value2;
     u8 *base;
     s32 mode;
-    void *info;
-    void *other;
     u8 *ap = (u8 *)arg0;
     value1 = lbl_80560360;
     value2 = value1;
@@ -534,7 +533,7 @@ void fn_800148A0(void *arg0) {
         strcpy(name, (char *)&lbl_80558B98);
     } else {
         other = *(void **)((u8 *)lbl_8055D350 + 0xC);
-        if (*(s32 *)((u8 *)info + 0x10) != *(s32 *)((u8 *)other + 8) &&
+        if (*(s32 *)((u8 *)info + 0x10) == *(s32 *)((u8 *)other + 8) ||
             *(s32 *)other >= *(s32 *)((u8 *)other + 8)) {
             strcpy(name, (char *)base + 0x1C8);
             mode = 0;
@@ -1038,8 +1037,8 @@ void fn_800154B8(void) {
     /* Fix note: final loop is a pre-tested for loop (target branches to its condition first). */
     s32 current;
     s32 *base;
-    s32 first, left, right, start, i, limit;
-    f32 y, step;
+    register s32 first, left, right, start, i, limit;
+    register f32 y, step;
     current = fn_801EA994();
     base = *(s32 **)((char *)lbl_8055D350 + 0x30);
     left = 2;
