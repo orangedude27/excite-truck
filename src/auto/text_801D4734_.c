@@ -1866,10 +1866,12 @@ void fn_801D6D28(void* cue) {
     *(int*)((char*)cue + 4) = 1;
 }
 #pragma scheduling on
-void fn_801D6D68(UnkStruct_801D701C *arg0) {
+void fn_801D6D68(UnkStruct_801D701C *object) {
+    /* Constructor: install the type/vtable table lbl_80338B98 in the object's
+       first field and reset its state. */
     extern char lbl_80338B98[];
-    arg0->name = lbl_80338B98;
-    arg0->state = 0;
+    object->name = lbl_80338B98;
+    object->state = 0;
 }
 #pragma scheduling reset
 /* Clear the object's secondary pointer and, if requested, run its cleanup helper. */
