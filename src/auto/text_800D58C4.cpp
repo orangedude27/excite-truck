@@ -539,52 +539,53 @@ extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4Si
 }
 
 extern "C" void GXSetTevOp(u8, u8);
-extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2) {
-    GXClearVtxDesc();
-    GXSetVtxDesc((GXAttr)9, (GXAttrType)1);
-    GXSetVtxAttrFmt((GXVtxFmt)0, (GXAttr)9, (GXCompCnt)0, (GXCompType)4, (u8)0);
-    GXSetNumChans((u32)1);
-    GXSetChanCtrl((u32)4, (u32)0, (u32)0, (u32)0, (u32)0, (u32)0, (u32)2);
-    u8 *color = (u8 *)arg2;
-    u8 r = color[0];
-    u8 g = color[1];
-    u8 b = color[2];
-    u8 a = color[3];
-    u8 buf[4];
-    buf[0] = r;
-    buf[1] = g;
-    buf[2] = b;
-    buf[3] = a;
-    GXSetChanMatColor_Internal((u32)4, buf, b, g, r);
-    GXSetNumTexGens((u8)0);
-    GXSetNumTevStages((u32)1);
-    GXSetNumIndStages((u32)0);
-    GXSetTevOrder((u8)0, (u8)0xFF, (u8)0xFF, (u8)4);
-    GXSetTevOp((u8)0, (u8)4);
-    GXSetTevDirect((u8)0);
-    GXSetTevSwapMode((u8)0, (u32)0, (u32)0);
-    GXSetTevSwapModeTable((u32)0, (u32)0, (u32)1, (u32)2, (u32)3);
-    GXSetAlphaCompare((u32)7, (u8)0, (u8)0, (u32)7, (u8)0);
-    GXSetBlendMode((u8)1, (u8)4, (u8)5, (u8)0xF);
-    GXSetLineWidth((u8)6, (u32)0);
-    GXBegin((GXPrimitive)0xB0, (GXVtxFmt)0, (u16)5);
-    volatile f32 *fifo = (volatile f32 *)0xCC008000;
-    f32 w = *(f32 *)arg1;
-    f32 x0 = *(f32 *)arg0;
-    *fifo = x0;
-    f32 y0 = *(f32 *)((u8 *)arg0 + 4);
-    f32 x1 = x0 + w;
-    f32 h = *(f32 *)((u8 *)arg1 + 4);
-    *fifo = y0;
-    f32 y1 = y0 + h;
-    *fifo = x1;
-    *fifo = y0;
-    *fifo = x1;
-    *fifo = y1;
-    *fifo = x0;
-    *fifo = y1;
-    *fifo = x0;
-    *fifo = y0;
+extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2)
+{
+  GXClearVtxDesc();
+  GXSetVtxDesc((GXAttr) 9, (GXAttrType) 1);
+  GXSetVtxAttrFmt((GXVtxFmt) 0, (GXAttr) 9, (GXCompCnt) 0, (GXCompType) 4, (u8) 0);
+  GXSetNumChans((u32) 1);
+  GXSetChanCtrl((u32) 4, (u32) 0, (u32) 0, (u32) 0, (u32) 0, (u32) 0, (u32) 2);
+  u8 *color = (u8 *) arg2;
+  u8 r = color[0];
+  u8 g = color[1];
+  u8 b = color[2];
+  u8 a = color[3];
+  u8 buf[4];
+  buf[0] = r;
+  buf[1] = g;
+  buf[2] = b;
+  buf[3] = a;
+  GXSetChanMatColor_Internal((u32) 4, buf, b, g, r);
+  GXSetNumTexGens((u8) 0);
+  GXSetNumTevStages((u32) 1);
+  GXSetNumIndStages((u32) 0);
+  GXSetTevOrder((u8) 0, (u8) 0xFF, (u8) 0xFF, (u8) 4);
+  GXSetTevOp((u8) 0, (u8) 4);
+  GXSetTevDirect((u8) 0);
+  GXSetTevSwapMode((u8) 0, (u32) 0, (u32) 0);
+  GXSetTevSwapModeTable((u32) 0, (u32) 0, (u32) 1, (u32) 2, (u32) 3);
+  GXSetAlphaCompare((u32) 7, (u8) 0, (u8) 0, (u32) 7, (u8) 0);
+  GXSetBlendMode((u8) 1, (u8) 4, (u8) 5, (u8) 0xF);
+  GXSetLineWidth((u8) 6, (u32) 0);
+  GXBegin((GXPrimitive) 0xB0, (GXVtxFmt) 0, (u16) 5);
+  volatile f32 *fifo = (volatile f32 *) 0xCC008000;
+  f32 w = *((f32 *) arg1);
+  f32 x0 = *((f32 *) arg0);
+  *fifo = x0;
+  f32 y0 = *((f32 *) (((u8 *) arg0) + 4));
+  f32 x1 = (0, x0 + w);
+  f32 h = *((f32 *) (((u8 *) arg1) + 4));
+  *fifo = y0;
+  f32 y1 = y0 + h;
+  *fifo = x1;
+  *fifo = y0;
+  *fifo = x1;
+  *fifo = y1;
+  *fifo = x0;
+  *fifo = y1;
+  *fifo = x0;
+  *fifo = y0;
 }
 
 #pragma use_lmw_stmw off
@@ -2132,31 +2133,30 @@ extern "C" char* fn_800D9584(char* arg0, const char* arg1) {
     return strncpy(arg0 + 4, arg1, 0x14);
 }
 
-extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void *arg0, unsigned char arg1) {
+extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void *arg0, u8 arg1) {
     extern const char lbl_8031F990[];
     extern void memset(void *, int, unsigned int);
-    struct Blob800D { char f; char _p[0x32F]; char m1; char _q[0x2F]; char m2; };
-    struct Blob800D *base = (struct Blob800D *)lbl_8031F990;
-    unsigned int capacity = *(unsigned int *)((unsigned char *)arg0 + 0x4C) >> 28;
-    if ((unsigned int)arg1 > capacity)
-        Panic__Q26nw4hbm2dbFPCciPCce(&base->f, 0x38B, &base->m1);
+    const char *data = lbl_8031F990;
+    u32 capacity = *(u32 *)((u8 *)arg0 + 0x4C) >> 28;
+    if ((u32)arg1 > capacity)
+        Panic__Q26nw4hbm2dbFPCciPCce(data, 0x38B, data + 0x330);
     if (arg1 == 0)
         return;
-    if (*(unsigned int *)((unsigned char *)arg0 + 0x58) == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&base->f, 0x38E, &base->m2);
-    unsigned int packed = *(unsigned int *)((unsigned char *)arg0 + 0x50);
-    unsigned char *texture = (unsigned char *)*(void **)((unsigned char *)arg0 + 0x58) + ((packed >> 23) & 0x1E0);
-    unsigned int index = packed >> 28;
+    if (*(u32 *)((u8 *)arg0 + 0x58) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(data, 0x38E, data + 0x360);
+    u32 packed = *(u32 *)((u8 *)arg0 + 0x50);
+    u8 *texture = (u8 *)*(void **)((u8 *)arg0 + 0x58) + ((packed >> 23) & 0x1E0);
+    u32 index = packed >> 28;
     while (index < arg1) {
         memset(texture, 0, 0x20);
         texture += 0x20;
         index++;
     }
     struct TextureCountWord {
-        unsigned int count : 4;
-        unsigned int rest : 28;
+        u32 count : 4;
+        u32 rest : 28;
     };
-    ((TextureCountWord *)((unsigned char *)arg0 + 0x50))->count = arg1;
+    ((TextureCountWord *)((u8 *)arg0 + 0x50))->count = arg1;
 }
 
 extern "C" const char lbl_8031F990[];
@@ -3661,8 +3661,12 @@ extern "C" void UnbindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransfor
     PaneObj* pane = (PaneObj*)self;
     pane->UnbindAnimationSelf(transform);
     if (flag) {
-        LinkNode* node = pane->mChildList.next;
-        LinkNode* end = &pane->mChildList;
+        struct { LinkNode* node; } cursor;
+        cursor.node = pane->mChildList.next;
+        LinkNode*& node = cursor.node;
+        struct { LinkNode* endp; } sentinel;
+        sentinel.endp = &pane->mChildList;
+        LinkNode*& end = sentinel.endp;
         while (node != end) {
             if (!node) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23d, lbl_8031E8D8);
