@@ -2296,8 +2296,9 @@ extern "C" void fn_8019EF00(void* arg0) {
     self->output.z += m[11];
 }
 
+#define gZeroFloat lbl_805622D0 /* 0.0f, shared constant in .sdata2 */
 extern "C" void fn_8019F03C(void* arg0) {
-    f32 value = lbl_805622D0;
+    f32 value = gZeroFloat;
     *(u8*)((u8*)arg0 + 0x4C) = 0;
     *(f32*)((u8*)arg0 + 0x40) = value;
     *(f32*)((u8*)arg0 + 0x44) = value;
