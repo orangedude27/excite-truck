@@ -955,7 +955,18 @@ copied:
     return -1;
 }
 #pragma scheduling on
-void fn_802ADFF4(int **arg0,int arg1){unsigned char *p=*(unsigned char **)*arg0+arg1*0x74;if(p[0x68]==0){p[0x68]=1;p[0x69]=0;*(float *)(p+0x6c)=lbl_8055E3C8;}}
+void fn_802ADFF4(int **manager, int animIndex) {
+#define CurrentGameTime lbl_8055E3C8
+    unsigned char *entry = *(unsigned char **)*manager + animIndex * 0x74;
+    /* ArtAnimManager::StartAnim: if animation `animIndex` has not started yet,
+     * mark it running and unpaused and record the current game time as its start. */
+    if (entry[0x68] == 0) {
+        entry[0x68] = 1;
+        entry[0x69] = 0;
+        *(float *)(entry + 0x6c) = CurrentGameTime;
+    }
+#undef CurrentGameTime
+}
 
 /* Pause an animation entry by index, recording its pause time; warn and mark it running if it was not already started. */
 void fn_802AE02C(void *manager, int animIndex) {
