@@ -21125,9 +21125,10 @@ l2c_conn_ret l2cu_create_conn_after_switch(void *arg0) {
             fn_8007093C(0x80000, lbl_80319218);
         }
         l2cu_release_lcb(arg0);
-        return;
+        return FALSE;
     }
     btu_start_timer((TIMER_LIST_ENT *)((UINT8 *)arg0 + 0x10), 2, 0x3C);
+    return TRUE;
 }
 
 /* Find an active link control block whose link state matches the given state. */
