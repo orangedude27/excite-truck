@@ -9368,12 +9368,6 @@ void btm_vsc_complete(UINT8 *p, UINT16 cc_opcode, UINT16 evt_len, tBTM_CMPL_CB *
 
 extern char lbl_803161E0[];
 extern char lbl_80316464[];
-s32 fn_8007A534(s32 arg0) {
-    if (*(s32 *)(lbl_803C0F78 + 0x56C) != 0 && arg0 != 0)
-        return 2;
-    *(s32 *)(lbl_803C0F78 + 0x56C) = arg0;
-    return 0;
-}
 
 /* btm_cb (lbl_803C0F78) members the vendor-specific-event handler uses, kept as
    byte offsets so the compiler still reuses one base register for them. */
@@ -9381,6 +9375,13 @@ s32 fn_8007A534(s32 arg0) {
 #define vsb_p_vsc_cback(b)    (*(UINT32 *)((b) + 0x61C))                  /* pending VSC command's callback */
 #define vsb_lmp_subversion(b) (*(UINT16 *)((b) + 0x63C))                  /* controller LMP subversion */
 #define vsb_vsc_busy(b)       ((b)[0x650])                                /* a VSC command awaits its event */
+
+s32 fn_8007A534(s32 arg0) {
+    if (*(s32 *)(lbl_803C0F78 + 0x56C) != 0 && arg0 != 0)
+        return 2;
+    *(s32 *)(lbl_803C0F78 + 0x56C) = arg0;
+    return 0;
+}
 
 /* Processes an HCI vendor-specific event: logs it (except on one controller
    revision), clears the pending vendor-specific-command callback and busy flag -
