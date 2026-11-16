@@ -32,12 +32,14 @@ extern float lbl_80562428;
 extern float *fn_80265D98(void);
 extern void fn_8012F57C(int, void *, void *, float);
 #pragma dont_inline on
-float fn_801A6370(float arg0, float arg1, float arg2, float arg3) {
-    float k = lbl_80562418 * arg2;
-    arg1 *= arg3;
-    arg0 += arg1;
-    k *= arg3;
-    return arg0 + arg3 * k;
+/* Integrate one axis of constant-acceleration motion over dt:
+   pos + vel*dt + 0.5*accel*dt^2 (lbl_80562418 is 0.5f). */
+float fn_801A6370(float pos, float vel, float accel, float dt) {
+    float half = lbl_80562418 * accel;
+    vel *= dt;
+    pos += vel;
+    half *= dt;
+    return pos + dt * half;
 }
 #pragma dont_inline reset
 
