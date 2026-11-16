@@ -89,10 +89,20 @@ void fn_80127468(void);
 void fn_801279B8(void);
 void fn_802E4C18(int);
 void fn_802C2B48(void) {
-    fn_802CFF10();
-    fn_80127468();
-    fn_801279B8();
-    fn_802E4C18(0);
+#define ResetGxState fn_802CFF10
+#define ResumeWaitingThread fn_80127468
+#define TickFrameCounter fn_801279B8
+#define VmemHook fn_802E4C18
+    /* End-of-frame flush: reset GX globals, wake a waiting thread, tick the
+     * wraparound counter, then run the vmem hook. */
+    ResetGxState();
+    ResumeWaitingThread();
+    TickFrameCounter();
+    VmemHook(0);
+#undef ResetGxState
+#undef ResumeWaitingThread
+#undef TickFrameCounter
+#undef VmemHook
 }
 
 void fn_802C2B78(float startValue, float endValue, float steps) {
