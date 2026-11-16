@@ -1699,7 +1699,7 @@ extern "C" void *lbl_8055F698;
 extern "C" void fn_801308F4(char *, int, const char *);
 extern "C" void *__AXGetStackHead(void);
 extern "C" void *fn_801284F8(int, const char *);
-extern "C" char lbl_8055C818[], lbl_8055C820[];
+extern "C" char lbl_8055C818[8], lbl_8055C820[];
 extern "C" void fn_80236008(void *, int, int);
 extern "C" int fn_802054EC(void *, int, int);
 extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
