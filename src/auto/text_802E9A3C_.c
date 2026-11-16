@@ -274,8 +274,10 @@ body:
     next = *(volatile unsigned char *)src;
     count--;
     *dst++ = 0x3F;
-    if ((signed char)next == 0) goto check;
-    src++;
+    switch ((signed char)next) {
+    case 0: goto check;
+    default: src++; break;
+    }
 check:
     if (count <= 1) goto done;
     if ((signed char)*src != 0) goto body;
@@ -536,7 +538,7 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
 #pragma scheduling invalid_target
 void fn_802EAA08(void) {
     if (lbl_805600B8 >= lbl_805600A4) {
-        memcpy((void *)lbl_805600A0, (void *)(lbl_805600A0 + lbl_805600A4), lbl_805600B8 - lbl_805600A4);
+        memcpy((void *)lbl_805600A0, (void *)(lbl_805600A0 + lbl_805600A4), (unsigned int)lbl_805600B8 - (unsigned int)lbl_805600A4);
         lbl_805600B8 -= lbl_805600A4;
     }
 }
@@ -578,9 +580,107 @@ int fn_802EAA58(int *arg0, int arg1) {
 }
 
 void fn_802EAB28(void) {
-    extern long lbl_8034E260;
+    struct NodeVT { void *a, *b, *c; int (*seek)(void *, int); void *(*size)(void *); int (*read)(void *, char *, int); };
+    struct NodeObj { struct NodeVT *vt; };
     extern int OSReport(const char *, ...);
-    OSReport((char *)&lbl_8034E260 + 0x2F4);
+    extern void OSSleepTicks(unsigned long long);
+    extern void OSLockMutex(void *);
+    extern void OSUnlockMutex(void *);
+    extern void fn_802EA7E0(void);
+    extern int fn_802E2C20(void);
+    extern void fn_800C3D9C(void);
+    extern long fn_802E30C8(char *, long);
+    extern long *fn_802EA834(long, long *);
+    extern int strncmp(const char *, const char *, unsigned long);
+    extern char *strncpy(char *, const char *, unsigned long);
+    extern char lbl_80507640[];
+    extern char lbl_805587E0[];
+    extern char lbl_8055D2A8[];
+    extern char lbl_805584A0;
+    extern int lbl_80560070;
+    extern int lbl_80560098;
+    extern char lbl_805600C9;
+    extern char lbl_805600C8;
+    extern int lbl_805600CC;
+    extern char lbl_80560062;
+    extern char lbl_80560063;
+    long (*logf)(char *, ...) = (long (*)(char *, ...))fn_802E30C8;
+    char *base = (char *)&lbl_8034E260;
+    char *msgBuf = lbl_80507640;
+    char *cmdBuf = lbl_805587E0;
+    unsigned int *tb = (unsigned int *)0x80000000;
+    void *curNode = 0;
+    long consumed = 0;
+    int retries = 0;
+    int zero = 0;
+    unsigned char flag = 0;
+    OSReport(base + 0x2f4);
+    for (;;) {
+        unsigned int clock;
+        int taken;
+        if (lbl_80560062 == 0) break;
+        clock = tb[0x3E] >> 2;
+        if (flag) {
+            ((void (*)(int, int))OSSleepTicks)(0, (clock / 1000) + ((clock / 250) & 0x0FFFFFFC));
+            flag = 0;
+        } else {
+            ((void (*)(int, int))OSSleepTicks)(0, (clock / 1000) * 50);
+        }
+        OSLockMutex(&lbl_805584A0);
+        if (lbl_80560068 != *(int *)((char *)&lbl_80560068 + 4)) {
+            *(int *)((char *)&lbl_80560068 + 4) = lbl_80560068;
+            taken = 1;
+        } else {
+            taken = 0;
+        }
+        if (taken != 0) {
+            if (lbl_80560098 != 0) { fn_800C3D9C(); lbl_80560098 = zero; }
+            if (curNode != 0) { fn_802E9BCC(curNode); curNode = 0; }
+            fn_802EA7E0();
+            lbl_80560070++;
+            lbl_805600C9 = zero;
+        }
+        if (curNode == 0 && *(int *)&lbl_80560078 != -1 && *(int *)&lbl_80560078 < lbl_8056007C) {
+            void *node;
+            consumed = 0;
+            node = fn_802EA834(0, &consumed);
+            curNode = node;
+            retries = 0;
+            if (node != 0) {
+                struct NodeObj *n = (struct NodeObj *)node;
+                void *sz = n->vt->size(n);
+                if (n->vt->seek(n, (int)sz - 0x80) != 0) {
+                    if (n->vt->read(n, cmdBuf, 0x80) != 0) {
+                        if (strncmp(cmdBuf, lbl_8055D2A8, 3) == 0) {
+                            strncpy(msgBuf, cmdBuf + 3, 0x1e);
+                            msgBuf[0x1e] = zero;
+                            strncpy(msgBuf + 0x20, cmdBuf + 0x21, 0x1e);
+                            msgBuf[0x3e] = zero;
+                            strncpy(msgBuf + 0x40, cmdBuf + 0x3f, 0x1e);
+                            msgBuf[0x5e] = zero;
+                        }
+                    }
+                }
+            }
+        }
+        lbl_80560078 = (void *)-1;
+        if (lbl_805600C8 != 0) {
+            if (lbl_805600C9 == 0) {
+                lbl_805600CC = fn_802E2C20();
+                lbl_805600C9 = 1;
+            }
+            if (curNode != 0) {
+                consumed = consumed;
+                logf(base + 0x310);
+            } else {
+                lbl_805600C8 = zero;
+                logf(base + 0x330);
+            }
+        }
+        OSUnlockMutex(&lbl_805584A0);
+    }
+    if (curNode != 0) fn_802E9BCC(curNode);
+    lbl_80560063 = 1;
 }
 
 #pragma push
@@ -659,12 +759,15 @@ int fn_802EB7D4(void *arg0, int arg1, int arg2, int arg_sp0) {
 #pragma dont_inline on
 int fn_802EBD40(void) {
     extern void OSSleepTicks(unsigned long long);
-    char *base = (char *)&lbl_8034E260;
-    unsigned int *tb;
-    int elapsed;
+    register char *base;
+    register unsigned int multiplier;
+    register int elapsed;
+    register unsigned int *tb;
     unsigned int clock;
+    base = (char *)&lbl_8034E260;
     lbl_80560062 = 0;
     ((void (*)(char *, ...))fn_802E30C8)(base + 0x65C);
+    multiplier = 0x10624DD3;
     elapsed = 0;
     tb = (unsigned int *)0x80000000;
     while ((unsigned char)lbl_80560063 == 0) {
@@ -823,6 +926,9 @@ void fn_802EC12C(void) {
 }
 
 #pragma dont_inline fn_802EC138
+/* Mark the sound/music state as enabled (lbl_805600D0). On the first enable,
+   while that flag was still clear, also set lbl_805600D1 — the pending-start
+   flag the mixer uses to hold the volume at its default until it is cleared. */
 void fn_802EC138(void) {
     if ((unsigned char)lbl_805600D0 == 0) {
         lbl_805600D1 = 1;
