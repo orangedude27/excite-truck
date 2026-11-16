@@ -1281,6 +1281,7 @@ int *fn_8000C69C(void) {
     }
 }
 
+/* Advances the global UI/menu state (lbl_8055D3DC) through states 0 -> 20 -> 19 -> 0. */
 void fn_8000C6E4(void) {
     switch ((int)lbl_8055D3DC) {
     case 0: lbl_8055D3DC = 0x14; return;
