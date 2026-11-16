@@ -1121,11 +1121,13 @@ extern "C" void fn_801F6C04(void *self, int argA, int argB, void *sourceObj, int
 #pragma cplusplus reset
 #pragma dont_inline off
 
-void *fn_801F6D20(void *arg0) {
-    int size = 0x2A0;
-    memset(arg0, 0, size);
-    *(int *)((char *)arg0 + 0x2A0) = 0;
-    return arg0;
+void *fn_801F6D20(void *pool) {
+    /* Zero the 0x2A4-byte cloth pool (0x54-byte entries) and clear its
+     * entry count at +0x2A0; returns the pool pointer. */
+    int zeroBytes = 0x2A0;
+    memset(pool, 0, zeroBytes);
+    *(int *)((char *)pool + 0x2A0) = 0;
+    return pool;
 }
 
 void *fn_801F6D60(void *object, int shouldFree) {
