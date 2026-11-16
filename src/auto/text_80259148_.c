@@ -340,10 +340,11 @@ extern float lbl_80563AE4;
 extern float lbl_8055F3A4;
 extern signed char lbl_8055F3A0;
 extern int fn_80236914(void);
-void fn_80259740(int arg0, float farg0) {
+void fn_80259740(int mode, float value) {
+    /* set dialog/menu state: refresh, store value, set flag when mode == 2 */
     fn_80236914();
-    lbl_8055F3A4 = farg0;
-    lbl_8055F3A0 = (arg0 - 2) == 0;
+    lbl_8055F3A4 = value;
+    lbl_8055F3A0 = (mode - 2) == 0;
 }
 
 int fn_8025978C(void **arg0) {
