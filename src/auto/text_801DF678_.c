@@ -141,13 +141,14 @@ float fn_801DFE94(void) {
 typedef void (*Fn)(void *);
 #pragma cplusplus on
 extern "C" void fn_801DFEB8(void *arg0, int arg1, int arg2, int arg3) {
-    struct Dummy_801DFEB8_Local {
+    /* Forward helper: fetch an object from arg0's vtable (slot 2) and pass it with (arg2, arg3) to fn_801476D8. arg1 is unused. */
+    struct VTableSlot2 {
         virtual void d0();
         virtual void d1();
-        virtual void* d2();
+        virtual void *getTarget();
     };
-    void *result = ((Dummy_801DFEB8_Local *)arg0)->d2();
-    ((void (*)(void *, int, int))fn_801476D8)(result, arg2, arg3);
+    void *target = ((VTableSlot2 *)arg0)->getTarget();
+    ((void (*)(void *, int, int))fn_801476D8)(target, arg2, arg3);
 }
 #pragma cplusplus reset
 int fn_801DFF08(int index) { return lbl_804348E8[index]; }
