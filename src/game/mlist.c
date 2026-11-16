@@ -373,9 +373,8 @@ void fn_802CDAB4(void *objectList, int objectIndex, float *transform) {
         unsigned char objectFlags[0x64]; /* +0x00: per-object type/visible bytes */
         int drawHandles[0x100];          /* +0x64: draw-entry handle per object */
     };
-    unsigned char *base = lbl_8055DFC4;
-    ((struct DrawContext *)base)->drawHandles[objectIndex] =
-        ((int (*)(float *))fn_802D0514)(transform);
+    struct DrawContext *context = (struct DrawContext *)lbl_8055DFC4;
+    context->drawHandles[objectIndex] = ((int (*)(float *))fn_802D0514)(transform);
 }
 
 extern unsigned char *lbl_8055DFC4;
