@@ -330,22 +330,9 @@ int fn_802E4400(void *arg0) {
 #pragma push
 #pragma cplusplus on
 extern "C" int fn_802E4408(int unused, void *arg0) {
-    class Obj {
-    public:
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3();
-        virtual void f4();
-        virtual void f5();
-        virtual void f6();
-        virtual void f7();
-        virtual void f8();
-        virtual void f9();
-        virtual void f10(int);
-    };
+    /* FileCd::close: release the given DVD file node, freeing its pool slot. */
     if (arg0 == 0) return;
-    ((Obj *)arg0)->f10(1);
+    ((FileDisk *)arg0)->release(1);
 }
 #pragma cplusplus reset
 #pragma pop
