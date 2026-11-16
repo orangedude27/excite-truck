@@ -735,22 +735,22 @@ void fn_802D8DA0(void) {
 extern void fn_802D81C4(void *, int);
 extern void fn_802D86BC(void *, int);
 void fn_802D8DCC(void *arg0, int arg1) {
-    unsigned char *p;
-    unsigned char t;
-    unsigned int kind;
-    p = *(unsigned char **)((char *)arg0 + 0x2C);
-    t = p[0]; p[0] = p[3]; p[3] = t;
-    t = p[1]; p[1] = p[2]; p[2] = t;
-    if (*(int *)(p + 0) != 0) *(unsigned char **)(p + 0) = p + *(int *)(p + 0);
-    t = p[4]; p[4] = p[7]; p[7] = t;
-    t = p[5]; p[5] = p[6]; p[6] = t;
-    if (*(int *)(p + 4) != 0) *(unsigned char **)(p + 4) = p + *(int *)(p + 4);
-    t = p[8]; p[8] = p[11]; p[11] = t;
-    t = p[9]; p[9] = p[10]; p[10] = t;
-    if (*(int *)(p + 8) != 0) *(unsigned char **)(p + 8) = p + *(int *)(p + 8);
-    kind = *(unsigned int *)arg0;
-    if (kind == 0x40 || kind == 0) fn_802D81C4(arg0, arg1);
-    else if (kind == 0x41 || kind == 1) fn_802D86BC(arg0, arg1);
+ unsigned char *p = *(unsigned char **)((char *)arg0 + 0x2C);
+ unsigned char t;
+ unsigned int kind;
+ int hold = arg1;
+ t=p[0]; p[0]=p[3]; p[3]=t;
+ t=p[1]; p[1]=p[2]; p[2]=t;
+ if (*(int *)(p+0) != 0) *(unsigned char **)(p+0) = p + *(int *)(p+0);
+ t=p[4]; p[4]=p[7]; p[7]=t;
+ t=p[5]; p[5]=p[6]; p[6]=t;
+ if (*(int *)(p+4) != 0) *(unsigned char **)(p+4) = p + *(int *)(p+4);
+ t=p[8]; p[8]=p[11]; p[11]=t;
+ t=p[9]; p[9]=p[10]; p[10]=t;
+ if (*(int *)(p+8) != 0) *(unsigned char **)(p+8) = p + *(int *)(p+8);
+ kind=*(unsigned int *)arg0;
+ if (kind == 0x40 || kind == 0) fn_802D81C4(arg0,hold);
+ else if (kind == 0x41 || kind == 1) fn_802D86BC(arg0,hold);
 }
 
 extern void *fn_802D7B5C(void *, void *);
@@ -763,9 +763,9 @@ extern char lbl_8034C5C8[];
 #pragma push
 #pragma scheduling on
 void *fn_802D8E9C(void *arg0, void *arg1) {
-    register void *name = arg1;
+    void *obj = 0;
     register int kind = *(int *)arg0;
-    register void *obj = 0;
+    void *name = arg1;
     if (kind == 0x17) goto use_a84;
     if (kind >= 0x17) goto high_range;
     if (kind == 0x10) goto use_a84;
@@ -965,9 +965,11 @@ float fn_802D93E0(void) {
 
 extern void fn_802D2614(void);
 extern int lbl_8055FE24;
-void fn_802D93E8(int arg0) {
+/* Reset the GX state, then select `texObj` as the current texture object for the
+ * GX texture-copy path (lbl_8055FE24); fn_802D9418 consumes and clears it. */
+void fn_802D93E8(int texObj) {
     fn_802D2614();
-    lbl_8055FE24 = arg0;
+    lbl_8055FE24 = texObj;
 }
 
 extern int GXGetTexObjMipMap(void *);
@@ -1158,9 +1160,7 @@ extern float lbl_80565018;
 extern float lbl_8056501C;
 extern double lbl_80565020;
 
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void *fn_802D8C00(void *arg0, void *arg1) {
     void *obj;
     int w;
@@ -1188,7 +1188,7 @@ void *fn_802D8C00(void *arg0, void *arg1) {
     fn_802D7780(obj, arg0);
     return obj;
 }
-#pragma pop
+#pragma opt_propagation reset
 
 #pragma push
 #pragma use_lmw_stmw off
