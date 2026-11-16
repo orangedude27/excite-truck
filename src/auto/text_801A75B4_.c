@@ -918,6 +918,7 @@ int fn_801A8E68(void *trigger) {
 }
 #pragma dont_inline reset
 #pragma pop
+#define SUPPORTED_TYPE_MASK 0x2D /* bit (type-1) set for each supported binding/subobject type: 1, 3, 4, 6 */
 int fn_801A8EE4(unsigned int *arg0) {
     unsigned int value = *arg0 - 1;
     int result = 0;
