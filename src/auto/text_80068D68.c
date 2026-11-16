@@ -27402,25 +27402,26 @@ s32 IUSB_OpenLib(void) {
     extern s32 lbl_805590A0;
     extern s32 lbl_8055DC88;
     extern u32 lbl_8055DC8C;
-    register char *base = lbl_8031A620;
+    register char *msgs = lbl_8031A620;
     s32 result = 0;
     s32 interruptState;
-    s32 heap;
+    s32 heapId;
 
+    // Create the IUSB IOS heap from the IPC arena once, with interrupts disabled.
     interruptState = OSDisableInterrupts();
-    heap = lbl_805590A0;
-    if (heap != -1) {
-        USB_LOG(base + 0xC, heap);
+    heapId = lbl_805590A0;
+    if (heapId != -1) {
+        USB_LOG(msgs + 0xC, heapId);
         goto done;
     }
 
     if (lbl_8055DC88 == 0) {
         lbl_8055DC88 = (s32)IPCGetBufferLo();
-        USB_LOG(base + 0x3C, 0x80, lbl_8055DC88,
+        USB_LOG(msgs + 0x3C, 0x80, lbl_8055DC88,
                 (lbl_8055DC8C = (u32)IPCGetBufferHi()));
 
         if ((u32)lbl_8055DC88 + 0x1000 > lbl_8055DC8C) {
-            USB_ERR(base + 0x5C);
+            USB_ERR(msgs + 0x5C);
             result = -0x16;
             goto done;
         }
@@ -27428,7 +27429,7 @@ s32 IUSB_OpenLib(void) {
     }
 
     if ((lbl_805590A0 = iosCreateHeap((void *)lbl_8055DC88, 0x1000)) < 0) {
-        USB_ERR(base + 0x74);
+        USB_ERR(msgs + 0x74);
         result = -0x16;
     }
 
