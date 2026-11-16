@@ -12,6 +12,7 @@ DECL_SECTION(".init") static void __init_registers(void);
 DECL_SECTION(".init") static void __init_data(void);
 
 DECL_SECTION(".init") static void __check_pad3(void) {
+    // Reset if the special button combo is held on GameCube controller port 4 (index 3).
     if ((OS_GC_PAD_3_BTN & 0x0EEF) == 0x0EEF) {
         OSResetSystem(0, 0, 0);
     }
