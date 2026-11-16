@@ -12,12 +12,13 @@ void fn_8027ABF8(void *node) {
     fn_8027ACBC(lbl_804A433C, node);
 }
 int fn_8027AC08(void *arg0, int arg1) {
-    int count = *(int *)((char *)arg0 + 0x88);
-    void *entry = arg0;
     int i = 0;
-    for (; i < count; i++, entry = (char *)entry + 8) {
-        if (arg1 == *(int *)((char *)entry + 0x30))
+    char *entry = (char *)arg0;
+    while (i < *(int *)((char *)arg0 + 0x88)) {
+        if (arg1 == *(int *)(entry + 0x30))
             return *(int *)((char *)arg0 + 0x34 + i * 8);
+        entry += 8;
+        i++;
     }
     return 0;
 }
@@ -25,11 +26,13 @@ int fn_8027AC50(void *arg0) {
     return *(int *)((char *)arg0 + 0xF0) != 0;
 }
 
-int fn_8027AC64(void *arg0) {
-    if (*(int *)((char *)arg0 + 0xF0) == 0) {
+int fn_8027AC64(void *team) {
+    /* Return the linked "other team" id (TeamEntry +0xF8) when the entry's mode
+     * flag (+0xF0) is set, otherwise -1 for an inactive entry. */
+    if (*(int *)((char *)team + 0xF0) == 0) {
         return -1;
     }
-    return *(int *)((char *)arg0 + 0xF8);
+    return *(int *)((char *)team + 0xF8);
 }
 
 #pragma push
@@ -39,17 +42,16 @@ int fn_8027AC80(void *arg0) {
 }
 
 void *fn_8027ACBC(void *arg0, void *arg1) {
-    int count = *(int *)((char *)arg0 + 0x30);
-    int i = 0;
     void **entry = (void **)arg0;
-    while (count-- > 0) {
-        void *item = *entry;
-        if ((int)arg1 == *(int *)item)
+    int i;
+    int count = *(int *)((char *)arg0 + 0x30);
+    for (i = 0; i < count; i++) {
+        int *p = *(int **)entry;
+        if ((int)arg1 == *p)
             return ((void **)arg0)[i];
         entry++;
-        i++;
     }
-    return 0;
+    return (void *)0;
 }
 
 #pragma pop
