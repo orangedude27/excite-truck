@@ -4023,6 +4023,7 @@ void fn_8006EB88(void) {
     OSRestoreInterrupts(gki_cb.os.int_state[gki_cb.os.int_index]);
 }
 
+/* Disable interrupts and push the saved state onto the GKI OS interrupt nesting stack. */
 void fn_8006EBAC(void) {
     gki_cb.os.int_state[gki_cb.os.int_index] = OSDisableInterrupts();
     gki_cb.os.int_index++;
