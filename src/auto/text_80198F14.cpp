@@ -2946,6 +2946,7 @@ extern f32 lbl_805623B8;
 extern f32 lbl_805623BC;
 /* Rotate src by the transpose-indexed 3x3 matrix m (box space back to world space);
  * the dst == &src check stays in the code, so both branches are emitted. */
+#pragma always_inline on
 static inline void fn801A0464RotateVec(Vec *dst, const Vec &src, const f32 *m) {
     if (dst == &src) {
         f32 x = src.x;
