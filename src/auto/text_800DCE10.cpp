@@ -1002,7 +1002,12 @@ block_241:
 extern const char lbl_80320948[];
 extern u32 lbl_80559804;
 #pragma small_data on
-namespace nw4hbm { namespace ut { struct CharStrmReader { s32 unk0; s32 unk4; s32 unk8; s32 unkC; }; struct Font { CharStrmReader GetCharStrmReader() const; }; } }
+namespace nw4hbm { namespace ut { struct CharStrmReader {
+    /* ReadFunc: a 12-byte pointer-to-member-function (Font stores it at +4) */
+    struct ReadFunc { s32 unk0; s32 unk4; s32 unk8; };
+    CharStrmReader() {}
+    CharStrmReader(ReadFunc func) : unk0(0), unk4(func.unk0), unk8(func.unk4), unkC(func.unk8) {}
+    s32 unk0; s32 unk4; s32 unk8; s32 unkC; }; struct Font { CharStrmReader GetCharStrmReader() const; }; } }
 nw4hbm::ut::CharStrmReader nw4hbm::ut::Font::GetCharStrmReader() const {
     s32 var_r5;
     s32 var_r6;
