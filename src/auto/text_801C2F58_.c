@@ -1629,7 +1629,7 @@ void fn_801C7A28(void) {
     lbl_8055E83A = 0;
     lbl_8055E868 = fn_801C6CB0;
     lbl_8055E83D = 0;
-    ((void (*)(f32, f32))fn_801C78D8)(lbl_80438268.y, lbl_80438268.x);
+    fn_801C78D8();
 }
 
 extern f64 atof(const char *);
