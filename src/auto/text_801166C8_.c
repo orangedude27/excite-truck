@@ -8254,21 +8254,24 @@ void fn_80125014(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x1C) = temp_f9 + temp_f11;
 }
 
-void fn_80125098(void *arg0) {
-    f32 f0, f1, f2, f3;
-    f32 diff0, sum0, diff1, sum1;
-    f3 = *(f32 *)((u8 *)arg0 + 0);
-    f1 = *(f32 *)((u8 *)arg0 + 8);
-    f2 = *(f32 *)((u8 *)arg0 + 4);
-    f0 = *(f32 *)((u8 *)arg0 + 12);
-    diff0 = f3 - f1;
-    sum0 = f3 + f1;
-    diff1 = f2 - f0;
-    sum1 = f2 + f0;
-    *(f32 *)((u8 *)arg0 + 8) = diff0;
-    *(f32 *)((u8 *)arg0 + 0) = sum0;
-    *(f32 *)((u8 *)arg0 + 4) = sum1;
-    *(f32 *)((u8 *)arg0 + 12) = diff1;
+/* Radix-2 DIF FFT butterfly (the n==4 base case): `data` holds two complex
+ * samples as re/im float pairs; replace them in place with their sum (first
+ * pair) and difference (second pair). */
+void fn_80125098(void *data) {
+    f32 im1, re1, im0, re0;
+    f32 reDiff, reSum, imDiff, imSum;
+    re0 = *(f32 *)((u8 *)data + 0);
+    re1 = *(f32 *)((u8 *)data + 8);
+    im0 = *(f32 *)((u8 *)data + 4);
+    im1 = *(f32 *)((u8 *)data + 12);
+    reDiff = re0 - re1;
+    reSum = re0 + re1;
+    imDiff = im0 - im1;
+    imSum = im0 + im1;
+    *(f32 *)((u8 *)data + 8) = reDiff;
+    *(f32 *)((u8 *)data + 0) = reSum;
+    *(f32 *)((u8 *)data + 4) = imSum;
+    *(f32 *)((u8 *)data + 12) = imDiff;
 }
 
 #pragma push
