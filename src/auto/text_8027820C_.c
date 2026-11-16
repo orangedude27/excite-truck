@@ -43,19 +43,37 @@ void fn_80278210(void) {}
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_80278214(void) {
+    /* Initialize the cscript movie-capture subsystem: allocate the empty 2-slot
+     * keyframe list and reset the recording, playback and tick-range globals. */
+#define sPlayFlag     lbl_8055F5C8
+#define sDemoActive   lbl_8055F5BB
+#define sPlayingBack  lbl_8055F5BA
+#define sPlayPending  lbl_8055F5B9
+#define sPlayEndTick  lbl_8055F5BC
+#define sLastPlayTick lbl_8055F5C4
+#define sRecording    lbl_8055F5B8
+#define cscriptNodeTag lbl_80347580
     int zero = 0;
     int minus = -1;
-    lbl_8055F5B4 = zero;
-    lbl_8055F5C8 = zero;
-    lbl_8055F5BB = zero;
-    lbl_8055F5BA = zero;
-    lbl_8055F5B9 = zero;
-    lbl_8055F5BC = minus;
-    lbl_8055F5C4 = minus;
-    lbl_8055F5B8 = zero;
-    lbl_8055F5B0 = (int)fn_8002F37C(
-        (void *)(((int (*)(int, const char *))fn_8012850C)(0x80, lbl_80347580)),
+    gKeyframeCount = zero;
+    sPlayFlag = zero;
+    sDemoActive = zero;
+    sPlayingBack = zero;
+    sPlayPending = zero;
+    sPlayEndTick = minus;
+    sLastPlayTick = minus;
+    sRecording = zero;
+    gKeyframeList = (int)fn_8002F37C(
+        (void *)(((int (*)(int, const char *))fn_8012850C)(0x80, cscriptNodeTag)),
         fn_80278284, zero, 0x38, 2);
+#undef sPlayFlag
+#undef sDemoActive
+#undef sPlayingBack
+#undef sPlayPending
+#undef sPlayEndTick
+#undef sLastPlayTick
+#undef sRecording
+#undef cscriptNodeTag
 }
 #pragma scheduling on
 #pragma pop
