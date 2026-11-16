@@ -77,16 +77,17 @@ int fn_801D9F44(int object, int deleteFlag) {
 }
 
 #pragma scheduling invalid_target
-void fn_801D9F84(void *arg0, int *arg1) {
-    float value = lbl_80562B38;
-    int isNull = (arg1 == 0);
-    *(int **)arg0 = arg1;
-    *(int *)((char *)arg0 + 8) = 0;
-    *(float *)((char *)arg0 + 0xC) = value;
-    if (!isNull && *arg1 > 0)
-        *(int *)((char *)arg0 + 4) = (int)(arg1 + 1);
+void fn_801D9F84(void *catalog, int *table) {
+    /* Initialize a parsed-table catalog object: +0 raw table, +4 pointer to its first 0x18-byte entry (when count > 0), +8 zero, +0xC default float. */
+    float defaultValue = lbl_80562B38;
+    int tableIsNull = (table == 0);
+    *(int **)catalog = table;
+    *(int *)((char *)catalog + 8) = 0;
+    *(float *)((char *)catalog + 0xC) = defaultValue;
+    if (!tableIsNull && *table > 0)
+        *(int *)((char *)catalog + 4) = (int)(table + 1);
     else
-        *(int *)((char *)arg0 + 4) = 0;
+        *(int *)((char *)catalog + 4) = 0;
 }
 #pragma scheduling on
 #pragma use_lmw_stmw off
