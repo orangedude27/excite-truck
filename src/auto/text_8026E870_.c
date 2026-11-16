@@ -1049,25 +1049,26 @@ void fn_8027045C(void) {
     ((f32 *)&lbl_8049A208)[3] = lbl_80563F1C;
 }
 
+/* Reset the 16-float lbl_8049A218 array (4 entries x 4 floats) to zero (lbl_80563E78). */
 void fn_80270484(void) {
-    f32 value = lbl_80563E78;
+    f32 zero = lbl_80563E78;
     f32 *p = lbl_8049A218 - 1;
-    *++p = value;
-    p[1] = value;
-    p[3] = value;
-    p[2] = value;
-    p[4] = value;
-    p[5] = value;
-    p[7] = value;
-    p[6] = value;
-    p[8] = value;
-    p[9] = value;
-    p[11] = value;
-    p[10] = value;
-    p[12] = value;
-    p[13] = value;
-    p[15] = value;
-    p[14] = value;
+    *++p = zero;
+    p[1] = zero;
+    p[3] = zero;
+    p[2] = zero;
+    p[4] = zero;
+    p[5] = zero;
+    p[7] = zero;
+    p[6] = zero;
+    p[8] = zero;
+    p[9] = zero;
+    p[11] = zero;
+    p[10] = zero;
+    p[12] = zero;
+    p[13] = zero;
+    p[15] = zero;
+    p[14] = zero;
 }
 
 void fn_802704D0(void) { fn_8026FCFC(); }
