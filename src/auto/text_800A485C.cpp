@@ -9056,9 +9056,11 @@ s32 fn_800AE4C0(s32, s32, s32);
 extern "C" s32 fn_800B3754(s32, s32 *, s32);
 extern "C" s32 fn_800AF574(void *);
 extern "C" s32 fn_800B5618(void *, void *, u32, u16, s32);
-extern "C" s32 fn_800B317C(s32 arg0, s32 arg1) {
+extern "C" s32 fn_800B317C(s32 name, s32 pattern) {
 extern s32 fn_800B3754(s32, s32 *, s32);
-return fn_800B3754(arg0, (s32 *)arg1, 1) == 0;
+// Match a directory entry's short filename against a search pattern via
+// fn_800B3754 in wide-character mode (flag 1); 0 means the pattern matched.
+return fn_800B3754(name, (s32 *)pattern, 1) == 0;
 }
 
 extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *, u8 *, s32 *);
