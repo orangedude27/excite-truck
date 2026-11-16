@@ -1746,51 +1746,51 @@ extern "C" void fn_802A4658(s32 arg0) {
 }
 
 extern "C" s32 fn_802A47A8(void *arg0) {
-    char *obj = (char *)arg0;
-    s32 offset, i, alphaInt, alpha;
+    char *system = (char *)arg0;
+    s32 offset, i, rawAlpha, clampedAlpha;
     struct { f32 value; } limitStorage;
-    f32 &limit = limitStorage.value;
+    f32 &minValue = limitStorage.value;
     f32 now;
-    f32 saved, v, high, t, low;
+    f32 savedState, alphaScale, rampHigh, age, rampLow;
 
-    if (*(s32 *)(obj + 4) >= 1) {
-        saved = fn_802C9A4C(*(f32 *)(obj + 0x64));
-        fn_802C8BD0((void *)*(s32 *)(obj + 0x60));
-        if (fn_802CE860((void *)*(s32 *)(obj + 4))) {
+    if (*(s32 *)(system + 4) >= 1) {
+        savedState = fn_802C9A4C(*(f32 *)(system + 0x64));
+        fn_802C8BD0((void *)*(s32 *)(system + 0x60));
+        if (fn_802CE860((void *)*(s32 *)(system + 4))) {
             now = ((f32 (*)())fn_801E7E18)();
-            limit = lbl_80564744;
-            v = lbl_8056483C;
-            for (i = 0, offset = 0; i < *(s32 *)(obj + 4); offset += 0x20, i++) {
-                char *p = *(char **)obj + offset;
-                t = *(f32 *)(obj + 0x10) * (now - *(f32 *)(p + 0x18));
-                high = t - *(f32 *)(obj + 0x5C);
-                if (limit > high)
-                    high = limit;
-                low = *(f32 *)(obj + 0x5C);
-                low = low < t ? low : t;
-                alphaInt = (s32)(v * (*(f32 *)(p + 0x1C) *
-                    (*(f32 *)(obj + 0x50) + *(f32 *)(obj + 0x54) * low +
-                     *(f32 *)(obj + 0x58) * high)));
-                alpha = alphaInt & ((-alphaInt & ~alphaInt) >> 31);
-                if (alpha < 0xFF)
-                    alphaInt = alpha;
+            minValue = lbl_80564744;
+            alphaScale = lbl_8056483C;
+            for (i = 0, offset = 0; i < *(s32 *)(system + 4); offset += 0x20, i++) {
+                char *p = *(char **)system + offset;
+                age = *(f32 *)(system + 0x10) * (now - *(f32 *)(p + 0x18));
+                rampHigh = age - *(f32 *)(system + 0x5C);
+                if (minValue > rampHigh)
+                    rampHigh = minValue;
+                rampLow = *(f32 *)(system + 0x5C);
+                rampLow = rampLow < age ? rampLow : age;
+                rawAlpha = (s32)(alphaScale * (*(f32 *)(p + 0x1C) *
+                    (*(f32 *)(system + 0x50) + *(f32 *)(system + 0x54) * rampLow +
+                     *(f32 *)(system + 0x58) * rampHigh)));
+                clampedAlpha = rawAlpha & ((-rawAlpha & ~rawAlpha) >> 31);
+                if (clampedAlpha < 0xFF)
+                    rawAlpha = clampedAlpha;
                 else
-                    alphaInt = 0xFF;
-                unsigned int color = (alphaInt << 24) | 0xFFFFFF;
-                high = t - *(f32 *)(obj + 0x4C);
-                if (limit > high)
-                    high = limit;
-                low = *(f32 *)(obj + 0x4C);
-                low = low < t ? low : t;
+                    rawAlpha = 0xFF;
+                unsigned int color = (rawAlpha << 24) | 0xFFFFFF;
+                rampHigh = age - *(f32 *)(system + 0x4C);
+                if (minValue > rampHigh)
+                    rampHigh = minValue;
+                rampLow = *(f32 *)(system + 0x4C);
+                rampLow = rampLow < age ? rampLow : age;
                 fn_802CE86C(color, 0,
-                    *(f32 *)(obj + 0x40) + *(f32 *)(obj + 0x44) * low +
-                    *(f32 *)(obj + 0x48) * high,
+                    *(f32 *)(system + 0x40) + *(f32 *)(system + 0x44) * rampLow +
+                    *(f32 *)(system + 0x48) * rampHigh,
                     *(f32 *)p, *(f32 *)(p + 4), *(f32 *)(p + 8));
             }
             fn_802CE868();
         }
         fn_802C8D74();
-        fn_802C9A4C(saved);
+        fn_802C9A4C(savedState);
     }
 }
 
