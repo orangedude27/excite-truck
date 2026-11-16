@@ -104,8 +104,8 @@ void fn_8013B950(void) {
     int remaining;
     int index;
     int bestIndex;
-    double score;
     float rounded;
+    double score;
 
     *((volatile u8 *)lbl_8042F8A8 + 4) = 0;
     selected = fn_80179630(0);
@@ -186,6 +186,8 @@ void fn_8013BAE4(int arg0) {
     lbl_8042F8B8[2] = (lbl_8042F8B8[2] < lbl_80561474) ? lbl_80561474 : lbl_8042F8B8[2];
 }
 
+/* Reset the shared status record: set the value at +0x08 to its default of 1.0,
+ * clear the periodic-update counter, and clear the flag byte at +0x04. */
 void fn_8013BC34(void) {
     *(float *)((char *)lbl_8042F8A8 + 8) = lbl_80561474;
     lbl_8055E174 = 0;
