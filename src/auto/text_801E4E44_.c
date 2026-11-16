@@ -230,6 +230,8 @@ void fn_801E53A8(void *arg0, void *arg1, void *arg2, s32 arg3, f32 arg4) {
 }
 
 #pragma pop
+/* End the current mesh pass: flush/compact the vertex and index buffers
+ * (fn_801E4E44) and reset the mesh mode (lbl_8055EAB0) to 0 (idle). */
 void fn_801E58FC(void) {
     fn_801E4E44();
     lbl_8055EAB0 = 0;
