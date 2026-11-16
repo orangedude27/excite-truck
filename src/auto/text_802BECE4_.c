@@ -347,6 +347,7 @@ int fn_802BF4B0(int object, int deleteFlag) {
 }
 
 int fn_802BF4F0(void) {
+    /* Return nonzero when the water/splash effect instance table is present (the splash system is active). */
     return (int)(unsigned int)lbl_804C07F0 != 0;
 }
 
