@@ -1441,9 +1441,15 @@ extern "C" void fn_801FF354(void* arg0) {
  *(int*)((char*)arg0 + 0x2C0) = 0;
 }
 
-extern "C" void* fn_801FF364(void* arg0, int arg1) {
- if (arg0 != 0) { lbl_8055EC98 = 0; if (arg1 > 0) fn_80128668(arg0); }
- return arg0;
+extern "C" void* fn_801FF364(void* pool, int shouldFree) {
+    /* Clear the global path-pool pointer; optionally free the pool object. */
+    if (pool != 0) {
+        lbl_8055EC98 = 0;
+        if (shouldFree > 0) {
+            fn_80128668(pool);
+        }
+    }
+    return pool;
 }
 
 extern "C" void fn_801FF3AC(void* container, float arg) {
