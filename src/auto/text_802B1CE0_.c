@@ -613,13 +613,19 @@ void fn_802B28BC(int *entries, int count) {
 }
 
 #pragma opt_pointer_aliasing on
+static inline void **fn_802B2934_append(void *vec, void **__restrict pValue) {
+    int index;
+    void **data;
+    int newIndex;
+    index = ((int *)vec)[1];
+    data = *(void ***)vec;
+    newIndex = index + 1;
+    ((int *)vec)[1] = newIndex;
+    data[index] = *pValue;
+    return &data[index];
+}
 void *fn_802B2934(void *arg0, void **arg1) {
-    struct PtrVec { void **data; int count; } *vec = arg0;
-    void *value = *arg1;
-    int index = vec->count++;
-    void **slot = &vec->data[index];
-    *slot = value;
-    return slot;
+    return fn_802B2934_append(arg0, arg1);
 }
 #pragma opt_pointer_aliasing reset
 extern void fn_802B2C34(void (*)(void *), void *);
