@@ -252,7 +252,6 @@ fail:
 
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling on
 void fn_802E1DA4(void *arg0, unsigned int arg1, unsigned int arg2, float f0, float f1, float f2, float f3, float f4) {
     extern float lbl_8056510C, lbl_80565110, lbl_80565114, lbl_80565118, lbl_8056511C;
     extern int lbl_802FAE40[];
@@ -768,11 +767,12 @@ u64 fn_802E2D74(int arg0) {
     return now;
 }
 #pragma scheduling on
-void fn_802E2E0C(int arg0, int arg1) {
+void fn_802E2E0C(int callback, int name) {
+    /* Append a reset callback and its log name to the parallel registration tables. */
     int index = lbl_8055FF00;
     lbl_8055FF00 = index + 1;
-    lbl_804DB790[index] = arg0;
-    lbl_804DB7D0[index] = arg1;
+    lbl_804DB790[index] = callback;
+    lbl_804DB7D0[index] = name;
 }
 /* Reset / power-down.
  * A subsystem that has to wind down before the console leaves the game
