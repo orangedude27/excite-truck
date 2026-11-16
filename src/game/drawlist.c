@@ -469,9 +469,11 @@ void fn_802C8B70(void) {
 }
 
 #pragma dont_inline on
-void fn_802C8B98(int arg0, int arg1) {
-    fn_802C7734(arg1);
-    ((void (*)(int))fn_802C8B70)(arg0);
+/* RealName: DrawList_QueueApplyAndBeginMode2 */
+void fn_802C8B98(int handle, int source) {
+    /* Queue the draw record at `source`, apply it as the current GX state, then run `handle`'s mode-2 draw-list setup. */
+    fn_802C7734(source);
+    ((void (*)(int))fn_802C8B70)(handle);
 }
 #pragma dont_inline reset
 void fn_802C8BD0(int arg0) {
