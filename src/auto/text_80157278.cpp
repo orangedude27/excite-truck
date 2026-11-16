@@ -1464,6 +1464,17 @@ extern "C" void fn_80158A84(Unk801577F0 *arg0) {
 #pragma use_lmw_stmw off
 #pragma processor 750
 extern "C" f32 fn_80158B0C(void* arg0, void* arg1) {
+#define playerProgress   (*(f32*)((u8*)arg0 + 0x25C))
+#define playerProgressY  (*(f32*)((u8*)arg0 + 0x260))
+#define playerProgressZ  (*(f32*)((u8*)arg0 + 0x264))
+#define playerLevel      (*(f32*)((u8*)arg0 + 0x24C))
+#define playerTime       (*(f32*)((u8*)arg0 + 0x258))
+#define playerObject     (*(void**)((u8*)arg0 + 0x26C))
+#define flag272          (*((u8*)arg0 + 0x272))
+#define flag273          (*((u8*)arg0 + 0x273))
+#define flag270          (*((u8*)arg0 + 0x270))
+#define flag271          (*((u8*)arg0 + 0x271))
+    /* Advance player progress/timers for this update and emit a value when a step completes. */
     f32 result = 0.0f;
     class Iface {
     public:
@@ -1479,41 +1490,51 @@ extern "C" f32 fn_80158B0C(void* arg0, void* arg1) {
         virtual void m36(); virtual s32 m37(void*);
     };
     Iface* self = (Iface*)arg0;
-    *((u8*)arg0 + 0x272) = 0;
+    flag272 = 0;
     fn_8014AEC8(arg1);
     if (((s32 (*)(void))fn_80141F7C)() != 0 && self->m37(arg1) != 0) {
-        if (*(f32*)((u8*)arg0 + 0x25C) > *(f32*)((u8*)arg0 + 0x24C)) self->m32();
+        if (playerProgress > playerLevel) self->m32();
         f32 speed = fn_80158E80(arg1);
         f32 scale = lbl_8056177C;
         f32 delta = scale * speed;
-        f32 x = *(f32*)((u8*)arg0 + 0x25C) + delta;
-        f32 y = *(f32*)((u8*)arg0 + 0x260) + delta;
-        f32 z = *(f32*)((u8*)arg0 + 0x264) + delta;
-        *(f32*)((u8*)arg0 + 0x25C) = x;
-        *(f32*)((u8*)arg0 + 0x260) = y;
-        *(f32*)((u8*)arg0 + 0x264) = z;
+        f32 x = playerProgress + delta;
+        f32 y = playerProgressY + delta;
+        f32 z = playerProgressZ + delta;
+        playerProgress = x;
+        playerProgressY = y;
+        playerProgressZ = z;
         self->m34();
-        if (*(f32*)((u8*)arg0 + 0x25C) > *(f32*)((u8*)arg0 + 0x24C) && self->m23() > 0) {
-            *(f32*)((u8*)arg0 + 0x258) = 0.0f;
-            void* object = *(void**)((u8*)arg0 + 0x26C);
+        if (playerProgress > playerLevel && self->m23() > 0) {
+            playerTime = 0.0f;
+            void* object = playerObject;
             if (object != 0) fn_80158E74(object);
         }
         result = 0.0f;
-    } else if (((s32 (*)(f32))fn_80141F7C)(*(f32*)((u8*)arg0 + 0x258)) != 0) {
+    } else if (((s32 (*)(f32))fn_80141F7C)(playerTime) != 0) {
         result = fn_80158D60(arg0, arg1);
     } else {
         self->m33();
-        f32 old = *(f32*)((u8*)arg0 + 0x258);
-        *(f32*)((u8*)arg0 + 0x258) = old + lbl_8056177C;
+        f32 old = playerTime;
+        playerTime = old + lbl_8056177C;
         fn_80158D0C(arg0);
     }
     if (self->m23() == fn_80158D04(arg0) - 1) {
         result = fn_80158D60(arg0, arg1);
     }
-    *((u8*)arg0 + 0x273) = (*((u8*)arg0 + 0x272) != 0 && *((u8*)arg0 + 0x271) != 0);
-    *((u8*)arg0 + 0x270) = 0;
-    *((u8*)arg0 + 0x271) = 0;
+    flag273 = (flag272 != 0 && flag271 != 0);
+    flag270 = 0;
+    flag271 = 0;
     return result;
+#undef playerProgress
+#undef playerProgressY
+#undef playerProgressZ
+#undef playerLevel
+#undef playerTime
+#undef playerObject
+#undef flag272
+#undef flag273
+#undef flag270
+#undef flag271
 }
 #pragma pop
 extern "C" s32 fn_80158D04(void* arg0) {
