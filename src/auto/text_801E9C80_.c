@@ -102,13 +102,14 @@ void fn_801E9E78(void *context, void *srcPoint, s32 outPos, s32 outInfo) {
     fn_801DCE14(context, &pointCopy, (s32)srcPoint, outPos, outInfo, x);
 }
 #pragma scheduling on
-void fn_801E9EC4(void *arg0, void *arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
-    f32 temp = *(f32 *)((char *)arg1 + 4);
-    f32 data[3];
-    data[0] = farg0;
-    data[1] = temp;
-    data[2] = farg1;
-    ((s32 (*)(void *, void *, s32, s32, s32, f32))fn_801DCE14)(arg0, data, (s32)arg1, arg2, arg3, farg0);
+void fn_801E9EC4(void *context, void *point, s32 outPos, s32 outInfo, f32 x, f32 z) {
+    /* Query using point's Y with the given X/Z, forwarding to fn_801DCE14. */
+    f32 y = *(f32 *)((char *)point + 4);
+    f32 queryPos[3];
+    queryPos[0] = x;
+    queryPos[1] = y;
+    queryPos[2] = z;
+    ((s32 (*)(void *, void *, s32, s32, s32, f32))fn_801DCE14)(context, queryPos, (s32)point, outPos, outInfo, x);
 }
 
 s32 fn_801E9C84(f32 *, void *, void *, s32, s32, s32, f32);
