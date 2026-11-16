@@ -7,10 +7,16 @@ extern char lbl_803415E8[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 void fn_8023CA18(void) {
-    if (lbl_8055BB68 == 0) {
-        fn_80214A9C(0x1F);
+#define SOUND_MENU_STATE lbl_8055BB68  /* s32 menu state: 0 = loading, 2 = ready */
+#define UIHideGroup fn_80214A9C
+    /* Sound-menu callback: while the menu state is 0 (loading), hide UI group
+     * 0x1F; then always hide UI group 1 (the main sound-menu group). */
+    if (SOUND_MENU_STATE == 0) {
+        UIHideGroup(0x1F);
     }
-    fn_80214A9C(1);
+    UIHideGroup(1);
+#undef UIHideGroup
+#undef SOUND_MENU_STATE
 }
 
 void fn_8023CA50(void) {}
