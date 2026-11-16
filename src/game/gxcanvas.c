@@ -524,6 +524,11 @@ void fn_802C3850(s32 dstCanvas, s32 srcX, s32 srcY, s32 srcX2, s32 srcY2, s32 sr
 
 extern s32 fn_802C3170(void *, s32 *, s32 *, s32 *, s32 *, s32 *, s32 *);
 extern const char lbl_8034B0B8[];
+static s32 fnSkipVal(s32 w, s32 count) {
+    s32 w2 = count * 2;
+    s32 d = w - w2;
+    return (((u32)d >> 31) + d) & ~1;
+}
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
@@ -536,6 +541,7 @@ void fn_802C3918(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     s32 temp_r0, temp_r29, temp_r31;
     s32 temp_r4, temp_r5, temp_r6, temp_r0_4, temp_r4_4;
     s32 var_r4, var_r4_2, var_r7;
+    s32 w1, w2v;
     register u16 temp_r0_2;
     u16 temp_r7, temp_r7_2, temp_r8;
     s8 temp_r4_2, temp_r5_2;
@@ -549,12 +555,12 @@ void fn_802C3918(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
         var_r30 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
         var_r3 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
         temp_r31 = sp1C;
-        temp_r5 = temp_r31 * 2;
+        temp_r4 = temp_r31 * 2;
         temp_r29 = sp18;
-        temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
-        temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
-        temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
-        temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
+        w1 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r4;
+        w2v = *(s32 *)((u8 *)arg5 + 0x10) - temp_r4;
+        temp_r5 = (((u32)w1 >> 31) + w1) & ~1;
+        temp_r6 = ((((u32)w2v >> 31) + w2v)) & ~1;
         do {
             var_r4 = sp1C;
 loop_copy:
@@ -576,12 +582,12 @@ loop_copy:
                 var_r30_2 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
                 var_r3_2 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
                 sp1C = temp_r31;
-                temp_r5 = temp_r31 * 2;
+                temp_r4 = temp_r31 * 2;
                 sp18 = temp_r29;
-                temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
-                temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
-                temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
-                temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
+                w1 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r4;
+                w2v = *(s32 *)((u8 *)arg5 + 0x10) - temp_r4;
+                temp_r5 = (((u32)w1 >> 31) + w1) & ~1;
+                temp_r6 = ((((u32)w2v >> 31) + w2v)) & ~1;
                 do {
                     var_r4_2 = sp1C;
 loop_10:
@@ -605,12 +611,12 @@ loop_10:
                 var_r30_3 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
                 var_r3_3 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
                 sp1C = temp_r31;
-                temp_r5 = temp_r31 * 2;
+                temp_r4 = temp_r31 * 2;
                 sp18 = temp_r29;
-                temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
-                temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
-                temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
-                temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
+                w1 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r4;
+                w2v = *(s32 *)((u8 *)arg5 + 0x10) - temp_r4;
+                temp_r5 = (((u32)w1 >> 31) + w1) & ~1;
+                temp_r6 = ((((u32)w2v >> 31) + w2v)) & ~1;
                 do {
                     var_r7 = sp1C;
 loop_17:
@@ -637,12 +643,12 @@ loop_17:
                 var_r30_4 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
                 var_r3_4 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
                 sp1C = temp_r31;
-                temp_r5 = temp_r31 * 2;
+                temp_r4 = temp_r31 * 2;
                 sp18 = temp_r29;
-                temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
-                temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
-                temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
-                temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
+                w1 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r4;
+                w2v = *(s32 *)((u8 *)arg5 + 0x10) - temp_r4;
+                temp_r5 = (((u32)w1 >> 31) + w1) & ~1;
+                temp_r6 = ((((u32)w2v >> 31) + w2v)) & ~1;
                 do {
                     var_r4 = sp1C;
 loop_24:
