@@ -414,8 +414,8 @@ void fn_8017F718(void *arg0) {
 #pragma pop
     fn_802E8524(v->flag5C, v->axStackHead);
     {
-        register int *p1 = lbl_802F9530;
-        register int *p2 = lbl_802F9540;
+        int *p1 = lbl_802F9530;
+        int *p2 = lbl_802F9540;
         keys1[0] = *p1++;
         keys1[1] = *p1++;
         keys1[2] = *p1++;
@@ -1399,11 +1399,12 @@ s32 fn_8018108C(s32 arg0) {
     }
     return (s32)*(Unk8017Object **)((u8 *)table + entry_offset);
 }
-int fn_801813D8(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_801813D8(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 void fn_80181418(void *arg0, int arg1) {
