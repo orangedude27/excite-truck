@@ -484,15 +484,16 @@ float fn_8013B744(int index) {
 
 #pragma push
 #pragma processor 750
-float fn_8013AA68(void *arg0, void *arg1, void *arg2, void *arg3) {
-    int spC;
-    float sp8;
-    float result = lbl_80561434;
-    if (((int (*)(unkVtable **, int))fn_8013A760)((unkVtable **)arg0, (int)arg1) != 0) {
-        ((void (*)(int *, float *, int))fn_8013B6C0)(&spC, &sp8, *(int *)((char *)arg3 + 0xC));
-        ((void (*)(unkVtable **, char *, char *))fn_8013A7E8)((unkVtable **)arg0, (char *)arg1, (char *)arg2);
-        result = ((float (*)(void *, int, int, float))fn_8013A90C)(arg0, (int)arg1, spC, sp8);
+float fn_8013AA68(void *table, void *elementSuffix, void *ownerName, void *raceEntry) {
+    /* Return the difficulty-interpolated value of elementSuffix in table at the race stage from raceEntry, or 0.0 if that element is absent. */
+    int rowIndex;
+    float fraction;
+    float value = lbl_80561434;
+    if (((int (*)(unkVtable **, int))fn_8013A760)((unkVtable **)table, (int)elementSuffix) != 0) {
+        ((void (*)(int *, float *, int))fn_8013B6C0)(&rowIndex, &fraction, *(int *)((char *)raceEntry + 0xC));
+        ((void (*)(unkVtable **, char *, char *))fn_8013A7E8)((unkVtable **)table, (char *)elementSuffix, (char *)ownerName);
+        value = ((float (*)(void *, int, int, float))fn_8013A90C)(table, (int)elementSuffix, rowIndex, fraction);
     }
-    return result;
+    return value;
 }
 #pragma pop
