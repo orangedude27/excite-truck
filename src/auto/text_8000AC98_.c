@@ -174,9 +174,10 @@ int fn_8000AEC8(int value) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Initialize the setting's allowed-value ring: a single legal value, 4. */
 void fn_8000AF04(void) {
-    lbl_8034F5D8[0] = 4;
-    lbl_8055D3E0 = 1;
+    ALLOWED_VALUES[0] = 4;
+    ALLOWED_COUNT = 1;
 }
 #pragma pop
 extern int fn_80204024(void);
