@@ -11,6 +11,11 @@ typedef struct FragmentInfo {
 
 static FragmentInfo fragmentInfo[NUM_FRAGMENT];
 
+/* Claims the first free entry of the fragment table for a loaded code fragment,
+ * recording its exception-table index chain (eti) and its TOC, and returns that
+ * entry's id (__unregister_fragment releases it again).  Returns -1 when no
+ * entry is free; with NUM_FRAGMENT == 1 only the game itself can be registered.
+ * Called from __init_cpp_exceptions() with &_eti_init_info and GetTOC(). */
 int __register_fragment(const ExtabIndexInfo* eti, void* toc) {
     int i;
     FragmentInfo* frag;
