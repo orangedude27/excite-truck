@@ -53,16 +53,17 @@ byte_tail:
     return dst;
 }
 
+/* Copy at most n bytes from src to dst, padding with null bytes if src is shorter than n. */
 unsigned char *strncpy(unsigned char *dst, const unsigned char *src, int n) {
-    const unsigned char *q = src - 1;
-    unsigned char *p = dst - 1;
+    const unsigned char *srcPtr = src - 1;
+    unsigned char *dstPtr = dst - 1;
     int count = n + 1;
     while (--count != 0) {
-        unsigned char c = *++q;
-        *++p = c;
+        unsigned char c = *++srcPtr;
+        *++dstPtr = c;
         if (c == 0) {
             while (--count != 0)
-                *++p = 0;
+                *++dstPtr = 0;
             return dst;
         }
     }
