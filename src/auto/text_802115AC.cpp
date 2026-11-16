@@ -2631,9 +2631,11 @@ extern "C" void fn_802159FC(void *arg0) {
     obj->vf12();
 }
 
-extern "C" void fn_80215A10(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x18) = 1;
-    ((VfObj *)*(void **)((u8 *)arg0 + 0x244))->vf15();
+extern "C" void fn_80215A10(void *wrapper) {
+    /* Widget wrapper: set the +0x18 flag (enable the widget) and dispatch
+     * vf15 (vtable slot 0x44) on the widget held at +0x244. */
+    *(u8 *)((u8 *)wrapper + 0x18) = 1;
+    ((VfObj *)*(void **)((u8 *)wrapper + 0x244))->vf15();
 }
 
 extern "C" void fn_80215A2C(void *wrapper) {
