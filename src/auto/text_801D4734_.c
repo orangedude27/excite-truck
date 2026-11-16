@@ -1023,21 +1023,22 @@ unsigned char fn_801D592C(void *obj) {
     return 0;
 }
 
-void fn_801D597C(void *arg0, int arg1) {
+void fn_801D597C(void *actionSequence, int startNow) {
+    /* Run a registered action sequence now, either starting or stopping it. */
     void **entries;
     int count;
     int i;
-    if (arg0 == 0) {
+    if (actionSequence == 0) {
         return;
     }
     entries = (void **)lbl_804423A4[0];
     count = lbl_804423A4[1];
     for (i = 0; i < count; i++) {
-        if (entries[i] == arg0) {
-            if (arg1 != 0) {
-                fn_801D50A8((int)arg0);
+        if (entries[i] == actionSequence) {
+            if (startNow != 0) {
+                fn_801D50A8((int)actionSequence);
             } else {
-                fn_801D50B0((int)arg0);
+                fn_801D50B0((int)actionSequence);
             }
             return;
         }
