@@ -603,12 +603,14 @@ extern "C" void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) 
 #pragma scheduling on
 #pragma cplusplus reset
 #pragma pop
+/* Recompute a proximity pair's squared horizontal distance: distSq = dx*dx + dz*dz. */
 void fn_8013776C(void *arg0) {
-    f32 temp_f0;
-    f32 temp_f1;
-    temp_f0 = *(f32 *)((char *)arg0 + 0x20);
-    temp_f1 = *(f32 *)((char *)arg0 + 0x1C);
-    *(f32 *)((char *)arg0 + 0x18) = temp_f1 * temp_f1 + temp_f0 * temp_f0;
+    ProxPair *pair = (ProxPair *)arg0;
+    f32 dz;
+    f32 dx;
+    dz = pair->dz;
+    dx = pair->dx;
+    pair->distSq = dx * dx + dz * dz;
 }
 
 void fn_80137788(void *pair, s32 carIndex, void *out) {
