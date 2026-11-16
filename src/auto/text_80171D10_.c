@@ -859,63 +859,65 @@ int fn_80172E24(int arg0, int arg1) {
 }
 
 #pragma cplusplus on
-extern "C" void *fn_80172E64(void *arg0, int arg1) {
-    class VObj { public: virtual void destroy(int); };
+extern "C" void *fn_80172E64(CrushMaster *self, int deleteFlag) {
+    /* Destructor of the "crushmaster" object (fn_80172C28): drops the prerace
+       sound, the shared "crush_nogo.val" forbidden-zone set and both overlay
+       textures, then releases the round's animation set and its six sounds and
+       clears the subtask header.  deleteFlag > 0 also frees the object. */
     extern char lbl_80331018[];
     extern int lbl_8055E3A4;
     extern float lbl_8055E3A8;
-    extern void fn_80139E18(void *);
-    extern void fn_802CAC54(int);
-    extern void fn_802ADE60(int, int);
-    extern int fn_80128668(void);
-    VObj *first;
-    void *resource;
-    VObj *sub;
-    if (arg0 != 0) {
-        first = *(VObj **)((char *)arg0 + 0x2B4);
-        *(void **)arg0 = lbl_80331018;
-        if (first != 0) {
-            if (first != 0) first->destroy(1);
+    extern void fn_80139E18(void *noGoZones);
+    extern void fn_802CAC54(int texture);
+    extern void fn_802ADE60(int entrySet, int freeHolder);
+    extern void fn_80128668(void *object);
+    Destroyable *prerace;
+    void *animSet;
+    Destroyable *sound;
+    if (self != 0) {
+        prerace = self->preraceSound;
+        self->vtable = lbl_80331018;
+        if (prerace != 0) {
+            if (prerace != 0) prerace->destroy(1);
         }
         if (lbl_8055E3A4 != 0) {
             fn_80139E18((void *)lbl_8055E3A4);
             lbl_8055E3A4 = 0;
         }
         fn_802CAC54(*(int *)&lbl_8055E3A8);
-        fn_802CAC54(*(int *)((char *)arg0 + 0x198));
-        if ((char *)arg0 + 0x1AC != 0) {
-            resource = *(void **)((char *)arg0 + 0x1B8);
-            if (resource != 0) {
-                fn_802ADE60((int)resource, 1);
-                *(void **)((char *)arg0 + 0x1B8) = 0;
+        fn_802CAC54(self->radarTexture);
+        if (&self->round != 0) {
+            animSet = self->round.animPlayer;
+            if (animSet != 0) {
+                fn_802ADE60((int)animSet, 1);
+                self->round.animPlayer = 0;
             }
-            sub = *(VObj **)((char *)arg0 + 0x1C0);
-            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1C0) = 0; }
-            sub = *(VObj **)((char *)arg0 + 0x1C4);
-            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1C4) = 0; }
-            sub = *(VObj **)((char *)arg0 + 0x1C8);
-            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1C8) = 0; }
-            sub = *(VObj **)((char *)arg0 + 0x1D0);
-            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1D0) = 0; }
-            sub = *(VObj **)((char *)arg0 + 0x1D4);
-            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1D4) = 0; }
-            sub = *(VObj **)((char *)arg0 + 0x1D8);
-            if (sub != 0) { if (sub != 0) sub->destroy(1); *(VObj **)((char *)arg0 + 0x1D8) = 0; }
+            sound = (Destroyable *)self->round.sound14;
+            if (sound != 0) { if (sound != 0) sound->destroy(1); self->round.sound14 = 0; }
+            sound = (Destroyable *)self->round.sound18;
+            if (sound != 0) { if (sound != 0) sound->destroy(1); self->round.sound18 = 0; }
+            sound = (Destroyable *)self->round.sound1C;
+            if (sound != 0) { if (sound != 0) sound->destroy(1); self->round.sound1C = 0; }
+            sound = (Destroyable *)self->round.sound24;
+            if (sound != 0) { if (sound != 0) sound->destroy(1); self->round.sound24 = 0; }
+            sound = (Destroyable *)self->round.sound28;
+            if (sound != 0) { if (sound != 0) sound->destroy(1); self->round.sound28 = 0; }
+            sound = (Destroyable *)self->round.sound2C;
+            if (sound != 0) { if (sound != 0) sound->destroy(1); self->round.sound2C = 0; }
         }
-        if ((int *)arg0 + 1 != 0) {
-            if ((int *)arg0 + 1 != 0) {
-                ((volatile int *)arg0)[1] = 0;
-                ((volatile int *)arg0)[2] = 0;
-                ((volatile int *)arg0)[3] = 0;
+        if (&self->buffer != 0) {
+            if (&self->buffer != 0) {
+                self->buffer = 0;
+                self->bufferUsed = 0;
+                self->bufferSize = 0;
             }
         }
-        if (arg1 > 0) {
-            ((void *(*)(void *))fn_80128668)(arg0);
+        if (deleteFlag > 0) {
+            fn_80128668(self);
         }
     }
-    return arg0;
+    return self;
 }
-
 extern "C" void fn_80173424(CrushRoundState *round) {
     /* Put the crush-mode round state (CrushMaster + 0x1AC) back to its idle
        values: state 0, timer -1.0, counters cleared, every animation cue of the
