@@ -11888,6 +11888,7 @@ void fn_80072524(void) {
     bta_dm_discover_next_device();
 }
 
+/* Frees the BTA device-search control block's pending buffer (+0x14) if present and clears the pointer. */
 void fn_80072570(void) {
     if (*(void **)(lbl_803C0B98 + 0x14) != 0) {
         GKI_freebuf(*(void **)(lbl_803C0B98 + 0x14));
