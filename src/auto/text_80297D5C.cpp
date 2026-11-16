@@ -183,12 +183,13 @@ extern "C" void fn_8029AAE0(int, int, void*);
     extern "C" void* fn_8028E2F8(void*, void*, void*);
     extern "C" char lbl_80349450[];
     extern void* lbl_8055CA80;
-    extern "C" void fn_80297E90(void) {
-        char sp8[0x98];
-        fn_8028E61C(sp8);
-        fn_80297DC8(sp8);
-        lbl_8055F7E0 = fn_8028E2F8(sp8, lbl_80349450, lbl_8055CA80);
-    }
+/* Create the "torch fire" effect instance and store its handle. */
+extern "C" void fn_80297E90(void) {
+    char effectInitData[0x98];
+    fn_8028E61C(effectInitData);
+    fn_80297DC8(effectInitData);
+    lbl_8055F7E0 = fn_8028E2F8(effectInitData, lbl_80349450, lbl_8055CA80);
+}
 
     extern "C" void fn_80297ED4(void) {
     }
