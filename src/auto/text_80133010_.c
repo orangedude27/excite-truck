@@ -775,11 +775,13 @@ extern const char lbl_8032B968[];
 extern const char lbl_8032B920[];
 extern int fn_80133F3C(int);
 extern void *memmove(void *, const void *, unsigned int);
-void fn_801341B4(int arg0, int arg1) {
-    switch (arg1) {
+/* Callback invoked when an option identity is cleared; logs the cleared value and
+ * removes the matching entry from the options table. */
+void fn_801341B4(int optionValue, int event) {
+    switch (event) {
     case 0:
-        fn_802E30C8(lbl_8032BAE8, arg0);
-        fn_80133F3C(arg0 + 0xC);
+        fn_802E30C8(lbl_8032BAE8, optionValue);
+        fn_80133F3C(optionValue + 0xC);
         break;
     default:
         break;
