@@ -146,6 +146,8 @@ void fn_8000F188(s32 arg0) {
     lbl_80558A94 = fn_802C6FC0(arg0, 0, 0);
 }
 void fn_8000F1B4(void) {
+    // Unload the model held in lbl_80558A94 (via mrModelUnload/fn_802C6CF8)
+    // and reset its handle to MODEL_INVALID (-1).
     fn_802C6CF8(lbl_80558A94);
     lbl_80558A94 = -1;
 }
