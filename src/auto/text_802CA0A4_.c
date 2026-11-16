@@ -6,9 +6,22 @@ extern int lbl_8055FC28;
 extern float lbl_804C1440[];
 extern float lbl_80564F00;
 extern float lbl_80564F1C;
+// Registers a draw-list node and resets the global direction vector to (0, -1, 0).
 void fn_802CA0A4(void) {
-    fn_8000D838(&lbl_8055FC28);
-    lbl_804C1440[0] = lbl_80564F00;
-    lbl_804C1440[1] = lbl_80564F1C;
-    lbl_804C1440[2] = lbl_80564F00;
+#define trackedNode     lbl_8055FC28
+#define globalDirection lbl_804C1440
+#define zeroFloat       lbl_80564F00
+#define minusOneFloat   lbl_80564F1C
+#define RegisterNode    fn_8000D838
+
+    RegisterNode(&trackedNode);
+    globalDirection[0] = zeroFloat;
+    globalDirection[1] = minusOneFloat;
+    globalDirection[2] = zeroFloat;
+
+#undef trackedNode
+#undef globalDirection
+#undef zeroFloat
+#undef minusOneFloat
+#undef RegisterNode
 }
