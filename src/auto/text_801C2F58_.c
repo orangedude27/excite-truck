@@ -1872,6 +1872,7 @@ void fn_801C821C(void) {
 #pragma push
 #pragma scheduling on
 #pragma dont_inline on
+/* Clear the interlude include/exclude name lists, reset the interlude index, and refresh the interlude menu state. */
 void fn_801C8298(void) {
     strcpy(sInterludeWhoList, STR_EMPTY);
     strcpy(sInterludeWhoNotList, STR_EMPTY);
