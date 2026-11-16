@@ -25425,9 +25425,10 @@ extern "C" s32 fn_800A4B54(s32 arg0) {
 }
 #pragma pop
 
-extern "C" Fn800A4B78Ret fn_800A4B78(u16 *arg0, u16 *arg1) {
-    u16 *dst = arg0;
-    u16 *src = arg1;
+extern "C" Fn800A4B78Ret fn_800A4B78(u16 *dest, u16 *source) {
+    /* Copy the null-terminated u16 string from `source` to `dest`, including the terminator, and return `dest`. */
+    u16 *dst = dest;
+    u16 *src = source;
     u16 value;
     goto copy;
 loop:
@@ -25439,7 +25440,7 @@ copy:
     if (value != 0) {
         goto loop;
     }
-    return arg0;
+    return dest;
 }
 
 /* fn_800A4B9C: compare up to count UTF-16 code units (u16) in two buffers.
