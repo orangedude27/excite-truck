@@ -583,8 +583,10 @@ int fn_802EAA58(int *arg0, int arg1) {
     return result;
 }
 
+#pragma push
+#pragma dont_inline on
 void fn_802EAB28(void) {
-    struct NodeVT { void *a, *b, *c; int (*seek)(void *, int); void *(*size)(void *); int (*read)(void *, char *, int); };
+    struct NodeVT { void *a, *b, *c; long (*seek)(void *, long); long (*size)(void *); long (*read)(void *, char *, long); };
     struct NodeObj { struct NodeVT *vt; };
     extern int OSReport(const char *, ...);
     extern void OSSleepTicks(unsigned long long);
@@ -592,53 +594,65 @@ void fn_802EAB28(void) {
     extern void OSUnlockMutex(void *);
     extern void fn_802EA7E0(void);
     extern int fn_802E2C20(void);
-    extern void fn_800C3D9C(void);
+    extern void fn_802E9BCC(void *);
+    extern void *fn_802E9BEC(long);
+    extern void fn_802EAA08(void);
+    extern int fn_802EAA58(int *, int);
+    extern void fn_800C3D9C(long);
     extern long fn_802E30C8(char *, long);
     extern long *fn_802EA834(long, long *);
+    extern long fn_800C3CDC(void *, long, long, long);
+    extern void fn_800BEDE0(long, void *);
+    extern long fn_800BDF4C(long, long, void *, long, long, long *, long);
     extern int strncmp(const char *, const char *, unsigned long);
     extern char *strncpy(char *, const char *, unsigned long);
+    extern void *memset(void *, int, int);
     extern char lbl_80507640[];
     extern char lbl_805587E0[];
-    extern char lbl_8055D2A8[];
     extern char lbl_805584A0;
-    extern int lbl_80560070;
-    extern int lbl_80560098;
+    extern char lbl_8055D2A8[], lbl_8055D2AC[], lbl_8055D2B0[], lbl_8055D2B4[], lbl_8055D2B8[], lbl_8055D2BC[], lbl_8055D2C4[], lbl_8055D2CC[];
+    extern int lbl_8055D25C, lbl_8055D260, lbl_8055D264, lbl_8055D268, lbl_8055D26C;
+    extern int lbl_80560070, lbl_80560098, lbl_8056009C, lbl_805600A8, lbl_805600AC, lbl_805600B0, lbl_805600BC, lbl_805600C0, lbl_805600CC;
     extern char lbl_805600C9;
-    extern char lbl_805600C8;
-    extern int lbl_805600CC;
-    extern char lbl_80560062;
-    extern char lbl_80560063;
-    long (*logf)(char *, ...) = (long (*)(char *, ...))fn_802E30C8;
-    char *base = (char *)&lbl_8034E260;
-    char *msgBuf = lbl_80507640;
-    char *cmdBuf = lbl_805587E0;
-    unsigned int *tb = (unsigned int *)0x80000000;
-    void *curNode = 0;
-    long consumed = 0;
-    int retries = 0;
-    int zero = 0;
-    unsigned char flag = 0;
+    char *base;
+    void *curNode;
+    long consumed;
+    char *msgBuf, *cmdBuf;
+    long off, retries;
+    unsigned int *tb;
+    long zero;
+    int *audioStatus;
+    long sp8;
+    int info[5];
+    unsigned char flag;
+    base = (char *)&lbl_8034E260;
     OSReport(base + 0x2f4);
+    curNode = 0;
+    consumed = 0;
+    flag = 0;
+    msgBuf = lbl_80507640;
+    cmdBuf = lbl_805587E0;
+    off = 0;
+    retries = 0;
+    tb = (unsigned int *)0x80000000;
+    audioStatus = &lbl_805600C0;
+    zero = 0;
+    sp8 = 0;
     for (;;) {
-        unsigned int clock;
-        int taken;
-        if (lbl_80560062 == 0) break;
-        clock = tb[0x3E] >> 2;
+        long taken, r15, r21, r22, r24, r25, r26, r27, r28;
         if (flag) {
-            ((void (*)(int, int))OSSleepTicks)(0, (clock / 1000) + ((clock / 250) & 0x0FFFFFFC));
+            ((void (*)(int, int))OSSleepTicks)(0, (*tb >> 2) / 1000 + (((*tb >> 2) / 250) & 0x0FFFFFFC));
             flag = 0;
         } else {
-            ((void (*)(int, int))OSSleepTicks)(0, (clock / 1000) * 50);
+            ((void (*)(int, int))OSSleepTicks)(0, (*tb >> 2) / 1000 * 50);
         }
         OSLockMutex(&lbl_805584A0);
         if (lbl_80560068 != *(int *)((char *)&lbl_80560068 + 4)) {
             *(int *)((char *)&lbl_80560068 + 4) = lbl_80560068;
             taken = 1;
-        } else {
-            taken = 0;
-        }
+        } else taken = 0;
         if (taken != 0) {
-            if (lbl_80560098 != 0) { fn_800C3D9C(); lbl_80560098 = zero; }
+            if (lbl_80560098 != 0) { fn_800C3D9C(lbl_80560098); lbl_80560098 = zero; }
             if (curNode != 0) { fn_802E9BCC(curNode); curNode = 0; }
             fn_802EA7E0();
             lbl_80560070++;
@@ -652,8 +666,8 @@ void fn_802EAB28(void) {
             retries = 0;
             if (node != 0) {
                 struct NodeObj *n = (struct NodeObj *)node;
-                void *sz = n->vt->size(n);
-                if (n->vt->seek(n, (int)sz - 0x80) != 0) {
+                long sz = n->vt->size(n);
+                if (n->vt->seek(n, sz - 0x80) != 0) {
                     if (n->vt->read(n, cmdBuf, 0x80) != 0) {
                         if (strncmp(cmdBuf, lbl_8055D2A8, 3) == 0) {
                             strncpy(msgBuf, cmdBuf + 3, 0x1e);
@@ -666,29 +680,245 @@ void fn_802EAB28(void) {
                     }
                 }
             }
+            lbl_80560078 = (void *)-1;
         }
-        lbl_80560078 = (void *)-1;
-        if (lbl_805600C8 != 0) {
-            if (lbl_805600C9 == 0) {
+        if ((unsigned char)lbl_805600C8 != 0) {
+            if ((unsigned char)lbl_805600C9 == 0) {
                 lbl_805600CC = fn_802E2C20();
                 lbl_805600C9 = 1;
             }
-            if (curNode != 0) {
-                consumed = consumed;
-                logf(base + 0x310);
-            } else {
+            if (curNode != 0) off = consumed;
+            ((long (*)(char *, ...))fn_802E30C8)(base + 0x310);
+            if (curNode == 0) {
                 lbl_805600C8 = zero;
-                logf(base + 0x330);
+                ((long (*)(char *, ...))fn_802E30C8)(base + 0x330);
+            }
+        }
+        if (curNode != 0) {
+            unsigned char *buf = (unsigned char *)lbl_805600A8;
+            long chunk = consumed - off;
+            if (chunk < 0x780) ((long (*)(char *, ...))fn_802E30C8)(base + 0x360);
+            r28 = lbl_805600AC;
+            if (r28 > chunk) { } else r28 = chunk;
+            r27 = 1;
+            if (off >= consumed) {
+                r27 = 1;
+                ((long (*)(char *, ...))fn_802E30C8)(base + 0x384);
+            } else {
+                struct NodeObj *n = (struct NodeObj *)curNode;
+                if (n->vt->seek(curNode, off) != 0) {
+                    if (n->vt->read(curNode, (char *)buf, r28) != 0) {
+                        r27 = 0;
+                        r21 = 0;
+                        r15 = 0;
+                        if (lbl_80560098 == 0 && strncmp((char *)buf, lbl_8055D2AC, 3) == 0) {
+                            unsigned short field;
+                            r26 = (buf[8] << 7) + (buf[7] << 14) + buf[9] + (buf[6] << 21) + 0xa;
+                            field = (buf[4] & ~0xFF00) | ((buf[3] << 8) & 0xFF00);
+                            if (r26 < r28) {
+                                r25 = 0xa;
+                                if (field >= 0x200 && field <= 0x2ff) {
+                                    for (;;) {
+                                        unsigned char *fr;
+                                        long len;
+                                        if (r25 + 6 >= r28) break;
+                                        if (buf[r25] == 0) break;
+                                        fr = buf + r25;
+                                        len = fr[5] + (fr[4] << 7) + (fr[3] << 14) + 6;
+                                        if ((signed char)buf[r25] == 0x54) {
+                                            char *v = (char *)fr + 7;
+                                            if (strncmp((char *)fr, lbl_8055D2B0, 3) == 0) { strncpy(msgBuf, v, 0x1f); msgBuf[0x1f] = zero; }
+                                            else if (strncmp((char *)fr, lbl_8055D2B4, 3) == 0) { strncpy(msgBuf + 0x20, v, 0x1f); msgBuf[0x3f] = zero; }
+                                            else if (strncmp((char *)fr, lbl_8055D2B8, 3) == 0) { strncpy(msgBuf + 0x40, v, 0x1f); msgBuf[0x5f] = zero; }
+                                        }
+                                        r25 += len;
+                                        if (len == 0) break;
+                                    }
+                                } else if (field >= 0x300 && field <= 0x3ff) {
+                                    for (;;) {
+                                        unsigned char *fr;
+                                        long len, szf, max;
+                                        if (r25 + 0xa >= r28) break;
+                                        if (buf[r25] == 0) break;
+                                        fr = buf + r25;
+                                        szf = (fr[6] << 7) + (fr[5] << 14) + fr[7] + (fr[4] << 21);
+                                        len = szf + 0xa;
+                                        if ((signed char)fr[0] == 0x54 && szf - 1 > 0) {
+                                            char *v = (char *)fr + 0xb;
+                                            max = szf - 1;
+                                            if (max >= 0x20) max = 0x1f;
+                                            if (strncmp((char *)fr, lbl_8055D2BC, 4) == 0) { strncpy(msgBuf, v, max); msgBuf[max] = zero; }
+                                            if (strncmp((char *)fr, lbl_8055D2C4, 4) == 0) { strncpy(msgBuf + 0x20, v, max); msgBuf[0x20 + max] = zero; }
+                                            if (strncmp((char *)fr, lbl_8055D2CC, 4) == 0) { strncpy(msgBuf + 0x40, v, max); msgBuf[0x40 + max] = zero; }
+                                        }
+                                        r25 += len;
+                                        if (len == 0) break;
+                                    }
+                                } else {
+                                    ((long (*)(char *, ...))fn_802E30C8)(base + 0x398, (unsigned short)field);
+                                }
+                                r21 = r26;
+                            } else {
+                                ((long (*)(char *, ...))fn_802E30C8)(base + 0x3b4, (unsigned short)r26, r28);
+                            }
+                            off += r26;
+                            r15 = 1;
+                        }
+                        if (r15 == 0) {
+                            long found = 0, i = 0;
+                            unsigned char *p = buf;
+                            for (;;) {
+                                long bound = r28 > 0x400 ? 0x400 : r28;
+                                if (i >= bound) break;
+                                if (p[0] == 0xff && (p[1] & 0xe0) == 0xe0) {
+                                    if (i != 0) ((long (*)(char *, ...))fn_802E30C8)(base + 0x3e0, (unsigned short)i);
+                                    r21 = i;
+                                    off += i;
+                                    found = 1;
+                                    break;
+                                }
+                                i++;
+                                p++;
+                            }
+                            if (found == 0) ((long (*)(char *, ...))fn_802E30C8)(base + 0x408);
+                        }
+                        if (lbl_80560098 == 0) {
+                            if (r15 == 0) {
+                                lbl_80560098 = fn_800C3CDC(buf + r21, r28 - r21, lbl_8056009C, 0xED80);
+                                if (lbl_80560098 == 0) {
+                                    ((long (*)(char *, ...))fn_802E30C8)(base + 0x420);
+                                    r27 = 1;
+                                }
+                            }
+                            if (lbl_80560098 != 0) {
+                                memset(info, 0, 0x14);
+                                fn_800BEDE0(lbl_80560098, info);
+                                ((long (*)(char *, ...))fn_802E30C8)(base + 0x438, info[0]);
+                                ((long (*)(char *, ...))fn_802E30C8)(base + 0x450, info[1]);
+                                ((long (*)(char *, ...))fn_802E30C8)(base + 0x460, info[2]);
+                                ((long (*)(char *, ...))fn_802E30C8)(base + 0x474, info[3]);
+                                ((long (*)(char *, ...))fn_802E30C8)(base + 0x484, info[4]);
+                                ((long (*)(char *, ...))fn_802E30C8)(base + 0x494, 4);
+                                if (fn_802EAA58(info, retries > 0) == 0) {
+                                    fn_800C3D9C(lbl_80560098);
+                                    retries++;
+                                    lbl_80560098 = zero;
+                                    if (retries > 0x10) {
+                                        ((long (*)(char *, ...))fn_802E30C8)(base + 0x4a8);
+                                        r27 = 1;
+                                        ((void (*)(int, int))OSSleepTicks)(0, (*tb >> 2) / 1000 * 100);
+                                    } else {
+                                        ((long (*)(char *, ...))fn_802E30C8)(base + 0x4d0, retries);
+                                        off += 0x780;
+                                        ((void (*)(int, int))OSSleepTicks)(0, (*tb >> 2) / 1000 * 30);
+                                    }
+                                }
+                            }
+                        }
+                        if (lbl_80560098 != 0) {
+                            lbl_8055D25C = info[1];
+                            lbl_8055D268 = info[2];
+                            if (lbl_8055D25C != lbl_8055D260 || lbl_8055D268 != lbl_8055D26C || (unsigned char)lbl_805600C9 != 0) {
+                                ((long (*)(char *, ...))fn_802E30C8)(base + 0x504);
+                                while (*(audioStatus + 1) < 4 && (unsigned char)lbl_805600D1 == 0 && (unsigned char)lbl_805600D0 != 0) {
+                                    ((void (*)(int, int))OSSleepTicks)(0, (*tb >> 2) / 1000 + (((*tb >> 2) / 250) & 0x0FFFFFFC));
+                                }
+                                lbl_8055D26C = lbl_8055D268;
+                                lbl_8055D264 = lbl_8055D25C;
+                                ((long (*)(char *, ...))fn_802E30C8)(base + 0x528);
+                                while (lbl_8055D260 != lbl_8055D264 && (unsigned char)lbl_805600D1 == 0 && (unsigned char)lbl_805600D0 != 0) {
+                                    ((void (*)(int, int))OSSleepTicks)(0, (*tb >> 2) / 1000 + (((*tb >> 2) / 250) & 0x0FFFFFFC));
+                                }
+                                ((long (*)(char *, ...))fn_802E30C8)(base + 0x54c);
+                                ((void (*)(int, int))OSSleepTicks)(0, (*tb >> 2) / 1000 * 50);
+                                lbl_805600C9 = zero;
+                            }
+                            sp8 = 0;
+                            r22 = lbl_805600B0;
+                            while (r21 + 1 <= r28) {
+                                long avail, sync2, j;
+                                if (lbl_805600B8 < r22) avail = r22 - lbl_805600B8;
+                                else avail = lbl_805600A4 - (lbl_805600B8 - r22);
+                                if (avail >= info[4] * 2) {
+                                    sync2 = -1;
+                                    j = 0;
+                                    for (;;) {
+                                        unsigned char *pp;
+                                        long bound = r28 > 0x400 ? 0x400 : r28;
+                                        if (j >= bound) break;
+                                        pp = buf + r21 + j;
+                                        if (pp[0] == 0xff && (pp[1] & 0xe0) == 0xe0) {
+                                            if (j != 0) ((long (*)(char *, ...))fn_802E30C8)(base + 0x570, j, buf[r21], buf[r21 + 1], buf[r21 + 2], buf[r21 + 3]);
+                                            sync2 = j;
+                                            r21 += j;
+                                            off += j;
+                                            break;
+                                        }
+                                        j++;
+                                    }
+                                    if (sync2 < 0) ((long (*)(char *, ...))fn_802E30C8)(base + 0x408);
+                                    if (sync2 <= 0) {
+                                        long res = fn_800BDF4C(lbl_80560098, lbl_805600A0 + lbl_805600B8, buf + r21, 0x780, info[4], &sp8, 0);
+                                        if (res == 0) {
+                                            lbl_805600B8 += info[4];
+                                            off += sp8;
+                                            r21 += sp8;
+                                            flag = 1;
+                                            fn_802EAA08();
+                                            continue;
+                                        }
+                                        retries++;
+                                        ((long (*)(char *, ...))fn_802E30C8)(base + 0x5a0, res, fn_802E9BEC(res), sp8);
+                                        if (sp8 == 0 || retries > 0x1e) {
+                                            r27 = 1;
+                                        } else {
+                                            off += sp8;
+                                            r21 += sp8;
+                                            lbl_805600B8 += info[4];
+                                            flag = 1;
+                                            fn_802EAA08();
+                                            continue;
+                                        }
+                                    } else {
+                                        continue;
+                                    }
+                                }
+                                break;
+                            }
+                            if (lbl_805600B8 <= r22) lbl_805600BC = lbl_805600A4 - (r22 - lbl_805600B8);
+                            else lbl_805600BC = lbl_805600B8 - r22;
+                        } else {
+                            lbl_805600BC = zero;
+                        }
+                    }
+                }
+            }
+            if (off >= consumed) {
+                ((long (*)(char *, ...))fn_802E30C8)(base + 0x5f0);
+                r27 = 1;
+            }
+            if (r27 != 0) {
+                ((long (*)(char *, ...))fn_802E30C8)(base + 0x610);
+                if (lbl_80560098 != 0) { fn_800C3D9C(lbl_80560098); lbl_80560098 = zero; }
+                if (curNode != 0) {
+                    fn_802E9BCC(curNode);
+                    ((long (*)(char *, ...))fn_802E30C8)(base + 0x624);
+                    curNode = 0;
+                }
+                memset(msgBuf, 0, 0x60);
+            }
+            if ((unsigned char)lbl_805600C8 != 0 && curNode == 0 && lbl_80560098 == 0) {
+                ((long (*)(char *, ...))fn_802E30C8)(base + 0x634);
+                lbl_805600C8 = zero;
             }
         }
         OSUnlockMutex(&lbl_805584A0);
+        if ((unsigned char)lbl_80560062 == 0) break;
     }
     if (curNode != 0) fn_802E9BCC(curNode);
     lbl_80560063 = 1;
 }
-
-#pragma push
-#pragma use_lmw_stmw off
+#pragma pop
 extern int lbl_805600B0;
 extern int lbl_805600C0;
 extern int lbl_8055D26C;
@@ -1029,9 +1259,10 @@ void fn_802EC294(int index, int resourceId) {
     }
 }
 #pragma pop
-void fn_802EC32C(long arg0, long arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        lbl_80560060 = 0;
+void fn_802EC32C(long stream, long deleteFlag) {
+    /* A stream's deleting-destructor tail: clear the "stream open" flag when a stream is present and the delete flag is set. */
+    if (stream != 0 && deleteFlag > 0) {
+        mp3StreamOpen = 0;
     }
 }
 
