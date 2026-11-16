@@ -51,7 +51,7 @@ long fn_801ECB60();
 extern unsigned int lbl_8055EBC8;
 void fn_801F131C(void *, long, void *, float);
 void fn_801EFC90(long, long, void *);
-extern float lbl_80488668[3];
+extern float lbl_80488668[3]; /* saved render state; [2] = draw scale */
 extern unsigned int lbl_8055EBC8;
 long fn_801ECB60();
 extern float lbl_80558DC4[];
