@@ -1299,6 +1299,7 @@ void fn_8000C6E4(void) {
 }
 
 void fn_8000C730(void) {
+    /* Cycles global UI/menu state lbl_8055D3DC: 0 -> 0x13, 19 -> 0x14, 20/default -> 0. */
     switch ((int)lbl_8055D3DC) {
     case 0: lbl_8055D3DC = 0x13; return;
     case 19: lbl_8055D3DC = 0x14; return;
