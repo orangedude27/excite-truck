@@ -989,6 +989,9 @@ int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr) {
 #pragma paired_single off
 #pragma opt_common_subs on
 #pragma scheduling invalid_target
+/* Ground height at a world X/Z position: rounds the scaled coordinates into a
+ * grid cell, finds the covering tile's node, and sums the weighted overlay
+ * layers chained from that node.  Returns 0 when no tile covers the point. */
 float fn_801DDC8C(float worldX, float worldZ)
 {
   int mapX;
