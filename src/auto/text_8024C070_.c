@@ -47,8 +47,6 @@ typedef struct {
 void fn_8024C070(void) {
     Fn8024C070Frame frame;
     int value;
-
-    /* Fix note: model the stack data as one frame and pass its argument table through config. */
     frame.flag = 0;
     fn_801333E8(5, &lbl_8055C010, &frame.flag);
     value = frame.flag != 0;
@@ -57,7 +55,6 @@ void fn_8024C070(void) {
     frame.settings[2] = lbl_80563920;
     frame.settings[3] = lbl_80563924;
     frame.settings[1] = lbl_8056392C;
-
     frame.object.enabled = 0;
     frame.object.sentinel = -1;
     frame.object.secondary = 0;
@@ -71,7 +68,6 @@ void fn_8024C070(void) {
         frame.object.selected = 0;
     if (value == frame.settings[3])
         frame.object.selected = 1;
-
 #pragma scheduling on
     frame.args[0] = (int)&lbl_8055C010;
     frame.args[1] = 0x10;
@@ -93,23 +89,23 @@ void fn_8024C070(void) {
     frame.args[17] = lbl_804989D0[2];
     frame.args[18] = lbl_804989D0[3];
     frame.args[19] = lbl_804989D0[4];
-
     frame.config[0] = lbl_802FA520[0];
     frame.config[1] = (int)frame.args;
     frame.config[2] = lbl_802FA520[2];
     frame.config[3] = lbl_802FA520[3];
     frame.config[4] = lbl_802FA520[4];
     ((int (*)(int *, int, int, int))fn_802146BC)(frame.config, -999, -999, 1);
-    frame.flag = !(frame.value - 1);
+    frame.flag = (frame.value == 1);
     fn_80133460(5, &lbl_8055C010, frame.flag);
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
-int fn_8024C24C(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_8024C24C(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 void fn_8024C28C(Fn8024C2C4Queue *q) {
