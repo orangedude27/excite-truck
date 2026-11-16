@@ -244,7 +244,7 @@ int fn_8017EBE0(void) {
     fn_801808DC();
     return 1;
 }
-#pragma pop
+#pragma scheduling on
 void fn_8017EC30(void) {
     Unk8017Object **ptr = lbl_804348D8;
     int i = 0;
@@ -253,13 +253,29 @@ void fn_8017EC30(void) {
         fn_802E8524(0, i);
         obj = *ptr;
         if (obj != 0) {
-            if (obj != 0) {
-                obj->vtable->unk_0x80(obj, 1);
+#pragma push
+#pragma cplusplus on
+            {
+                class Dispatch {
+                public:
+                    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+                    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+                    virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+                    virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+                    virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+                    virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23();
+                    virtual void f24(); virtual void f25(); virtual void f26(); virtual void f27();
+                    virtual void f28(); virtual void f29();
+                    virtual void call(int);
+                };
+                if (obj != 0) ((Dispatch *)obj)->call(1);
             }
+#pragma pop
             *ptr = 0;
         }
         i++;
-    } while (i < 4 && (++ptr, 1));
+        ptr++;
+    } while (i < 4);
     lbl_8055E4BA = 0;
 }
 int fn_8017ECC0(int object, int deleteFlag) {
