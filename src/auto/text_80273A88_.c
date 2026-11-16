@@ -54,9 +54,10 @@ void fn_80273AA4(void *arg0) {
     *(int *)arg0 = 0;
 }
 #pragma scheduling on
-int fn_80273ABC(int arg0) {
+int fn_80273ABC(int object) {
+    /* Pool constructor callback: initialize the object in place via fn_80272354, then return it. */
     fn_80272354();
-    return arg0;
+    return object;
 }
 
 void fn_80273AEC(void) {
