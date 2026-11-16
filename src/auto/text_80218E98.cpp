@@ -9252,15 +9252,16 @@ extern "C" void *lbl_8033DEAC[];
 extern "C" void fn_802328D4(void *);
 extern "C" void fn_80227C9C(s32, f32, f32, f32, f32);
 extern "C" f64 lbl_805634B8;
-extern "C" void fn_80229A94(void *arg0) {
+extern "C" void fn_80229A94(void *self) {
+    /* Mark the object active (and flag +0x234 when the +0x1A option is set), then dispatch Call with the two stored arguments. */
     register u32 one = 1;
-    *(u8 *)((u8 *)arg0 + 0x19) = one;
-    if (*(u8 *)((u8 *)arg0 + 0x1A)) {
-        *(u8 *)((u8 *)arg0 + 0x234) = one;
+    *(u8 *)((u8 *)self + 0x19) = one;
+    if (*(u8 *)((u8 *)self + 0x1A)) {
+        *(u8 *)((u8 *)self + 0x234) = one;
     }
-    ((Fn80229A94Dispatch *)arg0)->Call(
-        *(s32 *)((u8 *)arg0 + 4),
-        *(s32 *)((u8 *)arg0 + 8));
+    ((Fn80229A94Dispatch *)self)->Call(
+        *(s32 *)((u8 *)self + 4),
+        *(s32 *)((u8 *)self + 8));
 }
 
 extern "C" void fn_80229AC4(void *arg0) {
