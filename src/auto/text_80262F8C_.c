@@ -183,11 +183,16 @@ void *fn_802637B0(void *obj, s32 doDelete) {
 
 void fn_8026381C(void) {}
 
-void fn_80263820(void *arg0) {
-    if (lbl_8055F434 == lbl_8055C440)
-        *(s32 *)((u8 *)arg0 + 0x18) = 1;
+void fn_80263820(void *widget) {
+#define menuPageIndex lbl_8055F434
+#define menuPageMax lbl_8055C440
+    /* Sets this widget's flag at +0x18 to 1 when the current menu page is the last page, else 0. */
+    if (menuPageIndex == menuPageMax)
+        *(s32 *)((u8 *)widget + 0x18) = 1;
     else
-        *(s32 *)((u8 *)arg0 + 0x18) = 0;
+        *(s32 *)((u8 *)widget + 0x18) = 0;
+#undef menuPageIndex
+#undef menuPageMax
 }
 
 #pragma push
