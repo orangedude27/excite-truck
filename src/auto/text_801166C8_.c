@@ -5114,11 +5114,19 @@ got_memory:
    from that hook so it can still be released after the hook is replaced. */
 typedef void (*FreeHook)(void *block);
 
-void fn_80120084(void *arg0) {
-    u8 *ptr = arg0;
+/* Release a block handed out by the 32-byte aligned allocator fn_8011FFC4.
+ * That allocator leaves a small header just below the pointer it returns:
+ *   -1 : bytes it added to the raw block to reach the alignment
+ *   -2 : allocation mode -- 3 = custom allocator hook lbl_8055DEF8, 0 = malloc
+ *   -8 : the free hook (lbl_8055DEFC) that was installed when the block was
+ *        allocated, stored there only for mode 3
+ * Subtracting the first of those gets back to the raw block, which goes back to
+ * whichever allocator owns it. */
+void fn_80120084(void *block) {
+    u8 *ptr = block;
     if (ptr == 0) return;
     if (ptr[-2] == 3) {
-        ((void (*)(void *))*(void **)(ptr - 8))(ptr - ptr[-1]);
+        ((FreeHook)*(void **)(ptr - 8))(ptr - ptr[-1]);
     } else {
         free(ptr - ptr[-1]);
     }
