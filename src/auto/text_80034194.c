@@ -1069,11 +1069,12 @@ s32 DVDReadAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *call
 }
 #pragma use_lmw_stmw reset
 #pragma pop
-void cbForReadAsync(void *arg0, void *arg1) {
-    void (*callback)(void);
-    callback = *(void (**)(void))((u8 *)arg1 + 0x38);
-    if (callback != 0) {
-        callback();
+/* DVD read completion: call the user callback stored in the file info at +0x38. */
+void cbForReadAsync(void *result, void *fileInfo) {
+    void (*userCallback)(void);
+    userCallback = *(void (**)(void))((u8 *)fileInfo + 0x38);
+    if (userCallback != 0) {
+        userCallback();
     }
 }
 
