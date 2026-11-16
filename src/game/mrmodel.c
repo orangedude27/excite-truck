@@ -1511,10 +1511,12 @@ void fn_802C7A50(void) {
 #undef s_modelBatchActive
 }
 
-void fn_802C7A94(int arg0) {
+void fn_802C7A94(int groupId) {
+    /* Reset a model sort group: clear shared state, release the group's entries,
+     * and for the special group 9 clear its active model flag. */
     fn_802C7758();
-    fn_802C5720(arg0);
-    if (arg0 == 9) {
+    fn_802C5720(groupId);
+    if (groupId == 9) {
         fn_802C543C();
     }
 }
