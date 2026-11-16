@@ -76,6 +76,7 @@ extern const char lbl_8055B648;
 extern float lbl_8056336C;
 #pragma push
 #pragma processor 750
+#pragma cplusplus reset
 void *fn_8020DE74(void *arg0) {
     char name[0x20];
     register const char *labels __asm("r31") = lbl_8033C7A0;
