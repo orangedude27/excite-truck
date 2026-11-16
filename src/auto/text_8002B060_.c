@@ -3,9 +3,10 @@
 
 extern int frexp(int *);
 extern int ldexp(int);
-void fn_8002B060(int arg0) {
+// FDLIBM scalbn: return x * 2^n. x arrives in f1 (implicit arg to frexp) and the result leaves in f1.
+void fn_8002B060(int n) {
     int exponent;
     frexp(&exponent);
-    exponent += arg0;
+    exponent += n;
     ldexp(exponent);
 }
