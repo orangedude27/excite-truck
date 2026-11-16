@@ -1040,7 +1040,7 @@ check_loop:
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void *fn_80293A00(void *arg0, void *arg1, int arg2, int arg3, int arg4) {
+extern "C" void *fn_80293A00(void *object, void *effectArg, int modelBase, int instance, int remapTexture) {
     class EffectArg {
     public:
         virtual void v0();
@@ -1053,16 +1053,19 @@ extern "C" void *fn_80293A00(void *arg0, void *arg1, int arg2, int arg3, int arg
         virtual void v7();
         virtual float value(const char *, float);
     };
-    *(void **)arg0 = lbl_80349278;
-    fn_80293CD0(arg0, arg2, arg3, arg4);
-    float defaultValue = lbl_8056450C;
-    *(float *)((char *)arg0 + 4) = defaultValue;
-    if (arg1 != 0) {
-        *(float *)((char *)arg0 + 4) =
-            ((EffectArg *)arg1)->value((const char *)&lbl_8055C988, defaultValue);
+    /* Construct the "ter" chunk sys: install its vtable, load its models, then set
+     * its gravity_f (+0x4) to the default lbl_8056450C (2.1f), overridden by
+     * effectArg->value("grav_f", default). +0x4C2C is cleared. */
+    *(void **)object = lbl_80349278;
+    fn_80293CD0(object, modelBase, instance, remapTexture);
+    float defaultGravity = lbl_8056450C;
+    *(float *)((char *)object + 4) = defaultGravity;
+    if (effectArg != 0) {
+        *(float *)((char *)object + 4) =
+            ((EffectArg *)effectArg)->value((const char *)&lbl_8055C988, defaultGravity);
     }
-    *(int *)((char *)arg0 + 0x4C2C) = 0;
-    return arg0;
+    *(int *)((char *)object + 0x4C2C) = 0;
+    return object;
 }
 #pragma cplusplus off
 #pragma scheduling on
