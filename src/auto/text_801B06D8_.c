@@ -1460,6 +1460,9 @@ extern "C" void fn_801B228C(void) {
 }
 #pragma cplusplus off
 void fn_801B2320(void) {
+    /* Snapshot the current scene's clock into the global scheduling base time:
+       the root object returned by fn_80178C9C holds a container at +0x2C whose
+       +0x18 field is the tick used to schedule AI truck spawns. */
     lbl_8055E688 = *(s32 *)((u8 *)*(void **)((u8 *)fn_80178C9C() + 0x2C) + 0x18);
 }
 
