@@ -2297,15 +2297,17 @@ extern "C" void fn_8019EF00(void* arg0) {
 }
 
 #define gZeroFloat lbl_805622D0 /* 0.0f, shared constant in .sdata2 */
-extern "C" void fn_8019F03C(void* arg0) {
-    f32 value = gZeroFloat;
-    *(u8*)((u8*)arg0 + 0x4C) = 0;
-    *(f32*)((u8*)arg0 + 0x40) = value;
-    *(f32*)((u8*)arg0 + 0x44) = value;
-    *(f32*)((u8*)arg0 + 0x48) = value;
-    *(f32*)((u8*)arg0 + 0x34) = value;
-    *(f32*)((u8*)arg0 + 0x38) = value;
-    *(f32*)((u8*)arg0 + 0x3C) = value;
+extern "C" void fn_8019F03C(void* sphereShape) {
+    /* Reset a collision shape's cached runtime state: zero the two stored
+       contact vectors at +0x34..+0x48 and clear the active flag at +0x4C. */
+    f32 zero = gZeroFloat;
+    *(u8*)((u8*)sphereShape + 0x4C) = 0;
+    *(f32*)((u8*)sphereShape + 0x40) = zero;
+    *(f32*)((u8*)sphereShape + 0x44) = zero;
+    *(f32*)((u8*)sphereShape + 0x48) = zero;
+    *(f32*)((u8*)sphereShape + 0x34) = zero;
+    *(f32*)((u8*)sphereShape + 0x38) = zero;
+    *(f32*)((u8*)sphereShape + 0x3C) = zero;
 }
 #undef gZeroFloat
 
