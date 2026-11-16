@@ -427,14 +427,17 @@ void fn_8022DE1C(void *arg0) {
     *p = (low > v) ? low : v;
 }
 #pragma scheduling invalid_target
-int fn_8022DE88(void *arg0) {
-    float current = *(float *)((char *)arg0 + 0x10);
-    float *value_ptr = *(float **)((char *)arg0 + 0x18);
+int fn_8022DE88(void *object) {
+#define gZeroEpsilon lbl_80558DC4
+    /* Return 0 when |the float at +0x10 minus the float pointed to by +0x18| is within the zero epsilon, else 1. */
+    float current = *(float *)((char *)object + 0x10);
+    float *value_ptr = *(float **)((char *)object + 0x18);
     float value = *value_ptr;
     float mag = (float)__fabs(current - value);
-    if (mag <= *(float *)(void *)&lbl_80558DC4) return 0;
-    if (mag > *(float *)(void *)&lbl_80558DC4) return 1;
+    if (mag <= *(float *)(void *)&gZeroEpsilon) return 0;
+    if (mag > *(float *)(void *)&gZeroEpsilon) return 1;
     return 1;
+#undef gZeroEpsilon
 }
 #pragma pop
 extern double __fabs(double);
