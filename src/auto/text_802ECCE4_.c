@@ -9,8 +9,16 @@
  * next pointer at +0x44, chained into lbl_805600F8. */
 typedef struct MoviePlayInfo {
     char name[0x40]; /* 0x00 movie file name, without its extension */
-    s32 handle;      /* 0x40 Bink movie handle fn_802E11A4 opened for that name */
+    void *handle;    /* 0x40 the movie object fn_802E11A4 opened for that name */
 } MoviePlayInfo;     /* 0x44: the record the heap tag "MoviePlayInfo" names */
+
+/* One entry of the "single_movie_info" list: the movie record plus the link into
+ * that list, whose head lbl_805600F8 answers every movie request with.
+ * fn_802ECE48 pushes an entry, fn_802ECDF4 pops the head again. */
+typedef struct SingleMovieInfo {
+    MoviePlayInfo info;           /* 0x00 the movie's name and its opened handle */
+    struct SingleMovieInfo *next; /* 0x44 the entry this one pushes off the head */
+} SingleMovieInfo;                /* 0x48: the node the heap tag "single_movie_info" names */
 
 extern void fn_802E12DC(void *); /* video.c: play/advance a movie */
 extern void fn_802E1290(void *); /* video.c: drMovieUnload, close a movie */
