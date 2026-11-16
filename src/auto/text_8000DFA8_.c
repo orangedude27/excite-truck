@@ -203,6 +203,7 @@ void fn_8000F2A8(s32 fileId0, s32 fileId1) {
     lbl_80351214 = fn_8023512C(fileId1);
 }
 
+/* Releases the two refcounted file handles stored in lbl_80350F88 and lbl_80351214, if set. */
 void fn_8000F2EC(void) {
     if (lbl_80350F88 != 0) fn_80235380(lbl_80350F88);
     if (lbl_80351214 != 0) fn_80235380(lbl_80351214);
