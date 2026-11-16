@@ -20,14 +20,26 @@ extern void __register_global_object(void *, void *, void *, int);
 
 #pragma scheduling invalid_target
 void fn_80160C2C(void) {
+#define RegisterStaticDestructor fn_8000D838
+#define StaticDtorRecord lbl_8055E2C0
+#define CapacitySentinel lbl_8055E2C8
+#define GlobalObject lbl_8042FD84
+#define ObjectRegistry lbl_8042FD78
+#define DestroyGlobalObject fn_80160C8C
     /* Global constructor: register a static-destructor record, set a capacity sentinel,
      * initialize a small inline-storage object (data -> +12, count = 0, capacity = 0x14),
-     * and register its destructor destroyGlobalObject via __register_global_object. */
-    registerStaticDestructor(&gStaticDtorRecord);
-    gObjectCapacitySentinel = 0xFFFF0000;
-    *(void **)&gGlobalObject = (char *)&gGlobalObject + 12;
-    *(int *)((char *)&gGlobalObject + 8) = 0x14;
-    *(int *)((char *)&gGlobalObject + 4) = 0;
-    ((void (*)(void *, void *, void *))__register_global_object)(&gGlobalObject, &destroyGlobalObject, &gObjectRegistry);
+     * and register its destructor DestroyGlobalObject via __register_global_object. */
+    RegisterStaticDestructor(&StaticDtorRecord);
+    CapacitySentinel = 0xFFFF0000;
+    *(void **)&GlobalObject = (char *)&GlobalObject + 12;
+    *(int *)((char *)&GlobalObject + 8) = 0x14;
+    *(int *)((char *)&GlobalObject + 4) = 0;
+    ((void (*)(void *, void *, void *))__register_global_object)(&GlobalObject, &DestroyGlobalObject, &ObjectRegistry);
+#undef RegisterStaticDestructor
+#undef StaticDtorRecord
+#undef CapacitySentinel
+#undef GlobalObject
+#undef ObjectRegistry
+#undef DestroyGlobalObject
 }
 
