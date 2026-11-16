@@ -12056,12 +12056,13 @@ void bta_dm_inq_results_cb(u8 *p_inq) {
     }
 }
 
+/* BTM inquiry-complete callback: allocates and posts a BTA_DM_INQUIRY_CMPL_EVT to the DM search task. */
 void fn_80072A98(void *arg0) {
-    void *buf = GKI_getbuf(0x110);
-    if (buf != 0) {
-        *(u16 *)buf = 0x203;
-        *((u8 *)buf + 8) = *((u8 *)arg0 + 1);
-        fn_80071450(buf);
+    void *p_msg = GKI_getbuf(0x110);
+    if (p_msg != 0) {
+        *(u16 *)p_msg = BTA_DM_INQUIRY_CMPL_EVT;
+        *((u8 *)p_msg + 8) = *((u8 *)arg0 + 1);
+        fn_80071450(p_msg);
     }
 }
 
