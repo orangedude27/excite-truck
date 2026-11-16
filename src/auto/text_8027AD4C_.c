@@ -984,16 +984,19 @@ check:
 extern char lbl_80347B30[];
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" void fn_8027C0D0(void *arg0, long arg1, void *arg2) {
+/* Initializes a record with an id and target object, then stores the object's bracket-name string. */
+extern "C" void fn_8027C0D0(void *record, long id, void *obj) {
+#define sBracketName lbl_80347B30
     struct Dummy {
         virtual long m0(char **);
         virtual long m1(char **);
         virtual long m2(char **);
         virtual long m3(char **);
     };
-    *(long *)arg0 = arg1;
-    *(long *)((char *)arg0 + 8) = (long)arg2;
-    *(long *)((char *)arg0 + 4) = ((Dummy *)arg2)->m3((char **)&lbl_80347B30);
+    *(long *)record = id;
+    *(long *)((char *)record + 8) = (long)obj;
+    *(long *)((char *)record + 4) = ((Dummy *)obj)->m3((char **)&sBracketName);
+#undef sBracketName
 }
 #pragma cplusplus reset
 long *fn_8027C120(long table, long name) {
