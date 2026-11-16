@@ -2098,9 +2098,10 @@ void fn_8006A3BC(void)
 }
 
 void fn_8006A3BC(void);
-void fn_8006A440(u32 r3, u32 r4)
+/* Alarm handler: switch to a fiber that runs the WUD BT-info persistence step on the shared alarm stack. */
+void fn_8006A440(u32 pAlarm, u32 pContext)
 {
-	OSSwitchFiberEx(r3, r4, 0, 0, fn_8006A3BC, (u8*)&lbl_80393680 + 0x1000);
+    OSSwitchFiberEx(pAlarm, pContext, 0, 0, fn_8006A3BC, (u8*)&lbl_80393680 + 0x1000);
 }
 
 s32 fn_8006A460(s32 arg0) {
