@@ -1771,6 +1771,27 @@ int fn_802D0EC8(int arg0) {
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
+typedef struct {
+    unsigned char c0, c1, c2, c3;
+    unsigned char c4, c5, c6, c7, c8;
+    unsigned char pad09[3];
+    float p0, p1, p2, scale;
+    unsigned char obj[0x40];
+    unsigned char enabled;
+} LightRec802D0EEC;
+typedef struct {
+    unsigned char c0, c1, c2, c3, c4;
+    unsigned char pad05[3];
+    float p0, p1, pad10, p2, p3;
+    unsigned char enabled;
+    unsigned char pad1D[3];
+} FogRec802D0EEC;
+typedef struct {
+    unsigned char raw[0x4160];
+    FogRec802D0EEC fog;
+    LightRec802D0EEC light;
+} GXState802D0EEC;
+
 void fn_802D0EEC(void) {
     extern unsigned int lbl_8055FD74;
     extern unsigned int lbl_8055FD28;
@@ -1788,6 +1809,21 @@ void fn_802D0EEC(void) {
     extern void GXSetChanAmbColor_Internal(int, void *);
     extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
 
+    typedef struct {
+        unsigned char c0, c1, c2, c3;
+        unsigned char c4, c5, c6, c7, c8;
+        unsigned char pad09[3];
+        float p0, p1, p2, scale;
+        unsigned char obj[0x40];
+        unsigned char enabled;
+    } LightRec;
+    typedef struct {
+        unsigned char c0, c1, c2, c3, c4;
+        unsigned char pad05[3];
+        float p0, p1, pad10, p2, p3;
+        unsigned char enabled;
+    } FogRec;
+
     float lightPos[3];
     volatile unsigned char whiteColor[4];
     volatile unsigned char blackColor[4];
@@ -1802,8 +1838,8 @@ void fn_802D0EEC(void) {
     volatile unsigned char lightColor[4];
     unsigned int diff;
     register unsigned char *base;
-    register unsigned char *record;
-    register unsigned char *fog;
+    LightRec *record;
+    FogRec *fog;
     unsigned char *pB0;
     int lo, hi;
     int fogType;
@@ -1886,60 +1922,60 @@ void fn_802D0EEC(void) {
         lbl_8055FE58 = 0;
     }
 
-    fog = base + 0x4160;
-    if (fog[0x1C] != 0) {
+    fog = (FogRec *)(base + 0x4160);
+    if (fog->enabled != 0) {
         fogType = 0;
-        fog[0x1C] = 0;
-        fogColor[0] = fog[1];
-        fogColor[1] = fog[2];
-        fogColor[2] = fog[3];
-        fogColor[3] = fog[4];
+        fog->enabled = 0;
+        fogColor[0] = fog->c1;
+        fogColor[1] = fog->c2;
+        fogColor[2] = fog->c3;
+        fogColor[3] = fog->c4;
         if (base[0x4160] != 0)
             fogType = 2;
         ((void (*)(int, unsigned char *, void *, float, float, float, float))GXSetFog)(
-            fogType, (unsigned char *)fogColor, fog, *(float *)(fog + 8), *(float *)(fog + 0xC),
-            *(float *)(fog + 0x14), *(float *)(fog + 0x18));
+            fogType, (unsigned char *)fogColor, fog, fog->p0, fog->p1,
+            fog->p2, fog->p3);
     }
 
-    record = base + 0x4180;
-    if (record[0x5C] != 0) {
-        record[0x5C] = 0;
+    record = (LightRec *)(base + 0x4180);
+    if (record->enabled != 0) {
+        record->enabled = 0;
         packed = fn_802CE9FC(0xFF, 0xFF, 0xFF, 0xFF);
         whiteColor[3] = packed;
         whiteColor[0] = packed >> 24;
         whiteColor[1] = packed >> 16;
         whiteColor[2] = packed >> 8;
         packed = fn_802CE9FC(0, 0, 0, 0xFF);
-        lightPos[0] = *(float *)(record + 0xC) * lbl_80564FC4;
-        lightPos[1] = *(float *)(record + 0x10) * lbl_80564FC4;
-        lightPos[2] = *(float *)(record + 0x14) * lbl_80564FC4;
+        lightPos[0] = record->p0 * lbl_80564FC4;
+        lightPos[1] = record->p1 * lbl_80564FC4;
+        lightPos[2] = record->p2 * lbl_80564FC4;
         blackColor[0] = packed >> 24;
         blackColor[3] = packed;
         blackColor[1] = packed >> 16;
         blackColor[2] = packed >> 8;
-        GXInitLightPos(record + 0x1C, lightPos[0], lightPos[1], -lightPos[2]);
-        scale = *(float *)(record + 0x18);
-        lightColor[3] = record[3];
-        lightColor[0] = (unsigned char)(int)(scale * (float)record[0]);
-        lightColor[1] = (unsigned char)(int)(scale * (float)record[1]);
-        lightColor[2] = (unsigned char)(int)(scale * (float)record[2]);
+        GXInitLightPos(record->obj, lightPos[0], lightPos[1], -lightPos[2]);
+        scale = record->scale;
+        lightColor[3] = record->c3;
+        lightColor[0] = (unsigned char)(int)(scale * (float)record->c0);
+        lightColor[1] = (unsigned char)(int)(scale * (float)record->c1);
+        lightColor[2] = (unsigned char)(int)(scale * (float)record->c2);
         lightColorWord = *(int *)lightColor;
-        GXInitLightColor(record + 0x1C, (unsigned char *)&lightColorWord);
+        GXInitLightColor(record->obj, (unsigned char *)&lightColorWord);
         ((void (*)(void *, float, float, int))GXInitLightDistAttn_Internal)(
-            record + 0x1C, lbl_80564F8C, lbl_80564F8C, 0);
-        GXLoadLightObjImm(record + 0x1C, 1);
+            record->obj, lbl_80564F8C, lbl_80564F8C, 0);
+        GXLoadLightObjImm(record->obj, 1);
         matColor0 = *(int *)whiteColor;
         GXSetChanMatColor_Internal(0, &matColor0);
-        packed = fn_802CE9FC(0, 0, 0, record[8]);
+        packed = fn_802CE9FC(0, 0, 0, record->c8);
         matColor2[3] = packed;
         matColor2[0] = packed >> 24;
         matColor2[1] = packed >> 16;
         matColor2[2] = packed >> 8;
         GXSetChanMatColor_Internal(2, (void *)matColor2);
-        ambColor0[0] = record[4];
-        ambColor0[1] = record[5];
-        ambColor0[2] = record[6];
-        ambColor0[3] = record[7];
+        ambColor0[0] = record->c4;
+        ambColor0[1] = record->c5;
+        ambColor0[2] = record->c6;
+        ambColor0[3] = record->c7;
         GXSetChanAmbColor_Internal(0, (void *)ambColor0);
         ambient2Color = *(int *)blackColor;
         GXSetChanAmbColor_Internal(2, &ambient2Color);
