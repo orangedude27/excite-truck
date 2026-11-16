@@ -1116,10 +1116,11 @@ int fn_802C9C8C(unsigned int tintColor) {
     return 0;
 }
 
+/* Blend the alpha mask drawn since fn_802C9C8C back over the screen with the saved tint, then restore normal GX state. */
 void fn_802C9CE0(void) {
-    fn_802D362C(lbl_8055FC84);
+    fn_802D362C(sOverlayTint);
     fn_802D3304();
-    lbl_8055FC70 = 1;
+    sRenderMode = RENDER_MODE_NORMAL;
 }
 
 /* DrawListWrapper::alloc(size, name): hand out one DrawListWrapper from the
