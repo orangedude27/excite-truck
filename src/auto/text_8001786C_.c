@@ -83,16 +83,18 @@ void fn_8001786C(s32 vehicleNum) {
     }
 }
 
-/* Append one driver and the vehicle he drives to the two halves of a pairing list. */
+/* Append one driver/vehicle number pair to the EntryPairList: store the driver
+   number in the next slot of the driver half (+4), the vehicle number in the next
+   slot of the vehicle half (+0x28), and advance each half's count. */
 void fn_800178BC(void* list, s32 driverNum, s32 vehicleNum) {
-    s32 index1;
-    s32 index2;
-    index1 = *(s32*)list;
-    *(s32*)((char*)list + (index1 << 2) + 4) = driverNum;
-    index2 = *(s32*)((char*)list + 0x24);
-    *(s32*)list = index1 + 1;
-    *(s32*)((char*)list + (index2 << 2) + 0x28) = vehicleNum;
-    *(s32*)((char*)list + 0x24) = index2 + 1;
+    s32 driverIndex;
+    s32 vehicleIndex;
+    driverIndex = *(s32*)list;
+    *(s32*)((char*)list + (driverIndex << 2) + 4) = driverNum;
+    vehicleIndex = *(s32*)((char*)list + 0x24);
+    *(s32*)list = driverIndex + 1;
+    *(s32*)((char*)list + (vehicleIndex << 2) + 0x28) = vehicleNum;
+    *(s32*)((char*)list + 0x24) = vehicleIndex + 1;
 }
 #pragma scheduling on
 /* Whether a driver takes his vehicle from the vehicle record's alternate list
