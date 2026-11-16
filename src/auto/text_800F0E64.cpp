@@ -4701,6 +4701,8 @@ static inline void SoundInstanceManager_InsertPriorityList(void *pool, void *sou
 /* ut::LinkList iterator (list = { size, node }): GetEndIter() is the list's own node. */
 struct LinkListIter {
     void *node;
+    bool operator!=(const LinkListIter &other) const { return node != other.node; }
+    LinkListIter &operator++() { node = *(void **)node; return *this; }
 };
 /* End of the SoundInstanceManager's priority list (list at +0x4, its node at +0x8). */
 static inline LinkListIter SoundInstanceManager_GetPriorityListEnd(void *pool) {
