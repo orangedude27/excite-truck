@@ -758,9 +758,12 @@ extern "C" u8 *fn_8012B4E4(u8 *arg0, s8 *arg1) {
     return arg0;
 }
 #pragma scheduling on
-extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
-    if ((*(u32 *)((char *)arg0 + 0x34) & 0x20) &&
-        (*(u32 *)((char *)arg1 + 0x34) & 0x10)) return 1;
+extern "C" s32 fn_8012B50C(void *existingEntry, void *duplicateEntry) {
+    /* Name-clash check: true when the entry found first for a name is flagged
+       as the primary and a later, duplicate-named entry is flagged as a
+       duplicate. Used by fn_8012B534 while resolving resources by path. */
+    if ((((struct ResEntry *)existingEntry)->flags & RES_ENTRY_NAME_PRIMARY) &&
+        (((struct ResEntry *)duplicateEntry)->flags & RES_ENTRY_NAME_DUPLICATE)) return 1;
     return 0;
 }
 
