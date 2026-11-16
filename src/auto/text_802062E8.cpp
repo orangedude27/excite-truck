@@ -350,66 +350,6 @@ extern "C" void fn_802067C8(void *object, void *context, int arg) {
 extern "C" void fn_80206820(void) {
 }
 
-extern "C" void fn_80206824(void *arg0, int arg1, int arg2) {
-    struct Callback {
-        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-        virtual void f4(); virtual void f5(); virtual void f6(); virtual int f7();
-        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
-        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
-        virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
-        virtual void f20(); virtual void f21(void *);
-    };
-    struct Parent { virtual void f0(); virtual void f1(int, int); };
-    u8 *self = (u8 *)arg0;
-#define CB (*(Callback **)(self + 0xC))
-    int state = CB->f7();
-    self[0x19] = 1;
-    switch (state) {
-    case 1:
-        if (self[0x4A]) {
-            CB->f6();
-        } else if (self[0x48]) {
-            CB->f8();
-        } else if (self[0x4C]) {
-            self[0x4C] = 0;
-            CB->f6();
-        }
-        break;
-    case 3:
-        if (self[0x49]) {
-            if (IsDebugFlagSet_802062E8(0x200) && *(int *)(self + 0x44) != 0)
-                goto skip;
-            self[0x49] = 0;
-            if (self[0x4B])
-                CB->f5();
-            else
-                CB->f4();
-        } else {
-skip:
-            self[0x19] = 0;
-        }
-        if (self[0x48])
-            CB->f8();
-        break;
-    case 2:
-        if (!self[0x48]) {
-            if (self[0x4A])
-                CB->f6();
-            else
-                CB->f9();
-        }
-        break;
-    }
-    if (*(int *)(self + 0x50)) {
-        CB->f21(self + 0x50);
-        *(int *)(self + 0x50) = 0;
-    }
-    if (!self[0x48]) {
-        ((Parent *)arg0)->f1(arg1, arg2);
-    }
-#undef CB
-}
-
 /* The sound a Sound3D plays: voicesnd.c's VoiceSnd (its vtable is
  * lbl_8033C3F4, the one the mixer's createSound hands back).  Only the slots
  * this unit calls through are declared; the mix-value setters at +0x30..+0x4C
@@ -424,7 +364,7 @@ public:
     virtual void play();                  /* +0x18 */
     virtual void playLooping();           /* +0x1C */
     virtual void releaseVoices();         /* +0x20 */
-    virtual int state();                  /* +0x24 1 playing, 2 muted, 3 stopped */
+    virtual int state();                  /* +0x24, one of VoiceSndState below */
     virtual void mute();                  /* +0x28 */
     virtual void unmute();                /* +0x2C */
     virtual void setRate(float);          /* +0x30 sound+0x24 */
@@ -435,6 +375,18 @@ public:
     virtual void setUnused2c(float);      /* +0x44 sound+0x2C */
     virtual void setUnused30(float);      /* +0x48 sound+0x30 */
     virtual void setUnused34(float);      /* +0x4C sound+0x34 */
+    virtual void setAuxFlags(int);        /* +0x50 Sound3D.auxFlags */
+    virtual void slot54();                /* +0x54 */
+    virtual void slot58();                /* +0x58 */
+    virtual void setParam(void *);        /* +0x5C the block queued at Sound3D+0x50 */
+};
+
+/* What VoiceSnd::state() answers; fn_80206824 runs its play/mute bookkeeping
+ * off these. */
+enum VoiceSndState {
+    VOICE_STATE_PLAYING = 1,
+    VOICE_STATE_MUTED   = 2,
+    VOICE_STATE_STOPPED = 3
 };
 
 /* One of the game's 3D sounds -- "Sound3D" is the name its pool allocation
@@ -442,7 +394,9 @@ public:
  * vtable is lbl_8033BDC0: +0x08 destructor, +0x0C update, +0x10 the mix-value
  * flush below (shared by every derived class), +0x14 the per-frame work.
  * Mix values are queued here with a dirty flag each (the setters set both);
- * the update virtuals push the flagged ones to the VoiceSnd and clear them. */
+ * the update virtuals push the flagged ones to the VoiceSnd and clear them.
+ * The flags at +0x48.. are requests queued on the sound by the game, which
+ * fn_80206824 carries out on the VoiceSnd on the next pass. */
 struct Sound3D {
     void *vtable;                /* at 0x00 */
     float rate;                  /* at 0x04 -> VoiceSnd::setRate, flag at 0x4E */
@@ -450,16 +404,87 @@ struct Sound3D {
     VoiceSnd *sound;             /* at 0x0C the sound played, 0 when none */
     int slot10;                  /* at 0x10 -100 until the sound is placed */
     int auxFlags;                /* at 0x14 -> VoiceSnd slot +0x50, flag 0x4F */
-    char pad18[0x28 - 0x18];
+    unsigned char audible;       /* at 0x18 fn_802067C8: playing, and audible this pass */
+    unsigned char playing;       /* at 0x19 fn_80206824 keeps it up while the sound runs */
+    char pad1A[0x28 - 0x1A];
     float unused2c;              /* at 0x28 -> VoiceSnd::setUnused2c */
     float unused30;              /* at 0x2C -> VoiceSnd::setUnused30 */
     float unused34;              /* at 0x30 -> VoiceSnd::setUnused34 */
     unsigned char unused2cDirty; /* at 0x34 */
     unsigned char unused30Dirty; /* at 0x35 */
     unsigned char unused34Dirty; /* at 0x36 */
-    char pad37[0x4F - 0x37];
+    char pad37[0x44 - 0x37];
+    int handle44;                /* at 0x44 what the sound was made with; 0 = no slot */
+    unsigned char muted;         /* at 0x48 the sound is to be muted */
+    unsigned char playPending;   /* at 0x49 start it on the next update */
+    unsigned char releasePending;/* at 0x4A give its voices back on the next update */
+    unsigned char loop;          /* at 0x4B play it looping rather than once */
+    unsigned char releaseOnce;   /* at 0x4C give its voices back once */
+    unsigned char volumeDirty;   /* at 0x4D hand `volume` to the sound */
+    unsigned char rateDirty;     /* at 0x4E hand `rate` to the sound */
     unsigned char auxFlagsDirty; /* at 0x4F set with auxFlags, flushed by fn_80206B14 */
+    int queuedParam;             /* at 0x50 block handed to VoiceSnd::setParam, then cleared */
 };
+
+/* Sound3D::update -- the pass the SoundManager runs over every sound it owns
+ * (fn_80207C80, right after fn_802067C8 worked out whether each is audible).
+ * The game queues its wishes as the flags at Sound3D+0x48; here they are
+ * carried out on the VoiceSnd being played, in step with the state that sound
+ * reports: a playing sound gets its voices back or is muted, a stopped one
+ * starts the pending play (looping or once) unless nothing is pending, which
+ * takes the sound out of play, and a muted sound is unmuted once the mute is
+ * lifted.  Whatever was queued at +0x50 then goes to the sound, and a sound
+ * that is not muted runs its own virtual update. */
+extern "C" void fn_80206824(void *object, int context, int arg) {
+    /* The sound's own update: vtable slot +0x0C, fn_80206B14 in the base class. */
+    struct SoundBase { virtual void dispose(); virtual void update(int, int); };
+    Sound3D *self = (Sound3D *)object;
+    int state = self->sound->state();
+    self->playing = 1;
+    switch (state) {
+    case VOICE_STATE_PLAYING:
+        if (self->releasePending) {
+            self->sound->releaseVoices();
+        } else if (self->muted) {
+            self->sound->mute();
+        } else if (self->releaseOnce) {
+            self->releaseOnce = 0;
+            self->sound->releaseVoices();
+        }
+        break;
+    case VOICE_STATE_STOPPED:
+        if (self->playPending) {
+            if (IsDebugFlagSet_802062E8(0x200) && self->handle44 != 0)
+                goto skip;
+            self->playPending = 0;
+            if (self->loop)
+                self->sound->playLooping();
+            else
+                self->sound->play();
+        } else {
+skip:
+            self->playing = 0;
+        }
+        if (self->muted)
+            self->sound->mute();
+        break;
+    case VOICE_STATE_MUTED:
+        if (!self->muted) {
+            if (self->releasePending)
+                self->sound->releaseVoices();
+            else
+                self->sound->unmute();
+        }
+        break;
+    }
+    if (self->queuedParam) {
+        self->sound->setParam(&self->queuedParam);
+        self->queuedParam = 0;
+    }
+    if (!self->muted) {
+        ((SoundBase *)object)->update(context, arg);
+    }
+}
 
 extern "C" void fn_80206A5C(void* arg0) {
     /* Sound3D::flushMixValues -- vtable slot +0x10, the one every sound class
