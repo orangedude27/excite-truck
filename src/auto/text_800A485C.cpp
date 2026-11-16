@@ -1724,7 +1724,7 @@ extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
     u32 pair;
     u32 table;
     u32 offset;
-    u32 record;
+    u8 *record;
     s32 result;
 
     *arg2 = 0;
@@ -1749,14 +1749,14 @@ found:
     if (index == 0x1A)
         return 10;
 
-    table = (u32)&lbl_803D1640;
     offset = (u32)index * 0x28;
-    result = fn_800A625C(arg0, (s32)(base + index * 0x28 + 0x61C));
+    result = fn_800A625C(arg0, (s32)((u8 *)&lbl_803D1640 + offset + 0x61C));
     if (result != 0)
         return result;
 
-    record = table + offset;
+    table = (u32)&lbl_803D1640;
     *(u16 *)&lbl_803D1640 = *(u16 *)&lbl_803D1640 + 1;
+    record = (u8 *)(table + offset);
     *(u32 *)(record + 0x61C) |= 1;
     *(s32 *)(record + 0x620) = (s32)arg0;
     *(s32 *)(record + 0x624) = arg1;
@@ -25928,11 +25928,11 @@ extern "C" s32 fn_800BAE98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
         else if (arg9 != 0) *(s32 *)arg9 = *(s32 *)lbl_8055DD74;
     }
 done:
-    if (arg10 == 0) goto skip;
-    if (res == 0) goto skip;
-    if (buf == 0) goto skip;
-    iosFree(lbl_80559248, buf);
-skip:
+    if (arg10 == 0 || res != 0) {
+        if (buf != 0) {
+            iosFree(lbl_80559248, buf);
+        }
+    }
     return res;
 }
 
