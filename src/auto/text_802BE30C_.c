@@ -205,7 +205,6 @@ extern s32 fn_802BBD38(s16, s16, s32);
 #pragma use_lmw_stmw off
 void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
     typedef union { u32 raw; struct { u32 hi : 23; u32 best : 3; u32 lo : 6; } b; } Cell;
-    s32 flags;
     s32 counts[6];
     s32 *countPtr;
     s16 x;
@@ -217,7 +216,7 @@ void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
     s32 yOffset;
     s32 best;
     Cell *entry;
-
+    s32 flags;
     flags = 0;
     memset(counts, 0, 0x18);
     if (arg2 == 4) {
@@ -298,7 +297,7 @@ void fn_802BEAB0(void) {
 
 extern f32 fn_801DCF48(s32, f32, f32);
 extern f64 ceil(f64);
-extern f64 lbl_80564D70;
+f64 lbl_80564D70 = 4503599627370496.0;
 extern f32 lbl_80564D50;
 extern f32 lbl_80564D54;
 extern f32 lbl_80564D5C;
