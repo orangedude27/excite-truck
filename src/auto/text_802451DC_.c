@@ -27,9 +27,10 @@ extern void fn_80246210(void);
 __declspec(section ".sdata") extern void *lbl_8055BE70;
 __declspec(section ".sdata") extern void *lbl_8055BE78;
 extern int lbl_80498890[5];
-int fn_802451DC(void *arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668(arg0);
-    return (int)arg0;
+int fn_802451DC(void *object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668(object);
+    return (int)object;
 }
 
 /* Destructor/teardown helper for the global menu/status object: clear the global instance pointer and optionally delete the object when deleteFlag > 0. */
