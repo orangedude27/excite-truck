@@ -608,17 +608,19 @@ common:
 #pragma pop
 #pragma cplusplus reset
 extern void fn_801EBB7C(void *, s32);
-void fn_801EBB7C(void *arg0, s32 arg1) {
-    u8 a, b, c, d;
-    a = ((u8 *)arg0)[0];
-    d = ((u8 *)arg0)[3];
-    ((u8 *)arg0)[0] = d;
-    ((u8 *)arg0)[3] = a;
-    b = ((u8 *)arg0)[1];
-    c = ((u8 *)arg0)[2];
-    ((u8 *)arg0)[1] = c;
-    ((u8 *)arg0)[2] = b;
-    if (*(s32 *)arg0) *(s32 *)arg0 += arg1;
+void fn_801EBB7C(void *word, s32 base) {
+    u8 b0, b1, b2, b3;
+    /* Byte-swap the stored 32-bit word in place, then add the base address to
+     * turn the stored (big-endian) offset into a pointer, unless it is zero. */
+    b0 = ((u8 *)word)[0];
+    b3 = ((u8 *)word)[3];
+    ((u8 *)word)[0] = b3;
+    ((u8 *)word)[3] = b0;
+    b1 = ((u8 *)word)[1];
+    b2 = ((u8 *)word)[2];
+    ((u8 *)word)[1] = b2;
+    ((u8 *)word)[2] = b1;
+    if (*(s32 *)word) *(s32 *)word += base;
 }
 
 extern s32 lbl_8055AFB8;
