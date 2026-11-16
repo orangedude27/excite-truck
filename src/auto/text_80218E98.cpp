@@ -6324,7 +6324,7 @@ extern "C" void *fn_80223800(void *self, s32 arg1, s32 arg2, s32 arg3, void *par
 
 extern "C" void fn_802237DC(void *);
 extern "C" void fn_80223880(void *object) {
-    /* Invoke action 2 with no parameter, clear the pending flag, and reset the linked object state. */
+    /* Invoke action 2, clear the object's pending flag, and reset linked state. */
     class ActionVTable {
     public:
         virtual void v0();
