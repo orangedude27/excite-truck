@@ -1026,8 +1026,8 @@ extern "C" float fn_801671FC(int arg0) {
     int result;
     float gate1;
     float gate2;
-    register void *table;
     register void *record;
+    void *state;
     void *other;
     void *object;
     float threshold;
@@ -1038,10 +1038,10 @@ extern "C" float fn_801671FC(int arg0) {
     float f30;
 
     if (((int (*)(void))fn_801667F0)() != 0) {
-        table = *(void **)&lbl_8055E32C;
+        record = *(void **)&lbl_8055E32C;
         threshold = *(float *)((char *)&lbl_8042FE38 + 0x0c) - lbl_80561900;
         offset = arg0 * 0x88;
-        record = (char *)(*(void **)table) + offset;
+        record = (char *)(*(void **)record) + offset;
         f31 = *(float *)((char *)record + 0x24);
         gate1 = (float)(f31 > threshold);
         f0 = *(float *)((char *)&lbl_8042FE38 + 0x64);
@@ -1066,15 +1066,14 @@ extern "C" float fn_801671FC(int arg0) {
                 f1 = lbl_8056189C;
                 f0 = (f2 - f1) / lbl_80561904;
                 f2 = lbl_805618D0;
-                f2 = f2 < f0 ? f0 : f2;
+                f2 = (f2 < f0) ? f2 : f0;
                 f0 = lbl_8056189C;
-                f2 = f2 > f0 ? f0 : f2;
+                f2 = (f2 > f0) ? f2 : f0;
                 f30 = lbl_80561908 + f2 * lbl_8056190C;
             }
             f31 += f30;
-            table = *(void **)&lbl_8055E32C;
-            record = (char *)(*(void **)table) + offset;
-            *(float *)((char *)record + 0x74) = f30;
+            state = *(void **)&lbl_8055E32C;
+            *(float *)((char *)(*(void **)state) + offset + 0x74) = f30;
         } else {
             *(float *)((char *)record + 0x74) = lbl_8056189C;
         }
