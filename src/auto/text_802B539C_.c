@@ -74,11 +74,12 @@ extern "C" int fn_802B5488(void *arg0) {
 }
 extern const char lbl_8034A524[];
 extern "C" int fn_802B54CC(void *arg0) {
-    class Obj {
+    /* RealName: UMatItem_IsUnifiedMaterialSet (returns nonzero if the item's name is "unified_material_set"). */
+    class UMatNamedItem {
     public:
         virtual const char *getName();
     };
-    return stricmp(lbl_8034A524, ((Obj *)arg0)->getName()) == 0;
+    return stricmp(lbl_8034A524, ((UMatNamedItem *)arg0)->getName()) == 0;
 }
 
 extern "C" void fn_802B561C(void (*)(void *), void *);
