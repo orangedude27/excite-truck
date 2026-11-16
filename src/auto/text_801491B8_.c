@@ -2163,16 +2163,19 @@ extern s32 fn_80145E70(void *arg0);
 extern char lbl_8032DB34[];
 extern char lbl_8032DB40[];
 #pragma push
-#pragma opt_pointer_aliasing on
+#pragma optimization_level 3
+#pragma opt_pointer_aliasing off
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
-    s32 value = *arg1;
-    s32 index = ((s32 *)arg0)[1];
-    s32 *data = *(s32 **)arg0;
-    ((s32 *)arg0)[1] = index + 1;
-    data[index] = value;
+    s32 next = 0, index;
+    s32 *data;
+    index = ((s32 *)arg0)[1];
+    data = *(s32 **)arg0;
+    data[index] = *arg1;
+    next = index + 1;
+    ((s32 *)arg0)[1] = next;
     return &data[index];
 }
-
+#pragma opt_pointer_aliasing on
 #pragma cplusplus on
 extern "C" void *fn_8015011C(void *arg0, ...) {
     class Entry {
