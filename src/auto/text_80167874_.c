@@ -800,6 +800,7 @@ void fn_801688B4(s32 arg0) {
 }
 
 void fn_801688FC(s32 arg0) {
+    /* Clear the active flag (byte at +4) on all 0x20-byte records whose id matches arg0. */
     u8 *base = (u8 *)lbl_8055E354 + 0x20000;
     s32 i = 0;
     s32 offset = 0;
