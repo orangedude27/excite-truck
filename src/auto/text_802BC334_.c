@@ -1094,19 +1094,23 @@ void fn_802BDD8C(float arg0) {
     }
 }
 #pragma pop
-void fn_802BDFBC(void *arg0, int arg1, float farg0) {
-    float value = farg0;
+/* Stamp a band-selected weight into the +0xC field of every node in a grid
+ * cell's list: 1.0 (lbl_80564D18) below band 8, fadeWeight at band 8, and
+ * 0.0 (lbl_80564D14) above band 8. The cell's head pointer is at +4 and each
+ * node's next pointer is at +0. */
+void fn_802BDFBC(void *cell, int distanceBand, float fadeWeight) {
+    float weight = fadeWeight;
     void *node;
-    if (arg1 < 8) {
-        value = lbl_80564D18;
-    } else if (arg1 == 8) {
-        value = farg0;
+    if (distanceBand < 8) {
+        weight = lbl_80564D18;
+    } else if (distanceBand == 8) {
+        weight = fadeWeight;
     } else {
-        value = lbl_80564D14;
+        weight = lbl_80564D14;
     }
-    node = *(void **)((char *)arg0 + 4);
+    node = *(void **)((char *)cell + 4);
     while (node != 0) {
-        *(float *)((char *)node + 0xC) = value;
+        *(float *)((char *)node + 0xC) = weight;
         node = *(void **)node;
     }
 }
