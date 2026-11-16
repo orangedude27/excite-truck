@@ -873,7 +873,7 @@ void fn_801F2E88(void *arg0, void *arg1) {
     float t4[3],t3[3],t2[3],t1[3],t0[3];
     unsigned short indices[6];
     float vec[3];
-    float scale1 = lbl_80562F54, scale0 = lbl_80562F50, scale2 = lbl_80562F58, scale3 = lbl_80562F5C;
+    float scale2 = lbl_80562F58, scale3 = lbl_80562F5C, scale0 = lbl_80562F50, scale1 = lbl_80562F54;
     void *p = arg1;
     while (p != 0) {
         void *camera = fn_802C86DC();
