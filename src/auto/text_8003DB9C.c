@@ -2651,18 +2651,19 @@ void GXInitLightAttnK(s32 arg0) {
     ((GXAttnKReg *)&__peReg[1])->attenuationK = arg0;
 }
 
-void GXInitLightSpot(s32 arg0, s32 arg1) {
+void GXInitLightSpot(s32 enable, s32 alpha) {
+    /* Pack destination alpha (bits 0-7) and its enable flag (bit 8) into PE register 2. */
     union {
         unsigned int reg;
         struct {
             unsigned int pad : 23;
-            unsigned int bit : 1;
-            unsigned int value : 8;
+            unsigned int enable : 1;
+            unsigned int alpha : 8;
         } fields;
     } data = {0};
 
-    data.fields.value = arg1;
-    data.fields.bit = arg0;
+    data.fields.alpha = alpha;
+    data.fields.enable = enable;
     __peReg[2] = data.reg;
 }
 
