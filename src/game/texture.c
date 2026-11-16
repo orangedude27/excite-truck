@@ -1263,6 +1263,7 @@ void fn_802CBD30(void **destHead, void **srcHead, void *node) {
     ((TexNode *)node)->next = *(TexNode **)destHead;
     *destHead = node;
 }
+
 void fn_802CBD7C(void **, void *, void *);
 extern char lbl_8034BA04[];
 void fn_802CBD7C(register void **link, void *target, void *current) {
