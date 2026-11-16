@@ -1934,6 +1934,7 @@ extern "C" s32 fn_802E317C(const char *);
 extern "C" char lbl_8033D3D4[];
 #pragma dont_inline on
 extern "C" s32 fn_80214D04(void) {
+    /* Return the active UI window's menu index, or 0 and log if no window is active. */
     if (fn_802168E4() != 0) {
         return fn_80218120();
     } else {
