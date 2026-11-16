@@ -23,6 +23,24 @@ typedef struct { int w[0x48]; } Words120;
 typedef struct { int w[0xC]; } Words30;
 extern void fn_800328F0(void *);
 extern void TRKAppendBuffer(void *);
+
+/* This stretch of main is the game's AX voice-parameter-block sync, the SDK's
+ * AXVPB.c: the DSP reads the AXPB array below, the game stages each voice's
+ * settings in its AXVPB, and __AXSyncPBs() copies them across once per audio
+ * frame.  The names the map gave these globals and helpers come from
+ * MetroTRK, not from what they do, so they are given their AX names here. */
+#define __AXPBs               ((AXPB *)lbl_80363C60) /* AXPB[AX_NUM_VOICES] */
+#define __AXItdBuffers        lbl_8036C460     /* AX_ITD_BUFFER_SIZE per voice */
+#define __AXAuxBuffers        lbl_80368460     /* AX_AUX_BUFFER_SIZE per voice */
+#define __AXMixerCtrlCycles   lbl_802FED20     /* cycles per mixer-control group */
+#define __AXNumVoices         lbl_8055D7E0     /* PBs copied: AXPROFILE.numVoices */
+#define __AXDspCycles         lbl_8055D7E4     /* cycles the last frame will need */
+#define __AXMaxDspCycles      lbl_8055D7E8     /* budget: SI clock / 667 */
+#define __AXGetStackHead      TRKReadBuffer_ui8 /* head of a priority's voice stack */
+#define __AXPushCallbackStack TRKAppendBuffer  /* queue a voice for its callback */
+#define __AXUpdatePB          fn_800328F0      /* vpb->pb -> DSP PB, per vpb->sync */
+#define __AXGetMixCycles      fn_80031248      /* mixer command list's cycles */
+
 void* fn_800328E8(void) {
     return lbl_8055D7E0;
 }
