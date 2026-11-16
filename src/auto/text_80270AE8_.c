@@ -1185,12 +1185,17 @@ s32 fn_802726AC(f32 farg0, f32 farg1, f32 farg2) {
 #pragma dont_inline reset
 
 extern int fn_802726AC(float, float, float);
-int fn_802726EC(float farg0, float farg1, float farg2) {
-    int result = 0;
-    if (farg0 == farg1 || farg0 == farg2 || fn_802726AC(farg0, farg1, farg2) != 0) {
-        result = 1;
+/* RealName: IsFloatInRangeInclusive_802726EC - 1 when value is either bound or
+   lies strictly between them (the bounds may come in either order); the strict
+   middle is fn_802726AC. The curve intersection code calls it with
+   0.0f..1.0f (lbl_80563F48..lbl_80563F50) so that only quadratic roots falling
+   on the segment being tested are kept. */
+int fn_802726EC(float value, float boundA, float boundB) {
+    int inRange = 0;
+    if (value == boundA || value == boundB || fn_802726AC(value, boundA, boundB) != 0) {
+        inRange = 1;
     }
-    return result;
+    return inRange;
 }
 
 extern float lbl_80558DC4[];
