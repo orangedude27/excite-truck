@@ -989,7 +989,7 @@ extern "C" int fn_801F88F4(void *arg0) {
     return 0;
 }
 
-extern "C" void fn_801F8988(void *arg0, void *arg1) {
+extern "C" void fn_801F8988_tmp(void *arg0, void *arg1) {
     class Node {
     public:
         virtual void s8();
