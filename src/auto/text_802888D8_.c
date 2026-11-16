@@ -847,10 +847,13 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     fn_8028E584(arg0, (int)sp14, (int)sp8);
 }
 void fn_80289C80(int *);
-int fn_80289BE8(int arg0) {
-    fn_80289C80((int *)arg0);
-    fn_80289D94(arg0);
-    return arg0;
+/* Constructs the "misc smoke man" object: creates its two smoke effects —
+ * "small fire smoke" in the first slot (fn_80289C80) and "large fire smoke" in
+ * the second (fn_80289D94) — then returns the object. */
+int fn_80289BE8(int object) {
+    fn_80289C80((int *)object);
+    fn_80289D94(object);
+    return object;
 }
 
 /* Destroy a PhysicsWorld-like object by releasing the two owned resources at
