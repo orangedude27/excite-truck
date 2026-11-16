@@ -1470,6 +1470,7 @@ void fn_80233DD8(s32 *object, s32 color) {
     fn_802C8B98(*object, (s32)drawContext);
 }
 #pragma scheduling reset
+/* Set the current text/UI draw color from an RGBA value and apply it to the target's draw state. */
 void fn_80233E34(s32 *arg0, s32 arg1, s32 arg2) {
     lbl_8055F050 = fn_80230B9C(arg2);
     fn_802C8B98(*arg0, arg1);
