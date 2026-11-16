@@ -8536,45 +8536,53 @@ void btm_chg_all_acl_pkt_types(BOOLEAN start) {
     }
 }
 
+static inline u8 *btm_find_dev_entry(BD_ADDR bd_addr) {
+    u8 *p_dev_rec;
+    s32 i;
+    p_dev_rec = lbl_803C0F78 + 0x1F30;
+    i = 0;
+    do {
+        if ((p_dev_rec[0x76] & 0x80) && memcmp(p_dev_rec + 0x1C, bd_addr, 6) == 0)
+            return p_dev_rec;
+        i++;
+        p_dev_rec += 0x88;
+    } while (i < 16);
+    return 0;
+}
+
 BOOLEAN BTM_SecAddDevice(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, BD_FEATURES features, UINT32 trusted_mask[], LINK_KEY link_key, UINT8 key_type, tBTM_IO_CAP io_cap) {
-    u32 id;
     s32 i = 0;
     u8 *entry = lbl_803C0F78 + 0x1F30;
 loop:
-    if ((entry[0x76] & 0x80) == 0)
+    if ((entry[0x76] & 0x80) == 0) goto next;
+    if (memcmp(entry + 0x1C, bd_addr, 6) == 0) {
+        goto found;
+    } else {
         goto next;
-    if (memcmp(entry + 0x1C, bd_addr, 6) != 0)
-        goto next;
-    goto found;
+    }
 next:
     i++;
     entry += 0x88;
-    if (i < 16)
-        goto loop;
+    if (i < 16) goto loop;
     entry = 0;
 found:
     if (entry == 0) {
         entry = (u8 *)btm_sec_alloc_dev(bd_addr);
-        if (entry == 0)
-            return FALSE;
+        if (entry == 0) return FALSE;
     }
-    id = *(u32 *)(lbl_803C0F78 + 0x1974);
-    *(u32 *)(entry + 0xC) = id;
-    *(u32 *)(lbl_803C0F78 + 0x1974) = id + 1;
-    if (dev_class != 0) {
-        memcpy(entry + 0x22, dev_class, 3);
+    {
+        u32 id = *(u32 *)(lbl_803C0F78 + 0x1974);
+        *(u32 *)(entry + 0xC) = id;
+        *(u32 *)(lbl_803C0F78 + 0x1974) = id + 1;
     }
+    if (dev_class != 0) memcpy(entry + 0x22, dev_class, 3);
     memset(entry + 0x35, 0, 0x41);
-    if (bd_name != 0) {
-        if (bd_name[0] != 0) {
-            entry[0x76] |= 8;
-            strncpy((char *)entry + 0x35, (char *)bd_name, 0x40);
-        }
+    if (bd_name != 0 && bd_name[0] != 0) {
+        entry[0x76] |= 8;
+        strncpy((char *)entry + 0x35, (char *)bd_name, 0x40);
     }
-    if (features != 0)
-        memcpy(entry + 0x77, features, 8);
-    else
-        memset(entry + 0x77, 0, 8);
+    if (features != 0) memcpy(entry + 0x77, features, 8);
+    else memset(entry + 0x77, 0, 8);
     *(u32 *)(entry + 0x10) = trusted_mask[0];
     *(u32 *)(entry + 0x14) = trusted_mask[1];
     if (link_key != 0) {
