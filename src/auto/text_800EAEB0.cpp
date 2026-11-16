@@ -2490,49 +2490,51 @@ extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void*);
 extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void* self) {
     extern u8 lbl_80323B28[], lbl_80323B3C[];
     struct Manager {
-        virtual void unused0();
-        virtual void unused1();
+        virtual void method0();
+        virtual void method1();
         virtual void RemoveTrack(void*);
     };
-    register void* player = self;
-    register s32 state;
+    /* Stops an active sequence player: unlinks it from the player list and
+       dispose callbacks, closes all 16 of its tracks, then marks it inactive. */
+    register void* seqPlayer = self;
+    register s32 index;
     struct { u32 value; } interrupt;
-    u32& level = interrupt.value;
-    if (*(u8*)((u8*)player + 0x15) == 0) return;
-    level = OSDisableInterrupts();
-    if (*(u8*)((u8*)player + 0x17) != 0) {
-        if (player == 0)
+    u32& irqLevel = interrupt.value;
+    if (*(u8*)((u8*)seqPlayer + 0x15) == 0) return;
+    irqLevel = OSDisableInterrupts();
+    if (*(u8*)((u8*)seqPlayer + 0x17) != 0) {
+        if (seqPlayer == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324054, 0x233, (const char*)lbl_80324030);
-        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void*)lbl_80412A6C, (u8*)player + 0x100);
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void*)lbl_80412A6C, (u8*)seqPlayer + 0x100);
     }
-    if (*(u8*)((u8*)player + 0x15) != 0) {
-        state = (s32)player;
-        if (state != 0) state += 8;
-        void* manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-        UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void*)state);
+    if (*(u8*)((u8*)seqPlayer + 0x15) != 0) {
+        index = (s32)seqPlayer;
+        if (index != 0) index += 8;
+        void* callbackManager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+        UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(callbackManager, (void*)index);
     }
-    OSRestoreInterrupts(level);
-    state = 0;
-    register u8* entry = (u8*)player;
+    OSRestoreInterrupts(irqLevel);
+    index = 0;
+    register u8* slotCursor = (u8*)seqPlayer;
     register s32 zero = 0;
-    s32 valid;
-    void* seq;
+    s32 inRange;
+    void* track;
     do {
-        valid = 0;
-        if (state >= 0 && state < 16) valid = 1;
-        if (valid == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x2FD, (const char*)lbl_80323B3C, state, 0, 16);
-        seq = state > 15 ? (void*)zero : *(void**)(entry + 0x9C);
-        if (seq != 0) {
-            Close__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
-            void* manager = *(void**)((u8*)player + 0x98);
-            ((Manager*)manager)->RemoveTrack(*(void**)(entry + 0x9C));
-            *(void**)(entry + 0x9C) = (void*)zero;
+        inRange = 0;
+        if (index >= 0 && index < 16) inRange = 1;
+        if (inRange == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x2FD, (const char*)lbl_80323B3C, index, 0, 16);
+        track = index > 15 ? (void*)zero : *(void**)(slotCursor + 0x9C);
+        if (track != 0) {
+            Close__Q46nw4hbm3snd6detail8SeqTrackFv(track);
+            void* trackManager = *(void**)((u8*)seqPlayer + 0x98);
+            ((Manager*)trackManager)->RemoveTrack(*(void**)(slotCursor + 0x9C));
+            *(void**)(slotCursor + 0x9C) = (void*)zero;
         }
-        ++state;
-        entry += 4;
-    } while (state < 16);
-    *(u8*)((u8*)player + 0x15) = 0;
+        ++index;
+        slotCursor += 4;
+    } while (index < 16);
+    *(u8*)((u8*)seqPlayer + 0x15) = 0;
 }
 #pragma pop
 extern u8 lbl_80323B28[], lbl_80323C14[], lbl_80323BEC[];
