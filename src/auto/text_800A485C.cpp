@@ -1721,11 +1721,11 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
 extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
     u8 *base;
     u16 index;
+    u16 count;
     u32 pair;
     u32 table;
     u32 offset;
     u8 *record;
-    s32 out;
     s32 result;
 
     *arg2 = 0;
@@ -1756,13 +1756,13 @@ found:
         return result;
 
     table = (u32)&lbl_803D1640;
+    count = *(u16 *)&lbl_803D1640;
     record = (u8 *)(table + offset);
-    out = (s32)(record + 0x61C);
-    *(u16 *)&lbl_803D1640 = *(u16 *)&lbl_803D1640 + 1;
+    *(u16 *)&lbl_803D1640 = count + 1;
     *(u32 *)(record + 0x61C) |= 1;
     *(s32 *)(record + 0x620) = (s32)arg0;
     *(s32 *)(record + 0x624) = arg1;
-    *arg2 = out;
+    *arg2 = (s32)(record + 0x61C);
     return 0;
 }
 #pragma use_lmw_stmw reset
@@ -25887,58 +25887,86 @@ extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
 extern "C" void fn_800A71D0(void *, s32);
 
-extern "C" s32 fn_800BAE98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10, s32 arg11) {
-    const char *str = lbl_8031B838;
-    s32 r30, r29, res;
-    s32 *buf, *m;
-    if (arg8 != 0) { r30 = 2; r29 = 1; }
-    else { r30 = 1; r29 = 2; }
-    buf = (s32 *)iosAlloc(lbl_80559248, 0x40);
-    if (buf == 0) {
-        OSReport(str + 0x15c, 0x40);
-        res = -0x16;
+extern "C" s32 fn_800BAE98(s32 fd, s32 command, s32 type, s32 responseKind, s32 argument, s32 buffer, s32 count, s32 blockSize, s32 writeFlag, s32 responseOut, s32 callback, s32 callbackArg) {
+    /* RealName: SD_CommandIoctlv (sends an SD command via IOS ioctlv 7, sync or async)
+     * Builds a 0x40-byte command block and a 6-entry ioctlv vector in the shared
+     * lbl_8055DD80 buffer (request block + response buffer lbl_8055DD74). When callback
+     * is non-zero, allocates a 0x1c-byte async request for fn_800BAA8C and leaves it
+     * running; otherwise issues a synchronous ioctlv and copies the first response word
+     * to responseOut if provided. Frees the command block on the synchronous/error path. */
+    const char *messages = lbl_8031B838;
+    s32 inCount, outCount, result;
+    s32 *cmdBuf, *ioctlv;
+
+    if (writeFlag != 0) {
+        inCount = 2;
+        outCount = 1;
+    } else {
+        inCount = 1;
+        outCount = 2;
+    }
+
+    cmdBuf = (s32 *)iosAlloc(lbl_80559248, 0x40);
+    if (cmdBuf == 0) {
+        OSReport(messages + 0x15c, 0x40);
+        result = -0x16;
         goto done;
     }
-    buf[0] = arg1;
-    buf[1] = arg2;
-    buf[2] = arg3;
-    buf[3] = arg4;
-    buf[6] = arg5;
-    buf[4] = arg6;
-    buf[5] = arg7;
-    buf[7] = 1;
-    m = (s32 *)lbl_8055DD80; m[0] = (s32)buf;
-    m = (s32 *)lbl_8055DD80; m[1] = 0x24;
-    m = (s32 *)lbl_8055DD80; m[2] = arg5;
-    m = (s32 *)lbl_8055DD80; m[3] = arg6 * arg7;
-    m = (s32 *)lbl_8055DD80; m[4] = (s32)lbl_8055DD74;
-    m = (s32 *)lbl_8055DD80; m[5] = 0x10;
-    if (arg10 != 0) {
-        s32 *cb1c = (s32 *)iosAlloc(lbl_80559248, 0x1c);
-        if (cb1c == 0) {
-            OSReport(str + 0x188);
-            res = -0x16;
+
+    cmdBuf[0] = command;
+    cmdBuf[1] = type;
+    cmdBuf[2] = responseKind;
+    cmdBuf[3] = argument;
+    cmdBuf[6] = buffer;
+    cmdBuf[4] = count;
+    cmdBuf[5] = blockSize;
+    cmdBuf[7] = 1;
+
+    ioctlv = (s32 *)lbl_8055DD80;
+    ioctlv[0] = (s32)cmdBuf;
+    ioctlv = (s32 *)lbl_8055DD80;
+    ioctlv[1] = 0x24;
+    ioctlv = (s32 *)lbl_8055DD80;
+    ioctlv[2] = buffer;
+    ioctlv = (s32 *)lbl_8055DD80;
+    ioctlv[3] = count * blockSize;
+    ioctlv = (s32 *)lbl_8055DD80;
+    ioctlv[4] = (s32)lbl_8055DD74;
+    ioctlv = (s32 *)lbl_8055DD80;
+    ioctlv[5] = 0x10;
+
+    if (callback != 0) {
+        s32 *asyncReq = (s32 *)iosAlloc(lbl_80559248, 0x1c);
+        if (asyncReq == 0) {
+            OSReport(messages + 0x188);
+            result = -0x16;
             goto done;
         }
-        cb1c[0] = arg10;
-        cb1c[1] = arg11;
-        cb1c[5] = arg9;
-        cb1c[3] = arg1;
-        cb1c[6] = (s32)buf;
-        res = IOS_IoctlvAsync(arg0, 7, r30, r29, lbl_8055DD80, (void *)fn_800BAA8C, cb1c);
-        if (res != 0) OSReport(str + 0x19c, res);
+        asyncReq[0] = callback;
+        asyncReq[1] = callbackArg;
+        asyncReq[5] = responseOut;
+        asyncReq[3] = command;
+        asyncReq[6] = (s32)cmdBuf;
+        result = IOS_IoctlvAsync(fd, 7, inCount, outCount, lbl_8055DD80, (void *)fn_800BAA8C, asyncReq);
+        if (result != 0) {
+            OSReport(messages + 0x19c, result);
+        }
     } else {
-        res = IOS_Ioctlv(arg0, 7, r30, r29, lbl_8055DD80);
-        if (res != 0) OSReport(str + 0x19c, res);
-        else if (arg9 != 0) *(s32 *)arg9 = *(s32 *)lbl_8055DD74;
-    }
-done:
-    if (arg10 == 0 || res != 0) {
-        if (buf != 0) {
-            iosFree(lbl_80559248, buf);
+        result = IOS_Ioctlv(fd, 7, inCount, outCount, lbl_8055DD80);
+        if (result != 0) {
+            OSReport(messages + 0x19c, result);
+        } else if (responseOut != 0) {
+            *(s32 *)responseOut = *(s32 *)lbl_8055DD74;
         }
     }
-    return res;
+
+done:
+    if (callback == 0 || result != 0) {
+        if (cmdBuf != 0) {
+            iosFree(lbl_80559248, cmdBuf);
+        }
+    }
+    return result;
 }
 
 extern "C" s32 IOS_IoctlAsync(s32, s32, void *, s32, void *, s32, void *, void *);
