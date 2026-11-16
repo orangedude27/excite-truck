@@ -460,10 +460,12 @@ extern "C" void fn_801D9654(void **head, DtbManager801D9394 *manager, const char
 #pragma use_lmw_stmw on
 #pragma cplusplus reset
 
+/* Tears down the terrain morph ("wl model") system: releases the wlmap model,
+ * then frees the morph-group list and the oml model-set list. */
 void fn_801D9828(void) {
-    fn_802C6CF8(lbl_8055E960);
-    fn_801D985C((int *)&lbl_8055E96C);
-    fn_801D9948((int *)&lbl_8055E964);
+    fn_802C6CF8(wlMapModel);
+    fn_801D985C((int *)&morphGroupList);
+    fn_801D9948((int *)&omlList);
 }
 
 extern void fn_801D98F0(void **);
