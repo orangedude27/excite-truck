@@ -2951,17 +2951,17 @@ extern "C" void fn_8021CE8C(void *arg0) {
         ((Local *)arg0)->call();
 }
 
-extern "C" void fn_8021CEAC(void *arg0) {
-    struct Dispatch {
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
-        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
-        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
-        virtual void d16();
-        virtual void dispatch();
+extern "C" void fn_8021CEAC(void *self) {
+    /* Runs this widget's vf17() update, then clears its pending flag (+0x244). */
+    struct Widget {
+        VfObj obj;          /* 0x00: vtable */
+        u8 pad_0x4[0x240];
+        u8 pending;         /* 0x244: set while an update is pending */
     };
-    ((Dispatch *)arg0)->dispatch();
-    *(u8 *)((u8 *)arg0 + 0x244) = 0;
+    Widget *widget = (Widget *)self;
+
+    widget->obj.vf17();
+    widget->pending = 0;
 }
 
 extern char lbl_8033ECB8[];
