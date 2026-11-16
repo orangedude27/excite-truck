@@ -1045,6 +1045,7 @@ void fn_801D597C(void *arg0, int arg1) {
 }
 
 #pragma dont_inline on
+/* Return nonzero if the given object is in lbl_804423A4 and its field at +4 matches arg1. */
 int fn_801D59C8(int arg0, int arg1) {
     void **entries;
     int count;
