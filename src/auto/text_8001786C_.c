@@ -99,12 +99,12 @@ void fn_800178BC(void* list, s32 driverNum, s32 vehicleNum) {
  * instead of the one picked for him; always off in this build. */
 int fn_800178F0(void) { return 0; }
 
-/* Point a driver at the alternate vehicle his vehicle record selects. */
+/* Apply the currently selected alternate vehicle for a vehicle number to the given driver. */
 void fn_800178F8(s32 driverNum, s32 vehicleNum) {
-    void* temp = GetVehicleByNumber(vehicleNum);
-    volatile s32* pIndex = (volatile s32*)((char*)temp + 0x94);
-    s32 index = *pIndex;
-    SetDriverVehicleOverride(driverNum, *(s32*)((char*)temp + index * 4 + 0x64));
+    void *vehicleInfo = GetVehicleByNumber(vehicleNum);
+    volatile s32 *pAltIndex = (volatile s32 *)((char *)vehicleInfo + 0x94);
+    s32 altIndex = *pAltIndex;
+    SetDriverVehicleOverride(driverNum, *(s32 *)((char *)vehicleInfo + altIndex * 4 + 0x64));
 }
 
 #pragma use_lmw_stmw off
