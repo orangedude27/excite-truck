@@ -257,6 +257,9 @@ int fn_8022DA34(int object, int deleteFlag) {
     return object;
 }
 
+/* RealName: FloatGauge_FormatValue. Constants used when printing a gauge value. */
+#define GAUGE_FLOAT_FORMAT lbl_8055B958   /* "%1.*f" */
+#define GAUGE_ROUND_EPS lbl_805635D0      /* 0.0004: nudges the printed value up */
 #pragma push
 #pragma scheduling invalid_target
 void fn_8022DA74(void *arg0, char *arg1) {
