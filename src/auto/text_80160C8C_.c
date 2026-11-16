@@ -1231,8 +1231,8 @@ struct Obj_80161F10 {
     virtual s32 index(const char *);
 };
 #pragma cplusplus off
-extern const char lbl_8032F744[];
-extern const char lbl_8032F750[];
+extern char lbl_8032F744[];
+extern char lbl_8032F750[];
 extern s32 lbl_8055A0BC;
 extern s32 lbl_8055A0C0;
 #pragma push
