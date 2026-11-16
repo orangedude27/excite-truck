@@ -1025,7 +1025,13 @@ void *fn_8016D024(void *a0) {
 }
 
 #pragma scheduling on
-void fn_8016D278(void *arg0) { *(u32 *)arg0=(u32)arg0+0xC; *(u32 *)((u8 *)arg0+8)=8; *(u32 *)((u8 *)arg0+4)=0; }
+void fn_8016D278(void *list) {
+    /* Initialize a collection: point its items at the inline storage at +0xC,
+     * set the element count (+0x4) to 0 and its capacity (+0x8) to 8. */
+    *(u32 *)list = (u32)list + 0xC;
+    *(u32 *)((u8 *)list + 8) = 8;
+    *(u32 *)((u8 *)list + 4) = 0;
+}
 
 /* --- RingChallengeMaster (lbl_8055E378) -------------------------------------
  * 0x1B4-byte singleton built by fn_8016BE60 under the heap name "ringchalmaster"
