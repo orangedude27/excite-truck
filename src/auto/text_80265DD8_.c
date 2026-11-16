@@ -410,11 +410,9 @@ void *fn_80266120(void *cursor) {
 #pragma push
 #pragma scheduling off
 void fn_80266150(void *arg0) {
-    int zero;
-    float f0;
+    int zero = 0;
+    float f0 = lbl_80563C2C;
     float f1;
-    zero = 0;
-    f0 = lbl_80563C2C;
     *(int *)((char *)arg0 + 4) = zero;
     *(int *)((char *)arg0 + 0) = zero;
     f1 = lbl_8055C4C0;
@@ -2106,8 +2104,11 @@ void *fn_80267EE4();
 int fn_8026A368(int cameraIndex) {
     return ((Camera *)fn_80267EE4(cameraIndex))->mode;
 }
+/* Return a pointer to the primary camera's transform matrix (camera 0); callers
+   use its +0x24 position as the world-space reference for distance sorting and
+   marker fading. */
 int fn_802678C0(void) {
-    return (int)fn_80267EE4() + 0x58;
+    return (int)&((Camera *)fn_80267EE4())->transform;
 }
 char fn_8026A38C(void) {
     return lbl_8055F488;
