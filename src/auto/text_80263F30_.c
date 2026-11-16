@@ -186,15 +186,18 @@ void fn_80264098(void *arg0, int arg1) {
 
 #pragma dont_inline on
 #pragma dont_inline off
-void fn_802640A0(void *arg0) {
-    struct Init { int addr; int type; int zero; int z2; int z3; };
-    volatile struct Init *s = (volatile struct Init *)arg0;
-    unsigned int zero = 0;
-    s->zero = zero;
-    s->type = 0x7b;
-    s->addr = (int)&lbl_8055C458;
-    s->z2 = zero;
-    s->z3 = zero;
+void fn_802640A0(void *arg0)
+{
+  volatile int *new_var2;
+  volatile unsigned char *p = (volatile unsigned char *) arg0;
+  unsigned short new_var;
+  *new_var2 = (int) (&lbl_8055C458);
+  new_var = 8;
+  *((volatile int *) (p + new_var)) = (*((volatile int *) (p + 0xc)) = 0);
+  new_var2 = (volatile int *) (p + 0);
+  new_var = 4;
+  *((volatile int *) (p + new_var)) = 0x7b;
+  *((volatile int *) (p + 0x10)) = 0;
 }
 
 #pragma push
@@ -391,19 +394,20 @@ void fn_802645EC(void) {
 #pragma dont_inline off
 
 #pragma scheduling invalid_target
-void fn_802645FC(void *arg0) {
+void fn_802645FC(void *obj) {
     extern float lbl_80563BF8;
     extern float lbl_8055C454;
     extern float lbl_80563BF0;
     float b;
     float a;
     float c;
+    /* Initialize a credits/gate object: gate (+0x18) = 0.5, timer (+0x1C) = 1.5, rise (+0x20) = 0.0. */
     a = lbl_80563BF8;
     b = lbl_80563BF0;
-    *(float *)((char *)arg0 + 0x18) = a;
+    *(float *)((char *)obj + 0x18) = a;
     c = lbl_8055C454;
-    *(float *)((char *)arg0 + 0x1C) = c;
-    *(float *)((char *)arg0 + 0x20) = b;
+    *(float *)((char *)obj + 0x1C) = c;
+    *(float *)((char *)obj + 0x20) = b;
 }
 #pragma dont_inline on
 void fn_80264618(void *obj) {
