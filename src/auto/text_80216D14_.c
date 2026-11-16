@@ -769,38 +769,64 @@ void fn_80217C4C(void *arg0) {
 #pragma scheduling invalid_target
 void fn_80217D84(void *arg0) {
     char *base = (char *)arg0;
-    char *entry, *item1, *e2;
+    char *entry;
     int count = *(int *)(base + 0x494);
-    int last, matches, i, found, step, idx, item_ok;
-    register char *item2;
-    if (count < 1) return;
-    i = count;
+    float threshold;
+    int i;
+    int last;
+    int matches;
+    int eligible;
+    char *item;
+    float value;
+    if (1 > count) return;
+    threshold = lbl_80563490;
     entry = base + count * 8;
     last = -1;
     matches = 0;
+    i = count;
     goto first_test;
 first_body:
-    if (*(volatile int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
-    item1 = *(char **)(entry + 0x4A4);
-    item_ok = 0;
-    if (*(unsigned char *)(item1 + 0x1A) == 0 && *(volatile float *)(item1 + 0x20) < lbl_80563490) item_ok = 1;
-    if (item_ok && *(unsigned char *)(item1 + 0x1B) != 0) matches++;
+    if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
+    item = *(char **)(entry + 0x4A4);
+    eligible = 0;
+    if (*(unsigned char *)(item + 0x1A) != 0) goto first_yes;
+    value = *(float *)(item + 0x20);
+    if (value >= threshold) goto first_yes;
+    goto first_check;
+first_yes:
+    eligible = 1;
+first_check:
+    if (eligible != 0 && *(unsigned char *)(item + 0x1B) != 0) matches += 1;
 first_test:
     entry -= 8;
     if (i-- > 0) goto first_body;
-    found = -1;
-    step = 1;
-    while (step < count) {
-        idx = (last + count - step) % count;
-        e2 = base + idx * 8;
-        item2 = *(char **)(e2 + 0x4A4);
-        item_ok = 0;
-        if (*(unsigned char *)(item2 + 0x1A) == 0 && *(volatile float *)(item2 + 0x20) < lbl_80563490) item_ok = 1;
-        if (item_ok && *(unsigned char *)(item2 + 0x1B) != 0) { found = idx; break; }
-        step++;
+    {
+        int found = -1;
+        int step;
+        threshold = lbl_80563490;
+        for (step = 1; step < count; step++) {
+            int idx = (last + count - step) % count;
+            char *current = base + idx * 8;
+            char *item2;
+            float v2;
+            item2 = *(char **)(current + 0x4A4);
+            eligible = 0;
+            if (*(unsigned char *)(item2 + 0x1A) != 0) goto second_yes;
+            v2 = *(float *)(item2 + 0x20);
+            if (v2 >= threshold) goto second_yes;
+            goto second_check;
+second_yes:
+            eligible = 1;
+second_check:
+            if (eligible != 0 && *(unsigned char *)(item2 + 0x1B) != 0) {
+                found = idx;
+                break;
+            }
+        }
+        if (found >= 0 && (found < last || matches > 3)) {
+            *(int *)(base + 0x498) = *(int *)(base + found * 8 + 0x4A0);
+        }
     }
-    if (found >= 0 && (found < last || matches > 3))
-        *(int *)(base + 0x498) = *(int *)(base + found * 8 + 0x4A0);
 }
 
 #pragma push
@@ -808,14 +834,14 @@ first_test:
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 int fn_80217EC0(void *arg0, int arg1, int arg2) {
-    register int currentX;
+    register char *entry;
     register int currentY;
+    register int currentX;
     register int count = *(int *)((char *)arg0 + 0x494);
     register int candidateIndex;
     register int last;
     register int bestIndex;
     register int best;
-    register char *entry;
     register int deltaX;
     register int deltaY;
     register int keyIndex;
@@ -1219,8 +1245,12 @@ extern "C" void fn_80218574(void *arg0) {
 #pragma pop
 
 #pragma dont_inline on
-int fn_8021885C(void *arg0, int arg1) {
-    return (*(int *)((char *)arg0 + 0x464) & fn_80216D14(arg1)) == 0;
+int fn_8021885C(void *soundManager, int soundId) {
+/* Return nonzero when this sound id's bit is clear in the manager's mute mask
+ * (+0x464), i.e. the sound group is currently unmuted. */
+#define SoundIdToMask fn_80216D14
+    return (*(int *)((char *)soundManager + 0x464) & SoundIdToMask(soundId)) == 0;
+#undef SoundIdToMask
 }
 
 extern int fn_80216D14(int);
