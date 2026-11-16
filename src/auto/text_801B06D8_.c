@@ -109,6 +109,7 @@ struct Dummy_801B3084 {
     virtual void d3();
     virtual void func(s32, s32, s32, s32);
 };
+#define gPrimaryObject lbl_8055E68C
 #pragma cplusplus off
 extern s32 fn_80139EC4(f32, f32);
 extern s32 fn_802B04D4(f32 *, f32, f32, f32);
