@@ -415,62 +415,54 @@ extern "C" void fn_801F06DC(void *arg0, void *arg1) {
         virtual void pad0();
         virtual int test(const char *);
         virtual void *pad2();
-        virtual int find(const char *);
+        virtual char *find(const char *);
         virtual void *pad4();
         virtual void pad5();
         virtual void pad6();
         virtual float getValue(const char *);
         virtual float getValueWithDefault(const char *, float);
     };
+    struct Entry {
+        int handle;
+        float distSq;
+    };
+    struct Lod {
+        Entry entries[8];
+        int count;
+        float value44;
+        float value48;
+    };
 
-    void *output = arg0;
+    Lod *lod = (Lod *)arg0;
     char *strings = lbl_8033A3F0;
     char name[0x40];
     char valueName[0x20];
-    int id;
-    int current;
-    int next;
-    int countAfter;
-    int fallbackHandle;
-    int one;
     float value;
-    float fallbackValue;
 
-    if (((Fn801F06DCResource *)arg1)->test(strings + 0x90) != 0) {
-        id = ((Fn801F06DCResource *)arg1)->find(strings + 0x90);
-        *(volatile int *)((char *)output + 0x40) = 0;
-        while ((current = *(volatile int *)((char *)output + 0x40)) < 8) {
-            next = current + 1;
-            fn_801345D8(name, 0x40, strings + 0x60, id, next);
-            fn_801345D8(valueName, 0x20, (char *)&lbl_8055B0C8,
-                        *(volatile int *)((char *)output + 0x40));
-            if (fn_8012C33C(name) == 0) break;
-            *(void **)((char *)output +
-                (*(volatile int *)((char *)output + 0x40) << 3)) =
-                    (void *)fn_802C6FC0(name, 0, 0);
+    if (((Fn801F06DCResource *)arg1)->test(strings + 0x90)) {
+        char *id = ((Fn801F06DCResource *)arg1)->find(strings + 0x90);
+        for (lod->count = 0; lod->count < 8; lod->count++) {
+            fn_801345D8(name, 0x40, strings + 0x60, id, lod->count + 1);
+            fn_801345D8(valueName, 0x20, (char *)&lbl_8055B0C8, lod->count);
+            if (!fn_8012C33C(name)) break;
+            lod->entries[lod->count].handle = fn_802C6FC0(name, 0, 0);
             value = ((Fn801F06DCResource *)arg1)->getValue(valueName);
-            *(float *)((char *)output +
-                (*(volatile int *)((char *)output + 0x40) << 3) + 4) =
-                    value * value;
-            countAfter = *(volatile int *)((char *)output + 0x40) + 1;
-            *(volatile int *)((char *)output + 0x40) = countAfter;
+            lod->entries[lod->count].distSq = value * value;
         }
-        *(float *)((char *)output + 0x44) =
-            ((Fn801F06DCResource *)arg1)->getValue(strings + 0x9C);
-        fallbackValue = lbl_80562F28;
-        value = ((Fn801F06DCResource *)arg1)->getValueWithDefault(strings + 0xA8, fallbackValue);
-        *(float *)((char *)output + 0x48) = value * value;
+        lod->value44 = ((Fn801F06DCResource *)arg1)->getValue(strings + 0x9C);
+        value = ((Fn801F06DCResource *)arg1)->getValueWithDefault(strings + 0xA8, lbl_80562F28);
+        lod->value48 = value * value;
     } else {
-        fallbackHandle = fn_802C6FC0(
-            (char *)((Fn801F06DCResource *)arg1)->find((char *)&lbl_8055B0F0),
-            0, 0);
-        fallbackValue = lbl_80562F1C;
-        one = 1;
-        *(int *)output = fallbackHandle;
-        *(float *)((char *)output + 4) = fallbackValue;
-        *(volatile int *)((char *)output + 0x40) = one;
-        *(float *)((char *)output + 0x44) =
-            ((Fn801F06DCResource *)arg1)->getValue((char *)&lbl_8055B0F8);
+        int handle;
+        float distSq;
+        int count;
+        handle = fn_802C6FC0(((Fn801F06DCResource *)arg1)->find((char *)&lbl_8055B0F0), 0, 0);
+        distSq = lbl_80562F1C;
+        count = 1;
+        lod->entries[0].handle = handle;
+        lod->entries[0].distSq = distSq;
+        lod->count = count;
+        lod->value44 = ((Fn801F06DCResource *)arg1)->getValue((const char *)&lbl_8055B0F8);
     }
 }
 #pragma pop
@@ -833,12 +825,15 @@ int fn_801F1394(int *object, int transform) {
 
     fn_802C70AC(*(int *)((char *)element + 0x28), transform, 0, frameFlags);
 }
+#pragma peephole off
 void fn_801F13F4(int *arg0, float arg1, float arg2) {
     char *base = (char *)*(int *)arg0 + 0xEC;
     char *entry;
     int count;
     if (arg1 > *(float *)(base + 0x48)) return;
-    if (*(unsigned int *)(arg0 + 1) == 3) goto done;
+    if (*(unsigned int *)(arg0 + 1) != 3) goto cont;
+    return;
+cont:
     count = *(int *)(base + 0x40) - 1;
     entry = base + count * 8;
     while (count >= 0 && arg1 < *(float *)(entry + 4)) {
@@ -847,11 +842,8 @@ void fn_801F13F4(int *arg0, float arg1, float arg2) {
     }
     if (count < 0) return;
     fn_802C7AE0(*(int *)(base + count * 8), (char *)arg0 + 0x18, -1, *(float *)(base + 0x44) + arg2);
-    return;
-done:
-    return;
 }
-#pragma scheduling on
+#pragma peephole on
 void fn_801F1474(int *arg0, void *arg1) {
     int base = *arg0;
     if (*(int *)(base + 0x12C) <= 0) return;
@@ -1101,11 +1093,12 @@ void *fn_801F19FC(void *object, int param) {
     return object;
 }
 #pragma scheduling on
-int fn_801F1A70(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668(arg0);
+int fn_801F1A70(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 #pragma dont_inline on
