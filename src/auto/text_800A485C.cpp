@@ -11459,10 +11459,14 @@ extern "C" s32 fn_800B76A8(s32 flags, s32 callback) {
 
 extern "C" s32 fn_800B6A8C(s8, s32);
 #pragma dont_inline fn_800B76E8
-extern "C" s32 fn_800B76E8(s8 arg0) {
+extern "C" s32 fn_800B76E8(s8 drive) {
+    typedef s32 (*UnmountFn)(s8);
+    typedef s32 (*StatusFn)(void);
+    /* Unmount drive letter `drive` (fn_800B6A8C), then map its FRESULT to -1/0/1 (fn_800B73E4).
+       The no-arg casts are trampolines that leave r3, holding the result, live for the next call. */
     extern void fn_800B73E4(void*);
-    ((s32 (*)(s8))fn_800B6A8C)(arg0);
-    return ((s32 (*)(void))fn_800B73E4)();
+    ((UnmountFn)fn_800B6A8C)(drive);
+    return ((StatusFn)fn_800B73E4)();
 }
 
 extern "C" void fn_800B7710(void *state) {
