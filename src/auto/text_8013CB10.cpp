@@ -682,22 +682,23 @@ extern "C" s32 fn_8013D1F0(s32 arg0) {
     return *(s32 *)(p + 0x10);
 }
 
-extern "C" s32 fn_8013D224(f32 farg0, f32 farg1) {
+extern "C" s32 fn_8013D224(f32 a, f32 b) {
+    /* Compare a and b: return 0 if nearly equal (within epsilon), 1 if a > b, -1 if a < b. */
     f32 diff;
-    f32 abs;
-    f32 result;
+    f32 absDiff;
+    f32 signValue;
 
-    diff = farg0 - farg1;
-    abs = (f32)__fabs((f64)diff);
-    if (abs <= lbl_80558DC4[0]) {
+    diff = a - b;
+    absDiff = (f32)__fabs((f64)diff);
+    if (absDiff <= lbl_80558DC4[0]) {
         return 0;
     }
     if (diff > lbl_805614A4) {
-        result = lbl_805614AC;
+        signValue = lbl_805614AC;
     } else {
-        result = lbl_805614BC;
+        signValue = lbl_805614BC;
     }
-    return (s32)result;
+    return (s32)signValue;
 }
 
 extern "C" void fn_8013D27C(void *a, void *b) {
