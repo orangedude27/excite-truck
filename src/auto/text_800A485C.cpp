@@ -25368,13 +25368,14 @@ tail:
 
 #pragma push
 #pragma dont_inline on
-extern "C" s32 fn_800A4A8C(s32 arg0) {
-    s8 *start = (s8 *)arg0;
-    s8 *ptr = start;
-    while (*ptr != 0) {
-        ++ptr;
+extern "C" s32 fn_800A4A8C(s32 str) {
+    /* strlen: return the number of bytes before the NUL terminator of str. */
+    s8 *start = (s8 *)str;
+    s8 *p = start;
+    while (*p != 0) {
+        ++p;
     }
-    return ptr - start;
+    return p - start;
 }
 #pragma pop
 extern "C" char *fn_800A4AAC(char *dst, char *src) {
