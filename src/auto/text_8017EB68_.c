@@ -1553,6 +1553,7 @@ void fn_80181700(void *arg0, int arg1) {
     ((void (*)(int))fn_802E8518)(val);
 }
 
+/* Stop the sound/event on a slot when it is valid and its owner is not type 0x11. */
 void fn_80181720(void *arg0) {
     if (*(int *)((char *)arg0 + 8) >= 0 && fn_8026A368(*(int *)((char *)arg0 + 4)) != 0x11) {
         fn_802E85F4(*(int *)((char *)arg0 + 8));
