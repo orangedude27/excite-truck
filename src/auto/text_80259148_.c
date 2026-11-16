@@ -948,8 +948,9 @@ f32 fn_8025B0A8(void *arg0) {
     return out;
 }
 
-f32 fn_8025B0C4(f32 arg0) {
-    return (f32)sin(arg0);
+/* Return the sine of an angle (in radians) as a float. */
+f32 fn_8025B0C4(f32 radians) {
+    return (f32)sin(radians);
 }
 
 /* Copy 36 bytes (9 words) from src to dst. */
