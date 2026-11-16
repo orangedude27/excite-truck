@@ -3549,7 +3549,8 @@ u8 fn_8005EE80(s32 chan)
 
 void fn_8005EEC4(s32 chan, s32 result) {
     u16 val16;
-    u32 val32;
+    s32 val32;
+    s32 word;
     u32 w;
     u16 ch;
     u32 v;
@@ -3568,11 +3569,13 @@ void fn_8005EEC4(s32 chan, s32 result) {
         if (*(void **)((u8 *)cb + 0x7e4) != 0) (*(void (**)(void))((u8 *)cb + 0x7e4))();
         return;
     }
-    val32 = *(u32 *)((u8 *)cb + 0x820);
+    val32 = *(s32 *)((u8 *)cb + 0x820);
     val16 = 0x2a;
     if (val32 != 0) val16 = 0x14;
+    word = val32;
+    word = (s32)(((-word | word) >> 31) & 0x176c);
     *(u16 *)&buf[0] = val16;
-    *(u32 *)&buf[4] = (u32)(((s32)(-(s32)val32 | (s32)val32) >> 31) & 0x176c);
+    *(u32 *)&buf[4] = (u32)word;
     *(u32 *)&buf[8] = 0x17;
     *(u16 *)&buf[0x22] = 6;
     *(u32 *)&buf[0x34] = (u32)fn_8005EEC4;
@@ -6728,7 +6731,6 @@ void fn_8005E8E0(s32 chan)
     WPADCB* pCB = lbl_8038F4F0[chan];
     u8* p = (u8*)pCB;
     s32 enabled;
-    u32 i = (u32)chan * 0x14;
     u8 value = 0xFD;
     int m1 = -1;
     *(u8*)(p + 0x806) = 0;
@@ -6763,7 +6765,7 @@ void fn_8005E8E0(s32 chan)
     *(u32*)(p + 0x8B8) = 0;
     *(u16*)(p + 0x8C0) = 0;
     *(u32*)(p + 0x8BC) = 0;
-    p[0x803] = m1;
+    *(s8*)(p + 0x803) = (s8)m1;
     *(u32*)(p + 0x818) = 0;
     *(u32*)(p + 0x81C) = 0;
     *(u32*)(p + 0x820) = 0;
@@ -6800,11 +6802,16 @@ void fn_8005E8E0(s32 chan)
     p[0x5ED] = 0;
     memset(*(void**)(p + 0x5F0), 0, *(u32*)(p + 0x5F4) * 0x30);
     OSRestoreInterrupts(enabled);
-    *(u32*)(lbl_80392900 + i) = 0;
-    *(u32*)(lbl_80392900 + i + 4) = 0;
-    *(u16*)(lbl_80392900 + i + 8) = 0;
-    *(u32*)(lbl_80392900 + i + 12) = 0;
-    *(u32*)(lbl_80392900 + i + 16) = 0;
+    {
+        u32 i = (u32)chan * 0x14;
+        u8 *tbl = lbl_80392900;
+        *(u32*)(tbl + i) = 0;
+        tbl += i;
+        *(u32*)(tbl + 4) = 0;
+        *(u16*)(tbl + 8) = 0;
+        *(u32*)(tbl + 12) = 0;
+        *(u32*)(tbl + 16) = 0;
+    }
 }
 
 #include <types.h>
