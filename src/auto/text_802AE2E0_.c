@@ -35,6 +35,8 @@ void fn_802AE328(void) {
 #pragma push
 #pragma optimization_level 4
 void fn_802AE374(void) {
+    /* Reset the global object list on subsystem startup: mark it uninitialized,
+     * raise its reset flag and clear the recorded entry count. */
     lbl_8055F958 = 0;
     lbl_8055F959 = 1;
     lbl_804BD8CC[1] = 0;
