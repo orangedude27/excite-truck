@@ -549,22 +549,6 @@ void fn_8027B690(void) {
     }
 }
 #pragma pop
-static inline void resetPlayerGroup(char *base) {
-    char *row = base;
-    unsigned int i = 0;
-    do {
-        fn_8027B60C(row);
-        i++;
-        row += 0xBD0;
-    } while (i < 3);
-    row = base + 0x2370;
-    i = 0;
-    do {
-        fn_8027B60C(row);
-        i++;
-        row += 0xBD0;
-    } while (i < 2);
-}
 void fn_8027B77C(void) {
     char *base;
     unsigned int outer;
