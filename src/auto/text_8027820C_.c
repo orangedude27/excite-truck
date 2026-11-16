@@ -323,8 +323,10 @@ char fn_802787F4(void) {
 
 #define sPlayingBack lbl_8055F5BA /* 1 while the captured movie plays back */
 #define sDemoActive  lbl_8055F5BB /* 1 while the scripted replay/demo runs */
+/* Return 1 if any scripted-movie playback is active: either the captured
+ * movie is playing back, or the scripted replay/demo mode is running. */
 int fn_802787FC(void) {
-    return ((unsigned char)lbl_8055F5BA != 0) || ((unsigned char)lbl_8055F5BB != 0);
+    return ((unsigned char)sPlayingBack != 0) || ((unsigned char)sDemoActive != 0);
 }
 
 int fn_80278820(void) {
