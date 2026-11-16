@@ -2938,11 +2938,277 @@ extern "C" void fn_801A0444(void* arg0, void* arg1) {
     *(f32*)((u8*)arg0 + 0x16C) = *(f32*)((u8*)arg1 + 0x2C);
 }
 
+extern f32 lbl_805623B8;
+extern f32 lbl_805623BC;
 extern "C" void fn_801A0464(void *arg0, void *arg1) {
-    (void)arg0;
-    fn_801A0160(arg1);
+    u8 *self = (u8 *)arg0;
+    u8 *other = (u8 *)arg1;
+    u32 tag = *(u32 *)(other + 0x18);
+
+    if (tag == 0x47525550) {
+        u8 *otherOwner = *(u8 **)(other + 4);
+        if (otherOwner != 0) {
+            u8 *selfOwner = *(u8 **)(self + 4);
+            if (selfOwner != 0 && *(f32 *)(selfOwner + 0xD4) < *(f32 *)(otherOwner + 0xD4)) {
+                ((Fn801A401CDispatch *)other)->Call(self);
+                return;
+            }
+        }
+        f32 *a = *(f32 **)(self + 0xC);
+        f32 *b = *(f32 **)(other + 0xC);
+        Vec d;
+        d.x = a[9] - b[9];
+        d.y = a[10] - b[10];
+        d.z = a[11] - b[11];
+        f32 r = *(f32 *)(self + 0x178) + *(f32 *)(other + 0x178);
+        if (PSVECDotProduct(&d, &d) < r * r) {
+            fn_801A0160(other);
+            u8 *ent = other;
+            s32 i = 0;
+            while (i < *(s32 *)(other + 0x174)) {
+                fn_8019BD54(*(void **)(ent + 0x24), *(void **)(self + 0x17C), 0, 0);
+                ent += 4;
+                i++;
+            }
+        }
+    } else if (tag == 0x424F5820) {
+        Vec center;
+        Vec d;
+        fn_801A1F44(&center, other);
+        f32 *a = *(f32 **)(self + 0xC);
+        d.x = a[9] - center.x;
+        d.y = a[10] - center.y;
+        d.z = a[11] - center.z;
+        if ((f32)__fabs((f64)PSVECDotProduct(&d, *(Vec **)(other + 0xC))) <
+                *(f32 *)(self + 0x178) + *(f32 *)(other + 0x24) &&
+            (f32)__fabs((f64)PSVECDotProduct(&d, (Vec *)(*(u8 **)(other + 0xC) + 0x18))) <
+                *(f32 *)(self + 0x178) + *(f32 *)(other + 0x2C)) {
+            f32 *m = *(f32 **)(other + 0xC);
+            u8 *owner = *(u8 **)(self + 4);
+            Vec local;
+            f32 x, y, z;
+            local.x = *(f32 *)(owner + 0x60) - m[9];
+            local.y = *(f32 *)(owner + 0x64) - m[10];
+            local.z = *(f32 *)(owner + 0x68) - m[11];
+            x = local.x;
+            y = local.y;
+            z = local.z;
+            local.x = z * m[2] + (x * m[0] + y * m[1]);
+            local.y = z * m[5] + (x * m[3] + y * m[4]);
+            local.z = z * m[8] + (x * m[6] + y * m[7]);
+            fn_801A0160(self);
+            u8 *ent = self;
+            s32 i = 0;
+            while (i < *(s32 *)(self + 0x174)) {
+                fn_8019BD54(*(void **)(ent + 0x24), other, 0, (s32)&local);
+                ent += 4;
+                i++;
+            }
+            if (*(s32 *)(other + 0x20) < 8) {
+                u8 *obj = *(u8 **)(self + 4);
+                s32 ok;
+                if (obj == 0) goto box_set0;
+                switch (*(s32 *)(obj + 0x10)) {
+                case 0x4E434152:
+                case 0x43415220:
+                case 0x41434152:
+                case 0x50434152:
+                    ok = 1;
+                    goto box_done;
+                }
+            box_set0:
+                ok = 0;
+            box_done:
+                if (ok != 0) {
+                    s32 e = *(s32 *)(obj + 0x1EC);
+                    Vec out;
+                    Vec q;
+                    f32 one = lbl_805622E0;
+                    f32 eps = lbl_805622D8;
+                    s32 k = 0;
+                    do {
+                        Vec p;
+                        Vec diff;
+                        f32 *bm;
+                        fn_801BEAEC(e, k, &p);
+                        bm = *(f32 **)(other + 0xC);
+                        q.x = p.x - bm[9];
+                        q.y = p.y - bm[10];
+                        q.z = p.z - bm[11];
+                        x = q.x;
+                        y = q.y;
+                        z = q.z;
+                        q.x = z * bm[2] + (x * bm[0] + y * bm[1]);
+                        q.y = z * bm[5] + (x * bm[3] + y * bm[4]);
+                        q.z = z * bm[8] + (x * bm[6] + y * bm[7]);
+                        f32 sx = *(f32 *)(other + 0x24);
+                        f32 sy = *(f32 *)(other + 0x28);
+                        f32 sz = *(f32 *)(other + 0x2C);
+                        f32 v = q.x;
+                        if (sx < v) v = sx;
+                        q.x = (v > -sx) ? v : -sx;
+                        v = q.y;
+                        if (sy < v) v = sy;
+                        q.y = (v > -sy) ? v : -sy;
+                        v = q.z;
+                        if (sz < v) v = sz;
+                        q.z = (v > -sz) ? v : -sz;
+                        bm = *(f32 **)(other + 0xC);
+                        fn801A1F98Transform((volatile f32 *)&out, (volatile f32 *)&q, (volatile f32 *)&q, bm);
+                        out.x += bm[9];
+                        out.y += bm[10];
+                        out.z += bm[11];
+                        diff.x = p.x - out.x;
+                        diff.y = p.y - out.y;
+                        diff.z = p.z - out.z;
+                        f32 mag = PSVECMag(&diff);
+                        if (mag > eps) {
+                            f32 inv = one / mag;
+                            diff.x *= inv;
+                            diff.y *= inv;
+                            diff.z *= inv;
+                            fn_801BEB44(e, k, &out, (f32 *)&diff);
+                        }
+                        k++;
+                    } while (k < 4);
+                }
+            }
+        }
+    } else if (tag == 0x53504852 || tag == 0x464C5352) {
+        Vec c = *(Vec *)(*(u8 **)(self + 0x17C) + 0x38);
+        u8 *owner = *(u8 **)(self + 4);
+        if (owner != 0) {
+            c.x += *(f32 *)(owner + 0x30);
+            c.y += *(f32 *)(owner + 0x34);
+            c.z += *(f32 *)(owner + 0x38);
+        }
+        if (*(u32 *)(other + 0x18) == 0x53504852) {
+            fn_8019BD54(other, *(void **)(self + 0x17C), (s32)&c, 0);
+        } else {
+            fn_8019D06C(other, *(void **)(self + 0x17C), (s32)&c, 0);
+        }
+    } else if (tag == 0x54554245) {
+        fn_8019EA7C(other, *(void **)(self + 0x17C));
+    } else if (tag == 0x52494E47) {
+        fn_801A0160(self);
+        u8 *ent = self;
+        s32 i = 0;
+        while (i < *(s32 *)(self + 0x174)) {
+            fn_8019C854(*(void **)(ent + 0x24), other);
+            ent += 4;
+            i++;
+        }
+    } else if (tag == 0x52414744) {
+        ((Fn801A401CDispatch *)other)->Call(self);
+    } else if (tag == 0x504F4C59) {
+        fn_801A0160(self);
+        u8 *ent = self;
+        s32 i = 0;
+        while (i < *(s32 *)(self + 0x174)) {
+            ((Fn801A401CDispatch *)other)->Call(*(void **)(ent + 0x24));
+            ent += 4;
+            i++;
+        }
+        u8 *obj = *(u8 **)(self + 4);
+        s32 ok;
+        if (obj == 0) goto poly_set0;
+        switch (*(s32 *)(obj + 0x10)) {
+        case 0x4E434152:
+        case 0x43415220:
+        case 0x41434152:
+        case 0x50434152:
+            ok = 1;
+            goto poly_done;
+        }
+    poly_set0:
+        ok = 0;
+    poly_done:
+        if (ok != 0) {
+            s32 e = *(s32 *)(obj + 0x1EC);
+            s32 k = 0;
+            f32 scale = lbl_805623B8;
+            do {
+                Vec p;
+                Vec size;
+                Vec hit;
+                Vec nrm;
+                f32 depth;
+                fn_801BEAEC(e, k, &p);
+                size.x = *(f32 *)(obj + 0x3C) * scale;
+                size.y = *(f32 *)(obj + 0x40) * scale;
+                size.z = *(f32 *)(obj + 0x44) * scale;
+                if (fn_80198F64(&p, (int)other, &hit, &depth, &nrm, (float *)&size, lbl_805622E0)) {
+                    fn_801BEB44(e, k, &hit, (f32 *)&nrm);
+                }
+                k++;
+            } while (k < 4);
+        }
+    } else if (tag == 0x504D5348) {
+        fn_801A0160(self);
+        u8 *ent = self;
+        s32 i = 0;
+        while (i < *(s32 *)(self + 0x174)) {
+            ((Fn801A401CDispatch *)other)->Call(*(void **)(ent + 0x24));
+            ent += 4;
+            i++;
+        }
+        u8 *obj = *(u8 **)(self + 4);
+        s32 ok;
+        if (obj == 0) goto mesh_set0;
+        switch (*(s32 *)(obj + 0x10)) {
+        case 0x4E434152:
+        case 0x43415220:
+        case 0x41434152:
+        case 0x50434152:
+            ok = 1;
+            goto mesh_done;
+        }
+    mesh_set0:
+        ok = 0;
+    mesh_done:
+        if (ok != 0) {
+            s32 e = *(s32 *)(obj + 0x1EC);
+            s32 k = 0;
+            f32 one = lbl_805622E0;
+            s32 maxCount = 0x40;
+            f32 zero = lbl_805622D4;
+            f32 push = lbl_805623BC;
+            do {
+                Vec tmp;
+                s32 count;
+                u8 buffer[0x300];
+                s32 j;
+                fn_801BEAEC(e, k, &tmp);
+                Vec v = tmp;
+                v.x += *(f32 *)(obj + 0x48) * push;
+                v.y += *(f32 *)(obj + 0x4C) * push;
+                v.z += *(f32 *)(obj + 0x50) * push;
+                count = maxCount;
+                fn_801CF080(*(s32 *)(other + 0x24), &v, buffer, &count, *(s32 *)(other + 0xC), lbl_8056234C);
+                Vec *cur = (Vec *)buffer;
+                for (j = 0; j < count; j++) {
+                    Vec d;
+                    d.x = v.x - cur->x;
+                    d.y = v.y - cur->y;
+                    d.z = v.z - cur->z;
+                    f32 mag = PSVECMag(&d);
+                    if (mag > zero) {
+                        f32 inv = one / mag;
+                        d.x *= inv;
+                        d.y *= inv;
+                        d.z *= inv;
+                        fn_801BEB44(e, k, (f32 *)cur, (f32 *)&d);
+                    }
+                    cur++;
+                }
+                k++;
+            } while (k < 4);
+        }
+    }
 }
 
+#pragma dont_inline reset
+#pragma use_lmw_stmw reset
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
