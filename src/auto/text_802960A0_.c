@@ -59,6 +59,7 @@ extern "C" void fn_802960A0(float *pos, unsigned int color, int tex, float s, do
     fn_802C8D74();
 }
 
+#define kFrameName lbl_8055C9B8  // .sdata: "frame", the name of an opening frame entry
 extern "C" int fn_802962CC(void *node) {
     class NameNode {
     public:
