@@ -297,11 +297,12 @@ void fn_801B59A4(void *arg0, s32 arg1, s32 arg2) {
 
 #pragma dont_inline on
 void fn_801B5AE4(void) {
-    u8 *buffer;
+    /* Reset the BPX quad-tree linking allocator: zero both node counters and clear its 0x1C-byte state block. */
+    u8 *workspace;
     lbl_8055E6E8 = 0;
-    buffer = lbl_80435EC8;
+    workspace = lbl_80435EC8;
     lbl_8055E6EC = 0;
-    memset(buffer, 0, 0x1C);
+    memset(workspace, 0, 0x1C);
 }
 #pragma dont_inline reset
 
