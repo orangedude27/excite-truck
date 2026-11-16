@@ -2419,8 +2419,9 @@ extern "C" char lbl_80559D80[1];
 extern "C" char lbl_8032CC1C[];
 extern "C" char lbl_8032CC40[];
 extern "C" char lbl_8032CC64[];
-extern "C" f32 fn_80141C9C(f32 arg0) {
-    return floor(arg0);
+// Returns floor(value): the greatest integer less than or equal to value.
+extern "C" f32 fn_80141C9C(f32 value) {
+    return floor(value);
 }
 
 #pragma push
