@@ -4163,15 +4163,19 @@ extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6de
     ((SoundHandleBasicSoundLayout *)*handle)->generalHandle = handle;
 }
 
-void DetachSound__Q34nw4r3snd11SoundHandleFv(void **arg0) {
- void *p=*arg0;
- if(p) {
-  if(*(u32*)((u8*)p+8)==(u32)arg0) *(u32*)((u8*)p+8)=0;
-  p=*arg0;
-  if(*(u32*)((u8*)p+0xc)==(u32)arg0) *(u32*)((u8*)p+0xc)=0;
- }
- if(*arg0==0) return;
- *arg0=0;
+// Detaches this sound handle from the attached sound, clearing the sound's back-pointers to it.
+void DetachSound__Q34nw4r3snd11SoundHandleFv(void **handle) {
+    void *sound = *handle;
+    if (sound) {
+        if (*(u32 *)((u8 *)sound + 8) == (u32)handle)
+            *(u32 *)((u8 *)sound + 8) = 0;
+        sound = *handle;
+        if (*(u32 *)((u8 *)sound + 0xc) == (u32)handle)
+            *(u32 *)((u8 *)sound + 0xc) = 0;
+    }
+    if (*handle == 0)
+        return;
+    *handle = 0;
 }
 
 #pragma push
