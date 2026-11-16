@@ -6,6 +6,7 @@ extern float lbl_804B3220[3];
 extern float lbl_804B322C[3];
 extern float lbl_80564274;
 
+/* Initialize lbl_8055F6D0 and reset two 3-float vectors to lbl_80564274. */
 void fn_8028A614(void) {
     fn_8000D838(&lbl_8055F6D0);
     lbl_804B3220[0] = lbl_80564274;
