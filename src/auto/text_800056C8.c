@@ -1882,10 +1882,11 @@ void *fn_80007BB0(void) {
     return lbl_802FB668;
 }
 
+/* When the session's startup object has flag 0x200 set, dispatch the HUD event with the session word at +0x1C. */
 void fn_80007BBC(void) {
-    void **base = (void **)lbl_8055D350;
-    if ((*(u32 *)((u8 *)base[2] + 4) & 0x200) == 0) return;
-    fn_801B84C0(*(void **)((u8 *)base + 0x1C));
+    void **session = (void **)lbl_8055D350;
+    if ((*(u32 *)((u8 *)session[2] + 4) & 0x200) == 0) return;
+    fn_801B84C0(*(void **)((u8 *)session + 0x1C));
 }
 
 extern u8 lbl_802FB630[];
