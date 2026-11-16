@@ -2655,6 +2655,7 @@ extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus(v
 #pragma small_data off
 #pragma pop
 extern "C" void fn_800EFB6C(void* this_, s32 arg1) {
+    /* Set a 32-bit field at offset 0x3C under interrupt disable. */
     u32 level = OSDisableInterrupts();
     *(s32*)&((u8*)this_)[0x3C] = arg1;
     OSRestoreInterrupts(level);
