@@ -1709,12 +1709,13 @@ void fn_80007848(void) {
     fn_8000C630(0x20, *(s32 *)((u8 *)base + 0x1C));
 }
 
-s32 fn_8000786C(void *arg0, void *arg1, s32 arg2, void *arg3) {
-    if (arg1 != 0) {
+/* UI message callback: only handle message 0x3E8 when the context is null, forwarding the low 16 bits of param to fn_801B87A0; otherwise return 0. */
+s32 fn_8000786C(void *obj, void *context, s32 msg, void *param) {
+    if (context != 0) {
         return 0;
     }
-    if ((u32)arg2 == 0x3E8) {
-        return fn_801B87A0((s32)arg1, (s32)((u32)arg3 & 0xFFFF));
+    if ((u32)msg == 0x3E8) {
+        return fn_801B87A0((s32)context, (s32)((u32)param & 0xFFFF));
     }
     return 0;
 }
