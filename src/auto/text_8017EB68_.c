@@ -1542,10 +1542,15 @@ void fn_801815D4(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x50) = arg1;
 }
 
-void fn_801815DC(void *arg0, float arg1) {
-    float value = lbl_80561C48 < arg1 ? lbl_80561C48 : arg1;
-    value = value > lbl_80561C4C ? value : lbl_80561C4C;
-    *(float *)((char *)arg0 + 0x20) = value;
+/* Clamp a level to [0,1] and store it in the object's field at +0x20. */
+void fn_801815DC(void *obj, float level) {
+#define MAX_LEVEL lbl_80561C48  /* 1.0f */
+#define MIN_LEVEL lbl_80561C4C  /* 0.0f */
+    float clamped = MAX_LEVEL < level ? MAX_LEVEL : level;
+    clamped = clamped > MIN_LEVEL ? clamped : MIN_LEVEL;
+    *(float *)((char *)obj + 0x20) = clamped;
+#undef MIN_LEVEL
+#undef MAX_LEVEL
 }
 
 extern int fn_801A8E68(void *);
