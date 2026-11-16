@@ -3070,12 +3070,13 @@ extern "C" void fn_801D83CC(void *arg0) {
 }
 #pragma cplusplus reset
 
-int fn_801D83DC(int arg0, int arg1) {
-    if (arg0 != 0) {
-        ((int *)arg0)[1] = 0;
-        if (arg1 > 0) fn_80128668();
+/* Destructor-like reset: clear the stored object pointer at +4 and, if requested, free this object. */
+int fn_801D83DC(int object, int shouldFree) {
+    if (object != 0) {
+        ((int *)object)[1] = 0;
+        if (shouldFree > 0) fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
