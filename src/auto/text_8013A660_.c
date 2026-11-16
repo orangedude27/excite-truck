@@ -402,8 +402,11 @@ void fn_8013B56C(void) {
 }
 
 #pragma scheduling invalid_target
-void *fn_8013B578(int arg0) {
-    return lbl_8042F858 + 8 + arg0 * 8;
+void *fn_8013B578(int index) {
+    /* Return the address of the index-th 8-byte entry in the AI skill/speed
+       table lbl_8042F858 (an 8-byte header followed by entries of two floats:
+       a skill-range value and a speed-factor value). */
+    return lbl_8042F858 + 8 + index * 8;
 }
 #pragma scheduling on
 extern void **fn_801B2ED0(void);
