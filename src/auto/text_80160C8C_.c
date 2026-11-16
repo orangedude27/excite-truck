@@ -2961,6 +2961,34 @@ extern f32 lbl_80561878;
 extern f32 lbl_80561874;
 extern f64 lbl_80561880;
 extern s32 lbl_8055E4D0;
+
+/* The challenge step the player is on: the goals met when it started, and the
+ * number of met goals that finishes it.  fn_80161D50 counts the mandatory goals
+ * met so far, so [challenge_step_min, challenge_step_max) means "still on this
+ * step"; the challenge screens advance it with challenge_step_min =
+ * challenge_step_max++ (fn_80162268 and friends). */
+#define challenge_step_min lbl_8055A0B4
+#define challenge_step_max lbl_8055A0B8
+/* The car table: one pointer per vehicle of the race (each carries its FourCC
+ * tag at +0x10), and how many entries are in use. */
+#define car_table lbl_804348E8
+#define car_count lbl_8055E4D0
+/* The challenge sub-task list (data pointer, count, capacity and an inline
+ * array of pointers -- see fn_80161618), and the entry the player picked, which
+ * the manager makes its current sub-task (lbl_8055E300). */
+#define subtask_list lbl_8042FDEC
+#define selected_subtask_index lbl_8055E304
+
+/* The challenge level-select menu sub-task (vtable lbl_8032F790): the fields
+ * fn_80164D38 resets, fn_80164F50 seeds and fn_80165058 edits from menu input. */
+struct LevelSelectMenu {
+    /* 0x00 */ void *vtable;
+    /* 0x04 */ u8 confirmed;   /* the player confirmed the selection */
+    /* 0x05 */ u8 done;        /* the menu is over (slots 0x24..0x2C answer it) */
+    /* 0x06 */ u8 unk06;       /* input mode; fn_80165058 takes the other branch */
+    /* 0x07 */ u8 popupShown;  /* help popup 8 has been asked for */
+    /* 0x08 */ s32 selection;  /* the entry picked, 1..count of the sub-task list */
+};
 #pragma scheduling invalid_target
 void fn_80164D64(void *arg0, s32 arg1) {
     struct Head { u32 word[8]; };
