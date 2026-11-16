@@ -125,12 +125,13 @@ void *fn_801F1DA4(void) {
 
 #pragma scheduling invalid_target
 void *fn_801F1DE4(void) {
+    /* Allocate an AxisFacing instance (tag "AxisFacing", 4 bytes) and point it at its vtable. */
     extern const char lbl_8033A61C[], lbl_8033A9B8[];
-    void **p = (void **)fn_801284F8(4, (void *)lbl_8033A61C);
-    if (p != 0) {
-        *p = (void *)lbl_8033A9B8;
+    void **object = (void **)fn_801284F8(4, (void *)lbl_8033A61C);
+    if (object != 0) {
+        *object = (void *)lbl_8033A9B8;
     }
-    return (void *)p;
+    return (void *)object;
 }
 #pragma scheduling on
 /* Allocates and initializes a 0x40-byte "Sky" object (vtable lbl_8033A928)
