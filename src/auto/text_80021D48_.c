@@ -20,9 +20,9 @@ static inline Block* Pool_expand(Block** list, unsigned int size) {
     if (total < 0x10000) total = 0x10000;
     b = (Block*)__sys_alloc(total);
     if (b == 0) return 0;
-    remain = total - 0x18;
     flags = total | 3;
     link = (unsigned int)b | 1;
+    remain = total - 0x18;
     b->size_flags = flags;
     *(unsigned int*)((char*)b + total - 8) = flags;
     b->sb_link = link;
