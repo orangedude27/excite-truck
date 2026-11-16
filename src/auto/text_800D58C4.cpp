@@ -1157,8 +1157,9 @@ extern "C" void fn_800D76E0(void *arg0) {
     ((Obj*)arg0)->v4(0);
 }
 
-extern "C" void fn_800D76F4(void *arg0, int arg1, int arg2) {
-    struct Obj {
+extern "C" void fn_800D76F4(void *holder, int valueA, int valueB) {
+    // Forward a three-argument request (values, flag=1) to virtual slot 0x58 of the layout interface object held at holder+0x10, if one exists.
+    struct LayoutIf {
         virtual void v0(); virtual void v1(); virtual void v2();
         virtual void v3(); virtual void v4(); virtual void v5();
         virtual void v6(); virtual void v7(); virtual void v8();
@@ -1166,10 +1167,10 @@ extern "C" void fn_800D76F4(void *arg0, int arg1, int arg2) {
         virtual void v12(); virtual void v13(); virtual void v14();
         virtual void v15(); virtual void v16(); virtual void v17();
         virtual void v18(); virtual void v19();
-        virtual void v20(int, int, int);
+        virtual void forward(int, int, int);
     };
-    Obj* obj = *(Obj**)((char*)arg0 + 0x10);
-    if (obj) obj->v20(arg1, arg2, 1);
+    LayoutIf* target = *(LayoutIf**)((char*)holder + 0x10);
+    if (target) target->forward(valueA, valueB, 1);
 }
 
 extern "C" void fn_800D7718(void *arg0) {
