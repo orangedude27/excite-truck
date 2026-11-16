@@ -260,7 +260,17 @@ int fn_802E8BE4(void) {
 
 extern int fn_8012C4D8(int);
 extern int fn_802E88D8(void);
-void fn_802E8C2C(void) { for (;;) { if(((int(*)(int))fn_802E888C)(4)!=0) { ((void(*)(void))fn_802E8918)(); return; } if(fn_802E88D8()!=0) return; } }
+void fn_802E8C2C(void) {
+    /* After a corrupt NAND read: poll request 4 until it completes, then run fn_802E8918 (home-menu mode 1); return early if request 0 completes first. */
+    for (;;) {
+        if (((int (*)(int))fn_802E888C)(4) != 0) {
+            ((void (*)(void))fn_802E8918)();
+            return;
+        }
+        if (fn_802E88D8() != 0)
+            return;
+    }
+}
 
 int fn_802E8C6C(int arg0) {
     if (arg0 == 1) {
