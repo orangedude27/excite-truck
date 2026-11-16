@@ -2087,19 +2087,21 @@ extern "C" s32 fn_800D9344(void *arg0) {
     return t + b;
 }
 
-// The material's channel-control entry: first 4-byte optional entry of its GX memory
-// block, right after the tex-coord generators.  Its two first bytes are the
-// GXColorSource values GXSetChanCtrl() is called with (see fn_800DA094).
-extern "C" s32 fn_800D9364(void *arg0) {
-    volatile u32 *p = (volatile u32 *)((u8 *)arg0 + 0x4C);
-    u32 x = *p;
-    s32 y = *(volatile s32 *)((u8 *)arg0 + 0x58);
-    u32 n = (x >> 0x18) & 0xF;
-    u32 a = (x >> 0x12) & 0x3C;
-    u32 b = (x >> 0x17) & 0x1E0;
-    s32 t = y + n * 0x14;
-    s32 u = a + b;
-    return u + t;
+// Address of the material's channel-control entry inside the GX memory block it holds
+// at 0x58: the block begins with the texObj GXTexObj (0x20 each), the texSRT texture
+// SRTs (0x14 each) and the texGen tex-coord generators (4 each), sized by the capacity
+// counts at 0x4C, and the entry follows them.  Returned as an integer, as in the
+// sibling accessors; callers use it as a byte pointer.
+extern "C" s32 fn_800D9364(void *self) {
+    volatile u32 *pCap = (volatile u32 *)((u8 *)self + 0x4C);
+    u32 cap = *pCap;
+    s32 block = *(volatile s32 *)((u8 *)self + 0x58);
+    u32 texSRTNum = (cap >> 0x18) & 0xF;
+    u32 texGenBytes = (cap >> 0x12) & 0x3C;
+    u32 texObjBytes = (cap >> 0x17) & 0x1E0;
+    s32 pastSRT = block + texSRTNum * 0x14;
+    s32 genAndTex = texGenBytes + texObjBytes;
+    return genAndTex + pastSRT;
 }
 
 extern "C" s32 fn_800D938C(void* arg0) {
