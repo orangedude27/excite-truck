@@ -1818,10 +1818,17 @@ s32 fn_801194E4(void *voiceState) {
 }
 
 void fn_80119558(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 0x34) = 1;
+    /* Start voice playback state and snapshot the current read position and tick. */
+#define voiceState ((s32 *)((u8 *)arg0 + 0x34))
+#define readPosition ((s32 *)((u8 *)arg0 + 0x48))
+#define startTick ((s32 *)((u8 *)arg0 + 0x50))
+    *voiceState = 1;
     fn_80119498(arg0);
-    *(s32 *)((u8 *)arg0 + 0x48) = fn_801194E4(arg0);
-    *(s32 *)((u8 *)arg0 + 0x50) = fn_80116D30();
+    *readPosition = fn_801194E4(arg0);
+    *startTick = fn_80116D30();
+#undef voiceState
+#undef readPosition
+#undef startTick
 }
 
 void fn_801195A0(void *arg0) {
