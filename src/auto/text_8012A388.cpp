@@ -2608,14 +2608,19 @@ extern "C" void fn_8012E40C(void *request, s32 nameList) {
 #undef REQ_NAME_INDEX
 }
 
-extern "C" void *fn_8012E460(void *arg0) {
-    void *node = *(void **)((u8 *)arg0 + 0xC);
-    void *result = 0;
+extern "C" void *fn_8012E460(void *poolHeader) {
+    ResTocNodePool *pool = (ResTocNodePool *)poolHeader;
+    ResTocMount *node = pool->freeList;
+    ResTocMount *result = 0;
+    /* Take a mount node from the manager's node pool (its header is the pool
+     * field at +0x8): unlink the head of the free list and chain it onto the
+     * in-use list through the nodes' poolNext link.  Returns 0 when the pool
+     * is empty; the caller then runs the load queue and asks again. */
     if (node != 0) {
         result = node;
-        *(void **)((u8 *)arg0 + 0xC) = *(void **)node;
-        *(void **)node = *(void **)((u8 *)arg0 + 8);
-        *(void **)((u8 *)arg0 + 8) = node;
+        pool->freeList = (ResTocMount *)node->poolNext;
+        node->poolNext = pool->inUse;
+        pool->inUse = node;
     }
     return result;
 }
