@@ -272,9 +272,21 @@ void fn_801CB808(void) {
 }
 
 extern void fn_801CE6F8(void);
+/* Per-frame tick of the awards/stat manager while the awards screen sits in its
+   waiting step (fn_800064A8 runs this for state 2): fn_801CE6F8 refreshes the
+   results panel hanging off the manager (stat rows, names, times, progress) and
+   fires the screen's finish message once that panel reaches its done state.
+   Nothing runs while a boot option (bit 0x400) or a live challenge sub-task
+   keeps the stat manager off altogether. */
 void fn_801CB844(void) {
-    if (fn_80019BA8() || fn_80161C38()) return;
-    fn_801CE6F8();
+#define BootOptionBit_400 fn_80019BA8 /* lbl_8055D5A0 bit 10, set by a boot option */
+#define ChallengeSubTask_Active fn_80161C38 /* the manager's current sub-task, lbl_8055E300 */
+#define StatManager_Update fn_801CE6F8 /* refresh the results panel; idle while the stat tables load */
+    if (BootOptionBit_400() || ChallengeSubTask_Active()) return;
+    StatManager_Update();
+#undef BootOptionBit_400
+#undef ChallengeSubTask_Active
+#undef StatManager_Update
 }
 
 extern int fn_801CE75C(void);
