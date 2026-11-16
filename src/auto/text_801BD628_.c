@@ -593,19 +593,20 @@ void fn_801BF150(void *arg0, float farg0, float farg1, float farg2, float farg3)
     ((float *)arg0)[3] = farg3;
 }
 
-void fn_801BF164(float *arg0, float *arg1) {
-    float d;
-    float c;
-    float b;
-    float a;
-    a = arg1[0];
-    b = arg1[1];
-    c = arg1[2];
-    d = arg1[3];
-    arg0[0] = a;
-    arg0[1] = b;
-    arg0[2] = c;
-    arg0[3] = d;
+/* Copy a 4-component float vector from src to dst. */
+void fn_801BF164(float *dst, float *src) {
+    float w;
+    float z;
+    float y;
+    float x;
+    x = src[0];
+    y = src[1];
+    z = src[2];
+    w = src[3];
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
+    dst[3] = w;
 }
 
 void GXInitLightAttnA_801BF188(void *arg0, float farg0, float farg1, float farg2) {
