@@ -91,6 +91,8 @@ extern f32 lbl_805630D8, lbl_805630F0, lbl_805630F4, lbl_805630F8, lbl_805630FC;
 extern f32 lbl_80563100, lbl_80563104, lbl_80563110;
 extern f64 lbl_80563108, lbl_80563118;
 
+/* Branchless test: 1 when the scene state (lbl_8055ED14) is not 2, 0 when it is 2.
+   For x != 2, (2 - x) | (x - 2) has its sign bit set, so >>31 yields the boolean. */
 u32 fn_80202BE4(void) {
     return (u32)((2 - lbl_8055ED14) | (lbl_8055ED14 - 2)) >> 0x1FU;
 }
