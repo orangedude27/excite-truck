@@ -366,6 +366,8 @@ s32 fn_80287B24(s32 arg0) {
 }
 #pragma dont_inline reset
 
+#define gCallbackCount lbl_8055F6C0 /* number of registered per-car callbacks */
+#define gCallbackList  lbl_804B31E0 /* array of registered callback pointers */
 void fn_80287B38(s32 arg0) {
     s32 index = lbl_8055F6C0;
     ((s32 *)lbl_804B31E0)[index] = arg0;
