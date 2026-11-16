@@ -460,6 +460,8 @@ static asm void RealMode(register void* config) {
      * state, then return from the exception into that stub. */
     /* Jump to the BAT-config stub with translation off: SRR0 = aligned stub
      * address, SRR1 = MSR with IR/DR cleared (rlwinm 28..25), then rfi. */
+    /* Jump to the BAT-config stub with translation off: SRR0 = aligned stub
+     * address, SRR1 = MSR with IR/DR cleared (rlwinm 28..25), then rfi. */
     clrlwi config, config, 2
     mtspr 0x1a, config
     /* Clear IR/DR in the saved machine state so rfi enters the stub in real mode. */
