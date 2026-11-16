@@ -834,9 +834,14 @@ extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* arg0, 
     extern const char lbl_8031F694[];
     extern const char lbl_8031F688[];
     extern const char lbl_8031F664[];
-    register void* node = *(void**)((u8*)arg0 + 4);
-    register void* sentinel = (u8*)arg0 + 4;
-    while (node != sentinel) {
+    u8* base = (u8*)arg0;
+    struct { void *node; } cursor;
+    cursor.node = *(void**)(base + 4);
+    void *&node = cursor.node;
+    struct { void *end; } sentinel;
+    sentinel.end = base + 4;
+    void *&end = sentinel.end;
+    while (node != end) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
         if (((int (*)(const char*, const char*))fn_800D58C4)((const char*)node + 0x14, arg1)) {
