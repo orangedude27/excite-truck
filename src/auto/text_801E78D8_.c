@@ -772,9 +772,10 @@ long fn_801E86F8(long arg0) {
 }
 
 extern unsigned char lbl_80487D00[];
-void *fn_801E8718(long arg0) {
-    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
-    return lbl_80487D00 + arg0 * 0x38;
+void *fn_801E8718(long playerIndex) {
+    /* Return a pointer to the player's 0x38-byte entry (negative selects the current player). */
+    if (playerIndex < 0) playerIndex = (long)lbl_8055AF0C;
+    return lbl_80487D00 + playerIndex * 0x38;
 }
 
 float fn_801E8738(long arg0) {
