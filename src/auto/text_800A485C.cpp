@@ -5553,6 +5553,10 @@ extern "C" s32 VFiPFFAT_ReadClusterPage(void *arg0, u32 arg1, s32 arg2, s32 *arg
  * ends at or after here". */
 #define VF_FAT_END_OF_CHAIN(t) lbl_802EEF40[(t) * 5 + 2]
 
+/* [1] of the same table: below it an entry is a cluster of the heap, at or
+ * above it the chain ends (a bad-cluster, end-of-chain or reserved value). */
+#define VF_FAT_FIRST_END(t) ((u32 *)lbl_802EEF40)[(t) * 5 + 1]
+
 #ifndef VF_CHAIN_BLOCK_DEFINED
 #define VF_CHAIN_BLOCK_DEFINED
 /* [0] of the same table: the first value a data cluster cannot take; at and
