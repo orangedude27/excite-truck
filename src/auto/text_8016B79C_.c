@@ -3531,16 +3531,17 @@ extern s32 fn_80179650(void);
 #pragma push
 #pragma dont_inline on
 #pragma cplusplus on
-void **fn_8016CE9C(void *arg0, void **__restrict arg1) {
-    int idx;
-    void **base;
-    int next;
-    idx = ((int *)arg0)[1];
-    base = *(void ***)arg0;
-    next = idx + 1;
-    ((int *)arg0)[1] = next;
-    base[idx] = *arg1;
-    return &base[idx];
+void **fn_8016CE9C(void *vec, void **__restrict pValue) {
+    int index;
+    void **data;
+    int newIndex;
+    /* Append *pValue to the vector's data array, advance its count, and return the filled slot. */
+    index = ((PtrVec *)vec)->count;
+    data = ((PtrVec *)vec)->data;
+    newIndex = index + 1;
+    ((PtrVec *)vec)->count = newIndex;
+    data[index] = *pValue;
+    return &data[index];
 }
 #pragma pop
 
