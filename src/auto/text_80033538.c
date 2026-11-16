@@ -27,8 +27,8 @@ void fn_80033538(void *arg0, short arg1) {
 
 void fn_80033584(void *arg0, void *arg1) {
     unsigned int flags = 0;
-    unsigned short *in = (unsigned short *)arg1;
     unsigned short *out = (unsigned short *)((char *)arg0 + 0x14C);
+    unsigned short *in = (unsigned short *)arg1;
     unsigned short v;
     OSDisableInterrupts();
     v = in[0]; out[0] = v; if (v) flags |= 0x1;
@@ -274,17 +274,18 @@ void fn_80033CD8(void *arg0, void *arg1) {
 
 void *__AXGetCurrentProfile(void)
 {
-  unsigned char *new_var;
+  /* Round-robin: return the current 0x38-byte AX profile and advance the index; null when profiling is disabled. */
+  unsigned char *profile;
   unsigned int index;
-  int new_var2;
+  int offset;
   if (lbl_8055D7F0 != 0)
   {
     index = lbl_8055D7F4;
-    new_var = lbl_8055D7FC;
-    new_var2 = index * 0x38;
-    new_var = new_var + new_var2;
+    profile = lbl_8055D7FC;
+    offset = index * 0x38;
+    profile = profile + offset;
     lbl_8055D7F4 = (index + 1) % lbl_8055D7F8;
-    return new_var;
+    return profile;
   }
   return 0;
 }
