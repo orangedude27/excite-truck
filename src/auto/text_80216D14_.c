@@ -493,7 +493,7 @@ extern "C" void fn_80217834(void *arg0) {
 #pragma cplusplus off
 
 #pragma cplusplus on
-extern "C" void fn_80217854(void *arg0) {
+extern "C" void fn_80217854(void *menuGroup) {
     class Dummy_80217854 {
     public:
         virtual void m0();
@@ -517,8 +517,10 @@ extern "C" void fn_80217854(void *arg0) {
         virtual void m18();
         virtual void call();
     };
-    Dummy_80217854 *obj = *(Dummy_80217854 **)((char *)arg0 + 0x448);
-    if (obj != 0) obj->call();
+    /* Invoke the hover callback (vtable +0x54) on the widget the pointer is over
+     * (menuGroup+0x448), if there is one. */
+    Dummy_80217854 *hoveredWidget = *(Dummy_80217854 **)((char *)menuGroup + 0x448);
+    if (hoveredWidget != 0) hoveredWidget->call();
 }
 #pragma cplusplus off
 void fn_80218E08(void *arg0, int arg1);
