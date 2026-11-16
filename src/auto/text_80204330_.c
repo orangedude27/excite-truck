@@ -287,6 +287,7 @@ update:
     fn_80204330();
     return 1;
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
