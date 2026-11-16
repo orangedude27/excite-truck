@@ -1065,12 +1065,14 @@ void fn_8024B544(void *obj, char *name) {
 /* gEmptyString: shared zero buffer in .sdata, used as an empty C string fallback. */
 #define gEmptyString lbl_8055BFD8
 
-s32 fn_8024B5D4(void *arg0, s32 arg1) {
+s32 fn_8024B5D4(void *config, s32 index) {
+    /* Return the first word (name pointer) of the indexed 8-byte entry in the
+     * config's inline entry array, or the shared empty-string pointer if out of range. */
     extern s32 gEmptyString;
-    if (arg1 < *(s32 *)((char *)arg0 + 0x1C)) {
-        return *(s32 *)((char *)*(s32 **)((char *)arg0 + 0x18) + arg1 * 8);
+    if (index < *(s32 *)((char *)config + 0x1C)) {
+        return *(s32 *)((char *)*(s32 **)((char *)config + 0x18) + index * 8);
     }
-    return (s32)&lbl_8055BFD8;
+    return (s32)&gEmptyString;
 }
 
 s32 fn_8024B5F8(s32 arg0, s32 arg1) {
