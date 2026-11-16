@@ -22,6 +22,16 @@ extern void *fn_80156A40(void);
 extern float lbl_80560418;
 extern float lbl_8056041C;
 
+typedef struct ShapePair { float x, y; } ShapePair;
+static inline ShapePair InterpolatePair(ShapePair start, ShapePair finish, float t) {
+    ShapePair delta;
+    ShapePair result;
+    delta.x = finish.x - start.x;
+    delta.y = finish.y - start.y;
+    result.x = start.x + t * delta.x;
+    result.y = start.y + t * delta.y;
+    return result;
+}
 static inline float InterpolateDelta(float start, float delta, float t) {
     return start + t * delta;
 }
