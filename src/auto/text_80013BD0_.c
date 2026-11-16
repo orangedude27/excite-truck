@@ -344,20 +344,21 @@ extern "C" void *fn_80014524(void *object, s32 index) {
 }
 #pragma pop
 
-#pragma scheduling reset
+#pragma scheduling on
 void fn_80014638(void *arg0) {
     f32 zero = lbl_80560368;
     s32 a = 0;
     f32 one = lbl_80560398;
     s32 six = 6;
-    *(s32 *)((u8 *)arg0 + 0x14) = six;
-    *(f32 *)((u8 *)arg0 + 0x1C) = one;
-    *(u8 *)((u8 *)arg0 + 0x20) = a;
-    *(f32 *)((u8 *)arg0 + 0x2C) = zero;
-    *(f32 *)((u8 *)arg0 + 0x28) = zero;
-    *(s32 *)((u8 *)arg0 + 0x24) = a;
+    volatile u8 *p = (volatile u8 *)arg0;
+    *(s32 volatile *)(p + 0x14) = six;
+    *(f32 volatile *)(p + 0x1C) = one;
+    *(u8 volatile *)(p + 0x20) = a;
+    *(f32 volatile *)(p + 0x2C) = zero;
+    *(f32 volatile *)(p + 0x28) = zero;
+    *(s32 volatile *)(p + 0x24) = a;
 }
-#pragma scheduling invalid_target
+#pragma scheduling reset
 extern u8 lbl_802FCE18[];
 extern void fn_8001A04C(void *);
 extern void fn_802CAC54(s32);
