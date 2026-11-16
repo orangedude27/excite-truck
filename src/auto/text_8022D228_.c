@@ -262,14 +262,16 @@ int fn_8022DA34(int object, int deleteFlag) {
 #define GAUGE_ROUND_EPS lbl_805635D0      /* 0.0004: nudges the printed value up */
 #pragma push
 #pragma scheduling invalid_target
-void fn_8022DA74(void *arg0, char *arg1) {
-    register void *data = arg0;
-    register float high = *(volatile float *)((char *)arg0 + 8);
-    register float low = *(volatile float *)((char *)data + 4);
-    register float range = high - low;
-    register float fraction = **(float **)((char *)data + 0x18);
-    register int precision = *(int *)((char *)data + 0x1C);
-    sprintf(arg1, lbl_8055B958, precision, lbl_805635D0 + (low + fraction * range), range, low);
+/* Format a FloatGauge's value as a decimal string: the interpolated value
+ * (min + value*(max-min)) is printed with the gauge's fixed decimal precision. */
+void fn_8022DA74(void *gauge, char *out) {
+    register void *data = gauge;
+    register float displayMax = *(volatile float *)((char *)gauge + 8);
+    register float displayMin = *(volatile float *)((char *)data + 4);
+    register float displayRange = displayMax - displayMin;
+    register float value = **(float **)((char *)data + 0x18);
+    register int decimalPlaces = *(int *)((char *)data + 0x1C);
+    sprintf(out, GAUGE_FLOAT_FORMAT, decimalPlaces, GAUGE_ROUND_EPS + (displayMin + value * displayRange), displayRange, displayMin);
 }
 #pragma pop
 float fn_8022DAB0(void *arg0) {
