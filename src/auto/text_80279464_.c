@@ -1,8 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-void fn_80279464(void* alarm) {
-    fn_80279CE4(fn_80279370(alarm));
+/* Race-event bootstrap reset: clear the four controller entries (fn_80279370),
+ * then zero the event table (fn_80279CE4). The callback argument is unused. */
+void fn_80279464(void* unused) {
+    fn_80279CE4(fn_80279370(unused));
 }
 
 extern void* fn_80279D3C(void*);
