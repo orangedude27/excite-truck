@@ -706,11 +706,12 @@ float fn_80137850(void *arg0)
   return p[0] + ((new_var = new_var2[1]) * p[2]);
 }
 
-void fn_80137884(s32 arg0) {
- s32 var_r3 = fn_801284F8(0x18, &lbl_80559BF8);
- if (var_r3 != 0) var_r3 = ((s32 (*)(s32, s32))fn_801368F8)(var_r3, arg0);
- lbl_8055E0D4 = var_r3;
- lbl_8055E0D0 = var_r3;
+/* Allocate and initialize the global Proxer object for the given car count, storing it as the current and default instance. */
+void fn_80137884(s32 carCount) {
+ s32 instance = fn_801284F8(0x18, &lbl_80559BF8);
+ if (instance != 0) instance = ((s32 (*)(s32, s32))fn_801368F8)(instance, carCount);
+ lbl_8055E0D4 = instance;
+ lbl_8055E0D0 = instance;
 }
 
 void fn_801378D0(void) {
