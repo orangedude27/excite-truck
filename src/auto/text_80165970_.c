@@ -365,8 +365,16 @@ void *fn_80166040(int id) {
 #pragma dont_inline reset
 #pragma pop
 void fn_80166098(void) {
-    fn_80179630(-1);
-    fn_801B2EC0();
+#define GetPlayerVehicleIndex fn_80179630
+#define GetRacerObject        fn_801B2EC0
+    /* Fetch the reference racer object used for relative progress: resolve
+     * player 0's vehicle index (-1 clamps to 0), then index the 0x80-byte
+     * racer-object table. The object comes back in r3 from the second call,
+     * so callers cast this to a void**-returning getter. */
+    GetPlayerVehicleIndex(-1);
+    GetRacerObject();
+#undef GetPlayerVehicleIndex
+#undef GetRacerObject
 }
 
 #pragma push
