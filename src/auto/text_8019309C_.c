@@ -550,9 +550,11 @@ void fn_80193CD4(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80193CE0(void *arg0) {
-    ((DummyVt_80193CE0 *)arg0)->d10();
-    *(u8 *)((char *)arg0 + 0x2A5) = 0;
+extern "C" void fn_80193CE0(void *self) {
+    /* Runs the object's virtual d10() update (vtable slot +0x30), then clears
+       its boolean flag at +0x2A5. */
+    ((DummyVt_80193CE0 *)self)->d10();
+    *(u8 *)((char *)self + 0x2A5) = 0;
 }
 #pragma cplusplus reset
 
