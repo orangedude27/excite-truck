@@ -87,19 +87,19 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
     ((unsigned short*)object)[0x64] = zero;
     ((int*)object)[56] = zero;
     if ((signed char)lbl_8055DE28 == 0) {
-        char *globalManager = lbl_80412778;
+        ChannelManagerLayout *globalManager = (ChannelManagerLayout *)lbl_80412778;
         *(volatile int *)lbl_80412778 = zero;
-        *(void * volatile *)(globalManager + 0x4) = 0;
-        void *head = globalManager + 0x4;
-        void *tail = globalManager + 0x10;
-        *(void * volatile *)(globalManager + 0x8) = 0;
-        *(void * volatile *)(globalManager + 0x10) = 0;
-        *(void * volatile *)(globalManager + 0x14) = 0;
-        *(void **)(globalManager + 0x4) = head;
-        *(void **)(globalManager + 0x8) = head;
-        *(int *)(globalManager + 0xC) = zero;
-        *(void **)(globalManager + 0x10) = tail;
-        *(void **)(globalManager + 0x14) = tail;
+        *(void * volatile *)((char *)globalManager + 0x4) = 0;
+        void *head = &globalManager->idle.head;
+        void *tail = &globalManager->active.head;
+        *(void * volatile *)((char *)globalManager + 0x8) = 0;
+        *(void * volatile *)((char *)globalManager + 0x10) = 0;
+        *(void * volatile *)((char *)globalManager + 0x14) = 0;
+        *(void **)((char *)globalManager + 0x4) = head;
+        *(void **)((char *)globalManager + 0x8) = head;
+        *(int *)((char *)globalManager + 0xC) = zero;
+        *(void **)((char *)globalManager + 0x10) = tail;
+        *(void **)((char *)globalManager + 0x14) = tail;
         ((void (*)(void *, void *, void *, void *, void *))__register_global_object)(
             globalManager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv,
             lbl_8040EC78, tail, head);
