@@ -1873,8 +1873,9 @@ extern "C" f32 fn_80159C34(Fn80159C34Obj* arg0, void* arg1) {
  return result;
 }
 #pragma pop
-extern "C" void fn_80159E2C(Unk8015A368C* arg0) {
-    fn_80131234(lbl_8032E668[arg0->GetType()]);
+extern "C" void fn_80159E2C(Unk8015A368C* object) {
+    /* Look up the per-type entry in lbl_8032E668 by GetType() and pass it to fn_80131234. */
+    fn_80131234(lbl_8032E668[object->GetType()]);
 }
 
 extern "C" s32 fn_80159E6C(void) {
