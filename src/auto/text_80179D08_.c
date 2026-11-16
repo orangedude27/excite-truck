@@ -232,6 +232,7 @@ void fn_8017A004(void) {
 
 }
 
+/* Byte-by-byte copy of count bytes from src to dst; the goto form keeps the original codegen. */
 void fn_8017A008(unsigned char *dst, unsigned char *src, int count) {
     goto check;
 loop:
