@@ -672,15 +672,14 @@ extern "C" void fn_802BFB70(void *arg0, int arg1, float angle) {
     float rotation[3], viewport[4], direction[3], viewport0[4], initial[3], adjust[3], value;
     float transform[12], old2[12], old1[12], matrix[12];
     char *obj = (char *)arg0;
-    int i;
     char *views;
-    int *handles;
-    char *p;
     float theta;
     *(float *)(obj + 0x14) = fn_801E85A4() == 2 ? lbl_80564DB4 : lbl_80564D80;
     views = *(char **)(obj + 4);
-    if (!*(unsigned char *)(views + 0x1a8)) {
-        p = views + 0x1c; handles = (int *)views;
+    if (!*(unsigned char *)(views + 0x1A8)) {
+        int i;
+        char *p = views + 0x1C;
+        int *handles = (int *)views;
         for (i=0; i<6; i++, handles++, p+=0x30) {
             fn_802CB274(*handles); fn_802C9294(*handles,0);
             fn_802C9694(initial,lbl_80564D80,lbl_80564DB8,lbl_80564DBC);
@@ -698,13 +697,18 @@ extern "C" void fn_802BFB70(void *arg0, int arg1, float angle) {
     fn_802C86F0(viewport,0,0,0x100,0x100);
     fn_802C8B08(old2); fn_802C8638(transform); fn_802C88BC(2);
     if (*(void **)(obj+4)) {
+        int *handles;
+        char *p;
+        char *views;
+        struct { int count; } counter;
+        int &i = counter.count;
         value=theta; views=*(char **)(obj+4);
         ((void (*)(float *))fn_802C00A0)(&value);
         fn_802C9694(adjust,lbl_80564DC4,lbl_80564DB0,value);
         handles=(int *)views; p=views+0x1c;
-        for(i=0;i<6;i++,handles++,p+=0x30) {
+        for(i=0;i<6;i++,p+=0x30,handles++) {
             fn_80144DC8(matrix); fn_802C0054(matrix,p);
-            fn_80144DAC((char *)matrix+0x24,(char *)transform+0x24);
+            fn_80144DAC(matrix+9,transform+9);
             fn_802C8B98(*handles,matrix);
             fn_802C8DB8(views+0x13c,4,(unsigned short *)(views+0x19c),6); fn_802C8D74();
         }
