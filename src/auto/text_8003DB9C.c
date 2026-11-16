@@ -5636,6 +5636,8 @@ void GXSetDither(s32 enable) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
+/* Write the destination-alpha BP register: pack the enable bit and 8-bit alpha
+ * value, send them to the GPU, cache the result and mark the last write as BP. */
 void GXSetDstAlpha(s32 enable, s32 alpha) {
     union {
         unsigned int value;
@@ -5650,10 +5652,9 @@ void GXSetDstAlpha(s32 enable, s32 alpha) {
     reg.value = data[0x224 / 4];
     reg.bits.alpha = alpha;
     reg.bits.enable = enable;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = reg.value;
+    GX_BP_LOAD_REG(reg.value);
     data[0x224 / 4] = reg.value;
-    *(unsigned short *)((char *)data + 2) = 0;
+    gxdraw->lastWriteWasXF = FALSE;
 }
 
 void GXSetFieldMask(s32 even, s32 odd) {
