@@ -146,8 +146,9 @@ extern "C" void fn_801DFE50(void *object, int unused, int value) {
 }
 #pragma cplusplus reset
 
-float fn_801DFE94(void) {
-    return (float)fn_8002EFB4();
+float fn_801DFE94(double x, double y) {
+    /* Single-precision fmod: compute the double-precision remainder fn_8002EFB4(x, y) and round it to float. */
+    return (float)((double (*)(double, double))fn_8002EFB4)(x, y);
 }
 
 typedef void (*Fn)(void *);
