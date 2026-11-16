@@ -1153,6 +1153,7 @@ extern void fn_80070854(void);
 extern void fn_8008251C(void);
 extern void OSCancelAlarm(OSAlarm *alarm);
 
+/* Debug printf stub for this unit/build: discards formatted output. */
 void DBPrintf_80068D68(const char *fmt, ...) {
 #pragma unused(fmt)
 }
