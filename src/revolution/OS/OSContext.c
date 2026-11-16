@@ -381,7 +381,7 @@ asm void OSSwitchFiber(register void* func, register void* stack) {
     // clang-format on
 }
 
-asm void OSSwitchFiberEx(u32 r3, u32 r4, u32 r5, u32 r6, register void* func,
+asm void OSSwitchFiberEx(u32 arg0, u32 arg1, u32 arg2, u32 arg3, register void* func,
                          register void* stack) {
     // clang-format off
     nofralloc
