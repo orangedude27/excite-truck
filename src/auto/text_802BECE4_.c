@@ -1001,18 +1001,20 @@ extern "C" void *fn_802C0310(void *self, int shouldFree) {
 }
 #pragma cplusplus off
 #pragma cplusplus on
-extern "C" void fn_802C03B4(void *arg0) {
-    class Obj {
+extern "C" void fn_802C03B4(void *self) {
+    class Child {
     public:
         virtual void v0();
         virtual void v1();
     };
-    void *obj = *(void **)((char *)arg0 + 0x2c58);
-    if (obj == 0)
+    /* If a child is attached and the global trigger flag is set, invoke the
+     * child's vtable slot-0xC method. */
+    void *child = *(void **)((char *)self + 0x2c58);
+    if (child == 0)
         return;
     if (lbl_8055CF71 == 0)
         return;
-    ((Obj *)obj)->v1();
+    ((Child *)child)->v1();
 }
 #pragma cplusplus off
 
