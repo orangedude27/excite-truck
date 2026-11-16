@@ -1,5 +1,6 @@
 #include <types.h>
 #include <macros.h>
+#include "revolution/OS/OSExec.h"
 typedef struct IPCIOVector {
     void *base;
     u32 length;
@@ -22,18 +23,17 @@ extern void ICFlashInvalidate(void);
 extern void* memset(void*, int, unsigned int);
 extern unsigned int strlen(const char*);
 extern char* strcpy(char*, const char*);
+#pragma push
+#pragma use_lmw_stmw off
 int PackArgs(void* base, int count, char** args, int unused) {
-    register char** argv;
-    register void* heap;
+    void* heap = base;
+    char** argv = args;
     char** argp;
     char* str;
     char* strings;
     char* table;
     int original;
     unsigned int copied;
-
-    argv = args;
-    heap = base;
     memset(base, 0, 0x2000);
     if (count == 0) {
         *(int*)((char*)heap + 8) = 0;
@@ -41,15 +41,12 @@ int PackArgs(void* base, int count, char** args, int unused) {
         original = count;
         strings = (char*)heap + 0x2000;
         argp = argv + count;
-        while (count >= 0) {
+        for (; count >= 0; count--, argp--) {
             str = *argp;
             strings -= strlen(str) + 1;
             strcpy(strings, str);
             *argp = (char*)((char*)strings - (char*)heap);
-            count--;
-            argp--;
         }
-
         copied = 0;
         table = (char*)heap + ((strings - (char*)heap) & ~3);
         table -= (unsigned int)(original + 1) * 4;
@@ -63,13 +60,12 @@ int PackArgs(void* base, int count, char** args, int unused) {
     }
     return 1;
 }
-
-#pragma dont_inline on
+#pragma pop
 void fn_8004DD88(void (*target)(void)) {
     ICFlashInvalidate();
     __sync();
     __isync();
-    ((void (*)(void))(u32)target)();
+    ((void (*)(void))target)();
 }
 #pragma dont_inline reset
 
@@ -77,13 +73,15 @@ void __AXDSPInitCallback_8004DDC4(void) {
     lbl_8055DA44 = 1;
 }
 
-void __OSGetExecParams(unsigned int *param) {
-    unsigned int exec = *(volatile unsigned int *)0x800030F0;
-    if (exec >= 0x80000000u) {
-        memcpy(param, (void *)exec, 0x1C);
+// Copies the exec parameters saved at the DOL exec-params address into out,
+// or clears out when no valid saved parameters exist.
+void __OSGetExecParams(OSExecParams *out) {
+    unsigned int execParamsAddr = *(volatile unsigned int *)0x800030F0;
+    if (execParamsAddr >= 0x80000000u) {
+        memcpy(out, (void *)execParamsAddr, 0x1C);
         return;
     }
-    *param = 0;
+    out->WORD_0x0 = 0;
 }
 
 void fn_8004DDF4(void* hi) {
@@ -106,15 +104,13 @@ extern int _ES_GetTicketViews(int *fd, unsigned int title_hi, unsigned int title
 extern int _ES_LaunchTitle(int *fd, unsigned int title_hi, unsigned int title_lo, void *views);
 extern void OSReport(const char *format, ...);
 extern void __OSLaunchMenu(void);
-#pragma small_data on
-#pragma small_data reset
 #pragma use_lmw_stmw off
 void fn_8004DDFC(void) {
     unsigned char *base;
     unsigned char *mem;
+    register unsigned int *selected;
+    register unsigned int *entry;
     unsigned char *partition;
-    unsigned int *selected;
-    unsigned int *entry;
     struct local_state {
         unsigned char b0;
         unsigned char b1;
@@ -134,7 +130,7 @@ void fn_8004DDFC(void) {
     state.b2 = lbl_80560C72;
     state.b3 = lbl_80560C73;
     base = lbl_8037D900 + 0x10000;
-    mem = lbl_8037D900;
+    mem = lbl_8037D900 + 0;
     lbl_8055DA2C = 0;
     ((int (*)(void *, int, int, int, int, int, int, void *))fn_8003AC24)((void *)fn_8004DDF4, state.b2, state.b1, state.b0, 0, -1, 1, mem);
     if (lbl_8055DA2C != 0) {
@@ -192,7 +188,7 @@ void fn_8004DDFC(void) {
         }
     }
     lbl_8055DA2C = 0;
-    fn_8003AC24((void *)fn_8004DDF4);
+    ((int (*)(void *))fn_8003AC24)((void *)fn_8004DDF4);
     if (lbl_8055DA2C != 0) {
         if (lbl_8055DA2C != (void *)1) {
             const char *format = lbl_803049C0;
@@ -214,7 +210,7 @@ void fn_8004DDFC(void) {
         __OSLaunchMenu();
     }
     result = ((int (*)(int *, unsigned long long, void *, unsigned int *))_ES_GetTicketViews)(&state.fd, title, 0, &state.count);
-    if (state.count == 1 && result != 0) {
+    if (state.count != 1 || result != 0) {
         OSReport(lbl_803049C0, result);
         __OSLaunchMenu();
     }
@@ -285,8 +281,6 @@ void fn_8004DDFC(void) {
         __OSLaunchMenu();
     }
 }
-#pragma use_lmw_stmw on
-
 extern unsigned char lbl_80560C74, lbl_80560C75, lbl_80560C76, lbl_80560C77;
 void __OSLaunchMenu(void) {
     struct LocalState {
