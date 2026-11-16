@@ -524,6 +524,32 @@ int fn_801388F4(void *arg0) {
 
 void fn_80138958(void *arg0, float *arg1) { fn_801386D0(arg0, arg1[0], arg1[1], arg1[2]); }
 
+/* The two 32-bit words at the start of an IdealLineRes ('ILIN') resource.
+ * They are byte-swapped in place when the resource came from a big-endian
+ * file; the loader accepts ilsegSize 0x3C and resSize 0x30. */
+typedef struct IdealLineHeader {
+    unsigned int resSize;    /* +0x00, expected IDEAL_RES_RES_SIZE */
+    unsigned int ilsegSize;  /* +0x04, expected IDEAL_RES_ILSEG_SIZE */
+} IdealLineHeader;
+
+/* Scratch area filled in by the resource manager while loading an IdealLineRes. */
+typedef struct IdealResLoadInfo {
+    unsigned char firstLoad;   /* +0x00 set on the first load of the resource */
+    unsigned char swapEndian;  /* +0x01 set when the loaded bytes must be swapped */
+    unsigned char pad[2];
+    IdealLineHeader header;    /* +0x04 parsed (and possibly swapped) header words */
+    int valid;                 /* +0x0C non-zero if the load succeeded */
+    unsigned int version;      /* +0x10 resource version, expected IDEAL_RES_VERSION */
+} IdealResLoadInfo;
+
+#define IDEAL_RES_TAG 0x494C494E    /* 'ILIN' */
+#define IDEAL_RES_VERSION 0x1E
+#define IDEAL_RES_ILSEG_SIZE 0x3C
+#define IDEAL_RES_RES_SIZE 0x30
+
+#define sIdealSizeMismatchMsg lbl_8032BF20
+#define sIdealBadVersionMsg lbl_8032BF70
+
 extern void *fn_8012C370(int, int, unsigned int *, int *, void **, unsigned char *);
 extern void fn_8012C4D8(void *);
 extern void fn_801381B4(void *);
