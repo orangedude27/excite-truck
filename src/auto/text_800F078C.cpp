@@ -122,10 +122,12 @@ extern "C" u8 lbl_803240D4[];
 #pragma pop
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" void Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqTrackAllocatorUliPQ46nw4hbm3snd6detail14NoteOnCallback(void*, unsigned long, int, int, void*);
-extern "C" void fn_800F0850(void *arg0) {
+/* Re-initializes a SeqSound's base BasicSound parameters, then clears its
+ * pending asynchronous sequence-load callback (+0x1EC) and argument (+0x1F0). */
+extern "C" void fn_800F0850(void *sound) {
     InitParam__Q44nw4r3snd6detail10BasicSoundFv();
-    *(s32*)((u8*)arg0 + 0x1EC) = 0;
-    *(s32*)((u8*)arg0 + 0x1F0) = 0;
+    ((nw4hbm::snd::detail::SeqSound *)sound)->asyncCallback = 0;
+    ((nw4hbm::snd::detail::SeqSound *)sound)->asyncCallbackArg = 0;
 }
 
 #pragma push
