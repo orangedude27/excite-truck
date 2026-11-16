@@ -55,6 +55,8 @@ extern "C" void fn_802E75FC(s32 bankId) {
 }
 
 #pragma cplusplus reset
+#define gStrmBankMgr lbl_8055FFF0
+#define unloadBank f12
 extern "C" void fn_802E765C(s32 arg0, s32 arg1, s32 arg2) {
     s32 a0 = arg0;
     s32 a1 = arg1;
