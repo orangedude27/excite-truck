@@ -6513,8 +6513,8 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
 
     fn_80218F80();
 
-    *(s32 *)((u8 *)arg0 + 0x258) = 0;
     *(void **)arg0 = lbl_8033E350;
+    *(s32 *)((u8 *)arg0 + 0x258) = 0;
     *(u8 *)((u8 *)arg0 + 0x25C) = 0;
     *(s32 *)((u8 *)arg0 + 0x264) = -2;
     *(s32 *)((u8 *)arg0 + 0x260) = 0;
@@ -6560,8 +6560,8 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
         *(s32 *)((u8 *)arg0 + 0x258) = (s32)((u8 *)arg1 + 0x40);
     }
     s32 flag_val = *(s32 *)((u8 *)arg1 + 0xA4);
+    *(u8 *)((u8 *)arg0 + 0x25C) = flag_val != 0;
     *(s32 *)((u8 *)arg0 + 0x254) = 0;
-    *(u8 *)((u8 *)arg0 + 0x25C) = (u8)((u32)(-flag_val | flag_val) >> 31);
     return arg0;
 }
 #pragma pop
