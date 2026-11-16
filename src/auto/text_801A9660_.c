@@ -2106,13 +2106,14 @@ extern "C" void fn_801AD99C(void *r0, float *r1, float *r2) {
     ((Obj3 *)r0)->v16(x, y, 0x64, 0);
 }
 #pragma pop
-void fn_801ADA38(void *arg0, int arg1) {
-    int *sp8;
-    if (arg1) {
-        sp8 = (int *)lbl_80335940;
-        ((void (*)(void *, int **))fn_801ABFF8)(arg0, &sp8);
+void fn_801ADA38(void *object, int enable) {
+    /* If enabled, dispatch the default event table (lbl_80335940) to this object/its peers via fn_801ABFF8; otherwise clear the active flag at +0x220. */
+    int *event;
+    if (enable) {
+        event = (int *)lbl_80335940;
+        ((void (*)(void *, int **))fn_801ABFF8)(object, &event);
     } else {
-        *((char *)arg0 + 0x220) = 0;
+        *((char *)object + 0x220) = 0;
     }
 }
 
