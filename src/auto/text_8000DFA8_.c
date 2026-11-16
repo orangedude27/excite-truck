@@ -196,9 +196,11 @@ extern "C" void fn_8000F22C(void) {
 }
 #pragma pop
 #pragma cplusplus reset
-void fn_8000F2A8(s32 arg0, s32 arg1) {
-    lbl_80350F88 = fn_8023512C(arg0);
-    lbl_80351214 = fn_8023512C(arg1);
+/* Opens two refcounted archive/file handles via fn_8023512C and stores them in globals
+ * lbl_80350F88 and lbl_80351214 (released later by fn_8000F2EC). */
+void fn_8000F2A8(s32 fileId0, s32 fileId1) {
+    lbl_80350F88 = fn_8023512C(fileId0);
+    lbl_80351214 = fn_8023512C(fileId1);
 }
 
 void fn_8000F2EC(void) {
