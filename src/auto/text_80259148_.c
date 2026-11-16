@@ -629,9 +629,11 @@ extern int strlen(char *);
 
 extern char lbl_80345208[]; /* "*uiaction.res/" */
 __declspec(section ".sdata") extern char lbl_8055C384[]; /* ".mo0" */
-/* Set this UI object's motion/model from a base name: release the current handle, build
-   "*uiaction.res/<name>.mo0" (stripping any extension), load it if present, and reset
-   the transform/color floats at +0x84..+0xA4. */
+extern char lbl_80345208[]; /* "*uiaction.res/" path prefix */
+__declspec(section ".sdata") extern char lbl_8055C384[]; /* ".mo0" extension */
+/* Load UI motion/model by name: release any current model handle, build "*uiaction.res/<name>.mo0"
+   from the input, verify the resource exists, then store the new model handle and reset transform
+   fields at +0x84..+0xA4. */
 void fn_8025A8B8(void *arg0, char *arg1) {
     char name[0x40];
     char *input = arg1;
@@ -647,10 +649,10 @@ void fn_8025A8B8(void *arg0, char *arg1) {
     char *s;
     int m;
     char *q;
-#define UIACTION_RES_PREFIX lbl_80345208
-#define MO0_EXTENSION lbl_8055C384
-#define FLOAT_ONE lbl_80563AE0
-#define FLOAT_ZERO lbl_80563AE4
+#define UI_MOTION_PATH_PREFIX lbl_80345208
+#define UI_MOTION_EXT_MO0 lbl_8055C384
+#define UI_MOTION_ONE lbl_80563AE0
+#define UI_MOTION_ZERO lbl_80563AE4
 
     id = *(int *)((char *)obj + 0x50);
     if (id != -1) {
@@ -658,7 +660,7 @@ void fn_8025A8B8(void *arg0, char *arg1) {
         *(int *)((char *)obj + 0x50) = -1;
     }
     if (*(signed char *)input != 0 && strlen(input) != 0) {
-        src = UIACTION_RES_PREFIX;
+        src = UI_MOTION_PATH_PREFIX;
         dst = name;
         count = 0x40;
         while ((*dst++ = *src++) != 0) {
@@ -687,7 +689,7 @@ void fn_8025A8B8(void *arg0, char *arg1) {
         }
         q = name;
         m = 0x40;
-        s = MO0_EXTENSION;
+        s = UI_MOTION_EXT_MO0;
         while (q[0] != 0) {
             m--;
             q++;
@@ -703,8 +705,8 @@ void fn_8025A8B8(void *arg0, char *arg1) {
         if (fn_8012C33C(name))
             *(int *)((char *)obj + 0x50) = fn_802C6FC0(name, 0, 0);
     }
-    one = FLOAT_ZERO;
-    zero = FLOAT_ONE;
+    one = UI_MOTION_ZERO;
+    zero = UI_MOTION_ONE;
     *(float *)((char *)obj + 0x88) = one;
     *(float *)((char *)obj + 0x84) = zero;
     *(float *)((char *)obj + 0x8C) = one;
@@ -715,10 +717,10 @@ void fn_8025A8B8(void *arg0, char *arg1) {
     *(float *)((char *)obj + 0xA0) = one;
     *(float *)((char *)obj + 0xA4) = zero;
 
-#undef UIACTION_RES_PREFIX
-#undef MO0_EXTENSION
-#undef FLOAT_ONE
-#undef FLOAT_ZERO
+#undef UI_MOTION_PATH_PREFIX
+#undef UI_MOTION_EXT_MO0
+#undef UI_MOTION_ONE
+#undef UI_MOTION_ZERO
 }
 
 extern int fn_801298E8(void *, int);
