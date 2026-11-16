@@ -23256,6 +23256,8 @@ do_call:
 }
 
 extern "C" void fn_800D15B4(void*);
+/* OSAlarm callback for the rumble-motor timeout: the alarm's user data is the
+ * homebutton::Controller whose motor fn_800D15B4 silences. */
 extern "C" void fn_800CA148(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
     fn_800D15B4(OSGetAlarmUserData(alarm));
