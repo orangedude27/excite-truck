@@ -4448,11 +4448,11 @@ u32 fn_80062054(s32 chan) {
     return val;
 }
 
-// fn_80062088: set data format
-void fn_80062088(s32 val) {
-    BOOL enabled = OSDisableInterrupts();
-    lbl_8055DC12 = val;
-    OSRestoreInterrupts(enabled);
+// Caches the WPAD speaker volume (clamped to 0..0x7F) with interrupts disabled.
+void fn_80062088(s32 volume) {
+    BOOL interrupts = OSDisableInterrupts();
+    lbl_8055DC12 = volume;
+    OSRestoreInterrupts(interrupts);
 }
 
 // fn_80062278: check controller
