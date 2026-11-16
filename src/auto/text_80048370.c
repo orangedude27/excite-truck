@@ -868,9 +868,10 @@ void MEMFreeToAllocator(MEMAllocator* allocator, void* block) {
 
 #define sExpHeapAllocatorFuncs lbl_80560C38
 
+/* Sets up allocator to hand out blocks from expanded heap with the given alignment. */
 void MEMInitAllocatorForExpHeap(MEMAllocator* allocator, MEMiHeapHead* heap, s32 align) {
     extern const MEMAllocatorFuncs sExpHeapAllocatorFuncs;
-    allocator->funcs = &lbl_80560C38;
+    allocator->funcs = &sExpHeapAllocatorFuncs;
     allocator->heap = heap;
     allocator->heapParam1 = align;
     allocator->heapParam2 = 0;
