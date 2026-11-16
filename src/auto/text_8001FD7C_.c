@@ -219,10 +219,11 @@ void fn_8001FE20(void) {
     lbl_8055D658 = 0;
 }
 
+/* Restart action on the tips/results overlay: pause it, stamp the pause time, then request a physics restart. */
 void fn_8001FEB8(void) {
-    lbl_8055D645 = 1;
-    lbl_8055D640 = fn_802E2C20();
-    fn_80176734();
+    OVERLAY_PAUSED = 1;
+    TIPS_WAIT_MS = GetTimeMs();
+    RestartPhysics();
 }
 
 #pragma dont_inline on
