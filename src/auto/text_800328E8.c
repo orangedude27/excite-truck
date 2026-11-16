@@ -26,16 +26,16 @@ void* fn_800328E8(void) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_800328F0(void *arg0) {
+void fn_800328F0(void *arg0) {
     unsigned char *p = (unsigned char *)arg0;
-    struct { unsigned char *value; } source;
-    unsigned char *&src = source.value;
+    unsigned char *src;
     unsigned char *dst;
     unsigned int flags;
     unsigned int n;
     unsigned int *cs;
     unsigned int *cd;
     int *z;
+
     dst = p + 0x138;
     lbl_8055D7E0 = (void *)((unsigned int)lbl_8055D7E0 + 1);
     flags = *(unsigned int *)(p + 0x1C);
@@ -226,8 +226,12 @@ void fn_80032EAC(int arg0) {
             }
             if (*(unsigned short *)(p + 0x148) == 1 || *(int *)(p + 0x28) != 0) {
                 if (*(unsigned short *)(p + 0x140) != 2) {
-                    unsigned short lo = *(unsigned short *)(p + 0x1EA);
-                    unsigned int v = lo | (*(unsigned short *)(p + 0x1E8) << 16);
+                    unsigned int hi;
+                    unsigned int lo;
+                    unsigned int v;
+                    hi = *(volatile unsigned short *)(p + 0x1E8);
+                    lo = *(volatile unsigned short *)(p + 0x1EA);
+                    v = (hi << 16) | lo;
                     r29 += ((((v * 0x84) + 0x8000) >> 16) + 0x2D8) * 6;
                 }
                 if (*(unsigned short *)(p + 0x1FC) != 0) {
