@@ -991,12 +991,14 @@ extern "C" void *fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
  return c;
 }
 
-extern "C" void fn_800F26D8(void *arg0) {
-    extern char lbl_80324848[];
-    *(s32 *)arg0 = (s32)lbl_80324848;
-    *(s32 *)((u8 *)arg0 + 4) = 0;
-    *(u8 *)((u8 *)arg0 + 8) = 0x2F;
-    *(u8 *)((u8 *)arg0 + 9) = 0;
+/* Base sub-object constructor for a sound-archive: install the vtable at +0,
+ * clear the pointer at +4, and set the two byte fields at +8 (0x2F) and +9 (0). */
+extern "C" void fn_800F26D8(void *self) {
+    extern char lbl_80324848[]; /* vtable for this base sub-object */
+    *(s32 *)self = (s32)lbl_80324848;
+    *(s32 *)((u8 *)self + 4) = 0;
+    *(u8 *)((u8 *)self + 8) = 0x2F;
+    *(u8 *)((u8 *)self + 9) = 0;
 }
 
 extern "C" s32 fn_800F26FC(s32 object, s32 deleteFlag) {
