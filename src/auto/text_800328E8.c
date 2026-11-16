@@ -15,6 +15,9 @@ extern int fn_80031248(void);
 extern void *TRKReadBuffer_ui8(int);
 extern void __AXDepopVoice(void *);
 extern void *memcpy(void *, const void *, unsigned int);
+static inline void CopyStateBlock(const void *source, void *destination, unsigned int size) {
+    memcpy(destination, source, size);
+}
 typedef struct { unsigned char b[0x120]; } Block120;
 typedef struct { unsigned char b[0x30]; } Block30;
 typedef struct { int w[0x48]; } Words120;
