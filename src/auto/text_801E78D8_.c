@@ -557,7 +557,19 @@ extern "C" void fn_801E837C(void) {
     } while (index < 0x4B);
 }
 #pragma scheduling on
-void fn_801E83D4(void) { extern int fn_801B89F8(void); extern void *lbl_8055AF0C; extern void fn_801EBD18(void *); if (fn_801B89F8() == 0 || lbl_8055AF0C == 0) fn_801EBD18(lbl_8055AF0C); }
+void fn_801E83D4(void) {
+    extern int fn_801B89F8(void);
+    extern void *lbl_8055AF0C;
+    extern void fn_801EBD18(void *);
+#define ModeTimerPastIntro fn_801B89F8
+#define CurrentPlayerIndex lbl_8055AF0C
+#define NotifyPlayerRaceValue fn_801EBD18
+    /* Notify the current player's race slot of its value during intro or for player 0. */
+    if (ModeTimerPastIntro() == 0 || CurrentPlayerIndex == 0) NotifyPlayerRaceValue(CurrentPlayerIndex);
+#undef NotifyPlayerRaceValue
+#undef CurrentPlayerIndex
+#undef ModeTimerPastIntro
+}
 
 #pragma scheduling invalid_target
 #pragma cplusplus on
