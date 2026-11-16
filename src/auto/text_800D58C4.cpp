@@ -3679,49 +3679,22 @@ struct PaneObj {
     PaneLinkNode mChildList;
 };
 
-extern "C" void UnbindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* self, void* transform, bool flag) {
-    struct LinkNode {
-        LinkNode* next;
-        LinkNode* prev;
-    };
-    struct PaneObj {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual void v14();
-        virtual void v15();
-        virtual void UnbindAnimation(void* transform, bool flag);
-        virtual void v17();
-        virtual void UnbindAnimationSelf(void* transform);
-
-        char pad[0x10];
-        LinkNode mChildList;
-    };
+extern "C" void UnbindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* self, void* animTransform, bool recursive) {
+    /* Unbind an animation transform from this pane; when recursive, also unbind it from every child pane. */
     PaneObj* pane = (PaneObj*)self;
-    pane->UnbindAnimationSelf(transform);
-    if (flag) {
-        struct { LinkNode* node; } cursor;
+    pane->UnbindAnimationSelf(animTransform);
+    if (recursive) {
+        struct { PaneLinkNode* node; } cursor;
         cursor.node = pane->mChildList.next;
-        LinkNode*& node = cursor.node;
-        struct { LinkNode* endp; } sentinel;
-        sentinel.endp = &pane->mChildList;
-        LinkNode*& end = sentinel.endp;
+        PaneLinkNode*& node = cursor.node;
+        struct { PaneLinkNode* end; } sentinel;
+        sentinel.end = &pane->mChildList;
+        PaneLinkNode*& end = sentinel.end;
         while (node != end) {
             if (!node) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23d, lbl_8031E8D8);
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
             }
-            ((PaneObj*)((char*)node - 4))->UnbindAnimation(transform, flag);
+            ((PaneObj*)((char*)node - 4))->UnbindAnimation(animTransform, recursive);
             node = node->next;
         }
     }
