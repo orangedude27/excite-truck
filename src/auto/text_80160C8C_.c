@@ -562,6 +562,7 @@ extern void fn_801473F8(void *, const char *, ...);
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
+#pragma opt_propagation off
     struct Service {
         virtual void f0();
         virtual void *find(const char *);
@@ -574,7 +575,7 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
     f32 sp8;
     void *temp_r3;
     void *temp_r3_2;
-    register void *temp_r3_3;
+    void *temp_r3_3;
 
     if (lbl_8055E2E0 != 0) {
         temp_r3 = ((Service *)lbl_8055E2E0)->lookup((const char *)text + 0xC8);
@@ -587,8 +588,7 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
             fn_80148070(temp_r3_2, -1,
                 (s32)((Service *)lbl_8055E2E0)->create((const char *)text + 0xD4));
         }
-        temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
-        f32 value4 = *(f32 *)((u8 *)temp_r3_3 + 4);
+        f32 value4 = *(f32 *)((u8 *)(temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0)) + 4);
         f32 value8 = *(f32 *)((u8 *)temp_r3_3 + 8);
         s32 valueC = *(s32 *)((u8 *)temp_r3_3 + 0xC);
         fn_80148134(&spC, &sp8, valueC, value4, value8);
@@ -603,6 +603,7 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
         ((Service *)lbl_8055E2E0)->find((const char *)text + 0x110);
         fn_801476C4();
     }
+#pragma opt_propagation reset
 }
 #pragma cplusplus off
 #pragma scheduling on
@@ -1364,19 +1365,21 @@ extern f32 lbl_80558DC4[];
 #pragma push
 #pragma processor 750
 void fn_80162268(void *arg0) {
-    u8 *self = arg0;
-    s32 i,j,offset;
+    s32 i,j;
     int *cars;
-    u8 *car,*entry,*flags,*ui;
+    u8 *self = arg0;
+    u8 *entry;
+    s32 offset;
+    u8 *car,*flags,*ui;
     f32 velocity[2], length, scale;
-    f32 one, threshold, epsilon;
+    f32 threshold, one, epsilon;
     if (fn_801C5B60() == 0) fn_801DF074(8,0);
     if (((s32 (*)(void *))(*(void ***)self)[9])(self) == 0) {
         one=lbl_80561840; threshold=lbl_80561854; epsilon=lbl_80561850;
-        for (i=0,cars=lbl_804348E8; i<fn_801B2F24(); i++,cars++) {
+        for (i=0,cars=lbl_804348E8; i<fn_801B2F24(); cars++,i++) {
             car=(u8 *)*cars;
             if (*(u32 *)(car+0x10) != 0x50434152) continue;
-            for (j=0,offset=0; j<*(s32 *)(self+0xE4); j++,offset+=0x48) {
+            for (j=0,offset=0; j<*(s32 *)(self+0xE4); offset+=0x48,j++) {
                 entry=*(u8 **)(self+0xE0)+offset;
                 if (!entry[0x3C]) continue;
                 if (*(s32 *)(entry+0x34)) {
@@ -1390,7 +1393,7 @@ void fn_80162268(void *arg0) {
                                 scale=one/(f32)fn_8002F234(length);
                                 velocity[0]*=scale;
                                 velocity[1]*=scale;
-                                if (velocity[0]* *(f32 *)(entry+0x2C)+velocity[1]* *(f32 *)(entry+0x30)>threshold) {
+                                if (velocity[1]* *(f32 *)(entry+0x30)+velocity[0]* *(f32 *)(entry+0x2C)>threshold) {
                                     ++*(s32 *)(self+0x94);
                                     entry[0x3C]=0;
                                     ui=*(u8 **)(self+0xDC);
@@ -1420,8 +1423,8 @@ void fn_80162268(void *arg0) {
     } else {
         if ((f32)__fabs(*(f32 *)(self+0x8C))<=*(f32 *)&lbl_80558DC4) {
             fn_80276DC8(0);
-            for(i=0,cars=lbl_804348E8;i<fn_801B2F24();i++,cars++) {
-                void *manager=fn_801B83A0();
+            for(i=0,cars=lbl_804348E8;i<fn_801B2F24();cars++,i++) {
+                u8 *manager=fn_801B83A0();
                 ((void (*)(void *,s32,s32))(*(void ***)manager)[37])(manager,*cars,i);
             }
         }
@@ -2686,7 +2689,6 @@ extern "C" void fn_8016464C(void *arg0) {
     s32 count;
     void *iterator;
     s32 i;
-
     self->entryCount = 0;
     iterator = fn_80131810(lbl_8032FB90);
     count = 0;
@@ -2694,16 +2696,15 @@ extern "C" void fn_8016464C(void *arg0) {
         count++;
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, count);
     } while (((NameList_8016464C *)self->list)->hasName(name) != 0);
-
     i = 0;
     while (i < count - 1) {
-        s32 index = i + 1;
-        s32 n = self->entryCount;
+        unsigned long n = self->entryCount;
+        unsigned long index = i + 1;
         self->entryCount = n + 1;
         entry = (Entry_8016464C *)self->entries + n;
-        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, index);
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, (s32)index);
         entry->object = ((NameList_8016464C *)self->list)->getValue(name);
-        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A118, index);
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A118, (s32)index);
         entry->value = 0;
         if (((NameList_8016464C *)self->list)->hasName(name) != 0) {
             void *value = ((NameList_8016464C *)self->list)->getValue(name);
@@ -2969,10 +2970,6 @@ void fn_80164D64(void *arg0, s32 arg1) {
     register int *cars;
     register int index;
     register void *car;
-    register f32 offset;
-    register f32 scale;
-    register f32 zero;
-    f32 factor5;
     if (lbl_8055A0B4 <= fn_80161D50()) {
         if (lbl_8055A0B8 > fn_80161D50()) {
             if (*(u8 *)((u8 *)arg0 + 7) == 0) {
@@ -2981,9 +2978,6 @@ void fn_80164D64(void *arg0, s32 arg1) {
             }
         }
     }
-    zero = *(volatile f32 *)&lbl_80561848;
-    scale = *(volatile f32 *)&lbl_80561878;
-    offset = *(volatile f32 *)&lbl_80561874;
     for (cars = lbl_804348E8, index = 0; index < lbl_8055E4D0; cars++, index++) {
         car = (void *)*cars;
         fn_8018ADBC(car, lbl_80561840);
@@ -2996,12 +2990,11 @@ void fn_80164D64(void *arg0, s32 arg1) {
         work.tail[1] = word60;
         work.tail[2] = word64;
         work.tail[3] = *(volatile u32 *)((u8 *)car + 0x68);
-        ((f32 *)work.tail)[1] = zero;
-        factor5 = (f32)index;
-        ((f32 *)work.tail)[2] = offset + scale * factor5;
-        ((f32 *)work.tail)[3] = zero;
-        work.a[2] = work.a[1] = work.a[0] = zero;
-        work.b[2] = work.b[1] = work.b[0] = zero;
+        ((f32 *)work.tail)[1] = 0.0f;
+        ((f32 *)work.tail)[2] = 999.0f + 20.0f * (f32)index;
+        ((f32 *)work.tail)[3] = 0.0f;
+        work.a[2] = work.a[1] = work.a[0] = 0.0f;
+        work.b[2] = work.b[1] = work.b[0] = 0.0f;
         fn_8017CFFC(car, work.head.word, work.b, work.a);
     }
     if (*(u8 *)((u8 *)arg0 + 4)) {
