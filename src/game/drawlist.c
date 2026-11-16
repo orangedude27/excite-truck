@@ -476,9 +476,13 @@ void fn_802C8B98(int handle, int source) {
     ((void (*)(int))fn_802C8B70)(handle);
 }
 #pragma dont_inline reset
-void fn_802C8BD0(int arg0) {
-    fn_802C7758(arg0);
-    ((void (*)(int))fn_802C8B70)(arg0);
+/* Reset the current GX material/vertex state to its default (fn_802C7758),
+ * then run the mode-2 draw-list setup: select texture slot `texSlot` and set
+ * the draw mode to 2. Like fn_802C8B98, but resets to the default instead of
+ * applying a queued draw record first. */
+void fn_802C8BD0(int texSlot) {
+    fn_802C7758(texSlot);
+    ((void (*)(int))fn_802C8B70)(texSlot);
 }
 #pragma dont_inline off
 
