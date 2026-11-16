@@ -2110,6 +2110,8 @@ extern "C" void fn_800E5594(void *arg0, int arg1) {
 }
 
 extern "C" void fn_800E55B4(void *arg0, float arg1) {
+    /* Clamp arg1 to [0.0, 1.0], update the float field at +0x140, and mark voice
+     * parameter state dirty (flag 0x20 at +0x123) if it changed. */
     float value;
     if (arg1 > lbl_80560F38) {
         value = lbl_80560F38;
