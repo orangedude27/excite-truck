@@ -1127,9 +1127,10 @@ void fn_801E8F10(long arg0) {
 }
 
 #pragma scheduling on
-long fn_801E952C(long arg0) {
-    memset((void *)arg0, 0, 0x3F8);
-    return arg0;
+/* Zero a 0x3F8-byte state/context block and return the same pointer. */
+void *fn_801E952C(void *context) {
+    memset(context, 0, 0x3F8);
+    return context;
 }
 #pragma scheduling on
 // Builds the scene's physics objects and registers each one (fn_801E87D4): the truck's
