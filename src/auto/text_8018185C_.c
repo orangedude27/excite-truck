@@ -1941,10 +1941,7 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
     float z;
     float y;
     float x;
-    float c;
     void *p;
-    float inv;
-    int idx;
 #pragma unused(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
     value = *(int *)((char *)arg0 + 0x328);
     if (value != 0) {
@@ -1971,12 +1968,9 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
         *(float *)((char *)arg0 + 0x338) / lbl_80561D58);
     x = *(float *)((char *)arg0 + 0x32C);
     p = (void *)((unsigned int)arg0 + 0x32C);
-    c = lbl_80561CD0;
-    *(float *)((char *)arg0 + 0xD4) = x;
-    inv = c / x;
-    idx = *(int *)((char *)arg0 + 0x1EC);
-    *(float *)((char *)arg0 + 0xE4) = inv;
-    fn_801BDA74(idx, p, x);
+    *(volatile float *)((char *)arg0 + 0xD4) = x;
+    *(float *)((char *)arg0 + 0xE4) = lbl_80561CD0 / x;
+    fn_801BDA74(*(int *)((char *)arg0 + 0x1EC), p, x);
     fn_801D11D8((char *)lbl_8055E908 + *(int *)((char *)arg0 + 0x1EC) * 0x34, *(int *)((char *)arg0 + 0x1EC));
     fn_801D1540((char *)lbl_8055E918 + *(int *)((char *)arg0 + 0x1EC) * 0x9C, *(int *)((char *)arg0 + 0x1EC));
 }
@@ -2563,8 +2557,10 @@ int fn_8018B06C(void *arg0) {
                     *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C + 0x14);
 }
 
-int fn_8018B084(void *arg0) {
-    return *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C) + 0x20);
+int fn_8018B084(void *car) {
+    /* Returns field +0x20 of this car's 0x9C-byte state record in lbl_8055E918,
+       indexed by the car's element index at +0x1EC. */
+    return *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)car + 0x1EC) * 0x9C) + 0x20);
 }
 
 void fn_8018B09C(void *object) {
