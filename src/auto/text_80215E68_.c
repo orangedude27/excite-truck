@@ -68,11 +68,12 @@ extern u32 lbl_8055EF84;
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern s32 fn_80128668(void);
-s32 fn_80215E68(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80215E68(s32 value, s32 count) {
+    /* Return value unchanged; if non-zero and count is positive, call fn_80128668 as a side effect. */
+    if (value != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return value;
 }
 
 #pragma scheduling invalid_target
@@ -501,9 +502,9 @@ s32 fn_802168F0(void *arg0) {
     f29 = f28 / f2;
     f30 = lbl_80563468;
     f28 = (f32)__fabs(sp[0]) <= lbl_80558DC4 ? f28 : lbl_80563458;
-    f31 = lbl_80563488;
     flag = 0;
     lbl_8055EF94 = f28;
+    f31 = lbl_80563488;
     while (lbl_8055EF70 == 0) {
         fn_80236674();
         if (lbl_8055EF88 != 0) {
