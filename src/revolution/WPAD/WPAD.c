@@ -4439,13 +4439,15 @@ _end:
 #undef WPADiSendWriteDataCmdInline
 #undef WPADiSendWriteDataInline
 #undef WPADiSendGetContStatInline
-// fn_80062054: get data format
+/* Return the REXE01 global WPAD data-report format, read atomically with
+ * interrupts disabled. `chan` is unused: this build keeps one format for all
+ * controllers instead of a per-channel value. */
 u32 fn_80062054(s32 chan) {
 #pragma unused(chan)
     BOOL enabled = OSDisableInterrupts();
-    u32 val = lbl_8055DC12;
+    u32 format = lbl_8055DC12;
     OSRestoreInterrupts(enabled);
-    return val;
+    return format;
 }
 
 // Caches the WPAD speaker volume (clamped to 0..0x7F) with interrupts disabled.
