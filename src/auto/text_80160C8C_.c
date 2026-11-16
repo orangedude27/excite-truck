@@ -2971,12 +2971,14 @@ int fn_80164CF8(int object, int deleteFlag) {
     return object;
 }
 
-void fn_80164D38(void *arg0) {
-    *(int *)((char *)arg0 + 8) = 1;
-    *(u8 *)((char *)arg0 + 4) = 0;
-    *(u8 *)((char *)arg0 + 5) = 0;
-    *(u8 *)((char *)arg0 + 6) = 0;
-    *(u8 *)((char *)arg0 + 7) = 0;
+void fn_80164D38(void *menu) {
+    /* Reset the challenge level-select menu: nothing confirmed/done, no popup
+     * shown, and selection defaulted to the first entry. */
+    *(int *)((char *)menu + 8) = 1;
+    *(u8 *)((char *)menu + 4) = 0;
+    *(u8 *)((char *)menu + 5) = 0;
+    *(u8 *)((char *)menu + 6) = 0;
+    *(u8 *)((char *)menu + 7) = 0;
 }
 
 void fn_80164D58(void) {
