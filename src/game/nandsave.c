@@ -124,10 +124,11 @@ void fn_802E8874(void) {
     }
 }
 
-int fn_802E888C(int arg0) {
+/* Dispatches a NAND-save request table entry by index, bracketing it with the save subsystem refcount. */
+int fn_802E888C(int requestIndex) {
     int result;
     ((void (*)(void))fn_802E883C)();
-    result = fn_802E8744(lbl_8034DB28 + arg0 * 0x38);
+    result = fn_802E8744(lbl_8034DB28 + requestIndex * 0x38);
     ((void (*)(void))fn_802E8874)();
     return result;
 }
