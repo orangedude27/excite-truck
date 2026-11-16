@@ -118,13 +118,13 @@ extern "C" void *fn_800FDE60(void) {
         u8 pad[0x1C];
         volatile s32 unk_0x1C;
     };
-    register u8 *base = lbl_804190A0;
+    u8 *base = lbl_804190A0;
     if ((s8)lbl_8055DE78 == 0) {
-        register Manager *manager = (Manager *)(base + 0x2050);
+        volatile Manager *manager = (volatile Manager *)(base + 0x2050);
         manager->unk_0x1C = 0;
         fn_8002F53C((u8 *)manager + 0x20, (void *)fn_800FDFF8, (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0, 0xC, 3);
         OSInitMutex((void *)manager);
-        *(void **)((u8 *)manager + 0x18) = MEMRecordStateForFrmHeap((void *)(base + 0x0), 0x2044, 0x40, 4, 0);
+        *(void **)((u8 *)manager + 0x18) = MEMRecordStateForFrmHeap((void *)&lbl_804190A0[0], 0x2044, 0x40, 4, 0);
         if (MEMResizeForMBlockFrmHeap() < 0x80)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x37, (const char *)lbl_80326E20);
         __register_global_object(base + 0x2050, (void *)__dt__Q46nw4hbm3snd6detail11TaskManagerFv, base + 0x2044);
@@ -663,6 +663,9 @@ extern "C" void fn_800FEC1C(s32 *arg0, s32 arg1) {
 }
 
 extern "C" u32 GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void *, u32, u32);
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void **self, u8 *out, const void *base) {
     struct Coef { u16 v[20]; };
     u16 *d;
@@ -721,7 +724,7 @@ extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3s
     }
     return 1;
 }
-
+#pragma pop
 extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 deleteFlag, u32 arg2) {
     // nw4hbm::snd::WavePlayer deleting destructor: sets the WavePlayer vtable
     // (lbl_80327334), stops playback, frees the detail::AxVoice at +0x18, clears
@@ -830,7 +833,7 @@ extern "C" void fn_800FF090(void *arg0) {
     const char *base;
     u32 format;
     u8 *waveOut;
-    s32 i;
+    int i;
 
     base = (const char *)lbl_80327040;
     if (*(u32 *)((u8 *)arg0 + 4) == 0) {
@@ -876,7 +879,7 @@ extern "C" void fn_800FF090(void *arg0) {
         GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(
             *(u32 *)(wave + 0x10), format);
     waveOut = (u8 *)&waveData[0];
-    for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x10); i++) {
+    for (i = 0; i < *(int *)((u8 *)arg0 + 0x10); i++) {
         *(const void **)(waveOut + 0x10) = *(const void **)(wave + 8);
         wave += 4;
         waveOut += 0x44;
@@ -1147,17 +1150,28 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824(void
 }
 #pragma use_lmw_stmw off
 extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void) {
-    unsigned long cur = *(unsigned long *)(lbl_8041D4AC + 4);
-    unsigned long end = (unsigned long)(lbl_8041D4AC + 4);
-    while (cur != end) {
-        unsigned long item = cur;
-        cur = *(unsigned long *)cur;
-        if (item == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327370, 0x23D, (char *)lbl_8032734C);
-        Stop__Q36nw4hbm3snd10WavePlayerFv((u8 *)(item - 0x94));
+    struct LinkListIter {
+        void *node;
+    };
+    LinkListIter end;
+    end.node = (void *)&lbl_8041D4AC[0x04];
+    LinkListIter begin;
+    begin.node = *(void **)&lbl_8041D4AC[0x04];
+    LinkListIter it = begin;
+
+    while (it.node != end.node) {
+        void *node = it.node;
+        it.node = *(void **)it.node;
+        if (node == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327370, 0x23D,
+                                         (const char *)lbl_8032734C);
+        }
+        Stop__Q36nw4hbm3snd10WavePlayerFv((u8 *)node - 0x94);
     }
-    if (*(unsigned long *)lbl_8041D4AC != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327040, 0x319, (char *)lbl_80327304);
+    if (*(u32 *)lbl_8041D4AC != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327040, 0x319,
+                                     (const char *)lbl_80327304);
+    }
 }
 #pragma use_lmw_stmw reset
 extern "C" s32 fn_80128668(void *);
@@ -1167,10 +1181,11 @@ extern "C" s32 fn_80128668(void *);
 extern u8 lbl_8041B138[];
 #pragma pop
 extern u8 lbl_8055DE80;
-extern "C" s32 fn_800FF940(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_800FF940(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         ((s32 (*)(void))fn_80128668)();
     }
-    return arg0;
+    return object;
 }
 
