@@ -77,6 +77,7 @@ s32 fn_80215E68(s32 value, s32 count) {
 }
 
 #pragma scheduling invalid_target
+/* Delete the array at lbl_80490710: 16 elements of 24 bytes each, using the deleting destructor fn_80215EC4. */
 void fn_80215EA8(void) {
     fn_8002F634(lbl_80490710, fn_80215EC4, 0x18, 0x10);
 }
