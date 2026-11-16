@@ -16,6 +16,7 @@ void fn_802C990C(int);
 unsigned char fn_802C2C00(int);
 void fn_801E6978(void);
 
+/* View scale range state block: +0 start (f32), +4 end (f32), +8 steps/rate (f32), +0xC scroll enabled (u8). */
 extern unsigned char lbl_804C1328[];
 void fn_802C2B78(float, float, float);
 #pragma dont_inline on
