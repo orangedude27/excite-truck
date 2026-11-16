@@ -5040,8 +5040,10 @@ finish:
 }
 
 extern const char lbl_803122F4[];
-void fn_80063324(s32 arg0, WPADGameInfo *arg1) {
-    WPADCommand* command = (WPADCommand*)arg1;
+void fn_80063324(s32 chan, WPADGameInfo *pCommand) {
+    /* Send one Wiimote output report on channel: set up the controller block,
+     * handle rumble/ack timing, build a HID report buffer and send it over HID. */
+    WPADCommand* command = (WPADCommand*)pCommand;
     s32 enabled;
     s32 rumble;
     s8 devHandle;
@@ -5058,7 +5060,7 @@ void fn_80063324(s32 arg0, WPADGameInfo *arg1) {
     len = command->dataLength;
     pCmdData = command->dataBuf;
     enabled = OSDisableInterrupts();
-    cb = (u8*)lbl_8038F4F0[arg0];
+    cb = (u8*)lbl_8038F4F0[chan];
     devHandle = *(s8*)(cb + 0x803);
     status = *(s32*)(cb + 0x7fc);
     if (devHandle < 0) {
