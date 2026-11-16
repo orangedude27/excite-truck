@@ -1023,18 +1023,21 @@ extern "C" s32 fn_80161BDC(s32 arg0, s32 arg1, s32 arg2) {
 }
 #pragma cplusplus off
 void fn_80161C18(void) {
-    void *obj = (void *)lbl_8055E300;
-    if (obj != 0) {
+    /* Invoke virtual slot 0x58 on the active challenge sub-task (lbl_8055E300), if
+       any; for the level-select menu this is fn_801657DC, which sets up a view
+       and starts message 0x15. */
+    void *subTask = (void *)lbl_8055E300;
+    if (subTask != 0) {
 #pragma cplusplus on
-        struct Interface {
-            virtual void slot0(); virtual void slot1(); virtual void slot2(); virtual void slot3();
-            virtual void slot4(); virtual void slot5(); virtual void slot6(); virtual void slot7();
-            virtual void slot8(); virtual void slot9(); virtual void slot10(); virtual void slot11();
-            virtual void slot12(); virtual void slot13(); virtual void slot14(); virtual void slot15();
-            virtual void slot16(); virtual void slot17(); virtual void slot18(); virtual void slot19();
-            virtual void slot20();
+        struct ChallengeSubTask {
+            virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+            virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+            virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+            virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+            virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+            virtual void call();
         };
-        ((struct Interface *)obj)->slot20();
+        ((struct ChallengeSubTask *)subTask)->call();
 #pragma cplusplus reset
     }
 }
