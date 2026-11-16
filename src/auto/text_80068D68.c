@@ -22180,9 +22180,12 @@ void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
 }
 
 extern s32 rfc_parse_data(void *, void *, u8 *);
+#pragma push
+#pragma pool_strings off
+#pragma readonly_strings on
 void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
-    void *p_mcb;
-    char *messages = lbl_803196B8;
+    struct { void *value; } mcbStorage;
+    
     void *p_port;
     s32 index;
     u16 connection_id;
@@ -22190,56 +22193,56 @@ void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
     index = (s32)cid - 0x40;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, messages, cid);
-        p_mcb = NULL;
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, "rfc_find_lcid_mcb LCID:0x%x", cid);
+        mcbStorage.value = NULL;
     } else {
-        p_mcb = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
-        if (p_mcb != NULL) {
-            connection_id = *(u16 *)((u8 *)p_mcb + 0x68);
+        mcbStorage.value = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
+        if (mcbStorage.value != NULL) {
+            connection_id = *(u16 *)((u8 *)mcbStorage.value + 0x68);
             if ((u32)connection_id != cid) {
                 if (lbl_803C4828[0x414] >= 2)
-                    ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, messages + 0x1C, cid, connection_id);
-                p_mcb = NULL;
+                    ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, "rfc_find_lcid_mcb LCID reused LCID:0x%x current:0x%x\0\0\0\0RFCOMM_ConnectCnf LCID:0x%x\0RFCOMM_ConfigInd LCID:0x%x\0\0RFCOMM_ConfigCnf LCID:0x%x\0\0RFCOMM_DisconnectInd LCID:0x%x\0", cid, connection_id);
+                mcbStorage.value = NULL;
             }
         }
     }
-    if (p_mcb == NULL) {
+    if (mcbStorage.value == NULL) {
         if (lbl_803C4828[0x414] >= 2)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90001, messages + 0xC8, cid);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90001, "RFCOMM_BufDataInd LCID:0x%x", cid);
         GKI_freebuf(p_buf);
         return;
     }
-    result = rfc_parse_data(p_mcb, lbl_803C4828, (u8 *)p_buf);
+    result = rfc_parse_data(mcbStorage.value, lbl_803C4828, (u8 *)p_buf);
     if ((u8)result == 0x32) {
         GKI_freebuf(p_buf);
         return;
     }
     if (lbl_803C4828[0] == 0) {
         if ((u8)result == 4) {
-            rfc_process_mx_message(p_mcb, p_buf);
+            rfc_process_mx_message(mcbStorage.value, p_buf);
             return;
         }
-        fn_800916F4(p_mcb, (u8)result, NULL);
+        fn_800916F4(mcbStorage.value, (u8)result, NULL);
         GKI_freebuf(p_buf);
         return;
     }
-    p_port = port_find_mcb_dlci_port(p_mcb, lbl_803C4828[0]);
+    p_port = port_find_mcb_dlci_port(mcbStorage.value, lbl_803C4828[0]);
     if (p_port == NULL || *(s32 *)((u8 *)p_port + 0x6C) == 0) {
         if ((u8)result != 0) {
-            u8 mcb_flag = *(u8 *)((u8 *)p_mcb + 0x6D);
+            u8 mcb_flag = *(u8 *)((u8 *)mcbStorage.value + 0x6D);
             if (((mcb_flag != 0) && (lbl_803C4828[2] == 0)) || ((mcb_flag == 0) && (lbl_803C4828[2] != 0)))
-                rfc_send_dm(p_mcb, lbl_803C4828[0], lbl_803C4828[4]);
+                rfc_send_dm(mcbStorage.value, lbl_803C4828[0], lbl_803C4828[4]);
             GKI_freebuf(p_buf);
             return;
         }
         p_port = port_find_dlci_port(lbl_803C4828[0]);
         if (p_port == NULL) {
-            rfc_send_dm(p_mcb, lbl_803C4828[0], 1);
+            rfc_send_dm(mcbStorage.value, lbl_803C4828[0], 1);
             GKI_freebuf(p_buf);
             return;
         }
-        *((u8 *)p_mcb + lbl_803C4828[0] + 0x24) = *(u8 *)p_port;
-        *(void **)((u8 *)p_port + 0x6C) = p_mcb;
+        *((u8 *)mcbStorage.value + lbl_803C4828[0] + 0x24) = *(u8 *)p_port;
+        *(void **)((u8 *)p_port + 0x6C) = mcbStorage.value;
     }
     if ((u8)result == 4) {
         if (p_buf->len != 0)
@@ -22253,7 +22256,7 @@ void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
         GKI_freebuf(p_buf);
     }
 }
-
+#pragma pop
 void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
     register char *messages = lbl_803196B8;
     void *p_mcb;
