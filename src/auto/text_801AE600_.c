@@ -268,13 +268,15 @@ extern void fn_801AE874(unsigned short *, int);
 extern void fn_801AE894(void *);
 extern int fn_801EA994(void);
 extern double __fabs(double);
-int fn_801AEA64(float arg0, float arg1) {
-    /* Round the absolute float difference and compare with the full-address tolerance. */
-    float diff = arg0 - arg1;
+int fn_801AEA64(float a, float b) {
+#define gZeroEpsilon lbl_80558DC4
+    /* Three-way compare for qsort: values within the zero epsilon are equal, otherwise ordered by magnitude. */
+    float diff = a - b;
     float magnitude = (float)__fabs((double)diff);
-    if (magnitude <= *(float *)(void *)&lbl_80558DC4) return 0;
-    if (arg1 < arg0) return 1;
+    if (magnitude <= *(float *)(void *)&gZeroEpsilon) return 0;
+    if (b < a) return 1;
     return -1;
+#undef gZeroEpsilon
 }
 
 #pragma push
