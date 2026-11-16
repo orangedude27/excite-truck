@@ -480,12 +480,11 @@ extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* ar
 #pragma dont_inline reset
 
 #pragma dont_inline on
-extern "C" void fn_80199870(void* arg0) {
+extern "C" void fn_80199870(void* arg0, u32 arg1 = 0) {
     u32 value = *(u32*)((u8*)arg0 + 0x10);
-    u32 v2 = value;
-    if ((u32)(v2 - 0x50430000) == 0x4152 ||
+    if ((u32)(value - 0x50430000) == 0x4152 ||
         (u32)(value - 0x41430000) == 0x4152) {
-        fn_801A5C4C(arg0);
+        fn_801A5C4C(arg0, arg1);
     }
 }
 #pragma dont_inline reset
