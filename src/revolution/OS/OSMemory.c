@@ -33,12 +33,18 @@ static BOOL OnShutdown(BOOL final, u32 event) {
 }
 
 // @typo
+/* MEM protection interrupt handler: __OSInitMemoryProtection() installs this for the
+ * four MEM0..3 interrupts and for MEM_ADDRESS.  It takes the cause out of the MI
+ * interrupt-cause register and the address of the offending access out of
+ * MI_ADDRHI/MI_ADDRLO, acknowledges the interrupt, and hands both to the protection
+ * error handler the game installed with OSSetErrorHandler(), or to the default
+ * unhandled-exception report.  The name is misspelled in Nintendo's own SDK. */
 static void MEMIntrruptHandler(s16 intr, OSContext* ctx) {
 #pragma unused(intr)
 
     u32 dsisr = MI_HW_REGS[MI_INTSR];
     u32 dar = (MI_HW_REGS[MI_ADDRHI] & 0x3ff) << 0x10 | MI_HW_REGS[MI_ADDRLO];
-    MI_HW_REGS[MI_REG_0x20] = 0;
+    MI_HW_REGS[MI_REG_0x20] = 0; /* acknowledge the interrupt */
 
     if (__OSErrorTable[OS_ERR_PROTECTION] != NULL) {
         __OSErrorTable[OS_ERR_PROTECTION](OS_ERR_PROTECTION, ctx, dsisr, dar);
