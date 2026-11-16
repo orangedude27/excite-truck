@@ -5458,8 +5458,9 @@ void fn_8007148C(s32 arg0) {
     fn_800716B0((void **)((u8 *)&lbl_803C0AD8 + 0x68), arg0, &lbl_803C0AD8);
 }
 
-void fn_8007146C(s32 arg0, u16 arg1, s32 arg2) {
-    ptim_start_timer((tPTIM_CB *)((u8 *)&lbl_803C0AD8 + 0x68), (TIMER_LIST_ENT *)arg0, arg1, arg2);
+/* BTA system start timer: schedule p_tle with event 'type' after 'timeout' ms on the BTA system protocol timer. */
+void fn_8007146C(s32 p_tle, u16 type, s32 timeout) {
+    ptim_start_timer((tPTIM_CB *)((u8 *)&lbl_803C0AD8 + 0x68), (TIMER_LIST_ENT *)p_tle, type, timeout);
 }
 
 void fn_80072C38(void) {
