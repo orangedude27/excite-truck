@@ -4304,6 +4304,8 @@ void GXInitTlutRegion(unsigned int *region, int tmem_addr, int tlut_name) {
 }
 
 void GXInvalidateTexAll(void) {
+    /* Invalidate all texture caches by flushing texture state and writing BP invalidate commands
+       (0x66001000, 0x66001100) to the GX FIFO, then flushing again. */
     __GXFlushTextureState();
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = 0x66001000;
