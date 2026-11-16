@@ -69,6 +69,7 @@ extern void fn_80131318(int *arg);
 extern void *fn_80131234();
 extern void fn_8013072C(char *, int, int);
 #pragma inline off(fn_801302E0)
+#pragma inline off(fn_801305C4)
 extern int fn_801302E0(void *);
 
 __declspec(section ".sdata") extern char lbl_80559AF8;
@@ -379,6 +380,27 @@ void fn_80130568(char *arg0) {
         }
     }
 }
+
+#pragma dont_inline on
+void fn_801305C4(char *arg0, int arg1, Rec10 *arg2, int arg3, float farg0) {
+    int prec;
+    if ((prec = arg2->f3) == 0) {
+        fn_801345D8(arg0, arg1, &lbl_80559AA0, 1, (int)(farg0 * arg2->f2));
+    } else {
+        fn_801345D8(arg0, arg1, &lbl_80559AA8, 1, prec, farg0 * arg2->f2);
+    }
+    switch (arg3) {
+    case 0:
+        break;
+    case 1:
+        format_append(arg0, arg1, arg2->f1 + 1);
+        break;
+    case 2:
+        format_append(arg0, arg1, arg2->f0 + 1);
+        break;
+    }
+}
+#pragma dont_inline reset
 
 void fn_8013072C(char *arg0, int arg1, int arg2) {
     int sign = arg2 >> 31;
