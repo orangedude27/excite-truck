@@ -4492,7 +4492,7 @@ void uusb_issue_intr_read(void) {
 
 void uusb_WriteCtrlDataCB(s32 arg0, BT_HDR *arg1) {
     extern char lbl_803142C8[];
-    extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
+    extern s32 IUSB_WriteCtrlMsgAsync();
     register s32 status = arg0;
     register char *report = lbl_803142C8;
     if (lbl_803BD1E0.at_0x28 != 0)
@@ -10833,7 +10833,7 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 st
 void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
     extern char lbl_80316530[];
     extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
-    u8 *acl, *pm, *reg;
+    u8 *acl, *pm, *reg, *dev, *addr, *link;
     int offset, index, i;
     index = (u8)btm_handle_to_acl_index(handle);
     if (index >= 4) return;
@@ -10861,7 +10861,28 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
         if (reg[0x558] & 2)
             (*(void (**)(u8 *, u8, u16, u8))(reg + 0x554))(acl + 0x3c, mode, interval, status);
     }
-    btm_pm_cont_rswitch_inl((u8 *)((u32)lbl_803C0F78 + offset), lbl_803C0F78 + offset, handle, status);
+    link = (u8 *)((u32)lbl_803C0F78 + offset);
+    if (link[0x14f] == 1) {
+        addr = link + 0x3c;
+        dev = (u8 *)btm_find_dev(addr);
+        if (dev != 0 && (dev[0x76] & 4)) {
+            if (btsnd_hcic_set_conn_encrypt(handle, 0)) {
+                link[0x14f] = 2;
+                return;
+            }
+        } else {
+            if (btsnd_hcic_switch_role(addr, (lbl_803C0F78 + offset)[0x14e] == 0)) {
+                link[0x14f] = 0;
+                return;
+            }
+        }
+        link[0x14f] = 0;
+        if (*(void (**)(void *))(lbl_803C0F78 + 0x62c) != 0) {
+            lbl_803C0F78[0x624] = status;
+            (*(void (**)(void *))(lbl_803C0F78 + 0x62c))(lbl_803C0F78 + 0x624);
+            *(void (**)(void *))(lbl_803C0F78 + 0x62c) = 0;
+        }
+    }
 }
 #pragma pop
 void fn_8007D4C4(void) {
@@ -12851,13 +12872,16 @@ scan_early:
 
 extern u8 lbl_80316DC8[];
 
-tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_originator, UINT32 mx_proto_id, UINT32 mx_chan_id, tBTM_SEC_CALLBACK *p_callback, void *p_ref_data)
+tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_originator,
+                               UINT32 mx_proto_id, UINT32 mx_chan_id,
+                               tBTM_SEC_CALLBACK *p_callback, void *p_ref_data)
 {
     tBTM_SEC_DEV_REC *p_dev_rec;
     u8 *p_serv_rec;
     u8 *dev;
     u32 index;
     u8 rc;
+
     p_dev_rec = btm_find_dev(bd_addr);
     if (p_dev_rec == 0) {
         p_dev_rec = btm_sec_alloc_dev(bd_addr);
@@ -12867,6 +12891,7 @@ tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_or
             return;
         }
     }
+
     p_serv_rec = lbl_803C0F78 + 0x1990;
     for (index = 0; index < 0x18; index++, p_serv_rec += 0x3C) {
         if ((p_serv_rec[0xE] & 0x80) &&
@@ -12878,6 +12903,7 @@ tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_or
         }
     }
     p_serv_rec = 0;
+
 found:
     if (p_serv_rec == 0) {
         if (p_callback != 0)
@@ -12886,6 +12912,7 @@ found:
             ((void (*)(u32, void *, u32, u32, u32))fn_80070984)(0xD0000, lbl_80316DC8, psm, mx_proto_id, mx_chan_id);
         return;
     }
+
     dev = (u8 *)p_dev_rec;
     *(u8 **)dev = p_serv_rec;
     dev[0x81] = p_serv_rec[0xE];
@@ -12893,6 +12920,7 @@ found:
     *(tBTM_SEC_CALLBACK **)(dev + 4) = p_callback;
     *(void **)(dev + 8) = p_ref_data;
     dev[0x76] &= ~0x01;
+
     rc = btm_sec_execute_procedure(p_dev_rec);
     if (rc != 1) {
         if (p_callback != 0) {
@@ -27030,8 +27058,8 @@ BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) 
 
 void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
     int last;
-    UINT16 x;
     UINT16 i;
+    UINT16 x;
 
     if (num_attr <= 1) {
         return;
