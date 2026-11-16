@@ -562,58 +562,61 @@ extern "C" void fn_80149CEC(void *arg0, void * __restrict arg1) {
 #pragma dont_inline reset
 extern f32 fn_80149F00(void *, void *);
 extern s32 fn_801609C4(s32);
-void fn_80149D64(void *arg0, void *arg1, s32 arg2) {
+void fn_80149D64(void *state, void *sound, s32 arg2) {
+    /* Update a sound-debug readout: derive a phase index from the sound's frame, pick the
+       frame/voice value (live rate when more than one player, otherwise a table lookup),
+       flag a voice sub-object when that value changes, and store the extent and its band. */
     int index;
     f32 rate;
     int value;
-    int count;
-    void *object;
-    f32 end;
-    int *p = (int *)arg0;
-    if (*(u8 *)((char *)arg0 + 0x34) != 0) index = 0;
+    int frameIndex;
+    void *obj;
+    f32 extent;
+    int *words = (int *)state;
+    if (*(u8 *)((char *)state + 0x34) != 0) index = 0;
     else {
-        f32 frame = *(f32 *)((char *)arg1 + 0x14);
+        f32 frame = *(f32 *)((char *)sound + 0x14);
         index = (int)(frame < lbl_80561648 ? frame - lbl_8056163C : lbl_8056163C + frame);
     }
-    p[0] = index;
+    words[0] = index;
     if (fn_80179650() > 1) {
-        rate = fn_80149F00(arg0, arg1);
-        value = *(int *)((char *)arg0 + 0x10) == 0
-            ? *(int *)((char *)arg0 + 0x14) + (int)((f32)*(int *)((char *)arg0 + 0x18) * rate)
+        rate = fn_80149F00(state, sound);
+        value = *(int *)((char *)state + 0x10) == 0
+            ? *(int *)((char *)state + 0x14) + (int)((f32)*(int *)((char *)state + 0x18) * rate)
             : 0;
-        if (value != p[8]) {
-            object = *(void **)((char *)arg1 + 8);
-            if (object != 0 && *(void **)((char *)object + 0x1258) != 0) {
-                char *p2 = *(char **)((char *)object + 0x1258);
-                p2[0x49] = 1;
-                p2[0x4B] = 0;
-                p2[0x4A] = 0;
+        if (value != words[8]) {
+            obj = *(void **)((char *)sound + 8);
+            if (obj != 0 && *(void **)((char *)obj + 0x1258) != 0) {
+                char *subObj = *(char **)((char *)obj + 0x1258);
+                subObj[0x49] = 1;
+                subObj[0x4B] = 0;
+                subObj[0x4A] = 0;
             }
         }
-        p[8] = value;
+        words[8] = value;
     } else {
-        count = *(int *)((char *)arg0 + 0x10);
-        if (count < 0) goto no_frame;
-        if (count >= *(int *)((char *)arg0 + 0x0C)) goto no_frame;
-        value = *(int *)(*(char **)((char *)arg0 + 8) + count * 4);
+        frameIndex = *(int *)((char *)state + 0x10);
+        if (frameIndex < 0) goto no_frame;
+        if (frameIndex >= *(int *)((char *)state + 0x0C)) goto no_frame;
+        value = *(int *)(*(char **)((char *)state + 8) + frameIndex * 4);
         goto frame_ready;
     no_frame:
         value = 0;
     frame_ready:
-        p[8] = value;
+        words[8] = value;
     }
-    object = *(void **)((char *)arg1 + 0x68);
+    obj = *(void **)((char *)sound + 0x68);
     {
         f32 bottom, top, threshold, difference;
-        top = *(f32 *)((char *)object + 0x8DC);
-        bottom = *(f32 *)((char *)object + 0x8D4);
+        top = *(f32 *)((char *)obj + 0x8DC);
+        bottom = *(f32 *)((char *)obj + 0x8D4);
         threshold = lbl_80561648;
         difference = top - bottom;
-        end = threshold > difference ? threshold : difference;
+        extent = threshold > difference ? threshold : difference;
     }
-    *(int *)((char *)arg0 + 0x24) = p[0] + p[8];
-    *(int *)((char *)arg0 + 0x1C) = (int)end;
-    *(int *)((char *)arg0 + 0x30) = fn_801609C4(*(int *)((char *)arg0 + 0x24));
+    *(int *)((char *)state + 0x24) = words[0] + words[8];
+    *(int *)((char *)state + 0x1C) = (int)extent;
+    *(int *)((char *)state + 0x30) = fn_801609C4(*(int *)((char *)state + 0x24));
 }
 
 f32 fn_80149F00(void *arg0, void *arg1) {
@@ -1973,7 +1976,7 @@ extern "C" void fn_801777D0(void *), fn_801D05B4(void *), fn_801D0824(void *);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *fn_8014E9C4(char *p, s32 arg1) {
-    unsigned int off;
+    int off;
     char *entry;
     int i;
     char *item;
@@ -2168,10 +2171,13 @@ extern char lbl_8032DB40[];
 #pragma optimization_level 3
 #pragma opt_pointer_aliasing on
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
-    s32 value = *arg1;
-    s32 index = ((s32 *)arg0)[1];
-    s32 *data = *(s32 **)arg0;
-    ((s32 *)arg0)[1] = index + 1;
+    s32 value, next, index;
+    s32 *data;
+    index = ((s32 *)arg0)[1];
+    value = *arg1;
+    data = *(s32 **)arg0;
+    next = index + 1;
+    ((s32 *)arg0)[1] = next;
     data[index] = value;
     return &data[index];
 }
@@ -4206,67 +4212,78 @@ void fn_80155E58(void *arg0) {
 
 void fn_80155E64(void *arg0, signed char arg1) { *((signed char *)arg0 + 5) = arg1; }
 
-void *fn_80155E6C(void *arg0) {
-    typedef struct Node Node;
-    struct Node {
-        unsigned char pad[0x11C];
-        Node *prev;
-        Node *next;
-    };
-    typedef struct {
-        unsigned char pad[0x1244];
-        Node *head;
-        Node *tail;
-        Node *first;
-        Node *list;
-    } Owner;
-    extern float lbl_80561648;
-    extern float lbl_8055E3C8;
-    Owner *own = (Owner *)arg0;
-    Node *nd = own->head;
-    Node *nx;
-    Node *pr;
-    Node *tl;
-    float f1648 = lbl_80561648;
-    if (nd != 0) {
-        nx = nd->next;
-        if (nx != 0) {
-            nx->prev = nd->prev;
-        } else {
-            own->head = nd->prev;
-        }
-        pr = nd->prev;
-        if (pr != 0) {
-            pr->next = nd->next;
-        } else {
-            own->tail = nd->next;
-        }
-        nd->next = 0;
-        nd->prev = 0;
-        nd->next = own->list;
-        tl = own->list;
-        if (tl != 0) {
-            tl->prev = nd;
-        }
-        own->list = nd;
-        if (own->first == 0) {
-            own->first = nd;
-        }
-        *((unsigned char *)nd + 4) = 1;
-        *(float *)((unsigned char *)nd + 0x10) = lbl_8055E3C8;
-        *(float *)((unsigned char *)nd + 0xC) = f1648;
-        *(float *)((unsigned char *)nd + 8) = f1648;
-        *((unsigned char *)nd + 0x14) = 0;
-        *((unsigned char *)nd + 0x64) = 0;
-        *((unsigned char *)nd + 0xB4) = 0;
-        *((unsigned char *)nd + 5) = 0;
-        *(int *)((unsigned char *)nd + 0x10C) = -1;
-        *(float *)((unsigned char *)nd + 0x104) = f1648;
-        *(int *)((unsigned char *)nd + 0x108) = 0;
-        *(int *)((unsigned char *)nd + 0x114) = 1;
-        return nd;
+void *fn_80155E6C(void *arg0)
+{
+  typedef struct Node Node;
+  struct Node
+  {
+    unsigned char pad[0x11C];
+    Node *prev;
+    Node *next;
+  };
+  typedef struct 
+  {
+    unsigned char pad[0x1244];
+    Node *head;
+    Node *tail;
+    Node *first;
+    Node *list;
+  } Owner;
+  extern float lbl_8055E3C8;
+  Owner *owner = (Owner *) arg0;
+  Node *node = owner->head;
+  Node *next;
+  Node *prev;
+  Node *tail;
+  float f1648 = f1648;
+  if (node != 0)
+  {
+    next = node->next;
+    if (next != 0)
+    {
+      next->prev = node->prev;
     }
-    return 0;
+    else
+    {
+      owner->head = node->prev;
+    }
+    prev = node->prev;
+    if (prev != 0)
+    {
+      prev->next = node->next;
+    }
+    else
+    {
+      owner->tail = node->next;
+    }
+    node->next = 0;
+    node->prev = 0;
+    node->next = owner->list;
+    tail = owner->list;
+    if (tail != 0)
+    {
+      tail->prev = node;
+    }
+    owner->list = node;
+    if (owner->first == 0)
+    {
+      owner->first = node;
+    }
+    *(((unsigned char *) node) + 4) = 1;
+    *((float *) (((unsigned char *) node) + 0x10)) = lbl_8055E3C8;
+    *((float *) (((unsigned char *) node) + 0xC)) = f1648;
+    *((float *) (((unsigned char *) node) + 8)) = f1648;
+    *(((unsigned char *) node) + 0x14) = 0;
+    *(((unsigned char *) node) + 0x64) = 0;
+    *(((unsigned char *) node) + 0xB4) = 0;
+    *(((unsigned char *) node) + 5) = 0;
+    *((int *) (((unsigned char *) node) + 0x10C)) = -1;
+    *((float *) (((unsigned char *) node) + 0x104)) = f1648;
+    *((int *) (((unsigned char *) node) + 0x108)) = 0;
+    *((int *) (((unsigned char *) node) + 0x114)) = 1;
+    return node;
+  }
+  return 0;
 }
 
 /* Format a string into the buffer at dst + 4 using printf-style arguments. */
