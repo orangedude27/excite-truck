@@ -555,7 +555,6 @@ static inline void time_append_sizefirst(char *dstp, int sizep, char *str) {
     char *dst;
     int size;
     char *src;
-    char c;
     size = sizep;
     dst = dstp;
     while (*dst != 0) {
@@ -571,9 +570,7 @@ static inline void time_append_sizefirst(char *dstp, int sizep, char *str) {
         dst[-1] = 0;
         goto done;
     copy:
-        c = *src++;
-        *dst++ = c;
-        if (c != 0)
+        if ((*dst++ = *src++) != 0)
             goto count_check;
     done:;
     }
@@ -631,6 +628,7 @@ void fn_80130980(char *out, int size, int level, float t) {
     TimeSepTab tbl;
     int mins, hundredths, tenths, secs, hours;
     int hasPrev;
+    int found;
     char *src;
     char *p;
     char c;
@@ -698,14 +696,14 @@ void fn_80130980(char *out, int size, int level, float t) {
     fn_801345D8(out, size, lbl_80559AF0, 1);
     tbl = lbl_802F8E78;
     for (p = buf; *p != 0; p++) {
-        hasPrev = 0;
-        for (i = 0; hasPrev == 0 && i < 13; i++) {
-            if (*p == tbl.e[i].c) {
+        found = 0;
+        for (i = 0; found == 0 && i < 13; i++) {
+            if (tbl.e[i].c == *p) {
                 time_append_sizefirst(out, size, tbl.e[i].s);
-                hasPrev = 1;
+                found = 1;
             }
         }
-        if (!hasPrev) {
+        if (!found) {
             char tmp[2] = {0};
             tmp[0] = *p;
             time_append_sizefirst(out, size, tmp);
