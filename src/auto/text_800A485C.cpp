@@ -15049,12 +15049,15 @@ block61:
     return 0;
 }
 #pragma pop
-extern "C" void fn_800BEDE0(void *arg0, void *arg1) {
+/* Reads a VFiPFCard's audio settings into the output record: a flag, the
+ * sample rate (44.1/48/32 kHz by status mode, halved when unk4 is set), the
+ * channel byte, and the two stream-size fields. */
+extern "C" void fn_800BEDE0(VFiPFCard *card, void *info) {
     u32 rate;
     s16 mode;
-    *(s32 *)arg1 = *(u32 *)((u8 *)arg0 + 4) == 0;
+    *(s32 *)info = card->unk4 == 0;
     rate = 0xAC44;
-    mode = *(s16 *)((u8 *)arg0 + 0x1C);
+    mode = card->unk1c;
     if (mode == 0) {
         rate = 0xAC44;
     } else if (mode == 1) {
@@ -15062,12 +15065,12 @@ extern "C" void fn_800BEDE0(void *arg0, void *arg1) {
     } else if (mode == 2) {
         rate = 0x7D00;
     }
-    if (*(s32 *)arg1 == 0)
+    if (*(s32 *)info == 0)
         rate = (u32)(((s32)((rate >> 31)) + (s32)rate) >> 1);
-    *(u32 *)((u8 *)arg1 + 4) = rate;
-    *(s32 *)((u8 *)arg1 + 8) = (s8)*(u8 *)arg0;
-    *(s32 *)((u8 *)arg1 + 0x10) = *(s32 *)((u8 *)arg0 + 0xED74);
-    *(s32 *)((u8 *)arg1 + 0xC) = *(s32 *)((u8 *)arg0 + 0xED70);
+    *(u32 *)((u8 *)info + 4) = rate;
+    *(s32 *)((u8 *)info + 8) = card->unk0;
+    *(s32 *)((u8 *)info + 0x10) = card->unkED74;
+    *(s32 *)((u8 *)info + 0xC) = card->unkED70;
 }
 
 extern "C" s16 fn_800BDD7C(s32, s32, s32 *);
