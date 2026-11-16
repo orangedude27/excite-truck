@@ -2060,8 +2060,9 @@ int fn_8026A27C(int slotIndex) {
     return pendingDelta;
 }
 #pragma pop
-void fn_8026A298(int arg0) {
-    lbl_80499E50[arg0] = -1;
+void fn_8026A298(int slotIndex) {
+    /* Queue a backward (-1) track-selection delta for the given player slot. */
+    lbl_80499E50[slotIndex] = -1;
 }
 
 extern void fn_801EA994(void);
