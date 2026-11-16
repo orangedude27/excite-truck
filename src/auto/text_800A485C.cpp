@@ -18212,11 +18212,19 @@ extern "C" void fn_800C64F4(void *homeButtonInfo) {
     fn_800C6CE8(lbl_8055DD98);
 }
 
+/* HBMShutdownHomeButtonManager (fn_800C657C): tears down the Home Button
+ * (HBM / homebutton) manager instance — runs its destructor, frees the
+ * instance from the HBM allocator, clears the singleton pointer, and destroys
+ * the HBM heap. */
 extern "C" void fn_800C657C(void) {
-    fn_800C6A1C(lbl_8055DD98, -1);
-    MEMFreeToAllocator(lbl_80559708, lbl_8055DD98);
-    lbl_8055DD98 = NULL;
-    MEMDestroyExpHeap((MEMiHeapHead*)lbl_80559708->heap);
+#define s_homeButtonInstance lbl_8055DD98
+#define s_hbmAllocator lbl_80559708
+    fn_800C6A1C(s_homeButtonInstance, -1);
+    MEMFreeToAllocator(s_hbmAllocator, s_homeButtonInstance);
+    s_homeButtonInstance = NULL;
+    MEMDestroyExpHeap((MEMiHeapHead*)s_hbmAllocator->heap);
+#undef s_homeButtonInstance
+#undef s_hbmAllocator
 }
 
 extern "C" void fn_800C65C4(void) {
