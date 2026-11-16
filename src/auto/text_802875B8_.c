@@ -422,8 +422,8 @@ void fn_80287CE8(int arg0, void *arg1, int arg2, int arg3) {
     sprintf(local, lbl_80348A20, arg1);
     if (fn_8012C33C(local) != 0) {
         *(void **)arg0 = (void *)fn_80131808(local);
-        fn_80287D70((void *)arg0, arg2, arg3);
     }
+    fn_80287D70((void *)arg0, arg2, arg3);
 }
 #pragma dont_inline reset
   
