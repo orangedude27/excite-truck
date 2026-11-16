@@ -2537,9 +2537,11 @@ int fn_8018B084(void *arg0) {
     return *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C) + 0x20);
 }
 
-void fn_8018B09C(void *arg0) {
+void fn_8018B09C(void *object) {
+    /* Run the physics helper, then reset this object's float field at +0x26DC
+       to the shared zero value held in lbl_8055E3C8. */
     fn_8017D2C8();
-    *(float *)((unsigned char *)arg0 + 0x26dc) = lbl_8055E3C8;
+    *(float *)((unsigned char *)object + 0x26dc) = lbl_8055E3C8;
 }
 
 void fn_8018B0D0(void *arg0, int arg1) {
