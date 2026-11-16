@@ -2388,24 +2388,25 @@ extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
 
 #pragma use_lmw_stmw off
 extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
+    unsigned int p = (unsigned int)self;
     int level = OSDisableInterrupts();
-    int size = *(int *)((char *)self + 0x2C);
+    int size = *(int *)(p + 0x2C);
     if (size == 0) {
         OSRestoreInterrupts(level);
         return 0;
     }
-    if (IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(self)) {
-        level = OSDisableInterrupts();
-        unsigned char *pos = *(unsigned char **)((char *)self + 0xC) + 0x138;
+    if (IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv((void *)p)) {
+        int inner = OSDisableInterrupts();
+        unsigned char *pos = *(unsigned char **)(p + 0xC) + 0x138;
         int position;
         if (pos == 0) {
-            OSRestoreInterrupts(level);
+            OSRestoreInterrupts(inner);
             position = 0;
         } else {
             position = ((int)*(unsigned short *)(pos + 0x80) << 16) + *(unsigned short *)(pos + 0x82);
-            OSRestoreInterrupts(level);
+            OSRestoreInterrupts(inner);
         }
-        int format = *(int *)((char *)self + 0x118);
+        int format = *(int *)(p + 0x118);
         if (size != 0) size += (int)0x80000000;
         int result = 0;
         switch (format) {
@@ -2418,21 +2419,20 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
         case 10: result = position - ((unsigned int)size >> 1); break;
         default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438); break;
         }
-        level = OSDisableInterrupts();
         OSRestoreInterrupts(level);
         return result + 1;
     } else {
-        level = OSDisableInterrupts();
-        unsigned char *pos = *(unsigned char **)((char *)self + 0xC) + 0x138;
+        int inner = OSDisableInterrupts();
+        unsigned char *pos = *(unsigned char **)(p + 0xC) + 0x138;
         int position;
         if (pos == 0) {
-            OSRestoreInterrupts(level);
+            OSRestoreInterrupts(inner);
             position = 0;
         } else {
             position = ((int)*(unsigned short *)(pos + 0x84) << 16) + *(unsigned short *)(pos + 0x86);
-            OSRestoreInterrupts(level);
+            OSRestoreInterrupts(inner);
         }
-        int format = *(int *)((char *)self + 0x118);
+        int format = *(int *)(p + 0x118);
         if (size != 0) size += (int)0x80000000;
         int result = 0;
         switch (format) {
@@ -2445,7 +2445,6 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
         case 10: result = position - ((unsigned int)size >> 1); break;
         default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438); break;
         }
-        level = OSDisableInterrupts();
         OSRestoreInterrupts(level);
         return result;
     }
@@ -4129,11 +4128,12 @@ extern "C" void fn_800E9BA4(void *this_, int vol) {
 }
 extern int lbl_8055DE20;
 extern void fn_80128668(void);
-extern "C" int fn_800E9BE4(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" int fn_800E9BE4(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" int *fn_800E9C24(void) {
