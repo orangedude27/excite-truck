@@ -286,8 +286,10 @@ extern f32 fn_80011EDC(void);
 extern s32 fn_80232578(s32);
 extern char lbl_802FC414[];
 extern s32 lbl_8055D49C;
-void fn_8000F440(void) {
-    lbl_8055D4CC = fn_8023512C();
+/* Caches the ArtSet named by the resource-name string in r3: fn_8023512C opens
+ * it by name and takes a reference, released later by fn_8000F464. */
+void fn_8000F440(const char *resourceName) {
+    lbl_8055D4CC = fn_8023512C(resourceName);
 }
 
 /* Releases the globally cached ArtSet (lbl_8055D4CC) on teardown, if one is loaded. */
