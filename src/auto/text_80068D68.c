@@ -28039,6 +28039,7 @@ s32 EUARTInit(void) {
     return 1;
 }
 
+/* Initializes EUART enable sentinel from console type (devkits only). */
 s32 fn_8009D000(void) {
     if (!(OSGetConsoleType() & 0x10000000)) {
         lbl_8055DCA4 = 0;
