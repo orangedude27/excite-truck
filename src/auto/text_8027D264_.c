@@ -346,6 +346,7 @@ int fn_8027D8A0(void *arg0) {
 
 #pragma cplusplus on
 extern "C" void fn_8027D8A8(void *arg0) {
+    /* Forward v12() result to fn_8001DA48 on the embedded object at +0x14. */
     class Obj {
     public:
         virtual void v0();
