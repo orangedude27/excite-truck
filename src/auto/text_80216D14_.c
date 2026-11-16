@@ -271,10 +271,11 @@ void fn_80217478(void) {
 
 extern int fn_802368B4(int);
 extern void fn_80216D28(void);
-void fn_8021747C(void *arg0, void *arg1, void *arg2) {
-    void (*callback)(void *, void *) = *(void (**)(void *, void *))((char *)arg0 + 0x440);
-    if (callback != 0) {
-        callback(arg1, arg2);
+void fn_8021747C(void *menuGroup, void *callbackArg0, void *callbackArg1) {
+    /* Invoke the menu group's notification callback (menuGroup+0x440) with two arguments, if set. */
+    void (*notifyCb)(void *, void *) = ((struct UiMenuGroup *)menuGroup)->notifyCb;
+    if (notifyCb != 0) {
+        notifyCb(callbackArg0, callbackArg1);
     }
 }
 
