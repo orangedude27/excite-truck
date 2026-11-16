@@ -916,6 +916,16 @@ s32 fn_80261A08(s32 *arg0, s32 arg1) {
     return *arg0 + arg1 * 4;
 }
 
+/* One line of a debug menu: label, kind (8 = callback), the value/callback it
+   edits and two kind-specific words. */
+typedef struct DbgMenuItem {
+    void *name;
+    int type;
+    void *data;
+    int a;
+    int b;
+} DbgMenuItem;
+
 void fn_80261A18(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(s32 *)((u8 *)arg0 + 4) = 8;
