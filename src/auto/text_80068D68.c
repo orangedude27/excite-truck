@@ -5462,8 +5462,10 @@ void fn_8007143C(u32 index, u32 value) {
     ((u32 *)lbl_803C0AD8)[index & 0xFF] = value;
 }
 
-void fn_80071450(void *arg0) {
-    GKI_send_msg(lbl_803C0AD8[0x7D], lbl_80559038[2], arg0);
+void fn_80071450(void *msg) {
+    /* Post msg to the BTA task's GKI mailbox: task id at +0x7D of the BTA
+     * system control block (lbl_803C0AD8), mailbox id at +2 of lbl_80559038. */
+    GKI_send_msg(lbl_803C0AD8[0x7D], lbl_80559038[2], msg);
 }
 
 void fn_8007148C(s32 arg0) {
