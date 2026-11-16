@@ -730,14 +730,15 @@ s32 fn_80117598(s32 arg0, s32 arg1) {
     s32 value;
     s32 diff;
     s32 sign;
+    s32 inv;
     off = arg0 + 0x340;
     off -= arg0;
     base = arg0 - off;
     value = *(s32*)(base + 0x33C);
     diff = (value - arg1) | (arg1 - value);
     sign = diff >> 31;
-    off = -1 - value;
-    return off & sign;
+    inv = -1 - value;
+    return sign & inv;
 }
 
 /* Tick-list "finish" callback for the audio stream manager, registered by
@@ -9398,6 +9399,7 @@ void fn_80127464(void *alarm) {
 
 void fn_80127468(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
+    /* Alarm callback: drain pending home-button work via fn_802ECC74, then hand off to fn_80127F70. */
     fn_80127F70(fn_802ECC74(alarm));
 }
 
