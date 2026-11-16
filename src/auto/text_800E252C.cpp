@@ -2308,12 +2308,13 @@ extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(AxVoice *voice
 extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
     unsigned int start, end, address, buffer;
     int fmt;
-    void *mgr;
-    unsigned int level;
-    register unsigned int irq = OSDisableInterrupts();
-    if (*(int *)((char *)self + 0x2c) == 0) { OSRestoreInterrupts(irq); return 0; }
-    level = OSDisableInterrupts();
-    address = *(unsigned int *)((char *)self + 0xc) + 0x138;
+    unsigned int irq;
+    void *s;
+    irq = OSDisableInterrupts();
+    s = self;
+    if (*(int *)((char *)s + 0x2c) == 0) { OSRestoreInterrupts(irq); return 0; }
+    unsigned int level = OSDisableInterrupts();
+    address = *(unsigned int *)((char *)s + 0xc) + 0x138;
     if (address == 0) { OSRestoreInterrupts(level); start = 0; }
     else {
         unsigned short hi = *(unsigned short *)(address + 0x84);
@@ -2321,9 +2322,9 @@ extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
         start = ((unsigned int)hi << 16) + lo;
         OSRestoreInterrupts(level);
     }
-    mgr = Instance__15EmissionManagerFv();
+    void *mgr = Instance__15EmissionManagerFv();
     buffer = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(mgr);
-    fmt = *(int *)((char *)self + 0x118);
+    fmt = *(int *)((char *)s + 0x118);
     if (buffer != 0) buffer += 0x80000000;
     end = 0;
     switch (fmt) {
@@ -2333,7 +2334,7 @@ extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
     default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); break;
     }
     address = end;
-    switch (*(int *)((char *)self + 0x118)) {
+    switch (*(int *)((char *)s + 0x118)) {
     case 0: address = end + 0x200; break;
     case 25: address = end + 0x100; break;
     case 10: address = end + 0x80; break;
@@ -2802,17 +2803,16 @@ extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4
 }
 
 extern "C" void fn_800E6A44(void *arg0, int arg1, int arg2, void *arg3) {
-    struct FileBase { char c; };
-    const struct FileBase *file = (const struct FileBase *)lbl_803221A8;
+    const char *file = lbl_803221A8;
     unsigned short mix[3];
     unsigned char *voice;
     int i;
     if (arg1 >= 2) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&file->c, 0x458, &file->c + 0x258);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)file + 0), 0x458, file + 0x258);
     }
     if (arg2 == 0) {
         if (arg3 == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(&file->c, 0x45C, &file->c + 0x2A0);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)file + 0), 0x45C, file + 0x2A0);
         }
         mix[0] = ((unsigned short *)arg3)[0];
         mix[1] = ((unsigned short *)arg3)[1];
@@ -2996,19 +2996,17 @@ extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(char *self) {
 
 extern "C" unsigned int __mulhwu(unsigned int, unsigned int);
 extern "C" int GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void* arg0, unsigned long arg1, int arg2) {
-    register unsigned long base = (unsigned long)arg0;
+    unsigned long base = (unsigned long)arg0;
     if (base != 0) base += 0x80000000UL;
     int result = 0;
     switch (arg2) {
     case 0: {
-        register unsigned long sample = arg1;
-        register unsigned long doubled = base << 1;
-        register unsigned long q = __mulhwu(0x24924925U, (unsigned int)sample);
-        register unsigned long block = q + ((sample - q) >> 1);
-        unsigned long rem = sample - ((block >> 3) * 14U);
-        result = (int)(rem + doubled);
-        result += (int)((block << 1) & 0xFFFFFFF0UL);
-        result += 2;
+        unsigned long sample = arg1;
+        unsigned long doubled = base << 1;
+        unsigned long q = __mulhwu(0x24924925U, (unsigned int)sample);
+        unsigned long block = q + ((sample - q) >> 1);
+        unsigned long rem = sample - ((block >> 3) * 14);
+        result = (int)(rem + doubled) + (int)((block << 1) & 0xFFFFFFF0UL) + 2;
         break;
     }
     case 25: result = (int)(base + arg1); break;
@@ -3795,13 +3793,15 @@ extern "C" void FadeIn__Q44nw4r3snd6detail10BasicSoundFi(void* self, int duratio
         else
             volume = sound->start + (float)current * (sound->end - sound->start) / (float)total;
         int newDuration = (int)((float)duration * (lbl_80560FB4 - volume));
+        float targetVolume;
         float finalVolume;
         if (current >= total)
             finalVolume = sound->end;
         else
             finalVolume = sound->start + (float)current * (sound->end - sound->start) / (float)total;
-        sound->end = lbl_80560FB4;
+        targetVolume = lbl_80560FB4;
         sound->start = finalVolume;
+        sound->end = targetVolume;
         sound->total = newDuration;
         sound->current = 0;
     }
