@@ -479,20 +479,21 @@ extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
     f32 whole = __OSu16tof32(&q);
     u32 off = ((q * 0x10) & 0xFF0);
     f32 frac = index - whole;
-    u8 *base = (u8 *)lbl_80320E38;
-    f32 v0 = *(f32 *)(base + off);
-    f32 v1 = *(f32 *)(base + off + 8);
+    f32 *base = (f32 *)lbl_80320E38;
+    f32 v0 = *(f32 *)((char *)base + off);
+    f32 v1 = *(f32 *)((char *)base + off + 8);
     f32 value = v0 + frac * v1;
-    if (angle < lbl_80560F04) value = -value;
+    if (angle < 0.0f) value = -value;
     return value;
 }
 
 extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
     f32 index = __fabsf(angle);
     while (index >= lbl_80560F00) index -= lbl_80560F00;
-    u16 quantized = ((u16 *)&index)[0];
-    f32 *entry = (f32 *)((char *)lbl_80320E38 + ((quantized * 0x10) & 0xFF0));
-    f32 fraction = index;
+    u16 q = __OSf32tou16(index);
+    f32 whole = __OSu16tof32(&q);
+    f32 *entry = (f32 *)((char *)lbl_80320E38 + ((q * 0x10) & 0xFF0));
+    f32 fraction = index - whole;
     return entry[1] + fraction * entry[3];
 }
 
@@ -502,41 +503,42 @@ extern float lbl_80560F04, lbl_80560F08, lbl_80560F0C, lbl_80560F10, lbl_80560F1
 extern float lbl_80321E48[];
 #pragma pop
 extern "C" float Atan2FIdx__Q24nw4r4mathFff(float y, float x) {
-    float f1 = y;
-    float f3;
+    if (0.0f == x && 0.0f == y) return 0.0f;
     float f4 = lbl_80560F04;
+    float f3;
     int mode;
-    if (x == lbl_80560F04 && y == lbl_80560F04) return lbl_80560F04;
-    if (x <= lbl_80560F04) {
-        if (y <= lbl_80560F04) {
-            if (x <= y) { f3 = x; mode = 0; }
-            else { f3 = y; f4 = lbl_80560F0C; f1 = x; mode = 1; }
+    if (x >= lbl_80560F04) {
+        if (y >= lbl_80560F04) {
+            if (x >= y) { f3 = x; mode = 0; }
+            else { f3 = y; f4 = lbl_80560F0C; y = x; mode = 1; }
         } else {
-            f1 = -y;
-            if (x <= f1) { f3 = x; mode = 1; }
-            else { f3 = f1; f4 = lbl_80560F10; f1 = x; mode = 0; }
+            y = -y;
+            if (x >= y) { f3 = x; mode = 1; }
+            else { f3 = y; f4 = lbl_80560F10; y = x; mode = 0; }
         }
     } else {
-        if (y <= lbl_80560F04) {
+        if (y >= lbl_80560F04) {
             float f0 = -x;
-            if (f0 <= y) { f3 = f0; f4 = lbl_80560F14; mode = 1; }
-            else { f3 = y; f4 = lbl_80560F0C; f1 = f0; mode = 0; }
+            if (f0 >= y) { f3 = f0; f4 = lbl_80560F14; mode = 1; }
+            else { f3 = y; f4 = lbl_80560F0C; y = f0; mode = 0; }
         } else {
             float f0 = -x;
-            f1 = -y;
-            if (f0 <= f1) { f3 = f0; f4 = lbl_80560F18; mode = 0; }
-            else { f3 = f1; f4 = lbl_80560F10; f1 = f0; mode = 1; }
+            y = -y;
+            if (f0 >= y) { f3 = f0; f4 = lbl_80560F18; mode = 0; }
+            else { f3 = y; f4 = lbl_80560F10; y = f0; mode = 1; }
         }
     }
-    f1 = f1 / f3 * lbl_80560F08;
+    y = y / f3 * lbl_80560F08;
     if (mode) {
-        u16 i = *(u16 *)&f1;
+        u16 i = __OSf32tou16(y);
+        f32 whole = __OSu16tof32(&i);
         float *e = (float *)((char *)lbl_80321E48 + i * 8);
-        return f4 - (e[0] + (f1 - (float)i) * e[1]);
+        return f4 - (e[0] + (y - whole) * e[1]);
     } else {
-        u16 i = *(u16 *)&f1;
+        u16 i = __OSf32tou16(y);
+        f32 whole = __OSu16tof32(&i);
         float *e = (float *)((char *)lbl_80321E48 + i * 8);
-        return f4 + (e[0] + (f1 - (float)i) * e[1]);
+        return f4 + (e[0] + (y - whole) * e[1]);
     }
 }
 
@@ -1467,9 +1469,9 @@ extern "C" int fn_800E6B24(void *);
 extern "C" void fn_800E4764(void *arg0) {
 #define B(off) (*(unsigned char *)((char *)arg0 + (off)))
 #define I(off) (*(int *)((char *)arg0 + (off)))
-    char *row;
+    int j, i;
     char *col;
-    int i, j;
+    char *row;
     if (B(0x11C) != 0) {
         if (B(0x11E) != 0 && IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(arg0) != 0) {
             void (*cb)(void *, int, int) = *(void (**)(void *, int, int))((char *)arg0 + 0x10C);
@@ -1494,6 +1496,9 @@ extern "C" void fn_800E4764(void *arg0) {
         }
         if (B(0x11E) != 0) {
             if ((B(0x123) & 2) && B(0x11D) != 0) {
+                char *row;
+                char *col;
+                int i, j;
                 if (B(0x11F) != 0 || B(0x122) != 0 || *(unsigned char *)((char *)Instance__15EmissionManagerFv() + 0x6C33) != 0) {
                     row = (char *)arg0;
                     for (j = 0; j < I(0x104); row += 0x10, j++) {
@@ -1504,6 +1509,9 @@ extern "C" void fn_800E4764(void *arg0) {
                     }
                     B(0x120) = 1;
                 } else {
+                    char *row;
+                    char *col;
+                    int i, j;
                     col = (char *)arg0;
                     for (j = 0; j < I(0x104); col += 0x10, j++) {
                         row = col;
