@@ -482,25 +482,30 @@ void fn_8022DF14(void *arg0) {
     *p = lo;
 }
 
-void fn_8022DF48(void *arg0) {
-    int cur;
-    int hi;
-    int *p;
-    int v;
-    int lo;
-    p = *(int **)((char *)arg0 + 4);
-    hi = *(int *)((char *)arg0 + 0xC);
-    cur = *p;
-    if (hi < cur - 1) {
-        v = hi;
+/* Step an int gauge's value down by one, held inside its [min, max] range:
+ * value = max(min, min(max, *valuePtr - 1)).  The gauge points at the value it
+ * owns at +0x04 and keeps its low and high limits at +0x08 and +0x0C;
+ * fn_8022DF14 is the step-up half of the pair, and fn_8022DF9C / fn_8022DF7C
+ * say whether stepping down / up would change the value at all. */
+void fn_8022DF48(void *gauge) {
+    int value;
+    int max;
+    int *valuePtr;
+    int stepped;
+    int min;
+    valuePtr = *(int **)((char *)gauge + 4);
+    max = *(int *)((char *)gauge + 0xC);
+    value = *valuePtr;
+    if (max < value - 1) {
+        stepped = max;
     } else {
-        v = cur - 1;
+        stepped = value - 1;
     }
-    lo = *(int *)((char *)arg0 + 8);
-    if (v > lo) {
-        lo = v;
+    min = *(int *)((char *)gauge + 8);
+    if (stepped > min) {
+        min = stepped;
     }
-    *p = lo;
+    *valuePtr = min;
 }
 
 extern char *fn_8022D82C(void *, int, int);
