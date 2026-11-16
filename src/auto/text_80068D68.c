@@ -9,6 +9,7 @@ extern void WUDiMoveTopStdDevInfoPtr(unsigned char *);
 #include <stdarg.h>
 #include <printf.h>
 #include "revolution/BTE/stack/include/btm_api.h"
+struct BtaHhFindMessages { u8 found[0x24]; u8 inUse[0x34]; u8 limit[0x2C]; };
 #include "revolution/BTE/stack/include/gap_api.h"
 #define btm_sco_chk_pend_unpark btm_sco_chk_pend_unpark_old2
 #include "revolution/BTE/stack/btm/btm_int.h"
@@ -7416,28 +7417,37 @@ char *bta_hh_evt_code(u32 event) {
     }
 }
 
-u8 bta_hh_find_cb(u8 *bd_addr) {
+#pragma push
+#pragma cplusplus on
+extern "C" u8 bta_hh_find_cb(u8 *bd_addr) {
     extern u8 lbl_803159E0[];
     extern u8 lbl_80565228;
-    u8 *messages;
+    struct { u8 *base; } table;
+    table.base = lbl_803159E0;
+    u8 *&messages = table.base;
     u8 i;
-    messages = lbl_803159E0;
 
+    {
+    struct { u8 *base; } devices;
+    devices.base = lbl_803C0D48;
+    u8 *&controls = devices.base;
     for (i = 0; i < 0x10; i++) {
-        if (bdcmp(bd_addr, lbl_803C0D48 + ((i & 0xFF) << 5) + 0x18) == 0 &&
+        if (bdcmp(bd_addr, controls + ((i & 0xFF) << 5) + 0x18) == 0 &&
             bdcmp(bd_addr, &lbl_80565228) != 0) {
             if (lbl_8055DC80 >= 5)
                 fn_8007096C(0x504, messages + 0, i,
-                            lbl_803C0D48[((i & 0xFF) << 5) + 0x26]);
+                            controls[((i & 0xFF) << 5) + 0x26]);
             return i;
         }
         if (5 <= lbl_8055DC80)
             ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)
                 (0x504, messages + 0x24,
-                 lbl_803C0D48[((i & 0xFF) << 5) + 0x28],
-                 i, lbl_803C0D48[((i & 0xFF) << 5) + 0x26],
-                 lbl_803C0D48[((i & 0xFF) << 5) + 0x2C]);
+                 controls[((i & 0xFF) << 5) + 0x28],
+                 i, controls[((i & 0xFF) << 5) + 0x26],
+                 controls[((i & 0xFF) << 5) + 0x2C]);
     }
+    }
+
 
     for (i = 0; i < 0x10; i++) {
         if (lbl_803C0D48[(i << 5) + 0x28] == 0) {
@@ -7449,7 +7459,7 @@ u8 bta_hh_find_cb(u8 *bd_addr) {
         fn_8007096C(0x504, messages + 0x58, i, 0x10);
     return i;
 }
-
+#pragma pop
 /* Clean up a BTA HID host device control block: clear its callback index in
  * lbl_803C0D48 (+0x214 indexed by dev_cb+0x16), release the buffer slot at +4
  * via fn_800716F0, zero the 0x20-byte block, then restore state (+0x12), set
@@ -16881,24 +16891,24 @@ u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param, u16 data, u8 report_id, 
     return status;
 }
 
+#pragma push
+#pragma opt_lifetimes off
 u8 HID_HostCloseDev(u8 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
+    tHID_HOST_DEV_VIEW *device;
     tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
-    if (lbl_803C3C38[0x400] == 0) {
+    if (lbl_803C3C38[0x400] == 0)
         return 1;
-    }
-    if (dev_handle > 0x10 || devices[dev_handle].in_use == 0) {
+    if (dev_handle > 0x10 || (device = &devices[dev_handle])->in_use == 0)
         return 5;
-    }
-    devices[dev_handle].conn_tries = 1;
-    fn_80070F90(devices[dev_handle].timer_entry);
-    if (devices[dev_handle].state != 1) {
+    device->conn_tries = 1;
+    fn_80070F90(device->timer_entry);
+    if (devices[dev_handle].state != 1)
         return 4;
-    }
-    devices[dev_handle].conn_tries = 1;
+    device->conn_tries = 1;
     return hidh_conn_disconnect(dev_handle);
 }
-
+#pragma pop
 /* Register the HID host's services with the security manager (BTM_SetSecurityLevel
  * keeps a service record per psm/service_id/name): the HID service on the control
  * PSM at the level the application asked for, then the HID device record and the
