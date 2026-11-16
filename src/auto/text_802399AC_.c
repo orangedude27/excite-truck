@@ -572,9 +572,10 @@ void fn_8023AE28(void *selector) {
     *index = (count + *index - 1) % count;
 }
 
-void fn_8023AE50(void *arg0) {
-    s32 *index = *(s32 **)((char *)arg0 + 0x1C);
-    s32 count = *(s32 *)((char *)arg0 + 0x14);
+void fn_8023AE50(void *selector) {
+    /* Advance the selector's +0x1C index by one, wrapping back to 0 when it reaches count (+0x14). */
+    s32 *index = *(s32 **)((char *)selector + 0x1C);
+    s32 count = *(s32 *)((char *)selector + 0x14);
     *index = (*index + 1) % count;
 }
 
