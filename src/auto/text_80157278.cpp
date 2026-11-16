@@ -1201,7 +1201,7 @@ extern "C" void fn_801584A4(void* arg0) {
 }
 
 extern "C" void fn_801584A8(void *object) {
-    /* Init a collection: items point at inline storage +0xC, count (+4) = 0, capacity (+8) = 0x10. */
+    /* Initialize a collection object: point its items at the inline storage at +0xC, set the count (+0x4) to 0 and its capacity (+0x8) to 0x10. */
     *(u32 *)((u8 *)object + 0) = (u32)object + 0xC;
     *(u32 *)((u8 *)object + 8) = 0x10;
     *(u32 *)((u8 *)object + 4) = 0;
