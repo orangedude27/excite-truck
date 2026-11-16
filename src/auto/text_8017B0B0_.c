@@ -45,9 +45,10 @@ void fn_8017B0F8(void *self, float *config) {
     fn_8017B198(self);
 }
 #pragma scheduling on
-void fn_8017B164(void *arg0) {
-    fn_80179E00(arg0);
-    fn_8017B198(arg0);
+void fn_8017B164(void *object) {
+    /* Fully reset the object: refresh per-frame state/child transforms, then restore its default motion and matrix state. */
+    fn_80179E00(object);
+    fn_8017B198(object);
 }
 
 #pragma scheduling on
