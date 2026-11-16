@@ -243,22 +243,20 @@ static inline s32 fn_80231AF0_escape(char *text, f32 w, f32 *adv) {
     }
     return 0;
 }
-static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32 *adv) {
-    Fn80231AF0_Table *table = (Fn80231AF0_Table *)lbl_80497F14;
+static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32 half, f32 *adv) {
     s32 flag;
     s32 i;
-    if (adv != 0) {
-        *adv = w;
-    }
+    s32 eo;
+    *adv = w;
     flag = lbl_8055F050;
     if (*text == '\\') {
-        for (i = 0; i < table->count; i++) {
-            Fn80231AF0_Entry *e;
-            const char *name = table->entries[i].name;
-            if (fn_8002B1D8(text + 1, name, strlen(name)) == 0) {
+        eo = 0;
+        i = 0;
+        while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
+            Fn80231AF0_Entry *e = (Fn80231AF0_Entry *)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
+            if (fn_8002B1D8(text + 1, e->name, strlen(*(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo))) == 0) {
                 Fn80231D84_Rec *r;
                 f32 extra = lbl_8056368C;
-                e = &table->entries[i];
                 r = &((Fn80231D84_Rec *)lbl_8049846C[0])[lbl_8049846C[1]++];
                 r->idx = i;
                 if (e->unkC != 0) {
@@ -271,14 +269,16 @@ static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32
                     r->w = w * e->scale;
                 }
                 r->x = x;
-                r->y = y + w + lbl_80563688 * (r->w - w);
+                r->y = y + w + half * (r->w - w);
                 r->z = z;
                 r->flag = flag;
                 if (adv != 0) {
                     *adv = r->w2 + extra;
                 }
-                return strlen(table->entries[i].name) + 1;
+                return strlen(e->name) + 1;
             }
+            eo += 0x1C;
+            ++i;
         }
     }
     return 0;
