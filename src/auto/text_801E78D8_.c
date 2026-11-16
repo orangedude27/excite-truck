@@ -1007,11 +1007,12 @@ void fn_801E8C84(float *outVec) {
     outVec[2] = lbl_804881D8[2] * magnitude;
 }
 
-void fn_801E8CB8(float *arg0, float *arg1) {
-    arg0[0] = lbl_804881D8[0];
-    arg0[1] = lbl_804881D8[1];
-    arg0[2] = lbl_804881D8[2];
-    arg1[0] = lbl_804881D8[3];
+void fn_801E8CB8(float *outDir, float *outMagnitude) {
+    // Copies the global unit direction (lbl_804881D8[0..2]) into outDir and its magnitude (lbl_804881D8[3]) into outMagnitude.
+    outDir[0] = lbl_804881D8[0];
+    outDir[1] = lbl_804881D8[1];
+    outDir[2] = lbl_804881D8[2];
+    outMagnitude[0] = lbl_804881D8[3];
 }
 
 #pragma scheduling off
