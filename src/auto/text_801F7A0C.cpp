@@ -2329,85 +2329,89 @@ extern "C" void fn_801FA9AC(void) {
     }
 }
 
-extern "C" void fn_801FAAC4(char *dest, void *arg1) {
-    const char *base = lbl_8033AF80;
-    u32 idx;
-    char *name;
-    char **p;
-    FAANames2 names = *(FAANames2 *)lbl_802F9B40;
-    name = (char *)((FAAMgr *)arg1)->get((const char *)lbl_8055B2CC);
-    p = (char **)names.w;
-    idx = 0;
-    while (stricmp(*p, name) != 0) {
-        idx++;
-        p++;
-        if (idx == 0x18) {
-            fn_802E317C(base + 0x190, name);
+extern "C" void fn_801FAAC4(char *dest, void *mgr) {
+    /* Resolve the config "type" string to one of 24 shape/primitive kinds, store
+       its index at dest+0x50, then fill dest+0x58.. with that kind's parameters:
+       radii/scales, a vector, or a model filename built from "mode" plus a
+       ".pln"/".msh" suffix. */
+    const char *keyBase = lbl_8033AF80;
+    u32 typeIndex;
+    char *typeName;
+    char **entry;
+    FAANames2 typeNames = *(FAANames2 *)lbl_802F9B40;
+    typeName = (char *)((FAAMgr *)mgr)->get((const char *)lbl_8055B2CC);
+    entry = (char **)typeNames.w;
+    typeIndex = 0;
+    while (stricmp(*entry, typeName) != 0) {
+        typeIndex++;
+        entry++;
+        if (typeIndex == 0x18) {
+            fn_802E317C(keyBase + 0x190, typeName);
         }
     }
-    *(s32 *)((u8 *)dest + 0x50) = idx;
-    switch (idx) {
+    *(s32 *)((u8 *)dest + 0x50) = typeIndex;
+    switch (typeIndex) {
     case 0:
     case 14:
     case 17:
     case 19:
-        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B328);
+        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)mgr)->getF(lbl_8055B328);
         break;
     case 1:
     case 2:
     case 3:
     case 6:
     case 15:
-        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B32C);
-        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B330);
-        *(f32 *)((u8 *)dest + 0x60) = ((FAAMgr *)arg1)->getF(lbl_8055B334);
+        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)mgr)->getF(lbl_8055B32C);
+        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)mgr)->getF(lbl_8055B330);
+        *(f32 *)((u8 *)dest + 0x60) = ((FAAMgr *)mgr)->getF(lbl_8055B334);
         break;
     case 4:
-        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)arg1)->getF(base + 0x1A8);
-        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B338);
-        *(f32 *)((u8 *)dest + 0x60) = ((FAAMgr *)arg1)->getF(lbl_8055B340);
+        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)mgr)->getF(keyBase + 0x1A8);
+        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)mgr)->getF(lbl_8055B338);
+        *(f32 *)((u8 *)dest + 0x60) = ((FAAMgr *)mgr)->getF(lbl_8055B340);
         break;
     case 8:
-        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B340);
-        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B344);
-        *(f32 *)((u8 *)dest + 0x60) = ((FAAMgr *)arg1)->getF(lbl_8055B348);
+        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)mgr)->getF(lbl_8055B340);
+        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)mgr)->getF(lbl_8055B344);
+        *(f32 *)((u8 *)dest + 0x60) = ((FAAMgr *)mgr)->getF(lbl_8055B348);
         break;
     case 5:
     case 7:
-        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B328);
-        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B340);
+        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)mgr)->getF(lbl_8055B328);
+        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)mgr)->getF(lbl_8055B340);
         break;
     case 9:
-        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)arg1)->getF(base + 0x1B4);
-        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)arg1)->getF(base + 0x1C0);
+        *(f32 *)((u8 *)dest + 0x58) = ((FAAMgr *)mgr)->getF(keyBase + 0x1B4);
+        *(f32 *)((u8 *)dest + 0x5C) = ((FAAMgr *)mgr)->getF(keyBase + 0x1C0);
         break;
     case 10:
     {
-        const char *s = ((FAAMgr *)arg1)->getD(base + 0x1CC, lbl_8055B310);
-        s32 n = 0x10;
-        char *d = dest + 0x58;
-        u8 c;
+        const char *src = ((FAAMgr *)mgr)->getD(keyBase + 0x1CC, lbl_8055B310);
+        s32 room = 0x10;
+        char *dst = dest + 0x58;
+        u8 ch;
         goto body1;
         for (;;) {
-            if (--n <= 0) { d[-1] = 0; break; }
+            if (--room <= 0) { dst[-1] = 0; break; }
         body1:
-            c = *s++;
-            *d++ = c;
-            if ((s8)c == 0) break;
+            ch = *src++;
+            *dst++ = ch;
+            if ((s8)ch == 0) break;
         }
         if (*(s8 *)(dest + 0x58) != 0) {
             return;
         }
-        s = ((FAAMgr *)arg1)->getD(lbl_8055B2A8, lbl_8055B310);
-        n = 0x10;
-        d = dest + 0x58;
+        src = ((FAAMgr *)mgr)->getD(lbl_8055B2A8, lbl_8055B310);
+        room = 0x10;
+        dst = dest + 0x58;
         goto body2;
         for (;;) {
-            if (--n <= 0) { d[-1] = 0; break; }
+            if (--room <= 0) { dst[-1] = 0; break; }
         body2:
-            c = *s++;
-            *d++ = c;
-            if ((s8)c == 0) break;
+            ch = *src++;
+            *dst++ = ch;
+            if ((s8)ch == 0) break;
         }
         {
             char *dot = fn_80029004(dest + 0x58, 0x2E);
@@ -2416,53 +2420,53 @@ extern "C" void fn_801FAAC4(char *dest, void *arg1) {
             }
             *dot = 0;
         }
-        d = dest + 0x58;
-        n = 0x10;
-        s = lbl_8055B34C;
-        while (d[0] != 0) {
-            n--;
-            d++;
+        dst = dest + 0x58;
+        room = 0x10;
+        src = lbl_8055B34C;
+        while (dst[0] != 0) {
+            room--;
+            dst++;
         }
-        if (n <= 0) {
+        if (room <= 0) {
             break;
         }
         goto body3;
         for (;;) {
-            if (--n <= 0) { d[-1] = 0; break; }
+            if (--room <= 0) { dst[-1] = 0; break; }
         body3:
-            c = *s++;
-            *d++ = c;
-            if ((s8)c == 0) break;
+            ch = *src++;
+            *dst++ = ch;
+            if ((s8)ch == 0) break;
         }
         break;
     }
     case 20:
     {
-        const char *s = ((FAAMgr *)arg1)->getD(base + 0x1CC, lbl_8055B310);
-        s32 n = 0x10;
-        char *d = dest + 0x58;
-        u8 c;
+        const char *src = ((FAAMgr *)mgr)->getD(keyBase + 0x1CC, lbl_8055B310);
+        s32 room = 0x10;
+        char *dst = dest + 0x58;
+        u8 ch;
         goto body4;
         for (;;) {
-            if (--n <= 0) { d[-1] = 0; break; }
+            if (--room <= 0) { dst[-1] = 0; break; }
         body4:
-            c = *s++;
-            *d++ = c;
-            if ((s8)c == 0) break;
+            ch = *src++;
+            *dst++ = ch;
+            if ((s8)ch == 0) break;
         }
         if (*(s8 *)(dest + 0x58) != 0) {
             return;
         }
-        s = ((FAAMgr *)arg1)->getD(lbl_8055B2A8, lbl_8055B310);
-        n = 0x10;
-        d = dest + 0x58;
+        src = ((FAAMgr *)mgr)->getD(lbl_8055B2A8, lbl_8055B310);
+        room = 0x10;
+        dst = dest + 0x58;
         goto body5;
         for (;;) {
-            if (--n <= 0) { d[-1] = 0; break; }
+            if (--room <= 0) { dst[-1] = 0; break; }
         body5:
-            c = *s++;
-            *d++ = c;
-            if ((s8)c == 0) break;
+            ch = *src++;
+            *dst++ = ch;
+            if ((s8)ch == 0) break;
         }
         {
             char *dot = fn_80029004(dest + 0x58, 0x2E);
@@ -2471,77 +2475,77 @@ extern "C" void fn_801FAAC4(char *dest, void *arg1) {
             }
             *dot = 0;
         }
-        d = dest + 0x58;
-        n = 0x10;
-        s = lbl_8055B354;
-        while (d[0] != 0) {
-            n--;
-            d++;
+        dst = dest + 0x58;
+        room = 0x10;
+        src = lbl_8055B354;
+        while (dst[0] != 0) {
+            room--;
+            dst++;
         }
-        if (n <= 0) {
+        if (room <= 0) {
             break;
         }
         goto body6;
         for (;;) {
-            if (--n <= 0) { d[-1] = 0; break; }
+            if (--room <= 0) { dst[-1] = 0; break; }
         body6:
-            c = *s++;
-            *d++ = c;
-            if ((s8)c == 0) break;
+            ch = *src++;
+            *dst++ = ch;
+            if ((s8)ch == 0) break;
         }
         break;
     }
     case 11:
     {
-        void *model = ((FAAMgr *)arg1)->get(lbl_8055B2A8);
-        void *res = (void *)fn_802C6B44(model);
-        memcpy(dest + 0x58, (u8 *)res + 0x2C, 0x1C);
-        *(f32 *)(dest + 0x70) = ((FAAMgr *)arg1)->getFD(base + 0x1D8, lbl_80562FF0);
-        ((void (*)(void *))fn_802C6C20)(res);
+        void *modeName = ((FAAMgr *)mgr)->get(lbl_8055B2A8);
+        void *model = (void *)fn_802C6B44(modeName);
+        memcpy(dest + 0x58, (u8 *)model + 0x2C, 0x1C);
+        *(f32 *)(dest + 0x70) = ((FAAMgr *)mgr)->getFD(keyBase + 0x1D8, lbl_80562FF0);
+        ((void (*)(void *))fn_802C6C20)(model);
         break;
     }
     case 12:
-        *(f32 *)(dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B328);
-        *(f32 *)(dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B340);
+        *(f32 *)(dest + 0x58) = ((FAAMgr *)mgr)->getF(lbl_8055B328);
+        *(f32 *)(dest + 0x5C) = ((FAAMgr *)mgr)->getF(lbl_8055B340);
         break;
     case 13:
     case 18:
     case 22:
-        *(f32 *)(dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B328);
-        *(f32 *)(dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B348);
-        *(f32 *)(dest + 0x60) = lbl_8056300C * ((FAAMgr *)arg1)->getFD(base + 0x1EC, lbl_80562FF0);
+        *(f32 *)(dest + 0x58) = ((FAAMgr *)mgr)->getF(lbl_8055B328);
+        *(f32 *)(dest + 0x5C) = ((FAAMgr *)mgr)->getF(lbl_8055B348);
+        *(f32 *)(dest + 0x60) = lbl_8056300C * ((FAAMgr *)mgr)->getFD(keyBase + 0x1EC, lbl_80562FF0);
         break;
     case 16:
     {
-        *(f32 *)(dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B32C);
-        *(f32 *)(dest + 0x5C) = ((FAAMgr *)arg1)->getF(lbl_8055B330);
-        *(f32 *)(dest + 0x60) = ((FAAMgr *)arg1)->getF(lbl_8055B334);
-        const FAAVec &v = ((FAAMgr *)arg1)->getV(base + 0x204);
-        *(f32 *)(dest + 0x64) = v.x;
-        *(f32 *)(dest + 0x68) = v.y;
-        *(f32 *)(dest + 0x6C) = v.z;
+        *(f32 *)(dest + 0x58) = ((FAAMgr *)mgr)->getF(lbl_8055B32C);
+        *(f32 *)(dest + 0x5C) = ((FAAMgr *)mgr)->getF(lbl_8055B330);
+        *(f32 *)(dest + 0x60) = ((FAAMgr *)mgr)->getF(lbl_8055B334);
+        const FAAVec &vec = ((FAAMgr *)mgr)->getV(keyBase + 0x204);
+        *(f32 *)(dest + 0x64) = vec.x;
+        *(f32 *)(dest + 0x68) = vec.y;
+        *(f32 *)(dest + 0x6C) = vec.z;
         break;
     }
     case 21:
     {
-        const char *s = (const char *)((FAAMgr *)arg1)->get(lbl_8055B2A8);
-        s32 n = 0x10;
-        char *d = dest + 0x6C;
-        u8 c;
+        const char *src = (const char *)((FAAMgr *)mgr)->get(lbl_8055B2A8);
+        s32 room = 0x10;
+        char *dst = dest + 0x6C;
+        u8 ch;
         goto body7;
         for (;;) {
-            if (--n <= 0) { d[-1] = 0; break; }
+            if (--room <= 0) { dst[-1] = 0; break; }
         body7:
-            c = *s++;
-            *d++ = c;
-            if ((s8)c == 0) break;
+            ch = *src++;
+            *dst++ = ch;
+            if ((s8)ch == 0) break;
         }
-        *(f32 *)(dest + 0x58) = ((FAAMgr *)arg1)->getF(lbl_8055B328);
-        *(f32 *)(dest + 0x5C) = ((FAAMgr *)arg1)->getFD(lbl_8055B35C, *(f32 *)(dest + 0x58));
-        const FAAVec &v = ((FAAMgr *)arg1)->getV(lbl_8055B364);
-        *(f32 *)(dest + 0x60) = v.x;
-        *(f32 *)(dest + 0x64) = v.y;
-        *(f32 *)(dest + 0x68) = v.z;
+        *(f32 *)(dest + 0x58) = ((FAAMgr *)mgr)->getF(lbl_8055B328);
+        *(f32 *)(dest + 0x5C) = ((FAAMgr *)mgr)->getFD(lbl_8055B35C, *(f32 *)(dest + 0x58));
+        const FAAVec &vec = ((FAAMgr *)mgr)->getV(lbl_8055B364);
+        *(f32 *)(dest + 0x60) = vec.x;
+        *(f32 *)(dest + 0x64) = vec.y;
+        *(f32 *)(dest + 0x68) = vec.z;
         break;
     }
     default:
