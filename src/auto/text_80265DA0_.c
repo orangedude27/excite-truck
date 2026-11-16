@@ -6,6 +6,8 @@ extern int fn_8000D838(void*);
 extern unsigned int lbl_8055F460;
 void fn_80265DA0(void)
 {
+    /* Static initializer: register lbl_8055F458 as a static-destructor record,
+       then set the adjacent large-float sentinel (lbl_8055F460) to 0x7f000000. */
     fn_8000D838(&lbl_8055F458);
     lbl_8055F460 = 0x7f000000;
 }
