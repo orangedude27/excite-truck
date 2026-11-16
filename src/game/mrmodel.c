@@ -1502,12 +1502,16 @@ void fn_802C7A44(void) {
 }
 
 void fn_802C7A50(void) {
-    int i = 0;
+#define s_modelBatchActive lbl_8055FC20
+    /* Submit all nine model sort groups and clear the batch flag. */
+    int groupId = 0;
+
     do {
-        fn_802C5720(i);
-        i++;
-    } while (i < 9);
-    lbl_8055FC20 = 0;
+        fn_802C5720(groupId);
+        groupId++;
+    } while (groupId < 9);
+    s_modelBatchActive = 0;
+#undef s_modelBatchActive
 }
 
 void fn_802C7A94(int arg0) {
