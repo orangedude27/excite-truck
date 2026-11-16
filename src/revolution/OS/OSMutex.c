@@ -1,5 +1,6 @@
 #include <revolution/OS.h>
 
+/* Initialize a mutex: reset its waiter queue, clear ownership, and zero the recursion count. */
 void OSInitMutex(OSMutex* mutex) {
     OSInitThreadQueue(&mutex->queue);
     mutex->thread = NULL;
