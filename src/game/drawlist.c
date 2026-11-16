@@ -645,16 +645,16 @@ void fn_802C90F0(void) {
 
 #pragma scheduling invalid_target
 void fn_802C9294(int arg0, int arg1) {
-    int isOne;
+    int equal;
     if (arg0 != -1 && arg0 != -2) {
+        equal = arg1 == 1;
+        lbl_8055FC75 = equal;
         lbl_8055FC74 = 1;
-        isOne = (arg1 == 1);
-        lbl_8055FC75 = isOne;
     } else {
         lbl_8055FC74 = 0;
         lbl_8055FC75 = 0;
     }
-    fn_802CB29C();
+    fn_802CB29C(arg0);
 }
 #pragma scheduling on
 extern void fn_802C8C04(int);
