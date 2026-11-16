@@ -864,9 +864,10 @@ extern "C" void fn_800F1F44(void* arg0, f32 farg0) {
 }
 
 extern "C" f32 lbl_8056107C;
-extern "C" void fn_800F1F84(void* arg0, f32 farg0) {
+extern "C" void fn_800F1F84(void* object, f32 value) {
+    /* Set the float field at offset 0x18 of object with interrupts disabled. */
     OSDisableInterrupts();
-    *(f32*)((char*)arg0 + 0x18) = farg0;
+    *(f32*)((char*)object + 0x18) = value;
     ((void (*)(void))OSRestoreInterrupts)();
 }
 
