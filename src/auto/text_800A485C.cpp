@@ -1968,14 +1968,25 @@ extern "C" s32 fn_800A7568(void *arg0, s32 arg1) {
 
 extern "C" s32 fn_800A7610(void *arg0) {
     s32 temp;
-    if ((*(u32 *)arg0 & 4) != 0) {
-        temp = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
-        if (temp != 0)
-            return temp;
+    if ((*(u32 *)arg0 & 4) == 0) {
+        goto not_ready;
     }
+
+    temp = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+    if (temp != 0) {
+        return temp;
+    }
+
     temp = fn_800A6808(*(void **)((u8 *)arg0 + 4));
-    if (temp != 0)
-        return 0xD;
+    if (temp != 0) {
+        return temp;
+    }
+    goto mark_clear;
+
+not_ready:
+    return 0xD;
+
+mark_clear:
     *(u32 *)arg0 &= ~4U;
     return 0;
 }
