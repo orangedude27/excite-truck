@@ -1922,12 +1922,13 @@ extern s32 *lbl_8055E884;
 extern void fn_801CBD48(void *, void *);
 extern void fn_802AE220(void *);
 extern void fn_8001DFCC(void);
-void fn_801CE6D0(Struct_801CE670 *arg0, s32 arg1, s32 arg2) {
-    Struct_801CE670 local;
-    local.field4 = arg1;
-    local.field0 = 3;
-    local.field8 = arg2;
-    *arg0 = local;
+// Initializes a 3-word descriptor with a fixed kind tag (3) and two caller values.
+void fn_801CE6D0(Struct_801CE670 *out, s32 value1, s32 value2) {
+    Struct_801CE670 node;
+    node.field4 = value1;
+    node.field0 = 3;
+    node.field8 = value2;
+    *out = node;
 }
 
 void fn_801CE6F8(void) {
