@@ -802,10 +802,12 @@ void fn_801CC8EC(void *arg0) {
     *(int *)arg0 = 0;
 }
 
-void fn_801CC8FC(void *arg0) {
-    *(int *)arg0 = (int)((char *)arg0 + 12);
-    *(int *)((char *)arg0 + 8) = 7;
-    *(int *)((char *)arg0 + 4) = 0;
+void fn_801CC8FC(void *object) {
+    /* Initialize a collection object: point its items at the inline storage
+     * at +0xC, set the element count (+0x4) to 0 and its capacity (+0x8) to 7. */
+    *(int *)object = (int)((char *)object + 0xC);
+    *(int *)((char *)object + 8) = 7;
+    *(int *)((char *)object + 4) = 0;
 }
 
 /* The award stat handler kept in lbl_8055E884 (its heap name strings at
