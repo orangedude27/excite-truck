@@ -630,18 +630,19 @@ extern "C" f32 lbl_80561744;
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
-    void *self = arg0;
     s32 off = arg1 * 8;
-    u8 *element = (u8 *)arg0 + off;
     f32 f31 = lbl_8055E3C8;
+    u8 *element = (u8 *)arg0 + off;
+    void *self = arg0;
+
     if (f31 >= *(f32 *)(element + 0xE4)) {
-        void *r29v = fn_8017960C(arg1);
+        void *r29 = fn_8017960C(arg1);
         s32 found;
         s32 i;
         s32 offset;
         for (i = 0, offset = 0; i < *(s32 *)((u8 *)self + 0x94); offset += 4, i++) {
-            f32 a = *(f32 *)((u8 *)r29v + 0x60);
-            f32 b = *(f32 *)((u8 *)r29v + 0x68);
+            f32 a = *(f32 *)((u8 *)r29 + 0x60);
+            f32 b = *(f32 *)((u8 *)r29 + 0x68);
             s32 elem = *(s32 *)(*(u8 **)((u8 *)self + 0x90) + offset);
             if (fn_80139B70(elem, a, b)) {
                 found = 1;
@@ -668,6 +669,7 @@ extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
             *(f32 *)(element + 0xE4) += lbl_80561740;
         }
     }
+
     if (fn_801B306C() > lbl_80561744) {
         return *(s32 *)((u8 *)self + 0xE8);
     }
@@ -681,18 +683,12 @@ extern s32 fn_80129D90(s32, s32, s32);
 extern "C" void fn_80156DCC(void *arg0, s32 arg1) {
     s32 offset = arg1 * 8;
     u8 *element = (u8 *)arg0 + offset;
-    f32 base;
-    u32 oldValue;
-    s32 count;
-    s32 index;
-    u32 *table;
-    u32 value;
-    base = lbl_8055E3C8;
-    oldValue = *(u32 *)(element + 0xE8);
-    count = *(s32 *)((u8 *)arg0 + 8);
-    index = fn_80129D90(4, 0, count);
-    table = *(u32 **)((u8 *)arg0 + 4);
-    value = *(u32 *)((u8 *)table + index * 8);
+    f32 base = lbl_8055E3C8;
+    u32 oldValue = *(u32 *)(element + 0xE8);
+    s32 count = *(s32 *)((u8 *)arg0 + 8);
+    s32 index = fn_80129D90(4, 0, count);
+    u32 *table = *(u32 **)((u8 *)arg0 + 4);
+    u32 value = *(u32 *)((u8 *)table + index * 8);
     if (value == oldValue) {
         s32 next = index + 1;
         s32 divisor = *(s32 *)((u8 *)arg0 + 8);
@@ -852,8 +848,13 @@ extern "C" void fn_801571AC(void* arg0) {
 }
 
 void ebi::title::TBlackPlane::updateAfterCamera() {
-    m_b->v3();
-    m_a->v3();
+    /* Updates both black-plane layers after the camera transform (layer B then layer A). */
+#define backPlane m_b
+#define frontPlane m_a
+    backPlane->v3();
+    frontPlane->v3();
+#undef backPlane
+#undef frontPlane
 }
 
 extern "C" void fn_80157210(void* arg0) {
