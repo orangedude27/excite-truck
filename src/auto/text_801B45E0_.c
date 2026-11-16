@@ -82,17 +82,19 @@ extern int fn_801B4904();
 extern int lbl_80335E10[];
 extern int lbl_80335E28[];
 #pragma pop
-void fn_801B45E0(void *arg0) {
-    *(int *)((char *)arg0 + 0x00) = 0;
-    *(int *)((char *)arg0 + 0x14) = 0;
-    *(int *)((char *)arg0 + 0x10) = 0;
-    *(int *)((char *)arg0 + 0x0C) = 0;
-    *(int *)((char *)arg0 + 0x08) = 0;
-    *(int *)((char *)arg0 + 0x04) = 0;
-    *(int *)((char *)arg0 + 0x18) = 0;
-    *(int *)((char *)arg0 + 0x24) = 0;
-    *(int *)((char *)arg0 + 0x20) = 0;
-    *(int *)((char *)arg0 + 0x1C) = 0;
+void fn_801B45E0(void *self) {
+    /* Reset a frame/resource object to a blank state by zeroing all ten of its
+     * int fields (0x00..0x24), in the same order as fn_801B4610's teardown. */
+    *(int *)((char *)self + 0x00) = 0;
+    *(int *)((char *)self + 0x14) = 0;
+    *(int *)((char *)self + 0x10) = 0;
+    *(int *)((char *)self + 0x0C) = 0;
+    *(int *)((char *)self + 0x08) = 0;
+    *(int *)((char *)self + 0x04) = 0;
+    *(int *)((char *)self + 0x18) = 0;
+    *(int *)((char *)self + 0x24) = 0;
+    *(int *)((char *)self + 0x20) = 0;
+    *(int *)((char *)self + 0x1C) = 0;
 }
 
 #pragma push
