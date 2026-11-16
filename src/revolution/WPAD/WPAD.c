@@ -4008,13 +4008,15 @@ u32 fn_800609E0(s32 chan) {
     return (val == (u32)-1) ? 0 : val;
 }
 
-// fn_80060C7C: get connected flag
+/* Returns the connection state for the given WPAD channel (field at +0x77C). */
 u32 fn_80060C7C(s32 chan) {
-    WPADCB* p = lbl_8038F4F0[chan];
-    BOOL enabled = OSDisableInterrupts();
-    u32 val = *(u32*)((u8*)p + 0x77C);
-    OSRestoreInterrupts(enabled);
-    return val;
+#define s_wpadControlBlocks lbl_8038F4F0
+    WPADCB* controlBlock = s_wpadControlBlocks[chan];
+    BOOL interrupts = OSDisableInterrupts();
+    u32 connected = *(u32*)((u8*)controlBlock + 0x77C);
+    OSRestoreInterrupts(interrupts);
+    return connected;
+#undef s_wpadControlBlocks
 }
 
 static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
