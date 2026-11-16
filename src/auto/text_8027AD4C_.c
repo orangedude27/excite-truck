@@ -581,8 +581,10 @@ void fn_8027B77C(void) {
     }
 }
 
-void *fn_8027B834(void *arg0) {
-    return lbl_804A4380 + fn_8000DA10() * 0x3B10 + (long)arg0 * 0xBD0;
+/* RealName: GetPlayerGroupSlot_8027B834 */
+void *fn_8027B834(void *slotIndex) {
+    /* Return the slot at the given index within the current player's group block. */
+    return lbl_804A4380 + fn_8000DA10() * 0x3B10 + (long)slotIndex * 0xBD0;
 }
 
 #pragma scheduling on
