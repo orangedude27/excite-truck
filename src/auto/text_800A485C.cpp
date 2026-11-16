@@ -11620,8 +11620,9 @@ extern "C" s32 fn_800B7BDC(void) {
 }
 
 extern "C" s32 fn_800B7C08(void) {
-    s32 result = ((s32 (*)(void))fn_800B7504)();
-    return (-result | result) >> 31;
+    // Returns an all-ones mask when the handler's result is nonzero, zero otherwise.
+    s32 value = ((s32 (*)(void))fn_800B7504)();
+    return (-value | value) >> 31;
 }
 
 extern "C" s32 VFipf2_fopen(void);
