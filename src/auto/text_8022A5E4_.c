@@ -189,8 +189,10 @@ void fn_8022A7D0(void) {
 
 #pragma push
 #pragma dont_inline on
-int fn_8022A7D4(const char *arg0) {
-    return strstr(arg0, lbl_8055B8B0) != 0;
+int fn_8022A7D4(const char *resourceName) {
+    /* Nonzero if the resource name contains the ".img" extension (lbl_8055B8B0),
+       selecting the image loader at the resource-dispatch site. */
+    return strstr(resourceName, lbl_8055B8B0) != 0;
 }
 
 int fn_8022A804(const char *resourceName) {
