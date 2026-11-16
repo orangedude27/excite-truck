@@ -528,8 +528,9 @@ extern "C" f32 fn_8013CB3C(void) {
 }
 #pragma dont_inline off
 
-extern "C" s32 fn_8013CB44(const char *arg0, TObj10 *arg1) {
-    return strcmp((const char *)arg1->v10(), arg0) == 0;
+/* Return 1 if the object's virtual name equals the given name, 0 otherwise. */
+extern "C" s32 fn_8013CB44(const char *name, TObj10 *obj) {
+    return strcmp((const char *)obj->v10(), name) == 0;
 }
 
 #pragma dont_inline on
