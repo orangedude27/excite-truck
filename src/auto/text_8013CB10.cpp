@@ -1442,9 +1442,12 @@ extern "C" void *fn_8013E77C(void *instance, s32 delete_flag) {
     return instance;
 }
 
+#define ITEM_RECORD_STRIDE 0x12C /* size of one entry in the item table at self+0xB8 */
+#define ITEM_RECORD_ACTIVE 0x118 /* nonzero while the item entry is active */
+
 extern "C" void fn_8013EB0C(void *arg0, s32 arg1) {
-    u8 *entry = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
-    if (*(u8 *)(entry + 0x118))
+    u8 *entry = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * ITEM_RECORD_STRIDE;
+    if (*(u8 *)(entry + ITEM_RECORD_ACTIVE))
         *(s32 *)entry = 1;
 }
 
