@@ -1568,11 +1568,12 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
 #pragma pop
 extern "C" void fn_8002F6AC(s32, void *);
 extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *, s32);
-extern "C" s32 fn_80147070(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668((void *)arg0);
+extern "C" s32 fn_80147070(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668((void *)object);
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_802C8BD0(s32);
