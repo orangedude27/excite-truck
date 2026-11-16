@@ -16,6 +16,7 @@ extern f64 lbl_80561228;
 extern f32 lbl_80329BC8[];
 extern s32 lbl_8055DEE0;
 extern s32 lbl_8055DEE8;
+typedef struct { s32 first, second; } Pair8011A168;
 extern void TRKGetFreeBuffer(void *);
 extern void fn_80117074(void*);
 /* Pointer to the stream entry at byte offset `off` in the manager's entry table
