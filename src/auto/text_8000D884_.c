@@ -157,10 +157,11 @@ check:
     if (i < lbl_8055D464) goto loop;
 }
 
+/* Mark the currently selected IdentInfo slot as active (state 2). */
 void fn_8000DB18(void) {
-    int *entry;
-    entry = (int *)((char *)lbl_8055D46C + *lbl_8055D46C * 0x18);
-    entry[1] = 2;
+    int *currentSlot;
+    currentSlot = (int *)((char *)lbl_8055D46C + *lbl_8055D46C * 0x18);
+    currentSlot[1] = 2;
 }
 
 void *fn_8000DB34(int index) {
