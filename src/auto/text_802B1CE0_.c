@@ -20,7 +20,7 @@ public:
 extern void *fn_801284F8(int, const char *);
 extern void fn_801345D8(char *, int, const char *, ...);
 extern void fn_802B2C7C(void *);
-extern void **fn_802B2384(void *, void **);
+extern void **fn_802B2384(void *, void **__restrict);
 extern void *fn_802B23A8(void *, void *, void *);
 extern int fn_802B2C44(void *);
 extern char lbl_8034A2C4[];
@@ -609,10 +609,10 @@ void fn_802B28BC(int *entries, int count) {
 
 void *fn_802B2934(void *arg0, void **arg1) {
     struct PtrVec { void **data; int count; } *vec = arg0;
-    void *value = *arg1;
+    int value = *(int *)arg1;
     int index = vec->count++;
     void **slot = &vec->data[index];
-    *slot = value;
+    *(int *)slot = value;
     return slot;
 }
 
