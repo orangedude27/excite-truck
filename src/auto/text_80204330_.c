@@ -57,7 +57,7 @@ int fn_8020437C(void) {
 #pragma dont_inline on
 void fn_802043B0(int *arg0) {
     int elapsed;
-    volatile int *out = arg0;
+    int *out = arg0;
     int original;
     int packed;
     int final_value;
@@ -102,13 +102,18 @@ void fn_80204460(void) {
 
 #pragma cplusplus on
 extern "C" void fn_8020449C(void) {
+    /* Destroys the shared GUI object and resets its state/count. */
+#define sGuiObjectCount lbl_8055ED3C
+#define sGuiObject lbl_8055ED44
     class Obj {
     public:
         virtual ~Obj();
     };
-    lbl_8055ED3C = 0;
-    delete (Obj *)lbl_8055ED44;
-    lbl_8055ED44 = 0;
+    sGuiObjectCount = 0;
+    delete (Obj *)sGuiObject;
+    sGuiObject = 0;
+#undef sGuiObjectCount
+#undef sGuiObject
 }
 #pragma cplusplus on
 extern "C" int fn_802044E8(void) {
@@ -167,9 +172,7 @@ extern "C" int fn_802044E8(void) {
 #pragma cplusplus off
 extern int __cntlzw(unsigned int);
 int fn_80204870(int arg0) {
-    register int index;
-    register struct Entry80204 *table;
-    register int type;
+    int index;
     if (fn_8020437C() == 0)
         goto return_zero;
     if (arg0 == 0x127)
@@ -199,19 +202,21 @@ increment_store:
     lbl_8055ED40 = index;
     goto update;
 }
-edit_record:
+edit_record: {
+    char *rec;
+    int type;
     index = lbl_8055ED40;
     if (index < 0 || index >= lbl_8055ED3C)
         goto return_zero;
-    table = (struct Entry80204 *)lbl_80488BD0;
-    type = table[index].unk_0x4;
+    rec = lbl_80488BD0 + index * 0x18;
+    type = *(int *)(rec + 4);
     switch (type) {
     case 1:
         if ((unsigned int)arg0 == 0x127u) {
-            register float *value = (float *)(unsigned int)table[index].unk_0x8;
-            float step = table[index].unk_0x14;
+            float *value = (float *)(unsigned int)*(int *)(rec + 8);
+            float step = *(float *)(rec + 0x14);
             float current = *value;
-            float bound = table[index].unk_0x10;
+            float bound = *(float *)(rec + 0x10);
             float candidate = current + step;
             float result;
             if (bound < candidate)
@@ -220,10 +225,10 @@ edit_record:
                 result = candidate;
             *value = result;
         } else {
-            register float *value = (float *)(unsigned int)table[index].unk_0x8;
-            float step = table[index].unk_0x14;
+            float *value = (float *)(unsigned int)*(int *)(rec + 8);
+            float step = *(float *)(rec + 0x14);
             float current = *value;
-            float bound = table[index].unk_0xc;
+            float bound = *(float *)(rec + 0xc);
             float candidate = current - step;
             float result;
             if (bound > candidate)
@@ -234,13 +239,14 @@ edit_record:
         }
         break;
     case 0: {
-        register unsigned char *value = (unsigned char *)(unsigned int)table[index].unk_0x8;
-        *value = (unsigned char)((unsigned int)__cntlzw((unsigned int)*value) >> 5);
+        unsigned char *value = (unsigned char *)(unsigned int)*(int *)(rec + 8);
+        *value = __cntlzw(*value) >> 5;
         break;
     }
     default:
         goto return_zero;
     }
+}
 update:
     fn_80204330();
     return 1;
