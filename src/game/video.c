@@ -363,6 +363,7 @@ void fn_802DF994(void) {
     GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
     GXSetNumTevStages(2);
 }
+#define ResetTevSwapModes fn_802DFAF4 /* reset TEV swap selectors for stages 0 and 1 */
 void fn_802DFAF4(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
     GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
