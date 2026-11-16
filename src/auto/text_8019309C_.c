@@ -843,11 +843,13 @@ void fn_801941A8(void *arg0, float arg1) {
     fn_8018ADAC(*(void **)((char *)arg0 + 0x294), callPos);
 }
 #pragma scheduling on
-void fn_801942B8(void *arg0, float arg1) {
-    float value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
-    value = value > lbl_80562144 ? value : lbl_80562144;
-    *(float *)((char *)arg0 + 0x244) = value;
-    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), (float)(double)value);
+void fn_801942B8(void *obj, float input) {
+    /* Clamp the input to [0,1] (upper lbl_80562140=1.0, lower lbl_80562144=0.0),
+       store it at +0x244 and pass it to fn_8018ADBC for the field at +0x25E4. */
+    float clamped = lbl_80562140 < input ? lbl_80562140 : input;
+    clamped = clamped > lbl_80562144 ? clamped : lbl_80562144;
+    *(float *)((char *)obj + 0x244) = clamped;
+    fn_8018ADBC(*(int *)((char *)obj + 0x294), (float)(double)clamped);
 }
 
 void fn_801942F0(void *driver, int forceOn) {
