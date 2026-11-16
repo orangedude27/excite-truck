@@ -653,6 +653,60 @@ void fn_80014B9C(void *arg0) {
 }
 #pragma pop
 
+/* The per-session state block (lbl_8034EE84) that lbl_8055D350 points at;
+ * what the race HUD reads every frame. */
+typedef struct RaceSession {
+    u8 pad0[0x08];
+    void *app;       /* 0x08: app object; the word at its +4 holds app flags */
+    void *rules;     /* 0x0C: race rules; +0x08 is the lap count */
+    f32 speed;       /* 0x10: this screen's speed */
+    s32 playerCount; /* 0x14: racers taking part */
+    s32 mode;        /* 0x18: race mode (1 = single player) */
+    s32 playerIndex; /* 0x1C: screen/player whose HUD is being drawn */
+    u32 hudMask;     /* 0x20: which readouts to refresh this frame */
+    s32 racerIndex;  /* 0x24: this player's entry in the racer table */
+    s32 field28;     /* 0x28: racer entry the standings list highlights */
+    void *truck;     /* 0x2C: the player's truck; +0x28C.. position, +0x2C0 buttons */
+    void *standing;  /* 0x30: the player's standing; +0x04 place, +0x10 lap */
+} RaceSession;
+#define gSession ((RaceSession *)lbl_8055D350)
+
+/* Bits of the HUD mask at state+0x20; each block of fn_80014D04 draws one. */
+#define HUD_LAP       0x0001 /* "lap <n> / <total>" */
+#define HUD_PLACE     0x0002 /* place number and its ordinal suffix */
+#define HUD_SPEED     0x0008 /* speed needle and the boost gauge */
+#define HUD_DAMAGE    0x0010 /* off-screen marker for this player's damage */
+#define HUD_INCIDENTS 0x0020 /* markers for the four arena incidents */
+#define HUD_LAPINFO   0x0040 /* the lap-info line (fn_80014B9C) */
+#define HUD_LAPWARN   0x0200 /* lap warning (fn_800151DC) */
+#define HUD_RESETWARN 0x0400 /* "wrong way" / reset warning (fn_800151DC) */
+#define HUD_TRACKMAP  0x1000 /* this player's mark on the track map */
+#define HUD_STANDINGS 0x2000 /* the standings list (fn_800154B8) */
+#define HUD_COUNTS    0x4000 /* the two counters drawn over the map */
+
+/* One screen's race HUD object (vtable lbl_802FCE18, see fn_80014524). */
+typedef struct RaceOverlay {
+    void *vtable;      /* 0x00: lbl_802FCE18 */
+    s32 screen;        /* 0x04: index into sRaceOverlays */
+    u8 pad08[0x08];
+    f32 speed;         /* 0x10: smoothed speed, kept up to date by fn_80014820 */
+    u8 pad14[0x04];
+    s32 racerIndex;    /* 0x18: racer the readouts were last built for */
+    u8 pad1C[0x2C];
+    s32 mapFrame;      /* 0x48: track-map marker object, 0 when there is none */
+    void *messageSlot; /* 0x4C: written by the message hook fn_801333E8 registers */
+    void *layout;      /* 0x50: the "raceovr.val" layout the readouts live in */
+} RaceOverlay;
+
+/* Element names of the "raceovr.val" layout, in the string table at lbl_802FCB98. */
+#define NAME_PLACE_NUMBER 0x1F0 /* "place_numerator" */
+#define NAME_PLACE_SUFFIX 0x200 /* "place_suffix" */
+#define NAME_TRACK_MAP    0x210 /* "track_map" */
+#define FMT_INT           (&lbl_80558BA4)  /* "%d" */
+#define FMT_STR           (&lbl_80558BA8)  /* "%s" */
+#define MSG_DAMAGE        (&lbl_80558BAC)  /* "DAMAGE": off-screen marker name */
+#define MSG_KILLED        (&lbl_80558BB4)  /* "KILLED": likewise, for a wrecked racer */
+
 extern s32 fn_8000D75C(void);
 extern void fn_8000FBE4(void);
 extern void fn_80010F38(void *, s32, s32, s32, f32);
