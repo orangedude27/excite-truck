@@ -289,10 +289,16 @@ void fn_80264404(void *arg0) {
     *(void **)((char *)arg0 + 8) = fn_80264A54();
 }
 
+/* Initializes a credits page item that references the active timer/fade object. */
 void fn_80264444(void *arg0) {
-    *(void **)arg0 = 0;
-    fn_80264098(arg0, 5);
-    *(void **)((char *)arg0 + 8) = fn_80264580();
+#define setCreditsItemType fn_80264098
+#define getCreditsTimer fn_80264580
+    CreditsItem *item = (CreditsItem *)arg0;
+    item->vtable = 0;
+    setCreditsItemType(item, CREDITS_ITEM_REF);
+    item->object = getCreditsTimer();
+#undef setCreditsItemType
+#undef getCreditsTimer
 }
 
 void fn_80264484(void *arg0) {
