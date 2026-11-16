@@ -183,12 +183,14 @@ void fn_80008390(void) {
 #define IdList_Contains fn_800085D8
 #pragma dont_inline on
 #pragma scheduling invalid_target
-s32 fn_800085D8(s32 arg0) {
+/* Returns nonzero if the given ID is one of the enabled sound-test commands
+   collected in the IdList (fn_80008390). */
+s32 fn_800085D8(s32 id) {
     s32 i;
-    s32 *data = lbl_8034F3D0.data;
+    s32 *ids = lbl_8034F3D0.data;
     s32 count = lbl_8034F3D0.count;
     for (i = 0; i < count; i++) {
-        if (arg0 == data[i])
+        if (id == ids[i])
             return 1;
     }
     return 0;
