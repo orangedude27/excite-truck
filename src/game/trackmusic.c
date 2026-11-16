@@ -74,11 +74,11 @@ extern long fn_802EC0FC(void);
 long fn_8020F3B4(void) { return -1; }
  
 #pragma scheduling invalid_target
-int fn_8020F3BC(int arg0, int arg1, int arg2) {
-    fn_801345D8((void *)arg1, arg2, (void *)&lbl_8055B664, arg0);
-    return arg1;
+int fn_8020F3BC(int path, int buffer, int size) {
+    /* Formats a track-music path into the buffer and returns the buffer. */
+    fn_801345D8((void *)buffer, size, (void *)&lbl_8055B664, path);
+    return buffer;
 }
-#pragma scheduling on
 extern long lbl_8055B66C;
 int fn_8020F400(int source, int destination, int size) {
     /* Format a track-music song path ("%s.sng") into the destination buffer and return it. */
@@ -629,37 +629,37 @@ extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct R
     long temp_r31;
     struct Record_802101F8 rec;
     long i;
-    if (arg0 == 0) goto exit;
-    if (arg3 != 0) goto body;
-    goto exit;
-body:
-    temp_r31 = arg0->v4();
-    rec.f0 = arg3->f0;
-    {
-        long f4;
-        long f8;
-        f4 = arg3->f4;
-        f8 = arg3->f8;
-        rec.f4 = f4;
-        rec.f8 = f8;
-    }
-    rec.fC = arg3->fC;
-    rec.f10 = arg3->f10;
-    rec.f14 = arg3->f14;
-    rec.f18 = arg3->f18;
-    for (i = 0; i < 3; i++) {
-        long step = arg2 + i;
-        if (i == 1) {
-            float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
-            rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
-        } else {
-            rec.f10 = fn_80235EF0(temp_r31, step);
+
+    if (arg0 == 0) return;
+    if (arg3 != 0) {
+        temp_r31 = arg0->v4();
+        i = 0;
+        rec.f0 = arg3->f0;
+        {
+            long f4 = arg3->f4;
+            long f8 = arg3->f8;
+            rec.f4 = f4;
+            rec.f8 = f8;
         }
-        fn_80147940(arg0, &rec, arg1, step);
-        *(float *)&rec.f4 += rec.f10;
+        rec.fC = arg3->fC;
+        rec.f10 = arg3->f10;
+        rec.f14 = arg3->f14;
+        rec.f18 = arg3->f18;
+        do {
+            long step = arg2 + i;
+            if (i == 1) {
+                float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
+                rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
+            } else {
+                rec.f10 = fn_80235EF0(temp_r31, step);
+            }
+            fn_80147940(arg0, &rec, arg1, step);
+            i++;
+            *(float *)&rec.f4 += rec.f10;
+        } while (i < 3);
+    } else {
+        return;
     }
-exit:
-    return;
 }
 #pragma cplusplus reset
  
