@@ -25,6 +25,9 @@ typedef struct DbgRec { s32 a; f32 b; f32 c; s32 d; f32 e; s32 f; s32 g; s32 h; 
 typedef s32 (*UnkFunc2)(void*, s32);
 typedef struct UnkObj { UnkFunc2 *vtable; } UnkObj;
 #pragma dont_inline on
+/* Return the currently selected value from the lbl_804348E8 table, using the
+   index that fn_80179630 reports for slot 0; callers treat it as the active
+   vehicle identifier when gathering the garage's tunable parameters. */
 s32 fn_801DDE78(void) {
     return lbl_804348E8[fn_80179630(0)];
 }
