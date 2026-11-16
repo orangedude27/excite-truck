@@ -140,7 +140,10 @@ void fn_8001B9D4(void *values) {
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8001B9F4(void) {
-    fn_8002F634(&lbl_803583C8, fn_8001BA10, 0x14, 0x10);
+    /* Global destructor: array_delete the 16-element array of 0x14-byte ring-challenge map markers, freeing each record. */
+#define gMapMarkerRecords lbl_803583C8
+    fn_8002F634(&gMapMarkerRecords, fn_8001BA10, 0x14, 0x10);
+#undef gMapMarkerRecords
 }
 #pragma scheduling reset
 s32 fn_8001BA10(s32 ptr, s32 count) {
