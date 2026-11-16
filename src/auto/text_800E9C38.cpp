@@ -66,8 +66,8 @@ extern "C" int fn_800EC8B4(void *);
 extern "C" int fn_800EB41C(void *);
 extern "C" int Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *, const void *);
 extern "C" int fn_800E519C(void *);
-extern void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, int);
-extern void *fn_80128668(void *);
+extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, int);
+extern "C" void *fn_80128668(void *);
 extern "C" void *__ct__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
     register void *object asm("r29") = arg0;
     int zero = 0;
