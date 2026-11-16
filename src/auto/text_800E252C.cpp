@@ -3852,9 +3852,11 @@ extern "C" void Pause__Q46nw4hbm3snd6detail10BasicSoundFbi(void *self, bool paus
 }
 #pragma dont_inline on
 
-extern "C" void fn_800E8F54(void *arg0, int arg1) {
-    *(int *)((char *)arg0 + 0x6C) = arg1;
-    *(unsigned char *)((char *)arg0 + 0x66) = (unsigned int)((-arg1) & ~arg1) >> 31;
+extern "C" void fn_800E8F54(void *self, int value) {
+    /* Store value at +0x6C and set the flag byte at +0x66 to 1 exactly when value > 0
+       (the (-v & ~v) >> 31 sign trick). */
+    *(int *)((char *)self + 0x6C) = value;
+    *(unsigned char *)((char *)self + 0x66) = (unsigned int)((-value) & ~value) >> 31;
 }
 
 extern "C" float lbl_80560FB4;
