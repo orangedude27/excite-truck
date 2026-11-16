@@ -4334,11 +4334,12 @@ void fn_80156108(void) {
 
 s32 fn_8015610C(void *arg0) { s32 *base = *(s32 **)((u8 *)arg0 + 4); s32 index = *(s32 *)((u8 *)arg0 + 8); *(s32 *)((u8 *)arg0 + 8) = index + 1; return (s32)base + index * 0xF8; }
 
-s32 fn_8014F0C8(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_8014F0C8(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 s32 fn_8014F088(s32 arg0, s32 arg1);
