@@ -1838,16 +1838,17 @@ void fn_801D6C68(void *arg0)
 }
 
 #pragma scheduling invalid_target
-void fn_801D6D28(void* arg0) {
-    unsigned char* ptr = *(unsigned char**)((char*)arg0 + 0x30);
-    if (ptr != 0 && ptr[0x19] != 0) {
-        ptr[0x4A] = 1;
-        ptr[0x4C] = 0;
+void fn_801D6D28(void* cue) {
+    /* If the effect held at +0x30 is active (byte 0x19 set), mark it finished (0x4A=1, 0x4C=0); then reset the cue's state at +4 to ready (1) if it was set. */
+    unsigned char* effect = *(unsigned char**)((char*)cue + 0x30);
+    if (effect != 0 && effect[0x19] != 0) {
+        effect[0x4A] = 1;
+        effect[0x4C] = 0;
     }
-    if (*(int*)((char*)arg0 + 4) == 0) {
+    if (*(int*)((char*)cue + 4) == 0) {
         return;
     }
-    *(int*)((char*)arg0 + 4) = 1;
+    *(int*)((char*)cue + 4) = 1;
 }
 #pragma scheduling on
 void fn_801D6D68(UnkStruct_801D701C *arg0) {
