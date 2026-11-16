@@ -6669,68 +6669,73 @@ static inline s32 FatSetEndMark(void *ctx, s32 idx, u32 value) {
     }
     return 0xF;
 }
-extern "C" s32 fn_800AED1C(void *arg0) {
+/* Format a volume's FAT: clear and write out every FAT sector, then put the
+ * media descriptor in entry 0 and the end-of-chain marker in entry 1. */
+extern "C" s32 fn_800AED1C(void *volume) {
     void *page;
-    s32 sp8;
-    s32 r;
-    s32 type;
-    u32 i;
-    u32 v;
-    r = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8C90)(arg0, -1, &page, &sp8);
-    if (r != 0) return r;
-    fn_800A499C((const char *)*(void **)((u8 *)page + 8), 0, *(u16 *)arg0);
-    i = *(u16 *)((u8 *)arg0 + 2);
-    while (i < *(u32 *)((u8 *)arg0 + 0x2C)) {
-        r = ((s32 (*)(void *, s32, u32))VFiPFCACHE_WriteFATSectorAndFreeIfNeeded)(arg0, *(s32 *)((u8 *)page + 8), i);
-        if (r != 0) {
-            VFiPFCACHE_FreeFATPage(arg0, page);
-            return r;
+    s32 unusedOut;
+    s32 result;
+    s32 fatType;
+    u32 sector;
+    u32 entryValue;
+    result = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8C90)(volume, -1, &page, &unusedOut);
+    if (result != 0) return result;
+    fn_800A499C((const char *)*(void **)((u8 *)page + 8), 0, *(u16 *)volume);
+    sector = *(u16 *)((u8 *)volume + 2);
+    while (sector < *(u32 *)((u8 *)volume + 0x2C)) {
+        result = ((s32 (*)(void *, s32, u32))VFiPFCACHE_WriteFATSectorAndFreeIfNeeded)(volume, *(s32 *)((u8 *)page + 8), sector);
+        if (result != 0) {
+            VFiPFCACHE_FreeFATPage(volume, page);
+            return result;
         }
-        i++;
+        sector++;
     }
-    VFiPFCACHE_FreeFATPage(arg0, page);
-    type = *(s32 *)((u8 *)arg0 + 0x1C);
-    v = *(u8 *)((u8 *)arg0 + 0x1A) | lbl_802EEF40[type * 5 + 3];
-    switch (type) {
+    VFiPFCACHE_FreeFATPage(volume, page);
+    fatType = *(s32 *)((u8 *)volume + 0x1C);
+    /* Entry 0: the media descriptor byte in the low byte, the type's reserved
+     * high bits above it. */
+    entryValue = *(u8 *)((u8 *)volume + 0x1A) | lbl_802EEF40[fatType * 5 + 3];
+    switch (fatType) {
     case 0:
-        if (v > 0xFFF) r = 0x10;
-        else r = fn_800AF734(arg0, 0, (u16)v);
+        if (entryValue > 0xFFF) result = 0x10;
+        else result = fn_800AF734(volume, 0, (u16)entryValue);
         break;
     case 1:
-        if (v > 0xFFFF) r = 0x10;
-        else r = ((s32 (*)(void *, s32, u32))fn_800AFF28)(arg0, 0, v);
+        if (entryValue > 0xFFFF) result = 0x10;
+        else result = ((s32 (*)(void *, s32, u32))fn_800AFF28)(volume, 0, entryValue);
         break;
     case 2:
-        if (v > 0xFFFFFFF) r = 0x10;
-        else r = ((s32 (*)(void *, s32, u32))fn_800B037C)(arg0, 0, v);
+        if (entryValue > 0xFFFFFFF) result = 0x10;
+        else result = ((s32 (*)(void *, s32, u32))fn_800B037C)(volume, 0, entryValue);
         break;
     default:
-        r = 0xF;
+        result = 0xF;
         break;
     }
-    if (r != 0) return r;
-    type = *(s32 *)((u8 *)arg0 + 0x1C);
-    v = lbl_802EEF40[type * 5 + 4];
-    switch (type) {
+    if (result != 0) return result;
+    fatType = *(s32 *)((u8 *)volume + 0x1C);
+    /* Entry 1: end of chain, so the first data cluster ends the reserved run. */
+    entryValue = lbl_802EEF40[fatType * 5 + 4];
+    switch (fatType) {
     case 0:
-        if (v > 0xFFF) r = 0x10;
-        else r = fn_800AF734(arg0, 1, (u16)v);
+        if (entryValue > 0xFFF) result = 0x10;
+        else result = fn_800AF734(volume, 1, (u16)entryValue);
         break;
     case 1:
-        if (v > 0xFFFF) r = 0x10;
-        else r = ((s32 (*)(void *, s32, u32))fn_800AFF28)(arg0, 1, v);
+        if (entryValue > 0xFFFF) result = 0x10;
+        else result = ((s32 (*)(void *, s32, u32))fn_800AFF28)(volume, 1, entryValue);
         break;
     case 2:
-        if (v > 0xFFFFFFF) r = 0x10;
-        else r = ((s32 (*)(void *, s32, u32))fn_800B037C)(arg0, 1, v);
+        if (entryValue > 0xFFFFFFF) result = 0x10;
+        else result = ((s32 (*)(void *, s32, u32))fn_800B037C)(volume, 1, entryValue);
         break;
     default:
-        r = 0xF;
+        result = 0xF;
         break;
     }
-    if (r != 0) return r;
-    r = ((s32 (*)(void *))fn_800A9104)(arg0);
-    return r & ((s32)(-r | r) >> 31);
+    if (result != 0) return result;
+    result = ((s32 (*)(void *))fn_800A9104)(volume);
+    return result & ((s32)(-result | result) >> 31);
 }
 
 s32 fn_800AEF6C(void *);
@@ -21571,14 +21576,12 @@ extern "C" const char lbl_8031F1A8[];
 extern "C" void *fn_800D4F98(void *arg0, u32 arg1, u32 arg2) {
     u32 node;
     u32 sentinel;
-    register const char *file = lbl_8031EE58;
+    const char *file = lbl_8031EE58;
     if (arg0 == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x22F, file + 0x2B0);
     if (arg1 == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x230, file + 0x2DC);
-    node = *(u32 *)((u8 *)arg0 + 4);
-    sentinel = (u32)arg0 + 4;
-    while (node != sentinel) {
+    for (node = *(u32 *)((u8 *)arg0 + 4), sentinel = (u32)arg0 + 4; node != sentinel; node = *(u32 *)node) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
         if (arg1 == *(u32 *)(node + 8)) {
@@ -21588,7 +21591,6 @@ extern "C" void *fn_800D4F98(void *arg0, u32 arg1, u32 arg2) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1CC, 0x193, lbl_8031F1A8);
             return (void *)node;
         }
-        node = *(u32 *)node;
     }
     return 0;
 }
