@@ -940,10 +940,11 @@ void fn_801C2B9C(float * __restrict out, float * __restrict base, float * __rest
     out[2] = z;
 }
 
-extern "C" void fn_801C2BDC(void *arg0, unsigned int *arg1, unsigned int *arg2, unsigned int *arg3) {
-    *arg1 = *(unsigned int *)((unsigned char *)arg0 + 0x14);
-    *arg2 = *(unsigned int *)((unsigned char *)arg0 + 0x24);
-    *arg3 = *(unsigned int *)((unsigned char *)arg0 + 0x28);
+/* Extract three 32-bit fields from obj: the element count at +0x14, the data-list pointer at +0x24 and an extra value at +0x28. */
+extern "C" void fn_801C2BDC(void *obj, unsigned int *outCount, unsigned int *outList, unsigned int *outExtra) {
+    *outCount = *(unsigned int *)((unsigned char *)obj + 0x14);
+    *outList = *(unsigned int *)((unsigned char *)obj + 0x24);
+    *outExtra = *(unsigned int *)((unsigned char *)obj + 0x28);
 }
 
 extern "C" int lbl_8055E7C8;
