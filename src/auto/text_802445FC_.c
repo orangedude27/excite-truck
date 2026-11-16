@@ -57,11 +57,13 @@ int fn_802446F8(int arg0, int arg1) {
     return arg0;
 }
 
+/* Sets up a display-list context, initializes and draws it with opaque black, then tears it down. */
 void fn_80244738(void) {
-    char scratch[56];
+    char displayListBuffer[56];
+
     __AXDSPInitCallback_800216B8();
-    fn_80230B5C(scratch);
-    fn_80230AD8(scratch);
+    fn_80230B5C(displayListBuffer);
+    fn_80230AD8(displayListBuffer);
     fn_802C942C(0xFF000000);
     fn_800216C8();
     fn_80230B38();
