@@ -1665,46 +1665,49 @@ extern unsigned char lbl_804A16E8[];
 #define kInitZero lbl_8056208C  /* 0.0f */
 #define kInitOne  lbl_80562090  /* 1.0f */
 #pragma scheduling invalid_target
-int fn_80191758(void *arg0) {
+/* Fill this car's 0xA0-byte record in the global car table: copy its name from
+ * the racer object, then initialise the four groups of float parameters to
+ * 0/1 defaults.  Returns the destination record pointer. */
+int fn_80191758(void *car) {
     unsigned char *dst;
-    dst = lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-    strcpy((char *)dst, *(char **)((char *)arg0 + 0x20) + 0x234);
-    dst = lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-    *(float *)(dst + 0x28) = lbl_8056208C;
-    *(float *)(dst + 0x24) = lbl_8056208C;
-    *(float *)(dst + 0x20) = lbl_8056208C;
-    *(float *)(dst + 0x34) = lbl_80562090;
-    *(float *)(dst + 0x30) = lbl_80562090;
-    *(float *)(dst + 0x2C) = lbl_80562090;
-    *(float *)(dst + 0x38) = lbl_80562090;
-    *(float *)(dst + 0x3C) = lbl_80562090;
-    dst = lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-    *(float *)(dst + 0x48) = lbl_8056208C;
-    *(float *)(dst + 0x44) = lbl_8056208C;
-    *(float *)(dst + 0x40) = lbl_8056208C;
-    *(float *)(dst + 0x54) = lbl_80562090;
-    *(float *)(dst + 0x50) = lbl_80562090;
-    *(float *)(dst + 0x4C) = lbl_80562090;
-    *(float *)(dst + 0x58) = lbl_80562090;
-    *(float *)(dst + 0x5C) = lbl_80562090;
-    dst = lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-    *(float *)(dst + 0x68) = lbl_8056208C;
-    *(float *)(dst + 0x64) = lbl_8056208C;
-    *(float *)(dst + 0x60) = lbl_8056208C;
-    *(float *)(dst + 0x74) = lbl_80562090;
-    *(float *)(dst + 0x70) = lbl_80562090;
-    *(float *)(dst + 0x6C) = lbl_80562090;
-    *(float *)(dst + 0x78) = lbl_80562090;
-    *(float *)(dst + 0x7C) = lbl_80562090;
-    dst = lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
-    *(float *)(dst + 0x88) = lbl_8056208C;
-    *(float *)(dst + 0x84) = lbl_8056208C;
-    *(float *)(dst + 0x80) = lbl_8056208C;
-    *(float *)(dst + 0x94) = lbl_80562090;
-    *(float *)(dst + 0x90) = lbl_80562090;
-    *(float *)(dst + 0x8C) = lbl_80562090;
-    *(float *)(dst + 0x98) = lbl_80562090;
-    *(float *)(dst + 0x9C) = lbl_80562090;
+    dst = sCarTable + *(int *)((char *)car + 0x28) * 0xA0;
+    strcpy((char *)dst, *(char **)((char *)car + 0x20) + 0x234);
+    dst = sCarTable + *(int *)((char *)car + 0x28) * 0xA0;
+    *(float *)(dst + 0x28) = kInitZero;
+    *(float *)(dst + 0x24) = kInitZero;
+    *(float *)(dst + 0x20) = kInitZero;
+    *(float *)(dst + 0x34) = kInitOne;
+    *(float *)(dst + 0x30) = kInitOne;
+    *(float *)(dst + 0x2C) = kInitOne;
+    *(float *)(dst + 0x38) = kInitOne;
+    *(float *)(dst + 0x3C) = kInitOne;
+    dst = sCarTable + *(int *)((char *)car + 0x28) * 0xA0;
+    *(float *)(dst + 0x48) = kInitZero;
+    *(float *)(dst + 0x44) = kInitZero;
+    *(float *)(dst + 0x40) = kInitZero;
+    *(float *)(dst + 0x54) = kInitOne;
+    *(float *)(dst + 0x50) = kInitOne;
+    *(float *)(dst + 0x4C) = kInitOne;
+    *(float *)(dst + 0x58) = kInitOne;
+    *(float *)(dst + 0x5C) = kInitOne;
+    dst = sCarTable + *(int *)((char *)car + 0x28) * 0xA0;
+    *(float *)(dst + 0x68) = kInitZero;
+    *(float *)(dst + 0x64) = kInitZero;
+    *(float *)(dst + 0x60) = kInitZero;
+    *(float *)(dst + 0x74) = kInitOne;
+    *(float *)(dst + 0x70) = kInitOne;
+    *(float *)(dst + 0x6C) = kInitOne;
+    *(float *)(dst + 0x78) = kInitOne;
+    *(float *)(dst + 0x7C) = kInitOne;
+    dst = sCarTable + *(int *)((char *)car + 0x28) * 0xA0;
+    *(float *)(dst + 0x88) = kInitZero;
+    *(float *)(dst + 0x84) = kInitZero;
+    *(float *)(dst + 0x80) = kInitZero;
+    *(float *)(dst + 0x94) = kInitOne;
+    *(float *)(dst + 0x90) = kInitOne;
+    *(float *)(dst + 0x8C) = kInitOne;
+    *(float *)(dst + 0x98) = kInitOne;
+    *(float *)(dst + 0x9C) = kInitOne;
     return (int)dst;
 }
 
