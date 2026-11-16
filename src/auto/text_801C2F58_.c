@@ -1299,14 +1299,18 @@ void fn_801C7388(void) {
     lbl_8055E839 = 0;
 }
 
+/* RealName: TimelineDeleteSelectedEntry (rename_symbol unavailable)
+ * Removes the selected debug timeline entry and clamps the selection to the
+ * last remaining entry.
+ */
 void fn_801C7394(void) {
-    s32 temp_r3;
+    s32 lastIndex;
 
-    if (lbl_8055E7F0 > 0) {
-        fn_801C3C14(lbl_8055E828);
-        temp_r3 = lbl_8055E7F0 - 1;
-        if (lbl_8055E828 > temp_r3) {
-            lbl_8055E828 = temp_r3;
+    if (sTimelineCount > 0) {
+        fn_801C3C14(sTimelineSelection);
+        lastIndex = sTimelineCount - 1;
+        if (sTimelineSelection > lastIndex) {
+            sTimelineSelection = lastIndex;
         }
     }
 }
