@@ -217,10 +217,11 @@ s32 fn_802160AC(void)
 }
 #pragma pop
 void fn_80216194(void) {
-    s32 i = 1;
+    s32 pass = 1;
+    /* Run the shared update/draw pass three times. */
     do {
         fn_802166B8();
-    } while (i++ < 3);
+    } while (pass++ < 3);
 }
 
 #pragma dont_inline on
