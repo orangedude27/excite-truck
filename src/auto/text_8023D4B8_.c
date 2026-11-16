@@ -427,11 +427,12 @@ extern "C" int fn_8023DD80(void) {
 #pragma cplusplus reset
 #pragma scheduling on
 #pragma use_lmw_stmw on
-int fn_8023DF70(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+int fn_8023DF70(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 s32 fn_8023DFB0(void) {
@@ -567,14 +568,14 @@ extern "C" void fn_8023E1FC(void *arg0) {
         char pad1[3];
         char string[0x14];
     } frame;
-    register char *entry;
     register int zero = 0;
+    register char *entry;
     int i;
     Interface *object;
 
     fn_8022D76C();
     frame.state = *(int *)((char *)arg0 + 0x30);
-    entry = lbl_802FA190;
+    entry = &lbl_802FA190[zero];
     frame.zero = zero;
     for (i = 0; i < 0x11; i++, entry += 8) {
         fn_8022D894(arg0, i, 0, (long)*(char **)fn_8023DC38(*(char **)entry), 0);
