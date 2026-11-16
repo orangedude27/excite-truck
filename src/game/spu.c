@@ -882,8 +882,9 @@ void fn_802E5FE4(void *obj) {
     *(int *)((char *)obj + 0x94) = 0;
 }
 
-float fn_802E6040(void *arg0) {
-    if (arg0 != 0) return *(float *)((char *)arg0 + 0xA4);
+float fn_802E6040(void *sample) {
+    /* Return an SPU sample's stored length (+0xA4), or 0.0 when no sample is loaded. */
+    if (sample != 0) return *(float *)((char *)sample + 0xA4);
     return lbl_8056512C;
 }
 
