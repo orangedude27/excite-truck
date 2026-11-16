@@ -633,8 +633,9 @@ char fn_801769F8(void) {
 }
 
 extern void* lbl_8055A2F0;
-void fn_80176A00(s32 arg0) {
-    *(volatile s32*)&lbl_8055A2F0 = arg0;
+void fn_80176A00(s32 mode) {
+    /* Set the mode at lbl_8055A2F0; when it becomes 1, reset the interpolation factor at lbl_8055E460 to 1.0. */
+    *(volatile s32*)&lbl_8055A2F0 = mode;
     if (*(volatile s32*)&lbl_8055A2F0 == 1) {
         lbl_8055E460 = lbl_80561B1C;
     }
