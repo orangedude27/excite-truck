@@ -1328,7 +1328,7 @@ u8 fn_80068F94(void) {
     }
     return 2;
 }
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
 s32 fn_80069178(void) {
     s32 status;
     BOOL interrupts;
@@ -1336,6 +1336,7 @@ s32 fn_80069178(void) {
     register const u8 *record;
     register u8 count;
     register s32 index;
+    register s32 idx;
 
     status = SCCheckStatus();
     if (((u32)((1 - status) | (status - 1)) >> 31) == 0) {
@@ -1354,9 +1355,10 @@ s32 fn_80069178(void) {
     count = 0;
     do {
         interrupts = OSDisableInterrupts();
-        if (index < 0) goto high_record;
-        if (index >= 0xA) goto high_record;
-        record = device_info + (u8)index * 0x60 + 0x64;
+        idx = (u8)index;
+        if (idx < 0) goto high_record;
+        if (idx >= 0xA) goto high_record;
+        record = device_info + idx * 0x60 + 0x64;
         goto selected_record;
     high_record:
         record = device_info + ((u8)index - 0xA) * 0x60 + 0x424;
@@ -1379,7 +1381,6 @@ s32 fn_80069178(void) {
     }
     return 0x16;
 }
-#pragma use_lmw_stmw reset
 s32 fn_800692D0(void) {
     u8 *record;
     u8 *offset;
@@ -1891,11 +1892,10 @@ void fn_80069EB4(u32 pAlarm, u32 pContext) {
 extern void WUDStoredLinkKeyCallback(void *);
 extern void *WUDiGetDevInfo(u8 *);
 u8 WUDiClearUnregisteredDevice(void) {
-    u32 offset;
+    s32 offset;
     s32 index;
     u8 *base;
     u8 *entry;
-    void *info;
 
     if (lbl_80392960[0xE] == 0) {
         base = lbl_80392960;
@@ -1916,7 +1916,7 @@ u8 WUDiClearUnregisteredDevice(void) {
                     return 2;
                 }
                 if (entry[0x5C] != 3) {
-                    info = WUDiGetDevInfo(entry + 0x40);
+                    void *info = WUDiGetDevInfo(entry + 0x40);
                     if (info != 0) {
                         interrupt = OSDisableInterrupts();
                         memset(info, 0, 0x60);
@@ -2668,20 +2668,20 @@ void fn_8006B330(void) {
 extern u8 BTA_DmAddDevice(u8 *, u8 *, u32, u8);
 extern void BTA_HhAddDev(const u8 *, u16, u8, u8, const void *);
 void fn_8006B488(void) {
-    u8 *base = lbl_803130C8;
-    u8 *control = lbl_80392960;
-    u16 sp10;
-    u32 sp14;
-    f64 argData;
+    register u8 *base = lbl_803130C8;
+    register u8 *control = lbl_80392960;
     u8 *info = (u8 *)((void *(*)(void))WUDiGetDevInfo)();
     u8 status;
     BOOL interrupt;
     u8 state;
+    u16 sp10;
+    u32 sp14;
+    f64 argData;
     status = BTA_DmAddDevice(info + 0x40, info + 0x46, 0, 0);
     DBPrintf_8006CFA8((const char *)(base + 0x5D8), status);
     if (memcmp(info, base + 0x1A0, 0x10) == 0) {
-        sp10 = 0xD9;
         sp14 = (u32)base;
+        sp10 = 0xD9;
         DBPrintf_8006CFA8((const char *)(base + 0x5F0));
         argData = *(f64 *)&sp10;
         BTA_HhAddDev(info + 0x40, *(u16 *)(info + 0x5E), info[0x57], info[0x58], &argData);
@@ -3558,12 +3558,15 @@ extern u32 lbl_803946C0[];
 extern u8 lbl_80392960[0x1000];
 extern u16 lbl_80394680[];
 extern u32 lbl_80393628[];
-s32 fn_8006DF68(s32 *arg0) {
-    s32 val = arg0[-2];
+/* GKI queue walk (GKI_getnext): given the current BT_HDR user buffer, return
+ * the next queued user buffer, or 0 at the end.  The BUFFER_HDR_T link at buf-8
+ * holds the next header's base, so skip its 8-byte size to reach the BT_HDR. */
+s32 fn_8006DF68(s32 *buf) {
+    s32 nextHdr = buf[-2];
 
-    switch (val) {
+    switch (nextHdr) {
     default:
-        return val + 8;
+        return nextHdr + 8;
     case 0:
         return 0;
     }
