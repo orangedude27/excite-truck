@@ -1643,6 +1643,17 @@ extern char lbl_80559838[2]; /* "T" */
 extern char lbl_8055983C[2]; /* "G" */
 extern char lbl_80559840[2]; /* "" */
 
+/* MmlSeqTrack parser state at +0xC0 */
+struct MmlParserTrackParam {
+    bool cmpFlag;          /* +0x00 result of the last expression compare */
+    bool noteWait;         /* +0x01 */
+    bool tie;              /* +0x02 */
+    u8 loopCount[3];       /* +0x03 */
+    u8 callStackDepth;     /* +0x06 */
+    u8 pad7;
+    const u8 *callStack[3]; /* +0x08 */
+};
+
 /* MmlParser::GetVariablePtr: variables 0-0x1F are the player's, 0x20-0x2F the track's.
  * str is the snd_MmlParser.cpp string pool. */
 static inline s16 *MmlGetVariablePtr(const char *str, SeqPlayer *player, MmlSeqTrack *track, int varNo) {
