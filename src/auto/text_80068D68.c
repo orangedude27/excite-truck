@@ -34,6 +34,8 @@ extern BOOLEAN btsnd_hcic_set_event_filter(void *, UINT8, UINT8, UINT8 *, UINT8)
 #undef btsnd_hcic_accept_conn
 #undef btsnd_hcic_reject_esco_conn
 #undef btsnd_hcic_reject_conn
+#undef btsnd_hcic_hold_mode
+extern s32 btsnd_hcic_hold_mode(u8 *, u16, u16, u16);
 #include "revolution/BTE/bta/include/ptim.h"
 extern int btsnd_hcic_reject_conn(void *, u8 *, u8);
 extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
