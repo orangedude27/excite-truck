@@ -998,20 +998,21 @@ void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
     }
 }
 
-void fn_801C0D3C(void *arg0)
+/* Initialize the 3x3 matrix at out to the identity (1.0 on the diagonal, 0.0 elsewhere). */
+void fn_801C0D3C(void *out)
 {
-    float *o = (float *)arg0;
-    float a = lbl_805628B8;
-    float b = lbl_805628BC;
-    o[1] = a;
-    o[0] = b;
-    o[2] = a;
-    o[3] = a;
-    o[4] = b;
-    o[5] = a;
-    o[6] = a;
-    o[7] = a;
-    o[8] = b;
+    float *m = (float *)out;
+    float zero = lbl_805628B8;
+    float one = lbl_805628BC;
+    m[1] = zero;
+    m[0] = one;
+    m[2] = zero;
+    m[3] = zero;
+    m[4] = one;
+    m[5] = zero;
+    m[6] = zero;
+    m[7] = zero;
+    m[8] = one;
 }
 
 #pragma pop
