@@ -90,14 +90,15 @@ void fn_801E9E30(void *arg0, void *arg1) {
     struct V data = *(struct V *)arg1;
     ((s32 (*)(void *, void *, s32, s32, s32))fn_801DCE14)(arg0, &data, (s32)arg1, 0, 0);
 }
-void fn_801E9E78(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    struct { s32 a, b, c; } data;
-    s32 temp = *(s32 *)arg1;
-    s32 temp1 = *((s32 *)arg1 + 1);
-    data.a = temp;
-    data.b = temp1;
-    data.c = *((s32 *)arg1 + 2);
-    fn_801DCE14(arg0, &data, (s32)arg1, arg2, arg3, temp);
+/* RealName: QueryRaycastFromPoint (tentative). Copies the 3-s32/vec point from srcPoint into a temp, then forwards to fn_801DCE14 with casted srcPoint and copied first component as extra arg. */
+void fn_801E9E78(void *context, void *srcPoint, s32 outPos, s32 outInfo) {
+    struct { s32 a, b, c; } pointCopy;
+    s32 x = *(s32 *)srcPoint;
+    s32 y = *((s32 *)srcPoint + 1);
+    pointCopy.a = x;
+    pointCopy.b = y;
+    pointCopy.c = *((s32 *)srcPoint + 2);
+    fn_801DCE14(context, &pointCopy, (s32)srcPoint, outPos, outInfo, x);
 }
 #pragma scheduling on
 void fn_801E9EC4(void *arg0, void *arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
