@@ -2220,22 +2220,23 @@ void fn_801967A4(void *controller) {
     }
 }
 
-void fn_801967FC(void *arg0) {
-    float temp_f0;
-    float var_f2;
-    *(int *)((char *)arg0 + 0x300) = 0;
-    if ((int)*(u8 *)((char *)arg0 + 0x250) != 0) {
-        *(float *)((char *)arg0 + 0x254) *= lbl_8056224C;
+/* Resets a transient counter and updates a clamped value based on a state flag. */
+void fn_801967FC(void *object) {
+    float incrementedValue;
+    float clampedValue;
+    *(int *)((char *)object + 0x300) = 0;
+    if ((int)*(u8 *)((char *)object + 0x250) != 0) {
+        *(float *)((char *)object + 0x254) *= lbl_8056224C;
         return;
     }
-    var_f2 = lbl_80562140;
-    temp_f0 = lbl_80562148 + *(float *)((char *)arg0 + 0x254);
-    if (var_f2 < temp_f0) {
-        var_f2 = var_f2;
+    clampedValue = lbl_80562140;
+    incrementedValue = lbl_80562148 + *(float *)((char *)object + 0x254);
+    if (clampedValue < incrementedValue) {
+        clampedValue = clampedValue;
     } else {
-        var_f2 = temp_f0;
+        clampedValue = incrementedValue;
     }
-    *(float *)((char *)arg0 + 0x254) = var_f2;
+    *(float *)((char *)object + 0x254) = clampedValue;
 }
 
 extern int fn_801796B4(void);
