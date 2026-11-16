@@ -22,12 +22,12 @@ extern void __register_global_object(void *, void *, void *, int);
 void fn_80160C2C(void) {
     /* Global constructor: register a static-destructor record, set a capacity sentinel,
      * initialize a small inline-storage object (data -> +12, count = 0, capacity = 0x14),
-     * and register its destructor fn_80160C8C via __register_global_object. */
-    fn_8000D838(&lbl_8055E2C0);
-    lbl_8055E2C8 = 0xFFFF0000;
-    *(void **)&lbl_8042FD84 = (char *)&lbl_8042FD84 + 12;
-    *(int *)((char *)&lbl_8042FD84 + 8) = 0x14;
-    *(int *)((char *)&lbl_8042FD84 + 4) = 0;
-    ((void (*)(void *, void *, void *))__register_global_object)(&lbl_8042FD84, &fn_80160C8C, &lbl_8042FD78);
+     * and register its destructor destroyGlobalObject via __register_global_object. */
+    registerStaticDestructor(&gStaticDtorRecord);
+    gObjectCapacitySentinel = 0xFFFF0000;
+    *(void **)&gGlobalObject = (char *)&gGlobalObject + 12;
+    *(int *)((char *)&gGlobalObject + 8) = 0x14;
+    *(int *)((char *)&gGlobalObject + 4) = 0;
+    ((void (*)(void *, void *, void *))__register_global_object)(&gGlobalObject, &destroyGlobalObject, &gObjectRegistry);
 }
 
