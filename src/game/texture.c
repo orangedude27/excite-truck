@@ -1279,19 +1279,21 @@ void fn_802CBD30(void **destHead, void **srcHead, void *node) {
 
 void fn_802CBD7C(void **, void *, void *);
 extern char lbl_8034BA04[];
-void fn_802CBD7C(register void **link, void *target, void *current) {
-    int removed = 0;
-    while ((current = *link) != 0) {
-        if (current == target) {
-            void *next = *(void **)((char *)target + 0x10);
+/* Unlink a texture node from the list whose head pointer is *link, scanning
+   from the given node; report "can't find node!" if it isn't on that list. */
+void fn_802CBD7C(register void **link, void *node, void *scan) {
+    int found = 0;
+    while ((scan = *link) != 0) {
+        if (scan == node) {
+            void *next = *(void **)((char *)node + 0x10);
             *link = next;
-            *(void **)((char *)target + 0x10) = 0;
-            removed = 1;
+            *(void **)((char *)node + 0x10) = 0;
+            found = 1;
             break;
         }
-        link = (void **)((char *)current + 0x10);
+        link = (void **)((char *)scan + 0x10);
     }
-    if (removed == 0)
+    if (found == 0)
         fn_802E317C(lbl_8034BA04);
 }
 
