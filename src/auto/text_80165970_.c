@@ -1266,11 +1266,14 @@ void fn_80167684(float arg0) {
     }
 }
 #pragma pop
-int fn_80167728(int arg0) {
-    unsigned char **entries = *(unsigned char ***)&lbl_8055E32C;
-    int offset = arg0 * 0x88;
-    unsigned char *base = *entries;
-    return *(float *)(base + offset + 0x28) <
+/* Returns whether the +0x28 float of the indexed 0x88-byte automation entry
+ * (from the lbl_8055E32C effect list) is below the timing threshold at
+ * lbl_8042FE38+0x68. */
+int fn_80167728(int entryIndex) {
+    unsigned char **holder = *(unsigned char ***)&lbl_8055E32C;
+    int offset = entryIndex * 0x88;
+    unsigned char *items = *holder;
+    return *(float *)(items + offset + 0x28) <
            *(float *)((char *)&lbl_8042FE38 + 0x68);
 }
 #pragma pop
