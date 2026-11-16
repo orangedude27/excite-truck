@@ -53,10 +53,6 @@ struct PhobConfig {
     float primarySize;   /* 0x2C: "rad" shape size, or "len" for a cube */
     float secondarySize; /* 0x30: "len" of a tube, "hit" length of a hinged shape */
 };
-#define Fn801D334CObj PhobConfigSource
-#define Fn801D334CData PhobConfig
-#define f2c primarySize
-#define f30 secondarySize
 #pragma cplusplus reset
 
 extern const char lbl_80338340[];
