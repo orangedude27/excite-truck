@@ -16,7 +16,7 @@ static inline Block* Pool_expand(Block** list, unsigned int size) {
     Block* b;
     char* sb;
     char* end;
-    unsigned int remain, flags, link;
+    unsigned int flags, link, remain;
     if (total < 0x10000) total = 0x10000;
     b = (Block*)__sys_alloc(total);
     if (b == 0) return 0;
@@ -51,7 +51,7 @@ static inline Block* Pool_expand(Block** list, unsigned int size) {
 extern int fn_8002194C(void*, unsigned int, int*);
 int fn_80021D48(Block** arg0, int arg1, int* arg2) {
     Block* node;
-    unsigned long size;
+    unsigned int size;
     int result;
     if (arg2) *arg2 = 0;
     size = (arg1 + 15) & ~7;
