@@ -1014,8 +1014,10 @@ extern "C" s32 fn_8019A820(void* arg0, void* arg1, s32 arg2, s32 arg3, s32 arg4,
     return 0;
 }
 #pragma pop
-extern "C" void fn_8019AA18(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
-    fn_8019A820(arg0, (u8*)arg0 + 0x34, arg1, arg2, arg3, *(f32*)((u8*)arg0 + 0x24));
+extern "C" void fn_8019AA18(void* source, s32 point, s32 type, s32 vehicle) {
+    /* Forward a generated SPHR collision point to fn_8019A820, supplying the
+     * source's +0x34 vector and +0x24 float alongside the three forwarded args. */
+    fn_8019A820(source, (u8*)source + 0x34, point, type, vehicle, *(f32*)((u8*)source + 0x24));
 }
 
 #pragma push
@@ -1078,19 +1080,20 @@ static inline f32 fn_8019AC44_max(f32 a, f32 b) {
 
 extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
     Vec work[64]; s32 count, sp8; Vec p70,p64,delta,p4c,p40,p34,p28,p1c,p10;
-    f32 dot,mag,limit,scale,varf1,f31,dx,dy,dz,tx,ty,tz,ux,uy,uz,vx,vy,vz; void* body=*(void**)((u8*)arg0+4);
+    f32 dot,mag,limit,scale,varf1,f31,dx,dy,dz,tx,ty,tz,ux,uy,uz,vx,vy,vz,px,py,pz; void* body=*(void**)((u8*)arg0+4);
     if (lbl_8055E5A0!=0) { count=0x40; fn_801CF080((s32)lbl_8055E5A0,arg1,work,&count,0,farg0); Vec *wp = work; for(s32 i=0;i<count;wp++,++i) fn_8019A820(arg0,arg1,(s32)wp,0x6e,0,farg0); }
     if (fn_801E9F08((u8*)body+0x6c,arg1,&p70,(s32)&p64,(s32)&sp8,farg0)!=0) {
         dx=((Vec*)arg1)->x-p70.x; dy=((Vec*)arg1)->y-p70.y; dz=((Vec*)arg1)->z-p70.z; delta.x=dx; delta.y=dy; delta.z=dz;
         dot=PSVECDotProduct(&p64,&delta); f31=farg0-dot; fn_8017B6D4((s32)body,&p4c,(s32)&p70);
         farg0=f31* *(f32*)((u8*)arg0+0x10); dot=-PSVECDotProduct(&p4c,&p64);
-        tx = p64.x * farg0;
-        ux = p4c.x + p64.x * dot;
-        uz = p4c.z + p64.z * dot;
-        uy = p4c.y + p64.y * dot;
-        ty = p64.y * farg0;
+        px=p64.x; pz=p64.z; py=p64.y;
+        tx = px * farg0;
+        ux = p4c.x + px * dot;
+        uz = p4c.z + pz * dot;
+        uy = p4c.y + py * dot;
+        ty = py * farg0;
         p40.x = tx;
-        tz = p64.z * farg0;
+        tz = pz * farg0;
         p40.y = ty;
         vx = ux * lbl_8056231C;
         p34.x = ux;
