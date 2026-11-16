@@ -5047,6 +5047,7 @@ extern "C" void fn_801A4E28(void) {
     lbl_8055E5A0 = fn_801CFEAC(&lbl_803336EC[0]);
 }
 #pragma pop
+/* Release the global subsystem handle lbl_8055E5A0 if set, then clear it. */
 extern "C" void fn_801A4E54(void) {
     if (lbl_8055E5A0 != 0) {
         ((void (*)(s32))fn_801CFF14)(lbl_8055E5A0);
