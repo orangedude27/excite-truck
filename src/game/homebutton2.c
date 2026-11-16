@@ -4,6 +4,7 @@
 // auto/text_802ECCDC_.c pending a promotion pass.
 #include "types.h"
 #include "revolution/OS/OSFastCast.h"
+#include "revolution/SC/scapi.h"
 
 extern char lbl_805600E8;
 extern u8 lbl_805600E9;
@@ -39,17 +40,17 @@ void fn_80127464(void);
 #pragma dont_inline on
 s32 fn_802EC4E8(s32 arg0) {
     char sp10[0x40];
-    char *base = lbl_8034E9E0;
+    const char *base = lbl_8034E9E0;
     s32 sp8;
     s32 temp_r30;
     s32 temp_r31;
-    ((void (*)(void *, s32, void *, ...))fn_801345D8)(sp10, 0x40, base - 0, arg0);
+    ((void (*)(void *, s32, const char *, ...))fn_801345D8)(sp10, 0x40, &base[0], arg0);
     sp8 = fn_802E36D8(sp10);
     if (sp8 == -1)
-        ((void (*)(void *, ...))fn_802E317C)(base + 0x10, sp10);
+        ((void (*)(const char *, ...))fn_802E317C)(base + 0x10, sp10);
     temp_r30 = fn_802E37C4(sp8);
     fn_801282EC(0x20);
-    temp_r31 = fn_8012850C(temp_r30, base + 0x28);
+    temp_r31 = fn_8012850C(temp_r30, (void *)(base + 0x28));
     fn_802E3804(sp8, temp_r31, temp_r30);
     fn_802E3734(&sp8);
     return temp_r31;
