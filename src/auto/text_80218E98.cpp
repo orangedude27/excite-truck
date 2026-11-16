@@ -5150,23 +5150,25 @@ extern "C" void fn_80220F90(void *arg0, s32 arg1, s32 arg2) {
 }
 #pragma scheduling on
 extern "C" void fn_802213A4(void *arg0, s32 arg1, s32 arg2) {
-    void *state;
-    s32 value;
+    /* While dragging a scroll bar, turn the pointer position into a content
+     * offset using the track length and clamp it to [0, total - page size]. */
+    void *child;
+    s32 offset;
     if (*(u8 *)((u8 *)arg0 + 0x250) == 0) return;
     if (*(s32 *)((u8 *)arg0 + 0x254) == 0) {
-        state = *(void **)((u8 *)arg0 + 0x244);
-        value = (s32)(((f32)*(s32 *)state / (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8))) * (f32)(arg2 + *(s32 *)((u8 *)arg0 + 0x25C)));
-        *(s32 *)((u8 *)state + 8) = value;
-        if (value > *(s32 *)state - *(s32 *)((u8 *)state + 4)) *(s32 *)((u8 *)state + 8) = *(s32 *)state - *(s32 *)((u8 *)state + 4);
-        if (*(s32 *)((u8 *)state + 8) < 0) *(s32 *)((u8 *)state + 8) = 0;
+        child = *(void **)((u8 *)arg0 + 0x244);
+        offset = (s32)(((f32)*(s32 *)child / (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8))) * (f32)(arg2 + *(s32 *)((u8 *)arg0 + 0x25C)));
+        *(s32 *)((u8 *)child + 8) = offset;
+        if (offset > *(s32 *)child - *(s32 *)((u8 *)child + 4)) *(s32 *)((u8 *)child + 8) = *(s32 *)child - *(s32 *)((u8 *)child + 4);
+        if (*(s32 *)((u8 *)child + 8) < 0) *(s32 *)((u8 *)child + 8) = 0;
     } else {
-        s32 num = *(s32 *)(*(void **)((u8 *)arg0 + 0x244));
-        f32 ratio = (f32)num / (f32)((Vf78 *)arg0)->get();
-        value = (s32)(ratio * (f32)(arg1 + *(s32 *)((u8 *)arg0 + 0x258)));
-        state = *(void **)((u8 *)arg0 + 0x244);
-        *(s32 *)((u8 *)state + 8) = value;
-        if (value > *(s32 *)state - *(s32 *)((u8 *)state + 4)) *(s32 *)((u8 *)state + 8) = *(s32 *)state - *(s32 *)((u8 *)state + 4);
-        if (*(s32 *)((u8 *)state + 8) < 0) *(s32 *)((u8 *)state + 8) = 0;
+        s32 total = *(s32 *)(*(void **)((u8 *)arg0 + 0x244));
+        f32 ratio = (f32)total / (f32)((Vf78 *)arg0)->get();
+        offset = (s32)(ratio * (f32)(arg1 + *(s32 *)((u8 *)arg0 + 0x258)));
+        child = *(void **)((u8 *)arg0 + 0x244);
+        *(s32 *)((u8 *)child + 8) = offset;
+        if (offset > *(s32 *)child - *(s32 *)((u8 *)child + 4)) *(s32 *)((u8 *)child + 8) = *(s32 *)child - *(s32 *)((u8 *)child + 4);
+        if (*(s32 *)((u8 *)child + 8) < 0) *(s32 *)((u8 *)child + 8) = 0;
     }
 }
 
