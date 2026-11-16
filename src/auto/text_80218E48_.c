@@ -8,14 +8,15 @@ extern int fn_8000D838(int *);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
+/* Initializes a state record and resets its associated parameter block. */
 void fn_80218E48(void) {
-    int v;
-    int *p;
+    int initialValue;
+    int *parameterBase;
     fn_8000D838(&lbl_8055EFA0);
-    p = lbl_80490908 + 1;
+    parameterBase = lbl_80490908 + 1;
     lbl_80490908[0] = 0;
-    v = 0x7b;
-    lbl_80490908[1] = v;
+    initialValue = 0x7b;
+    lbl_80490908[1] = initialValue;
     lbl_80490908[2] = 0;
     lbl_80490908[3] = 0;
     lbl_80490908[4] = 0;
