@@ -694,11 +694,13 @@ s32 fn_80128E58(void *heap, s32 size) {
 }
 
 #define STKA_SIGNATURE 0x53544B41
-void *fn_80128EB4(void *arg0, void *arg1) {
-    if ((u32)*(s32 *)((u8 *)arg1 - 0x40) != STKA_SIGNATURE) {
+/* Return the name string stored in an STKA allocation's 0x40-byte header (at
+ * header+4), or the "<unknown>" string when the header signature is invalid. */
+void *fn_80128EB4(void *unused, void *pBlock) {
+    if ((u32)*(s32 *)((u8 *)pBlock - 0x40) != STKA_SIGNATURE) {
         return &lbl_8032A068;
     }
-    return (u8 *)arg1 - 0x3C;
+    return (u8 *)pBlock - 0x3C;
 }
 #undef STKA_SIGNATURE
 
