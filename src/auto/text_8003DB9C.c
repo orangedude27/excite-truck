@@ -3786,18 +3786,21 @@ void GXInitLightPos(void *arg0, float farg0, float farg1, float farg2) {
 /* Large magnitude (~1.7e26) used to push the light's position far along its
  * direction so the light behaves as if placed at infinity. */
 #define GX_LIGHT_FAR_POS_SCALE lbl_80560B5C
-void GXGetLightDir_Internal(void *arg0, float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
+/* Set a light's direction: scale the direction vector by a huge constant so the
+ * light's position is effectively at infinity, and store the unit direction.
+ * Writes GXLightObjImpl fields posX/Y/Z (0x28/0x2C/0x30) and dirX/Y/Z (0x34/0x38/0x3C). */
+void GXGetLightDir_Internal(void *light, float posDirX, float posDirY, float posDirZ, float dirX, float dirY, float dirZ) {
  extern const float lbl_80560B5C;
- float c, b, a;
- *(volatile float *)((char *)arg0 + 0x34) = farg3;
- a = lbl_80560B5C * farg0;
- b = lbl_80560B5C * farg1;
- *(volatile float *)((char *)arg0 + 0x38) = farg4;
- c = lbl_80560B5C * farg2;
- *(volatile float *)((char *)arg0 + 0x3C) = farg5;
- *(volatile float *)((char *)arg0 + 0x28) = a;
- *(volatile float *)((char *)arg0 + 0x2C) = b;
- *(volatile float *)((char *)arg0 + 0x30) = c;
+ float scaledZ, scaledY, scaledX;
+ *(volatile float *)((char *)light + 0x34) = dirX;
+ scaledX = lbl_80560B5C * posDirX;
+ scaledY = lbl_80560B5C * posDirY;
+ *(volatile float *)((char *)light + 0x38) = dirY;
+ scaledZ = lbl_80560B5C * posDirZ;
+ *(volatile float *)((char *)light + 0x3C) = dirZ;
+ *(volatile float *)((char *)light + 0x28) = scaledX;
+ *(volatile float *)((char *)light + 0x2C) = scaledY;
+ *(volatile float *)((char *)light + 0x30) = scaledZ;
 }
 
 void GXInitLightColor(void *arg0, s32 *arg1) { *(s32 *)((char *)arg0 + 0xC) = *arg1; }
