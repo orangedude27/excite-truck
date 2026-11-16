@@ -1522,6 +1522,7 @@ extern "C" void fn_8013ED74(void *arg0) {
                     ok = 0;
                 }
                 if (ok != 0 && fn_8013CFF0((f32 *)item, pos, &dist) != 0) {
+                    Entry *e;
                     s32 v;
                     u8 *p;
                     if (list.count + 1 > list.cap) break;
@@ -1533,24 +1534,18 @@ extern "C" void fn_8013ED74(void *arg0) {
                         v++;
                         p += 0xC;
                     } while ((u32)v < 2);
-                    {
-                        s32 n = list.count;
-                        Entry *e;
-                        list.count = n + 1;
-                        e = &list.data[n];
-                        e->item = item;
-                        e->dist = (f32)fn_8002F234(dist);
-                    }
+                    e = &list.data[list.count++];
+                    e->item = item;
+                    e->dist = (f32)fn_8002F234(dist);
                 }
                 {
                     u8 *group = *(u8 **)(*(u8 **)(self + 0x64) + 4) + *(s32 *)(self + 0x68) * 0x14;
                     u8 *array = *(u8 **)(group + 4);
                     u8 *last = array + *(s32 *)group * 0x24 - 0x24;
-                    if (item != last) goto do_add;
-                    goto done_add;
-do_add:
-                    array = item + 0x24;
-done_add:
+                    if (item == last) {
+                    } else {
+                        array = item + 0x24;
+                    }
                     item = array;
                 }
                 i++;
@@ -1560,14 +1555,16 @@ done_add:
     if (list.count > 0) {
         f32 v = fn_801E7E24();
         if (!((f32)__fabs((f64)v) <= *(f32 *)&lbl_80558DC4)) {
-            s32 k;
+            u8 *it;
             s32 off;
+            u32 w;
+            s32 k;
             k = 0;
             off = 0;
             for (; k < list.count; off += 8, k++) {
-                u8 *it = *(u8 **)((u8 *)list.data + off);
+                it = *(u8 **)((u8 *)list.data + off);
                 if (it[0x1E] == 0) {
-                    u32 w = 0;
+                    w = 0;
                     do {
                         fn_802981F8(it);
                         w++;
@@ -2291,11 +2288,21 @@ extern "C" void fn_80141458(void) {
 
 extern "C" char lbl_8032CA94[];
 extern "C" void *fn_8013D2C4(void *, void *);
+/* RealName: ZoneMaster_Create
+ * Allocates a 0x298-byte object tagged "ZoneMaster" and initializes it with
+ * fn_8013D2C4 when allocation succeeds.
+ */
 extern "C" void fn_8014145C(void *arg0) {
-    void **object = fn_801284F8(0x298, lbl_8032CA94);
-    if (object != 0) {
-        fn_8013D2C4(object, arg0);
+#define sZoneMasterTag lbl_8032CA94
+#define ZoneMaster_Alloc fn_801284F8
+#define ZoneMaster_Init fn_8013D2C4
+    void **zoneMaster = ZoneMaster_Alloc(0x298, sZoneMasterTag);
+    if (zoneMaster != 0) {
+        ZoneMaster_Init(zoneMaster, arg0);
     }
+#undef sZoneMasterTag
+#undef ZoneMaster_Alloc
+#undef ZoneMaster_Init
 }
 
 extern "C" char lbl_8032CAA0[];
