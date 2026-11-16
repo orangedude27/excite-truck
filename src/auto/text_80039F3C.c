@@ -185,6 +185,7 @@ int DVDSetAutoFatalMessaging(int enable) {
 }
 
 void __DVDPrintFatalMessage(void) {
+    /* Invoke the installed DVD fatal-message printing callback, if one is set. */
     if (FatalFunc_8055D8D8 != 0) {
         FatalFunc_8055D8D8();
     }
