@@ -1877,11 +1877,16 @@ void fn_801CE6F8(void) {
         fn_8001DFCC();
 }
 
+/* RealName: StatManager_IsComplete (stat manager unavailable, or its block state has reached 3). */
 int fn_801CE75C(void) {
-    if (fn_801CE898() != 0) {
+#define StatManager_IsUnavailable fn_801CE898
+#define sStatManager lbl_8055E884
+    if (StatManager_IsUnavailable() != 0) {
         return 1;
     }
-    return lbl_8055E884[0x2C0 / 4] == 3;
+    return sStatManager[0x2C0 / 4] == 3;
+#undef StatManager_IsUnavailable
+#undef sStatManager
 }
 
 extern unsigned int fn_801CE898(void);
