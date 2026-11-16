@@ -948,13 +948,14 @@ char fn_80009C84(void) {
 }
 
 extern char lbl_8055D378;
+/* Consume the first restart-request flag: report 1 only while the game is not tearing down (lbl_8055D36D == 0) and byte 0 of the restart flags is set, then clear it. */
 s32 fn_80009C8C(void) {
-    s32 result = 0;
+    s32 restartRequested = 0;
 
     if ((u8)lbl_8055D36D == 0 && (u8)lbl_8055D378 != 0)
-        result = 1;
+        restartRequested = 1;
     lbl_8055D378 = 0;
-    return result;
+    return restartRequested;
 }
 
 #pragma optimization_level 2
