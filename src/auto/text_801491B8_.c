@@ -1126,6 +1126,7 @@ float fn_8014C8F8(float farg0, float farg1, float farg2) {
     return value;
 }
 
+/* RealName: CopyTextEntry */
 void fn_8014C920(void *dst, void *srcObj) {
     /* Copy a 0x20-byte on-screen text entry (TextEntry8014C920) field by field:
      * the name, x, y and justification, the float scale at +0x10, then the
