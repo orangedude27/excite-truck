@@ -851,11 +851,13 @@ void *fn_80172C28(void) {
 }
 #pragma scheduling on
 #pragma pop
-int fn_80172E24(int arg0, int arg1) {
+/* CodeWarrior deleting-destructor helper: free object via Mem_freeObject (fn_80128668)
+   when deleteFlag > 0, then return object. */
+int fn_80172E24(int object, int deleteFlag) {
     extern int fn_80128668(void);
-    if (arg0 != 0 && arg1 > 0)
+    if (object != 0 && deleteFlag > 0)
         fn_80128668();
-    return arg0;
+    return object;
 }
 
 #pragma cplusplus on
@@ -1783,14 +1785,14 @@ extern "C" void fn_80175080(void **arg0, int arg1, int arg2, char *fmt, double f
     if (v != 0) {
         fn_80147CEC(result, v, p, farg0);
     } else {
-        unsigned int *dst = (unsigned int *)result;
-        unsigned int *src = (unsigned int *)p;
-        unsigned int w4, w8;
+        int *dst = (int *)result;
+        int *src = (int *)p;
+        int w4, w8;
         dst[0] = src[0];
-        w8 = src[2];
         w4 = src[1];
-        dst[2] = w8;
+        w8 = src[2];
         dst[1] = w4;
+        dst[2] = w8;
         dst[3] = src[3];
         *(float *)(result + 0x10) = *(float *)((char *)p + 0x10);
         dst[5] = src[5];
@@ -1863,26 +1865,24 @@ extern "C" int fn_80175238(void *arg0, int arg1) {
      ((void (*)(int, int))fn_8001DF08)(fn_801E866C(arg1),0);
      if (one && two && panel && detail) {
        value=lbl_80561A50;
-if (blend < value) {} else {
- value=lbl_80561A40;
- if (blend > value) {} else {
-  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
- }
-}
+       if (blend < value) goto ease1_done;
+       value=lbl_80561A40;
+       if (blend > value) goto ease1_done;
+       if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
+       else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
+ease1_done:
        fn_801479A8(one,two,fn_80131234(base+0x610),value);
        fn_80160A74(); fn_801308F4(frame.text1,0x14,fn_80160998());
        frame.rect1.a=*(int *)panel;
        { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
        frame.rect1.b-=lbl_80561A54*fn_80147204(&frame.rect1,frame.text1);
        value=lbl_80561A50;
-if (blend < value) {} else {
- value=lbl_80561A40;
- if (blend > value) {} else {
-  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
- }
-}
+       if (blend < value) goto ease2_done;
+       value=lbl_80561A40;
+       if (blend > value) goto ease2_done;
+       if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
+       else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
+ease2_done:
        fn_801479A8(&frame.rect1,detail,frame.text1,value);
      }
    }
@@ -1898,13 +1898,12 @@ if (blend < value) {} else {
      detail=mgr->get(lbl_8055A2E4);
      if (one && two && panel && detail) {
        value=lbl_80561A50;
-if (blend < value) {} else {
- value=lbl_80561A40;
- if (blend > value) {} else {
-  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
- }
-}
+       if (blend < value) goto ease3_done;
+       value=lbl_80561A40;
+       if (blend > value) goto ease3_done;
+       if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
+       else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
+ease3_done:
        fn_801479A8(one,two,fn_80131234(base+0x638),value);
        t=*(float *)((char *)arg0+0x19c)-fn_801E7E18();
        value=lbl_80561A44; value = value > t ? value : t;
@@ -1913,13 +1912,12 @@ if (blend < value) {} else {
        { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
        frame.rect2.b+=lbl_80561A54*fn_80147204(&frame.rect2,frame.text2);
        value=lbl_80561A50;
-if (blend < value) {} else {
- value=lbl_80561A40;
- if (blend > value) {} else {
-  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
- }
-}
+       if (blend < value) goto ease4_done;
+       value=lbl_80561A40;
+       if (blend > value) goto ease4_done;
+       if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
+       else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
+ease4_done:
        fn_801479A8(&frame.rect2,detail,frame.text2,value);
      }
    }
