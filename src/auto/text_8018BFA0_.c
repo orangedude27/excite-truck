@@ -56,7 +56,7 @@ extern float fn_80144514(float, float, float, float, float, float);
 void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5) {
     float *out = (float *)out0;
     float *b = (float *)b0;
-    float x0, x1, x2, x3, x4, x5, x7, x6, x8;
+    float x0, x1, x2, x3, x4, x5, x6, x7, x8;
     Vec_8018 scratch;
     if (out == b || out == a) {
         x0 = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
@@ -65,10 +65,10 @@ void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5
         x3 = fn_80144514(a[1], b[0], a[4], b[1], a[7], b[2]);
         x4 = fn_80144514(a[1], b[3], a[4], b[4], a[7], b[5]);
         x5 = fn_80144514(a[1], b[6], a[4], b[7], a[7], b[8]);
-        x7 = fn_80144514(a[2], b[0], a[5], b[1], a[8], b[2]);
-        x6 = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
+        x6 = fn_80144514(a[2], b[0], a[5], b[1], a[8], b[2]);
+        x7 = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
         x8 = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
-        out[0] = x0; out[3] = x1; out[6] = x2; out[1] = x3; out[4] = x4; out[7] = x5; out[2] = x7; out[5] = x6; out[8] = x8;
+        out[0] = x0; out[3] = x1; out[6] = x2; out[1] = x3; out[4] = x4; out[7] = x5; out[2] = x6; out[5] = x7; out[8] = x8;
     } else {
         out[0] = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
         out[3] = fn_80144514(a[0], b[3], a[3], b[4], a[6], b[5]);
@@ -162,114 +162,7 @@ extern void *fn_8001285C(int);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_8018C5A0(char *arg0, char *arg1) {
-    char *base = lbl_80332758;
-    char *p19;
-    char *p20;
-    int i;
-    char *p30;
-    int j;
-    Vec_8018 v;
-    Vec_8018 zero;
-    void *sp8;
-    float f31, f30;
-
-    memset(arg0 + 0x152C, 0, 0x900);
-    f31 = lbl_80561F74;
-    p19 = base + 0xE8;
-    f30 = lbl_80561F78;
-    p20 = arg0 + 0x152C;
-    for (i = 0; i < 0x11; i++, p19 += 0x40, p20 += 0x80) {
-        if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p19, void **, 4), p20) != 0) {
-            float *m = M2C_FIELD(p20, float **, 0);
-            matVecAliasV_8018(&v, m, (Vec_8018 *)(p19 + 0x24));
-            v.x += m[9];
-            v.y += m[10];
-            v.z += m[11];
-            M2C_FIELD(p20, int *, 4) = fn_8018C514(arg0, &v);
-            zero.x = f31;
-            zero.y = f31;
-            zero.z = f31;
-            m = M2C_FIELD(p20, float **, 0);
-            matVecAliasV_8018(&v, m, &zero);
-            v.x += m[9];
-            v.y += m[10];
-            v.z += m[11];
-            M2C_FIELD(p20, int *, 8) = fn_8018C514(arg0, &v);
-            M2C_FIELD(p20, float *, 0x14) = f30;
-        }
-    }
-    M2C_FIELD(arg0, int *, 0x5F8) = *M2C_FIELD(arg0, int **, 0x26C);
-    {
-        float r = lbl_80561F7C / (lbl_80561F80 * M2C_FIELD(arg1, float *, 8));
-        float a = M2C_FIELD(arg0, float *, 0x314);
-        M2C_FIELD(arg0, float *, 0x5F4) = r;
-        if (a >= lbl_80561F84) {
-            M2C_FIELD(arg0, float *, 0x5F4) = r * a;
-        } else {
-            M2C_FIELD(arg0, float *, 0x5F4) = fabs(a);
-        }
-    }
-    if (M2C_FIELD(arg0, int *, 0x1F0) == 0x50) {
-        void *o = M2C_FIELD(fn_8001285C(*(int *)__AXFXGetLfoSinTable_801769CC(0)), void **, 0x20);
-        float t = (*(float (**)(void *, void *, float))(*(char **)o + 0x28))(o, base + 0x680, lbl_80561F88);
-        M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * t;
-    }
-    M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * lbl_80561F8C;
-    if (M2C_FIELD(arg0, int *, 0x328) != 0) {
-        fn_80279B28(arg0 + 0x1E44);
-    } else {
-        fn_80279CD8(arg0 + 0x1E44);
-    }
-    *(Blob290_8018 *)(arg0 + 0x20F8) = *(Blob290_8018 *)(arg0 + 0x1E44);
-    {
-        Blob22_8018 *d = (Blob22_8018 *)(arg0 + 0x2388);
-        Blob22_8018 *s = (Blob22_8018 *)(arg0 + 0x20D4);
-        d->a = s->a;
-        d->b = s->b;
-        d->c = s->c;
-        d->d = s->d;
-        d->e0 = s->e0; d->e1 = s->e1; d->e2 = s->e2; d->e3 = s->e3;
-        d->e4 = s->e4; d->e5 = s->e5; d->e6 = s->e6; d->e7 = s->e7;
-        d->e8 = s->e8; d->e9 = s->e9; d->e10 = s->e10; d->e11 = s->e11;
-        d->e12 = s->e12; d->e13 = s->e13; d->e14 = s->e14; d->e15 = s->e15;
-        d->e16 = s->e16; d->e17 = s->e17;
-    }
-    M2C_FIELD(arg0, unsigned char *, 0x1E2C) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E2D) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E2E) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E2F) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E30) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E31) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E32) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E33) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E34) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E35) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E36) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E37) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E38) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E39) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E3A) = 0xFF;
-    M2C_FIELD(arg0, unsigned char *, 0x1E3B) = 0xFF;
-    p30 = base + 0x5B0;
-    for (j = 0; j < 0xD; j++, p30 += 0x10) {
-        char *s4;
-        char *t26;
-        sp8 = 0;
-        s4 = M2C_FIELD(p30, char **, 0);
-        t26 = arg0 + M2C_FIELD(p30, int *, 4);
-        if (s4[0] == 0x24) {
-            if (s4[1] == 0x57) {
-                M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, arg0 + (s4[2] - 0x30) * 0x74 + 0x23DC);
-            } else {
-                fn_802E317C(base + 0x694);
-            }
-        }
-        if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p30, void **, 0), &sp8) != 0) {
-            M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, (char *)sp8 + 0x24);
-        }
-    }
-}
+void fn_8018C5A0(char *arg0, char *arg1) { char *base = lbl_80332758; char *p19; char *p20; int i; char *p30; int j; Vec_8018 v; Vec_8018 zero; void *sp8; float f31, f30; memset(arg0 + 0x152C, 0, 0x900); f31 = lbl_80561F74; p19 = base + 0xE8; f30 = lbl_80561F78; p20 = arg0 + 0x152C; for (i = 0; i < 0x11; i++, p19 += 0x40, p20 += 0x80) { if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p19, void **, 4), p20) != 0) { float *m = M2C_FIELD(p20, float **, 0); matVecAliasV_8018(&v, m, (Vec_8018 *)(p19 + 0x24)); v.x += m[9]; v.y += m[10]; v.z += m[11]; M2C_FIELD(p20, int *, 4) = fn_8018C514(arg0, &v); zero.x = f31; zero.y = f31; zero.z = f31; m = M2C_FIELD(p20, float **, 0); matVecAliasV_8018(&v, m, &zero); v.x += m[9]; v.y += m[10]; v.z += m[11]; M2C_FIELD(p20, int *, 8) = fn_8018C514(arg0, &v); M2C_FIELD(p20, float *, 0x14) = f30; } } M2C_FIELD(arg0, int *, 0x5F8) = *M2C_FIELD(arg0, int **, 0x26C); { float r = lbl_80561F7C / (lbl_80561F80 * M2C_FIELD(arg1, float *, 8)); float a = M2C_FIELD(arg0, float *, 0x314); M2C_FIELD(arg0, float *, 0x5F4) = r; if (a >= lbl_80561F84) { M2C_FIELD(arg0, float *, 0x5F4) = r * a; } else { M2C_FIELD(arg0, float *, 0x5F4) = fabs(a); } } if (M2C_FIELD(arg0, int *, 0x1F0) == 0x50) { void *o = M2C_FIELD(fn_8001285C(*(int *)__AXFXGetLfoSinTable_801769CC(0)), void **, 0x20); float t = (*(float (**)(void *, void *, float))(*(char **)o + 0x28))(o, base + 0x680, lbl_80561F88); M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * t; } M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * lbl_80561F8C; if (M2C_FIELD(arg0, int *, 0x328) != 0) { fn_80279B28(arg0 + 0x1E44); } else { fn_80279CD8(arg0 + 0x1E44); } *(Blob290_8018 *)(arg0 + 0x20F8) = *(Blob290_8018 *)(arg0 + 0x1E44); { Blob22_8018 *d = (Blob22_8018 *)(arg0 + 0x2388); Blob22_8018 *s = (Blob22_8018 *)(arg0 + 0x20D4); d->a = s->a; d->b = s->b; d->c = s->c; d->d = s->d; d->e0 = s->e0; d->e1 = s->e1; d->e2 = s->e2; d->e3 = s->e3; d->e4 = s->e4; d->e5 = s->e5; d->e6 = s->e6; d->e7 = s->e7; d->e8 = s->e8; d->e9 = s->e9; d->e10 = s->e10; d->e11 = s->e11; d->e12 = s->e12; d->e13 = s->e13; d->e14 = s->e14; d->e15 = s->e15; d->e16 = s->e16; d->e17 = s->e17; } M2C_FIELD(arg0, unsigned char *, 0x1E2C) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E2D) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E2E) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E2F) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E30) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E31) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E32) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E33) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E34) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E35) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E36) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E37) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E38) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E39) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E3A) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E3B) = 0xFF; p30 = base + 0x5B0; for (j = 0; j < 0xD; j++, p30 += 0x10) { char *s4; char *t26; sp8 = 0; s4 = M2C_FIELD(p30, char **, 0); t26 = arg0 + M2C_FIELD(p30, int *, 4); if (s4[0] == 0x24) { if (s4[1] == 0x57) { M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, arg0 + (s4[2] - 0x30) * 0x74 + 0x23DC); } else { fn_802E317C(base + 0x694); } } if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p30, void **, 0), &sp8) != 0) { M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, (char *)sp8 + 0x24); } } }
 #pragma pop
 void fn_8018CB3C(char *arg0) {
     float force[3];
@@ -779,17 +672,17 @@ void fn_8018DA5C(char *arg0, char *arg1) {
             state=M2C_FIELD(entry,int*,0x7c);
             if (state==2 || state==4) {
                 int index=M2C_FIELD(arg1,int*,0xa78)++;
-                char *dest=arg1+index*0x34;
+                char *dest=arg1+index*0x34+0xa7c;
                 if ((float)fabs(blend-one) <= lbl_80558DC4) {
-                    *(Matrix8018*)(dest+0xa7c) = M2C_FIELD(entry,Matrix8018*,0x18);
+                    *(Matrix8018*)dest = M2C_FIELD(entry,Matrix8018*,0x18);
                 } else {
                     Matrix8018 tmp;
                     float *a=(float*)(entry+0x18), *b=(float*)(entry+0x48), *d=tmp.m;
                     int k;
                     for(k=0;k<12;k++) d[k]=b[k]+blend*(a[k]-b[k]);
-                    *(Matrix8018*)(dest+0xa7c)=tmp;
+                    *(Matrix8018*)dest=tmp;
                 }
-                M2C_FIELD(dest,int*,0xaac)=1<<M2C_FIELD(table,int*,8);
+                M2C_FIELD(dest,int*,0x30)=1<<M2C_FIELD(table,int*,8);
             }
         }
     }
@@ -807,8 +700,8 @@ extern float lbl_80561FEC, lbl_80561FF0, lbl_80561FF4;
 void fn_8018DE94(void *arg0, int arg1, float *arg2, int arg3, int arg4) {
     char *base = (char *)arg0;
     char *record = *(char **)(base + 0x26C) + arg1 * 0x34;
-    register float factor;
     register float speed;
+    register float factor;
     float gain;
     float damping;
     float scaled[3];
@@ -818,8 +711,8 @@ void fn_8018DE94(void *arg0, int arg1, float *arg2, int arg3, int arg4) {
     float delta[3];
     float next[3];
     float basis[3];
-    float *velocity;
-    char *velBase;
+    register float *velocity;
+    register char *velBase;
     float dot;
     float clampLo;
     float clampHi;
@@ -1705,23 +1598,18 @@ void fn_8018F2C0(void *arg0, void *arg1) {
     unsigned char *p = (unsigned char *)arg1;
     char *s = (char *)arg1;
     int i;
-    float t;
     float f = *(float *)(s + 0x290);
     *(float *)(d + 0x2690) = f;
     *(float *)(d + 0x2694) = f;
     *(float *)(d + 0x2698) = *(float *)(s + 0x294);
     *(int *)(d + 0x268C) = *(int *)(s + 0x298);
     for (i = 0; i < *(int *)((char *)arg0 + 0x5F8); i++) {
-        float b;
-        t = (lbl_80561F88 < (((float)p[0] - lbl_80561F74) / lbl_80562038)) ? lbl_80561F88 : (((float)p[0] - lbl_80561F74) / lbl_80562038);
-        t = (t > lbl_80561F74) ? t : lbl_80561F74;
-        *(float *)(d + 0x5FC) = lbl_8056203C + t * lbl_80562040;
-        t = (lbl_80561F88 < (((float)p[1] - lbl_80561F74) / lbl_80562038)) ? lbl_80561F88 : (((float)p[1] - lbl_80561F74) / lbl_80562038);
-        t = (t > lbl_80561F74) ? t : lbl_80561F74;
-        *(float *)(d + 0x600) = lbl_8056203C + t * lbl_80562040;
-        t = (lbl_80561F88 < (((float)p[2] - lbl_80561F74) / lbl_80562038)) ? lbl_80561F88 : (((float)p[2] - lbl_80561F74) / lbl_80562038);
-        t = (t > lbl_80561F74) ? t : lbl_80561F74;
-        b = lbl_8056203C + t * lbl_80562040;
+        float r, g, b;
+        r = Chan_8018F2C0(p[0]);
+        *(float *)(d + 0x5FC) = r;
+        g = Chan_8018F2C0(p[1]);
+        *(float *)(d + 0x600) = g;
+        b = Chan_8018F2C0(p[2]);
         *(float *)(d + 0x604) = b;
         *(float *)(d + 0xD94) = *(float *)(d + 0x5FC);
         *(float *)(d + 0xD98) = *(float *)(d + 0x600);
@@ -1756,7 +1644,7 @@ extern float lbl_80562038;
 extern float lbl_8056203C;
 extern float lbl_80562040;
 #pragma scheduling invalid_target
-void fn_8018F538(void *arg0, void *arg1) {
+void fn_8018F538(unsigned char *arg0, unsigned char *arg1) {
     unsigned char *src;
     unsigned char *dst;
     register float bias;
@@ -1771,9 +1659,9 @@ void fn_8018F538(void *arg0, void *arg1) {
     int word;
     int i;
 
-    src = (unsigned char *)arg0;
+    src = arg0;
     lower = *(volatile float *)&lbl_80561F88;
-    dst = (unsigned char *)arg1;
+    dst = arg1;
     first = *(float *)(src + 0x2690);
     upper = *(volatile float *)&lbl_80561F74;
     i = 0;
@@ -1787,43 +1675,43 @@ void fn_8018F538(void *arg0, void *arg1) {
     bias = *(volatile float *)&lbl_80561F8C;
     *(int *)(dst + 0x298) = word;
 
-    while (i < *(int *)((unsigned char *)arg0 + 0x5F8)) {
+    while (i < *(int *)(arg0 + 0x5F8)) {
         v = (*(float *)(src + 0x5FC) - origin) / divisor;
-        if (lower < v) v = lower;
-        if (v > upper) v = upper;
+        v = (lower < v) ? lower : v;
+        v = (v > upper) ? v : upper;
         dst[0] = (unsigned char)(int)(bias + (upper + v * scale));
         v = (*(float *)(src + 0x600) - origin) / divisor;
-        if (lower < v) v = lower;
-        if (v > upper) v = upper;
+        v = (lower < v) ? lower : v;
+        v = (v > upper) ? v : upper;
         dst[1] = (unsigned char)(int)(bias + (upper + v * scale));
         v = (*(float *)(src + 0x604) - origin) / divisor;
-        if (lower < v) v = lower;
-        if (v > upper) v = upper;
+        v = (lower < v) ? lower : v;
+        v = (v > upper) ? v : upper;
         dst[2] = (unsigned char)(int)(bias + (upper + v * scale));
         src += 0xC;
         dst += 4;
         i++;
     }
 
-    dst = (unsigned char *)arg1;
-    *(unsigned char *)(dst + 0x2A0) = *(int *)((unsigned char *)arg0 + 0x15A8);
-    *(unsigned char *)(dst + 0x2A1) = *(int *)((unsigned char *)arg0 + 0x1628);
-    *(unsigned char *)(dst + 0x2A2) = *(int *)((unsigned char *)arg0 + 0x16A8);
-    *(unsigned char *)(dst + 0x2A3) = *(int *)((unsigned char *)arg0 + 0x1728);
-    *(unsigned char *)(dst + 0x2A4) = *(int *)((unsigned char *)arg0 + 0x17A8);
-    *(unsigned char *)(dst + 0x2A5) = *(int *)((unsigned char *)arg0 + 0x1828);
-    *(unsigned char *)(dst + 0x2A6) = *(int *)((unsigned char *)arg0 + 0x18A8);
-    *(unsigned char *)(dst + 0x2A7) = *(int *)((unsigned char *)arg0 + 0x1928);
-    *(unsigned char *)(dst + 0x2A8) = *(int *)((unsigned char *)arg0 + 0x19A8);
-    *(unsigned char *)(dst + 0x2A9) = *(int *)((unsigned char *)arg0 + 0x1A28);
-    *(unsigned char *)(dst + 0x2AA) = *(int *)((unsigned char *)arg0 + 0x1AA8);
-    *(unsigned char *)(dst + 0x2AB) = *(int *)((unsigned char *)arg0 + 0x1B28);
-    *(unsigned char *)(dst + 0x2AC) = *(int *)((unsigned char *)arg0 + 0x1BA8);
-    *(unsigned char *)(dst + 0x2AD) = *(int *)((unsigned char *)arg0 + 0x1C28);
-    *(unsigned char *)(dst + 0x2AE) = *(int *)((unsigned char *)arg0 + 0x1CA8);
-    *(unsigned char *)(dst + 0x2AF) = *(int *)((unsigned char *)arg0 + 0x1D28);
-    *(unsigned char *)(dst + 0x2B0) = *(int *)((unsigned char *)arg0 + 0x1DA8);
-    *(int *)(dst + 0x29C) = *(int *)((unsigned char *)arg0 + 0x1E3C);
+    dst = arg1;
+    *(unsigned char *)(dst + 0x2A0) = *(int *)(arg0 + 0x15A8);
+    *(unsigned char *)(dst + 0x2A1) = *(int *)(arg0 + 0x1628);
+    *(unsigned char *)(dst + 0x2A2) = *(int *)(arg0 + 0x16A8);
+    *(unsigned char *)(dst + 0x2A3) = *(int *)(arg0 + 0x1728);
+    *(unsigned char *)(dst + 0x2A4) = *(int *)(arg0 + 0x17A8);
+    *(unsigned char *)(dst + 0x2A5) = *(int *)(arg0 + 0x1828);
+    *(unsigned char *)(dst + 0x2A6) = *(int *)(arg0 + 0x18A8);
+    *(unsigned char *)(dst + 0x2A7) = *(int *)(arg0 + 0x1928);
+    *(unsigned char *)(dst + 0x2A8) = *(int *)(arg0 + 0x19A8);
+    *(unsigned char *)(dst + 0x2A9) = *(int *)(arg0 + 0x1A28);
+    *(unsigned char *)(dst + 0x2AA) = *(int *)(arg0 + 0x1AA8);
+    *(unsigned char *)(dst + 0x2AB) = *(int *)(arg0 + 0x1B28);
+    *(unsigned char *)(dst + 0x2AC) = *(int *)(arg0 + 0x1BA8);
+    *(unsigned char *)(dst + 0x2AD) = *(int *)(arg0 + 0x1C28);
+    *(unsigned char *)(dst + 0x2AE) = *(int *)(arg0 + 0x1CA8);
+    *(unsigned char *)(dst + 0x2AF) = *(int *)(arg0 + 0x1D28);
+    *(unsigned char *)(dst + 0x2B0) = *(int *)(arg0 + 0x1DA8);
+    *(int *)(dst + 0x29C) = *(int *)(arg0 + 0x1E3C);
 }
 #pragma scheduling on
 void fn_8018F6F8(void *arg0) {
@@ -1852,8 +1740,8 @@ void fn_8018F6F8(void *arg0) {
 }
 
 void fn_8018F76C(void *arg0, int arg1) {
-    extern void fn_801BEB30(int, void **);
-    extern void fn_801AFC44();
+    extern void fn_801BEB30(int, int *);
+    extern void fn_801AFC44(int, int, int, int, int);
     extern float lbl_80562054;
     extern float lbl_80561F98;
     extern float lbl_80561F74;
@@ -1861,43 +1749,47 @@ void fn_8018F76C(void *arg0, int arg1) {
     extern char lbl_80332E40[];
     char *base = (char *)arg0;
     char *state = base + arg1 * 0x74;
-    float *q;
-    float *src;
-    float quat[4];
-    float mtx[9];
-    float pos[3];
-    float vel[3];
-    float out[3];
-    void *p;
+    struct { float tmp08; float tmp0c; void *p; float extra[7]; int itmp[4]; float out[3]; float vel[3]; float quat[4]; float mtx[9]; float pos[3]; } f;
+    int *qi;
+    float *qf;
+    int *mi;
     if (*(int *)(state + 0x241C) & 8)
-        fn_802E30C8(lbl_80332E40, *(int *)(base + 0x1EC));
-    fn_801BEB30(*(int *)(base + 0x1EC), &p);
-    q = (float *)((char *)p + 0x70);
-    quat[0] = q[0]; quat[1] = q[1]; quat[2] = q[2]; quat[3] = q[3];
-    quat[arg1] *= lbl_80562054;
-    q[0] = quat[0]; q[1] = quat[1]; q[2] = quat[2]; q[3] = quat[3];
-    src = (float *)(base + 0x3C);
-    mtx[0] = src[0]; mtx[1] = src[1]; mtx[2] = src[2];
-    mtx[3] = src[3]; mtx[4] = src[4]; mtx[5] = src[5];
-    mtx[6] = src[6]; mtx[7] = src[7]; mtx[8] = src[8];
-    pos[0] = *(float *)(state + 0x23D0) + mtx[3] * lbl_80561F98;
-    pos[1] = *(float *)(state + 0x23D4) + mtx[4] * lbl_80561F98;
-    pos[2] = *(float *)(state + 0x23D8) + mtx[5] * lbl_80561F98;
-    ((void (*)(void *, float *, float *))fn_8017B6D4)(arg0, vel, pos);
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_80332E40, arg1, *(int *)(base + 0x1EC));
+    fn_801BEB30(*(int *)(base + 0x1EC), (int *)&f.p);
+    qi = (int *)((char *)f.p + 0x70);
+    f.itmp[3] = qi[3];
+    f.itmp[0] = qi[0];
+    f.itmp[1] = qi[1];
+    f.itmp[2] = qi[2];
+    f.quat[0] = ((float *)f.itmp)[0]; f.quat[1] = ((float *)f.itmp)[1]; f.quat[2] = ((float *)f.itmp)[2]; f.quat[3] = ((float *)f.itmp)[3];
+    f.quat[arg1] *= lbl_80562054;
+    qf = (float *)((char *)f.p + 0x70);
+    qf[0] = f.quat[0]; qf[1] = f.quat[1]; qf[2] = f.quat[2]; qf[3] = f.quat[3];
+    mi = (int *)(base + 0x3C);
+    ((int *)f.mtx)[0] = mi[0]; ((int *)f.mtx)[1] = mi[1]; ((int *)f.mtx)[2] = mi[2];
+    ((int *)f.mtx)[3] = mi[3]; ((int *)f.mtx)[4] = mi[4]; ((int *)f.mtx)[5] = mi[5];
+    ((int *)f.mtx)[6] = mi[6]; ((int *)f.mtx)[7] = mi[7]; ((int *)f.mtx)[8] = mi[8];
+    f.pos[0] = *(float *)(state + 0x23D0) + f.mtx[3] * lbl_80561F98;
+    f.pos[1] = *(float *)(state + 0x23D4) + f.mtx[4] * lbl_80561F98;
+    f.pos[2] = *(float *)(state + 0x23D8) + f.mtx[5] * lbl_80561F98;
+    ((void (*)(void *, float *, float *))fn_8017B6D4)(arg0, f.vel, f.pos);
     if (fabsf(*(float *)(state + 0x23AC)) < lbl_80561F9C && *(float *)(state + 0x23AC) < lbl_80561F74) {
+    }
+    {
         float k = *(float *)(state + 0x23AC);
-        out[0] = mtx[0] * k + *(float *)(base + 0x124);
-        out[1] = mtx[1] * k + *(float *)(base + 0x128);
-        out[2] = mtx[2] * k + *(float *)(base + 0x12C);
-        fn_801AFC44(*(int *)(base + 0x1EC), arg1, mtx, vel, out);
+        f.out[0] = f.mtx[0] * k + *(float *)(base + 0x124);
+        f.out[1] = f.mtx[1] * k + *(float *)(base + 0x128);
+        f.out[2] = f.mtx[2] * k + *(float *)(base + 0x12C);
+        fn_801AFC44(*(int *)(base + 0x1EC), arg1, (int)f.mtx, (int)f.vel, (int)f.out);
     }
     *(int *)(state + 0x241C) |= 8;
 }
 
 extern void fn_801BF2A4(void *, int, float *, void *, void *, int, void *, float, float, float);
 extern float lbl_80561FE4;
+#pragma push
+#pragma use_lmw_stmw off
 void fn_8018F9B4(void *arg0) {
-    struct Values { float x; float y; float z; };
     unsigned char *base = (unsigned char *)arg0;
     char *slot = (char *)arg0 + 0x152C;
     char *table = (char *)&lbl_80332840;
@@ -1906,38 +1798,31 @@ void fn_8018F9B4(void *arg0) {
     int one = 1;
     int three = 3;
     int zero = 0;
-
     do {
-        if (*(int *)slot != 0 && *(int *)(slot + 4) > 0) {
-            if (*(volatile int *)(slot + 0x7C) == 0 ||
-                *(volatile int *)(slot + 0x7C) == 2) {
+        if ((*(int *)slot != 0 && *(int *)(slot + 4) > 0 &&
+             *(volatile int *)(slot + 0x7C) == 0) ||
+             *(volatile int *)(slot + 0x7C) == 2) {
                 int row = *(int *)(table + 8);
                 char *rowBase = *(char **)(base + 0x26C) + row * 0x18;
                 int context = *(int *)(table + 0x34);
-                float first = *(float *)(rowBase + 0x2138);
-                struct Values values;
                 float *position = (float *)(rowBase + 0x2138);
-                float second = *(float *)(rowBase + 0x2144);
-
-                values.x = second + first;
-                values.y = position[1] + position[4];
-                values.z = position[2] + position[5];
-                values.x *= scale;
-                values.y *= scale;
-                values.z *= scale;
-                fn_801BF2A4(arg0, one << row, &values.x, position,
-                            (char *)position + 0xC, context, table + 0x38,
-                            values.x, values.y, values.z);
+                float values[3];
+                values[0] = *(float *)(rowBase + 0x2138) + *(float *)(rowBase + 0x2144);
+                values[1] = position[1] + position[4];
+                values[2] = position[2] + position[5];
+                values[0] *= scale;
+                values[1] *= scale;
+                values[2] *= scale;
+                ((void (*)(void *, int, float *, void *, void *, int, void *))fn_801BF2A4)(arg0, one << row, values, position, (char *)position + 0xC, context, table + 0x38);
                 *(int *)(slot + 0x7C) = three;
                 *(char *)(slot + 0x78) = zero;
-            }
         }
         i++;
         slot += 0x80;
         table += 0x40;
     } while (i < 0x11);
 }
-
+#pragma pop
 extern float lbl_80561F74;
 extern float lbl_80562050;
 extern float lbl_80561F8C;
