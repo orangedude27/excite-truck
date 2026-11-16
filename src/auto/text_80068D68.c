@@ -9191,23 +9191,24 @@ void fn_8007A280(u8 *arg0) {
     base[0x630] = arg0[6];
 }
 
-tBTM_STATUS fn_8007A2C8(u16 *arg0) {
-    volatile u16 *base = (volatile u16 *)lbl_803C0F78;
-    u16 first;
-    u16 second;
-    u16 third;
-    u16 fourth;
+/* RealName: BTM_ReadLocalVersion (tentative). Returns BTM status 0 on success or 0xC if local version info in lbl_803C0F78 is not ready (<4 bytes at 0x64E); copies five u16 version fields from offsets 0x636..0x63E into outVersion. */
+tBTM_STATUS fn_8007A2C8(u16 *outVersion) {
+    volatile u16 *btmCb = (volatile u16 *)lbl_803C0F78;
+    u16 version0;
+    u16 version1;
+    u16 version2;
+    u16 version3;
 
-    if (((volatile u8 *)base)[0x64e] < 4) return 0xC;
-    first = base[0x31b];
-    second = base[0x31c];
-    arg0[0] = first;
-    arg0[1] = second;
-    third = base[0x31d];
-    fourth = base[0x31e];
-    arg0[2] = third;
-    arg0[3] = fourth;
-    arg0[4] = base[0x31f];
+    if (((volatile u8 *)btmCb)[0x64e] < 4) return 0xC;
+    version0 = btmCb[0x31b];
+    version1 = btmCb[0x31c];
+    outVersion[0] = version0;
+    outVersion[1] = version1;
+    version2 = btmCb[0x31d];
+    version3 = btmCb[0x31e];
+    outVersion[2] = version2;
+    outVersion[3] = version3;
+    outVersion[4] = btmCb[0x31f];
     return 0;
 }
 
