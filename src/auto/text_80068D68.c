@@ -11910,6 +11910,7 @@ void fn_800725FC(void *deviceRecord) {
 
 extern u8 lbl_803C0B98[];
 extern void *GKI_getbuf(u16);
+/* Frees the pending BTA DM search buffer at lbl_803C0B98+0x74 if present and clears it. */
 void fn_80072644(void) {
     if (*(void **)(lbl_803C0B98 + 0x74) != 0) {
         GKI_freebuf(*(void **)(lbl_803C0B98 + 0x74));
