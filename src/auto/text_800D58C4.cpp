@@ -1212,22 +1212,38 @@ extern "C" void fn_800D6CA0(s32, s32);
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
-    StateNode_800D6CA0 *n1, *n2, *n3;
-    u8 *p1, *p2, *p3;
+    struct { u8 *ptr; } pp3;
+    struct { StateNode_800D6CA0 *node; } cur1;
+    struct { StateNode_800D6CA0 *node; } cur2;
+    struct { StateNode_800D6CA0 *end; } end1s;
+    struct { StateNode_800D6CA0 *end; } end2s;
+    struct { StateNode_800D6CA0 *node; } cur3;
+    struct { u8 *ptr; } pp1;
+    struct { u8 *ptr; } pp2;
+    StateNode_800D6CA0 *&n1 = cur1.node;
+    StateNode_800D6CA0 *&n2 = cur2.node;
+    StateNode_800D6CA0 *&end1 = end1s.end;
+    StateNode_800D6CA0 *&end2 = end2s.end;
+    StateNode_800D6CA0 *&n3 = cur3.node;
+    u8 *&p1 = pp1.ptr;
+    u8 *&p2 = pp2.ptr;
+    u8 *&p3 = pp3.ptr;
     { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1(), sentinel) ? self : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-    n1 = *(StateNode_800D6CA0 **)(self + 0x14);
-    while (n1 != (StateNode_800D6CA0 *)(self + 0x14)) {
+    cur1.node = *(StateNode_800D6CA0 **)(self + 0x14);
+    end1s.end = (StateNode_800D6CA0 *)(self + 0x14);
+    while (n1 != end1) {
         if (!n1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
         p1 = (u8 *)n1 - 4;
         if (!p1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
         { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-        n2 = *(StateNode_800D6CA0 **)(p1 + 0x14);
-        while (n2 != (StateNode_800D6CA0 *)(p1 + 0x14)) {
+        cur2.node = *(StateNode_800D6CA0 **)(p1 + 0x14);
+        end2s.end = (StateNode_800D6CA0 *)(p1 + 0x14);
+        while (n2 != end2) {
             if (!n2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
             p2 = (u8 *)n2 - 4;
             if (!p2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
             { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-            n3 = *(StateNode_800D6CA0 **)(p2 + 0x14);
+            cur3.node = *(StateNode_800D6CA0 **)(p2 + 0x14);
             while (n3 != (StateNode_800D6CA0 *)(p2 + 0x14)) {
                 if (!n3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
                 p3 = (u8 *)n3 - 4;
@@ -2201,7 +2217,7 @@ struct TevStageDefault {
         b[8] = 0x77; b[9] = 0x57; b[10] = 0; b[11] = 0x81;
         b[12] = 0; b[13] = 0; b[14] = 0; b[15] = 0;
     }
-    TevStageDefault &operator=(const TevStageDefault &o) {
+    TevStageDefault &Assign(const TevStageDefault &o) {
         b[0] = o.b[0]; b[1] = o.b[1]; b[2] = o.b[2]; b[3] = o.b[3];
         b[4] = o.b[4]; b[5] = o.b[5]; b[6] = o.b[6]; b[7] = o.b[7];
         b[8] = o.b[8]; b[9] = o.b[9]; b[10] = o.b[10]; b[11] = o.b[11];
@@ -3298,12 +3314,9 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt4PaneFUlUc(void* self, u32 index, 
     extern const char lbl_8031FF90[];
     extern const char lbl_80320090[];
     if (index >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x14E, lbl_80320090);
-    if ((s32)index == 0x10) goto Lfield;
-    goto Lcall;
-Lfield:
-    *((u8*)self + 0xCD) = color;
-    goto Lend;
-Lcall: {
+    if ((s32)index == 0x10) {
+        *((u8*)self + 0xCD) = color;
+    } else {
         struct Obj {
             virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
             virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
@@ -3312,7 +3325,6 @@ Lcall: {
         };
         ((Obj*)self)->v12(index, color);
     }
-Lend:;
 }
 
 extern "C" s32 fn_800DB958(void) { return 0xFF; }
