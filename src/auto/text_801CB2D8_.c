@@ -226,6 +226,7 @@ done:
 }
 
 extern void fn_801CD970(int);
+/* If not blocked by fn_80019BA8 and mode fn_80161C38 is 0, perform action fn_801CD970. */
 void fn_801CB7BC(int arg0) {
     if (fn_80019BA8() != 0) goto done;
     switch (fn_80161C38()) {
