@@ -111,8 +111,9 @@ int *fn_8012A2D8(void *arg0) {
     return temp_r31;
 }
 
-void fn_8012A364(void *arg0, int *arg1) {
-    *arg1 = *(int *)((char *)arg0 + 0x10);
-    *(int *)((char *)arg0 + 0x10) = (int)arg1;
-    *(int *)((char *)arg0 + 0x1c) -= 1;
+void fn_8012A364(void *pool, int *element) {
+    /* Push element onto the ObjectPool free list (head at +0x10) and decrement the live count (+0x1C). */
+    *element = *(int *)((char *)pool + 0x10);
+    *(int *)((char *)pool + 0x10) = (int)element;
+    *(int *)((char *)pool + 0x1c) -= 1;
 }
