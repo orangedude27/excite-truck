@@ -1374,12 +1374,13 @@ void fn_800322E4(void) {
 #undef s_dspSleepQueue
 }
 
-u32 AIRegisterDMACallback(u32 value) {
-    u32 old = lbl_8055D774;
+/* Registers the AI DMA completion callback, returning the previously registered callback. */
+u32 AIRegisterDMACallback(u32 callback) {
+    u32 oldCallback = lbl_8055D774;
     BOOL enabled = OSDisableInterrupts();
-    lbl_8055D774 = value;
+    lbl_8055D774 = callback;
     OSRestoreInterrupts(enabled);
-    return old;
+    return oldCallback;
 }
 
 s32 AXRmtGetSamplesLeft(void) {
