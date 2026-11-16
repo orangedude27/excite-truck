@@ -1150,28 +1150,32 @@ void *fn_801F6D60(void *object, int shouldFree) {
 // build angles via fn_801F6778 (5 args, NOT 6 - fixed prototype) + fn_801F64E4,
 // always fn_801F65D0/fn_801F6728 + fn_802CDB20. sp[96] gives 0x1a0 frame.
 // Thunk fn_801F73F0 needs empty extern () to keep tail-call match.
-void fn_801F6DF0(void *arg0, int arg1) {
+void fn_801F6DF0(void *group, int visibilityArg) {
+    /* One simulation pass over the manual cloth group (count at +0x2A0, stride
+     * 0x54): when the global wind is strong enough, build per-entry wind angles
+     * and apply them, then relax constraints, re-pin vertices and set each
+     * entry's active flag from the visibility test. */
     extern float lbl_80558DC4;
     float sp[96];
-    int enabled4;
-    void *entry;
-    int i;
-    enabled4 = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
-    entry = arg0;
-    i = 0;
+    int windEnabled;
+    void *cloth;
+    int index;
+    windEnabled = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
+    cloth = group;
+    index = 0;
     goto check;
 loop:
-    if (enabled4 != 0) {
-        ((void (*)(float *, int, float *, float, float))fn_801F6778)(&sp[0], *(int *)((char *)entry + 0x10), (float *)((char *)entry + 0x48), *(float *)((char *)entry + 0x3C), *(float *)((char *)entry + 0x40));
-        fn_801F64E4(entry, &sp[0], *(float *)((char *)entry + 0x44));
-        fn_801F65D0(entry);
-        fn_801F6728(entry);
+    if (windEnabled != 0) {
+        ((void (*)(float *, int, float *, float, float))fn_801F6778)(&sp[0], *(int *)((char *)cloth + 0x10), (float *)((char *)cloth + 0x48), *(float *)((char *)cloth + 0x3C), *(float *)((char *)cloth + 0x40));
+        fn_801F64E4(cloth, &sp[0], *(float *)((char *)cloth + 0x44));
+        fn_801F65D0(cloth);
+        fn_801F6728(cloth);
     }
-    *(unsigned char *)((char *)entry + 0x38) = fn_802CDB20(arg1, *(int *)((char *)entry + 0x34));
-    entry = (char *)entry + 0x54;
-    i++;
+    *(unsigned char *)((char *)cloth + 0x38) = fn_802CDB20(visibilityArg, *(int *)((char *)cloth + 0x34));
+    cloth = (char *)cloth + 0x54;
+    index++;
 check:
-    if (i < *(int *)((char *)arg0 + 0x2A0)) goto loop;
+    if (index < *(int *)((char *)group + 0x2A0)) goto loop;
 }
 #pragma pop
 
