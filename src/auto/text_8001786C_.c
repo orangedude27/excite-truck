@@ -143,10 +143,11 @@ void fn_80017944(EntryPairList *list) {
 #pragma use_lmw_stmw reset
 
 #pragma dont_inline on
-s32 fn_800179E4(void *value, s32 array, s32 count) {
+s32 fn_800179E4(void *key, s32 values, s32 count) {
     s32 i;
+    /* Linear membership test: true when key matches one of the count words. */
     for (i = 0; i < count; i++) {
-        if ((s32)value == *(s32 *)(array + i * 4)) return 1;
+        if ((s32)key == *(s32 *)(values + i * 4)) return 1;
     }
     return 0;
 }
