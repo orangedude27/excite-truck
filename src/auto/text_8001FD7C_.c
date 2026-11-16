@@ -830,12 +830,13 @@ extern int fn_8000DA10(void);
 extern int fn_8001BA90(int, int, int, int, int);
 extern void fn_8001BA70(int, int, unsigned char *, int);
 #pragma dont_inline on
+/* True while the tips/results overlay is being shown and is not paused. */
 int fn_800216D0(void) {
-    int result = 0;
-    if (lbl_8055D644) {
-        if (!lbl_8055D645) result = 1;
+    int active = 0;
+    if (OVERLAY_ON) {
+        if (!OVERLAY_PAUSED) active = 1;
     }
-    return result;
+    return active;
 }
 unsigned char fn_800216F4(void) {
     return lbl_8055D644;
