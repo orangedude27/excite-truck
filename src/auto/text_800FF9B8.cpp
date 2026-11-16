@@ -125,10 +125,11 @@ extern "C" void Shutdown__Q46nw4hbm3snd6detail9WaveSoundFv_800FFB80(void *self) 
 #pragma pop
 
 #pragma use_lmw_stmw reset
-extern "C" int fn_800FFC5C(int arg0, int arg1) {
+extern "C" int fn_800FFC5C(int object, int deleteFlag) {
     extern void fn_80128668(void);
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668();
+    return object;
 }
 
 /* Set the channel priority on this wave sound (0..127) and forward to its sequence player. */
