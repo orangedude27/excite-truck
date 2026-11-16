@@ -1748,6 +1748,18 @@ struct AxVoice {
     /* 0x184 */ f32 playbackRate;     /* how fast the wave is played, 1.0 = as recorded */
 };
 
+/* Bits of AxVoice::updateFlags (+0x123).  Setters ask for one thing to be pushed
+ * to the AX voices; the update pass fn_800E4764, run over every live AxVoice by
+ * AxManager::UpdateAllVoices, does it and clears the bit again. */
+enum AxVoiceUpdateFlag {
+    AX_UPDATE_START = 0x01,   /* start playing: apply the source rate, then set the AX voices playing */
+    AX_UPDATE_PAUSE = 0x02,   /* re-apply the pause/mute state to the AX voices */
+    AX_UPDATE_SRC = 0x08,     /* refresh the AX source rate */
+    AX_UPDATE_VOLUME = 0x10,  /* ramp the AX volumes to their target (fn_800E6B24) */
+    AX_UPDATE_MIX = 0x20,     /* refresh the mix levels (UpdateAxMix) */
+    AX_UPDATE_LPF = 0x40      /* refresh the low-pass filter (UpdateAxLpf) */
+};
+
 #pragma fp_contract_aggressive on
 extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *arg0, const void *arg1) {
     /* Set this AxVoice up to play the given wave: pick the AX sample format from
@@ -3174,16 +3186,19 @@ extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg
 }
 
 extern float lbl_80560F3C, lbl_80560F80;
+extern float lbl_80560F38, lbl_80560F3C, lbl_80560F80;
+#pragma push
+#pragma processor 750
 extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(void* self, int a, int b, void* out) {
-    unsigned short* mix=(unsigned short*)out;
     float mainVol[4], auxVol[4];
     char* voice=(char*)self;
     for (int i=0;i<4;i++) {
-        mainVol[i]=lbl_80560F38;
-        auxVol[i]=lbl_80560F38;
+        float f = lbl_80560F38;
+        mainVol[i]=f;
+        auxVol[i]=f;
         float volume;
         if (*(volatile u32*)((char*)self+0x13c) & (2<<i))
-            volume=lbl_80560F38 * *(float*)(voice+0x154);
+            volume=f * *(float*)(voice+0x154);
         else
             volume=lbl_80560F3C;
         mainVol[i]*=volume;
@@ -3194,6 +3209,7 @@ extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(vo
         auxVol[i]*=right;
         voice+=4;
     }
+    unsigned short* mix=(unsigned short*)out;
     mix[0] = (u32)(32768.0f*mainVol[0]) < 0xffff ? (u32)(32768.0f*mainVol[0]) : 0xffff;
     mix[2] = 0;
     u32 v=(u32)(32768.0f*mainVol[1]);
@@ -3208,7 +3224,7 @@ extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(vo
     mix[1]=0; mix[3]=0; mix[5]=0; mix[7]=0;
     mix[9]=0; mix[11]=0; mix[13]=0; mix[15]=0;
 }
-
+#pragma pop
 extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *self, const void *start, const void *end) {
     unsigned int irq = OSDisableInterrupts();
     if (*((u8 *)self + 0x11C) != 0) {
