@@ -434,13 +434,15 @@ s32 fn_80167E58(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-int *fn_80167E98(int *arg0, int arg1) {
-    if (arg0 != 0) {
-        *arg0 = 0;
-        if (arg1 > 0)
+/* fn_80167E98: scalar deleting-destructor style helper — clears the object's
+ * first field, optionally deletes it, and returns the object pointer. */
+int *fn_80167E98(int *obj, int shouldDelete) {
+    if (obj != 0) {
+        *obj = 0;
+        if (shouldDelete > 0)
             fn_80128668();
     }
-    return arg0;
+    return obj;
 }
 
 void fn_80167EE0(s32 *arg0) {
