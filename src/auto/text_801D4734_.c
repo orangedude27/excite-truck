@@ -2464,12 +2464,13 @@ int fn_801D77B8(int arg0) {
     return ((int *)arg0)[2];
 }
 
-int fn_801D77C0(int arg0) {
-    if (((int *)arg0)[2] == 0) {
-        return arg0;
+/* Clamps the object's word at +0x8 to 1 if it is nonzero (leaves 0 alone), then returns the object. */
+int fn_801D77C0(int object) {
+    if (((int *)object)[2] == 0) {
+        return object;
     }
-    ((int *)arg0)[2] = 1;
-    return arg0;
+    ((int *)object)[2] = 1;
+    return object;
 }
 
 #pragma cplusplus on
