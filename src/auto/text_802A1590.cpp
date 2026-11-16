@@ -1745,6 +1745,9 @@ extern "C" void fn_802A4658(s32 arg0) {
     list->phase = list->phase + advance;
 }
 
+/* Draw a particle system's live particles: set the draw state, then for each
+ * 0x20-byte particle turn its age into two ramped factors that drive its alpha
+ * and size, and submit it to the billboard renderer. */
 extern "C" s32 fn_802A47A8(void *arg0) {
     char *system = (char *)arg0;
     s32 offset, i, rawAlpha, clampedAlpha;
