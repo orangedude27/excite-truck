@@ -64,6 +64,7 @@ asm void __init_user(void) {
 }
 
 void __init_cpp(void) {
+    /* Run global C++ static constructors from the .ctors table until the null terminator. */
     funcptr_t* ctor;
 
     for (ctor = _ctors; *ctor != NULL; ctor++) {
