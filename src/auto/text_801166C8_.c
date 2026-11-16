@@ -425,13 +425,14 @@ s32 fn_80116D30(void) {
 
 extern void* fn_8011FF24(void);
 extern void *fn_8011FF2C(s32);
-void fn_80116DDC(void* arg0, s32 arg1) {
-    void* result = fn_8011FF24();
-    s32* ptr = (s32*)arg0;
-    s32 current = ptr[0x290 / 4];
-    s32 new_val = arg1 + (s32)result + current;
-    ptr[0x290 / 4] = new_val;
-    fn_8011FF2C(arg1);
+/* Add (size + current pending allocation base) to the state's pending-size field and commit a block of `size`. */
+void fn_80116DDC(void* state, s32 size) {
+    void* pendingBase = fn_8011FF24();
+    s32* stateWords = (s32*)state;
+    s32 pendingTotal = stateWords[0x290 / 4];
+    s32 newPendingTotal = size + (s32)pendingBase + pendingTotal;
+    stateWords[0x290 / 4] = newPendingTotal;
+    fn_8011FF2C(size);
 }
 
 void fn_80116E2C(const u8 *arg0) {
