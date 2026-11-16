@@ -498,8 +498,10 @@ void fn_802C5BA0(int *entry) {
 }
 
 #pragma scheduling invalid_target
-u16 fn_802C5BEC(int arg0, int arg1) {
-    return (((int (*)(int, int))fn_802C5A50)(5, 0x64) - -((arg0 * 2) & 0xFFFE)) + (arg1 & 0xFFFF);
+/* Build the 16-bit texture-cache sub-key: the fixed (5, 0x64) tag from the u16
+ * packer, plus the doubled base id and the difference flag's low 16 bits. */
+u16 fn_802C5BEC(int baseId, int differs) {
+    return (((int (*)(int, int))fn_802C5A50)(5, 0x64) - -((baseId * 2) & 0xFFFE)) + (differs & 0xFFFF);
 }
 #pragma scheduling on
 extern int fn_802CAC28(void *, int);
