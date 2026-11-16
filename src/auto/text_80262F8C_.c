@@ -369,9 +369,11 @@ void fn_80263B68(void *object, s32 index) {
 }
 #pragma pop
 extern const u8 lbl_80346294[];
-void fn_80263BCC(void *arg0) {
-    s32 value = *(s32 *)((u8 *)arg0 + 0x24);
-    fn_80133460(value + 8, lbl_80346294, *((u8 *)arg0 + 0x28), value);
+void fn_80263BCC(void *setting) {
+    /* Write this setting's "controller_speaker" option: section index + 8, its
+     * current byte value at +0x28, and the index itself. */
+    s32 index = *(s32 *)((u8 *)setting + 0x24);
+    fn_80133460(index + 8, lbl_80346294, *((u8 *)setting + 0x28), index);
 }
 
 #pragma scheduling invalid_target
