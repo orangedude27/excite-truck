@@ -3994,9 +3994,14 @@ void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short h
 
 extern void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
 void GXInitTexObjCI(void *obj, void *image, unsigned short width, unsigned short height, int format, int wrap_s, int wrap_t, int mipmap, int tlut_name) {
+    /* Initialize a color-indexed texture object, then set its TLUT name and clear CI flag bit. */
+#define tlutNameField (*(int *)((char *)obj + 0x18))
+#define ciFlagsByte (*(unsigned char *)((char *)obj + 0x1F))
     GXInitTexObj(obj, image, width, height, format, wrap_s, wrap_t, mipmap);
-    *(int *)((char *)obj + 0x18) = tlut_name;
-    *(unsigned char *)((char *)obj + 0x1F) &= ~2;
+    tlutNameField = tlut_name;
+    ciFlagsByte &= ~2;
+#undef tlutNameField
+#undef ciFlagsByte
 }
 
 // Level-of-detail half of a texture object: packs the min and mag filters, the LOD
