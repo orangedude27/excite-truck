@@ -84,7 +84,8 @@ void fn_801CB320(void) {
     fn_801CB3F8();
 }
 
-void fn_801CB360(int arg0) {
+void fn_801CB360(int participantIndex) {
+    /* Update one participant if awards/overlays are active and in the default mode. */
     if (fn_80019BA8() != 0) goto done;
     switch (fn_80161C38()) {
     case 0:
@@ -93,7 +94,7 @@ void fn_801CB360(int arg0) {
         goto done;
     }
 action:
-    fn_801CCAEC(arg0);
+    fn_801CCAEC(participantIndex);
 done:
     return;
 }
