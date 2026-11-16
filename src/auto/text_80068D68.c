@@ -22179,6 +22179,12 @@ extern s32 rfc_parse_data(void *, void *, u8 *);
 #pragma push
 #pragma pool_strings off
 #pragma readonly_strings on
+/* rfc_l2cap_if.c: L2CAP's data-indication callback for RFCOMM.  An RFCOMM frame
+ * arrived on the L2CAP channel lcid; find the multiplexer control block serving
+ * that channel, parse the frame out of p_buf into rfc_cb's rx_frame and hand the
+ * event to the port state machine -- or, on the multiplexer's own DLCI, to the
+ * multiplexer's.  Frames that do not parse, or that name a DLCI no port is open
+ * on, are dropped; a channel we know nothing about is answered with a DM. */
 void RFCOMM_BufDataInd(u32 lcid, BT_HDR *p_buf) {
     /* rfc_cb (lbl_803C4828, rfc_int.h's tRFC_CB) is the RFCOMM control block: the
        frame last parsed by rfc_parse_data() at +0, the lcid -> multiplexer table
