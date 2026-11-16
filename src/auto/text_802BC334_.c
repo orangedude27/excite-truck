@@ -116,7 +116,9 @@ double fn_8002F234(float, float);
 float fn_802BC540(void *arg0, float farg0) {
     float x = *(float *)arg0;
     float z = *(float *)((char *)arg0 + 8);
-    float s = x * x + z * z;
+    float xx = x * x;
+    float zz = z * z;
+    float s = xx + zz;
     return farg0 * (float)fn_8002F234(s, z);
 }
 #pragma pop
