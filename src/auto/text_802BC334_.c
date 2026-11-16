@@ -63,10 +63,13 @@ void fn_802BC3DC(void) {
 }
 
 #pragma scheduling invalid_target
-void fn_802BC3E0(short arg0, short arg1, short arg2, char *arg3) {
-    char *obj = fn_802BE844(arg0, arg1, arg2);
-    *(char **)arg3 = *(char **)(obj + 4);
-    *(char **)(obj + 4) = arg3;
+void fn_802BC3E0(short x, short y, short cellSize, char *node) {
+    /* Insert `node` at the head of the linked list stored in the grid cell
+     * for (x, y, cellSize): node's next pointer (at +0) becomes the old head,
+     * and the cell's head (at +4) is set to `node`. */
+    char *cell = fn_802BE844(x, y, cellSize);
+    *(char **)node = *(char **)(cell + 4);
+    *(char **)(cell + 4) = node;
 }
 #pragma scheduling on
 short fn_802BC424(int arg0) {
