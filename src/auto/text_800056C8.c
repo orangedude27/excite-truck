@@ -1645,11 +1645,12 @@ s32 fn_800076A4(s32 object, s32 shouldDestroy) {
     return object;
 }
 
-s32 fn_800076E4(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_800076E4(s32 ptr, s32 shouldDelete) {
+    /* Frees the pointer via fn_80128668 when non-null and deletion is requested. */
+    if (ptr != 0 && shouldDelete > 0) {
         fn_80128668();
     }
-    return arg0;
+    return ptr;
 }
 
 s32 fn_80007724(s32 arg0, s32 arg1) {
