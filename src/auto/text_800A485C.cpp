@@ -854,6 +854,13 @@ extern "C" void *fn_800C6A1C(void*, s32);
 extern "C" void fn_800C6CE8(void*);
 extern "C" void fn_800C7998(void*);
 extern "C" s32 fn_800B23F8(s32, s32, s32, s32);
+struct CopyQuad { s32 w[4]; };
+static inline struct CopyQuad loadCopyQuad(const void *src) {
+    struct CopyQuad q;
+    const s32 *s = (const s32 *)src;
+    q.w[0] = s[0]; q.w[1] = s[1]; q.w[2] = s[2]; q.w[3] = s[3];
+    return q;
+}
 extern "C" u16 VFiPFSTR_StrNumChar(s32, s32);
 extern "C" s32 VFiPFSTR_StrNCmp(s32, const void*, s32, s32, s32);
 extern "C" void VFiPFSTR_ToUpperNStr(s32, u16, u8*);
