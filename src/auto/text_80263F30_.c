@@ -283,10 +283,16 @@ enum {
     CREDITS_ITEM_REF = 5  /* item holds a reference to another credits object */
 };
 
+/* Initializes a credits page item that references the active particle effect. */
 void fn_80264404(void *arg0) {
-    *(void **)arg0 = 0;
-    fn_80264098(arg0, 5);
-    *(void **)((char *)arg0 + 8) = fn_80264A54();
+#define setCreditsItemType fn_80264098
+#define getCreditsEffect fn_80264A54
+    CreditsItem *item = (CreditsItem *)arg0;
+    item->vtable = 0;
+    setCreditsItemType(item, CREDITS_ITEM_REF);
+    item->object = getCreditsEffect();
+#undef setCreditsItemType
+#undef getCreditsEffect
 }
 
 /* Initializes a credits page item that references the active timer/fade object. */
