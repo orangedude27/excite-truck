@@ -195,9 +195,12 @@ void *fn_8027D504(void *arg0) {
     return arg0;
 }
 
-int fn_8027D578(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_8027D578(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 #pragma scheduling invalid_target
@@ -496,7 +499,7 @@ void fn_8027DAF4(void) {
 void *fn_8027DB40(int arg0) {
     int flagA, bit1, bit2;
     int i;
-    int i2;
+    int j;
     int cnt;
     int limit;
     int filtered;
@@ -505,6 +508,7 @@ void *fn_8027DB40(int arg0) {
     int *info;
     Obj_8027DB40 *obj;
     int b, c;
+
     flagA = arg0 & 1;
     bit1 = (arg0 >> 1) & 1;
     bit2 = (arg0 >> 2) & 1;
@@ -517,12 +521,14 @@ void *fn_8027DB40(int arg0) {
         filtered = 1;
     }
     cnt = 0;
-    for (i = 0; i < fn_80019088(); i++) {
-        e = fn_80019054(i);
-        if ((filtered == 0 || e->val <= limit) && e != 0 && stricmp(e->name, lbl_8055C794) == 0
-            && fn_80016604(e->id) > 0) {
+    i = 0;
+    while (i < fn_80019088()) {
+        Ent_8027DB40 *entry = fn_80019054(i);
+        if ((filtered == 0 || entry->val <= limit) && entry != 0 && stricmp(entry->name, lbl_8055C794) == 0
+            && fn_80016604(entry->id) > 0) {
             cnt++;
         }
+        i++;
     }
     if (fn_800194CC() != 0) {
         cnt++;
@@ -532,8 +538,8 @@ void *fn_8027DB40(int arg0) {
     }
     obj = (Obj_8027DB40 *)fn_8025007C(cnt);
     bit1Zero = (!bit1);
-    for (i2 = 0; i2 < fn_80019088(); i2++) {
-        e = fn_80019054(i2);
+    for (j = 0; j < fn_80019088(); j++) {
+        e = fn_80019054(j);
         if ((filtered == 0 || e->val <= limit) && e != 0 && stricmp(e->name, lbl_8055C794) == 0
             && fn_80016604(e->id) > 0) {
             info = fn_8001668C(e->id, 0);
@@ -626,19 +632,25 @@ int fn_8027DEDC(int arg0, int arg1, int arg2, int arg3, int arg4) {
     void *obj;
     int found;
     void *manager;
+    struct VT { void *m[0x20]; };
+    struct OB { struct VT *vt; };
     fn_800167FC(1);
     manager = (void *)fn_80012820(arg2);
     found = 0;
     if (manager != 0) {
         obj = *(void **)((char *)manager + 0x80);
         if (obj != 0) {
-            void **vt = *(void ***)obj;
+            struct OB *o = (struct OB *)obj;
             const char *s = lbl_80347E30;
-            result = ((int (*)(void *, const char *))vt[0x5C / 4])(obj, s);
+            result = ((int (*)(void *, const char *))o->vt->m[0x5C / 4])(obj, s);
             if (((unsigned int)(-result | result) >> 31) != 0) {
+                struct OB *o2;
+                struct OB *o3;
                 obj = *(void **)((char *)manager + 0x80);
-                obj = (void *)((int (*)(void *, const char *))*(void **)((char *)*(void **)obj + 0x5C))(obj, lbl_80347E30);
-                found = ((int (*)(void *, const char *, int))*(void **)((char *)*(void **)obj + 0x18))(obj, lbl_80347E40, 0);
+                o2 = (struct OB *)obj;
+                obj = (void *)((int (*)(void *, const char *))o2->vt->m[0x5C / 4])(obj, lbl_80347E30);
+                o3 = (struct OB *)obj;
+                found = ((int (*)(void *, const char *, int))o3->vt->m[0x18 / 4])(obj, lbl_80347E40, 0);
             }
         }
     }
