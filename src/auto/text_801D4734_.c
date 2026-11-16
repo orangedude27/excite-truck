@@ -1601,10 +1601,11 @@ int fn_801D67E0(int arg0) {
     return ((int *)arg0)[1];
 }
 
-int fn_801D67E8(int arg0) {
-    if (((int *)arg0)[1] == 1) {
-        ((int *)arg0)[4] = lbl_8055E3C4;
-        ((int *)arg0)[1] = 2;
+int fn_801D67E8(int effect) {
+    /* If a timed effect is ready, record the current global tick as its start and mark it running. */
+    if (((int *)effect)[1] == TIMED_EFFECT_READY) {
+        ((int *)effect)[4] = lbl_8055E3C4;
+        ((int *)effect)[1] = TIMED_EFFECT_RUNNING;
         return 1;
     }
     return 0;
