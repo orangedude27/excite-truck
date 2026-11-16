@@ -367,9 +367,15 @@ void fn_802ECA48(void) {
 }
 #pragma dont_inline off
 void fn_802ECBF8(void) {
-    if ((u8)lbl_805600E8 == 0) {
-        lbl_805600EA = 1;
+#define gHomeMenuActive lbl_805600E8
+#define gHomeMenuRequest lbl_805600EA
+    /* Request the home-button menu: raise the pending-request flag only when the
+     * menu isn't already active (the per-frame process loop honours it later). */
+    if ((u8)gHomeMenuActive == 0) {
+        gHomeMenuRequest = 1;
     }
+#undef gHomeMenuRequest
+#undef gHomeMenuActive
 }
 
 char fn_802ECC10(void) {
