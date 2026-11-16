@@ -93,9 +93,10 @@ s32 fn_802407B0(s32 object, s32 deleteFlag) {
     return object;
 }
 
-s32 fn_802407F0(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+s32 fn_802407F0(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668();
+    return object;
 }
 
 /* One player's record (truck) choice, built by fn_80240BA4 and destroyed by fn_80240830.
