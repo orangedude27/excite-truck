@@ -130,9 +130,10 @@ s32 fn_80287668(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_802876A8(void *arg0) {
-    *(f32 *)((u8 *)arg0 + 0x18) = fn_8023659C();
-    *((u8 *)arg0 + 0x1C) = 0;
+void fn_802876A8(void *obj) {
+    /* Store the current timer/progress value at +0x18, clear the byte flag at +0x1C, and hide UI group 0x1D. */
+    *(f32 *)((u8 *)obj + 0x18) = fn_8023659C();
+    *((u8 *)obj + 0x1C) = 0;
     fn_80214A9C(0x1D);
 }
 
