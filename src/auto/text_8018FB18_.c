@@ -1825,8 +1825,9 @@ extern "C" void fn_80191928(void *ctrl) {
 #pragma pop
 
 #pragma scheduling on
-int fn_80191A98(void *arg0) {
-    int bit = (*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 1) & 1;
+int fn_80191A98(void *obj) {
+    /* Return bit 1 of the flags byte at +7 of the child object referenced by obj+8, normalized to 0/1. */
+    int bit = (*(unsigned char *)((char *)*(void **)((char *)obj + 8) + 7) >> 1) & 1;
     return (int)((unsigned int)(-bit | bit) >> 31);
 }
 
