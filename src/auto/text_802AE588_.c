@@ -1172,20 +1172,23 @@ loop_119:
 }
 #pragma scheduling on
 #pragma dont_inline reset
-void fn_802AFE64(int *arg0, short a, short b, short c, short d, int e, int f, int g, float h, int j) {
-    int index = *arg0;
-    char *p;
-    *arg0 = index + 1;
-    p = (char *)arg0 + index * 0x1C;
-    *(short *)(p + 4) = a;
-    *(short *)(p + 6) = b;
-    *(short *)(p + 8) = c;
-    *(short *)(p + 10) = d;
-    *(float *)(p + 12) = h;
-    *(int *)(p + 16) = e;
-    *(int *)(p + 20) = f;
-    *(int *)(p + 24) = j;
-    *(int *)(p + 28) = g;
+/* Append a 0x1C-byte corner descriptor to the count-prefixed array in *list.
+ * The record holds corner x/y, a size and corner id, a float value and four
+ * per-corner attribute pointers; *list is the next append index. */
+void fn_802AFE64(int *list, short x, short y, short size, short corner, int attrA, int attrB, int attrD, float value, int attrC) {
+    int index = *list;
+    char *entry;
+    *list = index + 1;
+    entry = (char *)list + index * 0x1C;
+    *(short *)(entry + 4) = x;
+    *(short *)(entry + 6) = y;
+    *(short *)(entry + 8) = size;
+    *(short *)(entry + 10) = corner;
+    *(float *)(entry + 12) = value;
+    *(int *)(entry + 16) = attrA;
+    *(int *)(entry + 20) = attrB;
+    *(int *)(entry + 24) = attrC;
+    *(int *)(entry + 28) = attrD;
 }
 
 void fn_802AFEA4(int *arg0, short arg1) {
