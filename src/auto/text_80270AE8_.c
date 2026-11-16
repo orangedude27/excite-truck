@@ -638,17 +638,18 @@ void fn_802715C4(void *arg0, void *arg1)
 
 extern f32 lbl_8055F540;
 extern f32 lbl_8055F544;
-f32 fn_802715F0(void *arg0) {
-    f32 b;
-    f32 c;
-    f32 a;
-    a = *(f32 *)((u8 *)arg0 + 0x18);
-    b = lbl_80563F4C;
-    c = lbl_8055F544;
-    b *= a;
-    c = (c < b) ? c : b;
-    c = (c > lbl_8055F540) ? c : lbl_8055F540;
-    return c;
+f32 fn_802715F0(void *effect) {
+    /* Return the effect field at +0x18 scaled by lbl_80563F4C and clamped to [lbl_8055F544, lbl_8055F540]. */
+    f32 scaled;
+    f32 result;
+    f32 raw;
+    raw = *(f32 *)((u8 *)effect + 0x18);
+    scaled = lbl_80563F4C;
+    result = lbl_8055F544;
+    scaled *= raw;
+    result = (result < scaled) ? result : scaled;
+    result = (result > lbl_8055F540) ? result : lbl_8055F540;
+    return result;
 }
 
 #pragma cplusplus on
