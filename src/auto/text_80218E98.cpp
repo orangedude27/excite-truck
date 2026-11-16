@@ -2948,15 +2948,10 @@ extern "C" void fn_8021CD04(void *arg0, s32 arg1, s32 arg2) {
     target->Set(value);
 }
 #pragma pop
-extern "C" void fn_8021CE8C(void *arg0) {
-    struct Local {
-        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
-        virtual void f12(); virtual void call();
-    };
-    if (*(u8 *)((u8 *)arg0 + 0x244) != 0)
-        ((Local *)arg0)->call();
+extern "C" void fn_8021CE8C(void *widget) {
+    /* If this widget has a pending update (+0x244), run its vf13() handler. */
+    if (*(u8 *)((u8 *)widget + 0x244) != 0)
+        ((VfObj *)widget)->vf13();
 }
 
 extern "C" void fn_8021CEAC(void *self) {
