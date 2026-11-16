@@ -445,12 +445,13 @@ extern "C" void* fn_80108FFC(void* arg0, const void* arg1) {
     return arg0;
 }
 #pragma pop
-extern "C" s32 fn_80109040(s32 arg0, s32 arg1) {
+extern "C" s32 fn_80109040(s32 object, s32 deleteFlag) {
     extern s32 fn_80128668(void);
-    if (arg0 != 0 && arg1 > 0) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 /* nw4hbm::ut::detail::ResFontBase::SetResourceBuffer(void* pUserBuffer,
