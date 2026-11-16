@@ -856,9 +856,10 @@ extern "C" void fn_80219264(void *widget, s32 dx, s32 dy) {
         *(s32 *)((u8 *)widget + 8) + dy);
 }
 #pragma scheduling on
-extern "C" void fn_80219284(void *arg0, s32 arg1, s32 arg2) {
-    *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)arg0 + 4) + arg1;
-    *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)((u8 *)arg0 + 8) + arg2;
+extern "C" void fn_80219284(void *widget, s32 width, s32 height) {
+    /* Set the widget's right/bottom edges (+0xC/+0x10) from its left/top position plus the given width and height. */
+    *(s32 *)((u8 *)widget + 0xC) = *(s32 *)((u8 *)widget + 4) + width;
+    *(s32 *)((u8 *)widget + 0x10) = *(s32 *)((u8 *)widget + 8) + height;
 }
 
 extern "C" void fn_802192A0(void) {
