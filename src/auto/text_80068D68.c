@@ -4549,14 +4549,15 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
 void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
+    register u8 *control;
     register int status = arg0;
-    register const char *report = lbl_803142C8;
+    register char *report = lbl_803142C8;
     u16 offset;
     if (lbl_803BD1E0.at_0x28 != 0) {
-        OSReport((char *)report + 0x518, status);
+        OSReport(report + 0x518, status);
     }
     if (status < 0 && lbl_803BD1E0.at_0x28 != 0) {
-        OSReport((char *)report + 0x550, status);
+        OSReport(report + 0x550, status);
     }
     if (arg1 != 0) {
         GKI_freebuf((void *)arg1);
@@ -4565,7 +4566,7 @@ void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
         fn_8006EB88();
     }
     {
-        register u8 *control = (u8 *)&lbl_803BD1E0;
+        control = (u8 *)&lbl_803BD1E0;
         if (control[0x38] < 5 && *(u16 *)(control + 0x34) != 0) {
             arg1 = (s32)GKI_dequeue((BUFFER_Q *)(control + 0x2C));
             offset = *(u16 *)((u8 *)arg1 + 4);
@@ -4574,7 +4575,7 @@ void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
                                       (u8 *)arg1 + offset + 8,
                                       (void (*)(void))uusb_WriteBulkDataCB, (void *)arg1) < 0) {
                 if (control[0x28] != 0) {
-                    OSReport((char *)report + 0x588);
+                    OSReport(report + 0x588);
                 }
                 GKI_enqueue_head((BUFFER_Q *)((u8 *)&lbl_803BD1E0 + 0x2C), (void *)arg1);
                 return;
@@ -20403,12 +20404,16 @@ void l2cu_send_peer_connect_rsp(void *p_ccb, u16 result, u16 status) {
 }
 
 void l2cu_reject_connection(void *p_lcb, u16 remote_cid, u8 rem_id, u16 result) {
+    #define sNoBufferForConnReq lbl_80319174
     u8 *packet;
     void *p_buf;
+    /* Builds and queues an L2CAP connection-response that rejects the peer's
+     * request (zero destination CID, the peer's source CID and the result code),
+     * logging when no packet buffer is available. */
     p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 8, 3, rem_id);
     if (p_buf == NULL) {
-        if (lbl_803C4040[0] >= 2) {
-            fn_8007093C(0x80001, lbl_80319174);
+        if (l2cb_trace_level >= 2) {
+            fn_8007093C(0x80001, sNoBufferForConnReq);
         }
         return;
     }
@@ -20422,6 +20427,7 @@ void l2cu_reject_connection(void *p_lcb, u16 remote_cid, u8 rem_id, u16 result) 
     packet[0x1A] = 0;
     packet[0x1B] = 0;
     ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, p_buf);
+    #undef sNoBufferForConnReq
 }
 
 /* Build and send an L2CAP "configuration request" message to the peer, asking
