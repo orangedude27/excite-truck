@@ -7,6 +7,11 @@
  * extension, then the movie handle fn_802E11A4 opened for that name at +0x40.
  * fn_802ECE48 builds 0x48-byte "single_movie_info" nodes: the same record plus a
  * next pointer at +0x44, chained into lbl_805600F8. */
+typedef struct MoviePlayInfo {
+    char name[0x40]; /* 0x00 movie file name, without its extension */
+    s32 handle;      /* 0x40 Bink movie handle fn_802E11A4 opened for that name */
+} MoviePlayInfo;     /* 0x44: the record the heap tag "MoviePlayInfo" names */
+
 extern void fn_802E12DC(void *); /* video.c: play/advance a movie */
 extern void fn_802E1290(void *); /* video.c: drMovieUnload, close a movie */
 extern void fn_80128668(void *); /* free an allocated object block */
