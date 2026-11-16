@@ -210,16 +210,18 @@ int fn_801B47D4(int arg0, int arg1) {
 }
 
 #pragma dont_inline on
-int fn_801B47F0(int arg0) {
-    unsigned int temp_r4;
-    unsigned int temp_r5;
+int fn_801B47F0(int pool) {
+    /* Used frames in the ring buffer: distance from the read index (+0x20) to
+       the write index (+0x24), wrapping around the frame count (+0x1C). */
+    unsigned int readIndex;
+    unsigned int writeIndex;
 
-    temp_r5 = *(unsigned int *)(arg0 + 0x24);
-    temp_r4 = *(unsigned int *)(arg0 + 0x20);
-    if (temp_r4 < temp_r5) {
-        return temp_r5 - temp_r4;
+    writeIndex = *(unsigned int *)(pool + 0x24);
+    readIndex = *(unsigned int *)(pool + 0x20);
+    if (readIndex < writeIndex) {
+        return writeIndex - readIndex;
     }
-    return temp_r5 + (*(int *)(arg0 + 0x1C) - temp_r4);
+    return writeIndex + (*(int *)(pool + 0x1C) - readIndex);
 }
 #pragma dont_inline off
 
