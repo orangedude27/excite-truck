@@ -5419,7 +5419,7 @@ void fn_80071450(void *arg0) {
 }
 
 void fn_8007148C(s32 arg0) {
-    fn_800716B0((void **)((u8 *)&lbl_803C0AD8 + 0x68), arg0, &lbl_803C0AD8);
+    fn_800716B0((tPTIM_CB *)((u8 *)&lbl_803C0AD8 + 0x68), arg0, &lbl_803C0AD8);
 }
 
 void fn_8007146C(s32 arg0, u16 arg1, s32 arg2) {
