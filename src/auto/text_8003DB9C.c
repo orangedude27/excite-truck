@@ -33,6 +33,8 @@ extern u8 GXShutdownFuncInfo_803036D0[];
 extern u32 GXTexRegionAddrTable_80303610[];
 typedef union { volatile unsigned char u8; volatile unsigned int u32; } GXCopyFifo;
 #define GXCopyWGFifo (*(GXCopyFifo *)0xCC008000)
+#define GX_WGPIPE_WPAR 0x0C008000 /* WPAR value aiming the write-gather pipe at 0xCC008000 */
+#define WPAR_BUSY 0x1             /* WPAR low bit: write-gather pipe still draining */
 extern unsigned int lbl_8055D968;
 extern unsigned int lbl_8055D930;
 extern unsigned int lbl_8055D938;
@@ -5346,7 +5348,7 @@ void GXSetFog(int type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
     u32 fogColorReg = 0;
     u32 fogParamReg0 = 0;
     u32 fogParamReg1 = 0;
-    register u32 fogParamReg2 = 0;
+    u32 fogParamReg2 = 0;
     u32 fogParamReg3 = 0;
 
     u32 fsel = GX_FOG_GET_FSEL(type);
