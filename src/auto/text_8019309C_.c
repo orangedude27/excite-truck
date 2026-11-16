@@ -469,10 +469,12 @@ void fn_801939C8(void *driver) {
     }
 }
 
-void fn_80193A38(void *arg0) {
-    void *obj = *(void **)((unsigned char *)arg0 + 0x294);
-    *(unsigned char *)((unsigned char *)arg0 + 0x2A4) = 0;
-    *(int *)((unsigned char *)obj + 0x24) = *(int *)((unsigned char *)obj + 0x28);
+/* Disconnect this AI driver: clear its connected flag at +0x2A4 and restore the
+ * vehicle's value at +0x24 from its saved value at +0x28 (inverse of fn_801939C8). */
+void fn_80193A38(void *driver) {
+    void *vehicle = *(void **)((unsigned char *)driver + 0x294);
+    *(unsigned char *)((unsigned char *)driver + 0x2A4) = 0;
+    *(int *)((unsigned char *)vehicle + 0x24) = *(int *)((unsigned char *)vehicle + 0x28);
 }
 
 void *fn_80193A50(void *player, int freeFlag) {
