@@ -125,8 +125,9 @@ char fn_801EA470(void) {
     return lbl_8055EB58;
 }
 
-void fn_801EA478(s32 arg0) {
-    fn_801E8738(arg0);
-    fn_801EA210(arg0);
+void fn_801EA478(s32 playerIndex) {
+    /* Reads this player's current progress value (left in f1) and updates the scene state with it. */
+    fn_801E8738(playerIndex);
+    fn_801EA210(playerIndex);
 }
 
