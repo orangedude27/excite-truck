@@ -831,24 +831,26 @@ extern "C" unsigned long long fn_80132A48(void *arg0, s32 arg1, void *arg2) {
     return *(unsigned long long*)&result;
 }
 #pragma cplusplus on
-extern "C" void fn_80132AE4(void *arg0, void *arg1, s32 arg2, void *arg3) {
+extern "C" void fn_80132AE4(void *out, void *table, s32 key, void *defaultValue) {
     typedef struct { s32 a[9]; } Matrix;
-    typedef struct { Matrix matrix; struct Unk80132968Vector vector; } Value;
-    class A {
+    typedef struct { Matrix matrix; struct Unk80132968Vector vector; } Transform;
+    class ValueTable {
     public:
-        virtual void f0(); virtual s32 f1(s32);
-        virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5();
-        virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9();
-        virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13();
-        virtual void f14(); virtual Value f15(s32);
+        virtual void unknown0(); virtual s32 hasEntry(s32);
+        virtual void unknown2(); virtual void unknown3(); virtual void unknown4(); virtual void unknown5();
+        virtual void unknown6(); virtual void unknown7(); virtual void unknown8(); virtual void unknown9();
+        virtual void unknown10(); virtual void unknown11(); virtual void unknown12(); virtual void unknown13();
+        virtual void unknown14(); virtual Transform getTransform(s32);
     };
-    const Value *source = (Value *)arg3;
-    if (((A *)arg1)->f1(arg2)) {
-        const Value &value = ((A *)arg1)->f15(arg2);
+    /* Copies a value table's matrix+vector transform for `key` into `out`, or the
+     * caller's default transform when the table has no such entry. */
+    const Transform *source = (Transform *)defaultValue;
+    if (((ValueTable *)table)->hasEntry(key)) {
+        const Transform &value = ((ValueTable *)table)->getTransform(key);
         source = &value;
     }
-    ((Value *)arg0)->matrix = source->matrix;
-    ((Value *)arg0)->vector = source->vector;
+    ((Transform *)out)->matrix = source->matrix;
+    ((Transform *)out)->vector = source->vector;
 }
 #pragma cplusplus off
 typedef float f32;
