@@ -9,6 +9,7 @@ void fn_8023B5EC(void);
 void fn_8023D7CC(void);
 void fn_8023D70C(void);
 #pragma dont_inline on
+/* Kick off the memory-card save flow: invoke the two card hooks (the second with argument 1), then load and validate the chunked MCSH save file. */
 void fn_8023B5EC(void) {
     fn_802E712C();
     fn_802E6CA4(1);
