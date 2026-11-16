@@ -370,11 +370,12 @@ s32 fn_801494A8(void) {
     return 0xFF00FF00;
 }
 
-void fn_801494B4(void *arg0, f32 *arg1, f32 *arg2) {
-    f32 y = arg2[1] + arg1[0];
-    f32 z = arg2[2] + arg1[1];
-    arg2[1] = y;
-    arg2[2] = z;
+void fn_801494B4(void *unused, f32 *delta, f32 *vec) {
+    /* Add the 2D vector *delta to elements 1 and 2 of the 3D vector *vec. */
+    f32 y = vec[1] + delta[0];
+    f32 z = vec[2] + delta[1];
+    vec[1] = y;
+    vec[2] = z;
 }
 
 extern unsigned long lbl_80559E94;
