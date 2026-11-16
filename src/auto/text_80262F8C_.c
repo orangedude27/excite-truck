@@ -53,13 +53,18 @@ s32 fn_80263070(void *arg0) {
 }
 
 s32 fn_80263080(void) {
-    s32 temp_r0;
-    temp_r0 = lbl_8055F434 - 1;
-    lbl_8055F434 = temp_r0;
-    if (temp_r0 < 0) {
-        lbl_8055F434 = 0;
+#define menuPageIndex lbl_8055F434
+#define Menu_RefreshState fn_80230E90
+    /* Decrement the menu page index, clamping at 0, then refresh the menu state. */
+    s32 newPageIndex;
+    newPageIndex = menuPageIndex - 1;
+    menuPageIndex = newPageIndex;
+    if (newPageIndex < 0) {
+        menuPageIndex = 0;
     }
-    fn_80230E90(0);
+    Menu_RefreshState(0);
+#undef menuPageIndex
+#undef Menu_RefreshState
     return 0;
 }
 
