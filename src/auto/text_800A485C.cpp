@@ -2953,9 +2953,13 @@ extern "C" s32 VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(void *cache, void *b
 }
 
 extern "C" s32 fn_800A8504(void *, void *, s32, s32);
-extern "C" s32 fn_800A8FD0(void *arg0, s32 arg1) {
-    s32 temp_r3 = fn_800A8504(arg0, (u8 *)arg0 + 0x1630, arg1, 0);
-    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+extern "C" s32 fn_800A8FD0(void *volume, s32 page) {
+    /* Touch a FAT-list cache page (list at volume+0x1630) without a timestamp
+       through the core page routine; 0 on success. */
+#define Cache_TouchPage fn_800A8504
+    s32 result = Cache_TouchPage(volume, (u8 *)volume + 0x1630, page, 0);
+    return result & ((s32)(-result | result) >> 31);
+#undef Cache_TouchPage
 }
 
 extern "C" s32 fn_800A900C(void *arg0, s32 arg1, s32 arg2) {
@@ -10099,7 +10103,7 @@ extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
 }
 #pragma pop
 extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1) {
-    s8 *p = (s8 *)arg0 + 7;
+    u8 *p = (u8 *)((s32)arg0 + 7);
     u32 digits = 7;
     u32 divisor = 10;
     u32 place = 1;
