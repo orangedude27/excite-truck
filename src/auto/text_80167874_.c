@@ -492,43 +492,47 @@ extern void fn_802C6CF8(s32);
 void fn_8002F634(void *, void *, s32, s32);
 void fn_802C6CF8(s32);
 extern "C" void fn_80167EEC(void) {
-    u8 *entry;
-    s32 *global;
+    /* Tear down the pickup manager (lbl_8055E354, the block fn_801679F0 made):
+     * forget every placed pickup, reset the placed count of the five pickup
+     * types (lbl_80330020), release their models, destroy the record array the
+     * manager holds inline at +0xC and free the manager itself. */
+    PickupTypeInfo *entry;
+    PickupTypeInfo *types;
     s32 i;
-    u8 *manager = (u8 *)(u32)lbl_8055E354;
+    DummyManager *manager = (DummyManager *)(u32)lbl_8055E354;
     if (manager != 0) {
-        global = (s32 *)lbl_80330020;
-        global[7] = 0;
-        global[15] = 0;
-        global[23] = 0;
-        global[31] = 0;
-        global[39] = 0;
-        i = *(s32 *)(manager + 4);
+        types = (PickupTypeInfo *)lbl_80330020;
+        types[0].placedCount = 0;
+        types[1].placedCount = 0;
+        types[2].placedCount = 0;
+        types[3].placedCount = 0;
+        types[4].placedCount = 0;
+        i = manager->recordCount;
         while (i-- > 0) {
-            *(s32 *)(*(u32 *)manager + i * 0x18) = 0;
+            manager->records[i].obj = 0;
         }
-        *(s32 *)(manager + 4) = 0;
-        *(s32 *)(manager + 0x1D4D0) = 0;
-        *(u8 *)(manager + 0x1E158) = 0;
-        entry = (u8 *)lbl_80330020;
+        manager->recordCount = 0;
+        manager->entryCount = 0;
+        manager->flag1E158 = 0;
+        entry = (PickupTypeInfo *)lbl_80330020;
         i = 0;
-        for (; i < 5; i++, entry += 0x20) {
-            if (*(s32 *)(entry + 0x10) != -1) {
-                fn_802C6CF8(*(s32 *)(entry + 0x10));
-                *(s32 *)(entry + 0x10) = -1;
+        for (; i < 5; i++, entry++) {
+            if (entry->modelHandle != -1) {
+                fn_802C6CF8(entry->modelHandle);
+                entry->modelHandle = -1;
             }
         }
-        if ((manager + 0x1D4CC) != 0 && (manager + 0x1D4CC) != 0) {
-            *(s32 *)(manager + 0x1D4CC) = 0;
-            *(s32 *)(manager + 0x1D4D0) = 0;
-            *(s32 *)(manager + 0x1D4D4) = 0;
+        if (&manager->entries != 0 && &manager->entries != 0) {
+            manager->entries = 0;
+            manager->entryCount = 0;
+            manager->entryCapacity = 0;
         }
         if (manager != 0) {
-            fn_8002F634(manager + 0xC, (void *)fn_80167E98, 0x18, 0x1388);
+            fn_8002F634((u8 *)manager + 0xC, (void *)fn_80167E98, 0x18, 0x1388);
             if (manager != 0) {
-                *(s32 *)(manager + 0) = 0;
-                *(s32 *)(manager + 4) = 0;
-                *(s32 *)(manager + 8) = 0;
+                manager->records = 0;
+                manager->recordCount = 0;
+                manager->recordCapacity = 0;
             }
         }
         ((s32 (*)(void *))fn_80128668)(manager);
