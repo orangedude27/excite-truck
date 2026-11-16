@@ -439,7 +439,7 @@ extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
     int mode = 0;
     float firstAngle = lbl_805645B8;
     float secondArg = lbl_80564590;
-    *(float *)(entry + 0x24) = remaining - deltaTime;
+    *(volatile float *)(entry + 0x24) = remaining - deltaTime;
     float angle = fn_80129DC4(mode, firstAngle, secondArg);
     float angle2 = angle * angle;
     float otherAngle = (float)fn_8002F234(lbl_80564590 - angle2);
@@ -1768,14 +1768,14 @@ extern "C" int fn_8029AF24(int arg0) {
         if (fn_802C8DBC(total * 4)) {
             fn_8029B6E4(obj);
             fn_802C8E48();
-            fn_802C8D74();
         }
+        fn_802C8D74();
         fn_802C8BD0(*(int *)((char *)obj + 0x1E4));
         if (fn_802C8DBC(total * 8)) {
             fn_8029B824(obj);
             fn_802C8E48();
-            fn_802C8D74();
         }
+        fn_802C8D74();
         ((float (*)(float))fn_802C9A4C)(temp_f31);
     }
 }
@@ -2225,7 +2225,7 @@ extern "C" void fn_8029BBD4(void *arg0, void *arg1, int arg2) {
         *(int *)(record + 4) = 1;
         goto done;
     }
-    if ((state & 0xF) != 2) goto done;
+    if ((state & 0xFU) != 2) goto done;
     float deltaTime = fn_801E7E24();
     float threshold = lbl_8056459C;
     float currentTime = *(float *)(record + 0xC);
@@ -2237,7 +2237,7 @@ extern "C" void fn_8029BBD4(void *arg0, void *arg1, int arg2) {
         *(int *)(record + 0x14) = 0;
         goto done;
     }
-    if ((*(unsigned int *)(record + 4) & 0x10) != 0) goto done;
+    if ((*(unsigned int *)(record + 4) & 0x10U) != 0) goto done;
     if (fn_80287B5C(0x28) != 0) goto done;
     void *info = fn_80288208(index);
     volatile int *table = (volatile int *)lbl_802FA9F0;
@@ -2321,7 +2321,7 @@ void fn_8029BE54(void* arg0, void* arg1) {
     register char* scan = (char*)arg0;
     register int count = *(int*)((char*)arg0 + 0xA4);
     register unsigned int key;
-    register int i = 0;
+    int i = 0;
     for (; i < count; ++i) {
         key = *(volatile unsigned int*)((char*)arg1 + 0xC);
         if (key == *(unsigned int*)(scan + 0x10)) {
@@ -2347,9 +2347,9 @@ void fn_8029BE54(void* arg0, void* arg1) {
     key = count * 0x14;
     char* dst = (char*)arg0;
     dst += key;
-    register unsigned int c = *(volatile unsigned int*)((char*)arg1 + 8);
-    register unsigned int b = *(volatile unsigned int*)((char*)arg1 + 4);
     register unsigned int a = *(volatile unsigned int*)arg1;
+    register unsigned int b = *(volatile unsigned int*)((char*)arg1 + 4);
+    register unsigned int c = *(volatile unsigned int*)((char*)arg1 + 8);
     *(unsigned int*)(dst + 4) = a;
     key = *(volatile unsigned int*)((char*)arg1 + 0xC);
     *(unsigned int*)(dst + 8) = b;
