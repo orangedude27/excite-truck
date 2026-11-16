@@ -472,12 +472,15 @@ void fn_801EB854(void) {
 #undef cachedValues
 }
 
+/* Destroy all cached subsystem objects stored in the table. */
 void fn_801EB8BC(void) {
-    s32 *p = lbl_804885E8;
-    u32 i;
-    for (i = 0; i < 0x18; i++, p++) {
-        fn_801EB9A4(p);
+#define sCachedSubsystemTable lbl_804885E8
+    s32 *entry = sCachedSubsystemTable;
+    u32 index;
+    for (index = 0; index < 0x18; index++, entry++) {
+        fn_801EB9A4(entry);
     }
+#undef sCachedSubsystemTable
 }
 #pragma dont_inline off
 
