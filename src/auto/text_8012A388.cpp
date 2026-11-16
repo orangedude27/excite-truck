@@ -3268,14 +3268,19 @@ extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
 }
 #pragma pop
 
-extern "C" s32 fn_8012C6F0(void *arg0) {
-    s32 temp_r4;
-    void *temp_r5;
-    temp_r5 = *(void **)((u8 *)arg0 + 4);
-    temp_r4 = *(s32 *)((u8 *)temp_r5 + 0x2C) +
-              *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x80);
-    return ((temp_r4 + *(s32 *)((u8 *)temp_r5 + 0x28) + 0x7FF) & 0xFFFFF800) -
-           (temp_r4 & 0xFFFFF800);
+/* Return the 0x800-aligned size of an open resource: round_up(base + size) - round_down(base). */
+extern "C" s32 fn_8012C6F0(void *handle) {
+#define ALIGN_UP 0x7FF        /* round-up addend */
+#define ALIGN_MASK 0xFFFFF800 /* ~0x7FF */
+    s32 base;
+    void *block;
+    block = *(void **)((u8 *)handle + 4);
+    base = *(s32 *)((u8 *)block + 0x2C) +
+           *(s32 *)((u8 *)*(void **)((u8 *)handle + 8) + 0x80);
+    return ((base + *(s32 *)((u8 *)block + 0x28) + ALIGN_UP) & ALIGN_MASK) -
+           (base & ALIGN_MASK);
+#undef ALIGN_MASK
+#undef ALIGN_UP
 }
 
 extern "C" s32 fn_802E748C(s32, s32, void *);
