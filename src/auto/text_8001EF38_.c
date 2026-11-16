@@ -343,10 +343,16 @@ void fn_8001F528(void) {
 
 #pragma scheduling on
 extern char lbl_8035A718[0x820];
+#pragma scheduling on
 #pragma scheduling invalid_target
+/* Clear the active and pending achievements statistics blocks. */
 void fn_8001F578(void) {
-    memset(lbl_8035A718, 0, 0x820);
-    memset(lbl_8035AF38, 0, 0x820);
+#define sActiveAchievementsBlock lbl_8035A718
+#define sPendingAchievementsBlock lbl_8035AF38
+    memset(sActiveAchievementsBlock, 0, 0x820);
+    memset(sPendingAchievementsBlock, 0, 0x820);
+#undef sActiveAchievementsBlock
+#undef sPendingAchievementsBlock
 }
 #pragma scheduling on
 extern void *memcpy(void *, const void *, unsigned long);
