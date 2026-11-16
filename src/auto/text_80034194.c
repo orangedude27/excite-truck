@@ -956,6 +956,7 @@ extern u32 lbl_8055D848;
 extern char __ErrorInfo[];
 extern s32 OSGetTick(void);
 s32 DVDClose(void) {
+    /* Close the DVD device: cancel any outstanding commands, then report success. */
     DVDCancel();
     return 1;
 }
