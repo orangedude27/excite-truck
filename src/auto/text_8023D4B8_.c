@@ -525,8 +525,11 @@ int fn_8023DF70(int object, int deleteFlag) {
 }
 
 s32 fn_8023DFB0(void) {
-    fn_8023DD4C();
+#define ResetControlsToDefaults fn_8023DD4C
+    /* Control-config screen command handler: reset every configurable control to its defaults, then report success. */
+    ResetControlsToDefaults();
     return 0;
+#undef ResetControlsToDefaults
 }
 
 /* Input command 0x126 of the control-configuration screen: unhighlight the row of the
