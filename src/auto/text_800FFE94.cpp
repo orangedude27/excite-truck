@@ -20,12 +20,13 @@ extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3s
 extern "C" char lbl_80327AF4[];
 extern "C" void fn_800EC890(void*);
 extern "C" float lbl_80561120;
-extern "C" void fn_800FFE94(void* arg0) {
-    void* p = *(void**)arg0;
-    if (p && *(void**)((char*)p + 0x1AC) == arg0)
-        *(void**)((char*)p + 0x1AC) = 0;
-    if (*(void**)arg0)
-        *(void**)arg0 = 0;
+extern "C" void fn_800FFE94(void* handle) {
+    void* sound = *(void**)handle;
+    /* Clear the sound's back-reference (if it still points here), then the handle. */
+    if (sound && *(void**)((char*)sound + 0x1AC) == handle)
+        *(void**)((char*)sound + 0x1AC) = 0;
+    if (*(void**)handle)
+        *(void**)handle = 0;
 }
 
 extern "C" char lbl_803276F0[];
