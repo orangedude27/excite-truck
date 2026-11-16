@@ -162,11 +162,18 @@ void fn_801F1E24(void) {
 #pragma push
 #pragma small_data off
 void fn_801F1EA8(void) {
-    void *p = fn_801284F8(0x14, &lbl_8055B124);
+    /* Allocate and initialize a Sun object (0x14 bytes, vtable lbl_8033A8F8). */
+    #define kSunAllocTag   lbl_8055B124
+    #define vtbl_Sun       lbl_8033A8F8
+
+    void *p = fn_801284F8(0x14, &kSunAllocTag);
     if (p != 0) {
-        *(void **)p = &lbl_8033A8F8;
+        *(void **)p = &vtbl_Sun;
         *(int *)((char *)p + 0x10) = 0;
     }
+
+    #undef kSunAllocTag
+    #undef vtbl_Sun
 }
 #pragma pop
 extern int fn_802CAC28(void *, int);
