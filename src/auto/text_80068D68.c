@@ -1763,6 +1763,8 @@ typedef struct {
     WUDDevInfoSlot smpDevs[6];  /* WUD_MAX_DEV_ENTRY_FOR_SMP simple-pairing devices */
     u8 connectedNum;            /* 0x664: devices HID is talking to */
     u8 linkedNum;               /* 0x665: devices with a link up */
+    u8 pad1[0x22];              /* 0x666..0x687 */
+    s8 disableChannel;          /* 0x688: AFH channel to avoid (WUDSetDisableChannel) */
 } WUDCBView;
 
 /* include/revolution/WUD/WUDInternal.h's WUDDeleteState; spelled out here because this
@@ -19158,7 +19160,6 @@ void l2c_link_sec_comp(BD_ADDR bd_addr, void *ref_data, UINT8 status)
         ccb = *(void **)((u8 *)lcb + 8);
         while (ccb != 0) {
             next = *(void **)((u8 *)ccb + 8);
-            event = event;
             fn_80089E40(ccb, (u8)(event + 8), ci);
             ccb = next;
         }
@@ -29052,8 +29053,8 @@ extern s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks);
 void WUDVendorSpecificCallback(u8 len, u8 *pData) {
     typedef void (*WUDSyncCallback)(s32, s32);
     typedef void (*WUDClearCallback)(s32);
-    u8 *state = lbl_80392960;
-    u8 *strings = lbl_803130C8;
+    register u8 *state = lbl_80392960;
+    register u8 *strings = lbl_803130C8;
     u8 event = pData[0];
     u32 enabled, busyEnabled;
     s32 busy, result, started, libStatus;
