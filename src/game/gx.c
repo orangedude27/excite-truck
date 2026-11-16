@@ -2378,9 +2378,12 @@ void fn_802D2684(void) {
 #pragma pop
 #pragma scheduling on
 void fn_802D2AC4(void) {
+#define ResetTevSwapModes fn_802DFAF4
+    /* Configure one color channel with no lighting and reset TEV swap modes. */
     GXSetNumChans(1);
     GXSetChanCtrl(1, 0, 0, 0, 0, 0, 2);
-    fn_802DFAF4();
+    ResetTevSwapModes();
+#undef ResetTevSwapModes
 }
 
 extern unsigned char lbl_804C9930[];
