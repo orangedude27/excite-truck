@@ -2612,8 +2612,11 @@ extern "C" s32 fn_80141F28(RingBuf8013D2C4 *rb, s32 n) {
     return (s32)base + index * 12;
 }
 #pragma small_data off
-extern "C" s32 fn_80141F7C(f32 arg0) {
-    return (f32)__fabs((f64)arg0) <= lbl_80558DC4[0];
+extern "C" s32 fn_80141F7C(f32 value) {
+#define FLOAT_EPS lbl_80558DC4[0]
+    /* True when value is effectively zero (its magnitude is within 2^-23). */
+    return (f32)__fabs((f64)value) <= FLOAT_EPS;
+#undef FLOAT_EPS
 }
 #pragma small_data on
 extern "C" u8 lbl_8055E1BC;
