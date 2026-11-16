@@ -283,6 +283,8 @@ check_state:
 
 #pragma scheduling invalid_target
 void fn_80176734(void) {
+    /* If the physics fader is active, log the restart message, then clear the
+     * pending physics command to PHYS_MODE_NONE and reinitialize the fade state. */
     if (fn_80176F9C() != 0) {
         fn_802E30C8(lbl_80331604);
     }
@@ -719,12 +721,17 @@ void fn_80176BA8(void) {
 #pragma push
 #pragma processor 750
 void fn_80176BAC(void) {
-    f32 now;
+    f32 now = lbl_8055E3C8;
+    f32 prev = lbl_8055E3FC;
+    f32 upper = lbl_80561B38;
+    f32 lower;
     f32 value;
-    now = lbl_8055E3C8;
-    value = lbl_80561B38;
-    value = (value < (now - lbl_8055E3FC)) ? (now - lbl_8055E3FC) : value;
-    fn_8017ED00((value > lbl_80561B3C) ? value : lbl_80561B3C);
+
+    prev = now - prev;
+    value = upper < prev ? prev : upper;
+    lower = lbl_80561B3C;
+    value = value > lower ? value : lower;
+    fn_8017ED00(value);
     lbl_8055E3FC = now;
 }
 #pragma pop
