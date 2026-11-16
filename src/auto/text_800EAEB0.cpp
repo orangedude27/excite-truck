@@ -1654,6 +1654,11 @@ struct MmlParserTrackParam {
     const u8 *callStack[3]; /* +0x08 */
 };
 
+/* start of the snd_MmlParser.cpp string pool (lbl_80323268) */
+struct MmlParserStrings {
+    char fileName[0x18]; /* "snd_MmlParser.cpp" */
+};
+
 /* MmlParser::GetVariablePtr: variables 0-0x1F are the player's, 0x20-0x2F the track's.
  * str is the snd_MmlParser.cpp string pool. */
 static inline s16 *MmlGetVariablePtr(const char *str, SeqPlayer *player, MmlSeqTrack *track, int varNo) {
