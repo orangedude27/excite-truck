@@ -135,11 +135,16 @@ int fn_802E888C(int requestIndex) {
 
 #pragma scheduling invalid_target
 int fn_802E88D8(void) {
-    if (fn_802E888C(0) != 0) {
-        lbl_80560034 = 1;
+#define nandDispatchRequest fn_802E888C
+#define gNandSaveInvalid lbl_80560034
+    /* Poll NAND request 0; if it completes, flag the save invalid and report failure. */
+    if (nandDispatchRequest(0) != 0) {
+        gNandSaveInvalid = 1;
         return 1;
     }
     return 0;
+#undef nandDispatchRequest
+#undef gNandSaveInvalid
 }
 #pragma scheduling on
 void fn_802E8918(void) {
