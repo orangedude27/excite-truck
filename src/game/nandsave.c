@@ -277,11 +277,22 @@ void fn_802E8C2C(void) {
     }
 }
 
-int fn_802E8C6C(int arg0) {
-    if (arg0 == 1) {
-        ((int (*)(const char *, void (*)(void)))fn_802E95E0)(lbl_8034DEC4, fn_802E9010);
+int fn_802E8C6C(int request) {
+#define KERNEL_RESET_NOTIFY 1
+#define rmemcard_wait_async fn_802E95E0
+#define rmemcard_pump_async fn_802E9010
+#define rmemcard_reset_op_name lbl_8034DEC4
+    /* Reset callback registered in fn_802E8CA8: when the reset is actually on,
+     * block until the async NAND save machine goes idle, pumping it once per
+     * pass; the "reset hander" tag is just the label it logs timeouts under. */
+    if (request == KERNEL_RESET_NOTIFY) {
+        ((int (*)(const char *, void (*)(void)))rmemcard_wait_async)(rmemcard_reset_op_name, rmemcard_pump_async);
     }
     return 0;
+#undef KERNEL_RESET_NOTIFY
+#undef rmemcard_wait_async
+#undef rmemcard_pump_async
+#undef rmemcard_reset_op_name
 }
 
 /* Initialize NAND/save subsystem: NAND init, allocator setup, async buffer, callbacks, and handlers. */
