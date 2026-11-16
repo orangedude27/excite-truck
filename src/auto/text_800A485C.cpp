@@ -20646,11 +20646,12 @@ extern "C" s32 fn_800D1E78(void *soundPlayer, s32 channel, s32 soundId) {
     return 0;
 }
 
-extern "C" s32 fn_800D1EA8(void *arg0, s32 arg1) {
-    u8 val = ((u8 *)((u8 *)arg0 + arg1 * 0x68))[0x62];
-    s32 result = (s32)val;
-    s32 neg = -result;
-    return (s32)((u32)(neg | result) >> 31);
+extern "C" s32 fn_800D1EA8(void *remoteSpk, s32 channel) {
+    /* Remote speaker: return nonzero when this channel's enable/playing flag at +0x62 is set. */
+    u8 flag = ((u8 *)((u8 *)remoteSpk + channel * 0x68))[0x62];
+    s32 value = (s32)flag;
+    s32 neg = -value;
+    return (s32)((u32)(neg | value) >> 31);
 }
 
 extern void *lbl_8055DDBC;
