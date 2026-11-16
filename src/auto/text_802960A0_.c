@@ -334,6 +334,9 @@ void fn_802968E8(void *arg0) {
 void fn_8029690C(arg0)
 void *arg0;
 {
+    /* Decrement refcount; when it hits zero, unlink from list and destroy. */
+    #define gObjectListHead lbl_8055F788
+
     int count;
     void **link;
 
@@ -342,7 +345,7 @@ void *arg0;
     if (count != 0)
         return;
 
-    link = &lbl_8055F788;
+    link = &gObjectListHead;
     while (*link != 0) {
         if (*link == arg0) {
             *link = *(void **)((char *)arg0 + 0x20);
@@ -351,6 +354,8 @@ void *arg0;
         link = (void **)((char *)*link + 0x20);
     }
     fn_80296838(arg0);
+
+    #undef gObjectListHead
 }
 #pragma pop
 
