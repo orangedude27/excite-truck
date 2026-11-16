@@ -13,6 +13,7 @@ extern char lbl_8055BC80[];
 extern int lbl_8055BC08;
 extern void fn_802E30C8(void *);
 extern void fn_802E8664(int);
+extern void fn_80137D10(void);
 
 /* One row of the configurable-control table at lbl_802FA190 (17 rows): the name of a
    control action ("steer_left", "throttle", "e_brake", ...) and the input binding it
