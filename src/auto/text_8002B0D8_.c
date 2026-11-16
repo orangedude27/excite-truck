@@ -1313,14 +1313,17 @@ __declspec(section ".sdata") extern double lbl_80560A80;
 #pragma dont_inline on
 #pragma scheduling invalid_target
 double cos(double x) {
+    /* fdlibm cos: cosine of x. For |x| <= pi/4 call the kernel directly; Inf/NaN yields NaN;
+       otherwise reduce with __ieee754_rem_pio2 (y = quotient and remainder) and select the
+       cos/sin kernel and sign from the quadrant n & 3. */
     double y[2], z = 0.0;
     int n, ix;
     ix = __HI(x);
     ix &= 0x7fffffff;
-    if (ix <= 0x3fe921fb) return __kernel_cos(x, z);
-    else if (ix >= 0x7ff00000) return x - x;
+    if (ix <= trig_pio4_hi) return __kernel_cos(x, z);	/* |x| ~< pi/4 */
+    else if (ix >= trig_inf_hi) return x - x;			/* cos(Inf or NaN) is NaN */
     else {
-        n = __ieee754_rem_pio2(x, y);
+        n = __ieee754_rem_pio2(x, y);		/* argument reduction needed */
         switch (n & 3) {
         case 0: return __kernel_cos(y[0], y[1]);
         case 1: return -__kernel_sin(1, y[0], y[1]);
