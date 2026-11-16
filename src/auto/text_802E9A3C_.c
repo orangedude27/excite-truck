@@ -945,9 +945,10 @@ int fn_802EC378(void *stream, void *dst, int count) {
 #pragma push
 #pragma scheduling invalid_target
 #define Mp3FileStream_Read fn_802EC3F0 /* file-backed MP3 stream vtable read(dst, size) */
-long fn_802EC3F0(void *arg0, long arg1, long arg2) {
-    long value = ((long *)arg0)[1];
-    return fn_800B7C60(arg1, arg2, 1, value) == 1;
+long fn_802EC3F0(void *arg0, long dst, long size) {
+    /* File-backed MP3 stream's read(): read `size` bytes into `dst` from its VF file. */
+    long handle = ((Mp3Stream *)arg0)->file;
+    return fn_800B7C60(dst, size, 1, handle) == 1;
 }
 #pragma scheduling on
 #pragma pop
