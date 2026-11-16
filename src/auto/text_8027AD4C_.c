@@ -1066,14 +1066,10 @@ long *fn_8027C26C(void *container, const char *name) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 struct ItemIface8027C2B8 {
-    virtual void f0();
-    virtual void f1();
     virtual char *getName();
 };
 struct ListIface8027C2B8 {
     virtual void f0();
-    virtual void f1();
-    virtual void f2();
     virtual void *fetch(long index);
 };
 struct SubIface8027C2B8 {
@@ -1099,8 +1095,6 @@ struct SubIface8027C2B8 {
     virtual void f19();
     virtual void f20();
     virtual void f21();
-    virtual void f22();
-    virtual void f23();
     virtual void *fetchSub(long index);
 };
 #pragma cplusplus reset
@@ -1114,6 +1108,7 @@ struct Ctx8027C2B8 {
     void **outerArray;
     int outerCount;
 };
+#pragma cplusplus on
 void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
     extern char lbl_80347A50[];
     extern void *fn_80131808(void *);
@@ -1140,7 +1135,7 @@ void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
     outerArray[outerCount] = outerList;
     goto fetch_outer;
 outer_loop:
-    name = ((char *(*)(void *))(*(void ***)outerItem)[2])(outerItem);
+    name = ((ItemIface8027C2B8 *)outerItem)->getName();
     if (stricmp(name, (const char *)&lbl_8055C760) == 0) {
         tableCount = ctx->tableCount;
         tableArray = ctx->innerArray;
@@ -1150,7 +1145,7 @@ outer_loop:
         innerIndex = 0;
         goto fetch_inner;
 inner_loop:
-        name = ((char *(*)(void *))(*(void ***)innerItem)[2])(innerItem);
+        name = ((ItemIface8027C2B8 *)innerItem)->getName();
         if (stricmp(name, lbl_80347A50) == 0) {
             itemCount = ctx->itemCount;
             tableArray = ctx->tableArray;
@@ -1159,17 +1154,17 @@ inner_loop:
         }
         innerIndex++;
 fetch_inner:
-        innerItem = ((void *(*)(void *, long))(*(void ***)outerItem)[24])(outerItem, innerIndex);
+        innerItem = ((SubIface8027C2B8 *)outerItem)->fetchSub(innerIndex);
         if (innerItem != 0)
             goto inner_loop;
     }
     outerIndex++;
 fetch_outer:
-    outerItem = ((void *(*)(void *, long))(*(void ***)outerList)[3])(outerList, outerIndex);
+    outerItem = ((ListIface8027C2B8 *)outerList)->fetch(outerIndex);
     if (outerItem != 0)
         goto outer_loop;
 }
-#pragma pop
+#pragma cplusplus reset
 extern void fn_8027C2B8();
 #pragma push
 #pragma scheduling invalid_target
