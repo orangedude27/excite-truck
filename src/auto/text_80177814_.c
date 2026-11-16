@@ -1468,8 +1468,9 @@ void DBPrintf_80179758(const char *format, ...) {
 #pragma unused(format)
 }
 
-void DBPrintf_801797A8(const char *fmt, ...) {
-#pragma unused(fmt)
+/* Debug printf stub (no-op). */
+void DBPrintf_801797A8(const char *format, ...) {
+#pragma unused(format)
 }
 
 extern int lbl_804305A0[];
