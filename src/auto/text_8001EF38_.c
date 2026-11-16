@@ -669,9 +669,14 @@ s32 fn_8001FD24(void) {
 extern s8 lbl_8055D614;
 extern s32 lbl_8055D618;
 extern s32 fn_80018FB4(void);
-void fn_8001FD4C(s8 arg0) {
-    lbl_8055D614 = arg0;
-    lbl_8055D618 = fn_80018FB4();
+void fn_8001FD4C(s8 enabled) {
+#define sCapExcitePoints lbl_8055D614
+#define sMaxExcitePoints lbl_8055D618
+    /* Sets the excite-point cap flag and caches the MAX_EXCITE_POINTS unlockable value used by fn_8001F7E4. */
+    sCapExcitePoints = enabled;
+    sMaxExcitePoints = fn_80018FB4();
+#undef sCapExcitePoints
+#undef sMaxExcitePoints
 }
 
 #pragma dont_inline off
