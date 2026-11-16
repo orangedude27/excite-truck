@@ -29050,12 +29050,13 @@ write_timeout:
 
 extern s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks);
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void WUDVendorSpecificCallback(u8 len, u8 *pData) {
     typedef void (*WUDSyncCallback)(s32, s32);
     typedef void (*WUDClearCallback)(s32);
-    register u8 *state = lbl_80392960;
-    register u8 *strings = lbl_803130C8;
+    u8 *state = lbl_80392960;
+    u8 *stateBase = lbl_80392960;
+    u8 *strings = lbl_803130C8;
     u8 event = pData[0];
     u32 enabled, busyEnabled;
     s32 busy, result, started, libStatus;
