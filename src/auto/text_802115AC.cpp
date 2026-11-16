@@ -1773,10 +1773,11 @@ extern "C" s32 fn_80214934(const void* dir, s32 path, void* out, s32 outSize) {
 
 #pragma push
 #pragma dont_inline on
-extern "C" void fn_802149C4(s32 arg0) {
-    char sp8[0x64];
-    fn_80214934(&lbl_8055B810, arg0, sp8, 0x64);
-    fn_8021481C(sp8);
+extern "C" void fn_802149C4(s32 name) {
+    char pathBuf[0x64];
+    /* Build "transin\\<name>" (extension stripped) and hand it to the transition handler. */
+    fn_80214934(&TRANSITION_DIR_IN, name, pathBuf, 0x64);
+    fn_8021481C(pathBuf);
 }
 #pragma dont_inline reset
 #pragma pop
