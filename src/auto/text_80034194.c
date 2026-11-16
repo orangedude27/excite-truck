@@ -3144,46 +3144,60 @@ void cbForPrepareReset(void) {
     lbl_8055D890 = 1;
 }
 
+/* __DVDPrepareReset (RVL SDK DVD.cpp): stop the drive and spin until the reset
+ * completes.  Pause the drive and cancel each queued block (with no callback)
+ * plus the one executing (through cbForPrepareReset), resume the drive, then
+ * wait for that callback to set ResetDone.  If a cancel is already in flight,
+ * only take over its callback instead. */
 void __DVDPrepareReset(void) {
-    s32 tempInterrupts;
-    s32 savedInterrupts;
-    void *active;
-    s32 oldInterrupts;
+    s32 intStatus;        // interrupts kept off from DVDPause to DVDResume
+    s32 resumeEnabled;    // DVDResume()'s own save
+    void *block;          // DVDPause()'s save at first, then each block popped
+    s32 enabled;          // interrupts as this function found them
     s32 one = 1;
+
     OSDisableInterrupts();
-    lbl_8055D890 = 0;
-    oldInterrupts = OSDisableInterrupts();
+    ResetDone = 0;
+    enabled = OSDisableInterrupts();
+
     __DVDClearWaitingQueue();
-    if (lbl_8055D858 != 0) {
-        lbl_8055D8B8 = (void (*)(s32, void *))cbForPrepareReset;
+
+    if (Canceling != 0) {
+        CancelCallback = (void (*)(s32, void *))cbForPrepareReset;
     } else {
-        if (executing_8055D8C8 != 0)
-            *(s32 *)(executing_8055D8C8 + 0x28) = 0;
-        tempInterrupts = OSDisableInterrupts();
-        active = (void *)OSDisableInterrupts();
-        *(volatile s32 *)&lbl_8055D84C = one;
-        if (executing_8055D8C8 == 0) {
+        if (ExecutingBlock != 0)
+            *(s32 *)(ExecutingBlock + 0x28) = 0;
+
+        // DVDPause(), inlined by the compiler
+        intStatus = OSDisableInterrupts();
+        block = (void *)OSDisableInterrupts();
+        *(volatile s32 *)&PauseFlag = one;
+        if (ExecutingBlock == 0) {
             PausingFlag_8055D850 = one;
         }
-        OSRestoreInterrupts((s32)active);
-        while ((active = (void *)__DVDPopWaitingQueue()) != 0)
-            fn_80039424(active, 0);
-        if (executing_8055D8C8 != 0)
-            fn_80039424((void *)executing_8055D8C8, (void (*)(s32, void *))cbForPrepareReset);
+        OSRestoreInterrupts((s32)block);
+
+        // Nothing queued may survive the reset, so queued blocks get no callback.
+        while ((block = (void *)__DVDPopWaitingQueue()) != 0)
+            DVDCancelAsync(block, 0);
+        if (ExecutingBlock != 0)
+            DVDCancelAsync((void *)ExecutingBlock, (void (*)(s32, void *))cbForPrepareReset);
         else if ((void *)cbForPrepareReset != 0)
-            lbl_8055D890 = one;
-        savedInterrupts = OSDisableInterrupts();
-        *(volatile s32 *)&lbl_8055D84C = 0;
+            ResetDone = one;
+
+        // DVDResume(), inlined; stateReady() is left as a call
+        resumeEnabled = OSDisableInterrupts();
+        *(volatile s32 *)&PauseFlag = 0;
         if (PausingFlag_8055D850 != 0) {
             PausingFlag_8055D850 = 0;
-            fn_80038040();
+            stateReady();
         }
-        OSRestoreInterrupts(savedInterrupts);
-        OSRestoreInterrupts(tempInterrupts);
+        OSRestoreInterrupts(resumeEnabled);
+        OSRestoreInterrupts(intStatus);
     }
-    OSRestoreInterrupts(oldInterrupts);
+    OSRestoreInterrupts(enabled);
     OSEnableInterrupts();
-    while (*(volatile s32 *)&lbl_8055D890 != 1) {}
+    while (*(volatile s32 *)&ResetDone != 1) {}
 }
 
 #pragma small_data off
