@@ -241,11 +241,13 @@ void fn_8000822C(void *arg0) {
 
 void fn_8000822C(void *);
 #pragma dont_inline fn_8000822C
-void fn_8000824C(void *arg0, s32 arg1) {
-    void *temp_r3;
+/* Initialize a record from a looked-up source: reset the destination, then copy
+ * its first field and the field at offset 8 from the looked-up object. */
+void fn_8000824C(void *dest, s32 index) {
+    void *source;
 
-    fn_8000822C(arg0);
-    temp_r3 = (void *)fn_8001285C(arg1);
-    *(u32 *)((u8 *)arg0) = *(u32 *)((u8 *)temp_r3);
-    *(u32 *)((u8 *)arg0 + 4) = *(u32 *)((u8 *)temp_r3 + 8);
+    fn_8000822C(dest);
+    source = (void *)fn_8001285C(index);
+    *(u32 *)((u8 *)dest) = *(u32 *)((u8 *)source);
+    *(u32 *)((u8 *)dest + 4) = *(u32 *)((u8 *)source + 8);
 }
