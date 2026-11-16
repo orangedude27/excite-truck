@@ -1816,9 +1816,10 @@ extern "C" u32 fn_8012D3D0(void) { return 1; }
 
 extern "C" void fn_8012D40C(s32);
 extern "C" void fn_8012D1A8(s32 arg0);
-extern "C" void fn_8012D3D8(s32 arg0) {
-    fn_8012D40C(arg0);
-    fn_8012D1A8(arg0);
+extern "C" void fn_8012D3D8(s32 object) {
+    /* Advance the object: process pending data, then clean up finished state. */
+    fn_8012D40C(object);
+    fn_8012D1A8(object);
 }
 
 #pragma dont_inline on
