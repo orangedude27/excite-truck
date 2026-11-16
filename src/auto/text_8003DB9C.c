@@ -273,11 +273,12 @@ void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
     }
 }
 
-s32 __GXDefaultTlutRegionCallback(unsigned int region) {
-    if (region >= 0x14) {
+/* Return a pointer to the default TLUT region with the given id, or NULL if out of range. */
+s32 __GXDefaultTlutRegionCallback(unsigned int id) {
+    if (id >= 0x14) {
         return 0;
     }
-    return (s32)((char *)__GXData + region * 0x10 + 0x3D8);
+    return (s32)((char *)__GXData + id * 0x10 + 0x3D8);
 }
 
 int __GXShutdown(int shutdown) {
