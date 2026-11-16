@@ -132,5 +132,6 @@ int fn_802E748C(int arg0, void *arg1, int arg2, int arg3) {
 #pragma pop
 void fn_802E7544(void) { fn_802E3990(); }
 
-void fn_802E7548(int arg0) { fn_802E3734(&arg0); }
+/* Close the file/stream handle by value; fn_802E3734 takes the handle by address and invalidates it. */
+void fn_802E7548(int handle) { fn_802E3734(&handle); }
 
