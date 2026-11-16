@@ -1550,6 +1550,9 @@ void fn_80007498(void) {
     fn_80011A50();
 }
 
+/* DSP init config bytes: [0] mode-2 flag, [1] DSP-initialized flag, [2] mode-1 flag. */
+#define gDspInitFlags lbl_8055D340
+
 s32 fn_8000749C(void) {
     s32 result = 0;
     if (lbl_8055D340[1] != 0) {
