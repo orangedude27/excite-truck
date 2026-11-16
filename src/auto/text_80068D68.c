@@ -2005,9 +2005,11 @@ extern s32 SCCheckStatus(void);
 extern s32 BTA_EnableBluetooth(void *);
 extern s32 SCSetBtDeviceInfoArray(void *);
 extern void SCFlushAsync(void *);
-void fn_8006A1BC(u32 r3, u32 r4)
+void fn_8006A1BC(u32 pAlarm, u32 pContext)
 {
-    OSSwitchFiberEx(r3, r4, 0, 0, fn_80069FE8, (u8*)&lbl_80393680 + 0x1000);
+    /* Alarm callback: switch to the fn_80069FE8 fiber, passing through the alarm
+     * and context arguments, using the 0x1000-byte stack at lbl_80393680+0x1000. */
+    OSSwitchFiberEx(pAlarm, pContext, 0, 0, fn_80069FE8, (u8*)&lbl_80393680 + 0x1000);
 }
 
 #pragma use_lmw_stmw off
