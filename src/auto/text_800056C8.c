@@ -1607,11 +1607,13 @@ s32 fn_800075A0(s32 playerIndex) {
     return result;
 }
 
-s32 fn_800075E4(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_800075E4(s32 ptr, s32 count) {
+    /* Return ptr unchanged; if it is non-null and count is positive, free it
+     * through fn_80128668 as a side effect (the pointer is still returned). */
+    if (ptr != 0 && count > 0) {
         fn_80128668();
     }
-    return arg0;
+    return ptr;
 }
 
 s32 fn_80007624(s32 value, s32 count) {
