@@ -539,15 +539,17 @@ extern "C" s32 fn_8013CB44(const char *name, TObj10 *obj) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_8013CB90(void *arg0) {
-    f32 y;
-    f32 scale;
-    f32 x;
+    /* Shift the 2D position at +0x4/+0x8 back by half the velocity at +0x10/+0x14
+     * (lbl_80561498 is 0.5). Declaration order fixes the FPR allocation. */
+    f32 dy;
+    f32 half;
+    f32 dx;
 
-    x = *(f32 *)((u8 *)arg0 + 0x10);
-    scale = lbl_80561498;
-    y = *(f32 *)((u8 *)arg0 + 0x14);
-    *(f32 *)((u8 *)arg0 + 4) = *(f32 *)((u8 *)arg0 + 4) - x * scale;
-    *(f32 *)((u8 *)arg0 + 8) = *(f32 *)((u8 *)arg0 + 8) - y * scale;
+    dx = *(f32 *)((u8 *)arg0 + 0x10);
+    half = lbl_80561498;
+    dy = *(f32 *)((u8 *)arg0 + 0x14);
+    *(f32 *)((u8 *)arg0 + 4) = *(f32 *)((u8 *)arg0 + 4) - dx * half;
+    *(f32 *)((u8 *)arg0 + 8) = *(f32 *)((u8 *)arg0 + 8) - dy * half;
 }
 
 extern "C" f32 lbl_805614A8;
