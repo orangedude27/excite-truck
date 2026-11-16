@@ -617,11 +617,12 @@ extern "C" void fn_80245D74(void *arg0, void *arg1, int arg2) {
 }
 
 #pragma cplusplus reset
-int fn_802461D0(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668((void *)arg0);
+int fn_802461D0(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668((void *)object);
     }
-    return arg0;
+    return object;
 }
 
 void fn_80246210(void) {
