@@ -145,7 +145,9 @@ int fn_802C544C(void **a, void **b) {
     return stricmp(fn_802CAE34(*(char **)left), fn_802CAE34(*(char **)right));
 }
 #pragma scheduling on
-void *fn_802C54B4(int i) { return (void *)(lbl_804C1348 + (i - 1) * 8); }
+/* Return the 8-byte {items, count} record for a 1-based detail level in the
+ * level table at lbl_804C1348 (levels 1..9). */
+void *fn_802C54B4(int level) { return (void *)(lbl_804C1348 + (level - 1) * 8); }
 
 unsigned char fn_802C54CC(unsigned int arg0) { return (unsigned char)(arg0 >> 8); }
 
