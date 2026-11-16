@@ -891,9 +891,11 @@ extern "C" s32 fn_800A5994(void *loader, s32 param, s32 *outHandle) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_800A59CC(s32 arg0) {
-    s32 r = fn_800A71A0((s32 *)arg0);
-    return r & ((-r | r) >> 31);
+extern "C" s32 fn_800A59CC(s32 handle) {
+    /* Release a cache handle: clear its in-use flag and decrement the global
+       in-use count, then pass back the zero status from that operation. */
+    s32 result = fn_800A71A0((s32 *)handle);
+    return result & ((-result | result) >> 31);
 }
 #pragma dont_inline reset
 
@@ -19520,9 +19522,8 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
         virtual void v16(); virtual void v17();
         virtual void call(void *);
     };
-    int zero = 0;
     void *p = *(void **)((u8 *)arg1 + 0x10);
-    lbl_8055DDA0 = zero;
+    lbl_8055DDA0 = 0;
     ((Dispatch *)arg0)->call((u8 *)p + 0x10);
 }
 #pragma scheduling on
