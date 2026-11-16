@@ -8158,6 +8158,7 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
     u16 supervision_timeout;
     u32 (*callback)(void *);
     u32 trace_level;
+    s32 r;
 
     if (bd_addr != NULL)
         addr = bd_addr;
@@ -8166,18 +8167,18 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
 
     entry = lbl_803C0F78 + 0x34;
     i = 0;
-    for (;;) {
-        if (entry[0x119] == 0 || memcmp(entry + 8, addr, 6) != 0) {
-            i++;
-            entry += 0x11C;
-            if (i >= 4) {
-                entry = NULL;
-                break;
-            }
-        } else {
-            break;
-        }
+loop1:
+    if (entry[0x119] != 0) {
+        r = memcmp(entry + 8, addr, 6);
+        if (r != 0) goto next1;
+        goto found1;
     }
+next1:
+    i++;
+    entry += 0x11C;
+    if (i < 4) goto loop1;
+    entry = NULL;
+found1:
 
     buffer = lbl_803C0F78 + 0x624;
     if (entry == NULL)
@@ -8194,18 +8195,18 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
         supervision_timeout = *(u16 *)(entry + 0x10E);
         other = lbl_803C0F78 + 0x34;
         j = 0;
-        for (;;) {
-            if (other[0x119] == 0 || memcmp(other + 8, entry + 8, 6) != 0) {
-                j++;
-                other += 0x11C;
-                if (j >= 4) {
-                    other = NULL;
-                    break;
-                }
-            } else {
-                break;
-            }
+loop2:
+        if (other[0x119] != 0) {
+            r = memcmp(other + 8, entry + 8, 6);
+            if (r != 0) goto next2;
+            goto found2;
         }
+next2:
+        j++;
+        other += 0x11C;
+        if (j < 4) goto loop2;
+        other = NULL;
+found2:
         if (other != NULL) {
             *(u16 *)(other + 0x10E) = supervision_timeout;
             if (other[0x11A] == 0)
@@ -11323,12 +11324,33 @@ void btm_sco_removed(u16 handle, u8 packet_types) {
     s32 state;
     u8 *base = lbl_803C0F78;
     *(volatile u16 *)(base + 0x18F6) = packet_types;
-    state = *(volatile u16 *)(base + 0x185C);
-    if (state >= 2 && state < 7) count = 1;
-    state = *(volatile u16 *)(base + 0x1890);
-    if (state >= 2 && state < 7) count++;
-    state = *(volatile u16 *)(base + 0x18C4);
-    if (state >= 2 && state < 7) count++;
+    switch (*(volatile u16 *)(base + 0x185C)) {
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+        count++;
+        break;
+    }
+    switch (*(volatile u16 *)(base + 0x1890)) {
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+        count++;
+        break;
+    }
+    switch (*(volatile u16 *)(base + 0x18C4)) {
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+        count++;
+        break;
+    }
     if (!((u8)count > 1U)) btm_chg_all_acl_pkt_types(FALSE);
     p = lbl_803C0F78 + 0x1854;
     for (i = 0; i < 3; i++, p += 0x34) {
