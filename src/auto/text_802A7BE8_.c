@@ -53,7 +53,8 @@ extern float lbl_80564900;
 extern float lbl_80564904;
 extern float lbl_80564908;
 extern float lbl_8056490C;
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 void fn_802A7CA8(void *unused, float farg0, int arg1) {
     unsigned int position[3];
     float screen[3];
@@ -63,7 +64,6 @@ void fn_802A7CA8(void *unused, float farg0, int arg1) {
     float opacity;
     float sizeFactor;
     float size;
-    float scaledAlpha;
     unsigned int mask;
 
     object = *(void **)((char *)fn_801EA9A0() + 8);
@@ -81,8 +81,7 @@ void fn_802A7CA8(void *unused, float farg0, int arg1) {
     opacity = (opacity < inverse) ? opacity : inverse;
     opacity = (opacity > lbl_805648FC) ? opacity : lbl_805648FC;
     opacity = lbl_805648F4 + opacity * lbl_805648F8;
-    scaledAlpha = lbl_80564900 * opacity;
-    mask = ((unsigned int)(int)scaledAlpha << 24) | 0x00FFFFFF;
+    mask = ((unsigned int)(int)(lbl_80564900 * opacity) << 24) | 0x00FFFFFF;
 
     inverse = (farg0 - lbl_805648F4) / lbl_805648F8;
     sizeFactor = lbl_805648F4;
@@ -97,6 +96,7 @@ void fn_802A7CA8(void *unused, float farg0, int arg1) {
             lbl_805648FC, size, size);
     }
 }
+#pragma pop
 extern void fn_801E85B4(void);
 extern void *fn_802678C0(void);
 extern f32 lbl_80564910;
@@ -155,16 +155,16 @@ s32 fn_802A7E08(s32 *arg0, s32 *arg1) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802A7EEC(void) {
-    char sp8[8];
     unsigned int position[3];
+    char sp8[8];
     float screen[3];
     int array[8];
+    int *p;
     int j;
     void *truck;
-    int *p;
     int id;
     int i;
-    unsigned int xbits;
+    unsigned long xbits;
     void *obj;
     float inverse;
     float opacity;
@@ -178,13 +178,13 @@ void fn_802A7EEC(void) {
     register f32 c26;
     register f32 c25;
     register f32 c24;
-    register f32 c23;
+    f32 c23;
 
     if (fn_801CF064() != 0) {
         return;
     }
 
-    for (j = 0, p = array; j < fn_801EA994(); j++, p++) {
+    for (j = 0, p = array; j < fn_801EA994(); p++, j++) {
         *p = j;
     }
 
@@ -200,7 +200,7 @@ void fn_802A7EEC(void) {
     c27 = lbl_80564900;
     c28 = lbl_80564920;
 
-    for (i = 0; i < fn_801EA994(); i++, p++) {
+    for (i = 0; i < fn_801EA994(); p++, i++) {
         id = *p;
         if (id == fn_801E866C(-1)) {
             continue;
@@ -240,24 +240,26 @@ void fn_802A7EEC(void) {
         }
 
         if (fn_8027AA48() != 0) {
+            int team;
+            void *own;
             inverse = (dist - c29) / (c28 * c29 - c29);
             opacity = c24;
             opacity = (opacity < inverse) ? opacity : inverse;
             opacity = (opacity > c25) ? opacity : c25;
-            j = *(int *)((char *)truck + 0xAC);
+            team = *(int *)((char *)truck + 0xAC);
             c23 = c24 + opacity * c26;
-            truck = *(void **)((char *)((void *(*)(int))fn_801EA9A0)(fn_801E866C(-1)) + 0xAC);
+            own = *(void **)((char *)((void *(*)(int))fn_801EA9A0)(fn_801E866C(-1)) + 0xAC);
 
-            fn_8027ABF8((s32)truck);
+            fn_8027ABF8((s32)own);
             if (fn_8027AC50() != 0) {
-                fn_8027ABF8((s32)truck);
-                if (j == fn_8027AC64()) {
+                fn_8027ABF8((s32)own);
+                if (team == fn_8027AC64()) {
                     fn_802A7CA8((void *)id, c23, 3);
                 }
             } else {
-                fn_8027ABF8((s32)truck);
+                fn_8027ABF8((s32)own);
                 if (fn_8027AC80() != 0) {
-                    if (j == *(int *)((char *)fn_8027ABF8((s32)truck) + 0xE8)) {
+                    if (team == *(int *)((char *)fn_8027ABF8((s32)own) + 0xE8)) {
                         fn_802A7CA8((void *)id, c23, 2);
                     }
                 }
