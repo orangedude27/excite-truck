@@ -1899,9 +1899,10 @@ u8 fn_80007C64(void *arg0) {
     return ((u8 *)arg0)[4];
 }
 
-void fn_80007C6C(void *arg0) {
+void fn_80007C6C(void *obj) {
+    // Raise the flag at byte 5 of the object when the mode query reports zero.
     if (fn_801B8848() == 0) {
-        ((u8 *)arg0)[5] = 1;
+        ((u8 *)obj)[5] = 1;
     }
 }
 
