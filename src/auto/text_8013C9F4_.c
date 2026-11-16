@@ -9,13 +9,14 @@ extern char lbl_8032C500[];
 extern long fn_80128668(void);
 
 #pragma scheduling invalid_target
+/* Allocate a 4-byte subtask-manager object and install its vtable pointer when arg0 is 0. */
 void fn_8013C9F4(long arg0) {
-    void **temp_r3;
+    void **object;
 
     if (arg0 == 0) {
-        temp_r3 = fn_801284F8(4, (void *)lbl_8032C4F0);
-        if (temp_r3 != (void **)0) {
-            *temp_r3 = (void *)lbl_8032C500;
+        object = fn_801284F8(4, (void *)lbl_8032C4F0);
+        if (object != (void **)0) {
+            *object = (void *)lbl_8032C500;
         }
     }
 }
