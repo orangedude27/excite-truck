@@ -392,8 +392,10 @@ void *fn_8023A83C(void *arg0, s32 arg1) {
 }
 #pragma pop
 s32 fn_8023A8B0(void) {
-    register s32 *obj = (s32 *)lbl_8055F110;
-    if (obj != 0 && *((unsigned char *)obj + 0x18) != 0) return 1;
+    /* PSSystem state query: true while the global system object exists and its
+       active/ready flag (byte +0x18) is set. Cleared when the system is torn down. */
+    register s32 *system = (s32 *)lbl_8055F110;
+    if (system != 0 && *((unsigned char *)system + 0x18) != 0) return 1;
     return 0;
 }
 
