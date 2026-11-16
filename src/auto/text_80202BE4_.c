@@ -154,7 +154,7 @@ void fn_80202BFC(s32 arg0) {
 #pragma processor reset
 
 #pragma push
-#pragma paired_single off
+#pragma processor 750
 void fn_80202D50(f32 *arg0) {
     f32 mag, inv, y, ny, lo, t, th;
     s32 i, n, r;
@@ -212,7 +212,7 @@ void fn_80202F58(void *arg0, void *arg1, void *arg2) {
     f32 temp_f3, temp_f3_10, temp_f3_2, temp_f3_3, temp_f3_4, temp_f3_5, temp_f3_6, temp_f3_7, temp_f3_8, temp_f3_9;
     f32 temp_f4, temp_f4_2, temp_f4_3, temp_f5, temp_f5_2, temp_f6, temp_f6_2, temp_f7;
     f32 var_f1, var_f2;
-    f32 temp_f29;
+    f64 temp_f29;
     void *temp_r3;
     f32 scale, zero, one;
     u32 copy0, copy1;
@@ -507,7 +507,6 @@ void fn_80203380(void *argp) {
     fn_802C8D74();
 }
 
-#pragma push
 #pragma processor 750
 #pragma opt_strength_reduction off
 void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
@@ -523,7 +522,6 @@ void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
     f32 inv;
     f32 den;
     f32 a, b, c;
-
     if (arg0 != lbl_8055ED1C) {
         lbl_8055ED1C = arg0;
         fn_802C8D74();
@@ -590,7 +588,7 @@ void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
         fn_802C8E48();
     }
 }
-#pragma pop
+#pragma opt_strength_reduction reset
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
     struct lbl_80488B88_t* dest;
     s32 w0;
@@ -642,6 +640,7 @@ void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
     f32 var_f1;
     f32 var_f2;
     f32 var_f3;
+
     if (fn_80202BE4() == 0) {
         fn_802D3050(1);
         fn_802D306C(0x5A);
@@ -740,6 +739,7 @@ void fn_80203C50(s32 arg0) {
     lbl_8055ED08 = 1;
 }
 #pragma pop
+/* Release a resource handle slot if it is valid and mark it as unused (-2). */
 void fn_80203D84(s32* arg0) {
     s32 temp_r0;
 
