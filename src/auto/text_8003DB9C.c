@@ -3289,16 +3289,18 @@ void GXSetDispCopyFrame2Field(s32 value) {
     gx[0x24C / 4] &= 0xFFFFCFFF;
 }
 
-void GXSetCopyClamp(s32 value) {
+/* GXCopyClamp bitmask: bit 0 (top) and bit 1 (bottom) are copied into both
+ * the display-copy (cpDisp) and texture-copy (cpTex) control registers. */
+void GXSetCopyClamp(s32 clamp) {
     u32 reg;
-    reg = __GXData[0x23C / 4];
-    reg = __rlwimi(reg, value, 0, 31, 31);
-    reg = __rlwimi(reg, value, 0, 30, 30);
-    __GXData[0x23C / 4] = reg;
-    reg = __GXData[0x24C / 4];
-    reg = __rlwimi(reg, value, 0, 31, 31);
-    reg = __rlwimi(reg, value, 0, 30, 30);
-    __GXData[0x24C / 4] = reg;
+    reg = __GXData[GX_CP_DISP / 4];
+    reg = __rlwimi(reg, clamp, 0, 31, 31);
+    reg = __rlwimi(reg, clamp, 0, 30, 30);
+    __GXData[GX_CP_DISP / 4] = reg;
+    reg = __GXData[GX_CP_TEX / 4];
+    reg = __rlwimi(reg, clamp, 0, 31, 31);
+    reg = __rlwimi(reg, clamp, 0, 30, 30);
+    __GXData[GX_CP_TEX / 4] = reg;
 }
 
 /* Display-copy Y scale (BP register 0x4D) is a 9-bit 8.8 fixed-point value:
