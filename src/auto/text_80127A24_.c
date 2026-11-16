@@ -34,6 +34,7 @@ void fn_80127A84(int *outX, int *outY, int *outButtons) {
 }
 
 int fn_80127AA0(void) {
+    /* Reports whether the 16-entry alarm record ring is empty (read index lbl_8055DF50 == write index lbl_8055DF54). */
     return lbl_8055DF50 == lbl_8055DF54;
 }
 
