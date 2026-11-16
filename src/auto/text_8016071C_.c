@@ -184,6 +184,7 @@ int fn_801609C4(int value) {
     return 4;
 }
 
+/* Return the rank held by the active stat handler (offset 0x14), or 2 when none is bound. */
 int fn_80160A74(void) {
     if (lbl_8055E2BC != 0) {
         return *(int *)((char *)lbl_8055E2BC + 0x14);
