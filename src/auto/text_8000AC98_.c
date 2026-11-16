@@ -129,6 +129,7 @@ void fn_8000ADE0(int arg0) {
 }
 
 int fn_80129374(int, int);
+/* Apply the given setting to both channels 0 and 1 via fn_80129374. */
 void fn_8000AE78(int arg0) {
     int i = 0;
     do {
