@@ -16407,13 +16407,15 @@ s32 btsnd_hcic_reset_800857CC(void) {
     return 1;
 }
 
-void fn_80085828(void *arg0) {
-    ((u16 *)((u8 *)arg0 + 2))[0] = 3;
-    ((u16 *)((u8 *)arg0 + 4))[0] = 0;
-    ((u8 *)arg0)[8] = 5;
-    ((u8 *)arg0)[9] = 0x10;
-    ((u8 *)arg0)[10] = 0;
-    btu_hcif_send_cmd(arg0);
+void fn_80085828(void *pCmdBuf) {
+    /* Build and send HCI Read_Buffer_Size (opcode 0x1005, no parameters) in a
+       caller-supplied BT_HDR buffer. */
+    ((u16 *)((u8 *)pCmdBuf + 2))[0] = 3;
+    ((u16 *)((u8 *)pCmdBuf + 4))[0] = 0;
+    ((u8 *)pCmdBuf)[8] = 5;
+    ((u8 *)pCmdBuf)[9] = 0x10;
+    ((u8 *)pCmdBuf)[10] = 0;
+    btu_hcif_send_cmd(pCmdBuf);
 }
 
 /* Builds and sends an HCI command buffer (opcode 0x1009, no parameters); returns 1 on success, 0 on allocation failure. */
