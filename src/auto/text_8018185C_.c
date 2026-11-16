@@ -250,7 +250,15 @@ float fn_80181A48(void *arg0) {
  }
  return *((float *)((unsigned char *)arg0 + 0x2D0)) + p[7];
 }
-float fn_80181A94(void) { if (lbl_8055E4F4) return lbl_80434950[14]; return lbl_80434908[2]; }
+/* Return a truck tuning value from the alternate parameter table when the LFO mode flag is set, otherwise from the normal table. */
+float fn_80181A94(void) {
+#define alternateParams lbl_80434950
+#define normalParams    lbl_80434908
+    if (lbl_8055E4F4) return alternateParams[14];
+    return normalParams[2];
+#undef normalParams
+#undef alternateParams
+}
 
 /* Return a truck tuning value from the alternate parameter table when the LFO mode flag is set, otherwise from the normal table. */
 float fn_80181AC0(void) {
