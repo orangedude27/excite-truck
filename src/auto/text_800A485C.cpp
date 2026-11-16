@@ -11350,9 +11350,10 @@ extern "C" s32 fn_800B73CC(s32 arg0, s32 arg1) {
     }
 }
 
-extern "C" s32 fn_800B73E4(s32 arg0) {
-    if (arg0 == 0) return 0;
-    if (arg0 == 1) return 1;
+/* Normalize a status/FRESULT code: 0 and 1 pass through, any other value becomes -1. */
+extern "C" s32 fn_800B73E4(s32 status) {
+    if (status == 0) return 0;
+    if (status == 1) return 1;
     return -1;
 }
 
