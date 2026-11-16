@@ -8,6 +8,7 @@ extern int lbl_8055D620;
 extern int lbl_8055D628;
 extern char lbl_8035B758[];
 #pragma scheduling invalid_target
+/* Initialize this subsystem's state, set its default token value, and register its update callback in the global task table. */
 void fn_800218FC(void) {
     fn_8000D838(&lbl_8055D620);
     lbl_8055D628 = 0x7F000000;
