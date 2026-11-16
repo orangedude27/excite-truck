@@ -1081,11 +1081,13 @@ extern "C" void *fn_801464DC(void *obj, s32 shouldDelete) {
     return obj;
 }
 
-extern "C" void fn_80146584(void *arg0) {
-    void *buf = *(void **)arg0;
-    if (buf != NULL) {
-        fn_80128668(buf);
-        *(void **)arg0 = NULL;
+extern "C" void fn_80146584(void *object) {
+    /* Free the owned buffer at offset 0 and clear the pointer. */
+    void *buffer = *(void **)object;
+
+    if (buffer != NULL) {
+        fn_80128668(buffer);
+        *(void **)object = NULL;
     }
 }
 extern "C" void fn_801465C8(void *slot) {
