@@ -139,6 +139,8 @@ void fn_801E2100(void *solid, void *query) {
 void *fn_801A4548(void *);
 extern void *lbl_80339890[];
 void fn_801E2188(void) {
+    /* Static initializer: load the "track.sol" collision-group resource and cache
+     * the resulting pointer as the primary collision group in lbl_8055EA3C. */
     lbl_8055EA3C = fn_801A4548(&lbl_80339890[0]);
 }
 
