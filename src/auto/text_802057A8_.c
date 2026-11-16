@@ -311,9 +311,11 @@ void fn_802061F8(void) {
     lbl_8055ED6C = fn_802CAC28(lbl_8033BC40, 0);
 }
 
+typedef void (*ReleaseTextureFn)(int);
 void fn_80206228(void) {
+    /* Release the "mpov_car.tex" texture cached by fn_802061F8, if any (-2 means none loaded). */
     if (lbl_8055ED6C != -2) {
-        ((void (*)(int))fn_802CAC54)(lbl_8055ED6C);
+        ((ReleaseTextureFn)fn_802CAC54)(lbl_8055ED6C);
         lbl_8055ED6C = -2;
     }
 }
