@@ -975,12 +975,13 @@ void fn_802E61EC(void *voice, float pan) {
     *(float *)((char *)voice + 0xC) = PanCenter;
 }
 
-void fn_802E620C(void *arg0, float farg0) {
-    if ((int)lbl_8055FF8C == 2) {
-        *(float *)((char *)arg0 + 0x14) = farg0;
+void fn_802E620C(void *voice, float surroundPan) {
+    /* Set a voice's surround pan, forcing it to the default (1.0) unless the output mode is surround (2). */
+    if ((int)SoundOutputMode == 2) {
+        *(float *)((char *)voice + 0x14) = surroundPan;
         return;
     }
-    *(float *)((char *)arg0 + 0x14) = lbl_80565128;
+    *(float *)((char *)voice + 0x14) = SurroundPanDefault;
 }
 
 void fn_802E622C(void *arg0, float farg0) { *(float *)((char *)arg0 + 0x10) = farg0; }
