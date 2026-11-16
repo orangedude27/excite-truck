@@ -408,9 +408,10 @@ extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_801769EC(void);
 
 #pragma scheduling invalid_target
+/* Return true while a physics fade is in progress (fading in or out). */
 int fn_80176F9C(void) {
-    s32 v = *(s32 *)(lbl_80430558 + 0xC);
-    return v != 0 && v != 3;
+    s32 mode = ((FadeState *)sFadeState)->mode;
+    return mode != FADE_MODE_IDLE && mode != FADE_MODE_DONE;
 }
 #pragma scheduling on
 /* Request the AX DSP fade/init transition: if already in state 3 run the completion
