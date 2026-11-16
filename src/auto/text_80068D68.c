@@ -21038,14 +21038,15 @@ void l2cu_process_our_cfg_req(void *p_ccb, void *p_cfg) {
     }
 }
 
-void fn_8008EF90(void *arg0, void *arg1) {
-    struct Pair { u32 first; u32 second; };
-    u8 *dst = (u8 *)arg0;
-    u8 *src = (u8 *)arg1;
-    if (src[6] != 0) {
-        *(struct Pair *)(dst + 0x40) = *(struct Pair *)(src + 8);
-        *(struct Pair *)(dst + 0x48) = *(struct Pair *)(src + 0x10);
-        *(struct Pair *)(dst + 0x50) = *(struct Pair *)(src + 0x18);
+/* Save the negotiated L2CAP QoS into the CCB's "our config" when the config reply carries a flow spec: copy three 32-bit words from cfg+8 into ccb+0x40. */
+void fn_8008EF90(void *p_ccb, void *p_cfg) {
+    struct FlowSpecPair { u32 first, second; };
+    u8 *ccb = (u8 *)p_ccb;
+    u8 *cfg = (u8 *)p_cfg;
+    if (cfg[6] != 0) {                      /* tL2CAP_CFG_INFO.qos_present */
+        *(struct FlowSpecPair *)(ccb + 0x40) = *(struct FlowSpecPair *)(cfg + 8);
+        *(struct FlowSpecPair *)(ccb + 0x48) = *(struct FlowSpecPair *)(cfg + 0x10);
+        *(struct FlowSpecPair *)(ccb + 0x50) = *(struct FlowSpecPair *)(cfg + 0x18);
     }
 }
 
