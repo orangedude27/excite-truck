@@ -1045,6 +1045,7 @@ extern f32 lbl_80563E3C;
 extern f32 lbl_80563E38;
 extern f32 lbl_80563E38;
 extern s32 lbl_8049A208[];
+/* Initialize the global 4-float response/shake profile to (8, 0, 0, 80): two Y amplitudes and a range. */
 void fn_8027045C(void) {
     ((f32 *)&lbl_8049A208)[0] = lbl_80563ED8;
     ((f32 *)&lbl_8049A208)[1] = lbl_80563E78;
