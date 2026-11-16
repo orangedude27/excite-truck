@@ -409,11 +409,10 @@ void fn_8000F884(void) {
     f32 c;
     u8 *p;
     s32 n;
-
     ((void (*)(s32))fn_8000F188)((s32)(base + 0x1D0));
     ((void (*)(s32, s32))fn_8000F2A8)((s32)(base + 0x1E0), (s32)(base + 0x1F0));
     ((void (*)(s32))fn_8000F1E0)((s32)(base + 0x200));
-    ((void (*)(s32, s32, s32))fn_8000F330)((s32)(base + 0x20C), (s32)(base + 0x21C), (s32)(base + 0x21C));
+    ((void (*)(s32, s32, s32))fn_8000F330)((s32)(base + 0x20C), (s32)(base + 0x21C), (s32)(base + 0x21c));
     ((void (*)(s32))fn_8000F440)((s32)(base + 0x228));
     ((void (*)(s32))fn_8000F3E8)((s32)(base + 0x238));
     ((void (*)(s32))fn_8000F498)((s32)(base + 0x244));
@@ -1389,10 +1388,19 @@ void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
 #pragma pop
 #pragma scheduling on
 #pragma use_lmw_stmw on
-void fn_8001123C(s32 arg0) {
-    fn_8000E3B4(arg0);
-    fn_8000E874(arg0);
-    fn_8000EF74(arg0);
+/* RealName: HudList_DrawAll. Draws each of the three 0x40-byte-entry HUD lists
+   (lbl_80350F88, lbl_80351214, lbl_803514A0) for the given player; a negative
+   index selects the shared default layout (fn_80011E34/54/70). */
+void fn_8001123C(s32 playerIndex) {
+#define DrawHudList_0 fn_8000E3B4 /* renders the lbl_80350F88 list */
+#define DrawHudList_1 fn_8000E874 /* renders the lbl_80351214 list */
+#define DrawHudList_2 fn_8000EF74 /* renders the lbl_803514A0 list */
+    DrawHudList_0(playerIndex);
+    DrawHudList_1(playerIndex);
+    DrawHudList_2(playerIndex);
+#undef DrawHudList_0
+#undef DrawHudList_1
+#undef DrawHudList_2
 }
 
 void fn_80011278(s32 arg0) {
