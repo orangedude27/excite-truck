@@ -925,11 +925,14 @@ void fn_8016CE94(void *arg0, f32 arg1) {
 extern f32 lbl_80561980;
 extern char lbl_8033072C[];
 extern char lbl_803308A0[];
-void *fn_8016CEC0(void *arg0, s32 arg1) {
-    *(s32 *)((u8 *)arg0 + 4) = arg1;
+/* Initialize one 16-byte ring-set entry: store its index, run the allocator
+ * bookkeeping hook, reset its float value (lbl_80561980 is 0.0f) at +0xC,
+ * then return the entry. */
+void *fn_8016CEC0(void *entry, s32 index) {
+    *(s32 *)((u8 *)entry + 4) = index;
     fn_8000DA10();
-    *(f32 *)((u8 *)arg0 + 0xC) = lbl_80561980;
-    return arg0;
+    *(f32 *)((u8 *)entry + 0xC) = lbl_80561980;
+    return entry;
 }
 
 void fn_8016CEFC(void *arg0) {
