@@ -689,11 +689,11 @@ void *fn_80237968(void *arg0, int freeFlag) {
 
 #pragma scheduling on
 void fn_802379EC(void *arg0) {
-    int minus = -1;
-    int zero = 0;
-    *(int *)((char *)arg0 + 0x20) = minus;
-    *(int *)((char *)arg0 + 0x28) = zero;
-    *(int *)((char *)arg0 + 0x24) = zero;
+    /* Array-element constructor: set a TrailEntry's group value to -1 and clear its key array and count. */
+    TrailEntry *entry = (TrailEntry *)arg0;
+    entry->field20 = -1;
+    entry->keyCount = 0;
+    entry->keys = 0;
 }
 
 void fn_80237A04(void) {
