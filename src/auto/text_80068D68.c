@@ -9941,19 +9941,22 @@ tBTM_INQ_INFO *BTM_InqDbNext(tBTM_INQ_INFO *p_cur) {
 }
 
 tBTM_STATUS BTM_ClearInqDb(BD_ADDR p_bda) {
+    /* Clear inquiry-database entries: all of them when p_bda is NULL, otherwise
+     * just the one matching that Bluetooth address. Refuse while an inquiry is
+     * active, then notify the registered change callback for each entry cleared. */
     u16 i;
-    u8 *entry;
-    tBTM_INQ_DB_CHANGE_CB *callback;
+    u8 *p_entry;
+    tBTM_INQ_DB_CHANGE_CB *p_callback;
 
     if (lbl_803C0F78[0x1848] != 0 || lbl_803C0F78[0x16AE] != 0 || lbl_803C0F78[0x1844] != 0)
         return BTM_BUSY;
 
-    for (i = 0, entry = lbl_803C0F78 + 0x16E4; i < 0xC; i++, entry += 0x1C) {
-        if (entry[0x1A] != 0 && (p_bda == NULL || memcmp(entry + 0xA, p_bda, BD_ADDR_LEN) == 0)) {
-            entry[0x1A] = FALSE;
-            callback = *(tBTM_INQ_DB_CHANGE_CB **)(lbl_803C0F78 + 0x16BC);
-            if (callback != NULL)
-                callback(entry + 8, FALSE);
+    for (i = 0, p_entry = lbl_803C0F78 + 0x16E4; i < 0xC; i++, p_entry += 0x1C) {
+        if (p_entry[0x1A] != 0 && (p_bda == NULL || memcmp(p_entry + 0xA, p_bda, BD_ADDR_LEN) == 0)) {
+            p_entry[0x1A] = FALSE;
+            p_callback = *(tBTM_INQ_DB_CHANGE_CB **)(lbl_803C0F78 + 0x16BC);
+            if (p_callback != NULL)
+                p_callback(p_entry + 8, FALSE);
         }
     }
     return BTM_SUCCESS;
