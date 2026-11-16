@@ -325,8 +325,9 @@ extern "C" void fn_801B848C(void *obj) {
     ((Dummy_801B8318 *)lbl_8055E744)->f3(obj);
 }
 #pragma cplusplus on
-extern "C" void fn_801B84A4(void *arg0) {
-    ((Dummy_801B8318 *)lbl_8055E744)->f17(arg0);
+extern "C" void fn_801B84A4(void *playerIndex) {
+    /* Forward the player index to the arena-event master (lbl_8055E744) via its f17 vtable slot. */
+    ((Dummy_801B8318 *)lbl_8055E744)->f17(playerIndex);
 }
 #pragma cplusplus off
 void fn_801B84BC(void) {
