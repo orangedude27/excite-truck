@@ -906,8 +906,9 @@ s32 fn_8001084C(s32 arg0, s32 arg1) {
     return (s32)(((f32)arg0 * ((f32 (*)(s32, s32, f32))fn_8023293C)(lbl_8055D490, arg1, s3)) / (f32)lbl_80558A90);
 }
 #pragma pop
-f32 fn_800108C8(f32 farg0, s32 arg0) {
-    return (farg0 * ((f32 (*)(s32, s32, f32))fn_8023293C)(lbl_8055D490, arg0, lbl_80560264)) * lbl_805602C8;
+/* Measures text width with the default UI font, scaled by the given factor and the UI text scale. */
+f32 fn_800108C8(f32 scale, s32 text) {
+    return (scale * ((f32 (*)(s32, s32, f32))fn_8023293C)(lbl_8055D490, text, lbl_80560264)) * lbl_805602C8;
 }
 #pragma pop
 extern s32 lbl_80558A90;
