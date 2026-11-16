@@ -570,6 +570,7 @@ void fn_80018794(void) {
 }
 
 void fn_800187B8(const char* source) {
+    /* Copy the "force_chassis" default string into the 64-byte DAV default buffer, forcing a NUL if it fills. */
     int remaining = 0x40;
     volatile char* destination = (volatile char*)lbl_80357DC0;
     while ((*destination++ = *source++) != '\0') {
