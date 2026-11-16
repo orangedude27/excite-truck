@@ -268,8 +268,8 @@ extern void fn_80131318(void);
 extern void fn_80010188(int, int, int, ...);
 typedef struct { float m[12]; } Mtx48;
 typedef struct { int w[8]; } Blk32;
-typedef struct { int w[3]; } Blk12;
-typedef struct { Blk32 a; int b; Blk12 c; } Cam48;
+typedef struct { int x, y; } Pair2;
+typedef struct { Blk32 a; int b; Pair2 c; int d; } Cam48;
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
