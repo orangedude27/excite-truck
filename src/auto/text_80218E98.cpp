@@ -6586,6 +6586,12 @@ extern "C" void *fn_80223CF0(void *widget, void *descriptor, s32 movieName, s32 
     return widget;
 }
 #pragma pop
+#undef FLOAT_ZERO
+#undef STRETCH_4_TO_3
+#undef Screen_height
+#undef Screen_width
+#undef Screen_toCentre
+#undef IsWidescreen
 /* MovieWidget deleting destructor: restore MovieWidget's vtable, destroy any
  * active movie handle at +0x254, run the base Widget destructor, and free the
  * widget when deletingFlag > 0. */
