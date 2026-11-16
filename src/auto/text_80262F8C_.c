@@ -236,15 +236,18 @@ done:
     return 0;
 }
 
-void fn_8026392C(void *arg0) {
-    s32 value;
-    value = lbl_8055F434;
-    if (value == *(s32 *)((u8 *)arg0 + 0x20)) {
-        *(s32 *)((u8 *)arg0 + 0x1C) = 1;
-        *((u8 *)arg0 + 0x29) = 1;
+/* Mirror the current menu page selection into a menu item's two flags: set the
+ * s32 at +0x1C and the byte at +0x29 when the item's page id (+0x20) matches
+ * lbl_8055F434 (the current page index), clear them otherwise. */
+void fn_8026392C(void *item) {
+    s32 pageIndex;
+    pageIndex = lbl_8055F434;
+    if (pageIndex == *(s32 *)((u8 *)item + 0x20)) {
+        *(s32 *)((u8 *)item + 0x1C) = 1;
+        *((u8 *)item + 0x29) = 1;
     } else {
-        *(s32 *)((u8 *)arg0 + 0x1C) = 0;
-        *((u8 *)arg0 + 0x29) = 0;
+        *(s32 *)((u8 *)item + 0x1C) = 0;
+        *((u8 *)item + 0x29) = 0;
     }
 }
 
