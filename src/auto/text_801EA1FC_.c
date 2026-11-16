@@ -86,6 +86,7 @@ void fn_801EA390(void) {
 }
 
 void fn_801EA394(void) {
+    /* Set the UI fill color: opaque black when the flag at lbl_8055EB60+4 is set, otherwise opaque light lavender (0xFFC9C9EA). */
     if (lbl_8055EB60[4] != 0)
         fn_802C86E8(0xFF000000);
     else
