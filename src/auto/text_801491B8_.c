@@ -626,6 +626,7 @@ void fn_80149D64(void *state, void *sound, s32 arg2) {
     *(int *)((char *)state + 0x30) = fn_801609C4(*(int *)((char *)state + 0x24));
 }
 
+#define SOUND_DBG_ZERO lbl_80561648 /* 0.0f, the shared sound-debug zero constant */
 f32 fn_80149F00(void *arg0, void *arg1) {
     f32 f0;
     f32 f2;
@@ -2340,13 +2341,12 @@ static inline void fn_80150BDC_PlaceEffect(void *e, f32 one, f32 zero) {
 #pragma dont_inline on
 void fn_80150BDC(void *arg0) {
     char *b = (char *)arg0;
-    f32 f31 = lbl_80561648, f29 = lbl_80561650;
-    f32 f27 = lbl_80561638, f28 = lbl_805616E0;
-    f32 f30 = lbl_8056164C;
+    f32 f29 = lbl_80561650, f30 = lbl_8056164C, f31 = lbl_80561648;
+    f32 f28 = lbl_805616E0, f27 = lbl_80561638;
     s32 r30, r31, played;
     void *r25, *r23, *r26;
     f32 f0, f1, f2, f25, f26;
-    s32 tmp;
+    s32 tmpv;
 
     for (r30 = 0, r31 = 0; r30 < *(s32 *)(b + 0x18); r30++, r31 += 4) {
         r25 = *(void **)(*(char **)(b + 0x14) + r31);
@@ -2427,8 +2427,8 @@ void fn_80150BDC(void *arg0) {
                         *(s8 *)(r31p + 0x8F8) = 1;
                     }
                     if (fn_800167F4() == 1) { fn_8017960C(r29); fn_80167840(); }
-                    tmp = fn_8016A30C(r29);
-                    if (tmp > 0) fn_8014E61C(r29, 5, (f32)tmp);
+                    tmpv = fn_8016A30C(r29);
+                    if (tmpv > 0) fn_8014E61C(r29, 5, (f32)tmpv);
                 }
             } else if (*(s32 *)((char *)fn_8017960C(r29) + 0x1F0) == 0x50) {
                 char *r24 = b + 0x454, *r23p = b;
