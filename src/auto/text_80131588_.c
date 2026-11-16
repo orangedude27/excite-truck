@@ -109,10 +109,12 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
     return r;
 }
 #pragma use_lmw_stmw reset
-unsigned char* fn_801317F0(void* arg0) {
-    unsigned char* p = *(unsigned char**)((char*)arg0 + 4);
-    if ((int)*p == 0x24) return p + 6;
-    return p;
+unsigned char* fn_801317F0(void* valueNode) {
+    /* Value-file lookup: return the string held at +0x04 of a value node; when it
+     * begins with a '$' reference marker, skip that 6-byte prefix. */
+    unsigned char* text = *(unsigned char**)((char*)valueNode + 4);
+    if ((int)*text == 0x24) return text + 6;
+    return text;
 }
 
 void fn_80131808(int arg0) { fn_80131588((void *)arg0, 0); }
@@ -719,9 +721,11 @@ extern "C" Vec2 fn_801324E0(void *node, s32 index) {
 void fn_80132584(void *arg0, void *arg1, const char *arg2) {
     typedef struct { float x, y, z; } Vec3;
     Vec3 v1, v2, v3, v4;
-
-    if (fn_8012F9E8(arg0, 0x30, ((const char *(**)(void *, const char *))(*(void **)arg1))[5](arg1, arg2)) != 0) {
-        u8 *p = (u8 *)arg0;
+    void *obj = arg1;
+    void *out = arg0;
+    const char *value = ((const char *(**)(void *, const char *))(*(void **)obj))[5](obj, arg2);
+    if (fn_8012F9E8(out, 0x30, value) != 0) {
+        u8 *p = (u8 *)out;
         int i;
         for (i = 0; i < 2; i++, p += 0x18) {
             u8 t;
@@ -740,26 +744,22 @@ void fn_80132584(void *arg0, void *arg1, const char *arg2) {
         }
         return;
     }
-
-    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v1, arg1, lbl_80559B48);
-    ((float *)arg0)[0] = v1.x;
-    ((float *)arg0)[1] = v1.y;
-    ((float *)arg0)[2] = v1.z;
-
-    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v2, arg1, lbl_80559B40);
-    ((float *)arg0)[3] = v2.x;
-    ((float *)arg0)[4] = v2.y;
-    ((float *)arg0)[5] = v2.z;
-
-    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v3, arg1, lbl_80559B38);
-    ((float *)arg0)[6] = v3.x;
-    ((float *)arg0)[7] = v3.y;
-    ((float *)arg0)[8] = v3.z;
-
-    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v4, arg1, lbl_80559B2C);
-    ((float *)arg0)[9] = v4.x;
-    ((float *)arg0)[10] = v4.y;
-    ((float *)arg0)[11] = v4.z;
+    ((void (**)(Vec3 *, void *, const char *))*(void **)obj)[13](&v1, obj, lbl_80559B48);
+    ((float *)out)[0] = v1.x;
+    ((float *)out)[1] = v1.y;
+    ((float *)out)[2] = v1.z;
+    ((void (**)(Vec3 *, void *, const char *))*(void **)obj)[13](&v2, obj, lbl_80559B40);
+    ((float *)out)[3] = v2.x;
+    ((float *)out)[4] = v2.y;
+    ((float *)out)[5] = v2.z;
+    ((void (**)(Vec3 *, void *, const char *))*(void **)obj)[13](&v3, obj, lbl_80559B38);
+    ((float *)out)[6] = v3.x;
+    ((float *)out)[7] = v3.y;
+    ((float *)out)[8] = v3.z;
+    ((void (**)(Vec3 *, void *, const char *))*(void **)obj)[13](&v4, obj, lbl_80559B2C);
+    ((float *)out)[9] = v4.x;
+    ((float *)out)[10] = v4.y;
+    ((float *)out)[11] = v4.z;
 }
 #pragma cplusplus on
 extern "C" float fn_8013278C(void *arg0, s32 arg1) {
