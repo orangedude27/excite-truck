@@ -324,7 +324,6 @@ void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
     float temp_f24, temp_f25, temp_f26, temp_f27;
     float temp_f28, temp_f29, temp_f30, temp_f31;
     float dx, dy, dz, a0, a1, a2, b0, b1, b2, c0, c1, c2;
-
     ((FV3 *)local.values)[0] = ((const FV3 *)arg2)[0];
     ((FV3 *)local.values)[1] = ((const FV3 *)arg2)[1];
     ((FV3 *)local.values)[2] = ((const FV3 *)arg2)[2];
@@ -337,7 +336,6 @@ void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
     localPtr[6] = t5;
     localPtr[5] = localPtr[7];
     localPtr[7] = t4;
-
     if (arg0 == arg1 || arg0 == local.values) {
         temp_f24 = fn_80144514(localPtr[0], arg1[0], localPtr[3], arg1[1], localPtr[6], arg1[2]);
         temp_f25 = fn_80144514(localPtr[0], arg1[3], localPtr[3], arg1[4], localPtr[6], arg1[5]);
@@ -368,18 +366,17 @@ void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
         arg0[5] = fn_80144514(localPtr[2], arg1[3], localPtr[5], arg1[4], localPtr[8], arg1[5]);
         arg0[8] = fn_80144514(localPtr[2], arg1[6], localPtr[5], arg1[7], localPtr[8], arg1[8]);
     }
-    a0 = arg1[9]; a1 = arg2[9]; b1 = arg2[10];
-    dx = a0 - a1;
+    dx = arg1[9] - arg2[9];
     arg0[9] = dx;
     a2 = arg2[0]; b0 = arg2[3]; c0 = arg2[6];
-    dy = arg1[10] - b1;
+    dy = arg1[10] - arg2[10];
     arg0[10] = dy;
     b1 = arg2[4]; a1 = arg2[1]; c1 = arg2[7];
     a0 = arg2[2]; b2 = arg2[5]; c2 = arg2[8];
     dz = arg1[11] - arg2[11];
-    a0 = dz * a0 + (dy * a1 + dx * a2);
-    b2 = dz * b2 + (dy * b1 + dx * b0);
-    c2 = dz * c2 + (dy * c1 + dx * c0);
+    a0 = dx * a2 + dy * a1 + dz * a0;
+    b2 = dx * b0 + dy * b1 + dz * b2;
+    c2 = dx * c0 + dy * c1 + dz * c2;
     arg0[9] = a0; arg0[10] = b2; arg0[11] = c2;
 }
 #pragma pop
@@ -477,13 +474,14 @@ void fn_801BFD34(float *out, float *in, const float *m) {
     }
 }
 
-void fn_801BFE7C(float *arg0, float *arg1, float *arg2) {
-    float x = arg1[0] + arg2[0];
-    float y = arg1[1] + arg2[1];
-    float z = arg1[2] + arg2[2];
-    arg0[0] = x;
-    arg0[1] = y;
-    arg0[2] = z;
+/* Add two 3D vectors component-wise and store the result in out. */
+void fn_801BFE7C(float *out, float *a, float *b) {
+    float x = a[0] + b[0];
+    float y = a[1] + b[1];
+    float z = a[2] + b[2];
+    out[0] = x;
+    out[1] = y;
+    out[2] = z;
 }
 
 void fn_801BFEB0(void) {
@@ -740,7 +738,6 @@ static inline void helper_801C02F4(void *self, int flag) {
 }
 
 #pragma opt_propagation off
-#pragma opt_dead_assignments off
 void fn_801C02F4(void *arg0) {
     struct Mat43 {
         float m[4][3];
@@ -748,13 +745,14 @@ void fn_801C02F4(void *arg0) {
     extern float lbl_805628B8, lbl_805628BC, lbl_805628E8, lbl_805628EC;
     extern void fn_8017B164(void *);
     struct Mat43 mat;
-    float f;
     int flag;
 
-    f = lbl_805628E8;
     *(int *)((char *)arg0 + 0x1EC) = 0;
-    *(float *)((char *)arg0 + 0x218) = f;
-    flag = 0;
+    {
+        float f = lbl_805628E8;
+        flag = 0;
+        *(float *)((char *)arg0 + 0x218) = f;
+    }
     if (flag != 0) {
         *(int *)((char *)arg0 + 0x1F0) = 0;
     } else {
@@ -799,7 +797,6 @@ void fn_801C02F4(void *arg0) {
         *(float *)((char *)arg0 + 0x274) = f2;
     }
 }
-#pragma opt_dead_assignments reset
 #pragma opt_propagation reset
 int fn_801C0440(void *arg0) {
     return *(int *)((char *)arg0 + 0x1EC) != 0;
