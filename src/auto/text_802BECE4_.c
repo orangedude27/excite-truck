@@ -146,7 +146,9 @@ float fn_802BEFB4(void) {
 }
 
 extern u32 lbl_802FABA0[];
-float fn_802BF02C(float arg0, int arg1) {
+float fn_802BF02C(float x, int unused) {
+    /* Sample the fixed 7-point (x,y) curve from lbl_802FABA0 at x: find the first segment whose
+       upper x exceeds x, clamp the segment fraction to [0,1], and linearly interpolate y. */
     struct Pair { float x, y; } points[7];
     register u32 *src = lbl_802FABA0;
     register u32 *dst = (u32 *)points;
@@ -171,12 +173,12 @@ float fn_802BF02C(float arg0, int arg1) {
     p = points + 1;
     i = 1;
     for (; i <= 6; ++p, ++i) {
-        if (p->x > arg0) {
+        if (p->x > x) {
             min = lbl_80564D80;
             highX = points[i].x;
             lowX = points[i - 1].x;
             highY = points[i].y;
-            numerator = arg0 - lowX;
+            numerator = x - lowX;
             lowY = points[i - 1].y;
             denominator = highX - lowX;
             t = numerator / denominator;
