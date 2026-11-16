@@ -784,10 +784,10 @@ extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADAC(void *, float);
 #pragma scheduling invalid_target
 void fn_80194170(void *arg0, float arg1) {
-    double value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
+    float value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
     value = value > lbl_80562144 ? value : lbl_80562144;
     *(float *)((char *)arg0 + 0x240) = value;
-    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)value);
+    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)(double)value);
 }
 #pragma scheduling invalid_target
 void fn_801941A8(void *arg0, float arg1) {
