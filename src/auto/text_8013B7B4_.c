@@ -205,7 +205,9 @@ void fn_8013BC54(void) {
     }
 }
 
-u8 fn_8013BC70(float *arg0) {
-    *arg0 = lbl_8042F8A8[0];
+/* Copies the stored score (record +0x0) into *outScore and returns the flag
+ * byte at +0x4, which records whether that score fell below the threshold. */
+u8 fn_8013BC70(float *outScore) {
+    *outScore = lbl_8042F8A8[0];
     return *((u8 *)lbl_8042F8A8 + 4);
 }
