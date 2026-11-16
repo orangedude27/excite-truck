@@ -773,17 +773,21 @@ void fn_801F2570(int arg0) {
 #pragma use_lmw_stmw reset
 #pragma pop
 
-void fn_801F2D84(void *unused, void *arg1) {
+void fn_801F2D84(void *unused, void *node) {
+    /* Builds camera basis, updates render state, then applies fn_802C7040 to each node in a linked list. */
     extern int fn_801F1C24(void *);
     extern int fn_802C7730(void *);
     int stack[12];
-    void *p = arg1;
+    void *p = node;
+
     fn_801F1C24(&stack[0]);
     fn_802C7730(&stack[0]);
     goto check;
+
 body:
     fn_802C7040(*(int *)((char *)p + 4));
     p = *(void **)((char *)p + 0xC);
+
 check:
     if (p != 0) {
         goto body;
