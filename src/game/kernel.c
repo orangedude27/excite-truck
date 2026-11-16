@@ -3,8 +3,6 @@
 // assert string "kernel.cpp". Static-init thunk fn_802E3020 (+ .ctors slot
 // 0x802ED5E8) remains in auto/text_802E3020_.c pending a promotion pass.
 
-#pragma ppc_psq_save off
-
 typedef struct { char data[0x20]; } GXTexObj;
 extern void GXInitTexObj(GXTexObj *, void *, unsigned short, unsigned short, int, int, int, int);
 extern void GXInitTexObjLOD(GXTexObj *, int, int, int, int, int, float, float, float);
