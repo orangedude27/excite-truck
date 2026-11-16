@@ -134,11 +134,12 @@ void fn_8023B904(void *arg0, void *dest, s32 flag) {
     }
 }
 #pragma scheduling on
-s32 fn_8023B9AC(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_8023B9AC(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern s32 fn_80128314(s32);
