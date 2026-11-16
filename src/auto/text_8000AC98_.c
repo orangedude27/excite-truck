@@ -447,33 +447,66 @@ extern unsigned char lbl_8055D3D4, lbl_8055D3D5;
 extern char lbl_802FBF80[];
 #pragma push
 #pragma dont_inline on
-int fn_8000B42C(int arg0) {
-    int var_r31 = 1;
+/* Confirm callback of the four-entry game-loop menu (registered with the menu by
+ * fn_8000D000(fn_8000B42C, fn_8000B3B4, entry); fn_8000D540/fn_8000C848 call it
+ * with the highlighted entry, or with 0 when the menu is cancelled).
+ *
+ * Entry 1 restarts the run -- physics first, then the participant flags and the
+ * race reset -- and entry 3 stops the game loop and marks the frame result as
+ * final.  Entry 2 only switches the AXFX audio hooks on and deliberately skips
+ * re-entering the current state.  The mp-client queries fn_80265D64/fn_80265D6C
+ * are stubs that answer 0, so the restart path always takes its first branch and
+ * the "ignoring mp client 'restart' request" log is dead code.
+ * Always answers 1, which keeps the menu's "still selecting" flag cleared. */
+int fn_8000B42C(int entry) {
+#define MENU_NONE        0
+#define MENU_RESTART     1
+#define MENU_AUDIO_HOOKS 2
+#define MENU_STOP        3
+#define MpClientWantsRestart fn_80265D64 /* stub: always 0 */
+#define MpClientIsRunning    fn_80265D6C /* stub: always 0 */
+#define kIgnoreRestartMsg lbl_802FBF80    /* "gameloop: ignoring mp client 'restart' request" */
+#define sLoopRunning  lbl_8055D3D4        /* game loop keeps polling while set */
+#define sNoRestart    lbl_8055D3D5        /* frame result: this was the last run */
+#define sCurrentState lbl_8055D3DC        /* game-loop state table index */
+
+    int reapplyState = 1;
     if (fn_8016212C() == 0) {
-        switch (arg0) {
-        case 0: break;
-        case 1:
-            if (fn_80265D64() == 0) fn_80176734();
-            else if (fn_80265D6C() != 0) fn_80265D54(2);
-            else ((int (*)(char *, ...))fn_802E30C8)(lbl_802FBF80);
+        switch (entry) {
+        case MENU_NONE: break;
+        case MENU_RESTART:
+            if (MpClientWantsRestart() == 0) fn_80176734();
+            else if (MpClientIsRunning() != 0) fn_80265D54(2);
+            else ((int (*)(char *, ...))fn_802E30C8)(kIgnoreRestartMsg);
             fn_801CB3F8();
             fn_8001EFB8();
             break;
-        case 3:
-            if (fn_80265D64() == 0) {
-                lbl_8055D3D4 = 0;
-                lbl_8055D3D5 = 1;
-            } else if (fn_80265D6C() != 0) lbl_8055D3D4 = 0;
+        case MENU_STOP:
+            if (MpClientWantsRestart() == 0) {
+                sLoopRunning = 0;
+                sNoRestart = 1;
+            } else if (MpClientIsRunning() != 0) sLoopRunning = 0;
             else fn_80265D50();
             break;
-        case 2:
-            var_r31 = 0;
+        case MENU_AUDIO_HOOKS:
+            reapplyState = 0;
             fn_8000B3DC(1);
             break;
         }
     }
-    if (var_r31 != 0) fn_8000ADE0(lbl_8055D3DC);
+    if (reapplyState != 0) fn_8000ADE0(sCurrentState);
     return 1;
+
+#undef MENU_NONE
+#undef MENU_RESTART
+#undef MENU_AUDIO_HOOKS
+#undef MENU_STOP
+#undef MpClientWantsRestart
+#undef MpClientIsRunning
+#undef kIgnoreRestartMsg
+#undef sLoopRunning
+#undef sNoRestart
+#undef sCurrentState
 }
 #pragma pop
 int fn_8000B53C(int arg0) {
