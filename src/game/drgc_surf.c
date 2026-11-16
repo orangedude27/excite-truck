@@ -1002,11 +1002,12 @@ void fn_802D5FE4(void *arg0) {
 }
 
 extern void fn_802D0E48(int);
-void fn_802D6170(void *arg0) {
+/* Draw a surface: toggle the draw state, configure its vertex format, then submit its display list. */
+void fn_802D6170(struct SurfDraw *surface) {
     fn_802D0E48(0);
-    fn_802D5FE4(arg0);
+    fn_802D5FE4(surface);
     fn_802D0E48(1);
-    GXCallDisplayList(*(void **)((u8 *)arg0 + 0x30), *(u32 *)((u8 *)arg0 + 0x2C));
+    GXCallDisplayList(surface->displayList, surface->listSize);
 }
 
 #pragma pop
