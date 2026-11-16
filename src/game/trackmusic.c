@@ -140,9 +140,10 @@ void fn_8020F5DC(void) {
  
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void *fn_8020F5F0(long arg0) {
-    long offset = (arg0 << 6) * 100;
-    return (void *)((char *)&lbl_80489CA0 + offset);
+void *fn_8020F5F0(long trackIndex) {
+    /* Return the 0x1900-byte track-music buffer for trackIndex within the trackMusicBuffer table (lbl_80489CA0). */
+    long byteOffset = (trackIndex << 6) * 100;
+    return (void *)((char *)&lbl_80489CA0 + byteOffset);
 }
 #pragma scheduling on
 #pragma dont_inline reset
