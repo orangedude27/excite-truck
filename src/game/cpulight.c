@@ -466,17 +466,14 @@ extern void GXBegin(int, int, unsigned short);
 void fn_802DBF54(unsigned short *__restrict verts, int count) {
     int n;
     int i;
-    volatile unsigned short *fifo;
-    fifo = (volatile unsigned short *)0xCC008000;
+    volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
     while (count > 0) {
-        n = *(unsigned short *)verts;
-        verts += 2;
+        n = *verts++;
         GXBegin(0xA0, 0, n);
         count -= n + 1;
         for (i = 0; i < n; i++) {
-            unsigned short v = *(unsigned short *)verts;
-            verts += 2;
-            *fifo = v;
+            unsigned short val = *verts++;
+            *fifo = val;
         }
     }
 }
