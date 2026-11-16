@@ -5964,18 +5964,11 @@ void BTA_DmSearch(u8 *services, u32 duration, u32 mode) {
     }
 }
 
-/* Posts a device-discovery cancel request (BTA_DM_API_SEARCH_CANCEL_EVT) to the BTA task. */
-#define BTA_DmSearchCancel fn_80073CA8
-
-#ifndef BTA_DM_API_SEARCH_CANCEL_EVT
-#define BTA_DM_API_SEARCH_CANCEL_EVT 0x201
-#endif
-
-void BTA_DmSearchCancel(void) {
-    u16 *msg = GKI_getbuf(8);
-    if (msg != 0) {
-        *msg = BTA_DM_API_SEARCH_CANCEL_EVT;
-        fn_80071450(msg);
+void fn_80073CA8(void) {
+    u16 *buf = GKI_getbuf(8);
+    if (buf != 0) {
+        *buf = 0x201;
+        fn_80071450(buf);
     }
 }
 
