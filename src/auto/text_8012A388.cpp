@@ -187,27 +187,21 @@ extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
     }
     return result;
 }
-#pragma use_lmw_stmw reset
-#pragma dont_inline reset
-#pragma dont_inline on
-extern "C" void *fn_8012A570(u32 arg0, void *arg1) {
-    void *value;
-    (void)arg0;
-    (void)arg1;
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void *fn_8012A570(u32, void *) {
     if (lbl_8055E004 == 0) {
-        value = fn_801284F8(0x20, lbl_8032A6F8);
-        if (value != 0) {
-            value = (void *)fn_8012A13C(value, lbl_8032A6F8, 0x20, 0x18);
-        }
+        void *value = fn_801284F8(0x20, lbl_8032A6F8);
+        if (value != 0)
+            value = fn_8012A13C(value, lbl_8032A6F8, 0x20, 0x18);
         lbl_8055E008 = (void **)value;
     }
     void *p = fn_8012A2D8(lbl_8055E008);
-    if (p != 0) {
+    if (p != 0)
         lbl_8055E004 += 1;
-    }
     return p;
 }
-#pragma dont_inline reset
+#pragma pop
 extern "C" void fn_8012A5E8(void *element) {
     /* Return an element to the shared pool and destroy the pool when the last user releases it. */
     fn_8012A364(lbl_8055E008, element);
@@ -3206,6 +3200,7 @@ extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
     long result = 0;
     s32 *manager;
     s32 *entry;
+
     manager = ((s32 *(*)(s32, s32 *, s32))fn_8012B534)(arg0, &index, 1);
     if (manager != 0) {
         entry = (s32 *)((char *)*(void **)((char *)manager + 0x60) + index * 0x44);
@@ -3218,37 +3213,32 @@ extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
                 fields[4] = 0;
                 fields[1] = 0;
                 fields[2] = 0;
-                result = (s32)allocation;
                 fields[5] = 0;
                 fields[0] = 0x19AFEE2A;
                 fields[1] = (s32)entry;
-                fields[2] = (s32)manager;
+                fields[2] = (s32)manager, result = (s32)allocation;
             }
         } else {
-            char queryText[5];
-            char entryText[5];
-            char e0, e3, e1, e2;
-            char q0, q3, q1, q2;
+            u8 queryText[5];
+            u8 entryText[5];
+            u8 swap0;
+            u8 swap1;
             *(u32 *)queryText = (u32)arg1;
-            q0 = queryText[0];
-            q3 = queryText[3];
+            swap0 = queryText[0];
+            queryText[0] = queryText[3];
+            queryText[3] = swap0;
+            swap1 = queryText[1];
+            queryText[1] = queryText[2];
+            queryText[2] = swap1;
             queryText[4] = 0;
-            q1 = queryText[1];
-            q2 = queryText[2];
-            queryText[0] = q3;
-            queryText[3] = q0;
-            queryText[2] = q1;
-            queryText[1] = q2;
             *(u32 *)entryText = *(u32 *)((char *)entry + 0x20);
+            swap0 = entryText[0];
+            entryText[0] = entryText[3];
+            entryText[3] = swap0;
+            swap1 = entryText[1];
+            entryText[1] = entryText[2];
+            entryText[2] = swap1;
             entryText[4] = 0;
-            e0 = entryText[0];
-            e3 = entryText[3];
-            e1 = entryText[1];
-            e2 = entryText[2];
-            entryText[0] = (unsigned)e3;
-            entryText[3] = e0;
-            entryText[1] = e2;
-            entryText[2] = e1;
             fn_802E30C8(lbl_8032AC08, queryText, entryText);
         }
     }
@@ -3408,15 +3398,14 @@ extern "C" s32 fn_8012CAA0(s32 requestedSize, void *source) {
 }
 
 extern "C" const char lbl_8032AE20[];
+#pragma scheduling invalid_target
 extern "C" void *fn_8012CB44(void *arg0, s32 arg1) {
     s32 i, offset;
     u32 flags;
     void *base, *entry;
     if (arg0 != 0) {
         if (*(u8 *)((char *)arg0 + 0xAC) != 0) {
-            i = 0;
-            offset = 0;
-            while (i < *(s32 *)((char *)arg0 + 0x88)) {
+            for (i = 0, offset = 0; i < *(s32 *)((char *)arg0 + 0x88); i++, offset += 0x44) {
                 base = *(void **)((char *)arg0 + 0x60);
                 entry = (char *)base + offset;
                 flags = *(u32 *)((char *)entry + 0x34);
@@ -3424,8 +3413,6 @@ extern "C" void *fn_8012CB44(void *arg0, s32 arg1) {
                 base = *(void **)((char *)arg0 + 0x60);
                 entry = (char *)base + offset;
                 flags = *(u32 *)((char *)entry + 0x34);
-                i = i + 1;
-                offset = offset + 0x44;
                 *(u32 *)((char *)entry + 0x34) = flags & 0xFFFFFFF0;
             }
             base = *(void **)((char *)arg0 + 0x64);
@@ -3438,4 +3425,3 @@ extern "C" void *fn_8012CB44(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-
