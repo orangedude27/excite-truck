@@ -575,17 +575,11 @@ int fn_802B9914(void *arg0) {
 }
 
 extern short lbl_802FAB60[];
-static inline short fn_802B9920_mod(short s) {
-    return (short)(s % 32);
-}
-static inline short fn_802B9920_mod2(int a, short s) {
-    return (short)(s % 32);
-}
 #pragma push
 #pragma scheduling invalid_target
 int fn_802B9920(int arg0) {
     short s = (short)(arg0 + 0x200);
-    short idx = fn_802B9920_mod(s);
+    short idx = fn_802B9920_mod2(arg0, s);
     return lbl_802FAB60[idx];
 }
 #pragma scheduling on
