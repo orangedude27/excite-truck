@@ -39,7 +39,13 @@ public:
 }
 }
 struct Data_800D8840 { s32 a; s32 b; f32 c; s32 d; s32 e; };
-// Material capacity (0x4C) / count (0x50) words share this bit layout.
+// nw4hbm::lyt::Material (lyt_material.cpp) keeps the layout of the GX memory block it
+// allocates in two words sharing this bit layout: 0x4C is the capacity the block at
+// 0x58 was made for (the "mGXMemNum" of the assertions), 0x50 the counts in use.  The
+// block starts with tex GXTexObj (0x20 each), then srt texture SRTs (0x14 each), then
+// gen tex-coord generators (4 each), then one 4-byte entry per optional state whose
+// flag bit is set (channel control, material colour, tev swap, ...; the constructor
+// asserts IsChanCtrlCap(), IsMatColorCap(), IsTevSwapCap(), ... before each).
 struct MatGXBits_800D8B28 {
     u32 tex : 4;
     u32 srt : 4;
