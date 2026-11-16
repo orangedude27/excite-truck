@@ -477,8 +477,9 @@ extern char jumptable_803318F8[];
 long fn_801781B8(void) { return 0; }
 
 #pragma scheduling invalid_target
-int fn_801781C0(int arg0) {
-    switch (arg0 - 0x13) {
+int fn_801781C0(int modeId) {
+    /* True when the game/mode id is one of the special modes 19, 21, 24, 26 or 31. */
+    switch (modeId - 0x13) {
     case 0:
     case 2:
     case 5:
