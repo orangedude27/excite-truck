@@ -1748,7 +1748,8 @@ extern "C" void fn_802A4658(s32 arg0) {
 extern "C" s32 fn_802A47A8(void *arg0) {
     char *obj = (char *)arg0;
     s32 offset, i, alphaInt, alpha;
-    f32 limit;
+    struct { f32 value; } limitStorage;
+    f32 &limit = limitStorage.value;
     f32 now;
     f32 saved, v, high, t, low;
 
