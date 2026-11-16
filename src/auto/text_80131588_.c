@@ -190,7 +190,7 @@ extern char lbl_8032B5E0[];
 extern s32 fn_80131234(char *);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_80131960(void *arg0, void *arg1) {
+fn_80131960_ret fn_80131960(void *arg0, void *arg1) {
     u8 *obj = (u8 *)arg0;
     u8 *base = (u8 *)arg1;
     u8 t8, t10, t29, t25, t26, t31, t30, t24;
