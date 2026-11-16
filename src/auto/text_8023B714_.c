@@ -10,13 +10,14 @@ extern u32 lbl_8055F128;
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_8023B714(void) {
-    u32 v;
-    u32 *p;
+    u32 trackId;
+    u32 *state;
+
     fn_8000D838(&lbl_8055F120);
-    p = lbl_80498758 + 1;
+    state = lbl_80498758 + 1;
     lbl_80498758[0] = 0;
-    v = 0x7B;
-    lbl_80498758[1] = v;
+    trackId = 0x7B;
+    lbl_80498758[1] = trackId;
     lbl_80498758[2] = 0;
     lbl_80498758[3] = 0;
     lbl_80498758[4] = 0;
