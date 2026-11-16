@@ -1258,8 +1258,9 @@ int GXGetFifoSize(void *fifo) {
 }
 
 #pragma dont_inline on
-int GXGetFifoCount(void *arg0) {
-    return ((int *)arg0)[0x1C / 4];
+/* Return the current number of bytes queued in the graphics FIFO. */
+int GXGetFifoCount(void *fifo) {
+    return ((int *)fifo)[0x1C / 4];
 }
 #pragma dont_inline reset
 
