@@ -212,14 +212,11 @@ f32 fn_801931AC(f32 numerator, f32 from, f32 to, f32 denominator) {
 }
 
 float fn_801931EC(float a, float b) {
-    float quotient;
-    quotient = a / b;
-    quotient = a - quotient;
-    a = lbl_80562140;
-    b = lbl_8055E558;
-    a = a < quotient ? quotient : a;
-    if (a > b) return a;
-    return b;
+    float t = lbl_80562140 - a / b;
+    float floor = lbl_8055E558;
+    t = (lbl_80562140 < t) ? lbl_80562140 : t;
+    if (t > floor) return t;
+    return floor;
 }
 
 #pragma processor 750
