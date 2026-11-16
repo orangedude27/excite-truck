@@ -341,10 +341,10 @@ void fn_802DF938(void) {
     GXSetTevDirect(1);
 }
 
-#pragma scheduling off
+#pragma push
+#pragma scheduling on
 void fn_802DF994(void) {
-    register u32 coord = 0;
-    GXSetTexCoordGen2(coord, 1, 4, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
     GXSetNumTexGens(1);
     GXSetTevOrder(0, 0, 0, 4);
     GXSetTevOrder(1, 0xFF, 0xFF, 5);
@@ -360,9 +360,6 @@ void fn_802DF994(void) {
     GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
     GXSetNumTevStages(2);
 }
-
-#pragma push
-#pragma scheduling invalid_target
 void fn_802DFAF4(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
     GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
