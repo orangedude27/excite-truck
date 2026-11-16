@@ -297,7 +297,7 @@ void fn_802BEAB0(void) {
 
 extern f32 fn_801DCF48(s32, f32, f32);
 extern f64 ceil(f64);
-f64 lbl_80564D70 = 4503599627370496.0;
+extern f64 lbl_80564D70;
 extern f32 lbl_80564D50;
 extern f32 lbl_80564D54;
 extern f32 lbl_80564D5C;
@@ -306,63 +306,89 @@ extern f64 lbl_80564D60;
 extern f32 lbl_80564D68;
 #pragma push
 #pragma processor 750
-void fn_802BEB70(void) {
-    s16 size;
-    s32 start;
-    s32 step;
-    s16 x;
-    s16 y;
-    s32 raw;
-    f32 rounded;
-    f32 subtract_value;
-    f32 correction;
-    f32 threshold;
-    f32 offset;
-    f32 scale;
-    if (lbl_8055FACC != 0)
-        return;
-    scale = lbl_80564D50;
-    offset = lbl_80564D54;
-    threshold = lbl_80564D5C;
-    correction = lbl_80564D58;
-    subtract_value = lbl_80564D68;
-    size = 4;
-    goto size_check;
-size_loop:
-    start = size - 0x200;
-    x = (s16)start;
-    step = size + size;
-    goto x_check;
-x_loop:
-    y = (s16)start;
-    goto y_check;
-y_loop:
+void fn_802BEB70(void)
+{
+  s32 size;
+  s32 start;
+  s32 step;
+  int new_var;
+  s16 x;
+  s16 y;
+  s32 raw;
+  f32 rounded;
+  f32 subtract_value;
+  f32 correction;
+  f32 threshold;
+  f64 new_var2;
+  f32 offset;
+  f32 scale;
+  if (lbl_8055FACC != 0)
+  {
+    return;
+  }
+  new_var2 = lbl_80564D50;
+  scale = new_var2;
+  offset = lbl_80564D54;
+  threshold = lbl_80564D5C;
+  correction = lbl_80564D58;
+ if (1) { } if (1) { } if (1) { } if (1) { } if (1) { } if (1) { }
+  subtract_value = lbl_80564D68;
+  size = 4;
+  goto size_check;
+  size_loop:
+  start = size - 0x200;
+
+  x = (s16) start;
+  step = size;
+  step = step * 2;
+  goto x_check;
+  x_loop:
+  y = (s16) start;
+
+  goto y_check;
+  y_loop:
+  {
+    void *cell = fn_802BE844(x, y, size);
+    f32 height = fn_801DCF48(0, ((f32) x) * scale, ((f32) y) * scale) - offset;
+    if (height < threshold)
     {
-        void *cell = fn_802BE844(x, y, size);
-        f32 height = fn_801DCF48(0, (f32)x * scale, (f32)y * scale) - offset;
-        if (height < threshold)
-            height -= correction;
-        else
-            height += correction;
-        raw = *(s32 *)((char *)cell + 8);
-        *(s32 *)((char *)cell + 8) = (raw & 0xFF803FFF) | ((s32)height << 14);
-        rounded = (f32)ceil(lbl_80564D60) - subtract_value;
-        raw = *(s32 *)((char *)cell + 8);
-        *(s32 *)((char *)cell + 8) =
-            (raw & 0xFFFFC3FF) | ((s32)rounded << 10);
+      height -= correction;
     }
-    y = (s16)(y + step);
-y_check:
-    if (y < 0x200)
-        goto y_loop;
-    x = (s16)(x + step);
-x_check:
-    if (x < 0x200)
-        goto x_loop;
-    size = size * 2;
-size_check:
-    if (size <= 0x40)
-        goto size_loop;
-    fn_802BE7F4();
+    else
+    {
+      height += correction;
+    }
+    new_var2 = lbl_80564D60;
+    ;
+    correction = height;
+    new_var = 14;
+    *((s32 *) (((char *) cell) + 8)) = ((*((s32 *) (((char *) cell) + 8))) & 0xFF803FFF) | (((s32) correction) << new_var);
+    rounded = ((f32) ceil(new_var2)) - subtract_value;
+    raw = *((s32 *) (((char *) cell) + 8));
+    *((s32 *) (((char *) cell) + 8)) = (raw & 0xFFFFC3FF) | (((s32) rounded) << 10);
+  }
+
+  y = (s16) (y + step);
+  y_check:
+  if (y < 0x200)
+  {
+    goto y_loop;
+  }
+
+  x = (s16) (x + step);
+  x_check:
+  if (x < 0x200)
+  {
+    goto x_loop;
+  }
+
+  size *= 2;
+  size_check:
+  if ((size - 1) < 0x40)
+  {
+    goto size_loop;
+  }
+
+  fn_802BE7F4();
 }
 #pragma pop
