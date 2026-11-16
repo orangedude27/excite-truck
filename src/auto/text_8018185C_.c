@@ -2386,8 +2386,9 @@ void fn_8018ADEC(void *arg0) {
     *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C) + 8) = -10;
 }
 
-void fn_8018AE08(void *arg0) {
-    *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C) + 8) = -10;
+/* Set this object's car-element +8 field to -10, indexing the 0x9C-byte entryset by the object's element index at +0x1EC. */
+void fn_8018AE08(void *object) {
+    *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)object + 0x1EC) * 0x9C) + 8) = -10;
 }
 
 void fn_8018AE24(void *arg0, signed char arg1) {
