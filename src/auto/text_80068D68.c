@@ -3,7 +3,7 @@ extern unsigned char lbl_803935C8[];
 extern unsigned char lbl_803C3AF0[];
 extern unsigned char lbl_803C0A50[];
 extern void WUDiMoveTopStdDevInfoPtr(unsigned char *);
-#define L2CU_DISC_RSP_RET int
+#define L2CU_DISC_RSP_RET void
 L2CU_DISC_RSP_RET l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -20618,15 +20618,17 @@ void l2cu_send_peer_disc_req(void *pCcb) {
     );
 }
 
-int l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid) {
+L2CU_DISC_RSP_RET l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid) {
     void *p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 4, 7, remote_id);
     u8 *packet;
-    if (!p_buf) {
+
+    if (p_buf == NULL) {
         if (lbl_803C4040[0] >= 2) {
             fn_8007093C(0x80001, lbl_80319174);
         }
         goto done;
     }
+
     packet = p_buf;
     packet[0x14] = local_cid;
     packet[0x15] = local_cid >> 8;
@@ -20635,6 +20637,7 @@ int l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remot
     *(u16 *)(packet + 6) = 0;
     GKI_enqueue((BUFFER_Q *)((u8 *)p_lcb + 0x44), p_buf);
     ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, 0);
+
 done:
     ;
 }
