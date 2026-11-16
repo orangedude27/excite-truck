@@ -652,13 +652,17 @@ void fn_8025A8B8(void *arg0, char *arg1) {
     char name[0x40];
     char *input = arg1;
     void *obj = arg0;
-    register char *src;
-    register int count;
-    signed char c;
-    register char *dst = name;
+    char *src;
+    int count;
+    char *dst;
     int id;
     float one;
     float zero;
+    int n;
+    char *p;
+    char *s;
+    int m;
+    char *q;
     id = *(int *)((char *)obj + 0x50);
     if (id != -1) {
         fn_802C6CF8(id);
@@ -668,77 +672,45 @@ void fn_8025A8B8(void *arg0, char *arg1) {
         src = lbl_80345208;
         dst = name;
         count = 0x40;
-        goto prefix_char;
-prefix_check:
-        count--;
-        if (count > 0)
-            goto prefix_char;
-        dst--;
-        *dst = 0;
-        goto prefix_done;
-prefix_char:
-        c = src[0];
-        src++;
-        dst[0] = c;
-        dst++;
-        if (c != 0)
-            goto prefix_check;
-prefix_done:
-        dst = name;
-        count = 0x40;
-        while (dst[0] != 0) {
-            count--;
-            dst++;
+        while ((*dst++ = *src++) != 0) {
+            if (--count <= 0) {
+                dst[-1] = 0;
+                break;
+            }
         }
-        if (count > 0) {
-            goto input_char;
+        p = name;
+        n = 0x40;
+        while (p[0] != 0) {
+            n--;
+            p++;
         }
-        goto input_done;
-input_check:
-        count--;
-        if (count > 0)
-            goto input_char;
-        dst--;
-        *dst = 0;
-        goto input_done;
-input_char:
-        c = input[0];
-        input++;
-        dst[0] = c;
-        dst++;
-        if (c != 0)
-            goto input_check;
-input_done:
+        if (n > 0) {
+            while ((*p++ = *input++) != 0) {
+                if (--n <= 0) {
+                    p[-1] = 0;
+                    break;
+                }
+            }
+        }
         if (fn_80029004(name, '.') != 0) {
             dst = fn_80029004(name, '.');
             *dst = 0;
         }
-        dst = name;
-        count = 0x40;
-        src = lbl_8055C384;
-        while (dst[0] != 0) {
-            count--;
-            dst++;
+        q = name;
+        m = 0x40;
+        s = lbl_8055C384;
+        while (q[0] != 0) {
+            m--;
+            q++;
         }
-        if (count > 0) {
-            goto suffix_char;
+        if (m > 0) {
+            while ((*q++ = *s++) != 0) {
+                if (--m <= 0) {
+                    q[-1] = 0;
+                    break;
+                }
+            }
         }
-        goto suffix_done;
-suffix_check:
-        count--;
-        if (count > 0)
-            goto suffix_char;
-        dst--;
-        *dst = 0;
-        goto suffix_done;
-suffix_char:
-        c = src[0];
-        src++;
-        dst[0] = c;
-        dst++;
-        if (c != 0)
-            goto suffix_check;
-suffix_done:
         if (fn_8012C33C(name))
             *(int *)((char *)obj + 0x50) = fn_802C6FC0(name, 0, 0);
     }
