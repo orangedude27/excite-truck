@@ -728,11 +728,17 @@ extern s32 fn_80011A5C(s32);
 extern s32 fn_801B84A4(s32);
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_80006378(s32 arg0, s32 arg1) {
-    struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); };
+extern "C" void fn_80006378(s32 unused, s32 playerIndex) {
+    struct Dummy {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void dispatch(); virtual void v11(); virtual void v12();
+    };
+    /* Call the slot-0x30 hook on this player's own HUD overlay, the fallback
+     * pointer at +0x1C of its entry in the overlay manager's per-player table. */
     s32 *entry = (s32 *)&lbl_8034EEB8;
-    entry += arg1 * 4;
-    ((Dummy *)entry[7])->v10();
+    entry += playerIndex * 4;
+    ((Dummy *)entry[7])->dispatch();
 }
 #pragma scheduling on
 #pragma cplusplus off
