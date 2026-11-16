@@ -773,6 +773,7 @@ long fn_802104B8(void) {
     return (unsigned long)((-1 - lbl_8055B658) | (lbl_8055B658 + 1)) >> 31;
 }
 
+/* True when the dash found at least one track-music song (song count > 0). */
 long fn_802104D0(void) {
     return fn_802EC0FC() > 0;
 }
