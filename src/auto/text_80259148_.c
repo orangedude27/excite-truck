@@ -627,6 +627,10 @@ extern int fn_802C6FC0(char *, int, int);
 extern char *fn_80029004(char *, int);
 extern int strlen(char *);
 
+/* Load or replace this object's UI motion model: free existing handle at +0x50, build
+   "*uiaction.res/<name>.mo0" into a temp buffer (strip extension), load if present, and
+   reset float fields at +0x84..+0xA4. lbl_80345208="*uiaction.res/", lbl_8055C384=".mo0",
+   lbl_80563AE0=1.0f, lbl_80563AE4=0.0f. */
 void fn_8025A8B8(void *arg0, char *arg1) {
     char name[0x40];
     char *input = arg1;
