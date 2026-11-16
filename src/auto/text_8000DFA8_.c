@@ -1928,17 +1928,18 @@ void fn_80012158(void) {
     state[0] = 0;
 }
 
+/* Activate the next queued object in slot group 2 of the state at lbl_8055D4AC: set its flags (0x49=1, 0x4B=0, 0x4A=0) and advance the index, wrapping at 3. */
 void fn_800121A4(void) {
-    u8 *obj;
-    s32 *base;
-    base = (s32 *)lbl_8055D4AC;
-    obj = *(u8 **)((u8 *)base + base[0] * 4 + 0x10);
-    if (obj == 0) return;
-    obj[0x49] = 1;
-    obj[0x4B] = 0;
-    obj[0x4A] = 0;
-    if (++base[0] < 3) return;
-    base[0] = 0;
+    u8 *object;
+    s32 *state;
+    state = (s32 *)lbl_8055D4AC;
+    object = *(u8 **)((u8 *)state + state[0] * 4 + 0x10);
+    if (object == 0) return;
+    object[0x49] = 1;
+    object[0x4B] = 0;
+    object[0x4A] = 0;
+    if (++state[0] < 3) return;
+    state[0] = 0;
 }
 
 extern void fn_801331C4(s32, void *, f32 *);
