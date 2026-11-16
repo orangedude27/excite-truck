@@ -222,6 +222,7 @@ s32 fn_800081BC(void) {
     return *(s32 *)((u8 *)&lbl_8034EF38 + fn_800080E8() * 0xC + 8);
 }
 
+#define GetContestLapCount fn_800081F0 /* contest lap count for a reference record */
 s32 fn_800081F0(void *arg0) {
     s32 result;
     if (*(u32 *)((u8 *)arg0 + 0x10) & 1) goto done;
