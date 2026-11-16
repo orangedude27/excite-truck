@@ -54,6 +54,8 @@ void OSSetArenaLo(void* lo) {
 }
 
 void* OSAllocFromMEM1ArenaLo(size_t size, u32 align) {
+    /* Bump-allocate size bytes from the low end of the MEM1 arena: align the
+       start and the new arena bound, advance the bound, and return the start. */
     u8* begin = ROUND_UP_PTR(OSGetMEM1ArenaLo(), align);
     u8* end = begin + size;
     end = ROUND_UP_PTR(end, align);
