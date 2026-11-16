@@ -3227,6 +3227,8 @@ void __DVDPrepareReset(void) {
 
 #pragma small_data off
 extern __declspec(section ".data") u8 lbl_8037B580;
+#define DvdTimeoutAlarm lbl_8037B580 /* DVD timeout alarm created and armed in fn_800379A8 */
+#define DefaultAlarmTest fn_8003BE40 /* default predicate: returns 0 */
 s32 __DVDTestAlarm(void *alarm) {
     if (alarm == &lbl_8037B580) {
         return 1;
