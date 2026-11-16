@@ -1512,11 +1512,12 @@ found:
     *(void **)(entry + 0x10 + count * 4) = arg1;
     *(int *)(entry + 0x50) = count + 1;
 }
-extern "C" void fn_801FF58C(void* unused, char* dst, const char* src) {
-    strncpy(dst, src, 0x10);
-    dst[0xF] = 0;
-    *(int*)(dst + 0x50) = 0;
-    *(int*)(dst + 0x54) = 0;
+/* Initialize a named pool slot: copy up to 16 bytes of the name, terminate it, and clear its item/in-use counts. */
+extern "C" void fn_801FF58C(void* unused, char* slot, const char* name) {
+    strncpy(slot, name, 0x10);
+    slot[0xF] = 0;
+    *(int*)(slot + 0x50) = 0;
+    *(int*)(slot + 0x54) = 0;
 }
 
 void fn_801FF5D4(void* arg0, void* arg1, float farg0) {
