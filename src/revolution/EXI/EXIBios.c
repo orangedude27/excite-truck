@@ -695,8 +695,8 @@ BOOL EXIUnlock(EXIChannel chan) {
     return TRUE;
 }
 
-// EXILock() callback for a freshly inserted external device: EXIGetID() reads
-// its ID again now that the channel has been handed back to it.
+// EXILock() callback run when a freshly inserted external device's channel is
+// released: re-read the device ID so EXIGetID() caches it for this insertion.
 static void UnlockedHandler(EXIChannel chan, OSContext* ctx) {
 #pragma unused(ctx)
     u32 id;
