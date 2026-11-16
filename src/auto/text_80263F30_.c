@@ -953,16 +953,19 @@ void fn_80265598(void *arg0) {
     lbl_8055C454 = *(float *)((char *)arg0 + 0x1C);
 }
 
-void fn_802655A4(void *arg0) {
+/* Construct the current credits object: install its vtable (lbl_80346558),
+ * clear the field at 0x14, publish it as the global current object, and zero
+ * the float at 0x1C. */
+void fn_802655A4(void *obj) {
     extern void *lbl_8055F44C;
     extern char lbl_80346558[];
     extern float lbl_80563BF0;
-    void *ptr = lbl_80346558;
-    float value = lbl_80563BF0;
-    *(void **)arg0 = ptr;
-    *(int *)((char *)arg0 + 0x14) = 0;
-    lbl_8055F44C = arg0;
-    *(float *)((char *)arg0 + 0x1C) = value;
+    void *vtable = lbl_80346558;
+    float initialValue = lbl_80563BF0;
+    *(void **)obj = vtable;
+    *(int *)((char *)obj + 0x14) = 0;
+    lbl_8055F44C = obj;
+    *(float *)((char *)obj + 0x1C) = initialValue;
 }
 
 int fn_802655C8(int arg0, int arg1) {
