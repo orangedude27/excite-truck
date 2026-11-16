@@ -4932,6 +4932,13 @@ void GXSetTevOp(int stage, int mode) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
+// GXData caches the BP's per-stage TEV combiner registers, one word per stage:
+// the colour combiner (BP register 0xC0 + stage) at 0x180 and the alpha
+// combiner (0xC1 + stage) at 0x1C0.  The colour word holds the four 4-bit
+// input selectors k0..k3 in its low 16 bits, the alpha word the four 3-bit
+// selectors k0..k3 below the operation fields.
+#define GX_TEV_COLOR_COMBINER 0x180
+
 void GXSetTevColorIn(s32 stage, s32 a, s32 b, s32 c, s32 d) { unsigned int *tev; unsigned int *base = __GXData; tev = (unsigned int *)((unsigned char *)base + stage * 4); { unsigned int value = tev[0x180 / 4]; value = __rlwimi(value, a, 12, 16, 19); value = __rlwimi(value, b, 8, 20, 23); *(volatile unsigned char *)0xCC008000 = 0x61; value = __rlwimi(value, c, 4, 24, 27); value = __rlwimi(value, d, 0, 28, 31); *(volatile unsigned int *)0xCC008000 = value; tev[0x180 / 4] = value; } *(unsigned short *)((unsigned char *)base + 2) = 0; }
 
 /* Set the four alpha input sources for one TEV stage: pack the selectors into
