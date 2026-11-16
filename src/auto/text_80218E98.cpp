@@ -7578,11 +7578,15 @@ extern "C" s32 fn_802267C4(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" s32 fn_802268A0(void *arg0, s32 arg1) {
-    s32 *p = *(s32 **)((u8 *)arg0 + 0x264);
-    if (p != 0 && *(s32 *)((u8 *)arg0 + 0x260) != *p)
+/* Returns 1 if arg1 is an accepted command id (0xD, 0x126, 0x128), but first
+ * rejects (returns 0) when the object's state pointer at +0x264 is set and its
+ * value differs from the current state id stored at +0x260.
+ */
+extern "C" s32 fn_802268A0(void *arg0, s32 commandId) {
+    s32 *statePtr = *(s32 **)((u8 *)arg0 + 0x264);
+    if (statePtr != 0 && *(s32 *)((u8 *)arg0 + 0x260) != *statePtr)
         return 0;
-    return arg1 == 0xD || (u32)arg1 == 0x126 || (u32)arg1 == 0x128;
+    return commandId == 0xD || (u32)commandId == 0x126 || (u32)commandId == 0x128;
 }
 
 extern "C" u32 fn_802268E8(void *arg0) {
