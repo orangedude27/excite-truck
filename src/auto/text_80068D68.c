@@ -9235,14 +9235,17 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
     if (temp_r28 != 0) temp_r28(0);
 }
 
-void fn_80085DC4(void *arg0, u8 arg1) {
-    *(u16 *)((u8 *)arg0 + 2) = 4;
-    *(u16 *)((u8 *)arg0 + 4) = 0;
-    *(u8 *)((u8 *)arg0 + 8) = 0x43;
-    *(u8 *)((u8 *)arg0 + 9) = 0x0C;
-    *(u8 *)((u8 *)arg0 + 10) = 1;
-    *(u8 *)((u8 *)arg0 + 11) = arg1;
-    btu_hcif_send_cmd(arg0);
+void fn_80085DC4(void *pCmdBuf, u8 scanType) {
+    /* Build a one-parameter HCI "Write Inquiry Scan Type" command (opcode 0x0C43)
+       in a caller-supplied BT_HDR buffer: len=4, offset=0, opcode, parameter length
+       and the scan type, then hand the buffer to btu_hcif_send_cmd. */
+    *(u16 *)((u8 *)pCmdBuf + 2) = 4;
+    *(u16 *)((u8 *)pCmdBuf + 4) = 0;
+    *(u8 *)((u8 *)pCmdBuf + 8) = 0x43;
+    *(u8 *)((u8 *)pCmdBuf + 9) = 0x0C;
+    *(u8 *)((u8 *)pCmdBuf + 10) = 1;
+    *(u8 *)((u8 *)pCmdBuf + 11) = scanType;
+    btu_hcif_send_cmd(pCmdBuf);
 }
 
 /* Set the local Bluetooth device name and send HCI Change_Local_Name (BTM_SetLocalDeviceName). */
