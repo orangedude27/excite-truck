@@ -5516,6 +5516,10 @@ void GXSetAlphaUpdate(s32 enable) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
+/* Set the depth-test mode: pack the test enable, compare function and
+ * write-enable into the Z-mode BP register shadowed at __GXData+0x228, push it
+ * to the BP through the write-gather FIFO, and mark the last FIFO write as a
+ * BP one. */
 void GXSetZMode(s32 enable, s32 func, s32 update) {
     union {
         unsigned int value;
@@ -5531,11 +5535,11 @@ void GXSetZMode(s32 enable, s32 func, s32 update) {
     reg.value = data[0x228 / 4];
     reg.bits.enable = enable;
     reg.bits.func = func;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
+    WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
     reg.bits.update = update;
-    *(volatile unsigned int *)0xCC008000 = reg.value;
+    WGPIPE.i = reg.value;
     data[0x228 / 4] = reg.value;
-    *(volatile unsigned short *)((char *)data + 2) = 0;
+    ((GXDrawData *)data)->lastWriteWasXF = FALSE;
 }
 
 void GXSetZCompLoc(s32 enable) {
