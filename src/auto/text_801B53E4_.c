@@ -50,8 +50,7 @@ extern void *fn_801B591C(void *, s32);
 extern void fn_8002F6AC(void *(*)(void *, s32));
 extern void fn_80128668(void *);
 
-static inline f32 RectMidpoint(f32 a, f32 b, f32 half) {
-    f32 sum = a + b;
+static inline f32 RectMidpoint(f32 half, f32 sum) {
     return half * sum;
 }
 
