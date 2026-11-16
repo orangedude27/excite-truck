@@ -268,8 +268,10 @@ extern "C" void fn_8001DFA8(s32 arg0) {
 #pragma scheduling on
 // Invalid-target scheduling keeps the table load ahead of the literal arguments.
 #pragma scheduling invalid_target
+/* Show the continue-prompt HUD overlay via its virtual apply; the two arguments
+ * are placeholders and are ignored by the overlay. */
 extern "C" void fn_8001DFCC(void) {
-    ((CollisionEntry *)lbl_80358680[4])->apply(9, 17);
+    ((CollisionEntry *)sHudOverlays[OVERLAY_CONTINUE])->apply(9, 17);
 }
 #pragma scheduling on
 /* Update the out-of-time HUD overlay with zeroed arguments (hide/reset it). */
