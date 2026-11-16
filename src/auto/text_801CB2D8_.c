@@ -751,11 +751,12 @@ void fn_801CC768(void *object, f32 value) {
 /* A growable array of pointers: `data` holds the slots, `count` the number used. */
 typedef struct PtrVec { void **data; s32 count; } PtrVec;
 
-void **fn_801CC784(void *arg0) {
-    s32 index = ((s32 *)arg0)[1];
-    s32 *base = *(s32 **)arg0;
-    ((s32 *)arg0)[1] = index + 1;
-    return (void **)((s32)base + (index << 2));
+void **fn_801CC784(void *vec) {
+    /* Reserve the next slot of a pointer vector: return the address of slot `count` and advance the vector's count. */
+    s32 index = ((PtrVec *)vec)->count;
+    void **data = ((PtrVec *)vec)->data;
+    ((PtrVec *)vec)->count = index + 1;
+    return (void **)((s32)data + (index << 2));
 }
 
 extern void *memset(void *, int, unsigned long);
