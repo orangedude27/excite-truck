@@ -1725,6 +1725,7 @@ extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
     u32 table;
     u32 offset;
     u8 *record;
+    s32 out;
     s32 result;
 
     *arg2 = 0;
@@ -1755,12 +1756,13 @@ found:
         return result;
 
     table = (u32)&lbl_803D1640;
-    *(u16 *)&lbl_803D1640 = *(u16 *)&lbl_803D1640 + 1;
     record = (u8 *)(table + offset);
+    out = (s32)(record + 0x61C);
+    *(u16 *)&lbl_803D1640 = *(u16 *)&lbl_803D1640 + 1;
     *(u32 *)(record + 0x61C) |= 1;
     *(s32 *)(record + 0x620) = (s32)arg0;
     *(s32 *)(record + 0x624) = arg1;
-    *arg2 = (s32)(record + 0x61C);
+    *arg2 = out;
     return 0;
 }
 #pragma use_lmw_stmw reset
@@ -17434,15 +17436,18 @@ void fn_800C4B5C(s32 arg0, s32 arg1) {
     lbl_8055DD94 = (void *)((u32)arg0 + temp_r5);
 }
 
-extern "C" void* fn_800C4B8C(s32 arg0) {
-    u32 old = (u32)lbl_8055DD94;
-    u32 next = old + (arg0 & 0xFFFFFFFC) + (((u32)(-(arg0 & 3) | (arg0 & 3)) >> 29) & 4);
-    lbl_8055DD94 = (void*)next;
-    if (next > (u32)lbl_8055DD90) {
-        lbl_8055DD94 = (void*)old;
+extern "C" void* fn_800C4B8C(s32 size) {
+    /* Bump-allocate size bytes from the arena, aligning up with the
+     * original's padding rule; returns the previous position, or NULL if
+     * it would exceed the arena end. */
+    u32 prevPos = (u32)lbl_8055DD94;
+    u32 newPos = prevPos + (size & 0xFFFFFFFC) + (((u32)(-(size & 3) | (size & 3)) >> 29) & 4);
+    lbl_8055DD94 = (void*)newPos;
+    if (newPos > (u32)lbl_8055DD90) {
+        lbl_8055DD94 = (void*)prevPos;
         return NULL;
     }
-    return (void*)old;
+    return (void*)prevPos;
 }
 
 extern void *lbl_8055DD94;
