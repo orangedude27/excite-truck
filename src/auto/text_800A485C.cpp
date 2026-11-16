@@ -21914,10 +21914,11 @@ extern "C" s32 fn_800D56FC(void *obj, const char *name) {
 
 /* nw4hbm::lyt::Bounding vtable: destructor, CalculateMtx, Draw, DrawSelf, Animate, ... */
 #define BoundingVtable lbl_8031F540
-extern "C" void* fn_800D57AC(void* arg0, const void* arg1) {
-    __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(arg0, arg1);
-    *(const char**)arg0 = lbl_8031F540;
-    return arg0;
+extern "C" void* fn_800D57AC(void* self, const void* resPane) {
+    /* Construct an nw4hbm::lyt::Bounding: init the base Pane from a res::Pane, then install the Bounding vtable. */
+    __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(self, resPane);
+    *(const char**)self = BoundingVtable;
+    return self;
 }
 
 /* nw4hbm::lyt::Bounding::~Bounding(): destroys base Pane and optionally deletes storage. */
