@@ -110,8 +110,9 @@ void fn_802DD63C(int count) {
     *(unsigned char *)((char *)lbl_8055FED8 + 0x4D) = 0;
 }
 
-void fn_802DD738(int arg0, float farg0) {
-    *(float *)((char *)lbl_804DB6A0 + (arg0 * 0x24) + 0x20) = farg0;
+void fn_802DD738(int index, float value) {
+    /* Set the +0x20 field of the index-th 0x24-byte entry in the texture-copy cache table. */
+    *(float *)((char *)lbl_804DB6A0 + (index * 0x24) + 0x20) = value;
 }
 
 void fn_802DD750(void) {
