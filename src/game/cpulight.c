@@ -462,6 +462,9 @@ extern void GXSetColorUpdate(int);
 extern void GXSetZMode(int,int,int);
 extern unsigned char lbl_8055FEBA;
 #pragma dont_inline on
+/* Reset per-frame render state: clear the CPU light tracking pointers
+   (fn_802DBDD8) and restore all TEV swap-mode selectors to their defaults
+   (fn_802DEE1C). */
 void fn_802DBF30(void) {
     fn_802DBDD8();
     fn_802DEE1C();
