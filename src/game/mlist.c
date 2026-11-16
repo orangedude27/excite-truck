@@ -794,10 +794,11 @@ void fn_802CE278(int *value, int delta) {
     }
 }
 
-void fn_802CE290(int *arg0, int arg1) {
-    int val = *arg0;
-    if (val != 0) {
-        *arg0 = val + arg1;
+void fn_802CE290(int *value, int delta) {
+    /* Add delta to *value (rebasing a stored pointer/handle), leaving a zero (null) sentinel unchanged. */
+    int cur = *value;
+    if (cur != 0) {
+        *value = cur + delta;
     }
 }
 
