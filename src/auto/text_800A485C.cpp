@@ -17800,19 +17800,21 @@ extern "C" void fn_800C3DA0(void *arg0, const u8 *data, s32 flags, s16 *out, s16
 }
 #pragma pop
 
-void fn_800C4B5C(s32 arg0, s32 arg1) {
-    u32 temp_r0;
-    s32 temp_r5;
-    s32 sum;
-    temp_r0 = (u32)arg0 << 0x1E;
-    temp_r5 = (u32)arg0 >> 0x1F;
-    temp_r0 = temp_r0 - temp_r5;
-    sum = arg0 + arg1;
-    temp_r0 = (temp_r0 << 2) | (temp_r0 >> 0x1E);
-    temp_r5 = temp_r0 + temp_r5;
-    lbl_8055DD90 = sum - 4;
-    temp_r5 = 4 - temp_r5;
-    lbl_8055DD94 = (void *)((u32)arg0 + temp_r5);
+/* Set up the 4-byte-aligned bump arena: the cursor is arenaStart rounded up to
+ * a multiple of 4, and the end marker is arenaStart + arenaSize - 4. */
+void fn_800C4B5C(s32 arenaStart, s32 arenaSize) {
+    u32 alignTemp;
+    s32 pad;
+    s32 end;
+    alignTemp = (u32)arenaStart << 0x1E;
+    pad = (u32)arenaStart >> 0x1F;
+    alignTemp = alignTemp - pad;
+    end = arenaStart + arenaSize;
+    alignTemp = (alignTemp << 2) | (alignTemp >> 0x1E);
+    pad = alignTemp + pad;
+    gArenaEnd = end - 4;
+    pad = 4 - pad;
+    gArenaCursor = (void *)((u32)arenaStart + pad);
 }
 
 extern "C" void* fn_800C4B8C(s32 size) {
