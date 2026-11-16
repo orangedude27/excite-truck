@@ -1839,9 +1839,11 @@ f32 fn_80011E60(void) {
 }
 
 f32 fn_80011E70(void) {
-    f32 value;
-    value = lbl_80350EC4[1] + lbl_80350EC4[2];
-    return value * lbl_8056025C;
+    f32 horizontalCenter;
+    /* Horizontal centre of the whole-screen layout box lbl_80350EC4, stored as
+     * {top, left, right, bottom}: (left + right) * 0.5 (lbl_8056025C). */
+    horizontalCenter = lbl_80350EC4[1] + lbl_80350EC4[2];
+    return horizontalCenter * lbl_8056025C;
 }
 
 /* Vertical centre of the whole-screen layout box lbl_80350EC4, stored as
