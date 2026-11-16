@@ -56,13 +56,14 @@ void fn_801D9F24(void) {
     fn_8012C4D8();
 }
 
-void fn_801D9F28(void *arg0) {
-    volatile int *p = (volatile int *)arg0;
-    float value = lbl_80562B38;
-    p[0] = 0;
-    p[1] = 0;
-    p[2] = 0;
-    *(volatile float *)((char *)arg0 + 0xC) = value;
+void fn_801D9F28(void *player) {
+    /* Initialize a path-follower object: clear its three header words and set its current time (+0xC) to the default 0.0. */
+    volatile int *header = (volatile int *)player;
+    float initialTime = lbl_80562B38;
+    header[0] = 0;
+    header[1] = 0;
+    header[2] = 0;
+    *(volatile float *)((char *)player + 0xC) = initialTime;
 }
 
 extern int fn_80128668(void);
@@ -146,6 +147,8 @@ int fn_801DA064(void *lookup, const char *name, int unused) {
     return 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801DA0EC(void *arg0, float farg0) {
     struct S { int pad0; void *obj; int idx; float cur; };
     volatile struct S *vs = (volatile struct S *)arg0;
@@ -160,30 +163,32 @@ void fn_801DA0EC(void *arg0, float farg0) {
     zero = lbl_80562B38;
     old = vs->cur;
     vs->cur = old + farg0;
-    if (farg0 >= zero) {
-        do {
-            ++vs->idx;
-            o = (void *)vs->obj;
-            idx = vs->idx;
-            if (idx + 1 >= *(int *)((char *)o + 0x10)) {
-                return;
-            }
-            values = *(float **)((char *)o + 0x14);
-        } while (*(float *)((char *)arg0 + 0xC) > values[idx * 8 + 8]);
-    } else {
-        do {
-            --vs->idx;
-            idx = vs->idx;
-            if (idx <= 0) {
-                return;
-            }
-            o = (void *)vs->obj;
-            values = *(float **)((char *)o + 0x14);
-        } while (values[idx * 8] > *(float *)((char *)arg0 + 0xC));
-    }
+    if (farg0 >= zero) goto forward;
+    goto backward;
+forward:
+    do {
+        ++vs->idx;
+        o = (void *)vs->obj;
+        idx = vs->idx;
+        if (idx + 1 >= *(int *)((char *)o + 0x10)) {
+            return;
+        }
+        values = *(float **)((char *)o + 0x14);
+    } while (*(float *)((char *)arg0 + 0xC) > values[idx * 8 + 8]);
+    return;
+backward:
+    do {
+        --vs->idx;
+        idx = vs->idx;
+        if (idx <= 0) {
+            return;
+        }
+        o = (void *)vs->obj;
+        values = *(float **)((char *)o + 0x14);
+    } while (values[idx * 8] > *(float *)((char *)arg0 + 0xC));
 }
-
-#pragma use_lmw_stmw reset
+#pragma scheduling on
+#pragma pop
 
 void fn_801DA198(void *arg0, float farg0) {
     register void *obj;
