@@ -4930,19 +4930,21 @@ void GXSetTevOp(int stage, int mode) {
 
 void GXSetTevColorIn(s32 stage, s32 a, s32 b, s32 c, s32 d) { unsigned int *tev; unsigned int *base = __GXData; tev = (unsigned int *)((unsigned char *)base + stage * 4); { unsigned int value = tev[0x180 / 4]; value = __rlwimi(value, a, 12, 16, 19); value = __rlwimi(value, b, 8, 20, 23); *(volatile unsigned char *)0xCC008000 = 0x61; value = __rlwimi(value, c, 4, 24, 27); value = __rlwimi(value, d, 0, 28, 31); *(volatile unsigned int *)0xCC008000 = value; tev[0x180 / 4] = value; } *(unsigned short *)((unsigned char *)base + 2) = 0; }
 
-void GXSetTevAlphaIn(s32 stage, s32 a, s32 b, s32 c, s32 d) {
+/* Set the four alpha input sources for one TEV stage: pack the selectors into
+   the stage's alpha-input register, send it to the GX FIFO and cache it. */
+void GXSetTevAlphaIn(s32 stage, s32 aSel, s32 bSel, s32 cSel, s32 dSel) {
     unsigned int *tev;
     unsigned int *base = __GXData;
     tev = (unsigned int *)((unsigned char *)base + stage * 4);
     {
-        unsigned int value = tev[0x1C0 / 4];
-        value = __rlwimi(value, a, 13, 16, 18);
-        value = __rlwimi(value, b, 10, 19, 21);
+        unsigned int alphaIn = tev[0x1C0 / 4];
+        alphaIn = __rlwimi(alphaIn, aSel, 13, 16, 18);
+        alphaIn = __rlwimi(alphaIn, bSel, 10, 19, 21);
         *(volatile unsigned char *)0xCC008000 = 0x61;
-        value = __rlwimi(value, c, 7, 22, 24);
-        value = __rlwimi(value, d, 4, 25, 27);
-        *(volatile unsigned int *)0xCC008000 = value;
-        tev[0x1C0 / 4] = value;
+        alphaIn = __rlwimi(alphaIn, cSel, 7, 22, 24);
+        alphaIn = __rlwimi(alphaIn, dSel, 4, 25, 27);
+        *(volatile unsigned int *)0xCC008000 = alphaIn;
+        tev[0x1C0 / 4] = alphaIn;
     }
     *(unsigned short *)((unsigned char *)base + 2) = 0;
 }
