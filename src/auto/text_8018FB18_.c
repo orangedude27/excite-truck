@@ -1275,28 +1275,31 @@ extern "C" s32 fn_80191108(void *container, s32 offset) {
 #pragma cplusplus on
 extern "C" void fn_801B6660(void);
 #pragma use_lmw_stmw off
-extern "C" void fn_80191178(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, f32 farg0) {
-    class Dummy {
+extern "C" void fn_80191178(void *parent, s32 inX, s32 inY, s32 *outX, s32 *outY, f32 scale) {
+    /* Query a base offset and a child object's offset via two virtual calls,
+     * returning their sums in outX/outY, then clear a flag byte on the object
+     * held at +0x20. */
+    class OffsetSource {
     public:
         virtual void v0();
         virtual void v1();
         virtual void v2();
         virtual void v3();
         virtual void v4();
-        virtual void v5(s32, s32, s32 *, s32 *, f32);
+        virtual void getOffset(s32, s32, s32 *, s32 *, f32);
     };
-    s32 sp14;
-    s32 sp10;
-    s32 spC;
-    s32 sp8;
-    register f32 value = farg0;
+    s32 baseX;
+    s32 baseY;
+    s32 childX;
+    s32 childY;
+    register f32 scaleValue = scale;
 
-    ((Dummy *)*(void **)((u8 *)arg0 + 0xC))->v5(arg1, arg2, &sp14, &sp10, value);
-    ((Dummy *)*(void **)((u8 *)arg0 + 8))->v5(arg1 + sp14, arg2 + sp10, &spC, &sp8, value);
-    *arg3 = sp14 + spC;
-    *arg4 = sp10 + sp8;
+    ((OffsetSource *)*(void **)((u8 *)parent + 0xC))->getOffset(inX, inY, &baseX, &baseY, scaleValue);
+    ((OffsetSource *)*(void **)((u8 *)parent + 8))->getOffset(inX + baseX, inY + baseY, &childX, &childY, scaleValue);
+    *outX = baseX + childX;
+    *outY = baseY + childY;
     fn_801B6660();
-    *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x20) + 0x260C) = 0;
+    *(u8 *)((u8 *)*(void **)((u8 *)parent + 0x20) + 0x260C) = 0;
 }
 #pragma use_lmw_stmw reset
 #pragma cplusplus reset
