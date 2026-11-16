@@ -90,6 +90,7 @@ static void nandOpenCallback(s32 result, void* arg) {
     }
 }
 
+/* Synchronously close an open NAND file and convert the ISFS result to a NAND result. */
 s32 NANDClose(NANDFileInfo* info) {
     s32 result;
 
