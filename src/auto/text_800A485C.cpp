@@ -14497,7 +14497,8 @@ extern "C" s32 fn_800BDEB4(const u8 *data, s32 bitCount, u32 *bitOffset) {
 extern "C" void *lbl_8055DD88;
 extern "C" void fn_800BC538(u8 *, u8 *, u8 *, s32, u8 *, s16 *, s16 *, u8 *, s16); /* extern */
 extern "C" void fn_800BF048(void *, u8 *, u8 *, u8 *, u8 *, u8 *, s32 *, u8 *, s16 *, s16 *, s16 *, s16 *, s16 *, s16 *, s16 *); /* extern */
-extern "C" u32 fn_800C0E7C(void *, void *, void *, void *, s32 *, void *); /* extern */
+struct TransformState800C;
+extern "C" u32 fn_800C0E7C(TransformState800C *, s32 (*)[36], s32 (*)[18], s32 *, s32 *, s32 *); /* extern */
 extern "C" void fn_800C18A0(void *input, void *output);
 extern "C" void fn_800C2590(s32 *a0, s32 *a1, s32 *a2, s32 *a3);
 extern "C" void fn_800C280C(s32 *a0, s32 *a1, s32 *a2, s32 *a3);
@@ -14814,9 +14815,9 @@ block61:
                 fn_800BD970(*(s32 *)((u8 *)arg0 + 0x9C8),
                             *(s32 *)((u8 *)arg0 + 0x9BC),
                             (s8)*(u8 *)arg0, *p90, (s32 *)((u8 *)arg0 + 0xAB0));
-            fn_800C0E7C(arg0, (u8 *)arg0 + 0x72B0,
-                        (u8 *)arg0 + 0x96B0, (u8 *)arg0 + 0xA8B0,
-                        p90, (u8 *)arg0 + 0xAB0);
+            fn_800C0E7C((TransformState800C *)arg0, (s32 (*)[36])((u8 *)arg0 + 0x72B0),
+                        (s32 (*)[18])((u8 *)arg0 + 0x96B0), (s32 *)((u8 *)arg0 + 0xA8B0),
+                        p90, (s32 *)((u8 *)arg0 + 0xAB0));
             if (arg6 == 0) {
                 fn_800C4CF4(arg0, (s32)((u8 *)arg0 + 0x52B0),
                             (s32)((u8 *)arg0 + 0xA8B0),
@@ -16313,17 +16314,11 @@ static inline void fn_800C0E7C_rotate(s32 *p, s32 *out) {
 }
 #pragma push
 #pragma use_lmw_stmw on
-extern "C" u32 fn_800C0E7C(void *arg0, void *arg1, void *arg2, void *arg3, s32 *arg4, void *arg5) {
-    u8 *self = (u8 *)arg0;
-    s32 (*a90)[36] = (s32 (*)[36])arg1;
-    s32 (*a48)[18] = (s32 (*)[18])arg2;
-    s32 *a4 = (s32 *)arg3;
-    s32 *flags = arg4;
-    s32 *base = (s32 *)arg5;
+extern "C" u32 fn_800C0E7C(TransformState800C *self, s32 (*a90)[36], s32 (*a48)[18], s32 *a4, s32 *flags, s32 *base) {
     s32 *a4b = a4 + 0x440;
     s32 m2[12], m1[12], m0[12];
     s16 ch;
-    for (ch = 0; ch < (s8)self[0]; flags++, a90 += 32, base += 0x900, ch++, a4b += 0x20, a4 += 0x20, a48 += 32) {
+    for (ch = 0; ch < self->channels; flags++, a90 += 32, base += 0x900, ch++, a4b += 0x20, a4 += 0x20, a48 += 32) {
         s16 i;
         s32 (*p90)[36];
         s32 (*p48)[18];
@@ -16334,7 +16329,7 @@ extern "C" u32 fn_800C0E7C(void *arg0, void *arg1, void *arg2, void *arg3, s32 *
         if (*flags & 7) {
             if (*flags & 1) {
                 p90 = a90; p4b = a4b; p4 = a4; p48 = a48;
-                for (i = 0; i < *(s32 *)(self + 0x9C8); p90++, p4b++, p4++, p48++, i++) {
+                for (i = 0; i < self->rows; p90++, p4b++, p4++, p48++, i++) {
                     fn_800C18A0(&base[i * 16 + i * 2] + 0x6C0, *p90);
                     if (!(i & 1))
                         fn_800C2590(*p90, *p48, p4, p4b);
@@ -16344,7 +16339,7 @@ extern "C" u32 fn_800C0E7C(void *arg0, void *arg1, void *arg2, void *arg3, s32 *
                 }
             } else {
                 p90 = a90; p4b = a4b; p4 = a4; p48 = a48;
-                for (i = 0; i < *(s32 *)(self + 0x9C8); i++, p90++, p4b++, p4++, p48++) {
+                for (i = 0; i < self->rows; i++, p90++, p4b++, p4++, p48++) {
                     fn_800C18A0(&base[i * 16 + i * 2] + 0x6C0, *p90);
                     if (*flags & 2) {
                         if (!(i & 1))
@@ -16367,17 +16362,17 @@ extern "C" u32 fn_800C0E7C(void *arg0, void *arg1, void *arg2, void *arg3, s32 *
                 fn_800C18A0(&base[j * 16 + j * 2] + 0x6C0, a90[j]);
                 fn_800C21D8(a90[j], &a90[j][17]);
             }
-            z = a90[*(s32 *)(self + 0x9C8) - 1];
+            z = a90[self->rows - 1];
             for (j = 0; j < 36; j++)
                 z[j] = 0;
-            for (i = 2; i < *(s32 *)(self + 0x9C8) - 1; i++) {
+            for (i = 2; i < self->rows - 1; i++) {
                 fn_800C0E7C_rotate(&base[i * 4 + i * 2], m0);
                 fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x240, m1);
                 fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x480, m2);
                 fn_800C3088(a90[i], m0, m1, m2);
             }
             p48 = a48; p90 = a90; p4 = a4;
-            for (i = 0; i < *(s32 *)(self + 0x9C8); p4++, p90++, i++, p48++) {
+            for (i = 0; i < self->rows; p4++, p90++, i++, p48++) {
                 if (!(i & 1))
                     fn_800C1F6C((u32 *)p4, (u32 *)*p90, (u32 *)*p48);
                 else
@@ -16386,17 +16381,17 @@ extern "C" u32 fn_800C0E7C(void *arg0, void *arg1, void *arg2, void *arg3, s32 *
                     (*p48)[j] = (*p90)[18 + j];
             }
         } else if (*flags & 0x10) {
-            z = a90[*(s32 *)(self + 0x9C8) - 1];
+            z = a90[self->rows - 1];
             for (j = 0; j < 36; j++)
                 z[j] = 0;
-            for (i = 0; i < *(s32 *)(self + 0x9C8) - 1; i++) {
+            for (i = 0; i < self->rows - 1; i++) {
                 fn_800C0E7C_rotate(&base[i * 4 + i * 2], m0);
                 fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x240, m1);
                 fn_800C0E7C_rotate(&base[i * 4 + i * 2] + 0x480, m2);
                 fn_800C3088(a90[i], m0, m1, m2);
             }
             p48 = a48; p90 = a90; p4 = a4;
-            for (i = 0; i < *(s32 *)(self + 0x9C8); p4++, p90++, i++, p48++) {
+            for (i = 0; i < self->rows; p4++, p90++, i++, p48++) {
                 if (!(i & 1))
                     fn_800C1F6C((u32 *)p4, (u32 *)*p90, (u32 *)*p48);
                 else
