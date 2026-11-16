@@ -606,6 +606,8 @@ void fn_802880F4(void) {
 }
 
 void fn_802881D4(void) {
+    /* Tear down the global per-car effect table: run the entry destructor
+       (fn_80287C80) over every element and free the array, then clear it. */
     fn_8002F6AC(lbl_8055F6C4, fn_80287C80);
     lbl_8055F6C4 = 0;
 }
