@@ -15,5 +15,5 @@ void fn_80160C2C(void) {
     *(void **)&lbl_8042FD84 = (char *)&lbl_8042FD84 + 12;
     *(int *)((char *)&lbl_8042FD84 + 8) = 0x14;
     *(int *)((char *)&lbl_8042FD84 + 4) = 0;
-    __register_global_object(&lbl_8042FD84, &fn_80160C8C, &lbl_8042FD78, *(int *)((char *)&lbl_8042FD84 + 8));
+    ((void (*)(void *, void *, void *))__register_global_object)(&lbl_8042FD84, &fn_80160C8C, &lbl_8042FD78);
 }
