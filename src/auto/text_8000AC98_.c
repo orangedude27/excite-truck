@@ -153,14 +153,15 @@ void fn_8000AEC4(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-int fn_8000AEC8(int arg0) {
+/* Returns 1 when value is one of the allowed setting values in the ring buffer, else 0. */
+int fn_8000AEC8(int value) {
     int i;
-    int *p;
-    i = lbl_8055D3E0;
-    p = lbl_8034F5D8;
+    int *cursor;
+    i = ALLOWED_COUNT;
+    cursor = ALLOWED_VALUES;
     for (; i > 0; i--) {
-        if (arg0 == *p) return 1;
-        p++;
+        if (value == *cursor) return 1;
+        cursor++;
     }
     return 0;
 }
