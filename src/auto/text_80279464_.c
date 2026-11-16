@@ -8,6 +8,7 @@ void fn_80279464(void* alarm) {
 extern void* fn_80279D3C(void*);
 extern void fn_802793AC(void*);
 void fn_80279488(void* alarm) {
+    /* Alarm callback: run the fn_80279D3C and fn_802793AC handlers (both currently no-ops). */
     fn_802793AC(fn_80279D3C(alarm));
 }
 
