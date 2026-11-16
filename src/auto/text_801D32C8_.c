@@ -10,7 +10,8 @@ public:
     virtual int isAvailable(int);
 };
 
-class Fn801D334CObj {
+/* Config object that supplies the named values of a mut_phob physics object. */
+class PhobConfigSource {
 public:
     virtual void dummy08();
     virtual int hasKey(const char *);
@@ -25,6 +26,7 @@ public:
     virtual char getByte(const char *, int);
 };
 
+/* The "mut_phob" keys, one block of 12-byte strings. */
 struct Table80338340 {
     char max_life[12];
     char friction[12];
@@ -34,7 +36,8 @@ struct Table80338340 {
     char error[20];
 };
 
-struct Fn801D334CData {
+/* Physics object configuration read by fn_801D334C from a config object. */
+struct PhobConfig {
     float max_life;
     float mass;
     float mx;
@@ -46,10 +49,14 @@ struct Fn801D334CData {
     char ground_test;
     char pad[3];
     int effect_id;
-    int mode;
-    float f2c;
-    float f30;
+    int mode;            /* collision shape: 0 sphere, 1 tube, 2 hinged, 3 cube */
+    float primarySize;   /* 0x2C: "rad" shape size, or "len" for a cube */
+    float secondarySize; /* 0x30: "len" of a tube, "hit" length of a hinged shape */
 };
+#define Fn801D334CObj PhobConfigSource
+#define Fn801D334CData PhobConfig
+#define f2c primarySize
+#define f30 secondarySize
 #pragma cplusplus reset
 
 extern const char lbl_80338340[];
@@ -494,9 +501,13 @@ extern float lbl_8055E3C8;
 extern float lbl_80562AC0;
 #pragma push
 #pragma processor 750
-void fn_801D3BF0(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_801D3BF0(void *arg0) {
     float temp_f31;
-    float a, b, c, d, e, f;
+    float b, c, d, e, f;
+    struct { float value; } aStorage;
+    float &a = aStorage.value;
+    float loadedA;
     float s;
     volatile int reserve[2];
     temp_f31 = lbl_8055E3C8;
@@ -507,16 +518,16 @@ void fn_801D3BF0(void *arg0) {
     }
     if (temp_f31 < *(float *)((char *)arg0 + 0x224) + *(float *)((char *)arg0 + 0x234)) {
         fn_8017B81C();
-        a = *(float *)((char *)arg0 + 0x118);
+        loadedA = *(float *)((char *)arg0 + 0x118);
         s = lbl_80562AC0;
-        a = a * s;
+        a = loadedA * s;
         b = *(float *)((char *)arg0 + 0x11C) * s;
-        *(float *)((char *)arg0 + 0x118) = a;
-        *(float *)((char *)arg0 + 0x11C) = b;
         c = *(float *)((char *)arg0 + 0x120) * s;
         d = *(float *)((char *)arg0 + 0x124) * s;
         e = *(float *)((char *)arg0 + 0x128) * s;
         f = *(float *)((char *)arg0 + 0x12C) * s;
+        *(float *)((char *)arg0 + 0x118) = a;
+        *(float *)((char *)arg0 + 0x11C) = b;
         *(float *)((char *)arg0 + 0x120) = c;
         *(float *)((char *)arg0 + 0x124) = d;
         *(float *)((char *)arg0 + 0x128) = e;
@@ -526,6 +537,7 @@ void fn_801D3BF0(void *arg0) {
     fn_801D411C(arg0);
     *(int *)((char *)arg0 + 0x1E4) = 0;
 }
+#pragma cplusplus reset
 #pragma pop
 extern float lbl_8055E460;
 extern char lbl_80558DC4[];
