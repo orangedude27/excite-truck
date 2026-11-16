@@ -298,10 +298,10 @@ extern "C" void fn_802CD254(void *list) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802CD320(void *arg0, int arg1) {
-    int *countPtr = (int *)((char *)arg0 + 0x88);
-    int **itemsPtr = (int **)((char *)arg0 + 0x90);
-    (*itemsPtr)[(*countPtr)++] = arg1;
+void fn_802CD320(void *list, int object) {
+    int *countPtr = (int *)((char *)list + 0x88);
+    int **itemsPtr = (int **)((char *)list + 0x90);
+    (*itemsPtr)[(*countPtr)++] = object;
 }
 #pragma pop
 void fn_802CD33C(void *list, int entryIndex, int clearFlag) {
