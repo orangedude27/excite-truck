@@ -2,18 +2,19 @@
   // split_file divides it into the game's real files (file_status shows its range).
   
       typedef signed int s32;
-extern char lbl_8055BBB8[];
-extern char lbl_8055BBC0[];
-extern char lbl_8055BBD0[];
-extern char lbl_8055BC18[];
-extern char lbl_8055BC68[];
-extern char lbl_8055BC70[];
-extern char lbl_8055BC78[];
-extern char lbl_8055BC80[];
-extern int lbl_8055BC08;
+extern __declspec(section ".sdata") char lbl_8055BBB8[];
+extern __declspec(section ".sdata") char lbl_8055BBC0[];
+extern __declspec(section ".sdata") char lbl_8055BBD0[];
+extern __declspec(section ".sdata") char lbl_8055BC18[];
+extern __declspec(section ".sdata") char lbl_8055BC68[];
+extern __declspec(section ".sdata") char lbl_8055BC70[];
+extern __declspec(section ".sdata") char lbl_8055BC78[];
+extern __declspec(section ".sdata") char lbl_8055BC80[];
+extern __declspec(section ".sdata") int lbl_8055BC08;
 extern void fn_802E30C8(void *);
 extern void fn_802E8664(int);
 extern void fn_80137D10(void);
+#pragma dont_inline fn_8023D6FC
 
 /* One row of the configurable-control table at lbl_802FA190 (17 rows): the name of a
    control action ("steer_left", "throttle", "e_brake", ...) and the input binding it
