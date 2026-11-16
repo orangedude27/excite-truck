@@ -15,6 +15,7 @@ static inline void sub2_(V2_ *o, const V2_ *p, const V2_ *q) {
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055A070[4];
+#define CIRCLE_NAME lbl_8055A070 /* .sdata string "circle" */
 __declspec(section ".sdata") extern char lbl_8055A078[];
 #define ERASER_NAME lbl_8055A078 /* .sdata string "eraser" */
 extern int lbl_8055E29C;
