@@ -1861,8 +1861,11 @@ f32 fn_80011E90(void) {
     return verticalCenter * lbl_8056025C;
 }
 
-f32 fn_80011EB0(s32 arg0) {
-    return lbl_80350ED8[arg0 * 5 + 2];
+f32 fn_80011EB0(s32 regionId) {
+    /* Horizontal anchor for layout region regionId: the [2] column of its
+     * 5-float record in lbl_80350ED8, used as a target when easing a box's
+     * centre toward the region. */
+    return lbl_80350ED8[regionId * 5 + 2];
 }
 
 f32 fn_80011EC8(s32 arg0) {
