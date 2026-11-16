@@ -2474,15 +2474,15 @@ void fn_801D77E8(void) {
 #pragma peephole off
 static inline int fn_801D77EC_Find(void *arg0, unsigned int arg1) {
     int count;
-    int index;
     unsigned int byteOffset;
+    int index;
     unsigned int *items;
 
     count = *(int volatile *)((char *)arg0 + 0x74);
     byteOffset = 0;
     for (index = 0; index < count; index += 1) {
         items = *(unsigned int **)((char *)arg0 + 0x70);
-        if (*(unsigned int *)((char *)items + byteOffset) == arg1)
+        if (arg1 == *(unsigned int *)((char *)items + byteOffset))
             return index;
         byteOffset += 4;
     }
@@ -2491,22 +2491,10 @@ static inline int fn_801D77EC_Find(void *arg0, unsigned int arg1) {
 
 void fn_801D77EC(void *arg0, unsigned int arg1) {
     int count;
-    int index;
-    unsigned int byteOffset;
     int last;
     unsigned int *items;
+    int index = fn_801D77EC_Find(arg0, arg1);
 
-    count = *(int volatile *)((char *)arg0 + 0x74);
-    index = 0;
-    byteOffset = 0;
-    for (; index < count; byteOffset += 4, index += 1) {
-        items = *(unsigned int **)((char *)arg0 + 0x70);
-        if (*(unsigned int *)((char *)items + byteOffset) != arg1)
-            continue;
-        goto found;
-    }
-    index = -1;
-found:
     if (index == -1)
         return;
     if (index < 0)
