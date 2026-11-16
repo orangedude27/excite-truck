@@ -798,9 +798,10 @@ extern "C" int fn_8023F878(void) {
     return 0;
 }
 #pragma cplusplus off
-int fn_8023F91C(int *arg0) {
+/* If NAND is busy/unavailable, sets -2 and returns 1; otherwise returns 0. */
+int fn_8023F91C(int *outStatus) {
     if (fn_802E8D84() != 0) {
-        *arg0 = -2;
+        *outStatus = -2;
         return 1;
     }
     return 0;
