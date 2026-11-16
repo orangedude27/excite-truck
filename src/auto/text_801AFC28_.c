@@ -450,10 +450,11 @@ s32 fn_801B0588(void *arg0, u8 *arg1) {
     return 1;
 }
 
-s32 fn_801B05A0(void *arg0, u8 *arg1) {
-    *arg1 = *(u8 *)((u8 *)arg0 + 0x1F8);
-    if (*(u8 *)((u8 *)arg0 + 0x1F8) != 0)
-        return (s32)(((u8 *(*)(void *, u8 *))fn_8017D274)(arg0, arg1 + 1) + 1);
+/* Serialize the optional extra payload: write the presence flag at +0x1F8 and, if set, append fn_8017D274's data. Returns bytes written. */
+s32 fn_801B05A0(void *object, u8 *outBuffer) {
+    *outBuffer = *(u8 *)((u8 *)object + 0x1F8);
+    if (*(u8 *)((u8 *)object + 0x1F8) != 0)
+        return (s32)(((u8 *(*)(void *, u8 *))fn_8017D274)(object, outBuffer + 1) + 1);
     return 1;
 }
 
