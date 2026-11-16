@@ -593,11 +593,15 @@ int fn_80289394(int effectOwner) {
 }
 #pragma pop
 void fn_802896E4(void *);
-int fn_802894B4(int arg0) {
-    fn_802896E4((void *)arg0);
-    fn_802897E0(arg0);
-    fn_80289554(arg0);
-    return arg0;
+int fn_802894B4(int manager) {
+    /* Construct the "exhaust smoke man" manager (name at lbl_80348A90+0x30).
+     * fn_802896E4 and fn_802897E0 create its "light exhaust" and "dark exhaust"
+     * effects, storing their handles at +0xA0/+0xA4; fn_80289554 (-> fn_8028967C)
+     * clears and fills the 0xA0-byte emitter table. Returns the manager. */
+    fn_802896E4((void *)manager);
+    fn_802897E0(manager);
+    fn_80289554(manager);
+    return manager;
 }
 
 void *__dt__Q210JASDrumSet5TPercFv_802894F4(void *self, int shouldDelete) {
