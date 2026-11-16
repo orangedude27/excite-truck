@@ -989,49 +989,275 @@ extern "C" int fn_801F88F4(void *arg0) {
     return 0;
 }
 
-extern "C" void fn_801F8988_tmp(void *arg0, void *arg1) {
-    class Node {
-    public:
-        virtual void s8();
-        virtual void sC();
-        virtual void s10();
-        virtual const char *get14(const char *);
-        virtual void s18();
-        virtual void s1C();
-        virtual void s20();
-        virtual void s24();
-        virtual float get28(const char *);
-        virtual void s2C();
-    };
-    u32 *tbl = lbl_802F9B30;
+extern "C" s32 fn_801F8988(void *arg0, void *arg1) {
+    char *dest = (char *)arg0;
     const char *base = lbl_8033AF80;
-    u32 t0 = tbl[0];
-    u32 t1 = tbl[1];
-    u32 t2 = tbl[2];
-    (void)t0; (void)t1; (void)t2;
-    const char *typeName = ((Node *)arg1)->get14((const char *)lbl_8055B2CC);
-    (void)typeName;
-    int found = 0;
-    {
-        const char *arr[3];
-        arr[0] = (const char *)t0;
-        arr[1] = (const char *)t1;
-        arr[2] = (const char *)t2;
-        for (int i = 0; i < 3; i++) {
-            if (arr[i] == 0) { found = 0; break; }
-            if (stricmp(arr[i], typeName) == 0) { found = 1; break; }
+    F8988Mgr *mgr = (F8988Mgr *)arg1;
+    const char *typeName;
+    void *res;
+    u32 idx;
+    char *name;
+    char **p;
+    u32 allowedTypes[3];
+    u32 *source = lbl_802F9B30;
+    allowedTypes[0] = *source++;
+    allowedTypes[1] = *source++;
+    allowedTypes[2] = *source;
+    typeName = mgr->get((const char *)lbl_8055B2CC);
+    int found;
+    u32 *candidate = allowedTypes;
+    while (*candidate != 0) {
+        if (stricmp((const char *)*candidate, typeName) == 0) {
+            found = 1;
+            goto typeChecked;
+        }
+        candidate++;
+    }
+    found = 0;
+typeChecked:
+    if (found) goto failed;
+    *(u32 *)dest = 0x4F425354;
+    *(s32 *)(dest + 4) = 0x84;
+    *(s32 *)(dest + 0x54) = 0;
+    if (mgr->has(base + 0x168)) {
+        if (mgr->has2(base + 0x168)) {
+            *(s32 *)(dest + 0x54) |= 4;
+        } else {
+            *(s32 *)(dest + 0x54) |= 8;
         }
     }
-    unsigned char *out = (unsigned char *)arg0;
-    if (found == 0) {
-        *(u32 *)out = 0x4f425354;
-        *(int *)(out + 4) = 0x84;
-        *(int *)(out + 0x54) = 0;
-        *(float *)(out + 8) = 0.0f;
+    *(s32 *)(dest + 0x80) = 0;
+    *(f32 *)(dest + 8) = mgr->getFD(lbl_8055B314, lbl_80563004);
+    *(f32 *)(dest + 0xC) = mgr->getFD(lbl_8055B31C, lbl_80563008);
+    *(f32 *)(dest + 0x10) = mgr->getFD(lbl_8055B320, lbl_80563008);
+    *(f32 *)(dest + 0x14) = mgr->getFD(lbl_8055B324, lbl_80563008);
+    s32 initial;
+    if (mgr->has(base + 0x178)) {
+        initial = fn_801D04D0(mgr->get(base + 0x178));
     } else {
-        *(u32 *)out = 0;
+        initial = 0x64;
     }
-    (void)base;
+    *(s32 *)(dest + 0x48) = initial;
+    f32 def184 = lbl_80562FFC;
+    *(f32 *)(dest + 0x4C) = mgr->getFD(base + 0x184, def184);
+    FAANames2 names = *(FAANames2 *)lbl_802F9B40;
+    name = (char *)mgr->get((const char *)lbl_8055B2CC);
+    p = (char **)names.w;
+    idx = 0;
+    while (stricmp(*p, name) != 0) {
+        idx++;
+        p++;
+        if (idx == 0x18) {
+            fn_802E317C(base + 0x190, name);
+        }
+    }
+    *(s32 *)(dest + 0x50) = idx;
+    switch (idx) {
+    case 0:
+    case 14:
+    case 17:
+    case 19:
+        *(f32 *)(dest + 0x58) = mgr->getF(lbl_8055B328);
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 6:
+    case 15:
+        *(f32 *)(dest + 0x58) = mgr->getF(lbl_8055B328);
+        *(f32 *)(dest + 0x5C) = mgr->getF(lbl_8055B32C);
+        *(f32 *)(dest + 0x60) = mgr->getF(lbl_8055B330);
+        break;
+    case 4:
+        *(f32 *)(dest + 0x58) = mgr->getF(base + 0x1A8);
+        *(f32 *)(dest + 0x5C) = mgr->getF(lbl_8055B338);
+        *(f32 *)(dest + 0x60) = mgr->getF(lbl_8055B340);
+        break;
+    case 8:
+        *(f32 *)(dest + 0x58) = mgr->getF(lbl_8055B340);
+        *(f32 *)(dest + 0x5C) = mgr->getF(lbl_8055B344);
+        *(f32 *)(dest + 0x60) = mgr->getF(lbl_8055B348);
+        break;
+    case 5:
+    case 7:
+        *(f32 *)(dest + 0x58) = mgr->getF(lbl_8055B328);
+        *(f32 *)(dest + 0x5C) = mgr->getF(lbl_8055B340);
+        break;
+    case 9:
+        *(f32 *)(dest + 0x58) = mgr->getF(base + 0x1B4);
+        *(f32 *)(dest + 0x5C) = mgr->getF(base + 0x1C0);
+        break;
+    case 10:
+    {
+        const char *s = mgr->getD(base + 0x1CC, lbl_8055B310);
+        s32 n = 0x10;
+        char *d = dest + 0x58;
+        u8 c;
+        goto body1;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body1:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        if (*(s8 *)(dest + 0x58) != 0) {
+            goto done;
+        }
+        s = mgr->getD(lbl_8055B2A8, lbl_8055B310);
+        n = 0x10;
+        d = dest + 0x58;
+        goto body2;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body2:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        {
+            char *dot = fn_80029004(dest + 0x58, 0x2E);
+            if (dot == 0) {
+                goto done;
+            }
+            *dot = 0;
+        }
+        d = dest + 0x58;
+        n = 0x10;
+        s = lbl_8055B34C;
+        while (d[0] != 0) {
+            n--;
+            d++;
+        }
+        if (n <= 0) {
+            break;
+        }
+        goto body3;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body3:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        break;
+    }
+    case 20:
+    {
+        const char *s = mgr->getD(base + 0x1CC, lbl_8055B310);
+        s32 n = 0x10;
+        char *d = dest + 0x58;
+        u8 c;
+        goto body4;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body4:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        if (*(s8 *)(dest + 0x58) != 0) {
+            goto done;
+        }
+        s = mgr->getD(lbl_8055B2A8, lbl_8055B310);
+        n = 0x10;
+        d = dest + 0x58;
+        goto body5;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body5:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        {
+            char *dot = fn_80029004(dest + 0x58, 0x2E);
+            if (dot == 0) {
+                goto done;
+            }
+            *dot = 0;
+        }
+        d = dest + 0x58;
+        n = 0x10;
+        s = lbl_8055B354;
+        while (d[0] != 0) {
+            n--;
+            d++;
+        }
+        if (n <= 0) {
+            break;
+        }
+        goto body6;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body6:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        break;
+    }
+    case 11:
+    {
+        void *model = (void *)mgr->get(lbl_8055B2A8);
+        res = (void *)fn_802C6B44(model);
+        memcpy(dest + 0x58, (u8 *)res + 0x2C, 0x1C);
+        *(f32 *)(dest + 0x70) = mgr->getFD(base + 0x1D8, lbl_80562FF0);
+        ((void (*)(void *))fn_802C6C20)(res);
+        break;
+    }
+    case 12:
+        *(f32 *)(dest + 0x58) = mgr->getF(lbl_8055B328);
+        *(f32 *)(dest + 0x5C) = mgr->getF(lbl_8055B340);
+        break;
+    case 13:
+    case 18:
+    case 22:
+        *(f32 *)(dest + 0x58) = mgr->getF(lbl_8055B328);
+        *(f32 *)(dest + 0x5C) = mgr->getF(lbl_8055B348);
+        *(f32 *)(dest + 0x60) = lbl_8056300C * mgr->getFD(base + 0x1EC, lbl_80562FF0);
+        break;
+    case 16:
+    {
+        *(f32 *)(dest + 0x58) = mgr->getF(lbl_8055B32C);
+        *(f32 *)(dest + 0x5C) = mgr->getF(lbl_8055B330);
+        *(f32 *)(dest + 0x60) = mgr->getF(lbl_8055B334);
+        const FAAVec &v = mgr->getV(base + 0x204);
+        *(f32 *)(dest + 0x64) = v.x;
+        *(f32 *)(dest + 0x68) = v.y;
+        *(f32 *)(dest + 0x6C) = v.z;
+        break;
+    }
+    case 21:
+    {
+        const char *s = (const char *)mgr->get(lbl_8055B2A8);
+        s32 n = 0x10;
+        char *d = dest + 0x6C;
+        u8 c;
+        goto body7;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body7:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        *(f32 *)(dest + 0x58) = mgr->getF(lbl_8055B328);
+        *(f32 *)(dest + 0x5C) = mgr->getFD(lbl_8055B35C, *(f32 *)(dest + 0x58));
+        const FAAVec &v = mgr->getV(lbl_8055B364);
+        *(f32 *)(dest + 0x60) = v.x;
+        *(f32 *)(dest + 0x64) = v.y;
+        *(f32 *)(dest + 0x68) = v.z;
+        break;
+    }
+    default:
+        break;
+    }
+done:
+    return 1;
+failed:
+    *(u32 *)dest = 0;
+    return 0;
 }
 
 extern "C" void fn_801F92A8(void) {
