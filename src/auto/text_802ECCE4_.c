@@ -105,8 +105,6 @@ s32 fn_802ECE48(char *movieName) {
     return 0;
 }
 #pragma dont_inline reset
-#pragma dont_inline reset
-#pragma dont_inline on
 
 #pragma dont_inline reset
 
