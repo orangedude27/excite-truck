@@ -829,8 +829,10 @@ extern unsigned short lbl_8055FCAA;
 #pragma pop
 extern int fn_802CB2FC(int, int, int, unsigned char, unsigned short, unsigned char);
 #pragma dont_inline on
+#pragma push
+#pragma opt_propagation off
 int fn_802CB128(int arg0, int arg1, int arg2, int arg3) {
-    register int n;
+    int n;
     const char *name;
     unsigned short id;
     unsigned char flags;
@@ -843,7 +845,7 @@ int fn_802CB128(int arg0, int arg1, int arg2, int arg3) {
     if (arg3 & 0x40)
         flags &= ~2;
     n = (arg3 & 1) + 2;
-    p = (int *)((int (*)(int))fn_802CB018)(n - 2);
+    p = (int *)fn_802CB018();
     memset(p, 0, 0x4C);
     p[0] = 1;
     p[9] = 0;
@@ -856,6 +858,7 @@ int fn_802CB128(int arg0, int arg1, int arg2, int arg3) {
     p[10] = fn_802CA4E0(p[11], (int)&lbl_8055D064, 1, 0, p[13]);
     return ((char *)p - (char *)lbl_8055FCB0) / 0x4C;
 }
+#pragma pop
 /* Release a texture slot: destroy its GPU texture object, free its resource handle, and clear the slot. */
 void fn_802CB228(int slotIndex) {
     int *slot = (int *)(lbl_8055FCB0 + slotIndex * 0x4C);
