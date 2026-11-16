@@ -8404,54 +8404,58 @@ extern "C" void fn_802285B8(void *arg0) {
 
 #pragma push
 #pragma fp_contract on
-extern "C" void *fn_802286E4(void *arg0, void *arg1, s32 arg2) {
-    void *obj;
-    u32 count;
+extern "C" void *fn_802286E4(void *widget, void *config, s32 field244) {
+    void *modelView;
+    u32 itemCount;
 
+    /* Initialize a spinning 3D-model-view text widget: install its vtable,
+       clear its state, and allocate the ModelView subobject it owns at +0x268.
+       The subobject gets an identity transform, an mrModel handle loaded from
+       config (+0x40) when present, and a spin speed of 2*pi / item count. */
     fn_80218F80();
-    *(s32 *)((u8 *)arg0 + 0x244) = arg2;
-    *(void **)((u8 *)arg0 + 0x268) = 0;
-    *(void **)arg0 = lbl_8033DD20;
-    *(u8 *)((u8 *)arg0 + 0x26C) = 0;
-    memset((u8 *)arg0 + 0x248, 0, 0x20);
+    *(s32 *)((u8 *)widget + 0x244) = field244;
+    *(void **)((u8 *)widget + 0x268) = 0;
+    *(void **)widget = lbl_8033DD20;
+    *(u8 *)((u8 *)widget + 0x26C) = 0;
+    memset((u8 *)widget + 0x248, 0, 0x20);
 
-    obj = (void *)fn_801284F8(0x40, lbl_8033DCE8);
-    if (obj != 0) {
-        f32 defaultValue = lbl_805634A8;
-        f32 a8, a4;
-        *(void **)obj = lbl_8033DCF8;
-        *(s32 *)((u8 *)obj + 4) = -1;
-        *(f32 *)((u8 *)obj + 0x38) = defaultValue;
-        *(f32 *)((u8 *)obj + 0x3C) = defaultValue;
-        if (fn_8012C33C((u8 *)arg1 + 0x40) != 0)
-            *(s32 *)((u8 *)obj + 4) = fn_802C6FC0((void *)((s32)arg1 + 0x40), 0, 0);
+    modelView = (void *)fn_801284F8(0x40, lbl_8033DCE8);
+    if (modelView != 0) {
+        f32 initialSpin = lbl_805634A8;
+        f32 identityZero, identityOne;
+        *(void **)modelView = lbl_8033DCF8;
+        *(s32 *)((u8 *)modelView + 4) = -1;
+        *(f32 *)((u8 *)modelView + 0x38) = initialSpin;
+        *(f32 *)((u8 *)modelView + 0x3C) = initialSpin;
+        if (fn_8012C33C((u8 *)config + 0x40) != 0)
+            *(s32 *)((u8 *)modelView + 4) = fn_802C6FC0((void *)((s32)config + 0x40), 0, 0);
 
-        count = *(u32 *)((u8 *)arg1 + 0x9C);
-        if (count != 0) {
-            f32 denominator = (f32)count;
-            f32 ratio = lbl_805634D8 / denominator;
-            *(f32 *)((u8 *)obj + 0x3C) = ratio;
+        itemCount = *(u32 *)((u8 *)config + 0x9C);
+        if (itemCount != 0) {
+            f32 denominator = (f32)itemCount;
+            f32 spinSpeed = lbl_805634D8 / denominator;
+            *(f32 *)((u8 *)modelView + 0x3C) = spinSpeed;
         }
 
-        a4 = lbl_805634A4;
-        a8 = lbl_805634A8;
-        *(f32 *)((u8 *)obj + 8) = a4;
-        *(f32 *)((u8 *)obj + 0xC) = a8;
-        *(f32 *)((u8 *)obj + 0x10) = a8;
-        *(f32 *)((u8 *)obj + 0x14) = a8;
-        *(f32 *)((u8 *)obj + 0x18) = a4;
-        *(f32 *)((u8 *)obj + 0x1C) = a8;
-        *(f32 *)((u8 *)obj + 0x20) = a8;
-        *(f32 *)((u8 *)obj + 0x24) = a8;
-        *(f32 *)((u8 *)obj + 0x28) = a4;
-        *(f32 *)((u8 *)obj + 0x2C) = a8;
-        *(f32 *)((u8 *)obj + 0x30) = a8;
-        *(f32 *)((u8 *)obj + 0x34) = a8;
+        identityOne = lbl_805634A4;
+        identityZero = lbl_805634A8;
+        *(f32 *)((u8 *)modelView + 8) = identityOne;
+        *(f32 *)((u8 *)modelView + 0xC) = identityZero;
+        *(f32 *)((u8 *)modelView + 0x10) = identityZero;
+        *(f32 *)((u8 *)modelView + 0x14) = identityZero;
+        *(f32 *)((u8 *)modelView + 0x18) = identityOne;
+        *(f32 *)((u8 *)modelView + 0x1C) = identityZero;
+        *(f32 *)((u8 *)modelView + 0x20) = identityZero;
+        *(f32 *)((u8 *)modelView + 0x24) = identityZero;
+        *(f32 *)((u8 *)modelView + 0x28) = identityOne;
+        *(f32 *)((u8 *)modelView + 0x2C) = identityZero;
+        *(f32 *)((u8 *)modelView + 0x30) = identityZero;
+        *(f32 *)((u8 *)modelView + 0x34) = identityZero;
     }
 
-    *(void **)((u8 *)arg0 + 0x268) = obj;
-    *(u8 *)((u8 *)arg0 + 0x26C) = 1;
-    return arg0;
+    *(void **)((u8 *)widget + 0x268) = modelView;
+    *(u8 *)((u8 *)widget + 0x26C) = 1;
+    return widget;
 }
 #pragma pop
 extern "C" void *memset(void *, int, unsigned long);
