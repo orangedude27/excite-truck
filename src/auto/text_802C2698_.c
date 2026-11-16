@@ -68,11 +68,13 @@ extern s32 fn_802C9294(s32, s32);
 extern s32 fn_802C974C(f32, f32, f32);
 extern s32 fn_802CB274(s32);
 extern f32 lbl_8055FB74, lbl_80564EB4, lbl_80564EB8, lbl_80564EBC, lbl_80564EC0, lbl_80564EC4, lbl_80564EC8, lbl_80564ECC, lbl_80564ED0;
+#pragma scheduling invalid_target
 void fn_802C276C(void) {
     f32 sp[12];
-    f32 temp_f3;
     f32 temp_f2;
+    f32 temp_f3;
     s32 temp_r31;
+
     if (lbl_8055FB70 == -2) {
         fn_802CB274(lbl_8055FB6C);
         fn_802C9294(lbl_8055FB6C, 0);
@@ -102,7 +104,7 @@ void fn_802C276C(void) {
         fn_802C9294(-1, 0);
     }
 }
-
+#pragma scheduling reset
 void fn_802C2874(void) {
     /* Release the swlmap render-target and texture slots when allocated. */
     if (sSwlMapTargetSlot != NO_TEXTURE_SLOT) {
