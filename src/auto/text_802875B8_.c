@@ -313,8 +313,9 @@ void fn_8028797C(void) {
     fn_802AB628(); fn_802885F0(); fn_802887EC(); fn_802885C0();
 }
 
-void fn_802879E4(s32 arg0) {
-    if (arg0 == 1) {
+/* Runs shutdown/cleanup steps for this subsystem; mode 1 only does a conditional part. */
+void fn_802879E4(s32 mode) {
+    if (mode == 1) {
         if ((u8)lbl_8055F6BC != 0) fn_8028CFB0();
     } else {
         fn_8028CFB0(); fn_802A0B54(); fn_801B8820(); fn_80161AEC(); fn_802A8DE8(); fn_802AB6D0();
