@@ -2406,11 +2406,15 @@ fail:
 #undef vtable_Trigger_ASE
 #undef vtable_Lightning_ASE
 
-int fn_801D76CC(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668();
+/* Lightning_ASE's deleting destructor -- the slot +0x8 of the second interface
+ * of its vtable (lbl_80338A78 + 0x48).  The class holds nothing that needs
+ * cleaning up, so this only hands the object to the delete entry point when it
+ * is being deleted rather than destroyed in place, and returns it. */
+int fn_801D76CC(int object, int deleteFlag) {
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668(); /* MemFree; `object` is still in the argument register */
     }
-    return arg0;
+    return object;
 }
 
 int fn_801D770C(int object, int deleteFlag) {
