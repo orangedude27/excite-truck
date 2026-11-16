@@ -540,10 +540,11 @@ int fn_80018FB4(s32 unused) {
     return 0;
 }
 #pragma pop
+/* Releases the unlock/properties manager object and clears its global pointer. */
 void fn_80018F7C(void) {
-    s32 val = (s32)lbl_8055D58C;
-    fn_80131818(val);
-    lbl_8055D58C = 0;
+    s32 manager = (s32)sUnlockManager;
+    fn_80131818(manager);
+    sUnlockManager = 0;
 }
 
 void *fn_80019054(s32 index) {
