@@ -5538,14 +5538,14 @@ void GXSetAlphaUpdate(s32 enable) {
             unsigned int alphaUpdate : 1;
             unsigned int unused1 : 4;
         } bits;
-    } alphaUpdateReg;
-    unsigned int *gxData = __GXData;
-    alphaUpdateReg.value = gxData[0x220 / 4];
-    alphaUpdateReg.bits.alphaUpdate = enable;
+    } reg;
+    unsigned int *data = __GXData;
+    reg.value = data[0x220 / 4];
+    reg.bits.alphaUpdate = enable;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = alphaUpdateReg.value;
-    gxData[0x220 / 4] = alphaUpdateReg.value;
-    *(unsigned short *)((char *)gxData + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = reg.value;
+    data[0x220 / 4] = reg.value;
+    *(unsigned short *)((char *)data + 2) = 0;
 }
 
 /* Set the depth-test mode: pack the test enable, compare function and
