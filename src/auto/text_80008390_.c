@@ -957,12 +957,14 @@ s32 fn_80009C8C(void) {
 }
 
 #pragma optimization_level 2
+/* Consume the second restart-request flag: report 1 only while the game is not tearing
+   down (lbl_8055D36D == 0) and byte 1 of the restart flags is set, then clear that byte. */
 s32 fn_80009CB8(void) {
-    s32 result = 0;
+    s32 restartRequested = 0;
 
     if ((u8)lbl_8055D36D == 0 && ((u8 *)&lbl_8055D378)[1] != 0)
-        result = 1;
+        restartRequested = 1;
     ((u8 *)&lbl_8055D378)[1] = 0;
-    return result;
+    return restartRequested;
 }
 #pragma optimization_level reset
