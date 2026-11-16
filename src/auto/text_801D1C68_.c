@@ -2,23 +2,6 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #pragma scheduling invalid_target
-static inline void fn_801D2008_swap_pairs(volatile unsigned char *p) {
-    unsigned char t;
-    t=p[0]; p[0]=p[3]; p[3]=t;
-    t=p[1]; p[1]=p[2]; p[2]=t;
-    t=p[4]; p[4]=p[7]; p[7]=t;
-    t=p[5]; p[5]=p[6]; p[6]=t;
-    t=p[8]; p[8]=p[11]; p[11]=t;
-    t=p[9]; p[9]=p[10]; p[10]=t;
-    t=p[12]; p[12]=p[15]; p[15]=t;
-    t=p[13]; p[13]=p[14]; p[14]=t;
-    t=p[16]; p[16]=p[19]; p[19]=t;
-    t=p[17]; p[17]=p[18]; p[18]=t;
-    t=p[20]; p[20]=p[23]; p[23]=t;
-    t=p[21]; p[21]=p[22]; p[22]=t;
-    t=p[24]; p[24]=p[27]; p[27]=t;
-    t=p[25]; p[25]=p[26]; p[26]=t;
-}
 void fn_801D1C68(void *arg0, int arg1) {
     unsigned int *fields = (unsigned int *)arg0;
     int offset;
@@ -243,8 +226,8 @@ void *fn_801D2008(void *arg0) {
     int error = 0;
     unsigned char swap = 1;
     unsigned char *result;
+    unsigned char temp;
     unsigned char *p;
-    int t;
     int i;
 
     result = (unsigned char *)((void *(*)(void *, unsigned int, int *, int, int, unsigned char *))fn_8012C370)(arg0, 0x434D7368, &error, 0, 0, &swap);
@@ -255,22 +238,23 @@ void *fn_801D2008(void *arg0) {
         fn_802E317C(lbl_80338284, error, 0);
     }
     if (swap != 0) {
+        temp = *result;
         p = result;
         for (i = 0; i < 8; i++) {
-            t = p[0]; p[0] = p[3]; p[3] = t;
-            t = p[1]; p[1] = p[2]; p[2] = t;
-            t = p[4]; p[4] = p[7]; p[7] = t;
-            t = p[5]; p[5] = p[6]; p[6] = t;
-            t = p[8]; p[8] = p[11]; p[11] = t;
-            t = p[9]; p[9] = p[10]; p[10] = t;
-            t = p[12]; p[12] = p[15]; p[15] = t;
-            t = p[13]; p[13] = p[14]; p[14] = t;
-            t = p[16]; p[16] = p[19]; p[19] = t;
-            t = p[17]; p[17] = p[18]; p[18] = t;
-            t = p[20]; p[20] = p[23]; p[23] = t;
-            t = p[21]; p[21] = p[22]; p[22] = t;
-            t = p[24]; p[24] = p[27]; p[27] = t;
-            t = p[25]; p[25] = p[26]; p[26] = t;
+            temp = p[0]; p[0] = p[3]; p[3] = temp;
+            temp = p[1]; p[1] = p[2]; p[2] = temp;
+            temp = p[4]; p[4] = p[7]; p[7] = temp;
+            temp = p[5]; p[5] = p[6]; p[6] = temp;
+            temp = p[8]; p[8] = p[11]; p[11] = temp;
+            temp = p[9]; p[9] = p[10]; p[10] = temp;
+            temp = p[12]; p[12] = p[15]; p[15] = temp;
+            temp = p[13]; p[13] = p[14]; p[14] = temp;
+            temp = p[16]; p[16] = p[19]; p[19] = temp;
+            temp = p[17]; p[17] = p[18]; p[18] = temp;
+            temp = p[20]; p[20] = p[23]; p[23] = temp;
+            temp = p[21]; p[21] = p[22]; p[22] = temp;
+            temp = p[24]; p[24] = p[27]; p[27] = temp;
+            temp = p[25]; p[25] = p[26]; p[26] = temp;
             p += 0x1c;
         }
         fn_801D1C68(result, (int)result);
