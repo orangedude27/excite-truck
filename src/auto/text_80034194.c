@@ -2434,12 +2434,14 @@ void fn_80037E94(void) {
     }
 }
 
+// Cover-poll alarm: if no cover-register read is in flight, mark one pending
+// and queue it; its callback advances the drive's cover/motor state machine.
 void fn_8003801C(void) {
-    if (lbl_8055D880 != 0) {
+    if (CoverRegPending != 0) {
         return;
     }
-    lbl_8055D880 = 1;
-    fn_8003BB58(fn_80037E94);
+    CoverRegPending = 1;
+    DVDLowPrepareCoverRegister(cbForCoverReg);
 }
 
 extern s32 __DVDCheckWaitingQueue(void);
