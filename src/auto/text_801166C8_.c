@@ -729,14 +729,16 @@ s32 fn_80117598(s32 arg0, s32 arg1) {
     register s32 base;
     s32 value;
     s32 diff;
+    s32 sign;
     s32 inv;
     off = arg0 + 0x340;
     off -= arg0;
     base = arg0 - off;
     value = *(s32*)(base + 0x33C);
-    diff = (value - arg1) | (arg1 - value);
     inv = -1 - value;
-    return (diff >> 31) & inv;
+    diff = (value - arg1) | (arg1 - value);
+    sign = diff >> 31;
+    return sign & inv;
 }
 
 /* Tick-list "finish" callback for the audio stream manager, registered by
@@ -3769,6 +3771,10 @@ merge:
 
 #pragma push
 #pragma scheduling on
+/* Huffman decoder over a BitReader8011 stream. Reads a 4-bit selector code, writes the two
+   table values lbl_80329DA8[code] / lbl_802F6990[code] to *arg1 / *arg2, then decodes a
+   16-byte permutation into arg3 (using fn_8011C400 to merge run pairs). arg0 is the reader,
+   whose next/value/count are updated on exit. */
 void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
     u8 buffers[0x20];
     const u8 *var_r31;
