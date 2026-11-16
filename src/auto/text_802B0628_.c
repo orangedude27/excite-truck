@@ -399,10 +399,12 @@ void fn_802B110C(void (*fn)(void *), void *arg) {
     fn(arg);
 }
 #pragma scheduling invalid_target
-void fn_802B111C(void *arg0) {
-    ((int *)arg0)[1] = (int)((char *)arg0 + 0x10);
-    ((int *)arg0)[3] = 6;
-    ((int *)arg0)[2] = 0;
+void fn_802B111C(void *object) {
+    /* Initialize a collection object: point its items field (+0x4) at the inline
+     * storage at +0x10, set the element count (+0x8) to 0 and capacity (+0xC) to 6. */
+    ((int *)object)[1] = (int)((char *)object + 0x10);
+    ((int *)object)[3] = 6;
+    ((int *)object)[2] = 0;
 }
 #pragma scheduling on
 __declspec(section ".data") extern void *lbl_804BE104;
