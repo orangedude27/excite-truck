@@ -1895,11 +1895,14 @@ extern "C" void *fn_800F41D0(void *arg0, s32 arg1) {
  return arg0;
 }
 
-extern "C" s32 fn_800F420C(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668();
+/* Deleting-destructor helper: free `object` when `shouldDelete` is set, then return it. */
+extern "C" s32 fn_800F420C(s32 object, s32 shouldDelete) {
+#define MemFree fn_80128668
+    if (object != 0 && shouldDelete > 0) {
+        MemFree();
     }
-    return arg0;
+    return object;
+#undef MemFree
 }
 
 extern "C" const char lbl_80324E40[];
