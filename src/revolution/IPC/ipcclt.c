@@ -22,6 +22,7 @@ static IPCRequestQueue __responses;
 
 size_t strnlen(const char* s, size_t maxlen);
 
+// Returns the number of bytes before the first NUL in s, or maxlen if none is found within maxlen bytes.
 size_t strnlen(const char* s, size_t maxlen) {
     const u8* p = (const u8*)s;
     while (*p && maxlen-- > 0) {
