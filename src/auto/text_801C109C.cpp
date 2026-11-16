@@ -419,10 +419,11 @@ extern "C" void fn_801C1320(void*);
 #define SolveConstraints   fn_801C1364  // two passes of link/distance constraint corrections
 #define WriteOutputs       fn_801C1320  // fill the output vectors
 #pragma dont_inline on
-extern "C" void fn_801C1B60(int arg0) {
-    fn_801C1218((void *)arg0);
-    fn_801C1364(arg0);
-    fn_801C1320((void*)arg0);
+// Run one particle-simulation step: integrate positions, solve constraints, then write outputs.
+extern "C" void fn_801C1B60(int state) {
+    IntegrateParticles((void *)state);
+    SolveConstraints(state);
+    WriteOutputs((void*)state);
 }
 #undef IntegrateParticles
 #undef SolveConstraints
