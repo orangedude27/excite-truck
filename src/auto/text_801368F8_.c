@@ -631,7 +631,6 @@ void fn_80137788(void *arg0, s32 arg1, void *arg2) {
     register unsigned char flag;
     f32 x;
     f32 y;
-    f32 scale;
 
     state = lbl_8055E0D0;
     stride = *(s32 *)((char *)state + 0xC);
@@ -642,19 +641,23 @@ void fn_80137788(void *arg0, s32 arg1, void *arg2) {
     flag = *(unsigned char *)((char *)entry + 0x14);
     equal = difference == 0;
     if ((equal ^ flag) != 0) {
+        f32 scale;
         x = *(f32 *)((char *)arg0 + 0x1C);
         scale = lbl_8056136C;
         x = x * scale;
-        y = *(f32 *)((char *)arg0 + 0x20);
+        y = *(f32 *)((char *)arg0 + 0x20) * scale;
         *(f32 *)arg2 = x;
-        y = y * scale;
         *(f32 *)((char *)arg2 + 4) = y;
         return;
     }
-    y = *(f32 *)((char *)arg0 + 0x20);
-    x = *(f32 *)((char *)arg0 + 0x1C);
-    *(f32 *)((char *)arg2 + 4) = y;
-    *(f32 *)arg2 = x;
+    {
+        f32 ty;
+        f32 tx;
+        tx = *(f32 *)((char *)arg0 + 0x1C);
+        ty = *(f32 *)((char *)arg0 + 0x20);
+        *(f32 *)arg2 = tx;
+        *(f32 *)((char *)arg2 + 4) = ty;
+    }
 }
 
 void fn_801377EC(void *arg0, s32 arg1, void *arg2) {
