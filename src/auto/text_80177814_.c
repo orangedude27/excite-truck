@@ -507,6 +507,7 @@ unsigned char *fn_801781F4(long arg0) {
 #pragma dont_inline off
 
 void fn_80178224(void) {
+    /* Log a "NetCar" debug event (id 0x2780) via the ring buffer; if accepted, construct the NetCar task object. */
     if (fn_801284F8(0x2780, &lbl_8055A304) != 0)
         fn_801A6484();
 }
