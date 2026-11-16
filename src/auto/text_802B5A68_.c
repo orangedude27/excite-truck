@@ -1580,6 +1580,7 @@ void fn_802B7CF0(void) {
 }
 
 void fn_802B7D1C(void) {
+    /* Build the "tedash.val" debug panel: wire the Save-Material-Maps control, then set up the brush and layer columns. */
     fn_802B7884(lbl_8034A8B0);
     fn_802B7918();
     fn_802B7B08();
