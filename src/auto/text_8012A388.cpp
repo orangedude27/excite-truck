@@ -133,7 +133,7 @@ extern "C" s32 fn_8012D024(void *, s32, s32);
 
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012A388(void *arg0) {
-    u8 t0; u8 t24; u8 t25; u8 t26; u8 t27; u8 t28; u8 t29; u8 t30; u8 t31; u8 t6;
+    u8 t6; u8 t24; u8 t25; u8 t26; u8 t27; u8 t28; u8 t29; u8 t30; u8 t31; u8 t0;
     t6 = *(u8 *)((char *)arg0 + 0x24); t0 = *(u8 *)((char *)arg0 + 0x26);
     *(u8 *)((char *)arg0 + 0x24) = *(u8 *)((char *)arg0 + 0x27); t31 = *(u8 *)((char *)arg0 + 0x20);
     *(u8 *)((char *)arg0 + 0x27) = t6; t27 = *(u8 *)((char *)arg0 + 0x21);
@@ -1362,7 +1362,7 @@ extern "C" void fn_8012CC20(void) {
 #pragma dont_inline on
 extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
     u8 *self = (u8 *)arg0;
-    s32 sum, count, value, result, temp, handle, size, done;
+    s32 result, sum, count, value, temp, handle, size, done;
     s32 *record;
     u8 *destination, *source, byte;
     void *parser;
@@ -1550,8 +1550,6 @@ extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
     u8 parseBuffer[0x40];
     s32 size;
     u8 *parser;
-    s32 value;
-    s32 handle;
     do {
         parser = ((u8 *(*)(void *, void *, s32))fn_8012B314)((void *)arg1, parseBuffer,
                                                               *(s32 *)(self + 0xBC));
@@ -1560,11 +1558,11 @@ extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
         done = 0;
         temp = ((s32 (*)(void *, s32 *))fn_8012AC28)(parser, &size);
         if (temp != -1) {
-            value = *(s32 *)(self + 0xCC);
+            s32 value = *(s32 *)(self + 0xCC);
             *(s32 *)(self + 0xC0) = value;
             if (value > *(s32 *)(self + 0xC0))
                 goto parse_next;
-            handle = ((s32 (*)(s32, void *))fn_802E748C)(temp, *(void **)(self + 0xC8));
+            s32 handle = ((s32 (*)(s32, void *, s32))fn_802E748C)(temp, *(void **)(self + 0xC8), value);
             *(s32 *)(self + 0xB4) = handle;
             if (handle != -1) {
                 *(s32 *)(self + 0xB8) = 2;
@@ -1611,7 +1609,7 @@ extern "C" s32 fn_8012D024(void *arg0, s32 arg1, s32 arg2) {
                 *(s32 *)(self + 0x68) = 0;
                 *(u8 *)(self + 0xB1) = 0;
                 s32 base = fn_802E2C20();
-                *(s32 *)self = (base + *(s32 *)(self + 0xC0) / 3000 + 0x1F4);
+                *(s32 *)self = base + *(s32 *)(self + 0xC0) / 3000 + 0x1F4;
             }
         }
     parse_next:
@@ -3114,25 +3112,21 @@ extern "C" void fn_8012F06C(void *arg0) {
             void *entry = (void *)fn_8012E490((s32 *)(obj + 0xA18));
             if (entry != 0) {
                 s32 state = fn_8012D838(*(s32 *)((u8 *)entry + 0x4C));
-                if (state == 1) goto after_state;
-                if (state >= 1) goto state_ge_one;
-                if (state >= 0) goto state_zero;
-                goto after_state;
-state_ge_one:
-                if (state < 3) {
+                switch (state) {
+                case 2:
                     fn_8012E40C((void *)*(s32 *)((u8 *)entry + 0x4C), (s32)((u8 *)entry + 0xC));
-                }
-                goto after_state;
-state_zero:
-                {
+                    break;
+                case 0: {
                     void *node = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
                     *(s32 *)((u8 *)node + 0x9C) = *(s32 *)((u8 *)entry + 8);
                     *(u8 *)((u8 *)node + 0xAD) = (u8)one;
                     fn_8012E3D4(obj + 0xA18);
                     done = 1;
+                    break;
                 }
-after_state:
-                ;
+                default:
+                    break;
+                }
             }
         } while (done != 0);
         obj[0xA20] = 0;
