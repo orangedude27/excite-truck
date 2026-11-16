@@ -271,14 +271,16 @@ extern "C" void fn_802980A0(void) {
 #define gEffectSystem lbl_8055F7C8  // race visual/effect subsystem, ticked by fn_80298BBC
 #define gBackfireMan  lbl_8055F7D8  // "BackfireMan" exhaust-torch manager, ticked by fn_8029BA8C
 #define gEffectDraw   lbl_8055F7C4  // effect draw-list object drawn by fn_80299628
-    extern "C" void fn_80298124(void) {
-        fn_80298BBC(lbl_8055F7C8);
-        fn_8029BA8C(lbl_8055F7D8);
-        void* p = lbl_8055F7C4;
-        if (p != 0) {
-            ((void (*)(void*))fn_80299628)(p);
-        }
+// Per-frame tick of the race visual/effect and backfire systems, then draw the
+// active effect slots when the effect draw-list object exists.
+extern "C" void fn_80298124(void) {
+    fn_80298BBC(gEffectSystem);
+    fn_8029BA8C(gBackfireMan);
+    void* effects = gEffectDraw;
+    if (effects != 0) {
+        ((void (*)(void*))fn_80299628)(effects);
     }
+}
 
 extern "C" void fn_80298160(void) {
     /* Run per-frame updates for several global subsystems when the global time delta is non-zero. */
