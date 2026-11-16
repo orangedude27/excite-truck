@@ -11,6 +11,8 @@ extern float lbl_8056133C;
 void fn_80136714(void *);
 extern float lbl_80561320;
 extern float lbl_80561324;
+#define FLOAT_ZERO lbl_80561320 /* 0.0f */
+#define FLOAT_ONE lbl_80561324  /* 1.0f */
 extern s32 lbl_8032BE80[];
 
 typedef struct {
@@ -907,28 +909,28 @@ void fn_80136594(void *arg0, s32 arg1, s32 arg2) {
 #pragma push
 #pragma scheduling invalid_target
 float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
-    s32 same, offset, pos, count, i, j;
-    s32 length;
-    s32 p_data;
-    s32 p;
+    s32 offset, same, pos, count, i, j;
+    unsigned long length;
+    Unk_80135278 *p;
+    void *data;
     float value, result;
-    p_data = a->unk_2c;
-    if (p_data == 0 || b->unk_4 == 0 || a->unk_4 == 0 || b->unk_54 != a->unk_54)
+    data = (void *)a->unk_2c;
+    if (data == 0 || b->unk_4 == 0 || a->unk_4 == 0 || b->unk_54 != a->unk_54)
         return lbl_80561320;
-    p = a->unk_4;
-    same = (void *)p == (void *)b->unk_4;
+    p = (Unk_80135278 *)a->unk_4;
+    same = p == (Unk_80135278 *)b->unk_4;
     offset = ((-same | same) >> 31) - 1;
-    pos = *(s32 *)(p + 0x10);
+    pos = *(s32 *)((char *)p + 0x10);
     if (a->unk_34 != 0) {
-        length = *(s32 *)(p_data + 0x18);
-        pos = ((unsigned long)length + (pos - a->unk_34)) % (unsigned long)length;
+        length = *(unsigned long *)((char *)data + 0x18);
+        pos = (length + (pos - a->unk_34)) % length;
     }
     count = a->unk_54;
     i = ((pos >> 16) + (count + offset)) % count;
     j = (i + 1) % count;
-    value = b->unk_50[i] + a->unk_8 * (b->unk_50[j] - b->unk_50[i]);
+    value = a->unk_8 * (b->unk_50[j] - b->unk_50[i]) + b->unk_50[i];
     if (same)
-        result = a->unk_50[i] + a->unk_8 * (a->unk_50[j] - a->unk_50[i]);
+        result = a->unk_8 * (a->unk_50[j] - a->unk_50[i]) + a->unk_50[i];
     else
         result = lbl_8055E3C8;
     return result - value;
