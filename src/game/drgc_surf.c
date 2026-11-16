@@ -973,33 +973,35 @@ void fn_802D5F88(s32 arg0) {
 #pragma push
 #pragma opt_lifetimes off
 void fn_802D5FE4(void *arg0) {
-    register void *object = arg0;
-    register int code;
-    fn_802D5F88((s32)object);
-    code = (int)((u8 *)object)[8];
-    switch (code - 10) {
-    case 0: fn_802D41C8(object); break;
-    case 4: if (fn_802DAC64()) fn_802D4280(object); else fn_802D42E4(object); break;
-    case 9: fn_802D4458(object); break;
-    case 16: fn_802D45C0(object); break;
-    case 17: fn_802D50B4(object); break;
-    case 5: fn_802D5270(object); break;
-    case 1: fn_802D3F34(object); break;
-    case 18: fn_802D3F98(object); break;
-    case 2: fn_802D3FFC(object); break;
-    case 3: fn_802D4060(object); break;
+    /* Dispatch display-list surface drawing by the surface descriptor's vertex format
+       (byte at +8, numbered from 10); some formats fall back to conventional handling. */
+    register void *surf = arg0;
+    register int vertexFormat;
+    fn_802D5F88((s32)surf);
+    vertexFormat = (int)((u8 *)surf)[8];
+    switch (vertexFormat - 10) {
+    case 0: fn_802D41C8(surf); break;
+    case 4: if (fn_802DAC64()) fn_802D4280(surf); else fn_802D42E4(surf); break;
+    case 9: fn_802D4458(surf); break;
+    case 16: fn_802D45C0(surf); break;
+    case 17: fn_802D50B4(surf); break;
+    case 5: fn_802D5270(surf); break;
+    case 1: fn_802D3F34(surf); break;
+    case 18: fn_802D3F98(surf); break;
+    case 2: fn_802D3FFC(surf); break;
+    case 3: fn_802D4060(surf); break;
     case 6:
-    case 8: if (fn_802DAC64()) fn_802D5680(object); else fn_802D56D4(object); break;
-    case 7: fn_802D5838(object); break;
-    case 10: fn_802D5ACC(object); break;
-    case 11: fn_802D479C(object); break;
-    case 14: fn_802D4988(object); break;
-    case 12: fn_802D4C44(object); break;
-    case 15: fn_802D4ECC(object); break;
-    case 13: fn_802D5B8C(object); break;
+    case 8: if (fn_802DAC64()) fn_802D5680(surf); else fn_802D56D4(surf); break;
+    case 7: fn_802D5838(surf); break;
+    case 10: fn_802D5ACC(surf); break;
+    case 11: fn_802D479C(surf); break;
+    case 14: fn_802D4988(surf); break;
+    case 12: fn_802D4C44(surf); break;
+    case 15: fn_802D4ECC(surf); break;
+    case 13: fn_802D5B8C(surf); break;
     case 19: fn_802E317C(lbl_8034C2F8); break;
-    case 20: fn_802D422C(object); break;
-    default: fn_802E317C(lbl_8034C334, code); break;
+    case 20: fn_802D422C(surf); break;
+    default: fn_802E317C(lbl_8034C334, vertexFormat); break;
     }
 }
 #pragma pop
