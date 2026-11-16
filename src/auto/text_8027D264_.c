@@ -70,6 +70,7 @@ extern void *fn_8025007C(int);
 extern void fn_8027B94C(void);
 #pragma scheduling invalid_target
 void fn_8027D264(void) {
+    /* Tear down the array at lbl_804A4380: 4 player blocks of 0x3B10 bytes each, run through the per-block deleting destructor fn_8027D280 (MSL runtime array_delete). */
     fn_8002F634(lbl_804A4380, fn_8027D280, 0x3B10, 4);
 }
 #pragma scheduling on
