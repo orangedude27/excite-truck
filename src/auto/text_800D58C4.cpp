@@ -1792,23 +1792,40 @@ extern "C" void fn_800D886C(GXColor *arg0, const GXColor *arg1) {
 #pragma scheduling invalid_target
 extern "C" void __as__Q34nw4r3lyt8TevStageFRCQ34nw4r3lyt8TevStage(void *arg0, const void *arg1) {
     u8 *dst = (u8 *)arg0;
-    const u8 *src = (const u8 *)arg1;
-    dst[8] = src[8];
-    dst[0] = src[0];
-    dst[1] = src[1];
-    dst[2] = src[2];
-    dst[3] = src[3];
-    dst[4] = src[4];
-    dst[5] = src[5];
-    dst[6] = src[6];
-    dst[7] = src[7];
-    dst[9] = src[9];
-    dst[0xA] = src[0xA];
-    dst[0xB] = src[0xB];
-    dst[0xC] = src[0xC];
-    dst[0xD] = src[0xD];
-    dst[0xE] = src[0xE];
-    dst[0xF] = src[0xF];
+    const volatile u8 *src = (const volatile u8 *)arg1;
+    u8 b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15;
+    b0 = src[0];
+    b1 = src[1];
+    b2 = src[2];
+    b3 = src[3];
+    b4 = src[4];
+    b5 = src[5];
+    b6 = src[6];
+    b7 = src[7];
+    b8 = src[8];
+    b9 = src[9];
+    b10 = src[10];
+    b11 = src[11];
+    b12 = src[12];
+    b13 = src[13];
+    b14 = src[14];
+    b15 = src[15];
+    dst[8] = b8;
+    dst[0] = b0;
+    dst[1] = b1;
+    dst[2] = b2;
+    dst[3] = b3;
+    dst[4] = b4;
+    dst[5] = b5;
+    dst[6] = b6;
+    dst[7] = b7;
+    dst[9] = b9;
+    dst[10] = b10;
+    dst[11] = b11;
+    dst[12] = b12;
+    dst[13] = b13;
+    dst[14] = b14;
+    dst[15] = b15;
 }
 #pragma pop
 extern "C" s32 fn_800D893C(void *arg0) {
