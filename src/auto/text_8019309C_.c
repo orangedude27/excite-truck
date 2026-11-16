@@ -838,11 +838,12 @@ void fn_801942B8(void *arg0, float arg1) {
     fn_8018ADBC(*(int *)((char *)arg0 + 0x294), (float)value);
 }
 
-void fn_801942F0(void *arg0, int arg1) {
-    if ((*(int *)((unsigned char *)arg0 + 0x2D0) & 0x20) || arg1 != 0) {
-        *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x267C) = 1;
+void fn_801942F0(void *driver, int forceOn) {
+    /* Set the linked vehicle's flag at +0x267C when the driver's drive word has bit 0x20 or the caller's condition holds; otherwise clear it. */
+    if ((*(int *)((unsigned char *)driver + 0x2D0) & 0x20) || forceOn != 0) {
+        *(int *)((unsigned char *)*(void **)((unsigned char *)driver + 0x294) + 0x267C) = 1;
     } else {
-        *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x267C) = 0;
+        *(int *)((unsigned char *)*(void **)((unsigned char *)driver + 0x294) + 0x267C) = 0;
     }
 }
 
