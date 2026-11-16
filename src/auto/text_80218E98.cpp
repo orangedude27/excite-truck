@@ -9443,19 +9443,20 @@ extern "C" void fn_80229E34(void *sound) {
 }
 
 extern "C" void fn_80229E74(void *arg0) {
-    s32 temp_r0;
-    s32 temp_r4;
-    void *temp_r5;
+    /* Decrement the visible-range count at range+8 by one, clamped to [0, range+0 - range+4]. */
+    s32 maxVisible;
+    s32 count;
+    void *range;
 
-    temp_r5 = *(void **)((u8 *)arg0 + 0x248);
-    temp_r4 = *(s32 *)((u8 *)temp_r5 + 8) - 1;
-    *(s32 *)((u8 *)temp_r5 + 8) = temp_r4;
-    temp_r0 = *(s32 *)((u8 *)temp_r5 + 0) - *(s32 *)((u8 *)temp_r5 + 4);
-    if (temp_r4 > temp_r0) {
-        *(s32 *)((u8 *)temp_r5 + 8) = temp_r0;
+    range = *(void **)((u8 *)arg0 + 0x248);
+    count = *(s32 *)((u8 *)range + 8) - 1;
+    *(s32 *)((u8 *)range + 8) = count;
+    maxVisible = *(s32 *)((u8 *)range + 0) - *(s32 *)((u8 *)range + 4);
+    if (count > maxVisible) {
+        *(s32 *)((u8 *)range + 8) = maxVisible;
     }
-    if (*(s32 *)((u8 *)temp_r5 + 8) < 0) {
-        *(s32 *)((u8 *)temp_r5 + 8) = 0;
+    if (*(s32 *)((u8 *)range + 8) < 0) {
+        *(s32 *)((u8 *)range + 8) = 0;
     }
 }
 
