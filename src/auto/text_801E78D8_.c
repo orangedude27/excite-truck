@@ -730,10 +730,14 @@ loop:
     fn_8026A248(idx, playerId);
 }
 
+#define CurrentPlayerIndex lbl_8055AF0C /* -1 sentinel: use the current player */
+#define sPlayerConfigs lbl_8055EB04 /* array of 0xE0-byte per-player camera/viewport configs */
 long fn_801E866C(long arg0) {
     if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
     return *(long *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x64);
 }
+#undef CurrentPlayerIndex
+#undef sPlayerConfigs
 
 #pragma scheduling invalid_target
 /* If this 0xE0-byte entry's id at +0x70 changed since last seen, cache it and
