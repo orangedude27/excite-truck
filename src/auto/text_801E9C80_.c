@@ -85,10 +85,11 @@ f32 fn_801E9DDC(void *arg0, f32 farg0, f32 farg1) {
 }
 
 #pragma scheduling invalid_target
-void fn_801E9E30(void *arg0, void *arg1) {
-    struct V { s32 a, b, c; };
-    struct V data = *(struct V *)arg1;
-    ((s32 (*)(void *, void *, s32, s32, s32))fn_801DCE14)(arg0, &data, (s32)arg1, 0, 0);
+/* Copy a 3-word vector and query fn_801DCE14 against it, passing the original pointer as context. */
+void fn_801E9E30(void *arg0, void *point) {
+    struct Vec3 { s32 x, y, z; };
+    struct Vec3 pointCopy = *(struct Vec3 *)point;
+    ((s32 (*)(void *, void *, s32, s32, s32))fn_801DCE14)(arg0, &pointCopy, (s32)point, 0, 0);
 }
 /* RealName: QueryRaycastFromPoint (tentative). Copies the 3-s32/vec point from srcPoint into a temp, then forwards to fn_801DCE14 with casted srcPoint and copied first component as extra arg. */
 void fn_801E9E78(void *context, void *srcPoint, s32 outPos, s32 outInfo) {
