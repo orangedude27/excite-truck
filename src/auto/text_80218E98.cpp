@@ -7930,19 +7930,21 @@ extern "C" void *fn_802270DC(void *arg0, void *arg1) {
 #pragma scheduling on
 
 #pragma pop
-extern "C" void *fn_80227244(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(void **)arg0 = &lbl_8033DFB4;
-        fn_8022EE98(*(void **)((u8 *)arg0 + 0x260));
-        s32 h = *(s32 *)((u8 *)arg0 + 0x254);
-        if (h != -2 && h != -1)
-            ((void (*)(int))fn_802CAC54)(h);
-        *(s32 *)((u8 *)arg0 + 0x254) = -1;
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+extern "C" void *fn_80227244(void *object, s32 shouldFree) {
+    /* Widget destructor: reinstall vtable lbl_8033DFB4, release the buffer at +0x260
+       and the handle at +0x254, run the base destructor, then free on request. */
+    if (object != 0) {
+        *(void **)object = &lbl_8033DFB4;
+        fn_8022EE98(*(void **)((u8 *)object + 0x260));
+        s32 handle = *(s32 *)((u8 *)object + 0x254);
+        if (handle != -2 && handle != -1)
+            ((void (*)(int))fn_802CAC54)(handle);
+        *(s32 *)((u8 *)object + 0x254) = -1;
+        fn_8021915C(object, 0);
+        if (shouldFree > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 extern "C" f32 lbl_805634C4;
