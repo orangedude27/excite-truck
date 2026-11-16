@@ -1356,11 +1356,12 @@ extern "C" u32 fn_800ED008(void) { return 1; }
 
 extern "C" u32 fn_800ED010(void) { return 1; }
 
-extern "C" s32 fn_800ED018(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_800ED018(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668_noarg();
     }
-    return arg0;
+    return object;
 }
 
 #pragma dont_inline on
