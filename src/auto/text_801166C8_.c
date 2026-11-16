@@ -5539,26 +5539,28 @@ void fn_80121400(s32 n, s32 *map, f32 *data) {
     }
 }
 #pragma pop
-void fn_80121848(void *arg0) {
-    f32 *p = (f32 *)arg0;
-    f32 a0 = p[2], a1 = p[3], c0 = p[4], c1 = p[5];
-    f32 e0 = p[6], e1 = p[7], d0 = p[8], d1 = p[9];
-    f32 g0 = p[10], g1 = p[11], i0 = p[14], i1 = p[15];
-    f32 b0 = p[16], b1 = p[17], h0 = p[20], h1 = p[21];
-    f32 k0 = p[22], k1 = p[23], f0v = p[24], f1v = p[25];
-    f32 l0 = p[26], l1 = p[27], j0 = p[28], j1 = p[29];
-    p[2] = b0; p[3] = b1;
-    p[4] = d0; p[5] = d1;
-    p[6] = f0v; p[7] = f1v;
-    p[8] = c0; p[9] = c1;
-    p[10] = h0; p[11] = h1;
-    p[14] = j0; p[15] = j1;
-    p[16] = a0; p[17] = a1;
-    p[20] = g0; p[21] = g1;
-    p[22] = l0; p[23] = l1;
-    p[24] = e0; p[25] = e1;
-    p[26] = k0; p[27] = k1;
-    p[28] = i0; p[29] = i1;
+void fn_80121848(void *values) {
+    /* In-place bit-reversal of the 16 complex values in a 32-point FFT buffer;
+     * each value is a real/imaginary float pair. */
+    f32 *p = (f32 *)values;
+    f32 c1re = p[2], c1im = p[3], c2re = p[4], c2im = p[5];
+    f32 c3re = p[6], c3im = p[7], c4re = p[8], c4im = p[9];
+    f32 c5re = p[10], c5im = p[11], c7re = p[14], c7im = p[15];
+    f32 c8re = p[16], c8im = p[17], c10re = p[20], c10im = p[21];
+    f32 c11re = p[22], c11im = p[23], c12re = p[24], c12im = p[25];
+    f32 c13re = p[26], c13im = p[27], c14re = p[28], c14im = p[29];
+    p[2] = c8re; p[3] = c8im;
+    p[4] = c4re; p[5] = c4im;
+    p[6] = c12re; p[7] = c12im;
+    p[8] = c2re; p[9] = c2im;
+    p[10] = c10re; p[11] = c10im;
+    p[14] = c14re; p[15] = c14im;
+    p[16] = c1re; p[17] = c1im;
+    p[20] = c5re; p[21] = c5im;
+    p[22] = c13re; p[23] = c13im;
+    p[24] = c3re; p[25] = c3im;
+    p[26] = c11re; p[27] = c11im;
+    p[28] = c7re; p[29] = c7im;
 }
 
 // Fixed output-ordering permutation for the n == 32 inverse-FFT butterfly
