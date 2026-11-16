@@ -708,8 +708,6 @@ void fn_80247768(void) {
 extern void *lbl_8055BEB0;
 extern s32 lbl_8055BEB8;
 extern s32 lbl_8055F26C;
-#pragma push
-#pragma scheduling invalid_target
 void fn_8024778C(void) {
     s32 current;
     s32 i;
@@ -741,11 +739,12 @@ void fn_8024778C(void) {
         }
         break;
     }
-    for (i = 0; i < 3; i++) {
+    i = 0;
+    do {
         if (fn_8027B94C(i) == 0) {
             fn_80214A9C(i + 0xB);
         }
-    }
+    } while (++i < 3);
 }
 extern void* lbl_8055BEB0;
 extern s32 lbl_8055BEB4;
