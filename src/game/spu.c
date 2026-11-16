@@ -887,10 +887,14 @@ void *fn_802E6058(void *arg0) {
     unsigned int shifted;
     float zeroValue;
     float oneValue;
-    for (i = 0; i < 32; i++) {
+
+    for (i = 0; i < 0x20; i++) {
         unsignedIndex = (unsigned int)i;
         shifted = unsignedIndex << 27;
-        entry = lbl_8055FF94 + (((unsignedIndex >> 31) + (((shifted - (unsignedIndex >> 31)) << 5) | ((shifted - (unsignedIndex >> 31)) >> 27))) * 44);
+        entry = lbl_8055FF94 +
+                (((unsignedIndex >> 31) +
+                  (((shifted - (unsignedIndex >> 31)) << 5) |
+                   ((shifted - (unsignedIndex >> 31)) >> 27))) * 0x2C);
         if (entry[0x20] == 0) {
             OSDisableInterrupts();
             entry[0x20] = 1;
@@ -1267,11 +1271,18 @@ void fn_802E6AC4(void) {
     lbl_8055FFB5 = 1;
 }
 
-int fn_802E6AD0(int arg0) {
-    if (arg0 == 1) {
-        fn_802E7774(fn_802E6AC4);
+int fn_802E6AD0(int request) {
+#define KERNEL_RESET_NOTIFY 1
+#define invokeCallback fn_802E7774
+#define flagSpuReset fn_802E6AC4
+    /* SPU reset callback: on a real reset request, flag the SPU to reset itself. */
+    if (request == KERNEL_RESET_NOTIFY) {
+        invokeCallback(flagSpuReset);
     }
     return 0;
+#undef flagSpuReset
+#undef invokeCallback
+#undef KERNEL_RESET_NOTIFY
 }
 
 #pragma scheduling invalid_target
