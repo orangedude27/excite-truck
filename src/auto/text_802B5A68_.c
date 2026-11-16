@@ -471,6 +471,7 @@ void fn_802B61E0(void) {
 }
 
 void fn_802B6228(void) {
+    /* Update the secondary timer accumulator in seconds. */
     s32 val = fn_802E2C20();
     lbl_8055FA10 = (float)val / lbl_80564C70;
 }
