@@ -360,9 +360,10 @@ extern "C" int fn_8029833C(void *slotPool, void *param1, void *param2, void *par
     return slotIndex;
 }
 
-extern "C" void fn_8029840C(void *arg0, int arg1) {
-    fn_802994C0(lbl_8055F7C4, arg1);
-    *(char *)((char *)arg0 + arg1 * 0x2c + 0x28) = 0;
+extern "C" void fn_8029840C(void *owner, int index) {
+    /* Clear the given indexed slot entry and reset its associated record in the shared state. */
+    fn_802994C0(lbl_8055F7C4, index);
+    *(char *)((char *)owner + index * 0x2c + 0x28) = 0;
 }
 
 #pragma pop
