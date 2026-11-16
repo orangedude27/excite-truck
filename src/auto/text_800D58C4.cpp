@@ -660,50 +660,69 @@ extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Construct a layout Group: reset its child-pane list and other fields, copy in
+ * the group resource, then look up each named child pane and link it into the
+ * list. */
 extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(void *self, const void *resource, void *pane) {
+    #define GROUP_HEAD_OFF    0x10   /* list-head sentinel at self+0x10 */
+    #define GROUP_DATA_OFF    0x18   /* copied resource data at self+0x18 */
+    #define GROUP_DATA_SIZE   0x10
+    #define CHILD_COUNT_OFF   0x18   /* u16 count of child pane names in the resource */
+    #define CHILD_NAMES_OFF   0x1C
+    #define CHILD_NAME_STEP   0x10
+    #define CHILD_NODE_SIZE   0xC
+
     GroupLayout *group = (GroupLayout *)self;
-    register u32 *head = (u32 *)((u8 *)self + 0x10);
-    register void *node;
-    register s32 offset;
-    register const u8 *items;
-    register s32 index;
-    ((volatile u32 *)head)[0] = 0;
-    ((volatile u32 *)head)[1] = 0;
+    register u32 *listHead = (u32 *)((u8 *)self + GROUP_HEAD_OFF);
+    register void *childNode;
+    register s32 nameOffset;
+    register const u8 *childNames;
+    register s32 childIndex;
+    ((volatile u32 *)listHead)[0] = 0;
+    ((volatile u32 *)listHead)[1] = 0;
     group->vtable = lbl_8031F628;
     group->unk4 = 0;
     group->unk8 = 0;
     group->children.count = 0;
-    *(volatile u32 **)&group->children.first = head;
-    *(volatile u32 **)&group->children.last = head;
+    *(volatile u32 **)&group->children.first = listHead;
+    *(volatile u32 **)&group->children.last = listHead;
     *(volatile u8 *)((u8 *)self + 0x28) = 0;
-    memcpy((u8 *)self + 0x18, (const u8 *)resource + 8, 0x10);
+    memcpy((u8 *)self + GROUP_DATA_OFF, (const u8 *)resource + 8, GROUP_DATA_SIZE);
 
-    items = (const u8 *)resource + 0x1C;
-    index = 0;
-    offset = 0;
-    while (index < (s32)*(const u16 *)((const u8 *)resource + 0x18)) {
-        void *result = ((GroupPaneDispatch_800D58C4 *)pane)->GetResource(items + offset, 1);
-        if (result != 0) {
-            s32 allocation = MEMAllocFromAllocator(lbl_8055DDF0, 0xC);
-            if (allocation != 0) {
-                node = (void *)allocation;
-                if (allocation != 0) {
-                    *(u32 *)node = 0;
-                    *(u32 *)((u8 *)node + 4) = 0;
+    childNames = (const u8 *)resource + CHILD_NAMES_OFF;
+    childIndex = 0;
+    nameOffset = 0;
+    while (childIndex < (s32)*(const u16 *)((const u8 *)resource + CHILD_COUNT_OFF)) {
+        void *childPane = ((GroupPaneDispatch_800D58C4 *)pane)->GetResource(childNames + nameOffset, 1);
+        if (childPane != 0) {
+            s32 nodeAddr = MEMAllocFromAllocator(lbl_8055DDF0, CHILD_NODE_SIZE);
+            if (nodeAddr != 0) {
+                childNode = (void *)nodeAddr;
+                if (nodeAddr != 0) {
+                    *(u32 *)childNode = 0;
+                    *(u32 *)((u8 *)childNode + 4) = 0;
                 }
-                *(void **)((u8 *)node + 8) = result;
-                register void *iterator = &group->children.first;
-                void *slot;
-                if (allocation == 0)
+                *(void **)((u8 *)childNode + 8) = childPane;
+                register void *insertPoint = &group->children.first;
+                void *insertSlot;
+                if (nodeAddr == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6E8, 0x233, lbl_8031F6C4);
-                slot = iterator;
-                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&group->children, &slot, node);
+                insertSlot = insertPoint;
+                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&group->children, &insertSlot, childNode);
             }
         }
-        offset += 0x10;
-        index += 1;
+        nameOffset += CHILD_NAME_STEP;
+        childIndex += 1;
     }
     return self;
+
+    #undef GROUP_HEAD_OFF
+    #undef GROUP_DATA_OFF
+    #undef GROUP_DATA_SIZE
+    #undef CHILD_COUNT_OFF
+    #undef CHILD_NAMES_OFF
+    #undef CHILD_NAME_STEP
+    #undef CHILD_NODE_SIZE
 }
 #pragma pop
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
@@ -823,47 +842,40 @@ extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* arg0, 
 }
 
 extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
+    StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = (u8 *)arg0;
-    StateNode_800D6CA0 *type;
-    StateNode_800D6CA0 *needle = (StateNode_800D6CA0 *)&lbl_8055DE08;
-    StateNode_800D6CA0 *n1, *n2, *n3;
-    u8 *p1, *p2, *p3;
-    bool found;
-    type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1();
-    while (type) {
-        if (type == needle) { found = true; goto found1; }
-        type = type->next;
-    }
-    found = false;
-    found1:
-    { u8 *cast = found ? self : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-    n1 = *(StateNode_800D6CA0 **)(self + 0x14);
-    while (n1 != (StateNode_800D6CA0 *)(self + 0x14)) {
+    struct { u8 *ptr; } pp3;
+    struct { StateNode_800D6CA0 *node; } cur1;
+    struct { StateNode_800D6CA0 *node; } cur2;
+    struct { StateNode_800D6CA0 *end; } end1s;
+    struct { StateNode_800D6CA0 *end; } end2s;
+    struct { StateNode_800D6CA0 *node; } cur3;
+    struct { u8 *ptr; } pp1;
+    struct { u8 *ptr; } pp2;
+    StateNode_800D6CA0 *&n1 = cur1.node;
+    StateNode_800D6CA0 *&n2 = cur2.node;
+    StateNode_800D6CA0 *&end1 = end1s.end;
+    StateNode_800D6CA0 *&end2 = end2s.end;
+    StateNode_800D6CA0 *&n3 = cur3.node;
+    u8 *&p1 = pp1.ptr;
+    u8 *&p2 = pp2.ptr;
+    u8 *&p3 = pp3.ptr;
+    { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1(), sentinel) ? self : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+    cur1.node = *(StateNode_800D6CA0 **)(self + 0x14);
+    end1s.end = (StateNode_800D6CA0 *)(self + 0x14);
+    while (n1 != end1) {
         if (!n1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
         p1 = (u8 *)n1 - 4;
         if (!p1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-        type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1();
-        while (type) {
-            if (type == needle) { found = true; goto found2; }
-            type = type->next;
-        }
-        found = false;
-        found2:
-        { u8 *cast = found ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-        n2 = *(StateNode_800D6CA0 **)(p1 + 0x14);
-        while (n2 != (StateNode_800D6CA0 *)(p1 + 0x14)) {
+        { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+        cur2.node = *(StateNode_800D6CA0 **)(p1 + 0x14);
+        end2s.end = (StateNode_800D6CA0 *)(p1 + 0x14);
+        while (n2 != end2) {
             if (!n2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
             p2 = (u8 *)n2 - 4;
             if (!p2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-            type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1();
-            while (type) {
-                if (type == needle) { found = true; goto found3; }
-                type = type->next;
-            }
-            found = false;
-            found3:
-            { u8 *cast = found ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-            n3 = *(StateNode_800D6CA0 **)(p2 + 0x14);
+            { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+            cur3.node = *(StateNode_800D6CA0 **)(p2 + 0x14);
             while (n3 != (StateNode_800D6CA0 *)(p2 + 0x14)) {
                 if (!n3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
                 p3 = (u8 *)n3 - 4;
