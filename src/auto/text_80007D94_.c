@@ -218,6 +218,8 @@ const char* fn_80008188(void) {
     return *(const char**)((u8*)&lbl_8034EF38 + fn_800080E8() * 0xC + 4);
 }
 
+/* Returns the "environ" field (offset 8) of the race-event table entry whose name
+ * matches; the caller's name argument is forwarded in r3 to the lookup fn_800080E8. */
 s32 fn_800081BC(void) {
     return *(s32 *)((u8 *)&lbl_8034EF38 + fn_800080E8() * 0xC + 8);
 }
