@@ -567,9 +567,10 @@ extern "C" s32 fn_80132220(void **arg0) {
         virtual void v2();
         virtual char *v3();
     };
+    s32 result;
     char *value = ((Dummy *)arg0)->v3();
-    s32 result = 0;
-    if (0 != stricmp(value, lbl_80559B18) && 0 == stricmp(value, lbl_80559B10))
+    result = 0;
+    if (stricmp(value, lbl_80559B18) == 0 || stricmp(value, lbl_80559B10) == 0)
         result = 1;
     return result;
 }
