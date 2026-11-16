@@ -804,6 +804,7 @@ void fn_8002167C(void) {
 }
 
 void fn_80021680(void) {
+    /* Audio-DSP case 1: redraw the loading/tips overlay — opaque white art, the overlay effect/message pass, then the "Tips:LOADING" text. */
     fn_80020860(0xFF);
     fn_800209A0(0xFF, lbl_805604B4);
     fn_8001FF34(-1);
