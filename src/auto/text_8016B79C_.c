@@ -862,14 +862,15 @@ void fn_8016CD10(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x34) = value;
 }
 #pragma scheduling on
-void fn_8016CD28(void *arg0) {
+void fn_8016CD28(void *record) {
+    // Array-element constructor: init a 0x44-byte record header — id -1, two zero counters, a field of 3, and a cleared flag at +0x10.
     int zero = 0;
     int minusOne = -1;
-    *((u8 *)arg0 + 0x10) = zero;
-    ((int *)arg0)[0] = minusOne;
-    ((int *)arg0)[1] = zero;
-    ((int *)arg0)[2] = zero;
-    ((int *)arg0)[3] = 3;
+    *((u8 *)record + 0x10) = zero;
+    ((int *)record)[0] = minusOne;
+    ((int *)record)[1] = zero;
+    ((int *)record)[2] = zero;
+    ((int *)record)[3] = 3;
 }
 
 s32 fn_8016CD4C(void *arg0) { s32 *base=*(s32 **)arg0; s32 index=((s32 *)arg0)[1]; ((s32 *)arg0)[1]=index+1; return (s32)base+index*0x14; }
