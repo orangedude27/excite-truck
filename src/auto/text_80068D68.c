@@ -5351,6 +5351,7 @@ void bta_sys_conn_open_8007116C(s32 connId, s32 param1, s32 param2) {
     if (callbacks[0x88 / 4] != 0) callbacks[0x88 / 4](1, connId, param1, param2);
 }
 
+/* Notifies the BTA system callback registered at +0x84 in lbl_803C0AD8 with event code 5. */
 void fn_80071230(void *arg0, void *arg1, void *arg2) {
     void (*callback)(int, void *, void *, void *) =
         *(void (**)(int, void *, void *, void *))(lbl_803C0AD8 + 0x84);
