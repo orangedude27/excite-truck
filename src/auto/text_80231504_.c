@@ -243,6 +243,46 @@ static inline s32 fn_80231AF0_escape(char *text, f32 w, f32 *adv) {
     }
     return 0;
 }
+static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32 *adv) {
+    Fn80231AF0_Table *table = (Fn80231AF0_Table *)lbl_80497F14;
+    s32 flag;
+    s32 i;
+    if (adv != 0) {
+        *adv = w;
+    }
+    flag = lbl_8055F050;
+    if (*text == '\\') {
+        for (i = 0; i < table->count; i++) {
+            Fn80231AF0_Entry *e;
+            const char *name = table->entries[i].name;
+            if (fn_8002B1D8(text + 1, name, strlen(name)) == 0) {
+                Fn80231D84_Rec *r;
+                f32 extra = lbl_8056368C;
+                e = &table->entries[i];
+                r = &((Fn80231D84_Rec *)lbl_8049846C[0])[lbl_8049846C[1]++];
+                r->idx = i;
+                if (e->unkC != 0) {
+                    f32 q = w / fn_80235F64(e->unkC, e->unk10);
+                    r->w = w * e->scale;
+                    r->w2 = q * e->scale * fn_80235EF0(e->unkC, e->unk10);
+                    extra = e->scale * (e->unk18 * q);
+                } else {
+                    r->w2 = w * e->scale;
+                    r->w = w * e->scale;
+                }
+                r->x = x;
+                r->y = y + w + lbl_80563688 * (r->w - w);
+                r->z = z;
+                r->flag = flag;
+                if (adv != 0) {
+                    *adv = r->w2 + extra;
+                }
+                return strlen(table->entries[i].name) + 1;
+            }
+        }
+    }
+    return 0;
+}
 s32 fn_80231504(void) {
     return 0;
 }
@@ -534,12 +574,14 @@ have:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 sy, f32 sp) {
+    register char *curText;
     f32 sp8;
     register f32 half;
     f32 *out = &sp8;
-    strlen(text);
+    curText = text;
+    strlen(curText);
     half = lbl_80563688;
-    while (*text != 0) {
+    while (*curText != 0) {
         register s32 skip;
         s32 flag;
         u8 c;
@@ -550,18 +592,17 @@ void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
 
         sp8 = w;
         flag = lbl_8055F050;
-        if (*text == '\\') {
+        if (*curText == '\\') {
             s32 eo;
             s32 i;
             eo = 0;
             i = 0;
             while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
                 Fn80231AF0_Entry *e = (Fn80231AF0_Entry *)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
-                if (fn_8002B1D8(text + 1, e->name, strlen(*(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo))) == 0) {
-                    Fn80231D84_Table *t = (Fn80231D84_Table *)lbl_8049846C;
+                if (fn_8002B1D8(curText + 1, e->name, strlen(*(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo))) == 0) {
                     Fn80231D84_Rec *r;
                     f32 extra = lbl_8056368C;
-                    r = &t->recs[t->count++];
+                    r = &((Fn80231D84_Rec *)lbl_8049846C[0])[lbl_8049846C[1]++];
                     r->idx = i;
                     if (e->unkC != 0) {
                         f32 q = w / fn_80235F64(e->unkC, e->unk10);
@@ -589,23 +630,23 @@ void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
         skip = 0;
 have:
         if (0 < skip) {
-            text += skip;
+            curText += skip;
             x += sp8;
             continue;
         }
-        c = *(u8 *)text;
+        c = *(u8 *)curText;
         if ((c & 0xF0) == 0xE0) {
-            next = text + 3;
-            code = ((c & 0xF) << 12) | ((((u8 *)text)[1] & 0x3F) << 6) | (((u8 *)text)[2] & 0x3F);
+            next = curText + 3;
+            code = ((c & 0xF) << 12) | ((((u8 *)curText)[1] & 0x3F) << 6) | (((u8 *)curText)[2] & 0x3F);
         } else if ((c & 0xE0) == 0xC0) {
-            next = text + 2;
-            code = ((c & 0x1F) << 6) | (((u8 *)text)[1] & ~0xC0);
+            next = curText + 2;
+            code = ((c & 0x1F) << 6) | (((u8 *)curText)[1] & ~0xC0);
         } else {
             code = c & 0x7F;
-            next = text + 1;
+            next = curText + 1;
         }
         off = code * 0x1C;
-        text += next - text;
+        curText += next - curText;
         g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs;
         x += sy * (sx * *(f32 *)(g + off));
         fn_80233AA4(ctx, code, x, y + w, x + sx * *(f32 *)(g + off + 4), y, z);
