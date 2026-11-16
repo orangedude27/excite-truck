@@ -357,16 +357,17 @@ void* fn_801B3BD4(void* obj, s32 shouldFree) {
     return obj;
 }
 
-void fn_801B3C64(void* arg0) {
-    u8* p = (u8*)arg0;
+void fn_801B3C64(void* object) {
+    /* Construct a pool element: install the vtable (lbl_80335DAC), zero the six floats at +4..+0x18, and clear the owned child at +0x1C. */
+    u8* bytes = (u8*)object;
     f32 zero = lbl_80562624;
     s32 i;
 
-    *(void**)p = (void*)&lbl_80335DAC;
+    *(void**)bytes = (void*)&lbl_80335DAC;
     for (i = 4; i < 0x1C; i += 4) {
-        *(f32*)(p + i) = zero;
+        *(f32*)(bytes + i) = zero;
     }
-    *(s32*)(p + 0x1C) = 0;
+    *(s32*)(bytes + 0x1C) = 0;
 }
 
 typedef void (*Vfn2)(void*, s32);
