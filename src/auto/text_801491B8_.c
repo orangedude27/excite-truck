@@ -2337,7 +2337,7 @@ s32 fn_8015160C(void) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80151654(void *a0, void *a1, int selector) {
+extern "C" void fn_80151654(void *entityPool, void *msgParam, int messageId) {
     struct Obj {
         virtual void v0();
         virtual void v1();
@@ -2350,9 +2350,12 @@ extern "C" void fn_80151654(void *a0, void *a1, int selector) {
     };
     int index;
     void *obj;
-    if (selector != 0x3EB) return;
-    index = *(int *)((char *)a1 + 0x1EC);
-    obj = (char *)a0 + index * 0xC0;
+    /* For message 0x3EB only: take the entity index stored at +0x1EC of the message
+       parameter, index into the pool of 0xC0-byte records, follow the object pointer
+       at +0x9E4, and invoke that object's v7 callback. */
+    if (messageId != 0x3EB) return;
+    index = *(int *)((char *)msgParam + 0x1EC);
+    obj = (char *)entityPool + index * 0xC0;
     obj = (char *)obj + 0x9E4;
     if (obj == 0) return;
     ((Obj *)*(void **)((char *)obj + 0x10))->v7();
