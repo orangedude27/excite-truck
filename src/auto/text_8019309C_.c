@@ -151,9 +151,11 @@ int fn_8019309C(void *player, int slotIndex, signed char value) {
     return applied;
 }
 
-u8 fn_801930DC(void *unused, int index) {
+u8 fn_801930DC(void *unused, int slotIndex) {
     void *entry;
-    entry = lbl_804349C0[index];
+
+    /* Read the +0x2FD marker of the racer registered at slotIndex, if active. */
+    entry = lbl_804349C0[slotIndex];
     if (entry != 0 && *((u8 *)entry + 0x2A4) != 0)
         return *((u8 *)entry + 0x2FD);
     return 0;
