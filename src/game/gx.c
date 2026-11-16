@@ -1130,16 +1130,6 @@ void fn_802D007C(float arg0) {
     lbl_804C5700[0] = 1;
 }
 #pragma pop
-
-static inline void setAmbientColor_802D0160(unsigned char a, unsigned char b, unsigned char c, unsigned char d) {
-    extern char lbl_804C97D0;
-    volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
-    p[4] = a;
-    p[5] = b;
-    p[6] = c;
-    p[7] = d;
-    p[0x5C] = 1;
-}
 void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     unsigned char *p = (unsigned char *)&lbl_804C97D0;
