@@ -1992,11 +1992,12 @@ int fn_801CE874(int arg0) {
 }
 
 unsigned int fn_801CE898(void) {
-    int value = fn_800167F4();
-    int temp = value ^ 1;
-    int half = temp >> 1;
-    temp &= value;
-    return (unsigned int)(half - temp) >> 31;
+    /* Stat-manager flag (StatManager_IsUnavailable): 1 when the record count from fn_800167F4 is >= 2, else 0. */
+    int recordCount = fn_800167F4();
+    int flipped = recordCount ^ 1;
+    int half = flipped >> 1;
+    flipped &= recordCount;
+    return (unsigned int)(half - flipped) >> 31;
 }
 
 extern s32 *__AXFXGetLfoSinTable_801769CC(void);
