@@ -469,15 +469,16 @@ int fn_8023DFD4(void) {
     return 0;
 }
 
+/* Advance the current table row selection to the next row, wrapping at the row count. */
 int fn_8023E028(void) {
-    int temp_r4;
-    int temp_r5;
+    int nextRow;
+    int incrementedRow;
 
     fn_8023E16C(lbl_8055F190, lbl_8055F194);
-    temp_r5 = lbl_8055F194 + 1;
-    temp_r4 = temp_r5 % *(int *)((char *)lbl_8055F190 + 8);
-    lbl_8055F194 = temp_r4;
-    fn_8023E0DC(lbl_8055F190, temp_r4, temp_r5);
+    incrementedRow = lbl_8055F194 + 1;
+    nextRow = incrementedRow % *(int *)((char *)lbl_8055F190 + 8);
+    lbl_8055F194 = nextRow;
+    fn_8023E0DC(lbl_8055F190, nextRow, incrementedRow);
     return 0;
 }
 
