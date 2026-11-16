@@ -303,9 +303,12 @@ void fn_8022DB50(void *obj, int field0, int field4, int step, int field14) {
     *(char *)((char *)obj + 0x18) = 0;
 }
 
-int fn_8022DB94(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
-    return arg0;
+int fn_8022DB94(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668();
+    }
+    return object;
 }
 
 #pragma dont_inline on
