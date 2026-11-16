@@ -11289,6 +11289,7 @@ void fn_800716B0(void *p_queue, s32 p_tle, void *arg2) {
     }
 }
 
+/* Free a GKI buffer pointer if set and clear the slot. */
 void fn_800716F0(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
