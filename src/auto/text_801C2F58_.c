@@ -5,6 +5,10 @@ extern char lbl_8055E7E2;
 extern char lbl_8055E7E3;
 extern void __AXDSPInitCallback_801769E0(void);
 extern f32 fn_801C3B6C(void);
+extern void fn_802E317C(void *, ...);
+extern void fn_802E30C8(const char *, ...);
+extern char lbl_8055AA48[];
+extern void DBPrintf_80179758(const char *, ...);
 
 /* Debug event timeline drawn by this unit: 0x30C-byte entries appended by
  * fn_801C3C80 and kept sorted by fn_801C3B7C on the time at entry+0x0.
@@ -576,36 +580,41 @@ extern s32 fn_801E8838(void);
 extern s32 fn_80202B00(void);
 extern s32 fn_80176780(s32, s32);
 extern float lbl_8055A958, lbl_805629B0, lbl_805629AC;
+extern s32 fn_80179318(void);
+extern void fn_80176858(void);
+extern s32 lbl_8055E7EC;
 void fn_801C4CE8(void) {
     f32 t;
     f64 bias;
     f32 k1, k2, k3, k4;
     s32 i;
     u8 *rec;
-    if (lbl_8055E7E1 != 0) {
+    u8 *dst;
+    s32 tmp32;
+    if ((u8)lbl_8055E7E1 != 0) {
         __AXDSPInitCallback_801769E0();
         lbl_8055E7E1 = 0;
-        if (lbl_8055E7E2 == 0) {
+        if ((u8)lbl_8055E7E2 == 0) {
             lbl_8055E7E3 = 0;
             return;
         }
     }
     t = fn_801C3B6C();
     if (t > lbl_8055A958) {
-        if (lbl_8055E7E3 != 0) return;
+        if ((u8)lbl_8055E7E3 != 0) return;
         lbl_8055E7E3 = 1;
         fn_80176780(0x8102, 0);
         return;
     }
     lbl_8055E7E3 = 0;
     fn_80176A00(1);
-    if (lbl_8055E7E8 != 0) {
+    if ((u8)lbl_8055E7E8 != 0) {
         lbl_8055E7E8 = (fn_801E8838() != 0);
     }
-    if (lbl_8055E7FC != 0 && lbl_8055E800 > 4 && fn_80202B00() == 0) {
+    if ((u8)lbl_8055E7FC != 0 && lbl_8055E800 > 4 && fn_80202B00() == 0) {
         lbl_8055E7FC = 0;
     }
-    if (lbl_8055E7FC != 0) {
+    if ((u8)lbl_8055E7FC != 0) {
         lbl_8055E7E4 = -lbl_8055E3C8;
     }
     bias = lbl_80562980;
@@ -614,6 +623,7 @@ void fn_801C4CE8(void) {
     k3 = lbl_8056296C;
     k4 = lbl_805629AC;
     (void)bias; (void)k1; (void)k2; (void)k3; (void)k4;
+    dst = (u8 *)&lbl_80437D88;
     for (i = 0; i < lbl_8055E804; i++) {
         rec = (u8 *)(u32)lbl_8055E7F8 + i * 0x30c;
         if (t < *(f32 *)rec) return;
@@ -622,8 +632,44 @@ void fn_801C4CE8(void) {
         case 0: break;
         case 1: break;
         case 2: break;
-        case 3: break;
-        case 4: break;
+        case 3:
+            *(f32 *)(dst + 0x0) = *(f32 *)(rec + 0x0);
+            *(f32 *)(dst + 0x4) = *(f32 *)(rec + 0x58);
+            *(f32 *)(dst + 0x8) = *(f32 *)(rec + 0xc);
+            *(f32 *)(dst + 0xc) = *(f32 *)(rec + 0x10);
+            *(f32 *)(dst + 0x10) = *(f32 *)(rec + 0x14);
+            *(u32 *)(dst + 0x14) = *(u32 *)(rec + 0x18);
+            *(u32 *)(dst + 0x18) = *(u32 *)(rec + 0x1c);
+            *(u32 *)(dst + 0x1c) = *(u32 *)(rec + 0x20);
+            *(u32 *)(dst + 0x20) = *(u32 *)(rec + 0x24);
+            *(u32 *)(dst + 0x24) = *(u32 *)(rec + 0x28);
+            *(u32 *)(dst + 0x28) = *(u32 *)(rec + 0x2c);
+            *(u32 *)(dst + 0x2c) = *(u32 *)(rec + 0x30);
+            *(u32 *)(dst + 0x30) = *(u32 *)(rec + 0x34);
+            *(u32 *)(dst + 0x34) = *(u32 *)(rec + 0x38);
+            *(f32 *)(dst + 0x38) = *(f32 *)(rec + 0x3c);
+            *(f32 *)(dst + 0x3c) = *(f32 *)(rec + 0x40);
+            *(f32 *)(dst + 0x40) = *(f32 *)(rec + 0x44);
+            *(f32 *)(dst + 0x44) = *(f32 *)(rec + 0x48);
+            *(f32 *)(dst + 0x48) = *(f32 *)(rec + 0x4c);
+            *(f32 *)(dst + 0x4c) = *(f32 *)(rec + 0x50);
+            *(f32 *)(dst + 0x50) = *(f32 *)(rec + 0x54);
+            *(u8 *)(dst + 0x54) = *(u8 *)(rec + 0x5c);
+            *(u32 *)(dst + 0x58) = *(u32 *)(rec + 0x60);
+            *(u32 *)(dst + 0x5c) = *(u32 *)(rec + 0x64);
+            *(u32 *)(dst + 0x60) = *(u32 *)(rec + 0x68);
+            *(f32 *)(dst + 0x64) = *(f32 *)(rec + 0x6c);
+            break;
+        case 4:
+            if ((u8)lbl_8055E7E8 == 0) {
+                lbl_8055E7E8 = 1;
+                lbl_8055E7EC = fn_80179318();
+                fn_80176858();
+            } else {
+                tmp32 = fn_80179318();
+                if (lbl_8055E7EC == tmp32) break;
+            }
+            break;
         case 5: break;
         case 6: break;
         case 7: break;
