@@ -321,8 +321,7 @@ int fn_80193524(void *first, void *second) {
     return result;
 }
 #pragma processor gekko
-/* Clears a sound object's two accumulator fields to zero and stamps its start
- * field with the current game time (lbl_8055E3C8), resetting its timing state. */
+/* Reset a sound object's timing: zero its accumulators and stamp its start time. */
 void fn_801935EC(void *sound) {
     float zero = lbl_80562144;
     *(float *)((unsigned char *)sound + 0x224) = zero;
