@@ -79,8 +79,9 @@ int fn_80129D18(int slot, int range) {
 }
 
 #pragma dont_inline on
-int fn_80129D90(int unused, int arg0, int arg1) {
-    return arg0 + fn_80129D18(unused, arg1 - arg0);
+int fn_80129D90(int slot, int min, int max) {
+    /* Draw a random integer in [min, max) from RNG slot `slot`. */
+    return min + fn_80129D18(slot, max - min);
 }
 #pragma dont_inline off
 int fn_80129D18(int, int);
