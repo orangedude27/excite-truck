@@ -520,10 +520,12 @@ void fn_80178258(void) {
     }
 }
 #pragma scheduling on
+/* Allocate the 0x1FC-byte "WheelPhob" DisposeCallbackManager and construct it
+   through fn_801AFD20 (the new object stays in r3 for the constructor call). */
 void fn_80178290(void) {
-    void *p = (void *)fn_801284F8(0x1FC, &lbl_80331938);
-    if (p != 0) {
-        fn_801AFD20(p);
+    void *manager = (void *)fn_801284F8(0x1FC, &lbl_80331938);
+    if (manager != 0) {
+        fn_801AFD20(manager);
     }
 }
 extern char lbl_80331944[];
