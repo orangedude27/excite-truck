@@ -318,15 +318,16 @@ void fn_80134A8C(void) {
   
 #pragma push
 #pragma processor 750
-float fn_80134B58(s32 arg0, float arg1)
+/* Returns the float value for the given config key, or the provided default if the key is absent. */
+float fn_80134B58(s32 key, float defaultValue)
 {
     extern s32 fn_80134B9C(s32, s32);
     extern double atof(void);
-    float result = arg1;
-    if (fn_80134B9C(arg0, 0) != 0) {
-        result = (float)atof();
+    float value = defaultValue;
+    if (fn_80134B9C(key, 0) != 0) {
+        value = (float)atof();
     }
-    return result;
+    return value;
 }
 #pragma push
 #pragma cplusplus on
