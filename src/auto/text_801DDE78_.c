@@ -34,21 +34,19 @@ s32 fn_801DDEAC(void) {
 }
 #pragma push
 #pragma scheduling invalid_target
-/* Each 28-byte sParamTable record is seven words:
- *   +0x00 name (const char*), +0x04 unit (const char*), +0x08 value pointer (f32*),
- *   +0x0C current value, +0x10 min, +0x14 max, +0x18 slider step. */
-void fn_801DDED0(s32 arg0, f32* arg1, s32 arg2, f32 farg0, f32 farg1, f32 farg2) {
+/* Appends one tunable-parameter record (name, unit, value pointer/value, min, max, step) to the garage overlay's entry table. */
+void fn_801DDED0(s32 name, f32* value, s32 unit, f32 min, f32 max, f32 step) {
     u32* entry;
-    s32 idx = lbl_8055E9C4;
-    entry = &lbl_80486F30[idx * 7];
-    entry[0] = (u32)arg0;
-    entry[1] = (u32)arg2;
-    lbl_8055E9C4 = idx + 1;
-    entry[2] = (u32)arg1;
-    *(f32*)&entry[3] = *arg1;
-    *(f32*)&entry[4] = farg0;
-    *(f32*)&entry[5] = farg1;
-    *(f32*)&entry[6] = farg2;
+    s32 index = sParamCount;
+    entry = &sParamTable[index * 7];
+    entry[0] = (u32)name;
+    entry[1] = (u32)unit;
+    sParamCount = index + 1;
+    entry[2] = (u32)value;
+    *(f32*)&entry[3] = *value;
+    *(f32*)&entry[4] = min;
+    *(f32*)&entry[5] = max;
+    *(f32*)&entry[6] = step;
 }
 #pragma pop
 extern void fn_8018A2C0();
