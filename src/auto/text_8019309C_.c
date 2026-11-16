@@ -193,11 +193,16 @@ u8 fn_80193184(void *unused, int index) {
 
 typedef float f32;
 struct S93524 { char pad[0x54]; float dir[3]; float pos[3]; };
-f32 fn_801931AC(f32 a, f32 b, f32 c, f32 d) {
-    f32 t = lbl_80562140 - a / d;
-    t = (lbl_80562140 < t) ? lbl_80562140 : t;
-    t = (t > lbl_80562144) ? t : lbl_80562144;
-    return b + t * (c - b);
+f32 fn_801931AC(f32 numerator, f32 from, f32 to, f32 denominator) {
+#define kOne lbl_80562140
+#define kZero lbl_80562144
+    /* Lerp from `from` to `to` by 1 - numerator/denominator, clamped into [0,1]. */
+    f32 t = kOne - numerator / denominator;
+    t = (kOne < t) ? kOne : t;
+    t = (t > kZero) ? t : kZero;
+    return from + t * (to - from);
+#undef kOne
+#undef kZero
 }
 
 float fn_801931EC(float a, float b) {
@@ -2423,18 +2428,18 @@ extern int fn_80197FE4(void *, void *);
 extern int fn_80137788(void *, int, float *);
 extern int fn_801377EC(void *, int, float *);
 extern int lbl_802F9578[3];
+#pragma scheduling invalid_target
 void fn_80196DC4(void *arg0) {
     struct Cnt { int a, b, c; };
     struct Entry { u8 pad0[8]; u8 b8; u8 pad9[3]; int w0C; u8 b10; u8 pad11[3]; int w14; };
     struct Info { struct Entry *e; float f[4]; u8 b; int w; };
     struct Table { int count; int pad4[2]; int stride; char *base; };
     struct Local { struct Cnt cnt; struct Info info; } L;
+    int c2, c1, c0, *src;
     char *obj = (char *)arg0;
     float negx, x, u, v, w;
     int s, n, i;
     float zero;
-    int *src;
-    int c0, c1, c2;
     fn_80196C90(arg0);
     x = *(float *)(obj + 0x274);
     *(u8 *)(obj + 0x74) = 0;
@@ -2457,8 +2462,7 @@ void fn_80196DC4(void *arg0) {
     *(float *)(obj + 0xD4) = x;
     *(u8 *)(obj + 0x11C) = 0;
     *(float *)(obj + 0x120) = w;
-    s = *(int *)(obj + 0x290);
-    ((void (*)(int, int, float, float, float, float))fn_80136EA4)(lbl_8055E0D0, s, v, u, x, negx);
+    ((void (*)(int, int, float, float, float, float))fn_80136EA4)(lbl_8055E0D0, *(int *)(obj + 0x290), v, u, x, negx);
     src = (int *)lbl_802F9578;
     c0 = src[0]; c1 = src[1]; c2 = src[2];
     zero = lbl_80562144;
@@ -2491,8 +2495,7 @@ void fn_80196DC4(void *arg0) {
         }
     }
 }
-
-#pragma pop
+#pragma scheduling reset
 int fn_8019700C(int index) {
     void *entry = lbl_804349C0[index];
     int result = 1;
