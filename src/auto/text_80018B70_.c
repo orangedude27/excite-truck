@@ -426,16 +426,18 @@ static inline s32 fn_80019258_find_inl(const char *name) {
 #pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
-int fn_80019258(const char *name, int *out0, int *out1, int unused) {
-    s32 i;
-    char *p;
-    i = fn_80019258_find_inl(name);
-    p = (char *)lbl_803580A4 + i * 0x10 + 4;
-    if (i < 0)
-        p = 0;
-    if (p != 0) {
-        *out0 = *(s32 *)p;
-        *out1 = *(s32 *)(p + 4);
+int fn_80019258(const char *name, int *outValue0, int *outValue1, int unused) {
+    /* Find the named record in the global registry and return its two int
+     * payload fields; return 0 if no record matches. */
+    s32 row;
+    char *pRecord;
+    row = fn_80019258_find_inl(name);
+    pRecord = (char *)lbl_803580A4 + row * 0x10 + 4;
+    if (row < 0)
+        pRecord = 0;
+    if (pRecord != 0) {
+        *outValue0 = *(s32 *)pRecord;
+        *outValue1 = *(s32 *)(pRecord + 4);
         return 1;
     }
     return 0;
