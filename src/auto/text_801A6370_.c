@@ -146,9 +146,10 @@ struct Fn801A67C4Vt {
     virtual void d8(); virtual void d9();
 };
 #pragma cplusplus reset
-void fn_801A6524(void *arg0) {
+void fn_801A6524(void *object) {
+    /* Initialize the object: run the shared transform/state setup path, then its type-specific field initialization. */
     fn_8018381C();
-    fn_801A6558(arg0);
+    fn_801A6558(object);
 }
 
 #pragma dont_inline on
