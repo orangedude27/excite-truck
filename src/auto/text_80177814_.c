@@ -493,17 +493,15 @@ int fn_801781C0(int modeId) {
 #pragma scheduling on
 unsigned char *fn_801781F4(long arg0) {
     volatile unsigned char *p = &lbl_8055E46C;
-    register unsigned char a;
-    unsigned char b;
-    unsigned char c;
+    int d, a, b, c;
     *(volatile long *)p = arg0;
     a = p[0];
     c = p[3];
     b = p[1];
-    b = p[2];
+    d = p[2];
     p[0] = c;
     p[3] = a;
-    p[1] = b;
+    p[1] = d;
     p[2] = b;
     return (unsigned char *)p;
 }
