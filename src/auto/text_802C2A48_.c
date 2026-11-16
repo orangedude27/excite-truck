@@ -107,15 +107,16 @@ void fn_802C2B78(float arg0, float arg1, float arg2) {
     fn_802D0014(*(float *)lbl_804C1328, *(float *)(lbl_804C1328 + 4), f);
 }
 
-void fn_802C2BB8(float *arg0, float *arg1, float *arg2) {
-    if (arg0 != 0) {
-        *arg0 = *(float *)lbl_804C1328;
+/* Gets the stored view scale range values (start, end, rate). */
+void fn_802C2BB8(float *outStart, float *outEnd, float *outRate) {
+    if (outStart != 0) {
+        *outStart = *(float *)lbl_804C1328;
     }
-    if (arg1 != 0) {
-        *arg1 = *(float *)(lbl_804C1328 + 4);
+    if (outEnd != 0) {
+        *outEnd = *(float *)(lbl_804C1328 + 4);
     }
-    if (arg2 != 0) {
-        *arg2 = *(float *)(lbl_804C1328 + 8);
+    if (outRate != 0) {
+        *outRate = *(float *)(lbl_804C1328 + 8);
     }
 }
 
