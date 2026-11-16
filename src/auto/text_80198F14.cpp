@@ -5048,7 +5048,7 @@ extern "C" void* fn_801A4B5C(void* arg0, s32 arg1, void* arg2) {
 #pragma push
 #pragma small_data off
 extern "C" void fn_801A4E28(void) {
-    /* Static initializer: load the "track.msh" mesh resource and cache the resulting pointer in lbl_8055E5A0. */
+    /* Static initializer: load the "track.msh" mesh resource and cache its pointer in lbl_8055E5A0. */
     lbl_8055E5A0 = fn_801CFEAC(&lbl_803336EC[0]);
 }
 #pragma pop
