@@ -139,15 +139,16 @@ extern float lbl_80333308[];
 extern float lbl_8056220C;
 extern float lbl_8055A488, lbl_8056215C;
 
-int fn_8019309C(void *arg0, int index, signed char arg2) {
-    void *entry = lbl_804349C0[index];
-    int result = 0;
-    if (entry != 0 && *((u8 *)entry + 0x2A4) != 0) {
-        result = 1;
-        *((u8 *)entry + 0x2FC) = *((unsigned int *)((char *)arg0 + 0x290));
-        *((u8 *)arg0 + 0x2FD) = arg2;
+int fn_8019309C(void *player, int slotIndex, signed char value) {
+    /* If the player registered at slotIndex is active, copy its id into that record's voice slot, store value on the player, and report success. */
+    void *rec = lbl_804349C0[slotIndex];
+    int applied = 0;
+    if (rec != 0 && *((u8 *)rec + 0x2A4) != 0) {
+        applied = 1;
+        *((u8 *)rec + 0x2FC) = *((unsigned int *)((char *)player + 0x290));
+        *((u8 *)player + 0x2FD) = value;
     }
-    return result;
+    return applied;
 }
 
 u8 fn_801930DC(void *unused, int index) {
@@ -202,9 +203,9 @@ f32 fn_801931AC(f32 a, f32 b, f32 c, f32 d) {
 float fn_801931EC(float a, float b) {
     float quotient;
     quotient = a / b;
+    quotient = a - quotient;
     a = lbl_80562140;
     b = lbl_8055E558;
-    quotient = a - quotient;
     a = a < quotient ? quotient : a;
     if (a > b) return a;
     return b;
@@ -1405,9 +1406,10 @@ void fn_80195654(void *arg0, void *arg1) {
     void *second;
     void *left;
     void *right;
-    int secondWord;
     int firstWord;
+    int secondWord;
     int flags;
+
     *(volatile int *)((char *)arg0 + 0x2D0) = 0;
     difference = current - previous;
     doInterpolate = difference < threshold;
@@ -1447,8 +1449,8 @@ void fn_80195654(void *arg0, void *arg1) {
         ((void (*)(void *, void *, float))fn_80194FD0)(arg0, arg1, interpolated);
         if (*(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1E4) <
             *(float *)((char *)arg0 + 0x2BC)) {
-            secondWord = ((int *)arg1)[1];
             firstWord = ((int *)arg1)[0];
+            secondWord = ((int *)arg1)[1];
             scratch.word0 = firstWord;
             scratch.word1 = secondWord;
             scratch.value0 = ((float *)arg1)[2];
@@ -2255,41 +2257,34 @@ extern "C" void fn_8019684C(void) {
         virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
         virtual void update();
     };
+    struct Controllers { Controller *entries[8]; int count; };
     List active, inactive;
-    void **entry;
-    int mode, i, count;
+    int mode, i;
+    Controllers *controllers;
+    Controller **iter;
     active.count = 0;
     inactive.count = 0;
     mode = fn_801796B4();
-    entry = lbl_804349C0;
-    for (i = 0; i < 8; i++, entry++) {
-        void *obj = *entry;
+    for (i = 0; i < 8; i++) {
+        void *obj = ((void **)lbl_804349C0)[i];
         if (obj && fn_80134A44(i) && *((unsigned char *)obj + 0x2A4)) {
             if (mode || *((unsigned char *)obj + 0x2A5)) inactive.entry[inactive.count++] = obj;
             else active.entry[active.count++] = obj;
         }
     }
-    count = inactive.count;
-    for (i = 0; i < count; i++) ((void (*)(void *))fn_8019639C)(inactive.entry[i]);
-    count = active.count;
-    for (i = 0; i < count; i++) ((void (*)(void *))fn_8019639C)(active.entry[i]);
-    count = inactive.count;
-    for (i = 0; i < count; i++) fn_80196328(inactive.entry[i]);
-    count = active.count;
-    for (i = 0; i < count; i++) fn_801963A0(active.entry[i]);
-    count = active.count;
-    for (i = 0; i < count; i++) fn_80196414(active.entry[i]);
-    count = active.count;
-    for (i = 0; i < count; i++) fn_80196418(active.entry[i]);
-    count = active.count;
-    for (i = 0; i < count; i++) fn_801967A4(active.entry[i]);
-    count = active.count;
-    for (i = 0; i < count; i++) fn_801967FC(active.entry[i]);
-    {
-        struct Controllers { Controller *entries[8]; int count; };
-        Controllers *controllers = (Controllers *)lbl_804349E0;
-        Controller **iter = controllers->entries;
-        for (i = 0; i < controllers->count; i++, iter++) (*iter)->update();
+    for (i = 0; i < inactive.count; i++) ((void (*)(void *))fn_8019639C)(inactive.entry[i]);
+    for (i = 0; i < active.count; i++) ((void (*)(void *))fn_8019639C)(active.entry[i]);
+    for (i = 0; i < inactive.count; i++) fn_80196328(inactive.entry[i]);
+    for (i = 0; i < active.count; i++) fn_801963A0(active.entry[i]);
+    for (i = 0; i < active.count; i++) fn_80196414(active.entry[i]);
+    for (i = 0; i < active.count; i++) fn_80196418(active.entry[i]);
+    for (i = 0; i < active.count; i++) fn_801967A4(active.entry[i]);
+    for (i = 0; i < active.count; i++) fn_801967FC(active.entry[i]);
+    iter = (Controller **)lbl_804349E0;
+    controllers = (Controllers *)lbl_804349E0;
+    for (i = 0; i < controllers->count; i++) {
+        (*iter)->update();
+        iter++;
     }
 }
 #pragma cplusplus reset
@@ -2389,8 +2384,6 @@ void fn_80196C90(void *arg0) {
     float f1;
     double d148;
     double d144;
-    int r4;
-    int r0;
     int r31;
     int nan;
     int fin;
@@ -2401,9 +2394,7 @@ void fn_80196C90(void *arg0) {
     if (flag != 0) {
         f1 = *(float *)(obj + 0x144);
         f0 = *(float *)(obj + 0xCC);
-        r4 = *(int *)&f1;
-        r0 = *(int *)&f0;
-        if ((int)(r4 & 0x80000000) == (int)(r0 & 0x80000000)) {
+        if ((int)(*(int *)&f1 & 0x80000000) == (int)(*(int *)&f0 & 0x80000000)) {
             *(float *)(obj + 0x144) = f1 * lbl_80562260;
         }
     }
