@@ -355,12 +355,13 @@ extern "C" s32 fn_80134B9C(s32 key, s32 defaultValue) {
       return lbl_8055E0A8;
   }
   
-  s32 fn_80134C24(s32 arg0) {
-      extern void *fn_8017960C(void);
-      if (arg0 >= 0 && arg0 < 8)
-          return *(s32 *)((char *)fn_8017960C() + 0x258);
-      return -1;
-  }
+s32 fn_80134C24(s32 playerIndex) {
+    extern void *fn_8017960C(void);
+    /* Return the label value from player slot 0-7, or -1 when the slot is out of range. */
+    if (playerIndex >= 0 && playerIndex < 8)
+        return *(s32 *)((char *)fn_8017960C() + 0x258);
+    return -1;
+}
   
 s32 fn_80134C60(s32 value, char *dst)
 {
