@@ -2656,8 +2656,10 @@ extern "C" s32 fn_80141FA8(void *arg0, f32 arg1) {
     }
     return result;
 }
-extern "C" s32 fn_801420D4(void *arg0) {
-    return !((f32)__fabs((f64)*(f32 *)((u8 *)arg0 + 0x2690)) <= lbl_80558DC4[0]);
+extern "C" s32 fn_801420D4(void *entity) {
+    /* Nonzero when the entity's float field at 0x2690 is meaningfully nonzero,
+       i.e. its magnitude exceeds the near-zero epsilon in lbl_80558DC4[0]. */
+    return !((f32)__fabs((f64)*(f32 *)((u8 *)entity + 0x2690)) <= lbl_80558DC4[0]);
 }
 
 extern "C" void fn_80142104(void *arg0) {
