@@ -969,26 +969,38 @@ extern "C" double __fabs(double);
 __declspec(section ".data") extern float lbl_80558DC4;
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_801FE448(void *arg0) {
-    float delta = fn_801E7E24();
-    if (!((float)__fabs((double)delta) <= lbl_80558DC4)) {
+extern "C" void fn_801FE448(void *spawners) {
+    #define kSpawnDeltaEpsilon lbl_80558DC4
+    #define kSpawnZero lbl_80563034
+    #define getDeltaTime fn_801E7E24
+    #define spawnFromPool fn_801FEB58
+    #define randomInRange fn_80129DC4
+    float deltaTime = getDeltaTime();
+    /* Advances each spawner's countdown by the frame delta; when a countdown
+     * expires, spawns its pool object and reschedules it with a random delay. */
+    if (!((float)__fabs((double)deltaTime) <= kSpawnDeltaEpsilon)) {
         struct { float value; } thresholdStorage;
         float &threshold = thresholdStorage.value;
-        threshold = lbl_80563034;
-        char *item = (char *)arg0 + 4;
-        int i = 0;
-        while (i < *(int *)((char *)arg0 + 0x34)) {
-            float time = *(float *)(item + 4) - delta;
-            *(float *)(item + 4) = time;
-            if (time <= threshold) {
-                fn_801FEB58(*(void **)item);
-                void *obj = *(void **)item;
-                *(float *)(item + 4) = fn_80129DC4(0, obj, *(float *)((char *)obj + 0x314), *(float *)((char *)obj + 0x318));
+        threshold = kSpawnZero;
+        char *entry = (char *)spawners + 4;
+        int index = 0;
+        while (index < *(int *)((char *)spawners + 0x34)) {
+            float remaining = *(float *)(entry + 4) - deltaTime;
+            *(float *)(entry + 4) = remaining;
+            if (remaining <= threshold) {
+                spawnFromPool(*(void **)entry);
+                void *spawner = *(void **)entry;
+                *(float *)(entry + 4) = randomInRange(0, spawner, *(float *)((char *)spawner + 0x314), *(float *)((char *)spawner + 0x318));
             }
-            item += 8;
-            ++i;
+            entry += 8;
+            ++index;
         }
     }
+    #undef randomInRange
+    #undef spawnFromPool
+    #undef getDeltaTime
+    #undef kSpawnZero
+    #undef kSpawnDeltaEpsilon
 }
 #pragma scheduling on
 #pragma pop
