@@ -172,11 +172,12 @@ extern "C" void fn_801FC994(void) {
 
 #pragma pop
 
-void* fn_801FCA14(void* arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668(arg0);
+void* fn_801FCA14(void* object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_801FCA54(void* arg0, int arg1, int arg2) {
