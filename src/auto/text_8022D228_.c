@@ -292,9 +292,10 @@ void fn_8022DAD0(void *params, float t) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_8022DB34(void *arg0, char *arg1) {
-    int value = **(int **)((char *)arg0 + 4);
-    sprintf(arg1, *(char **)((char *)arg0 + 0x10), value, arg0);
+void fn_8022DB34(void *gauge, char *text) {
+    /* Format an int gauge's current value into text using the gauge's printf format. */
+    int value = **(int **)((char *)gauge + 4);
+    sprintf(text, *(char **)((char *)gauge + 0x10), value, gauge);
 }
 #pragma pop
 /* Initialize a repeating counter/timer object. */
