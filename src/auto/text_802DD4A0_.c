@@ -77,31 +77,30 @@ void fn_802DD5F4(void) {
 
 extern float lbl_80565088, lbl_8056508C, lbl_80565090, lbl_80565094;
 void fn_802DD63C(int count) {
-    typedef struct { float v[36]; int n; } VBuf;
     float f2;
     float f1;
     float f0;
     float f3;
     int i;
-    float *entry;
+    int * __restrict countPtr = (int *)&lbl_804DB6A0[36];
+    float * __restrict entry = lbl_804DB6A0;
 
     f0 = lbl_80565090;
     f1 = lbl_8056508C;
     f2 = lbl_80565094;
     f3 = lbl_80565088;
-    ((VBuf *)lbl_804DB6A0)->n = count;
-    entry = ((VBuf *)lbl_804DB6A0)->v;
-    for (i = 0; i < ((VBuf *)lbl_804DB6A0)->n; entry += 9, i++) {
-        if (((VBuf *)lbl_804DB6A0)->n < 3) {
+    *countPtr = count;
+    for (i = 0; i < *countPtr; entry += 9, i++) {
+        if (*countPtr < 3) {
             entry[0] = f3; entry[1] = f1; entry[4] = f0; entry[5] = f1;
         } else if (i % 2 == 0) {
             entry[0] = f3; entry[1] = f0; entry[4] = f0; entry[5] = f2;
         } else {
             entry[0] = f0; entry[1] = f1; entry[4] = f2; entry[5] = f1;
         }
-        if (((VBuf *)lbl_804DB6A0)->n == 1) {
+        if (*countPtr == 1) {
             entry[2] = f1; entry[3] = f3; entry[6] = f0; entry[7] = f1;
-        } else if (i < (((VBuf *)lbl_804DB6A0)->n + 1) / 2) {
+        } else if (i < (*countPtr + 1) / 2) {
             entry[2] = f1; entry[3] = f0; entry[6] = f0; entry[7] = f2;
         } else {
             entry[2] = f0; entry[3] = f3; entry[6] = f2; entry[7] = f1;
@@ -122,52 +121,58 @@ extern double lbl_805650A0;
 extern float lbl_80565094, lbl_80565098;
 void fn_802DE788(void);
 void fn_802DD898(void *, float, float);
-void fn_802DEA6C(void *);
+void fn_802DEA6C();
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802DD754(void) {
-    float *entry;
-    register int i;
-    register int j;
-    register int one;
-    register void *texObj;
-    int found;
-    float *base;
+void fn_802DD754(void)
+{
+  float *entry;
+  register int i;
+  register int j;
+  register int one;
+  register void *texObj;
+  int new_var;
+  int found;
+  float *base;
+  one = 1;
+  entry = lbl_804DB6A0;
+  for (found = *((int *) (((char *) lbl_804DB6A0) + 0x90)); found > 0; found--, entry += 9)
+  {
+    if (entry[8] > lbl_80565098)
+    {
+      found = 1;
+      goto done;
+    }
+  }
 
-    one = 1;
-    entry = lbl_804DB6A0;
-    for (found = *(int *)((char *)lbl_804DB6A0 + 0x90); found > 0; found--, entry += 9) {
-        if (entry[8] > lbl_80565098) {
-            found = 1;
-            goto done;
-        }
+  found = 0;
+  done:
+  if (found != 0)
+  {
+    fn_802DE788();
+    base = lbl_804DB6A0;
+    for (i = 0; i < 5; i++)
+    {
+      texObj = lbl_8055FED8;
+      GXSetTexCopySrc(0, 0, (unsigned short) lbl_8055FED0, (unsigned short) lbl_8055FED4);
+      GXSetTexCopyDst((unsigned short) (*((int *) (((char *) texObj) + 0x44))), (unsigned short) (*((int *) (((char *) texObj) + 0x48))), 4, *((unsigned char *) (((char *) texObj) + 0x4C)));
+      new_var = i;
+      GXCopyTex(*((void **) (((char *) texObj) + 0x40)), 0);
+      *((unsigned char *) (((char *) texObj) + 0x4D)) = one;
+      GXLoadTexObj(lbl_8055FED8, 0);
+      entry = base;
+      for (j = 0; j < (*((int *) (((char *) base) + 0x90))); j++)
+      {
+        ((void (*)(void *, int, float, float)) fn_802DD898)(entry, new_var, (float) (one << i), lbl_80565094);
+        entry += 9;
+      }
+
     }
-    found = 0;
-done:
-    if (found != 0) {
-        fn_802DE788();
-        base = lbl_804DB6A0;
-        for (i = 0; i < 5; i++) {
-            texObj = lbl_8055FED8;
-            GXSetTexCopySrc(0, 0, (unsigned short)lbl_8055FED0, (unsigned short)lbl_8055FED4);
-            GXSetTexCopyDst(
-                (unsigned short)*(int *)((char *)texObj + 0x44),
-                (unsigned short)*(int *)((char *)texObj + 0x48),
-                4,
-                *(unsigned char *)((char *)texObj + 0x4C));
-            GXCopyTex(*(void **)((char *)texObj + 0x40), 0);
-            *(unsigned char *)((char *)texObj + 0x4D) = one;
-            GXLoadTexObj(lbl_8055FED8, 0);
-            entry = base;
-            for (j = 0; j < *(int *)((char *)base + 0x90); j++) {
-                ((void (*)(void *, int, float, float))fn_802DD898)(
-                    entry, i, (float)(one << i), lbl_80565094);
-                entry += 9;
-            }
-        }
-        ((void (*)(void))fn_802DEA6C)();
-    }
+
+    ((void (*)(void)) fn_802DEA6C)();
+  }
+
 }
 #pragma pop
 extern float lbl_8056508C, lbl_80565090, lbl_80565094, lbl_80565098;
