@@ -2012,9 +2012,10 @@ fail:
 }
 #pragma scheduling reset
 
-void fn_801D6FA0(int arg0) {
-    if (((int *)arg0)[1] != 0) {
-        ((int *)arg0)[1] = 1;
+/* Re-arm an action-sequence element: if its state field (+4) is active (nonzero), force it back to 1 (ready). */
+void fn_801D6FA0(int elem) {
+    if (((int *)elem)[1] != 0) {
+        ((int *)elem)[1] = 1;
     }
 }
 
