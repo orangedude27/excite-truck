@@ -279,16 +279,17 @@ int fn_8029F3BC(unsigned char *name) {
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_8029F458(unsigned char *arg0, int arg1) {
+void fn_8029F458(const char *arg0, int arg1) {
     unsigned char buf[0x20];
     unsigned char c;
     int remaining;
     unsigned char *dst;
     int id;
-    int i;
+    unsigned char *entry;
     int offset;
     int *table;
-    if (*(volatile signed char *)arg0 == '$')
+    int i;
+    if (*arg0 == '$')
         arg0++;
     dst = buf;
     remaining = 0x20;
@@ -309,18 +310,12 @@ lookup:
     table = lbl_804B9B7C;
     i = 0;
     offset = 0;
-    goto check;
-loop:
-    {
-        unsigned char *entry = (unsigned char *)*(volatile int *)&lbl_804B9B7C[0] + offset;
+    for (; i < ((volatile int *)table)[1]; i++) {
+        entry = (unsigned char *)*(volatile int *)&lbl_804B9B7C[0] + offset;
         if (*(int *)entry == id)
             *(int *)(entry + 0x30) = arg1;
+        offset += 0x34;
     }
-    offset += 0x34;
-    i++;
-check:
-    if (i < ((volatile int *)table)[1])
-        goto loop;
 }
 #pragma dont_inline reset
 #pragma scheduling on
