@@ -5,9 +5,20 @@ extern void fn_8000D838(void *);
 extern unsigned char lbl_8055ECA0;
 extern float lbl_804888A8[3];
 extern float lbl_8056305C;
+/* Register the tracked static node and clear the global direction vector to zero. */
 void fn_802021DC(void) {
-    fn_8000D838(&lbl_8055ECA0);
-    lbl_804888A8[0] = lbl_8056305C;
-    lbl_804888A8[1] = lbl_8056305C;
-    lbl_804888A8[2] = lbl_8056305C;
+#define trackedNode     lbl_8055ECA0
+#define globalDirection lbl_804888A8
+#define zeroFloat       lbl_8056305C
+#define RegisterNode    fn_8000D838
+
+    RegisterNode(&trackedNode);
+    globalDirection[0] = zeroFloat;
+    globalDirection[1] = zeroFloat;
+    globalDirection[2] = zeroFloat;
+
+#undef trackedNode
+#undef globalDirection
+#undef zeroFloat
+#undef RegisterNode
 }
