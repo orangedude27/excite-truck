@@ -4355,7 +4355,7 @@ void uusb_ReadBulkDataCB(s32 length, BT_HDR *buf) {
     s32 size, i;
     u8 *p;
     BT_HDR *copy;
-    u32 zero = 0;
+    register u32 zero = 0;
     char *report=lbl_803142C8;
     uusb_cb_t *control=&lbl_803BD1E0;
     if(control->state!=2) {
@@ -21690,6 +21690,7 @@ extern u8 lbl_80319514[],lbl_80319540[];
 void port_rfc_closed(struct t_port_info *arg0, u8 arg1) {
     void *mcb = *(void **)((u8 *)arg0 + 0x6C);
     s32 signals = 0;
+    u8 old_signals;
 
     if (*((u8 *)arg0 + 2) == 1 && *((u8 *)arg0 + 0xC)) {
         if (lbl_803C4828[0x414] >= 4)
@@ -21705,10 +21706,10 @@ void port_rfc_closed(struct t_port_info *arg0, u8 arg1) {
         return;
     }
     if (*((u8 *)arg0 + 2) != 3 && *((u8 *)arg0 + 2) != 0) {
-        u32 mask = 0xFFFFFFF4;
         *((u8 *)arg0 + 0xF) |= 0x10;
-        *((u8 *)arg0 + 0x5F) = *((u8 *)arg0 + 0x5F) & mask;
-        signals = port_get_signal_changes(arg0);
+        old_signals = *((u8 *)arg0 + 0x5F);
+        *((u8 *)arg0 + 0x5F) &= ~(0x1 | 0x2 | 0x8);
+        signals |= port_get_signal_changes(arg0, old_signals, *((u8 *)arg0 + 0x5F));
         if (*(u32 *)((u8 *)arg0 + 0x88) & 0x8000)
             signals |= 0x8000;
     }
