@@ -52,11 +52,17 @@ int fn_802044E8(void);
 int fn_80007238();
 int fn_80204870(void);
 int fn_800074EC(int);
+/* RealName: unknown (rename_symbol unavailable). Returns 1 if fn_80204870 reports
+ * a blocking condition, otherwise forwards to fn_800074EC. */
 int fn_8000ACDC(int arg0) {
-    if (fn_80204870() != 0) {
+#define IsUiInputBlocked fn_80204870
+#define ForwardMenuInput fn_800074EC
+    if (IsUiInputBlocked() != 0) {
         return 1;
     }
-    return fn_800074EC(arg0);
+    return ForwardMenuInput(arg0);
+#undef IsUiInputBlocked
+#undef ForwardMenuInput
 }
 
 void fn_8000AD20(void) {
