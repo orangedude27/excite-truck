@@ -369,10 +369,15 @@ s32 fn_80134C60(s32 arg0, char *arg1)
     extern u8 lbl_80559BDC, lbl_80559BE4, lbl_80559BEC;
     if (arg0 >= 0) {
         sprintf(arg1, (const char *)&lbl_80559BDC, arg0);
-    } else if (arg0 != -0x14) {
-        strcpy(arg1, (const char *)&lbl_80559BEC);
     } else {
-        strcpy(arg1, (const char *)&lbl_80559BE4);
+        switch (arg0) {
+        case -0x14:
+            strcpy(arg1, (const char *)&lbl_80559BE4);
+            break;
+        default:
+            strcpy(arg1, (const char *)&lbl_80559BEC);
+            break;
+        }
     }
     return (s32)arg1;
 }
