@@ -1,7 +1,10 @@
 typedef int s32;
 struct LLTmp { int a; void* next; void* prev; };
 struct ElemTmp { float f1; float f2; int i1; int i2; };
-extern float lbl_80560F20;
+float lbl_80560F20 = 0.0f;
+float lbl_80560F24 = 1.0f;
+double lbl_80560F28 = 4503617744854144.0;
+float lbl_80560F30 = 32768.0f;
 static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { if (q < end) { do { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } while (q < end); } }
 typedef unsigned int u32;
 typedef signed char s8;
@@ -1549,8 +1552,7 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
     int total;
     const char *fileName = lbl_803221A8;
     int buffers[8];
-    int valid, rows, ncols, made, result, remaining;
-    int j, i;
+    int valid, rows, ncols, made, result, remaining, i, j;
     unsigned int bufferSize, nextSize;
     int *bufferOut, *bufferIn;
     char *voice, *row, *manager, *node, *sentinel;
@@ -1558,7 +1560,7 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
     if (count >= 1) {
         if (count <= 2) valid = 1;
     }
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x124, fileName + 0x10, count, 1, 2);
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName + 0, 0x124, fileName + 0x10, count, 1, 2);
     if (count > 2) rows = 2;
     else {
         rows = 1;
@@ -1568,7 +1570,7 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
     if (columns >= 1) {
         if (columns <= 4) valid = 1;
     }
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x127, fileName + 0x5C, columns, 1, 4);
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName + 0, 0x127, fileName + 0x5C, columns, 1, 4);
     if (columns > 4) ncols = 4;
     else {
         ncols = 1;
@@ -1577,7 +1579,7 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
     interruptState = OSDisableInterrupts();
     bufferSize = 0x10;
     if (priority == 0xFF) bufferSize = 0x1F;
-    if (*((unsigned char *)self + 0x11C) != 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x12E, fileName + 0xA8);
+    if (*((unsigned char *)self + 0x11C) != 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName + 0, 0x12E, fileName + 0xA8);
     total = rows * ncols;
     bufferOut = buffers;
     made = 0;
@@ -1607,7 +1609,7 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
             if (bufferSize < 0x1F) nextSize = bufferSize + 1;
             result = TRKInitializeMessageBuffers(nextSize, VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv, self);
         }
-        if (result == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x167, fileName + 0xD0);
+        if (result == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName + 0, 0x167, fileName + 0xD0);
         if (result == 0) {
             bufferIn = buffers; i = 0;
             while (i < made) { TRKGetFreeBuffer((void *)(unsigned int)*bufferIn); bufferIn++; i++; }
@@ -2412,7 +2414,9 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
 #pragma use_lmw_stmw reset
 extern const char lbl_80322400[];
 extern "C" void fn_8003381C(void *, void *);
+#pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling on
 extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6) {
     const char *f = lbl_803221A8;
     char *self = (char *)arg0;
@@ -2431,7 +2435,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
     char *entry;
     int i;
     if (arg1 >= 2) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((int)f + 0), 0x396, f + 0x258);
+        Panic__Q26nw4hbm2dbFPCciPCce(f, 0x396, f + 0x258);
     }
     if (arg2 != 0) {
         int fmt = *(int *)(self + 0x118);
@@ -2442,7 +2446,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         case 0: start = ((unsigned int)arg5 % 14) + (off * 2) + (((unsigned int)arg5 / 14) * 16) + 2; break;
         case 25: start = off + arg5; break;
         case 10: start = (off >> 1) + arg5; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce((const char *)((int)f + 0), 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
         }
     } else {
         unsigned int addr = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(Instance__15EmissionManagerFv());
@@ -2453,7 +2457,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         case 0: start = addr * 2 + 2; break;
         case 25: start = addr; break;
         case 10: start = addr >> 1; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce((const char *)((int)f + 0), 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
         }
     }
     {
@@ -2465,7 +2469,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         case 0: cur = off * 2 + 2; break;
         case 25: cur = off; break;
         case 10: cur = off >> 1; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce((const char *)((int)f + 0), 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
         }
     }
     {
@@ -2481,7 +2485,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         }
         case 25: end = off2 + arg6 - 1; break;
         case 10: end = arg6 + (off2 >> 1) - 1; break;
-        default: Panic__Q26nw4hbm2dbFPCciPCce((const char *)((int)f + 0), 0x561, f + 0x290); break;
+        default: Panic__Q26nw4hbm2dbFPCciPCce(f, 0x561, f + 0x290); break;
         }
     }
     rec.flag = arg2;
@@ -2497,7 +2501,7 @@ extern "C" void fn_800E5E74(void *arg0, int arg1, int arg2, int arg3, int arg4, 
         fn_8003381C(*(void **)(entry + 0xC), &rec);
     }
 }
-#pragma use_lmw_stmw reset
+#pragma pop
 
 #pragma push
 #pragma dont_inline off
@@ -2640,9 +2644,9 @@ extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *self, bool loo
 
 #pragma dont_inline on
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
-    unsigned long irq=OSDisableInterrupts();
+    int irq=OSDisableInterrupts();
     void *emission=Instance__15EmissionManagerFv();
-    unsigned int address=(unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(emission);
+    register unsigned int address=(unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(emission);
     unsigned int format=*(int *)((char *)arg0+0x118);
     if(address) address+=0x80000000;
     s32 start=0;
@@ -2721,16 +2725,19 @@ extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7
 extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *arg0, int arg1) {
     unsigned char *self = (unsigned char *)arg0;
     int mode = arg1;
-    float scale = (float)(*(int *)(self + 0x114));
-    float ratio = (*(float *)(self + 0x184) * scale) / lbl_80560F40;
-    float gain = lbl_80560F58;
-    float max = lbl_80560F38;
-    float min = lbl_80560F3C;
+    float ratio;
     int i = 0;
     int offset = 0;
     int j;
     unsigned char *src = self;
     short values[7];
+    float min = lbl_80560F3C;
+    float max = lbl_80560F38;
+    float gain = lbl_80560F58;
+    {
+        float scale = (float)(*(int *)(self + 0x114));
+        ratio = (*(float *)(self + 0x184) * scale) / lbl_80560F40;
+    }
     while (i < *(int *)(self + 0x108)) {
         float volume = *(float *)(src + 0x98);
         if (volume > max) volume = max;
