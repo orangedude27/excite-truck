@@ -3774,7 +3774,8 @@ void fn_8005FCCC(u8 devHandle, u8 open) {
     WPADCommand queuedCommand ALIGN(8);
     WPADCommand readCommand ALIGN(8);
     WPADCB* p;
-    s8 windex;
+    s8 indexByte;
+    s32 windex;
     s32 wlast;
     s32 wmask;
 
@@ -3821,7 +3822,8 @@ void fn_8005FCCC(u8 devHandle, u8 open) {
             } else {
                 memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], 0, sizeof(WPADCommand));
                 memcpy(&p->stdCmdQueue.buffer[p->stdCmdQueue.back], &queuedCommand, sizeof(WPADCommand));
-                windex = p->stdCmdQueue.back;
+                indexByte = p->stdCmdQueue.back;
+                windex = indexByte;
                 wlast = p->stdCmdQueue.capacity - 1;
                 wmask = ~(((s32)windex - wlast) | (wlast - (s32)windex)) >> 31;
                 p->stdCmdQueue.back = (windex + 1) & ~wmask;
@@ -3874,7 +3876,8 @@ void fn_8005FCCC(u8 devHandle, u8 open) {
                             OSRestoreInterrupts(enabled);
                         } else {
                             memset(&p->stdCmdQueue.buffer[p->stdCmdQueue.front], 0, sizeof(WPADCommand));
-                            windex = p->stdCmdQueue.front;
+                            indexByte = p->stdCmdQueue.front;
+                            windex = indexByte;
                             wlast = p->stdCmdQueue.capacity - 1;
                             wmask = ~(((s32)windex - wlast) | (wlast - (s32)windex)) >> 31;
                             p->stdCmdQueue.front = (windex + 1) & ~wmask;
