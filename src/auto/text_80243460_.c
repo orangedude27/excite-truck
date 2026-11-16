@@ -187,10 +187,11 @@ s32 fn_80243764(s32 *entryIndex, volatile s32 *groupIndex, s32 entryDelta, s32 g
     return 0;
 }
 #pragma pop
-void fn_802438EC(char* arg0) {
-    s32 len = strlen(arg0);
+// Remove a trailing '_' marker from the end of a string, if present.
+void fn_802438EC(char *str) {
+    s32 len = strlen(str);
     if (len > 0) {
-        u8* end = (u8*)((u32)len + (u32)arg0);
+        u8 *end = (u8 *)((u32)len + (u32)str);
         if ((s32)end[-1] == '_') end[-1] = 0;
     }
 }
