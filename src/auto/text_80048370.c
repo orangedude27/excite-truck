@@ -156,6 +156,7 @@ void *FindContainHeap_(MEMList *list, u32 addr) {
     MEMiHeapHead *found;
 
     heap = 0;
+    /* Walk the nested heap lists (heaps -> children -> blocks) to find the innermost heap whose [start,end) range contains addr. */
     while ((heap = (MEMiHeapHead *)MEMGetNextListObject(list, heap)) != 0) {
         if ((u32)heap->start <= addr && addr < (u32)heap->end) {
             child = 0;
