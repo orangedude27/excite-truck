@@ -85,18 +85,28 @@ s32 fn_802ECDF4(void) {
 
 #pragma dont_inline on
 s32 fn_802ECE48(char *movieName) {
-    void *temp_r31;
+    /* Play one movie by itself: make a node for it and put it at the head of the
+     * single-movie list lbl_805600F8, whose head record answers every movie request
+     * (fn_802ECF08 hands that record out instead of opening one, and fn_802ECF90
+     * finds any name a match for it). The node is freed and 0 returned when the
+     * movie cannot be opened. */
+    struct SingleMovieInfo {
+        MoviePlayInfo info;           /* 0x00 the movie's name and its opened handle */
+        struct SingleMovieInfo *next; /* 0x44 the record this one pushes off the head */
+    } *node;
 
-    temp_r31 = fn_801284F8(0x48, lbl_8034EC04);
-    if (fn_802ECD68(temp_r31, movieName, 1) != 0) {
-        ((void **)temp_r31)[17] = (void *)lbl_805600F8;
-        lbl_805600F8 = (s32)temp_r31;
+    node = fn_801284F8(sizeof(struct SingleMovieInfo), lbl_8034EC04);
+    if (fn_802ECD68(node, movieName, 1) != 0) {
+        node->next = (struct SingleMovieInfo *)lbl_805600F8;
+        lbl_805600F8 = (s32)node;
         return 1;
     }
-    fn_80128668(temp_r31);
+    fn_80128668(node);
     return 0;
 }
 #pragma dont_inline reset
+#pragma dont_inline reset
+#pragma dont_inline on
 
 #pragma dont_inline reset
 
