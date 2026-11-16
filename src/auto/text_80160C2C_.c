@@ -30,4 +30,4 @@ void fn_80160C2C(void) {
     *(int *)((char *)&lbl_8042FD84 + 4) = 0;
     ((void (*)(void *, void *, void *))__register_global_object)(&lbl_8042FD84, &fn_80160C8C, &lbl_8042FD78);
 }
-DECL_SECTION(".ctors") funcptr_t D_802ED1DC = fn_80160C2C;
+
