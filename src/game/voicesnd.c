@@ -562,10 +562,12 @@ void *fn_8020B314(void) {
 }
 
 void fn_8020B320(void) {
-    volatile unsigned char *p = lbl_80489BD0;
-    p[0] = 0;
-    *(volatile int *)(p + 4) = 0;
-    *(volatile int *)(p + 8) = 0x20;
+    /* Reset the sound-voice state block at lbl_80489BD0: clear the flag and
+     * used count, then set its capacity to 32 voices. */
+    volatile unsigned char *voiceState = lbl_80489BD0;
+    voiceState[0] = 0;
+    *(volatile int *)(voiceState + 4) = 0;
+    *(volatile int *)(voiceState + 8) = 0x20;
 }
 
 void fn_8020B340(void) {
