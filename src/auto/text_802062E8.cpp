@@ -208,9 +208,11 @@ extern "C" void fn_80206514(void) {
 }
 
 extern "C" void fn_80206518(void) {
-    extern void fn_80208D70(void); extern void* fn_80208D4C(void);
+    extern void fn_80208D70(void);
+    extern void *fn_80208D4C(void);
+    /* Select the current mixer, then invoke its f12 virtual callback. */
     fn_80208D70();
-    ((Obj80206518*)fn_80208D4C())->f12();
+    ((Obj80206518 *)fn_80208D4C())->f12();
 }
 
 extern "C" void fn_8020654C(void) {
