@@ -650,17 +650,22 @@ void* fn_801B447C(void* arg0, void* arg1, s32 arg2) {
     }
     return (u8*)arg1 + half * 16;
 }
-void *fn_801B4528(void *arg0, u32 *arg1, u32 arg2) {
-    if (arg2 < *arg1) {
-        arg1 = (u32 *)arg1[2];
-        if (arg1 != NULL) return fn_801B4528(arg0, arg1, arg2);
+void *fn_801B4528(void *tree, u32 *node, u32 key) {
+    /* Search a balanced binary tree node for the given key; return the node or NULL. */
+    if (key < *node) {
+        node = (u32 *)node[2];
+        if (node != NULL) {
+            return fn_801B4528(tree, node, key);
+        }
         return NULL;
-    } else if (arg2 > *arg1) {
-        arg1 = (u32 *)arg1[3];
-        if (arg1 != NULL) return fn_801B4528(arg0, arg1, arg2);
+    } else if (key > *node) {
+        node = (u32 *)node[3];
+        if (node != NULL) {
+            return fn_801B4528(tree, node, key);
+        }
         return NULL;
     }
-    return arg1;
+    return node;
 }
 void* fn_801B4570(void* arg0, u32 arg1) {
     void* found;
