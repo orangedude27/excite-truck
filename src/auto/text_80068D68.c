@@ -29343,12 +29343,14 @@ void fn_80085DF4(void *arg0, u8 arg1) {
     btu_hcif_send_cmd(arg0);
 }
 
-void fn_80085E24(void *arg0, u8 arg1) {
-    *(u16 *)((u8 *)arg0 + 2) = 4;
-    *(u16 *)((u8 *)arg0 + 4) = 0;
-    *(u8 *)((u8 *)arg0 + 8) = 0x47;
-    *(u8 *)((u8 *)arg0 + 9) = 0x0C;
-    *(u8 *)((u8 *)arg0 + 10) = 1;
-    *(u8 *)((u8 *)arg0 + 11) = arg1;
-    btu_hcif_send_cmd(arg0);
+/* Build and send an HCI "Write Page Scan Type" command (opcode 0x0C47):
+ * the single parameter selects standard (0) or interlaced (1) page scan. */
+void fn_80085E24(void *pCmdBuf, u8 scanType) {
+    *(u16 *)((u8 *)pCmdBuf + 2) = 4;
+    *(u16 *)((u8 *)pCmdBuf + 4) = 0;
+    *(u8 *)((u8 *)pCmdBuf + 8) = 0x47;
+    *(u8 *)((u8 *)pCmdBuf + 9) = 0x0C;
+    *(u8 *)((u8 *)pCmdBuf + 10) = 1;
+    *(u8 *)((u8 *)pCmdBuf + 11) = scanType;
+    btu_hcif_send_cmd(pCmdBuf);
 }
