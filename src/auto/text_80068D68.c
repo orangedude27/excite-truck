@@ -4997,9 +4997,10 @@ void fn_8007099C(u32 code, void *msg) {
     }
 }
 
-void fn_800709B4(u32 code, void *msg) {
+/* BTE trace wrapper: forward the message to LogMsg unless logging is muted. */
+void fn_800709B4(u32 traceMask, void *format) {
     if (lbl_8055DC70 == 0) {
-        LogMsg(code, msg);
+        LogMsg(traceMask, format);
     }
 }
 
