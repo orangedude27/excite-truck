@@ -78,6 +78,7 @@ void fn_80208A50(float *arg0) {
 }
 
 void fn_80208A78(void) {
+    /* Load saved mixer settings for effects volume and sound quality, then apply them. */
     fn_801331C4(4, lbl_8033BEF8, &lbl_8055B4D0);
     fn_80209030(lbl_8055B4D0);
     fn_801332D0(4, &lbl_8055B4E0, &lbl_8055EDA8);
