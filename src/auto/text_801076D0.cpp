@@ -366,7 +366,7 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
     if ((v8 == 0) && ((p & 0xFF800000U) != 0xC1000000U)) v7 = 0;
     if ((v7 == 0) && ((p & 0xF8000000U) != 0xD0000000U)) v6 = 0;
     if ((v6 == 0) && ((p & 0xFFFFC000U) != 0xE0000000U)) v5 = 0;
-    if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x61, file + 0x10, (void*)this);
+    if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x61, file + 0x10, (void*)this);
     u32 q = (u32)resource;
     s32 v4b = 1, v5b = 1, v6b = 1, v7b = 1, v8b = 1, v9b = 1;
     u32 t10 = q & 0xFF000000;
@@ -376,11 +376,11 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
     if ((v7b == 0) && ((q & 0xFF800000U) != 0xC1000000U)) v6b = 0;
     if ((v6b == 0) && ((q & 0xF8000000U) != 0xD0000000U)) v5b = 0;
     if ((v5b == 0) && ((q & 0xFFFFC000U) != 0xE0000000U)) v4b = 0;
-    if (v4b == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x62, file + 0x48, (void*)resource);
-    if (q & 0x1F) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x63, file + 0x80, (void*)resource);
+    if (v4b == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x62, file + 0x48, (void*)resource);
+    if (q & 0x1F) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x63, file + 0x80, (void*)resource);
     s32 existing = *(s32*)((u8*)this + 0x10);
     void* info = 0;
-    if (existing != 0) { Warning__Q26nw4hbm2dbFPCciPCce(file + 0, 0x6B, file + 0xCC); return false; }
+    if (existing != 0) { Warning__Q26nw4hbm2dbFPCciPCce(&file[0], 0x6B, file + 0xCC); return false; }
     if (*(u32*)resource == 0x52464E55) {
         u8* block = (u8*)resource + *(u16*)((u8*)resource + 0xC);
         s32 i = 0;
@@ -393,15 +393,15 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
             if ((d == 0) && ((r & 0xFF800000U) != 0xC1000000U)) c = 0;
             if ((c == 0) && ((r & 0xF8000000U) != 0xD0000000U)) b = 0;
             if ((b == 0) && ((r & 0xFFFFC000U) != 0xE0000000U)) a = 0;
-            if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x7C, file + 0xEC, (void*)block);
+            if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x7C, file + 0xEC, (void*)block);
             if (*(u32*)block == 0x46494E46) { info = block + 8; break; }
             ++i; block += *(u32*)(block + 4);
         }
     } else {
         u16 version = *(u16*)((u8*)resource + 6);
         if (version == 0x104) {
-            if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x104, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(file + 0, 0x96, file + 0x128); return false; }
-        } else if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x102, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(file + 0, 0xA0, file + 0x128); return false; }
+            if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x104, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(&file[0], 0x96, file + 0x128); return false; }
+        } else if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x102, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(&file[0], 0xA0, file + 0x128); return false; }
         info = Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(resource);
     }
     if (info == 0) return false;
@@ -5844,19 +5844,25 @@ extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
     copy.prefix[30] = source->prefix[30];
     copy.prefix[31] = source->prefix[31];
     copy.word20 = source->word20;
-    u32 pair24 = source->word24;
-    u32 pair28 = source->word28;
-    copy.word28 = pair28;
+    u32 pair28;
+    u32 pair24;
+    pair24 = ((volatile WriterCopy *)source)->word24;
+    pair28 = ((volatile WriterCopy *)source)->word28;
     copy.word24 = pair24;
-    u32 pair2C = source->word2C;
-    u32 pair30 = source->word30;
-    copy.word30 = pair30;
+    copy.word28 = pair28;
+    u32 pair30;
+    u32 pair2C;
+    pair2C = ((volatile WriterCopy *)source)->word2C;
+    pair30 = ((volatile WriterCopy *)source)->word30;
     copy.word2C = pair2C;
+    copy.word30 = pair30;
     copy.word34 = source->word34;
-    u32 pair38 = source->word38;
-    u32 pair3C = source->word3C;
-    copy.word3C = pair3C;
+    u32 pair3C;
+    u32 pair38;
+    pair38 = ((volatile WriterCopy *)source)->word38;
+    pair3C = ((volatile WriterCopy *)source)->word3C;
     copy.word38 = pair38;
+    copy.word3C = pair3C;
     copy.bytes40[0] = source->bytes40[0];
     copy.bytes40[1] = source->bytes40[1];
     copy.bytes40[2] = source->bytes40[2];
