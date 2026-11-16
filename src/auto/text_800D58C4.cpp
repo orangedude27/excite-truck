@@ -1769,8 +1769,9 @@ extern "C" s32 fn_800D8798(u32 *arg0) {
     return (*arg0 >> 18U) & 0x1F;
 }
 
-extern "C" void fn_800D87A4(GXColor *arg0, const GXColor *arg1) {
-    *arg0 = *arg1;
+// Copies one RGBA color (used by nw4r lyt material setup) from src into dst.
+extern "C" void fn_800D87A4(GXColor *dst, const GXColor *src) {
+    *dst = *src;
 }
 
 extern "C" int fn_800D87C8(void *arg0) {
@@ -2093,13 +2094,13 @@ extern "C" s32 fn_800D9364(void *arg0) {
 }
 
 extern "C" s32 fn_800D938C(void* arg0) {
-    unsigned int bits = *(unsigned int*)((char*)arg0 + 0x4C);
-    unsigned int base = *(unsigned int*)((char*)arg0 + 0x58);
-    unsigned int high = (bits >> 24) & 0xF;
-    unsigned int mid = (bits >> 18) & 0x3C;
-    unsigned int scaled = high * 0x14;
-    unsigned int top = (bits >> 23) & 0x1E0;
-    unsigned int low = (bits >> 6) & 4;
+    s32 bits = *(s32*)((u8*)arg0 + 0x4C);
+    s32 base = *(s32*)((u8*)arg0 + 0x58);
+    s32 high = (bits >> 24) & 0xF;
+    s32 mid = (bits >> 18) & 0x3C;
+    s32 scaled = high * 0x14;
+    s32 top = (bits >> 23) & 0x1E0;
+    s32 low = (bits >> 6) & 4;
     mid += top;
     scaled += low;
     mid += base;
