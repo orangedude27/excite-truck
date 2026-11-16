@@ -922,12 +922,19 @@ void fn_802108C8(void) {
  
 #pragma cplusplus on
 extern "C" void fn_80210904(void) {
-    fn_80209110(&lbl_8055EEF0);
-    struct Dummy_80210904 *obj = (struct Dummy_80210904 *)lbl_8055EED4;
-    if (obj != 0) {
-        obj->f1(1);
+    /* Shut down track music: stop its controller and destroy the active resource. */
+#define sTrackMusicHandle lbl_8055EEF0
+#define sTrackMusicResource lbl_8055EED4
+
+    fn_80209110(&sTrackMusicHandle);
+    struct Dummy_80210904 *resource = (struct Dummy_80210904 *)sTrackMusicResource;
+    if (resource != 0) {
+        resource->f1(1);
     }
-    lbl_8055EED4 = 0;
+    sTrackMusicResource = 0;
+
+#undef sTrackMusicHandle
+#undef sTrackMusicResource
 }
 #pragma cplusplus off
 extern void *lbl_8055EED8;
