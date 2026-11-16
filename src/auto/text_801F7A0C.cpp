@@ -1128,8 +1128,11 @@ extern "C" s32 fn_801F9450(void *node) {
 }
 
 extern "C" s32 fn_801F948C(void *node) {
-    struct V { virtual const char *get(); };
-    return stricmp(((V *)node)->get(), (const char *)lbl_8033B1EC) == 0;
+#define kObjectPropertiesName lbl_8033B1EC
+    /* Returns nonzero when the node's virtual name is "object_properties" (case-insensitive). */
+    struct NameNode { virtual const char *getName(); };
+    return stricmp(((NameNode *)node)->getName(), (const char *)kObjectPropertiesName) == 0;
+#undef kObjectPropertiesName
 }
 
 extern u8 lbl_8033B200[];
