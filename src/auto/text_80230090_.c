@@ -699,11 +699,12 @@ void fn_80231220(void *drawCtx, s32 texParam, f32 x, f32 y, f32 w, f32 h, f32 u0
 }
 #pragma pop
 
-void fn_80231380(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    f32 *p = (f32 *)arg0;
-    p[0] = farg0; p[1] = farg1; p[2] = farg2;
-    *(s32 *)(p + 3) = arg1;
-    p[4] = farg3; p[5] = farg4;
+/* Fill one textured quad vertex: x, y, z, packed colour, then texture s and t. */
+void fn_80231380(void *arg0, s32 color, f32 x, f32 y, f32 z, f32 s, f32 t) {
+    Pack6 *v = (Pack6 *)arg0;
+    v->a = x; v->b = y; v->c = z;
+    v->d = color;
+    v->e = s; v->f = t;
 }
 
 void *fn_8023139C(void *buf, int len, u32 val) {
