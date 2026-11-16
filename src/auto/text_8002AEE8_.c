@@ -7,8 +7,9 @@ typedef struct {
     unsigned int _rest : 20;
 } FwideFlags;
 
-int fn_8002AEE8(unsigned short* s) {
-    unsigned short* p = s - 1;
+/* Return the number of non-NUL unsigned shorts before the terminator (wcslen). */
+int fn_8002AEE8(unsigned short* str) {
+    unsigned short* p = str - 1;
     int len = -1;
     do {
         len++;
