@@ -272,11 +272,11 @@ extern void *fn_801284F8(int, const void *);
 extern void *fn_80293034(void *, void *, int);
 extern void *fn_80293A00(void *, void *, int, int, int);
 extern void *fn_80294254(void *, void *, int, int, int);
-#pragma push
-#pragma scheduling invalid_target
+#pragma cplusplus on
 int fn_802928D4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     char *str = lbl_80349170;
     void *ptr;
+
     switch (arg1) {
     case 1:
         ptr = fn_801284F8(0x2FF0, str);
@@ -302,10 +302,12 @@ int fn_802928D4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     }
     return (int)ptr;
 }
-#pragma pop
+#pragma cplusplus reset
 extern int fn_802928D4(int, int, int, int, int, int);
-void fn_802929D8(int arg0, int arg1, int arg2, int arg3) {
-    fn_802928D4(0, arg0, arg1, arg2, arg3, arg1);
+/* Creates a fresh chunk (no parent) of the requested type via the subsystem
+ * dispatcher fn_802928D4, forwarding the data pointer and init parameters. */
+void fn_802929D8(int chunkType, int chunkData, int initArg0, int initArg1) {
+    fn_802928D4(0, chunkType, chunkData, initArg0, initArg1, chunkData);
 }
 
 #pragma cplusplus on
