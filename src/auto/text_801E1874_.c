@@ -24,6 +24,8 @@ int *fn_801E1F44(void);
 void *fn_80207848(const char *, int);
 #pragma scheduling invalid_target
 void fn_801E1874(void) {
+    /* Clear the level's weather state and lightning flag: no precipitation,
+     * not night, no fog (gWeatherState fields 0x00, 0x04, 0x18). */
     *(volatile int *)lbl_804874D4 = 0;
     *((volatile char *)lbl_804874D4 + 0x18) = 0;
     *((volatile char *)lbl_804874D4 + 4) = 0;
