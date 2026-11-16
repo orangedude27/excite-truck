@@ -3317,10 +3317,15 @@ extern "C" void fn_801A17B8(void* arg0) {
 extern int lbl_80333918[64];
 extern "C" void* fn_801A1520(void*, void*, s32);
 #pragma scheduling off
-extern "C" void** fn_801A1898(void** arg0) {
-    ((void* (*)(void*))fn_801A1520)(arg0);
-    *arg0 = &lbl_80333918;
-    return arg0;
+extern "C" void** fn_801A1898(void** object) {
+#define BaseCtor fn_801A1520
+#define DerivedVtable lbl_80333918
+    /* Construct a derived object: run the base initializer, then install the derived vtable. */
+    ((void* (*)(void*))BaseCtor)(object);
+    *object = &DerivedVtable;
+    return object;
+#undef BaseCtor
+#undef DerivedVtable
 }
 
 extern "C" void fn_801A18D4(void* arg0, f32* arg1, f32* arg2) {
