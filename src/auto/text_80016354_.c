@@ -140,8 +140,12 @@ void* fn_800165D4(void) {
     return lbl_8055D550;
 }
 
-void fn_800165DC(void) {
-    fn_80016510(*(int *)((char *)((void *(*)())fn_80016474)() + 0x4C));
+/* The 0x5C-byte record whose id matches `id` (fn_80016474) holds, at +0x4C, the
+ * index of a 0xA8-byte entry; return that entry's address (fn_80016510 hands
+ * out entries: the first lbl_8055D550 of them live in the dynamic table
+ * lbl_8055D544, the rest in the static table lbl_80357960). */
+void *fn_800165DC(int id) {
+    return (void *)fn_80016510(*(int *)((char *)fn_80016474(id) + 0x4C));
 }
 
 int fn_80016604(const char *name) {
