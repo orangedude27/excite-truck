@@ -362,21 +362,22 @@ void* AllocFromHead_(MEMiHeapHead* heap, u32 size, s32 align) {
     u32 bestBlkSize;
     void* bestBlkMemPtr;
     exp = (MEMiExpHeapHead*)(heap + 1);
-    isFastAlloc = (exp->allocMode == MEM_EXP_HEAP_ALLOC_FAST);
+    isFastAlloc = exp->allocMode == MEM_EXP_HEAP_ALLOC_FAST;
     bestBlk = 0;
     bestBlkSize = 0xFFFFFFFF;
     bestBlkMemPtr = 0;
     for (it = exp->freeMBlocks.head; it != 0; it = it->next) {
-        void* start = (it + 1);
-        void* end = (void*)(((u32)align + (u32)start - 1) & ~(align - 1));
-        if ((it->size >= (size + ((u32)end - (u32)start))) && (bestBlkSize > it->size)) {
+        void* end;
+        void* start = it + 1;
+        end = (void*)((align + (u32)start - 1) & ~(align - 1));
+        if (it->size >= size + ((u32)end - (u32)start) && bestBlkSize > it->size) {
             bestBlk = it;
             bestBlkSize = it->size;
             bestBlkMemPtr = end;
-            if ((isFastAlloc) || (bestBlkSize == size)) break;
+            if (isFastAlloc || bestBlkSize == size) break;
         }
     }
-    return (bestBlk != 0) ? AllocUsedBlockFromFreeBlock_(exp, bestBlk, bestBlkMemPtr, size, 0) : 0;
+    return bestBlk != 0 ? AllocUsedBlockFromFreeBlock_(exp, bestBlk, bestBlkMemPtr, size, 0) : 0;
 }
 
 #pragma pop
@@ -537,6 +538,7 @@ MEMiHeapHead* MEMCreateExpHeapEx(void *start, u32 size, u16 opt) {
 }
 
 MEMiHeapHead* MEMDestroyExpHeap(MEMiHeapHead* heap) {
+    /* Finalize an expanded heap (unlink it from the heap list and clear its magic), then return the handle. */
     MEMiFinalizeHeap(heap);
     return heap;
 }
@@ -960,6 +962,42 @@ void PSMTXConcatArray(const float a[3][4], const float b[3][4], float c[3][4], u
     }
 }
 
+#pragma push
+#pragma paired on
+#pragma paired_single on
+u32 PSMTXTranspose(const Mtx src, Mtx dst) {
+    f32 c00 = src[1][1] * src[2][2] - src[1][2] * src[2][1];
+    f32 c01 = src[1][2] * src[2][0] - src[1][0] * src[2][2];
+    f32 c02 = src[1][0] * src[2][1] - src[1][1] * src[2][0];
+    f32 det = src[0][0] * c00 + src[0][1] * c01 + src[0][2] * c02;
+    if (det == 0.0f) {
+        return 0;
+    }
+    {
+        f32 estimate = __fres(det);
+        f32 invDet = (estimate + estimate) - det * (estimate * estimate);
+        f32 c10 = src[0][2] * src[2][1] - src[0][1] * src[2][2];
+        f32 c11 = src[0][0] * src[2][2] - src[0][2] * src[2][0];
+        f32 c12 = src[0][1] * src[2][0] - src[0][0] * src[2][1];
+        f32 c20 = src[0][1] * src[1][2] - src[0][2] * src[1][1];
+        f32 c21 = src[0][2] * src[1][0] - src[0][0] * src[1][2];
+        f32 c22 = src[0][0] * src[1][1] - src[0][1] * src[1][0];
+        dst[0][0] = c00 * invDet;
+        dst[0][1] = c10 * invDet;
+        dst[0][2] = c20 * invDet;
+        dst[0][3] = 0.0f;
+        dst[1][0] = c01 * invDet;
+        dst[1][1] = c11 * invDet;
+        dst[1][2] = c21 * invDet;
+        dst[1][3] = 0.0f;
+        dst[2][0] = c02 * invDet;
+        dst[2][1] = c12 * invDet;
+        dst[2][2] = c22 * invDet;
+        dst[2][3] = 0.0f;
+        return 1;
+    }
+}
+#pragma pop
 /* Builds a rotation matrix about one coordinate axis: axis is 'X', 'Y' or 'Z' (either
  * case) and rad the angle in radians.  The sine and cosine are taken here;
  * PSMTXInvXpose fills the matrix from them. */
