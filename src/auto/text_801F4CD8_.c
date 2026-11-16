@@ -890,25 +890,27 @@ check:
 #pragma pop
 
 #pragma dont_inline on
-void fn_801F6728(void *arg0) {
-    int offset;
+void fn_801F6728(void *cloth) {
+    /* Copy pinned vertex positions from pin records into the cloth's vertex buffer. */
+    int recordOffset;
     int i;
-    unsigned short index;
-    char *records;
-    char *record;
-    char *output;
+    unsigned short vertexIndex;
+    char *pinRecords;
+    char *pinRecord;
+    char *vertexBuffer;
+
     i = 0;
-    offset = 0;
-    while (i < *(int *)((char *)arg0 + 0x20)) {
-        records = *(char * volatile *)((char *)arg0 + 0x1C);
+    recordOffset = 0;
+    while (i < *(int *)((char *)cloth + 0x20)) {
+        pinRecords = *(char * volatile *)((char *)cloth + 0x1C);
         i++;
-        output = *(char * volatile *)((char *)arg0 + 4);
-        record = records + offset;
-        index = *(unsigned short *)record;
-        *(float *)(output + index * 0xC) = *(float *)(record + 4);
-        *(float *)(output + index * 0xC + 4) = *(float *)(record + 8);
-        *(float *)(output + index * 0xC + 8) = *(float *)(record + 0xC);
-        offset += 0x10;
+        vertexBuffer = *(char * volatile *)((char *)cloth + 4);
+        pinRecord = pinRecords + recordOffset;
+        vertexIndex = *(unsigned short *)pinRecord;
+        *(float *)(vertexBuffer + vertexIndex * 0xC) = *(float *)(pinRecord + 4);
+        *(float *)(vertexBuffer + vertexIndex * 0xC + 4) = *(float *)(pinRecord + 8);
+        *(float *)(vertexBuffer + vertexIndex * 0xC + 8) = *(float *)(pinRecord + 0xC);
+        recordOffset += 0x10;
     }
 }
 #pragma dont_inline off
