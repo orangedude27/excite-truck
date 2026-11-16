@@ -483,9 +483,11 @@ void fn_801ECB80(void *arg0) {
 }
 
 #pragma dont_inline on
-void fn_801ECC70(void *arg0) {
-    void *ptr = *(void **)((char *)arg0 + 0x3C);
-    fn_802C99E8(ptr, *(float *)((char *)lbl_80488668 + 8) * *(float *)((char *)ptr + 0x2CC));
+/* Apply the vehicle owner's draw scale, scaled by the saved global draw scale,
+ * through fn_802C99E8; vehicleRender+0x3C points to that owner. */
+void fn_801ECC70(void *vehicleRender) {
+    void *owner = *(void **)((char *)vehicleRender + 0x3C);
+    fn_802C99E8(owner, lbl_80488668[2] * *(float *)((char *)owner + 0x2CC));
 }
 #pragma dont_inline reset
 
