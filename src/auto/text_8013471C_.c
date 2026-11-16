@@ -598,12 +598,17 @@ s32 fn_80135038(s32 arg0, s32 arg1) {
 }
 
 void *fn_80135078(void) {
-    void *p = fn_801284F8(12, lbl_8032BCA0);
+    /* Construct a 0xC-byte ParkDriver object: allocate, set vtable lbl_8032BCC0, clear flag at +4. */
+#define kParkDriverClassName lbl_8032BCA0 /* "ParkDriver" */
+#define kParkDriverVTable lbl_8032BCC0
+    void *p = fn_801284F8(12, kParkDriverClassName);
     if (p != 0) {
-        *(const void**)p = lbl_8032BCC0;
+        *(const void**)p = kParkDriverVTable;
         *((u8*)p + 4) = 0;
     }
     return p;
+#undef kParkDriverClassName
+#undef kParkDriverVTable
 }
 
 void *fn_801350C0(void) {
