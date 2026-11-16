@@ -986,7 +986,6 @@ extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3sn
 }
 
 extern "C" void fn_80031C6C(int);
-#pragma push
 #pragma use_lmw_stmw off
 extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(void *self, int mode) {
     if (*(int *)self == mode) return;
@@ -998,19 +997,20 @@ extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10Out
     case 3: fn_80031C6C(0); break;
     }
     unsigned int interrupts = OSDisableInterrupts();
-    void *node;
+    void *end = (char *)self + 0x18;
+    void *node = *(void **)((char *)self + 0x18);
     void *current;
-    for (node = *(void **)((char *)self + 0x18); node != (char *)self + 0x18; ) {
+    while (node != end) {
         current = node;
         node = *(void **)node;
         if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
-        if (*((unsigned char *)current - 0x8c) == 0) continue;
-        if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
-        *((unsigned char *)current - 0x85) |= 0x20;
+        if (*((unsigned char *)current - 0x8c) != 0) {
+            if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
+            *((unsigned char *)current - 0x85) |= 0x20;
+        }
     }
     OSRestoreInterrupts(interrupts);
 }
-#pragma pop
 
 extern "C" int fn_800E394C(int *arg0) { return *arg0; }
 
@@ -3391,7 +3391,11 @@ extern "C" void *fn_800E80B8(void *arg0, const void *arg1) {
     return arg0;
 }
 
-extern "C" int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
+extern "C" int fn_800E80F0(int object, int deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) fn_80128668();
+    return object;
+}
 
 void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &noteInfo) const {
     unsigned char inst[0x10];
