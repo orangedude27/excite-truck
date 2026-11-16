@@ -480,8 +480,9 @@ s32 fn_80008DBC(s32 keyCode) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
-s32 fn_80008F68(s32 arg0) {
-    switch (arg0) {
+s32 fn_80008F68(s32 command) {
+    /* Sound-test command filter: true for 0x15 and the 2..5 audio-mode/flag commands. */
+    switch (command) {
     case 0x15:
     case 2:
     case 3:
