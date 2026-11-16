@@ -194,9 +194,10 @@ int fn_801B47B4(void *arg0) {
     return fn_801B47D4(arg0, *(int *)((char *)arg0 + 0x24));
 }
 
-int fn_801B47BC(int arg0, int arg1) {
-    int next = arg1 + 1;
-    if ((unsigned int)next < *(unsigned int *)(arg0 + 0x1C)) {
+/* Advance an index by one within the ring of count entries at +0x1C, wrapping to 0. */
+int fn_801B47BC(int ring, int index) {
+    int next = index + 1;
+    if ((unsigned int)next < *(unsigned int *)(ring + 0x1C)) {
         return next;
     }
     return 0;
