@@ -48,19 +48,7 @@ typedef struct MenuRenderCopy {
     s32 unk1C;
 } MenuRenderCopy;
 #pragma pack(pop)
-#pragma cplusplus on
-struct MenuWorkspace {
-    s32 *data;
-    s32 count;
-    s32 capacity;
-    s32 storage[48];
-    void init() {
-        count = 0;
-        capacity = 16;
-        data = storage;
-    }
-};
-#pragma cplusplus reset
+
 extern char lbl_8034A598[];
 extern char lbl_8034A6A0[];
 extern char lbl_8034A790[];
