@@ -1855,8 +1855,9 @@ void fn_801C811C(void) {
 }
 
 void fn_801C8150(void) {
-    lbl_8055E864 = atoi(lbl_804380F0);
-    strcpy(lbl_804380F0, lbl_8055AA44);
+    /* Console callback: parse the integer typed into the input line into lbl_8055E864, then clear the line. */
+    lbl_8055E864 = atoi(sInputLine);
+    strcpy(sInputLine, STR_EMPTY);
 }
 
 void fn_801C8190(void) {
