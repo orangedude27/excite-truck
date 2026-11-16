@@ -1404,15 +1404,16 @@ void fn_80272738(void *arg0, void *arg1) {
 }
 
 #pragma dont_inline on
-int fn_80272C24(float farg0, float farg1, float farg2, float farg3) {
+/* Returns whether a value lies within an interval, adjusting a wrapped lower/upper bound by the period. */
+int fn_80272C24(float value, float lower, float upper, float period) {
     int result;
-    if (farg1 == farg2) return 1;
-    if (farg1 > farg2) {
-        if (farg1 > farg0) farg1 -= farg3;
-        else farg2 += farg3;
+    if (lower == upper) return 1;
+    if (lower > upper) {
+        if (lower > value) lower -= period;
+        else upper += period;
     }
     result = 0;
-    if ((farg0 >= farg1) && (farg0 <= farg2)) result = 1;
+    if ((value >= lower) && (value <= upper)) result = 1;
     return result;
 }
 #pragma dont_inline reset
