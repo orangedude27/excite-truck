@@ -755,6 +755,7 @@ void fn_8024778C(void) {
 }
 extern void* lbl_8055BEB0;
 extern s32 lbl_8055BEB4;
+#define gSelectedMenuIndex lbl_8055BEB0 /* active UI window's menu index; mirrors fn_80247768 */
 void fn_80247880(void) {
     lbl_8055BEB0 = (void*)fn_80214D04();
 }
