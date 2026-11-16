@@ -2051,7 +2051,7 @@ extern "C" void fn_8012D8A8(s32 arg0) {
 #define RES_TOC_EXT_PATH ((char *)&lbl_805599E0)  // ".toc"
 
 struct ResTocMount {  // one resource set whose load is in flight, 0x50 bytes
-    void *poolNext;   // 0x00: next free node in the manager's pool (fn_8012E460)
+    void *poolNext;   // 0x00: next node of the pool list it is on, free or in use (fn_8012E460)
     ResTocMount *next;
     s32 uses;         // 0x08: times this set has been asked for (fn_8012DDA8)
     char name[0x40];  // 0x0C: resource set name, e.g. "tracks"
