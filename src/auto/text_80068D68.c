@@ -4038,6 +4038,7 @@ u8 fn_8006EB80(void) {
 
 #pragma dont_inline on
 void fn_8006EB88(void) {
+    // GKI_enable: leave a critical section by popping the saved interrupt state and restoring interrupts.
     gki_cb.os.int_index--;
     OSRestoreInterrupts(gki_cb.os.int_state[gki_cb.os.int_index]);
 }
