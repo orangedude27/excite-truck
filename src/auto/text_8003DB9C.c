@@ -2596,13 +2596,14 @@ void GXInitSpecularDir(unsigned int arg0, void *ctx) {
 }
 #pragma scheduling reset
 #pragma cplusplus reset
-unsigned int GXLoadLightObjIndx(unsigned int value) {
-    unsigned int old = lbl_8055D974;
+/* Atomically sets and returns the previous value of the light-object index global. */
+unsigned int GXLoadLightObjIndx(unsigned int lightObjIndex) {
+    unsigned int previousIndex = lbl_8055D974;
 
     OSDisableInterrupts();
-    lbl_8055D974 = value;
+    lbl_8055D974 = lightObjIndex;
     OSRestoreInterrupts();
-    return old;
+    return previousIndex;
 }
 
 /* PE token interrupt handler: acknowledge PE reg bit, set pending flag, run the
