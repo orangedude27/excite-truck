@@ -1607,8 +1607,10 @@ extern int lbl_8055F54C;
 #define reinitCurrentObject fn_80271578
 #pragma dont_inline on
 void fn_802733C8(void) {
-    fn_80271578();
-    lbl_8055F54C = 0x12;
+    /* Reinitialize the current object's camera state and invalidate the cached camera
+     * type, so the next update sees its mode as newly selected and re-applies it. */
+    reinitCurrentObject();
+    sLastCamType = CAM_TYPE_COUNT;
 }
 #pragma dont_inline reset
 void fn_802733F0(void) {
