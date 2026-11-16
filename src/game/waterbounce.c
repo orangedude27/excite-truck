@@ -753,13 +753,15 @@ void fn_8020F1F8(void *object) {
     }
 }
 
-void fn_8020F21C(void *arg0) {
-    void *temp_r3;
-    temp_r3 = *(void **)((char *)arg0 + 0x28);
-    if (temp_r3 != 0) {
-        *(signed char *)((char *)temp_r3 + 0x49) = 1;
-        *(signed char *)((char *)temp_r3 + 0x4B) = 0;
-        *(signed char *)((char *)temp_r3 + 0x4A) = 0;
+/* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the water-bounce
+ * sound stored at +0x28 of the car's sound set. */
+void fn_8020F21C(void *sounds) {
+    void *sound;
+    sound = *(void **)((char *)sounds + 0x28);
+    if (sound != 0) {
+        *(signed char *)((char *)sound + 0x49) = 1;
+        *(signed char *)((char *)sound + 0x4B) = 0;
+        *(signed char *)((char *)sound + 0x4A) = 0;
     }
 }
 
