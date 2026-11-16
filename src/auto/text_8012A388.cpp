@@ -2404,62 +2404,64 @@ done:
     *(s32 *)((u8 *)obj + 8) = 1;
 }
 
-extern "C" void *fn_8012E060(void *arg0, const char *arg1) {
-    const char *orig = arg1;
-    char sp10[0x80];
-    s32 spC;
-    u8 sp8;
-    s32 var_r5;
-    char *var_r6;
-    char *var_r4_2;
-    s32 var_r5_2;
-    char *var_r6_2;
-    u8 temp_r3;
-    u8 temp_r3_2;
+extern "C" void *fn_8012E060(void *unused, const char *path) {
+    /* Build "<path-without-ext>.toc", load that resource, byte-swap its header and each entry, and return the data pointer offset by 0x80. */
+    const char *origPath = path;
+    char pathBuf[0x80];
+    s32 dataSize;
+    u8 swappedFlag;
+    s32 remaining;
+    char *dst;
+    char *suffixSrc;
+    s32 suffixRemaining;
+    char *scan;
+    u8 ch;
+    u8 suffixCh;
     void *data;
     u8 t;
     u8 t2;
-    u32 n;
+    u32 i;
     u8 *entry;
     void *ret;
     char *dot;
-    var_r6 = sp10; var_r5 = 0x80;
+
+    dst = pathBuf; remaining = 0x80;
     goto path_copy;
 path_limit:
-    var_r5 -= 1;
-    if (var_r5 > 0) goto path_copy;
-    var_r6[-1] = 0;
+    remaining -= 1;
+    if (remaining > 0) goto path_copy;
+    dst[-1] = 0;
     goto path_done;
 path_copy:
-    temp_r3 = *arg1++; *var_r6++ = temp_r3;
-    if ((s8)temp_r3 != 0) goto path_limit;
+    ch = *path++; *dst++ = ch;
+    if ((s8)ch != 0) goto path_limit;
 path_done:
-    dot = fn_80029004(sp10, 0x2E);
+    dot = fn_80029004(pathBuf, 0x2E);
     if ((s8)*dot != 0) {
-        dot = fn_80029004(sp10, 0x2E);
+        dot = fn_80029004(pathBuf, 0x2E);
         *dot = 0;
     }
-    var_r6_2 = sp10; var_r5_2 = 0x80;
+    scan = pathBuf; suffixRemaining = 0x80;
     goto scan_test;
 scan_step:
-    var_r5_2 -= 1; var_r6_2 += 1;
+    suffixRemaining -= 1; scan += 1;
 scan_test:
-    if ((s8)*var_r6_2 != 0) goto scan_step;
-    if (var_r5_2 <= 0) goto path_all_done;
-    var_r4_2 = (char *)&lbl_805599E0;
+    if ((s8)*scan != 0) goto scan_step;
+    if (suffixRemaining <= 0) goto path_all_done;
+    suffixSrc = (char *)&lbl_805599E0;
     goto suffix_copy;
 suffix_limit:
-    var_r5_2 -= 1;
-    if (var_r5_2 > 0) goto suffix_copy;
-    var_r6_2[-1] = 0;
+    suffixRemaining -= 1;
+    if (suffixRemaining > 0) goto suffix_copy;
+    scan[-1] = 0;
     goto path_all_done;
 suffix_copy:
-    temp_r3_2 = *var_r4_2++; *var_r6_2++ = temp_r3_2;
-    if ((s8)temp_r3_2 != 0) goto suffix_limit;
+    suffixCh = *suffixSrc++; *scan++ = suffixCh;
+    if ((s8)suffixCh != 0) goto suffix_limit;
 path_all_done:
-    fn_8002B0D8(sp10);
-    data = (void *)fn_8012C370((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
-    if (data != 0 && sp8 != 0) {
+    fn_8002B0D8(pathBuf);
+    data = (void *)fn_8012C370((s32)pathBuf, 0x45544F43, (s32)&dataSize, 0, 0, (s32)&swappedFlag);
+    if (data != 0 && swappedFlag != 0) {
         u8 *d = (u8 *)data;
         t = d[0]; d[0] = d[3]; d[3] = t;
         t = d[1]; d[1] = d[2]; d[2] = t;
@@ -2473,14 +2475,14 @@ path_all_done:
         t = d[0x11]; d[0x11] = d[0x12]; d[0x12] = t;
         if (*(u32 *)d != 0 || *(u32 *)(d + 4) != 0x14)
             fn_802E317C(lbl_8032AE60, *(u32 *)d, 0, *(u32 *)(d + 4), 0x14);
-        entry = d + 0x14; n = 0;
+        entry = d + 0x14; i = 0;
         goto entries_test;
 entries_loop:
-        fn_8012A388(entry); entry += 0x44; n += 1;
+        fn_8012A388(entry); entry += 0x44; i += 1;
 entries_test:
-        if (n < *(u32 *)(d + 0xC)) goto entries_loop;
+        if (i < *(u32 *)(d + 0xC)) goto entries_loop;
     }
-    if (data == 0) fn_802E317C(lbl_8032ADDC, orig);
+    if (data == 0) fn_802E317C(lbl_8032ADDC, origPath);
     ret = (void *)(*(s32 *)((char *)data + 0x10) + 0x80);
     fn_8012C4D8(data);
     return ret;
