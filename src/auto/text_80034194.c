@@ -274,6 +274,7 @@ enum { MOTOR_STATE_WORKING, MOTOR_STATE_PENDING_STOP, MOTOR_STATE_STOPPED };
 #define DummyBlock     DummyCommandBlock_80376AA0 // "nothing is executing" block
 #define PauseFlag      lbl_8055D84C  // DVDPause/DVDResume: keep stateReady off the queue
 #define isCancelDone   lbl_8055D864  // cbForCancel: the cancel DVDCancelAll asked for landed
+#define ResetDone      lbl_8055D890  // set by cbForPrepareReset; __DVDPrepareReset polls it
 
 // The cancel helpers below, under the names the RVL SDK's DVD.cpp gives them.
 #define DVDCancelAsync fn_80039424   // cancel one command block, answer when done
@@ -868,7 +869,7 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
     u32 p2;
     const char *name3;
     const char *name2;
-    unsigned char *name1;
+    char *name1;
     u32 offset;
     u8 *fst;
 
@@ -878,7 +879,7 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
         if (cur == 0) {
             loc = 0;
         } else {
-            name1 = (unsigned char *)entryName(cur);
+            name1 = (char *)entryName(cur);
             p1 = entryParent(cur);
             if (p1 == 0) {
                 loc = 0;
@@ -891,9 +892,9 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
                     name3 = entryName(p2);
                     loc = appendPathPart(dir, DVDConvertEntrynumToPath(entryParent(p2), dir, 0x80), 0x80, name3);
                 }
-                loc = appendPathPart(dir, loc, 0x80, (const char *)name2);
+                loc = appendPathPart(dir, loc, 0x80, name2);
             }
-            loc = appendPathPart(dir, loc, 0x80, (const char *)name1);
+            loc = appendPathPart(dir, loc, 0x80, name1);
         }
         if (loc == 0x80) {
             dir[0x7F] = '\0';
@@ -1368,7 +1369,7 @@ void fn_80035E6C(u32 arg0) {
     u32 status;
     s32 code;
     s32 handled;
-    char *block;
+    void *block;
     void (*callback)(s32, void *);
     register u32 kind = arg0;
     u8 *info;
@@ -1421,12 +1422,12 @@ void fn_80035E6C(u32 arg0) {
     }
 
     if (lbl_8055D858 != 0) {
-        block = (char *)executing_8055D8C8;
+        block = (void *)executing_8055D8C8;
         lbl_8055D85C = code;
         lbl_8055D858 = 0;
         executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-        *(s32 *)(block + 0xC) = 0xA;
-        callback = *(void (**)(s32, void *))(block + 0x28);
+        *(s32 *)((char *)block + 0xC) = 0xA;
+        callback = *(void (**)(s32, void *))((u8 *)block + 0x28);
         if (callback != 0)
             callback(-3, block);
         if (lbl_8055D8B8 != 0)
@@ -1471,8 +1472,8 @@ void fn_80035E6C(u32 arg0) {
             OSCreateAlarm(&lbl_80376AD0);
             tick = OSGetTick();
             period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
-            OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period,
-                               fn_8003801C);
+            ((void (*)(void *, u64, u64, void (*)(void)))OSSetPeriodicAlarm)(
+                &lbl_80376AD0, (u64)tick, (u64)period, fn_8003801C);
         }
         return;
     }
@@ -1489,8 +1490,8 @@ void fn_80035E6C(u32 arg0) {
             OSCreateAlarm(&lbl_80376AD0);
             tick = OSGetTick();
             period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
-            OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period,
-                               fn_8003801C);
+            ((void (*)(void *, u64, u64, void (*)(void)))OSSetPeriodicAlarm)(
+                &lbl_80376AD0, (u64)tick, (u64)period, fn_8003801C);
         }
         return;
     }
@@ -2572,12 +2573,14 @@ extern void (*lbl_80558E08)(void *, void *);
 #pragma use_lmw_stmw off
 void fn_80038368(void *arg0) {
  u8 *p = arg0;
+ int offset;
+ int length;
  int command;
  lbl_8055D8CC = (int)fn_80038368;
  command = *(int *)(p+8);
  switch (command) {
  case 2: case 3: case 5: case 13: case 14: case 15: case 16: case 34: case 37: {
-   int length = *(int *)(p+0x14), offset = *(int *)(p+0x10);
+   length = *(int *)(p+0x14); offset = *(int *)(p+0x10);
    {
  int irq = OSDisableInterrupts(); int tick;
  if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
@@ -2608,16 +2611,16 @@ void fn_80038368(void *arg0) {
    {
      u32 remaining = *(u32 *)(p+0x14) - *(u32 *)(p+0x20);
      u32 n = 0x80000;
-     u32 offset; int cmd;
+     u32 off2; int cmd;
      if (remaining <= n) n = remaining;
      *(u32 *)(p+0x1c) = n;
      cmd = *(int *)(p+8);
-     offset = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
+     off2 = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
      {
  int irq = OSDisableInterrupts(); int tick;
  if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = cmd;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = off2;
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = n;
  tick = OSGetTick();
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
@@ -2644,16 +2647,16 @@ void fn_80038368(void *arg0) {
    fn_8003BCDC(0);
    {
      u32 remaining = *(u32 *)(p+0x14) - *(u32 *)(p+0x20);
-     int cmd; u32 offset; u32 n = 0x80000;
+     int cmd; u32 offset3; u32 n = 0x80000L;
      if (remaining <= n) n = remaining;
      *(u32 *)(p+0x1c) = n;
      cmd = *(int *)(p+8);
-     offset = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
+     offset3 = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
      {
  int irq = OSDisableInterrupts(); int tick;
  if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = cmd;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset3;
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = n;
  tick = OSGetTick();
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
