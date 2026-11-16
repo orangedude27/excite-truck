@@ -1022,13 +1022,12 @@ extern void fn_80204048();
 extern void fn_8020404C(void);
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
     f32 sp[4];
     f32 x, y, adjusted;
     s32 rounded;
     s16 xBase, yBase;
-    u32 scale1, scale2, width, height;
+    u32 scale, width, height;
     register u32 row, column;
 
     if (*(s32 *)((u8 *)arg1 + 0x20) != 0) {
@@ -1038,8 +1037,8 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
         else
             adjusted = lbl_80564C78 + x;
         rounded = (s32)adjusted;
-        scale1 = fn_802B6E30() - 1;
-        xBase = (s16)rounded & ~scale1;
+        scale = fn_802B6E30() - 1;
+        xBase = (s16)rounded & ~scale;
 
         y = *(f32 *)((u8 *)arg0 + 8) / lbl_80564C58;
         if (y < lbl_80564C74)
@@ -1047,8 +1046,8 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
         else
             adjusted = lbl_80564C78 + y;
         rounded = (s32)adjusted;
-        scale2 = fn_802B6E30() - 1;
-        yBase = (s16)rounded & ~scale2;
+        scale = fn_802B6E30() - 1;
+        yBase = (s16)rounded & ~scale;
         width = lbl_8055CEA0 * *(u32 *)((u8 *)arg1 + 0x20);
         height = lbl_8055CEA0 * *(u32 *)((u8 *)arg1 + 0x24);
         if (lbl_8055FA38 == 5) {
