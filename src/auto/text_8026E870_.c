@@ -176,8 +176,9 @@ done:
 
 #pragma push
 #pragma dont_inline on
-f32 fn_8026EA44(s32 arg0) {
-    switch (arg0) {
+/* Returns a factor for the given type id: 3.7 for type 6, 1.0 for type 7, and 1.9 for types 4, 8, or any other type. */
+f32 fn_8026EA44(s32 typeId) {
+    switch (typeId) {
     case 6:
         return lbl_80563E38;
     case 8:
