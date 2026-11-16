@@ -8,6 +8,7 @@ extern struct S8013 lbl_8042F8C8;
 extern s32 lbl_8055E178;
 #pragma scheduling invalid_target
 void fn_8013C714(void) {
+    /* Reset the line-info resource cache: register its static destructor node, then clear its entry count. */
     fn_8000D838(&lbl_8055E178);
     lbl_8042F8C8.entryCount = 0;
 }
