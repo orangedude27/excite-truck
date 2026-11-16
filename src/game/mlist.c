@@ -397,21 +397,23 @@ void fn_802CDAFC(void *arg0, int arg1) {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-int fn_802CDB20(void *arg0, int arg1) {
-    int a;
-    int b;
-    int index;
-    unsigned char *base;
+/* RealName: MlistIsObjectFlagged. Test whether an object's per-object flag byte in the
+ * shared draw context is set; fn_802CDAFC clears that same byte. */
+int fn_802CDB20(void *object, int objectIndex) {
+    int offset18;
+    int offset10;
+    int flagIndex;
+    unsigned char *flags;
 
-    if (arg1 < 0) {
+    if (objectIndex < 0) {
         return 0;
     }
-    a = *(int *)((char *)arg0 + 0x18);
-    b = *(int *)((char *)arg0 + 0x10);
-    index = arg1 + a;
-    base = lbl_8055DFC4;
-    index = index + b;
-    return base[index + 1] != 0;
+    offset18 = *(int *)((char *)object + 0x18);
+    offset10 = *(int *)((char *)object + 0x10);
+    flagIndex = objectIndex + offset18;
+    flags = gDrawContext;
+    flagIndex = flagIndex + offset10;
+    return flags[flagIndex + 1] != 0;
 }
 
 extern char lbl_8034BBEC[];
