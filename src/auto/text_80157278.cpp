@@ -3671,8 +3671,9 @@ extern "C" f32 fn_8015D5A4(void *arg0) {
     return (f32)idx + fraction;
 }
 #pragma pop
-extern "C" void fn_8015D6BC(Unk8015A368C* arg0) {
-    fn_80131234(lbl_8032E668[arg0->GetType()]);
+extern "C" void fn_8015D6BC(Unk8015A368C* object) {
+    /* Look up the per-type entry in lbl_8032E668 by GetType() and pass it to fn_80131234. */
+    fn_80131234(lbl_8032E668[object->GetType()]);
 }
 
 extern void* lbl_8032E7F8[];
