@@ -785,10 +785,12 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
 }
 #pragma cplusplus reset
 #pragma pop
-f32 fn_8026FCE0(f32 farg0, f32 farg1) {
-    f32 diff = lbl_80563E30 - farg1;
-    f32 square = farg0 * farg0;
-    return (diff * farg0) + (farg1 * square);
+f32 fn_8026FCE0(f32 value, f32 weight) {
+    /* Quadratic blend of value toward its square by weight: (1-weight)*value + weight*value^2
+     * (lbl_80563E30 is 1.0). */
+    f32 linearPart = lbl_80563E30 - weight;
+    f32 squared = value * value;
+    return (linearPart * value) + (weight * squared);
 }
 
 #pragma push
