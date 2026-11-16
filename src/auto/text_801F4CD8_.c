@@ -722,12 +722,13 @@ void fn_801F602C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     fn_801F5970(arg0, (void *)arg1); fn_801F5508(arg0); fn_801F5664(arg0, arg3);
 }
 #pragma pop
-void fn_801F6358(void *arg0) {
-    int temp;
-    fn_80128670(*(int *)((char *)arg0 + 0xC));
-    temp = *(int *)arg0;
-    if (temp != 0) {
-        fn_80128670(temp - 0x10);
+/* Free the texture-coordinate buffer at +0xC and the paired position buffer block at +0x0 (cookie at -0x10). */
+void fn_801F6358(void *entry) {
+    int positionBlock;
+    fn_80128670(*(int *)((char *)entry + 0xC));
+    positionBlock = *(int *)entry;
+    if (positionBlock != 0) {
+        fn_80128670(positionBlock - 0x10);
     }
 }
 
