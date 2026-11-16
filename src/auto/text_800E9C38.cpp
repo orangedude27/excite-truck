@@ -79,54 +79,58 @@ extern "C" void *fn_80128668(void *);
 #define sLinkListFile lbl_80322AD8
 #define sNullPtrMsg lbl_80322AB4
 
+/* nw4hbm::snd::detail::Channel::Channel(): construct a new sound channel.
+ * Zero its fields and subobjects and set the default volume, lazily build the
+ * global ChannelManager singleton (queueing its destruction) on first use,
+ * then insert this channel into the manager's idle list. */
 extern "C" void *__ct__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
-    register void *object asm("r29") = arg0;
+    register void *channel asm("r29") = arg0;
     int zero = 0;
-    ((int*)object)[0] = zero;
-    ((int*)object)[1] = zero;
-    fn_800EB3AC((char *)object + 0x8);
-    fn_800EC890((char *)object + 0x20);
-    float initialVolume = lbl_80560FC0;
-    ((int*)object)[12] = zero;
-    ((float*)object)[13] = initialVolume;
-    ((unsigned char*)object)[0x39] = zero;
-    ((unsigned char*)object)[0x3A] = zero;
-    ((unsigned char*)object)[0x3B] = zero;
-    ((unsigned char*)object)[0xC4] = zero;
-    ((unsigned char*)object)[0xC5] = zero;
-    ((unsigned short*)object)[0x63] = zero;
-    ((unsigned short*)object)[0x64] = zero;
-    ((int*)object)[56] = zero;
-    if ((signed char)lbl_8055DE28 == 0) {
-        ChannelManagerLayout *globalManager = (ChannelManagerLayout *)lbl_80412778;
-        *(volatile int *)lbl_80412778 = zero;
+    ((int*)channel)[0] = zero;
+    ((int*)channel)[1] = zero;
+    fn_800EB3AC((char *)channel + 0x8);
+    fn_800EC890((char *)channel + 0x20);
+    float initialVolume = sDefaultChannelVolume;
+    ((int*)channel)[12] = zero;
+    ((float*)channel)[13] = initialVolume;
+    ((unsigned char*)channel)[0x39] = zero;
+    ((unsigned char*)channel)[0x3A] = zero;
+    ((unsigned char*)channel)[0x3B] = zero;
+    ((unsigned char*)channel)[0xC4] = zero;
+    ((unsigned char*)channel)[0xC5] = zero;
+    ((unsigned short*)channel)[0x63] = zero;
+    ((unsigned short*)channel)[0x64] = zero;
+    ((int*)channel)[56] = zero;
+    if ((signed char)sChannelManagerInitialized == 0) {
+        ChannelManagerLayout *globalManager = (ChannelManagerLayout *)sChannelManager;
+        *(volatile int *)sChannelManager = zero;
         *(void * volatile *)((char *)globalManager + 0x4) = 0;
-        void *head = &globalManager->idle.head;
-        void *tail = &globalManager->active.head;
+        void *idleSentinel = &globalManager->idle.head;
+        void *activeSentinel = &globalManager->active.head;
         *(void * volatile *)((char *)globalManager + 0x8) = 0;
         *(void * volatile *)((char *)globalManager + 0x10) = 0;
         *(void * volatile *)((char *)globalManager + 0x14) = 0;
-        *(void **)((char *)globalManager + 0x4) = head;
-        *(void **)((char *)globalManager + 0x8) = head;
+        *(void **)((char *)globalManager + 0x4) = idleSentinel;
+        *(void **)((char *)globalManager + 0x8) = idleSentinel;
         *(int *)((char *)globalManager + 0xC) = zero;
-        *(void **)((char *)globalManager + 0x10) = tail;
-        *(void **)((char *)globalManager + 0x14) = tail;
+        *(void **)((char *)globalManager + 0x10) = activeSentinel;
+        *(void **)((char *)globalManager + 0x14) = activeSentinel;
         ((void (*)(void *, void *, void *, void *, void *))__register_global_object)(
             globalManager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv,
-            lbl_8040EC78, tail, head);
-        lbl_8055DE28 = 1;
+            sChannelManagerDtorRecord, activeSentinel, idleSentinel);
+        sChannelManagerInitialized = 1;
     }
-    void *head;
-    char *manager = lbl_80412778;
-    if (object == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322B0C, 0x43, lbl_80322AE4);
-    head = manager + 4;
-    if (object == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8, 0x233, lbl_80322AB4);
-    void *iterator = head;
+    void *idleSentinel;
+    char *manager = sChannelManager;
+    if (channel == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(sInstanceManagerFile, 0x43, sNullObjMsg);
+    idleSentinel = manager + 4;
+    if (channel == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(sLinkListFile, 0x233, sNullPtrMsg);
+    void *insertPos = idleSentinel;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
-        manager, &iterator, object);
-    return object;
+        manager, &insertPos, channel);
+    return channel;
 }
 
 extern "C" int __dt__Q46nw4hbm3snd6detail14ChannelManagerFv(int arg0, int arg1) {
