@@ -250,9 +250,8 @@ extern f32 fn_8026EAEC(f32);
 extern int fn_801769F8(void);
 extern int fn_800216D0(void);
 extern void *fn_801B2ED0(s32);
- #pragma push
+  #pragma push
  #pragma processor 750
- #pragma scheduling invalid_target
  #pragma cplusplus on
  extern "C" f32 fn_8026EB4C(void *arg0) {
     class Obj {
