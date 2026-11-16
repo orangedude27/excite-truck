@@ -949,6 +949,7 @@ extern void fn_8017A580(void *);
 extern void fn_8017A57C(void *);
 extern void fn_801A4868(void *, int);
 extern float lbl_80562AAC, lbl_80562AB8, lbl_80562ABC, lbl_80562AC8, lbl_80562ACC, lbl_80562AD0, lbl_80562AD4;
+static float fnMul(float a, float b) { return a * b; }
 #pragma push
 #pragma processor 750
 void fn_801D4598(void *arg0, float farg0) {
