@@ -1470,47 +1470,49 @@ int fn_80248C94(void *arg0, int arg1) {
 #define FADE_ROUND     lbl_805638D8 /* 0.5f, added for round-to-nearest */
 extern float lbl_805638D0, lbl_805638D4, lbl_805638D8;
 extern s32 fn_802C942C(s32);
-void fn_80248CD8(void *arg0)
+void fn_80248CD8(void *effect)
 {
   register s32 elapsed;
-  s32 limit;
+  s32 duration;
   s32 alpha;
-  s32 converted;
-  s32 masked;
+  s32 truncated;
+  s32 nonNegative;
   float factor;
-  float amount;
-  float value;
-  float next;
+  float scaled;
+  float endFade;
+  float rounded;
   s32 now;
+  /* Drive a white overlay's alpha: opaque at the start, clear through the
+   * middle, opaque again at the end, then apply it as ARGB. */
   now = fn_802E2C20();
-  factor = lbl_805638B0;
-  elapsed = now - (*((s32 *) (((char *) arg0) + 0x1C)));
+  factor = FADE_ZERO;
+  elapsed = now - (*((s32 *) (((char *) effect) + 0x1C)));
   if (elapsed < 0x1F4)
   {
-    factor = (factor > (lbl_80563898 - (((float) elapsed) / lbl_805638D0)))
-      ? factor : (lbl_80563898 - (((float) elapsed) / lbl_805638D0));
+    factor = (factor > (FADE_ONE - (((float) elapsed) / FADE_MILLIS)))
+      ? factor : (FADE_ONE - (((float) elapsed) / FADE_MILLIS));
   }
-  limit = *((s32 *) (((char *) arg0) + 0x20));
-  if ((limit != 0) || ((*((s32 *) (((char *) arg0) + 0x18))) != 1))
+  duration = *((s32 *) (((char *) effect) + 0x20));
+  if ((duration != 0) || ((*((s32 *) (((char *) effect) + 0x18))) != 1))
   {
-    if (elapsed > (limit - 0x1F4))
+    if (elapsed > (duration - 0x1F4))
     {
-      value = lbl_80563898 - (((float) (limit - elapsed)) / lbl_805638D0);
-      factor = (factor > value) ? factor : value;
+      endFade = FADE_ONE - (((float) (duration - elapsed)) / FADE_MILLIS);
+      factor = (factor > endFade) ? factor : endFade;
     }
   }
-  amount = lbl_805638D4 * factor;
-  if (amount < lbl_805638B0)
+  scaled = FADE_ALPHA_MAX * factor;
+  if (scaled < FADE_ZERO)
   {
-    next = amount - lbl_805638D8;
+    rounded = scaled - FADE_ROUND;
   }
   else
   {
-    next = lbl_805638D8 + amount;
+    rounded = FADE_ROUND + scaled;
   }
-  converted = (s32) next;
-  masked = converted & (((-converted) & (~converted)) >> 31);
-  alpha = (masked < 0xFF) ? masked : 0xFF;
+  truncated = (s32) rounded;
+  nonNegative = truncated & (((-truncated) & (~truncated)) >> 31);
+  alpha = (nonNegative < 0xFF) ? nonNegative : 0xFF;
   fn_802C942C((alpha << 24) | 0xFFFFFF);
 }
 
