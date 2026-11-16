@@ -681,9 +681,18 @@ int fn_802EBD40(void) {
 #pragma dont_inline reset
 #pragma scheduling on
 
-int fn_802EBE00(int arg0) {
-    if (arg0 == 1) fn_802EBD40();
+int fn_802EBE00(int request) {
+#define KERNEL_RESET_NOTIFY 1
+#define mp3WaitForAck fn_802EBD40
+    /* Reset callback registered in fn_802EBE2C: when the reset is actually on,
+     * run the MP3 routine that waits for the stream to acknowledge
+     * (lbl_80560063), logging status and timing out after a few seconds. */
+    if (request == KERNEL_RESET_NOTIFY) {
+        mp3WaitForAck();
+    }
     return 0;
+#undef mp3WaitForAck
+#undef KERNEL_RESET_NOTIFY
 }
 
 void fn_802EBE2C(void) {
