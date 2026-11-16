@@ -1690,7 +1690,7 @@ extern "C" void fn_801B2910(void) {
         virtual void v7();
     };
     s32 i, j;
-    s32 b, a, one;
+    s32 a, b, one;
     f32 f31, f30;
     s32 *p;
 
@@ -1700,9 +1700,9 @@ extern "C" void fn_801B2910(void) {
     for (i = 0, j = 0; i < (s32)lbl_8055E678; j += 0x80, i++) {
         ((Obj *)((u8 *)lbl_8055E684 + j))->v0();
     }
-    for (i = 0; i < (s32)lbl_8055E678; i++) {
-        u32 idx = *(s32 *)((u8 *)lbl_8055E684 + (i << 7) + 8) - 1;
-        lbl_80435C30[idx] = i;
+    for (j = 0; j < (s32)lbl_8055E678; j++) {
+        u32 idx = *(s32 *)((u8 *)lbl_8055E684 + (j << 7) + 8) - 1;
+        lbl_80435C30[idx] = j;
     }
     if (lbl_8055E68C != 0) {
         ((Obj *)lbl_8055E68C)->v7();
@@ -2015,12 +2015,13 @@ extern "C" void fn_801B30E0(s32 index) {
     void *bestNode;
     if (reference != 0) {
         void *parent = *(void **)((u8 *)header + 0x2C);
-        void *first = *(void **)((u8 *)parent + 0x1C);
+        void *first;
         s32 referenceValue = *(s32 *)((u8 *)reference + 0x10);
-        void *node = first;
+        void *node = *(void **)((u8 *)parent + 0x1C);
         s32 bestDiff = 0x7FFFFFFF;
+        first = node;
         bestNode = 0;
-        for (;;) {
+        do {
             s32 difference = *(s32 *)((u8 *)node + 0x10) - referenceValue;
             s32 absDiff = difference < 0 ? -difference : difference;
             if (absDiff < bestDiff) {
@@ -2028,10 +2029,7 @@ extern "C" void fn_801B30E0(s32 index) {
                 bestNode = node;
             }
             node = *(void **)((u8 *)node + 0x14);
-            if (node == first) {
-                break;
-            }
-        }
+        } while (node != first);
     } else {
         bestNode = 0;
     }
