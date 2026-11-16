@@ -236,6 +236,7 @@ void fn_802A4B90(void) {
 }
 
 void fn_802A4C20(void) {
+    /* Reinitialize the two active effect handles (lbl_8055F88C / lbl_8055F888) via their reset helpers, then refresh every registered object through fn_802A59E0. */
     if (lbl_8055F88C != 0) fn_802A6A44((s32 *)lbl_8055F88C);
     if (lbl_8055F888 != 0) ((void (*)(void *))fn_802A5C1C)((void *)lbl_8055F888);
     fn_802A59E0();
@@ -472,14 +473,16 @@ extern "C" void fn_802A50F8(void) {
     void *section;
     void *track;
     f32 one, half, zero, scale;
+    int sz;
     base = lbl_80349BF0;
     fn_8028E61C(&init);
     zero = lbl_8056485C;
     half = lbl_8056486C;
     one = lbl_80564870;
     scale = lbl_80564868;
+    sz = 0x100;
     init.a = 0;
-    init.b = 0x100;
+    init.b = sz;
     init.c[0] = scale;
     init.c[1] = zero;
     init.c[2] = half;
