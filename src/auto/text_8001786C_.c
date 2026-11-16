@@ -589,26 +589,27 @@ void fn_800187F8(void) {
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_80017D5C(void* arg0) {
+void fn_80017D5C(void* list) {
     extern s32 fn_80129D18(s32);
-    register s32* arr = (s32*)arg0;
-    register s32 offset = 0;
+    register s32* fields = (s32*)list;
+    register s32 byteOffset = 0;
     register s32 i = 0;
-    register s32 left;
+    register s32 scratch;
     register s32* items;
+    /* Fisher-Yates shuffle: swap each word of the list with one at a random index. */
     goto check;
 loop:
     {
-        s32 index = ((s32 (*)(s32, s32))fn_80129D18)(1, arr[1]);
-        items = (s32*)arr[0];
-        left = *(s32*)((char*)items + offset);
+        s32 randIndex = ((s32 (*)(s32, s32))fn_80129D18)(1, fields[1]);
+        items = (s32*)fields[0];
+        scratch = *(s32*)((char*)items + byteOffset);
         i++;
-        *(s32*)((char*)items + offset) = items[index];
-        offset += 4;
-        items[index] = left;
+        *(s32*)((char*)items + byteOffset) = items[randIndex];
+        byteOffset += 4;
+        items[randIndex] = scratch;
     }
 check:
-    left = arr[1];
-    if (i < left) goto loop;
+    scratch = fields[1];
+    if (i < scratch) goto loop;
 }
 #pragma pop
