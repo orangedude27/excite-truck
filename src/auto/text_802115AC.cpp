@@ -619,9 +619,10 @@ extern "C" s32 fn_802121D4(s32 ptr, s32 count) {
 }
 
 extern s32 (*lbl_8055EF0C)(s32 *);
-extern "C" s32 fn_80212214(s32 arg0) {
+extern "C" s32 fn_80212214(s32 bits) {
+    /* Bit-preserving cast: copy the argument's 32 bits into the s32 result via memcpy. */
     s32 value;
-    memcpy(&value, &arg0, 4);
+    memcpy(&value, &bits, 4);
     return value;
 }
 
