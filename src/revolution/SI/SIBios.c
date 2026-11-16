@@ -10,17 +10,6 @@ typedef enum {
     SI_WIRELESS_CONT = (1 << 19),
 } SIStatus;
 
-#ifndef SI_SIMAIN_DEFINED
-#define SI_SIMAIN_DEFINED
-typedef struct SIMain {
-    s32 chan;            // at 0x0
-    u32 poll;            // at 0x4
-    u32 inSize;          // at 0x8
-    void* inAddr;        // at 0xC
-    SICallback callback; // at 0x10
-} SIMain;
-#endif
-
 typedef struct SIPacket {
     s32 chan;            // at 0x0
     void* outAddr;       // at 0x4
