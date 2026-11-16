@@ -6,12 +6,13 @@ extern int lbl_80497DF8[5];
 extern int fn_8000D838(void*);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
+/* Initialize the global state block at lbl_80497DF8 (all zero except field 1 = 123). */
 void fn_8022E0A4(void) {
-    int v;
+    int initialValue;
     fn_8000D838(&lbl_8055EFD8);
     lbl_80497DF8[0] = 0;
-    v = 123;
-    lbl_80497DF8[1] = v;
+    initialValue = 123;
+    lbl_80497DF8[1] = initialValue;
     lbl_80497DF8[2] = 0;
     lbl_80497DF8[3] = 0;
     lbl_80497DF8[4] = 0;
