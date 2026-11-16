@@ -755,41 +755,101 @@ done:
 }
 #pragma pop
 
+/* FrameHeap::Destroy and NewSection as inlined into Create. */
+static inline void FrameHeap_DestroyInline(FrameHeapDestroyView *state) {
+    if (state->heap == 0) return;
+    if (state->count == 0) goto free_heap;
+    FrameHeapDestroyListView *head = &state->list;
+    goto loop_test;
+loop_body:
+    if (state->count == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
+    }
+    {
+        void *list = head->tail;
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
+        if (list != 0) {
+            void *node = (u8 *)list + 0xC;
+            while (node != *(void **)((u8 *)list + 12)) {
+                void (*callback)(void *, void *, void *);
+                node = *(void **)((u8 *)node + 4);
+                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
+                if (node != 0) {
+                    callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
+                    if (callback != 0) callback((u8 *)node + 0x20, *(void **)((u8 *)node + 8), *(void **)((u8 *)node + 0x10));
+                }
+            }
+            if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
+        }
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&state->count, list);
+    }
+loop_test:
+    if (state->count != 0) goto loop_body;
+free_heap:
+    MEMFreeToFrmHeap(state->heap, 3);
+    MEMDestroyFrmHeap(state->heap);
+    state->heap = 0;
+}
+
+static inline bool FrameHeap_NewSectionInline(FrameHeapDestroyView *state) {
+    void *node = MEMAllocFromFrmHeapEx(state->heap, 0x14, 4);
+    if (node == 0) return false;
+    if (node != 0) {
+        void *t = (u8 *)node + 0xC;
+        *(u32 *)node = 0;
+        *((u32 *)node + 1) = 0;
+        *((void **)node + 3) = 0;
+        *((void **)node + 4) = 0;
+        *((u32 *)node + 2) = 0;
+        *((void **)node + 3) = t;
+        *((void **)node + 4) = t;
+    }
+    void *head = &state->list;
+    if (node == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
+    }
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&state->count, &head, node);
+    return true;
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 bool nw4hbm::snd::detail::FrameHeap::Create(void *buffer, unsigned long size) {
     FrameHeapDestroyView *state = (FrameHeapDestroyView *)this;
-    void *head2;
+    struct { FrameHeapDestroyListView *p; } headBox;
+    FrameHeapDestroyListView *&head = headBox.p;
     if (buffer == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D60, 0x4B, (const char *)lbl_80322D74);
     }
     if (state->heap != 0) {
         if (state->heap != 0) {
-            void *volatile_head;
             if (state->count == 0) goto free_heap;
-            head2 = (u8 *)state + 8;
+            head = &state->list;
             goto loop_test;
         loop_body:
             if (state->count == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
             }
             {
-                void *list = *(void **)((u8 *)head2 + 4);
+                struct { void *p; } listBox;
+                void *&list = listBox.p;
+                list = head->tail;
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
                 if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
                 if (list != 0) {
-                    register void *node = (u8 *)list + 0xC;
-                    while (1) {
+                    struct { void *p; } nodeBox;
+                    void *&node = nodeBox.p;
+                    node = (u8 *)list + 0xC;
+                    while (node != *(void **)((u8 *)list + 12)) {
                         void (*callback)(void *, void *, void *);
                         node = *(void **)((u8 *)node + 4);
                         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
                         if (node != 0) {
                             callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
-                            if (callback != 0) callback((u8 *)node + 0x20,
-                                                         *(void **)((u8 *)node + 8),
-                                                         *(void **)((u8 *)node + 0x10));
+                            if (callback != 0) callback((u8 *)node + 0x20, *(void **)((u8 *)node + 8), *(void **)((u8 *)node + 0x10));
                         }
-                        if (node == *(void **)((u8 *)list + 0xC)) break;
                     }
                     if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
                 }
@@ -812,25 +872,27 @@ bool nw4hbm::snd::detail::FrameHeap::Create(void *buffer, unsigned long size) {
         if (state->heap == 0) return false;
     }
     int ok;
-    void *node = MEMAllocFromFrmHeapEx(state->heap, 0x14, 4);
-    if (node == 0) {
+    void *mem = MEMAllocFromFrmHeapEx(state->heap, 0x14, 4);
+    if (mem == 0) {
         ok = 0;
     } else {
-        if (node != 0) {
-            void *t = (u8 *)node + 0xC;
-            *(u32 *)node = 0;
-            *((u32 *)node + 1) = 0;
-            *((void **)node + 3) = 0;
-            *((void **)node + 4) = 0;
-            *((u32 *)node + 2) = 0;
-            *((void **)node + 3) = t;
-            *((void **)node + 4) = t;
+        void *node;
+        if (mem != 0) {
+            void *t = (u8 *)mem + 0xC;
+            *(u32 *)mem = 0;
+            *((u32 *)mem + 1) = 0;
+            *((void **)mem + 3) = 0;
+            *((void **)mem + 4) = 0;
+            *((u32 *)mem + 2) = 0;
+            *((void **)mem + 3) = t;
+            *((void **)mem + 4) = t;
         }
-        head2 = (u8 *)state + 8;
+        node = mem;
+        head = &state->list;
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
         }
-        void *sp8 = head2;
+        void *sp8 = head;
         Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)state + 4, &sp8, node);
         ok = 1;
     }
