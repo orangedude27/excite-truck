@@ -1,5 +1,26 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
+#pragma cplusplus on
+extern "C" f32 fn_8016FD58(void);
+extern "C" void fn_8016FD60(void *,void *);
+extern "C" void fn_8016FD9C(const f32 *,void *);
+
+extern "C" s32 fn_80141FA0(void);
+extern "C" void fn_80142B60(s32);
+extern "C" f32 fn_80144BD8(f32);
+extern "C" f32 fn_80144C80(f32, f32, f32);
+extern "C" void fn_80147230(void *, const void *, ...);
+extern "C" void fn_801476C4(void *);
+extern "C" void fn_80147940(void *, void *, const void *, s32);
+extern "C" void fn_8014C72C(void *, const void *);
+extern "C" f32 fn_8014C8B4(f32, f32, f32, f32, f32);
+extern "C" void fn_8014C920(void *, void *);
+
+extern "C" s32 fn_802C9A58(void);
+extern "C" char lbl_8055A264;
+extern "C" f32 lbl_805619B0,lbl_805619B4,lbl_805619C8,lbl_805619CC,lbl_805619D0,lbl_805619D4,lbl_805619D8,lbl_805619DC,lbl_805619E0,lbl_805619E4,lbl_805619E8,lbl_805619EC,lbl_805619F0,lbl_805619F4,lbl_805619F8,lbl_805619FC,lbl_80561A00,lbl_80561A04,lbl_80561A08;
+
+#pragma cplusplus reset
 #pragma ppc_psq_save off
 #pragma cplusplus on
 extern "C" char lbl_80330A90[];
