@@ -681,15 +681,16 @@ void fn_801B1390(s32 trackIndex, s32 offset) {
 #pragma scheduling on
 #pragma cplusplus off
 #pragma dont_inline on
+/* Applies any pending track-selection delta for each of the four player slots. */
 void fn_801B146C(void) {
-    s32 i = 0;
+    s32 slotIndex = 0;
     do {
-        s32 r = fn_8026A27C(i);
-        if (r != 0) {
-            fn_801B1390(i, r);
+        s32 pendingDelta = fn_8026A27C(slotIndex);
+        if (pendingDelta != 0) {
+            fn_801B1390(slotIndex, pendingDelta);
         }
-        i++;
-    } while (i < 4);
+        slotIndex++;
+    } while (slotIndex < 4);
 }
 #pragma dont_inline reset
 void fn_801B14BC(s32 *arg0,s32 arg1,s32 arg2) {
@@ -1771,8 +1772,8 @@ void fn_801B2C6C(void) {
 #pragma scheduling invalid_target
 s32 fn_801B2C70(void *arg0) {
     s32 x;
-    unsigned int y;
     unsigned int shifted;
+    unsigned int y;
     s32 mask;
     struct Entry {
         s32 unknown0;
@@ -1782,7 +1783,7 @@ s32 fn_801B2C70(void *arg0) {
         u8 flag;
         u8 unknown11[3];
     } *entry;
-    unsigned int zero;
+    s32 zero;
     s32 offset;
     s32 i;
     memset(arg0, 0, 0xB0);
@@ -1793,7 +1794,7 @@ s32 fn_801B2C70(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0xD) = lbl_8055E698;
     x = (unsigned)lbl_8055E69C;
     y = lbl_8055E67C;
-    x = x ^ y;
+    x = y ^ x;
     shifted = x >> 1;
     mask = x & y;
     shifted = shifted - mask;
@@ -1811,7 +1812,6 @@ s32 fn_801B2C70(void *arg0) {
     }
     return 1;
 }
-
 extern int fn_801E89EC();
 #pragma cplusplus on
 extern "C" s32 fn_801B2F40(s32);
