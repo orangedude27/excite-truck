@@ -20,6 +20,7 @@ extern s32 lbl_805600F8; /* head of the "single_movie_info" list; while it is se
                           * freed or compared against */
 extern char lbl_8034EC04[]; /* "single_movie_info": heap tag of the 0x48-byte node */
 extern char lbl_8034EC18[]; /* "MoviePlayInfo": heap tag of the 0x44-byte record */
+extern char lbl_8055D308[]; /* "missing": movie name opened when the wanted one is not there */
 #pragma dont_inline fn_802ECCE4
 #pragma dont_inline fn_802ECD68
 #pragma dont_inline fn_802ECDF4
