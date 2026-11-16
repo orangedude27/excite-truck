@@ -4400,14 +4400,16 @@ void GXLoadTexObj(void *obj, unsigned int map) {
     GXLoadTexObjPreLoaded(obj, region, map);
 }
 
-void GXInitTlutObj(void *arg0, unsigned int arg1, int arg2, short arg3) {
+/* Initialize a GX TLUT object: pack the CLUT address (>>5) and type 0x64 into
+ * its attribute word, and store the lookup format and entry count. */
+void GXInitTlutObj(void *tlutObj, unsigned int lut, int fmt, short nEntries) {
     union {
         unsigned int reg;
         struct {
             unsigned int type : 8;
             unsigned int format : 24;
         } fields;
-    } value;
+    } attrReg;
     union {
         unsigned int reg;
         struct {
@@ -4415,15 +4417,15 @@ void GXInitTlutObj(void *arg0, unsigned int arg1, int arg2, short arg3) {
             unsigned int size : 2;
             unsigned int rest : 10;
         } fields;
-    } size = {0};
+    } sizeReg = {0};
 
-    value.reg = *(unsigned int *)((char *)arg0 + 4);
-    value.fields.format = arg1 >> 5;
-    size.fields.size = arg2;
-    *(short *)((char *)arg0 + 8) = arg3;
-    value.fields.type = 0x64;
-    *(unsigned int *)arg0 = size.reg;
-    *(unsigned int *)((char *)arg0 + 4) = value.reg;
+    attrReg.reg = *(unsigned int *)((char *)tlutObj + 4);
+    attrReg.fields.format = lut >> 5;
+    sizeReg.fields.size = fmt;
+    *(short *)((char *)tlutObj + 8) = nEntries;
+    attrReg.fields.type = 0x64;
+    *(unsigned int *)tlutObj = sizeReg.reg;
+    *(unsigned int *)((char *)tlutObj + 4) = attrReg.reg;
 }
 
 unsigned short GXGetTexObjTlut(void *arg0) {
