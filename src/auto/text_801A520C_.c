@@ -592,9 +592,10 @@ struct Dummy_801A5E98 {
     virtual void h14() {}
 };
 #pragma cplusplus on
-extern "C" void fn_801A5E98(void *arg0) {
+extern "C" void fn_801A5E98(void *wrapper) {
+    /* Call the shared pre-update hook, then forward h14 to the subobject held at +0x270C of the wrapper. */
     fn_8018AF00();
-    ((Dummy_801A5E98 *)*(void **)((char *)arg0 + 0x270C))->h14();
+    ((Dummy_801A5E98 *)*(void **)((char *)wrapper + 0x270C))->h14();
 }
 #pragma cplusplus off
 
