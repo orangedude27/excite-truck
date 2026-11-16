@@ -1996,7 +1996,8 @@ extern "C" void fn_801CE7A0(void) {
     if (stat != 0) { if (stat != 0) stat->destroy(1); block->statObjects[2] = 0; }
 }
 #pragma cplusplus reset
-int fn_801CE874(int arg0) {
+/* Read a byte from the current entry; index is forwarded to the entry accessor as its argument. */
+int fn_801CE874(int index) {
     return *fn_801EA9A0();
 }
 
