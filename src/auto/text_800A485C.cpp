@@ -11352,12 +11352,13 @@ extern "C" s32 fn_800B73BC(s32 arg0) {
 }
 #pragma dont_inline reset
 
-extern "C" s32 fn_800B73CC(s32 arg0, s32 arg1) {
-    switch (arg0) {
+extern "C" s32 fn_800B73CC(s32 cond, s32 value) {
+    /* Return value only when cond is zero; any other condition yields 0. */
+    switch (cond) {
     default:
         return 0;
     case 0:
-        return arg1;
+        return value;
     }
 }
 
@@ -14723,7 +14724,8 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
 }
 #pragma pop
 extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
-    u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 0xC, arg2);
+    s32 mode = 0xC;
+    u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, mode, arg2);
     while ((value & 0xFFFFU) != 0xFFFU) {
         value = (value * 2) & 0xFFFEU;
         value |= ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 1, arg2);
@@ -21945,11 +21947,11 @@ extern "C" s32 fn_800D53FC(void *arg0, void *arg1, const char *arg2) {
     const char *name = arg2;
     void *self = arg0;
     if (*(s32 *)((u8 *)self + 0x20) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0xDC, file + 0x7C);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8 + 0, 0xDC, file + 0x7C);
     if (handle == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0xDD, file + 0xA4);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8 + 0, 0xDD, file + 0xA4);
     if (name == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0xDE, file + 0xD8);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8 + 0, 0xDE, file + 0xD8);
     if (ARCInitHandle(handle, (ARCHandle *)((u8 *)self + 4)) == 0)
         return 0;
     *(void **)((u8 *)self + 0x20) = handle;
