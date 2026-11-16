@@ -3025,17 +3025,17 @@ extern "C" void fn_800F0360(void *self) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
-    void *pHead;
-    void *pList = &lbl_80412A6C[4];
-    void *pPlayer;
-    for (pHead = *(void **)pList; pHead != pList;) {
-        pPlayer = pHead;
-        pHead = *(void **)pHead;
-        if (pPlayer == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324024, 0x23D,
-                                         (const char *)lbl_80324000);
+    struct LinkListIter { void *node; };
+    LinkListIter begin;
+    begin.node = *(void**)&lbl_80412A6C[0x04];
+    LinkListIter it = begin;
+    while (it.node != (void*)&lbl_80412A6C[0x04]) {
+        void* node = it.node;
+        it.node = *(void**)it.node;
+        if (node == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324024, 0x23D, (const char*)lbl_80324000);
         }
-        fn_800F0360((u8 *)pPlayer - 0x100);
+        fn_800F0360(&((u8*)node)[-0x100]);
     }
 }
 #pragma pop
