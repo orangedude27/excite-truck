@@ -12,7 +12,7 @@ extern void fn_8000DD98(void);
 extern void fn_8000D984(int);
 extern void fn_8000DA80(void);
 extern void fn_8000DC84(int);
-extern int lbl_8055D468;
+extern int lbl_8055D468;  /* IdentInfo: the allocated block the slot table lives in */
 extern unsigned char lbl_8034F650[];
 extern void fn_8000DF2C(int);
 extern void *memset(void *, int, unsigned int);
