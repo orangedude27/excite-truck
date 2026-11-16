@@ -201,6 +201,9 @@ extern "C" int fn_802044E8(void) {
 }
 #pragma cplusplus off
 extern int __cntlzw(unsigned int);
+#pragma push
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 int fn_80204870(int arg0) {
     int index;
     if (fn_8020437C() == 0)
