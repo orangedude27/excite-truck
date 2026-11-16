@@ -9120,9 +9120,18 @@ extern "C" void fn_80229918(void *self) {
     widget->active = 1;
 }
 
-extern "C" void fn_80229958(void *arg0) {
-    ((VfObj *)arg0)->vf31();
-    *(u8 *)((u8 *)arg0 + 0x18) = 0;
+extern "C" void fn_80229958(void *self) {
+    /* Turns this widget off: runs its virtual update (vtable slot +0x84) and then
+     * clears its active flag (+0x18), the mirror image of fn_80229918. */
+    struct VfWidget {
+        VfObj obj;          /* 0x00: vtable; slot +0x84 updates the widget */
+        u8 pad_0x4[0x14];
+        u8 active;          /* 0x18: nonzero while the widget is turned on */
+    };
+    VfWidget *widget = (VfWidget *)self;
+
+    widget->obj.vf31();
+    widget->active = 0;
 }
 
 extern "C" void fn_80229998(void *arg0) {
