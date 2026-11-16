@@ -1781,15 +1781,17 @@ void __GXCalculateVLim(void) {
 }
 
 void GXClearVtxDesc(void) {
+    /* Clear the vertex descriptor and the normal/binormal enables, then flag VCD dirty. */
     unsigned int *data = __GXData;
     unsigned int zero = 0;
     unsigned int value = 1;
     unsigned int field = __rlwimi(0, value, 9, 21, 22);
-    data[0x14 / 4] = field;
-    data[0x18 / 4] = zero;
-    *((unsigned char *)data + 0x524) = zero;
-    *((unsigned char *)data + 0x525) = zero;
-    data[0x5FC / 4] |= 8;
+    GXVtxDescData *desc = (GXVtxDescData *)data;
+    desc->vcdLo = field;
+    desc->vcdHi = zero;
+    desc->normal = zero;
+    desc->binormal = zero;
+    desc->dirtyState |= DIRTY_VCD;
 }
 
 static inline void SETVAT(unsigned int *vatA, unsigned int *vatB, unsigned int *vatC,
