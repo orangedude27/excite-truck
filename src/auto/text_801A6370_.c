@@ -47,8 +47,10 @@ float fn_801A6390(int arg0, int arg1) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
-float fn_801A63C4(int arg0, int arg1) {
-    return (lbl_80562428 * fn_801A6390(arg0, arg1)) / lbl_8056241C;
+float fn_801A63C4(int endTick, int startTick) {
+    /* Elapsed time between two tick stamps: fn_801A6390 turns the gap into
+       seconds on one time base, then this rescales onto the spline's time base. */
+    return (lbl_80562428 * fn_801A6390(endTick, startTick)) / lbl_8056241C;
 }
 #pragma scheduling on
 #pragma dont_inline off
