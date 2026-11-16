@@ -532,7 +532,7 @@ extern "C" void fn_802168BC(void *);
 extern "C" void *fn_8022D97C(s32);
 extern "C" void *lbl_8033F90C[];
 extern "C" int lbl_8033FA28[];
-extern "C" void fn_802CAC54(void);
+extern "C" void fn_802CAC54(int);
 extern "C" char lbl_8033DFB4[];
 extern "C" s32 fn_80128668(void *);
 extern "C" void fn_80219440(void *, s32, void *, s32);
