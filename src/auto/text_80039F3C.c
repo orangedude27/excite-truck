@@ -334,7 +334,8 @@ static inline int allocateStructures(const char *msg) {
 }
 
 #pragma scheduling reset
-static inline void initDvdContexts(DVDLowContext *base) {
+static inline void initDvdContexts(void) {
+    DVDLowContext *base = (DVDLowContext *)lbl_8037B820;
     base[0].callback = (void *)0;
     base[0].WORD_0x4 = 0;
     base[0].inUse = 0;
