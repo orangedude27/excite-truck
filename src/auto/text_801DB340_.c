@@ -989,63 +989,63 @@ int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr) {
 #pragma paired_single off
 #pragma opt_common_subs on
 #pragma scheduling invalid_target
-float fn_801DDC8C(float farg0, float farg1)
+float fn_801DDC8C(float worldX, float worldZ)
 {
-  int tileX;
-  int tileZ;
+  int mapX;
+  int mapZ;
   int cellX;
   int cellZ;
-  int tileWorldX;
-  int tileWorldZ;
-  int *state = (int *) lbl_8055E990;
-  int remX;
-  int remZ;
-  unsigned short tile;
+  int tileCoordX;
+  int tileCoordZ;
+  int *ground = (int *) lbl_8055E990;
+  int cellInTileX;
+  int cellInTileZ;
+  unsigned short tileId;
   char *node;
-  int layerIndex;
+  int firstLayer;
   unsigned short sample;
-  int next;
-  int tblIdx;
-  float x;
-  float z;
-  float roundX;
-  float roundZ;
-  float value;
-  float result;
+  int nextLayer;
+  int weightIndex;
+  float gridX;
+  float gridZ;
+  float roundedX;
+  float roundedZ;
+  float layerHeight;
+  float height;
   char *layer;
-  if (state[4] == 0)
+  if (ground[4] == 0)
   {
     return lbl_80562B84;
   }
-  x = *((float *) (((char *) state) + 8)) * (farg0 + *((float *) (((char *) state) + 0)));
-  z = *((float *) (((char *) state) + 12)) * (farg1 + *((float *) (((char *) state) + 4)));
-  roundX = (x < lbl_80562B84) ? (x - lbl_80562B64) : (lbl_80562B64 + x);
-  cellX = (int) roundX;
-  roundZ = (z < lbl_80562B84) ? (z - lbl_80562B64) : (lbl_80562B64 + z);
-  cellZ = (int) roundZ;
+  gridX = *((float *) (((char *) ground) + 8)) * (worldX + *((float *) (((char *) ground) + 0)));
+  gridZ = *((float *) (((char *) ground) + 12)) * (worldZ + *((float *) (((char *) ground) + 4)));
+  roundedX = (gridX < lbl_80562B84) ? (gridX - lbl_80562B64) : (lbl_80562B64 + gridX);
+  cellX = (int) roundedX;
+  roundedZ = (gridZ < lbl_80562B84) ? (gridZ - lbl_80562B64) : (lbl_80562B64 + gridZ);
+  cellZ = (int) roundedZ;
   if ((cellX < 0) || (cellZ < 0))
   {
     return lbl_80562B84;
   }
-  tileWorldX = cellX / 32;
-  tileWorldZ = cellZ / 32;
-  tileX = tileWorldX - lbl_8055E99C;
-  remX = cellX - (tileWorldX * 32);
-  remZ = cellZ - (tileWorldZ * 32);
-  tileZ = tileWorldZ - lbl_8055E9A0;
-  if ((tileX < 0) || ((tileWorldZ - lbl_8055E9A0) < 0))
+  tileCoordX = cellX / 32;
+  tileCoordZ = cellZ / 32;
+  mapX = tileCoordX - lbl_8055E99C;
+  cellInTileX = cellX - (tileCoordX * 32);
+  cellInTileZ = cellZ - (tileCoordZ * 32);
+  mapZ = tileCoordZ - lbl_8055E9A0;
+  if ((mapX < 0) || ((tileCoordZ - lbl_8055E9A0) < 0))
   {
     node = 0;
   }
   else
-    if ((tileX >= 0x60) || (tileZ >= 0x60))
+    if ((mapX >= 0x60) || (mapZ >= 0x60))
   {
     node = 0;
   }
   else
   {
-    tile = *((unsigned short *) ((((char *) lbl_80442708) + (tileX * 0xC0)) + (tileZ * 2)));
-    if (tile == 0xFFFF)
+    tileId = *((unsigned short *) ((((char *) lbl_80442708) + (mapX * 0xC0)) + (mapZ * 2)));
+    if (tileId == 0xFFFF)
     {
       if (1)
       {
@@ -1054,23 +1054,23 @@ float fn_801DDC8C(float farg0, float farg1)
     }
     else
     {
-      node = ((char *) (*((int *) (((char *) state) + 0x18)))) + (tile * 0x894);
+      node = ((char *) (*((int *) (((char *) ground) + 0x18)))) + (tileId * 0x894);
     }
   }
   if (node == 0)
   {
     return lbl_80562B84;
   }
-  layerIndex = *((int *) (node + 0x890));
-  result = lbl_80562B84;
-  if (layerIndex >= 0)
+  firstLayer = *((int *) (node + 0x890));
+  height = lbl_80562B84;
+  if (firstLayer >= 0)
   {
-    layer = *(char **)((char *)state + 0x20) + layerIndex * 0x810;
- do { do { tblIdx = *((int *) (layer + 0x808)); sample = ((GroundLayer *)layer)->samples[remX][remZ]; next = *((int *) (layer + 0x80C)); value = (*((float *) (layer + 0))) + ((*((float *) (layer + 4))) * ((float) sample)); result += value * lbl_804425DC[tblIdx]; if (next < 0) { break; } layer = ((char *) (*((int *) (((char *) state) + 0x20)))) + (next * 0x810); } while (1); return result; } while (0);
+    layer = *(char **)((char *)ground + 0x20) + firstLayer * 0x810;
+ do { do { weightIndex = *((int *) (layer + 0x808)); sample = ((GroundLayer *)layer)->samples[cellInTileX][cellInTileZ]; nextLayer = *((int *) (layer + 0x80C)); layerHeight = (*((float *) (layer + 0))) + ((*((float *) (layer + 4))) * ((float) sample)); height += layerHeight * lbl_804425DC[weightIndex]; if (nextLayer < 0) { break; } layer = ((char *) (*((int *) (((char *) ground) + 0x20)))) + (nextLayer * 0x810); } while (1); return height; } while (0);
   }
   else
   {
-    return result;
+    return height;
   }
 }
 #pragma pop
