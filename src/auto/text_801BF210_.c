@@ -622,14 +622,15 @@ void fn_801C0124(float *out, float *src, float scale) {
 
 extern void fn_8017A580(int, int, int, int, int, int);
 extern void fn_8017A57C(float, float);
-void fn_801C014C(void *arg0, float *arg1) {
-    float temp_f2 = arg1[0];
-    float temp_f1 = arg1[1];
-    float temp_f0 = arg1[2];
-    *(float *)((char *)arg0 + 0x30) = temp_f2;
-    *(float *)((char *)arg0 + 0x34) = temp_f1;
-    *(float *)((char *)arg0 + 0x38) = temp_f0;
-    fn_8017A57C(temp_f1, temp_f2);
+void fn_801C014C(void *object, float *position) {
+    /* Copy a 3-component position into the object at +0x30/+0x34/+0x38 and notify fn_8017A57C. */
+    float x = position[0];
+    float y = position[1];
+    float z = position[2];
+    *(float *)((char *)object + 0x30) = x;
+    *(float *)((char *)object + 0x34) = y;
+    *(float *)((char *)object + 0x38) = z;
+    fn_8017A57C(y, x);
 }
 
 int fn_801C0168(void *arg0) { return *(int *)((char *)arg0 + 0x5A4); }
