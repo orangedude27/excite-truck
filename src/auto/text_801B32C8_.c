@@ -202,6 +202,10 @@ void fn_801B3448(void) {
     }
 }
 #pragma scheduling on
+/* Reset all collision-sound history when the game state is restarted.
+   lbl_8055E6C0 is the global collision-sound manager; fn_801B3DBC clears its
+   16 per-pair sound records (played object / key / time). lbl_80435C50 is the
+   8-entry table of last-play times by sound id, zeroed so a sound can retrigger. */
 void fn_801B34A4(void) {
     fn_801B3DBC((void*)lbl_8055E6C0);
     memset(lbl_80435C50, 0, 0x20);
@@ -646,7 +650,7 @@ void* fn_801B447C(void* arg0, void* arg1, s32 arg2) {
     right = arg2 - half - 1;
     if (right > 0) {
         s32 off = half * 16;
-        *(void**)((u8*)arg1 + off + 12) = fn_801B447C(arg0, (u8*)arg1 + off + 16, right);
+        *(void**)((u8*)arg1 + off + 12) = fn_801B447C(arg0, (u8*)arg1 + half * 16 + 16, right);
     }
     return (u8*)arg1 + half * 16;
 }
