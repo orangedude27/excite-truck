@@ -181,18 +181,19 @@ extern "C" void NotifyLoadAsyncEndSeqData__Q46nw4hbm3snd6detail8SeqSoundFbPCvlPv
 #pragma pop
 #pragma push
 #pragma scheduling on
-extern "C" void Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCQ56nw4hbm3snd6detail8SeqSound15SeqLoadCallbackUl(void *arg0, const void *arg1, unsigned long arg2) {
+extern "C" void Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCQ56nw4hbm3snd6detail8SeqSound15SeqLoadCallbackUl(void *seqSound, const void *callback, unsigned long id) {
+    /* SeqSound::Prepare: hand the async-load callback and id to the archive player, then cache them on the sound with the loading flag set. */
     struct SeqLoadCallback {
         virtual void v0();
         virtual void Invoke(void (*)(int, const void *, unsigned long, void *), void *, unsigned long) const;
     };
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324060, 0x80, (const char *)lbl_80324074);
-    if (arg1 != 0) {
-        ((const SeqLoadCallback *)arg1)->Invoke(
-            NotifyLoadAsyncEndSeqData__Q46nw4hbm3snd6detail8SeqSoundFbPCvlPv, arg0, arg2);
-    *(void **)((u8 *)arg0 + 0x1EC) = (void *)arg1;
-    *(unsigned long *)((u8 *)arg0 + 0x1F0) = arg2;
-    *(volatile u8 *)((u8 *)arg0 + 0x1E8) = 1;
+    if (callback == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324060, 0x80, (const char *)lbl_80324074);
+    if (callback != 0) {
+        ((const SeqLoadCallback *)callback)->Invoke(
+            NotifyLoadAsyncEndSeqData__Q46nw4hbm3snd6detail8SeqSoundFbPCvlPv, seqSound, id);
+    *(void **)((u8 *)seqSound + 0x1EC) = (void *)callback;
+    *(unsigned long *)((u8 *)seqSound + 0x1F0) = id;
+    *(volatile u8 *)((u8 *)seqSound + 0x1E8) = 1;
     }
 }
 
