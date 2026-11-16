@@ -327,6 +327,15 @@ void fn_801381B4(void *arg0) {
 #pragma pop
 
 #pragma dont_inline on
+/* Node in a line's circular list: +0x10 is the index/priority, +0x14 the next link. */
+struct LineNode {
+    char pad0[0x10];
+    int index;                 /* +0x10 */
+    struct LineNode *next;     /* +0x14 */
+    char pad18[0x14];
+    float metric;              /* +0x2C */
+};
+
 void fn_80138434(void) {
     fn_80137F2C();
 }
