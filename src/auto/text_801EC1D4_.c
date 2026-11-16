@@ -21,7 +21,7 @@ struct Unk_801EEA64Iface {
     virtual int m1C(char *);
 };
 #pragma cplusplus reset
-extern long lbl_80488648[];
+extern long lbl_80488648[]; /* up to 8 live vehicle render objects, by render slot */
 extern char lbl_8033A300[];
 extern char lbl_8033A0B0[];
 __declspec(section ".sdata") extern char lbl_8055AFEC[];
