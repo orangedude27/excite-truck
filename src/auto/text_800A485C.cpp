@@ -11412,10 +11412,12 @@ s32 VFipf2_fopen(const char *arg0, const char *arg1) {
 }
 
 extern "C" s32 fn_800B1EB8(s32, s32, s32, s32, s32 *);
-extern "C" s32 fn_800B75C4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 result;
-    fn_800B1EB8(arg0, arg1, arg2, arg3, &result);
-    return result;
+extern "C" s32 fn_800B75C4(s32 buffer, s32 size, s32 count, s32 file) {
+    /* fread-style convenience wrapper: forwards to the locked file-read helper
+       and returns the number of bytes actually read (its error code is ignored). */
+    s32 bytesRead;
+    fn_800B1EB8(buffer, size, count, file, &bytesRead);
+    return bytesRead;
 }
 
 extern "C" s32 fn_800B1FF4(void *, u32, s32);
