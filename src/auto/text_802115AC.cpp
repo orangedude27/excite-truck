@@ -2396,9 +2396,10 @@ extern "C" s32 fn_80215498(void) {
     return 0;
 }
 
-extern "C" void fn_802154A0(void *arg0) {
-    if (*(u8 *)((char *)arg0 + 0x1A) != 0) {
-        *(u8 *)((char *)arg0 + 0x234) = 1;
+extern "C" void fn_802154A0(void *widget) {
+    /* Mark this VfWidget dirty (+0x234) when its layout option (+0x1A) is set. */
+    if (*(u8 *)((char *)widget + 0x1A) != 0) {
+        *(u8 *)((char *)widget + 0x234) = 1;
     }
 }
 
