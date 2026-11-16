@@ -444,6 +444,7 @@ next:
 
 #pragma cplusplus on
 extern "C" void fn_801EB800(void *object, s32 arg1, s32 arg2) {
+    /* C-callable thunk: invoke the virtual method at vtable slot 0x28 on object, passing the two args swapped. */
     struct Dispatch {
         virtual void u0();
         virtual void u1();
