@@ -2734,11 +2734,12 @@ extern "C" void *fn_8021C97C(void *obj, s32 arg1, s32 arg2, s32 arg3, s32 value2
     return (void *)((char *)obj + 0);
 }
 
-extern "C" void fn_8021C9D8(void *arg0) {
-    if (*(s32 *)((u8 *)arg0 + 0x258) > 0) {
-        (*(Fn8021C9D8Object **)((u8 *)arg0 + 0x254))->First();
+extern "C" void fn_8021C9D8(void *item) {
+    /* Call First() on the +0x254 helper when the +0x258 count is positive, otherwise Second(). */
+    if (*(s32 *)((u8 *)item + 0x258) > 0) {
+        (*(Fn8021C9D8Object **)((u8 *)item + 0x254))->First();
     } else {
-        (*(Fn8021C9D8Object **)((u8 *)arg0 + 0x254))->Second();
+        (*(Fn8021C9D8Object **)((u8 *)item + 0x254))->Second();
     }
 }
 
