@@ -1237,7 +1237,7 @@ void fn_802AFF80(void *arg0, short arg1) {
     u32 limit = *(unsigned short *)((char *)arg0 + 6);
     if (index < limit) {
         short *data = *(short **)arg0;
-        unsigned int offset = index << 1;
+        u32 offset = index << 1;
         register index = index + 1;
         data[offset >> 1] = arg1;
         *(unsigned short *)((char *)arg0 + 4) = index;
@@ -1274,8 +1274,10 @@ extern int fn_802B127C(int, int);
 extern float fn_801DCF48(int, float, float);
 extern float lbl_80564AF0;
 extern double lbl_80564B70;
-unsigned short fn_802B0070(int arg0) {
-    return fn_802B127C(lbl_8055F974, arg0);
+unsigned short fn_802B0070(int point) {
+    /* Append the 3-float point at `point` to the global object lbl_8055F974's
+     * point array (fn_802B127C) and return the new entry's 16-bit index. */
+    return fn_802B127C(lbl_8055F974, point);
 }
 
 #pragma scheduling on
