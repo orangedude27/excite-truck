@@ -3457,14 +3457,16 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
     }
 }
 #pragma pop
-extern "C" void fn_800F0728(void *this_, s32 a1, s32 a2) {
-    class Dispatch {
+/* Forward an event to the virtual callback stored at +0x94 on this player,
+ * passing the player and the two event arguments. */
+extern "C" void fn_800F0728(void *player, s32 arg1, s32 arg2) {
+    class Callback {
     public:
         virtual void f0();
         virtual void invoke(void *, s32, s32);
     };
-    Dispatch *object = *(Dispatch **)((u8 *)this_ + 0x94);
-    object->invoke(this_, a1, a2);
+    Callback *callback = *(Callback **)((u8 *)player + 0x94);
+    callback->invoke(player, arg1, arg2);
 }
 
 extern "C" void fn_800F0750(void) {
