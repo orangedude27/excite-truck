@@ -15,41 +15,35 @@ extern s32 fn_801DCE14(void *, void *, s32, s32, s32, s32);
 extern f32 PSVECDotProduct(const void *, const void *);
 extern f32 __fabsf(f32);
 extern double __fabs(double);
-#pragma scheduling invalid_target
-#pragma paired off
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 s32 fn_801E9C84(f32 *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, s32 arg5, f32 farg0) {
-    s32 original[3];
+    struct S { s32 x, y, z; };
+    struct S original;
     f32 normal[3];
     f32 delta[3];
-    volatile s32 *bits = (volatile s32 *)arg0;
-    s32 first = bits[0];
-    s32 last = bits[2];
+    s32 first = ((struct S *)arg0)->x;
+    s32 last = ((struct S *)arg0)->z;
     f32 diffX;
     f32 diffY;
     f32 diffZ;
     f32 dot;
-    f32 valueX;
-    f32 valueY;
-    f32 valueZ;
-
-    original[0] = first;
-    original[1] = bits[1];
-    original[2] = last;
-    if (((s32 (*)(s32, void *, void *, void *, s32, s32))fn_801DCE14)(arg4, arg0, original, normal, arg5, arg5) == 0)
+    original.x = first;
+    original.y = ((struct S *)arg0)->y;
+    original.z = last;
+    if (fn_801DCE14((void *)arg4, arg0, (s32)&original, (s32)normal, arg5, arg5) == 0)
         return 0;
-
-    diffX = ((f32 *)arg1)[0] - ((f32 *)original)[0];
-    diffY = ((f32 *)arg1)[1] - ((f32 *)original)[1];
-    diffZ = ((f32 *)arg1)[2] - ((f32 *)original)[2];
+    diffX = ((f32 *)arg1)[0] - ((f32 *)&original)[0];
+    diffY = ((f32 *)arg1)[1] - ((f32 *)&original)[1];
+    diffZ = ((f32 *)arg1)[2] - ((f32 *)&original)[2];
     delta[0] = diffX;
     delta[1] = diffY;
     delta[2] = diffZ;
     dot = PSVECDotProduct(normal, delta);
     if ((f32)__fabs((double)dot) < farg0) {
-        valueX = ((f32 *)arg1)[0];
-        valueY = ((f32 *)arg1)[1];
-        valueZ = ((f32 *)arg1)[2];
+        f32 valueX = ((f32 *)arg1)[0];
+        f32 valueY = ((f32 *)arg1)[1];
+        f32 valueZ = ((f32 *)arg1)[2];
         dot = -dot;
         ((f32 *)arg2)[0] = valueX + normal[0] * dot;
         ((f32 *)arg2)[1] = valueY + normal[1] * dot;
@@ -61,9 +55,7 @@ s32 fn_801E9C84(f32 *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, s32 arg5,
     }
     return 0;
 }
-#pragma paired_single reset
-#pragma paired reset
-#pragma scheduling on
+#pragma pop
 s32 fn_801DCE14(void *, void *, s32, s32, s32, s32);
 extern f32 lbl_80562E2C;
 void fn_801E9DC4(s16 *arg0) { *arg0 = -1; }
@@ -83,8 +75,9 @@ void fn_801E9DD8(void) {
 f32 fn_801E9DDC(void *arg0, f32 farg0, f32 farg1) {
     f32 input[3];
     f32 output[3];
+    f32 y = lbl_80562E2C;
     input[0] = farg0;
-    input[1] = lbl_80562E2C;
+    input[1] = y;
     input[2] = farg1;
     if (((s32 (*)(void *, void *, void *, s32, s32))fn_801DCE14)(arg0, input, output, 0, 0) != 0)
         return output[1];
@@ -118,28 +111,32 @@ void fn_801E9EC4(void *arg0, void *arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg
 
 s32 fn_801E9C84(f32 *, void *, void *, s32, s32, s32, f32);
 extern f32 lbl_80562E30;
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 s32 fn_801E9F08(void *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, f32 farg0) {
-    struct Vec3 { f32 x, y, z; } data;
-    f32 temp2 = *((f32 *)arg1 + 2);
-    f32 temp1 = *((f32 *)arg1 + 1);
-    f32 temp0 = *(f32 *)arg1;
-    f32 offset = lbl_80562E30 + farg0;
-
-    data.x = temp0;
-    data.z = temp2;
-    data.y = temp1 - offset;
-    if (fn_801E9C84(&data.x, arg1, arg2, arg3, (s32)arg0, 0, farg0) != 0) {
-        data.x = *(f32 *)arg2;
-        data.y = *((f32 *)arg2 + 1);
-        data.z = *((f32 *)arg2 + 2);
-        if (fn_801E9C84(&data.x, arg1, arg2, arg3, (s32)arg0, arg4, farg0) != 0) {
+    f32 data[4];
+    f32 a0;
+    f32 a1;
+    f32 a2;
+    f32 off;
+    a0 = *(f32 *)arg1;
+    a1 = *((f32 *)arg1 + 1);
+    a2 = *((f32 *)arg1 + 2);
+    off = lbl_80562E30 + farg0;
+    data[0] = a0;
+    data[2] = a2;
+    data[1] = a1 - off;
+    if (fn_801E9C84(data, arg1, arg2, arg3, (s32)arg0, 0, farg0) != 0) {
+        data[0] = *(f32 *)arg2;
+        data[1] = *((f32 *)arg2 + 1);
+        data[2] = *((f32 *)arg2 + 2);
+        if (fn_801E9C84(data, arg1, arg2, arg3, (s32)arg0, arg4, farg0) != 0)
             return 1;
-        }
     }
     return 0;
 }
-#pragma scheduling on
+#pragma pop
 f32 fn_801E9FDC(s16 *arg0, f32 farg0, f32 farg1) {
     s16 index = *arg0;
     f32 data[3];
@@ -154,30 +151,36 @@ f32 fn_801E9FDC(s16 *arg0, f32 farg0, f32 farg1) {
 
 #pragma scheduling invalid_target
 void fn_801EA03C(s16 *arg0, void *arg1) {
+    struct W { s32 a; f32 b; s32 c; } *p = arg1;
+    struct W data;
     s16 index = *arg0;
-    struct V { s32 a, b, c; } data = *(struct V *)arg1;
-    *(f32 *)((char *)arg1 + 4) = lbl_80562E2C;
-    ((s32 (*)(s16 *, struct V *, void *, s32, s32))fn_801DCE14)(&index, &data, arg1, 0, 0);
-}
-#pragma scheduling on
-void fn_801EA098(s16 *arg0, void *arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
-    s16 index = *arg0;
-    f32 temp = *(f32 *)((char *)arg1 + 4);
-    f32 data[3];
-    data[0] = farg0;
-    data[1] = temp;
-    data[2] = farg1;
-    ((s32 (*)(s16 *, f32 *, void *, s32, s32))fn_801DCE14)(&index, data, arg1, arg2, arg3);
+    s32 zero = 0;
+    data = *p;
+    p->b = lbl_80562E2C;
+    ((s32 (*)(s16 *, struct W *, void *, s32, s32))fn_801DCE14)(&index, &data, p, zero, zero);
 }
 #pragma scheduling invalid_target
+/* RealName: QueryGroundPosAtXZ
+ * Builds an XZ query position using the caller's X/Z and the input position's Y,
+ * copies the index from *indexPtr, and queries ground/height info via fn_801DCE14. */
+void fn_801EA098(s16 *indexPtr, void *position, s32 outPosition, s32 outIndex, f32 queryX, f32 queryZ) {
+#define QueryGroundHeight fn_801DCE14
+    s16 index = *indexPtr;
+    f32 posY = *(f32 *)((char *)position + 4);
+    f32 queryPos[3];
+    queryPos[0] = queryX;
+    queryPos[1] = posY;
+    queryPos[2] = queryZ;
+    ((s32 (*)(s16 *, f32 *, void *, s32, s32))QueryGroundHeight)(&index, queryPos, position, outPosition, outIndex);
+#undef QueryGroundHeight
+}
 f32 fn_801EA0E8(f32 arg0, f32 arg1) {
-    f32 center = *(volatile f32 *)&lbl_80562E2C;
-    volatile f32 input[3];
+    f32 input[3];
     f32 output[3];
     input[0] = arg0;
-    input[1] = center;
+    input[1] = lbl_80562E2C;
     input[2] = arg1;
-    if (((s32 (*)(void *, f32 *, f32 *, s32, s32))fn_801DCE14)(0, (f32 *)input, output, 0, 0) != 0)
+    if (((s32 (*)(void *, f32 *, f32 *, s32, s32))fn_801DCE14)(0, input, output, 0, 0) != 0)
         return output[1];
     return lbl_80562E2C;
 }
