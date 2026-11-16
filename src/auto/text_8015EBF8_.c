@@ -1036,6 +1036,7 @@ void fn_80160230(void *arg0, void *arg1) {
     *(f32 *)((u8 *)arg0 + 8) = c;
 }
 
+#pragma dont_inline on
 s32 fn_8016024C(s32 arg0, s32 arg1) {
     if (arg1 < arg0) {
         return arg1;
