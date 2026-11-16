@@ -203,74 +203,87 @@ extern s32 fn_802C6FC0(char *, s32, s32);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_803398E4[];
 #pragma scheduling invalid_target
-void *fn_801E3004(s32 arg0, s32 arg1, s32 arg2) {
-    struct Pair { s32 x[2]; };
-    char path[0x28];
-    s32 *result;
-    s32 *source;
-    f32 *matrix;
-    f32 other, one;
-
-    result = (s32 *)fn_8012A2D8(lbl_8055EA50);
-    result[1] = 0;
-    result[0] = -1;
-    matrix = (f32 *)(result + 2);
-    one = lbl_80562CE8;
-    other = lbl_80562CEC;
-    matrix[0] = one;
-    matrix[1] = other;
-    matrix[2] = other;
-    matrix[3] = other;
-    matrix[4] = one;
-    matrix[5] = other;
-    matrix[6] = other;
-    matrix[7] = other;
-    matrix[8] = one;
-    matrix[9] = other;
-    matrix[10] = other;
-    matrix[11] = other;
-    matrix[12] = one;
-    matrix[13] = other;
-    matrix[14] = other;
-    matrix[15] = other;
-    matrix[16] = one;
-    matrix[17] = other;
-    matrix[18] = other;
-    matrix[19] = other;
-    matrix[20] = one;
-    matrix[21] = other;
-    matrix[22] = other;
-    matrix[23] = other;
-
-    if (arg0 == -1)
-        return result;
-
-    source = (s32 *)fn_801E2DEC(arg0, arg1, (s32)path);
-    if (source != 0) {
-        ((struct Pair *)(result + 14))[0] = ((struct Pair *)(source + 8))[0];
-        ((struct Pair *)(result + 14))[1] = ((struct Pair *)(source + 8))[1];
-        ((struct Pair *)(result + 14))[2] = ((struct Pair *)(source + 8))[2];
-        ((struct Pair *)(result + 14))[3] = ((struct Pair *)(source + 8))[3];
-        result[22] = source[16];
-        ((struct Pair *)(result + 23))[0] = ((struct Pair *)(source + 17))[0];
-        result[25] = source[19];
-
-        if (path[0] != 0 && strchr(path, '.') != 0) {
-            if (fn_8012C33C(path) != 0) {
-                if (arg2 >= 0)
-                    result[0] = fn_802C6FC0(path, arg2, 0);
-                else
-                    result[0] = fn_802C6FC0(path, 0, 0);
-            } else {
-                fn_802E30C8(lbl_803398E4, arg1, path);
-            }
-        }
-    }
+void *fn_801E3004(s32 arg0, s32 arg1, s32 arg2)
+{
+  struct Pair
+  {
+    s32 x[2];
+  };
+  char path[0x28];
+  s32 *result;
+  s32 *source;
+  f32 *matrix;
+  f32 other;
+  f32 one;
+  result = (s32 *) fn_8012A2D8(lbl_8055EA50);
+  result[1] = 0;
+  result[0] = -1;
+  matrix = (f32 *) (result + 2);
+  one = lbl_80562CE8;
+  matrix[1] = other;
+  matrix[2] = other;
+  matrix[3] = other;
+  matrix[4] = one;
+  matrix[5] = other;
+  matrix[6] = other;
+  matrix[7] = other;
+  matrix[8] = one;
+  matrix[9] = other;
+  matrix[10] = other;
+  matrix[11] = other;
+  matrix[12] = one;
+  matrix[13] = other;
+  matrix[14] = other;
+  matrix[15] = other;
+  matrix[16] = one;
+  matrix[17] = other;
+  matrix[18] = other;
+  matrix[19] = other;
+  matrix[20] = one;
+  matrix[21] = other;
+  matrix[22] = other;
+  matrix[23] = other;
+  if (arg0 == (-1))
+  {
     return result;
+  }
+  source = (s32 *) fn_801E2DEC(arg0, arg1, (s32) path);
+  if (source != 0)
+  {
+    ((struct Pair *) (result + 14))[0] = ((struct Pair *) (source + 8))[0];
+    ((struct Pair *) (result + 14))[1] = ((struct Pair *) (source + 8))[1];
+    ((struct Pair *) (result + 14))[2] = ((struct Pair *) (source + 8))[2];
+    ((struct Pair *) (result + 14))[3] = ((struct Pair *) (source + 8))[3];
+    result[22] = source[16];
+    ((struct Pair *) (result + 23))[0] = ((struct Pair *) (source + 17))[0];
+    result[25] = source[19];
+    if ((path[0] != 0) && (strchr(path, '.') != 0))
+    {
+      other = lbl_80562CEC;
+      if (fn_8012C33C(path) != 0)
+      {
+        if (arg2 >= 0)
+        {
+          result[0] = fn_802C6FC0(path, arg2, 0);
+        }
+        else
+        {
+          result[0] = fn_802C6FC0(path, 0, 0);
+        }
+      }
+      else
+      {
+        fn_802E30C8(lbl_803398E4, arg1, path);
+      }
+    }
+  }
+  return result;
+  matrix[0] = one;
 }
 #pragma scheduling on
-void fn_801E31D8(s32 *arg0) {
-    *(s32 **)((u8 *)((void *(*)(s32))fn_801E3004)(*arg0) + 4) = arg0;
+/* Allocates a child record from *record and stores a back-pointer to record at offset 4. */
+void fn_801E31D8(s32 *record) {
+    *(s32 **)((u8 *)((void *(*)(s32))fn_801E3004)(*record) + 4) = record;
 }
 
 s32 fn_801E320C(s32 arg0, s32 arg1) {
