@@ -10801,6 +10801,33 @@ void btm_pm_proc_cmd_status(UINT8 status) {
     lbl_803C0F78[0x564] = 4;
 }
 
+/* Continue a role switch / encryption change that waited for the mode change. */
+static inline void btm_pm_cont_switch_inl(u8 *link, u16 handle, u8 status) {
+    u8 *addr;
+    u8 *dev;
+    if (link[0x14f] == 1) {
+        addr = link + 0x3c;
+        dev = (u8 *)btm_find_dev(addr);
+        if (dev != 0 && (dev[0x76] & 4)) {
+            if (btsnd_hcic_set_conn_encrypt(handle, 0)) {
+                link[0x14f] = 2;
+                return;
+            }
+        } else {
+            if (btsnd_hcic_switch_role(addr, link[0x14e] == 0)) {
+                link[0x14f] = 0;
+                return;
+            }
+        }
+        link[0x14f] = 0;
+        if (*(void (**)(void *))(lbl_803C0F78 + 0x62c) != 0) {
+            lbl_803C0F78[0x624] = status;
+            (*(void (**)(void *))(lbl_803C0F78 + 0x62c))(lbl_803C0F78 + 0x624);
+            *(void (**)(void *))(lbl_803C0F78 + 0x62c) = 0;
+        }
+    }
+}
+
 void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
     extern char lbl_80316530[];
     extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
