@@ -20974,6 +20974,9 @@ void l2cu_process_peer_cfg_req(void *arg0, void *arg1) {
     }
 }
 
+/* l2cu_save_peer_cfg_rsp_qos: simplified l2cu_process_peer_cfg_rsp; saves the
+   negotiated QoS from a peer config response into the CCB's our_qos. */
+#define l2cu_save_peer_cfg_rsp_qos fn_8008EE40
 void fn_8008EE40(void *arg0, void *arg1) {
     struct Pair { u32 x; u32 y; };
     u8 *dst = (u8 *)arg0; u8 *src = (u8 *)arg1;
