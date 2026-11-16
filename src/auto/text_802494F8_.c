@@ -394,9 +394,10 @@ record_done:
     return result;
 }
 #pragma pop
-s32 fn_8024A6A4(s32 *arg0) {
+/* Sets -1 and returns 1 when the system is not ready, otherwise returns 0. */
+s32 fn_8024A6A4(s32 *outValue) {
     if (fn_802411D4() == 0) {
-        *arg0 = -1;
+        *outValue = -1;
         return 1;
     } else {
         return 0;
