@@ -379,9 +379,9 @@ extern "C" s32 fn_801F7A88(void *, s32, void *, s32);
 extern "C" void fn_801F7A14(void *);
 #pragma scheduling invalid_target
 extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
-    volatile u8 *dst = (volatile u8 *)arg0;
-    s32 i;
     F7B10Obj *obj = (F7B10Obj *)arg1;
+    volatile u8 *dst = (volatile u8 *)arg0;
+    int i;
     if (fn_801F7A88(arg1, arg2, arg0, 0x30) != 0) {
         volatile u8 *p = dst;
         for (i = 0; i < 2; i++) {
@@ -1275,35 +1275,39 @@ extern "C" void *fn_801F981C(void *object, s32 flags) {
         virtual void a();
         virtual void b();
         virtual void c();
-        virtual void *find(const char *);
+        virtual void *get(const char *);
     };
     struct Dispatch {
         u8 padding[0x108];
         virtual void a();
-        virtual void run(void *, void *);
+        virtual void init(void *, void *);
     };
+    /* Build a dynamic object ("dyno") from a level node: look up its type,
+       initialize a parameter record, then reject disallowed types (+0x2A0),
+       types whose difficulty level differs from the current one (+0x2E0) or
+       "Star" (+0x318), otherwise register the object. */
     extern void fn_802E30C8(const char *, ...);
     extern s32 fn_80204CF0(void);
     extern int strcmp(const char *, const char *);
     extern u8 lbl_8055EC42;
-    register char *base = lbl_8033AF80;
-    char *name = (char *)((Lookup *)object)->find((const char *)lbl_8055B374);
-    void *current = fn_801F96C8(name);
-    u8 result[0x40];
+    register char *logBase = lbl_8033AF80;
+    char *dynoName = (char *)((Lookup *)object)->get((const char *)lbl_8055B374);
+    void *typeDef = fn_801F96C8(dynoName);
+    u8 params[0x40];
 
-    *(s32 *)(result + 0x34) = 0;
-    *(s32 *)(result + 0x30) = 0;
-    ((Dispatch *)current)->run(result, object);
+    *(s32 *)(params + 0x34) = 0;
+    *(s32 *)(params + 0x30) = 0;
+    ((Dispatch *)typeDef)->init(params, object);
 
-    if (*(u8 *)((u8 *)current + 0x2C) != 0 && (flags & 4) == 0) {
-        fn_802E317C(base + 0x2A0, current);
+    if (*(u8 *)((u8 *)typeDef + 0x2C) != 0 && (flags & 4) == 0) {
+        fn_802E317C(logBase + 0x2A0, typeDef);
     }
-    if (*(s32 *)(result + 0x38) != fn_80204CF0()) {
-        fn_802E30C8(base + 0x2E0, name);
-    } else if (lbl_8055EC42 != 0 && strcmp(name, (const char *)lbl_8055B37C) == 0) {
-        fn_802E30C8(base + 0x318, name);
+    if (*(s32 *)(params + 0x38) != fn_80204CF0()) {
+        fn_802E30C8(logBase + 0x2E0, dynoName);
+    } else if (lbl_8055EC42 != 0 && strcmp(dynoName, (const char *)lbl_8055B37C) == 0) {
+        fn_802E30C8(logBase + 0x318, dynoName);
     } else {
-        ((void (*)(void *, void *, u32))fn_801F973C)(current, result, (u32)flags);
+        ((void (*)(void *, void *, u32))fn_801F973C)(typeDef, params, (u32)flags);
     }
 }
 
@@ -1369,18 +1373,18 @@ extern "C" void fn_801F99CC(F92Obj *obj) {
 }
 #pragma scheduling on
 extern "C" void fn_801F9A24(F92Node **arg0) {
-    F92Node *node = *arg0;
-    F92Node *next;
+    struct NN { u8 pad[0x20]; void *next; u8 pad2[0x108-0x24]; void **tbl; };
+    NN *node = *(NN **)arg0;
+    void *nxt;
     while (node != 0) {
         fn_801F99CC((F92Obj *)node);
-        next = (F92Node *)*(void **)((char *)node + 0x20);
+        nxt = node->next;
         if (node != 0) {
-            F92Elem *elem = (F92Elem *)node;
-            elem->tbl->fn8((void *)node, 1);
+            ((void (*)(void *, int))node->tbl[2])((void *)node, 1);
         }
-        node = next;
+        node = (NN *)nxt;
     }
-    *arg0 = 0;
+    *(void **)arg0 = 0;
 }
 
 #pragma dont_inline on
