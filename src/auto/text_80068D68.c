@@ -4976,10 +4976,14 @@ void fn_8007093C(u32 trace_set_mask, void *fmt_str) {
 #undef bte_target_mode
 }
 
-void fn_80070954(u32 code, void *msg, u16 param) {
-    if (lbl_8055DC70 == 0) {
-        LogMsg(code, msg);
+/* BTE LogMsg_1: forward a one-parameter trace message to LogMsg only while the
+ * target runs in serial-app mode (bte_target_mode == BTE_MODE_SERIAL_APP, 0). */
+void fn_80070954(u32 trace_set_mask, void *fmt_str, u16 param) {
+#define bte_target_mode lbl_8055DC70
+    if (bte_target_mode == 0 /* BTE_MODE_SERIAL_APP */) {
+        LogMsg(trace_set_mask, fmt_str);
     }
+#undef bte_target_mode
 }
 
 void fn_8007096C(u32 traceMask, void *format, u16 param1, u16 param2) {
