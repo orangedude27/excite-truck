@@ -310,11 +310,12 @@ void fn_801F2190(void) {
 #pragma dont_inline off
 
 void *fn_801F21CC(void) {
-    void **p = (void **)fn_801284F8(4, (void *)&lbl_8033A684);
-    if (p != 0) {
-        *p = (void *)lbl_8033A6E0;
+    /* Allocate a PinkTriangle instance (tag "PinkTriangle", 4 bytes) and point it at its vtable, lbl_8033A6E0. */
+    void **object = (void **)fn_801284F8(4, (void *)&lbl_8033A684);
+    if (object != 0) {
+        *object = (void *)lbl_8033A6E0;
     }
-    return (void *)p;
+    return (void *)object;
 }
 
 #pragma scheduling invalid_target
