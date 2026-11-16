@@ -1643,7 +1643,18 @@ extern char lbl_80559838[2]; /* "T" */
 extern char lbl_8055983C[2]; /* "G" */
 extern char lbl_80559840[2]; /* "" */
 
-/* MmlParser::GetVariablePtr: variables 0-0x1F are the player's, 0x20-0x2F the track's. */
+/* MmlParser::GetVariablePtr: variables 0-0x1F are the player's, 0x20-0x2F the track's.
+ * str is the snd_MmlParser.cpp string pool. */
+static inline s16 *MmlGetVariablePtr(const char *str, SeqPlayer *player, MmlSeqTrack *track, int varNo) {
+    int valid = 0;
+    if (varNo >= 0 && varNo <= 0x30) valid = 1;
+    if (valid == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(str + 0, 0x370, str + 0xC8, varNo, 0, 0x30);
+    }
+    if (varNo < 0x20) return GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(player, varNo);
+    if (varNo < 0x30) return GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(track, varNo - 0x20);
+    return 0;
+}
 static inline s16 *MmlGetVariablePtr(SeqPlayer *player, MmlSeqTrack *track, int varNo) {
     int valid = 0;
     if (varNo >= 0 && varNo <= 0x30) valid = 1;
@@ -1655,7 +1666,255 @@ static inline s16 *MmlGetVariablePtr(SeqPlayer *player, MmlSeqTrack *track, int 
     return 0;
 }
 
-void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg, s32 arg2) const { if (track == 0) return; if (command == 0x81) return; }
+void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg1, s32 arg2) const {
+    const char *str = (const char *)lbl_80323268;
+    SeqPlayer *player;
+    u8 *param;
+
+    if (track == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(str, 0x162, str + 0x18);
+    }
+    player = track->player;
+    if (player == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(str, 0x164, str + 0x40);
+    }
+    param = (u8 *)track + 0xC0;
+
+    if (command <= 0xFF) {
+        switch (command) {
+        case 0xE1:
+            *(u16 *)((u8 *)player + 0x92) = arg1;
+            break;
+        case 0x81:
+            if (arg1 < 0x10000) {
+                *(u32 *)((u8 *)track + 0x64) = (u16)arg1;
+            } else {
+                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x179, str + 0x98, arg1);
+            }
+            break;
+        case 0xDD:
+            SetMute__Q46nw4hbm3snd6detail8SeqTrackFQ36nw4hbm3snd7SeqMute(track, arg1);
+            break;
+        case 0xC1:
+            *((u8 *)track + 0x80) = arg1;
+            break;
+        case 0xD5:
+            *((u8 *)track + 0x81) = arg1;
+            break;
+        case 0xC2:
+            *((u8 *)player + 0x90) = arg1;
+            break;
+        case 0xC3:
+            *((s8 *)track + 0x87) = arg1;
+            break;
+        case 0xC4:
+            *((s8 *)track + 0x82) = arg1;
+            break;
+        case 0xC5:
+            *((u8 *)track + 0x83) = arg1;
+            break;
+        case 0xC0:
+            if (arg1 <= 1) arg1++;
+            *((s8 *)track + 0x84) = arg1 - 0x40;
+            break;
+        case 0xD7:
+            if (arg1 <= 1) arg1++;
+            *((s8 *)track + 0x85) = arg1 - 0x40;
+            break;
+        case 0xDC:
+            if (arg1 <= 1) arg1++;
+            *((u8 *)track + 0x86) = arg1;
+            break;
+        case 0xC6:
+            *((u8 *)track + 0x88) = arg1;
+            break;
+        case 0xC7:
+            param[1] = arg1 != 0;
+            break;
+        case 0xCF:
+            *((u8 *)track + 0x8A) = arg1;
+            break;
+        case 0xCA:
+            *(f32 *)((u8 *)track + 0x68) = (u8)arg1 / 128.0f;
+            break;
+        case 0xCB:
+            *(f32 *)((u8 *)track + 0x6C) = 0.390625f * (u8)arg1;
+            break;
+        case 0xCC:
+            *((u8 *)track + 0x78) = arg1;
+            break;
+        case 0xCD:
+            *((u8 *)track + 0x74) = arg1;
+            break;
+        case 0xE0:
+            *(u32 *)((u8 *)track + 0x70) = arg1 * 5;
+            break;
+        case 0xE3:
+            *(f32 *)((u8 *)track + 0x7C) = arg1 / 32.0f;
+            break;
+        case 0xD0:
+            *((u8 *)track + 0x8B) = arg1;
+            break;
+        case 0xD1:
+            *((u8 *)track + 0x8C) = arg1;
+            break;
+        case 0xD2:
+            *((u8 *)track + 0x8D) = arg1;
+            break;
+        case 0xD3:
+            *((u8 *)track + 0x8E) = arg1;
+            break;
+        case 0xC8:
+            param[2] = arg1 != 0;
+            ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(track, -1);
+            FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(track);
+            break;
+        case 0xC9:
+            *((u8 *)track + 0x89) = arg1 + *((s8 *)track + 0x87);
+            *((u8 *)track + 0x5F) = 1;
+            break;
+        case 0xCE:
+            *((u8 *)track + 0x5F) = arg1 != 0;
+            break;
+        case 0xD8:
+            *((u8 *)track + 0x93) = arg1;
+            break;
+        case 0xD9:
+            *((u8 *)track + 0x90) = arg1;
+            break;
+        case 0xDA:
+            *((u8 *)track + 0x91) = arg1;
+            break;
+        case 0xDE:
+            *((u8 *)track + 0x92) = arg1;
+            break;
+        case 0xDB:
+            *((u8 *)track + 0x8F) = arg1;
+            break;
+        case 0xD6:
+            if (lbl_8055DE38) {
+                s16 *var = MmlGetVariablePtr(player, track, arg1);
+                OSReport(str + 0x104, player, *((u8 *)track + 4),
+                         arg1 >= 0x20 ? lbl_80559838 : arg1 >= 0x10 ? lbl_8055983C : lbl_80559840,
+                         arg1 >= 0x20 ? arg1 - 0x20 : arg1 >= 0x10 ? arg1 - 0x10 : arg1,
+                         arg1, *var);
+            }
+            break;
+        case 0x88: {
+            void *dest = (void *)fn_800F016C((s32)player, arg1);
+            if (dest == 0) {
+                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x219, str + 0x12C);
+                break;
+            }
+            if (dest == track) {
+                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x21E, str + 0x168);
+                break;
+            }
+            Close__Q46nw4hbm3snd6detail8SeqTrackFv(dest);
+            fn_800F1080(dest, *(const void **)((u8 *)track + 0x50), arg2);
+            break;
+        }
+        case 0x89:
+            track->cur = *(const u8 **)((u8 *)track + 0x50) + arg1;
+            break;
+        case 0x8A:
+            if (param[6] >= 3) {
+                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x22C, str + 0x19C);
+                break;
+            }
+            ((const u8 **)(param + 8))[param[6]] = track->cur;
+            param[6]++;
+            track->cur = *(const u8 **)((u8 *)track + 0x50) + arg1;
+            break;
+        case 0xFD:
+            if (param[6] == 0) {
+                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x237, str + 0x1DC);
+                break;
+            }
+            param[6]--;
+            track->cur = ((const u8 **)(param + 8))[param[6]];
+            break;
+        case 0xD4:
+            if (param[6] >= 3) {
+                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x241, str + 0x218);
+                break;
+            }
+            ((const u8 **)(param + 8))[param[6]] = track->cur;
+            param[3 + param[6]] = arg1;
+            param[6]++;
+            break;
+        case 0xFC: {
+            u8 count;
+            if (param[6] == 0) {
+                Warning__Q26nw4hbm2dbFPCciPCce(str, 0x24D, str + 0x260);
+                break;
+            }
+            count = param[2 + param[6]];
+            if (count != 0) {
+                count--;
+                if (count == 0) {
+                    param[6]--;
+                    break;
+                }
+            }
+            param[2 + param[6]] = count;
+            track->cur = ((const u8 **)(param + 8))[param[6] - 1];
+            break;
+        }
+        }
+    } else if (command <= 0xFFFF) {
+        u32 cmd = command >> 8;
+        s16 *var;
+        command &= 0xFF;
+        if (cmd != 0xF0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(str, 0x264, str + 0x2A0);
+        }
+        var = 0;
+        if ((command & 0xF0) == 0x80 || (command & 0xF0) == 0x90) {
+            var = MmlGetVariablePtr(player, track, arg1);
+            if (var == 0) return;
+        }
+        switch (command) {
+        case 0x80: *var = arg2; break;
+        case 0x81: *var += arg2; break;
+        case 0x82: *var -= arg2; break;
+        case 0x83: *var *= arg2; break;
+        case 0x84:
+            if (arg2 != 0) *var /= arg2;
+            break;
+        case 0x85:
+            if (arg2 >= 0) *var <<= arg2;
+            else *var >>= -arg2;
+            break;
+        case 0x86: {
+            bool neg = false;
+            s32 r;
+            if (arg2 < 0) {
+                neg = true;
+                arg2 = (s16)-arg2;
+            }
+            r = ((u16)fn_800FEB9C() * (arg2 + 1)) >> 16;
+            if (neg) r = -r;
+            *var = r;
+            break;
+        }
+        case 0x87: *var &= arg2; break;
+        case 0x88: *var |= arg2; break;
+        case 0x89: *var ^= arg2; break;
+        case 0x8A: *var = ~(u16)arg2; break;
+        case 0x8B:
+            if (arg2 != 0) *var %= arg2;
+            break;
+        case 0x90: param[0] = *var == arg2; break;
+        case 0x91: param[0] = *var >= arg2; break;
+        case 0x92: param[0] = *var > arg2; break;
+        case 0x93: param[0] = *var <= arg2; break;
+        case 0x94: param[0] = *var < arg2; break;
+        case 0x95: param[0] = *var != arg2; break;
+        case 0xE0: break;
+        }
+    }
+}
 
 #pragma use_lmw_stmw reset
 
