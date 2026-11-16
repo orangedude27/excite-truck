@@ -1466,9 +1466,11 @@ int fn_8017960C(int objIndex) {
     return 0;
 }
 
-int fn_80179630(int arg0) {
-    if (arg0 < 0) arg0 = 0;
-    return lbl_80430590[arg0];
+/* Return the object-table index of the vehicle registered for a split-screen
+ * player slot (lbl_80430590), treating a negative slot as slot 0. */
+int fn_80179630(int playerSlot) {
+    if (playerSlot < 0) playerSlot = 0;
+    return lbl_80430590[playerSlot];
 }
 
 extern void *lbl_8055E430;
