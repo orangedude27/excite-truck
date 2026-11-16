@@ -1459,7 +1459,14 @@ long fn_801796EC(long arg0, long arg1, long arg2) {
 }
 
 float fn_8017970C(void) {
-    return lbl_80561B60 * (float)fn_80178C1C((long *)lbl_80430850);
+    /* Return the global object's counter value scaled to a time-like float. */
+#define sGlobalObject lbl_80430850
+#define sCounterToTimeScale lbl_80561B60
+
+    return sCounterToTimeScale * (float)fn_80178C1C((long *)sGlobalObject);
+
+#undef sGlobalObject
+#undef sCounterToTimeScale
 }
 
 #pragma dont_inline off
