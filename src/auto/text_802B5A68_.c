@@ -1449,7 +1449,6 @@ extern "C" void fn_802B7918(void) {
 #pragma use_lmw_stmw reset
 #pragma cplusplus reset
 
-extern void fn_801345D8(void *, s32, const char *, ...);
 extern "C" s32 fn_802B1C14(s32);
 extern "C" s32 fn_802B1C1C(s32, s32);
 __declspec(section ".sdata") extern const char lbl_8055CEB0[];
