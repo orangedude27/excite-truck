@@ -2492,10 +2492,11 @@ done:
     return 0;
 }
 #pragma pop
-extern "C" s32 fn_8021C318(void *arg0) {
-    s32 *p = *(s32 **)((u8 *)arg0 + 0x2A8);
-    if (p == 0) return 0;
-    return *p == *(s32 *)((u8 *)arg0 + 0x2AC);
+/* Status query: 0 if no status pointer is set, otherwise 1 when the pointed-to status equals the +0x2AC expected value. */
+extern "C" s32 fn_8021C318(void *widget) {
+    s32 *statusPtr = *(s32 **)((u8 *)widget + 0x2A8);
+    if (statusPtr == 0) return 0;
+    return *statusPtr == *(s32 *)((u8 *)widget + 0x2AC);
 }
 
 extern "C" void *fn_8021C344(void *self, s32 x, s32 y, void *callbackObj, s32 param4, s32 lineHeight, s32 textY, s32 flags, s32 textId, s32 mode) {
