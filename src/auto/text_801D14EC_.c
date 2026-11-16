@@ -280,9 +280,21 @@ void fn_801D1C00(void *arg0, int arg1) {
     ((void (*)(int))fn_801D153C)(lbl_8055E918 + arg1 * 0x9C);
 }
 
+/* Allocates and initializes an array of 0x9C-byte car elements using global count (lbl_8055E8F8),
+ * storing the initialized array pointer in lbl_8055E918. Allocation tag string: "carelem". */
 void fn_801D1C10(void) {
-    int count = lbl_8055E8F8;
-    int result = fn_8012850C(count * 0x9c + 0x10, &lbl_8055ABD8);
-    lbl_8055E918 = ((int (*)(int, int, int, int, int))fn_8002F37C)(result, 0, 0, 0x9c, count);
+#define gCarElemCount lbl_8055E8F8
+#define gCarElemArray lbl_8055E918
+#define sCarelemTag lbl_8055ABD8
+#define AllocTagged fn_8012850C
+#define InitObjectArray fn_8002F37C
+    int count = gCarElemCount;
+    int result = AllocTagged(count * 0x9c + 0x10, &sCarelemTag);
+    gCarElemArray = ((int (*)(int, int, int, int, int))InitObjectArray)(result, 0, 0, 0x9c, count);
+#undef gCarElemCount
+#undef gCarElemArray
+#undef sCarelemTag
+#undef AllocTagged
+#undef InitObjectArray
 }
 
