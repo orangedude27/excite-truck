@@ -6685,13 +6685,19 @@ done:
     }
 }
 
-extern "C" void fn_80224160(void *arg0) {
-    s32 handle;
-    fn_80219354();
-    handle = *(s32 *)((u8 *)arg0 + 0x254);
-    if (handle != 0) {
-        ((void (*)(s32))fn_802ECFEC)(handle);
+/* Clean up a UI image widget: advance the global timers, then release the
+ * image resource it holds (if any). */
+extern "C" void fn_80224160(void *widget) {
+#define tickGlobalTimers fn_80219354
+#define releaseImageResource fn_802ECFEC
+    s32 imageRes;
+    tickGlobalTimers();
+    imageRes = *(s32 *)((u8 *)widget + 0x254);
+    if (imageRes != 0) {
+        ((void (*)(s32))releaseImageResource)(imageRes);
     }
+#undef releaseImageResource
+#undef tickGlobalTimers
 }
 
 extern "C" void fn_802ED038(s32, f32, f32, f32, f32);
