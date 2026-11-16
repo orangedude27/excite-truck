@@ -460,6 +460,7 @@ static asm void RealMode(register void* config) {
      * state, then return from the exception into that stub. */
     clrlwi config, config, 2
     mtspr 0x1a, config
+    /* Clear IR/DR in the saved machine state so rfi enters the stub in real mode. */
     mfmsr config
     rlwinm config, config, 0, 0x1c, 0x19
     mtspr 0x1b, config
