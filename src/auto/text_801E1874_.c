@@ -325,9 +325,10 @@ check:
 }
 
 int *fn_801E1F44(void) {
-    if ((unsigned char)lbl_8055EA20 == 0)
+    /* Return the weather state, loading the level's weather parameters on first use. */
+    if ((unsigned char)gWeatherLoaded == 0)
         fn_801E1894();
-    return (int *)&lbl_804874D4;
+    return (int *)&gWeatherState;
 }
 
 extern char lbl_8055EA21;
