@@ -617,6 +617,7 @@ loop_87:
 }
 #pragma dont_inline reset
 
+/* Set the pre-retrace (pre-vertical-blank) callback, returning the previous one. */
 VIRetraceCallback fn_800591AC(VIRetraceCallback cb)
 {
     BOOL enabled;
