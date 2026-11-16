@@ -16021,6 +16021,8 @@ void fn_80085524(void *arg0, void *arg1) {
 }
 
 void fn_80085568(void *arg0, u16 arg1, u16 arg2) {
+    /* Build and send HCI Write_Automatic_Flush_Timeout for a connection handle
+     * (arg1) with the timeout value (arg2). */
     ((u16 *)((u8 *)arg0 + 2))[0] = 7;
     ((u16 *)((u8 *)arg0 + 4))[0] = 0;
     ((u8 *)arg0)[8] = 0x28;
