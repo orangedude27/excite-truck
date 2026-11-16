@@ -1066,17 +1066,18 @@ f32 fn_8014C838(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x10); }
 
 s32 fn_8014C840(void *arg0) { return ((s32 *)arg0)[1]; }
 
-s32 fn_8014C848(void *arg0) {
-    void *next = ((void **)arg0)[2];
-    ((void **)arg0)[1] = next;
+/* Advance the iterator to its next node and return whether a current node remains. */
+s32 fn_8014C848(void *iter) {
+    void *next = ((void **)iter)[2];
+    ((void **)iter)[1] = next;
     if (next != 0) {
-        ((void **)arg0)[2] = *(void **)((u8 *)next + 0x11C);
-        ((s32 *)arg0)[3] = *(s32 *)((u8 *)next + 0x120);
+        ((void **)iter)[2] = *(void **)((u8 *)next + 0x11C);
+        ((s32 *)iter)[3] = *(s32 *)((u8 *)next + 0x120);
     } else {
-        ((s32 *)arg0)[3] = 0;
-        ((void **)arg0)[2] = 0;
+        ((s32 *)iter)[3] = 0;
+        ((void **)iter)[2] = 0;
     }
-    return ((void **)arg0)[1] != 0;
+    return ((void **)iter)[1] != 0;
 }
 
 extern f32 lbl_80558DC4[];
