@@ -9855,26 +9855,27 @@ tBTM_INQ_INFO *BTM_InqDbFirst(void) {
 }
 
 tBTM_INQ_INFO *BTM_InqDbNext(tBTM_INQ_INFO *p_cur) {
-    u8 *base;
-    u8 *entry;
-    u16 index;
-    u16 xx;
+    struct InqDbEnt {
+        u8 pad0[0x1A];
+        u8 in_use;
+        u8 pad1;
+    };
+    struct InqDbEnt *p_ent;
+    u16 inx;
 
     if (p_cur != 0) {
-        base = lbl_803C0F78;
-        index = (u16)(((u8 *)p_cur - 8 - (base + 0x16E4)) / 28 + 1);
-        entry = base + 0x16E4;
-        entry += (u32)index * 0x1C;
-        for (; index < 12; index++, entry += 0x1C) {
-            if (entry[0x1A] != 0)
-                return (tBTM_INQ_INFO *)(entry + 8);
+        p_ent = (struct InqDbEnt *)((u8 *)p_cur - 8);
+        inx = (u16)((p_ent - (struct InqDbEnt *)(lbl_803C0F78 + 0x16E4)) + 1);
+        for (p_ent = &((struct InqDbEnt *)(lbl_803C0F78 + 0x16E4))[inx]; inx < 12; inx++, p_ent++) {
+            if (p_ent->in_use)
+                return (tBTM_INQ_INFO *)((u8 *)p_ent + 8);
         }
         return 0;
     }
-    entry = lbl_803C0F78 + 0x16E4;
-    for (xx = 0; xx < 12; xx++, entry += 0x1C) {
-        if (entry[0x1A])
-            return (tBTM_INQ_INFO *)(entry + 8);
+    p_ent = (struct InqDbEnt *)(lbl_803C0F78 + 0x16E4);
+    for (inx = 0; inx < 12; inx++, p_ent++) {
+        if (p_ent->in_use)
+            return (tBTM_INQ_INFO *)((u8 *)p_ent + 8);
     }
     return 0;
 }
