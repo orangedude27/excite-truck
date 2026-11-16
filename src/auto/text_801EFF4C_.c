@@ -80,12 +80,15 @@ int fn_801F0008(void) {
     return 0x4C;
 }
 
-int fn_801F0010(int arg0, int arg1) {
-    int value = arg1;
-    if (value != 0) {
-        value = fn_801F0E88(value, arg0);
+int fn_801F0010(int modName, int wheel) {
+#define InitWheelInstance fn_801F0E88
+    /* Initialize a wheel instance with its mod name when one is supplied; return the instance. */
+    int result = wheel;
+    if (result != 0) {
+        result = InitWheelInstance(result, modName);
     }
-    return value;
+    return result;
+#undef InitWheelInstance
 }
 
 extern float lbl_80562F10;
