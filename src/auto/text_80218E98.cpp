@@ -3,16 +3,6 @@
 
 #include <types.h>
 
-typedef struct { char pad[0x454]; s32 x; s32 y; } Parent8021952C;
-typedef struct {
-    char pad[0x2C];
-    Parent8021952C *p;
-    char pad2[0x244 - 0x30];
-    s32 dx;
-    s32 dy;
-    u8 flag;
-} Self8021952C;
-
 #pragma push
 #pragma cplusplus off
 typedef struct { u32 words[9]; } MatrixCopy_8021AA18;
