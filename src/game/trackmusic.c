@@ -50,6 +50,8 @@ extern void fn_8012E81C(void);
 extern long fn_802EC294(long, long);
 extern char lbl_80489CA0[16];
 extern long fn_8020F608(long, long);
+// Shuffled track play order: m_entries holds m_count indices into the
+// track-music list; lbl_8055EEC4 is the next cursor into this order.
 extern struct Unk_804902C4 {
     long *m_entries;
     long m_count;
