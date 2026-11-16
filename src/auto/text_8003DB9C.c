@@ -775,47 +775,76 @@ void __GXInitGX(void) {
     GXClearGPMetric();
 }
 
+/* Handle CP (command-processor) FIFO interrupts: resume the GX thread when the
+ * FIFO drains past the high watermark, suspend it at the low watermark, and run
+ * the break-point callback when a break/overflow condition is signalled. */
 void GXCPInterruptHandler(short intr, void *ctx) {
-    unsigned char sp[0x2c8];
-    unsigned int *gx = __GXData;
-    unsigned int *p;
-    gx[3] = *__cpReg;
-    if (((gx[2] >> 3) & 1) && ((gx[3] >> 1) & 1)) {
-        OSResumeThread(lbl_8055D95C);
-        lbl_8055D958 = 0;
-        p = GXD;
-        p[4] |= 3;
-        *(volatile unsigned short *)((char *)__cpReg + 4) = p[4];
-        gx[2] = (gx[2] | 4) & ~8;
-        *(volatile unsigned short *)((char *)__cpReg + 2) = gx[2];
+    #define GX_DATA_CP_ENABLE   2   /* GXData.cpEnable: CP interrupt enables (written to CP_CONTROL) */
+    #define GX_DATA_CP_STATUS   3   /* GXData.cpStatus: status latched from CP_STATUS */
+    #define GX_DATA_CP_CLR      4   /* GXData.cpClr: value written to CP_CLEAR_STATUS */
+    #define CP_ENABLE_HI_WM     3   /* high-watermark interrupt enable bit */
+    #define CP_ENABLE_LO_WM     2   /* low-watermark interrupt enable bit */
+    #define CP_ENABLE_OVF       5   /* overflow / break interrupt enable bit */
+    #define CP_STATUS_HI_WM     1   /* high-watermark reached bit in CP status */
+    #define CP_STATUS_OVF       4   /* overflow / break bit in CP status */
+    #define GxFifoSuspend       lbl_8055D958    /* __GXFifoSuspend */
+    #define GxFifoBreakThread   lbl_8055D95C    /* __GXFifoBreakPtr */
+    #define BreakPtCallback     lbl_8055D954    /* set by GXSetBreakPtCallback */
+
+    unsigned char tempContext[0x2c8];
+    unsigned int *gxData = __GXData;
+    unsigned int *cpClr;
+    gxData[GX_DATA_CP_STATUS] = *__cpReg;
+    if (((gxData[GX_DATA_CP_ENABLE] >> CP_ENABLE_HI_WM) & 1) &&
+        ((gxData[GX_DATA_CP_STATUS] >> CP_STATUS_HI_WM) & 1)) {
+        OSResumeThread(GxFifoBreakThread);
+        GxFifoSuspend = 0;
+        cpClr = GXD;
+        cpClr[GX_DATA_CP_CLR] |= 3;
+        *(volatile unsigned short *)((char *)__cpReg + 4) = cpClr[GX_DATA_CP_CLR];
+        gxData[GX_DATA_CP_ENABLE] = (gxData[GX_DATA_CP_ENABLE] | 4) & ~8;
+        *(volatile unsigned short *)((char *)__cpReg + 2) = gxData[GX_DATA_CP_ENABLE];
     }
-    if (((gx[2] >> 2) & 1) && (gx[3] & 1)) {
+    if (((gxData[GX_DATA_CP_ENABLE] >> CP_ENABLE_LO_WM) & 1) && (gxData[GX_DATA_CP_STATUS] & 1)) {
         lbl_8055D94C = (char *)lbl_8055D94C + 1;
-        p = GXD;
+        cpClr = GXD;
         {
             union { unsigned int word; struct { unsigned int high:28; unsigned int overflow:1; unsigned int underflow:1; unsigned int low:2; } bits; } control;
-            control.word = gx[2];
+            control.word = gxData[GX_DATA_CP_ENABLE];
             control.bits.underflow = 0;
             control.bits.overflow = 1;
-            gx[2] = control.word;
+            gxData[GX_DATA_CP_ENABLE] = control.word;
         }
-        *(volatile unsigned short *)((char *)__cpReg + 2) = gx[2];
-        p[4] = (p[4] | 1) & ~2;
-        *(volatile unsigned short *)((char *)__cpReg + 4) = p[4];
-        lbl_8055D958 = 1;
-        OSSuspendThread(lbl_8055D95C);
+        *(volatile unsigned short *)((char *)__cpReg + 2) = gxData[GX_DATA_CP_ENABLE];
+        cpClr[GX_DATA_CP_CLR] = (cpClr[GX_DATA_CP_CLR] | 1) & ~2;
+        *(volatile unsigned short *)((char *)__cpReg + 4) = cpClr[GX_DATA_CP_CLR];
+        GxFifoSuspend = 1;
+        OSSuspendThread(GxFifoBreakThread);
     }
-    if (((gx[2] >> 5) & 1) && ((gx[3] >> 4) & 1)) {
-        gx[2] &= ~0x20;
-        *(volatile unsigned short *)((char *)__cpReg + 2) = gx[2];
-        if (lbl_8055D954 != 0) {
-            OSClearContext(sp);
-            OSSetCurrentContext(sp);
-            ((void (*)(void))lbl_8055D954)();
-            OSClearContext(sp);
+    if (((gxData[GX_DATA_CP_ENABLE] >> CP_ENABLE_OVF) & 1) &&
+        ((gxData[GX_DATA_CP_STATUS] >> CP_STATUS_OVF) & 1)) {
+        gxData[GX_DATA_CP_ENABLE] &= ~0x20;
+        *(volatile unsigned short *)((char *)__cpReg + 2) = gxData[GX_DATA_CP_ENABLE];
+        if (BreakPtCallback != 0) {
+            OSClearContext(tempContext);
+            OSSetCurrentContext(tempContext);
+            ((void (*)(void))BreakPtCallback)();
+            OSClearContext(tempContext);
             OSSetCurrentContext(ctx);
         }
     }
+
+    #undef GX_DATA_CP_ENABLE
+    #undef GX_DATA_CP_STATUS
+    #undef GX_DATA_CP_CLR
+    #undef CP_ENABLE_HI_WM
+    #undef CP_ENABLE_LO_WM
+    #undef CP_ENABLE_OVF
+    #undef CP_STATUS_HI_WM
+    #undef CP_STATUS_OVF
+    #undef GxFifoSuspend
+    #undef GxFifoBreakThread
+    #undef BreakPtCallback
 }
 
 void GXInitFifoBase(void *fifoObj, void *base, u32 size) {
