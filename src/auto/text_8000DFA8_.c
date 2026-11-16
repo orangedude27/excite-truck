@@ -285,7 +285,12 @@ extern s32 fn_80232B70(s32);
 extern s32 lbl_8055D490;
 extern f32 lbl_805602C8;
 extern f64 lbl_80560268;
+/* The UI's 9-slice frame art set: fn_8000F498 opens it by name, fn_80011278
+ * lays its nine pictures as a frame, fn_8000F4BC releases it. */
 extern s32 lbl_8055D4D4;
+/* Caches the frame art set named by the string in r3 (fn_8023512C opens an
+ * ArtSet by name and takes a reference; the name comes from the UI config
+ * table, so this wrapper only forwards r3 and stores the handle). */
 void fn_8000F498(void) {
     lbl_8055D4D4 = fn_8023512C();
 }
