@@ -29,6 +29,7 @@ extern void* lbl_8055C390;
 extern void fn_80214CB4(void*);
 extern void* fn_80214D04(void);
 extern int lbl_8055F2E8;
+extern int lbl_8055F2E4;
 extern void *fn_801284F8(int, void *);
 extern char lbl_803453B8[];
 extern void fn_80235380(void*, void*);
@@ -177,12 +178,23 @@ typedef int (*M2C_F5)(void *, int *);
 typedef int (*M2C_F6)(void *, int *);
 typedef int (*M2C_F7)(void *, void *);
 
+extern char lbl_8055C114[], lbl_8055C10C[], lbl_80344760[];
+extern void **fn_80131808(void *);
+extern void *fn_8012850C(int, void *);
 void fn_8025C204(int arg0, int arg1) {
-    (void)arg1;
+    void *obj;
+    void *list;
     if (lbl_8055F2E8 == 0) {
-        void *p = fn_801284F8(8, (void *)arg0);
-        (void)p;
+        obj = fn_801284F8(8, (void *)lbl_8055C114);
+        if (obj != 0) {
+            *(int *)((char *)obj + 4) = 0;
+            list = fn_80131808((void *)lbl_80344760);
+            *(void **)obj = fn_8012850C(0xAF0, (void *)lbl_8055C10C);
+            (void)list;
+        }
     }
+    (void)arg0;
+    (void)arg1;
 }
 
 #pragma pop
