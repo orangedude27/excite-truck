@@ -2166,14 +2166,10 @@ extern char lbl_8032DB40[];
 #pragma optimization_level 3
 #pragma opt_pointer_aliasing on
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
-    s32 next = 0, index;
-    s32 *data;
-    s32 value;
-    index = ((s32 *)arg0)[1];
-    value = *arg1;
-    data = *(s32 **)arg0;
-    next = index + 1;
-    ((s32 *)arg0)[1] = next;
+    s32 value = *arg1;
+    s32 index = ((s32 *)arg0)[1];
+    s32 *data = *(s32 **)arg0;
+    ((s32 *)arg0)[1] = index + 1;
     data[index] = value;
     return &data[index];
 }
