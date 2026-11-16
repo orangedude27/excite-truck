@@ -349,7 +349,21 @@ struct IndexedLineNode {
     struct IndexedLineNode *next;   /* +0x14 next node in the ring */
 };
 
-void *fn_80138438(void *arg0) { void *node; void *best; node=*(void **)((char *)arg0+0x14); best=arg0; while(node!=arg0) { if(*(unsigned int *)((char *)node+0x10)>*(unsigned int *)((char *)best+0x10)) best=node; node=*(void **)((char *)node+0x14); } return best; }
+void *fn_80138438(void *arg0) {
+    struct LineNode *node;
+    struct LineNode *best;
+
+    /* Return the node with the highest index/priority in the circular list. */
+    node = ((struct LineNode *)arg0)->next;
+    best = (struct LineNode *)arg0;
+    while (node != (struct LineNode *)arg0) {
+        if ((unsigned int)node->index > (unsigned int)best->index) {
+            best = node;
+        }
+        node = node->next;
+    }
+    return best;
+}
 
 void *fn_8013846C(void *arg0) {
     /* Return the node with the smallest path index in the circular line-node
