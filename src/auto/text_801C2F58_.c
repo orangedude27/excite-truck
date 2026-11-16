@@ -1902,10 +1902,21 @@ void fn_801C82E0(void) {
 #pragma dont_inline off
 #pragma pop
 void fn_801C83D0(void) {
-    f32 value = (f32)atof(lbl_804380F0);
-    lbl_8055A958 = value;
-    sprintf(lbl_80437FC0, lbl_80336FDC, value);
+    /* Set interlude duration from a text buffer and refresh the display string. */
+#define sInterludeDurationText  lbl_804380F0
+#define sInterludeDurationLabel lbl_80437FC0
+#define sInterludeDurationFmt   lbl_80336FDC
+#define sInterludeDuration      lbl_8055A958
+
+    f32 value = (f32)atof(sInterludeDurationText);
+    sInterludeDuration = value;
+    sprintf(sInterludeDurationLabel, sInterludeDurationFmt, value);
     fn_801C957C(0);
+
+#undef sInterludeDurationText
+#undef sInterludeDurationLabel
+#undef sInterludeDurationFmt
+#undef sInterludeDuration
 }
 
 extern char lbl_8055AA68[6];
