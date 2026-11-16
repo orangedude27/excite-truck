@@ -7,6 +7,8 @@ extern s32 lbl_8055E108;
 extern s32 lbl_8055E110;
 extern s32 lbl_8055E114;
 void fn_80139080(void) {
+    /* Static constructor: register a destructor node for lbl_8055E108, then
+     * initialize the record's two 0xFFFF0000 fields. */
     fn_8000D838(&lbl_8055E108);
     lbl_8055E110 = 0xFFFF0000;
     lbl_8055E114 = 0xFFFF0000;
