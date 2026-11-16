@@ -30,6 +30,7 @@ void fn_8020A5F8(f32 arg0) {
 }
 
 #pragma scheduling invalid_target
+/* Music-playback enable: log "music: play!" and set the music-enabled flag. */
 void fn_8020A600(void) {
     fn_802E30C8(lbl_8033C308);
     lbl_8055EDDC = 1;
@@ -312,7 +313,8 @@ extern const char lbl_8033C288[];
 /* Music event 3 exports the local volume, 1/2 import it, and 0 applies default. */
 #pragma cplusplus on
 extern "C" void fn_8020A03C(s32 object, s32 event) {
-    f32 volume = lbl_80563290;
+    f32 volume;
+    volume = *(f32 *)&lbl_80563290;
     switch (event) {
     case 3:
         fn_801331C4(object + 0xC, (void *)lbl_8033C288, &volume);
