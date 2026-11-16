@@ -152,7 +152,7 @@ void *fn_8022E4C0(void *arg0) {
     unsigned char *cur;
     unsigned char *next;
     char *strings;
-    register int zero;
+    int zeros[2];
     int index;
     int type;
     int y;
@@ -166,8 +166,8 @@ void *fn_8022E4C0(void *arg0) {
     *(unsigned char **)(base + 0x64) =
         fn_8012850C(0x13400, strings + 0x60);
     memset(*(void **)(base + 0x64), 0, 0x13400);
-    zero = 0;
-    entry = *(unsigned char **)(base + 0x64) + zero * 0x134;
+    zeros[0] = 0; zeros[1] = 1;
+    entry = *(unsigned char **)(base + 0x64) + zeros[0] * 0x134;
     *(int *)(entry + 0x00) = 0x21;
     *(int *)(entry + 0x04) = 6;
     *(int *)(entry + 0x08) = 0;
@@ -175,8 +175,7 @@ void *fn_8022E4C0(void *arg0) {
     *(int *)(entry + 0x14) = 0x280;
     *(int *)(entry + 0x18) = 0x1e0;
     strcpy((char *)(entry + 0x40), strings + 0x6c);
-    zero = 1;
-    entry = *(unsigned char **)(base + 0x64) + zero * 0x134;
+    entry = *(unsigned char **)(base + 0x64) + zeros[1] * 0x134;
     *(int *)(entry + 0x00) = 0x1c;
     strcpy((char *)(entry + 0x40), *(char **)arg0);
     *(int *)(entry + 0x08) = 0x140;
@@ -325,7 +324,12 @@ void *fn_8022E4C0(void *arg0) {
 #pragma pop
 
 void fn_8022E960(void *arg0) {
-    fn_80128670(*(int *)((char *)arg0 + 0x64));
-    fn_80128668(arg0);
+#define freeMem fn_80128670
+#define deleteMem fn_80128668
+    /* Destroy a loaded layout: free its entry array (+0x64), then the layout object itself. */
+    freeMem(*(int *)((char *)arg0 + 0x64));
+    deleteMem(arg0);
+#undef freeMem
+#undef deleteMem
 }
 
