@@ -4267,18 +4267,17 @@ block_268:
 }
 
 #pragma push
-#pragma optimize_for_size on
 extern "C" void fn_8010F430(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     extern const char lbl_80329530[];
     extern f32 lbl_80561178;
     extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32, f32, f32);
-    volatile f32 sp14, sp10, spC, sp8;
+    f32 bounds[4];
     f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f31;
     f32 var_f1, var_f1_2, var_f1_3, var_f1_4;
     s32 var_r29, var_r30;
-    s32 var_r5, var_r5_2, var_r5_3, var_r6, var_r6_2, var_r6_3;
-    s32 var_r7, var_r7_2, var_r7_3, var_r8, var_r8_2, var_r8_3;
-    s32 var_r9, var_r9_2, var_r9_3, var_r10, var_r4, var_r4_2;
+    s32 var_r5, var_r6, var_r7, var_r8, var_r9, var_r10;
+    s32 var_r4, var_r5_2, var_r6_2, var_r7_2, var_r8_2, var_r9_2;
+    s32 var_r4_2, var_r5_3, var_r6_3, var_r7_3, var_r8_3, var_r9_3;
     s32 temp_r11, temp_r10, temp_r10_2, temp_r3;
     const char *base = lbl_80329530;
     temp_r11 = arg0 & 0xFF000000;
@@ -4299,12 +4298,12 @@ extern "C" void fn_8010F430(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if ((var_r6 == 0) && ((arg0 & 0xFFFFC000U) != 0xE0000000U)) var_r5 = 0;
     if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F2, base + 0x48, arg0);
     temp_r10 = arg1 & 0xFF000000;
-    var_r9_2 = 1;
-    var_r8_2 = 1;
-    var_r7_2 = 1;
-    var_r6_2 = 1;
-    var_r5_2 = 1;
     var_r4 = 1;
+    var_r5_2 = 1;
+    var_r6_2 = 1;
+    var_r7_2 = 1;
+    var_r8_2 = 1;
+    var_r9_2 = 1;
     if (((u32)temp_r10 != 0x80000000U) &&
         ((arg1 & 0xFF800000U) != 0x81000000U)) var_r9_2 = 0;
     if ((var_r9_2 == 0) && ((arg1 & 0xF8000000U) != 0x90000000U)) var_r8_2 = 0;
@@ -4314,12 +4313,12 @@ extern "C" void fn_8010F430(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if ((var_r5_2 == 0) && ((arg1 & 0xFFFFC000U) != 0xE0000000U)) var_r4 = 0;
     if (var_r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F3, base + 0xF8, arg1);
     temp_r10_2 = var_r29 & 0xFF000000;
-    var_r9_3 = 1;
-    var_r8_3 = 1;
-    var_r7_3 = 1;
-    var_r6_3 = 1;
-    var_r5_3 = 1;
     var_r4_2 = 1;
+    var_r5_3 = 1;
+    var_r6_3 = 1;
+    var_r7_3 = 1;
+    var_r8_3 = 1;
+    var_r9_3 = 1;
     if (((u32)temp_r10_2 != 0x80000000U) &&
         ((var_r29 & 0xFF800000U) != 0x81000000U)) var_r9_3 = 0;
     if ((var_r9_3 == 0) && ((var_r29 & 0xF8000000U) != 0x90000000U)) var_r8_3 = 0;
@@ -4330,35 +4329,37 @@ extern "C" void fn_8010F430(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (var_r4_2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F4, base + 0x130, var_r29);
     if (var_r30 < 0)
         Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F5, base + 0x168, var_r30, 0);
-    register f32 zero = lbl_80561178;
-    *(f32 *)arg1 = zero;
-    *(f32 *)(arg1 + 8) = zero;
-    *(f32 *)(arg1 + 4) = zero;
-    *(f32 *)(arg1 + 0xC) = zero;
-    SetCursor__Q36nw4hbm2ut10CharWriterFff(arg0, zero, zero);
+    {
+        f32 zero = lbl_80561178;
+        ((f32 *)arg1)[0] = zero;
+        ((f32 *)arg1)[2] = zero;
+        ((f32 *)arg1)[1] = zero;
+        ((f32 *)arg1)[3] = zero;
+        SetCursor__Q36nw4hbm2ut10CharWriterFff(arg0, zero, zero);
+    }
     temp_f31 = lbl_80561178;
     do {
-        sp8 = temp_f31;
-        spC = temp_f31;
-        sp10 = temp_f31;
-        sp14 = temp_f31;
-        temp_r3 = fn_8010E3BC(arg0, (s32)&sp8, var_r29, var_r30);
-        var_f1 = sp8;
+        bounds[0] = temp_f31;
+        bounds[1] = temp_f31;
+        bounds[2] = temp_f31;
+        bounds[3] = temp_f31;
+        temp_r3 = fn_8010E3BC(arg0, (s32)&bounds[0], var_r29, var_r30);
+        var_f1 = bounds[0];
         var_r29 += temp_r3;
         temp_f0 = *(f32 *)arg1;
         var_r30 -= temp_r3;
         var_f1 = (temp_f0 > var_f1) ? var_f1 : temp_f0;
         *(f32 *)arg1 = var_f1;
         temp_f0_2 = *(f32 *)(arg1 + 4);
-        var_f1_2 = spC;
+        var_f1_2 = bounds[1];
         var_f1_2 = (temp_f0_2 > var_f1_2) ? var_f1_2 : temp_f0_2;
         *(f32 *)(arg1 + 4) = var_f1_2;
         temp_f0_3 = *(f32 *)(arg1 + 8);
-        var_f1_3 = sp10;
+        var_f1_3 = bounds[2];
         var_f1_3 = (temp_f0_3 < var_f1_3) ? var_f1_3 : temp_f0_3;
         *(f32 *)(arg1 + 8) = var_f1_3;
         temp_f0_4 = *(f32 *)(arg1 + 0xC);
-        var_f1_4 = sp14;
+        var_f1_4 = bounds[3];
         var_f1_4 = (temp_f0_4 < var_f1_4) ? var_f1_4 : temp_f0_4;
         *(f32 *)(arg1 + 0xC) = var_f1_4;
     } while (var_r30 > 0);
