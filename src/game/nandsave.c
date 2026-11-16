@@ -235,6 +235,7 @@ void fn_802E8B34(const char *path) {
 }
 
 void fn_802E8B98(void) {
+    /* Delete the currently selected NAND file, appending "banner.bin"; report if no file is selected. */
     if (lbl_80560030 != 0) {
         fn_802E8B34((const char *)lbl_80560030);
         fn_802E8B34(lbl_8034DD78);
