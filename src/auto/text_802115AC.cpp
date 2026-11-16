@@ -286,8 +286,9 @@ nonzero:
     return lbl_8055EF20;
 }
 #pragma optimization_level reset
-extern "C" s32 fn_80211678(u8 *arg0) {
-    return ((s8) *arg0 - 0x24) == 0;
+extern "C" s32 fn_80211678(u8 *obj) {
+    /* True when the object's leading byte is the 0x24 ('$') tag; callers use it to pick a handler. */
+    return ((s8) *obj - 0x24) == 0;
 }
 
 extern "C" void fn_80211690(s32 arg0) {
