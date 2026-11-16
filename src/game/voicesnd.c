@@ -78,10 +78,11 @@ void *fn_8020A6AC(void *name) {
 #pragma dont_inline reset
 
 void fn_8020A72C(void) {
-    void *object = (void *)fn_801284F8(0xC, lbl_8033C35C);
-    if (object != 0)
-        object = ((void *(*)(void *))fn_8020A860)(object);
-    ((int (*)(void *, int))fn_80208E90)(object, 0);
+    /* Create the voice-sound mixer object and register it as a sound device. */
+    void *mixer = (void *)fn_801284F8(0xC, lbl_8033C35C);
+    if (mixer != 0)
+        mixer = ((void *(*)(void *))fn_8020A860)(mixer);
+    ((int (*)(void *, int))fn_80208E90)(mixer, 0);
 }
 #pragma scheduling on
 void* fn_8020A76C(void) {
