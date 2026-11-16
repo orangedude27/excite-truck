@@ -1191,9 +1191,16 @@ extern "C" void fn_800D7718(void *holder) {
     if (target) target->invoke();
 }
 
-extern "C" void fn_800D7738(void* arg0) {
-    Obj_800D7738* p = *(Obj_800D7738**)((char*)arg0 + 0x10);
-    if (p != 0) p->v3();
+extern "C" void fn_800D7738(void *holder) {
+    /* Invoke virtual slot 0x14 on the layout interface object held at holder+0x10, if any. */
+    struct LayoutIf {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void invoke();
+    };
+    LayoutIf *target = *(LayoutIf **)((char *)holder + 0x10);
+    if (target != 0) target->invoke();
 }
 
 extern "C" void fn_800D7758(void *holder) {
@@ -2113,12 +2120,12 @@ extern "C" s32 fn_800D9364(void *self) {
 
 extern "C" s32 fn_800D938C(void* arg0) {
     s32 bits = *(s32*)((u8*)arg0 + 0x4C);
-    s32 base = *(s32*)((u8*)arg0 + 0x58);
     s32 high = (bits >> 24) & 0xF;
     s32 mid = (bits >> 18) & 0x3C;
     s32 scaled = high * 0x14;
     s32 top = (bits >> 23) & 0x1E0;
     s32 low = (bits >> 6) & 4;
+    s32 base = *(s32*)((u8*)arg0 + 0x58);
     mid += top;
     scaled += low;
     mid += base;
