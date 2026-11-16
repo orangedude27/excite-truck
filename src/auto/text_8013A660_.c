@@ -59,13 +59,16 @@ int fn_8013A6C4(void *arg0, void *arg1) {
     return *(int *)((char *)arg0 + 8) - *(int *)((char *)arg1 + 8);
 }
 
-int fn_8013A6D4(int arg0) {
-    int values[3];
-    int *p = lbl_802F9350;
-    values[0] = *p++;
-    values[1] = *p++;
-    values[2] = *p;
-    return values[arg0];
+int fn_8013A6D4(int difficultyIndex) {
+#define gDifficultyPrefixes lbl_802F9350
+    int prefixes[3];
+    int *cursor = gDifficultyPrefixes;
+    /* Returns the difficulty prefix string ("easy_", "medium_" or "hard_") for the given index. */
+    prefixes[0] = *cursor++;
+    prefixes[1] = *cursor++;
+    prefixes[2] = *cursor;
+    return prefixes[difficultyIndex];
+#undef gDifficultyPrefixes
 }
 
 #pragma push
