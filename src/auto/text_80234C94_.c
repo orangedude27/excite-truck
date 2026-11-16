@@ -275,39 +275,43 @@ void fn_802350BC(void) {
 extern char lbl_8055B9E8[4];
 extern char lbl_8055B9F0[4];
 extern char *fn_80029004(char *, int);
-void *fn_8023512C(const char *arg0) {
+/* gArtGet: return the loaded art set for a resource name, bumping its
+ * reference count, or create it (texture handle + the ".tab" picture table). */
+void *fn_8023512C(const char *resourceName) {
     char *tbl = (char *)lbl_80340670;
-    char full[0x80];
-    char name[0x80];
-    int *obj;
+    char fullName[0x80];
+    char tableName[0x80];
+    ArtSet *artSet;
     char *dot;
-    CopyStrB_8023512C(arg0, 0x80, full);
-    if (fn_8012C33C(arg0) == 0) {
-        fn_802E30C8(tbl + 0x120, arg0);
-        CopyStrI_8023512C(tbl + 0x140, 0x80, full);
+    CopyStrB_8023512C(resourceName, 0x80, fullName);
+    if (fn_8012C33C(resourceName) == 0) {
+        /* Resource missing: log it and fall back to the placeholder art. */
+        fn_802E30C8(tbl + 0x120, resourceName);
+        CopyStrI_8023512C(tbl + 0x140, 0x80, fullName);
     }
-    obj = ((void *(*)(char *))fn_80234E88)(full);
-    if (obj != 0) {
-        obj[0x80 / 4] += 1;
-        return obj;
+    artSet = ((void *(*)(char *))fn_80234E88)(fullName);
+    if (artSet != 0) {
+        artSet->refCount += 1;
+        return artSet;
     }
-    obj = fn_801284F8(0x8C, lbl_8055B9E8);
-    obj[0x84 / 4] = fn_802CAC28(full, 0);
-    if (obj[0x84 / 4] == -1)
-        fn_802E317C(tbl + 0x14C, full);
-    obj[0x80 / 4] = 1;
-    obj[0x88 / 4] = 0;
-    CopyStrB_8023512C(full, 0x80, (char *)obj);
-    CopyStrI_8023512C(full, 0x80, name);
-    dot = fn_80029004(name, 0x2E);
+    artSet = fn_801284F8(0x8C, lbl_8055B9E8);
+    artSet->drawHandle = fn_802CAC28(fullName, 0);
+    if (artSet->drawHandle == -1)
+        fn_802E317C(tbl + 0x14C, fullName);
+    artSet->refCount = 1;
+    artSet->pictures = 0;
+    CopyStrB_8023512C(fullName, 0x80, (char *)artSet);
+    CopyStrI_8023512C(fullName, 0x80, tableName);
+    /* Strip the extension and load the matching .tab table next to it. */
+    dot = fn_80029004(tableName, 0x2E);
     if (dot != 0)
         *dot = 0;
     else
-        fn_802E317C(tbl + 0x168, name);
-    CatStrC_8023512C(lbl_8055B9F0, 0x80, name);
-    fn_80234EF4(obj, name);
-    fn_80234D44((int)obj);
-    return obj;
+        fn_802E317C(tbl + 0x168, tableName);
+    CatStrC_8023512C(lbl_8055B9F0, 0x80, tableName);
+    fn_80234EF4(artSet, tableName);
+    fn_80234D44((int)artSet);
+    return artSet;
 }
 
 /* Releases one reference to an art set: frees its picture list, texture handle,
