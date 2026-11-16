@@ -5180,6 +5180,10 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
+/* Set per-fragment alpha comparison: pack the two compare functions (comp0/comp1),
+ * their reference values (ref0/ref1) and the combining op into BP register 0xF3
+ * (the packed word's top byte), push it through the write-gather FIFO and mark
+ * GXData's last FIFO write as a BP load. */
 void GXSetAlphaCompare(s32 comp0, s32 ref0, s32 op, s32 comp1, s32 ref1) {
     union {
         u32 value;
@@ -5193,15 +5197,15 @@ void GXSetAlphaCompare(s32 comp0, s32 ref0, s32 op, s32 comp1, s32 ref1) {
         } bits;
     } reg;
 
-    reg.value = 0xF3000000;
+    reg.value = 0xF3000000; /* BP register 0xF3 (alpha compare) */
     reg.bits.ref0 = ref0;
-    *(volatile u8 *)0xCC008000 = 0x61;
+    WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
     reg.bits.ref1 = ref1;
     reg.bits.comp0 = comp0;
     reg.bits.comp1 = comp1;
     reg.bits.op = op;
-    *(volatile u32 *)0xCC008000 = reg.value;
-    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
+    WGPIPE.i = reg.value;
+    ((GXDrawData *)__GXData)->lastWriteWasXF = FALSE;
 }
 
 void GXSetZTexture(s32 op, s32 format, s32 bias) {
