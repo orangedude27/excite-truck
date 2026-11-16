@@ -3615,7 +3615,10 @@ extern "C" void Animate__Q36nw4hbm3lyt4PaneFUl(void *self, u32 flags) {
     }
 }
 
-extern "C" void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void* self, unsigned long flags) {
+/* Walk this pane's circular animation-link list and invoke each enabled link's
+ * animation callback with the pane; then, unless the pane is hidden while
+ * `option` asks to skip hidden panes, invoke the update callback at +0x28. */
+extern "C" void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void* self, unsigned long option) {
     struct AnimCallback {
         virtual void d0();
         virtual void d1();
@@ -3642,15 +3645,15 @@ extern "C" void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void* self, unsigned long fla
         if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
         if (!*(u8*)((u8*)link + 0xE)) {
             if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            AnimCallback* anim = (AnimCallback*)*(void**)((u8*)link + 8);
+            AnimCallback* animCallback = (AnimCallback*)*(void**)((u8*)link + 8);
             if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            anim->call(*(u16*)((u8*)link + 0xC), self);
+            animCallback->call(*(u16*)((u8*)link + 0xC), self);
         }
         link = *(void**)link;
     }
-    if ((*(u8*)(pane + 0xCF) & 1) == 0 && (flags & 1)) return;
-    UpdateCallback* obj = (UpdateCallback*)*(void**)(pane + 0x28);
-    if (obj) obj->call();
+    if ((*(u8*)(pane + 0xCF) & 1) == 0 && (option & 1)) return;
+    UpdateCallback* updateCallback = (UpdateCallback*)*(void**)(pane + 0x28);
+    if (updateCallback) updateCallback->call();
 }
 
 extern "C" void BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* pane, void* animTransform, bool bRecursive) {
