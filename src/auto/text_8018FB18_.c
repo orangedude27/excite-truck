@@ -1351,6 +1351,7 @@ void fn_801912B4(void *arg0) {
 }
 
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_801912D8(void *arg0) {
     class Obj {
     public:
