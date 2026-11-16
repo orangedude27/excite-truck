@@ -741,13 +741,15 @@ extern "C" void fn_8020F15C(void *arg0) {
 #pragma scheduling off
 #pragma cplusplus reset
 
-void fn_8020F1F8(void *arg0) {
-    void *temp_r3;
-    temp_r3 = *(void **)((char *)arg0 + 0x50);
-    if (temp_r3 != 0) {
-        *(signed char *)((char *)temp_r3 + 0x49) = 1;
-        *(signed char *)((char *)temp_r3 + 0x4B) = 0;
-        *(signed char *)((char *)temp_r3 + 0x4A) = 0;
+/* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the child
+ * node stored at +0x50 of the object. */
+void fn_8020F1F8(void *object) {
+    void *node;
+    node = *(void **)((char *)object + 0x50);
+    if (node != 0) {
+        *(signed char *)((char *)node + 0x49) = 1;
+        *(signed char *)((char *)node + 0x4B) = 0;
+        *(signed char *)((char *)node + 0x4A) = 0;
     }
 }
 
