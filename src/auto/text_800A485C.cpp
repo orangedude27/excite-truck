@@ -11739,9 +11739,11 @@ extern "C" void fn_800B7E18(u32 arg0) {
     if (lbl_80405D00[0]) lbl_80405D00[0]((u8)arg0);
 }
 
-extern "C" void fn_800B7E38(u32 arg0) {
+/* Dispatch a status byte to the second installed status callback (slot 1 of
+ * the lbl_80405D00 table) when one has been registered. */
+extern "C" void fn_800B7E38(u32 status) {
     if (lbl_80405D00[1] != 0)
-        lbl_80405D00[1]((u8)arg0);
+        lbl_80405D00[1]((u8)status);
 }
 
 #pragma dont_inline on
