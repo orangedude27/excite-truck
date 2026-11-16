@@ -14823,6 +14823,8 @@ void btu_hcif_link_key_notification_evt(u8 *p, u16 evt_len) {
     btm_sec_link_key_notification(bda,key,key_type);
 }
 
+// Initialize the core BTE Bluetooth stack layers (BTM, L2CAP, SDP) and the
+// discovery database; called during stack bring-up by fn_80070B54.
 void fn_8008251C(void) {
     btm_init();
     l2c_init();
