@@ -11400,6 +11400,8 @@ extern "C" s32 fn_800B74B8(s8 drive) {
 extern "C" void* fn_800B1BDC(void*);
 extern "C" void fn_800B74E0(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
+    /* File-thread alarm callback: the alarm pointer doubles as the file handle
+       to close; fold the close result into fn_800B73BC's 0/-1 status mask. */
     fn_800B73BC((s32)fn_800B1BDC(alarm));
 }
 
