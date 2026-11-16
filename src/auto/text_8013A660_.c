@@ -416,9 +416,7 @@ struct VObj_8013B590 {
     virtual void v2();
     virtual void v3();
     virtual void v4();
-    virtual void v5();
-    virtual void v6();
-    virtual int v7();
+    virtual int v5();
 };
 extern "C" float fn_8013B590(void) {
     void *object = *fn_801B2ED0();
