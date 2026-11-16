@@ -7716,16 +7716,18 @@ block_done:
 #pragma pop
 #pragma push
 #pragma dont_inline off
-void btm_acl_removed(u8 *addr) {
-    u8 *entry;
-    void (*callback)(u8 *, u32, u32, u32, u32);
+void btm_acl_removed(u8 *bdAddr) {
+    /* Handle an ACL link removal: clear the matching entry's in-use flag and
+       notify the registered disconnect callback. */
+    u8 *aclEntry;
+    void (*disconnectCallback)(u8 *, u32, u32, u32, u32);
 
-    entry = btm_bda_to_acl_inl(addr);
-    if (entry != 0) {
-        entry[0x119] = 0;
-        callback = *(void (**)(u8 *, u32, u32, u32, u32))(lbl_803C0F78 + 0x4C8);
-        if (callback != 0)
-            callback(addr, 0, 0, 0, 0);
+    aclEntry = btm_bda_to_acl_inl(bdAddr);
+    if (aclEntry != 0) {
+        aclEntry[0x119] = 0;
+        disconnectCallback = *(void (**)(u8 *, u32, u32, u32, u32))(lbl_803C0F78 + 0x4C8);
+        if (disconnectCallback != 0)
+            disconnectCallback(bdAddr, 0, 0, 0, 0);
     }
 }
 #pragma pop
