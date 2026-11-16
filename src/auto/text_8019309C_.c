@@ -3215,10 +3215,11 @@ void *fn_80198DD0(void *arg0, int arg1) {
 }
 
 #pragma dont_inline on
-void fn_80198E7C(int index) {
-    void *entry = lbl_804349C0[index];
-    if (*((u8 *)entry + 0x2A4) != 0)
-        fn_801964D0(entry);
+/* If the racer registered at slotIndex is active, apply a random directional impulse to it. */
+void fn_80198E7C(int slotIndex) {
+    void *racer = lbl_804349C0[slotIndex];
+    if (*((u8 *)racer + 0x2A4) != 0)
+        fn_801964D0(racer);
 }
 #pragma dont_inline reset
 
