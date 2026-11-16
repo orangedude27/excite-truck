@@ -2327,6 +2327,17 @@ extern void fn_801688B4(s32);
 extern void *fn_801E87A8(void);
 typedef void (*SetXf80150BDC)(void *, f32 *, f32 *, f32 *);
 typedef s32 (*GetFn80150BDC)(void *);
+
+/* Place an effect object at its stored position with an identity rotation
+ * (vtable slot +0x28 of the object's model). */
+static inline void fn_80150BDC_PlaceEffect(void *e, f32 one, f32 zero) {
+    f32 m[12], scale[3], trans[3];
+    m[0]=one; m[1]=zero; m[2]=zero; m[3]=zero; m[4]=one; m[5]=zero; m[6]=zero; m[7]=zero; m[8]=one; m[9]=zero; m[10]=zero; m[11]=zero;
+    m[9]=*(f32 *)((char *)e + 8); m[10]=*(f32 *)((char *)e + 0xC); m[11]=*(f32 *)((char *)e + 0x10);
+    scale[0]=zero; scale[1]=zero; scale[2]=zero; trans[0]=zero; trans[1]=zero; trans[2]=zero;
+    (*(SetXf80150BDC *)(*(char **)*(void **)e + 0x28))(*(void **)e, m, trans, scale);
+}
+#pragma dont_inline on
 void fn_80150BDC(void *arg0) {
     char *b = (char *)arg0;
     f32 f31 = lbl_80561648, f29 = lbl_80561650;
@@ -2366,8 +2377,7 @@ void fn_80150BDC(void *arg0) {
         }
         if (fn_801D4900(*(s32 *)((char *)r25 + *(s32 *)((char *)r25 + 0x14) * 4 + 0xC)) == 0) {
             f0 = *(f32 *)((char *)r25 + 0x34);
-            if (!(f0 > f29)) f0 = f29;
-            *(f32 *)((char *)r25 + 0x34) = f0;
+            *(f32 *)((char *)r25 + 0x34) = (f0 > f29) ? f0 : f29;
         }
         if (*(s32 *)((char *)r25 + 0x38) == 4) {
             f0 = *(f32 *)((char *)r25 + 0x18) - f29;
@@ -2514,9 +2524,11 @@ void fn_80150BDC(void *arg0) {
     }
     if (*(u8 *)(b + 0x8E4) != 0) {
         void *p, *r4;
+        s32 done;
         f0 = *(f32 *)(b + 0x8D4) + lbl_80561650;
         *(f32 *)(b + 0x8D4) = f0;
-        if (f0 > *(f32 *)(b + 0x8DC)) {
+        done = f0 > *(f32 *)(b + 0x8DC);
+        if (done) {
             p = *(void **)(b + 0x8E8);
             if (p != 0) { *(s8 *)((char *)p + 0x4A) = 1; *(s8 *)((char *)p + 0x4C) = 0; }
             r4 = *(void **)(b + 0x8EC);
@@ -2526,20 +2538,19 @@ void fn_80150BDC(void *arg0) {
             }
         } else {
             p = *(void **)(b + 0x8E8);
-            f1 = *(f32 *)(b + 0x8DC) - f0;
-            if (p != 0 && f1 < *(f32 *)(b + 0x8D8) && *(u8 *)((char *)p + 0x19) == 0) {
-                *(s8 *)((char *)p + 0x4A) = 0; *(s8 *)((char *)p + 0x4B) = 1; *(s8 *)((char *)p + 0x49) = 1;
+            if (p != 0) {
+                s32 near = *(f32 *)(b + 0x8DC) - f0 < *(f32 *)(b + 0x8D8);
+                if (near && *(u8 *)((char *)p + 0x19) == 0) {
+                    *(s8 *)((char *)p + 0x4A) = 0; *(s8 *)((char *)p + 0x4B) = 1; *(s8 *)((char *)p + 0x49) = 1;
+                }
             }
         }
     }
     if (played != 0) {
         f0 = *(f32 *)(b + 0x8DC) - *(f32 *)(b + 0x8D4);
-        if (lbl_80561648 > f0) f0 = lbl_80561648;
-        fn_80167684(f0);
+        fn_80167684(lbl_80561648 > f0 ? lbl_80561648 : f0);
     }
 }
-
-#pragma pop
 s32 fn_80151604(void) { return 0; }
 
 /* Return a status flag word: 0x5608 when the current race state is active,
