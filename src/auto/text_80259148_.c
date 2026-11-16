@@ -943,12 +943,12 @@ extern double sin(double);
 typedef unsigned int u32;
 typedef float f32;
 extern f32 lbl_80563B1C;
-f32 fn_8025B0A8(void *arg0) {
-    f32 *p = (f32 *)arg0;
-    f32 d = p[1] - p[0];
-    f32 out = p[0];
-    out += d * lbl_80563B1C;
-    return out;
+f32 fn_8025B0A8(void *pair) {
+    f32 *values = (f32 *)pair;
+    f32 delta = values[1] - values[0];
+    f32 midpoint = values[0];
+    midpoint += delta * lbl_80563B1C;
+    return midpoint;
 }
 
 /* Return the sine of an angle (in radians) as a float. */
