@@ -16289,6 +16289,21 @@ u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     return (value & lbl_802F3F54[shift]) >> (shift - arg1);
 }
 
+extern "C" void fn_800C2A88(volatile s32 *, volatile s32 *, volatile s32 *, volatile s32 *);
+extern "C" void fn_800C2C18(s32 *, s32 *, s32 *, s32 *);
+extern "C" void fn_800C2DBC(s32 *, s32 *, s32 *);
+extern "C" void fn_800C2F98(s32 *, s32 *, s32 *);
+extern "C" void fn_800C21D8(s32 *, s32 *);
+extern "C" void fn_800C1E88(const s32 *, const s32 *, s32 *);
+extern "C" void fn_800C1F6C(volatile u32 *, const volatile u32 *, const volatile u32 *);
+extern "C" void fn_800C2090(volatile s32 *, const volatile s32 *, const volatile s32 *);
+extern "C" void fn_800C3088(volatile s32 *, const volatile s32 *, const volatile s32 *, const volatile s32 *);
+extern "C" const s32 lbl_802F3FB8[];
+extern "C" s32 lbl_8031D5C8[];
+extern "C" u32 fn_800C0E7C(void *arg0, void *arg1, void *arg2, void *arg3, s32 *arg4, void *arg5) {
+    return 0;
+}
+
 extern "C" void fn_800C1984(s32 *, s32 *);
 extern "C" void fn_800C18A0(void *input, void *output) {
     /* Unpack 18 transformed samples: copy temp[9..17] to out[0..8] and
