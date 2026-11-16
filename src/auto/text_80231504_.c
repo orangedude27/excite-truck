@@ -1037,13 +1037,15 @@ u8 fn_80232B78(void *arg0) {
     return ((u8 *)arg0)[5];
 }
 
-void fn_80232B80(s32 arg0) {
-    void *value = (void *)fn_80231AF0;
-    lbl_8055F070 = arg0;
-    if (arg0 == 0) {
-        value = (void *)fn_80231D84;
+// Selects the text-layout routine and coordinate-transform hook: with a transform
+// callback set, text is rendered directly; otherwise layout records are built.
+void fn_80232B80(s32 coordTransform) {
+    void *layoutFunc = (void *)fn_80231AF0;
+    lbl_8055F070 = coordTransform;
+    if (coordTransform == 0) {
+        layoutFunc = (void *)fn_80231D84;
     }
-    lbl_8055B9A8 = value;
+    lbl_8055B9A8 = layoutFunc;
 }
 
 #pragma push
