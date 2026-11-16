@@ -987,7 +987,18 @@ extern "C" void fn_8016707C(void *arg0, register void **arg1) {
 }
 
 #pragma pop
-unsigned char fn_801671AC(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x5C)); }
+/* RealName: Unknown_GetByte5C
+ * If the global state is valid, returns the byte at offset +0x5C of the
+ * arg0-th 0x88-byte entry in the array pointed to by lbl_8055E32C->items;
+ * otherwise returns 0. */
+unsigned char fn_801671AC(int index) {
+    void *state;
+    if (!((int (*)(void))fn_801667F0)()) {
+        return 0;
+    }
+    state = *(void **)&lbl_8055E32C;
+    return *((unsigned char *)((char *)*(void **)state + index * 0x88 + 0x5C));
+}
 
 #pragma push
 #pragma processor 750
