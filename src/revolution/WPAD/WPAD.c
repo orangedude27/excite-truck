@@ -3537,13 +3537,14 @@ void fn_8005EE70(void) { fn_8006AC4C(); }
 // fn_8005EE74: tail call to WUDSetSyncSimpleCallback
 void fn_8005EE74(WUDSyncDeviceCallback pCallback) { WUDSetSyncSimpleCallback(pCallback); }
 
-// fn_8005EE80: get extFormat
-u8 fn_8005EE80(s32 chan) {
-    WPADCB* p = lbl_8038F4F0[chan];
-    BOOL enabled = OSDisableInterrupts();
-    u8 val = p->devHandle;
-    OSRestoreInterrupts(enabled);
-    return val;
+/* Get the HID device handle for the specified channel (interrupt-protected). */
+u8 fn_8005EE80(s32 chan)
+{
+    WPADCB* controlBlock = lbl_8038F4F0[chan];
+    BOOL interruptsDisabled = OSDisableInterrupts();
+    u8 deviceHandle = controlBlock->devHandle;
+    OSRestoreInterrupts(interruptsDisabled);
+    return deviceHandle;
 }
 
 void fn_8005EEC4(s32 chan, s32 result) {
