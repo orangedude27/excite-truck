@@ -270,8 +270,11 @@ void fn_802CEAC4(void) {
 }
 
 extern void fn_802D9C4C(void);
-int fn_802CEC04(int arg0) {
-    if (arg0 == 1) {
+/* GX draw-sync callback (RealName: GX_BlankOnShutdown): when reason is 1,
+   unregister the audio DMA and draw-sync callbacks, blank the screen and wait
+   for the retrace, then return 0. */
+int fn_802CEC04(int reason) {
+    if (reason == 1) {
         fn_802D9C4C();
         GXSetDrawSyncCallback();
         VISetBlack(1);
@@ -2881,31 +2884,34 @@ void fn_802D3144(void) {
     lbl_804C5700[0] = 1;
 }
 
-int fn_802D31D8(void) {
-    volatile unsigned char col[4];
-    unsigned long c;
-
-    lbl_8055FDB4 = 1;
-    GXSetColorUpdate(0);
-    GXSetAlphaUpdate(1);
-    GXSetDstAlpha(0, 0);
-    fn_802CF5D4();
-    lbl_8055FD1C = (void *)((unsigned long)lbl_8055FD1C & 0xFFFFFFF7);
-    GXSetNumTevStages(1);
-    GXSetNumTexGens(0);
-    GXSetZMode(1, 6, 0);
-    GXSetTevOrder(0, 0xFF, 0xFF, 4);
-    GXSetTevAlphaIn(0, 7, 7, 7, 1);
-    GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
-    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
-    GXSetTevColorIn(0, 0xF, 0xF, 0xF, 0xF);
-    c = fn_802CE9FC(0, 0, 0, 4);
-    col[3] = c;
-    col[0] = c >> 24;
-    col[1] = c >> 16;
-    col[2] = c >> 8;
-    ((void (*)(int, volatile unsigned char *))GXSetTevColor)(1, col);
-    return 1;
+int fn_802D31D8(void)
+{
+  unsigned long new_var;
+  volatile unsigned char col[4];
+  unsigned long c;
+  lbl_8055FDB4 = 1;
+  GXSetColorUpdate(0);
+  GXSetAlphaUpdate(1);
+  GXSetDstAlpha(0, 0);
+  new_var = c;
+  fn_802CF5D4();
+  lbl_8055FD1C = (void *) (((unsigned long) lbl_8055FD1C) & 0xFFFFFFF7);
+  GXSetNumTevStages(1);
+  GXSetNumTexGens(0);
+  c = 7;
+  GXSetZMode(1, 6, 0);
+  GXSetTevOrder(0, 0xFF, 0xFF, 4);
+  GXSetTevAlphaIn(0, c, c, c, 1);
+  GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
+  GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+  GXSetTevColorIn(0, 0xF, 0xF, 0xF, 0xF);
+  c = fn_802CE9FC(0, 0, 0, 4);
+  col[3] = c;
+  col[0] = c >> 24;
+  col[1] = new_var >> 16;
+  col[2] = new_var >> 8;
+  ((void (*)(int, volatile unsigned char *)) GXSetTevColor)(1, col);
+  return 1;
 }
 
 #pragma dont_inline reset
