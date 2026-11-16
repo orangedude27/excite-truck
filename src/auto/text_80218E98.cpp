@@ -6613,7 +6613,7 @@ extern "C" void fn_80224028(void *arg0) {
 
 active:
     if (*(u8 *)((u8 *)arg0 + 0x25C) != 0) {
-        if (fn_802ED040() != 0) {
+        if (((s32 (*)(s32))fn_802ED040)(state) != 0) {
             callback = *(s32 (**)(void *))((u8 *)arg0 + 0x260);
             if ((callback == 0) || (callback(*(void **)((u8 *)arg0 + 0x264)) != 0)) {
                 fn_802168BC(*(void **)((u8 *)arg0 + 0x264));
