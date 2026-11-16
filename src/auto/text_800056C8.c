@@ -1753,11 +1753,12 @@ void *fn_80007984(void) {
     return lbl_802FB6C0;
 }
 
-s32 fn_80007990(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+s32 fn_80007990(s32 ptr, s32 shouldDelete) {
+    /* Frees the pointer via fn_80128668 when non-null and deletion is requested. */
+    if (ptr != 0 && shouldDelete > 0) {
         fn_80128668();
     }
-    return arg0;
+    return ptr;
 }
 
 u32 fn_800079D0(void) { return 1; }
