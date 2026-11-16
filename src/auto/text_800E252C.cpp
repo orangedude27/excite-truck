@@ -1968,20 +1968,21 @@ extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *voice, u8 pauseFlag)
     OSRestoreInterrupts(interrupts);
 }
 
-extern "C" void fn_800E5338(void *arg0, float arg1) {
-    float value;
-    if (arg1 > lbl_80560F38) {
-        value = lbl_80560F38;
-    } else if (arg1 < lbl_80560F3C) {
-        value = lbl_80560F3C;
+extern "C" void fn_800E5338(void *voice, float volume) {
+    /* Clamp volume to [0.0, 1.0], store at +0x188, and set dirty flag 0x10 at +0x123 when changed. */
+    float clampedVolume;
+    if (volume > lbl_80560F38) {
+        clampedVolume = lbl_80560F38;
+    } else if (volume < lbl_80560F3C) {
+        clampedVolume = lbl_80560F3C;
     } else {
-        value = arg1;
+        clampedVolume = volume;
     }
-    float *field = (float *)((char *)arg0 + 0x188);
-    if (value != *field) {
-        unsigned char *flags = (unsigned char *)arg0 + 0x123;
-        *field = value;
-        *flags |= 0x10;
+    float *volumeField = (float *)((char *)voice + 0x188);
+    if (clampedVolume != *volumeField) {
+        unsigned char *updateFlags = (unsigned char *)voice + 0x123;
+        *volumeField = clampedVolume;
+        *updateFlags |= 0x10;
     }
 }
 
