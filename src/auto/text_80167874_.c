@@ -806,14 +806,19 @@ extern s32 fn_8002B1D8(s32, s32 *, s32);
 extern char lbl_803301B8[];
 extern s32 lbl_8055E354;
 extern s32 lbl_80430260[];
-void fn_801688B4(s32 arg0) {
-    u8 *base = (u8 *)lbl_8055E354 + 0x20000;
+void fn_801688B4(s32 groupId) {
+    /* Switch on every group of the scene object manager (lbl_8055E354) whose
+     * id matches groupId: set the active byte (+4) of each matching 0x20-byte
+     * GroupEntry, which lets fn_80168104 update its records again.
+     * fn_801688FC(1) is the counterpart that switches them off. */
+    u8 *base = (u8 *)lbl_8055E354 + 0x20000; /* manager + 0x20000 */
     s32 i = 0;
     s32 offset = 0;
-    while (i < *(s32 *)(base - 0x2B30)) {
-        s32 *record = (s32 *)(*(s32 *)(base - 0x2B34) + offset);
-        if (arg0 == *record) {
-            *((u8 *)record + 4) = 1;
+    while (i < *(s32 *)(base - 0x2B30)) { /* manager group count, +0x1D4D0 */
+        struct GroupEntry *entry =
+            (struct GroupEntry *)(*(s32 *)(base - 0x2B34) + offset); /* +0x1D4CC */
+        if (groupId == entry->id) {
+            entry->active = 1;
         }
         offset += 0x20;
         i++;
