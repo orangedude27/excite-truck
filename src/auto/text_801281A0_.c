@@ -693,12 +693,14 @@ s32 fn_80128E58(void *heap, s32 size) {
     return result;
 }
 
+#define STKA_SIGNATURE 0x53544B41
 void *fn_80128EB4(void *arg0, void *arg1) {
-    if ((u32)*(s32 *)((u8 *)arg1 - 0x40) != 0x53544B41U) {
+    if ((u32)*(s32 *)((u8 *)arg1 - 0x40) != STKA_SIGNATURE) {
         return &lbl_8032A068;
     }
     return (u8 *)arg1 - 0x3C;
 }
+#undef STKA_SIGNATURE
 
 void fn_80128ED8(void *arg0, s32 arg1, s32 arg2) {
     s32 *p = (s32 *)arg0;
