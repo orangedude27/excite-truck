@@ -49,9 +49,10 @@ extern int fn_802E30C8(const char *, int, int, int);
 extern char lbl_8032A5C0[];
 extern float fn_8012A080(void *);
 #pragma scheduling invalid_target
-void fn_80129C64(int arg0) {
-    char *entry = lbl_804223F8 + arg0 * 0x19C;
-    fn_80129E34(entry, 0x5AC2, 0x43DB);
+void fn_80129C64(int slotIndex) {
+    /* Initialize one RNG state slot with the default seed pair. */
+    char *state = gRngStateBuffer + slotIndex * RNG_STATE_SIZE;
+    InitRngState(state, 0x5AC2, 0x43DB);
 }
 #pragma scheduling on
 /* Set the RNG seed pair for slot `slotIndex`, logging non-debug seeds, then (re)initialize that slot's state. */
