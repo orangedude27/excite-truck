@@ -201,8 +201,6 @@ extern "C" int fn_802044E8(void) {
 }
 #pragma cplusplus off
 extern int __cntlzw(unsigned int);
-#pragma push
-#pragma processor 750
 int fn_80204870(int arg0) {
     int index;
     if (fn_8020437C() == 0)
