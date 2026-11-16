@@ -41,8 +41,10 @@ int fn_80138BE4(float arg0, float arg1) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
-int fn_80138BFC(float arg0) {
-    return (float)__fabs((double)arg0) <= lbl_805613BC * lbl_80558DC4[0];
+/* Near-zero test for the motion-crossing solver (motion_is_zero): true when
+ * |value| is within the small tolerance 10 * lbl_80558DC4[0]. */
+int fn_80138BFC(float value) {
+    return (float)__fabs((double)value) <= lbl_805613BC * lbl_80558DC4[0];
 }
 #pragma dont_inline reset
 
