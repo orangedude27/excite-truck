@@ -55,18 +55,37 @@ void fn_80230090(void) {
 }
 
 void fn_80230114(void) {
-    extern s32 lbl_8055F028;
-    extern void fn_8022EDB8(void);
-    extern void fn_8022EB30(s32);
-    extern void fn_80236774(void);
-    extern void fn_802350BC(void);
-    extern void fn_8022F294(void);
-    extern void fn_802324D8(void);
-    extern void fn_8022EBF0(void);
-    fn_8022EDB8();
-    fn_8022EB30(lbl_8055F028);
-    fn_80236774(); fn_802350BC(); fn_8022F294();
-    fn_802324D8(); fn_8022EBF0();
+    /* Shut down the rendering/UI subsystem built by fn_80230090: drop the
+       current UI node, return the UIContext to its pool, clear the uiAnime
+       started flag, then flush the art, background-quad and font caches. */
+#define FreeCurrentUINode   fn_8022EDB8
+#define ReleaseUIContext    fn_8022EB30
+#define gUIContext          lbl_8055F028
+#define ClearUiAnimeStarted fn_80236774
+#define FlushArtList        fn_802350BC
+#define FreeBackgroundQuads fn_8022F294
+#define FreeFontCache       fn_802324D8
+#define FreeUINodeList      fn_8022EBF0
+    extern s32 gUIContext;
+    extern void FreeCurrentUINode(void);
+    extern void ReleaseUIContext(s32);
+    extern void ClearUiAnimeStarted(void);
+    extern void FlushArtList(void);
+    extern void FreeBackgroundQuads(void);
+    extern void FreeFontCache(void);
+    extern void FreeUINodeList(void);
+    FreeCurrentUINode();
+    ReleaseUIContext(gUIContext);
+    ClearUiAnimeStarted(); FlushArtList(); FreeBackgroundQuads();
+    FreeFontCache(); FreeUINodeList();
+#undef FreeCurrentUINode
+#undef ReleaseUIContext
+#undef gUIContext
+#undef ClearUiAnimeStarted
+#undef FlushArtList
+#undef FreeBackgroundQuads
+#undef FreeFontCache
+#undef FreeUINodeList
 }
 
 // ---------------------------------------------------------------------------
