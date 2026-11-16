@@ -2996,10 +2996,11 @@ extern "C" void fn_80142B60(void *arg0) {
     p[0x4A] = 0;
 }
 
-extern "C" void fn_80142B78(void *arg0, f32 arg1) {
-    if (arg1 != *(f32 *)((u8 *)arg0 + 4)) {
-        *(f32 *)((u8 *)arg0 + 4) = arg1;
-        *(u8 *)((u8 *)arg0 + 0x4E) = 1;
+/* If `value` differs from the object's float field at +4, store it and flag the object changed at +0x4E. */
+extern "C" void fn_80142B78(void *object, f32 value) {
+    if (value != *(f32 *)((u8 *)object + 4)) {
+        *(f32 *)((u8 *)object + 4) = value;
+        *(u8 *)((u8 *)object + 0x4E) = 1;
     }
 }
 
