@@ -11614,8 +11614,9 @@ extern "C" s32 fn_800B7B34(s8 slotChar) {
 }
 
 extern "C" s32 fn_800B7BDC(void) {
-    s32 result = ((s32 (*)(void))fn_800B74E0)();
-    return (-result | result) >> 31;
+    // Returns an all-ones mask when the handler's result is nonzero, zero otherwise.
+    s32 value = ((s32 (*)(void))fn_800B74E0)();
+    return (-value | value) >> 31;
 }
 
 extern "C" s32 fn_800B7C08(void) {
@@ -19518,7 +19519,7 @@ extern "C" s32 fn_800D014C(s32 object, s32 deleteFlag) {
 }
 
 extern "C" u32 lbl_8055DDA0;
-#pragma scheduling off
+#pragma scheduling on
 extern "C" void fn_800D018C(void *arg0, void *arg1) {
     class Dispatch {
     public:
@@ -19529,12 +19530,11 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
         virtual void v16(); virtual void v17();
         virtual void call(void *);
     };
-    int zero = 0;
+    u32 zero = 0;
     void *p = *(void **)((u8 *)arg1 + 0x10);
     lbl_8055DDA0 = zero;
     ((Dispatch *)arg0)->call((u8 *)p + 0x10);
 }
-#pragma scheduling on
 extern "C" u8 lbl_8031E878[];
 extern "C" u8 lbl_8031E780[];
 extern "C" const char lbl_8031E8FC[];
