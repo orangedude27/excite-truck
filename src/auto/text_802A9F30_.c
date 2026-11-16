@@ -92,20 +92,21 @@ s32 fn_802A9F30(void *arg0) {
     return 0xC;
 }
 
-s32 fn_802A9F90(s32 *arg0) {
+s32 fn_802A9F90(s32 *args) {
     extern int lbl_8055F928;
-    *(u8 *)((u8 *)(lbl_8055F928 + (*arg0 * 0x108)) + 0xDC) = 1;
+    /* Mark the trail-state record for entry args[0] active (byte 0xDC). */
+    ((UnkAA9D4 *)(lbl_8055F928 + (*args * 0x108)))->active = 1;
     return 4;
 }
 
-#pragma scheduling reset
+#pragma scheduling invalid_target
 s32 fn_802A9FB0(void *arg0) {
     int index = *(int *)arg0;
     extern int lbl_8055F928;
     int offset = index * 0x108;
     unsigned char value = *((unsigned char *)arg0 + 4);
     register unsigned one = 1;
-    *(unsigned char *)(lbl_8055F928 + offset + (s32)0xEC + (value & 0)) = one;
+    *(unsigned char *)(lbl_8055F928 + offset + (s32)0xEC) = one;
     *(unsigned char *)(lbl_8055F928 + offset + (unsigned)0xF4) = value;
     return 8;
 }
