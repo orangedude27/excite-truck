@@ -41,6 +41,16 @@ extern f32 fn_801C3B6C(void);
 #define STR_ALL        lbl_8055A964 /* "all" - default for a name list */
 #define set_text_entry fn_801C957C  /* (1) clear the line and edit it, (0) close it */
 #define menu_action_idle fn_801C6CB0 /* the menu's do-nothing action, back to it once an item ran */
+#define menu_action_active fn_801C6CBC /* the action installed while the text field is being edited */
+#define FLOAT_ZERO lbl_80562970 /* 0.0f */
+#define FLOAT_FIVE lbl_805629B4 /* 5.0f: default z of an interlude position */
+
+/* AI-think interlude command the debug menu builds up; fn_801C82E0 appends it as an
+ * entry of type 5, taking the behaviour from sInterludeMode, the index from
+ * lbl_8055E864 (typed into the text field) and the position from sInterludeX/Z. */
+#define sInterludeMode lbl_8055E854 /* entry+0x210: behaviour picked from the submenu (0 = Park, 3 = Follow) */
+#define sInterludeX    lbl_8055E85C /* entry+0x21C: x, from the debug cursor when set by the position submenu */
+#define sInterludeZ    lbl_8055E860 /* entry+0x220: z */
 
 __declspec(section ".sdata") extern char lbl_8055AAF0[], lbl_8055AAF4[], lbl_8055AAF8[];
 extern void fn_802E3AD0(s32, const char *, ...);
