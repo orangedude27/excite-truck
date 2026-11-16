@@ -6,12 +6,14 @@ extern int lbl_8055E0C8;
 extern int lbl_802EE7E0[3];
 extern int lbl_8042F778[3];
 void fn_8013790C(void) {
-    int *src;
-    int *dst;
+    /* Initializes lbl_8055E0C8 and copies 3 words from lbl_802EE7E0 to lbl_8042F778. */
+    int *source;
+    int *destination;
+
     fn_8000D838(&lbl_8055E0C8);
-    src = lbl_802EE7E0;
-    dst = lbl_8042F778;
-    *dst++ = *src++;
-    *dst++ = *src++;
-    *dst = *src;
+    source = lbl_802EE7E0;
+    destination = lbl_8042F778;
+    *destination++ = *source++;
+    *destination++ = *source++;
+    *destination = *source;
 }
