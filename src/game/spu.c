@@ -966,12 +966,13 @@ void fn_802E61E4(void *arg0, float farg0) {
     *(float *)((char *)arg0 + 8) = farg0;
 }
 
-void fn_802E61EC(void *arg0, float farg0) {
-    if (lbl_8055FF8C != 0) {
-        *(float *)((char *)arg0 + 0xC) = farg0;
+void fn_802E61EC(void *voice, float pan) {
+    /* Set a voice's pan, forcing it to center (0.0) when the sound output mode is mono. */
+    if (SoundOutputMode != 0) {
+        *(float *)((char *)voice + 0xC) = pan;
         return;
     }
-    *(float *)((char *)arg0 + 0xC) = lbl_8056512C;
+    *(float *)((char *)voice + 0xC) = PanCenter;
 }
 
 void fn_802E620C(void *arg0, float farg0) {
