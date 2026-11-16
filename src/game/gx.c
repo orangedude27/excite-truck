@@ -554,6 +554,9 @@ void fn_802CF5A8(void) {
 void fn_802CF5D0(void) {}
 #pragma pop
 
+#define alphaCompareRef lbl_8055FD24        /* cached alpha-reference byte (GXSetAlphaCompare ref0) */
+#define alphaCompareAppliedRef lbl_8055FD91 /* last alpha reference programmed into the GX registers */
+
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802CF5D4(void) {
