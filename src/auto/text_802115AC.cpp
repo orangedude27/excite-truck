@@ -2225,6 +2225,7 @@ extern "C" void fn_80215214(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 extern "C" void fn_8021521C(s32 arg0, s32 arg1, s32 arg2) { fn_80214FE0(arg0, arg1, 0, arg2); }
 
 extern "C" s32 fn_80215228(void) {
+    /* Return TRUE when the stored last-layout name matches the current layout name (case-insensitive). */
     return stricmp((const char *)lbl_8033CAE8, lbl_8055B6B0) == 0;
 }
 
