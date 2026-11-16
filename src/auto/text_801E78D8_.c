@@ -732,9 +732,10 @@ loop:
 
 #define CurrentPlayerIndex lbl_8055AF0C /* -1 sentinel: use the current player */
 #define sPlayerConfigs lbl_8055EB04 /* array of 0xE0-byte per-player camera/viewport configs */
-long fn_801E866C(long arg0) {
-    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
-    return *(long *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x64);
+long fn_801E866C(long playerIndex) {
+    /* Return the car-manager entry index at +0x64 of the given player's config (negative index means current player). */
+    if (playerIndex < 0) playerIndex = (long)CurrentPlayerIndex;
+    return *(long *)((char *)sPlayerConfigs + playerIndex * 0xE0 + 0x64);
 }
 #undef CurrentPlayerIndex
 #undef sPlayerConfigs
