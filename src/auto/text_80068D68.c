@@ -7668,6 +7668,7 @@ extern u8 *lbl_80559030;
 extern u8 lbl_80315A64[];
 extern void fn_800716F0(void *);
 void fn_80076E70(void) {
+    /* BTM init defaults: set control-block field +0x4C6 to 0x7D00 and byte +0x27BF to 0xFF. */
     *(u16 *)(lbl_803C0F78 + 0x4C6) = 0x7D00;
     lbl_803C0F78[0x27BF] = 0xFF;
 }
