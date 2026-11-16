@@ -282,57 +282,67 @@ extern f32 lbl_805632FC;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+/* Per-frame pre-race music update: pick which of the three music tracks is
+ * featured (start countdown/race state), advance the master fade toward its
+ * target volume, and tell every track object whether to keep playing. */
 void fn_8020C59C(void) {
-           register f64 temp_f31;
+           register f64 fullVolume;
            f32 temp_f0, temp_f1, temp_f2, temp_f4;
-           s32 which_r31, loop_ptr_r28, active_r29, cached_r30, loop_r27, inner_r26;
-    s32 temp_r0, temp_r3, current;
-           void *object;
+           s32 featuredTrack, selection, active, cached, i, skip;
+    s32 elapsed, now, track;
+           void *sound;
+           /* The three track tables start at lbl_8055EE41 and must be set up. */
            if ((u8)lbl_8055EE41 == 0 || (u8)lbl_8055EE43 == 0 || (u8)lbl_8055EE42 == 0) fn_8020C2AC();
            lbl_8055EE58 = fn_802104B8();
            lbl_8055EE40 = fn_8000D75C();
-           active_r29 = 0;
-           if (fn_800216D0() != 0 && fn_80009C84() == 0) active_r29 = 1;
-           loop_ptr_r28 = active_r29;
-           cached_r30 = 1;
-           if (fn_801B85CC() == 0 && fn_80009C84() == 0) cached_r30 = 0;
-           if ((u8)lbl_8055EE45 == 0) lbl_8055EE45 = active_r29;
-           else { lbl_8055EE46 = 1; loop_ptr_r28 = (u8)lbl_8055EE45; }
-           which_r31 = 0;
-           if (loop_ptr_r28 != 0) which_r31 = 1;
-           else if (cached_r30 != 0) which_r31 = 2;
-           if (active_r29 != 0 && fn_800216FC() != 0) which_r31 = -1;
+           active = 0;
+           if (fn_800216D0() != 0 && fn_80009C84() == 0) active = 1;
+           selection = active;
+           cached = 1;
+           if (fn_801B85CC() == 0 && fn_80009C84() == 0) cached = 0;
+           if ((u8)lbl_8055EE45 == 0) lbl_8055EE45 = active;
+           else { lbl_8055EE46 = 1; selection = (u8)lbl_8055EE45; }
+           featuredTrack = 0;
+           if (selection != 0) featuredTrack = 1;
+           else if (cached != 0) featuredTrack = 2;
+           if (active != 0 && fn_800216FC() != 0) featuredTrack = -1;
            lbl_8055EE54 = lbl_805632F0;
-           if (cached_r30 != 0 && (u8)lbl_8055EE44 == 0) {
-               active_r29 = 1;
-               lbl_8055EE44 = active_r29;
+           if (cached != 0 && (u8)lbl_8055EE44 == 0) {
+               active = 1;
+               lbl_8055EE44 = active;
                if (fn_80009C84() == 0) {
+                   /* Remember when the featured track started; fade it in. */
                    lbl_8055EE3C = fn_802E2C20();
-                   object = (void *)lbl_8055EE38;
-                   if (object != 0) {
-                       *(u8 *)((u8 *)object + 0x49) = active_r29;
-                       *(u8 *)((u8 *)object + 0x4B) = 0;
-                       *(u8 *)((u8 *)object + 0x4A) = 0;
+                   sound = (void *)lbl_8055EE38;
+                   if (sound != 0) {
+                       *(u8 *)((u8 *)sound + 0x49) = active;
+                       *(u8 *)((u8 *)sound + 0x4B) = 0;
+                       *(u8 *)((u8 *)sound + 0x4A) = 0;
                    }
                }
-           } else if (cached_r30 == 0) {
-               temp_r3 = lbl_8055EE38;
-               if (temp_r3 != 0) {
-                   *(u8 *)(temp_r3 + 0x4A) = 1;
-                   *(u8 *)(temp_r3 + 0x4C) = 0;
+           } else if (cached == 0) {
+               now = lbl_8055EE38;
+               if (now != 0) {
+                   /* No music wanted: fade the current track out. */
+                   *(u8 *)(now + 0x4A) = 1;
+                   *(u8 *)(now + 0x4C) = 0;
                }
            } else if (fn_80009C84() == 0) {
-               temp_r3 = fn_802E2C20();
-               if (temp_r3 >= lbl_8055EE3C && temp_r3 < lbl_8055EE3C + 0xFA0) {
-                   temp_r0 = temp_r3 - lbl_8055EE3C;
-                   temp_f0 = ((f32)temp_r0 - lbl_805632DC) / lbl_805632F4;
-                   which_r31 = 0;
+               now = fn_802E2C20();
+               if (now >= lbl_8055EE3C && now < lbl_8055EE3C + 0xFA0) {
+                   /* Race starts 0xFA0 frames after the track: ramp the
+                    * "start" volume from 0 to 1 over 1000 frames. */
+                   elapsed = now - lbl_8055EE3C;
+                   temp_f0 = ((f32)elapsed - lbl_805632DC) / lbl_805632F4;
+                   featuredTrack = 0;
                    temp_f4 = lbl_805632F0;
                    temp_f4 = temp_f4 < temp_f0 ? temp_f4 : temp_f0;
                    temp_f4 = temp_f4 > lbl_805632DC ? temp_f4 : lbl_805632DC;
                    lbl_8055EE54 = lbl_805632F0 + temp_f4 * lbl_805632F8;
                }
            }
+           /* Move the master fade toward lbl_8055EE50 by at most 0.2/frame,
+            * clamped to 0..1. */
            temp_f2 = lbl_805632D8;
            temp_f0 = lbl_8055EE50 - lbl_8055EE4C;
            temp_f2 = temp_f2 < temp_f0 ? temp_f2 : temp_f0;
@@ -343,39 +353,42 @@ void fn_8020C59C(void) {
            temp_f1 = temp_f1 > lbl_805632DC ? temp_f1 : lbl_805632DC;
            lbl_8055EE4C = temp_f1;
            fn_8020C140();
-           temp_f31 = lbl_805632F0;
-           loop_ptr_r28 = (s32)&lbl_80489BE0;
-           loop_r27 = 0;
-           active_r29 = 1;
-           cached_r30 = 0;
+           fullVolume = lbl_805632F0;
+           selection = (s32)&lbl_80489BE0;
+           i = 0;
+           active = 1;
+           cached = 0;
            do {
-               if (loop_r27 == which_r31) {
-                   inner_r26 = 0;
-                   if ((u8)lbl_8055EE44 != 0 && which_r31 == 2 && fn_80009C84() == 0) {
-                       temp_r3 = fn_802E2C20();
-                       if (temp_r3 >= lbl_8055EE3C && temp_r3 < lbl_8055EE3C + 0xFA0) inner_r26 = 1;
+               if (i == featuredTrack) {
+                   skip = 0;
+                   /* While the race-start ramp runs, keep the third featured
+                    * track silent so the ramp track is the one heard. */
+                   if ((u8)lbl_8055EE44 != 0 && featuredTrack == 2 && fn_80009C84() == 0) {
+                       now = fn_802E2C20();
+                       if (now >= lbl_8055EE3C && now < lbl_8055EE3C + 0xFA0) skip = 1;
                    }
-                   current = *(s32 *)((u8 *)loop_ptr_r28 + 0x20);
-                   if (current != 0 && inner_r26 == 0) {
-                       *(u8 *)(current + 0x4A) = cached_r30;
-                       *(u8 *)(current + 0x4B) = active_r29;
-                       *(u8 *)(current + 0x49) = active_r29;
-                       current = *(s32 *)((u8 *)loop_ptr_r28 + 0x20);
-                       if (temp_f31 != *(f32 *)(current + 4)) {
-                           *(u8 *)(current + 0x4E) = active_r29;
-                           *(f32 *)(current + 4) = temp_f31;
+                   track = *(s32 *)((u8 *)selection + 0x20);
+                   if (track != 0 && skip == 0) {
+                       *(u8 *)(track + 0x4A) = cached;
+                       *(u8 *)(track + 0x4B) = active;
+                       *(u8 *)(track + 0x49) = active;
+                       track = *(s32 *)((u8 *)selection + 0x20);
+                       if (fullVolume != *(f32 *)(track + 4)) {
+                           *(u8 *)(track + 0x4E) = active;
+                           *(f32 *)(track + 4) = fullVolume;
                        }
                    }
                } else {
-                   current = *(s32 *)((u8 *)loop_ptr_r28 + 0x20);
-                   if (current != 0) {
-                       *(u8 *)(current + 0x4A) = active_r29;
-                       *(u8 *)(current + 0x4C) = cached_r30;
+                   /* Tracks that are not featured only fade out. */
+                   track = *(s32 *)((u8 *)selection + 0x20);
+                   if (track != 0) {
+                       *(u8 *)(track + 0x4A) = active;
+                       *(u8 *)(track + 0x4C) = cached;
                    }
                }
-               loop_r27 += 1;
-               loop_ptr_r28 += 0x24;
-           } while (loop_r27 < 3);
+               i += 1;
+               selection += 0x24;
+           } while (i < 3);
            fn_80210688(0);
        }
 #pragma pop
