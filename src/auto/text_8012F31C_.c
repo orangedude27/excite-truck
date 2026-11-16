@@ -51,10 +51,12 @@ void fn_8012F3CC(s32 arg0) {
     s32 *streamPtr = (s32 *)fn_801284F8(8, lbl_8032AFC4);
     if (streamPtr != 0) { streamPtr[0] = arg0; streamPtr[1] = 0; }
 }
-void fn_8012F418(s32 *arg0) {
-    if (arg0 == 0) return;
-    arg0[0] = 0;
-    arg0[1] = 0x2bad2bad;
+void fn_8012F418(s32 *obj) {
+    /* Release an 8-byte tracked heap object (the physics heap block): clear its first word,
+       stamp the second with the 0x2bad2bad freed-memory poison, then free the block. */
+    if (obj == 0) return;
+    obj[0] = 0;
+    obj[1] = 0x2bad2bad;
     fn_80128668();
 }
 
