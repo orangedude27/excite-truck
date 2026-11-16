@@ -63,6 +63,7 @@ typedef struct UIContext {
 #define sCNodeLiveCount     lbl_8055EFF4 /* cnodes handed out */
 #define sUIContextPool      lbl_8055F000 /* ObjectPool of 0x3c-byte UIContexts */
 #define sUIContextLiveCount lbl_8055EFFC /* UIContexts handed out */
+#define sUIContextList      lbl_8055F004 /* UI-context stack record: {head, tail} node links */
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
