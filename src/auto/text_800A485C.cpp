@@ -6933,17 +6933,18 @@ extern "C" s32 fn_800AF584(void *arg0) {
     return *(s32 *)((char *)lbl_802EEF40 + idx * 0x14 + 8);
 }
 
-extern "C" s32 fn_800AF5A0(void *arg0, s32 arg1, s32 *arg2) {
+extern "C" s32 fn_800AF5A0(void *stream, s32 sampleIndex, s32 *outSample) {
+    /* Read a 12-bit sample from an interleaved stream buffer, spanning two blocks when needed, retrying through the feed callback on 0x1000 (needs-more-data). */
     u8 buf[2];
     u32 index;
     u16 offset;
     s32 result;
     u32 retry = 1;
-    s32 *output = arg2;
-    void *object = arg0;
-    s32 cluster = arg1;
+    s32 *output = outSample;
+    void *object = stream;
+    s32 sampleNo = sampleIndex;
     u16 flags = *(u16 *)((u8 *)object + 0x18);
-    u16 scaled = cluster + (cluster >> 1);
+    u16 scaled = sampleNo + (sampleNo >> 1);
     index = (u16)(*(u32 *)((u8 *)object + 0x28) + (scaled >> *(u8 *)((u8 *)object + 0x20)));
     offset = (u16)(scaled & (*(u16 *)object - 1));
     if (flags & 0x80)
@@ -6977,7 +6978,7 @@ retryCheck:
     if (result == 0) {
         u16 val = *(u16 *)buf;
         u16 v = ((val & 0xFF00) >> 8) | ((val & 0x00FF) << 8);
-        if (cluster & 1)
+        if (sampleNo & 1)
             *output = (v >> 4) & 0xFFF;
         else
             *output = v & 0xFFF;
