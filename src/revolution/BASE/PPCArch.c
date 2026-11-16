@@ -194,6 +194,7 @@ asm void PPCMtwpar(register u32 val) {
 }
 
 void PPCDisableSpeculation(void) {
+    // Set HID0's speculative-cache-access-disable bit.
     PPCMthid0(PPCMfhid0() | HID0_SPD);
 }
 
