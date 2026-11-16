@@ -123,6 +123,9 @@ extern "C" s32* fn_801E87A8();
 extern "C" void* fn_8001285C(s32);
 #pragma dont_inline fn_8015621C
 s32 fn_8015621C(void) {
+    // Returns the current manager object (used as a text manager, config reader, etc.): reads a slot index
+    // from the global pointed to by fn_801E87A8, indexes the table of 0x28-byte records at lbl_80352AD0
+    // through fn_8001285C, and returns the object pointer stored at offset 0x20 of that record.
     return *(s32*)((char*)fn_8001285C(*fn_801E87A8()) + 0x20);
 }
 
