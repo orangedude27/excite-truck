@@ -1615,6 +1615,32 @@ char_test:
     return width + height;
 }
 
+/* ---- Text draw queue: entry layout and alignment flags for the layout pass ----
+ * gActiveFont points at the active font; gTextQueue is the base of the array of
+ * 0x58-byte text entries that fn_802344CC fills. */
+#define gActiveFont lbl_8055F058
+#define gTextQueue lbl_8055F06C
+#define gHalf lbl_80563688 /* 0.5f */
+
+/* Offsets inside one text queue entry. */
+enum {
+    TEXTQ_STRIDE = 0x58,
+    TEXTQ_POS_X = 0x40,
+    TEXTQ_POS_Y = 0x44,
+    TEXTQ_SCALE = 0x50,
+    TEXTQ_ALT_SCALE = 0x54
+};
+
+/* Flags selecting which glyph metric is subtracted from an entry's position. */
+enum {
+    TEXT_ADJ_X_GLYPH = 0x1,
+    TEXT_ADJ_X_FULL = 0x2,
+    TEXT_ADJ_X_HALF = 0x4,
+    TEXT_ADJ_Y_LINE = 0x8,
+    TEXT_ADJ_Y_LINE_HALF = 0x10,
+    TEXT_ADJ_Y_ALT = 0x20
+};
+
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
