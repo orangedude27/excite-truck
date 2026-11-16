@@ -98,14 +98,11 @@ s32 fn_802ECE48(char *movieName) {
      * (fn_802ECF08 hands that record out instead of opening one, and fn_802ECF90
      * finds any name a match for it). The node is freed and 0 returned when the
      * movie cannot be opened. */
-    struct SingleMovieInfo {
-        MoviePlayInfo info;           /* 0x00 the movie's name and its opened handle */
-        struct SingleMovieInfo *next; /* 0x44 the record this one pushes off the head */
-    } *node;
+    SingleMovieInfo *node;
 
-    node = fn_801284F8(sizeof(struct SingleMovieInfo), lbl_8034EC04);
+    node = fn_801284F8(sizeof(SingleMovieInfo), lbl_8034EC04);
     if (fn_802ECD68(node, movieName, 1) != 0) {
-        node->next = (struct SingleMovieInfo *)lbl_805600F8;
+        node->next = (SingleMovieInfo *)lbl_805600F8;
         lbl_805600F8 = (s32)node;
         return 1;
     }
