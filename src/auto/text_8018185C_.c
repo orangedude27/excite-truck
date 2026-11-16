@@ -227,11 +227,16 @@ void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, fl
     values[3] = d * farg1;
     fn_8018185C(dst, values);
 }
-float fn_80181A14(void *arg0) {
-    float value;
-    if (*((unsigned char *)arg0 + 0x259d) != 0) value = lbl_80434930[6];
-    else value = lbl_80434908[6];
-    return *((float *)((unsigned char *)arg0 + 0x2d8)) * value;
+float fn_80181A14(void *truck) {
+#define dirtyParams lbl_80434930
+#define normalParams lbl_80434908
+    /* Scale the object's value at +0x2d8 by a tuning factor picked from the dirty or normal parameter table, based on the dirty flag at +0x259d. */
+    float factor;
+    if (*((unsigned char *)truck + 0x259d) != 0) factor = dirtyParams[6];
+    else factor = normalParams[6];
+    return *((float *)((unsigned char *)truck + 0x2d8)) * factor;
+#undef normalParams
+#undef dirtyParams
 }
 
 float fn_80181A48(void *arg0) {
