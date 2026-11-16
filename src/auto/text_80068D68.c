@@ -28069,8 +28069,9 @@ s32 AXFXReverbHiInit(void* arg0) {
     return AXFXReverbHiExpInit(&reverb->exp);
 }
 
-s32 fn_8009BF98(void* arg0) {
-    AXFXReverbHiExpShutdown(arg0);
+/* Shut down the exponential reverb effect fx and report success. */
+s32 fn_8009BF98(AXFX_REVERBHI_EXP_VIEW* fx) {
+    AXFXReverbHiExpShutdown(fx);
     return 1;
 }
 
