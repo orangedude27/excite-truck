@@ -7695,54 +7695,63 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
 #define VF_ENTRY_SIZE(e)            (*(u32 *)((u8 *)(e) + 0x228))    /* 0x228 the file's size */
 #define VF_ENTRY_FIRST_CLUSTER(e)   (*(u32 *)((u8 *)(e) + 0x234))    /* 0x234 the cluster its chain starts at */
 
-extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
-    s32 chosenIndex = 0;
-    u8 *chosen = 0;
-    u8 *base = (u8 *)arg0;
-    u8 *a1 = (u8 *)arg1;
-    u8 *entry = (u8 *)arg0;
-    u8 *cand = (u8 *)arg0 + 0x40;
+extern "C" void *fn_800B0F1C(void *volumeObject, void *entryObject, s32 unused) {
+    /* Open a stream on the volume for the file `entryObject` describes.  Of the
+     * volume's five streams it takes the one already open on that very directory
+     * entry (same volume, sector and offset in it), or else the first free slot,
+     * which it sets up: the entry copied in, a directory iterator put on the
+     * entry's own first cluster, and - when the volume keeps them - the stream's
+     * own slice of the cluster-chain pool, cleared and started with that first
+     * cluster for a file that has one.  0 when no slot is free. */
+    s32 freeIndex = 0;
+    u8 *freeStream = 0;
+    u8 *volume = (u8 *)volumeObject;
+    u8 *entry = (u8 *)entryObject;
+    u8 *slot = (u8 *)volumeObject;
+    u8 *stream = (u8 *)volumeObject + 0x40;
     s32 i = 0;
     for (; i < 5; i++) {
-        if ((*(u32 *)(entry + 0x40) & 1) == 0 || (((*(u32 *)(entry + 0x40) & 1) != 0) && (((__cntlzw(*(u32 *)(entry + 0x40)) >> 5) & 2) != 0))) {
-            if (chosen == 0) {
-                chosen = cand;
-                chosenIndex = i;
+        /* the slot holds nothing, or something the cntlzw test picks out: free */
+        if ((*(u32 *)(slot + 0x40) & VF_STREAM_IN_USE) == 0 || (((*(u32 *)(slot + 0x40) & VF_STREAM_IN_USE) != 0) && (((__cntlzw(*(u32 *)(slot + 0x40)) >> 5) & 2) != 0))) {
+            if (freeStream == 0) {
+                freeStream = stream;
+                freeIndex = i;
             }
-        } else if (*(u32 *)(a1 + 0x22C) == *(u32 *)(entry + 0x2A8) && *(u32 *)(a1 + 0x238) == *(u32 *)(entry + 0x2B4) && *(u16 *)(a1 + 0x23C) == *(u16 *)(entry + 0x2B8)) {
-            return (u8 *)arg0 + i * 0x29C + 0x40;
+        } else if (VF_ENTRY_VOLUME(entry) == *(void **)(slot + 0x2A8) && VF_ENTRY_SECTOR(entry) == *(u32 *)(slot + 0x2B4) && VF_ENTRY_SECTOR_OFF(entry) == *(u16 *)(slot + 0x2B8)) {
+            return volume + i * 0x29C + 0x40;
         }
-        entry += 0x29C;
-        cand += 0x29C;
+        slot += 0x29C;
+        stream += 0x29C;
     }
-    if (chosen == 0) {
+    if (freeStream == 0) {
         return 0;
     }
-    *(u32 *)chosen = 3;
-    *(u16 *)(chosen + 0x298) = 0;
-    *(B240 *)(chosen + 0x3C) = *(B240 *)a1;
+    VF_STREAM_FLAGS(freeStream) = VF_STREAM_IN_USE | VF_STREAM_OPEN;
+    VF_STREAM_OPEN_COUNT(freeStream) = 0;
+    *(VFiPFEntryCopy240 *)VF_STREAM_ENTRY(freeStream) = *(VFiPFEntryCopy240 *)entry;
     {
         s32 zero = 0;
-        *(u16 *)(chosen + 0x27C) = zero;
-        *(u16 *)(chosen + 0x27E) = zero;
-        *(u32 *)(chosen + 0x280) = zero;
-        *(u32 *)(chosen + 0x284) = zero;
-        *(u32 *)(chosen + 0x288) = zero;
-        ((s32 (*)(void *, void *, s32, s32))fn_800AF530)(chosen + 4, 0, *(u32 *)(a1 + 0x22C), (s32)(chosen + 0x270));
-        if (*(u16 *)(base + 0x1FB0) & 1) {
-            *(u32 *)(chosen + 0x20) = *(u32 *)(base + 0x1FB4) + chosenIndex * *(u32 *)(base + 0x1FB8) * 4;
-            fn_800A499C((const char *)*(u32 *)(chosen + 0x20), 0, *(u32 *)(base + 0x1FB8) * 4);
-            *(u32 *)(chosen + 0x2C) = *(u32 *)(base + 0x1FB8);
-            *(u16 *)(chosen + 0x24) = *(u16 *)(base + 0x1FB2);
-            *(u16 *)(chosen + 0x26) = zero;
-            *(u32 *)(chosen + 0x28) = zero;
-            *(u32 *)(chosen + 0x30) = zero;
-            if (*(u32 *)(a1 + 0x228) != 0 && *(u32 *)(chosen + 0x2C) != 0) {
-                **(u32 **)(chosen + 0x20) = *(u32 *)(a1 + 0x234);
-                *(u32 *)(chosen + 0x28) += 1;
+        VF_STREAM_WRITE_STATE(freeStream) = zero;
+        VF_STREAM_WRITE_BYTES(freeStream) = zero;
+        *(u32 *)(freeStream + 0x280) = zero;
+        VF_STREAM_WRITE_FILE(freeStream) = 0;
+        *(u32 *)(freeStream + 0x288) = zero;
+        /* the cast keeps the iterator setup a call rather than inline code */
+        ((s32 (*)(void *, void *, s32, s32))fn_800AF530)(freeStream + 4, 0, (s32)VF_ENTRY_VOLUME(entry), (s32)(freeStream + 0x270));
+        if (VF_VOL_CHAIN_FLAGS(volume) & 1) {
+            VF_CHAIN_TABLE(freeStream + 4) = (u32 *)(VF_VOL_CHAIN_POOL(volume) + freeIndex * VF_VOL_CHAIN_WORDS(volume) * 4);
+            fn_800A499C((const char *)VF_CHAIN_TABLE(freeStream + 4), 0, VF_VOL_CHAIN_WORDS(volume) * 4);
+            VF_CHAIN_PAGES(freeStream + 4) = VF_VOL_CHAIN_WORDS(volume);
+            VF_CHAIN_PAGE_SIZE(freeStream + 4) = VF_VOL_CHAIN_PAGE_SIZE(volume);
+            VF_CHAIN_PAGE_POS(freeStream + 4) = zero;
+            VF_CHAIN_PAGE(freeStream + 4) = zero;
+            VF_CHAIN_LAST(freeStream + 4) = zero;
+            if (VF_ENTRY_SIZE(entry) != 0 && VF_CHAIN_PAGES(freeStream + 4) != 0) {
+                *VF_CHAIN_TABLE(freeStream + 4) = VF_ENTRY_FIRST_CLUSTER(entry);
+                VF_CHAIN_PAGE(freeStream + 4) += 1;
             }
         }
-        return chosen;
+        return freeStream;
     }
 }
 
