@@ -1123,6 +1123,7 @@ void fn_8017D0C8(void *phob) {
 
 #pragma dont_inline on
 void fn_8017D140(unsigned char *dst, unsigned char *src, int count) {
+    // Byte-by-byte copy of 'count' bytes from src to dst; the goto form keeps the original do/while codegen.
     goto check;
 loop:
     *dst++ = *src++;
