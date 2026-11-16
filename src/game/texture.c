@@ -777,14 +777,15 @@ char fn_802CAFC8(int arg0) {
     return *(char *)(*(int *)(base + offset + 0x2C) + 8);
 }
 
-char fn_802CAFF0(int arg0) {
-    int offset;
-    char *base;
-    if (arg0 == -1)
+/* Return a texture slot's mode byte (+9 of its resource), or 0x32 for no texture. */
+char fn_802CAFF0(int textureSlot) {
+    int slotOffset;
+    char *slots;
+    if (textureSlot == -1)
         return 0x32;
-    offset = arg0 * 0x4C;
-    base = (char *)lbl_8055FCB0;
-    return *(char *)(*(int *)(base + offset + 0x2C) + 9);
+    slotOffset = textureSlot * 0x4C;
+    slots = (char *)lbl_8055FCB0;
+    return *(char *)(*(int *)(slots + slotOffset + 0x2C) + 9);
 }
 
 extern char lbl_8034B940[];
