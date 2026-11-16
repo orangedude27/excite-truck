@@ -660,10 +660,16 @@ void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
 #pragma pop
 float fn_8017E380(void) { extern float lbl_80561C2C; return lbl_80561C2C; }
 
-void fn_8017E388(void *arg0) {
- extern float lbl_80561BE0; extern float lbl_80561BF4;
- float a=lbl_80561BE0, b=lbl_80561BF4; float *p=(float*)arg0;
- p[1]=a; p[0]=b; p[2]=a; p[3]=a; p[4]=b; p[5]=a; p[6]=a; p[7]=a; p[8]=b; p[9]=a; p[10]=a; p[11]=a;
+/* Initialize a 3x4 transform matrix (12 floats) to the identity: 1.0f on the
+ * diagonal, 0.0f everywhere else (lbl_80561BE0=0.0f, lbl_80561BF4=1.0f). */
+void fn_8017E388(void *out) {
+    extern float lbl_80561BE0;
+    extern float lbl_80561BF4;
+    float zero = lbl_80561BE0, one = lbl_80561BF4;
+    float *m = (float *)out;
+    m[1] = zero; m[0] = one; m[2] = zero; m[3] = zero;
+    m[4] = one; m[5] = zero; m[6] = zero; m[7] = zero;
+    m[8] = one; m[9] = zero; m[10] = zero; m[11] = zero;
 }
 
 #pragma small_data off
