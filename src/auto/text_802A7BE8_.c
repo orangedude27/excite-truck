@@ -29,10 +29,18 @@ void fn_802A7C64(void) {
 
 void fn_802A7EEC(void);
 void fn_802A7C68(void) {
-    if ((fn_801C5B60() == 0) &&
-        ((u32)(*(u32 *)((u8 *)fn_801E87A8() + 4) + 0xFFE80000) != 0x304U)) {
-        fn_802A7EEC();
+    #define dbgIsEnabled      fn_801C5B60
+    #define dbgGetModeObj     fn_801E87A8
+    #define dbgDrawCarMarkers fn_802A7EEC
+    /* Draw the car markers only while debug mode is off and the game mode word
+     * (the u32 at dbgGetModeObj()+4) is not 0x180304. */
+    if ((dbgIsEnabled() == 0) &&
+        ((u32)(*(u32 *)((u8 *)dbgGetModeObj() + 4) + 0xFFE80000) != 0x304U)) {
+        dbgDrawCarMarkers();
     }
+    #undef dbgIsEnabled
+    #undef dbgGetModeObj
+    #undef dbgDrawCarMarkers
 }
 
 extern float lbl_8042F8A8[];
@@ -53,50 +61,48 @@ extern float lbl_80564900;
 extern float lbl_80564904;
 extern float lbl_80564908;
 extern float lbl_8056490C;
-#pragma push
-#pragma processor 750
-void fn_802A7CA8(void *unused, float farg0, int arg1) {
-    unsigned int position[3];
-    float screen[3];
-    unsigned int xbits;
-    void *object;
-    float inverse;
-    float opacity;
-    float sizeFactor;
-    float size;
-    unsigned int mask;
-
-    object = *(void **)((char *)fn_801EA9A0() + 8);
-    xbits = *(unsigned int *)((char *)object + 0x24);
-    position[1] = *(unsigned int *)((char *)object + 0x28);
-    inverse = *(float *)&position[1];
-    position[0] = xbits;
-    inverse = inverse + lbl_805648F0;
-    position[2] = *(unsigned int *)((char *)object + 0x2C);
-    *(float *)&position[1] = inverse;
-    fn_802C8E70((float *)position, screen);
-
-    inverse = (farg0 - lbl_805648F4) / lbl_805648F8;
-    opacity = lbl_805648F4;
-    opacity = (opacity < inverse) ? opacity : inverse;
-    opacity = (opacity > lbl_805648FC) ? opacity : lbl_805648FC;
-    opacity = lbl_805648F4 + opacity * lbl_805648F8;
-    mask = ((unsigned int)(int)(lbl_80564900 * opacity) << 24) | 0x00FFFFFF;
-
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_802A7CA8(void *unused, float farg0, int arg1)
+{
+  unsigned int position[3];
+  float screen[3];
+  unsigned int xbits;
+  void *object;
+  float inverse;
+  float *new_var;
+  float opacity;
+  float sizeFactor;
+  float size;
+  unsigned int mask;
+  object = *((void **) (((char *) fn_801EA9A0()) + 8));
+  xbits = *((unsigned int *) (((char *) object) + 0x24));
+  position[1] = *((unsigned int *) (((char *) object) + 0x28));
+  inverse = *((float *) (&position[1]));
+  position[0] = xbits;
+  inverse = (*(new_var = &inverse)) + lbl_805648F0;
+  position[2] = *((unsigned int *) (((char *) object) + 0x2C));
+  *((float *) (&position[1])) = *new_var;
+  fn_802C8E70((float *) position, screen);
+  inverse = (farg0 - lbl_805648F4) / lbl_805648F8;
+  opacity = lbl_805648F4;
+  opacity = (opacity < (*new_var)) ? (opacity) : (inverse);
+  if (1)
+  {
+    opacity = (opacity > lbl_805648FC) ? (opacity) : (lbl_805648FC);
+    opacity = lbl_805648F4 + (opacity * lbl_805648F8);
+    mask = (((unsigned int) ((int) (lbl_80564900 * opacity))) << 24) | 0x00FFFFFF;
     inverse = (farg0 - lbl_805648F4) / lbl_805648F8;
     sizeFactor = lbl_805648F4;
-    sizeFactor = (sizeFactor < inverse) ? sizeFactor : inverse;
-    sizeFactor = (sizeFactor > lbl_805648FC) ? sizeFactor : lbl_805648FC;
-    size = lbl_80564904 + sizeFactor * lbl_80564908;
-    if (fn_802C8FF4(screen, lbl_805648FC)) {
-        ((void (*)(void *, int, unsigned int, float, float, float, float, float))fn_80235CBC)(
-            (void *)lbl_8055F8C0, arg1, mask,
-            screen[0] - lbl_8056490C * size,
-            screen[1] - lbl_8056490C * size,
-            lbl_805648FC, size, size);
-    }
+    sizeFactor = (sizeFactor < inverse) ? (sizeFactor) : (inverse);
+  }
+  sizeFactor = (sizeFactor > lbl_805648FC) ? (sizeFactor) : (lbl_805648FC);
+  size = lbl_80564904 + (sizeFactor * lbl_80564908);
+  if (fn_802C8FF4(screen, lbl_805648FC))
+  {
+    ((void (*)(void *, int, unsigned int, float, float, float, float, float)) fn_80235CBC)((void *) lbl_8055F8C0, arg1, mask, screen[0] - (lbl_8056490C * size), screen[1] - (lbl_8056490C * size), lbl_805648FC, size, size);
+  }
 }
-#pragma pop
 extern void fn_801E85B4(void);
 extern void *fn_802678C0(void);
 extern f32 lbl_80564910;
