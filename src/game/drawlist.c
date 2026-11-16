@@ -815,11 +815,19 @@ void fn_802C967C(void) {
 }
 
 void *fn_802C9694(void *arg0) {
-    ((float *)arg0)[0] = lbl_8055FC38;
-    ((float *)arg0)[1] = lbl_8055FC3C;
-    ((float *)arg0)[2] = lbl_8055FC40;
+    /* Initialize a 3-float vector from view/projection globals (lbl_8055FC38/3C/40),
+       run fn_802C974C on it, and return the object. */
+#define kViewX lbl_8055FC38
+#define kViewY lbl_8055FC3C
+#define kViewZ lbl_8055FC40
+    ((float *)arg0)[0] = kViewX;
+    ((float *)arg0)[1] = kViewY;
+    ((float *)arg0)[2] = kViewZ;
     ((void (*)())fn_802C974C)(arg0);
     return arg0;
+#undef kViewX
+#undef kViewY
+#undef kViewZ
 }
 
 void *fn_802C96DC(void *object, int shouldDelete) {
