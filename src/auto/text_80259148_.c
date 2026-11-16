@@ -610,21 +610,26 @@ extern "C" void fn_8025A83C(void *object) {
 }
 #pragma cplusplus reset
 void fn_8025A87C(void *arg0) {
-    float a = lbl_80563AE4;
+#define kFloatZero lbl_80563AE4
+#define kFloatOne  lbl_80563AE0
+    /* Reset the object's 3x3 transform matrix to identity and clear two flag bytes. */
+    float offDiag = kFloatZero;
     char zero = 0;
-    float b = lbl_80563AE0;
-    float *p = (float *)((char *)arg0 + 0x84);
-    p[1] = a;
-    p[0] = b;
-    p[2] = a;
-    p[3] = a;
-    p[4] = b;
-    p[5] = a;
-    p[6] = a;
-    p[7] = a;
-    p[8] = b;
+    float diag = kFloatOne;
+    float *matrix = (float *)((char *)arg0 + 0x84);
+    matrix[1] = offDiag;
+    matrix[0] = diag;
+    matrix[2] = offDiag;
+    matrix[3] = offDiag;
+    matrix[4] = diag;
+    matrix[5] = offDiag;
+    matrix[6] = offDiag;
+    matrix[7] = offDiag;
+    matrix[8] = diag;
     ((char *)arg0)[4] = zero;
     ((char *)arg0)[0x36] = zero;
+#undef kFloatOne
+#undef kFloatZero
 }
 
 extern char lbl_80345208[];
