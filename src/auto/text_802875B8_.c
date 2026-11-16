@@ -623,7 +623,15 @@ void fn_80288218(int arg0) {
 
 void fn_8028829C(void) {}
 
-void fn_802882A0(void){if(*(s32*)lbl_804B3150)fn_80128670(*(s32*)lbl_804B3150-0x10);*(s32*)lbl_804B3150=0;*(s32*)(lbl_804B3150+4)=0;lbl_804B3150[8]=0;}
+void fn_802882A0(void) {
+    /* Free the object pool at lbl_804B3150 (storage at pool-0x10) and clear
+       its pointer, count, and flag fields. */
+    if (*(s32 *)lbl_804B3150)
+        fn_80128670(*(s32 *)lbl_804B3150 - 0x10);
+    *(s32 *)lbl_804B3150 = 0;
+    *(s32 *)(lbl_804B3150 + 4) = 0;
+    lbl_804B3150[8] = 0;
+}
 
 #pragma push
 #pragma processor 750
