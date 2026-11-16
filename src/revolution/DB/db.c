@@ -5,8 +5,8 @@
 BOOL DBVerbose;
 OSDebugInterface* __DBInterface;
 
-/* Map the physical debug interface into cached memory, install the exception
- * hook, and enable verbose debug output. */
+/* Initialize the debug interface: map the physical debug interface registers
+ * into cached memory, install the exception hook, and enable verbose output. */
 void DBInit(void) {
     __DBInterface =
         (OSDebugInterface*)OSPhysicalToCached(OS_PHYS_DEBUG_INTERFACE);
