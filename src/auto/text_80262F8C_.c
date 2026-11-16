@@ -113,11 +113,13 @@ void fn_8026311C(void) {
     (void)lbl_803460B4; (void)lbl_80563BD0;
 }
 
-s32 fn_80263658(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+/* CodeWarrior deleting-destructor helper: free object via Mem_freeObject (fn_80128668)
+   when deleteFlag > 0, then return object. */
+s32 fn_80263658(s32 object, s32 deleteFlag) {
+    if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 #pragma cplusplus on
