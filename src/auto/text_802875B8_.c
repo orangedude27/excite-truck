@@ -417,13 +417,14 @@ void *fn_80287C80(void *object, s32 shouldFree) {
 }
 
 #pragma dont_inline on
-void fn_80287CE8(int arg0, void *arg1, int arg2, int arg3) {
-    char local[0x40];
-    sprintf(local, lbl_80348A20, arg1);
-    if (fn_8012C33C(local) != 0) {
-        *(void **)arg0 = (void *)fn_80131808(local);
+void fn_80287CE8(int effectSlot, void *carName, int effectId, int flags) {
+    char path[0x40];
+    /* Load a car's "<name>.car/efx.val" effect file into its table slot, then parse it. */
+    sprintf(path, lbl_80348A20, carName);
+    if (fn_8012C33C(path) != 0) {
+        *(void **)effectSlot = (void *)fn_80131808(path);
     }
-    fn_80287D70((void *)arg0, arg2, arg3);
+    fn_80287D70((void *)effectSlot, effectId, flags);
 }
 #pragma dont_inline reset
   
