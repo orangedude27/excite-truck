@@ -4,6 +4,7 @@
 extern void *lbl_8055E738;
 extern int lbl_8055E740;
 extern void fn_8000D838(void*);
+/* Register the static-destructor record at lbl_8055E738 and set its trailing word to 0xffff0000. */
 void fn_801B8B58(void)
 {
     fn_8000D838(&lbl_8055E738);
