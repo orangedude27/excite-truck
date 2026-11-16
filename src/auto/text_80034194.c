@@ -341,8 +341,9 @@ void *DSPAssertTask(void *arg0) {
     return 0;
 }
 
-void DBPrintf_800343C8(const char *fmt, ...) {
-#pragma unused(fmt)
+// Debug printf stub; ignores all arguments and produces no output.
+void DBPrintf_800343C8(const char *format, ...) {
+#pragma unused(format)
 }
 
 /*
