@@ -1381,13 +1381,14 @@ extern "C" void fn_801FEF80(void* arg0) {
 }
 
 extern "C" char* strncpy(char*, const char*, unsigned long);
-extern "C" void fn_801FEF90(void* arg0) {
-    struct Obj {
+extern "C" void fn_801FEF90(void* holder) {
+    // Forward a pool-reset request (flag 0) to the drone manager held at holder+4, if one exists.
+    struct DroneManagerIf {
         virtual void v0(); virtual void v1(); virtual void v2();
-        virtual void v5(int);
+        virtual void resetPools(int);
     };
-    Obj* obj = *(Obj**)((char*)arg0 + 4);
-    if (obj != 0) obj->v5(0);
+    DroneManagerIf* manager = *(DroneManagerIf**)((char*)holder + 4);
+    if (manager != 0) manager->resetPools(0);
 }
 
 extern "C" void fn_801FEFB4(void* arg0) {
