@@ -5525,8 +5525,8 @@ void GXSetColorUpdate(s32 enable) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
-/* Sets GX's alpha-update enable bit in the 0x61 control register, writing the
- * value to the FIFO and updating the shadowed register state in __GXData. */
+/* Sets GX's alpha-update enable bit in control register 0x61, writing the new
+ * value to the FIFO and caching it in the shadowed __GXData register state. */
 void GXSetAlphaUpdate(s32 enable) {
     union {
         unsigned int value;
@@ -5535,14 +5535,14 @@ void GXSetAlphaUpdate(s32 enable) {
             unsigned int alphaUpdate : 1;
             unsigned int unused1 : 4;
         } bits;
-    } reg;
-    unsigned int *data = __GXData;
-    reg.value = data[0x220 / 4];
-    reg.bits.alphaUpdate = enable;
+    } alphaUpdateReg;
+    unsigned int *gxData = __GXData;
+    alphaUpdateReg.value = gxData[0x220 / 4];
+    alphaUpdateReg.bits.alphaUpdate = enable;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = reg.value;
-    data[0x220 / 4] = reg.value;
-    *(unsigned short *)((char *)data + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = alphaUpdateReg.value;
+    gxData[0x220 / 4] = alphaUpdateReg.value;
+    *(unsigned short *)((char *)gxData + 2) = 0;
 }
 
 /* Set the depth-test mode: pack the test enable, compare function and
