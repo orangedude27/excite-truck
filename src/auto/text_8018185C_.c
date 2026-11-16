@@ -1676,12 +1676,15 @@ void **fn_801B83A0(void);
 int fn_801BF1B8(int, int);
 extern f32 lbl_80561CAC;
 #pragma dont_inline fn_80189C64
-void fn_80189C64(void *arg0) {
-    if (*(unsigned char *)((char *)arg0 + 0x26AC) != 0) {
-        *(unsigned char *)((char *)arg0 + 0x26AC) = 0;
-        fn_801BF1B8(*(int *)((char *)arg0 + 0x1EC), *(unsigned char *)((char *)arg0 + 0x26AC));
+/* Clears the pending flag and notifies its handler, then resets the object's timer. */
+void fn_80189C64(void *object) {
+#define sZero lbl_80561CAC
+    if (*(unsigned char *)((char *)object + 0x26AC) != 0) {
+        *(unsigned char *)((char *)object + 0x26AC) = 0;
+        fn_801BF1B8(*(int *)((char *)object + 0x1EC), *(unsigned char *)((char *)object + 0x26AC));
     }
-    *(float *)((char *)arg0 + 0x26A8) = lbl_80561CAC;
+    *(float *)((char *)object + 0x26A8) = sZero;
+#undef sZero
 }
 
 #pragma opt_propagation off
