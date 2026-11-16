@@ -4939,7 +4939,25 @@ void GXSetTevOp(int stage, int mode) {
 // selectors k0..k3 below the operation fields.
 #define GX_TEV_COLOR_COMBINER 0x180
 
-void GXSetTevColorIn(s32 stage, s32 a, s32 b, s32 c, s32 d) { unsigned int *tev; unsigned int *base = __GXData; tev = (unsigned int *)((unsigned char *)base + stage * 4); { unsigned int value = tev[0x180 / 4]; value = __rlwimi(value, a, 12, 16, 19); value = __rlwimi(value, b, 8, 20, 23); *(volatile unsigned char *)0xCC008000 = 0x61; value = __rlwimi(value, c, 4, 24, 27); value = __rlwimi(value, d, 0, 28, 31); *(volatile unsigned int *)0xCC008000 = value; tev[0x180 / 4] = value; } *(unsigned short *)((unsigned char *)base + 2) = 0; }
+/* Set the four colour input sources of one TEV stage: pack the four 4-bit
+   selectors into the stage's colour combiner register, push it to the BP
+   through the write-gather FIFO and keep GXData's copy up to date. */
+void GXSetTevColorIn(s32 stage, s32 aSel, s32 bSel, s32 cSel, s32 dSel) {
+    unsigned int *tev;
+    unsigned int *base = __GXData;
+    tev = (unsigned int *)((unsigned char *)base + stage * 4);
+    {
+        unsigned int colorIn = tev[GX_TEV_COLOR_COMBINER / 4];
+        colorIn = __rlwimi(colorIn, aSel, 12, 16, 19); /* k0ColorSel */
+        colorIn = __rlwimi(colorIn, bSel, 8, 20, 23);  /* k1ColorSel */
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        colorIn = __rlwimi(colorIn, cSel, 4, 24, 27);  /* k2ColorSel */
+        colorIn = __rlwimi(colorIn, dSel, 0, 28, 31);  /* k3ColorSel */
+        *(volatile unsigned int *)0xCC008000 = colorIn;
+        tev[GX_TEV_COLOR_COMBINER / 4] = colorIn;
+    }
+    *(unsigned short *)((unsigned char *)base + 2) = 0;
+}
 
 /* Set the four alpha input sources for one TEV stage: pack the selectors into
    the stage's alpha-input register, send it to the GX FIFO and cache it. */
