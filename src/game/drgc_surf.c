@@ -1321,6 +1321,7 @@ void fn_802D6860(void) {
 #undef logTotalYmorphVertsMsg
 }
 #pragma scheduling on
+/* Update a surface: do common work, then dispatch to the flagged or default path based on lbl_8055FD1C bit 3. */
 void fn_802D6B08(void *arg0) {
     fn_802D61BC(arg0);
     if (lbl_8055FD1C & 8) {
