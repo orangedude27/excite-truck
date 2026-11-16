@@ -1174,11 +1174,14 @@ extern "C" void* fn_801FE9A8(void* object, int shouldDelete) {
 
 extern "C" int stricmp(const char*, const char*);
 
-extern "C" void* fn_801FE9E8(void* arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668(arg0);
+extern "C" void* fn_801FE9E8(void* object, int deleteFlag) {
+#define MemFreeObject fn_80128668
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+    if (object != 0 && deleteFlag > 0) {
+        MemFreeObject(object);
     }
-    return arg0;
+    return object;
+#undef MemFreeObject
 }
 
 extern "C" void fn_801FEA28(void* pEntry) {
