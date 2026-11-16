@@ -45,9 +45,10 @@ void fn_8012F384(void *arg0) {
     }
 }
 #pragma scheduling on
+/* Create an 8-byte MemStreamPtr (heap tag "MemStreamPtr") and initialize it with the given stream and cursor position 0. */
 void fn_8012F3CC(s32 arg0) {
-    s32 *p = (s32 *)fn_801284F8(8, lbl_8032AFC4);
-    if (p != 0) { p[0] = arg0; p[1] = 0; }
+    s32 *streamPtr = (s32 *)fn_801284F8(8, lbl_8032AFC4);
+    if (streamPtr != 0) { streamPtr[0] = arg0; streamPtr[1] = 0; }
 }
 void fn_8012F418(s32 *arg0) {
     if (arg0 == 0) return;
