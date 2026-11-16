@@ -251,9 +251,17 @@ done:
 }
 
 extern void fn_801CDDCC(void);
+/* Set up the stats/awards manager's stat block at startup, unless a boot option
+   (bit 0x400) or an active challenge sub-task is holding the game in another mode. */
 void fn_801CB808(void) {
-    if (fn_80019BA8() || fn_80161C38()) return;
-    fn_801CDDCC();
+#define BootOptionBit_400 fn_80019BA8 /* lbl_8055D5A0 bit 10, set by a boot option */
+#define ChallengeSubTask_Active fn_80161C38 /* the manager's current sub-task, lbl_8055E300 */
+#define StatManager_InitBlock fn_801CDDCC /* build the manager's stat block once tables are loaded */
+    if (BootOptionBit_400() || ChallengeSubTask_Active()) return;
+    StatManager_InitBlock();
+#undef BootOptionBit_400
+#undef ChallengeSubTask_Active
+#undef StatManager_InitBlock
 }
 
 extern void fn_801CE6F8(void);
