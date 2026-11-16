@@ -466,6 +466,7 @@ __declspec(section ".sdata") extern double lbl_80564C68;
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802B61E0(void) {
+    /* Store the current timer value in seconds at lbl_8055FA08. */
     s32 val = fn_802E2C20();
     lbl_8055FA08 = (float)val / lbl_80564C70;
 }
