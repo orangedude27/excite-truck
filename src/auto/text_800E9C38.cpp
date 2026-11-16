@@ -119,12 +119,14 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
 }
 
 extern "C" int __dt__Q46nw4hbm3snd6detail14ChannelManagerFv(int arg0, int arg1) {
-    if (arg0 != 0 && arg0 != 0) {
-        if (arg0 + 0xC != 0) {
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)(arg0 + 12), 0);
-        }
+    if (arg0 != 0) {
         if (arg0 != 0) {
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)arg0, 0);
+            if (arg0 + 0xC != 0) {
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)(arg0 + 12), 0);
+            }
+            if (arg0 != 0) {
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)arg0, 0);
+            }
         }
         if (arg1 > 0) {
             fn_80128668((void *)arg0);
@@ -383,19 +385,14 @@ extern "C" void Update__Q46nw4hbm3snd6detail7ChannelFb(void *arg0, s32 arg1) {
         temp_f27 += *(f32 *)((char *)arg0 + 0x4C);
         remoteOut[0] = lbl_80560FC0;
         remoteOut[1] = lbl_80560FC0;
-        temp_f26 = lbl_80560FC0;
-        temp_f26 += *(f32 *)((char *)arg0 + 0x50);
+        temp_f26 = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x50);
         remoteOut[2] = lbl_80560FC0;
-        temp_f25 = lbl_80560FC0;
-        temp_f25 += *(f32 *)((char *)arg0 + 0x54);
-        temp_f24 = lbl_80560FC4;
-        temp_f24 += *(f32 *)((char *)arg0 + 0x58);
+        temp_f25 = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x54);
+        temp_f24 = lbl_80560FC4 + *(f32 *)((char *)arg0 + 0x58);
         remoteSend[0] = lbl_80560FC0;
-        temp_f23 = lbl_80560FC4;
-        temp_f23 *= *(f32 *)((char *)arg0 + 0x60);
+        temp_f23 = lbl_80560FC4 * *(f32 *)((char *)arg0 + 0x60);
         remoteFx[0] = lbl_80560FC0;
-        temp_f22 = lbl_80560FC0;
-        temp_f22 += *(f32 *)((char *)arg0 + 0x64);
+        temp_f22 = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x64);
         remoteOut[0] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x68);
         remoteOut[1] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x6C);
         remoteOut[2] = lbl_80560FC0 + *(f32 *)((char *)arg0 + 0x70);
