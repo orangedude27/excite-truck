@@ -7313,10 +7313,12 @@ extern "C" void *fn_80225828(void *self, s32 deleting) {
 }
 
 extern "C" void fn_802258C8(void *arg0) {
-    void *result;
-    result = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C), *(s32 *)((u8 *)arg0 + 0x280), arg0);
-    *(void **)((u8 *)arg0 + 0x27C) = result;
-    fn_80219440(arg0, 1, result, 4);
+    /* Register the object at +0x280 in the table at +0x2C and append a copy of it to the entry list. */
+    void *entry;
+
+    entry = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C), *(s32 *)((u8 *)arg0 + 0x280), arg0);
+    *(void **)((u8 *)arg0 + 0x27C) = entry;
+    fn_80219440(arg0, 1, entry, 4);
 }
 
 #pragma pop
