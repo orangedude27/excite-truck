@@ -137,7 +137,11 @@ void fn_80288A20(void) {
 #pragma pop
 extern void *lbl_8055F6E0;
 extern int fn_8028E584(int, int, int);
-void fn_80288A40(int arg0, int arg1) { fn_8028E584(*(int *)((char *)lbl_8055F6E0 + 4), arg0, arg1); }
+/* Forwards the global PhysicsWorld's secondary handle (field +0x4) and the
+ * caller's source/target arguments to fn_8028E584 to spawn an effect. */
+void fn_80288A40(int source, int target) {
+    fn_8028E584(*(int *)((char *)lbl_8055F6E0 + 4), source, target);
+}
 
 void fn_80288A58(int effectArg, int paramArg) {
     /* Spawn an effect through the global effect manager's primary handle,
