@@ -1192,8 +1192,10 @@ void fn_802EC158(void) {
 
 #pragma push
 #pragma dont_inline on
-void fn_802EC1C0(float arg0) {
-    lbl_8055D270 = arg0;
+void fn_802EC1C0(float volume) {
+    /* Store the master sound volume in lbl_8055D270. If sound/music is already
+       enabled (lbl_805600D0), re-run the enable helper so the new volume takes effect. */
+    lbl_8055D270 = volume;
     if ((unsigned char)lbl_805600D0 != 0) {
         fn_802EC138();
     }
