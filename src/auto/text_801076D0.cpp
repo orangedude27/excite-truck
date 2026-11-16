@@ -5722,19 +5722,27 @@ extern "C" void *GetFont__Q36nw4hbm2ut10CharWriterCFv_80112410(void *writer) {
 }
 
 extern "C" const char lbl_80329530[];
-extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
+/* nw4hbm::ut::TextWriterBase (ut_TextWriterBase.cpp; the three asserts below
+ * are its lines 0x2C1-0x2C3): prints `length` characters of `str` through a
+ * stack copy of this writer and returns the width fn_801142F8 measured for it.
+ * Only the cursor the copy ends up with is committed back to the writer
+ * (SetCursor), so the call leaves the writer's own font, spacing and tab state
+ * as they were; the copy is then destroyed without freeing it (the deleting
+ * flag fn_801033F0 is given is 0). */
+extern "C" f32 fn_80112528(void *writer, const char *str, s32 length) {
     extern f32 fn_801142F8(void *, s32, s32);
-    extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32);
-    extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32);
+    extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32); /* the writer's cursor Y */
+    extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32); /* the writer's cursor X */
     extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32, f32, f32);
     extern void fn_801033F0(void *, unsigned int);
+    /* The writer as the stack copy needs it: all 0x60 bytes of it. */
     struct WriterCopy {
         u8 prefix[0x20];
         u32 word20;
         u32 word24;
         u32 word28;
-        u32 word2C;
-        u32 word30;
+        u32 cursorX;   /* 0x2C, an f32: where the next glyph starts */
+        u32 cursorY;   /* 0x30, an f32 */
         u32 word34;
         u32 word38;
         u32 word3C;
@@ -5745,71 +5753,80 @@ extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
         f32 float50;
         u32 word54;
         u32 word58;
-        u32 word5C;
+        u32 word5C;    /* the font pointer */
     };
+    /* This library copy's assert strings; +0x30 is their file name. */
     register const char *file = lbl_80329530;
-    register s32 r5 = 1;
-    register s32 r6 = 1;
-    register s32 r7 = 1;
-    register s32 r8 = 1;
-    register s32 r9 = 1;
-    register s32 r10 = 1;
-    register u32 hi0 = (u32)arg0 & 0xFF000000U;
-    if ((hi0 != 0x80000000U) && (((u32)arg0 & 0xFF800000U) != 0x81000000U)) {
-        r10 = 0;
+    /* NW4HBM_ASSERT_VALID_PTR(this): one flag per window of the Wii's address
+     * map, all six believed at first.  Each check clears the flag of the window
+     * it tests, walking down from MEM1 to the IO window; the last flag left is
+     * the answer. */
+    register s32 inIO = 1;    /* 0xE0000000-0xE0003FFF, the IO window */
+    register s32 inD0 = 1;    /* ... or 0xD0000000-0xD7FFFFFF */
+    register s32 inC1 = 1;    /* ... or 0xC1000000-0xC17FFFFF */
+    register s32 inC0 = 1;    /* ... or 0xC0000000-0xC0FFFFFF */
+    register s32 inMem2 = 1;  /* ... or 0x90000000-0x97FFFFFF, MEM2 */
+    register s32 inMem1 = 1;  /* ... or 0x80000000-0x80FFFFFF / 0x81000000-0x817FFFFF, MEM1 */
+    register u32 top = (u32)writer & 0xFF000000U;
+    if ((top != 0x80000000U) && (((u32)writer & 0xFF800000U) != 0x81000000U)) {
+        inMem1 = 0;
     }
-    if ((r10 == 0) && (((u32)arg0 & 0xF8000000U) != 0x90000000U)) {
-        r9 = 0;
+    if ((inMem1 == 0) && (((u32)writer & 0xF8000000U) != 0x90000000U)) {
+        inMem2 = 0;
     }
-    if ((r9 == 0) && (hi0 != 0xC0000000U)) {
-        r8 = 0;
+    if ((inMem2 == 0) && (top != 0xC0000000U)) {
+        inC0 = 0;
     }
-    if ((r8 == 0) && (((u32)arg0 & 0xFF800000U) != 0xC1000000U)) {
-        r7 = 0;
+    if ((inC0 == 0) && (((u32)writer & 0xFF800000U) != 0xC1000000U)) {
+        inC1 = 0;
     }
-    if ((r7 == 0) && (((u32)arg0 & 0xF8000000U) != 0xD0000000U)) {
-        r6 = 0;
+    if ((inC1 == 0) && (((u32)writer & 0xF8000000U) != 0xD0000000U)) {
+        inD0 = 0;
     }
-    if ((r6 == 0) && (((u32)arg0 & 0xFFFFC000U) != 0xE0000000U)) {
-        r5 = 0;
+    if ((inD0 == 0) && (((u32)writer & 0xFFFFC000U) != 0xE0000000U)) {
+        inIO = 0;
     }
-    if (r5 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2C1, file + 0x48, arg0);
-    }
-
-    register s32 r4 = 1;
-    register s32 r5_2 = 1;
-    register s32 r6_2 = 1;
-    register s32 r7_2 = 1;
-    register s32 r8_2 = 1;
-    register s32 r9_2 = 1;
-    register u32 hi1 = (u32)arg1 & 0xFF000000U;
-    if ((hi1 != 0x80000000U) && (((u32)arg1 & 0xFF800000U) != 0x81000000U)) {
-        r9_2 = 0;
-    }
-    if ((r9_2 == 0) && (((u32)arg1 & 0xF8000000U) != 0x90000000U)) {
-        r8_2 = 0;
-    }
-    if ((r8_2 == 0) && (hi1 != 0xC0000000U)) {
-        r7_2 = 0;
-    }
-    if ((r7_2 == 0) && (((u32)arg1 & 0xFF800000U) != 0xC1000000U)) {
-        r6_2 = 0;
-    }
-    if ((r6_2 == 0) && (((u32)arg1 & 0xF8000000U) != 0xD0000000U)) {
-        r5_2 = 0;
-    }
-    if ((r5_2 == 0) && (((u32)arg1 & 0xFFFFC000U) != 0xE0000000U)) {
-        r4 = 0;
-    }
-    if (r4 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2C2, file + 0x130, arg1);
-    }
-    if (arg2 < 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2C3, file + 0x168, arg2, 0);
+    if (inIO == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2C1, file + 0x48, writer);
     }
 
-    WriterCopy *source = (WriterCopy *)arg0;
+    /* NW4HBM_ASSERT_VALID_PTR(str), the same walk over the string pointer. */
+    register s32 strInIO = 1;
+    register s32 strInD0 = 1;
+    register s32 strInC1 = 1;
+    register s32 strInC0 = 1;
+    register s32 strInMem2 = 1;
+    register s32 strInMem1 = 1;
+    register u32 strTop = (u32)str & 0xFF000000U;
+    if ((strTop != 0x80000000U) && (((u32)str & 0xFF800000U) != 0x81000000U)) {
+        strInMem1 = 0;
+    }
+    if ((strInMem1 == 0) && (((u32)str & 0xF8000000U) != 0x90000000U)) {
+        strInMem2 = 0;
+    }
+    if ((strInMem2 == 0) && (strTop != 0xC0000000U)) {
+        strInC0 = 0;
+    }
+    if ((strInC0 == 0) && (((u32)str & 0xFF800000U) != 0xC1000000U)) {
+        strInC1 = 0;
+    }
+    if ((strInC1 == 0) && (((u32)str & 0xF8000000U) != 0xD0000000U)) {
+        strInD0 = 0;
+    }
+    if ((strInD0 == 0) && (((u32)str & 0xFFFFC000U) != 0xE0000000U)) {
+        strInIO = 0;
+    }
+    if (strInIO == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2C2, file + 0x130, str);
+    }
+    if (length < 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2C3, file + 0x168, length, 0);
+    }
+
+    /* copy = *writer, field by field.  The three pairs staged through
+     * temporaries are the ones the scheduler loads as a pair; the volatile
+     * casts keep those loads in front of their stores. */
+    WriterCopy *source = (WriterCopy *)writer;
     WriterCopy copy;
     copy.prefix[0] = source->prefix[0];
     copy.prefix[1] = source->prefix[1];
@@ -5844,25 +5861,25 @@ extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
     copy.prefix[30] = source->prefix[30];
     copy.prefix[31] = source->prefix[31];
     copy.word20 = source->word20;
-    u32 pair28;
-    u32 pair24;
-    pair24 = ((volatile WriterCopy *)source)->word24;
-    pair28 = ((volatile WriterCopy *)source)->word28;
-    copy.word24 = pair24;
-    copy.word28 = pair28;
-    u32 pair30;
-    u32 pair2C;
-    pair2C = ((volatile WriterCopy *)source)->word2C;
-    pair30 = ((volatile WriterCopy *)source)->word30;
-    copy.word2C = pair2C;
-    copy.word30 = pair30;
+    u32 v28;
+    u32 v24;
+    v24 = ((volatile WriterCopy *)source)->word24;
+    v28 = ((volatile WriterCopy *)source)->word28;
+    copy.word24 = v24;
+    copy.word28 = v28;
+    u32 v30;
+    u32 v2C;
+    v2C = ((volatile WriterCopy *)source)->cursorX;
+    v30 = ((volatile WriterCopy *)source)->cursorY;
+    copy.cursorX = v2C;
+    copy.cursorY = v30;
     copy.word34 = source->word34;
-    u32 pair3C;
-    u32 pair38;
-    pair38 = ((volatile WriterCopy *)source)->word38;
-    pair3C = ((volatile WriterCopy *)source)->word3C;
-    copy.word38 = pair38;
-    copy.word3C = pair3C;
+    u32 v3C;
+    u32 v38;
+    v38 = ((volatile WriterCopy *)source)->word38;
+    v3C = ((volatile WriterCopy *)source)->word3C;
+    copy.word38 = v38;
+    copy.word3C = v3C;
     copy.bytes40[0] = source->bytes40[0];
     copy.bytes40[1] = source->bytes40[1];
     copy.bytes40[2] = source->bytes40[2];
@@ -5874,16 +5891,15 @@ extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
     copy.word54 = source->word54;
     copy.word58 = source->word58;
     copy.word5C = source->word5C;
-    f32 scale;
-    f32 result;
-    result = fn_801142F8(&copy, (s32)arg1, arg2);
-    scale = GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770((s32)&copy);
-    SetCursor__Q36nw4hbm2ut10CharWriterFff((s32)arg0,
-        GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658((s32)&copy), scale);
+    f32 endY;
+    f32 width;
+    width = fn_801142F8(&copy, (s32)str, length);
+    endY = GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770((s32)&copy);
+    SetCursor__Q36nw4hbm2ut10CharWriterFff((s32)writer,
+        GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658((s32)&copy), endY);
     fn_801033F0(&copy, 0);
-    return result;
+    return width;
 }
-
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" f32 fn_80112960(u8 *arg0, u8 *arg1) {
