@@ -2960,9 +2960,11 @@ extern "C" int fn_801D815C(void *arg0, int arg1) {
 #pragma pop
 
 void *fn_801DA8C8(const char *, const char *);
-void fn_801D825C(void *arg0) {
-    if (*(int *)((char *)arg0 + 0x40) != 0) {
-        *(void **)((char *)arg0 + 0x2C) = fn_801DA8C8((char *)arg0 + 4, (char *)arg0 + 0x18);
+/* RealName: ResolveLinkedObject_801D825C */
+void fn_801D825C(void *object) {
+    /* If a linked name is set, resolve it into the object pointer at offset 0x2C. */
+    if (*(int *)((char *)object + 0x40) != 0) {
+        *(void **)((char *)object + 0x2C) = fn_801DA8C8((char *)object + 4, (char *)object + 0x18);
     }
 }
 
