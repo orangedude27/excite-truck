@@ -171,22 +171,34 @@ check:
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_801C1320(void *arg0) {
+    /* Fill all output vectors (+0x2C array, count +0x14, stride 12) with vec3 at +0x3C. */
+    #define outCount (*(int *)((char *)arg0 + 0x14))
+    #define outBase  (*(char * volatile *)((char *)arg0 + 0x2C))
+    #define fillX    (*(float *)((char *)arg0 + 0x3C))
+    #define fillY    (*(float *)((char *)arg0 + 0x40))
+    #define fillZ    (*(float *)((char *)arg0 + 0x44))
+
     int offset;
     int i;
     char *dst;
     i = 0;
     offset = 0;
-    while (i < *(int *)((char *)arg0 + 0x14)) {
-        dst = *(char * volatile *)((char *)arg0 + 0x2C);
+    while (i < outCount) {
+        dst = outBase;
         i++;
-        *(float *)(dst + offset) = *(float *)((char *)arg0 + 0x3C);
+        *(float *)(dst + offset) = fillX;
         float *out = (float *)(dst + offset);
         offset += 12;
-        out[1] = *(float *)((char *)arg0 + 0x40);
-        out[2] = *(float *)((char *)arg0 + 0x44);
+        out[1] = fillY;
+        out[2] = fillZ;
     }
-}
 
+    #undef outCount
+    #undef outBase
+    #undef fillX
+    #undef fillY
+    #undef fillZ
+}
 extern "C" float PSVECDotProduct(float *, float *);
 extern "C" float PSVECMag(float *);
 extern "C" double fn_8002F234();
