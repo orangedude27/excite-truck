@@ -2187,6 +2187,11 @@ extern "C" s32 fn_800A7B34(void *volume, void *block) {
 #define VF_PAGE_IN_USE          1U /* the page holds a run of sectors */
 #define VF_PAGE_CHANGED         2U /* and was written to */
 #define VF_PAGE_FAT             4U /* and belongs to the FAT list */
+#define VF_PAGE_OWNER(p)          (*(u32 *)((u8 *)(p) + 0x1C))
+#define VF_VOL_PAGE_OWNER(v)      (*(void **)((u8 *)(v) + 0x1644))
+#define VF_VOL_CACHE_FLAGS(v)     (*(u32 *)((u8 *)(v) + 0x1624))
+#define VF_CACHE_ACTIVE           2U
+#define VF_ERR_SHORT_TRANSFER     0x11
 
 /* Volume fields the page cache reads (VFiPFVolume is described further down;
  * VF_VOL_FAT_TYPE, VF_VOL_SECTOR_SHIFT, VF_FAT_TYPE_32 and VF_SECTOR_IS_END
@@ -2973,17 +2978,17 @@ extern "C" s32 fn_800A9138(void *arg0, u32 arg1) {
     s32 result = 0;
     void *head;
     void *node;
-    register u32 flags = *(u32 *)((u8 *)arg0 + 0x1624);
-    if (flags & 7) {
+    void *self = arg0;
+    if (*(u32 *)((u8 *)arg0 + 0x1624) & 7) {
         head = *(void **)((u8 *)arg0 + 0x1634);
         if (*(u32 *)((u8 *)head + 0x1C) != 0 && *(u32 *)((u8 *)head + 0x1C) == arg1) {
-            result = ((s32 (*)(void *, void *))fn_800A7B34)(arg0, head);
+            result = ((s32 (*)(void *, void *))fn_800A7B34)(self, head);
             if (result != 0) return result;
         }
         node = *(void **)((u8 *)head + 0x20);
         while (node != head) {
             if (*(u32 *)((u8 *)node + 0x1C) != 0 && *(u32 *)((u8 *)node + 0x1C) == arg1) {
-                result = ((s32 (*)(void *, void *))fn_800A7B34)(arg0, node);
+                result = ((s32 (*)(void *, void *))fn_800A7B34)(self, node);
                 if (result != 0) return result;
             }
             node = *(void **)((u8 *)node + 0x20);
@@ -17890,14 +17895,18 @@ extern "C" void fn_800C5508(void *arg0, void *arg1, void *arg2) {
     s32 *dst = (s32 *)arg0;
     s32 *src = (s32 *)arg1;
     for (s32 i = 0; i < 4; i++) {
-        s32 b0 = src[0]; s32 a0 = dst[0]; s32 d0 = a0 - b0; s32 sum0 = a0 + b0;
-        dst[0] = sum0; src[0] = (s32)(((s64)d0 * scale0) >> 24);
-        s32 b1 = src[1]; s32 a1 = dst[1]; s32 d1 = a1 - b1; s32 sum1 = a1 + b1;
-        dst[1] = sum1; src[1] = (s32)(((s64)d1 * scale1) >> 24);
-        s32 b2 = src[4]; s32 a2 = dst[4]; s32 d2 = a2 - b2; s32 sum2 = a2 + b2;
-        dst[4] = sum2; src[4] = (s32)(((s64)d2 * scale0) >> 24);
-        s32 b3 = src[5]; s32 a3 = dst[5]; s32 d3 = a3 - b3; s32 sum3 = a3 + b3;
-        dst[5] = sum3; src[5] = (s32)(((s64)d3 * scale1) >> 24);
+        s32 b0 = src[0]; s32 a0 = dst[0];
+        dst[0] = a0 + b0;
+        { s32 d0 = a0 - b0; src[0] = (s32)(((s64)d0 * scale0) >> 24); }
+        s32 b1 = src[1]; s32 a1 = dst[1];
+        dst[1] = a1 + b1;
+        { s32 d1 = a1 - b1; src[1] = (s32)(((s64)d1 * scale1) >> 24); }
+        s32 b2 = src[4]; s32 a2 = dst[4];
+        dst[4] = a2 + b2;
+        { s32 d2 = a2 - b2; src[4] = (s32)(((s64)d2 * scale0) >> 24); }
+        s32 b3 = src[5]; s32 a3 = dst[5];
+        dst[5] = a3 + b3;
+        { s32 d3 = a3 - b3; src[5] = (s32)(((s64)d3 * scale1) >> 24); }
         dst += 8;
         src += 8;
     }
