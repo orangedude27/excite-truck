@@ -206,6 +206,8 @@ done:
 }
 #pragma scheduling on
 void fn_801CB6B4(void) {
+    /* Gate check shared by the neighbouring event dispatchers: probe the flag from fn_80019BA8,
+       and only when it is clear probe fn_80161C38; no action follows either result. */
     if (fn_80019BA8() == 0) {
         if (fn_80161C38() != 0) return;
     }
@@ -1090,8 +1092,8 @@ extern f32 lbl_80562A0C;
 #pragma cplusplus on
 extern "C" void fn_801CCDAC(int arg0, int arg1, int arg2) {
 s32 *temp_r31;
-register s32 var_r30;
 register s32 var_r29;
+register s32 var_r30;
 s32 var_r0;
 s32 var_r0_2;
 register s32 var_ctr;
@@ -1124,10 +1126,8 @@ if (var_r0_2 == 0) {
 var_r30 = 0;
 var_r29 = 0;
 for (; var_r30 < *(s32 *)((unsigned char *)temp_r31 + 0x1C); ) {
-if (fn_801CB900(*(int **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r29 / 4), arg0) == 0)
-goto cont_inc;
+if (fn_801CB900(*(int **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r29 / 4), arg0) != 0)
 goto after_search;
-cont_inc:
 var_r29 += 4;
 var_r30 += 1;
 }
