@@ -1455,8 +1455,13 @@ extern char lbl_80337D00[];
 #pragma push
 #pragma scheduling invalid_target
 s32 fn_801CD49C(void) {
-    ((void (*)(char *, ...))fn_802E317C)(lbl_80337D00);
+#define PanicAbort fn_802E317C
+#define kRealTypeRejectedMsg lbl_80337D00
+    /* Fatal panic: this stat handler cannot accept a "real" data type. */
+    ((void (*)(char *, ...))PanicAbort)(kRealTypeRejectedMsg);
     return 0;
+#undef kRealTypeRejectedMsg
+#undef PanicAbort
 }
 
 extern void fn_8001EF5C(int, int);
