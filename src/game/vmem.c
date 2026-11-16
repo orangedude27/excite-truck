@@ -35,19 +35,20 @@ void *fn_802E4CA4(int arg0) {
     return fn_802E4C1C(arg0);
 }
 
-void fn_802E4CA8(unsigned char *arg0, const signed char *arg1, int arg2) {
+void fn_802E4CA8(unsigned char *dst, const signed char *src, int maxLen) {
+    /* Bounded string copy: copy bytes from src to dst until NUL, or NUL-terminate at maxLen on truncation. */
     unsigned char c;
     goto copy;
     for (;;) {
-        if (--arg2 <= 0) {
-            arg0[-1] = 0;
+        if (--maxLen <= 0) {
+            dst[-1] = 0;
             return;
         }
     copy:
-        c = (unsigned char)*arg1;
-        arg1++;
-        *arg0 = c;
-        arg0++;
+        c = (unsigned char)*src;
+        src++;
+        *dst = c;
+        dst++;
         if ((signed char)c == 0) return;
     }
 }
