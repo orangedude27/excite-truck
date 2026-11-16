@@ -667,57 +667,60 @@ extern "C" void *fn_802BFA58(void *object, int shouldDelete) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" void fn_802BFB70(void *arg0, int arg1, float angle) {
-    class Camera { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void unused(); virtual void e(void *, int, void *); };
-    float rotation[3], viewport[4], direction[3], viewport0[4], initial[3], adjust[3], value;
-    float transform[12], old2[12], old1[12], matrix[12];
-    char *obj = (char *)arg0;
-    char *views;
-    float theta;
-    *(float *)(obj + 0x14) = fn_801E85A4() == 2 ? lbl_80564DB4 : lbl_80564D80;
-    views = *(char **)(obj + 4);
-    if (!*(unsigned char *)(views + 0x1A8)) {
+/* Renders the six faces of the water environment-map cube texture: lazily
+   initializes the per-face view states, sets the face camera's projection and
+   draws the cube geometry into each face before restoring the render state. */
+extern "C" void fn_802BFB70(void *envMap_, int face, float angle) {
+    class Camera { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void unused(); virtual void getViewMatrix(void *, int, void *); };
+    float mainPerspective[3], mainViewport[4], lookDir[3], setupViewport[4], clearPerspective[3], adjustPerspective[3], adjustedAngle;
+    float viewMatrix[12], savedMatrix2[12], savedMatrix1[12], faceMatrix[12];
+    char *envMap = (char *)envMap_;
+    char *faces;
+    float fov;
+    *(float *)(envMap + 0x14) = fn_801E85A4() == 2 ? lbl_80564DB4 : lbl_80564D80;
+    faces = *(char **)(envMap + 4);
+    if (!*(unsigned char *)(faces + 0x1A8)) {
         int i;
-        char *p = views + 0x1C;
-        int *handles = (int *)views;
+        char *p = faces + 0x1C;
+        int *handles = (int *)faces;
         for (i=0; i<6; i++, handles++, p+=0x30) {
             fn_802CB274(*handles); fn_802C9294(*handles,0);
-            fn_802C9694(initial,lbl_80564D80,lbl_80564DB8,lbl_80564DBC);
-            fn_802C86F0(viewport0,0,0,0x100,0x100);
-            fn_802C8B08(old1); fn_802C8638(p); fn_802C88BC(3); fn_802C10C8();
-            fn_802C9294(-2,0); fn_802C8638(old1); fn_802C8750(viewport0,-1); fn_802C96DC(initial,-1);
+            fn_802C9694(clearPerspective,lbl_80564D80,lbl_80564DB8,lbl_80564DBC);
+            fn_802C86F0(setupViewport,0,0,0x100,0x100);
+            fn_802C8B08(savedMatrix1); fn_802C8638(p); fn_802C88BC(3); fn_802C10C8();
+            fn_802C9294(-2,0); fn_802C8638(savedMatrix1); fn_802C8750(setupViewport,-1); fn_802C96DC(clearPerspective,-1);
         }
-        *(unsigned char *)(views + 0x1a8) = 1;
+        *(unsigned char *)(faces + 0x1a8) = 1;
     }
-    fn_802CB274(*(int *)(obj+8)); fn_802C9294(*(int *)(obj+8),1);
-    direction[0]=lbl_80564D90; direction[1]=lbl_80564D80; direction[2]=lbl_80564D90;
-    ((Camera *)arg0)->e(transform,arg1,direction);
-    theta=lbl_80564DB0 * (float)atan(*(float *)(obj+0x14) * (float)fn_8002EF30(lbl_80564DAC * angle));
-    fn_802C9694(rotation,lbl_80564D80,lbl_80564DC0,theta);
-    fn_802C86F0(viewport,0,0,0x100,0x100);
-    fn_802C8B08(old2); fn_802C8638(transform); fn_802C88BC(2);
-    if (*(void **)(obj+4)) {
+    fn_802CB274(*(int *)(envMap+8)); fn_802C9294(*(int *)(envMap+8),1);
+    lookDir[0]=lbl_80564D90; lookDir[1]=lbl_80564D80; lookDir[2]=lbl_80564D90;
+    ((Camera *)envMap_)->getViewMatrix(viewMatrix,face,lookDir);
+    fov=lbl_80564DB0 * (float)atan(*(float *)(envMap+0x14) * (float)fn_8002EF30(lbl_80564DAC * angle));
+    fn_802C9694(mainPerspective,lbl_80564D80,lbl_80564DC0,fov);
+    fn_802C86F0(mainViewport,0,0,0x100,0x100);
+    fn_802C8B08(savedMatrix2); fn_802C8638(viewMatrix); fn_802C88BC(2);
+    if (*(void **)(envMap+4)) {
         int *handles;
         char *p;
-        char *views;
+        char *faces;
         struct { int count; } counter;
         int &i = counter.count;
-        value=theta; views=*(char **)(obj+4);
-        ((void (*)(float *))fn_802C00A0)(&value);
-        fn_802C9694(adjust,lbl_80564DC4,lbl_80564DB0,value);
-        handles=(int *)views; p=views+0x1c;
+        adjustedAngle=fov; faces=*(char **)(envMap+4);
+        ((void (*)(float *))fn_802C00A0)(&adjustedAngle);
+        fn_802C9694(adjustPerspective,lbl_80564DC4,lbl_80564DB0,adjustedAngle);
+        handles=(int *)faces; p=faces+0x1c;
         for(i=0;i<6;i++,p+=0x30,handles++) {
-            fn_80144DC8(matrix); fn_802C0054(matrix,p);
-            fn_80144DAC(matrix+9,transform+9);
-            fn_802C8B98(*handles,matrix);
-            fn_802C8DB8(views+0x13c,4,(unsigned short *)(views+0x19c),6); fn_802C8D74();
+            fn_80144DC8(faceMatrix); fn_802C0054(faceMatrix,p);
+            fn_80144DAC(faceMatrix+9,viewMatrix+9);
+            fn_802C8B98(*handles,faceMatrix);
+            fn_802C8DB8(faces+0x13c,4,(unsigned short *)(faces+0x19c),6); fn_802C8D74();
         }
-        fn_802BFE48(views,transform,lbl_80564D80); fn_802C96DC(adjust,-1);
+        fn_802BFE48(faces,viewMatrix,lbl_80564D80); fn_802C96DC(adjustPerspective,-1);
     }
-    fn_802C7040(*(int *)(obj+0xc));
+    fn_802C7040(*(int *)(envMap+0xc));
     if (fn_801E85A4()==1) fn_802BDD8C(lbl_80564DC8);
-    if (*(int *)(obj+0x10)!=-1) fn_802C7040(*(int *)(obj+0x10));
-    fn_802C9294(-2,0); fn_802C8638(old2); fn_802C8750(viewport,-1); fn_802C96DC(rotation,-1);
+    if (*(int *)(envMap+0x10)!=-1) fn_802C7040(*(int *)(envMap+0x10));
+    fn_802C9294(-2,0); fn_802C8638(savedMatrix2); fn_802C8750(mainViewport,-1); fn_802C96DC(mainPerspective,-1);
 }
 #pragma pop
 
