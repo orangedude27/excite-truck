@@ -783,11 +783,17 @@ extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADBC(int, float);
   extern void fn_8018ADAC(void *, float);
 #pragma scheduling invalid_target
-void fn_80194170(void *arg0, float arg1) {
-    float value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
-    value = value > lbl_80562144 ? value : lbl_80562144;
-    *(float *)((char *)arg0 + 0x240) = value;
-    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)(double)value);
+/* Clamp the input to [0,1], store it in the controller's +0x240 slot, and pass
+ * the same value to the linked vehicle's setter (fn_8018ADB4). */
+void fn_80194170(void *controller, float input) {
+#define MAX_LEVEL lbl_80562140
+#define MIN_LEVEL lbl_80562144
+    float value = MAX_LEVEL < input ? MAX_LEVEL : input;
+    value = value > MIN_LEVEL ? value : MIN_LEVEL;
+    *(float *)((char *)controller + 0x240) = value;
+    fn_8018ADB4(*(int *)((char *)controller + 0x294), (float)(double)value);
+#undef MIN_LEVEL
+#undef MAX_LEVEL
 }
 #pragma scheduling invalid_target
 void fn_801941A8(void *arg0, float arg1) {
