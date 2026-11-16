@@ -28,6 +28,8 @@ extern unsigned int lbl_8055D954;
 extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
 extern unsigned int * const __GXData;
+#define GX_CP_DISP 0x23C
+#define GX_CP_TEX  0x24C
 extern u8 FifoObj_8037BA40[];
 extern u8 GXShutdownFuncInfo_803036D0[];
 extern u32 GXTexRegionAddrTable_80303610[];
