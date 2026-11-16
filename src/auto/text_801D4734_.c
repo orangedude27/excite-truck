@@ -2038,10 +2038,12 @@ void fn_801D6FB8(int self) {
 }
 
 #pragma scheduling invalid_target
-void fn_801D701C(UnkStruct_801D701C *arg0) {
+/* Constructor for a RingMaster_ASE action-sequence element: install its
+ * vtable (lbl_80338B08) at +0 and clear its state word at +4. */
+void fn_801D701C(UnkStruct_801D701C *element) {
     extern char lbl_80338B08[];
-    arg0->name = lbl_80338B08;
-    arg0->state = 0;
+    element->name = lbl_80338B08;
+    element->state = 0;
 }
 #pragma scheduling reset
 int fn_801D7034(int arg0, int arg1) {
