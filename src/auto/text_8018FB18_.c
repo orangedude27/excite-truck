@@ -1113,8 +1113,8 @@ extern "C" void fn_80190EAC(void *arg0) {
 #pragma cplusplus reset
 #pragma pop
 
-void fn_80190F90(void) {
-    fn_80191758();
+void fn_80190F90(void *arg0) {
+    fn_80191758(arg0);
 }
 
 #pragma cplusplus on
