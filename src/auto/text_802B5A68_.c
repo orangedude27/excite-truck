@@ -305,12 +305,15 @@ void fn_802B5E24(s32 arg0) {
     lbl_8055FA08 = lbl_80564C5C;
 }
 
-void fn_802B5E58(s32 arg0) {
+/* Parses the "brush" tag from `text` (a string passed as a number) into
+ * lbl_8055FA2C, via fn_802B5D2C which returns -1 when the tag is absent, then
+ * resets lbl_8055FA10 to -100.0f (the constant lbl_80564C5C). */
+void fn_802B5E58(s32 text) {
     extern s32 lbl_8055FA2C;
     extern float lbl_8055FA10;
     extern float lbl_80564C5C;
     extern const char lbl_8055CE50[];
-    lbl_8055FA2C = fn_802B5D2C(lbl_8055CE50, arg0);
+    lbl_8055FA2C = fn_802B5D2C(lbl_8055CE50, text);
     lbl_8055FA10 = lbl_80564C5C;
 }
 
