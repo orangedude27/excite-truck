@@ -813,16 +813,17 @@ extern "C" void fn_80264FE4(void *arg0) {
 #pragma pop
 
 #pragma cplusplus off
-void fn_8026523C(void *arg0) {
+/* Constructor for a "firetext" credits line (class vtable lbl_80346618): set the vtable, clear the anchor/font/text/length fields, and give it a default start time. */
+void fn_8026523C(void *item) {
     extern char lbl_80346618[];
     extern float lbl_80563BF0;
-    float value = lbl_80563BF0;
-    *(void **)arg0 = lbl_80346618;
-    *(int *)((char *)arg0 + 0x14) = 0;
-    *(int *)((char *)arg0 + 0x18) = 0;
-    *(unsigned char *)((char *)arg0 + 0x1C) = 0;
-    *(int *)((char *)arg0 + 0xB4) = 0;
-    *(float *)((char *)arg0 + 0xB8) = value;
+    float startTime = lbl_80563BF0;
+    *(void **)item = lbl_80346618;
+    *(int *)((char *)item + 0x14) = 0;
+    *(int *)((char *)item + 0x18) = 0;
+    *(unsigned char *)((char *)item + 0x1C) = 0;
+    *(int *)((char *)item + 0xB4) = 0;
+    *(float *)((char *)item + 0xB8) = startTime;
 }
 
 int strlen(char *);
