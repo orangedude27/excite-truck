@@ -3710,12 +3710,14 @@ extern "C" s32 fn_8015D77C(void* list) {
 #undef ENTRY_VALUE_OFFSET
 }
 
-extern "C" s32 fn_8015D7CC(void* arg0) {
+extern "C" s32 fn_8015D7CC(void* list) {
+    /* Scan a list of 0x38-byte entries backwards; return the +0x14 value of the
+     * last entry whose +0x14 value is non-negative, or 0 if none qualifies. */
     struct { u8* v; } baseBox;
     u8*& base = baseBox.v;
-    s32 count = *(s32*)((u8*)arg0 + 0xC);
+    s32 count = *(s32*)((u8*)list + 0xC);
     while (count-- > 0) {
-        base = *(u8**)((u8*)arg0 + 8);
+        base = *(u8**)((u8*)list + 8);
         if (*(s32*)(base + count * 0x38 + 0x14) >= 0)
             return *(s32*)(base + count * 0x38 + 0x14);
     }
