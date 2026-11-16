@@ -173,10 +173,13 @@ extern "C" void fn_8015EE14(void **collection, void *arg1) {
         s32 index = 0;
         while ((node = ((Collection *)collection)->getAt(index)) != 0) {
             if (fn_8015ED18((void **)node) != 0) {
-                void *array = ((void **)lbl_8055E29C)[0];
-                s32 count = ((int *)lbl_8055E29C)[1];
+                s32 count;
+                void *array;
+                int *registry = (int *)lbl_8055E29C;
+                count = registry[1];
+                array = *(void **)registry;
                 union { u64 bits; f32 floats[2]; } packed;
-                ((int *)lbl_8055E29C)[1] = count + 1;
+                registry[1] = count + 1;
                 entry = (char *)array + count * 0x10;
                 packed.bits = ((Item *)node)->getPacked((const char *)lbl_8055A080);
                 *(f32 *)((char *)entry + 4) = packed.floats[0];
@@ -201,8 +204,6 @@ extern "C" void fn_8015EE14(void **collection, void *arg1) {
     }
 }
 #pragma pop
-#pragma scheduling on
-#pragma cplusplus reset
 
 #pragma cplusplus reset
 #pragma pop
@@ -336,42 +337,52 @@ extern f32 lbl_805617D4, lbl_805617D8, lbl_805617DC, lbl_805617E0;
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma processor 750
-void fn_8015F1E4(void *arg0, void *arg1) {
-    void *inputState = *(void **)((char *)arg1 + 0xC);
-    f32 base = *(f32 *)((char *)arg1 + 0x24);
-    f32 x = *(f32 *)((char *)inputState + 0x18);
-    f32 z = *(f32 *)((char *)inputState + 0x20);
-    f32 result[5];
-    f32 speed;
-    void *state;
-    f32 threshold;
-    f32 tmp;
-    f32 angle;
-    result[1] = z;
-    result[0] = x;
-    speed = (f32)((double (*)(f32))fn_8002F234)(x * x + z * z);
-    state = *(void **)((char *)arg1 + 0xC);
-    tmp = lbl_805617D8 * speed;
-    threshold = lbl_805617D4;
-    angle = base + lbl_805617DC * tmp;
-    *(f32 *)((char *)arg0 + 0xC) = angle;
+void fn_8015F1E4(void *arg0, void *arg1)
+{
+  void *inputState;
+  f32 x = *((f32 *) (((char *) inputState) + 0x18));
+  float new_var;
+  f32 z = *((f32 *) (((char *) inputState) + 0x20));
+  f32 result[5];
+  f32 speed;
+  void *state;
+  f32 threshold;
+  f32 tmp;
+  f32 angle;
+  result[0] = x;
+  result[1] = z;
+  speed = (f32) ((double (*)(f32)) fn_8002F234)((x * x) + (z * z));
+  state = *((void **) (((char *) arg1) + 0xC));
+  tmp = lbl_805617D8 * speed;
+  threshold = lbl_805617D4;
+  inputState = *((void **) (((char *) arg1) + 0xC));
+  new_var = lbl_805617DC;
+  dummy_label_423612:
+  ;
+
+  ;
+  angle = x + (new_var * tmp);
+  *((f32 *) (((char *) arg0) + 0xC)) = angle;
+  {
+    f32 y = *((f32 *) (((char *) state) + 0x1C));
+    if (y < threshold)
     {
-        f32 y = *(f32 *)((char *)state + 0x1C);
-        if (y < threshold) {
-            f32 delta = *(f32 *)((char *)arg1 + 0x28) - lbl_805617E0;
-            result[2] = *(f32 *)((char *)state + 0x24) + *(f32 *)((char *)state + 0x18) * delta;
-            result[3] = *(f32 *)((char *)state + 0x28) + *(f32 *)((char *)state + 0x1C) * delta;
-            result[4] = *(f32 *)((char *)state + 0x2C) + *(f32 *)((char *)state + 0x20) * delta;
-        } else {
-            f32 delta = -(*(f32 *)((char *)arg1 + 0x28) - lbl_805617E0);
-            result[2] = *(f32 *)((char *)state + 0x24) + *(f32 *)((char *)state + 0x18) * delta;
-            result[3] = *(f32 *)((char *)state + 0x28) + *(f32 *)((char *)state + 0x1C) * delta;
-            result[4] = *(f32 *)((char *)state + 0x2C) + *(f32 *)((char *)state + 0x20) * delta;
-        }
+      f32 delta = (*((f32 *) (((char *) arg1) + 0x28))) - lbl_805617E0;
+      result[2] = (*((f32 *) (((char *) state) + 0x24))) + ((*((f32 *) (((char *) state) + 0x18))) * delta);
+      result[3] = (*((f32 *) (((char *) state) + 0x28))) + ((*((f32 *) (((char *) state) + 0x1C))) * delta);
+      result[4] = (*((f32 *) (((char *) state) + 0x2C))) + ((*((f32 *) (((char *) state) + 0x20))) * delta);
     }
-    *(f32 *)((char *)arg0 + 4) = result[2];
-    *(f32 *)((char *)arg0 + 8) = result[4];
-    *(u16 *)((char *)arg0 + 2) = 0;
+    else
+    {
+      f32 delta = -((*((f32 *) (((char *) arg1) + 0x28))) - lbl_805617E0);
+      result[2] = (*((f32 *) (((char *) state) + 0x24))) + ((*((f32 *) (((char *) state) + 0x18))) * delta);
+      result[3] = (*((f32 *) (((char *) state) + 0x28))) + ((*((f32 *) (((char *) state) + 0x1C))) * delta);
+      result[4] = (*((f32 *) (((char *) state) + 0x2C))) + ((*((f32 *) (((char *) state) + 0x20))) * delta);
+    }
+  }
+  *((f32 *) (((char *) arg0) + 4)) = result[2];
+  *((f32 *) (((char *) arg0) + 8)) = result[4];
+  *((u16 *) (((char *) arg0) + 2)) = 0;
 }
 #pragma pop
 void fn_8015F1E4();
@@ -681,36 +692,42 @@ s32 fn_8015F848(f32 *arg0, f32 farg0) {
 
 extern long lbl_8055E2A8;
 extern float lbl_8056180C;
-void fn_8015F92C(float *arg0, float farg0) {
-    long v = lbl_8055E2A8;
-    int i = 0;
-    int count = (int)(v / 2 + 1);
-    float value = farg0;
-    float temp;
-    float *base = arg0;
-    for (; i < count; i++) {
-        temp = base[64];
-        value = value < temp ? value : temp;
-        temp = arg0[(32 - i) * 2];
-        value = value < temp ? value : temp;
-        base += 2;
+void fn_8015F92C(float *arg0, float farg0)
+{
+  s32 v;
+  s32 i;
+  s32 count;
+  float value;
+  float temp;
+  v = lbl_8055E2A8;
+  i = 0;
+  count = (v / 2) + 1;
+  value = farg0;
+  arg0 = arg0;
+  for (; i < count; i++)
+  {
+    temp = arg0[64];
+    value = (value < temp) ? (value) : (temp);
+ temp = arg0[(32 - i) * 2]; value = (value < temp) ? (value) : (temp); arg0 += 2; } { float scale = lbl_8056180C; float current0; float current1; float current2; float current3; float current4; float current5; float current6; float current7; for (i = 0; i < 8; i++) { current0 = (current4 = arg0[0]);
+      arg0[0] = current0 + ((current0 - value) * scale);
+      current1 = arg0[2];
+      arg0[2] = current1 + ((current1 - value) * scale);
+      current2 = arg0[4];
+      arg0[4] = current2 + ((current2 - value) * scale);
+      current3 = arg0[6];
+      arg0[6] = current3 + ((current3 - value) * scale);
+      current4 = arg0[8];
+      arg0[8] = current4 + ((current4 - value) * scale);
+      current5 = arg0[10];
+      arg0[10] = current5 + ((current5 - value) * scale);
+      current6 = arg0[12];
+      arg0[12] = current6 + ((current6 - value) * scale);
+      current7 = arg0[14];
+      arg0[14] = current7 + ((current7 - value) * scale);
+      arg0 += 16;
     }
-    {
-        float scale = lbl_8056180C;
-        float current0, current1, current2, current3;
-        float current4, current5, current6, current7;
-        for (i = 0; i < 8; i++) {
-            current0 = arg0[0]; arg0[0] = current0 + (current0 - value) * scale;
-            current1 = arg0[2]; arg0[2] = current1 + (current1 - value) * scale;
-            current2 = arg0[4]; arg0[4] = current2 + (current2 - value) * scale;
-            current3 = arg0[6]; arg0[6] = current3 + (current3 - value) * scale;
-            current4 = arg0[8]; arg0[8] = current4 + (current4 - value) * scale;
-            current5 = arg0[10]; arg0[10] = current5 + (current5 - value) * scale;
-            current6 = arg0[12]; arg0[12] = current6 + (current6 - value) * scale;
-            current7 = arg0[14]; arg0[14] = current7 + (current7 - value) * scale;
-            arg0 += 16;
-        }
-    }
+
+  }
 }
 
 #pragma scheduling invalid_target
