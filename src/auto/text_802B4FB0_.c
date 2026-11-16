@@ -9,9 +9,11 @@ extern int fn_802B4FD0(void *, int *, int *);
 extern void *fn_802B51E4(int, int);
 extern int fn_802B50E8(int, int, int);
 extern void *fn_801284E8(void *, int);
-int fn_802B4FB0(unsigned char arg0) {
+/* Return 1 if an image file header's bits-per-pixel field is a supported depth
+ * (0x20 = 32-bit or 0x18 = 24-bit), otherwise 0. */
+int fn_802B4FB0(unsigned char bitsPerPixel) {
     int result = 0;
-    if (arg0 == 0x20 || arg0 == 0x18) {
+    if (bitsPerPixel == 0x20 || bitsPerPixel == 0x18) {
         result = 1;
     }
     return result;
@@ -121,7 +123,8 @@ extern int fn_802E3D68(int, int, int);
 extern int fn_802E3A64(int, void *, int);
 extern void fn_802E30C8(char *, int);
 extern char lbl_8034A4EC[];
-#pragma scheduling invalid_target
+#pragma push
+#pragma scheduling on
 int fn_802B52C0(int arg0, void *arg1) {
     int result = 0;
     int value0;
@@ -132,8 +135,8 @@ int fn_802B52C0(int arg0, void *arg1) {
     memset(spC, 0, 0x12);
     value0 = *(int *)arg1;
     spC[2] = 2;
-    *(short *)(spC + 0xC) = (short)value0;
     value1 = *(int *)((char *)arg1 + 4);
+    *(short *)(spC + 0xC) = (short)value0;
     *(short *)(spC + 0xE) = (short)value1;
     spC[0x10] = 0x20;
     sp8 = fn_802E3D68(arg0, value1, value0);
@@ -148,4 +151,4 @@ int fn_802B52C0(int arg0, void *arg1) {
     }
     return result;
 }
-#pragma scheduling on
+#pragma pop
