@@ -2273,8 +2273,11 @@ extern "C" s32 fn_802192A4(void *, s32);
 extern "C" void fn_802152C8(void);
 #pragma dont_inline reset
 extern "C" s32 fn_802152CC(void) {
-    fn_802152C8();
+#define NoopHook fn_802152C8
+    /* Default result callback: invoke the no-op hook, then report that no result is available (0). */
+    NoopHook();
     return 0;
+#undef NoopHook
 }
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802152F0(void *self, int shouldDelete) {
     /* Deleting destructor for nw4hbm::snd::MemorySoundArchive: run base destructor, optionally free storage. */
