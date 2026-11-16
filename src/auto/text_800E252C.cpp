@@ -3248,57 +3248,59 @@ extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(vo
     mix[9]=0; mix[11]=0; mix[13]=0; mix[15]=0;
 }
 #pragma pop
+/* If any loaded wave in this AxVoice overlaps [start, end], stops its active
+ * AX voices and notifies the invalidation callback. */
 extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *self, const void *start, const void *end) {
     unsigned int irq;
-    int i;
-    char *voice;
-    int found;
-    void *address;
-    unsigned int lock;
-    unsigned int nested;
-    void *manager;
+    int remaining;
+    char *voiceIter;
+    int foundOverlap;
+    void *waveAddress;
+    unsigned int lockLevel;
+    unsigned int innerLevel;
+    void *voiceManager;
     int outer;
     int innerIndex;
-    int active;
+    int isActive;
     unsigned char *row;
     unsigned char *slot;
-    void *item;
+    void *axVoice;
     void (*callback)(void *, int, void *);
 
     irq = OSDisableInterrupts();
     if (*((u8 *)self + 0x11C) != 0) {
-        i = *(int *)((char *)self + 0x104);
-        voice = (char *)self;
-        found = 0;
-        while (i > 0) {
-            address = *(void **)(voice + 0x2C);
-            if (start <= address && address <= end) {
-                found = 1;
+        remaining = *(int *)((char *)self + 0x104);
+        voiceIter = (char *)self;
+        foundOverlap = 0;
+        while (remaining > 0) {
+            waveAddress = *(void **)(voiceIter + 0x2C);
+            if (start <= waveAddress && waveAddress <= end) {
+                foundOverlap = 1;
             }
-            voice += 0x34;
-            i--;
+            voiceIter += 0x34;
+            remaining--;
         }
-        if (found != 0) {
-            lock = OSDisableInterrupts();
+        if (foundOverlap != 0) {
+            lockLevel = OSDisableInterrupts();
             if (*((u8 *)self + 0x11E) != 0) {
-                nested = OSDisableInterrupts();
-                manager = *(void **)((char *)self + 0xC);
-                if (manager == 0) {
-                    OSRestoreInterrupts(nested);
-                    active = 0;
+                innerLevel = OSDisableInterrupts();
+                voiceManager = *(void **)((char *)self + 0xC);
+                if (voiceManager == 0) {
+                    OSRestoreInterrupts(innerLevel);
+                    isActive = 0;
                 } else {
-                    active = (*(unsigned short *)((char *)manager + 0x148) == 1);
-                    OSRestoreInterrupts(nested);
+                    isActive = (*(unsigned short *)((char *)voiceManager + 0x148) == 1);
+                    OSRestoreInterrupts(innerLevel);
                 }
-                if (active != 0) {
+                if (isActive != 0) {
                     row = (unsigned char *)self;
                     outer = 0;
                     while (outer < *(int *)((char *)self + 0x104)) {
                         slot = row;
                         innerIndex = 0;
                         while (innerIndex < *(int *)((char *)self + 0x108)) {
-                            item = *(void **)(slot + 0xC);
-                            if (item != 0) AXSetVoiceState(item, 0);
+                            axVoice = *(void **)(slot + 0xC);
+                            if (axVoice != 0) AXSetVoiceState(axVoice, 0);
                             slot += 4;
                             innerIndex++;
                         }
@@ -3311,7 +3313,7 @@ extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *se
             *((u8 *)self + 0x120) = 0;
             *((u8 *)self + 0x11F) = 0;
             *((u8 *)self + 0x11D) = 0;
-            OSRestoreInterrupts(lock);
+            OSRestoreInterrupts(lockLevel);
             callback = *(void (**)(void *, int, void *))((char *)self + 0x10C);
             if (callback != 0) callback(self, 1, *(void **)((char *)self + 0x110));
         }
