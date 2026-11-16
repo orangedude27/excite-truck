@@ -653,23 +653,36 @@ s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
     }
     return 0;
 }
-#pragma scheduling on
-void fn_801785A4(void **arg0) {
-    int index;
-    void **table;
-    struct Funcs {
-        void *pad[0x10];
-        int (*callback)(void **);
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801B5318(void *);
+extern "C" void fn_801785A4(void *arg0) {
+    int index = lbl_8055E438;
+    void **table = lbl_8055E434;
+    struct Dummy_801785A4 {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
+        virtual void d5();
+        virtual void d6();
+        virtual void d7();
+        virtual void d8();
+        virtual void d9();
+        virtual void d10();
+        virtual void d11();
+        virtual void d12();
+        virtual void d13();
+        virtual int d14();
     };
-    index = lbl_8055E438;
-    table = lbl_8055E434;
-    table[index] = arg0;
+    *(index + table) = arg0;
     lbl_8055E438 = index + 1;
-    if (((struct Funcs *)*arg0)->callback(arg0) != 0) {
+    if (((Dummy_801785A4 *)arg0)->d14() != 0) {
         fn_801B5318(arg0);
     }
 }
-
+#pragma pop
 /* Classifies a sound archive/header buffer: returns 0 for known archive magics
  * (CAR, PCAR, ACAR, NCAR), 2 for an OBST header with field 0x50 == 0x14, else 1. */
 int fn_80178604(void *header) {
@@ -1450,8 +1463,9 @@ float fn_8017970C(void) {
 }
 
 #pragma dont_inline off
-void DBPrintf_80179758(const char *fmt, ...) {
-#pragma unused(fmt)
+/* Debug printf stub (no-op). */
+void DBPrintf_80179758(const char *format, ...) {
+#pragma unused(format)
 }
 
 void DBPrintf_801797A8(const char *fmt, ...) {
