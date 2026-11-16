@@ -366,14 +366,14 @@ void fn_802C3424(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
 void fn_802C3478(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     u32 pixel;
     s32 width, height, skip, n;
-    u8 mode;
+    s32 mode;
     u16 *p;
     if (x1 == x0 || y1 == y0) return;
     if (!fn_802C307C((void *)lbl_8055FC00, &x0, &y0, &x1, &y1)) return;
-    pixel = color >> 16;
-    mode = *(u8 *)lbl_8055FC00;
     width = x1 - x0;
     height = y1 - y0;
+    mode = *(u8 *)lbl_8055FC00;
+    pixel = color >> 16;
     if (mode == 3) pixel = (u16)color;
     p = (u16 *)fn_802C3044((void *)lbl_8055FC00, x0, y0);
     skip = (*(s32 *)((u8 *)lbl_8055FC00 + 0x10) - width * 2) / 2;
@@ -847,14 +847,16 @@ void fn_802C3F00(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
 }
 #pragma scheduling on
 #pragma pop
-void fn_802C40B8(void *arg0, s32 arg1, s32 arg2) {
+/* Blit the whole canvas to the global canvas at (dstX,dstY), unless the global
+ * canvas's state flag (bit 2 at +1) suppresses drawing. */
+void fn_802C40B8(void *canvas, s32 dstX, s32 dstY) {
     if ((*(u8 *)((u8 *)lbl_8055FC00 + 1) & 4) != 0) {
         fn_802DB2C8();
         return;
     }
-    fn_802C3754((s32)arg0, 0, 0,
-        *(s32 *)((u8 *)arg0 + 8), *(s32 *)((u8 *)arg0 + 0xC),
-        lbl_8055FC00, arg1, arg2);
+    fn_802C3754((s32)canvas, 0, 0,
+        *(s32 *)((u8 *)canvas + 8), *(s32 *)((u8 *)canvas + 0xC),
+        lbl_8055FC00, dstX, dstY);
 }
 
 void fn_802C40E8(void *arg0, s32 arg1, s32 arg2) {
