@@ -1089,8 +1089,8 @@ extern void *lbl_8055F9BC;
 
 #pragma push
 #pragma cplusplus on
-extern "C" int fn_802B2C44(void *arg0) {
-    class Obj {
+extern "C" int fn_802B2C44(void *object) {
+    class NamedObject {
     public:
         virtual void v0();
         virtual void v1();
@@ -1113,9 +1113,13 @@ extern "C" int fn_802B2C44(void *arg0) {
         virtual void v18();
         virtual void v19();
         virtual void v20();
-        virtual int v21();
+        virtual int hasChild();
     };
-    return ((Obj *)arg0)->v21() != 0;
+    /* Return nonzero if the named child exists, via the virtual lookup at
+       vtable slot 21 (+0x5C). The child name reaches the virtual method in r4
+       from the caller and passes through unchanged (this wrapper takes no
+       second argument, so the compiler never overwrites r4). */
+    return ((NamedObject *)object)->hasChild() != 0;
 }
 #pragma cplusplus reset
 #pragma pop
