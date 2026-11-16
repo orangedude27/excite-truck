@@ -160,13 +160,14 @@ extern "C" void *fn_802E3F94(void) {
     return 0;
 }
 #pragma cplusplus reset
-int fn_802E4030(int arg0, int arg1) {
-    void (*reset)(void);
-    if (arg0 != 0 && arg1 > 0) {
-        reset = fn_802E3EB8;
-        reset();
+int fn_802E4030(int object, int destroyFlag) {
+    void (*freeFn)(void);
+    /* FileCd::release: free the object through its no-op deallocator when destroying, then return it. */
+    if (object != 0 && destroyFlag > 0) {
+        freeFn = fn_802E3EB8;
+        freeFn();
     }
-    return arg0;
+    return object;
 }
 
 extern const char lbl_8034D0C0[];
