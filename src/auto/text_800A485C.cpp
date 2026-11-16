@@ -18768,6 +18768,8 @@ extern "C" void fn_800C6610(void) {
     *(volatile f32 *)0xCC008000 = lbl_80560DC4;
 }
 
+/* Return the Home Button manager's result at +0xAC when its state (+0x10)
+ * is 0x12, otherwise -1. */
 extern "C" s32 fn_800C673C(void) {
     if (*(s32*)((u8*)lbl_8055DD98 + 0x10) != 0x12) {
         return -1;
