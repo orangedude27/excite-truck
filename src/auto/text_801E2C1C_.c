@@ -173,6 +173,7 @@ void fn_801E2F00(void) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_801E2F68(void) {
+    /* Destroy the global Joint Pool object (deleting destructor) and clear its pointer. */
     class Obj {
     public:
         virtual void destroy(int);
