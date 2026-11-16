@@ -508,14 +508,18 @@ extern char lbl_8034B8E0[];
 #pragma scheduling invalid_target
 void fn_802CAC54(int arg0) {
     int *entry;
+    int offset;
     if (arg0 == -1)
         return;
     if (arg0 >= 0 && arg0 < 0x200) {
-        int v = *(int *)((char *)lbl_8055FCB0 + arg0 * 0x4C);
-        if (v <= 0)
+        int off0 = arg0 * 0x4C;
+        char *base0 = (char *)lbl_8055FCB0;
+        long v0 = *(long *)(base0 + off0);
+        if (v0 <= 0)
             fn_802E317C(lbl_8034B8E0, (char *)lbl_8055FCB0 + arg0 * 0x4C + 4);
     }
-    entry = (int *)((char *)lbl_8055FCB0 + arg0 * 0x4C);
+    offset = arg0 * 0x4C;
+    entry = (int *)((char *)lbl_8055FCB0 + offset);
     if (*(unsigned char *)((char *)entry + 0x30) != 0) {
         fn_802CAD28(arg0);
         return;
@@ -702,7 +706,7 @@ DECL_SECTION(".sdata") extern int lbl_8055FCB0;
 extern float lbl_80564F40; /* 1.0f: floor for the scale fn_802CC550 weighs a slot by */
 extern float lbl_80564F44; /* 1e-5f: weight a slot is raised to when it is just used */
 extern float lbl_8055FCC4; /* texel scale, set by fn_802CC518 */
-  extern unsigned short lbl_8055FCA8;
+      extern unsigned short lbl_8055FCA8; /* expected value (0x100) compared against a texture's referenced-object field at +0xC */
 int fn_802CAF8C(int arg0) {
     int *entry;
     unsigned short expected;
