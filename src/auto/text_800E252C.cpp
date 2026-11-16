@@ -3816,39 +3816,40 @@ extern "C" void fn_800E8F54(void *arg0, int arg1) {
 
 extern "C" float lbl_80560FB4;
 extern double lbl_80560FB8;
-extern "C" void FadeIn__Q44nw4r3snd6detail10BasicSoundFi(void* self, int duration) {
+extern "C" void FadeIn__Q44nw4r3snd6detail10BasicSoundFi(void* self, int frames) {
+    // Restart the volume ramp toward full volume (1.0), unless a fade-to-stop is pending.
     struct BasicSoundFields {
         unsigned char pad0[0x44];
-        float start;
-        float end;
-        int total;
-        int current;
+        float fadeStart;
+        float fadeEnd;
+        int fadeFrames;
+        int fadeFrame;
         unsigned char pad1[0x15];
-        unsigned char active;
+        unsigned char stopWhenFaded;
     };
     BasicSoundFields* sound = (BasicSoundFields*)self;
-    if (0 == sound->active) {
-        int current;
-        int total;
-        total = sound->total;
-        current = sound->current;
+    if (0 == sound->stopWhenFaded) {
+        int elapsed;
+        int length;
+        length = sound->fadeFrames;
+        elapsed = sound->fadeFrame;
         float volume;
-        if (current >= total)
-            volume = sound->end;
+        if (elapsed >= length)
+            volume = sound->fadeEnd;
         else
-            volume = sound->start + (float)current * (sound->end - sound->start) / (float)total;
-        int newDuration = (int)((float)duration * (lbl_80560FB4 - volume));
-        float targetVolume;
-        float finalVolume;
-        if (current >= total)
-            finalVolume = sound->end;
+            volume = sound->fadeStart + (float)elapsed * (sound->fadeEnd - sound->fadeStart) / (float)length;
+        int newFrames = (int)((float)frames * (lbl_80560FB4 - volume));
+        float fullVolume;
+        float currentVolume;
+        if (elapsed >= length)
+            currentVolume = sound->fadeEnd;
         else
-            finalVolume = sound->start + (float)current * (sound->end - sound->start) / (float)total;
-        targetVolume = lbl_80560FB4;
-        sound->start = finalVolume;
-        sound->end = targetVolume;
-        sound->total = newDuration;
-        sound->current = 0;
+            currentVolume = sound->fadeStart + (float)elapsed * (sound->fadeEnd - sound->fadeStart) / (float)length;
+        fullVolume = lbl_80560FB4;
+        sound->fadeStart = currentVolume;
+        sound->fadeEnd = fullVolume;
+        sound->fadeFrames = newFrames;
+        sound->fadeFrame = 0;
     }
 }
 
