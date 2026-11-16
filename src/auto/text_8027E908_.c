@@ -1623,7 +1623,7 @@ finish:
 #pragma pop
 static inline int fn_80281138_find(int count, void **items, void *key) {
     int i;
-    for (i = 0; i < count; ++i, ++items) {
+    for (i = 0; i < count; ++items, ++i) {
         if (*items == key)
             return i;
     }
