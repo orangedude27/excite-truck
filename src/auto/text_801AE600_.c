@@ -583,6 +583,11 @@ void fn_801AEF28(Src *arg0) {
 extern void fn_801AFA5C(int);
 extern void fn_80128670(void *);
 extern void fn_80128668();
+/* Heap-backed end-of-race tables allocated in fn_801AEF28 and released below. */
+#define gCarLapTable     lbl_8055E620
+#define gRaceResultTable lbl_8055E624
+#define gRecordMgr       lbl_8055E628
+#define gResultsReady    lbl_8055E635
 #pragma scheduling invalid_target
 void fn_801AF598(void) {
     /* Tear down the heap-backed end-of-race tables allocated by fn_801AEF28:
