@@ -54,8 +54,9 @@ void *__dt__Q34nw4r2ef6EffectFv_801D0D7C(void *arg0, int arg1) {
     return arg0;
 }
 
-void fn_801D0DDC(void *arg0) {
-    lbl_80438818[lbl_8055E8E8++] = arg0;
+/* Register a boot-time manager: append it to the global manager list. */
+void fn_801D0DDC(void *manager) {
+    gManagerList[gManagerCount++] = manager;
 }
 
 void fn_801D0DFC(void) {
