@@ -24,7 +24,14 @@ void fn_80236550(void) {
 
 #pragma dont_inline off
 float fn_8023659C(void) {
-    return (float)(lbl_8055F09C - lbl_8055F094) / lbl_805636D0;
+#define timeBase lbl_8055F094
+#define pauseTime lbl_8055F09C
+#define msPerSecond lbl_805636D0
+    /* Return the accumulated active time in seconds; the timer counts milliseconds. */
+    return (float)(pauseTime - timeBase) / msPerSecond;
+#undef timeBase
+#undef pauseTime
+#undef msPerSecond
 }
 
 void fn_802365D8(void) {
