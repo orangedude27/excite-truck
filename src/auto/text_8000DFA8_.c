@@ -150,12 +150,13 @@ void fn_8000F1B4(void) {
     lbl_80558A94 = -1;
 }
 
+/* Initializes the 3-2-1 countdown assets: caches the handle from fn_8023512C and loads the two sound objects. */
 void fn_8000F1E0(void) {
-    s32 flag;
-    flag = 1;
+    s32 createFlag;
+    createFlag = 1;
     lbl_8055D4BC = fn_8023512C();
-    lbl_8055D4B4 = (UnkF22C *)fn_80207848(lbl_802FC420, flag);
-    lbl_8055D4B8 = (UnkF22C *)fn_80207848(lbl_802FC42C, flag);
+    lbl_8055D4B4 = (UnkF22C *)fn_80207848(lbl_802FC420, createFlag);
+    lbl_8055D4B8 = (UnkF22C *)fn_80207848(lbl_802FC42C, createFlag);
 }
 
 #pragma push
