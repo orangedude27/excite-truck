@@ -6822,9 +6822,18 @@ void __a1_22_ack(u8 chan, u8* pReport)
     OSRestoreInterrupts(intr);
 }
 
-void fn_8005E8C0(u32 r3, u32 r4)
+/*
+ * WPAD SDK "manageAlarm": the callback of the 1 ms management alarm
+ * (_managerAlarm) that WPADInit (fn_8005EB44) arms.  Alarms run on the OS
+ * alarm thread, so the callback does nothing but jump onto the WPAD
+ * management fiber, fn_8005E298, which runs on the 4 KiB block
+ * __WPADiManageHandlerStack (top-down, so the fiber starts at its top).  The
+ * alarm and its argument are handed to the fiber, which ignores them.
+ */
+void fn_8005E8C0(OSAlarm* pAlarm, OSContext* pContext)
 {
-	OSSwitchFiberEx(r3, r4, 0, 0, fn_8005E298, (u8*)&lbl_8038F500 + 0x1000);
+	OSSwitchFiberEx((u32)pAlarm, (u32)pContext, 0, 0, fn_8005E298,
+	                __WPADiManageHandlerStack + sizeof(__WPADiManageHandlerStack));
 }
 
 /*
