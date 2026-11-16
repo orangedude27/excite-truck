@@ -53,6 +53,7 @@ typedef unsigned char u8;
 typedef unsigned char u8;
 typedef struct { void **vtable; } Fn80287A34Obj;
 typedef float f32;
+typedef struct { f32 x, y, z; } Fn80287Vector;
 extern void fn_802885C0(void);
 extern void fn_802885F0(void);
 extern void fn_802887EC(void);
@@ -658,10 +659,10 @@ void fn_802882EC(void) {
     table = (u8 **)lbl_80488648;
     i = 0;
     while (i < *(s32 *)(lbl_804B3150 + 4)) {
-        register u8 *obj = fn_801EA9CC(i);
-        register u8 *state = *(u8 **)(obj + 8);
-        register u8 *entry;
-        register u8 *dst, *src;
+        u8 *obj = fn_801EA9CC(i);
+        u8 *state = *(u8 **)(obj + 8);
+        u8 *entry;
+        u8 *dst, *src;
         s32 all, j, flags;
         if ((unsigned)i < 8) entry = *table;
         else entry = 0;
