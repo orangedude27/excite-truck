@@ -194,6 +194,8 @@ void fn_8013BC34(void) {
     *((u8 *)lbl_8042F8A8 + 4) = 0;
 }
 
+#define sPeriodicUpdateCounter lbl_8055E174
+
 void fn_8013BC54(void) {
     lbl_8055E174++;
     if ((lbl_8055E174 & 7) == 0) {
