@@ -359,6 +359,8 @@ extern "C" void fn_8001E078(void* overlay, s32 arg1, s32 value) {
         }
     }
 }
+#pragma scheduling on
+
 extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
