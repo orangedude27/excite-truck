@@ -747,7 +747,10 @@ void *fn_80128F94(void *arg0, s32 arg1, void *arg2, s32 arg3) {
 }
 
 #pragma dont_inline on
+/* RealName: Arena_TrimToLastAllocatedBlock (rewinds used offset past trailing free blocks until the last allocated block tag is found). */
 void fn_80129088(void *arg0) {
+#define ALLOC_BLOCK_TAG_MAGIC 0x5555U
+#define ALLOC_BLOCK_TAG_BIAS  0x55560000U
     s32 *candidate;
     s32 base;
     void *end;
@@ -755,10 +758,12 @@ void fn_80129088(void *arg0) {
         base = *(s32 *)((u8 *)arg0 + 4);
         end = (void *)(base + *(s32 *)((u8 *)arg0 + 8));
         candidate = (s32 *)((u8 *)end - 0x20 - *(s32 *)((u8 *)end - 0xC));
-        if ((u32)*candidate + 0x55560000U == 0x5555U)
+        if ((u32)*candidate + ALLOC_BLOCK_TAG_BIAS == ALLOC_BLOCK_TAG_MAGIC)
             return;
         *(s32 *)((u8 *)arg0 + 8) = (s32)((u8 *)candidate - (u8 *)base);
     }
+#undef ALLOC_BLOCK_TAG_MAGIC
+#undef ALLOC_BLOCK_TAG_BIAS
 }
 #pragma dont_inline reset
 
