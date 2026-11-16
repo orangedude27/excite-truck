@@ -81,7 +81,7 @@ extern "C" void *fn_802583CC(void *o, int arg1, int arg2) {
     int offset;
     int scan;
     int index3;
-    register void *item;
+    void *item;
 
     if (o) {
         *(void **)p = &lbl_80344D98;
@@ -117,13 +117,13 @@ L_check2:
         *(int *)(p + 0x914) = zero;
 
         index3 = 0;
-        offset = 0;
+        idx = 0;
         goto L_check3;
 L_loop3:
-        item = *(void **)(*(char **)(p + 0xd9c) + offset + 0x20);
+        item = *(void **)(*(char **)(p + 0xd9c) + idx + 0x20);
         if (item != 0)
             ((Release *)item)->release(1);
-        offset += 0x2c;
+        idx += 0x2c;
         index3++;
 L_check3:
         if (index3 < *(int *)(p + 0xda0))
