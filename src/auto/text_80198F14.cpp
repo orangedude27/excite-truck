@@ -2968,7 +2968,6 @@ static inline void fn801A0464RotateVec(Vec *dst, const Vec &src, const f32 *m) {
 
 /* registers are saved with _savegpr */
 #pragma use_lmw_stmw off
-#pragma always_inline on
 extern "C" void fn_801A0464(void *arg0, void *arg1) {
     u8 buffer[0x300];
     Vec boxDelta;
@@ -3069,8 +3068,9 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
             box_done:
                 if (ok != 0) {
                     s32 e = *(s32 *)(obj + 0x1EC);
+                    f32 one;
                     f32 eps;
-                    f32 one = lbl_805622E0;
+                    one = lbl_805622E0;
                     eps = lbl_805622D8;
                     s32 k = 0;
                     do {
@@ -3213,10 +3213,13 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
         if (ok != 0) {
             s32 e = *(s32 *)(obj + 0x1EC);
             s32 k = 0;
+            f32 zero;
+            f32 one;
             f32 push;
-            f32 one = lbl_805622E0;
-            s32 maxCount = 0x40;
-            f32 zero = lbl_805622D4;
+            s32 maxCount;
+            one = lbl_805622E0;
+            maxCount = 0x40;
+            zero = lbl_805622D4;
             push = lbl_805623BC;
             do {
                 s32 j;
