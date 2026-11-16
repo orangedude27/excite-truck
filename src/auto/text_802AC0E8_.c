@@ -989,15 +989,16 @@ void fn_802AE02C(void *manager, int animIndex) {
 
 void fn_802AE0B8(int **arg0,int arg1){unsigned char *p; p=(unsigned char *)**arg0+arg1*0x74;if(p[0x69])p[0x69]=0;}
 
-void fn_802AE0E0(void **arg0) {
-    int off;
-    int i;
-    i = 0;
-    off = 0;
-    while (i < *(int *)(*(char **)arg0 + 4)) {
-        *(unsigned char *)(*(char **)*(char **)arg0 + off + 0x68) = 0;
-        off += 0x74;
-        i++;
+/* Reset every animation entry of the manager to not-started by clearing its running flag at +0x68. */
+void fn_802AE0E0(void **manager) {
+    int offset;
+    int index;
+    index = 0;
+    offset = 0;
+    while (index < *(int *)(*(char **)manager + 4)) {
+        *(unsigned char *)(*(char **)*(char **)manager + offset + 0x68) = 0;
+        offset += 0x74;
+        index++;
     }
 }
 
