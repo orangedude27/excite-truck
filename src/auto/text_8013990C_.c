@@ -10,6 +10,10 @@ int fn_80139B70(int, float, float);
 extern int lbl_8055E138; /* the resource table fn_80131810 opened (fn_8013A074 closes it) */
 extern int lbl_8055E13C; /* the source that table was opened from (fn_8013A0B0's fallback lookup) */
 extern __declspec(section ".data") unsigned char lbl_8042F7C0; /* the path it was opened from, as text */
+#define gResourceTable  lbl_8055E138
+#define gResourceSource lbl_8055E13C
+#define gResourcePath   lbl_8042F7C0
+#define CloseResourceTable fn_80131818
 extern const char lbl_8032BFD8[];
 extern const char lbl_8032C018[];
 extern const char lbl_80559C40[];
