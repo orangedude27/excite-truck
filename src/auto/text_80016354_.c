@@ -213,8 +213,15 @@ void *fn_8001675C(unsigned int mask, int matchIndex) {
 #pragma scheduling on
 void *fn_800167B8(int arg0) { return lbl_803577F0 + arg0 * 0x5C; }
 
-void *fn_800167CC(int arg0) {
-    return (void *)fn_80016510(*(int *)((char *)fn_800167B8(arg0) + 0x4C));
+/* The vehicle driven by the base driver at `index`: that DriverInfo (0x5C stride, fixed
+ * table lbl_803577F0) keeps the index of its VehicleInfo at +0x4C, and fn_80016510
+ * turns such an index into the record (dynamic table first, then the fixed one). */
+void *fn_800167CC(int index) {
+#define GetDriverByIndex  fn_800167B8 /* DriverInfo *by index in the fixed table */
+#define GetVehicleByIndex fn_80016510 /* VehicleInfo *by index */
+    return (void *)GetVehicleByIndex(*(int *)((char *)GetDriverByIndex(index) + 0x4C));
+#undef GetVehicleByIndex
+#undef GetDriverByIndex
 }
 
 extern void *lbl_8055D554;
