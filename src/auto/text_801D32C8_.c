@@ -198,7 +198,7 @@ extern "C" void fn_801D3610(void *outConfig, int configName) {
 }
 #pragma scheduling on
 #pragma cplusplus reset
-extern int fn_801D411C(void *);
+extern void fn_801D411C(void *);
 extern void *lbl_804421D8[];
 #pragma push
 #pragma processor 750
@@ -718,7 +718,7 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
 }
 
 #pragma push
-int fn_801D411C(void *arg0) {
+void fn_801D411C(void *arg0) {
     register char *p = (char *)arg0;
     float sp8;
     float sp10;
@@ -963,7 +963,6 @@ void fn_801D4598(void *arg0, float farg0) {
          ((lbl_80562AAC + *(float *)(p + 0x240)) * (lbl_80562AAC + *(float *)(p + 0x240))))) {
         float f5, f6, f7;
         float step;
-        float py, px, pz;
         PSVECCrossProduct(p + 0x54, p + 0x20C, sp8);
         scale = dot - lbl_80562ACC;
         {
@@ -982,16 +981,18 @@ void fn_801D4598(void *arg0, float farg0) {
         *(float *)(p + 0x124) = f7;
         *(float *)(p + 0x128) = f6;
         *(float *)(p + 0x12C) = f5;
-        py = *(float *)(p + 0x21C);
-        px = *(float *)(p + 0x218);
-        pz = *(float *)(p + 0x220);
-        *(float *)(p + 0x124) = f7 + sp8[0] * step;
-        *(float *)(p + 0x128) = f6 + sp8[1] * step;
-        f5 += sp8[2] * step;
-        *(float *)(p + 0x64) = py;
-        *(float *)(p + 0x60) = px;
-        *(float *)(p + 0x68) = pz;
-        *(float *)(p + 0x12C) = f5;
+        {
+            float py = *(float *)(p + 0x21C);
+            float px = *(float *)(p + 0x218);
+            float pz = *(float *)(p + 0x220);
+            *(float *)(p + 0x124) = f7 + sp8[0] * step;
+            *(float *)(p + 0x128) = f6 + sp8[1] * step;
+            f5 += sp8[2] * step;
+            *(float *)(p + 0x64) = py;
+            *(float *)(p + 0x60) = px;
+            *(float *)(p + 0x68) = pz;
+            *(float *)(p + 0x12C) = f5;
+        }
         fn_8017A580(arg0);
     } else fn_801D411C(arg0);
 }
