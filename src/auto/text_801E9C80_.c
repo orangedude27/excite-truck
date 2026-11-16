@@ -117,25 +117,25 @@ extern f32 lbl_80562E30;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 s32 fn_801E9F08(void *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, f32 farg0) {
     f32 data[4];
-    f32 a0;
-    f32 a1;
-    f32 a2;
-    f32 off;
-    a0 = *(f32 *)arg1;
-    a1 = *((f32 *)arg1 + 1);
-    a2 = *((f32 *)arg1 + 2);
-    off = lbl_80562E30 + farg0;
-    data[0] = a0;
-    data[2] = a2;
-    data[1] = a1 - off;
+    f32 temp2, temp1, temp0;
+    f32 offset;
+    temp1 = *((f32 *)arg1 + 1);
+    temp0 = *(f32 *)arg1;
+    temp2 = *((f32 *)arg1 + 2);
+    offset = lbl_80562E30 + farg0;
+    data[0] = temp0;
+    data[2] = temp2;
+    data[1] = temp1 - offset;
     if (fn_801E9C84(data, arg1, arg2, arg3, (s32)arg0, 0, farg0) != 0) {
         data[0] = *(f32 *)arg2;
         data[1] = *((f32 *)arg2 + 1);
         data[2] = *((f32 *)arg2 + 2);
-        if (fn_801E9C84(data, arg1, arg2, arg3, (s32)arg0, arg4, farg0) != 0)
+        if (fn_801E9C84(data, arg1, arg2, arg3, (s32)arg0, arg4, farg0) != 0) {
             return 1;
+        }
     }
     return 0;
 }
