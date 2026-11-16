@@ -503,9 +503,10 @@ float fn_8022DFBC(void *arg0) {
     return convertedNumerator / convertedDenominator;
 }
 #pragma scheduling on
-void fn_8022E014(void *arg0, float arg1) {
-    int temp = *(int *)((char *)arg0 + 8);
-    *(int *)*(int **)((char *)arg0 + 4) = temp + (int)(arg1 * (float)(*(int *)((char *)arg0 + 0xC) - temp));
+/* Set the pointed-to value by interpolating from base (+8) toward max (+0xC) by t. */
+void fn_8022E014(void *obj, float t) {
+    int base = *(int *)((char *)obj + 8);
+    *(int *)*(int **)((char *)obj + 4) = base + (int)(t * (float)(*(int *)((char *)obj + 0xC) - base));
 }
 
 int fn_8022E064(int arg0, int arg1) {
