@@ -3681,11 +3681,13 @@ extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 far
     return arg0;
 }
 #pragma scheduling on
-extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
+extern "C" s32 fn_801A2434(s32 object, s32 shouldDestroy) {
+    /* If object is non-null and shouldDestroy > 0, signal it for destruction
+     * via fn_80128668 (calls fn_80128584 with mode 3). Returns the object. */
+    if (object != 0 && shouldDestroy > 0) {
         fn_80128668();
     }
-    return arg0;
+    return object;
 }
 
 extern "C" void fn_801A2474(void *arg0) {
