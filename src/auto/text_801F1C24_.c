@@ -1039,8 +1039,9 @@ void fn_801F31E8(int arg0, unsigned char *arg1) {
     } while (--count != 0);
 }
 #pragma unroll reset
-void fn_801F3280(void *arg0, int arg1) {
-    *(int *)((char *)arg0 + 0x3C) = arg1;
+void fn_801F3280(void *obj, int value) {
+    /* Set the object's field at +0x3C (the one fn_801F31A0 clears) to value. */
+    *(int *)((char *)obj + 0x3C) = value;
 }
 
 extern float lbl_80562F64, lbl_80562F70;
