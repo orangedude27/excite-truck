@@ -1067,11 +1067,13 @@ void fn_802D61BC(void *packet) {
 }
 
 #pragma scheduling on
-s32 fn_802D62E4(void *arg0) {
-    if ((u32)(*(u32 *)arg0 + 0xB1BC0000) != 0x4C32U) {
+/* Return the object pointer only if its first word is the surface magic
+ * 0x4E444C32 (tested as word + 0xB1BC0000 == 0x4C32); otherwise return 0. */
+s32 fn_802D62E4(void *object) {
+    if ((u32)(*(u32 *)object + 0xB1BC0000) != 0x4C32U) {
         return 0;
     }
-    return (s32)arg0;
+    return (s32)object;
 }
 
 #pragma scheduling on
