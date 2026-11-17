@@ -259,13 +259,13 @@ void fn_80138144(void *arg0) {
 
 extern void fn_80138434();
 #pragma push
-#pragma use_lmw_stmw off
 void fn_801381B4(void *arg0) {
     volatile unsigned char *v = (volatile unsigned char *)arg0;
     unsigned char *base = (unsigned char *)arg0;
     unsigned char *p = base + 0x30;
     unsigned char *r;
     unsigned char *node;
+    unsigned char *tail;
     unsigned char t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
     int mode, found, i, i0, i1;
     t0 = v[0]; t3 = v[3]; t1 = v[1]; t2 = v[2]; t4 = v[4]; t7 = v[7]; t5 = v[5]; t6 = v[6];
@@ -318,10 +318,10 @@ void fn_801381B4(void *arg0) {
             node = *(unsigned char **)(node + 0x14);
         } while (node[0x34] == 3);
     }
-    node = *(unsigned char **)(base + 0x24);
-    while (node != 0) {
-        fn_80138144(node);
-        node = *(unsigned char **)(node + 4);
+    tail = *(unsigned char **)(base + 0x24);
+    while (tail != 0) {
+        fn_80138144(tail);
+        tail = *(unsigned char **)(tail + 4);
     }
 }
 #pragma pop
