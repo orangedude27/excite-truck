@@ -4539,8 +4539,8 @@ advance:
 
 extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
      u8 sp30buf[0x240];
-    s32 sp20;
-    int sp14;
+    s32 sp20[4];
+    int sp14[2];
     s32 sp10;
     u32 spC;
     u32 sp8;
@@ -4597,7 +4597,7 @@ block_11:
     fn_800B3330(&sp20, temp_r21, fn_800A4D44(p3));
     var_r3 = VFiPFPATH_GetNextTokenOfPath(&sp20, arg4);
 loop_64:
-    if (sp20 == 0) {
+    if (sp20[0] == 0) {
         goto block_65;
     }
     if (var_r3 != 0) {
@@ -4642,7 +4642,7 @@ loop_64:
             return var_r22;
         }
         temp_r27_2 = *M2C_FIELD(p0, s32 **, 0x10);
-        temp_r3_3 = fn_800AB528(p0, p1, sp20, 0x7F, 0, &sp10);
+        temp_r3_3 = fn_800AB528(p0, p1, sp20[0], 0x7F, 0, &sp10);
         if (temp_r3_3 != 0) {
             return temp_r3_3;
         }
@@ -4651,7 +4651,7 @@ loop_64:
             if (temp_r3_2 != 0) {
                 return temp_r3_2;
             }
-            return (sp20 == 0) + 2;
+            return (sp20[0] == 0) + 2;
         }
         if (arg4 == 0) {
             temp_r3_8 = M2C_FIELD(p1, u8 *, 0x21C) & 0x10;
@@ -12385,44 +12385,34 @@ got:
     #undef SLOT_FLAGS
     #undef SLOT_BUSY
 }
-#pragma dont_inline reset
-s32 fn_800B8E28(s32 arg0) {
-    u32 temp;
-    s32 temp_r30;
-    s32 var_ctr;
-    u16 index;
-    void *entry;
-    entry = 0;
+#pragma dont_inline on
+extern "C" s32 fn_800B8E28(s32 arg0) {
+    u16 i;
+    u8 *slot;
+    u8 *entry = 0;
+    s32 result;
+    s32 err;
     fn_800B8004(lbl_8055DD30);
     if (arg0 == 0) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    index = 0;
-    var_ctr = 0x17;
-loop:
-    temp = index * 0xF0;
-    if ((u32)*((u8 *)&lbl_80405D58 + temp) == (u32)arg0) {
-        entry = (u8 *)&lbl_80405D58 + temp;
-    } else {
-        index += 1;
-        var_ctr -= 1;
-        if (var_ctr != 0) goto loop;
+    for (i = 0; i < 0x17; i++) {
+        slot = (u8 *)lbl_80405D58 + i * 0xF0;
+        if (*(u32 *)slot == (u32)arg0) { entry = slot; break; }
     }
-    if (-0x16 & ((s32)~((index - 0x17) | (0x17 - index)) >> 31)) {
+    err = i == 0x17 ? -0x16 : 0;
+    if (err != 0) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    M2C_FIELD(entry, s32 *, 0xE4) |= 4;
-    temp_r30 = fn_800B808C(arg0, entry, 1);
-    M2C_FIELD(entry, s32 *, 0xE4) &= 0xFFFFFFFB;
+    *(s32 *)(entry + 0xE4) |= 4;
+    result = fn_800B808C(arg0, entry, 1);
+    *(s32 *)(entry + 0xE4) &= 0xFFFFFFFB;
     fn_800B8048(lbl_8055DD30);
-    return temp_r30;
+    return result;
 }
-
-#pragma push
-#pragma use_lmw_stmw off
-#pragma dont_inline on
+#pragma dont_inline reset
 extern "C" s32 fn_800B8F20(s32 buffer, s32 path, s32 length, s32 offset, s32 *outBytes, s32 unused) {
     /* Read NAND data with locking: validates args, performs operation, returns status. */
     s32 result;
