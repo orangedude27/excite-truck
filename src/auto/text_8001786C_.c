@@ -97,9 +97,8 @@ void fn_800178BC(void* list, s32 driverNum, s32 vehicleNum) {
     *(s32*)((char*)list + 0x24) = vehicleIndex + 1;
 }
 #pragma scheduling on
-/* Whether a driver takes his vehicle from the vehicle record's alternate list
- * instead of the one picked for him; always off in this build. */
-int fn_800178F0(void) { return 0; }
+/* VehicleOverrideEnabled: whether a driver takes his vehicle from the vehicle record's alternate list instead of the one picked for him; always off in this build. */
+s32 fn_800178F0(void) { return 0; }
 
 /* Apply the currently selected alternate vehicle for a vehicle number to the given driver. */
 void fn_800178F8(s32 driverNum, s32 vehicleNum) {
