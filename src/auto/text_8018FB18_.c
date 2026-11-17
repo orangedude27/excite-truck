@@ -1446,7 +1446,8 @@ extern "C" void fn_801914F8(void *arg0) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_80191568(void *arg0) {
+extern "C" void fn_80191568(void *wrapper) {
+    /* Forward virtual f25 (vtable slot 0x6C) to the sub-object held at +0x4 of the wrapper. */
     class VTable {
     public:
         virtual void f0();
@@ -1476,8 +1477,8 @@ extern "C" void fn_80191568(void *arg0) {
         virtual void f24();
         virtual void f25();
     };
-    VTable *obj = *(VTable **)((char *)arg0 + 4);
-    obj->f25();
+    VTable *sub = *(VTable **)((char *)wrapper + 4);
+    sub->f25();
 }
 #pragma pop
 
