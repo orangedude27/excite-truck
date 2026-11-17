@@ -296,7 +296,6 @@ extern "C" const char lbl_80324314[];
 extern "C" const char lbl_803242F0[];
 #pragma push
 #pragma use_lmw_stmw off
-#define REG_R24 asm("r24")
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, int arg1) {
     int priority;
     void *list;
