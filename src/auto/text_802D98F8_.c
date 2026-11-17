@@ -89,7 +89,7 @@ extern void fn_802C2AA8(int);
 extern void fn_802D3E9C(int);
 extern void fn_802DB03C(void *);
 extern void fn_802C2B18(void);
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802D9A50(void) {
     extern unsigned char lbl_8055FFB4;
     extern unsigned char lbl_8055FE38;
@@ -117,8 +117,9 @@ void fn_802D9A50(void) {
     if (*(volatile s32 *)&lbl_8055FE3C != 1)
         lbl_8055FE4C = 0;
 
+    table = (void **)(base + 0x18C);
     one = 1;
-    for (table = (void **)(base + 0x18C);;) {
+    for (;;) {
         state = *(volatile s32 *)&lbl_8055FE3C;
         if (state == 0)
             break;
@@ -139,8 +140,8 @@ void fn_802D9A50(void) {
 
         fn_80129AFC();
         fn_802E6264();
-        fn_802E7FD0();
         OSDisableInterrupts();
+        fn_802E7FD0();
         check = fn_802CF834() == 0;
         OSEnableInterrupts();
         if (check != 0 && lbl_8055FE48 == 0) {
@@ -161,7 +162,7 @@ void fn_802D9A50(void) {
     }
     OSEnableInterrupts();
 }
-#pragma scheduling on
+#pragma opt_propagation reset
 
 #pragma scheduling on
 #pragma pop
