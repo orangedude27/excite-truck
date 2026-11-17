@@ -2051,7 +2051,12 @@ f32 fn_801B306C(void) {
 }
 
 void* fn_801B307C(void) {
-    return lbl_8055E694;
+    /* lbl_8055E694 holds the highest step counter any state has reached (a
+     * running maximum reset by fn_801B265C, used as a progress snapshot);
+     * return it. */
+    #define sMaxStepCount lbl_8055E694
+    return sMaxStepCount;
+    #undef sMaxStepCount
 }
 
 #pragma cplusplus on
