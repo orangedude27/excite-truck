@@ -1465,6 +1465,7 @@ int fn_801D6320(void *out, void *object) {
     return 1;
 }
 
+/* AX effect helper: return the address of the LFO sine table used by the FX. */
 int *__AXFXGetLfoSinTable_801D64F4(void) {
     extern char lbl_803387A8[];
     return (int *)lbl_803387A8;
