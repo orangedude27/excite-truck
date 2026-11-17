@@ -1171,20 +1171,21 @@ void fn_801E8E38(void) {
     ((void (*)(void))fn_801E87D4)();
 }
 #pragma scheduling invalid_target
-void *fn_801E8EA4(long arg0) {
+/* Find the mapping-table row whose CarType field matches carType; on a miss, log "world: Can't map CarType %d" and return the terminating (zero) row. */
+void *fn_801E8EA4(long carType) {
     unsigned char *entry;
     long sentinel;
     entry = lbl_80339CC0;
     goto load_sentinel;
 check_key:
-    if (*(long *)(entry + 4) == arg0) goto done;
+    if (*(long *)(entry + 4) == carType) goto done;
     entry = (unsigned char *)((long)entry + 0xC);
 load_sentinel:
     sentinel = *(long *)entry;
     if (sentinel != 0) goto check_key;
 done:
     if (sentinel == 0) {
-        fn_802E317C(lbl_80339CFC, arg0);
+        fn_802E317C(lbl_80339CFC, carType);
     }
     return entry;
 }
