@@ -2669,8 +2669,9 @@ void GXInitLightSpot(s32 enable, s32 alpha) {
     __peReg[2] = data.reg;
 }
 
-void GXInitLightDistAttn(unsigned int arg0) {
-    ((GXDistAttnReg *)&__peReg[1])->distanceAttn = arg0;
+/* Set the light distance-attenuation bit in PE register 1. */
+void GXInitLightDistAttn(unsigned int distanceAttn) {
+    ((GXDistAttnReg *)&__peReg[1])->distanceAttn = distanceAttn;
 }
 
 /* Pack x (1 bit), y (3 bits) and z (1 bit) into the low halfword of PE register 0. */
