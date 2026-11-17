@@ -727,9 +727,10 @@ int fn_802CB274(int arg0) {
 }
 
 int fn_802DB2C4(int);
-int fn_802CB288(int arg0) {
-    int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
-    return fn_802DB2C4(p[0x28 / 4]);
+int fn_802CB288(int textureSlot) {
+    /* Forward a texture slot's +0x28 handle to the no-op trace hook fn_802DB2C4. */
+    int *entry = (int *)(lbl_8055FCB0 + textureSlot * 0x4C);
+    return fn_802DB2C4(entry[0x28 / 4]);
 }
 
 extern void fn_802D93E8(int);
