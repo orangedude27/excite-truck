@@ -932,7 +932,8 @@ void fn_8014AE60(void *context) {
     node->prev = 0;
 }
 
-s32 fn_8014AEB8(void *arg0) { return ((s32 *)arg0)[1]; }
+/* Return the current node (the s32 word at +4) of this linked-list iterator. */
+s32 fn_8014AEB8(void *it) { return ((s32 *)it)[1]; }
 
 /* Return the s32 type/id field at offset 0x10C of this event object. */
 s32 fn_8014AEC0(void *event) { return *(s32 *)((u8 *)event + 0x10C); }
