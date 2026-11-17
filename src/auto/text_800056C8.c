@@ -1395,6 +1395,8 @@ loop_test:
 #pragma cplusplus off
 
 void fn_800070D4(void) {
+    /* No-op stub beside the HUD-overlay teardown/rebuild code (fn_800070DC);
+     * a reserved callback slot with no work to do in this build. */
     return;
 }
 
