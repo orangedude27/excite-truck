@@ -412,6 +412,8 @@ Obj_802470D4 *fn_802470D4(Obj_802470D4 *self, s32 deleteFlag) {
     return self;
 }
 #pragma pop
+#pragma push
+#pragma processor 750
 void fn_80247174(void) {
     s32 i = 0;
     do {
