@@ -6428,12 +6428,15 @@ extern "C" s32 fn_800AF5A0(void *, s32, s32 *);
 extern "C" s32 fn_800AFE14(void *arg0, s32 arg1, s32 *arg2);
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800B0258(void *, s32, s32 *);
-extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    u32 sign = ((u32)(-(arg2) | (arg2))) >> 31;
-    s32 result = fn_800AE4C0((void *)arg0, (u32)arg1, sign, 0, (s32 *)arg3);
-    switch (result) {
+extern "C" s32 fn_800AE620(s32 fileInfo, s32 sector, s32 modeFlag, s32 outSector) {
+    /* Map a file sector to the disk sector its FAT chain points at: forward modeFlag
+     * as a nonzero lookup mode and a zero byte count to the address resolver, then
+     * return its status (0 on success). */
+    u32 mode = ((u32)(-(modeFlag) | (modeFlag))) >> 31;
+    s32 status = fn_800AE4C0((void *)fileInfo, (u32)sector, mode, 0, (s32 *)outSector);
+    switch (status) {
     case 0: return 0;
-    default: return result;
+    default: return status;
     }
 }
 
