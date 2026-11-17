@@ -897,16 +897,16 @@ void fn_8029D574(int arg0) {
 #pragma pop
 void fn_8029D644(void *arg0);
 void fn_8029D644(void *arg0) {
-    int i;
-    int offset;
     char *source;
     char *other;
+    int offset;
+    int count;
     char *buffers[2];
     char **bufferTable;
     int mode;
     GridRecord_8029D644 *row;
 
-    i = (*(int *)((char *)arg0 + 0x10) - 1) * (*(int *)((char *)arg0 + 0xC) * 2);
+    count = (*(int *)((char *)arg0 + 0x10) - 1) * (*(int *)((char *)arg0 + 0xC) * 2);
     {
         char *result = (char *)((void *(*)(int, int))fn_802C86DC)(
             *(int *)((char *)arg0 + 0x10) - 1, *(int *)((char *)arg0 + 0x10));
@@ -915,7 +915,8 @@ void fn_8029D644(void *arg0) {
         *(float *)((char *)arg0 + 0x6C) = *(float *)(result + 0x2C);
     }
     fn_802C8BD0(*(int *)((char *)arg0 + 0x74));
-    if (fn_802C8DBC(i) != 0) {
+    if (fn_802C8DBC(count) != 0) {
+        int i;
         buffers[0] = *(char **)((char *)arg0 + 0x70);
         buffers[1] = buffers[0] + *(int *)((char *)arg0 + 0xC) * 0x18;
         for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x18, i++)
@@ -926,10 +927,10 @@ void fn_8029D644(void *arg0) {
             source = bufferTable[mode & 1];
             other = bufferTable[1 - (mode & 1)];
             for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x18, i++) {
-                fn_8029DB78(arg0, source + offset, i, mode);
+                fn_8029DB78(arg0, (void *)((unsigned long)source + offset), i, mode);
                 row = (GridRecord_8029D644 *)(other + offset);
                 {
-                    float f1 = row->f0;
+                    float f1 = *(float *)(other + offset);
                     unsigned int flag = (unsigned int)(i > 0);
                     float f5 = row->f14;
                     float f4 = row->f10;
@@ -1432,9 +1433,10 @@ void fn_8029E8E0(float *arg0, int arg1) {
     struct ReverseVec3 center;
     struct Vec3 diff;
     struct Vec3 sp8;
-    float f30, f31, radius, norm;
+    float f31, f30, radius, norm;
+    float cx, cy, cz;
     int i;
-    int b, a;
+    int a, b;
     fn_802C8BD0(*(int *)((char *)arg0 + 0x40));
     if (fn_802C8DBC(4) != 0) {
         struct ReverseVec3 *view;
@@ -1442,11 +1444,14 @@ void fn_8029E8E0(float *arg0, int arg1) {
         center = *view;
         f30 = lbl_80564658;
         i = 0;
+        cz = center.z;
+        cy = center.y;
+        cx = center.x;
         f31 = lbl_8056465C;
         do {
-            diff.y = arg0[1] - center.y;
-            diff.x = arg0[0] - center.z;
-            diff.z = arg0[2] - center.x;
+            diff.y = arg0[1] - cy;
+            diff.x = arg0[0] - cz;
+            diff.z = arg0[2] - cx;
             sp8.x = diff.x;
             sp8.y = -diff.y;
             sp8.z = diff.z;
@@ -1459,10 +1464,13 @@ void fn_8029E8E0(float *arg0, int arg1) {
                 radius = y * y + len2;
                 norm = (float)fn_8002F234(radius);
                 norm = f31 / norm;
-                b = (i ^ 1) & i;
                 a = (i ^ 1) >> 1;
-                fn_802C8E00(-1, (unsigned int)(a - b) >> 31, arg0[0], arg0[1], arg0[2],
-                    f31 + sp8.x * norm, f31 + sp8.z * norm);
+                b = (i ^ 1) & i;
+                {
+                    float az = f31 + sp8.z * norm;
+                    float ax = f31 + sp8.x * norm;
+                    fn_802C8E00(-1, (unsigned int)(a - b) >> 31, arg0[0], arg0[1], arg0[2], ax, az);
+                }
             }
             i++;
             arg0 += 3;
@@ -1601,8 +1609,9 @@ int fn_8029EF30(void *effect) {
     return ((int *)effect)[4];
 }
 
-int fn_8029EF38(void *arg0) {
-    return *(int *)((char *)arg0 + 0x64);
+/* nw4r::ef::Effect virtual getter: returns this effect's 32-bit field at offset 0x64. */
+int fn_8029EF38(void *effect) {
+    return *(int *)((char *)effect + 0x64);
 }
 
 #pragma dont_inline on
