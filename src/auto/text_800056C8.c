@@ -1968,6 +1968,8 @@ void *fn_80007BDC(void) {
 }
 
 void fn_80007BE8(void) {
+    /* No-op hook among the arena/HUD overlay name getters (fn_80007BDC,
+     * fn_80007BEC, ...); a reserved callback slot with no work in this build. */
     return;
 }
 
