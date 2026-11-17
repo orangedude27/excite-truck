@@ -1431,8 +1431,11 @@ void __GXCleanGPFifo(void) {
 }
 
 extern void *lbl_8055D94C;
+/** @brief Get the thread currently attached to the GX context (NULL if none). */
 void* GXGetCurrentGXThread(void) {
-    return lbl_8055D94C;
+#define currentGXThread lbl_8055D94C
+    return currentGXThread;
+#undef currentGXThread
 }
 
 /* Detach the current GX thread: return its previous value, then clear the global slot. */
