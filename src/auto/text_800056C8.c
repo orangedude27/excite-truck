@@ -315,6 +315,7 @@ void fn_80005B58(void) {
 }
 
 void fn_80005B64(void) {
+    /* Empty no-op stub: one of a run of default callback slots that do nothing. */
     return;
 }
 
