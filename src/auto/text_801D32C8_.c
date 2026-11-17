@@ -341,7 +341,7 @@ struct Obj3910 {
     char pad[3];
     float unk50;
 };
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_801D3910(void *arg0) {
     char *p;
     int i;
