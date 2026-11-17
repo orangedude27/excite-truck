@@ -22552,8 +22552,11 @@ extern "C" void fn_800C7998(void *arg0) {
 #pragma dont_inline reset
 #pragma pop
 
+/* Getter for the address of the shared storage word that several pointer globals alias. */
 extern "C" u32* fn_800C7C68(void) {
-    return &lbl_8055DDF8;
+#define gSharedStorageWord lbl_8055DDF8
+    return &gSharedStorageWord;
+#undef gSharedStorageWord
 }
 
 extern "C" u8 fn_80062054(void);
