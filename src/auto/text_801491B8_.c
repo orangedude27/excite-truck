@@ -952,8 +952,9 @@ u8 fn_8014AEE0(void *obj) {
     return ((u8 *)obj)[5];
 }
 
-u8 fn_8014AEE8(void *arg0) {
-    return ((u8 *)arg0)[4];
+u8 fn_8014AEE8(void *object) {
+    /* Return the "active" flag byte at offset +4 of the iterator/object. */
+    return ((u8 *)object)[4];
 }
 
 /* If active, advance the timer at offset 0xC by lbl_80561650 scaled by fn_80176A2C() when fn_80176A1C() == 2, otherwise by lbl_8056164C. */
@@ -1676,7 +1677,8 @@ extern "C" void fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
         virtual void d0(); virtual void d1(); virtual void d2();
         virtual void *get(void *);
     };
-    struct Rec { s32 w0, w1, w2, w3; f32 f4, f5; s32 w6; };
+    struct Pair { s32 a, b; };
+    struct Rec { s32 w0; Pair p; s32 w3; f32 f4, f5; s32 w6; };
     Rec *b, *a;
     void *obj;
     char storage[0x64];
@@ -1698,17 +1700,19 @@ extern "C" void fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
     if (a != 0 && b != 0) {
         time = (f32)fn_8002EFB4(rate, lbl_805616A0);
         if (time < lbl_8056163C) {
-            f32 x = (time - lbl_80561648) / lbl_805616C8;
+            f32 x;
             v = *a;
+            x = (time - lbl_80561648) / lbl_805616C8;
             x = (lbl_8056164C < x) ? lbl_8056164C : x;
             x = (lbl_80561648 > x) ? lbl_80561648 : x;
             v.w6 = ((s32 (*)(s32, s32, f32))fn_80147C50)(v.w6 & 0xFFFFFF, v.w6, lbl_80561648 + x * lbl_8056164C);
         } else {
-            f32 x = lbl_80561670 * time - lbl_8056164C;
-            f32 y = lbl_8056164C - x;
-            f32 w = x * x;
-            f32 h = lbl_8056164C - y * y;
             f32 *pa = (f32 *)a, *pb = (f32 *)b, *pv = (f32 *)&v;
+            f32 x, y, w, h;
+            x = lbl_80561670 * time - lbl_8056164C;
+            y = lbl_8056164C - x;
+            w = x * x;
+            h = lbl_8056164C - y * y;
             v = *a;
             pv[1] = pa[1] + h * (pb[1] - pa[1]);
             pv[2] = pa[2] + w * (pb[2] - pa[2]);
