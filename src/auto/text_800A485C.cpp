@@ -21618,8 +21618,9 @@ extern "C" s32 fn_800D43DC(s32 object, s32 deleteFlag) {
     return object;
 }
 
-extern "C" u16 fn_800D441C(void *arg0) {
-    return *(u16 *)(*(u8 **)((u8 *)arg0 + 0xC) + 8);
+/* Return the u16 field at offset 8 of the object referenced by holder+0xC. */
+extern "C" u16 fn_800D441C(void *holder) {
+    return *(u16 *)(*(u8 **)((u8 *)holder + 0xC) + 8);
 }
 
 extern "C" s32 fn_800D58F0(void *);
