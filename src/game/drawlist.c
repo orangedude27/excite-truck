@@ -618,6 +618,13 @@ float fn_802C8FEC(void) { return lbl_8055FC6C; }
 extern char lbl_80558DC4[];
 extern float lbl_8055FC38, lbl_8055FC3C;
 #pragma scheduling off
+typedef union { double d; unsigned int w[2]; } MagicDouble;
+static inline float to_float_802C8FF4(int v) {
+    MagicDouble u;
+    u.w[0] = 0x43300000;
+    u.w[1] = (unsigned int)v ^ 0x8000;
+    return (float)(u.d - lbl_80564F10);
+}
 int fn_802C8FF4(float *arg0, float arg1) {
     float x;
     float y;
