@@ -8,15 +8,17 @@ extern int fn_8016208C(void);
 #pragma push
 #pragma scheduling invalid_target
 int fn_80257FB8(void) {
-    int total = fn_80161D14();
-    int count = fn_80161ECC();
-    int accum = 0;
-    int i = 0;
-    while (i < count) {
-        fn_80161E40(i);
-        accum += fn_8016208C();
-        if (total <= accum) return i;
-        i++;
+    /* Return the tutorial contest index at which the running total of "challenge"
+     * elements reaches the configured tutorial level, or 0 if it never does. */
+    int tutorialLevel = fn_80161D14();
+    int contestCount = fn_80161ECC();
+    int challengeTotal = 0;
+    int contestIndex = 0;
+    while (contestIndex < contestCount) {
+        fn_80161E40(contestIndex);
+        challengeTotal += fn_8016208C();
+        if (tutorialLevel <= challengeTotal) return contestIndex;
+        contestIndex++;
     }
     return 0;
 }
