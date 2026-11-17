@@ -323,8 +323,7 @@ s32 fn_8017A804(void *arg0, void *arg1) {
     f32 (*m)[3] = (f32 (*)[3])((u8 *)arg0 + 0x3C);
     f32 trace, t, scale, angle, si, x, y, z;
     f32 c0 = lbl_80561B7C;
-    s32 i, j, k, dummy;
-    dummy = 0;
+    register s32 i, j, k;
     *(f32 *)((u8 *)arg1+8)=*(f32 *)((u8 *)arg0+0x60);
     *(f32 *)((u8 *)arg1+12)=*(f32 *)((u8 *)arg0+0x64);
     *(f32 *)((u8 *)arg1+16)=*(f32 *)((u8 *)arg0+0x68);
@@ -338,7 +337,7 @@ s32 fn_8017A804(void *arg0, void *arg1) {
         q[2]=scale*(m[0][1]-m[1][0]);
     }else{
         qp = q;
-        i=dummy;
+        i=0;
         if(*(volatile f32 *)&m[1][1]>*(volatile f32 *)&m[0][0])i=1;
         if(*(volatile f32 *)&m[2][2]>*(volatile f32 *)&m[i][i])i=2;
         j=(i+1)%3; k=(j+1)%3;
@@ -367,7 +366,7 @@ s32 fn_8017A804(void *arg0, void *arg1) {
     z=lbl_80561B78<z?lbl_80561B78:z;
     z=z>lbl_80561B7C?z:lbl_80561B7C;
     ((s16*)arg1)[2]=(s16)(lbl_80561B98+(lbl_80561B7C+z*lbl_80561B80));
-    return 20 + (dummy - dummy);
+    return 20;
 }
 #pragma pop
 
@@ -411,8 +410,9 @@ int fn_8017B094(void) {
     return 0x14;
 }
 
-void fn_8017B09C(void* arg0, signed char* arg1) {
-    *arg1 = 0;
+/* Virtual SoundArchive query: reports false by writing 0 to the caller's output flag. */
+void fn_8017B09C(void* self, signed char* outFlag) {
+    *outFlag = 0;
 }
 extern int lbl_80331C28[64];
 #define SoundArchiveBaseCtor fn_80179D08
