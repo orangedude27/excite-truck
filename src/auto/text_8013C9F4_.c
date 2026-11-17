@@ -21,7 +21,10 @@ void fn_8013C9F4(long arg0) {
     }
 }
 #pragma scheduling on
-void fn_8013CA3C(void) {
+/* Empty hook: the close-score scan fn_8027AA50 calls it with the index of an entry
+ * and of the rival closest to it in score, once that best score gap still exceeds
+ * the threshold at lbl_8055F638; the shipped game does nothing here. */
+void fn_8013CA3C(s32 closestIndex, s32 entryIndex) {
 
 }
 
