@@ -1388,9 +1388,10 @@ extern "C" void fn_80146BD4(u8 *dst, const s8 *src, s32 maxLen) {
     }
 }
 
-extern "C" void fn_80146C08(void *arg0, s32 arg1) {
-    *(s32 *)((u8 *)arg0 + 4) = arg1;
-    *(void **)arg0 = (void *)&lbl_8032D214;
+extern "C" void fn_80146C08(void *obj, s32 parent) {
+    /* Initialise this sub-object: store the owner pointer at +0x4 and install its vtable (lbl_8032D214) at +0x0. */
+    *(s32 *)((u8 *)obj + 4) = parent;
+    *(void **)obj = (void *)&lbl_8032D214;
 }
 
 extern void lbl_8032D260(void);
