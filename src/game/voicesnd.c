@@ -534,8 +534,9 @@ void *fn_8020B1C8(void *arg0, int arg1) {
 
 #pragma pop
 
-int fn_8020B2A8(void *arg0) {
-    return *(int *)((char *)arg0 + 0x10) != 0;
+int fn_8020B2A8(void *voiceSnd) {
+    // Nonzero if this voice sound has a main sound resource loaded (+0x10).
+    return *(int *)((char *)voiceSnd + 0x10) != 0;
 }
 
 /* Clear slot slotIndex in the active voice mixer's work-buffer slot array (voiceSound is passed but unused). */
