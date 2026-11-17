@@ -4,7 +4,8 @@
 
 extern u8 *lbl_8055F834;
 typedef struct Rec48 { u32 w[18]; } Rec48;
-typedef struct Rec54 { u32 a, b, c; Rec48 rest; } Rec54;
+typedef struct Head3 { u32 a, b, c; } Head3;
+typedef struct Rec54 { Head3 h; Rec48 rest; } Rec54;
 extern int lbl_8055CB68;
 extern int fn_80128670(int);
 extern long fn_801EF024(long (*)(void *));
@@ -30,10 +31,10 @@ void fn_802A0940(void) {
 s32 fn_802A0944(void *arg0) {
     s32 index;
     Rec54 *table = (Rec54 *)lbl_8055F834;
-    if (*(s32 *)arg0 == 1)
-        index = 0x3F - *((s32 *)arg0 + 1);
-    else
+    if (*(s32 *)arg0 != 1)
         index = *((s32 *)arg0 + 1);
+    else
+        index = 0x3F - *((s32 *)arg0 + 1);
     table[index] = *(Rec54 *)arg0;
     return 0x54;
 }
@@ -203,7 +204,7 @@ void fn_802A0B54(void) {
             f0 = size + f3;
             f4 = base + (float)(first * 6);
             for (j = 0; j < *(int *)(record + 8); j++) {
-                float f = ((float)j / scale) * f4;
+                float f = (float)(((float)j / scale) * f4);
                 work.vertices[j].f0 = *(float *)(record + 0xC);
                 work.vertices[j].f4 = *(float *)(record + 0x10);
                 work.vertices[j].f8 = *(float *)(record + 0x14);
