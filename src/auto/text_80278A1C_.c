@@ -357,8 +357,12 @@ void fn_80131818(void*);
 void fn_80128670(s32);
 void fn_80128668(void*);
 #pragma dont_inline on
-void fn_802792E4(s32 arg0) {
-    fn_80279254(arg0, 0);
+/* RealName: GetCarResource. Look up the car layout named carName in
+ * gCarResourceList, raising its reference count, and load it through
+ * fn_80279004 when it is not there yet; the loader's second argument is
+ * unused, so this wrapper passes 0. Returns the car resource. */
+void* fn_802792E4(char* carName) {
+    return fn_80279254((s32)carName, 0);
 }
 #pragma dont_inline off
 /* Release a reference to a loaded car resource node; when its reference count
