@@ -3611,6 +3611,7 @@ extern "C" s32 fn_8015D374(void* object) {
     return *(s32*)((u8*)object + 0x264);
 }
 
+// Trivial callback stub in this player's vtable group; always returns 1 (true).
 extern "C" u32 fn_8015D37C(void) { return 1; }
 
 extern "C" void fn_8015D384(Unk801577F0* arg0) {
