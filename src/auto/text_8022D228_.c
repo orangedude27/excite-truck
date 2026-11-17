@@ -420,8 +420,10 @@ int fn_8022DD88(void *arg0) { return *(int *)((char *)arg0 + 0x44); }
 
 int fn_8022DD90(int arg0,int arg1) { return arg0 + arg1 * 16; }
 
-void fn_8022DD9C(void *arg0,int *arg1,int *arg2) {
-*arg1=*(int *)((char *)arg0+0x18); *arg2=4;
+/* Return a float gauge's value pointer (the word at +0x18) in *valuePtrOut and write the type code 4 to *typeOut. */
+void fn_8022DD9C(void *gauge, int *valuePtrOut, int *typeOut) {
+    *valuePtrOut = *(int *)((char *)gauge + 0x18);
+    *typeOut = 4;
 }
 
 #pragma push
