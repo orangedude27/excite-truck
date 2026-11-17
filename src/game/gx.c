@@ -3492,29 +3492,43 @@ extern char lbl_8055D100;
       dst[11] = src[11];
       GXSetCurrentMtx(0);
   }
+/* Apply the pending viewport change held in the sViewport settings block (+1 is
+   the dirty flag): clear it, set the GX viewport (jittered by field when field
+   rendering is enabled), set the matching scissor box, then invalidate the
+   cached vertex format. */
 void fn_802D1678() {
-    if (lbl_804C9778[1] != 0) {
-        lbl_804C9778[1] = 0;
-        if (*(unsigned char *)((unsigned char *)lbl_8055FD64 + 0x18) != 0) {
+#define sViewport           lbl_804C9778
+#define gRenderMode         lbl_8055FD64
+#define gNearPlane          lbl_80564F88
+#define gFarPlane           lbl_80564F8C
+#define invalidateVtxFormat fn_802D6C68
+    if (sViewport[1] != 0) {
+        sViewport[1] = 0;
+        if (*(unsigned char *)((unsigned char *)gRenderMode + 0x18) != 0) {
             ((void (*)(unsigned int, float, float, float, float, float, float))GXSetViewportJitter)(
                 VIGetNextField(),
-                (float)*(int *)(lbl_804C9778 + 0x1C),
-                (float)*(int *)(lbl_804C9778 + 0x20),
-                (float)*(int *)(lbl_804C9778 + 0x24),
-                (float)*(int *)(lbl_804C9778 + 0x28),
-                lbl_80564F88, lbl_80564F8C);
+                (float)*(int *)(sViewport + 0x1C),
+                (float)*(int *)(sViewport + 0x20),
+                (float)*(int *)(sViewport + 0x24),
+                (float)*(int *)(sViewport + 0x28),
+                gNearPlane, gFarPlane);
         } else {
             ((void (*)(float, float, float, float, float, float))GXSetViewport)(
-                (float)*(int *)(lbl_804C9778 + 0x1C),
-                (float)*(int *)(lbl_804C9778 + 0x20),
-                (float)*(int *)(lbl_804C9778 + 0x24),
-                (float)*(int *)(lbl_804C9778 + 0x28),
-                lbl_80564F88, lbl_80564F8C);
+                (float)*(int *)(sViewport + 0x1C),
+                (float)*(int *)(sViewport + 0x20),
+                (float)*(int *)(sViewport + 0x24),
+                (float)*(int *)(sViewport + 0x28),
+                gNearPlane, gFarPlane);
         }
-        GXSetScissor(*(unsigned int *)(lbl_804C9778 + 0x1C),
-                     *(unsigned int *)(lbl_804C9778 + 0x20),
-                     *(unsigned int *)(lbl_804C9778 + 0x24),
-                     *(unsigned int *)(lbl_804C9778 + 0x28));
-        fn_802D6C68();
+        GXSetScissor(*(unsigned int *)(sViewport + 0x1C),
+                     *(unsigned int *)(sViewport + 0x20),
+                     *(unsigned int *)(sViewport + 0x24),
+                     *(unsigned int *)(sViewport + 0x28));
+        invalidateVtxFormat();
     }
+#undef invalidateVtxFormat
+#undef gFarPlane
+#undef gNearPlane
+#undef gRenderMode
+#undef sViewport
 }
