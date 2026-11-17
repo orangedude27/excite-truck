@@ -199,8 +199,6 @@ void fn_801A7A08(const char *keySpec, int valueId, int groupId) {
 }
 #pragma pop
 extern float lbl_80562458;
-#pragma push
-#pragma scheduling invalid_target
 void fn_801A7A5C(void) {
     int i, j;
     float v;
