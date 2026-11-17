@@ -13,6 +13,7 @@ extern float lbl_805646F0;
 extern double __fabs(double);
 extern float lbl_80558DC4[];
 extern float lbl_805646E8, lbl_805646EC, lbl_805646F4;
+extern double lbl_805646F8;
 extern void fn_801E9E30(s32, float *);
 extern void fn_802CA09C(s32, u32, u32, float, float, float, float, float);
 extern void fn_802A9428(void);
@@ -52,7 +53,14 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
         if (i < 0xFF)
             c = i;
         n = -arg4;
-        color = ((n & 0xFF) | ((n << 8) & 0xFF00)) | (((n << 16) & 0xFF0000) | (c << 24));
+        {
+            u32 lo, hi;
+            lo = __rlwinm(n, 0, 24, 31);
+            lo = __rlwimi(lo, n, 8, 16, 23);
+            hi = __rlwinm(n, 24, 24, 7);
+            hi = __rlwimi(hi, c, 24, 0, 7);
+            color = lo | hi;
+        }
         zero = lbl_805646F0;
         for (i = 0; i < 4; i++) {
             u32 a = i & 1;
