@@ -897,7 +897,7 @@ void fn_8028F2EC(int *arg0) {
 extern float fn_80129DC4(int, float, float);
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8028F444(float *arg0, float *arg1, float *arg2, float *arg3, float farg0, float farg1) {
     float t0 = arg2[0];
     float h0 = fn_80129DC4(0, -t0, t0);
@@ -1008,19 +1008,20 @@ void fn_8028F608(float *out0, float *out1, float (*matrix)[3], float angle) {
 #pragma pop
 int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
     int count;
-    void *self;
-    int *params;
-    self = arg0;
-    params = (int *)arg1;
-    ((int (*)(void *))fn_8028E61C)(self);
-    ((void (*)(void *, void *))fn_8028FD00)(self, params);
-    count = params[1];
-    *(void **)((char *)self + 0x8c) =
-        fn_8002F37C(fn_8012850C(count * 0x28 + 0x10, lbl_80348FC4),
-                    (void *)fn_8028F854, 0, 0x28, count);
-    *(int *)((char *)self + 0x98) = count;
-    *(int *)((char *)self + 0xa4) = fn_802CAC28(arg2, 0);
-    return (int)self;
+    volatile int *countp;
+    void *buffer;
+    void *result;
+
+    countp = (volatile int *)((char *)arg1 + 4);
+    ((int (*)(void *))fn_8028E61C)(arg0);
+    ((void (*)(void *, void *))fn_8028FD00)(arg0, arg1);
+    count = *countp;
+    buffer = fn_8012850C(count * 0x28 + 0x10, &lbl_80348FC4);
+    result = fn_8002F37C(buffer, (void *)fn_8028F854, 0, 0x28, count);
+    *(void **)((char *)arg0 + 0x8c) = result;
+    *(int *)((char *)arg0 + 0x98) = count;
+    *(void **)((char *)arg0 + 0xa4) = (void *)fn_802CAC28(arg2, 0);
+    return (int)arg0;
 }
 #pragma pop
 void fn_8028F854(void) {}
@@ -1441,15 +1442,16 @@ typedef struct { float x, y, z; unsigned int color; float u, v; } EfVtx;
 typedef struct { float m[9]; } EfMtx3;
 #pragma scheduling off
 void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0) {
-    register float a, b, c, d, e, f, g, h, i, j, k, l, m, n;
-    register float o, p, q, r, s, t, u, v, w, x, y, z;
-    register float aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, an;
+    float a, b, c, d, e, f, g, h, i, j, k, l, m, n;
+    float o, p, q, r, s, t, u, v, w, x, y, z;
+    float aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, an;
     volatile float spill10, spill8, spillC;
+
     a = *(volatile float *)&lbl_8056444C;
     b = *(volatile float *)((char *)arg0 + 0xa0);
     c = a * farg0;
-    d = farg0 * b;
     e = *(volatile float *)&lbl_80564448;
+    d = farg0 * b;
     f = *(volatile float *)((char *)arg0 + 0x34);
     g = *(volatile float *)&lbl_80564454;
     h = g * f;
@@ -1488,10 +1490,12 @@ void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0) {
     am = aj * farg0;
     spillC = aj;
     an = aa + am;
+
     *(float *)arg1 = ak;
     *(float *)((char *)arg1 + 8) = al;
     *(float *)((char *)arg1 + 4) = an;
 }
+#pragma scheduling reset
 extern void *fn_802C86DC(void);
 extern void fn_802C8DB8(void *, int, void *, int);
 extern float PSVECDotProduct(float *, float *);
