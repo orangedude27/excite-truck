@@ -957,6 +957,7 @@ extern "C" s32 fn_800A59FC(void *arg0) {
 #pragma opt_common_subs reset
 extern "C" s32 fn_800A59FC(void *);
 extern "C" s32 fn_800A6A40(void *);
+#define PIN_R30 asm("r30")
 extern "C" s32 fn_800A5AE4(void *arg0, void *arg1) {
     s32 var_r30 = 0;
     u16 temp;
