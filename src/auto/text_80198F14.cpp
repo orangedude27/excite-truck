@@ -458,6 +458,7 @@ extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *
     return 0;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* arg4, f32 farg0) {
     Vec proj, d, a, b, p;
     f32 dot, mag, limit;
@@ -473,11 +474,12 @@ extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* ar
     d.x-=proj.x; d.y-=proj.y; d.z-=proj.z;
     p.x=d.x*lbl_805622E4; p.y=d.y*lbl_805622E4; p.z=d.z*lbl_805622E4;
     mag=PSVECMag(&p);
-    limit=lbl_805622E8*farg0*(*(f32*)((u8*)arg3+0x14)+*(f32*)((u8*)arg4+0x14));
+    limit=lbl_805622E8*farg0*(*(f32*)((u8*)arg4+0x14)+*(f32*)((u8*)arg3+0x14));
     if (mag>limit) { f32 s=limit/mag; p.x*=s; p.y*=s; p.z*=s; }
-    *arg0=p;
+    arg0->x = p.x;
+    arg0->y = p.y;
+    arg0->z = p.z;
 }
-#pragma dont_inline reset
 
 #pragma dont_inline on
 extern "C" void fn_80199870(void* car, u32 key = 0) {
@@ -1770,8 +1772,10 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
     f32 radius = radius0 + radius1;
     f32 radiusSquared = radius * radius;
     if (PSVECDotProduct((Vec *)&local[12], (Vec *)&local[12]) < radiusSquared) {
-        u32 result = (u32)fn_8019DAB0(object0, object1) | 0u;
-        u32 found = ((u32)-(s32)result | result) >> 31;
+        u32 found = 0;
+        s32 result = fn_8019DAB0(object0, object1);
+        u32 raw = (u32)result;
+        found = ((u32)(-result) | raw) >> 31;
         if (found != 0) {
             return 1;
         }
@@ -1780,22 +1784,23 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
         volatile u32 *words = (volatile u32 *)mat;
         u32 v14 = words[6];
         u32 v18 = words[7];
-        f32 neg_w = -w;
         local[3] = v14;
-        u32 v1C = words[8];
         local[4] = v18;
-        u32 v8 = words[9];
-        f32 f0 = *(volatile f32 *)&local[3];
+        u32 v1C = words[8];
         local[5] = v1C;
+        u32 v8 = words[9];
         u32 vC = words[10];
-        f32 f2 = *(volatile f32 *)&local[4];
-        local[0] = v8;
         u32 v10 = words[11];
-        f32 f5 = *(volatile f32 *)&local[5];
+        f32 neg_w = -w;
+        local[0] = v8;
         local[1] = vC;
-        f32 f3 = *(volatile f32 *)&local[0];
         local[2] = v10;
+        f32 f0 = *(volatile f32 *)&local[3];
+        f32 f2 = *(volatile f32 *)&local[4];
+        f32 f5 = *(volatile f32 *)&local[5];
+        f32 f3 = *(volatile f32 *)&local[0];
         f32 f8 = *(volatile f32 *)&local[1];
+        f32 f5trans = *(volatile f32 *)&local[2];
         f32 f = *(f32 *)((u8 *)object0 + 0x24);
         f32 f10 = f0 * w;
         f32 f7 = f2 * w;
@@ -1804,7 +1809,6 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
         f2 = f2 * neg_w;
         f32 f9 = f3 + f10;
         f3 = f3 + f0;
-        f32 f5trans = *(volatile f32 *)&local[2];
         f5 = f5 * neg_w;
         f32 fposY = f8 + f7;
         *(volatile f32 *)&local[9] = f9;
@@ -1817,14 +1821,14 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
         *(volatile f32 *)&local[7] = fnegY;
         *(volatile f32 *)&local[8] = fnegZ;
         s32 first = fn_8019CCCC(object0, (Vec *)&local[9], object1, f);
-        s32 combined = (s32)found | first;
-        found = ((u32)(-combined) | (u32)combined) >> 31;
+        s32 c2 = (s32)found | first;
+        found = ((u32)(-c2) | (u32)c2) >> 31;
         if (found != 0) {
             return 1;
         }
         s32 second = fn_8019CCCC(object0, (Vec *)&local[6], object1, f);
-        combined = (s32)found | second;
-        return ((u32)(-combined) | (u32)combined) >> 31;
+        s32 c3 = (s32)found | second;
+        return ((u32)(-c3) | (u32)c3) >> 31;
     }
     return 0;
 }
@@ -4893,69 +4897,75 @@ extern "C" void fn_801A38E4(int arg0, void *arg1) {
 }
 extern f32 lbl_80562314;
 extern "C" void fn_801E41D8(void*, void*, s32, f32);
-extern "C" void fn_801A3BE0(void* arg0, void* arg1) {
-    f32 pos[3];
-    f32 v[3];
-    f32 out[3];
-    f32* entry = (f32*)((u8*)arg0 + 0x3C);
-    const f32* m0 = *(const f32**)((u8*)arg0 + 0xC);
-    s32 g = lbl_8055E598;
-    s32 i = 0;
-    u32 t0 = ((u32*)m0)[9];
-    u32 t1 = ((u32*)m0)[10];
-    u32 t2 = ((u32*)m0)[11];
-    ((u32*)pos)[0] = t0;
-    ((u32*)pos)[1] = t1;
-    ((u32*)pos)[2] = t2;
-    for (; i < *(s32*)((u8*)arg0 + 0xBC); entry += 4, i++) {
-        f32 w = entry[3];
-        v[0] = entry[0] * w;
-        v[1] = entry[1] * w;
-        v[2] = entry[2] * w;
-        const f32* m = *(const f32**)((u8*)arg0 + 0xC);
-        if (out == v) {
-            f32 xc = v[0], yc = v[1], zc = v[2];
-            f32 a0 = yc * m[3];
-            f32 b0 = xc * m[0];
-            f32 b1 = yc * m[4];
-            f32 a1 = xc * m[1];
-            f32 b2 = yc * m[5];
-            f32 a2 = xc * m[2];
-            f32 c0 = zc * m[6];
-            f32 c1 = zc * m[7];
-            f32 c2 = zc * m[8];
-            out[0] = a0 + b0 + c0;
-            out[1] = b1 + a1 + c1;
-            out[2] = b2 + a2 + c2;
-        } else {
-            f32 a0 = v[1] * m[3];
-            f32 b0 = v[0] * m[0];
-            f32 c0 = v[2] * m[6];
-            out[0] = a0 + b0 + c0;
-            f32 a1 = v[1] * m[4];
-            f32 b1 = v[0] * m[1];
-            f32 c1 = v[2] * m[7];
-            out[1] = a1 + b1 + c1;
-            f32 a2 = v[1] * m[5];
-            f32 b2 = v[0] * m[2];
-            f32 c2 = v[2] * m[8];
-            out[2] = a2 + b2 + c2;
-        }
-        out[0] += m[9];
-        out[1] += m[10];
-        out[2] += m[11];
-        fn_801E41D8(pos, out, g, lbl_80562314);
+extern "C" void fn_801A3BE0(void *arg0, void *arg1)
+{
+  f32 pos[3];
+  f32 v[3];
+  f32 out[3];
+  f32 *entry = (f32 *) (((u8 *) arg0) + 0x3C);
+  const f32 *m0 = *((const f32 **) (((u8 *) arg0) + 0xC));
+  s32 g = lbl_8055E598;
+  s32 i = 0;
+  u32 t0 = ((u32 *) m0)[9];
+  u32 t1 = ((u32 *) m0)[10];
+  ((u32 *) pos)[0] = t0;
+  ((u32 *) pos)[1] = t1;
+  ((u32 *) pos)[2] = ((u32 *) m0)[11];
+  for (; i < *((s32 *) (((u8 *) arg0) + 0xBC)); entry += 4, i++)
+  {
+    f32 w = entry[3];
+    v[0] = entry[0] * w;
+    v[1] = entry[1] * w;
+    v[2] = entry[2] * w;
+    const f32 *m = *((const f32 **) (((u8 *) arg0) + 0xC));
+    if (out == v)
+    {
+      float m10 = m[3];
+      float m00 = m[0];
+      float m11 = m[4];
+      float m01 = m[1];
+      float m20 = m[6];
+      float m21 = m[7];
+      float m12 = m[5];
+      float m02 = m[2];
+      float m22 = m[8];
+      float x = v[0];
+      float y = v[1];
+      float z = v[2];
+      out[0] = (z * m20) + ((x * m00) + (y * m10));
+      out[1] = (z * m21) + ((x * m01) + (y * m11));
+      out[2] = (z * m22) + ((x * m02) + (y * m12));
     }
+    else
+    {
+      float m10 = m[3];
+      float m00 = m[0];
+      float m20 = m[6];
+      float x = v[0];
+      float y = v[1];
+      float z = v[2];
+      out[0] = (z * m20) + ((x * m00) + (y * m10));
+      float m11 = m[4];
+      float m01 = m[1];
+      float m21 = m[7];
+      out[1] = (z * m21) + ((x * m01) + (y * m11));
+      float m12 = m[5];
+      float m02 = m[2];
+      float m22 = m[8];
+      out[2] = (z * m22) + ((x * m02) + (y * m12));
+    }
+    out[0] += m[9];
+    out[1] += m[10];
+    out[2] += m[11];
+    fn_801E41D8(pos, out, g, lbl_80562314);
+  }
+
 }
 
 #pragma push
 #pragma small_data off
-extern s32 lbl_80333728;
+__declspec(section ".data") extern s32 lbl_80333728;
 extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-#pragma push
-#pragma small_data off
-    extern s32 lbl_80333728;
-#pragma pop
     struct Vec { f32 x, y, z; };
     void *object;
     Vec *vectors;
