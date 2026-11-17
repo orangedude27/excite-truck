@@ -83,18 +83,16 @@ s32 fn_80243478(s32 arg0) {
     return count;
 }
 
+#pragma scheduling invalid_target
 s32 fn_80243528(s32 arg0, s32 arg1) {
-    s32 n = arg0;
     s32 *base = (s32 *)lbl_803428B0 + arg1 * 48;
     s32 sum = 0;
     s32 i;
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < arg0; i++) {
         sum += base[i * 3 + 1];
     }
     return sum;
 }
-
-#pragma unroll on
 /* MenuTable_EntryAtOffset: given a cumulative horizontal offset (the sum of
  * entry widths before the cursor, from MenuTable_OffsetOfEntry) within a menu
  * group, find the entry whose width range contains it, falling back to the
