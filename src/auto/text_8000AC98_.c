@@ -888,6 +888,8 @@ void fn_8000BD64(void) {
 }
 
 void fn_8000BD98(void) {
+    /* No-op end-of-game-loop hook: invoked with the final frame count once frame
+     * polling ends, just before the run's result is reported. Does nothing here. */
     return;
 }
 
