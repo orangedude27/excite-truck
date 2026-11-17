@@ -462,7 +462,8 @@ float fn_8013B5DC(int entryIndex, int randomState) {
 #pragma dont_inline on
 float fn_8013B650(int arg0) {
     float temp = fn_80134B58((float *)lbl_8032C364, lbl_80561434);
-    return fn_8013B5DC(arg0, 3) + temp;
+    float result = fn_8013B5DC(arg0, 3);
+    return result + temp;
 }
 #pragma pop
 
