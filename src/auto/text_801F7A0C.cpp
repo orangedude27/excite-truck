@@ -252,8 +252,8 @@ extern "C" int fn_801F88F4(void *);
 
 struct F92Node {
     u8 pad0[0x20];
-    F92Node *next; // 0x20
-    F92Node *f24;  // 0x24
+    F92Node *next; // 0x20: next object on the placed-object list
+    F92Node *f24;  // 0x24: next object of this object's own child chain
 };
 
 extern "C" void fn_801FA010(void **);
