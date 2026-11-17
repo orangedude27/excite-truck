@@ -54,8 +54,9 @@ s32 fn_80249538(s32 object, s32 deleteFlag) {
     return object;
 }
 
-void fn_80249578(void *arg0) {
-    fn_8023E52C(*(s32 *)*(void **)((char *)arg0 + 0x10));
+/* Request the controller grip-name string for the index held by this object. */
+void fn_80249578(void *gripSetting) {
+    fn_8023E52C(*(s32 *)*(void **)((char *)gripSetting + 0x10));
 }
 
 void fn_80249584(void) {}
