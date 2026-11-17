@@ -922,21 +922,30 @@ extern float lbl_80562FE4;
 #pragma push
 #pragma processor 750
 void fn_801F6778(float *out, int count, float *angles, float offset, float scale) {
+#pragma scheduling invalid_target
     float buf[4];
+    float m, d0, d1, d2, a0, a1, a2;
     float f6, f4, f31, f30, f29, f28, f27, f26;
     int i;
     buf[0] = lbl_80562FE4;
     fn_801E8CB8(&buf[1], &buf[0]);
+    m = buf[0];
+    d0 = buf[1];
+    d1 = buf[2];
+    d2 = buf[3];
+    a0 = angles[0];
+    a1 = angles[1];
+    a2 = angles[2];
     i = 0;
-    f6 = buf[0] * scale;
-    f31 = buf[1] * f6;
-    f4 = buf[2] * f6;
-    f29 = buf[3] * f6;
+    f6 = m * scale;
+    f4 = d1 * f6;
+    f31 = d0 * f6;
+    f29 = d2 * f6;
     f30 = f4 - offset;
     buf[0] = f6;
-    f28 = angles[0] * f6;
-    f27 = angles[1] * f6;
-    f26 = angles[2] * f6;
+    f28 = a0 * f6;
+    f27 = a1 * f6;
+    f26 = a2 * f6;
     while (i < count) {
         out[0] = f31 + fn_80287BC8(-f28, f28);
         out[1] = f30 + fn_80287BC8(-f27, f27);
@@ -1631,7 +1640,10 @@ int fn_801F79B0(int object, int deleteFlag) {
     return object;
 }
 
-int fn_801F79F0(void) { return 3; }
+int fn_801F79F0(void) {
+    /* Constant getter (returns 3); likely a virtual method reached through a dispatch table. */
+    return 3;
+}
 
 int fn_801F79F8(void) { return 3; }
 
