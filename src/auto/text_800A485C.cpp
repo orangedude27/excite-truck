@@ -25560,10 +25560,11 @@ extern "C" s32 fn_800A4B9C(u16 *left, u16 *right, s32 count) {
 
 extern "C" s32 fn_800A4BE8(s32 arg0, s32 arg1) { return (arg0 << 16) + arg1; }
 
-extern "C" s32 fn_800A4BF4(s32 arg0, u16 *arg1, s16 *arg2) {
-    *arg1 = (u32)arg0 >> 16;
-    *arg2 = arg0;
-    return arg0;
+extern "C" s32 fn_800A4BF4(s32 packed, u16 *outLength, s16 *inLength) {
+    /* Unpack a Unicode-conversion callback result: high halfword is the bytes written (*outLength), low halfword the UTF-16 units consumed (*inLength). */
+    *outLength = (u32)packed >> 16;
+    *inLength = packed;
+    return packed;
 }
 
 /* Read the little-endian 16-bit unsigned value (a two-byte character code in
