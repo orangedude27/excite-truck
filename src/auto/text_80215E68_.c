@@ -603,8 +603,12 @@ s32 fn_802168F0(void *arg0) {
 #pragma pop
 
 extern char lbl_8055EF99;
+/* Set the one-shot flag that suppresses the next fn_80214D50(4) speaker-volume
+   refresh in the screen update; that update clears the flag once it is used. */
 void fn_80216CA8(void) {
-    lbl_8055EF99 = 1;
+#define sSkipSpeakerRefresh lbl_8055EF99
+    sSkipSpeakerRefresh = 1;
+#undef sSkipSpeakerRefresh
 }
 
 f32 fn_80216CB4(void) { return lbl_8055EF94; }
