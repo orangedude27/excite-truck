@@ -333,7 +333,8 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
     s32 index, result, i, n, wordA, wordB, count, j;
     void *item, *record, *ctx, *info, *vtable, *infoDst;
     register void *self = arg0;
-    void *desired = arg2;
+    register void *desired = arg2;
+    register s32 zero = 0;
     char *src, *dst, *entries, *output, *zeroBase, *textItem, *object;
     char c;
     struct Collection {
@@ -363,9 +364,9 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
     };
 
     *(s32 *)((u8 *)self + 0x10) = arg1;
-    *(u8 *)((u8 *)self + 0x0) = 0;
+    *(u8 *)((u8 *)self + 0x0) = zero;
     *(s32 *)((u8 *)self + 0x4) = -1;
-    *(u8 *)((u8 *)self + 0x8) = 0;
+    *(u8 *)((u8 *)self + 0x8) = zero;
     *(void **)((u8 *)self + 0x0C) = lbl_80342618;
     *(void **)((u8 *)self + 0x14) = desired;
     *(void **)((u8 *)self + 0x18) = arg3;
@@ -373,7 +374,7 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
     *(void **)((u8 *)self + 0x20) = arg5;
     *(void **)((u8 *)self + 0x24) = fn_8027DB40(6);
     *(u8 *)((u8 *)self + 0x8) = 1;
-    *(s32 *)((u8 *)self + 0x28) = 0;
+    *(s32 *)((u8 *)self + 0x28) = zero;
 
     j = 0;
     count = ((Collection *)*(void **)((u8 *)self + 0x24))->getCount();
@@ -996,8 +997,9 @@ do_loop:
     return 1;
 }
 #pragma scheduling on
-s32 fn_80241EE8(s32 arg0) {
-    return arg0 + 0x4C;
+s32 fn_80241EE8(s32 index) {
+    /* Offset helper: add the fixed 0x4C-byte entry/header size to the given index. */
+    return index + 0x4C;
 }
 
 #pragma cplusplus on
