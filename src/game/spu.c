@@ -1013,8 +1013,9 @@ void fn_802E6238(void) {}
 
 void fn_802E623C(void) {}
 
-void fn_802E6240(void* arg0, int arg1) {
-    *(int*)((char*)arg0 + 0x18) = arg1;
+void fn_802E6240(void* voice, int flags) {
+    // Set a voice handle's auxiliary send flags (SND_SetAuxFlags), stored at +0x18.
+    *(int*)((char*)voice + 0x18) = flags;
 }
 
 /* Set the volume of one Wii Remote speaker channel (spuSetRemoteSpeakerVolume). */
