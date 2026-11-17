@@ -69,8 +69,9 @@ void fn_8012F448(void *arg0, s32 arg1) {
     ((s32 *)arg0)[1] = arg1;
 }
 
-s32 fn_8012F450(void *arg0) {
-    return ((s32 *)arg0)[1];
+/* Return the current byte position (pos) of a MemStreamPtr cursor. */
+s32 fn_8012F450(MemStreamPtr *cursor) {
+    return cursor->pos;
 }
 
 /* Appends a 32-bit word to the stream at its cursor and advances the cursor
