@@ -11695,8 +11695,9 @@ void btm_sco_acl_removed(BD_ADDR addr) {
     }
 }
 
-void fn_8007DEF4(void *arg0) {
-    GKI_freebuf(arg0);
+void fn_8007DEF4(void *p_msg) {
+    /* Discard an incoming HCI SCO (audio) buffer in the BTU task. */
+    GKI_freebuf(p_msg);
 }
 
 /* Set the BTA subsystem trace level, which controls debug logging verbosity across the Bluetooth modules. */
