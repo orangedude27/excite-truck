@@ -2013,9 +2013,10 @@ extern "C" s32 fn_800A7688(void *object, void **callbacks, void **unused) {
     return 0;
 }
 
-extern "C" s32 fn_800A76A0(void *arg0) {
-    *(u32 *)((u8 *)arg0 + 0x20) = 0;
-    *(u32 *)((u8 *)arg0 + 0x24) = 0;
+/* Clear the object's two stored callback pointers at +0x20/+0x24; returns 0. */
+extern "C" s32 fn_800A76A0(void *object) {
+    *(u32 *)((u8 *)object + 0x20) = 0;
+    *(u32 *)((u8 *)object + 0x24) = 0;
     return 0;
 }
 
