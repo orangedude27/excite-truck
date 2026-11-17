@@ -502,8 +502,9 @@ void fn_802CAC34(int name, int resource) {
     fn_802CA898(name, 0, resource, 0xE);
 }
 
-void fn_802CAC44(int arg0, int arg1) {
-    fn_802CA898(arg0, 0, 0, arg1);
+void fn_802CAC44(int name, int type) {
+    /* Register a named texture with no scene id and no backing resource, using type as its category. */
+    fn_802CA898(name, 0, 0, type);
 }
 
 extern void fn_8012C4D8(void *);
