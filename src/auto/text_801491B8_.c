@@ -1131,7 +1131,8 @@ unsigned int fn_8014C808(unsigned int arg0) { return arg0 >> 24; }
 
 unsigned char fn_8014C810(unsigned char arg0) { return arg0; }
 
-unsigned char fn_8014C818(unsigned int arg0) { return (unsigned char)(arg0 >> 8); }
+/* Extract the green channel (byte at bits 8-15) of a packed RGBA8888 color. */
+unsigned char fn_8014C818(unsigned int color) { return (unsigned char)(color >> 8); }
 
 unsigned char fn_8014C820(unsigned int arg0) { return (unsigned char)(arg0 >> 16); }
 
