@@ -2321,34 +2321,23 @@ extern "C" void fn_8019EF00(void* arg0) {
     Object* self = (Object*)arg0;
     f32* m = self->matrix;
     if (&self->output == (volatile Vec*)&self->input) {
-        f32 y = self->input.y;
-        f32 p03 = y * m[3];
-        f32 p14 = y * m[4];
-        f32 p25 = y * m[5];
-        f32 x = self->input.x;
-        f32 p00 = x * m[0];
-        f32 p11 = x * m[1];
-        f32 p22 = x * m[2];
-        f32 z = self->input.z;
-        f32 p06 = z * m[6];
-        f32 p17 = z * m[7];
-        f32 p28 = z * m[8];
-        self->output.x = p00 + p03 + p06;
-        self->output.y = p11 + p14 + p17;
-        self->output.z = p22 + p25 + p28;
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m11 = m[4]; m12 = m[5]; m00 = m[0]; m01 = m[1]; m02 = m[2]; m20 = m[6]; m21 = m[7]; m22 = m[8];
+        x = self->input.x; y = self->input.y; z = self->input.z;
+        self->output.x = z * m20 + (x * m00 + y * m10);
+        self->output.y = z * m21 + (x * m01 + y * m11);
+        self->output.z = z * m22 + (x * m02 + y * m12);
     } else {
-        f32 p03 = self->input.y * m[3];
-        f32 p00 = self->input.x * m[0];
-        f32 p06 = self->input.z * m[6];
-        self->output.x = p00 + p03 + p06;
-        f32 p14 = self->input.y * m[4];
-        f32 p11 = self->input.x * m[1];
-        f32 p17 = self->input.z * m[7];
-        self->output.y = p11 + p14 + p17;
-        f32 p25 = self->input.y * m[5];
-        f32 p22 = self->input.x * m[2];
-        f32 p28 = self->input.z * m[8];
-        self->output.z = p22 + p25 + p28;
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m00 = m[0]; m20 = m[6];
+        x = self->input.x; y = self->input.y; z = self->input.z;
+        self->output.x = z * m20 + (x * m00 + y * m10);
+        m11 = m[4]; m01 = m[1]; m21 = m[7];
+        self->output.y = z * m21 + (x * m01 + y * m11);
+        m12 = m[5]; m02 = m[2]; m22 = m[8];
+        self->output.z = z * m22 + (x * m02 + y * m12);
     }
     self->output.x += m[9];
     self->output.y += m[10];
@@ -4118,49 +4107,51 @@ extern "C" void fn_801A2474(void *arg0) {
         u32 *matrix;
         char pad10[0x28];
         Vec input;
-        u32 cache[9];
+        char pad14[0x24];
         volatile Vec output;
     };
     Object *self = (Object *)arg0;
-    u32 *mw = self->matrix;
-    f32 *m = (f32 *)mw;
-    u32 m0 = mw[0], m1 = mw[1], m2, m3, m4, m5, m6, m7, m8;
-    self->cache[0] = m0; self->cache[1] = m1;
-    m2 = mw[2]; self->cache[2] = m2;
+    register u32 *mw = self->matrix;
+    register f32 *m = (f32 *)mw;
+    u32 *cache = (u32 *)((char *)self + 0x44);
+    u32 m0, m1, m2, m3, m4, m5, m6, m7, m8;
+    m0 = mw[0]; m1 = mw[1];
+    cache[0] = m0; cache[1] = m1;
+    m2 = mw[2]; cache[2] = m2;
     m3 = mw[3]; m4 = mw[4];
-    self->cache[3] = m3; self->cache[4] = m4;
-    m5 = mw[5]; self->cache[5] = m5;
+    cache[3] = m3; cache[4] = m4;
+    m5 = mw[5]; cache[5] = m5;
     m6 = mw[6]; m7 = mw[7];
-    self->cache[6] = m6; self->cache[7] = m7;
-    m8 = mw[8]; self->cache[8] = m8;
+    cache[6] = m6; cache[7] = m7;
+    m8 = mw[8]; cache[8] = m8;
     if (&self->output == (volatile Vec *)&self->input) {
-        f32 y = self->input.y;
-        f32 p03 = y * m[3];
-        f32 p14 = y * m[4];
-        f32 p25 = y * m[5];
-        f32 x = self->input.x;
-        f32 p00 = x * m[0];
-        f32 p11 = x * m[1];
-        f32 p22 = x * m[2];
-        f32 z = self->input.z;
-        f32 p06 = z * m[6];
-        f32 p17 = z * m[7];
-        f32 p28 = z * m[8];
+        register f32 y = self->input.y;
+        register f32 p03 = y * m[3];
+        register f32 p14 = y * m[4];
+        register f32 p25 = y * m[5];
+        register f32 x = self->input.x;
+        register f32 p00 = x * m[0];
+        register f32 p11 = x * m[1];
+        register f32 p22 = x * m[2];
+        register f32 z = self->input.z;
+        register f32 p06 = z * m[6];
+        register f32 p17 = z * m[7];
+        register f32 p28 = z * m[8];
         self->output.x = p00 + p03 + p06;
         self->output.y = p11 + p14 + p17;
         self->output.z = p22 + p25 + p28;
     } else {
-        f32 p03 = self->input.y * m[3];
-        f32 p00 = self->input.x * m[0];
-        f32 p06 = self->input.z * m[6];
+        register f32 p03 = self->input.y * m[3];
+        register f32 p00 = self->input.x * m[0];
+        register f32 p06 = self->input.z * m[6];
         self->output.x = p00 + p03 + p06;
-        f32 p14 = self->input.y * m[4];
-        f32 p11 = self->input.x * m[1];
-        f32 p17 = self->input.z * m[7];
+        register f32 p14 = self->input.y * m[4];
+        register f32 p11 = self->input.x * m[1];
+        register f32 p17 = self->input.z * m[7];
         self->output.y = p11 + p14 + p17;
-        f32 p25 = self->input.y * m[5];
-        f32 p22 = self->input.x * m[2];
-        f32 p28 = self->input.z * m[8];
+        register f32 p25 = self->input.y * m[5];
+        register f32 p22 = self->input.x * m[2];
+        register f32 p28 = self->input.z * m[8];
         self->output.z = p22 + p25 + p28;
     }
     self->output.x += m[9];
@@ -4700,51 +4691,96 @@ extern "C" void fn_801A34D0(void *arg0, Vec *arg1, Vec *arg2) {
     extern f32 lbl_80562380;
     struct Bounds { u8 pad0[0xC]; f32 *matrix; u8 pad1[0x14]; Vec min; Vec max; };
     Bounds *box = (Bounds *)arg0;
-    f32 sp1C;
-    f32 sp18;
     f32 sp14[3];
-    f32 sp10;
-    f32 spC;
     f32 sp8[3];
     f32 *mat = box->matrix;
     if (&sp8[0] == &box->min.x) {
+        f32 m3 = mat[3];
+        f32 m0 = mat[0];
+        f32 x = box->min.x;
         f32 y = box->min.y;
-        f32 x = *&box->min.x;
+        f32 m4 = mat[4];
+        f32 m1 = mat[1];
+        f32 m6 = mat[6];
         f32 z = box->min.z;
-        f32 y0 = y * mat[3];
-        f32 y1 = y * mat[4];
-        f32 x0 = mat[0] * x;
-        f32 x1 = mat[1] * x;
-        f32 y2 = y * mat[5];
-        f32 x2 = mat[2] * x;
-        f32 z0 = z * mat[6];
-        f32 z1 = z * mat[7];
-        f32 z2 = z * mat[8];
-        sp8[0] = x0 + y0 + z0;
-        sp8[1] = x1 + y1 + z1;
-        sp8[2] = x2 + y2 + z2;
+        f32 m7 = mat[7];
+        f32 m2, m5;
+        m5 = mat[5];
+        m2 = mat[2];
+        f32 m8 = mat[8];
+        sp8[0] = (z * m6) + ((x * m0) + (y * m3));
+        sp8[1] = (z * m7) + ((x * m1) + (y * m4));
+        sp8[2] = (z * m8) + ((x * m2) + (y * m5));
     } else {
-        sp8[0] = (mat[6] * box->min.z) + ((*&mat[0] * box->min.x) + (mat[3] * box->min.y));
-        sp8[1] = (mat[7] * box->min.z) + ((*&mat[1] * box->min.x) + (mat[4] * box->min.y));
-        sp8[2] = (mat[8] * box->min.z) + ((*&mat[2] * box->min.x) + (mat[5] * box->min.y));
+        f32 nv6 = mat[6];
+        {
+            f32 m6, m0, m3;
+            m3 = mat[3];
+            m0 = mat[0];
+            m6 = nv6;
+            sp8[0] = (box->min.z * m6) + ((box->min.x * m0) + (box->min.y * m3));
+        }
+        f32 nv7 = mat[7];
+        {
+            f32 m7, m1, m4;
+            m4 = mat[4];
+            m1 = mat[1];
+            m7 = nv7;
+            sp8[1] = (box->min.z * m7) + ((box->min.x * m1) + (box->min.y * m4));
+        }
+        f32 nv8 = mat[8];
+        {
+            f32 m8, m2, m5;
+            m5 = mat[5];
+            m2 = mat[2];
+            m8 = nv8;
+            sp8[2] = (box->min.z * m8) + ((box->min.x * m2) + (box->min.y * m5));
+        }
     }
     sp8[0] += mat[9]; sp8[1] += mat[10]; sp8[2] += mat[11];
     f32 *mat2 = *(f32 * volatile *)((u8 *)box + 0xC);
     if (&sp14[0] == &box->max.x) {
-        f32 temp_f6 = box->max.y;
-        f32 temp_f0 = *&box->max.x;
-        f32 temp_f7 = box->max.z;
-        f32 q0 = temp_f0 * mat2[0] + temp_f6 * mat2[3];
-        f32 q1 = temp_f0 * mat2[1] + temp_f6 * mat2[4];
-        f32 q2 = temp_f0 * mat2[2] + temp_f6 * mat2[5];
-        f32 r0 = temp_f7 * mat2[6];
-        f32 r1 = temp_f7 * mat2[7];
-        f32 r2 = temp_f7 * mat2[8];
-        sp14[0] = q0 + r0; sp14[1] = q1 + r1; sp14[2] = q2 + r2;
+        f32 m3 = mat2[3];
+        f32 m0 = mat2[0];
+        f32 x = box->max.x;
+        f32 y = box->max.y;
+        f32 m4 = mat2[4];
+        f32 m1 = mat2[1];
+        f32 m6 = mat2[6];
+        f32 z = box->max.z;
+        f32 m7 = mat2[7];
+        f32 m2, m5;
+        m5 = mat2[5];
+        m2 = mat2[2];
+        f32 m8 = mat2[8];
+        sp14[0] = (z * m6) + ((x * m0) + (y * m3));
+        sp14[1] = (z * m7) + ((x * m1) + (y * m4));
+        sp14[2] = (z * m8) + ((x * m2) + (y * m5));
     } else {
-        sp14[0] = (mat2[6] * box->max.z) + ((*&mat2[0] * box->max.x) + (mat2[3] * box->max.y));
-        sp14[1] = (mat2[7] * box->max.z) + ((*&mat2[1] * box->max.x) + (mat2[4] * box->max.y));
-        sp14[2] = (mat2[8] * box->max.z) + ((*&mat2[2] * box->max.x) + (mat2[5] * box->max.y));
+        f32 nv6 = mat2[6];
+        {
+            f32 m6, m0, m3;
+            m3 = mat2[3];
+            m0 = mat2[0];
+            m6 = nv6;
+            sp14[0] = (box->max.z * m6) + ((box->max.x * m0) + (box->max.y * m3));
+        }
+        f32 nv7 = mat2[7];
+        {
+            f32 m7, m1, m4;
+            m4 = mat2[4];
+            m1 = mat2[1];
+            m7 = nv7;
+            sp14[1] = (box->max.z * m7) + ((box->max.x * m1) + (box->max.y * m4));
+        }
+        f32 nv8 = mat2[8];
+        {
+            f32 m8, m2, m5;
+            m5 = mat2[5];
+            m2 = mat2[2];
+            m8 = nv8;
+            sp14[2] = (box->max.z * m8) + ((box->max.x * m2) + (box->max.y * m5));
+        }
     }
     sp14[0] += mat2[9]; sp14[1] += mat2[10]; sp14[2] += mat2[11];
     f32 var_f4 = sp8[0];
