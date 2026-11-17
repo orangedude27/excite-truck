@@ -104,6 +104,8 @@ void SCGetBtDeviceInfoArray(SCBtDeviceInfoArray* info) {
     SCFindByteArrayItem(info, 0x461, SC_ITEM_BT_DINF);
 }
 
+/* Write the Bluetooth device info array (0x461 bytes) to the System Configuration's
+   SC_ITEM_BT_DINF item (id 0x15), returning whether the item was replaced. */
 BOOL SCSetBtDeviceInfoArray(const SCBtDeviceInfoArray* info) {
     return SCReplaceByteArrayItem(info, 0x461, SC_ITEM_BT_DINF);
 }
