@@ -1431,7 +1431,8 @@ extern "C" void fn_801912D8(void *arg0) {
     }
     memset(self + 0x20, 0, 0x10);
 }
-extern "C" void fn_801914F8(void *arg0) {
+extern "C" void fn_801914F8(void *wrapper) {
+    /* Forward virtual f8 (vtable slot 0x28) to the sub-object held at +0x4 of the wrapper. */
     class VTable {
     public:
         virtual void f0();
@@ -1444,8 +1445,8 @@ extern "C" void fn_801914F8(void *arg0) {
         virtual void f7();
         virtual void f8();
     };
-    VTable *obj = *(VTable **)((char *)arg0 + 4);
-    obj->f8();
+    VTable *sub = *(VTable **)((char *)wrapper + 4);
+    sub->f8();
 }
 
 #pragma push
