@@ -21506,8 +21506,14 @@ extern "C" s32 fn_800D3824(void) {
     u32 signBits = (u32)(-listHead) | (u32)listHead;
     return (s32)(signBits >> 31);
 }
-extern "C" u8 fn_800D3838(u8 *arg0) {
-    return *arg0;
+/* Byte reader for a file whose image is already in RAM: returns the byte at the
+   address the caller walks.  fn_800D3F94 stores this in the reader callback
+   lbl_8055DDD8 when the file handle carries a memory pointer (instead of
+   fn_800D3840, which reads one through a cached DVD read of the open file);
+   the path helpers fn_800D3944, fn_800D3A30, fn_800D3B40 and fn_800D3C44 then
+   fetch every character of the file through that global. */
+extern "C" u8 fn_800D3838(u8 *addr) {
+    return *addr;
 }
 
 extern "C" s32 OSEnableInterrupts(void);
@@ -25971,19 +25977,21 @@ extern "C" u16 VFiPFSTR_StrNumChar(s32 context, s32 selector) {
 
 #pragma dont_inline on
 typedef s32 (*UnicodeCompareCallback)(s32, u16 *);
-#pragma dont_inline on
+#pragma scheduling on
 extern "C" s32 VFiPFSTR_StrCmp(void *arg0, s32 arg1) {
+    u16 converted;
     register u8 *table;
     register u16 *cursor;
-    register u32 code = (u32)arg1;
-    u16 converted;
+    register s32 code = arg1;
     u16 current;
+
     if (*(u32 *)((u8 *)arg0 + 0xC) == 1)
         return fn_800A4AD0(*(u8 **)arg0, (u8 *)arg1);
+
     table = (u8 *)lbl_803D2140;
     cursor = *(u16 **)arg0;
 loop:
-    ((UnicodeCompareCallback *)(table + 0x48))[0]((s32)code, &converted);
+    ((UnicodeCompareCallback *)(table + 0x48))[0](code, &converted);
     current = *cursor;
     code++;
     cursor++;
@@ -25991,7 +25999,7 @@ loop:
         goto loop;
     return *(cursor - 1) - converted;
 }
-#pragma dont_inline reset
+#pragma scheduling reset
 extern "C" s32 VFiPFSTR_StrNCmp(s32 arg0_, const void *arg1_, s32 arg2_, s32 arg3, s32 arg4_) {
     void *arg0 = (void *)arg0_;
     u32 arg2 = (u32)arg2_;
