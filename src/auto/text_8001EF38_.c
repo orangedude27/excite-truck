@@ -125,8 +125,11 @@ void fn_8001EF60(void* alarm) {
 #undef CurrentPlayer
 }
 
-void fn_8001EF98(void) {
-    fn_8001F89C();
+s32 fn_8001EF98(s32 counterId, s32 profileIndex) {
+#define GetAchCounterValue fn_8001F89C
+    /* Profile-init thunk: return the stored achievements counter value for counterId in the given profile. */
+    return GetAchCounterValue(counterId, profileIndex);
+#undef GetAchCounterValue
 }
 
 void fn_8001EF9C(void) {
@@ -380,7 +383,7 @@ void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
     char *entry;
     s32 sum7, sum6, sum5, sum4, sum3, sum2, sum1, sum0;
     int found, empty;
-    unsigned int i, j;
+    u32 i, j;
     sum0 = a[0] + b[0];
     sum1 = a[1] + b[1];
     sum2 = a[2] + b[2];
@@ -397,7 +400,8 @@ void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
     a[5] = sum5;
     a[6] = sum6;
     a[7] = sum7;
-    for (i = 0; i < 0x32; i++) {
+    i = 0;
+    for (; i < 0x32; i++, input += 0x28) {
         entry = output + 0x50;
         found = 0;
         empty = -1;
@@ -415,7 +419,6 @@ void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
         if (found == 0) {
             memcpy(output + 0x50 + empty * 0x28, input, 0x28);
         }
-        input += 0x28;
     }
 }
 
