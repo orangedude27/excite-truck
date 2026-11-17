@@ -793,7 +793,13 @@ void fn_802E9254(void *ctx) {
     }
 }
 #pragma scheduling on
-void fn_802E95CC(int arg0, void **arg1) { void *obj=*arg1; *(int*)((char*)obj+0x254)=arg0; *(char*)((char*)obj+0x250)=1; }
+/* Async NAND-completion callback: stores the operation's result in the write
+   context's async_result (+0x254) and raises its async_done flag (+0x250). */
+void fn_802E95CC(int result, void **cb_ctx) {
+    void *ctx = *cb_ctx;
+    *(int *)((char *)ctx + 0x254) = result;
+    *(char *)((char *)ctx + 0x250) = 1;
+}
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
