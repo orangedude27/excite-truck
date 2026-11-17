@@ -942,8 +942,12 @@ void fn_802B9FC0(void *manager) {
 }
 
 extern void *lbl_8055FA84;
+/* Reset the racing-lines record counter, bumped as road-object and render
+ * entries are registered (fn_802BA010, fn_802BA580, fn_802BAA68). */
 void fn_802BA004(void) {
-    lbl_8055FA84 = 0;
+    #define s_recordCount lbl_8055FA84
+    s_recordCount = 0;
+    #undef s_recordCount
 }
 
 #pragma cplusplus on
