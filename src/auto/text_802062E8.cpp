@@ -164,8 +164,9 @@ extern "C" void fn_8020646C(long, long);
 /* The scene's sound-group table: four slots, and the scene setup (fn_801E78D8)
  * stores in the slot its group id picks the index of that group's scene object. */
 extern long lbl_804891E8[];
-extern "C" void fn_8020646C(long arg0, long arg1) {
-    lbl_804891E8[arg0] = arg1;
+extern "C" void fn_8020646C(long slot, long value) {
+    /* Set a slot of the scene's sound-group table to the index of that group's scene object. */
+    lbl_804891E8[slot] = value;
 }
 
 extern "C" void fn_80206480(void) {
