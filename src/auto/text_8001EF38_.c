@@ -190,7 +190,10 @@ void fn_8001EFB8(void) {
 }
 
 void fn_8001EFBC(void) {
-    fn_8001F780();
+#define FinalizeAchievements fn_8001F780
+    /* Tail-call thunk: finalize this player's achievements after the results screen - merge their stats into the career totals and reset the working achievement blocks. */
+    FinalizeAchievements();
+#undef FinalizeAchievements
 }
 
 void fn_8001EFC0(void) {
