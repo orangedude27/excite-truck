@@ -1424,38 +1424,42 @@ __declspec(section ".sdata") extern char lbl_8055B948[];
 __declspec(section ".sdata") extern char lbl_8055B950[];
 extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
 #pragma dont_inline(fn_8022CD0C)
-void fn_8022CDE4(int *d, void *o) {
-    register const char *base;
+#pragma cplusplus on
+extern "C" void fn_8022CDE4(int *d, void *o) {
+    register const char *base = lbl_8033FBE8;
     register char *s;
-    base = lbl_8033FBE8;
+    register void *obj;
+    register int *dst;
     if (!o)
         return;
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x498) != 0)
-        d[0] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x498));
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4A4) != 0)
-        d[1] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4A4));
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4BC) != 0)
-        d[2] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4BC));
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4C8) != 0)
-        d[3] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4C8));
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4E0) != 0) {
-        s = ((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4E0);
+    obj = o;
+    dst = d;
+    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, base + 0x498) != 0)
+        dst[0] = fn_8022CD0C(((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, base + 0x498));
+    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, base + 0x4A4) != 0)
+        dst[1] = fn_8022CD0C(((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, base + 0x4A4));
+    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, base + 0x4BC) != 0)
+        dst[2] = fn_8022CD0C(((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, base + 0x4BC));
+    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, base + 0x4C8) != 0)
+        dst[3] = fn_8022CD0C(((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, base + 0x4C8));
+    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, base + 0x4E0) != 0) {
+        s = ((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, base + 0x4E0);
         if (stricmp(s, lbl_8055B930) == 0)
-            d[4] = 0;
+            dst[4] = 0;
         else if (stricmp(s, lbl_8055B938) == 0)
-            d[4] = 4;
+            dst[4] = 4;
         else if (stricmp(s, lbl_8055B940) == 0)
-            d[4] = 2;
+            dst[4] = 2;
         else if (stricmp(s, base + 0x4EC) == 0)
-            d[4] = 1;
+            dst[4] = 1;
         else if (stricmp(s, base + 0x4F8) == 0)
-            d[4] = 5;
+            dst[4] = 5;
         else if (stricmp(s, base + 0x504) == 0)
-            d[4] = 6;
+            dst[4] = 6;
         else
-            d[4] = fn_8022CD0C(s);
+            dst[4] = fn_8022CD0C(s);
     }
-    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, lbl_8055B948) != 0)
-        sscanf(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, lbl_8055B948), lbl_8055B950, &d[5], &d[6]);
+    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, lbl_8055B948) != 0)
+        sscanf(((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, lbl_8055B948), lbl_8055B950, &dst[5], &dst[6]);
 }
 #pragma dont_inline reset
