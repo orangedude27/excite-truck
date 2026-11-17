@@ -505,8 +505,11 @@ void fn_802B6228(void) {
 }
 
 #pragma pop
+/* Return nonzero when the debug viewer's selected-object index is at its sentinel value 7. */
 s32 fn_802B6270(void) {
-    return lbl_8055FA40 == 7;
+#define objectIndex lbl_8055FA40
+    return objectIndex == 7;
+#undef objectIndex
 }
 
 /* Snap the debug viewer's selected-object index (lbl_8055FA40) to the sentinel 7,
