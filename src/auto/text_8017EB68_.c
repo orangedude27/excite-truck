@@ -1443,9 +1443,11 @@ void fn_80181418(void *arg0, int arg1) {
 }
 
 extern void lbl_80331EFC(void);
+#define s_baseDriverVTable lbl_80331EFC
 void fn_80181428(void **arg0) {
     *arg0 = (void *)&lbl_80331EFC;
 }
+#undef s_baseDriverVTable
 
 void fn_80181438(void) {
 
@@ -1507,15 +1509,16 @@ extern "C" float fn_80181498(void *arg0) {
     float a;
     float b;
     a = *(float *)((char *)arg0 + 0xC);
-    a = (a > lbl_80561C48) ? a : lbl_80561C48;
+    a = (a > 1.0f) ? a : 1.0f;
     b = *(float *)((char *)arg0 + 0xC);
-    b = (b < lbl_80561C58) ? lbl_80561C58 : b;
+    b = (b < -1.0f) ? -1.0f : b;
     a = (a < (*(float *)((char *)arg0 + 0xC) + *(float *)((char *)arg0 + 0x10))) ? (*(float *)((char *)arg0 + 0xC) + *(float *)((char *)arg0 + 0x10)) : a;
     a = (a > b) ? b : a;
+    float result = a;
     if (((Callback *)arg0)->f21() != 0) {
-        a = *(float *)((char *)arg0 + 0xC);
+        result = *(float *)((char *)arg0 + 0xC);
     }
-    return a;
+    return result;
 }
 #pragma pop
 /* Return the sum of the two driver stats at +0x20 and +0x24, capped at 1.0. */
