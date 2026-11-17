@@ -2029,6 +2029,7 @@ void fn_801AD870(void *unused0, void *unused1, void *unused2, long *out0, long *
     *out0 = 0;
 }
 
+/* Virtual method at vtable slot +0x34 (lbl_80335744): default stub that reports a zero result (nothing to return). */
 long fn_801AD880(void) {
     return 0;
 }
