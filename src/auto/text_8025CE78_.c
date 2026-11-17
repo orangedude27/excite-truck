@@ -10,7 +10,7 @@ extern void fn_80128668(void *);
 extern void fn_80214A9C(int);
 extern void *fn_8023512C(void *, void *, void *);
 extern char lbl_80345694[];
-extern char lbl_8055C3E0[];
+extern int lbl_8055C3E0;
 extern double lbl_80563B68;
 extern float lbl_80563B58, lbl_80563B5C, lbl_80563B60;
 extern void fn_80230C30(float *, float *, int, int);
