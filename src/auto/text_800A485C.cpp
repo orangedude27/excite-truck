@@ -11551,12 +11551,22 @@ extern "C" void fn_800B7504(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC((s32)fn_800B224C(alarm, ctx));
 }
 
-s32 VFipf2_fopen(const char *arg0, const char *arg1) {
-    s32 mode = VFiPFAPI_ParseOpenModeString((char *)arg1);
+extern "C" s32 VFipf2_fopen(s32 path, s32 modeStr) {
+    s32 sp8;
+    char sp10[0x18];
+    s32 result;
+    s32 mode = VFiPFAPI_ParseOpenModeString((char *)modeStr);
     if (mode == 0) {
+        *(s32 *)((char *)lbl_803D2140 + 0x40) = 10;
         return 0;
     }
-    return 0;
+    result = fn_800A4E80(sp10, path, 1);
+    if (result == 0) {
+        result = ((s32 (*)(void *, s32, s32 *))fn_800B1AFC)(sp10, mode, &sp8);
+    } else {
+        *(s32 *)((char *)lbl_803D2140 + 0x40) = result;
+    }
+    return ((s32 (*)(s32, s32))fn_800B73CC)(result, sp8);
 }
 
 extern "C" s32 fn_800B1EB8(s32, s32, s32, s32, s32 *);
@@ -21321,13 +21331,15 @@ extern "C" s32 fn_800D3634(s32 arg0) {
     s32 irq;
     u8 *fb;
     u32 frame;
-    static const u32 defaultDims[2] = {0x280, 0x1E0};
+    u32 w;
+    u32 h;
+    static const u16 defaultDims[2] = {0x280, 0x1E0};
 #define DST16(o) (*(u16 *)((u8 *)lbl_80407BD8 + (o)))
 #define COL8(o) (*(u8 *)((u8 *)lbl_80407BE8 + (o)))
 #define COL16(o) (*(u16 *)((u8 *)lbl_80407BE8 + (o)))
     if (lbl_8055DDC8 == 0) {
-        u32 w = defaultDims[0];
-        u32 h = defaultDims[1];
+        w = defaultDims[0];
+        h = defaultDims[1];
         DST16(8) = w;
         lbl_80407BD8[0] = 0;
         DST16(10) = h;
@@ -21368,14 +21380,14 @@ extern "C" s32 fn_800D3634(s32 arg0) {
     }
     OSRestoreInterrupts(irq);
     if (mode != 0) {
-        u16 w = *(u16 *)(mode + 4);
-        u16 h = *(u16 *)(mode + 8);
-        u16 stride = (w + 0xF) & 0xFFF0;
+        u16 lw = *(u16 *)(mode + 4);
+        u16 lh = *(u16 *)(mode + 8);
+        u16 stride = (lw + 0xF) & 0xFFF0;
         lbl_80407BD8[0] = (u32)fb;
-        DST16(8) = w;
-        DST16(10) = h;
+        DST16(8) = lw;
+        DST16(10) = lh;
         DST16(12) = stride;
-        lbl_80407BD8[1] = stride * h * 2;
+        lbl_80407BD8[1] = stride * lh * 2;
     } else {
         lbl_80407BD8[0] = (u32)fb;
     }
