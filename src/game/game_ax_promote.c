@@ -17,5 +17,6 @@
 extern u8 lbl_802FC200[];  /* .data */
 
 void* __AXGetStudio_8000D82C(void) {
+    /* Accessor: return the address of the global AX studio buffer at lbl_802FC200. */
     return &lbl_802FC200;
 }
