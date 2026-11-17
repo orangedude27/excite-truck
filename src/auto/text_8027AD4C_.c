@@ -785,8 +785,10 @@ void fn_8027BCC0(long root, long outSum, long outTotal) {
     fn_8027BB4C(root, outSum, outTotal, 0);
 }
 
-void fn_8027BCC8(long arg0, long arg1, long arg2) {
-    fn_8027BB4C(arg0, arg1, arg2, 1);
+void fn_8027BCC8(long root, long outSum, long outTotal) {
+    /* As fn_8027BCC0, but counting each item only up to the size its loaded resource
+     * actually has (fn_8027BB4C's clamp flag), so unloaded parts are not charged. */
+    fn_8027BB4C(root, outSum, outTotal, 1);
 }
 
 #pragma push
