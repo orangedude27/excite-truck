@@ -2763,8 +2763,7 @@ void fn_80038870(u32 arg0) {
                 OSCreateAlarm(&lbl_80376AD0);
                 {
                     s32 tick = OSGetTick();
-                    u32 period = (u32)(((u64)(*(volatile u32 *)0x800000F8 >> 2) * (u32)0x10624DD3U) >> 32);
-                    period = (period >> 6) * 100;
+                    u32 period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
                     OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period, fn_8003801C);
                 }
             }
