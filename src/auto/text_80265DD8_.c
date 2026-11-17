@@ -1612,6 +1612,12 @@ extern void fn_801EA140(void*, float, float, float, float, float, float, float);
 extern void PSVECCrossProduct(void*, void*, void*);
 extern double cos(float);
 extern double sin(float);
+struct InputVec {
+    float a[4];
+    float pad;
+    void *b;
+    float rest[10];
+};
 #pragma push
 #pragma processor 750
 void fn_80268BD4(void *out, int arg1, float t, float angle) {
