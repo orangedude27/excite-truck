@@ -862,8 +862,9 @@ void fn_8020F39C(void) {
 
 }
 
-void fn_8020F3A0(void *arg0) {
-    *(signed char *)((char *)arg0 + 0x72) = 1;
+void fn_8020F3A0(void *carSound) {
+    /* Raise the +0x72 flag (CarSound.flag72): request the invulnerable sfx after a hit. */
+    *(signed char *)((char *)carSound + 0x72) = 1;
 }
 extern float lbl_80563368;
 extern float lbl_80563370;
