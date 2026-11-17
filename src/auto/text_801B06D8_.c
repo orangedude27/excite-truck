@@ -286,8 +286,9 @@ void fn_801B0B8C(void *obj) {
     *(f32 *)((u8 *)obj + 0x30) = defaultValue;
 }
 
-s32 fn_801B0BA0(void *arg0) {
-    return *(s32 *)((u8 *)arg0 + 0x5C);
+s32 fn_801B0BA0(void *obj) {
+    /* Return the 32-bit field at offset 0x5C of the given deity/AI-truck request object. */
+    return *(s32 *)((u8 *)obj + 0x5C);
 }
 
 s32 fn_801B0BA8(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x58); }
