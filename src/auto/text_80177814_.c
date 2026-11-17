@@ -91,7 +91,7 @@ long fn_80177988(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80177990(void) {
-    float tmp6 = lbl_80561B48;
+    float tmp6 = 0.0f;
     float *p1 = &lbl_80430700[0];
     float *p2 = &lbl_804305D4[0];
     int i;
@@ -1576,13 +1576,14 @@ void *fn_80179824(void) {
     extern void *lbl_8055E444;
     extern float lbl_80561B6C;
     extern float lbl_8055E3C8;
-    int *tbl = lbl_80430590;
+    register int *tbl = lbl_80430590;
     register char *p = (char *)lbl_8055E450;
-    char *arg = p + 0x2ee8;
+    char *arg;
     char *q;
     int *e;
-    int i, j;
+    int j, i;
     *(int *)(p + 0x398) = lbl_8055E448;
+    arg = p + 0x2ee8;
     *(int *)(p + 0x394) = lbl_8055E440;
     *(int *)(p + 0x388) = tbl[1];
     *(int *)(p + 0x384) = tbl[0];
@@ -1600,7 +1601,7 @@ void *fn_80179824(void) {
         e += 2;
     }
     fn_80206550((int)lbl_8055E444);
-    *(float *)p = lbl_80561B60 * (lbl_8055E460 - lbl_80561B6C) + lbl_8055E3C8;
+    *(float *)p = lbl_8055E3C8 + lbl_80561B60 * (lbl_8055E460 - lbl_80561B6C);
     for (i = 0, j = 0; i < lbl_8055E438; i++, j += 4) {
         void **o = *(void ***)((char *)lbl_8055E434 + j);
         ((void (*)(void *, void *))(((void **)*o)[10]))(o, arg);
@@ -1619,8 +1620,46 @@ void *fn_80179824(void) {
     fn_801E1EA4(p);
     {
         float *s = (float *)(tbl + 17);
-        float *d = (float *)(p + 0xdb4);
-        for (i = 0; i < 75; i++) d[i] = s[i];
+        char *dst = p;
+        int idx = 0;
+        int k;
+        for (k = 0; k < 3; k++) {
+            idx += 0x18;
+            *(float *)(dst + 0xdb4) = s[0];
+            *(float *)(dst + 0xdb8) = s[1];
+            *(float *)(dst + 0xdbc) = s[2];
+            *(float *)(dst + 0xdc0) = s[3];
+            *(float *)(dst + 0xdc4) = s[4];
+            *(float *)(dst + 0xdc8) = s[5];
+            *(float *)(dst + 0xdcc) = s[6];
+            *(float *)(dst + 0xdd0) = s[7];
+            *(float *)(dst + 0xdd4) = s[8];
+            *(float *)(dst + 0xdd8) = s[9];
+            *(float *)(dst + 0xddc) = s[10];
+            *(float *)(dst + 0xde0) = s[11];
+            *(float *)(dst + 0xde4) = s[12];
+            *(float *)(dst + 0xde8) = s[13];
+            *(float *)(dst + 0xdec) = s[14];
+            *(float *)(dst + 0xdf0) = s[15];
+            *(float *)(dst + 0xdf4) = s[16];
+            *(float *)(dst + 0xdf8) = s[17];
+            *(float *)(dst + 0xdfc) = s[18];
+            *(float *)(dst + 0xe00) = s[19];
+            *(float *)(dst + 0xe04) = s[20];
+            *(float *)(dst + 0xe08) = s[21];
+            *(float *)(dst + 0xe0c) = s[22];
+            *(float *)(dst + 0xe10) = s[23];
+            s += 0x18;
+            dst += 0x60;
+        }
+        {
+            int off = idx * 4;
+            char *dp = p + off;
+            char *sp = (char *)(tbl + 17) + off;
+            *(float *)(dp + 0xdb4) = *(float *)sp;
+            *(float *)(dp + 0xdb8) = *(float *)(sp + 4);
+            *(float *)(dp + 0xdbc) = *(float *)(sp + 8);
+        }
     }
     fn_80176C0C(p + 0xee0, tbl + 0xb8);
     fn_80176C0C(p + 0x1ee4, tbl + 0x4b9);
