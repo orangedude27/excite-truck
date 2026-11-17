@@ -404,7 +404,10 @@ void fn_80287AF0(void* unused) {
 }
 
 s32 fn_80287B14(void) {
-    return ((s32*)lbl_804B3150)[1];
+    /* Return the active object count from the global object-pool descriptor (the word at +0x04). */
+    #define sObjectPool lbl_804B3150
+    return ((s32 *)sObjectPool)[1];
+    #undef sObjectPool
 }
 
 #pragma dont_inline on
