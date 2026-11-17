@@ -3444,10 +3444,10 @@ extern "C" int fn_800E80F0(int object, int deleteFlag) {
 }
 
 void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &noteInfo) const {
-    unsigned char inst[0x10];
     unsigned char wave[0x98];
+    unsigned char inst[0x10];
     void *bank = (void *)this;
-    void *channel;
+    register void *channel;
     if (!ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(bank, inst,
         noteInfo.unk_0, noteInfo.unk_4, noteInfo.unk_8)) return 0;
     if (!ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(bank, wave,
@@ -3457,22 +3457,22 @@ void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &n
     if (waveVoices <= 2) voices = waveVoices;
     channel = AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(
         voices, noteInfo.unk_18, noteInfo.unk_14, noteInfo.unk_1C, noteInfo.unk_20);
-    if (channel == 0) return 0;
+    if (!channel) return 0;
     *(int *)((char *)channel + 0xCC) = noteInfo.unk_4;
     *(int *)((char *)channel + 0xD0) = inst[8];
-    float level = (float)noteInfo.unk_8 / lbl_80560F88;
-    float multiplier = (float)inst[0xA] / lbl_80560F88;
-    float levelSquared = level * level;
-    *(float *)((char *)channel + 0xB4) = levelSquared * multiplier;
+    float volume = (float)noteInfo.unk_8 / 127.0f;
+    volume *= volume;
+    volume *= (float)inst[0xA] / 127.0f;
+    *(float *)((char *)channel + 0xB4) = volume;
     *(float *)((char *)channel + 0xC0) = *(float *)(inst + 0xC);
     SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[4]);
     SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[5]);
     SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[6]);
     SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[7]);
-    *(float *)((char *)channel + 0xB8) =
-        ((float)((int)inst[9] - 0x40) / lbl_80560F8C) +
-        ((float)noteInfo.unk_10 / lbl_80560F8C);
-    *(float *)((char *)channel + 0xBC) = lbl_80560F90;
+    float pan = (float)((int)inst[9] - 0x40) / 63.0f;
+    pan += (float)noteInfo.unk_10 / 63.0f;
+    *(float *)((char *)channel + 0xB8) = pan;
+    *(float *)((char *)channel + 0xBC) = 0.0f;
     Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(channel, wave, noteInfo.unk_C);
     return channel;
 }
