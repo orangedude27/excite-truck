@@ -415,9 +415,13 @@ void *fn_802D7D98(void *arg0, void *arg1) {
         fn_802E317C(lbl_8034C4F8);
     }
     texture = *(void **)((char *)obj + 0x30);
-    if (texture == 0) {
-        texture = fn_802D7600(work);
+    switch ((int)texture) {
+    case 0: goto alloc_texture;
+    default: goto got_texture;
     }
+alloc_texture:
+    texture = fn_802D7600(work);
+got_texture:
     dst = (char *)texture;
     count = 0x20;
     goto copy_char;
@@ -475,10 +479,10 @@ extern int stricmp(const char *, const char *);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_802D7FA0(void *arg0, void *arg1) {
-    char *texture;
-    char *obj = (char *)arg0;
     char *base = lbl_8034C460;
+    char *texture;
     int format = -1;
+    char *obj;
     int divisor = -1;
     int width;
     int height;
@@ -491,6 +495,7 @@ void *fn_802D7FA0(void *arg0, void *arg1) {
     u32 type;
     u32 lod;
     int mult;
+    obj = (char *)arg0;
     type = *(u32 *)obj;
     switch (type) {
     case 0x48:
@@ -522,10 +527,10 @@ void *fn_802D7FA0(void *arg0, void *arg1) {
         break;
     }
     texture = *(char **)(obj + 0x30);
-    if (texture == 0) {
-        goto alloc_texture;
+    switch ((int)texture) {
+    case 0: goto alloc_texture;
+    default: goto got_texture;
     }
-    goto got_texture;
 alloc_texture:
     texture = fn_802D7600(work);
 got_texture:
@@ -630,7 +635,7 @@ void fn_802D81C4(void *arg0, int arg1) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern char lbl_8034C5AC[];
-void fn_802D86BC(void *arg0, int arg1) {
+void fn_802D86BC(void *__restrict arg0, int arg1) {
     void **data = *(void ***)((char *)arg0 + 0x2c);
     int width = *(int *)((char *)arg0 + 0x24);
     int height = *(int *)((char *)arg0 + 0x28);
@@ -1003,6 +1008,7 @@ void fn_802D9418(void) {
 extern void *lbl_8055FE28;
 extern char lbl_8034C5B8[];
 extern void *fn_8012850C(void *, void *);
+/* Returns the currently bound primary texture object, or NULL when none is bound. */
 void* fn_802D94DC(void) {
     return lbl_8055FE18;
 }
