@@ -2863,6 +2863,7 @@ void fn_80150BDC(void *arg0) {
         fn_80167684(lbl_80561648 > f0 ? lbl_80561648 : f0);
     }
 }
+/* Constant-zero stub: always reports false / no value (likely a registered callback). */
 s32 fn_80151604(void) { return 0; }
 
 /* Return a status flag word: 0x5608 when the current race state is active,
