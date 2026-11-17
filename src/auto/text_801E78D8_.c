@@ -855,8 +855,11 @@ void fn_801E8820(void) {
 }
 
 extern char lbl_8055EB08;
+/* Mark the game subsystem as initialized (the flag set by the main init). */
 void fn_801E882C(void) {
-    lbl_8055EB08 = 1;
+#define sGameInitialized lbl_8055EB08
+    sGameInitialized = 1;
+#undef sGameInitialized
 }
 
 #define sPlayerConfigs lbl_8055EB04
