@@ -1,4 +1,19 @@
 #include "ansi_fp.h"
+#include <types.h>
+#include <macros.h>
+
+typedef struct {
+    void (*function)(decimal*, const decimal*, const decimal*);
+    unsigned int size;
+    const unsigned long long *extab;
+} ET_ExtabIndex;
+
+#pragma section ".extab"
+DECL_SECTION(".extab") const unsigned long long etb_80004570 = 0x1808000000000000ULL;
+#pragma section ".extabindex"
+DECL_SECTION(".extabindex") const ET_ExtabIndex eti_80004778 = {
+    __timesdec, 0x288, &etb_80004570
+};
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
