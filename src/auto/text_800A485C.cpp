@@ -9103,7 +9103,7 @@ extern "C" s32 VFiPFPATH_cmpName(void *name, s32 pathEntry, s32 exactMatch) {
     pattern = (u8 *)(u32)fn_800A4D74((void *)(u32)pathEntry, 3);
     fn_800A4AAC((char *)scan, (char *)name);
     if ((((u32)lbl_803D2140[0x60 / 4] & 2U) == 2U) &&
-        ((u32)fn_800A4D44((void *)(u32)pathEntry) == 2U) &&
+        /* unicode mode */ ((u32)fn_800A4D44((void *)(u32)pathEntry) == 2U) &&
         fn_800A4AD0(scan, &lbl_80559210) != 0 &&
         fn_800A4AD0(scan, &lbl_80559214) != 0 &&
         ((s32 (*)(void *, u32, u32))fn_800B4D5C)((void *)(u32)pathEntry, 3, 1) == 0 &&
@@ -10665,7 +10665,6 @@ extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *);
 #pragma dont_inline on
 extern "C" s32 fn_800B6004(void *arg0) {
     s32 result;
-    u16 flags;
     if (fn_800A53B4(arg0) != 0) {
         if (fn_800A53DC(arg0) != 0 && (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) == 0) {
             VFiPFFILE_FinalizeAllFiles((u8 *)arg0);
@@ -10731,11 +10730,16 @@ block_25:
     if (result != 0) {
         return result;
     }
-    flags = *(u16 *)((u8 *)arg0 + 0x1F8C);
-    if (flags & 8) {
-        return -((flags >> 1) & 1) & 0xB;
+    {
+        u16 flags = *(u16 *)((u8 *)arg0 + 0x1F8C);
+        if (flags & 8) goto compute_tail;
+        result = 9;
+        goto done_tail;
+compute_tail:
+        result = -((flags >> 1) & 1) & 0xB;
+done_tail:
+        return result;
     }
-    return 9;
 }
 
 struct CacheKey { u32 flag; s32 key; };
