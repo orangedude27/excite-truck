@@ -197,6 +197,7 @@ void fn_802C3014(void *arg0) {
     canvas->maxY = canvas->height;
 }
 
+#define sCurrentCanvas lbl_8055FC00 /* the canvas the gxCanvas* routines draw on */
 s32 fn_802C3034(s32 value) {
     s32 old;
 
