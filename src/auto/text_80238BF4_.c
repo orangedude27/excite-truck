@@ -186,6 +186,7 @@ void fn_8023905C(void *state) {
     *(int *)((char *)state + 0x10) = 0;
     *(int *)((char *)state + 0xC) = 0;
 }
+#pragma scheduling on
 void fn_802390B4(void *arg0, s32 arg1) {
     s32 unused;
     u32 version;
