@@ -24,6 +24,7 @@ DECL_SECTION(".init") static void __set_debug_bba(void) {
     Debug_BBA = TRUE;
 }
 
+/* Return the boot-time "debug over BBA" flag set by __set_debug_bba. */
 DECL_SECTION(".init") static BOOL __get_debug_bba(void) {
     return Debug_BBA;
 }
