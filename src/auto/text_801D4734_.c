@@ -3383,6 +3383,25 @@ void *fn_801D8720(void) {
     #undef sSurfaceChangeAseName
 }
 
+/* One "SurfaceChange_ASE" action: fn_801D8634 builds it from the *_ASE element's
+ * parameters, fn_801D875C steps it every frame -- after "delay" seconds it hands
+ * its surface type to every target of the +0x24 list, holds it for "holdTime"
+ * seconds and then gives each target its old override (-1) back -- and
+ * fn_801D88BC resets it. */
+struct SurfaceChangeAse {
+    void *vtable;      /* 0x00 */
+    int pad04;         /* 0x04 */
+    int groupId;       /* 0x08 the element's "group_id" */
+    float delay;       /* 0x0C seconds from start until the change is applied */
+    float startTime;   /* 0x10 game time (lbl_8055E3C8) when it was started */
+    float holdTime;    /* 0x14 seconds the change stays on */
+    int state;         /* 0x18 1 = idle, 2 = running */
+    int surfaceType;   /* 0x1C fn_801D04D0() of the element's "surftype" */
+    int applied;       /* 0x20 0 before the change is applied, 1 after */
+    void *targets;     /* 0x24 12-byte {target, type, type} records */
+    int targetCount;   /* 0x28 */
+};
+
 int fn_801D872C(int arg0) {
     return ((int *)arg0)[6];
 }
