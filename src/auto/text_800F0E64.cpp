@@ -2959,10 +2959,9 @@ extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void* arg0) {
             it_18 = *(void**)(self + 0x90);
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(self + 0x8C, (void**)&it_18);
             s32 prio = *(u8*)(elt + 0x74) + *(s32*)(elt + 0x40);
-            if (prio <= 0x7F) {
-                prio = prio & ~(prio >> 31);
-            } else {
-                prio = 0x7F;
+            switch (prio > 0x7F) {
+            case 0: prio = prio & ~(prio >> 31); break;
+            default: prio = 0x7F; break;
             }
             u8* bucket = arrB + prio * 0xC;
             it_1C = (void*)(bucket + 4);
