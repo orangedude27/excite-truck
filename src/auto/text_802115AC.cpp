@@ -2704,9 +2704,10 @@ extern "C" void fn_80215B1C(void *arg0) {
     obj->vf7();
 }
 
-extern "C" void fn_80215B30(void *arg0) {
-    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf8();
+extern "C" void fn_80215B30(void *wrapper) {
+    /* Forward the vf8() virtual call to the widget wrapped at +0x244. */
+    VfObj *widget = *(VfObj **)((char *)wrapper + 0x244);
+    widget->vf8();
 }
 
 extern "C" void fn_80215B44(void *arg0) {
