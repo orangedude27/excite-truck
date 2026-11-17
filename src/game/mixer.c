@@ -416,8 +416,12 @@ extern void fn_80208A50(float *);
 extern int fn_80128668(void);
 #pragma push
 #pragma inline_depth(0)
-void fn_802091CC(void) {
-    fn_80208A18(lbl_80563230);
+/* Overall mixer gain for voices: start at full volume (lbl_80563230 is 1.0f),
+ * multiply in every active volume handle, and return the product. The caller
+ * in voicesnd.c stores this as gMasterVolume. Tail call, so the result stays
+ * in f1. */
+float fn_802091CC(void) {
+    return fn_80208A18(lbl_80563230);
 }
 #pragma pop
 
