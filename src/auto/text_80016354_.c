@@ -213,7 +213,8 @@ void *fn_8001675C(unsigned int mask, int matchIndex) {
     return base;
 }
 #pragma scheduling on
-void *fn_800167B8(int arg0) { return lbl_803577F0 + arg0 * 0x5C; }
+/* Return the DriverInfo at `index` in the fixed base-driver table. */
+void *fn_800167B8(int index) { return sBaseDrivers + index * DRIVER_SIZE; }
 
 /* The vehicle driven by the base driver at `index`: that DriverInfo (0x5C stride, fixed
  * table lbl_803577F0) keeps the index of its VehicleInfo at +0x4C, and fn_80016510
