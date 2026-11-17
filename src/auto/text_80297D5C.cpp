@@ -792,10 +792,8 @@ extern int lbl_8055CA70, lbl_8055CA7C;
 extern float lbl_8056459C, lbl_805645D8, lbl_805645DC;
 extern "C" int fn_802996B0(void *, int *);
 #pragma paired_single off
-#pragma ppc_psq_save off
 #pragma scheduling invalid_target
 extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg3, void *arg4, short arg5) {
-#pragma ppc_psq_save off
     struct Work {
         short angle;
         char pad[2];
