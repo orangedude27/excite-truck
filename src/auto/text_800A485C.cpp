@@ -19556,7 +19556,9 @@ void homebutton::gui::Manager::addComponent(homebutton::gui::Component *componen
     }
 }
 
-extern "C" void fn_800CFBB8(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x28) = arg1; }
+/* Store the s32 at +0x28 of a GUI component: the ComponentUpdateManager
+ * pointer that its update handler notifies on hover/press/motion/leave. */
+extern "C" void fn_800CFBB8(void *component, s32 value) { *(s32 *)((u8 *)component + 0x28) = value; }
 
 extern "C" s32 fn_800CFBC0(void *manager, s32 index) {
     /* Return, as an s32, the component stored at +4 of the index-th entry in the
