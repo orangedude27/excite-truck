@@ -4,6 +4,15 @@
 #include <stddef.h>
 #include <revolution/MTX/mtxtypes.h>
 
+typedef struct QuadNode {
+    s32 count;
+    s32 p;
+    s32 e6ec;
+    s32 q;
+    s32 tail;
+    s32 callback;
+} QuadNode;
+
 /* One link of the object list fn_801B5D30 packs into a quad tree; the same
  * list fn_801B5D10 counts and fn_801B5BDC turns into an array. */
 struct ObjectLink {
@@ -416,11 +425,12 @@ extern void *fn_801284E8(void *, s32);
 extern void fn_80128670(void *);
 #pragma optimize_for_size on
 #pragma optimize_for_size on
+#pragma use_lmw_stmw off
 void *fn_801B5D30(s32 *arg0) {
     s32 tmp1[3];
     s32 tmp2[3];
-    s32 count;
-    s32 size;
+    register s32 count;
+    register s32 size;
     void *buf;
     s32 *obj;
     void *p;
@@ -444,7 +454,7 @@ void *fn_801B5D30(s32 *arg0) {
     if (tmp1[2] != 0) {
         ((void (*)(void *, void *(*)(void *, s32)))fn_8002F6AC)((void *)tmp1[2], fn_801B591C);
     }
-    obj = (s32 *)fn_801284E8(lbl_8055A8C8, size + lbl_8055E6EC * 2 + lbl_8055E6E8 * 8 + 0x18);
+    obj = (s32 *)fn_801284E8(lbl_8055A8C8, lbl_8055E6EC * 2 + lbl_8055E6E8 * 8 + size + 0x18);
     obj[0] = count;
     p = (u8 *)obj + 0x18;
     q = (u8 *)p + count * 4;
@@ -476,4 +486,3 @@ void *fn_801B5D30(s32 *arg0) {
     }
     return obj;
 }
-#pragma optimize_for_size reset
