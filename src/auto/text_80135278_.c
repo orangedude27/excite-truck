@@ -658,9 +658,10 @@ void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
  {
   Unk_80135278 *obj=(Unk_80135278 *)arg0;
   volatile float *v=(volatile float *)obj;
-  Unk_80135278 *p=(Unk_80135278 *)obj->unk_4;
+  Unk_80135278 *p;
   float a,z,c,e,d,f,g,h,b;
   a=-v[4]; z=lbl_80561320;
+  p=*(Unk_80135278 **)((char *)obj+4);
   obj->unk_44=z;
   b=v[6];
   obj->unk_4c=z;
@@ -679,8 +680,9 @@ void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 }
 #pragma dont_inline off
 
-void fn_8013605C(void *arg0) {
-    *(signed char *)((char *)arg0 + 0x64) = 0;
+void fn_8013605C(void *follower) {
+    /* Clear the path-update flag byte at +0x64 of a path follower (Unk_80135278). */
+    *(signed char *)((char *)follower + 0x64) = 0;
 }
 
 #pragma scheduling invalid_target
