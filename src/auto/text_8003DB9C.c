@@ -1371,7 +1371,7 @@ void __GXFifoInit(void) {
 }
 
 void __GXCleanGPFifo(void) {
-    int zero = 0;
+    int zero;
     unsigned int *gd;
     unsigned int *fifo;
     int intStatus;
@@ -1380,6 +1380,7 @@ void __GXCleanGPFifo(void) {
         return;
     }
     intStatus = OSDisableInterrupts();
+    zero = 0;
     gd = __GXData;
     fifo = (unsigned int *)lbl_8037C0C0;
     gd[2] &= ~1u;
@@ -4365,8 +4366,9 @@ void GXGetTexObjWidth(void *arg0, s32 arg1) {
     *(s32 *)((char *)arg0 + 0x10) = arg1;
 }
 
-int GXGetTexObjHeight(void *arg0) {
-    return ((int *)arg0)[4];
+int GXGetTexObjHeight(void *texObj) {
+    // Read the texture height field (the word at offset 0x10) from a GX texture object.
+    return ((int *)texObj)[4];
 }
 
 /* Return the texture format of a GXTexObj: the format field packed into the
