@@ -63,6 +63,7 @@ extern unsigned char lbl_8055CF70;
 extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
 #pragma scheduling invalid_target
+#pragma dont_inline on
 /* Parses a 4-byte dotted decimal string into a packed integer, or falls back to hex parsing; returns defaultValue on failure. */
 int fn_802BECE4(const char *str, int defaultValue) {
     int b0, b1, b2, b3;
@@ -76,6 +77,7 @@ int fn_802BECE4(const char *str, int defaultValue) {
     }
     return value;
 }
+#pragma dont_inline reset
 #pragma scheduling on
 void fn_802BED90(float *vec) {
     /* Normalize a 3D vector to unit length, clamping very small magnitudes to avoid division by zero. */
@@ -231,6 +233,7 @@ void fn_802BF160(void) {
     scratch[14] = *src++; scratch[15] = *src++; scratch[16] = *src;
     fn_802C9648(lbl_80564D98);
     fn_802D3D6C();
+
     f31 = lbl_80564D80;
     f30 = lbl_80564DA8;
     point = (volatile float *)(scratch + 8);
@@ -250,7 +253,7 @@ void fn_802BF160(void) {
         f0 = f2 - f30;
         f2 = f0 * f29;
         if (f31 < f2) f2 = f31;
-        if (f2 < f28) f2 = f28;
+        if (f28 > f2) f2 = f28;
         f3 = point[0];
         f0 = f1 - f28;
         m3 = table[3];
@@ -266,7 +269,7 @@ void fn_802BF160(void) {
         m4 = table[4];
         m6 = table[6];
         f4 = f28 + f2;
-        ((volatile unsigned int *)scratch)[3] = m3;
+        scratch[3] = m3;
         f2 = point[1];
         scratch[5] = m5;
         f3 = f4 + f3;
