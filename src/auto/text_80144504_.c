@@ -202,13 +202,13 @@ float fn_80144C80(float a, float b, float t) {
 
 extern f32 lbl_805615C0;
 #pragma push
-#pragma scheduling off
+#pragma scheduling on
 s32 fn_80144C90(f32 farg0) {
     f32 x;
-    if (farg0 < lbl_805615BC) {
-        x = farg0 - lbl_805615C0;
+    if (farg0 < 0.0f) {
+        x = farg0 - 0.5f;
     } else {
-        x = lbl_805615C0 + farg0;
+        x = 0.5f + farg0;
     }
     return (s32)x;
 }
