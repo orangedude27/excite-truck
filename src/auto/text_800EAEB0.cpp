@@ -1375,6 +1375,7 @@ extern "C" void fn_800ECF54(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 
+// Trivial predicate stub in the nw4r::snd memory sound archive interface group; always reports true (1).
 extern "C" u32 fn_800ECFC0(void) { return 1; }
 
 extern "C" u32 fn_800ECFC8(void) { return 1; }
