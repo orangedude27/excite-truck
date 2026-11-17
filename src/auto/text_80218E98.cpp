@@ -970,8 +970,9 @@ extern "C" void fn_802194F4(void* arg0) {
 }
 #pragma dont_inline reset
 
-extern "C" void fn_802194FC(void* arg0) {
-    fn_80218198(*(s32*)((u8*)arg0 + 0x2C), 0);
+// Clear the current selection on the menu screen (held at +0x2C) of this widget.
+extern "C" void fn_802194FC(void* widget) {
+    fn_80218198(*(s32*)((u8*)widget + 0x2C), 0);
 }
 
 extern "C" void fn_80217AC0(s32);
