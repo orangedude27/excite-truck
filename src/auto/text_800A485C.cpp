@@ -20886,6 +20886,7 @@ void fn_800D2E3C(s32 x, s32 y, s32 width, s32 height) {
 }
 
 extern "C" void fn_800D2FC8(void) {
+    /* Flush the debug console framebuffer (base/size in lbl_80407BD8) from the data cache before display. */
     DCStoreRange((void *)lbl_80407BD8[0], lbl_80407BD8[1]);
 }
 
