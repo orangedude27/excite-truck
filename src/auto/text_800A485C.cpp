@@ -21323,6 +21323,8 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 static const u16 fn_800D3634_defaultDims[2] = {0x280, 0x1E0};
+static const u16 fn_800D3634_defaultW = 0x280;
+static const u16 fn_800D3634_defaultH = 0x1E0;
 extern "C" s32 fn_800D3634(s32 arg0) {
     u8 *mode = (u8 *)arg0;
     u8 *fb;
