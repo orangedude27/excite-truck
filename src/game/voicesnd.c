@@ -1001,9 +1001,8 @@ void fn_8020BC88(void *arg0, float arg1) {
     *(float *)((char *)arg0 + 0x34) = arg1;
 }
 
-void fn_8020BC90(void *arg0, int arg1) {
-    *(int *)((char *)arg0 + 0x38) = arg1;
-}
+/* Set the effect-send (aux) flags of a VoiceSnd (consumed by the mixer fn_802E6264). */
+void fn_8020BC90(VoiceSnd *snd, int auxFlags) { snd->auxFlags = auxFlags; }
 
 #pragma scheduling invalid_target
 void fn_8020BC98(void) {
