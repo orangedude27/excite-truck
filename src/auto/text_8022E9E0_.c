@@ -64,6 +64,11 @@ typedef struct UIContext {
 #define sUIContextPool      lbl_8055F000 /* ObjectPool of 0x3c-byte UIContexts */
 #define sUIContextLiveCount lbl_8055EFFC /* UIContexts handed out */
 #define sUIContextList      lbl_8055F004 /* UI-context stack record: {head, tail} node links */
+#define STR_UICONTEXT       lbl_80340344 /* "UIContext": the heap tag its contexts are allocated under */
+
+/* operator new(0x3c, "UIContext"): take one UIContext off "UIContext::pool"
+ * (fn_8022EAB8, defined below without its two arguments). */
+#define UIContext_New() ((void *(*)(int, void *))fn_8022EAB8)(0x3C, (void *)&STR_UICONTEXT)
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
