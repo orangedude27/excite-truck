@@ -714,7 +714,6 @@ void fn_80231380(void *arg0, s32 color, f32 x, f32 y, f32 z, f32 s, f32 t) {
     v->e = s; v->f = t;
 }
 
-#pragma unroll off
 void *fn_8023139C(void *buf, int len, u32 val) {
     int temp = len - 1;
     int n = temp - (temp - 1) / 3;
