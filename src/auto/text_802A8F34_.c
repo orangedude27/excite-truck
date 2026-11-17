@@ -1,5 +1,11 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+#include <types.h>
+#include <macros.h>
+
+void fn_802A8F34(void);
+DECL_SECTION(".ctors") funcptr_t D_802ED534 = fn_802A8F34;
+
 #pragma push
 #pragma small_data off
 typedef struct { void *p; int a; int b; } GlobalObj;
