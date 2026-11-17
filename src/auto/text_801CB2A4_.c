@@ -7,10 +7,13 @@ extern char lbl_8055E7D0;
 extern s32 lbl_8055E7D8;
 extern s32 lbl_8055E7DC;
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_801CB2A4(void) {
+    s32 v;
     fn_8000D838(&lbl_8055E7D0);
-    lbl_8055E7DC = 0x7F000000;
-    lbl_8055E7D8 = -65536;
+    v = 0x7F000000;
+    lbl_8055E7DC = v;
+    v = -65536;
+    lbl_8055E7D8 = v;
 }
 #pragma scheduling reset
