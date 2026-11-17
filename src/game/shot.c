@@ -187,8 +187,6 @@ void fn_802E4A2C(void) {
         p += 2;
     } while (p < &stack[65]);
 }
-#pragma ctrloop reset
-#pragma unroll reset
 
 extern unsigned char lbl_8055FF58;
 extern unsigned char lbl_804FC3B0[];
