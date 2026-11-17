@@ -384,10 +384,11 @@ typedef struct BodyPose {
 /* Carry a point given in a body's own frame out into the world:
  * dst = axes[0]*src.x + axes[1]*src.y + axes[2]*src.z + position, the 3x3 of the
  * body's world frame at 0x3C (one axis per column) times the point, plus the
- * body's world position at 0x60.  The point is read into temporaries first when
- * dst and src are the same Vec, so the transform can be applied in place. */
+ * body's world position at 0x60 (see BodyPose above).  The point is read into
+ * temporaries first when dst and src are the same Vec, so the transform can be
+ * applied in place. */
 void fn_8017AB84(void *body, float *dst, const float *src) {
-    float *m = (float *)((char *)body + 0x3C);
+    float *m = (float *)((BodyPose *)body)->axes;
     if (dst == src) {
         float x, y, z;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
