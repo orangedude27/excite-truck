@@ -858,6 +858,7 @@ static void AllocatorFreeForFrmHeap_(MEMAllocator* allocator, void* block) {
 #pragma unused(block)
 }
 
+/* Allocate `size` bytes through the allocator's virtual alloc function. */
 void* MEMAllocFromAllocator(MEMAllocator* allocator, u32 size) {
     return allocator->funcs->allocFunc(allocator, size);
 }
