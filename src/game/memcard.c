@@ -25,7 +25,8 @@ extern int fn_802E721C(unsigned int, unsigned int, int);
 extern int fn_802E8D8C(void *, void *, int);
 extern unsigned int lbl_8034D7B0[];
 void fn_802E6B50(void) {
-    memset(&lbl_804FC8B0[0], 0, 200);
+    #pragma scheduling invalid_target
+    memset(lbl_804FC8B0, 0, 0xC8);
     lbl_8055FFC0 = 0;
     lbl_8055FFC4 = 1;
     lbl_8055FFC5 = 0;
