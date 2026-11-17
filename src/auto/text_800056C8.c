@@ -1907,7 +1907,10 @@ void fn_80007BE8(void) {
 
 extern u8 lbl_802FB618[];
 void *fn_80007BEC(void) {
-    return lbl_802FB618;
+    /* Return the "KioskDeadDriverOverlay" name string. */
+    #define s_kioskDeadDriverOverlayName lbl_802FB618
+    return s_kioskDeadDriverOverlayName;
+    #undef s_kioskDeadDriverOverlayName
 }
 
 extern u8 lbl_802FB6D0[];
