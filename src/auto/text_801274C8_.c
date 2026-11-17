@@ -272,6 +272,7 @@ void fn_80127954(void) {
 #undef sampleElapsedMs
 }
 
+/* No-op callback in the profiler/sound hook group: intentionally does nothing. */
 void fn_80127958(void) {
 
 }
