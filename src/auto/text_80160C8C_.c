@@ -423,9 +423,7 @@ extern "C" char lbl_8032F790[];
 extern "C" void fn_80158558(void *);
 extern "C" s32 fn_80158618(s32);
 static inline void fn_80160CF4_clear(void *p) {
-    s32 *q = (s32 *)p;
-    s32 i;
-    for (i = 0; i < 0x438 / 4; i++) q[i] = 0;
+    (void)p;
 }
 extern "C" int stricmp(const char *, const char *);
 extern "C" char lbl_8055A0D4;
@@ -441,6 +439,7 @@ extern void *memset(void *, s32, u32);
 extern void *memset(void *, int, unsigned int);
 extern "C" void fn_80160CF4(void) {
 #pragma scheduling invalid_target
+#pragma dont_inline reset
     struct Node {
         virtual const char *name();
         virtual void f1(); virtual void f2();
@@ -502,7 +501,7 @@ extern "C" void fn_80160CF4(void) {
                             }
                             check = flag;
                         }
-                        if (check != 0) memset(o + 0x134, 0, 0);
+                        if (check != 0) fn_80160CF4_clear(o + 0x134);
                     }
                 }
                 *(s32 *)(o + 0x80) = 0;
@@ -559,7 +558,7 @@ extern "C" void fn_80160CF4(void) {
                             }
                             check = flag;
                         }
-                        if (check != 0) memset(o2 + 0x134, 0, 0);
+                        if (check != 0) fn_80160CF4_clear(o2 + 0x134);
                     }
                 }
                 *(s32 *)(o2 + 0x80) = 0;
