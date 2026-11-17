@@ -2932,9 +2932,9 @@ void fn_8018BDEC(void *arg0) {
     f32 sp[12];
     f32 *matrix = sp;
     int value;
-    sp[0]=lbl_80561CD0; sp[1]=lbl_80561CAC; sp[2]=lbl_80561CAC; sp[3]=lbl_80561CAC;
-    sp[4]=lbl_80561CD0; sp[5]=lbl_80561CAC; sp[6]=lbl_80561CAC; sp[7]=lbl_80561CAC;
-    sp[8]=lbl_80561CD0; sp[9]=lbl_80561CAC; sp[10]=lbl_80561CAC; sp[11]=lbl_80561CAC;
+    sp[0]=1.0f; sp[1]=0.0f; sp[2]=0.0f; sp[3]=0.0f;
+    sp[4]=1.0f; sp[5]=0.0f; sp[6]=0.0f; sp[7]=0.0f;
+    sp[8]=1.0f; sp[9]=0.0f; sp[10]=0.0f; sp[11]=0.0f;
     value=*(int *)((u8 *)arg0+0x26C4);
     if(value) fn_801C2BF8(value,matrix);
 }
