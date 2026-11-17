@@ -168,8 +168,9 @@ void *fn_80279874(s32 vehicleId) {
     return 0;
 }
 #pragma scheduling reset
-f32 fn_802798E8(void *arg0) {
-    return *(f32 *)((char *)arg0 + 0x294);
+f32 fn_802798E8(void *entry) {
+    /* Return the float state field at +0x294 of a carstate entry. */
+    return *(f32 *)((char *)entry + 0x294);
 }
 
 extern f32 lbl_805640F0;
@@ -254,7 +255,7 @@ void fn_802799EC(void *arg0, float amount) {
     base[0x2B0] = 0;
     base[0x2B1] = 0;
 }
-#pragma pop
+#pragma optimize_for_size on
 void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
     unsigned char *target = arg1 - 1;
     unsigned char *source = arg0 + 3;
@@ -330,7 +331,7 @@ void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
     arg1[0x2B0] = arg0[0x2B4];
     arg1[0x2B1] = arg0[0x2B5];
 }
-
+#pragma optimize_for_size reset
 void fn_80279C00(unsigned char *dst, unsigned char *src) {
     unsigned char *source = src - 1;
     unsigned char *target = dst + 3;
