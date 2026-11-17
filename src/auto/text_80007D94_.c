@@ -4,7 +4,8 @@
 #include <macros.h>
 
 typedef struct {
-    u8 unk_0x0[0x1E4];
+    u8 unk_0x0[0x1E0];
+    u32 count;
     void* unk_0x1E4;
 } Unk8034EF38;
 
