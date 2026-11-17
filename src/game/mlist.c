@@ -364,7 +364,10 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
 }
 
 void fn_802CDAA8(void) {
-    lbl_8055FCD8 = 0;
+    /* Clear the current mlist context pointer once the scene's draw list has been submitted. */
+    #define s_currentMlist lbl_8055FCD8
+    s_currentMlist = 0;
+    #undef s_currentMlist
 }
 
 /* RealName: MlistSetObjectDraw (the project cannot rename symbols yet).
@@ -583,7 +586,7 @@ void fn_802CE2C0(int *, int);
 void fn_802CE2D8(int *, int);
 void fn_802CE2F0(int *, int);
 #pragma scheduling on
-void fn_802CDDC8(void *arg0, int arg1) {
+void fn_802CDDC8(void *__restrict arg0, int arg1) {
     volatile unsigned char *base = (volatile unsigned char *)arg0;
     volatile unsigned char *rec;
     unsigned char t;
@@ -591,21 +594,9 @@ void fn_802CDDC8(void *arg0, int arg1) {
     int index;
     int offset;
     {
-        unsigned char a6;
-        unsigned char a10;
-        unsigned char a0;
-        unsigned char a1;
-        unsigned char a2;
-        unsigned char a3;
-        unsigned char a4;
-        unsigned char a5;
-        unsigned char a7;
-        unsigned char a8;
-        unsigned char a9;
-        unsigned char a11;
-        a0 = base[0]; a1 = base[3]; a2 = base[1]; a3 = base[2];
-        a4 = base[4]; a5 = base[7]; a6 = base[5]; a7 = base[6];
-        a8 = base[8]; a9 = base[0xB]; a10 = base[9]; a11 = base[0xA];
+        unsigned char a0 = base[0], a1 = base[3], a2 = base[1], a3 = base[2];
+        unsigned char a4 = base[4], a5 = base[7], a6 = base[5], a7 = base[6];
+        unsigned char a8 = base[8], a9 = base[0xB], a10 = base[9], a11 = base[0xA];
         base[0] = a1; base[3] = a0; base[1] = a3; base[2] = a2;
         base[4] = a5; base[7] = a4; base[5] = a7; base[6] = a6;
         base[8] = a9; base[0xB] = a8; base[9] = a11; base[0xA] = a10;
