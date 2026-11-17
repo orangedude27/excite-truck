@@ -588,8 +588,9 @@ float fn_801DCEC0(void) {
 }
 
 extern float lbl_804424B0[];
-void fn_801DCEC8(int arg0, float arg1) {
-    lbl_804424B0[arg0] = arg1;
+/* Sets the ground-layer blend weight at the given table index. */
+void fn_801DCEC8(int index, float weight) {
+    lbl_804424B0[index] = weight;
 }
 
 extern float lbl_804425DC[];
