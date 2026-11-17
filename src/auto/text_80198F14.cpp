@@ -282,6 +282,11 @@ extern "C" void* __dt__Q36PSGame10SoundTable11CategoryMgrFv(void* thisPtr, s32 s
 }
 
 extern "C" f64 __fabs(f64);
+#pragma push
+#pragma ppc_psq_save off
+#pragma paired off
+#pragma paired_single off
+#pragma processor 750
 extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *arg4, float *arg5, float farg0) {
     f32 *pt = (f32 *)arg0;
     u8 *obj = (u8 *)arg1;
