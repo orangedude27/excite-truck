@@ -1210,8 +1210,9 @@ extern "C" s32 fn_8019B4D8(void *arg0, void *arg1, void *arg2, s32 arg3, f32 far
     return 0;
 }
 
-extern "C" s32 fn_8019BD4C(void *arg0) {
-    return ((s32 *)arg0)[0xC / 4];
+/* Return the 32-bit field at offset 0xC of the object (physics/collision record). */
+extern "C" s32 fn_8019BD4C(void *obj) {
+    return ((s32 *)obj)[0xC / 4];
 }
 
 extern "C" void fn_8019BD54(void *arg0, void *arg1, s32 arg2, s32 arg3) {
