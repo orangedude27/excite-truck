@@ -134,8 +134,11 @@ void fn_801D90F8(s32 userData) {
     fn_801D77EC(userData - 4);
 }
 
-void fn_801D9100(s32 arg0) {
-    fn_801D7874(arg0 - 4);
+/* Callback wrapper of the action-group operations (like fn_801D90E8 next door):
+ * the callback is handed the group's +0x4 field, so back the pointer up to the
+ * group's start before calling fn_801D7874. */
+void fn_801D9100(s32 userData) {
+    fn_801D7874(userData - 4);
 }
 
 /* Callback wrapper of the action-group operations (like fn_801D90E8): back the
