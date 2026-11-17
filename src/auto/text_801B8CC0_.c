@@ -233,24 +233,13 @@ extern "C" void fn_801E323C(void *);
 extern "C" int fn_802C7A10(int);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" char lbl_803369A0[];
-#pragma scheduling invalid_target
-void fn_801B8CC0(float *arg0, int arg1, int *arg2, float *arg3, float arg4, float arg5) {
-    unsigned int *dst;
-    unsigned int *src;
-    unsigned int a;
-    unsigned int b;
-    unsigned int c;
+#pragma cplusplus on
+#pragma scheduling on
+extern "C" void fn_801B8CC0(float *arg0, int arg1, int *arg2, float *arg3, float arg4, float arg5) {
     void *p;
     int result;
 
-    dst = (unsigned int *)arg0;
-    src = (unsigned int *)arg3;
-    a = src[0];
-    b = src[1];
-    c = src[2];
-    dst[0] = a;
-    dst[1] = b;
-    dst[2] = c;
+    *(Vec *)arg0 = *(Vec *)arg3;
     result = fn_801E320C(arg1, (int)arg2);
     if (result != 0) {
         p = fn_801E3004(arg1, (int)arg2, -1);
@@ -263,8 +252,6 @@ void fn_801B8CC0(float *arg0, int arg1, int *arg2, float *arg3, float arg4, floa
         fn_802E30C8(lbl_803369A0, (int)arg2, result);
     }
 }
-#pragma scheduling on
-#pragma cplusplus reset
 extern "C" void *fn_801B8D80(void) {
     /* Allocate and initialize a "trlr_car" object (0x2760 bytes), set its vtable
        (lbl_803369D0), clear/init fields at 0x2700/0x2710/0x272C/0x2730/0x2738/0x275C,
@@ -450,7 +437,7 @@ void *fn_801B9274(struct TrlrCar *car, s32 deleteFlag) {
 #undef trlrCarCount
     return car;
 }
-#pragma cplusplus reset
+#pragma cplusplus off
 #pragma scheduling on
 extern float lbl_80562750;
 extern float lbl_80562768;
@@ -474,7 +461,8 @@ void fn_801B92F0(void *arg0, int arg1) {
     unsigned int *copySrc;
     unsigned int word2, word1, word0;
     float result, top, zero, param1, out0, out1, out2;
-    *((unsigned char *)arg0 + 10077) = (bits >> 12) & 1;
+
+    *((unsigned char *)arg0 + 0x275d) = (bits >> 12) & 1;
     fn_80182074(arg0, arg1);
     frame.work.sp44[0] = lbl_80562750;
     frame.work.sp44[1] = lbl_80562750;
@@ -487,6 +475,7 @@ void fn_801B92F0(void *arg0, int arg1) {
     *(float *)((unsigned char *)arg0 + 0x273c) = frame.work.sp5c[0];
     *(float *)((unsigned char *)arg0 + 0x2740) = frame.work.sp5c[1];
     *(float *)((unsigned char *)arg0 + 0x2744) = frame.work.sp5c[2];
+
     fn_802C77F0(*(int *)((unsigned char *)arg0 + 0x59c), frame.work.sp90);
     if (*((unsigned char *)arg0 + 0x275d)) {
         top = frame.work.sp90[5];
@@ -499,6 +488,7 @@ void fn_801B92F0(void *arg0, int arg1) {
         *(float *)((unsigned char *)arg0 + 0x2740) = zero;
         *(float *)((unsigned char *)arg0 + 0x2744) = result;
     }
+
     fn_802C77F0(*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x2754) + 0x59c),
         frame.work.sp78);
     if (*((unsigned char *)arg0 + 0x275d)) {
