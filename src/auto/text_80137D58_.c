@@ -484,6 +484,7 @@ extern double fn_8002F234(double);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma dont_inline on
 int fn_801386D0(void *arg0, float farg0, float farg1, float farg2) {
     char *ctx = (char *)arg0;
     char *a, *b, *n;
