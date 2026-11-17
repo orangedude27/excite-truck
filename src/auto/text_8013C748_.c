@@ -59,18 +59,20 @@ done:
 void *fn_8013C7D0(arg0)
 int arg0;
 {
-    int *var_r4;
-    var_r4 = (int *)&lbl_8032C478;
-    while (1) {
-        if (arg0 == *(var_r4 + 1)) {
-            break;
-        }
-        var_r4 += 3;
-        if (*var_r4 == 0) {
-            break;
-        }
+    int *entry;
+    entry = (int *)&lbl_8032C478;
+    goto loop_test;
+loop_body:
+    if (arg0 == *(entry + 1)) {
+        goto done;
     }
-    return var_r4;
+    entry += 3;
+loop_test:
+    if (*entry != 0) {
+        goto loop_body;
+    }
+done:
+    return entry;
 }
 #pragma scheduling on
 #pragma dont_inline off
