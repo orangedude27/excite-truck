@@ -98,13 +98,17 @@ void fn_802D9A50(void) {
     extern s32 lbl_8055FE4C;
     extern char lbl_8034C680[];
 
-    register char *base;
-    register void **table;
-    register u8 one;
-    register s32 check;
-    register s32 state;
+    register char *msgBase;
+    register void **stateMessages;
+    register u8 flagOn;
+    register s32 noFramebuffer;
+    register s32 driveState;
 
-    base = lbl_8034C680;
+    /* DVD-drive / power-button monitor: while the drive state is nonzero, react
+       to the power button and reset requests by logging status messages and
+       calling the kernel reset (fn_802E2E38) or the state's message screen, then
+       finalize once the drive returns to idle. */
+    msgBase = lbl_8034C680;
     if (lbl_8055FFB4 != 0)
         return;
 
@@ -117,22 +121,22 @@ void fn_802D9A50(void) {
     if (*(volatile s32 *)&lbl_8055FE3C != 1)
         lbl_8055FE4C = 0;
 
-    table = (void **)(base + 0x18C);
-    one = 1;
+    stateMessages = (void **)(msgBase + 0x18C);
+    flagOn = 1;
     for (;;) {
-        state = *(volatile s32 *)&lbl_8055FE3C;
-        if (state == 0)
+        driveState = *(volatile s32 *)&lbl_8055FE3C;
+        if (driveState == 0)
             break;
         if ((u8)lbl_8055FE41 != 0)
             fn_802E2E38(2);
-        if (state == 1) {
-            register check = (u32)__cntlzw((u32)lbl_8055FE39) >> 5;
+        if (driveState == 1) {
+            register subsystemClear = (u32)__cntlzw((u32)lbl_8055FE39) >> 5;
             lbl_8055FE4C++;
-            if ((unsigned)check != 0) {
-                fn_802E30C8(base + 0x1FC);
+            if ((unsigned)subsystemClear != 0) {
+                fn_802E30C8(msgBase + 0x1FC);
                 fn_802E2E38(0);
             } else {
-                fn_802E30C8(base + 0x210);
+                fn_802E30C8(msgBase + 0x210);
                 lbl_8055FE38 = 1;
             }
             break;
@@ -140,23 +144,23 @@ void fn_802D9A50(void) {
 
         fn_80129AFC();
         fn_802E6264();
-            fn_802E7FD0();
-    OSDisableInterrupts();
-    check = fn_802CF834() == 0;
+        fn_802E7FD0();
+        OSDisableInterrupts();
+        noFramebuffer = fn_802CF834() == 0;
         OSEnableInterrupts();
-        if (check != 0 && lbl_8055FE48 == 0) {
-            lbl_8055FE48 = one;
-            fn_802E30C8(base + 0x224);
+        if (noFramebuffer != 0 && lbl_8055FE48 == 0) {
+            lbl_8055FE48 = flagOn;
+            fn_802E30C8(msgBase + 0x224);
             fn_802C2AA8(2);
         }
         fn_802D3E9C(0);
-        fn_802DB03C(table[state]);
+        fn_802DB03C(stateMessages[driveState]);
         OSEnableInterrupts();
     }
 
     OSDisableInterrupts();
     if (lbl_8055FE48 != 0 && lbl_8055FE3C == 0) {
-        fn_802E30C8(base + 0x240);
+        fn_802E30C8(msgBase + 0x240);
         lbl_8055FE48 = 0;
         fn_802C2B18();
     }
