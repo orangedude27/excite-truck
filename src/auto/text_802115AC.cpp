@@ -754,7 +754,7 @@ extern "C" s32 fn_8021E0C0(void *, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_80220E48(void *, s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_8021B1C4(void *, s32, s32, s32, s32, s32);
 extern "C" char lbl_8055B7C0[];
-extern "C" char lbl_8055B7C8[];
+extern "C" char lbl_8055B7C8[8];
 extern "C" char lbl_8055B7D0[];
 extern "C" s32 lbl_8055EF24;
 extern "C" char lbl_8033D480[];
