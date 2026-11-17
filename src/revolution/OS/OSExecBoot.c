@@ -16,8 +16,10 @@ void fn_80052390(u32 dolOffset, u32 restartCode) {
     __OSBootDol(restartCode, dolOffset | 0x80000000, (const char**)&argvDummy);
 }
 
-/* fn_800523F0 - read reboot params */
-void fn_800523F0(u32* a, u32* b) {
-    *a = lbl_8055DA70;
-    *b = lbl_8055DA74;
+/* Copies the saved MEM1 region bounds, recorded at boot from the exec params,
+ * into @p saveStart and @p saveEnd. __OSBootDol forwards them to the reboot
+ * call so that this region survives the DOL launch. */
+void fn_800523F0(u32* saveStart, u32* saveEnd) {
+    *saveStart = lbl_8055DA70;
+    *saveEnd = lbl_8055DA74;
 }
