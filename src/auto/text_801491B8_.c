@@ -788,6 +788,7 @@ void fn_80149F2C(void *arg0, void *arg1, void *arg2) {
     (void)list1; (void)list2; (void)r3fill;
 }
 
+// Trivial callback stub; always returns 0 (false).
 s32 fn_8014ACBC(void) { return 0; }
 
 // Trivial callback stub; always returns 0 (false).
