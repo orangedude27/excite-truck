@@ -1034,46 +1034,47 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
      }
  }
 
-void fn_802DCFCC(int arg0, int arg1, int arg2, float farg0, float farg1) {
-    float diff;
-    float c;
-    float factor;
+/* Set up the CPU-light indirect-texture (bump-map) pass: optionally bind the pass texture to texcoord slot 1, derive a base-2 indirect-matrix scale from the light level (farg0) and load it into indirect matrix 1, then configure the indirect TEV and vertex state. A texture-slot value of -2 skips that binding; arg0 is unused. */
+void fn_802DCFCC(int arg0, int indTexSlot, int texSlot1, float lightLevel, float texScale) {
+    float logDiff;
+    float magnitude;
+    float sign;
     float base;
-    float result;
-    int r0;
-    int r3;
-    int exp;
-    float p;
+    float scale;
+    int clampedExp;
+    int rawExp;
+    int scaleExp;
+    float powResult;
     fn_802DCAE4_GXColor col;
 
-    lbl_8055D148 = farg1;
+    lbl_8055D148 = texScale;
     fn_802DBD88();
-    if (arg2 != -2) {
-        fn_802CADD0(arg2, 1);
+    if (texSlot1 != -2) {
+        fn_802CADD0(texSlot1, 1);
     }
     fn_802DB778(2);
-    if (arg1 != -2) {
+    if (indTexSlot != -2) {
         lbl_8055FEC0 = 1;
-        base = lbl_80565050 * farg0;
-        diff = (float)fn_8002F208(lbl_80565058) - (float)fn_8002F208(base);
-        c = (float)ceil(lbl_80565060 + (float)__fabs(diff));
-        if (diff > lbl_80565048) {
-            factor = lbl_80565064;
+        base = lbl_80565050 * lightLevel;
+        logDiff = (float)fn_8002F208(lbl_80565058) - (float)fn_8002F208(base);
+        magnitude = (float)ceil(lbl_80565060 + (float)__fabs(logDiff));
+        if (logDiff > lbl_80565048) {
+            sign = lbl_80565064;
         } else {
-            factor = lbl_80565068;
+            sign = lbl_80565068;
         }
-        r0 = -0x2E;
-        r3 = (int)(factor * c);
-        if (r3 > -0x2E) {
-            r0 = r3;
+        clampedExp = -0x2E;
+        rawExp = (int)(sign * magnitude);
+        if (rawExp > -0x2E) {
+            clampedExp = rawExp;
         }
-        exp = 0x11;
-        if (r0 < 0x11) {
-            exp = r0;
+        scaleExp = 0x11;
+        if (clampedExp < 0x11) {
+            scaleExp = clampedExp;
         }
-        p = (float)fn_8002EFBC(lbl_80565070, (float)exp);
-        result = base * lbl_80565078 / p;
-        fn_802D3DF8(fn_802CA294(arg1), exp, result, result);
+        powResult = (float)fn_8002EFBC(lbl_80565070, (float)scaleExp);
+        scale = base * lbl_80565078 / powResult;
+        fn_802D3DF8(fn_802CA294(indTexSlot), scaleExp, scale, scale);
         GXSetNumIndStages(1);
         GXSetTevIndirect(0, 0, 0, 3, 1, 0, 0, 0, 0, 0);
         GXSetIndTexOrder(0, lbl_8055FEA4, 2);
