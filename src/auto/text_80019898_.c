@@ -225,6 +225,8 @@ int fn_80019B48(void) {
 /* Return bit 2 of the locale/language flag word assembled by fn_800199B8. */
 int fn_80019B54(void) { return (lbl_8055D5A0 >> 2) & 1; }
 
+/* Return bit 3 of the startup-option flag word built by fn_800199B8:
+   nonzero when the "-no_sound" switch is active. */
 int fn_80019B60(void) { return (lbl_8055D5A0 >> 3) & 1; }
 
 /* Return bit 6 of the locale/language flag word assembled by fn_800199B8. */
