@@ -6364,8 +6364,9 @@ extern "C" void fn_802237DC(void *list) {
     *(u8 *)((u8 *)list + 0x41C) = 0;
 }
 
-extern "C" s32 fn_802237E8(void *arg0) {
-    return *(s32 *)((u8 *)arg0 + 0x2C8);
+/* Return the number of rows in a sound list (MenuSoundList.rowCount at +0x2C8). */
+extern "C" s32 fn_802237E8(void *list) {
+    return *(s32 *)((u8 *)list + 0x2C8);
 }
 
 /* Return the sound id of row `row` from a sound-list's id table at +0x378. */
