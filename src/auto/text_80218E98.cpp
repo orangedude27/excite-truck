@@ -9046,8 +9046,9 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802295AC(void *this_,
     return this_;
 }
 
-extern "C" void fn_80229604(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x24C) = 0;
+/* Clear the byte flag at offset 0x24C of the given widget. */
+extern "C" void fn_80229604(void *widget) {
+    *(u8 *)((u8 *)widget + 0x24C) = 0;
 }
 
 extern "C" void fn_80229610(void) {
