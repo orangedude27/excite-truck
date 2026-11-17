@@ -8818,6 +8818,9 @@ extern "C" void fn_80228D90(void *widget) {
     iface->vf6();
 }
 
+/* Default no-op virtual for this TruckIface widget: returns 0.  Sits among
+   the vf6()/vf7() forwarding methods, supplying a zero for a query the base
+   interface leaves unimplemented. */
 extern "C" s32 fn_80228DA4(void) { return 0; }
 
 // Forward vf7() to the TruckIface stored at offset 0x268 of the given widget.
