@@ -209,21 +209,21 @@ void fn_801AE874(unsigned short *flags, int extra) {
 }
 
 #pragma scheduling invalid_target
-void fn_801AE894(void *q) {
-    int c;
+void fn_801AE894(void *arg0) {
+    short count;
     float s;
     float v;
-    c = *(short *)((char *)q + 0x18);
-    if (c > 0) {
-        s = *(float *)q;
+    count = *(short *)((char *)arg0 + 0x18);
+    if (count > 0) {
+        s = *(float *)arg0;
         if (s > lbl_8056255C) {
-            v = (lbl_8055E630 * (float)c) / s;
-            *(float *)((char *)q + 4) = v;
-            *(float *)((char *)q + 4) = v * ((float)c / (float)lbl_8055E62C);
+            v = (lbl_8055E630 * (float)count) / s;
+            *(float *)((char *)arg0 + 4) = v;
+            *(float *)((char *)arg0 + 4) = v * ((float)count / (float)lbl_8055E62C);
             return;
         }
     }
-    *(float *)((char *)q + 4) = lbl_80562560;
+    *(float *)((char *)arg0 + 4) = lbl_80562560;
 }
 
 #pragma processor 750
@@ -833,7 +833,9 @@ void fn_801AFA20(void) {
 #undef RecordMgr_init
 }
 #pragma scheduling on
-void fn_801AFA5C(int arg0) { fn_801AFA70(arg0, 1); }
+/* RecordMgr deleting destructor: forward to the CodeWarrior deleting-destructor helper
+ * with deleteFlag = 1 so it frees the object during end-of-race teardown. */
+void fn_801AFA5C(int recordMgr) { fn_801AFA70(recordMgr, 1); }
 
 extern int fn_801284F8(int, const char *);
 extern void fn_801AFA64(int *);
