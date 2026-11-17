@@ -1876,8 +1876,9 @@ void fn_8018A088(void) {
 
 }
 
-void fn_8018A08C(void *arg0) {
-    *(float *)((unsigned char *)arg0 + 0x26d8) = lbl_8055E3C8;
+/* Reset this object's float field at +0x26D8 to the shared zero value held in lbl_8055E3C8. */
+void fn_8018A08C(void *object) {
+    *(float *)((unsigned char *)object + 0x26d8) = lbl_8055E3C8;
 }
 
 #pragma push
