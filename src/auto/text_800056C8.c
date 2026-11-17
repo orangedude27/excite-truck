@@ -1874,6 +1874,7 @@ extern "C" void fn_80007AC4(void *arg0) {
     lbl_8055D340[1] = 1;
 }
 #pragma cplusplus off
+/* Constant predicate/callback used by the game-setting code: always returns 1 (true). */
 u32 fn_80007B84(void) { return 1; }
 
 s32 fn_80007B8C(void) {
