@@ -121,8 +121,11 @@ void fn_80202BFC(s32 arg0) {
     u16 v0, v1, v2, v3, v4, v5;
     s32 pair;
 
+    p1 = work.pair1;
     work.pair1[0] = *(volatile s32 *)&lbl_805630B8;
+    p2 = work.pair2;
     f28 = lbl_805630C8;
+    table = (volatile u16 *)lbl_802F9D48;
     work.pair1[1] = arg0;
     f29 = lbl_805630CC;
     i = 0;
@@ -130,8 +133,6 @@ void fn_80202BFC(s32 arg0) {
     f30 = lbl_805630D0;
     work.pair2[1] = *(volatile s32 *)&lbl_805630C4;
     f31 = lbl_805630D4;
-    p1 = work.pair1;
-    p2 = work.pair2;
     do {
         fn_802C8C04(*p1);
         v0 = table[0]; v1 = table[1]; v2 = table[2];
