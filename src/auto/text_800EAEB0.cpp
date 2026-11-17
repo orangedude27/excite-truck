@@ -1384,6 +1384,11 @@ extern "C" u32 fn_800ECFC0(void) { return 1; }
  * a stream backed by memory is always in this state, so it reports true. */
 extern "C" u32 fn_800ECFC8(void) { return 1; }
 
+/* Slot 0x34 of the nw4r::snd::MemorySoundArchive::MemoryFileStream vtable
+ * (lbl_803231D8, installed by OpenStream): the archive-stream state predicate
+ * just below fn_800ECFC8 (0x38), polled alongside IsOpen (0x2C) and IsReady
+ * (0x50); a stream backed by memory is always in this state, so it reports
+ * true. */
 extern "C" u32 fn_800ECFD0(void) { return 1; }
 
 extern "C" u32* fn_800ECFD8(void) {
