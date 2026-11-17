@@ -1100,6 +1100,7 @@ int fn_8003BB58(void *arg0) {
 /* Return the first word of the 32-byte DVD low-level ioctl result buffer (lbl_8037B8A0): the drive's current task-type/error status word. */
 void *fn_8003BCC0(void) { return *(void **)&lbl_8037B8A0; }
 
+/* DVD low-level: unmask status interrupts. On Broadway this is a no-op stub that always reports success (TRUE). */
 unsigned int DVDLowUnmaskStatusInterrupts(void) { return 1; }
 
 unsigned int DVDLowMaskCoverInterrupt(void) { return 1; }
