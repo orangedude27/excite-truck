@@ -1757,7 +1757,6 @@ int fn_80191758(void *car) {
 }
 
 #pragma cplusplus on
-#pragma scheduling on
 extern "C" void fn_80191860(void *arg0, void *arg1) {
     class ObjA {
     public:
