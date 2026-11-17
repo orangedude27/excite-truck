@@ -312,7 +312,10 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
   return 0;
 }
 #pragma pop
-int fn_801BF754(int arg0) { return arg0 + 0x124; }
+int fn_801BF754(int object) {
+    /* Field-offset helper: return a pointer to the field at +0x124 of the given object. */
+    return object + 0x124;
+}
 
 extern float fn_80144514(float, float, float, float, float, float);
 #pragma push
