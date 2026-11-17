@@ -2977,6 +2977,7 @@ u16 _WUDGetQueuedSize_8006CA10(s8 arg0) {
 }
 
 s32 fn_8006CFA0(void) {
+    /* L2CAP server compress callback: reports "not compressed" (0) for the queried link. */
     return 0;
 }
 
