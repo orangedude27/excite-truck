@@ -1842,9 +1842,14 @@ extern "C" void fn_8014DC08(void *arg0) {
 }
 #pragma cplusplus reset
 
+/* Empty: the do-nothing destructor that CodeWarrior emits just ahead of
+ * fn_8014DE50, the constructor that installs this file's interface table
+ * lbl_8032D970 (and its three sub-tables at +0x100, +0x11C and +0x130) into a
+ * new object. Nothing calls it by name; it runs only as the destroy entry of a
+ * table, and freeing the object needs no work of its own. */
 void fn_8014DE4C(void) {
 
-  }
+}
   // test
 
 extern s32 fn_801284F8(s32, void *);
