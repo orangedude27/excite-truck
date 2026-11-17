@@ -824,6 +824,7 @@ check_flags:
 }
 extern char lbl_8055E3D4;
 void fn_80176DD4(void) {
+    /* Fade-out completion callback: flag that the pending scene change can run. */
     lbl_8055E3D4 = 1;
 }
 
