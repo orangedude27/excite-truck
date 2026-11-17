@@ -4,5 +4,6 @@
 extern char lbl_8055E8D0[4];
 extern void fn_8000D838(void *queue);
 void fn_801D0CE8(void) {
+    /* Register the global object lbl_8055E8D0 as a static-destructor record on the global chain. */
     fn_8000D838(lbl_8055E8D0);
 }
