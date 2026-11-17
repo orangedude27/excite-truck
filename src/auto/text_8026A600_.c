@@ -17,6 +17,7 @@ void *fn_8026A600(void *camera) {
 #undef InitCameraSplineCursor
 }
 
+#pragma scheduling invalid_target
 float fn_8026A63C(const float * __restrict arg0, const float * __restrict arg1, const float * __restrict arg2) {
     float sp8[3];
     float f4 = arg0[0];
