@@ -902,9 +902,9 @@ static inline u32 entryToPathB(u32 entry, char *path, u32 maxlen) {
 }
 static inline u32 entryToPathC(u32 entry, char *path, u32 maxlen) {
     u32 loc;
-    char *name;
+    const char *name;
     if (entry == 0) return 0;
-    name = (char *)FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF);
+    name = (const char *)FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF);
     loc = entryToPathB(*(u32 *)(FstStart_8055D840 + 4 + entry * 12), path, maxlen);
     if (loc == maxlen) return loc;
     path[loc++] = '/';
