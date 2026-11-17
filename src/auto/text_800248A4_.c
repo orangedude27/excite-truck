@@ -4,30 +4,33 @@
 extern unsigned char lbl_802FE850[];
 int fn_800248A4(unsigned char *a, unsigned char *b, int n) {
     unsigned int locale;
-    register int c asm("r7") = 0;
-    register int scratch asm("r0") = 0;
-    register int first asm("r8") = 0;
-    int raw = 0;
+    int c, first, scratch;
+    int raw;
     locale = *(volatile unsigned int *)(lbl_802FE850 + 0x38);
     while (n > 0) {
-        c = (signed char)*a++;
+        raw = *a++;
+        c = (signed char)raw;
         scratch = 0;
         if (c < 0 || c >= 256) scratch = 1;
-        if (scratch == 0) goto l1;
-        goto a1;
-l1:
-        c = *(unsigned char *)(*(unsigned int *)(locale + 16) + c);
-a1:
+        switch (scratch) {
+            case 0:
+                c = *(unsigned char *)(*(unsigned int *)(locale + 16) + c);
+                break;
+            default:
+                break;
+        }
         raw = *b++;
         first = (signed char)c;
         c = (signed char)raw;
         scratch = 0;
         if (c < 0 || c >= 256) scratch = 1;
-        if (scratch == 0) goto l2;
-        goto a2;
-l2:
-        c = *(unsigned char *)(*(unsigned int *)(locale + 16) + c);
-a2:
+        switch (scratch) {
+            case 0:
+                c = *(unsigned char *)(*(unsigned int *)(locale + 16) + c);
+                break;
+            default:
+                break;
+        }
         scratch = (signed char)c;
         if (first < scratch) return -1;
         if (first > scratch) return 1;
@@ -64,6 +67,7 @@ void *file;
     return position;
 }
 
+/* MSL ftell thunk: tail-call _ftell to report the current position of a stream. */
 void fn_80024A0C(void) {
     _ftell();
 }
