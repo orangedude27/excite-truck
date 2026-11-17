@@ -1008,7 +1008,13 @@ void fn_80289C80(int *arg0) {
 extern char lbl_80348B58[];
 extern float lbl_80564290, lbl_80564294, lbl_805642B8, lbl_805642D8;
 extern float lbl_80564308, lbl_8056430C, lbl_80564310;
-int fn_80289D94(void *arg0) {
+int fn_80289D94(void *effectSlots) {
+    /* Create the "large fire smoke" effect (name lbl_80348B58) and store its handle in the
+     * second slot (+4) of the "misc smoke man" object built by fn_80289BE8. The 0x8C-byte
+     * nw4r::ef create-args block at frame.sp20 is cleared by fn_8028E61C, then filled here
+     * from fixed sdata2 constants (read through volatile to keep the lfs order); fn_8028E2F8
+     * builds the effect from it using the "smoke.tex" texture named by lbl_8055C880.
+     * The sibling fn_80289C80 fills the first slot with the small fire smoke effect. */
     fn_802897E0Frame frame;
     register float negPoint75;
     register float four;
@@ -1073,8 +1079,8 @@ int fn_80289D94(void *arg0) {
     frame.sp74 = three;
     frame.sp98 = negPoint75;
     frame.sp9C = one;
-    *(int *)((char *)arg0 + 4) = ((int (*)(int *, const char *, int))fn_8028E2F8)(
-        (int *)&frame.sp20, lbl_80348B58, lbl_8055C880);
+    *(int *)((char *)effectSlots + 4) = ((int (*)(int *, const char *, int))fn_8028E2F8)(
+        (int *)&frame.sp20, lbl_80348B58 /* "large fire smoke" */, lbl_8055C880 /* "smoke.tex" */);
 }
 
 extern int fn_8028A1A4(int);
