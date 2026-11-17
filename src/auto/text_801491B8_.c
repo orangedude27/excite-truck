@@ -927,8 +927,9 @@ void fn_8014AED0(void *arg0, f32 farg0) {
     ((f32 *)arg0)[0x41] = farg0;
 }
 
-f32 fn_8014AED8(void *arg0) {
-    return ((f32 *)arg0)[0x41];
+f32 fn_8014AED8(void *event) {
+    /* Read the floating-point value at offset 0x104 of the event object (paired setter: fn_8014AED0). */
+    return ((f32 *)event)[0x41];
 }
 
 u8 fn_8014AEE0(void *arg0) {
@@ -1303,7 +1304,6 @@ extern "C" s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
     typedef struct { s32 tag; f32 x; f32 y; s32 mode; f32 w; f32 h; f32 x0, y0, x1, y1; } Rect;
     typedef struct { s32 id; s32 x; s32 y; s32 just; f32 scale; s32 font; u32 color; char *text; } Text;
     typedef struct { int id; s32 num; s32 pad; } Slot;
-    struct Names { s32 a, b, c; };
     typedef struct { char s0[4]; } Strings;
     u8 *o = (u8 *)a0;
     Layout_8014CA48 *mgr = (Layout_8014CA48 *)a1;
@@ -1316,12 +1316,13 @@ extern "C" s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
     u32 k;
     s32 i;
     s32 count;
-    void *node;
+    Slot *slot;
     f32 f24, f25, f26, f27, f28, f29, f30;
     Rect r210, r1E8, r1C0, r198, r170, r148, r120;
     char name100[0x20];
     Text tE0, tC0, tA0, t80;
     char name60[0x20], name40[0x20];
+    LabelNames_8014CA48 names;
     u8 it[0x10];
     s64 lerp18, lerp10;
     u8 shown[6];
@@ -1347,16 +1348,17 @@ extern "C" s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
 
     while (fn_8014C840(it) != 0) {
         if (fn_8014AED8((void *)fn_8014C9CC(it)) > f26) {
-            for (k = 0; k < 6; k++) {
+            slot = (Slot *)lbl_802F9410;
+            for (k = 0; k < 6; k++, slot++) {
                 Rect *src;
-                fn_801345D8(name40, 0x20, lbl_80559F10, ((Slot *)lbl_802F9410)[k].num);
+                fn_801345D8(name40, 0x20, lbl_80559F10, slot->num);
                 src = (Rect *)mgr->rect(name40);
                 if (src != 0) {
                     fn_8014C978(&r120, src);
                     r120.x = r120.x - r120.w * f26 - f25 * r120.w * f26;
                     if (fn_8014C964(&((Slot *)lbl_802F9410)[k].id, fn_8014AEC0((void *)fn_8014C9CC(it))) != 0 && shown[k] == 0) {
                         Text *t;
-                        fn_801345D8(name60, 0x20, strings + 0x1e0, ((Slot *)lbl_802F9410)[k].num);
+                        fn_801345D8(name60, 0x20, strings + 0x1e0, slot->num);
                         t = (Text *)mgr->text(name60);
                         if (t != 0) {
                             fn_8014C920(&t80, t);
@@ -1384,21 +1386,20 @@ extern "C" s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
         fn_8014C848(it);
     }
 
-    node = *(void **)(p8 + 0x1254);
-    if (node != 0) {
+    p8 = *(u8 **)(p8 + 0x1254);
+    if (p8 != 0) {
         f25 = fn_801E7E18();
         f24 = (fn_80176A1C() == 2) ? fn_80176A2C() : lbl_8056164C;
-        f25 = (f25 - fn_8014C838(node)) * f24;
+        f25 = (f25 - fn_8014C838(p8)) * f24;
         f27 = fn_8014C8B4(lbl_8056163C, lbl_80561684, lbl_80561648, lbl_8056164C, f25);
         f30 = fn_8014C8B4(lbl_80561684, lbl_8056165C, lbl_80561648, lbl_8056164C, f25);
-        count = fn_80144C90(fn_8014AED8(node));
-        if (fn_8014AD64(node) > 0) {
+        count = fn_80144C90(fn_8014AED8(p8));
+        if (fn_8014AD64(p8) > 0) {
             Rect *t;
             f24 = fn_8014C8F8(f27, lbl_80561648, lbl_8056164C);
             f28 = fn_8014C8B4(lbl_80561648, lbl_8056164C, lbl_8056164C, lbl_80561688, f24);
-            {
-            Names names = *(Names *)lbl_802F9458;
-            names.c = (count >= 5) ? fn_8014C830((s32)node) : fn_8014C828((s32)node);
+            names = *(LabelNames_8014CA48 *)lbl_802F9458;
+            names.c = (count >= 5) ? fn_8014C830((s32)p8) : fn_8014C828((s32)p8);
             if (count >= 5) {
                 s32 col;
                 f24 = fn_8014C8B4(lbl_80561648, lbl_80561684, lbl_80561648, lbl_8056164C, f25);
@@ -1414,7 +1415,7 @@ extern "C" s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
                         f24 = fn_80144C80(lbl_80561648, lbl_8056164C, f24);
                         tA0.color = fn_80144C68((u8)(lbl_80561690 * f24),
                             ((u8 (*)(s32))fn_8014C820)(col), ((u8 (*)(s32))fn_8014C818)(col), ((u8 (*)(s32))fn_8014C810)(col));
-                        fn_80147230(&tA0, &lbl_80559EC4, fn_8014C830((s32)node));
+                        fn_80147230(&tA0, &lbl_80559EC4, fn_8014C830((s32)p8));
                     }
                 } else {
                     Text *ta, *tb;
@@ -1439,15 +1440,15 @@ extern "C" s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
                 if (ta != 0 && tb != 0)
                     fn_801479A8(ta, (s32)tb, &lbl_80559EC4, names.c, f24);
             }
-            }
             t = (Rect *)mgr->rect(strings + 0x1fc);
             if (t != 0) {
                 fn_801460F4(&r170);
                 if (fn_80141F7C(f30) != 0) {
-                    Rect *found = 0;
+                    Rect *found;
                     f24 = fn_8014C8B4(lbl_80561648, lbl_80561658, lbl_80561648, lbl_8056164C, f25);
+                    found = 0;
                     for (k = 0; k < 6; k++) {
-                        if (fn_8014C964(&((Slot *)lbl_802F9410)[k].id, fn_8014AEC0(node)) != 0) {
+                        if (fn_8014C964(&((Slot *)lbl_802F9410)[k].id, fn_8014AEC0(p8)) != 0) {
                             ((int (*)(char *, const char *, ...))sprintf)(name100, lbl_80559F10, ((Slot *)lbl_802F9410)[k].num);
                             found = (Rect *)mgr->rect(name100);
                             break;
@@ -3611,22 +3612,28 @@ extern "C" void fn_80153900(void *arg0, long arg1) {
     extern long fn_801CB7BC(long);
     extern long lbl_8055E23C;
     extern long lbl_8055E238;
-    void *vv;
-    long pp;
+    void *v;
+    long base;
+    long p;
     unsigned char flag;
     flag = *(unsigned char *)((char *)arg0 + 0x9E0);
     if (flag != 0) {
         ((Obj *)arg0)->v32();
-    } else {
-        if (fn_801E85A4() == 2) vv = (void *)lbl_8055E23C;
-        else vv = (void *)lbl_8055E238;
-        ((V *)vv)->v5();
+        return;
     }
-    pp = (long)arg0 + fn_801E866C(arg1) * 0xC0 + 0x9E4;
-    if (pp != 0) {
-        if (fn_801E85A4() == 2) vv = (void *)lbl_8055E23C;
-        else vv = (void *)lbl_8055E238;
-        fn_8014AFD4((void *)pp, vv, arg1);
+    switch (fn_801E85A4()) {
+    default: v = (void *)lbl_8055E238; break;
+    case 2: v = (void *)lbl_8055E23C; break;
+    }
+    ((V *)v)->v5();
+    base = (long)arg0 + fn_801E866C(arg1) * 0xC0;
+    p = base + 0x9E4;
+    if (p != 0) {
+        switch (fn_801E85A4()) {
+        default: v = (void *)lbl_8055E238; break;
+        case 2: v = (void *)lbl_8055E23C; break;
+        }
+        fn_8014AFD4((void *)p, v, arg1);
         fn_801CB7BC(0);
     }
 }
