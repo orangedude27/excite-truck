@@ -245,7 +245,8 @@ extern "C" s32 fn_80239EF0(void) {
 }
 #pragma cplusplus reset
 #pragma pop
-unsigned char fn_80239F6C(void *arg0) { return *(unsigned char *)((char *)arg0 + 0x20); }
+/* Return this widget's byte field at offset 0x20. */
+unsigned char fn_80239F6C(void *widget) { return *(unsigned char *)((char *)widget + 0x20); }
 
 extern s32 fn_802C83C4(void);
 extern s32 fn_802090CC(void);
