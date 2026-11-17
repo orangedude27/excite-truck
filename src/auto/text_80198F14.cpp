@@ -297,16 +297,9 @@ extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *
     f32 *inVec = (f32 *)arg5;
     f32 radius = farg0;
     f32 *m = *(f32 **)(obj + 0xC);
-    f32 sp5C[3];
-    f32 sp50[3];
-    f32 sp48[3];
-    f32 sp44[3];
-    f32 sp38[3];
-    f32 sp2C[3];
+    f32 sp5C[3], sp50[3], sp48[3], sp44[3], sp38[3], sp2C[3];
     s32 sp20[3];
-    f32 sp14[3];
-    f32 sp8[3];
-    f32 sp68[8][4];
+    f32 sp14[3], sp8[3], sp68[8][4];
     f32 x = pt[0] - m[9];
     f32 y = pt[1] - m[10];
     f32 z = pt[2] - m[11];
@@ -327,7 +320,6 @@ extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *
     if (nx < sp50[0] - radius) return 0;
     if (ny < sp50[1] - radius) return 0;
     if (nz < sp50[2] - radius) return 0;
-
     if ((f32 *)sp38 == inVec) {
         sp38[0] = inVec[2] * m[2] + (inVec[0] * m[0] + inVec[1] * m[1]);
         sp38[1] = inVec[2] * m[5] + (inVec[0] * m[3] + inVec[1] * m[4]);
@@ -337,13 +329,10 @@ extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *
         sp38[1] = inVec[2] * m[5] + (inVec[0] * m[3] + inVec[1] * m[4]);
         sp38[2] = inVec[2] * m[8] + (inVec[0] * m[6] + inVec[1] * m[7]);
     }
-
     {
         f32 var_f31 = lbl_805622D0;
         u8 *var_r24 = obj + 0x3C;
-        s32 var_r31 = 0;
-        s32 var_r25 = 0;
-        s32 var_r23 = 0;
+        s32 var_r31 = 0, var_r25 = 0, var_r23 = 0;
         while (var_r23 < *(s32 *)(obj + 0xBC)) {
             f32 temp_f28 = (f32)__fabs((f64)PSVECDotProduct((Vec *)sp38, (Vec *)var_r24));
             f32 temp_f2 = (PSVECDotProduct((Vec *)sp5C, (Vec *)var_r24) - *(f32 *)(var_r24 + 0xC)) + temp_f28;
@@ -365,8 +354,7 @@ extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *
             s32 var_r25_2 = var_r31 * 0x10;
             s32 var_r23_2 = 0;
             while (var_r23_2 < *(s32 *)(obj + 0xDC)) {
-                f32 t;
-                f32 mag;
+                f32 t, mag;
                 sp2C[0] = sp5C[0] - *(f32 *)(var_r24_2 + 0);
                 sp2C[1] = sp5C[1] - *(f32 *)(var_r24_2 + 4);
                 sp2C[2] = sp5C[2] - *(f32 *)(var_r24_2 + 8);
@@ -404,8 +392,7 @@ extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *
                 r = (u32)i >> 1;
                 if (r != 0) {
                     do {
-                        f32 w0 = p[3];
-                        f32 w1 = p[7];
+                        f32 w0 = p[3], w1 = p[7];
                         f32 s0 = -w0 * (invsum * (w0 * w0));
                         f32 s1 = -w1 * (invsum * (w1 * w1));
                         *(f32 *)&sp20[0] = *(f32 *)&sp20[0] + p[0] * s0;
@@ -1199,6 +1186,9 @@ extern "C" s32 fn_8019B08C(void* arg0, const Vec* arg1, void* arg2, f32 farg0) {
     return 1;
 }
 
+extern "C" void fn_802E30C8(const char *, ...);
+extern f32 lbl_805622D8, lbl_80562300, lbl_80562334, lbl_80562338, lbl_8056233C;
+extern char lbl_80333448[];
 extern "C" s32 fn_8019B4D8(void *arg0, void *arg1, void *arg2, s32 arg3, f32 farg0) {
     f32 *matrix;
     u32 copied[12];
@@ -3757,29 +3747,69 @@ extern "C" void** fn_801A1898(void** object) {
 }
 
 extern "C" void fn_801A18D4(void* arg0, f32* arg1, f32* arg2) {
-    s32 w20, w2c, w18, w1c, w24, w28;
-    f32 x = *(f32*)((u8*)arg0+0x24);
+    volatile u32 local[30];
     void* m = *(void**)((u8*)arg0+0xC);
-    w20 = *(s32*)((u8*)m+0x20);
-    w2c = *(s32*)((u8*)m+0x2C);
-    w18 = *(s32*)((u8*)m+0x18);
-    w1c = *(s32*)((u8*)m+0x1C);
-    w24 = *(s32*)((u8*)m+0x24);
-    w28 = *(s32*)((u8*)m+0x28);
-    f32 a = *(f32*)&w20, b = *(f32*)&w2c, c = *(f32*)&w18, d = *(f32*)&w1c, e = *(f32*)&w24, f = *(f32*)&w28;
-    f32 g=b+a*x, h=b-a*x, i=e+c*x, j=e-c*x, k=f+d*x, l=f-d*x;
-    f32 lo0=g-x, lo1=h-x, lo2=i-x, lo3=j-x, lo4=k-x, lo5=l-x;
-    f32 minx=lo0, miny=lo4, minz=lo2;
-    if (minx>=lo1) minx=lo1;
-    if (miny>=lo5) miny=lo5;
-    if (minz>=lo3) minz=lo3;
-    arg1[0]=minz; arg1[1]=miny; arg1[2]=minx;
-    f32 hi0=j+x, hi1=l+x, hi2=h+x, hi3=g+x, hi4=k+x, hi5=i+x;
-    f32 maxx=hi0, maxy=hi1, maxz=hi2;
-    if (maxx<=hi3) maxx=hi3;
-    if (maxy<=hi4) maxy=hi4;
-    if (maxz<=hi5) maxz=hi5;
-    arg2[0]=maxz; arg2[1]=maxy; arg2[2]=maxx;
+    f32 x = *(f32*)((u8*)arg0+0x24);
+    f32 nx = -x;
+    local[26] = *(u32*)((u8*)m+0x20);
+    local[29] = *(u32*)((u8*)m+0x2c);
+    local[24] = *(u32*)((u8*)m+0x18);
+    f32 a = *(volatile f32*)&local[26];
+    f32 ax = a*x;
+    f32 b = *(volatile f32*)&local[29];
+    f32 anx = a*nx;
+    f32 g = b + ax;
+    local[25] = *(u32*)((u8*)m+0x1c);
+    f32 c = *(volatile f32*)&local[24];
+    f32 h = b + anx;
+    local[27] = *(u32*)((u8*)m+0x24);
+    f32 cx = c*x;
+    f32 lo0 = g - x;
+    f32 d = *(volatile f32*)&local[25];
+    f32 lo1 = h - x;
+    f32 e = *(volatile f32*)&local[27];
+    local[28] = *(u32*)((u8*)m+0x28);
+    f32 i = e + cx;
+    f32 cnx = c*nx;
+    *(volatile f32*)&local[23] = g;
+    f32 dx = d*x;
+    f32 f = *(volatile f32*)&local[28];
+    f32 j = e + cnx;
+    f32 dnx = d*nx;
+    *(volatile f32*)&local[20] = h;
+    f32 k = f + dx;
+    f32 lo3 = j - x;
+    f32 l = f + dnx;
+    f32 lo4 = k - x;
+    *(volatile f32*)&local[18] = j;
+    f32 lo5 = l - x;
+    *(volatile f32*)&local[19] = l;
+    f32 lo2 = i - x;
+    *(volatile f32*)&local[21] = i;
+    *(volatile f32*)&local[22] = k;
+    *(volatile f32*)&local[9] = lo3;
+    *(volatile f32*)&local[10] = lo5;
+    *(volatile f32*)&local[11] = lo1;
+    *(volatile f32*)&local[12] = lo2;
+    *(volatile f32*)&local[13] = lo4;
+    *(volatile f32*)&local[14] = lo0;
+    lo0 = (lo0 >= lo1) ? lo1 : lo0;
+    lo4 = (lo4 >= lo5) ? lo5 : lo4;
+    lo2 = (lo2 >= lo3) ? lo3 : lo2;
+    arg1[0] = lo2; arg1[1] = lo4; arg1[2] = lo0;
+    *(volatile f32*)&local[0] = j+x;
+    *(volatile f32*)&local[1] = l+x;
+    *(volatile f32*)&local[2] = h+x;
+    *(volatile f32*)&local[3] = g+x;
+    *(volatile f32*)&local[4] = k+x;
+    *(volatile f32*)&local[5] = i+x;
+    f32 M0 = *(volatile f32*)&local[0], M1 = *(volatile f32*)&local[1];
+    f32 M2 = *(volatile f32*)&local[2], M3 = *(volatile f32*)&local[3];
+    f32 M4 = *(volatile f32*)&local[4], M5 = *(volatile f32*)&local[5];
+    M0 = (M0 <= M3) ? M3 : M0;
+    M1 = (M1 <= M4) ? M4 : M1;
+    M2 = (M2 <= M5) ? M5 : M2;
+    arg2[0] = M2; arg2[1] = M1; arg2[2] = M0;
 }
 
 extern "C" void fn_8019CF60(void*, void*);
