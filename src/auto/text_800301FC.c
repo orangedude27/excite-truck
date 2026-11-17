@@ -1172,6 +1172,7 @@ u16 fn_80031C7C(void) {
 }
 
 u16 fn_80031C84(void) {
+    /* Return the third debug CC channel mask (ccMask3, lbl_8055D730). */
     return lbl_8055D730;
 }
 
