@@ -1462,10 +1462,11 @@ int fn_80181444(void *arg0) { return *(int *)((char *)arg0 + 0x34C); }
 
 int fn_8018144C(void *arg0) { return *(int *)((char *)arg0 + 0x348); }
 
-void GXInitLightAttnA_80181454(void *arg0, float farg0, float farg1, float farg2) {
-    *(float *)((char *)arg0 + 0x30C) = farg0;
-    *(float *)((char *)arg0 + 0x310) = farg1;
-    *(float *)((char *)arg0 + 0x314) = farg2;
+void GXInitLightAttnA_80181454(void *light, float a, float b, float c) {
+    /* Set the three diffuse-attenuation coefficients a/b/c of the light object. */
+    *(float *)((char *)light + 0x30C) = a;
+    *(float *)((char *)light + 0x310) = b;
+    *(float *)((char *)light + 0x314) = c;
 }
 
 void GXInitLightAttnK_80181464(void *arg0, float farg0, float farg1, float farg2) {
