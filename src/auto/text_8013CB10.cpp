@@ -2419,6 +2419,7 @@ extern "C" void fn_80141558(void *params, s32 points, s32 count, s32 color) {
 
 extern "C" u8 *fn_80142D3C(void *, s32);
 extern "C" s32 fn_80142D34(void);
+extern "C" s32 fn_80141F28(RingBuf8013D2C4 *, s32);
 extern "C" void fn_80142948(void *);
 extern "C" s32 fn_80142978(void *);
 extern "C" u8 *fn_801421C0(u8 *);
