@@ -192,7 +192,10 @@ int fn_80137C98(int value) {
     return -1;
 }
 
-int __AXGetStackHead_80137CFC(int index) { return lbl_8042F798[index]; }
+int __AXGetStackHead_80137CFC(int slot) {
+    /* Return the per-context league mapping stored at lbl_8042F798[slot]. */
+    return lbl_8042F798[slot];
+}
 
 #pragma dont_inline fn_80137C84
 void fn_80137D10(void) {
