@@ -510,7 +510,10 @@ extern int strcmp(const char *, const char *);
 extern int fn_802E317C(const char *, ...);
 extern int lbl_802FA998[];
 extern char lbl_80349208[];
-void fn_80292EA8(void *arg0) { *(s32 *)((u8 *)arg0 + 0x180) = 0; }
+void fn_80292EA8(void *cache) {
+    /* Reset the chunk cache's in-use row count to zero. */
+    ((ChunkCache *)cache)->count = 0;
+}
 
 void fn_80292EB4(void *arg0) { *(s32 *)((u8 *)arg0 + 0x180) = 0; }
 
