@@ -933,8 +933,9 @@ void fn_802328D4(s32 arg0) {
 #pragma dont_inline off
 
 #pragma pop
-void fn_80232928(void* hi) {
-    lbl_8055F060 = hi;
+/* Set the persistent font/outline template word that fn_80231718 merges the primary text style into. */
+void fn_80232928(void* templateWord) {
+    lbl_8055F060 = templateWord;
 }
 
 /* Reset the persistent font/outline template word lbl_8055F060 to its default held in lbl_8055F04C (zero at boot) -- the base word fn_80231718 merges primary styling into. */
@@ -1251,9 +1252,13 @@ void fn_80233354(u8 *text, u8 *ctx, s32 arg2, s32 flags, f32 x, f32 y, f32 sx, f
         charW = (f32)ctx[4] * sx;
         switch (c0 & 0xF0) {
         case 0xE0:
-            break;
+        case 0xC0:
         default:
-            if ((c0 & 0xE0) == 0xC0) { }
+            switch (c0 & 0xE0) {
+            case 0xC0:
+            default:
+                break;
+            }
             break;
         }
         if (flags & 1) {
