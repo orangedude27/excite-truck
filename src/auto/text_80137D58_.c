@@ -85,6 +85,8 @@ static inline void Swap32_801381B4(unsigned char *p) {
     p[1] = p[2];
     p[2] = b;
 }
+/* No-op stub: the original function has an empty body (its target is a bare `blr`),
+ * but callers such as fn_80138434 still tail-call it. */
 void fn_80137F2C(void) {
 
 }
@@ -486,67 +488,74 @@ extern double fn_8002F234(double);
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 int fn_801386D0(void *arg0, float farg0, float farg1, float farg2) {
+    struct Vec2 { float x, y; } q, p;
+    volatile struct Vec2 r;
     char *ctx = (char *)arg0;
-    char *a, *b, *n;
-    float step, d, f24, f25, one, half, zero, big, minLen, len, inv;
-    float tmp[2];
-    float p[2];
+    char *n;
     int hit = 0;
-    f25 = lbl_805613A4;
-    half = lbl_80561398;
-    zero = f25;
-    minLen = lbl_805613B4;
-    one = lbl_8056139C;
-    big = lbl_805613B0;
+    char *a, *b, *nx;
+    float step, f25, f24b, f24, d, len, inv;
+    f25 = 0.0f;
     do {
         step = farg0 - f25;
-        if (step < big) {
-        } else {
-            step = big;
-        }
+        step = (step < 0.02f) ? step : 0.02f;
         a = *(char **)(ctx + 0x1C);
         f24 = *(float *)(ctx + 8);
         n = *(char **)(a + 0x14);
         do {
             float v = fn_801385F0(*(float *)(n + 0x1C), f24, farg1, farg2);
-            if (v > zero) {
+            if (v > 0.0f) {
+                float ay = *(float *)(a + 0xC);
+                float ax = *(float *)(a + 8);
                 float k = v * step;
-                float y1 = *(float *)(a + 0xC);
-                float x1 = *(float *)(a + 8);
-                *(float *)(n + 0x2C) = *(float *)(n + 0x2C) + k;
-                p[1] = y1 + half * (*(float *)(n + 0xC) - y1);
-                p[0] = x1 + half * (*(float *)(n + 8) - x1);
-                tmp[0] = p[0];
-                tmp[1] = -p[1];
-                *(float *)n = *(float *)n + p[1] * k;
-                *(float *)(n + 4) = *(float *)(n + 4) + tmp[1] * k;
+                p.y = ay + 0.5f * (*(float *)(n + 0xC) - ay);
+                p.x = ax + 0.5f * (*(float *)(n + 8) - ax);
+                *(float *)(n + 0x2C) += k;
+                {
+                    double dd = *(double *)&p;
+                    *(double *)&q = dd;
+                }
+                {
+                    float oldx = q.x;
+                    q.x = q.y;
+                    q.y = -oldx;
+                    *(float *)n += q.x * k;
+                    *(float *)(n + 4) += q.y * k;
+                }
             }
             b = *(char **)(ctx + 0x1C);
             a = n;
             n = *(char **)(n + 0x14);
         } while (a != b);
-        f24 = lbl_805613A4;
+        f24b = 0.0f;
         do {
-            char *nx = *(char **)(b + 0x14);
+            nx = *(char **)(b + 0x14);
             *(float *)(b + 8) = *(float *)nx - *(float *)b;
             d = *(float *)(nx + 4) - *(float *)(b + 4);
             *(float *)(b + 0xC) = d;
-            len = fn_8002F234(*(float *)(b + 8) * *(float *)(b + 8) + d * d);
-            if (minLen > len)
-                len = minLen;
-            inv = one / len;
-            *(float *)(b + 8) = *(float *)(b + 8) * inv;
-            *(float *)(b + 0xC) = *(float *)(b + 0xC) * inv;
-            *(float *)(b + 0x1C) = f24;
+            len = (float)fn_8002F234((double)(*(float *)(b + 8) * *(float *)(b + 8) + d * d));
+            if (0.01f > len) {
+                len = 0.01f;
+            }
+            inv = 1.0f / len;
+            *(float *)(b + 8) *= inv;
+            *(float *)(b + 0xC) *= inv;
+            *(float *)(b + 0x1C) = f24b;
             nx = *(char **)(b + 0x14);
-            p[1] = *(float *)(b + 4) - *(float *)(nx + 4);
-            p[0] = *(float *)b - *(float *)nx;
-            *(float *)(b + 0x18) = fn_8002F234(p[0] * p[0] + p[1] * p[1]);
-            if (*(float *)(b + 0x18) < half)
+            {
+                float px, py;
+                py = *(float *)(b + 4) - *(float *)(nx + 4);
+                px = *(float *)b - *(float *)nx;
+                r.y = py;
+                r.x = px;
+                *(float *)(b + 0x18) = (float)fn_8002F234((double)(px * px + py * py));
+            }
+            if (*(float *)(b + 0x18) < 0.5f) {
                 hit = 1;
+            }
             len = *(float *)(b + 0x18);
             b = *(char **)(b + 0x14);
-            f24 += len;
+            f24b += len;
         } while (b != *(char **)(ctx + 0x1C) && hit == 0);
         f25 += step;
     } while (f25 < farg0 && hit == 0);
