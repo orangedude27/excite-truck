@@ -589,8 +589,11 @@ void fn_800187B8(const char* source) {
     }
 }
 
+/* Enable the DAV force option by setting its flag byte (lbl_8055D564) to 1. */
 void fn_800187F8(void) {
-    lbl_8055D564 = 1;
+#define gForceEnabled lbl_8055D564
+    gForceEnabled = 1;
+#undef gForceEnabled
 }
 
 /* Shuffle the indexed word array. Reload its base after the random call. */
