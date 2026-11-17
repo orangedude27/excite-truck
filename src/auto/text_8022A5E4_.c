@@ -215,8 +215,12 @@ unsigned int fn_8022A834(unsigned int color) {
 }
 #pragma pop
 
-void fn_8022A858(int arg0) {
-    fn_8022CAA8(lbl_80490968 + arg0 * 0x74);
+/* Initialize the UI text style at styleIndex in the style table; the caller's
+ * descriptor block (arriving in r4) is forwarded to fn_8022CAA8 unchanged. */
+void fn_8022A858(int styleIndex) {
+#define StyleTable lbl_80490968
+    fn_8022CAA8(StyleTable + styleIndex * 0x74);
+#undef StyleTable
 }
 
 #pragma dont_inline on
