@@ -318,13 +318,15 @@ void fn_801BDA74(int idx, float *p) {
 extern float lbl_80562838, lbl_8056283C, lbl_80562854;
 extern double fn_8002F234(float);
 extern signed char lbl_8055E7A8;
+#pragma scheduling invalid_target
 void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
     extern int lbl_8055E794;
     struct V4 { float x, y, z, w; };
-    float out[4], t, q, inv;
+    float t, out[4], q, inv;
     struct V4 pos, quat, la, lb;
-    int i, j, k;
-    float *dst = (float *)(lbl_8055E794 + index * 0xB0);
+    int j, k, i;
+    float *o, *dst;
+    dst = (float *)(lbl_8055E794 + index * 0xB0);
     t = m[0][0] + m[1][1] + m[2][2];
     pos.x = m[3][0]; pos.y = m[3][1]; pos.z = m[3][2];
     dst[0] = pos.x;
@@ -339,7 +341,7 @@ void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
         out[1] = inv * (m[2][0] - m[0][2]);
         out[2] = inv * (m[0][1] - m[1][0]);
     } else {
-        float *o = out;
+        o = out;
         i = 0; if (m[1][1] > m[0][0]) i = 1; if (m[2][2] > m[i][i]) i = 2;
         j = (i + 1) % 3; k = (j + 1) % 3;
         q = fn_8002F234(lbl_8056283C + m[i][i] - (m[k][k] + m[j][j]));
@@ -356,7 +358,6 @@ void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
     dst[20] = la.x; dst[21] = la.y; dst[22] = la.z; dst[23] = la.w;
     dst[24] = lb.x; dst[25] = lb.y; dst[26] = lb.z; dst[27] = lb.w;
 }
-
 void fn_801BE400(int index, float *m, float scale) {
     float out[4], t, q, inv;
     float *dst = (float *)(lbl_8055E794 + index * 0xB0);
@@ -499,57 +500,72 @@ void fn_801BF164(float *arg0, float *arg1);
 void GXInitLightAttnA_801BF188(void *arg0, float farg0, float farg1, float farg2);
 void fn_801BF198(void *arg0, void *arg1);
 void fn_801BF0C4(void *arg0, void *arg1, int arg2);
+/* CarPostUpdate: for each active car slot, copy its simulation records into a
+ * scratch area and run the physics post-step, write the mass/orientation data
+ * back unless the slot is flagged, then validate the mass position (logging and
+ * resetting the light fields when it is illegal) and refresh the four wheels'
+ * ground-contact status, normal and position records. */
 void fn_801BEDD4(void) {
-    int i;
-    char tmp90[16], tmp80[16], tmp70[16], tmp60[16], tmp50[16], tmp40[16];
-    float v30[3], v24[3], m2[3], m1[3];
-    int sp8;
-    for (i = 0; i < lbl_8055E78C; i++) {
-        char *p3, *p4, *p5;
-        memcpy(lbl_80436D48, (char *)lbl_8055E794 + i * 0xB0, 0xB0);
-        memcpy(lbl_80436D48 + 0xB0, (char *)lbl_8055E798 + i * 0x1F0, 0x1F0);
-        memcpy(lbl_80436D48 + 0x2A0, (char *)lbl_8055E79C + i * 0x190, 0x190);
-        lbl_8055A920 = i;
-        fn_801BA088(lbl_80436D48, 0, 0xB, 0x2A);
-        lbl_8055A920 = -1;
-        if (((unsigned char *)lbl_8055E7A0)[i] == 0) {
-            memcpy((char *)lbl_8055E794 + i * 0xB0, lbl_80436D48, 0xB0);
-            memcpy((char *)lbl_8055E798 + i * 0x1F0, lbl_80436D48 + 0xB0, 0x1F0);
+#define workBuf       lbl_80436D48  /* scratch copy of one car's mass/cs/cc records */
+#define simSlot       lbl_8055A920  /* slot currently handed to the physics step */
+#define illegalPosFmt lbl_80336A60  /* "CarPostUpdate: illegal mass position (%f %f %f)" */
+#define zeroF         lbl_80562838  /* 0.0f */
+#define oneF          lbl_8056283C  /* 1.0f */
+    int slot;
+    char wheelPos4[16], normal4[16], cs4[16], attn2[16], pos4[16], attn1[16];
+    float normal[3], wheelPos[3], localAxis[3], massPos[3];
+    int groundInfo;
+    for (slot = 0; slot < poolIndex; slot++) {
+        char *mass, *cs, *cx;
+        memcpy(workBuf, (char *)massList + slot * 0xB0, 0xB0);
+        memcpy(workBuf + 0xB0, (char *)csList + slot * 0x1F0, 0x1F0);
+        memcpy(workBuf + 0x2A0, (char *)ccList + slot * 0x190, 0x190);
+        simSlot = slot;
+        fn_801BA088(workBuf, 0, 0xB, 0x2A);
+        simSlot = -1;
+        if (((unsigned char *)aList)[slot] == 0) {
+            memcpy((char *)massList + slot * 0xB0, workBuf, 0xB0);
+            memcpy((char *)csList + slot * 0x1F0, workBuf + 0xB0, 0x1F0);
         }
-        p5 = (char *)lbl_8055E7A4 + i * 0x14;
-        p4 = (char *)lbl_8055E798 + i * 0x1F0;
-        p3 = (char *)lbl_8055E794 + i * 0xB0;
-        fn_8001BA68(m1);
-        fn_801BF198(m1, p3);
-        if (((int (*)(float *))fn_801BD628)(m1) == 0) {
-            fn_802E30C8(lbl_80336A60, m1[0], m1[1], m1[2]);
-            ((void *(*)(void *, void *))fn_801BF164)(p3, ((void *(*)(void *, float, float, float))GXInitLightAttnA_801BF188)(tmp40, lbl_80562838, lbl_805628B4, lbl_80562838));
-            ((void *(*)(void *, void *))fn_801BF12C)(p3 + 0x40, ((void *(*)(void *, float, float, float, float))fn_801BF150)(tmp50, lbl_80562838, lbl_80562838, lbl_80562838, lbl_8056283C));
-            ((void *(*)(void *, void *))fn_801BF164)(p3 + 0x50, ((void *(*)(void *, void *))fn_801BF164)(p3 + 0x60, ((void *(*)(void *, float, float, float))GXInitLightAttnA_801BF188)(tmp60, lbl_80562838, lbl_80562838, lbl_80562838)));
-            ((void *(*)(void *, void *))fn_801BF12C)(p4, ((void *(*)(void *, void *))fn_801BF12C)(p4 + 0x10, ((void *(*)(void *, void *))fn_801BF12C)(p4 + 0x20, ((void *(*)(void *, void *))fn_801BF12C)(p4 + 0x30, ((void *(*)(void *, float, float, float, float))fn_801BF150)(tmp70, lbl_80562838, lbl_80562838, lbl_80562838, lbl_80562838)))));
-            fn_801BF198(m1, p3);
+        cx = (char *)cxList + slot * 0x14;
+        cs = (char *)csList + slot * 0x1F0;
+        mass = (char *)massList + slot * 0xB0;
+        fn_8001BA68(massPos);
+        fn_801BF198(massPos, mass);
+        if (((int (*)(float *))fn_801BD628)(massPos) == 0) {
+            fn_802E30C8(illegalPosFmt, massPos[0], massPos[1], massPos[2]);
+            ((void *(*)(void *, void *))fn_801BF164)(mass, ((void *(*)(void *, float, float, float))GXInitLightAttnA_801BF188)(attn1, zeroF, lbl_805628B4, zeroF));
+            ((void *(*)(void *, void *))fn_801BF12C)(mass + 0x40, ((void *(*)(void *, float, float, float, float))fn_801BF150)(pos4, zeroF, zeroF, zeroF, oneF));
+            ((void *(*)(void *, void *))fn_801BF164)(mass + 0x50, ((void *(*)(void *, void *))fn_801BF164)(mass + 0x60, ((void *(*)(void *, float, float, float))GXInitLightAttnA_801BF188)(attn2, zeroF, zeroF, zeroF)));
+            ((void *(*)(void *, void *))fn_801BF12C)(cs, ((void *(*)(void *, void *))fn_801BF12C)(cs + 0x10, ((void *(*)(void *, void *))fn_801BF12C)(cs + 0x20, ((void *(*)(void *, void *))fn_801BF12C)(cs + 0x30, ((void *(*)(void *, float, float, float, float))fn_801BF150)(cs4, zeroF, zeroF, zeroF, zeroF)))));
+            fn_801BF198(massPos, mass);
         }
-        fn_8001BA68(m2);
-        fn_801BF198(m2, p3 + 0x30);
+        fn_8001BA68(localAxis);
+        fn_801BF198(localAxis, mass + 0x30);
         {
-            char *a = p4 + 0x40;
-            char *pq = p5;
-            char *b = p4 + 0x110;
-            int j = 0;
-            char *c = p4 + 0x150;
+            char *wheelSrc = cs + 0x40;
+            char *infoDst = cx;
+            char *normalDst = cs + 0x110;
+            int wheel = 0;
+            char *posDst = cs + 0x150;
             do {
-                fn_8001BA68(v24);
-                fn_801BF198(v24, a);
-                sp8 = 0xFF;
-                GXInitLightAttnA_80144B44(v30, lbl_80562838, lbl_8056283C, lbl_80562838);
-                ((void (*)(void *, void *, void *, void *))fn_801BF0C4)(v24, v30, p5, &sp8);
-                ((int *)pq)[1] = sp8;
-                ((void *(*)(void *, void *))fn_801BF12C)(b, ((void *(*)(void *, float, float, float, float))fn_801BF150)(tmp80, v30[0], v30[1], v30[2], v24[1]));
-                ((void *(*)(void *, void *))fn_801BF164)(c, ((void *(*)(void *, float, float, float))GXInitLightAttnA_801BF188)(tmp90, v24[0], v24[1], v24[2]));
-                j++; a += 0x10; pq += 4; b += 0x10; c += 0x10;
-            } while (j < 4);
+                fn_8001BA68(wheelPos);
+                fn_801BF198(wheelPos, wheelSrc);
+                groundInfo = 0xFF;
+                GXInitLightAttnA_80144B44(normal, zeroF, oneF, zeroF);
+                ((void (*)(void *, void *, void *, void *))fn_801BF0C4)(wheelPos, normal, cx, &groundInfo);
+                ((int *)infoDst)[1] = groundInfo;
+                ((void *(*)(void *, void *))fn_801BF12C)(normalDst, ((void *(*)(void *, float, float, float, float))fn_801BF150)(normal4, normal[0], normal[1], normal[2], wheelPos[1]));
+                ((void *(*)(void *, void *))fn_801BF164)(posDst, ((void *(*)(void *, float, float, float))GXInitLightAttnA_801BF188)(wheelPos4, wheelPos[0], wheelPos[1], wheelPos[2]));
+                wheel++; wheelSrc += 0x10; infoDst += 4; normalDst += 0x10; posDst += 0x10;
+            } while (wheel < 4);
         }
     }
+#undef oneF
+#undef zeroF
+#undef illegalPosFmt
+#undef simSlot
+#undef workBuf
 }
 
 #pragma push
