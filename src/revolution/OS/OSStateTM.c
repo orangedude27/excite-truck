@@ -260,6 +260,7 @@ static s32 AccessVIDimRegs(void) {
     return result != IPC_RESULT_OK ? result : 1;
 }
 
+/* Async IPC reply for the screen-dim ioctl: release the in-use flag so another VI-dim request can be issued. */
 static s32 __OSVIDimReplyHandler(s32 result, void* arg) {
 #pragma unused(result)
 #pragma unused(arg)
