@@ -2758,6 +2758,7 @@ extern "C" void fn_801FBCF4(void **list, void *node) {
     *list = node;
 }
 
+/* Default node callback installed at +0x38: returns the constant mask -0xF when no dynamic visibility callback is selected. */
 extern "C" s32 fn_801FBD04(void) {
     return -0xF;
 }
