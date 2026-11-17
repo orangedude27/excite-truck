@@ -1058,14 +1058,17 @@ void fn_8028FB98(void *arg0, int arg1, float *arg2, float farg0) {
     extern float lbl_80558DC4;
     extern float lbl_80564420;
     float sp8[2];
-    int result;
-    result = 0;
-    if (*(float *)((char *)arg0 + 0x9C) >= lbl_80564424 - lbl_80558DC4) {
-        if (*(int *)((char *)arg0 + 0x90) != *(int *)((char *)arg0 + 0x94))
-            result = 1;
-    }
+    int result = 0;
+
+    if (*(float *)((char *)arg0 + 0x9C) >=
+            1.0f - lbl_80558DC4 &&
+        *(int *)((char *)arg0 + 0x90) != *(int *)((char *)arg0 + 0x94))
+        result = 1;
     if (result != 0) {
-        fn_8028F444(sp8, arg2, (float *)((char *)arg0 + 0x10), (float *)((char *)arg0 + 0x1C), *(float *)((char *)arg0 + 0x28), farg0);
+        fn_8028F444(sp8, arg2,
+                    (float *)((char *)arg0 + 0x10),
+                    (float *)((char *)arg0 + 0x1C),
+                    *(float *)((char *)arg0 + 0x28), farg0);
         fn_8028FEE4(arg0, arg1, sp8, lbl_80564420, lbl_80564424);
     }
 }
