@@ -3232,7 +3232,7 @@ extern "C" void fn_8015C5E4(void* arg0) {
         *(f32*)((u8*)arg0 + 0x278) = lbl_80561754;
     }
 }
-/* Bonus-tracker type getter: returns category index 4 (cf. fn_80159E6C). */
+/* Bonus-tracker category getter: returns index 4. */
 extern "C" s32 fn_8015C684(void) {
     return 4;
 }
