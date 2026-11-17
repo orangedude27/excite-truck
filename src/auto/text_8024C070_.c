@@ -129,7 +129,8 @@ int fn_8024C2F8(void *entry) {
     return (*(int **)((char *)entry + 0x18))[*(int *)((char *)entry + 0x10)];
 }
 
-int fn_8024C30C(void *arg0) {
-    return (*(int **)((char *)arg0 + 0x14))[*(int *)((char *)arg0 + 0x10)];
+/* Looks up a queue's current element: +0x10 holds the index and +0x14 the int buffer pointer. */
+int fn_8024C30C(void *queue) {
+    return (*(int **)((char *)queue + 0x14))[*(int *)((char *)queue + 0x10)];
 }
 
