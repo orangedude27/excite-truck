@@ -5,6 +5,7 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/GX/GXTypes.h"
+#include "revolution/OS/OSFastCast.h"
 extern void fn_802E317C(const char *, ...);
 extern s32 fn_802DAC64(void);
 extern void fn_802D61BC(void *);
@@ -129,7 +130,7 @@ void fn_802D3FFC(void *arg0) {
     GXSetArray(0xE, *(void **)((char *)arg0 + 0x24), 4);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
-#pragma pop
+#pragma scheduling invalid_target
 void fn_802D4060(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DB068[];
@@ -138,13 +139,13 @@ void fn_802D4060(void *arg0) {
     register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
     register s32 count = *(s32 *)((u8 *)object + 0x1C);
     f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
-    s32 k;
+    s32 i;
     if (base == 0) return;
     {
         f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
         f32 factor = lbl_80564FF0;
         register volatile f32 *out = base;
-        for (k = 0; k < count; k++) {
+        for (i = 0; i < count; i++) {
             u8 a, b, c, d;
             f32 weight1, weight2;
             f32 *direction;
@@ -175,9 +176,6 @@ void fn_802D4060(void *arg0) {
     GXSetArray(14, *(void **)((u8 *)object + 0x24), 4);
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
-#pragma push
-#pragma scheduling invalid_target
-#pragma scheduling on
 void fn_802D41C8(void *arg0) {
     /* Binds this object's position, normal, and color vertex arrays, then submits its display list. */
     GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
@@ -266,7 +264,7 @@ void fn_802D42E4(void *arg0) {
 #pragma scheduling on
 #pragma pop
 
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802D4458(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DB068[];
@@ -274,32 +272,36 @@ void fn_802D4458(void *arg0) {
     register void *object = arg0;
     register volatile u8 *src = *(u8 **)((u8 *)object + 0x20);
     register s32 count = *(s32 *)((u8 *)object + 0x1C);
-    f32 *base = (f32 *)fn_802CFF64(count * 12);
-    s32 k;
+    f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
+    s32 i;
     if (base == 0) return;
     {
+        f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
         f32 factor = lbl_80564FF0;
-        f32 *out = base;
-        for (k = 0; k < count; k++) {
-            u8 a = src[0xE];
-            s32 offset1 = src[0xC] * 12;
-            s32 offset2 = src[0xD] * 12;
-            u8 d = src[0xF];
-            f32 *first = (f32 *)((u8 *)lbl_804DB068 + offset1);
-            f32 *second = (f32 *)((u8 *)lbl_804DB068 + offset2);
-            f32 weight1 = factor * (f32)a;
-            f32 weight2 = factor * (f32)d;
+        register volatile f32 *out = base;
+        for (i = 0; i < count; i++) {
+            u8 a, b, c, d;
+            f32 weight1, weight2;
+            f32 *direction;
             f32 x, y, z;
-            x = *(f32 *)((u8 *)src + 0x0) + first[0] * weight1;
+            a = src[0xE];
+            b = src[0xC];
+            direction = (f32 *)((u8 *)directions + b * 12);
+            weight1 = factor * (f32)a;
+            c = src[0xD];
+            d = src[0xF];
+            weight2 = factor * (f32)d;
+            x = *(f32 *)((u8 *)src + 0x0) + direction[0] * weight1;
             out[0] = x;
-            y = *(f32 *)((u8 *)src + 0x4) + first[1] * weight1;
+            y = *(f32 *)((u8 *)src + 0x4) + direction[1] * weight1;
             out[1] = y;
-            z = *(f32 *)((u8 *)src + 0x8) + first[2] * weight1;
+            z = *(f32 *)((u8 *)src + 0x8) + direction[2] * weight1;
             out[2] = z;
+            direction = (f32 *)((u8 *)directions + c * 12);
             src += 0x10;
-            out[0] = x + second[0] * weight2;
-            out[1] = y + second[1] * weight2;
-            out[2] = z + second[2] * weight2;
+            out[0] = x + direction[0] * weight2;
+            out[1] = y + direction[1] * weight2;
+            out[2] = z + direction[2] * weight2;
             out += 3;
         }
     }
@@ -308,10 +310,7 @@ void fn_802D4458(void *arg0) {
     GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
-
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma opt_propagation reset
 void fn_802D45C0(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern u8 lbl_804CEC3C[];
@@ -406,12 +405,10 @@ void fn_802D479C(void *arg0) {
             b[2] = factor * (f32)*(s16 *)(vertex + 0x16);
             out[0] = *(f32 *)(src + 0) + a[0] * t0;
             out[1] = *(f32 *)(src + 4) + a[1] * t0;
-            {
-                f32 z = *(f32 *)(src + 8) + a[2] * t0;
-                out[0] += b[0] * t1;
-                out[1] += b[1] * t1;
-                out[2] = z + b[2] * t1;
-            }
+            out[2] = *(f32 *)(src + 8) + a[2] * t0;
+            out[0] += b[0] * t1;
+            out[1] += b[1] * t1;
+            out[2] += b[2] * t1;
             vertex += 0x1C;
             src += 0x1C;
             out += 3;
@@ -496,7 +493,6 @@ void fn_802D4988(void *arg0) {
 #pragma pop
 
 #pragma push
-#pragma processor 750
 void fn_802D4C44(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DB068[];
@@ -548,6 +544,9 @@ void fn_802D4C44(void *arg0) {
 #pragma push
 #pragma processor 750
 void fn_802D4ECC(void *arg0) {
+#pragma scheduling invalid_target
+#pragma dont_inline on
+#pragma opt_common_subs off
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DB068[];
     extern f32 lbl_804CA308[];
@@ -556,12 +555,12 @@ void fn_802D4ECC(void *arg0) {
     register u8 *src = *(u8 **)((u8 *)object + 0x20);
     register s32 count = *(s32 *)((u8 *)object + 0x1C);
     f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
-    register f32 *out = base;
     s32 i;
-    f32 factor = lbl_80564FF0;
     volatile f32 sp8, spc, sp10;
 
     if (base != 0) {
+        f32 factor = lbl_80564FF0;
+        register f32 *out = base;
         for (i = 0; i < count; i++) {
             f32 *first = (f32 *)((u8 *)lbl_804DB068 + src[0xC] * 12);
             f32 weightA = factor * (f32)src[0xE];
@@ -773,7 +772,6 @@ void fn_802D56D4(void *arg0) {
     register s32 count = *(s32 *)((u8 *)object + 0x1C);
     f32 *base = (f32 *)fn_802CFF64(count * 12);
     s32 i;
-    s32 dummy4;
     if (base == 0) {
         fn_802D5680(object);
         return;
@@ -788,26 +786,25 @@ void fn_802D56D4(void *arg0) {
             u8 b = src[0xC];
             u8 c = src[0xD];
             u8 d = src[0xF];
-            union { double dd; unsigned int ww[2]; } cd, ca;
-            float fa, fd;
+            f32 *d1 = dirs[b];
+            f32 *d2 = dirs[c];
+            union { double dd; unsigned int ww[2]; } ca, cd;
             f32 weight1, weight2;
             f32 x, y, z;
             ca.ww[0] = 0x43300000; ca.ww[1] = a;
             cd.ww[0] = 0x43300000; cd.ww[1] = d;
-            fa = (float)(ca.dd - bias);
-            fd = (float)(cd.dd - bias);
-            weight1 = factor * fa;
-            weight2 = factor * fd;
-            x = *(f32 *)((u8 *)src + 0x0) + dirs[b][0] * weight1;
+            weight1 = factor * (f32)(ca.dd - bias);
+            weight2 = factor * (f32)(cd.dd - bias);
+            x = *(f32 *)((u8 *)src + 0x0) + d1[0] * weight1;
             out[0] = x;
-            y = *(f32 *)((u8 *)src + 0x4) + dirs[b][1] * weight1;
+            y = *(f32 *)((u8 *)src + 0x4) + d1[1] * weight1;
             out[1] = y;
-            z = *(f32 *)((u8 *)src + 0x8) + dirs[b][2] * weight1;
+            z = *(f32 *)((u8 *)src + 0x8) + d1[2] * weight1;
             out[2] = z;
             src += 0x10;
-            out[0] = x + dirs[c][0] * weight2;
-            out[1] = y + dirs[c][1] * weight2;
-            out[2] = z + dirs[c][2] * weight2;
+            out[0] = x + d2[0] * weight2;
+            out[1] = y + d2[1] * weight2;
+            out[2] = z + d2[2] * weight2;
             out += 3;
         }
     }
@@ -836,16 +833,19 @@ void fn_802D5838(void *arg0) {
   m=fn_802D2D04();
   L=lbl_804C5690;
   if(v==m) {
-   f32 y=m[1], x=m[0], z=m[2];
-   f32 p1=y*L[1], p4=y*L[4], p0=x*L[0], p3=x*L[3], p6=x*L[6], p7=y*L[7];
-   f32 o0=z*L[2]+(p0+p1);
-   f32 o1=z*L[5]+(p3+p4);
-   f32 o2=z*L[8]+(p6+p7);
+   f32 l1, l4, l0, l3, l6, l7;
+   f32 p1, p4, p0, p3, p6, p7;
+   f32 o0, o1, o2;
+   l1=L[1]; l4=L[4]; l0=L[0]; l3=L[3]; l6=L[6]; l7=L[7];
+   p1=m[1]*l1; p4=m[1]*l4; p0=m[0]*l0; p3=m[0]*l3; p6=m[0]*l6; p7=m[1]*l7;
+   o0=m[2]*L[2]+(p0+p1); o1=m[2]*L[5]+(p3+p4); o2=m[2]*L[8]+(p6+p7);
    v[0]=o0; v[1]=o1; v[2]=o2;
   } else {
-   v[0]=m[2]*L[2]+(m[0]*L[0]+m[1]*L[1]);
-   v[1]=m[2]*L[5]+(m[0]*L[3]+m[1]*L[4]);
-   v[2]=m[2]*L[8]+(m[0]*L[6]+m[1]*L[7]);
+   f32 l0, l1, l2, l3, l4, l5, l6, l7, l8;
+   l1=L[1]; l0=L[0]; l2=L[2]; l4=L[4]; l3=L[3]; l5=L[5]; l7=L[7]; l6=L[6]; l8=L[8];
+   v[0]=m[2]*l2+(m[0]*l0+m[1]*l1);
+   v[1]=m[2]*l5+(m[0]*l3+m[1]*l4);
+   v[2]=m[2]*l8+(m[0]*l6+m[1]*l7);
   }
   thresh=lbl_80565008;
   dst=base;
@@ -898,11 +898,11 @@ void fn_802D5B8C(void *arg0) {
     if (colors != 0 && uvs != 0) {
         f32 *pos = *(f32 **)((char *)arg0 + 0x20);
         u32 *srcColor = *(u32 **)((char *)arg0 + 0x24);
+        f32 *srcUv = *(f32 **)((char *)arg0 + 0x28);
         f32 d0 = lbl_804C56C0[9] - lbl_804C5690[9];
         f32 d1 = lbl_804C56C0[10] - lbl_804C5690[10];
         f32 d2 = lbl_804C56C0[11] - lbl_804C5690[11];
         f32 vec[5];
-        f32 *srcUv = *(f32 **)((char *)arg0 + 0x28);
         f32 offU, offV, scale, one;
         u32 *outC = colors;
         f32 *outUv = uvs;
@@ -966,8 +966,9 @@ void fn_802D5DE8(u32 flags) {
 #pragma dont_inline on
 void fn_802D5F88(s32 arg0) {
     u32 normalized = *(u32 *)((u8 *)arg0 + 0xC) & 0xFFCFFFFF;
+    u32 cur = lbl_8055FDE8;
     u8 mode = *(u8 *)((u8 *)arg0 + 9);
-    if (normalized != lbl_8055FDE8) {
+    if (normalized != cur) {
         GXCallDisplayList(*(void **)((u8 *)arg0 + 0x10), (u32)*(u8 *)((u8 *)arg0 + 0xB) << 5);
         lbl_8055FDE8 = normalized;
         lbl_8055FDEC = mode;
@@ -1129,77 +1130,76 @@ void fn_802D63FC(void *arg0, s32 arg1) {
     register u8 *p20;
     s32 sp1C, sp18, sp14, sp10, spC;
     u32 sp8;
-    u32 temp_r0_6;
     u8 temp_r0, temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5;
-    u8 temp_r10, temp_r15, temp_r16, temp_r17, temp_r18, temp_r19;
-    u8 temp_r20, temp_r21, temp_r22, temp_r23, temp_r24, temp_r25;
-    u8 temp_r26, temp_r27, temp_r28, temp_r5, temp_r6, temp_r7, temp_r8, temp_r9;
+    u8 b2B, b26, b27, b22, b23, b1E, b1F;
+    u8 b1C, b20, b24, b28, b18, b0C, b10, b1D, b21, b25, b29, b19, b0D, b11, b1B;
     temp_r0 = p[0x1A];
     p20 = p + 0x20;
-    temp_r17 = p[0x19];
+    b19 = p[0x19];
     sp1C = (s32)temp_r0;
     temp_r0_2 = p[0x0F];
-    temp_r23 = p[0x0C];
+    b0C = p[0x0C];
     spC = (s32)temp_r0_2;
     temp_r0_3 = p[0x0E];
-    temp_r16 = p[0x0D];
+    b0D = p[0x0D];
     sp10 = (s32)temp_r0_3;
     temp_r0_4 = p[0x13];
-    temp_r22 = p[0x10];
+    b10 = p[0x10];
     sp14 = (s32)temp_r0_4;
     temp_r0_5 = p[0x12];
-    temp_r15 = p[0x11];
+    b11 = p[0x11];
     sp18 = (s32)temp_r0_5;
-    temp_r28 = p[0x1C];
+    b1C = p[0x1C];
+    b1F = p[0x1F];
+    b1D = p[0x1D];
+    b1E = p[0x1E];
+    b20 = p20[0];
+    b23 = p20[3];
+    b21 = p20[1];
+    b22 = p20[2];
+    b24 = p[0x24];
+    b27 = p[0x27];
+    b25 = p[0x25];
+    b26 = p[0x26];
+    b28 = p[0x28];
+    b2B = p[0x2B];
+    b29 = p[0x29];
+    b18 = p[0x18];
+    b1B = p[0x1B];
     p[0x19] = (u8)sp1C;
-    temp_r21 = p[0x1D];
     p[0x0C] = (u8)spC;
-    temp_r27 = p20[0];
-    temp_r10 = p20[3];
     p[0x0D] = (u8)sp10;
-    temp_r20 = p20[1];
-    temp_r9 = p20[2];
     p[0x10] = (u8)sp14;
-    temp_r26 = p[0x24];
-    temp_r8 = p[0x27];
-    temp_r19 = p[0x25];
-    temp_r7 = p[0x26];
-    temp_r25 = p[0x28];
-    temp_r6 = p[0x2B];
-    temp_r18 = p[0x29];
-    temp_r5 = p[0x2A];
-    temp_r24 = p[0x18];
-    p[0x1C] = (u8)p[0x1F];
-    p[0x1F] = temp_r28;
-    p[0x1D] = (u8)p[0x1E];
-    p[0x1E] = temp_r21;
-    p20[0] = temp_r10;
-    p20[3] = temp_r27;
-    p20[1] = temp_r9;
-    p20[2] = temp_r20;
-    p[0x24] = temp_r8;
-    p[0x27] = temp_r26;
-    p[0x25] = temp_r7;
-    p[0x26] = temp_r19;
-    p[0x28] = temp_r6;
-    p[0x2B] = temp_r25;
-    p[0x29] = temp_r5;
-    p[0x2A] = temp_r18;
-    p[0x18] = (u8)p[0x1B];
-    p[0x1B] = temp_r24;
-    p[0x1A] = temp_r17;
-    p[0x0F] = temp_r23;
-    p[0x0E] = temp_r16;
-    p[0x13] = temp_r22;
+    p[0x1C] = b1F;
+    p[0x1F] = b1C;
+    p[0x1D] = b1E;
+    p[0x1E] = b1D;
+    p[0x20] = b23;
+    p[0x23] = b20;
+    p[0x21] = b22;
+    p[0x22] = b21;
+    p[0x24] = b27;
+    p[0x27] = b24;
+    p[0x25] = b26;
+    p[0x26] = b25;
+    p[0x28] = b2B;
+    p[0x2B] = b28;
+    p[0x29] = p[0x2A];
+    p[0x2A] = b29;
+    p[0x18] = b1B;
+    p[0x1B] = b18;
+    p[0x1A] = b19;
+    p[0x0F] = b0C;
+    p[0x0E] = b0D;
+    p[0x13] = b10;
     p[0x11] = (u8)sp18;
-    p[0x12] = temp_r15;
+    p[0x12] = b11;
     fn_802D657C((s32 *)p20, arg1);
     fn_802D657C((s32 *)(p20 + 4), arg1);
     fn_802D657C((s32 *)(p20 + 8), arg1);
     fn_802D62FC(arg0, (s32 *)(p + 0x10), (s32 *)&sp8);
-    temp_r0_6 = sp8 >> 5U;
-    sp8 = temp_r0_6;
-    p[0x0B] = (u8)temp_r0_6;
+    sp8 = sp8 >> 5U;
+    p[0x0B] = (u8)sp8;
 }
 #pragma pop
 void fn_802D657C(s32 *value, s32 delta) {
@@ -1262,10 +1262,14 @@ void fn_802D65F8(s32 arg0, s32 arg1) {
         fn_802E317C(lbl_8034C3B4);
         bytes[8]=0x1A;
         entries=*(u8 **)(bytes+0x20);
-        for(i=0;i<*(s32 *)(bytes+0x1C);++i) {
-            f32 value=lbl_80565010*(f32)entries[0xE]/lbl_80565014;
-            *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
-            entries+=0x10;
+        {
+            f32 factor = lbl_80565010;
+            f32 divisor = lbl_80565014;
+            for(i=0;i<*(s32 *)(bytes+0x1C);++i) {
+                f32 value=factor*(f32)entries[0xE]/divisor;
+                *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
+                entries+=0x10;
+            }
         }
     }
 second:
@@ -1277,10 +1281,14 @@ second:
         }
         bytes[8]=0x1B;
         entries=*(u8 **)(bytes+0x20);
-        for(i=0;i<*(s32 *)(bytes+0x1C);++i) {
-            f32 value=lbl_80565010*(f32)entries[0xE]/lbl_80565014;
-            *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
-            entries+=0x18;
+        {
+            f32 factor = lbl_80565010;
+            f32 divisor = lbl_80565014;
+            for(i=0;i<*(s32 *)(bytes+0x1C);++i) {
+                f32 value=factor*(f32)entries[0xE]/divisor;
+                *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
+                entries+=0x18;
+            }
         }
     }
 }
@@ -1365,31 +1373,28 @@ extern void fn_802E317C(const char *, ...);
 extern const char lbl_8034C440[];
 #pragma scheduling invalid_target
 void fn_802D6B80(u8 *arg0, s32 arg1, s32 arg2) {
-    u8 a;
-    u8 b;
-    u8 c;
-    u8 d;
     s32 result;
-    a = arg0[0];
-    b = arg0[3];
-    c = arg0[1];
-    d = arg0[2];
-    arg0[0] = b;
-    arg0[3] = a;
-    arg0[1] = d;
-    arg0[2] = c;
+    u8 t;
+    u8 *p;
+    u32 sp8;
+    t = arg0[0];
+    arg0[0] = arg0[3];
+    arg0[3] = t;
+    t = arg0[1];
+    arg0[1] = arg0[2];
+    arg0[2] = t;
     result = fn_802D62E4(arg0);
     if (result != 0) {
         ((void (*)(s32, s32, s32))fn_802D65F8)(result, arg1, arg2);
     } else {
-        s32 sp8 = *(s32 *)arg0;
-        u8 *p = (u8 *)&sp8;
-        u8 x = p[0];
+        sp8 = *(u32 *)arg0;
+        p = (u8 *)&sp8;
+        t = p[0];
         p[0] = p[3];
-        p[3] = x;
-        x = p[1];
+        p[3] = t;
+        t = p[1];
         p[1] = p[2];
-        p[2] = x;
+        p[2] = t;
         p[4] = 0;
         fn_802E317C(lbl_8034C440, arg2, &sp8);
     }
@@ -1422,137 +1427,271 @@ void fn_802D6C68(void) {
 #undef sCachedFormat
 }
 
+#pragma inline on
+#pragma dont_inline off
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802D6C78(void) {
     extern f32 lbl_804CA308[];
     extern f32 lbl_804DB068[];
-    extern f32 lbl_80564FF0;
-    extern double lbl_80564FF8;
     extern f32 lbl_804C56F0[];
     extern void LCLoadData(void*, const void*, unsigned long);
     extern void LCStoreData(void*, const void*, unsigned long);
     extern void LCQueueWait(unsigned long);
-    extern void OSSetGQR6(unsigned long, unsigned long);
+    unsigned char *g = (unsigned char *)lbl_804CA308;
     {
-        unsigned char *base = (unsigned char *)lbl_804CA308 + 0x930;
-        s32 n = *(s32 *)(base + 0x4000);
+        unsigned char *base = g + 0x930;
+        unsigned char *e = base;
         s32 i;
-        for (i = 0; i < n; i++) {
-            s32 count = *(s32 *)(base + i * 0x10 + 0x0);
-            unsigned char *src = *(unsigned char **)(base + i * 0x10 + 0x4);
-            float *dst = *(float **)(base + i * 0x10 + 0x8);
+        for (i = 0; i < *(s32 *)(base + 0x4000); i++, e += 0x10) {
             s32 k;
-            double bias = lbl_80564FF8;
-            f32 factor = lbl_80564FF0;
-            f32 (*dirs)[3] = (f32 (*)[3])lbl_804DB068;
+            s32 count = *(s32 *)e;
             for (k = 0; k < count; k++) {
-                unsigned char a = src[0xE];
-                unsigned char b = src[0xC];
-                unsigned char c = src[0xD];
-                unsigned char d = src[0xF];
-                union { double dd; unsigned int ww[2]; } ca, cd;
-                float fa, fd;
-                f32 w1, w2, x, y, z;
-                ca.ww[0] = 0x43300000; ca.ww[1] = a;
-                cd.ww[0] = 0x43300000; cd.ww[1] = d;
-                fa = (float)(ca.dd - bias);
-                fd = (float)(cd.dd - bias);
-                w1 = factor * fa;
-                w2 = factor * fd;
-                x = *(f32 *)(src + 0x0) + dirs[b][0] * w1;
-                dst[0] = x;
-                y = *(f32 *)(src + 0x4) + dirs[b][1] * w1;
-                dst[1] = y;
-                z = *(f32 *)(src + 0x8) + dirs[b][2] * w1;
-                dst[2] = z;
-                src += 0x10;
-                dst[0] = x + dirs[c][0] * w2;
-                dst[1] = y + dirs[c][1] * w2;
-                dst[2] = z + dirs[c][2] * w2;
-                dst += 3;
+                unsigned char *s = *(unsigned char **)(e + 4) + k * 0x10;
+                f32 *d = *(f32 **)(e + 8) + k * 3;
+                f32 w1 = (1.0f / 255.0f) * (f32)s[0xE];
+                f32 *db = (f32 *)((unsigned char *)lbl_804DB068 + s[0xC] * 0xC);
+                f32 w2 = (1.0f / 255.0f) * (f32)s[0xF];
+                unsigned char c = s[0xD];
+                f32 *dc;
+                f32 x, y, z;
+                x = *(f32 *)(s + 0x0) + db[0] * w1;
+                d[0] = x;
+                y = *(f32 *)(s + 0x4) + db[1] * w1;
+                d[1] = y;
+                z = *(f32 *)(s + 0x8) + db[2] * w1;
+                d[2] = z;
+                dc = (f32 *)((unsigned char *)lbl_804DB068 + c * 0xC);
+                d[0] = x + dc[0] * w2;
+                d[1] = y + dc[1] * w2;
+                d[2] = z + dc[2] * w2;
             }
         }
         *(s32 *)(base + 0x4000) = 0;
     }
     OSSetGQR6(7, 8);
     OSSetGQR6(7, 8);
-    {
-        unsigned char *base = (unsigned char *)lbl_804CA308 + 0x8938;
-        s32 nch = *(s32 *)(base + 0x4000);
-        if (nch != 0) {
-            s32 chunkLeft;
-            unsigned char *chunk;
-            s32 rem;
-            unsigned char *src;
-            float *dst;
-            s32 cur;
-            void *lc;
-            s32 toggle;
-            s32 rest;
-            unsigned char *src0;
-            s32 n;
-            float *storedst;
-            float *lcbuf;
-            chunkLeft = nch - 1;
-            chunk = base + 0x10;
-            rem = *(s32 *)(base + 0x0);
-            src = *(unsigned char **)(base + 0x4);
-            dst = *(float **)(base + 0x8);
-            cur = rem <= 0x100 ? rem : 0x100;
-            lc = (void *)0xE0000000;
-            toggle = 1;
-            rest = rem - cur;
-            src0 = src;
-            src += cur * 0x14;
-            n = 0;
-            storedst = 0;
-            lcbuf = 0;
-            LCLoadData((void *)0xE0000000, src0, (unsigned long)(cur * 0x14));
-            for (;;) {
-                float *out;
-                LCQueueWait(0);
-                if (n > 0) LCStoreData(storedst, lcbuf, (unsigned long)(((n * 12) + 0x1F) & ~0x1F));
-                storedst = dst;
-                n = cur;
-                lcbuf = (float *)lc;
-                dst += cur * 3;
-                if (rest == 0 && chunkLeft > 0) {
-                    rest = *(s32 *)(chunk + 0x0);
-                    chunkLeft--;
-                    src = *(unsigned char **)(chunk + 0x4);
-                    dst = *(float **)(chunk + 0x8);
-                    chunk += 0x10;
-                }
-                cur = rest <= 0x100 ? rest : 0x100;
-                if (rest > 0) {
-                    void *nlc = (void *)((toggle << 13) + 0xE0000000);
-                    toggle = 1 - toggle;
-                    LCLoadData(nlc, src, (unsigned long)(((cur * 0x14) + 0x1F) & ~0x1F));
-                    src += cur * 0x14;
-                    rest -= cur;
-                    lc = nlc;
-                }
-                if (n == 0) break;
-                out = (float *)((toggle << 13) + 0xE0001400);
-                lcbuf = (float *)lc;
-                if (n > 0) {
-                    s32 j;
-                    float *s = lcbuf;
-                    float *d = out;
-                    for (j = 0; j < n; j++) {
-                        d[0] = s[0]; d[1] = s[1]; d[2] = s[2];
-                        s += 5; d += 3;
-                    }
-                    lcbuf = out;
-                    storedst = out;
+    if (*(s32 *)(g + 0x8938 + 0x4000) != 0) {
+        s32 chunkLeft;
+        unsigned char *chunk;
+        s32 rest;
+        unsigned char *src;
+        float *dst;
+        s32 cur;
+        void *lc;
+        s32 toggle;
+        s32 n;
+        float *storedst;
+        float *lcbuf;
+        rest = *(s32 *)(g + 0x8938 + 0x0);
+        chunkLeft = *(s32 *)(g + 0x8938 + 0x4000) - 1;
+        src = *(unsigned char **)(g + 0x8938 + 0x4);
+        chunk = g + 0x8938 + 0x10;
+        dst = *(float **)(g + 0x8938 + 0x8);
+        cur = rest <= 0x100 ? rest : 0x100;
+        lc = (void *)0xE0000000;
+        toggle = 1;
+        LCLoadData((void *)0xE0000000, src, (unsigned long)(cur * 0x14));
+        rest -= cur;
+        src += cur * 0x14;
+        n = 0;
+        storedst = 0;
+        lcbuf = 0;
+        for (;;) {
+            float *out;
+            LCQueueWait(0);
+            if (n > 0) LCStoreData(storedst, lcbuf, (unsigned long)(((n * 12) + 0x1F) & ~0x1F));
+            storedst = dst;
+            n = cur;
+            lcbuf = (float *)lc;
+            dst += cur * 3;
+            if (rest == 0 && chunkLeft > 0) {
+                rest = *(s32 *)(chunk + 0x0);
+                chunkLeft--;
+                src = *(unsigned char **)(chunk + 0x4);
+                dst = *(float **)(chunk + 0x8);
+                chunk += 0x10;
+            }
+            cur = rest <= 0x100 ? rest : 0x100;
+            if (rest > 0) {
+                void *nlc = (void *)((toggle << 13) + 0xE0000000);
+                toggle = 1 - toggle;
+                LCLoadData(nlc, src, (unsigned long)(((cur * 0x14) + 0x1F) & ~0x1F));
+                src += cur * 0x14;
+                rest -= cur;
+                lc = nlc;
+            }
+            if (n == 0) break;
+            out = (float *)((toggle << 13) + 0xE0001400);
+            {
+                s32 j;
+                f32 *s = lcbuf;
+                f32 *d = out;
+                lcbuf = out;
+                for (j = 0; j < n; j++) {
+                    f32 z = s[2];
+                    f32 y = s[1];
+                    f32 x = s[0];
+                    d[0] = x;
+                    d[1] = y;
+                    d[2] = z;
+                    s += 5; d += 3;
                 }
             }
-            LCQueueWait(0);
-            *(s32 *)(base + 0x4000) = 0;
         }
+        LCQueueWait(0);
+        *(s32 *)(g + 0x8938 + 0x4000) = 0;
     }
     OSSetGQR6(7, 8);
+    if (*(s32 *)(g + 0xC93C + 0x4000) != 0) {
+        s32 chunkLeft;
+        unsigned char *chunk;
+        s32 rest;
+        unsigned char *src;
+        float *dst;
+        s32 cur;
+        void *lc;
+        s32 toggle;
+        s32 n;
+        float *storedst;
+        float *lcbuf;
+        rest = *(s32 *)(g + 0xC93C + 0x0);
+        chunkLeft = *(s32 *)(g + 0xC93C + 0x4000) - 1;
+        src = *(unsigned char **)(g + 0xC93C + 0x4);
+        chunk = g + 0xC93C + 0x10;
+        dst = *(float **)(g + 0xC93C + 0x8);
+        cur = rest <= 0xE0 ? rest : 0xE0;
+        lc = (void *)0xE0000000;
+        toggle = 1;
+        LCLoadData((void *)0xE0000000, src, (unsigned long)(cur * 0x18));
+        rest -= cur;
+        src += cur * 0x18;
+        n = 0;
+        storedst = 0;
+        lcbuf = 0;
+        for (;;) {
+            float *out;
+            LCQueueWait(0);
+            if (n > 0) LCStoreData(storedst, lcbuf, (unsigned long)(((n * 12) + 0x1F) & ~0x1F));
+            storedst = dst;
+            n = cur;
+            lcbuf = (float *)lc;
+            dst += cur * 3;
+            if (rest == 0 && chunkLeft > 0) {
+                rest = *(s32 *)(chunk + 0x0);
+                chunkLeft--;
+                src = *(unsigned char **)(chunk + 0x4);
+                dst = *(float **)(chunk + 0x8);
+                chunk += 0x10;
+            }
+            cur = rest <= 0xE0 ? rest : 0xE0;
+            if (rest > 0) {
+                void *nlc = (void *)((toggle << 13) + 0xE0000000);
+                toggle = 1 - toggle;
+                LCLoadData(nlc, src, (unsigned long)(((cur * 0x18) + 0x1F) & ~0x1F));
+                src += cur * 0x18;
+                rest -= cur;
+                lc = nlc;
+            }
+            if (n == 0) break;
+            out = (float *)((toggle << 13) + 0xE0001500);
+            {
+                s32 j;
+                unsigned char *s = (unsigned char *)lcbuf;
+                float *d = out;
+                lcbuf = out;
+                for (j = 0; j < n; j++) {
+                    f32 w1 = (1.0f / 255.0f) * (f32)*(s16 *)(s + 0x10);
+                    f32 w2 = (1.0f / 255.0f) * (f32)*(s16 *)(s + 0x12);
+                    FifoVec3 sc = *(FifoVec3 *)lbl_804C56F0;
+                    f32 gg = *(f32 *)(s + 0xC);
+                    FifoVec3 t;
+                    t.x = *(f32 *)(s + 0x0) + sc.x * gg;
+                    t.y = *(f32 *)(s + 0x4) + sc.y * gg;
+                    t.z = *(f32 *)(s + 0x8) + sc.z * gg;
+                    d[0] = t.x;
+                    d[1] = t.y + w1 * ((f32 *)g)[s[0x14]] + w2 * ((f32 *)g)[s[0x15]];
+                    d[2] = t.z;
+                    s += 0x18; d += 3;
+                }
+            }
+        }
+        LCQueueWait(0);
+        *(s32 *)(g + 0xC93C + 0x4000) = 0;
+    }
+    OSSetGQR6(7, 8);
+    if (*(s32 *)(g + 0x4934 + 0x4000) != 0) {
+        s32 chunkLeft;
+        unsigned char *chunk;
+        s32 rest;
+        unsigned char *src;
+        float *dst;
+        s32 cur;
+        void *lc;
+        s32 toggle;
+        s32 n;
+        float *storedst;
+        float *lcbuf;
+        rest = *(s32 *)(g + 0x4934 + 0x0);
+        chunkLeft = *(s32 *)(g + 0x4934 + 0x4000) - 1;
+        src = *(unsigned char **)(g + 0x4934 + 0x4);
+        chunk = g + 0x4934 + 0x10;
+        dst = *(float **)(g + 0x4934 + 0x8);
+        cur = rest <= 0x100 ? rest : 0x100;
+        lc = (void *)0xE0000000;
+        toggle = 1;
+        LCLoadData((void *)0xE0000000, src, (unsigned long)(cur * 0x10));
+        rest -= cur;
+        src += cur * 0x10;
+        n = 0;
+        storedst = 0;
+        lcbuf = 0;
+        for (;;) {
+            float *out;
+            LCQueueWait(0);
+            if (n > 0) LCStoreData(storedst, lcbuf, (unsigned long)(((n * 12) + 0x1F) & ~0x1F));
+            storedst = dst;
+            n = cur;
+            lcbuf = (float *)lc;
+            dst += cur * 3;
+            if (rest == 0 && chunkLeft > 0) {
+                rest = *(s32 *)(chunk + 0x0);
+                chunkLeft--;
+                src = *(unsigned char **)(chunk + 0x4);
+                dst = *(float **)(chunk + 0x8);
+                chunk += 0x10;
+            }
+            cur = rest <= 0x100 ? rest : 0x100;
+            if (rest > 0) {
+                void *nlc = (void *)((toggle << 13) + 0xE0000000);
+                toggle = 1 - toggle;
+                LCLoadData(nlc, src, (unsigned long)(((cur * 0x10) + 0x1F) & ~0x1F));
+                src += cur * 0x10;
+                rest -= cur;
+                lc = nlc;
+            }
+            if (n == 0) break;
+            out = (float *)((toggle << 13) + 0xE0001000);
+            {
+                s32 j;
+                f32 *s = lcbuf;
+                f32 *d = out;
+                lcbuf = out;
+                for (j = 0; j < n; j++) {
+                    f32 z = s[2];
+                    f32 y = s[1];
+                    f32 x = s[0];
+                    d[0] = x;
+                    d[1] = y;
+                    d[2] = z;
+                    s += 4; d += 3;
+                }
+            }
+        }
+        LCQueueWait(0);
+        *(s32 *)(g + 0x4934 + 0x4000) = 0;
+    }
 }
-
 /* Set the global flag that swaps the two GX cull modes used when drawing surf surfaces. */
 void fn_802D754C(u8 value) {
     lbl_8055FDE4 = value;
