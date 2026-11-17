@@ -28414,8 +28414,14 @@ s32 fn_8009BF98(AXFX_REVERBHI_EXP_VIEW* fx) {
     return 1;
 }
 
-void fn_8009BFBC(void) {
-    AXFXReverbHiExpCallback();
+/* AXFXReverbHiCallback (revolution/AXFX/AXFXReverbHi.c): the generic void*
+ * wrapper AX registers for the "Hi" reverb (AXRegisterAuxACallback passes it
+ * as the Aux-A callback).  It only casts the buffer update and the effect
+ * context back to their real types and hands them to the exponential reverb's
+ * block processor - a sibling call, so no frame is built. */
+void fn_8009BFBC(void *chans, void *context) {
+    AXFXReverbHiExpCallback((AXFX_BUFFERUPDATE_VIEW *)chans,
+                            (AXFX_REVERBHI_EXP_VIEW *)context);
 }
 
 extern void __FreeDelayLine(void *);
