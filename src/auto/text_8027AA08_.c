@@ -11,6 +11,7 @@ int fn_8027AA08(int object, int deleteFlag) {
     return object;
 }
 
+/* Return the flag that gates the close-score notification scan in fn_8027AA50. */
 char fn_8027AA48(void) {
     return lbl_8055F634;
 }
