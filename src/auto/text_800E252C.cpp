@@ -4097,12 +4097,11 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this
     }
 }
 
-void nw4hbm::snd::detail::BasicSound::SetInitialVolume(float vol) {
-    float thresh = lbl_80560FB0;
-    if (!(vol >= thresh)) {
+extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *this_, float vol) {
+    if (!(vol >= 0.0f)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x216, lbl_80322830);
     }
-    initialVolume = vol;
+    *(float *)((char *)this_ + 0x8C) = vol;
 }
 
 #pragma scheduling on
