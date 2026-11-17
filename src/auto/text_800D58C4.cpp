@@ -1793,8 +1793,10 @@ extern "C" s32 fn_800D8774(u32* arg0) {
     return ((u32)*arg0 >> 0x18U) & 1;
 }
 
-extern "C" s32 fn_800D8780(u32 *arg0) {
-    return (*arg0 >> 13U) & 3;
+/* Extract the indirect-texture count (indTexNum, 2 bits at bit 13) from the
+ * nw4r lyt material flag word at res+0x3C. */
+extern "C" s32 fn_800D8780(u32 *flags) {
+    return (*flags >> 13U) & 3;
 }
 
 /* Returns the 3-bit indirect-texture-stage count from a nw4r lyt material flags word. */
