@@ -1280,8 +1280,12 @@ s32 fn_8001D464(s32 offset) {
     return offset + *lbl_8055D5D0;
 }
 
-s32 fn_8001D474(s32 arg0) {
-    return arg0 - *lbl_8055D5D0;
+/* Un-relocate a saved record pointer: subtract the statistics string archive's
+ * base address (the first field of the descriptor pointed to by lbl_8055D5D0),
+ * turning an in-memory archive pointer back into a relative offset before it is
+ * written to the memory card. Inverse of fn_8001D464. */
+s32 fn_8001D474(s32 pointer) {
+    return pointer - *lbl_8055D5D0;
 }
 
 #pragma push
