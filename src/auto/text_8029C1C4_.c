@@ -268,9 +268,10 @@ void fn_8029C570(void) {
 #pragma pop
 
 void fn_8029C650(void) {
-    int value = lbl_8055CAA8;
-    if (value == -1) return;
-    ((void (*)(int))fn_802C6CF8)(value);
+    /* Release the current model's handle; -1 means no model is loaded. */
+    int modelHandle = lbl_8055CAA8;
+    if (modelHandle == -1) return;
+    ((void (*)(int))fn_802C6CF8)(modelHandle);
 }
 
 #pragma push
@@ -862,12 +863,12 @@ void fn_8029D574(int arg0) {
     float value;
     int y;
     char *p = (char *)arg0;
-    if (*(float *)(p + 0x34) >= lbl_80564658 - lbl_80558DC4) {
+    if (*(float *)(p + 0x34) >= *(const float *)&lbl_80564658 - lbl_80558DC4) {
         float range = *(float *)(p + 0x28);
         value = fn_80287BC8(-range, range);
         y = fn_80287B94(1, *(int *)(p + 0x10) - 2);
         fn_8029DF64(p, fn_80287B94(1, *(int *)(p + 0xC) - 2), y, value);
-        *(float *)(p + 0x34) += *(float *)(p + 0x24) - lbl_80564658;
+        *(float *)(p + 0x34) += *(float *)(p + 0x24) - *(const float *)&lbl_80564658;
     } else {
         *(float *)(p + 0x34) += *(float *)(p + 0x24);
     }
