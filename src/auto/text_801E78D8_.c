@@ -155,9 +155,10 @@ void fn_801E7984(long arg0) {
 }
 #pragma scheduling on
 
-void fn_801E7C1C(long arg0) {
+/* Begin a race scene: clear the "scene owned elsewhere" flag lbl_8055EB11 (sceneOwnedElsewhere) so fn_801E7984 (WorldBeginCommon) sets up the world normally. */
+void fn_801E7C1C(long sceneData) {
     lbl_8055EB11 = 0;
-    fn_801E7984(arg0);
+    fn_801E7984(sceneData);
 }
 
 #pragma cplusplus on
