@@ -4252,7 +4252,7 @@ for (;;) {
 void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
     u16 event = *(u16 *)arg1;
     u8 *msg = (u8 *)arg1;
-    u16 header, header_hi;
+    u16 header_hi, header;
     u16 max_len, len;
     u8 *data, *base;
     u8 channel;
@@ -4270,31 +4270,33 @@ void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
         header = (header & 0xCFFF) | 0x1000;
         header_hi = header >> 8;
         data += 2;
-        do {
-            UUSB_Write(channel, data, event, (BT_HDR *)msg);
-            len = *(u16 *)(msg + 2);
-            *(u16 *)(msg + 4) += *(u16 *)(lbl_803C0A50 + 0x7C);
-            base = msg + *(u16 *)(msg + 4);
-            *(u16 *)(msg + 2) = len - *(u16 *)(lbl_803C0A50 + 0x7C);
-            base[8] = header;
-            base[9] = header_hi;
-            data = base + 0xA;
-            if (*(u16 *)(msg + 2) > *(u16 *)(lbl_803C0A50 + 0x7E)) {
-                data[0] = *(u16 *)(lbl_803C0A50 + 0x7C);
-                data[1] = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
-            } else {
-                data[0] = *(u16 *)(msg + 2) - 4;
-                data[1] = (*(u16 *)(msg + 2) - 4) >> 8;
-            }
-            data += 2;
-            if (*(u16 *)(msg + 6) != 0 && --*(u16 *)(msg + 6) == 0) {
-                *(u16 *)msg = (short)0x1900;
-                GKI_send_msg(((u8 *)&lbl_803BD1A0)[0x1F], 0, (BT_HDR *)msg);
-                return;
-            }
-            event = *(u16 *)(lbl_803C0A50 + 0x7E);
-            len = *(u16 *)(msg + 2);
-        } while (len > event);
+        goto check;
+    body:
+        UUSB_Write(channel, data, event, (BT_HDR *)msg);
+        len = *(u16 *)(msg + 2);
+        *(u16 *)(msg + 4) += *(u16 *)(lbl_803C0A50 + 0x7C);
+        base = msg + *(u16 *)(msg + 4);
+        *(u16 *)(msg + 2) = len - *(u16 *)(lbl_803C0A50 + 0x7C);
+        base[8] = header;
+        base[9] = header_hi;
+        data = base + 0xA;
+        if (*(u16 *)(msg + 2) > *(u16 *)(lbl_803C0A50 + 0x7E)) {
+            data[0] = *(u16 *)(lbl_803C0A50 + 0x7C);
+            data[1] = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
+        } else {
+            data[0] = *(u16 *)(msg + 2) - 4;
+            data[1] = (*(u16 *)(msg + 2) - 4) >> 8;
+        }
+        data += 2;
+        if (*(u16 *)(msg + 6) != 0 && --*(u16 *)(msg + 6) == 0) {
+            *(u16 *)msg = (short)0x1900;
+            GKI_send_msg(((u8 *)&lbl_803BD1A0)[0x1F], 0, (BT_HDR *)msg);
+            return;
+        }
+    check:
+        event = *(u16 *)(lbl_803C0A50 + 0x7E);
+        len = *(u16 *)(msg + 2);
+        if (len > event) goto body;
     }
     UUSB_Write(channel, data, *(u16 *)(msg + 2), (BT_HDR *)msg);
     GKI_freebuf((BT_HDR *)msg);
@@ -10531,17 +10533,6 @@ void btm_event_filter_complete(UINT8 *p_param) {
             }
         }
     }
-}
-
-static inline UINT8 *find_inq_entry(UINT8 *base, UINT8 *bda)
-{
-    UINT32 xx;
-    UINT8 *p_ent = base + 0x16e4;
-    for (xx = 0; xx < 12; xx++, p_ent++) {
-        if ((p_ent[0x1a]) && (!memcmp(p_ent + 0xa, bda, 6)))
-            return p_ent;
-    }
-    return 0;
 }
 
 void btm_process_inq_results(UINT8 *p, UINT8 mode)
