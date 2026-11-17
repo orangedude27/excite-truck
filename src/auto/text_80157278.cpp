@@ -2427,7 +2427,6 @@ extern "C" void* fn_8015ADAC(void* arg0, s32 arg1) {
 }
 
 extern f32 lbl_805617A8;
-struct Fn8015AE18Truck { unsigned char pad[0x2620]; s32 reward; };
 #pragma push
 #pragma processor 750
 extern "C" f32 fn_8015AE18(void *a, void *arg1) {
@@ -2441,17 +2440,17 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
     s32 zero = 0;
     s32 i;
     f32 t;
-    s32 reward = *(s32 *)((u8 *)arg1 + 0x2620);
+    s32 reward = *(volatile s32 *)((u8 *)arg1 + 0x2620);
     if (reward > 0) {
         *(f32 *)(p + 0x270) = *(f32 *)(p + 0x270) + lbl_8056177C;
     } else {
         *(f32 *)(p + 0x270) = lbl_80561754;
     }
     if (*(u8 *)(p + 0x26c) != 0) {
-        f32 f = lbl_80561750;
         *(s32 *)(p + 0x274) = *(s32 *)(p + 0x274) + 1;
         *(s32 *)(p + 0x278) = *(s32 *)(p + 0x278) + 1;
         *(u8 *)(p + 0x26c) = zero;
+        f32 f = lbl_80561750;
         for (i = 0; i < *(s32 *)(p + 0x274); i++) {
             *(s32 *)(p + 0x264) = *(s32 *)(p + 0x264) + 1;
             *(s32 *)(p + 0x260) = *(s32 *)(p + 0x260) + 1;
