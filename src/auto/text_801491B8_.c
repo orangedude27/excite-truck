@@ -1129,7 +1129,8 @@ void fn_8014C7B4(void *dst, void *srcObj) {
 
 unsigned int fn_8014C808(unsigned int arg0) { return arg0 >> 24; }
 
-unsigned char fn_8014C810(unsigned char arg0) { return arg0; }
+/* Return the red channel (lowest byte) of a packed RGBA8888 color. */
+unsigned char fn_8014C810(unsigned char color) { return color; }
 
 /* Extract the green channel (byte at bits 8-15) of a packed RGBA8888 color. */
 unsigned char fn_8014C818(unsigned int color) { return (unsigned char)(color >> 8); }
