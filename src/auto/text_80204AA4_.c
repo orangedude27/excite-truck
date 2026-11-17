@@ -492,47 +492,20 @@ inline DiffLookup802054EC::DiffLookup802054EC(int type, int stageIndex) {
 }
 #pragma dont_inline off
 extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
-    class Manager { public: virtual void *get(int); };
-    class Stage { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void *get(int); };
-    volatile Lookup802054EC s;
+    DiffLookup802054EC l(arg1, arg2);
     char buf[0x64];
-    char *entry;
-    const char *result;
-    void *sel;
-    void *mgr;
-    s.typeIndex = arg1;
-    s.group = 0;
-    s.current = 0;
-    s.stage = 0;
-    s.contest = 0;
-    s.group = fn_80131808(lbl_8033BBE4);
-    entry = (char *)((void *(*)(int))fn_80204B18)(arg1);
-    s.current = ((Manager *)s.group)->get(*(int *)(entry + 8));
-    if (arg2 >= 0 && arg2 < fn_80012854()) {
-        void *stage = *(void **)((char *)((void *(*)(int))fn_8001285C)(arg2) + 0x20);
-        int ok = ((Stage *)stage)->get(*(int *)(entry + 8)) != 0;
-        if (ok) {
-            s.stage = ((Stage *)stage)->get(*(int *)(entry + 8));
-        }
-        s.contest = ((void *(*)(int))fn_80204AA4)(arg2);
-    }
-    result = 0;
-    sel = s.contest;
-    if (sel != 0) {
-        ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, sel, arg0);
-        result = FindProp802054EC(&s, buf);
+    const char *result = 0;
+    void *contest = l.contest;
+    int answer;
+    if (contest != 0) {
+        ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, contest, arg0);
+        result = l.Find(buf);
     }
     if (result == 0) {
-        result = FindProp802054EC(&s, arg0);
+        result = l.Find(arg0);
     }
     if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
-    arg2 = 1;
-    if (stricmp(result, lbl_8055B4B4) != 0 && stricmp(result, lbl_8055B4B8) != 0) arg2 = 0;
-    mgr = s.group;
-    s.contest = 0;
-    s.current = 0;
-    s.stage = 0;
-    fn_80131818((int)mgr);
-    s.group = 0;
-    return arg2;
+    answer = 1;
+    if (stricmp(result, lbl_8055B4B4) != 0 && stricmp(result, lbl_8055B4B8) != 0) answer = 0;
+    return answer;
 }
