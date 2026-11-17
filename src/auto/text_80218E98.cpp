@@ -5411,8 +5411,13 @@ extern "C" void fn_80221E7C(void *parent) {
 }
 
 #pragma dont_inline on
-extern "C" void fn_80221EA0(void *arg0, s32 arg1, void *arg2, s32 arg3) {
-    fn_80219440(*(void **)((u8 *)arg0 + 0x14), arg1, arg2, arg3);
+/**
+ * Registers one tracked field with the field-list manager held at `panel`+0x14:
+ * forwards the field id, a pointer to its value and that value's byte size,
+ * which the manager copies and records for change notification.
+ */
+extern "C" void fn_80221EA0(void *panel, s32 fieldId, void *value, s32 size) {
+    fn_80219440(*(void **)((u8 *)panel + 0x14), fieldId, value, size);
 }
 #pragma dont_inline reset
 extern "C" s32 fn_80221EA8(void *arg0) {
@@ -6223,16 +6228,16 @@ extern "C" void fn_80223280(void *arg0, s32 arg1) {
 loop_body:
         if (var_r28 == **(s32 **)((u8 *)arg0 + 0x2CC)) {
             temp_f29 = temp_f30;
-            temp_f30 += *(f32 *)((u8 *)arg0 + 0x400) + (*(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F4) * temp_f28);
+            temp_f30 += *(f32 *)((u8 *)arg0 + 0x400) + (temp_f28 * *(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F4));
             if (var_r28 + 1 < temp_r4) {
-                temp_f30 += *(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F8) * temp_f28;
+                temp_f30 += temp_f28 * *(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F8);
             }
         } else {
             fn_80232BA4((char *)*(s32 *)((u8 *)arg0 + var_r28 * 4 + 0x244), *(s32 *)((u8 *)arg0 + 0x3FC), 0xFF000000, 0xC, temp_f27 + temp_f30, temp_f31 - temp_f27, *(f32 *)((u8 *)arg0 + 0x404), lbl_805634A8, lbl_805634A4);
             fn_80232BA4((char *)*(s32 *)((u8 *)arg0 + var_r28 * 4 + 0x244), *(s32 *)((u8 *)arg0 + 0x3FC), fn_802236C8(arg0, var_r28), 0xC, temp_f30, temp_f31, *(f32 *)((u8 *)arg0 + 0x404), lbl_805634A8, lbl_805634A4);
-            temp_f30 += *(f32 *)((u8 *)arg0 + 0x400) + (*(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F4) * temp_f28);
+            temp_f30 += *(f32 *)((u8 *)arg0 + 0x400) + (temp_f28 * *(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F4));
             if (var_r28 + 1 < *(s32 *)((u8 *)arg0 + 0x2C8)) {
-                temp_f30 += *(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F8) * temp_f28;
+                temp_f30 += temp_f28 * *(f32 *)((u8 *)arg0 + var_r28 * 4 + 0x2F8);
             }
         }
         var_r28++;
@@ -6814,7 +6819,7 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 *ar
     register s32 initial = arg1;
     register s32 length = arg3;
     register s32 *link = arg4;
-    register s32 zero = 0;
+    register s32 scratch;
     char name[0x100];
 
     ((void *(*)(void *, void *))fn_80218F80)(self, resource);
@@ -6840,7 +6845,8 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 *ar
 
     *(s32 *)(self + 0x254) =
         fn_80228F40(*(s32 *)(self + 4), *(s32 *)(self + 8));
-    *(s32 *)(self + 0x258) = zero;
+    scratch = 0;
+    *(s32 *)(self + 0x258) = scratch;
     *(s32 *)(self + 0x25c) = length;
     *(s32 *)(self + 0x250) = initial;
     s32 flags = *(s32 *)(resource + 0x9c);
@@ -6852,7 +6858,8 @@ extern "C" void *fn_8022435C(void *arg0, s32 arg1, void *arg2, s32 arg3, s32 *ar
     *(f32 *)(self + 0x24c) = lbl_805634A8;
 
     if (link != 0) {
-        *(s32 *)(self + 0x244) = *link;
+        scratch = *link;
+        *(s32 *)(self + 0x244) = scratch;
         strcpy(name, (char *)(resource + 0x40));
         s32 handle = ((s32 (*)(void *))fn_802C5130)(name);
         *(s32 *)(self + 0x280) = handle;
@@ -7083,14 +7090,16 @@ extern "C" s32 fn_80224B0C(void *widget, s32 action) {
     return action == 0xD || (u32)action == 0x126 || (u32)action == 0x128;
 }
 
+#pragma push
+#pragma opt_propagation off
 extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
-    volatile u8 *self = (volatile u8 *)arg0;
-    register s32 first;
+    u8 *self = (u8 *)arg0;
+    s32 first;
     f32 sp10;
     f32 spC;
     f32 sp8;
     ((void *(*)(void *, void *))fn_80218F80)((void *)self, arg2);
-    *(void *volatile *)self = lbl_8033E1C4;
+    *(void **)self = lbl_8033E1C4;
     strcpy((char *)(self + 0x259), &lbl_8055B88C);
     self[0x258] = 0;
     switch (*(s32 *)((u8 *)arg2 + 0xA0)) {
@@ -7120,16 +7129,14 @@ extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
     memcpy(&sp10, (u8 *)arg2 + 0xA4, 4);
     memcpy(&spC, (u8 *)arg2 + 0xA8, 4);
     memcpy(&sp8, (u8 *)arg2 + 0xAC, 4);
-    if ((f32)FN8021C18C_ABS((double)sp10) > *(f32 *)&lbl_80558DC4 ||
-        (f32)FN8021C18C_ABS((double)spC) > *(f32 *)&lbl_80558DC4 ||
-        (f32)FN8021C18C_ABS((double)sp8) > *(f32 *)&lbl_80558DC4) {
+    if (!((f32)FN8021C18C_ABS((double)sp10) <= *(f32 *)&lbl_80558DC4) ||
+        !((f32)FN8021C18C_ABS((double)spC) <= *(f32 *)&lbl_80558DC4) ||
+        !((f32)FN8021C18C_ABS((double)sp8) <= *(f32 *)&lbl_80558DC4)) {
         fn_80224DDC((void *)self, sp10, spC, sp8);
     }
     return (void *)self;
 }
-
-#pragma push
-#pragma small_data on
+#pragma pop
 extern "C" void *fn_80224D40(void *obj, s32 deleteFlags) {
     // Destructor-like cleanup: reset vtable, conditionally destroy owned subobjects, clear fields, reset string/base, optional delete.
     if (obj != 0) {
@@ -8054,8 +8061,8 @@ extern "C" void fn_80227044(void *arg0, float x, float y, float z) {
 }
 #pragma pop
 extern "C" void *fn_802270DC(void *arg0, void *arg1) {
-    register s32 context = (s32)arg1;
     register u8 *obj = (u8 *)arg0;
+    register s32 context = (s32)arg1;
 
     fn_80218F80();
     *(void **)obj = lbl_8033DFB4;
@@ -8403,12 +8410,7 @@ extern f32 lbl_80563578;
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 extern "C" void fn_80228010(void* arg0) {
-s32 t250 = *(s32*)((u8*)arg0 + 0x250);
-if (t250 == 0) return;
-s32 t254 = *(s32*)((u8*)arg0 + 0x254);
-if (t254 == 0) return;
-s32 t258 = *(s32*)((u8*)arg0 + 0x258);
-if (t258 == 0) {} else {
+if (*(s32*)((u8*)arg0 + 0x250) != 0 && *(s32*)((u8*)arg0 + 0x254) != 0 && *(s32*)((u8*)arg0 + 0x258) != 0) {
 f32 duration, initial, radius;
 s32 lastIndex;
 duration = fn_80235EF0(*(s32*)((u8*)arg0 + 0x254), 0);
@@ -8426,8 +8428,7 @@ spC -= lbl_8056356C;
 }
 s32 count = fn_8022DD80(*(s32*)((u8*)arg0 + 0x248));
 s32 temp = count ^ 1;
-s32 shr = temp >> 1;
-u32 flag = (u32)(shr - (temp & count)) >> 31;
+u32 flag = (u32)((temp >> 1) - (temp & count)) >> 31;
 f32 progress = lbl_805634EC + spC;
 if (flag != 0) {
 f32 scale = lbl_805634C4;
@@ -9897,7 +9898,6 @@ extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     f32 scratch[24];
     register f32 temp_f31, var_f30, var_f2, temp_f0, temp_f0_2, temp_f11, temp_f12;
     register f32 axisValue, axisZero, deltaY, deltaX, deltaZ;
-    u8 *dst;
     u32 *source; u32 second, first; s32 matrixValue;
     if (*(s32 *)((u8 *)obj + 4) == -1) return;
     *(f32 *)((u8 *)obj + 0x38) += *(f32 *)((u8 *)obj + 0x3C) * arg5;
@@ -9922,8 +9922,7 @@ extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     matrixValue = (s32)second;
     scratch[4] = axisZero; scratch[5] = axisValue; scratch[6] = axisZero;
     ((void (*)(void *, f32 *, s32, f32))fn_80015A20)(&scratch[16], &scratch[4], matrixValue, scratch[5]);
-    dst = (u8 *)obj + 8;
-    fn_80015B20(dst, &scratch[16], dst);
+    fn_80015B20((u8 *)obj + 8, &scratch[16], (u8 *)obj + 8);
     fn_802C77F0(*(s32 *)((u8 *)obj + 4), &scratch[10]);
     deltaY = scratch[13] - scratch[12];
     deltaX = scratch[11] - scratch[10];
