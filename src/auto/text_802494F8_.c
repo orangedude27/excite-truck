@@ -1242,8 +1242,9 @@ s32 fn_8024B8A4(void *config, s32 index) {
     return -1;
 }
 
-s32 fn_8024B8CC(s32 arg0) {
-    return arg0 + 0x4C;
+/* Return the address of the embedded field at offset 0x4C of base. */
+s32 fn_8024B8CC(s32 base) {
+    return base + 0x4C;
 }
 
 s32 fn_8024B8D4(s32 arg0) {
