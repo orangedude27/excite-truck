@@ -249,8 +249,7 @@ int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
     return 0;
 }
 
-extern float lbl_80562B40, lbl_80562B44, lbl_80562B48, lbl_80562B4C;
-__declspec(section ".data") extern float lbl_80558DC4;
+extern float lbl_80562B40, lbl_80562B44, lbl_80562B48, lbl_80562B4C, lbl_80558DC4;
 extern double fn_8002F234(float);
 extern double fn_8002EFA8(double);
 extern double sin(double);
