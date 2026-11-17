@@ -373,6 +373,7 @@ long fn_801E7E2C(void) {
 }
 
 extern float *lbl_8055EB04;
+/* Get the base of the current frame's per-player data array (frameData). */
 void* fn_801E7E34(void) {
     return lbl_8055EB04;
 }
