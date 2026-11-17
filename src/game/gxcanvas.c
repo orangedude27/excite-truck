@@ -198,12 +198,13 @@ void fn_802C3014(void *arg0) {
 }
 
 #define sCurrentCanvas lbl_8055FC00 /* the canvas the gxCanvas* routines draw on */
-s32 fn_802C3034(s32 value) {
-    s32 old;
+s32 fn_802C3034(s32 newCanvas) {
+    s32 oldCanvas;
 
-    old = lbl_8055FC00;
-    lbl_8055FC00 = value;
-    return old;
+    // Make newCanvas the current drawing canvas and return the one it replaced.
+    oldCanvas = sCurrentCanvas;
+    sCurrentCanvas = newCanvas;
+    return oldCanvas;
 }
 
 /* Return the address of the 16-bit pixel at (x, y): pixels + y * rowBytes + x * 2. */
