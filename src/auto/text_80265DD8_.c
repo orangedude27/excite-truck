@@ -364,7 +364,7 @@ weight_done:
     path->x = current->x + (float)(double)weight * (next->x - current->x);
     path->y = current->y + (float)(double)weight * (next->y - current->y);
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80266070(void *arg0, void *arg1, void *arg2, void *arg3) {
     volatile float scaled[3];
     float mag;
@@ -389,7 +389,6 @@ void fn_80266070(void *arg0, void *arg1, void *arg2, void *arg3) {
     out[1] = yOut;
     out[2] = zOut;
 }
-
 extern float lbl_8055C4C0;
 extern float lbl_80563C2C;
 extern float lbl_8055C4C4;
@@ -404,7 +403,7 @@ void *fn_80266120(void *cursor) {
     return cursor;
 }
 
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_80266150(void *arg0) {
     int zero = 0;
     float f0 = lbl_80563C2C;
@@ -415,7 +414,7 @@ void fn_80266150(void *arg0) {
     *(float *)((char *)arg0 + 8) = f1;
     *(float *)((char *)arg0 + 0xC) = f0;
 }
-
+#pragma opt_propagation reset
 void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     float temp_f0;
     float temp_f0_2;
@@ -718,12 +717,12 @@ void fn_802670A0(int *cellRect, int index) {
     cellRect[15] = cellHeight * (index % div);
 }
 
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_80267130(void *arg0) {
     float value;
     float clamp;
     clamp = lbl_80563C2C;
-    value = (*(float *)((char *)arg0 + 0x30) - lbl_80563C44) / lbl_80563C48;
+    value = (*(float *)((char *)arg0 + 0x30) - 0.3926991f) / 0.78539812f;
     clamp = clamp < value ? value : clamp;
     clamp = lbl_80563C20 < clamp ? lbl_80563C20 : clamp;
     *(float *)((char *)arg0 + 0x48) = lbl_80563C34 + clamp * lbl_80563C4C;
@@ -731,7 +730,7 @@ void fn_80267130(void *arg0) {
     else value = lbl_80563C50;
     *(float *)((char *)arg0 + 0x4C) = lbl_8055F484 * value;
 }
-#pragma scheduling on
+#pragma opt_propagation reset
 extern float lbl_8055D020;
 extern double lbl_80563C38;
 extern float fn_801EA0E8(float, float);
@@ -739,21 +738,13 @@ extern float fn_801EA0E8(float, float);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802671CC(void *arg0, int arg1) {
-    union IntDouble {
-        double value;
-        unsigned int word[2];
-    };
     struct Scratch {
         float output[3];
         float input[3];
-        union IntDouble width;
-        union IntDouble height;
     } scratch;
     float *in = scratch.input;
     float *out = scratch.output;
     float *matrix;
-    unsigned int widthBits;
-    unsigned int heightBits;
     float z;
     float delta;
     float xstep;
@@ -761,22 +752,14 @@ void fn_802671CC(void *arg0, int arg1) {
     float heightValue;
     float ystep;
     float best;
-    double bias;
     int i;
 
-    widthBits = *(unsigned int *)((char *)arg0 + 0x44) ^ 0x80000000;
-    heightBits = *(unsigned int *)((char *)arg0 + 0x40) ^ 0x80000000;
-    scratch.width.word[0] = 0x43300000;
-    scratch.width.word[1] = widthBits;
     matrix = (float *)arg0;
     z = *(float *)((char *)arg0 + 0x48);
     delta = z * *(float *)((char *)arg0 + 0x34);
     xstep = delta / lbl_8055D020;
-    scratch.height.word[1] = heightBits;
-    scratch.height.word[0] = 0x43300000;
-    bias = lbl_80563C38;
-    widthValue = (float)(scratch.width.value - bias);
-    heightValue = (float)(scratch.height.value - bias);
+    widthValue = (float)*(int *)((char *)arg0 + 0x44);
+    heightValue = (float)*(int *)((char *)arg0 + 0x40);
     ystep = widthValue * delta / heightValue;
     best = lbl_80563C20;
     i = 0;
@@ -2070,26 +2053,38 @@ void fn_8026A2C8(void) {
 
 #pragma scheduling invalid_target
 #pragma scheduling on
+#pragma cplusplus on
 void fn_8026A2CC(int *arg0, int arg1, float arg2) {
-    int a = arg0[0];
-    int b = arg0[1];
-    int c = arg0[2];
-    int d = arg0[3];
-    int *dst = (int *)((char *)lbl_80499080 + arg1 * 0x228 + 0x1a4);
+    int a, b, c, d, e;
+    char *p = (char *)lbl_80499080 + arg1 * 0x228 + 0x1a4;
+    int *dst = (int *)p;
+    a = arg0[0];
+    b = arg0[1];
+    c = arg0[2];
+    d = arg0[3];
+    e = arg0[4];
     dst[0] = a;
+    a = arg0[5];
     dst[1] = b;
+    b = arg0[6];
     dst[2] = c;
+    c = arg0[7];
     dst[3] = d;
-    dst[4] = arg0[4];
-    dst[5] = arg0[5];
-    dst[6] = arg0[6];
-    dst[7] = arg0[7];
-    dst[8] = arg0[8];
-    dst[9] = arg0[9];
-    dst[10] = arg0[10];
-    dst[11] = arg0[11];
+    d = arg0[8];
+    dst[4] = e;
+    e = arg0[9];
+    dst[5] = a;
+    a = arg0[10];
+    dst[6] = b;
+    b = arg0[11];
+    dst[7] = c;
+    dst[8] = d;
+    dst[9] = e;
+    dst[10] = a;
+    dst[11] = b;
     *(float *)(dst + 12) = arg2;
 }
+#pragma cplusplus reset
 /* Return the index of the object the given camera is following (Camera.subject). */
 int fn_8026A344(int cameraIndex) {
     return ((Camera *)fn_80267EE4(cameraIndex))->subject;
