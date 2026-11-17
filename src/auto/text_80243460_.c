@@ -493,89 +493,92 @@ extern float lbl_805637AC;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_802440CC(void *arg0) {
-    struct V {
+extern "C" void fn_802440CC(void *menu) {
+    struct MenuListVtbl {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
         virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
         virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
         virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
         virtual void f20(); virtual void f21(); virtual void f22();
-        virtual void action(); virtual void other();
+        virtual void onAction(); virtual void onBack();
     };
+    /* Menu-list text-field update: measure the field width, then handle the
+       selected entry's kind -- run the action callback (4), insert the chosen
+       character/label into the typed string (1/2), go back (3), or finalize (5). */
     float spacing = 1.0f;
     s32 *entry;
-    s32 buffer[8];
-    char *src;
-    s32 left, i, j;
-    char *dst;
+    s32 charBuf[8];
+    char *source;
+    s32 remaining, group, index;
+    char *dest;
     char ch;
-    fn_8023293C(*(s32 *)((u8 *)arg0+0x20), lbl_80342CE0, spacing);
-    entry = lbl_803428B0[*(s32 *)((u8 *)arg0+0x2c)][*(s32 *)((u8 *)arg0+0x30)];
+    fn_8023293C(*(s32 *)((u8 *)menu+0x20), lbl_80342CE0, spacing);
+    entry = lbl_803428B0[*(s32 *)((u8 *)menu+0x2c)][*(s32 *)((u8 *)menu+0x30)];
     switch (entry[2]) {
     case 4:
-        ((V *)arg0)->action();
+        ((MenuListVtbl *)menu)->onAction();
         break;
     case 1:
     case 2:
-        if (fn_80244558(arg0) >= *(s32 *)((u8 *)arg0+0x1c)-1) ((V *)arg0)->action();
-        if (fn_80244558(arg0)+1 < *(s32 *)((u8 *)arg0+0x1c)) {
-            fn_802438EC(*(char **)((u8 *)arg0+0x18));
-            buffer[0]=0; buffer[1]=0; buffer[2]=0; buffer[3]=0;
-            buffer[4]=0; buffer[5]=0; buffer[6]=0; buffer[7]=0;
+        if (fn_80244558(menu) >= *(s32 *)((u8 *)menu+0x1c)-1) ((MenuListVtbl *)menu)->onAction();
+        if (fn_80244558(menu)+1 < *(s32 *)((u8 *)menu+0x1c)) {
+            fn_802438EC(*(char **)((u8 *)menu+0x18));
+            charBuf[0]=0; charBuf[1]=0; charBuf[2]=0; charBuf[3]=0;
+            charBuf[4]=0; charBuf[5]=0; charBuf[6]=0; charBuf[7]=0;
             if (entry[2] == 2) {
-                if (**(char **)((u8 *)arg0+0x18)) {
-                    src=lbl_8055BE18;
-                    dst=(char *)buffer;
-                    left=32;
+                if (**(char **)((u8 *)menu+0x18)) {
+                    source=lbl_8055BE18;
+                    dest=(char *)charBuf;
+                    remaining=32;
                     goto copy1_body;
 copy1_check:
-                    if (--left > 0) goto copy1_body;
-                    dst[-1]=0;
+                    if (--remaining > 0) goto copy1_body;
+                    dest[-1]=0;
                     goto copy1_done;
 copy1_body:
-                    while ((*dst++ = *src++) != 0) goto copy1_check;
+                    while ((*dest++ = *source++) != 0) goto copy1_check;
 copy1_done:;
-                } else ((char *)buffer)[0]=0;
+                } else ((char *)charBuf)[0]=0;
             } else {
-                src=(char *)entry[0];
-                if (strlen(src)==2) {
-                    ((char *)buffer)[0]=src[*((u8 *)arg0+0x29)];
-                    ((char *)buffer)[1]=0;
+                source=(char *)entry[0];
+                if (strlen(source)==2) {
+                    ((char *)charBuf)[0]=source[*((u8 *)menu+0x29)];
+                    ((char *)charBuf)[1]=0;
                 } else {
-                    s32 left2; char *dst2;
-                    dst2=(char *)buffer; left2=32;
+                    s32 remaining2; char *dest2;
+                    dest2=(char *)charBuf; remaining2=32;
                     goto copy2_body;
 copy2_check:
-                    if (--left2 > 0) goto copy2_body;
-                    dst2[-1]=0;
+                    if (--remaining2 > 0) goto copy2_body;
+                    dest2[-1]=0;
                     goto copy2_done;
 copy2_body:
-                    while ((*dst2++ = *src++) != 0) goto copy2_check;
+                    while ((*dest2++ = *source++) != 0) goto copy2_check;
 copy2_done:;
                 }
             }
-            s32 left3=*(s32 *)((u8 *)arg0+0x1c);
-            char *dst3=*(char **)((u8 *)arg0+0x18);
-            while (*dst3) { left3--; dst3++; }
-            if (left3>0) {
-                src=(char *)buffer;
+            s32 remaining3=*(s32 *)((u8 *)menu+0x1c);
+            char *dest3=*(char **)((u8 *)menu+0x18);
+            while (*dest3) { remaining3--; dest3++; }
+            if (remaining3>0) {
+                source=(char *)charBuf;
                 goto copy3_body;
 copy3_check:
-                if (--left3 > 0) goto copy3_body;
-                dst3[-1]=0;
+                if (--remaining3 > 0) goto copy3_body;
+                dest3[-1]=0;
                 goto copy3_done;
 copy3_body:
-                while ((*dst3++ = *src++) != 0) goto copy3_check;
+                while ((*dest3++ = *source++) != 0) goto copy3_check;
 copy3_done:;
             }
-            fn_80243938(*(char **)((u8 *)arg0+0x18), *(char **)((u8 *)arg0+0x1c));
-            if (*(s32 *)((u8 *)arg0+0x1c)==fn_80244558(arg0)+1) {
-                for (i=0;i<5;i++) {
-                    for (j=0;j<16;j++) {
-                        if (lbl_803428B0[i][j][2]==5) {
-                            *(s32 *)((u8 *)arg0+0x2c)=i;
-                            *(s32 *)((u8 *)arg0+0x30)=j;
+            fn_80243938(*(char **)((u8 *)menu+0x18), *(char **)((u8 *)menu+0x1c));
+            if (*(s32 *)((u8 *)menu+0x1c)==fn_80244558(menu)+1) {
+                for (group=0;group<5;group++) {
+                    for (index=0;index<16;index++) {
+                        if (lbl_803428B0[group][index][2]==5) {
+                            *(s32 *)((u8 *)menu+0x2c)=group;
+                            *(s32 *)((u8 *)menu+0x30)=index;
                             break;
                         }
                     }
@@ -584,12 +587,12 @@ copy3_done:;
         }
         break;
     case 3:
-        ((V *)arg0)->other();
+        ((MenuListVtbl *)menu)->onBack();
         break;
     case 5:
-        if (strlen(*(char **)((u8 *)arg0+0x18))>1) {
-            *((u8 *)arg0+0x28)=1;
-            fn_802438EC(*(char **)((u8 *)arg0+0x18));
+        if (strlen(*(char **)((u8 *)menu+0x18))>1) {
+            *((u8 *)menu+0x28)=1;
+            fn_802438EC(*(char **)((u8 *)menu+0x18));
         }
         break;
     }
