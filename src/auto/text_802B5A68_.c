@@ -2003,11 +2003,14 @@ extern "C" void fn_802B869C(void) {
 #pragma cplusplus off
 #pragma small_data off
 void fn_802B86F8(void) {
-    s8 value = (s8)((u8 *)&lbl_804BFF80)[0x14];
-    ((u8 *)&lbl_804BFF80)[0x34] = 0;
-    if (value == 0) return;
-    if (*(s32 *)((u8 *)&lbl_804BFF80 + 0xC) & 1) return;
-    ((u8 *)&lbl_804BFF80)[0x14] = 0;
+    s8 zero = 0;
+    s8 value = (s8)((u8 *)lbl_804BFF80)[0x14];
+    ((u8 *)lbl_804BFF80)[0x34] = zero;
+    if (value == 0)
+        return;
+    if (*(s32 *)((u8 *)lbl_804BFF80 + 0xC) & 1)
+        return;
+    ((u8 *)lbl_804BFF80)[0x14] = zero;
 }
 s32 fn_802B8728(void) {
     /* Registered update-check callback: true while the state byte at lbl_804BFF80+0x34 is zero. */
