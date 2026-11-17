@@ -82,7 +82,7 @@ void SISetSamplingRate(u32 msec) {
     OSRestoreInterrupts(enabled);
 }
 
-/* Reapply the previously stored SI sampling rate, e.g. after a TV format change. */
+/* Reapply the previously stored SI sampling rate. */
 void SIRefreshSamplingRate(void) {
     SISetSamplingRate(SamplingRate);
 }
