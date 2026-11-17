@@ -221,6 +221,7 @@ _not_current_fpu_ctx:
 }
 
 OSContext* OSGetCurrentContext(void) {
+    /* Return the OS context of the currently running thread. */
     return OS_CURRENT_CONTEXT;
 }
 
