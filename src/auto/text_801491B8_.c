@@ -3678,14 +3678,17 @@ extern "C" void fn_80153900(void *owner, long playerIndex) {
 }
 #pragma cplusplus reset
 #pragma pop
-void fn_801539C0(s32 arg0, s32 arg1) {
-    s32 base = arg0 + fn_801E866C(arg1) * 0xC0;
-    s32 temp_r31 = base + 0x9E4;
-    s32 var_r4;
-    if (temp_r31 != 0) {
-        if (fn_801E85A4() == 2) var_r4 = *(volatile long *)&lbl_8055E23C;
-        else var_r4 = *(volatile long *)&lbl_8055E238;
-        fn_8014CA48(temp_r31, var_r4, arg1);
+void fn_801539C0(s32 owner, s32 playerIndex) {
+    /* Locate the player's 0xC0-byte entry at owner+0x9E4 (indexed by the player's
+       car-manager index); if present, pick one of two shared managers by game mode
+       and draw the entry via fn_8014CA48. */
+    s32 base = owner + fn_801E866C(playerIndex) * 0xC0;
+    s32 entry = base + 0x9E4;
+    s32 manager;
+    if (entry != 0) {
+        if (fn_801E85A4() == 2) manager = *(volatile long *)&lbl_8055E23C;
+        else manager = *(volatile long *)&lbl_8055E238;
+        fn_8014CA48(entry, manager, playerIndex);
     }
 }
 
