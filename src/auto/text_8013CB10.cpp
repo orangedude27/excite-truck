@@ -1116,10 +1116,11 @@ extern "C" f32 lbl_80561498, lbl_805614A4;
 #pragma push
 #pragma processor 750
 extern "C" void fn_8013E19C(void *arg0, float arg1) {
+    struct S { float o0, o1, o2, o3, o4, o5, m0, m1, m2; };
+    S s;
     float *p = (float *)arg0;
     float unit = lbl_805614A4;
     void *other = (char *)arg0 + 0xC;
-    float s[9];
     p[4] = unit;
     p[1] = unit;
     float t = arg1 / PSQUATMultiply(arg0, other);
@@ -1135,9 +1136,9 @@ extern "C" void fn_8013E19C(void *arg0, float arg1) {
     float bx = b - x;
     float by = d - y;
     float bz = g - z;
-    s[8] = x;
-    s[6] = z;
-    s[7] = y;
+    s.m2 = x;
+    s.m0 = z;
+    s.m1 = y;
     float ax = a - x;
     float ay = c - y;
     float az = e - z;
@@ -1147,12 +1148,12 @@ extern "C" void fn_8013E19C(void *arg0, float arg1) {
     float rx = x + t * ax;
     float ry = y + t * ay;
     float rz = z + t * az;
-    s[5] = qx;
-    s[3] = qz;
-    s[4] = qy;
-    s[0] = rz;
-    s[1] = ry;
-    s[2] = rx;
+    s.o5 = qx;
+    s.o3 = qz;
+    s.o4 = qy;
+    s.o0 = rz;
+    s.o1 = ry;
+    s.o2 = rx;
     p[2] = qx;
     p[0] = qz;
     p[1] = qy;
@@ -4054,6 +4055,7 @@ extern "C" s32 fn_8014432C(void) {
 extern "C" void fn_80144334(void) {
 }
 
+// No-op stub in this vtable's callback group; does nothing.
 extern "C" void fn_80144338(void) {
 }
 
