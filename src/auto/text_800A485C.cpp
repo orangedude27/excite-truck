@@ -4704,7 +4704,7 @@ loop_64:
                 if (sp30buf[0x20A] != 0) {
                     M2C_FIELD(p1, s32 *, 0x230) = (s32) (M2C_FIELD(p1, s32 *, 0x230) - VFiPFPATH_GetLengthFromUnicode((const u16 *)sp30buf));
                 } else {
-                    M2C_FIELD(p1, s32 *, 0x230) = (s32) (M2C_FIELD(p1, s32 *, 0x230) - VFiPFPATH_GetLengthFromShortname((s8 *)sp23Ebuf));
+                    M2C_FIELD(p1, s32 *, 0x230) = (s32) (M2C_FIELD(p1, s32 *, 0x230) - VFiPFPATH_GetLengthFromShortname((s8 *)(sp30buf + 0x20E)));
                 }
                 M2C_FIELD(p1, s32 *, 0x230) = (s32) (M2C_FIELD(p1, s32 *, 0x230) - 1);
                 goto block_63;
