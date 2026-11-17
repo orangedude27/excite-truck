@@ -2248,27 +2248,26 @@ extern "C" s32 fn_8015A814(void) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_8015A81C(Unk801577F0* arg0) {
-    f32 f = lbl_80561754;
+    f32 entryValue = 0.0f;
     s32 r6 = 0;
     s32 r7 = 0;
     s32 r5 = 0;
-    s32 z = 0;
     for (; r6 < arg0->mCount; r6++) {
         *(s32*)(arg0->mData + r7) = r5;
         *(s32*)(arg0->mData + r7 + 4) = r5;
         *(s32*)(arg0->mData + r7 + 8) = r5;
-        *(f32*)(arg0->mData + r7 + 0xC) = f;
+        *(f32*)(arg0->mData + r7 + 0xC) = entryValue;
         r7 += 0x38;
     }
-    f32 a = lbl_80561754;
-    f = lbl_80561750;
-    arg0->m264 = z;
-    arg0->m260 = z;
-    arg0->m254 = a;
-    arg0->m25c = f;
+    f32 resetValue = 0.0f;
+    entryValue = 1.0f;
+    arg0->m264 = r5;
+    arg0->m260 = r5;
+    arg0->m254 = resetValue;
+    arg0->m25c = entryValue;
     arg0->v31();
-    *(s32*)((u8*)arg0 + 0x26c) = z;
-    *(u8*)((u8*)arg0 + 0x2f0) = (u8)z;
+    *(s32*)((u8*)arg0 + 0x26c) = r5;
+    *(u8*)((u8*)arg0 + 0x2f0) = (u8)r5;
 }
 
 extern "C" s32 fn_801D48FC(s32);
