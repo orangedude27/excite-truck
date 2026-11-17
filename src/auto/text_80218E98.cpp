@@ -1328,7 +1328,7 @@ extern "C" void fn_80219F14(void *arg0) {
     }
 }
 
-#pragma scheduling invalid_target
+#pragma opt_common_subs off
 extern "C" void fn_80219FE0(void *arg0) {
     u8 *self = (u8 *)arg0;
     f32 time = fn_8023659C();
@@ -1436,7 +1436,7 @@ extern "C" void fn_80219FE0(void *arg0) {
     }
     }
 }
-#pragma scheduling on
+#pragma opt_common_subs reset
 extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" u8 lbl_8033F3B0[];
 extern "C" u8 lbl_8033F434[];
@@ -9501,8 +9501,9 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229D64(v
     return self;
 }
 
-extern "C" s32 fn_80229DC0(s32 arg0) {
-    return arg0 + 0x268;
+/* Add the 0x268 field offset to a base value (address of the field at +0x268). */
+extern "C" s32 fn_80229DC0(s32 base) {
+    return base + 0x268;
 }
 
 #pragma peephole off
