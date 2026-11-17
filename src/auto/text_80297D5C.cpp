@@ -561,7 +561,7 @@ static inline void XformRot3(const float *m, const float *src, float *dst) {
         dst[1] = z * m21 + (x * m01 + y * m11);
         dst[2] = z * m22 + (x * m02 + y * m12);
     } else {
-        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        float m10, m00, m20, m01, m11, m21, m02, m12, m22;
         m10 = m[3]; m00 = m[0]; m20 = m[6];
         dst[0] = src[2] * m20 + (src[0] * m00 + src[1] * m10);
         m11 = m[4]; m01 = m[1]; m21 = m[7];
@@ -636,13 +636,10 @@ extern "C" void fn_80298DE0(void *arg0, void *arg1, int arg2) {
             float now = fn_801E7E18();
             char *e2 = *(char **)arg0 + off;
             *(float *)(e2 + 0x1C) = now;
-            void *mat = ((void *(*)(int, void *))fn_80287B24)((int)arg1, (void *)e2);
+            float *mat = (float *)((void *(*)(int, void *))fn_80287B24)((int)arg1, (void *)e2);
             char *e3 = *(char **)arg0 + off;
-            float tmp[3];
-            XformRot3((const float *)mat, (const float *)e3, tmp);
-            tmp[0] += ((float *)mat)[9];
-            tmp[1] += ((float *)mat)[10];
-            tmp[2] += ((float *)mat)[11];
+            XformVec tmp;
+            XformPoint(mat, &tmp, (const XformVec *)e3);
         }
         char *e4 = *(char **)arg0 + off;
         e4[0x19] = (char)arg2;
