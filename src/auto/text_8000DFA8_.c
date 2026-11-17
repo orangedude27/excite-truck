@@ -2466,15 +2466,15 @@ f32 fn_8000EDC0(s32 arg0) {
     if (fn_801E85A4() > 2)
         return lbl_80560264;
     switch (arg0) {
+    case 12:
+        return lbl_805602B8;
     case 13:
         return lbl_805602BC;
-    case 12:
     case 14:
         return lbl_805602B8;
-    case 11:
-        return lbl_80560264;
     default:
         fn_802E317C(&lbl_802FC3A4, arg0);
+    case 11:
         return lbl_80560264;
     }
 }
