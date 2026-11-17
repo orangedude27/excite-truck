@@ -11552,21 +11552,24 @@ extern "C" void fn_800B7504(OSAlarm *alarm, OSContext *ctx) {
 }
 
 extern "C" s32 VFipf2_fopen(s32 path, s32 modeStr) {
-    s32 sp8;
-    char sp10[0x18];
+    s32 handle;
+    char pathRange[0x18];
     s32 result;
+    /* pf2_fopen: parse the C-style open mode, describe `path` as a byte-string
+     * range and open it through the VFiPF volume layer, returning the file
+     * handle on success or 0 on failure (with VF_LAST_ERROR set). */
     s32 mode = VFiPFAPI_ParseOpenModeString((char *)modeStr);
     if (mode == 0) {
-        *(s32 *)((char *)lbl_803D2140 + 0x40) = 10;
+        VF_LAST_ERROR = VF_ERR_BAD_REQUEST;
         return 0;
     }
-    result = fn_800A4E80(sp10, path, 1);
+    result = fn_800A4E80(pathRange, path, 1);
     if (result == 0) {
-        result = ((s32 (*)(void *, s32, s32 *))fn_800B1AFC)(sp10, mode, &sp8);
+        result = ((s32 (*)(void *, s32, s32 *))fn_800B1AFC)(pathRange, mode, &handle);
     } else {
-        *(s32 *)((char *)lbl_803D2140 + 0x40) = result;
+        VF_LAST_ERROR = result;
     }
-    return ((s32 (*)(s32, s32))fn_800B73CC)(result, sp8);
+    return ((s32 (*)(s32, s32))fn_800B73CC)(result, handle);
 }
 
 extern "C" s32 fn_800B1EB8(s32, s32, s32, s32, s32 *);
@@ -21325,13 +21328,12 @@ extern "C" s32 fn_800D3634(s32 arg0) {
     u8 *fb;
     u32 frame;
     u32 irq;
-    static const u16 defaultDims[2] = {0x280, 0x1E0};
 #define DST16(o) (*(u16 *)((u8 *)lbl_80407BD8 + (o)))
 #define COL8(o) (*(u8 *)((u8 *)lbl_80407BE8 + (o)))
 #define COL16(o) (*(u16 *)((u8 *)lbl_80407BE8 + (o)))
     if (lbl_8055DDC8 == 0) {
-        u32 w = defaultDims[0];
-        u32 h = defaultDims[1];
+        u32 w = fn_800D3634_defaultDims[0];
+        u32 h = fn_800D3634_defaultDims[1];
         DST16(8) = w;
         lbl_80407BD8[0] = 0;
         DST16(10) = h;
