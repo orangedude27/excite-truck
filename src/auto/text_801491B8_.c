@@ -2161,6 +2161,7 @@ extern "C" void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
     }
 }
 #pragma cplusplus reset
+/* Empty stub callback in the bonus-entry group: does nothing. */
 void fn_8014E704(void) {
 
 }
