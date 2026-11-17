@@ -1000,6 +1000,7 @@ extern "C" void fn_80219510(void *widget, s32 offsetX, s32 offsetY) {
     *(s32 *)((u8 *)widget + 0x248) = scrollY;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
     void* p = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
@@ -1011,7 +1012,6 @@ extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
         *(s32*)((u8*)p + 0x458) = old2 + dy;
     }
 }
-
 extern "C" void *fn_80219568(void *obj, s32 x, s32 y, s32 arg3, s32 arg4, s32 width, s32 height, s32 arg7) {
     /* Initialize a menu text widget: set up base bounds, vtable, and fields at 0x244-0x250. */
     fn_80218F34(obj, x, y, x + width, y + height, arg3);
@@ -4304,8 +4304,15 @@ extern "C" s32 fn_8021F478(s32 *result) {
 extern "C" void fn_801A7A5C(void);
 extern "C" s32 fn_802146BC(void *, s32, s32, s32, void *, s32, s32, s32);
 extern "C" void fn_802194FC(void *);
+#pragma use_lmw_stmw off
+typedef struct {
+    s32 f0, f1, f2, f3, f4, f5, f6, f7, f8, f9;
+    s32 f10, f11, f12, f13, f14, f15, f16, f17, f18, f19;
+    s32 f20, f21, f22, f23, f24, f25, f26, f27, f28, f29;
+} Args8021F4F0;
 extern "C" void fn_8021F4F0(void *arg0, void *) {
-    s32 args[30];
+    Args8021F4F0 a;
+    s32 *args = (s32 *)&a;
 
     fn_801A7A5C();
     strcpy((char *)lbl_80490934, (char *)arg0 + 0x254);
@@ -4353,7 +4360,6 @@ extern "C" void fn_8021F4F0(void *arg0, void *) {
     if (*((u8 *)arg0 + 0x1a) != 0)
         *((u8 *)arg0 + 0x234) = 1;
 }
-
 /* Horizontal slider widget (vtable lbl_8033E878, constructed by fn_8021F678). */
 typedef struct SliderWidget {
     char pad000[0x244];
@@ -5920,10 +5926,10 @@ extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80222C8C(void *arg0, s32 
 
 #pragma push
 #pragma processor 750
+extern "C" char lbl_8055B8A8[4];
 extern "C" void fn_80222CFC(void *arg0, s32 arg1) {
-    struct Matrix { f32 m[12]; };
     struct TransformArgs { s32 x, y; f32 z; };
-    Matrix sp38;
+    f32 sp38[10];
     struct Scratch {
         char sp8[4];
         f32 spC, sp10, sp14, sp18, sp1C;
@@ -5941,13 +5947,14 @@ extern "C" void fn_80222CFC(void *arg0, s32 arg1) {
     register f32 temp_f2;
     register f32 temp_f3;
     register s32 temp_r31;
-    register s32 var_r26;
     register s32 var_r30;
-    register void *temp_r25;
     register void *temp_r29;
     register void *temp_r28;
     register void *temp_r27;
+    register s32 var_r26;
+    register void *temp_r25;
     register char *temp_r24;
+    register s32 var_r21;
     void *temp_r3;
     u32 *copyDst;
     u32 *copySrc;
@@ -5968,16 +5975,16 @@ extern "C" void fn_80222CFC(void *arg0, s32 arg1) {
     if (temp_r31 <= 0) return;
 
     temp_f28 = lbl_805634A8;
-    var_r30 = 0;
+    var_r21 = 0;
     goto loop3_test;
 loop3_body:
     temp_r3 = ((char *(*)(s32, s32, s32))fn_8022D3F8)(
-        *(s32 *)((u8 *)temp_r25 + 0x244), var_r30, 0);
+        *(s32 *)((u8 *)temp_r25 + 0x244), var_r21, 0);
     temp_f28 += fn_8023293C(*(s32 *)((u8 *)temp_r25 + 0x248),
         (s32)temp_r3, lbl_805634A4);
-    var_r30++;
+    var_r21++;
 loop3_test:
-    if (var_r30 < temp_r31) goto loop3_body;
+    if (var_r21 < temp_r31) goto loop3_body;
 
     temp_f3 = lbl_805634D8 * *(f32 *)((u8 *)temp_r25 + 0x250);
     temp_f3 -= temp_f28;
@@ -5995,6 +6002,7 @@ loop3_test:
 
     var_f28_2 = lbl_805634A8;
     var_r30 = 0;
+    var_r21 = 0;
     goto outer_test;
 outer_body:
     temp_r3 = ((char *(*)(s32, s32, s32))fn_8022D3F8)(
@@ -6021,46 +6029,46 @@ inner_body:
         a = copySrc[10]; b = copySrc[11];
         copyDst[10] = a; copyDst[11] = b;
     }
-    *(volatile u32 *)&stack.sp2C = 0;
-    *(volatile u32 *)&stack.sp30 = 0;
-    *(volatile u32 *)&stack.sp34 = 0;
+    *(volatile u32 *)&stack.sp2C = var_r21;
+    *(volatile u32 *)&stack.sp30 = var_r21;
+    *(volatile u32 *)&stack.sp34 = var_r21;
     *(volatile f32 *)&stack.sp2C = stack.sp10;
     *(volatile f32 *)&stack.sp30 = stack.spC;
 
     if (var_r23 == var_r22) {
-        stack.sp14 = (*(volatile f32 *)&stack.sp34) * ((Matrix *)temp_r28)->m[6] +
-            (stack.sp10 * ((Matrix *)temp_r28)->m[0] +
-             stack.spC * ((Matrix *)temp_r28)->m[3]);
-        stack.sp18 = stack.sp34 * ((Matrix *)temp_r28)->m[7] +
-            (stack.sp10 * ((Matrix *)temp_r28)->m[1] +
-             stack.spC * ((Matrix *)temp_r28)->m[4]);
-        stack.sp1C = stack.sp34 * ((Matrix *)temp_r28)->m[8] +
-            (stack.sp10 * ((Matrix *)temp_r28)->m[2] +
-             stack.spC * ((Matrix *)temp_r28)->m[5]);
+        stack.sp14 = (stack.sp10 * ((f32 *)temp_r28)[0] +
+            stack.spC * ((f32 *)temp_r28)[3]) +
+            stack.sp34 * ((f32 *)temp_r28)[6];
+        stack.sp18 = (stack.sp10 * ((f32 *)temp_r28)[1] +
+            stack.spC * ((f32 *)temp_r28)[4]) +
+            stack.sp34 * ((f32 *)temp_r28)[7];
+        stack.sp1C = (stack.sp10 * ((f32 *)temp_r28)[2] +
+            stack.spC * ((f32 *)temp_r28)[5]) +
+            stack.sp34 * ((f32 *)temp_r28)[8];
     } else {
-        stack.sp14 = stack.sp34 * ((Matrix *)temp_r28)->m[6] +
-            (stack.sp10 * ((Matrix *)temp_r28)->m[0] +
-             stack.spC * ((Matrix *)temp_r28)->m[3]) +
-            ((Matrix *)temp_r28)->m[9];
-        stack.sp18 = stack.sp34 * ((Matrix *)temp_r28)->m[7] +
-            (stack.sp10 * ((Matrix *)temp_r28)->m[1] +
-             stack.spC * ((Matrix *)temp_r28)->m[4]) +
-            ((Matrix *)temp_r28)->m[10];
-        stack.sp1C = stack.sp34 * ((Matrix *)temp_r28)->m[8] +
-            (stack.sp10 * ((Matrix *)temp_r28)->m[2] +
-             stack.spC * ((Matrix *)temp_r28)->m[5]) +
-            ((Matrix *)temp_r28)->m[11];
+        stack.sp14 = (stack.sp10 * ((f32 *)temp_r28)[0] +
+            stack.spC * ((f32 *)temp_r28)[3]) +
+            stack.sp34 * ((f32 *)temp_r28)[6] +
+            ((f32 *)temp_r28)[9];
+        stack.sp18 = (stack.sp10 * ((f32 *)temp_r28)[1] +
+            stack.spC * ((f32 *)temp_r28)[4]) +
+            stack.sp34 * ((f32 *)temp_r28)[7] +
+            ((f32 *)temp_r28)[10];
+        stack.sp1C = (stack.sp10 * ((f32 *)temp_r28)[2] +
+            stack.spC * ((f32 *)temp_r28)[5]) +
+            stack.sp34 * ((f32 *)temp_r28)[8] +
+            ((f32 *)temp_r28)[11];
     }
 
-    ((Matrix *)temp_r28)->m[9] += stack.sp14;
-    ((Matrix *)temp_r28)->m[10] += stack.sp18;
-    temp_f2 = ((Matrix *)temp_r28)->m[11];
+    ((f32 *)temp_r28)[9] += stack.sp14;
+    ((f32 *)temp_r28)[10] += stack.sp18;
+    temp_f2 = ((f32 *)temp_r28)[11];
     temp_f1_2 = temp_f2 + stack.sp1C;
-    ((Matrix *)temp_r28)->m[11] = temp_f1_2;
+    ((f32 *)temp_r28)[11] = temp_f1_2;
 
-    stack.sp20.z = 0.0f;
-    stack.sp20.x = 0;
-    stack.sp20.y = 0;
+    *(volatile u32 *)&stack.sp20.z = var_r21;
+    stack.sp20.x = var_r21;
+    stack.sp20.y = var_r21;
     stack.sp20.z = temp_f29 * var_f28_2 + temp_f31;
     ((void (*)(void *, void *, f32, f32))fn_80015A20)(
         &sp38, &stack.sp20, temp_f1_2, temp_f2);
@@ -8756,7 +8764,6 @@ extern "C" void fn_80228A84(void *object) {
     fn_802C8750(savedState, -1);
 }
 
-#pragma push
 #pragma processor 750
 extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     f32 saved_arg = farg0;
@@ -8778,15 +8785,16 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     s32 var_r4;
     s32 var_r7;
     s32 got;
-    temp_r30 = lbl_8055CFF0;
-    var_r4 = temp_r30 - 2;
+
     var_f4 = lbl_805634A4;
     temp_f0 = ((f32)*(s32 *)(arg0 + 4) - lbl_805634A8) / lbl_8056357C;
     var_f4 = var_f4 < temp_f0 ? temp_f0 : var_f4;
     var_f4 = var_f4 > lbl_805634A8 ? lbl_805634A8 : var_f4;
-    temp_r0 = (s32)(lbl_805634A8 + (var_f4 * ((f32)temp_r30 - lbl_805634A8)));
+    var_r4 = lbl_8055CFF0 - 2;
+    temp_r0 = (s32)(lbl_805634A8 + (var_f4 * ((f32)lbl_8055CFF0 - lbl_805634A8)));
     var_r4 = temp_r0 < var_r4 ? temp_r0 : var_r4;
     *(s32 *)(arg0 + 0x270) = var_r4;
+
     var_f4_2 = lbl_805634A4;
     temp_f0_2 = ((f32)*(s32 *)(arg0 + 8) - lbl_805634A8) / lbl_80563580;
     var_f4_2 = var_f4_2 < temp_f0_2 ? temp_f0_2 : var_f4_2;
@@ -8795,6 +8803,8 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     temp_r4 = (s32)(lbl_805634A8 + (var_f4_2 * ((f32)lbl_8055CFF4 - lbl_805634A8)));
     var_r0 = temp_r4 < var_r0 ? temp_r4 : var_r0;
     *(s32 *)(arg0 + 0x274) = var_r0;
+
+    temp_r30 = lbl_8055CFF0;
     got = ((Vf78 *)arg0)->get();
     temp_f1 = ((f32)temp_r30 * (f32)got) / lbl_8056357C;
     if (temp_f1 < lbl_805634A8) {
@@ -8807,6 +8817,7 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     if (temp_r3 < var_r0_2)
         var_r0_2 = temp_r3;
     *(s32 *)(arg0 + 0x278) = var_r0_2;
+
     temp_f1_2 = ((f32)lbl_8055CFF4 * (f32)(*(s32 *)(arg0 + 0x10) - *(s32 *)(arg0 + 8))) / lbl_80563580;
     if (temp_f1_2 < lbl_805634A8) {
         var_f0_2 = temp_f1_2 - lbl_805634C4;
@@ -8818,9 +8829,10 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     if (temp_r0_2 < var_r7)
         var_r7 = temp_r0_2;
     *(s32 *)(arg0 + 0x27C) = var_r7;
-    ((Vf14Apply *)*(void **)(arg0 + 0x268))->apply(*(s32 *)(arg0 + 0x270), *(s32 *)(arg0 + 0x274), *(s32 *)(arg0 + 0x278), saved_arg);
+    ((Vf14Apply *)*(void **)(arg0 + 0x268))->apply(
+        *(s32 *)(arg0 + 0x270), *(s32 *)(arg0 + 0x274),
+        *(s32 *)(arg0 + 0x278), saved_arg);
 }
-#pragma pop
 // Forward vf6() to the TruckIface stored at offset 0x268 of the given widget.
 extern "C" void fn_80228D90(void *widget) {
     TruckIface *iface = *(TruckIface **)((u8 *)widget + 0x268);
