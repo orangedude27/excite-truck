@@ -859,6 +859,7 @@ int fn_802D9068(void) {
     return 0;
 }
 
+/* Reserve a drgc texture slot for the "handle" texture (name used in the out-of-textures message). */
 void fn_802D9154(void) {
     fn_802D7600(lbl_8055D118);
 }
@@ -991,11 +992,12 @@ extern void fn_802CFF50(void);
 void fn_802D9418(void) {
     void *obj;
     unsigned int s, t;
-    int zero = 0;
+    int zero;
     fn_802D2614();
     obj = (char *)lbl_8055FE24 + 0x24;
     s = GXGetTexObjWrapS(obj) & 0xFFFF;
     t = GXGetTexObjWrapT(obj) & 0xFFFF;
+    zero = 0;
     GXSetTexCopySrc(zero, zero, s, t);
     GXSetTexCopyDst(s, t, GXGetTexObjMipMap(obj), zero);
     GXSetZMode(1, 7, 1);
