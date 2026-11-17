@@ -1843,6 +1843,7 @@ void fn_801C7784(void) {
     *(s8*)&lbl_8055E83F = !lbl_8055E83F;
 }
 
+/* Toggle the debug sound-sample "Music" flag lbl_8055E840 via its menu callback. */
 void fn_801C7798(void) {
     *(s8*)&lbl_8055E840 = !lbl_8055E840;
 }
