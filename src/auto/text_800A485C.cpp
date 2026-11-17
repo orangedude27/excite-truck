@@ -11429,7 +11429,7 @@ extern "C" s16 fn_800B7200(s32 oemText) {
     return count;
 }
 
-extern "C" s32 VFiPFCODE_CP932_isOEMMBchar_impl(s32 arg0, s32 arg1) {
+extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(s32 arg0, s32 arg1) {
     if (arg1 == 2) {
         if (arg0 < 0x40) return 0;
         if (arg0 <= 0x7e) return 1;
