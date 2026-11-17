@@ -217,22 +217,26 @@ void fn_80291AC8(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling on
-void fn_80291B14(void *arg0, float value)
+/* Submit a world-space point to the debug draw list: project it through the current
+ * view matrix into the shared scratch at lbl_804B4010 (using depth), test the
+ * projected point against the viewport, queue it for drawing, and record the
+ * on-screen result as a byte flag in the scratch. */
+void fn_80291B14(void *worldPos, float depth)
 {
-  int result;
-  signed char success;
-  fn_802C8E70((int *) arg0, (int *) lbl_804B4010);
-  *((float *) (lbl_804B4010 + 8)) = value;
+  int ignored;
+  signed char visible;
+  fn_802C8E70((int *) worldPos, (int *) lbl_804B4010);
+  *((float *) (lbl_804B4010 + 8)) = depth;
   ;
-  success = 0;
+  visible = 0;
   if ((fn_802C8FF4((int *) lbl_804B4010, *((float *) (lbl_804B4010 + 0x1C))) != 0) && (fn_802D3A5C(*((int *) (lbl_804B4010 + 0x10)), (int *) lbl_804B4010) != 0))
   {
-    success = 1;
+    visible = 1;
   }
   if (lbl_804B4010)
   {
   }
-  *((unsigned char *) (lbl_804B4010 + 0x14)) = success;
+  *((unsigned char *) (lbl_804B4010 + 0x14)) = visible;
 }
 void fn_80291B9C(void *arg0, float *arg1, float arg2) {
     float c = arg1[2];
