@@ -167,6 +167,7 @@ extern "C" int fn_802B539C(int);
 extern "C" void *fn_802C6B44(void *);
 extern const char lbl_8055CE20[];
 __declspec(section ".sdata") extern const char lbl_8055CE20[];
+#pragma opt_propagation off
 extern "C" void fn_802B562C(void *arg0, void *arg1, void *arg2) {
     class Manager {
     public:
@@ -184,9 +185,9 @@ extern "C" void fn_802B562C(void *arg0, void *arg1, void *arg2) {
     register char *entry;
     register void *name;
     register int i;
+    register int tailItem;
     register Manager *manager;
     register void *item;
-    register int tailItem;
     register int result;
     manager = (Manager *)arg1;
     labels = lbl_8034A510;
@@ -220,7 +221,7 @@ extern "C" void fn_802B562C(void *arg0, void *arg1, void *arg2) {
         *(int *)((char *)arg0 + 0x2C) = -1;
     }
 }
-
+#pragma opt_propagation reset
 extern "C" void fn_802B57B8(void) {
     /* Load the umat.val resource and ensure the global parameters singleton exists. */
     int resourcePath;
