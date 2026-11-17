@@ -1801,7 +1801,8 @@ extern "C" s32 fn_800D8780(u32 *flags) {
     return (*flags >> 13U) & 3;
 }
 
-/* Returns the 3-bit indirect-texture-stage count from a nw4r lyt material flags word. */
+/* Returns the 3-bit indirect-texture-stage count from a nw4r lyt material flags word;
+ * callers size the 4-byte indirect-texture stage array at res+0x3C with it. */
 extern "C" s32 fn_800D878C(u32 *flags) {
     return (*flags >> 15U) & 7;
 }
