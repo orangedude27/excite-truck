@@ -996,9 +996,11 @@ void fn_80178CAC(void *a, void *b)
   fn_801EAA94((int) a, t24);
   fn_801EAA94((int) b, t25);
 }
-void fn_80178DBC(int arg0, float arg1) {
-    lbl_804305D4[arg0] = arg1;
-    fn_801DCEC8(arg0, arg1);
+/* Stores weight at index in both parallel tables: lbl_804305D4 here and
+   lbl_804424B0 through fn_801DCEC8. */
+void fn_80178DBC(int index, float weight) {
+    lbl_804305D4[index] = weight;
+    fn_801DCEC8(index, weight);
 }
 
 #pragma dont_inline on
