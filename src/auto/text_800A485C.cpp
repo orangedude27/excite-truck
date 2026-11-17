@@ -3823,7 +3823,8 @@ extern "C" void fn_800AABE0(void) {
 }
 
 extern "C" s32 fn_800AE620(s32, s32, s32, s32);
-extern "C" s32 fn_800B4D00(void);
+extern "C" s32 fn_800B4D00(s32);
+#define fn_800B4D00(...) fn_800B4D00(s32 arg0)
 
 /* ---------------------------------------------------------------------
  * VFiPFENT: the directory entries of a FAT volume.
