@@ -2238,6 +2238,8 @@ extern "C" void fn_8015A7D8(void* tracker, void* player) {
     }
 }
 
+// GetType()-style category identifier for the "car_throw" bonus tracker:
+// returns bonus-category index 9, used to index gBonusCategoryNames (lbl_8032E540).
 extern "C" s32 fn_8015A814(void) {
     return 9;
 }
