@@ -6317,6 +6317,8 @@ end2:;
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
+/* Clear the four GP (graphics processor) metric counters: writing 4 to CP's
+ * clear-status register (__cpReg[2], offset 0x4) resets them. */
 void GXClearGPMetric(void) {
     __cpReg[2] = 4;
 }
