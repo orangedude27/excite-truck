@@ -25606,8 +25606,11 @@ extern "C" s32 fn_800A4E80(void *rangeObj, s32 stringPtr, u32 mode) {
       return 0;
 }
 
+/* Returns the byte length of the current path-token string range (end - begin). */
 extern "C" u16 fn_800A4F08(void *arg0) {
-    return (u16)(*(u32 *)((u8 *)arg0 + 4) - *(u32 *)arg0);
+    struct PathRange { u32 begin; u32 end; };
+    PathRange *range = (PathRange *)arg0;
+    return (u16)(range->end - range->begin);
 }
 
 /* Count characters in the selected string buffer of a PF string context, using single-byte or wide/multibyte traversal callbacks. */
