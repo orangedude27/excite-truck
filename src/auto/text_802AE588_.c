@@ -1235,18 +1235,20 @@ void fn_802AFF6C(void *list) {
     *(unsigned short *)*(void **)list = *(unsigned short *)((char *)list + 4) - 1;
 }
 
-#pragma optimization_level 3
+#pragma opt_propagation off
 void fn_802AFF80(void *arg0, short arg1) {
     unsigned int index = *(unsigned short *)((char *)arg0 + 4);
     u32 limit = *(unsigned short *)((char *)arg0 + 6);
+    short *data;
     if (index < limit) {
-        short *data = *(short **)arg0;
-        unsigned int offset = index << 1;
-        register index = index + 1;
-        data[offset >> 1] = arg1;
+        data = *(short **)arg0;
+        limit = index << 1;
+        data[limit >> 1] = arg1;
+        index = index + 1;
         *(unsigned short *)((char *)arg0 + 4) = index;
     }
 }
+#pragma opt_propagation reset
 int fn_802AFFA8(int arg0, int arg1) {
     float out[3];
     float x = (float)arg0 * lbl_80564AF0;
