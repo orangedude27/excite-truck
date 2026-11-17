@@ -376,7 +376,12 @@ extern "C" void fn_801A7E54(char *dst, int len, const char *name) {
 #pragma dont_inline reset
 
 void fn_801A7F8C(void) {
-    lbl_8055E5C8 = 0;
+    /* Re-enable keyboard input by clearing the flag that makes fn_801A7F98
+     * ignore keyboard scan codes; called when a session starts and ends. */
+    extern char lbl_8055E5C8;
+#define gKeyboardInputDisabled lbl_8055E5C8
+    gKeyboardInputDisabled = 0;
+#undef gKeyboardInputDisabled
 }
 
 #pragma push
