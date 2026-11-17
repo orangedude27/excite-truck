@@ -9984,16 +9984,17 @@ extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
 
 extern "C" u8 lbl_80559230;
 extern "C" u8 lbl_80559231;
-extern "C" s32 fn_800B4D00(s32 arg0) {
-    u8 data[2];
-    s32 result = 0;
+extern "C" s32 fn_800B4D00(s32 name) {
+    /* Return 1 if the Unicode 'name' equals the reserved two-character sequence in lbl_80559230/31 (0x01, 0x02). */
+    u8 pattern[2];
+    s32 disallowed = 0;
 
-    data[0] = lbl_80559230;
-    data[1] = lbl_80559231;
-    if (VFiPFSTR_StrNCmp(arg0, data, 1, 0, 2) == 0) {
-        result = 1;
+    pattern[0] = lbl_80559230;
+    pattern[1] = lbl_80559231;
+    if (VFiPFSTR_StrNCmp(name, pattern, 1, 0, 2) == 0) {
+        disallowed = 1;
     }
-    return result;
+    return disallowed;
 }
 
 extern "C" s32 fn_800A4D74(void *, u32);
