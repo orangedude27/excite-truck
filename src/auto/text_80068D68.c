@@ -15429,7 +15429,9 @@ void btm_cback(u32 index, void *param) {
    on channel 0 (connection events). */
 void fn_800833E8(void *param) { btm_cback(0, param); }
 
-void fn_800833F4(void *arg0) { btm_cback(1, arg0); }
+/* GAP inquiry callback: forward the event to the BTM dispatcher on channel 1
+   (inquiry events), the counterpart of fn_800833E8's connection channel 0. */
+void fn_800833F4(void *param) { btm_cback(1, param); }
 
 extern char lbl_80317558[];
 extern char lbl_8031759C[];
