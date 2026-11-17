@@ -1197,8 +1197,9 @@ void fn_80031C94(unsigned short mask) {
     #undef ccMask2
 }
 
-void fn_80031C9C(unsigned short arg0) {
-    lbl_8055D730 = arg0;
+void fn_80031C9C(unsigned short mask) {
+    /* Set ccMask3 (lbl_8055D730), the third MetroTRK debug CC channel mask. */
+    lbl_8055D730 = mask;
 }
 
 extern u64 lbl_8035EE20[];
