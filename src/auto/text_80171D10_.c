@@ -142,7 +142,8 @@ public:
 
 void fn_80171D10(int arg0) { fn_80171930(arg0 - 4); }
 
-void fn_80171D18(int arg0) { fn_80171934(arg0 - 4); }
+/* Callback wrapper: forward to fn_80171934 with the pointer backed up to its enclosing structure (userData - 4). */
+void fn_80171D18(int userData) { fn_80171934(userData - 4); }
 
 void fn_80171D20(int arg0) { fn_80171A4C(arg0 - 4); }
 
