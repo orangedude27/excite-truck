@@ -2102,8 +2102,9 @@ extern "C" s32 fn_800D9328(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x58);
 }
 
-extern "C" s32 fn_800D9330(void *arg0) {
-    return *(s32 *)((u8 *)arg0 + 0x58) + ((*(u32 *)((u8 *)arg0 + 0x4C) >> 0x17) & 0x1E0);
+extern "C" s32 fn_800D9330(void *material) {
+    // Return the GX memory block address just past the tex GXTexObj section (tex count * 0x20).
+    return *(s32 *)((u8 *)material + 0x58) + ((*(u32 *)((u8 *)material + 0x4C) >> 0x17) & 0x1E0);
 }
 
 /* Return (as an integer byte address) the start of the texGen area in the
