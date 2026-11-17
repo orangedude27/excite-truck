@@ -746,7 +746,8 @@ void fn_802BD4DC(void *arg0, int arg1) {
 }
 #pragma pop
 
-int fn_802BD5A8(int arg0, int arg1) { return arg0 + arg1; }
+/* Return the sum of two integers (used to advance a stored value by a delta). */
+int fn_802BD5A8(int value, int delta) { return value + delta; }
 
 #pragma push
 #pragma inline_depth(0)
