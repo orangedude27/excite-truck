@@ -870,8 +870,9 @@ void ebi::title::TBlackPlane::updateAfterCamera() {
 #undef frontPlane
 }
 
-extern "C" void fn_80157210(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v4();
+// Forwards the virtual v4() call to the TPlaneSub member (m_a) of the given TBlackPlane.
+extern "C" void fn_80157210(void* plane) {
+    ((ebi::title::TBlackPlane*)plane)->m_a->v4();
 }
 
 extern "C" void fn_80157224(void* arg0) {
