@@ -557,8 +557,12 @@ void fn_802CAD28(int slotIndex) {
 #undef gTextureSlots
 }
 
+/* Invalidate the texture module's "last bound slot" cache by setting it to -2,
+   so the next fn_802CAD74 call rebinds even if the slot number is unchanged. */
 void fn_802CAD68(void) {
-    lbl_8055FCB8 = -2;
+#define gLastBoundTextureSlot lbl_8055FCB8
+    gLastBoundTextureSlot = -2;
+#undef gLastBoundTextureSlot
 }
 
 #pragma dont_inline fn_802CAD74
