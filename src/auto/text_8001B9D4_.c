@@ -159,7 +159,8 @@ void fn_8001BA50(void *record) {
     ((s32 *)record)[1] = -1;
 }
 
-void fn_8001BA68(void) {
+void fn_8001BA68(void *element) {
+    /* No-op default constructor for 12-byte (Vec3) elements of the global object table; leaves the element untouched. */
 }
 
 void fn_8001BA6C(void) {
@@ -1087,11 +1088,7 @@ double arg4;
     return 5;
 }
 
-#pragma push
-#pragma paired off
-#pragma paired_single off
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, f32 arg6) {
     struct SavedValues {
         char *name;
@@ -1121,7 +1118,6 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     void *entry;
     void *layout;
     volatile struct SavedValues saved;
-    /* Fix note: scan the pool, then shift and fill the selected record slot. */
     temp = fn_8001D25C(savedArg1);
     if (temp != 0) {
         record = fn_8001C540(savedArg0, temp, savedArg2, 1);
@@ -1130,34 +1126,32 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
             pool = lbl_8055D5D0;
             *(u8 *)((u8 *)pool + 8) = 0;
             cursor = *(char **)pool;
-            goto scan_name;
-        skip_name:
-            while ((s8)*cursor != 0) cursor++;
-            cursor++;
-        scan_name:
-            if ((s8)*cursor == 0 || cursor - *(char **)pool >= *(s32 *)((u8 *)pool + 4)) {
-                dest = cursor;
-                remaining = *(s32 *)((u8 *)pool + 4) -
-                            (cursor - *(char **)pool) - 1;
-            copy_name:
-                sourceByte = (u8)*savedArg3;
-                savedArg3++;
-                *dest = (u8)sourceByte;
-                dest++;
-                if ((s8)sourceByte != 0) {
-                    remaining--;
-                    if (remaining <= 0) {
-                        dest[-1] = 0;
-                    } else {
-                        goto copy_name;
-                    }
-                }
+            while (*(s8 *)cursor != 0 &&
+                   cursor - *(char **)pool < *(s32 *)((u8 *)pool + 4)) {
+                if (stricmp(cursor, savedArg3) != 0) goto skip_name;
                 goto name_ready;
-            } else if (stricmp(cursor, savedArg3) == 0) {
-                goto name_ready;
-            } else {
-                goto skip_name;
+            skip_name:
+                do {
+                    cursor++;
+                } while (*(s8 *)cursor != 0);
+                cursor++;
             }
+            dest = cursor;
+            remaining = *(s32 *)((u8 *)pool + 4) -
+                        (cursor - *(char **)pool) - 1;
+            goto copy_name;
+        decrement:
+            remaining--;
+            if (remaining <= 0) {
+                dest[-1] = 0;
+                goto name_ready;
+            }
+        copy_name:
+            sourceByte = (u8)*savedArg3;
+            savedArg3++;
+            *dest = (u8)sourceByte;
+            dest++;
+            if ((s8)sourceByte != 0) goto decrement;
         name_ready:
             saved.name = cursor;
             saved.value0 = savedArg4;
@@ -1187,9 +1181,6 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     }
     return 0;
 }
-
-#pragma pop
-#pragma scheduling reset
 u32 fn_8001D220(u32 entryIndex, u32 valueIndex, u32 flag) {
     /* Pack an EntryRef (entry index, value index, flag) into the low three bytes
        of one word; fn_8001D234 decodes it. */
