@@ -348,14 +348,7 @@ void fn_802C33A8(s32 x, s32 y, u32 packedColor) {
     }
 }
 
-/* gxRect (proposed name): fill the rectangle (x0, y0)-(x1, y1) on the canvas
- * every gxCanvas* routine of this file draws on (lbl_8055FC00, a GxCanvas *)
- * with the colour in `color`.  Its format byte (a signed read of +0x00) picks
- * the filler: a 16-bit canvas (any format but 5 and 6) is filled by
- * fn_802C3478, except format 1, whose 4-bit-per-component pixels keep their
- * alpha nibble and so go through fn_802C365C; the 4-byte format 5 goes to
- * fn_802C356C; format 6 has no filler at all and is left untouched - gxPoint
- * reports that one, this does not. */
+// Fill a rectangle, dispatching to the pixel-format-specific fill routine selected by the canvas's current format.
 void fn_802C3424(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     s8 format = *(s8 *)lbl_8055FC00;
     s32 is16Bit = 0;
