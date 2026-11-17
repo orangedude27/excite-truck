@@ -311,6 +311,7 @@ int fn_801DC258(float *out_height, int *out_type, void *unused, float *out_norma
 #pragma pop
 
 #pragma use_lmw_stmw off
+#pragma opt_unroll_loops off
 void fn_801DC32C(void *base) {
     unsigned char *arg0 = base;
     int i, j, k;
