@@ -83,7 +83,7 @@ static inline void fn_801E1048_xh(const f32 *m, const f32 *src, f32 *dst) {
 static inline void fn_801E1048_xi(const f32 *m, const f32 *src, f32 *dst) {
     f32 x, y, z;
     if (src == dst) {
-        f32 a, b, c, d, e, f, nx, ny, nz;
+        f32 a, b, c, d, e, f;
         a = m[3];
         b = m[4];
         y = src[1];
@@ -98,12 +98,9 @@ static inline void fn_801E1048_xi(const f32 *m, const f32 *src, f32 *dst) {
         e = x * e;
         f = y * m[5];
         z = src[2];
-        nx = z * m[6] + (c + a);
-        ny = z * m[7] + (d + b);
-        nz = z * m[8] + (e + f);
-        dst[0] = nx;
-        dst[1] = ny;
-        dst[2] = nz;
+        dst[0] = z * m[6] + (c + a);
+        dst[1] = z * m[7] + (d + b);
+        dst[2] = z * m[8] + (e + f);
     } else {
         x = src[0];
         y = src[1];
@@ -541,6 +538,7 @@ void fn_801E1038(void **object) {
     #undef sInitialTable
 }
 
+#pragma opt_propagation off
 s32 fn_801E1048(void) {
     Vec_801E1048 v;
     u8 *player;
@@ -580,7 +578,7 @@ s32 fn_801E1048(void) {
     }
     return 0;
 }
-
+#pragma opt_propagation reset
 static inline void fn_801E1250_check(u8 *p, s32 arg0, s8 arg1) {
     if (arg0 == *(s32 *)(p + 0xC)) *(p + 0x10) = arg1;
     if (arg0 == *(s32 *)(p + 0x24)) *(p + 0x28) = arg1;
@@ -632,27 +630,26 @@ void fn_801E12A4(void) {
 /* Return the current element count of a boost-area list (List_801E0890.count, +0x04). */
 s32 fn_801E137C(void *list) { return ((List_801E0890 *)list)->count; }
 
+#pragma opt_propagation off
 void fn_801E1384(s32 arg0, s32 arg1) {
     register s32 *desc = (s32 *)arg0;
-    register s32 x;
-    register s32 y;
     register s32 left = arg1;
+    register s32 y;
+    register s32 x;
     register s32 color;
     char *record;
     f32 xval, yval, zval, uval, vval;
+    s32 h, h2;
 
     if (*(volatile s32 *)desc != 0) {
-        {
-            s32 width = *(volatile s32 *)((char *)desc + 8);
-            s32 height = *(volatile s32 *)((char *)desc + 0xC);
-            fn_802C8DBC(height * ((width - 1) << 1));
-        }
+        s32 width = *(volatile s32 *)((char *)desc + 8);
+        s32 height = *(volatile s32 *)((char *)desc + 0xC);
+        fn_802C8DBC(height * ((width - 1) << 1));
         for (x = 1; x < *(volatile s32 *)((char *)desc + 8); x++) {
-            color = x - 1;
             {
                 s32 height = *(volatile s32 *)((char *)desc + 0xC);
                 char *base = (char *)*(volatile s32 *)((char *)desc + 4);
-                record = base + (color * height * 0x18);
+                record = base + ((x - 1) * height * 0x18);
             }
             *(volatile s32 *)(record + 0xC) = left;
             vval = *(f32 *)(record + 0x14);
@@ -673,22 +670,19 @@ void fn_801E1384(s32 arg0, s32 arg1) {
             yval = *(f32 *)(record + 4);
             zval = *(f32 *)(record + 8);
             fn_802C8E00(left, 0, xval, yval, zval, uval, vval);
-            for (y = 1; y < *(volatile s32 *)((char *)desc + 0xC); y++) {
-                {
-                    s32 height = *(volatile s32 *)((char *)desc + 0xC);
-                    char *base = (char *)*(volatile s32 *)((char *)desc + 4);
-                    record = base + ((y + color * height) * 0x18);
-                }
-                *(volatile s32 *)(record + 0xC) = left;
-                {
-                    s32 recordColor = *(volatile s32 *)(record + 0xC);
-                    vval = *(f32 *)(record + 0x14);
-                    uval = *(f32 *)(record + 0x10);
-                    xval = *(f32 *)(record + 0);
-                    yval = *(f32 *)(record + 4);
-                    zval = *(f32 *)(record + 8);
-                    fn_802C8E00(recordColor, 1, xval, yval, zval, uval, vval);
-                }
+
+            color = x - 1;
+            for (y = 1; (h = *(volatile s32 *)((char *)desc + 0xC)) > y; y++) {
+                s32 h2 = *(volatile s32 *)((char *)desc + 0xC);
+                char *base = (char *)*(volatile s32 *)((char *)desc + 4);
+                *(volatile s32 *)(base + ((y + color * h) * 0x18) + 0xC) = left;
+                record = base + ((y + color * h2) * 0x18);
+                vval = *(f32 *)(record + 0x14);
+                uval = *(f32 *)(record + 0x10);
+                xval = *(f32 *)(record + 0);
+                yval = *(f32 *)(record + 4);
+                zval = *(f32 *)(record + 8);
+                fn_802C8E00(*(s32 *)(record + 0xC), 1, xval, yval, zval, uval, vval);
                 {
                     s32 height = *(volatile s32 *)((char *)desc + 0xC);
                     char *base = (char *)*(volatile s32 *)((char *)desc + 4);
@@ -706,7 +700,7 @@ void fn_801E1384(s32 arg0, s32 arg1) {
         fn_802C8E48();
     }
 }
-
+#pragma opt_propagation reset
 /* Return the address of boost-area record `index` from a list whose data pointer is at *listData (records are 0x1C bytes). */
 s32 fn_801E1510(s32 *listData, s32 index) { return *listData + index * 0x1C; }
 
