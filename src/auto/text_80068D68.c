@@ -18012,7 +18012,7 @@ static void hidh_l2cif_data_ind(UINT16 l2cap_cid, BT_HDR *p_msg) {
 }
 
 extern UINT8 L2CA_DataWrite(UINT16, BT_HDR *);
-UINT8 hidh_conn_snd_data(UINT8 dhandle, s32 trans_type, UINT8 param, UINT16 data, UINT8 rpt_id, BT_HDR *buf) {
+UINT8 hidh_conn_snd_data(UINT8 dhandle, hidh_trans_t trans_type, UINT8 param, UINT16 data, UINT8 rpt_id, BT_HDR *buf) {
     register u8 var_r17;
     register s32 var_r20;
     s32 var_r4;
