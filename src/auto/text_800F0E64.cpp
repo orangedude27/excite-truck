@@ -2867,8 +2867,8 @@ extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void* arg0) {
     u8 arrC[0x600];
     void* mutex = (u8*)GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv() + 0x2320;
     OSLockMutex(mutex);
-    int index = 0;
-    int offset = 0;
+    u32 index = 0;
+    s32 offset = 0;
     while (index < *(u32*)(self + 0x70)) {
         if (index >= *(u32*)(self + 0x70)) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2B2, lbl_803250C8, index, 0);
