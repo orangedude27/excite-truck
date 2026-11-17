@@ -646,7 +646,7 @@ int fn_8028EF44(void *arg0, unsigned int arg1) {
     int i = 0;
     int count = *(int *)(base + 0x600);
     while (count > 0) {
-        if (arg1 == *(unsigned int *)(p + 0x10)) {
+        if (*(unsigned int *)(p + 0x10) == arg1) {
             int *q = (int *)(base + i * 0x18 + 0x14);
             *q -= 1;
             return *q == 0;
@@ -751,16 +751,106 @@ int fn_8028F0C0(int *lists, int index, int excludeTexId) {
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_8028F114(int *arg0, int arg1, int arg2) {
-    void *tmp[64]; register int n1 = 0; register int n2 = 0; register int n3 = 0;
+void fn_8028F114(register int *arg0, register int arg1, register int arg2) {
+    register int n1 = 0;
+    register int n2 = 0;
+    register int n3 = 0;
+    void *tmp[64];
+
     memset(tmp, 0, 0x100);
-    if (arg1 != -2) { int *src = arg0; void **dst = tmp; int i = 0; goto first_test; first_loop: { void *item = *(void **)src; if (*(int *)((char *)item + 0xA4) == arg1) { *dst++ = item; n1++; } } src++; i++; first_test: if (i < *(int *)((char *)arg0 + 0x100)) goto first_loop; }
-    if (arg2 != -2) { int *src = arg0; int i = 0; goto second_test; second_loop: { void *item = *(void **)src; if (*(int *)((char *)item + 0xA4) == arg2) { tmp[*(int *)((char *)arg0 + 0x100) - n2 - 1] = item; n2++; } } src++; i++; second_test: if (i < *(int *)((char *)arg0 + 0x100)) goto second_loop; }
-    { int *src = arg0; int i = 0; goto outer_test; outer_loop: { void *item = *(void **)src; int id = *(int *)((char *)item + 0xA4); if (id != arg1 && id != arg2) { int *search = (int *)(tmp + n1); int j = 0; int equal = 0; search_loop: { void *q = *(void **)search; search++; j++; equal = (*(int *)((char *)q + 0xA4) == id); } if (equal != 0) goto search_done; if (j < n3) goto search_loop; search_done: if (equal == 0) { tmp[n1 + n3] = item; n3++; { int k = i + 1; void **dst = tmp + n1 + n3; int *siblings = arg0 + k; goto sibling_test; sibling_loop: if (*(int *)((char *)*(void **)siblings + 0xA4) == id) { *dst++ = *(void **)siblings; n3++; } siblings++; k++; sibling_test: if (k < *(int *)((char *)arg0 + 0x100)) goto sibling_loop; } } } } src++; i++; outer_test: if (i < *(int *)((char *)arg0 + 0x100)) goto outer_loop; }
+    if (arg1 != -2) {
+        int *src = arg0;
+        void **dst = tmp;
+        int i = 0;
+        goto first_test;
+    first_loop:
+        {
+            void *item = *(void **)src;
+            if (*(int *)((char *)item + 0xA4) == arg1) {
+                *dst++ = item;
+                n1++;
+            }
+        }
+        src++;
+        i++;
+    first_test:
+        if (i < *(int *)((char *)arg0 + 0x100))
+            goto first_loop;
+    }
+
+    if (arg2 != -2) {
+        int *src = arg0;
+        int i = 0;
+        goto second_test;
+    second_loop:
+        {
+            void *item = *(void **)src;
+            if (*(int *)((char *)item + 0xA4) == arg2) {
+                tmp[*(int *)((char *)arg0 + 0x100) - n2 - 1] = item;
+                n2++;
+            }
+        }
+        src++;
+        i++;
+    second_test:
+        if (i < *(int *)((char *)arg0 + 0x100))
+            goto second_loop;
+    }
+
+    {
+        int *src = arg0;
+        int i = 0;
+        goto outer_test;
+    outer_loop:
+        {
+            void *item = *(void **)src;
+            int id = *(int *)((char *)item + 0xA4);
+            if (id != arg1 && id != arg2) {
+                int *search = (int *)(tmp + n1);
+                int j = 0;
+                int equal = 0;
+            search_loop:
+                {
+                    void *q = *(void **)search;
+                    search++;
+                    j++;
+                    equal = (*(int *)((char *)q + 0xA4) == id);
+                }
+                if (equal != 0)
+                    goto search_done;
+                if (j < n3)
+                    goto search_loop;
+            search_done:
+                if (equal == 0) {
+                    tmp[n1 + n3] = item;
+                    n3++;
+                    {
+                        int k = i + 1;
+                        void **dst = tmp + n1 + n3;
+                        int *siblings = arg0 + k;
+                        goto sibling_test;
+                    sibling_loop:
+                        if (*(int *)((char *)*(void **)siblings + 0xA4) == id) {
+                            *dst++ = *(void **)siblings;
+                            n3++;
+                        }
+                        siblings++;
+                        k++;
+                    sibling_test:
+                        if (k < *(int *)((char *)arg0 + 0x100))
+                            goto sibling_loop;
+                    }
+                }
+            }
+        }
+        src++;
+        i++;
+    outer_test:
+        if (i < *(int *)((char *)arg0 + 0x100))
+            goto outer_loop;
+    }
     memcpy(arg0, tmp, *(int *)((char *)arg0 + 0x100) * 4);
 }
-#pragma scheduling on
-#pragma use_lmw_stmw on
 void fn_8028F2EC(int *arg0) {
     int records[9][65];
     char *p;
