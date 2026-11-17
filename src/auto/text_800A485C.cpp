@@ -20,6 +20,19 @@ extern "C" s32 OSWaitSemaphore(void *);
 extern "C" s32 OSInitSemaphore(void *, s32);
 extern "C" const char lbl_8031B1E4[];
 struct KeySlot63FC { u32 flags; s32 key; };
+struct VFiCacheNode {
+    u16 flags;
+    u16 unused2;
+    u32 field4;
+    u32 field8;
+    u32 fieldC;
+    u32 field10;
+    u32 size;
+    s32 field18;
+    u32 field1C;
+    void *field20;
+    void *field24;
+};
 static inline s32 KeySlot63FCMatch(KeySlot63FC *e, s32 k) {
     e->flags &= 1;
     return e->flags && e->key == k;
@@ -2044,56 +2057,60 @@ extern "C" void fn_800A76B4(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_800A7774(void *a, void *out, void *base, void *data, u16 count, void *sizearg, s32 flag) {
-    u32 size = (u32)sizearg;
-    *(void**)out = base;
-    u32 step = (*(u16*)a >> 9) * size;
-    u32 n = count / step;
-    u8 *b = (u8*)base;
-    u32 d = (u32)data;
-    u32 rem, last, i;
+    u8 *b = (u8 *)base;
+    u32 d, stride, i, advance, rem, last;
     u8 *p, *end;
-    u16 flags;
-    if (!n) return 30;
+    u32 flags;
+    *(void **)out = base;
+    u32 step = (*(u16 *)a >> 9) * (u32)sizearg;
+    u32 n = (u32)count / step;
+    if (n == 0) return 0x1e;
     if (n == 1) {
-        flags = *(u16*)b & 0xfffc;
-        *(void**)(b+0x24)=b; *(void**)(b+0x20)=b;
-        *(u32*)(b+4)=d; *(u32*)(b+8)=d;
-        *(u32*)(b+12)=0; *(u32*)(b+16)=0; *(u32*)(b+20)=size;
-        *(s32*)(b+24)=-1; *(u16*)(b+2)=0; *(u32*)(b+28)=0;
-        *(u16*)b=flags;
-        if(flag) *(u16*)b=flags|4; else *(u16*)b=flags&~4;
+        flags = *(u16 *)b & 0xfffc;
+        *(void **)(b + 0x24) = b; *(void **)(b + 0x20) = b;
+        *(u32 *)(b + 4) = (u32)data; *(u32 *)(b + 8) = (u32)data;
+        *(u32 *)(b + 12) = 0; *(u32 *)(b + 16) = 0; *(u32 *)(b + 20) = (u32)sizearg;
+        *(s32 *)(b + 24) = -1; *(u16 *)(b + 2) = 0; *(u32 *)(b + 28) = 0;
+        *(u16 *)b = flags;
+        if (flag) *(u16 *)b = flags | 4; else *(u16 *)b = flags & ~4;
         return 0;
     }
-    rem=count%step;
-    last=count-rem-step;
-    flags=*(u16*)b&0xfffc;
-    *(u32*)(b+4)=d; *(u32*)(b+8)=d;
-    *(u32*)(b+12)=0; *(u32*)(b+16)=0;
-    end=b+last*40; p=b+step*40;
-    *(u32*)(b+20)=size; *(void**)(b+0x24)=end; *(void**)(b+0x20)=p;
-    *(s32*)(b+24)=-1; *(u16*)(b+2)=0; *(u32*)(b+28)=0; *(u16*)b=flags;
-    if(flag) *(u16*)b=flags|4; else *(u16*)b=flags&~4;
-    u32 stride = step << 9;
-    u32 advance = step * 40;
-    d += stride;
-    for(i=step;i<last;i+=step) {
-        *(void**)(p+0x24)=b+(i-step)*40;
-        *(void**)(p+0x20)=b+(i+step)*40;
-        *(u32*)(p+4)=d; *(u32*)(p+8)=d;
-        *(u32*)(p+12)=0; *(u32*)(p+16)=0; *(u32*)(p+20)=size;
-        *(s32*)(p+24)=-1; *(u16*)(p+2)=0; *(u32*)(p+28)=0;
-        *(u16*)p &= 0xfffc;
-        if(flag) *(u16*)p |= 4; else *(u16*)p &= ~4;
-        p+=advance; d+=stride;
+    rem = (u32)count % step;
+    last = ((u32)count - rem) - step;
+    flags = *(u16 *)b & 0xfffc;
+    end = b + last * 40;
+    advance = step * 40;
+    p = b + advance;
+    *(u32 *)(b + 4) = (u32)data; *(u32 *)(b + 8) = (u32)data;
+    *(u32 *)(b + 12) = 0; *(u32 *)(b + 16) = 0; *(u32 *)(b + 20) = (u32)sizearg;
+    *(void **)(b + 0x24) = end; *(void **)(b + 0x20) = p;
+    *(s32 *)(b + 24) = -1; *(u16 *)(b + 2) = 0; *(u32 *)(b + 28) = 0; *(u16 *)b = flags;
+    if (flag) *(u16 *)b = flags | 4; else *(u16 *)b = flags & ~4;
+    stride = step << 9;
+    i = step;
+    d = (u32)data + stride;
+    while (i < last) {
+        *(void **)(p + 0x24) = (void *)(b + (i - step) * 40);
+        *(void **)(p + 0x20) = (void *)(b + (i + step) * 40);
+        *(u32 *)(p + 4) = d; *(u32 *)(p + 8) = d;
+        *(u32 *)(p + 12) = 0; *(u32 *)(p + 16) = 0; *(u32 *)(p + 20) = (u32)sizearg;
+        *(s32 *)(p + 24) = -1; *(u16 *)(p + 2) = 0; *(u32 *)(p + 28) = 0;
+        *(u16 *)p &= 0xfffc;
+        if (flag) *(u16 *)p |= 4; else *(u16 *)p &= ~4;
+        p += advance; d += stride; i += step;
     }
-    p=b+last*40;
-    *(void**)(p+0x24)=b+(count-rem-2*step)*40;
-    *(void**)(p+0x20)=b;
-    *(u32*)(p+4)=(u32)data+(last<<9); *(u32*)(p+8)=(u32)data+(last<<9);
-    *(u32*)(p+12)=0; *(u32*)(p+16)=0; *(u32*)(p+20)=size;
-    *(s32*)(p+24)=-1; *(u16*)(p+2)=0; *(u32*)(p+28)=0;
-    *(u16*)end &= 0xfffc;
-    if(flag) *(u16*)end |= 4; else *(u16*)end &= ~4;
+    {
+        u32 prevOff = (-(step * 2) - rem) + (u32)count;
+        u32 last2 = ((u32)count - rem) - step;
+        u8 *q = b + last2 * 40;
+        *(void **)(q + 0x24) = (void *)(b + prevOff * 40);
+        *(void **)(q + 0x20) = b;
+        *(u32 *)(q + 4) = (u32)data + (last2 << 9); *(u32 *)(q + 8) = (u32)data + (last2 << 9);
+        *(u32 *)(q + 12) = 0; *(u32 *)(q + 16) = 0; *(u32 *)(q + 20) = (u32)sizearg;
+        *(s32 *)(q + 24) = -1; *(u16 *)(q + 2) = 0; *(u32 *)(q + 28) = 0;
+        *(u16 *)end &= 0xfffc;
+        if (flag) *(u16 *)end |= 4; else *(u16 *)end &= ~4;
+    }
     return 0;
 }
 
@@ -26324,11 +26341,16 @@ extern "C" void fn_800D272C(void *arg0, void *arg1) {
     var_r8 = ((M2C_FIELD(arg0, u16 *, 4) + 1) * M2C_FIELD(arg0, u16 *, 0xC)) + ((u8 *)M2C_FIELD(arg0, s32 *, 0) + M2C_FIELD(arg0, u16 *, 0xE));
     goto loop_51;
 loop_body:
-        if (M2C_FIELD(arg0, u16 *, 0xA) & 2) {
+        switch (M2C_FIELD(arg0, u16 *, 0xA) & 2) {
+        case 2:
             if ((u16) M2C_FIELD(arg0, u16 *, 0xC) != (u16) M2C_FIELD(arg0, u16 *, 6)) {
                 goto loop_50;
             }
-        } else {
+            break;
+        default:
+            goto loop_50;
+        }
+        goto loop_51;
 loop_50:
             temp_r11 = *var_r31;
             if ((s32) temp_r11 != 0) {
@@ -26474,7 +26496,6 @@ loop_51:
     if ((s32) *var_r31 != 0) {
         goto loop_body;
     }
-}
 }
 
 extern "C" void fn_800D272C(void*, void*);
