@@ -3107,7 +3107,12 @@ extern "C" void fn_801D83AC(void *arg0) {
 #pragma cplusplus reset
 
 int fn_801D83BC(void *arg0) {
-    return (unsigned int)__cntlzw(*(unsigned char *)((char *)arg0 + 0x30)) >> 5;
+    /* Returns nonzero while this object's flag byte at +0x30 is clear (zero). */
+    typedef struct {
+        unsigned char _pad[0x30];
+        unsigned char flag;
+    } FlagObj;
+    return ((FlagObj *)arg0)->flag == 0;
 }
 
 #pragma cplusplus on
