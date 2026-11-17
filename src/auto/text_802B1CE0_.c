@@ -437,6 +437,7 @@ extern void fn_802B257C(void *);
 #pragma dont_inline on
 #pragma opt_common_subs off
 #pragma opt_loop_invariants off
+#pragma unroll off
 extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
     class Obj {
     public:
