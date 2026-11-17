@@ -3237,8 +3237,9 @@ s32 fn_80165058(void *arg0, s32 arg1) {
 }
 
 extern f32 fn_80165238(void);
+/* Default virtual: returns 0.0f, held by the original as a .sdata2 float (lbl_80561848). */
 f32 fn_80165238(void) {
-    return lbl_80561848;
+    return 0.0f;
 }
 
 /* Level-select menu vtable slot 0x3C: default/no-op virtual returning 0. */
