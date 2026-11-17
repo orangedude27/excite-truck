@@ -2121,8 +2121,9 @@ extern "C" s32 fn_80214E10(s32 arg0, s32 arg1, s32 arg2) {
 #pragma pop
 
 #pragma use_lmw_stmw reset
-extern "C" void fn_80214FD8(s32 arg0, s32 arg1) {
-    ((s32 (*)(s32, s32, s32))fn_80214E10)(arg0, arg1, 0);
+extern "C" void fn_80214FD8(s32 title, s32 message) {
+    /* Open a message dialog with the given title and body text, using the default options. */
+    ((s32 (*)(s32, s32, s32))fn_80214E10)(title, message, 0);
 }
 
 #pragma push
