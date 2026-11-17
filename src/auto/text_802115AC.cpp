@@ -2702,9 +2702,10 @@ extern "C" void fn_80215B08(void *wrapper) {
     widget->vf21();
 }
 
-extern "C" void fn_80215B1C(void *arg0) {
-    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf7();
+extern "C" void fn_80215B1C(void *wrapper) {
+    /* Forward vf7() to the widget (VfObj) held at +0x244 of the wrapper. */
+    VfObj *widget = *(VfObj **)((char *)wrapper + 0x244);
+    widget->vf7();
 }
 
 extern "C" void fn_80215B30(void *wrapper) {
