@@ -133,6 +133,27 @@ extern "C" s32 fn_8025FECC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 extern void *fn_80016464(int);
 extern void *fn_80016510(int);
 extern void *fn_8001285C(void);
+extern void *lbl_8055F3E4;
+extern u8 lbl_8055F3E8;
+extern void *fn_80016544(void *);
+extern void fn_80019144(void *);
+extern void fn_80016970(s32, s32, s32, s32);
+extern void fn_8000DA10(void);
+extern void fn_8000DB34(void);
+extern void fn_800169F8(s32);
+extern void fn_802E4A10(void);
+extern void fn_80137C84(s32);
+extern void *fn_80012870(s32, s32);
+extern void fn_8023BF4C(void *);
+extern void fn_80016A44(void);
+extern void fn_8001EFC8(void);
+extern void *fn_8027B878(s32);
+extern void *fn_801284F8(s32, void *);
+extern void *fn_8023512C(void *);
+extern void *fn_80232578(void *);
+extern void *fn_80207848(void *, s32);
+extern s32 fn_802E8D84(void);
+extern void fn_802E7128(void);
 #pragma cplusplus reset
 void fn_8026003C(void) {
 int temp;
