@@ -9451,6 +9451,7 @@ void fn_80127398(s32 groupIndex) {
 #pragma opt_propagation on
 #pragma scheduling on
 extern char lbl_8055DF08;
+/* Returns the mode-exit request flag polled by mode loops to break out and tear down. */
 char fn_8012742C(void) {
     return lbl_8055DF08;
 }
