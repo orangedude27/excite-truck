@@ -916,8 +916,12 @@ extern "C" void fn_801EBF00(void) {
 extern f32 lbl_8055EBA4;
 extern f32 fn_801EC114(void);
 #define gEBDefaultValue lbl_8055EBA4
+/* Read the EB ("Simple Model") subsystem's scale parameter: 0.5 unless the
+ * parameter archive loaded by fn_801EB9FC supplies another value. The sun /
+ * lens-flare mover scales its offset by it (fn_8029231C) and the weather draw
+ * shrinks the model translation by 1 - it (fn_801EBF00). */
 f32 fn_801EC114(void) {
-    return lbl_8055EBA4;
+    return gEBDefaultValue;
 }
 #undef gEBDefaultValue
 
