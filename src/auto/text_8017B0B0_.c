@@ -174,6 +174,7 @@ void fn_8017B2D0(void *arg0, float a, float b, float c, float d) {
     matrix->u[0x168 / 4] = matrix->u[0x114 / 4];
 }
 
+#pragma opt_propagation off
 #pragma scheduling invalid_target
 void fn_8017B3A8(void *arg0, float *arg1, float *arg2) {
     float delta[3];
@@ -202,7 +203,7 @@ void fn_8017B3A8(void *arg0, float *arg1, float *arg2) {
         *(float *)((char *)arg0 + 0x144) += output[2];
     }
 }
-#pragma scheduling on
+#pragma opt_propagation reset
 void fn_8017B4AC(float * __restrict state, float * __restrict delta) {
     /* In-place vec3 add: translate the vector at offset 0x13C of state by delta. */
     float x = state[0x13C / 4] + delta[0];
