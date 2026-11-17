@@ -3,8 +3,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern u8 *lbl_8055F834;
-typedef struct Rec54 { u32 w[21]; } Rec54;
 typedef struct Rec48 { u32 w[18]; } Rec48;
+typedef struct Rec54 { u32 a, b, c; Rec48 rest; } Rec54;
 extern int lbl_8055CB68;
 extern int fn_80128670(int);
 extern long fn_801EF024(long (*)(void *));
@@ -202,7 +202,7 @@ void fn_802A0B54(void) {
             f3 = size * (float)first;
             f0 = size + f3;
             f4 = base + (float)(first * 6);
-            for (j = 0; j < count; j++) {
+            for (j = 0; j < *(int *)(record + 8); j++) {
                 float f = ((float)j / scale) * f4;
                 work.vertices[j].f0 = *(float *)(record + 0xC);
                 work.vertices[j].f4 = *(float *)(record + 0x10);
@@ -211,11 +211,12 @@ void fn_802A0B54(void) {
                 work.vertices[j].f14 = f3;
                 work.vertices[j].unk0C = -1;
                 work.vertices[j].f18 = work.vertices[j].f0;
-                work.vertices[j].f1C = work.vertices[j].f4 + add;
+                work.vertices[j].f1C = work.vertices[j].f4;
                 work.vertices[j].f20 = work.vertices[j].f8;
                 work.vertices[j].unk24 = -1;
                 work.vertices[j].f28 = f;
                 work.vertices[j].f2C = f0;
+                work.vertices[j].f1C = work.vertices[j].f1C + add;
                 if (j > 0) {
                     short *idx = work.indices + (j - 1) * 6;
                     int baseIdx = (j - 1) * 2;
