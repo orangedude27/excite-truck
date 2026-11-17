@@ -58,7 +58,8 @@ s32 fn_801E9C84(f32 *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, s32 arg5,
 #pragma pop
 s32 fn_801DCE14(void *, void *, s32, s32, s32, s32);
 extern f32 lbl_80562E2C;
-void fn_801E9DC4(s16 *arg0) { *arg0 = -1; }
+/* Reset a 16-bit index/value to -1 (the invalid-index sentinel). */
+void fn_801E9DC4(s16 *index) { *index = -1; }
 
 f32 fn_801E9DD0(void) {
     return ((f32 (*)(void))fn_801E9DDC)();
