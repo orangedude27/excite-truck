@@ -142,9 +142,9 @@ extern "C" void *fn_80207990(void *arg0, void *arg1) {
     struct Slot *slot;
     signed long i;
     signed long values[3];
+    unsigned long *source;
     volatile float *vector1;
     volatile float *vector2;
-    unsigned long *source;
     float zero;
     float one;
     object = (struct SoundObject *)arg0;
@@ -162,10 +162,10 @@ extern "C" void *fn_80207990(void *arg0, void *arg1) {
     object->callback = arg1;
     memset(object->cleared5C, 0, 0x30);
     vector1 = lbl_804891F8;
-    vector2 = lbl_80489228;
     object->field5 = 0;
-    zero = lbl_8056322C;
-    one = lbl_80563228;
+    vector2 = lbl_80489228;
+    zero = 0.0f;
+    one = 1.0f;
     vector1[1] = zero;
     vector1[0] = one;
     vector1[2] = zero;
@@ -268,7 +268,8 @@ void fn_80207C4C(void) {
 	return;
 }
 
-#pragma cplusplus on
+#pragma push
+#pragma opt_common_subs off
 void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
     signed long c, b, a;
     signed long offset = arg2 * 0xC;
@@ -281,9 +282,14 @@ void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
     *(signed long*)((char*)arg0 + 0x60) = b;
     *(signed long*)((char*)arg0 + 0x64) = c;
 }
-#pragma cplusplus reset
-void fn_80207C74(void* arg0, signed long arg1) {
-    *(signed long*)((char*)arg0 + 0x8C) = arg1;
+#pragma pop
+/* Set the flag at offset 0x8C of a sound object. */
+void fn_80207C74(void *object, signed long value) {
+    struct SoundObject {
+        char pad[0x8C];
+        signed long flag8C;
+    };
+    ((struct SoundObject *)object)->flag8C = value;
 }
 
 void fn_80207C7C(void) {
