@@ -1609,7 +1609,9 @@ extern "C" void fn_801915FC(void *self, void *source) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80191688(void *arg0) {
+/* Thunk: dispatch virtual method f26 on the child object referenced at +4 of
+ * holder. The two leading CodeWarrior vtable slots put f26 at byte offset 0x70. */
+extern "C" void fn_80191688(void *holder) {
     class Inner {
     public:
         virtual void f0();
@@ -1640,11 +1642,11 @@ extern "C" void fn_80191688(void *arg0) {
         virtual void f25();
         virtual void f26();
     };
-    struct DummyWrapper {
+    struct Holder {
         int pad;
-        Inner *inner;
+        Inner *child;
     };
-    ((DummyWrapper *)arg0)->inner->f26();
+    ((Holder *)holder)->child->f26();
 }
 #pragma cplusplus off
 
