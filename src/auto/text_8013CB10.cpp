@@ -3664,7 +3664,7 @@ extern "C" void fn_80143CB0(void *arg0) {
     int zero = 0;
     int ref = p->ref;
     p->value0 = zero;
-    p->value4 = lbl_805614BC;
+    p->value4 = -1.0f;
     p->flag8 = 1;
     p->flag9 = zero;
     p->flag10 = zero;
