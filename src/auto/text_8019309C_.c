@@ -2260,9 +2260,14 @@ done:
     ;
 }
 
+/* MSL float.h classification results (__fpclassifyf/__fpclassifyd).  The header
+   itself is not included: it defines __fpclassifyf inline, and the game calls the
+   library function. */
+enum MslFloatClass { FP_SNAN = 0, FP_QNAN = 1, FP_INFINITE = 2, FP_ZERO = 3, FP_NORMAL = 4, FP_SUBNORMAL = 5 };
+
 #pragma push
 #pragma use_lmw_stmw off
-static inline int fn_80196C90_signbit(float x) {
+static inline int fn_80196C90_signbit(float x) { /* MSL float.h __signbitf() */
     return (int)(*(int *)&x & 0x80000000);
 }
 
