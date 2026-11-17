@@ -269,8 +269,7 @@ extern "C" void fn_8000D1DC(void) {
     f32 baseVal, scale, factor, selectedVal;
     f32 temp_f0, temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, temp_f7;
     s32 temp_r8;
-    s32 selected;
-    register s32 i;
+    register s32 i, selected;
     register u8 *base = lbl_802FC058;
     register s32 *obj;
     if (lbl_8055D405 != 0) {
@@ -423,10 +422,12 @@ s32 fn_8000C7CC(void) {
 #pragma scheduling off
 #pragma scheduling invalid_target
 u32 fn_8000C7F4(s32 arg0) {
-    if (fn_8000C7CC() == 0) {
-        return 1;
+    switch (fn_8000C7CC()) {
+        case 0:
+            return 1;
+        default:
+            return (u32)((2 - arg0) | (arg0 - 2)) >> 31;
     }
-    return (u32)((2 - arg0) | (arg0 - 2)) >> 31;
 }
 #pragma scheduling on
 #pragma dont_inline off
