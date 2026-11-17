@@ -661,7 +661,10 @@ void fn_8027DEAC(void *alarm) {
 }
 
 void* fn_8027DED0(void) {
-    return lbl_8055C790;
+#define rankOverride lbl_8055C790
+    /* Get the temporary rank override set during scene setup (-1 = none). */
+    return rankOverride;
+#undef rankOverride
 }
 
 void fn_8027DED8(void) {
