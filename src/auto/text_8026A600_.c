@@ -275,11 +275,11 @@ int fn_8026A698(void *arg0, int arg1) {
     *(int *)(p + 0x10) = 5;
     *(float *)(p + 0xBC) = *(float *)(e + 0x34) + f29 * (lbl_80563D5C - *(float *)(e + 0x34));
     *(int *)(e + 0x68) = lbl_8055E3C4;
-common:
-    return 1;
-}
-
-#pragma scheduling on
+ common:
+     return 1;
+ }
+ #pragma pop
+ #pragma scheduling on
 /* Returns the in-use flag of the given player's arena-event entry in the
    4-slot pool at lbl_80499E60; each entry is 0x6C bytes, flag at offset 0. */
 unsigned char fn_8026B0C0(int playerIndex) {
