@@ -2776,8 +2776,9 @@ extern "C" s32 fn_80215C08(void *arg0) {
     return rect->right - rect->left;
 }
 
-extern "C" void fn_80215C18(void *arg0) {
-    fn_80214CB4(*(u8 *)((char *)arg0 + 0x18) == 0);
+/* Set the active window's menu index from this widget's flag at +0x18: 1 when the flag is clear, 0 when set. */
+extern "C" void fn_80215C18(void *widget) {
+    fn_80214CB4(*(u8 *)((char *)widget + 0x18) == 0);
 }
 
 extern "C" s32 fn_80215C28(s32 unused, s32 command) {
