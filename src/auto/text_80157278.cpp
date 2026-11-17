@@ -1131,6 +1131,10 @@ extern "C" char lbl_8032F184[];
 extern "C" f32 lbl_80561774;
 extern "C" f32 lbl_80561770;
 extern "C" void* fn_801582A4(void* self, s32 arg1, s32 arg2, void* arg3) {
+    struct Tail {
+        u8 pad244[0x244];
+        s32 field244;
+    };
     u8* p = (u8*)self + 0x14;
     *(void**)((u8*)self + 8) = p;
     *(void**)self = &lbl_8032F2BC;
@@ -1143,7 +1147,7 @@ extern "C" void* fn_801582A4(void* self, s32 arg1, s32 arg2, void* arg3) {
     *(s32*)((u8*)self + 0x248) = 0;
     *(s32*)((u8*)self + 0xC) = 0;
     *(s32*)((u8*)self + 4) = arg2;
-    *(s32*)((u8*)self + 0x244) = arg1;
+    ((Tail*)self)->field244 = arg1;
     *(s32*)((u8*)self + 0x268) = 0x40901;
     *(f32*)((u8*)self + 0x24C) = 30.5f;
     *(f32*)((u8*)self + 0x250) = 1.0f;
@@ -2440,17 +2444,17 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
     s32 zero = 0;
     s32 i;
     f32 t;
-    s32 reward = *(volatile s32 *)((u8 *)arg1 + 0x2620);
+    s32 reward = *(s32 *)((u8 *)arg1 + 0x2620);
     if (reward > 0) {
         *(f32 *)(p + 0x270) = *(f32 *)(p + 0x270) + lbl_8056177C;
     } else {
         *(f32 *)(p + 0x270) = lbl_80561754;
     }
     if (*(u8 *)(p + 0x26c) != 0) {
+        f32 f = lbl_80561750;
         *(s32 *)(p + 0x274) = *(s32 *)(p + 0x274) + 1;
         *(s32 *)(p + 0x278) = *(s32 *)(p + 0x278) + 1;
         *(u8 *)(p + 0x26c) = zero;
-        f32 f = lbl_80561750;
         for (i = 0; i < *(s32 *)(p + 0x274); i++) {
             *(s32 *)(p + 0x264) = *(s32 *)(p + 0x264) + 1;
             *(s32 *)(p + 0x260) = *(s32 *)(p + 0x260) + 1;
@@ -3345,14 +3349,10 @@ extern "C" void fn_8015CC6C(void* arg0, f32 farg0) {
 }
 
 extern "C" void fn_8015CC74(Unk801577F0* arg0) {
-    f32 zero;
-    register s32 i;
-    register s32 offset;
-    register s32 value;
-    zero = lbl_80561754;
-    i = 0;
-    offset = 0;
-    value = 0;
+    f32 zero = 0.0f;
+    s32 i = 0;
+    s32 offset = 0;
+    s32 value = 0;
     for (; i < arg0->mCount; i++) {
         *(s32*)(arg0->mData + offset) = value;
         *(s32*)(arg0->mData + offset + 4) = value;
