@@ -38,10 +38,9 @@ void fn_801EA1FC(void) {
 
 #pragma dont_inline on
 void fn_801EA28C(s32 arg0, f32 farg0) {
-    f32 temp_f31;
-    f32 temp;
-    temp_f31 = fn_801E8874();
-    temp = fn_801E8894(arg0);
+    #pragma scheduling invalid_target
+    f32 temp_f31 = fn_801E8874();
+    f32 temp = fn_801E8894(arg0);
     fn_802C974C(temp_f31, temp, farg0);
 }
 #pragma dont_inline off
