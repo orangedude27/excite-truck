@@ -384,8 +384,11 @@ void fn_802166B8(void) {
 }
 
 extern u32 lbl_8055EF98;
+/* Getter for the UI mode flag byte: callers read *(u8 *)returned (0 or nonzero) to tell which UI mode is active. */
 u32 *fn_80216708(void) {
-    return &lbl_8055EF98;
+#define kUiModeFlag lbl_8055EF98
+    return &kUiModeFlag;
+#undef kUiModeFlag
 }
 
 #pragma scheduling invalid_target
