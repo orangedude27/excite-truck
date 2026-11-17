@@ -389,6 +389,7 @@ void fn_801494B4(void *unused, f32 *delta, f32 *vec) {
 }
 
 extern unsigned long lbl_80559E94;
+// Getter returning a pointer to the "Move" name string (lbl_80559E94).
 unsigned long *fn_801494D8(void) { return &lbl_80559E94; }
 
 int fn_801494E0(void) {
@@ -3604,8 +3605,7 @@ void fn_801537C8(s32 *arg0) {
 
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling reset
 s32 fn_801537CC(s32 arg0, s32 arg1, f32 t) {
     u8 *a = (u8 *)&arg0;
     u8 *b = (u8 *)&arg1;
@@ -3618,12 +3618,12 @@ s32 fn_801537CC(s32 arg0, s32 arg1, f32 t) {
     f32 b3 = (f32)b[3];
     f32 a3 = (f32)a[3];
     f32 delta0 = b0 - a0;
-    f32 delta1 = b1 - a1;
-    f32 delta2 = b2 - a2;
-    f32 delta3 = b3 - a3;
     s32 c0 = (s32)(a0 + t * delta0);
+    f32 delta1 = b1 - a1;
     s32 c1 = (s32)(a1 + t * delta1);
+    f32 delta2 = b2 - a2;
     s32 c2 = (s32)(a2 + t * delta2);
+    f32 delta3 = b3 - a3;
     s32 c3 = (s32)(a3 + t * delta3);
     u8 out[4];
     out[0] = (u8)c0;
@@ -3632,7 +3632,6 @@ s32 fn_801537CC(s32 arg0, s32 arg1, f32 t) {
     out[3] = (u8)c3;
     return *(s32 *)out;
 }
-#pragma pop
 void *fn_801538E4(void *entry) {
     s32 index = *(s32 *)((u8 *)entry + 0x38) + *(s32 *)((u8 *)entry + 0x14);
     /* Address the 0x14-byte record at index (sum of the two fields at +0x38 and +0x14) in the table at entry+0x3C. */
@@ -4512,20 +4511,23 @@ extern s32 lbl_8032E1A0[];
 extern f32 lbl_8056171C;
 void fn_80155318(void *arg0) {
     f32 f0 = lbl_80561648;
+    s32 zero = 0;
+    s32 *vtable = lbl_8032E1A0;
     f32 f1 = lbl_8056171C;
-    *(s32 **)arg0 = lbl_8032E1A0;
-    *(s32 *)((u8 *)arg0 + 0x120) = 0;
-    *(s32 *)((u8 *)arg0 + 0x11C) = 0;
-    *((u8 *)arg0 + 4) = 0;
+    s32 neg1 = -1;
+    *(s32 **)arg0 = vtable;
+    *(s32 *)((u8 *)arg0 + 0x120) = zero;
+    *(s32 *)((u8 *)arg0 + 0x11C) = zero;
+    *((u8 *)arg0 + 4) = (u8)zero;
     *(f32 *)((u8 *)arg0 + 8) = f1;
     *(f32 *)((u8 *)arg0 + 0xC) = f0;
     *(f32 *)((u8 *)arg0 + 0x10) = f0;
-    *(s32 *)((u8 *)arg0 + 0x118) = 0;
-    *(s32 *)((u8 *)arg0 + 0x10C) = -1;
-    *((u8 *)arg0 + 5) = 0;
-    *((u8 *)arg0 + 0x14) = 0;
-    *((u8 *)arg0 + 0x64) = 0;
-    *((u8 *)arg0 + 0xB4) = 0;
+    *(s32 *)((u8 *)arg0 + 0x118) = zero;
+    *(s32 *)((u8 *)arg0 + 0x10C) = neg1;
+    *((u8 *)arg0 + 5) = (u8)zero;
+    *((u8 *)arg0 + 0x14) = (u8)zero;
+    *((u8 *)arg0 + 0x64) = (u8)zero;
+    *((u8 *)arg0 + 0xB4) = (u8)zero;
 }
 void fn_80155368(void) {
 
