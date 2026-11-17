@@ -1906,11 +1906,7 @@ struct ArenaMaster {
     virtual void c48() {}
     virtual int slotCC(int) { return 0; }
 };
-/* Whether the arena-event master still has something to do for this truck: a car
- * that is not a trailer and whose race progress is already reset (state 1) or has
- * every checkpoint (state 3) reports 0, everything else is the master's answer
- * for the truck's element index. */
-#define CAR_TAG_TRAILER 0x54524C52 /* 'TRLR' */
+#define CAR_TAG_TRAILER 0x54524C52 /* 'TRLR': the car-type FourCC at +0x10 */
 extern "C" int fn_80189BDC(void *truck) {
     /* Whether the arena-event master still has something to do for this truck: a
      * car that is not a trailer and whose race progress is already reset (state 1)
