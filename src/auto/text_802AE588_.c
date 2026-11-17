@@ -21,7 +21,6 @@ extern int fn_802AFF54(void *);
 extern int fn_802AFF5C(int *, int);
 extern void fn_802AFF6C(void *);
 extern void fn_802AFF80(void *, short);
-struct Buf802AFF80 { short *data; unsigned short index; unsigned short limit; };
 extern void fn_802B0024(void *, short);
 extern unsigned short fn_802B0070(int);
 extern void fn_802B009C(void *, int, int, int);
