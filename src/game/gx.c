@@ -2765,7 +2765,10 @@ extern char lbl_804C97D0;
 #pragma small_data off
 __declspec(section ".rodata") extern char lbl_804C97D0;
 void *fn_802D2D04(void) {
-    return &lbl_804C97D0 + 0xC;
+#define sDefaultLight lbl_804C97D0
+    /* Return a pointer to the default light's float direction vector (offset 0xC). */
+    return &sDefaultLight + 0xC;
+#undef sDefaultLight
 }
 #pragma small_data on
 extern void *lbl_8055FD64;
