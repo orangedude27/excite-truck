@@ -426,6 +426,11 @@ static inline s32 abs_diff_sqr(s32 a, s32 b) {
     return diff * diff;
 }
 
+static inline s32 sqabs(s32 d) {
+    s32 sign = d >> 31;
+    return (d ^ sign) - sign;
+}
+
 void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
     u8* origin = (u8*)lbl_8038F080;
     u8 temp;
