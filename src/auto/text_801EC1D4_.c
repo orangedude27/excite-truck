@@ -1017,8 +1017,10 @@ long fn_801EE0C8(void *arg0) {
     return *(long *)((char *)arg0 + 0x48);
 }
 
-void fn_801EE0D0(long arg0, long arg1) {
-    fn_801F159C(*(long *)(arg0 + arg1 * 4 + 0x4D4));
+/* Passes the object pointer held in the +0x4D4 pointer array of `table` at
+   `index` to fn_801F159C (effectively reading that object's +0x18 float). */
+void fn_801EE0D0(long table, long index) {
+    fn_801F159C(*(long *)(table + index * 4 + 0x4D4));
 }
 
 void fn_801EE0E0(void *arg0, char *arg1, int arg2, int arg3, char *arg4) {
