@@ -1132,16 +1132,16 @@ void fn_801E8D48(void) {
     struct Init { void *name; int size; float a,b,c,d,e,f,g,h; } init;
     int status;
 
-    init.c = lbl_80562DFC;
-    init.d = lbl_80562DFC;
     init.name = (void *)0x57484C50;
-    init.a = lbl_80562DF4;
-    init.b = lbl_80562DF8;
     init.size = 0x28;
-    init.e = lbl_80562E00;
-    init.f = lbl_80562DA0;
-    init.g = lbl_80562E04;
-    init.h = lbl_80562E08;
+    init.a = 60.0f;
+    init.b = 90.0f;
+    init.c = 15.0f;
+    init.d = 15.0f;
+    init.e = 18.0f;
+    init.f = 500.0f;
+    init.g = 0.6f;
+    init.h = 0.8f;
     status = ((int (*)(int, void *))fn_801284F8)(0x84, &lbl_8055AF24);
     if (status != 0) {
         ((void (*)(int, void *))fn_801F19FC)(status, &init);
