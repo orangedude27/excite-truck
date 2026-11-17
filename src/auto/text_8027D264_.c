@@ -249,7 +249,7 @@ int fn_8027D6BC(int object, int deleteFlag) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_8027D6FC(void *arg0) {
+extern "C" void fn_8027D6FC(void *__restrict arg0) {
     class Obj {
     public:
         virtual void v0();
@@ -257,7 +257,9 @@ extern "C" void fn_8027D6FC(void *arg0) {
         virtual void v2();
         virtual int v3(int);
     };
-    void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
+    struct InArgs { unsigned char pad[0xC]; int id; };
+    int id = ((struct InArgs *)arg0)->id;
+    void *res = fn_8001285C(id);
     void *obj = *(void **)((char *)res + 0x20);
     if (((Obj *)obj)->v1((int)&lbl_8055C77C) != 0) {
         obj = *(void **)((char *)res + 0x20);
