@@ -51,9 +51,9 @@ typedef struct Obj801ADB44 {
 static inline void xf(f32 *out, f32 *in, u8 *m) {
     if (out == in) {
         f32 y = in[1], x = in[0], z = in[2];
-        f32 o0 = z * F(m, 0x54) + (y * F(m, 0x48) + x * F(m, 0x3C));
-        f32 o1 = z * F(m, 0x58) + (y * F(m, 0x4C) + x * F(m, 0x40));
-        f32 o2 = z * F(m, 0x5C) + (y * F(m, 0x50) + x * F(m, 0x44));
+        f32 o0 = z * F(m, 0x54) + (x * F(m, 0x3C) + y * F(m, 0x48));
+        f32 o1 = z * F(m, 0x58) + (x * F(m, 0x40) + y * F(m, 0x4C));
+        f32 o2 = z * F(m, 0x5C) + (x * F(m, 0x44) + y * F(m, 0x50));
         out[0] = o0;
         out[1] = o1;
         out[2] = o2;
