@@ -4,6 +4,7 @@ static BOOL OnShutdown(BOOL final, u32 event);
 static OSShutdownFunctionInfo ShutdownFunctionInfo = {OnShutdown, 127};
 
 u32 OSGetPhysicalMem1Size(void) {
+    /* Return the console's physical MEM1 size from the hardware config register. */
     return OS_PHYSICAL_MEM1_SIZE;
 }
 
