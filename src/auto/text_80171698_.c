@@ -123,9 +123,6 @@ void *fn_801717B4(void *self, int shouldDelete) {
     return obj;
 }
 #pragma pop
-#pragma push
-#pragma use_lmw_stmw off
-#pragma opt_common_subs off
 void fn_8017188C(void *arg0) {
     int i = 0;
     int offset = 0;
