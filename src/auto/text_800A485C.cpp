@@ -20208,6 +20208,8 @@ extern "C" s32 isVisible__Q310homebutton3gui13PaneComponentFv(void *component) {
     return is_visible__Q210homebutton3guiFPQ34nw4lyt4Pane((void *)LytPaneParent(parent));
 }
 
+/* homebutton GUI stub: reports "false" (no result / capability unsupported)
+ * to callers through this vtable slot. */
 extern "C" s32 fn_800D0B90(void) { return 0; }
 
 /* homebutton::gui setter: store value into the 32-bit field at offset 0x1C of
