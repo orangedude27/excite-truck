@@ -7,8 +7,7 @@ extern int lbl_80507268[];
 extern unsigned char lbl_80505978[];
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern float lbl_80565160, lbl_80565164, lbl_80565168;
-extern const float lbl_8056516C;
+extern float lbl_80565160, lbl_80565164, lbl_80565168, lbl_8056516C;
 extern float lbl_80565170, lbl_80565174, lbl_80565178;
 extern int lbl_8055D208, lbl_8055D210, lbl_8055D218, lbl_8055D220;
 __declspec(section ".rodata") extern int lbl_8034D898;
