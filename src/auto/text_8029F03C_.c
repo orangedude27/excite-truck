@@ -658,7 +658,8 @@ extern "C" void fn_8029FD04(void) {
 #pragma cplusplus off
 #pragma scheduling invalid_target
 void fn_8029FDDC(void) {
-    lbl_804B9B7C[1] = 0;
+    /* Reset the effect-record allocator's live count (base ptr at [0], count at [1]) to zero. */
+    gEffectAllocator[1] = 0;
 }
 #pragma scheduling on
 
@@ -919,7 +920,8 @@ extern float lbl_805646BC, lbl_805646C0, lbl_805646C8;
 extern "C" void *fn_801E8718(int);
 extern "C" float PSVECDotProduct(const float *, const float *);
 extern "C" int fn_801E85A4(void);
-#pragma cplusplus off
+#pragma push
+#pragma scheduling invalid_target
 void fn_802A042C(void *arg0, Unk802A0794Params *arg1) {
     struct Entry { unsigned int words[12]; };
     struct Entry copy;
@@ -948,7 +950,7 @@ body:
         float radius;
         copy = *entry;
         pointX = pos->values[0] + *(float *)((char *)obj + 0x30);
-        radius = *(volatile float *)((char *)obj + 0x44);
+        radius = *(float *)((char *)obj + 0x44);
         radius2 = radius * radius;
         dx = pointX - *(float *)&copy.words[9];
         pointY = pos->values[1] + *(float *)((char *)obj + 0x34);
