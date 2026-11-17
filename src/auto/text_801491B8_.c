@@ -369,6 +369,7 @@ s32 fn_80149468(void *obj) {
 }
 
 s32 fn_801494A8(void) {
+    /* Return the packed color 0xFF00FF00 - opaque green in 0xAARRGGBB form. */
     return 0xFF00FF00;
 }
 
