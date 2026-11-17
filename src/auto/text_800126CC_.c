@@ -92,8 +92,9 @@ void* fn_80012854(void) {
     return (void*)lbl_8055D508;
 }
 
-void *fn_8001285C(int arg0) DECOMP_DONT_INLINE {
-    return &lbl_80352AD0[arg0 * 0x28];
+void *fn_8001285C(int index) DECOMP_DONT_INLINE {
+    /* Return a pointer to the 0x28-byte entry at the given index in the per-slot state table lbl_80352AD0. */
+    return &lbl_80352AD0[index * 0x28];
 }
 
 extern char lbl_80352AD0[];
