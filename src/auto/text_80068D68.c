@@ -21553,7 +21553,7 @@ u8 l2cu_lcb_disconnecting(void) {
     u8 *entry = base + 8;
     register u32 i = 0;
 
-    for (; i < 4; i++) {
+    for (; i < 4 && result == 0; i++) {
         if (entry[0] != 0) {
             u8 *link = *(u8 **)(entry + 8);
             if (link == 0 || (s32)*(u32 *)(entry + 4) == 5)
