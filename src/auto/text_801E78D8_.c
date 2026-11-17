@@ -1147,23 +1147,28 @@ struct WheelInitRec {
 };
 
 #pragma scheduling on
+/* Builds one of the truck's five wheel objects: fills its 'WHLP' creation
+ * record, allocates the 0x84-byte object from the "wheel" pool and has
+ * fn_801F19FC construct it from that record; the object then goes onto the
+ * world object list (fn_801E87D4, which takes it in r3, where the constructor
+ * call above leaves it). */
 void fn_801E8D48(void) {
-    struct Init { void *name; int size; float a,b,c,d,e,f,g,h; } init;
-    int status;
+    struct WheelInitRec init;
+    void *wheel;
 
-    init.name = (void *)0x57484C50;
-    init.size = 0x28;
-    init.a = 60.0f;
-    init.b = 90.0f;
-    init.c = 15.0f;
-    init.d = 15.0f;
-    init.e = 18.0f;
-    init.f = 500.0f;
-    init.g = 0.6f;
-    init.h = 0.8f;
-    status = ((int (*)(int, void *))fn_801284F8)(0x84, &lbl_8055AF24);
-    if (status != 0) {
-        ((void (*)(int, void *))fn_801F19FC)(status, &init);
+    init.tag = 0x57484C50; /* 'WHLP' */
+    init.size = sizeof(init);
+    init.p08 = 60.0f;
+    init.p0C = 90.0f;
+    init.p10 = 15.0f;
+    init.p14 = 15.0f;
+    init.p18 = 18.0f;
+    init.p1C = 500.0f;
+    init.p20 = 0.6f;
+    init.p24 = 0.8f;
+    wheel = fn_801284F8(0x84, &lbl_8055AF24);
+    if (wheel != 0) {
+        fn_801F19FC(wheel, &init);
     }
     ((void (*)(void))fn_801E87D4)();
 }
