@@ -779,8 +779,10 @@ extern "C" long fn_8027BB4C(long arg0, long arg1, long arg2, long arg3) {
 #pragma pop
 
 long fn_8027BB4C(long, long, long, long);
-void fn_8027BCC0(long arg0, long arg1, long arg2) {
-    fn_8027BB4C(arg0, arg1, arg2, 0);
+void fn_8027BCC0(long root, long outSum, long outTotal) {
+    /* Sum each item's full loaded resource size in the two-level list rooted at root;
+     * write the accumulated sum to *outSum and total item size to *outTotal (either may be null). */
+    fn_8027BB4C(root, outSum, outTotal, 0);
 }
 
 void fn_8027BCC8(long arg0, long arg1, long arg2) {
