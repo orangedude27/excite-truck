@@ -1938,7 +1938,7 @@ extern "C" int fn_8013FC6C(void* self) {
     }
     return 0;
 }
-#pragma scheduling on
+#pragma scheduling reset
 extern "C" s32 fn_8013FD20(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     s32 result = 1;
@@ -4115,8 +4115,8 @@ extern "C" s32 fn_80144454(void) { return 0; }
 extern "C" s32 fn_8013D1F0(s32);
 #pragma dont_inline on
 extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
-    arg0 = fn_8013D1F0(arg1) ^ 0xA;
-    return ((arg0 >> 1) - (arg0 & 0xA)) < 0;
+    s32 v = fn_8013D1F0(arg1) ^ 0xA;
+    return ((v >> 1) - (v & 0xA)) < 0;
 }
 #pragma dont_inline off
 /* Vtable callback that ignores its first argument and returns the second unchanged. */
