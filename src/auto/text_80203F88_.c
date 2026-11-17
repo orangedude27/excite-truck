@@ -20,6 +20,9 @@ void* fn_80203F88(void* object, int shouldDelete) {
     return object;
 }
 
+/* Returns the constant 16.0f held in lbl_80563140; callers use it as a fixed
+ * scale/divisor, e.g. the 16-unit grid spacing when placing scene objects
+ * (fn_801E95DC). */
 float fn_80203FE0(void) { return lbl_80563140; }
 
 void fn_80203FE8(void) {
