@@ -1238,17 +1238,20 @@ extern "C" void fn_8029A208(void *arg0, int arg1, int arg2) {
 
 #pragma push
 #pragma processor 750
-extern "C" int fn_8029A290(void* arg0, void* arg1) {
+/* Returns nonzero when objects A and B are too far apart (the squared distance
+   of their +0x24 position vectors exceeds 0.25) or their facing vectors diverge
+   (dot product below 0.9659, lbl_80564604). */
+extern "C" int fn_8029A290(void* objectA, void* objectB) {
     extern float PSVECSquareDistance(const void*, const void*);
     extern float PSVECDotProduct(const void*, const void*);
     extern float lbl_80564604;
     float threshold = 0.25f;
     int result = 1;
-    if (PSVECSquareDistance((char*)arg0 + 0x24, (char*)arg1 + 0x24) > threshold) {
+    if (PSVECSquareDistance((char*)objectA + 0x24, (char*)objectB + 0x24) > threshold) {
         goto done;
     }
     {
-    int below = PSVECDotProduct(arg0, arg1) < lbl_80564604;
+    int below = PSVECDotProduct(objectA, objectB) < lbl_80564604;
     if (below == 0) {
         result = 0;
     }
