@@ -73,21 +73,22 @@ extern char lbl_8032A01C[];
 extern u32 lbl_802F8E40;
 extern u32 lbl_80559968;
 extern char lbl_8032A430[];
+#pragma scheduling invalid_target
 int fn_8012820C(void) {
-    s32 a, b, c, d;
+    s32 sp14, sp10, spC, sp8;
     ((void (*)(char *))fn_80128208)(lbl_8032A01C);
-    lbl_8055DF8C = 0;
-    b = 0;
-    d = 0;
     lbl_8055DF90 = 1;
-    fn_802E3DF8(0, &a, &c);
-    fn_802E3DF8(1, &b, &d);
-    fn_80128714(&lbl_8041E140, a, c);
-    fn_80128714(&lbl_8041E160, b, d);
-    lbl_8055DF94 = a;
+    lbl_8055DF8C = 0;
+    sp10 = 0;
+    sp8 = 0;
+    fn_802E3DF8(0, &sp14, &spC);
+    fn_802E3DF8(1, &sp10, &sp8);
+    fn_80128714(&lbl_8041E140, sp14, spC);
+    fn_80128714(&lbl_8041E160, sp10, sp8);
+    lbl_8055DF94 = sp14;
     return 1;
 }
-
+#pragma scheduling on
 extern void fn_80128710(void);
 #pragma dont_inline on
 /* Shut down heap ring buffers: report usage for both regions, invoke the
