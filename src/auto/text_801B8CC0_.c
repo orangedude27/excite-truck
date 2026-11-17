@@ -197,9 +197,10 @@ static inline void transform_vec_scheduled(float *out, const float *m, float *in
     }
 
 }
-/* The same scheduled transform as transform_vec_scheduled, but over a source
-   vector that is re-read for every row (fn_801B97D8's two trailer points). */
-static inline void transform_vec_scheduled_vol(float *out, const float *m, volatile float *in) {
+/* The same scheduled transform as transform_vec_scheduled, but with the
+   non-alias path written so each row re-reads the source vector
+   (fn_801B97D8's two trailer points). */
+static inline void transform_vec_scheduled_reload(float *out, const float *m, float *in) {
     if (out == in) {
         float m8, m5, m2, m7, m4, m1, m6, m3, m0;
         float z, y, x;
@@ -219,9 +220,9 @@ static inline void transform_vec_scheduled_vol(float *out, const float *m, volat
         out[1] = z * m7 + (x * m1 + y * m4);
         out[2] = z * m8 + (x * m2 + y * m5);
     } else {
-        out[0] = in[1] * m[3] + in[0] * m[0] + in[2] * m[6];
-        out[1] = in[1] * m[4] + in[0] * m[1] + in[2] * m[7];
-        out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
+        out[0] = in[2] * m[6] + (in[0] * m[0] + in[1] * m[3]);
+        out[1] = in[2] * m[7] + (in[0] * m[1] + in[1] * m[4]);
+        out[2] = in[2] * m[8] + (in[0] * m[2] + in[1] * m[5]);
     }
 }
 /* Same source as the out-of-line fn_801E67B4 (out = in * 3x3 m, safe in place). */
