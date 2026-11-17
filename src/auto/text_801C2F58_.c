@@ -3127,10 +3127,10 @@ void fn_801C96E4(void) {
 
 #pragma scheduling invalid_target
 static inline void fn_801C9708_append(char *str, char c) {
-    s32 length = strlen(str);
-    if ((u32)length < 0xFF) {
+    u32 length = strlen(str);
+    if (length < 0xFF) {
         str[length] = c;
-        str[length + 1] = 0;
+        *(char *)(length + 1 + (u32)str) = 0;
     }
 }
 
