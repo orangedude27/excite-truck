@@ -43,10 +43,16 @@ extern void *fn_801792F8(void);
   extern void *fn_8001285C(s32);
   extern s32 *fn_801E87A8(void);
   extern u32 lbl_80559BD8;
-  void fn_8013471C(void *arg0, s32 arg1) {
-      *(s32 *)arg0 = arg1;
-      *((u8 *)arg0 + 4) = 1;
-  }
+void fn_8013471C(void *carInfo, s32 carIndex) {
+    /* Initialize an AI::AICarInfo slot: set its car index and flag it for reset. */
+    typedef struct {
+        s32 carIndex;
+        u8 needsReset;
+    } AICarInfo;
+    AICarInfo *info = (AICarInfo *)carInfo;
+    info->carIndex = carIndex;
+    info->needsReset = 1;
+}
   
 #pragma dont_inline fn_8013472C
 #pragma push
