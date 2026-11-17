@@ -925,6 +925,8 @@ extern int lbl_805600C0;
 extern int lbl_8055D26C;
 extern void *memset(void *, int, int);
 #pragma use_lmw_stmw off
+#pragma push
+#pragma cplusplus on
 int fn_802EB7D4(void *arg0, int arg1, int arg2, int arg_sp0) {
     int idx = arg2 * 4;
     int elem = lbl_8055D26C;
@@ -989,9 +991,7 @@ int fn_802EB7D4(void *arg0, int arg1, int arg2, int arg_sp0) {
         }
     }
 }
-
-#pragma scheduling invalid_target
-#pragma dont_inline on
+#pragma pop
 int fn_802EBD40(void) {
     extern void OSSleepTicks(unsigned long long);
     register char *base;
@@ -1048,7 +1048,7 @@ void fn_802EBE2C(void) {
     extern void fn_802E2E0C();
     extern void OSResumeThread(void *);
     extern void fn_80127C90();
-    extern int fn_802EB7D4(void *, int, int, int);
+    extern int fn_802EB7D4();
     extern void fn_802EAB28(void);
     extern void fn_802E9EB8(void);
     int i, off, h;
