@@ -50,8 +50,9 @@ void fn_8026300C(void *arg0) {
     }
 }
 
-s32 fn_80263070(void *arg0) {
-    return *((u8 *)arg0 + 0x1C) == 0;
+/* Return nonzero while this timed object's flag at +0x1C is clear (it has not expired); fn_8026300C sets that flag when the timer at +0x18 runs out. */
+s32 fn_80263070(void *obj) {
+    return *((u8 *)obj + 0x1C) == 0;
 }
 
 s32 fn_80263080(void) {
