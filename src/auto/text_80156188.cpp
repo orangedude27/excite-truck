@@ -497,6 +497,7 @@ void fn_801569FC(void) {
     lbl_8055E27C = 0;
 }
 
+/* Return the global PSSystem callback singleton pointer (lbl_8055E27C) as an integer. */
 s32 fn_80156A40(void) {
     return (s32)lbl_8055E27C;
 }
