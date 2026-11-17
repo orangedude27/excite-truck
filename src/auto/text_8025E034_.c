@@ -214,8 +214,8 @@ void* __dt__Q28PSSystem7SeqHeapFv_8025E614(void* arg0, int arg1) {
 #pragma cplusplus on
 extern "C" int fn_8025E678(void) {
     typedef SeqObj Obj;
-    struct Key { int a; int b; unsigned char c; } out, tmp;
     char buf0[0x24], buf1[0x24], buf2[0x24];
+    struct Key { int a; int b; unsigned char c; } out, tmp;
     char *base, *recPtr, *dest1, *dest2, *dest3, *p, *q, *src, *chosen, *arr;
     Obj *obj, *item, *o1;
     void *obj300, *table, *key;
@@ -387,7 +387,7 @@ extern "C" int fn_8025E678(void) {
 #pragma cplusplus on
 extern "C" int fn_8025ECBC(void) {
     typedef SeqObj Obj;
-    struct Key { int a; int b; unsigned char c; } out, tmp;
+    int tmpArr[3], outArr[3];
     char buf0[0x24], buf1[0x24], buf2[0x24];
     char *base, *recPtr, *dest1, *dest2, *dest3, *p, *q, *src, *chosen, *arr;
     Obj *obj, *item, *o1;
@@ -509,12 +509,14 @@ extern "C" int fn_8025ECBC(void) {
                     if (sel == 0) chosen = buf0;
                     else if (sel == 1) chosen = buf1;
                     else if (sel == 2) chosen = buf2;
-                    fn_8001BD54(&out, chosen);
-                    tmp = out;
+                    fn_8001BD54(outArr, chosen);
+                    tmpArr[0] = outArr[0];
+                    tmpArr[1] = outArr[1];
+                    tmpArr[2] = outArr[2];
                     obj300 = *(void **)(base + 0x300);
-                    *(int *)((char *)obj300 + 0x20) = out.b;
-                    *(unsigned char *)((char *)obj300 + 0x24) = tmp.c;
-                    key = fn_80016510(out.a);
+                    *(int *)((char *)obj300 + 0x20) = outArr[1];
+                    *(unsigned char *)((char *)obj300 + 0x24) = *(unsigned char *)&tmpArr[2];
+                    key = fn_80016510(outArr[0]);
                     table = *(void **)((char *)obj300 + 0x18);
                     arr = *(char **)table;
                     foundIdx = 0;
@@ -737,20 +739,20 @@ void fn_8025F46C(void *arg0) {
             p = (char *)p16;
             q = src;
             k = 0x20;
-            do {
+            while (--k > 0) {
                 char c = *q++;
                 *p++ = c;
                 if (c == 0) break;
-                k--;
-            } while (k > 0);
-            if (k == 0) p[-1] = 0;
+            }
+            p[-1] = 0;
             *(int *)(p17 + 0x38) = (i18 == *(int *)(base + 0x10)) ? 6 : 7;
             p16 += 0x24;
             p17 += 0x24;
             i18++;
             cnt = ((int (*)(void *))(*(void ***)obj)[3])(obj);
-            if (cnt >= 6) break;
-            if (i18 >= cnt) break;
+            n = (cnt >= 6) ? 6 : cnt;
+            if (n >= 6) break;
+            if (i18 >= n) break;
         }
     }
     {
@@ -765,7 +767,6 @@ void fn_8025F46C(void *arg0) {
             }
             ii++;
             p15 += 4;
-            if (found) break;
             if (ii >= 3) break;
         }
         *(unsigned char *)((unsigned char *)*(void **)(base + 0x300) + 0x25) = 0;
@@ -791,25 +792,23 @@ void fn_8025F46C(void *arg0) {
         p = (char *)dest1;
         q = src;
         k = 0x20;
-        do {
+        while (--k > 0) {
             char c = *q++;
             *p++ = c;
             if (c == 0) break;
-            k--;
-        } while (k > 0);
-        if (k == 0) p[-1] = 0;
+        }
+        p[-1] = 0;
         obj2 = ((void *(*)(void *, int))(*(void ***)o1)[7])(o1, i);
         src = ((char *(*)(void *))(*(void ***)obj2)[3])(obj2);
         p = (char *)dest2;
         q = src;
         k = 0x20;
-        do {
+        while (--k > 0) {
             char c = *q++;
             *p++ = c;
             if (c == 0) break;
-            k--;
-        } while (k > 0);
-        if (k == 0) p[-1] = 0;
+        }
+        p[-1] = 0;
         {
             void *tmp = ((void *(*)(void *))(*(void ***)o1)[8])(o1);
             void *conv = fn_8000DA10(tmp);
@@ -878,8 +877,9 @@ void fn_8025F46C(void *arg0) {
 next_iter:
         dest1 += 0x58; dest2 += 0x58; base += 4; dest3 += 0x58; recPtr += 0x58;
         cnt = ((int (*)(void *))(*(void ***)item)[6])(item);
-        if (cnt >= 6) break;
-        if (i + 1 >= cnt) break;
+        n = (cnt >= 6) ? 6 : cnt;
+        if (n >= 6) break;
+        if (i + 1 >= n) break;
     }
 }
 void fn_8025F9B8(void* seqObj, int heap) {
@@ -898,7 +898,7 @@ void* fn_8025F9C0(void* self) {
 }
 
 extern void *fn_801284F8(int, const char *);
-extern void *fn_8012850C(int, const char *);
+extern "C" void *fn_8012850C(int, const char *);
 extern void *fn_80131808(const char *);
 extern void fn_80131818(void *);
 extern int fn_802CAC28(const char *, int);
