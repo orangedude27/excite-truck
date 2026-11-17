@@ -70,6 +70,8 @@ int fn_80204024(void) {
 }
 
 int fn_8020402C(void) {
+    /* Another of this unit's trivial virtual-method stubs: always answers 0/false.
+     * The world-setup path calls it as a "setup already active" guard (it never is). */
     return 0;
 }
 
