@@ -231,6 +231,7 @@ s32 fn_80116A30(ARCFileInfo *info) {
     return info->length;
 }
 
+/* Always reports success (nonzero); callers ignore the return value. */
 s32 fn_80116A38(void) {
     return 1;
 }
