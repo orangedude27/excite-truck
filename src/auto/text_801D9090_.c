@@ -161,7 +161,6 @@ void fn_801D9118(s32 userData) { fn_801D89C0(userData - 4); }
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
-#pragma scheduling on
 void fn_801D9120(float *out, float *values, int count, float weight) {
     float value = values[count - 1];
     if (count == 1) {
