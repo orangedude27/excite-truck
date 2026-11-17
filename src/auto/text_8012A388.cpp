@@ -674,6 +674,7 @@ __declspec(section ".sdata") extern char lbl_805599AC[];
 extern "C" s32 fn_8012B2C4(s32 buffer, s32 str, s32 flag) {
 #define kStringPrefix lbl_80559984
 #define kConcatFormat lbl_805599AC
+    /* If flag is zero, write the fixed prefix followed by str into buffer and return buffer; otherwise return 0. */
     s32 result = 0;
     if (flag == 0) {
         sprintf((char *)buffer, kConcatFormat, kStringPrefix, str);
