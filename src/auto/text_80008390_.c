@@ -948,6 +948,7 @@ void fn_80009C80(void) {
 
 extern char lbl_8055D36D;
 char fn_80009C84(void) {
+    /* Return the scene-active flag byte: 1 while a scene runs, 0 during teardown. */
     return lbl_8055D36D;
 }
 
