@@ -3237,8 +3237,7 @@ extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
         first = *(u32 *)(context + 0x264);
         u32 remainder = first % size;
         s32 steps = *(s32 *)(context + 0x14);
-        s32 sign = -((s32)remainder) | (s32)remainder;
-        aligned = first + (u32)((size - remainder) & (sign >> 31));
+        aligned = first + (remainder != 0 ? size - remainder : 0);
 
         if (steps != 0) {
             range = (u32)(steps + 1) * size;
@@ -13972,13 +13971,12 @@ extern "C" s32 fn_800BBCF4(void) {
 
 #pragma push
 #pragma processor 750
-extern "C" s32 fn_800BBEA4(register IosDevice *dev, register s32 arg1, s32 *arg2, s32 arg3) {
-    // prologue mr order quirk: target mr r26,r4 then mr r25,r3
+extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
     const char *str = lbl_8031B838;
-    register s32 cmd = arg1;
     s32 r30 = 3;
     s32 field10 = dev->field10;
     s32 res;
+    s32 *out = arg2;
     if (lbl_80559248 < 0) {
         res = (s32)0xC1000000;
     } else if (dev->state == 0) {
@@ -14005,38 +14003,38 @@ extern "C" s32 fn_800BBEA4(register IosDevice *dev, register s32 arg1, s32 *arg2
                     goto end;
                 }
             }
-            if (arg2 == 0 || arg3 == 0) {
+            if (out == 0 || arg3 == 0) {
                 lbl_8055DD6C = 0;
                 res = (s32)0xC1000000;
             } else {
-                switch (cmd) {
+                switch (arg1) {
                 case 9:
                 case 10:
                     r30 = 3;
                     break;
                 case 0x33:
-                    res = fn_800BC2EC(dev, arg2);
+                    res = fn_800BC2EC(dev, out);
                     lbl_8055DD6C = 0;
                     goto end;
                 case 0x29:
                     res = 0;
-                    if (arg2 != 0) {
+                    if (out != 0) {
                         res = IOS_Ioctl(dev->fd, 0xC, 0, 0, (void *)lbl_8055DD70, 4);
                         if (res != 0) {
                             OSReport(str + 0x5E8, res);
                         } else {
-                            *arg2 = *lbl_8055DD70;
+                            *out = *lbl_8055DD70;
                         }
                     }
                     lbl_8055DD6C = 0;
                     goto end;
                 case 3:
                     res = 0;
-                    *arg2 = dev->field10;
+                    *out = dev->field10;
                     lbl_8055DD6C = 0;
                     goto end;
                 }
-                res = fn_800BB0A8(dev->fd, cmd, 3, r30, field10, 0, 0, 0, 0, (s32)arg2, 0, 0);
+                res = fn_800BB0A8(dev->fd, arg1, 3, r30, field10, 0, 0, 0, 0, (s32)out, 0, 0);
                 lbl_8055DD6C = 0;
             }
         }
@@ -14825,22 +14823,15 @@ extern "C" void fn_800BD710(void *arg0, s16 arg1, s16 arg2, void *arg3, void *ar
     s32 *out0 = (s32 *)arg3;
     s32 *out1 = (s32 *)arg4;
     if (obj->mode == 0) {
-        s32 (*p)[8] = (s32 (*)[8])t;
-        s32 *a = p[0];
-        s32 *b = p[1];
         s32 v = *out0;
-        s32 bv = b[arg2];
-        s32 av = a[arg2];
-        *out1 = fn_800C0E7C_fxmul(v, bv);
-        s32 v2 = *out0;
-        *out0 = fn_800C0E7C_fxmul(v2, av);
+        *out1 = fn_800BD710_scale(v, (s32 *)(t + 0x20), arg2);
+        *out0 = fn_800BD710_scale(*out0, (s32 *)t, arg2);
         return;
     }
     if (obj->inited == 0) {
         obj->inited = 1;
         if (arg1 == 1) {
-            u8 *base = t + 0xE8;
-            u8 *src = base;
+            u8 *src = t + 0xE8;
             u8 *dst = (u8 *)obj;
             s32 i = 0;
             for (s32 c = 0; c < 2; c++) {
@@ -14866,10 +14857,9 @@ extern "C" void fn_800BD710(void *arg0, s16 arg1, s16 arg2, void *arg3, void *ar
                 *(s16 *)(dst + 0xA8C) = (s16)f;
                 dst += 0x20;
             }
-            *(s16 *)((u8 *)obj + i * 2 + 0xA6E) = (s16)*(s32 *)(base + i * 4);
+            *(s16 *)((u8 *)obj + i * 2 + 0xA6E) = (s16)*(s32 *)(t + 0xE8 + i * 4);
         } else {
-            u8 *base = t + 0x40;
-            u8 *src = base;
+            u8 *src = t + 0x40;
             u8 *dst = (u8 *)obj;
             s32 i = 0;
             for (s32 c = 0; c < 2; c++) {
@@ -14895,7 +14885,7 @@ extern "C" void fn_800BD710(void *arg0, s16 arg1, s16 arg2, void *arg3, void *ar
                 *(s16 *)(dst + 0xA8C) = (s16)f;
                 dst += 0x20;
             }
-            *(s16 *)((u8 *)obj + i * 2 + 0xA6E) = (s16)*(s32 *)(base + i * 4);
+            *(s16 *)((u8 *)obj + i * 2 + 0xA6E) = (s16)*(s32 *)(t + 0x40 + i * 4);
         }
     }
     if ((arg2 & 1) == 1) {
