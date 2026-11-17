@@ -30,14 +30,21 @@ struct BigObj {
     struct Container container;
 };
 
+struct Glob {
+    char f0[0xFC];
+    char fFC[0xC];
+    struct Container container;
+};
+
 extern char lbl_804872B0[];
 extern unsigned char lbl_8055AE2C;
 extern unsigned char lbl_8055E9D0;
 extern int lbl_8055E9D8;
 
+#pragma scheduling invalid_target
 void fn_801DF3BC(void) {
-    char *base = lbl_804872B0;
-    struct Container *c;
+    register char *base asm("r31") = lbl_804872B0;
+    register struct Container *c asm("r9");
     struct Elem *p;
     struct Elem *end;
 
@@ -65,3 +72,4 @@ void fn_801DF3BC(void) {
 
     __register_global_object(base + 0x108, (void *)&fn_801DF678, base + 0xFC);
 }
+#pragma scheduling reset
