@@ -4709,6 +4709,9 @@ struct BasicSoundVirtualsEarly {
     virtual void v3();
     virtual void Stop(s32 fadeFrames);
 };
+struct AmbientArgAllocaterCallbackEarly {
+    virtual void *detail_AllocAmbientArg(s32 size);
+};
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
