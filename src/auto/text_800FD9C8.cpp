@@ -46,12 +46,12 @@ extern "C" void *fn_800FDA20(void *sound, void *pool) {
 #pragma use_lmw_stmw off
 extern "C" s32 Prepare__Q46nw4hbm3snd6detail9StrmSoundFPQ46nw4hbm3snd6detail14StrmBufferPoolQ56nw4hbm3snd6detail10StrmPlayer15StartOffsetTypeliPQ56nw4hbm3snd6detail10StrmPlayer12StrmCallbackUl(void* self, void* pool, s32 start, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     struct V { virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void h(); virtual void i(); virtual void j(); virtual void k(); virtual void l(); virtual void m(); virtual void n(); virtual void o(); virtual void p(); virtual void q(); virtual void r(); virtual void s(); virtual void t(); virtual void u(); };
-    const char* file = lbl_80326C88;
+    char* file = lbl_80326C88;
     if (*(s32*)((u8*)self + 0x10) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x42, file + 0x14);
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x42, file + 0x14);
     }
     if (pool == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x43, file + 0x48);
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x43, file + 0x48);
     }
     if (pool == 0) return 0;
     ((V*)self)->u();
@@ -167,8 +167,9 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9StrmSoundFi_800FDCB8(voi
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&list->list, &node, soundNode);
 }
 #pragma pop
-extern "C" s32 fn_800FDDE8(void* arg0) {
-    return *(s32*)((u8*)arg0 + 0x5F4) != 0;
+extern "C" s32 fn_800FDDE8(void* sound) {
+    /* Return nonzero when the stream sound's state word at offset 0x5F4 is set. */
+    return *(s32*)((u8*)sound + 0x5F4) != 0;
 }
 
 extern "C" void fn_800FDDFC(void* arg0) {
