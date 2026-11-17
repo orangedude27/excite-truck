@@ -1112,8 +1112,9 @@ void fn_80276044(CamState *camera) {
 int fn_802704D4(int, int);
 int fn_80276BE4(int, int);
 int fn_80274730(void *, float, float, float, float);
-void fn_80276054(int arg0) {
-    fn_802704D4(4, arg0);
+void fn_80276054(int camera) {
+    /* Camera mode 22: set up the camera through preset/mode 4 (fn_802704D4), the same transform path used by modes 4-8/23. */
+    fn_802704D4(4, camera);
 }
 #pragma push
 #pragma processor 750
