@@ -198,14 +198,13 @@ static inline void transform_vec_scheduled(float *out, const float *m, float *in
 
 }
 /* Rotate a vector into the frame whose axes are m's rows, in place. */
-static inline void rotate_vec_in_place(f32 *v, const f32 *m) {
-    f32 z, y, x;
-    x = v[0];
-    y = v[1];
-    z = v[2];
-    v[0] = x * m[0] + y * m[1] + z * m[2];
-    v[1] = x * m[3] + y * m[4] + z * m[5];
-    v[2] = x * m[6] + y * m[7] + z * m[8];
+static inline void rotate_vec_in_place(Vec *v, const Vec *axes) {
+    f32 x = v->x;
+    f32 y = v->y;
+    f32 z = v->z;
+    v->x = x * axes[0].x + y * axes[0].y + z * axes[0].z;
+    v->y = x * axes[1].x + y * axes[1].y + z * axes[1].z;
+    v->z = x * axes[2].x + y * axes[2].y + z * axes[2].z;
 }
 /* The same scheduled transform as transform_vec_scheduled, but with the
    non-alias path written so each row re-reads the source vector
