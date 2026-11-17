@@ -6356,8 +6356,9 @@ extern "C" s32 fn_802237E8(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x2C8);
 }
 
-extern "C" s32 fn_802237F0(s32 arg0, s32 arg1) {
-    return *(s32 *)(arg0 + (arg1 << 2) + 0x378);
+/* Return the sound id of row `row` from a sound-list's id table at +0x378. */
+extern "C" s32 fn_802237F0(s32 list, s32 row) {
+    return *(s32 *)(list + (row << 2) + 0x378);
 }
 
 
