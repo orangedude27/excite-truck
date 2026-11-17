@@ -4771,6 +4771,7 @@ void fn_80155AF0(void *arg0, void *arg1) {
         base[idx] = alloc2;
     }
 }
+/* Constant predicate in the UI text-object subsystem: always returns 1 (true). */
 u32 fn_80155C88(void) { return 1; }
 
 extern int vsprintf(char *, const char *, va_list);
