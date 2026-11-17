@@ -2247,8 +2247,10 @@ extern "C" int fn_8029BA0C(void *arg0) {
     return fn_8029AEE8(((struct BackfireMan *)base)->torches);
 }
 #pragma use_lmw_stmw reset
-extern "C" void fn_8029BA8C(void* arg0) {
-    fn_8029AF24(*(int*)arg0);
+extern "C" void fn_8029BA8C(void* backfireMan) {
+    /* Tick the backfire system: load the ExhaustTorchMan pointer stored at +0 of
+       the BackfireMan object and pass it on to be rebuilt for this frame. */
+    fn_8029AF24(*(int*)backfireMan);
 }
 
 extern "C" void *fn_80288060(void *, int);
