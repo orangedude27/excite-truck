@@ -82,6 +82,8 @@ void fn_80012790(void) {
 
 extern int lbl_80558AD8;
 void* fn_80012810(void) {
+    /* Return the current game mode id held in lbl_80558AD8 (used by callers as
+     * prev/current mode and passed to fn_800126CC to look up mode info). */
     return (void*)lbl_80558AD8;
 }
 
