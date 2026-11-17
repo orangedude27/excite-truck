@@ -106,6 +106,16 @@ typedef struct { char *name; int state; } UnkStruct_801D701C;
  * constructor installs at +0 and the state its state()/start()/update() methods step
  * through (0 unset, 1 ready, 2 running, 3 finished - see enum TimedEffectState). */
 typedef struct { char *typeInfo; int state; } AseElementHeader;
+/* One "Text_ASE" subtitle cue: fn_801D6D68 constructs it, fn_801D6DC8 reads its
+ * parameters from the value file and fn_801D6EE4 copies it into the on-screen
+ * display buffer lbl_80442310 when it is triggered. */
+struct TextAseElement {
+    void *typeInfo;    /* 0x00 the class's type/vtable table lbl_80338B98 */
+    int state;         /* 0x04, enum TimedEffectState; 1 once read */
+    float length;      /* 0x08 the value file's "length", seconds on screen */
+    char title[0x40];  /* 0x0C the value file's "title" */
+    char text[0x40];   /* 0x4C the value file's "text" */
+};
 extern char lbl_80339038[];
 extern char lbl_8033905C[];
 extern char lbl_8033907C[];
