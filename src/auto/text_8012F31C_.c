@@ -65,8 +65,9 @@ void fn_8012F43C(MemStreamPtr *cursor) {
     cursor->pos = 0;
 }
 
-void fn_8012F448(void *arg0, s32 arg1) {
-    ((s32 *)arg0)[1] = arg1;
+/* Seek a MemStreamPtr cursor: set the byte position of its next access. */
+void fn_8012F448(MemStreamPtr *cursor, s32 pos) {
+    cursor->pos = pos;
 }
 
 /* Return the current byte position (pos) of a MemStreamPtr cursor. */
