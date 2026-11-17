@@ -695,8 +695,8 @@ extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(void *self) {
-    void *node = *(void **)((u8 *)self + 4);
-    void *end = (u8 *)self + 4;
+    register unsigned char *node = *(unsigned char **)((unsigned char *)self + 4);
+    register unsigned char *end = (unsigned char *)self + 4;
     int candidate;
     int priority = 0x80;
     void *result = 0;
@@ -706,16 +706,16 @@ extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlay
     extern const char lbl_80322D54[];
     while (node != end) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322D54, 0x23d, lbl_80322D30);
-        int value = *(u8 *)((u8 *)node - 0x5c) + *(int *)((u8 *)node - 0x90);
+        int value = *(unsigned char *)(node - 0x5c) + *(int *)(node - 0x90);
         if (value <= 0x7f) candidate = value & ~(value >> 31);
         else candidate = 0x7f;
         if (priority > candidate) {
             if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322D54, 0x23d, lbl_80322D30);
-            result = (u8 *)node - 0xd0;
+            result = node - 0xd0;
             if (result == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322CF4, 0x193, lbl_80322CD0);
             priority = candidate;
         }
-        node = *(void **)node;
+        node = *(unsigned char **)node;
     }
     return result;
 }
@@ -1385,8 +1385,9 @@ extern "C" s32 fn_800ECFE0(void *arg0) {
 }
 
 extern u32 lbl_8055DEA0;
-extern "C" s32 fn_800ECFE8(void *arg0) {
-    return ((s32 *)arg0)[0x1C / 4];
+extern "C" s32 fn_800ECFE8(void *obj) {
+    // Return the s32 field at offset 0x1C of an object (companion to fn_800ECFE0 at 0x18).
+    return ((s32 *)obj)[0x1C / 4];
 }
 
 extern "C" s32 fn_800ECFF0(void) {
