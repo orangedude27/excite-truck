@@ -3117,7 +3117,11 @@ extern "C" u8 *fn_80142C9C(u8 *arg0, s32 arg1) {
     return out;
 }
 
-extern "C" s32 fn_80142D34(void) { return 0; }
+extern "C" s32 fn_80142D34(void) {
+    /* Always returns 0: a no-op status/predicate whose callers treat zero as
+       the success (or "false") result. */
+    return 0;
+}
 
 /* Returns a pointer to the indexed item record in the table at owner+0xB8. */
 extern "C" u8 *fn_80142D3C(void *owner, s32 index) { return *(u8 **)((u8 *)owner + 0xB8) + index * ITEM_RECORD_STRIDE; }
