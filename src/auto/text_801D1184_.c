@@ -151,6 +151,5 @@ void fn_801D14BC(void* entry) {
 }
 
 extern void *lbl_804348E8[];
-extern float lbl_80562A48;
 extern float lbl_80562A4C;
 extern void fn_801819A0(void *, void *, void *, float, float, float);
