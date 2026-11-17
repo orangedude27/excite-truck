@@ -156,7 +156,7 @@ void fn_802D9DE4(int arg0, void *arg1, int arg2) {
                 ctr = (unsigned int)(n + 7) >> 3;
                 src = (unsigned int *)arg1;
                 dest = (unsigned int *)((char *)lbl_804DAC48 + arg0 * 0x30);
-                if (n > 0) do {
+                if (n > 0) for (c = 0; c < ctr; c++) {
                 t0 = src[0];
                 t1 = src[1];
                 dest[0] = t0;
