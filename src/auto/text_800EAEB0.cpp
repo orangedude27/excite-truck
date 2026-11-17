@@ -1485,8 +1485,9 @@ extern "C" void fn_800ED0E4(s32 arg0) {
 }
 
 extern "C" void InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(void* this_, const void* arg1, const void* arg2);
-extern "C" void fn_800ED0EC(void* player, const void* arg1, const void* arg2) {
-    InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv((u8*)player - 8, arg1, arg2);
+/* This-adjusting thunk: subtract the 8-byte multiple-inheritance offset to recover the base SeqPlayer subobject's `this`, then tail-call SeqPlayer::InvalidateData with the data range unchanged. */
+extern "C" void fn_800ED0EC(void* subobjectThis, const void* rangeStart, const void* rangeEnd) {
+    InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv((u8*)subobjectThis - 8, rangeStart, rangeEnd);
 }
 
 extern "C" s32 fn_800ED0F4(s32 object, s32 deleteFlag) {
