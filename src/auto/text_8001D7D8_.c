@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 int __AXGetStackHead(int index) {
+    /* Return the AX stack-head pointer registered at the given context index (a 5-entry table filled at runtime). */
     extern int lbl_802ED82C[];
     return lbl_802ED82C[index];
 }
