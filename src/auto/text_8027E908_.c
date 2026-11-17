@@ -2933,6 +2933,18 @@ extern "C" void fn_80284760(void *widget) {
     }
 }
 
+extern "C" int fn_80214AF0(int);
+extern "C" int fn_80214A9C(int);
+extern "C" float fn_80214D48(void);
+extern "C" void fn_80236958(char *);
+extern "C" float lbl_805641FC;
+extern "C" float lbl_8056420C;
+extern "C" float lbl_80564210;
+extern "C" float lbl_80564214;
+extern "C" float lbl_80564218;
+extern "C" float lbl_80564228;
+extern "C" float lbl_8056422C;
+extern unsigned char lbl_804B3068[];
 void fn_802849E8(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 0x64) != 0) return;
     *(int *)((char *)arg0 + 0x24) = *(int *)((char *)arg0 + 0x20);
@@ -3454,7 +3466,7 @@ extern "C" void fn_8028679C(void *plane) {
 }
 #pragma cplusplus off
 int fn_802867B0(void *arg0) {
-    void *p = *(void **)((char *)arg0 + 0x20);
+    register void *p = *(void **)((char *)arg0 + 0x20);
     if (p != 0) {
         int value = (int)((float)*(int *)p + *(float *)((char *)p + 0x10));
         int limit = *(int *)((char *)p + 4);
