@@ -1202,6 +1202,8 @@ extern "C" void fn_80006D9C(void) {
 #pragma pop
 
 void fn_80006E50(void) {
+    /* Empty no-op hook between manager startup (fn_80006D9C) and teardown
+     * (fn_80006E54); a reserved slot with no work to do in this build. */
 }
 
 extern void fn_8001DD6C(void);
