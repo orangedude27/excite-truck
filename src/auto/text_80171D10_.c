@@ -1890,11 +1890,12 @@ extern "C" void fn_80175080(void **arg0, int arg1, int arg2, char *fmt, double f
     } else {
         int *dst = (int *)result;
         int *src = (int *)p;
-        int w4, w8;
+        int w8, w4;
         dst[0] = src[0];
         w4 = src[1];
         w8 = src[2];
-        Store2(dst, w4, w8);
+        dst[2] = w8;
+        dst[1] = w4;
         dst[3] = src[3];
         *(float *)(result + 0x10) = *(float *)((char *)p + 0x10);
         dst[5] = src[5];
