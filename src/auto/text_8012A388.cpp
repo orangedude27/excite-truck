@@ -661,8 +661,10 @@ extern "C" int sprintf(char *, const char *, ...);
 extern "C" s32 lbl_80559984;
 extern "C" char lbl_805599AC[];
 extern "C" s32 fn_8012B2C4(s32, s32, s32);
-extern "C" void *fn_8012B314(s32 arg0, s32 arg1, s32 arg2) {
-    return (void *)fn_8012B2C4(arg1, arg0, arg2);
+/* Argument-swapping shim: calls fn_8012B2C4(buffer, value, flag) -- which formats value into
+ * buffer when flag is zero -- and returns the resulting buffer pointer. */
+extern "C" void *fn_8012B314(s32 value, s32 buffer, s32 flag) {
+    return (void *)fn_8012B2C4(buffer, value, flag);
 }
 
 extern "C" void fn_8012B324(void) {
