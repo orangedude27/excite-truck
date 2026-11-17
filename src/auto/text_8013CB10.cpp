@@ -2112,11 +2112,13 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
                 f32 v = (lbl_805614AC < ratio) ? ratio : lbl_805614AC;
                 v = (v > lbl_805614A4) ? v : lbl_805614A4;
                 fn_80147BD0((s32)sp30, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)arg0 + 0xAC), v);
-            }
-        }
-    }
-}
-extern "C" void fn_80140A6C(void *arg0, int arg1) {
+                          }
+          }
+      }
+  }
+  #pragma opt_propagation reset
+  #pragma pop
+  extern "C" void fn_80140A6C(void *arg0, int arg1) {
     extern char lbl_8032CA64[];
     int base;
     int tmp;
