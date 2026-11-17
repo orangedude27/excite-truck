@@ -226,35 +226,36 @@ int fn_80288BF0(int arg0, int arg1, int arg2) {
     float frame[9];
     float *matrix;
     float *vector;
-    float p0, p1, p2, p3, p4, p5, p6, p7, p8;
-    float v1a;
-    float v0;
-    float v2;
-    float t2;
-    float t1;
+    float t2, t1;
+
     if (arg2 == 2) {
         matrix = (float *)fn_80287B24(arg1);
         vector = (float *)((char *)arg0 + (arg1 * 0xC));
         if (&frame[6] == vector) {
-            v1a = vector[1];
-            p3 = matrix[3] * v1a;
-            p4 = matrix[4] * v1a;
-            v0 = vector[0];
-            p0 = matrix[0] * v0;
-            p1 = matrix[1] * v0;
-            p2 = matrix[2] * v0;
-            p5 = matrix[5] * v1a;
-            v2 = vector[2];
-            p6 = matrix[6] * v2;
-            p7 = matrix[7] * v2;
-            p8 = matrix[8] * v2;
-            frame[6] = p6 + (p0 + p3);
-            frame[7] = p7 + (p1 + p4);
-            frame[8] = p8 + (p2 + p5);
+            float y = vector[1];
+            float m3 = matrix[3];
+            float m0 = matrix[0];
+            float x = vector[0];
+            float m4 = matrix[4];
+            float m1 = matrix[1];
+            float m6 = matrix[6];
+            float z = vector[2];
+            float m7 = matrix[7];
+            {
+                float m2, m5;
+                m5 = matrix[5];
+                m2 = matrix[2];
+                {
+                    float m8 = matrix[8];
+                    frame[6] = (z * m6) + ((x * m0) + (y * m3));
+                    frame[7] = (z * m7) + ((x * m1) + (y * m4));
+                    frame[8] = (z * m8) + ((x * m2) + (y * m5));
+                }
+            }
         } else {
-            frame[6] = matrix[6] * vector[2] + ((matrix[0] * vector[0]) + (matrix[3] * vector[1]));
-            frame[7] = matrix[7] * vector[2] + ((matrix[1] * vector[0]) + (matrix[4] * vector[1]));
-            frame[8] = matrix[8] * vector[2] + ((matrix[2] * vector[0]) + (matrix[5] * vector[1]));
+            frame[6] = matrix[6] * vector[2] + ((matrix[3] * vector[1]) + (matrix[0] * vector[0]));
+            frame[7] = matrix[7] * vector[2] + ((matrix[4] * vector[1]) + (matrix[1] * vector[0]));
+            frame[8] = matrix[8] * vector[2] + ((matrix[5] * vector[1]) + (matrix[2] * vector[0]));
         }
         t2 = frame[7];
         t1 = frame[8];
@@ -266,25 +267,30 @@ int fn_80288BF0(int arg0, int arg1, int arg2) {
         matrix = (float *)fn_80287B24(arg1);
         vector = (float *)((char *)arg0 + (arg1 * 0xC));
         if (&frame[3] == vector) {
-            v1a = vector[1];
-            p3 = matrix[3] * v1a;
-            p4 = matrix[4] * v1a;
-            v0 = vector[0];
-            p0 = matrix[0] * v0;
-            p1 = matrix[1] * v0;
-            p2 = matrix[2] * v0;
-            p5 = matrix[5] * v1a;
-            v2 = vector[2];
-            p6 = matrix[6] * v2;
-            p7 = matrix[7] * v2;
-            p8 = matrix[8] * v2;
-            frame[3] = p6 + (p0 + p3);
-            frame[4] = p7 + (p1 + p4);
-            frame[5] = p8 + (p2 + p5);
+            float y = vector[1];
+            float m3 = matrix[3];
+            float m0 = matrix[0];
+            float x = vector[0];
+            float m4 = matrix[4];
+            float m1 = matrix[1];
+            float m6 = matrix[6];
+            float z = vector[2];
+            float m7 = matrix[7];
+            {
+                float m2, m5;
+                m5 = matrix[5];
+                m2 = matrix[2];
+                {
+                    float m8 = matrix[8];
+                    frame[3] = (z * m6) + ((x * m0) + (y * m3));
+                    frame[4] = (z * m7) + ((x * m1) + (y * m4));
+                    frame[5] = (z * m8) + ((x * m2) + (y * m5));
+                }
+            }
         } else {
-            frame[3] = matrix[6] * vector[2] + ((matrix[0] * vector[0]) + (matrix[3] * vector[1]));
-            frame[4] = matrix[7] * vector[2] + ((matrix[1] * vector[0]) + (matrix[4] * vector[1]));
-            frame[5] = matrix[8] * vector[2] + ((matrix[2] * vector[0]) + (matrix[5] * vector[1]));
+            frame[3] = matrix[6] * vector[2] + ((matrix[3] * vector[1]) + (matrix[0] * vector[0]));
+            frame[4] = matrix[7] * vector[2] + ((matrix[4] * vector[1]) + (matrix[1] * vector[0]));
+            frame[5] = matrix[8] * vector[2] + ((matrix[5] * vector[1]) + (matrix[2] * vector[0]));
         }
         t2 = frame[4];
         t1 = frame[5];
@@ -296,25 +302,30 @@ int fn_80288BF0(int arg0, int arg1, int arg2) {
         matrix = (float *)fn_80287B24(arg1);
         vector = (float *)((char *)arg0 + (arg1 * 0xC));
         if (&frame[0] == vector) {
-            v1a = vector[1];
-            p3 = matrix[3] * v1a;
-            p4 = matrix[4] * v1a;
-            v0 = vector[0];
-            p0 = matrix[0] * v0;
-            p1 = matrix[1] * v0;
-            p2 = matrix[2] * v0;
-            p5 = matrix[5] * v1a;
-            v2 = vector[2];
-            p6 = matrix[6] * v2;
-            p7 = matrix[7] * v2;
-            p8 = matrix[8] * v2;
-            frame[0] = p6 + (p0 + p3);
-            frame[1] = p7 + (p1 + p4);
-            frame[2] = p8 + (p2 + p5);
+            float y = vector[1];
+            float m3 = matrix[3];
+            float m0 = matrix[0];
+            float x = vector[0];
+            float m4 = matrix[4];
+            float m1 = matrix[1];
+            float m6 = matrix[6];
+            float z = vector[2];
+            float m7 = matrix[7];
+            {
+                float m2, m5;
+                m5 = matrix[5];
+                m2 = matrix[2];
+                {
+                    float m8 = matrix[8];
+                    frame[0] = (z * m6) + ((x * m0) + (y * m3));
+                    frame[1] = (z * m7) + ((x * m1) + (y * m4));
+                    frame[2] = (z * m8) + ((x * m2) + (y * m5));
+                }
+            }
         } else {
-            frame[0] = matrix[6] * vector[2] + ((matrix[0] * vector[0]) + (matrix[3] * vector[1]));
-            frame[1] = matrix[7] * vector[2] + ((matrix[1] * vector[0]) + (matrix[4] * vector[1]));
-            frame[2] = matrix[8] * vector[2] + ((matrix[2] * vector[0]) + (matrix[5] * vector[1]));
+            frame[0] = matrix[6] * vector[2] + ((matrix[3] * vector[1]) + (matrix[0] * vector[0]));
+            frame[1] = matrix[7] * vector[2] + ((matrix[4] * vector[1]) + (matrix[1] * vector[0]));
+            frame[2] = matrix[8] * vector[2] + ((matrix[5] * vector[1]) + (matrix[2] * vector[0]));
         }
         t2 = frame[1];
         t1 = frame[2];
@@ -323,7 +334,6 @@ int fn_80288BF0(int arg0, int arg1, int arg2) {
         frame[2] = t1 + matrix[11];
         return ((int (*)(int, float *, void *, float, float))fn_8028E584)(*(int *)((char *)arg0 + 0x68), &frame[0], (char *)matrix + 0x34, t1, t2);
     }
-    return 0;
 }
 
 extern int fn_80287E20();
@@ -773,6 +783,8 @@ int fn_802897E0(int arg0) {
     *(float *)(stack+0x6c)=lbl_80564300;
     return *(int *)((char *)arg0+0xa4)=((int (*)(void *, void *, int))fn_8028E2F8)(&stack[0x18],(void *)&lbl_80348B34,lbl_8055C880);
 }
+#pragma push
+#pragma scheduling reset
 void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     extern void *fn_80287B24(int);
     extern int fn_80288208(int);
@@ -782,82 +794,107 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     float sp8[3];
     float *vec;
     float *mat;
-    float a;
-    float b;
-    float c;
+    float nv6, nv7, nv8, nw6, nw7, nw8;
+
     vec = (float *)fn_80287B24(arg1);
     mat = (float *)fn_80288060(fn_80288208(arg1), arg2);
-    if ((float *)((char *)mat + 0x24) == sp14) {
-        float m1 = *(float *)((char *)mat + 0x28);
-        float m0 = *(float *)((char *)mat + 0x24);
-        float m2 = *(float *)((char *)mat + 0x2C);
-        float x3 = vec[3];
-        float x4 = vec[4];
-        float x5 = vec[5];
-        float x0 = vec[0];
-        float x1 = vec[1];
-        float x2 = vec[2];
-        float x6 = vec[6];
-        float x7 = vec[7];
-        float x8 = vec[8];
-        float q0 = m1 * x3;
-        float q1 = m1 * x4;
-        float q2 = m1 * x5;
-        float p0 = m0 * x0;
-        float p1 = m0 * x1;
-        float p2 = m0 * x2;
-        float r0 = m2 * x6;
-        float r1 = m2 * x7;
-        float r2 = m2 * x8;
-        sp14[0] = r0 + (p0 + q0);
-        sp14[1] = r1 + (p1 + q1);
-        sp14[2] = r2 + (p2 + q2);
+    if (sp14 == (float *)((char *)mat + 0x24)) {
+        float m3 = vec[3];
+        float x = mat[9];
+        float m0 = vec[0];
+        float y = mat[10];
+        float m4 = vec[4];
+        float m1 = vec[1];
+        float z = mat[11];
+        float m6 = vec[6];
+        float m7 = vec[7];
+        float m2, m5, m8;
+        m5 = vec[5];
+        m2 = vec[2];
+        m8 = vec[8];
+        sp14[0] = (z * m6) + ((x * m0) + (y * m3));
+        sp14[1] = (z * m7) + ((x * m1) + (y * m4));
+        sp14[2] = (z * m8) + ((x * m2) + (y * m5));
     } else {
-        sp14[0] = (*(float *)((char *)mat + 0x2C) * vec[6]) + ((*(float *)((char *)mat + 0x24) * vec[0]) + (*(float *)((char *)mat + 0x28) * vec[3]));
-        sp14[1] = (*(float *)((char *)mat + 0x2C) * vec[7]) + ((*(float *)((char *)mat + 0x24) * vec[1]) + (*(float *)((char *)mat + 0x28) * vec[4]));
-        sp14[2] = (*(float *)((char *)mat + 0x2C) * vec[8]) + ((*(float *)((char *)mat + 0x24) * vec[2]) + (*(float *)((char *)mat + 0x28) * vec[5]));
+        nv6 = vec[6];
+        {
+            float m6, m0, m3;
+            m3 = vec[3];
+            m0 = vec[0];
+            m6 = nv6;
+            sp14[0] = (mat[11] * m6) + ((mat[9] * m0) + (mat[10] * m3));
+        }
+        nv7 = vec[7];
+        {
+            float m7, m1, m4;
+            m4 = vec[4];
+            m1 = vec[1];
+            m7 = nv7;
+            sp14[1] = (mat[11] * m7) + ((mat[9] * m1) + (mat[10] * m4));
+            if (1) {}
+        }
+        nv8 = vec[8];
+        {
+            float m8, m2, m5;
+            m5 = vec[5];
+            m2 = vec[2];
+            m8 = nv8;
+            sp14[2] = (mat[11] * m8) + ((mat[9] * m2) + (mat[10] * m5));
+        }
     }
-    sp14[0] += *(float *)((char *)vec + 0x24);
-    sp14[1] += *(float *)((char *)vec + 0x28);
-    sp14[2] += *(float *)((char *)vec + 0x2C);
-    if ((float *)((char *)mat + 0xC) == sp8) {
-        float m1 = *(float *)((char *)mat + 0x10);
-        float m0 = *(float *)((char *)mat + 0xC);
-        float m2 = *(float *)((char *)mat + 0x14);
-        float x3 = vec[3];
-        float x4 = vec[4];
-        float x5 = vec[5];
-        float x0 = vec[0];
-        float x1 = vec[1];
-        float x2 = vec[2];
-        float x6 = vec[6];
-        float x7 = vec[7];
-        float x8 = vec[8];
-        float q0 = m1 * x3;
-        float q1 = m1 * x4;
-        float q2 = m1 * x5;
-        float p0 = m0 * x0;
-        float p1 = m0 * x1;
-        float p2 = m0 * x2;
-        float r0 = m2 * x6;
-        float r1 = m2 * x7;
-        float r2 = m2 * x8;
-        sp8[0] = r0 + (p0 + q0);
-        sp8[1] = r1 + (p1 + q1);
-        sp8[2] = r2 + (p2 + q2);
+    sp14[0] = sp14[0] + vec[9];
+    sp14[1] = sp14[1] + vec[10];
+    sp14[2] = sp14[2] + vec[11];
+    if (sp8 == (float *)((char *)mat + 0xC)) {
+        float m3 = vec[3];
+        float x = mat[3];
+        float m0 = vec[0];
+        float y = mat[4];
+        float m4 = vec[4];
+        float m1 = vec[1];
+        float z = mat[5];
+        float m6 = vec[6];
+        float m7 = vec[7];
+        float m2, m5, m8;
+        m5 = vec[5];
+        m2 = vec[2];
+        m8 = vec[8];
+        sp8[0] = (z * m6) + ((x * m0) + (y * m3));
+        sp8[1] = (z * m7) + ((x * m1) + (y * m4));
+        sp8[2] = (z * m8) + ((x * m2) + (y * m5));
     } else {
-        sp8[0] = (*(float *)((char *)mat + 0x14) * vec[6]) + ((*(float *)((char *)mat + 0xC) * vec[0]) + (*(float *)((char *)mat + 0x10) * vec[3]));
-        sp8[1] = (*(float *)((char *)mat + 0x14) * vec[7]) + ((*(float *)((char *)mat + 0xC) * vec[1]) + (*(float *)((char *)mat + 0x10) * vec[4]));
-        sp8[2] = (*(float *)((char *)mat + 0x14) * vec[8]) + ((*(float *)((char *)mat + 0xC) * vec[2]) + (*(float *)((char *)mat + 0x10) * vec[5]));
+        register nw6 = vec[6];
+        {
+            float m6, m0, m3;
+            m3 = vec[3];
+            m0 = vec[0];
+            m6 = nw6;
+            sp8[0] = (mat[5] * m6) + ((mat[3] * m0) + (mat[4] * m3));
+        }
+        nw7 = vec[7];
+        {
+            float m7, m1, m4;
+            m4 = vec[4];
+            m1 = vec[1];
+            m7 = nw7;
+            sp8[1] = (mat[5] * m7) + ((mat[3] * m1) + (mat[4] * m4));
+            if (1) {}
+        }
+        nw8 = vec[8];
+        {
+            float m8, m2, m5;
+            m5 = vec[5];
+            m2 = vec[2];
+            m8 = nw8;
+            sp8[2] = (mat[5] * m8) + ((mat[3] * m2) + (mat[4] * m5));
+        }
     }
-    a = sp8[0] * lbl_805642FC;
-    b = sp8[1] * lbl_805642FC;
-    c = sp8[2] * lbl_805642FC;
-    sp8[0] = *(float *)((char *)vec + 0x34) + a;
-    sp8[1] = *(float *)((char *)vec + 0x38) + b;
-    sp8[2] = *(float *)((char *)vec + 0x3C) + c;
+    sp8[0] = vec[13] + sp8[0] * lbl_805642FC;
+    sp8[1] = vec[14] + sp8[1] * lbl_805642FC;
+    sp8[2] = vec[15] + sp8[2] * lbl_805642FC;
     fn_8028E584(arg0, (int)sp14, (int)sp8);
 }
+#pragma pop
 void fn_80289C80(int *);
 /* Constructs the "misc smoke man" object: creates its two smoke effects —
  * "small fire smoke" in the first slot (fn_80289C80) and "large fire smoke" in
@@ -972,86 +1009,72 @@ extern char lbl_80348B58[];
 extern float lbl_80564290, lbl_80564294, lbl_805642B8, lbl_805642D8;
 extern float lbl_80564308, lbl_8056430C, lbl_80564310;
 int fn_80289D94(void *arg0) {
-    struct Frame {
-        volatile float sp8, spC, sp10, sp14, sp18, sp1C;
-        volatile int sp20, sp24;
-        volatile float sp28, sp2C, sp30, sp34, sp38, sp3C, sp40, sp44;
-        volatile float sp48, sp4C, sp50, sp54;
-        unsigned char pad58[0xC];
-        volatile int sp64;
-        volatile float sp68;
-        unsigned char pad6C[4];
-        volatile float sp70, sp74, sp78, sp7C, sp80, sp84, sp88, sp8C, sp90, sp94, sp98, sp9C;
-    } frame;
-    register float f8;
-    register float f9;
-    register float f10;
-    register float f4;
-    register float f7;
-    register float f11;
-    register float f6;
-    register float f5;
-    register float f3;
-    register float f2;
-    register float f1;
-    register float f0;
-    register int size;
-    register int zero;
-    register int one;
+    fn_802897E0Frame frame;
+    register float negPoint75;
+    register float four;
+    register float point65;
+    register float negPoint65;
+    register float zero;
+    register float point25;
+    register float negPoint15;
+    register float three;
+    register float one;
+    register float half;
+    register float point1;
+    register float twoPoint75;
+    register int emitterCount;
+    register int effectType;
     fn_8028E61C((int *)&frame.sp20);
-    f8 = lbl_8056428C;
-    size = 0x80;
-    f9 = lbl_80564284;
-    zero = 0;
-    f10 = lbl_805642C8;
-    f4 = lbl_80564274;
-    one = 1;
-    f7 = lbl_80564290;
-    f11 = lbl_8056430C;
-    f6 = lbl_80564294;
-    f5 = lbl_805642B0;
-    f3 = lbl_80564308;
-    f2 = lbl_805642B8;
-    f1 = lbl_80564310;
-    f0 = lbl_805642D8;
-    frame.sp24 = size;
-    frame.sp28 = f11;
-    frame.sp2C = f10;
-    frame.sp20 = zero;
-    frame.sp68 = f9;
-    frame.sp64 = one;
-    frame.sp14 = f9;
-    frame.sp18 = f9;
-    frame.sp1C = f9;
-    frame.sp30 = f9;
-    frame.sp34 = f9;
-    frame.sp38 = f9;
-    frame.sp8 = f8;
-    frame.spC = f8;
-    frame.sp10 = f8;
-    frame.sp3C = f8;
-    frame.sp40 = f8;
-    frame.sp44 = f8;
-    frame.sp48 = f8;
-    frame.sp4C = f7;
-    frame.sp50 = f6;
-    frame.sp54 = f5;
-    frame.sp90 = f4;
-    frame.sp88 = f4;
-    frame.sp80 = f4;
-    frame.sp94 = f10;
-    frame.sp8C = f10;
-    frame.sp84 = f10;
-    frame.sp78 = f3;
-    frame.sp7C = f2;
-    frame.sp70 = f1;
-    frame.sp74 = f7;
-    frame.sp98 = f0;
-    frame.sp9C = f8;
-    *(int *)((char *)arg0 + 4) =
-        ((int (*)(int *, int *, int, int, float, float, float, float, float, float, float))fn_8028E2F8)(
-            (int *)&frame.sp20, (int *)&lbl_80348B58, lbl_8055C880, zero,
-            f1, f2, f3, f4, f5, f6, f7);
+    one = *(volatile float *)&lbl_8056428C;       /* 1.0f */
+    emitterCount = 0x80;
+    half = *(volatile float *)&lbl_80564284;      /* 0.5f */
+    effectType = 0;
+    point1 = *(volatile float *)&lbl_805642C8;    /* 0.1f */
+    zero = *(volatile float *)&lbl_80564274;      /* 0.0f */
+    three = *(volatile float *)&lbl_80564290;     /* 3.0f */
+    twoPoint75 = *(volatile float *)&lbl_8056430C;/* 2.75f */
+    negPoint15 = *(volatile float *)&lbl_80564294;/* -0.15f */
+    point25 = *(volatile float *)&lbl_805642B0;   /* 0.25f */
+    negPoint65 = *(volatile float *)&lbl_80564308;/* -0.65f */
+    point65 = *(volatile float *)&lbl_805642B8;   /* 0.65f */
+    four = *(volatile float *)&lbl_80564310;      /* 4.0f */
+    negPoint75 = *(volatile float *)&lbl_805642D8;/* -0.75f */
+    frame.sp24 = emitterCount;
+    frame.sp28 = twoPoint75;
+    frame.sp2C = point1;
+    frame.sp20 = effectType;
+    frame.sp68 = half;
+    frame.sp64 = 1;
+    frame.sp14 = half;
+    frame.sp18 = half;
+    frame.sp1C = half;
+    frame.sp30 = half;
+    frame.sp34 = half;
+    frame.sp38 = half;
+    frame.sp8 = one;
+    frame.spC = one;
+    frame.sp10 = one;
+    frame.sp3C = one;
+    frame.sp40 = one;
+    frame.sp44 = one;
+    frame.sp48 = one;
+    frame.sp4C = three;
+    frame.sp50 = negPoint15;
+    frame.sp54 = point25;
+    frame.sp90 = zero;
+    frame.sp88 = zero;
+    frame.sp80 = zero;
+    frame.sp94 = point1;
+    frame.sp8C = point1;
+    frame.sp84 = point1;
+    frame.sp78 = negPoint65;
+    frame.sp7C = point65;
+    frame.sp70 = four;
+    frame.sp74 = three;
+    frame.sp98 = negPoint75;
+    frame.sp9C = one;
+    *(int *)((char *)arg0 + 4) = ((int (*)(int *, const char *, int))fn_8028E2F8)(
+        (int *)&frame.sp20, lbl_80348B58, lbl_8055C880);
 }
 
 extern int fn_8028A1A4(int);
