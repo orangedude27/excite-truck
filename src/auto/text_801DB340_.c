@@ -107,11 +107,12 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     h = *(float *)(node + 0) + *(float *)(node + 4) * (float)*(unsigned short *)(node + (remX * 64 + remZ * 2) + 8);
     next = *(int *)(node + 0x890);
     if (next >= 0) {
-        do {
+        for (;;) {
             layer = *(char **)((char *)lbl_8055E990 + 0x20) + next * 0x810;
             h += lbl_804424B0[*(int *)(layer + 0x808)] * (*(float *)(layer + 0) + *(float *)(layer + 4) * (float)*(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8));
             next = *(int *)(layer + 0x80C);
-        } while (next >= 0);
+            if (next < 0) break;
+        }
     }
     type_p = *(unsigned char **)((char *)lbl_8055E990 + 0x30) + *(int *)(node + 0x810 + remZ * 4);
     sum = 0;
@@ -266,9 +267,9 @@ float fn_801DB514(float grid[4][4], void *out, float t, float u) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
-    int i, j;
-    float sp8;
     float grid[4][4];
+    float sp8;
+    int i, j;
 
     if (!sample_tile(arg0, arg1, &sp8, arg3, arg4) &&
         !sample_tile(arg0 + 1, arg1, &sp8, arg3, arg4) &&
