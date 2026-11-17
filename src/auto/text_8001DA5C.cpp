@@ -629,10 +629,13 @@ extern "C" void fn_8001E634(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((unsigned char *)arg0 + arg1 * 4 + 4) = temp_r31;
 }
 #pragma pop
-extern "C" void fn_8001E964(void* arg0) {
-    f32 value = lbl_80560490;
-    *(f32*)((u8*)arg0 + 0x34) = value;
-    *(f32*)((u8*)arg0 + 0x2C) = value;
+extern "C" void fn_8001E964(void* object) {
+    #define INVALID_VALUE lbl_80560490 /* -999.0f */
+    /* Reset the two float fields at +0x2C and +0x34 to the invalid sentinel. */
+    f32 value = INVALID_VALUE;
+    *(f32*)((u8*)object + 0x34) = value;
+    *(f32*)((u8*)object + 0x2C) = value;
+    #undef INVALID_VALUE
 }
 
 extern "C" s32 fn_8001E974(s32 object, s32 deleteFlag) {
