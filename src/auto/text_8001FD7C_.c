@@ -106,6 +106,8 @@ struct lbl_8035BAE4_t {
     unsigned int unk_8;
 };
 extern struct lbl_8035BAE4_t lbl_8035BAE4;
+struct lbl_8035BAF0_t { float f0; int f4; int f8; };
+extern struct lbl_8035BAF0_t lbl_8035BAF0;
 extern char lbl_802FE1C0[0x100];
 int fn_802E2C20(void);
 extern int lbl_8055D630;
