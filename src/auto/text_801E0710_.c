@@ -700,7 +700,8 @@ void fn_801E1384(s32 arg0, s32 arg1) {
     }
 }
 
-s32 fn_801E1510(s32 *arg0, s32 arg1) { return *arg0 + arg1 * 0x1C; }
+/* Return the address of boost-area record `index` from a list whose data pointer is at *listData (records are 0x1C bytes). */
+s32 fn_801E1510(s32 *listData, s32 index) { return *listData + index * 0x1C; }
 
 void fn_801E1520(void);
 #pragma cplusplus on
