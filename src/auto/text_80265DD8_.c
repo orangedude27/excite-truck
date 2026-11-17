@@ -2053,7 +2053,6 @@ void fn_8026A2C8(void) {
 
 #pragma scheduling invalid_target
 #pragma scheduling on
-#pragma cplusplus on
 void fn_8026A2CC(int *arg0, int arg1, float arg2) {
     int a, b, c, d, e;
     char *p = (char *)lbl_80499080 + arg1 * 0x228 + 0x1a4;
