@@ -5599,7 +5599,6 @@ void fn_80120F84(s32 n, s32 ip_arg, void *a_arg) {
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 void fn_80121400(s32 n, s32 *map, f32 *data) {
     s32 *ip = map;
     f32 *a = data;
