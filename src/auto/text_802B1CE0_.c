@@ -139,6 +139,7 @@ extern "C" void fn_802B1E28(void) {
         void *storage;
     } Pool;
     typedef void *(*AllocArray)(void *, void (*)(void *), void *(*)(void *, int), int, int);
+    register char *table = lbl_8034A288;
     Pool *pool;
     void *storage;
     void *nodes;
@@ -149,9 +150,9 @@ extern "C" void fn_802B1E28(void) {
     int offset;
     int i;
     int index;
-    fn_802B8AE0(lbl_8034A288 + 0xC, &lbl_8055F9B4);
-    fn_802B8AE0(lbl_8034A288 + 0x18, &lbl_8055F9B0);
-    pool = (Pool *)fn_801284F8(0x14, lbl_8034A288 + 0x28);
+    fn_802B8AE0(table + 0xC, &lbl_8055F9B4);
+    fn_802B8AE0(table + 0x18, &lbl_8055F9B0);
+    pool = (Pool *)fn_801284F8(0x14, table + 0x28);
     if (pool != 0) {
         storage = fn_8012850C(0x610, (const char *)&lbl_8055CDC0);
         nodes = ((AllocArray)fn_8002F37C)(storage, fn_802B1FC0, fn_802B1F68, 0x10, 0x60);
@@ -370,17 +371,20 @@ extern "C" void fn_802B224C(void *arg0) {
         virtual void v20();
         virtual int v21(const char *);
     };
+
     char name[16];
     void *object;
     int index;
     void *child;
     void *item;
     int count;
-    void *items;
+    void **items;
     Obj *self = (Obj *)arg0;
+
     count = *(int *)((char *)&lbl_804BE1FC + 4);
-    if ((int)(count + 1) > *(int *)((char *)&lbl_804BE1FC + 8))
+    if (count + 1 > *(int *)((char *)&lbl_804BE1FC + 8))
         return;
+
     object = fn_801284F8(0x28, lbl_8034A2C4);
     if (object != 0) {
         fn_802B2C7C(object);
@@ -399,10 +403,11 @@ extern "C" void fn_802B224C(void *arg0) {
         } while (1);
         *(void **)((char *)object + 0x24) = self->v3((const char *)&lbl_8055CDD0);
     }
-    items = *(void **)&lbl_804BE1FC;
+
+    items = *(void ***)&lbl_804BE1FC;
     count = *(int *)((char *)&lbl_804BE1FC + 4);
     *(int *)((char *)&lbl_804BE1FC + 4) = count + 1;
-    ((void **)items)[count] = object;
+    items[count] = object;
 }
 
 #pragma cplusplus off
@@ -591,17 +596,6 @@ void fn_802B28BC(int *entries, int count) {
 #undef RandomIntInRange
 }
 
-#pragma push
-#pragma optimization_level 3
-void *fn_802B2934(void *arg0, void **arg1) {
-    int count = ((int *)arg0)[1];
-    void *val = *arg1;
-    void **entry = *(void ***)arg0 + count;
-    ((int *)arg0)[1] = count + 1;
-    *entry = val;
-    return entry;
-}
-#pragma pop
 extern void fn_802B2C34(void (*)(void *), void *);
 extern char lbl_8055CDE0[8], lbl_8055CDE8[4], lbl_8055CDEC[4];
 extern void fn_802C6B44(void *);
@@ -964,7 +958,76 @@ check:
 int fn_802B3340(int arg) {
     char *p = (char *)arg;
     if (((unsigned char *)p)[5] != ((unsigned char *)p)[4]) {
-        fn_802B257C(p);
+        int count, **list, total, i, idx, remain, dbl, pos, k;
+        void *shadow[128];
+        count = *(int *)(p + 0x40C);
+        list = *(int ***)(p + 0x408);
+        total = 0;
+        for (i = 0; i < count; i++) total += *list[i];
+        if (total > 0x80) {
+            idx = fn_80129D90(0, 0, count);
+            while (total > 0x80) {
+                int *q = list[idx];
+                if (*q > 0) { *q = *q - 1; total--; }
+                idx = (idx + 1) % count;
+            }
+        }
+        memset((void *)(p + 0x208), 0, 0x200);
+        remain = 0x80 - total;
+        dbl = remain * 2;
+        pos = 0;
+        for (k = 0; k < count; k++) {
+            int *obj = list[k];
+            int lim = dbl / count;
+            if (lim > remain) lim = remain;
+            if (lim > 0) {
+                int n = *(int *)(p + 8 + ((k & 0x7F) << 2)) % lim;
+                int j;
+                for (j = 0; j < n; j++) *(void **)(p + 0x208 + (pos++ << 2)) = 0;
+                remain -= n;
+            }
+            {
+                int c = *obj;
+                int j;
+                for (j = 0; j < c; j++) *(void **)(p + 0x208 + (pos++ << 2)) = obj;
+            }
+        }
+        if (*(unsigned char *)(p + 4) == 0) fn_802B28BC((int *)(p + 0x208), 0x80);
+        memcpy((void *)shadow, (void *)(p + 0x208), 0x200);
+        for (i = 0; i < 16; i++) shadow[i] = (void *)*(int *)(p + (i << 2));
+        count = *(int *)(p + 0x40C);
+        list = *(int ***)(p + 0x408);
+        total = 0;
+        for (i = 0; i < count; i++) total += *list[i];
+        if (total > 0x80) {
+            idx = fn_80129D90(0, 0, count);
+            while (total > 0x80) {
+                int *q = list[idx];
+                if (*q > 0) { *q = *q - 1; total--; }
+                idx = (idx + 1) % count;
+            }
+        }
+        memset((void *)shadow, 0, 0x200);
+        remain = 0x80 - total;
+        dbl = remain * 2;
+        pos = 0;
+        for (k = 0; k < count; k++) {
+            int *obj = list[k];
+            int lim = dbl / count;
+            if (lim > remain) lim = remain;
+            if (lim > 0) {
+                int n = (int)shadow[k & 0x7F] % lim;
+                int j;
+                for (j = 0; j < n; j++) shadow[pos++] = 0;
+                remain -= n;
+            }
+            {
+                int c = *obj;
+                int j;
+                for (j = 0; j < c; j++) shadow[pos++] = obj;
+            }
+        }
+        memcpy((void *)(p + 0x208), (void *)shadow, 0x200);
     }
     ((unsigned char *)p)[5] = ((unsigned char *)p)[4];
     return arg;
