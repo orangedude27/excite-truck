@@ -2813,6 +2813,7 @@ void *WUDiGetNewDevInfo(void) {
 
 #pragma use_lmw_stmw off
 void WUDiMoveTopSmpDevInfoPtr(u8 *arg0, void *arg1) {
+    /* Move the SMP device-info list entry matching arg0's device address to the top of the list, if it is not already there. */
     typedef struct WUDDevInfoView {
         u8 pad[0x40];
         u8 devAddr[6];
@@ -2834,33 +2835,29 @@ void WUDiMoveTopSmpDevInfoPtr(u8 *arg0, void *arg1) {
     WUDDevInfoView *targetDevInfo = (WUDDevInfoView *)arg0;
     BOOL interrupts;
     s32 i;
-    u8 *scan;
 
     interrupts = OSDisableInterrupts();
-    scan = (u8 *)wudCb;
-    for (i = 0; i < 6; i++, scan += 0xC) {
-        WUDListEntry *entry;
-        WUDListEntry *cur = (WUDListEntry *)(scan + 0x1C);
-        if (memcmp(cur->devInfo->devAddr, targetDevInfo->devAddr, 6) != 0)
+    for (i = 0; i < 6; i++) {
+        if (memcmp(wudCb->smpList[i].devInfo->devAddr, targetDevInfo->devAddr, 6) != 0) {
             continue;
-        {
-            u8 *baseOff = (u8 *)wudCb + (s32)i * 0xC;
-            WUDListEntry *e2 = (WUDListEntry *)(baseOff + 0x1C);
-            if (memcmp(wudCb->smpListHead->devInfo->devAddr, e2->devInfo->devAddr, 6) == 0)
-                break;
-            *(WUDListEntry **)(*(u8 **)(baseOff + 0x20) + 8) = *(WUDListEntry **)(baseOff + 0x24);
-            if (memcmp(wudCb->smpListTail->devInfo->devAddr, e2->devInfo->devAddr, 6) == 0) {
-                wudCb->smpListTail = *(WUDListEntry **)(baseOff + 0x20);
-            } else {
-                *(WUDListEntry **)(*(u8 **)(baseOff + 0x24) + 4) = *(WUDListEntry **)(baseOff + 0x20);
-            }
-            entry = e2;
-            entry->next = wudCb->smpListHead;
-            wudCb->smpListHead->prev = entry;
-            wudCb->smpListHead = entry;
-            entry->prev = 0;
+        }
+
+        if (memcmp(wudCb->smpListHead->devInfo->devAddr, wudCb->smpList[i].devInfo->devAddr, 6) == 0) {
             break;
         }
+
+        wudCb->smpList[i].prev->next = wudCb->smpList[i].next;
+        if (memcmp(wudCb->smpListTail->devInfo->devAddr, wudCb->smpList[i].devInfo->devAddr, 6) == 0) {
+            wudCb->smpListTail = wudCb->smpList[i].prev;
+        } else {
+            wudCb->smpList[i].next->prev = wudCb->smpList[i].prev;
+        }
+
+        wudCb->smpList[i].next = wudCb->smpListHead;
+        wudCb->smpListHead->prev = &wudCb->smpList[i];
+        wudCb->smpListHead = &wudCb->smpList[i];
+        wudCb->smpList[i].prev = 0;
+        break;
     }
     OSRestoreInterrupts(interrupts);
 }
