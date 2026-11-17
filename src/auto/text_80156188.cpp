@@ -844,8 +844,10 @@ extern "C" void* fn_801570D0(ebi::title::TBlackPlane* self, s32 deleteFlag) {
     return self;
 }
 
-extern "C" void fn_80157170(void* arg0) {
-    ((ebi::title::TPlaneSubShort*)((ebi::title::TBlackPlane*)arg0)->m_b)->v1();
+extern "C" void fn_80157170(void* plane) {
+    /* Forward the v1() virtual call to the m_b (back-plane) child of the
+     * TBlackPlane, viewed as a TPlaneSubShort. */
+    ((ebi::title::TPlaneSubShort*)((ebi::title::TBlackPlane*)plane)->m_b)->v1();
 }
 
 extern "C" void fn_80157184(void* arg0) {
