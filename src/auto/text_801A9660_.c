@@ -1998,9 +1998,10 @@ long fn_801AD868(void) {
     return 0;
 }
 
-void fn_801AD870(void *arg0, void *arg1, void *arg2, long *arg3, long *arg4) {
-    *arg4 = 0;
-    *arg3 = 0;
+/* No-op/default handler: simply clears the two output values. */
+void fn_801AD870(void *unused0, void *unused1, void *unused2, long *out0, long *out1) {
+    *out1 = 0;
+    *out0 = 0;
 }
 
 long fn_801AD880(void) {
