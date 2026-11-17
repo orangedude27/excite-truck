@@ -1105,44 +1105,50 @@ long fn_801EFF94(void *, long, long);
 #define CAR_PARAM_SET(car) (*(void **)(*(char **)((char *)(car) + 0x188) + 0x2134)) /* the car's parameter record */
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_801EE974(void *arg0, void *arg1) {
-    class VObj {
+/* Attaches a wheel to each of a car's four wheel slots (+0x4D4): the front axle's
+ * two wheels read their "wheel_class" out of the car's "Front" parameter group and
+ * the rear axle's two out of "Rear", allocate a wheel of that class for this car,
+ * and the wheel's tire radius goes to the vehicle's radius array at +0x10C. */
+extern "C" void fn_801EE974(void *car, void *vehicle) {
+    /* A car's parameter record: virtual 0 picks a named group ("Front"/"Rear"),
+     * virtual 3 reads a key ("wheel_class") out of that group. */
+    class ParamNode {
     public:
-        virtual void *m0(void *);
+        virtual void *getGroup(void *);
         virtual void *m1(void *);
         virtual void *m2(void *);
-        virtual void *m3(void *);
+        virtual void *getKey(void *);
     };
-    char *entries;
-    char *out;
+    char *wheelSlot;
+    char *radiusOut;
     long i;
-    long flag;
-    VObj *object;
-    VObj *result;
-    out = (char *)arg1;
-    entries = (char *)arg0;
+    long frontAxle;
+    ParamNode *params;
+    ParamNode *wheelClass;
+    radiusOut = (char *)vehicle;
+    wheelSlot = (char *)car;
     i = 0;
     do {
-        flag = 0;
-        if (i == 0) goto enabled;
+        frontAxle = 0;
+        if (i == 0) goto front;
         if (i != 1) goto checked;
-    enabled:
-        flag = 1;
+    front:
+        frontAxle = 1;
     checked:
-        if (flag) {
-            object = (VObj *)*(void **)(*(char **)((char *)arg0 + 0x188) + 0x2134);
-            result = (VObj *)object->m0(lbl_8055B070);
-            result = (VObj *)result->m3(lbl_8033A1C8);
+        if (frontAxle) {
+            params = (ParamNode *)CAR_PARAM_SET(car);
+            wheelClass = (ParamNode *)params->getGroup(CAR_GROUP_FRONT);
+            wheelClass = (ParamNode *)wheelClass->getKey(CAR_WHEEL_CLASS_KEY);
         } else {
-            object = (VObj *)*(void **)(*(char **)((char *)arg0 + 0x188) + 0x2134);
-            result = (VObj *)object->m0(lbl_8055B078);
-            result = (VObj *)result->m3(lbl_8033A1C8);
+            params = (ParamNode *)CAR_PARAM_SET(car);
+            wheelClass = (ParamNode *)params->getGroup(CAR_GROUP_REAR);
+            wheelClass = (ParamNode *)wheelClass->getKey(CAR_WHEEL_CLASS_KEY);
         }
-        *(long *)(entries + 0x4D4) = fn_801EFF94(result, *(long *)((char *)arg0 + 0x40), i);
-        *(float *)(out + 0x10C) = fn_801F159C(*(long *)(entries + 0x4D4));
+        *(long *)(wheelSlot + 0x4D4) = fn_801EFF94(wheelClass, *(long *)((char *)car + 0x40), i);
+        *(float *)(radiusOut + 0x10C) = fn_801F159C(*(long *)(wheelSlot + 0x4D4));
         i++;
-        entries += 4;
-        out += 4;
+        wheelSlot += 4;
+        radiusOut += 4;
     } while (i < 4);
 }
 #pragma cplusplus reset
