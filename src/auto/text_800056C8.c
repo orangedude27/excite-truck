@@ -1402,6 +1402,9 @@ void fn_800070D4(void) {
     return;
 }
 
+/* No-op stub beside the HUD-overlay rebuild code (fn_800070DC), immediately
+ * after the companion stub fn_800070D4; a reserved callback slot with no work
+ * to do in this build. */
 void fn_800070D8(void) {
 }
 
