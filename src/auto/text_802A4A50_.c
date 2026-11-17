@@ -1789,6 +1789,7 @@ extern f32 lbl_805648D4;
 #pragma optimization_level 2
 #pragma processor 750
 #pragma dont_inline on
+#pragma use_lmw_stmw off
 void fn_802A775C(void *arg0) {
     s32 offset;
     s32 i;
