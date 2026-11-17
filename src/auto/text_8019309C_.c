@@ -421,30 +421,32 @@ extern void fn_801352B8(void *);
 extern float lbl_80562144, lbl_80562180;
 extern const char lbl_80333348[];
 #pragma cplusplus on
-extern "C" void *fn_801938F4(void *arg0) {
+extern "C" void *fn_801938F4(void *driver) {
+    /* Construct an AI driver: install its vtable, set default state fields,
+     * initialize its two embedded subobjects, and reset their controllers. */
 #pragma scheduling invalid_target
     int minusOne = -1;
     int zero = 0;
     float initial = 0.0f;
-    char *obj = (char *)arg0 + 0x168;
-    *(int *)((char *)arg0 + 0x68) = zero;
-    *(const char **)arg0 = lbl_80333348;
-    *(int *)((char *)arg0 + 0x70) = 10000;
-    *(float *)((char *)arg0 + 0x6C) = initial;
-    *(int *)((char *)arg0 + 0x78) = zero;
-    *(int *)((char *)arg0 + 0x90) = minusOne;
-    *((char *)arg0 + 0x8C) = zero;
-    *(int *)((char *)arg0 + 0xA0) = zero;
-    *(int *)((char *)arg0 + 0xB8) = minusOne;
-    *((char *)arg0 + 0xB4) = zero;
+    char *obj = (char *)driver + 0x168;
+    *(int *)((char *)driver + 0x68) = zero;
+    *(const char **)driver = lbl_80333348;
+    *(int *)((char *)driver + 0x70) = 10000;
+    *(float *)((char *)driver + 0x6C) = initial;
+    *(int *)((char *)driver + 0x78) = zero;
+    *(int *)((char *)driver + 0x90) = minusOne;
+    *((char *)driver + 0x8C) = zero;
+    *(int *)((char *)driver + 0xA0) = zero;
+    *(int *)((char *)driver + 0xB8) = minusOne;
+    *((char *)driver + 0xB4) = zero;
     fn_801352B8(obj);
     fn_801352B8(obj + 0x34);
     *(float *)(obj + 0x68) = lbl_80562180;
     ((Dummy_801938F4 *)(obj + 0x34))->d1(0);
     ((Dummy_801938F4 *)obj)->d1(0);
-    *(int *)((char *)arg0 + 0x294) = zero;
-    *(int *)((char *)arg0 + 0x290) = -1000;
-    return arg0;
+    *(int *)((char *)driver + 0x294) = zero;
+    *(int *)((char *)driver + 0x290) = -1000;
+    return driver;
 #pragma scheduling on
 }
 #pragma cplusplus reset
