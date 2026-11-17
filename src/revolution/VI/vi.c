@@ -1349,8 +1349,9 @@ void VISetBlack(BOOL black)
     OSRestoreInterrupts(enabled);
 }
 
-VITVFormat fn_8005AC08(void) {
-    return lbl_8055DBD0;
+/* Return the current VI retrace count (the SDK's VIGetRetraceCount). */
+s32 fn_8005AC08(void) {
+    return retraceCount;
 }
 
 static u32 getCurrentHalfLine(void)
