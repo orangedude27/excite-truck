@@ -903,7 +903,8 @@ float fn_802C973C(void) { return sViewAngle; }
 
 /* Raw field-of-view input last applied through fn_802C974C. */
 #define sFov lbl_8055FC40
-float fn_802C9744(void) { return lbl_8055FC40; }
+/* Return the current field-of-view value last applied through fn_802C974C. */
+float fn_802C9744(void) { return sFov; }
 
 extern float __fabsf(float);
 extern double __fabs(double);
