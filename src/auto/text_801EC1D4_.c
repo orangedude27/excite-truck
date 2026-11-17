@@ -1098,6 +1098,11 @@ extern char lbl_8033A1C8[];
 extern char lbl_8055B070[8];
 extern char lbl_8055B078[8];
 long fn_801EFF94(void *, long, long);
+/* Readable aliases; the game's own symbols keep their placeholder names. */
+#define CAR_WHEEL_CLASS_KEY lbl_8033A1C8 /* "wheel_class": the wheel record an axle group names */
+#define CAR_GROUP_FRONT lbl_8055B070      /* "Front" */
+#define CAR_GROUP_REAR lbl_8055B078       /* "Rear" */
+#define CAR_PARAM_SET(car) (*(void **)(*(char **)((char *)(car) + 0x188) + 0x2134)) /* the car's parameter record */
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_801EE974(void *arg0, void *arg1) {
