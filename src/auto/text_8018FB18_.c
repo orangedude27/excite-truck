@@ -1449,17 +1449,19 @@ extern "C" void fn_801914F8(void *wrapper) {
     sub->f8();
 }
 
-extern "C" void fn_8019150C(void *arg0, int arg1) {
+/* Forward virtual f7 to the sub-object at +4, then set the 3-bit field at the
+ * top of state[7] (state buffer at +8) to index+1. */
+extern "C" void fn_8019150C(void *wrapper, int index) {
     class VTable {
     public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
     };
-    VTable *sub = *(VTable **)((char *)arg0 + 4);
+    VTable *sub = *(VTable **)((char *)wrapper + 4);
     sub->f7();
     struct Bits { unsigned char a : 3; unsigned char b : 5; };
-    unsigned char *state = *(unsigned char **)((char *)arg0 + 8);
-    ((Bits *)&state[7])->a = (unsigned char)(arg1 + 1);
+    unsigned char *state = *(unsigned char **)((char *)wrapper + 8);
+    ((Bits *)&state[7])->a = (unsigned char)(index + 1);
 }
 
 #pragma push
