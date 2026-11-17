@@ -210,7 +210,8 @@ void fn_802ED038(MoviePlayInfo *record) {
 }
 
 extern void fn_802E1718(void *);
-void fn_802ED040(void *arg0) {
-    fn_802E1718(((void **)arg0)[16]);
+/* Report whether the movie held by the MoviePlayInfo record has finished (video.c helper; currently always 0). */
+void fn_802ED040(MoviePlayInfo *record) {
+    fn_802E1718(record->handle);
 }
 
