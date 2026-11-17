@@ -488,8 +488,9 @@ int *fn_80167E98(int *obj, int shouldDelete) {
     return obj;
 }
 
-void fn_80167EE0(s32 *arg0) {
-    *arg0 = 0;
+/* Array-element constructor (passed to fn_8002F53C): zero a newly constructed record's first field. */
+void fn_80167EE0(s32 *record) {
+    *record = 0;
 }
 
 extern void fn_8002F634(void *, void *, s32, s32);
@@ -917,27 +918,27 @@ extern "C" s32 fn_8016899C(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
     DummyVec2 d;
     DummyVec2 d1;
     DummyVec2 dc;
-    s32 *values;
-    s32 isRoad;
+    register s32 *values;
+    register s32 isRoad;
     s32 laneCount;
     s32 laneId;
-    s32 type;
-    DummyPattern *pat;
+    register s32 type;
+    register DummyPattern *pat;
     DummyVec2 *pts;
-    f32 total;
+    register f32 total;
     s32 i;
     s32 n;
     s32 segCount;
-    f32 step;
-    s32 id;
-    DummyEntry *entry;
-    f32 zero;
-    f32 half;
-    f32 one;
-    f32 pos;
+    register f32 step;
+    register s32 id;
+    register DummyEntry *entry;
+    register f32 zero;
+    register f32 half;
+    register f32 one;
+    register f32 pos;
     s32 seg;
     s32 last;
-    f32 t;
+    register f32 t;
     f32 len;
     s32 j;
     s32 sel;
