@@ -15425,7 +15425,9 @@ void btm_cback(u32 index, void *param) {
         p_elem[0xF] = 0;
     }
 }
-void fn_800833E8(void *arg0) { btm_cback(0, arg0); }
+/* Default GAP connection callback: forward the event to the BTM dispatcher
+   on channel 0 (connection events). */
+void fn_800833E8(void *param) { btm_cback(0, param); }
 
 void fn_800833F4(void *arg0) { btm_cback(1, arg0); }
 
