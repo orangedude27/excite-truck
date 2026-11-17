@@ -3341,8 +3341,11 @@ int fn_80165824(void) { return 0; }
 
 int fn_8016582C(void) { return 0; }
 
+/* AX "get studio name" accessor stub, dispatched indirectly through a function-pointer table; this build returns the placeholder label string "Challenge List" (lbl_8032FCB0). */
 void *__AXGetStudio_80165834(void) {
-    return lbl_8032FCB0;
+    #define sStudioName lbl_8032FCB0
+    return sStudioName;
+    #undef sStudioName
 }
 
 int fn_80165840(void) {
