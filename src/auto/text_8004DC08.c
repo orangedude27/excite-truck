@@ -58,6 +58,7 @@ int PackArgs(void* base, int count, char** args, int unused) {
     return 1;
 }
 #pragma pop
+#pragma dont_inline on
 void fn_8004DD88(void (*target)(void)) {
     ICFlashInvalidate();
     __sync();
