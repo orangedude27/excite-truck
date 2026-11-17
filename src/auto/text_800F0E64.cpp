@@ -4346,11 +4346,11 @@ extern "C" void *fn_800F8310(void *self) {
 #pragma use_lmw_stmw off
 extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* self, int flag) {
     if (self) {
-        *(void**)self = lbl_80325C40;
-        Destroy__Q46nw4hbm3snd6detail9FrameHeapFv((char*)self + 0x1C);
-        __dt__Q46nw4hbm3snd6detail9FrameHeapFv((char*)self + 0x1C, -1);
+        *(u32*)self = (u32)lbl_80325C40;
+        Destroy__Q46nw4hbm3snd6detail9FrameHeapFv((u8*)self + 0x1C);
+        __dt__Q46nw4hbm3snd6detail9FrameHeapFv((char*)((u32)self + 0x1C), -1);
         if (flag > 0)
-            fn_80128668();
+            ((void (*)(void *))fn_80128668)(self);
     }
     return self;
 }
@@ -7302,6 +7302,12 @@ extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6det
         u32 sampleBytes;
         ChannelWave channelsData[2];
     };
+    struct PlayerFields {
+        char pad6c[0x6C];
+        s32 f6c;
+        char pad78[8];
+        s32 f78;
+    };
     const char *base = lbl_80326768;
     if (*(volatile u32 *)((u8 *)arg0 + 0x42C) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768 + 0, 0x3E1, base + 0x1C4);
@@ -7420,7 +7426,7 @@ extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6det
     *(s32 *)(((u8 *)arg0) + 0x7C) = 0;
 
     if (((u8 *)arg0)[0x4F] != 0) {
-        *(s32 *)(((u8 *)arg0) + 0x6C) = *(s32 *)(((u8 *)arg0) + 0x28);
+        ((struct PlayerFields *)arg0)->f6c = *(s32 *)(((u8 *)arg0) + 0x28);
     } else {
         s32 last = *(s32 *)(((u8 *)arg0) + 0x88);
         s32 block = *(s32 *)(((u8 *)arg0) + 0x68);
@@ -7428,9 +7434,9 @@ extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6det
         s32 rem = (next - ((last - samplesPerBlock) + 1)) % ((last - (s32)*(u32 *)(((u8 *)arg0) + 0x84)) + 1);
         if (rem == 0)
             block = next;
-        *(s32 *)(((u8 *)arg0) + 0x6C) = block;
+        ((struct PlayerFields *)arg0)->f6c = block;
     }
-    *(s32 *)(((u8 *)arg0) + 0x78) = *(s32 *)(((u8 *)arg0) + 0x6C);
+    ((struct PlayerFields *)arg0)->f78 = ((struct PlayerFields *)arg0)->f6c;
 
     u32 token = OSDisableInterrupts();
     s32 requestedChannels = ((u8 *)arg0)[0x12];
