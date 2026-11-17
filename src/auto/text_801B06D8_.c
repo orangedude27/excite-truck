@@ -1963,7 +1963,9 @@ s32 fn_801B2F40(s32 arg0) {
 }
 
 typedef void (*VFnPtr)(void *);
-#define sDeitySlotBase lbl_8055E684 /* base of the 0x80-byte deity (AI truck) slot table */
+ #define sDeitySlotBase lbl_8055E684 /* base of the 0x80-byte deity (AI truck) slot table */
+ #define DEITY_SLOT_RANK 0x6C /* +0x6C: qualifying rank/placement, assigned by the fn_801B25B0 sort */
+
 #pragma cplusplus on
 /* RealName: DeitySlot_GetResourceType. Return the magic/tag at +0x10 of the resource held by a deity (AI truck) slot (0x50434152 = "PCAR"). */
 extern "C" s32 fn_801B2F54(s32 slotIndex) {
