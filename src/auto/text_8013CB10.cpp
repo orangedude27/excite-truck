@@ -528,7 +528,8 @@ extern "C" s32 fn_8013CB10(void) {
 #define GAME_TIME lbl_8055E3C8  /* .sbss: current game time in seconds, advanced every frame */
 #pragma dont_inline on
 extern "C" f32 fn_8013CB3C(void) {
-    return lbl_8055E3C8;
+    /* Return the current game time (seconds played). */
+    return GAME_TIME;
 }
 #pragma dont_inline off
 
