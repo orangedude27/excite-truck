@@ -258,7 +258,10 @@ s32 fn_80019430(void) {
 }
 
 s32 fn_800194C8(void) {
-    fn_80019438();
+#define CheckCarUnlockStatus fn_80019438
+    /* Tail-call thunk forwarding to the CAR-unlockable status check (0 = satisfied, 1 = otherwise). */
+    CheckCarUnlockStatus();
+#undef CheckCarUnlockStatus
 }
 #pragma dont_inline off
 
