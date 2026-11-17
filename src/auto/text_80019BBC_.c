@@ -21,7 +21,29 @@ extern void fn_802354A0(void *, int, int, float, float, float, float, float);
 extern void *fn_80156A40(void);
 extern float lbl_80560418;
 extern float lbl_8056041C;
-
+extern void fn_80019BBC(void);
+extern void fn_8001B7BC(void*);
+extern double fn_8002EFB0(float, float);
+extern void *memset(void*, int, unsigned long);
+extern char lbl_802FD618[];
+extern char lbl_802FD6CC[];
+extern char lbl_802FD6C0[];
+extern char* lbl_80358508;
+extern char lbl_80558C70[8];
+extern char lbl_80558C78[8];
+extern char lbl_80558C80[8];
+extern char lbl_80558C88[8];
+extern float lbl_80560428, lbl_8056042C, lbl_80560430, lbl_80560434, lbl_80560438;
+extern void *fn_801284F8(int, void*);
+extern void* fn_8023512C(void*);
+extern void fn_802A1120(void*, float*);
+extern int fn_8012C33C(void*);
+extern void* fn_80131808(void*);
+extern void fn_80131818(void*);
+extern int fn_802CB128(int, int, int, int);
+extern void* fn_802CAC28(void*, int);
+extern void fn_802C8530(void);
+extern void fn_802C855C(void);
 
 #pragma small_data off
 extern char lbl_803582C0[];
