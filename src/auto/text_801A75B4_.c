@@ -29,7 +29,7 @@ typedef struct Tail_801A7A5C { float x, y; unsigned char a, b, c; } Tail_801A7A5
 extern unsigned char lbl_80435370[];
 extern int lbl_8055CFF0;
 extern int lbl_8055CFF4;
-__declspec(section ".sdata2") double lbl_80562450 = 4503599761588224.0;
+extern double lbl_80562450;
 extern void fn_80127A84(int *, int *, unsigned int *);
 extern int fn_80129AE8(void *, int);
 extern void *memset(void *, int, unsigned int);
@@ -135,6 +135,7 @@ void fn_801A7844(int arg0) {
     int spC;
     unsigned int sp8;
     int a;
+    unsigned char *dest;
     int b;
     float x;
     float y;
@@ -151,14 +152,15 @@ void fn_801A7844(int arg0) {
     }
     fn_80127A84(&sp10, &spC, &sp8);
     a = (int)lbl_8055CFF0 / 2;
+    dest = lbl_80435370;
     b = (int)lbl_8055CFF4 / 2;
     x = (float)(sp10 - a) / (float)a;
     y = (float)(spC - b) / (float)b;
-    lbl_80435370[8] = sp8 & 1;
-    lbl_80435370[9] = (sp8 >> 1) & 1;
-    lbl_80435370[10] = (sp8 >> 2) & 1;
+    dest[8] = sp8 & 1;
+    dest[9] = (sp8 >> 1) & 1;
+    dest[10] = (sp8 >> 2) & 1;
     *(float *)&lbl_80435370[0] = x;
-    *(float *)&lbl_80435370[4] = y;
+    *(float *)&dest[4] = y;
 }
 extern void fn_801334F4(int, int, int *, int);
 #pragma push
