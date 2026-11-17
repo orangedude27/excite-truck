@@ -211,7 +211,10 @@ void fn_8001EFC4(void) {
 }
 
 void fn_8001EFC8(void) {
-    fn_8001F578();
+#define ClearAchievementBlocks fn_8001F578
+    /* Tail-call thunk: zero the active and pending achievement statistics blocks. */
+    ClearAchievementBlocks();
+#undef ClearAchievementBlocks
 }
 
 void fn_8001EFCC(void* alarm) {
