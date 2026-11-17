@@ -1811,8 +1811,10 @@ int fn_801D6C28(void) {
     return (int)lbl_80338868;
 }
 
-int fn_801D6C34(int arg0) {
-    return ((int *)arg0)[1];
+/* state() of a SoundEffect_ASE action-sequence element (vtable slot +0x18): report the
+ * element's state field (+0x04), which its start/update methods step through. */
+int fn_801D6C34(int element) {
+    return ((AseElementHeader *)element)->state;
 }
 
 /* If the timer object is idle (state 1), stamp its start field with the current global tick (lbl_8055E3C4), switch it to the active state (2) and report success. */
