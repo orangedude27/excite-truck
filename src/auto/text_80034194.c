@@ -3086,8 +3086,10 @@ void cbForCancel(void) {
 }
 
 extern void *lbl_8055D88C;
-void fn_8003998C(void* hi) {
-    lbl_8055D88C = hi;
+/* DVD cover-status callback: store the command's returned status word into
+   lbl_8055D88C so __DVDGetCoverStatus, polling it, can read the result. */
+void fn_8003998C(void* status) {
+    lbl_8055D88C = status;
 }
 
 u32 __DVDGetCoverStatus(void) {
