@@ -710,9 +710,12 @@ extern s32 fn_8024A6EC(s32 *, void *);
 extern s32 fn_8024ACB4(s32 *, s32, void *);
 extern u8 lbl_8055F298;
 static inline s32 findEntry8024B070(s32 **arg1, s32 *arg0) {
-    s32 offset = 0;
-    s32 i = 0;
-    s32 n = *(s32 *)((u8 *)arg1 + 4);
+    s32 offset;
+    s32 i;
+    s32 n;
+    i = 0;
+    offset = 0;
+    n = *(s32 *)((u8 *)arg1 + 4);
     for (; i < n; offset += 0x18, i++) {
         s32 item = *(s32 *)((u8 *)*arg1 + offset);
         s32 key = *arg0;
