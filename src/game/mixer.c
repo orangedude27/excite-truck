@@ -555,6 +555,9 @@ int fn_802093A4(void *arg0) {
 #undef state
 }
 
+/* No-op placeholder hook; one of a run of adjacent empty stubs
+ * (fn_802093EC, fn_802093F0, fn_802093F4, ...) in the mixer subsystem
+ * that intentionally do nothing. */
 void fn_802093EC(void) {
 
 }
