@@ -24,9 +24,12 @@ struct BtaHhFindMessages { u8 found[0x24]; u8 inUse[0x34]; u8 limit[0x2C]; };
 #define btsnd_hcic_sniff_mode btsnd_hcic_sniff_mode_api
 #define btsnd_hcic_hold_mode btsnd_hcic_hold_mode_api
 #define btsnd_hcic_accept_esco_conn btsnd_hcic_accept_esco_conn_api
-#define btsnd_hcic_set_event_filter btsnd_hcic_set_event_filter_4arg
-#include "revolution/BTE/stack/include/hcimsgs.h"
-#undef btsnd_hcic_set_event_filter
+ #define btsnd_hcic_set_event_filter btsnd_hcic_set_event_filter_4arg
+ #define btsnd_hcic_read_stored_key btsnd_hcic_read_stored_key_public
+ #include "revolution/BTE/stack/include/hcimsgs.h"
+ #undef btsnd_hcic_read_stored_key
+ extern int btsnd_hcic_read_stored_key(void *, u8 *, u8);
+ #undef btsnd_hcic_set_event_filter
 extern BOOLEAN btsnd_hcic_set_event_filter(void *, UINT8, UINT8, UINT8 *, UINT8);
 #undef btsnd_hcic_accept_esco_conn
 #undef btsnd_hcic_sniff_mode
