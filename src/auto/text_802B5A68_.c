@@ -350,18 +350,14 @@ void fn_802B5EC4(void) {
     lbl_8055FA44 = (void*)fn_802B5D94();
 }
 
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802B5EE8(void) {
     register s32 v = lbl_8055FA38 + 1;
-    register s32 zero = 0;
     lbl_8055FA18 = lbl_80564C5C;
     v %= 4;
     lbl_8055FA38 = v;
-    *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = zero;
+    ((s32 *)&lbl_804BE7D8)[1] = 0;
 }
-#pragma pop
 extern s32 lbl_8055FA38;
 extern float lbl_8055FA18;
 __declspec(section ".data") extern s32 lbl_804BE7D8;
@@ -531,6 +527,7 @@ extern char lbl_8034A670[];
 extern char lbl_8034A70C[];
 extern int strcmp(const char *, const char *);
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_802B62A4(const char **arg) {
     register s32 *entry;
     register u32 i;
