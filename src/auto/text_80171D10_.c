@@ -61,7 +61,9 @@ typedef struct CachedMessage {
    at +0x1AC and built by fn_8017353C.  The ten text cells are the results
    overlay's fields; fn_8017272C refills them every frame and fn_80173ACC
    writes the last three. */
-typedef struct CrushRoundState {
+ #define CRUSH_ROUND_ENDED 2 /* round.state: results shown, awaiting finish (fn_801758B8) */
+ typedef struct CrushRoundState {
+
     int state;                  /* +0x00: 0 idle, 1 running, 2 ended, 4 scored */
     float time;                 /* +0x04: game time the round began, -1.0 unused */
     unsigned char active;       /* +0x08 */
