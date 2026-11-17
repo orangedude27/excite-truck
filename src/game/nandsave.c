@@ -344,8 +344,9 @@ void fn_802E8D2C(void) {
 }
 
 extern void *lbl_80560024;
-void fn_802E8D7C(void* hi) {
-    lbl_80560024 = hi;
+/* Set the active NAND-save interface object pointer (gNandSaveInterface); 0 clears it. */
+void fn_802E8D7C(void* saveInterface) {
+    lbl_80560024 = saveInterface;
 }
 
 typedef unsigned int u32;
