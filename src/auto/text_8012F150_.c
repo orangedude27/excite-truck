@@ -87,8 +87,9 @@ void fn_8012F2E4(void) {
     fn_8012C4D8();
 }
 
-s32 fn_8012F2E8(s32 *arg0) {
-    return *arg0;
+/* Return the value pointed to: the row count of the most recently loaded STAB table. */
+s32 fn_8012F2E8(s32 *value) {
+    return *value;
 }
 
 void *fn_8012F2F0(s32 *table, s32 row, s32 column) {
