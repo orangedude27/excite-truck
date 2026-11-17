@@ -2702,6 +2702,8 @@ struct WorldMorphAse {
     int state; /* 0x28, 1 = idle/ready, 2 = running */
 };
 
+/* Return the current state of a WorldMorph_ASE action-sequence element (the
+ * state() slot at vtable+0x18); fn_801D7C80 starts it and fn_801D7D20 steps it. */
 int fn_801D7C78(struct WorldMorphAse *element) {
     return element->state;
 }
