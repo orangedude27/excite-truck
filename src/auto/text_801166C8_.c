@@ -799,7 +799,7 @@ void fn_80117618(void *arg0, void *arg1) {
     layout[27] = temp_r5; layout[28] = 0; layout[29] = 0;
 }
 
-void fn_801176FC(void* arg0,s32 arg1){if(arg0)*(s32*)((u8*)arg0+0xb8)=arg1;}
+void fn_801176FC(void* bink, s32 layout){if(bink)*(s32*)((u8*)bink+0xb8)=layout;}
 
 extern u32 lbl_80559944;
 extern u32 lbl_8041D608[0x100];
