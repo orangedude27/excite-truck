@@ -178,8 +178,10 @@ extern "C" void fn_801B4720(int arg0) {
 #pragma pop
 
 #pragma dont_inline on
-int *fn_801B479C(int arg0, int arg1) {
-    return (int *)(*(int *)(arg0 + 0x18) + arg1 * 12);
+/* Return the 12-byte ReplayFrame at index in the FramePool's mFrames array,
+ * whose base pointer lives at +0x18 of the pool object. */
+int *fn_801B479C(int pool, int index) {
+    return (int *)(*(int *)(pool + 0x18) + index * 12);
 }
 #pragma dont_inline reset
 
