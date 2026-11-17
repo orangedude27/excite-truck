@@ -19549,7 +19549,9 @@ extern "C" void fn_800CF95C(s32 base, s32 index, s8 value) {
 }
 
 extern "C" void fn_800CF968(void) {
-
+    /* No-op virtual method (slot +0x2C / vf9) of the homebutton::gui
+     * PaneComponent-derived class whose vtable is lbl_8031E780: an empty
+     * override that does nothing. */
 }
 
 /* No-op virtual stub: an empty method slot in the homebutton GUI component
