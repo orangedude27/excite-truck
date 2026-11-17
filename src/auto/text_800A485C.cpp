@@ -1,5 +1,5 @@
   #include <types.h>
-static inline s32 fn_800B6004_tail(u16 flags) {
+static __inline s32 fn_800B6004_tail(u16 flags) {
     if (!(flags & 8)) return 9;
     return -((flags >> 1) & 1) & 0xB;
 }
