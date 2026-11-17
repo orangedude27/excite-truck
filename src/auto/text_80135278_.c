@@ -169,12 +169,14 @@ void fn_80135390(Unk_80135278 *follower) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    float f = 0.0f;
-    arg0->unk_4 = arg3;
-    arg0->unk_8 = f;
-    fn_801355C0(arg0, arg1, arg2, &arg0->unk_4, 0);
-    fn_801357A4(arg0, arg1);
+/* InitPathFollower: start the follower at startNode with fraction 0, resolve the
+ * initial sample through the point/hint, then sample the follower once. */
+void fn_801353C8(Unk_80135278 *follower, s32 point, s32 hint, s32 startNode) {
+    float fraction = 0.0f;
+    follower->unk_4 = startNode;
+    follower->unk_8 = fraction;
+    fn_801355C0(follower, point, hint, &follower->unk_4, 0);
+    fn_801357A4(follower, point);
 }
 // The circular list of stretches the samplers search: only its first stretch
 // is read here.  (The searches below walk it with fn_80135420's own loads.)
