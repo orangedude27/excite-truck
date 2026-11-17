@@ -1548,8 +1548,10 @@ void fn_802BAE50(void) {
 }
 
 typedef signed char s8;
-void fn_802BAF98(void* arg0, s8 arg1) {
-    ((s8*)arg0)[0xC] = arg1;
+/* Store value into the single-byte state/enable flag at offset +0xC of a
+ * pooled object (road pieces, gems and list-node owners all use this byte). */
+void fn_802BAF98(void* object, s8 value) {
+    ((s8*)object)[0xC] = value;
 }
 
 #pragma push
