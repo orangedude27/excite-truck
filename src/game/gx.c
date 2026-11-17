@@ -3285,7 +3285,11 @@ extern void GXLoadTexObj(void *, int, void *);
 extern volatile int lbl_8055FDD0;
 extern char lbl_8034C204[];
 void fn_802D3D6C(void) {
-    lbl_804C5700[12] = 1;
+    /* Enable texture-matrix 0 for texcoord 0 in the shared render request block
+       (request +0xC selects GX_TEXMTX0 instead of GX_IDENTITY in fn_802D2684). */
+#define texCoordMtxFlag lbl_804C5700[12]
+    texCoordMtxFlag = 1;
+#undef texCoordMtxFlag
 }
 
 void fn_802D3D80(void) {
