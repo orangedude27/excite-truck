@@ -8785,8 +8785,9 @@ extern "C" void fn_80228E80(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s3
     fn_80218EBC((void *)arg0, &savedRect);
 }
 
-extern "C" s32 fn_80228F40(s32 arg0, s32 arg1) {
-    return arg0 + arg1 * 1000;
+/* Pack a screen-grid position into a unique element id (1000 columns per row). */
+extern "C" s32 fn_80228F40(s32 column, s32 row) {
+    return column + row * 1000;
 }
 
 extern "C" void *fn_80223208(void *, unsigned int);
