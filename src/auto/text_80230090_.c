@@ -566,7 +566,9 @@ float fn_80230EF4(long mode) {
 extern f32 lbl_80563610, lbl_80563640, lbl_80563648;
 extern u32 lbl_8055FB9C, lbl_8055FBA0;
 float fn_80230E54(float, float);
-void fn_80230F6C(s32 *arg0) { *arg0 = -0x35BC; }
+/* Reset a selected-item color field to the default highlight color 0xFFFFCA44
+   (called by fn_80230F78). */
+void fn_80230F6C(s32 *color) { *color = -0x35BC; }
 
 extern float fn_80230EF4(long);
 extern float lbl_80563610, lbl_80563614, lbl_80563658, lbl_80563664, lbl_80563668, lbl_8056366C;
