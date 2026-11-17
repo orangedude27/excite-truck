@@ -711,15 +711,17 @@ extern "C" void fn_802B676C(void) {
 __declspec(section ".sdata") extern const char lbl_8055CE78[], lbl_8055CE80[];
 extern const char lbl_8034A808[], lbl_8034A814[];
 extern s32 fn_80147FF0(s32);
-#pragma push
-#pragma scheduling invalid_target
-#pragma scheduling on
-void fn_802B67C8(s32 arg0) {
-    void *g = lbl_8055FA48;
-    void *obj;
-    obj = ((void *(*)(void *, s32))(*(void ***)g)[5])(g, arg0);
+#pragma cplusplus on
+extern "C" void fn_802B67C8(s32 arg0) {
+    struct Dummy {
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void *v3(s32);
+    };
+    Dummy *g = (Dummy *)lbl_8055FA48;
+    void *obj = g->v3(arg0);
     ((void (*)(void *, s32))fn_80147FF0)(obj, *(s32 *)((char *)obj + 0x18));
 }
+#pragma cplusplus reset
 __declspec(section ".sdata") extern const char lbl_8055CE74[];
 extern u8 lbl_8055FA30;
 #pragma use_lmw_stmw off
