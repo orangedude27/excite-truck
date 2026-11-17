@@ -1103,6 +1103,7 @@ void *fn_8003BCC0(void) { return *(void **)&lbl_8037B8A0; }
 /* DVD low-level: unmask status interrupts. On Broadway this is a no-op stub that always reports success (TRUE). */
 unsigned int DVDLowUnmaskStatusInterrupts(void) { return 1; }
 
+/* DVD low-level: mask the cover interrupt. On Broadway this is a no-op stub that always reports success (TRUE). */
 unsigned int DVDLowMaskCoverInterrupt(void) { return 1; }
 
 #pragma scheduling invalid_target
