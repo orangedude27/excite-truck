@@ -163,32 +163,39 @@ void fn_80127D58(unsigned int arg0) {
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_80127E28(unsigned int arg0) {
-    int i;
-    int count;
-    char *entry;
-    int found;
-    int last;
-    count = lbl_8041E098[1];
-    for (i = 0, entry = (char *)lbl_8041E098; i < count; i++, entry += 16) {
-        found = 0;
-        if (*(int *)(entry + 8) == 0) {
-            if (*(unsigned int *)(entry + 12) == arg0)
-                found = 1;
-        }
+    char *entry = (char *)lbl_8041E098;
+    int i = 0;
+    int count = *(int *)(entry + 4);
+    for (; i < count; entry += 16, i++) {
+        int found = 0;
+        if (*(int *)(entry + 8) == 0 && *(unsigned int *)(entry + 12) == arg0)
+            found = 1;
         if (found != 0) {
-            if (i >= 0 && i < count) {
-                if (*(unsigned char *)lbl_8041E098 != 0) {
-                    *((char *)lbl_8041E098 + i * 16 + 20) = 1;
-                    return;
+            if (i < 0)
+                return;
+            if (i >= count)
+                return;
+            if (*(unsigned char *)lbl_8041E098 != 0) {
+                char *mark = (char *)lbl_8041E098;
+                mark += i * 16;
+                mark[20] = 1;
+                return;
+            }
+            {
+                char *dest;
+                int last;
+                char *base = (char *)lbl_8041E098;
+                last = *(volatile int *)(base + 4);
+                dest = base + i * 16;
+                last--;
+                *(volatile int *)(base + 4) = last;
+                {
+                    char *src = base + last * 16;
+                    *(int *)(dest + 8) = *(int *)(src + 8);
+                    *(int *)(dest + 12) = *(int *)(src + 12);
+                    *(int *)(dest + 16) = *(int *)(src + 16);
+                    dest[20] = src[20];
                 }
-                last = *(volatile int *)&lbl_8041E098[1];
-                last = last - 1;
-                *(volatile int *)&lbl_8041E098[1] = last;
-                entry = (char *)lbl_8041E098 + i * 16;
-                *(int *)(entry + 8) = *(int *)((char *)lbl_8041E098 + last * 16 + 8);
-                *(int *)(entry + 12) = *(int *)((char *)lbl_8041E098 + last * 16 + 12);
-                *(int *)(entry + 16) = *(int *)((char *)lbl_8041E098 + last * 16 + 16);
-                entry[20] = *((char *)lbl_8041E098 + last * 16 + 20);
             }
             return;
         }
