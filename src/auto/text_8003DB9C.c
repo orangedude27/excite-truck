@@ -4319,6 +4319,7 @@ void GXInitTexObjLOD(void *obj, GXTexFilter min_filt, GXTexFilter mag_filt, f32 
 }
 
 void GXInitTexObjWrapMode(int *obj, int wrap_s, int wrap_t) {
+    /* Set the S and T texture-coordinate wrap modes in a texture object's wrap register. */
     ((GXTexWrapReg *)obj)->wrapS = wrap_s;
     ((GXTexWrapReg *)obj)->wrapT = wrap_t;
 }
