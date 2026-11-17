@@ -105,6 +105,7 @@ extern void fn_802C8DB8(f32*, s32, u16*, s32);
 #pragma push
 #pragma paired_single off
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_80202BFC(s32 arg0) {
     typedef union { f32 f; s32 s; } WorkValue;
     typedef struct { s32 pair2[2]; s32 pair1[2]; u16 table[6]; u16 pad[2]; WorkValue values[24]; } Work;
@@ -122,7 +123,6 @@ void fn_80202BFC(s32 arg0) {
 
     work.pair1[0] = *(volatile s32 *)&lbl_805630B8;
     f28 = lbl_805630C8;
-    table = (volatile u16 *)lbl_802F9D48;
     work.pair1[1] = arg0;
     f29 = lbl_805630CC;
     i = 0;
@@ -153,7 +153,6 @@ void fn_80202BFC(s32 arg0) {
         i++; p1++; p2++;
     } while (i < 2);
 }
-#pragma processor reset
 
 #pragma push
 #pragma processor 750
@@ -702,26 +701,24 @@ extern u8 lbl_8055ED08;
 #pragma use_lmw_stmw off
 void fn_80203C50(s32 arg0) {
     char name[0x20];
-    const char *base;
-    const char *first;
+    const char *base = lbl_8033BA88;
+    const char *first = base + 0;
     s32 i;
     s32 count;
     lbl_8048897C_entry *entries;
     s32 resource;
 
-    base = lbl_8033BA88;
     lbl_8055ED14 = arg0;
     lbl_8055ED18 = 1;
-    first = base;
     if (arg0 == 1) {
         first = base + 0xC;
     }
     lbl_8055ED00 = fn_802CAC28(first, 0);
-    lbl_8055ED04 = fn_802CAC28(lbl_8033BA88 + 0x18, 0);
-    lbl_8055ED0C = fn_802CAC28(lbl_8033BA88 + 0x24, 0);
+    lbl_8055ED04 = fn_802CAC28(base + 0x18, 0);
+    lbl_8055ED0C = fn_802CAC28(base + 0x24, 0);
 
     for (i = 0; i < 0x5A; i++) {
-        fn_801345D8(name, 0x20, lbl_8033BA88 + 0x30, i);
+        fn_801345D8(name, 0x20, base + 0x30, i);
         if (fn_8012C33C(name) != 0) {
             resource = fn_802CAC28(name, 0);
             count = lbl_8048897C.count;
@@ -734,8 +731,8 @@ void fn_80203C50(s32 arg0) {
 
     resource = fn_802CB128(0x100, 0x100, 0, 1);
     lbl_8055ECFC = resource;
-    fn_802CAE98(resource, base);
-    fn_802CAE98(lbl_8055ED00, lbl_8033BA88 + 0x3C);
+    fn_802CAE98(resource, first);
+    fn_802CAE98(lbl_8055ED00, base + 0x3C);
     fn_802CAF1C(lbl_8055ECFC, 6, 0x50);
     fn_80202BE4();
     lbl_8055ED08 = 1;
