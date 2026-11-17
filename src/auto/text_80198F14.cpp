@@ -3823,7 +3823,7 @@ extern "C" void* fn_801A1CE4(void *shape, s32 owner, s32 swap) {
     // register, so all twenty bytes are read before any is written back.
     u8 b24, b28, b2c, b30, b34;
     u8 b25, b29, b2d, b31, b35;
-    fn_8019ECC4();
+    ((void(*)(void*,s32,s32))fn_8019ECC4)(shape, owner, swap);
     *(void**)shape = &lbl_803338C0;
     if (swap != 0) {
         b24 = *(u8*)((u8*)shape + 0x24);
@@ -4493,6 +4493,7 @@ extern "C" void fn_801A2EC8(void) {
 
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
     f32 corners[24];
     f32 tmp[3];
@@ -4500,18 +4501,16 @@ extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
     f32 *hi = (f32 *)arg2;
     f32 b = *(f32 *)((u8 *)arg0 + 0x28);
     f32 c = *(f32 *)((u8 *)arg0 + 0x24) + b;
-    f32 nb = -b;
-    f32 nc = -c;
     const f32 *m = *(const f32 **)((u8 *)arg0 + 0xC);
     f32 *p;
     int i;
-    corners[0] = nc; corners[1] = nc; corners[2] = nb;
-    corners[3] = nc; corners[4] = nc; corners[5] = b;
-    corners[6] = nc; corners[7] = c; corners[8] = nb;
-    corners[9] = nc; corners[10] = c; corners[11] = b;
-    corners[12] = c; corners[13] = nc; corners[14] = nb;
-    corners[15] = c; corners[16] = nc; corners[17] = b;
-    corners[18] = c; corners[19] = c; corners[20] = nb;
+    corners[0] = -c; corners[1] = -c; corners[2] = -b;
+    corners[3] = -c; corners[4] = -c; corners[5] = b;
+    corners[6] = -c; corners[7] = c; corners[8] = -b;
+    corners[9] = -c; corners[10] = c; corners[11] = b;
+    corners[12] = c; corners[13] = -c; corners[14] = -b;
+    corners[15] = c; corners[16] = -c; corners[17] = b;
+    corners[18] = c; corners[19] = c; corners[20] = -b;
     corners[21] = c; corners[22] = c; corners[23] = b;
     lo[0] = m[9]; lo[1] = m[10]; lo[2] = m[11];
     hi[0] = m[9]; hi[1] = m[10]; hi[2] = m[11];
@@ -4541,7 +4540,6 @@ extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
         hi[2] = (hi[2] > tmp[2]) ? hi[2] : tmp[2];
     }
 }
-
 extern "C" void fn_801A3174(void *shape) {
     /* Forward to fn_801E3FC8 (matrix/translation setup via handle lbl_8055E598):
      * the child referenced at +0xC (its +0x24 position) and a scale formed by
