@@ -361,28 +361,32 @@ extern void DCFlushRange(void *, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma unroll off
+#pragma ctrloop on
 void fn_800331A0(void) {
-#pragma unroll off
     unsigned int i;
     int j;
-    int *p;
+    s32 *p;
+    s32 ctr;
     lbl_8055D7E4 = 0;
     lbl_8055D7E8 = *(unsigned int *)0x800000F8 / 667;
-    p = (int *)lbl_80363C60;
-    for (j = 0; j < 0x200; j++) {
-        int k;
-        for (k = 0; k < 9; k++) *p++ = 0;
-    }
-    p = (int *)lbl_8036C460;
-    for (j = 0; j < 0x80; j++) {
-        int k;
-        for (k = 0; k < 8; k++) *p++ = 0;
-    }
-    p = (int *)lbl_8036D460;
-    for (j = 0; j < 0x3c0; j++) {
-        int k;
-        for (k = 0; k < 10; k++) *p++ = 0;
-    }
+    p = (s32 *)lbl_80363C60;
+    ctr = 0x200;
+    do {
+        p[0]=0; p[1]=0; p[2]=0; p[3]=0; p[4]=0; p[5]=0; p[6]=0; p[7]=0; p[8]=0;
+        p += 9;
+    } while (--ctr != 0);
+    p = (s32 *)lbl_8036C460;
+    ctr = 0x80;
+    do {
+        p[0]=0; p[1]=0; p[2]=0; p[3]=0; p[4]=0; p[5]=0; p[6]=0; p[7]=0;
+        p += 8;
+    } while (--ctr != 0);
+    p = (s32 *)lbl_8036D460;
+    ctr = 0x3c0;
+    do {
+        p[0]=0; p[1]=0; p[2]=0; p[3]=0; p[4]=0; p[5]=0; p[6]=0; p[7]=0; p[8]=0; p[9]=0;
+        p += 10;
+    } while (--ctr != 0);
     for (i = 0; i < 0x40; i++) {
         unsigned char *vpb = lbl_8036D460 + i * 0x258;
         unsigned char *buf = lbl_80363C60 + i * 0x120;
