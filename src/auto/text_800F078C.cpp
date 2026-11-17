@@ -346,8 +346,9 @@ extern "C" s32 fn_800F0E40(s32 base) {
     return base + 0xD8;
 }
 
-extern "C" s32 fn_800F0E48(s32 arg0) {
-    return arg0 + 0xD8;
+/* Returns a pointer to the field/sub-object held at offset +0xD8 of the given sound object. */
+extern "C" s32 fn_800F0E48(s32 object) {
+    return object + 0xD8;
 }
 
 extern "C" u32* fn_800F0E50(void) {
