@@ -1878,56 +1878,62 @@ typedef struct { u32 a, b; } WordPair_801B2D28;
 extern "C" s32 fn_801B2F40(s32);
 extern "C" f32 fn_801B306C(void);
 extern "C" void *fn_801B307C(void);
-extern "C" void fn_801B2D28(void *arg0) {
+/* Fill the global race-state buffer (lbl_8055E450) with a snapshot of the race:
+ * clear the 0x1C-byte info block at +0x560 and store the progress snapshot,
+ * lead deity slot, contest lap count, scheduled deadline and finishing flags;
+ * copy one 0x38-byte per-racer record from each deity's state block into the
+ * standings table at +0x3A0; and set +0x39C to the whole seconds left until the
+ * finish (0 when there is no countdown, -1 when the deadline is disarmed). */
+extern "C" void fn_801B2D28(void *raceState) {
     struct Item {
         virtual void d0();
         virtual void d1();
-        virtual void *get();
+        virtual void *getState();
     };
     struct Header {
         u8 padding[0x560];
-        void *resource;
+        void *progressSnapshot;
     };
-    s32 offset;
-    u8 *dst;
-    s32 index;
-    s32 value;
+    s32 slotOffset;
+    u8 *record;
+    s32 racerIndex;
+    s32 activeFlag;
 
-    memset((u8 *)arg0 + 0x560, 0, 0x1C);
-    ((Header *)arg0)->resource = fn_801B307C();
-    *(s32 *)((u8 *)arg0 + 0x564) = fn_801B2F40(0);
-    value = lbl_8055E6A8;
+    memset((u8 *)raceState + 0x560, 0, 0x1C);
+    ((Header *)raceState)->progressSnapshot = fn_801B307C();
+    *(s32 *)((u8 *)raceState + 0x564) = fn_801B2F40(0);
+    activeFlag = lbl_8055E6A8;
     if (lbl_8055E691)
-        value = 0;
-    *(s32 *)((u8 *)arg0 + 0x574) = value;
-    *(s32 *)((u8 *)arg0 + 0x578) = value;
-    *(f32 *)((u8 *)arg0 + 0x56C) = lbl_8055E6A4;
-    *(f32 *)((u8 *)arg0 + 0x570) = fn_801B306C();
+        activeFlag = 0;
+    *(s32 *)((u8 *)raceState + 0x574) = activeFlag;
+    *(s32 *)((u8 *)raceState + 0x578) = activeFlag;
+    *(f32 *)((u8 *)raceState + 0x56C) = lbl_8055E6A4;
+    *(f32 *)((u8 *)raceState + 0x570) = fn_801B306C();
 
-    dst = (u8 *)arg0;
-    index = 0;
-    *(void **)((u8 *)arg0 + 0x568) = lbl_8055E680;
-    offset = 0;
-    while (index < (s32)lbl_8055E678) {
-        Item *obj = (Item *)((u8 *)lbl_8055E684 + offset);
-        void *result = obj->get();
+    record = (u8 *)raceState;
+    racerIndex = 0;
+    *(void **)((u8 *)raceState + 0x568) = lbl_8055E680;
+    slotOffset = 0;
+    while (racerIndex < (s32)lbl_8055E678) {
+        Item *deity = (Item *)((u8 *)lbl_8055E684 + slotOffset);
+        void *deityState = deity->getState();
 
-        *(u32 *)(dst + 0x3A0) = *(u32 *)((u8 *)result + 0x00);
-        *(u32 *)(dst + 0x3A4) = *(u32 *)((u8 *)result + 0x04);
-        *(u32 *)(dst + 0x3A8) = *(u32 *)((u8 *)result + 0x08);
-        *(f32 *)(dst + 0x3AC) = *(f32 *)((u8 *)result + 0x0C);
-        *(u32 *)(dst + 0x3B0) = *(u32 *)((u8 *)result + 0x10);
-        *(f32 *)(dst + 0x3B4) = *(f32 *)((u8 *)result + 0x14);
-        *(f32 *)(dst + 0x3B8) = *(f32 *)((u8 *)result + 0x18);
-        *(f32 *)(dst + 0x3BC) = *(f32 *)((u8 *)result + 0x1C);
-        *(f32 *)(dst + 0x3C0) = *(f32 *)((u8 *)result + 0x20);
-        *(u32 *)(dst + 0x3C4) = *(u32 *)((u8 *)result + 0x24);
-        *(u8 *)(dst + 0x3C8) = *(u8 *)((u8 *)result + 0x28);
-        *(f32 *)(dst + 0x3CC) = *(f32 *)((u8 *)result + 0x2C);
-        *(WordPair_801B2D28 *)(dst + 0x3D0) = *(WordPair_801B2D28 *)((u8 *)result + 0x30);
-        dst += 0x38;
-        offset += 0x80;
-        ++index;
+        *(u32 *)(record + 0x3A0) = *(u32 *)((u8 *)deityState + 0x00);
+        *(u32 *)(record + 0x3A4) = *(u32 *)((u8 *)deityState + 0x04);
+        *(u32 *)(record + 0x3A8) = *(u32 *)((u8 *)deityState + 0x08);
+        *(f32 *)(record + 0x3AC) = *(f32 *)((u8 *)deityState + 0x0C);
+        *(u32 *)(record + 0x3B0) = *(u32 *)((u8 *)deityState + 0x10);
+        *(f32 *)(record + 0x3B4) = *(f32 *)((u8 *)deityState + 0x14);
+        *(f32 *)(record + 0x3B8) = *(f32 *)((u8 *)deityState + 0x18);
+        *(f32 *)(record + 0x3BC) = *(f32 *)((u8 *)deityState + 0x1C);
+        *(f32 *)(record + 0x3C0) = *(f32 *)((u8 *)deityState + 0x20);
+        *(u32 *)(record + 0x3C4) = *(u32 *)((u8 *)deityState + 0x24);
+        *(u8 *)(record + 0x3C8) = *(u8 *)((u8 *)deityState + 0x28);
+        *(f32 *)(record + 0x3CC) = *(f32 *)((u8 *)deityState + 0x2C);
+        *(WordPair_801B2D28 *)(record + 0x3D0) = *(WordPair_801B2D28 *)((u8 *)deityState + 0x30);
+        record += 0x38;
+        slotOffset += 0x80;
+        ++racerIndex;
     }
 
     if (fn_801E89EC() == 0) {
@@ -1936,12 +1942,12 @@ extern "C" void fn_801B2D28(void *arg0) {
             f32 start;
             start = lbl_8055E3C8;
             end = lbl_8055E6A4;
-            *(s32 *)((u8 *)arg0 + 0x39C) = (s32)(end - start) + 1;
+            *(s32 *)((u8 *)raceState + 0x39C) = (s32)(end - start) + 1;
         } else {
-            *(s32 *)((u8 *)arg0 + 0x39C) = -1;
+            *(s32 *)((u8 *)raceState + 0x39C) = -1;
         }
     } else {
-        *(s32 *)((u8 *)arg0 + 0x39C) = 0;
+        *(s32 *)((u8 *)raceState + 0x39C) = 0;
     }
 }
 #pragma cplusplus reset
