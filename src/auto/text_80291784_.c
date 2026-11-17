@@ -216,20 +216,23 @@ void fn_80291AC8(void) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_80291B14(arg0, value)
-void *arg0;
-float value;
+#pragma scheduling on
+void fn_80291B14(void *arg0, float value)
 {
-    int result;
-    signed char success;
-    fn_802C8E70((int *)arg0, (int *)lbl_804B4010);
-    *((float *)(lbl_804B4010 + 8)) = value;
-    result = fn_802C8FF4((int *)lbl_804B4010, *((float *)(lbl_804B4010 + 0x1C)));
-    success = 0;
-    if (result != 0 && fn_802D3A5C(*((int *)(lbl_804B4010 + 0x10)), (int *)lbl_804B4010) != 0) {
-        success = 1;
-    }
-    *((unsigned char *)(lbl_804B4010 + 0x14)) = success;
+  int result;
+  signed char success;
+  fn_802C8E70((int *) arg0, (int *) lbl_804B4010);
+  *((float *) (lbl_804B4010 + 8)) = value;
+  ;
+  success = 0;
+  if ((fn_802C8FF4((int *) lbl_804B4010, *((float *) (lbl_804B4010 + 0x1C))) != 0) && (fn_802D3A5C(*((int *) (lbl_804B4010 + 0x10)), (int *) lbl_804B4010) != 0))
+  {
+    success = 1;
+  }
+  if (lbl_804B4010)
+  {
+  }
+  *((unsigned char *) (lbl_804B4010 + 0x14)) = success;
 }
 void fn_80291B9C(void *arg0, float *arg1, float arg2) {
     float c = arg1[2];
