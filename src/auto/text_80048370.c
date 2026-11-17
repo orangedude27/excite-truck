@@ -148,15 +148,14 @@ void WPADiSamplingCallback(s32 chan, s32 result) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling reset
 void *FindContainHeap_(MEMList *list, u32 addr) {
-    MEMiHeapHead *heap;
     MEMiHeapHead *child;
     MEMiHeapHead *block;
+    MEMiHeapHead *heap;
     MEMiHeapHead *found;
 
     heap = 0;
-    /* Walk the nested heap lists (heaps -> children -> blocks) to find the innermost heap whose [start,end) range contains addr. */
     while ((heap = (MEMiHeapHead *)MEMGetNextListObject(list, heap)) != 0) {
         if ((u32)heap->start <= addr && addr < (u32)heap->end) {
             child = 0;
@@ -166,18 +165,25 @@ void *FindContainHeap_(MEMList *list, u32 addr) {
                     while ((block = (MEMiHeapHead *)MEMGetNextListObject(&child->list, block)) != 0) {
                         if ((u32)block->start <= addr && addr < (u32)block->end) {
                             found = (MEMiHeapHead *)FindContainHeap_(&block->list, addr);
-                            if (found != 0)
-                                return found;
-                            return block;
+                            switch ((u32)found) { case 0: found = block; break; default: break; }
+                            goto found_inner;
                         }
                     }
-                    return child;
+                    found = 0;
+                found_inner:
+                    switch ((u32)found) { case 0: found = child; break; default: break; }
+                    goto found_middle;
                 }
             }
-            return heap;
+            found = 0;
+        found_middle:
+            switch ((u32)found) { case 0: found = heap; break; default: break; }
+            goto found_outer;
         }
     }
-    return 0;
+    found = 0;
+found_outer:
+    return found;
 }
 
 #pragma push
