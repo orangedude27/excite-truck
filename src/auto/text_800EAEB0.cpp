@@ -1451,8 +1451,9 @@ extern "C" s32 fn_800ED0A8(s32 player) {
 extern "C" s32 fn_800ED0BC(void *arg0) {
     return ((u8 *)arg0)[0x16] != 0;
 }
-extern "C" s32 fn_800ED0D0(void *arg0) {
-    return ((u8 *)arg0)[0x15] != 0;
+extern "C" s32 fn_800ED0D0(void *object) {
+    /* Returns 1 when the boolean byte flag at offset 0x15 of the object is set, 0 otherwise. */
+    return ((u8 *)object)[0x15] != 0;
 }
 #pragma push
 #pragma small_data off
