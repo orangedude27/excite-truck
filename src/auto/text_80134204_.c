@@ -4,8 +4,8 @@
 extern char lbl_8055E070[4];
 extern int fn_8000D838(void*);
 
-/* Compiler-generated .ctors entry: register this file's static-destructor
- * record with fn_8000D838 so its object is destroyed at exit. */
+/* .ctors entry generated for this file's static C++ object: pass its
+ * destructor record lbl_8055E070 to fn_8000D838 for exit-time cleanup. */
 void fn_80134204(void) {
     fn_8000D838(lbl_8055E070);
 }
