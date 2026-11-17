@@ -3651,7 +3651,6 @@ extern "C" void* fn_801A1520(void* self, void* unused, s32 doSwap) {
 }
 #pragma pop
 extern f32 lbl_805622D0, lbl_805622D4, lbl_805622E0;
-#pragma use_lmw_stmw on
 extern "C" s32 fn_801A15CC(void* arg0, Vec* arg1, Vec* arg2, f32* arg3, Vec* arg4) {
     f32 t0 = lbl_805622D0;
     f32 t1 = lbl_805622D0;
