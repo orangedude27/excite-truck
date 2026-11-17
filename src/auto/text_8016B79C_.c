@@ -2431,6 +2431,7 @@ sF8.color |= (temp_r3 << 0x18);
 
 #pragma scheduling on
 extern f32 fn_8016FD58(void);
+/* Getter for the current game time in seconds (lbl_8055E3C8). */
 f32 fn_8016FD58(void) {
     return lbl_8055E3C8;
 }
