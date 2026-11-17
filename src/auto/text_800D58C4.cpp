@@ -2352,6 +2352,7 @@ extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigne
     }
 }
 
+struct CountField_800D9844 { u32 pad : 9; u32 cnt : 5; u32 rest : 18; };
 struct TevStageDefault {
     u8 b[16];
     TevStageDefault() {
@@ -2380,13 +2381,12 @@ extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
             Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3B0, msg + 0x360);
         u32 fmt = *(u32*)(p + 0x4C);
         u32 count = (*(u32*)(p + 0x50) >> 9) & 0x1F;
-        TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58)
-            + ((fmt >> 18) & 3) * 0x14 + ((fmt >> 4) & 0xF) * 0x14
-            + ((fmt >> 6) & 4) + ((fmt >> 22) & 0x3C)
-            + ((fmt >> 20) & 4) + ((fmt >> 27) & 4)
-            + ((fmt >> 29) & 4) + ((fmt >> 28) & 4)
-            + ((fmt >> 26) & 4) + ((fmt >> 25) & 4)
-            + ((fmt >> 3) & 4) + ((fmt >> 12) & 4));
+        u32 off =
+              (((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C))
+            + (((((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14) + ((fmt >> 6) & 4));
+        u32 off2 =
+            ((fmt >> 13) & 4) + (((fmt >> 3) & 4) + (((fmt >> 4) & 4) + (((fmt >> 5) & 4) + ((fmt >> 12) & 4))));
+        TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58) + off + off2);
         if (count < arg1) {
             TevStageDefault def;
             TevStageDefault copy = def;
