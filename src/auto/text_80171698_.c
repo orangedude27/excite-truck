@@ -163,16 +163,20 @@ void fn_80171934(void *p) {
     }
 }
 #pragma pop
-void fn_80171A4C(void *arg0) {
+/* TriggerMaster reset: clear the "already fired" byte (trigger+0x24) of every
+ * trigger in the master's array so fn_80171934 may fire them again.  The array
+ * base is at +0x8 and the number of triggers in use at +0xC, each trigger being
+ * 0x28 bytes. */
+void fn_80171A4C(void *triggerMaster) {
     #pragma scheduling invalid_target
     int offset;
     int count;
     count = 0;
     offset = 0;
-    while (count < *(int *)((char *)arg0 + 12)) {
-        unsigned char *base = *(unsigned char **)((char *)arg0 + 8);
+    while (count < *(int *)((char *)triggerMaster + 12)) {
+        unsigned char *triggers = *(unsigned char **)((char *)triggerMaster + 8);
         count++;
-        base[offset + 0x24] = 0;
+        triggers[offset + 0x24] = 0;
         offset += 0x28;
     }
 }
