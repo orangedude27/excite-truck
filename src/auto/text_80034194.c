@@ -3170,8 +3170,10 @@ void fn_80039A5C(void (*callback)(s32, void *)) {
     OSRestoreInterrupts(enabled);
 }
 
+/* DVD reset callback: signal that the drive reset/cancel has completed so that
+ * __DVDPrepareReset's wait loop can exit. */
 void cbForPrepareReset(void) {
-    lbl_8055D890 = 1;
+    ResetDone = 1;
 }
 
 /* __DVDPrepareReset (RVL SDK DVD.cpp): stop the drive and spin until the reset
