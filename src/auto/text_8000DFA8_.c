@@ -1467,8 +1467,11 @@ void fn_8001123C(s32 playerIndex) {
 #undef DrawHudList_2
 }
 
-void fn_80011278(s32 arg0) {
-    ((void (*)(s32, s32))fn_80011280)(arg0, lbl_8055D4D4);
+void fn_80011278(s32 color) {
+    /* Alternate entry to the 9-slice frame drawer: tail-call fn_80011280 with the
+       cached frame art-set handle (lbl_8055D4D4) in its second slot, forwarding
+       color and the four float coords/scales still live in the float registers. */
+    ((void (*)(s32, s32))fn_80011280)(color, lbl_8055D4D4);
 }
 
 extern f32 fn_80235EF0(s32, s32);
