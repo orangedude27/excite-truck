@@ -120,7 +120,7 @@ struct Obj8028D084 {
     virtual void f0();
     virtual void f1();
     virtual void f2();
-    virtual void f5(const char *);
+    virtual int f5(const char *);
     virtual void f4();
     virtual int f7(char *);
     virtual void f6();
