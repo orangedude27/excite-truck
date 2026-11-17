@@ -1043,8 +1043,7 @@ typeChecked:
         initial = 0x64;
     }
     *(s32 *)(dest + 0x48) = initial;
-    f32 def184 = lbl_80562FFC;
-    *(f32 *)(dest + 0x4C) = mgr->getFD(base + 0x184, def184);
+    *(f32 *)(dest + 0x4C) = mgr->getFD(base + 0x184, 1.0f);
     FAANames2 names = *(FAANames2 *)lbl_802F9B40;
     name = (char *)mgr->get((const char *)lbl_8055B2CC);
     p = (char **)names.w;
@@ -1227,10 +1226,10 @@ typeChecked:
         *(f32 *)(dest + 0x58) = mgr->getF(lbl_8055B32C);
         *(f32 *)(dest + 0x5C) = mgr->getF(lbl_8055B330);
         *(f32 *)(dest + 0x60) = mgr->getF(lbl_8055B334);
-        const FAAVec &v = mgr->getV(base + 0x204);
-        *(f32 *)(dest + 0x64) = v.x;
-        *(f32 *)(dest + 0x68) = v.y;
-        *(f32 *)(dest + 0x6C) = v.z;
+        const FAAVec *v = &mgr->getV(base + 0x204);
+        *(f32 *)(dest + 0x64) = v->x;
+        *(f32 *)(dest + 0x68) = v->y;
+        *(f32 *)(dest + 0x6C) = v->z;
         break;
     }
     case 21:
