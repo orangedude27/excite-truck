@@ -1652,8 +1652,8 @@ extern "C" s32 fn_801628E8(void *arg0) {
         virtual void v0();
         virtual void call(char *);
     };
-    f32 val = *(f32 *)((u8 *)arg0 + 0x8C);
-    if (val > lbl_8056185C) {
+    f32 *pf = (f32 *)((u8 *)arg0 + 0x8C);
+    if (*pf > lbl_8056185C) {
         ((Dummy *)lbl_8055E2E0)->call(lbl_8032F698);
         fn_801476C4();
     }
@@ -2970,6 +2970,7 @@ s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
 
 extern f32 lbl_80561870;
 extern f32 fn_80164CD4(void);
+/* Returns the fixed constant 5.0f held in the read-only global lbl_80561870. */
 f32 fn_80164CD4(void) {
     return lbl_80561870;
 }
