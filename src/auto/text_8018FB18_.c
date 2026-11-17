@@ -2688,13 +2688,14 @@ f32 fn_80192ED0(void *object) {
 }
 
 #pragma cplusplus on
-extern "C" int fn_80192F58(void *arg0) {
+extern "C" int fn_80192F58(void *self) {
+    /* Forward the first virtual call to the child object held at +4 of the container and return its int result. */
     class VTable {
     public:
         virtual int f0();
     };
-    VTable *obj = *(VTable **)((char *)arg0 + 4);
-    return obj->f0();
+    VTable *child = *(VTable **)((char *)self + 4);
+    return child->f0();
 }
 #pragma cplusplus off
 
