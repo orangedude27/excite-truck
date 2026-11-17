@@ -1253,7 +1253,11 @@ extern "C" void fn_80191084(int hybridDriver, int newDriver) {
 #pragma cplusplus off
 
 #pragma cplusplus off
-int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
+/* Hybrid getter: returns the Hybrid's player input driver, the driver object its
+ * constructor (fn_8018FD88) stores at +0xC; the AI/game driver sits at +8.
+ * fn_801902B4 and fn_80190EAC use it to hand the active driver (+0x10) back to
+ * the input driver. */
+int fn_80191100(void *hybrid) { return (int)((Hybrid *)hybrid)->inputDriver; }
 
 #pragma cplusplus on
 extern "C" s32 fn_80191108(void *container, s32 offset) {
