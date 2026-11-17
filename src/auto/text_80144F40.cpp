@@ -2628,7 +2628,9 @@ extern "C" s32 fn_80148230(void) {
     return -1;
 }
 
+/* Opaque mid-grey ARGB, the colour menu code uses for disabled entries. */
+#define DISABLED_ITEM_COLOR 0xFF808080
 extern "C" s32 fn_80148238(void) {
-    return 0xFF808080;
+    return DISABLED_ITEM_COLOR;
 }
 
