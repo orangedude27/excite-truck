@@ -897,6 +897,7 @@ void __OSPSInit(void) {
     OSInitFastCast();
 }
 
+/* Read the low byte of the DI hardware config register (DI_CONFIG, 0xCD006024): the connected disc drive type, 0xFF when none. */
 u32 __OSGetDIConfig(void) {
     return *(volatile u32 *)0xCD006024 & 0xFF;
 }
