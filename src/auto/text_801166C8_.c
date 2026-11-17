@@ -726,6 +726,8 @@ u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag)
     return maxDiff;
 }
 
+#pragma push
+#pragma opt_common_subs off
 s32 fn_80117598(s32 arg0, s32 arg1) {
     register s32 off;
     register s32 base;
@@ -740,9 +742,9 @@ s32 fn_80117598(s32 arg0, s32 arg1) {
     diff = (value - arg1) | (arg1 - value);
     sign = diff >> 31;
     inv = -1 - value;
-    return (s32)((u32)sign & (u32)inv);
+    return sign & inv;
 }
-
+#pragma pop
 /* Tick-list "finish" callback for the audio stream manager, registered by
  * fn_8011BEC8 at the manager's node (mgr+0x340) alongside the check callback
  * fn_80117598. The periodic tick driver (fn_8011BD20) calls it once per alarm
@@ -1632,48 +1634,72 @@ void fn_80118F1C(void *object, s32 endTick) {
 }
 
 s32 fn_80118F78(void *arg0, s32 arg1) {
-    u32 index = 0;
-    s32 off = 0;
-    s32 reset = 0;
+    struct S {
+        char pad0[0xDC];
+        s32 dc;
+        char pad1[0x268 - 0xE0];
+        s32 f268;
+        char pad2[0x2E8 - 0x26C];
+        s32 f2E8;
+        char pad3[0x2F0 - 0x2EC];
+        void *f2F0;
+        char pad4[0x330 - 0x2F4];
+        s32 f330;
+        char pad5[0x340 - 0x334];
+        char f340[1];
+    } *s = (struct S *)arg0;
+    s32 result;
+    s32 elapsed;
+    s32 offset;
+    u32 index;
+    s32 reset;
+
+    reset = 0;
     if (arg0 == 0) {
         return 0;
     }
-    off = fn_80116D30();
-    fn_80118C1C(arg0, off);
-    fn_80118F1C(arg0, off);
+
+    elapsed = fn_80116D30();
+    fn_80118C1C(arg0, elapsed);
+    fn_80118F1C(arg0, elapsed);
+
     if (arg1 == 0) {
-        if (*(s32 *)((u8 *)arg0 + 0xDC) != 0) {
+        if (s->dc != 0) {
             reset = 1;
         }
-    } else if (*(s32 *)((u8 *)arg0 + 0xDC) == 0) {
-        s32 result = *(s32 *)((u8 *)arg0 + 0x268);
+    } else if (s->dc == 0) {
+        result = s->f268;
         if (result != 0) {
-            *(s32 *)((u8 *)arg0 + 0x330) = off - result;
+            s->f330 = elapsed - result;
         } else {
-            *(s32 *)((u8 *)arg0 + 0x330) = 0;
+            s->f330 = 0;
         }
     }
-    *(s32 *)((u8 *)arg0 + 0xDC) = arg1;
-    fn_8011C274(lbl_8055DED4, (u8 *)arg0 + 0x340);
+
+    s->dc = arg1;
+    fn_8011C274(lbl_8055DED4, s->f340);
+
     index = 0;
-    off = 0;
-    while (index < *(u32 *)((u8 *)arg0 + 0x2E8)) {
-        void *object = *(u8 **)((u8 *)arg0 + 0x2F0) + off;
+    offset = 0;
+    while (index < (u32)s->f2E8) {
+        void *object = (u8 *)s->f2F0 + offset;
         (*(void (**)(void *, s32))((u8 *)object + 0x14))(object, arg1);
-        off += 0x17C;
+        offset += 0x17C;
         index++;
     }
-    fn_8011C2EC(lbl_8055DED4, (u8 *)arg0 + 0x340);
+
+    fn_8011C2EC(lbl_8055DED4, s->f340);
     if (*(s32 *)((u8 *)arg0 + 0x258) != 0 &&
-        *(s32 *)((u8 *)arg0 + 0x2E8) != 0) {
+        s->f2E8 != 0) {
         fn_80117074(arg0);
     }
+
     if (reset != 0) {
-        s32 result = fn_80116D30();
-        *(s32 *)((u8 *)arg0 + 0x268) =
-            result - *(s32 *)((u8 *)arg0 + 0x330);
+        result = fn_80116D30();
+        s->f268 = result - s->f330;
     }
-    return *(s32 *)((u8 *)arg0 + 0xDC);
+
+    return s->dc;
 }
 
 #pragma push
