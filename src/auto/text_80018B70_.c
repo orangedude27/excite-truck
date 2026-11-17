@@ -240,6 +240,8 @@ void fn_80018FA8(s32 itemName) {
 
 #pragma dont_inline on
 s32 fn_80019430(void) {
+    /* Stubbed reset check: always reports "no pending reset", so the exit/busy
+     * tests that call it (fn_80019604, fn_800194CC) never trigger on it here. */
     return 0;
 }
 
