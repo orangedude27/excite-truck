@@ -16479,7 +16479,7 @@ if (maxForPass > maxOutput) {
 maxForPass = maxOutput;
 }
 while (outputIndex < maxForPass) {
-raw = (u32)fn_800C0DF8((u8*)arg1, 0x10, (u32*)&ctx->bitIndex) << 16;
+raw = (u32)((u16 (*)(u8*, s32, u32*))fn_800C0DF8)((u8*)arg1, 0x10, (u32*)&ctx->bitIndex) << 16;
 if (type == 0xD || type == 0x10) {
 bits = ctx->bitIndex;
 ctx->bitIndex = bits + 4;
