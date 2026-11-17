@@ -2810,9 +2810,10 @@ extern "C" void fn_800A8B94(void *volume, s32 cacheObject, s32 cacheBuffer, s16 
     *(s16 *)((u8 *)volume + 0x162A) = cacheExtra;
 }
 
-extern "C" void fn_800A8BA8(void *arg0, s32 arg1) {
-    if (arg1 != 0) {
-        *(s32 *)((u8 *)arg0 + 0x163C) = arg1;
+extern "C" void fn_800A8BA8(void *volume, s32 cacheSectors) {
+    /* Set how many sectors a volume reads at a time; a zero setting is ignored. */
+    if (cacheSectors != 0) {
+        *(s32 *)((u8 *)volume + 0x163C) = cacheSectors;
     }
 }
 
