@@ -1380,6 +1380,7 @@ void fn_80162214(void) {
 }
 
 int fn_80162248(void) {
+    /* Unused stub among the popup/menu helpers: always returns zero. */
     return 0;
 }
 
