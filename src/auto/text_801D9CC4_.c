@@ -193,17 +193,21 @@ backward:
 #pragma scheduling on
 #pragma pop
 
-void fn_801DA198(void *arg0, float farg0) {
-    float *values;
-    int index;
-    *(float *)((char *)arg0 + 0xC) = farg0;
-    *(int *)((char *)arg0 + 8) = 0;
-    if (*(void **)((char *)arg0 + 4) == 0) return;
-    while (*(int *)((char *)arg0 + 8) + 1 < *(int *)((char *)*(void **)((char *)arg0 + 4) + 0x10)) {
-        index = *(int *)((char *)arg0 + 8);
-        values = *(float **)((char *)*(void **)((char *)arg0 + 4) + 0x14);
-        if (values[index * 8 + 8] > *(float *)((char *)arg0 + 0xC)) return;
-        *(int *)((char *)arg0 + 8) = *(int *)((char *)arg0 + 8) + 1;
+void fn_801DA198(void *pathCursor, float value) {
+    /* Seek a path-follower cursor to `value`: store it as the current value (+0xC), reset the
+       segment index (+8) to 0, then advance that index while the next keyframe's time (the
+       second float, +8, of each 0x20-byte keyframe in the curve's array at curve+0x14) is
+       at or below the value. */
+    float *keyframes;
+    int segment;
+    *(float *)((char *)pathCursor + 0xC) = value;
+    *(int *)((char *)pathCursor + 8) = 0;
+    if (*(void **)((char *)pathCursor + 4) == 0) return;
+    while (*(int *)((char *)pathCursor + 8) + 1 < *(int *)((char *)*(void **)((char *)pathCursor + 4) + 0x10)) {
+        segment = *(int *)((char *)pathCursor + 8);
+        keyframes = *(float **)((char *)*(void **)((char *)pathCursor + 4) + 0x14);
+        if (keyframes[segment * 8 + 8] > *(float *)((char *)pathCursor + 0xC)) return;
+        *(int *)((char *)pathCursor + 8) = *(int *)((char *)pathCursor + 8) + 1;
     }
 }
 
