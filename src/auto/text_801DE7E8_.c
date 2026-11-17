@@ -479,10 +479,11 @@ extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_801769EC(void);
 extern int fn_8000DA10(void);
 extern void fn_801332D0(int, int*, int*);
+/* Return nonzero while a popup is being shown (lbl_8055E9E8 holds the active popup id, 0 when none). */
 int fn_801DF060(void) {
-    int val = lbl_8055E9E8;
-    unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
-    return (int)(tmp >> 31);
+    int popupId = lbl_8055E9E8;
+    unsigned int bits = (unsigned int)(-popupId) | (unsigned int)popupId;
+    return (int)(bits >> 31);
 }
 
 int fn_801DF074(int popupId, int arg1) {
