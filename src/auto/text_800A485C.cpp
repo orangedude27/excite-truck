@@ -12,7 +12,6 @@ extern "C" void fn_800B3330(void *, s32, s32);
 extern "C" s32 fn_800AC708(void *, u8 *, u32, s32 *);
 extern "C" s32 fn_800AF4F0(void *, s32);
 extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
-static inline int fn_800ACDF8_tagDiff(u32 value, u16 tag) { return value != tag; }
 extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *);
 extern "C" s32 VFiPFPATH_GetLengthFromUnicode(const u16 *);
 extern "C" s32 OSWaitSemaphore(void *);
@@ -10817,15 +10816,15 @@ extern "C" s32 fn_800B63FC(void) {
     if (i == 4) {
         s32 k = key;
         s32 *e = lbl_803D2140;
+        s32 *e2 = e + 4;
         e[0x22] &= 1;
         if (e[0x22] && k == e[0x23]) found = 1;
         else {
-            e += 4;
-            e[0x20] &= 1;
-            if (e[0x20] && k == e[0x21]) found = 1;
+            e2[0x20] &= 1;
+            if (e2[0x20] && k == e2[0x21]) found = 1;
             else {
-                e[0x22] &= 1;
-                if (e[0x22] && k == e[0x23]) found = 1;
+                e2[0x22] &= 1;
+                if (e2[0x22] && k == e2[0x23]) found = 1;
                 else found = 0;
             }
         }
