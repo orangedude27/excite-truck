@@ -1360,8 +1360,6 @@ extern "C" int fn_801EE0C8(int);
 extern "C" void fn_802C77F0(int, float *);
 extern "C" int lbl_80488648[];
 extern "C" float lbl_80564608;
-typedef struct { unsigned int w[7]; } Fn8029A4B4Copy7;
-typedef struct { unsigned int w[3]; } Fn8029A4B4Copy3;
 #pragma dont_inline on
 extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     register void *dest = arg0;
