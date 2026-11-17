@@ -981,6 +981,7 @@ typedef signed int s32;
 /* Set the per-sound volume of a VoiceSnd (mixed into its voices every frame). */
 void fn_8020BC58(VoiceSnd *snd, f32 volume) { snd->volume = volume; }
 
+/* SndVoice parameter stub: a no-arg getter that reports zero in this build. */
 s32 fn_8020BC60(void) { return 0; }
 
 /* Set the pan field (offset 0x20) of a VoiceSnd: -1 = left, 1 = right. */
