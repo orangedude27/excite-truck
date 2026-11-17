@@ -172,6 +172,7 @@ extern "C" void fn_802C82C4(int arg0) {
     }
 }
 #pragma cplusplus reset
+/* Get the "display_type" setting (0 normal, 1 widescreen, 2 letterbox). */
 void* fn_802C83C4(void) {
     return lbl_8055FC90;
 }
