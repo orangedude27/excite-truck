@@ -73,6 +73,7 @@ int fn_8000ACDC(int arg0) {
 void fn_8000AD20(void) {
 }
 
+/* No-argument stub predicate that always reports false (0) in this build. */
 int fn_8000AD24(void) { return 0; }
 
 /* Returns 0 for game modes that should not save/restore state on dispatch
