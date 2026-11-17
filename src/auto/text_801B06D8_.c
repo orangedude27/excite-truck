@@ -1422,7 +1422,7 @@ extern "C" void *fn_801B2118(void *obj, s32 deleteFlag) {
 
 #pragma scheduling on
 void *fn_801B21B8(void *arg0) {
-    const f32 value = lbl_805625BC;
+    register float value = lbl_805625BC;
     register int zero = 0;
     *(void **)arg0 = lbl_80335BFC;
     *(s32 *)((u8 *)arg0 + 0x40) = zero;
