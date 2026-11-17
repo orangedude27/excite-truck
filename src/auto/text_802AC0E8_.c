@@ -41,21 +41,13 @@ extern int lbl_802FAA50[];
 struct AcTable { int w[24]; };
 #pragma use_lmw_stmw off
 int fn_802AC1BC(const char *arg0, int arg1) {
-    int entries[24];
-    int *src = lbl_802FAA50 - 1;
-    int *dst = entries - 1;
-    int i = 12;
+    struct AcTable entries;
     int flags = 0;
     int has_align = 0;
     int has_no_align = 0;
-    do {
-        dst[1] = src[1];
-        dst[2] = src[2];
-        src += 2;
-        dst += 2;
-    } while (--i != 0);
+    entries = *(struct AcTable *)lbl_802FAA50;
     {
-        int *entry = entries;
+        int *entry = (int *)&entries;
         while (entry[0] != 0) {
             if (strstr(arg0, (const char *)entry[0]) != 0) {
                 int masked = flags & 7;
