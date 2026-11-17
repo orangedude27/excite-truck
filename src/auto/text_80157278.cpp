@@ -950,38 +950,84 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2) {
 extern "C" void *fn_80157DA0(void *self, s32 arg1, s32 arg2) {
     extern void *lbl_8032EF08;
     extern float lbl_80561760;
-    unsigned char *p;
-    int *q;
-    void *vt = &lbl_8032EF08;
-    *(void **)((char *)self + 8) = (char *)self + 0x14;
-    *(void **)self = &lbl_8032F2BC;
-    *(int *)((char *)self + 0x10) = 10;
-    *(int *)((char *)self + 0xC) = 0;
-    p = (unsigned char *)self + 0x14;
+    extern char lbl_8032F2BC[];
+    char *base = (char *)self;
+    char *p, *q, *end, *r6, *r4, *end2;
+    s32 dist, r8, r9, r10;
+    s32 v3, v6, v6b, v7;
+    u32 ctr, ctr2;
+    p = base + 0x14;
+    *(void **)(base + 8) = p;
+    *(void **)base = lbl_8032F2BC;
+    *(int *)(base + 0x10) = 10;
+    *(int *)(base + 0xc) = 0;
     do {
         memset(p, 0, 4);
         p += 0x38;
-    } while (p < (unsigned char *)self + 0x244);
-    *(s32 *)((char *)self + 4) = arg2;
-    *(int *)((char *)self + 0xC) = 0;
-    *(s32 *)((char *)self + 0x244) = arg1;
-    *(int *)((char *)self + 0x258) = 0;
-    *(float *)((char *)self + 0x250) = lbl_80561760;
-    *(int *)((char *)self + 0x268) = 0;
-    *(int *)((char *)self + 0x248) = 0;
-    *(void **)self = vt;
-    *(int *)((char *)self + 0x270) = 0;
-    *(int *)((char *)self + 0x274) = 0;
-    q = (int *)((char *)self + 0x280);
-    while (q < (int *)((char *)self + 0x2F0)) {
-        q[0] = 0;
-        q[1] = 0;
-        q += 4;
+    } while (p < base + 0x244);
+    *(s32 *)(base + 4) = arg2;
+    q = base + 0x280;
+    *(int *)(base + 0xc) = 0;
+    end = base + 0x2f0;
+    *(s32 *)(base + 0x244) = arg1;
+    *(int *)(base + 0x258) = 0;
+    *(float *)(base + 0x250) = lbl_80561760;
+    *(int *)(base + 0x268) = 0;
+    *(int *)(base + 0x248) = 0;
+    *(void **)base = &lbl_8032EF08;
+    *(int *)(base + 0x270) = 0;
+    *(int *)(base + 0x274) = 0;
+    if (q < end) {
+        r6 = base + 0x280;
+        dist = end - r6;
+        r8 = dist + 0xf;
+        r9 = r8 / 16;
+        r10 = r9 + 1;
+        r4 = base + 0x270;
+        if (r10 > 8) {
+            v3 = 0;
+            v6 = 0;
+            if (r6 <= end) {
+                v7 = 1;
+                if (!((u32)dist & 0x80000000) && ((u32)r8 & 0x80000000)) v7 = 0;
+                if (v7 != 0) v6 = 1;
+            }
+            if (v6 != 0) {
+                v6b = 1;
+                if (!((u32)r9 & 0x80000000) && ((u32)r9 & 0x80000000) != ((u32)r10 & 0x80000000)) v6b = 0;
+                if (v6b != 0) v3 = 1;
+            }
+            if (v3 != 0) {
+                ctr = (u32)((r4 + 0x7f) - q) >> 7;
+                if (q < r4) {
+                    do {
+                        *(int *)(q + 0) = 0; *(int *)(q + 4) = 0;
+                        *(int *)(q + 0x10) = 0; *(int *)(q + 0x14) = 0;
+                        *(int *)(q + 0x20) = 0; *(int *)(q + 0x24) = 0;
+                        *(int *)(q + 0x30) = 0; *(int *)(q + 0x34) = 0;
+                        *(int *)(q + 0x40) = 0; *(int *)(q + 0x44) = 0;
+                        *(int *)(q + 0x50) = 0; *(int *)(q + 0x54) = 0;
+                        *(int *)(q + 0x60) = 0; *(int *)(q + 0x64) = 0;
+                        *(int *)(q + 0x70) = 0; *(int *)(q + 0x74) = 0;
+                        q += 0x80;
+                        ctr -= 1;
+                    } while (ctr != 0);
+                }
+            }
+        }
+        end2 = base + 0x2f0;
+        ctr2 = (u32)((end2 + 0xf) - q) >> 4;
+        if (q < end2) {
+            do {
+                *(int *)(q + 0) = 0;
+                *(int *)(q + 4) = 0;
+                q += 0x10;
+                ctr2 -= 1;
+            } while (ctr2 != 0);
+        }
     }
-    *(int *)((char *)self + 0x2F0) = 0;
-    *(int *)((char *)self + 0x2F4) = 0;
-    *(int *)((char *)self + 0x26C) = 0;
-    *(unsigned char *)((char *)self + 0x2F0) = 0;
+    *(int *)(base + 0x26c) = 0;
+    *(char *)(base + 0x2f0) = 0;
     return self;
 }
 
@@ -4082,12 +4128,11 @@ extern "C" s32 fn_80161C4C(void);
 #pragma use_lmw_stmw off
 #pragma processor 750
 extern "C" f32 fn_8015E338(void* arg0, void* arg1) {
-    struct P { void *q; void *r; int f8; int fC; };
     f32 sum = lbl_80561754;
     s32 off = 0;
     s32 i = 0;
-    struct P *p;
-    void *q;
+    void* p;
+    void* q;
     if (*(u8*)((u8*)arg0 + 0x54) != 0 && fn_801B2F2C(*(s32*)((u8*)arg1 + 0x1EC)) == 0 && fn_801B8570(*(s32*)((u8*)arg1 + 0x1EC)) != 0 && fn_80161BB8() == 0 && fn_80161C4C() != 0) {
         for (i = 0, off = 0; i < *(s32*)((u8*)arg0 + 8); off += 4, i++) {
             if ((f32)__fabs((f64)*(f32*)((u8*)arg1 + 0x2690)) <= lbl_80558DC4[0] ||
@@ -4097,27 +4142,27 @@ extern "C" f32 fn_8015E338(void* arg0, void* arg1) {
             }
         }
     }
-    p = *(struct P**)((u8*)arg0 + 0x50);
-    q = p->q;
+    p = *(void**)((u8*)arg0 + 0x50);
+    q = *(void**)p;
     if (q != 0) {
-        if (p->f8 == 0) {
+        if (*(s32*)((u8*)p + 8) == 0) {
             *(u8*)((u8*)q + 0x4A) = 0;
             *(u8*)((u8*)q + 0x4B) = 1;
             *(u8*)((u8*)q + 0x49) = 1;
         } else {
-            void* r = p->r;
-            if (r != 0 && p->fC == 0) {
+            void* r = *(void**)((u8*)p + 4);
+            if (r != 0 && *(s32*)((u8*)p + 0xC) == 0) {
                 *(u8*)((u8*)r + 0x49) = 1;
                 *(u8*)((u8*)r + 0x4B) = 0;
                 *(u8*)((u8*)r + 0x4A) = 0;
             }
-            q = p->q;
-            *(u8*)((u8*)q + 0x4A) = 1;
-            *(u8*)((u8*)q + 0x4C) = 0;
+            void *q2 = *(void**)p;
+            *(u8*)((u8*)q2 + 0x4A) = 1;
+            *(u8*)((u8*)q2 + 0x4C) = 0;
         }
     }
-    p->fC = p->f8;
-    p->f8 = 1;
+    *(s32*)((u8*)p + 0xC) = *(s32*)((u8*)p + 8);
+    *(s32*)((u8*)p + 8) = 1;
     return sum;
 }
 #pragma pop
