@@ -180,6 +180,8 @@ u8 SCGetWpadSpeakerVolume(void) {
     return volume;
 }
 
-BOOL SCSetWpadSpeakerVolume(u8 vol) {
-    return SCReplaceU8Item(vol, SC_ITEM_BT_SPKV);
+/* Write the Wii Remote's speaker volume to the System Configuration's Bluetooth
+   speaker-volume item (SC_ITEM_BT_SPKV). */
+BOOL SCSetWpadSpeakerVolume(u8 volume) {
+    return SCReplaceU8Item(volume, SC_ITEM_BT_SPKV);
 }
