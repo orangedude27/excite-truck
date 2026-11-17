@@ -241,9 +241,8 @@ done:
 #pragma push
 #pragma processor 750
 extern "C" f32 fn_801451DC(s32 arg0, f32 farg0) {
-    f32 var_f31;
+    f32 var_f31 = farg0 - lbl_805615E0;
     s32 var_r31 = arg0;
-    var_f31 = farg0 - lbl_805615E0;
     if ((fn_802C9A58() != 0) || (fn_802C9A60() != 0)) {
         if (var_r31 == 0) {
             if (var_f31 < lbl_805615E8) {
@@ -2189,6 +2188,7 @@ extern "C" void *fn_801481C8(void *arg0, s32 arg1) {
 extern "C" void fn_80148218(void) {
 }
 
+/* No-op predicate stub in this callback group: always reports 0 (false). */
 extern "C" s32 fn_8014821C(void) {
     return 0;
 }
@@ -2378,6 +2378,7 @@ extern "C" u8 fn_80148624(void *obj) { return ((u8 *)obj)[4]; }
 extern "C" s32 fn_80127A50(void *);
 extern "C" void fn_80010B80(s32, f32, f32, f32, f32);
 extern "C" f32 lbl_80558DC4;
+extern "C" f32 __fabsf(f32);
 extern "C" void fn_8014862C(void *arg0) {
     struct Table { void *data; s32 count; s32 cap; void *end; };
     struct Cur { void *cur; void *sel; u8 flag; u8 p1[3]; f32 x10; f32 y14; u8 p2[8]; struct Table *tab; };
@@ -2385,8 +2386,8 @@ extern "C" void fn_8014862C(void *arg0) {
     struct Obj *obj = (struct Obj *)arg0;
     if (obj->en == 0) return;
     f32 eps = lbl_80558DC4;
-    f32 base = lbl_80561608;
-    (void)base;
+    f32 zero = lbl_805615D4;
+    (void)zero;
     while (fn_80127A50(arg0) != 0) {
         struct Cur *cur = obj->cur;
         u8 sbuf[0x40]; FloatPair80145A24 pp = fn_80145A24((void *)sbuf);
@@ -2395,8 +2396,8 @@ extern "C" void fn_8014862C(void *arg0) {
             if ((((s32 *)sbuf)[9] & 1) != 0) {
                 f32 dx = px - cur->x10;
                 f32 dy = py - cur->y14;
-                float adx = dx < 0 ? -dx : dx;
-                float ady = dy < 0 ? -dy : dy;
+                float adx = __fabsf(dx);
+                float ady = __fabsf(dy);
                 cur->x10 = dx; cur->y14 = dy;
                 if (adx > eps || ady > eps) cur->flag = 1;
                 void *o = cur->cur;
