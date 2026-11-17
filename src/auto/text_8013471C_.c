@@ -594,6 +594,7 @@ extern "C" void *fn_80134EC8(s32 arenaType)
 }
 #pragma cplusplus reset
 #pragma pop
+/* No-op stub: always returns 0. */
 s32 fn_80134F40(void) {
     return 0;
 }
