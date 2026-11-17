@@ -492,7 +492,6 @@ s32 fn_80116E54(s32 (*callback)(s32), s32 arg) {
 }
 
 #pragma push
-#pragma unroll off
 s8 *fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
     s16 *var_r4 = arg1;
     s8 *var_r3 = arg0;
@@ -518,8 +517,7 @@ s8 *fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
                 var_r4 += 8;
                 var_r3[7] = (s8)(temp_r0_2 >> 8);
                 var_r3 += 8;
-                var_ctr -= 1;
-            } while (var_ctr != 0);
+            } while (--var_ctr != 0);
             var_r5 &= 7;
             if (var_r5 != 0) goto tail;
         } else {
@@ -530,8 +528,7 @@ tail:
                 var_r4 += 1;
                 *var_r3 = (s8)(temp_r0_3 >> 8);
                 var_r3 += 1;
-                var_ctr_2 -= 1;
-            } while (var_ctr_2 != 0);
+            } while (--var_ctr_2 != 0);
         }
     }
     return var_r3;
