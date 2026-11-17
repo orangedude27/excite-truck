@@ -8,7 +8,7 @@ extern int lbl_802FA320[];
 extern char lbl_80342DC8[];
 extern int lbl_80498860[];
 #pragma push
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw on
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
