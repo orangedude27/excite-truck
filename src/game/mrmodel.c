@@ -688,8 +688,9 @@ void fn_802C6068(void *entry) {
     *(s16 *)((char *)entry + 4) = 0;
 }
 
-void fn_802C6074(s32 *arg0) {
-    *arg0 = 0;
+/* Pool element init callback: clear the first 32-bit word of an entry. */
+void fn_802C6074(s32 *entry) {
+    *entry = 0;
 }
 
 extern void fn_80128670(void *);
