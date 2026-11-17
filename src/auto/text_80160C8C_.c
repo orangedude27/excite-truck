@@ -2799,8 +2799,10 @@ extern "C" void fn_801647DC(void *list) {
     *(s32 *)((char *)list + 0x38) = 0;
 }
 #pragma cplusplus off
-int fn_80164868(void) {
-    return 1;
+/* Default predicate for this path/route object: it has no state to test,
+   so it always reports success (true). */
+BOOL fn_80164868(void) {
+    return TRUE;
 }
 
 /* Start this object's timer if it is not running yet: record the id and the
