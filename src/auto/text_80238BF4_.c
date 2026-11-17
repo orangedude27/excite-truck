@@ -387,13 +387,13 @@ void fn_8023986C(void *arg0) {
         offset = 0;
         while (i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8)) {
             if (*(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) != -2) {
-                fn_802CAC54();
+                fn_802CAC54(*(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset));
                 *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) = marker;
             }
             offset += 0x14;
             i++;
         }
-        fn_8012C4D8();
+        fn_8012C4D8(*(void **)((u8 *)arg0 + 0x14));
         *(u32 *)((u8 *)arg0 + 0x14) = 0;
     }
 }
