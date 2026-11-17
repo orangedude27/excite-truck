@@ -172,7 +172,8 @@ s32 fn_8028774C(void *arg0) {
 #undef expired
 }
 
-void fn_8028775C(int arg0) { fn_802869CC(arg0 - 4); }
+/* Callback wrapper: forward to fn_802869CC with the pointer backed up to its enclosing structure (userData - 4). */
+void fn_8028775C(int userData) { fn_802869CC(userData - 4); }
 
 void fn_80287764(int arg0) { fn_80286A34(arg0 - 4); }
 
