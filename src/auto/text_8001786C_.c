@@ -553,26 +553,27 @@ s32 fn_800183C0(void *entry) {
 #pragma pop
 extern void *fn_8001285C(s32);
 #pragma use_lmw_stmw off
-void fn_80018440(EntryPairList *arg0, s32 arg1, const EntryPairList *arg2)
+/* Build a reversed copy of a driver/vehicle pairing list: clear the destination,
+ * then copy up to `count` pairs from the end of the source list towards its front
+ * (last driver/vehicle first). The entry count comes from the per-slot state via
+ * fn_800183C0. */
+void fn_80018440(EntryPairList *dst, s32 slotIndex, const EntryPairList *src)
 {
   s32 count;
   s32 i;
-  s32 n;
-  s32 m;
-  int new_var;
-  count = fn_800183C0(fn_8001285C(arg1));
-  new_var = 0x48;
-  memset(arg0, 0, new_var);
+  s32 srcDriverCount;
+  s32 listSize;
+  count = fn_800183C0(fn_8001285C(slotIndex));
+  listSize = 0x48;
+  memset(dst, 0, listSize);
   for (i = 0; i < count; i++)
   {
-    n = arg2->driverCount;
-    ;
-    arg0->driverNums[i] = arg2->driverNums[(n - 1) - i];
-    arg0->driverCount++;
-    arg0->vehicleNums[i] = arg2->vehicleNums[(arg2->vehicleCount - 1) - i];
-    arg0->vehicleCount++;
+    srcDriverCount = src->driverCount;
+    dst->driverNums[i] = src->driverNums[(srcDriverCount - 1) - i];
+    dst->driverCount++;
+    dst->vehicleNums[i] = src->vehicleNums[(src->vehicleCount - 1) - i];
+    dst->vehicleCount++;
   }
-
 }
 
 /* Set the forced entry-count override (lbl_8055D560) to atoi()'s result. */
