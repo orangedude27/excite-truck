@@ -167,7 +167,10 @@ void fn_8001EFAC(void) {
 void fn_8001F908(void *);
 
 void fn_8001EFB0(void *arg0) {
-    fn_8001F908(arg0);
+#define ComputeAchievementValues fn_8001F908
+    /* Thunk: compute an achievement's progress values into the record pointed to by arg0. */
+    ComputeAchievementValues(arg0);
+#undef ComputeAchievementValues
 }
 
 void fn_8001EFB4(void) {
