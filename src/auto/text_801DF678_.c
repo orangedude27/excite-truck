@@ -124,7 +124,7 @@ void fn_801DF6FC(void) {
 int fn_801DF93C(int arg0) { (void)arg0; return 1; }
 
 void fn_801476D8(int, int);
-void fn_801DFE44(int a1, int a2) { ((void (*)(int, int, int))fn_801476D8)(a1, -1, a2); }
+void fn_801DFE44(int object, int value) { ((void (*)(int, int, int))fn_801476D8)(object, -1, value); }
 
 #pragma cplusplus on
 struct Dummy_801DFE50 {
