@@ -2741,10 +2741,12 @@ char *fn_80252494(void *table, s32 recordIndex) {
     return records + byteOffset + 0x21;
 }
 
-u8 fn_802524A8(void *arg0, s32 arg1) {
-    s32 offset = arg1 * 0x48;
-    s32 *base = *(s32 **)((char *)arg0 + 4);
-    return *(u8 *)((char *)base + offset + 0x41);
+/* Returns the u8 flag at +0x41 of the indexed 0x48-byte chassis record in the
+   ChassisList's array (set by fn_80252320; selects the record's name source). */
+u8 fn_802524A8(void *list, s32 chassisIndex) {
+    s32 offset = chassisIndex * 0x48;
+    s32 *records = *(s32 **)((char *)list + 4);
+    return *(u8 *)((char *)records + offset + 0x41);
 }
 
 s32 fn_802524BC(void *table, s32 recordIndex) {
