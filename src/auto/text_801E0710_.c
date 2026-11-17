@@ -281,6 +281,8 @@ extern f32 lbl_80562C8C;
 extern f32 lbl_80562C80, lbl_80562C84, lbl_80562C88, lbl_80562C90, lbl_80562C94;
 
 #pragma scheduling invalid_target
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801E0710(void) {
     u8 *ref = lbl_80339780;
     void *obj;
@@ -309,7 +311,6 @@ void fn_801E0710(void) {
         }
     }
 }
-#pragma scheduling on
 extern void fn_80128658();
 /* Destructor of one boost-area record (BoostMan keeps up to 100 of these
  * 0x1C-byte records in its area store at +0x88; fn_801E0FC4 registers this
@@ -628,7 +629,8 @@ void fn_801E12A4(void) {
     }
 }
 #pragma scheduling on
-s32 fn_801E137C(void *arg0) { return ((s32 *)arg0)[1]; }
+/* Return the current element count of a boost-area list (List_801E0890.count, +0x04). */
+s32 fn_801E137C(void *list) { return ((List_801E0890 *)list)->count; }
 
 void fn_801E1384(s32 arg0, s32 arg1) {
     register s32 *desc = (s32 *)arg0;
@@ -790,34 +792,37 @@ void fn_801E1688(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_801E168C(void *arg0) {
-    f32 y = lbl_80562C7C;
+    f32 y;
+    s32 zero = 0;
     f32 x = lbl_80562C78;
-    *(s32 *)((u8 *)arg0 + 0x6C) = -1;
-    *(s32 *)((u8 *)arg0 + 0x0C) = -1;
-    *(u8 *)((u8 *)arg0 + 0x10) = 0;
-    *(s32 *)((u8 *)arg0 + 0x1C) = 0;
-    *(s32 *)((u8 *)arg0 + 0x20) = 0;
+    s32 minus = -1;
+    y = lbl_80562C7C;
+    *(s32 *)((u8 *)arg0 + 0x6C) = minus;
+    *(s32 *)((u8 *)arg0 + 0x0C) = minus;
+    *(u8 *)((u8 *)arg0 + 0x10) = zero;
+    *(s32 *)((u8 *)arg0 + 0x1C) = zero;
+    *(s32 *)((u8 *)arg0 + 0x20) = zero;
     *(f32 *)((u8 *)arg0 + 0x14) = x;
     *(f32 *)((u8 *)arg0 + 0x18) = y;
-    *(s32 *)((u8 *)arg0 + 0x70) = -1;
-    *(s32 *)((u8 *)arg0 + 0x24) = -1;
-    *(u8 *)((u8 *)arg0 + 0x28) = 0;
-    *(s32 *)((u8 *)arg0 + 0x34) = 0;
-    *(s32 *)((u8 *)arg0 + 0x38) = 0;
+    *(s32 *)((u8 *)arg0 + 0x70) = minus;
+    *(s32 *)((u8 *)arg0 + 0x24) = minus;
+    *(u8 *)((u8 *)arg0 + 0x28) = zero;
+    *(s32 *)((u8 *)arg0 + 0x34) = zero;
+    *(s32 *)((u8 *)arg0 + 0x38) = zero;
     *(f32 *)((u8 *)arg0 + 0x2C) = x;
     *(f32 *)((u8 *)arg0 + 0x30) = y;
-    *(s32 *)((u8 *)arg0 + 0x74) = -1;
-    *(s32 *)((u8 *)arg0 + 0x3C) = -1;
-    *(u8 *)((u8 *)arg0 + 0x40) = 0;
-    *(s32 *)((u8 *)arg0 + 0x4C) = 0;
-    *(s32 *)((u8 *)arg0 + 0x50) = 0;
+    *(s32 *)((u8 *)arg0 + 0x74) = minus;
+    *(s32 *)((u8 *)arg0 + 0x3C) = minus;
+    *(u8 *)((u8 *)arg0 + 0x40) = zero;
+    *(s32 *)((u8 *)arg0 + 0x4C) = zero;
+    *(s32 *)((u8 *)arg0 + 0x50) = zero;
     *(f32 *)((u8 *)arg0 + 0x44) = x;
     *(f32 *)((u8 *)arg0 + 0x48) = y;
-    *(s32 *)((u8 *)arg0 + 0x78) = -1;
-    *(s32 *)((u8 *)arg0 + 0x54) = -1;
-    *(u8 *)((u8 *)arg0 + 0x58) = 0;
-    *(s32 *)((u8 *)arg0 + 0x64) = 0;
-    *(s32 *)((u8 *)arg0 + 0x68) = 0;
+    *(s32 *)((u8 *)arg0 + 0x78) = minus;
+    *(s32 *)((u8 *)arg0 + 0x54) = minus;
+    *(u8 *)((u8 *)arg0 + 0x58) = zero;
+    *(s32 *)((u8 *)arg0 + 0x64) = zero;
+    *(s32 *)((u8 *)arg0 + 0x68) = zero;
     *(f32 *)((u8 *)arg0 + 0x5C) = x;
     *(f32 *)((u8 *)arg0 + 0x60) = y;
 }
