@@ -543,6 +543,7 @@ void fn_8017DCB4(void *arg0) {
 #pragma scheduling on
 #pragma dont_inline on
 #pragma ppc_psq_save off
+#pragma opt_common_subs off
 void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
     extern int lbl_8055D430;
     extern float lbl_80561BE0, lbl_80561BF4, lbl_80561C0C;
@@ -557,12 +558,13 @@ void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
     int var_r3_2;
     int var_r3_3;
     void *sub;
+    int one = 1;
     fn_8017D378();
     *(float *)((char *)arg0 + 0x124) = lbl_80561BE0;
     *(float *)((char *)arg0 + 0x128) = lbl_80561BE0;
     *(float *)((char *)arg0 + 0x12C) = lbl_80561BE0;
     *(short *)((char *)arg0 + 0x6C) = arg3;
-    *((unsigned char *)arg0 + 0x1E9) = 1;
+    *((unsigned char *)arg0 + 0x1E9) = one;
     ((int *)m)[0] = ((int *)arg1)[0];
     ((int *)m)[1] = ((int *)arg1)[1];
     ((int *)m)[2] = ((int *)arg1)[2];
@@ -638,7 +640,7 @@ void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
             }
         }
     }
-    *((unsigned char *)arg0 + 0x1FE) = 1;
+    *((unsigned char *)arg0 + 0x1FE) = one;
     *((unsigned char *)arg0 + 0x1FC) = 0;
     sub = *(void **)((char *)arg0 + 0x218);
     if (sub != 0) {
@@ -646,24 +648,24 @@ void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
         *(float *)((char *)arg0 + 0x204) = point[1];
         *(float *)((char *)arg0 + 0x208) = point[2];
         if (lbl_80561BF4 != *(float *)((char *)sub + 8)) {
-            *((unsigned char *)sub + 0x4D) = 1;
+            *((unsigned char *)sub + 0x4D) = one;
             *(float *)((char *)sub + 8) = lbl_80561BF4;
         }
         sub = *(void **)((char *)arg0 + 0x218);
-        *((unsigned char *)sub + 0x49) = 1;
+        *((unsigned char *)sub + 0x49) = one;
         *((unsigned char *)sub + 0x4B) = 0;
         *((unsigned char *)sub + 0x4A) = 0;
     }
     sub = *(void **)((char *)arg0 + 0x21C);
     if (sub != 0) {
         if (lbl_80561BF4 != *(float *)((char *)sub + 8)) {
-            *((unsigned char *)sub + 0x4D) = 1;
+            *((unsigned char *)sub + 0x4D) = one;
             *(float *)((char *)sub + 8) = lbl_80561BF4;
         }
         sub = *(void **)((char *)arg0 + 0x21C);
         *((unsigned char *)sub + 0x4A) = 0;
-        *((unsigned char *)sub + 0x4B) = 1;
-        *((unsigned char *)sub + 0x49) = 1;
+        *((unsigned char *)sub + 0x4B) = one;
+        *((unsigned char *)sub + 0x49) = one;
     }
 }
 #pragma ppc_psq_save reset
