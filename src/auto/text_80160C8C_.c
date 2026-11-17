@@ -405,8 +405,17 @@ void* fn_80160C8C(void* arg0, s32 arg1) {
 
 #pragma push
 #pragma dont_inline on
+/* The number of challenge levels unlocked so far: the goal count that ends the
+ * current challenge step (challenge_step_max) minus the number of challenge
+ * levels in the contests before this one (challenge_step_base).  With no
+ * challenge active the base is -1, so every level is unlocked.  The challenge
+ * level-select menu uses this as its highest selectable entry. */
 s32 fn_80160CE4(void) {
-    return lbl_8055A0B8 - lbl_8055A0C0;
+#define challenge_step_max lbl_8055A0B8
+#define challenge_step_base lbl_8055A0C0
+    return challenge_step_max - challenge_step_base;
+#undef challenge_step_max
+#undef challenge_step_base
 }
 
 #pragma cplusplus on
