@@ -135,6 +135,7 @@ void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
     *(void **)((char *)b + 8) = entry;
 }
 void fn_802C543C(void) {
+    /* Reset the used-count at +0 of the display entry pool lbl_804C1338, emptying it. */
     lbl_804C1338[0] = 0;
 }
 #pragma dont_inline off
