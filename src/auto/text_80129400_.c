@@ -196,6 +196,8 @@ void fn_80129790(void) {
     fn_802E830C(lbl_804223C0);
 }
 
+// Returns a pointer to the global 14-entry s32 offset table used by the audio/session
+// field lookups (reset to -1 by fn_80129790).
 void *__AXFXGetLfoSinTable_801297F4(void) { return lbl_804223C0; }
 
 /* Load a 0x70-byte record for the given id and return the byte at fieldOffset[fieldIndex] within its payload, or 0 when unavailable. */
