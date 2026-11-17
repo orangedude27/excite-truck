@@ -438,7 +438,10 @@ void fn_8001F724(void) {
 
 #pragma scheduling invalid_target
 void fn_8001F76C(void) {
-    memset(lbl_8035AF38, 0, 0x820);
+    /* Clear this session's pending achievements/statistics block. */
+#define sPendingAchievementsBlock lbl_8035AF38
+    memset(sPendingAchievementsBlock, 0, ACH_BLOCK_SIZE);
+#undef sPendingAchievementsBlock
 }
 
 #pragma scheduling invalid_target
