@@ -258,16 +258,17 @@ extern char *strchr(char *, int);
 #pragma push
 #pragma processor 750
 void fn_801D490C(void) {
-    float alpha, right, width, x, t, edge, dy, y;
+    float width, right, x, alpha, t, edge, dy, y, limit;
     int color, n;
     char text[0x40], *src, *dst, *part, *caret;
     x = *(float *)lbl_80442310;
     width = *(float *)(lbl_80442310 + 4);
     right = x + width;
-    if (lbl_8055E3C8 < right) {
+    limit = lbl_8055E3C8;
+    if (limit < right) {
         alpha = lbl_80562AE0;
         if (width > lbl_80562AE4) {
-            t = lbl_8055E3C8 - x;
+            t = limit - x;
             if (t < lbl_80562AE8) {
                 t = t / ((lbl_80562AE8 + x) - x);
                 alpha = alpha < t ? t : alpha;
@@ -275,10 +276,10 @@ void fn_801D490C(void) {
                 alpha = lbl_80562ADC + alpha * lbl_80562AE0;
             } else {
                 edge = right - lbl_80562AE8;
-                if (lbl_8055E3C8 > edge) {
-                    t = (lbl_8055E3C8 - edge) / (right - edge);
-                    alpha = alpha >= t ? alpha : t;
-                    alpha = alpha <= lbl_80562ADC ? alpha : lbl_80562ADC;
+                if (limit > edge) {
+                    t = (limit - edge) / (right - edge);
+                    alpha = alpha < t ? t : alpha;
+                    alpha = alpha > lbl_80562ADC ? lbl_80562ADC : alpha;
                     alpha = lbl_80562AE0 + alpha * lbl_80562AEC;
                 }
             }
@@ -287,12 +288,12 @@ void fn_801D490C(void) {
         fn_8000FF88(color, 0xC, lbl_8055AD5C, lbl_80562AF4, lbl_80562ADC, lbl_80562AF8, lbl_80442310 + 0x48);
         src = lbl_80442310 + 8; dst = text; n = 0x40;
         goto copy;
-    limit:
+    limit_lbl:
         if (--n > 0) goto copy;
         dst[-1] = 0;
         goto done;
     copy:
-        { char c = *src++; *dst++ = c; if ((signed char)c) goto limit; }
+        { char c = *src++; *dst++ = c; if ((signed char)c) goto limit_lbl; }
     done:
         y = lbl_80562AD8;
         dy = lbl_80562AFC;
@@ -3327,6 +3328,7 @@ void fn_801D8600(UnkStruct_801D701C *object) {
 }
 
 int fn_801D8618(void) {
+    /* No-op query stub: always reports 0 (false / no result). */
     return 0;
 }
 
