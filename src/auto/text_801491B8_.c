@@ -386,21 +386,20 @@ unsigned long *fn_801494D8(void) { return &lbl_80559E94; }
 int fn_801494E0(void) { return 0xFF0000FF; }
 
 void fn_801494EC(void *arg0, float *arg1, float *arg2) {
-    float a; float b; float c; float d; float e; float f; float g; float h; float i; float j;
-    a = arg2[1];
-    b = arg1[0];
-    c = arg2[4];
-    d = a + b;
-    e = arg2[2];
-    f = c - b;
-    g = arg1[1];
-    h = arg2[5];
-    i = e + g;
-    arg2[1] = d;
-    j = h - g;
-    arg2[4] = f;
-    arg2[2] = i;
-    arg2[5] = j;
+    float f2 = arg2[1];
+    float f1 = arg1[0];
+    float f0 = arg2[4];
+    float f4 = f2 + f1;
+    float f2b = arg2[2];
+    float f1b = f0 - f1;
+    float f3 = arg1[1];
+    float f0b = arg2[5];
+    float f2c = f2b + f3;
+    float f0c = f0b - f3;
+    arg2[1] = f4;
+    arg2[4] = f1b;
+    arg2[2] = f2c;
+    arg2[5] = f0c;
 }
 
 extern unsigned long lbl_80559E94;
@@ -4679,9 +4678,17 @@ void fn_80155DB0(void *obj, const char *fmt, ...) {
     va_end(args);
 }
 
+/* Set the object's value field (+0x108) and mark it active by setting +0x114 to 1. */
 void fn_80155E40(void *arg0, s32 arg1) {
-    *(s32 *)((u8 *)arg0 + 0x108) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x114) = 1;
+    typedef struct {
+        u8 pad[0x108];
+        s32 value;
+        u8 pad2[0x8];
+        s32 active;
+    } ObjFields;
+    ObjFields *obj = (ObjFields *)arg0;
+    obj->value = arg1;
+    obj->active = 1;
 }
 
 void fn_80155E50(void *arg0, int arg1) { *(int *)((char *)arg0 + 0x10C) = arg1; }
