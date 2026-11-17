@@ -4150,6 +4150,8 @@ void fn_80154748(void) {
 
 }
 
+/* Third of the four empty default handlers at 0x80154744-0x80154750 (no-op: nothing
+ * to do for this slot).  No source references it, so it is taken by pointer. */
 void fn_8015474C(void) {
 
 }
