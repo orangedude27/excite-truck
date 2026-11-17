@@ -1053,8 +1053,10 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
 #pragma push
 #pragma small_data off
 #pragma pop
-void fn_802C6FA8(void *arg0) {
-    ((void (*)(void *, void *))fn_802C5DF0)(arg0, fn_802D6C48);
+/* Registers a model's textures (mrModelRegisterTextures): visits every group in
+ * groupList through fn_802C5DF0 with the per-group hook fn_802D6C48. */
+void fn_802C6FA8(void *groupList) {
+    ((void (*)(void *, void *))fn_802C5DF0)(groupList, fn_802D6C48);
 }
 
 extern void fn_802D6C44(void);
