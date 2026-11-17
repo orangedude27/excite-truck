@@ -3135,8 +3135,13 @@ extern "C" void fn_801FC644(void **list, void *node) {
 }
 
 extern "C" s32 lbl_8055EC70;
-extern "C" void fn_801FC654(void *arg0, s32 arg1, void *arg2) {
-    ((void (*)(s32, s32, s32))fn_80204014)(arg1, *(s32 *)((u8 *)arg2 + 0x34), lbl_8055EC70);
+typedef void (*NoopHandler)(s32, s32, s32);
+extern "C" void fn_801FC654(void *unused, s32 value, void *object) {
+    #define gResourceManager lbl_8055EC70
+    /* Forward to the empty scratch handler with the object's resource-getter
+       field (+0x34) and the global resource manager. */
+    ((NoopHandler)fn_80204014)(value, *(s32 *)((u8 *)object + 0x34), gResourceManager);
+    #undef gResourceManager
 }
 
 extern "C" f32 fn_801FC664(void) {
