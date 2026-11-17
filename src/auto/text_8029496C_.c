@@ -116,6 +116,7 @@ void fn_80294CC4(void) {}
 
 void fn_80294ED4(void);
 void fn_80294CC8(void) { fn_80294ED4(); }
+#pragma processor 750
 
 #pragma push
 #pragma processor 750
