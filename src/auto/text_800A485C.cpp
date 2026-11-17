@@ -19987,7 +19987,8 @@ extern "C" s32 is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane(void *pane) {
     return is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane((void *)fn_800D0AB4(current));
 }
 
-extern "C" s32 fn_800D0AA8(void *arg0) { return (*(u8 *)((u8 *)arg0 + 0xCF)) & 1; }
+// Return the "shown" flag (bit 0 of LYT_PANE_FLAGS) of an nw4r::lyt::Pane.
+extern "C" s32 fn_800D0AA8(void *pane) { return LYT_PANE_FLAGS(pane) & LYT_PANE_SHOWN; }
 
 extern "C" s32 fn_800D0AB4(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
