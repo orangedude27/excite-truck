@@ -213,8 +213,11 @@ void fn_8017EB70(void *child) {
 }
 
 extern void fn_8017E9FC(void *);
-void fn_8017EB78(void *arg0) {
-    fn_8017E9FC((char *)arg0 - 0x1EC);
+/* Ball-body vtable method: `child` points 0x1EC into the owning object, so recover
+ * the BallBody base and forward to fn_8017E9FC (other args pass through in r4/r5),
+ * which advances the ball's state machine and plays a sound when triggered. */
+void fn_8017EB78(void *child) {
+    fn_8017E9FC((char *)child - 0x1EC);
 }
 
 float fn_8017EB80(float arg0, float arg1, float arg2) {
