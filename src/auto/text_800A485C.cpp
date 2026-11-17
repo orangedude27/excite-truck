@@ -13510,8 +13510,10 @@ extern "C" s32 fn_800BB4C8(s32 device, s32 offset, s32 buffer, s32 length) {
     return fn_800BB4E0(device,offset,buffer,length,0,0);
 }
 
-extern "C" s32 fn_800BB4D4(s32 a,s32 b,s32 c,s32 d) {
-    return fn_800BB81C(a,b,c,d,0,0);
+/* Synchronous SD-card write: write "length" bytes from "buffer" at byte
+ * "offset" to the opened "device", with no callback so the transfer is waited on. */
+extern "C" s32 fn_800BB4D4(s32 device, s32 offset, s32 buffer, s32 length) {
+    return fn_800BB81C(device, offset, buffer, length, 0, 0);
 }
 
 extern "C" s32 fn_800BAE98(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
