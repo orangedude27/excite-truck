@@ -904,6 +904,7 @@ void fn_8023B2EC(void *widget) {
 
 void fn_8023B368(void) {}
 
+/* Constant predicate (returns 0 / false); likely a virtual getter reached through a dispatch table. */
 s32 fn_8023B36C(void) { return 0; }
 
 void fn_8023B374(void *arg0) {
