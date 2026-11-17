@@ -4701,7 +4701,7 @@ loop_64:
                 if (sp10 == 0) {
                     return 2;
                 }
-                if ((s32) sp23A != 0) {
+                if (sp30buf[0x20A] != 0) {
                     M2C_FIELD(p1, s32 *, 0x230) = (s32) (M2C_FIELD(p1, s32 *, 0x230) - VFiPFPATH_GetLengthFromUnicode((const u16 *)sp30buf));
                 } else {
                     M2C_FIELD(p1, s32 *, 0x230) = (s32) (M2C_FIELD(p1, s32 *, 0x230) - VFiPFPATH_GetLengthFromShortname((s8 *)sp23Ebuf));
