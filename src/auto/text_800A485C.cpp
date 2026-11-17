@@ -8275,6 +8275,17 @@ extern "C" s32 VFiPFFILE_p_fread(void *, void *buffer, u32 count, u32 size, void
 }
 
 extern "C" s32 fn_800A9470(void *,void *);
+/* File info filled in by VFiPFFILE_p_finfo. */
+typedef struct PFFileInfo {
+    u32 size;        /* 0x00 */
+    u32 position;    /* 0x04 */
+    u32 allocated;   /* 0x08 */
+    u32 chainBytes;  /* 0x0C */
+    u32 attr;        /* 0x10 */
+    u32 unk14;       /* 0x14 */
+    u32 unk18;       /* 0x18 */
+    u32 unk1C;       /* 0x1C */
+} PFFileInfo;
 extern "C" s32 VFiPFFILE_p_finfo(void *arg0, void *arg1) {
     s32 temp_r3, temp_r5;
     u32 size;
@@ -16504,6 +16515,7 @@ register u32 raw;
 register s16 decoded;
 register s16 x;
 register s16 y;
+
 if (sp14 != 0) {
 register s32 tile = *(s32*)((u8*)arg0 + 4);
 register s16 row = *(s16*)((u8*)arg0 + 0x1C);
@@ -16514,6 +16526,7 @@ sp10 = 0x24;
 } else {
 sp10 = (s16)lbl_80559270[*(s32*)((u8*)arg0 + 4)];
 }
+
 maxOutput = arg3 * 2;
 sp18 = ((u32)(-sp14 | sp14) >> 31) + 2;
   output = (s16*)sp8;
@@ -16526,6 +16539,7 @@ type = 0x11;
 } else if (type > 0xF) {
 type = 0x10;
 }
+
 if (i == 0) {
 maxForPass = sp10;
 }
@@ -16542,8 +16556,9 @@ maxForPass = maxOutput;
 if (maxForPass > maxOutput) {
 maxForPass = maxOutput;
 }
+
 while (outputIndex < maxForPass) {
-raw = (u32)((u16 (*)(u8*, s32, u32*))fn_800C0DF8)((u8*)arg1, 0x10, (u32*)&ctx->bitIndex) << 16;
+raw = (u32)fn_800C0DF8((u8*)arg1, 0x10, (u32*)&ctx->bitIndex) << 16;
 if (type == 0xD || type == 0x10) {
 bits = ctx->bitIndex;
 ctx->bitIndex = bits + 4;
@@ -16557,10 +16572,12 @@ raw |= ((sign & 0xF) << 12);
 } else {
 ctx->bitIndex -= 0x10;
 }
+
 decoded = (s16)fn_800C083C(raw, decodeTable[type], (s32*)(sp20 + type * 4));
 x = (s16)((decoded & 0xF0) >> 4);
 y = (s16)(decoded & 0xF);
 ctx->bitIndex += (s16)decoded >> 8;
+
 if (x == 0xF && status != 0) {
 x = (s16)(x + (u16)fn_800BDEB4((const u8*)arg1, status, (u32*)&ctx->bitIndex));
 }
@@ -16576,6 +16593,7 @@ if (sign != 0) {
 x = -x;
 }
 }
+
 if (y == 0xF && status != 0) {
 y = (s16)(y + (u16)fn_800BDEB4((const u8*)arg1, status, (u32*)&ctx->bitIndex));
 }
@@ -16591,6 +16609,7 @@ if (sign != 0) {
 y = -y;
 }
 }
+
 output[0] = x;
 output[1] = y;
 if ((s32)ctx->bitIndex > ctx->limit) {
@@ -16606,6 +16625,7 @@ outputIndex += 2;
 ++i;
 ++inputCursor;
 }
+
 if (spC == 0) {
 fn_800C08A8(arg0, *(s16*)((u8*)arg0 + 0x288), (s32)arg1, (s16*)arg2, outputIndex, arg8, arg10);
 } else {
