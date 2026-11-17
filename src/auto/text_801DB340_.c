@@ -606,7 +606,10 @@ void fn_801DCEF0(void) {
 
 extern void *lbl_8055E9A8;
 void fn_801DCEF4(void) {
-    lbl_8055E9A8 = 0;
+    /* Reset the active-entry count, emptying the pending value-accumulation queue. */
+#define sActiveEntryCount lbl_8055E9A8
+    sActiveEntryCount = 0;
+#undef sActiveEntryCount
 }
 
 extern void *lbl_8055E9A8;
