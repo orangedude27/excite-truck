@@ -6848,10 +6848,11 @@ extern "C" s32 fn_800AEF6C(void *arg0) {
 }
 
 extern "C" void fn_800AF2B8(void *);
-extern "C" void fn_800AF2B8(void *arg0) {
-    ((s32 *)arg0)[0] = 0;
-    ((s32 *)arg0)[1] = 0;
-    ((s32 *)arg0)[2] = 0;
+/* Clear the three-word field at the start of a file-handle slot (the slot's +0xC). */
+extern "C" void fn_800AF2B8(void *field) {
+    ((s32 *)field)[0] = 0;
+    ((s32 *)field)[1] = 0;
+    ((s32 *)field)[2] = 0;
 }
 
 extern "C" s32 fn_800AF2CC(void *fatFile, u32 startCluster, s32 length, s32 *clusterOut, u32 *nextClusterOut, s32 flags) {
