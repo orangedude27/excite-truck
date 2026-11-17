@@ -4077,6 +4077,7 @@ extern "C" s32 fn_8014436C(TObj20 *arg0, s32 arg1) {
 extern "C" s32 fn_801B8514(void);
 extern "C" s32 fn_801443E0(void) { return 0; }
 
+// Trivial stub in this vtable's callback group; always returns 1 (true).
 extern "C" u32 fn_801443E8(void) { return 1; }
 
 // Trivial stub in this vtable's callback group; always returns 0 (false).
