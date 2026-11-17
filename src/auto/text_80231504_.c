@@ -283,7 +283,10 @@ static inline s32 fn_80231D84_addEscape(f32 *adv, char *text, f32 x, f32 y, f32 
     }
     return 0;
 }
-s32 fn_80231504(void) {
+/* State save/restore hook used by the game-mode dispatcher (fn_8000B210):
+ * called with 0 to snapshot state, then with that value to restore it. This
+ * build has no state to preserve, so it always reports 0. */
+s32 fn_80231504(s32 state) {
     return 0;
 }
 
