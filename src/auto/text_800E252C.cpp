@@ -5,7 +5,7 @@ extern float lbl_80560F20;
 extern float lbl_80560F24;
 extern double lbl_80560F28;
 extern float lbl_80560F30;
-static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { ElemTmp v; v.f1 = f; v.f2 = f; v.i1 = 0; v.i2 = 0; while (q < end) *q++ = v; }
+static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { if (q < end) { do { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } while (q < end); } }
 typedef unsigned int u32;
 typedef signed char s8;
 typedef int M2C_UNK;
