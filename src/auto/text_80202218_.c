@@ -221,6 +221,9 @@ extern "C" void fn_802023D4(void) {
 #pragma cplusplus reset
 #pragma pop
 
+/* Element constructor that the array allocator fn_8002F37C runs over each
+ * 0x10-byte modpool entry (position + slot record) fn_802023D4 allocates: the
+ * entries are plain data filled in afterwards, so it does nothing. */
 void fn_802025D4(void) {
 
 }
@@ -287,10 +290,7 @@ void fn_80202718(int arg0) {
     extern void fn_801DCEF0(void);
     extern int fn_802CE728(int);
     extern void fn_802C7458(int, int);
-    int *rec;
-    int i;
-    int base;
-    int dir;
+    register int i, base, dir;
     int center, result, count;
     int *data;
     float x, y, z;
@@ -298,11 +298,10 @@ void fn_80202718(int arg0) {
     Vec local;
     lbl_804888E0[0x20] = 0;
     if (lbl_8055ECD8) {
-        void *p;
+        int v;
         fn_801E86F8(-1);
-        p = fn_801EA9A0();
-        p = *(void **)((char *)p + 8);
-        if (*(short *)((char *)p + 0x30) >= 0) fn_801DCEF0();
+        v = *(short *)(*(int *)((char *)fn_801EA9A0() + 8) + 0x30);
+        if (v >= 0) fn_801DCEF0();
         return;
     }
     if (lbl_8055ECC0 == 0) {
@@ -313,10 +312,10 @@ void fn_80202718(int arg0) {
     center = fn_802022E4((Vec *)(o + 9));
     lbl_804888D0[fn_801E85B4()] = center;
     data = (int *)(lbl_8055ECC4 + (((center + 1) % lbl_8055ECC0) * 16));
-    dir = 1;
     x = ((float *)data)[0] - o[9];
     y = ((float *)data)[1] - o[10];
     z = ((float *)data)[2] - o[11];
+    dir = 1;
     local.x = z * o[2] + (x * o[0] + y * o[1]);
     local.y = z * o[5] + (x * o[3] + y * o[4]);
     local.z = z * o[8] + (x * o[6] + y * o[7]);
@@ -327,10 +326,11 @@ void fn_80202718(int arg0) {
         base = 0;
         center = count;
     }
-    for (i = 0; (result = fn_80202378(center, base, dir, i)) >= 0; i++) {
-        rec = (int *)(lbl_8055ECC4 + result * 16);
-        fn_802CE744(rec[3], 0);
-        result = fn_802CE728(rec[3]);
+    i = 0;
+    while ((result = fn_80202378(center, base, dir, i)) >= 0) {
+        data = (int *)(lbl_8055ECC4 + result * 16);
+        fn_802CE744(data[3], 0);
+        result = fn_802CE728(data[3]);
         if (result != -1) {
             fn_802C7458(result, -13);
             count = lbl_804888E0[0x20];
@@ -339,6 +339,7 @@ void fn_80202718(int arg0) {
                 lbl_804888E0[0x20] = count + 1;
             }
         }
+        i++;
     }
     fn_8020268C();
 }
