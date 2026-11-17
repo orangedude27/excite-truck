@@ -4485,28 +4485,31 @@ void Update__Q36nw4hbm3snd11SoundPlayerFv(void *player) {
 }
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
-    struct Dummy {
-        virtual ~Dummy();
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
+void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *player, s32 fadeTime) {
+    /* Stop every sound on this SoundPlayer's priority list: walk the nw4
+     * LinkList (sentinel at +4 of the player, each node 0xC0 into its sound
+     * object) and call each sound's virtual stopAllSound (vtable slot 6). */
+    struct StoppableSound {
+        virtual ~StoppableSound();
+        virtual void unusedVirtual0();
+        virtual void unusedVirtual1();
+        virtual void unusedVirtual2();
         virtual void stopAllSound(s32);
     };
     struct { void *head; } cursor;
-    cursor.head = *(void **)((u8 *)self + 4);
+    cursor.head = *(void **)((u8 *)player + 4);
     void *&head = cursor.head;
     struct { void *end; } sentinel;
-    sentinel.end = (u8 *)self + 4;
+    sentinel.end = (u8 *)player + 4;
     void *&end = sentinel.end;
-    void *node;
+    void *soundNode;
     while (head != end) {
-        node = head;
-        head = *(void **)node;
-        if (node == 0) {
+        soundNode = head;
+        head = *(void **)soundNode;
+        if (soundNode == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262E8, 0x23D, (const char *)lbl_803262C4);
         }
-        ((Dummy *)((u8 *)node - 0xC0))->stopAllSound(arg1);
+        ((StoppableSound *)((u8 *)soundNode - 0xC0))->stopAllSound(fadeTime);
     }
 }
 #pragma opt_common_subs reset
