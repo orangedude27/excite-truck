@@ -358,8 +358,8 @@ void fn_8000F4F0(void) {
     f32 time, scale;
     s32 number;
     u32 alpha;
-    char *src, *dst;
     s32 count;
+    char *src, *dst;
     UnkF4F0Style *p, *q;
     UnkF4F0Style *(*lookup)(void *, const char *);
     strBase = (char *)lbl_802FC2A8;
@@ -415,7 +415,10 @@ void fn_8000F4F0(void) {
         lookup = *(UnkF4F0Style *(**)(void *, const char *))((u8 *)lbl_8055D4B0->vtable+0xC);
         q = lookup(lbl_8055D4B0,strBase+0x1C4);
         if (p && q) {
-            a = *p; b = *q;
+            a.unk_0x00=p->unk_0x00; a.unk_0x04=p->unk_0x04; a.unk_0x08=p->unk_0x08; a.unk_0x0C=p->unk_0x0C;
+            a.unk_0x10=p->unk_0x10; a.unk_0x14=p->unk_0x14; a.unk_0x18=p->unk_0x18; a.unk_0x1C=p->unk_0x1C;
+            b.unk_0x00=q->unk_0x00; b.unk_0x04=q->unk_0x04; b.unk_0x08=q->unk_0x08; b.unk_0x0C=q->unk_0x0C;
+            b.unk_0x10=q->unk_0x10; b.unk_0x14=q->unk_0x14; b.unk_0x18=q->unk_0x18; b.unk_0x1C=q->unk_0x1C;
             a.unk_0x18 = (a.unk_0x18 & 0xFFFFFF) | (alpha << 24);
             b.unk_0x18 = a.unk_0x18;
             fn_80232928(-1);
@@ -899,8 +902,10 @@ extern s32 lbl_8055D494;
   extern char lbl_802FC518[];
   extern s32 lbl_80558AA4;
   extern void fn_802337A0(f32, s32, f32, s32, f32, f32, s32, f32, const char *, ...);
-  void fn_8001071C(s32 arg0) {
-    ((void (*)(s32, s32))fn_80010FDC)(arg0, 0xD);
+typedef void (*RegisterTextEntry)(s32 name, s32 id);
+void fn_8001071C(s32 name) {
+    /* Register a text entry under the fixed id 0xD (13). */
+    ((RegisterTextEntry)fn_80010FDC)(name, 0xD);
 }
 
 #pragma push
