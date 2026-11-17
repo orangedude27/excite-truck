@@ -126,6 +126,8 @@ void fn_801282A0(void) {
 }
 #pragma dont_inline reset
 
+/* No-op hook in the heap subsystem, invoked during per-scene initialization;
+   intentionally does nothing. */
 void fn_801282E8(void) {
 
 }
