@@ -1711,10 +1711,8 @@ extern "C" void fn_8021AD10(void *arg0) {
         value %= fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
     }
 
-    screenX = *(s32 *)((u8 *)arg0 + 4) -
-        ((s32)(lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1);
-    screenY = ((s32)(lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1) -
-        *(s32 *)((u8 *)arg0 + 8);
+    screenX = *(s32 *)((u8 *)arg0 + 4) - lbl_8055FB9C / 2;
+    screenY = lbl_8055FBA0 / 2 - *(s32 *)((u8 *)arg0 + 8);
 
     fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), value,
         (f32)screenX, (f32)screenY, lbl_805634A8);
