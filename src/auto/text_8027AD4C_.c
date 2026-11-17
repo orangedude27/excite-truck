@@ -165,7 +165,8 @@ unsigned char fn_8027AF84(void *arg0) {
 
 #pragma dont_inline on
 unsigned char fn_8027AF8C(void *arg0) { return *((unsigned char *)arg0 + 0x10); }
-void fn_8027AF94(void *arg0) { ((unsigned char *)arg0)[4] = 0; }
+/* Reset an effect entry by clearing its active/valid flag at offset 4 (Entry_reset). */
+void fn_8027AF94(void *entry) { ((unsigned char *)entry)[4] = 0; }
 
 #pragma push
 #pragma use_lmw_stmw off
