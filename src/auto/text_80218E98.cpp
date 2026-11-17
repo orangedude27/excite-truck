@@ -867,8 +867,11 @@ extern "C" void fn_802192A0(void) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_802192A4(void *, s32) { return 0; }
-
+/* Base widget message handler (vtable lbl_8033FB38, slot 0x64).  The base
+ * widget class claims no message, so it always answers 0 ("not handled");
+ * derived widgets' handlers call it as the fallback for every key they do not
+ * use themselves (see fn_8021AB90, fn_802239C8 and the text field's handler). */
+extern "C" s32 fn_802192A4(void *widget, s32 message) { return 0; }
 extern "C" int memcmp(const void *, const void *, size_t);
 extern "C" void *memcpy(void *, const void *, size_t);
 #pragma use_lmw_stmw off
@@ -6088,24 +6091,25 @@ outer_test:
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, void *arg3, s32 arg4) {
-    register s32 obj = (s32)self;
-    register u8 *input = (u8 *)arg3;
-    register s32 data = arg4;
-    register s32 i;
-    register s32 offset;
-    register s32 zero;
-    register s32 one;
-    register s32 minusOne;
+    u8 *obj = (u8 *)self;
+    u8 *input = (u8 *)arg3;
+    s32 data = arg4;
+    s32 i;
+    u8 *row;
+    s32 offset;
+    s32 zero;
+    s32 one;
+    s32 minusOne;
     s32 scratch;
     s32 count;
     s32 texture;
-    register f32 defaultValue;
-    f32 scale;
+    f32 defaultValue;
     f32 baseValue;
-    f32 resetValue;
+    f32 scale;
     f32 lastValue;
+    f32 resetValue;
 
-    fn_80218F34((void *)obj, arg1, arg2, 0, 0, 0);
+    fn_80218F34(obj, arg1, arg2, 0, 0, 0);
     count = *(s32 *)(input + 8);
     *(s32 *)(obj + 0x2CC) = data;
     *(void **)obj = lbl_8033E4DC;
@@ -6131,24 +6135,19 @@ loop:
     data = ((s32 (*)(void *, s32, s32 *))fn_8022D3F8)(input, i, &scratch);
     if ((scratch & 3) != 1)
         *(u8 *)(obj + i + 0x2D0) = one;
+    row = obj + offset;
+    *(s32 *)(row + 0x378) = (scratch >> 2) & 0x3F;
     {
-        u8 *row = (u8 *)(obj + offset);
-        *(s32 *)(row + 0x378) = (scratch >> 2) & 0x3F;
-        {
-            f32 width = fn_8023293C(
-                *(s32 *)(obj + 0x3FC), data, lbl_805634A4);
-            *(f32 *)(row + 0x2F4) = *(f32 *)(obj + 0x404) * width;
-        }
-        *(s32 *)(row + 0x244) = data;
+        f32 width = fn_8023293C(*(s32 *)(obj + 0x3FC), data, lbl_805634A4);
+        *(f32 *)(row + 0x2F4) = *(f32 *)(obj + 0x404) * width;
     }
+    *(s32 *)(row + 0x244) = data;
     goto next;
 empty:
-    {
-        u8 *row = (u8 *)(obj + offset);
-        *(s32 *)(row + 0x244) = zero;
-        *(f32 *)(row + 0x2F4) = defaultValue;
-        *(s32 *)(row + 0x378) = minusOne;
-    }
+    row = obj + offset;
+    *(s32 *)(row + 0x244) = zero;
+    *(f32 *)(row + 0x2F4) = defaultValue;
+    *(s32 *)(row + 0x378) = minusOne;
 next:
     ++i;
     offset += 4;
@@ -6161,8 +6160,8 @@ next:
     *(f32 *)(obj + 0x40C) = resetValue;
     *(f32 *)(obj + 0x408) = lastValue;
     *(u8 *)(obj + 0x41C) = zero;
-    ((void (*)(void *))fn_8022375C)((void *)obj);
-    return (void *)obj;
+    ((void (*)(void *))fn_8022375C)(obj);
+    return obj;
 }
 
 /* Deleting destructor of the gText text widget built by fn_802230A4: releases
