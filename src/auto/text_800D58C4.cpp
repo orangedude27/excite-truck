@@ -1857,8 +1857,9 @@ extern "C" s32 fn_800D8828(void *arg0) {
     return (*(u32 *)((u8 *)arg0 + 0x4C) >> 14) & 1;
 }
 
-extern "C" void fn_800D8834(u8 *arg0, u8 *arg1) {
-    *arg0 = *arg1;
+/* Copies one byte of an RGBA color (used by nw4r lyt material setup) from src into dst. */
+extern "C" void fn_800D8834(u8 *dst, u8 *src) {
+    *dst = *src;
 }
 
 #pragma push
