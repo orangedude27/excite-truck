@@ -167,7 +167,6 @@ extern "C" void fn_8026B260(void) {
 
 #pragma cplusplus reset
 #pragma processor 750
-#pragma opt_common_subs off
 void fn_8026B3D4(int arg0) {
     struct Ent { unsigned char on; unsigned char pad[3]; float t; float v; int idx; };
     float t = lbl_8055E3C8;
