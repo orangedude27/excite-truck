@@ -9793,10 +9793,11 @@ extern "C" s32 VFiPFPATH_parseShortName(void *arg0, void *arg1) {
     u8* dest = (u8*)arg0;
     s32 found;
     s32 truncated;
-    u8* cursor = (u8*)fn_800A4D74(arg1, 3);
-    sp8 = (s32)arg1;
+    u8* cursor;
     found = 0;
     truncated = 0;
+    cursor = (u8*)fn_800A4D74(arg1, 3);
+    sp8 = (s32)arg1;
     if ((*(u32 *)((const u8 *)lbl_803D2140 + 0x60) & 2) == 0) {
 loop_3:
         {
@@ -9807,10 +9808,10 @@ loop_3:
                 goto loop_3;
             }
         }
-        s16 lastDot = 0;
-        s16 prevDot = 0;
-        s16 pos = 0;
-        s16 cur;
+        u16 lastDot = 0;
+        u16 prevDot = 0;
+        u16 pos = 0;
+        u16 cur;
 loop_11:
         cur = (u8)cursor[pos];
         if ((s8)cur != 0) {
@@ -9829,14 +9830,14 @@ loop_11:
             }
             truncated = 1;
         }
-        s16 written = 0;
+        u16 written = 0;
         u16* countPtr = &sp10;
         u16* extPtr = &sp10;
         sp10 = 0;
         spE = 0;
-        s16 i2 = 0;
-        s16 state18 = 1;
-        s16 state17 = 1;
+        u16 i2 = 0;
+        u16 state18 = 1;
+        u16 state17 = 1;
 loop_64:
         if (spE < 3) {
             u8 ch2 = cursor[i2];
@@ -9889,7 +9890,7 @@ loop_45:
                                 state18 = 1;
                             }
                             if ((*(s32 *)(lbl_803D2140 + 0x38) & 0x10000) != 0 || cursor[i2] >= 0x80 || ((u8)cursor[i2] >= 0x20 && *(u8 *)(lbl_802EEEE0 + cursor[i2] - 0x20) & 2)) {
-                                s16 before = (s16)written;
+                                u16 before = written;
                                 written += 1;
                                 dest[before] = (u8)fn_800A485C(cursor[i2]);
                                 *countPtr += 1;
@@ -17096,6 +17097,13 @@ extern "C" void fn_800C1A80(void *arg0, void *arg1, s32 *out) {
 
 extern "C" void fn_800C1C1C(void *arg0, s32 *out) {
     s32 *in = (s32 *)arg0;
+    s32 kA = -0x1BB67A;
+    s32 kB = 0x1E11FB;
+    s32 kC = -0x58E86;
+    s32 kD = -0x188370;
+    s32 kE = -0xAF1D3;
+    s32 kF = -0x1F8390;
+    s32 kG = -0x1491BC;
     s32 t1 = in[1];
     s32 t7 = in[7];
     s32 t0 = in[0];
@@ -17119,11 +17127,11 @@ extern "C" void fn_800C1C1C(void *arg0, s32 *out) {
     s32 d35 = t3 - t5;
     s32 f1 = d62 + d80;
     s32 s4 = t4 + s17;
-    s32 A = (s32)(((s64)d17 * -0x1BB67ALL) >> 20);
-    s32 B = (s32)(((s64)e1 * 0x1E11FBLL) >> 20);
-    s32 C = (s32)(((s64)e2 * -0x58E86LL) >> 20);
-    s32 D = (s32)(((s64)e3 * -0x188370LL) >> 20);
-    s32 E = (s32)(((s64)f1 * -0xAF1D3LL) >> 20);
+    s32 A = (s32)(((s64)d17 * kA) >> 20);
+    s32 B = (s32)(((s64)e1 * kB) >> 20);
+    s32 C = (s32)(((s64)e2 * kC) >> 20);
+    s32 D = (s32)(((s64)e3 * kD) >> 20);
+    s32 E = (s32)(((s64)f1 * kE) >> 20);
     s32 g1 = d35 - d80;
     s32 g2 = d35 + d62;
     s32 g3 = (d35 - d62) + d80;
@@ -17135,12 +17143,12 @@ extern "C" void fn_800C1C1C(void *arg0, s32 *out) {
     out[6] = -(s4 * 2) + sum;
     out[8] = h + (C + D);
     out[4] = (h - B) - C;
-    F = (s32)(((s64)g1 * -0x1F8390LL) >> 20);
+    F = (s32)(((s64)g1 * kF) >> 20);
     out[5] = (A - E) - F;
-    G = (s32)(((s64)g2 * -0x1491BCLL) >> 20);
+    G = (s32)(((s64)g2 * kG) >> 20);
     out[7] = A + (E + G);
     out[1] = G - (A + F);
-    out[3] = (s32)(((s64)g3 * -0x1BB67ALL) >> 20);
+    out[3] = (s32)(((s64)g3 * kA) >> 20);
 }
 
 #pragma push
@@ -17720,7 +17728,7 @@ extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4
         c += 16;
     }
 }
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw on
 extern "C" void fn_800C3960(s32 *tbl, s32 *coef, u32 idx, s16 *out, u32 mask, s32 flag) {
     s32 *tbl2 = tbl + 0x10;
     s64 sumA = 0;
@@ -17747,6 +17755,7 @@ extern "C" void fn_800C3960(s32 *tbl, s32 *coef, u32 idx, s16 *out, u32 mask, s3
         out[0x10] = b;
     }
 }
+#pragma use_lmw_stmw off
 
 #pragma push
 #pragma opt_dead_assignments off
