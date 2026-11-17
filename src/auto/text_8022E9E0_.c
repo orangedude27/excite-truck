@@ -215,8 +215,10 @@ void fn_8022ED50(s32 arg0) {
 }
 #pragma dont_inline reset
 
+/* Pop the top UI context off the stack: release the tail node of the
+   global UI-context list. */
 void fn_8022EDB8(void) {
-    fn_8022ED50(((s32 *)lbl_8055F004)[1]);
+    fn_8022ED50(((s32 *)sUIContextList)[1]);
 }
 
 s32 fn_8022EDC4(void) {
