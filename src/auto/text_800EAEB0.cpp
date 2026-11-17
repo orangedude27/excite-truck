@@ -1321,10 +1321,12 @@ extern "C" s32 fn_800ECEA8(void *object, s32 deleteFlag) {
     return (s32)object;
 }
 
-extern "C" void fn_800ECEE8(void* arg0) {
-    *(s32*)((u8*)arg0 + 0x14) = 0;
-    *(s32*)((u8*)arg0 + 0x18) = 0;
-    *(s32*)((u8*)arg0 + 0x1C) = 0;
+/* Reset a nw4r::snd MemoryFileStream by clearing its data pointer (+0x14),
+ * buffer size (+0x18) and current offset (+0x1C). */
+extern "C" void fn_800ECEE8(void *stream) {
+    *(s32 *)((u8 *)stream + 0x14) = 0;
+    *(s32 *)((u8 *)stream + 0x18) = 0;
+    *(s32 *)((u8 *)stream + 0x1C) = 0;
 }
 
 extern "C" u32 Read__Q44nw4r3snd18MemorySoundArchive16MemoryFileStreamFPvUl(void *stream, void *dst, u32 size) {
