@@ -976,7 +976,10 @@ void *fn_80237FF8(void *object, int destroyFlag) {
     return object;
 }
 
-float fn_80238084(void *arg0) { return *(float *)((char *)arg0 + 0xC); }
+float fn_80238084(void *arg0) {
+    /* Return the UI animation manager's total duration (field +0xC). */
+    return ((AnimMgr *)arg0)->duration;
+}
 
 extern float lbl_805636E8;
 extern void *fn_8022EDE4(float *, float);
