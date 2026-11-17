@@ -1895,7 +1895,7 @@ struct VCC {
     virtual void c36() {} virtual void c37() {} virtual void c38() {} virtual void c39() {}
     virtual void c40() {} virtual void c41() {} virtual void c42() {} virtual void c43() {}
     virtual void c44() {} virtual void c45() {} virtual void c46() {} virtual void c47() {}
-    virtual void c48() {} virtual void c49() {} virtual void c50() {}
+    virtual void c48() {}
     virtual int get(int) { return 0; }
 };
 extern "C" int fn_80189BDC(void *arg0) {
