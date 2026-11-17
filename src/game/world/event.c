@@ -13,9 +13,9 @@ typedef struct {
 extern unsigned char lbl_80488678[];
 void *memset(void *, int, unsigned int);
 #pragma scheduling off
-/* Clears the whole event-handler registry (18 event types x 4 handler slots). */
+/* Clears the whole event-handler registry (all 18 event-type rows of handlers). */
 void fn_801EEFC8(void) {
-    memset(lbl_80488678, 0, 0x120);
+    memset(lbl_80488678, 0, 18 * sizeof(EventHandlerRow));
 }
 #pragma scheduling invalid_target
 /* Registers handler for event type (eventType & 0xFF): stores it in the first free slot of that type's 4-slot row; does nothing when the row is full. */
