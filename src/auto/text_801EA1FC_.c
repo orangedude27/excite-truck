@@ -125,6 +125,10 @@ void fn_801EA404(s32 arg0, s32 arg1) {
 }
 
 char fn_801EA470(void) {
+    /* Returns the camera/scene mode flag byte lbl_8055EB58. When set, callers
+     * pick the fixed projection constants and scene context [2] instead of the
+     * player-driven FOV and scene context [1]; cleared by fn_801EA31C when the
+     * view is reinitialized. */
     return lbl_8055EB58;
 }
 
