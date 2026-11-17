@@ -115,10 +115,9 @@ extern float fn_802C9A50(void);
 static inline void Mtx33MultVec_802A6470(const f32 *m, const f32 *src, f32 *dst) {
     if (src == dst) {
         f32 x = src[0], y = src[1], z = src[2];
-        f32 o0 = z * m[2] + (x * m[0] + y * m[1]);
-        f32 o1 = z * m[5] + (x * m[3] + y * m[4]);
-        f32 o2 = z * m[8] + (x * m[6] + y * m[7]);
-        dst[0] = o0; dst[1] = o1; dst[2] = o2;
+        dst[0] = z * m[2] + (x * m[0] + y * m[1]);
+        dst[1] = z * m[5] + (x * m[3] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[6] + y * m[7]);
     } else {
         f32 x = src[0], y = src[1], z = src[2];
         x = z * m[2] + (x * m[0] + y * m[1]);
@@ -1031,27 +1030,17 @@ void fn_802A62CC(void *arg0, s32 arg1) {
     f32 sp10;
     s32 spC;
     f32 sp8;
-    f32 temp_f10;
-    f32 temp_f29;
-    f32 temp_f29_2;
-    f32 temp_f2;
-    f32 temp_f30;
-    f32 temp_f30_2;
-    f32 temp_f31;
-    f32 temp_f3;
-    f32 temp_f4;
-    f32 temp_f6;
-    f32 temp_f7;
-    f32 temp_f8;
-    f32 temp_f9;
+    f32 temp_f30, temp_f31, temp_f29;
+    f32 temp_f10, temp_f29_2, temp_f2, temp_f30_2, temp_f3, temp_f4, temp_f6, temp_f7, temp_f8, temp_f9;
+
     temp_f30 = lbl_80564850 * fn_801E8738(*(s32 *)((u8 *)arg0 + 0x1C));
     temp_f31 = fn_801E8874(*(s32 *)((u8 *)arg0 + 0x1C));
     temp_f29 = fn_801E8894(*(s32 *)((u8 *)arg0 + 0x1C));
     fn_801E88B4(&sp14, &sp10, &spC, &sp8, *(s32 *)((u8 *)arg0 + 0x1C));
     temp_f10 = (f32)fn_8002EF30(temp_f30);
     *(f32 *)((u8 *)arg0 + 0x20) = temp_f10;
-    temp_f30_2 = temp_f29 + temp_f31;
     temp_f7 = temp_f29 * lbl_8056489C;
+    temp_f30_2 = temp_f29 + temp_f31;
     *(f32 *)((u8 *)arg0 + 0x24) = lbl_805648A0 + temp_f31;
     temp_f9 = lbl_80564894 * temp_f30_2;
     temp_f8 = lbl_80564860 * temp_f29 * temp_f31;
@@ -1402,7 +1391,7 @@ void fn_802A6E34(void *arg0) {
     f32 sp10;
     s32 spC;
     f32 sp8;
-    volatile union { double value; struct { u32 high, low; } words; } conversion;
+    u32 conv[2];
     f32 temp_f30;
     f32 temp_f31;
     f32 temp_f29;
@@ -1417,22 +1406,23 @@ void fn_802A6E34(void *arg0) {
     f32 temp_f8;
     f32 temp_f9;
     f32 disc;
-    temp_f30 = lbl_80564850 * fn_801E8738(*(s32 *)((u8 *)arg0 + 0x10));
+
+    temp_f30 = fn_801E8738(*(s32 *)((u8 *)arg0 + 0x10)) * lbl_80564850;
     temp_f31 = fn_801E8874(*(s32 *)((u8 *)arg0 + 0x10));
     temp_f29 = fn_801E8894(*(s32 *)((u8 *)arg0 + 0x10));
     fn_801E88B4(&sp14, &sp10, &spC, &sp8, *(s32 *)((u8 *)arg0 + 0x10));
     temp_f10 = (f32)fn_8002EF30(temp_f30);
     *(f32 *)((u8 *)arg0 + 0x14) = temp_f10;
-    temp_f30_2 = temp_f29 + temp_f31;
     temp_f7 = temp_f29 * lbl_805648BC;
+    temp_f30_2 = temp_f29 + temp_f31;
     *(f32 *)((u8 *)arg0 + 0x18) = lbl_8056485C + temp_f31;
     temp_f9 = lbl_805648B8 * temp_f30_2;
     temp_f8 = lbl_80564860 * temp_f29 * temp_f31;
     temp_f6 = temp_f31 * temp_f7;
     temp_f29_2 = temp_f9 - temp_f8;
-    conversion.words.high = 0x43300000;
-    conversion.words.low = (u32)spC ^ 0x80000000;
-    temp_f3 = lbl_805648B4 * ((f32)(conversion.value - lbl_80564848) *
+    conv[0] = 0x43300000;
+    conv[1] = (u32)spC ^ 0x80000000;
+    temp_f3 = lbl_805648B4 * ((f32)(*(double *)conv - lbl_80564848) *
         (lbl_80564890 * temp_f31));
     temp_f4 = temp_f29_2 * temp_f29_2;
     temp_f2 = temp_f3 * (temp_f29 - temp_f31);
