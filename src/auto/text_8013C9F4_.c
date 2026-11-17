@@ -66,6 +66,7 @@ void fn_8013CAA8(void) {
 
 }
 
+/* Default/stub method: reports zero (false / no result) for a vtable-dispatched query. */
 long fn_8013CAAC(void) {
     return 0;
 }
