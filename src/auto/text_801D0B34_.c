@@ -72,8 +72,6 @@ void fn_801D0C58(int arg0, int arg1, int arg2) {
     *(volatile int *)&lbl_8055E8D8 = count + 1;
 }
 #pragma pop
-#pragma push
-#pragma opt_common_subs off
 void fn_801D0C84(unsigned int arg0) {
     int count = lbl_8055E8D8;
     struct Entry *entry = lbl_80438758;
