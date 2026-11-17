@@ -587,6 +587,7 @@ void fn_802CF5F8(void) {
 }
 
 void fn_802CF5FC(void) {
+    /* No-op hook in the global teardown path (fn_802C2B18); nothing to release. */
 }
 
 #pragma push
