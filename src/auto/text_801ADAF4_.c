@@ -76,8 +76,9 @@ void fn_801ADAFC(void *subObject) {
 }
 
 extern void fn_801AD99C(void **);
-void fn_801ADB04(void *arg0) {
-    fn_801AD99C((void **)((u8 *)arg0 - 0x23C));
+/* Calls fn_801AD99C on the owning object, recovered from an embedded sub-object pointer by subtracting 0x23C. */
+void fn_801ADB04(void *subObject) {
+    fn_801AD99C((void **)((u8 *)subObject - 0x23C));
 }
 
 extern void fn_801ADA38(void **);
