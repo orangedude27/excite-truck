@@ -663,7 +663,7 @@ void* fn_80176A1C(void) {
 }
 #pragma dont_inline reset
 
-/* Sets the global time-scale factor (default 3.0f) read by fn_80176A2C and used to scale timer deltas. */
+/* Sets the global time-scale factor read by fn_80176A2C (default 3.0f), used to scale timer deltas. */
 void fn_80176A24(f32 scale) {
     lbl_8055A2F4 = scale;
 }
