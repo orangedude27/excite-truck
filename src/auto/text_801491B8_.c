@@ -415,6 +415,7 @@ extern f32 lbl_80561648;
 unsigned long *fn_80149528(void) { return &lbl_80559E9C; }
 
 int fn_80149530(void) {
+    /* Return the packed color 0xFFC0D9D9 - opaque light pink in 0xAARRGGBB form. */
     return 0xFFC0D9D9;
 }
 
