@@ -141,6 +141,8 @@ void *fn_80016544(int id) {
 #pragma dont_inline reset
 
 extern void *lbl_8055D550;
+/* Return the number of dynamically registered 0xA8-byte entries held in
+ * lbl_8055D550 (the count of records in the dynamic table lbl_8055D544). */
 void* fn_800165D4(void) {
     return lbl_8055D550;
 }
