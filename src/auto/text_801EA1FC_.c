@@ -38,12 +38,15 @@ void fn_801EA1FC(void) {
 }
 
 #pragma processor 750
-void fn_801EA210(s32 arg0, f32 farg0) {
+void fn_801EA210(s32 playerIndex, f32 fov) {
     #pragma scheduling invalid_target
-    f32 temp_f31;
+    /* Refresh the projection/view parameters: when the camera/scene mode flag is
+     * clear, use this player's stored near/far planes and the supplied FOV; when
+     * set, fall back to the fixed near/far constants and the cached FOV. */
+    f32 nearPlane;
     if ((u8)lbl_8055EB58 == 0) {
-        temp_f31 = fn_801E8874();
-        fn_802C974C(temp_f31, fn_801E8894(arg0), farg0);
+        nearPlane = fn_801E8874();
+        fn_802C974C(nearPlane, fn_801E8894(playerIndex), fov);
         return;
     }
     fn_802C974C(lbl_80562E40, lbl_80562E44, lbl_8055AF68);
