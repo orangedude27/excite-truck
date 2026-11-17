@@ -3581,10 +3581,12 @@ s32 fn_8006DF68(s32 *buf) {
     }
 }
 
+/* Return 1 if the HCI command queue has no buffers pending (its count field is zero), else 0. */
 u8 fn_8006DF84(void *arg0) {
-    u16 val = *(u16 *)((u8 *)arg0 + 8);
-    u32 tmp = __cntlzw(val);
-    return tmp >> 5;
+    BUFFER_Q *p_q = (BUFFER_Q *)arg0;
+    u16 count = p_q->count;
+    u32 leadingZeros = __cntlzw(count);
+    return leadingZeros >> 5;
 }
 
 static UINT8 gki_set_pool_permission_local(UINT8 pool_id, UINT8 permission)
@@ -24894,10 +24896,10 @@ u16 arg0;
 u8 *arg1;
 u8 arg2;
 {
+    u8 *table = lbl_802EEC40;
+    u32 crc = 0xFF;
     u8 *ptr = arg1;
     u16 len = arg0;
-    u8 *table = lbl_802EEC40;
-    u8 crc = 0xFF;
     while (len-- != 0) {
         crc = table[crc ^ *ptr];
         ptr++;
