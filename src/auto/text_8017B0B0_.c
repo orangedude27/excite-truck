@@ -251,7 +251,6 @@ void fn_8017B5D4(void *arg0, int arg1, int arg2, float *arg3, float *arg4, int a
     int count;
     int index;
     void *entry;
-    int count2;
     if (*(int *)((char *)arg0 + 0x1E4) < 16) {
         if (lbl_8055E488 < lbl_8055E48C) {
             index = lbl_8055E488;
@@ -278,9 +277,9 @@ void fn_8017B5D4(void *arg0, int arg1, int arg2, float *arg3, float *arg4, int a
             }
             *(int *)((char *)entry + 0x20) = arg5;
             *(int *)((char *)entry + 0x24) = arg7;
-            count2 = *(int *)((char *)arg0 + 0x1E4);
-            *(void **)((char *)arg0 + 0x1A4 + count2 * 4) = entry;
-            *(int *)((char *)arg0 + 0x1E4) = count2 + 1;
+            count = *(int *)((char *)arg0 + 0x1E4);
+            *(void **)((char *)arg0 + 0x1A4 + count * 4) = entry;
+            *(int *)((char *)arg0 + 0x1E4) = count + 1;
         }
     }
     fn_8017B4E0(arg0, arg3, arg4, arg8);
@@ -334,16 +333,16 @@ void fn_8017B6D4(RigidBody * __restrict body, Vec * __restrict pointVel, const V
 }
 extern void PSVECCrossProduct(const float *, const float *, float *);
 #pragma scheduling on
-void fn_8017B778(void *arg0, float *arg1, float *arg2) {
-    float vector[3];
-    float t0 = arg2[0];
-    float t1 = arg2[1];
-    float t2 = arg2[2];
-    vector[0] = t0 - *(float *)((char *)arg0 + 0x60);
-    vector[1] = t1 - *(float *)((char *)arg0 + 0x64);
-    vector[2] = t2 - *(float *)((char *)arg0 + 0x68);
-    PSVECCrossProduct((const float *)((char *)arg0 + 0x178), vector, arg1);
-    arg1[0] += *(float *)((char *)arg0 + 0x16c);
+void fn_8017B778(void *__restrict arg0, float *__restrict arg1, float *__restrict arg2) {
+    float lever[3];
+    float px = arg2[0];
+    float py = arg2[1];
+    float pz = arg2[2];
+    lever[0] = px - *(float *)((char *)arg0 + 0x60);
+    lever[1] = py - *(float *)((char *)arg0 + 0x64);
+    lever[2] = pz - *(float *)((char *)arg0 + 0x68);
+    PSVECCrossProduct((const float *)((char *)arg0 + 0x178), lever, arg1);
+    arg1[0] += *(float *)((char *)arg0 + 0x16C);
     arg1[1] += *(float *)((char *)arg0 + 0x170);
     arg1[2] += *(float *)((char *)arg0 + 0x174);
 }
