@@ -7033,7 +7033,8 @@ extern "C" void fn_800FC5B8(void *player, f32 value) {
     OSRestoreInterrupts(token);
 }
 
-extern "C" f32 fn_800FC5F8(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x45C); }
+/* Return the sound player's float field at offset 0x45C (the value set by fn_800FC5B8). */
+extern "C" f32 fn_800FC5F8(void *player) { return *(f32 *)((u8 *)player + 0x45C); }
 
 extern "C" void fn_800FC600(void *object, f32 value) {
     /* Set the float field at offset 0x460 of object with interrupts disabled. */
