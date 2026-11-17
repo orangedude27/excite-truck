@@ -3947,8 +3947,9 @@ char *fn_801D8EF0(void) {
     return lbl_803389B8;
 }
 
-int fn_801D8EFC(void *arg0) {
-    return ((int *)arg0)[1];
+/* Return the current state field (+0x4) of the effect object. */
+int fn_801D8EFC(void *object) {
+    return ((UnkStruct_801D701C *)object)->state;
 }
 
 /* Starts a ready timed cue: switches its state from READY to RUNNING and stamps
