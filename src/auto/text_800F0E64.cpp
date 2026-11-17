@@ -72,6 +72,7 @@ struct SoundArchiveFileReaderLayout {
     u8 pad[0x2C];
     const char *stringBase;
     SoundArchiveLabelTableLayout *labelTable;
+    StringTreeLayout *stringTree;
 };
 namespace nw4hbm { namespace snd { namespace detail { struct WaveSoundInfo; struct WaveSoundNoteInfo; struct WaveData; struct SeqPlayer; struct NoteOnInfo; } class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); class SeqNoteOnCallback { public: void *NoteOn(detail::SeqPlayer *, int, const detail::NoteOnInfo &); }; class WsdCallback { public: s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, s32, s32, u32) const; s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, int, int, u32) const; }; }; namespace detail { class StrmPlayer { public: struct StrmHeader; s32 Start(); void Pause(bool); void Setup(const StrmHeader *); }; class SoundThread { public: s32 Shutdown(); }; } } }
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
