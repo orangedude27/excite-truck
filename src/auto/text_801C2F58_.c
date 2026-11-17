@@ -1606,7 +1606,8 @@ void fn_801C6D00(void) {
 
 void fn_801C7288(void);
 void fn_801C7288(void) {
-    fn_801C957C(0);
+    /* Menu callback: close the on-screen text-entry field. */
+    set_text_entry(0);
 }
 
 /* Set the selected entry to type 2, format its fadeout timestamp, and resort the entry table. */
