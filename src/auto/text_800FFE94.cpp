@@ -460,8 +460,9 @@ extern "C" void fn_80100BAC(void* player, int value) {
     OSRestoreInterrupts(irqState);
 }
 
-extern "C" int fn_80100BEC(void* arg0) {
-    return *(int*)((char*)arg0 + 0x44);
+/* Return the integer field at offset 0x44 of this WsdPlayer (set by fn_80100BAC). */
+extern "C" int fn_80100BEC(void* player) {
+    return *(int*)((char*)player + 0x44);
 }
 
 extern "C" char lbl_80327930[];
