@@ -640,21 +640,21 @@ void fn_8028EEB4(void *table, int instance, const char *name) {
     ++*(int *)((char *)table + 0x600);
 }
 #pragma scheduling on
-int fn_8028EF44(void *bucket, unsigned int systemId) {
-    /* Release one reference to the particle system matching systemId in a bucket; returns 1 when its refcount reaches 0, panics if the system is absent. */
-    char *base = (char *)bucket;
-    char *entry = base;
-    int entryIndex = 0;
-    int entryCount = *(int *)(base + 0x600);
-    while (entryCount > 0) {
-        if (*(unsigned int *)(entry + 0x10) == systemId) {
-            int *refCount = (int *)(base + entryIndex * 0x18 + 0x14);
-            *refCount -= 1;
-            return *refCount == 0;
+int fn_8028EF44(void *arg0, unsigned int arg1) {
+    /* Release one reference to the particle system matching arg1 in a bucket; returns 1 when its refcount reaches 0, panics if the system is absent. */
+    char *base = (char *)arg0;
+    char *p = base;
+    int i = 0;
+    int count = *(int *)(base + 0x600);
+    while (count > 0) {
+        if (*(unsigned int *)(p + 0x10) == arg1) {
+            int *q = (int *)(base + i * 0x18 + 0x14);
+            *q -= 1;
+            return *q == 0;
         }
-        entry += 0x18;
-        entryIndex++;
-        entryCount--;
+        p += 0x18;
+        i++;
+        count--;
     }
     fn_802E317C(lbl_80348F4C);
     return 0;
