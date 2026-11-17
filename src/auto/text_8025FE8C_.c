@@ -1006,9 +1006,7 @@ extern u8 lbl_8055C420;
 /* Store `value` into the s32 pointed to by `dst`. */
 void fn_80261AE8(s32 *dst, s32 value) { *dst = value; }
 
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80261AF0(s32 *arg0, s32 arg1) {
     struct Frame {
         s32 args[6];
@@ -1024,9 +1022,9 @@ void fn_80261AF0(s32 *arg0, s32 arg1) {
     register s32 minusTwo = -2;
     register s32 thirteen = 13;
     register s32 eight = 8;
-    register s32 *a = lbl_802FA6D4;
-    register s32 *b = (s32*)lbl_80498F00;
     register s32 func = (s32)fn_80261A40;
+    s32 *a = lbl_802FA6D4;
+    s32 *b = (s32*)lbl_80498F00;
     s32 hash1;
     s32 hash2;
     fn_801345D8(frame.buffer, 0x64, lbl_80345DE0, arg1);
@@ -1069,7 +1067,6 @@ void fn_80261AF0(s32 *arg0, s32 arg1) {
     frame.args[1] = (s32)frame.objects;
     fn_802146BC(frame.args, -0x3E7, -0x3E7, 1);
 }
-#pragma pop
 
 #pragma cplusplus on
 extern "C" void *fn_801284F8(s32, void *);
@@ -1268,36 +1265,23 @@ firstCheck:
     if (i < (s32)base[2]) goto firstBody;
 
     i = 0;
-    {
-        register offset = 0;
-        goto secondCheck;
-    secondBody:
+    for (j = 0; base = (u32 *)lbl_8055F420, i < (s32)base[3]; i++) {
         if (lbl_8055F3EB == 0) {
             if (i == (s32)base[1]) {
-                object = *(void **)((u8 *)base[0xF] + offset);
-                ((Dummy *)object)->slot24();
+                ((Dummy *)*(void **)((u8 *)base[0xF] + j))->slot24();
             } else {
-                object = *(void **)((u8 *)base[0xF] + offset);
-                ((Dummy *)object)->slot23();
-                object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + offset);
-                ((Dummy *)object)->slot25();
+                ((Dummy *)*(void **)((u8 *)base[0xF] + j))->slot23();
+                ((Dummy *)*(void **)((u8 *)((u32 *)lbl_8055F420)[0xF] + j))->slot25();
             }
         } else if (i == (s32)base[1]) {
-            object = *(void **)((u8 *)base[0xF] + offset);
-            ((Dummy *)object)->slot24();
-            object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + *(s32 *)(lbl_8055F420 + 4) * 4);
-            ((Dummy *)object)->slot26();
+            ((Dummy *)*(void **)((u8 *)base[0xF] + j))->slot24();
+            base = (u32 *)lbl_8055F420;
+            ((Dummy **)base[0xF])[base[1]]->slot26();
         } else {
-            object = *(void **)((u8 *)base[0xF] + offset);
-            ((Dummy *)object)->slot22();
-            object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + offset);
-            ((Dummy *)object)->slot25();
+            ((Dummy *)*(void **)((u8 *)base[0xF] + j))->slot22();
+            ((Dummy *)*(void **)((u8 *)((u32 *)lbl_8055F420)[0xF] + j))->slot25();
         }
-        offset += 4;
-        i++;
-    secondCheck:
-        base = (u32 *)lbl_8055F420;
-        if (i < (s32)base[3]) goto secondBody;
+        j += 4;
     }
 }
 #pragma scheduling on
