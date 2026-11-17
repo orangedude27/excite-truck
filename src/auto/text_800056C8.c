@@ -1026,17 +1026,18 @@ void fn_80006B18(void *arg0) {
     void *entry;
     start = fn_80011E34();
     now = fn_80011E54() - lbl_80560170;
+    i = 0;
     gap = lbl_80560178;
     threshold = lbl_8056017C;
     unk11C = lbl_8056011C;
     percent = lbl_80560188;
-    i = 0;
-    scale = lbl_80560174;
-    offset = lbl_80560184;
-    percentScale = lbl_8056018C;
     for (; i < fn_801EA994(); i++) {
         entry = fn_801EA9B0(i);
-        y = now - scale * (f32)i;
+        y = (f32)i;
+        scale = lbl_80560174;
+        offset = lbl_80560184;
+        percentScale = lbl_8056018C;
+        y = now - scale * y;
         fn_80010E94(*(s32 *)((u8 *)arg0 + 0x14), 0, start,
                     y - gap, lbl_80560118, lbl_8056017C);
         flags = *(s32 *)((u8 *)entry + 0xC);
