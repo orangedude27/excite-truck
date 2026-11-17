@@ -588,6 +588,8 @@ extern "C" int fn_801B87A0(int arg0, int arg1) {
     return ((UiObjectVTable_801B87A0 *)lbl_8055E744)->method(arg0, arg1);
 }
 #pragma cplusplus off
+/* No-arg stub among the arena-event master wrappers: always reports 0 (false)
+ * where a master or system state would otherwise supply a result. */
 int fn_801B8804(void) { return 0; }
 
 #pragma cplusplus on
