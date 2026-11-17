@@ -385,6 +385,9 @@ void fn_802DBD88(void) {
     *texSlots = defaultTex;
 }
 #pragma pop
+/* Cached GX position vertex array: the buffer pointer and the vertex count. */
+#define sCachedPositionArray lbl_8055FEA8
+#define sCachedVertexCount   lbl_8055FEAC
 void fn_802DBDD8(void) {
     lbl_8055FEA8 = 0;
     lbl_8055FEAC = 0;
