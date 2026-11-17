@@ -850,8 +850,9 @@ extern "C" void fn_80157170(void* plane) {
     ((ebi::title::TPlaneSubShort*)((ebi::title::TBlackPlane*)plane)->m_b)->v1();
 }
 
-extern "C" void fn_80157184(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v1();
+extern "C" void fn_80157184(void* plane) {
+    /* Forward the virtual v1() call to the m_a (front-plane) child of the TBlackPlane. */
+    ((ebi::title::TBlackPlane*)plane)->m_a->v1();
 }
 
 extern "C" void fn_80157198(void* plane) {
