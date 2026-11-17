@@ -113,7 +113,10 @@ check:
 }
 #pragma pop
 int fn_8000DA10(void) {
-    return *lbl_8055D46C;
+    /* Return the currently selected IdentInfo slot (table of 0x18-byte records). */
+    #define gIdentInfoSlots lbl_8055D46C
+    return *gIdentInfoSlots;
+    #undef gIdentInfoSlots
 }
 
 #pragma push
