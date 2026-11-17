@@ -50,8 +50,10 @@ void fn_802BB8E4(int *handlePtr) {
     }
 }
 
-int fn_802BB928(int arg0) {
-    return (arg0 + 0x200) / 2;
+int fn_802BB928(int worldX) {
+    /* Map a signed world X coordinate to a rounded 9-bit grid index (0..0x1FF):
+     * round (worldX + 0x200)/2.  The Y counterpart is fn_802BB93C. */
+    return (worldX + 0x200) / 2;
 }
 
 short fn_802BB93C(int worldY) {
