@@ -20246,9 +20246,10 @@ int homebutton::Controller::isPlayingSoundId(int soundId) const {
     }
     return fn_800D1E78(m_soundPlayer, m_channel, soundId);
 }
+/* Clear a controller's remote-speaker tone tracking flags (m_soundActive and m_stopTiming). */
 extern "C" void fn_800D1300(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x42) = 0;
-    *(u8 *)((u8 *)arg0 + 0x43) = 0;
+    ((homebutton::Controller *)arg0)->m_soundActive = 0;
+    ((homebutton::Controller *)arg0)->m_stopTiming = 0;
 }
 
 extern "C" u8 fn_8005EE80(s32);
@@ -21276,9 +21277,9 @@ extern "C" u32 fn_800D3A30(const char *arg0) {
 extern "C" u32 fn_800D3B40(const char *str, char *buffer, s32 count, u32 delim) {
     s32 copied = 0;
     const char *base = lbl_8031EC50;
-    if (str == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x220, base + 0x18C);
-    if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x221, base + 0x164);
-    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x222, base + 0x134);
+    if (str == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x220, base + 0x18C);
+    if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x221, base + 0x164);
+    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x222, base + 0x134);
     count--;
     for (;;) {
         const char *p = str;
