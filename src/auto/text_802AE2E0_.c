@@ -43,12 +43,14 @@ void fn_802AE374(void) {
 }
 #pragma opt_common_subs reset
 void fn_802AE394(void) {
-    int offset = 0;
-    int i = 0;
-    while (i < lbl_804BD8CC[1]) {
-        fn_80131818((void *)(*(int *)((char *)lbl_804BD8CC[0] + offset)));
-        offset += 4;
-        i += 1;
+    /* Release every object tracked in the global list (fn_80131818 drops one
+       reference each), then empty the list and clear the initialized/reset flags. */
+    int byteOffset = 0;
+    int index = 0;
+    while (index < lbl_804BD8CC[1]) {
+        fn_80131818((void *)(*(int *)((char *)lbl_804BD8CC[0] + byteOffset)));
+        byteOffset += 4;
+        index += 1;
     }
     lbl_804BD8CC[1] = 0;
     lbl_8055F958 = 0;
