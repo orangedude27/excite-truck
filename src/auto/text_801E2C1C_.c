@@ -465,5 +465,8 @@ void fn_801E35D4(void *arg0, void *arg1) {
 
 #pragma push
 #pragma small_data off
-s32 fn_801E3630(s32 arg0) { return arg0 + 0x5C; }
+float *fn_801E3630(void *handle) {
+    /* Model-resource helper: return the float vector held at +0x5C of the handle (e.g. a node position). */
+    return (float *)((char *)handle + 0x5C);
+}
 
