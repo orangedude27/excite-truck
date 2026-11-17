@@ -1595,8 +1595,11 @@ void *fn_802CC2C8(void *arg0, int arg1) {
     return result;
 }
 
-int fn_802CC404(void *arg0) {
-    return *(int *)(*(char **)((char *)arg0 + 0x38) + 4);
+/* Return the SimpleHeap handle used for texture allocations: the scene context
+   holds a heap container at +0x38, whose +4 field is the heap handle. */
+int fn_802CC404(void *context) {
+    char *heapContainer = *(char **)((char *)context + 0x38);
+    return *(int *)(heapContainer + 4);
 }
 
 extern int fn_8012C7FC(void *, int *);
