@@ -2349,37 +2349,38 @@ extern signed long long OSGetTime(void);
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 void GXGetVtxAttrFmt(void) {
-    unsigned int old;
-    unsigned int value;
-    unsigned long long start;
+    unsigned int old, value;
+    signed long long startTime, nowTime;
+    unsigned int *gxData = __GXData;
 
-    if (*(unsigned char *)((char *)__GXData + 0x5FA) &&
+    if (*(unsigned char *)((char *)gxData + 0x5FA) &&
         (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0)) {
-        unsigned int high;
-        unsigned int firstHigh;
-        unsigned int low;
-        unsigned int shiftedHigh;
-
+        unsigned int hi, prevHi, lo;
+        volatile unsigned short *reg = (volatile unsigned short *)__memReg;
+        hi = reg[0x4E / 2];
         do {
-            high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
-            firstHigh = high;
-            low = *(volatile unsigned short *)((char *)__memReg + 0x50);
-            high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
-        } while (high != firstHigh);
-        shiftedHigh = high << 16;
-        old = shiftedHigh | low;
+            prevHi = hi;
+            lo = reg[0x50 / 2];
+            hi = reg[0x4E / 2];
+        } while (hi != prevHi);
+        old = (hi << 16) | lo;
 
         for (;;) {
-            start = OSGetTime();
-            while (OSGetTime() - start < 8) {}
+            unsigned int hi2, prevHi2, lo2;
+            startTime = OSGetTime();
             do {
-                high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
-                firstHigh = high;
-                low = *(volatile unsigned short *)((char *)__memReg + 0x50);
-                high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
-            } while (high != firstHigh);
-            shiftedHigh = high << 16;
-            value = shiftedHigh | low;
+                nowTime = OSGetTime();
+            } while (nowTime - startTime <= 8);
+            {
+                volatile unsigned short *reg2 = (volatile unsigned short *)__memReg;
+                hi2 = reg2[0x4E / 2];
+                do {
+                    prevHi2 = hi2;
+                    lo2 = reg2[0x50 / 2];
+                    hi2 = reg2[0x4E / 2];
+                } while (hi2 != prevHi2);
+            }
+            value = (hi2 << 16) | lo2;
             {
                 unsigned int previous = old;
                 old = value;
@@ -2391,11 +2392,11 @@ void GXGetVtxAttrFmt(void) {
     }
 
     *(volatile unsigned int *)0xCC003018 = 1;
-    start = OSGetTime();
-    while (OSGetTime() - start < 50) {}
+    startTime = OSGetTime();
+    do { nowTime = OSGetTime(); } while (nowTime - startTime <= 50);
     *(volatile unsigned int *)0xCC003018 = 0;
-    start = OSGetTime();
-    while (OSGetTime() - start < 5) {}
+    startTime = OSGetTime();
+    do { nowTime = OSGetTime(); } while (nowTime - startTime <= 5);
 }
 #pragma dont_inline reset
 #pragma use_lmw_stmw off
@@ -3251,9 +3252,20 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 
 #pragma scheduling on
 void GXSetDispCopyDst(s32 value) {
-    u32 reg = __rlwimi(0, ((value << 1) & 0xFFFE) >> 5, 0, 22, 31);
-    reg = __rlwimi(reg, 0x4D, 24, 0, 7);
-    *((u32 *)__GXData + 0x238 / 4) = reg;
+    unsigned int *gx;
+    union {
+        u32 reg;
+        struct {
+            u32 constant : 8;
+            u32 pad : 14;
+            u32 arg : 10;
+        } fields;
+    } data = {0};
+
+    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
+    data.fields.constant = 0x4D;
+    gx = __GXData;
+    gx[0x238 / 4] = data.reg;
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
@@ -3495,7 +3507,7 @@ void GXSetCopyClear(unsigned char *color, unsigned int depth) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
-#pragma use_lmw_stmw off
+#pragma opt_propagation off
 void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg3) {
     union MSLoc {
         unsigned int word;
@@ -3521,6 +3533,7 @@ void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg
     };
     union MSLoc a,b,c,d;
     union Coeff coeff0,coeff1;
+
     if (arg0 != 0) {
         a.word = 0;
         b.word = 0;
@@ -3560,6 +3573,7 @@ void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg
         c.word = 0x03666666u;
         d.word = 0x04666666u;
     }
+
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = a.word;
     *(volatile unsigned char *)0xCC008000 = 0x61;
@@ -3568,6 +3582,7 @@ void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg
     *(volatile unsigned int *)0xCC008000 = c.word;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = d.word;
+
     coeff0.word = 0;
     coeff0.bits.tag = 0x53;
     coeff1.word = 0;
@@ -3589,12 +3604,14 @@ void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg
         coeff1.bits.f1 = 0;
         coeff1.bits.f2 = 0;
     }
+
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = coeff0.word;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = coeff1.word;
     *(volatile unsigned short *)((unsigned char *)__GXData + 2) = 0;
 }
+#pragma opt_propagation reset
 void GXSetDispCopyGamma(s32 gamma) {
     // Set the gamma correction value used when copying the frame buffer to the display.
     ((GXDispCopyGammaReg *)&__GXData[0x23c / 4])->gamma = gamma;
@@ -5047,8 +5064,8 @@ void GXSetTevOp(int stage, int mode) {
     unsigned int *base = lbl_80303C30;
     unsigned int *data;
     unsigned int *tev;
-    unsigned int *color;
-    unsigned int *alpha;
+    register unsigned int *color;
+    register unsigned int *alpha;
     unsigned int value;
     unsigned int oldValue;
     unsigned int inputValue;
