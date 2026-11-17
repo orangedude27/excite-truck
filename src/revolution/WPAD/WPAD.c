@@ -6682,12 +6682,108 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
 void fn_800678D8(void) { /* stub */ }
 
 // fn_800678DC: WPAD data processing
-extern f64 lbl_80560CE8;
-extern f32 lbl_80560CD8;
-extern unsigned char lbl_8055DC20[];
-extern unsigned char lbl_8055DC24[];
+__declspec(section ".sdata") extern f64 lbl_80560CE8;
+__declspec(section ".sdata") extern f32 lbl_80560CD8;
+__declspec(section ".sdata") extern unsigned char lbl_8055DC20[];
+__declspec(section ".sdata") extern unsigned char lbl_8055DC24[];
 
-BOOL fn_800678DC(void) { return FALSE; }
+void fn_800678DC(s32 chan, u8 *data) {
+    WPADCB *cb = lbl_8038F4F0[chan];
+    u8 *buf = (u8*)cb + ((u8*)cb)[0x806] * 0x60 + 0xA0;
+    s32 i;
+    s16 v;
+    u16 u;
+    BOOL enabled;
+
+    if (lbl_8055DC20[chan] == 0 && lbl_8055DC24[chan] == 0) {
+        for (i = 0; i < 0x60; i++) buf[i] = 0;
+    }
+
+    *(u16*)buf = ((u16)data[1] | ((u16)data[2] << 8)) & 0x9F1F;
+
+    if (cb->readFormat == 0 || cb->readFormat == 1 || cb->readFormat == 9) {
+        buf[0x29] = cb->readStatus;
+    } else if (cb->readStatus == 0) {
+        buf[0x29] = -4;
+    }
+    buf[0x28] = *(u8*)((u8*)cb + 0x801);
+    *(u32*)((u8*)cb + 0x788) = (data[1] >> 7) & 1;
+
+    v = (s16)(((s16)(data[1] << 2) & ~3) | ((data[3] >> 6) & 3));
+    *(s16*)(buf + 2) = v - *(s16*)((u8*)cb + 0x7B4);
+
+    v = (s16)(((s16)(data[2] << 3) & ~0xFF) | ((data[1] << 1) & 0x300));
+    *(s16*)(buf + 6) |= v;
+
+    v = (s16)data[4];
+    *(s16*)(buf + 8) = v | (s16)((data[6] << 4) & 0x300);
+    v = (s16)data[5];
+    *(s16*)(buf + 0xA) = 0x2FF - (s16)(v | (s16)((data[6] << 2) & 0x300));
+    u = data[6] & 0xF;
+    *(u16*)(buf + 0xC) = (u8)(lbl_80560CD8 * (f32)(s16)(s8)(u8)u * (f32)(s16)(s8)(u8)u);
+    if (*(u16*)(buf + 0xC) == 0 || *(s16*)(buf + 8) == 0x3FF || *(s16*)(buf + 0xA) == 0x2FF) {
+        if (*(u8*)(buf + 0x34) == 0xF) {
+            *(s16*)(buf + 8) = 0;
+            *(s16*)(buf + 0xA) = 0x2FF;
+            *(u16*)(buf + 0xC) = 0;
+            *(s16*)(buf + 0x32) = 0;
+            *(u8*)(buf + 0x34) = 0;
+            buf[0xE] = 0;
+        }
+    }
+
+    v = (s16)data[0xD];
+    *(s16*)(buf + 0x10) = v | (s16)((data[0xF] << 4) & 0x300);
+    v = (s16)data[0xE];
+    *(s16*)(buf + 0x12) = 0x2FF - (s16)(v | (s16)((data[0xF] << 2) & 0x300));
+    u = data[0xF] & 0xF;
+    *(u16*)(buf + 0x14) = (u8)(lbl_80560CD8 * (f32)(s16)(s8)(u8)u * (f32)(s16)(s8)(u8)u);
+    v = (s16)data[0x14];
+    *(s16*)(buf + 0x3E) = v | (s16)((data[0x15] << 6) & 0xC00);
+    buf[0x40] = data[0xF] & 0xF;
+    if (*(u16*)(buf + 0x14) == 0 || *(s16*)(buf + 0x10) == 0x3FF || *(s16*)(buf + 0x12) == 0x2FF) {
+        if (*(u8*)(buf + 0x40) == 0xF) {
+            *(s16*)(buf + 0x10) = 0;
+            *(s16*)(buf + 0x12) = 0x2FF;
+            *(u16*)(buf + 0x14) = 0;
+            *(s16*)(buf + 0x3E) = 0;
+            *(u8*)(buf + 0x40) = 0;
+        }
+    }
+
+    v = (s16)(s8)data[7];
+    *(s16*)(buf + 0x2A) = (data[7] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
+    v = (s16)(s8)data[8];
+    *(s16*)(buf + 0x2C) = (data[8] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
+    v = (s16)(s8)data[9];
+    *(s16*)(buf + 0x2E) = (data[9] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
+    *(s16*)(buf + 0x2A) = *(s16*)(buf + 0x2A) * 8;
+    *(s16*)(buf + 0x2C) = 0x2FF - (*(s16*)(buf + 0x2C) * 8);
+    *(s16*)(buf + 0x2E) = 0x2FF - (*(s16*)(buf + 0x2E) * 8);
+    *(s16*)(buf + 0x30) = (s16)(s8)data[0xA] * 8;
+
+    v = (s16)(s8)data[0x10];
+    *(s16*)(buf + 0x36) = (data[0x10] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
+    v = (s16)(s8)data[0x11];
+    *(s16*)(buf + 0x38) = (data[0x11] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
+    v = (s16)(s8)data[0x12];
+    *(s16*)(buf + 0x3A) = (data[0x12] & 0xFF) & (v == -1 ? 0 : 0xFFFF);
+    *(s16*)(buf + 0x36) = *(s16*)(buf + 0x36) * 8;
+    *(s16*)(buf + 0x38) = 0x2FF - (*(s16*)(buf + 0x38) * 8);
+    *(s16*)(buf + 0x3A) = 0x2FF - (*(s16*)(buf + 0x3A) * 8);
+    *(s16*)(buf + 0x3C) = (s16)(s8)data[0x13] * 8;
+    *(u16*)(buf + 0x32) = 0;
+
+    enabled = OSDisableInterrupts();
+    lbl_8055DC20[chan] = 1;
+    if (enabled != 0 && lbl_8055DC24[chan] != 0) {
+        *(s16*)(buf + 6) = *(s16*)(buf + 6) - *(s16*)((u8*)cb + 0x7B8);
+        ((u8*)cb)[0x806] = __cntlzw(((u8*)cb)[0x806]) >> 5;
+        lbl_8055DC24[chan] = 0;
+        lbl_8055DC20[chan] = 0;
+    }
+    OSRestoreInterrupts(enabled);
+}
 
 // fn_80067ECC: WPAD data processing
 void fn_80067ECC(s32 chan, void* data) {
