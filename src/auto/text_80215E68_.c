@@ -630,5 +630,6 @@ void fn_80216CA8(void) {
 #undef sSkipSpeakerRefresh
 }
 
+/* Return the current screen-transition fade/progress factor, ramped by the transition update and read elsewhere (e.g. as "time") to scale fade and animation alpha. */
 f32 fn_80216CB4(void) { return lbl_8055EF94; }
 
