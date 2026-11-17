@@ -4144,6 +4144,8 @@ void fn_80154744(void) {
 
 }
 
+/* Second of the four empty default handlers at 0x80154744-0x80154750; reached only
+ * through a handler/vtable pointer, so it has no callers in the sources. */
 void fn_80154748(void) {
 
 }
