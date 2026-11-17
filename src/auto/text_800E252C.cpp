@@ -999,12 +999,17 @@ extern "C" void RegisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6
     void *pThis = self;
     void *pNode = node;
     void (*pCallback)(void) = callback;
-    unsigned int level = OSDisableInterrupts();
+    unsigned int level;
+    void *callbackListNode;
+    void *iterator;
+
+    level = OSDisableInterrupts();
+    *(void (**)(void))((char *)pNode + 8) = pCallback;
+    callbackListNode = (char *)pThis + 12;
     if (pNode == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322094, 0x233, lbl_80322070);
     }
-    *(void (**)(void))((char *)pNode + 8) = pCallback;
-    void *iterator = (char *)pThis + 12;
+    iterator = callbackListNode;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)pThis + 8, &iterator, pNode);
     OSRestoreInterrupts(level);
 }
@@ -4095,6 +4100,7 @@ void nw4hbm::snd::detail::BasicSound::SetInitialVolume(float vol) {
     initialVolume = vol;
 }
 
+#pragma scheduling on
 extern "C" void SetVolume__Q46nw4hbm3snd6detail10BasicSoundFfi(void *this_, float volume, int arg2) {
     struct SoundFields {
         char pad[0x7C];
@@ -4109,19 +4115,20 @@ extern "C" void SetVolume__Q46nw4hbm3snd6detail10BasicSoundFfi(void *this_, floa
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x225, lbl_80322830);
     }
     SoundFields *sound = (SoundFields *)this_;
-    if (sound->elapsed >= sound->total) {
+    s32 total = sound->total;
+    s32 elapsed = sound->elapsed;
+    if (elapsed >= total) {
         current = sound->target;
     } else {
         current = sound->current +
-                  ((float)sound->elapsed * (sound->target - sound->current)) /
-                      (float)sound->total;
+                  ((float)elapsed * (sound->target - sound->current)) /
+                      (float)total;
     }
     sound->current = current;
     sound->target = volume;
     sound->total = arg2;
     sound->elapsed = 0;
 }
-
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *sound, float volume) {
     /* Sets the initial volume at +0x98, asserting that volume is non-negative. */
     if (!(volume >= 0.0f)) {
