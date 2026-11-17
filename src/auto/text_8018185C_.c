@@ -2630,7 +2630,7 @@ f32 fn_8018AE3C(void) {
 
 extern f32 fn_8018AE44(void);
 f32 fn_8018AE44(void) {
-    return lbl_80561CAC;
+    return F_0;
 }
 
 extern f32 fn_8018AE4C(void);
