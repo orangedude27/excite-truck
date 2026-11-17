@@ -1282,11 +1282,11 @@ extern "C" s32 detail_GetWaveDataFileAddress__Q36nw4hbm3snd18MemorySoundArchiveC
 }
 
 extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this_, void *stream, u32 bufferSize, s32 offset, u32 length) {
-    void *ret = stream;
     u32 base = *(u32 *)((u8 *)this_ + 0x108);
+    void *ret = stream;
     if (base == 0) return 0;
     if (bufferSize < 0x20) return 0;
-    if (ret == 0) return ret;
+    if (!stream) return ret;
     *(u8 *)((u8 *)stream + 4) = 0;
     *(u32 *)((u8 *)stream + 0xC) = 0;
     *(u32 *)((u8 *)stream + 0x10) = 0;
@@ -1395,6 +1395,7 @@ extern "C" s32 fn_800ECFE8(void *obj) {
 }
 
 extern "C" s32 fn_800ECFF0(void) {
+    // Trivial predicate stub in the nw4r::snd memory sound archive interface group; always reports false (0).
     return 0;
 }
 
