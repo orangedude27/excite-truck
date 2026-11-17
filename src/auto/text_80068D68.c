@@ -4066,8 +4066,13 @@ void fn_8006EACC(s32 unused) {
 void fn_8006EAD0(void) {
 }
 
+/* GKI_sched_unlock (revolution/BTE/gki/common/gki.h:465): no-op scheduler-unlock
+ * stub.  This Revolution GKI port runs all Bluetooth work on a single PPC task,
+ * so there is no context switch to re-enable; the BTA/stack code still pairs it
+ * with GKI_sched_lock (fn_8006EAD0) around shared state the way the SDK's
+ * rvl/gki_ppc.c does. */
 void fn_8006EAD4(void) {
-
+    return;
 }
 
 /* GKI_delay no-op stub: this build does not really sleep, so the startup poll
