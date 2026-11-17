@@ -1595,9 +1595,12 @@ void fn_801FF644(void* arg0, void* arg1) {
 }
 #pragma dont_inline reset
 extern "C" void* lbl_8055EC94;
-void fn_801FF6A4(void* arg0) {
-    lbl_8055EC94 = arg0;
-    *(int*)((char*)arg0 + 0x4C0) = 0;
+/* Install the global object-pool table and zero its registered-pool count at +0x4C0. */
+void fn_801FF6A4(void* poolTable) {
+#define s_objectPoolTable lbl_8055EC94
+    s_objectPoolTable = poolTable;
+    *(int*)((char*)poolTable + 0x4C0) = 0;
+#undef s_objectPoolTable
 }
 
 extern "C" void* fn_801FF6B4(void* pool, int shouldFree) {
