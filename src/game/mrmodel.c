@@ -1529,8 +1529,12 @@ void fn_802C7A40(void) { fn_802DA550(); }
 
 extern s8 lbl_8055FC20;
 extern void fn_802C543C(void);
+/* Begin a model-draw batch: mark submits as batched and empty the display
+ * entry pool (fn_802C543C) — paired with fn_802C7A50, which submits and clears. */
 void fn_802C7A44(void) {
-    lbl_8055FC20 = 1;
+#define s_modelBatchActive lbl_8055FC20
+    s_modelBatchActive = 1;
+#undef s_modelBatchActive
     fn_802C543C();
 }
 
