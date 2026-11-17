@@ -702,6 +702,7 @@ extern "C" void FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(void *track) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8SeqTrackFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl(void *channel, s32 status, void *track, u32 arg3) {
+    void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
     struct Callback {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9();
         virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
@@ -712,9 +713,9 @@ extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8SeqTrackFPQ46nw4hbm3sn
     register u32 token;
     register const char *file = lbl_80324390;
     if (channel == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x209, file + 0xA0);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x209, file + 0xA0);
     if (track == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x20A, file + 0xD0);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x20A, file + 0xD0);
     switch (status) {
     case 0:
     case 2:
@@ -736,18 +737,18 @@ extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8SeqTrackFPQ46nw4hbm3sn
         return;
     }
     if (node == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x220, file + 0xF8);
-    u32 next = *(u32 *)((u8 *)node + 0xE4);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x220, file + 0xF8);
+    void *next = *(void **)((u8 *)node + 0xE4);
     while (next != 0) {
-        if ((void *)next == channel) {
-            *(u32 *)((u8 *)node + 0xE4) = *(u32 *)((u8 *)channel + 0xE4);
+        if (next == channel) {
+            *(void **)((u8 *)node + 0xE4) = *(void **)((u8 *)channel + 0xE4);
             OSRestoreInterrupts(token);
             return;
         }
-        node = (void *)next;
-        next = *(u32 *)((u8 *)node + 0xE4);
+        node = next;
+        next = *(void **)((u8 *)node + 0xE4);
     }
-    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x229, file + 0x124);
+    Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x229, file + 0x124);
     OSRestoreInterrupts(token);
 }
 #pragma pop
@@ -1232,22 +1233,30 @@ extern "C" s32 detail_OpenGroupWaveDataStream__Q36nw4hbm3snd12SoundArchiveCFUlPv
     Archive *archive = (Archive *)self;
     if (!ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(*(void **)((u8 *)self + 4), group, &info))
         return 0;
+    u32 meta10, meta14;
     const char *path = info.path;
     if (path != 0) {
-        u32 meta14 = info.unk14;
-        u32 meta10 = info.unk10;
-        if (*path == '/')
+        meta14 = info.unk14;
+        meta10 = info.unk10;
+        switch (*path) {
+        default:
+            goto strlen_path;
+        case 0x2f:
             goto open_stream;
-        unsigned long pathLen = strlen(path);
-        unsigned long prefixLen = strlen((const char *)self + 8);
-        if (pathLen + prefixLen >= 0x100) {
-            Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
-            return 0;
         }
-        char buf[0x100];
-        strncpy(buf, (const char *)self + 8, prefixLen + 1);
-        fn_80028E2C(buf, path, pathLen + 1);
-        path = buf;
+    strlen_path:
+        {
+            unsigned long pathLen = strlen(path);
+            unsigned long prefixLen = strlen((const char *)self + 8);
+            if (pathLen + prefixLen >= 0x100) {
+                Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)((u8 *)self + 8), path);
+                return 0;
+            }
+            char buf[0x100];
+            strncpy(buf, (const char *)((char *)self + 8), prefixLen + 1);
+            fn_80028E2C(buf, path, pathLen + 1);
+            path = buf;
+        }
     open_stream:
         return archive->f5(arg2, arg3, path, meta10, meta14);
     }
@@ -2858,8 +2867,8 @@ extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void* arg0) {
     u8 arrC[0x600];
     void* mutex = (u8*)GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv() + 0x2320;
     OSLockMutex(mutex);
-    u32 index = 0;
-    s32 offset = 0;
+    int index = 0;
+    int offset = 0;
     while (index < *(u32*)(self + 0x70)) {
         if (index >= *(u32*)(self + 0x70)) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2B2, lbl_803250C8, index, 0);
