@@ -2891,8 +2891,12 @@ void fn_802D30DC(void* hi) {
     lbl_8055FD5C = hi;
 }
 
+/* Return the GXTexObj at +0x24 of the global GX state block; the caller loads it
+ * as the indirect texture (GXLoadTexObj, map 7). */
 void* fn_802D30E4(void) {
-    return (char*)lbl_8055FD54 + 0x24;
+    struct { char pad[0x24]; char texObj; } *state;
+    state = lbl_8055FD54;
+    return &state->texObj;
 }
 
 #pragma dont_inline on
