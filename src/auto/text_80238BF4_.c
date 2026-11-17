@@ -379,19 +379,22 @@ void fn_80239784(void *arg0, s32 arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8023986C(void *arg0) {
-    s32 offset;
-    u32 i;
-    s32 marker = -2;
+    /* Release every texture of a loaded SWF animation (each 0x14-byte entry holds
+       a texture id in its first word), mark it freed (-2), then free the SWF data
+       and clear the pointer at +0x14. */
+    s32 byteOffset;
+    u32 entryIndex;
+    s32 releasedId = -2;
     if (*(void **)((u8 *)arg0 + 0x14) != 0) {
-        i = 0;
-        offset = 0;
-        while (i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8)) {
-            if (*(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) != -2) {
-                fn_802CAC54(*(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset));
-                *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) = marker;
+        entryIndex = 0;
+        byteOffset = 0;
+        while (entryIndex < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8)) {
+            if (*(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + byteOffset) != -2) {
+                fn_802CAC54(*(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + byteOffset));
+                *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + byteOffset) = releasedId;
             }
-            offset += 0x14;
-            i++;
+            byteOffset += 0x14;
+            entryIndex++;
         }
         fn_8012C4D8(*(void **)((u8 *)arg0 + 0x14));
         *(u32 *)((u8 *)arg0 + 0x14) = 0;
