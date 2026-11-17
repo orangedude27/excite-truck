@@ -16,7 +16,10 @@ extern int __AXGetStackHead(int);
 typedef struct Obj { void **vtable; } Obj;
 typedef int (*Callback)(Obj *, int, int);
 #pragma cplusplus on
-extern "C" void fn_8016071C(void *obj_) {
+/* Build the active grade handler from the given schedule object: allocate a 0x18-byte
+ * "gradeschedule" block, construct it from the object, store it as the active handler,
+ * then fill the five-entry bound table from the object's per-stack-head values. */
+extern "C" void fn_8016071C(void *sourceObj) {
     #pragma scheduling invalid_target
     class ObjV {
     public:
@@ -30,13 +33,13 @@ extern "C" void fn_8016071C(void *obj_) {
     };
     int i;
     int head;
-    void *result;
+    void *gradeHandler;
     void *mem = (void *)fn_801284F8(0x18, lbl_8032F4C8);
     if (mem != 0) {
-        result = (void *)((int (*)(void *, void *))fn_8001D884)(mem, obj_);
+        gradeHandler = (void *)((int (*)(void *, void *))fn_8001D884)(mem, sourceObj);
     }
-    lbl_8055E2BC = result;
-    ObjV *obj = (ObjV *)obj_;
+    lbl_8055E2BC = gradeHandler;
+    ObjV *obj = (ObjV *)sourceObj;
     for (i = 0; i < 5; i++) {
         head = __AXGetStackHead(i);
         lbl_8042FD60[i] = obj->meth(head, -1);
