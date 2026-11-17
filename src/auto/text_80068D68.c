@@ -2424,42 +2424,46 @@ s32 fn_8006AC4C(void) {
     return result;
 }
 
-s32 WUDSetDisableChannel(s8 arg0) {
+/* Disable a Wi-Fi channel for WUD: once the library is ready, program the Bluetooth
+ * AFH channel range to avoid the given channel (0 disables all channels). */
+s32 WUDSetDisableChannel(s8 afhChannel) {
     extern void DBPrintf_8006CFA8(const char *, ...);
     extern u8 BTM_SetAfhChannels(u8, u8);
     extern char lbl_80313550[];
     extern char lbl_80313568[];
     extern u8 lbl_80392960[];
-    struct Base { char pad[0x688]; s8 state; };
-    s32 result = 0;
-    struct Base *base = (struct Base *)lbl_80392960;
-    s32 min;
-    s32 max;
-    s32 channel;
-    s32 state;
+#define WUD_LIB_STATUS_3 3
+    struct WudControlBlock { char pad[0x688]; s8 libStatus; };
+    s32 success = 0;
+    struct WudControlBlock *p = (struct WudControlBlock *)lbl_80392960;
+    s32 first;
+    s32 last;
+    s32 libStatus;
+    s32 enabled;
     u8 status;
     DBPrintf_8006CFA8(lbl_80313550);
-    if (arg0 < 0 || arg0 > 0xD) return 0;
-    state = OSDisableInterrupts();
-    channel = base->state;
-    OSRestoreInterrupts(state);
-    if ((u32)channel == 3) {
-        if (arg0 == 0) {
-            min = 0xFF;
-            max = 0xFF;
+    if (afhChannel < 0 || afhChannel > 0xD) return 0;
+    enabled = OSDisableInterrupts();
+    libStatus = p->libStatus;
+    OSRestoreInterrupts(enabled);
+    if ((u32)libStatus == WUD_LIB_STATUS_3) {
+        if (afhChannel == 0) {
+            first = 0xFF;
+            last = 0xFF;
         } else {
-            channel = arg0 + 1;
-            channel = channel * 5;
-            min = channel - 0xE;
-            max = channel + 0xE;
-            if (min < 0) min = 0;
-            if (max > 0x4E) max = 0x4E;
+            libStatus = afhChannel + 1;
+            libStatus = libStatus * 5;
+            first = libStatus - 0xE;
+            last = libStatus + 0xE;
+            if (first < 0) first = 0;
+            if (last > 0x4E) last = 0x4E;
         }
-        status = BTM_SetAfhChannels((u8)min, (u8)max);
+        status = BTM_SetAfhChannels((u8)first, (u8)last);
         DBPrintf_8006CFA8(lbl_80313568, status);
-        result = 1;
+        success = 1;
     }
-    return result;
+#undef WUD_LIB_STATUS_3
+    return success;
 }
 
 /* Sets the WUD HID-receive callback in lbl_80392960+0x66C (see "WUDSetHidRecvCallback()\n") and returns the previous value. */
