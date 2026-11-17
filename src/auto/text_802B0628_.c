@@ -906,8 +906,9 @@ void fn_802B1B60(void *arg0) {
     fn_802DAA18();
 }
 
-int fn_802B1BE4(void *arg0) {
-    return ((int *)arg0)[1];
+/* Return the element count at +4 of a cache table (whose base pointer is at +0). */
+int fn_802B1BE4(void *table) {
+    return ((int *)table)[1];
 }
 
 void fn_802B1BEC(void) {
