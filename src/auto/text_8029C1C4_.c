@@ -1,3 +1,18 @@
+typedef struct WaterGrid_8029E130 {
+    float f0;
+    short *data;
+    float f8;
+    int width;
+    int height;
+    char pad14[0x24];
+    float x0;
+    float y0;
+    float z0;
+    float m44;
+    float m48;
+    float m4c;
+    float m50;
+} WaterGrid_8029E130;
 __declspec(section ".data") extern float lbl_80558DC4;
 extern void *fn_802C86DC(void);
 extern void fn_802C8BD0(int);
@@ -959,7 +974,7 @@ void fn_8029D644(void *arg0) {
 
 extern void fn_8029E49C(int, void *, int);
 extern void fn_8029E130(void *, float *, float *, float);
-void fn_8029D7D0(int arg0, void **arg1) {
+void fn_8029D7D0(int arg0, void **__restrict arg1) {
     extern void fn_801EE0C8(int);
     extern void *fn_802C6C34(void);
     extern int lbl_80488648[];
@@ -1282,8 +1297,10 @@ void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
  ix=(int)(x<lbl_80564628 ? x-lbl_8056465C : lbl_8056465C+x);
  z=hit[0]**(float *)(obj+0x4c)+hit[1]**(float *)(obj+0x50);
  iz=(int)(z<lbl_80564628 ? z-lbl_8056465C : lbl_8056465C+z);
- if(ix<1 || ix>=*(int *)(obj+0xc)-1 || iz<1) return;
- if(iz>=*(int *)(obj+0x10)-1) return;
+ if (ix < 1) return;
+ if (ix >= *(int *)(obj+0xc)-1) return;
+ if (iz < 1) return;
+ if (iz < *(int *)(obj+0x10)-1) {
  (*(short **)(obj+4))[ix+iz**(int *)(obj+0xc)]=-32768;
  origin[2]=*(float *)(obj+0x40)+hit[1];
  origin[1]=lbl_8056464C+*(float *)(obj+0x3c);
@@ -1303,9 +1320,10 @@ void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
    z=direction[1]+perpendicular[1]*(factor*fn_80287BC8(-spread,spread));
    x=cap<vertical?cap:vertical;
    x=x+lift*fn_80287BC8(lbl_80564628,spread);
-   scale=lbl_80564698*fn_80287BC8(-spread,spread);
+   scale=factor*fn_80287BC8(-spread,spread);
    outvel[1]=x; outvel[2]=z; outvel[0]=direction[0]+perpendicular[0]*scale;
    fn_8028E584(lbl_8055F7F8,outpos,outvel);
+ }
  }
 }
 extern float fn_80287BC8(float, float);
@@ -1358,18 +1376,21 @@ void fn_8029E49C(int unused, void *arg1, int arg2) {
     }
 }
 
+#pragma opt_propagation off
 void *fn_8029E754(void *arg0, void *arg1, int arg2) {
     float *out;
     float *in;
-    float half;
-    float scale;
     float x, y, z, w, xx, yy, zz;
     float a, b, c, d, e, f;
     float qx, qy, qz;
+    float half;
+    float scale;
+    float q[3];
     out = (float *)arg0;
     in = (float *)arg1;
     half = lbl_80564628;
     scale = lbl_8056465C;
+
     w = in[3];
     x = in[0];
     xx = in[4];
@@ -1398,13 +1419,17 @@ void *fn_8029E754(void *arg0, void *arg1, int arg2) {
     out[9] = e;
     out[10] = d;
     out[11] = f;
-    out[12] = x + qy;
-    out[13] = y + qx;
-    out[14] = z + qz;
+    q[0] = x + qy;
+    q[1] = y + qx;
+    q[2] = z + qz;
+    out[12] = q[0];
+    out[13] = q[1];
+    out[14] = q[2];
     out[15] = PSQUATMultiply(out, out + 12);
     ((int *)arg0)[16] = (int)fn_802CAC28(arg2, 0);
     return arg0;
 }
+#pragma opt_propagation reset
 void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *self, int shouldDelete) {
     /* Destroys a J2DAnmTexPatternTIMGPointer instance and optionally deletes it. */
     if (self != 0) {
@@ -1530,24 +1555,27 @@ int fn_8029EAE8(void *arg0) {
 }
 int fn_8029EB54(void *arg0, void *arg1) {
     float *a=(float *)arg0, *b=(float *)arg1;
-    float minX, maxX, minY, maxY, point;
-    int result=0;
-    int inside=0;
-    minX=a[9];
-    if (a[0]>minX) minX=a[0];
-    maxX=a[9];
-    if (a[0]<maxX) maxX=a[0];
+    float point, maxX, minX, maxY, minY;
+    int x_ok, result=0, flag=0;
+    maxX = a[9];
+    if (a[0] > maxX) maxX = a[0]; else maxX = a[9];
+    minX = a[9];
+    if (a[0] < minX) minX = a[0]; else minX = a[9];
     point=b[0];
-    if (point>=minX-lbl_80558DC4 && point<=maxX+lbl_80558DC4) inside=1;
-    if (inside) {
-        minY=a[11];
-        if (a[2]>minY) minY=a[2];
-        maxY=a[11];
-        if (a[2]<maxY) maxY=a[2];
+    x_ok = 0;
+    if (point>=minX-lbl_80558DC4 && point<=maxX+lbl_80558DC4) x_ok=1;
+    if (x_ok) {
+        int y_ok;
+        maxY = a[11];
+        if (a[2] > maxY) maxY = a[2]; else maxY = a[11];
+        minY = a[11];
+        if (a[2] < minY) minY = a[2]; else minY = a[11];
         point=b[2];
-        if (point>=minY-lbl_80558DC4 && point<=maxY+lbl_80558DC4) inside=1;
+        y_ok = 0;
+        if (point>=minY-lbl_80558DC4 && point<=maxY+lbl_80558DC4) y_ok=1;
+        if (y_ok) flag=1;
     }
-    if (inside && b[1]<a[1]-lbl_80564634) result=1;
+    if (flag && b[1]<a[1]-lbl_80564634) result=1;
     return result;
 }
 
