@@ -721,19 +721,24 @@ void MEMFreeToFrmHeap(MEMiHeapHead* heap, u32 flags) {
 }
 
 u32 MEMGetAllocatableSizeForFrmHeapEx(MEMiHeapHead *heap, s32 align) {
-    BOOL enabled;
-    u32 result;
-    void *block;
+    /* Largest block the frame heap can still hand out at this alignment: round
+     * the current head up to 'align', then measure the free bytes to the tail (0
+     * once the head has passed it). Interrupts are off while head and tail are
+     * read so they cannot change mid-computation. */
+    MEMiFrmHeapHead *frm = (MEMiFrmHeapHead *)(heap + 1);
+    BOOL irq;
+    u32 allocatable;
+    void *alignedHead;
     align = __abs(align);
-    enabled = OSDisableInterrupts();
-    block = (void *)((*(u32 *)((u8 *)heap + 0x3C) + (align - 1)) & ~(align - 1));
-    if ((u32)block > *(u32 *)((u8 *)heap + 0x40)) {
-        result = 0;
+    irq = OSDisableInterrupts();
+    alignedHead = (void *)((u32)frm->head + (align - 1) & ~(align - 1));
+    if ((u32)alignedHead > (u32)frm->tail) {
+        allocatable = 0;
     } else {
-        result = *(u32 *)((u8 *)heap + 0x40) - (u32)block;
+        allocatable = (u32)frm->tail - (u32)alignedHead;
     }
-    OSRestoreInterrupts(enabled);
-    return result;
+    OSRestoreInterrupts(irq);
+    return allocatable;
 }
 
 #pragma push
@@ -747,12 +752,12 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 
     }
     {
         u32 *untHead;
-        u8 *mblk;
+        void *mblk;
         u32 elementNum;
         u32 mask = ~((align - 1) | (align - 1));
         untHead = (u32 *)((u8 *)startAddr + 0x3C);
         unitSize = mask & (align + unitSize - 1);
-        mblk = (u8 *)(mask & ((u32)untHead + align + 7));
+        mblk = (void *)(mask & ((u32)untHead + align + 7));
         if ((s32)((u32)mblk - (u32)heapEnd) > 0) {
             return 0;
         }
@@ -760,7 +765,7 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 
         if (elementNum == 0) {
             return 0;
         }
-        heapEnd = &mblk[elementNum * unitSize];
+        heapEnd = (void *)((s32)(elementNum * unitSize) + (s32)mblk);
         MEMiInitHeapHead((MEMiHeapHead *)startAddr, 0x554E5448, mblk, heapEnd, opt);
         untHead[0] = (u32)mblk;
         untHead[1] = unitSize;
