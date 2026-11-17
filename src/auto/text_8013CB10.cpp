@@ -716,8 +716,9 @@ extern "C" s32 fn_8013D224(f32 a, f32 b) {
     return (s32)signValue;
 }
 
-extern "C" void fn_8013D27C(void *a, void *b) {
-    fn_8013D224(*(f32 *)((u8 *)a + 0x18), *(f32 *)((u8 *)b + 0x18));
+/* qsort-style comparator: order two entries by the float score at offset 0x18 of each. */
+extern "C" void fn_8013D27C(void *lhs, void *rhs) {
+    fn_8013D224(*(f32 *)((u8 *)lhs + 0x18), *(f32 *)((u8 *)rhs + 0x18));
 }
 
 extern "C" u8 lbl_8032CAC0_vt[48];
