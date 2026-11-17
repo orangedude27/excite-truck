@@ -1157,8 +1157,12 @@ void* fn_802EC124(void) {
     return lbl_80560078;
 }
 
+/* Clear the pending track-music song request: reset the song index the audio
+ * thread picks up (lbl_80560078, -1 = no request) back to -1. */
 void fn_802EC12C(void) {
-    lbl_80560078 = (void*)-1;
+#define gPendingSong lbl_80560078
+    gPendingSong = (void*)-1;
+#undef gPendingSong
 }
 
 #pragma dont_inline fn_802EC138
