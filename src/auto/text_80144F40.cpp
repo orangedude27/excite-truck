@@ -2202,6 +2202,11 @@ extern "C" void fn_80148228(void) {
 extern "C" void fn_80148244(void) {
 }
 
+/* Default answer of the adapter sub-object's virtual at slot 0x34 of vtable
+   lbl_8032D214 (installed by fn_80146C08 at +0x40 of the object fn_80145E70
+   builds).  That sub-object forwards most of its calls to its owner (kept at
+   +4, see fn_80148250) and answers the rest with defaults (-1 index,
+   DISABLED_ITEM_COLOR); this query has nothing to report, so it says no. */
 extern "C" s32 fn_80148248(void) {
     return 0;
 }
