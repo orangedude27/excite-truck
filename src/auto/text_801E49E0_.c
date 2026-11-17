@@ -3,19 +3,20 @@
 
 extern void fn_8000D838(void*);
 extern int lbl_8055EA70;
-extern volatile int lbl_8055EA78;
-extern volatile short lbl_8055EA7C;
-extern volatile short lbl_8055EA7E;
-extern volatile short lbl_8055EA80;
-extern volatile int lbl_8055EA84;
+extern int lbl_8055EA78;
+extern short lbl_8055EA7C;
+extern short lbl_8055EA7E;
+extern short lbl_8055EA80;
+extern int lbl_8055EA84;
 #pragma scheduling invalid_target
 void fn_801E49E0(void) {
-#pragma scheduling on
+    register int c1 asm("r0");
     fn_8000D838(&lbl_8055EA70);
-    *(volatile short *)&lbl_8055EA7C = 0x100;
-    *(volatile int *)&lbl_8055EA84 = 0x7F000000;
-    *(volatile int *)&lbl_8055EA78 = 0xFFFF0000;
-    *(volatile short *)&lbl_8055EA7E = 0x405;
-    *(volatile short *)&lbl_8055EA80 = 0x401;
+    c1 = 0x100;
+    lbl_8055EA7C = c1;
+    lbl_8055EA84 = 0x7F000000;
+    lbl_8055EA78 = 0xFFFF0000;
+    lbl_8055EA7E = 0x405;
+    lbl_8055EA80 = 0x401;
 }
 #pragma scheduling on
