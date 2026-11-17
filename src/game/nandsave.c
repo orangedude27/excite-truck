@@ -173,41 +173,62 @@ void fn_802E8918(void) {
 }
 
 #pragma scheduling invalid_target
-void fn_802E8920(int arg0) {
-    unsigned int flags = 0;
-    char *messages = lbl_8034D9C0;
-    int result = NANDCheck((arg0 + 0x3FFF) / 0x4000 + 4, 2, &flags);
-    if (result == 0) {
+void fn_802E8920(int lenBytes) {
+    /* Recover free NAND space: see how far over its block/file limits the title is, print a
+     * warning for each exceeded limit, then keep running recovery requests until the check
+     * comes back clean; a fatal NANDCheck error is logged and reported instead. */
+#define rmemcard_log_strings lbl_8034D9C0
+#define nandLogPrintf        fn_802E30C8
+#define nandDispatchRequest  fn_802E888C
+#define rmemcardSpaceReady   fn_802E88D8
+#define rmemcardResetHome    fn_802E8918
+#define APP_BLOCKS_OVER 1 /* NAND_CHECK_TOO_MANY_APP_BLOCKS */
+#define APP_FILES_OVER  2 /* NAND_CHECK_TOO_MANY_APP_FILES */
+#define ANY_LIMIT_OVER  0xF
+#define BLOCKS_OVER     5 /* app or user blocks are over their limit */
+    unsigned int checkFlags = 0;
+    char *logStrings = rmemcard_log_strings;
+    int checkResult = NANDCheck((lenBytes + 0x3FFF) / 0x4000 + 4, 2, &checkFlags);
+    if (checkResult == 0) {
         for (;;) {
         loop:
-            if (flags & 1) {
-                fn_802E30C8(messages + 0x328);
+            if (checkFlags & APP_BLOCKS_OVER) {
+                nandLogPrintf(logStrings + 0x328);
             }
-            if (flags & 2) {
-                fn_802E30C8(messages + 0x35C);
+            if (checkFlags & APP_FILES_OVER) {
+                nandLogPrintf(logStrings + 0x35C);
             }
-            if (flags & 0xF) {
-                int request = 3;
-                if (flags & 5) {
-                    request = 2;
+            if (checkFlags & ANY_LIMIT_OVER) {
+                int requestIndex = 3;
+                if (checkFlags & BLOCKS_OVER) {
+                    requestIndex = 2;
                 }
-                if (fn_802E888C(request) != 0) {
-                    fn_802E8918();
+                if (nandDispatchRequest(requestIndex) != 0) {
+                    rmemcardResetHome();
                     break;
                 }
-                if (fn_802E88D8() == 0) goto loop;
+                if (rmemcardSpaceReady() == 0) goto loop;
                 break;
             } else {
-                if (fn_802E888C(7) != 0) {
+                if (nandDispatchRequest(7) != 0) {
                     break;
                 }
-                if (fn_802E88D8() == 0) goto loop;
+                if (rmemcardSpaceReady() == 0) goto loop;
                 break;
             }
         }
     } else {
-        fn_802E30C8(messages + 0x398, result);
+        nandLogPrintf(logStrings + 0x398, checkResult);
     }
+#undef rmemcard_log_strings
+#undef nandLogPrintf
+#undef nandDispatchRequest
+#undef rmemcardSpaceReady
+#undef rmemcardResetHome
+#undef APP_BLOCKS_OVER
+#undef APP_FILES_OVER
+#undef ANY_LIMIT_OVER
+#undef BLOCKS_OVER
 }
 
 int fn_802E8A18(void) {
