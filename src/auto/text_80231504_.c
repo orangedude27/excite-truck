@@ -179,30 +179,15 @@ static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *
     f32 outZ;
 
     if (src == dst) {
-        f32 m3 = matrix[3];
-        f32 m0 = matrix[0];
-        f32 p0 = y * m3;
-        f32 m1 = matrix[1];
-        f32 p1 = x * m0;
-        f32 m4 = matrix[4];
-        f32 p2 = x * m1;
-        f32 p3 = y * m4;
-        f32 m2 = matrix[2];
-        f32 m5 = matrix[5];
-        f32 p4 = p1 + p0;
-        f32 p5 = x * m2;
-        f32 p6 = y * m5;
-        f32 m6 = matrix[6];
-        f32 m7 = matrix[7];
-        f32 p7 = p2 + p3;
-        f32 m8 = matrix[8];
-        f32 p8 = p5 + p6;
-        f32 p9 = z * m6;
-        f32 p10 = z * m7;
-        f32 p11 = z * m8;
-        outX = p9 + p4;
-        outY = p10 + p7;
-        outZ = p11 + p8;
+        f32 xy3 = y * matrix[3];
+        f32 xx0 = x * matrix[0];
+        f32 xx1 = x * matrix[1];
+        f32 yy4 = y * matrix[4];
+        f32 xx2 = x * matrix[2];
+        f32 yy5 = y * matrix[5];
+        outX = (xx0 + xy3) + z * matrix[6];
+        outY = (xx1 + yy4) + z * matrix[7];
+        outZ = (xx2 + yy5) + z * matrix[8];
     } else {
         x = src[0];
         y = src[1];
