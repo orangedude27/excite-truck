@@ -802,8 +802,9 @@ void fn_801C02F4(void *arg0) {
     }
 }
 #pragma opt_propagation reset
-int fn_801C0440(void *arg0) {
-    return *(int *)((char *)arg0 + 0x1EC) != 0;
+int fn_801C0440(void *sceneLight) {
+    // Nonzero if this scene light is in use: +0x1EC holds its owner id (0 when free).
+    return *(int *)((char *)sceneLight + 0x1EC) != 0;
 }
 
 #pragma push
