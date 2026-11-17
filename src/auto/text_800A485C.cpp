@@ -19497,7 +19497,8 @@ extern "C" s32 update__Q310homebutton3gui9ComponentFiffUlUlUlPv(void *self, int 
     return handled;
 }
 #pragma pop
-extern "C" u8 fn_800CFDB4(void *arg0) { return *((u8 *)((u8 *)arg0 + 0x24)); }
+// Return the byte flag at offset 0x24 of the given GUI component.
+extern "C" u8 fn_800CFDB4(void *component) { return *((u8 *)((u8 *)component + 0x24)); }
 
 extern "C" void fn_800CFDBC(void *component, s32 propertyMask, void *values) {
     /* If any bit of propertyMask is enabled in the component's mask at +0x1C,
