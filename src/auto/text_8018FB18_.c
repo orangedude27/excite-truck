@@ -1505,7 +1505,8 @@ extern "C" void fn_80191568(void *wrapper) {
 #pragma pop
 
 #pragma cplusplus off
-u8 fn_8019157C(void *arg0) { return *((u8 *)arg0 + 0x14); }
+/* Return the byte-sized flag field at offset 0x14 of the given object. */
+u8 fn_8019157C(void *obj) { return *((u8 *)obj + 0x14); }
 
 #pragma cplusplus on
 extern "C" void fn_80191584(void *arg0) {
