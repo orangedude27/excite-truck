@@ -131,7 +131,12 @@ int fn_80202378(int arg0, int arg1, int arg2, int arg3) {
 }
 
 #pragma pop
-void *fn_802023C8(void) { return lbl_80488964; }
+/* Return a pointer to the stored requested position vector. */
+void *fn_802023C8(void) {
+#define sRequestedPos lbl_80488964
+    return sRequestedPos;
+#undef sRequestedPos
+}
 
 #pragma push
 #pragma scheduling invalid_target
