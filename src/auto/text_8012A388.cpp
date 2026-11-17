@@ -3226,7 +3226,7 @@ extern "C" s32 fn_8012C4E4(void *arg0, void *arg1, s32 arg2) {
     return fn_8012BC50(arg0, arg1, arg2);
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
 extern "C" void fn_8012C4E8(void) {
     void *node;
     s32 p;
@@ -3241,13 +3241,14 @@ extern "C" void fn_8012C4E8(void) {
     node = lbl_8055E000;
     lbl_8055DFFC = 0;
     lbl_8055DFF8 = 0;
-    while (node != NULL) {
-        fn_802E30C8(lbl_8032AB9C, node, *(s32 *)((u8 *)node + 0x9C));
-        node = *(void **)((u8 *)node + 0xA8);
+    if (node != NULL) {
+        while (node != NULL) {
+            fn_802E30C8(lbl_8032AB9C, node, *(s32 *)((u8 *)node + 0x9C));
+            node = *(void **)((u8 *)node + 0xA8);
+        }
+        fn_802E317C(lbl_8032ABC8);
     }
-    fn_802E317C(lbl_8032ABC8);
 }
-#pragma scheduling reset
 extern "C" void *fn_8012C58C(void *arg0) {
     /* Resource name for the diagnostic dump: the name recorded in the node header
      * at -8, or "res:unknown" when the tag at -4 is not the resource tag 0x4D474921. */
