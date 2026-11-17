@@ -148,8 +148,11 @@ report_error:
 }
 
 #pragma scheduling invalid_target
-void fn_802B561C(void (*fn)(void *), void *arg0) {
-    fn(arg0);
+/* Generic call-through thunk: invoke a one-argument callback with its argument.
+ * Callers cast this to several signatures to bridge C/C++ call sites that need a
+ * plain function-pointer adapter. */
+void fn_802B561C(void (*callback)(void *), void *arg) {
+    callback(arg);
 }
 
 extern "C" void fn_802B0B20(void *, void *);
