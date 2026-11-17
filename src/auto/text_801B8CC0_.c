@@ -197,6 +197,15 @@ static inline void transform_vec_scheduled(float *out, const float *m, float *in
     }
 
 }
+/* Rotate a vector into the frame whose axes are m's rows, in place. */
+static inline void rotate_vec_in_place(f32 *v, const f32 *m) {
+    f32 x = v[0];
+    f32 y = v[1];
+    f32 z = v[2];
+    v[0] = x * m[0] + y * m[1] + z * m[2];
+    v[1] = x * m[3] + y * m[4] + z * m[5];
+    v[2] = x * m[6] + y * m[7] + z * m[8];
+}
 /* The same scheduled transform as transform_vec_scheduled, but with the
    non-alias path written so each row re-reads the source vector
    (fn_801B97D8's two trailer points). */
@@ -742,11 +751,11 @@ extern "C" void fn_801B97D8(struct TrlrCar *car) {
 
     if (car->towed != 0) {
         player = car->player;
-        transform_vec_scheduled(anchorWorld, (const float *)((char *)car + 0x70), (float *)&car->anchorPos);
+        transform_vec_scheduled_reload(anchorWorld, (const float *)((char *)car + 0x70), (float *)&car->anchorPos);
         anchorWorld[0] += ((Vec *)((char *)car + 0x94))->x;
         anchorWorld[1] += ((Vec *)((char *)car + 0x94))->y;
         anchorWorld[2] += ((Vec *)((char *)car + 0x94))->z;
-        transform_vec_scheduled(carWorld, (const float *)player->trailerAxes, (float *)&car->carPos);
+        transform_vec_scheduled_reload(carWorld, (const float *)player->trailerAxes, (float *)&car->carPos);
         carWorld[0] += player->trailerPos.x;
         carWorld[1] += player->trailerPos.y;
         carWorld[2] += player->trailerPos.z;
