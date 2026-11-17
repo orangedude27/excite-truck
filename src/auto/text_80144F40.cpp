@@ -189,11 +189,13 @@ extern "C" s32 fn_80144FB0(void *outStr, s32 maxLen, s32 flags, const char *flag
     return (s32)dst;
 }
 #pragma scheduling on
-extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
+extern "C" s32 fn_801450A0(u32 from, u32 to, f32 weight) {
+    /* Interpolate two byte values by weight, bias by +/-0.5 to round to the
+       nearest integer, then clamp that integer to [0,255] and return it as a byte. */
     s32 masked;
     s32 rounded;
     f32 adjusted;
-    f32 value = (f32)arg0 + arg2 * ((f32)arg1 - (f32)arg0);
+    f32 value = (f32)from + weight * ((f32)to - (f32)from);
     if (value < lbl_805615D4) {
         adjusted = value - lbl_805615D0;
     } else {
