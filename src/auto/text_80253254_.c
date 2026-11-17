@@ -1385,9 +1385,11 @@ void *fn_80255758(void *arg0, s32 arg1, s32 arg2) {
 }
 #pragma use_lmw_stmw reset
 
-void fn_80255904(void *arg0) {
+/* Run the cleanup routine on the object stored at holder+8, releasing its
+   resources and clearing its active flag. */
+void fn_80255904(void *holder) {
     extern void fn_80253824(void *);
-    fn_80253824(*(void **)((u8 *)arg0 + 8));
+    fn_80253824(*(void **)((u8 *)holder + 8));
 }
 
 u8 fn_8025590C(void *holder) {
