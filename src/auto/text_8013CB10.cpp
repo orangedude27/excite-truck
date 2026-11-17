@@ -1467,10 +1467,9 @@ extern "C" void fn_8013EB0C(void *owner, s32 index) {
 
 #pragma push
 #pragma processor 750
+#pragma opt_common_subs off
 extern "C" void fn_8013EB30(void *arg0) {
-    struct Vec3 {
-        f32 x, y, z;
-    };
+    struct Vec3U { u32 x, y, z; };
     u8 *self = (u8 *)arg0;
     f32 elapsed = fn_8013CB3C() - *(f32 *)(self + 0x290);
     u8 *obj = *(u8 **)(self + 0xB8) + fn_801E866C(0) * 0x12C;
@@ -1479,9 +1478,11 @@ extern "C" void fn_8013EB30(void *arg0) {
         s32 idx = *(s32 *)(obj + 0xE8);
         s32 total = *(s32 *)(lbl_8042FB3C + 4);
         if (total - idx < 3) {
-            Vec3 a, b;
+            Vec3U a, b;
             while (item[0x1E] != 0) {
-                item = NextPathNode1(self, item);
+                PathNode *nodes = PathGroupAt(self)->nodes;
+                PathNode *last = &nodes[PathGroupAt(self)->count] - 1;
+                item = (PathNode *)item == last ? (u8 *)nodes : item + 0x24;
             }
             {
                 s32 n = idx + 1;
@@ -1489,7 +1490,9 @@ extern "C" void fn_8013EB30(void *arg0) {
                     s32 j;
                     for (j = n; j < total; j++) {
                         do {
-                            item = NextPathNode1(self, item);
+                            PathNode *nodes = PathGroupAt(self)->nodes;
+                            PathNode *last = &nodes[PathGroupAt(self)->count] - 1;
+                            item = (PathNode *)item == last ? (u8 *)nodes : item + 0x24;
                         } while (item[0x1E] != 0);
                     }
                 }
@@ -1502,13 +1505,13 @@ extern "C" void fn_8013EB30(void *arg0) {
                     *(u8 **)(self + 0x28C) = item;
                     *(f32 *)(self + 0x290) = fn_8013CB3C();
                 }
-                a = *(Vec3 *)item;
-                b = *(Vec3 *)(item + 0xC);
-                y = a.y;
-                if (!(y > b.y)) y = b.y;
+                a = *(Vec3U *)item;
+                b = *(Vec3U *)(item + 0xC);
+                y = *(f32 *)&a.y;
+                if (!(y > *(f32 *)&b.y)) y = *(f32 *)&b.y;
                 y = lbl_80561508 + y;
-                b.y = y;
-                a.y = y;
+                b.y = *(u32 *)&y;
+                a.y = *(u32 *)&y;
                 r7 = 0;
                 r9 = 0x48;
                 if (*(s32 *)(self + 0x68) == *(s32 *)(lbl_8042FB3C + 0x14) - 1) {
