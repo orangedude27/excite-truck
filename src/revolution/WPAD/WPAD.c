@@ -6285,8 +6285,15 @@ void fn_800660E8(s32 chan, u8* data)
     OSRestoreInterrupts(enabled);
 }
 
-// fn_80066630: WPAD data processing
-void fn_80066630(void) { /* stub */ }
+/*
+ * No-op stub - the compiled body is a single `blr`.  The SDK leaves it here
+ * among the HID report parsers (fn_80066634 below decodes the frequency
+ * sensor / classic-controller extension data into the channel's control
+ * block); nothing is ever done in this one.
+ */
+void fn_80066630(void) {
+    //
+}
 
 // fn_80066634: WPAD data processing
 void fn_80066634(s32 chan, u8* data)
