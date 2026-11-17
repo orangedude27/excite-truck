@@ -1742,8 +1742,9 @@ int fn_802916F8(void *arg0) { return *(int *)((char *)arg0 + 0x118); }
 void fn_80291700(void) { fn_802916E8(); }
 void fn_80291704(void) { fn_802916EC(); }
 
-void fn_80291708(void *arg0) {
-    *((unsigned char *)arg0 + 0x11C) = 1;
+/* Set the object's boolean flag at offset 0x11C to true (paired with the clear fn_80291714 and getter fn_80291720). */
+void fn_80291708(void *object) {
+    *((unsigned char *)object + 0x11C) = 1;
 }
 
 void fn_80291714(void *arg0) {
