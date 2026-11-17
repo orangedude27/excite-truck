@@ -1175,10 +1175,11 @@ void *fn_801E8EA4(long arg0) {
     unsigned char *entry;
     long sentinel;
     entry = lbl_80339CC0;
-    goto check_key;
+    goto load_sentinel;
 check_key:
     if (*(long *)(entry + 4) == arg0) goto done;
     entry = (unsigned char *)((long)entry + 0xC);
+load_sentinel:
     sentinel = *(long *)entry;
     if (sentinel != 0) goto check_key;
 done:
