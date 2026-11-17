@@ -140,9 +140,9 @@ void fn_802D9A50(void) {
 
         fn_80129AFC();
         fn_802E6264();
-        OSDisableInterrupts();
-        fn_802E7FD0();
-        check = fn_802CF834() == 0;
+            fn_802E7FD0();
+    OSDisableInterrupts();
+    check = fn_802CF834() == 0;
         OSEnableInterrupts();
         if (check != 0 && lbl_8055FE48 == 0) {
             lbl_8055FE48 = one;
