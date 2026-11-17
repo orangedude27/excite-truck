@@ -741,6 +741,11 @@ void fn_802E5A54(void) {
     lbl_8055FF78 = 0;
 }
 
+extern float lbl_80565138;
+static inline float Spu_toRateUnits(unsigned int n) {
+    return (float)n / lbl_80565138;
+}
+
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -769,9 +774,8 @@ void *fn_802E5AE8(char *arg0) {
     unsigned int unk4, aligned;
     float f31, f30;
     struct Res *res;
-    unsigned char *slot;
-    unsigned char flag;
-    unsigned char tmp9;
+    char *slot;
+    int flag;
     found = fn_80029004(arg0, 0x2F);
     if (found != 0) name = found + 1;
     else name = arg0;
@@ -779,12 +783,12 @@ void *fn_802E5AE8(char *arg0) {
     i = 0;
     off = 0;
     for (; i < 0x100; i++, off += 0xB0) {
-        slot = (unsigned char *)lbl_8055FF90 + off;
+        slot = (char *)lbl_8055FF90 + off;
         if (*(int *)(slot + 0x94) != 0) {
-            if (stricmp(name, (char *)slot) == 0 && *(int *)((unsigned char *)lbl_8055FF90 + off + 0x20) == 0) {
-                slot = (unsigned char *)lbl_8055FF90 + i * 0xB0;
+            if (stricmp(name, slot) == 0 && *(int *)((char *)lbl_8055FF90 + off + 0x20) == 0) {
+                slot = (char *)lbl_8055FF90 + i * 0xB0;
                 *(int *)(slot + 0x94) = *(int *)(slot + 0x94) + 1;
-                return (unsigned char *)lbl_8055FF90 + i * 0xB0;
+                return (char *)lbl_8055FF90 + i * 0xB0;
             }
         } else if (freeIdx < 0) {
             freeIdx = i;
@@ -793,29 +797,27 @@ void *fn_802E5AE8(char *arg0) {
     if (freeIdx < 0) fn_802E317C(msg + 0x2A8, arg0);
     res = (struct Res *)fn_802E4DC8(arg0);
     if (res == 0) return 0;
-    res->unkC = 0xCFFE;
-    if (res->unkC != 0xCFFE) fn_802E317C(msg + 0x2C4, arg0);
+    if ((res->unkC = 0xCFFE) != 0xCFFE) fn_802E317C(msg + 0x2C4, arg0);
     f31 = (float)(res->size >> 1) / lbl_80565138;
     aligned = (res->size + 0x3F) & ~0x3F;
     if (res->unk9 == 1) f31 = f31 * lbl_8056513C;
-    slot = (unsigned char *)lbl_8055FF90 + freeIdx * 0xB0;
     f30 = (float)res->unk10 / lbl_80565138;
+    slot = (char *)lbl_8055FF90 + freeIdx * 0xB0;
     memset(slot, 0, 0xB0);
     unk4 = res->unk4;
     if (unk4 & 0x1F) fn_802E317C(msg + 0x2FC, name, unk4);
     *(unsigned int *)(slot + 0xA0) = aligned;
     *(int *)(slot + 0x94) = 1;
     *(int *)(slot + 0x20) = 0;
-    tmp9 = res->unk9;
-    flag = (tmp9 == 1);
+    flag = res->unk9 == 1;
     slot[0x24] = flag;
-    slot[0x25] = (res->unk8 != 0);
+    slot[0x25] = res->unk8 != 0;
     if (flag) memcpy(slot + 0x28, res->data, 0x60);
     else memset(slot + 0x28, 0, 0x60);
     *(int *)(slot + 0x98) = 0;
     *(float *)(slot + 0xA8) = f30;
     *(float *)(slot + 0xA4) = f31 / f30;
-    strcpy((char *)slot, name);
+    strcpy(slot, name);
     *(unsigned int *)(slot + 0x9C) = unk4;
     *(void **)(slot + 0xAC) = res;
     return slot;
@@ -1087,7 +1089,7 @@ void fn_802E6264(void) {
     unsigned short spD8[20];
     unsigned int sp100[24];
     float f0, f1, f2, f4;
-    float one, inv, k4C, k50, k54, k58;
+    float one, inv, k4C, k50, k58, k54;
     if ((unsigned char)lbl_8055FFA4 != 0) {
         lbl_8055FFA4 = 0;
         lbl_8055FFA6 = 1;
