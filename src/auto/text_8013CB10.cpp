@@ -4340,6 +4340,8 @@ extern "C" void fn_80144334(void) {
 extern "C" void fn_80144338(void) {
 }
 
+/* Empty virtual slot in the same run of unimplemented zone-system callbacks
+ * (fn_801442D4..fn_80144358); calling it does nothing. */
 extern "C" void fn_8014433C(void) {
 }
 
