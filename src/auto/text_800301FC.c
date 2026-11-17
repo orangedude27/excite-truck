@@ -1320,9 +1320,15 @@ void fn_80031F9C(void) {
 #undef AX_OUT_DSP_W4_TASK
 }
 
+/* DSP-task done callback: mark the audio task finished and wake the thread
+ * sleeping on the DSP sleep queue. */
 void __AXDSPDoneCallback(void) {
-    lbl_8055D76C = 1;
-    OSWakeupThread(&lbl_8055D760);
+#define s_dspDoneFlag lbl_8055D76C
+#define s_dspSleepQueue lbl_8055D760 /* queue __AXDSPDoneCallback wakes */
+    s_dspDoneFlag = 1;
+    OSWakeupThread(&s_dspSleepQueue);
+#undef s_dspDoneFlag
+#undef s_dspSleepQueue
 }
 
 void fn_80032000(void) {
