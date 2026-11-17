@@ -503,6 +503,7 @@ extern "C" float lbl_80563434;
 extern "C" float lbl_80563440;
 extern "C" float lbl_80563444;
 extern "C" double lbl_80563448;
+/* Bootstraps the UI subsystem (fn_80211690) in mode 1 during game-menu init. */
 extern "C" void fn_80211F44(void) { fn_80211690(1); }
 
 extern "C" void fn_80211F4C(void) { fn_80211D24(1); }
