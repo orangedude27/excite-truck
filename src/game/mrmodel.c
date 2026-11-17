@@ -588,9 +588,11 @@ void fn_802C5DF0(void *groupList, void *callback) {
     }
 }
 
-void fn_802C5E6C(void *arg0, void *arg1) {
-    void *temp = fn_802D6C44;
-    ((void (*)(void *, void *))fn_802C5DF0)(arg1, temp);
+void fn_802C5E6C(void *unused, void *groupList) {
+    /* Resource callback: visit every group in groupList through fn_802C5DF0,
+       passing the no-op per-group hook fn_802D6C44. arg0 is unused. */
+    void *callback = fn_802D6C44;
+    ((void (*)(void *, void *))fn_802C5DF0)(groupList, callback);
 }
 
 #pragma pop
