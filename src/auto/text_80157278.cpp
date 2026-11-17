@@ -1446,28 +1446,31 @@ extern "C" void fn_80158A74(void *arg0, f32 farg0) {
 
 extern "C" f32 lbl_80561754;
 #pragma scheduling on
-extern "C" void fn_80158A84(Unk801577F0 *arg0) {
-    s32 value = 0;
-    *((u8 *)arg0 + 0x273) = (u8)value;
-    f32 zero = 0.0f;
+/* Reset the frame-driven player: clear its four flag bytes at 0x270..0x273,
+   zero the head of each 0x38-byte record, reset the progress/time counters to
+   0.0f, then refresh the player through vtable slot 0x84. */
+extern "C" void fn_80158A84(Unk801577F0 *player) {
+    s32 zeroInt = 0;
+    *((u8 *)player + 0x273) = (u8)zeroInt;
+    f32 zeroFloat = 0.0f;
     s32 i = 0;
     s32 offset = 0;
-    *((u8 *)arg0 + 0x270) = (u8)value;
-    *((u8 *)arg0 + 0x271) = (u8)value;
-    *((u8 *)arg0 + 0x272) = (u8)value;
-    for (; i < arg0->mCount; i++) {
-        *(s32 *)(arg0->mData + offset) = value;
-        *(s32 *)(arg0->mData + offset + 4) = value;
-        *(s32 *)(arg0->mData + offset + 8) = value;
-        *(f32 *)(arg0->mData + offset + 0xC) = zero;
+    *((u8 *)player + 0x270) = (u8)zeroInt;
+    *((u8 *)player + 0x271) = (u8)zeroInt;
+    *((u8 *)player + 0x272) = (u8)zeroInt;
+    for (; i < player->mCount; i++) {
+        *(s32 *)(player->mData + offset) = zeroInt;
+        *(s32 *)(player->mData + offset + 4) = zeroInt;
+        *(s32 *)(player->mData + offset + 8) = zeroInt;
+        *(f32 *)(player->mData + offset + 0xC) = zeroFloat;
         offset += 0x38;
     }
-    f32 zero2 = lbl_80561754;
-    *(f32 *)((u8 *)arg0 + 0x25C) = zero2;
-    *(f32 *)((u8 *)arg0 + 0x260) = zero2;
-    *(f32 *)((u8 *)arg0 + 0x258) = zero2;
-    *(f32 *)((u8 *)arg0 + 0x264) = zero2;
-    arg0->v31();
+    f32 reset = lbl_80561754;
+    *(f32 *)((u8 *)player + 0x25C) = reset;
+    *(f32 *)((u8 *)player + 0x260) = reset;
+    *(f32 *)((u8 *)player + 0x258) = reset;
+    *(f32 *)((u8 *)player + 0x264) = reset;
+    player->v31();
 }
 
 #pragma push
