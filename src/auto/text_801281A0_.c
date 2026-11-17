@@ -419,7 +419,9 @@ void fn_80128658(s32 arg0) {
     fn_80128584(arg0, 1);
 }
 
-void fn_80128660(s32 arg0) { fn_80128584(arg0, 2); }
+/* Free a block that was allocated through MemAllocPhys (allocator source id 2):
+   hand it and its source id to fn_80128584, which routes it to the right heap. */
+void fn_80128660(s32 block) { fn_80128584(block, 2); }
 
 /* Frees an object using allocator mode 3. */
 void fn_80128668(s32 object) {
