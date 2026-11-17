@@ -8569,8 +8569,9 @@ extern "C" void *__dt__10J2DTextBoxFv(void *self, s32 shouldDelete) {
     return self;
 }
 
-extern "C" void fn_8022897C(void *arg0) {
- ((VfObj *)*(void **)((u8 *)arg0 + 0x268))->vf2();
+/* Forward vf2 (vtable slot 0x10) to the child object held at +0x268. */
+extern "C" void fn_8022897C(void *object) {
+    ((VfObj *)*(void **)((u8 *)object + 0x268))->vf2();
 }
 
 extern "C" void fn_80228990(void) {
