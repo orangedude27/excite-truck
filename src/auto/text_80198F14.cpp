@@ -5609,8 +5609,9 @@ extern "C" s32 fn_801A51CC(void* object) {
     return *(s32*)((u8*)object + 0x34);
 }
 
-extern "C" void fn_801A51D4(void* arg0, s32 arg1) {
-    *(s32*)((u8*)arg0 + 0x34) = arg1;
+/* Setter paired with fn_801A51CC: store a 32-bit value at +0x34 of the object. */
+extern "C" void fn_801A51D4(void* object, s32 value) {
+    *(s32*)((u8*)object + 0x34) = value;
 }
 extern void fn_8019ECC4(void);
 extern void* lbl_80333968;
