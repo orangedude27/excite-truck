@@ -10533,6 +10533,17 @@ void btm_event_filter_complete(UINT8 *p_param) {
     }
 }
 
+static inline UINT8 *find_inq_entry(UINT8 *base, UINT8 *bda)
+{
+    UINT32 xx;
+    UINT8 *p_ent = base + 0x16e4;
+    for (xx = 0; xx < 12; xx++, p_ent++) {
+        if ((p_ent[0x1a]) && (!memcmp(p_ent + 0xa, bda, 6)))
+            return p_ent;
+    }
+    return 0;
+}
+
 void btm_process_inq_results(UINT8 *p, UINT8 mode)
 {
     UINT8 n, i;
