@@ -2582,30 +2582,31 @@ extern "C" s32 fn_8015B2E0(void* arg0) {
 extern "C" s32 fn_8015B338(void) { return 0xC; }
 
 extern "C" void fn_8015B340(Unk801577F0* self) {
-    f32 entryZero = 0.0f;
-    s32 i = 0;
-    s32 offset = 0;
-    s32 value = 0;
-    for (; i < self->mCount; i++) {
-        *(s32*)(self->mData + offset) = value;
-        *(s32*)(self->mData + offset + 4) = value;
-        *(s32*)(self->mData + offset + 8) = value;
-        *(f32*)(self->mData + offset + 0xC) = entryZero;
-        offset += 0x38;
+    // Reset every track record (three counters and its float), call v31(), then clear the tail state.
+    f32 zeroFloat = 0.0f;
+    s32 recordIndex = 0;
+    s32 byteOffset = 0;
+    s32 zeroInt = 0;
+    for (; recordIndex < self->mCount; recordIndex++) {
+        *(s32*)(self->mData + byteOffset) = zeroInt;
+        *(s32*)(self->mData + byteOffset + 4) = zeroInt;
+        *(s32*)(self->mData + byteOffset + 8) = zeroInt;
+        *(f32*)(self->mData + byteOffset + 0xC) = zeroFloat;
+        byteOffset += 0x38;
     }
     self->v31();
-    f32 tailZero = 0.0f;
+    f32 zeroTail = 0.0f;
     *(u8*)((u8*)self + 0x294) = 0;
-    *(f32*)((u8*)self + 0x290) = tailZero;
-    *(f32*)((u8*)self + 0x28C) = tailZero;
-    *(f32*)((u8*)self + 0x24C) = tailZero;
-    *(f32*)((u8*)self + 0x254) = tailZero;
-    *(f32*)((u8*)self + 0x25C) = tailZero;
-    *(f32*)((u8*)self + 0x264) = tailZero;
-    *(f32*)((u8*)self + 0x26C) = tailZero;
-    *(f32*)((u8*)self + 0x274) = tailZero;
-    *(f32*)((u8*)self + 0x27C) = tailZero;
-    *(f32*)((u8*)self + 0x284) = tailZero;
+    *(f32*)((u8*)self + 0x290) = zeroTail;
+    *(f32*)((u8*)self + 0x28C) = zeroTail;
+    *(f32*)((u8*)self + 0x24C) = zeroTail;
+    *(f32*)((u8*)self + 0x254) = zeroTail;
+    *(f32*)((u8*)self + 0x25C) = zeroTail;
+    *(f32*)((u8*)self + 0x264) = zeroTail;
+    *(f32*)((u8*)self + 0x26C) = zeroTail;
+    *(f32*)((u8*)self + 0x274) = zeroTail;
+    *(f32*)((u8*)self + 0x27C) = zeroTail;
+    *(f32*)((u8*)self + 0x284) = zeroTail;
 }
 
 #pragma push
