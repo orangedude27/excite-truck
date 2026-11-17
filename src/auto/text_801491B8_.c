@@ -1695,7 +1695,7 @@ extern "C" void fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
     Rec *b, *a;
     void *obj;
     char storage[0x64];
-    f32 t, time, rate;
+    f32 t, time, rate, x;
     Rec v;
     char *strs = (char *)lbl_8032D358;
     obj = *(void **)((u8 *)arg0 + 0x68);
@@ -1713,15 +1713,16 @@ extern "C" void fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
     if (a != 0 && b != 0) {
         time = (f32)fn_8002EFB4(rate, lbl_805616A0);
         if (time < lbl_8056163C) {
-            f32 x;
-            v = *a;
             x = (time - lbl_80561648) / lbl_805616C8;
+            v = *a;
             x = (lbl_8056164C < x) ? lbl_8056164C : x;
             x = (lbl_80561648 > x) ? lbl_80561648 : x;
             v.w6 = ((s32 (*)(s32, s32, f32))fn_80147C50)(v.w6 & 0xFFFFFF, v.w6, lbl_80561648 + x * lbl_8056164C);
         } else {
             f32 *pa = (f32 *)a, *pb = (f32 *)b, *pv = (f32 *)&v;
-            f32 x, y, w, h;
+            f32 y = lbl_8056164C - x;
+            f32 w = x * x;
+            f32 h = lbl_8056164C - y * y;
             x = lbl_80561670 * time - lbl_8056164C;
             y = lbl_8056164C - x;
             w = x * x;
@@ -2306,6 +2307,13 @@ extern "C" void fn_802CAC54(s32);
 extern "C" void fn_802C6CF8(s32);
 extern "C" void fn_80167838(void), fn_8016A68C(void), fn_80167EEC(void);
 extern "C" void fn_801777D0(void *), fn_801D05B4(void *), fn_801D0824(void *);
+/* pointer array member (data, count, capacity) */
+struct PtrArray8014E9C4 { void **data; s32 count; s32 capacity; };
+static inline void FreeAll8014E9C4(PtrArray8014E9C4 *a) {
+    int i;
+    for (i = 0; i < a->count; i++)
+        fn_80128668(a->data[i]);
+}
 #pragma cplusplus on
 #pragma push
 #pragma use_lmw_stmw off
@@ -2519,7 +2527,7 @@ s32 *fn_801500F8(void *vec, s32 *__restrict pValue) {
     return &data[index];
 }
 #pragma cplusplus on
-extern "C" void *fn_8015011C(void *arg0, ...) {
+extern "C" void *fn_8015011C(void *arg0, void *arg1) {
     class Entry {
     public:
         virtual void d0();
@@ -2536,16 +2544,11 @@ extern "C" void *fn_8015011C(void *arg0, ...) {
         virtual s32 m50(void *, void *);
         virtual s32 m54(void *, void *);
     };
-    va_list ap;
-    void *arg1;
     extern s32 fn_802CAC28(void *, s32);
     extern s32 fn_801D4888();
     extern u8 lbl_8032D358[];
     extern u8 lbl_80559F98[];
     extern u8 lbl_80559FA0[];
-    va_start(ap, arg0);
-    arg1 = va_arg(ap, void *);
-    va_end(ap);
     ((s32 *)arg0)[8] = fn_802CAC28(lbl_8032D358 + 0xB28, 0);
     ((s32 *)arg0)[0xD0/4] = ((Entry *)arg1)->m8();
     ((Entry *)arg1)->m8();
@@ -3133,10 +3136,10 @@ extern "C" void fn_80151B48(void *arg0) {
     };
     void *self = arg0;
     s32 addr;
+    s32 flag;
     register void *entry;
     void *p;
     void *obj;
-    s32 flag = 0;
     s32 index;
     s32 i;
     f32 f;
@@ -3162,7 +3165,8 @@ extern "C" void fn_80151B48(void *arg0) {
             f = ((f32 (*)(void))fn_80149650)();
             obj = fn_801538E4(entry);
             p = fn_801538E4(entry);
-            fn_80151C98(entry, fn_801537CC(*(s32 *)((char *)p + 4), *(s32 *)obj, f));
+            fn_801537CC(*(s32 *)((char *)p + 4), *(s32 *)obj, f);
+            fn_80151C98(entry, (s32)obj);
         }
         index += 4;
         i += 1;
