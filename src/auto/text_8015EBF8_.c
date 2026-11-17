@@ -1065,9 +1065,10 @@ int fn_80160268(int value) {
 void fn_80160278(void) {
 }
 
-void fn_8016027C(void *arg0, f32 farg0, f32 farg1) {
-    *(f32 *)((u8 *)arg0 + 0) = farg0;
-    *(f32 *)((u8 *)arg0 + 4) = farg1;
+// Set both components of a 2D vector (two adjacent f32s).
+void fn_8016027C(void *vec, f32 x, f32 y) {
+    *(f32 *)((u8 *)vec + 0) = x;
+    *(f32 *)((u8 *)vec + 4) = y;
 }
 
 void fn_80160288(void *dst, void *src) {
