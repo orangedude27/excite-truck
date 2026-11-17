@@ -3976,6 +3976,7 @@ extern "C" s32 fn_8015E100(void) {
     return 0;
 }
 
+/* Default stub that always reports a zero value. */
 extern "C" s32 fn_8015E108(void) {
     return 0;
 }
