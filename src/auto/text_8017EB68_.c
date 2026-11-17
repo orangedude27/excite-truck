@@ -1437,8 +1437,9 @@ int fn_801813D8(int object, int deleteFlag) {
 }
 
 void fn_80181418(void *arg0, int arg1) {
- *(int *)((char *)arg0+4)=arg1;
- *(unsigned char *)((char *)arg0+0xC)=0;
+    /* Reset a driver-interface sound slot: assign its value/id and clear its in-use flag. */
+    ((struct DriverInterfaceSlot *)arg0)->value = arg1;
+    ((struct DriverInterfaceSlot *)arg0)->inUse = 0;
 }
 
 extern void lbl_80331EFC(void);
