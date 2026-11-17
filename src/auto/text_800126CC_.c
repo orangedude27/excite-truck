@@ -89,6 +89,8 @@ void* fn_80012810(void) {
 
 extern void *lbl_8055D504;
 void* fn_80012818(void) {
+    /* Return the number of event/menu entries currently registered in the
+     * lbl_803518C0 table (global counter lbl_8055D504, capped at 0x23). */
     return lbl_8055D504;
 }
 
