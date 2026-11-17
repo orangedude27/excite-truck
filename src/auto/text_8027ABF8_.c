@@ -13,12 +13,16 @@ void fn_8027ABF8(void *item) {
     fn_8027ACBC(lbl_804A433C, item);
 }
 #pragma scheduling invalid_target
-int fn_8027AC08(void *arg0, int arg1) {
+/* Look an id up in the table of (id, value) pairs a global-registry entry (the
+ * object fn_8027ABF8 hands back) carries: the pairs start at +0x30, eight bytes
+ * apart, and their count sits at +0x88.  Returns the value stored with the id,
+ * or 0 when the table holds no such id. */
+int fn_8027AC08(void *table, int id) {
     int i;
-    char *entry = (char *)arg0;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x88); entry += 8, i++) {
-        if (arg1 == *(int *)(entry + 0x30))
-            return *(int *)((char *)arg0 + 0x34 + i * 8);
+    char *entry = (char *)table;
+    for (i = 0; i < *(int *)((char *)table + 0x88); entry += 8, i++) {
+        if (id == *(int *)(entry + 0x30))
+            return *(int *)((char *)table + 0x34 + i * 8);
     }
     return 0;
 }
