@@ -1426,6 +1426,8 @@ extern "C" void fn_801FF114(void) {
 
 }
 
+/* No-op virtual method (vtable lbl_8033B700, slot 0xC) of the menu/holder class
+ * that also owns the DroneManager entry point fn_801FF014; does nothing here. */
 extern "C" void fn_801FF118(void) {
 
 }
