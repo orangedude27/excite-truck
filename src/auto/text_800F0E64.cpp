@@ -7771,8 +7771,9 @@ extern "C" f32 fn_800FD870(void *player) {
     return *(f32 *)((u8 *)player + 0x450);
 }
 
-extern "C" f32 fn_800FD878(void *arg0) {
-    return *(f32 *)((u8 *)arg0 + 0x43C);
+/* Return this sound player's float field at +0x43C (paired with setter fn_800FD8B0). */
+extern "C" f32 fn_800FD878(void *player) {
+    return *(f32 *)((u8 *)player + 0x43C);
 }
 
 /* Set this sound player's float field at +0x454 (paired with getter fn_800FD848). */
