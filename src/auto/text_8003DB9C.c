@@ -687,29 +687,50 @@ void GXClearGPMetric(void);
 void GXSetCopyClear(unsigned char *color, unsigned int depth);
 void GXSetChanCtrl(int, unsigned char, int, int, int, int, int);
 void __GXInitGX(void) {
+    typedef struct {
+        u32 unk0;
+        u16 fbWidth;
+        u16 efbHeight;
+        u16 xfbHeight;
+        u16 viXOrigin;
+        u16 viYOrigin;
+        u16 viWidth;
+        u16 viHeight;
+        u16 unk12;
+        u16 unk14;
+        u16 unk16;
+        u8 fieldMode;
+        u8 filter;
+        u8 samples[24];
+        u8 vfilter[7];
+    } RenderMode;
     GXColor clearColor;
     GXColor matColor;
     GXColor copyColor;
-    GXColor tmpColor;
-    GXColor ambBlack;
+    u32 ambBlack4;
+    u32 matTmp4;
+    u32 ambBlack5;
+    u32 matTmp5;
     GXColor fogColor;
-    unsigned char *mode;
+    RenderMode *mode;
+    unsigned char *base;
     int tv;
-    int i;
+    register u32 i;
     f32 mtx[3][4];
     unsigned int texObj[8];
 
+    base = lbl_803034A0;
     clearColor.r = lbl_80560B24; clearColor.g = lbl_80560B25;
     clearColor.b = lbl_80560B26; clearColor.a = lbl_80560B27;
     matColor.r = lbl_80560B28; matColor.g = lbl_80560B29;
     matColor.b = lbl_80560B2A; matColor.a = lbl_80560B2B;
     tv = VIGetTvFormat();
     switch (tv) {
-    case 0: mode = lbl_803038D8; break;
-    case 1: mode = lbl_8030398C; break;
-    case 2: mode = lbl_80303950; break;
-    case 5: mode = lbl_803039C8; break;
-    default: mode = lbl_803038D8; break;
+    case 0: mode = (RenderMode *)lbl_803038D8; break;
+    case 1: mode = (RenderMode *)lbl_8030398C; break;
+    case 5: mode = (RenderMode *)lbl_803039C8; break;
+    case 2: mode = (RenderMode *)lbl_80303950; break;
+    default: mode = (RenderMode *)lbl_803038D8; break;
     }
     copyColor = clearColor;
     GXSetCopyClear((unsigned char *)&copyColor, 0xFFFFFF);
@@ -724,8 +745,8 @@ void __GXInitGX(void) {
     GXSetNumTexGens(1);
     GXClearVtxDesc();
     GXInvalidateVtxCache();
-    for (i = 9; i <= 0x18; i++) GXSetArray(i, (unsigned int)__GXData, 0);
-    for (i = 0; i < 8; i++) GXSetVtxAttrFmtv(i, (const GXVtxAttrFmtList *)&lbl_803034A0[0x80]);
+    for (i = 9; i <= 0x18; i++) GXSetArray(i, (unsigned int)*(u32 * volatile *)&__GXData, 0);
+    for (i = 0; i < 8; i++) GXSetVtxAttrFmtv(i, (const GXVtxAttrFmtList *)&base[0x80]);
     GXSetLineWidth(6, 0);
     GXSetPointSize(6, 0);
     GXEnableTexOffsets(0, 0, 0);
@@ -744,25 +765,28 @@ void __GXInitGX(void) {
     GXSetCurrentMtx(0);
     GXLoadTexMtxImm((const f32 *)mtx, 0x3C, 0);
     GXLoadTexMtxImm((const f32 *)mtx, 0x7D, 0);
-    GXSetViewport(0.0f, 0.0f, (f32)*(u16 *)(mode + 4), (f32)*(u16 *)(mode + 8), 0.0f, 1.0f);
-    GXSetProjectionv((float *)&lbl_803034A0[0x150]);
+    GXSetViewport(0.0f, 0.0f, (f32)mode->fbWidth, (f32)mode->xfbHeight, 0.0f, 1.0f);
+    GXSetProjectionv((float *)&base[0x150]);
     GXSetCoPlanar(0);
     GXSetCullMode(2);
     GXSetClipMode(0);
-    GXSetScissor(0, 0, *(u16 *)(mode + 4), *(u16 *)(mode + 6));
+    GXSetScissor(0, 0, mode->fbWidth, mode->efbHeight);
     GXSetScissorBoxOffset(0, 0);
     GXSetNumChans(0);
-    ambBlack.r = 0; ambBlack.g = 0; ambBlack.b = 0; ambBlack.a = 0;
-    GXSetChanAmbColor_Internal(4, &ambBlack);
-    tmpColor = matColor;
-    GXSetChanMatColor_Internal(4, &tmpColor);
-    GXSetChanAmbColor_Internal(5, &ambBlack);
-    tmpColor = matColor;
-    GXSetChanMatColor_Internal(5, &tmpColor);
+    GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
+    ambBlack4 = 0;
+    GXSetChanAmbColor_Internal(4, &ambBlack4);
+    matTmp4 = *(u32 *)&matColor;
+    GXSetChanMatColor_Internal(4, &matTmp4);
+    GXSetChanCtrl(5, 0, 0, 1, 0, 0, 2);
+    ambBlack5 = 0;
+    GXSetChanAmbColor_Internal(5, &ambBlack5);
+    matTmp5 = *(u32 *)&matColor;
+    GXSetChanMatColor_Internal(5, &matTmp5);
     GXInvalidateTexAll();
     GXSetTexRegionCallback((void *)__GXDefaultTexRegionCallback);
     GXSetTlutRegionCallback((void *)__GXDefaultTlutRegionCallback);
-    GXInitTexObj(texObj, &lbl_803034A0[0x60], 4, 4, 3, 0, 0, 0);
+    GXInitTexObj(texObj, &base[0x60], 4, 4, 3, 0, 0, 0);
     GXLoadTexObj(texObj, 0);
     GXLoadTexObj(texObj, 1);
     GXLoadTexObj(texObj, 2);
@@ -802,8 +826,8 @@ void __GXInitGX(void) {
     GXSetIndTexCoordScale(1, 0, 0);
     GXSetIndTexCoordScale(2, 0, 0);
     GXSetIndTexCoordScale(3, 0, 0);
-    fogColor.r = 0; fogColor.g = 0; fogColor.b = 0; fogColor.a = 0;
-    GXSetFog(0, fogColor, 0.0f, 1.0f, lbl_80560B30, 1.0f);
+    *(u32 *)&fogColor = 0;
+    GXSetFog(0, fogColor, 0.0f, lbl_80560B2C, lbl_80560B30, lbl_80560B2C);
     GXSetFogRangeAdj(0, 0, 0);
     GXSetBlendMode(0, 4, 5, 0);
     GXSetColorUpdate(1);
@@ -814,12 +838,16 @@ void __GXInitGX(void) {
     GXSetDstAlpha(0, 0);
     GXSetPixelFmt(0, 0);
     GXSetFieldMask(1, 1);
-    GXSetFieldMode(0, 0);
-    GXSetDispCopySrc(0, 0, 0, 0);
-    GXSetDispCopyDst(0);
-    GXSetDispCopyYScale(1.0f);
+    {
+        int fieldMode;
+        if (2 * mode->xfbHeight == mode->viHeight) fieldMode = 1; else fieldMode = 0;
+        GXSetFieldMode(mode->fieldMode, fieldMode);
+    }
+    GXSetDispCopySrc(0, 0, mode->fbWidth, mode->efbHeight);
+    GXSetDispCopyDst(mode->fbWidth);
+    GXSetDispCopyYScale((f32)mode->xfbHeight / (f32)mode->efbHeight);
     GXSetCopyClamp(3);
-    GXSetCopyFilter(0, mode, 1, mode);
+    GXSetCopyFilter(mode->filter, mode->samples, 1, mode->vfilter);
     GXSetDispCopyGamma(0);
     GXSetDispCopyFrame2Field(0);
     GXClearBoundingBox();
@@ -2216,76 +2244,101 @@ void GXInvalidateVtxCache(void) {
 }
 
 void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned int nrm, unsigned int normalize, int postmtx) {
-    unsigned int *data = __GXData;
-    unsigned int type = 0;
+    typedef union {
+        u32 val;
+        struct {
+            u32 padHigh : 14;
+            u32 texFunc : 3;
+            u32 texLine : 3;
+            u32 src : 5;
+            u32 type : 3;
+            u32 pad3 : 1;
+            u32 norm : 1;
+            u32 padLow : 2;
+        } f;
+    } TCGValue;
+    typedef union {
+        u32 val;
+        struct { u32 p : 20; u32 n : 6; u32 q : 6; } s6;
+        struct { u32 p : 14; u32 n : 6; u32 q : 12; } s12;
+        struct { u32 p : 8; u32 n : 6; u32 q : 18; } s18;
+        struct { u32 p : 2; u32 n : 6; u32 q : 24; } s24;
+        struct { u32 p : 26; u32 n : 6; } s0;
+    } NrmVal;
+    typedef union {
+        u32 val;
+        struct { u32 p : 23; u32 norm : 1; u32 q : 2; u32 pmod : 6; } f;
+    } PMVal;
+    TCGValue v;
     unsigned int source = 5;
-    unsigned int normalizeFlag = 0;
+    unsigned int normFlag = 0;
+
+    v.val = 0;
     switch (line) {
-        case 0: source = 0; normalizeFlag = 1; break;
-        case 1: source = 1; normalizeFlag = 1; break;
-        case 2: source = 3; normalizeFlag = 1; break;
-        case 3: source = 4; normalizeFlag = 1; break;
-        case 4: source = 2; break;
-        case 5: source = 2; break;
-        case 6: source = 5; break;
-        case 7: source = 6; break;
-        case 8: source = 7; break;
-        case 9: source = 8; break;
-        case 10: source = 9; break;
-        case 11: source = 10; break;
-        case 12: source = 11; break;
-        case 13: source = 12; break;
-        case 14: source = 12; break;
-        case 15: source = 12; break;
-        case 16: source = 12; break;
-        case 17: source = 12; break;
-        case 18: source = 12; break;
-        case 19: source = 12; break;
-        case 20: source = 12; break;
-        default: break;
+    case 0: source = 0; normFlag = 1; break;
+    case 1: source = 1; normFlag = 1; break;
+    case 2: source = 3; normFlag = 1; break;
+    case 3: source = 4; normFlag = 1; break;
+    case 4: source = 5; break;
+    case 5: source = 6; break;
+    case 6: source = 7; break;
+    case 7: source = 8; break;
+    case 8: source = 9; break;
+    case 9: source = 10; break;
+    case 10: source = 11; break;
+    case 11: source = 12; break;
+    case 19: source = 2; break;
+    case 20: source = 2; break;
+    default: break;
     }
+
+    switch (func) {
+    case 0:
+        v.val = 2;
+        v.f.norm = normFlag;
+        v.f.src = source;
+        break;
+    case 1:
+        v.f.norm = normFlag;
+        v.f.src = source;
+        break;
+    case 10:
+        v.f.norm = normFlag;
+        if (line == 0x13) v.f.type = 2; else v.f.type = 3;
+        v.f.src = 2;
+        break;
+    default:
+        if (func > 1 && func < 10) {
+            v.f.norm = normFlag;
+            v.f.type = 1;
+            v.f.src = source;
+            v.f.texLine = line - 0xC;
+            v.f.texFunc = func - 2;
+        }
+        break;
+    }
+
+    *(u32 *)((char *)__GXData + coord * 4 + 0xC8) = v.val;
+    __GXData[0x5FC / 4] |= 0x10000 << coord;
     {
-        unsigned int value;
-        unsigned int mask;
-        if (func == 1) {
-            type = 0; source = 5; normalizeFlag = 0;
-        } else if (func == 0) {
-            type = 0; source = 5; normalizeFlag = 1;
-        } else if (func == 10) {
-            type = 1;
-            source = (line == 0x13) ? 2 : 3;
-        } else if (func < 10 && func > 1) {
-            type = (unsigned int)(func - 2);
-            source = 1; normalizeFlag = 1;
-        }
-        if (func == 1) value = 0x280;
-        else if (func == 0) value = 0x282;
-        else if (func == 10) value = (line == 0x13) ? 0x120 : 0x130;
-        else {
-            value = 0;
-            value |= source << 7;
-            value |= normalizeFlag << 2;
-            value |= (line - 0xC) << 12;
-            value |= (unsigned int)(func - 2) << 15;
-            value |= type << 4;
-        }
-        *(unsigned int *)((char *)data + coord * 4 + 0xC8) = value;
-        mask = 0x10000 << coord;
-        data[0x5FC / 4] |= mask;
-        *(unsigned int *)((char *)data + coord * 4 + 0xE8) = ((normalize & 1) << 8) | ((postmtx - 0x40) & 0x3F);
+        PMVal pm;
+        pm.val = 0;
+        pm.f.pmod = postmtx - 0x40;
+        pm.f.norm = normalize & 1;
+        *(u32 *)((char *)__GXData + coord * 4 + 0xE8) = pm.val;
     }
+
     switch (coord) {
-        case 0: data[0x80/4] = (data[0x80/4] & 0xFC000000) | ((nrm & 0x3F) << 26); break;
-        case 1: data[0x80/4] = (data[0x80/4] & 0x03FFFFFF) | ((nrm & 0x3F) << 20); break;
-        case 2: data[0x80/4] = (data[0x80/4] & 0xFFFFC000) | ((nrm & 0x3F) << 14); break;
-        case 3: data[0x80/4] = (data[0x80/4] & 0xFFFFFF00) | ((nrm & 0x3F) << 8); break;
-        case 4: data[0x84/4] = (data[0x84/4] & 0xFC000000) | ((nrm & 0x3F) << 26); break;
-        case 5: data[0x84/4] = (data[0x84/4] & 0x03FFFFFF) | ((nrm & 0x3F) << 20); break;
-        case 6: data[0x84/4] = (data[0x84/4] & 0xFFFFC000) | ((nrm & 0x3F) << 14); break;
-        case 7: data[0x84/4] = (data[0x84/4] & 0xFFFFFF00) | ((nrm & 0x3F) << 8); break;
-        default: data[0x84/4] = (data[0x84/4] & 0xFF03FFFF) | ((nrm & 0x3F) << 18); break;
+    case 0: ((NrmVal *)&__GXData[0x80/4])->s6.n = nrm; break;
+    case 1: ((NrmVal *)&__GXData[0x80/4])->s12.n = nrm; break;
+    case 2: ((NrmVal *)&__GXData[0x80/4])->s18.n = nrm; break;
+    case 3: ((NrmVal *)&__GXData[0x80/4])->s24.n = nrm; break;
+    case 4: ((NrmVal *)&__GXData[0x84/4])->s0.n = nrm; break;
+    case 5: ((NrmVal *)&__GXData[0x84/4])->s6.n = nrm; break;
+    case 6: ((NrmVal *)&__GXData[0x84/4])->s12.n = nrm; break;
+    default: ((NrmVal *)&__GXData[0x84/4])->s18.n = nrm; break;
     }
-    data[0x5FC / 4] |= 0x4000000;
+    __GXData[0x5FC / 4] |= 0x4000000;
 }
 
 /* Set the number of texture generators (texture-coordinate transforms) and flag
@@ -2897,9 +2950,9 @@ void __GXSetDirtyState(void) {
     unsigned int reg;
     unsigned int count1;
     u8 *ptr1;
-    u32 count2;
-    u8 *ptr2;
     unsigned int reg2;
+    u8 *ptr2;
+    unsigned int count2;
 
     if (dirty & 1) {
         __GXSetSUTexRegs();
@@ -3289,11 +3342,11 @@ void GXSetDispCopyDst(s32 value) {
             u32 arg : 10;
         } fields;
     } data = {0};
-    u32 reg;
+    unsigned int *gx = __GXData;
+
     data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
-    reg = data.reg;
-    __GXData[0x238 / 4] = reg;
+    gx[0x238 / 4] = data.reg;
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
@@ -4484,31 +4537,41 @@ typedef struct {
 
 extern unsigned char lbl_80558E48, lbl_80558E50, lbl_80558E58;
 extern unsigned char lbl_80558E60, lbl_80558E68, lbl_80558E70, lbl_80558E78;
-void GXLoadTexObjPreLoaded(void *obj, void *region, int map) {
+void GXLoadTexObjPreLoaded(void *__restrict obj, void *__restrict region, int map) {
     unsigned int *a = (unsigned int *)obj;
     unsigned int *b = (unsigned int *)region;
+    unsigned int v0, v1, v2, v3, v4, v5;
     unsigned int *data;
     unsigned int *dst;
     unsigned char opcode = 0x61;
 
-    a[0] = __rlwimi(a[0], (&lbl_80558E48)[map], 24, 0, 7);
-    a[1] = __rlwimi(a[1], (&lbl_80558E50)[map], 24, 0, 7);
-    a[2] = __rlwimi(a[2], (&lbl_80558E58)[map], 24, 0, 7);
-    b[0] = __rlwimi(b[0], (&lbl_80558E60)[map], 24, 0, 7);
-    b[1] = __rlwimi(b[1], (&lbl_80558E68)[map], 24, 0, 7);
-    a[3] = __rlwimi(a[3], (&lbl_80558E70)[map], 24, 0, 7);
+    v0 = __rlwimi(a[0], (&lbl_80558E48)[map], 24, 0, 7);
+    v1 = __rlwimi(a[1], (&lbl_80558E50)[map], 24, 0, 7);
+    v2 = __rlwimi(a[2], (&lbl_80558E58)[map], 24, 0, 7);
+    v3 = __rlwimi(b[0], (&lbl_80558E60)[map], 24, 0, 7);
+    v4 = __rlwimi(b[1], (&lbl_80558E68)[map], 24, 0, 7);
+    v5 = __rlwimi(a[3], (&lbl_80558E70)[map], 24, 0, 7);
+
     *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = a[0];
+    *(volatile unsigned int *)0xCC008000 = v0;
     *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = a[1];
+    *(volatile unsigned int *)0xCC008000 = v1;
     *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = a[2];
+    *(volatile unsigned int *)0xCC008000 = v2;
     *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = b[0];
+    *(volatile unsigned int *)0xCC008000 = v3;
     *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = b[1];
+    *(volatile unsigned int *)0xCC008000 = v4;
     *(volatile unsigned char *)0xCC008000 = opcode;
-    *(volatile unsigned int *)0xCC008000 = a[3];
+
+    a[0] = v0;
+    a[1] = v1;
+    a[2] = v2;
+    b[0] = v3;
+    b[1] = v4;
+    a[3] = v5;
+    *(volatile unsigned int *)0xCC008000 = v5;
+
     if ((*(unsigned char *)((char *)obj + 0x1F) & 2) == 0) {
         data = __GXData;
         dst = ((unsigned int *(*)(unsigned int))data[0x51C / 4])(*(unsigned int *)((char *)obj + 0x18));
