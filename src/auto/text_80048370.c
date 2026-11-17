@@ -239,7 +239,7 @@ found_outer:
 extern char lbl_8037D808[];
 extern char lbl_8037D818[];
 #pragma push
-#pragma scheduling on
+#pragma scheduling reset
 void MEMiFinalizeHeap(MEMiHeapHead *heap) {
     MEMiHeapHead *child;
     MEMiHeapHead *outer;
@@ -247,9 +247,8 @@ void MEMiFinalizeHeap(MEMiHeapHead *heap) {
     MEMiHeapHead *res;
     MEMList *list;
     OSLockMutex((OSMutex *)lbl_8037D818);
-    outer = 0;
     list = (MEMList *)lbl_8037D808;
-    while ((outer = (MEMiHeapHead *)MEMGetNextListObject((MEMList *)lbl_8037D808, outer)) != 0) {
+    for (outer = 0; (outer = (MEMiHeapHead *)MEMGetNextListObject((MEMList *)lbl_8037D808, outer)) != 0; ) {
         if ((u32)outer->start <= (u32)heap && (u32)heap < (u32)outer->end) {
             child = 0;
             while ((child = (MEMiHeapHead *)MEMGetNextListObject(&outer->list, child)) != 0) {
@@ -280,7 +279,7 @@ found_outer:
         list = &res->list;
     MEMRemoveListObject(list, heap);
     OSUnlockMutex((OSMutex *)lbl_8037D818);
-    heap->magic = 0;
+    *(u32 *)heap = 0;
 }
 #pragma pop
 
