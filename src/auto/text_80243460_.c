@@ -614,8 +614,9 @@ void fn_802443C0(void *arg0) {
 #undef MenuList_AppendPlaceholderSuffix
 }
 
-void fn_8024442C(void *arg0) {
-    *(s8 *)((u8 *)arg0 + 0x29) = !*(u8 *)((u8 *)arg0 + 0x29);
+void fn_8024442C(void *menu) {
+    /* Toggle the two-label flag (MenuListObject.toggle at +0x29) of this menu list. */
+    *(s8 *)((u8 *)menu + 0x29) = !*(u8 *)((u8 *)menu + 0x29);
 }
 
 extern s32 fn_80244558(void *);
