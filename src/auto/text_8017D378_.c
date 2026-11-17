@@ -76,8 +76,10 @@ void fn_802066C8(void*, unsigned int);
 void fn_80206C70(void*);
 #pragma push
 #pragma dont_inline on
+/* Returns the shared game clock (seconds since start), used as the time base
+   for the AI-truck bodies' timers and decision deadlines. */
 float fn_8017D378(void) {
-    extern float lbl_8055E3C8;
+    extern float lbl_8055E3C8; /* current game time */
     return lbl_8055E3C8;
 }
 
@@ -121,12 +123,13 @@ extern "C" void fn_8017D404(float *pos, int target, float radius, float strength
     register int i;
     float dist, rand, px, py, pz;
     register float zero;
+    register float one;
     struct { float value; } offsetStorage;
     float &offset = offsetStorage.value;
-    register float factor;
+    float factor;
     count = 5;
     fn_801B619C(lists, &count, pos);
-    const float one = lbl_80561BF4;
+    one = lbl_80561BF4;
     offset = lbl_80561C00;
     zero = lbl_80561BF0;
     iter = lists;
