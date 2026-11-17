@@ -1583,6 +1583,9 @@ void AXRmtAdvancePtr(s32 samples) {
 
 extern u8 lbl_80363BE0[];
 void *__AXGetStudio_800324C4(void) {
-    return lbl_80363BE0;
+    /* Return the pointer to the AX studio parameter block (AXSPB). */
+    #define s_axStudio lbl_80363BE0
+    return s_axStudio;
+    #undef s_axStudio
 }
 
