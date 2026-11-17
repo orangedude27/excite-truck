@@ -3,6 +3,8 @@
 
 extern char lbl_8055DF00[4];
 extern void fn_8000D838(void *queue);
+extern void fn_8000D838(void *record);
+// Registers this translation unit's static-destructor record by pushing it onto the global destructor chain.
 void fn_801274C0(void) {
     fn_8000D838(lbl_8055DF00);
 }
