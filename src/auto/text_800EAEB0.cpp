@@ -3237,7 +3237,7 @@ extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi(void *playe
     OSRestoreInterrupts(interruptLevel);
 }
 
-extern "C" void InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(void *player, const void *arg1, const void *arg2) {
+extern "C" void InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(void *player, const void *dataStart, const void *dataEnd) {
     extern u8 lbl_80323B28[], lbl_80323B3C[];
     extern u8 lbl_80324054[], lbl_80324030[];
     extern u8 lbl_80412A6C[];
@@ -3254,19 +3254,21 @@ extern "C" void InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(void *play
     u32& level2 = interrupt2.value;
     void* track;
     s32 inRange;
-    void* cbManager;
-    void** trackInfo;
-    void* trackManager;
+    void* disposeCallbackManager;
+    void** pTrackData;
+    void* seqTrackManager;
     register u8* slotCursor;
 
+    /* Stop this sequence player and close all of its tracks when any track's
+       sequence data lies inside the memory range [dataStart, dataEnd]. */
     irqLevel = OSDisableInterrupts();
     if (*(u8*)((u8*)seqPlayer + 0x15) == 0) goto restore;
     for (index = 0; index < 16; index++) {
         u8* slot = (u8*)seqPlayer + index * 4;
         track = index > 15 ? 0 : *(void**)(slot + 0x9C);
         if (track != 0) {
-            trackInfo = (void**)((u8*)track + 0x50);
-            if ((const u8*)arg1 <= (u8*)trackInfo[0] && (u8*)trackInfo[0] <= (const u8*)arg2) {
+            pTrackData = (void**)((u8*)track + 0x50);
+            if ((const u8*)dataStart <= (u8*)pTrackData[0] && (u8*)pTrackData[0] <= (const u8*)dataEnd) {
                 level2 = OSDisableInterrupts();
                 if (*(u8*)((u8*)seqPlayer + 0x17) != 0) {
                     if (seqPlayer == 0)
@@ -3276,8 +3278,8 @@ extern "C" void InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(void *play
                 if (*(u8*)((u8*)seqPlayer + 0x15) != 0) {
                     index = (s32)seqPlayer;
                     if (index != 0) index += 8;
-                    cbManager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-                    UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(cbManager, (void*)index);
+                    disposeCallbackManager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+                    UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(disposeCallbackManager, (void*)index);
                 }
                 OSRestoreInterrupts(level2);
                 index = 0;
@@ -3290,8 +3292,8 @@ extern "C" void InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(void *play
                     track = index > 15 ? 0 : *(void**)(slotCursor + 0x9C);
                     if (track != 0) {
                         Close__Q46nw4hbm3snd6detail8SeqTrackFv(track);
-                        trackManager = *(void**)((u8*)seqPlayer + 0x98);
-                        ((Manager*)trackManager)->RemoveTrack(*(void**)(slotCursor + 0x9C));
+                        seqTrackManager = *(void**)((u8*)seqPlayer + 0x98);
+                        ((Manager*)seqTrackManager)->RemoveTrack(*(void**)(slotCursor + 0x9C));
                         *(void**)(slotCursor + 0x9C) = 0;
                     }
                     slotCursor += 4;
