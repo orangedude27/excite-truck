@@ -430,8 +430,9 @@ done:
     return;
 }
 #pragma pop
-u16 fn_802C5A50(int arg0, int arg1) {
-    return (u16)((arg0 << 8) | arg1);
+/* Combine two byte values into a 16-bit key: high in the upper byte, low in the lower. */
+u16 fn_802C5A50(int high, int low) {
+    return (u16)((high << 8) | low);
 }
 
 void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
