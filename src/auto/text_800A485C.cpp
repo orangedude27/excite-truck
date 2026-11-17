@@ -19526,6 +19526,9 @@ extern "C" u8 fn_800CF924(s32 base, s32 index) {
     return *(u8 *)((u8 *)(base + index) + 4);
 }
 
+/* No-op virtual stub: an empty method slot in the homebutton GUI component
+ * vtable lbl_8031E780 (+0x38), among the PaneComponent/Manager callbacks.
+ * Calling it does nothing. */
 extern "C" void fn_800CF930(void) {
 
 }
