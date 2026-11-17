@@ -242,6 +242,7 @@ void fn_801A7A5C(void) {
         vv->c = u->c;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
