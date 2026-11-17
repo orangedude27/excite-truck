@@ -535,10 +535,12 @@ done:
 
 extern void fn_8002F53C(void *, void *, void *, s32, s32);
 extern void *memset(void *, int, unsigned int);
-void fn_80241010(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    *(s32 *)((u8 *)arg0 + 0x24) = arg2;
-    *(s32 *)((u8 *)arg0 + 0x1C) = arg1 + 1;
-    *(s32 *)((u8 *)arg0 + 0x20) = arg3;
+/* Set an MRoll stat label's one-based display rank (+0x1C), value pointer (+0x24)
+ * and flag block (+0x20), used later when the label is drawn. */
+void fn_80241010(void *label, s32 rankIndex, s32 valuePtr, s32 flag) {
+    *(s32 *)((u8 *)label + MROLL_STAT_VALUE_PTR_OFFSET) = valuePtr;
+    *(s32 *)((u8 *)label + 0x1C) = rankIndex + 1;
+    *(s32 *)((u8 *)label + MROLL_STAT_FLAG_OFFSET) = flag;
 }
 
 /* Initializes a container: constructs 5 0x28-byte elements at offset 0x2C and clears the header and per-element flag bytes. */
