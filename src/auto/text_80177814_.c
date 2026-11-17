@@ -1293,7 +1293,12 @@ void fn_801792F4(void) {
 
 extern void *lbl_8055E454;
 void* fn_801792F8(void) {
-    return lbl_8055E454;
+    /* lbl_8055E454 points at the current mode/request data object while it is
+     * being set up (stored by fn_801783A8, then cleared); callers read its mode
+     * id and flags at +0x50/+0xD8. */
+    #define sCurrentModeObject lbl_8055E454
+    return sCurrentModeObject;
+    #undef sCurrentModeObject
 }
 
 extern void *lbl_8055E458;
