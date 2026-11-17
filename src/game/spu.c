@@ -1002,8 +1002,9 @@ void fn_802E6240(void* arg0, int arg1) {
     *(int*)((char*)arg0 + 0x18) = arg1;
 }
 
-void fn_802E6248(int arg0, float arg1) {
-    lbl_804FC680[arg0] = arg1;
+/* Set the volume of one Wii Remote speaker channel (spuSetRemoteSpeakerVolume). */
+void fn_802E6248(int channel, float volume) {
+    lbl_804FC680[channel] = volume;
 }
 
 void fn_802E625C(void* hi) {
