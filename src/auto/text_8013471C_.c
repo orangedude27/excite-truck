@@ -757,6 +757,7 @@ s32 fn_8013521C(void *object) {
     return ((s32)(-(s32)flag | flag) >> 0x1F) & 0x100;
 }
 
+/* Default/stub implementation: reports no result (zero). */
 s32 fn_80135234(void) {
     return 0;
 }
