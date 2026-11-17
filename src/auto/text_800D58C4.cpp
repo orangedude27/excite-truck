@@ -1436,8 +1436,9 @@ extern "C" f32 fn_800D7F58(f32 *out, const f32 *src) {
     return x;
 }
 
-extern "C" void fn_800D7F6C(s32 *arg0) {
-    *arg0 = -1;
+extern "C" void fn_800D7F6C(s32 *pIndex) {
+    /* Constructor callback for the s32 index arrays in nw4r::lyt objects: initialise one element to -1 (the "no index" sentinel). */
+    *pIndex = -1;
 }
 
 #pragma dont_inline fn_800D7F78
