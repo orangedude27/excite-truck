@@ -213,7 +213,11 @@ int fn_8001EFC0(s32 counter, const char *name) {
  * Thunk for gameplay code: add `amount` to lifetime statistic `stat` of the
  * object `objectName` in this session's pending achievements block. */
 void fn_8001EFC4(s32 stat, const char *objectName, s32 amount) {
-    fn_8001FBE4(stat, objectName, amount);
+#define AchAddNamedValue fn_8001FBE4
+    /* Achievement thunk: forward to AchAddNamedValue, which adds `amount` to
+       lifetime counter `stat` for the named object in the pending block. */
+    AchAddNamedValue(stat, objectName, amount);
+#undef AchAddNamedValue
 }
 
 void fn_8001EFC8(void) {
