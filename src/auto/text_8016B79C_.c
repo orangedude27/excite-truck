@@ -2672,10 +2672,11 @@ float sc = lbl_80561A10 * ((float (*)(void *, void *, float))*(void **)((char *)
 *(float *)((char *)arg1 + 0x34) = *(float *)((char *)arg1 + 0x1C) * sc;
 *(float *)((char *)arg1 + 0x38) = *(float *)((char *)arg1 + 0x20) * sc;
 }
-return 1;
-}
+ return 1;
+ }
+#pragma pop
 
-#pragma cplusplus on
+ #pragma cplusplus on
 extern "C" s32 fn_80009C84(void);
 extern "C" u8 *fn_80131234(const char *);
 extern "C" s32 fn_80141FA0(void);
