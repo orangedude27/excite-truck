@@ -5,6 +5,7 @@
 extern "C" {
 #endif
 
+/* Read the Machine State Register (MSR); see the MSR_* bits below. */
 u32 PPCMfmsr(void);
 void PPCMtmsr(u32 val);
 
