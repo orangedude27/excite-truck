@@ -1261,7 +1261,10 @@ void fn_801F37A4(void) {
 
 #pragma scheduling invalid_target
 void fn_801F37EC(void) {
-    fn_802E317C(lbl_8033ABA0);
+#define kAmbientColorPanic lbl_8033ABA0 /* "AmbientColorTMH: shouldn't draw!" */
+    /* Fatal abort: an AmbientColorTMH was drawn when it shouldn't have been. */
+    fn_802E317C(kAmbientColorPanic);
+#undef kAmbientColorPanic
 }
 int fn_801F37FC(int object, int deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
