@@ -1298,8 +1298,10 @@ s32 fn_8024B9CC(void *selector, s32 *outFirst, s32 *outSecond) {
     return value1;
 }
 
-s32 fn_8024B9EC(void *arg0) {
-    return *(s32 *)(*(char **)((char *)arg0 + 0x10) + *(s32 *)((char *)arg0 + 0x11C) * 8);
+/* Returns the first s32 of the currently selected 8-byte entry in a selector's
+   item array (array pointer at +0x10, selected index at +0x11C). */
+s32 fn_8024B9EC(void *selector) {
+    return *(s32 *)(*(char **)((char *)selector + 0x10) + *(s32 *)((char *)selector + 0x11C) * 8);
 }
 
 void fn_8024BA00(void *arg0) {
