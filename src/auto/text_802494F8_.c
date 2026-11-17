@@ -247,9 +247,13 @@ extern char lbl_80343E7C[];
 #pragma scheduling invalid_target
 void fn_8024A304(void *arg0, void **arg1, int arg2, int arg3) {
     extern unsigned char lbl_8055F290;
+    void *record;
     register void *object;
     register void **list;
     register int index;
+    register int offset;
+    register int archiveIndex;
+    register int archiveCount;
     (void)arg3;
     *(int *)((char *)arg0 + 0x1C) = arg2;
     object = arg0;
@@ -257,61 +261,56 @@ void fn_8024A304(void *arg0, void **arg1, int arg2, int arg3) {
     list = arg1;
     index = 0;
     *(int *)((char *)object + 0x14) = 0;
-    {
-        register void *record;
-        register int offset;
-        register int archiveIndex;
-        register int archiveCount;
-        offset = 0;
-        goto outer_check;
+    offset = 0;
+    goto outer_check;
 outer_body:
-        if (stricmp((char *)fn_800081BC(*(void **)((char *)*(void **)*list + offset)), *(char **)((char *)object + 0x1C)) == 0) {
-            void *header = *list;
-            int itemCount = *(int *)((char *)object + 0x14);
-            char *array = *(char **)header;
-            char *entry = array + offset;
-            record = *(void **)(entry + 4);
-            {
-                char *item = (char *)object + itemCount * 0xC;
-                *(int *)(item + 0x20) = *(int *)((char *)record + 4);
-            }
-            archiveCount = *(int *)((char *)fn_80012820(*(int *)((char *)record + 4)) + 0x70);
-            for (archiveIndex = 0; archiveIndex < archiveCount; archiveIndex++) {
-                if (record == (void *)fn_80012870(*(int *)((char *)record + 4), archiveIndex))
-                    break;
-            }
-            if (archiveIndex >= archiveCount)
-                archiveIndex = -1;
-            *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x24) = archiveIndex;
-            {
-                int tableIndex = 0;
-                int tableOffset = 0;
-                void *table = lbl_8055F28C;
-                int tableCount = *(int *)((char *)table + 4);
-                for (; tableIndex < tableCount; tableIndex++, tableOffset += 0x18) {
-                    if (*(int *)(*(char **)table + tableOffset) != *(int *)record)
-                        continue;
-                    goto table_found;
-                }
-                tableIndex = -1;
-table_found:
-                if (lbl_8055F290 != 0 && tableIndex >= 0) {
-                    *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x28) = *(int *)(*(char **)table + tableIndex * 0x18 + 4);
-                } else {
-                    int key = fn_80012910(*(int *)record);
-                    void *dispatchObject = *(void **)((char *)record + 0x20);
-                    int (*method)(void *, char *, int) = (int (*)(void *, char *, int))(*(void ***)dispatchObject)[6];
-                    *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x28) = method(dispatchObject, lbl_80343E7C, key);
-                }
-            }
-            *(int *)((char *)object + 0x14) = *(int *)((char *)object + 0x14) + 1;
+    if (stricmp((char *)fn_800081BC(*(void **)((char *)*(void **)*list + offset)), *(char **)((char *)object + 0x1C)) == 0) {
+        void *header = *list;
+        int itemCount = *(int *)((char *)object + 0x14);
+        char *array = *(char **)header;
+        char *entry = array + offset;
+        record = *(void **)(entry + 4);
+        {
+            char *item = (char *)object + itemCount * 0xC;
+            *(int *)(item + 0x20) = *(int *)((char *)record + 4);
         }
-        offset += 8;
-        index += 1;
-outer_check:
-        if (index < *(int *)((char *)*list + 4))
-            goto outer_body;
+        archiveCount = *(int *)((char *)fn_80012820(*(int *)((char *)record + 4)) + 0x70);
+        for (archiveIndex = 0; archiveIndex < archiveCount; archiveIndex++) {
+            if (record != (void *)fn_80012870(*(int *)((char *)record + 4), archiveIndex))
+                continue;
+            break;
+        }
+        if (archiveIndex >= archiveCount)
+            archiveIndex = -1;
+        *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x24) = archiveIndex;
+        {
+            int tableIndex = 0;
+            int tableOffset = 0;
+            void *table = lbl_8055F28C;
+            int tableCount = *(int *)((char *)table + 4);
+            for (; tableIndex < tableCount; tableIndex++, tableOffset += 0x18) {
+                if (*(int *)(*(char **)table + tableOffset) != *(int *)record)
+                    continue;
+                goto table_found;
+            }
+            tableIndex = -1;
+table_found:
+            if (lbl_8055F290 != 0 && tableIndex >= 0) {
+                *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x28) = *(int *)(*(char **)table + tableIndex * 0x18 + 4);
+            } else {
+                int key = fn_80012910(*(int *)record);
+                void *dispatchObject = *(void **)((char *)record + 0x20);
+                int (*method)(void *, char *, int) = (int (*)(void *, char *, int))(*(void ***)dispatchObject)[6];
+                *(int *)((char *)object + *(int *)((char *)object + 0x14) * 0xC + 0x28) = method(dispatchObject, lbl_80343E7C, key);
+            }
+        }
+        *(int *)((char *)object + 0x14) = *(int *)((char *)object + 0x14) + 1;
     }
+    offset += 8;
+    index += 1;
+outer_check:
+    if (index < *(int *)((char *)*list + 4))
+        goto outer_body;
 }
 #pragma scheduling reset
 #pragma use_lmw_stmw on
@@ -1331,19 +1330,20 @@ s32 fn_8024B9EC(void *selector) {
 void fn_8024BA00(void *arg0) {
     s32 count;
     s32 index;
-    s32 *items;
+    s32 sum;
     s32 value;
     s32 next;
     void *obj;
     s32 item;
+    s32 *items;
     count = *(s32 *)((char *)arg0 + 0x14);
     index = *(s32 *)((char *)arg0 + 0x11C);
-    items = *(s32 **)((char *)arg0 + 0x10);
+    sum = count + index;
     value = *(s32 *)((char *)arg0 + 0x120);
-    next = (count + index - 1) % count;
-    *(s32 *)((char *)arg0 + 0x11C) = next;
-    obj = *(void **)((char *)arg0 + 0x124);
-    item = items[next * 2 + 1];
+    next = (sum - 1) % count;
+    *(s32 volatile *)((char *)arg0 + 0x11C) = next;
+    obj = *(void * volatile *)((char *)arg0 + 0x124);
+    item = *(*(s32 **)((char *)arg0 + 0x10) + next * 2 + 1);
     ((void (*)(void *, s32, s32))*(void **)((char *)*(void **)((char *)obj + 0xC) + 0x30))(obj, value, item);
     index = *(s32 *)((char *)arg0 + 0x11C);
     items = *(s32 **)((char *)arg0 + 0x10);
