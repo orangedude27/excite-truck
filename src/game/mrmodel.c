@@ -733,20 +733,16 @@ struct MasterList {
 } while (0)
 #pragma scheduling on
 void fn_802C6080(void) {
-    struct SubList {
-        int count;
-        int capacity;
-        void *buf;
-    };
     register struct SubList *e;
     register struct SubList *e58;
     register struct SubList *e7c;
     register char *base;
     register int offset;
     register int i;
-    int zero;
+    register int zero;
     void *ptr;
 
+    zero = 0;
     base = (char *)lbl_804C1338;
     e = (struct SubList *)(base + 0x64);
     for (i = 0, offset = 0; i < *(int *)(base + 0x64); i++, offset += 0x10) {
@@ -767,7 +763,6 @@ void fn_802C6080(void) {
     }
 
     e58 = (struct SubList *)(base + 0x58);
-    zero = 0;
     ptr = e58->buf;
     *(int *)(base + 0x70) = zero;
     *(void **)(base + 0x70 + 8) = (void *)zero;
@@ -1392,17 +1387,22 @@ float fn_802C7808(int instanceId) {
     return *(float *)((char *)(*(void **)((char *)fn_802C5390(instanceId) + 4)) + 0x1C);
 }
 
-s32 fn_802C7830(char *arg0, s32 is_digit, signed char c) {
+s32 fn_802C7830(char *arg0) {
     s32 value = 0;
-    while (c != 0) {
+    s32 digit;
+    s32 is_digit;
+    u8 c;
+    while (*arg0 != 0) {
         value <<= 4;
-        is_digit = 0;
-        if (c >= '0' && c <= '9') {
-            is_digit = 1;
-        }
-        value |= is_digit ? c - '0' : c - '7';
-        arg0++;
         c = *arg0;
+        is_digit = 0;
+        if ((s8)c >= '0' && (s8)c <= '9')
+            is_digit = 1;
+        digit = (s8)c - '7';
+        if (is_digit != 0)
+            digit = (s8)c - '0';
+        value |= digit;
+        arg0++;
     }
     return value;
 }
