@@ -104,14 +104,8 @@ extern const char lbl_80322734[];
 extern "C" unsigned int GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(unsigned char, unsigned int, const void *);
 #pragma push
 #pragma small_data on
-#pragma push
-#pragma small_data on
-#pragma push
-#pragma small_data on
 extern const char lbl_80559820[];
 extern const char lbl_80559828[];
-#pragma pop
-#pragma pop
 #pragma pop
 extern float lbl_80560F38;
 extern float lbl_80560F3C;
@@ -3595,15 +3589,15 @@ extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3sn
 extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
     int type = *((unsigned char *)arg1 + 1);
     unsigned char *data;
-    unsigned int address;
+    unsigned int base, address;
     int i;
     switch (type) {
     case 0:
         return 0;
     case 1:
         return arg1;
-    case 2: {
-        unsigned int base = *(unsigned int *)((char *)arg0 + 4) + 8;
+    case 2:
+        base = *(unsigned int *)((char *)arg0 + 4) + 8;
         if (type != 2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559820, 0x71, lbl_80322708);
         address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
         data = (unsigned char *)address;
@@ -3620,16 +3614,14 @@ extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
             return (void *)(off + (unsigned int)(data + i * 8));
         }
         goto inc;
-    }
-    case 3: {
-        unsigned int base = *(unsigned int *)((char *)arg0 + 4) + 8;
+    case 3:
+        base = *(unsigned int *)((char *)arg0 + 4) + 8;
         if (type != 3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559828, 0x72, lbl_80322734);
         address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
         data = (unsigned char *)address;
         if (!data) return 0;
         if (arg2 < data[0] || arg2 > data[1]) return 0;
         return data + (arg2 - data[0]) * 8 + 4;
-    }
     default:
         return 0;
     }
