@@ -2207,6 +2207,12 @@ extern "C" s32 fn_8014821C(void) {
 extern "C" void fn_80148224(void) {
 }
 
+/* No-op default implementation: the last of the four unimplemented virtual
+ * stubs fn_80148218 / fn_8014821C / fn_80148224 / fn_80148228 that sit between
+ * this file's 2D-drawing helpers (fn_80148100 .. fn_801481C8) and the adapter
+ * sub-object's virtuals (fn_80148230 .. fn_80148280, vtable lbl_8032D214).
+ * Nothing in the game's code calls it by name, so it runs only when reached
+ * through the pointer table its entry sits in. */
 extern "C" void fn_80148228(void) {
 }
 
