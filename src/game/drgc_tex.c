@@ -228,12 +228,12 @@ int fn_802D76DC(int format) {
 #pragma dont_inline reset
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802D7780(void *arg0, void *arg1) {
     u32 filter = *(u32 *)((u8 *)arg1 + 0x10);
     u32 opts = *(u32 *)((u8 *)arg1 + 0x18);
     int wrapS = filter & 1;
-    int wrapT = (filter & 2) != 0;
+    int wrapT = ((filter >> 1) & 1) != 0;
     u32 firstMode;
     u32 transfer;
     u32 id;
@@ -290,29 +290,32 @@ void fn_802D78D4(void *arg0, void *arg1, unsigned int arg2, unsigned int arg3) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_802D7B5C(void *arg0, void *arg1) {
-    int isCi4;
-    void *texture;
     void *obj = arg0;
     char *name = (char *)arg1;
-    int entries;
-    int palBytes;
+    void *texture;
+    int isCi4;
     int width;
     int height;
     char *texData;
+    int entries;
+    int palBytes;
     int count;
     char *dst;
     unsigned char ch;
     int size;
     unsigned int type;
-    int fmt;
     type = *(unsigned int *)obj;
     isCi4 = 1;
     if (type != 0 && type != 0x40) {
         isCi4 = 0;
     }
     texture = *(void **)((char *)obj + 0x30);
-    if (texture == 0) {
+    switch ((unsigned int)texture) {
+    case 0:
         texture = fn_802D7600(name);
+        break;
+    default:
+        break;
     }
     count = 0x20;
     dst = (char *)texture;
@@ -355,34 +358,15 @@ copied_name:
     GXInitTlutObj((char *)texture + 0xB8, *(void **)((char *)texture + 0xC4), 0, (unsigned short)entries);
     width = *(int *)((char *)obj + 0x24);
     height = *(int *)((char *)obj + 0x28);
-    if (isCi4 == 0) {
-        fmt = 9;
-    } else {
-        fmt = 8;
-    }
-    GXGetTexBufferSize((unsigned short)width, (unsigned short)height, fmt, 0, 1);
+    GXGetTexBufferSize((unsigned short)width, (unsigned short)height, isCi4 == 0 ? 9 : 8, 0, 1);
     texData = *(char **)((char *)obj + 0x2C);
     dst = *(char **)(texData + 4);
     *(char **)((char *)texture + 0xD0) = dst;
     size = (width * height) / ((isCi4 != 0) + 1);
     *(int *)((char *)texture + 0xD4) = size;
     DCFlushRange(dst, size);
-    if (isCi4 == 0) {
-        fmt = 9;
-    } else {
-        fmt = 8;
-    }
-    GXInitTexObjCI((char *)texture + 0x24, *(void **)(texData + 4),
-                   (unsigned short)width, (unsigned short)height,
-                   fmt, 1, 1, 0, 0);
-    if (isCi4 == 0) {
-        fmt = 9;
-    } else {
-        fmt = 8;
-    }
-    GXInitTexObjCI((char *)texture + 0x78, *(void **)(texData + 4),
-                   (unsigned short)width, (unsigned short)height,
-                   fmt, 1, 1, 0, 1);
+    GXInitTexObjCI((char *)texture + 0x24, *(void **)(texData + 4), (unsigned short)width, (unsigned short)height, isCi4 == 0 ? 9 : 8, 1, 1, 0, 0);
+    GXInitTexObjCI((char *)texture + 0x78, *(void **)(texData + 4), (unsigned short)width, (unsigned short)height, isCi4 == 0 ? 9 : 8, 1, 1, 0, 1);
     GXInvalidateTexAll();
     fn_802D7780(texture, obj);
     return texture;
@@ -671,16 +655,18 @@ void fn_802D86BC(void *__restrict arg0, int arg1) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_802D8A84(void *arg0, void *arg1) {
+    struct TexHeader { char pad[0x24]; char obj[32]; };
     void *texture;
     void *obj = arg0;
-    char *work = (char *)arg1;
-    int count;
-    char *dst;
-    unsigned char ch;
     int width;
     int height;
     int bytes;
     int format;
+    int count;
+    char *dst;
+    unsigned char ch;
+    char *work = (char *)arg1;
+    char *image;
 
     texture = *(void **)((char *)obj + 0x30);
     texture = texture != 0 ? texture : fn_802D7600(work);
@@ -710,14 +696,14 @@ copied_name:
     *(int *)((char *)texture + 0xC4) = 0;
     GXGetTexBufferSize((unsigned short)width, (unsigned short)height, 0xE, 0, 1);
     bytes = width * height;
-    work = *(char **)(*(char **)((char *)obj + 0x2C) + 4);
-    *(char **)((char *)texture + 0xD0) = work;
+    image = *(char **)(*(char **)((char *)obj + 0x2C) + 4);
+    *(char **)((char *)texture + 0xD0) = image;
     bytes = (int)((u32)bytes + ((u32)bytes >> 31)) >> 1;
     *(int *)((char *)texture + 0xD4) = bytes;
-    DCFlushRange(work, bytes);
+    DCFlushRange(image, bytes);
 
     format = *(int *)((char *)obj + 0x20);
-    GXInitTexObj((char *)texture + 0x24, work, (unsigned short)width,
+    GXInitTexObj(((struct TexHeader *)texture)->obj, image, (unsigned short)width,
                  (unsigned short)height, 0xE, 1, 1,
                  (u32)((((format ^ 2) >> 1) - ((format ^ 2) & format))) >> 31);
     if ((u32)((((format ^ 2) >> 1) - ((format ^ 2) & format))) >> 31) {
@@ -1075,21 +1061,20 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802D9628(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    int mip;
+    #pragma opt_common_subs off
+    register int mip;
     int wrap;
-    int base;
+    register int base;
     int tile;
     unsigned int ysign;
     unsigned int yoff;
     unsigned int xsign;
     unsigned int xoff;
     int pixel;
-    void *saved;
     mip = GXGetTexObjMipMap((char *)arg0 + 0x24);
-    saved = arg0;
-    wrap = GXGetTexObjWrapS((char *)saved + 0x24) & 0xFFFF;
-    GXGetTexObjWrapT((char *)saved + 0x24);
-    base = (int)GXGetTexObjFmt((char *)saved + 0x24) - 0x40000000;
+    wrap = GXGetTexObjWrapS((char *)arg0 + 0x24) & 0xFFFF;
+    GXGetTexObjWrapT((char *)arg0 + 0x24);
+    base = (int)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000;
     if (mip == 0) {
         tile = arg1 / 8 + (arg2 / 8) * (wrap / 8);
         base += tile << 5;
@@ -1097,7 +1082,8 @@ void fn_802D9628(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         yoff = (arg2 << 29) - ysign;
         xsign = (unsigned int)arg1 >> 31;
         xoff = (arg1 << 29) - xsign;
-        pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign + ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
+        pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign +
+                      ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
         {
             unsigned char value = (unsigned char)arg3;
             if (arg1 & 1) {
