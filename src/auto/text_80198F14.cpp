@@ -2255,7 +2255,7 @@ extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
     u32 self = (u32)arg0;
     u32 copyFlag = (u32)arg2;
     u8 second, first, opposite, other;
-    fn_8019ECC4();
+    ((void(*)(void*,s32,s32))fn_8019ECC4)(arg0, (s32)arg1, arg2);
     *(void**)self = &lbl_80333B48;
     if (copyFlag != 0) {
         first = *(volatile u8*)(self + 0x24);
