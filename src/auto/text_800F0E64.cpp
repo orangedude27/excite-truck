@@ -4333,8 +4333,10 @@ extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* self, int flag) {
     return self;
 }
 #pragma pop
-extern "C" void fn_800F83C8(void* arg0) {
-    Create__Q46nw4hbm3snd6detail9FrameHeapFPvUl((u8*)arg0 + 0x1C);
+/* nw4hbm::snd::SoundHeap::Create(): initialize the frame heap embedded at
+ * +0x1C of this SoundHeap (paired with fn_800F83D0 / fn_800F83D8). */
+extern "C" void fn_800F83C8(void* self) {
+    Create__Q46nw4hbm3snd6detail9FrameHeapFPvUl((u8*)self + 0x1C);
 }
 
 extern "C" void fn_800F83D0(void* arg0) {
