@@ -3417,8 +3417,9 @@ extern "C" void fn_80286774(void* plane) {
     ((ebi::title::TPlaneObj*)plane)->m_sub->v5();
 }
 #pragma cplusplus on
-extern "C" void fn_80286788(void* arg0) {
-    ((ebi::title::TPlaneObj*)arg0)->m_sub->v6();
+extern "C" void fn_80286788(void* plane) {
+    /* Forward v6() to the sub-object of this title plane. */
+    ((ebi::title::TPlaneObj*)plane)->m_sub->v6();
 }
 #pragma cplusplus on
 struct Fn867B0Iface {
