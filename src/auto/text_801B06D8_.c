@@ -2158,7 +2158,8 @@ void fn_801B3284(void) {
 
 }
 
-u8 fn_801B3288(void *arg0) { return *(u8 *)((u8 *)arg0 + 0x2C); }
+/* Return the byte field at offset 0x2C of this object. */
+u8 fn_801B3288(void *object) { return *(u8 *)((u8 *)object + 0x2C); }
 
 u32 fn_801B3290(void) {
     /* Constant predicate (returns 1 / true); likely a virtual getter reached through a dispatch table. */
