@@ -2331,6 +2331,7 @@ static inline void FreeAll8014E9C4(PtrArray8014E9C4 *a) {
     int i;
     for (i = 0; i < a->count; i++)
         fn_80128668(a->data[i]);
+    /* indexes; the compiler strength-reduces i*4 */
 }
 #pragma cplusplus on
 #pragma push
@@ -2384,19 +2385,7 @@ extern "C" void *fn_8014E9C4(char *p, s32 arg1) {
         for (i=0,off=0; i<*(s32 *)(p+0x18); off+=4,i++) {
             item = *(char **)(*(char **)(p+0x14)+off);
             if (item) {
-                if (--lbl_8055E258 == 0) {
-                    fn_802CAC54(lbl_80559EDC);
-                    lbl_80559EDC = -1;
-                    fn_802C6CF8(lbl_80559ED4);
-                    fn_802C6CF8(lbl_80559ED8);
-                    fn_802C6CF8(lbl_80559ECC);
-                    fn_802C6CF8(lbl_80559ED0);
-                    fn_802C6CF8(lbl_8055E254);
-                    lbl_80559ED0 = -1;
-                    lbl_80559ECC = -1;
-                    lbl_8055E254 = -1;
-                }
-                if (item+0x20) fn_802CAC54(*(s32 *)(item+0x20));
+                DestroyItem8014E9C4(item);
                 fn_80128668(item);
             }
         }
