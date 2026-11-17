@@ -1780,8 +1780,10 @@ extern "C" s32 fn_800D8738(u32 *flags) {
     return (*flags >> 8) & 0xF;
 }
 
-extern "C" s32 fn_800D8744(u32 *arg0) {
-    return (*arg0 >> 25) & 1;
+/* Returns bit 25 of a nw4r lyt material flag word (res+0x3C): the "hasA" flag
+ * the material constructor tests to decide whether channel A is present. */
+extern "C" s32 fn_800D8744(u32 *flags) {
+    return (*flags >> 25) & 1;
 }
 
 extern "C" u32 fn_800D8750(u32 *arg0) {
