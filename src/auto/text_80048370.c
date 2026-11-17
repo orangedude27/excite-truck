@@ -872,6 +872,7 @@ static void* AllocatorAllocForExpHeap_(MEMAllocator* allocator, u32 size) {
     return MEMAllocFromExpHeapEx(allocator->heap, size, allocator->heapParam1);
 }
 
+/* Allocator free callback: return `block` to the allocator's expanded heap. */
 static void AllocatorFreeForExpHeap_(MEMAllocator* allocator, void* block) {
     MEMFreeToExpHeap(allocator->heap, block);
 }
