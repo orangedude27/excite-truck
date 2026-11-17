@@ -19092,7 +19092,7 @@ void l2c_csm_w4_l2ca_connect_rsp(void *p_ccb, u16 event, void *p_data)
 
 #pragma push
 #pragma scheduling on
-void l2c_csm_config(void *p_ccb, u16 event, void *p_data)
+void l2c_csm_config(void *p_ccb, L2C_CSM_EVT event, void *p_data)
 {
     char *p_str = (char *)jumptable_803183B0;
     void (*disconnect_ind)(u16, u16) = *(void (**)(u16, u16))((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 0x18);
