@@ -360,7 +360,9 @@ extern void TRKReadBuffer(void);
 extern void DCFlushRange(void *, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
+#pragma unroll off
 void fn_800331A0(void) {
+#pragma unroll off
     unsigned int i;
     int j;
     int *p;
@@ -388,7 +390,23 @@ void fn_800331A0(void) {
         unsigned char *b3 = lbl_80368460 + i * 0x100;
         *(unsigned int *)(vpb + 0x18) = i;
         *(void **)(vpb + 0x134) = b2;
-        fn_80033148(vpb);
+        *(short *)(vpb + 0x148) = 0;
+        *(short *)(vpb + 0x17C) = 0;
+        *(int *)(vpb + 0x1C) = 0x115000A4;
+        *(int *)(vpb + 0x28) = 0;
+        *(int *)(vpb + 0x24) = 0;
+        *(int *)(vpb + 0x30) = (int)(vpb + 0x34);
+        *(short *)(vpb + 0x18E) = 0;
+        *(short *)(vpb + 0x18C) = 0;
+        *(short *)(vpb + 0x18A) = 0;
+        *(short *)(vpb + 0x1FC) = 0;
+        *(short *)(vpb + 0x204) = 0;
+        *(short *)(vpb + 0x20C) = 0;
+        *(short *)(vpb + 0x240) = 0;
+        *(short *)(vpb + 0x242) = 0;
+        *(short *)(vpb + 0x244) = 0;
+        *(short *)(vpb + 0x246) = 0;
+        *(short *)(vpb + 0x248) = 0;
         if (i == 0x3F) {
             *(unsigned short *)(buf + 2) = 0;
             *(unsigned short *)(vpb + 0x13A) = 0;
