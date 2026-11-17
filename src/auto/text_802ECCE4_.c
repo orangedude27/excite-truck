@@ -203,8 +203,10 @@ void fn_802ECFF4(void *movie) {
 }
 
 extern void fn_802E13D8(void *);
-void fn_802ED038(void *arg0) {
-    fn_802E13D8(((void **)arg0)[16]);
+/* Tail-calls the movie video setup/draw routine fn_802E13D8 with the movie object
+ * fn_802E11A4 opened for `record` (the handle stored at record+0x40). */
+void fn_802ED038(MoviePlayInfo *record) {
+    fn_802E13D8(record->handle);
 }
 
 extern void fn_802E1718(void *);
