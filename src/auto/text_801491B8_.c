@@ -885,8 +885,9 @@ void fn_8014AE1C(void *list, void *newNode) {
 }
 
 extern f32 lbl_8055E3C8;
-void fn_8014AE54(void *arg0) {
-    *(f32 *)((u8 *)arg0 + 0x10) = lbl_8055E3C8;
+/* Stamp the node's timestamp field (+0x10) with the current game time. */
+void fn_8014AE54(void *node) {
+    *(f32 *)((u8 *)node + 0x10) = lbl_8055E3C8;
 }
 
 /* Removes a node from the doubly-linked list referenced by the iterator/unlink context. */
