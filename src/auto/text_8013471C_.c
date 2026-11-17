@@ -800,8 +800,9 @@ void fn_80135258(void) {
 void fn_8013525C(void) {
 }
 
+/* Shared AIDriver virtual slot 12 (vtable offset 0x38) default implementation: a no-op used by both
+ * NullDriver (lbl_8032BD08) and ParkDriver (lbl_8032BCC0). */
 void fn_80135260(void) {
-
 }
 
 /* Shared AIDriver virtual slot 13 (vtable offset 0x3C) default implementation: a no-op used by both
