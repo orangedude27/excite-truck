@@ -1039,4 +1039,3 @@ void fn_8025FC8C(void* p, int arg1) {
     fn_80231220(*(int*)(item + 0x24), packed,
         outC, out8, f25, f24, f26, f27, f28, f29);
 }
-#pragma dont_inline reset
