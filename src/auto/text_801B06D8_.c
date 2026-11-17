@@ -1965,7 +1965,10 @@ s32 fn_801B2EDC(s32 arg0, s32 arg1) {
 }
 
 void* fn_801B2F24(void) {
-    return lbl_8055E678;
+#define deitySlotCount lbl_8055E678
+    /* Return the number of deity slot indices held in the order table lbl_80435C30. */
+    return deitySlotCount;
+#undef deitySlotCount
 }
 
 u8 fn_801B2F2C(s32 slotIndex) {
