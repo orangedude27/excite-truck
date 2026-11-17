@@ -132,11 +132,7 @@ static inline Vec97354 Arg1_get38_97354(void *p, char *k, Vec97354 *in) { return
 static inline float Obj_get10_97354(void *p) { return ((ObjDummy97354 *)p)->get(); }
 #pragma cplusplus reset
 s32 fn_80297354(void *arg0, void *arg1) {
-    struct Vec3 {
-        float x;
-        float y;
-        float z;
-    };
+    struct Vec3 { float x; float y; float z; };
     void *obj = fn_802972A4(arg1);
     if (obj != 0) {
         struct Vec3 value;
@@ -144,18 +140,18 @@ s32 fn_80297354(void *arg0, void *arg1) {
         struct Vec3 defaults;
         float initial;
 
-        initial = ((float (*)(void *, char *))(*(void **)((char *)*(void **)arg1 + 0x24)))(arg1, lbl_8055CA48);
+        initial = Arg1_get24_97354(arg1, lbl_8055CA48);
         defaults.x = lbl_80564578;
         defaults.y = lbl_80564578;
         defaults.z = lbl_80564578;
-        *(float *)arg0 = initial;
         copy = defaults;
+        *(float *)arg0 = initial;
         ((void (*)(struct Vec3 *, void *, char *, struct Vec3 *))(*(void **)((char *)*(void **)arg1 + 0x38)))(&value, arg1, lbl_8055CA50, &copy);
         *(float *)((char *)arg0 + 4) = value.x;
         *(float *)((char *)arg0 + 8) = value.y;
         *(float *)((char *)arg0 + 12) = value.z;
         *(void **)((char *)arg0 + 16) = obj;
-        *(float *)((char *)arg0 + 20) = *(float *)arg0 + ((float (*)(void *))(*(void **)((char *)*(void **)obj + 0x10)))(obj);
+        *(float *)((char *)arg0 + 20) = *(float *)arg0 + Obj_get10_97354(obj);
     }
     return obj != 0;
 }
@@ -372,8 +368,11 @@ __declspec(section ".sdata") extern char *lbl_8055CA38[];
 extern char lbl_80349384[];
 extern int stricmp(const char *, const char *);
 extern int fn_802E317C(char *, ...);
-s32 fn_802978A0(void *arg0) {
-    return fn_80296D2C(*(s32 *)((u8 *)arg0 + 4));
+/* FlipBookElem::play (vtable slot 0x14) -- tail-calls the FlipBook keyframe
+ * player fn_80296D2C with this element's collection pointer (offset +4),
+ * leaving the caller's remaining argument registers untouched for the player. */
+s32 fn_802978A0(FlipBookElem *elem) {
+    return fn_80296D2C(elem->book);
 }
 
 s32 fn_802978A8(void *arg0) {
