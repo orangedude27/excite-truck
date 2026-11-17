@@ -189,8 +189,9 @@ s32 fn_802ECF90(char *record, void *movieName) {
     fn_802ECCE4(baseName, movieName, 64);
     return stricmp(baseName, record) == 0;
 }
-void fn_802ECFEC(void *arg0) {
-    fn_802E12DC(((void **)arg0)[16]);
+/* Advance/play, for this frame, the movie whose handle the MoviePlayInfo record holds. */
+void fn_802ECFEC(MoviePlayInfo *record) {
+    fn_802E12DC(record->handle);
 }
 
 /* Destroy the given movie object when no current movie is set. */
