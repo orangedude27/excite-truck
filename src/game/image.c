@@ -91,7 +91,8 @@ int fn_802C5280(int arg0, int arg1, int arg2) {
 extern void fn_802353F4(void);
 extern void fn_802354A0(void*, void*, int);
 extern void fn_80235758(void*, float, float, float, float, float, float, int);
-void fn_802C5310(void* arg0) { if (arg0 != 0) fn_802353F4(); }
+/* If the art-set handle is non-null, tail-call the picture-draw wrapper fn_802353F4; a null handle is ignored. */
+void fn_802C5310(void* artSet) { if (artSet != 0) fn_802353F4(); }
 
 /* If the image set is non-null, draw picture `picture` with the default tint (-1). */
 void fn_802C5320(void* imageSet, void* picture) { if (imageSet != 0) fn_802354A0(imageSet, picture, -1); }
