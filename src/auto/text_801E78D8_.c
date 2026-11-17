@@ -999,8 +999,10 @@ void* fn_801E89EC(void) {
     return lbl_8055AF08;
 }
 
-void fn_801E89F4(void *arg0) {
-    lbl_8055AF08 = arg0;
+/* Set the global race/game phase state lbl_8055AF08 (paired with the fn_801E89EC getter):
+ * 0 before start, 1 racing, 3 finishing. */
+void fn_801E89F4(void *phase) {
+    lbl_8055AF08 = phase;
 }
 
 #pragma scheduling invalid_target
