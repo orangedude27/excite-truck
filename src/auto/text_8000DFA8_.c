@@ -2567,7 +2567,6 @@ void fn_8000EF74(s32 arg0) {
         }
     }
 }
-#pragma dont_inline reset
 /* Initialize UI font/text handles and scaling: cache the default font handle and its scaled metric, store the computed scale factor, and load the big text texture. */
 void fn_8000F0E4(void) {
 #define defaultUiFontHandle   lbl_8055D490
