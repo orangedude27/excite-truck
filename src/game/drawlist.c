@@ -360,8 +360,10 @@ void fn_802C88BC(int flags) {
 }
 
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
-void fn_802C88CC(unsigned int arg0) {
-    fn_802D02F8(arg0, 1);
+/* Wrapper around the fade-colour setter fn_802D02F8: set the screen fade colour
+ * to the packed aRGB value `color` and switch fading on. */
+void fn_802C88CC(unsigned int color) {
+    fn_802D02F8(color, 1);
 }
 
 extern unsigned int lbl_804C1410[];
