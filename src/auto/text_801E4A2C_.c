@@ -27,17 +27,20 @@ void fn_801E4A2C(s32 *fontObject) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_801E4A6C(s32 *arg0, const u8 *arg1) {
-    s32 index;
-    if (arg0) {
-        s32 sum = 0;
-        for (; *arg1 != 0; arg1++) {
-            index = *arg1;
-            sum += *(s16 *)((u8 *)arg0 + (index << 1) + 0x204);
+/* Returns the total width of the whole null-terminated text string. If fontTable
+ * is non-null, sums per-character widths from the 16-bit table at offset 0x204
+ * indexed by each text byte; if null, falls back to the canvas string width. */
+s32 fn_801E4A6C(s32 *fontTable, const u8 *text) {
+    s32 charIndex;
+    if (fontTable) {
+        s32 totalWidth = 0;
+        for (; *text != 0; text++) {
+            charIndex = *text;
+            totalWidth += *(s16 *)((u8 *)fontTable + (charIndex << 1) + 0x204);
         }
-        return sum;
+        return totalWidth;
     }
-    return fn_802C4FF8((const char *)arg1);
+    return fn_802C4FF8((const char *)text);
 }
 /* RealName: Font_MeasureStringN
  * Returns the total width of up to count characters from text. If fontTable
