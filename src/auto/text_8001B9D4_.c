@@ -175,10 +175,13 @@ void fn_8001BA74(void) {
     fn_8001C960();
 }
 
+/* Enable the statistics memory-card subsystem: mark it active, then set it up. */
+#define s_statsEnabled lbl_8055D5C8
 void fn_8001BA78(void) {
-    lbl_8055D5C8 = 1;
+    s_statsEnabled = 1;
     fn_8001C9C4();
 }
+#undef s_statsEnabled
 
 /* Tear down the statistics section: clear the initialized flag, then free its
  * buffer and four slots (fn_8001CAF8) — the inverse of fn_8001BA78. */
