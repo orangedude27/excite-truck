@@ -7,7 +7,8 @@ extern int lbl_80507268[];
 extern unsigned char lbl_80505978[];
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern float lbl_80565160, lbl_80565164, lbl_80565168, lbl_8056516C;
+extern float lbl_80565160, lbl_80565164, lbl_80565168;
+extern const float lbl_8056516C;
 extern float lbl_80565170, lbl_80565174, lbl_80565178;
 extern int lbl_8055D208, lbl_8055D210, lbl_8055D218, lbl_8055D220;
 __declspec(section ".rodata") extern int lbl_8034D898;
@@ -48,20 +49,20 @@ void *fn_802E77C0(int statusCode) {
 
 #pragma push
 #pragma scheduling invalid_target
-#pragma processor 750
 float fn_802E7824(float arg0, float arg1) {
     float c = lbl_80565164;
     float t = lbl_80565160 / (lbl_80565160 - arg1);
     if (arg0 >= c) {
+        float r = lbl_80565168;
         float v = t * (arg0 - arg1);
-        if (v < lbl_80565168) v = lbl_80565168;
-        if (v > lbl_80565164) v = lbl_80565164;
-        return v;
+        if (r < v) { r = r; } else { r = v; }
+        if (r > lbl_80565164) { r = r; } else { r = lbl_80565164; }
+        return r;
     } else {
         float v = t * (arg0 + arg1);
-        if (v < lbl_80565164) v = lbl_80565164;
-        if (v > lbl_8056516C) v = lbl_8056516C;
-        return v;
+        if (c < v) { c = c; } else { c = v; }
+        if (c <= lbl_8056516C) { c = lbl_8056516C; } else { c = c; }
+        return c;
     }
 }
 #pragma pop
