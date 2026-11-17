@@ -1459,8 +1459,9 @@ s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
     return result;
 }
 
-void fn_8014D6EC(void *arg0) {
-    if (((u8 *)arg0)[0xA0] == 0) {
+// If the racer's out-of-time flag is set, display the "out of time" HUD overlay.
+void fn_8014D6EC(void *racer) {
+    if (((u8 *)racer)[0xA0] == 0) {
         return;
     }
     fn_8001DFF0();
