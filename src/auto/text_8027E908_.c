@@ -2640,16 +2640,11 @@ extern "C" int fn_802840FC(int *a0, void *a1, int *a2, void *a3) {
     unsigned char *stateBytes;
 
     lbl_8055F67C = 0;
-    c0 = a2[0];
-    c1 = a2[1];
-    c2 = a2[2];
-    c3 = a2[3];
-    c4 = a2[4];
-    options.fields[0] = c0;
-    options.fields[1] = c1;
-    options.fields[2] = c2;
-    options.fields[3] = c3;
-    options.fields[4] = c4;
+    options.fields[0] = a2[0];
+    options.fields[1] = a2[1];
+    options.fields[2] = a2[2];
+    options.fields[3] = a2[3];
+    options.fields[4] = a2[4];
     spC = -1;
     temp_r25 = (*a0 + 1) == 0;
     sp8 = -1;
