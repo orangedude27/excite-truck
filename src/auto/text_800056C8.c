@@ -1792,6 +1792,7 @@ s32 fn_80007990(s32 ptr, s32 shouldDelete) {
     return ptr;
 }
 
+/* Virtual method of the intro/arena-intro overlay UI class family (grouped with fn_800079D8/fn_800079E4/fn_800079F0): reports a constant enabled value (1). */
 u32 fn_800079D0(void) { return 1; }
 
 extern u8 lbl_802FB688[];
