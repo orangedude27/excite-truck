@@ -38,6 +38,7 @@ typedef struct OSCalendarTime {
 } OSCalendarTime;
 
 s64 OSGetTime(void);
+/* Read the lower 32 bits of the time-base counter (mftb); hand-written assembly. */
 u32 OSGetTick(void);
 
 typedef s64 OSTime;
