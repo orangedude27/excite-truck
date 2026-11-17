@@ -1358,6 +1358,7 @@ float fn_801F3A94(void *params) {
 #pragma scheduling invalid_target
 extern const char lbl_8033AB5C[];
 int fn_801F3AB0(void) {
+    /* Log the "SunIntensityTMH: shouldn't draw!" warning. */
     return fn_802E317C(lbl_8033AB5C);
 }
 
