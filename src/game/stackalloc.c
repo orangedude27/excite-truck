@@ -898,7 +898,8 @@ void fn_802DABA4(float *arg0) {
 }
 
 void fn_802DAC54(void) {
-    *((unsigned char *)lbl_8055FE5C + 0x25) = 1;
+    /* Mark the BoneHandleAlloc stack allocator as initialized. */
+    ((struct StackAlloc *)lbl_8055FE5C)->initialized = 1;
 }
 
 unsigned char fn_802DAC64(void) {
