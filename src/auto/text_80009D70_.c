@@ -150,6 +150,7 @@ void fn_80009DC8(void *arg0) {
         }
     }
 }
+#pragma use_lmw_stmw on
 
 #pragma push
 #pragma processor 750
