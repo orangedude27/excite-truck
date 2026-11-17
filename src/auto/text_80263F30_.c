@@ -389,7 +389,10 @@ int fn_802645C0(void) {
 
 void fn_802645EC(void) {
     extern float lbl_8055C454;
-    *(float *)((char *)lbl_8055F444 + 0x1C) = lbl_8055C454;
+    /* Copy the shared timer global into the current credits object's timer field (+0x1C). */
+#define sCurrentObject lbl_8055F444
+    *(float *)((char *)sCurrentObject + 0x1C) = lbl_8055C454;
+#undef sCurrentObject
 }
 #pragma dont_inline off
 
@@ -641,7 +644,7 @@ void fn_80264A5C(float farg0, float farg1) {
             temp_f31 = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x24), *(float *)((char *)temp_r31 + 0x28));
             *(float *)((char *)temp_r30 + 8) = temp_f31 * (float)cos((double)temp_f30);
             *(float *)((char *)temp_r30 + 0xC) = temp_f31 * (float)sin((double)temp_f30);
-            *(float *)((char *)temp_r30 + 0x10) = fn_80129DC4(6, lbl_80563BF0, lbl_80563C08);
+            *(float *)((char *)temp_r30 + 0x10) = fn_80129DC4(6, 0.0f, 6.283185f);
             *(float *)((char *)temp_r30 + 0x14) = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x34), *(float *)((char *)temp_r31 + 0x38));
             *(float *)((char *)temp_r30 + 0x18) = *(float *)((char *)temp_r31 + 0x44);
             *(int *)((char *)temp_r30 + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31 + 0x54)));
@@ -667,7 +670,7 @@ void fn_80264A5C(float farg0, float farg1) {
             temp_f31_2 = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x84), *(float *)((char *)temp_r31_2 + 0x88));
             *(float *)((char *)temp_r30_2 + 8) = temp_f31_2 * (float)cos((double)temp_f30_2);
             *(float *)((char *)temp_r30_2 + 0xC) = temp_f31_2 * (float)sin((double)temp_f30_2);
-            *(float *)((char *)temp_r30_2 + 0x10) = fn_80129DC4(6, lbl_80563BF0, lbl_80563C08);
+            *(float *)((char *)temp_r30_2 + 0x10) = fn_80129DC4(6, 0.0f, 6.283185f);
             *(float *)((char *)temp_r30_2 + 0x14) = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x94), *(float *)((char *)temp_r31_2 + 0x98));
             *(float *)((char *)temp_r30_2 + 0x18) = *(float *)((char *)temp_r31_2 + 0xA4);
             *(int *)((char *)temp_r30_2 + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31_2 + 0xB4)));
