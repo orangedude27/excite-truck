@@ -1021,7 +1021,7 @@ extern float lbl_80565028;
 #pragma paired off
 #pragma paired_single off
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling reset
 #pragma unroll off
 void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     struct TexWrap { u8 pad[0x24]; u8 tex; } *t0 = arg0;
@@ -1145,7 +1145,7 @@ int fn_802D972C(register void *arg0, register int arg1, register int arg2) {
             value = *(unsigned char *)(base + pixel) & 0xF;
         }
         doubled = value | (value * 0x10);
-        return (doubled << 24) | ((doubled << 16) | doubled | (doubled << 8));
+        return (doubled << 24) | ((doubled << 8) | doubled | (doubled << 16));
     }
     if (mip == 6) {
         tile = arg1 / 4 + (arg2 / 4) * (wrap / 4);
