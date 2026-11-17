@@ -439,23 +439,21 @@ void fn_801BFB2C(char *base, float *out, FV3 *points) {
 #pragma dont_inline off
 #pragma opt_propagation reset
 
+#pragma scheduling invalid_target
 void fn_801BFD34(float *out, float *in, const float *m) {
     if (out == in) {
         float y = in[1];
         float y0 = y * m[3];
         float y1 = y * m[4];
         float y2 = y * m[5];
-
         float x = in[0];
         float x0 = x * m[0];
         float x1 = x * m[1];
         float x2 = x * m[2];
-
         float z = in[2];
         float z0 = z * m[6];
         float z1 = z * m[7];
         float z2 = z * m[8];
-
         out[0] = (x0 + y0) + z0;
         out[1] = (x1 + y1) + z1;
         out[2] = (x2 + y2) + z2;
@@ -463,7 +461,6 @@ void fn_801BFD34(float *out, float *in, const float *m) {
         float m0 = m[0], m1 = m[1], m2 = m[2];
         float m3 = m[3], m4 = m[4], m5 = m[5];
         float m6 = m[6], m7 = m[7], m8 = m[8];
-
         out[0] = (m3 * in[1] + m0 * in[0]) + m6 * in[2];
         out[1] = (m4 * in[1] + m1 * in[0]) + m7 * in[2];
         out[2] = (m5 * in[1] + m2 * in[0]) + m8 * in[2];
@@ -477,7 +474,7 @@ void fn_801BFD34(float *out, float *in, const float *m) {
         out[2] = tz;
     }
 }
-
+#pragma scheduling reset
 /* Add two 3D vectors component-wise and store the result in out. */
 void fn_801BFE7C(float *out, float *a, float *b) {
     float x = a[0] + b[0];
@@ -583,7 +580,23 @@ static inline void inline_transform_vec(float *out, const float *in, const float
 #pragma scheduling invalid_target
 void fn_801BFF64(float *m, const float *in) {
     float tmp[3];
-    inline_transform_vec(tmp, in, m);
+    if (tmp == in) {
+        float m10 = m[3], m11 = m[4], m12 = m[5];
+        float x = in[0], y = in[1], z = in[2];
+        float m00 = m[0], m01 = m[1], m02 = m[2];
+        float m20 = m[6], m21 = m[7], m22 = m[8];
+        tmp[0] = z * m20 + (x * m00 + y * m10);
+        tmp[1] = z * m21 + (x * m01 + y * m11);
+        tmp[2] = z * m22 + (x * m02 + y * m12);
+    } else {
+        float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+        m10 = m[3]; m00 = m[0]; m20 = m[6];
+        tmp[0] = in[2] * m20 + (in[0] * m00 + in[1] * m10);
+        m11 = m[4]; m01 = m[1]; m21 = m[7];
+        tmp[1] = in[2] * m21 + (in[0] * m01 + in[1] * m11);
+        m12 = m[5]; m02 = m[2]; m22 = m[8];
+        tmp[2] = in[2] * m22 + (in[0] * m02 + in[1] * m12);
+    }
     m[9] += tmp[0];
     m[10] += tmp[1];
     m[11] += tmp[2];
@@ -838,7 +851,8 @@ int fn_801C0454(void *arg0) {
     extern void fn_801C092C(void *, void *, void *, int);
     extern void fn_801C0D3C(void *);
     extern void fn_801C0D6C(void *);
-    extern void fn_801C0E44(void *);
+#define FN_801C0E44_RET void
+    extern FN_801C0E44_RET fn_801C0E44();
     extern void fn_801C0E4C(void *, void *, void *);
     extern void fn_801C0E60(float *, float *, float *);
     extern float lbl_805628C8;
