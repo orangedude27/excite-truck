@@ -146,6 +146,7 @@ s32 fn_80136A18(s32 self, s32 deleteFlag) {
     return self;
 }
 
+#pragma scheduling reset
 void fn_80136AA8(void *g) {
     int i, j;
     int k = 0;
@@ -170,8 +171,6 @@ void fn_80136AA8(void *g) {
         }
     }
 }
-
-#pragma dont_inline reset
 
 /* Update an entry and clear its smoothed vector fields to zero. */
 void fn_80136CB8(void *table, s32 index) {
@@ -203,8 +202,8 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
     void *entry = (char*)base + arg1 * stride;
     void *obj = ((Dummy*)fn_801B2ED0(arg1))->v4();
     if (*(unsigned char*)((char*)entry + 0x15) != 0) {
-        volatile unsigned char zero = 0;
-        *(unsigned char*)((char*)entry + 0x14) = zero;
+        volatile unsigned char cond = 0;
+        *(unsigned char*)((char*)entry + 0x14) = 0;
         void *r5 = *(void**)((char*)obj + 4);
         float f2 = *(float*)((char*)obj + 8);
         void *r4 = *(void**)((char*)r5 + 0x14);
@@ -214,7 +213,7 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
         f0 = (f0 - f1) * f2 + f1;
         f2 = f3 + f0;
         f1 = *(float*)((char*)obj + 0x48) + *(float*)((char*)r5 + 0x30);
-        if (zero != 0) {
+        if (cond != 0) {
             f1 = *(float*)((char*)arg0 + 0x14) - f1;
         }
         *(float*)((char*)entry + 8) = *(float*)((char*)obj + 0x44);
@@ -247,9 +246,6 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
         *(unsigned char*)((char*)entry + 0x16) = 0;
     }
 }
-#pragma opt_propagation reset
-#pragma scheduling reset
-#pragma cplusplus reset
 #pragma pop
 
 void fn_80136E8C(void *proxer, s32 carIndex, signed char active) {
@@ -727,4 +723,9 @@ void fn_801378D0(void) {
 #undef destroyProxer
 }
 
-void fn_80137904(void) { fn_80136AA8((void*)lbl_8055E0D4); }
+/* Rebuild the pairwise proximity links in the current Proxer object. */
+void fn_80137904(void) {
+#define gProxerCurrent lbl_8055E0D4
+    fn_80136AA8((void *)gProxerCurrent);
+#undef gProxerCurrent
+}
