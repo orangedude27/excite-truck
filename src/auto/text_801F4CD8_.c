@@ -115,6 +115,7 @@ void fn_801F4D64(void) {
     lbl_8055EC20 = 0;
 }
 
+/* Run one wind/simulation pass (fn_801F7160) over the global cloth group held in lbl_8055EC18. */
 void fn_801F4DC4(void) {
     fn_801F7160(lbl_8055EC18);
 }
@@ -358,22 +359,13 @@ void fn_801F5508(void *arg0) {
     int temp_r30 = ((temp_r6 - 1) * temp_r5) + (temp_r6 * (temp_r5 - 1));
     char *temp_r31 = (char *)((void *(*)(int, void *))fn_8012850C)(
         temp_r30 * 8, lbl_8033AD94);
-    int var_r29 = 0;
-    int var_r24 = 0;
-    int var_r25;
-    int var_r23;
-    int temp_r28;
-    int temp_r5_2;
-    int temp_r0;
-    char *temp_r27;
-    void *temp_r4;
-    int var_r27;
-    char *temp_r24;
-    int temp_r5_3;
-    void *temp_r4_2;
-    int temp_r0_2;
-    int temp_r5_4;
+    int temp_r28, temp_r5_2, temp_r0, temp_r5_3, temp_r0_2, temp_r5_4;
+    char *temp_r27, *temp_r24;
+    void *temp_r4, *temp_r4_2;
+    int var_r27, var_r23, var_r25, var_r24, var_r29;
 
+    var_r29 = 0;
+    var_r24 = 0;
     goto loop_5;
 loop_3:
     temp_r5 = *(int *)((char *)arg0 + 0x2C);
