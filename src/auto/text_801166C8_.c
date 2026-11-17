@@ -1674,15 +1674,20 @@ s32 fn_80118F78(void *arg0, s32 arg1) {
     return *(s32 *)((u8 *)arg0 + 0xDC);
 }
 
+#pragma push
+#pragma opt_loop_invariants off
 s32 fn_801190B0(void *arg0, s32 arg1) {
-    s32 var_r29;
+    s32 var_r31;
     s32 var_r30;
+    s32 var_r29;
     u32 temp_r3_5;
     s32 temp_r3_2;
-    s32 var_r31;
     u32 var_r28;
     s32 zero;
     s32 one;
+    u8 *frame;
+    s32 (*cb)(void *, s32);
+    s32 cond;
 
     var_r30 = 0;
     if (arg0 != 0) {
@@ -1699,10 +1704,10 @@ s32 fn_801190B0(void *arg0, s32 arg1) {
                 fn_8011C274(lbl_8055DED4,
                     (void *)((s32)arg0 + 0x340));
             }
-            temp_r3_2 = (*(s32 (**)(void *, s32))(
-                *(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x18))(
-                    *(u8 **)((u8 *)arg0 + 0x2F0) + var_r31,
-                    arg1 != 0);
+            cond = arg1 != 0;
+            frame = *(u8 **)((u8 *)arg0 + 0x2F0) + var_r31;
+            cb = *(s32 (**)(void *, s32))(frame + 0x18);
+            temp_r3_2 = cb(frame, cond);
             if (temp_r3_2) {
                 var_r30 = 1;
             }
@@ -1719,17 +1724,17 @@ s32 fn_801190B0(void *arg0, s32 arg1) {
                 } else {
                     fn_80116F8C(*(u8 **)((u8 *)arg0 + 0x2F0) + var_r31);
                 }
-                *(s32 *)((u8 *)arg0 + (int)0x288) = zero;
+                *(s32 *)((u8 *)arg0 + 0x288) = zero;
             } else if (temp_r3_2 != 0 &&
                        *(s32 *)((u8 *)arg0 + 0x288) == 0) {
-                *(s32 *)((u8 *)arg0 + 0x268) = zero;
                 *(s32 *)((u8 *)arg0 + 0x288) = one;
+                *(s32 *)((u8 *)arg0 + 0x268) = zero;
                 *(s32 *)((u8 *)arg0 + 0x328) = zero;
-                *(s32 *)((u8 *)arg0 + 0x330) = (unsigned short)zero;
+                *(s32 *)((u8 *)arg0 + 0x330) = zero;
             }
         }
-        var_r28++;
         var_r31 += 0x17C;
+        var_r28++;
     loop_check:
         if (var_r28 < *(u32 *)((u8 *)arg0 + 0x2E8)) {
             goto loop_body;
@@ -1740,7 +1745,7 @@ s32 fn_801190B0(void *arg0, s32 arg1) {
     }
     return var_r30;
 }
-
+#pragma pop
 void fn_80119214(void) {
     AXFXSetHooks_8011FFB8();
 }
@@ -8701,8 +8706,10 @@ void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
 }
 
 extern void fn_80125664(void *p0, void *p1, void *p2, void *p3);
-void fn_80125CA0(void *arg0, void *arg1, void *arg2, s32 arg3) {
-    fn_80125664(arg0, arg1, arg2, (u8 *)&lbl_802F6A40 + (arg3 << 8));
+/* Run the inverse DCT (fn_80125664) on the coefficients into dst, selecting a
+ * 256-byte quantization table from lbl_802F6A40 by index. */
+void fn_80125CA0(void *dst, void *stride, void *coeffs, s32 quantTable) {
+    fn_80125664(dst, stride, coeffs, (u8 *)&lbl_802F6A40 + (quantTable << 8));
 }
 
 extern void fn_80125960(void *p0, s32 p1, void *p2, void *p3);
