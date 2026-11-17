@@ -1005,7 +1005,8 @@ void fn_802E620C(void *voice, float surroundPan) {
     *(float *)((char *)voice + 0x14) = SurroundPanDefault;
 }
 
-void fn_802E622C(void *arg0, float farg0) { *(float *)((char *)arg0 + 0x10) = farg0; }
+/* Set a voice handle's playback rate (offset 0x10), the field SND_SetRate writes. */
+void fn_802E622C(void *voice, float rate) { *(float *)((char *)voice + 0x10) = rate; }
 
 void fn_802E6234(void) {}
 
