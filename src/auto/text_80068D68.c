@@ -5384,8 +5384,9 @@ void btu_start_timer(void *p_tle, UINT16 event, UINT32 timeout) {
 
 extern unsigned char lbl_803C0A50[];
 extern unsigned char lbl_803C0AD8[];
-void fn_80070F90(void *arg0) {
-    GKI_remove_from_timer_list((void *)(lbl_803C0A50 + 0x40), arg0);
+void fn_80070F90(void *p_tle) {
+    /* Remove a timer entry from the main BTU timer queue (btu_cb.timer_queue at lbl_803C0A50+0x40). */
+    GKI_remove_from_timer_list((void *)(lbl_803C0A50 + 0x40), p_tle);
 }
 
 extern void (*lbl_803C0AD8_callback)(void);
