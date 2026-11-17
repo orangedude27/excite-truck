@@ -129,7 +129,7 @@ extern char lbl_804C97D6;
 extern char lbl_804C97D7;
 extern char lbl_804C97D8;
 #pragma small_data on
-extern void GXSetTevColor(int, ...);
+extern void GXSetTevColor(int, void *);
 extern unsigned long fn_802CE9FC(int, int, int, int);
 typedef struct { float x, y, z; } Vec_802D1C04;
 // 3x3 matrix times vector (MTXMultVecSR shape); src/dst may alias.
@@ -3097,6 +3097,38 @@ void fn_802D3420(void) {
     lbl_804C9778[0] = 1;
     lbl_8055FD70 = 1;
 }
+
+void fn_802D362C(s32 arg0) {
+    unsigned char color[4];
+    unsigned int packed;
+
+    GXSetTexCopySrc((u16)*(int *)(lbl_804C9778 + 0x1C), (u16)*(int *)(lbl_804C9778 + 0x20), (u16)*(int *)(lbl_804C9778 + 0x24), (u16)*(int *)(lbl_804C9778 + 0x28));
+    GXSetTexCopyDst((u16)*(int *)(lbl_804C9778 + 0x24), (u16)*(int *)(lbl_804C9778 + 0x28), 0x27, 0);
+    GXCopyTex((void *)lbl_804C9940, 0);
+    __GXSetGenMode();
+    GXSetColorUpdate(1);
+    GXSetAlphaUpdate(0);
+    GXSetDstAlpha(0, 0);
+    GXSetNumTevStages(1);
+    GXSetNumTexGens(1);
+    GXLoadTexObj((char *)&lbl_804C9940 + 4, 0);
+    GXSetTevOrder(0, 0, 0, 4);
+    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+    GXSetTevColorIn(0, 0xF, 0xF, 0xF, 2);
+    GXSetTevAlphaOp(0, 0xE, 0, 0, 1, 0);
+    GXSetTevAlphaIn(0, 4, 7, 1, 7);
+    GXSetBlendMode(1, 4, 5, 3);
+    GXSetZMode(0, 3, 0);
+    GXSetTexCoordGen2(0, 1, 0xC, 0x3C, 0, 0x7D);
+    packed = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
+    color[3] = (unsigned char)packed;
+    color[0] = (unsigned char)(packed >> 24);
+    color[1] = (unsigned char)(packed >> 16);
+    color[2] = (unsigned char)(packed >> 8);
+    GXSetTevColor(1, color);
+    fn_802D3420();
+}
+
 #pragma pop
 
 // Depth queries, pool at 0x804C9984 (lbl_804C9984). fn_802D39A4 takes a free
