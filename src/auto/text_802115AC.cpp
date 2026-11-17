@@ -2635,9 +2635,10 @@ extern "C" void fn_802159E8(void *arg0) {
     obj->vf4();
 }
 
-extern "C" void fn_802159FC(void *arg0) {
-    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf12();
+extern "C" void fn_802159FC(void *wrapper) {
+    /* Forward vf12 (vtable slot 0x38) to the widget held at +0x244 of the wrapper. */
+    VfObj *widget = *(VfObj **)((char *)wrapper + 0x244);
+    widget->vf12();
 }
 
 extern "C" void fn_80215A10(void *wrapper) {
