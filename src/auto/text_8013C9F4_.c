@@ -57,6 +57,9 @@ long fn_8013CA98(void) {
     return 0;
 }
 
+/* Base-class default for slot +0x18 of the sub-task manager interface, shared by
+ * the "csubtasktmgr" vtable (lbl_8032C500) and the "chalsubtaskmgr" vtable
+ * (lbl_8032F760): a notification neither manager shipped in this game acts on. */
 void fn_8013CAA0(void) {
 
 }
