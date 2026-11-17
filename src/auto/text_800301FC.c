@@ -770,9 +770,10 @@ void AXRegisterAuxBCallback(void *arg0, void *arg1) {
     lbl_8055D718 = arg1;
 }
 
-void AXRegisterAuxCCallback(void *arg0, void *arg1) {
-    lbl_8055D720 = arg0;
-    lbl_8055D714 = arg1;
+void AXRegisterAuxCCallback(void *callback, void *context) {
+    /* Register the AX auxiliary-C bus DSP callback and the user context passed to it. */
+    lbl_8055D720 = callback;
+    lbl_8055D714 = context;
 }
 
 /* Retrieve the registered AUX A DSP callback and its user context. */
