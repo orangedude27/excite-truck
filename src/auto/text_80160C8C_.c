@@ -1560,7 +1560,8 @@ struct Obj8016275C {
     virtual void f20(); virtual void f21(); virtual void f22(s32);
 };
 #pragma cplusplus off
-s32 fn_80162734(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) != 0; }
+/* Return nonzero when the object's state field at offset 8 is set. */
+s32 fn_80162734(void *obj) { return *(s32 *)((u8 *)obj + 8) != 0; }
 
 /* Return nonzero when the object's state field at offset 8 is exactly 1. */
 s32 fn_80162748(void *obj) { return *(s32 *)((u8 *)obj + 8) == 1; }
