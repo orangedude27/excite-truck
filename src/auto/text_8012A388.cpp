@@ -1373,8 +1373,9 @@ extern "C" void fn_8012C41C(s32 (*callback)(void *, void *, void *, s32), s32 us
     }
 }
 #pragma pop
-extern "C" void fn_8012C4D8(void *arg0) {
-    fn_8012BC50(arg0, 0, 0);
+// Drop one reference to a loaded resource object; no callback when it is freed.
+extern "C" void fn_8012C4D8(void *resource) {
+    fn_8012BC50(resource, 0, 0);
 }
 
 extern "C" void fn_8012CC20(void) {
@@ -1848,7 +1849,7 @@ extern "C" void fn_8012D3D8(s32 object) {
 extern "C" void fn_8012D40C(s32 arg0) {
     u8 *self = (u8 *)arg0;
     s32 *object = (s32 *)self;
-    s32 state, value, result, index, count, done, limit;
+    s32 state, value, result, index, count, limit, done;
     s32 temp, handle, size;
     s32 *record;
     u8 *data, *source, *destination, byte;
