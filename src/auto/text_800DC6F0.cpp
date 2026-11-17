@@ -283,31 +283,30 @@ extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc(
 
 extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(void*, u8);
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(s32, u8);
-extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
+struct VEC2_8015B4 { f32 x, y; };
+extern "C" VEC2_8015B4 GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(void*, void*, u8, s32, void*, u8);
 extern "C" void DrawSelf__Q36nw4hbm3lyt7PictureFRCQ36nw4hbm3lyt8DrawInfo(void* this_) {
     u8* self = (u8*)this_;
     void* tex = *(void**)(self + 0x28);
-    u8 color;
-    s32 modret;
     u8 fmt;
+    s32 modret;
     s32 sz;
-    u8 fmt2;
-    void* pos;
+    u8 color;
     void* cols;
+    VEC2_8015B4 pos;
     if (tex == 0) return;
     ((void (*)(void*))(*(void***)this_)[0x60 / 4])(this_);
     color = self[0xCE];
     modret = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xD4, color);
     tex = *(void**)(self + 0x28);
     modret = ((s32 (*)(void*, s32, u8))(*(void***)tex)[0x0C / 4])(tex, modret, color);
-    fmt = self[0xE5];
-    SetVertexFormat__Q34nw4r3lyt6detailFbUc(modret, fmt);
+    SetVertexFormat__Q34nw4r3lyt6detailFbUc(modret, self[0xE5]);
     cols = modret ? self + 0xD4 : 0;
     sz = *(s32*)(self + 0xE8);
-    fmt2 = self[0xE5];
+    fmt = self[0xE5];
     pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(this_);
-    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(&pos, self + 0x4C, fmt2, sz, cols, color);
+    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(&pos, self + 0x4C, fmt, sz, cols, self[0xCE]);
 }
 
 extern "C" u32* fn_800DCDFC(void) {
