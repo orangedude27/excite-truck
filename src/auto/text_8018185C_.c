@@ -2185,8 +2185,8 @@ void fn_8018A8A8(void *arg0) {
     float angle;
     float value;
     float calculated;
-    register float temp_f31;
-    register float temp_f30;
+    float temp_f31;
+    float temp_f30;
     sp38[0] = lbl_80561CAC;
     sp38[1] = lbl_80561DBC;
     sp38[2] = lbl_80561CAC;
@@ -2363,7 +2363,9 @@ void fn_8018A9F0(void *arg0, void *arg1) {
     *(int *)((char *)arg1 + 0xFA4) = *(int *)(*(char **)((char *)arg0 + 0x26C0) + 0xDC);
 }
 
-void fn_8018ADA4(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25DC) = farg0; }
+/* Set the truck's physics float at +0x25DC, the first of the triplet at
+ * +0x25DC/+0x25E0/+0x25E4 that reset code (fn_801838C8/fn_80183E7C) sets to 0/0/1. */
+void fn_8018ADA4(void *truck, f32 value) { *(f32 *)((u8 *)truck + 0x25DC) = value; }
 
 void fn_8018ADAC(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25DC) = farg0; }
 
