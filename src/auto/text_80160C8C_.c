@@ -2439,8 +2439,10 @@ unsigned char fn_80163F6C(void *arg0) {
     return *((unsigned char *)arg0 + 0x56D);
 }
 
-unsigned char fn_80163F74(void *arg0) {
-    return *((unsigned char *)arg0 + 0x56D);
+/* Return the timed-run/HUD object's +0x56D flag: whether its countdown timer has
+ * been stopped. */
+unsigned char fn_80163F74(void *hud) {
+    return *((unsigned char *)hud + 0x56D);
 }
 
 extern void fn_802E30C8(const char *, const char *);
