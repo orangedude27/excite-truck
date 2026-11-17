@@ -1694,29 +1694,29 @@ extern "C" void fn_8021ACC0(void *widget, s32 value) {
 #pragma scheduling invalid_target
 /* Draw an animated image widget: pick a frame index from its state flags, wrap
  * it to the image's frame count, then draw centred on the screen at its position. */
-extern "C" void fn_8021AD10(void *widget) {
-    s32 frame;
+extern "C" void fn_8021AD10(void *arg0) {
+    s32 value;
     s32 screenX;
     s32 screenY;
 
-    if (*(u8 *)((u8 *)widget + 0x18) != 0) {
-        frame = (*(u8 *)((u8 *)widget + 0x244) != 0) + 2;
+    if (*(u8 *)((u8 *)arg0 + 0x18) != 0) {
+        value = (*(u8 *)((u8 *)arg0 + 0x244) != 0) + 2;
     } else {
-        frame = 0;
+        value = 0;
     }
 
-    if (fn_802C51AC(*(s32 *)((u8 *)widget + 0x250)) == 3 && frame == 3) {
-        frame = 1;
+    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250)) == 3 && value == 3) {
+        value = 1;
     }
 
-    if (fn_802C51AC(*(s32 *)((u8 *)widget + 0x250)) > 0) {
-        frame %= fn_802C51AC(*(s32 *)((u8 *)widget + 0x250));
+    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250)) > 0) {
+        value %= fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
     }
 
-    screenX = *(s32 *)((u8 *)widget + 4) - lbl_8055FB9C / 2;
-    screenY = lbl_8055FBA0 / 2 - *(s32 *)((u8 *)widget + 8);
+    screenX = *(s32 *)((u8 *)arg0 + 4) - lbl_8055FB9C / 2;
+    screenY = lbl_8055FBA0 / 2 - *(s32 *)((u8 *)arg0 + 8);
 
-    fn_802C5310(*(s32 *)((u8 *)widget + 0x250), frame,
+    fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), value,
         (f32)screenX, (f32)screenY, lbl_805634A8);
 }
 #pragma scheduling on
