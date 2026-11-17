@@ -418,7 +418,11 @@ void *fn_8022DD38(void *arg0, int arg1) {
 /* Return the number of entries stored in the 16-byte-slot string table (+0x40). */
 int fn_8022DD80(void *table) { return *(int *)((char *)table + 0x40); }
 
-int fn_8022DD88(void *arg0) { return *(int *)((char *)arg0 + 0x44); }
+/* Return the extra field (+0x44) of the 16-byte-slot string table. */
+int fn_8022DD88(void *table) {
+    struct TableHeader { char pad[0x44]; int extra; };
+    return ((struct TableHeader *)table)->extra;
+}
 
 /* Return a pointer to the index-th 16-byte glyph record in the table. */
 int fn_8022DD90(int table, int index) { return table + index * 16; }
