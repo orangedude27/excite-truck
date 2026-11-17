@@ -51,9 +51,9 @@ typedef struct Obj801ADB44 {
 static inline void xf(f32 *out, f32 *in, u8 *m) {
     if (out == in) {
         f32 y = in[1], x = in[0], z = in[2];
-        f32 o0 = z * F(m, 0x54) + (x * F(m, 0x3C) + y * F(m, 0x48));
-        f32 o1 = z * F(m, 0x58) + (x * F(m, 0x40) + y * F(m, 0x4C));
-        f32 o2 = z * F(m, 0x5C) + (x * F(m, 0x44) + y * F(m, 0x50));
+        f32 o0 = z * F(m, 0x54) + (y * F(m, 0x48) + x * F(m, 0x3C));
+        f32 o1 = z * F(m, 0x58) + (y * F(m, 0x4C) + x * F(m, 0x40));
+        f32 o2 = z * F(m, 0x5C) + (y * F(m, 0x50) + x * F(m, 0x44));
         out[0] = o0;
         out[1] = o1;
         out[2] = o2;
@@ -131,10 +131,11 @@ void fn_801ADB44(Ent801ADB44 *a, Obj801ADB44 *b) {
     struct { s32 flag; f32 r[3], e[3], v[3], w[3], t[3], d[3], pos[3], n[3], hit[3]; } s;
     s32 found;
     f32 dist, dot, k, m, lim, q, pen;
-    if (a->v[2] * F(b, 0x58) + (a->v[0] * F(b, 0x40) + a->v[1] * F(b, 0x4C)) > lbl_80562520) {
+    f32 *av = a->v;
+    if (a->v[1] * F(b, 0x4C) + a->v[0] * F(b, 0x40) + a->v[2] * F(b, 0x58) > lbl_80562520) {
         return;
     }
-    xf(s.pos, a->v, (u8 *)b);
+    xf(s.pos, av, (u8 *)b);
     s.pos[0] += b->org[0];
     s.pos[1] += b->org[1];
     s.pos[2] += b->org[2];
@@ -236,7 +237,6 @@ void fn_801AE158(void *obj) {
 
 #pragma scheduling invalid_target
 void *fn_801AE180(void) {
-     union { u32 d; u8 b[4]; } u320, u40;
      s32 var_r8;
      s32 var_r5_2;
      s32 var_r5;
@@ -257,8 +257,7 @@ void *fn_801AE180(void) {
      u8 *temp_r5;
      u8 *temp_r3_3;
      u8 *temp_r3_2;
-      u320.d = 320;
-      u40.d = 40;
+  
       temp_r31 = lbl_8055E604;
       temp_r3_2 = (*(void **)((u8 *)(temp_r31) + (0)));
       if ((temp_r3_2 == ((void *)0)) || ((s32) (*(s32 *)((u8 *)(temp_r3_2) + (4))) == 0x40)) {
@@ -305,7 +304,7 @@ void *fn_801AE180(void) {
                           }
                       }
                       if (var_r4 != 0) {
-                          var_ctr = (u32) ((temp_r7 + 0x13F) - var_r6) / u320.d;
+                          var_ctr = (u32) ((temp_r7 + 0x13F) - var_r6) / 320U;
                           if (var_r6 < temp_r7) {
                               do {
                                   (*(f32 *)((u8 *)(var_r6) + (4))) = (f32) lbl_80562520;
@@ -395,7 +394,7 @@ void *fn_801AE180(void) {
                       }
                   }
                   temp_r5_3 = temp_r3_3 + 0xA08;
-                  var_ctr_2 = (u32) ((temp_r5_3 + 0x27) - var_r6) / u40.d;
+                  var_ctr_2 = (u32) ((temp_r5_3 + 0x27) - var_r6) / 40U;
                   if (var_r6 < temp_r5_3) {
                       do {
                           (*(f32 *)((u8 *)(var_r6) + (4))) = (f32) lbl_80562520;
@@ -423,7 +422,7 @@ void *fn_801AE180(void) {
       temp_r3 = (*(s32 *)((u8 *)(temp_r5) + (4)));
       (*(s32 *)((u8 *)(temp_r5) + (4))) = (s32) (temp_r3 + 1);
       return temp_r5 + (temp_r3 * 0x28) + 8;
-}
+  }
 #pragma scheduling on
 void fn_801AE4C4(void) {
     void *result = (void *)fn_801284F8(8, &lbl_8033596C);
