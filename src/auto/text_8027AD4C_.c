@@ -1544,6 +1544,9 @@ extern "C" long fn_8027CB28(void *recordPtr) {
 }
 #pragma cplusplus reset
 
+/* Challenge-path bracket-reached handler for fn_8027D068: a constant "return true"
+ * predicate -- challenge brackets are open from the start, paired with the career
+ * handler fn_8027C850 which checks the preceding bracket. */
 long fn_8027CBF0(void) { return 1; }
 
 #pragma push
