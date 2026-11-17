@@ -412,6 +412,7 @@ void fn_8029C934(void) {
 }
 
 #pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 void fn_8029C998(void) {
     typedef struct { float x, y, z; } Vec;
@@ -427,7 +428,7 @@ void fn_8029C998(void) {
     extern char lbl_80349560[]; extern int lbl_804B5030[]; extern int lbl_8055F7F4;
     extern int lbl_8055CAB4, lbl_8055CABC, lbl_8055CAC4;
     extern void *fn_80131810(void *); extern void fn_80131818(void *);
-    extern int fn_801284F8(int, void *, float); extern void *fn_8029E754(void *, void *, int);
+    extern void *fn_8029E754(void *, void *, int);
     extern void fn_802E317C(const char *, ...);
     Params params; int *dest; char *base; Owner *owner; int i; int idx;
     base = lbl_80349560; lbl_8055F7F4 = 0; owner = (Owner *)fn_80131810(base + 0xEC);
@@ -440,7 +441,7 @@ void fn_8029C998(void) {
             params.pos = item->getVec(&lbl_8055CAB4);
             params.v1 = item->getVec2(&lbl_8055CABC);
             params.v2 = item->getVec2(&lbl_8055CAC4);
-            res = (void *)fn_801284F8(0x44, base + 0x11C, params.v2.x);
+            res = (void *)fn_801284F8(0x44, base + 0x11C);
             if (res != 0) res = fn_8029E754(res, &params, id);
             idx = lbl_8055F7F4; dest[idx] = (int)res; lbl_8055F7F4 = idx + 1;
         }
