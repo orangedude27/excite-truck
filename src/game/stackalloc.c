@@ -145,7 +145,7 @@ void fn_802D9C5C(int arg0, void *arg1, int arg2) {
 #pragma push
 void fn_802D9DE4(int arg0, void *arg1, int arg2) {
     unsigned int *src, *dest;
-    int i = 0, n, ctr, safe;
+    int i = 0, n, ctr, safe, c;
     unsigned int t0, t1;
     if (arg2 > 0) {
         n = arg2 - 8;
