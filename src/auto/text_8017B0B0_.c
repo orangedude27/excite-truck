@@ -57,51 +57,55 @@ void fn_8017B164(void *object) {
 }
 
 #pragma scheduling on
-void fn_8017B198(void *arg0) {
+/* Reset an object's simulation state: clear its motion/force floats and a 0x40-byte
+ * scratch block, restore the default nine-word transform block from +0xF4 to +0x148,
+ * unlink the object from its old list (+0x184) and zero the vector of every node in
+ * the linked list headed at +0xD0. */
+void fn_8017B198(void *object) {
     struct Block { unsigned int value[9]; };
     float zero;
-    int old;
+    int oldList;
     void *node;
 
     zero = 0.0f;
-    *(int *)((char *)arg0 + 0x1E4) = 0;
-    *(float *)((char *)arg0 + 0x118) = zero;
-    *(float *)((char *)arg0 + 0x11C) = zero;
-    *(float *)((char *)arg0 + 0x120) = zero;
-    *(float *)((char *)arg0 + 0x124) = zero;
-    *(float *)((char *)arg0 + 0x128) = zero;
-    *(float *)((char *)arg0 + 0x12C) = zero;
-    *(float *)((char *)arg0 + 0x130) = zero;
-    *(float *)((char *)arg0 + 0x134) = zero;
-    *(float *)((char *)arg0 + 0x138) = zero;
-    *(float *)((char *)arg0 + 0x13C) = zero;
-    *(float *)((char *)arg0 + 0x140) = zero;
-    *(float *)((char *)arg0 + 0x144) = zero;
-    *(float *)((char *)arg0 + 0x16C) = zero;
-    *(float *)((char *)arg0 + 0x170) = zero;
-    *(float *)((char *)arg0 + 0x174) = zero;
-    *(float *)((char *)arg0 + 0x178) = zero;
-    *(float *)((char *)arg0 + 0x17C) = zero;
-    *(float *)((char *)arg0 + 0x180) = zero;
-    *(float *)((char *)arg0 + 0x188) = zero;
-    *(float *)((char *)arg0 + 0x18C) = zero;
-    *(float *)((char *)arg0 + 0x190) = zero;
-    *(float *)((char *)arg0 + 0x194) = zero;
-    *(float *)((char *)arg0 + 0x198) = zero;
-    *(float *)((char *)arg0 + 0x19C) = zero;
-    *(float *)((char *)arg0 + 0x1A0) = zero;
-    *((unsigned char *)arg0 + 0x1E9) = 1;
-    memset((char *)arg0 + 0x1A4, 0, 0x40);
+    *(int *)((char *)object + 0x1E4) = 0;
+    *(float *)((char *)object + 0x118) = zero;
+    *(float *)((char *)object + 0x11C) = zero;
+    *(float *)((char *)object + 0x120) = zero;
+    *(float *)((char *)object + 0x124) = zero;
+    *(float *)((char *)object + 0x128) = zero;
+    *(float *)((char *)object + 0x12C) = zero;
+    *(float *)((char *)object + 0x130) = zero;
+    *(float *)((char *)object + 0x134) = zero;
+    *(float *)((char *)object + 0x138) = zero;
+    *(float *)((char *)object + 0x13C) = zero;
+    *(float *)((char *)object + 0x140) = zero;
+    *(float *)((char *)object + 0x144) = zero;
+    *(float *)((char *)object + 0x16C) = zero;
+    *(float *)((char *)object + 0x170) = zero;
+    *(float *)((char *)object + 0x174) = zero;
+    *(float *)((char *)object + 0x178) = zero;
+    *(float *)((char *)object + 0x17C) = zero;
+    *(float *)((char *)object + 0x180) = zero;
+    *(float *)((char *)object + 0x188) = zero;
+    *(float *)((char *)object + 0x18C) = zero;
+    *(float *)((char *)object + 0x190) = zero;
+    *(float *)((char *)object + 0x194) = zero;
+    *(float *)((char *)object + 0x198) = zero;
+    *(float *)((char *)object + 0x19C) = zero;
+    *(float *)((char *)object + 0x1A0) = zero;
+    *((unsigned char *)object + 0x1E9) = 1;
+    memset((char *)object + 0x1A4, 0, 0x40);
 
-    old = *(int *)((char *)arg0 + 0x184);
-    *(struct Block *)((char *)arg0 + 0x148) =
-        *(struct Block *)((char *)arg0 + 0xF4);
+    oldList = *(int *)((char *)object + 0x184);
+    *(struct Block *)((char *)object + 0x148) =
+        *(struct Block *)((char *)object + 0xF4);
 
-    if (old != 0)
-        fn_801B6428((unsigned int)old, arg0);
+    if (oldList != 0)
+        fn_801B6428((unsigned int)oldList, object);
 
-    node = *(void **)((char *)arg0 + 0xD0);
-    *(int *)((char *)arg0 + 0x184) = 0;
+    node = *(void **)((char *)object + 0xD0);
+    *(int *)((char *)object + 0x184) = 0;
     while (node != 0) {
         fn_801AE158(node);
         node = *(void **)node;
