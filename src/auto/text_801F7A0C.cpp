@@ -1630,21 +1630,27 @@ get_cur:
         goto body;
     }
 }
-extern "C" void fn_801F99CC(F92Obj *obj) {
-    class Base {
+/* Destroy the chain of objects linked through the +0x24 child link of `parent`,
+ * starting with its first child; the chain itself is left linked, only its
+ * members are destroyed. */
+extern "C" void fn_801F99CC(F92Obj *parent) {
+    /* The same dispatch table as in fn_801F9A24: it is kept at +0x108, so a base
+     * class of that size reaches it, and its first declared virtual is the table's
+     * slot 8 - the destructor, called with the delete flag set. */
+    class DispatchPad {
     public:
         char pad[0x108];
     };
-    class Node : public Base {
+    class Destroyable : public DispatchPad {
     public:
         virtual void destroy(int);
     };
-    F92Obj *cur = (F92Obj *)*(void **)((char *)obj + 0x24);
+    F92Obj *cur = (F92Obj *)*(void **)((char *)parent + 0x24);
     F92Obj *next;
     while (cur != NULL) {
         next = (F92Obj *)*(void **)((char *)cur + 0x24);
         if (cur != NULL) {
-            ((Node *)cur)->destroy(1);
+            ((Destroyable *)cur)->destroy(1);
         }
         cur = next;
     }
