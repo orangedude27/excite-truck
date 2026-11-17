@@ -86,9 +86,9 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     divX = x / 32;
     divY = y / 32;
     tileX = divX - lbl_8055E99C;
-    tileZ = divY - lbl_8055E9A0;
     remX = x - divX * 32;
     remZ = y - divY * 32;
+    tileZ = divY - lbl_8055E9A0;
     if (tileX < 0 || tileZ < 0) {
         node = 0;
     } else if (tileX >= 0x60 || tileZ >= 0x60) {
@@ -162,24 +162,26 @@ float fn_801DB398(float grid[4][4], float t, float u) {
     float values[4];
     float *src = (float *)grid;
     int qq;
+    float dp21;
     for (qq = 0; qq < 4; qq++) {
-        float p2 = src[8];
-        float p0 = src[0];
-        float p1 = src[4];
-        float dp20 = p2 - p0;
-        float p3 = src[12];
-        float dp21 = p2 - p1;
-        float dp31 = p3 - p1;
-        float half20 = lbl_80562B64 * dp20;
-        float twice20 = lbl_80562B68 * half20;
-        float half31 = lbl_80562B64 * dp31;
-        float c3t = lbl_80562B6C * dp21;
-        float sum = half20 + half31;
-        float twice21 = lbl_80562B68 * dp21;
-        float coeff3 = c3t - twice20;
-        float coeff2 = sum - twice21;
-        float t2 = t * t;
-        float t3 = t2 * t;
+        float c3t, p0, p1, dp20, sum, dp31, half20, twice20, half31, twice21, p2, p3, coeff3, coeff2, t3, t2;
+        p2 = src[8];
+        p0 = src[0];
+        p1 = src[4];
+        dp20 = p2 - p0;
+        p3 = src[12];
+        dp21 = p2 - p1;
+        dp31 = p3 - p1;
+        half20 = lbl_80562B64 * dp20;
+        twice20 = lbl_80562B68 * half20;
+        half31 = lbl_80562B64 * dp31;
+        c3t = lbl_80562B6C * dp21;
+        sum = half20 + half31;
+        twice21 = lbl_80562B68 * dp21;
+        coeff3 = c3t - twice20;
+        coeff2 = sum - twice21;
+        t2 = t * t;
+        t3 = t2 * t;
         coeff3 = coeff3 - half31;
         values[qq] = (coeff2 * t3 + coeff3 * t2) + half20 * t + p1;
         src++;
@@ -191,15 +193,15 @@ float fn_801DB398(float grid[4][4], float t, float u) {
         float p1 = values[1];
         float dp20 = p2 - p0;
         float half20 = lbl_80562B64 * dp20;
-        float dp21 = p2 - p1;
+        float dp21b = p2 - p1;
         float p3 = values[3];
         float u3 = u2 * u;
         float dp31 = p3 - p1;
         float twice20 = lbl_80562B68 * half20;
         float half31 = lbl_80562B64 * dp31;
-        float c3t = lbl_80562B6C * dp21;
+        float c3t = lbl_80562B6C * dp21b;
         float sum = half20 + half31;
-        float twice21 = lbl_80562B68 * dp21;
+        float twice21 = lbl_80562B68 * dp21b;
         float coeff3 = c3t - twice20;
         float coeff2 = sum - twice21;
         coeff3 = coeff3 - half31;
@@ -638,7 +640,7 @@ float fn_801DCF0C(void) {
  #pragma push
  #pragma processor 750
  #pragma use_lmw_stmw off
- float fn_801DCF48(void *arg0, float farg0, float farg1) {
+float fn_801DCF48(void *arg0, float farg0, float farg1) {
     extern float lbl_80562B84;
     extern float lbl_80562BBC;
     char *state = (char *)lbl_8055E990;
@@ -651,6 +653,7 @@ float fn_801DCF0C(void) {
     unsigned short *tileMap;
     unsigned short sample00, sample01, sample10;
     void *tileBase;
+
     if (*(int *)(state + 0x10) == 0) {
         sp8 = lbl_80562B84;
         if (((int (*)(float *, int, int, void *))fn_801DC258)(&sp8, 0, 0, arg0) == 0) {
@@ -674,6 +677,7 @@ float fn_801DCF0C(void) {
     if (z < lbl_80562B84) roundedZ = z - lbl_80562B64;
     else roundedZ = lbl_80562B64 + z;
     iz = (int)roundedZ;
+
     quotientX = ix / 32;
     tileX = quotientX - lbl_8055E99C;
     remX = ix - quotientX * 32;
@@ -704,6 +708,7 @@ float fn_801DCF0C(void) {
         var_f31 = lbl_80562B84;
         goto done;
     }
+
     if (arg0 != 0) {
         deltaZ = remZ << 1;
         next = *(int *)(node + 0x890);
@@ -756,7 +761,8 @@ float fn_801DCF0C(void) {
             layer = (char *)*(char **)((char *)*(volatile int *)&lbl_8055E990 + 0x20) + next * 0x810;
             do {
                 weight = lbl_804424B0[*(int *)(layer + 0x808)];
-                var_f31 += weight * (*(float *)(layer + 0) + *(float *)(layer + 4) * (float)*(unsigned short *)(layer + deltaX + deltaZ + 8));
+                var_f31 += weight * (*(float *)(layer + 0) +
+                    *(float *)(layer + 4) * (float)*(unsigned short *)(layer + deltaX + deltaZ + 8));
                 next = *(int *)(layer + 0x80C);
                 layer = next >= 0 ? (char *)*(char **)((char *)*(volatile int *)&lbl_8055E990 + 0x20) + next * 0x810 : 0;
             } while (layer != 0);
@@ -952,57 +958,51 @@ extern int lbl_8055E9A0;
 extern unsigned short lbl_80442708[];
 extern float lbl_80562B64, lbl_80562B84;
 extern double lbl_80562B78;
+#pragma push
+#pragma paired_single off
+#pragma opt_common_subs on
+#pragma scheduling invalid_target
 int fn_801DDA84(int unused, int *out, int max, float x, float z, float thr) {
-    int *state = (int *)lbl_8055E990;
+    GroundDesc *ground = (GroundDesc *)lbl_8055E990;
     int ix, iz, qx, qz, tileX, tileZ, remX, remZ;
-    int tile, count, idx;
+    unsigned short tile;
+    int count, idx;
     char *node, *map;
-
-    if (state[4] == 0)
-        return 0;
-    x = (x + *(float *)((char *)state + 0)) * *(float *)((char *)state + 8);
-    z = (z + *(float *)((char *)state + 4)) * *(float *)((char *)state + 12);
+    float bias = (float)lbl_80562B78;
+    if (ground->tiled == 0) return 0;
+    x = (x + ground->offsetX) * ground->scaleX;
+    z = (z + ground->offsetZ) * ground->scaleZ;
     ix = (int)(x < lbl_80562B84 ? x - lbl_80562B64 : lbl_80562B64 + x);
     iz = (int)(z < lbl_80562B84 ? z - lbl_80562B64 : lbl_80562B64 + z);
-    if (ix < 0 || iz < 0)
-        return 0;
+    if (ix < 0 || iz < 0) return 0;
     qx = ix / 32;
     qz = iz / 32;
     tileX = qx - lbl_8055E99C;
     tileZ = qz - lbl_8055E9A0;
     remX = ix - qx * 32;
     remZ = iz - qz * 32;
-    if (tileX < 0 || tileZ < 0 || tileX >= 0x60 || tileZ >= 0x60)
-        return 0;
+    if (tileX < 0 || tileZ < 0 || tileX >= 0x60 || tileZ >= 0x60) return 0;
     tile = ((unsigned short (*)[0x60])lbl_80442708)[tileX][tileZ];
-    if (tile == 0xFFFF)
-        return 0;
-    node = *(char **)((char *)state + 0x18) + tile * 0x894;
-    if (node == 0)
-        return 0;
+    if (tile == 0xFFFF) return 0;
+    node = (char *)ground->nodes + tile * 0x894;
+    if ((unsigned long)node == 0) return 0;
     idx = *(int *)(node + 0x890);
     count = 0;
-    if (idx < 0)
-        return 0;
-    map = *(char **)((char *)state + 0x20) + idx * 0x810;
+    if (idx < 0) return 0;
+    map = (char *)ground->layers + idx * 0x810;
     while (1) {
-        float h = (float)fabs(*(float *)map + *(float *)(map + 4) * ((float)*(unsigned short *)(map + remX * 64 + remZ * 2 + 8) - lbl_80562B78));
+        GroundLayer *layer = (GroundLayer *)map;
+        float h = (float)fabs(layer->baseHeight + layer->heightScale * ((float)layer->samples[remX][remZ] - bias));
         if (h < thr && count < max) {
             out[count] = *(int *)(map + 0x808);
             count++;
         }
-        idx = *(int *)(map + 0x80C);
-        if (idx < 0)
-            break;
-        map = *(char **)((char *)lbl_8055E990 + 0x20) + idx * 0x810;
+        idx = layer->next;
+        if (idx < 0) break;
+        map = (char *)ground->layers + idx * 0x810;
     }
     return count;
 }
-
-#pragma push
-#pragma paired_single off
-#pragma opt_common_subs on
-#pragma scheduling invalid_target
 /* Ground height at a world X/Z position: rounds the scaled coordinates into a
  * grid cell, finds the covering tile's node, and sums the weighted overlay
  * layers chained from that node.  Returns 0 when no tile covers the point. */
