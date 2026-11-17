@@ -874,6 +874,64 @@ static inline const char *entryName(s32 entry) {
 static inline u32 entryParent(s32 entry) {
     return *(u32 *)(FstStart_8055D840 + 4 + entry * 12);
 }
+static inline u32 myStrncpy(char *dest, char *src, u32 maxlen) {
+    u32 i = maxlen;
+    while (i > 0 && *src != 0) {
+        *dest++ = *src++;
+        i--;
+    }
+    return maxlen - i;
+}
+static inline u32 entryToPathA(u32 entry, char *path, u32 maxlen) {
+    char *name;
+    u32 loc;
+    if (entry == 0) return 0;
+    name = (char *)FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF);
+    loc = DVDConvertEntrynumToPath(*(u32 *)(FstStart_8055D840 + 4 + entry * 12), path, maxlen);
+    if (loc == maxlen) return loc;
+    path[loc++] = '/';
+    loc += myStrncpy(path + loc, name, maxlen - loc);
+    return loc;
+}
+static inline u32 entryToPathB(u32 entry, char *path, u32 maxlen) {
+    char *name;
+    u32 loc;
+    if (entry == 0) return 0;
+    name = (char *)FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF);
+    loc = entryToPathA(*(u32 *)(FstStart_8055D840 + 4 + entry * 12), path, maxlen);
+    if (loc == maxlen) return loc;
+    path[loc++] = '/';
+    loc += myStrncpy(path + loc, name, maxlen - loc);
+    return loc;
+}
+static inline u32 entryToPathC(u32 entry, char *path, u32 maxlen) {
+    char *name;
+    u32 loc;
+    if (entry == 0) return 0;
+    name = (char *)FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF);
+    loc = entryToPathB(*(u32 *)(FstStart_8055D840 + 4 + entry * 12), path, maxlen);
+    if (loc == maxlen) return loc;
+    path[loc++] = '/';
+    loc += myStrncpy(path + loc, name, maxlen - loc);
+    return loc;
+}
+static inline BOOL convertEntrynumToPath(s32 entrynum, char *path, u32 maxlen) {
+    u32 loc;
+    loc = entryToPathC((u32)entrynum, path, maxlen);
+    if (loc == maxlen) {
+        path[maxlen - 1] = '\0';
+        return FALSE;
+    }
+    if (*(u32 *)(FstStart_8055D840 + entrynum * 12) & 0xFF000000) {
+        if (loc == maxlen - 1) {
+            path[loc] = '\0';
+            return FALSE;
+        }
+        path[loc++] = '/';
+    }
+    path[loc] = '\0';
+    return TRUE;
+}
 static inline u32 entryToPath1(u32 entry, char *path, u32 maxlen) {
     const char *name;
     if (entry == 0) return 0;
