@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef signed int s32;
+typedef signed char s8;
 typedef unsigned char u8;
 typedef float f32;
 extern s32 fn_801333E8(s32, const u8 *, u8 *, u8 *);
@@ -454,8 +455,8 @@ void fn_80263D18(void *arg0, int arg_sp0) {
         unsigned char field28; unsigned char field29;
     };
     struct Object *obj = (struct Object *)arg0;
-    int var_r31, var_r30;
     int a, b, c, d, e;
+    int var_r31, var_r30;
     if (obj->field29) {
         if (obj->field28) { var_r31=3; var_r30=0; }
         else { var_r31=0; var_r30=3; }
@@ -469,21 +470,21 @@ void fn_80263D18(void *arg0, int arg_sp0) {
             a=obj->field10; b=obj->fieldC; c=obj->field8; d=obj->field4;
             e=((int (*)(const u8 *))fn_80131234)(lbl_80346310);
             ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))fn_8022BAD0)(
-                0xC9,d,c,0,b,a,e,obj->field1C,0,lbl_80563BD4);
+                0xC9,d,c,0,b,a,e,obj->field1C,0,1.0f);
         } else {
             a=obj->field10; b=obj->fieldC; c=obj->field8; d=obj->field4;
             e=((int (*)(const u8 *))fn_80131234)(lbl_803462FC);
             ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))fn_8022BAD0)(
-                0xC9,d,c,0,b,a,e,obj->field1C,0,lbl_80563BD4);
+                0xC9,d,c,0,b,a,e,obj->field1C,0,1.0f);
         }
     }
     a=obj->field10; b=obj->fieldC; c=obj->field8; d=obj->field4;
     e=((int (*)(const u8 *))fn_80131234)(lbl_803462E8);
     ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))fn_8022BAD0)(
-        0xCA,d+0x159,c+2,0,b,a,e,var_r31,0,lbl_80563BD4);
+        0xCA,d+0x159,c+2,0,b,a,e,var_r31,0,1.0f);
     a=obj->field10; b=obj->fieldC; c=obj->field8; d=obj->field4;
     e=((int (*)(const u8 *))fn_80131234)(lbl_803462D4);
     ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))fn_8022BAD0)(
-        0xCA,d+0x1BD,c+2,0,b,a,e,var_r30,0,lbl_80563BD4);
+        0xCA,d+0x1BD,c+2,0,b,a,e,var_r30,0,1.0f);
 }
 
