@@ -20236,6 +20236,8 @@ extern "C" void fn_800D0BA4(void *target, void *handler) {
     }
 }
 
+/* homebutton GUI vtable stub: reports "false" (0) through this slot, i.e. the
+ * queried capability/result is unavailable. */
 extern "C" s32 fn_800D0BD0(void) { return 0; }
 
 extern "C" void wpadExtensionCallback__Q210homebutton10ControllerFll(s32, s32);
