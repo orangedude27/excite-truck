@@ -281,6 +281,7 @@ copy2:      *dst++=*src++; } while(dst[-1]);
     *(int *)(obj+0x408)=best_j;
 }
 
+#pragma cplusplus reset
 void fn_8025DDD0(void *arg0, int arg1) {
     float spC, sp8, f25, f24, f26, f27, f28, f29;
     char *base, *entry;
