@@ -3328,7 +3328,10 @@ extern "C" s32 fn_8016524C(void *a){
 }
 #pragma cplusplus off
 
-int fn_801657D4(void) { return 1; }
+int fn_801657D4(void) {
+    /* No-op default callback among the level-select/UI handlers: always reports handled (1). */
+    return 1;
+}
 
 /* Captures the current view transform and scale, applies them, then sets the state to 0x15 for all players. */
 void fn_801657DC(void) {
