@@ -432,11 +432,14 @@ void fn_801BEB30(int slot, int *outRecord) {
 extern float lbl_80562838, lbl_8056283C, lbl_805628A8, lbl_805628AC, lbl_805628B0;
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801BEB44(int i, int j, float *target, float *velocity) {
     unsigned char *base = (unsigned char *)lbl_8055E798 + i * 0x1F0;
     int off = j * 16;
     unsigned char *p = base + off;
-    Vec801BD a, b, n, diff, tmp, lerp;
+    Vec801BD a, b, n, diff, tmp, lerp, dead1, dead2, dead3;
     Vec801BD *tg = (Vec801BD *)target;
     Vec801BD *vel = (Vec801BD *)velocity;
     float d0, d1, t;
@@ -457,9 +460,12 @@ void fn_801BEB44(int i, int j, float *target, float *velocity) {
     lerp.z = vel->z + t * (n.z - vel->z);
     Vec801BD_Copy(&n, &lerp);
     PSVECNormalize(&n, &n);
+    Vec801BD_Copy(&dead1, &n);
     lerp.x = tg->x + t * (b.x - tg->x);
     lerp.y = tg->y + t * (b.y - tg->y);
     lerp.z = tg->z + t * (b.z - tg->z);
+    Vec801BD_Copy(&dead2, &lerp);
+    Vec801BD_Copy(&dead3, &n);
     p = base + off;
     Vec801BD_Copy((Vec801BD *)(p + 0x150), &lerp);
     *(float *)(p + 0x15C) = *(float *)(p + 0x24);
