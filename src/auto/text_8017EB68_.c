@@ -1639,8 +1639,9 @@ int fn_80181774(void *object) {
     return ((struct Di718 *)object)->flag5D;
 }
 
-int fn_8018177C(void *arg0) {
-    return *(unsigned char *)((char *)arg0 + 0x68);
+/* Return the flag68 byte (offset 0x68) of this audio-driver object. */
+int fn_8018177C(void *object) {
+    return ((struct Di718 *)object)->flag68;
 }
 
 int fn_80181784(void *arg0) {
