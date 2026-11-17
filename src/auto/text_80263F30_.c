@@ -843,8 +843,8 @@ void fn_8026523C(void *item) {
 
 int strlen(char *);
 void fn_80265268(void *arg0, int arg1, char *arg2, float farg0) {
-    char *dst = (char *)arg0 + 0x1C;
     int count = 0x96;
+    char *dst = (char *)arg0 + 0x1C;
     char *src = arg2;
     unsigned char c;
     *(int *)((char *)arg0 + 0x18) = arg1;
@@ -861,7 +861,7 @@ copy:
         goto count_check;
     goto done;
 done:
-    *(int *)((char *)arg0 + 0xB4) = strlen((char *)arg0 + 0x1C);
+    *(int *)((char *)arg0 + 0xB4) = strlen(&((char *)arg0)[0x1C]);
     *(float *)((char *)arg0 + 0xB8) = farg0;
 }
 
