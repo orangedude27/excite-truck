@@ -20664,7 +20664,8 @@ extern "C" void fn_800D1548(void *controller) {
 }
 
 extern "C" void fn_800D1558(void) {
-
+    /* Identity hook: hands back the homebutton::Controller pointer it receives,
+       letting callers reach that controller's state fields. */
 }
 
 extern "C" s32 WPADControlMotor(s32, s32);
