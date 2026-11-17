@@ -329,9 +329,14 @@ void fn_80278778(char *name) {
 }
 #pragma opt_propagation reset
 extern char lbl_8055F5B9;
+/* Clear scripted-movie playback state: stop any playback and drop the queued movie. */
 void fn_802787E4(void) {
-    lbl_8055F5BA = 0;
-    lbl_8055F5B9 = 0;
+    #define sPlayingBack lbl_8055F5BA /* 1 while the captured movie plays */
+    #define sPlayPending lbl_8055F5B9 /* a movie is queued to play back */
+    sPlayingBack = 0;
+    sPlayPending = 0;
+    #undef sPlayingBack
+    #undef sPlayPending
 }
 
 extern char lbl_8055F5BA;
