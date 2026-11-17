@@ -2367,7 +2367,9 @@ void fn_8018A9F0(void *arg0, void *arg1) {
  * +0x25DC/+0x25E0/+0x25E4 that reset code (fn_801838C8/fn_80183E7C) sets to 0/0/1. */
 void fn_8018ADA4(void *truck, f32 value) { *(f32 *)((u8 *)truck + 0x25DC) = value; }
 
-void fn_8018ADAC(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25DC) = farg0; }
+/* Set the truck's +0x25DC physics float (same field as fn_8018ADA4); callers such
+ * as fn_801941A8 feed it a computed, sign-checked position value. */
+void fn_8018ADAC(void *truck, f32 value) { *(f32 *)((u8 *)truck + 0x25DC) = value; }
 
 void fn_8018ADB4(void *car, f32 value) {
     /* Set the car's float tuning parameter at offset 0x25E0 (one of a run of interpolated fields). */
