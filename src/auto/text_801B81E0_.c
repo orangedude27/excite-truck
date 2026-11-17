@@ -770,9 +770,11 @@ void fn_801B8A70(void *ctx, int itemIndex, int payload) {
     fn_801B0F70(itemIndex, payload);
 }
 
-void fn_801B8A7C(void *arg0, int arg1) {
+/* Callback adapter: ignores the context pointer and forwards the summary-buffer
+ * pointer to fn_801B2C70, which fills a competitor result table there. */
+void fn_801B8A7C(void *ctx, int buffer) {
     extern void fn_801B2C70(void *);
-    fn_801B2C70((void *)arg1);
+    fn_801B2C70((void *)buffer);
 }
 
 void fn_801B8A84(void) {
