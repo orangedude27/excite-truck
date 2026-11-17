@@ -1482,9 +1482,10 @@ void GXInitLightAttnK_80181464(void *light, float a, float b, float c) {
     *(float *)((char *)light + 0x320) = c;
 }
 
-void fn_80181474(void *arg0, float arg1, float arg2) {
- *(float *)((char *)arg0+0x324)=arg1;
- *(float *)((char *)arg0+0x328)=arg2;
+void fn_80181474(void *obj, float x, float y) {
+    /* Set the two rumble-parameter floats at +0x324/+0x328 (read by fn_8017F628). */
+    *(float *)((char *)obj + 0x324) = x;
+    *(float *)((char *)obj + 0x328) = y;
 }
 
 /* Update the running minimum at +0x50 with value, always recording the latest value at +0x54. */
