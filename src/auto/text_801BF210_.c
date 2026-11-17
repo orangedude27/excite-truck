@@ -30,14 +30,15 @@ void *fn_801BF214(void) {
     extern int lbl_8055E7BC;
     void *p = fn_801284F8(0x278, &lbl_8055A948);
     if (p != 0) {
-        int index;
+        register int index;
         fn_8017B0B0();
         *(char **)p = lbl_80336A90;
         *(int *)((char *)p + 0x1EC) = 0;
         *(int *)((char *)p + 0x1F0) = -1;
-        index = lbl_8055E7BC++;
+        index = lbl_8055E7BC;
         *(void **)(lbl_80437D48 + index * 4) = p;
-        *(int *)((char *)p + 0x214) = fn_801C1BA4(4, 6, 2, lbl_80437D48, lbl_8055E7BC);
+        lbl_8055E7BC = index + 1;
+        *(int *)((char *)p + 0x214) = fn_801C1BA4(4, 6, 2, lbl_80437D48, index + 1);
     }
     return p;
 }
@@ -488,7 +489,8 @@ void fn_801BFEB0(void) {
 
 }
 
-long fn_801BFEB4(long arg0) { return arg0 + 0x6C; }
+/* Return the address of the embedded field at offset 0x6C of base. */
+long fn_801BFEB4(long base) { return base + 0x6C; }
 
 /* GXInitLightAttnA: store the three cosine-attenuation coefficients (aa, ab, ac) at the head of a GX light object. */
 void GXInitLightAttnA_801BFEBC(void *lightObj, float aa, float ab, float ac) {
