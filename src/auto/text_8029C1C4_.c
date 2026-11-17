@@ -418,35 +418,43 @@ void fn_8029C934(void) {
 void fn_8029C998(void) {
     typedef struct { float x, y, z; } Vec;
     typedef struct { float x, y; } Vec2;
+    /* the area's rectangle: one corner and its two edge vectors */
     typedef struct { Vec pos; Vec2 v1; Vec2 v2; } Params;
-    struct Owner { virtual void m08(); virtual void *get(int); };
-    struct Item {
-        virtual void m08(); virtual void m0C(); virtual void m10(); virtual int getId(void *);
+    /* a VALT parameter file: fn_80131810 opens one by name and fn_80131818
+       closes it again; its entries are asked for until one comes back NULL */
+    struct ValtFile { virtual void m08(); virtual void *getEntry(int i); };
+    /* one entry of it, whose values are looked up by the key they are named with */
+    struct ValtEntry {
+        virtual void m08(); virtual void m0C(); virtual void m10(); virtual int getInt(void *key);
         virtual void m18(); virtual void m1C(); virtual void m20(); virtual void m24();
-        virtual void m28(); virtual void m2C(); virtual void m30(); virtual Vec getVec(void *);
-        virtual void m38(); virtual Vec2 getVec2(void *);
+        virtual void m28(); virtual void m2C(); virtual void m30(); virtual Vec getVec3(void *key);
+        virtual void m38(); virtual Vec2 getVec2(void *key);
     };
-    extern char lbl_80349560[]; extern int lbl_804B5030[]; extern int lbl_8055F7F4;
-    extern int lbl_8055CAB4, lbl_8055CABC, lbl_8055CAC4;
+    extern char lbl_80349560[];       /* the module's strings, by the offsets below */
+    extern int lbl_804B5030[];        /* the shallow water areas */
+    extern int lbl_8055F7F4;          /* how many shallow water areas there are */
+    extern int lbl_8055CAB4, lbl_8055CABC, lbl_8055CAC4;   /* "origin", "right", "up" */
     extern void *fn_80131810(void *); extern void fn_80131818(void *);
     extern void *fn_8029E754(void *, void *, int);
     extern void fn_802E317C(const char *, ...);
-    Params params; int *dest; char *base; Owner *owner; int i; int idx;
-    base = lbl_80349560; lbl_8055F7F4 = 0; owner = (Owner *)fn_80131810(base + 0xEC);
-    if (owner != 0) {
+    Params params; int *dest; char *base; ValtFile *valt; int i; int idx;
+
+    base = lbl_80349560; lbl_8055F7F4 = 0; valt = (ValtFile *)fn_80131810(base + 0xEC);
+    if (valt != 0) {
         dest = lbl_804B5030;
-        for (i = 0; owner->get(i) != 0; i++) {
-            Item *item; int id; void *res;
-            if (lbl_8055F7F4 >= 16) fn_802E317C(base + 0xF8, 16);
-            item = (Item *)owner->get(i); id = item->getId(base + 0xD0);
-            params.pos = item->getVec(&lbl_8055CAB4);
-            params.v1 = item->getVec2(&lbl_8055CABC);
-            params.v2 = item->getVec2(&lbl_8055CAC4);
-            res = (void *)fn_801284F8(0x44, base + 0x11C);
-            if (res != 0) res = fn_8029E754(res, &params, id);
-            idx = lbl_8055F7F4; dest[idx] = (int)res; lbl_8055F7F4 = idx + 1;
+        for (i = 0; valt->getEntry(i) != 0; i++) {
+            ValtEntry *entry; int texture; void *area;
+            if (lbl_8055F7F4 >= 16)
+                fn_802E317C(base + 0xF8, 16);
+            entry = (ValtEntry *)valt->getEntry(i); texture = entry->getInt(base + 0xD0);
+            params.pos = entry->getVec3(&lbl_8055CAB4);
+            params.v1 = entry->getVec2(&lbl_8055CABC);
+            params.v2 = entry->getVec2(&lbl_8055CAC4);
+            area = (void *)fn_801284F8(0x44, base + 0x11C);
+            if (area != 0) area = fn_8029E754(area, &params, texture);
+            idx = lbl_8055F7F4; dest[idx] = (int)area; lbl_8055F7F4 = idx + 1;
         }
-        fn_80131818(owner);
+        fn_80131818(valt);
     }
 }
 #pragma pop
