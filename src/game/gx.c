@@ -3121,10 +3121,10 @@ void fn_802D362C(s32 arg0) {
     GXSetZMode(0, 3, 0);
     GXSetTexCoordGen2(0, 1, 0xC, 0x3C, 0, 0x7D);
     packed = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
-    color[3] = (unsigned char)packed;
     color[0] = (unsigned char)(packed >> 24);
     color[1] = (unsigned char)(packed >> 16);
     color[2] = (unsigned char)(packed >> 8);
+    color[3] = (unsigned char)packed;
     GXSetTevColor(1, color);
     fn_802D3420();
 }
@@ -3153,28 +3153,13 @@ typedef struct {
 
 #pragma dont_inline reset
 void fn_802D37E4(void) {
-    unsigned char *p = (unsigned char *)lbl_804C9984;
-    int i = 4;
-    do {
-        p[12] = 0; p[13] = 0;
-        p[36] = 0; p[37] = 0;
-        p[60] = 0; p[61] = 0;
-        p[84] = 0; p[85] = 0;
-        p[108] = 0; p[109] = 0;
-        p[132] = 0; p[133] = 0;
-        p[156] = 0; p[157] = 0;
-        p[180] = 0; p[181] = 0;
-        p[204] = 0; p[205] = 0;
-        p[228] = 0; p[229] = 0;
-        p[252] = 0; p[253] = 0;
-        p[276] = 0; p[277] = 0;
-        p[300] = 0; p[301] = 0;
-        p[324] = 0; p[325] = 0;
-        p[348] = 0; p[349] = 0;
-        p[372] = 0; p[373] = 0;
-        p += 384;
-    } while (--i);
-    *(int *)(lbl_804C9984 + 1792) = 0;
+    ZQueryPool *pool = (ZQueryPool *)lbl_804C9984;
+    int i;
+    for (i = 0; i < 64; i++) {
+        pool->query[i].used = 0;
+        pool->query[i].visible = 0;
+    }
+    *(int *)((char *)lbl_804C9984 + 0x700) = 0;
 }
 
 void fn_802D3894(void) {
