@@ -1279,6 +1279,8 @@ void fn_80035B88(u32 dvdStatus) {
     fn_80038040();
 }
 
+/* After a DVD error code is stored, re-arm the drive with a low-level command,
+ * using the fatal-command handler fn_80035B88 as its completion callback. */
 void fn_80035C64(void) {
     fn_8003AF1C(0, 0, fn_80035B88);
 }
