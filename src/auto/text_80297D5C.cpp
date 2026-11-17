@@ -458,19 +458,17 @@ extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
         ((void (*)(void *, int))fn_8029840C)(arg0, index);
         return;
     }
-    int mode = 0;
-    float firstAngle = lbl_805645B8;
-    float secondArg = lbl_80564590;
-    *(volatile float *)(entry + 0x24) = remaining - deltaTime;
-    float angle = fn_80129DC4(mode, firstAngle, secondArg);
+    *(float *)(entry + 0x24) = remaining - deltaTime;
+    float angle = fn_80129DC4(0, -1.0f, 1.0f);
     float angle2 = angle * angle;
-    float otherAngle = (float)fn_8002F234(lbl_80564590 - angle2);
-    float cosine = fn_80129DC4(mode, -otherAngle, otherAngle);
+    float otherAngle = (float)fn_8002F234(1.0f - angle2);
+    float cosine = fn_80129DC4(0, -otherAngle, otherAngle);
     volatile float target[3];
     volatile float positions[3];
-    target[0] = lbl_8056459C;
-    target[1] = lbl_8056459C;
-    target[2] = lbl_8056459C;
+    float zero = 0.0f;
+    target[0] = zero;
+    target[1] = zero;
+    target[2] = zero;
     float x = *(float *)(entry + 0x00) + *(float *)(entry + 0x0C) * angle;
     positions[0] = x;
     float y = *(float *)(entry + 0x04) + *(float *)(entry + 0x10) * angle;
@@ -952,6 +950,7 @@ extern "C" void fn_80299628(void *arg0) {
 
 #pragma scheduling invalid_target
 extern "C" int fn_802996B0(void *arg0, int *out) {
+ #pragma scheduling invalid_target
  int state, best=-1, found=0;
  state=*(int*)((char*)arg0+0x34);
  if(state==0){*out=0;return 1;}
