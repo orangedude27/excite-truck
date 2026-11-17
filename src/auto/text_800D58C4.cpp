@@ -3130,7 +3130,9 @@ static inline void AssertNode(void* node) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_800DB098(void* arg0, void* arg1) {
+/* nw4hbm::lyt::Material::Animate: walk the material's animation link list at
+ * +0x1C and invoke Animate(index, this) on each active target's callback. */
+extern "C" void fn_800DB098(void* material, void* option) {
     struct AnimTarget {
         virtual void v0();
         virtual void v1();
@@ -3141,22 +3143,22 @@ extern "C" void fn_800DB098(void* arg0, void* arg1) {
     };
     extern const char lbl_8031F1FC[];
     extern const char lbl_8031F1D8[];
-    u8* base = (u8*)arg0;
+    u8* base = (u8*)material;
     struct { void *node; } cursor;
     cursor.node = *(void**)(base + 0x1C);
-    void *&node = cursor.node;
+    void *&link = cursor.node;
     struct { void *end; } sentinel;
     sentinel.end = base + 0x1C;
-    void *&end = sentinel.end;
-    while (node != end) {
-        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-        if (*(u8*)((u8*)node + 0xE) == 0) {
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            AnimTarget* obj = *(AnimTarget**)((u8*)node + 8);
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            obj->Animate(*(u16*)((u8*)node + 0xC), arg0);
+    void *&head = sentinel.end;
+    while (link != head) {
+        if (link == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+        if (*(u8*)((u8*)link + 0xE) == 0) {
+            if (link == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+            AnimTarget* animTarget = *(AnimTarget**)((u8*)link + 8);
+            if (link == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+            animTarget->Animate(*(u16*)((u8*)link + 0xC), material);
         }
-        node = *(void**)node;
+        link = *(void**)link;
     }
 }
 #pragma pop
