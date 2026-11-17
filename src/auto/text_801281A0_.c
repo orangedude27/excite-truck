@@ -213,8 +213,9 @@ s32 fn_801284E8(void *arg0, void *arg1) {
     fn_8012834C(arg0, arg1, 1);
 }
 
-void fn_801284F0(void *arg0, void *arg1) {
-    fn_8012834C(arg0, arg1, 2);
+/* Debug heap allocation wrapper: allocate `size` bytes tagged with `label`, using allocation source id 2. */
+void fn_801284F0(void *label, void *size) {
+    fn_8012834C(label, size, 2);
 }
 
 /* Named heap allocation through C++ operator new (source id 3): allocates
