@@ -7630,6 +7630,10 @@ fetch:
 }
 
 extern "C" void fn_800B0748(void);
+/* Tail-call thunk into the VF file-system/CP932 code-page manager startup
+ * fn_800B5CB4: it sets up the manager block at lbl_803D2140 (its list heads,
+ * the OEM<->Unicode conversion callbacks and the 0x1A name records), so the
+ * caller's flag and pointer arguments pass straight through the branch. */
 void fn_800B0748(void) {
     ((void (*)(void))fn_800B5CB4)();
 }
@@ -12720,7 +12724,7 @@ static inline void fn800B960CSetSlotError(u32 key, s32 err) {
 }
 extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
     s32 status;
-    u16 i;
+    u32 i;
     u32 filelen;
     u32 pos;
     u32 length;
@@ -12732,14 +12736,14 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     unsigned char buf[0x200] __attribute__((aligned(32)));
 
     entry = 0;
-    for (i = 0; i < 0x17; i++) {
-        u32 offset = i * 0xF0;
+    for (i = 0; (u16)i < 0x17; i++) {
+        u32 offset = (u16)i * 0xF0;
         if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
             entry = lbl_80405D58 + offset;
             break;
         }
     }
-    if (i == 0x17) {
+    if ((u16)i == 0x17) {
         status = -0x16;
     } else {
         status = 0;
@@ -12781,8 +12785,8 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     while (length >= 0x200) {
         r = NANDRead(entry + 0x58, buf, 0x200);
         if (r < 0) {
-            for (i = 0; i < 0x17; i++) {
-                u32 offset = i * 0xF0;
+            for (i = 0; (u16)i < 0x17; i++) {
+                u32 offset = (u16)i * 0xF0;
                 if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
                     *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
                     break;
@@ -12797,8 +12801,8 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     if (length != 0) {
         r = NANDRead(entry + 0x58, buf, length);
         if (r < 0) {
-            for (i = 0; i < 0x17; i++) {
-                u32 offset = i * 0xF0;
+            for (i = 0; (u16)i < 0x17; i++) {
+                u32 offset = (u16)i * 0xF0;
                 if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
                     *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
                     break;
@@ -12812,8 +12816,8 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     return 0;
 
 fail:
-    for (i = 0; i < 0x17; i++) {
-        u32 offset = i * 0xF0;
+    for (i = 0; (u16)i < 0x17; i++) {
+        u32 offset = (u16)i * 0xF0;
         if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
             *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
             break;
@@ -22147,12 +22151,12 @@ void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
     offsets += *(s32 *)(offsets + 0x10);
     register u16 i = 0;
     register u8 *materialPtr = (u8 *)material;
-    u32 off = 0;
+    u32 off;
     while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
         u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
         if (entry[0x15] == 1) {
             if (((s32 (*)(void *, void *))fn_800D58F0)(materialPtr + 4, entry) != 0) {
-                off = i * 0x10;
+                off = (u32)i << 4;
                 u8 *link = (u8 *)*(void **)(self + 0x18) + off;
                 *(void **)(link + 8) = self;
                 *(u16 *)(link + 0xC) = i;
