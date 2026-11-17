@@ -845,7 +845,8 @@ int fn_802B1AF0(void *arg0) {
     return ((int *)arg0)[1];
 }
 
-int fn_802B1AF8(int *arg0, int arg1) { return *arg0 + arg1 * 2; }
+/* Indexed accessor: returns the stored base value advanced by two per step (stride of a two-word record). */
+int fn_802B1AF8(int *base, int step) { return *base + step * 2; }
 
 int fn_802B1B08(void *arg0) { return ((int *)arg0)[1]; }
 
