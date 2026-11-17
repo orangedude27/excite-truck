@@ -24,7 +24,9 @@ s32 fn_8013A1F8(void) {
     return 0;
 }
 
-void fn_8013A200(void) {
+/* Per-AI-car hook run when a car's proximity record is re-armed after a restart
+ * (fn_801349C4 passes the car index): the shipped game leaves it empty. */
+void fn_8013A200(s32 carIndex) {
 
 }
 
