@@ -1067,7 +1067,12 @@ int fn_802C0C98(void *arg0) { return *(int *)((char *)arg0 + 8); }
 /* Getter: returns the float field at offset 0x14 of the given object. */
 float fn_802C0CA0(void *object) { return *(float *)((char *)object + 0x14); }
 
-int fn_802C0CA8(void) { /* Predicate method on this UI object: always reports available (1). */ int isAvailable = 1; return isAvailable; }
+int fn_802C0CA8(void) {
+#define ALWAYS_AVAILABLE 1
+    /* Predicate method on this UI object: always reports available so callers proceed. */
+    int isAvailable = ALWAYS_AVAILABLE;
+    return isAvailable;
+}
 
 /* Destructor-like cleanup: installs lbl_8034AE20 vtable, releases the ref-counted/owned handle at offset +4 when valid, and optionally frees the object. */
 void *fn_802C0CB0(void *object, int shouldDelete) {
