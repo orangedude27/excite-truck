@@ -213,8 +213,9 @@ s32 fn_80144C90(f32 farg0) {
     return (s32)x;
 }
 #pragma pop
-f32 fn_80144CC8(f32 farg0) {
-    return farg0 * farg0;
+/* Return the square of value. */
+f32 fn_80144CC8(f32 value) {
+    return value * value;
 }
 
 #pragma push
