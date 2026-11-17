@@ -356,8 +356,8 @@ s32 fn_801291C8(void *buffer, u32 value) {
 s32 fn_801291F4(void *region) {
 #define HEAP_BASE_INDEX 1
     /* Return this heap region's base field (offset 0x4), the lower bound used by fn_801291FC. */
-    s32 base = ((s32 *)region)[HEAP_BASE_INDEX];
-    return base;
+    s32 baseAddr = ((s32 *)region)[HEAP_BASE_INDEX];
+    return baseAddr;
 }
 
 s32 fn_801291FC(void *region) {
