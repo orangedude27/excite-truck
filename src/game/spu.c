@@ -1300,6 +1300,8 @@ void fn_802E6264(void) {
     }
 }
 #pragma pop
+/* SND_Name: return the default sound-resource name, the shared "!!" string shown
+ * for resources that have no name. The resource argument callers pass is ignored. */
 int* fn_802E6ABC(void) {
     return &lbl_8055D1EC;
 }
