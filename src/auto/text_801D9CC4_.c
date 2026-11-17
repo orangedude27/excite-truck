@@ -13,13 +13,15 @@ extern char lbl_80339218[];
 #define SWAP2(q, a, b) do { u8 t = (q)[a]; (q)[a] = (q)[b]; (q)[b] = t; } while (0)
 #define SWAP4(q, o) do { SWAP2(q, (o), (o) + 3); SWAP2(q, (o) + 1, (o) + 2); } while (0)
 
+#pragma opt_propagation off
 void *fn_801D9CC4(void *arg0) {
     int type = 0;
     u8 flag = 0;
     volatile u8 *base;
+    int i, j;
+    int off;
     volatile u8 *e;
     volatile u8 *r;
-    int i, j;
     base = (volatile u8 *)fn_8012C370(arg0, 0x50507468, &type, 0, 0, &flag);
     if (base == 0) {
         fn_802E317C(lbl_80339200, arg0);
@@ -36,8 +38,9 @@ void *fn_801D9CC4(void *arg0) {
             SWAP4(e, 0x10);
             SWAP4(e, 0x14);
             *(u32 *)(e + 0x14) = (u32)base + *(u32 *)(e + 0x14);
-            for (j = 0; j < *(s32 *)(e + 0x10); j++) {
-                r = (volatile u8 *)*(u32 *)(e + 0x14) + j * 0x20;
+            off = 0;
+            for (j = 0; j < *(s32 *)(e + 0x10); j++, off += 0x20) {
+                r = (volatile u8 *)*(u32 *)(e + 0x14) + off;
                 SWAP4(r, 0);
                 SWAP4(r, 4);
                 SWAP4(r, 8);
@@ -51,7 +54,7 @@ void *fn_801D9CC4(void *arg0) {
     }
     return (void *)base;
 }
-
+#pragma opt_propagation reset
 void fn_801D9F24(void) {
     fn_8012C4D8();
 }
@@ -191,15 +194,16 @@ backward:
 #pragma pop
 
 void fn_801DA198(void *arg0, float farg0) {
-    register void *obj;
-    register int index;
     float *values;
+    int index;
     *(float *)((char *)arg0 + 0xC) = farg0;
     *(int *)((char *)arg0 + 8) = 0;
     if (*(void **)((char *)arg0 + 4) == 0) return;
-    while ((index = ++*(int *)((char *)arg0 + 8)) + 1 < *(int *)((char *)(obj = *(void **)((char *)arg0 + 4)) + 0x10)) {
-        values = *(float **)((char *)obj + 0x14);
+    while (*(int *)((char *)arg0 + 8) + 1 < *(int *)((char *)*(void **)((char *)arg0 + 4) + 0x10)) {
+        index = *(int *)((char *)arg0 + 8);
+        values = *(float **)((char *)*(void **)((char *)arg0 + 4) + 0x14);
         if (values[index * 8 + 8] > *(float *)((char *)arg0 + 0xC)) return;
+        *(int *)((char *)arg0 + 8) = *(int *)((char *)arg0 + 8) + 1;
     }
 }
 
