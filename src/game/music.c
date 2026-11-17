@@ -113,6 +113,7 @@ void fn_8020A550(void) {
     } while (index < 2);
 }
 
+/* Return the global music playback volume (the "Music" setting), set by fn_8020A5F8 and used as the level music plays at. */
 f32 fn_8020A5F0(void) {
     return lbl_8055EDD8;
 }
