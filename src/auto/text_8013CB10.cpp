@@ -3361,8 +3361,10 @@ extern "C" void fn_801431F4(u8 *arg0) {
     *(u8 *)(arg0 + 0x26C) = 1;
 }
 
-extern "C" void fn_80143200(u8 *arg0) {
-    *(u8 *)(arg0 + 0x26C) = 0;
+extern "C" void fn_80143200(u8 *obj) {
+    /* Clear this object's flag byte at +0x26C (paired with fn_801431F4,
+     * which sets the same flag). */
+    *(u8 *)(obj + 0x26C) = 0;
 }
 
 extern "C" s32 fn_8014320C(void) {
