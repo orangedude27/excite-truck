@@ -179,7 +179,8 @@ int fn_80208CFC(int object, int deleteFlag) {
     return object;
 }
 
-int fn_80208D3C(void) { return lbl_80489238[6]; }
+/* Return the number of registered sound devices in the mixer registry. */
+int fn_80208D3C(void) { return MIXER_DEVICE_COUNT; }
 
 int fn_80208D4C(int index) {
     /* Return the mixer device handle registered at the given slot. */
