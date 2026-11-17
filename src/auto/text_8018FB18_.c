@@ -2518,7 +2518,8 @@ extern "C" void fn_80192C10(void *self) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80192C24(void *arg0) {
+extern "C" void fn_80192C24(void *self) {
+    /* Forward the f19() virtual call to the child object held at +4 of the container. */
     class VTable {
     public:
         virtual void f0();
@@ -2542,8 +2543,8 @@ extern "C" void fn_80192C24(void *arg0) {
         virtual void f18();
         virtual void f19();
     };
-    VTable *obj = *(VTable **)((char *)arg0 + 4);
-    obj->f19();
+    VTable *child = *(VTable **)((char *)self + 4);
+    child->f19();
 }
 #pragma cplusplus off
 
