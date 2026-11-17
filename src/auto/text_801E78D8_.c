@@ -369,6 +369,7 @@ float fn_801E7E18(void) {
 
 float fn_801E7E24(void) { extern float lbl_8055EB14; return lbl_8055EB14; }
 
+/* Constant getter in the frame/player code: always returns -1 (the "none" sentinel). */
 long fn_801E7E2C(void) {
     return -1;
 }
