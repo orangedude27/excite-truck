@@ -1047,6 +1047,8 @@ void fn_801EE0D0(long table, long index) {
     fn_801F159C(*(long *)(table + index * 4 + 0x4D4));
 }
 
+extern void *fn_80131808(void *);
+extern char lbl_8055AFFC[], lbl_8055B000[], lbl_8055B004[], lbl_8055B00C[];
 void fn_801EE0E0(void *arg0, char *arg1, int arg2, int arg3, char *arg4) {
     (void)arg0; (void)arg1; (void)arg2; (void)arg3; (void)arg4;
 }
