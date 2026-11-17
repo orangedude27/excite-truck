@@ -705,8 +705,11 @@ void fn_80130980(char *out, int size, int level, float seconds) {
 
 extern void *lbl_80559AA0;
 #pragma scheduling invalid_target
-void fn_80130FCC(void *arg0, int arg1, void *arg2) {
-    fn_801345D8(arg0, arg1, &lbl_80559AA0, 1, arg2);
+/* Write the `\x01` control code followed by the decimal `value` into the
+ * game-text buffer `dst` (`size` bytes); `\x01` makes the game's text renderer
+ * display the number that follows. */
+void fn_80130FCC(char *dst, int size, int value) {
+    fn_801345D8(dst, size, &lbl_80559AA0, 1, value);
 }
 #pragma scheduling on
 extern int lbl_802F8EE0[];
