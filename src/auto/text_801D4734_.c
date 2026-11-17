@@ -2695,8 +2695,15 @@ void *fn_801D7C6C(void) {
 #undef STR_WORLD_MORPH_ASE
 }
 
-int fn_801D7C78(int arg0) {
-    return ((int *)arg0)[10];
+/* A WorldMorph_ASE action-sequence element. */
+struct WorldMorphAse {
+    void *vtable; /* 0x00 */
+    char pad[0x24];
+    int state; /* 0x28, 1 = idle/ready, 2 = running */
+};
+
+int fn_801D7C78(struct WorldMorphAse *element) {
+    return element->state;
 }
 
 extern int fn_802E317C(const char *, ...);
