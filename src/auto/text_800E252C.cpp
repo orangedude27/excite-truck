@@ -1157,18 +1157,19 @@ extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7
     OSRestoreInterrupts(firstState);
 }
 
-#pragma push
-#pragma use_lmw_stmw off
+#pragma opt_common_subs off
 extern "C" void fn_800E3DDC(void *arg0, void *arg1) {
     struct Mgr { char pad0[0x14]; char activeList[0xC]; char freeList[0x4]; char pad1[8]; void *head; char pad2[0x6c31 - 0x1c]; unsigned char flag; };
     Mgr *m = (Mgr *)arg0;
+    register void *it1;
+    register void *it2;
     unsigned int outerLevel = OSDisableInterrupts();
     unsigned int level = OSDisableInterrupts();
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     void *link = (char *)arg1 + 0x1A8;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(m->activeList, link);
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
-    void *it1 = (char *)arg0 + 0x24;
+    it1 = (char *)arg0 + 0x24;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)arg0 + 0x20, &it1, link);
     OSRestoreInterrupts(level);
     level = OSDisableInterrupts();
@@ -1181,7 +1182,7 @@ extern "C" void fn_800E3DDC(void *arg0, void *arg1) {
         node = *(void **)node;
     }
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
-    void *it2 = node;
+    it2 = node;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)arg0 + 0x14, &it2, link);
     OSRestoreInterrupts(level);
     if (*(unsigned char *)((char *)arg0 + 0x6C31) != 0) {
@@ -1209,11 +1210,6 @@ extern "C" void fn_800E3DDC(void *arg0, void *arg1) {
     }
     OSRestoreInterrupts(outerLevel);
 }
-#pragma pop
-
-#pragma use_lmw_stmw reset
-
-#pragma pop
 extern "C" void fn_800E402C(void *manager) {
     /* Stop the sound emission manager: clear its active flag inside a critical
      * section so no emissions are processed while channels are being released. */
@@ -1276,7 +1272,7 @@ extern "C" void fn_800E4064(void *arg0, void *arg1) {
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
     void *end = (char *)this_ + 0x18;
-    unsigned int level = OSDisableInterrupts();
+    int level = OSDisableInterrupts();
     void *iterator = *(void **)end;
     while (iterator != end) {
         void *node = iterator;
@@ -3438,7 +3434,7 @@ extern "C" int fn_800E80F0(int object, int deleteFlag) {
 
 void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &noteInfo) const {
     unsigned char inst[0x10];
-    unsigned char wave[0x90];
+    unsigned char wave[0x98];
     void *bank = (void *)this;
     void *channel;
     if (!ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(bank, inst,
@@ -3454,8 +3450,8 @@ void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &n
     *(int *)((char *)channel + 0xCC) = noteInfo.unk_4;
     *(int *)((char *)channel + 0xD0) = inst[8];
     float level = (float)noteInfo.unk_8 / lbl_80560F88;
-    float levelSquared = level * level;
     float multiplier = (float)inst[0xA] / lbl_80560F88;
+    float levelSquared = level * level;
     *(float *)((char *)channel + 0xB4) = levelSquared * multiplier;
     *(float *)((char *)channel + 0xC0) = *(float *)(inst + 0xC);
     SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, inst[4]);
