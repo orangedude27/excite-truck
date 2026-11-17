@@ -1759,8 +1759,9 @@ extern "C" void fn_800D86F0(void *dst, void *srcData) {
     ((s16 *)dst)[3] = half3;
 }
 
-extern "C" void GXInitLightColor_800D8714(u32 *arg0, u32 *arg1) {
-    *arg0 = *arg1;
+extern "C" void GXInitLightColor_800D8714(u32 *dst, u32 *src) {
+    /* Copy one 32-bit light color word from the source into the destination. */
+    *dst = *src;
 }
 
 extern "C" s32 fn_800D8720(s32 *arg0) {
