@@ -2677,10 +2677,11 @@ extern "C" s32 fn_801420D4(void *entity) {
     return !((f32)__fabs((f64)*(f32 *)((u8 *)entity + 0x2690)) <= lbl_80558DC4[0]);
 }
 
-extern "C" void fn_80142104(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 0xE8) = 0;
-    *(s32 *)((u8 *)arg0 + 0x104) = 0;
-    *(s32 *)((u8 *)arg0 + 0x100) = 0;
+/* Clears the three pending-event counters on the zone object at +0xE8, +0x104 and +0x100. */
+extern "C" void fn_80142104(void *zone) {
+    *(s32 *)((u8 *)zone + 0xE8) = 0;
+    *(s32 *)((u8 *)zone + 0x104) = 0;
+    *(s32 *)((u8 *)zone + 0x100) = 0;
 }
 
 /* Return a by-value copy of the 28-byte zone-state block (save/restore helper).
