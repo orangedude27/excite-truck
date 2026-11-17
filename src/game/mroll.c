@@ -998,8 +998,9 @@ do_loop:
 }
 #pragma scheduling on
 s32 fn_80241EE8(s32 base) {
-    /* Field accessor: add the fixed 0x4C offset to reach the record-name field of a UI entry. */
-    return base + 0x4C;
+#define RECORD_NAME_FIELD_OFFSET 0x4C
+    /* Field accessor: offset a UI entry base to its record-name field (record+0xC is copied here). */
+    return base + RECORD_NAME_FIELD_OFFSET;
 }
 
 #pragma cplusplus on
