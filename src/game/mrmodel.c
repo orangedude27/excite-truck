@@ -1255,7 +1255,11 @@ void fn_802C729C(int arg0, float arg1) {
     }
 }
 
-void fn_802C744C(int arg0, void *arg1) { fn_802C70AC(arg0, arg1, -1, -1); }
+/* Set a model instance's world transform from a caller-supplied 3x4 matrix,
+   using the default draw entry id (-1) and the all-groups mask (-1). */
+void fn_802C744C(int instanceId, void *transform) {
+    fn_802C70AC(instanceId, transform, -1, -1);
+}
 
 /* Draw a model instance with a temporary group mask: test its stored transform
    against the view and submit it for drawing if visible, then restore the mask. */
