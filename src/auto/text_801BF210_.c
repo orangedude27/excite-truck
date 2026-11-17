@@ -534,17 +534,15 @@ void fn_801BFECC(void *arg0, void *arg1) {
 
 static inline void inline_transform_vec(float *out, const float *in, const float *m) {
     if (out == in) {
-        float y0 = m[3] * in[1];
-        float y1 = m[4] * in[1];
-        float y2 = m[5] * in[1];
-
-        float x0 = m[0] * in[0];
-        float x1 = m[1] * in[0];
-        float x2 = m[2] * in[0];
-
-        float z0 = m[6] * in[2];
-        float z1 = m[7] * in[2];
-        float z2 = m[8] * in[2];
+        float y0 = in[1] * m[3];
+        float y1 = in[1] * m[4];
+        float x0 = in[0] * m[0];
+        float x1 = in[0] * m[1];
+        float x2 = in[0] * m[2];
+        float y2 = in[1] * m[5];
+        float z0 = in[2] * m[6];
+        float z1 = in[2] * m[7];
+        float z2 = in[2] * m[8];
 
         out[0] = z0 + (x0 + y0);
         out[1] = z1 + (x1 + y1);
@@ -580,6 +578,7 @@ static inline void inline_transform_vec(float *out, const float *in, const float
     }
 }
 
+#pragma scheduling invalid_target
 void fn_801BFF64(float *m, const float *in) {
     float tmp[3];
     inline_transform_vec(tmp, in, m);
@@ -587,7 +586,6 @@ void fn_801BFF64(float *m, const float *in) {
     m[10] += tmp[1];
     m[11] += tmp[2];
 }
-
 extern void fn_8019EECC(void *, void *);
 /* Copy a 3D position into the object's +0x28 field, then add the source object's
    offset vector (source+0x30) to it via fn_8019EECC when a source pointer exists at +4. */
