@@ -9962,32 +9962,35 @@ extern "C" void fn_800B783C(void *);
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559224[]; }
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055922C[]; }
 #pragma opt_lifetimes off
-extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
+extern "C" void fn_800B4BD8(char *p0, u16 *p1, void *p2) {
+    void *a2 = p2;
+    u16 *a1 = p1;
+    char *a0 = p0;
     u16 sp8[2];
-    if (fn_800A4D44((u16 **)arg2) == 1U) {
-        if (fn_800A4AD0((u8 *)*(u16 **)arg2, (u8 *)lbl_8055922C) == 0) {
-            fn_800A4AAC(arg0, (char *)lbl_80559224);
+    if (fn_800A4D44((u16 **)a2) == 1U) {
+        if (fn_800A4AD0((u8 *)*(u16 **)a2, (u8 *)lbl_8055922C) == 0) {
+            fn_800A4AAC(a0, (char *)lbl_80559224);
             return;
         }
-        fn_800A4AAC(arg0, (char *)*(u16 **)arg2);
+        fn_800A4AAC(a0, (char *)*(u16 **)a2);
         return;
     }
-    if (VFiPFSTR_StrCmp((u16 **)arg2, (s32)lbl_8055922C) == 0) {
+    if (VFiPFSTR_StrCmp((u16 **)a2, (s32)lbl_8055922C) == 0) {
         sp8[0] = 0x2A;
         sp8[1] = 0;
-        fn_800A4B78(arg1, sp8);
+        fn_800A4B78(a1, sp8);
     } else {
-        fn_800A4B78(arg1, *(u16 **)arg2);
+        fn_800A4B78(a1, *(u16 **)a2);
     }
     if ((u32)(lbl_803D2140[0x60 / 4] & 2) == 2U) {
         fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
         lbl_803D2140[0x60 / 4] = (lbl_803D2140[0x60 / 4] & ~3) | 1;
-        VFiPFPATH_transformFromUnicodeToNormal((u16 *)arg0, arg1);
+        VFiPFPATH_transformFromUnicodeToNormal((u16 *)a0, a1);
         lbl_803D2140[0x60 / 4] = (lbl_803D2140[0x60 / 4] & ~3) | 2;
         fn_800B783C((u8 *)lbl_803D2140 + 0x64);
         return;
     }
-    VFiPFPATH_transformFromUnicodeToNormal((u16 *)arg0, arg1);
+    VFiPFPATH_transformFromUnicodeToNormal((u16 *)a0, a1);
 }
 #pragma opt_lifetimes reset
 extern "C" u8 lbl_80559230;
@@ -25551,7 +25554,9 @@ extern "C" s32 fn_800A4BF4(s32 arg0, u16 *arg1, s16 *arg2) {
     return arg0;
 }
 
-extern "C" u32 fn_800A4C04(u8 *arg0) { return (arg0[1] << 8) | arg0[0]; }
+/* Read the little-endian 16-bit unsigned value (a two-byte character code in
+ * the VFiPFPATH name matcher) stored in the two bytes at `bytes`. */
+extern "C" u32 fn_800A4C04(u8 *bytes) { return (bytes[1] << 8) | bytes[0]; }
 
 extern "C" void fn_800A4C14(void *arg0, s32 arg1) {
     u8 *b = (u8 *)arg0;
