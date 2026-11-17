@@ -510,6 +510,8 @@ float fn_80277704(int blendIndex) {
     return BLEND_NONE;
 }
 
+/* Resets the camera table: record count (lbl_8055F5A0), the "rddefault" camera
+   (lbl_8055F598) and the "house" camera (lbl_8055F59C) all back to zero. */
 void fn_80277740(void) {
     lbl_8055F5A0 = 0;
     lbl_8055F598 = 0;
