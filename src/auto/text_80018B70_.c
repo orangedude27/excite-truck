@@ -274,8 +274,11 @@ void fn_800196FC(void) {
     sResetRequested = 1;
 }
 
+/* Fire the "career completed" car-unlock event path. */
 void fn_800196F0(void) {
-    fn_80131234(lbl_802FD404);
+#define EVENT_CAR_UNLOCK_CAREER_COMPLETED lbl_802FD404
+    fn_80131234(EVENT_CAR_UNLOCK_CAREER_COMPLETED);
+#undef EVENT_CAR_UNLOCK_CAREER_COMPLETED
 }
 
 #pragma dont_inline on
