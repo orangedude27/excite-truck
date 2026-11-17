@@ -60,6 +60,26 @@ struct DroneManager {
     int pathCount;             // +0x1004: segments in use, limit 64
 };                             // +0x1008: the pool table follows
 
+// The larger manager's pool table at +0x1008: the same named pools as PathPool
+// above, but 0x98 bytes each and holding up to 16 objects per list.
+struct DronePool {
+    char name[0x10];    // +0x00: pool name, matched with stricmp
+    void *unused[0x10]; // +0x10: objects available to hand out
+    void *inUse[0x10];  // +0x50: objects currently handed out
+    int unusedCount;    // +0x90
+    int inUseCount;     // +0x94
+};
+
+struct DronePoolTable {
+    DronePool pools[8];
+    int poolCount;      // +0x4C0
+};
+
+#define DMGR_POOL_TABLE_COUNT(o) (*(int *)((char *)(o) + 0x4C0)) /* DronePoolTable::poolCount */
+#define DMGR_POOL_MAX            8                               /* pools per table */
+#define DMGR_POOL_OBJECT_MAX     0x10                            /* objects per pool */
+#define STR_PATH_POOL_LIMIT lbl_8033B8EC          /* "path: exceeded pool limit (%d)" */
+#define STR_PATH_POOL_OBJECT_LIMIT lbl_8033B90C   /* "path: exceeded pool_object limit of %d" */
 #define DMGR_PATH_COUNT(m) (*(int *)((char *)(m) + 0x1004)) /* DroneManager::pathCount */
 #define DMGR_PATH(m, i)    ((char *)(m) + ((i) << 6) + 4)   /* &DroneManager::path[i] */
 #define DMGR_POOLS(m)      ((char *)(m) + 0x1008)           /* the manager's pool table */
