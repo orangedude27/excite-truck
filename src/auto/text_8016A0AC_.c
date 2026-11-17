@@ -692,7 +692,9 @@ u8 *fn_8016B4FC(u8 *ptr, s32 shouldFree) {
     return ptr;
 }
 
-void fn_8016B544(u8* arg0) { *arg0 = 0; }
+/* Pool-element initializer for the A manager: clear a newly allocated element's
+ * first (in-use/state) byte, matching the clear in the release callback fn_8016B550. */
+void fn_8016B544(u8* element) { *element = 0; }
 
 /* Reset the object's byte flag and optionally free it. */
 void *fn_8016B550(void *object, s32 shouldFree) {
