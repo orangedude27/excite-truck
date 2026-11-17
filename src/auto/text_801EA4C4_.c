@@ -282,7 +282,9 @@ void fn_801EAA94(s32 index, s32 carType) {
     entry->active = active;
 }
 
-void fn_801EAB10(s32 arg0, s32 arg1) {
-    *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78 + arg0 * 0xBC) + 8) = arg1;
+/* Store value in the +0x08 field of CarMgr car record index. */
+void fn_801EAB10(s32 index, s32 value) {
+    struct CarMgrEntry *entry = (struct CarMgrEntry *)(*(s32 *)&lbl_8055EB78 + index * 0xBC);
+    entry->unk08 = value;
 }
 
