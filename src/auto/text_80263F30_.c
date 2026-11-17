@@ -179,8 +179,10 @@ extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
 #pragma use_lmw_stmw on
 #pragma dont_inline on
 
-void fn_80264098(void *arg0, int arg1) {
-    *(int *)((char *)arg0 + 4) = arg1;
+/* Sets the item type field (+0x04) of a credits page item. */
+void fn_80264098(void *item, int type) {
+    struct ItemHeader { char vtable[4]; int type; };
+    ((struct ItemHeader *)item)->type = type;
 }
 #pragma dont_inline off
 
@@ -1074,8 +1076,8 @@ extern "C" int fn_802656C8(void *arg0) {
     };
     extern unsigned char lbl_80498F78[];
     int sp[5];
-    int count = 0;
-    int i = 0;
+    register int count = 0;
+    register int i = 0;
     int j, k;
     int result;
     void *item;
@@ -1087,7 +1089,6 @@ extern "C" int fn_802656C8(void *arg0) {
         }
     }
     i = count + 5;
-    /* new CreditItem[n]: __construct_new_array(alloc(n*0x14+0x10), ctor, 0, 0x14, n) */
     list = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(
         fn_8012850C(i * 0x14 + 0x10, lbl_803464B4), fn_802640A0, 0, 0x14, i);
     count = 0;
@@ -1122,6 +1123,7 @@ extern "C" int fn_802656C8(void *arg0) {
     return (unsigned)((-1 - result) | (result + 1)) >> 31;
 }
 #pragma cplusplus off
+#pragma pop
 extern char lbl_8055C4A8[4];
 extern void fn_80236954(void *queue);
 /* Start the "fade_in" trail: activate its named table entry and clear its group. */
