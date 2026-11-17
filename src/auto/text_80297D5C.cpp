@@ -581,7 +581,7 @@ static inline void XformPoint(const float *m, XformVec *dst, const XformVec *src
         dst->y = z * m21 + (x * m01 + y * m11);
         dst->z = z * m22 + (x * m02 + y * m12);
     } else {
-        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        float m10, m00, m20, m01, m11, m21, m02, m12, m22;
         m10 = m[3]; m00 = m[0]; m20 = m[6];
         dst->x = src->z * m20 + (src->x * m00 + src->y * m10);
         m11 = m[4]; m01 = m[1]; m21 = m[7];
