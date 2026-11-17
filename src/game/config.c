@@ -101,7 +101,7 @@ void fn_802E99AC(void) {
     sConfigWpadSpeakerVolume = (f32)(u32)SCGetWpadSpeakerVolume() / 127.0f;
 }
 
-/** @brief The console's aspect ratio, as set in the system menu (SCAspectRatio). */
+/** @brief Get the console's aspect ratio, as set in the system menu (SCAspectRatio). */
 s32 fn_802E9A0C(void) {
     return sConfigAspectRatio;
 }
