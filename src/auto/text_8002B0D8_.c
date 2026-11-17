@@ -141,6 +141,7 @@ int stricmp(unsigned char *a, unsigned char *b) {
     }
 }
 
+/* strcmp/strncmp thunk: tail-call the locale-aware n-byte string comparator fn_800248A4. */
 void fn_8002B1D8(void) {
     fn_800248A4();
 }
@@ -607,13 +608,14 @@ double x;
 	}
 }
 
+#pragma opt_propagation off
 double __ieee754_pow(x, y)
 double x, y;
 {
     double *pow_tbl = lbl_802EE4D8;
     double z, ax, z_h, z_l, p_h, p_l;
     double y1, t1, t2, r, s, t, u, v, w;
-    int i, j, k, yisint, n;
+    int k, i, j, yisint, n;
     int hx, hy, ix, iy;
     unsigned lx, ly;
 
@@ -787,7 +789,7 @@ double x, y;
     else __HI(z) += (n << 20);
     return s * z;
 }
-
+#pragma opt_propagation reset
 /* Constants of fdlibm's e_rem_pio2.c (see the reference copy in
  * src/MSL/e_rem_pio2.c); the game keeps them in .sdata2 / .rodata, so they
  * are only reachable through these labels. Aliased with macros -- the game's
