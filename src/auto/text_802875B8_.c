@@ -598,8 +598,9 @@ extern "C" void fn_80287F90(void *arg0, void **arg1, s32 arg2, s32 arg3, s32 *sr
 }
 #pragma cplusplus off
 #pragma use_lmw_stmw reset
-s32 fn_80288060(s32 arg0, s32 arg1) {
-    return *(s32 *)(arg0 + (arg1 << 2) + 4);
+s32 fn_80288060(s32 table, s32 index) {
+    /* Return element `index` from the 4-byte-entry table whose data starts at table+4. */
+    return *(s32 *)(table + (index << 2) + 4);
 }
 
 /* Looks up the per-car effect entry for the given instance pointer and forwards the request. */
