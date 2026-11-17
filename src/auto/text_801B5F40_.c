@@ -83,8 +83,9 @@ void fn_801B5FA0(void) {
     }
 }
 #pragma scheduling on
-void fn_801B608C(s32 *arg0) {
-    *arg0 = 0;
+/* Pool-element initializer (passed to fn_8002F37C): zero the 4-byte element. */
+void fn_801B608C(s32 *element) {
+    *element = 0;
 }
 
 void NWC24Data_Init_801B6098(s32 *data) {
