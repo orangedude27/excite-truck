@@ -979,7 +979,8 @@ void fn_801CCBA4(void) {
 }
 
 void fn_801CCBB4(void) {
-    *((signed char *)lbl_8055E884 + 0x10) = 0;
+    /* Clear the paused flag of the award stat handler in lbl_8055E884. */
+    ((StatHandler *)lbl_8055E884)->paused = 0;
 }
 
 extern void fn_8001BDA8(void *);
