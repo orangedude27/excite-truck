@@ -2947,7 +2947,7 @@ extern f32 lbl_80563014, lbl_80563018;
 extern u8 lbl_803338C0[], lbl_8033B55C[];
 extern "C" f64 fn_8002F234(void);
 extern u8 lbl_803338C0[], lbl_3B55C[], lbl_8033B55C[];
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void *fn_801FC12C(void *arg0) {
     f32 save = lbl_80563010;
     u8 *obj = (u8 *)fn_801284F8(0x38, lbl_8033B55C);
