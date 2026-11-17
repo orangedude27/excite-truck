@@ -281,7 +281,7 @@ void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
     *(signed long*)((char*)arg0 + 0x60) = b;
     *(signed long*)((char*)arg0 + 0x64) = c;
 }
-#pragma opt_propagation reset
+#pragma opt_propagation on
 /* Set the flag at offset 0x8C of a sound object. */
 void fn_80207C74(void *object, signed long value) {
     struct SoundObject {
