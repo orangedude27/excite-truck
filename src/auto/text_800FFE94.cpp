@@ -82,16 +82,13 @@ extern "C" char lbl_803278D8[];
 extern "C" char lbl_80327904[];
 extern "C" char lbl_80559918;
 extern "C" char lbl_80559920;
-#pragma push
-#pragma scheduling on
+#pragma use_lmw_stmw off
 extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail13WaveSoundInfoi(void* arg0, void* arg1, int arg2) {
-    unsigned char* base = (unsigned char*)*(void**)((char*)arg0 + 4);
-    unsigned char* data = base + 8;
+    register unsigned char* base = (unsigned char*)*(void**)((char*)arg0 + 4);
+    register unsigned char* data = base + 8;
     unsigned char* entry = base + arg2 * 8;
     unsigned char* ref;
     unsigned char* wave;
-    unsigned char* fileHeader;
-    unsigned short fileVersion;
     if (entry[0xD] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559918, 0x6F, lbl_803278D8);
     ref = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[0xC], *(unsigned int*)(entry + 0x10), data);
@@ -99,14 +96,12 @@ extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hb
     if (ref[1] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559920, 0x6F, lbl_80327904);
     wave = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(unsigned int*)(ref + 4), data);
-    fileHeader = (unsigned char*)*(void**)arg0;
-    fileVersion = *(unsigned short*)(fileHeader + 6);
-    if (fileVersion == 0x102) {
+    if (*(unsigned short*)((char*)*(void**)arg0 + 6) == 0x102) {
         *(float*)arg1 = *(float*)wave;
         ((unsigned char*)arg1)[4] = wave[4]; ((unsigned char*)arg1)[5] = wave[5];
         ((unsigned char*)arg1)[6] = wave[6]; ((unsigned char*)arg1)[7] = wave[7];
         ((unsigned char*)arg1)[8] = wave[8]; ((unsigned char*)arg1)[9] = wave[9];
-    } else if (fileVersion == 0x101) {
+    } else if (*(unsigned short*)((char*)*(void**)arg0 + 6) == 0x101) {
         *(float*)arg1 = *(float*)wave;
         ((unsigned char*)arg1)[4] = wave[4]; ((unsigned char*)arg1)[5] = wave[5];
         ((unsigned char*)arg1)[6] = 0; ((unsigned char*)arg1)[7] = 0;
@@ -119,7 +114,7 @@ extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hb
     }
     return 1;
 }
-#pragma pop
+#pragma use_lmw_stmw reset
 extern "C" char lbl_80327880[], lbl_803278AC[], lbl_803278D8[];
 extern "C" char lbl_80559908, lbl_80559910;
 extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(void* readerPtr, void* outNoteInfo, int soundIndex, int noteIndex) {
@@ -697,8 +692,9 @@ extern "C" float fn_801013BC(void* arg0) {
 
 extern "C" float fn_801013C4(void* arg0) { return *(float*)((char*)arg0 + 0x34); }
 
-extern "C" float fn_801013CC(void* arg0) {
-    return *(float*)((char*)arg0 + 0x2C);
+extern "C" float fn_801013CC(void* player) {
+    /* Return the sound player's float parameter at +0x2C. */
+    return *(float*)((char*)player + 0x2C);
 }
 
 extern "C" float fn_801013D4(void* player) {
