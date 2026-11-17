@@ -712,14 +712,16 @@ __declspec(section ".sdata") extern const char lbl_8055CE78[], lbl_8055CE80[];
 extern const char lbl_8034A808[], lbl_8034A814[];
 extern s32 fn_80147FF0(s32);
 #pragma cplusplus on
-extern "C" void fn_802B67C8(s32 arg0) {
-    struct Dummy {
+/* Look up a draw-style object by index through the global System's virtual factory,
+ * then draw its 9-slice frame using the color stored at offset 0x18. */
+extern "C" void fn_802B67C8(s32 index) {
+    struct StyleFactory {
         virtual void v0(); virtual void v1(); virtual void v2();
-        virtual void *v3(s32);
+        virtual void *getStyle(s32);
     };
-    Dummy *g = (Dummy *)lbl_8055FA48;
-    void *obj = g->v3(arg0);
-    ((void (*)(void *, s32))fn_80147FF0)(obj, *(s32 *)((char *)obj + 0x18));
+    StyleFactory *system = (StyleFactory *)lbl_8055FA48;
+    void *style = system->getStyle(index);
+    ((void (*)(void *, s32))fn_80147FF0)(style, *(s32 *)((char *)style + 0x18));
 }
 #pragma cplusplus reset
 __declspec(section ".sdata") extern const char lbl_8055CE74[];
