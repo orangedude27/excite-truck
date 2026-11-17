@@ -345,41 +345,41 @@ struct Obj3910 {
 void fn_801D3910(void *arg0) {
     char *p;
     int i;
+
     fn_8017B0F8();
     p = (char *)arg0 + 0x248;
     *(void **)((char *)arg0 + 0x244) = p;
     if (p != 0) {
-        struct Obj3910 *o = (struct Obj3910 *)p;
         float value = lbl_80562AAC;
         float zero = lbl_80562AB8;
-        volatile float sp10;
-        volatile float spC;
-        volatile float sp8;
-        o->vtable = lbl_80333B98;
-        sp8 = zero;
-        spC = zero;
-        sp10 = zero;
-        o->unkC = (char *)arg0 + 0x3C;
-        o->unk4 = arg0;
-        o->unk8 = 0;
-        o->unk18 = 0x53504852;
-        o->unk10 = value;
-        o->unk14 = value;
-        o->unk20 = 100;
-        o->unk1C = 0;
-        o->vtable = lbl_80333B48;
-        o->unk24 = value;
-        o->unk34 = zero;
-        o->unk38 = zero;
-        o->unk3C = zero;
-        o->unk40 = zero;
-        o->unk44 = zero;
-        o->unk48 = zero;
-        o->unk4C = 0;
-        o->unk50 = zero;
-        o->unk28 = zero;
-        o->unk2C = zero;
-        o->unk30 = zero;
+        volatile float temp[3];
+        void *initialVtable = lbl_80333B98;
+
+        *(volatile void **)p = initialVtable;
+        temp[0] = zero;
+        temp[1] = zero;
+        temp[2] = zero;
+        *(void **)(p + 0xC) = (char *)arg0 + 0x3C;
+        *(void **)(p + 4) = arg0;
+        *(int *)(p + 8) = 0;
+        *(int *)(p + 0x18) = 0x53504852;
+        *(float *)(p + 0x10) = value;
+        *(float *)(p + 0x14) = value;
+        *(int *)(p + 0x20) = 100;
+        *(int *)(p + 0x1C) = 0;
+        *(void **)p = lbl_80333B48;
+        *(float *)(p + 0x24) = value;
+        *(float *)(p + 0x34) = zero;
+        *(float *)(p + 0x38) = zero;
+        *(float *)(p + 0x3C) = zero;
+        *(float *)(p + 0x40) = zero;
+        *(float *)(p + 0x44) = zero;
+        *(float *)(p + 0x48) = zero;
+        *(char *)(p + 0x4C) = 0;
+        *(float *)(p + 0x50) = zero;
+        *(float *)(p + 0x28) = zero;
+        *(float *)(p + 0x2C) = zero;
+        *(float *)(p + 0x30) = zero;
         if (arg0 != 0)
             fn_8019EECC(arg0, p + 0x28);
     }
@@ -390,8 +390,7 @@ void fn_801D3910(void *arg0) {
     *(int *)&lbl_8055E940 = i + 1;
 }
 
-#pragma push
-#pragma scheduling on
+#pragma opt_propagation off
 void fn_801D3A1C(void *arg0) {
     struct Mtx48Copy { int w[12]; };
     register char *self = (char *)arg0;
@@ -470,7 +469,7 @@ void fn_801D3A1C(void *arg0) {
     fn_8017A580(arg0);
     fn_8017B164(arg0);
 }
-#pragma pop
+#pragma opt_propagation reset
 extern void fn_8017A57C(void *);
 extern void fn_8017A580();
 extern void fn_8017B164(void *);
@@ -622,6 +621,7 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
     }
 }
 
+#pragma scheduling invalid_target
 void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *arg5, int arg6) {
     float fa;
     float fb;
@@ -800,6 +800,7 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
     volatile float spc;
     volatile float sp8;
     void *resource;
+
     sp8 = zero;
     spc = zero;
     sp10 = zero;
@@ -923,6 +924,7 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         fn_802E317C(lbl_8033837C, mode);
         break;
     }
+
     resource = *(void **)(self + 0x244);
     {
         struct Resource {
