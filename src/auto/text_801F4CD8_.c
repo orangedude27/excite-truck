@@ -1360,6 +1360,8 @@ void fn_801F73E0(void) {
 }
 
 extern void fn_801F6B98(void *);
+/* Draw the active entries of the global uniform cloth group (lbl_8055EC10)
+ * via fn_801F6B98; fn_801F73E0 is its simulation twin. */
 void fn_801F73E8(void) { fn_801F6B98(lbl_8055EC10); }
 
 extern void fn_801F6DF0();
