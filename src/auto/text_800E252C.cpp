@@ -4147,8 +4147,9 @@ extern "C" void fn_800E9B74(void *arg0, int arg1, int arg2, int arg3, int arg4) 
     *(int *)((char *)arg0 + 0x24) = arg4;
 }
 
-extern "C" int fn_800E9B88(void *arg0) {
-    return *(int *)((char *)arg0 + 8) != 0;
+/* Return nonzero if a general SoundHandle is attached to this BasicSound (its +0x08 mGeneralHandle). */
+extern "C" int fn_800E9B88(void *sound) {
+    return *(int *)((char *)sound + 8) != 0;
 }
 
 extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void *);
