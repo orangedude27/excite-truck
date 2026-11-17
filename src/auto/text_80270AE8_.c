@@ -624,6 +624,7 @@ void fn_80271578(void) {
 
 typedef float f32;
 extern f32 lbl_80563F4C;
+#define DEG_TO_RAD lbl_80563F4C /* pi / 180: converts degrees to radians */
 #pragma opt_propagation off
 void fn_802715C4(void *arg0, void *arg1)
 {
