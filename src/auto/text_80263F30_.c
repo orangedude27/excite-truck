@@ -949,6 +949,13 @@ void fn_80265558(void *obj) {
     *(float *)((char *)obj + 0x1C) = value;
 }
 
+typedef struct ExtraDelayItem {
+    char pad0[0x14];
+    int field14;
+    float delay;
+    float field1C;
+} ExtraDelayItem;
+
 void fn_8026557C(void *arg0, float farg0) {
     *(float *)((char *)arg0 + 0x18) = farg0;
 }
