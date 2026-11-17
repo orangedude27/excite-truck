@@ -630,10 +630,16 @@ typedef struct {
     s32 group;                  /* 0x04 group the cursor is on */
     s32 item_count;             /* 0x08 widgets in the item array */
     s32 group_count;            /* 0x0C widgets in the group array */
-    u8  pad_0x10[8];
+    u8  pad_0x10[4];
+    void *value_widget;         /* 0x14 the value display, looked up by fn_80207848 */
     u8 *item_widgets;           /* 0x18 SelectorWidget *[item_count] */
-    u8  pad_0x1C[0x20];
+    s32 item_widget_count;      /* 0x1C items pushed on the item array so far */
+    u8  pad_0x20[0x1C];
     u8 *group_widgets;          /* 0x3C SelectorWidget *[group_count] */
+    s32 group_widget_count;     /* 0x40 groups pushed on the group array so far */
+    u8  pad_0x44[0x10];
+    void *group_data[3];        /* 0x54 the data node of each group built */
+    s32 group_item_data[6];     /* 0x60 the data nodes of the items built so far */
 } SelectorView;
 #define SELECTOR          ((SelectorView *)lbl_8055F420)
 #define SELECTOR_IN_ITEMS (lbl_8055F3EB) /* 0: cursor on a group, 1: in its items */
