@@ -3241,8 +3241,11 @@ f32 fn_80170E80(f32 *ptr) {
 }
 
 extern s32 fn_8017960C(s32);
-s32 fn_80170E88(void *arg0) {
-    return fn_8017960C(*(s32 *)((u8 *)arg0 + 4));
+/* Resolve a list entry to the object it names: take the object-table index stored at
+ * +4 of the entry and look it up in the 8-entry global object table (fn_8017960C),
+ * which holds the vehicle/player registered at each index (0 if out of range). */
+s32 fn_80170E88(void *entry) {
+    return fn_8017960C(*(s32 *)((u8 *)entry + 4));
 }
 
 /* Read the byte flag at +8 of an item/entry object handled by the TObj4C
