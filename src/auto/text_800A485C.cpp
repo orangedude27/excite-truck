@@ -957,6 +957,7 @@ extern "C" s32 fn_800A59FC(void *arg0) {
 #pragma opt_common_subs reset
 extern "C" s32 fn_800A59FC(void *);
 extern "C" s32 fn_800A6A40(void *);
+#pragma use_lmw_stmw off
 extern "C" s32 fn_800A5AE4(void *arg0, void *arg1) {
     u32 var_r3_4, var_r3_6;
     s32 var_r30 = 0;
