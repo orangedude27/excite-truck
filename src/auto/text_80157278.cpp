@@ -2414,6 +2414,7 @@ extern "C" void fn_8015ACB0(void *arg0, void *arg1, s32 arg2, f32 arg3) {
 }
 #pragma pop
 extern "C" s32 fn_8015ADA4(void) {
+    /* Fixed-count accessor: reports 10 (e.g. the item/slot limit used by callers). */
     return 10;
 }
 
