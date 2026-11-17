@@ -136,9 +136,10 @@ void fn_802ECEC4(void) {
 }
 
 s32 fn_802ECEEC(void) {
-    s32 val = lbl_805600F8;
-    u32 tmp = (u32)(-val) | (u32)val;
-    return (s32)(tmp >> 31);
+    /* Branchless 1 when the single-movie list head is set (one record answers every request), else 0. */
+    s32 listHead = lbl_805600F8;
+    u32 bits = (u32)(-listHead) | (u32)listHead;
+    return (s32)(bits >> 31);
 }
 
 void fn_802ECF00(char *movieName) {
