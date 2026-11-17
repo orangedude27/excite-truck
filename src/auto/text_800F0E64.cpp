@@ -1109,8 +1109,9 @@ extern "C" s32 fn_800F2824(void *archive, u32 groupIndex, void *groupInfo) {
 #pragma dont_inline reset
 
 M2C_UNK ReadGroupItemInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive13GroupItemInfo(s32);
-extern "C" s32 fn_800F282C(void *arg0) {
-    return ReadGroupItemInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive13GroupItemInfo(*(s32*)((u8*)arg0 + 4));
+extern "C" s32 fn_800F282C(void *archive) {
+    /* Read group item info through this archive's file reader. */
+    return ReadGroupItemInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive13GroupItemInfo(*(s32*)((u8*)archive + 4));
 }
 
 M2C_UNK ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8FileInfo(s32);
