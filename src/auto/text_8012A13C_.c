@@ -46,15 +46,17 @@ s32 fn_8012A17C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_8012A218(void *arg0) {
-    char *base = (char *)*(int *)((char *)arg0 + 0x10);
-    char *end = base + (*(int *)((char *)arg0 + 0x18) - 1) * *(volatile int *)((char *)arg0 + 0x14);
-    char *p;
-    for (p = base; p < end; p += *(volatile int *)((char *)arg0 + 0x14)) {
-        *(char **)p = p + *(volatile int *)((char *)arg0 + 0x14);
+/* Rebuild the free list of a fixed-size block pool: thread every block to the
+ * next one, terminate the last with a null pointer, and reset the used count. */
+void fn_8012A218(void *pool) {
+    char *firstBlock = (char *)*(int *)((char *)pool + 0x10);
+    char *lastBlock = firstBlock + (*(int *)((char *)pool + 0x18) - 1) * *(volatile int *)((char *)pool + 0x14);
+    char *block;
+    for (block = firstBlock; block < lastBlock; block += *(volatile int *)((char *)pool + 0x14)) {
+        *(char **)block = block + *(volatile int *)((char *)pool + 0x14);
     }
-    *(int *)end = 0;
-    *(int *)((char *)arg0 + 0x1c) = 0;
+    *(int *)lastBlock = 0;
+    *(int *)((char *)pool + 0x1c) = 0;
 }
 #pragma pop
 /* Destructor of the fixed-size block pool (built by fn_8012A13C/fn_8012A17C, which
