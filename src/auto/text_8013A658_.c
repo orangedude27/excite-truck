@@ -6,6 +6,7 @@
 extern void fn_8000D838(void *);
 extern void *lbl_8055E150;
 
+/* Static constructor: register a static-destructor record for the object at lbl_8055E150. */
 void fn_8013A658(void) {
     fn_8000D838(&lbl_8055E150);
 }
