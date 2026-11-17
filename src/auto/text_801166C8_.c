@@ -2741,7 +2741,6 @@ s32 fn_8011A870(void *stream, s32 flags) {
 extern u32 fn_8011A240(void *, u32, s32, u32);
 extern void fn_8011A45C(void *, s32, s32);
 extern void fn_8011A1A0(u32 *, u32);
-#define REGOBJ register u8 *obj asm("r24")
 u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     u8 *obj = (u8 *)arg0;
     u8 *buf = (u8 *)arg3;
