@@ -2630,8 +2630,9 @@ extern "C" void fn_801FB354(void *arg0, void *arg1) {
     fn_802C70AC(*(s32 *)((u8 *)arg0 + 0x74), arg1, -1, flags);
 }
 
-extern "C" void fn_801FB40C(void *arg0, s32 arg1, void *arg2) {
-    fn_80204014(arg1, *(s32 *)((u8 *)arg2 + 0x34), *(s32 *)((u8 *)arg0 + 0x19C), arg0);
+extern "C" void fn_801FB40C(void *sender, s32 code, void *target) {
+    // Forward a notification to the no-op handler: pull a field from each object and append the sender.
+    fn_80204014(code, *(s32 *)((u8 *)target + 0x34), *(s32 *)((u8 *)sender + 0x19C), sender);
 }
 
 extern "C" void fn_801FB420(void *arg0, void *arg1) {
