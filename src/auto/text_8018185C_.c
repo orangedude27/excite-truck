@@ -791,7 +791,7 @@ extern void *fn_801B2ED0(int);
 extern void *memset(void *, int, unsigned long);
 void fn_801838C8(void *arg0) {
 #pragma scheduling invalid_target
- char *p = (char *)arg0, *r, *q; float zero, one; int i; void *obj, *v, *path;
+ int i; char *p = (char *)arg0, *r, *q; float zero, one; void *obj, *v, *path;
  *(float *)(p+0x5e4)=0.0f;
  fn_8018BE54(p,1.0f);
  one=1.0f; zero=0.0f;
