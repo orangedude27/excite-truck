@@ -1036,6 +1036,7 @@ void fn_80010A50(f32 left, f32 top, f32 width, f32 height, s32 colorTop, s32 col
     fn_802C8DB8(frame.topLeft, 4, frame.indices.idx, 6);
 }
 #pragma pop
+/* Reset the draw list with no texture slot selected (-1) before drawing a quad. */
 void fn_80010B74(void) {
     fn_802C8BD0(-1);
 }
