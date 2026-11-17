@@ -245,7 +245,9 @@ copy_loop:
 #pragma pop
 s32 fn_8024EB94(void *arg0) { return *(s32 *)((char *)arg0 + 0x1C); }
 
-s32 fn_8024EB9C(void *arg0, s32 arg1) { return *(s32 *)((char *)arg0 + 0xCC) + arg1 * 0x14; }
+/* Address of the 20-byte (0x14) record at `index` in the table whose base
+   pointer is stored at `obj` + 0xCC. */
+s32 fn_8024EB9C(void *obj, s32 index) { return *(s32 *)((char *)obj + 0xCC) + index * 0x14; }
 
 void fn_8024EBAC(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((char *)arg0 + 0x2C) = arg1;
