@@ -3,5 +3,8 @@
 
 extern void *lbl_8055DEA8;
 void fn_801076C4(void) {
-    lbl_8055DEA8 = 0;
+    /* Clear the leaf global of the registered-object pointer chain (returned by fn_801076BC) to null. */
+#define sLeafObject lbl_8055DEA8
+    sLeafObject = 0;
+#undef sLeafObject
 }
