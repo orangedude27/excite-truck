@@ -4363,6 +4363,9 @@ extern "C" void fn_8014434C(void) {
 // Trivial stub in this vtable's callback group; always returns 0 (false).
 extern "C" s32 fn_80144350(void) { return 0; }
 
+/* Empty virtual slot closing the zone system's run of unimplemented callbacks
+ * (fn_801442D4..fn_80144358); the next stub, fn_8014435C, always returns 1.
+ * Calling it does nothing; it compiles to a bare 'blr'. */
 extern "C" void fn_80144358(void) {
 }
 
