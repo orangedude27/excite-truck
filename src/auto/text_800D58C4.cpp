@@ -3628,7 +3628,8 @@ void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self, void* info) {
+extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self, void* drawInfo) {
+    /* Draw this pane when visible, then draw every pane in its child list. */
     extern const char lbl_8031E8FC[];
     extern const char lbl_8031E8D8[];
     struct PaneLinkNode { PaneLinkNode* next; PaneLinkNode* prev; };
@@ -3659,7 +3660,7 @@ extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self, vo
                 virtual void a2();
                 virtual void Draw(void*);
             };
-            ((Child*)((char*)node - 4))->Draw(info);
+            ((Child*)((char*)node - 4))->Draw(drawInfo);
             node = node->next;
         }
     }
