@@ -5748,7 +5748,7 @@ void fn_80064B1C(s32 chan, void* data) {
     for (i = 0; i < 96; i++) buf[i] = 0;
     oldReport = *(s32*)(p + 0x780);
     *(u16*)buf = (u16)((((u8*)report)[1] | (((u8*)report)[2] << 8)) & 0x9f1f);
-    *(s32*)(p + 0x788) = (s32)((s8)(((u8*)report)[1] & 0x80)) >> 7;
+    *(s32*)(p + 0x788) = -((s32)((u8*)report)[1] >> 7);
     *(s32*)(p + 0x778) = (((u8*)report)[3] >> 3) & 1;
     *(s32*)(p + 0x77C) = (((u8*)report)[3] >> 2) & 1;
     *(s32*)(p + 0x780) = (((u8*)report)[3] >> 1) & 1;
