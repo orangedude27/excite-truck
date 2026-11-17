@@ -2769,9 +2769,9 @@ void fn_80038870(u32 arg0) {
                 }
             }
         }
-    } else {
-        if (CMD == 1 || CMD == 4 || CMD == 5 || CMD == 0x21 || CMD == 0xE || CMD == lbl_80558E14) {
-            s32 add = (arg0 & 9) ? *(s32 *)((char *)executing_8055D8C8 + 0x1C) : 0;
+         } else {
+         if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE || CMDN == lbl_80558E14) {
+             s32 add = (arg0 & 9) ? *(s32 *)((char *)executing_8055D8C8 + 0x1C) : 0;
             *(s32 *)((char *)executing_8055D8C8 + 0x20) += add;
         }
         if (lbl_8055D86C != 0) {
