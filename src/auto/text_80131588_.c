@@ -119,8 +119,9 @@ unsigned char* fn_801317F0(void* valueNode) {
 
 void fn_80131808(int arg0) { fn_80131588((void *)arg0, 0); }
 
-void fn_80131810(s32 arg0) {
-    fn_80131588((void *)arg0, 1);
+void fn_80131810(s32 data) {
+    /* Parse this data block through fn_80131588 with the silent flag (1), suppressing the failure report. */
+    fn_80131588((void *)data, 1);
 }
 
 void fn_80131818(void) {
