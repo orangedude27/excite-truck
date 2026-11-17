@@ -13,6 +13,7 @@ extern void __register_global_object(void *, void (*)(void), void *, int);
 
 #pragma scheduling invalid_target
 void fn_802A8F34(void) {
+    /* Initialize a global object (storage pointer, capacity 10, count 0) and register its destructor. */
     fn_8000D838(&lbl_8055F8C8);
     lbl_8055F8D0 = 0xFFFF0000;
     *(void **)&lbl_804BD6C4 = (char *)&lbl_804BD6C4 + 12;
