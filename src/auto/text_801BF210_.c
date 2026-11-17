@@ -372,15 +372,15 @@ void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
     }
     dx = arg1[9] - arg2[9];
     arg0[9] = dx;
-    a2 = arg2[0]; b0 = arg2[3]; c0 = arg2[6];
     dy = arg1[10] - arg2[10];
     arg0[10] = dy;
-    b1 = arg2[4]; a1 = arg2[1]; c1 = arg2[7];
-    a0 = arg2[2]; b2 = arg2[5]; c2 = arg2[8];
     dz = arg1[11] - arg2[11];
-    a0 = dx * a2 + dy * a1 + dz * a0;
-    b2 = dx * b0 + dy * b1 + dz * b2;
-    c2 = dx * c0 + dy * c1 + dz * c2;
+    a2 = arg2[0]; b0 = arg2[3]; c0 = arg2[6];
+    a1 = arg2[1]; b1 = arg2[4]; c1 = arg2[7];
+    a0 = arg2[2]; b2 = arg2[5]; c2 = arg2[8];
+    a0 = dz * a0 + (dx * a2 + dy * a1);
+    b2 = dz * b2 + (dx * b0 + dy * b1);
+    c2 = dz * c2 + (dx * c0 + dy * c1);
     arg0[9] = a0; arg0[10] = b2; arg0[11] = c2;
 }
 #pragma pop
