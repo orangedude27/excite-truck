@@ -148,8 +148,8 @@ void *fn_8025D9D0(void *arg0) {
     *((char *)arg0 + 0x42C) = 0;
     *(void **)((char *)arg0 + 0x434) = ((void *(*)(const char *))fn_8023512C)(lbl_80345694);
     dst = (char *)arg0 + 4;
-    *(void **)arg0 = lbl_8055C3E0;
-    src = lbl_8055C3E0;
+    *(void **)arg0 = (void *)&lbl_8055C3E0;
+    src = (char *)&lbl_8055C3E0;
     count = 0x14;
     goto copy;
     do {
@@ -161,8 +161,8 @@ void *fn_8025D9D0(void *arg0) {
         *dst++ = *src++;
     } while (dst[-1]);
     *(int *)((char *)arg0 + 0x408) = 0;
-    *(void **)((char *)arg0 + 0x1C) = lbl_8055C3E0;
-    *(void **)((char *)arg0 + 0x18) = lbl_8055C3E0;
+    *(void **)((char *)arg0 + 0x1C) = (void *)&lbl_8055C3E0;
+    *(void **)((char *)arg0 + 0x18) = (void *)&lbl_8055C3E0;
     *((char *)arg0 + 0x20) = 0;
     *((char *)arg0 + 0x42C) = 0;
     return arg0;
