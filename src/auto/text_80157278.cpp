@@ -3247,6 +3247,8 @@ extern "C" s32 fn_8015C684(void) {
     return 4;
 }
 
+/* Bonus-tracker type getter: returns category index 13 (0xD), the "Stunt:RING"
+ * entry a tracker's GetType() uses to index the bonus-category name tables. */
 extern "C" s32 fn_8015C68C(void) { return 0xD; }
 
 #pragma cplusplus on
