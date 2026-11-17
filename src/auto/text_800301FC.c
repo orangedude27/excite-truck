@@ -1289,8 +1289,12 @@ extern void CircleBufferInitialize(u32);
 extern void OSWakeupThread(void *);
 extern void DSPAssertTask(void *);
 extern void AIInitDMA(void *, u32);
+/* DSP-init callback for the audio task: signal that the DSP has run its init
+ * routine, releasing fn_80032004 which spins on this flag until it is set. */
 void __AXDSPInitCallback_80031F90(void) {
-    lbl_8055D770 = 1;
+#define s_dspInitDone lbl_8055D770
+    s_dspInitDone = 1;
+#undef s_dspInitDone
 }
 
 void fn_80031F9C(void) {
