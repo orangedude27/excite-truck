@@ -2499,7 +2499,7 @@ extern "C" void fn_8021568C(void *arg0, s32 x, s32 y,
 #pragma use_lmw_stmw reset
 typedef struct CanvasHandleObj {
     void *vtable;
-    s32 *canvas;
+    s32 canvas;
 } CanvasHandleObj;
 extern "C" s32 fn_80215730(void *arg0) {
     return fn_802C4F14(*(s32*)((u8*)arg0 + 4));
