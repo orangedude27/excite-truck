@@ -696,7 +696,10 @@ void fn_80135198(void) {
 
 #pragma scheduling invalid_target
 int fn_8013519C(void) {
-    return fn_802E317C(lbl_8032BD98);
+#define kSetCarNotOverriddenMsg lbl_8032BD98
+    /* Panic with the message that the idriver SetCar callback is not overridden. */
+    return fn_802E317C(kSetCarNotOverriddenMsg);
+#undef kSetCarNotOverriddenMsg
 }
 extern const char lbl_8032BD98[];
 extern s32 fn_802E317C(const char *, ...);
