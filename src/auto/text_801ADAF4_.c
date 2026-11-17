@@ -82,8 +82,9 @@ void fn_801ADB04(void *subObject) {
 }
 
 extern void fn_801ADA38(void **);
-void fn_801ADB0C(void *arg0) {
-    fn_801ADA38((void **)((u8 *)arg0 - 0x23C));
+/* Forwards to fn_801ADA38 with the owning object, recovered from a sub-object pointer by subtracting 0x23C (default-event dispatch / clear active flag). */
+void fn_801ADB0C(void *subObject) {
+    fn_801ADA38((void **)((u8 *)subObject - 0x23C));
 }
 
 extern void fn_801ADA7C(void **);
