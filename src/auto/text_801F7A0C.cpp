@@ -1391,21 +1391,26 @@ extern "C" int vsprintf(char *, const char *, va_list);
 extern void *fn_801284F8(u32, void *);
 extern void *fn_80131810(char *);
 extern void fn_80131818(void);
+/* Format a variadic resource name, turn it into a "class_file" owner with
+ * fn_80131810, and prepend an 8-byte node holding that owner to the global
+ * owner list lbl_8055EC44; free the node and owner if parsing produced nothing. */
 extern "C" void fn_801F94CC(const char *format, ...) {
+#define sOwnerList lbl_8055EC44
+#define kClassFilePool lbl_8033B200
     char buffer[0x100];
     void *node;
     void *parsed;
     va_list args;
     va_start(args, format);
     vsprintf(buffer, format, args);
-    node = fn_801284F8(8, lbl_8033B200);
+    node = fn_801284F8(8, kClassFilePool);
     if (node != 0) {
         *(void * volatile *)node = fn_80131810((void *)buffer);
     }
     parsed = *(void * volatile *)node;
     if (parsed != 0) {
-        *(void **)((u8 *)node + 4) = lbl_8055EC44;
-        lbl_8055EC44 = node;
+        *(void **)((u8 *)node + 4) = sOwnerList;
+        sOwnerList = node;
     } else if (node != 0) {
         if (parsed != 0) {
             fn_80131818(parsed);
@@ -1413,6 +1418,8 @@ extern "C" void fn_801F94CC(const char *format, ...) {
         *(void * volatile *)node = 0;
         ((void (*)(void *))fn_80128668)(node);
     }
+#undef kClassFilePool
+#undef sOwnerList
 }
 
 __declspec(section ".sdata") extern u8 lbl_8055B2DC[];
