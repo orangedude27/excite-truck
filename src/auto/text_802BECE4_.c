@@ -1106,8 +1106,9 @@ unsigned int fn_802C0D34(void) {
     return 1;
 }
 
-unsigned char fn_802C0D3C(void *arg0) {
-    return *((unsigned char *)arg0 + 0x2C5C);
+/* Return the WaterQuad object's initialization-state byte (0 = setup incomplete, 1 = initialized). */
+unsigned char fn_802C0D3C(void *object) {
+    return *((unsigned char *)object + 0x2C5C);
 }
 
 extern int fn_801E85AC(void);
