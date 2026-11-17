@@ -144,8 +144,11 @@ void fn_802B0860(void *record) {
     ((int *)record)[1] = 0;
 }
 
+/* Destroy the global block-pool manager singleton, freeing all of its storage. */
 void fn_802B0874(void) {
-    fn_802B087C(&lbl_8055F9A0);
+    #define gBlockPoolManager lbl_8055F9A0
+    fn_802B087C(&gBlockPoolManager);
+    #undef gBlockPoolManager
 }
 
 #pragma push
