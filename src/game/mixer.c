@@ -513,8 +513,11 @@ void fn_80209348(void *timer) {
 #undef state
 }
 
-void fn_80209380(void *arg0) {
-    *(int *)((char *)arg0 + 8) = 3;
+void fn_80209380(void *timer) {
+    /* Mark a timed object as expired by setting its state field (+8) to 3. */
+#define state ((int *)((char *)timer + 8))
+    *state = 3;
+#undef state
 }
 
 void fn_8020938C(void *arg0) {
