@@ -2283,8 +2283,13 @@ void fn_802B8AE0(const char *arg0, s32 arg1)
 #pragma small_data on
 extern s32 lbl_8055CEA0;
 void fn_802B8C88(void) {
-    lbl_8055FA31 = 1;
-    lbl_8055CEA0 = 1;
+    /* Enable this menu renderer: set the active flag and reset the block scale to 1. */
+    #define sRenderEnabled lbl_8055FA31
+    #define sBlockScale    lbl_8055CEA0
+    sRenderEnabled = 1;
+    sBlockScale = 1;
+    #undef sRenderEnabled
+    #undef sBlockScale
 }
 
 #pragma small_data on
