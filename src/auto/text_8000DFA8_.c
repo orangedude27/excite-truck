@@ -1560,7 +1560,7 @@ extern f32 lbl_805602E4;
 void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
                  register f32 farg0, register f32 farg1, register f32 farg2, register f32 farg3,
                  register f32 farg4, register f32 farg5, register f32 farg6, register f32 farg7,
-                 register f32 arg_sp8, register f32 arg_spC) {
+                 f32 arg_sp8, f32 arg_spC) {
     volatile f32 sp14, sp10, spC, sp8;
     f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4;
     f32 temp_f1_2, temp_f22, temp_f23, temp_f23_2;
@@ -1849,6 +1849,7 @@ f32 fn_80011E44(void) {
 }
 
 f32 fn_80011E54(void) {
+    /* Top edge of the whole-screen layout box lbl_80350EC4, stored as {top, left, right, bottom}. */
     return lbl_80350EC4[0];
 }
 
