@@ -44,6 +44,7 @@ extern int fn_802CB128(int, int, int, int);
 extern void* fn_802CAC28(void*, int);
 extern void fn_802C8530(void);
 extern void fn_802C855C(void);
+typedef struct { int pad[2]; void* (*get)(void*,void*); int pad2[6]; float (*f)(void*,void*); float (*def)(void*,void*,float); int pad3[4]; unsigned long long (*vec)(void*,void*); } VTable;
 
 #pragma small_data off
 extern char lbl_803582C0[];
