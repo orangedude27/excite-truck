@@ -665,6 +665,7 @@ extern int fn_80128668(void);
 extern void* lbl_8055E744;
 #pragma cplusplus on
 extern "C" void fn_801B89A0(void) {
+    /* Forward the f27() virtual call to the arena-event master object lbl_8055E744. */
     ((Dummy_801B8318 *)lbl_8055E744)->f27();
 }
 #pragma cplusplus on
