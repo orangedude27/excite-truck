@@ -2268,8 +2268,10 @@ extern "C" s32 fn_800D9524(void* arg0) {
 }
 #pragma pop
 extern "C" char* strncpy(char*, const char*, unsigned int);
-extern "C" char* fn_800D9584(char* arg0, const char* arg1) {
-    return strncpy(arg0 + 4, arg1, 0x14);
+/* Copy the 20-byte name at the start of a layout Material resource into the
+   Material object's name field at +4. */
+extern "C" char* fn_800D9584(char* material, const char* resourceName) {
+    return strncpy(material + 4, resourceName, 0x14);
 }
 
 extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void *arg0, u8 arg1) {
