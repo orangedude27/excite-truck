@@ -4344,12 +4344,15 @@ extern "C" void *fn_800F8310(void *self) {
 #pragma push
 #pragma small_data off
 #pragma use_lmw_stmw off
-extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* self, int flag) {
+/* nw4hbm::snd::SoundHeap destructor: restore the vtable pointer, destroy and
+ * destruct the embedded detail::FrameHeap at +0x1C, then free the object when
+ * shouldDelete > 0 (fn_80128668 is the memory-free helper). */
+extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* self, int shouldDelete) {
     if (self) {
         *(u32*)self = (u32)lbl_80325C40;
         Destroy__Q46nw4hbm3snd6detail9FrameHeapFv((u8*)self + 0x1C);
         __dt__Q46nw4hbm3snd6detail9FrameHeapFv((char*)((u32)self + 0x1C), -1);
-        if (flag > 0)
+        if (shouldDelete > 0)
             ((void (*)(void *))fn_80128668)(self);
     }
     return self;
