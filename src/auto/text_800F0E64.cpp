@@ -1009,10 +1009,11 @@ extern "C" s32 fn_800F26FC(s32 object, s32 deleteFlag) {
     return object;
 }
 
-extern "C" s32 fn_800F273C(void *arg0) __attribute__((noinline)) {
-    s32 val = *(s32 *)((u8 *)arg0 + 4);
-    s32 neg = -val;
-    return (neg | val) >> 31 & 1;
+extern "C" s32 fn_800F273C(void *obj) __attribute__((noinline)) {
+    /* Return nonzero when the object's 32-bit field at offset 4 is set. */
+    s32 field = *(s32 *)((u8 *)obj + 4);
+    s32 negField = -field;
+    return (negField | field) >> 31 & 1;
 }
 
 extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2750(void *arg0, s32 flag) {
