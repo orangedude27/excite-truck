@@ -1604,8 +1604,10 @@ extern "C" void fn_80158E74(void* listener) {
     *(s32*)((u8*)listener + 8) = 0;
 }
 
-extern "C" f32 fn_80158E80(void* arg0) {
-    return *(f32*)((u8*)arg0 + 0x25D4);
+/* Return the speed at +0x25D4 of a frame-driven player; callers multiply it by one
+ * 60 Hz frame (lbl_8056177C) to advance that player's progress counters. */
+extern "C" f32 fn_80158E80(void* player) {
+    return *(f32*)((u8*)player + 0x25D4);
 }
 
 extern "C" void fn_80158F34(void**);
