@@ -8704,8 +8704,11 @@ void fn_80125CA0(void *arg0, void *arg1, void *arg2, s32 arg3) {
 }
 
 extern void fn_80125960(void *p0, s32 p1, void *p2, void *p3);
-void fn_80125CB4(void *arg0, void *arg1, void *arg2, s32 arg3) {
-    fn_80125960(arg0, (s32)arg1, arg2, (u8 *)&lbl_802F6A40 + (arg3 << 8));
+/* IDCT block decode: dequantize the 8x8 coefficients in `coeffs` with the
+   quantization table indexed by `quantTable` (each 0x100-byte slice of
+   lbl_802F6A40 is one table) and write rows `stride` bytes apart to `dst`. */
+void fn_80125CB4(void *dst, void *stride, void *coeffs, s32 quantTable) {
+    fn_80125960(dst, (s32)stride, coeffs, (u8 *)&lbl_802F6A40 + (quantTable << 8));
 }
 
 extern u8 lbl_802F7A40[];
