@@ -651,6 +651,8 @@ void fn_8001C4D4(void) {
 }
 
 void fn_8001C4D8(void) {
+    /* Middle link of the statistics lock-hook chain (fn_8001C4DC -> here ->
+     * fn_8001C4D4): forwards to the no-op base hook; locking is compiled out. */
     fn_8001C4D4();
     __builtin_unreachable();
 }
