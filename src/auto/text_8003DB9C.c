@@ -2153,7 +2153,10 @@ void GXSetArray(s32 attr, unsigned int base, unsigned int stride) {
 }
 
 void GXInvalidateVtxCache(void) {
-    *(volatile unsigned char *)0xCC008000 = 0x48;
+    #define GX_CP_CMD_INVALIDATE_VTX_CACHE 0x48
+    /* Invalidate the GP's cached vertex data by writing the CP invalidate command to the write-gather FIFO. */
+    *(volatile unsigned char *)0xCC008000 = GX_CP_CMD_INVALIDATE_VTX_CACHE;
+    #undef GX_CP_CMD_INVALIDATE_VTX_CACHE
 }
 
 void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned int nrm, unsigned int normalize, int postmtx) {
