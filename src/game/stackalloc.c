@@ -388,7 +388,7 @@ void fn_802D9DE4(int arg0, void *arg1, int arg2) {
     }
 }
 #pragma pop
-#pragma unroll off
+#pragma unroll_loops off
 void fn_802DA1F4(int arg0, void *arg1, int arg2) {
     extern int lbl_804DB458[];
     extern signed char lbl_8055FE58;
