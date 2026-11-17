@@ -117,9 +117,7 @@ void *fn_801D9090(void *object, s32 shouldFree) {
 }
 
 /* Callback wrapper: forward to fn_801D611C with the pointer backed up to its enclosing structure (userData - 4). */
-void fn_801D90E8(s32 userData) {
-    fn_801D611C(userData - 4);
-}
+void fn_801D90E8(s32 userData) { fn_801D611C(userData - 4); }
 
 void fn_801D90F0(s32 arg0) {
     fn_801D77E8(arg0 - 4);
