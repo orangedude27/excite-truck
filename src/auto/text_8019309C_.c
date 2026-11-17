@@ -388,8 +388,13 @@ void fn_8019386C(void *arg0) {
     fn_80193CE0(arg0);
 }
 
-void fn_80193870(void *arg0) {
-    ((void (*)(void *, void *))fn_801945F8)(arg0, lbl_8055A4B8);
+/* Single-argument entry point (callback shape) for fn_801945F8, the routine that
+ * sets up a driver's lateral direction scale once its vehicle (+0x294) and
+ * sub-object (+0x288) states allow it: tail-calls it with the driver untouched
+ * and the "console" name as the extra tag argument. fn_801945F8 is defined
+ * taking only the driver, so the call goes through a two-argument cast. */
+void fn_80193870(void *driver) {
+    ((void (*)(void *, const char *))fn_801945F8)(driver, lbl_8055A4B8);
 }
 
 void fn_80193878(void *arg0) {
