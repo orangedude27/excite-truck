@@ -9511,8 +9511,8 @@ extern "C" void fn_80229BE8(void *this_) {
 }
 
 extern "C" s32 fn_80229C9C(s32 widget) {
-    /* Field-offset helper: return a pointer to a UI widget's field at +0x264
-     * (the value the widget watches; see the label widgets around fn_801E8D48). */
+    /* Field-offset helper: return a pointer to a UI widget's field at +0x264,
+     * where these widgets keep the value or state they watch. */
     return widget + 0x264;
 }
 
