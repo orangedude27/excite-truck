@@ -1812,6 +1812,7 @@ extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
     *(f32 *)arg1 = out2;
     *(f32 *)((u8 *)arg1 + 4) = out3;
 }
+#pragma use_lmw_stmw off
 extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
     struct Lookup {
         virtual void dummy();
@@ -1824,7 +1825,7 @@ extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
     u8 *other = (u8 *)arg2;
     char *labels = (char *)lbl_8032C530;
     f32 diff, ratio, opacity;
-    s32 i, active;
+    s32 active, i;
     void *item, *icon;
     TextStyle text;
     DrawStyle draw;
@@ -1876,7 +1877,6 @@ extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
         }
     }
 }
-#pragma use_lmw_stmw reset
 extern "C" s32 fn_8013F438(f32);
 extern "C" void fn_8013F498(void *, void *, f32);
 extern "C" f32 fn_8013EFBC(f32);
@@ -3988,6 +3988,7 @@ extern "C" void fn_801442DC(void *obj) {
     ((TObj20 *)obj)->v20();
 }
 
+// Trivial stub in this vtable's callback group; always returns 0 (false).
 extern "C" s32 fn_801442EC(void) { return 0; }
 
 extern "C" s32 fn_801442F4(void) { return 0; }
