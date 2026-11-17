@@ -4601,6 +4601,7 @@ void fn_80155AEC(void) {
 
 }
 
+#pragma scheduling invalid_target
 void fn_80155AF0(void *arg0, void *arg1) {
     u8 *b358 = lbl_8032D358;
     void *fn;
@@ -4657,7 +4658,6 @@ void fn_80155AF0(void *arg0, void *arg1) {
         base[idx] = alloc2;
     }
 }
-
 u32 fn_80155C88(void) { return 1; }
 
 extern int vsprintf(char *, const char *, va_list);
@@ -4699,8 +4699,9 @@ void fn_80155E40(void *arg0, s32 arg1) {
 
 void fn_80155E50(void *arg0, int arg1) { *(int *)((char *)arg0 + 0x10C) = arg1; }
 
-void fn_80155E58(void *arg0) {
-    ((u8 *)arg0)[4] = 0;
+/* Clear the byte flag at offset +4 of the object. */
+void fn_80155E58(void *object) {
+    ((u8 *)object)[4] = 0;
 }
 
 void fn_80155E64(void *arg0, signed char arg1) { *((signed char *)arg0 + 5) = arg1; }
