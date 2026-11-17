@@ -1043,12 +1043,13 @@ extern "C" void fn_8014C72C(void *textEntry) {
     fn_801476C4();
 }
 #pragma cplusplus reset
-f32 fn_8014C75C(f32 *arg0, const f32 *arg1) {
-    f32 v0 = arg1[0];
-    f32 v1 = arg1[1];
-    arg0[0] = v0;
-    arg0[1] = v1;
-    return v0;
+f32 fn_8014C75C(f32 *dst, const f32 *src) {
+    /* Copy a 2D point (x, y) from src to dst and return its x component. */
+    f32 x = src[0];
+    f32 y = src[1];
+    dst[0] = x;
+    dst[1] = y;
+    return x;
 }
 
 #pragma scheduling invalid_target
