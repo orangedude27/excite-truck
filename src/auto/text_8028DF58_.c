@@ -1855,8 +1855,10 @@ void fn_80291714(void *object) {
     *((unsigned char *)object + 0x11C) = 0;
 }
 
-unsigned char fn_80291720(void *arg0) {
-    return *((unsigned char *)arg0 + 0x11C);
+/* Read the object's boolean flag at offset 0x11C (set by fn_80291708, cleared by
+ * fn_80291714; the value next to it at +0x118 is read by fn_802916F8). */
+unsigned char fn_80291720(void *object) {
+    return *((unsigned char *)object + 0x11C);
 }
 
 #pragma dont_inline reset
