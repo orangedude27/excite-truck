@@ -298,22 +298,6 @@ static inline MEMiExpHeapMBlock *InsertAfterMBlock_(MEMiExpHeapMBlockList *list,
     return mblock;
 }
 
-static inline MEMiExpHeapMBlock* RemoveMBlockEarly_(MEMiExpHeapMBlockList* list, MEMiExpHeapMBlock* mblock) {
-    MEMiExpHeapMBlock* prev = mblock->prev;
-    MEMiExpHeapMBlock* next = mblock->next;
-    if (prev != 0) {
-        prev->next = next;
-    } else {
-        list->head = next;
-    }
-    if (next != 0) {
-        next->prev = prev;
-    } else {
-        list->tail = prev;
-    }
-    return prev;
-}
-
 void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk, void *mem, u32 size, u16 direction) {
     MEMiExpHeapMBlock *usedStart;
     u8 *after = (u8 *)mem + size;
