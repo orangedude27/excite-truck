@@ -104,10 +104,11 @@ void fn_802CA1E0(void) {
     lbl_8055FCB0 = 0;
 }
 #pragma scheduling on
-int fn_802CA294(int arg0) {
-    int offset = arg0 * 0x4C;
-    int *base = (int *)lbl_8055FCB0;
-    return *(int *)((char *)base + offset + 0x28);
+/* Return the texture id (field +0x28) of the given 0x4C-byte texture slot. */
+int fn_802CA294(int textureSlot) {
+    int offset = textureSlot * 0x4C;
+    int *slots = (int *)lbl_8055FCB0;
+    return *(int *)((char *)slots + offset + 0x28);
 }
 
 extern char *fn_80029004(char *, int); /* strchr */
@@ -1599,17 +1600,17 @@ extern char lbl_8055D090;
 #pragma use_lmw_stmw off
 void fn_802CC410(void *arg0) {
     register int zero = 0;
-    register int *node;
     register int value = -2;
     register int done = 2;
     register char *root = (char *)arg0;
+    register int *node;
     int temporary;
     int result;
 
 outer:
     node = *(int **)root;
     value = -2;
-    do {
+    while (node != 0) {
         if (node[4] == -1) {
             result = fn_8012C7FC((void *)node[0], &temporary);
             if (result != 0) {
@@ -1627,10 +1628,11 @@ outer:
                     (void *)(value + 4), &lbl_8055D090);
                 *(int *)(root + 0x18) += *(int *)(value + 0x3C);
                 value = node[1];
+                break;
             }
         }
         node = *(int **)((char *)node + 0x14);
-    } while (node != 0);
+    }
     if (value != -2) {
         *(int *)(root + value * 0x14 + 0x40) = done;
         goto outer;
