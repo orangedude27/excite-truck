@@ -152,7 +152,7 @@ BOOL nandIsInitialized(void) {
     return s_libState == NAND_LIB_INITIALIZED ? TRUE : FALSE;
 }
 
-// Stubbed for release
+// Release-build no-op: nandConvertErrorCode calls this with the failing IPC result code (a debug build would report it here).
 void nandReportErrorCode(s32 result) {
 #pragma unused(result)
 }
