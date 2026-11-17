@@ -2226,8 +2226,9 @@ extern "C" s32 fn_802151D4(s32 object, s32 deleteFlag) {
 }
 
 extern "C" s32 fn_80214FE0(s32, s32, s32, s32);
-extern "C" void fn_80215214(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    fn_80214FE0(arg0, arg1, arg2, 1);
+extern "C" void fn_80215214(s32 headingMsg, s32 bodyMsg, s32 param, s32 unused) {
+    /* Tail-call the message-box display helper with its mode flag fixed to 1 (ignores the 4th argument). */
+    fn_80214FE0(headingMsg, bodyMsg, param, 1);
 }
 
 extern "C" void fn_8021521C(s32 headingMsg, s32 bodyMsg, s32 flag) {
