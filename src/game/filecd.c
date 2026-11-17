@@ -421,8 +421,9 @@ int fn_802E4648(void *file) {
     return -1;
 }
 #pragma scheduling on
-int fn_802E4680(void *arg0) {
-    return *(int *)((char *)arg0 + 0x88);
+/* Return the current read position (FileDisk::cursor at offset 0x88) of the DVD file node. */
+int fn_802E4680(void *file) {
+    return *(int *)((char *)file + 0x88);
 }
 
 #pragma cplusplus on
