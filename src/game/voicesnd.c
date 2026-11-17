@@ -89,7 +89,10 @@ void* fn_8020A76C(void) {
     return lbl_8055EE08;
 }
 
-void *fn_8020A774(int arg0) { return lbl_804892D0 + arg0 * 0x24; }
+void *fn_8020A774(int index) {
+    /* Return a pointer to the 0x24-byte voice-sound entry at the given index in lbl_804892D0. */
+    return lbl_804892D0 + index * 0x24;
+}
 
 int fn_8020A788(void) {
     /* Lazily create/initialize the shared voice-sound pool object, then increment the active-use count on success. */
