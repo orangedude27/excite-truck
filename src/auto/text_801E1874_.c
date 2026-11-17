@@ -170,57 +170,60 @@ extern double __fabs(double);
 #pragma scheduling invalid_target
 #pragma push
 #pragma processor 750
+/* Steps the rain/thunder sound state each frame: picks a new rain spell or thunderclap
+ * time, eases the volume toward its target, and asks the thunder sound to play at the
+ * scheduled instant. The force flag makes the change happen immediately. */
 void fn_801E1B30(void) {
-    float temp = lbl_8055E3C8;
-    char *state = lbl_804874B8;
+    float currentTime = lbl_8055E3C8;
+    char *sound = gWeatherSound;
     int zero = 0;
 
-    if (fn_80129D18(4, 0x12C) == 0 || (unsigned char)lbl_8055EA21 != 0) {
-        if (*(int *)state == 1 || (unsigned char)lbl_8055EA21 != 0) {
-            if (fn_80129D18(4, 0xA) < 6 || (unsigned char)lbl_8055EA21 != 0) {
-                *(int *)state = 2;
-                *(float *)(state + 0x10) = fn_80129DC4(4, lbl_80562CAC, lbl_80562CB0);
+    if (fn_80129D18(4, 0x12C) == 0 || (unsigned char)gForceWeather != 0) {
+        if (*(int *)sound == 1 || (unsigned char)gForceWeather != 0) {
+            if (fn_80129D18(4, 0xA) < 6 || (unsigned char)gForceWeather != 0) {
+                *(int *)sound = 2;
+                *(float *)(sound + 0x10) = fn_80129DC4(4, lbl_80562CAC, lbl_80562CB0);
             } else {
-                *(int *)state = 3;
-                *(float *)(state + 0xC) = temp + fn_80129DC4(4, lbl_80562CB4, lbl_80562CB8);
+                *(int *)sound = 3;
+                *(float *)(sound + 0xC) = currentTime + fn_80129DC4(4, lbl_80562CB4, lbl_80562CB8);
             }
-            *(float *)(state + 8) = fn_80129DC4(4, lbl_80562CB8, lbl_80562CBC);
-        } else if (*(float *)(state + 4) > *(float *)(state + 8)) {
-            *(float *)(state + 8) = fn_80129DC4(4, *(float *)(state + 4), lbl_80562CC0);
+            *(float *)(sound + 8) = fn_80129DC4(4, lbl_80562CB8, lbl_80562CBC);
+        } else if (*(float *)(sound + 4) > *(float *)(sound + 8)) {
+            *(float *)(sound + 8) = fn_80129DC4(4, *(float *)(sound + 4), lbl_80562CC0);
         }
     }
 
-    lbl_8055EA21 = zero;
-    if (*(int *)state != 1) {
-        if (WeatherAbs(*(float *)(state + 4) - *(float *)(state + 8)) < lbl_80562CC4) {
-            if (WeatherAbs(*(float *)(state + 8)) <= lbl_80558DC4) {
+    gForceWeather = zero;
+    if (*(int *)sound != 1) {
+        if (WeatherAbs(*(float *)(sound + 4) - *(float *)(sound + 8)) < lbl_80562CC4) {
+            if (WeatherAbs(*(float *)(sound + 8)) <= lbl_80558DC4) {
                 goto set_mode;
             }
-            *(float *)(state + 8) = lbl_80562CAC;
+            *(float *)(sound + 8) = lbl_80562CAC;
             goto after_mode;
         set_mode:
-            *(int *)state = 1;
+            *(int *)sound = 1;
         after_mode:
             ;
         }
-        *(float *)(state + 4) =
-            *(float *)(state + 4) +
-            lbl_80562CB4 * (*(float *)(state + 8) - *(float *)(state + 4));
+        *(float *)(sound + 4) =
+            *(float *)(sound + 4) +
+            lbl_80562CB4 * (*(float *)(sound + 8) - *(float *)(sound + 4));
     }
 
-    if (*(void **)(lbl_804874B8 + 0x18) != 0 &&
-        *(float *)(state + 0xC) > lbl_80562CAC &&
-        temp > *(float *)(state + 0xC)) {
-        unsigned char *obj = *(unsigned char **)(lbl_804874B8 + 0x18);
-        if (obj[0x19] != 0) {
-            obj[0x4C] = 1;
-            obj[0x4A] = 0;
+    if (*(void **)(gWeatherSound + 0x18) != 0 &&
+        *(float *)(sound + 0xC) > lbl_80562CAC &&
+        currentTime > *(float *)(sound + 0xC)) {
+        unsigned char *thunder = *(unsigned char **)(gWeatherSound + 0x18);
+        if (thunder[0x19] != 0) {
+            thunder[0x4C] = 1;
+            thunder[0x4A] = 0;
         } else {
-            obj[0x49] = 1;
-            obj[0x4B] = 0;
-            obj[0x4A] = 0;
+            thunder[0x49] = 1;
+            thunder[0x4B] = 0;
+            thunder[0x4A] = 0;
         }
-        *(float *)(state + 0xC) = lbl_80562CC8;
+        *(float *)(sound + 0xC) = lbl_80562CC8;
     }
 }
 #pragma pop
