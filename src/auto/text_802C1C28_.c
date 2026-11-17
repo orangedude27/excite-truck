@@ -170,7 +170,8 @@ void fn_802C205C(int userData) { fn_802C1F84(userData - 4); }
 void fn_802C2064(int userData) { fn_802C1F88(userData - 4); }
 
 void fn_802C1F8C();
-void fn_802C206C(int arg0) { fn_802C1F8C(arg0 - 4); }
+/* Release-callback wrapper: forward to fn_802C1F8C with the pointer backed up to its enclosing allocation header (userData - 4). */
+void fn_802C206C(int userData) { fn_802C1F8C(userData - 4); }
 
 /* Returns a handle for the given resource path if valid and initialized, or -2 on failure. */
 int fn_802C2074(void *path) {
