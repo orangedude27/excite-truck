@@ -4138,10 +4138,12 @@ extern "C" void* fn_801A25F8(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     return arg0;
 }
 #pragma scheduling on
-extern "C" void fn_801A2674(void* arg0, s32 arg1, s32 arg2, f32 arg3) {
-    *(f32*)((u8*)arg0 + 0x24) = arg3;
-    *(s32*)((u8*)arg0 + 0x28) = arg1;
-    *(s32*)((u8*)arg0 + 0x2C) = arg2;
+/* Set the tail fields of the object built by fn_801A25F8: an extent/scale float
+ * at +0x24 and two integer parameters at +0x28 and +0x2C. */
+extern "C" void fn_801A2674(void* obj, s32 param28, s32 param2C, f32 extent) {
+    *(f32*)((u8*)obj + 0x24) = extent;
+    *(s32*)((u8*)obj + 0x28) = param28;
+    *(s32*)((u8*)obj + 0x2C) = param2C;
 }
 
 extern f32 lbl_805622E0;
