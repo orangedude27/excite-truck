@@ -2755,7 +2755,7 @@ void fn_80038870(u32 arg0) {
             fn_80038040();
             flag = 1;
         } else flag = 0;
-        if (flag == 0 && MotorState_8055D8A8 != 2) {
+        if (flag == 0 && MotorState_8055D8A8 != 2U) {
             *(s32 *)((char *)executing_8055D8C8 + 0xC) = 7;
             MotorState_8055D8A8 = 1;
             if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
