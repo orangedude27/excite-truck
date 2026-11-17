@@ -971,9 +971,10 @@ extern "C" void *fn_802078CC(int arg0, int arg1, void *object) {
     return (*(int *)((u8 *)result + 0xC) != 0) ? result : 0;
 }
 #pragma scheduling on
-extern "C" void fn_80207924(void *arg0) {
-    struct Obj { virtual void v0(int); };
-    ((Obj *)arg0)->v0(-1);
+extern "C" void fn_80207924(void *sound) {
+    /* Dispatch the virtual at vtable slot 0x8 on the sound object, passing -1. */
+    struct SoundObj { virtual void v0(int); };
+    ((SoundObj *)sound)->v0(-1);
 }
 
 extern int lbl_8055ED94;
