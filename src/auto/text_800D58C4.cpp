@@ -271,10 +271,11 @@ extern "C" s32 fn_800D5944(void* resource, u32 signature) {
     return result;
 }
 
-extern "C" void fn_800D5978(void* arg0) {
-    *(u8*)((u8*)arg0) = 0;
-    *((u8*)arg0 + 1) = 0;
-    *(u32*)((u8*)arg0 + 4) = 0;
+/* Initialize a layout detail::TexCoordAry: no entries in use and no buffer yet. */
+extern "C" void fn_800D5978(nw4hbm::lyt::detail::TexCoordAry* texCoords) {
+    texCoords->mSize = 0;
+    texCoords->mTop = 0;
+    texCoords->mpTexCoord = 0;
 }
 
 /* Frees the owned buffer through the global allocator and clears the buffer pointer and status bytes. */
