@@ -144,6 +144,8 @@ u8 SCGetWpadMotorMode(void) {
 }
 
 BOOL SCSetWpadMotorMode(u8 mode) {
+    /* Set the Wii Remote's rumble motor mode in the System Configuration's Bluetooth
+       motor-mode item (SC_ITEM_BT_MOT, id 0x18). */
     return SCReplaceU8Item(mode, SC_ITEM_BT_MOT);
 }
 
