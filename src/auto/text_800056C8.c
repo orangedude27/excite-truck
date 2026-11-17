@@ -554,6 +554,8 @@ void fn_800060A0(void *object) {
     ((s32 *)object)[2] = 0;
 }
 
+/* No-op default callback in the audio/HUD dispatch-table run around fn_800060A0
+ * (DSP init-flag clear) and fn_800060B8 (parameter reset); this build leaves it empty. */
 void fn_800060B4(void) {
     return;
 }
