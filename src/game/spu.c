@@ -1336,8 +1336,10 @@ void fn_802E6B04(void) {
 void fn_802E6B34(void) {
 }
 
-void fn_802E6B38(void* arg0, signed char* arg1) {
-    *arg1 = 0;
+/* Clear a scratch text buffer to an empty string before a sound name is formatted
+ * into it (the sound-index argument is unused). */
+void fn_802E6B38(void* index, signed char* text) {
+    *text = 0;
 }
 
 #pragma dont_inline on
