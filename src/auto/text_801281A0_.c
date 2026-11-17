@@ -75,18 +75,32 @@ extern u32 lbl_80559968;
 extern char lbl_8032A430[];
 #pragma scheduling invalid_target
 int fn_8012820C(void) {
-    s32 sp14, sp10, spC, sp8;
-    ((void (*)(char *))fn_80128208)(lbl_8032A01C);
-    lbl_8055DF90 = 1;
-    lbl_8055DF8C = 0;
-    sp10 = 0;
-    sp8 = 0;
-    fn_802E3DF8(0, &sp14, &spC);
-    fn_802E3DF8(1, &sp10, &sp8);
-    fn_80128714(&lbl_8041E140, sp14, spC);
-    fn_80128714(&lbl_8041E160, sp10, sp8);
-    lbl_8055DF94 = sp14;
+    #define memBeginTag       lbl_8032A01C
+    #define heapReadyFlag     lbl_8055DF90
+    #define heapPendingSize   lbl_8055DF8C
+    #define heapRingPrimary   lbl_8041E140
+    #define heapRingSecondary lbl_8041E160
+    #define heapBufferHandle  lbl_8055DF94
+    s32 mem1Base, mem2Base, mem1Size, mem2Size;
+    /* Start the heap manager, mark it ready, and seed the MEM1/MEM2 ring buffers
+       with their arena bounds, keeping the primary base as the buffer handle. */
+    ((void (*)(char *))fn_80128208)(memBeginTag);
+    heapReadyFlag = 1;
+    heapPendingSize = 0;
+    mem2Base = 0;
+    mem2Size = 0;
+    fn_802E3DF8(0, &mem1Base, &mem1Size);
+    fn_802E3DF8(1, &mem2Base, &mem2Size);
+    fn_80128714(&heapRingPrimary, mem1Base, mem1Size);
+    fn_80128714(&heapRingSecondary, mem2Base, mem2Size);
+    heapBufferHandle = mem1Base;
     return 1;
+    #undef memBeginTag
+    #undef heapReadyFlag
+    #undef heapPendingSize
+    #undef heapRingPrimary
+    #undef heapRingSecondary
+    #undef heapBufferHandle
 }
 #pragma scheduling on
 extern void fn_80128710(void);
