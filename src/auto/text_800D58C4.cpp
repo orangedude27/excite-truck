@@ -1804,8 +1804,10 @@ extern "C" s32 fn_800D8768(u32 *flags) {
     return ((u32)*flags >> 0x17U) & 1;
 }
 
-extern "C" s32 fn_800D8774(u32* arg0) {
-    return ((u32)*arg0 >> 0x18U) & 1;
+/* Returns bit 24 of a nw4r lyt material flag word (res+0x3C): an optional 4-byte-state
+ * capacity flag the material constructor (fn_800D8B28) passes as its last argument. */
+extern "C" s32 fn_800D8774(u32 *flags) {
+    return ((u32)*flags >> 0x18U) & 1;
 }
 
 /* Extract the indirect-texture count (indTexNum, 2 bits at bit 13) from the
