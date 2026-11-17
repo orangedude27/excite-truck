@@ -94,20 +94,22 @@ extern long lbl_8055EB34;
 extern long *lbl_8055EB3C;
 extern long lbl_8055EB38;
 extern long *lbl_8055EB40;
-void fn_801E78D8(long arg0) {
+/* Rebuild the scene's sound-group table: clear every slot to -1, then map each
+ * scene object tagged 0x50 from its group id (+0x70 & 3) to its record index. */
+void fn_801E78D8(long scene) {
     #pragma scheduling invalid_target
-    long count;
-    long i;
-    unsigned char *base;
-    unsigned char *entry;
-    long j;
-    count = fn_800167F4();
+    long objectCount;
+    long slot;
+    unsigned char *records;
+    unsigned char *record;
+    long recordIndex;
+    objectCount = fn_800167F4();
     fn_80206464();
-    for (i = 0; i < count; i++) fn_8020646C(i, -1);
-    base = (unsigned char *)arg0 + 0x20;
-    entry = base;
-    for (j = 0; j < *(long *)(base + 0x3C0); entry += 0x78, j++) {
-        if (*(long *)entry == 0x50) fn_8020646C(*(entry + 0x70) & 3, j);
+    for (slot = 0; slot < objectCount; slot++) fn_8020646C(slot, -1);
+    records = (unsigned char *)scene + 0x20;
+    record = records;
+    for (recordIndex = 0; recordIndex < *(long *)(records + 0x3C0); record += 0x78, recordIndex++) {
+        if (((struct Rec78 *)record)->tag == 0x50) fn_8020646C(((struct Rec78 *)record)->c70 & 3, recordIndex);
     }
 }
 
