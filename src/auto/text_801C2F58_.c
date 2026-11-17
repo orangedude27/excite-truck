@@ -164,15 +164,16 @@ extern void fn_8012F57C(float *, float *, float *, float);
 extern f32 lbl_8056296C, lbl_80562974;
 static inline void mtx_to_quat(float m[3][3], float *q) {
     float sum = m[0][0] + m[1][1] + m[2][2];
-    float sn, inv;
+    float sn, inv, q0, q1, q2, q3;
     int i, j, k;
     if (sum > lbl_80562970) {
         sn = (float)fn_8002F234(lbl_8056296C + sum);
         inv = lbl_80562974 / sn;
-        q[3] = lbl_80562974 * sn;
-        q[0] = inv * (m[1][2] - m[2][1]);
-        q[1] = inv * (m[2][0] - m[0][2]);
-        q[2] = inv * (m[0][1] - m[1][0]);
+        q3 = lbl_80562974 * sn;
+        q0 = inv * (m[1][2] - m[2][1]);
+        q1 = inv * (m[2][0] - m[0][2]);
+        q2 = inv * (m[0][1] - m[1][0]);
+        q[3] = q3; q[0] = q0; q[1] = q1; q[2] = q2;
     } else {
         i = 0;
         if (m[1][1] > m[0][0]) i = 1;
@@ -200,20 +201,25 @@ f32 fn_801C2F58(s32 count, f32 factor) {
 }
 #pragma scheduling on
 void fn_801C2FF4(float *out, float *a, float *b, float weight) {
-    float qa[4], qb[4], q[4], trace, root, half=lbl_80562974, w, x, y, z;
-    int i,j,k;
-    trace=a[0]+a[4]+a[8];
-    if(trace>lbl_80562970){ root=fn_8002F234(lbl_8056296C+trace); qa[0]=half*root; root=half/root; qa[1]=root*(a[5]-a[7]); qa[2]=root*(a[6]-a[2]); qa[3]=root*(a[1]-a[3]); }
-    else { i=0; if(a[4]>a[0])i=1; if(a[8]>a[i*3+i])i=2; j=(i+1)%3; k=(j+1)%3; root=fn_8002F234(lbl_8056296C+a[i*3+i]-(a[j*3+k]+a[k*3+j])); qa[i]=half*root; root=half/root; qa[3]=root*(a[j*3+k]-a[k*3+j]); qa[j]=root*(a[i*3+j]+a[j*3+i]); qa[k]=root*(a[i*3+k]+a[k*3+i]); }
-    trace=b[0]+b[4]+b[8];
-    if(trace>lbl_80562970){ root=fn_8002F234(lbl_8056296C+trace); qb[0]=half*root; root=half/root; qb[1]=root*(b[5]-b[7]); qb[2]=root*(b[6]-b[2]); qb[3]=root*(b[1]-b[3]); }
-    else { i=0; if(b[4]>b[0])i=1; if(b[8]>b[i*3+i])i=2; j=(i+1)%3; k=(j+1)%3; root=fn_8002F234(lbl_8056296C+b[i*3+i]-(b[j*3+k]+b[k*3+j])); qb[i]=half*root; root=half/root; qb[3]=root*(b[j*3+k]-b[k*3+j]); qb[j]=root*(b[i*3+j]+b[j*3+i]); qb[k]=root*(b[i*3+k]+b[k*3+i]); }
-    fn_8012F57C(q,qa,qb,weight);
-    w=q[0]; x=q[1]; y=q[2]; z=q[3];
-    out[9]=a[9]+weight*(b[9]-a[9]); out[10]=a[10]+weight*(b[10]-a[10]); out[11]=a[11]+weight*(b[11]-a[11]);
-    out[0]=1-2*(y*y+z*z); out[4]=1-2*(x*x+z*z); out[8]=1-2*(x*x+y*y);
-    out[7]=2*(y*z-w*x); out[2]=2*(y*z+w*x); out[1]=2*(x*y-w*z); out[3]=2*(x*y+w*z);
-    out[6]=2*(x*z-w*y); out[5]=2*(x*z+w*y);
+    float q[4], av[4], bv[4];
+    mtx_to_quat((float (*)[3])a, av);
+    mtx_to_quat((float (*)[3])b, bv);
+    fn_8012F57C(q, av, bv, weight);
+    {
+        float x = q[0], y = q[1], z = q[2], w = q[3];
+        float xx = x * (2 * x), yy = y * (2 * y), zz = z * (2 * z);
+        float xy = x * (2 * y), xz = x * (2 * z), yz = y * (2 * z);
+        float wx = w * (2 * x), wy = w * (2 * y), wz = w * (2 * z);
+        out[0] = 1.0f - (yy + zz);
+        out[4] = 1.0f - (xx + zz);
+        out[8] = 1.0f - (xx + yy);
+        out[1] = xy + wz; out[3] = xy - wz;
+        out[2] = xz - wy; out[6] = xz + wy;
+        out[5] = yz - wx; out[7] = yz + wx;
+        out[9] = a[9] + weight * (b[9] - a[9]);
+        out[10] = a[10] + weight * (b[10] - a[10]);
+        out[11] = a[11] + weight * (b[11] - a[11]);
+    }
 }
 
 #pragma dont_inline on
