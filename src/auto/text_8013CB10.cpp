@@ -4302,6 +4302,10 @@ extern "C" void fn_80144308(void) {
 extern "C" void fn_80144304(void) {
 }
 
+/* Empty virtual slot: part of the zone system's run of unimplemented class
+ * methods here -- 4-byte no-ops (fn_80144304, fn_8014430C, fn_80144310)
+ * alternating with stubs that just return 0 (fn_80144314, fn_8014431C), the
+ * shape a class with empty overrides leaves behind.  Does nothing. */
 extern "C" void fn_8014430C(void) {
 }
 
