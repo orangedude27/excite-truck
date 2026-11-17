@@ -1280,6 +1280,7 @@ extern f32 lbl_80561680, lbl_80561684, lbl_8056168C, lbl_80561690, lbl_80561694,
 extern f64 lbl_805616B0;
 extern u8 lbl_802F9410[];
 extern s32 lbl_802F9458[];
+typedef struct { s32 a, b, c; } LabelNames_8014CA48;
 extern char lbl_80559F10[8];
 extern f32 fn_80144C80(f32, f32, f32);
 extern void fn_801476D8(void *, ...);
@@ -1302,6 +1303,7 @@ extern "C" s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
     typedef struct { s32 tag; f32 x; f32 y; s32 mode; f32 w; f32 h; f32 x0, y0, x1, y1; } Rect;
     typedef struct { s32 id; s32 x; s32 y; s32 just; f32 scale; s32 font; u32 color; char *text; } Text;
     typedef struct { int id; s32 num; s32 pad; } Slot;
+    struct Names { s32 a, b, c; };
     typedef struct { char s0[4]; } Strings;
     u8 *o = (u8 *)a0;
     Layout_8014CA48 *mgr = (Layout_8014CA48 *)a1;
@@ -1320,7 +1322,6 @@ extern "C" s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
     char name100[0x20];
     Text tE0, tC0, tA0, t80;
     char name60[0x20], name40[0x20];
-    volatile s32 names[3];
     u8 it[0x10];
     s64 lerp18, lerp10;
     u8 shown[6];
@@ -1393,14 +1394,11 @@ extern "C" s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
         count = fn_80144C90(fn_8014AED8(node));
         if (fn_8014AD64(node) > 0) {
             Rect *t;
-            s32 *src;
             f24 = fn_8014C8F8(f27, lbl_80561648, lbl_8056164C);
             f28 = fn_8014C8B4(lbl_80561648, lbl_8056164C, lbl_8056164C, lbl_80561688, f24);
-            src = (s32 *)lbl_802F9458;
-            names[0] = src[0];
-            names[1] = src[1];
-            names[2] = src[2];
-            names[2] = (count >= 5) ? fn_8014C830((s32)node) : fn_8014C828((s32)node);
+            {
+            Names names = *(Names *)lbl_802F9458;
+            names.c = (count >= 5) ? fn_8014C830((s32)node) : fn_8014C828((s32)node);
             if (count >= 5) {
                 s32 col;
                 f24 = fn_8014C8B4(lbl_80561648, lbl_80561684, lbl_80561648, lbl_8056164C, f25);
@@ -1421,8 +1419,8 @@ extern "C" s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
                 } else {
                     Text *ta, *tb;
                     f24 = fn_8014C8B4(lbl_80561694, lbl_8056164C, lbl_80561648, lbl_8056164C, f24);
-                    ta = (Text *)mgr->text((void *)names[0]);
-                    tb = (Text *)mgr->text((void *)names[1]);
+                    ta = (Text *)mgr->text((void *)names.a);
+                    tb = (Text *)mgr->text((void *)names.b);
                     if (ta != 0 && tb != 0) {
                         fn_8014C920(&tC0, ta);
                         fn_8014C920(&tE0, tb);
@@ -1430,16 +1428,17 @@ extern "C" s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
                             ((u8 (*)(s32))fn_8014C820)(col), ((u8 (*)(s32))fn_8014C818)(col), ((u8 (*)(s32))fn_8014C810)(col));
                         tE0.color = fn_80144C68(fn_8014C808(tE0.color),
                             ((u8 (*)(s32))fn_8014C820)(col), ((u8 (*)(s32))fn_8014C818)(col), ((u8 (*)(s32))fn_8014C810)(col));
-                        fn_801479A8(&tC0, (s32)&tE0, &lbl_80559EC4, names[2], f24);
+                        fn_801479A8(&tC0, (s32)&tE0, &lbl_80559EC4, names.c, f24);
                     }
                 }
                 fn_80232930();
             } else {
                 Text *ta, *tb;
-                ta = (Text *)mgr->text((void *)names[0]);
-                tb = (Text *)mgr->text((void *)names[1]);
+                ta = (Text *)mgr->text((void *)names.a);
+                tb = (Text *)mgr->text((void *)names.b);
                 if (ta != 0 && tb != 0)
-                    fn_801479A8(ta, (s32)tb, &lbl_80559EC4, names[2], f24);
+                    fn_801479A8(ta, (s32)tb, &lbl_80559EC4, names.c, f24);
+            }
             }
             t = (Rect *)mgr->rect(strings + 0x1fc);
             if (t != 0) {
