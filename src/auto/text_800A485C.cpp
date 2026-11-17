@@ -18723,8 +18723,11 @@ extern "C" void fn_800CF170(void*);
 extern "C" void* lbl_804075F0[];
 extern "C" u32 lbl_8055DD90;
 
-extern "C" void fn_800C64E8(u32 size) {
-    MEMFreeToAllocator(lbl_80559708, (void*)size);
+extern "C" void fn_800C64E8(u32 ptr) {
+#define s_hbmAllocator lbl_80559708
+    /* AXFX free hook: release `ptr` back to the home-button manager's allocator. */
+    MEMFreeToAllocator(s_hbmAllocator, (void*)ptr);
+#undef s_hbmAllocator
 }
 
 extern "C" void fn_800C64F4(void *homeButtonInfo) {
