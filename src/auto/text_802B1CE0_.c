@@ -218,7 +218,6 @@ void fn_802B1FC0(void *node) {
 void fn_802B1FD4(void) {
     int i;
     void *table;
-    int zero = 0;
     void *r27;
     int j;
     void *r25;
@@ -227,6 +226,7 @@ void fn_802B1FD4(void) {
     int off_i;
     int off_j;
     int off_k;
+
     fn_802B2104(&lbl_8055F9BC);
     table = &lbl_804BE1FC;
     i = 0;
@@ -244,29 +244,29 @@ void fn_802B1FD4(void) {
                             fn_80128668(r23);
                         }
                     }
-                    *(int *)((char *)r25 + 0x40c) = zero;
+                    *(int *)((char *)r25 + 0x40c) = 0;
                     if ((char *)r25 + 0x408 != 0) {
                         if ((char *)r25 + 0x408 != 0) {
-                            *(int *)((char *)r25 + 0x408) = zero;
-                            *(int *)((char *)r25 + 0x40c) = zero;
-                            *(int *)((char *)r25 + 0x410) = zero;
+                            *(int *)((char *)r25 + 0x408) = 0;
+                            *(int *)((char *)r25 + 0x40c) = 0;
+                            *(int *)((char *)r25 + 0x410) = 0;
                         }
                     }
                     fn_80128668(r25);
                 }
             }
-            *(int *)((char *)r27 + 4) = zero;
+            *(int *)((char *)r27 + 4) = 0;
             if (r27 != 0) {
                 if (r27 != 0) {
-                    *(int *)r27 = zero;
-                    *((int *)r27 + 1) = zero;
-                    *((int *)r27 + 2) = zero;
+                    *(int *)r27 = 0;
+                    *((int *)r27 + 1) = 0;
+                    *((int *)r27 + 2) = 0;
                 }
             }
             fn_80128668(r27);
         }
     }
-    *(int *)((char *)table + 4) = zero;
+    *(int *)((char *)table + 4) = 0;
 }
 #pragma pop
 
@@ -804,7 +804,8 @@ outer_body:
                 j++;
                 product1 = radial * x;
                 product0 = c * x;
-                product2 = -sine * x;
+                product2 = -sine;
+                product2 = product2 * x;
                 entry[0] = product0;
                 entry[1] = product1;
                 entry[2] = product2;
@@ -872,7 +873,7 @@ outer_body:
                 j++;
                 entry[5] = *(float *)(obj + 8) * cosine;
                 entry += 10;
-            } while (j < 16);
+            } while ((unsigned int)j < 16u);
         }
 
         fn_802C28C0();
@@ -913,8 +914,9 @@ outer_check:
 #pragma pop
 #pragma push
 #pragma dont_inline on
-int *fn_802B320C(int *arg0, int arg1) {
-    return (int *)((char *)*arg0 + arg1 * 4);
+/* Pointer to the 32-bit element at `index` in the array whose base pointer is stored at `basePtr`. */
+int *fn_802B320C(int *basePtr, int index) {
+    return (int *)((char *)*basePtr + index * 4);
 }
 #pragma pop
 
