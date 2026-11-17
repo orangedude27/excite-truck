@@ -14,6 +14,7 @@ void fn_801CEFAC(void) {
     lbl_8055E8A1 = 1;
 }
 
+/* Leave replay mode: clear the replay-mode flag and the in-playback flag. */
 void fn_801CEFC4(void) {
     lbl_8055AB50 = 0;
     lbl_8055E8A0 = 0;
