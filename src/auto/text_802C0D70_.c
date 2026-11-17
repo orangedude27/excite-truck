@@ -119,6 +119,7 @@ void fn_802C0FD4(int *slot) {
     }
 }
 
+/* Release the loaded "sky.mod" resource handle held in lbl_8055FB18, if any. */
 void fn_802C1018(void) {
     fn_802C0FD4((int *)&lbl_8055FB18);
 }
