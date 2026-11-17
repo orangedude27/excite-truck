@@ -10732,7 +10732,10 @@ block_25:
         return result;
     }
     flags = *(u16 *)((u8 *)arg0 + 0x1F8C);
-    return (flags & 8) ? -((flags >> 1) & 1) & 0xB : 9;
+    if (flags & 8) {
+        return -((flags >> 1) & 1) & 0xB;
+    }
+    return 9;
 }
 
 struct CacheKey { u32 flag; s32 key; };
@@ -20017,8 +20020,9 @@ extern "C" s32 is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane(void *pane) {
 // Return the "shown" flag (bit 0 of LYT_PANE_FLAGS) of an nw4r::lyt::Pane.
 extern "C" s32 fn_800D0AA8(void *pane) { return LYT_PANE_FLAGS(pane) & LYT_PANE_SHOWN; }
 
-extern "C" s32 fn_800D0AB4(void *arg0) {
-    return ((s32 *)arg0)[0xC / 4];
+extern "C" s32 fn_800D0AB4(void *pane) {
+    // LytPaneParent: returns the parent pane stored at offset 0xC of a nw4r::lyt::Pane.
+    return ((s32 *)pane)[0xC / 4];
 }
 
 extern "C" s32 is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane(void *pane);
