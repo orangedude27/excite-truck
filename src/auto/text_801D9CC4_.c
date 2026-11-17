@@ -258,6 +258,7 @@ extern int fn_801DA1F8(void *, void **, void **, float *);
 extern float __fabsf(float);
 #pragma processor 750
 #pragma scheduling invalid_target
+#pragma optimization_level 3
 int fn_801DA294(void *arg0, void *arg1, void *arg2, void *arg3) {
     float *a, *b;
     float t, omt;
