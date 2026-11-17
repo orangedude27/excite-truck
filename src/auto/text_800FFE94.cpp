@@ -29,12 +29,20 @@ extern "C" void fn_800FFE94(void* handle) {
         *(void**)handle = 0;
 }
 
-extern "C" char lbl_803276F0[];
+extern "C" char lbl_803276F0;
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *arg0, const void *arg1) {
+    struct PanicStrings {
+        char f0[0x10];
+        char f10[0x4C];
+        char f5c[0x58];
+        char fb4[0x2C];
+        char fe0[0x58];
+        char f138[0xC0];
+    };
     register void *self = arg0;
     register const unsigned char *file = (const unsigned char *)arg1;
-    register char *strings = lbl_803276F0;
+    register const PanicStrings *strings = (const PanicStrings *)lbl_803276F0;
     register unsigned short temp_r0;
     register unsigned short temp_r4;
     register unsigned int var_r0;
@@ -42,22 +50,22 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *a
     *(unsigned int *)((char *)self + 4) = 0;
     *(unsigned int *)((char *)self + 8) = 0;
     if (file == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803276F0, 89, strings + 180);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings->f0, 89, strings->fb4);
     if (*(const unsigned int *)file != 0x52575344)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x37, strings + 0x10);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings->f0, 0x37, strings->f10);
     if (*(const unsigned int *)file != 0x52575344) {
         var_r0 = 0;
     } else {
         if (*(const unsigned short *)(file + 6) < 0x100)
-            Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x3F, strings + 0x5C);
+            Panic__Q26nw4hbm2dbFPCciPCce(strings->f0, 0x3F, strings->f5c);
         temp_r0 = *(const unsigned short *)(file + 6);
         if (temp_r0 < 0x100) {
             var_r0 = 0;
         } else {
             if (temp_r0 > 0x102)
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_803276F0, 0x45, strings + 0x5C);
+                Panic__Q26nw4hbm2dbFPCciPCce(strings->f0, 0x45, strings->f5c);
             temp_r4 = *(const unsigned short *)(file + 6);
-            var_r0 = (unsigned int)((0x102 | ~temp_r4) - ((unsigned int)(0x102 - temp_r4) >> 1)) >> 31;
+            var_r0 = (unsigned int)(~(temp_r4 & ~0x102U) - ((0x102U - temp_r4) >> 1)) >> 31;
         }
     }
     if ((int)var_r0 == 0)
@@ -65,13 +73,13 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *a
     *(const void **)self = (const void *)file;
     *(void **)((char *)self + 4) = (void *)(*(const unsigned int *)(file + 0x10) + (unsigned int)file);
     if (**(const unsigned int **)((char *)self + 4) != 0x44415441)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x62, strings + 0xE0);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings->f0, 0x62, strings->fe0);
     {
         register const unsigned char *stored = (const unsigned char *)*(volatile void **)self;
         *(void **)((char *)self + 8) = (void *)(*(const unsigned int *)(stored + 0x18) + (unsigned int)stored);
     }
     if (**(const unsigned int **)((char *)self + 8) != 0x57415645)
-        Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x66, strings + 0x138);
+        Panic__Q26nw4hbm2dbFPCciPCce(strings->f0, 0x66, strings->f138);
     return self;
 }
 
