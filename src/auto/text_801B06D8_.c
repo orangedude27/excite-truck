@@ -291,7 +291,10 @@ s32 fn_801B0BA0(void *obj) {
     return *(s32 *)((u8 *)obj + 0x5C);
 }
 
-s32 fn_801B0BA8(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x58); }
+s32 fn_801B0BA8(void *obj) {
+    /* Return the 32-bit field at offset 0x58 of the given deity/AI-truck request object. */
+    return *(s32 *)((u8 *)obj + 0x58);
+}
 
 extern f32 lbl_805625F4;
 extern char lbl_80335A58[];
