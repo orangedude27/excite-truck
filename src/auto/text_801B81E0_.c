@@ -244,7 +244,11 @@ extern "C" void fn_801B832C(void) {
 }
 #pragma cplusplus off
 void* fn_801B83A0(void) {
-    return lbl_8055E744;
+    /* lbl_8055E744 is the global master object (the arena-event master), created
+     * by fn_801B81E0 and cleared on shutdown; return it. */
+    #define gGlobalObject lbl_8055E744
+    return gGlobalObject;
+    #undef gGlobalObject
 }
 
 #pragma cplusplus on
