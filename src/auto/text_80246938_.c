@@ -183,8 +183,11 @@ void *__dt__Q28PSSystem7SeqHeapFv_80246C48(void *arg0, s32 arg1) {
 }
 
 #pragma dont_inline on
-void fn_80246CAC(float farg0) {
-    fn_8020A5F8(farg0 * lbl_8055F264);
+void fn_80246CAC(float volume) {
+    /* Set the music master volume (fn_8020A5F8) to volume scaled by the level saved when demo mode began (lbl_8055F264); 0.0 silences playback. */
+#define SAVED_DEMO_VOLUME lbl_8055F264
+    fn_8020A5F8(volume * SAVED_DEMO_VOLUME);
+#undef SAVED_DEMO_VOLUME
 }
 #pragma dont_inline reset
 
