@@ -150,9 +150,10 @@ void fn_802607D0(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1E) = 1;
 }
 
-void fn_802607DC(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x1E) = 0;
-    *(u8 *)((u8 *)arg0 + 0x1C) = 0;
+/* Clear this selector row's expanded (+0x1E) and on-cursor (+0x1C) flags. */
+void fn_802607DC(void *row) {
+    *(u8 *)((u8 *)row + 0x1E) = 0;
+    *(u8 *)((u8 *)row + 0x1C) = 0;
 }
 
 void fn_802607EC(void *arg0) {
