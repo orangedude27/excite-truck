@@ -271,10 +271,13 @@ extern "C" f32 fn_801451DC(s32 arg0, f32 farg0) {
 #pragma pop
 
 #pragma dont_inline on
-extern "C" f32 fn_801452A0(s32 arg0, f32 arg1) {
-    if (arg0 & 0x20)
-        arg1 /= lbl_8055D020;
-    return arg1;
+extern "C" f32 fn_801452A0(s32 flags, f32 value) {
+    /* Undo the widescreen horizontal squeeze: when flags bit 0x20 is set,
+       divide by the display aspect scale (lbl_8055D020: 1.0 fullscreen,
+       0.75 widescreen) so artwork keeps its aspect. */
+    if (flags & 0x20)
+        value /= lbl_8055D020;
+    return value;
 }
 #pragma dont_inline reset
 
