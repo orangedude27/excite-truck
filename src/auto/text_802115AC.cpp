@@ -294,7 +294,6 @@ extern "C" s32 fn_80211678(u8 *obj) {
 }
 
 extern "C" void fn_80211690(s32 arg0) {
-    s32 isZero;
     const char *base = (const char *)lbl_8033CAE8;
     S12Ptr tbl;
     S3Word w3;
@@ -302,6 +301,7 @@ extern "C" void fn_80211690(s32 arg0) {
     char buf38[0x20];
     char buf18[0x20];
     s32 sp8;
+    s32 isZero;
     s32 notZero;
     s32 i, j;
     Ent18 *e;
@@ -328,7 +328,7 @@ extern "C" void fn_80211690(s32 arg0) {
         s32 *d = drow;
         for (j = 0; j < 4; j++) {
             if (isZero != 0) {
-                if (i == 2 && (unsigned)j <= 1)
+                if (i == 2 && (u32)j <= 1)
                     *d = fn_802C5130(*s);
                 else
                     *d = 0;
@@ -402,7 +402,7 @@ extern "C" void fn_80211690(s32 arg0) {
         e[0].name = base + 0x228; e[0].f = lbl_80563438; memset(e[0].v, 0, 0x10);
         e[2].name = s;            e[2].f = lbl_80563438; memset(e[2].v, 0, 0x10);
         e[3].name = s;            e[3].f = lbl_80563438; memset(e[3].v, 0, 0x10);
-        e[1].name = s;            e[1].f = lbl_80563438; memset(e[1].v, 0, 0x10);
+        e[1].name = s;            e[1].f = lbl_8056343C; memset(e[1].v, 0, 0x10);
         e[4].name = base + 0x248; e[4].f = lbl_80563438; memset(e[4].v, 0, 0x10);
         e[5].name = 0;            e[5].f = lbl_80563438; memset(e[5].v, 0, 0x10);
         e[6].name = base + 0x258; e[6].f = lbl_80563438; memset(e[6].v, 0, 0x10);
@@ -422,13 +422,14 @@ extern "C" void fn_80211690(s32 arg0) {
         const char *src = lbl_8055B6B0;
         char *dst = (char *)lbl_8033CAE8;
         s32 n = 0x64;
-        while (1) {
-            char c = *src++;
+        char c;
+        do {
+            c = *src++;
             *dst++ = c;
-            if (c != 0) {
-                if (--n <= 0) { dst[-1] = 0; break; }
-            } else break;
-        }
+            if (c == 0)
+                break;
+        } while (--n > 0);
+        dst[-1] = 0;
     }
     r25 = lbl_8055B718;
     if (isZero != 0) r25 = base + 0x280;
@@ -2587,7 +2588,7 @@ extern "C" s32 fn_8021581C(void *obj) {
 }
 
 extern "C" void fn_80215824(void) {
-
+    /* Empty no-op: a default callback/virtual slot with no behaviour. */
 }
 
 extern "C" void fn_80215828(void *self, void *arg1, void *arg2, void *arg3, void *arg4, void *arg5, void *arg6) {
