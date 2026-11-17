@@ -2518,7 +2518,6 @@ extern char lbl_80330DF4[];
 extern char lbl_8055A270[];
 extern float lbl_80561980;
 #pragma push
-#pragma use_lmw_stmw off
 struct Frame_8016FFEC {
     float f8, fC, f10, f14, f18, f1C;
     float ret[2];
@@ -2570,12 +2569,9 @@ s.f30 = lbl_80561980;
 s.f34 = lbl_80561980;
 do {
 fn_801345D8(s.sp40, 0x10, lbl_8055A270, i);
-{
-unsigned long long ret = ((unsigned long long (*)(void *, void *))*(void **)((char *)*(void **)obj + 0x3C))(obj, s.sp40);
-*(unsigned long long *)s.ret = ret;
-p[0] = *(float *)&ret;
-p[1] = *((float *)&ret + 1);
-}
+*(unsigned long long *)s.ret = ((unsigned long long (*)(void *, void *))*(void **)((char *)*(void **)obj + 0x3C))(obj, s.sp40);
+p[0] = s.ret[0];
+p[1] = s.ret[1];
 p += 2;
 i += 1;
 } while (i < 3);
@@ -2613,9 +2609,9 @@ double dd = *(double *)&s.f8;
 *(double *)s.d28 = dd;
 {
 float dx = s.pts[o1] - (float)dd;
-float dy = s.pts[o1 + 1] - s.d28[1];
+float dy = s.pts[o1 + 1] - *((float *)&s.d28 + 1);
 s.f38 = (float)dd;
-s.f3C = s.d28[1];
+s.f3C = *((float *)&s.d28 + 1);
 s.f30 = dx;
 s.f34 = dy;
 sqf = (float)((double (*)(float))fn_8002F234)(dx * dx + dy * dy);
