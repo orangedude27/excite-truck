@@ -2252,45 +2252,51 @@ extern "C" void fn_8019ECBC(void* obj, s32 value) {
 
 extern char lbl_80333B98[];
 #pragma use_lmw_stmw off
-extern "C" void fn_8019ECC4(void* self, s32 arg1, s32 arg2) {
+extern "C" void fn_8019ECC4(void* shape, s32 owner, s32 swapBytes) {
+    /* Shared base constructor: install the vtable at +0, optionally byte-swap
+     * the five packed 32-bit words at +0x10..+0x23 (endian conversion of data
+     * loaded from file), then set +8 = owner, +4 = 0 and +0xC = owner + 4. */
+    // Bytes saved aside while reversing each word: b18 is the byte at 0x18,
+    // etc. The first byte of each word is declared before its second so each
+    // gets its own register and all ten reads happen before any write.
     u8 b18, b10, b14, b20, b1c;
     u8 b19, b11, b15, b21, b1d;
-    *(void**)self = &lbl_80333B98;
-    if (arg2 != 0) {
-        b18 = *(u8*)((u8*)self + 0x18);
-        b19 = *(u8*)((u8*)self + 0x19);
-        b10 = *(u8*)((u8*)self + 0x10);
-        b11 = *(u8*)((u8*)self + 0x11);
-        b14 = *(u8*)((u8*)self + 0x14);
-        b15 = *(u8*)((u8*)self + 0x15);
-        b20 = *(u8*)((u8*)self + 0x20);
-        b21 = *(u8*)((u8*)self + 0x21);
-        b1c = *(u8*)((u8*)self + 0x1c);
-        b1d = *(u8*)((u8*)self + 0x1d);
-        *(u8*)((u8*)self + 0x18) = *(u8*)((u8*)self + 0x1b);
-        *(u8*)((u8*)self + 0x1b) = b18;
-        *(u8*)((u8*)self + 0x19) = *(u8*)((u8*)self + 0x1a);
-        *(u8*)((u8*)self + 0x1a) = b19;
-        *(u8*)((u8*)self + 0x10) = *(u8*)((u8*)self + 0x13);
-        *(u8*)((u8*)self + 0x13) = b10;
-        *(u8*)((u8*)self + 0x11) = *(u8*)((u8*)self + 0x12);
-        *(u8*)((u8*)self + 0x12) = b11;
-        *(u8*)((u8*)self + 0x14) = *(u8*)((u8*)self + 0x17);
-        *(u8*)((u8*)self + 0x17) = b14;
-        *(u8*)((u8*)self + 0x15) = *(u8*)((u8*)self + 0x16);
-        *(u8*)((u8*)self + 0x16) = b15;
-        *(u8*)((u8*)self + 0x20) = *(u8*)((u8*)self + 0x23);
-        *(u8*)((u8*)self + 0x23) = b20;
-        *(u8*)((u8*)self + 0x21) = *(u8*)((u8*)self + 0x22);
-        *(u8*)((u8*)self + 0x22) = b21;
-        *(u8*)((u8*)self + 0x1c) = *(u8*)((u8*)self + 0x1f);
-        *(u8*)((u8*)self + 0x1f) = b1c;
-        *(u8*)((u8*)self + 0x1d) = *(u8*)((u8*)self + 0x1e);
-        *(u8*)((u8*)self + 0x1e) = b1d;
+    *(void**)shape = &lbl_80333B98;
+    if (swapBytes != 0) {
+        b18 = *(u8*)((u8*)shape + 0x18);
+        b19 = *(u8*)((u8*)shape + 0x19);
+        b10 = *(u8*)((u8*)shape + 0x10);
+        b11 = *(u8*)((u8*)shape + 0x11);
+        b14 = *(u8*)((u8*)shape + 0x14);
+        b15 = *(u8*)((u8*)shape + 0x15);
+        b20 = *(u8*)((u8*)shape + 0x20);
+        b21 = *(u8*)((u8*)shape + 0x21);
+        b1c = *(u8*)((u8*)shape + 0x1c);
+        b1d = *(u8*)((u8*)shape + 0x1d);
+        *(u8*)((u8*)shape + 0x18) = *(u8*)((u8*)shape + 0x1b);
+        *(u8*)((u8*)shape + 0x1b) = b18;
+        *(u8*)((u8*)shape + 0x19) = *(u8*)((u8*)shape + 0x1a);
+        *(u8*)((u8*)shape + 0x1a) = b19;
+        *(u8*)((u8*)shape + 0x10) = *(u8*)((u8*)shape + 0x13);
+        *(u8*)((u8*)shape + 0x13) = b10;
+        *(u8*)((u8*)shape + 0x11) = *(u8*)((u8*)shape + 0x12);
+        *(u8*)((u8*)shape + 0x12) = b11;
+        *(u8*)((u8*)shape + 0x14) = *(u8*)((u8*)shape + 0x17);
+        *(u8*)((u8*)shape + 0x17) = b14;
+        *(u8*)((u8*)shape + 0x15) = *(u8*)((u8*)shape + 0x16);
+        *(u8*)((u8*)shape + 0x16) = b15;
+        *(u8*)((u8*)shape + 0x20) = *(u8*)((u8*)shape + 0x23);
+        *(u8*)((u8*)shape + 0x23) = b20;
+        *(u8*)((u8*)shape + 0x21) = *(u8*)((u8*)shape + 0x22);
+        *(u8*)((u8*)shape + 0x22) = b21;
+        *(u8*)((u8*)shape + 0x1c) = *(u8*)((u8*)shape + 0x1f);
+        *(u8*)((u8*)shape + 0x1f) = b1c;
+        *(u8*)((u8*)shape + 0x1d) = *(u8*)((u8*)shape + 0x1e);
+        *(u8*)((u8*)shape + 0x1e) = b1d;
     }
-    *(s32*)((u8*)self + 8) = arg1;
-    *(s32*)((u8*)self + 4) = 0;
-    *(s32*)((u8*)self + 0xC) = arg1 + 4;
+    *(s32*)((u8*)shape + 8) = owner;
+    *(s32*)((u8*)shape + 4) = 0;
+    *(s32*)((u8*)shape + 0xC) = owner + 4;
 }
 #pragma use_lmw_stmw on
 
