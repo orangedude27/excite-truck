@@ -196,4 +196,5 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
         fn_802C8D74();
     }
 }
+#pragma pop
 
