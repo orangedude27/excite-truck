@@ -1562,7 +1562,8 @@ struct Obj8016275C {
 #pragma cplusplus off
 s32 fn_80162734(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) != 0; }
 
-s32 fn_80162748(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) == 1; }
+/* Return nonzero when the object's state field at offset 8 is exactly 1. */
+s32 fn_80162748(void *obj) { return *(s32 *)((u8 *)obj + 8) == 1; }
 
 #pragma cplusplus on
 extern "C" void fn_8016275C(void *arg0, s32 event, s32 index) {
