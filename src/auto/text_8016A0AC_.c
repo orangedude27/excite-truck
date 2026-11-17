@@ -678,7 +678,9 @@ s32 fn_8016AC90(s32 unused) {
     return 0;
 }
 #pragma pop
-void fn_8016B4F0(u8* arg0) { *arg0 = 0; }
+/* Pool-element initializer: clear a newly allocated element's first
+ * (in-use/state) byte, matching the clear done by the pool's release callback. */
+void fn_8016B4F0(u8* element) { *element = 0; }
 
 /* RealName: unknown (pool element dtor/init helper; clears first byte and optionally frees when flag > 0) */
 u8 *fn_8016B4FC(u8 *ptr, s32 shouldFree) {
