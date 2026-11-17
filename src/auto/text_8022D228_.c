@@ -320,6 +320,15 @@ int fn_8022DB94(int object, int deleteFlag) {
     return object;
 }
 
+/* A circular index selector: `index` walks [0, count) over parallel element arrays. */
+typedef struct IndexSelector {
+    int *values;  /* 0x00 */
+    int *tags;    /* 0x04 */
+    int field8;   /* 0x08 */
+    int index;    /* 0x0C current index */
+    int count;    /* 0x10 number of elements */
+} IndexSelector;
+
 #pragma dont_inline on
 int fn_8022DBD4(void *arg0) {
     int *array = *(int **)arg0;
@@ -338,15 +347,6 @@ void fn_8022DBFC(void *selector) {
     *(int *)((char *)selector + 0xC) = nextIndex;
     if (nextIndex >= *(int *)((char *)selector + 0x10)) *(int *)((char *)selector + 0xC) = 0;
 }
-
-/* A circular index selector: `index` walks [0, count) over parallel element arrays. */
-typedef struct IndexSelector {
-    int *values;  /* 0x00 */
-    int *tags;    /* 0x04 */
-    int field8;   /* 0x08 */
-    int index;    /* 0x0C current index */
-    int count;    /* 0x10 number of elements */
-} IndexSelector;
 
 void fn_8022DC20(IndexSelector *selector) {
     /* Step the selector's index back by one, wrapping to count-1 when it falls below zero (the inverse of fn_8022DBFC). */
