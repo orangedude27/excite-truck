@@ -12745,7 +12745,18 @@ static inline void fn800B960CSetSlotError(u32 key, s32 err) {
         }
     }
 }
-extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
+extern "C" s32 fn_800B960C(s32 blockCount, s32 dst, s32 blockIndex, s32 blockSize, s32 *blocksRead, s32 fileId) {
+    /* prfile2: read blockCount blocks of blockSize bytes out of the NAND image file
+     * held open in the file-state slot tagged fileId, starting at block blockIndex,
+     * into the buffer at dst.  The slot's NAND handle is seeked to the start
+     * position unless NANDGetLengthAsync reports it already sits there, and the
+     * data is carried through a 0x200-byte aligned temporary because NAND reads
+     * want whole blocks.  A request running past the end of the file still fills
+     * dst with the bytes that are there and answers -22; a NAND error is left in
+     * the slot's error field and returned as it is.  Answers 0 with blockCount in
+     * *blocksRead on success, or -20 when no slot holds fileId. */
+    #define PF2_BUF_SIZE 0x200 /* the aligned temporary every block goes through */
+
     s32 status;
     u32 slotOffset;
     u16 slotIndex;
@@ -12756,19 +12767,19 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     s32 nandResult;
     u32 bytesRemaining;
     u32 bytesRead;
-    unsigned char *slot;
-    unsigned char buf[0x200] __attribute__((aligned(32)));
+    struct PF2FileSlot *slot;
+    unsigned char buf[PF2_BUF_SIZE] __attribute__((aligned(32)));
 
     slot = 0;
-    for (slotIndex = 0; slotIndex < 0x17; slotIndex++) {
-        slotOffset = slotIndex * 0xF0;
-        if (*(u32 *)(lbl_80405D58 + slotOffset) == (u32)arg5) {
-            slot = lbl_80405D58 + slotOffset;
+    for (slotIndex = 0; slotIndex < PF2_SLOT_COUNT; slotIndex++) {
+        slotOffset = slotIndex * PF2_SLOT_SIZE;
+        if (PF2_SLOT_AT(slotOffset)->fileId == (u32)fileId) {
+            slot = PF2_SLOT_AT(slotOffset);
             break;
         }
     }
-    if (slotIndex == 0x17) {
-        status = -0x16;
+    if (slotIndex == PF2_SLOT_COUNT) {
+        status = -0x16; /* no slot holds this file */
     } else {
         status = 0;
     }
@@ -12776,86 +12787,63 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
         return -0x14;
     }
 
-    bytesToRead = arg0 * arg3;
-    fileLength = *(u32 *)(slot + 0x54);
-    readPos = arg2 * arg3;
+    bytesToRead = blockCount * blockSize;
+    fileLength = slot->fileLength;
+    readPos = blockIndex * blockSize;
 
-    if (NANDGetLengthAsync(slot + 0x58, &currentPos) != 0 || currentPos != readPos) {
-        nandResult = NANDSeek(slot + 0x58, readPos, 0);
+    if (NANDGetLengthAsync(&slot->handle[0], &currentPos) != 0 || currentPos != readPos) {
+        nandResult = NANDSeek(&slot->handle[0], readPos, 0);
     } else {
         nandResult = 0;
     }
     if (nandResult < 0) goto fail;
 
     if (readPos + bytesToRead > fileLength) {
+        /* past the end of the file: give back what it has, and say so */
         bytesRemaining = fileLength - readPos;
         bytesRead = 0;
-        while (bytesRemaining >= 0x200) {
-            nandResult = NANDRead(slot + 0x58, buf, 0x200);
+        while (bytesRemaining >= PF2_BUF_SIZE) {
+            nandResult = NANDRead(&slot->handle[0], buf, PF2_BUF_SIZE);
             if (nandResult < 0) return -0x16;
-            VFipf_memcpy((u8 *)arg1 + bytesRead, buf, nandResult);
+            VFipf_memcpy((u8 *)dst + bytesRead, buf, nandResult);
             bytesRead += nandResult;
             bytesRemaining -= nandResult;
         }
         if (bytesRemaining != 0) {
-            nandResult = NANDRead(slot + 0x58, buf, bytesRemaining);
+            nandResult = NANDRead(&slot->handle[0], buf, bytesRemaining);
             if (nandResult < 0) return -0x16;
-            VFipf_memcpy((u8 *)arg1 + bytesRead, buf, nandResult);
+            VFipf_memcpy((u8 *)dst + bytesRead, buf, nandResult);
         }
         return -0x16;
     }
 
     bytesRead = 0;
-    while (bytesToRead >= 0x200) {
-        nandResult = NANDRead(slot + 0x58, buf, 0x200);
+    while (bytesToRead >= PF2_BUF_SIZE) {
+        nandResult = NANDRead(&slot->handle[0], buf, PF2_BUF_SIZE);
         if (nandResult < 0) {
-            u32 offset;
-            u16 j;
-            for (j = 0; j < 0x17; j++) {
-                offset = j * 0xF0;
-                if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
-                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
-                    break;
-                }
-            }
+            fn800B960CSetSlotError((u32)fileId, nandResult);
             return nandResult;
         }
-        VFipf_memcpy((u8 *)arg1 + bytesRead, buf, nandResult);
+        VFipf_memcpy((u8 *)dst + bytesRead, buf, nandResult);
         bytesRead += nandResult;
         bytesToRead -= nandResult;
     }
     if (bytesToRead != 0) {
-        nandResult = NANDRead(slot + 0x58, buf, bytesToRead);
+        nandResult = NANDRead(&slot->handle[0], buf, bytesToRead);
         if (nandResult < 0) {
-            u32 offset;
-            u16 j;
-            for (j = 0; j < 0x17; j++) {
-                offset = j * 0xF0;
-                if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
-                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
-                    break;
-                }
-            }
+            fn800B960CSetSlotError((u32)fileId, nandResult);
             return nandResult;
         }
-        VFipf_memcpy((u8 *)arg1 + bytesRead, buf, nandResult);
+        VFipf_memcpy((u8 *)dst + bytesRead, buf, nandResult);
     }
-    *arg4 = arg0;
+    *blocksRead = blockCount;
     return 0;
 
 fail:
-    {
-        u32 offset;
-        u16 j;
-        for (j = 0; j < 0x17; j++) {
-            offset = j * 0xF0;
-            if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
-                *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
-                break;
-            }
-        }
-    }
+    fn800B960CSetSlotError((u32)fileId, nandResult);
     return nandResult;
+
+    #undef PF2_BUF_SIZE
 }
 
 extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
