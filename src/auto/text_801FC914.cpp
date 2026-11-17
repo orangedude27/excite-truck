@@ -1469,6 +1469,7 @@ extern "C" void fn_801FF260(void *obj) {
     }
 }
 #pragma pop
+/* Constant virtual getter (returns the fixed value 3); likely a count/type reported through a dispatch table. */
 extern "C" int fn_801FF2B0(void) { return 3; }
 
 extern "C" void fn_801FF2B8(void* manager, int record, int name) {
