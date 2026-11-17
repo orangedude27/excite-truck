@@ -1595,8 +1595,9 @@ extern "C" f32 fn_80158D60(void* arg0, void*) {
 }
 #pragma pop
 
-extern "C" void fn_80158E74(void* arg0) {
-    *(s32*)((u8*)arg0 + 8) = 0;
+// Clear the pending-event counter at +8 of a bonus listener, marking it as having nothing pending.
+extern "C" void fn_80158E74(void* listener) {
+    *(s32*)((u8*)listener + 8) = 0;
 }
 
 extern "C" f32 fn_80158E80(void* arg0) {
