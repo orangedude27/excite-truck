@@ -1302,8 +1302,10 @@ int* fn_802E6ABC(void) {
     return &lbl_8055D1EC;
 }
 
+/* Flag an SPU reset as pending: registered as the reset callback by fn_802E6AD0,
+ * this asks the SPU to re-initialize itself on its next pass. */
 void fn_802E6AC4(void) {
-    lbl_8055FFB5 = 1;
+    gSpuResetPending = 1;
 }
 
 int fn_802E6AD0(int request) {
