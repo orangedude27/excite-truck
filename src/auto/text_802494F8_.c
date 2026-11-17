@@ -714,11 +714,12 @@ static inline s32 findEntry8024B070(s32 **arg1, s32 *arg0) {
     s32 offset = 0;
     s32 n = *(s32 *)((u8 *)arg1 + 4);
     for (; i < n; i++, offset += 0x18) {
-        if (*(s32 *)((u8 *)*arg1 + offset) == *arg0) return i;
+        if (*arg0 == *(s32 *)((u8 *)*arg1 + offset)) return i;
     }
     return -1;
 }
 
+#pragma scheduling invalid_target
 u8 fn_8024B070(s32 *arg0, s32 **arg1) {
     s32 sp8;
     s32 i = findEntry8024B070(arg1, arg0);
@@ -741,7 +742,6 @@ u8 fn_8024B070(s32 *arg0, s32 **arg1) {
     }
     return lbl_8055F298;
 }
-
 extern void *fn_8001285C(s32);
 extern int strlen(const char *);
 extern int strncmp(const char *, const char *, unsigned int);
