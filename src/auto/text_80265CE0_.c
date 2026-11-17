@@ -36,8 +36,10 @@ int fn_80265D58(void) { return 0; }
 
 void fn_80265D60(void) {}
 
-/* MP-client query stub (MpClientWantsRestart): reports no pending restart request by always returning 0. */
-int fn_80265D64(void) { return 0; }
+/* MP-client query stub: always answers 0 ("wants restart" is false). */
+int fn_80265D64(void) {
+    return 0;
+}
 
 int fn_80265D6C(void) { return 0; }
 
