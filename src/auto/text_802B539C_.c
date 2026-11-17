@@ -344,8 +344,9 @@ void *fn_802B59A4(unsigned int index) {
 }
 
 #pragma scheduling reset
+/* Returns the archive's cached "global_parameters" item (lbl_8055F9E8). */
 void* fn_802B59CC(void) {
-    return lbl_8055F9E8;
+    return sGlobalParameters;
 }
 #pragma scheduling invalid_target
 #pragma cplusplus on
