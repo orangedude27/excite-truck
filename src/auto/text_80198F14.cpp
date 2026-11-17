@@ -5532,8 +5532,9 @@ extern "C" f32 fn_801A5100(void *arg0) {
     return ((f32 *)arg0)[0x24 / 4];
 }
 
-extern "C" void fn_801A5108(void* arg0) {
-    *(s32*)((u8*)arg0 + 0x180) = -1;
+extern "C" void fn_801A5108(void* container) {
+    /* Clear this container's active index at +0x180 to -1 (no selection). */
+    *(s32*)((u8*)container + 0x180) = -1;
 }
 
 extern "C" f32 fn_801A5114(void *arg0) {
