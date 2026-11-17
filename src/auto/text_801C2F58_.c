@@ -1627,6 +1627,7 @@ void fn_801C72F0(void) {
 }
 
 void fn_801C7374(void);
+/* Menu "Cancel" callback: aborts the pending debug-timeline action by clearing its active state. */
 void fn_801C7374(void) {
     fn_801C957C(0);
 }
