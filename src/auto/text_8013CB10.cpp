@@ -3961,7 +3961,7 @@ extern "C" void fn_801442D8(void) {
 
 }
 
-extern "C" void fn_801442DC(void *arg0) {
+extern "C" void fn_801442DC(void *obj) {
     class TObj20 {
     public:
         virtual void f0();
@@ -3970,9 +3970,10 @@ extern "C" void fn_801442DC(void *arg0) {
         virtual void f3();
         virtual void f4();
         virtual void f5();
-        virtual void f6();
+        virtual void v20();
     };
-    ((TObj20 *)arg0)->f6();
+    /* Thunk: invoke the object's v20 callback (vtable slot +0x20). */
+    ((TObj20 *)obj)->v20();
 }
 
 extern "C" s32 fn_801442EC(void) { return 0; }
