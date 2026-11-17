@@ -762,12 +762,14 @@ typedef struct SVT { void *pad[3]; float (*get)(void *); void (*set)(void *, flo
 typedef struct SObj { SVT *vt; } SObj;
 #pragma push
 #pragma processor 750
+static unsigned char pass_flag_37AA0(int dummy, unsigned char flag, char *base) { return flag; }
+
 void fn_80237AA0(int arg0, float *arg1, float arg2)
 {
     float var_f31 = arg2;
     float var_f1, var_f2;
     double tmp;
-    unsigned char var_r4;
+    int var_r4;
     void *p;
     if (arg0 == 0) {
         p = *(void **)(lbl_8055F0C0 + 0x28);
@@ -778,22 +780,22 @@ void fn_80237AA0(int arg0, float *arg1, float arg2)
         if (p) var_f2 = call_get_37AA0(p);
         else var_f2 = lbl_805636E0;
         arg1[1] = var_f2;
-        if ((unsigned char)lbl_8055F0C0[0x21] == 0) {
+        if (*(unsigned char *)((char *)lbl_8055F0C0 + 0x21) == 0) {
             tmp = var_f2;
             arg1[1] = arg1[0];
             arg1[0] = tmp;
         }
-        if ((unsigned char)lbl_8055F0C0[0x1F] != 0) arg1[0] = lbl_805636E0;
-        if ((unsigned char)lbl_8055F0C0[0x20] != 0) arg1[1] = lbl_805636E0;
+        if (*(unsigned char *)((char *)lbl_8055F0C0 + 0x1F) != 0) arg1[0] = lbl_805636E0;
+        if (*(unsigned char *)((char *)lbl_8055F0C0 + 0x20) != 0) arg1[1] = lbl_805636E0;
     } else {
         if (arg0 == 3) {
-            var_r4 = (unsigned char)lbl_8055F0C0[0x21];
+            var_r4 = *(unsigned char *)((char *)lbl_8055F0C0 + 0x21);
             if (var_r4 != 0) var_f31 = lbl_805636E4 - arg2;
         } else {
-            var_r4 = (unsigned char)lbl_8055F0C0[0x21];
+            var_r4 = *(unsigned char *)((char *)lbl_8055F0C0 + 0x21);
             if (var_r4 == 0) var_f31 = lbl_805636E4 - arg2;
         }
-        if ((unsigned int)(arg0 == 3) == var_r4) {
+        if ((unsigned int)(arg0 == 3) == (unsigned int)var_r4) {
             p = *(void **)(lbl_8055F0C0 + 0x2C);
             if (p) call_set_37AA0(p, var_f31);
         } else {
@@ -1086,6 +1088,7 @@ void fn_802383FC(TrailMgr *mgr) {
     extern void fn_8022EE98(void *);
     extern void fn_80214C54(void *, void *);
     extern float lbl_805636E0, lbl_805636E4, lbl_805636E8;
+    float mtx[3][12];
     float f29 = fn_8023659C();
     float f30 = lbl_805636E0;
     float f31 = lbl_805636E4;
@@ -1106,41 +1109,38 @@ void fn_802383FC(TrailMgr *mgr) {
                 }
                 if (idx == -1) {
                     TrailKey *k = e->keys;
-                    float mtx[12];
-                    mtx[9] = k->fc;
-                    mtx[10] = k->f10;
-                    mtx[11] = f30;
-                    mtx[0] = f31; mtx[1] = f30; mtx[2] = f30; mtx[3] = f30;
-                    mtx[4] = f31; mtx[5] = f30; mtx[6] = f30; mtx[7] = f30;
-                    mtx[8] = f31;
-                    obj = fn_8022EDE4(mtx, k->f4);
+                    mtx[0][9] = k->fc;
+                    mtx[0][10] = k->f10;
+                    mtx[0][11] = f30;
+                    mtx[0][0] = f31; mtx[0][1] = f30; mtx[0][2] = f30; mtx[0][3] = f30;
+                    mtx[0][4] = f31; mtx[0][5] = f30; mtx[0][6] = f30; mtx[0][7] = f30;
+                    mtx[0][8] = f31;
+                    obj = fn_8022EDE4(mtx[0], k->f4);
                     *(float *)((char *)obj + 0x38) = k->f8;
                 } else if (idx == e->keyCount - 1) {
                     TrailKey *k = &e->keys[e->keyCount - 1];
-                    float mtx[12];
-                    mtx[9] = k->fc;
-                    mtx[10] = k->f10;
-                    mtx[11] = f30;
-                    mtx[0] = f31; mtx[1] = f30; mtx[2] = f30; mtx[3] = f30;
-                    mtx[4] = f31; mtx[5] = f30; mtx[6] = f30; mtx[7] = f30;
-                    mtx[8] = f31;
-                    obj = fn_8022EDE4(mtx, k->f4);
+                    mtx[1][9] = k->fc;
+                    mtx[1][10] = k->f10;
+                    mtx[1][11] = f30;
+                    mtx[1][0] = f31; mtx[1][1] = f30; mtx[1][2] = f30; mtx[1][3] = f30;
+                    mtx[1][4] = f31; mtx[1][5] = f30; mtx[1][6] = f30; mtx[1][7] = f30;
+                    mtx[1][8] = f31;
+                    obj = fn_8022EDE4(mtx[1], k->f4);
                     *(float *)((char *)obj + 0x38) = k->f8;
                 } else {
                     TrailKey *c = &e->keys[idx];
                     TrailKey *n = &e->keys[idx + 1];
                     float denom = n->time - c->time;
                     float tt;
-                    float mtx[12];
                     if (denom <= f27) denom = f27;
                     tt = (t - c->time) / denom;
-                    mtx[11] = f30;
-                    mtx[0] = f31; mtx[1] = f30; mtx[2] = f30; mtx[3] = f30;
-                    mtx[4] = f31; mtx[5] = f30; mtx[6] = f30; mtx[7] = f30;
-                    mtx[8] = f31;
-                    mtx[9] = c->fc + tt * (n->fc - c->fc);
-                    mtx[10] = c->f10 + tt * (n->f10 - c->f10);
-                    obj = fn_8022EDE4(mtx, c->f4 + tt * (n->f4 - c->f4));
+                    mtx[2][11] = f30;
+                    mtx[2][0] = f31; mtx[2][1] = f30; mtx[2][2] = f30; mtx[2][3] = f30;
+                    mtx[2][4] = f31; mtx[2][5] = f30; mtx[2][6] = f30; mtx[2][7] = f30;
+                    mtx[2][8] = f31;
+                    mtx[2][9] = c->fc + tt * (n->fc - c->fc);
+                    mtx[2][10] = c->f10 + tt * (n->f10 - c->f10);
+                    obj = fn_8022EDE4(mtx[2], c->f4 + tt * (n->f4 - c->f4));
                     *(float *)((char *)obj + 0x38) = c->f8 + tt * (n->f8 - c->f8);
                 }
             } else {
