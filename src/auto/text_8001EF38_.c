@@ -132,8 +132,11 @@ s32 fn_8001EF98(s32 counterId, s32 profileIndex) {
 #undef GetAchCounterValue
 }
 
-void fn_8001EF9C(void) {
-    fn_8001F388();
+s32 fn_8001EF9C(s32 coefIndex) {
+#define GetAchCoefId fn_8001F388
+    /* Thunk: return the resolved id of the achievements source-coefficient entry at coefIndex. */
+    return GetAchCoefId(coefIndex);
+#undef GetAchCoefId
 }
 
 void fn_8001EFA0(void) {
