@@ -3129,11 +3129,13 @@ void fn_801C96E4(void) {
 static inline void fn_801C9708_append(char *str, char c) {
     u32 length = strlen(str);
     if (length < 0xFF) {
-        str[length] = c;
-        str[length + 1] = 0;
+        str[length++] = c;
+        str[length] = 0;
     }
 }
 
+#pragma push
+#pragma dont_inline off
 s32 fn_801C9708(s32 arg0) {
     switch (arg0) {
     case 0xD:
@@ -3156,17 +3158,13 @@ s32 fn_801C9708(s32 arg0) {
             (arg0 >= 0x30 && arg0 <= 0x39) ||
             arg0 == 0x3A || arg0 == 0x2E ||
             arg0 == 0x20 || arg0 == 0x2D) {
-            register u32 length = strlen(lbl_804380F0);
-            if (length < 0xFF) {
-                lbl_804380F0[length] = (char)arg0;
-                *((volatile char *)length + (u32)lbl_804380F0 + 1) = 0;
-            }
+            fn_801C9708_append(lbl_804380F0, arg0);
         }
         break;
     }
     return 1;
 }
-#pragma scheduling on
+#pragma pop
 void fn_801C9830(void) {
     return;
 }
