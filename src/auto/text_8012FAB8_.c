@@ -820,7 +820,12 @@ void fn_80131268(void *arg0) {
 }
 
 extern int lbl_8055E044;
-void fn_80131308(void) { lbl_8055E044 += 1; }
+void fn_80131308(void) {
+    /* Advance the message-table generation stamp used to invalidate lazy cache entries. */
+    #define s_msgTableStamp lbl_8055E044
+    s_msgTableStamp += 1;
+    #undef s_msgTableStamp
+}
 
 void fn_801312EC(int *msg, int key) {
     /* Start a lazy message-cache entry: remember the table key, clear the
