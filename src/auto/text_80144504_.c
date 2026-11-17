@@ -16,7 +16,8 @@ extern double sin(double);
 extern float fn_80144514(float, float, float, float, float, float);
 #define D6(a, b, c, d, e, f) fn_80144514(a, b, c, d, e, f)
 #define M33CAT(a, b, ab)                                                   \
-    if ((ab) == (b) || (ab) == (a)) {                                      \
+    { f32 *volatile _alias_probe = (ab);                                   \
+    if (_alias_probe == (b) || _alias_probe == (a)) {                      \
         f32 t0 = D6((a)[0], (b)[0], (a)[3], (b)[1], (a)[6], (b)[2]);       \
         f32 t3 = D6((a)[0], (b)[3], (a)[3], (b)[4], (a)[6], (b)[5]);       \
         f32 t6 = D6((a)[0], (b)[6], (a)[3], (b)[7], (a)[6], (b)[8]);       \
@@ -39,7 +40,7 @@ extern float fn_80144514(float, float, float, float, float, float);
         (ab)[2] = D6((a)[2], (b)[0], (a)[5], (b)[1], (a)[8], (b)[2]);      \
         (ab)[5] = D6((ab)[2], (b)[3], (a)[5], (b)[4], (a)[8], (b)[5]);     \
         (ab)[8] = D6((ab)[2], (b)[6], (ab)[5], (b)[7], (a)[8], (b)[8]);    \
-    }
+    } }
 
 static inline void M33Cat(f32 *a, f32 *b, f32 *ab) {
     M33CAT(a, b, ab)
@@ -63,6 +64,7 @@ float fn_80144514(float ax, float bx, float ay, float by, float az, float bz) {
 void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     f32 b[9];
     f32 c, s;
+    f32 *volatile mp = m;
     c = cos(ax);
     s = sin(ax);
     m[0] = c;
@@ -85,7 +87,7 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     b[6] = lbl_805615BC;
     b[7] = -s;
     b[8] = c;
-    M33Cat(m, b, m);
+    M33Cat(m, b, mp);
     c = cos(az);
     s = sin(az);
     b[0] = c;
@@ -97,7 +99,7 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     b[6] = lbl_805615BC;
     b[7] = lbl_805615BC;
     b[8] = lbl_805615B8;
-    M33Cat(m, b, m);
+    M33Cat(m, b, mp);
 }
 #pragma pop
 
@@ -114,35 +116,19 @@ void GXInitLightAttnA_80144B44(void *attn, f32 aa, f32 ab, f32 ac) {
     ((struct Attn *)attn)->ac = ac;
 }
 
-void fn_80144B54(void *dst, void *src) {
-    int l, k, j, i, h, g, f, e, d, c, b, a;
-    volatile s32 *vs = (volatile s32 *)src;
-    d = vs[3];
-    c = vs[2];
-    b = vs[1];
-    a = vs[0];
-    e = vs[4];
-    f = vs[5];
-    g = vs[6];
-    h = vs[7];
-    i = vs[8];
-    j = vs[9];
-    k = vs[10];
-    l = vs[11];
-    ((s32 *)dst)[0] = a;
-    ((s32 *)dst)[1] = b;
-    ((s32 *)dst)[2] = c;
-    ((s32 *)dst)[3] = d;
-    ((s32 *)dst)[4] = e;
-    ((s32 *)dst)[5] = f;
-    ((s32 *)dst)[6] = g;
-    ((s32 *)dst)[7] = h;
-    ((s32 *)dst)[8] = i;
-    ((s32 *)dst)[9] = j;
-    ((s32 *)dst)[10] = k;
-    ((s32 *)dst)[11] = l;
+#pragma push
+#pragma scheduling full
+void fn_80144B54(s32 *dst, s32 *src) {
+    s32 l, k, j, i, h, g, f, e, d, c, b, a;
+    volatile s32 *vs = src;
+    d = vs[3]; c = vs[2]; b = vs[1]; a = vs[0];
+    e = vs[4]; f = vs[5]; g = vs[6]; h = vs[7];
+    i = vs[8]; j = vs[9]; k = vs[10]; l = vs[11];
+    dst[0] = a; dst[1] = b; dst[2] = c; dst[3] = d;
+    dst[4] = e; dst[5] = f; dst[6] = g; dst[7] = h;
+    dst[8] = i; dst[9] = j; dst[10] = k; dst[11] = l;
 }
-
+#pragma pop
 /* Odd smoothstep: clamps x to [-1,1] and returns sign(x) * (3x^2 - 2x^3), the
  * S-curve that eases a signed blend factor between -1 and 1.  Callers hand the
  * result to fn_80144C80(), which lerps between two values by it.
@@ -233,9 +219,9 @@ void fn_80144CD0(float *out, float *vec, float (*m)[4]) {
     float b2 = y * m[1][3];
     float o0 = a0 + b0;
     float o1 = a1 + b1;
+    float o2 = a2 + b2;
     float m5v = m[1][1];
     float z = vec[2] - m[2][3];
-    float o2 = a2 + b2;
     float c1 = z * m5v;
     float c0 = z * m[0][2];
     float c2 = z * m[2][0];
