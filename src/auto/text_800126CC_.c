@@ -67,6 +67,7 @@ void *fn_800126CC(int modeId) DECOMP_DONT_INLINE {
     return lbl_802FC638 + index * 0x14;
 }
 #pragma scheduling on
+/* Initialize/load the resource set for game mode id 0x12F (a thin wrapper over fn_80012984). */
 void fn_80012778(void) { fn_80012984(0x12F); }
 
 void fn_80012780(void) { fn_80012984(0x130); }
