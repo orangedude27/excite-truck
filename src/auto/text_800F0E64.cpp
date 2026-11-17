@@ -4752,21 +4752,16 @@ extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s3
 #define FRAME_HEAP_CLEAR fn_800EC1A4
 #define ATTACH_AMBIENT_ARG fn_800E9B74
     union { s32 request; u32 end; } scratch;
-    s32 listPriority;
     s32 ambientPriority;
+    s32 listPriority;
     void *sound;
 
     if (manager == 0) {
         return 0;
     }
     scratch.request = requestedPriority;
-    ambientPriority = 0;
-    if (ambientInfo != 0) {
-        s32 info[7];
-        (*(AmbientParamUpdateCallbackEarly **)ambientInfo)->detail_Update((void *)info, soundId, 0, *(s32 *)(ambientInfo + 0xC), 8);
-        ambientPriority = info[6];
-    }
-    listPriority = scratch.request - ambientPriority > 0x7F ? 0x7F : (scratch.request - ambientPriority < 0 ? 0 : scratch.request - ambientPriority);
+    ambientPriority = AmbientInfo_GetPriority_E(ambientInfo, soundId);
+    listPriority = ClampS32_E(scratch.request - ambientPriority, 0, 127);
     if (CHECK_PLAYABLE((void *)player, listPriority, (void *)externalPlayer) == 0) {
         return 0;
     }
@@ -4819,7 +4814,7 @@ extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s3
         }
         {
             s32 lowestPrio = *(u8 *)(lowest + 0x74) + *(s32 *)(lowest + 0x40);
-            s32 clamped = lowestPrio > 0x7F ? 0x7F : (lowestPrio < 0 ? 0 : lowestPrio);
+            s32 clamped = ClampS32_E(lowestPrio, 0, 0x7F);
             if (listPriority < clamped) {
                 OSRestoreInterrupts(irq);
                 sound = 0;
@@ -4842,12 +4837,8 @@ extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s3
         if (pos == 0) {
             PANIC(lbl_80324314, 0x23D, lbl_803242F0);
         }
-        {
-            s32 c = *(u8 *)((u8 *)pos - 0x44) + *(s32 *)((u8 *)pos - 0x78);
-            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
-            if (listPriority < cc) {
-                break;
-            }
+        if (listPriority < ClampS32_E(*(u8 *)((u8 *)pos - 0x44) + *(s32 *)((u8 *)pos - 0x78), 0, 0x7F)) {
+            break;
         }
         pos = *(void **)pos;
     }
@@ -4925,9 +4916,9 @@ allocation_done:
                 PANIC(lbl_80326348, 0x23D, lbl_80326324);
             }
             s32 c = *(u8 *)((u8 *)pos2 - 0x54) + *(s32 *)((u8 *)pos2 - 0x88);
-            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
+            s32 cc = ClampS32_E(c, 0, 0x7F);
             s32 d = *(u8 *)((u8 *)sound + 0x74) + *(s32 *)((u8 *)sound + 0x40);
-            s32 dc = d > 0x7F ? 0x7F : (d < 0 ? 0 : d);
+            s32 dc = ClampS32_E(d, 0, 0x7F);
             if (dc < cc) {
                 break;
             }
