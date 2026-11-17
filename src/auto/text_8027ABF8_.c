@@ -22,8 +22,9 @@ int fn_8027AC08(void *arg0, int arg1) {
     }
     return 0;
 }
-int fn_8027AC50(void *arg0) {
-    return *(int *)((char *)arg0 + 0xF0) != 0;
+/* Nonzero when the team entry's mode flag (TeamEntry +0xF0) is set. */
+int fn_8027AC50(void *team) {
+    return *(int *)((char *)team + 0xF0) != 0;
 }
 
 int fn_8027AC64(void *team) {
