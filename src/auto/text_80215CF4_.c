@@ -16,6 +16,12 @@ extern float lbl_80563434, lbl_80563450, lbl_80563454;
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
+static inline void init_header(unsigned int *p) {
+    p[1] = 0x7B;
+    p[2] = 0;
+    p[3] = 0;
+    p[4] = 0;
+}
 extern "C" void fn_80215CF4(void) {
     char *base;
     unsigned int zero;
