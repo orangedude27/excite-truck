@@ -2552,6 +2552,7 @@ void fn_801971AC(void *arg0, void *arg1) {
 extern int fn_801671AC(int);
 extern int fn_8015FBCC(void *, float *, int, int, float, float);
 extern float fn_801973FC(float *, float *, void *);
+typedef struct { float x, y; } Vec2_801973FC;
 extern float lbl_80562160, lbl_8056222C, lbl_80562268, lbl_8056226C;
 #pragma processor 750
 void fn_8019724C(void *arg0, float *arg1) {
