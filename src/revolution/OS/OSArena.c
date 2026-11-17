@@ -5,6 +5,7 @@ static void* s_mem2ArenaLo = (void*)-1;
 static void* __OSArenaHi = NULL;
 static void* s_mem2ArenaHi = NULL;
 
+/* Return the upper bound of the MEM1 arena. */
 void* OSGetMEM1ArenaHi(void) {
     return __OSArenaHi;
 }
