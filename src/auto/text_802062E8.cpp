@@ -222,9 +222,12 @@ extern "C" void fn_80206518(void) {
 extern "C" void fn_8020654C(void) {
 }
 
-extern "C" void fn_80206550(unsigned int size) {
+extern "C" void fn_80206550(unsigned int value) {
+    /* Set the sound manager's field at +0x8C to value. */
+    #define sSoundManager lbl_8055ED80
     extern int lbl_8055ED80; extern void* fn_80207C74(int, unsigned int);
-    fn_80207C74(lbl_8055ED80, size);
+    fn_80207C74(sSoundManager, value);
+    #undef sSoundManager
 }
 
 extern int lbl_8055ED80;
