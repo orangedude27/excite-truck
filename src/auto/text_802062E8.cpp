@@ -226,7 +226,7 @@ extern "C" void fn_80206550(unsigned int size) {
 
 extern int lbl_8055ED80;
 extern "C" int fn_80207C50(int,int,int);
-extern "C" void fn_8020655C(int a, int b) { fn_80207C50(lbl_8055ED80,a,b); }
+extern "C" void fn_8020655C(int soundData, int soundIndex) { fn_80207C50(lbl_8055ED80, soundData, soundIndex); }
 
 extern void* fn_80207C74(int, unsigned int);
 extern int lbl_802F9DA0[10];
