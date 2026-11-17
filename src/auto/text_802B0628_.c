@@ -916,8 +916,9 @@ void fn_802B1BF0(void *pointBuffer, void *outPoint, int index) {
     dest[2] = source[2];
 }
 
-int fn_802B1C14(void *arg0) {
-    return ((int *)arg0)[4];
+int fn_802B1C14(void *layerSet) {
+    // Return the number of water layers in a layer set (paired with fn_802B1C1C).
+    return ((int *)layerSet)[4];
 }
 
 extern char lbl_8034A270[];
