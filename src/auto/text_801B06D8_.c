@@ -591,50 +591,53 @@ extern "C" s32 fn_801B1130(s32 slotIndex) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 __declspec(section ".data") extern float lbl_80558DC4;
-extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
+/* qsort comparator ranking deity/AI-truck slots: slots whose +0x68 matches the
+   active cutoff sort by their +0x70 score (within a 52.0 tolerance) and come
+   first; the remaining slots sort by resource sort key, then scheduled time. */
+extern "C" s32 fn_801B11DC(const void *aSlotIndex, const void *bSlotIndex) {
     extern int __cntlzw(unsigned int);
-    struct Item {
+    struct DeitySlot {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
         virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
-        virtual void d12(); virtual void d13(); virtual void *get();
+        virtual void d12(); virtual void d13(); virtual void *getRankData();
     };
-    u32 idx0 = *(const u32 *)arg0;
+    u32 idxA = *(const u32 *)aSlotIndex;
     u32 cutoff = *(u32 *)&lbl_8055E680;
-    u32 off0 = idx0 << 7;
+    u32 offA = idxA << 7;
     void *base = *(void **)&lbl_8055E684;
-    u32 idx1 = *(const u32 *)arg1;
-    u32 off1 = idx1 << 7;
-    Item *obj0 = (Item *)((u8 *)base + off0);
-    Item *obj1 = (Item *)((u8 *)base + off1);
-    u32 flag0;
-    u32 flag1;
-    s32 tie0;
-    s32 tie1;
-    s32 key0;
-    s32 key1;
+    u32 idxB = *(const u32 *)bSlotIndex;
+    u32 offB = idxB << 7;
+    DeitySlot *slotA = (DeitySlot *)((u8 *)base + offA);
+    DeitySlot *slotB = (DeitySlot *)((u8 *)base + offB);
+    u32 flaggedA;
+    u32 flaggedB;
+    s32 scheduledA;
+    s32 scheduledB;
+    s32 keyA;
+    s32 keyB;
     cutoff += 1;
-    flag0 = (u32)__cntlzw(*(u32 *)((u8 *)obj0 + 0x68) - cutoff) >> 5;
-    flag1 = (u32)__cntlzw(*(u32 *)((u8 *)obj1 + 0x68) - cutoff) >> 5;
-    key0 = *(s32 *)((u8 *)obj0->get() + 0x10);
-    key1 = *(s32 *)((u8 *)obj1->get() + 0x10);
-    tie0 = *(s32 *)((u8 *)obj0 + 0x74);
-    tie1 = *(s32 *)((u8 *)obj1 + 0x74);
-    if (flag0 == 0) goto fallback;
-    if (flag1 == 0) goto fallback;
+    flaggedA = (u32)__cntlzw(*(u32 *)((u8 *)slotA + 0x68) - cutoff) >> 5;
+    flaggedB = (u32)__cntlzw(*(u32 *)((u8 *)slotB + 0x68) - cutoff) >> 5;
+    keyA = *(s32 *)((u8 *)slotA->getRankData() + 0x10);
+    keyB = *(s32 *)((u8 *)slotB->getRankData() + 0x10);
+    scheduledA = *(s32 *)((u8 *)slotA + 0x74);
+    scheduledB = *(s32 *)((u8 *)slotB + 0x74);
+    if (flaggedA == 0) goto fallback;
+    if (flaggedB == 0) goto fallback;
     {
-        f32 a = *(f32 *)((u8 *)obj0 + 0x70);
-        f32 b = *(f32 *)((u8 *)obj1 + 0x70);
-        f32 difference = (f32)(double)__fabsf(a - b);
-        if (difference <= lbl_80558DC4) return 0;
-        if (b < a) return 1;
+        f32 scoreA = *(f32 *)((u8 *)slotA + 0x70);
+        f32 scoreB = *(f32 *)((u8 *)slotB + 0x70);
+        f32 scoreDelta = (f32)(double)__fabsf(scoreA - scoreB);
+        if (scoreDelta <= lbl_80558DC4) return 0;
+        if (scoreB < scoreA) return 1;
         return -1;
     }
 fallback:
-    if (flag0 == 0 && flag1 == 0) goto compare_keys;
-    return flag0 ? -1 : 1;
+    if (flaggedA == 0 && flaggedB == 0) goto compare_keys;
+    return flaggedA ? -1 : 1;
 compare_keys:
-    return key0 == key1 ? tie1 - tie0 : key1 - key0;
+    return keyA == keyB ? scheduledB - scheduledA : keyB - keyA;
 }
 #pragma pop
 #pragma scheduling on
