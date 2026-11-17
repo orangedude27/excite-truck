@@ -503,7 +503,7 @@ extern "C" const char lbl_803243F0[];
 #pragma use_lmw_stmw off
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void* arg0, int arg1) {
     UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(arg0);
-    BOOL irq = OSDisableInterrupts();
+    u32 irq = OSDisableInterrupts();
     fn_800E402C(Instance__15EmissionManagerFv());
     void* channel = *(void**)((u8*)arg0 + 0xB8);
     while (channel != 0) {
@@ -3664,13 +3664,58 @@ extern "C" void *fn_800FE648(void);
 extern "C" void fn_800FE804(void *arg0);
 extern "C" const char lbl_80324E88[];
 extern "C" s32 fn_800F6F6C(void *arg0, s32 arg1, s32 arg2, void *arg3) {
-    s32 sp18, sp8;
-    void *freader = *(void**)((u8*)arg0 + 4);
-    s32 v = *(s32*)((u8*)freader + 0x10);
+    struct Scratch { s32 bankInfo[4]; s32 seqInfo[4]; } scratch;
+    const char *panicBase = lbl_80324E88;
+    void *soundArchive = *(void **)((u8 *)arg0 + 4);
+    void *archive2;
+    void *bankFileReader;
+    void *manager;
+    void *task;
+    s32 value;
     s32 has;
-    if (v == 0) has = 0;
-    else has = fn_800F273C(*(void**)((u8*)freader + 0x10));
+    if (*(void **)((u8 *)soundArchive + 0x10) == 0) {
+        has = 0;
+    } else {
+        has = fn_800F273C(*(void **)((u8 *)soundArchive + 0x10));
+    }
     if (has == 0) return 1;
+    archive2 = *(void * volatile *)((u8 *)arg0 + 4);
+    if (*(s32 *)((u8 *)archive2 + 0x10) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(panicBase, 0x2AC, panicBase + 0x288);
+    }
+    bankFileReader = *(void **)((u8 *)archive2 + 0x10);
+    value = *(s32 *)((u8 *)arg3 + 0x78);
+    if (((s32 (*)(void *, s32, s32 *))fn_800F27EC)(bankFileReader, value, scratch.seqInfo) == 0) {
+        return 1;
+    }
+    if (((s32 (*)(void *, s32, s32 *))fn_800F27F4)(bankFileReader, value, scratch.bankInfo) == 0) {
+        return 1;
+    }
+    value = *(s32 *)((u8 *)arg3 + 4);
+    if (value == 0) return 1;
+    manager = fn_800FDE60();
+    if (fn_800FE0DC(manager) >= 0x30) {
+        Panic__Q26nw4hbm2dbFPCciPCce(panicBase, 0x5A5, panicBase + 0x528);
+    }
+    task = Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(fn_800FDE60());
+    if (task == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(panicBase, 0x5A7, panicBase + 0x590);
+    }
+    if (task != 0) {
+        *(s32 *)((u8 *)task + 4) = 0;
+        *(s32 *)((u8 *)task + 8) = 0;
+        *(void **)((u8 *)task + 0xC) = arg3;
+        *(void **)task = (void *)lbl_80325698;
+        *(void **)((u8 *)task + 0x14) = bankFileReader;
+        *(s32 *)((u8 *)task + 0x18) = scratch.seqInfo[0];
+        *(s32 *)((u8 *)task + 0x1C) = scratch.bankInfo[0];
+        *(s32 *)((u8 *)task + 0x20) = value;
+        *(s32 *)((u8 *)task + 0x24) = arg1;
+        *(s32 *)((u8 *)task + 0x28) = arg2;
+        *(void **)((u8 *)task + 0x2C) = (u8 *)arg0 + 8;
+        AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(fn_800FDE60(), task, 1);
+    }
+    fn_800FE804(fn_800FE648());
     return 3;
 }
 #pragma pop
@@ -5679,21 +5724,23 @@ extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi(
 }
 
 extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(void *);
+static inline u8 *checkPlayableListFront(u8 *list) { return *(u8 **)(list + 0x10); }
+static inline u8 *checkPlayableListElement(u8 *node) { return node - 0xC8; }
 extern "C" const char lbl_803263A8[];
 extern "C" const char lbl_80326384[];
 extern "C" const char lbl_80326378[];
 extern "C" const char lbl_80326354[];
-#pragma use_lmw_stmw off
+#pragma opt_propagation off
 extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer(void *self, int priority, void *external) {
     int limit;
     if (*(u16 *)((u8 *)self + 0x24) == 0)
         return 0;
     while (*(s32 *)self >= *(u16 *)((u8 *)self + 0x24)) {
-        u8 *sound;
+        register u8 *sound;
         if (*(s32 *)((u8 *)self + 0xC) == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
         {
-            u8 *first = *(u8 **)((u8 *)self + 0x10);
+            register u8 *first = *(u8 **)((u8 *)self + 0x10);
             u8 *obj;
             if (first == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
@@ -5726,6 +5773,7 @@ extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3s
     }
     return 1;
 }
+#pragma opt_propagation reset
 extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10PlayerHeap(void *player, void *heap) {
     /* Append a PlayerHeap to the SoundPlayer's heap list and mark the player
        as having a heap attached. */
