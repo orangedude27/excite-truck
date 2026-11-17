@@ -238,9 +238,8 @@ int fn_802CA4E0(int textureDesc, int textureName, int mode, int param3, int para
 
 extern void fn_802D8DCC(void *, int);
 #pragma push
-#pragma opt_propagation on
+#pragma opt_propagation off
 void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
-#pragma opt_propagation on
     unsigned char *base = (unsigned char *)arg0;
     unsigned char t;
     char sp8[0x34];
