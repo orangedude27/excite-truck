@@ -1064,8 +1064,10 @@ void fn_802CFF50(void) {
 #pragma pop
 
 extern void *lbl_8055FD1C;
-void fn_802CFF5C(void* hi) {
-    lbl_8055FD1C = hi;
+/* Set the cached GX render-state flags bitmask (depth test, colour/alpha
+   updates, etc.); the dirty-state code compares it with lbl_8055FD74. */
+void fn_802CFF5C(void* flags) {
+    lbl_8055FD1C = flags;
 }
 
 /* Bump-allocates size bytes (rounded up to 32) from the GX dynamic-data display-list buffer, wrapping to its start when full. */
