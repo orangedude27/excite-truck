@@ -3206,67 +3206,72 @@ extern "C" s32 fn_800AF584(void *);
 extern "C" s32 fn_800AF2CC(void *, u32, s32, s32 *, u32 *, s32);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800A9470(void *arg0, void *arg1) {
-    volatile s32 *out = (volatile s32 *)arg1;
-    u8 *context;
-    void *entry;
-    u32 count;
-    u32 size;
-    s32 aligned;
-    u32 first;
-    u32 range;
+/* Compute the byte length of a file's FAT cluster-chain tail for VFiPFFILE_p_finfo
+ * and write it through *out.  `handle` is a file handle whose stream (+0x08) holds
+ * the first cluster (+0x270), the file size (+0x264), a cached cluster step count
+ * (+0x14) and the volume (+0x268).  Returns 0x26 when the stream is not in use and
+ * open, 0 on success, or an error from one of the FAT chain helpers. */
+extern "C" s32 fn_800A9470(void *handle, void *out) {
+    volatile s32 *pResult = (volatile s32 *)out;
+    u8 *stream;
+    void *volume;
+    u32 firstCluster;
+    u32 clusterBytes;
+    s32 allocBytes;
+    u32 fileSize;
+    u32 totalBytes;
     s32 error;
-    u32 chainEnd;
-    u32 current;
-    s32 i;
-    struct Local { u32 sp8; u32 spC; u32 sp10; } local;
+    u32 chainEndCluster;
+    u32 currentCluster;
+    s32 clustersWalked;
+    struct ChainScratch { u32 nextCluster; u32 walkCluster; u32 foundCluster; } scratch;
 
-    *out = 0;
-    context = (u8 *)*(u32 *)((u8 *)arg0 + 8);
-    if ((*(u32 *)context & 1) == 0 || (*(u32 *)context & 2) == 0)
+    *pResult = 0;
+    stream = (u8 *)*(u32 *)((u8 *)handle + 8);
+    if ((*(u32 *)stream & 1) == 0 || (*(u32 *)stream & 2) == 0)
         return 0x26;
 
-    if (arg0 == 0)
-        entry = 0;
+    if (handle == 0)
+        volume = 0;
     else
-        entry = *(void **)(context + 0x268);
+        volume = *(void **)(stream + 0x268);
 
-    count = *(u32 *)(context + 0x270);
-    size = (u32)*(u16 *)entry << *((u8 *)entry + 0x21);
-    if (count != 0) {
-        first = *(u32 *)(context + 0x264);
-        u32 remainder = first % size;
-        s32 steps = *(s32 *)(context + 0x14);
-        aligned = first + (remainder != 0 ? size - remainder : 0);
+    firstCluster = *(u32 *)(stream + 0x270);
+    clusterBytes = (u32)*(u16 *)volume << *((u8 *)volume + 0x21);
+    if (firstCluster != 0) {
+        fileSize = *(u32 *)(stream + 0x264);
+        u32 remainder = fileSize % clusterBytes;
+        s32 clusterSteps = *(s32 *)(stream + 0x14);
+        allocBytes = fileSize + (remainder != 0 ? clusterBytes - remainder : 0);
 
-        if (steps != 0) {
-            range = (u32)(steps + 1) * size;
+        if (clusterSteps != 0) {
+            totalBytes = (u32)(clusterSteps + 1) * clusterBytes;
             goto finish;
         }
 
-        if (first != 0) {
-            error = fn_800AF2CC(context + 4, count, first,
-                                (s32 *)&local.sp10, &local.spC, (s32)context);
+        if (fileSize != 0) {
+            error = fn_800AF2CC(stream + 4, firstCluster, fileSize,
+                                (s32 *)&scratch.foundCluster, &scratch.walkCluster, (s32)stream);
             if (error != 0)
                 return error;
         } else {
-            local.spC = count;
+            scratch.walkCluster = firstCluster;
         }
-        chainEnd = (u32)fn_800AF584(entry);
-        current = local.spC;
-        i = 0;
-        while (current != chainEnd) {
-            i++;
-            error = VFiPFFAT_TraceClustersChain(entry, (s32)current,
-                                                (s32 *)&local.sp8);
+        chainEndCluster = (u32)fn_800AF584(volume);
+        currentCluster = scratch.walkCluster;
+        clustersWalked = 0;
+        while (currentCluster != chainEndCluster) {
+            clustersWalked++;
+            error = VFiPFFAT_TraceClustersChain(volume, (s32)currentCluster,
+                                                (s32 *)&scratch.nextCluster);
             if (error != 0)
                 return error;
-            current = local.sp8;
-            local.spC = current;
+            currentCluster = scratch.nextCluster;
+            scratch.walkCluster = currentCluster;
         }
-        range = (u32)aligned + (u32)i * size;
+        totalBytes = (u32)allocBytes + (u32)clustersWalked * clusterBytes;
 finish:
-        *out = (s32)(range - (u32)aligned);
+        *pResult = (s32)(totalBytes - (u32)allocBytes);
     }
     return 0;
 }
