@@ -468,8 +468,10 @@ f32 fn_80134D78(void) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
+/* Fixed AI list length used by fn_80134E00's non-flag path: just the list's
+ * own layout share (LAYOUT_BASE = 4.0f). Kept non-inlined for the direct call. */
 f32 fn_80134DF8(void) {
-    return lbl_80561304;
+    return LAYOUT_BASE;
 }
 #pragma dont_inline reset
 
