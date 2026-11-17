@@ -5539,8 +5539,9 @@ extern "C" void fn_801A5108(void* container) {
     *(s32*)((u8*)container + 0x180) = -1;
 }
 
-extern "C" f32 fn_801A5114(void *arg0) {
-    return ((f32 *)arg0)[0x30 / 4];
+extern "C" f32 fn_801A5114(void *object) {
+    /* Return the floating-point field at offset 0x30 of object. */
+    return ((f32 *)object)[0x30 / 4];
 }
 
 extern "C" f32 fn_801A511C(void *object) {
