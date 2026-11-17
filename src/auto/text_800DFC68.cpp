@@ -127,8 +127,8 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
     if (set8 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320C14, 0xC1, lbl_80320C24);
     }
-    data = res + *(int *)(res + 0x60);
     table = (u8 *)(*(int *)(set + 8) + 0xC);
+    data = res + *(int *)(res + 0x60);
     n = data[0x12];
     w0 = *(int *)data;
     w1 = *(int *)(data + 4);
@@ -149,36 +149,39 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
     m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
     if (m != 0) {
         matRes = *(int *)(set + 8) + *(int *)(table + *(u16 *)(data + 0x10) * 4);
-        if (matRes != 0) {
+        if (m != 0) {
             m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(m, (void *)matRes, set);
         }
         *(u8 **)(self + 0x28) = m;
     }
-    *(u8 *)(self + 0x100) = 0;
-    *(int *)(self + 0xFC) = 0;
-    if (res[0x5C] != 0) {
-        u8 *a = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, (u8)(res[0x5C]) << 3);
-        *(u8 **)(self + 0xFC) = a;
-        if (a != 0) {
-            i = 0;
-            off = 0;
-            *(u8 *)(self + 0x100) = res[0x5C];
-            p = (int *)(res + *(int *)(res + 0x64));
-            while (i < *(u8 *)(self + 0x100)) {
-                entry = res + *p;
-                *(u8 *)(*(u8 **)(self + 0xFC) + off) = entry[2];
-                *(int *)(*(u8 **)(self + 0xFC) + off + 4) = 0;
-                m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
-                if (m != 0) {
-                    matRes = *(int *)(set + 8) + *(int *)(table + *(u16 *)entry * 4);
-                    if (matRes != 0) {
-                        m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(m, (void *)matRes, set);
+    {
+        int numMat = res[0x5C];
+        *(u8 *)(self + 0x100) = 0;
+        *(int *)(self + 0xFC) = 0;
+        if (numMat != 0) {
+            u8 *a = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, (u8)numMat << 3);
+            *(u8 **)(self + 0xFC) = a;
+            if (a != 0) {
+                i = 0;
+                off = 0;
+                *(u8 *)(self + 0x100) = res[0x5C];
+                p = (int *)(res + *(int *)(res + 0x64));
+                while (i < *(u8 *)(self + 0x100)) {
+                    entry = res + *p;
+                    *(u8 *)(*(u8 **)(self + 0xFC) + off) = entry[2];
+                    *(int *)(*(u8 **)(self + 0xFC) + off + 4) = 0;
+                    m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
+                    if (m != 0) {
+                        matRes = *(int *)(set + 8) + *(int *)(table + *(u16 *)entry * 4);
+                        if (m != 0) {
+                            m = (u8 *)__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(m, (void *)matRes, set);
+                        }
+                        *(u8 **)(*(u8 **)(self + 0xFC) + off + 4) = m;
                     }
-                    *(u8 **)(*(u8 **)(self + 0xFC) + off + 4) = m;
+                    p++;
+                    off += 8;
+                    i++;
                 }
-                p++;
-                off += 8;
-                i++;
             }
         }
     }
@@ -235,22 +238,23 @@ void* nw4hbm::lyt::Window::FindMaterialByName(const char* name, bool searchChild
         virtual void v12(); virtual void v13();
         virtual void* FindMaterialByName(const char*, bool);
     };
-    int i; // try4
+    u8* pane = (u8*)this;
     int offset;
-    if (material != 0 && fn_800D58F0((char*)material + 4, name) != 0)
-        return this->material;
-    i = 0;
+    int i;
+    if (*(void**)(pane + 0x28) != 0 && fn_800D58F0((char*)*(void**)(pane + 0x28) + 4, name) != 0)
+        return *(void**)(pane + 0x28);
     offset = 0;
-    while (i < materialCount) {
-        void* candidate = *(void**)((char*)materials + offset + 4);
+    i = 0;
+    while (i < *(u8*)(pane + 0x100)) {
+        void* candidate = *(void**)(*(u8**)(pane + 0xFC) + offset + 4);
         if (fn_800D58F0((char*)candidate + 4, name) != 0)
-            return *(void**)((char*)materials + i * 8 + 4);
+            return *(void**)(*(u8**)(pane + 0xFC) + i * 8 + 4);
         offset += 8;
         i++;
     }
     if (searchChildren) {
-        Link* child = children.next;
-        Link* sentinel = &children;
+        Link* child = *(Link**)(pane + 0x14);
+        Link* sentinel = (Link*)(pane + 0x14);
         while (child != sentinel) {
             if (child == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
@@ -456,8 +460,6 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     s32 modulate;
     s32 useVtxColor;
     void *vtxColor;
-    s32 texture;
-    u8 format;
     f32 quad[4];
     register f32 temp_f0;
     register f32 temp_f1;
@@ -466,7 +468,8 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     register f32 temp_f4;
     register f32 temp_f5;
     register f32 temp_f6;
-    // try931
+    s32 texture;
+    u8 format;
     modulate = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xE4, arg3);
     useVtxColor = ((MaterialVTable *)*(void **)(self + 0x28))->draw(modulate, arg3);
     SetVertexFormat__Q34nw4r3lyt6detailFbUc(useVtxColor, self[0xF5]);
@@ -1366,6 +1369,7 @@ extern "C" nw4hbm::lyt::Material* GetFrameMaterial__Q36nw4hbm3lyt6WindowCFUl(con
     return window->materials[frameIdx].material;
 }
 
+/* C-linkage adapter: call virtual slot 23 (dispatch) of the object's vtable. */
 extern "C" void fn_800E2508(void* self) {
     struct VTable23 {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
