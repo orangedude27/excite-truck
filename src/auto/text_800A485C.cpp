@@ -5,6 +5,9 @@ __declspec(section ".sdata") extern u8 lbl_805591F8[];
 static inline s32 fn_800C0E7C_fxmul(s32 a, s32 b) {
     return (s32)(((s64)a * b) >> 20);
 }
+static inline s32 fn_800BD710_scale(s32 v, s32 *tbl, s32 idx) {
+    return fn_800C0E7C_fxmul(v, tbl[idx]);
+}
 __declspec(section ".sdata") extern u8 lbl_805591FC[];
 __declspec(section ".sdata") extern u8 lbl_80559200[];
 __declspec(section ".sdata") extern u8 lbl_80559204[];
@@ -2869,7 +2872,7 @@ extern "C" s32 fn_800A8C90(void *arg0, s32 arg1, void **arg2, s32 *arg3) {
         *arg2 = *(void **)((u8 *)arg0 + 0x162C);
         return 0;
     }
-    s32 r = fn_800A7C20(arg0, (void **)((u8 *)arg0 + 0x1630), (u32)arg1, arg2, arg3);
+    s32 r = fn_800A7C20(arg0, (void **)((u32 *)arg0 + 0x58C), (u32)arg1, arg2, arg3);
     return r & (((-r) | r) >> 31);
 }
 #pragma scheduling on
@@ -14817,38 +14820,93 @@ extern "C" u8 lbl_80559268;
 
 extern s32 lbl_802F3238[];
 extern "C" void fn_800BD710(void *arg0, s16 arg1, s16 arg2, void *arg3, void *arg4) {
+    u8 *t = (u8 *)lbl_802F3238;
     Fn800BD710Obj *obj = (Fn800BD710Obj *)arg0;
-    s32 *t = lbl_802F3238;
     s32 *out0 = (s32 *)arg3;
     s32 *out1 = (s32 *)arg4;
     if (obj->mode == 0) {
-        s32 *a = (s32 *)((u8 *)t + 0x0);
-        s32 *b = (s32 *)((u8 *)t + 0x20);
-        s32 v0 = *out0;
-        *out1 = (s32)(((s64)v0 * b[arg2]) >> 20);
-        *out0 = (s32)(((s64)v0 * a[arg2]) >> 20);
+        s32 (*p)[8] = (s32 (*)[8])t;
+        s32 *a = p[0];
+        s32 *b = p[1];
+        s32 v = *out0;
+        s32 bv = b[arg2];
+        s32 av = a[arg2];
+        *out1 = fn_800C0E7C_fxmul(v, bv);
+        s32 v2 = *out0;
+        *out0 = fn_800C0E7C_fxmul(v2, av);
         return;
     }
     if (obj->inited == 0) {
         obj->inited = 1;
         if (arg1 == 1) {
-            s32 *src = (s32 *)((u8 *)t + 0xE8);
-            for (int i = 0; i < 33; i++) {
-                obj->tab[i] = (s16)src[i];
+            u8 *base = t + 0xE8;
+            u8 *src = base;
+            u8 *dst = (u8 *)obj;
+            s32 i = 0;
+            for (s32 c = 0; c < 2; c++) {
+                i += 0x10;
+                *(s16 *)(dst + 0xA6E) = (s16)*(s32 *)(src + 0x0);
+                *(s16 *)(dst + 0xA70) = (s16)*(s32 *)(src + 0x4);
+                *(s16 *)(dst + 0xA72) = (s16)*(s32 *)(src + 0x8);
+                *(s16 *)(dst + 0xA74) = (s16)*(s32 *)(src + 0xC);
+                *(s16 *)(dst + 0xA76) = (s16)*(s32 *)(src + 0x10);
+                *(s16 *)(dst + 0xA78) = (s16)*(s32 *)(src + 0x14);
+                *(s16 *)(dst + 0xA7A) = (s16)*(s32 *)(src + 0x18);
+                *(s16 *)(dst + 0xA7C) = (s16)*(s32 *)(src + 0x1C);
+                *(s16 *)(dst + 0xA7E) = (s16)*(s32 *)(src + 0x20);
+                *(s16 *)(dst + 0xA80) = (s16)*(s32 *)(src + 0x24);
+                *(s16 *)(dst + 0xA82) = (s16)*(s32 *)(src + 0x28);
+                *(s16 *)(dst + 0xA84) = (s16)*(s32 *)(src + 0x2C);
+                *(s16 *)(dst + 0xA86) = (s16)*(s32 *)(src + 0x30);
+                s32 e = *(s32 *)(src + 0x38);
+                *(s16 *)(dst + 0xA88) = (s16)*(s32 *)(src + 0x34);
+                s32 f = *(s32 *)(src + 0x3C);
+                src += 0x40;
+                *(s16 *)(dst + 0xA8A) = (s16)e;
+                *(s16 *)(dst + 0xA8C) = (s16)f;
+                dst += 0x20;
             }
+            *(s16 *)((u8 *)obj + i * 2 + 0xA6E) = (s16)*(s32 *)(base + i * 4);
         } else {
-            s32 *src = (s32 *)((u8 *)t + 0x40);
-            for (int i = 0; i < 33; i++) {
-                obj->tab[i] = (s16)src[i];
+            u8 *base = t + 0x40;
+            u8 *src = base;
+            u8 *dst = (u8 *)obj;
+            s32 i = 0;
+            for (s32 c = 0; c < 2; c++) {
+                i += 0x10;
+                *(s16 *)(dst + 0xA6E) = (s16)*(s32 *)(src + 0x0);
+                *(s16 *)(dst + 0xA70) = (s16)*(s32 *)(src + 0x4);
+                *(s16 *)(dst + 0xA72) = (s16)*(s32 *)(src + 0x8);
+                *(s16 *)(dst + 0xA74) = (s16)*(s32 *)(src + 0xC);
+                *(s16 *)(dst + 0xA76) = (s16)*(s32 *)(src + 0x10);
+                *(s16 *)(dst + 0xA78) = (s16)*(s32 *)(src + 0x14);
+                *(s16 *)(dst + 0xA7A) = (s16)*(s32 *)(src + 0x18);
+                *(s16 *)(dst + 0xA7C) = (s16)*(s32 *)(src + 0x1C);
+                *(s16 *)(dst + 0xA7E) = (s16)*(s32 *)(src + 0x20);
+                *(s16 *)(dst + 0xA80) = (s16)*(s32 *)(src + 0x24);
+                *(s16 *)(dst + 0xA82) = (s16)*(s32 *)(src + 0x28);
+                *(s16 *)(dst + 0xA84) = (s16)*(s32 *)(src + 0x2C);
+                *(s16 *)(dst + 0xA86) = (s16)*(s32 *)(src + 0x30);
+                s32 e = *(s32 *)(src + 0x38);
+                *(s16 *)(dst + 0xA88) = (s16)*(s32 *)(src + 0x34);
+                s32 f = *(s32 *)(src + 0x3C);
+                src += 0x40;
+                *(s16 *)(dst + 0xA8A) = (s16)e;
+                *(s16 *)(dst + 0xA8C) = (s16)f;
+                dst += 0x20;
             }
+            *(s16 *)((u8 *)obj + i * 2 + 0xA6E) = (s16)*(s32 *)(base + i * 4);
         }
     }
     if ((arg2 & 1) == 1) {
+        s16 v = *(s16 *)((u8 *)obj + (s16)(arg2 + 1) * 2 + 0xA6E);
         *out1 = *out0;
-        *out0 = (s32)(((s64)*out0 * obj->tab[(s16)(arg2 + 1)]) >> 20);
+        *out0 = fn_800C0E7C_fxmul(*out0, v);
         return;
     }
-    *out1 = (s32)(((s64)*out0 * obj->tab[arg2]) >> 20);
+    s32 v = *out0;
+    s16 tv = *(s16 *)((u8 *)obj + arg2 * 2 + 0xA6E);
+    *out1 = fn_800C0E7C_fxmul(v, tv);
 }
 
 extern "C" s16 fn_800BDD7C(s32, s32, s32 *);
