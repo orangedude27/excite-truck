@@ -1045,37 +1045,62 @@ extern void *memcpy(void *, const void *, unsigned long);
 extern float lbl_80563898, lbl_805638AC, lbl_805638B0, lbl_805638B4, lbl_805638B8;
 #pragma push
 #pragma processor 750
-void fn_802481A0(float *arg0, float *arg1, float farg0, float farg1) {
-    typedef struct { float v[18]; } Table;
-    Table tbl;
-    float lo, hi, lo1, hi1, t;
-    float pclamp, phase;
-    float traw;
-    s32 tm, idx, offIdx, offPrev;
+/* Position-warp hook of the "logo_mover" animation of the "thankyou.lyt" text
+ * (installed by fn_802483E0 with fn_80232B80): the text drawer (fn_80231AF0)
+ * runs every glyph position it places through here.  The time since the
+ * animation started, less a 1500 ms delay, is turned into a 0..1 progress over
+ * the following second, and `remaining` counts that back down from 1 to 0.  The
+ * glyph is shaken sideways by 3.0 * sin(956 * remaining) and offset vertically
+ * by the curve read off logoCurve at its x, scaled by `remaining`, so the text
+ * settles onto the position it was given; outside that one-second window the
+ * clamps leave `remaining` at 0 and the glyph passes through untouched. */
+void fn_802481A0(float *outX, float *outY, float x, float y) {
+#define startTime   lbl_8055F274 /* ms stamp fn_802483E0 took at the start */
+#define one         lbl_80563898 /* 1.0f */
+#define msPerSecond lbl_805638AC /* 1000.0f */
+#define zero        lbl_805638B0 /* 0.0f */
+#define shakeRate   lbl_805638B4 /* 956.0f radians per second */
+#define shakeAmount lbl_805638B8 /* 3.0f pixels */
+#define logoCurve   lbl_802FA430 /* the (x, offset) curve, copied below */
 
-    tm = (fn_802E2C20() - lbl_8055F274) - 0x5DC;
-    pclamp = (lbl_80563898 < (float)tm / lbl_805638AC) ? lbl_80563898 : (float)tm / lbl_805638AC;
-    pclamp = (pclamp > lbl_805638B0) ? pclamp : lbl_805638B0;
-    phase = lbl_80563898 - pclamp;
-    *arg0 = farg0 + (lbl_805638B8 * (float)sin(lbl_805638B4 * phase));
-    tbl = *(Table *)lbl_802FA430;
-    for (idx = 1; idx < 8; idx++) {
-        if (farg0 < tbl.v[idx * 2]) break;
+    typedef struct { float v[18]; } CurveCopy; /* nine LogoCurvePoint pairs */
+    CurveCopy curve;
+    float xLow, xHigh, yLow, yHigh, frac;
+    float progress, remaining;
+    float rawFrac;
+    s32 ms, high, offHigh, offLow;
+
+    ms = (fn_802E2C20() - startTime) - 0x5DC; /* 1500 ms before it starts */
+    progress = (one < (float)ms / msPerSecond) ? one : (float)ms / msPerSecond;
+    progress = (progress > zero) ? progress : zero;
+    remaining = one - progress;
+    *outX = x + (shakeAmount * (float)sin(shakeRate * remaining));
+    curve = *(CurveCopy *)logoCurve;
+    for (high = 1; high < 8; high++) {
+        if (x < curve.v[high * 2]) break;
     }
-    offIdx = idx * 8;
-    offPrev = (idx - 1) * 8;
-    lo = *(float *)((char *)tbl.v + offPrev);
-    hi = *(float *)((char *)tbl.v + offIdx);
-    hi1 = *(float *)((char *)tbl.v + 4 + offIdx);
-    lo1 = *(float *)((char *)tbl.v + 4 + offPrev);
-    traw = (farg0 - lo) / (hi - lo);
-    if (lbl_80563898 < traw) {
-        t = lbl_80563898;
+    offHigh = high * 8;
+    offLow = (high - 1) * 8;
+    xLow = *(float *)((char *)curve.v + offLow);
+    xHigh = *(float *)((char *)curve.v + offHigh);
+    yHigh = *(float *)((char *)curve.v + 4 + offHigh);
+    yLow = *(float *)((char *)curve.v + 4 + offLow);
+    rawFrac = (x - xLow) / (xHigh - xLow);
+    if (one < rawFrac) {
+        frac = one;
     } else {
-        t = traw;
+        frac = rawFrac;
     }
-    t = (t > lbl_805638B0) ? t : lbl_805638B0;
-    *arg1 = farg1 + (phase * (lo1 + (t * (hi1 - lo1))));
+    frac = (frac > zero) ? frac : zero;
+    *outY = y + (remaining * (yLow + (frac * (yHigh - yLow))));
+
+#undef startTime
+#undef one
+#undef msPerSecond
+#undef zero
+#undef shakeRate
+#undef shakeAmount
+#undef logoCurve
 }
 #pragma pop
 void fn_80248398(void) {
