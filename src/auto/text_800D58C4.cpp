@@ -1977,8 +1977,9 @@ extern "C" s32 fn_800D89D4(s32 arg0, s32 arg1) {
     return arg0 + arg1;
 }
 
-extern "C" s32 fn_800D89DC(s32 arg0, s32 arg1) {
-    return arg0 + arg1;
+/* Compute base + offset as an integer address (used to index resource data). */
+extern "C" s32 fn_800D89DC(s32 base, s32 offset) {
+    return base + offset;
 }
 
 extern "C" u32 fn_800D89E4(u32 value, u32 limit) {
