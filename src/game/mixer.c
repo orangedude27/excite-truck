@@ -345,6 +345,7 @@ void fn_802090BC(void) {
 }
 #undef MIXER_SET_SOUND_MODE_NOOP_MSG
 extern void *lbl_8055B4D8;
+/* Get the configured sound mode (0/1/2, set in fn_80208B8C from config). */
 void* fn_802090CC(void) {
     return lbl_8055B4D8;
 }
