@@ -3950,18 +3950,21 @@ extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTrans
     }
 }
 
+struct DrawInfoBits_800D58C4 { char pad[0x50]; u8 flip : 1; };
 extern "C" int fcmpgt(f32, f32);
 extern "C" void PSMTXConcat(const f32*, const f32*, f32*);
 extern "C" void PSMTXCopy(const f32*, f32*);
 extern "C" void GXLoadPosMtxImm(const f32*, u32);
 extern "C" void GXSetCurrentMtx(u32);
+#pragma scheduling invalid_target
 extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self_, void* info_) {
     extern float lbl_80560EA8;
+    int flag = (((unsigned char*)info_)[0x50] >> 7) & 1;
     unsigned char* ip = (unsigned char*)info_;
     unsigned char* sp = (unsigned char*)self_;
     float mtx[3][4];
     float* result;
-    if ((ip[0x50] >> 7) & 1) {
+    if (flag) {
         PSMTXConcat((float*)(ip + 4), (float*)(sp + 0x84), (float*)mtx);
         int flip = (*(float*)(ip + 0x40) - *(float*)(ip + 0x38)) < lbl_80560EA8;
         if (flip) {
@@ -3985,7 +3988,7 @@ extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self_, vo
     GXLoadPosMtxImm(result, 0);
     GXSetCurrentMtx(0);
 }
-
+#pragma scheduling on
 extern "C" f32 lbl_80560EC0;
 #pragma scheduling invalid_target
 extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self) {
