@@ -170,7 +170,7 @@ void fn_80135390(Unk_80135278 *follower) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    volatile float f = lbl_80561320;
+    float f = 0.0f;
     arg0->unk_4 = arg3;
     arg0->unk_8 = f;
     fn_801355C0(arg0, arg1, arg2, &arg0->unk_4, 0);
