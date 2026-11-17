@@ -376,33 +376,33 @@ extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(nw4hbm::lyt::detai
 }
 #pragma unroll reset
 #pragma optimize_for_size reset
-#pragma use_lmw_stmw off
-#pragma unroll off
 extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const void* src, u8 count) {
     u8* p = (u8*)self;
     if (count > p[0])
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F5A8, 0xA1, lbl_8031F5E8);
-    if (p[1] < count)
-        p[1] = count;
+    if (p[1] < count) {
+        s32 newTop = count;
+        p[1] = (u8)newTop;
+    }
     s32 offset = 0;
     s32 n = count;
     if (n > 0) {
         do {
             void* base0 = *(void**)(p + 4);
-            f32* dst0 = (f32*)((u8*)base0 + offset);
+            f32* dst0 = (f32*)(offset + (u8*)base0);
             dst0[0] = ((const f32*)src)[0];
             dst0[1] = ((const f32*)src)[1];
             void* base1 = *(void**)(p + 4);
-            f32* dst1 = (f32*)((u8*)base1 + offset);
+            f32* dst1 = (f32*)(offset + (u8*)base1);
             dst1[2] = ((const f32*)src)[2];
             dst1[3] = ((const f32*)src)[3];
             src = (const u8*)src + 0x20;
             void* base2 = *(void**)(p + 4);
-            f32* dst2 = (f32*)((u8*)base2 + offset);
+            f32* dst2 = (f32*)(offset + (u8*)base2);
             dst2[4] = ((const f32*)src)[-4];
             dst2[5] = ((const f32*)src)[-3];
             void* base3 = *(void**)(p + 4);
-            f32* dst3 = (f32*)((u8*)base3 + offset);
+            f32* dst3 = (f32*)(offset + (u8*)base3);
             offset += 0x20;
             dst3[6] = ((const f32*)src)[-2];
             dst3[7] = ((const f32*)src)[-1];
