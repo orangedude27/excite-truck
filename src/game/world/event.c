@@ -6,6 +6,10 @@
 
 /* Event-handler registry: 18 event types, each a row of 4 handler function
  * pointers (int handler(char *payload)), 0x120 bytes in all. */
+typedef int (*EventHandler)(char *payload);
+typedef struct {
+    EventHandler handlers[4];
+} EventHandlerRow;
 extern unsigned char lbl_80488678[];
 void *memset(void *, int, unsigned int);
 #pragma scheduling off
