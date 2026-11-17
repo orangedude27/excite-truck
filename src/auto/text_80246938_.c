@@ -1287,8 +1287,11 @@ void fn_80248770(void *group) {
     #undef AllocGroupId
 }
 
-void fn_802487A8(void *arg0) {
-    *(unsigned char*)((char*)arg0 + 0x18) = 0;
+// Deactivate a UI window group by clearing its enabled flag (counterpart of fn_80248770).
+void fn_802487A8(void *group) {
+    #define GROUP_ACTIVE 0x18  /* u8 enabled flag */
+    *(unsigned char*)((char*)group + GROUP_ACTIVE) = 0;
+    #undef GROUP_ACTIVE
 }
 
 #pragma push
