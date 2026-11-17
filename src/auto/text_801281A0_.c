@@ -60,8 +60,9 @@ u32 fn_801281A0(s32 allocSource) {
     return (u32)&lbl_80559968; /* "unknown" */
 }
 #pragma scheduling off
-s32 fn_801281F4(s32 arg0, s32 arg1) {
-    return ((arg0 + arg1) - 1) & ~(arg1 - 1);
+s32 fn_801281F4(s32 value, s32 alignment) {
+    /* Round value up to the next multiple of alignment (alignment is a power of two). */
+    return ((value + alignment) - 1) & ~(alignment - 1);
 }
 #pragma scheduling on
 void fn_80128208(void) {
