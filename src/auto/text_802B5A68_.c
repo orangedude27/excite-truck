@@ -2036,7 +2036,7 @@ void fn_802B87F4(void) {
 extern char lbl_8055FA32;
 extern float lbl_80564CA0, lbl_80564CA4;
 extern char lbl_8034A6C0[];
-extern void fn_802B773C(void), fn_802C7040(void), fn_80230B5C(void *), fn_802C8638(void *);
+extern void fn_802B773C(void), fn_802C7040(s32), fn_80230B5C(void *), fn_802C8638(void *);
 extern void fn_802C974C(float,float,float), fn_802B86F8(void), fn_802B676C(void), fn_802B6804(void);
 extern void fn_802B7D4C(void), fn_802B69FC(void), fn_802B7D1C(void), fn_802B7CF0(void);
 extern void fn_8001123C(s32), fn_80011A2C(void);
