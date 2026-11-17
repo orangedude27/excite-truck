@@ -2265,6 +2265,7 @@ extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *arg0) {
     base = base + mid2;
     return scaled + base;
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
