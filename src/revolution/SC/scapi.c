@@ -31,6 +31,8 @@ s8 SCGetDisplayOffsetH(void) {
 }
 
 void SCGetIdleMode(SCIdleModeInfo* mode) {
+    /* Read the two-byte IPL idle-mode item (SC_ITEM_IPL_IDL, id 0x5) into mode:
+       wc24 and slot-light flags. Leaves mode untouched if the item is absent. */
     SCFindByteArrayItem(mode, 2, SC_ITEM_IPL_IDL);
 }
 
