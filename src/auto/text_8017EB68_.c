@@ -1653,7 +1653,8 @@ int fn_80181784(void *object) {
 
 unsigned char fn_8018178C(void *arg0) { return *((unsigned char *)arg0 + 0x5B); }
 
-float fn_80181794(void *arg0) { return *(float *)((char *)arg0 + 0x32C); }
+/* Return the driver's rate-limited camera/look axis (pad30C[8] at +0x32C). */
+float fn_80181794(void *driver) { return DRIVER(driver)->pad30C[8]; }
 
 float fn_8018179C(void *arg0) { return *(float *)((char *)arg0 + 0x330); }
 
