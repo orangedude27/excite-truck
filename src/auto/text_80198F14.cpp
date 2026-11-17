@@ -464,6 +464,7 @@ extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *
     }
     return 0;
 }
+#pragma pop
 
 #pragma scheduling invalid_target
 extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* arg4, f32 farg0) {
