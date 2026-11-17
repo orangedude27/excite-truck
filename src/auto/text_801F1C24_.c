@@ -2117,6 +2117,7 @@ void fn_801F4C34(void *arg0, int arg1) {
     }
 }
 
+/* Stub: always returns -1 (the "none / invalid index" sentinel). */
 int fn_801F4C98(void) { return -1; }
 
 void fn_801F4CA0(void) {
