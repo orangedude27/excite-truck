@@ -1100,8 +1100,9 @@ s32 fn_801602BC(s32 *header, s32 index) {
     return *header + (index * 0x10);
 }
 
-s32 fn_801602CC(void *arg0) {
-    return ((s32 *)arg0)[1];
+/* Return the record count (+0x4) from a ring-buffer header (+0 base pointer, +4 count). */
+s32 fn_801602CC(void *header) {
+    return ((s32 *)header)[1];
 }
 #pragma dont_inline reset
 
