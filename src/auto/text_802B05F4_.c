@@ -5,7 +5,7 @@ extern char lbl_8055F960[8];
 extern int fn_8000D838(void*);
 extern int lbl_8055F968;
 extern float lbl_8055F96C;
-extern volatile float lbl_80564BB4;
+extern float lbl_80564BB4;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
