@@ -220,7 +220,8 @@ void fn_801EA1DC(void) {
 }
 
 s32 fn_801DD3BC(s32);
-void fn_801EA1E0(s32 arg0, s32 arg1) { ((void (*)(s32, s32))fn_801DD3BC)(arg0, arg1 != 0); }
+/* Thunk: normalize `flag` to a boolean and tail-call fn_801DD3BC; the caller's x/z stay in f1/f2. */
+void fn_801EA1E0(s32 value, s32 flag) { ((void (*)(s32, s32))fn_801DD3BC)(value, flag != 0); }
 
 void fn_801EA1F0(void) {
     fn_801DD808();
