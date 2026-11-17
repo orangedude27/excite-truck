@@ -4,5 +4,8 @@
 extern char lbl_8055D448[4];
 extern void fn_8000D838(void *queue);
 void fn_8000D87C(void) {
-    fn_8000D838(lbl_8055D448);
+#define sThisUnitDtorRecord lbl_8055D448
+    /* Startup (.ctors) thunk: register this unit's static-destructor record on the global chain. */
+    fn_8000D838(sThisUnitDtorRecord);
+#undef sThisUnitDtorRecord
 }
