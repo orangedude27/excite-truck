@@ -1139,7 +1139,9 @@ unsigned char fn_8014C818(unsigned int color) { return (unsigned char)(color >> 
 /* Extract the red channel (byte at bits 16-23) of a packed RGBA8888 color. */
 unsigned char fn_8014C820(unsigned int color) { return (unsigned char)(color >> 16); }
 
-s32 fn_8014C828(s32 arg0) { return arg0 + 0x64; }
+/* Address helper: returns the field at offset +0x64 of `obj`, an alternate
+ * HUD label string (sibling of fn_8014C830, which uses +0x14). */
+s32 fn_8014C828(s32 obj) { return obj + 0x64; }
 
 /* Address helper: returns a pointer to the field at offset +0x14 of `obj`
  * (e.g. the label string used by the HUD), sibling of fn_8014C828 (+0x64). */
