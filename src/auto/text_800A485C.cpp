@@ -8947,141 +8947,201 @@ block_27:
     return (*(u16 *)(work + 4));
 }
 
+#pragma opt_propagation off
 extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16 arg0, s32 *arg1, u16 arg2, s32 *arg3, s32 arg4) {
+    struct St { u8 *buf; u32 end; u32 wide; u16 idx; };
     u16 c0 = arg0;
-    s32 *pat = arg1;
+    St *pat = (St *)arg1;
     u16 tok = arg2;
-    s32 *file = arg3;
+    St *file = (St *)arg3;
     s32 flag = arg4;
-    u8 *tbl = (u8 *)lbl_803D2140;
     u16 fwA;
     u16 fwB;
 loop_top:
     if (tok == 0) return c0 == 0;
-    if (tok == 63) {
+    switch (tok) {
+    case 0x3F:
         if (c0 == 0) return 0;
         goto adv_both;
-    }
-    if (tok == 42) {
+    case 0x2A:
         tok = fn_800B25CC(file, flag);
-    star_loop:
-        if (tok == 42) { tok = fn_800B25CC(file, flag); goto star_loop; }
-        if (tok == 63) { tok = fn_800B25CC(file, flag); goto star_loop; }
-        if (tok == 0) return 1;
-    match_loop:
-        if (c0 == 0) return 0;
-        if (c0 == tok) {
-            s32 sp_file[4];
-            s32 sp_pat[4];
-            sp_pat[0]=pat[0]; sp_pat[1]=pat[1]; sp_pat[2]=pat[2]; sp_pat[3]=pat[3];
-            sp_file[0]=file[0]; sp_file[1]=file[1]; sp_file[2]=file[2]; sp_file[3]=file[3];
-            u16 nc = 0;
-            if (sp_pat[2] != 0) {
-                u16 idx=(u16)sp_pat[3];
-                if (idx<=522u) {
-                    s32 f=0; u16 ch=*(u16*)((u8*)sp_pat[0]+idx); sp_pat[3]=(s16)(idx+2);
-                    if (ch>=97u&&ch<=122u) f=1; if (f!=0) ch-=32; nc=ch;
-                    u32 g=0; if (nc>=65345u&&nc<=65374u){g=1;fwA=nc-32;} if (g==1u) nc=fwA;
-                }
-            } else {
-                u16 idx=(u16)sp_pat[3];
-                if (idx<12u) {
-                    sp_pat[3]=(s16)(idx+1); s8 ch=*(s8*)((u8*)sp_pat[0]+idx);
-                    if (((s32(**)(s8,s32))((u8*)tbl+84))[0](ch,1)!=0){u16 i2=(u16)sp_pat[3];sp_pat[3]=(s16)(i2+1);ch=(s8)(u16)(((ch<<8)&0xFF00)+*(u8*)((u8*)sp_pat[0]+i2));}
-                    s32 f=0; if ((u16)ch>=97u&&(u16)ch<=122u) f=1; u16 cc=(u16)ch; if (f!=0) cc-=32; nc=cc;
-                }
-            }
-            u16 ntok=fn_800B25CC(sp_file,flag);
-            if (VFiPFPATH_DoMatchFileNameWithPattern(nc,sp_pat,ntok,sp_file,flag)!=0) return 1;
-            goto adv_pat;
-        }
-    adv_pat:
-        if (pat[2]!=0){u16 idx=(u16)pat[3]; if(idx>522u)c0=0; else{s32 f=0;u16 ch=*(u16*)((u8*)pat[0]+idx);pat[3]=(s16)(idx+2);if(ch>=97u&&ch<=122u)f=1;if(f!=0)ch-=32;c0=ch;u32 g=0;if(c0>=65345u&&c0<=65374u){g=1;fwB=c0-32;}if(g==1u)c0=fwB;}}
-        else{u16 idx=(u16)pat[3]; if(idx>=12u)c0=0; else{pat[3]=(s16)(idx+1);s8 ch=*(s8*)((u8*)pat[0]+idx);if(((s32(**)(s8,s32))((u8*)tbl+84))[0](ch,1)!=0){u16 i2=(u16)pat[3];pat[3]=(s16)(i2+1);ch=(s8)(u16)(((ch<<8)&0xFF00)+*(u8*)((u8*)pat[0]+i2));}s32 f=0;if((u16)ch>=97u&&(u16)ch<=122u)f=1;u16 cc=(u16)ch;if(f!=0)cc-=32;c0=cc;}}
-        goto match_loop;
+        break;
+    default:
+        if (c0 != tok) return 0;
+        goto adv_both;
     }
-    if (c0!=tok) return 0;
+star_skip:
+    if (tok == 0x2A || tok == 0x3F) { tok = fn_800B25CC(file, flag); goto star_skip; }
+    if (tok == 0) return 1;
+match_loop:
+    if (c0 == 0) return 0;
+    if (c0 == tok) {
+        St sp_pat;
+        St sp_file;
+        sp_pat = *pat;
+        sp_file = *file;
+        u16 nc = 0;
+        if (sp_pat.wide != 0) {
+            u16 idx = sp_pat.idx;
+            if (idx <= 0x20A) {
+                u16 ch = *(u16 *)(pat->buf + idx);
+                u32 f = 0;
+                sp_pat.idx = idx + 2;
+                if (ch >= 0x61 && ch <= 0x7A) f = 1;
+                if (f != 0) ch -= 0x20;
+                nc = ch;
+                { u32 g = 0; if (nc >= 0xFF41 && nc <= 0xFF5A) { g = 1; fwB = nc - 0x20; } if (g == 1) nc = fwB; }
+            }
+        } else {
+            u16 idx = sp_pat.idx;
+            if (idx < 0xC) {
+                s8 ch;
+                sp_pat.idx = idx + 1;
+                ch = *(s8 *)(pat->buf + idx);
+                if (M2C_FIELD(&lbl_803D2140, s32 (**)(s8, s32), 0x54)(ch,1) != 0) {
+                    u16 i2 = sp_pat.idx; sp_pat.idx = i2 + 1;
+                    ch = (s8)(u16)(((ch << 8) & 0xFF00) + sp_pat.buf[i2]);
+                }
+                u32 f = 0; u16 cc = (u16)ch;
+                if (cc >= 0x61 && cc <= 0x7A) f = 1;
+                if (f != 0) cc -= 0x20;
+                nc = cc;
+            }
+        }
+        tok = fn_800B25CC(&sp_file, flag);
+        if (VFiPFPATH_DoMatchFileNameWithPattern(nc, (s32 *)&sp_pat, tok, (s32 *)&sp_file, flag) != 0) return 1;
+    }
+adv_pat:
+    if (pat->wide != 0) {
+        u16 idx = pat->idx;
+        if (idx > 0x20A) c0 = 0; else {
+            u16 ch = *(u16 *)(pat->buf + idx); u32 f = 0;
+            pat->idx = idx + 2;
+            if (ch >= 0x61 && ch <= 0x7A) f = 1;
+            if (f != 0) ch -= 0x20;
+            c0 = ch;
+            { u32 g = 0; if (c0 >= 0xFF41 && c0 <= 0xFF5A) { g = 1; fwA = c0 - 0x20; } if (g == 1) c0 = fwA; }
+        }
+    } else {
+        u16 idx = pat->idx;
+        if (idx >= 0xC) c0 = 0; else {
+            s8 ch; pat->idx = idx + 1; ch = *(s8 *)(pat->buf + idx);
+            if (M2C_FIELD(&lbl_803D2140, s32 (**)(s8, s32), 0x54)(ch,1) != 0) {
+                u16 i2 = pat->idx; pat->idx = i2 + 1;
+                ch = (s8)(u16)(((ch << 8) & 0xFF00) + pat->buf[i2]);
+            }
+            u32 f = 0; u16 cc = (u16)ch;
+            if (cc >= 0x61 && cc <= 0x7A) f = 1;
+            if (f != 0) cc -= 0x20;
+            c0 = cc;
+        }
+    }
+    goto match_loop;
 adv_both:
-    if (pat[2]!=0){u16 idx=(u16)pat[3]; if(idx>522u)c0=0; else{s32 f=0;u16 ch=*(u16*)((u8*)pat[0]+idx);pat[3]=(s16)(idx+2);if(ch>=97u&&ch<=122u)f=1;if(f!=0)ch-=32;c0=ch;u32 g=0;if(c0>=65345u&&c0<=65374u){g=1;fwA=c0-32;}if(g==1u)c0=fwA;}}
-    else{u16 idx=(u16)pat[3]; if(idx>=12u)c0=0; else{pat[3]=(s16)(idx+1);s8 ch=*(s8*)((u8*)pat[0]+idx);if(((s32(**)(s8,s32))((u8*)tbl+84))[0](ch,1)!=0){u16 i2=(u16)pat[3];pat[3]=(s16)(i2+1);ch=(s8)(u16)(((ch<<8)&0xFF00)+*(u8*)((u8*)pat[0]+i2));}s32 f=0;if((u16)ch>=97u&&(u16)ch<=122u)f=1;u16 cc=(u16)ch;if(f!=0)cc-=32;c0=cc;}}
-    tok=fn_800B25CC(file,flag);
+    if (pat->wide != 0) {
+        u16 idx = pat->idx;
+        if (idx > 0x20A) c0 = 0; else {
+            u16 ch = *(u16 *)(pat->buf + idx); u32 f = 0;
+            pat->idx = idx + 2;
+            if (ch >= 0x61 && ch <= 0x7A) f = 1;
+            if (f != 0) ch -= 0x20;
+            c0 = ch;
+            { u32 g = 0; if (c0 >= 0xFF41 && c0 <= 0xFF5A) { g = 1; fwA = c0 - 0x20; } if (g == 1) c0 = fwA; }
+        }
+    } else {
+        u16 idx = pat->idx;
+        if (idx >= 0xC) c0 = 0; else {
+            s8 ch; pat->idx = idx + 1; ch = *(s8 *)(pat->buf + idx);
+            if (M2C_FIELD(&lbl_803D2140, s32 (**)(s8, s32), 0x54)(ch,1) != 0) {
+                u16 i2 = pat->idx; pat->idx = i2 + 1;
+                ch = (s8)(u16)(((ch << 8) & 0xFF00) + pat->buf[i2]);
+            }
+            u32 f = 0; u16 cc = (u16)ch;
+            if (cc >= 0x61 && cc <= 0x7A) f = 1;
+            if (f != 0) cc -= 0x20;
+            c0 = cc;
+        }
+    }
+    tok = fn_800B25CC(file, flag);
     goto loop_top;
 }
-
+#pragma opt_propagation reset
 extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *arg0, u8 *arg1, s32 *arg2) {
-    u16 spA, sp8;
-    s32 temp_r23, temp_r3, temp_r3_2, temp_r3_3, temp_r3_4;
     s32 var_r31;
-    u16 var_r29, var_r30, var_r3, var_r3_2, var_r3_7, var_r3_8, var_r3_9;
-    u32 var_r3_3, var_r3_4, var_r3_5, var_r3_6;
+    u16 var_r30, var_r29;
+    s32 *var_r28 = arg2;
     u8 *var_r27 = arg1;
     u8 *var_r26 = arg0;
-    u8 *table = (u8 *)lbl_803D2140;
-    s32 *var_r28 = arg2;
     s32 one = 1;
-loop_64:
-    if ((s8)*var_r27 == 0) return (s8)*var_r26 != 0;
-    temp_r23 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
-    var_r31 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
-    if (temp_r23 == 1) var_r3 = fn_800A485C((s8)*var_r27); else var_r3 = fn_800A4C04(var_r27);
-    var_r30 = var_r3;
-    if (var_r31 == 1) var_r3_2 = fn_800A485C((s8)*var_r26); else var_r3_2 = fn_800A4C04(var_r26);
-    var_r29 = var_r3_2;
-    if (temp_r23 == 2) {
-        M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(var_r27, &spA);
-        if (spA >= 0xFF41U && spA <= 0xFF5AU) { var_r3_3 = 1U; spA -= 0x20; } else var_r3_3 = 0U;
-        if (var_r3_3 == 1U) { M2C_FIELD(table, s32 (**)(u16 *, u16 *), 0x4C)(&spA, &spA); var_r3_4 = 1U; } else var_r3_4 = 0U;
-        if (var_r3_4 == 1U) var_r30 = spA;
-    }
-    if (var_r31 == 2) {
-        M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(var_r26, &sp8);
-        if (sp8 >= 0xFF41U && sp8 <= 0xFF5AU) { var_r3_5 = 1U; sp8 -= 0x20; } else var_r3_5 = 0U;
-        if (var_r3_5 == 1U) { M2C_FIELD(table, s32 (**)(u16 *, u16 *), 0x4C)(&sp8, &sp8); var_r3_6 = 1U; } else var_r3_6 = 0U;
-        if (var_r3_6 == 1U) var_r29 = sp8;
-    }
-    var_r27 = &var_r27[temp_r23];
-    switch ((s32)var_r30) {
-    case 0x3F:
-        if ((s32)var_r29 == 0) return 1;
-block_63:
-        var_r26 = &var_r26[var_r31]; goto loop_64;
-    case 0x2A:
-loop_33:
-        temp_r3_2 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
-        if (temp_r3_2 != 1) var_r3_7 = fn_800A4C04(var_r27); else var_r3_7 = fn_800A485C((s8)*var_r27);
-        var_r30 = var_r3_7; var_r27 = &var_r27[temp_r3_2];
+    u8 *table = (u8 *)lbl_803D2140;
+    s32 temp_r23;
+    u16 spA, sp8;
+    s32 temp_r3, temp_r3_2, temp_r3_3, temp_r3_4;
+    u16 var_r3, var_r3_2, var_r3_7, var_r3_8, var_r3_9;
+    u32 var_r3_3, var_r3_4, var_r3_5, var_r3_6;
+    while ((s8)*var_r27 != 0) {
+        temp_r23 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
+        var_r31 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
+        if (temp_r23 == 1) var_r3 = fn_800A485C((s8)*var_r27); else var_r3 = fn_800A4C04(var_r27);
+        var_r30 = var_r3;
+        if (var_r31 == 1) var_r3_2 = fn_800A485C((s8)*var_r26); else var_r3_2 = fn_800A4C04(var_r26);
+        var_r29 = var_r3_2;
+        if (temp_r23 == 2) {
+            M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(var_r27, &spA);
+            if (spA >= 0xFF41U && spA <= 0xFF5AU) { var_r3_3 = 1U; spA -= 0x20; } else var_r3_3 = 0U;
+            if (var_r3_3 == 1U) { M2C_FIELD(table, s32 (**)(u16 *, u16 *), 0x4C)(&spA, &spA); var_r3_4 = 1U; } else var_r3_4 = 0U;
+            if (var_r3_4 == 1U) var_r30 = spA;
+        }
+        if (var_r31 == 2) {
+            M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(var_r26, &sp8);
+            if (sp8 >= 0xFF41U && sp8 <= 0xFF5AU) { var_r3_5 = 1U; sp8 -= 0x20; } else var_r3_5 = 0U;
+            if (var_r3_5 == 1U) { M2C_FIELD(table, s32 (**)(u16 *, u16 *), 0x4C)(&sp8, &sp8); var_r3_6 = 1U; } else var_r3_6 = 0U;
+            if (var_r3_6 == 1U) var_r29 = sp8;
+        }
+        var_r27 = &var_r27[temp_r23];
         if (var_r30 == 0x3F) {
             if ((s32)var_r29 == 0) return 1;
             var_r26 = &var_r26[var_r31];
-            temp_r3_3 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26); var_r31 = temp_r3_3;
+            continue;
+        }
+        if (var_r30 != 0x2A) goto loop_57;
+loop_33:
+        temp_r3_2 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
+        if (temp_r3_2 != 1) var_r3_7 = fn_800A4C04(var_r27); else var_r3_7 = fn_800A485C((s8)*var_r27);
+        var_r30 = var_r3_7;
+        var_r27 = &var_r27[temp_r3_2];
+        if (var_r30 == 0x3F) {
+            if ((s32)var_r29 == 0) return 1;
+            var_r26 = &var_r26[var_r31];
+            temp_r3_3 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
+            var_r31 = temp_r3_3;
             if (temp_r3_3 == 1) var_r3_8 = fn_800A485C((s8)*var_r26); else var_r3_8 = fn_800A4C04(var_r26);
-            var_r29 = var_r3_8; goto block_43;
+            var_r29 = var_r3_8;
         }
-block_43:
-        if (var_r30 != 0x3F && var_r30 != 0x2A) {
-            if ((s32)var_r30 == 0) return 0;
+        if (var_r30 == 0x3F || var_r30 == 0x2A) goto loop_33;
+        if ((s32)var_r30 == 0) return 0;
 loop_57:
-            if ((s32)var_r29 == 0) {
-                if ((s8)*var_r26 == 0 || (s8)*var_r27 == 0) *var_r28 = one;
-            default:
-                if (var_r29 != var_r30) return 1;
-                goto block_63;
-            }
-        }
+        if ((s32)var_r29 == 0 && ((s8)*var_r26 == 0 || (s8)*var_r27 == 0)) *var_r28 = one;
+        if (var_r29 != var_r30) return 1;
+        var_r26 = &var_r26[var_r31];
+        if (var_r30 == 0x2A) goto loop_33;
+        if (var_r30 == 0x3F) continue;
+        if ((s32)var_r29 == 0) continue;
         var_r26 = &var_r26[var_r31];
         if (var_r29 == var_r30) {
             temp_r3 = VFiPFPATH_cmpNameImpl(var_r26, var_r27, var_r28);
             if (temp_r3 == 0) return 0;
             if ((s32)*var_r28 != 0) return temp_r3;
-            goto block_53;
         }
-block_53:
-        temp_r3_4 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26); var_r31 = temp_r3_4;
+        temp_r3_4 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
+        var_r31 = temp_r3_4;
         if (temp_r3_4 == 1) var_r3_9 = fn_800A485C((s8)*var_r26); else var_r3_9 = fn_800A4C04(var_r26);
-        var_r29 = var_r3_9; goto loop_57;
+        var_r29 = var_r3_9;
+        goto loop_57;
     }
+    return (s8)*var_r26 != 0;
 }
-
+#pragma opt_propagation reset
 extern "C" s32 fn_800B6928(s8);
 s32 fn_800AE4C0(s32, s32, s32);
 extern "C" s32 fn_800B3754(s32, s32 *, s32);
@@ -10802,6 +10862,7 @@ extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
 
 #pragma opt_propagation off
 extern "C" s32 fn_800B63FC(void) {
+    struct Tail63FC { u8 pad[0x80]; u32 flagA; s32 keyA; u32 flagB; s32 keyB; };
     s32 result, found;
     u32 i;
     s32 *p;
@@ -10816,15 +10877,15 @@ extern "C" s32 fn_800B63FC(void) {
     if (i == 4) {
         s32 k = key;
         s32 *e = lbl_803D2140;
-        s32 *e2 = e + 4;
         e[0x22] &= 1;
         if (e[0x22] && k == e[0x23]) found = 1;
         else {
-            e2[0x20] &= 1;
-            if (e2[0x20] && k == e2[0x21]) found = 1;
+            Tail63FC *t = (Tail63FC *)((u8 *)lbl_803D2140 + 0x10);
+            t->flagA &= 1;
+            if (t->flagA && k == t->keyA) found = 1;
             else {
-                e2[0x22] &= 1;
-                if (e2[0x22] && k == e2[0x23]) found = 1;
+                t->flagB &= 1;
+                if (t->flagB && k == t->keyB) found = 1;
                 else found = 0;
             }
         }
@@ -11367,6 +11428,8 @@ extern "C" s16 fn_800B72B0(s32 unicode) {
 
 extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32*);
 extern "C" s32 fn_800A4BF4(s32, u16*, s16*);
+/* CP932 code-conversion callback installed in the codec table at
+ * lbl_803D2140+0x5C; this implementation reports a default of 0. */
 extern "C" s32 fn_800B72E4(void) { return 0; }
 
 extern "C" s32 VFiPFAPI_ParseOpenModeString(char *modeString) {
@@ -17447,6 +17510,7 @@ extern "C" void fn_800C34B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_800C3574((void *)arg0, lbl_802F4108, arg2 + 1, arg1 + 2, arg3);
 }
 
+#pragma use_lmw_stmw on
 extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 *win = (s32 *)arg0;
     s32 *c = (s32 *)arg1;
@@ -17454,57 +17518,89 @@ extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4
     s32 n = arg2;
     s32 i;
     for (i = 0; i < 15; i++) {
-        s32 s0 = win[n & 0x3FF];
-        s32 s3e0 = win[(n + 0x3E0) & 0x3FF];
-        s32 s60 = win[(n + 0x60) & 0x3FF];
-        s32 s380 = win[(n + 0x380) & 0x3FF];
-        s32 s80 = win[(n + 0x80) & 0x3FF];
-        s32 s360 = win[(n + 0x360) & 0x3FF];
-        s32 se0 = win[(n + 0xE0) & 0x3FF];
-        s32 s300 = win[(n + 0x300) & 0x3FF];
-        s32 s100 = win[(n + 0x100) & 0x3FF];
-        s32 s2e0 = win[(n + 0x2E0) & 0x3FF];
-        s32 s160 = win[(n + 0x160) & 0x3FF];
-        s32 s280 = win[(n + 0x280) & 0x3FF];
-        s32 s180 = win[(n + 0x180) & 0x3FF];
-        s32 s260 = win[(n + 0x260) & 0x3FF];
-        s32 s1e0 = win[(n + 0x1E0) & 0x3FF];
-        s32 s200 = win[(n + 0x200) & 0x3FF];
         s64 a = 0;
         s64 b = 0;
         s32 r1, r2;
-        a += (s64)s0 * c[0];
-        a += (s64)s3e0 * c[8];
-        a += (s64)s60 * c[1];
-        a += (s64)s380 * -c[9];
-        a += (s64)s80 * c[2];
-        a += (s64)s360 * c[10];
-        a += (s64)se0 * c[3];
-        a += (s64)s300 * -c[11];
-        a += (s64)s100 * c[4];
-        a += (s64)s2e0 * c[12];
-        a += (s64)s160 * c[5];
-        a += (s64)s280 * -c[13];
-        a += (s64)s180 * c[6];
-        a += (s64)s260 * c[14];
-        a += (s64)s1e0 * c[7];
-        a += (s64)s200 * -c[15];
-        b += (s64)s0 * c[8];
-        b += (s64)s3e0 * -c[0];
-        b += (s64)s60 * c[9];
-        b += (s64)s380 * c[1];
-        b += (s64)s80 * c[10];
-        b += (s64)s360 * -c[2];
-        b += (s64)se0 * c[11];
-        b += (s64)s300 * c[3];
-        b += (s64)s100 * c[12];
-        b += (s64)s2e0 * -c[4];
-        b += (s64)s160 * c[13];
-        b += (s64)s280 * c[5];
-        b += (s64)s180 * c[14];
-        b += (s64)s260 * -c[6];
-        b += (s64)s1e0 * c[15];
-        b += (s64)s200 * c[7];
+        {
+            s32 s = win[n & 0x3FF];
+            a += (s64)s * c[0];
+            b += (s64)s * c[8];
+        }
+        {
+            s32 s = win[(n + 0x3E0) & 0x3FF];
+            a += (s64)s * c[8];
+            b += (s64)s * -c[0];
+        }
+        {
+            s32 s = win[(n + 0x60) & 0x3FF];
+            a += (s64)s * c[1];
+            b += (s64)s * c[9];
+        }
+        {
+            s32 s = win[(n + 0x380) & 0x3FF];
+            a += (s64)s * -c[9];
+            b += (s64)s * c[1];
+        }
+        {
+            s32 s = win[(n + 0x80) & 0x3FF];
+            a += (s64)s * c[2];
+            b += (s64)s * c[10];
+        }
+        {
+            s32 s = win[(n + 0x360) & 0x3FF];
+            a += (s64)s * c[10];
+            b += (s64)s * -c[2];
+        }
+        {
+            s32 s = win[(n + 0xE0) & 0x3FF];
+            a += (s64)s * c[3];
+            b += (s64)s * c[11];
+        }
+        {
+            s32 s = win[(n + 0x300) & 0x3FF];
+            a += (s64)s * -c[11];
+            b += (s64)s * c[3];
+        }
+        {
+            s32 s = win[(n + 0x100) & 0x3FF];
+            a += (s64)s * c[4];
+            b += (s64)s * c[12];
+        }
+        {
+            s32 s = win[(n + 0x2E0) & 0x3FF];
+            a += (s64)s * c[12];
+            b += (s64)s * -c[4];
+        }
+        {
+            s32 s = win[(n + 0x160) & 0x3FF];
+            a += (s64)s * c[5];
+            b += (s64)s * c[13];
+        }
+        {
+            s32 s = win[(n + 0x280) & 0x3FF];
+            a += (s64)s * -c[13];
+            b += (s64)s * c[5];
+        }
+        {
+            s32 s = win[(n + 0x180) & 0x3FF];
+            a += (s64)s * c[6];
+            b += (s64)s * c[14];
+        }
+        {
+            s32 s = win[(n + 0x260) & 0x3FF];
+            a += (s64)s * c[14];
+            b += (s64)s * -c[6];
+        }
+        {
+            s32 s = win[(n + 0x1E0) & 0x3FF];
+            a += (s64)s * c[7];
+            b += (s64)s * c[15];
+        }
+        {
+            s32 s = win[(n + 0x200) & 0x3FF];
+            a += (s64)s * -c[15];
+            b += (s64)s * c[7];
+        }
         r1 = (s32)(a >> 25);
         r2 = (s32)(b >> 25);
         if ((r1 >> 31) != (r1 >> 15)) {
@@ -17524,7 +17620,7 @@ extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4
         c += 16;
     }
 }
-
+#pragma use_lmw_stmw off
 extern "C" void fn_800C3960(s32 *tbl, s32 *coef, u32 idx, s16 *out, u32 mask, s32 flag) {
     s32 *tbl2 = tbl + 0x10;
     s64 sumA = 0;
@@ -19715,8 +19811,7 @@ extern "C" u32 lbl_8055DE00;
 extern "C" u32 lbl_8055DE10;
 extern "C" void *fn_80128520(s32);
 extern "C" void List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(void *, void *);
-#pragma push
-#pragma opt_common_subexpr off
+#pragma opt_propagation off
 extern "C" void fn_800D01AC(void *arg0, void *arg1) {
     struct Dispatch {
         virtual void d0();
@@ -19807,7 +19902,10 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
                 *(void **)((u8 *)entry + 4) = object;
             }
         }
-        List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv((u8 *)arg0 + 0x18, entry);
+        {
+            void *list = (u8 *)arg0 + 0x18;
+            List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(list, entry);
+        }
         lbl_8055DDA0 += 1;
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
@@ -19864,7 +19962,7 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
         ((Dispatch *)arg0)->d18((s32)(node + 0xC));
     }
 }
-#pragma pop
+#pragma opt_propagation reset
 extern "C" void fn_800D0560(void *object, s32 value) {
     /* Store value into the 32-bit field at offset 0x2C of object. */
     *(s32 *)((u8 *)object + 0x2C) = value;
@@ -23383,9 +23481,15 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
 void homebutton::HomeButton::calc_battery(int n) {
     u8 *self = (u8 *)this;
     void *obj;
-    s32 *ids = (s32 *)((u8 *)lbl_8031E370 + n * 16);
-    u8 *rec = self + n * 0x18;
+    s32 *ids;
+    u8 *rec;
+    register s32 offRec;
+    s32 offIds;
     s32 i, index;
+    offRec = n * 0x18;
+    offIds = n << 4;
+    ids = (s32 *)((u8 *)lbl_8031E370 + offIds);
+    rec = self + offRec;
     for (i = 0; i < 4; i++) {
         u8 *pane;
         if (i < rec[0x16C]) {
