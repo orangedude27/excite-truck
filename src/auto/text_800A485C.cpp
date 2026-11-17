@@ -19264,8 +19264,9 @@ extern "C" void fn_800CF554(s32 arg0, u8 *arg1, f32 x0, f32 y0, f32 x1, f32 y1, 
 
 extern "C" u32 fn_800CF91C(void) { return 1; }
 
-extern "C" u8 fn_800CF924(s32 arg0, s32 arg1) {
-    return *(u8 *)((u8 *)(arg0 + arg1) + 4);
+extern "C" u8 fn_800CF924(s32 base, s32 index) {
+    /* Read the byte at offset 4 of the byte array at base, selected by index. */
+    return *(u8 *)((u8 *)(base + index) + 4);
 }
 
 extern "C" void fn_800CF930(void) {
