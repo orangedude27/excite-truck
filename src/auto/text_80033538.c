@@ -15,7 +15,6 @@ extern float lbl_80560AF0;
 extern float lbl_80560AF4;
 extern float lbl_80560AF8;
 extern float lbl_80560AFC;
-extern double lbl_80560B00;
 void fn_80033538(void *arg0, short arg1) {
     /* Set the voice's type/field at 0x14A and flag the parameter block for update (bit 0x8),
        with interrupts disabled. */
@@ -218,7 +217,7 @@ void fn_80033B74(void *vpb, short on, short yn1) {
 
 #pragma scheduling invalid_target
 void AXGetLpfCoefs(unsigned int arg0, short *arg1, short *arg2) {
-#pragma scheduling on
+#pragma opt_common_subs off
     float input = (float)arg0;
     float angle = (lbl_80560AF0 * input) / lbl_80560AF4;
     float c = (float)cos((double)angle);
