@@ -1536,7 +1536,9 @@ extern double fn_8002F234(float);
 extern float lbl_80562140;
 extern float lbl_80562148;
 extern float lbl_80562204;
-void fn_801958C4(void *arg0) { *(float *)((unsigned char *)arg0+0x248) *= lbl_80562204; }
+/* Damp the controller's forward velocity (+0x248) by a fixed traction factor
+ * (lbl_80562204 ~= 0.9409). */
+void fn_801958C4(void *controller) { *(float *)((unsigned char *)controller+0x248) *= lbl_80562204; }
 
 extern char lbl_803332D8[];
 extern float lbl_805621A0;
