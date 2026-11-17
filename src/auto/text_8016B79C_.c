@@ -246,9 +246,24 @@ extern "C" u8 lbl_8043036C[];
 extern "C" void fn_8016B964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     f32 f0, f1, f2, f4;
     s32 count, var_r28, var_r6, state;
-    u8 *src, *dst;
     u8 c;
     void *obj;
+    u8 *emptySrc;
+    int timeRoom;
+    u8 *timeDst;
+    u8 *emptySrc2;
+    int captionRoom;
+    u8 *captionDst;
+    u8 *captionMsg;
+    int captionRoom2;
+    u8 *captionDst2;
+    u8 *rankText;
+    int rankRoom;
+    u8 *rankDst;
+    u8 *dashSrc;
+    int dashRoom;
+    u8 *dashDst;
+
     if (*(s32 *)((u8 *)arg0 + 0xC) == 0) return;
     ((void (*)(void *, s32))fn_801308F4)((u8 *)arg0 + 0x30, 0x14);
     var_r28 = arg3;
@@ -262,85 +277,73 @@ extern "C" void fn_8016B964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
             f1 = f2 - f1;
             f0 = f1 - f0;
             f0 = f0 / f4;
-            if (f4 < f0) f4 = f0;
-            if (f4 > lbl_80561980) f4 = lbl_80561980;
-            var_r6 = (s32)(lbl_80561980 + f4 * (lbl_80561988 + (f32)arg3 - lbl_80561980));
+            f4 = (f4 < f0) ? f4 : f0;
+            f4 = (f4 > lbl_80561980) ? f4 : lbl_80561980;
+            var_r6 = (s32)(lbl_80561980 + (f4 * ((lbl_80561988 + (f32)arg3) - lbl_80561980)));
             var_r28 = arg3 - var_r6;
         }
     }
-    ((void (*)(void *, s32, void *, ...))fn_801345D8)((u8 *)arg0 + 0x44, 0x14, &lbl_8055A208, var_r6);
+    ((void (*)(void *, s32, const void *, ...))fn_801345D8)((u8 *)arg0 + 0x44, 0x14, &lbl_8055A208, var_r6);
     if ((s8)lbl_8055E374 == 0) {
         fn_801312EC(lbl_8043036C, lbl_803306D0);
         lbl_8055E374 = 1;
     }
     if (*(u8 *)((u8 *)arg0 + 0x10) != 0) {
-        dst = (u8 *)arg0 + 0x9E; src = &lbl_8055A20C; count = 0x14;
-        goto copy1;
-loop1:
-        if (--count > 0) goto copy1;
-        dst[-1] = 0;
-        goto after1;
-copy1:
-        c = *src++;
-        *dst++ = c;
-        if ((s8)c != 0) goto loop1;
-after1:
-        dst = (u8 *)arg0 + 0x58; src = &lbl_8055A20C; count = 0x14;
-        goto copy2;
-loop2:
-        if (--count > 0) goto copy2;
-        dst[-1] = 0;
-        goto after2;
-copy2:
-        c = *src++;
-        *dst++ = c;
-        if ((s8)c != 0) goto loop2;
-after2:
-        ;
+        timeDst = (u8 *)arg0 + 0x9E; emptySrc = &lbl_8055A20C; timeRoom = 0x14;
+        goto clearTime;
+        for (;;) {
+            if (--timeRoom <= 0) { timeDst[-1] = 0; break; }
+        clearTime:
+            c = *emptySrc++;
+            *timeDst++ = c;
+            if ((s8)c == 0) break;
+        }
+        captionDst = (u8 *)arg0 + 0x58; emptySrc2 = &lbl_8055A20C; captionRoom = 0x14;
+        goto clearCaption;
+        for (;;) {
+            if (--captionRoom <= 0) { captionDst[-1] = 0; break; }
+        clearCaption:
+            c = *emptySrc2++;
+            *captionDst++ = c;
+            if ((s8)c == 0) break;
+        }
     } else {
         fn_80130980((u8 *)arg0 + 0x9E, 0x14, 2, (f32)var_r28);
         if (*(u32 *)(lbl_8043036C + 8) != lbl_8055E044) fn_80131318();
-        src = *(u8 **)(lbl_8043036C + 4); dst = (u8 *)arg0 + 0x58; count = 0x14;
-        goto copy3;
-loop3:
-        if (--count > 0) goto copy3;
-        dst[-1] = 0;
-        goto after3;
-copy3:
-        c = *src++;
-        *dst++ = c;
-        if ((s8)c != 0) goto loop3;
-after3:
-        ;
+        captionMsg = *(u8 **)(lbl_8043036C + 4);
+        captionDst2 = (u8 *)arg0 + 0x58; captionRoom2 = 0x14;
+        goto copyCaption;
+        for (;;) {
+            if (--captionRoom2 <= 0) { captionDst2[-1] = 0; break; }
+        copyCaption:
+            c = *captionMsg++;
+            *captionDst2++ = c;
+            if ((s8)c == 0) break;
+        }
     }
-    ((void (*)(void *, s32, s32))fn_801308F4)((u8 *)arg0 + 0x6C, 0x14, arg1);
-    ((void (*)(void *, s32, s32))fn_801308F4)((u8 *)arg0 + 0x8A, 0x14, arg1 - arg3);
+    fn_801308F4((u8 *)arg0 + 0x6C, 0x14, arg1);
+    fn_801308F4((u8 *)arg0 + 0x8A, 0x14, arg1 - arg3);
     if (fn_801609C4(arg1) != -1) {
-        src = __AXGetStackHead(); dst = (u8 *)arg0 + 0x80; count = 0xA;
-        goto copy4;
-loop4:
-        if (--count > 0) goto copy4;
-        dst[-1] = 0;
-        goto after4;
-copy4:
-        c = *src++;
-        *dst++ = c;
-        if ((s8)c != 0) goto loop4;
-after4:
-        ;
+        rankText = __AXGetStackHead();
+        rankDst = (u8 *)arg0 + 0x80; rankRoom = 0xA;
+        goto copyRank;
+        for (;;) {
+            if (--rankRoom <= 0) { rankDst[-1] = 0; break; }
+        copyRank:
+            c = *rankText++;
+            *rankDst++ = c;
+            if ((s8)c == 0) break;
+        }
     } else {
-        src = &lbl_8055A210; dst = (u8 *)arg0 + 0x80; count = 0xA;
-        goto copy5;
-loop5:
-        if (--count > 0) goto copy5;
-        dst[-1] = 0;
-        goto after5;
-copy5:
-        c = *src++;
-        *dst++ = c;
-        if ((s8)c != 0) goto loop5;
-after5:
-        ;
+        dashDst = (u8 *)arg0 + 0x80; dashSrc = &lbl_8055A210; dashRoom = 0xA;
+        goto noRank;
+        for (;;) {
+            if (--dashRoom <= 0) { dashDst[-1] = 0; break; }
+        noRank:
+            c = *dashSrc++;
+            *dashDst++ = c;
+            if ((s8)c == 0) break;
+        }
     }
     if (*(s32 *)((u8 *)arg0 + 0xF8) != 0) *((u8 *)arg0 + 8) = 0;
     state = *(s32 *)arg0;
@@ -1591,22 +1594,25 @@ void fn_8016E118(void *obj)
     }
 }
 
+#pragma scheduling off
 void fn_8016E15C(void *arg0) {
     f32 f = lbl_80561998;
     s32 off;
     s32 i;
+#pragma scheduling off
     *(u8 *)((u8 *)arg0 + 9) = 0;
     i = 0;
     off = 0;
     *(f32 *)((u8 *)arg0 + 0xC) = f;
     *(s32 *)((u8 *)arg0 + 0x10) = 0;
+#pragma scheduling on
     while (i < *(s32 *)(*(char **)((u8 *)arg0 + 4) + 4)) {
         *(u8 *)(*(char **)*(char **)((u8 *)arg0 + 4) + off + 0x30) = 0;
         off += 0x38;
         i++;
     }
 }
-
+#pragma scheduling on
 /* Address of the index-th 0x14-byte element in the array whose base pointer is *basePtr. */
 s32 fn_8016E1A4(s32 *basePtr, s32 index) {
     return *basePtr + (index * 0x14);
@@ -1765,6 +1771,7 @@ extern "C" int fn_8016E328(void *arg0, int arg1) {
 
 extern f32 lbl_805619C0;
 extern f32 fn_8016E878(void);
+/* Getter returning a fixed read-only tuning constant (7.75) shared by the HUD/gauge code. */
 f32 fn_8016E878(void) {
     return lbl_805619C0;
 }
