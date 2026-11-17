@@ -1634,8 +1634,9 @@ int fn_8018176C(void *object) {
     return *(unsigned char *)((char *)object + 0x58);
 }
 
-int fn_80181774(void *arg0) {
-    return *(unsigned char *)((char *)arg0 + 0x5D);
+/* Return the unsigned control-flag byte at offset 0x5D of this object. */
+int fn_80181774(void *object) {
+    return ((struct Di718 *)object)->flag5D;
 }
 
 int fn_8018177C(void *arg0) {
