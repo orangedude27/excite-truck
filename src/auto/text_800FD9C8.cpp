@@ -196,8 +196,9 @@ extern "C" s32 fn_800FDE04(s8* sound) {
     return (s32)(sound + 0xD8);
 }
 
-extern "C" s32 fn_800FDE0C(s8* arg0) {
-    return (s32)(arg0 + 0xD8);
+/* Return the address of the embedded StrmPlayer (at +0xD8 of the StrmSound object). */
+extern "C" s32 fn_800FDE0C(s8* sound) {
+    return (s32)(sound + 0xD8);
 }
 
 extern "C" u32* fn_800FDE14(void) {
