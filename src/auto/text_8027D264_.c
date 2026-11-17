@@ -401,8 +401,9 @@ extern "C" void fn_8027D8A8(void *arg0) {
 #pragma cplusplus off
 int fn_8027D8EC(void *arg0) { return *(int *)((char *)arg0 + 0x2C); }
 
-int fn_8027D8F4(void *arg0) {
-    return ((int *)arg0)[3];
+/* Return the int field at offset 0xC of the nw4r::ef effect object. */
+int fn_8027D8F4(void *effect) {
+    return ((int *)effect)[3];
 }
 
 /* Return the int field at offset 0x10 of the nw4r::ef effect object. */
