@@ -2374,7 +2374,9 @@ void fn_8018ADB4(void *car, f32 value) {
     *(f32 *)((u8 *)car + 0x25E0) = value;
 }
 
-void fn_8018ADBC(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25E4) = farg0; }
+/* Set the truck's physics float at +0x25E4, the third of the triplet at
+ * +0x25DC/+0x25E0/+0x25E4 that reset code (fn_801838C8/fn_80183E7C) sets to 0/0/1. */
+void fn_8018ADBC(void *truck, f32 value) { *(f32 *)((u8 *)truck + 0x25E4) = value; }
 
 void fn_8018ADC4(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25E8) = farg0; }
 
