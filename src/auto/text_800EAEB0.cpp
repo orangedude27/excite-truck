@@ -1056,19 +1056,18 @@ extern "C" u32 fn_800EC56C(void *__restrict soundHeapRef) {
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
     extern u8 lbl_80323058[], lbl_80323070[];
     void** head = (void**)headArg;
-    u32 addr = (u32)buffer;
-    u32 start;
-    u32 stride;
     u32 count;
+    u32 stride;
+    u32 start;
+    u32 idx;
     u32 irq;
     u32 previous;
     u32 node;
-    u32 idx;
     if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323058, 0x26, (const char*)lbl_80323070);
     irq = OSDisableInterrupts();
-    start = (addr + 3) & ~3u;
     stride = (blockSize + 3) & ~3u;
-    count = (size - (start - addr)) / stride;
+    start = ((u32)buffer + 3) & ~3u;
+    count = (size - (start - (u32)buffer)) / stride;
     if (count != 0) {
         node = start;
         previous = (u32)*head;
@@ -1503,8 +1502,10 @@ extern "C" s32 fn_800ED0D0(void *object) {
 #pragma push
 #pragma small_data off
 #pragma pop
-extern "C" void fn_800ED0E4(s32 arg0) {
-    fn_800ED058(arg0 - 8);
+extern "C" void fn_800ED0E4(s32 subobjectThis) {
+    /* This-adjusting thunk for a no-op virtual: subtract the 8-byte multiple-inheritance
+       offset to recover the base subobject's `this`, then tail-call the empty base method. */
+    fn_800ED058(subobjectThis - 8);
 }
 
 extern "C" void InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(void* this_, const void* arg1, const void* arg2);
