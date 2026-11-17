@@ -279,6 +279,11 @@ s32 fn_80144DCC(void) {
     return 0;
 }
 
+/* Default implementation of a virtual method of the class whose vtable is
+ * lbl_80336890 -- the base-class vtable fn_80144504() stores at the head of an
+ * object under construction.  This method sits at vtable offset 0x50 (the 19th
+ * declared virtual); like most entries of that table it is an empty stub, so
+ * derived objects that need behaviour here simply override it. */
 void fn_80144DD4(void) {
 }
 
