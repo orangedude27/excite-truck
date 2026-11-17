@@ -173,8 +173,15 @@ void fn_802B087C(void **objectPtr) {
     }
 }
 #pragma pop
+/* Reset the global block pool's used-count to 0, freeing all currently allocated blocks at once. */
 void fn_802B0904(void) {
-    ((int *)lbl_8055F9A0)[2] = 0;
+    typedef struct {
+        void *bufferBase;
+        void *entries;
+        volatile int usedCount;
+        int capacity;
+    } BlockPool;
+    ((BlockPool *)lbl_8055F9A0)->usedCount = 0;
 }
 
 #pragma scheduling invalid_target
