@@ -6404,7 +6404,7 @@ void bta_dm_pm_set_mode(u8 *peer_addr, u8 timed_out) {
     u8 mode;
     u8 i;
     u8 j;
-    u32 off;
+    int off;
     u8 *act_base;
     tBTM_PM_MODE read_mode;
     tBTM_PM_PWR_MD pwr_md;
@@ -6588,28 +6588,30 @@ loop_first:
             goto loop_first;
     }
 
-    if (p[0xE] == 0)
+    switch (p[0xE]) {
+    case 0:
         goto check_links;
-    goto done;
+    default:
+        goto done;
+    }
 check_links:
     if (p[0x12] == 0)
         goto fallback;
 
     j = 0;
-loop_second:
-    offset = j * 0xB;
-    if (bdcmp((u8 *)&lbl_803C0C14 + offset, p + 8) == 0) {
-        record = (u8 *)&lbl_803C0C14 + offset;
-        mask = *(u8 *)((u8 *)record + 9) & 3;
-        if (mask != 0) {
-            *(u8 *)((u8 *)record + 0xA) |= mask;
-            bta_dm_pm_set_mode(p + 8, 0);
+    while (j < lbl_803C0C14[0x4D]) {
+        offset = j * 0xB;
+        if (bdcmp((u8 *)&lbl_803C0C14 + offset, p + 8) == 0) {
+            record = (u8 *)&lbl_803C0C14 + offset;
+            mask = *(u8 *)((u8 *)record + 9) & 3;
+            if (mask != 0) {
+                *(u8 *)((u8 *)record + 0xA) |= mask;
+                bta_dm_pm_set_mode(p + 8, 0);
+            }
+            goto done;
         }
-        goto done;
+        j++;
     }
-    j++;
-    if (j < lbl_803C0C14[0x4D])
-        goto loop_second;
     goto done;
 
 fallback:
@@ -12613,13 +12615,10 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     u8 *p_setup;
     u16 temp_pkt;
     u16 req;
-    if (sco_inx >= 3) {
-        return BTM_WRONG_MODE;
-    }
+    tBTM_STATUS status;
+    if (sco_inx >= 3) { status = BTM_WRONG_MODE; goto done; }
     p_sco = lbl_803C0F78 + sco_inx * 0x34;
-    if (*(u16 *)(p_sco + 0x185C) != 4) {
-        return BTM_WRONG_MODE;
-    }
+    if (*(u16 *)(p_sco + 0x185C) != 4) { status = BTM_WRONG_MODE; goto done; }
     p_setup = p_sco + 0x1868;
     if (*(u8 *)(p_sco + 0x1882) == 0 || lbl_803C0F78[0x1908] == 0) {
         *(u16 *)(p_setup + 0xC) = (*(u16 *)(pp + 2) & (*(u16 *)(lbl_803C0F78 + 0x656) & 7));
@@ -12627,9 +12626,11 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
             fn_8007096C(0xD0002, strBase + 0x248, *(u16 *)(p_sco + 0x185E), *(u16 *)(p_setup + 0xC));
         }
         if (btsnd_hcic_change_conn_type(*(u16 *)(p_sco + 0x185E), (*(u16 *)(p_setup + 0xC) << 5) & 0xE0) == 0) {
-            return BTM_NO_RESOURCES;
+            status = BTM_NO_RESOURCES;
+        } else {
+            status = BTM_CMD_STARTED;
         }
-        return BTM_CMD_STARTED;
+        goto done;
     }
     req = *(u16 *)(pp + 2);
     temp_pkt = ((req & *(u16 *)(lbl_803C0F78 + 0x656)) & 0x3F);
@@ -12643,10 +12644,13 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
         fn_800709CC(0xD0002, strBase + 0x8C, *(u32 *)(p_sco + 0x1868), *(u32 *)(p_setup + 4), *(u16 *)(pp + 0), *(u16 *)(p_setup + 0xA), *(pp + 4), temp_pkt);
     }
     if (btsnd_hcic_setup_esco_conn(*(u16 *)(p_sco + 0x185E), *(u32 *)(p_sco + 0x1868), *(u32 *)(p_setup + 4), *(u16 *)(pp + 0), *(u16 *)(p_setup + 0xA), *(pp + 4), temp_pkt) == 0) {
-        return BTM_NO_RESOURCES;
+        status = BTM_NO_RESOURCES;
+        goto done;
     }
     *(u16 *)(pp + 2) = temp_pkt;
-    return BTM_CMD_STARTED;
+    status = BTM_CMD_STARTED;
+done:
+    return status;
 }
 
 extern u8 lbl_80316834[];
@@ -15400,26 +15404,27 @@ found:
 extern char lbl_803173A8[];
 void gap_congestion_ind(u16 cid, u16 congest) {
     u8 *p;
-    u32 i;
+    int ctr;
 
     if (lbl_803C3740[0x28] >= 4) {
         fn_8007096C(0xE0003, lbl_803173A8, congest, cid);
     }
     p = lbl_803C3740 + 0xAC;
-    i = 0;
-    do {
-        if (p[0] != 0 && *(u16 *)(p + 6) == cid) goto found;
-        if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) goto found;
-        if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) goto found;
-        if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) goto found;
+    ctr = 2;
+loop:
+    if (p[0] != 0 && *(u16 *)(p + 6) == cid) {
+    } else if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) {
+    } else if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) {
+    } else if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) {
+    } else {
         p += 0x60;
-        i++;
-    } while (i < 2);
-    return;
-
-found:
-    ((void (*)(u16, u16))*(void **)(p + 0x20))(
-        *(u16 *)(p + 4), (u16)(0x104 + ((-(s32)congest | (s32)congest) >> 31)));
+        if (--ctr != 0) goto loop;
+        p = NULL;
+    }
+    if (p != NULL) {
+        ((void (*)(u16, u16))*(void **)(p + 0x20))(
+            *(u16 *)(p + 4), (u16)(0x104 + ((-(s32)congest | (s32)congest) >> 31)));
+    }
 }
 
 extern u8 lbl_803173E0[];
@@ -16373,7 +16378,7 @@ BOOLEAN btsnd_hcic_write_pin_type(UINT8 type) {
     return TRUE;
 }
 
-BOOLEAN btsnd_hcic_read_stored_key(BD_ADDR bd_addr, BOOLEAN read_all_flag) {
+BOOLEAN btsnd_hcic_read_stored_key_public(BD_ADDR bd_addr, BOOLEAN read_all_flag) {
     u8 *p = GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
     *(u16 *)(p + 2) = 10;
@@ -26942,7 +26947,6 @@ void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
 }
 
 void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len, UINT8 *p) {
-    tCONN_CB *ccb;
     UINT16 start_offset;
     tSDP_RECORD *p_rec;
     UINT16 num_uids;
@@ -26959,12 +26963,12 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
     u32 param_len2;
     BT_HDR *buf;
     s32 total;
-    ccb = p_ccb;
+
     sp17c = 0;
     p_rec = NULL;
     uid = sdpu_extract_uid_seq(p, param_len, &seq);
     if ((uid == NULL) || (seq.num_uids == 0)) {
-        sdpu_build_n_send_error(ccb, trans_num, 3, 0);
+        sdpu_build_n_send_error(p_ccb, trans_num, 3, 0);
         return;
     }
     num_uids = ((UINT16) uid[0] << 8) + uid[1];
@@ -26982,13 +26986,13 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
     }
     if (uid[2] != 0) {
         if (uid[2] != 2) {
-            sdpu_build_n_send_error(ccb, trans_num, 5, 0);
+            sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
             return;
         }
         p_cont = uid + 3;
         start_offset = ((UINT16) p_cont[0] << 8) + p_cont[1];
-        if (start_offset != ((tSDP_CCB_CONT_VIEW *)ccb)->cont_offset) {
-            sdpu_build_n_send_error(ccb, trans_num, 5, 0);
+        if (start_offset != ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset) {
+            sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
             return;
         }
         count = total_handles - start_offset;
@@ -26996,12 +27000,12 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
         count = total_handles;
         start_offset = 0;
     }
-    max_handles = (UINT16)(((s32)ccb->rem_mtu_size - 12) / 4);
+    max_handles = (UINT16)(((s32)p_ccb->rem_mtu_size - 12) / 4);
     if (count <= max_handles) {
         max_handles = count;
     } else {
         sp17c = 1;
-        ((tSDP_CCB_CONT_VIEW *)ccb)->cont_offset += max_handles;
+        ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset += max_handles;
     }
     buf = (BT_HDR *)GKI_getpoolbuf(2);
     if (buf == NULL) {
@@ -27032,31 +27036,31 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
                 p_end[4] = (UINT8)(handles[start_offset + 1] >> 24);
                 p_end[5] = (UINT8)(handles[start_offset + 1] >> 16);
                 p_end[6] = (UINT8)(handles[start_offset + 1] >> 8);
-                p_end[7] = (UINT8)handles[start_offset + 1];
+                p_end[7] = (UINT8)(handles[start_offset + 1]);
                 p_end[8] = (UINT8)(handles[start_offset + 2] >> 24);
                 p_end[9] = (UINT8)(handles[start_offset + 2] >> 16);
                 p_end[10] = (UINT8)(handles[start_offset + 2] >> 8);
-                p_end[11] = (UINT8)handles[start_offset + 2];
+                p_end[11] = (UINT8)(handles[start_offset + 2]);
                 p_end[12] = (UINT8)(handles[start_offset + 3] >> 24);
                 p_end[13] = (UINT8)(handles[start_offset + 3] >> 16);
                 p_end[14] = (UINT8)(handles[start_offset + 3] >> 8);
-                p_end[15] = (UINT8)handles[start_offset + 3];
+                p_end[15] = (UINT8)(handles[start_offset + 3]);
                 p_end[16] = (UINT8)(handles[start_offset + 4] >> 24);
                 p_end[17] = (UINT8)(handles[start_offset + 4] >> 16);
                 p_end[18] = (UINT8)(handles[start_offset + 4] >> 8);
-                p_end[19] = (UINT8)handles[start_offset + 4];
+                p_end[19] = (UINT8)(handles[start_offset + 4]);
                 p_end[20] = (UINT8)(handles[start_offset + 5] >> 24);
                 p_end[21] = (UINT8)(handles[start_offset + 5] >> 16);
                 p_end[22] = (UINT8)(handles[start_offset + 5] >> 8);
-                p_end[23] = (UINT8)handles[start_offset + 5];
+                p_end[23] = (UINT8)(handles[start_offset + 5]);
                 p_end[24] = (UINT8)(handles[start_offset + 6] >> 24);
                 p_end[25] = (UINT8)(handles[start_offset + 6] >> 16);
                 p_end[26] = (UINT8)(handles[start_offset + 6] >> 8);
-                p_end[27] = (UINT8)handles[start_offset + 6];
+                p_end[27] = (UINT8)(handles[start_offset + 6]);
                 p_end[28] = (UINT8)(handles[start_offset + 7] >> 24);
                 p_end[29] = (UINT8)(handles[start_offset + 7] >> 16);
                 p_end[30] = (UINT8)(handles[start_offset + 7] >> 8);
-                p_end[31] = (UINT8)handles[start_offset + 7];
+                p_end[31] = (UINT8)(handles[start_offset + 7]);
                 start_offset += 8;
                 p_end += 0x20;
             }
@@ -27073,8 +27077,8 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
     }
     if (sp17c != 0) {
         p_end[0] = 2;
-        p_end[1] = (UINT8)(((tSDP_CCB_CONT_VIEW *)ccb)->cont_offset >> 8);
-        p_end[2] = (UINT8)((tSDP_CCB_CONT_VIEW *)ccb)->cont_offset;
+        p_end[1] = (UINT8)(((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset >> 8);
+        p_end[2] = (UINT8)((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset;
         p_end += 3;
     } else {
         p_end[0] = 0;
@@ -27084,128 +27088,128 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
     p_param_len[0] = (UINT8)(param_len2 >> 8);
     p_param_len[1] = (UINT8)param_len2;
     buf->len = (UINT16)((u32)p_end - ((u32)buf + 0x11));
-    L2CA_DataWrite(ccb->connection_id, buf);
+    L2CA_DataWrite(p_ccb->connection_id, buf);
 }
 
 static void process_service_attr_req(tCONN_CB *arg0, UINT16 arg1, UINT16 arg2, UINT8 *arg3, UINT8 *arg4) {
-tSDP_ATTR_SEQ attr_seq;
-UINT32 record_handle;
-UINT16 max_list_len;
-UINT16 i;
-UINT16 list_len;
-UINT16 send_len;
-UINT16 cont_offset;
-UINT8 *p;
-UINT8 *out;
-UINT8 *list_base;
-UINT8 *param_len_ptr;
-tSDP_RECORD *record;
-tSDP_ATTRIBUTE *attr;
-BT_HDR *buf;
-p = arg3;
-BE_STREAM_TO_UINT32(record_handle, p);
-if (p > arg4) {
-sdpu_build_n_send_error(arg0, arg1, 2, NULL);
-return;
-}
-max_list_len = ((UINT16)p[0] << 8) + p[1];
-if (max_list_len > *(UINT16 *)((UINT8 *)arg0 + 0x20) - 10) {
-max_list_len = *(UINT16 *)((UINT8 *)arg0 + 0x20) - 10;
-}
-p = sdpu_extract_attr_seq(p + 2, arg2, &attr_seq);
-if (p == NULL || attr_seq.num_attr == 0 || p > arg4) {
-sdpu_build_n_send_error(arg0, arg1, 3, NULL);
-return;
-}
-record = sdp_db_find_record(record_handle);
-if (record == NULL) {
-sdpu_build_n_send_error(arg0, arg1, 2, NULL);
-return;
-}
-if (*p != 0) {
-if (*p != 2) {
-sdpu_build_n_send_error(arg0, arg1, 5, NULL);
-return;
-}
-if ((((UINT16)p[1] << 8) + p[2]) != *(UINT16 *)((UINT8 *)arg0 + 0x476)) {
-sdpu_build_n_send_error(arg0, arg1, 5, NULL);
-return;
-}
-goto build_response;
-}
-list_base = (UINT8 *)arg0 + 0x29;
-*(UINT16 *)((UINT8 *)arg0 + 0x476) = 0;
-for (i = 0; i < attr_seq.num_attr; i++) {
-UINT8 *entry = (UINT8 *)&attr_seq + ((UINT32)i << 2);
-UINT16 start = *(UINT16 *)(entry + 2);
-UINT16 end = *(UINT16 *)(entry + 4);
-attr = fn_80096904(record, start, end);
-if (attr != NULL) {
-if ((UINT32)attr->len > (UINT32)((UINT16)(0x3E8 - (UINT16)(list_base - ((UINT8 *)arg0 + 0x26))) - 6)) {
-break;
-}
-list_base = sdpu_build_attrib_entry(list_base, attr);
-if (*(UINT16 *)(entry + 2) != *(UINT16 *)(entry + 4)) {
-*(UINT16 *)(entry + 2) = attr->id + 1;
-i--;
-}
-}
-}
-list_len = (UINT16)(list_base - ((UINT8 *)arg0 + 0x26));
-*(UINT16 *)((UINT8 *)arg0 + 0x24) = list_len;
-if (list_len > 0xFF) {
-UINT16 adjusted = list_len - 3;
-*((UINT8 *)arg0 + 0x26) = 0x36;
-*((UINT8 *)arg0 + 0x27) = adjusted >> 8;
-*((UINT8 *)arg0 + 0x28) = adjusted;
-} else {
-*(UINT16 *)((UINT8 *)arg0 + 0x476) = 1;
-*((UINT8 *)arg0 + 0x27) = 0x35;
-*((UINT8 *)arg0 + 0x28) = list_len - 3;
-*(UINT16 *)((UINT8 *)arg0 + 0x24) = list_len - 1;
-}
+    tSDP_ATTR_SEQ attr_seq;
+    UINT32 record_handle;
+    UINT16 max_list_len;
+    UINT16 i;
+    UINT16 list_len;
+    UINT16 send_len;
+    UINT16 cont_offset;
+    UINT8 *p;
+    UINT8 *out;
+    UINT8 *list_base;
+    UINT8 *param_len_ptr;
+    tSDP_RECORD *record;
+    tSDP_ATTRIBUTE *attr;
+    BT_HDR *buf;
+    p = arg3;
+    BE_STREAM_TO_UINT32(record_handle, p);
+    if (p > arg4) {
+        sdpu_build_n_send_error(arg0, arg1, 2, NULL);
+        return;
+    }
+    max_list_len = ((UINT16)p[0] << 8) + p[1];
+    if (max_list_len > *(UINT16 *)((UINT8 *)arg0 + 0x20) - 10) {
+        max_list_len = *(UINT16 *)((UINT8 *)arg0 + 0x20) - 10;
+    }
+    p = sdpu_extract_attr_seq(p + 2, arg2, &attr_seq);
+    if (p == NULL || attr_seq.num_attr == 0 || p > arg4) {
+        sdpu_build_n_send_error(arg0, arg1, 3, NULL);
+        return;
+    }
+    record = sdp_db_find_record(record_handle);
+    if (record == NULL) {
+        sdpu_build_n_send_error(arg0, arg1, 2, NULL);
+        return;
+    }
+    if (*p != 0) {
+        if (*p != 2) {
+            sdpu_build_n_send_error(arg0, arg1, 5, NULL);
+            return;
+        }
+        if ((((UINT16)p[1] << 8) + p[2]) != *(UINT16 *)((UINT8 *)arg0 + 0x476)) {
+            sdpu_build_n_send_error(arg0, arg1, 5, NULL);
+            return;
+        }
+        goto build_response;
+    }
+    list_base = (UINT8 *)arg0 + 0x29;
+    *(UINT16 *)((UINT8 *)arg0 + 0x476) = 0;
+    for (i = 0; i < attr_seq.num_attr; i++) {
+        UINT8 *entry = (UINT8 *)&attr_seq + ((UINT32)i << 2);
+        UINT16 start = *(UINT16 *)(entry + 2);
+        UINT16 end = *(UINT16 *)(entry + 4);
+        attr = fn_80096904(record, start, end);
+        if (attr != NULL) {
+            if ((UINT32)attr->len > (UINT32)((UINT16)(0x3E8 - (UINT16)(list_base - ((UINT8 *)arg0 + 0x26))) - 6)) {
+                break;
+            }
+            list_base = sdpu_build_attrib_entry(list_base, attr);
+            if (*(UINT16 *)(entry + 2) != *(UINT16 *)(entry + 4)) {
+                *(UINT16 *)(entry + 2) = attr->id + 1;
+                i--;
+            }
+        }
+    }
+    list_len = (UINT16)(list_base - ((UINT8 *)arg0 + 0x26));
+    *(UINT16 *)((UINT8 *)arg0 + 0x24) = list_len;
+    if (list_len > 0xFF) {
+        UINT16 adjusted = list_len - 3;
+        *((UINT8 *)arg0 + 0x26) = 0x36;
+        *((UINT8 *)arg0 + 0x27) = adjusted >> 8;
+        *((UINT8 *)arg0 + 0x28) = adjusted;
+    } else {
+        *(UINT16 *)((UINT8 *)arg0 + 0x476) = 1;
+        *((UINT8 *)arg0 + 0x27) = 0x35;
+        *((UINT8 *)arg0 + 0x28) = list_len - 3;
+        *(UINT16 *)((UINT8 *)arg0 + 0x24) = list_len - 1;
+    }
 build_response:
-buf = (BT_HDR *)GKI_getpoolbuf(2);
-if (buf == NULL) {
-if (lbl_803C4C40[0x4630] >= 1) {
-fn_8007093C(0xA0000, lbl_8031A50C);
-}
-return;
-}
-buf->offset = 9;
-out = (UINT8 *)buf + 0x11;
-out[0] = 5;
-out[1] = arg1 >> 8;
-out[2] = arg1;
-param_len_ptr = out + 3;
-p = param_len_ptr;
-list_len = *(UINT16 *)((UINT8 *)arg0 + 0x24);
-if (list_len <= max_list_len) {
-max_list_len = list_len;
-}
-p[2] = max_list_len >> 8;
-p[3] = max_list_len;
-p += 4;
-memcpy(p, (UINT8 *)arg0 + *(UINT16 *)((UINT8 *)arg0 + 0x476) + 0x26, max_list_len);
-p += max_list_len;
-list_len -= max_list_len;
-*(UINT16 *)((UINT8 *)arg0 + 0x24) = list_len;
-cont_offset = *(UINT16 *)((UINT8 *)arg0 + 0x476) + max_list_len;
-*(UINT16 *)((UINT8 *)arg0 + 0x476) = cont_offset;
-if (list_len != 0) {
-p[0] = 2;
-p[1] = cont_offset >> 8;
-p[2] = cont_offset;
-p += 3;
-} else {
-p[0] = 0;
-p += 1;
-}
-send_len = (UINT16)(p - param_len_ptr - 2);
-param_len_ptr[0] = send_len >> 8;
-param_len_ptr[1] = send_len;
-*(UINT16 *)((UINT8 *)buf + 2) = p - out;
-L2CA_DataWrite(*(UINT16 *)((UINT8 *)arg0 + 0x22), buf);
+    buf = (BT_HDR *)GKI_getpoolbuf(2);
+    if (buf == NULL) {
+        if (lbl_803C4C40[0x4630] >= 1) {
+            fn_8007093C(0xA0000, lbl_8031A50C);
+        }
+        return;
+    }
+    buf->offset = 9;
+    out = (UINT8 *)buf + 0x11;
+    out[0] = 5;
+    out[1] = arg1 >> 8;
+    out[2] = arg1;
+    param_len_ptr = out + 3;
+    p = param_len_ptr;
+    list_len = *(UINT16 *)((UINT8 *)arg0 + 0x24);
+    if (list_len <= max_list_len) {
+        max_list_len = list_len;
+    }
+    p[2] = max_list_len >> 8;
+    p[3] = max_list_len;
+    p += 4;
+    memcpy(p, (UINT8 *)arg0 + *(UINT16 *)((UINT8 *)arg0 + 0x476) + 0x26, max_list_len);
+    p += max_list_len;
+    list_len = *(UINT16 *)((UINT8 *)arg0 + 0x24) - max_list_len;
+    *(UINT16 *)((UINT8 *)arg0 + 0x24) = list_len;
+    cont_offset = *(UINT16 *)((UINT8 *)arg0 + 0x476) + max_list_len;
+    *(UINT16 *)((UINT8 *)arg0 + 0x476) = cont_offset;
+    if (list_len != 0) {
+        p[0] = 2;
+        p[1] = cont_offset >> 8;
+        p[2] = cont_offset;
+        p += 3;
+    } else {
+        p[0] = 0;
+        p += 1;
+    }
+    send_len = (UINT16)(p - param_len_ptr - 2);
+    param_len_ptr[0] = send_len >> 8;
+    param_len_ptr[1] = send_len;
+    *(UINT16 *)((UINT8 *)buf + 2) = p - out;
+    L2CA_DataWrite(*(UINT16 *)((UINT8 *)arg0 + 0x22), buf);
 }
 
 static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
@@ -28672,6 +28676,7 @@ s32 __InitParams(void *arg0) {
     u8 *base;
     u8 *cfg;
     void *temp_r3, *temp_r4_2, *temp_r5, *temp_r7, *var_r26, *var_r28;
+
     temp_r4 = *(u32 *)((u8 *)arg0 + 0x110);
     base = lbl_8031ABD8;
     cfg = arg0;
@@ -28694,6 +28699,7 @@ s32 __InitParams(void *arg0) {
     if (temp_f0_5 < lbl_80560D5C || temp_f0_5 > lbl_80560D60) return 0;
     temp_f0_6 = *(f32 *)(cfg + 0x144);
     if (temp_f0_6 < lbl_80560D5C || temp_f0_6 > lbl_80560D60) return 0;
+
     temp_f0 = lbl_80560D58;
     temp_f2 = lbl_80560D64;
     var_r27 = 0;
@@ -28712,6 +28718,7 @@ s32 __InitParams(void *arg0) {
     *(s32 *)(cfg + 0x38) = var_r27;
     *(f32 *)(cfg + 0x28) = temp_f3 * *(f32 *)((u8 *)temp_r4_2 + 8) * temp_f2;
     *(u32 *)(cfg + 0x3C) = __cvt_fp2unsigned(temp_f1);
+
     var_r26 = cfg;
     temp_f29 = lbl_80560D90;
     var_r28 = base + 0xC0;
@@ -28726,9 +28733,11 @@ s32 __InitParams(void *arg0) {
         var_r24 += 1;
         var_r25 += 4;
         temp_f0 = *(f32 *)(cfg + 0x120);
-        *(f32 *)((u8 *)var_r26 + 0x8C) = (f32)fn_8002EFBC(lbl_80560D80, (temp_f30 * (f32)temp_r0) / (temp_f31 * temp_f0));
+        *(f32 *)((u8 *)var_r26 + 0x8C) = (f32)fn_8002EFBC(lbl_80560D80,
+            (temp_f30 * (f32)temp_r0) / (temp_f31 * temp_f0));
         var_r26 = (u8 *)var_r26 + 4;
     } while (var_r24 < 3U);
+
     *(s32 *)(cfg + 0xB0) = 0;
     temp_r3 = (u8 *)var_r28 + (*(u32 *)(cfg + 0x11C) << 5);
     temp_f1 = lbl_80560D60 - *(f32 *)(cfg + 0x128);
