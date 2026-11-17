@@ -1305,7 +1305,12 @@ void* fn_801792F8(void) {
 
 extern void *lbl_8055E458;
 void* fn_80179300(void) {
-    return lbl_8055E458;
+    /* lbl_8055E458 counts frames since the scene was reset (cleared by
+     * fn_80179320, advanced each tick by fn_80177F40); callers gate a
+     * 40-frame startup grace period on it. */
+    #define sSceneFrameCount lbl_8055E458
+    return sSceneFrameCount;
+    #undef sSceneFrameCount
 }
 
 void fn_80179308(void) {
