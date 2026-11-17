@@ -519,13 +519,14 @@ extern "C" void fn_802A50F8(void) {
     }
 }
 #pragma cplusplus reset
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802A5270(f32 arg0) {
-    f32 value = lbl_8056485C;
+    f32 value;
     s32 amount;
     s32 result;
-    value = (value < arg0) ? value : arg0;
-    value = (value > lbl_80564858) ? value : lbl_80564858;
+
+    value = lbl_8056485C < arg0 ? lbl_8056485C : arg0;
+    value = value > lbl_80564858 ? value : lbl_80564858;
     amount = (s32)(lbl_80564878 * value);
     result = fn_801284F8(0x44, lbl_80349C88);
     if (result != 0) {
@@ -820,6 +821,7 @@ s32 fn_802A5B8C(s32 arg0, s32 arg1) {
     }
     return arg0;
 }
+#pragma opt_propagation off
 void fn_802A5C1C(void *arg0) {
     f32 zero = lbl_80564858;
     f32 a = lbl_8056485C;
@@ -845,7 +847,7 @@ void fn_802A5C1C(void *arg0) {
     fn_802A6234(c, b, a);
     fn_802A6790(arg0);
 }
-#pragma scheduling on
+#pragma opt_propagation reset
 extern f32 lbl_8056488C;
 extern void *fn_801E8718();
 extern void fn_802A62CC(void *, s32);
@@ -872,7 +874,7 @@ void fn_802A5CA4(void *arg0) {
     a=source[11]; w.matrix[11]=a;
     fn_802A62CC(obj, w.matrix[9]);
     {
-        f32 y=lbl_80564874, x=lbl_80564858, z=lbl_80564858;
+        register f32 y=lbl_80564874, x=lbl_80564858, z=lbl_80564858;
         w.input[0]=x; w.input[1]=y; w.input[2]=z;
         if (obj->base==&w.input[0]) {
             f32 xy1=y*m[1];
