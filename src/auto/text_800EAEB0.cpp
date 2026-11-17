@@ -1378,6 +1378,10 @@ extern "C" void fn_800ECF54(void *arg0, s32 arg1, s32 arg2) {
 // Trivial predicate stub in the nw4r::snd memory sound archive interface group; always reports true (1).
 extern "C" u32 fn_800ECFC0(void) { return 1; }
 
+/* Slot 0x38 of the nw4r::snd::MemorySoundArchive::MemoryFileStream vtable
+ * (lbl_803231D8, installed by OpenStream): one of the archive-stream state
+ * predicates the loaders poll alongside IsOpen (0x2C) and IsReady (0x50);
+ * a stream backed by memory is always in this state, so it reports true. */
 extern "C" u32 fn_800ECFC8(void) { return 1; }
 
 extern "C" u32 fn_800ECFD0(void) { return 1; }
