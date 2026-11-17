@@ -164,7 +164,12 @@ void fn_8001BA68(void *element) {
 }
 
 void fn_8001BA6C(void) {
-    fn_8001C714();
+    /* Tail-call the handler that returns the localized display name of the current
+     * stat type: it reads the message key from the current stat-type info entry
+     * (fn_8001C4E0) and resolves it through the locale message table (fn_80131234). */
+#define getStatTypeDisplayName fn_8001C714
+    getStatTypeDisplayName();
+#undef getStatTypeDisplayName
 }
 
 extern s32 fn_8001C73C();
