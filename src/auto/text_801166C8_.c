@@ -168,16 +168,16 @@ BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
 }
 
 extern u8 lbl_802FE850[];
-s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
-    u32 entry = handle->currDir;
-    u32 *fst = (u32 *)handle->FSTStart;
-    u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
+s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *__restrict path) {
+    register u32 entry = handle->currDir;
+    register u32 *fst = (u32 *)handle->FSTStart;
+    register u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
     for (;;) {
         const char *end;
         u32 length, limit, node;
         int hasSlash;
         if (*path == 0) return entry;
-        if (*path == '/') { entry = 0; ++path; continue; }
+        if (*path == '/') { entry = 0; path++; continue; }
         if (*path == '.') {
             if (path[1] == '.') {
                 if (path[2] == '/') { entry = fst[entry * 3 + 1]; path += 3; continue; }
@@ -188,10 +188,10 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
             }
         }
         end = path;
-        while (*end && *end != '/') ++end;
+        while (*end && *end != '/') end++;
         length = end - path;
         limit = fst[entry * 3 + 2];
-        ++entry;
+        entry++;
         hasSlash = *end != 0;
         while (entry < limit) {
             char *name;
@@ -199,7 +199,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
             node = fst[entry * 3];
             if ((node >> 24) == 0 && hasSlash == 1) goto next;
             name = handle->FSTStringStart + (node & 0xffffff);
-            if (name[0] == '.' && name[1] == 0) { ++entry; continue; }
+            if (name[0] == '.' && name[1] == 0) { entry++; continue; }
             p = path;
             while (*name) {
                 int a = *name++;
@@ -212,7 +212,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
             if (*p == '/' || *p == 0) goto found;
         next:
             if (fst[entry * 3] & 0xff000000) entry = fst[entry * 3 + 2];
-            else ++entry;
+            else entry++;
         }
         return -1;
     found:
@@ -2741,118 +2741,120 @@ s32 fn_8011A870(void *stream, s32 flags) {
 extern u32 fn_8011A240(void *, u32, s32, u32);
 extern void fn_8011A45C(void *, s32, s32);
 extern void fn_8011A1A0(u32 *, u32);
+#define REGOBJ register u8 *obj asm("r24")
 u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
-u8 *obj = (u8 *)arg0;
-u8 *buf = (u8 *)arg3;
-u8 *buf0 = buf;
-s32 seek = arg2;
-u32 len = arg4;
-u32 total = 0;
-u32 t0;
-u32 t1;
-u32 chunk;
-u32 first;
-volatile u32 *rd;
-if (*(s32 *)(obj + 0x20) != 0)
-return 0;
-t0 = fn_80116D30();
-if (seek != -1 && *(u32 *)(obj + 0x98) != (u32)seek) {
-if ((u32)seek > *(u32 *)(obj + 0x98) && (u32)seek <= *(u32 *)(obj + 0x90)) {
-BOOL en = OSDisableInterrupts();
-u32 d = (u32)seek - *(u32 *)(obj + 0x98);
-u32 p;
-*(u32 *)(obj + 0xA0) += d;
-p = *(u32 *)(obj + 0x9C) + d;
-*(u32 *)(obj + 0x98) = seek;
-*(u32 *)(obj + 0x4C) -= d;
-*(u32 *)(obj + 0x9C) = p;
-if (p > *(u32 *)(obj + 0xA8))
-*(u32 *)(obj + 0x9C) = p - *(u32 *)(obj + 0x40);
-OSRestoreInterrupts(en);
-} else {
-BOOL en;
-fn_8011A330(arg0);
-en = OSDisableInterrupts();
-{
-u32 a4 = *(u32 *)(obj + 0xA4);
-*(u32 *)(obj + 0x90) = seek;
-*(u32 *)(obj + 0x98) = seek;
-*(u32 *)(obj + 0xA0) = *(u32 *)(obj + 0x40);
-*(u32 *)(obj + 0x4C) = 0;
-*(u32 *)(obj + 0x9C) = a4;
-*(u32 *)(obj + 0xAC) = a4;
-}
-OSRestoreInterrupts(en);
-}
-}
-if (*(u32 *)(obj + 0xA4) == 0) {
-t1 = fn_80116D30();
-total = fn_8011A240(obj + 0x54, *(u32 *)(obj + 0x90), (s32)buf, len);
-if (total < len) {
-*(s32 *)(obj + 0x20) = 1;
-fn_8011A330(arg0);
-}
-rd = (volatile u32 *)(obj + 0x98);
-*(u32 *)(obj + 0x90) += total;
-*rd += total;
-*(u32 *)(obj + 0x28) += total;
-if (*(s32 *)(obj + 0xBC) != 0)
-fn_8011A45C(arg0, total, t1);
-{
-u32 now = fn_80116D30();
-*(u32 *)(obj + 0x30) += now - t1;
-*(u32 *)(obj + 0x34) += now - t0;
-}
-} else {
-rd = (volatile u32 *)(obj + 0x98);
-while (len != 0 && *(s32 *)(obj + 0x20) == 0) {
-fn_8011A6A0(arg0);
-chunk = *(u32 *)(obj + 0x4C);
-if (chunk != 0) {
-if (chunk > len)
-chunk = len;
-len -= chunk;
-total += chunk;
-first = *(u32 *)(obj + 0xA8) - *(u32 *)(obj + 0x9C);
-*rd += chunk;
-if (first <= chunk) {
-memcpy(buf, (void *)*(u32 *)(obj + 0x9C), first);
-buf += first;
-chunk -= first;
-*(u32 *)(obj + 0x9C) = *(u32 *)(obj + 0xA4);
-{
-BOOL en = OSDisableInterrupts();
-*(u32 *)(obj + 0x4C) -= first;
-*(u32 *)(obj + 0xA0) += first;
-OSRestoreInterrupts(en);
-}
-}
-if (chunk != 0) {
-memcpy(buf, (void *)*(u32 *)(obj + 0x9C), chunk);
-buf += chunk;
-*(u32 *)(obj + 0x9C) += chunk;
-{
-BOOL en = OSDisableInterrupts();
-*(u32 *)(obj + 0x4C) -= chunk;
-*(u32 *)(obj + 0xA0) += chunk;
-OSRestoreInterrupts(en);
-}
-}
-}
-}
-*(u32 *)(obj + 0x34) += fn_80116D30() - t0;
-}
-{
-u32 rem = *(u32 *)(obj + 0xB8) - *rd;
-if (rem < *(u32 *)(obj + 0x40))
-*(u32 *)(obj + 0x48) = rem;
-else
-*(u32 *)(obj + 0x48) = *(u32 *)(obj + 0x40);
-}
-if (*(volatile u32 *)(obj + 0x4C) + 0x8000 > *(volatile u32 *)(obj + 0x48))
-*(u32 *)(obj + 0x48) = *(volatile u32 *)(obj + 0x4C);
-fn_8011A1A0((u32 *)buf0, total);
-return total;
+    u8 *obj = (u8 *)arg0;
+    u8 *buf = (u8 *)arg3;
+    u32 len = arg4;
+    u8 *buf0 = buf;
+    u32 total = 0;
+    s32 seek = arg2;
+    u32 t0;
+    u32 t1;
+    u32 chunk;
+    u32 first;
+    volatile u32 *rd;
+
+    if (*(s32 *)(obj + 0x20) != 0)
+        return 0;
+    t0 = fn_80116D30();
+    if (seek != -1 && *(u32 *)(obj + 0x98) != (u32)seek) {
+        if ((u32)seek > *(u32 *)(obj + 0x98) && (u32)seek <= *(u32 *)(obj + 0x90)) {
+            BOOL en = OSDisableInterrupts();
+            u32 d = (u32)seek - *(u32 *)(obj + 0x98);
+            u32 p;
+            *(u32 *)(obj + 0xA0) += d;
+            p = *(u32 *)(obj + 0x9C) + d;
+            *(u32 *)(obj + 0x98) = seek;
+            *(u32 *)(obj + 0x4C) -= d;
+            *(u32 *)(obj + 0x9C) = p;
+            if (p > *(u32 *)(obj + 0xA8))
+                *(u32 *)(obj + 0x9C) = p - *(u32 *)(obj + 0x40);
+            OSRestoreInterrupts(en);
+        } else {
+            BOOL en;
+            fn_8011A330(arg0);
+            en = OSDisableInterrupts();
+            {
+                u32 a4 = *(u32 *)(obj + 0xA4);
+                *(u32 *)(obj + 0x90) = seek;
+                *(u32 *)(obj + 0x98) = seek;
+                *(u32 *)(obj + 0xA0) = *(u32 *)(obj + 0x40);
+                *(u32 *)(obj + 0x4C) = 0;
+                *(u32 *)(obj + 0x9C) = a4;
+                *(u32 *)(obj + 0xAC) = a4;
+            }
+            OSRestoreInterrupts(en);
+        }
+    }
+    if (*(u32 *)(obj + 0xA4) == 0) {
+        t1 = fn_80116D30();
+        total = fn_8011A240(obj + 0x54, *(u32 *)(obj + 0x90), (s32)buf, len);
+        if (total < len) {
+            *(s32 *)(obj + 0x20) = 1;
+            fn_8011A330(arg0);
+        }
+        rd = (volatile u32 *)(obj + 0x98);
+        *(u32 *)(obj + 0x90) += total;
+        *rd += total;
+        *(u32 *)(obj + 0x28) += total;
+        if (*(s32 *)(obj + 0xBC) != 0)
+            fn_8011A45C(arg0, total, t1);
+        {
+            u32 now = fn_80116D30();
+            *(u32 *)(obj + 0x30) += now - t1;
+            *(u32 *)(obj + 0x34) += now - t0;
+        }
+    } else {
+        rd = (volatile u32 *)(obj + 0x98);
+        while (len != 0 && *(s32 *)(obj + 0x20) == 0) {
+            fn_8011A6A0(arg0);
+            chunk = *(u32 *)(obj + 0x4C);
+            if (chunk != 0) {
+                if (chunk > len)
+                    chunk = len;
+                len -= chunk;
+                total += chunk;
+                first = *(u32 *)(obj + 0xA8) - *(u32 *)(obj + 0x9C);
+                *rd += chunk;
+                if (first <= chunk) {
+                    memcpy(buf, (void *)*(u32 *)(obj + 0x9C), first);
+                    buf += first;
+                    chunk -= first;
+                    *(u32 *)(obj + 0x9C) = *(u32 *)(obj + 0xA4);
+                    {
+                        BOOL en = OSDisableInterrupts();
+                        *(u32 *)(obj + 0x4C) -= first;
+                        *(u32 *)(obj + 0xA0) += first;
+                        OSRestoreInterrupts(en);
+                    }
+                }
+                if (chunk != 0) {
+                    memcpy(buf, (void *)*(u32 *)(obj + 0x9C), chunk);
+                    buf += chunk;
+                    *(u32 *)(obj + 0x9C) += chunk;
+                    {
+                        BOOL en = OSDisableInterrupts();
+                        *(u32 *)(obj + 0x4C) -= chunk;
+                        *(u32 *)(obj + 0xA0) += chunk;
+                        OSRestoreInterrupts(en);
+                    }
+                }
+            }
+        }
+        *(u32 *)(obj + 0x34) += fn_80116D30() - t0;
+    }
+    {
+        u32 rem = *(u32 *)(obj + 0xB8) - *rd;
+        if (rem < *(u32 *)(obj + 0x40))
+            *(u32 *)(obj + 0x48) = rem;
+        else
+            *(u32 *)(obj + 0x48) = *(u32 *)(obj + 0x40);
+    }
+    if (*(volatile u32 *)(obj + 0x4C) + 0x8000 > *(volatile u32 *)(obj + 0x48))
+        *(u32 *)(obj + 0x48) = *(volatile u32 *)(obj + 0x4C);
+    fn_8011A1A0((u32 *)buf0, total);
+    return total;
 }
 
 #pragma dont_inline reset
@@ -5602,10 +5604,8 @@ void fn_80120F84(s32 n, s32 ip_arg, void *a_arg) {
 void fn_80121400(s32 n, s32 *map, f32 *data) {
     s32 *ip = map;
     f32 *a = data;
-    int j, j1, k, k1, l, m, m2;
+    int j, j1, j2, k, k1, l, m, m2;
     float xr, xi, yr, yi;
-    int d;
-    float t0, t1;
     ip[0] = 0;
     l = n;
     m = 1;
@@ -5622,29 +5622,31 @@ void fn_80121400(s32 n, s32 *map, f32 *data) {
             for (j = 0; j < k; j++) {
                 j1 = 2 * j + ip[k];
                 k1 = 2 * k + ip[j];
-                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
                 j1 += m2;
                 k1 += 2 * m2;
-                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
                 j1 += m2;
                 k1 -= m2;
-                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
                 j1 += m2;
                 k1 += 2 * m2;
-                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
             }
-            d = ip[k] + k * 2;
-            a[d + 1] = -a[d + 1];
-            d += m2;
-            t0 = a[d + m2]; t1 = a[d + m2 + 1];
-            a[d + m2] = a[d]; a[d + m2 + 1] = -a[d + 1];
-            a[d] = t0; a[d + 1] = -t1;
-            d += m2;
-            a[d + m2 + 1] = -a[d + m2 + 1];
+            j1 = 2 * k + ip[k];
+            a[j1 + 1] = -a[j1 + 1];
+            j2 = j1 + m2;
+            xr = a[j2]; xi = -a[j2 + 1];
+            j1 = j2 + m2;
+            yr = a[j1]; yi = -a[j1 + 1];
+            a[j2] = yr; a[j2 + 1] = yi;
+            a[j1] = xr; a[j1 + 1] = xi;
+            j1 += m2;
+            a[j1 + 1] = -a[j1 + 1];
         }
     } else {
         a[1] = -a[1];
@@ -5653,16 +5655,16 @@ void fn_80121400(s32 n, s32 *map, f32 *data) {
             for (j = 0; j < k; j++) {
                 j1 = 2 * j + ip[k];
                 k1 = 2 * k + ip[j];
-                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
                 j1 += m2;
                 k1 += m2;
-                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
-                a[j1] = yr; a[j1 + 1] = -yi; a[k1] = xr; a[k1 + 1] = -xi;
+                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
             }
-            d = 2 * k + ip[k + 1];
-            a[d + 1] = -a[d + 1];
-            a[d + m2 + 1] = -a[d + m2 + 1];
+            j1 = 2 * k + ip[k + 1];
+            a[j1 + 1] = -a[j1 + 1];
+            a[j1 + m2 + 1] = -a[j1 + m2 + 1];
         }
     }
 }
