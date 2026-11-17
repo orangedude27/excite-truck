@@ -251,7 +251,7 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail7ChannelFPFPQ46nw4hbm3snd6detail7
     *(float *)((char *)arg0 + 0xA8) = a;
     *(int *)((char *)arg0 + 0xB0) = zero;
     *(int *)((char *)arg0 + 0xAC) = zero;
-    ((void (*)(void *))fn_800EB3E4)((char *)arg0 + 8);
+    fn_800EB3E4((char *)arg0 + 8);
     fn_800EC890((char *)arg0 + 0x20);
     *((unsigned char *)arg0 + 0x38) = 0;
 }
