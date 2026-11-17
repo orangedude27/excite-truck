@@ -842,5 +842,7 @@ int fn_801B8B40(void) { return 1; }
 
 int fn_801B8B48(void) { return 1; }
 
+/* Constant "return false" stub, alongside the always-true stubs fn_801B8B38,
+ * fn_801B8B40 and fn_801B8B48; a default boolean method result. */
 int fn_801B8B50(void) { return 0; }
 
