@@ -56,6 +56,7 @@ extern char lbl_8033BEF8[];
 #define MIXER_DEVICE_MAX 6
 #define MIXER_DEVICES lbl_80489238
 #define MIXER_DEVICE_COUNT lbl_80489238[MIXER_DEVICE_MAX]
+#define MIXER_SELECTED_DEVICE lbl_80489238[7]
 extern char lbl_8033BF08[];
 extern char lbl_8055B4E0;
 extern void fn_801331C4(int, void *, float *);
