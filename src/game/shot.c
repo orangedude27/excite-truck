@@ -161,7 +161,12 @@ s32 fn_802E499C(u16 *sequence) {
 s32 fn_802E4A10(void) { return (lbl_8055FF5A >> 12) & 0xF; }
 
 extern u8 lbl_804FC458[];
-u8 fn_802E4A1C(s32 arg0) { return lbl_804FC458[arg0]; }
+u8 fn_802E4A1C(s32 keyCode) {
+    /* Current pressed state of keyboard scan code keyCode (256-entry key-state table). */
+#define gKeyStateTable lbl_804FC458
+    return gKeyStateTable[keyCode];
+#undef gKeyStateTable
+}
 
 void fn_802E4A2C(void) {
     volatile u32 stack[65];
