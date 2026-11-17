@@ -582,26 +582,11 @@ void fn_800060E0(u8 isMode2, u8 isMode1) {
 extern "C" void fn_80006110(void *arg0) {
     class VTable {
     public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual void v14();
-        virtual void v15();
-        virtual void v16();
-        virtual void v17();
-        virtual void v18();
-        virtual void v19();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
         virtual void v20();
         virtual s32 v21(s32);
         virtual void v22();
@@ -609,25 +594,27 @@ extern "C" void fn_80006110(void *arg0) {
     };
     extern void fn_8001071C(void *, s32);
     extern u8 lbl_802FB69C[];
-    extern s32 lbl_8034EEB8[];
     f32 threshold;
-    s32 flag;
+    register bool flag;
     s32 *settings;
     s32 index;
     f32 f2;
-    threshold = lbl_8056011C;
-    flag = 0;
+    threshold = 0.0f;
+    flag = false;
     settings = (s32 *)lbl_8055D350;
     index = settings[7];
     f2 = *(f32 *)((s8 *)arg0 + index * 4 + 4);
     if (f2 >= threshold) {
         f32 f0 = *(f32 *)(settings + 4) - f2;
         if (f0 > threshold)
-            flag = 1;
+            flag = true;
     }
-    if (flag == 0) {
+    if (!flag) {
         if (fn_80005564() == 0) {
-            s32 *p = lbl_8034EEB8 + ((s32 *)lbl_8055D350)[7] * 4;
+            s32 *settings2 = (s32 *)lbl_8055D350;
+            s32 *entries = (s32 *)lbl_8034EEB8;
+            s32 index2 = settings2[7];
+            s32 *p = entries + index2 * 4;
             void *obj = *(void **)(p + 7);
             ((VTable *)obj)->v7();
         }
@@ -1929,6 +1916,7 @@ void fn_80007C10(void *obj) {
 
 extern s32 fn_801B8848(void);
 extern s32 fn_801B87A0(s32, s32);
+/* Set the queued one-shot override to 0xb for all four players (via fn_8000C630). */
 s32 fn_80007C58(void) {
     return fn_8000C630(0xb, -1);
 }
