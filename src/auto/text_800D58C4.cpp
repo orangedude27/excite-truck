@@ -209,6 +209,8 @@ struct ResAccess_800D58C4 {
     virtual void *getRes(u32 type, void *ptr, u32 unk);
 };
 struct ResFlagView_800D58C4 { u8 pad[0x3C]; u32 flags; };
+union ResFlagsUnion_800D58C4 { u32 f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17; };
+struct ResFlagsView2_800D58C4 { u8 pad[0x3C]; ResFlagsUnion_800D58C4 u; };
 struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
 static inline bool HasState_800D6CA0(StateNode_800D6CA0 *t, StateNode_800D6CA0 *s) {
     while (t) {
