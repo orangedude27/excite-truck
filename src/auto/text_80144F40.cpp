@@ -279,7 +279,12 @@ extern "C" f32 fn_801452A0(s32 arg0, f32 arg1) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
-extern "C" f32 fn_801452B4(f32 arg0) { f32 result = lbl_805615F0 - arg0; result = result + lbl_8055E204; return result; }
+extern "C" f32 fn_801452B4(f32 inputY) {
+    // Convert a game-space Y to screen space: mirror about 240.0 (lbl_805615F0), then add the current Y translation offset (lbl_8055E204).
+    f32 screenY = lbl_805615F0 - inputY;
+    screenY = screenY + lbl_8055E204;
+    return screenY;
+}
 #pragma dont_inline reset
 
 extern "C" f32 fn_801452C8(f32 arg0) {
