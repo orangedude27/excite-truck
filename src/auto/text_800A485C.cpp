@@ -19495,14 +19495,15 @@ check:
 
 #pragma push
 #pragma small_data on
-extern "C" void setAllComponentTriggerTarget__Q310homebutton3gui7ManagerFb(void *arg0, bool arg1) {
-    struct ManagerLayout {
+extern "C" void setAllComponentTriggerTarget__Q310homebutton3gui7ManagerFb(void *manager, bool triggerTarget) {
+    /* Set the trigger target on every component in this home-button GUI manager's list. */
+    struct ManagerFields {
         u8 pad0[8];
         void *list;
         u8 pad1[4];
         u16 count;
     };
-    struct Dummy {
+    struct TriggerDispatch {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
@@ -19510,21 +19511,21 @@ extern "C" void setAllComponentTriggerTarget__Q310homebutton3gui7ManagerFb(void 
         virtual void v16(); virtual void v17();
         virtual void Set(bool);
     };
-    ManagerLayout *self = (ManagerLayout *)arg0;
+    ManagerFields *self = (ManagerFields *)manager;
     void *list = &self->list;
-    u32 i = 0;
+    u32 index = 0;
     goto check;
 loop:
     {
-        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(&self->list, (u16)i);
-        void *obj = *(void **)((u8 *)entry + 4);
-        ((Dummy *)obj)->Set(arg1);
-        ++i;
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(&self->list, (u16)index);
+        void *component = *(void **)((u8 *)entry + 4);
+        ((TriggerDispatch *)component)->Set(triggerTarget);
+        ++index;
     }
 check:
     if (list == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
-    if (i < self->count)
+    if (index < self->count)
         goto loop;
 }
 
