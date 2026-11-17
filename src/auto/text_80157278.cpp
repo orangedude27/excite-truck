@@ -3431,6 +3431,9 @@ extern "C" void fn_8015CDDC(Unk801577F0 *player, void *context, s32 id, f32 gain
     }
 }
 #pragma scheduling on
+/* Bonus-tracker type getter: returns category index 14 (0xE), the "ring"
+ * entry a tracker's GetType() uses to index the bonus-category name tables
+ * (gBonusCategoryNames / lbl_8032E540). */
 extern "C" s32 fn_8015CE48(void) {
     return 0xE;
 }
