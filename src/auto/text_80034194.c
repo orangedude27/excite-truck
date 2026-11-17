@@ -1078,6 +1078,7 @@ void cbForReadAsync(void *result, void *fileInfo) {
     }
 }
 
+/* DVD cancel-completion callback: wakes the thread blocked in DVDCancel once the cancel command finishes. */
 void cbForCancelSync(void) {
     OSWakeupThread(__DVDThreadQueue);
 }
