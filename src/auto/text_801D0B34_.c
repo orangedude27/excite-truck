@@ -36,6 +36,7 @@ void *fn_801D0B8C(void *object, int shouldDelete) {
     return object;
 }
 
+/* Reset the global key/value entry registry (table lbl_80438758, live count lbl_8055E8D8) used by fn_801D0BF8/fn_801D0C58/fn_801D0C84: zero the entry count and its companion counter lbl_8055E8DC. Called once while initializing the physics module. */
 void fn_801D0BE4(void) {
     lbl_8055E8D8 = 0;
     lbl_8055E8DC = 0;
@@ -58,14 +59,19 @@ int fn_801D0BF8(int arg0, int arg1) {
     return 0;
 }
 
+#pragma push
+#pragma optimization_level 3
 void fn_801D0C58(int arg0, int arg1, int arg2) {
-    int count = lbl_8055E8D8;
-    lbl_80438758[count].second = arg2;
-    lbl_80438758[count].first = arg1;
-    lbl_80438758[count].value = arg0;
-    lbl_8055E8D8 = count + 1;
+    register volatile struct Entry *entry;
+    register int count;
+    count = lbl_8055E8D8;
+    entry = (volatile struct Entry *)&lbl_80438758[count];
+    entry->second = arg2;
+    ((volatile struct Entry *)lbl_80438758)[count].first = arg1;
+    ((volatile struct Entry *)lbl_80438758)[count].value = arg0;
+    *(volatile int *)&lbl_8055E8D8 = count + 1;
 }
-
+#pragma pop
 void fn_801D0C84(unsigned int arg0) {
     int count = lbl_8055E8D8;
     struct Entry *entry = lbl_80438758;
