@@ -140,6 +140,7 @@ extern "C" int fn_80259224(void **arg0) {
     public:
         virtual void destroy(int);
     };
+    void *button;
     unsigned int frame[0x9E];
     void *buttonA;
     void *buttonB;
@@ -152,7 +153,7 @@ extern "C" int fn_80259224(void **arg0) {
     int count;
     int n;
     void *dialog = (char *)frame + 0xC0 - 8;
-    void *button;
+
     *(char **)(dialog) = (char *)&lbl_80345158;
     *(int *)(((char *)frame + 0x110 - 8)) = -1;
     *(float *)(((char *)frame + 0x144 - 8)) = lbl_80563AE0;
@@ -169,6 +170,7 @@ extern "C" int fn_80259224(void **arg0) {
     *(void **)(((char *)frame + 0x168 - 8)) = (void *)fn_802CAC28((char *)lbl_80344DE0 + 0x108, 0, lbl_80563AE0);
     *(unsigned char *)(((char *)frame + 0x10A - 8)) = 0;
     *(int *)(((char *)frame + 0x10C - 8)) = 5;
+
     if (fn_8025921C() != 0) {
         buttonA = fn_801284F8(0x78, (char *)lbl_80344DE0 + 0x114);
         if (buttonA != 0) {
@@ -198,6 +200,7 @@ extern "C" int fn_80259224(void **arg0) {
         }
         button = buttonB;
     }
+
     size = *(int *)((char *)arg0 + 0xC8);
     *(volatile int *)(((char *)frame + 0x10C - 8)) = size;
     src = fn_8001EFAC(*(int *)((char *)arg0 + 0x18), size);
@@ -228,6 +231,7 @@ extern "C" int fn_80259224(void **arg0) {
         ((int (*)(char *, int, const char *, ...))fn_801345D8)(((char *)frame + 0x20 - 8) + ((i - 1) << 2) + (i - 1), 0x20, lbl_8055C260,
                     fn_8001EFA4(*(int *)((char *)arg0 + 0x18), i));
     }
+
     *(void **)(((char *)frame + 0x188 - 8)) = button;
     *(void **)(((char *)frame + 0x174 - 8)) = fn_80259740;
     *(int *)(((char *)frame + 0x170 - 8)) = 8;
@@ -248,7 +252,10 @@ extern "C" int fn_80259224(void **arg0) {
     *(void **)(((char *)frame + 0x1B0 - 8)) = (char *)button + 0x20;
     *(int *)(((char *)frame + 0x1B4 - 8)) = 0;
     *(int *)(((char *)frame + 0x1B8 - 8)) = 0;
-    result = fn_8001EF9C(*(int *)((char *)arg0 + 0x18), 0x13, 5, lbl_8055C264, lbl_8055C264);
+
+    result = fn_8001EF9C(*(int *)((char *)arg0 + 0x18), 0x13, 5,
+                         lbl_8055C264, lbl_8055C264);
+
     *(int *)(((char *)frame + 0x1C0 - 8)) = 3;
     *(void **)(((char *)frame + 0x1BC - 8)) = (char *)lbl_80344DE0 + 0x134;
     *(int *)(((char *)frame + 0x1C4 - 8)) = result;
@@ -256,7 +263,8 @@ extern "C" int fn_80259224(void **arg0) {
     *(int *)(((char *)frame + 0x1CC - 8)) = 0;
     *(int *)(((char *)frame + 0x1D4 - 8)) = 3;
     *(void **)(((char *)frame + 0x1D0 - 8)) = (char *)lbl_80344DE0 + 0x148;
-    *(int *)(((char *)frame + 0x1D8 - 8)) = *((int *)((char *)lbl_80344DE0 + 0xC0 + *(int *)((char *)arg0 + 0x24) * 8) + 1);
+    *(int *)(((char *)frame + 0x1D8 - 8)) = *((int *)((char *)lbl_80344DE0 + 0xC0 +
+                                    *(int *)((char *)arg0 + 0x24) * 8) + 1);
     *(int *)(((char *)frame + 0x1DC - 8)) = 0;
     *(int *)(((char *)frame + 0x1E0 - 8)) = 0;
     *(int *)(((char *)frame + 0x1E8 - 8)) = 3;
@@ -294,6 +302,7 @@ extern "C" int fn_80259224(void **arg0) {
     *(int *)(((char *)frame + 0x264 - 8)) = lbl_80498E98[2];
     *(int *)(((char *)frame + 0x268 - 8)) = lbl_80498E98[3];
     *(int *)(((char *)frame + 0x26C - 8)) = lbl_80498E98[4];
+
     *(int *)(((char *)frame + 0x08 - 8)) = lbl_802FA63C[0];
     *(void **)(((char *)frame + 0x0C - 8)) = ((char *)frame + 0x16C - 8);
     *(int *)(((char *)frame + 0x10 - 8)) = lbl_802FA63C[2];
@@ -302,8 +311,10 @@ extern "C" int fn_80259224(void **arg0) {
     fn_802368E0();
     fn_80216CA8();
     n = fn_802146BC((int *)(((char *)frame + 0x08 - 8)), -0x3E7, -0x3E7, 1);
+
     if (button != 0)
         ((Dialog_80259224 *)button)->destroy(1);
+
     *(char **)(dialog) = (char *)&lbl_80345158;
     if (*(int *)(((char *)frame + 0x110 - 8)) != -1) {
         fn_802C6CF8(*(int *)(((char *)frame + 0x110 - 8)));
@@ -350,6 +361,8 @@ void fn_80259740(int mode, float value) {
     lbl_8055F3A0 = (mode - 2) == 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 int fn_8025978C(void **arg0) {
     unsigned char stack[0x600];
     int i;
@@ -506,12 +519,14 @@ void fn_8025A50C(void) {
         char pad3[2]; int saved; float value;
     } state;
     float base;
-    int index, changed, current, result, count, objectValue, firstResult, secondResult;
+    int index, changed, current, result, objectValue, firstResult, secondResult;
+    char *src;
+    int count;
     unsigned int running;
-    char *src, *dst;
+    char *dst;
     char * volatile text;
     register int zero = 0;
-    fn_80259148();
+    ((void (*)(void))fn_80259148)();
     base = lbl_80563AE4;
     lbl_80498EAC[0] = base;
     lbl_80498EAC[1] = lbl_80563AEC;
@@ -532,9 +547,9 @@ void fn_8025A50C(void) {
             state.next = state.selected + 0x32;
             firstResult = fn_8001EFA0(state.object, state.next);
             secondResult = fn_8001EFA0(state.object, state.selected);
-            state.difference = (unsigned int)((firstResult - secondResult) | (secondResult - firstResult)) >> 31;
         }
         state.number = (float)(int)state.selected;
+        state.difference = (unsigned char)((unsigned int)((firstResult - secondResult) | (secondResult - firstResult)) >> 31);
         current = (int)(state.number + lbl_80558DC4);
         fn_80130FCC(state.shortText, 0x14, current);
         changed = 1;
@@ -580,13 +595,11 @@ void fn_8025A50C(void) {
             do { result = fn_80259224((void **)&text); } while (result != -1);
             break;
         case -1: running = 0; break;
-        default: fn_802E317C(lbl_80344FE0, result); break;
+        default: ((void (*)(const char *, ...))fn_802E317C)(lbl_80344FE0, result); break;
         }
     }
-    fn_802591D8();
+    ((void (*)(void))fn_802591D8)();
 }
-#pragma pop
-
 #pragma cplusplus on
 extern "C" void fn_8025A83C(void *object) {
     /* Store a 3x3 identity matrix at +0x84, then hand the object's +0x4 data to apply(). */
