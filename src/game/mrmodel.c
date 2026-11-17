@@ -789,6 +789,7 @@ void fn_802C6080(void) {
     *(int *)(base + 0x64 + 4) = 0;
 }
 
+extern void fn_802C6A84(s32 *value, s32 delta);
 void fn_802C61BC(void *arg0, int arg1) {
     unsigned char *p = (unsigned char *)arg0;
     (void)arg1;
