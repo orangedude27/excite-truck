@@ -1026,8 +1026,11 @@ void fn_802C9A1C(float *direction) {
 }
 #pragma dont_inline reset
 #undef globalDirection
+/* Return a pointer to the global 3-component draw direction vector (lbl_804C1440). */
 void *fn_802C9A40(void) {
-    return lbl_804C1440;
+    #define globalDirection lbl_804C1440
+    return globalDirection;
+    #undef globalDirection
 }
 
 void fn_802C9A4C(void) {
