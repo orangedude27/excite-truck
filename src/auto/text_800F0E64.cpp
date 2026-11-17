@@ -6017,9 +6017,10 @@ extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void *self, void *pt
     OSRestoreInterrupts(savedInterruptState);
 }
 
-extern "C" void NWC24Data_Init(void* arg0) {
-    *(int*)arg0 = 0;
-    *((int*)arg0 + 1) = 0;
+extern "C" void NWC24Data_Init(void* data) {
+    /* Clear a two-word header (valid flag and ref pointer) to zero. */
+    *(int*)data = 0;
+    *((int*)data + 1) = 0;
 }
 
 extern "C" const char lbl_80326518[];
