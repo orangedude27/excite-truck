@@ -1904,9 +1904,9 @@ extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __rest
 #pragma push
 #pragma processor 750
 #pragma dont_inline off
+#pragma scheduling invalid_target
 extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *arg4, f32 farg0, f32 farg1) {
     Vec velocity, delta, normalCopy, normal, cross, rotated, result;
-    f32 *m = (f32 *)arg2;
     f32 *p = (f32 *)arg0;
     u32 ny = ((u32 *)arg4)[1];
     f32 dx = arg3[0] - p[0];
@@ -1923,7 +1923,7 @@ extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *ar
         ((u32 *)&normal)[2] = ((u32 *)&normalCopy)[2];
         PSVECNormalize(&normal, &normal);
         PSVECCrossProduct(&delta, &normal, &cross);
-        Fn8019DF88MultVec(m, (f32 *)&cross, (f32 *)&rotated);
+        Fn8019DF88MultVec((f32 *)arg2, (f32 *)&cross, (f32 *)&rotated);
         PSVECCrossProduct(&rotated, &delta, &result);
         f32 denominator = lbl_805622E0 / farg0 + PSVECDotProduct(&normal, &result);
         if ((f32)__fabs((f64)denominator) > lbl_8056235C) {
