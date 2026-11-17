@@ -1395,8 +1395,9 @@ extern "C" void fn_80146C08(void *obj, s32 parent) {
 }
 
 extern void lbl_8032D260(void);
-extern "C" void fn_80146C1C(void **arg0) {
-    *arg0 = (void *)&lbl_8032D260;
+/* Install the base-class vtable lbl_8032D260 at the start of the object (base-class constructor step). */
+extern "C" void fn_80146C1C(void **vtableSlot) {
+    *vtableSlot = (void *)&lbl_8032D260;
 }
 
 extern "C" char lbl_8032CEC8[];
