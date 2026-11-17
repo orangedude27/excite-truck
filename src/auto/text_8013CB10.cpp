@@ -1467,6 +1467,7 @@ extern "C" void fn_8013EB0C(void *owner, s32 index) {
 
 #pragma push
 #pragma processor 750
+#pragma opt_common_subs off
 extern "C" void fn_8013EB30(void *arg0) {
     struct Vec3 {
         f32 x, y, z;
