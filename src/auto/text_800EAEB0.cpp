@@ -2421,11 +2421,9 @@ extern "C" void fn_800EE910(void* alarm) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext(void* alarm, void* context) {
-    register void* savedAlarm = alarm;
-    register u32 level;
-    register u8* data;
-    level = OSDisableInterrupts();
-    data = (u8*)OSGetAlarmUserData(savedAlarm);
+    u32 level = OSDisableInterrupts();
+    alarm = OSGetAlarmUserData(alarm);
+    u8* data = (u8*)alarm;
     if (data[8] != 0) {
         OSCancelAlarm(data + 0x38);
         data[6] = 0;
