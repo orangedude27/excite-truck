@@ -800,11 +800,10 @@ typedef struct Result_802A0098 {
 } Result_802A0098;
 extern "C" float PSVECMag(const void *);
 extern float lbl_805646BC;
-#pragma optimization_level 2
+#pragma optimization_level 4
 extern "C" void fn_802A0098(Result_802A0098 *out, const float *arg0, const Unk802A0794Params *arg1) {
     float span = arg0[1] * PSVECMag(&arg1->values[3]);
-    float width = lbl_805646BC;
-    if (width < span) width = span;
+    float width = (lbl_805646BC < span) ? lbl_805646BC : span;
 
     out->count = (int)(arg0[2] + arg0[3] * width);
     out->data[0] = arg1->values[0] + arg0[12];
