@@ -287,8 +287,12 @@ int fn_802CEC04(int reason) {
     return 0;
 }
 
+/* Signal completion of the GX operation: set the flag that fn_802CFDE0
+   busy-waits on (cleared to 0 by fn_802CEC50 case 1). */
 void fn_802CEC44(void) {
-    lbl_8055FD3C = 1;
+#define sGxSyncDone lbl_8055FD3C
+    sGxSyncDone = 1;
+#undef sGxSyncDone
 }
 
 void fn_802CEC50(int arg0) {
