@@ -52,6 +52,7 @@ void fn_80019884(void) {
 }
 
 s32 fn_80019888(void) {
+    /* Return the player's Game Reputation Rating (0 = none earned yet). */
     return 0;
 }
 
