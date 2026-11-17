@@ -790,6 +790,7 @@ void fn_80149F2C(void *arg0, void *arg1, void *arg2) {
 
 s32 fn_8014ACBC(void) { return 0; }
 
+// Trivial callback stub; always returns 0 (false).
 s32 fn_8014ACC4(void) { return 0; }
 
 void fn_8014ACCC(void) {
