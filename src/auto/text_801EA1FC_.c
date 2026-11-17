@@ -37,11 +37,13 @@ void fn_801EA1FC(void) {
 }
 
 #pragma dont_inline on
-void fn_801EA28C(s32 arg0, f32 farg0) {
+void fn_801EA28C(s32 playerIndex, f32 fov) {
     #pragma scheduling invalid_target
-    f32 temp_f31 = fn_801E8874();
-    f32 temp = fn_801E8894(arg0);
-    fn_802C974C(temp_f31, temp, farg0);
+    /* Refresh the projection/view parameters from the player's stored near/far
+     * planes (config +0x4C/+0x50) and the supplied FOV value. */
+    f32 nearPlane = fn_801E8874();
+    f32 farPlane = fn_801E8894(playerIndex);
+    fn_802C974C(nearPlane, farPlane, fov);
 }
 #pragma dont_inline off
 
