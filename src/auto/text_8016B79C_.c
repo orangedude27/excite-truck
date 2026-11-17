@@ -1282,7 +1282,7 @@ extern "C" void fn_802ADE60(s32, s32);
 extern "C" void fn_8016D658(void *arg0, s32 arg1) {
  class VObj { public: virtual void destroy(int); };
  struct List { void *vtable; VObj **items; s32 count; };
- VObj *old; VObj *p; s32 offset, i;
+ VObj *old; s32 offset; VObj *p; s32 i;
  if (arg0 != 0) {
   old = *(VObj **)((u8 *)arg0 + 0xA4); *(char **)arg0 = lbl_80330990;
   if (old != 0) { if (old != 0) old->destroy(1); }
@@ -1323,9 +1323,11 @@ p = *(VObj **)((u8 *)arg0 + 0x94); if (p != 0) { if (p != 0) p->destroy(1); }
   if ((u8 *)arg0 + 4 != 0) { *(s32 *)((u8 *)arg0 + 4) = 0; *(s32 *)((u8 *)arg0 + 8) = 0; *(s32 *)((u8 *)arg0 + 0xC) = 0; }
   if (arg1 > 0) fn_80128668(arg0);
  }
-}
-#pragma scheduling on
-#pragma cplusplus off
+ }
+#pragma opt_common_subs on
+ #pragma scheduling on
+ #pragma cplusplus off
+
 
 extern s32 fn_8016DD98(void *);
 extern s32 fn_8016DE08(void *);
