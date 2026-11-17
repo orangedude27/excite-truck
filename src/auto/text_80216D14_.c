@@ -89,6 +89,7 @@ int fn_80216D14(int soundId) {
 
 #pragma dont_inline fn_80216D28
 void fn_80216D28(void) {
+    /* Suppress UI key sounds while a screen handles the key itself (see fn_80218E08). */
     lbl_8055EFAC = 1;
 }
 
