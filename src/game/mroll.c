@@ -27,10 +27,12 @@ extern void *fn_80241098(void *);
 extern void fn_802E317C(char *, ...);
 typedef struct Fn241820VT { int pad[3]; int (*isActive)(void *); } Fn241820VT;
 typedef struct Fn241820Obj { char pad[0xc]; Fn241820VT *vt; } Fn241820Obj;
+/* Clear the player-info table (lbl_80498828): set the id word of each of its
+ * two 0x10-byte slots to -1, marking both slots empty. */
 void fn_8023FE20(void) {
-    register int *p = (int *)lbl_80498828;
-    *p++ = -1;
-    p[3] = -1;
+    register int *slots = (int *)lbl_80498828;
+    *slots++ = -1;
+    slots[3] = -1;
 }
 
 s32 fn_8023FE34(void) {
