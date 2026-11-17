@@ -227,9 +227,9 @@ skip_clear:
 #pragma scheduling on
 
   
-  void fn_80134994(void) {
-  
-  }
+/* No-op AI hook: called once per frame from fn_801E7E48; reserved, does nothing. */
+void fn_80134994(void) {
+}
   
 /* Resets the AI subsystem: clears per-car state, reinitializes the AI car-info and
  * proximity tables, then resets the Proxer tracker (the last hook is a no-op). */
@@ -268,16 +268,17 @@ void fn_801349C4(void) {
 extern s32 lbl_8055E3C4;
 #pragma dont_inline on
 s32 fn_80134A44(s32 arg0) {
+    if (arg0 == -1) goto tail;
     switch (arg0) {
     case 0:
     case 1:
     case 2:
         return (arg0 + lbl_8055E3C4) & 1;
-    case -1:
-        return lbl_8055E3C4 & 1;
     default:
         return arg0;
     }
+tail:
+    return lbl_8055E3C4 & 1;
 }
 #pragma dont_inline reset
 
