@@ -639,7 +639,8 @@ compare_keys:
 #pragma pop
 #pragma scheduling on
 #pragma cplusplus off
-s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
+/* Address helper: returns a pointer to the field at offset +4 of `obj`. */
+s32 fn_801B1310(s32 obj) { return obj + 4; }
 
 extern s32 fn_801B11DC(const void *, const void *);
 extern void qsort(void *, unsigned long, unsigned long, s32 (*)(const void *, const void *));
