@@ -2572,7 +2572,7 @@ void fn_8016FF98(void *container) {
     }
 }
 
-s32 fn_8016FFE4(void) { return 0x1408; }
+s32 fn_8016FFE4(void) { return 0x1408; /* fixed constant 0x1408 (5128) */ }
 
 extern void *fn_8000AC38(void);
 extern char lbl_80330DF4[];
