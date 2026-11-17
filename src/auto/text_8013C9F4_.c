@@ -39,6 +39,7 @@ long fn_8013CA80(void) {
     return 0;
 }
 
+/* Default/stub method: reports one (true / success) for a vtable-dispatched query. */
 long fn_8013CA88(void) {
     return 1;
 }
