@@ -426,8 +426,12 @@ void fn_80128668(s32 object) {
     fn_80128584(object, 3);
 }
 
-void fn_80128670(s32 arg0) {
-    fn_80128584(arg0, 0);
+/* Free a block that was allocated through new[]: the allocator source id 0
+   ("new[]" in the fn_801281A0 name table) is passed on to fn_80128584, which
+   frees it and reports any mismatch with the id recorded in the block header.
+   The siblings pick the other sources: 1 MemAlloc, 2 MemAllocPhys, 3 new. */
+void fn_80128670(s32 block) {
+    fn_80128584(block, 0);
 }
 
 #pragma scheduling invalid_target
