@@ -117,7 +117,8 @@ struct Dummy_801B3084 {
 #pragma cplusplus off
 extern s32 fn_80139EC4(f32, f32);
 extern s32 fn_802B04D4(f32 *, f32, f32, f32);
-extern f32 lbl_805625BC, lbl_805625C0, lbl_805625C4;
+extern const f32 lbl_805625BC;
+extern f32 lbl_805625C0, lbl_805625C4;
 extern f32 lbl_80562600;
 extern char lbl_80335AD8[], lbl_80335B04[];
 extern f32 lbl_80558DC4;
