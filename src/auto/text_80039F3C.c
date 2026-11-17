@@ -1036,7 +1036,11 @@ int fn_8003B9CC(void *arg0, void *arg1) {
 }
 #pragma scheduling reset
 int fn_8003BB48(void) {
-    return ((int *)lbl_8037B8A0)[1];
+    #define sDriveStatusBuffer lbl_8037B8A0 /* 32-byte IOS cover-register ioctl result buffer */
+    /* Return the DVD drive/cover status word (buffer +4) from the last
+       cover-register read; callers test bit 0 for cover-open and bit 2. */
+    return ((int *)sDriveStatusBuffer)[1];
+    #undef sDriveStatusBuffer
 }
 
 int fn_8003BB58(void *arg0) {
