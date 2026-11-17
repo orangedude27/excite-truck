@@ -3418,7 +3418,8 @@ extern "C" void fn_801A12C4(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" void fn_801A1358(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x1C) = arg1; }
+/* Store a 32-bit value into the field at offset 0x1C of the given object (no child broadcast). */
+extern "C" void fn_801A1358(void *object, s32 value) { *(s32 *)((u8 *)object + 0x1C) = value; }
 
 extern "C" void fn_801A1360(void *arg0, s32 arg1) {
     /* Store value and propagate it to the primary child and to each child entry. */
