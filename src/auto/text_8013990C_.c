@@ -101,9 +101,9 @@ extern "C" void *fn_801399FC(void *arg0) {
         count = 0;
     }
     {
-        int oldSize = *(int *)table * 8 + 8;
-        int newSize = count * 8 + 8;
-        fn_801286A0(table, oldSize - newSize);
+        char *oldEnd = (char *)table + (*(int *)table * 8 + 8);
+        char *newEnd = (char *)table + (count * 8 + 8);
+        fn_801286A0(table, oldEnd - newEnd);
     }
     *(int *)((char *)table + 4) = count;
     *(int *)table = count;
