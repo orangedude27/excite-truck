@@ -133,14 +133,25 @@ extern float lbl_80561F38, lbl_80561F3C, lbl_80561F48, lbl_80561F4C, lbl_80561F5
 typedef struct Mtx3x4Words { int value[12]; } Mtx3x4Words;
 typedef struct PhysParamA {
     int unk00;
-    unsigned char bytes[0x40];
-    char name[0x20];
+    unsigned char b0, b1, b2, b3, b4, b5, b6, b7;
+    unsigned char b8, b9, b10, b11, b12, b13, b14, b15;
+    unsigned char b16, b17, b18, b19, b20, b21, b22, b23;
+    unsigned char b24, b25, b26, b27, b28, b29, b30, b31;
+    unsigned char b32, b33, b34, b35, b36, b37, b38, b39;
+    unsigned char b40, b41, b42, b43, b44, b45, b46, b47;
+    unsigned char b48, b49, b50, b51, b52, b53, b54, b55;
+    unsigned char b56, b57, b58, b59, b60, b61, b62, b63;
+    unsigned char n0, n1, n2, n3, n4, n5, n6, n7;
+    unsigned char n8, n9, n10, n11, n12, n13, n14, n15;
+    unsigned char n16, n17, n18, n19, n20, n21, n22, n23;
+    unsigned char n24, n25, n26, n27, n28, n29, n30, n31;
     int unk64, unk68, unk6C;
     unsigned char unk70;
     int unk74;
 } PhysParamA;
 typedef struct PhysParamB {
-    int words[16];
+    int w0, w1, w2, w3, w4, w5, w6, w7;
+    int w8, w9, w10, w11, w12, w13, w14, w15;
     short unk40;
     short unk42;
     int unk44, unk48, unk4C;
@@ -497,22 +508,182 @@ void *fn_80182010(void *object) {
     return object;
 }
 
+extern int fn_802792E4(char *);
+extern void *fn_80279874(int);
+extern int fn_8027AA48(void);
+extern void fn_801345D8(char *, long, char *, ...);
+extern void *fn_80131808(void *);
+extern void fn_80131818(void *);
+extern void fn_80279F58(void *, void *);
+extern void *fn_8027A798(void *);
+extern void fn_8027A8B4(void *, void *);
+extern void fn_8017B0F8(void *, void *, float, float);
+extern void fn_801795D8(void *, int);
+extern int fn_801B2EDC(int, void *);
+extern void fn_801B86BC(int, void *);
+extern void fn_80016A48(void *, int);
+extern void *fn_80016544(int);
+extern void fn_801D108C(int);
+extern int fn_80209448(void *, int);
+extern int fn_80209D4C(void *);
+extern int fn_8020DE74(void *);
+extern void fn_8018C5A0(void *, void *);
+extern void fn_8018A654(void *, void *);
+extern void fn_801836DC(void);
+extern void fn_80182DF4(void *);
+extern float lbl_80561D40, lbl_80561D44, lbl_80561D48, lbl_80561D4C, lbl_80561D50;
+extern float lbl_80561D5C, lbl_80561D60, lbl_80561D64;
+extern char lbl_8055A3B8[], lbl_8055A3C0[], lbl_8055A3C8[];
+extern char lbl_8055A3D0[], lbl_8055A3D8[], lbl_8055A3E0[];
+extern unsigned char lbl_8055E4F7;
 void fn_80182074(void *arg0, void *arg1) {
-    extern void *__AXFXGetLfoSinTable_801769CC(void);
+    unsigned char *a = (unsigned char *)arg0;
+    unsigned char *b = (unsigned char *)arg1;
+    void *node;
+    V3 in;
+    V3 out1;
+    V3 out2;
+    char path[0x50];
+    PhysState state;
+    void *cfg;
+    void *chassis;
+    void *obj;
     int v;
-    void *tbl;
-    *(unsigned char *)((char *)arg0 + 0x2680) = 0;
-    *(int *)((char *)arg0 + 0x59C) = *(int *)((char *)arg1 + 0xE4);
-    *(int *)((char *)arg0 + 0x5A4) = *(int *)((char *)arg1 + 0xE8);
-    v = *(int *)((char *)arg1 + 0xDC);
-    *(int *)((char *)arg0 + 0x5A0) = v;
+    int i;
+    int isPcar;
+    int flag;
+
+    *(unsigned char *)(a + 0x2680) = 0;
+    *(int *)(a + 0x59C) = *(int *)(b + 0xE4);
+    *(int *)(a + 0x5A4) = *(int *)(b + 0xE8);
+    v = *(int *)(b + 0xDC);
+    *(int *)(a + 0x5A0) = v;
     if (v == 0) {
-        *(int *)((char *)arg0 + 0x5A0) = 0x0FF807FF;
-        tbl = __AXFXGetLfoSinTable_801769CC();
-        if (*(int *)((char *)tbl + 4) & 0x400) {
-            *(int *)((char *)arg0 + 0x5A0) |= 0x80000000;
-        }
+        *(int *)(a + 0x5A0) = 0x0FF807FF;
     }
+    if (*(int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4) & 0x400) {
+        *(int *)(a + 0x5A0) |= 0x80000000;
+    }
+    *(int *)(a + 0x1EC) = *(int *)(b + 0xE0);
+    *(PhysParamA *)(a + 0x1F0) = *(PhysParamA *)(b + 0x68);
+    *(int *)(a + 0x26C) = fn_802792E4((char *)(a + 0x234));
+    *(PhysParamB *)(a + 0x274) = *(PhysParamB *)(b + 0x18);
+    *(int *)(a + 0x328) = (int)fn_80279874(*(int *)(a + 0x25C));
+    if (fn_8027AA48() == 0) {
+        *(int *)(a + 0x328) = 0;
+    }
+    fn_801345D8(path, 0x50, lbl_803322B0 + 0x1D8, (char *)(a + 0x234));
+    cfg = fn_80131808(path);
+    chassis = ((void *(*)(void *, char *))(*(void ***)cfg)[2])(cfg, lbl_8055A3B8);
+    *(float *)(a + 0x5B4) = ((float (*)(void *, char *, float))(*(void ***)chassis)[10])(chassis, lbl_803322B0 + 0x1EC, lbl_80561CAC);
+    *(float *)(a + 0x5B8) = ((float (*)(void *, char *, float))(*(void ***)chassis)[10])(chassis, lbl_803322B0 + 0x200, lbl_80561CAC);
+    ((void (*)(V3 *, void *, char *))(*(void ***)chassis)[13])(&out2, chassis, lbl_803322B0 + 0x214);
+    *(float *)(a + 0x5C4) = out2.x;
+    *(float *)(a + 0x5C8) = out2.y;
+    *(float *)(a + 0x5CC) = out2.z;
+    *(float *)(a + 0x5D0) = out2.x * lbl_80561D40;
+    *(float *)(a + 0x5D4) = out2.y + lbl_80561D44;
+    *(float *)(a + 0x5D8) = out2.z;
+    in.x = *(float *)(a + 0x5D0);
+    in.y = *(float *)(a + 0x5D4);
+    in.z = *(float *)(a + 0x5D8);
+    ((void (*)(V3 *, void *, char *, V3 *))(*(void ***)chassis)[14])(&out1, chassis, lbl_803322B0 + 0x220, &in);
+    *(float *)(a + 0x5D0) = out1.x;
+    *(float *)(a + 0x5D4) = out1.y;
+    *(float *)(a + 0x5C4) = *(float *)(a + 0x5C4) * lbl_80561D48;
+    *(float *)(a + 0x5C8) = *(float *)(a + 0x5C8) * lbl_80561D48;
+    *(float *)(a + 0x5CC) = *(float *)(a + 0x5CC) * lbl_80561D48;
+    *(float *)(a + 0x5D0) = out1.x * lbl_80561D48;
+    *(float *)(a + 0x5D4) = out1.y * lbl_80561D48;
+    *(float *)(a + 0x5D8) = out1.z * lbl_80561D48;
+    *(float *)(a + 0x5C0) = lbl_80561D4C * ((float (*)(void *, char *, float))(*(void ***)chassis)[9])(chassis, lbl_803322B0 + 0x234, out1.y * lbl_80561D48);
+    if (((int (*)(void *, char *))(*(void ***)chassis)[3])(chassis, lbl_803322B0 + 0x258) != 0) {
+        flag = ((int (*)(void *, char *, char *))(*(void ***)chassis)[21])(chassis, lbl_803322B0 + 0x258, lbl_803322B0 + 0x240);
+    } else {
+        flag = 1;
+    }
+    *(int *)(a + 0x5E8) = flag;
+    fn_80016A48(a + 0x2C4, *(int *)(a + 0x25C));
+    fn_801B86BC(*(int *)(b + 0xE0), a + 0x2C4);
+    obj = fn_80016544(*(int *)(a + 0x25C));
+    *(unsigned char *)(a + 0x25C0) = (*(unsigned int *)((unsigned char *)obj + 0xA0) >> 2) & 1;
+    fn_80279F58(&state, cfg);
+    fn_8027A8B4(&state, fn_8027A798(a + 0x234));
+    state.m[0] = state.m[0] * *(float *)(a + 0x2EC);
+    state.g[0] = state.g[0] * (lbl_80561CDC * (*(float *)(a + 0x2F4) + *(float *)(a + 0x2F8)));
+    state.g[1] = state.g[1] * *(float *)(a + 0x2FC);
+    for (i = 0; i < 4; i++) {
+        obj = ((void *(*)(void *, char *))(*(void ***)cfg)[2])(cfg, (i == 0 || i == 1) ? lbl_8055A3C0 : lbl_8055A3C8);
+        *(float *)(a + 0x23E8 + i * 0x74) = *(float *)(b + 0x10C + i * 4);
+        *(float *)(a + 0x23EC + i * 0x74) = lbl_80561D48 * ((float (*)(void *, char *, float))(*(void ***)obj)[10])(obj, lbl_803322B0 + 0x268, lbl_80561D50) - *(float *)(a + 0x23E8 + i * 0x74);
+        state.rec[i].value = *(float *)(a + 0x23E8 + i * 0x74);
+    }
+    *(float *)(b + 0x8) = state.m[0] / lbl_80561D54;
+    *(float *)(b + 0xC) = state.m[1] / lbl_80561D58;
+    *(float *)(b + 0x10) = state.m[2] / lbl_80561D58;
+    *(float *)(b + 0x14) = state.m[3] / lbl_80561D58;
+    fn_8017B0F8(a, b, lbl_80561D58, state.m[0]);
+    *(int *)(a + 0x270) = fn_801B2EDC(*(int *)(a + 0x1EC), a);
+    fn_801795D8(a, *(int *)(a + 0x1EC));
+    *(float *)(a + 0x5AC) = -(lbl_80561D48 * ((float (*)(void *, char *, float))(*(void ***)chassis)[10])(chassis, lbl_8055A3D0, lbl_80561CAC));
+    *(float *)(a + 0x5B0) = state.g[6];
+    *(float *)(a + 0x5A8) = lbl_80561D5C;
+    if ((unsigned int)(*(int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4) - 0x180000) != 0x201) {
+        *(float *)(a + 0x5A8) = lbl_80561D60 * (*(float *)(a + 0x2C8) + ((float (*)(void *, char *, float))(*(void ***)chassis)[10])(chassis, lbl_803322B0 + 0x278, *(float *)(a + 0x5A8)));
+    } else if (lbl_8055E4F7 == 0) {
+        lbl_8055E4F7 = 1;
+        fn_802E30C8(lbl_8055A3D8, lbl_803322B0 + 0x288);
+    }
+    *(float *)(a + 0x5DC) = ((float (*)(void *, char *, float))(*(void ***)chassis)[10])(chassis, lbl_803322B0 + 0x2B4, lbl_80561CAC);
+    *(float *)(a + 0x5E0) = ((float (*)(void *, char *, float))(*(void ***)chassis)[10])(chassis, lbl_803322B0 + 0x2C4, *(float *)(a + 0x5DC));
+    *(signed char *)(a + 0x26E0) = ((signed char (*)(void *, char *, int))(*(void ***)chassis)[12])(chassis, lbl_8055A3E0, 0);
+    *(float *)(a + 0x30) = state.tail[0];
+    *(float *)(a + 0x34) = state.tail[1];
+    *(float *)(a + 0x38) = state.tail[2];
+    fn_8017A57C(a);
+    if (*(int *)(a + 0x10) == 0x41434152) {
+        state.m[11] = lbl_80561D64;
+    }
+    *(PhysState *)(a + 0x32C) = state;
+    *(PhysState *)(a + 0x464) = *(PhysState *)(a + 0x32C);
+    ((void (*)(int, void *, int, int, float, float, float, float, float, float))fn_801BDA74)(*(int *)(a + 0x1EC), a + 0x32C, *(int *)(a + 0x45C), *(int *)(a + 0x458), *(float *)(a + 0x450), *(float *)(a + 0x44C), *(float *)(a + 0x448), *(float *)(a + 0x444), *(float *)(a + 0x440), *(float *)(a + 0x43C));
+    node = 0;
+    fn_801BEB30(*(int *)(a + 0x1EC), &node);
+    *(float *)(a + 0x23DC) = ((float *)node)[0];
+    *(float *)(a + 0x23E0) = ((float *)node)[1];
+    *(float *)(a + 0x23E4) = ((float *)node)[2];
+    *(float *)(a + 0x2450) = ((float *)node)[4];
+    *(float *)(a + 0x2454) = ((float *)node)[5];
+    *(float *)(a + 0x2458) = ((float *)node)[6];
+    *(float *)(a + 0x24C4) = ((float *)node)[8];
+    *(float *)(a + 0x24C8) = ((float *)node)[9];
+    *(float *)(a + 0x24CC) = ((float *)node)[10];
+    *(float *)(a + 0x2538) = ((float *)node)[12];
+    *(float *)(a + 0x253C) = ((float *)node)[13];
+    *(float *)(a + 0x2540) = ((float *)node)[14];
+    ((void (*)(void *, void *))fn_801836DC)(a, b);
+    ((void (*)(void *, void *))fn_80182DF4)(a, b);
+    fn_8018C5A0(a, b);
+    fn_8018A654(a, b);
+    isPcar = *(int *)(b) == 0x50434152;
+    *(int *)(a + 0x257C) = fn_80209448(a, *(int *)(b));
+    if (isPcar) {
+        *(int *)(a + 0x2580) = fn_80209D4C(a);
+    } else {
+        *(int *)(a + 0x2580) = 0;
+    }
+    *(int *)(a + 0x2584) = fn_8020DE74(a);
+    fn_801D108C(*(int *)(a + 0x1EC));
+    fn_80131818(cfg);
+    flag = 0;
+    if (isPcar && fn_8020503C(lbl_803322B0 + 0x2D8) != 0) {
+        flag = 1;
+    }
+    *(signed char *)(a + 0x25C8) = flag;
+    if ((unsigned int)(*(int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4) - 0x180000) == 0x304) {
+        *(signed char *)(a + 0x25C8) = 1;
+    }
+    fn_801838C8(a);
 }
 
 extern void *fn_801284F8(int, const char *);
