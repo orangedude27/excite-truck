@@ -574,7 +574,7 @@ typedef struct XformVec { float x, y, z; } XformVec;
 static inline void XformPoint(const float *m, XformVec *dst, const XformVec *src) {
     if (dst == src) {
         float x, y, z;
-        float m10, m11, m12, m00, m01, m02, m20, m21, m22;
+        float m00, m01, m02, m10, m11, m12, m20, m21, m22;
         m10 = m[3]; m11 = m[4]; m12 = m[5]; m00 = m[0]; m01 = m[1]; m02 = m[2]; m20 = m[6]; m21 = m[7]; m22 = m[8];
         x = src->x; y = src->y; z = src->z;
         dst->x = z * m20 + (x * m00 + y * m10);
@@ -638,8 +638,11 @@ extern "C" void fn_80298DE0(void *arg0, void *arg1, int arg2) {
             *(float *)(e2 + 0x1C) = now;
             float *mat = (float *)((void *(*)(int, void *))fn_80287B24)((int)arg1, (void *)e2);
             char *e3 = *(char **)arg0 + off;
-            XformVec tmp;
-            XformPoint(mat, &tmp, (const XformVec *)e3);
+            float tmp[3];
+            XformRot3((const float *)mat, (const float *)e3, tmp);
+            tmp[0] += mat[9];
+            tmp[1] += mat[10];
+            tmp[2] += mat[11];
         }
         char *e4 = *(char **)arg0 + off;
         e4[0x19] = (char)arg2;
