@@ -1028,16 +1028,15 @@ extern "C" s32 fn_8013DE7C(TObj60 *container, const char *name) {
 
 #pragma push
 #pragma processor 750
-#pragma opt_common_subs off
 extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
     f32 *from = (f32 *)arg1;
     f32 *to = (f32 *)arg2;
     f32 *out = (f32 *)arg0;
     f32 s[2], e[2], d[2], c[2], o[2];
-    u32 i;
+    u32 i = 0;
     f32 unit = lbl_805614A4;
     f32 one = lbl_805614AC;
-    for (i = 0; i < 2; i++) {
+    do {
         s[0] = from[0];
         s[1] = from[2];
         e[0] = to[0];
@@ -1045,6 +1044,7 @@ extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
         d[0] = e[0] - s[0];
         d[1] = e[1] - s[1];
         f32 length = (f32)fn_8002F234(d[0] * d[0] + d[1] * d[1]);
+        i++;
         f32 scale = one / length;
         c[0] = out[0];
         c[1] = out[2];
@@ -1061,7 +1061,7 @@ extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
         out[1] = unit;
         out[2] = c[1];
         out += 3;
-    }
+    } while (i < 2);
 }
 #pragma pop
 static inline TVec2 TVec2MulAdd8013E054(const TVec2 &base, const TVec2 &dir, f32 s) {
