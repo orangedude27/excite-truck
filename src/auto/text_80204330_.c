@@ -202,6 +202,7 @@ extern "C" int fn_802044E8(void) {
  return result;
 }
 #pragma cplusplus off
+#pragma processor gekko
 extern int __cntlzw(unsigned int);
 int fn_80204870(int arg0) {
     int index;
