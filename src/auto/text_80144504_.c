@@ -64,6 +64,7 @@ float fn_80144514(float ax, float bx, float ay, float by, float az, float bz) {
 #pragma processor 750
 void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     f32 b[9];
+    f32 *bp = b;
     f32 c, s;
     c = cos(ax);
     s = sin(ax);
@@ -78,28 +79,28 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     m[8] = c;
     c = cos(ay);
     s = sin(ay);
-    b[1] = lbl_805615BC;
-    b[0] = lbl_805615B8;
-    b[2] = lbl_805615BC;
-    b[3] = lbl_805615BC;
-    b[4] = c;
-    b[5] = s;
-    b[6] = lbl_805615BC;
-    b[7] = -s;
-    b[8] = c;
-    M33Cat(m, b, m);
+    bp[1] = lbl_805615BC;
+    bp[0] = lbl_805615B8;
+    bp[2] = lbl_805615BC;
+    bp[3] = lbl_805615BC;
+    bp[4] = c;
+    bp[5] = s;
+    bp[6] = lbl_805615BC;
+    bp[7] = -s;
+    bp[8] = c;
+    M33Cat(m, bp, m);
     c = cos(az);
     s = sin(az);
-    b[0] = c;
-    b[1] = s;
-    b[2] = lbl_805615BC;
-    b[3] = -s;
-    b[4] = c;
-    b[5] = lbl_805615BC;
-    b[6] = lbl_805615BC;
-    b[7] = lbl_805615BC;
-    b[8] = lbl_805615B8;
-    M33Cat(m, b, m);
+    bp[0] = c;
+    bp[1] = s;
+    bp[2] = lbl_805615BC;
+    bp[3] = -s;
+    bp[4] = c;
+    bp[5] = lbl_805615BC;
+    bp[6] = lbl_805615BC;
+    bp[7] = lbl_805615BC;
+    bp[8] = lbl_805615B8;
+    M33Cat(m, bp, m);
 }
 #pragma pop
 
@@ -267,6 +268,9 @@ void fn_80144DAC(f32 *dst, f32 *src) {
     dst[2] = z;
 }
 
+/* Empty no-op stub -- an unimplemented callback/virtual slot that does nothing
+ * (a bare 'blr').  It sits with the default return-FALSE predicates
+ * fn_80144DCC and fn_80144DD8, at the end of this stretch of math helpers. */
 void fn_80144DC8(void) {
 }
 
