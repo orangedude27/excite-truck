@@ -7,6 +7,7 @@ typedef signed int s32;
 typedef unsigned char u8;
 typedef int M2C_UNK;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
+#define MROLL_OFF(base, off) ((char *)(base) + (off))
 extern int fn_80131234(void *);
 extern void *fn_8027DB40(s32);
 extern void *memset(void *, int, unsigned int);
