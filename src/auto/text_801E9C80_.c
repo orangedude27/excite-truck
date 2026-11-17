@@ -73,19 +73,17 @@ void fn_801E9DD8(void) {
 
 }
 
+#pragma scheduling invalid_target
 f32 fn_801E9DDC(void *arg0, f32 farg0, f32 farg1) {
     f32 input[3];
     f32 output[3];
-    f32 y = lbl_80562E2C;
     input[0] = farg0;
-    input[1] = y;
+    input[1] = 0.0f;
     input[2] = farg1;
-    if (((s32 (*)(void *, void *, void *, s32, s32))fn_801DCE14)(arg0, input, output, 0, 0) != 0)
+    if (((s32 (*)(void *, f32 *, f32 *, s32, s32))fn_801DCE14)(arg0, input, output, 0, 0) != 0)
         return output[1];
-    return lbl_80562E2C;
+    return 0.0f;
 }
-
-#pragma scheduling invalid_target
 /* Copy a 3-word vector and query fn_801DCE14 against it, passing the original pointer as context. */
 void fn_801E9E30(void *arg0, void *point) {
     struct Vec3 { s32 x, y, z; };
