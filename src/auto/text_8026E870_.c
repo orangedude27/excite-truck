@@ -1081,8 +1081,9 @@ void fn_80270484(void) {
 
 void fn_802704D0(void) { fn_8026FCFC(); }
 
-void fn_802704D4(void *arg0, void *arg1) {
-    ((void (*)(void *, s32, void *))fn_802704D0)(arg0, *(s32 *)((u8 *)arg1 + 4), arg1);
+void fn_802704D4(void *mode, void *camera) {
+    /* Set up the camera with the given mode, taking the previous-mode field at +4 from the camera object. */
+    ((void (*)(void *, s32, void *))fn_802704D0)(mode, *(s32 *)((u8 *)camera + 4), camera);
 }
 
 void fn_802704E0(void) { ((f32 (*)())fn_8026EA8C)(); }
