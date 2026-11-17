@@ -903,9 +903,11 @@ static inline u32 entryToPathB(u32 entry, char *path, u32 maxlen) {
 static inline u32 entryToPathC(u32 entry, char *path, u32 maxlen) {
     u32 loc;
     const char *name;
+    u32 *e;
     if (entry == 0) return 0;
-    name = (const char *)FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF);
-    loc = entryToPathB(*(u32 *)(FstStart_8055D840 + 4 + entry * 12), path, maxlen);
+    e = (u32 *)(FstStart_8055D840 + entry * 12);
+    name = (const char *)FstStringStart_8055D83C + (e[0] & 0xFFFFFF);
+    loc = entryToPathB(e[1], path, maxlen);
     if (loc == maxlen) return loc;
     path[loc++] = '/';
     loc += myStrncpy(path + loc, name, maxlen - loc);
