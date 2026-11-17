@@ -962,6 +962,7 @@ extern "C" s32 fn_800A6A40(void *);
 #define PIN_R29 asm("r29")
 #define PIN_R30 asm("r30")
 #define PIN_R31 asm("r31")
+#define PINUP_R30 asm("R30")
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800A5AE4(void *arg0, void *arg1) {
     s32 var_r30 = 0;
