@@ -217,8 +217,8 @@ void fn_801A7A5C(void) {
         ((void (*)(int, void *))fn_801A7844)(1, t);
     }
     fn_801A7844(1);
-    src = (Rec_801A7A5C*)lbl_80435050;
     dst = (Rec_801A7A5C*)(lbl_80435050 + 100);
+    src = (Rec_801A7A5C*)lbl_80435050;
     i = 4;
     do {
         for (j = 0; j < 8; j++) dst->f[j] = src->f[j];
@@ -242,7 +242,6 @@ void fn_801A7A5C(void) {
         vv->c = u->c;
     }
 }
-#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
