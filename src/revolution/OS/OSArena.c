@@ -37,8 +37,9 @@ void OSSetMEM2ArenaHi(void* hi) {
     s_mem2ArenaHi = hi;
 }
 
-void OSSetArenaHi(void* hi) {
-    OSSetMEM1ArenaHi(hi);
+/* Set the high bound of the default (MEM1) arena. */
+void OSSetArenaHi(void* arenaHi) {
+    OSSetMEM1ArenaHi(arenaHi);
 }
 
 void OSSetMEM1ArenaLo(void* lo) {
