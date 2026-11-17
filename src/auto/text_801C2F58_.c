@@ -2056,9 +2056,10 @@ void fn_801C7C04(void) {
     extern double fn_8002EFB0(f32, f32);
     char *base = (char *)&lbl_80437D88;
     char *obj;
+    u32 mode;
     Vec *start = (Vec *)(base + 0x6F8), *mid = (Vec *)(base + 0x704), *end = (Vec *)(base + 0x710);
     f32 a[2], b[2], c[2], d[2], e[2], f[2], g[2], h[2], i[2];
-    f32 *p, *q;
+    f32 *q, *p;
     f32 x, y, len, scale;
     lbl_8055E84C = lbl_805629D4 * (f32)atof(base + 0x368);
     fn_801C957C(0);
@@ -2070,7 +2071,8 @@ void fn_801C7C04(void) {
     *(s32 *)(obj + 0xC) = fn_801C3954((s32)obj + 0x10);
     *(s32 *)(obj + 0xC) &= ~fn_801C3954((s32)obj + 0x110);
     *(f32 *)(obj + 0x214) = lbl_8055E84C;
-    switch (*(s32 *)(obj + 0x210)) {
+    mode = *(u32 *)(obj + 0x210);
+    switch (mode) {
     case 2:
         *(f32 *)(obj + 0x220) = lbl_80562970;
         b[1] = end->z; b[0] = end->x;
@@ -2079,13 +2081,13 @@ void fn_801C7C04(void) {
     case 0:
         c[0] = start->x; c[1] = start->z;
         *(f32 *)(obj + 0x218) = c[0]; *(f32 *)(obj + 0x21C) = c[1];
+        g[0] = lbl_80562970; g[1] = lbl_8056296C;
         d[0] = end->x; d[1] = end->z;
         *(f32 *)(obj + 0x224) = d[0] - *(f32 *)(obj + 0x218);
         *(f32 *)(obj + 0x228) = d[1] - *(f32 *)(obj + 0x21C);
         f[1] = start->z; e[1] = mid->z;
         f[0] = start->x; e[0] = mid->x;
         a[0] = e[0] - f[0]; a[1] = e[1] - f[1];
-        g[0] = lbl_80562970; g[1] = lbl_8056296C;
         q = g; p = a;
         len = a[0]*a[0] + a[1]*a[1];
         if (!((f32)__fabs((f64)(len-lbl_8056296C)) <= lbl_80558DC4[0])) {
@@ -3124,6 +3126,14 @@ void fn_801C96E4(void) {
 }
 
 #pragma scheduling invalid_target
+static inline void fn_801C9708_append(char *str, char c) {
+    u32 length = strlen(str);
+    if (length < 0xFF) {
+        str[length] = c;
+        str[length + 1] = 0;
+    }
+}
+
 s32 fn_801C9708(s32 arg0) {
     switch (arg0) {
     case 0xD:
@@ -3230,9 +3240,11 @@ char *fn_801C98F4(char *blob, s32 index) {
 #pragma push
 #pragma processor 750
 s32 fn_801C9920(s32 arg0, s32 arg1) {
-    char *base = lbl_80336B00;
-    char *record = (char *)arg0;
-    s32 handle = arg1;
+    #pragma use_lmw_stmw off
+    char *base;
+    char *record;
+    s32 handle;
+    f32 *rot;
     f32 vec[3];
     f32 quat[4];
     f32 trace;
@@ -3243,7 +3255,9 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
     f32 angle;
     f32 sv;
     f32 scale;
-    f32 *rot;
+    base = lbl_80336B00;
+    record = (char *)arg0;
+    handle = arg1;
     fn_802E3AD0(handle, base + 0x9b0);
     fn_802E3AD0(handle, base + 0x9c0, *(f32 *)record);
     switch (*(u32 *)(record + 8)) {
