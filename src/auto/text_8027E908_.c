@@ -202,7 +202,7 @@ extern "C" char lbl_8055C7A8;
 extern "C" char lbl_8055C7B0;
 extern "C" char lbl_8055C7B8;
 extern "C" char lbl_8055C7C0;
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_8027E908(void) {
     class InitObj {
     public:
