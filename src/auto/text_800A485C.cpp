@@ -12,6 +12,7 @@ extern "C" void fn_800B3330(void *, s32, s32);
 extern "C" s32 fn_800AC708(void *, u8 *, u32, s32 *);
 extern "C" s32 fn_800AF4F0(void *, s32);
 extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
+static inline int fn_800ACDF8_tagDiff(u16 tag, u32 value) { return value != tag; }
 extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *);
 extern "C" s32 VFiPFPATH_GetLengthFromUnicode(const u16 *);
 extern "C" s32 OSWaitSemaphore(void *);
@@ -5970,6 +5971,7 @@ extern "C" s32 fn_800AF144(void *volume) {
     }
     return result;
 }
+#pragma optimize_for_size on
 extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4, s32 arg5, s32 arg6) {
     void *context = *(void **)((u8 *)arg0 + 0x34);
     u32 *typeEntry;
@@ -5978,9 +5980,9 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     s32 pageIndex;
     void *page;
     u32 maxCluster;
-    s32 cluster;
-    s32 savedResult;
+    u32 cluster;
     s32 result;
+    s32 savedResult;
 
     typeEntry = lbl_802EEF40 + *(s32 *)((u8 *)context + 0x1C) * 5;
     *arg3 = -1;
@@ -6037,20 +6039,18 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
             *(u32 *)((u8 *)context + 0x38) -= 1;
         }
     }
-    savedResult = 0;
-    cluster = 0;
     *(u32 *)((u8 *)context + 0x3C) = end + 1;
     *(u32 *)((u8 *)arg0 + 0xC) = end;
     *(u32 *)((u8 *)arg0 + 0x10) = arg2;
     *arg4 = end;
     arg2 = (u32)page;
     arg0 = *(void **)((u8 *)arg2 + 0x18);
-    while ((u16)cluster < *(u8 *)((u8 *)context + 0x22)) {
+    savedResult = 0;
+    for (cluster = 0; (u16)cluster < *(u8 *)((u8 *)context + 0x22); cluster++) {
         result = fn_800B5618(context, *(void **)((u8 *)arg2 + 8),
                              (u32)arg0, 0, *(u16 *)context);
         if (result != 0 && savedResult == 0) savedResult = result;
         arg0 = (u8 *)arg0 + *(s32 *)((u8 *)context + 0xC);
-        cluster++;
     }
     if (savedResult != 0) {
         VFiPFCACHE_FreeFATPage_800A8E10(context, page);
@@ -6065,7 +6065,7 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     }
     return 0;
 }
-
+#pragma optimize_for_size reset
 extern "C" s32 VFiPFFAT_ReadClusterPage(void *, u32, s32, s32 *, s32 *, void *);
 extern "C" s32 VFiPFFAT_WriteCluster(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800AE7A8(void *, s32, s32, s32);
@@ -8860,7 +8860,6 @@ u16 fn_800B25CC(void *arg0, s32 arg1) {
     u32 var_r3;
     u32 var_r3_2;
     u32 var_r3_3;
-    u32 var_r3_4;
     u8 *temp_r3;
     u8 *temp_r5;
     u8 temp_r4;
@@ -8938,11 +8937,11 @@ block_27:
         }
         if (var_r3_3 == 1U) {
             M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)work), &(*(u16 *)work));
-            var_r3_4 = 1U;
+            var_r0 = 1U;
         } else {
-            var_r3_4 = 0U;
+            var_r0 = 0U;
         }
-        if (var_r3_4 == 1U) {
+        if (var_r0 == 1U) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     }
@@ -10803,37 +10802,41 @@ extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
 }
 
 extern "C" s32 fn_800B63FC(void) {
+    struct Extra63FC { u32 flagA; s32 keyA; u32 flagB; s32 keyB; };
     s32 result, found;
     u32 i;
     s32 *p;
-    s32 key, k;
+    s32 key;
     fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
     result = 0;
     ((void (*)(s32 *))fn_800B78F0)(&key);
-    k = key;
     p = lbl_803D2140 + 3;
-    for (i = 1; i < 4; i++, p += 3) {
-        if ((p[0] & 1) && p[1] == k) { result = lbl_803D2140[i * 3 + 2]; break; }
+    for (i = 1; i < 4; p += 3, i++) {
+        if ((p[0] & 1) && key == p[1]) { result = lbl_803D2140[i * 3 + 2]; break; }
     }
     if (i == 4) {
-        s32 *e = (s32 *)((u8 *)lbl_803D2140 + 0x88);
-        e[0] &= 1;
-        if (e[0] && e[1] == k) found = 1;
+        s32 k = key;
+        Extra63FC *s = (Extra63FC *)((u8 *)lbl_803D2140 + 0x80);
+        s->flagB &= 1;
+        if (s->flagB && k == s->keyB) found = 1;
         else {
-            e = (s32 *)((u8 *)e + 8); e[0] &= 1;
-            if (e[0] && e[1] == k) found = 1;
+            s += 1;
+            s->flagA &= 1;
+            if (s->flagA && k == s->keyA) found = 1;
             else {
-                e = (s32 *)((u8 *)e + 8); e[0] &= 1;
-                if (e[0] && e[1] == k) found = 1;
+                s->flagB &= 1;
+                if (s->flagB && k == s->keyB) found = 1;
                 else found = 0;
             }
         }
         if (found) {
             p = lbl_803D2140 + 3;
-            for (i = 1; i < 4; i++, p += 3) {
+            for (i = 1; i < 4; p += 3, i++) {
                 if (!(p[0] & 1)) {
-                    s32 *q = lbl_803D2140 + i * 3;
-                    q[0] |= 1; q[1] = k; result = q[2]; break;
+                    lbl_803D2140[i * 3] |= 1;
+                    lbl_803D2140[i * 3 + 1] = key;
+                    result = lbl_803D2140[i * 3 + 2];
+                    break;
                 }
             }
         } else result = lbl_803D2140[2];
