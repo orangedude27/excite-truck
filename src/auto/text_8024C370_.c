@@ -599,6 +599,7 @@ int fn_8024CF48(int *arg0) {
     fn_8024CC54(arg0, 0, 0);
 }
 
+// Set the lbl_8055F2C8 flag, then invoke the fn_8024C768 menu dialog (its result becomes the tail-call return).
 void fn_8024CF54(void) {
     lbl_8055F2C8 = 1;
     fn_8024C768();
