@@ -13,8 +13,7 @@ extern void fn_802DD4A0(void);
 #include <types.h>
 #include <macros.h>
 void fn_802DD430(void);
-#pragma section ".ctors$00"
-DECL_SECTION(".ctors$00") funcptr_t D_802ED5DC = fn_802DD430;
+DECL_SECTION(".ctors") funcptr_t D_802ED5DC = fn_802DD430;
 #pragma push
 #pragma scheduling invalid_target
 void fn_802DD430(void) {
