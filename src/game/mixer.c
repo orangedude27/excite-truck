@@ -452,7 +452,8 @@ int fn_8020921C(void) {
     return (int)*(lbl_8048929C + 1);
 }
 #pragma scheduling default
-int fn_80209260(int arg0) { return arg0 + 4; }
+/* Trivial mixer helper: returns the supplied value advanced by 4. */
+int fn_80209260(int value) { return value + 4; }
 
 int fn_80209268(void) { return 1; }
 
