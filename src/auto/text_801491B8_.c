@@ -3574,9 +3574,14 @@ extern "C" void fn_80153900(void *arg0, long arg1) {
 #pragma cplusplus reset
 #pragma pop
 void fn_801539C0(s32 arg0, s32 arg1) {
-    s32 temp_r31 = arg0 + (fn_801E866C(arg1) * 0xC0) + 0x9E4;
+    s32 base = arg0 + fn_801E866C(arg1) * 0xC0;
+    s32 temp_r31 = base + 0x9E4;
+    s32 var_r4;
     if (temp_r31 != 0) {
-        s32 var_r4 = (fn_801E85A4() == 2) ? lbl_8055E23C : lbl_8055E238;
+        switch (fn_801E85A4()) {
+        default: var_r4 = lbl_8055E238; break;
+        case 2: var_r4 = lbl_8055E23C; break;
+        }
         fn_8014CA48(temp_r31, var_r4, arg1);
     }
 }
@@ -4358,8 +4363,9 @@ s32 fn_80155288(s32 object, s32 deleteFlag) {
 }
 
 extern void lbl_8032E160(void);
-void fn_801552C8(void **arg0) {
-    *arg0 = (void *)&lbl_8032E160;
+/* Constructor helper: point the object's vtable slot at the vtable lbl_8032E160. */
+void fn_801552C8(void **vtableSlot) {
+    *vtableSlot = (void *)&lbl_8032E160;
 }
 
 s32 fn_801552D8(s32 object, s32 deleteFlag) {
