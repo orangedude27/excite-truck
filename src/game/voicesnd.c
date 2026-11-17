@@ -338,8 +338,12 @@ extern void fn_802E5950(int, int); void fn_8020AC0C(int arg0, int arg1, int arg2
 extern void fn_802E59BC(void *); void fn_8020AC18(void *arg0, int arg1) { fn_802E59BC((void *)arg1); }
 
 extern void fn_802E5A54(void);
+/* Voice-sound shutdown: clear the registered voice-entry count, then tear down
+ * SPU state (fn_802E5A54). */
 void fn_8020AC20(void) {
-    lbl_8055EE08 = 0;
+#define s_voiceEntryCount lbl_8055EE08
+    s_voiceEntryCount = 0;
+#undef s_voiceEntryCount
     fn_802E5A54();
 }
 
