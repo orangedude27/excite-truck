@@ -658,6 +658,8 @@ void fn_8001C4D8(void) {
 }
 
 void fn_8001C4DC(void) {
+    /* Top of the statistics lock-hook chain: forwards down to fn_8001C4D8,
+     * which reaches the no-op base hook; locking is compiled out of this build. */
     fn_8001C4D8();
 }
 
