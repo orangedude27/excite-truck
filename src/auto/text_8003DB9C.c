@@ -46,9 +46,6 @@ extern unsigned int lbl_8055D954;
 extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
 extern unsigned int * const __GXData;
-static inline void GXStoreWord_8003DB9C(unsigned int value, unsigned int *base) {
-    base[0x238 / 4] = value;
-}
 #define GX_CP_DISP 0x23C
 #define GX_CP_TEX  0x24C
 extern u8 FifoObj_8037BA40[];
@@ -3366,11 +3363,10 @@ void GXSetDispCopyDst(s32 value) {
             u32 arg : 10;
         } fields;
     } data = {0};
-    unsigned int *gx = __GXData;
 
     data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
-    gx[0x238 / 4] = data.reg;
+    GXStoreWord_8003DB9C(data.reg, __GXData);
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
