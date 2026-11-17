@@ -2056,8 +2056,10 @@ void fn_801B30C0(s32 arg0, s32 arg1, s32 arg2) {
     fn_801B18B8((void *)((u8 *)lbl_8055E684 + (arg0 << 7)), arg1, arg2);
 }
 #pragma dont_inline reset
-void fn_801B30D0(s32 arg0) {
-    fn_801B196C((s32)((u8 *)lbl_8055E684 + (arg0 << 7)), (s32)lbl_8055E684);
+/* Run one processing pass over the 0x80-byte AI-truck (deity) slot at
+   `slotIndex` in the slot table based at lbl_8055E684. */
+void fn_801B30D0(s32 slotIndex) {
+    fn_801B196C((s32)((u8 *)lbl_8055E684 + (slotIndex << 7)), (s32)lbl_8055E684);
 }
 
 #pragma cplusplus on
