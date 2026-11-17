@@ -291,6 +291,7 @@ void fn_80144DD4(void) {
 }
 
 s32 fn_80144DD8(void) {
+    /* Default no-op predicate: unconditionally returns FALSE (0). */
     return 0;
 }
 
