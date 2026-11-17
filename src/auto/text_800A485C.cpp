@@ -1332,8 +1332,9 @@ extern "C" s32 fn_800A6268(s32 device, void *info) {
 }
 #pragma dont_inline reset
 
-extern "C" s32 fn_800A6298(void *arg0, u16 *arg1) {
-    *arg1 = *(u16 *)((char *)arg0 + 0x20);
+/* Read the 16-bit field at offset 0x20 of the object into *outValue and return success (0). */
+extern "C" s32 fn_800A6298(void *object, u16 *outValue) {
+    *outValue = *(u16 *)((char *)object + 0x20);
     return 0;
 }
 
