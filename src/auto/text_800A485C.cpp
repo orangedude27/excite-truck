@@ -16546,11 +16546,10 @@ loop_25:
         temp_r3 -= arg4;
         var_r3_2 = (u32)temp_r3 >> 2;
         if (arg4 < arg1) {
-            u32 k;
             temp_r0 = var_r3_2 >> 3U; var_ctr = temp_r0;
             if (temp_r0 != 0) {
                 do {
-                    for (k = 0; k < 32; k++) var_r5_2[k] = var_r4;
+                    var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4; var_r5_2[4] = var_r4; var_r5_2[5] = var_r4; var_r5_2[6] = var_r4; var_r5_2[7] = var_r4; var_r5_2[8] = var_r4; var_r5_2[9] = var_r4; var_r5_2[10] = var_r4; var_r5_2[11] = var_r4; var_r5_2[12] = var_r4; var_r5_2[13] = var_r4; var_r5_2[14] = var_r4; var_r5_2[15] = var_r4; var_r5_2[16] = var_r4; var_r5_2[17] = var_r4; var_r5_2[18] = var_r4; var_r5_2[19] = var_r4; var_r5_2[20] = var_r4; var_r5_2[21] = var_r4; var_r5_2[22] = var_r4; var_r5_2[23] = var_r4; var_r5_2[24] = var_r4; var_r5_2[25] = var_r4; var_r5_2[26] = var_r4; var_r5_2[27] = var_r4; var_r5_2[28] = var_r4; var_r5_2[29] = var_r4; var_r5_2[30] = var_r4; var_r5_2[31] = var_r4;
                     var_r5_2 += 32; var_ctr -= 1;
                 } while (var_ctr != 0);
                 var_r3_2 &= 7;
@@ -16559,7 +16558,7 @@ loop_25:
 block_21:
                 var_ctr_2 = var_r3_2;
                 do {
-                    for (k = 0; k < 4; k++) var_r5_2[k] = var_r4;
+                    var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4;
                     var_r5_2 += 4; var_ctr_2 -= 1;
                 } while (var_ctr_2 != 0);
             }
@@ -20170,10 +20169,11 @@ extern "C" void fn_800D1054(void *dst, void *src, s32 copyPos) {
     }
 }
 
-extern "C" void fn_800D11CC(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 0x10) = 0;
-    *(s32 *)((u8 *)arg0 + 0x14) = 0;
-    *(s32 *)((u8 *)arg0 + 0x18) = 0;
+/* Clears the home-button controller's three flag words at +0x10/+0x14/+0x18. */
+extern "C" void fn_800D11CC(void *controller) {
+    *(s32 *)((u8 *)controller + 0x10) = 0;
+    *(s32 *)((u8 *)controller + 0x14) = 0;
+    *(s32 *)((u8 *)controller + 0x18) = 0;
 }
 
 extern "C" void fn_800D11E0(void* arg0) {
@@ -25178,23 +25178,23 @@ extern "C" void fn_800CEF60(void *object, void *archive, s32 enable) {
  unsigned long size, streamSize;
  p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0xd8);
  if (p) { if (p) { p=__ct__Q36nw4hbm3snd18SoundArchivePlayerFv(p); } *(void **)(self+0x5c0)=p; }
- if(!*(void * volatile *)(self+0x5c0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe62,file+0xe14);
+ if(!*(void * volatile *)(self+0x5c0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe62,file+0xe14);
  size=GetRequiredMemSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(*(void **)(self+0x5c0),archive);
  streamSize=GetRequiredStrmBufferSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(*(void **)(self+0x5c0),archive);
  stream=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,streamSize);
  buffer=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,size);
- if(!Setup__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUlPvUl(*(void **)(self+0x5c0),archive,buffer,size,stream,streamSize)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe74,file+0xd2c);
+ if(!Setup__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUlPvUl(*(void **)(self+0x5c0),archive,buffer,size,stream,streamSize)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe74,file+0xd2c);
  p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,4);
  if (p) { if (p) { *(u32 *)p=0; } *(void **)(self+0x5d4)=p; }
- if(!*(void * volatile *)(self+0x5d4)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe7b,file+0xe44);
+ if(!*(void * volatile *)(self+0x5d4)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe7b,file+0xe44);
  if(enable) {
   p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0x2c);
   if (p) { if (p) { p=fn_800F8310(p); } *(void **)(self+0x5d0)=p; }
-  if(!*(void * volatile *)(self+0x5d0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe84,file+0xe6c);
+  if(!*(void * volatile *)(self+0x5d0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe84,file+0xe6c);
   p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0x60000);
   fn_800F83C8(*(void **)(self+0x5d0),p,0x60000);
-  if(!*(u32 *)(*(u8 **)(self+0x5d0)+0x1c)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe8b,file+0xe90);
-  if(!fn_800F6C7C(*(void **)(self+0x5c0),0,*(void **)(self+0x5d0),0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe8e,file+0xd2c);
+  if(!*(u32 *)(*(u8 **)(self+0x5d0)+0x1c)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe8b,file+0xe90);
+  if(!fn_800F6C7C(*(void **)(self+0x5c0),0,*(void **)(self+0x5d0),0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe8e,file+0xd2c);
  } else *(void **)(self+0x5d0)=0;
 }
 #pragma pop
