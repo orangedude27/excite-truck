@@ -205,8 +205,11 @@ void fn_8017EB68(void *child) {
 }
 
 extern void fn_8017E96C(void *);
-void fn_8017EB70(void *arg0) {
-    fn_8017E96C((char *)arg0 - 0x1EC);
+/* Ball-body vtable method: `child` points 0x1EC into the owning object, so recover
+ * the BallBody base and forward to fn_8017E96C (out params pass through in r4/r5),
+ * which reports a status string and flag derived from the ball's state. */
+void fn_8017EB70(void *child) {
+    fn_8017E96C((char *)child - 0x1EC);
 }
 
 extern void fn_8017E9FC(void *);
