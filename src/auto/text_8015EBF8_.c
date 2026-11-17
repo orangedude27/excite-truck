@@ -646,7 +646,7 @@ void fn_8015F79C(void) {
 
 
 extern f32 lbl_805617D4, lbl_805617E4, lbl_805617E8, lbl_805617EC, lbl_805617F0;
-extern f64 lbl_805617F8;
+extern const f64 lbl_805617F8;
 extern f32 lbl_8056182C;
 extern f64 fn_8002F234(f32, f32, f32);
 f32 PSVECDotProduct(void *, void *);
@@ -666,8 +666,8 @@ s32 fn_8015F7A0(s32 arg0, void *arg1, void *arg2) {
 extern f32 lbl_8055E2A4;
 extern f32 lbl_805617DC;
 extern f32 lbl_80561808;
-extern f64 lbl_805617F8;
-__declspec(section ".sdata") extern f64 lbl_805617F8;
+extern const f64 lbl_805617F8;
+__declspec(section ".sdata") extern const f64 lbl_805617F8;
 s32 fn_8015F848(f32 *arg0, f32 farg0) {
     f32 *var_r5;
     f32 *temp_r7;
