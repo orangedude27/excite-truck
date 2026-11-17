@@ -3205,7 +3205,7 @@ void fn_80170E98(void *source, void *buffer, s32 bufferSize) {
             buffer, bufferSize, messages + 0x27c, *(s32 *)((u8 *)source + 0x2c));
         break;
     default:
-        fn_802E317C((void *)(messages + 0x288));
+        fn_802E317C(messages + 0x288);
         break;
     }
 }
