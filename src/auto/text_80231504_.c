@@ -1306,8 +1306,9 @@ extern void fn_8022C8B98(void);
 extern s32 lbl_8055F050;
 extern void fn_80232040(u8 *, s32, s32, s32, s32, f32, f32, f32, f32, f32, f32);
 extern void fn_80233600(u8 *, s32, s32, s32, f32, f32, f32);
-void fn_802335F0(u8 *arg0, s32 arg1, f32 farg0, f32 farg1) {
-    fn_80233600(arg0, arg1, -1, 9, farg0, farg1, lbl_8056368C);
+/* Draw text at (x, y) using the given font, with no picture, default color, and no extra offset. */
+void fn_802335F0(u8 *text, s32 font, f32 x, f32 y) {
+    fn_80233600(text, font, -1, 9, x, y, lbl_8056368C);
 }
 
 #pragma push
