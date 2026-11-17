@@ -123,19 +123,19 @@ struct CarObject {
     s32 count20F0;
     Entry20F4 wheels[4];
 };
- struct File_Vtable_80279004 {
-     virtual void slot0();
-     virtual void slot1();
-     virtual Res_80279004* getRes(const char*);
-     virtual void slot3();
-     virtual int hasRes(const char*);
- };
  struct Res_Vtable_80279004 {
      virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3();
      virtual void s4(); virtual void s5(); virtual void s6(); virtual void s7();
      virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11();
      virtual void s12();
      virtual Vec3_80279004 getVec(const char*);
+ };
+ struct File_Vtable_80279004 {
+     virtual void slot0();
+     virtual void slot1();
+     virtual Res_Vtable_80279004* getRes(const char*);
+     virtual void slot3();
+     virtual int hasRes(const char*);
  };
  #pragma cplusplus reset
 
