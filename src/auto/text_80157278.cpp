@@ -1448,13 +1448,10 @@ extern "C" f32 lbl_80561754;
 #pragma scheduling on
 extern "C" void fn_80158A84(Unk801577F0 *arg0) {
     s32 value = 0;
-    f32 zero;
-    s32 i;
-    s32 offset;
     *((u8 *)arg0 + 0x273) = (u8)value;
-    i = 0;
-    zero = lbl_80561754;
-    offset = 0;
+    f32 zero = 0.0f;
+    s32 i = 0;
+    s32 offset = 0;
     *((u8 *)arg0 + 0x270) = (u8)value;
     *((u8 *)arg0 + 0x271) = (u8)value;
     *((u8 *)arg0 + 0x272) = (u8)value;
