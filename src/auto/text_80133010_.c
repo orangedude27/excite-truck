@@ -336,8 +336,8 @@ int fn_8013365C(int arg0, int arg1) {
 
 #pragma scheduling invalid_target
 void fn_801336E0(int arg0, int arg1) {
-    int offset = arg0 << 3;
-    int *entry = &lbl_8042F718[arg0 + arg0];
+    int *entry = &lbl_8042F718[arg0 * 2];
+    int offset = arg0 * 8;
     if (entry[1] == 0) {
         fn_802E317C(lbl_8032B940, arg0);
     }
@@ -346,7 +346,7 @@ void fn_801336E0(int arg0, int arg1) {
     }
     entry[1] = 0;
 }
-#pragma scheduling on
+#pragma opt_propagation off
 int fn_80133780(void *arg0, void *arg1) {
     int result = *(int *)((char *)arg0 + 4) - *(int *)((char *)arg1 + 4);
     switch (result) {
@@ -358,7 +358,7 @@ int fn_80133780(void *arg0, void *arg1) {
     }
     return result;
 }
-#pragma optimize_for_size off
+#pragma opt_propagation reset
 extern void qsort(void *, int, int, int (*)(void *, void *));
 int fn_80133780(void *, void *);
 #pragma scheduling invalid_target
@@ -416,7 +416,7 @@ check_invalid:
         return atoi(p) != 0;
     return stricmp(p, lbl_80559B64) == 0;
 }
-#pragma dont_inline off
+#pragma dont_inline on
 
 int fn_801338D8(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
