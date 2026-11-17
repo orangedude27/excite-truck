@@ -290,9 +290,12 @@ extern "C" f32 fn_801452B4(f32 inputY) {
 }
 #pragma dont_inline reset
 
-extern "C" f32 fn_801452C8(f32 arg0) {
+extern "C" f32 fn_801452C8(f32 x) {
+    /* Converts a layout X coordinate to screen space for legacy-version text entries by adding the 320-unit screen width (lbl_805615E0); paired with fn_801452D4 for Y. */
     extern f32 lbl_805615E0;
-    return lbl_805615E0 + arg0;
+#define SCREEN_WIDTH lbl_805615E0
+    return SCREEN_WIDTH + x;
+#undef SCREEN_WIDTH
 }
 
 extern "C" f32 fn_801452D4(f32 y) {
@@ -1770,8 +1773,8 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
     extern f32 fn_801452A0(s32, f32);
-    f32 tx;
     f32 angle;
+    f32 tx;
     if (arg0 != 0) {
         fn_802C8BD0(arg2);
         if (fn_802C8DBC(4) != 0) {
