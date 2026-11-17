@@ -14,11 +14,10 @@ extern void *lbl_80438818[];
 #define gManagerCount lbl_8055E8E8 /* number of registered boot-time managers */
 #define gManagerList  lbl_80438818 /* array of registered manager objects */
 
-/* Empty the manager list.  The ROM symbol here reads __AXDSPInitCallback, but
- * nothing about this list is audio/DSP related and the same name is attached
- * to unrelated functions elsewhere, so treat it as misattributed. */
+/* Empty the boot-time manager list by zeroing its registered-manager count.
+ * The ROM symbol reads __AXDSPInitCallback, but this list is not audio/DSP. */
 void __AXDSPInitCallback_801D0CF0(void) {
-    lbl_8055E8E8 = 0;
+    gManagerCount = 0;
 }
 
 #pragma cplusplus on
