@@ -12727,26 +12727,27 @@ static inline void fn800B960CSetSlotError(u32 key, s32 err) {
 }
 extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
     s32 status;
-    u32 i;
-    u32 filelen;
-    u32 pos;
-    u32 length;
-    u32 cur;
-    s32 r;
-    u32 remain;
-    u32 done;
-    unsigned char *entry;
+    u32 slotOffset;
+    u16 slotIndex;
+    u32 fileLength;
+    u32 readPos;
+    u32 bytesToRead;
+    u32 currentPos;
+    s32 nandResult;
+    u32 bytesRemaining;
+    u32 bytesRead;
+    unsigned char *slot;
     unsigned char buf[0x200] __attribute__((aligned(32)));
 
-    entry = 0;
-    for (i = 0; (u16)i < 0x17; i++) {
-        u32 offset = (u16)i * 0xF0;
-        if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
-            entry = lbl_80405D58 + offset;
+    slot = 0;
+    for (slotIndex = 0; slotIndex < 0x17; slotIndex++) {
+        slotOffset = slotIndex * 0xF0;
+        if (*(u32 *)(lbl_80405D58 + slotOffset) == (u32)arg5) {
+            slot = lbl_80405D58 + slotOffset;
             break;
         }
     }
-    if ((u16)i == 0x17) {
+    if (slotIndex == 0x17) {
         status = -0x16;
     } else {
         status = 0;
@@ -12755,78 +12756,86 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
         return -0x14;
     }
 
-    length = arg0 * arg3;
-    filelen = *(u32 *)(entry + 0x54);
-    pos = arg2 * arg3;
+    bytesToRead = arg0 * arg3;
+    fileLength = *(u32 *)(slot + 0x54);
+    readPos = arg2 * arg3;
 
-    if (NANDGetLengthAsync(entry + 0x58, &cur) != 0 || cur != pos) {
-        r = NANDSeek(entry + 0x58, (s32)pos, 0);
+    if (NANDGetLengthAsync(slot + 0x58, &currentPos) != 0 || currentPos != readPos) {
+        nandResult = NANDSeek(slot + 0x58, readPos, 0);
     } else {
-        r = 0;
+        nandResult = 0;
     }
-    if (r < 0) goto fail;
+    if (nandResult < 0) goto fail;
 
-    if (pos + length > filelen) {
-        remain = filelen - pos;
-        done = 0;
-        while (remain >= 0x200) {
-            r = NANDRead(entry + 0x58, buf, 0x200);
-            if (r < 0) return -0x16;
-            VFipf_memcpy((void *)(arg1 + done), buf, r);
-            done += r;
-            remain -= r;
+    if (readPos + bytesToRead > fileLength) {
+        bytesRemaining = fileLength - readPos;
+        bytesRead = 0;
+        while (bytesRemaining >= 0x200) {
+            nandResult = NANDRead(slot + 0x58, buf, 0x200);
+            if (nandResult < 0) return -0x16;
+            VFipf_memcpy((u8 *)arg1 + bytesRead, buf, nandResult);
+            bytesRead += nandResult;
+            bytesRemaining -= nandResult;
         }
-        if (remain != 0) {
-            r = NANDRead(entry + 0x58, buf, remain);
-            if (r < 0) return -0x16;
-            VFipf_memcpy((void *)(arg1 + done), buf, r);
+        if (bytesRemaining != 0) {
+            nandResult = NANDRead(slot + 0x58, buf, bytesRemaining);
+            if (nandResult < 0) return -0x16;
+            VFipf_memcpy((u8 *)arg1 + bytesRead, buf, nandResult);
         }
         return -0x16;
     }
 
-    done = 0;
-    while (length >= 0x200) {
-        r = NANDRead(entry + 0x58, buf, 0x200);
-        if (r < 0) {
-            for (i = 0; (u16)i < 0x17; i++) {
-                u32 offset = (u16)i * 0xF0;
+    bytesRead = 0;
+    while (bytesToRead >= 0x200) {
+        nandResult = NANDRead(slot + 0x58, buf, 0x200);
+        if (nandResult < 0) {
+            u32 offset;
+            u16 j;
+            for (j = 0; j < 0x17; j++) {
+                offset = j * 0xF0;
                 if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
-                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
+                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
                     break;
                 }
             }
-            return r;
+            return nandResult;
         }
-        VFipf_memcpy((void *)(arg1 + done), buf, r);
-        done += r;
-        length -= r;
+        VFipf_memcpy((u8 *)arg1 + bytesRead, buf, nandResult);
+        bytesRead += nandResult;
+        bytesToRead -= nandResult;
     }
-    if (length != 0) {
-        r = NANDRead(entry + 0x58, buf, length);
-        if (r < 0) {
-            for (i = 0; (u16)i < 0x17; i++) {
-                u32 offset = (u16)i * 0xF0;
+    if (bytesToRead != 0) {
+        nandResult = NANDRead(slot + 0x58, buf, bytesToRead);
+        if (nandResult < 0) {
+            u32 offset;
+            u16 j;
+            for (j = 0; j < 0x17; j++) {
+                offset = j * 0xF0;
                 if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
-                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
+                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
                     break;
                 }
             }
-            return r;
+            return nandResult;
         }
-        VFipf_memcpy((void *)(arg1 + done), buf, r);
+        VFipf_memcpy((u8 *)arg1 + bytesRead, buf, nandResult);
     }
     *arg4 = arg0;
     return 0;
 
 fail:
-    for (i = 0; (u16)i < 0x17; i++) {
-        u32 offset = (u16)i * 0xF0;
-        if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
-            *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
-            break;
+    {
+        u32 offset;
+        u16 j;
+        for (j = 0; j < 0x17; j++) {
+            offset = j * 0xF0;
+            if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+                *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
+                break;
+            }
         }
     }
-    return r;
+    return nandResult;
 }
 
 extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
@@ -17532,11 +17541,11 @@ extern "C" s32 lbl_8031D778[];
 extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
     const s32 *k = lbl_8031D778;
     s32 zero = 0;
-    s32 value;
-    s32 coefficient;
+    register s32 value;
+    register s32 coefficient;
     s32 result;
     s32 negative;
-    s32 sample;
+    register s32 sample;
     s64 product;
     s64 second;
 
