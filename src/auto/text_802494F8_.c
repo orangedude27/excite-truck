@@ -1090,8 +1090,10 @@ s32 fn_8024B608(s32 base, s32 recordIndex) {
     return base + recordIndex * 0x68 + 0x78;
 }
 
-s32 fn_8024B618(s32 arg0, s32 arg1) {
-    return arg0 + arg1 * 0x68 + 0xDC;
+/* Return a pointer (as s32) to the text field at offset 0xDC within the
+ * index-th 0x68-byte record of the table based at base (work + 0x18). */
+s32 fn_8024B618(s32 base, s32 index) {
+    return base + index * 0x68 + 0xDC;
 }
 
 void fn_8024B628(void *obj) {
