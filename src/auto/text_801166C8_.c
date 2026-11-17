@@ -728,6 +728,7 @@ u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag)
 
 #pragma push
 #pragma opt_common_subs off
+static inline s32 fn_80117598_and_swap(s32 a, s32 b) { return b & a; }
 s32 fn_80117598(s32 arg0, s32 arg1) {
     register s32 off;
     register s32 base;
@@ -4258,8 +4259,10 @@ void fn_8011CD90(s32 objectBase, s32 bitReader, s32 workBuffer) {
 const u8 lbl_80561208[] = {0x04, 0x08, 0x0C, 0x20};
 void fn_8011CE18(void *arg0, void *arg1) {
     u32 *bits;
-    u32 value, bitCount, available, mask, count, code, len, s, w, fill;
-    u8 *dst, *table, *lookup;
+    u32 value, bitCount, available, mask, count, code, len, s, w;
+    register u32 fill;
+    register u8 *dst;
+    u8 *table, *lookup;
     u32 sym;
     u8 run;
     u32 fw;
@@ -4285,11 +4288,11 @@ void fn_8011CE18(void *arg0, void *arg1) {
         if (bitCount == 0) { w = *bits++; bitCount = 31; value = w >> 1; }
         else { w = value; value >>= 1; bitCount--; }
         if ((w & 1) == 0) {
-            fill = 0;
             table = (u8 *)arg0 + 0x10;
             lookup = *(u8 **)((u8 *)arg0 + 0x24);
             available = *(u32 *)((u8 *)arg0 + 0x20);
             mask = 0xFFFFFFFFU >> (32 - available);
+            fill = 0;
             while (count != 0) {
                 if (bitCount >= available) {
                     code = value & mask;
@@ -5073,8 +5076,12 @@ u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s
 }
 
 void fn_8011FE20(u32 **arg0, u32 arg1) {
-    void *newBuffer;
     void *newSizes;
+    void *newBuffer;
+    u32 base;
+    u32 rounded;
+    u32 extra;
+    u32 total;
     if (lbl_80559950 == lbl_8055DEF4) {
         newBuffer = fn_8011FFC4(lbl_80559950 << 4);
         newSizes = (u8 *)newBuffer + (lbl_80559950 << 3);
@@ -5084,18 +5091,17 @@ void fn_8011FE20(u32 **arg0, u32 arg1) {
         if (lbl_80559950 != 0x40) {
             fn_80120084(lbl_80559948);
         }
-        lbl_80559948 = newBuffer;
-        lbl_8055994C = newSizes;
+        lbl_80559948 = (void **)newBuffer;
+        lbl_8055994C = (u32 *)newSizes;
     }
-    {
-        u32 rounded = arg1 + 0x1F;
-        u32 extra = ((((u32)lbl_8055DEF0 >> 5) & 0x1F) + 0x21 - ((rounded >> 5) & 0x1F)) & 0x1F;
-        u32 total = (rounded & ~0x1F) + (extra << 5);
-        lbl_8055DEF0 = (void *)((u32)lbl_8055DEF0 + total);
-        lbl_8055994C[lbl_8055DEF4] = total;
-        lbl_80559948[lbl_8055DEF4] = arg0;
-        lbl_8055DEF4++;
-    }
+    base = (u32)lbl_8055DEF0;
+    rounded = arg1 + 0x1F;
+    extra = (((base >> 5) & 0x1F) + 0x21 - ((rounded >> 5) & 0x1F)) & 0x1F;
+    total = (rounded & ~0x1F) + (extra << 5);
+    lbl_8055DEF0 = (void *)(base + total);
+    lbl_8055994C[lbl_8055DEF4] = total;
+    lbl_80559948[lbl_8055DEF4] = arg0;
+    lbl_8055DEF4 = lbl_8055DEF4 + 1;
 }
 
 extern void *lbl_8055DEF0;
