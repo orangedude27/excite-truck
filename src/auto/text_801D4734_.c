@@ -1144,21 +1144,24 @@ extern void fn_801D0824(void *);
 void *fn_801D5AF0(void *arg0, int arg1) {
     int field8;
     int has_field;
-
+    void *table;
+    void *table2;
+    void *child;
     if (arg0 != 0) {
         field8 = *(int *)((char *)arg0 + 8);
-        *(void **)arg0 = lbl_80338D20;
+        table = lbl_80338D20;
+        table2 = (char *)table + 0x38;
+        *(void **)arg0 = table;
         has_field = field8 != 0;
-        *(void **)((char *)arg0 + 4) = lbl_80338D20 + 0x38;
-
+        *(void **)((char *)arg0 + 4) = table2;
         if (has_field) {
             *(int *)((char *)arg0 + 8) = 0;
+            child = (char *)arg0 + 4;
             if (arg0 != 0) {
-                fn_801D0824((char *)arg0 + 4);
+                fn_801D0824(child);
             }
             *(int *)((char *)arg0 + 0xC) = -1;
         }
-
         if ((unsigned int)arg0 + 0x70 != 0) {
             if ((unsigned int)arg0 + 0x70 != 0) {
                 *(int *)((char *)arg0 + 0x70) = 0;
@@ -1166,7 +1169,6 @@ void *fn_801D5AF0(void *arg0, int arg1) {
                 *(int *)((char *)arg0 + 0x78) = 0;
             }
         }
-
         if ((unsigned int)arg0 + 0x10 != 0) {
             if ((unsigned int)arg0 + 0x10 != 0) {
                 *(int *)((char *)arg0 + 0x10) = 0;
@@ -1174,7 +1176,6 @@ void *fn_801D5AF0(void *arg0, int arg1) {
                 *(int *)((char *)arg0 + 0x18) = 0;
             }
         }
-
         if (arg1 > 0) {
             ((int (*)(void *))fn_80128668)(arg0);
         }
@@ -1449,18 +1450,20 @@ int fn_801D6320(void *out, void *object) {
     extern void fn_802E30C8(const char *, const char *);
     char *messages = &lbl_80338460;
     float a, b;
-    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0xC)))(object, &lbl_8055ACB0) == 0) { fn_802E30C8(messages + 0x210, 0); return 0; }
-    a = ((float (*)(void *, const char *))(*(void **)(*(void ***)object + 0x24)))(object, &lbl_8055ACB0);
-    if (a < lbl_80562ADC) { fn_802E30C8(messages + 0x254, 0); return 0; }
+    #define VT(off) (*(void **)((char *)*(void ***)object + (off)))
+    #define LOG ((void (*)(const char *, ...))fn_802E30C8)
+    if (((int (*)(void *, const char *))VT(0xC))(object, &lbl_8055ACB0) == 0) { LOG(messages + 0x210); return 0; }
+    a = ((float (*)(void *, const char *))VT(0x24))(object, &lbl_8055ACB0);
+    if (a < lbl_80562ADC) { LOG(messages + 0x254, a); return 0; }
     *(int *)((char *)out + 0xC) = (int)(lbl_80562B0C * a);
-    *(int *)((char *)out + 8) = (int)(lbl_80562B0C * ((float (*)(void *, const char *, float))(*(void **)(*(void ***)object + 0x28)))(object, &lbl_8055ACB8, lbl_80562ADC));
-    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0xC)))(object, &lbl_8055ACC0) == 0) { fn_802E30C8(messages + 0x2A4, 0); return 0; }
-    b = ((float (*)(void *, const char *, float))(*(void **)(*(void ***)object + 0x28)))(object, &lbl_8055ACC0, lbl_80562AE4);
+    *(int *)((char *)out + 8) = (int)(lbl_80562B0C * ((float (*)(void *, const char *, float))VT(0x28))(object, &lbl_8055ACB8, lbl_80562ADC));
+    if (((int (*)(void *, const char *))VT(0xC))(object, &lbl_8055ACC0) == 0) { LOG(messages + 0x2A4); return 0; }
+    b = ((float (*)(void *, const char *, float))VT(0x28))(object, &lbl_8055ACC0, lbl_80562AE4);
     *(float *)((char *)out + 0x10) = b;
-    if (b < lbl_80562ADC) { fn_802E30C8(messages + 0x2E8, 0); return 0; }
+    if (b < lbl_80562ADC) { LOG(messages + 0x2E8, b); return 0; }
     *(int *)((char *)out + 0x14) = 0;
-    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0x5C)))(object, &lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
-    *(signed char *)((char *)out + 0x18) = ((signed char (*)(void *, const char *, int))(*(void **)(*(void ***)object + 0x30)))(object, messages + 0x338, 0);
+    if (((int (*)(void *, const char *))VT(0x5C))(object, &lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
+    *(signed char *)((char *)out + 0x18) = ((signed char (*)(void *, const char *, int))VT(0x30))(object, messages + 0x338, 0);
     *(int *)((char *)out + 4) = 1;
     return 1;
 }
@@ -2090,7 +2093,6 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
     char *src;
     int remaining;
     char *dst;
-    float second;
 
     obj = (Dummy *)arg1;
     if (obj->check(&lbl_8055AC80) == 0) {
@@ -2111,10 +2113,9 @@ copy_body:
         goto copy_limit;
 copy_done:
     *(float *)((char *)arg0 + 0x28) = obj->value(&lbl_8055ACB8, lbl_80562ADC);
-    second = lbl_80562AEC;
-    *(float *)((char *)arg0 + 0x30) = obj->value(&lbl_8055ACB0, second);
-    *(int *)((char *)arg0 + 4) = 1;
+    *(float *)((char *)arg0 + 0x30) = obj->value(&lbl_8055ACB0, lbl_80562AEC);
     *(float *)((char *)arg0 + 0x2C) = lbl_80562ADC;
+    *(int *)((char *)arg0 + 4) = 1;
     *((char *)arg0 + 0x34) = 0;
     *(int *)((char *)arg0 + 0x38) = fn_80207848(lbl_803388C8, 1);
     return 1;
@@ -3353,9 +3354,9 @@ extern "C" int fn_801D8634(void *out, void *obj) {
         {
             float finalRate = lbl_80562ADC;
             *(int *)((char *)out + 0x18) = 1;
-            result = 1;
             *(float *)((char *)out + 0x10) = finalRate;
         }
+        result = 1;
     }
     return result;
 }
@@ -3627,6 +3628,7 @@ extern "C" s32 fn_801D8ACC(void *arg0, void *arg1) {
         virtual void v7();
         virtual float get(char *, float);
     };
+    #pragma opt_propagation off
     float value = lbl_80562ADC;
     Dummy *obj = (Dummy *)arg1;
     *(int *)((char *)arg0 + 4) = 1;
@@ -3634,6 +3636,7 @@ extern "C" s32 fn_801D8ACC(void *arg0, void *arg1) {
     *(float *)((char *)arg0 + 8) = obj->get(&lbl_8055ACB8, value);
     *(float *)((char *)arg0 + 0xC) = obj->get(&lbl_8055ACB0, lbl_80562B14);
     return 1;
+    #pragma opt_propagation reset
 }
 #pragma pop
 #pragma cplusplus reset
@@ -3660,9 +3663,6 @@ extern "C" int fn_801D8B60(void *arg0, void *arg1) {
     extern char lbl_80339070[];
     extern char lbl_8055ACB8;
     extern char lbl_8055ACB0;
-    extern float lbl_80562ADC;
-    extern float lbl_80562B14;
-    extern float lbl_80562B20;
     struct Dummy {
         virtual void v0();
         virtual void v1();
@@ -3677,12 +3677,12 @@ extern "C" int fn_801D8B60(void *arg0, void *arg1) {
     Dummy *obj = (Dummy *)arg1;
     float temp;
 
-    *(float *)((char *)arg0 + 0x14) = obj->value(lbl_80339070, lbl_80562B20);
+    *(float *)((char *)arg0 + 0x14) = obj->value(lbl_80339070, 999.0f);
     *(int *)((char *)arg0 + 4) = 1;
-    temp = lbl_80562ADC;
+    temp = 0.0f;
     *(float *)((char *)arg0 + 0x10) = temp;
     *(float *)((char *)arg0 + 8) = obj->value(&lbl_8055ACB8, temp);
-    *(float *)((char *)arg0 + 0xC) = obj->value(&lbl_8055ACB0, lbl_80562B14);
+    *(float *)((char *)arg0 + 0xC) = obj->value(&lbl_8055ACB0, 5.0f);
     return 1;
 }
 #pragma cplusplus reset
