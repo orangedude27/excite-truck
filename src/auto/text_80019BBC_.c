@@ -762,7 +762,6 @@ void fn_8001B7B8(void) {
 extern char lbl_802FD618[];
 extern char lbl_802FD6CC[];
 extern char lbl_802FD6C0[];
-extern char* lbl_80358508;
 extern char lbl_80558C70[8];
 extern char lbl_80558C78[8];
 extern char lbl_80558C80[8];
