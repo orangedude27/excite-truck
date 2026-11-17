@@ -182,8 +182,9 @@ u32 fn_80008050(const char* eventName) {
     return 0;
 }
 #pragma scheduling on
+/* Returns the number of populated race-event entries in the global event table. */
 u32 fn_800080D8(void) {
-    return *(u32*)((u8*)&lbl_8034EF38 + 0x1E0);
+    return lbl_8034EF38.count;
 }
 
 #pragma dont_inline on
