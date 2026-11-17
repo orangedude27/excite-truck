@@ -1127,7 +1127,8 @@ void fn_8014C7B4(void *dst, void *srcObj) {
     out->y1 = y1;
 }
 
-unsigned int fn_8014C808(unsigned int arg0) { return arg0 >> 24; }
+/* Return the alpha channel (highest byte) of a packed RGBA8888 color. */
+unsigned int fn_8014C808(unsigned int color) { return color >> 24; }
 
 /* Return the red channel (lowest byte) of a packed RGBA8888 color. */
 unsigned char fn_8014C810(unsigned char color) { return color; }
