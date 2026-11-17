@@ -10383,9 +10383,11 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4)
     u16 sectorSize;
     s32 result;
 
-    if (!(((VFiPFVolume *)arg0)->flags & 1) ||
+    /* fn_800A53B4 reports VF_VOL_MEDIA_PRESENT; a write also needs an attached
+     * device (VF_VOL_IN_USE) that is not VF_VOL_WRITE_PROTECTED. */
+    if (!(((VFiPFVolume *)arg0)->flags & VF_VOL_IN_USE) ||
         fn_800A53B4(arg0) == 0 ||
-        (((VFiPFVolume *)arg0)->flags & 2)) {
+        (((VFiPFVolume *)arg0)->flags & VF_VOL_WRITE_PROTECTED)) {
         return 9;
     }
 
