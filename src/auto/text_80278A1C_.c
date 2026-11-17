@@ -123,9 +123,23 @@ struct CarObject {
     s32 count20F0;
     Entry20F4 wheels[4];
 };
-#pragma cplusplus reset
+ struct File_Vtable_80279004 {
+     virtual void slot0();
+     virtual void slot1();
+     virtual Res_80279004* getRes(const char*);
+     virtual void slot3();
+     virtual int hasRes(const char*);
+ };
+ struct Res_Vtable_80279004 {
+     virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3();
+     virtual void s4(); virtual void s5(); virtual void s6(); virtual void s7();
+     virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11();
+     virtual void s12();
+     virtual Vec3_80279004 getVec(const char*);
+ };
+ #pragma cplusplus reset
 
-s32 fn_80278A1C(void) {
+ s32 fn_80278A1C(void) {
     /* Default predicate stub: unconditionally returns FALSE (0) to callers that test its result. */
     return 0;
 }
@@ -259,17 +273,18 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
 
 #pragma cplusplus on
 extern "C" void* fn_80279004(s32 name, s32 arg1) {
+    #pragma scheduling invalid_target
     char path[0x80];
     char path2[0x80];
     char key[0x20];
     char* base = lbl_80347690;
-    char* arg0 = (char*)name;
+    char* p;
     char* object;
-    void* file;
     void* file2;
+    void* file;
     void* resource;
     s32 i;
-    f32* dst;
+    char* arg0 = (char*)name;
     Vec3_80279004 v;
     Vec3_80279004 w;
 
@@ -291,15 +306,19 @@ extern "C" void* fn_80279004(s32 name, s32 arg1) {
     memset(object + 0x2138, 0, 0x300);
     if (((s32 (**)(void*, const char*))(*(void**)file))[4](file, lbl_8055C6D0) != 0) {
         resource = ((void* (**)(void*, const char*))(*(void**)file))[2](file, lbl_8055C6D0);
-        dst = (f32*)(object + 0x2138);
+        p = object;
         for (i = 0; i < 0x20; i++) {
             sprintf(key, lbl_8055C6D8, i);
             v = ((Vec3_80279004 (**)(void*, char*))(*(void**)resource))[13](resource, key);
-            dst[0] = v.x; dst[1] = v.y; dst[2] = v.z;
+            *(f32*)(p + 0x2138) = v.x;
+            *(f32*)(p + 0x213C) = v.y;
+            *(f32*)(p + 0x2140) = v.z;
             sprintf(key, lbl_8055C6E0, i);
             w = ((Vec3_80279004 (**)(void*, char*))(*(void**)resource))[13](resource, key);
-            dst[3] = w.x; dst[4] = w.y; dst[5] = w.z;
-            dst += 6;
+            *(f32*)(p + 0x2144) = w.x;
+            *(f32*)(p + 0x2148) = w.y;
+            *(f32*)(p + 0x214C) = w.z;
+            p += 0x18;
         }
     } else {
         fn_802E30C8(base + 0x13C, (s32)arg0);
