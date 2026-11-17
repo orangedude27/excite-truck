@@ -882,15 +882,19 @@ static inline u32 entryToPath1(u32 entry, char *path, u32 maxlen) {
 }
 static inline u32 entryToPath2(u32 entry, char *path, u32 maxlen) {
     const char *name;
+    u32 loc;
     if (entry == 0) return 0;
     name = entryName(entry);
-    return appendPathPart(path, entryToPath1(entryParent(entry), path, maxlen), maxlen, name);
+    loc = entryToPath1(entryParent(entry), path, maxlen);
+    return appendPathPart(path, loc, maxlen, name);
 }
 static inline u32 entryToPath3(u32 entry, char *path, u32 maxlen) {
     const char *name;
+    u32 loc;
     if (entry == 0) return 0;
     name = entryName(entry);
-    return appendPathPart(path, entryToPath2(entryParent(entry), path, maxlen), maxlen, name);
+    loc = entryToPath2(entryParent(entry), path, maxlen);
+    return appendPathPart(path, loc, maxlen, name);
 }
 #pragma push
 #pragma use_lmw_stmw off
