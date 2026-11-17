@@ -900,27 +900,30 @@ void fn_802E1058(void) {
 #pragma push
 #pragma use_lmw_stmw off
 s32 fn_802E11A4(const char *arg0, u8 arg1) {
-    s32 saved = ((s32 (*)(void))fn_802E0BA8)();
-    void *object = fn_802E0BA4();
+    struct Movie { char pad[4]; s32 field4; char buf[0x40]; u8 field48; };
+    s32 saved;
+    struct Movie *object;
     char *dot;
-    char *dest;
     const char *suffix;
     int remaining;
-    *(s32 *)((char *)object + 4) = 0;
-    *(u8 *)((char *)object + 0x48) = arg1;
-    fn_801345D8((char *)object + 8, 0x40, lbl_8034CBC4, arg0);
-    dot = fn_80029004((char *)object + 8, 0x2e);
+    char *dest;
+    saved = ((s32 (*)(void))fn_802E0BA8)();
+    object = (struct Movie *)fn_802E0BA4();
+    object->field4 = 0;
+    object->field48 = arg1;
+    fn_801345D8(object->buf, 0x40, lbl_8034CBC4, arg0);
+    dot = fn_80029004(object->buf, 0x2e);
     if (dot != 0)
         *dot = 0;
-    dest = (char *)object + 8;
+    dest = object->buf;
     remaining = 0x40;
     suffix = lbl_8055D168;
-    while ((signed char)*dest) {
+    while ((s8)*dest) {
         --remaining;
         ++dest;
     }
     if (remaining > 0) {
-        while ((signed char)(*dest++ = *suffix++) != 0) {
+        while ((s8)(*dest++ = *suffix++) != 0) {
             if (--remaining <= 0) {
                 dest[-1] = 0;
                 break;
