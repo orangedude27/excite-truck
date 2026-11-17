@@ -2964,14 +2964,14 @@ extern "C" void fn_8021CD04(void *arg0, s32 arg1, s32 arg2) {
     left = *(s32 *)(self + 4);
     s32 size = *(s32 *)(self + 0x254);
     s32 width = ((BoundsSource *)arg0)->GetWidth();
+    f32 value = lbl_805634A4;
     s32 denom = width - size;
     s32 numer = arg1 - left - size / 2;
     f32 fden = (f32)denom;
     f32 fnum = (f32)numer;
     f32 amount = fnum / fden;
-    f32 value = lbl_805634A4;
-    value = (value < amount) ? amount : value;
-    value = (value > lbl_805634A8) ? lbl_805634A8 : value;
+    value = (value < amount) ? value : amount;
+    value = (value > lbl_805634A8) ? value : lbl_805634A8;
     CacheTarget *target = *(CacheTarget **)(self + 0x248);
     target->Set(value);
 }
