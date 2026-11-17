@@ -3196,9 +3196,10 @@ extern "C" void fn_8015C564(void* controller, void* vehicle, s32 messageId, f32 
     }
 }
 
-extern "C" void fn_8015C5D0(void* arg0) {
-    if (*(s32*)((u8*)arg0 + 0x26c) > 0)
-        fn_8015A368(arg0);
+/* Finalize the bonus accumulator (fn_8015A368) when queued bonus events (+0x26C) remain. */
+extern "C" void fn_8015C5D0(void* bonus) {
+    if (*(s32*)((u8*)bonus + 0x26c) > 0)
+        fn_8015A368(bonus);
 }
 
 #pragma scheduling on
@@ -3637,10 +3638,11 @@ extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     for (; i < count; i++) {
         s32 value = *(s32*)((u8*)arg0->mData + offset + 0x14);
         if (arg1 < value) goto out;
-        if (value >= 0) goto cont;
-        else goto out;
-    cont:
-        offset += 0x38;
+        if (value >= 0) {
+            offset += 0x38;
+            continue;
+        }
+        goto out;
     }
     i = 0;
 out:
