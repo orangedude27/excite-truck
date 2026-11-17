@@ -21548,30 +21548,25 @@ void *l2cu_find_lcb_by_state(s32 state) {
 }
 
 u8 l2cu_lcb_disconnecting(void) {
-    register u8 result = 0;
+    u8 result = 0;
     u8 *base = lbl_803C4040;
     u8 *entry = base + 8;
-    register u32 i = 0;
-
-    for (; i < 4; i++) {
+    u32 i;
+    for (i = 0; i < 2; i++) {
         if (entry[0] != 0) {
             u8 *link = *(u8 **)(entry + 8);
-            if (link == 0 || (s32)*(u32 *)(entry + 4) == 5)
-                return 1;
+            if (link == 0 || (s32)*(u32 *)(entry + 4) == 5) { result = 1; break; }
             if (link == *(u8 **)(entry + 0xC) &&
                 link[0] != 0 &&
-                (u32)(*(u32 *)(link + 4) - 7) <= 1)
-                return 1;
+                (u32)(*(u32 *)(link + 4) - 7) <= 1) { result = 1; break; }
         }
         i++;
         if (entry[0x5C] != 0) {
             u8 *link = *(u8 **)(entry + 0x64);
-            if (link == 0 || (s32)*(u32 *)(entry + 0x60) == 5)
-                return 1;
+            if (link == 0 || (s32)*(u32 *)(entry + 0x60) == 5) { result = 1; break; }
             if (link == *(u8 **)(entry + 0x68) &&
                 link[0] != 0 &&
-                (u32)(*(u32 *)(link + 4) - 7) <= 1)
-                return 1;
+                (u32)(*(u32 *)(link + 4) - 7) <= 1) { result = 1; break; }
         }
         entry += 0xB8;
     }
