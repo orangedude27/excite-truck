@@ -26,8 +26,11 @@ void __AXDSPInitCallback_801293D0(void) {
     lbl_8055DFC0 = 0;
 }
 
-void fn_801293DC(void *arg0) {
-    memcpy(arg0, lbl_8055DFC4, 0x4000);
+void fn_801293DC(void *dst) {
+    /* Copy 0x4000 bytes from the AX DSP DMA buffer into dst (inverse of fn_801293E8). */
+#define gAXDmaBuffer lbl_8055DFC4
+    memcpy(dst, gAXDmaBuffer, 0x4000);
+#undef gAXDmaBuffer
 }
 
 /* Copy 0x4000 bytes from src into the AX DSP DMA buffer pointed to by lbl_8055DFC4 (inverse of fn_801293DC). */
