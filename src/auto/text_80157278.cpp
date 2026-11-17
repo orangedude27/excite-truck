@@ -1562,8 +1562,10 @@ extern "C" f32 fn_80158B0C(void* arg0, void* arg1) {
 #undef flag271
 }
 #pragma pop
-extern "C" s32 fn_80158D04(void* arg0) {
-    return *(s32*)((u8*)arg0 + 0xC);
+extern "C" s32 fn_80158D04(void* tracker) {
+    // Getter: number of 0x38-byte records in this bonus tracker's list (0xC).
+    // Callers use fn_80158D04(tracker) - 1 as the index of the last record.
+    return ((Fn8015889C*)tracker)->mCount;
 }
 
 /* One step of a bonus tracker on a frame that emits nothing: once the progress
