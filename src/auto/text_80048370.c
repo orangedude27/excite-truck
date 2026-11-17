@@ -353,24 +353,27 @@ void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk,
     return mem;
 }
 
+static inline void* RoundUpPtr_(void* ptr, s32 align) {
+    return (void*)(((u32)ptr + (align - 1)) & ~(align - 1));
+}
+
+static inline u32 GetOffsetFromPtr_(void* start, void* end) {
+    return (u32)end - (u32)start;
+}
+
 void* AllocFromHead_(MEMiHeapHead* heap, u32 size, s32 align) {
     extern void* AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead*, MEMiExpHeapMBlock*, void*, u32, u16);
-    BOOL isFastAlloc;
-    MEMiExpHeapMBlock* it;
-    MEMiExpHeapHead* exp;
-    MEMiExpHeapMBlock* bestBlk;
-    u32 bestBlkSize;
-    void* bestBlkMemPtr;
-    exp = (MEMiExpHeapHead*)(heap + 1);
-    isFastAlloc = exp->allocMode == MEM_EXP_HEAP_ALLOC_FAST;
-    bestBlk = 0;
-    bestBlkSize = 0xFFFFFFFF;
-    bestBlkMemPtr = 0;
+    MEMiExpHeapHead* exp = (MEMiExpHeapHead*)(heap + 1);
+    BOOL isFastAlloc = exp->allocMode == MEM_EXP_HEAP_ALLOC_FAST;
+    MEMiExpHeapMBlock* it = 0;
+    MEMiExpHeapMBlock* bestBlk = 0;
+    u32 bestBlkSize = 0xFFFFFFFF;
+    void* bestBlkMemPtr = 0;
     for (it = exp->freeMBlocks.head; it != 0; it = it->next) {
-        void* end;
-        void* start = it + 1;
-        end = (void*)((align + (u32)start - 1) & ~(align - 1));
-        if (it->size >= size + ((u32)end - (u32)start) && bestBlkSize > it->size) {
+        void* const start = it + 1;
+        void* const end = (void*)((align + (u32)start - 1) & ~(align - 1));
+        const u32 offset = (u32)end - (u32)start;
+        if (it->size >= size + offset && bestBlkSize > it->size) {
             bestBlk = it;
             bestBlkSize = it->size;
             bestBlkMemPtr = end;
