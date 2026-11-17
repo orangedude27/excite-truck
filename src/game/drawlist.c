@@ -703,8 +703,10 @@ void fn_802C92DC(int left, int top, int right, int bottom, int screen) {
     }
 }
 
+/* Record render mode 2 (the state fn_802CAD74/fn_801E4FF4 leave GX in), then hand
+ * off to fn_802C8D74 to restore the normal state and drop any pending overlay. */
 void fn_802C9118(void) {
-    lbl_8055FC70 = 2;
+    sRenderMode = 2;
     fn_802C8D74();
 }
 
