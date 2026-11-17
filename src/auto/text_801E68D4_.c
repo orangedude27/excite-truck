@@ -524,6 +524,8 @@ s32 fn_801E7650(void *arg0) {
 #undef mTime
 }
 
+/* RealName: GetMaxTrackedObjects — returns the cap (8) used to clamp the
+ * nearby-object counter lbl_8055EC64 in fn_801FA2C4. */
 int fn_801E7698(void) {
     return 8;
 }
