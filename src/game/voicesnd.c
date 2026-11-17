@@ -333,7 +333,11 @@ copy_done:
 }
 #pragma cplusplus reset
 #pragma pop
-extern void fn_802E5950(int, int); void fn_8020AC0C(int arg0, int arg1, int arg2) { fn_802E5950(arg1, arg2); }
+/* Voice-sound thunk: drop the unused object pointer and forward the directory
+ * and file names to the path-building helper fn_802E5950. */
+void fn_8020AC0C(int self, int dirName, int fileName) {
+    fn_802E5950(dirName, fileName);
+}
 
 extern void fn_802E59BC(void *); void fn_8020AC18(void *arg0, int arg1) { fn_802E59BC((void *)arg1); }
 
