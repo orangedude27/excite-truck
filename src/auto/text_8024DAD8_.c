@@ -1191,21 +1191,30 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
     fn_80255758(stack+0x320, -1);
 }
 #pragma cplusplus reset
-void *fn_8024FFF8(void *arg0, s32 arg1) {
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void *fn_8024FFF8(void *arg0, s32 arg1) {
     extern char lbl_803443B0[];
-    char *child;
+    class Entry {
+    public:
+        virtual void destroy(s32);
+    };
+    void *child;
+
     if (arg0 != 0) {
-        child = *(char **)((u8 *)arg0 + 0x188);
-        *(char **)arg0 = lbl_803443B0;
+        child = *(void **)((u8 *)arg0 + 0x188);
+        *(void **)arg0 = (void *)lbl_803443B0;
         if (child != 0) {
             if (child != 0)
-                ((void (*)(char *, s32))(*(void ***)child)[2])(child, 1);
+                ((Entry *)child)->destroy(1);
         }
         if (arg1 > 0)
             ((s32 (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
 }
+#pragma pop
 
 #pragma push
 #pragma small_data on
