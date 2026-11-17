@@ -199,15 +199,17 @@ void fn_801A7A08(const char *keySpec, int valueId, int groupId) {
 }
 #pragma pop
 extern float lbl_80562458;
+#pragma push
+#pragma scheduling invalid_target
 void fn_801A7A5C(void) {
     int i, j;
     float v;
     Rec_801A7A5C* src;
     Rec_801A7A5C* dst;
-    v = lbl_80562458;
+    v = 0.0f;
     {
         Tail_801A7A5C* t = (Tail_801A7A5C*)(lbl_80435050 + 0xC8);
-        *(float *)((unsigned char *)lbl_80435050 + 0x320) = v;
+        t->x = v;
         t->y = v;
         t->c = 0;
         t->b = 0;
@@ -215,8 +217,8 @@ void fn_801A7A5C(void) {
         ((void (*)(int, void *))fn_801A7844)(1, t);
     }
     fn_801A7844(1);
-    dst = (Rec_801A7A5C*)(lbl_80435050 + 100);
     src = (Rec_801A7A5C*)lbl_80435050;
+    dst = (Rec_801A7A5C*)(lbl_80435050 + 100);
     i = 4;
     do {
         for (j = 0; j < 8; j++) dst->f[j] = src->f[j];
