@@ -651,42 +651,45 @@ extern "C" void fn_80298DE0(void *arg0, void *arg1, int arg2) {
 
 #pragma push
 #pragma processor 750
-void fn_80298FBC(void *arg0, void *arg1) {
-    float *m = (float *)fn_80287B24(((char *)arg1 - *(char **)arg0) / 32);
-    float *v = (float *)arg1;
-    float out[3];
+void fn_80298FBC(void *container, void *entry) {
+    typedef void (*EmitPointFn)(void *emitter, float *position, float *basePosition);
+    /* Transform an active effect entry's local position by its object's pose (column-major
+     * 3x3 rotation, translation), add per-axis random jitter, then emit the world position. */
+    float *pose = (float *)fn_80287B24(((char *)entry - *(char **)container) / 32);
+    float *local = (float *)entry;
+    float worldPos[3];
 
-    if (out == v) {
+    if (worldPos == local) {
         float x, y, z;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-        m10 = m[3];
-        y = v[1];
-        m11 = m[4]; m12 = m[5];
-        m00 = m[0];
-        x = v[0];
-        m01 = m[1]; m02 = m[2];
-        m20 = m[6];
-        z = v[2];
-        m21 = m[7]; m22 = m[8];
-        out[0] = z * m20 + (x * m00 + y * m10);
-        out[1] = z * m21 + (x * m01 + y * m11);
-        out[2] = z * m22 + (x * m02 + y * m12);
+        m10 = pose[3];
+        y = local[1];
+        m11 = pose[4]; m12 = pose[5];
+        m00 = pose[0];
+        x = local[0];
+        m01 = pose[1]; m02 = pose[2];
+        m20 = pose[6];
+        z = local[2];
+        m21 = pose[7]; m22 = pose[8];
+        worldPos[0] = z * m20 + (x * m00 + y * m10);
+        worldPos[1] = z * m21 + (x * m01 + y * m11);
+        worldPos[2] = z * m22 + (x * m02 + y * m12);
     } else {
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-        m10 = m[3]; m00 = m[0]; m20 = m[6];
-        out[0] = v[2] * m20 + (v[0] * m00 + v[1] * m10);
-        m11 = m[4]; m01 = m[1]; m21 = m[7];
-        out[1] = v[2] * m21 + (v[0] * m01 + v[1] * m11);
-        m12 = m[5]; m02 = m[2]; m22 = m[8];
-        out[2] = v[2] * m22 + (v[0] * m02 + v[1] * m12);
+        m10 = pose[3]; m00 = pose[0]; m20 = pose[6];
+        worldPos[0] = local[2] * m20 + (local[0] * m00 + local[1] * m10);
+        m11 = pose[4]; m01 = pose[1]; m21 = pose[7];
+        worldPos[1] = local[2] * m21 + (local[0] * m01 + local[1] * m11);
+        m12 = pose[5]; m02 = pose[2]; m22 = pose[8];
+        worldPos[2] = local[2] * m22 + (local[0] * m02 + local[1] * m12);
     }
-    out[0] += m[9];
-    out[1] += m[10];
-    out[2] += m[11];
-    out[0] += fn_80129DC4(0, -v[3], v[3]);
-    out[1] += fn_80129DC4(0, -v[4], v[4]);
-    out[2] += fn_80129DC4(0, -v[5], v[5]);
-    ((void (*)(void *, float *, float *))fn_8028E584)(*(void **)((char *)arg0 + 4), out, m + 13);
+    worldPos[0] += pose[9];
+    worldPos[1] += pose[10];
+    worldPos[2] += pose[11];
+    worldPos[0] += fn_80129DC4(0, -local[3], local[3]);
+    worldPos[1] += fn_80129DC4(0, -local[4], local[4]);
+    worldPos[2] += fn_80129DC4(0, -local[5], local[5]);
+    ((EmitPointFn)fn_8028E584)(*(void **)((char *)container + 4), worldPos, pose + 13);
 }
 #pragma pop
 
