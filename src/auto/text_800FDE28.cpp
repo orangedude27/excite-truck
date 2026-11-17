@@ -484,8 +484,9 @@ extern "C" s32 Destroy__Q46nw4hbm3snd6detail10TaskThreadFv(void *arg0) {
     return 1;
 }
 
-extern "C" void fn_800FE804(void *arg0) {
-    OSSendMessage((OSMessageQueue *)((u8 *)arg0 + 0x2320), (OSMessage)0x1, 0);
+extern "C" void fn_800FE804(void *taskThread) {
+    /* Wake the sound task thread to run pending tasks: send it message 1 on its queue. */
+    OSSendMessage((OSMessageQueue *)((u8 *)taskThread + 0x2320), (OSMessage)0x1, 0);
 }
 
 extern "C" s32 fn_800FE814(s32 taskThread) {
