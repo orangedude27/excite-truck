@@ -1073,12 +1073,13 @@ void fn_80160288(void *dst, void *src) {
     *(struct Pair *)dst = *(struct Pair *)src;
 }
 
-f32 fn_8016029C(f32 *arg0, f32 *arg1) {
-    f32 a = arg1[0];
-    f32 b = arg1[2];
-    arg0[0] = a;
-    arg0[1] = b;
-    return a;
+f32 fn_8016029C(f32 *out, f32 *vec) {
+    /* Copy a 3D vector's X and Z components (elements 0 and 2) into a 2D vector, returning X. */
+    f32 x = vec[0];
+    f32 z = vec[2];
+    out[0] = x;
+    out[1] = z;
+    return x;
 }
 
 void fn_801602B0(void) {
