@@ -2321,20 +2321,21 @@ extern "C" void* fn_80288208(int);
 extern "C" int fn_80287B14(void);
 extern "C" int fn_8029AEE8(void*);
 #pragma scheduling invalid_target
-extern "C" void fn_8029BDC4(void* arg0) {
-    float values[3];
-    char* entry = (char*)arg0 + 4;
-    int i = 0;
-    values[0] = 0.0f;
-    values[1] = 0.0f;
-    values[2] = 0.0f;
-    while (i < *(int*)((char*)arg0 + 0xA4)) {
-        if (*(unsigned char*)(entry + 0x10)) {
-            fn_80288A58(entry, values);
-            ((void (*)(void *, void *, float *))fn_8028E584)(*(void**)arg0, entry, values);
+/* Spawn fire effects for every active record in the TorchFireMan's fire list. */
+extern "C" void fn_8029BDC4(void* torchFireMan) {
+    float basePos[3];
+    char* fire = (char*)torchFireMan + 4;
+    int index = 0;
+    basePos[0] = 0.0f;
+    basePos[1] = 0.0f;
+    basePos[2] = 0.0f;
+    while (index < *(int*)((char*)torchFireMan + 0xA4)) {
+        if (*(unsigned char*)(fire + 0x10)) {
+            fn_80288A58(fire, basePos);
+            ((void (*)(void *, void *, float *))fn_8028E584)(*(void**)torchFireMan, fire, basePos);
         }
-        entry += 0x14;
-        i++;
+        fire += 0x14;
+        index++;
     }
 }
 #pragma scheduling on
