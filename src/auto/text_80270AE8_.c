@@ -624,22 +624,23 @@ void fn_80271578(void) {
 
 typedef float f32;
 extern f32 lbl_80563F4C;
+#pragma opt_propagation off
 void fn_802715C4(void *arg0, void *arg1)
 {
-  f32 a = *((f32 *) (((u8 *) arg1) + 0x14));
-  f32 b = lbl_80563F4C;
-  f32 c = *((f32 *) (((u8 *) arg1) + 0x10));
-  f32 d = *((f32 *) (((u8 *) arg1) + 0xC));
-  f32 x = b * a;
-  f32 y = b * c;
-  f32 z;
+  f32 b, d, c, a;
+  f32 x, y, z;
+  a = *((f32 *) (((u8 *) arg1) + 0x14));
+  b = lbl_80563F4C;
+  c = *((f32 *) (((u8 *) arg1) + 0x10));
+  d = *((f32 *) (((u8 *) arg1) + 0xC));
+  x = b * a;
+  y = b * c;
+  z = b * d;
   *((f32 *) (((u8 *) arg0) + 8)) = x;
-  z = d;
-  z = b * z;
   *((f32 *) (((u8 *) arg0) + 0)) = z;
   *((f32 *) (((u8 *) arg0) + 4)) = y;
 }
-
+#pragma opt_propagation reset
 extern f32 lbl_8055F540;
 extern f32 lbl_8055F544;
 f32 fn_802715F0(void *effect) {
@@ -1622,8 +1623,10 @@ extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
 #pragma pop
 #pragma cplusplus reset
 
+#pragma scheduling on
 void fn_80273354(void) {
     unsigned char *ptr = lbl_8049A258;
+    void (*fp)(int, int, int, unsigned char *) = (void (*)(int, int, int, unsigned char *))fn_8027156C;
     memset(ptr, 0, 0x64);
     *(int *)(ptr + 0x1C) = 1;
     *(int *)(ptr + 0x18) = 0;
@@ -1633,9 +1636,8 @@ void fn_80273354(void) {
     *(int *)(ptr + 0x44) = 3;
     *(int *)(ptr + 0x54) = 5;
     *(int *)(ptr + 0x58) = 3;
-    ((void (*)(int, int, int, unsigned char *))fn_8027156C)(3, 2, 1, ptr);
+    fp(3, 2, 1, ptr);
 }
-
 extern int lbl_8055F54C;
 /* The CamType the last camera update applied: fn_80271624 compares it with the camera
  * entry's mode and re-applies the camera setup when it differs, then stores it back.
