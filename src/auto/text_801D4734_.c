@@ -1601,8 +1601,11 @@ extern "C" int fn_801D6678(void *out, void *object) {
 }
 #pragma pop
 
-int fn_801D67D4(void) {
-    return (int)lbl_803387C8;
+/* Name accessor: returns the "TrackEffect_ASE" identifier string for this effect system. */
+void *fn_801D67D4(void) {
+#define STR_TRACK_EFFECT_ASE lbl_803387C8
+    return STR_TRACK_EFFECT_ASE;
+#undef STR_TRACK_EFFECT_ASE
 }
 
 int fn_801D67E0(int arg0) {
