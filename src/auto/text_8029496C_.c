@@ -513,15 +513,16 @@ void fn_80295C70(void *arg0, int light, const float *pos, unsigned int rgba, int
     entry->type = lightType;
     queue->count++;
 }
-#pragma pop
+#pragma push
+#pragma processor 750
+#pragma scheduling on
 void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *pos, float size) {
-    Vec80295 col;
+    Vec80295 col = *input;
     int id;
     unsigned int packed;
     int extra;
     float base, sx, sy;
     void *obj;
-    col = *input;
     if (fn_80288070(a,b,&id)) {
         if (fn_80287E20(a,b)) {
             Vec80295 result, def;
@@ -535,7 +536,7 @@ void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *p
  t=(int)(lbl_80564544*result.y); t=t>0?t:0; g=(unsigned char)(t<255?t:255)<<8;
  t=(int)(lbl_80564544*result.x); t=t>0?t:0;
  r=(unsigned char)(t<255?t:255)<<16;
- packed=b | g | r | 0xFF000000U;
+ packed=0xFF000000U | r | g | b;
 }
             base = ((float (*)(void *, char *, float))(*(int **)obj)[10])(obj,lbl_8055C9A0,size);
             sx = ((float (*)(void *, char *, float))(*(int **)obj)[10])(obj,lbl_8055C9A4,lbl_80564520);
@@ -550,13 +551,16 @@ void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *p
  t=(int)(lbl_80564544*col.y); t=t>0?t:0; g=(unsigned char)(t<255?t:255)<<8;
  t=(int)(lbl_80564544*col.x)>0?(int)(lbl_80564544*col.x):0;
  r=(unsigned char)(t<255?t:255)<<16;
- packed=b | g | r | 0xFF000000U;
+ packed=0xFF000000U | r | g | b;
 }
             sx=size; sy=size; extra=0;
         }
         fn_80295C70(self,id,pos,packed,extra,sx,sy);
     }
 }
-#pragma scheduling reset
+#pragma pop
 
 #pragma scheduling on
+
+#pragma push
+#pragma processor 750
