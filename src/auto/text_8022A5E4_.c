@@ -105,32 +105,22 @@ extern void fn_8023293C(void *, char *, float);
 extern int fn_800241CC(int);
 extern void fn_8022B390(const char *, const char *, int, int *, int *);
 void fn_8022A5E4(void) {
-    extern char lbl_80490968[];
+#pragma scheduling invalid_target
     extern unsigned char lbl_80497D68[];
     extern void *memset(void *, int, unsigned int);
     extern void fn_8022C520(void);
-    struct Record {
-        unsigned char b0;
-        unsigned int w4, w8, wC, w10, w14, w18, w1C, w20, w24, w28, w2C, w30;
-        float f34;
-        unsigned int w38, w3C, w40, w44, w48, w4C, w50, w54, w58;
-        float f5C, f60;
-        unsigned int w64, w68, w6C, w70;
-    };
-    struct Record *src;
-    struct Record *out;
+    struct Record74 *src, *out;
     unsigned char b0;
     unsigned int v4, v8, vC, v10, v14, v18, v1C, v20, v24, v28, v2C, v30;
-    float v34;
     unsigned int v3C, v40, v44, v48, v4C, v50, v54, v58;
-    float v5C, v60;
     unsigned int v64, v68, v6C, v70;
-    unsigned int i;
+    float v60, v5C, v34;
+    int i;
 
     memset(lbl_80497D68, 0, 0x74);
-    src = (struct Record *)lbl_80497D68;
-    src->w38 = 9;
-    b0 = src->b0;
+    src = (struct Record74 *)lbl_80497D68;
+    out = (struct Record74 *)lbl_80490968;
+    b0 = lbl_80497D68[0];
     vC = src->wC;
     v10 = src->w10;
     v14 = src->w14;
@@ -143,7 +133,6 @@ void fn_8022A5E4(void) {
     v30 = src->w30;
     v4 = src->w4;
     v8 = src->w8;
-    v34 = src->f34;
     v3C = src->w3C;
     v40 = src->w40;
     v44 = src->w44;
@@ -152,14 +141,15 @@ void fn_8022A5E4(void) {
     v50 = src->w50;
     v54 = src->w54;
     v58 = src->w58;
-    v5C = src->f5C;
-    v60 = src->f60;
     v64 = src->w64;
     v68 = src->w68;
     v6C = src->w6C;
     v70 = src->w70;
-    out = (struct Record *)lbl_80490968;
-    for (i = 0; i < 0x80; ++i) {
+    v60 = src->f60;
+    v5C = src->f5C;
+    v34 = src->f34;
+    src->w38 = 9;
+    for (i = 0; i < 0x80; i++) {
         out[0].b0 = b0;
         out[0].w4 = v4; out[0].w8 = v8; out[0].wC = vC; out[0].w10 = v10;
         out[0].w14 = v14; out[0].w18 = v18; out[0].w1C = v1C; out[0].w20 = v20;
@@ -886,7 +876,7 @@ void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
     *arg1 -= farg1 - (float)(int)farg1;
 }
 #pragma pop
-extern double lbl_805635A0;
+__declspec(section ".sdata2") extern double lbl_805635A0;
 #pragma scheduling invalid_target
 unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
     float e = (float)(unsigned char)arg1;
@@ -940,6 +930,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     float sp10;
     float spC;
     unsigned char sp8;
+    float f0v;
     float f28v;
     float f2v;
     float f29v;
@@ -953,7 +944,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     int i24;
     int i25;
     int i28;
-    int i20;
+    register int i20;
     int i26;
     int i30;
     int fl;
@@ -964,11 +955,12 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     int lenarg;
     int tret;
     void *base;
-    char *i19;
+    register char *i19;
     char *found;
     char *entry;
     (void)arg0;
     (void)farg5;
+    f0v = farg0;
     f28v = farg1;
     i20 = i20_;
     i19 = (char *)i19arg;
@@ -1005,10 +997,10 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
         }
     }
     if (*(int *)((char *)base + 0x68) != 0) {
-        ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp28, &sp24, farg0, f28v);
+        ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp28, &sp24, f0v, f28v);
         fn_802C5310(*(int *)((char *)base + 0x68), arg2_ % fn_802C51AC(*(int *)((char *)base + 0x68)), sp28, sp24, lbl_8056358C);
     } else if (*(int *)((char *)base + 0x6C) != 0) {
-        ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp20, &sp1C, farg0, f28v);
+        ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp20, &sp1C, f0v, f28v);
         fl = *(int *)((char *)base + 0x38);
         i30 = arg2_ % fn_80235FD8(*(int *)((char *)base + 0x6C));
         if (fl & 0x10) {
@@ -1045,7 +1037,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
             fn_802354A0(*(int *)((char *)base + 0x70), i18, -1, sp20 + *(float *)((char *)base + 0x5C), sp1C + *(float *)((char *)base + 0x60), lbl_8056358C, fn_80235EF0(*(int *)((char *)base + 0x70), *(int *)((char *)base + 0x58)), f29v);
         }
     } else if (i26 != 0) {
-        ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp18, &sp14, farg0, f28v);
+        ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp18, &sp14, f0v, f28v);
         fl = *(int *)((char *)base + 0x38);
         if (fl & 0x10) {
             sp14 += farg4 * lbl_80563598;
@@ -1089,7 +1081,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
             } else {
                 v3 = *(int *)((char *)base + 0x48);
             }
-            ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp10, &spC, farg0 + (float)v2, f28v + (float)v3);
+            ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp10, &spC, f0v + (float)v2, f28v + (float)v3);
             fl = *(int *)((char *)base + 0x38);
             i22 = 0;
             lenarg = sp2C;
@@ -1425,40 +1417,38 @@ __declspec(section ".sdata") extern char lbl_8055B950[];
 extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
 #pragma dont_inline(fn_8022CD0C)
 void fn_8022CDE4(int *d, void *o) {
-    register const char *base = lbl_8033FBE8;
-    register char *s;
-    register void *obj;
-    register int *dst;
+#pragma opt_common_subs off
+    const char *base = lbl_8033FBE8;
+    char *s;
     if (!o)
         return;
-    obj = o;
-    dst = d;
-    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, base + 0x498) != 0)
-        dst[0] = fn_8022CD0C(((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, base + 0x498));
-    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, base + 0x4A4) != 0)
-        dst[1] = fn_8022CD0C(((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, base + 0x4A4));
-    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, base + 0x4BC) != 0)
-        dst[2] = fn_8022CD0C(((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, base + 0x4BC));
-    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, base + 0x4C8) != 0)
-        dst[3] = fn_8022CD0C(((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, base + 0x4C8));
-    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, base + 0x4E0) != 0) {
-        s = ((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, base + 0x4E0);
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x498) != 0)
+        d[0] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x498));
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4A4) != 0)
+        d[1] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4A4));
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4BC) != 0)
+        d[2] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4BC));
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4C8) != 0)
+        d[3] = fn_8022CD0C(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4C8));
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x4E0) != 0) {
+        s = ((XmlObj2 *)o)->vt->get((XmlObj2 *)o, base + 0x4E0);
         if (stricmp(s, lbl_8055B930) == 0)
-            dst[4] = 0;
+            d[4] = 0;
         else if (stricmp(s, lbl_8055B938) == 0)
-            dst[4] = 4;
+            d[4] = 4;
         else if (stricmp(s, lbl_8055B940) == 0)
-            dst[4] = 2;
+            d[4] = 2;
         else if (stricmp(s, base + 0x4EC) == 0)
-            dst[4] = 1;
+            d[4] = 1;
         else if (stricmp(s, base + 0x4F8) == 0)
-            dst[4] = 5;
+            d[4] = 5;
         else if (stricmp(s, base + 0x504) == 0)
-            dst[4] = 6;
+            d[4] = 6;
         else
-            dst[4] = fn_8022CD0C(s);
+            d[4] = fn_8022CD0C(s);
     }
-    if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, lbl_8055B948) != 0)
-        sscanf(((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, lbl_8055B948), lbl_8055B950, &dst[5], &dst[6]);
+    if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, lbl_8055B948) != 0)
+        sscanf(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, lbl_8055B948), lbl_8055B950, &d[5], &d[6]);
+#pragma opt_common_subs reset
 }
 #pragma dont_inline reset
