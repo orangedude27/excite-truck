@@ -1845,7 +1845,7 @@ extern f32 lbl_80562350;
 extern f32 lbl_80562354;
 extern f32 lbl_80562358;
 #pragma processor 750
-#pragma scheduling reset
+#pragma scheduling on
 extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __restrict arg4, void *arg5, f32 farg0) {
     f32 * __restrict vec0 = (f32 *)arg0;
     f32 * __restrict vec2 = (f32 *)arg4;
@@ -1877,7 +1877,7 @@ extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __rest
     t = valueSq - lbl_80562350 * (dot2 - radiusSq);
     if (t > lbl_80562354) {
         mag = (f32)fn_8002F234(t);
-        scale = lbl_805622E8 * (0.0f - val - mag);
+        scale = lbl_805622E8 * (-val - mag);
         if (scale >= lbl_805622D0 && scale < *(f32 *)arg2) {
             register f32 x0 = ((f32 *)arg1)[0];
             *(f32 *)arg2 = scale;
