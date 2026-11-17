@@ -11,6 +11,7 @@ u32 PPCMfmsr(void);
 void PPCMtmsr(u32 val);
 
 /* Read the HID0 special-purpose register (processor/cache control bits). */
+/* Read the HID0 special-purpose register (processor/cache control bits). */
 u32 PPCMfhid0(void);
 void PPCMthid0(u32 val);
 
