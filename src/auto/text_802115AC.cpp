@@ -2541,6 +2541,7 @@ extern "C" void fn_80215824(void) {
 }
 
 extern "C" void fn_80215828(void *self, void *arg1, void *arg2, void *arg3, void *arg4, void *arg5, void *arg6) {
+    /* Forward to virtual slot 2 of self, passing args 1-3 and 6 (args 4 and 5 are ignored). */
     struct Obj {
         virtual void v0();
         virtual void v1();
