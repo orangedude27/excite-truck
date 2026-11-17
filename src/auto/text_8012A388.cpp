@@ -2652,8 +2652,9 @@ extern "C" void *fn_8012E460(void *poolHeader) {
     return result;
 }
 
-extern "C" s32 fn_8012E490(s32 *arg0) {
-    return *arg0;
+/* Returns the value stored at slot (used to read an effect's +0xA18 linked-list head). */
+extern "C" s32 fn_8012E490(s32 *slot) {
+    return *slot;
 }
 
 extern "C" const char lbl_8032ACF4[];
