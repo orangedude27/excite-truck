@@ -4252,11 +4252,12 @@ for (;;) {
 void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
     u16 event = *(u16 *)arg1;
     u8 *msg = (u8 *)arg1;
-    u8 *data, *base;
-    u16 header_hi, header;
+    u16 header, header_hi;
     u16 max_len, len;
+    u8 *data, *base;
     u8 channel;
-    data = msg + *(u16 *)(msg + 4) + 8;
+    base = msg + *(u16 *)(msg + 4);
+    data = base + 8;
     if (event == 0x2100) {
         channel = 2;
     } else if (event == 0x2200) {
@@ -4287,7 +4288,7 @@ void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
             }
             data += 2;
             if (*(u16 *)(msg + 6) != 0 && --*(u16 *)(msg + 6) == 0) {
-                *(u16 *)msg = 0x1900;
+                *(u16 *)msg = (short)0x1900;
                 GKI_send_msg(((u8 *)&lbl_803BD1A0)[0x1F], 0, (BT_HDR *)msg);
                 return;
             }
@@ -10537,13 +10538,14 @@ void btm_process_inq_results(UINT8 *p, UINT8 mode)
     UINT8 n, i;
     UINT8 bda[6];
     UINT8 *entry;
+    UINT8 *info;
     UINT8 *base = lbl_803C0F78;
     UINT32 is_new = 1;
     void (*cb)(void *) = *(void (**)(void *))(base + 0x16b4);
     UINT8 rssi = 0, scan = 0, per = 0, rep = 0;
     UINT8 dc[3];
     UINT16 clock;
-    UINT8 j;
+    UINT32 j;
     if (!base[0x1848]) return;
     n = *p++;
     for (i = 0; i < n; i++) {
@@ -10560,28 +10562,32 @@ void btm_process_inq_results(UINT8 *p, UINT8 mode)
         entry = base + 0x16e4;
         j = 0;
         do {
-            if (entry[0x1a] && !memcmp(entry + 0xa, bda, 6)) goto found;
-            j++; entry += 0x1c;
+            if (!entry[0x1a] || memcmp(entry + 0xa, bda, 6) != 0) {
+                j++; entry += 0x1c;
+            } else {
+                goto found;
+            }
         } while (j < 12);
         entry = 0;
 found:
         if (!entry) { entry = (UINT8 *)btm_inq_db_new(bda); is_new = 1; }
         else if (*(UINT32 *)(entry + 4) == *(UINT32 *)(base + 0x16c0)) is_new = 0;
         if (is_new == 1) {
-            entry[0x13] = rep; entry[0x14] = per; 
-            entry[0x15] = scan;
-            entry[0x10] = dc[0]; entry[0x11] = dc[1]; entry[0x12] = dc[2];
-            *(UINT16 *)(entry + 8) = clock | 0x8000;
-            if (mode) entry[0x8 + 0xe] = rssi; else entry[0x8 + 0xe] = 0x7f;
+            info = entry + 8;
+            info[0x13 - 8] = rep; info[0x14 - 8] = per; 
+            info[0x15 - 8] = scan;
+            info[0x10 - 8] = dc[0]; info[0x11 - 8] = dc[1]; info[0x12 - 8] = dc[2];
+            *(UINT16 *)info = clock | 0x8000;
+            if (mode) info[0xe] = rssi; else info[0xe] = 0x7f;
             *(UINT32 *)entry = fn_8006E4F8();
             *(UINT32 *)(entry + 4) = *(UINT32 *)(base + 0x16c0);
             base[0x183f]++;
             if (!(base[0x1848] & 4) && base[0x1836] &&
                 base[0x183f] == base[0x1836]) btsnd_hcic_inq_cancel();
             entry[0x18] = 0;
-            if (cb) cb(entry + 8);
+            if (cb) cb(info);
             if (*(void (**)(void *, UINT8))(base + 0x16bc))
-                (*(void (**)(void *, UINT8))(base + 0x16bc))(entry + 8, 1);
+                (*(void (**)(void *, UINT8))(base + 0x16bc))(info, 1);
         }
     }
 }
@@ -29035,6 +29041,7 @@ void fn_8006CF80(void) {
 extern char lbl_803140FC[];
 extern char lbl_80313794[];
 extern u32 lbl_8055DC30;
+/* BTA HID-host call-out for a closed connection: emit the "bta_hh_co_close()" debug trace (DBPrintf is a no-op stub in this build). Called by bta_hh_close_act. */
 void fn_8006CF90(void) {
     DBPrintf_8006CFA8(lbl_803140FC);
 }
