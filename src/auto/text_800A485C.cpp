@@ -19426,6 +19426,7 @@ extern "C" void fn_800CF554(s32 arg0, u8 *arg1, f32 x0, f32 y0, f32 x1, f32 y1, 
     *(volatile u32 *)0xCC008000 = *(u32 *)arg1;
 }
 
+// Trivial predicate stub; always reports true (1).
 extern "C" u32 fn_800CF91C(void) { return 1; }
 
 extern "C" u8 fn_800CF924(s32 base, s32 index) {
@@ -21330,12 +21331,13 @@ extern "C" s32 fn_800D3634(s32 arg0) {
     u8 *fb;
     u32 frame;
     u32 irq;
+    static const u16 defaultDims[2] = {0x280, 0x1E0};
 #define DST16(o) (*(u16 *)((u8 *)lbl_80407BD8 + (o)))
 #define COL8(o) (*(u8 *)((u8 *)lbl_80407BE8 + (o)))
 #define COL16(o) (*(u16 *)((u8 *)lbl_80407BE8 + (o)))
     if (lbl_8055DDC8 == 0) {
-        u32 w = fn_800D3634_defaultDims[0];
-        u32 h = fn_800D3634_defaultDims[1];
+        u32 w = defaultDims[0];
+        u32 h = defaultDims[1];
         DST16(8) = w;
         lbl_80407BD8[0] = 0;
         DST16(10) = h;
@@ -25479,21 +25481,22 @@ extern "C" s32 fn_800A485C(s32 c) {
 
 #pragma optimize_for_size on
 void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
-    u8 *out = (u8 *)dstArg;
+    u8 *out;
     const u8 *in = (const u8 *)srcArg;
-    int words;
     u32 blocks;
+    u32 words;
     s32 byteAdjustment;
     u32 value;
     int i;
     if (((u32)dstArg & 3) != 0)
         goto copy_bytes;
+    out = (u8 *)dstArg;
     if (((u32)srcArg & 3) != 0)
         goto copy_bytes;
-    words = (int)(size >> 2);
+    words = size >> 2;
     if (size <= 3)
         goto copy_bytes;
-    blocks = (u32)words >> 3;
+    blocks = words >> 3;
     byteAdjustment = -(s32)(words << 2);
     if (blocks != 0) {
         for (i = 0; i < (int)blocks; i++) {
@@ -25512,7 +25515,7 @@ void VFipf_memcpy(void *dstArg, const void *srcArg, u32 size) {
     }
     words &= 7;
     if (words != 0) {
-        for (i = 0; i < words; i++) {
+        for (i = 0; i < (int)words; i++) {
             value = *(u32 *)in;
             in += 4;
             *(u32 *)out = value;
