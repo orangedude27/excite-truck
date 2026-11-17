@@ -67,7 +67,16 @@ extern void fn_802C365C(s32, s32, s32, s32, u32);
 #pragma scheduling invalid_target
 #pragma push
 #pragma peephole off
-s32 fn_802C2CAC(s32 arg0) { unsigned int a = __rlwinm(arg0, 9, 8, 12); unsigned int b; a |= 0xFF000000; b = __rlwinm(arg0, 3, 24, 28); a = __rlwimi(a, arg0, 6, 16, 20); return (s32)(b | a); }
+s32 fn_802C2CAC(s32 pixel16) {
+    /* Convert a 16-bit packed pixel from a format-3 canvas into a 32-bit GX
+       RGBA color word for blitting into a 4-byte-per-pixel canvas (fn_802C3D74). */
+    unsigned int hi = __rlwinm(pixel16, 9, 8, 12);
+    unsigned int lo;
+    hi |= 0xFF000000;
+    lo = __rlwinm(pixel16, 3, 24, 28);
+    hi = __rlwimi(hi, pixel16, 6, 16, 20);
+    return (s32)(lo | hi);
+}
 #pragma pop
 #pragma push
 #pragma peephole off
