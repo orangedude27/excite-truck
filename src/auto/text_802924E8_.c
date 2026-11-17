@@ -52,6 +52,7 @@ public:
     virtual void f2(int);
 };
 #pragma cplusplus off
+// Clear the global chunk cache (lbl_804B4168) by resetting its in-use entry count to zero.
 void fn_802924E8(void) {
     fn_80292EA8(lbl_804B4168);
 }
