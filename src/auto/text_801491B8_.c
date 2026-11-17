@@ -1508,6 +1508,8 @@ extern "C" void fn_8014D700(void *context, s32 param) {
     fn_80149658(param, (void *)((u8 *)context + 0x6C), *(void **)((u8 *)context + 0xC), tableValue);
 }
 
+#pragma push
+#pragma opt_propagation off
 extern "C" bool fn_8014D794(void *arg0, void *arg1) {
     fn_801E7E18();
     if (*(u8 *)((u8 *)arg0 + 0xA0) == 0) {
@@ -1530,8 +1532,7 @@ extern "C" bool fn_8014D794(void *arg0, void *arg1) {
     }
     return *(f32 *)((u8 *)arg0 + 0x64) >= lbl_80561648;
 }
-
-#pragma cplusplus off
+#pragma pop
 extern char *lbl_80559F30;
 extern char *lbl_80559F38;
 #pragma push
@@ -3938,8 +3939,16 @@ void fn_8015471C(s32 arg0, s32 arg1, s32 arg2) {
     fn_801B0F70(arg1, arg2);
 }
 
-void fn_80154728(void *arg0) {
-    if (((u8 *)arg0)[0x8F4] != 0) {
+/* Runs the coin-record update pass when the bet/race manager (allocated as
+ * "betamaster") carries coin_file data, flagged by its +0x8F4 byte. */
+void fn_80154728(void *object) {
+    struct BetaMaster {
+        char pad_0[0x8F4];
+        u8 coinEnabled; /* +0x8F4: set when coin_file exists */
+    };
+    struct BetaMaster *master = (struct BetaMaster *)object;
+
+    if (master->coinEnabled != 0) {
         fn_80168104();
     }
 }
