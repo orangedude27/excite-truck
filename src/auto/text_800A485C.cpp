@@ -11776,6 +11776,9 @@ void fn_800B78EC(void) {
 
 }
 
+/* Tail-call thunk to pfk_get_task_id / VFiPFTHREAD_GetCurrentThread (fn_800B7EAC),
+ * which stores the current OSThread handle through its pointer argument: the
+ * caller's out-parameter passes straight through the branch. */
 void fn_800B78F0(void) {
     ((void (*)(void))fn_800B7EAC)();
 }
