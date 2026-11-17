@@ -566,8 +566,7 @@ next:
 #pragma scheduling invalid_target
 /* Run the action of the editor-menu control whose name is *name.
  *
- * sControlTable is 11 entries of {const char *name; s32 (*test)(const char *);
- * void (*action)(const char *, void *entry);}: the named controls of the
+ * sControlTable is 11 ControlEntry records for the named controls of the
  * in-game track editor ("cur_material", "object_clump", "mode_button",
  * "generate_wmap", "save_matmap", "toggle_objects", "dump_world_model", ...).
  * An entry matches when its name equals *name, or when it has no name of its
@@ -575,27 +574,33 @@ next:
  * name and a pointer to itself.  fn_802B62A4 walks the 4-entry dropdown table
  * (lbl_8034A670: "layer_dropdown", "brush_dropdown") the same way. */
 void fn_802B6358(const char **name) {
+    struct ControlEntry {
+        const char *name;
+        s32 (*test)(const char *);
+        void (*action)(const char *, void *entry);
+    };
 #define sControlTable lbl_8034A70C
-    register s32 *entry = (s32 *)sControlTable;
+    register struct ControlEntry *entry = (struct ControlEntry *)sControlTable;
     register u32 i = 0;
 
 loop:
-    if (entry[0] != 0 && strcmp((const char *)entry[0], *name) == 0) {
+    if (entry->name != 0 && strcmp(entry->name, *name) == 0) {
         goto action;
     }
-    if (entry[1] != 0 && ((s32 (*)(const char *))entry[1])(*name) != 0) {
+    if (entry->test != 0 && entry->test(*name) != 0) {
         goto action;
     }
     goto next;
 action:
     {
-        s32 *actionEntry = (s32 *)(sControlTable + i * 12);
-        ((void (*)(const char *, void *))actionEntry[2])(*name, (void *)actionEntry);
+        struct ControlEntry *actionEntry =
+            (struct ControlEntry *)(sControlTable + i * sizeof(struct ControlEntry));
+        actionEntry->action(*name, (void *)actionEntry);
         return;
     }
 next:
     i++;
-    entry += 3;
+    entry += 1;
     if (i < 11) {
         goto loop;
     }
