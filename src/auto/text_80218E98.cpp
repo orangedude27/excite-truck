@@ -28,6 +28,12 @@ enum {
 };
 
 extern "C" f64 lbl_805634B8;
+static inline f32 cvtI2F_80219FE0(s32 i) {
+    u32 w[2];
+    w[0] = 0x43300000u;
+    w[1] = (u32)i ^ 0x80000000u;
+    return (f32)(*(f64 *)w - lbl_805634B8);
+}
 extern "C" char lbl_8033DAD8[];
 extern "C" s32 fn_80129D90(s32, s32, s32);
 extern "C" s32 fn_80131234(void *);
