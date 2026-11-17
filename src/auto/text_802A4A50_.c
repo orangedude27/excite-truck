@@ -525,7 +525,7 @@ void fn_802A5270(f32 arg0) {
     s32 amount;
     s32 result;
 
-    value = lbl_8056485C < arg0 ? lbl_8056485C : arg0;
+    value = 1.0f < arg0 ? 1.0f : arg0;
     value = value > lbl_80564858 ? value : lbl_80564858;
     amount = (s32)(lbl_80564878 * value);
     result = fn_801284F8(0x44, lbl_80349C88);
