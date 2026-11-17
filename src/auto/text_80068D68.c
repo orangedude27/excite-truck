@@ -4059,6 +4059,7 @@ UINT8 GKI_send_event(UINT8 task_id, UINT16 event) {
 }
 
 u8 fn_8006EB80(void) {
+    /* GKI_get_taskid: return the current GKI task ID (fixed at 2 in this build), used to tag timers and buffer headers. */
     return 2;
 }
 
@@ -17175,16 +17176,18 @@ clear_entry:
     return 0;
 }
 
+#pragma optimize_for_size on
 u8 HID_HostAddDev(u8 *addr, u16 attr_mask, u8 *handle) {
     u32 offset;
     s32 index;
     u8 *p;
     s32 ctr;
     u8 value;
-    p = lbl_803C3C38;
-    if (p[0x400] == 0)
+
+    if (lbl_803C3C38[0x400] == 0)
         return 1;
     index = 0;
+    p = lbl_803C3C38;
 search:
     if (memcmp(addr, p + 1, 6) != 0) {
         index++;
@@ -17195,48 +17198,45 @@ search:
     if (index == 0x10) {
         p = lbl_803C3C38;
         index = 0;
-        ctr = 2;
-scan:
-        if (p[0] == 0)
-            goto scan_done;
-        value = p[0x34];
-        index++;
-        if (value == 0)
-            goto scan_done;
-        value = p[0x68];
-        index++;
-        if (value == 0)
-            goto scan_done;
-        value = p[0x9C];
-        index++;
-        if (value == 0)
-            goto scan_done;
-        value = p[0xD0];
-        index++;
-        if (value == 0)
-            goto scan_done;
-        value = p[0x104];
-        index++;
-        if (value == 0)
-            goto scan_done;
-        value = p[0x138];
-        index++;
-        if (value == 0)
-            goto scan_done;
-        value = p[0x16C];
-        index++;
-        if (value == 0)
-            goto scan_done;
-        p += 0x1A0;
-        index++;
-        ctr--;
-        if (ctr != 0)
-            goto scan;
+        for (ctr = 2; ctr != 0; ctr--) {
+            if (p[0] == 0)
+                goto scan_done;
+            value = p[0x34];
+            index++;
+            if (value == 0)
+                goto scan_done;
+            value = p[0x68];
+            index++;
+            if (value == 0)
+                goto scan_done;
+            value = p[0x9C];
+            index++;
+            if (value == 0)
+                goto scan_done;
+            value = p[0xD0];
+            index++;
+            if (value == 0)
+                goto scan_done;
+            value = p[0x104];
+            index++;
+            if (value == 0)
+                goto scan_done;
+            value = p[0x138];
+            index++;
+            if (value == 0)
+                goto scan_done;
+            value = p[0x16C];
+            index++;
+            if (value == 0)
+                goto scan_done;
+            p += 0x1A0;
+            index++;
+        }
     }
 scan_done:
     if (index == 0x10)
         return 3;
-    offset = (u32)index * 0x34U;
+    offset = index * 0x34;
     p = lbl_803C3C38;
     if (p[offset] == 0) {
         p[offset] = 1;
@@ -17245,11 +17245,10 @@ scan_done:
         p[offset + 0xC] = 0;
     }
     *(u16 *)(p + offset + 8) = attr_mask;
-    *handle = (u8)index;
+    *handle = index;
     return 0;
 }
-
-#pragma pop
+#pragma optimize_for_size reset
 
 #pragma push
 #pragma use_lmw_stmw off
@@ -24423,13 +24422,12 @@ void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
     u8 *buf = (u8 *)GKI_getpoolbuf(2);
     if (buf != 0) {
         s32 sign = (-arg1 | arg1) >> 31;
-        u16 f = 2;
-        u8 e = 1;
+        u16 len = 2;
         *(u16 *)(buf + 4) = 12;
         buf[20] = (u8)((sign & 2) | 161);
-        buf[21] = e;
-        *(u16 *)(buf + 2) = f;
-        rfc_send_buf_uih(arg0, 0, buf, 2);
+        buf[21] = 1;
+        *(u16 *)(buf + 2) = len;
+        rfc_send_buf_uih(arg0, 0, buf, len);
     }
 }
 
