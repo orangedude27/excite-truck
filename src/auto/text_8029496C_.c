@@ -118,6 +118,8 @@ void fn_80294CC0(void) {}
 void fn_80294CC4(void) {}
 
 void fn_80294ED4(void);
+/* Per-mode update thunk: always runs the truck-effects update pass in
+ * fn_80294ED4, regardless of the mode its caller (fn_80287A6C) selects. */
 void fn_80294CC8(void) { fn_80294ED4(); }
 
 #pragma push
