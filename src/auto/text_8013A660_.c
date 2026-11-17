@@ -460,10 +460,14 @@ float fn_8013B5DC(int entryIndex, int randomState) {
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
-float fn_8013B650(int arg0) {
-    float temp = fn_80134B58((float *)lbl_8032C364, lbl_80561434);
-    float result = fn_8013B5DC(arg0, 3);
-    return result + temp;
+float fn_8013B650(int entryIndex) {
+    #define qualifyBiasKey lbl_8032C364 /* config key "qualify_bias" */
+    /* Return an AI racer's qualifying time: its randomized scaled skill value
+       plus the configurable "qualify_bias" offset (default 0.0). */
+    float bias = fn_80134B58((float *)qualifyBiasKey, lbl_80561434);
+    float score = fn_8013B5DC(entryIndex, 3);
+    #undef qualifyBiasKey
+    return score + bias;
 }
 #pragma pop
 
