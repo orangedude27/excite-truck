@@ -308,8 +308,13 @@ extern "C" s32 fn_802E7354(void *);
 extern "C" s32 fn_802E746C(s32, s32 *, s32 *);
 #pragma scheduling off
 extern "C" void fn_8012A7FC(void) {
-    lbl_8055DFF9 = 1;
-    fn_802E2D74(0x32);
+#define sLoadRetryFlag lbl_8055DFF9
+#define waitMs fn_802E2D74
+    /* Raise the load-retry flag and busy-wait 50 ms (0x32) on the millisecond timer. */
+    sLoadRetryFlag = 1;
+    waitMs(0x32);
+#undef waitMs
+#undef sLoadRetryFlag
 }
 
 static inline void Swap4(u8 *q) {
