@@ -92,8 +92,10 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F078C(void *self, 
     return self;
 }
 
-extern "C" void fn_800F07E4(s32 arg0) {
-    __dt__Q46nw4hbm3snd6detail9SeqPlayerFv(arg0 - 8);
+/* Destructor thunk: the SeqPlayer base subobject lies 8 bytes below the incoming
+   `this` pointer, so shift it back by 8 before delegating to SeqPlayer's destructor. */
+extern "C" void fn_800F07E4(s32 derivedThis) {
+    __dt__Q46nw4hbm3snd6detail9SeqPlayerFv(derivedThis - 8);
 }
 
 /* Construct a nw4r::snd::detail::SeqSound: initialize the base BasicSound,
