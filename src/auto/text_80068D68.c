@@ -2120,11 +2120,19 @@ void fn_8006A440(u32 pAlarm, u32 pContext)
 s32 fn_8006A460(s32 arg0) {
     register u8 *var_r6;
     u32 temp_r10;
+    s32 temp_r26;
+    s32 temp_r3;
+    s32 var_ctr;
     register u32 var_r10;
+    u64 temp_ret;
+    void *temp_r7;
+    void *temp_r8;
+    void *temp_r9;
     void *var_r0;
     void *var_r0_2;
     void *var_r0_3;
     void *var_r0_4;
+    u32 ready;
     u8 *base;
     u8 *setup;
     register u32 *words;
@@ -2134,13 +2142,13 @@ s32 fn_8006A460(s32 arg0) {
     register s32 old_state;
     register s32 lock_state;
     s32 i;
+    register s32 n;
     register u32 zero = 0;
     register u32 one = 1;
     u64 now;
     u32 scale;
-    base = lbl_80392960;
-    setup = base + 0;
-    if (lbl_8055DC30 != 0) {
+
+    if ((ready = lbl_8055DC30, base = lbl_80392960, setup = base, ready != 0)) {
         return 0;
     }
     old_state = OSDisableInterrupts();
@@ -2152,6 +2160,7 @@ s32 fn_8006A460(s32 arg0) {
         shorts1[i] = init_zero;
         shorts2[i] = init_zero;
     }
+
     *(u8 **)(setup + 0x18) = setup + 0x58;
     *(u8 **)(setup + 0x14) = setup + 0x1C;
     var_r6 = setup;
@@ -2186,6 +2195,7 @@ s32 fn_8006A460(s32 arg0) {
         var_r6 += 0x18;
         var_r10 = temp_r10 + 1;
     }
+
     *(u32 *)(setup + 0) = zero;
     *(u32 *)(setup + 4) = zero;
     *(u32 *)(setup + 8) = zero;
@@ -2209,6 +2219,7 @@ s32 fn_8006A460(s32 arg0) {
     memset(setup + 0x67C, 0, 6);
     *(u16 *)(setup + 0x6C4) = zero;
     *(u16 *)(setup + 0x6C6) = 0xA;
+
     lock_state = OSDisableInterrupts();
     memset(base + 0x64, 0, 0x3C0);
     memset(base + 0x424, 0, 0x240);
@@ -2220,6 +2231,7 @@ s32 fn_8006A460(s32 arg0) {
     OSRestoreInterrupts(lock_state);
     *(u8 *)(setup + 0x10) = one;
     OSRestoreInterrupts(old_state);
+
     DBPrintf_8006CFA8(lbl_80313464);
     fn_800709FC();
     fn_80071508(lbl_8055DC34);
@@ -2227,11 +2239,12 @@ s32 fn_8006A460(s32 arg0) {
     fn_80096670(lbl_8055DC34);
     DBPrintf_8006CFA8(lbl_8031347C);
     SCInit();
+
     OSCreateAlarm((OSAlarm *)(setup + 0x690));
     now = __OSGetSystemTime();
     scale = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 10;
-    ((void (*)(void *, u64, u32, u32, void (*)(u32, u32)))OSSetPeriodicAlarm)(
-        setup + 0x690, now, 0, scale, (void (*)(u32, u32))fn_8006A39C);
+    ((void (*)(void *, u64, u32, u32, void (*)(void)))OSSetPeriodicAlarm)(
+        setup + 0x690, now, 0, scale, (void (*)(void))fn_8006A39C);
     lbl_8055DC30 = 1;
     return 1;
 }
@@ -24018,8 +24031,9 @@ void fn_800932D8(void) {
 
 }
 
-void fn_800932DC(void *arg0, s32 arg1) {
-    GKI_freebuf((void *)arg1);
+void fn_800932DC(void *p_mcb, s32 p_buf) {
+    /* RFCOMM dealloc callback: discard the given received BT_HDR buffer via the GKI heap (p_mcb unused). */
+    GKI_freebuf((void *)p_buf);
 }
 
 /* Handle an RFCOMM FCON (flow-control on) frame: on command, clear peer
