@@ -3325,7 +3325,7 @@ void fn_802D3D50(void) {
 extern void OSReport(const char *, ...);
 extern void GXInitVtxDescList(int);
 extern void GXDisableBreakPt(void);
-extern void GXLoadTexObj(void *, int, void *);
+extern void GXLoadTexObj(void *, int);
 extern volatile int lbl_8055FDD0;
 extern char lbl_8034C204[];
 void fn_802D3D6C(void) {
