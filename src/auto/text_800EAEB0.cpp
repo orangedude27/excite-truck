@@ -1246,8 +1246,9 @@ extern "C" s32 fn_800ECB90(void *arg0, s32 arg1) {
 }
 #pragma pop
 extern "C" void fn_800F27AC(void *);
-extern "C" void fn_800ECC58(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 0x108) = 0;
+extern "C" void fn_800ECC58(void *soundPlayer) {
+    /* Detach the loaded sound archive (clear its base pointer at +0x108) and reset player state. */
+    *(s32 *)((u8 *)soundPlayer + 0x108) = 0;
     ((void (*)(void))fn_800F27AC)();
 }
 
