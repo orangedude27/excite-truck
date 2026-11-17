@@ -55,6 +55,7 @@ void fn_801E5998(struct SrcHdr *src, struct Rec14 *dst, s32 *outCount) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 s32 fn_801E5E24(s32 arg0, void *arg1, s32 arg2, void *arg3) {
     float m00, m01, m02, m10, m11, m12, m20, m21, m22;
     float qx, qy, qz, qw;
