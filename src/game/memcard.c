@@ -60,33 +60,37 @@ extern char lbl_8034D690[];
 #pragma scheduling invalid_target
 #pragma push
 #pragma use_lmw_stmw off
-/* Register a memory-card chunk record, warn on duplicate cookie ids, and append it to the chunk table. */
-void fn_802E6BD8(unsigned int cookieId, unsigned int recordType, unsigned int recordData, unsigned int recordSize, unsigned int recordCallback) {
-    unsigned char *record;
-    int i;
+/* Adds a save record to the memcard cookie table: cookieId is the record's
+ * four-character id (e.g. 'Rep0' = 0x52657030), recordType the record type,
+ * recordAddr/recordSize the buffer to read the record from and recordCallback
+ * an optional completion callback stored with it.  An id that is already in the
+ * table has its pending write dropped first, so the new entry replaces it. */
+void fn_802E6BD8(unsigned int cookieId, unsigned int recordType, unsigned int recordAddr, unsigned int recordSize, unsigned int recordCallback) {
+    unsigned char *entry;
+    int index;
     int count;
 
     fn_802E30C8(lbl_8034D678, fn_802E6B98(cookieId), recordType, recordSize);
-    record = lbl_804FC8B0;
-    i = 0;
+    entry = lbl_804FC8B0;
+    index = 0;
     goto loop_check;
 loop_body:
-    if (cookieId == *(unsigned int *)record)
+    if (cookieId == *(unsigned int *)entry)
         fn_802E317C(lbl_8034D690, cookieId);
-    record += 0x14;
-    i++;
+    entry += 0x14;
+    index++;
 loop_check:
-    if (i < lbl_8055FFC0)
+    if (index < lbl_8055FFC0)
         goto loop_body;
 
     count = lbl_8055FFC0;
-    record = lbl_804FC8B0 + count * 0x14;
-    *(unsigned int *)(record + 0) = cookieId;
-    *(unsigned int *)(record + 4) = recordType;
-    *(unsigned int *)(record + 8) = recordData;
-    *(unsigned int *)(record + 0xC) = recordSize;
+    entry = lbl_804FC8B0 + count * 0x14;
+    *(unsigned int *)(entry + 0) = cookieId;
+    *(unsigned int *)(entry + 4) = recordType;
+    *(unsigned int *)(entry + 8) = recordAddr;
+    *(unsigned int *)(entry + 0xC) = recordSize;
     lbl_8055FFC0 = count + 1;
-    *(unsigned int *)(record + 0x10) = recordCallback;
+    *(unsigned int *)(entry + 0x10) = recordCallback;
 }
 #pragma pop
 #pragma scheduling on
@@ -286,20 +290,19 @@ void fn_802E7128(void) { fn_802E6FBC(); }
 
 void fn_802E712C(void) {}
 
-#pragma scheduling invalid_target
+#pragma scheduling reset
 int fn_802E7130(void) {
     int count = lbl_8055FFC0;
     int total = 0x20D0;
     int i = 0;
     unsigned char *entry = lbl_804FC8B0;
     while (i < count) {
-        total = total + *(int *)(entry + 0xC);
-        entry = entry + 0x14;
-        i = i + 1;
+        total += *(int *)(entry + 0xC);
+        entry += 0x14;
+        i++;
     }
     return (total + 0x1FFF) & 0xFFFFE000;
 }
-
 /* Finds the index of a memcard record matching (arg0,arg1,arg2); logs and returns -1 on mismatch. */
 int fn_802E721C(unsigned int arg0, unsigned int arg1, int arg2) {
     unsigned char *entry = lbl_804FC8B0;
