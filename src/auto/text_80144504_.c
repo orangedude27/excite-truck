@@ -192,8 +192,9 @@ unsigned int fn_80144C68(unsigned int red, unsigned int green, unsigned int blue
 }
 #pragma scheduling invalid_target
 #pragma scheduling on
-float fn_80144C80(float farg0, float farg1, float farg2) {
-    return farg0 + (farg2 * (farg1 - farg0));
+/* Linear interpolation: blend from a to b by factor t (a + t*(b-a)). */
+float fn_80144C80(float a, float b, float t) {
+    return a + (t * (b - a));
 }
 
 extern f32 lbl_805615C0;
