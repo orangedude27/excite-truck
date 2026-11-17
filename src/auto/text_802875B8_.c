@@ -816,7 +816,8 @@ extern f32 PSVECSquareDistance(void *, void *);
 extern u8 lbl_804B3160[];
 extern s32 fn_802885C4(void *, void *);
 extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
-#pragma scheduling invalid_target
+#pragma scheduling reset
+#pragma paired_single off
 void fn_802885F0(void) {
     struct Pair { s32 a; s32 b; };
     struct Entry {
@@ -880,10 +881,7 @@ void fn_802885F0(void) {
                 scaleSquared = scale * scale;
                 distance = PSVECSquareDistance(currentVector, &other->vecpair);
                 candidate = distance * scaleSquared;
-                if (best < candidate) {
-                } else {
-                    best = candidate;
-                }
+                best = best < candidate ? best : candidate;
                 flag = 0;
                 if (i == *otherId && fn_801E8954(j) != 0) flag = 1;
                 other++;
@@ -901,7 +899,6 @@ void fn_802885F0(void) {
     }
     qsort(lbl_804B3160, *(s32 *)(lbl_804B3150 + 4), 0x10, (int (*)(const void *, const void *))fn_802885C4);
 }
-#pragma scheduling on
 void fn_802887EC(void) {
     u8 *base = lbl_804B3150;
     void (**callback)(void *, s32) = (void (**)(void *, s32))(base + 0x90);
