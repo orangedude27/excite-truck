@@ -297,9 +297,11 @@ extern "C" void fn_80298160(void) {
     }
 }
 
-    extern "C" void* fn_802981EC(unsigned int size, float value) {
-        return (void*)fn_80299A04(lbl_8055F7CC, size, value);
-    }
+/* Add a ring-fire effect to the global set: transform is a pointer to the source
+ * orientation matrix, scale controls how many rings the effect emits. */
+extern "C" void* fn_802981EC(unsigned int transform, float scale) {
+    return (void*)fn_80299A04(lbl_8055F7CC, transform, scale);
+}
 
 extern "C" void fn_802981F8(void* self) {
     float sp8 = lbl_8056459C;
