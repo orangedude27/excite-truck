@@ -4355,8 +4355,10 @@ s32 GXGetTexObjFmt(void *arg0) {
     return (*(s32 *)((char *)arg0 + 0xC) << 5) & 0x1FFFFFE0;
 }
 
-unsigned short GXGetTexObjWrapS(void *arg0) {
-    return (unsigned short)(((*(unsigned int *)((char *)arg0 + 8)) & 0x3FF) + 1);
+/* Return the S-axis wrap mode of a GXTexObj: bits 0..9 of mode0 (+8), plus one
+ * to turn the stored zero-based bias into a GXTexWrapMode value. */
+unsigned short GXGetTexObjWrapS(void *texObj) {
+    return (unsigned short)(((*(unsigned int *)((char *)texObj + 8)) & 0x3FF) + 1);
 }
 
 unsigned short GXGetTexObjWrapT(void *arg0) {
