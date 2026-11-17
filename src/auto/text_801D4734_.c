@@ -1084,8 +1084,10 @@ void fn_801D5A14(int arg0) {
     (void)fn_801D59C8(arg0, 2);
 }
 
-void fn_801D5A1C(int arg0) {
-    (void)fn_801D59C8(arg0, 1);
+/* Return nonzero when the registered action sequence's state field (+0x4) is
+ * ACTION_SEQ_READY (1), or 0 when the sequence is not in the global list. */
+void fn_801D5A1C(int sequence) {
+    (void)fn_801D59C8(sequence, ACTION_SEQ_READY);
 }
 
 /* Return nonzero when the registered action sequence's state field (+0x4) equals 4
