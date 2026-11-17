@@ -2728,9 +2728,10 @@ extern "C" void fn_8012E630(void *node) {
     *((u8 *)node + 0xC) = 0;
 }
 
-  extern "C" s32 fn_8012E674(void *arg0) {
-      return *(s32*)((u8*)arg0 + 8);
-  }
+extern "C" s32 fn_8012E674(void *list) {
+    /* Return the head of the singly-linked list whose head pointer lives at list+0x8. */
+    return *(s32*)((u8*)list + 8);
+}
 
   #pragma push
   #pragma scheduling invalid_target
