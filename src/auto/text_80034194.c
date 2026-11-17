@@ -2985,28 +2985,32 @@ s32 DVDInquiryAsync(void *block, void *addr, void *callback) {
 extern u8 lbl_8037B5B0;
 extern s32 __DVDGetNextWaitingQueue(void);
 extern __declspec(section ".data") u8 lbl_8037B5B0;
-s32 DVDGetCommandBlockStatus(void *arg0) {
-    s32 status;
+/* Report a DVD command block's state from its volatile field at block+0xC:
+ * cover-closed (3) reads as busy (1), cover-open (5) as no-disk (4), and the
+ * root block reads busy while it is queued but not yet executing. The whole
+ * read runs with interrupts disabled. */
+s32 DVDGetCommandBlockStatus(void *block) {
+    s32 state;
     s32 enabled = OSDisableInterrupts();
-    if (*(volatile s32 *)((u8 *)arg0 + 0xC) == 3) {
-        status = 1;
-    } else if (*(volatile s32 *)((u8 *)arg0 + 0xC) == 5) {
-        status = 4;
+    if (*(volatile s32 *)((u8 *)block + 0xC) == 3) {
+        state = 1;
+    } else if (*(volatile s32 *)((u8 *)block + 0xC) == 5) {
+        state = 4;
     } else if ((u32)executing_8055D8C8 == (u32)&lbl_8037B5B0) {
         s32 next = __DVDGetNextWaitingQueue();
         if (next != 0) {
-            if ((u32)arg0 == (u32)next) status = 1;
-            else status = *(volatile s32 *)((u8 *)arg0 + 0xC);
-        } else if ((u32)arg0 == (u32)&lbl_8037B5B0) {
-            status = 0;
+            if ((u32)block == (u32)next) state = 1;
+            else state = *(volatile s32 *)((u8 *)block + 0xC);
+        } else if ((u32)block == (u32)&lbl_8037B5B0) {
+            state = 0;
         } else {
-            status = *(volatile s32 *)((u8 *)arg0 + 0xC);
+            state = *(volatile s32 *)((u8 *)block + 0xC);
         }
     } else {
-        status = *(volatile s32 *)((u8 *)arg0 + 0xC);
+        state = *(volatile s32 *)((u8 *)block + 0xC);
     }
     OSRestoreInterrupts(enabled);
-    return status;
+    return state;
 }
 
 /* Return the current DVD drive status: fatal error (-1), paused (8), idle (0)
