@@ -74,35 +74,63 @@ extern "C" float fn_80019FD4(void *arg0, int arg1, float farg0) {
     return farg0;
 }
 
-void fn_8001A04C(int *arg0) {
-    int i;
-    int *old;
+extern "C" void fn_8001A04C(int *arg0) {
+    char *base;
+    char *p;
+    int count;
 
-    if (--lbl_8055D5B8 == 0) {
-        old = (int *)lbl_8055D5B4;
+    lbl_8055D5B8--;
+    if (lbl_8055D5B8 == 0) {
+        int *old = (int *)lbl_8055D5B4;
         if (old != 0) {
             fn_80235380(old[0]);
             fn_80128668(old);
         }
         lbl_8055D5B4 = 0;
     }
-    for (i = 0; i < 16; i++) {
-        lbl_803583C8[i * 0x14 + 0x10] = 0;
-        *(int *)&lbl_803583C8[i * 0x14] = 0;
-        *(int *)&lbl_803583C8[i * 0x14 + 4] = -1;
-    }
+    count = 2;
+    base = (char *)&lbl_803583C8;
+    do {
+        *(char *)(base + 0x10) = 0;
+        *(int *)(base + 0) = 0;
+        *(int *)(base + 4) = -1;
+        *(char *)(base + 0x24) = 0;
+        *(int *)(base + 0x14) = 0;
+        *(int *)(base + 0x18) = -1;
+        *(char *)(base + 0x38) = 0;
+        *(int *)(base + 0x28) = 0;
+        *(int *)(base + 0x2C) = -1;
+        *(char *)(base + 0x4C) = 0;
+        *(int *)(base + 0x3C) = 0;
+        *(int *)(base + 0x40) = -1;
+        *(char *)(base + 0x60) = 0;
+        *(int *)(base + 0x50) = 0;
+        *(int *)(base + 0x54) = -1;
+        *(char *)(base + 0x74) = 0;
+        *(int *)(base + 0x64) = 0;
+        *(int *)(base + 0x68) = -1;
+        *(char *)(base + 0x88) = 0;
+        *(int *)(base + 0x78) = 0;
+        *(int *)(base + 0x7C) = -1;
+        *(char *)(base + 0x9C) = 0;
+        *(int *)(base + 0x8C) = 0;
+        *(int *)(base + 0x90) = -1;
+        base += 0xA0;
+        count--;
+    } while (count != 0);
     if (arg0 != 0) {
-        if (arg0[6] != -2) { fn_802CAC54(arg0[6]); arg0[6] = -2; }
-        if (arg0[5] != -2) { fn_802CAC54(arg0[5]); arg0[5] = -2; }
-        if (arg0[0] != -2) { fn_802CAC54(arg0[0]); arg0[0] = -2; }
-        if (arg0[2] != -2) { fn_802CAC54(arg0[2]); arg0[2] = -2; }
-        if (arg0[3] != -2) { fn_802CAC54(arg0[3]); arg0[3] = -2; }
-        if (arg0[1] != -2) { fn_802CB228(arg0[1]); arg0[1] = -2; }
-        old = (int *)arg0[4];
-        if (old != 0) {
-            fn_80235380(old[0]);
-            fn_80128668(old);
-            arg0[4] = 0;
+        p = (char *)arg0;
+        if (*(int *)(p + 0x18) != -2) { fn_802CAC54(*(int *)(p + 0x18)); *(int *)(p + 0x18) = -2; }
+        if (*(int *)(p + 0x14) != -2) { fn_802CAC54(*(int *)(p + 0x14)); *(int *)(p + 0x14) = -2; }
+        if (*(int *)(p + 0) != -2) { fn_802CAC54(*(int *)(p + 0)); *(int *)(p + 0) = -2; }
+        if (*(int *)(p + 8) != -2) { fn_802CAC54(*(int *)(p + 8)); *(int *)(p + 8) = -2; }
+        if (*(int *)(p + 12) != -2) { fn_802CAC54(*(int *)(p + 12)); *(int *)(p + 12) = -2; }
+        if (*(int *)(p + 4) != -2) { fn_802CB228(*(int *)(p + 4)); *(int *)(p + 4) = -2; }
+        p = *(char **)(p + 0x10);
+        if (p != 0) {
+            fn_80235380(*(int *)p);
+            fn_80128668(p);
+            *(char **)((char *)arg0 + 0x10) = 0;
         }
     }
 }
@@ -619,9 +647,9 @@ extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
 void fn_8001B478(int arg0, float farg0) {
     unsigned char sp20[0x38];
     int n, result, i;
-    float y, x, t, step, texscale2, angle, ratio, inv, ratio2;
-    float p[2];
     float a[4];
+    float p[2];
+    float y, x, t, step, texscale2, angle, ratio, inv, ratio2;
     void *shape;
     void *node;
     void *head;
@@ -730,6 +758,7 @@ extern int fn_802CB128(int, int, int, int);
 extern void* fn_802CAC28(void*, int);
 extern void fn_802C8530(void);
 extern void fn_802C855C(void);
+typedef struct { int pad[2]; void* (*get)(void*,void*); int pad2[6]; float (*f)(void*,void*); float (*def)(void*,void*,float); int pad3[4]; unsigned long long (*vec)(void*,void*); } VTable;
 
 extern void fn_802CB274(int);
 extern void fn_802C9294(int, int);
