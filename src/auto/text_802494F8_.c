@@ -19,14 +19,14 @@ static inline int has_sound_entry(int *key) {
     return find_sound_entry_inline(key) != -1;
 }
 static inline int find_sound_entry_first(int *key) {
-    void *table = lbl_8055F28C;
     int i;
-    int byteOffset;
-    int count = *(int *)((char *)table + 4);
-    for (i = 0, byteOffset = 0; i < count; i++, byteOffset += 0x18) {
-        int value = *(int *)(*(char **)table + byteOffset);
+    int byteOffset = 0;
+    int count = *(int *)((char *)lbl_8055F28C + 4);
+    for (i = 0; i < count; i++) {
+        int value = *(int *)(*(char **)lbl_8055F28C + byteOffset);
         int id = *key;
         if (value == id) return i;
+        byteOffset += 0x18;
     }
     return -1;
 }
