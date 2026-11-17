@@ -26390,7 +26390,11 @@ void *add_record(tSDP_DISCOVERY_DB *p_db, BD_ADDR p_bda) {
 #pragma push
 #pragma optimization_level 3
 UINT8 *add_attr(UINT8 *p, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_REC *p_rec, UINT16 attr_id, tSDP_DISC_ATTR *p_parent_attr, UINT8 nest_level) {
-    char *log = lbl_8031A028;
+#define SDP_ADDITIONAL_LIST_MASK 0x80
+#define MAX_NEST_LEVELS 5
+#define FREE_MEM(db) (*(UINT8 **)((UINT8 *)(db) + 0x68))
+#define COPY_ARRAY(p, a, len) {register int ijk; for (ijk = 0; ijk < (int)(len); ijk++) ((UINT8 *) a)[ijk] = *p++;}
+    char *p_trace_str = lbl_8031A028;
     UINT32 total_len;
     UINT32 size;
     tSDP_DISC_ATTR *p_attr;
@@ -26401,15 +26405,13 @@ UINT8 *add_attr(UINT8 *p, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_REC *p_rec, UINT16 
     UINT16 id;
     UINT8 type;
     UINT8 *p_end;
-    UINT8 is_additional_list = nest_level & 0x80;
-#define FREE_MEM(db) (*(UINT8 **)((UINT8 *)(db) + 0x68))
-#define COPY_ARRAY(p, a, len) {register int ijk; for (ijk = 0; ijk < (int)(len); ijk++) ((UINT8 *) a)[ijk] = *p++;}
+    UINT8 is_additional_list = nest_level & SDP_ADDITIONAL_LIST_MASK;
 
-    nest_level &= ~0x80;
+    nest_level &= ~SDP_ADDITIONAL_LIST_MASK;
 
     type = *p++;
     p = sdpu_get_len_from_type(p, type, &attr_len);
-    attr_len &= 0x0FFF;
+    attr_len &= SDP_DISC_ATTR_LEN_MASK;
     attr_type = (type >> 3) & 0x0f;
 
     if (attr_len > 4)
@@ -26428,26 +26430,26 @@ UINT8 *add_attr(UINT8 *p, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_REC *p_rec, UINT16 
     p_attr->p_next_attr = NULL;
 
     switch (attr_type) {
-    case 1:
+    case UINT_DESC_TYPE:
         if (is_additional_list != 0 && attr_len == 2) {
             id = (p[0] << 8) + p[1];
-            if (id == 4) {
+            if (id == ATTR_ID_PROTOCOL_DESC_LIST) {
                 FREE_MEM(p_db) += 12;
                 p_db->mem_free -= 12;
                 total_len = 0;
                 p += 2;
                 p_end = p + attr_len;
-                if (nest_level >= 5) {
-                    if (lbl_803C4C40[0x4630] >= 1)
-                        fn_8007093C(0xA0000, log + 0xD8);
+                if (nest_level >= MAX_NEST_LEVELS) {
+                    if (sdp_cb_trace_level >= BT_TRACE_LEVEL_ERROR)
+                        fn_8007093C(0xA0000, p_trace_str + 0xD8);
                     return p_end;
                 }
-                p = add_attr(p, p_db, p_rec, 4, p_attr, nest_level + 1);
+                p = add_attr(p, p_db, p_rec, ATTR_ID_PROTOCOL_DESC_LIST, p_attr, nest_level + 1);
                 break;
             }
             p = p;
         }
-    case 2:
+    case TWO_COMP_INT_DESC_TYPE:
         switch (attr_len) {
         case 1:
             p_attr->attr_value.v.u8 = *p++;
@@ -26463,7 +26465,7 @@ UINT8 *add_attr(UINT8 *p, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_REC *p_rec, UINT16 
             break;
         }
         break;
-    case 3:
+    case UUID_DESC_TYPE:
         switch (attr_len) {
         case 2:
             BE_STREAM_TO_UINT16(p_attr->attr_value.v.u16, p);
@@ -26476,59 +26478,59 @@ UINT8 *add_attr(UINT8 *p, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_REC *p_rec, UINT16 
                 p_attr->attr_value.v.u16 = (UINT16)p_attr->attr_value.v.u32;
             }
             break;
-        case 16:
+        case MAX_UUID_SIZE:
             if (sdpu_is_base_uuid(p)) {
                 if (p[0] == 0 && p[1] == 0) {
-                    p_attr->attr_len_type = (p_attr->attr_len_type & ~0xFFF) | 2;
+                    p_attr->attr_len_type = (p_attr->attr_len_type & ~SDP_DISC_ATTR_LEN_MASK) | 2;
                     p += 2;
                     BE_STREAM_TO_UINT16(p_attr->attr_value.v.u16, p);
-                    p += 12;
+                    p += MAX_UUID_SIZE - 4;
                 } else {
-                    p_attr->attr_len_type = (p_attr->attr_len_type & ~0xFFF) | 4;
+                    p_attr->attr_len_type = (p_attr->attr_len_type & ~SDP_DISC_ATTR_LEN_MASK) | 4;
                     BE_STREAM_TO_UINT32(p_attr->attr_value.v.u32, p);
-                    p += 12;
+                    p += MAX_UUID_SIZE - 4;
                 }
             } else {
                 COPY_ARRAY(p, p_attr->attr_value.v.array, attr_len);
             }
             break;
         default:
-            if (lbl_803C4C40[0x4630] >= 2)
-                ((void (*)(u32, void *, UINT32))fn_80070954)(0xA0001, log + 0xF4, attr_len);
+            if (sdp_cb_trace_level >= BT_TRACE_LEVEL_WARNING)
+                ((void (*)(u32, void *, UINT32))fn_80070954)(0xA0001, p_trace_str + 0xF4, attr_len);
             return p + attr_len;
         }
         break;
-    case 6:
-    case 7:
+    case DATA_ELE_SEQ_DESC_TYPE:
+    case DATA_ELE_ALT_DESC_TYPE:
         FREE_MEM(p_db) += 12;
         p_db->mem_free -= 12;
         total_len = 0;
         p_end = p + attr_len;
-        if (nest_level >= 5) {
-            if (lbl_803C4C40[0x4630] >= 1)
-                fn_8007093C(0xA0000, log + 0xD8);
+        if (nest_level >= MAX_NEST_LEVELS) {
+            if (sdp_cb_trace_level >= BT_TRACE_LEVEL_ERROR)
+                fn_8007093C(0xA0000, p_trace_str + 0xD8);
             return p_end;
         }
-        if (is_additional_list != 0 || attr_id == 0xD)
-            nest_level |= 0x80;
+        if (is_additional_list != 0 || attr_id == ATTR_ID_ADDITION_PROTO_DESC_LISTS)
+            nest_level |= SDP_ADDITIONAL_LIST_MASK;
         while (p < p_end) {
             p = add_attr(p, p_db, p_rec, 0, p_attr, nest_level + 1);
             if (p == NULL)
                 return NULL;
         }
         break;
-    case 4:
-    case 8:
+    case TEXT_STR_DESC_TYPE:
+    case URL_DESC_TYPE:
         COPY_ARRAY(p, p_attr->attr_value.v.array, attr_len);
         break;
-    case 5:
+    case BOOLEAN_DESC_TYPE:
         switch (attr_len) {
         case 1:
             p_attr->attr_value.v.u8 = *p++;
             break;
         default:
-            if (lbl_803C4C40[0x4630] >= 2)
-                ((void (*)(u32, void *, UINT32))fn_80070954)(0xA0001, log + 0x114, attr_len);
+            if (sdp_cb_trace_level >= BT_TRACE_LEVEL_WARNING)
+                ((void (*)(u32, void *, UINT32))fn_80070954)(0xA0001, p_trace_str + 0x114, attr_len);
             return p + attr_len;
         }
         break;
@@ -29444,19 +29446,18 @@ void fn_8006BAD8(u32 event, u8 *data)
 }
 
 void fn_8006C00C(s32 event, void *arg) {
-    union { char *strings; u32 count; } work;
+    char *strings = (char *)lbl_803130C8;
     u8 *p = (u8 *)arg;
     u16 timeout;
     BOOL interrupts;
     u8 state;
-    
+    u8 count;
     u8 field;
     u32 value;
 
-    work.strings = (char *)lbl_803130C8;
     switch (event) {
     case 0:
-        DBPrintf_8006CFA8(work.strings + 0x96C,
+        DBPrintf_8006CFA8(strings + 0x96C,
                            p[0], p[1], p[2], p[3], p[4], p[5], p[6],
                            p[7], p[8], (s8)p[9]);
         field = p[9];
@@ -29466,9 +29467,9 @@ void fn_8006C00C(s32 event, void *arg) {
             goto low_timeout;
         if (state == 0) {
             interrupts = OSDisableInterrupts();
-            work.count = lbl_80392960[0x665];
+            count = lbl_80392960[0x665];
             OSRestoreInterrupts(interrupts);
-            if (work.count < 3) {
+            if (count < 3) {
                 low_timeout:
                 timeout = 0x12C0;
                 goto write_timeout;
@@ -29480,7 +29481,7 @@ write_timeout:
         BTM_WritePageTimeout(timeout);
         break;
     case 1:
-        DBPrintf_8006CFA8(work.strings + 0x9B0);
+        DBPrintf_8006CFA8(strings + 0x9B0);
         break;
     case 2:
         memcpy(lbl_803934C0, p, 6);
@@ -29488,24 +29489,24 @@ write_timeout:
         value = *(u32 *)(p + 0x100);
         *(u32 *)(lbl_803934C0 + 0x100) = value;
         lbl_8055DC49++;
-        DBPrintf_8006CFA8(work.strings + 0x9C4,
+        DBPrintf_8006CFA8(strings + 0x9C4,
                            lbl_803934C0[0], lbl_803934C0[1],
                            lbl_803934C0[2], lbl_803934C0[3],
                            lbl_803934C0[4], lbl_803934C0[5],
                            lbl_803934C0 + 6, value);
         break;
     case 3:
-        DBPrintf_8006CFA8(work.strings + 0xA04);
+        DBPrintf_8006CFA8(strings + 0xA04);
         lbl_80392960[0xC] = 4;
         break;
     case 4:
-        DBPrintf_8006CFA8(work.strings + 0xA18);
+        DBPrintf_8006CFA8(strings + 0xA18);
         lbl_8055DC49 = 0;
         memset(lbl_803934C0, 0, 0x108);
         lbl_80392960[0xC] = 4;
         break;
     default:
-        DBPrintf_8006CFA8(work.strings + 0xA28);
+        DBPrintf_8006CFA8(strings + 0xA28);
         break;
     }
 }
