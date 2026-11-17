@@ -188,7 +188,8 @@ int fn_80208D4C(int index) {
     return MIXER_DEVICES[index];
 }
 
-void fn_80208D60(int arg0) { lbl_80489238[7] = arg0; }
+/* Set the index of the currently selected mixer device. */
+void fn_80208D60(int index) { MIXER_SELECTED_DEVICE = index; }
 
 int fn_80208D70(void) { return lbl_80489238[7]; }
 
