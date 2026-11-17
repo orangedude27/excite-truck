@@ -20,6 +20,7 @@ u32 OSGetConsoleSimulatedMem1Size(void) {
 }
 
 u32 OSGetConsoleSimulatedMem2Size(void) {
+    /* Return the simulated MEM2 size the console reports to the game, from the hardware config globals. */
     return OS_SIMULATED_MEM2_SIZE;
 }
 
