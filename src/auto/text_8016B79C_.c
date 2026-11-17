@@ -1448,8 +1448,9 @@ s32 fn_8016DE08(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
-s32 fn_8016DE10(s32 *arg0, s32 arg1) {
-    return *arg0 + (arg1 * 0x10);
+/* Compute the address of the index-th 16-byte record in the array whose base pointer is stored at *arg0 (record layout: +0 flag byte, +4 int, +8/+0xC floats). */
+s32 fn_8016DE10(s32 *header, s32 index) {
+    return *header + (index * 0x10);
 }
 
 /* Refreshes an object's display text/resource handle based on its mode/index.
