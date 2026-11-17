@@ -4536,11 +4536,7 @@ advance:
 }
 
 extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    u32 sp264;
-    u8 sp24C;
-    u8 sp23Ebuf[16];
-    u8 sp23A;
-    u8 sp30buf[64];
+     u8 sp30buf[0x240];
     s32 sp20;
     int sp14;
     s32 sp10;
@@ -16746,23 +16742,23 @@ u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     s32 shift = 0x18 - (bits & 7);
     *arg2 = bits + arg1;
     volatile u8 *bytes = (volatile u8 *)arg0;
+    u8 a;
     u8 b;
     u8 c;
-    u8 a;
     if (index < 0x1FFE) {
         u32 next = index + 1;
         a = bytes[index];
         b = bytes[next];
-        next++;
-        c = bytes[next];
+        next = next + 1;
+        c = bytes[next + 0];
     } else {
         u32 next = index + 1;
         a = bytes[index];
         next &= 0x1FFF;
         b = bytes[next];
-        next++;
+        next = next + 1;
         next &= 0x1FFF;
-        c = bytes[next];
+        c = bytes[next + 0];
     }
     u32 value = ((u32)a << 16) | ((u32)b << 8) | c;
     return (value & lbl_802F3F54[shift]) >> (shift - arg1);
