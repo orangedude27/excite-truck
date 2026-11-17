@@ -794,6 +794,7 @@ extern "C" int fn_802996B0(void *, int *);
 #pragma paired_single off
 #pragma scheduling invalid_target
 extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg3, void *arg4, short arg5) {
+#pragma use_lmw_stmw off
     struct Work {
         short angle;
         char pad[2];
@@ -1319,32 +1320,48 @@ extern float lbl_805645C8;
 extern float lbl_805645E8;
 extern "C" void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float z) {
     if ((unsigned char *)b == (unsigned char *)a + 0x30) {
-        float t12 = a[12];
-        float t13 = a[13];
-        float t14 = a[14];
-        b[0] = t12*a[0] + t13*a[3] + t14*a[6];
-        b[1] = t12*a[1] + t13*a[4] + t14*a[7];
-        b[2] = t12*a[2] + t13*a[5] + t14*a[8];
+        float ax, ay, az;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = a[3];
+        ay = a[13];
+        m11 = a[4]; m12 = a[5];
+        m00 = a[0];
+        ax = a[12];
+        m01 = a[1]; m02 = a[2];
+        m20 = a[6];
+        az = a[14];
+        m21 = a[7]; m22 = a[8];
+        b[0] = az * m20 + (ax * m00 + ay * m10);
+        b[1] = az * m21 + (ax * m01 + ay * m11);
+        b[2] = az * m22 + (ax * m02 + ay * m12);
     } else {
-        b[0] = a[12]*a[0] + a[13]*a[3] + a[14]*a[6];
-        b[1] = a[12]*a[1] + a[13]*a[4] + a[14]*a[7];
-        b[2] = a[12]*a[2] + a[13]*a[5] + a[14]*a[8];
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = a[3]; m00 = a[0]; m20 = a[6];
+        b[0] = a[14] * m20 + (a[12] * m00 + a[13] * m10);
+        m11 = a[4]; m01 = a[1]; m21 = a[7];
+        b[1] = a[14] * m21 + (a[12] * m01 + a[13] * m11);
+        m12 = a[5]; m02 = a[2]; m22 = a[8];
+        b[2] = a[14] * m22 + (a[12] * m02 + a[13] * m12);
     }
+    float dScale = lbl_805645E8;
+    float cScale = lbl_805645C8;
     b[0] += a[9];
     b[1] += a[10];
     b[2] += a[11];
-    c[0] = a[0] * lbl_805645C8;
-    c[1] = a[1] * lbl_805645C8;
-    c[2] = a[2] * lbl_805645C8;
-    d[0] = a[6] * lbl_805645E8;
-    d[1] = a[7] * lbl_805645E8;
-    d[2] = a[8] * lbl_805645E8;
+    c[0] = a[0] * cScale;
+    c[1] = a[1] * cScale;
+    c[2] = a[2] * cScale;
+    d[0] = a[6] * dScale;
+    d[1] = a[7] * dScale;
+    d[2] = a[8] * dScale;
 }
 
 extern "C" int fn_801EE0C8(int);
 extern "C" void fn_802C77F0(int, float *);
 extern "C" int lbl_80488648[];
 extern "C" float lbl_80564608;
+typedef struct { unsigned int w[7]; } Fn8029A4B4Copy7;
+typedef struct { unsigned int w[3]; } Fn8029A4B4Copy3;
 #pragma dont_inline on
 extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     register void *dest = arg0;
@@ -1353,8 +1370,8 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     float a[3], b[3], c[3], home[3], screen[6];
     int selector, handle;
     unsigned int *src, *dst;
-    unsigned int t;
-    register unsigned int v1, v0;
+    register unsigned int t, v1, v0;
+    float h2, h0;
 
     data = (void *)fn_80287B24(index);
     if ((unsigned int)index < 8U)
@@ -1371,16 +1388,18 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     v0=src[4]; v1=src[5]; dst[4]=v0; dst[5]=v1;
     v0=src[6]; v1=src[7]; dst[6]=v0; dst[7]=v1;
     v0=src[8]; dst[8]=v0;
-    v0=src[9]; v1=src[10]; dst[9]=v0; dst[10]=v1;
+    v1=src[9]; v0=src[10]; dst[9]=v1; dst[10]=v0;
     v0=src[11]; dst[11]=v0;
 
-    home[2] = screen[4];
+    h2 = screen[4];
     home[1] = screen[2];
-    home[0] = screen[0];
-    *(float *)((char *)dest + 0x30) = home[0];
+    h0 = screen[0];
+    *(float *)((char *)dest + 0x30) = h0;
     *(float *)((char *)dest + 0x34) = home[1];
-    *(float *)((char *)dest + 0x38) = home[2];
+    *(float *)((char *)dest + 0x38) = h2;
     *(unsigned int *)((char *)dest + 0x3C) = (unsigned int)index;
+    home[0] = h0;
+    home[2] = h2;
 
     a[0] = 0.0f; a[1] = 0.0f; a[2] = 0.0f;
     b[0] = 0.0f; b[1] = 0.0f; b[2] = 0.0f;
@@ -1946,23 +1965,25 @@ extern "C" void fn_802C8E00(int, int, float, float, float, float, float);
 #pragma push
 #pragma processor 750
 extern "C" void fn_8029B274(void *arg0, float *c, unsigned char arg2, void *arg3, void *arg4, float f, float arg6) {
-#pragma opt_common_subs off
     struct V3 { float x, y, z; };
     V3 *a = (V3 *)arg3;
     V3 *b = (V3 *)arg4;
     V3 t, s, r, q;
     float sp14, sp10, spC, sp8;
-    float neg, h1, h2, px, py, pz;
+    float neg, h1, h2, px, py, pz, cz, cx, cy;
 
     fn_8029B138(arg0, arg2, &sp14, &sp10, &spC, &sp8);
     neg = -f;
-    px = c[0] + a->x * neg;
-    py = c[1] + a->y * neg;
+    cx = c[0];
+    cy = c[1];
+    cz = c[2];
+    px = cx + a->x * neg;
+    py = cy + a->y * neg;
     q.x = px;
     q.y = py;
     h1 = lbl_8056460C * f;
     h2 = lbl_805645D8 * f;
-    pz = c[2] + a->z * neg;
+    pz = cz + a->z * neg;
     q.x = px + b->x * f;
     q.y = py + b->y * f;
     q.z = pz + b->z * f;
