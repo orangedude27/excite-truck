@@ -593,7 +593,8 @@ void fn_802E9160(void *arg0) {
     *(int*)arg0=1;
 }
 
-int fn_802E91AC(int *arg0) { return *arg0 == 0; }
+/* True when the rmemcard async NAND write state word is IDLE (0), i.e. no write was started. */
+int fn_802E91AC(int *state) { return *state == 0; }
 
 #pragma push
 #pragma opt_propagation off
