@@ -366,8 +366,9 @@ void fn_8027D888(void *effect) {
     fn_8001DA48((char *)effect + 0x14);
 }
 
-int fn_8027D890(void *arg0) {
-    return ((int *)arg0)[3];
+/* Return the int field at offset 0xC of the nw4r::ef effect object. */
+int fn_8027D890(void *effect) {
+    return ((int *)effect)[3];
 }
 
 int fn_8027D898(void *arg0) { return *(int *)((char *)arg0 + 0x30); }
