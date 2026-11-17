@@ -25633,8 +25633,10 @@ extern "C" void NANDSetUserData(void* arg0, s32 arg1) {
     *(s32*)((u8*)arg0 + 0xC) = arg1;
 }
 
+/* Returns the character-code mode of a VFiPF path context (VFiPFStrPos.code): 1 = one byte per character, 2 = Unicode. */
 extern "C" s32 fn_800A4D44(void *arg0) {
-    return ((s32 *)arg0)[0xC / 4];
+    VFiPFStrPos *ctx = (VFiPFStrPos *)arg0;
+    return ctx->code;
 }
 
 /* Set the selected string of a PF path/string context: use the context's own
