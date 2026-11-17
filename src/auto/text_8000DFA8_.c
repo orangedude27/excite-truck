@@ -1807,8 +1807,9 @@ void fn_80011A5C(s32 arg0) {
     lbl_8055D4A4 = 1;
 }
 
-f32 fn_80011DC0(s32 arg0) {
-    return lbl_80350F28[arg0][0];
+f32 fn_80011DC0(s32 regionId) {
+    /* First stored top of layout region regionId (the [region][0] column of lbl_80350F28). */
+    return lbl_80350F28[regionId][0];
 }
 
 f32 fn_80011DD4(s32 regionId) {
