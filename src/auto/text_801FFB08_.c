@@ -60,6 +60,7 @@ char *fn_801FFB08(int arg0, int helperId) {
     return helperEntry + 0x24;
 }
 #pragma scheduling on
+/* No-op stub: called during scene initialization but does nothing (a single `blr`). */
 void fn_801FFB6C(void) {
 
 }
@@ -287,9 +288,12 @@ void fn_8020095C(int *object) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802009CC(M802009CC *out, float *verts, int *tri, int count, unsigned char *arr, float *M) {
     struct { float axis[3]; float d[3]; float w[3]; float p[3]; float R[9]; float res[9]; } s;
     int i;
+    float kOne = lbl_80563058, kMagD = lbl_8056306C, kMagA = lbl_80563070, kZero = lbl_8056305C, kEps = lbl_80563068;
+    if (count <= 0) return;
     for (i = 0; i < count; i++, tri += 3) {
         int i0 = tri[0], i2 = tri[2];
         float *vp = (float *)((unsigned char *)verts + tri[1] * 12);
@@ -315,19 +319,19 @@ void fn_802009CC(M802009CC *out, float *verts, int *tri, int count, unsigned cha
             s.d[1] = s.w[1] - s.p[1];
             s.d[2] = s.w[2] - s.p[2];
             mag = PSVECMag(s.d);
-            if (mag > lbl_80563068) {
-                float k = lbl_8056306C / mag;
+            if (mag > kEps) {
+                float k = kMagD / mag;
                 s.res[0] = s.d[0] * k;
                 s.res[1] = s.d[1] * k;
                 s.res[2] = s.d[2] * k;
                 PSVECCrossProduct(B, s.res, s.axis);
                 mag = PSVECMag(s.axis);
-                if (mag > lbl_80563070) {
-                    float inv = lbl_80563058 / mag;
+                if (mag > kMagA) {
+                    float inv = kOne / mag;
                     float ax = inv * s.axis[0], ay = inv * s.axis[1], az = inv * s.axis[2];
                     float sn = (float)sin(mag);
                     float cs = (float)cos(mag);
-                    float t = lbl_80563058 - cs;
+                    float t = kOne - cs;
                     float txy = t * ax;
                     float a = ay * txy;
                     float b = sn * az;
@@ -345,9 +349,9 @@ void fn_802009CC(M802009CC *out, float *verts, int *tri, int count, unsigned cha
                     s.R[7] = g - h;
                     s.R[8] = cs + t * (az * az);
                 } else {
-                    s.R[0] = lbl_80563058; s.R[1] = lbl_8056305C; s.R[2] = lbl_8056305C;
-                    s.R[3] = lbl_8056305C; s.R[4] = lbl_80563058; s.R[5] = lbl_8056305C;
-                    s.R[6] = lbl_8056305C; s.R[7] = lbl_8056305C; s.R[8] = lbl_80563058;
+                    s.R[0] = kOne; s.R[1] = kZero; s.R[2] = kZero;
+                    s.R[3] = kZero; s.R[4] = kOne; s.R[5] = kZero;
+                    s.R[6] = kZero; s.R[7] = kZero; s.R[8] = kOne;
                 }
                 if (s.res == s.R || s.res == B) {
                     float r0 = fn_80144514(B[0], s.R[0], B[3], s.R[1], B[6], s.R[2]);
@@ -374,9 +378,9 @@ void fn_802009CC(M802009CC *out, float *verts, int *tri, int count, unsigned cha
                     s.res[8] = fn_80144514(B[2], s.R[6], B[5], s.R[7], B[8], s.R[8]);
                 }
             } else {
-                s.res[0] = lbl_80563058; s.res[1] = lbl_8056305C; s.res[2] = lbl_8056305C;
-                s.res[3] = lbl_8056305C; s.res[4] = lbl_80563058; s.res[5] = lbl_8056305C;
-                s.res[6] = lbl_8056305C; s.res[7] = lbl_8056305C; s.res[8] = lbl_80563058;
+                s.res[0] = kOne; s.res[1] = kZero; s.res[2] = kZero;
+                s.res[3] = kZero; s.res[4] = kOne; s.res[5] = kZero;
+                s.res[6] = kZero; s.res[7] = kZero; s.res[8] = kOne;
             }
             ((V802009CC *)o)[0] = ((V802009CC *)s.res)[0];
             ((V802009CC *)o)[1] = ((V802009CC *)s.res)[1];
