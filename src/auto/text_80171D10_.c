@@ -2107,6 +2107,7 @@ ease4_done:
 
 #pragma cplusplus reset
 extern float lbl_80561AEC;
+/* No-argument float query with a fixed answer: always returns the constant 7.75 (lbl_80561AEC). */
 float fn_801757A8(void) { return lbl_80561AEC; }
 
 /* No-argument query with a fixed answer: this object always reports true (1).
