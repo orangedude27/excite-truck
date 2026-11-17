@@ -21550,8 +21550,8 @@ void *l2cu_find_lcb_by_state(s32 state) {
 u8 l2cu_lcb_disconnecting(void) {
     register u8 result = 0;
     u8 *base = lbl_803C4040;
-    register u32 i = 0;
     u8 *entry = base + 8;
+    register u32 i = 0;
 
     for (; i < 4; i++) {
         if (entry[0] != 0) {
