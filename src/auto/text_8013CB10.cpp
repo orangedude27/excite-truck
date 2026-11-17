@@ -1103,6 +1103,7 @@ extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
         *(f32 *)(out + 0x20) = ((f32 (*)(void *, const char *))(*(void ***)objPtr)[0x24 / 4])(objPtr, lbl_80559D60);
     }
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
