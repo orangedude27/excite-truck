@@ -171,6 +171,7 @@ struct BA54CallObj {
 #pragma scheduling invalid_target
 void fn_8018185C(void *arg0, const float *arg1) {
     float *out = (float *)arg0;
+    register float slope1;
     float x;
     float y;
     float delta;
@@ -180,7 +181,6 @@ void fn_8018185C(void *arg0, const float *arg1) {
     float x2;
     float y2;
     float t;
-    float slope1;
     x = arg1[1];
     out[7] = x;
     out[10] = arg1[3];
@@ -1540,6 +1540,7 @@ vel[5] = (c < d) ? c : d;
 int fn_80188E24(void) { return 0; }
 
 void fn_80188E2C(void *arg0, void *arg1) {
+#pragma scheduling invalid_target
     unsigned char *a0 = (unsigned char *)arg0;
     unsigned char *a1 = (unsigned char *)arg1;
     unsigned char *dst;
@@ -1920,11 +1921,10 @@ void fn_80189CB4(void *arg0, void *arg1) {
     volatile float out[3];
     volatile int matrix[12];
     float temp_f1, temp_f6, temp_f7;
-    int count, index;
-    register int i;
+    int count, index, i;
     int word0, word1, word2, word3, word4, word5;
     int word6, word7, word8, word9;
-    char *cursor;
+    register char *cursor;
     {
         float zero = lbl_80561CAC;
         *(float *)((char *)arg0 + 0x130) = zero;
@@ -2799,22 +2799,26 @@ void fn_8018B0D0(void *object, int value) {
     *(int *)((unsigned char *)object + 0x2610) = value;
 }
 
+#pragma push
+#pragma ppc_psq_save off
+#pragma paired off
+#pragma paired_single off
 void fn_8018B0D8(void *arg0, void *arg1, void *arg2, int *arg3, int *arg4, float farg0) {
     float mag;
     float v5, v4, v7, v5b, v6, v5c, v4b, v5d;
     float f6, f4b, f1b, f1c;
-    float f30, f13, f30b, f13b, f30c;
+    float f30, f13, f30b, f30c;
     unsigned short t0, t0b, t4;
-    unsigned char b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18;
+    unsigned char b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17;
     unsigned char tc;
     int bit;
     int i;
     unsigned char *p5, *p6, *p7;
-    float *fp5;
     int idx, tbl;
     unsigned char *src1, *src2;
     unsigned char *dst1, *dst2;
     float spC, sp8;
+    float tmp;
     bit = ((*(unsigned short *)((char *)arg2 + 0x3A) >> 9) & 1);
     if (bit != 0) {
         fn_8017D160(arg0, (unsigned char *)arg1, (unsigned char *)arg1, arg3, arg4, farg0);
@@ -2827,38 +2831,26 @@ void fn_8018B0D8(void *arg0, void *arg1, void *arg2, int *arg3, int *arg4, float
     *(float *)((char *)arg0 + 0x25D8) = mag;
     *(float *)((char *)arg0 + 0x25CC) = mag;
     *(float *)((char *)arg0 + 0x25D4) = mag;
-    if (!(v5 < (((float)t0 - lbl_80561CAC) / lbl_80561F54))) {
-        v5 = (((float)t0 - lbl_80561CAC) / lbl_80561F54);
-    }
-    if (!(v5 > lbl_80561CAC)) {
-        v5 = lbl_80561CAC;
-    }
+    tmp = (((float)t0 - lbl_80561CAC) / lbl_80561F54);
+    v5 = (v5 < tmp) ? v5 : tmp;
+    v5 = (v5 > lbl_80561CAC) ? lbl_80561CAC : v5;
     t0b = *(unsigned short *)((char *)arg1 + 0x20);
     v4 = lbl_80561CD0;
-    if (!(v4 < (((float)t0b - lbl_80561CAC) / lbl_80561F54))) {
-        v4 = (((float)t0b - lbl_80561CAC) / lbl_80561F54);
-    }
-    if (!(v4 > lbl_80561CAC)) {
-        v4 = lbl_80561CAC;
-    }
+    tmp = (((float)t0b - lbl_80561CAC) / lbl_80561F54);
+    v4 = (v4 < tmp) ? v4 : tmp;
+    v4 = (v4 > lbl_80561CAC) ? lbl_80561CAC : v4;
     b3 = *(unsigned char *)((char *)arg2 + 0x22);
     f6 = lbl_80561F58 + (v4 * lbl_80561F5C);
     v7 = lbl_80561CD0;
     *(float *)((char *)arg0 + 0x25D0) = (float)(f6 + (farg0 * ((lbl_80561F58 + (v5 * lbl_80561F5C)) - f6)));
-    if (!(v7 < (((float)b3 - lbl_80561CAC) / lbl_80561F60))) {
-        v7 = (((float)b3 - lbl_80561CAC) / lbl_80561F60);
-    }
-    if (!(v7 > lbl_80561CAC)) {
-        v7 = lbl_80561CAC;
-    }
+    tmp = (((float)b3 - lbl_80561CAC) / lbl_80561F60);
+    v7 = (v7 < tmp) ? v7 : tmp;
+    v7 = (v7 > lbl_80561CAC) ? lbl_80561CAC : v7;
     b4 = *(unsigned char *)((char *)arg1 + 0x22);
     v5b = lbl_80561CD0;
-    if (!(v5b < (((float)b4 - lbl_80561CAC) / lbl_80561F60))) {
-        v5b = (((float)b4 - lbl_80561CAC) / lbl_80561F60);
-    }
-    if (!(v5b > lbl_80561CAC)) {
-        v5b = lbl_80561CAC;
-    }
+    tmp = (((float)b4 - lbl_80561CAC) / lbl_80561F60);
+    v5b = (v5b < tmp) ? v5b : tmp;
+    v5b = (v5b > lbl_80561CAC) ? lbl_80561CAC : v5b;
     tc = *(unsigned char *)((char *)arg1 + 0x3C);
     f1b = lbl_80561F64 + (v5b * lbl_80561E60);
     f4b = f1b + (farg0 * ((lbl_80561F64 + (v7 * lbl_80561E60)) - f1b));
@@ -2867,20 +2859,17 @@ void fn_8018B0D8(void *arg0, void *arg1, void *arg2, int *arg3, int *arg4, float
     if ((int)tc != 0) {
         if (bit != 0) {
             float vv = lbl_80561CD0;
-            if (!(vv < (((float)tc - lbl_80561CAC) / lbl_80561F60))) {
-                vv = (((float)tc - lbl_80561CAC) / lbl_80561F60);
-            }
-            if (!(vv > lbl_80561CAC)) {
-            }
+            tmp = (((float)tc - lbl_80561CAC) / lbl_80561F60);
+            vv = (vv < tmp) ? vv : tmp;
+            vv = (vv > lbl_80561CAC) ? lbl_80561CAC : vv;
         } else {
             float vv2;
             unsigned char bb = *(unsigned char *)((char *)arg2 + 0x3C);
             vv2 = lbl_80561CD0;
-            if (!(vv2 < (((float)bb - lbl_80561CAC) / lbl_80561F60))) {
-            }
-            vv2 = lbl_80561CD0;
-            if (!(vv2 < (((float)tc - lbl_80561CAC) / lbl_80561F60))) {
-            }
+            tmp = (((float)bb - lbl_80561CAC) / lbl_80561F60);
+            vv2 = (vv2 < tmp) ? vv2 : tmp;
+            tmp = (((float)tc - lbl_80561CAC) / lbl_80561F60);
+            vv2 = (vv2 < tmp) ? vv2 : tmp;
         }
     }
     b5 = *(unsigned char *)((char *)arg2 + 0x23);
@@ -2891,40 +2880,28 @@ void fn_8018B0D8(void *arg0, void *arg1, void *arg2, int *arg3, int *arg4, float
     *(float *)((char *)arg0 + 0x25E8) = v6;
     *(float *)((char *)arg0 + 0x23C0) = (*(float *)((char *)arg0 + 0x25F0)) * (*(float *)((char *)arg0 + 0x5B0));
     *(float *)((char *)arg0 + 0x2434) = (*(float *)((char *)arg0 + 0x25F0)) * (*(float *)((char *)arg0 + 0x5B0));
-    if (!(v6 < (((float)b5 - lbl_80561CAC) / lbl_80561F60))) {
-        v6 = (((float)b5 - lbl_80561CAC) / lbl_80561F60);
-    }
-    if (!(v6 > lbl_80561CAC)) {
-        v6 = lbl_80561CAC;
-    }
+    tmp = (((float)b5 - lbl_80561CAC) / lbl_80561F60);
+    v6 = (v6 < tmp) ? v6 : tmp;
+    v6 = (v6 > lbl_80561CAC) ? lbl_80561CAC : v6;
     b6 = *(unsigned char *)((char *)arg1 + 0x23);
     v5c = lbl_80561CD0;
     f4b = lbl_80561CAC + (v6 * v5c);
-    if (!(v5c < (((float)b6 - lbl_80561CAC) / lbl_80561F60))) {
-        v5c = (((float)b6 - lbl_80561CAC) / lbl_80561F60);
-    }
-    if (!(v5c > lbl_80561CAC)) {
-        v5c = lbl_80561CAC;
-    }
+    tmp = (((float)b6 - lbl_80561CAC) / lbl_80561F60);
+    v5c = (v5c < tmp) ? v5c : tmp;
+    v5c = (v5c > lbl_80561CAC) ? lbl_80561CAC : v5c;
     f1c = lbl_80561CAC + (v5c * lbl_80561CD0);
     fn_8018ADB4(arg0, f1c + (farg0 * (f4b - f1c)));
     b7 = *(unsigned char *)((char *)arg2 + 0x24);
     v4b = lbl_80561CD0;
-    if (!(v4b < (((float)b7 - lbl_80561CAC) / lbl_80561F60))) {
-        v4b = (((float)b7 - lbl_80561CAC) / lbl_80561F60);
-    }
-    if (!(v4b > lbl_80561CAC)) {
-        v4b = lbl_80561CAC;
-    }
+    tmp = (((float)b7 - lbl_80561CAC) / lbl_80561F60);
+    v4b = (v4b < tmp) ? v4b : tmp;
+    v4b = (v4b > lbl_80561CAC) ? lbl_80561CAC : v4b;
     b8 = *(unsigned char *)((char *)arg1 + 0x24);
     v5d = lbl_80561CD0;
     f4b = lbl_80561CAC + (v4b * v5d);
-    if (!(v5d < (((float)b8 - lbl_80561CAC) / lbl_80561F60))) {
-        v5d = (((float)b8 - lbl_80561CAC) / lbl_80561F60);
-    }
-    if (!(v5d > lbl_80561CAC)) {
-        v5d = lbl_80561CAC;
-    }
+    tmp = (((float)b8 - lbl_80561CAC) / lbl_80561F60);
+    v5d = (v5d < tmp) ? v5d : tmp;
+    v5d = (v5d > lbl_80561CAC) ? lbl_80561CAC : v5d;
     f1b = lbl_80561CAC + (v5d * lbl_80561CD0);
     fn_8018ADBC(arg0, f1b + (farg0 * (f4b - f1b)));
     t4 = *(unsigned short *)((char *)arg1 + 0x3A);
@@ -2934,38 +2911,34 @@ void fn_8018B0D8(void *arg0, void *arg1, void *arg2, int *arg3, int *arg4, float
     p6 = (unsigned char *)arg1 + 0x26;
     p7 = (unsigned char *)arg2 + 0x26;
     for (i = 0; i < 4; i++) {
-        float a0, a1, b0, b1, c0;
-        unsigned char u0, u1, u2, u3, u4;
+        float a0, a1;
+        unsigned char u4;
         float t13, t30;
         b9 = *(p7 + 2);
         a0 = lbl_80561CD0;
-        if (!(a0 < (((float)b9 - lbl_80561CAC) / lbl_80561F60))) {
-            a0 = (((float)b9 - lbl_80561CAC) / lbl_80561F60);
-        }
-        if (!(a0 > lbl_80561CAC)) a0 = lbl_80561CAC;
+        tmp = (((float)b9 - lbl_80561CAC) / lbl_80561F60);
+        a0 = (a0 < tmp) ? a0 : tmp;
+        a0 = (a0 > lbl_80561CAC) ? lbl_80561CAC : a0;
         b10 = *(p6 + 2);
         a1 = lbl_80561CD0;
-        if (!(a1 < (((float)b10 - lbl_80561CAC) / lbl_80561F60))) {
-            a1 = (((float)b10 - lbl_80561CAC) / lbl_80561F60);
-        }
-        if (!(a1 > lbl_80561CAC)) a1 = lbl_80561CAC;
+        tmp = (((float)b10 - lbl_80561CAC) / lbl_80561F60);
+        a1 = (a1 < tmp) ? a1 : tmp;
+        a1 = (a1 > lbl_80561CAC) ? lbl_80561CAC : a1;
         b11 = *(p6 + 0);
         t30 = lbl_80561CAC + (a1 * lbl_80561CD8);
         t13 = t30 + (farg0 * ((lbl_80561CAC + (a0 * lbl_80561CD8)) - t30));
         *(float *)(p5 + 0xC) = t13;
         *(float *)(p5 + 0x1C) = t13;
         a0 = lbl_80561CD0;
-        if (!(a0 < (((float)b11 - lbl_80561CAC) / lbl_80561F60))) {
-            a0 = (((float)b11 - lbl_80561CAC) / lbl_80561F60);
-        }
-        if (!(a0 > lbl_80561CAC)) a0 = lbl_80561CAC;
+        tmp = (((float)b11 - lbl_80561CAC) / lbl_80561F60);
+        a0 = (a0 < tmp) ? a0 : tmp;
+        a0 = (a0 > lbl_80561CAC) ? lbl_80561CAC : a0;
         b12 = *(p7 + 0);
         f30 = lbl_80561F68 + (a0 * lbl_80561F6C);
         a1 = lbl_80561CD0;
-        if (!(a1 < (((float)b12 - lbl_80561CAC) / lbl_80561F60))) {
-            a1 = (((float)b12 - lbl_80561CAC) / lbl_80561F60);
-        }
-        if (!(a1 > lbl_80561CAC)) a1 = lbl_80561CAC;
+        tmp = (((float)b12 - lbl_80561CAC) / lbl_80561F60);
+        a1 = (a1 < tmp) ? a1 : tmp;
+        a1 = (a1 > lbl_80561CAC) ? lbl_80561CAC : a1;
         f13 = lbl_80561F68 + (a1 * lbl_80561F6C);
         if (f13 > f30) {
             if ((f13 - f30) > lbl_80561E70) f30 += lbl_80561E6C;
@@ -2975,30 +2948,26 @@ void fn_8018B0D8(void *arg0, void *arg1, void *arg2, int *arg3, int *arg4, float
         b13 = *(p7 + 1);
         *(float *)(p5 + 8) = (float)(f30 + (farg0 * (f13 - f30)));
         a0 = lbl_80561CD0;
-        if (!(a0 < (((float)b13 - lbl_80561CAC) / lbl_80561F60))) {
-            a0 = (((float)b13 - lbl_80561CAC) / lbl_80561F60);
-        }
-        if (!(a0 > lbl_80561CAC)) a0 = lbl_80561CAC;
+        tmp = (((float)b13 - lbl_80561CAC) / lbl_80561F60);
+        a0 = (a0 < tmp) ? a0 : tmp;
+        a0 = (a0 > lbl_80561CAC) ? lbl_80561CAC : a0;
         b14 = *(p6 + 1);
         a1 = lbl_80561CD0;
-        if (!(a1 < (((float)b14 - lbl_80561CAC) / lbl_80561F60))) {
-            a1 = (((float)b14 - lbl_80561CAC) / lbl_80561F60);
-        }
-        if (!(a1 > lbl_80561CAC)) a1 = lbl_80561CAC;
+        tmp = (((float)b14 - lbl_80561CAC) / lbl_80561F60);
+        a1 = (a1 < tmp) ? a1 : tmp;
+        a1 = (a1 > lbl_80561CAC) ? lbl_80561CAC : a1;
         b15 = *(p7 + 3);
         f30b = lbl_80561EE4 + (a1 * lbl_80561D28);
         *(float *)(p5 + 0) = (float)(f30b + (farg0 * ((lbl_80561EE4 + (a0 * lbl_80561D28)) - f30b)));
         a0 = lbl_80561CD0;
-        if (!(a0 < (((float)b15 - lbl_80561CAC) / lbl_80561F60))) {
-            a0 = (((float)b15 - lbl_80561CAC) / lbl_80561F60);
-        }
-        if (!(a0 > lbl_80561CAC)) a0 = lbl_80561CAC;
+        tmp = (((float)b15 - lbl_80561CAC) / lbl_80561F60);
+        a0 = (a0 < tmp) ? a0 : tmp;
+        a0 = (a0 > lbl_80561CAC) ? lbl_80561CAC : a0;
         b16 = *(p6 + 3);
         a1 = lbl_80561CD0;
-        if (!(a1 < (((float)b16 - lbl_80561CAC) / lbl_80561F60))) {
-            a1 = (((float)b16 - lbl_80561CAC) / lbl_80561F60);
-        }
-        if (!(a1 > lbl_80561CAC)) a1 = lbl_80561CAC;
+        tmp = (((float)b16 - lbl_80561CAC) / lbl_80561F60);
+        a1 = (a1 < tmp) ? a1 : tmp;
+        a1 = (a1 > lbl_80561CAC) ? lbl_80561CAC : a1;
         u4 = *(p6 + 4);
         f30c = lbl_80561CAC + (a1 * lbl_80561D34);
         *(float *)(p5 + 0x68) = (float)(f30c + (farg0 * ((lbl_80561CAC + (a0 * lbl_80561D34)) - f30c)));
