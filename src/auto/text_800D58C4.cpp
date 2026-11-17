@@ -3631,17 +3631,25 @@ void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
 extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self, void* info) {
     extern const char lbl_8031E8FC[];
     extern const char lbl_8031E8D8[];
+    struct PaneLinkNode { PaneLinkNode* next; PaneLinkNode* prev; };
+    struct PaneObj {
+        virtual void a0();
+        virtual void a1();
+        virtual void a2();
+        virtual void a3();
+        virtual void a4();
+        char pad[0x10];
+        PaneLinkNode mChildList;
+    };
     if (*((u8*)self + 0xCF) & 1) {
-        struct Obj {
-            virtual void a0();
-            virtual void a1();
-            virtual void a2();
-            virtual void a3();
-            virtual void a4();
-        };
-        ((Obj*)self)->a4();
-        register void *node = *(void**)((u8*)self + 0x14);
-        register void *end = (u8*)self + 0x14;
+        PaneObj* pane = (PaneObj*)self;
+        pane->a4();
+        struct { PaneLinkNode* node; } cursor;
+        cursor.node = pane->mChildList.next;
+        PaneLinkNode*& node = cursor.node;
+        struct { PaneLinkNode* end; } sentinel;
+        sentinel.end = &pane->mChildList;
+        PaneLinkNode*& end = sentinel.end;
         while (node != end) {
             if (!node)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
@@ -3651,8 +3659,8 @@ extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self, vo
                 virtual void a2();
                 virtual void Draw(void*);
             };
-            ((Child*)((u8*)node - 4))->Draw(info);
-            node = *(void**)node;
+            ((Child*)((char*)node - 4))->Draw(info);
+            node = node->next;
         }
     }
 }
