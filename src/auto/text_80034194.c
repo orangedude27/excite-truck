@@ -2605,6 +2605,7 @@ void fn_80038368(void *arg0) {
  int offset;
  int length;
  int command;
+ u32 n;
  lbl_8055D8CC = (int)fn_80038368;
  command = *(int *)(p+8);
  switch (command) {
@@ -2639,17 +2640,17 @@ void fn_80038368(void *arg0) {
    fn_8003BCDC(0);
    {
      u32 remaining = *(u32 *)(p+0x14) - *(u32 *)(p+0x20);
-     u32 n = 0x80000;
-     u32 off2; int cmd;
+     u32 offset2; int cmd;
+     n = 0x80000;
      if (remaining <= n) n = remaining;
      *(u32 *)(p+0x1c) = n;
      cmd = *(int *)(p+8);
-     off2 = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
+     offset2 = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
      {
  int irq = OSDisableInterrupts(); int tick;
  if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = cmd;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = off2;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset2;
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = n;
  tick = OSGetTick();
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
@@ -2676,7 +2677,8 @@ void fn_80038368(void *arg0) {
    fn_8003BCDC(0);
    {
      u32 remaining = *(u32 *)(p+0x14) - *(u32 *)(p+0x20);
-     int cmd; u32 offset3; u32 n = 0x80000L;
+     int cmd; u32 offset3;
+     n = 0x80000;
      if (remaining <= n) n = remaining;
      *(u32 *)(p+0x1c) = n;
      cmd = *(int *)(p+8);
