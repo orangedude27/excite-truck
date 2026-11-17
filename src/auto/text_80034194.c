@@ -3223,6 +3223,10 @@ s32 DVDCancel(void *block) {
     return 0;
 }
 
+/* RVL SDK DVD cbForCancelSync (dvdcancel.c): the cancel-completion callback
+ * DVDCancel hands to DVDCancelAsync(fn_80039424).  The driver calls it once the
+ * cancel has landed, waking the thread that is sleeping on __DVDThreadQueue
+ * waiting for the command block to reach a terminal state. */
 void fn_80039838(void) {
     OSWakeupThread(__DVDThreadQueue);
 }
