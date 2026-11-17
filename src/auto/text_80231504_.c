@@ -1732,9 +1732,10 @@ extern void fn_802328D4(s32);
 extern char lbl_80340614[];
 extern u32 strlen(const char *);
 s32 fn_802344B0(void) {
-    s32 val = lbl_8055F06C;
-    u32 tmp = (u32)(-val) | (u32)val;
-    return (s32)(tmp >> 31);
+    /* Return 1 if the text-queue buffer is allocated, 0 otherwise (neg/or/shift is a != 0 test). */
+    s32 textQueue = lbl_8055F06C;
+    u32 nonzero = (u32)(-textQueue) | (u32)textQueue;
+    return (s32)(nonzero >> 31);
 }
 
 void fn_802344C4(u8 arg0) {
