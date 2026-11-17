@@ -12179,7 +12179,7 @@ void bta_dm_rmt_name(s32 arg0) {
     extern unsigned char lbl_803C0F78[];
     extern void bta_dm_remname_cback(u8 *);
     unsigned char info[0x104];
-    int retry = 1;
+    s32 retry = 1;
     void *entry;
     void *buf;
     void (*callback)(s32, void *);
@@ -12194,12 +12194,15 @@ void bta_dm_rmt_name(s32 arg0) {
         callback(2, info);
     }
     if (*(u16 *)(lbl_803C0F78 + 0x64C) < 0x7530)
-        fn_8007146C((s32)(lbl_803C0B98 + 0x58), 0x205, *(u16 *)(lbl_803C0F78 + 0x64C) + 0x64);
-    if (BTM_ReadRemoteDeviceName((u8 *)*(void **)(lbl_803C0B98 + 4) + 2, (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
+        fn_8007146C((s32)(lbl_803C0B98 + 0x58), 0x205,
+                    *(u16 *)(lbl_803C0F78 + 0x64C) + 0x64);
+    if (BTM_ReadRemoteDeviceName((u8 *)*(void **)(lbl_803C0B98 + 4) + 2,
+                                (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
         fn_8007148C((s32)(lbl_803C0B98 + 0x58));
         buf = GKI_getbuf(0x110);
         if (buf != 0) {
-            fn_80070FA4((u8 *)buf + 8, (u8 *)*(void **)(lbl_803C0B98 + 4) + 2);
+            fn_80070FA4((u8 *)buf + 8,
+                        (u8 *)*(void **)(lbl_803C0B98 + 4) + 2);
             *((u8 *)buf + 0xE) = 0;
             *(u16 *)buf = 0x204;
             fn_80071450(buf);
@@ -16628,14 +16631,16 @@ s32 btsnd_hcic_write_policy_set_80085668(u16 handle, u16 settings) {
     return 1;
 }
 
+#pragma unroll off
 void btsnd_hcic_write_cur_iac_lap(u8 *p_buf, u8 num_cur_iac, u8 *cur_iac_lap) {
     u8 *p = p_buf + 12;
     u8 *q = cur_iac_lap;
-    *(u16 *)(p_buf + 2) = num_cur_iac * 3 + 4;
+    u16 len = num_cur_iac * 3 + 4;
+    *(u16 *)(p_buf + 2) = len;
     *(u16 *)(p_buf + 4) = 0;
     p_buf[8] = 0x3A;
     p_buf[9] = 0x0C;
-    p_buf[10] = num_cur_iac * 3 + 1;
+    p_buf[10] = len - 3;
     p_buf[11] = num_cur_iac;
     while (num_cur_iac-- != 0) {
         p[0] = q[2];
@@ -19314,29 +19319,33 @@ void l2c_csm_open(tL2C_CCB_VIEW *p_ccb, u16 event, void *p_data)
 void l2c_csm_w4_l2cap_disconnect_rsp(void *p_ccb, u16 event, void *p_data) {
     char *p_str = (char *)jumptable_803183B0;
     void *p_lcb = *(void **)((u8 *)p_ccb + 0x30);
-    void (*disc_cfm)(u16, u16) = *(void (**)(u16, u16))((u8 *)p_lcb + 0x1CU);
-    void (*disc_ind)(u16, u8) = *(void (**)(u16, u8))((u8 *)p_lcb + 0x18U);
-    u16 local_cid = *(u16 *)((u8 *)p_ccb + 0x14U);
+    void (*disc_cfm)(u16, u16) = *(void (**)(u16, u16))((u8 *)p_lcb + 0x1C);
+    void (*disc_ind)(u16, u8) = *(void (**)(u16, u8))((u8 *)p_lcb + 0x18);
+    u16 local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
+
     if (lbl_803C4040[0] >= 4)
         fn_80070954(0x80003, p_str + 0x6B0, event);
-    if ((u16)(event - 3) > 0x1B)
-        goto free_data;
+
     switch (event) {
     case 3:
         if (lbl_803C4040[0] >= 3)
-            fn_80070954(0x80002, p_str + 0x40, local_cid);
+            fn_80070954(0x80002, p_str + 0x40, *(u16 *)((u8 *)p_ccb + 0x14));
         l2cu_release_ccb(p_ccb);
         disc_ind(local_cid, 0);
         break;
-    case 4: case 5: case 6: case 7: case 8: case 9: case 10:
-    case 11: case 12: case 13: case 14: case 15: case 16:
-        goto free_data;
+    case 18:
+        l2cu_release_ccb(p_ccb);
+        if (disc_cfm != 0) {
+            if (lbl_803C4040[0] >= 3)
+                fn_80070954(0x80002, p_str + 0x6D8, local_cid);
+            disc_cfm(local_cid, 0);
+        }
+        break;
     case 17:
         l2cu_send_peer_disc_rsp(*(void **)((u8 *)p_ccb + 0x10),
                                 *((u8 *)p_ccb + 0x36),
-                                local_cid,
+                                *(u16 *)((u8 *)p_ccb + 0x14),
                                 *(u16 *)((u8 *)p_ccb + 0x16));
-    case 18:
         l2cu_release_ccb(p_ccb);
         if (disc_cfm != 0) {
             if (lbl_803C4040[0] >= 3)
@@ -19352,13 +19361,11 @@ void l2c_csm_w4_l2cap_disconnect_rsp(void *p_ccb, u16 event, void *p_data) {
             disc_cfm(local_cid, 0xEEEE);
         }
         break;
-    case 20: case 21: case 22: case 23: case 24: case 25:
-    case 26: case 27: case 28: case 29: case 30:
-        goto free_data;
+    case 20: case 30:
+    default:
+        GKI_freebuf(p_data);
+        break;
     }
-    return;
-free_data:
-    GKI_freebuf(p_data);
 }
 
 extern char lbl_80318B28[];
@@ -24525,6 +24532,7 @@ void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
     rfc_send_buf_uih(arg0, 0, p_buf);
 }
 
+#pragma scheduling reset
 void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
     BT_HDR *p_buf;
     u8 *p_data;
@@ -24543,14 +24551,13 @@ void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
         len = 2;
     *p_data++ = (u8)(0xE1 | (is_command ? 2 : 0));
     *p_data++ = (u8)(1 | (len << 1));
-    *p_data++ = (u8)(3 | (dlci << 2));
+    *p_data++ = (u8)(3 | ((u8)dlci << 2));
     *p_data++ = (u8)(1 | (p_pars[4] ? 2 : 0) | ((signals & 1) ? 4 : 0) | ((signals & 2) ? 8 : 0) | ((signals & 4) ? 0x40 : 0) | ((signals & 8) ? 0x80 : 0));
     if (break_duration)
         *p_data++ = (u8)(3 | (break_duration << 4));
     p_buf->len = (u16)(len + 2);
     rfc_send_buf_uih(p_mcb, 0, p_buf);
 }
-
 /* Send an RFCOMM Remote Line Status (RLS) UIH frame for the given DLCI. */
 void rfc_send_rls(void *p_mcb, u8 dlci, s32 isCommand, u8 lineStatus) {
     u8 *p_buf = GKI_getpoolbuf(2);
