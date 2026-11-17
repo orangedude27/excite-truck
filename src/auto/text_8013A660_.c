@@ -459,6 +459,7 @@ float fn_8013B5DC(int entryIndex, int randomState) {
 #pragma cplusplus off
 #pragma push
 #pragma processor 750
+#pragma dont_inline on
 float fn_8013B650(int arg0) {
     float temp = fn_80134B58((float *)lbl_8032C364, lbl_80561434);
     return fn_8013B5DC(arg0, 3) + temp;
