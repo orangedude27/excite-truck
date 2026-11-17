@@ -1186,8 +1186,9 @@ u16 fn_80031C84(void) {
     return lbl_8055D730;
 }
 
-void fn_80031C8C(unsigned short arg0) {
-    lbl_8055D734 = arg0;
+void fn_80031C8C(unsigned short mask) {
+    /* Set ccMask1 (lbl_8055D734), the first MetroTRK debug CC AUX channel mask. */
+    lbl_8055D734 = mask;
 }
 
 void fn_80031C94(unsigned short mask) {
