@@ -1431,10 +1431,13 @@ void* GXGetCurrentGXThread(void) {
     return lbl_8055D94C;
 }
 
+/* Detach the current GX thread: return its previous value, then clear the global slot. */
 void *GXInitVtxDescList(void) {
-    void *temp = lbl_8055D94C;
-    lbl_8055D94C = 0;
-    return temp;
+#define currentGXThread lbl_8055D94C
+    void *previousThread = currentGXThread;
+    currentGXThread = 0;
+    return previousThread;
+#undef currentGXThread
 }
 
 // GXAttr as this build of the GX library counts it: GX_VA_NBT still sits right
