@@ -3,6 +3,11 @@
 
 extern unsigned int lbl_8055DE20;
 extern unsigned int lbl_8055DE70;
+/* Point a sound-library pointer global (lbl_8055DE70, returned by fn_800FDE14) at the shared nw4r sound dummy value lbl_8055DE20. */
 void fn_800FDE1C(void) {
-    lbl_8055DE70 = (unsigned int)&lbl_8055DE20;
+    #define s_sndDummy lbl_8055DE20
+    #define gpSndPointer lbl_8055DE70
+    gpSndPointer = (unsigned int)&s_sndDummy;
+    #undef gpSndPointer
+    #undef s_sndDummy
 }
