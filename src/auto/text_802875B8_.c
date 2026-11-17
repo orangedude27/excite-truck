@@ -460,10 +460,13 @@ f32 fn_80287BC8(f32 farg0, f32 farg1) {
 #pragma pop
 extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
+/* Construct a per-car effect-table entry: zero its 0x28-byte record and return it. */
 void *fn_80287C30(void *arg0) {
-    *(s32 *)arg0 = 0;
-    memset((u8 *)arg0 + 4, 0, 0x20);
-    *(s32 *)((u8 *)arg0 + 0x24) = 0;
+    typedef struct { s32 handle; u8 values[0x20]; s32 tail; } EffectEntry;
+    EffectEntry *entry = (EffectEntry *)arg0;
+    entry->handle = 0;
+    memset(entry->values, 0, sizeof(entry->values));
+    entry->tail = 0;
     return arg0;
 }
 /* If the object is non-null, release its owned resource handle at offset 0, clear it, and optionally free the object when arg1 > 0. */
