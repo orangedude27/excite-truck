@@ -28,6 +28,7 @@ void IPCWriteReg(s32 index, u32 value) {
     IPC_HW_REGS_PPC[index] = value;
 }
 
+/* Return the current upper bound of the IPC buffer region. */
 void* IPCGetBufferHi(void) {
     return IPCCurrentBufferHi;
 }
