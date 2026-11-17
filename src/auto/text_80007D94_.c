@@ -34,8 +34,9 @@ void fn_80012794(void);
 void fn_80279488(void);
 void fn_802E30C8(const char*, ...);
 extern const char lbl_802FB7A4[];
-void fn_80007D94(const char** arg0, const char** arg1) {
-    stricmp(*arg0, *arg1);
+/* qsort comparator for race-event names: compares the two name pointers case-insensitively. */
+void fn_80007D94(const char** lhs, const char** rhs) {
+    stricmp(*lhs, *rhs);
 }
 
 extern void *fn_80131808(void *);
