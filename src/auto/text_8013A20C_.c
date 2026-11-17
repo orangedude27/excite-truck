@@ -4,7 +4,6 @@
 
 extern void fn_8000D838(void *);
 extern s32 lbl_8042F840[];
-typedef struct { u32 v[5]; } Block8013A20C;
 extern s32 lbl_8055E140;
 extern u32 lbl_8055E148;
 extern u32 lbl_8055E14C;
