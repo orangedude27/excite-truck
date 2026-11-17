@@ -713,24 +713,28 @@ extern "C" void fn_80145C7C(void * __restrict arg0, u32 arg1) {
 #pragma processor 750
 #pragma dont_inline on
 #pragma scheduling invalid_target
-extern "C" void fn_80145CF4(void *__restrict arg0, void *arg1, u32 arg2) {
-    f32 temp_f31;
-    f32 temp_f30;
-    f32 input10;
-    f32 input4;
-    s32 mode;
-    f32 value;
-    input10 = *(f32 *)((u8 *)arg0 + 0x10);
-    mode = *(s32 *)((u8 *)arg0 + 0xC);
-    temp_f30 = fn_801452A0(mode, input10);
-    temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-    input4 = *(f32 *)((u8 *)arg0 + 4);
-    mode = *(s32 *)((u8 *)arg0 + 0xC);
-    value = ((f32 (*)(s32, f32))fn_801451DC)(mode, input4);
+extern "C" void fn_80145CF4(void *__restrict entry, void *resource, u32 pictureIndex) {
+    /* Draws an entry's artwork: aspect-correct its scale (fn_801452A0), flip Y
+       into screen space (fn_801452B4), resolve X by justification (fn_801451DC),
+       then hand the resource, position, scale and remaining entry fields to the
+       2D art drawer fn_802354A0. */
+    f32 screenY;
+    f32 scaledScale;
+    f32 scale;
+    f32 x;
+    s32 justification;
+    f32 screenX;
+    scale = *(f32 *)((u8 *)entry + 0x10);
+    justification = *(s32 *)((u8 *)entry + 0xC);
+    scaledScale = fn_801452A0(justification, scale);
+    screenY = fn_801452B4(*(f32 *)((u8 *)entry + 8));
+    x = *(f32 *)((u8 *)entry + 4);
+    justification = *(s32 *)((u8 *)entry + 0xC);
+    screenX = ((f32 (*)(s32, f32))fn_801451DC)(justification, x);
     ((void (*)(s32, s32, f32, f32, f32, f32, f32, s32))fn_802354A0)(
-        (s32)arg1, arg2, value, temp_f31, lbl_805615D4,
-        temp_f30, *(f32 *)((u8 *)arg0 + 0x14),
-        *(s32 *)((u8 *)arg0 + 0x18));
+        (s32)resource, pictureIndex, screenX, screenY, lbl_805615D4,
+        scaledScale, *(f32 *)((u8 *)entry + 0x14),
+        *(s32 *)((u8 *)entry + 0x18));
 }
 #pragma scheduling on
 #pragma dont_inline reset
