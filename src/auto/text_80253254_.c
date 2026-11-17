@@ -2179,7 +2179,8 @@ s32 fn_802571F0(void) { return 0; }
 /* Set the boolean flag at offset 0x18 of the object to true (pairs with fn_80257204). */
 void fn_802571F8(void *obj) { *(u8 *)((u8 *)obj + 0x18) = 1; }
 
-void fn_80257204(void *arg0) { *(u8 *)((u8 *)arg0 + 0x18) = 0; }
+/* Clear the boolean flag at offset 0x18 of the object to false (pairs with fn_802571F8). */
+void fn_80257204(void *obj) { *(u8 *)((u8 *)obj + 0x18) = 0; }
 
 void fn_80257210(void) {}
 
