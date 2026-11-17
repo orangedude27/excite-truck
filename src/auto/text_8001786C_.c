@@ -152,8 +152,9 @@ s32 fn_800179E4(void *key, s32 values, s32 count) {
     return 0;
 }
 
-s32 fn_80017A14(s32 arg0, s32 arg1) {
-    return fn_800179E4((void *)arg0, arg1 + 0x28, *(s32 *)(arg1 + 0x24));
+s32 fn_80017A14(s32 objectId, s32 exclusions) {
+    /* True when objectId appears in the exclusion list (count at +0x24, values from +0x28). */
+    return fn_800179E4((void *)objectId, exclusions + 0x28, *(s32 *)(exclusions + 0x24));
 }
 
 #pragma dont_inline off
