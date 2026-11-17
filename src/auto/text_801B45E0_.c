@@ -274,8 +274,9 @@ int __dt__15shdStateMachineFv_801B496C(int arg0, int arg1) {
 }
 
 #pragma dont_inline on
-void fn_801B49C8(void *arg0) {
-    *(unsigned char *)arg0 = 1;
+/* Set the replay state machine's byte-0 flag (its per-step marker) to 1. */
+void fn_801B49C8(void *stateMachine) {
+    *(unsigned char *)stateMachine = 1;
 }
 #pragma dont_inline reset
 
