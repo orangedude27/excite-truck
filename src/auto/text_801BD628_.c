@@ -613,10 +613,11 @@ void fn_801BF164(float *dst, float *src) {
     dst[3] = w;
 }
 
-void GXInitLightAttnA_801BF188(void *arg0, float farg0, float farg1, float farg2) {
-    ((float *)arg0)[0] = farg0;
-    ((float *)arg0)[1] = farg1;
-    ((float *)arg0)[2] = farg2;
+/* Set the three angle-attenuation coefficients a/b/c at the start of the light object. */
+void GXInitLightAttnA_801BF188(void *light, float a, float b, float c) {
+    ((float *)light)[0] = a;
+    ((float *)light)[1] = b;
+    ((float *)light)[2] = c;
 }
 
 /* Copy a 3-component (12-byte) float vector from src into dst. */
