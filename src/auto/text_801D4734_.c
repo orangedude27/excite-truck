@@ -3868,6 +3868,7 @@ copied:
 }
 #pragma cplusplus reset
 
+/* Returns the "Trigger_ASE" name string that identifies trigger action-sequence events. */
 char *fn_801D8EF0(void) {
     return lbl_803389B8;
 }
