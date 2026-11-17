@@ -758,26 +758,27 @@ void fn_80274F74(void *arg0, void *arg1, float angle) {
 extern float PSVECDotProduct(float *, float *);
 extern void fn_8026E850(float *, float *, void *, float *);
 #pragma processor 7400
-void fn_802750C4(void *arg0, float arg1, float arg2) {
-    float sp14[3];
-    float sp8[3];
+/* Aim the object at its look-at target (+0xE4) using a +Y up vector, then slide its position (+0x7C) along the direction at +0x70 to correct the distance. */
+void fn_802750C4(void *object, float gain, float desired) {
+    float toTarget[3];
+    float up[3];
     float dot;
-    float d;
-    float scale;
-    char *p = (char *)arg0;
-    sp8[0] = 0.0f;
-    sp8[1] = 1.0f;
-    sp8[2] = 0.0f;
-    fn_8026E850((float *)(p + 0x7C), (float *)(p + 0xE4), arg0, sp8);
-    sp14[0] = *(float *)(p + 0xE4) - *(float *)(p + 0x7C);
-    sp14[1] = *(float *)(p + 0xE8) - *(float *)(p + 0x80);
-    sp14[2] = *(float *)(p + 0xEC) - *(float *)(p + 0x84);
-    dot = PSVECDotProduct((float *)(p + 0x70), sp14);
-    d = dot - arg2;
-    scale = d * arg1;
-    *(float *)(p + 0x7C) += *(float *)(p + 0x70) * scale;
-    *(float *)(p + 0x80) += *(float *)(p + 0x74) * scale;
-    *(float *)(p + 0x84) += *(float *)(p + 0x78) * scale;
+    float delta;
+    float step;
+    char *p = (char *)object;
+    up[0] = 0.0f;
+    up[1] = 1.0f;
+    up[2] = 0.0f;
+    fn_8026E850((float *)(p + 0x7C), (float *)(p + 0xE4), object, up);
+    toTarget[0] = *(float *)(p + 0xE4) - *(float *)(p + 0x7C);
+    toTarget[1] = *(float *)(p + 0xE8) - *(float *)(p + 0x80);
+    toTarget[2] = *(float *)(p + 0xEC) - *(float *)(p + 0x84);
+    dot = PSVECDotProduct((float *)(p + 0x70), toTarget);
+    delta = dot - desired;
+    step = delta * gain;
+    *(float *)(p + 0x7C) += *(float *)(p + 0x70) * step;
+    *(float *)(p + 0x80) += *(float *)(p + 0x74) * step;
+    *(float *)(p + 0x84) += *(float *)(p + 0x78) * step;
 }
 #pragma processor 750
 void fn_802751AC(void *arg0, float angle) {
