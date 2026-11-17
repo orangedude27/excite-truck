@@ -246,15 +246,13 @@ void fn_8026B3D4(int arg0) {
 #pragma cplusplus reset
 #pragma pop
 
-#pragma scheduling invalid_target
 void fn_8026B644(void) {
-    volatile unsigned char *base = lbl_80346988;
+    unsigned char *base = lbl_80346988;
     fn_8026B260();
-    fn_801331C4(4, (unsigned char *)base + 0xA0, &lbl_8055C4F8);
-    fn_8026B11C((void **)&lbl_8055F4D0, (unsigned char *)base + 0xB0);
-    fn_8026B11C((void **)&lbl_8055F4CC, (unsigned char *)base + 0xBC);
+    fn_801331C4(4, base + 0xA0, &lbl_8055C4F8);
+    fn_8026B11C((void **)&lbl_8055F4D0, base + 0xB0);
+    fn_8026B11C((void **)&lbl_8055F4CC, base + 0xBC);
 }
-#pragma scheduling reset
 void fn_8026B69C(void) {
     /* Tear down the thread lists: reset the active slot count and delete both thread groups. */
     lbl_8055F4C8 = 0;
