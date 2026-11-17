@@ -326,21 +326,55 @@ static inline void Swap4(u8 *q) {
 }
 
 extern "C" void fn_8012A80C(s32 arg0) {
-    u8 *p=(u8 *)arg0;
-    u8 a0=p[0],a1=p[1],a2=p[2],a3=p[3],a4=p[4],a5=p[5],a6=p[6],a7=p[7];
-    u8 a8=p[8],a9=p[9],a10=p[10],a11=p[11],a12=p[12],a13=p[13],a14=p[14],a15=p[15];
-    u8 a16=p[16],a17=p[17],a18=p[18],a19=p[19],a20=p[20],a21=p[21],a22=p[22],a23=p[23];
-    u8 a24=p[24],a25=p[25],a26=p[26],a27=p[27],a28=p[28],a29=p[29],a30=p[30],a31=p[31];
-    u8 a32=p[32],a33=p[33],a34=p[34],a35=p[35],a36=p[36],a37=p[37],a38=p[38],a39=p[39];
-    u8 a40=p[40],a41=p[41],a42=p[42],a43=p[43],a44=p[44],a45=p[45],a46=p[46],a47=p[47];
-    u8 a48=p[48],a49=p[49],a50=p[50],a51=p[51];
-    p[0]=a3;p[1]=a2;p[2]=a1;p[3]=a0;p[4]=a7;p[5]=a6;p[6]=a5;p[7]=a4;
-    p[8]=a11;p[9]=a10;p[10]=a9;p[11]=a8;p[12]=a15;p[13]=a14;p[14]=a13;p[15]=a12;
-    p[16]=a19;p[17]=a18;p[18]=a17;p[19]=a16;p[20]=a23;p[21]=a22;p[22]=a21;p[23]=a20;
-    p[24]=a27;p[25]=a26;p[26]=a25;p[27]=a24;p[28]=a31;p[29]=a30;p[30]=a29;p[31]=a28;
-    p[32]=a35;p[33]=a34;p[34]=a33;p[35]=a32;p[36]=a39;p[37]=a38;p[38]=a37;p[39]=a36;
-    p[40]=a43;p[41]=a42;p[42]=a41;p[43]=a40;p[44]=a47;p[45]=a46;p[46]=a45;p[47]=a44;
-    p[48]=a51;p[49]=a50;p[50]=a49;p[51]=a48;
+#pragma use_lmw_stmw off
+    u8 *p = (u8 *)arg0;
+    s32 s48, s44, s40, s3C, s38, s34, s30, s2C, s28, s24, s20, s1C, s18, s14, s10, sC, s8;
+    u8 k29, k28, k25, k24, k21, k20, k1D, k1C, k19, k18, k15, k12, k11, k10, kD, kC, k9;
+    u8 b0, b1, b2, b3, b4, b5, b6, b7, b8, bB;
+
+    s48 = p[0xA]; k9 = p[9];
+    s8 = p[0xF]; kC = p[0xC];
+    sC = p[0xE]; kD = p[0xD];
+    s10 = p[0x13]; k10 = p[0x10];
+    s14 = p[0x12]; k11 = p[0x11];
+    s18 = p[0x17]; k12 = p[0x14];
+    s1C = p[0x16]; k15 = p[0x15];
+    s20 = p[0x1B]; k18 = p[0x18];
+    s24 = p[0x1A]; k19 = p[0x19];
+    s28 = p[0x1F]; k1C = p[0x1C];
+    s2C = p[0x1E]; k1D = p[0x1D];
+    s30 = p[0x23]; k20 = p[0x20];
+    s34 = p[0x22]; k21 = p[0x21];
+    s38 = p[0x27]; k24 = p[0x24];
+    s3C = p[0x26]; k25 = p[0x25];
+    s40 = p[0x2B]; k28 = p[0x28];
+    s44 = p[0x2A]; k29 = p[0x29];
+    b0 = p[0]; b1 = p[1]; b2 = p[2]; b3 = p[3];
+    b4 = p[4]; b5 = p[5]; b6 = p[6]; b7 = p[7];
+    b8 = p[8]; bB = p[0xB];
+
+    p[9] = (u8)s48; p[0xC] = (u8)s8; p[0xD] = (u8)sC;
+    p[0x10] = (u8)s10; p[0x11] = (u8)s14; p[0x14] = (u8)s18;
+    p[0x15] = (u8)s1C; p[0x18] = (u8)s20; p[0x19] = (u8)s24;
+    p[0x1C] = (u8)s28; p[0x1D] = (u8)s2C; p[0x20] = (u8)s30;
+    p[0x21] = (u8)s34; p[0x24] = (u8)s38; p[0x25] = (u8)s3C;
+    p[0x28] = (u8)s40; p[0x29] = (u8)s44;
+    p[0] = b3; p[3] = b0; p[1] = b2; p[2] = b1;
+    p[4] = b7; p[7] = b4; p[5] = b6; p[6] = b5;
+    p[8] = bB; p[0xB] = b8;
+    p[0xA] = k9; p[0xF] = kC; p[0xE] = kD;
+    p[0x13] = k10; p[0x12] = k11; p[0x17] = k12;
+    p[0x16] = k15; p[0x1B] = k18; p[0x1A] = k19;
+    p[0x1F] = k1C; p[0x1E] = k1D; p[0x23] = k20;
+    p[0x22] = k21; p[0x27] = k24; p[0x26] = k25;
+    p[0x2B] = k28; p[0x2A] = k29;
+    {
+        u8 c = p[0x2C], d = p[0x2D], e = p[0x30], f = p[0x31];
+        p[0x2C] = p[0x2F]; p[0x2F] = c;
+        p[0x2D] = p[0x2E]; p[0x2E] = d;
+        p[0x30] = p[0x33]; p[0x33] = e;
+        p[0x31] = p[0x32]; p[0x32] = f;
+    }
 }
 
 #pragma scheduling reset
@@ -696,6 +730,8 @@ extern "C" void *fn_8012B314(s32 value, s32 buffer, s32 flag) {
     return (void *)fn_8012B2C4(buffer, value, flag);
 }
 
+/* No-op resource-load failure hook: invoked with the rejected node when fn_8012AFE0
+ * cannot resolve a resource (paired with the success hook fn_8012B328); does nothing. */
 extern "C" void fn_8012B324(void) {
 
 }
