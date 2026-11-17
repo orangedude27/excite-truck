@@ -2883,7 +2883,7 @@ extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 fa
     };
     Object *object = (Object *)fn_801284F8(0x54, lbl_80333640);
     if (object != 0) {
-        u32 type = *(u32 *)((u8 *)arg0 + 4);
+        s32 type = *(s32 *)((u8 *)arg0 + 4);
         object->fieldC = *(s32 *)((u8 *)arg0 + 0xC);
         f32 zero = lbl_805622D0;
         object->field4 = type;
@@ -4308,11 +4308,13 @@ extern "C" f32 fn_801A2CA4(void* arg0) {
     return *(f32*)((u8*)arg0 + 0x178);
 }
 
-extern "C" void fn_801A2CAC(void *arg0) {
+extern "C" void fn_801A2CAC(void *shape) {
     extern s32 lbl_8055E598;
     extern void fn_801E3FC8(s32, s32, s32, f32);
-    s32 temp_r5 = *(s32 *)((u8 *)arg0 + 0xC);
-    fn_801E3FC8(temp_r5 + 0x24, lbl_8055E598, temp_r5, *(f32 *)((u8 *)arg0 + 0x24));
+    /* Matrix/translation setup via handle lbl_8055E598: pass the child
+     * referenced at +0xC (its matrix at +0x24) and this shape's +0x24 scale. */
+    s32 child = *(s32 *)((u8 *)shape + 0xC);
+    fn_801E3FC8(child + 0x24, lbl_8055E598, child, *(f32 *)((u8 *)shape + 0x24));
 }
 
 extern void fn_8019ECC4();
