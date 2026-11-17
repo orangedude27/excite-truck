@@ -502,16 +502,20 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
     s32 i;
     u8 *m;
     s32 j;
-    s32 n = arg1;
-    u8 *ent = (u8 *)arg0;
+    u8 *ent;
     struct V3 *pv;
+    u8 *tbl_base;
     u8 *t;
+    s32 n;
     f32 a1[3], b1[3], c1[3];
     struct V3 a2;
     f32 b2[3];
     f32 k31, k30, k29, k28, k27, k26, k25, k24, k23;
-    pv = &a2;
+    ent = (u8 *)arg0;
+    n = arg1;
     if ((f32)__fabs(fn_801E7E24()) <= lbl_80558DC4[0]) return;
+    pv = &a2;
+    tbl_base = (u8 *)lbl_804B3238;
     k23 = lbl_80564334;
     k24 = lbl_80564344;
     k25 = lbl_80564348;
@@ -533,7 +537,7 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
                 if (e[0x30] == 0) continue;
                 type = *(s32 *)(e + 0x38);
                 if (type < 0 || type >= 8) continue;
-                t = (u8 *)lbl_804B3238 + type * 16;
+                t = tbl_base + type * 16;
                 if (*(s32 *)t == 0) continue;
                 if (*(s32 *)(e + 0x2C) & 8) continue;
                 roll = fn_80287B5C(0x64);
@@ -809,7 +813,7 @@ s32 fn_8028B93C(f32 *arg0) {
     }
     return 0x20;
 }
-#pragma scheduling on
+#pragma scheduling reset
 s32 fn_8028BA44(void *arg0) {
     struct {
         f32 sp8;
@@ -818,10 +822,9 @@ s32 fn_8028BA44(void *arg0) {
     } locals;
     f32 val;
     s32 gval;
-    f32 init = lbl_8056434C;
-    locals.sp8 = init;
-    locals.spC = init;
-    locals.sp10 = init;
+    locals.sp8 = 0.0f;
+    locals.spC = 0.0f;
+    locals.sp10 = 0.0f;
     fn_80288A70(arg0, &locals.sp8);
     val = *(f32 *)((u8 *)arg0 + 0xC);
     gval = lbl_8055F700;
