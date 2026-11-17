@@ -1021,7 +1021,7 @@ extern float lbl_80565028;
 #pragma paired off
 #pragma paired_single off
 #pragma use_lmw_stmw off
-#pragma scheduling reset
+#pragma scheduling invalid_target
 #pragma unroll off
 void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     struct TexWrap { u8 pad[0x24]; u8 tex; } *t0 = arg0;
