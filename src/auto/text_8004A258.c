@@ -429,7 +429,8 @@ extern const char lbl_80558F04[6];
 #pragma small_data on
 
 void ReportOSInfo_8004AA40(void) {
-    u32 type;
+    OSConsoleType_Report type;
+    u32 tdev;
     u32 version;
     u32 builddate;
 
@@ -437,7 +438,7 @@ void ReportOSInfo_8004AA40(void) {
     OSReport("Kernel built : %s %s\n\0\0", "Sep 21 2006", "14:32:13\0\0\0");
 
     OSReport("Console Type : ");
-    type = OSGetConsoleType();
+    type = (OSConsoleType_Report)OSGetConsoleType();
     switch (type & OS_CONSOLE_MASK) {
     case OS_CONSOLE_MASK_RVL:
         switch (type) {
@@ -481,7 +482,8 @@ void ReportOSInfo_8004AA40(void) {
         }
         break;
     case OS_CONSOLE_MASK_TDEV:
-        OSReport("TDEV-based emulation HW%d\n\0", (type & 0x0FFFFFFF) - 3);
+        tdev = type & 0x0FFFFFFF;
+        OSReport("TDEV-based emulation HW%d\n\0", tdev - 3);
         break;
     default:
         OSReport(lbl_80558F04, type);
@@ -790,6 +792,7 @@ asm void __OSDBJump(void) {
 
 #pragma small_data on
 void *__OSSetExceptionHandler(u8 type, void *handler) {
+    /* Install 'handler' for exception 'type' in the OS exception table and return the previous handler. */
     void *old = OSExceptionTable_8055D9D0[type];
     OSExceptionTable_8055D9D0[type] = handler;
     return old;
