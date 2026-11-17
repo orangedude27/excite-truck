@@ -242,8 +242,9 @@ void* fn_800167F4(void) {
     return lbl_8055D554;
 }
 
-void fn_800167FC(void *arg0) {
-    lbl_8055D554 = arg0;
+/* Set the registered record-entry count (lbl_8055D554) that sizes the record tables. */
+void fn_800167FC(void *count) {
+    lbl_8055D554 = count;
 }
 
 int fn_80016804(int id, int index) {
