@@ -19552,6 +19552,9 @@ extern "C" void fn_800CF968(void) {
 
 }
 
+/* No-op virtual stub: an empty method slot in the homebutton GUI component
+ * vtable lbl_8031E780 (+0x30), next to the other empty stubs fn_800CF954/
+ * fn_800CF95C/fn_800CF968.  Calling it does nothing. */
 extern "C" void fn_800CF96C(void) {
 
 }
