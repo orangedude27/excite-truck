@@ -602,8 +602,9 @@ int fn_802B9920(int arg0) {
 }
 #pragma scheduling on
 #pragma pop
-short fn_802B9954(void* arg0) {
-    return (short)((int*)arg0)[5];
+/* Return the signed piece index stored at +0x14 of a racing-line RoadObject. */
+short fn_802B9954(void *roadObject) {
+    return (short)((int *)roadObject)[5];
 }
 
 void fn_802B9960(void) {
