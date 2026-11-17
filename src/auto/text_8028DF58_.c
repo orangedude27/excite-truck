@@ -614,12 +614,13 @@ int fn_8028EE34(void *table, int name, int *outIndex) {
 extern int fn_8002B1D8(int, void *, int);
 extern char *strncpy(char *, const char *, unsigned int);
 #pragma scheduling invalid_target
-void fn_8028EEB4(void *arg0, int arg1, const char *arg2) {
-    strncpy((char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18, arg2, 0x10);
-    *(char *)((char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18 + 0xF) = 0;
-    *(int *)((char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18 + 0x10) = arg1;
-    *(int *)((char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18 + 0x14) = 1;
-    ++*(int *)((char *)arg0 + 0x600);
+/* Append a 0x18-byte cache entry to the table: name (16 bytes), instance value at +0x10, refcount 1 at +0x14, then advance the entry count at +0x600. */
+void fn_8028EEB4(void *table, int instance, const char *name) {
+    strncpy((char *)table + *(int *)((char *)table + 0x600) * 0x18, name, 0x10);
+    *(char *)((char *)table + *(int *)((char *)table + 0x600) * 0x18 + 0xF) = 0;
+    *(int *)((char *)table + *(int *)((char *)table + 0x600) * 0x18 + 0x10) = instance;
+    *(int *)((char *)table + *(int *)((char *)table + 0x600) * 0x18 + 0x14) = 1;
+    ++*(int *)((char *)table + 0x600);
 }
 #pragma scheduling on
 int fn_8028EF44(void *arg0, unsigned int arg1) {
