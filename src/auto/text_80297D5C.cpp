@@ -23,6 +23,7 @@ extern "C" void fn_8029A114(void *);
 extern "C" void fn_8029A8B8(void *);
 
 struct Fn80299A88Matrix { float v[9]; };
+struct Fn8029A4B4Vec { float v[3]; };
 struct Fn80299A88Frame { float temp[6]; Fn80299A88Matrix matrix, rotation; unsigned char config[0x90]; };
 
 struct Entry {
