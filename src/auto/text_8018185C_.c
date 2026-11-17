@@ -208,7 +208,7 @@ void fn_8018185C(void *arg0, const float *arg1) {
     out[5] = t + second * (out[10] * out[10]);
     out[4] = out[6] + (lbl_80561CB0 * second) * out[10];
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 
 void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, float farg2) {
     float values[6];
