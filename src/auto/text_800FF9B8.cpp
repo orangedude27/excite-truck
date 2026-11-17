@@ -217,8 +217,9 @@ extern "C" void fn_800FFE68(void *sound) {
     fn_800FFE94(*(int *)((char *)sound + 0x1AC));
 }
 
-extern "C" int fn_800FFE70(int arg0) {
-    return arg0 + 0xD8;
+/* Return the address of the embedded WsdPlayer (at +0xD8 of the WaveSound object). */
+extern "C" int fn_800FFE70(int sound) {
+    return sound + 0xD8;
 }
 
 extern "C" int fn_800FFE78(int arg0) { return arg0 + 0xD8; }
