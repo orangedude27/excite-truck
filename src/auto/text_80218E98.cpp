@@ -9350,8 +9350,9 @@ extern "C" void fn_80229B0C(void *arg0, s32 arg1, s32 arg2) {
 
 extern "C" s32 fn_80229B68(void) { return 0; }
 
-extern "C" s32 fn_80229B70(void *arg0) {
-    return *(s32 *)((u8 *)arg0 + 0x254);
+// Getter: return the 32-bit value this object stores at +0x254 (a bound handle/selection used by UI widgets).
+extern "C" s32 fn_80229B70(void *self) {
+    return *(s32 *)((u8 *)self + 0x254);
 }
 
 extern "C" char lbl_8033EFF4[];
