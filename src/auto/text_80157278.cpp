@@ -1050,7 +1050,6 @@ extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2, void *arg3) {
 extern "C" f32 lbl_8056176C;
 #pragma small_data off
 extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, void* arg3) {
-    extern f32 lbl_80561770;
     struct Tail {
         u8 pad244[0x244];
         s32 field244;
@@ -1078,17 +1077,14 @@ extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, void* arg3) {
         memset(ptr, 0, 4);
         ptr += 0x38;
     } while (ptr < end);
-    f32 f0 = lbl_80561770;
-    f32 f1 = lbl_80561750;
-    f32 f2 = lbl_8056176C;
     ((Tail *)arg0)->field248 = zero;
     *(s32 *)((u8 *)arg0 + 0x0C) = zero;
-    *(s32 *)((u8 *)arg0 + 4) = arg2;
+    *(s32 *)((u8 *)arg0 + 4) = (s32)arg3;
     ((Tail *)arg0)->field244 = arg1;
     ((Tail *)arg0)->field268 = 0x40902;
-    ((Tail *)arg0)->field24C = f2;
-    ((Tail *)arg0)->field250 = f1;
-    ((Tail *)arg0)->field254 = f0;
+    ((Tail *)arg0)->field24C = 15.0f;
+    ((Tail *)arg0)->field250 = 1.0f;
+    ((Tail *)arg0)->field254 = 305.0f;
     ((Tail *)arg0)->field248 = zero;
     ((Tail *)arg0)->field26C = zero;
     *(void **)arg0 = &lbl_8032F0E8;
@@ -1096,7 +1092,7 @@ extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, void* arg3) {
     if (ptr != end) {
         u8 *zeroPtr = (u8 *)zero;
         zeroPtr[0x4D] = 1;
-        *(f32 *)(zeroPtr + 8) = f0;
+        *(f32 *)(zeroPtr + 8) = 305.0f;
         ((Tail *)arg0)->field26C = 0;
     }
     return arg0;
@@ -1663,8 +1659,7 @@ extern "C" s32 fn_80158F60(Unk8015A368C* bonus) {
     return bonus->v21() > 0;
 }
 
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
     struct Dummy {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -1693,7 +1688,6 @@ extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
     }
     return 0;
 }
-#pragma pop
 /* One frame of a bonus tracker, with nothing emitted: it runs the update at
    vtable+0x84, clears the main progress (0x25C) and the second counter (0x264)
    and moves the time (0x258) on by one frame.  Once the progress counted for
@@ -1737,41 +1731,44 @@ extern "C" u8 fn_80159124(void* arg0, void* arg1) {
     limit = *(f32*)(other + 0x25D4);
     u8 flag;
     if ((f32)__fabs(*(f32*)(other + 0x2690)) <= lbl_80558DC4[0] && limit > lbl_80561788 && *(f32*)(self + 0x270) < lbl_80561760) {
-        f32 d = (f32)__fabs(PSVECDotProduct(other + 0x118, other + 0x3C));
+        f64 dtmp = __fabs((f64)PSVECDotProduct(other + 0x118, other + 0x3C));
+        f32 d = (f32)dtmp;
         f32 k = prev != 0 ? lbl_8056178C : lbl_80561790;
         flag = d > limit * k;
     } else {
         flag = 0;
     }
     *(u8*)(self + 0x274) = flag;
-    if (flag != 0) {
-        f32 lim2 = *(f32*)(other + 0x25D4);
-        f32 d = (f32)__fabs(PSVECDotProduct(other + 0x118, other + 0x3C));
+    if ((u8)flag != 0) {
+        limit = *(f32*)(other + 0x25D4);
+        f64 dtmp = __fabs((f64)PSVECDotProduct(other + 0x118, other + 0x3C));
+        f32 d = (f32)dtmp;
         f32 k = prev != 0 ? lbl_8056178C : lbl_80561790;
         f32 a = lbl_80561750 - lbl_80561794 * *(f32*)(self + 0x270);
-        a = (a <= lbl_80561754) ? lbl_80561754 : a;
+        a = (a > lbl_80561754) ? a : lbl_80561754;
         f32 b = lbl_80561750;
-        f32 t = lbl_80561788 * (d / (lim2 * k) - b);
-        b = (b >= t) ? t : b;
-        b = (b <= lbl_80561754) ? lbl_80561754 : b;
+        f32 t = lbl_80561788 * (d / (limit * k) - b);
+        b = (b < t) ? b : t;
+        b = (b > lbl_80561754) ? b : lbl_80561754;
         result = b * a;
     }
     u8* w = *(u8**)(self + 0x278);
     if (w != 0) {
-        if ((f32)__fabs(result) <= lbl_80558DC4[0]) {
-            w[0x4A] = 1;
-            w[0x4C] = 0;
-        } else {
-            f32 v = lbl_80561798 * result;
-            if (v != *(f32*)(w + 8)) {
-                w[0x4D] = 1;
-                *(f32*)(w + 8) = v;
-            }
-            w = *(u8**)(self + 0x278);
-            w[0x4A] = 0;
-            w[0x4B] = 1;
-            w[0x49] = 1;
+        if ((f32)__fabs(result) <= lbl_80558DC4[0]) goto small;
+        f32 v = lbl_80561798 * result;
+        if (v != *(f32*)(w + 8)) {
+            w[0x4D] = 1;
+            *(f32*)(w + 8) = v;
         }
+        w = *(u8**)(self + 0x278);
+        w[0x4A] = 0;
+        w[0x4B] = 1;
+        w[0x49] = 1;
+        goto done_w;
+    small:
+        w[0x4A] = 1;
+        w[0x4C] = 0;
+    done_w: ;
     }
     return *(u8*)(self + 0x274);
 }
@@ -2171,12 +2168,12 @@ extern "C" void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3) {
     f32 now;
     f32 tol;
     f32 lim;
-    if (!(*(f32 *)((u8 *)arg1 + 0x25d4) > lbl_805617B4 * lbl_8055A02C) || arg2 != 0x3eb || *((u8 *)arg0 + 0x2d1)) {
+    if (!(*(f32 *)((u8 *)arg1 + 0x25d4) > 0.444444f * lbl_8055A02C) || arg2 != 0x3eb || *((u8 *)arg0 + 0x2d1)) {
         return;
     }
-    now = lbl_8055E3C8;
+    lim = 5.0f;
     tol = lbl_80558DC4[0];
-    lim = lbl_80561788;
+    now = lbl_8055E3C8;
     base = (u8 *)arg0 + 0x26c;
     found = 0;
     p = base;
@@ -3360,13 +3357,13 @@ extern "C" void* fn_8015CBBC(void* self, s32 shouldDelete) {
 extern "C" u32 fn_8015CC28(void) { return 1; }
 
 #pragma push
-#pragma processor 750
+#pragma scheduling on
 extern "C" s32 fn_8015CC30(void* arg0) {
-    register f32 x = *(f32*)((char*)arg0 + 0x250);
-    register f32 r;
-    if (x < lbl_80561754) r = x - lbl_80561760;
-    else r = lbl_80561760 + x;
-    return (s32)r;
+    f32 x = *(f32*)((char*)arg0 + 0x250);
+    f32 rounded;
+    if (x < 0.0f) rounded = x - 0.5f;
+    else rounded = 0.5f + x;
+    return (s32)rounded;
 }
 #pragma pop
 /* Set the gain applied to a record's value (field at +0x250) on this record player. */
@@ -4044,14 +4041,18 @@ extern "C" void fn_8015E238(Unk801577F0V* arg0) {
         virtual void v0();
         virtual void Call();
     };
-    s32 offset = 0;
-    s32 i = 0;
-    u8* self = (u8*)arg0;
+    s32 offset;
+    s32 i;
+    f32 *array;
+    offset = 0;
+    i = 0;
+    volatile u8* self = (volatile u8*)arg0;
+    array = lbl_8042FD08;
     s32 valueIndex = *(s32*)(self + 0x58);
     *(u8*)(self + 0x54) = 1;
-    lbl_8042FD08[valueIndex] = lbl_80561750;
-    while (i < *(s32*)(self + 8)) {
-        void* item = *(void**)((u8*)*(void**)(self + 4) + offset);
+    array[valueIndex] = 1.0f;
+    while (i < *(volatile s32*)(self + 8)) {
+        void* item = *(void**)((u8*)*(void* volatile*)(self + 4) + offset);
         ((Dummy*)item)->Call();
         offset += 4;
         i++;
