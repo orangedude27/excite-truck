@@ -4259,6 +4259,7 @@ extern "C" s32 fn_800AB378(void *arg0, s32 grow) {
     return 0;
 }
 
+__declspec(section ".sdata") extern const char lbl_805591F0[], lbl_805591F4[];
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800AB528(void *arg0, void *arg1, s32 arg2, u8 arg3, s32 arg4, s32 *arg5) {
