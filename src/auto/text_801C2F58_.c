@@ -912,8 +912,7 @@ void fn_801C56AC(void) {
     float cAC;
     float cB4;
     float c70;
-    float var_f23;
-    register float c78;
+    float c78;
     float cBC;
     if ((u8)lbl_8055E7E2 == 0) return;
     cfg = lbl_80437E30;
@@ -924,11 +923,11 @@ void fn_801C56AC(void) {
     cAC = lbl_805629AC;
     cB4 = lbl_805629B4;
     c70 = lbl_80562970;
-    var_f23 = 0;
     c78 = lbl_80562978;
     cBC = lbl_805629BC;
     i = 0;
     for (;;) {
+        float var_f23;
         obj = fn_8017960C(i);
         if (obj == 0) return;
         var_f23 = *(float *)(cfg + 8);
@@ -2219,9 +2218,12 @@ void fn_801C8150(void) {
     strcpy(sInputLine, STR_EMPTY);
 }
 
+/* Debug-menu callback: select interlude mode 1 and reopen the AI-think interlude's menu. */
 void fn_801C8190(void) {
-    lbl_8055E854 = 1;
-    fn_801C78D8();
+    #define enterDebugMenuMode fn_801C78D8
+    sInterludeMode = 1;
+    enterDebugMenuMode();
+    #undef enterDebugMenuMode
 }
 
 extern f32 lbl_8055E85C;
