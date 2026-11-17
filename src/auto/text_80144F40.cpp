@@ -782,6 +782,7 @@ static inline s32 findLayout80145DD8(void *obj) {
     return -1;
 }
 
+#pragma dont_inline on
 extern "C" void fn_80145DD8(void *arg0) {
     void **p;
     s32 i;
