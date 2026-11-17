@@ -2137,8 +2137,11 @@ extern "C" void fn_801D71A8(void *self) {
 
 #pragma cplusplus reset
 
+/* Return the "RingMaster_ASE" resource name string. */
 void *fn_801D7200(void) {
-    return lbl_803388D4;
+#define STR_RING_MASTER_ASE lbl_803388D4
+    return STR_RING_MASTER_ASE;
+#undef STR_RING_MASTER_ASE
 }
 
 int fn_801D720C(int arg0) {
