@@ -675,13 +675,11 @@ void *fn_801B4528(void *tree, u32 *node, u32 key) {
     return node;
 }
 #pragma scheduling invalid_target
-#pragma opt_propagation off
-typedef struct Node801B4570 { s32 *data; s32 count; s32 idx; } Node801B4570;
 void* fn_801B4570(void* arg0, u32 arg1) {
-    void *cur;
     void *found;
     s32 *data;
     s32 idx;
+    void *cur;
     cur = arg0;
     found = fn_801B4528(arg0, *(void**)((u8*)arg0 + 0x2F8), arg1);
     if (found != NULL) {
