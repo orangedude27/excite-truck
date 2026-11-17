@@ -475,29 +475,24 @@ extern "C" void fn_802BCBDC(void) {
 }
 
 #pragma push
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
 extern "C" void fn_802BCF04(void) {
-    void *base;
-    char *entry;
     int i;
     int offset;
-    base = *(void **)&lbl_804C00D4;
+    char *entry;
     i = 0;
     offset = 0;
-    goto check;
-loop:
-    entry = (char *)base + offset;
-    fn_802BCFB0((int *)(entry + 0x58));
-    fn_802CAC54(*(int *)(entry + 0x20));
-    fn_802C6C20(*(int *)(entry + 0x18));
-    *(int *)(entry + 0x18) = 0;
-    fn_802CAC54(*(int *)(entry + 0x10));
-    fn_802C6C20(*(int *)(entry + 8));
-    *(int *)(entry + 8) = 0;
-    offset += 0x60;
-    i++;
-check:
-    if (i < *(int *)((char *)&lbl_804C00D4 + 4)) goto loop;
+    for (; i < *(int *)((char *)&lbl_804C00D4 + 4); i++) {
+        entry = *(char **)&lbl_804C00D4 + offset;
+        fn_802BCFB0((int *)(entry + 0x58));
+        fn_802CAC54(*(int *)(entry + 0x20));
+        fn_802C6C20(*(int *)(entry + 0x18));
+        *(int *)(entry + 0x18) = 0;
+        fn_802CAC54(*(int *)(entry + 0x10));
+        fn_802C6C20(*(int *)(entry + 8));
+        *(int *)(entry + 8) = 0;
+        offset += 0x60;
+    }
     *(int *)((char *)&lbl_804C00D4 + 4) = 0;
     if (lbl_8055FAB4 != 0) {
         fn_80131818();
