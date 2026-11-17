@@ -29,6 +29,7 @@ void* OSGetMEM2ArenaLo(void) {
     return s_mem2ArenaLo;
 }
 
+/* Return the low bound of the default (MEM1) arena. */
 void* OSGetArenaLo(void) {
     return OSGetMEM1ArenaLo();
 }
