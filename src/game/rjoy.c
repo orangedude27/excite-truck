@@ -605,8 +605,12 @@ unsigned char fn_802E8504(int controllerIndex) {
 #undef gWiimoteStateTable
 }
 
-void fn_802E8518(int arg0) {
-    fn_802E8528(arg0, lbl_80565164, lbl_80565164);
+/* Center a controller's steering: feed a zero input to the rumble-level converter
+ * so it stores the small centering level in that controller's state record. */
+void fn_802E8518(int controllerIndex) {
+#define RJOY_ZERO lbl_80565164 /* 0.0f */
+    fn_802E8528(controllerIndex, RJOY_ZERO, RJOY_ZERO);
+#undef RJOY_ZERO
 }
 
 extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
