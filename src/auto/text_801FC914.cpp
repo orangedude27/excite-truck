@@ -1670,13 +1670,14 @@ extern "C" int stricmp(const char *, const char *);
 void fn_801FF7D4(void *arg0, void *arg1) {
     const char *name = *(const char **)arg1;
     int i = 0;
-    char *entry = (char *)arg0;
+    char *scan = (char *)arg0;
+    char *entry;
     while (i < *(int *)((char *)arg0 + 0x4C0)) {
-        if (stricmp(name, entry) == 0) {
+        if (stricmp(name, scan) == 0) {
             entry = (char *)arg0 + i * 0x98;
             goto found;
         }
-        entry += 0x98;
+        scan += 0x98;
         i++;
     }
     entry = 0;
