@@ -242,7 +242,9 @@ void fn_8001BBBC(EntryRef *out, s32 encoded) {
 
 s32 ARCGetStartOffset(void *arg0) { return ((s32 *)arg0)[2]; }
 
-s32 fn_8001BC18(s32 arg0) { return arg0 + 0x14; }
+/* Address helper: returns a pointer to the field at offset +0x14 of `record`.
+ * Called through casts by field accessors such as fn_8001BEC4 / fn_8001C0A0. */
+s32 fn_8001BC18(s32 record) { return record + 0x14; }
 
 s32 fn_8001BC20(s32 arg0) { return arg0 + 0x1C; }
 
