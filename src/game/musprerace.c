@@ -449,7 +449,6 @@ extern s32 lbl_8055B5DC;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma opt_propagation off
 void fn_8020C920(s32 arg0) {
     const char *base = lbl_8033C5D8;
     s32 i = 0;
