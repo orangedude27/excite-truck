@@ -670,14 +670,12 @@ extern "C" void fn_801A6C14(void *arg0) {
 #pragma cplusplus reset
 #pragma scheduling reset
 #pragma push
-#pragma processor 750
+#pragma processor 7400
 #pragma scheduling on
 float fn_801A70EC(int arg0, void *arg1, void *arg2, int arg3) {
     float ratio;
     float denominator;
-    int v1 = ((int *)arg1)[1];
-    int v2 = ((int *)arg2)[1];
-    denominator = fn_801A63C4(v2, v1);
+    denominator = fn_801A63C4(((int *)arg2)[1], ((int *)arg1)[1]);
     ratio = fn_801A63C4(arg3, ((int *)arg1)[1]);
     ratio /= denominator;
     fn_8012F57C(arg0, (char *)arg1 + 0x2A, (char *)arg2 + 0x2A, ratio);
