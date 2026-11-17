@@ -2631,8 +2631,9 @@ extern "C" s32 fn_80141F7C(f32 value) {
 }
 #pragma small_data on
 extern "C" u8 lbl_8055E1BC;
-extern "C" u8 fn_80141FA0(void *arg0) {
-    return *(u8 *)((u8 *)arg0 + 0x19);
+/* Return the one-byte state flag at offset 0x19 of the given object/sub-object. */
+extern "C" u8 fn_80141FA0(void *object) {
+    return *(u8 *)((u8 *)object + 0x19);
 }
 
 extern "C" u8 lbl_8055E1BC;
