@@ -236,8 +236,9 @@ void *fn_801E6BEC(char *arg0) {
     return animData;
 }
 
-void fn_801E6CC8(void* arg0, s8 arg1) {
-    ((s8*)arg0)[0xC] = arg1;
+/* Set the byte-sized flag at offset 0xC of an animation-data object (whose name string starts at +0x10). */
+void fn_801E6CC8(void* animData, s8 value) {
+    ((s8*)animData)[0xC] = value;
 }
 
 typedef unsigned int u32;
