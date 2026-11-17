@@ -25825,7 +25825,11 @@ extern "C" void fn_800A53CC(void *volume) {
 #undef VF_VOL_FLAGS
 }
 
-extern "C" s32 fn_800A53DC(void *arg0) { return ((u16)*(u16 *)((u8 *)arg0 + 0x1F8C) >> 5U) & 1; }
+/* Return 1 when a VFiPFVolume's VF_VOL_UNMOUNT_PENDING flag (bit 5 of its
+   flags word at +0x1F8C) is set. */
+extern "C" s32 fn_800A53DC(void *volume) {
+    return ((u16)VF_VOLUME(volume)->flags >> 5U) & 1;
+}
 
 /* Clears VF_VOL_UNMOUNT_PENDING (bit 5) in the volume's flag word at +0x1F8C. */
 extern "C" void fn_800A53E8(void *volume) { *(u16 *)((u8 *)volume + 0x1F8C) = (u16)(*(u16 *)((u8 *)volume + 0x1F8C) & ~VF_VOL_UNMOUNT_PENDING); }
