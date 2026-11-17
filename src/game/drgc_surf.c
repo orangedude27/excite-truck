@@ -315,6 +315,7 @@ void fn_802D45C0(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern u8 lbl_804CEC3C[];
     extern f32 lbl_804C56F0[];
+    struct CacheEntry { s32 count; void *src; void *dst; s32 flag; };
     register void *object = arg0;
     register f32 *src = *(f32 **)((u8 *)object + 0x20);
     register s32 count = *(s32 *)((u8 *)object + 0x1C);
@@ -327,11 +328,13 @@ void fn_802D45C0(void *arg0) {
         register u8 *cache = lbl_804CEC3C;
         index = *(s32 *)(cache + 0x4000);
         if (index < 0x400) {
+            struct CacheEntry *entry;
             *(s32 *)(cache + 0x4000) = index + 1;
-            *(s32 *)(cache + index * 0x10) = count;
-            *(f32 **)(cache + index * 0x10 + 4) = src;
-            *(f32 **)(cache + index * 0x10 + 8) = base;
-            *(s32 *)(cache + index * 0x10 + 0xC) = 0;
+            entry = (struct CacheEntry *)(cache + index * 0x10);
+            entry->count = count;
+            entry->src = src;
+            entry->dst = base;
+            entry->flag = 0;
             cached = 1;
         } else {
             cached = 0;
@@ -454,20 +457,22 @@ void fn_802D4988(void *arg0) {
             cached = 0;
         }
         if (cached == 0) {
-            f32 factor = lbl_80564FF0;
             struct SourceVertex *vertex = src;
             f32 *out = base;
+            f32 factor = lbl_80564FF0;
             s32 i;
             for (i = count; i > 0; i--) {
-                s16 h0 = vertex->half0;
-                s16 h1 = vertex->half1;
-                f32 t0 = lbl_804CA308[vertex->index0];
-                f32 t1 = lbl_804CA308[vertex->index1];
-                f32 a = factor * (f32)h0;
-                f32 b = factor * (f32)h1;
-                f32 y = src->y;
-                f32 z = src->z;
-                f32 x = src->x;
+                s16 h0, h1;
+                f32 t0, t1, y, z, x, a, b;
+                h0 = vertex->half0;
+                h1 = vertex->half1;
+                t0 = lbl_804CA308[vertex->index0];
+                t1 = lbl_804CA308[vertex->index1];
+                y = src->y;
+                z = src->z;
+                x = src->x;
+                a = factor * (f32)h0;
+                b = factor * (f32)h1;
                 vertex = (struct SourceVertex *)((u8 *)vertex + 0x14);
                 src = (struct SourceVertex *)((u8 *)src + 0x14);
                 out[0] = x;
@@ -1547,8 +1552,9 @@ void fn_802D6C78(void) {
     OSSetGQR6(7, 8);
 }
 
-void fn_802D754C(u8 arg0) {
-    lbl_8055FDE4 = arg0;
+/* Set the global flag that swaps the two GX cull modes used when drawing surf surfaces. */
+void fn_802D754C(u8 value) {
+    lbl_8055FDE4 = value;
 }
 
 extern u8 lbl_8055FDFC;
