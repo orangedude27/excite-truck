@@ -2353,40 +2353,41 @@ extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigne
 }
 
 struct CountField_800D9844 { u32 pad : 9; u32 cnt : 5; u32 rest : 18; };
+struct TevStageMid_800D9844 { u8 v[8]; };
 struct TevStageDefault {
     u8 head[4];
-    u8 mid[8];
+    TevStageMid_800D9844 mid;
     u8 tail[4];
     TevStageDefault() {
         head[0] = 0xFF; head[1] = 4; head[2] = 0xFF; head[3] = 0;
-        mid[0] = 0xFF; mid[1] = 0xAF; mid[2] = 0; mid[3] = 0x61;
-        mid[4] = 0x77; mid[5] = 0x57; mid[6] = 0; mid[7] = 0x81;
+        mid.v[0] = 0xFF; mid.v[1] = 0xAF; mid.v[2] = 0; mid.v[3] = 0x61;
+        mid.v[4] = 0x77; mid.v[5] = 0x57; mid.v[6] = 0; mid.v[7] = 0x81;
         tail[0] = 0; tail[1] = 0; tail[2] = 0; tail[3] = 0;
     }
-    TevStageDefault &operator=(const TevStageDefault &other) {
+    TevStageDefault &operator=(const TevStageMid_800D9844 &o) {
         head[0] = 0xFF; head[1] = 4; head[2] = 0xFF; head[3] = 0;
-        mid[0] = other.mid[0]; mid[1] = other.mid[1]; mid[2] = other.mid[2]; mid[3] = other.mid[3];
-        mid[4] = other.mid[4]; mid[5] = other.mid[5]; mid[6] = other.mid[6]; mid[7] = other.mid[7];
+        mid.v[0] = o.v[0]; mid.v[1] = o.v[1]; mid.v[2] = o.v[2]; mid.v[3] = o.v[3];
+        mid.v[4] = o.v[4]; mid.v[5] = o.v[5]; mid.v[6] = o.v[6]; mid.v[7] = o.v[7];
         tail[0] = 0; tail[1] = 0; tail[2] = 0; tail[3] = 0;
         return *this;
     }
 };
 extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
     u8* p = (u8*)arg0;
-    struct MsgBlock { char text[0x400]; };
-    const MsgBlock *blk = (const MsgBlock*)lbl_8031F990;
+    const char *msg = lbl_8031F990;
     if (arg1 > ((*(u32*)(p + 0x4C) >> 9) & 0x1F))
-        Panic__Q26nw4hbm2dbFPCciPCce(blk->text, 0x3AD, blk->text + 0x3C4);
+        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3AD, msg + 0x3C4);
     if (arg1 != 0) {
         if (*(void**)(p + 0x58) == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(blk->text, 0x3B0, blk->text + 0x360);
+            Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3B0, msg + 0x360);
         u32 fmt = *(u32*)(p + 0x4C);
         u32 count = (*(u32*)(p + 0x50) >> 9) & 0x1F;
         TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58)
-            + (((((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C))
-                + (((((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14) + ((fmt >> 6) & 4)))
-               + (((fmt >> 13) & 0x1C) + (((fmt >> 3) & 4) + (((fmt >> 4) & 4)
-                  + (((fmt >> 5) & 4) + ((fmt >> 12) & 4)))))));
+            + (((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14
+            + ((fmt >> 5) & 4) + ((fmt >> 12) & 4)
+            + ((fmt >> 6) & 4) + ((fmt >> 4) & 4)
+            + ((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C)
+            + ((fmt >> 3) & 4) + ((fmt >> 13) & 0x1C));
         if (count < arg1) {
             TevStageDefault def;
             TevStageDefault copy = def;
