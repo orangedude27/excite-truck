@@ -1958,8 +1958,9 @@ extern "C" s32 fn_800D89B4(s32 base, s32 offset) {
     return base + offset;
 }
 
-extern "C" s32 fn_800D89BC(s32 arg0, s32 arg1) {
-    return arg0 + arg1;
+extern "C" s32 fn_800D89BC(s32 base, s32 offset) {
+    // Returns a pointer into the Material resource at base+offset (used for channel A color data).
+    return base + offset;
 }
 
 /* Compute base + offset as an integer address (used to index resource data). */
