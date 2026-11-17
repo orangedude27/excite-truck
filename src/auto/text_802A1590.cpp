@@ -1813,6 +1813,7 @@ extern "C" s32 fn_802A4958(s32 object, s32 deleteFlag) {
     return object;
 }
 
+// Trivial virtual getter on the title-screen plane object: always returns 0.
 extern "C" u8 fn_802A4998(void) {
     return 0;
 }
