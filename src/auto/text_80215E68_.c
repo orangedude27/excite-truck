@@ -466,6 +466,7 @@ void fn_802168E0(void) {
 }
 
 extern void *lbl_8055EF88;
+/* UIGetActiveWindow: return the currently active UI window (NULL when none). */
 void* fn_802168E4(void) {
     return lbl_8055EF88;
 }
