@@ -20213,10 +20213,13 @@ extern "C" void fn_800D11CC(void *controller) {
     *(s32 *)((u8 *)controller + 0x18) = 0;
 }
 
-extern "C" void fn_800D11E0(void* arg0) {
-    f32 value = lbl_80560E3C;
-    *(f32*)((u8*)arg0 + 8) = value;
-    *(f32*)((u8*)arg0 + 0xC) = value;
+extern "C" void fn_800D11E0(void* controller) {
+    #define INVALID_VALUE lbl_80560E3C /* -10000.0f */
+    /* Reset the remote-speaker controller's two float fields at +8 and +0xC to the invalid sentinel. */
+    f32 value = INVALID_VALUE;
+    *(f32*)((u8*)controller + 8) = value;
+    *(f32*)((u8*)controller + 0xC) = value;
+    #undef INVALID_VALUE
 }
 
 extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *, s32);
