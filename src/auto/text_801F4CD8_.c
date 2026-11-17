@@ -352,6 +352,7 @@ extern "C" void fn_801F5344(void *out, void *arg1, void *arg2) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma cplusplus on
 void fn_801F5508(void *arg0) {
     int temp_r5 = *(int *)((char *)arg0 + 0x2C);
     int temp_r6 = *(int *)((char *)arg0 + 0x30);
@@ -411,8 +412,8 @@ loop_10:
     temp_r5_3 = *(int *)((char *)arg0 + 0x2C);
     temp_r4_2 = *(void **)((char *)arg0 + 4);
     temp_r24 = temp_r31 + var_r25;
-    temp_r0_2 = temp_r28 + ((var_r27 - 1) * temp_r5_3);
     temp_r5_4 = temp_r28 + (var_r27 * temp_r5_3);
+    temp_r0_2 = temp_r28 + ((var_r27 - 1) * temp_r5_3);
     *(short *)(temp_r31 + var_r25) = (short)temp_r0_2;
     *(short *)(temp_r24 + 2) = (short)temp_r5_4;
     var_r29 += 1;
