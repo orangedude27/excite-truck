@@ -3811,10 +3811,10 @@ extern "C" void fn_800DC204(void* pane, void* flag) {
 }
 
 #pragma push
-extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* pane, void* anim) {
+#pragma opt_propagation off
+extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* pane, u32 anim) {
     extern const char lbl_8031F1FC[];
     extern const char lbl_8031F1D8[];
-    extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
     void* node;
     void* end;
     void* current;
@@ -3830,14 +3830,14 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTran
         node = *(void**)node;
         if (anim != 0) {
             if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23d, lbl_8031F1D8);
-            if (*(void**)((char*)current + 8) != anim) continue;
+            if (*(u32*)((char*)current + 8) != anim) continue;
         }
         {
           void* slot = current;
           Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((char*)pane + 0x1c, &slot);
         }
         if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23d, lbl_8031F1D8);
-        *(void**)((char*)current + 8) = 0;
+        *(u32*)((char*)current + 8) = 0;
         *(u16*)((char*)current + 0xc) = 0;
     }
 }
