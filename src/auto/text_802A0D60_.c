@@ -27,7 +27,10 @@ extern void fn_802A93A4(void);
 extern void *fn_8000AC38(void);
 extern s32 fn_80161C38(void);
 extern char lbl_80349900[];
+#pragma push
 #pragma ppc_psq_save off
+#pragma paired off
+#pragma paired_single off
 void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, float farg0, float farg1) {
     float sp10[3];
     float v;
@@ -183,21 +186,25 @@ extern "C" inline void *fn_802A1120_getSecond(void) {
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
-void fn_802A1120(float *arg0, float *arg1) {
+extern "C" void fn_802A1120(float *arg0, float *arg1) {
+    struct Dummy {
+        virtual void *getFirst(s32);
+        virtual void *getSecond(s32);
+    };
     struct Search { s32 index; float value; s32 max; };
-    char work[0x14];
-    struct Search search;
+    char work[0x34];
+    Search search;
     void *manager;
     void *entry;
     register float end;
     register float increment;
     register float baseline;
     register float step;
-    manager = fn_802A1120_getFirst();
+    manager = ((Dummy *)fn_80156A40())->getFirst(0);
     arg1[0] = *(float *)(*(char **)((char *)manager + 0x1C) + 8);
     arg1[1] = *(float *)(*(char **)((char *)manager + 0x1C) + 0xC);
     fn_801352B8(work);
-    entry = fn_802A1120_getSecond();
+    entry = ((Dummy *)fn_80156A40())->getSecond(0);
     fn_80135D60(work, (s32)entry);
     search.index = 0;
     search.max = 0x2710;
