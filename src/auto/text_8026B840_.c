@@ -1368,7 +1368,10 @@ extern void fn_801E9DC4(void *);
 extern char lbl_80346A70[];
 extern f32 lbl_80563E18;
 extern void fn_802E30C8(const char *, ...);
+#pragma push
+#pragma opt_propagation off
 void fn_8026DDD8(s32 arg0) {
+    f32 *g;
     if (arg0 == 3 || (s32)lbl_8055F4E0 == arg0) {
         s32 r23 = fn_8026A344(0);
         if (fn_8017960C(++lbl_8055F4F0) == 0) lbl_8055F4F0 = 0;
@@ -1380,7 +1383,7 @@ void fn_8026DDD8(s32 arg0) {
     if ((s32)lbl_8055F4E0 != arg0) {
         if (arg0 == 2) {
             f32 *p;
-            f32 *g = (f32 *)lbl_8049A168;
+            g = (f32 *)lbl_8049A168;
             g[9] = lbl_80563D78;
             g[10] = lbl_80563DA0;
             g[11] = lbl_80563E18;
@@ -1458,9 +1461,10 @@ void fn_8026DDD8(s32 arg0) {
         fn_801E9DC4(lbl_8049A168 + 0x4c);
     }
 }
-
-void fn_8026E204(void* hi) {
-    lbl_8055F4E4 = hi;
+#pragma pop
+void fn_8026E204(void* flags) {
+    /* Set the camera behavior flag mask (lbl_8055F4E4); bits 0/1/2 toggle camera features. */
+    lbl_8055F4E4 = flags;
 }
 
 extern void *lbl_8055F4E4;
