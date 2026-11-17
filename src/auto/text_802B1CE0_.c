@@ -612,6 +612,7 @@ extern void fn_802E317C(const char *, ...);
 #pragma processor 750
 #pragma cplusplus on
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void *fn_802B2958(void *arg0, void *arg1) {
     char *base = lbl_8034A288;
@@ -659,8 +660,8 @@ extern "C" void *fn_802B2958(void *arg0, void *arg1) {
     *(float *)(obj + 0x29C) = ((ParticleConfig *)arg1)->getFloat(base + 0x11C, lbl_80564C04);
     *(char *)(obj + 4) = ((ParticleConfig *)arg1)->getBool(base + 0x128, 0);
     entry = (float *)(obj + 0x18);
-    zero = lbl_80564C00;
-    one = lbl_80564C04;
+    zero = 0.0;
+    one = 1.0;
     for (i = 0; i < 16; i++, entry += 10) {
         entry[9] = ((float (*)(int, float, float))fn_80129DC4)(0, *(float *)(obj + 0x298), *(float *)(obj + 0x29C));
         angle = ((float (*)(int, float, float))fn_80129DC4)(0, lbl_80564C00, lbl_80564C08);
