@@ -855,8 +855,10 @@ int fn_802B1B10(int *arg0) { return *arg0; }
 /* Return non-zero when the slot's stored handle is zero (the slot is empty). */
 int fn_802B1B18(int *slot) { return *slot == 0; }
 
-int fn_802B1B28(int *arg0, int arg1) {
-    return *arg0 + (arg1 * 0xC);
+/* Address of the 3-component (12-byte) point at `index` in the table whose base
+   pointer is stored at `basePtr`. */
+int fn_802B1B28(int *basePtr, int index) {
+    return *basePtr + (index * 0xC);
 }
 
 int fn_802B1B38(void *arg0) {
