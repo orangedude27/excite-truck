@@ -625,7 +625,10 @@ s32 fn_801773E4(void) {
 }
 
 void __AXDSPInitCallback_801769E0(void) {
-    lbl_8055E3C0 = 1;
+    /* DSP init callback: advance the sound-init state to 1. */
+#define sSoundInitState lbl_8055E3C0
+    sSoundInitState = 1;
+#undef sSoundInitState
 }
 
 void fn_801769EC(void) {
