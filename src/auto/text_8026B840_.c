@@ -1464,6 +1464,7 @@ void fn_8026E204(void* hi) {
 }
 
 extern void *lbl_8055F4E4;
+/* Get the camera behavior flag mask (lbl_8055F4E4); bits 0/1/2 toggle individual camera features. */
 void* fn_8026E20C(void) {
     return lbl_8055F4E4;
 }
