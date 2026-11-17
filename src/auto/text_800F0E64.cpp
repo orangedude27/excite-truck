@@ -1030,8 +1030,11 @@ extern "C" void fn_800F27AC(void *archive) {
     *(u8 *)((u8 *)archive + 9) = 0;
 }
 
-extern "C" s32 fn_800F27C4(void *arg0) {
-    return GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(*(s32*)((u8*)arg0 + 4));
+extern "C" s32 fn_800F27C4(void *archive) {
+    /* nw4hbm::snd::SoundArchive::GetPlayerCount(): hand the call straight to the
+     * archive's detail::SoundArchiveFileReader (the pointer kept at +4), which reads
+     * the player count out of the archive file's player-info block. */
+    return GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(*(s32 *)((u8 *)archive + 4));
 }
 
 M2C_UNK GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
