@@ -177,18 +177,20 @@ extern f32 lbl_805640F0;
 extern f32 lbl_805640F4;
 extern f32 lbl_805640F0;
 #pragma opt_propagation off
-unsigned char fn_802798F0(u32 arg0, u32 arg1, f32 farg0) {
-    s32 temp_r3;
-    s32 temp_r4;
-    f32 var_f0;
-    if (((f32)arg0 + (farg0 * ((f32)arg1 - (f32)arg0))) < lbl_805640F0) {
-        var_f0 = ((f32)arg0 + (farg0 * ((f32)arg1 - (f32)arg0))) - lbl_805640F4;
+unsigned char fn_802798F0(u32 from, u32 to, f32 weight) {
+    /* Interpolate two byte values by weight, bias by +/-0.5 to round to the
+       nearest integer, then clamp that integer to [0,255] and return it as a byte. */
+    s32 masked;
+    s32 rounded;
+    f32 adjusted;
+    if (((f32)from + (weight * ((f32)to - (f32)from))) < lbl_805640F0) {
+        adjusted = ((f32)from + (weight * ((f32)to - (f32)from))) - lbl_805640F4;
     } else {
-        var_f0 = lbl_805640F4 + ((f32)arg0 + (farg0 * ((f32)arg1 - (f32)arg0)));
+        adjusted = lbl_805640F4 + ((f32)from + (weight * ((f32)to - (f32)from)));
     }
-    temp_r4 = (s32)var_f0;
-    temp_r3 = temp_r4 & ((-temp_r4 & ~temp_r4) >> 31);
-    return (unsigned char)((temp_r3 < 0xFF) ? temp_r3 : 0xFF);
+    rounded = (s32)adjusted;
+    masked = rounded & ((-rounded & ~rounded) >> 31);
+    return (unsigned char)((masked < 0xFF) ? masked : 0xFF);
 }
 #pragma opt_propagation reset
 extern unsigned char fn_802798F0(unsigned int, unsigned int, float);
