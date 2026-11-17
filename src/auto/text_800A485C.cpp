@@ -18069,8 +18069,9 @@ extern "C" void* fn_800C4B8C(s32 size) {
 }
 
 extern void *lbl_8055DD94;
-extern "C" void fn_800C4BD0(void* hi) {
-    lbl_8055DD94 = hi;
+extern "C" void fn_800C4BD0(void *newCursor) {
+    /* Arena allocator: set the bump-allocation cursor to a new address (rewind/reset point). */
+    gArenaCursor = newCursor;
 }
 
 #pragma optimize_for_size on
@@ -20575,20 +20576,19 @@ extern "C" void fn_800D16A8(s32 *indexPtr) {
 }
 
 extern "C" void fn_800D16C4() {
-    register u8* p;
-    register s32 i = 0;
-    register s32 zero = 0;
-    register s32 neg1 = -1;
     if (lbl_8055DDB0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0x3F, lbl_8031E974);
     }
-    p = (u8*)lbl_8055DDB0;
+    register u8* p = (u8*)lbl_8055DDB0;
+    register s32 i = 0;
+    register s32 zero = 0;
+    register s32 neg1 = -1;
     do {
         if (*(u32*)(p + 0x50) != 0 && fn_80060C7C((void*)i) != 0) {
             s32 lr = OSDisableInterrupts();
             if (WPADCanSendStreamData(i) != 0) {
                 u16 buf[0x28];
-                u32 enc;
+                u32 enc[5];
                 s32 count = 0x28;
                 u32 avail = *(u32*)(p + 0x54) >> 1;
                 const s16* src = (const s16*)*(u32*)(p + 0x50);
@@ -20597,7 +20597,7 @@ extern "C" void fn_800D16C4() {
                 if (avail <= (u32)0x28) {
                     count = (s32)avail;
                 }
-                if (count != 0) {
+                if (count > 0) {
                     s32 q = (s32)((u32)count >> 2);
                     if (q != 0) {
                         do {
@@ -20638,8 +20638,8 @@ extern "C" void fn_800D16C4() {
                         }
                     }
                 }
-                WENCGetEncodeData(p + 0x30, p[0x5c] == 0, (const s16*)buf, 0x28, &enc);
-                fn_80062278(i, &enc, 0x14);
+                WENCGetEncodeData(p + 0x30, p[0x5c] == 0, (const s16*)buf, 0x28, enc);
+                fn_80062278(i, enc, 0x14);
                 p[0x5c] = 0;
                 p[0x5e] = 0;
                 *(u32*)(p + 0x50) += 0x50;
@@ -25916,8 +25916,8 @@ extern "C" void fn_800A52DC(u32 arg0) {
 #pragma opt_propagation reset
 extern "C" void fn_800A535C(u32 arg0) {
     u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
-    s32 i;
-    for (i = 0; i < 13; i++, ptr += 0x3F90) {
+    s32 i, n;
+    for (i = 0, n = 13; n > 0; n--, i++, ptr += 0x3F90) {
         if (*(u32 *)(ptr + 0x1FBC) == arg0) {
             *(u16 *)(ptr + 0x1F8C) |= 0x14;
         }
