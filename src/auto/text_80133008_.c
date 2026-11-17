@@ -4,6 +4,8 @@
 extern char lbl_8055E068[4];
 void fn_8000D838(void *arg0);
 
+/* Register lbl_8055E068 as a static-destructor record (see fn_8000D838) so
+ * its destructor runs at shutdown. */
 void fn_80133008(void) {
     fn_8000D838(lbl_8055E068);
 }
