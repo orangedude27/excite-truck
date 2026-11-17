@@ -526,9 +526,10 @@ void *fn_801E0FC4(void *array) {
     return array;
 }
 
-void NWC24Data_Init_801E1028(void *arg0) {
-    ((s32 *)arg0)[0] = 0;
-    ((s32 *)arg0)[1] = 0;
+void NWC24Data_Init_801E1028(void *data) {
+    /* Zero the first two words of an NWC24 data element. */
+    ((s32 *)data)[0] = 0;
+    ((s32 *)data)[1] = 0;
 }
 
 extern void lbl_8032CE98(void);
