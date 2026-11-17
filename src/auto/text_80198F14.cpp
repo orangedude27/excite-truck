@@ -1218,8 +1218,53 @@ extern "C" s32 fn_8019BD4C(void *obj) {
     return ((s32 *)obj)[0xC / 4];
 }
 
+extern f32 lbl_80562340, lbl_80562344, lbl_8055A4C0;
+extern "C" f32 PSVECSquareDistance(const Vec *, const Vec *);
 extern "C" void fn_8019BD54(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    (void)arg0; (void)arg1; (void)arg2; (void)arg3;
+    Vec *point = (Vec *)arg2;
+    f32 sp8C, sp90, sp94;
+    f32 sp98, sp9C, spA0, spA4, spA8, spAC, spB0, spB4, spB8, spBC, spC0, spC4;
+    f32 sp68, sp6C, sp70, sp74, sp78, sp7C;
+    f32 f1, f0_2, f2, f6, f7, f0;
+    void *mat = *(void **)((char *)arg1 + 0);
+    void *(*getMat)(void *) = *(void *(*)(void *))((char *)mat + 0x50);
+    void *m = getMat(arg1);
+    if (arg2 == 0) {
+        f1 = PSVECSquareDistance((const Vec *)((char *)arg0 + 0x34), (const Vec *)((char *)m + 0x24));
+    } else {
+        sp8C = point->z * *(f32 *)((char *)m + 0x18) + (point->x * *(f32 *)((char *)m + 0) + point->y * *(f32 *)((char *)m + 0xC));
+        sp90 = point->z * *(f32 *)((char *)m + 0x1C) + (point->x * *(f32 *)((char *)m + 4) + point->y * *(f32 *)((char *)m + 0x10));
+        sp94 = point->z * *(f32 *)((char *)m + 0x20) + (point->x * *(f32 *)((char *)m + 8) + point->y * *(f32 *)((char *)m + 0x14));
+        sp8C += *(f32 *)((char *)m + 0x24);
+        sp90 += *(f32 *)((char *)m + 0x28);
+        sp94 += *(f32 *)((char *)m + 0x2C);
+        f1 = PSVECSquareDistance((const Vec *)((char *)arg0 + 0x34), (const Vec *)&sp8C);
+        (void)sp90; (void)sp94;
+    }
+    f0_2 = *(f32 *)((char *)arg1 + 0x30) + *(f32 *)((char *)arg0 + 0x24);
+    if (f1 > f0_2 * f0_2) return;
+    sp98 = *(f32 *)((char *)m + 0); sp9C = *(f32 *)((char *)m + 4); spA0 = *(f32 *)((char *)m + 8);
+    spA4 = *(f32 *)((char *)m + 0xC); spA8 = *(f32 *)((char *)m + 0x10); spAC = *(f32 *)((char *)m + 0x14);
+    spB0 = *(f32 *)((char *)m + 0x18); spB4 = *(f32 *)((char *)m + 0x1C); spB8 = *(f32 *)((char *)m + 0x20);
+    spBC = *(f32 *)((char *)m + 0x24); spC0 = *(f32 *)((char *)m + 0x28); spC4 = *(f32 *)((char *)m + 0x2C);
+    sp68 = *(f32 *)((char *)arg0 + 0x34);
+    f2 = sp68 - spBC;
+    sp6C = *(f32 *)((char *)arg0 + 0x38);
+    f6 = sp6C - spC0;
+    f7 = *(f32 *)((char *)arg0 + 0x3C) - spC4;
+    sp70 = *(f32 *)((char *)arg0 + 0x3C);
+    f1 = f7 * spA0 + (f2 * sp98 + f6 * sp9C);
+    sp74 = f1;
+    sp78 = f7 * spAC + (f2 * spA4 + f6 * spA8);
+    sp7C = f7 * spB8 + (f2 * spB0 + f6 * spB4);
+    f0 = *(f32 *)((char *)arg1 + 0x24);
+    if (sp74 > f0) sp74 = f0; else if (sp74 < -f0) sp74 = -f0;
+    f0 = *(f32 *)((char *)arg1 + 0x28);
+    if (sp78 > f0) sp78 = f0; else if (sp78 < -f0) sp78 = -f0;
+    f0 = *(f32 *)((char *)arg1 + 0x2C);
+    if (sp7C > f0) sp7C = f0; else if (sp7C < -f0) sp7C = -f0;
+    (void)sp70; (void)sp74; (void)sp78; (void)sp7C; (void)lbl_80562340;
+    (void)lbl_80562344; (void)lbl_8055A4C0; (void)fn_8002F234;
 }
 
 #pragma scheduling invalid_target
@@ -5556,6 +5601,8 @@ extern "C" float fn_801A5124(void* object) {
     return *(float*)((char*)object + 0x28);
 }
 
+/* Default vtable method for this collision/solid object class: takes no
+ * arguments and reports the constant 0 (false / no value). */
 extern "C" s32 fn_801A512C(void) {
     return 0;
 }
