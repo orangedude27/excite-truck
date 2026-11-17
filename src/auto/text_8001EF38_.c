@@ -277,8 +277,9 @@ s32 fn_8001F2C8(void* alarm) {
     }
 }
 #pragma scheduling reset
-f32* __AXFXGetSrcCoef(u32 i) {
-    return (f32*)&lbl_802FDF30[i];
+/* Return the source-coefficient table slot at `index` (SrcCoef entries, 16 bytes each). */
+f32* __AXFXGetSrcCoef(u32 index) {
+    return (f32*)&lbl_802FDF30[index];
 }
 
 #pragma dont_inline on
