@@ -1956,6 +1956,7 @@ u8 fn_80007CDC(void *arg0) {
 }
 
 s32 fn_80007CE4(void) {
+    /* Queue one-shot override code 0x0b for all four players (fn_8000C630 index -1). */
     return fn_8000C630(0xb, -1);
 }
 
