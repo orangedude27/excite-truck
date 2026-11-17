@@ -298,6 +298,22 @@ static inline MEMiExpHeapMBlock *InsertAfterMBlock_(MEMiExpHeapMBlockList *list,
     return mblock;
 }
 
+static inline MEMiExpHeapMBlock* RemoveMBlockEarly_(MEMiExpHeapMBlockList* list, MEMiExpHeapMBlock* mblock) {
+    MEMiExpHeapMBlock* prev = mblock->prev;
+    MEMiExpHeapMBlock* next = mblock->next;
+    if (prev != 0) {
+        prev->next = next;
+    } else {
+        list->head = next;
+    }
+    if (next != 0) {
+        next->prev = prev;
+    } else {
+        list->tail = prev;
+    }
+    return prev;
+}
+
 void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk, void *mem, u32 size, u16 direction) {
     MEMiExpHeapMBlock *usedStart;
     u8 *after = (u8 *)mem + size;
@@ -307,6 +323,7 @@ void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk,
     MEMiExpHeapMBlock *next = blk->next;
     u8 *end = (u8 *)blk + blk->size + sizeof(MEMiExpHeapMBlock);
     MEMiExpHeapMBlock *fb;
+
     usedStart = newBlk;
     if (prev != 0) {
         prev->next = next;
@@ -318,6 +335,7 @@ void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk,
     } else {
         exp->freeMBlocks.tail = prev;
     }
+
     if ((u32)newBlk - (u32)start < 0x14) {
         usedStart = (MEMiExpHeapMBlock *)start;
     } else {
@@ -328,6 +346,7 @@ void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk,
         fb->next = 0;
         prev = InsertAfterMBlock_(&exp->freeMBlocks, prev, fb);
     }
+
     if ((u32)end - (u32)after < 0x14) {
         after = end;
     } else {
@@ -338,9 +357,11 @@ void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk,
         fb->next = 0;
         prev = InsertAfterMBlock_(&exp->freeMBlocks, prev, fb);
     }
+
     if (((MEMiHeapHead *)exp)[-1].attribute & 1) {
         memset(usedStart, 0, after - (u8 *)usedStart);
     }
+
     newBlk->state = 0x5544;
     newBlk->size = after - (u8 *)mem;
     newBlk->prev = 0;
@@ -352,7 +373,7 @@ void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk,
     InsertAfterMBlock_(&exp->usedMBlocks, exp->usedMBlocks.tail, newBlk);
     return mem;
 }
-
+#pragma opt_propagation reset
 static inline void* RoundUpPtr_(void* ptr, s32 align) {
     return (void*)(((u32)ptr + (align - 1)) & ~(align - 1));
 }
