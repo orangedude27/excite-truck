@@ -2803,9 +2803,10 @@ extern "C" s32 fn_801A010C(s32 item, s32 count) {
     return item;
 }
 
-extern "C" void fn_801A014C(void* arg0) {
-    Fn801A014CDispatch* item = (Fn801A014CDispatch*)*(void**)((u8*)arg0 + 0x17C);
-    item->Call();
+extern "C" void fn_801A014C(void* parent) {
+    /* Invoke Call() on the primary child stored at +0x17C of the parent. */
+    Fn801A014CDispatch* child = (Fn801A014CDispatch*)*(void**)((u8*)parent + 0x17C);
+    child->Call();
 }
 
 extern s32 lbl_8055E3C4;  // current frame counter; fn_80176A34 sets it (and its seconds form lbl_8055E3C8) once per frame
@@ -5369,18 +5370,21 @@ extern "C" void* fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* ar
     return arg0;
 }
 
+#pragma push
+#pragma dont_inline off
+#pragma use_lmw_stmw off
 extern "C" void* fn_801A4B5C(void* arg0, s32 arg1, void* arg2) {
     u8* p = (u8*)arg0;
+    u32 q = (u32)p + 4;
     s32 magic;
     *(void**)arg0 = lbl_803336F8;
     if (arg1) {
-        u8* q = p + 4;
         s32 i;
         Swap4(p + 0x34);
         Swap4(p + 0x38);
         for (i = 0; i < 2; i++) {
-            Swap4(q); Swap4(q + 4); Swap4(q + 8);
-            Swap4(q + 0xC); Swap4(q + 0x10); Swap4(q + 0x14);
+            Swap4((u8*)q); Swap4((u8*)(q + 4)); Swap4((u8*)(q + 8));
+            Swap4((u8*)(q + 0xC)); Swap4((u8*)(q + 0x10)); Swap4((u8*)(q + 0x14));
             q += 0x18;
         }
     }
@@ -5415,9 +5419,7 @@ extern "C" void* fn_801A4B5C(void* arg0, s32 arg1, void* arg2) {
     fn_801A48E4(arg0);
     return arg0;
 }
-
-#pragma push
-#pragma small_data off
+#pragma pop
 extern "C" void fn_801A4E28(void) {
     /* Static initializer: load the "track.msh" mesh resource and cache its pointer in lbl_8055E5A0. */
     lbl_8055E5A0 = fn_801CFEAC(&lbl_803336EC[0]);
