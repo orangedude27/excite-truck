@@ -669,7 +669,10 @@ void fn_802881D4(void) {
     lbl_8055F6C4 = 0;
 }
 
-s32 fn_80288208(s32 arg0){return lbl_8055F6C0+arg0*0x28;}
+s32 fn_80288208(s32 index) {
+    /* Return the address of the 0x28-byte per-car effect table entry at index. */
+    return lbl_8055F6C0+index*0x28;
+}
 
 extern char lbl_80348A80[];
 extern void fn_8028829C(void);
