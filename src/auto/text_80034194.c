@@ -2711,6 +2711,7 @@ void fn_80038368(void *block) {
 
 void fn_80038870(u32 arg0) {
 #define CMD (*(volatile u32 *)&lbl_8055D8BC)
+#define CMDN lbl_8055D8BC
     char *block;
     void *cbp;
     s32 flag;
