@@ -783,8 +783,9 @@ void fn_801ED46C(void *arg0) {
 }
 #pragma pop
 
-void fn_801ED68C(long arg0) {
-    fn_801ECCE0(arg0, 1);
+/* Wrapper: run the plain/class-0 vehicle render pass (fn_801ECCE0 with group key 1). */
+void fn_801ED68C(long renderObj) {
+    fn_801ECCE0(renderObj, 1);
 }
 
 /* Wrapper: run the effect/class-1 vehicle render pass (fn_801ECCE0 with group key 0). */
