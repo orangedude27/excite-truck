@@ -357,12 +357,10 @@ void fn_802B40F8(void) {
 #pragma pop
 int fn_80129D90(int, int, int);
 #pragma push
-#pragma scheduling on
+#pragma scheduling 750
 int fn_802B475C(void* arg0) {
-    int count;
-    int index;
-    count = *(volatile int*)((char*)arg0 + 4);
-    index = fn_80129D90(0, 0, count);
+    int count = *(volatile int*)((char*)arg0 + 4);
+    int index = fn_80129D90(0, 0, count);
     return ((int*)*(void**)arg0)[index];
 }
 #pragma pop
@@ -381,6 +379,7 @@ extern unsigned short lbl_80564C38, lbl_80564C3A, lbl_80564C3C, lbl_80564C3E;
 extern float lbl_802FAAD0[];
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void *fn_802B47A0(void *arg0, int *arg1, void *arg2, int arg3, int **arg4) {
     int sp[4];
     unsigned short sel[4];
