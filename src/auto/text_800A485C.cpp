@@ -13500,8 +13500,10 @@ extern "C" s32 fn_800BC134(void *, s32, s32);
 extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
 extern "C" void DCFlushRange(void *, u32);
 extern "C" s32 fn_800BB81C(s32,s32,s32,s32,s32,s32);
-extern "C" s32 fn_800BB4BC(s32 a,s32 b,s32 c,s32 d) {
-    return fn_800BB81C(a,b,c,d,0,0);
+/* Synchronous SD-card write: issue the write transfer with no completion
+ * callback, so fn_800BB81C waits for the card to finish before returning. */
+extern "C" s32 fn_800BB4BC(s32 device, s32 offset, s32 buffer, s32 length) {
+    return fn_800BB81C(device, offset, buffer, length, 0, 0);
 }
 
 /* Synchronous SD-card read: read `length` bytes into `buffer` from byte `offset`
