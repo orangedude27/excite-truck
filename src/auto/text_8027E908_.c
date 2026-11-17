@@ -361,10 +361,12 @@ void fn_8027ED78(int arg0, int arg1, int arg2) {
     ((int (*)(int *, int, int, int))fn_802146BC)(block, -999, -999, 1);
 }
 #pragma use_lmw_stmw on
-void fn_8027EE74(int arg0) {
+/* Set the one-shot career level-up flag when `selection` is 2, then refresh
+ * the menu; the flag drives fn_8027EE88's unlock sound. */
+void fn_8027EE74(int selection) {
     extern unsigned char lbl_8055F684;
     extern int fn_80236914(void);
-    *(signed char*)&lbl_8055F684 = (arg0 == 2);
+    *(signed char*)&lbl_8055F684 = (selection == 2);
     fn_80236914();
 }
 
