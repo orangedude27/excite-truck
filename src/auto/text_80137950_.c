@@ -169,6 +169,7 @@ void* fn_80137C54(int league) {
     return lbl_8042F788[league];
 }
 
+/* RealName: getBaseEntryCount. Forwards to fn_800167F4 (the base-table entry count, lbl_8055D554), whose return value passes through this tail call; callers use it as the player/record count. */
 void fn_80137C74(void) {
     fn_800167F4();
 }
