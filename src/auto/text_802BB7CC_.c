@@ -423,9 +423,10 @@ void fn_802BBF44(unsigned char *bytes, int channelIndex) {
 #undef sInvalidChecksumFmt
 }
 #pragma pop
-int fn_802BBF94(unsigned char arg0) {
-    int res = (arg0 >> 4) & 0xF;
-    return __rlwimi(res, arg0, 0, 24, 27);
+int fn_802BBF94(unsigned char packedNibble) {
+    int highNibble = (packedNibble >> 4) & 0xF;
+    /* Expand the high 4-bit nibble into a byte whose two nibbles are equal. */
+    return __rlwimi(highNibble, packedNibble, 0, 24, 27);
 }
 
 #pragma push
