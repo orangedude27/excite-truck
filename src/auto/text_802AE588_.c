@@ -1222,8 +1222,9 @@ int fn_802AFEC0(int count) {
     return slotPtr;
 }
 
-int fn_802AFF54(void *arg0) {
-    return ((int *)arg0)[1];
+/* Return the entry count stored at +4 of a table descriptor (base pointer at +0). */
+int fn_802AFF54(void *table) {
+    return ((int *)table)[1];
 }
 
 /* Address of 0x24-byte element index in the table whose base pointer is stored at *basePtr. */
