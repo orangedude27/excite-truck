@@ -204,8 +204,10 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFD24(voi
     void* node = cursor;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&list->list, &node, soundNode);
 }
-extern "C" int fn_800FFE54(void *arg0) {
-    return *(int *)((char *)arg0 + 0x1AC) != 0;
+/* Return non-zero when this WaveSound's +0x1AC field is set (the value passed
+ * to fn_800FFE68, cleared by the constructor fn_800FFA10). */
+extern "C" int fn_800FFE54(void *sound) {
+    return *(int *)((char *)sound + 0x1AC) != 0;
 }
 
 extern "C" void fn_800FFE68(void *arg0) {
