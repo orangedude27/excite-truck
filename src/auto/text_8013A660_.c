@@ -264,7 +264,7 @@ extern void qsort(void *, int, int, int (*)(void *, void *));
 extern int fn_8013A6C4(void *, void *);
 #pragma cplusplus off
 #pragma push
-#pragma processor 750
+#pragma ppc_psq_save off
 #pragma use_lmw_stmw off
 void fn_8013AC78(int arg0, int *arg1) {
     char *base = lbl_8032C1A0;
@@ -274,7 +274,7 @@ void fn_8013AC78(int arg0, int *arg1) {
     float f31;
     int *a;
     int count, n, i, j, k, pairs;
-    int *q, *q1;
+    int *q;
     a = fn_801E87A8();
     count = fn_80135108();
     fn_801E879C();
@@ -288,12 +288,12 @@ void fn_8013AC78(int arg0, int *arg1) {
     *(float *)(lbl_8042F858 + 0x48) = ((float (*)(int *))fn_8013AC2C)(a);
     *(float *)lbl_8042F858 = sp8[1];
     n = fn_80016508(lbl_8042F858);
-    q1 = pr;
+    q = pr;
     for (i = 0; i < n; i++) {
         int *p = (int *)fn_80016464(i);
-        q1[0] = p[1];
-        q1[1] = p[0x12];
-        q1 += 2;
+        q[0] = p[1];
+        q[1] = p[0x12];
+        q += 2;
     }
     pairs = i;
     q = (int *)es;
