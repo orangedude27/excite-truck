@@ -1311,7 +1311,10 @@ void fn_801F3920(void *params) {
 
 #pragma scheduling invalid_target
 void fn_801F393C(void) {
-    fn_802E317C(lbl_8033AB80);
+    /* Panics ("ShadowColorTMH: shouldn't draw!") if the shadow-color TMH is drawn when it shouldn't be. */
+    #define sShadowColorPanic lbl_8033AB80
+    fn_802E317C(sShadowColorPanic);
+    #undef sShadowColorPanic
 }
 
 int fn_801F394C(int object, int deleteFlag) {
