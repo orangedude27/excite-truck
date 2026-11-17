@@ -899,6 +899,14 @@ void fn_802E1058(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Bink movie playback state: fn_802E0BA8 allocates it and fn_802E0EAC opens the
+ * movie whose filename is stored in name. */
+struct BinkMovieInfo {
+    char pad[4];        /* 0x00 */
+    s32 binkHandle;     /* 0x04, 0 while no movie is open */
+    char name[0x40];    /* 0x08, "video/<name>.bik" */
+    u8 flags;           /* 0x48 */
+};
 s32 fn_802E11A4(const char *arg0, u8 arg1) {
     struct Movie { char pad[4]; s32 field4; char buf[0x40]; u8 field48; };
     s32 saved;
