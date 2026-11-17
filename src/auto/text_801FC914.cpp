@@ -1769,9 +1769,12 @@ extern "C" void fn_801FF014(void *arg0, int arg1, int start, int arg3) {
     fn_801FF1C4(*(void **)((char *)arg0 + 4), start, end);
 }
 #pragma pop
-extern "C" void fn_801FF0D4(void* arg0) {
-    *(int*)arg0 = 0;
-    *((int*)arg0 + 1) = 0;
+/* Array-element constructor passed to fn_8002F53C alongside the deleting
+ * destructor fn_801FCED8 when the small DroneManager builds its path array
+ * (32 elements of 0x70 bytes). Zero the first two words of each new segment. */
+extern "C" void fn_801FF0D4(void* segment) {
+    *(int*)segment = 0;
+    *((int*)segment + 1) = 0;
 }
 
 extern "C" void fn_801FF0E4(void* holder) {
