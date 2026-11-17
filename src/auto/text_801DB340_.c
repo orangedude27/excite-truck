@@ -233,6 +233,7 @@ static inline float eval_spline(const float *p, int stride, float t, float *out_
     return (coeff2 * t3 + coeff3 * t2) + half20 * t + p1;
 }
 
+#pragma ppc_psq_save off
 #pragma push
 #pragma processor 750
 #pragma opt_common_subs off
