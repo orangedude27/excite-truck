@@ -9,6 +9,8 @@ extern const char lbl_8033BBE4[];
 extern void *fn_80131808(const char *);
 extern int fn_80012854(void);
 extern char lbl_802F9D68[];
+#define sTypeEntries   lbl_802F9D68 /* 0xC-byte descriptors: {name, display name, property key} */
+#define TYPE_ENTRY_SIZE 0xC
 extern char lbl_8033BBA0[];
 extern int *lbl_8055ED5C;
 extern int lbl_8055B468;
@@ -188,50 +190,32 @@ public:
 };
 extern "C" int fn_80204EA0(const char *arg0) {
     char buf[0x64];
-    int *p;
     int result = 0;
-    void **vt;
-    int (*method)(void *, const char *);
-
-    p = lbl_8055ED5C;
-    if (p[4] != 0) {
-        fn_801345D8(buf, 0x64, lbl_8055B4AC, arg0);
-        if (p[3] != 0) {
-            vt = *(void ***)p[3];
-            method = (int (*)(void *, const char *))vt[3];
-            if (method((void *)p[3], buf) != 0) {
-                vt = *(void ***)p[3];
-                method = (int (*)(void *, const char *))vt[5];
-                result = method((void *)p[3], buf);
-            }
+    int r;
+    int *temp;
+    int check;
+    temp = lbl_8055ED5C;
+    check = temp[4];
+    if (check != 0) {
+        ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, check, arg0);
+        if (temp[3] != 0 && ((Res80204EA0 *)temp[3])->has(buf)) {
+            r = ((Res80204EA0 *)temp[3])->get(buf);
+        } else if (((Res80204EA0 *)temp[2])->has(buf)) {
+            r = ((Res80204EA0 *)temp[2])->get(buf);
         } else {
-            vt = *(void ***)p[2];
-            method = (int (*)(void *, const char *))vt[3];
-            if (method((void *)p[2], buf) != 0) {
-                vt = *(void ***)p[2];
-                method = (int (*)(void *, const char *))vt[5];
-                result = method((void *)p[2], buf);
-            } else result = 0;
+            r = 0;
         }
+        result = r;
     }
     if (result == 0) {
-        if (p[3] != 0) {
-            vt = *(void ***)p[3];
-            method = (int (*)(void *, const char *))vt[3];
-            if (method((void *)p[3], arg0) != 0) {
-                vt = *(void ***)p[3];
-                method = (int (*)(void *, const char *))vt[5];
-                result = method((void *)p[3], arg0);
-            } else result = 0;
+        if (temp[3] != 0 && ((Res80204EA0 *)temp[3])->has((void *)arg0)) {
+            r = ((Res80204EA0 *)temp[3])->get((void *)arg0);
+        } else if (((Res80204EA0 *)temp[2])->has((void *)arg0)) {
+            r = ((Res80204EA0 *)temp[2])->get((void *)arg0);
         } else {
-            vt = *(void ***)p[2];
-            method = (int (*)(void *, const char *))vt[3];
-            if (method((void *)p[2], arg0) != 0) {
-                vt = *(void ***)p[2];
-                method = (int (*)(void *, const char *))vt[5];
-                result = method((void *)p[2], arg0);
-            } else result = 0;
+            r = 0;
         }
+        result = r;
     }
     if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
     return result;
