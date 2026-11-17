@@ -303,8 +303,9 @@ outer_check:
 #pragma scheduling reset
 #pragma use_lmw_stmw on
 int stricmp(const char*, const char*);
-void fn_8024A4B8(const char** arg0, const char** arg1) {
-    stricmp(*arg0, *arg1);
+// qsort comparison callback: case-insensitively compare the strings held in the two elements.
+void fn_8024A4B8(const char** lhs, const char** rhs) {
+    stricmp(*lhs, *rhs);
 }
 
 s32 fn_8024974C();
