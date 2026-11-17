@@ -688,9 +688,16 @@ void fn_80117380(void *arg0, s32 arg1) {
 }
 
 u32 fn_80116BD4(s32, s32, s32);
+/* Pick the block size out of a table of stream positions.  The table holds
+ * count + 1 values; every value is compared with the one `offset` places after
+ * it, and the largest difference - together with where it starts - is the
+ * answer: an evenly spaced table has no such difference, and then the average
+ * spacing, (values[count] - values[0]) * offset / count, is returned instead.
+ * *outFlag reports whether every one of the count values is odd, which is how
+ * the caller tells a table of packed entries from one of plain positions. */
 u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag) {
-    u32 *value;
-    u32 *base;
+    u32 *from;          /* values[i] */
+    u32 *to;            /* values[offset + i] */
     s32 remaining;
     s32 byteOffset;
     s32 i;
@@ -702,20 +709,22 @@ u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag)
     maxDiff = 0;
     index = 0;
     allOdd = 1;
-    value = values;
-    base = values + offset;
+    from = values;
+    to = values + offset;
     remaining = count - offset;
     byteOffset = 0;
+    /* The largest jump between two values `offset` apart. */
     for (i = 0; i < remaining; i++) {
-        diff = base[byteOffset / 4] - *value;
+        diff = to[byteOffset / 4] - *from;
         if (diff > maxDiff) {
             maxDiff = diff;
             index = i;
         }
-        value++;
+        from++;
         byteOffset += 4;
     }
     if (maxDiff == 0) {
+        /* Nothing stands out: the average distance between two values. */
         maxDiff = fn_80116BD4(values[count] - values[0], offset, count);
     }
     for (i = 0; i < count; i++) {
