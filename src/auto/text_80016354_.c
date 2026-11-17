@@ -236,6 +236,8 @@ extern void *lbl_8055D554;
 extern unsigned char lbl_803577F0[];
 extern unsigned char lbl_80357960[];
 extern void *fn_80016474();
+/* Return the number of registered 0x5C-byte record entries held in lbl_8055D554
+ * (the count used for the record table lbl_803577F0 and its companion tables). */
 void* fn_800167F4(void) {
     return lbl_8055D554;
 }
