@@ -4097,11 +4097,12 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this
     }
 }
 
-extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *this_, float vol) {
-    if (!(vol >= 0.0f)) {
+extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *sound, float volume) {
+    /* Sets the initial volume at +0x8C, asserting that volume is non-negative. */
+    if (!(volume >= 0.0f)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x216, lbl_80322830);
     }
-    *(float *)((char *)this_ + 0x8C) = vol;
+    *(float *)((char *)sound + 0x8C) = volume;
 }
 
 #pragma scheduling on
