@@ -1590,6 +1590,7 @@ void fn_8029EC64(void *area, void *arg1, int arg2) {
     }
 }
 
+/* Default virtual-method stub in the nw4r::ef effect vtable: returns 0 (false). */
 int fn_8029EF1C(void) {
     return 0;
 }
