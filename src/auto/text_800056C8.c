@@ -537,9 +537,10 @@ s32 fn_80006060(s32 object, s32 shouldDestroy) {
     return object;
 }
 
-void fn_800060A0(void *arg0) {
+void fn_800060A0(void *object) {
+    /* Clear the DSP-initialized flag (lbl_8055D340[1]) and reset the object's field at +0x8. */
     lbl_8055D340[1] = 0;
-    ((s32 *)arg0)[2] = 0;
+    ((s32 *)object)[2] = 0;
 }
 
 void fn_800060B4(void) {
