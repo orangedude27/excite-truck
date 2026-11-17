@@ -308,38 +308,37 @@ typedef struct {
     u8 flag30;
     u8 pad31[3];
     f32 f34, f38, f3c;
-    u8 rest[0x3c];
+    u8 rest[0x38];
 } CamEntry80253104;
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
     f32 z, y, x;
-    volatile u8 *entry;
     u32 args[12];
+    CamEntry80253104 *cam = (CamEntry80253104 *)lbl_80498D00;
     x = *(volatile f32 *)((u8 *)arg1 + 0x12C);
     y = *(volatile f32 *)((u8 *)arg1 + 0x130);
     z = *(volatile f32 *)((u8 *)arg1 + 0x134);
-    entry = lbl_80498D00 + arg0 * 0x78;
-    *(volatile f32 *)(entry + 0x34) = x;
-    *(volatile f32 *)(entry + 0x38) = y;
-    *(volatile f32 *)(entry + 0x3C) = z;
-    fn_801BDA74(arg0, (void *)entry);
-    if (entry[0x30] == 0) {
+    cam[arg0].f34 = x;
+    cam[arg0].f38 = y;
+    cam[arg0].f3c = z;
+    fn_801BDA74(arg0, arg1);
+    if (cam[arg0].flag30 == 0) {
         fn_80252B88(arg0);
     } else {
-        args[9] = *(volatile u32 *)(entry + 0x24);
-        args[11] = *(volatile u32 *)(entry + 0x2C);
-        args[0] = *(volatile u32 *)(entry + 0);
-        args[1] = *(volatile u32 *)(entry + 4);
-        args[2] = *(volatile u32 *)(entry + 8);
-        args[3] = *(volatile u32 *)(entry + 0xC);
-        args[4] = *(volatile u32 *)(entry + 0x10);
-        args[5] = *(volatile u32 *)(entry + 0x14);
-        args[6] = *(volatile u32 *)(entry + 0x18);
-        args[7] = *(volatile u32 *)(entry + 0x1C);
-        args[8] = *(volatile u32 *)(entry + 0x20);
-        args[10] = *(volatile u32 *)(entry + 0x28);
-        *(f32 *)&args[10] = lbl_805639FC + fn_801DCF48(0, args[9], args[8], args[7], args[6], args[5], args[4], args[3], *(f32 *)(entry + 0x24), *(f32 *)(entry + 0x2C));
+        args[9] = cam[arg0].w24;
+        args[11] = cam[arg0].w2c;
+        args[0] = *(u32 *)&cam[arg0].pad0[0x00];
+        args[1] = *(u32 *)&cam[arg0].pad0[0x04];
+        args[2] = *(u32 *)&cam[arg0].pad0[0x08];
+        args[3] = *(u32 *)&cam[arg0].pad0[0x0C];
+        args[4] = *(u32 *)&cam[arg0].pad0[0x10];
+        args[5] = *(u32 *)&cam[arg0].pad0[0x14];
+        args[6] = *(u32 *)&cam[arg0].pad0[0x18];
+        args[7] = *(u32 *)&cam[arg0].pad0[0x1C];
+        args[8] = *(u32 *)&cam[arg0].pad0[0x20];
+        args[10] = cam[arg0].w28;
+        *(f32 *)&args[10] = lbl_805639FC + fn_801DCF48(0, args[9], args[8], args[7], args[6], args[5], args[4], args[3], *(f32 *)&args[9], *(f32 *)&args[11]);
         fn_801BE400(arg0, args, lbl_805639E8);
     }
 }
