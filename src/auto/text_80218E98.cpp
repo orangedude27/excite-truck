@@ -5212,8 +5212,9 @@ extern "C" void fn_802213A4(void *scrollBar, s32 pointerX, s32 pointerY) {
     }
 }
 
-extern "C" void fn_80221538(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x250) = 0;
+extern "C" void fn_80221538(void *scrollBar) {
+    /* End a scroll-bar drag: clear the "dragging" flag checked by fn_802213A4. */
+    *(u8 *)((u8 *)scrollBar + 0x250) = 0;
 }
 
 extern "C" void fn_80228E80(s32, s32, s32, s32, s32, s32);
