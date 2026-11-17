@@ -468,6 +468,7 @@ extern "C" int fn_802BF6AC(void) {
     }
     return (int)obj;
 }
+#pragma dont_inline reset
 #pragma scheduling on
 #pragma cplusplus reset
 extern void *fn_801284F8(int, const char*);
