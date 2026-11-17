@@ -24,17 +24,16 @@ void fn_801D11D4(void) {
     fn_801D11D8();
 }
 
+#pragma scheduling on
 int fn_801D11D8(void *arg0, int arg1) {
     char *p = (char *)lbl_804348E8[arg1];
     char *q = p + 0x32c;
     fn_801819A0((char *)arg0 + 4, q, p, lbl_80562A48 * *(float *)(p + 0x2dc), *(float *)(p + 0x2e4), *(float *)(p + 0x2e8));
     *(float *)((char *)arg0 + 0x30) = *(float *)(q + 0x64);
 }
-
 extern void *fn_801284F8(int, const char *);
 extern void fn_801D0FA4(void);
 extern void *lbl_804348E8[];
-extern float lbl_80562A48;
 extern void fn_801819A0(void *, void *, void *, float, float, float);
 extern float lbl_80562A4C;
 /* Sets the first float field of an entry to lbl_80562A4C (0.0f). */
