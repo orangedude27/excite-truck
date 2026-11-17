@@ -125,8 +125,9 @@ void fn_801D90F0(s32 arg0) {
     fn_801D77E8(arg0 - 4);
 }
 
-void fn_801D90F8(s32 arg0) {
-    fn_801D77EC(arg0 - 4);
+/* Callback wrapper: forward to fn_801D77EC with the pointer backed up to its enclosing structure (userData - 4). */
+void fn_801D90F8(s32 userData) {
+    fn_801D77EC(userData - 4);
 }
 
 void fn_801D9100(s32 arg0) {
