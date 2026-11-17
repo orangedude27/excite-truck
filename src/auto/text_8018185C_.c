@@ -552,10 +552,6 @@ extern char lbl_8055A3B8[], lbl_8055A3C0[], lbl_8055A3C8[];
 extern char lbl_8055A3D0[], lbl_8055A3D8[], lbl_8055A3E0[];
 extern unsigned char lbl_8055E4F7;
 extern void *memcpy(void *, const void *, unsigned int);
-#pragma push
-#pragma ppc_psq_save off
-#pragma paired off
-#pragma paired_single off
 void fn_80182074(void *arg0, void *arg1) {
     unsigned char *a = (unsigned char *)arg0;
     unsigned char *b = (unsigned char *)arg1;
