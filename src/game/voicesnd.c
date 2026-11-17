@@ -85,6 +85,7 @@ void fn_8020A72C(void) {
     ((int (*)(void *, int))fn_80208E90)(mixer, 0);
 }
 #pragma scheduling on
+/* Return s_voiceEntryCount (lbl_8055EE08), the number of registered 0x24-byte voice-sound entries. */
 void* fn_8020A76C(void) {
     return lbl_8055EE08;
 }
