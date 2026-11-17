@@ -785,6 +785,7 @@ extern "C" void fn_80264FD4(void *obj) {
 }
 
 #pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_80264FE4(void *arg0) {
     char *p = (char *)arg0;
