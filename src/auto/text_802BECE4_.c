@@ -1064,7 +1064,8 @@ fn_802C98DC(&a, &b, &c, &d, m[10]);
 #pragma pop
 int fn_802C0C98(void *arg0) { return *(int *)((char *)arg0 + 8); }
 
-float fn_802C0CA0(void *arg0) { return *(float *)((char *)arg0 + 0x14); }
+/* Getter: returns the float field at offset 0x14 of the given object. */
+float fn_802C0CA0(void *object) { return *(float *)((char *)object + 0x14); }
 
 int fn_802C0CA8(void) { return 1; }
 
