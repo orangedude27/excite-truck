@@ -1,7 +1,6 @@
 #include "types.h"
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
-#define SWAP8(p, i, j) do { unsigned char t_ = (p)[i]; (p)[i] = (p)[j]; (p)[j] = t_; } while (0)
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <math.h>
@@ -334,82 +333,40 @@ s32 fn_801CF828(Mesh *mesh, Vec *origin, Vec *dir, f32 *ioDist, Vec *normalOut) 
 #pragma pop
 void fn_801CFA48(void *arg0) {
  typedef struct { unsigned char *ptr1; int count1; unsigned char *ptr2; int count2; unsigned char *ptr3; int count3; } tFA48View;
- unsigned char temp;
- int offset, i1;
- volatile unsigned char *item, *base;
  volatile tFA48View *p=(volatile tFA48View *)arg0;
  volatile unsigned char *b=(volatile unsigned char *)arg0;
- int i2,i3,count1,count2;
- temp=b[0]; item=(volatile unsigned char *)arg0+0x18; b[0]=b[3]; b[3]=temp; i1=0; offset=0;
-        {temp=b[1]; b[1]=b[2]; b[2]=temp;}
-        {temp=b[4]; b[4]=b[7]; b[7]=temp;}
-        {temp=b[5]; b[5]=b[6]; b[6]=temp;}
-        {temp=b[8]; b[8]=b[11]; b[11]=temp;}
-        {temp=b[9]; b[9]=b[10]; b[10]=temp;}
-        {temp=b[12]; b[12]=b[15]; b[15]=temp;}
-        {temp=b[13]; b[13]=b[14]; b[14]=temp;}
-        {temp=b[16]; b[16]=b[19]; b[19]=temp;}
-        {temp=b[17]; b[17]=b[18]; b[18]=temp;}
-        {temp=b[20]; b[20]=b[23]; b[23]=temp;}
-        {temp=b[21]; b[21]=b[22]; b[22]=temp;}
+ volatile unsigned char *base,*item;
+ int offset,i1,i2,i3,count1,count2;
+ item=(volatile unsigned char *)arg0+0x18; i1=0; offset=0;
+ SWAP8(b,0,3); SWAP8(b,1,2); SWAP8(b,4,7); SWAP8(b,5,6);
+ SWAP8(b,8,11); SWAP8(b,9,10); SWAP8(b,12,15); SWAP8(b,13,14);
+ SWAP8(b,16,19); SWAP8(b,17,18); SWAP8(b,20,23); SWAP8(b,21,22);
  count1=p->count1; count2=p->count2; count1*=0x18; p->ptr1=(unsigned char *)item; item+=count1; p->ptr2=(unsigned char *)item; count2*=0xC; item+=count2; p->ptr3=(unsigned char *)item;
  goto check1;
 loop1:
- base=p->ptr1; i1++; item=base+offset; temp=base[offset]; item[0]=item[3]; item[3]=temp; offset+=0x18;
-        {temp=item[1]; item[1]=item[2]; item[2]=temp;}
-        {temp=item[4]; item[4]=item[7]; item[7]=temp;}
-        {temp=item[5]; item[5]=item[6]; item[6]=temp;}
-        {temp=item[8]; item[8]=item[11]; item[11]=temp;}
-        {temp=item[9]; item[9]=item[10]; item[10]=temp;}
-        {temp=item[12]; item[12]=item[15]; item[15]=temp;}
-        {temp=item[13]; item[13]=item[14]; item[14]=temp;}
-        {temp=item[16]; item[16]=item[19]; item[19]=temp;}
-        {temp=item[17]; item[17]=item[18]; item[18]=temp;}
-        {temp=item[20]; item[20]=item[23]; item[23]=temp;}
-        {temp=item[21]; item[21]=item[22]; item[22]=temp;}
+ base=p->ptr1; i1++; item=base+offset; { unsigned char t_=base[offset]; item[0]=item[3]; item[3]=t_; } offset+=0x18;
+ SWAP8(item,1,2); SWAP8(item,4,7); SWAP8(item,5,6); SWAP8(item,8,11); SWAP8(item,9,10);
+ SWAP8(item,12,15); SWAP8(item,13,14); SWAP8(item,16,19); SWAP8(item,17,18); SWAP8(item,20,23); SWAP8(item,21,22);
 check1:
  if(i1<p->count1) goto loop1;
  i2=0; offset=0; goto check2;
 loop2:
- base=p->ptr2; i2++; item=base+offset; temp=base[offset]; item[0]=item[3]; item[3]=temp; offset+=0xC;
-        {temp=item[1]; item[1]=item[2]; item[2]=temp;}
-        {temp=item[4]; item[4]=item[7]; item[7]=temp;}
-        {temp=item[5]; item[5]=item[6]; item[6]=temp;}
-        {temp=item[8]; item[8]=item[11]; item[11]=temp;}
-        {temp=item[9]; item[9]=item[10]; item[10]=temp;}
+ base=p->ptr2; i2++; item=base+offset; { unsigned char t_=base[offset]; item[0]=item[3]; item[3]=t_; } offset+=0xC;
+ SWAP8(item,1,2); SWAP8(item,4,7); SWAP8(item,5,6); SWAP8(item,8,11); SWAP8(item,9,10);
 check2:
  if(i2<p->count2) goto loop2;
  i3=0; offset=0; goto check3;
 loop3:
- base=p->ptr3; item=base+offset; temp=base[offset]; item[0]=item[1]; item[1]=temp; temp=item[2]; item[2]=item[3]; item[3]=temp;
-        {temp=item[24]; item[24]=item[27]; item[27]=temp;}
-        {temp=item[25]; item[25]=item[26]; item[26]=temp;}
-        {temp=item[28]; item[28]=item[31]; item[31]=temp;}
-        {temp=item[29]; item[29]=item[30]; item[30]=temp;}
-        {temp=item[32]; item[32]=item[35]; item[35]=temp;}
-        {temp=item[33]; item[33]=item[34]; item[34]=temp;}
-        {temp=item[4]; item[4]=item[5]; item[5]=temp;}
-        {temp=item[36]; item[36]=item[39]; item[39]=temp;}
-        {temp=item[37]; item[37]=item[38]; item[38]=temp;}
-        {temp=item[40]; item[40]=item[43]; item[43]=temp;}
-        {temp=item[41]; item[41]=item[42]; item[42]=temp;}
-        {temp=item[44]; item[44]=item[47]; item[47]=temp;}
-        {temp=item[45]; item[45]=item[46]; item[46]=temp;}
-        {temp=item[6]; item[6]=item[7]; item[7]=temp;}
-        {temp=item[48]; item[48]=item[51]; item[51]=temp;}
-        {temp=item[49]; item[49]=item[50]; item[50]=temp;}
-        {temp=item[52]; item[52]=item[55]; item[55]=temp;}
-        {temp=item[53]; item[53]=item[54]; item[54]=temp;}
-        {temp=item[56]; item[56]=item[59]; item[59]=temp;}
-        {temp=item[57]; item[57]=item[58]; item[58]=temp;}
- temp=item[8]; offset+=0x3C; i3++; item[8]=item[0xB]; item[0xB]=temp;
-        {temp=item[9]; item[9]=item[10]; item[10]=temp;}
-        {temp=item[12]; item[12]=item[15]; item[15]=temp;}
-        {temp=item[13]; item[13]=item[14]; item[14]=temp;}
-        {temp=item[16]; item[16]=item[19]; item[19]=temp;}
-        {temp=item[17]; item[17]=item[18]; item[18]=temp;}
-        {temp=item[20]; item[20]=item[23]; item[23]=temp;}
-        {temp=item[21]; item[21]=item[22]; item[22]=temp;}
+ base=p->ptr3; item=base+offset; { unsigned char t_=base[offset]; item[0]=item[1]; item[1]=t_; }
+ { unsigned char t_=item[2]; item[2]=item[3]; item[3]=t_; }
+ SWAP8(item,24,27); SWAP8(item,25,26); SWAP8(item,28,31); SWAP8(item,29,30);
+ SWAP8(item,32,35); SWAP8(item,33,34); SWAP8(item,4,5); SWAP8(item,36,39);
+ SWAP8(item,37,38); SWAP8(item,40,43); SWAP8(item,41,42); SWAP8(item,44,47);
+ SWAP8(item,45,46); SWAP8(item,6,7); SWAP8(item,48,51); SWAP8(item,49,50);
+ SWAP8(item,52,55); SWAP8(item,53,54); SWAP8(item,56,59); SWAP8(item,57,58);
+ { unsigned char t_=item[8]; offset+=0x3C; i3++; item[8]=item[0xB]; item[0xB]=t_; }
+ SWAP8(item,9,10); SWAP8(item,12,15); SWAP8(item,13,14); SWAP8(item,16,19); SWAP8(item,17,18);
+ SWAP8(item,20,23); SWAP8(item,21,22);
 check3:
  if(i3<p->count3) goto loop3;
 }
