@@ -297,8 +297,10 @@ done:
     return flagged;
 }
 
-s32 fn_8001BD28(void *arg0) {
-    return ((s32 *)arg0)[1];
+/* Return a stat object's type word at +0x04 (e.g. 0x22205 or 0x20507); the
+ * comparison helpers mask off bits 0x60000 of it to choose how to rank its value. */
+s32 fn_8001BD28(void *stat) {
+    return ((s32 *)stat)[1];
 }
 
 /* Return the flag byte at offset 0x10 of this record (tested as zero/non-zero by the ARC-data comparison helpers). */
