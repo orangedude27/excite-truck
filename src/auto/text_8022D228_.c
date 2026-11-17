@@ -415,7 +415,8 @@ void *fn_8022DD38(void *arg0, int arg1) {
 #undef DeleteObject
 }
 
-int fn_8022DD80(void *arg0) { return *(int *)((char *)arg0 + 0x40); }
+/* Return the number of entries stored in the 16-byte-slot string table (+0x40). */
+int fn_8022DD80(void *table) { return *(int *)((char *)table + 0x40); }
 
 int fn_8022DD88(void *arg0) { return *(int *)((char *)arg0 + 0x44); }
 
