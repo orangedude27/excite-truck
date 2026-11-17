@@ -2622,8 +2622,10 @@ void fn_8018AE2C(void *car, f32 value) { *(f32 *)((u8 *)car + 0x2600) = value; }
 void fn_8018AE34(void *car, f32 value) { *(f32 *)((u8 *)car + 0x2604) = value; }
 
 extern f32 fn_8018AE3C(void);
+/* Virtual getter called on a car object (which it ignores): this class stores no value for
+   this float parameter, so it returns the constant 0.0f (.sdata2 float lbl_80561CAC). */
 f32 fn_8018AE3C(void) {
-    return lbl_80561CAC;
+    return 0.0f;
 }
 
 extern f32 fn_8018AE44(void);
@@ -3048,16 +3050,17 @@ static inline float BA54_Clamp(float lo, float x) {
 }
 
 extern "C" int fn_8018BA54(void *arg0, void *arg1) {
-    register float var_f2;
     float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f3;
     float color, value3, second_offset, second_scale, scaled1, middle1, output1;
     float var_f0, var_f0_2, var_f0_3, var_f0_4;
+    register float var_f2;
     float var_f3, var_f3_2, var_f4;
     float loop_y_scale, loop_x_scale, loop_x, loop_height_scale, loop_height;
     float loop_scale, loop_base, loop_max, loop_min;
     int i, var_r5;
     unsigned char *var_r3, *var_r4;
     void *obj, *ret;
+
     fn_8017D274();
     var_f2 = lbl_80561CD0;
     temp_f0 = (*(float *)((char *)arg0 + 0x25D0) - lbl_80561F58) / lbl_80561F5C;
@@ -3092,6 +3095,7 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     ret = ((BA54CallObj *)obj)->method4(color, lbl_80561CDC);
     *(int *)((char *)arg1 + 0x40) = ((int (*)(void *, void *))fn_801363A0)(ret, (char *)ret + 4);
     if (*(unsigned char *)((char *)arg1 + 0x3C) == 0) *(unsigned char *)((char *)arg1 + 0x3C) = 1;
+
     *(short *)((char *)arg1 + 0x3A) = *(int *)((char *)arg0 + 4);
     loop_min = lbl_80561CAC;
     loop_max = lbl_80561CD0;
