@@ -162,11 +162,11 @@ void fn_802A92CC(void) {
         value0 = lbl_8055F908[0];
         value1 = lbl_8055F908[1];
         lbl_8055F900[0] = value0;
-        entry = (s32 *)lbl_804BD740;
         lbl_8055F900[1] = value1;
         i = 0;
         lbl_8055F900[0] = value1;
         lbl_8055F900[1] = -value0;
+        entry = (s32 *)lbl_804BD740;
         do {
             if (fn_8012C33C(entry[0]) != 0)
                 entry[1] = fn_802C6FC0(entry[0], 0, 0);
@@ -277,8 +277,9 @@ void fn_802A95A8(void) {
     fn_802A9090();
 }
 
-void fn_802A95AC(u8 arg0) {
-    lbl_8055F8F1 = arg0;
+/* Set the global flag read by fn_802A9428 when choosing a model slot. */
+void fn_802A95AC(u8 value) {
+    lbl_8055F8F1 = value;
 }
 extern u8 lbl_8055F8F0;
 extern s32 lbl_8055CC58;
