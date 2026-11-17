@@ -2820,8 +2820,14 @@ return total;
 }
 
 #pragma dont_inline reset
-s32 fn_8011AC04(s32 arg0, s32 arg1) {
-    return (arg1 + 0x7FFF) & 0xFFFF8000;
+/* DVD stream callback: round the requested read size up to a 32 KiB block
+ * boundary (the stream argument is unused). */
+s32 fn_8011AC04(s32 stream, s32 size) {
+#define DVD_BLOCK_ROUND 0x7FFF     /* added before masking to round up */
+#define DVD_BLOCK_MASK 0xFFFF8000  /* keeps only 32 KiB-aligned bits */
+    return (size + DVD_BLOCK_ROUND) & DVD_BLOCK_MASK;
+#undef DVD_BLOCK_MASK
+#undef DVD_BLOCK_ROUND
 }
 
 /* Configure a DVD stream with its ring buffer, end offset, and read pacing rate. */
@@ -4320,24 +4326,26 @@ void fn_8011CE18(void *arg0, void *arg1) {
 }
 
 void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
- u32 out, code, rem, value, c, sign;
- u32 *p, bits, n, width;
- s32 tree;
+ u32 *p;
+ u32 bits, n, width, tree, rem, sign, mask, code;
+ s32 out;
+ u32 w2;
  u8 *dst, *table, *lut;
- u32 w2, mask;
+ u32 v, c;
  if(M2C_FIELD(arg0,u32*,0)!=M2C_FIELD(arg0,u32*,4)) return;
  n=M2C_FIELD(arg1,u32*,8); width=M2C_FIELD(arg0,u32*,0x28); p=M2C_FIELD(arg1,u32**,4); bits=M2C_FIELD(arg1,u32*,0);
- if(n<width){u32 x=*p++; out=(-1U>>(32-width))&(bits|(x<<n)); bits=x>>(width-n); n=n+32-width;} else {out=bits&(-1U>>(32-width)); bits>>=width; n-=width;}
+ if(n<width){u32 x=*p++; out=(bits|(x<<n))&(-1U>>(32-width)); bits=x>>(width-n); n=n+32-width;} else {out=bits&(-1U>>(32-width)); bits>>=width; n-=width;}
  if(out){
   dst=M2C_FIELD(arg0,u8**,0x2C); M2C_FIELD(arg0,u8**,0)=dst; M2C_FIELD(arg0,u8**,4)=dst+out;
-  w2=M2C_FIELD(arg0,u32*,0x20); lut=(u8*)arg0+0x10; table=M2C_FIELD(arg0,u8**,0x24);
-  tree=M2C_FIELD(arg2,s32*,0x180);
+  w2=M2C_FIELD(arg0,u32*,0x20); table=M2C_FIELD(arg0,u8**,0x24); lut=(u8*)arg0+0x10;
+  tree=M2C_FIELD(arg2,u32*,0x180);
   if(n==0){sign=*p++; bits=sign>>1; n=31;} else {sign=bits; bits>>=1; n--;}
   if(sign&1) out=-20-out;
   mask=-1U>>(32-w2);
   do {
+   u32 w;
    u32 *ent=(u32*)((u8*)arg2+tree*4);
-   u32 w=ent[0x40];
+   w=ent[0x40];
    out--;
    if(n>=w){
     code=((u8*)ent[0x50])[bits&(-1U>>(32-w))];
@@ -4349,16 +4357,16 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
     if(n>=rem){bits>>=rem;n-=rem;} else {p++; bits=x>>(rem-n); n=n+32-rem;}
    }
    if(n>=w2){
-    c=table[bits&mask]; value=lut[c&15]; rem=c>>4; bits>>=rem; n-=rem;
+    c=table[bits&mask]; v=lut[c&15]; rem=c>>4; bits>>=rem; n-=rem;
    } else {
     u32 x=*p;
-    c=table[(bits|(x<<n))&mask]; value=lut[c&15]; rem=c>>4;
+    c=table[(bits|(x<<n))&mask]; v=lut[c&15]; rem=c>>4;
     if(n>=rem){bits>>=rem;n-=rem;} else {p++; bits=x>>(rem-n); n=n+32-rem;}
    }
-   c=value|(tree<<4); value=c&127; if(c&128)value=(u8)(-value); *dst++=value+128;
-  } while((s32)out>0);
-  if((s32)out < -22) memset(M2C_FIELD(arg0,u8**,0x2C),*(u8*)M2C_FIELD(arg0,u8**,0x2C),-((s32)out+21));
-  M2C_FIELD(arg2,s32*,0x180)=tree;
+   c=v|(tree<<4); v=c&127; if(c&128)v=(u8)(-v); *dst++=v+128;
+  } while(out>0);
+  if(out < -22) memset(M2C_FIELD(arg0,u8**,0x2C),*(u8*)M2C_FIELD(arg0,u8**,0x2C),-(out+21));
+  M2C_FIELD(arg2,u32*,0x180)=tree;
  } else {dst=M2C_FIELD(arg0,u8**,0x2C);M2C_FIELD(arg0,u8**,4)=dst;M2C_FIELD(arg0,u8**,0)=dst+4;}
  M2C_FIELD(arg1,u32**,4)=p;M2C_FIELD(arg1,u32*,0)=bits;M2C_FIELD(arg1,u32*,8)=n;
 }
