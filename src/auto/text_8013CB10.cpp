@@ -3630,63 +3630,64 @@ extern "C" void fn_80143C54(void *arg0) {
 extern "C" void fn_802AE0E0(int);
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_80143CB0(void *arg0) {
-    struct Item {
+/* Reset the ArtAnim sub-state at +0x134 of an ArtAnim manager: idle state/timer, cleared counters, stop every cue in its DSA animation player and reactivate its six tracked items. */
+extern "C" void fn_80143CB0(void *artAnim) {
+    struct AnimItem {
         u8 pad0[0x4A];
         u8 active;
         u8 pad4B;
         u8 state;
     };
-    struct Manager {
-        int value0;
-        float value4;
-        u8 flag8;
-        u8 flag9;
+    struct ArtAnimState {
+        int state;
+        float time;
+        u8 active;
+        u8 resumeFlag;
         u8 padA[2];
-        int ref;
+        int animPlayer;
         u8 flag10;
         u8 pad11[3];
-        Item *item14;
-        Item *item18;
-        Item *item1C;
+        AnimItem *item14;
+        AnimItem *item18;
+        AnimItem *item1C;
         u8 flag20;
         u8 pad21[3];
-        Item *item24;
-        Item *item28;
-        Item *item2C;
+        AnimItem *item24;
+        AnimItem *item28;
+        AnimItem *item2C;
         u8 pad30[0xDC];
-        int value10C;
-        int value110;
-        int value114;
-        int value118;
+        int counter0;
+        int counter1;
+        int counter2;
+        int counter3;
     };
-    Manager *p = (Manager *)arg0;
+    ArtAnimState *mgr = (ArtAnimState *)artAnim;
     int zero = 0;
-    int ref = p->ref;
-    p->value0 = zero;
-    p->value4 = -1.0f;
-    p->flag8 = 1;
-    p->flag9 = zero;
-    p->flag10 = zero;
-    p->value10C = zero;
-    p->value110 = zero;
-    p->value114 = zero;
-    p->value118 = zero;
-    if (ref != 0) fn_802AE0E0(ref);
-    Item *i;
-    i = p->item14;
-    if (i != 0) { i->active = 1; i->state = 0; }
-    i = p->item18;
-    if (i != 0) { i->active = 1; i->state = 0; }
-    i = p->item1C;
-    if (i != 0) { i->active = 1; i->state = 0; }
-    i = p->item24;
-    p->flag20 = zero;
-    if (i != 0) { i->active = 1; i->state = zero; }
-    i = p->item28;
-    if (i != 0) { i->active = 1; i->state = 0; }
-    i = p->item2C;
-    if (i != 0) { i->active = 1; i->state = 0; }
+    int animPlayer = mgr->animPlayer;
+    mgr->state = zero;
+    mgr->time = -1.0f;
+    mgr->active = 1;
+    mgr->resumeFlag = zero;
+    mgr->flag10 = zero;
+    mgr->counter0 = zero;
+    mgr->counter1 = zero;
+    mgr->counter2 = zero;
+    mgr->counter3 = zero;
+    if (animPlayer != 0) fn_802AE0E0(animPlayer);
+    AnimItem *item;
+    item = mgr->item14;
+    if (item != 0) { item->active = 1; item->state = 0; }
+    item = mgr->item18;
+    if (item != 0) { item->active = 1; item->state = 0; }
+    item = mgr->item1C;
+    if (item != 0) { item->active = 1; item->state = 0; }
+    item = mgr->item24;
+    mgr->flag20 = zero;
+    if (item != 0) { item->active = 1; item->state = zero; }
+    item = mgr->item28;
+    if (item != 0) { item->active = 1; item->state = 0; }
+    item = mgr->item2C;
+    if (item != 0) { item->active = 1; item->state = 0; }
 }
 #pragma pop
 extern "C" void fn_80130980(void *, s32, s32, f32);
