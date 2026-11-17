@@ -991,9 +991,11 @@ int fn_802655C8(int arg0, int arg1) {
 typedef float f32;
 void fn_80265610(void *arg0, f32 farg0) { *(f32 *)((char *)arg0 + 0x1C) = farg0; }
 
-void fn_80265618(void *arg0) {
-    *(unsigned char *)((char *)arg0 + 0x20) = 0;
-    *(float *)((char *)arg0 + 0x18) = *(float *)((char *)arg0 + 0x1C);
+/* Reset a countdown timer: clear the completion flag at +0x20 and copy the
+ * starting value at +0x1C into the countdown at +0x18. */
+void fn_80265618(void *timer) {
+    *(unsigned char *)((char *)timer + 0x20) = 0;
+    *(float *)((char *)timer + 0x18) = *(float *)((char *)timer + 0x1C);
 }
 
 #pragma dont_inline on
