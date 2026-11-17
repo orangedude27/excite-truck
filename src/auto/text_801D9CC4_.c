@@ -257,7 +257,7 @@ extern double __fabs(double);
 extern int fn_801DA1F8(void *, void **, void **, float *);
 extern float __fabsf(float);
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 int fn_801DA294(void *arg0, void *arg1, void *arg2, void *arg3) {
     float *a = 0, *b = 0;
     float t = lbl_80562B38;
