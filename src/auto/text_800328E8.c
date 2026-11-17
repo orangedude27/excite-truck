@@ -17,7 +17,6 @@ extern int fn_80031248(void);
 extern void *TRKReadBuffer_ui8(int);
 extern void __AXDepopVoice(void *);
 extern void *memcpy(void *, const void *, unsigned int);
-static inline void copyBlockRev(void *dst, const void *src, unsigned int n) { memcpy((void *)src, dst, n); }
 typedef struct { unsigned char b[0x120]; } Block120;
 typedef struct { unsigned char b[0x30]; } Block30;
 typedef struct { int w[0x48]; } Words120;
@@ -70,8 +69,7 @@ void fn_800328F0(void *arg0) {
         return;
     }
     if (flags & 0x80000000) {
-        unsigned char *d0 = dst;
-        memcpy(src, d0, 0x120);
+        memcpy(src, dst, 0x120);
         n = *(unsigned int *)(p + 0x28);
         if (n != 0) {
             cs = (unsigned int *)(p + 0x34);
@@ -98,8 +96,7 @@ void fn_800328F0(void *arg0) {
             *(unsigned short *)(src + 0x12) = *(unsigned short *)(dst + 0x12);
         }
         if (flags & 0x10) {
-            unsigned char *d1 = dst + 0x14;
-            memcpy(src + 0x14, d1, 0x30);
+            memcpy(src + 0x14, dst + 0x14, 0x30);
         }
         if (flags & 0x40) {
             *(unsigned short *)(src + 0x4E) = *(unsigned short *)(dst + 0x4E);
