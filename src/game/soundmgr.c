@@ -271,17 +271,19 @@ void fn_80207C4C(void) {
 #pragma scheduling invalid_target
 #pragma push
 #pragma opt_propagation off
-void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
-    signed long c, b, a;
-    signed long offset = arg2 * 0xC;
-    volatile signed long *p = (volatile signed long *)arg1;
-    a = p[0];
-    b = p[1];
-    c = p[2];
-    arg0 = (char*)arg0 + offset;
-    *(signed long*)((char*)arg0 + 0x5C) = a;
-    *(signed long*)((char*)arg0 + 0x60) = b;
-    *(signed long*)((char*)arg0 + 0x64) = c;
+void fn_80207C50(void* object, void* src, signed long slotIndex) {
+    /* Seed one 0xC-byte slot of a sound-manager object (slots start at +0x5C)
+     * with the three-word value at src; init calls this for all four slots. */
+    signed long w2, w1, w0;
+    signed long slotOffset = slotIndex * 0xC;
+    volatile signed long *srcWords = (volatile signed long *)src;
+    w0 = srcWords[0];
+    w1 = srcWords[1];
+    w2 = srcWords[2];
+    object = (char*)object + slotOffset;
+    *(signed long*)((char*)object + 0x5C) = w0;
+    *(signed long*)((char*)object + 0x60) = w1;
+    *(signed long*)((char*)object + 0x64) = w2;
 }
 #pragma pop
 /* Set the flag at offset 0x8C of a sound object. */
