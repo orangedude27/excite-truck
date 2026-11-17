@@ -1135,10 +1135,11 @@ extern "C" void fn_800EC890(void *param) {
 #pragma pop
 #pragma dont_inline reset
 
-extern "C" void fn_800EC8B4(void* arg0) {
-    f32 value = lbl_80561018;
-    *(s32*)((u8*)arg0 + 0x10) = 0;
-    *(f32*)((u8*)arg0 + 0x14) = value;
+extern "C" void fn_800EC8B4(void* lfo) {
+    /* Reset a sound LFO's delay counter and phase to zero (called from Channel::Start). */
+    f32 initialPhase = lbl_80561018;
+    *(s32*)((u8*)lfo + 0x10) = 0;
+    *(f32*)((u8*)lfo + 0x14) = initialPhase;
 }
 
 extern "C" void Update__Q44nw4r3snd6detail3LfoFi(void* lfo, s32 msec) {
