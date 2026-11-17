@@ -29,7 +29,7 @@ extern "C" void fn_800FFE94(void* handle) {
         *(void**)handle = 0;
 }
 
-extern "C" char lbl_803276F0;
+extern "C" char lbl_803276F0[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *arg0, const void *arg1) {
     struct PanicStrings {
