@@ -705,7 +705,8 @@ extern char lbl_80313238[];
 extern u8 lbl_803C0D48[];
 extern u8 lbl_803C3C38[];
 extern u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param, u16 data, u8 report_id, BT_HDR *pbuf);
-extern u8 hidh_conn_snd_data(u8 dev_handle, s32 trans_type, u8 param, u16 data, u8 report_id, BT_HDR *buf);
+typedef s32 hidh_trans_t;
+extern u8 hidh_conn_snd_data(u8 dev_handle, hidh_trans_t trans_type, u8 param, u16 data, u8 report_id, BT_HDR *buf);
 extern u8 lbl_8031787C[];
 extern char lbl_80317838[];
 extern void *l2cu_find_ccb_by_cid(void *, u16);
@@ -18012,7 +18013,7 @@ static void hidh_l2cif_data_ind(UINT16 l2cap_cid, BT_HDR *p_msg) {
 
 extern UINT8 L2CA_DataWrite(UINT16, BT_HDR *);
 UINT8 hidh_conn_snd_data(UINT8 dhandle, s32 trans_type, UINT8 param, UINT16 data, UINT8 rpt_id, BT_HDR *buf) {
-    register s32 var_r17;
+    register u8 var_r17;
     register s32 var_r20;
     s32 var_r4;
     register u16 temp_r24;
@@ -18031,12 +18032,13 @@ UINT8 hidh_conn_snd_data(UINT8 dhandle, s32 trans_type, UINT8 param, UINT16 data
     register u8 var_r29;
     register u8 var_r28;
     register u8 var_r31;
+
     var_r17 = trans_type;
     temp_r27 = lbl_803C3C38 + (dhandle * 0x34);
     var_r21 = 0;
     var_r20 = 0;
     if (temp_r27[0x11] & 0x20) {
-        if (buf != 0) GKI_freebuf(buf);
+        if (buf != NULL) GKI_freebuf(buf);
         return 8;
     }
     if (4 > trans_type) {
@@ -18069,10 +18071,11 @@ block_12:
     var_r28 = (u8)(data >> 8);
     var_r31 = 9;
 loop_18:
-    if (buf == 0 || var_r20 != 0) {
+    if (buf == NULL || var_r20 != 0) {
+allocate_new:
         temp_r3 = GKI_getpoolbuf(var_r22);
         var_r26 = (BT_HDR *)temp_r3;
-        if (temp_r3 == 0) return 3;
+        if (temp_r3 == NULL) return 3;
         var_r26->offset = var_r31;
         var_r4 = 0;
         var_r24 = 0;
@@ -18080,11 +18083,12 @@ loop_18:
         var_r20 = 0;
         goto block_28;
     }
+use_existing:
     var_r24 = buf->len;
     if ((s32)var_r24 > (s32)(*(u16 *)(temp_r27 + 0x18) - 1)) {
         temp_r3_2 = GKI_getpoolbuf(var_r22);
         var_r26 = (BT_HDR *)temp_r3_2;
-        if (temp_r3_2 == 0) return 3;
+        if (temp_r3_2 == NULL) return 3;
         var_r26->offset = var_r31;
         var_r4 = 1;
         var_r24 = buf->len;
