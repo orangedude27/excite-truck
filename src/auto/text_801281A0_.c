@@ -278,6 +278,7 @@ void fn_80128584(s32 ptr, s32 arg1) {
 #pragma dont_inline reset
 
 #pragma scheduling on
+/* Set the save-state flag at lbl_8055DF88 to 1 (counterpart of fn_80128684; read by fn_80128690). */
 void fn_80128678(void) {
     lbl_8055DF88 = 1;
 }
