@@ -415,6 +415,7 @@ s32 fn_801E3534(s32 *p) {
 
 #pragma push
 #pragma processor 750
+#pragma opt_propagation off
 void fn_801E353C(s32 arg0, f32 angle) {
     f32 c;
     f32 s;
