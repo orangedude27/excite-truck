@@ -1088,8 +1088,10 @@ void fn_801D5A1C(int arg0) {
     (void)fn_801D59C8(arg0, 1);
 }
 
-int fn_801D5A24(int arg0) {
-    return fn_801D59C8(arg0, 4);
+/* Return nonzero when the registered action sequence's state field (+0x4) equals 4
+ * (ACTION_SEQ_LAP_GAP), or 0 when the sequence is not in the global list. */
+int fn_801D5A24(int sequence) {
+    return fn_801D59C8(sequence, 4);
 }
 
 #pragma scheduling invalid_target
