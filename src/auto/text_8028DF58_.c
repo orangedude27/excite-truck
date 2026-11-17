@@ -430,6 +430,7 @@ void *memset(void *, int, unsigned int);
 #pragma push
 #pragma small_data off
 int fn_8028E61C(void *arg0) {
+    /* Zero the 0x8C-byte nw4r::ef effect creation descriptor before its fields are filled. */
     memset(arg0, 0, 0x8Cu);
     return (int)arg0;
 }
