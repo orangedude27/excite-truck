@@ -1461,5 +1461,4 @@ void fn_8022CDE4(int *d, void *o) {
     if (((XmlObj2 *)obj)->vt->has((XmlObj2 *)obj, lbl_8055B948) != 0)
         sscanf(((XmlObj2 *)obj)->vt->get((XmlObj2 *)obj, lbl_8055B948), lbl_8055B950, &dst[5], &dst[6]);
 }
-#pragma cplusplus off
 #pragma dont_inline reset
