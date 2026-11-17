@@ -709,8 +709,9 @@ extern "C" float fn_801013E4(void* arg0) {
     return *(float*)((char*)arg0 + 0x24);
 }
 
-extern "C" int fn_801013EC(void* arg0) {
-    return *((unsigned char*)arg0 + 0x20) != 0;
+extern "C" int fn_801013EC(void* player) {
+    /* Return the boolean flag stored at offset 0x20 of the sound player. */
+    return *((unsigned char*)player + 0x20) != 0;
 }
 
 /* Return whether the WSD player is prepared (byte flag at +0x1E). */
