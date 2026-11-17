@@ -643,6 +643,7 @@ extern "C" void fn_80006110(void *arg0) {
     }
 }
 #pragma cplusplus off
+/* No-op stub that always reports success (zero). */
 s32 ARCClose(void) {
     return 0;
 }
