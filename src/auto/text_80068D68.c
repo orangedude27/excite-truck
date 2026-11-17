@@ -5602,6 +5602,9 @@ void fn_8007146C(s32 p_tle, u16 type, s32 timeout) {
     ptim_start_timer((tPTIM_CB *)((u8 *)&lbl_803C0AD8 + 0x68), (TIMER_LIST_ENT *)p_tle, type, timeout);
 }
 
+/* Out-of-line tail call to BTM_CancelRemoteDeviceName(): abandons a pending
+ * remote name request.  The wrapper drops BTM's tBTM_STATUS return value, so
+ * callers here get a plain void helper (branch-and-link is not even emitted). */
 void fn_80072C38(void) {
     BTM_CancelRemoteDeviceName();
 }
