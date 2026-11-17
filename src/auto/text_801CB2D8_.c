@@ -1623,70 +1623,75 @@ extern f32 lbl_805629FC;
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_801CD7BC(int arg0, int arg1, f32 farg0) {
+/* Awards: push a race time for a player into the stat handler. After the
+ * context/per-player status checks, scan the stat array for the slot whose
+ * type is 0x20507, forward the time through that stat object's virtual setter
+ * v2() (lbl_80337CA0 warns if none is found), cache it at +0x2B8 and start
+ * award playback. lbl_80337D90 warns when a time was already cached. */
+extern "C" void fn_801CD7BC(int playerIndex, int pushEnabled, f32 raceTime) {
     #pragma opt_propagation off
-    register u8 *base;
-    register s32 high;
-    register s32 id;
-    register s32 index;
-    register s32 offset;
-    s32 statusIndex;
+    register u8 *awards;
+    register s32 statTypeBase;
+    register s32 statType;
+    register s32 slotIndex;
+    register s32 slotOffset;
+    s32 playerSlot;
     u8 *object;
-    s32 status;
-    s32 mapIndex;
+    s32 playerStatus;
+    s32 score;
     s32 current;
     if (fn_801CE898() != 0)
         goto done;
-    base = (u8 *)lbl_8055E884;
-    if (base[0x10] != 0)
+    awards = (u8 *)lbl_8055E884;
+    if (awards[0x10] != 0)
         goto done;
-    object = ((u8 *(*)(s32))fn_801EA9A0)(arg0);
+    object = ((u8 *(*)(s32))fn_801EA9A0)(playerIndex);
     if (object[0] != 0)
-        statusIndex = object[0xB4] & 3;
+        playerSlot = object[0xB4] & 3;
     else
-        statusIndex = -1;
-    if (statusIndex >= 0)
-        status = base[statusIndex + 0x11];
+        playerSlot = -1;
+    if (playerSlot >= 0)
+        playerStatus = awards[playerSlot + 0x11];
     else
-        status = 1;
-    if (status != 0)
+        playerStatus = 1;
+    if (playerStatus != 0)
         goto done;
-    object = ((u8 *(*)(s32))fn_801EA9A0)(arg0);
-    if (object[0] == 0 || arg1 == 0)
+    object = ((u8 *(*)(s32))fn_801EA9A0)(playerIndex);
+    if (object[0] == 0 || pushEnabled == 0)
         goto done;
-    if (*(f32 *)(base + 0x2B8) < lbl_805629FC) {
-        high = 0x20000;
-        id = high + 0x507;
-        index = 0;
-        offset = 0;
-        while (index < *(s32 *)(base + 0x1C)) {
-            switch (fn_801CB900(*(int **)((u8 *)*(s32 **)(base + 0x18) + offset), high + 0x507)) {
+    if (*(f32 *)(awards + 0x2B8) < lbl_805629FC) {
+        statTypeBase = 0x20000;
+        statType = statTypeBase + 0x507;
+        slotIndex = 0;
+        slotOffset = 0;
+        while (slotIndex < *(s32 *)(awards + 0x1C)) {
+            switch (fn_801CB900(*(int **)((u8 *)*(s32 **)(awards + 0x18) + slotOffset), statTypeBase + 0x507)) {
             case 0:
-                offset += 4;
-                index++;
+                slotOffset += 4;
+                slotIndex++;
                 break;
             default:
                 goto found;
             }
         }
-        index = -1;
+        slotIndex = -1;
 found:
-        if (index < 0)
-            ((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, id);
-        ((Dummy_801CCDAC *)*(void **)((u8 *)*(s32 **)(base + 0x18) + index * 4))->v2(farg0);
-        *(f32 *)(base + 0x2B8) = farg0;
-        *(u8 *)(base + 0x2BC) = 1;
-        if (*(s32 *)(base + 0x2B4) < 0 && *(u8 *)(base + 0x2BC) != 0) {
-            mapIndex = *(s32 *)(base + 0x2AC);
-            if (mapIndex >= 0) {
+        if (slotIndex < 0)
+            ((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, statType);
+        ((Dummy_801CCDAC *)*(void **)((u8 *)*(s32 **)(awards + 0x18) + slotIndex * 4))->v2(raceTime);
+        *(f32 *)(awards + 0x2B8) = raceTime;
+        *(u8 *)(awards + 0x2BC) = 1;
+        if (*(s32 *)(awards + 0x2B4) < 0 && *(u8 *)(awards + 0x2BC) != 0) {
+            score = *(s32 *)(awards + 0x2AC);
+            if (score >= 0) {
                 current = fn_8000DA10();
-                *(s32 *)(base + 0x2B4) = ((s32 (*)(s32, s32, s32, s32, f32))fn_8001BBB8)(
-                    current, *(s32 *)base, *(s32 *)(base + 4), mapIndex, *(f32 *)(base + 0x2B8));
+                *(s32 *)(awards + 0x2B4) = ((s32 (*)(s32, s32, s32, s32, f32))fn_8001BBB8)(
+                    current, *(s32 *)awards, *(s32 *)(awards + 4), score, *(f32 *)(awards + 0x2B8));
             }
         }
     } else {
         ((void (*)(const char *, f32, ...))fn_802E317C)(
-            lbl_80337D90, *(f32 *)(base + 0x2B8), (double)farg0);
+            lbl_80337D90, *(f32 *)(awards + 0x2B8), (double)raceTime);
     }
 done:
     return;
