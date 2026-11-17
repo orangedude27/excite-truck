@@ -1768,8 +1768,9 @@ extern "C" s32 fn_800D8720(s32 *arg0) {
     return *arg0 & 0xF;
 }
 
-extern "C" s32 fn_800D872C(u32 *arg0) {
-    return (*arg0 >> 4) & 0xF;
+extern "C" s32 fn_800D872C(u32 *flags) {
+    /* Read the texture-coordinate count nibble (bits 4-7) of a layout material's flag word. */
+    return (*flags >> 4) & 0xF;
 }
 
 extern "C" s32 fn_800D8738(u32 *arg0) {
