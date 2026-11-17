@@ -1093,7 +1093,7 @@ extern float PSVECDotProduct(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern float lbl_805628B8;
 extern float lbl_805628BC;
-void fn_801C0E44(void *arg0) { PSVECDotProduct(arg0, arg0); }
+FN_801C0E44_RET fn_801C0E44(void *arg0) { PSVECDotProduct(arg0, arg0); }
 
 /* Compute the cross product of vectors `a` and `b` into `out`. */
 void fn_801C0E4C(void *out, void *a, void *b) {
