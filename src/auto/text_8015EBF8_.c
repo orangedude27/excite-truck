@@ -1090,8 +1090,9 @@ s32 fn_801602B4(s32 arg0) {
     return arg0 + 0x3C;
 }
 
-s32 fn_801602BC(s32 *arg0, s32 arg1) {
-    return *arg0 + (arg1 * 0x10);
+/* Compute the address of the index-th 16-byte record in the array whose base pointer is stored at *arg0 (a ring-buffer header: +0 base pointer, +4 record count). */
+s32 fn_801602BC(s32 *header, s32 index) {
+    return *header + (index * 0x10);
 }
 
 s32 fn_801602CC(void *arg0) {
