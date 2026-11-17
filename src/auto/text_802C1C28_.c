@@ -166,7 +166,8 @@ void fn_802C2054(int userData) { fn_802C1F80(userData - 4); }
 /* Release-callback wrapper: forward to the no-op finalizer fn_802C1F84 with the pointer backed up to its enclosing allocation header (userData - 4). */
 void fn_802C205C(int userData) { fn_802C1F84(userData - 4); }
 
-void fn_802C2064(int arg0) { fn_802C1F88(arg0 - 4); }
+/* Release-callback wrapper: forward to the no-op finalizer fn_802C1F88 with the pointer backed up to its enclosing allocation header (userData - 4). */
+void fn_802C2064(int userData) { fn_802C1F88(userData - 4); }
 
 void fn_802C1F8C();
 void fn_802C206C(int arg0) { fn_802C1F8C(arg0 - 4); }
