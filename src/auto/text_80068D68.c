@@ -648,6 +648,10 @@ typedef struct t_l2c_ccb_view {
 #define L2CEVT_L2CA_DATA_WRITE       29 /* upper layer data to send */
 #define L2CEVT_TIMEOUT               30 /* channel timeout */
 
+/* Bits of the CCB's config_done byte (l2c_int.h's IB_CFG_DONE / OB_CFG_DONE). */
+#define IB_CFG_DONE                  0x01 /* our config response was received */
+#define OB_CFG_DONE                  0x02 /* peer config response was received */
+
 /* The L2CAP link states (l2c_int.h's tL2C_LINK_STATE); the game numbers them
    the same way. p_lcb's +0x04 link_state field holds one of these. */
 #define LST_DISCONNECTED             0  /* link control block is free */
