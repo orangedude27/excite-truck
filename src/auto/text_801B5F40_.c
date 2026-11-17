@@ -87,7 +87,11 @@ void fn_801B608C(s32 *arg0) {
     *arg0 = 0;
 }
 
-void NWC24Data_Init_801B6098(s32 *arg0) { arg0[0] = 0; arg0[1] = 0; }
+void NWC24Data_Init_801B6098(s32 *data) {
+    /* Zero the first two words of the record (used as the 8-byte pool-element init callback). */
+    data[0] = 0;
+    data[1] = 0;
+}
 
 /* Free the phob (physics object) pools: the big-phob list and the node/cell-grid buffers. */
 void fn_801B60A8(void) {
