@@ -2640,7 +2640,7 @@ f32 fn_8018AE4C(void) {
 
 extern f32 fn_8018AE54(void);
 f32 fn_8018AE54(void) {
-    return lbl_80561CAC;
+    return F_0;
 }
 
 /* Returns the shared vector at lbl_80434990, marking the one-time init flag
