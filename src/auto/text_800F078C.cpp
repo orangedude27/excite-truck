@@ -331,8 +331,9 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, i
     }
 }
 #pragma pop
-extern "C" s32 fn_800F0E24(void* arg0) {
-    return *(s32*)((u8*)arg0 + 0x1E0) != 0;
+// Returns nonzero when the SeqSound has a player/handle assigned (field +0x1E0).
+extern "C" s32 fn_800F0E24(void* sound) {
+    return *(s32*)((u8*)sound + 0x1E0) != 0;
 }
 
 extern "C" void fn_800F0E38(void* arg0) {
