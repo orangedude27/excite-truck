@@ -2400,6 +2400,12 @@ done4:;}
 }
 #pragma pop
 
+/* Zone system's bootstrap entry point: the game/menu init sequence
+ * (fn_80004B5C in src/game/game_menu_init.c) calls it with no arguments where
+ * each subsystem sets itself up, and its pair fn_80141458 is called from the
+ * matching teardown (fn_80004CB4).  Both bodies are empty -- the zone system
+ * is really built by ZoneMaster_Create -- so this compiles to a bare 'blr'
+ * and the call site keeps it in the build. */
 extern "C" void fn_80141454(void) {
 
 }
