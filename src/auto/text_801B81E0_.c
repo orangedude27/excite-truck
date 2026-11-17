@@ -639,9 +639,10 @@ extern "C" void fn_801B8928(void *slotIndex, void *request, void *flags) {
 }
 #pragma scheduling on
 #pragma cplusplus off
-float fn_801B8950(int arg0) {
+/* Returns element @p index of the shared float array at lbl_80436D08. */
+float fn_801B8950(int index) {
     extern float lbl_80436D08[];
-    return lbl_80436D08[arg0];
+    return lbl_80436D08[index];
 }
 
 extern float lbl_80436D08[];
