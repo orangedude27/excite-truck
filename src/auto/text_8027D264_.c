@@ -393,8 +393,9 @@ int fn_8027D904(void *arg0) { return *(int *)((char *)arg0 + 0x14); }
 
 int fn_8027D90C(void *arg0) { return *(int *)((char *)arg0 + 0x1C); }
 
-int fn_8027D914(void *arg0, int arg1) {
-    return ((int *)arg0)[6] + arg1 * 0x3C;
+int fn_8027D914(void *container, int index) {
+    // Return the address of the index-th 0x3C-byte effect element in the container's embedded array (base at +0x18).
+    return ((int *)container)[6] + index * 0x3C;
 }
 
 unsigned char fn_8027D924(void *arg0) {
