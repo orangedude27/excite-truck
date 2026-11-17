@@ -195,7 +195,11 @@ s32 fn_80018E3C(void) {
 }
 
 s32 fn_80018E40(void) {
-    fn_80018B70();
+#define GetCurrentPlayerUnlockMode fn_80018B70
+    /* GetCurrentUnlockModeForOtherCategories: tail-call the shared per-player
+       mode getter whose result gates non-car unlockables in fn_80018E44. */
+    GetCurrentPlayerUnlockMode();
+#undef GetCurrentPlayerUnlockMode
 }
 #pragma pop
 
