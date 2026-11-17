@@ -179,7 +179,7 @@ asm void ICFlashInvalidate(void) {
     nofralloc
     
     mfhid0 r3
-    ori r3, r3, 0x800
+    ori r3, r3, 0x800 // HID0_ICFI: flash-invalidate the whole instruction cache
     mthid0 r3
 
     blr
