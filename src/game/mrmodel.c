@@ -793,10 +793,15 @@ extern void fn_802C6A84(s32 *value, s32 delta);
 extern void fn_802C6A9C(s32 *value, s32 delta);
 extern void fn_802C6AFC(s32 *value, s32 delta);
 extern void fn_802D6B80(unsigned char *arg0, s32 arg1, s32 arg2);
+static inline void mr_swap4(unsigned char *q) {
+    unsigned char t = q[0]; q[0] = q[3]; q[3] = t;
+    t = q[1]; q[1] = q[2]; q[2] = t;
+}
 void fn_802C61BC(void *arg0, int arg1) {
     unsigned char *p = (unsigned char *)arg0;
+    unsigned char *base;
     unsigned char t;
-    int i;
+    int i, j;
     (void)arg1;
     if (*(unsigned int *)p >= 0x3E80) return;
     if (*(unsigned int *)(p + 0x10) < 0x3E80) return;
@@ -805,6 +810,17 @@ void fn_802C61BC(void *arg0, int arg1) {
         t = p[i+1]; p[i+1] = p[i+2]; p[i+2] = t;
     }
     ((void (*)(void *))fn_802C6A84)(p + 4);
+    base = *(unsigned char **)(p + 4);
+    for (i = 0; i < *(int *)p; i++) {
+        unsigned char *e = base + i * 0x10;
+        for (j = 0; j < 0x10; j += 4) {
+            t = e[j]; e[j] = e[j+3]; e[j+3] = t;
+            t = e[j+1]; e[j+1] = e[j+2]; e[j+2] = t;
+        }
+        fn_802C6A9C((s32 *)(e + 0xC), (s32)arg0);
+        fn_802D6B80((unsigned char *)*(void **)(e + 0xC), (s32)arg0, arg1);
+        fn_802C6AFC((s32 *)(e + 8), (s32)arg0);
+    }
 }
 
 void fn_802C6A84(s32 *value, s32 delta) {
