@@ -3434,8 +3434,10 @@ int fn_802D3EBC(void) {
 }
 
 extern unsigned short lbl_8055FD86;
-void fn_802D3ECC(unsigned short arg0) {
-    lbl_8055FD86 = arg0;
+/* Store the requested 16-bit GX blend mode (high byte = src factor, low byte = dst factor).
+   The pipeline rebuild (fn_802D3144) compares this with the applied copy lbl_8055FD88. */
+void fn_802D3ECC(unsigned short blendMode) {
+    lbl_8055FD86 = blendMode;
 }
 
 extern unsigned long lbl_8055FD94;
