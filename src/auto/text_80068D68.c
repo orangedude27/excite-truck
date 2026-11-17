@@ -8170,8 +8170,9 @@ found:
     }
 }
 
-void fn_80077C94(s16 arg0) {
-    *(s16 *)(lbl_803C0F78 + 0x4C6) = arg0;
+/* Set btm_cb's secondary default link-policy value at +0x4C6, applied to newly established ACL links. */
+void fn_80077C94(s16 linkPolicy) {
+    *(s16 *)(lbl_803C0F78 + 0x4C6) = linkPolicy;
 }
 
 BOOLEAN BTM_IsAclConnectionUp(BD_ADDR remote_bda) {
