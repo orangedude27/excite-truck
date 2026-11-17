@@ -18270,16 +18270,15 @@ extern "C" void fn_800C55D8(void *arg0, void *arg1, s32 *arg2) {
     s32 scale = *arg2;
     s32 *dst = (s32 *)arg0;
     s32 *src = (s32 *)arg1;
-    s64 product;
     for (s32 i = 0; i < 4; i++) {
         s32 b0 = src[0]; s32 a0 = dst[0];
-        dst[0] = a0 + b0; product = (s64)(a0 - b0) * scale; src[0] = (s32)(product >> 24);
+        dst[0] = a0 + b0; src[0] = (s32)(((s64)(a0 - b0) * scale) >> 24);
         s32 b1 = src[2]; s32 a1 = dst[2];
-        dst[2] = a1 + b1; product = (s64)(a1 - b1) * scale; src[2] = (s32)(product >> 24);
+        dst[2] = a1 + b1; src[2] = (s32)(((s64)(a1 - b1) * scale) >> 24);
         s32 b2 = src[4]; s32 a2 = dst[4];
-        dst[4] = a2 + b2; product = (s64)(a2 - b2) * scale; src[4] = (s32)(product >> 24);
+        dst[4] = a2 + b2; src[4] = (s32)(((s64)(a2 - b2) * scale) >> 24);
         s32 b3 = src[6]; s32 a3 = dst[6];
-        dst[6] = a3 + b3; product = (s64)(a3 - b3) * scale; src[6] = (s32)(product >> 24);
+        dst[6] = a3 + b3; src[6] = (s32)(((s64)(a3 - b3) * scale) >> 24);
         dst += 8;
         src += 8;
     }
@@ -18844,6 +18843,7 @@ extern "C" void fn_800C675C(u32 size) {
     fn_800CEBE0(lbl_8055DD98, size);
 }
 
+// Returns the status/setting byte at offset 0x88 of the Home Button (HBM) manager singleton.
 extern "C" u8 fn_800C6768(void) {
     return *(u8 *)((char *)lbl_8055DD98 + 0x88);
 }
