@@ -15,6 +15,7 @@ void fn_80296064(void) {
 
 }
 
+/* No-op stub callback that reports zero. */
 int fn_80296068(void) {
     return 0;
 }
