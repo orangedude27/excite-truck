@@ -941,19 +941,13 @@ int fn_802ADF34(void **arg0, char *arg1, int arg2) {
     int count;
     char *dst;
     char *entry;
-    int index;
-    char *base;
     unsigned char c;
     result = fn_802AC4A8(arg1, arg2);
     if (result != 0) {
         header = (char *)*arg0;
-        index = ((int *)header)[1];
-        base = ((char **)header)[0];
-        entry = base + index * 116;
-        index++;
-        ((int *)header)[1] = index;
+        entry = *(char **)header + (*(int *)(header + 4))++ * 0x74;
         dst = entry;
-        count = 100;
+        count = 0x64;
         goto copy;
 check:
         count--;
@@ -965,11 +959,11 @@ copy:
         *dst++ = c;
         if ((signed char)c != 0) goto check;
 copied:
-        *(int *)(entry + 100) = result;
-        entry[104] = 0;
-        entry[105] = 0;
+        *(int *)(entry + 0x64) = result;
+        entry[0x68] = 0;
+        entry[0x69] = 0;
         header = (char *)*arg0;
-        return ((int *)header)[1] - 1;
+        return *(int *)(header + 4) - 1;
     }
     return -1;
 }
