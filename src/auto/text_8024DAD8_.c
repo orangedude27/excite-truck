@@ -66,20 +66,50 @@ void fn_8024DADC(void) {
     fn_8024739C();
 }
 
+extern void *memset(void *, int, unsigned int);
+extern void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, void *arg5);
 unsigned int fn_8024DAE0(int *arg0, int arg1, int arg2, void **arg3, int arg4, int arg5) {
     extern int fn_8000DA10(void);
     extern unsigned char lbl_80498C30[];
+    extern void fn_8013C804(void);
+    extern void fn_8001880C(void);
+    extern void fn_802556BC(void *, s32);
+    extern s32 fn_802E4A10(void);
+    extern void fn_8002F53C(void *, void *, void *, s32, s32);
+    extern s32 fn_80241098(void);
+    extern s32 fn_80240928(void);
+    u8 sp78[0x60];
+    u8 sp610[0xd8];
+    u8 sp734[0x2c];
+    u8 sp760[0xc8];
+    u8 *g = lbl_80498C30;
+    u8 *slots;
+    s32 *p;
+    s32 result;
     int v = fn_8000DA10();
-    if (*(int *)(lbl_80498C30 + 0x18) != v) {
-        int *p = (int *)(lbl_80498C30 + 0x18);
+    if (*(int *)(g + 0x18) != v) {
+        *(int *)(g + 0x18) = v;
+        p = (int *)(g + 0x18);
         p[4] = 0; p[2] = 0; p[5] = 2; p[3] = 2;
         p[8] = 0; p[6] = 0; p[9] = 2; p[7] = 2;
         p[12] = 0; p[10] = 0; p[13] = 2; p[11] = 2;
         p[16] = 0; p[14] = 0; p[17] = 2; p[15] = 2;
-        *(int *)(lbl_80498C30 + 0x18) = v;
     }
-    (void)arg0; (void)arg1; (void)arg2; (void)arg3; (void)arg4; (void)arg5;
-    return 0;
+    slots = g + 0x18;
+    slots[4] = ((s32 (*)(void *))(*(void ***)arg3)[5])(arg3) == 1;
+    fn_8013C804();
+    fn_8001880C();
+    result = -1;
+    fn_802556BC(sp610, 0);
+    *(s32 *)(sp610 + 0xd8) = fn_802E4A10();
+    fn_8002F53C(sp760, fn_80241098, fn_80240928, 0x28, 5);
+    memset(sp734, 0, 0x2c);
+    fn_8024F17C(sp78, arg3,
+                slots[4] ? (s32 *)(slots + arg2 * 16 + 0x14) : (s32 *)(slots + arg2 * 16 + 0xc),
+                slots[4] ? (s32 *)(slots + arg2 * 16 + 0x10) : (s32 *)(slots + arg2 * 16 + 0x8),
+                sp734, sp610);
+    (void)arg0; (void)arg1; (void)arg4; (void)arg5;
+    return result;
 }
 
 #pragma push
@@ -1031,7 +1061,7 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
     extern void fn_8002F634(void *, void *, s32, s32);
     extern void fn_80018B24(void);
     extern void fn_8013C8B8(void);
-    extern void fn_802146BC(s32 *, s32, s32, s32);
+    extern s32 fn_802146BC(s32 *, s32, s32, s32);
     extern void fn_80255758(void *, s32);
     extern void *fn_80258354(void);
     extern unsigned char lbl_80344170[];
