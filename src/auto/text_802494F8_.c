@@ -1241,12 +1241,16 @@ typedef struct RaceMovieSelector {
 } RaceMovieSelector;
 
 #pragma cplusplus on
-extern "C" void fn_8024BA00(void *arg0) {
+extern "C" void fn_8024BA00(RaceMovieSelector *selector) {
+    #define sRacePathFormat lbl_80343E70 /* "%s/race.%s" */
+    #define sM2vExtension   lbl_8055BFF8 /* "m2v" */
+    #define sSnprintf       fn_801345D8
     class Base {
     public:
         char pad[0xC];
     };
-    class Dummy : public Base {
+    /* selection handler: vtable+0x30 = select(handlerArg, entryName) */
+    class SelectionHandler : public Base {
     public:
         virtual void v0();
         virtual void v1();
@@ -1258,13 +1262,13 @@ extern "C" void fn_8024BA00(void *arg0) {
         virtual void v7();
         virtual void v8();
         virtual void v9();
-        virtual void select(s32, s32);
+        virtual void select(s32 handlerArg, s32 entryName);
     };
-    s32 count = *(s32 *)((char *)arg0 + 0x14);
-    s32 next = (count + *(s32 *)((char *)arg0 + 0x11C) - 1) % count;
-    *(s32 *)((char *)arg0 + 0x11C) = next;
-    (*(Dummy **)((char *)arg0 + 0x124))->select(*(s32 *)((char *)arg0 + 0x120), (*(s32 **)((char *)arg0 + 0x10))[next * 2 + 1]);
-    fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70, (*(s32 **)((char *)arg0 + 0x10))[*(s32 *)((char *)arg0 + 0x11C) * 2 + 1], (const char *)&lbl_8055BFF8);
+    s32 count = selector->count;
+    s32 next = (count + selector->index - 1) % count;
+    selector->index = next;
+    ((SelectionHandler *)selector->handler)->select(selector->handlerArg, selector->items[next * 2 + 1]);
+    sSnprintf(selector->path, 0x20, (const char *)&sRacePathFormat, selector->items[selector->index * 2 + 1], (const char *)&sM2vExtension);
 }
 #pragma cplusplus on
 extern "C" void fn_8024BAA0(void *arg0) {
