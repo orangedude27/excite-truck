@@ -665,6 +665,24 @@ struct SelectorWidget {
     virtual void clearCursor(); /* 0x6C */
     virtual void setExpanded(); /* 0x70 */
 };
+
+/* --- the data the selector shows ---------------------------------------- */
+/* lbl_8055F3E4, the handle fn_8027B878 returns for the screen's argument.  Its
+   groups are the difficulties and each group's items are the choices listed
+   under it; fn_80261C68 turns at most 3 groups and 6 items per group into the
+   two widget lists. */
+struct SelectorDataGroup;
+struct SelectorData {
+    virtual void v08();
+    virtual s32 groupCount();                /* 0x0C how many groups there are */
+    virtual SelectorDataGroup *group(s32);   /* 0x10 one group, by number */
+    virtual void v14();
+};
+struct SelectorDataGroup {
+    virtual void v08(); virtual void v0C(); virtual void v10(); virtual void v14();
+    virtual s32 itemCount();                 /* 0x18 how many items this group has */
+    virtual void *item(s32);                 /* 0x1C one item's data node */
+};
 #pragma pop
 #pragma push
 #pragma cplusplus on
