@@ -4309,6 +4309,9 @@ extern "C" void fn_80144304(void) {
 extern "C" void fn_8014430C(void) {
 }
 
+/* Empty virtual slot in the zone system's run of unimplemented callbacks
+ * (fn_801442D4..fn_8014432C, the group the ZoneMaster vtable lbl_8032CAF0
+ * points into).  Calling it does nothing; it compiles to a bare 'blr'. */
 extern "C" void fn_80144310(void) {
 }
 
