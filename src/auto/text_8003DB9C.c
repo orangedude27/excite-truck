@@ -3578,8 +3578,9 @@ void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg
     *(volatile unsigned int *)0xCC008000 = coeff1.word;
     *(volatile unsigned short *)((unsigned char *)__GXData + 2) = 0;
 }
-void GXSetDispCopyGamma(s32 arg0) {
-    ((GXDispCopyGammaReg *)&__GXData[0x23c / 4])->gamma = arg0;
+void GXSetDispCopyGamma(s32 gamma) {
+    // Set the gamma correction value used when copying the frame buffer to the display.
+    ((GXDispCopyGammaReg *)&__GXData[0x23c / 4])->gamma = gamma;
 }
 
 typedef struct {
