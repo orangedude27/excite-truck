@@ -51,7 +51,11 @@ typedef struct UnlockableTable {
 // split_file divides it into the game's real files (file_status shows its range).
 
 void fn_80018B70(void) {
-    fn_8027DEAC();
+#define GetCurrentPlayerMode fn_8027DEAC
+    /* GetCurrentPlayerUnlockMode: tail-call thunk forwarding to the per-player
+       mode getter whose result gates non-car unlockables in fn_80018E44. */
+    GetCurrentPlayerMode();
+#undef GetCurrentPlayerMode
 }
 
 /* qsort comparator for unlockable records: order by value ascending, using the
