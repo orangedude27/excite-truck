@@ -4,8 +4,13 @@
 extern void *lbl_8055DFC4;
 extern void lbl_8041E180(void);
 extern void *memcpy(void *, const void *, unsigned long);
+/* Install the AX DSP DMA work buffer: point the global 0x4000-byte buffer pointer at its static backing store. */
 void fn_801293B4(void) {
-    lbl_8055DFC4 = lbl_8041E180;
+#define gAXDmaBuffer lbl_8055DFC4
+#define sAXDmaBufferData lbl_8041E180
+    gAXDmaBuffer = sAXDmaBufferData;
+#undef gAXDmaBuffer
+#undef sAXDmaBufferData
 }
 
 void fn_801293C4(void) {
