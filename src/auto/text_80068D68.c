@@ -16382,12 +16382,15 @@ BOOLEAN btsnd_hcic_write_pin_type(UINT8 type) {
 }
 
 int btsnd_hcic_read_stored_key(void *p_buf, u8 *bd_addr, u8 read_all_flag) {
+    /* Build an HCI_Read_Stored_Link_Key command (opcode 0x0C0D, 7-byte payload)
+     * into the caller's buffer: the 6-byte bd_addr in reverse order followed by
+     * read_all_flag, then submit the buffer via btu_hcif_send_cmd. */
     u8 *buf = p_buf;
-    *(u16 *)(buf + 2) = 0xA;
+    *(u16 *)(buf + 2) = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_READ_STORED_KEY;
     *(u16 *)(buf + 4) = 0;
-    buf[8] = 0xD;
-    buf[9] = 0xC;
-    buf[0xA] = 7;
+    buf[8] = (u8)HCI_READ_STORED_LINK_KEY;
+    buf[9] = (u8)(HCI_READ_STORED_LINK_KEY >> 8);
+    buf[0xA] = HCIC_PARAM_SIZE_READ_STORED_KEY;
     buf[0xB] = bd_addr[5];
     buf[0xC] = bd_addr[4];
     buf[0xD] = bd_addr[3];
