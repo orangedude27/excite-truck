@@ -3191,7 +3191,9 @@ void *fn_802D39A4(float value) {
     return found;
 }
 #pragma processor gekko
-void fn_802D3A50(void *arg0) { ((unsigned char *)arg0)[0xC] = 0; }
+/* Free a GX effect/light pool entry by clearing its in-use flag at offset 0xC
+   (entries are allocated by fn_802D39A4). */
+void fn_802D3A50(void *effect) { ((unsigned char *)effect)[0xC] = 0; }
 
 extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE8, lbl_80564FEC;
 #pragma push
