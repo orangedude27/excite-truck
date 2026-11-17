@@ -213,12 +213,16 @@ void fn_80291AC8(void) {
     }
     settings[4] = 0;
 }
-#pragma scheduling invalid_target
-void fn_80291B14(float *arg0) {
-    float value = arg0[0];
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_80291B14(arg0, value)
+void *arg0;
+float value;
+{
     int result;
     signed char success;
-    fn_802C8E70((int *)lbl_804B4010);
+    fn_802C8E70((int *)arg0, (int *)lbl_804B4010);
     *((float *)(lbl_804B4010 + 8)) = value;
     result = fn_802C8FF4((int *)lbl_804B4010, *((float *)(lbl_804B4010 + 0x1C)));
     success = 0;
@@ -227,9 +231,6 @@ void fn_80291B14(float *arg0) {
     }
     *((unsigned char *)(lbl_804B4010 + 0x14)) = success;
 }
-#pragma processor 750
-#pragma push
-#pragma processor 750
 void fn_80291B9C(void *arg0, float *arg1, float arg2) {
     float c = arg1[2];
     float b = arg1[1];
@@ -512,7 +513,7 @@ void fn_8029231C(float *arg0) {
         sp[1] = base[10] + temp_f2;
         sp[2] = base[11] + temp_f1;
         dt = fn_80291784(temp_f1, temp_f2, temp_f3, temp_f4);
-        fn_80291B14((float *)sp);
+        fn_80291B14((float *)sp, dt);
         fn_80291B9C(&lbl_804B3EC0, (float *)sp, dt);
     }
 }
