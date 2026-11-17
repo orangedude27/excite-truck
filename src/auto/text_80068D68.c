@@ -10386,7 +10386,7 @@ void btm_inq_db_reset(void) {
 }
 
 void fn_8007BC88(void) {
-
+    /* Empty BTM init hook: called from btm_init just after btm_cb is cleared; does nothing in this build. */
 }
 
 /* Check if a peer BD_ADDR was already reported in the current inquiry; if not and there is space, record it. */
