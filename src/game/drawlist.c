@@ -1335,8 +1335,10 @@ void fn_802CA04C(int listCount) {
     }
 }
 
-void fn_802CA094(int *arg0) {
-    __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(arg0, 1);
+/* Deleting-destructor thunk for J2DAnmTexPatternTIMGPointer: destroy `self`
+ * and pass shouldDelete = 1 so the storage is freed too. */
+void fn_802CA094(int *self) {
+    __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(self, 1);
 }
 
 void fn_802CA09C(void) {
