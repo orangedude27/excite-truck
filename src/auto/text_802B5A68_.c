@@ -1197,22 +1197,16 @@ s32 fn_802B7300(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
     extern float lbl_80564C74;
     extern float lbl_80564C78;
     extern float lbl_80564C88;
-    extern void fn_801E41D8(void *, void *, s32, f32);
-    union ScaleConvert {
-        double d;
-        u32 word[2];
-    } scaleConvert;
+    extern s32 fn_801E41D8(void *, void *, s32, f32);
     f32 points[6];
     f32 x1;
     f32 y1;
     f32 height;
     f32 scale;
-    u32 magic;
     s16 scaleValue;
-    s32 color;
-    s32 alpha;
+    u32 color;
+    u32 alpha;
 
-    magic = 0x43300000;
     points[4] = lbl_80564C74;
     x1 = lbl_80564C88 + (f32)x * lbl_80564C58;
     points[3] = x1;
@@ -1227,19 +1221,16 @@ s32 fn_802B7300(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
     points[4] = height + farg0;
 
     scaleValue = (s16)fn_802B6E30();
-    scaleConvert.word[0] = magic;
-    scaleConvert.word[1] = (u32)scaleValue ^ 0x80000000;
-    scale = lbl_80564C88 * (f32)(scaleConvert.d - lbl_80564C68);
+    scale = lbl_80564C88 * (f32)scaleValue;
 
-    color = arg2;
-    alpha = arg3;
+    color = (u32)arg2;
+    alpha = (u32)arg3;
     if (arg2 == 0) {
-        alpha = 0xFF000000;
-        color = 0x20;
+        alpha = 0xFF000000u;
+        color = 0x20u;
     }
-    fn_801E41D8(&points[3], &points[0],
-                 (color << 24) | (alpha & 0xFFFFFF), scale);
-    return 0;
+    return fn_801E41D8(&points[3], &points[0],
+                 (alpha & 0xFFFFFFu) | (color << 24), scale);
 }
 
 #pragma pop
@@ -1818,8 +1809,7 @@ s32 fn_802B825C(s32 arg0) {
         value = values[1];
         next = values[0] + fn_802B822C(arg0);
         value = value < next ? value : next;
-        if (value > lbl_80564C98) value = lbl_80564C98;
-        else value = value;
+        value = value > lbl_80564C98 ? value : lbl_80564C98;
         if (value != values[0]) {
             values[0] = value;
             changed = 1;
