@@ -151,59 +151,44 @@ extern "C" const char lbl_803257D4[];
 extern "C" const char lbl_803257B0[];
 extern "C" const char lbl_80325804[];
 extern "C" const char lbl_803257E0[];
-#pragma use_lmw_stmw off
+#pragma opt_propagation off
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9WaveSoundFi_800FFD24(void* arg0, int arg1) {
-    struct LinkListImpl {
-        void* unused;
-        void* head;
-    };
-    struct PriorityList {
-        void* unused;
-        LinkListImpl list;
-    };
-    register void* soundNode;
-    register int priority;
-    register PriorityList* list;
-    register void* end;
-    register void* cursor;
-    register int value;
+    #pragma opt_common_subs off
+    #pragma opt_dead_assignments off
+    void* node;
+    void* list;
+    void* sentinel;
+    int priority;
+    void* soundNode;
 
     SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
-    value = *(unsigned char*)((unsigned char*)arg0 + 0x74) + *(int*)((unsigned char*)arg0 + 0x40);
-    if (value > 0x7f) {
-        priority = 0x7f;
-    } else {
-        priority = value & ~(value >> 31);
-    }
-    list = *(PriorityList**)((unsigned char*)arg0 + 0x1b0);
-    if (arg0 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
-    }
+    priority = *(unsigned char*)((unsigned char*)arg0 + 0x74) + *(int*)((unsigned char*)arg0 + 0x40);
+    if (priority > 0x7F)
+        priority = 0x7F;
+    else
+        priority &= ~(priority >> 31);
+    list = *(void**)((unsigned char*)arg0 + 0x1b0);
+    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
     soundNode = (unsigned char*)arg0 + 0xb8;
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&list->list, soundNode);
-    end = &list->list.head;
-    cursor = list->list.head;
-    while (cursor != end) {
-        if (cursor == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23d, lbl_803257E0);
-        }
-        value = *(unsigned char*)((unsigned char*)cursor - 0x44) + *(int*)((unsigned char*)cursor - 0x78);
-        if (value > 0x7f) {
-            value = 0x7f;
-        } else {
-            value &= ~(value >> 31);
-        }
-        if (priority < value) {
-            break;
-        }
-        cursor = *(void**)cursor;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, soundNode);
+    node = *(void**)((unsigned char*)list + 8);
+    sentinel = (unsigned char*)list + 8;
+    while (node != sentinel) {
+        int nodePriority;
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23d, lbl_803257E0);
+        nodePriority = *(unsigned char*)((unsigned char*)node - 0x44) + *(int*)((unsigned char*)node - 0x78);
+        if (nodePriority > 0x7F)
+            nodePriority = 0x7F;
+        else
+            nodePriority &= ~(nodePriority >> 31);
+        if (priority < nodePriority) break;
+        node = *(void**)node;
     }
-    if (arg0 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
-    }
-    void* node = cursor;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&list->list, &node, soundNode);
+    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
+    void* iterator = node;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((unsigned char*)list + 4, &iterator, soundNode);
 }
+#pragma opt_propagation reset
 /* Return non-zero when this WaveSound's +0x1AC field is set (the value passed
  * to fn_800FFE68, cleared by the constructor fn_800FFA10). */
 extern "C" int fn_800FFE54(void *sound) {
@@ -222,7 +207,8 @@ extern "C" int fn_800FFE70(int sound) {
     return sound + 0xD8;
 }
 
-extern "C" int fn_800FFE78(int arg0) { return arg0 + 0xD8; }
+/* Return the address of the embedded WsdPlayer (at +0xD8 of the WaveSound object). */
+extern "C" int fn_800FFE78(int sound) { return sound + 0xD8; }
 
 extern "C" u32 *fn_800FFE80(void) {
     return &lbl_8055DE88;
