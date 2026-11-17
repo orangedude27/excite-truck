@@ -1873,8 +1873,11 @@ s32 fn_80007B98(s32 obj, s32 unused, u32 msg, u32 param) {
 }
 
 extern u8 lbl_802FB668[];
+/* Returns the "ResultsOverlay" scene name string. */
 void *fn_80007BB0(void) {
-    return lbl_802FB668;
+    #define s_resultsOverlayName lbl_802FB668
+    return s_resultsOverlayName;
+    #undef s_resultsOverlayName
 }
 
 /* When the session's startup object has flag 0x200 set, dispatch the HUD event with the session word at +0x1C. */
