@@ -437,7 +437,6 @@ s32 fn_801B3DC0(void* owner, u32 object, u32 key) {
 
 extern void* fn_801B4570(void*, u32);
 extern f32 lbl_8056264C;
-#pragma ppc_psq_save off
 #pragma cplusplus on
 extern "C" void fn_801B3E24(void *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, f32 farg0) {
     class Item {
