@@ -1422,7 +1422,10 @@ extern "C" void fn_801FEFC0(void) {
 
 }
 
-extern "C" void fn_801FF114(void) {
+/* No-op virtual method (vtable lbl_8033B700, slot 0x10: the first one after the
+ * deleting/complete destructors) of the holder class that owns the DroneManager
+ * entry point fn_801FF014; this class leaves the handler empty. */
+extern "C" void fn_801FF114(void *self) {
 
 }
 
