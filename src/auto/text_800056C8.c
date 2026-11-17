@@ -1946,8 +1946,9 @@ s32 fn_80007C58(void) {
     return fn_8000C630(0xb, -1);
 }
 
-u8 fn_80007C64(void *arg0) {
-    return ((u8 *)arg0)[4];
+/* Returns the boolean flag at byte 4 of the overlay object (as set/cleared by fn_80007C10/fn_80007CD0). */
+u8 fn_80007C64(void *obj) {
+    return ((u8 *)obj)[4];
 }
 
 void fn_80007C6C(void *obj) {
