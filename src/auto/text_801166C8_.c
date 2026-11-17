@@ -2517,6 +2517,8 @@ u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     volatile u32 *offset = (volatile u32 *)((u8 *)arg0 + 0x90);
     volatile u32 *base = (volatile u32 *)((u8 *)arg0 + 0xB4);
     volatile u32 *capacityPtr = (volatile u32 *)((u8 *)arg0 + 0x40);
+    s32 a2 = arg2;
+    u32 a3 = arg3;
     u32 result;
     u32 current;
     u32 end;
@@ -2527,8 +2529,8 @@ u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     if (*offset == (u32)arg1) goto return_arg3;
     *offset = (u32)arg1;
     current = *offset;
-    result = fn_8011A240((u8 *)arg0 + 0x54, current + *base, arg2, arg3);
-    if (result != arg3) {
+    result = fn_8011A240((u8 *)arg0 + 0x54, current + *base, a2, a3);
+    if (result != a3) {
         *(s32 *)((u8 *)arg0 + 0x20) = 1;
         fn_8011A330(arg0);
     }
@@ -2540,13 +2542,13 @@ u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     capacity = *capacityPtr;
     remaining = end - current;
     *(u32 *)((u8 *)arg0 + 0x98) = current;
-    if (capacity <= remaining) {
+    if (remaining < capacity) {
         *(u32 *)((u8 *)arg0 + 0x48) = *capacityPtr;
     }
-    fn_8011A1A0((u32 *)arg2, result);
+    fn_8011A1A0((u32 *)a2, result);
     return result;
 return_arg3:
-    return arg3;
+    return a3;
 }
 
 #pragma unroll reset
@@ -5318,21 +5320,25 @@ void fn_80120834(s32 n, s32 *info, f32 *table) {
     f32 angle2;
     f32 stage_scale;
     f32 stage_zero;
+
     info[0] = n;
     info[1] = 1;
     if (n <= 2)
         return;
+
     half = n >> 1;
     angle = lbl_80561214 / (f32)half;
     endpoint = (f32)cos((f64)(angle * (f32)half));
     table[0] = lbl_80561218;
     table[1] = endpoint;
+
     if (half >= 4) {
         f32 first = (f32)cos((f64)(lbl_8056121C * angle));
         f32 second_angle = lbl_80561220 * angle;
-        table[2] = (lbl_80561210 / first);
+        table[2] = lbl_80561210 / first;
         table[3] = lbl_80561210 / (f32)cos((f64)second_angle);
     }
+
     angle2 = lbl_80561224 * angle;
     for (i = 4; i < half; i += 4) {
         table[i + 0] = (f32)cos((f64)(angle * (f32)i));
@@ -5340,6 +5346,7 @@ void fn_80120834(s32 n, s32 *info, f32 *table) {
         table[i + 2] = (f32)cos((f64)(angle2 * (f32)i));
         table[i + 3] = (f32)sin((f64)(angle2 * (f32)i));
     }
+
     stage_scale = lbl_80561210;
     stage_zero = lbl_80561218;
     i = 0;
@@ -5592,6 +5599,7 @@ void fn_80120F84(s32 n, s32 ip_arg, void *a_arg) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_80121400(s32 n, s32 *map, f32 *data) {
     s32 *ip = map;
     f32 *a = data;
@@ -8250,11 +8258,10 @@ void fn_80124CE8(void *arg0, void *arg1) {
     ((f32 *)arg0)[15] = v0;
 }
 
-#pragma push
-#pragma processor 750
+#pragma opt_propagation off
 void fn_80124F90(void *arg0) {
-    register f32 r4_f12, r4_f11, r4_f10, r4_f9, r4_f0b, r4_f1b;
-    register f32 r4_f7, r4_f2, r4_f3, r4_f8, r4_f6, r4_f4, r4_f5, r4_f0, r4_f1;
+    f32 r4_f12, r4_f11, r4_f10, r4_f9, r4_f1b, r4_f0b;
+    f32 r4_f7, r4_f2, r4_f3, r4_f8, r4_f6, r4_f4, r4_f5, r4_f0, r4_f1;
 
     r4_f1 = *(f32 *)((u8 *)arg0 + 0x0);
     r4_f0 = *(f32 *)((u8 *)arg0 + 0x10);
@@ -8281,7 +8288,7 @@ void fn_80124F90(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x18) = r4_f8 + r4_f12;
     *(f32 *)((u8 *)arg0 + 0x1C) = r4_f9 - r4_f11;
 }
-#pragma pop
+#pragma opt_propagation reset
 void fn_80125014(void *arg0) {
     f32 temp_f0;
     f32 temp_f1;
