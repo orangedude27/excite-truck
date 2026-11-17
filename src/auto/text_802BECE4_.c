@@ -1064,7 +1064,9 @@ fn_802C98DC(&a, &b, &c, &d, m[10]);
 }
 
 #pragma pop
-int fn_802C0C98(void *arg0) { return *(int *)((char *)arg0 + 8); }
+/* Getter: returns the 32-bit field at offset 0x8 of the given object (one of the
+ * tiny accessors of this module, alongside fn_802C0CA0's float field at 0x14). */
+int fn_802C0C98(void *object) { return *(int *)((char *)object + 8); }
 
 /* Getter: returns the float field at offset 0x14 of the given object. */
 float fn_802C0CA0(void *object) { return *(float *)((char *)object + 0x14); }
