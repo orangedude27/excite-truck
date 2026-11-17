@@ -1,6 +1,5 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-typedef int s32;
 #pragma push
 #pragma cplusplus on
 class ParticleConfig {
@@ -596,10 +595,9 @@ void fn_802B28BC(int *entries, int count) {
 #pragma optimization_level 3
 void *fn_802B2934(void *arg0, void **arg1) {
     int count = ((int *)arg0)[1];
-    int next = count + 1;
     void *val = *arg1;
     void **entry = *(void ***)arg0 + count;
-    ((int *)arg0)[1] = next;
+    ((int *)arg0)[1] = count + 1;
     *entry = val;
     return entry;
 }
