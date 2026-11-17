@@ -1111,50 +1111,58 @@ extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const wch
 #pragma use_lmw_stmw off
 extern "C" u16 SetString__Q36nw4hbm3lyt7TextBoxFPCwUsUs(void *this_ptr, const u16 *str, u32 offset, u32 len)
 {
-  u8 *new_var;
-  u32 count;
-  u32 max;
-  const char *msg = lbl_80320560;
-  if ((*((void **) (((u8 *) this_ptr) + 0xD4))) == 0)
+  /* nw4hbm::lyt::TextBox::SetString(pw, offs, len): copy `len` wide characters
+   * from `str` into the box's own string buffer (+0xD4, allocated by
+   * AllocStringBuffer__Q36nw4hbm3lyt7TextBoxFUs) starting at character
+   * `offset`, NUL-terminate it and store the new string length at +0xFA.
+   * The buffer holds mStringBufferSize (+0xF8) / 2 - 1 characters, so an
+   * offset past the end gives up and a too-long string is cut short, each
+   * with a nw4hbm::db message (file/line/text from the block lbl_80320560).
+   * Returns the number of characters copied. */
+  u8 *self;
+  u32 copied;
+  u32 capacity;
+  const char *strings = lbl_80320560;
+  if ((*((void **) (((u8 *) this_ptr) + 0xD4))) == 0) /* no string buffer */
   {
-    ((void (*)(const char *, s32, const char *, ...)) Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2C4, msg + 0x328);
+    WARNING(strings + 0x10, 0x2C4, strings + 0x328);
     return 0;
   }
-  new_var = (u8 *) this_ptr;
-  if ((*((u16 *) (((u8 *) this_ptr) + 0xF8))) == 0)
+  self = (u8 *) this_ptr;
+  if ((*((u16 *) (((u8 *) this_ptr) + 0xF8))) == 0) /* mStringBufferSize */
   {
-    max = 0;
+    capacity = 0;
   }
   else
   {
-    if ((*((u16 *) (new_var + 0xF8))) < 2)
+    if ((*((u16 *) (self + 0xF8))) < 2)
     {
-      ((void (*)(const char *, s32, const char *, ...)) Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x25D, msg + 0x2EC);
+      PANIC(strings + 0x10, 0x25D, strings + 0x2EC);
     }
-    max = ((((u32) (*((u16 *) (new_var + 0xF8)))) >> 1) - 1) & 0xffff;
+    capacity = ((((u32) (*((u16 *) (self + 0xF8)))) >> 1) - 1) & 0xffff;
   }
-  if (offset >= max)
+  if (offset >= capacity)
   {
-    ((void (*)(const char *, s32, const char *, ...)) Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2CC, msg + 0x33C);
+    WARNING(strings + 0x10, 0x2CC, strings + 0x33C);
     return 0;
   }
-  max = (max - offset) & 0xffff;
-  count = len;
-  if (len > max)
+  capacity = (capacity - offset) & 0xffff;
+  copied = len;
+  if (len > capacity)
   {
-    count = max;
+    copied = capacity;
   }
-  if (((u16) count) < len)
+  if (((u16) copied) < len)
   {
-    ((void (*)(const char *, s32, const char *, ...)) Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2D1, msg + 0x358, len - ((u16) count));
+    WARNING(strings + 0x10, 0x2D1, strings + 0x358, len - ((u16) copied));
   }
-  memcpy(((u8 *) (*((u16 **) (new_var + 0xD4)))) + (((u16) offset) * 2), str, ((u16) count) * 2);
+  memcpy(((u8 *) (*((u16 **) (self + 0xD4)))) + (((u16) offset) * 2), str, ((u16) copied) * 2);
   {
-    u32 end = offset + count;
-    *((u16 *) (((u8 *) this_ptr) + 0xFA)) = (u16) end;
-    ((u16 *) (*((u16 **) (new_var + 0xD4))))[(u16) end] = 0;
+    u32 end = offset + copied;
+    *((u16 *) (((u8 *) this_ptr) + 0xFA)) = (u16) end; /* mStringLength */
+    ((u16 *) (*((u16 **) (self + 0xD4))))[(u16) end] = 0;
   }
-  return count;
+  return copied;
 }
 extern "C" s32 fn_800DF1C8(s32 object, s32 deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
