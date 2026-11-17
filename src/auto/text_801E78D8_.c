@@ -820,6 +820,7 @@ void *fn_801E879C(void) {
     return lbl_80487DE0;
 }
 
+/* Returns a pointer to the sub-object at offset 0x3E4 of the global 0x3F8-byte state block (lbl_80487DE0). */
 void *fn_801E87A8(void) {
     return lbl_80487DE0 + 0x3E4;
 }
