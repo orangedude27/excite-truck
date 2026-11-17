@@ -711,9 +711,10 @@ void fn_802B9B2C(void *record) {
     ((int *)record)[1] = 0;
 }
 
-void fn_802B9B40(void *arg0) {
-    ((int *)arg0)[1] = 0;
-    ((int *)arg0)[0] = 0;
+/* Zeroes the two 32-bit fields of an 8-byte grid cell; used as the clear callback for the spatial grid. */
+void fn_802B9B40(void *cell) {
+    ((int *)cell)[1] = 0;
+    ((int *)cell)[0] = 0;
 }
 
 /* qsort comparator: order records by the key at index 2 (byte offset 8);
