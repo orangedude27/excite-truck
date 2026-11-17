@@ -12715,12 +12715,32 @@ block_11:
     return -0x16 & ((s32)~(((s32)(u16)i - 0x17) | (0x17 - (s32)(u16)i)) >> 31);
 }
 
+/* One entry of the prfile2 file-state table: 0x17 slots of 0xF0 bytes at
+ * lbl_80405D58 (the table inside the prfile2 control block at lbl_80405D18,
+ * which fn_800B94EC clears and puts its semaphore on).  Each slot holds one
+ * NAND file opened to carry a FAT image, tagged with the file handle that
+ * owns it; the table is walked by handle under the lbl_8055DD30 semaphore. */
+struct PF2FileSlot {
+    u32 fileId;      /* 0x00 handle of the file owning the slot, 0 when free */
+    char path[0x50]; /* 0x04 NAND path of the image file */
+    u32 fileLength;  /* 0x54 length of the image file in bytes */
+    u8 handle[0x8C]; /* 0x58 NAND handle of the open file */
+    u32 flags;       /* 0xE4 slot flags: 2 = in use, 4 = being opened */
+    u32 padE8;       /* 0xE8 */
+    s32 error;       /* 0xEC error the last operation on this slot left */
+};
+#define PF2_FILE_SLOTS   lbl_80405D58
+#define PF2_SLOT_AT(off) ((struct PF2FileSlot *)(lbl_80405D58 + (off)))
+#define PF2_SLOT_SIZE    0xF0
+#define PF2_SLOT_COUNT   0x17
+
+/* prfile2: leave err in the error field of the slot that holds `key`. */
 static inline void fn800B960CSetSlotError(u32 key, s32 err) {
     u16 j;
-    for (j = 0; j < 0x17; j++) {
-        u32 offset = j * 0xF0;
-        if (*(u32 *)(lbl_80405D58 + offset) == key) {
-            *(s32 *)(lbl_80405D58 + offset + 0xEC) = err;
+    for (j = 0; j < PF2_SLOT_COUNT; j++) {
+        u32 offset = j * PF2_SLOT_SIZE;
+        if (PF2_SLOT_AT(offset)->fileId == key) {
+            PF2_SLOT_AT(offset)->error = err;
             break;
         }
     }
@@ -23735,23 +23755,19 @@ extern "C" void fn_800CA064(void) {
     u8 *base = (u8 *)lbl_8055DD98;
     s32 index = (s32)(userData >> 16);
     u32 low = userData & 0xFFFF;
-    void *entry;
-    OSAlarm *alarm;
-    if (fn_80060C7C((void *)index) == 0) goto setup;
-    entry = *(void **)(base + index * 4 + 0x254);
-    if (((s32 (*)(void *))fn_800D1548)(entry) != 0) goto do_call;
-setup:
-    alarm = (OSAlarm *)(base + 0x4D0) + index;
-    OSSetAlarmUserData(alarm, (void *)((index << 16) | (index + 2)));
-    OSCancelAlarm(alarm);
-    {
-        u32 ticks = *(volatile u32 *)0x800000F8;
-        u32 period = ((ticks >> 2) / 1000U) * 50;
-        ((void (*)(OSAlarm *, u32, u32, u32, void (*)(void)))OSSetAlarm)(alarm, 0x10624DD3, 0, period, fn_800CA064);
+    if (fn_80060C7C((void *)index) == 0 ||
+        ((s32 (*)(void *))fn_800D1548)(*(void **)(base + index * 4 + 0x254)) == 0) {
+        u32 ticks;
+        u32 period;
+        base = (u8 *)((OSAlarm *)(base + 0x4D0) + index);
+        OSSetAlarmUserData((OSAlarm *)base, (void *)((index << 16) | (index + 2)));
+        OSCancelAlarm((OSAlarm *)base);
+        ticks = *(volatile u32 *)0x800000F8;
+        period = ((ticks >> 2) / 1000U) * 50;
+        ((void (*)(OSAlarm *, u32, u32, u32, void (*)(void)))OSSetAlarm)((OSAlarm *)base, 0x10624DD3, 0, period, fn_800CA064);
+    } else {
+        ((void (*)(void *, void *, s32))fn_800D120C)(*(void **)(base + index * 4 + 0x254), *(void **)(base + 0x5C0), low);
     }
-    return;
-do_call:
-    fn_800D120C(*(void **)(base + index * 4 + 0x254), *(void **)(base + 0x5C0), low);
 }
 
 extern "C" void fn_800D15B4(void*);
