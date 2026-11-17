@@ -769,9 +769,12 @@ long fn_801E868C(long index, unsigned long *outHi, unsigned long *outLo) {
     }
     return 0;
 }
-void fn_801E86E8(long arg0, long arg1) {
-    if (arg1 < 0) arg1 = (long)lbl_8055AF0C;
-    fn_8026A248(arg0, arg1);
+/* Set the camera's wanted subject for a player, using the current player when the index is negative. */
+void fn_801E86E8(long subjectIndex, long playerIndex) {
+#define CurrentPlayerIndex lbl_8055AF0C
+    if (playerIndex < 0) playerIndex = (long)CurrentPlayerIndex;
+    fn_8026A248(subjectIndex, playerIndex);
+#undef CurrentPlayerIndex
 }
 
 long fn_801E86F8(long playerIndex) {
