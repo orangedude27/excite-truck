@@ -356,12 +356,12 @@ done:
 }
 
 void __GXInitRevisionBits(void) {
-    volatile unsigned int *p = __GXData;
-    unsigned int n = 0;
-    volatile unsigned char *b = (volatile unsigned char *)0xCC008000;
-    volatile unsigned int *w = (volatile unsigned int *)0xCC008000;
-    unsigned int i;
-    unsigned int code;
+    register volatile unsigned int *p = __GXData;
+    register unsigned int n = 0;
+    register volatile unsigned char *b = (volatile unsigned char *)0xCC008000;
+    register volatile unsigned int *w = (volatile unsigned int *)0xCC008000;
+    register unsigned int i;
+    register unsigned int code;
     for (i = 0; i < 2; i++) {
         code = 0x80 | n++;
         p[7] |= 0x40000000;
@@ -420,14 +420,13 @@ void __GXSetIndirectMask(s32);
 void __GXSetTmemConfig(s32);
 void __GXInitGX(void);
 void OSRegisterVersion(s32);
+#pragma unroll off
 void *GXInit(void *arg0, unsigned int arg1) {
-    static int shutdownRegistered = 0;
+    static int shutdownFuncRegistered = 0;
     unsigned int hid;
     unsigned int *p;
     unsigned int *q;
     int i;
-    unsigned int v10;
-    unsigned int tmp;
     extern s32 __GXVersion;
     extern unsigned int * const __GXData;
     OSRegisterVersion(__GXVersion);
@@ -448,9 +447,9 @@ void *GXInit(void *arg0, unsigned int arg1) {
     GXInitFifoBase(&FifoObj_8037BA40, arg0, arg1);
     GXSetCPUFifo(&FifoObj_8037BA40);
     GXSetGPFifo((unsigned int *)&FifoObj_8037BA40);
-    if (shutdownRegistered == 0) {
+    if (shutdownFuncRegistered == 0) {
         OSRegisterShutdownFunction(&GXShutdownFuncInfo_803036D0);
-        shutdownRegistered = 1;
+        shutdownFuncRegistered = 1;
     }
     __GXPEInit();
     hid = PPCMfhid2();
@@ -459,65 +458,71 @@ void *GXInit(void *arg0, unsigned int arg1) {
     p = *(unsigned int * volatile *)&__GXData;
     p[0x254/4] = 0;
     p[0x174/4] = __rlwimi(0xFF, 0x0F, 24, 0, 7);
-    p[0x7C/4] = __rlwimi(0, 0x22, 24, 0, 7);
-    v10 = 0xC0;
     q = p;
+    p[0x7C/4] = __rlwimi(0, 0x22, 24, 0, 7);
     {
         unsigned int n = 0;
+        unsigned int v = 0xC0;
         for (i = 0; i < 8; i++) {
             unsigned int idx = n >> 1;
-            unsigned int off = ((n << 1) & 0xFFFFFFFC);
-            unsigned int *r27 = (unsigned int *)((unsigned char *)p + off);
-            unsigned int r11 = v10 + 1;
+            unsigned int *r27 = (unsigned int *)((unsigned char *)p + ((n << 1) & 0xFFFFFFFC));
+            unsigned int n2 = n + 1;
+            unsigned int a = idx + 0xF6;
+            unsigned int b = idx + 0x28;
+            unsigned int off2 = (n2 << 1) & 0xFFFFFFFC;
+            unsigned int idx2 = n2 >> 1;
+            unsigned int *r27b;
+            unsigned int r4, r11, r10;
             q[0x180/4] = 0;
             q[0x1C0/4] = 0;
+            n = n2 + 1;
             r27[0x150/4] = 0;
             q[0x5A4/4] = 0xFF;
-            n++;
-            q[0x180/4] = __rlwimi(q[0x180/4], v10, 24, 0, 7);
-            q[0x1C0/4] = __rlwimi(q[0x1C0/4], r11, 24, 0, 7);
-            r11 = v10 + 3;
-            v10 = v10 + 2;
-            r27[0x200/4] = __rlwimi(r27[0x200/4], idx + 0xF6, 24, 0, 7);
-            r27[0x150/4] = __rlwimi(r27[0x150/4], idx + 0x28, 24, 0, 7);
-            {
-                unsigned int idx2 = n >> 1;
-                unsigned int off2 = ((n << 1) & 0xFFFFFFFC);
-                unsigned int *r272 = (unsigned int *)((unsigned char *)p + off2);
-                n++;
-                q[0x184/4] = 0;
-                q[0x1C4/4] = 0;
-                r272[0x150/4] = 0;
-                q[0x5A8/4] = 0xFF;
-                q[0x184/4] = __rlwimi(q[0x184/4], v10, 24, 0, 7);
-                q[0x1C4/4] = __rlwimi(q[0x1C4/4], r11, 24, 0, 7);
-                v10 = v10 + 2;
-                q += 2;
-                r272[0x200/4] = __rlwimi(r272[0x200/4], idx2 + 0xF6, 24, 0, 7);
-                r272[0x150/4] = __rlwimi(r272[0x150/4], idx2 + 0x28, 24, 0, 7);
-            }
+            q[0x180/4] = __rlwimi(q[0x180/4], v, 24, 0, 7);
+            r11 = v + 3;
+            r10 = v + 2;
+            q[0x1C0/4] = __rlwimi(q[0x1C0/4], v + 1, 24, 0, 7);
+            r27[0x200/4] = __rlwimi(r27[0x200/4], a, 24, 0, 7);
+            r27[0x150/4] = __rlwimi(r27[0x150/4], b, 24, 0, 7);
+            r27b = (unsigned int *)((unsigned char *)p + off2);
+            q[0x184/4] = 0;
+            q[0x1C4/4] = 0;
+            r27b[0x150/4] = 0;
+            q[0x5A8/4] = 0xFF;
+            r4 = __rlwimi(q[0x184/4], r10, 24, 0, 7);
+            v = r10 + 2;
+            q[0x184/4] = r4;
+            q[0x1C4/4] = __rlwimi(q[0x1C4/4], r11, 24, 0, 7);
+            q += 2;
+            r27b[0x200/4] = __rlwimi(r27b[0x200/4], idx2 + 0xF6, 24, 0, 7);
+            r27b[0x150/4] = __rlwimi(r27b[0x150/4], idx2 + 0x28, 24, 0, 7);
         }
     }
     {
         unsigned int *gx2 = __GXData;
         gx2[0x170/4] = __rlwimi(0, 0x27, 24, 0, 7);
         {
-            unsigned int val = 0x30;
             unsigned int *r3 = p;
-            for (i = 0; i < 2; i++) {
+            unsigned int val = 0x30;
+            unsigned int ctr = 2;
+            do {
+                unsigned int val2, val3, val4;
                 r3[0x108/4] = __rlwimi(0, val, 24, 0, 7);
-                r3[0x128/4] = __rlwimi(0, val+1, 24, 0, 7);
-                r3[0x10C/4] = __rlwimi(0, val+2, 24, 0, 7);
-                r3[0x12C/4] = __rlwimi(0, val+3, 24, 0, 7);
-                r3[0x110/4] = __rlwimi(0, val+4, 24, 0, 7);
-                r3[0x130/4] = __rlwimi(0, val+5, 24, 0, 7);
-                r3[0x114/4] = __rlwimi(0, val+6, 24, 0, 7);
-                r3[0x134/4] = __rlwimi(0, val+7, 24, 0, 7);
-                val += 8;
+                val2 = val + 2;
+                r3[0x128/4] = __rlwimi(0, val + 1, 24, 0, 7);
+                r3[0x10C/4] = __rlwimi(0, val2, 24, 0, 7);
+                val3 = val2 + 2;
+                r3[0x12C/4] = __rlwimi(0, val + 3, 24, 0, 7);
+                r3[0x110/4] = __rlwimi(0, val3, 24, 0, 7);
+                val4 = val3 + 2;
+                r3[0x130/4] = __rlwimi(0, val2 + 3, 24, 0, 7);
+                r3[0x114/4] = __rlwimi(0, val4, 24, 0, 7);
+                val = val4 + 2;
+                r3[0x134/4] = __rlwimi(0, val3 + 3, 24, 0, 7);
                 r3 += 4;
-            }
+            } while (--ctr != 0);
         }
-        p = __GXData;
+        p = *(unsigned int * volatile *)&__GXData;
         p[0x148/4] = __rlwimi(p[0x148/4], 0x20, 24, 0, 7);
         p[0x14C/4] = __rlwimi(p[0x14C/4], 0x21, 24, 0, 7);
         p[0x220/4] = __rlwimi(p[0x220/4], 0x41, 24, 0, 7);
@@ -529,47 +534,50 @@ void *GXInit(void *arg0, unsigned int arg1) {
         ((float *)p)[0x55C/4] = 0.0f;
         p[0x5FC/4] = 0;
         ((unsigned char *)p)[0x5FB] = 0;
-        tmp = *(unsigned int *)0x800000F8 / 500;
-        __GXFlushTextureState();
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = ((tmp >> 11) | 0x69000400);
-        __GXFlushTextureState();
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = ((tmp / 4224) | 0x46000200);
+        {
+            unsigned int tmp = *(unsigned int *)0x800000F8 / 500;
+            __GXFlushTextureState();
+            *(volatile unsigned char *)0xCC008000 = 0x61;
+            *(volatile unsigned int *)0xCC008000 = ((tmp >> 11) | 0x69000400);
+            __GXFlushTextureState();
+            *(volatile unsigned char *)0xCC008000 = 0x61;
+            *(volatile unsigned int *)0xCC008000 = ((tmp / 4224) | 0x46000200);
+        }
         __GXInitRevisionBits();
         {
             unsigned char *r29 = (unsigned char *)p + 0x258;
             unsigned char *r27b = (unsigned char *)p + 0x2D8;
             unsigned char *r30 = (unsigned char *)p + 0x358;
             u32 *tbl = GXTexRegionAddrTable_80303610;
-            int n = 0;
-            for (n = 0; n < 8; n++) {
+            unsigned int n = 0;
+            do {
                 GXInitTexCacheRegion(r29, 0, tbl[0], 0, tbl[8], 0);
                 GXInitTexCacheRegion(r27b, 0, tbl[16], 0, tbl[24], 0);
                 GXInitTexCacheRegion(r30, 1, tbl[32], 0, tbl[40], 0);
+                n++;
                 r29 += 0x10; r27b += 0x10; r30 += 0x10; tbl += 1;
-            }
+            } while (n < 8);
         }
         {
-            unsigned char *base = (unsigned char *)__GXData + 0x3D8;
+            unsigned char *base = (unsigned char *)gx2 + 0x3D8;
             unsigned int addr = 0xC0000;
-            int n;
-            for (n = 0; n < 16; n++) {
+            unsigned int n = 0;
+            do {
                 GXInitTlutRegion((unsigned int *)base, addr, 0x10);
+                n++;
                 base += 0x10; addr += 0x2000;
-            }
+            } while (n < 16);
         }
         {
-            unsigned char *base = (unsigned char *)__GXData + 0x3D8;
             unsigned int addr = 0xE0000;
-            int n;
-            for (n = 0; n < 4; n++) {
-                GXInitTlutRegion((unsigned int *)(base + (n+16)*0x10), addr, 0x40);
+            unsigned int n = 0;
+            do {
+                GXInitTlutRegion((unsigned int *)((unsigned char *)gx2 + 0x3D8 + (n+16)*0x10), addr, 0x40);
+                n++;
                 addr += 0x8000;
-            }
+            } while (n < 4);
         }
         __cpReg[3] = 0;
-        gx2 = __GXData;
         gx2[0x5F4/4] &= 0xFFFFFF0F;
         *(volatile unsigned char *)0xCC008000 = 8;
         *(volatile unsigned char *)0xCC008000 = 0x20;
@@ -589,7 +597,7 @@ void *GXInit(void *arg0, unsigned int arg1) {
         return &FifoObj_8037BA40;
     }
 }
-
+#pragma unroll reset
 int VIGetTvFormat(void);
 extern unsigned char lbl_803034A0[];
 extern unsigned char lbl_803038D8[];
@@ -678,63 +686,106 @@ void GXSetGPMetric(unsigned int metric1, unsigned int metric2);
 void GXClearGPMetric(void);
 void GXSetCopyClear(unsigned char *color, unsigned int depth);
 void __GXInitGX(void) {
-    unsigned char c0, c1, c2, c3, c4, c5, c6, c7;
-    unsigned int clearColor;
-    unsigned int matColor;
+    GXColor clearColor;
+    GXColor matColor;
+    GXColor copyColor;
+    GXColor tmpColor;
+    GXColor ambBlack;
+    GXColor fogColor;
     unsigned char *mode;
     int tv;
     int i;
     f32 mtx[3][4];
     unsigned int texObj[8];
-    int ambBlack = 0;
-    GXColor fogColor;
-    c0 = lbl_80560B24; c1 = lbl_80560B25; c2 = lbl_80560B26; c3 = lbl_80560B27;
-    c4 = lbl_80560B28; c5 = lbl_80560B29; c6 = lbl_80560B2A; c7 = lbl_80560B2B;
+
+    clearColor.r = lbl_80560B24; clearColor.g = lbl_80560B25;
+    clearColor.b = lbl_80560B26; clearColor.a = lbl_80560B27;
+    matColor.r = lbl_80560B28; matColor.g = lbl_80560B29;
+    matColor.b = lbl_80560B2A; matColor.a = lbl_80560B2B;
     tv = VIGetTvFormat();
-    if (tv == 0) mode = lbl_803038D8;
-    else if (tv == 1) mode = lbl_8030398C;
-    else if (tv == 5) mode = lbl_803039C8;
-    else if (tv == 2) mode = lbl_80303950;
-    else mode = lbl_803038D8;
-    clearColor = ((unsigned int)c0 << 24) | ((unsigned int)c1 << 16) | ((unsigned int)c2 << 8) | (unsigned int)c3;
-    matColor = ((unsigned int)c4 << 24) | ((unsigned int)c5 << 16) | ((unsigned int)c6 << 8) | (unsigned int)c7;
-    GXSetCopyClear((unsigned char*)&clearColor, 0xFFFFFF);
-    for (i = 0; i < 8; i++) GXSetTexCoordGen2(i, 1, 4+i, 0x3C, 0, 0x7D);
+    switch (tv) {
+    case 0: mode = lbl_803038D8; break;
+    case 1: mode = lbl_8030398C; break;
+    case 2: mode = lbl_80303950; break;
+    case 5: mode = lbl_803039C8; break;
+    default: mode = lbl_803038D8; break;
+    }
+    copyColor = clearColor;
+    GXSetCopyClear((unsigned char *)&copyColor, 0xFFFFFF);
+    GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(1, 1, 5, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(2, 1, 6, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(3, 1, 7, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(4, 1, 8, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(5, 1, 9, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(6, 1, 10, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(7, 1, 11, 0x3C, 0, 0x7D);
     GXSetNumTexGens(1);
     GXClearVtxDesc();
     GXInvalidateVtxCache();
     for (i = 9; i <= 0x18; i++) GXSetArray(i, (unsigned int)__GXData, 0);
-    for (i = 0; i < 8; i++) GXSetVtxAttrFmtv(i, (const GXVtxAttrFmtList*)&lbl_803034A0[0x80]);
+    for (i = 0; i < 8; i++) GXSetVtxAttrFmtv(i, (const GXVtxAttrFmtList *)&lbl_803034A0[0x80]);
     GXSetLineWidth(6, 0);
     GXSetPointSize(6, 0);
-    for (i = 0; i < 8; i++) GXEnableTexOffsets(i, 0, 0);
-    mtx[0][0]=0.0f; mtx[0][1]=lbl_80560B2C; mtx[0][2]=0.0f; mtx[0][3]=0.0f;
+    GXEnableTexOffsets(0, 0, 0);
+    GXEnableTexOffsets(1, 0, 0);
+    GXEnableTexOffsets(2, 0, 0);
+    GXEnableTexOffsets(3, 0, 0);
+    GXEnableTexOffsets(4, 0, 0);
+    GXEnableTexOffsets(5, 0, 0);
+    GXEnableTexOffsets(6, 0, 0);
+    GXEnableTexOffsets(7, 0, 0);
+    mtx[0][0]=lbl_80560B2C; mtx[0][1]=0.0f; mtx[0][2]=0.0f; mtx[0][3]=0.0f;
     mtx[1][0]=0.0f; mtx[1][1]=lbl_80560B2C; mtx[1][2]=0.0f; mtx[1][3]=0.0f;
     mtx[2][0]=0.0f; mtx[2][1]=0.0f; mtx[2][2]=lbl_80560B2C; mtx[2][3]=0.0f;
     GXLoadPosMtxImm(mtx, 0);
     GXLoadNrmMtxImm(mtx, 0);
     GXSetCurrentMtx(0);
-    GXLoadTexMtxImm((const f32*)mtx, 0x3C, 0);
-    GXLoadTexMtxImm((const f32*)mtx, 0x7D, 0);
-    GXSetViewport(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-    GXSetProjectionv((float*)&lbl_803034A0[0x150]);
+    GXLoadTexMtxImm((const f32 *)mtx, 0x3C, 0);
+    GXLoadTexMtxImm((const f32 *)mtx, 0x7D, 0);
+    GXSetViewport(0.0f, 0.0f, (f32)*(u16 *)(mode + 4), (f32)*(u16 *)(mode + 8), 0.0f, 1.0f);
+    GXSetProjectionv((float *)&lbl_803034A0[0x150]);
     GXSetCoPlanar(0);
     GXSetCullMode(2);
     GXSetClipMode(0);
-    GXSetScissor(0, 0, 0, 0);
+    GXSetScissor(0, 0, *(u16 *)(mode + 4), *(u16 *)(mode + 6));
     GXSetScissorBoxOffset(0, 0);
     GXSetNumChans(0);
+    ambBlack.r = 0; ambBlack.g = 0; ambBlack.b = 0; ambBlack.a = 0;
     GXSetChanAmbColor_Internal(4, &ambBlack);
-    GXSetChanMatColor_Internal(4, &matColor);
+    tmpColor = matColor;
+    GXSetChanMatColor_Internal(4, &tmpColor);
     GXSetChanAmbColor_Internal(5, &ambBlack);
-    GXSetChanMatColor_Internal(5, &matColor);
+    tmpColor = matColor;
+    GXSetChanMatColor_Internal(5, &tmpColor);
     GXInvalidateTexAll();
-    GXSetTexRegionCallback((void*)__GXDefaultTexRegionCallback);
-    GXSetTlutRegionCallback((void*)__GXDefaultTlutRegionCallback);
+    GXSetTexRegionCallback((void *)__GXDefaultTexRegionCallback);
+    GXSetTlutRegionCallback((void *)__GXDefaultTlutRegionCallback);
     GXInitTexObj(texObj, &lbl_803034A0[0x60], 4, 4, 3, 0, 0, 0);
-    for (i = 0; i < 8; i++) GXLoadTexObj(texObj, i);
-    for (i = 0; i < 8; i++) GXSetTevOrder(i, i, i, 4);
-    for (i = 8; i < 16; i++) GXSetTevOrder(i, 0xFF, 0xFF, 0xFF);
+    GXLoadTexObj(texObj, 0);
+    GXLoadTexObj(texObj, 1);
+    GXLoadTexObj(texObj, 2);
+    GXLoadTexObj(texObj, 3);
+    GXLoadTexObj(texObj, 4);
+    GXLoadTexObj(texObj, 5);
+    GXLoadTexObj(texObj, 6);
+    GXLoadTexObj(texObj, 7);
+    GXSetTevOrder(0, 0, 0, 4);
+    GXSetTevOrder(1, 1, 1, 4);
+    GXSetTevOrder(2, 2, 2, 4);
+    GXSetTevOrder(3, 3, 3, 4);
+    GXSetTevOrder(4, 4, 4, 4);
+    GXSetTevOrder(5, 5, 5, 4);
+    GXSetTevOrder(6, 6, 6, 4);
+    GXSetTevOrder(7, 7, 7, 4);
+    GXSetTevOrder(8, 0xFF, 0xFF, 0xFF);
+    GXSetTevOrder(9, 0xFF, 0xFF, 0xFF);
+    GXSetTevOrder(10, 0xFF, 0xFF, 0xFF);
+    GXSetTevOrder(11, 0xFF, 0xFF, 0xFF);
+    GXSetTevOrder(12, 0xFF, 0xFF, 0xFF);
+    GXSetTevOrder(13, 0xFF, 0xFF, 0xFF);
+    GXSetTevOrder(14, 0xFF, 0xFF, 0xFF);
+    GXSetTevOrder(15, 0xFF, 0xFF, 0xFF);
     GXSetNumTevStages(1);
     GXSetTevOp(0, 3);
     GXSetAlphaCompare(7, 0, 0, 7, 0);
@@ -746,9 +797,12 @@ void __GXInitGX(void) {
     GXSetTevSwapModeTable(3, 2, 2, 2, 3);
     for (i = 0; i < 16; i++) GXSetTevDirect(i);
     GXSetNumIndStages(0);
-    for (i = 0; i < 4; i++) GXSetIndTexCoordScale(i, 0, 0);
+    GXSetIndTexCoordScale(0, 0, 0);
+    GXSetIndTexCoordScale(1, 0, 0);
+    GXSetIndTexCoordScale(2, 0, 0);
+    GXSetIndTexCoordScale(3, 0, 0);
     fogColor.r = 0; fogColor.g = 0; fogColor.b = 0; fogColor.a = 0;
-    GXSetFog(0, fogColor, 0.0f, 1.0f, 0.0f, 1.0f);
+    GXSetFog(0, fogColor, 0.0f, 1.0f, lbl_80560B30, 1.0f);
     GXSetFogRangeAdj(0, 0, 0);
     GXSetBlendMode(0, 4, 5, 0);
     GXSetColorUpdate(1);
@@ -1749,16 +1803,12 @@ void __GXCalculateVLim(void) {
     register unsigned int flags;
     register int extra;
     register unsigned int vtx;
-    register unsigned char *table;
     register int sum;
-    int term;
     int tableValue;
-    int mode;
 
     if (*(unsigned short *)((char *)gx + 4) == 0) return;
 
     flags = gx[0x14 / 4];
-    table = &lbl_80558E40;
     extra = gx[0x1C / 4];
 
     sum = flags & 1;
@@ -1771,28 +1821,22 @@ void __GXCalculateVLim(void) {
     sum += (flags >> 6) & 1;
     sum += (flags >> 7) & 1;
 
-    tableValue = table[(flags >> 11) & 3];
-    term = (flags >> 8) & 1;
-    mode = (extra >> 9) & 1;
-    if (mode == 1) {
-        term = tableValue * (mode + 2);
-    }
-    sum += term;
-    sum += table[(flags >> 9) & 3];
+    tableValue = ((unsigned char *)&lbl_80558E40)[(flags >> 11) & 3];
+    sum += (flags >> 8) & 1;
+    sum += ((unsigned char *)&lbl_80558E40)[(flags >> 9) & 3];
+    sum += tableValue * (((extra >> 9) & 1) == 1 ? 3 : 1);
 
-    table = &lbl_80558E38;
-    sum += table[(flags >> 13) & 3];
-    sum += table[(flags >> 15) & 3];
+    sum += ((unsigned char *)&lbl_80558E38)[(flags >> 13) & 3];
+    sum += ((unsigned char *)&lbl_80558E38)[(flags >> 15) & 3];
 
-    table = &lbl_80558E3C;
-    sum += table[(vtx >> 0) & 3];
-    sum += table[(vtx >> 2) & 3];
-    sum += table[(vtx >> 4) & 3];
-    sum += table[(vtx >> 6) & 3];
-    sum += table[(vtx >> 8) & 3];
-    sum += table[(vtx >> 10) & 3];
-    sum += table[(vtx >> 12) & 3];
-    sum += table[(vtx >> 14) & 3];
+    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 0) & 3];
+    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 2) & 3];
+    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 4) & 3];
+    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 6) & 3];
+    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 8) & 3];
+    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 10) & 3];
+    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 12) & 3];
+    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 14) & 3];
 
     *(unsigned short *)((char *)gx + 6) = sum;
 }
@@ -2970,59 +3014,21 @@ void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts) {
     unsigned int *data = __GXData;
     unsigned int *dim;
     unsigned int count;
-    unsigned int rounded;
-    unsigned int remaining;
-    unsigned int written;
-    unsigned int blocks;
+    unsigned int i;
     unsigned short width;
     unsigned short height;
-    unsigned int zero;
 
     if (data[0x5FC / 4] != 0)
         __GXSetDirtyState();
     if (data[0] == 0) {
         dim = *(unsigned int * volatile *)&__GXData;
-        written = 0;
         width = *(unsigned short *)((char *)dim + 4);
         height = *(unsigned short *)((char *)dim + 6);
         *(volatile unsigned char *)0xCC008000 = 0x98;
         count = (unsigned int)width * height;
         *(volatile unsigned short *)0xCC008000 = *(volatile unsigned short *)((char *)dim + 4);
-        if (count != 0) {
-            rounded = count + 3;
-            remaining = count - 0x20;
-            if ((rounded >> 2) > 8) {
-                int valid = 0;
-                if (rounded >= 3) {
-                    if (count <= rounded)
-                        valid = 1;
-                }
-                if (valid) {
-                    blocks = (remaining + 0x1F) >> 5;
-                    zero = 0;
-                    if (remaining <= 0)
-                        goto end_large_clear;
-                    do {
-                        *(volatile unsigned int *)0xCC008000 = zero;
-                        *(volatile unsigned int *)0xCC008000 = zero;
-                        *(volatile unsigned int *)0xCC008000 = zero;
-                        *(volatile unsigned int *)0xCC008000 = zero;
-                        *(volatile unsigned int *)0xCC008000 = zero;
-                        *(volatile unsigned int *)0xCC008000 = zero;
-                        *(volatile unsigned int *)0xCC008000 = zero;
-                        *(volatile unsigned int *)0xCC008000 = zero;
-                        written += 0x20;
-                    } while (--blocks != 0);
-                }
-            }
-        end_large_clear:
-            blocks = (count + 3 - written) >> 2;
-            if (written < count) {
-                zero = 0;
-                do {
-                    *(volatile unsigned int *)0xCC008000 = zero;
-                } while (--blocks != 0);
-            }
+        for (i = 0; i < count; i += 4) {
+            *(volatile unsigned int *)0xCC008000 = 0;
         }
         *(unsigned short *)((char *)data + 2) = 1;
     }
@@ -3274,7 +3280,6 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 
 #pragma scheduling on
 void GXSetDispCopyDst(s32 value) {
-    unsigned int *gx;
     union {
         u32 reg;
         struct {
@@ -3283,11 +3288,11 @@ void GXSetDispCopyDst(s32 value) {
             u32 arg : 10;
         } fields;
     } data = {0};
-
+    u32 reg;
     data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
-    gx = __GXData;
-    gx[0x238 / 4] = data.reg;
+    reg = data.reg;
+    __GXData[0x238 / 4] = reg;
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
@@ -4130,8 +4135,8 @@ typedef union _GXChanCtrl {
    and how its diffuse/attenuation term is computed. GX_COLOR0A0 and GX_COLOR1A1
    copy the word into ALPHA0CNTRL/ALPHA1CNTRL too. The channel's dirty bit makes
    __GXSetDirtyState resend the words to the XF before the next draw. */
-void GXSetChanCtrl(GXChannelID chan, GXBool enable, GXColorSrc ambSrc, GXColorSrc matSrc,
-                   GXLightID lightMask, GXDiffuseFn diffFn, GXAttnFn attnFn) {
+void GXSetChanCtrl(int chan, unsigned char enable, int ambSrc, int matSrc,
+                    int lightMask, int diffFn, int attnFn) {
     GXChanCtrl u;
     unsigned int *gxData;
     unsigned int *chanCtrl;
@@ -5235,27 +5240,25 @@ void GXSetTevColor(s32 arg0, unsigned int *arg1) {
 }
 
 void GXSetTevColorS10(s32 tevReg, void *color) {
-    s32 index;
-    unsigned int c0, c1, regRA, regBG;
-    unsigned int *data;
-    index = tevReg << 1;
-    c0 = *(unsigned int *)color;
-    regRA = (index + 0xE0) << 24;
-    c1 = *((unsigned int *)color + 1);
-    data = __GXData;
+    s32 index = tevReg << 1;
+    unsigned int c0 = ((unsigned int *)color)[0];
+    unsigned int c1 = ((unsigned int *)color)[1];
+    unsigned int regRA = (unsigned int)((index + 0xE0) << 24);
+    unsigned int regBG;
     regRA = __rlwimi(regRA, c0, 16, 21, 31);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
+    WGPIPE.c = 0x61;
     regRA = __rlwimi(regRA, c1, 12, 9, 19);
-    regBG = (index + 0xE1) << 24;
-    *(volatile unsigned int *)0xCC008000 = regRA;
-    regBG = __rlwimi(__rlwimi(regBG, c1, 16, 21, 31), c0, 12, 9, 19);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = regBG;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = regBG;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = regBG;
-    *(unsigned short *)((char *)data + 2) = 0;
+    regBG = (unsigned int)((index + 0xE1) << 24);
+    WGPIPE.i = regRA;
+    regBG = __rlwimi(regBG, c1, 16, 21, 31);
+    WGPIPE.c = 0x61;
+    regBG = __rlwimi(regBG, c0, 12, 9, 19);
+    WGPIPE.i = regBG;
+    WGPIPE.c = 0x61;
+    WGPIPE.i = regBG;
+    WGPIPE.c = 0x61;
+    WGPIPE.i = regBG;
+    *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXSetTevKColor(s32 tevReg, unsigned int *color) {
@@ -6008,11 +6011,11 @@ void GXLoadNrmMtxImm(const f32 mtx[3][4], u32 id) {
     cmd |= 8 << 16;
     *(volatile u8 *)0xCC008000 = 0x10;
     *(volatile u32 *)0xCC008000 = cmd;
-    row0 = *(const volatile f64 *)&mtx[0][1];
+    row0 = *(const volatile f64 *)&mtx[0][0];
     tail0 = *(const volatile f32 *)&mtx[0][2];
-    row1 = *(const volatile f64 *)&mtx[1][1];
+    row1 = *(const volatile f64 *)&mtx[1][0];
     tail1 = *(const volatile f32 *)&mtx[1][2];
-    row2 = *(const volatile f64 *)&mtx[2][1];
+    row2 = *(const volatile f64 *)&mtx[2][0];
     tail2 = *(const volatile f32 *)&mtx[2][2];
     *(volatile f64 *)0xCC008000 = row0;
     *(volatile f32 *)0xCC008000 = tail0;
