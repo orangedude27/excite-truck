@@ -129,7 +129,8 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     return 0;
 }
 
-void fn_801DB340(int arg0) { fn_801DB13C(arg0 - 4); }
+/* Callback wrapper: forward to fn_801DB13C with the pointer backed up to its enclosing structure (userData - 4). */
+void fn_801DB340(int userData) { fn_801DB13C(userData - 4); }
 
 #pragma auto_inline off
 #pragma dont_inline on
@@ -441,9 +442,10 @@ extern double fn_8002F234(double);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma dont_inline on
+#pragma opt_propagation off
 int fn_801DCA60(void) {
     float *object;
-    float one, pi, falloff, peak, offset, range, zero, amplitude, maxR, minR;
+    float pi, amplitude, zero, range, offset, one, peak, maxR, minR, falloff;
     float scale, size, val, power, radius, factor, sum, amp, base;
     int row, col, row2, col2, offsetRow, dx, dz, width, octave;
     lbl_80446F08[1] = 256;
@@ -507,7 +509,7 @@ int fn_801DCA60(void) {
     }
     return (int)object;
 }
-#pragma pop
+#pragma opt_propagation reset
 
 void fn_801DCD24(void) {
     fn_80128668();
@@ -553,11 +555,13 @@ void fn_801DCE10(void) {
 
 }
 
+#pragma push
+#pragma scheduling invalid_target
 int fn_801DCE14(short *arg0, float *arg1, float *arg2, int arg3, int *arg4) {
     float spC;
-    int sp8;
-    float b2;
     float b0;
+    float b2;
+    int sp8;
     float t0;
     float tC;
     float t2;
@@ -582,7 +586,7 @@ int fn_801DCE14(short *arg0, float *arg1, float *arg2, int arg3, int *arg4) {
     }
     return 0;
 }
-
+#pragma pop
 float fn_801DCEC0(void) {
     return lbl_80562B70;
 }
