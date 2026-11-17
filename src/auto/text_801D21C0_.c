@@ -67,8 +67,9 @@ void fn_801D2B94(void) {
 }
 #pragma dont_inline off
 
-s32 fn_801D2BF4(s32 *arg0, s32 *arg1) {
-    return *arg0 - *arg1;
+/* qsort/bsearch comparator: order soevent class entries by their id field. */
+s32 fn_801D2BF4(s32 *lhsId, s32 *rhsId) {
+    return *lhsId - *rhsId;
 }
 
 #pragma scheduling invalid_target
