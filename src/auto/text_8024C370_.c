@@ -595,8 +595,9 @@ int fn_8024CF38(int *selectedSlot) {
     fn_8024CC54(selectedSlot, fn_8024CEF0, 1);
 }
 #pragma pop
-int fn_8024CF48(int *arg0) {
-    fn_8024CC54(arg0, 0, 0);
+/* Show the save-slot select dialog with no confirmation callback and store the chosen slot in *selectedSlot (0 = cancelled); the "Use existing profile" action (fn_8024CFB4). */
+int fn_8024CF48(int *selectedSlot) {
+    fn_8024CC54(selectedSlot, 0, 0);
 }
 
 // Set the lbl_8055F2C8 flag, then invoke the fn_8024C768 menu dialog (its result becomes the tail-call return).
