@@ -398,7 +398,12 @@ void *fn_801769B8(void) {
 
 extern void *lbl_8055E3E8;
 void* fn_801769C4(void) {
-    return lbl_8055E3E8;
+    /* lbl_8055E3E8 is the requested post-race physics mode: fn_80176460 clears
+     * it on init, fn_8017685C sets it, and callers such as fn_80183DF8 test it
+     * for mode 2. */
+    #define sRequestedPhysicsMode lbl_8055E3E8
+    return sRequestedPhysicsMode;
+    #undef sRequestedPhysicsMode
 }
 
 extern u8 lbl_804303E0[];
