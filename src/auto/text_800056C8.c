@@ -756,6 +756,8 @@ s32 fn_8000639C(void) {
 }
 
 void fn_800063A4(void) {
+    /* Dispatch hook: run any pending timer-name actions queued in lbl_80437E24,
+     * via fn_801C6B70 (reset the timer or invoke its two stored name callbacks). */
     fn_801C6B70();
 }
 
