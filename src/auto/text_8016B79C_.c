@@ -3215,7 +3215,10 @@ void fn_80170DA8(void *arg0, void *arg1) {
 #pragma use_lmw_stmw on
 s32 fn_80170E78(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x1ec); }
 
-f32 fn_80170E80(f32 *arg0) { return *arg0; }
+f32 fn_80170E80(f32 *ptr) {
+    /* Return the float value pointed to by ptr (identity accessor kept as a separate function). */
+    return *ptr;
+}
 
 extern s32 fn_8017960C(s32);
 s32 fn_80170E88(void *arg0) {
