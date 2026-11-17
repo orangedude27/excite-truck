@@ -56,23 +56,26 @@ done:
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void *fn_8013C7D0(arg0)
-int arg0;
+/* Find the car-class registry entry in lbl_8032C478 whose class-type field (+4)
+ * equals classType. Returns a pointer to the matching 12-byte entry, or to the
+ * zero-terminator entry when no type matches. */
+void *fn_8013C7D0(classType)
+int classType;
 {
-    int *entry;
-    entry = (int *)&lbl_8032C478;
+    int *classEntry;
+    classEntry = (int *)&lbl_8032C478;
     goto loop_test;
 loop_body:
-    if (arg0 == *(entry + 1)) {
+    if (classType == *(classEntry + 1)) {
         goto done;
     }
-    entry += 3;
+    classEntry += 3;
 loop_test:
-    if (*entry != 0) {
+    if (*classEntry != 0) {
         goto loop_body;
     }
 done:
-    return entry;
+    return classEntry;
 }
 #pragma scheduling on
 #pragma dont_inline off
