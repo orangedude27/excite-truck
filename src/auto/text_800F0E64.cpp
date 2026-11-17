@@ -1750,6 +1750,7 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
     register u8 *archive = *(u8 **)((u8 *)self + 0x28);
     register const void *reader = self;
     register void *fileInfo = out;
+    register u32 firstWord;
     u8 *files;
     u8 *detail;
     u8 *player;
@@ -1770,8 +1771,9 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559890, 0x6F, lbl_80324C58);
     player = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)detail + 0x14), *(u32 *)((u8 *)detail + 0x18), (void *)file);
     if (player == 0) return 0;
+    firstWord = *(u32 *)detail;
     archive = *(u8 **)((u8 *)reader + 0x28);
-    *(u32 *)fileInfo = *(u32 *)detail;
+    *(u32 *)fileInfo = firstWord;
     *(u32 *)((u8 *)fileInfo + 4) = *(u32 *)((u8 *)detail + 4);
     if (*((u8 *)detail + 0xD) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559810, 0x6F, lbl_80321F50);
@@ -2757,7 +2759,7 @@ extern "C" void *fn_800F8310(void *);
 extern "C" void fn_800F83C8(void *);
 extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10PlayerHeap(void *, void *);
 extern "C" unsigned char lbl_803257A0[];
-#pragma use_lmw_stmw off
+#pragma opt_propagation off
 extern "C" s32 SetupSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePPvPv(void *self, void *archive, void **pBuf, void *end) {
     struct PlayerInfo { s32 count; s32 size; };
     s32 num = ((s32 (*)(void *))fn_800F27C4)(archive);
@@ -2802,8 +2804,12 @@ extern "C" s32 SetupSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3s
                                 *(u32 *)(heap + 0x30) = zero;
                                 *(u32 *)(heap + 0x34) = zero;
                                 *(u32 *)(heap + 0x38) = zero;
-                                if (((s32 (*)(void *, void *, u32))fn_800F83C8)(heap, heap + 0x3C, sz) == 0) {
+                                switch (((s32 (*)(void *, void *, u32))fn_800F83C8)(heap, heap + 0x3C, sz)) {
+                                case 0:
                                     heap = 0;
+                                    break;
+                                default:
+                                    break;
                                 }
                             }
                             if (heap == 0) {
@@ -2818,6 +2824,7 @@ extern "C" s32 SetupSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3s
     }
     return 1;
 }
+#pragma opt_propagation reset
 extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void* arg0) {
     extern void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void);
     extern void OSLockMutex(void*);
@@ -4547,7 +4554,8 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(vo
     *(f32 *)((u8 *)sound + 0x28) = volume;
 }
 #pragma pop
-extern "C" s32 fn_800F87E8(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x30); }
+/* Return the 32-bit field at offset 0x30 of a sound player object (its voice/player id). */
+extern "C" s32 fn_800F87E8(void *player) { return *(s32 *)((u8 *)player + 0x30); }
 
 extern "C" u8 fn_800F87F0(void *arg0) { return *(u8 *)((u8 *)arg0 + 0x2C); }
 
