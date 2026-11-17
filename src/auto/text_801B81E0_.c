@@ -383,6 +383,7 @@ extern "C" int fn_801B8570(int arg0) {
 }
 
 #pragma cplusplus on
+/* Forward f7 to the current arena-event master via its vtable slot. */
 extern "C" void fn_801B85CC(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f7();
 }
