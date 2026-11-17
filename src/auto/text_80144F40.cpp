@@ -2241,6 +2241,7 @@ extern "C" s32 DVDGetCurrentDiskID(void) {
     return 0x40000000;
 }
 
+/* Fixed-value stub: always returns the sentinel constant 0xC0C0C0C0. */
 extern "C" s32 fn_80148274(void) {
     return 0xC0C0C0C0;
 }
