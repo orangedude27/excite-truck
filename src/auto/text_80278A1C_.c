@@ -126,6 +126,7 @@ struct CarObject {
 #pragma cplusplus reset
 
 s32 fn_80278A1C(void) {
+    /* Default predicate stub: unconditionally returns FALSE (0) to callers that test its result. */
     return 0;
 }
 
@@ -165,13 +166,11 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
     Res_80279004* res2;
     Res_80279004* res;
     Element_80278A64* elem;
-    s32 i;
+    register s32 i;
     char boneName[0x20];
     char wheelName[0x20];
     struct Keys { const char* k[4]; } keys;
-    Vec3_80279004 v1;
-    Vec3_80279004 v2;
-    Vec3_80279004 v3;
+    Vec3_80279004 v1, v2, v3;
     if (file != NULL) {
         car->count = 0;
         f32 scale = lbl_805640CC;
@@ -181,39 +180,23 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
         elem->id = 1;
         for (; i < 0xA2; i++, elem++) {
             sprintf(boneName, lbl_8055C678, i);
-            if (!file->hasRes(boneName)) {
-                break;
-            }
+            if (!file->hasRes(boneName)) break;
             res = file->getRes(boneName);
             car->count = i + 1;
             res2 = res;
             if (file2 != NULL) {
-                if (file2->hasRes(boneName)) {
-                    res2 = file2->getRes(boneName);
-                }
+                if (file2->hasRes(boneName)) res2 = file2->getRes(boneName);
             }
             if (res != NULL) {
                 v1 = res2->getVec(base->travel_min);
-                elem->v1.x = v1.x;
-                elem->v1.y = v1.y;
-                elem->v1.z = v1.z;
-                elem->v1.x *= scale;
-                elem->v1.y *= scale;
-                elem->v1.z *= scale;
+                elem->v1.x = v1.x; elem->v1.y = v1.y; elem->v1.z = v1.z;
+                elem->v1.x *= scale; elem->v1.y *= scale; elem->v1.z *= scale;
                 v2 = res2->getVec(base->travel_max);
-                elem->v2.x = v2.x;
-                elem->v2.y = v2.y;
-                elem->v2.z = v2.z;
-                elem->v2.x *= scale;
-                elem->v2.y *= scale;
-                elem->v2.z *= scale;
+                elem->v2.x = v2.x; elem->v2.y = v2.y; elem->v2.z = v2.z;
+                elem->v2.x *= scale; elem->v2.y *= scale; elem->v2.z *= scale;
                 v3 = res2->getVec(base->link_center);
-                elem->v3.x = v3.x;
-                elem->v3.y = v3.y;
-                elem->v3.z = v3.z;
-                elem->v3.x *= scale;
-                elem->v3.y *= scale;
-                elem->v3.z *= scale;
+                elem->v3.x = v3.x; elem->v3.y = v3.y; elem->v3.z = v3.z;
+                elem->v3.x *= scale; elem->v3.y *= scale; elem->v3.z *= scale;
                 elem->b30 = res->getByte(base->is_welded, 0);
                 elem->f2C = res->getFloat(base->weakness);
                 f32 def = lbl_805640D0;
@@ -226,9 +209,7 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
         car->count20F0 = 0;
         i = 0;
         while ((res = file->getChild(i++)) != NULL) {
-            if (stricmp(res->getName(), lbl_8055C680) == 0) {
-                car->count20F0 += 1;
-            }
+            if (stricmp(res->getName(), lbl_8055C680) == 0) car->count20F0 += 1;
         }
         car->items20EC = fn_8012850C(car->count20F0 * 0x14, base->bone_conn);
         car->count20F0 = 0;
@@ -245,12 +226,8 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
                 entry->f8 = child->getFloat(lbl_8055C690);
                 entry->fC = child->getFloat(lbl_8055C698);
                 entry->f10 = child->getFloatDefault(lbl_8055C6A0, lbl_805640C4);
-                if (entry->id1 < 1 || entry->id1 >= 0xA2) {
-                    fn_802E317C(base->link_out_of_range, entry->id1);
-                }
-                if (entry->id2 < 1 || entry->id2 >= 0xA2) {
-                    fn_802E317C(base->link_out_of_range, entry->id2);
-                }
+                if (entry->id1 < 1 || entry->id1 >= 0xA2) fn_802E317C(base->link_out_of_range, entry->id1);
+                if (entry->id2 < 1 || entry->id2 >= 0xA2) fn_802E317C(base->link_out_of_range, entry->id2);
             }
         }
         const char* const* tbl = lbl_802FA838;
