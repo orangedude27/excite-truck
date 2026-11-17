@@ -2263,6 +2263,13 @@ extern "C" s32 fn_80148274(void) {
     return 0xC0C0C0C0;
 }
 
+/* Empty destructor of the adapter sub-object (the one fn_80146C08 installs at
+ * +0x40 of its owner).  Its vtable lbl_8032D214 replaces the base class's
+ * deleting destructor (slot 0x8 of the base vtable lbl_8032D260 ->
+ * fn_80007A84, which frees the object when the delete flag is positive) with a
+ * no-op, because this sub-object is embedded in its owner and is never freed
+ * on its own; the same empty body also answers the base's pure virtual at slot
+ * 0x24. */
 extern "C" void fn_80148280(void) {
 
 }
