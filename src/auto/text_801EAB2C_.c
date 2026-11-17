@@ -100,8 +100,9 @@ void fn_801EABA8(void *arg0, void *arg1) {
     *(s16 *)((u8 *)arg0 + 0x38) = m;
 }
 #pragma scheduling on
-s16 fn_801EAC3C(void* arg0) {
-    return *(s16*)((u8*)arg0 + 0x38);
+s16 fn_801EAC3C(void* seqHeap) {
+    /* Read the 16-bit field at offset 0x38 of a SeqHeap/sound object. */
+    return *(s16*)((u8*)seqHeap + 0x38);
 }
 
 #pragma dont_inline on
