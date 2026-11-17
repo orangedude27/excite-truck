@@ -6581,6 +6581,8 @@ done:
     ;
 }
 
+/* Power-management timer callback: switch the peer device (whose BD_ADDR sits
+ * at +8 of the message block) to its low-power mode, flagging it as timed out. */
 void fn_80074A4C(s32 arg0) {
     bta_dm_pm_set_mode((u8 *)arg0 + 8, 1);
 }
@@ -9053,13 +9055,21 @@ void btm_dev_timeout(struct _tle *arg0) {
             return;
         case 1: {
             void *buf;
-            lbl_803C0F78[0x64F] = 4;
             lbl_803C0F78[0x64E] = 2;
+            lbl_803C0F78[0x64F] = 4;
+            goto case1_timer;
+            lbl_803C0F78[0x64F] = 4;
+            lbl_803C0F78[0x64E] = 4;
+            btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 4);
+            ((void (*)(void))btsnd_hcic_reset)();
+            goto case1_after_buf;
+        case1_timer:
             btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 1);
             buf = GKI_getpoolbuf(2);
             if (buf != NULL) {
                 fn_80085828(buf);
             }
+        case1_after_buf:
             memcpy(lbl_803C0F78 + 0x648, lbl_803C0F78 + 0x648, 3);
             if (lbl_803C0F78[0x64E] != 0 && lbl_803C0F78[0x64E] != 1) {
                 buf = GKI_getpoolbuf(2);
@@ -9121,7 +9131,6 @@ void btm_dev_timeout(struct _tle *arg0) {
                 btsnd_hcic_inq_cancel_80085850();
             }
             btm_pm_reset();
-            return;
         }
         }
         return;
@@ -15305,13 +15314,13 @@ psm_found:
 
 void gap_data_ind(u16 cid, void *p_buf) {
     u8 *conn = lbl_803C3740 + 0xAC;
-    u8 i = 0;
-    while (i < 8) {
+    u8 i;
+
+    for (i = 0; i < 8; i++) {
         if (conn[0] != 0) {
             if (*(u16 *)(conn + 6) == cid)
                 goto found;
         }
-        i++;
         conn += 0x60;
     }
     conn = NULL;
@@ -19974,10 +19983,10 @@ void l2c_rcv_acl_data(register BT_HDR *arg0) {
     extern void process_l2cap_cmd(void *, UINT8 *, UINT16);
     u8 *data;
     register char *trace;
-    s32 temp_r26;
+    register s32 temp_r26;
     s32 temp_r3;
     s32 temp_r3_2;
-    s32 var_r28;
+    register s32 var_r28;
     register u32 temp_r0_3;
     u32 temp_r0_4;
     u32 temp_r24;
@@ -19992,7 +20001,7 @@ void l2c_rcv_acl_data(register BT_HDR *arg0) {
     temp_r26 = temp_r0 & 0xFFF;
     if (((temp_r0 >> 12) & 3) != 2) {
         if (lbl_803C4040[0] >= 2)
-            fn_80070954(0x80001, trace + 0, (u16)((temp_r0 >> 12) & 3));
+            fn_80070954(0x80001, trace, (u16)((temp_r0 >> 12) & 3));
         GKI_freebuf(arg0);
         return;
     }
@@ -20058,11 +20067,12 @@ void l2c_rcv_acl_data(register BT_HDR *arg0) {
         return;
     }
     if (temp_r24 == 2) {
-        arg0->offset = (u16)(temp_r0_4 + 2);
+        u16 off = (u16)temp_r0_4;
+        u16 peerCid = (u16)(data[16] + (data[17] << 8));
+        arg0->offset = (u16)(off + 2);
         arg0->len = temp_r4 - 2;
         if (lbl_803C4040[0] >= 5)
-            fn_80070954(0x80004, trace + 0xE0,
-                (u16)(data[16] + (data[17] << 8)));
+            fn_80070954(0x80004, trace + 0xE0, peerCid);
         GKI_freebuf(arg0);
         return;
     }
