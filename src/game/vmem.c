@@ -19,11 +19,12 @@ void fn_802E4C18(void) {
 
 #pragma dont_inline on
 void *fn_802E4C1C(int arg0) {
+    #pragma scheduling invalid_target
     char *object = fn_801284F8(0xC, &lbl_8055D1C8);
     if (object != 0) {
-        *(void **)object = (void *)lbl_8034D1D0;
+        *(char **)object = lbl_8034D1D0;
         *(int *)(object + 8) = arg0;
-        *(int *)(object + 4) = fn_8012850C(arg0, (void *)lbl_8034D204);
+        *(int *)(object + 4) = fn_8012850C(arg0, lbl_8034D204);
         fn_802E30C8(lbl_8034D1F0, arg0 / 1024);
     }
     return object;
