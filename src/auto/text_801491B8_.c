@@ -932,8 +932,9 @@ f32 fn_8014AED8(void *event) {
     return ((f32 *)event)[0x41];
 }
 
-u8 fn_8014AEE0(void *arg0) {
-    return ((u8 *)arg0)[5];
+/* Returns the boolean flag at byte 5 of this object (initialized to 0 when the node is created). */
+u8 fn_8014AEE0(void *obj) {
+    return ((u8 *)obj)[5];
 }
 
 u8 fn_8014AEE8(void *arg0) {
