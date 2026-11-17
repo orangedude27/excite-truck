@@ -3321,6 +3321,8 @@ done:
     return (s32)result;
 }
 #pragma pop
+
+#pragma opt_propagation off
 s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
 {
     WPADCB* p = lbl_8038F4F0[chan];
