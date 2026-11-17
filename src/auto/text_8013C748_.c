@@ -24,6 +24,7 @@ void fn_8013C748(void);
 
 extern char lbl_8032C478[];
 void fn_8013C748(void) {
+    #pragma scheduling invalid_target
     int *p = (int *)&lbl_8032C478;
     while (*p != 0) {
         p[2] = 0;
