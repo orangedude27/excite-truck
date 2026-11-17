@@ -3750,8 +3750,9 @@ extern "C" void fn_802872F0(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v2();
 }
 #pragma cplusplus on
-extern "C" void fn_80287304(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v3();
+extern "C" void fn_80287304(void* plane) {
+    /* Forward the virtual v3() call to the TPlaneSub member (m_a) of this TBlackPlane. */
+    ((ebi::title::TBlackPlane*)plane)->m_a->v3();
 }
 #pragma cplusplus off
 #pragma cplusplus on
