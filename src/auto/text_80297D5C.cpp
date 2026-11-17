@@ -404,7 +404,7 @@ extern int lbl_8055CA70;
 extern int lbl_8055CA7C;
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling 604
 extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, void* arg4, void* ctx) {
     float* out = (float*)arg1;
     float* base = (float*)arg2;
