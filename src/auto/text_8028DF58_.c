@@ -641,7 +641,6 @@ void fn_8028EEB4(void *table, int instance, const char *name) {
 }
 #pragma scheduling on
 int fn_8028EF44(void *arg0, unsigned int arg1) {
-    /* Release one reference to the particle system matching arg1 in a bucket; returns 1 when its refcount reaches 0, panics if the system is absent. */
     char *base = (char *)arg0;
     char *p = base;
     int i = 0;
