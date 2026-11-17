@@ -492,104 +492,115 @@ void calc_dpd_variable(void *arg0, s8 arg1) {
     VFIELD(p,0x84)=(u8)arg1;
 }
 
-void read_kpad_dpd(void *arg0, void *arg1, s32 mode) {
-    u8 *p = (u8 *)arg0;
-    register u8 *a, *first, *last, *b;
-    s32 probe, type;
-    s8 selected;
-    register f32 dy, dx; f32 mag, scale, x, c, d, hori;
-    if (*(s16 *)(p + 0x114) < 0) return;
-    probe = WPADProbe(*(s16 *)(p + 0x114), &type);
-    if ((u32)mode == 1) {
-        if (probe != 0) { if (probe == -1) { *(s16 *)(p+0x114) -= 4; reset_kpad(arg0); return; } }
-        else ((void (*)(void *, void *, int))select_1obj_continue_head)(arg0,arg1,1);
-    } else if ((u32)mode == 2) {
-        if (probe != 0) { if (probe == -1) { *(s16 *)(p+0x114) -= 4; reset_kpad(arg0); return; } }
-        else ((void (*)(void *, void *, int))select_1obj_continue_head)(arg0,arg1,2);
+/* Reads one sample of Wii pointer (DPD) objects for a controller channel: probes the
+   device, gathers and validates the reported object centres, selects a one- or
+   two-object pair, and caches its direction, length and horizon in the KPAD state. */
+void read_kpad_dpd(void *kp, void *uwp, s32 devType) {
+#define kObjFrameMin lbl_8055D9A8
+#define kObjFrameMax lbl_8055D9A0
+#define kUprightDotMax lbl_80558ECC
+#define kAccDotMax lbl_80558EC8
+    u8 *base = (u8 *)kp;
+    register u8 *obj, *first, *last, *obj2;
+    s32 probeRes, probeDevType;
+    s8 validFgNext;
+    register f32 dy, dx; f32 mag, scale, horiNrmX, objHorX, objHorY, secDist;
+    if (*(s16 *)(base + 0x114) < 0) return;
+    probeRes = WPADProbe(*(s16 *)(base + 0x114), &probeDevType);
+    if ((u32)devType == 1) {
+        if (probeRes != 0) { if (probeRes == -1) { *(s16 *)(base+0x114) -= 4; reset_kpad(kp); return; } }
+        else ((void (*)(void *, void *, int))select_1obj_continue_head)(kp,uwp,1);
+    } else if ((u32)devType == 2) {
+        if (probeRes != 0) { if (probeRes == -1) { *(s16 *)(base+0x114) -= 4; reset_kpad(kp); return; } }
+        else ((void (*)(void *, void *, int))select_1obj_continue_head)(kp,uwp,2);
     } else {
-        if (probe != 0) { if (probe == -1) { *(s16 *)(p+0x114) -= 4; reset_kpad(arg0); return; } }
-        else ((void (*)(void *, void *, int))select_1obj_continue_head)(arg0,arg1,0);
+        if (probeRes != 0) { if (probeRes == -1) { *(s16 *)(base+0x114) -= 4; reset_kpad(kp); return; } }
+        else ((void (*)(void *, void *, int))select_1obj_continue_head)(kp,uwp,0);
     }
-    first = p + 0xc8; last = p + 0xec;
-    a = last;
+    first = base + 0xc8; last = base + 0xec;
+    obj = last;
     do {
-        if (*(s8 *)(a+8) >= 0 && (*(f32 *)a <= lbl_8055D9A8[0] || *(f32 *)a >= lbl_8055D9A0[0] || *(f32 *)(a+4) <= lbl_8055D9A8[1] || *(f32 *)(a+4) >= lbl_8055D9A0[1]))
-            a[8] |= 1;
-        a -= 12;
-    } while (a >= first);
-    a = first;
+        if (*(s8 *)(obj+8) >= 0 && (*(f32 *)obj <= kObjFrameMin[0] || *(f32 *)obj >= kObjFrameMax[0] || *(f32 *)(obj+4) <= kObjFrameMin[1] || *(f32 *)(obj+4) >= kObjFrameMax[1]))
+            obj[8] |= 1;
+        obj -= 12;
+    } while (obj >= first);
+    obj = first;
     do {
-        if (*(s8 *)(a+8) == 0) {
-            b = a + 12;
+        if (*(s8 *)(obj+8) == 0) {
+            obj2 = obj + 12;
             do {
-                if (*(s8 *)(b+8) == 0 && *(f32 *)a == *(f32 *)b && *(f32 *)(a+4) == *(f32 *)(b+4)) b[8] |= 2;
-                b += 12;
-            } while (b <= last);
+                if (*(s8 *)(obj2+8) == 0 && *(f32 *)obj == *(f32 *)obj2 && *(f32 *)(obj+4) == *(f32 *)(obj2+4)) obj2[8] |= 2;
+                obj2 += 12;
+            } while (obj2 <= last);
         }
-        a += 12;
-    } while (a < last);
-    *(s16 *)(p+0x110) = 0;
-    b = p + 0xec;
+        obj += 12;
+    } while (obj < last);
+    *(s16 *)(base+0x110) = 0;
+    obj2 = base + 0xec;
     do {
-        if (*(s8 *)(b+8) == 0) ++*(s16 *)(p+0x110);
-        b -= 12;
-    } while (b >= p + 0xc8);
-    if (!(*(f32 *)(p+0x54) <= lbl_80558ECC)) {
-        if (*(s8 *)(p+0x84) == 2 || *(s8 *)(p+0x84) == -2) {
-            if (*(s16 *)(p+0x110) >= 2) {
-                selected = ((s8 (*)(void *))select_2obj_continue)(arg0);
-                if (selected) goto select_ok;
+        if (*(s8 *)(obj2+8) == 0) ++*(s16 *)(base+0x110);
+        obj2 -= 12;
+    } while (obj2 >= base + 0xc8);
+    if (!(*(f32 *)(base+0x54) <= kUprightDotMax)) {
+        if (*(s8 *)(base+0x84) == 2 || *(s8 *)(base+0x84) == -2) {
+            if (*(s16 *)(base+0x110) >= 2) {
+                validFgNext = ((s8 (*)(void *))select_2obj_continue)(kp);
+                if (validFgNext) goto select_ok;
             }
-            if (*(s16 *)(p+0x110) >= 1) {
-                selected = ((s8 (*)(void *))select_1obj_continue)(arg0);
-                if (!selected) goto select_done; else goto select_ok;
+            if (*(s16 *)(base+0x110) >= 1) {
+                validFgNext = ((s8 (*)(void *))select_1obj_continue)(kp);
+                if (!validFgNext) goto select_done; else goto select_ok;
             }
-        } else if (*(s8 *)(p+0x84) == 1 || *(s8 *)(p+0x84) == -1) {
-            if (*(s16 *)(p+0x110) >= 2) {
-                selected = ((s8 (*)(void *))select_2obj_first)(arg0);
-                if (selected) goto select_ok;
+        } else if (*(s8 *)(base+0x84) == 1 || *(s8 *)(base+0x84) == -1) {
+            if (*(s16 *)(base+0x110) >= 2) {
+                validFgNext = ((s8 (*)(void *))select_2obj_first)(kp);
+                if (validFgNext) goto select_ok;
             }
-            if (*(s16 *)(p+0x110) >= 1) {
-                selected = ((s8 (*)(void *))select_1obj_continue)(arg0);
-                if (!selected) goto select_done; else goto select_ok;
+            if (*(s16 *)(base+0x110) >= 1) {
+                validFgNext = ((s8 (*)(void *))select_1obj_continue)(kp);
+                if (!validFgNext) goto select_done; else goto select_ok;
             }
         } else {
-            if (*(s16 *)(p+0x110) >= 2) {
-                selected = ((s8 (*)(void *))select_2obj_first)(arg0);
-                if (selected) goto select_ok;
+            if (*(s16 *)(base+0x110) >= 2) {
+                validFgNext = ((s8 (*)(void *))select_2obj_first)(kp);
+                if (validFgNext) goto select_ok;
             }
-            if (*(s16 *)(p+0x110) == 1) {
-                selected = ((s8 (*)(void *))select_1obj_first)(arg0);
-                if (selected) goto select_ok;
+            if (*(s16 *)(base+0x110) == 1) {
+                validFgNext = ((s8 (*)(void *))select_1obj_first)(kp);
+                if (validFgNext) goto select_ok;
             }
         }
     }
 select_done:
-    selected = 0;
+    validFgNext = 0;
 select_ok:
-    if (selected) {
-        dx = *(f32 *)(p+0x104) - *(f32 *)(p+0xf8);
-        dy = *(f32 *)(p+0x108) - *(f32 *)(p+0xfc);
+    if (validFgNext) {
+        dx = *(f32 *)(base+0x104) - *(f32 *)(base+0xf8);
+        dy = *(f32 *)(base+0x108) - *(f32 *)(base+0xfc);
         mag = (f32)fn_8002F234(dx*dx+dy*dy);
-        scale = lbl_80560BE4 / mag;
-        *(f32 *)(p+0x3a0) = mag;
-        hori = lbl_8055D990 * scale;
-        x = *(f32 *)(p+0xb4);
+        scale = F_ONE / mag;
+        *(f32 *)(base+0x3a0) = mag;
+        secDist = kp_dist_vv1 * scale;
+        horiNrmX = *(f32 *)(base+0xb4);
         dx *= scale; dy *= scale;
-        *(f32 *)(p+0x3a4) = dx;
-        *(f32 *)(p+0x3ac) = hori;
-        c = x*dx+*(f32 *)(p+0xb8)*dy; d = *(f32 *)(p+0xb8)*dx-x*dy;
-        *(f32 *)(p+0x3a8) = dy;
-        *(f32 *)(p+0x3c0) = c; *(f32 *)(p+0x3c4) = d;
-        if (*(u16 *)(p+0x3d8) == 0 && c * *(f32 *)(p+0x3c8) + d * *(f32 *)(p+0x3cc) <= lbl_80558EC8) {
-            selected = 0; p[0x10c] = 1; p[0x100] = 1;
+        *(f32 *)(base+0x3a4) = dx;
+        *(f32 *)(base+0x3ac) = secDist;
+        objHorX = horiNrmX*dx+*(f32 *)(base+0xb8)*dy; objHorY = *(f32 *)(base+0xb8)*dx-horiNrmX*dy;
+        *(f32 *)(base+0x3a8) = dy;
+        *(f32 *)(base+0x3c0) = objHorX; *(f32 *)(base+0x3c4) = objHorY;
+        if (*(u16 *)(base+0x3d8) == 0 && objHorX * *(f32 *)(base+0x3c8) + objHorY * *(f32 *)(base+0x3cc) <= kAccDotMax) {
+            validFgNext = 0; base[0x10c] = 1; base[0x100] = 1;
         }
-        if ((s32)p[0x84] == 2 && selected == 2) {
-            if (p[0x3da] == 0xc8) *(f32 *)(p+0x3b0) = *(f32 *)(p+0x3a0);
-            else ++p[0x3da];
-        } else p[0x3da] = 0;
-    } else p[0x3da] = 0;
-    calc_dpd_variable(arg0, selected);
+        if ((s32)base[0x84] == 2 && validFgNext == 2) {
+            if (base[0x3da] == 0xc8) *(f32 *)(base+0x3b0) = *(f32 *)(base+0x3a0);
+            else ++base[0x3da];
+        } else base[0x3da] = 0;
+    } else base[0x3da] = 0;
+    calc_dpd_variable(kp, validFgNext);
+#undef kAccDotMax
+#undef kUprightDotMax
+#undef kObjFrameMax
+#undef kObjFrameMin
 }
 
 static void clamp_stick_circle(Vec2* stick, s32 sx, s32 sy, s32 min, s32 max) {
