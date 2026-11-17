@@ -95,13 +95,20 @@ extern long *lbl_8055EB3C;
 extern long lbl_8055EB38;
 extern long *lbl_8055EB40;
 void fn_801E78D8(long arg0) {
- long count; long i; long j; unsigned char *entry;
- count=fn_800167F4(); fn_80206464();
- for(i=0;i<count;i++) fn_8020646C(i,-1);
- entry=(unsigned char *)arg0+0x20;
- for(j=0;j<*((long *)((unsigned char *)arg0+0x3E0)); entry+=0x78,j++) {
-  if(*(long *)entry==0x50) fn_8020646C(*(entry+0x70)&3,j);
- }
+    #pragma scheduling invalid_target
+    long count;
+    long i;
+    unsigned char *base;
+    unsigned char *entry;
+    long j;
+    count = fn_800167F4();
+    fn_80206464();
+    for (i = 0; i < count; i++) fn_8020646C(i, -1);
+    base = (unsigned char *)arg0 + 0x20;
+    entry = base;
+    for (j = 0; j < *(long *)(base + 0x3C0); entry += 0x78, j++) {
+        if (*(long *)entry == 0x50) fn_8020646C(*(entry + 0x70) & 3, j);
+    }
 }
 
 #pragma dont_inline on
