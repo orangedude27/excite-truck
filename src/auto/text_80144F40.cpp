@@ -2224,6 +2224,7 @@ extern "C" void fn_80148250(void *params) {
 }
 
 extern "C" u32 lbl_80559E68;
+/* Return the address of the static "Save" label string held in lbl_80559E68. */
 extern "C" u32 *fn_80148264(void) {
     return &lbl_80559E68;
 }
