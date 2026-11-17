@@ -78,6 +78,7 @@ extern "C" void Shutdown__Q46nw4hbm3snd6detail9StrmSoundFv(void *self) {
     };
     struct StrmSoundObj { void *vtable; char pad[0xB8 - 4]; struct LinkNode link; };
 
+    /* Shut down this streaming sound and remove it from its owning player's active sound list. */
     struct StrmSoundObj *sound = (struct StrmSoundObj *)self;
     int interrupts;
     struct StrmSoundPlayer *player;
