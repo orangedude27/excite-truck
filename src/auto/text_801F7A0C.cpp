@@ -2883,10 +2883,13 @@ extern "C" void fn_801FBF48(void *arg0) {
 }
 #pragma push
 #pragma processor 750
-extern "C" void fn_801FBFE8(void* arg0) {
+/* Spawn a "polyvol" special effect: allocate a 0xE0-byte object tagged "ewcv:polyvol"
+ * and construct its POLY records from the tag list at spawn+0x58, passing 50000.0f
+ * and the effect's +0x4C float to the constructor. */
+extern "C" void fn_801FBFE8(void* spawn) {
     register f32 value = 50000.0f;
-    void* obj = fn_801284F8(0xE0, lbl_8033B53C);
-    if (obj != 0) fn_801A324C(obj, 0, (char*)arg0 + 0x58, value, *(f32*)((char*)arg0 + 0x4C));
+    void* effect = fn_801284F8(0xE0, lbl_8033B53C);
+    if (effect != 0) fn_801A324C(effect, 0, (char*)spawn + 0x58, value, *(f32*)((char*)spawn + 0x4C));
 }
 #pragma pop
 
