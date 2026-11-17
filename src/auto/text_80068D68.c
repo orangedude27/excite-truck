@@ -18750,7 +18750,9 @@ u8 fn_80089E20(u8 level) {
 }
 
 void fn_80089E3C(void) {
-
+    /* No-op: L2CAP compression-callback registration hook. bta_dm_enable calls
+     * this with bta_dm_l2cap_server_compress_cback, but the feature is compiled
+     * out in this build, so the function is empty. */
 }
 
 extern void l2c_csm_closed(void *, u16, void *);
@@ -18810,6 +18812,7 @@ void fn_80089E40(void *ccb, u8 event, void *eventData) {
 }
 
 void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
+    typedef u8 (*Req5)(u8 *, u16, u16, u8, void *);
     extern void l2c_link_sec_comp(BD_ADDR, void *, UINT8);
     char *p_str = (char *)jumptable_803183B0;
     void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
@@ -18819,14 +18822,14 @@ void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
     if (lbl_803C4040[0] >= 4) fn_80070954(0x80003, p_str + 0x24, event);
     switch (event) {
     case 0:
-        if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, p_str + 0x40, local_cid);
+        if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, p_str + 0x40, *(u16 *)((u8 *)p_ccb + 0x14));
         l2cu_release_ccb(p_ccb);
         disconnect_ind(local_cid, 0);
         break;
     case 1: {
         void *id = *(void **)((u8 *)p_ccb + 0x10);
         *(u32 *)((u8 *)p_ccb + 4) = 1;
-        btm_sec_l2cap_access_req((u8 *)id + 0x2A, *(u16 *)((u8 *)id + 0x28), *(u16 *)((u8 *)(*(void **)((u8 *)p_ccb + 0x30)) + 2), 1, l2c_link_sec_comp, 0);
+        ((Req5)btm_sec_l2cap_access_req)((u8 *)id + 0x2A, *(u16 *)((u8 *)(*(void **)((u8 *)p_ccb + 0x30)) + 2), *(u16 *)((u8 *)id + 0x28), 1, l2c_link_sec_comp);
         break;
     }
     case 3: {
@@ -18834,12 +18837,12 @@ void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
         u8 *addr = (u8 *)id + 0x2A;
         u16 psm = *(u16 *)((u8 *)id + 0x28);
         u16 h = *(u16 *)((u8 *)(*(void **)((u8 *)p_ccb + 0x30)) + 2);
-        u8 r = btm_sec_l2cap_access_req(addr, psm, h, 1, l2c_link_sec_comp, 0);
-        if ((u8)(r - 1) == 0) *(u32 *)((u8 *)p_ccb + 4) = 1;
+        u8 r = ((Req5)btm_sec_l2cap_access_req)(addr, h, psm, 1, l2c_link_sec_comp);
+        if (r == 1) *(u32 *)((u8 *)p_ccb + 4) = 1;
         break;
     }
     case 7: {
-        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, local_cid, *((u8 *)p_msg + 6));
+        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), *((u8 *)p_msg + 6));
         l2cu_release_ccb(p_ccb);
         connect_cfm(local_cid, *((u8 *)p_msg + 6));
         break;
@@ -18851,7 +18854,7 @@ void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
         break;
     }
     case 9: {
-        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, local_cid, 1);
+        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), 1);
         l2cu_release_ccb(p_ccb);
         connect_cfm(local_cid, 3);
         break;
@@ -18859,17 +18862,17 @@ void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
     case 10: {
         void *id = *(void **)((u8 *)p_ccb + 0x10);
         *(u32 *)((u8 *)p_ccb + 4) = 2;
-        btm_sec_l2cap_access_req((u8 *)id + 0x2A, *(u16 *)((u8 *)id + 0x28), *(u16 *)((u8 *)(*(void **)((u8 *)p_ccb + 0x30)) + 2), 0, l2c_link_sec_comp, 0);
+        ((Req5)btm_sec_l2cap_access_req)((u8 *)id + 0x2A, *(u16 *)((u8 *)(*(void **)((u8 *)p_ccb + 0x30)) + 2), *(u16 *)((u8 *)id + 0x28), 0, l2c_link_sec_comp);
         break;
     }
     case 19: {
-        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, local_cid, 1);
+        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), 1);
         l2cu_release_ccb(p_ccb);
         connect_cfm(local_cid, 1);
         break;
     }
     case 20: {
-        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, local_cid, 1);
+        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), 1);
         l2cu_release_ccb(p_ccb);
         connect_cfm(local_cid, 1);
         break;
