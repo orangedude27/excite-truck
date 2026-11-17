@@ -3074,9 +3074,11 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
     fn_801FC4D8((void **)&lbl_8055EC5C, object);
 }
 
-extern "C" void fn_801FC4D8(void **arg0, void *arg1) {
-    *(void **)((u8 *)arg1 + 0x68) = *arg0;
-    *arg0 = arg1;
+/* Push node onto the front of the intrusive singly-linked list whose head pointer is list;
+ * each node's next link is stored at offset 0x68. */
+extern "C" void fn_801FC4D8(void **list, void *node) {
+    *(void **)((u8 *)node + 0x68) = *list;
+    *list = node;
 }
 
 #pragma dont_inline on
