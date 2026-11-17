@@ -1114,6 +1114,7 @@ static inline f32 PSQUATMultiply_f32(void *a, void *b) {
 }
 extern "C" f32 lbl_80561498, lbl_805614A4;
 #pragma push
+#pragma processor 750
 extern "C" void fn_8013E19C(void *arg0, float arg1) {
     float *p = (float *)arg0;
     float unit = lbl_805614A4;
