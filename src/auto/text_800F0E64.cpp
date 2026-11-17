@@ -7760,8 +7760,9 @@ extern "C" float fn_800FD858(void *player) { return *(float *)((char *)player + 
 
 extern "C" float fn_800FD860(void *arg0) { return *(float *)((char *)arg0 + 0x444); }
 
-extern "C" f32 fn_800FD868(void *arg0) {
-    return *(f32 *)((u8 *)arg0 + 0x440);
+/* Return this sound player's float field at +0x440 (paired with setter fn_800FD8A0). */
+extern "C" f32 fn_800FD868(void *player) {
+    return *(f32 *)((u8 *)player + 0x440);
 }
 
 extern "C" f32 fn_800FD870(void *arg0) {
