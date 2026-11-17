@@ -439,8 +439,10 @@ void fn_80014750(void *arg0) {
     }
 }
 
-void fn_8001480C(void *arg0) {
- *(f32 *)((u8 *)arg0+0x10)=*(f32 *)((u8 *)*(void **)((u8 *)lbl_8055D350+0x2C)+0x4C);
+/* Seed the smoothed value at +0x10 of `state` from the game manager's target
+ * value (gameManager +0x2C -> +0x4C), as used by fn_80014820. */
+void fn_8001480C(void *state) {
+ *(f32 *)((u8 *)state+0x10)=*(f32 *)((u8 *)*(void **)((u8 *)lbl_8055D350+0x2C)+0x4C);
 }
 
 #pragma dont_inline on
