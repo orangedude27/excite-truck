@@ -4070,8 +4070,9 @@ void fn_8006EAD4(void) {
 
 }
 
-void fn_8006EAD8(void) {
-
+/* GKI_delay no-op stub: this build does not really sleep, so the startup poll
+ * loops just spin; callers pass a nominal timeout in milliseconds. */
+void fn_8006EAD8(s32 timeout) {
 }
 
 /* Post an event mask to a GKI task, taking the GKI interrupt lock around the update. */
