@@ -175,9 +175,11 @@ extern "C" void Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPla
     *(int *)((char *)arg0 + 0x30) = 0;
 }
 #pragma scheduling on
-extern "C" void NWC24Data_SetDataP(void *arg0, int arg1, int arg2) {
-    *(int *)arg0 = arg1;
-    *((int *)arg0 + 1) = arg2;
+/* Points an NWC24 data descriptor at a payload buffer and records its byte size. */
+extern "C" void NWC24Data_SetDataP(void *data, const void *ptr, unsigned int size) {
+    struct NWC24DataDesc { const void *ptr; unsigned int size; };
+    ((struct NWC24DataDesc *)data)->ptr = ptr;
+    ((struct NWC24DataDesc *)data)->size = size;
 }
 
 void nw4hbm::snd::detail::WsdTrack::Close() {
@@ -632,7 +634,7 @@ extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36n
 nw4hbm::ut::CharWriter::CharWriter() {
     unsigned char *self = (unsigned char *)this;
     unsigned char *source1, *source2, *source3;
-    nw4hbm::ut::Color colorA, colorB;
+    nw4hbm::ut::Color colorA, colorB, white;
     unsigned int addr = (unsigned int)this;
     int r9 = 1, r10 = 1, r11 = 1, r12 = 1, r30 = 1, r29 = 1;
     unsigned int top = addr & 0xFF000000U;
@@ -671,15 +673,14 @@ nw4hbm::ut::CharWriter::CharWriter() {
     if (*(int *)(self + 0x20) == 0) source3 = self + 0x18; else source3 = self + 0x1C;
     self[0x14] = source3[0]; self[0x15] = source3[1]; self[0x16] = source3[2];
     {
-        int b0 = self[0xB];
-        int alpha = self[0x42];
-        int product_b = b0 * alpha, product_f = self[0xF] * alpha;
+        int alpha = *(volatile unsigned char *)(self + 0x42);
+        int product_b = self[0xB] * alpha, product_f = self[0xF] * alpha;
         int product_13 = self[0x13] * alpha, product_17 = source3[3] * alpha;
         self[0xB] = product_b / 255; self[0xF] = product_f / 255;
         self[0x13] = product_13 / 255; self[0x17] = product_17 / 255;
     }
-    int whiteBits = -1;
-    SetTextColor(*(nw4hbm::ut::Color *)&whiteBits);
+    *(int *)&white = -1;
+    SetTextColor(white);
     CW_CHECK_THIS(this, 0x1E7);
     *(float *)(self + 0x24) = lbl_80561154;
     *(float *)(self + 0x28) = lbl_80561154;
