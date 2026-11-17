@@ -380,309 +380,361 @@ int fn_8017ECC0(int object, int deleteFlag) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma dont_inline on
+/* PhysDriverUpdate (the name its own debug print uses): read the four drivers'
+ * input bindings and turn them into the control values the physics driver
+ * consumes; called once per frame with the clamped frame time.  An analog
+ * binding is shaped by the driver's dead-spot/overshoot levels, while a digital
+ * one - and everything a game-pad player or a controller without an analog
+ * wheel produces - is instead ramped toward +-1 at the level's speed.  The
+ * buttons the game only needs an edge for (horn, reverse, help, airlift, gear
+ * changes) are latched into the object's flag bytes. */
 void fn_8017ED00(f32 dt) {
-    /* Per-frame input update for all four players: translate each bound slot into a
-     * control value (fn_801A7F98), apply analog rates/dead-zones and digital presses,
-     * and write the results into the player's pad0C[] controls and flag bytes.
-     * Does nothing while lbl_8055E4B8 is nonzero; dt is the frame delta time. */
+#define InputValue        fn_801A7F98   /* a binding's value, 0..1 */
+#define InputPressed      fn_801A8E38   /* ... above the press threshold */
+#define InputPressedOnce  fn_801A8E68   /* ... on the frame it is pressed */
+#define InputIsDigital    fn_801A8EE4   /* the binding is a key/button, not an axis */
+#define InputIsBound      fn_801A8F10   /* the device really has that axis/button */
+#define ShapeResponse     fn_8017EB80   /* rescale past the dead spot, keep the sign */
+#define AbsFloat          fn_8017F70C
+#define FloatMax          fn_801429D0
+#define FloatMin          fn_801429E0
+#define LerpTo            fn_80144C80   /* a + t * (b - a) */
+#define ClampTo           fn_8014C8F8   /* value, low, high */
+#define LogPrint          fn_802E30C8
+#define PanicPrint        fn_802E317C
+#define PollInput         fn_801A7844
+#define ControllerType    fn_802E85B0   /* rjoy stub: always reports 3 */
+#define ReadController    fn_801298E8   /* snapshot of one controller's status */
+#define SceneFrames       fn_80179300
+#define UpdateDriverSound fn_8017F628
+#define ResetDriverLevels fn_8017F718
+#define GetStackHead      __AXGetStackHead_80137CFC
+#define sDrivers          lbl_804348D8
+#define sUpdateSuspended  lbl_8055E4B8
+#define sSmoothing        lbl_8055E4B9  /* option "smoothing" */
+#define sUnexpectedUseMsg lbl_80331E28  /* "I don't expect PhysDriverUpdate (fg) to be used" */
+#define sControllerMsg    lbl_80332280  /* "driver: controller changed for player %d" */
+#define K_ONE             lbl_80561C48  /* 1.0f */
+#define K_ZERO            lbl_80561C4C  /* 0.0f */
+#define K_RAMP_GAIN       lbl_80561C50  /* 1.9f: extra steering ramp on top of the base */
+#define K_RAMP_BASE       lbl_80561C54  /* 2.5f: steering ramp, times steer_speed */
+#define K_MINUS_ONE       lbl_80561C58  /* -1.0f */
+#define K_RELEASE_RATE    lbl_80561C5C  /* 1.5f: pedal release, and raw digital steering */
+#define K_STEER_SMOOTH    lbl_80561C60  /* 0.4f: steering smoothing weight / look dead spot */
+#define K_THROTTLE_RATE   lbl_80561C64  /* 6.0f: throttle ramp, times throttle_speed */
+#define K_BRAKE_RATE      lbl_80561C68  /* 12.0f: brake ramp, times brake_speed */
+#define K_CLUTCH_RATE     lbl_80561C6C  /* 10.0f: clutch ramp per second */
+#define K_CLUTCH_RELEASE  lbl_80561C70  /* 5.0f: clutch release per second */
+#define K_LOOK_DEAD_SPOT  lbl_80561C74  /* 0.07f: camera look dead spot */
+#define K_LOOK_RATE       lbl_80561C78  /* 4.0f: camera look per second */
     struct {
         u8 pad00[0x50];
-        u32 flags;
+        u32 flags;      /* +0x50 the controller's status bits */
         u8 pad54[0x1C];
     } ctrlInfo;
-    u8 useAltB;
-    u8 useAltA;
-    struct Di718 **playerPtr;
-    struct Di718 *player;
-    s32 playerIdx;
+    u8 digitalBraking;  /* use the brake button rather than the brake axis */
+    u8 digitalThrottle; /* ... the throttle button rather than the throttle axis */
+    struct Di718 **driverPtr;
+    struct Di718 *driver;
+    s32 driverIdx;
 
-    if ((u8)lbl_8055E4B8 != 0) {
+    if ((u8)sUpdateSuspended != 0) {
         return;
     }
     {
-        f32 k78;
-        f32 k70;
-        f32 k6C;
-        f32 k64;
-        f32 k68;
-        f32 k5C;
+        f32 lookRate;
+        f32 clutchRelease;
+        f32 clutchRate;
+        f32 throttleRate;
+        f32 brakeRate;
+        f32 releaseRate;
         f32 minusOne;
         f32 one;
         f32 zero;
-        f32 k50;
-        f32 k54;
-        fn_802E317C(lbl_80331E28);
-        fn_801A7844(1);
-        zero = lbl_80561C4C;
-        k70 = lbl_80561C70;
-        k6C = lbl_80561C6C;
-        k68 = lbl_80561C68;
-        k64 = lbl_80561C64;
-        k5C = lbl_80561C5C;
-        k54 = lbl_80561C54;
-        k50 = lbl_80561C50;
-        one = lbl_80561C48;
-        minusOne = lbl_80561C58;
-        k78 = lbl_80561C78;
-        playerPtr = (struct Di718 **)lbl_804348D8;
-        for (playerIdx = 0; playerIdx < 4; playerIdx++, playerPtr++) {
-            s32 slotValue;
-            struct Di718Slot *activeSlot;
-            struct Di718Slot *gearSlot;
+        f32 rampGain;
+        f32 rampBase;
+        PanicPrint(sUnexpectedUseMsg);
+        PollInput(1);
+        zero = K_ZERO;
+        clutchRelease = K_CLUTCH_RELEASE;
+        clutchRate = K_CLUTCH_RATE;
+        brakeRate = K_BRAKE_RATE;
+        throttleRate = K_THROTTLE_RATE;
+        releaseRate = K_RELEASE_RATE;
+        rampBase = K_RAMP_BASE;
+        rampGain = K_RAMP_GAIN;
+        one = K_ONE;
+        minusOne = K_MINUS_ONE;
+        lookRate = K_LOOK_RATE;
+        driverPtr = (struct Di718 **)sDrivers;
+        for (driverIdx = 0; driverIdx < 4; driverIdx++, driverPtr++) {
+            s32 deviceIndex;
+            struct Di718Slot *binding;
+            struct Di718Slot *gearBinding;
             s32 gear;
 
-            player = *playerPtr;
-            if (player == NULL) {
+            driver = *driverPtr;
+            if (driver == NULL) {
                 continue;
             }
-            if (player->axStackHead != __AXGetStackHead_80137CFC(player->index)) {
-                fn_802E30C8(lbl_80332280, player->index);
-                fn_8017F718(player);
+            /* The sound player this driver drives changed: re-register its
+             * bindings, levels and options before reading any input. */
+            if (driver->axStackHead != GetStackHead(driver->index)) {
+                LogPrint(sControllerMsg, driver->index);
+                ResetDriverLevels(driver);
             }
-            useAltA = player->pad345[0];
-            useAltB = player->pad345[1];
-            player->flag342 = 0;
-            player->flag343 = 0;
-            slotValue = player->slot[2].value;
-            if (fn_802E85B0(slotValue) == 4) {
-                player->flag343 = 1;
-                useAltA = 0;
-                useAltB = 0;
+            digitalThrottle = driver->pad345[0];
+            digitalBraking = driver->pad345[1];
+            driver->flag342 = 0;
+            driver->flag343 = 0;
+            deviceIndex = driver->slot[BIND_THROTTLE].value;
+            if (ControllerType(deviceIndex) == 4) {
+                driver->flag343 = 1;
+                digitalThrottle = 0;
+                digitalBraking = 0;
             }
-            if (fn_801298E8(&ctrlInfo, slotValue) != 0) {
+            if (ReadController(&ctrlInfo, deviceIndex) != 0) {
                 if (ctrlInfo.flags & 2) {
-                    player->flag343 = 1;
-                    useAltA = 0;
-                    useAltB = 0;
+                    driver->flag343 = 1;
+                    digitalThrottle = 0;
+                    digitalBraking = 0;
                 }
                 if (ctrlInfo.flags & 8) {
-                    player->flag342 = 1;
-                    player->flag343 = 1;
+                    driver->flag342 = 1;
+                    driver->flag343 = 1;
                 }
             }
 
-            /* Steering: digital left/right or the analog axis difference. */
-            if (player->flag340 || fn_801A8EE4(&player->slot[0]) || fn_801A8EE4(&player->slot[1])) {
-                f32 base = k54 * player->level2C[2];
-                f32 rate = k50 * base;
-                f32 fast = rate + base;
-                if (player->pad0C[0] > zero) {
-                    player->pad0C[0] = fn_801429D0(player->pad0C[0] - rate * dt, zero);
+            /* Steering: the two steer axes against each other. */
+            if (driver->flag340 || InputIsDigital(&driver->slot[BIND_STEER_LEFT]) || InputIsDigital(&driver->slot[BIND_STEER_RIGHT])) {
+                f32 rampStep = rampBase * driver->level2C[LEVEL_STEER_SPEED];
+                f32 rampRate = rampGain * rampStep;
+                f32 pressedRate = rampRate + rampStep;
+                if (driver->pad0C[CTRL_STEER] > zero) {
+                    driver->pad0C[CTRL_STEER] = FloatMax(driver->pad0C[CTRL_STEER] - rampRate * dt, zero);
                 }
-                if (player->pad0C[0] < zero) {
-                    player->pad0C[0] = fn_801429E0(player->pad0C[0] + rate * dt, zero);
+                if (driver->pad0C[CTRL_STEER] < zero) {
+                    driver->pad0C[CTRL_STEER] = FloatMin(driver->pad0C[CTRL_STEER] + rampRate * dt, zero);
                 }
-                if (fn_801A8E38(&player->slot[0])) {
-                    player->pad0C[0] -= fast * dt;
+                if (InputPressed(&driver->slot[BIND_STEER_LEFT])) {
+                    driver->pad0C[CTRL_STEER] -= pressedRate * dt;
                 }
-                if (fn_801A8E38(&player->slot[1])) {
-                    player->pad0C[0] += fast * dt;
+                if (InputPressed(&driver->slot[BIND_STEER_RIGHT])) {
+                    driver->pad0C[CTRL_STEER] += pressedRate * dt;
                 }
-                if (player->pad0C[0] > one) {
-                    player->pad0C[0] = one;
+                if (driver->pad0C[CTRL_STEER] > one) {
+                    driver->pad0C[CTRL_STEER] = one;
                 }
-                if (player->pad0C[0] < minusOne) {
-                    player->pad0C[0] = minusOne;
+                if (driver->pad0C[CTRL_STEER] < minusOne) {
+                    driver->pad0C[CTRL_STEER] = minusOne;
                 }
             } else {
-                f32 prevSteer = player->pad0C[0];
-                f32 rightAxis = fn_801A7F98(&player->slot[1]);
-                f32 leftAxis = fn_801A7F98(&player->slot[0]);
+                f32 prevSteer = driver->pad0C[CTRL_STEER];
+                f32 rightAxis = InputValue(&driver->slot[BIND_STEER_RIGHT]);
+                f32 leftAxis = InputValue(&driver->slot[BIND_STEER_LEFT]);
                 f32 steerInput = -leftAxis + rightAxis;
-                if (player->flag344) {
-                    player->pad0C[0] = fn_8017EB80(steerInput, player->level2C[0], player->level2C[1]);
-                } else if (!player->flag343) {
-                    player->pad0C[0] = fn_8017EB80(steerInput, player->level2C[0], player->level2C[1]);
-                    player->pad0C[0] *= (one + player->pad60 * fn_8017F70C(player->pad0C[0])) - player->pad60;
-                    player->pad0C[0] *= (one + player->pad64 * fn_8017F70C(player->pad0C[0])) - player->pad64;
+                if (driver->flag344) {
+                    driver->pad0C[CTRL_STEER] = ShapeResponse(steerInput, driver->level2C[LEVEL_STEER_DEAD_SPOT], driver->level2C[LEVEL_STEER_OVERSHOOT]);
+                } else if (!driver->flag343) {
+                    driver->pad0C[CTRL_STEER] = ShapeResponse(steerInput, driver->level2C[LEVEL_STEER_DEAD_SPOT], driver->level2C[LEVEL_STEER_OVERSHOOT]);
+                    /* Two passes of (1 + k*|x|) - k: keeps the ends of the range
+                     * and pulls the middle of the wheel toward zero. */
+                    driver->pad0C[CTRL_STEER] *= (one + driver->pad60 * AbsFloat(driver->pad0C[CTRL_STEER])) - driver->pad60;
+                    driver->pad0C[CTRL_STEER] *= (one + driver->pad64 * AbsFloat(driver->pad0C[CTRL_STEER])) - driver->pad64;
                 } else {
-                    player->pad0C[0] = steerInput;
-                    if (player->flag342) {
-                        player->pad0C[0] *= k5C;
+                    driver->pad0C[CTRL_STEER] = steerInput;
+                    if (driver->flag342) {
+                        driver->pad0C[CTRL_STEER] *= releaseRate;
                     }
                 }
-                if ((u8)lbl_8055E4B9 != 0) {
-                    player->pad0C[0] = fn_80144C80(player->pad0C[0], prevSteer, lbl_80561C60);
+                if ((u8)sSmoothing != 0) {
+                    driver->pad0C[CTRL_STEER] = LerpTo(driver->pad0C[CTRL_STEER], prevSteer, K_STEER_SMOOTH);
                 }
             }
 
-            /* Acceleration/brake axis. */
+            /* The second steering axis always decays, and only the steer2
+             * buttons push it back. */
             {
-                f32 base = k54 * player->level2C[2];
-                f32 rate = k50 * base;
-                f32 fast = rate + base;
-                if (player->pad0C[1] > zero) {
-                    player->pad0C[1] = fn_801429D0(player->pad0C[1] - rate * dt, zero);
+                f32 rampStep = rampBase * driver->level2C[LEVEL_STEER_SPEED];
+                f32 rampRate = rampGain * rampStep;
+                f32 pressedRate = rampRate + rampStep;
+                if (driver->pad0C[CTRL_STEER2] > zero) {
+                    driver->pad0C[CTRL_STEER2] = FloatMax(driver->pad0C[CTRL_STEER2] - rampRate * dt, zero);
                 }
-                if (player->pad0C[1] < zero) {
-                    player->pad0C[1] = fn_801429E0(player->pad0C[1] + rate * dt, zero);
+                if (driver->pad0C[CTRL_STEER2] < zero) {
+                    driver->pad0C[CTRL_STEER2] = FloatMin(driver->pad0C[CTRL_STEER2] + rampRate * dt, zero);
                 }
-                if (fn_801A8E38(&player->slot[18])) {
-                    player->pad0C[1] -= fast * dt;
+                if (InputPressed(&driver->slot[BIND_STEER2_LEFT])) {
+                    driver->pad0C[CTRL_STEER2] -= pressedRate * dt;
                 }
-                if (fn_801A8E38(&player->slot[19])) {
-                    player->pad0C[1] += fast * dt;
+                if (InputPressed(&driver->slot[BIND_STEER2_RIGHT])) {
+                    driver->pad0C[CTRL_STEER2] += pressedRate * dt;
                 }
-                if (player->pad0C[1] > one) {
-                    player->pad0C[1] = one;
+                if (driver->pad0C[CTRL_STEER2] > one) {
+                    driver->pad0C[CTRL_STEER2] = one;
                 }
-                if (player->pad0C[1] < minusOne) {
-                    player->pad0C[1] = minusOne;
+                if (driver->pad0C[CTRL_STEER2] < minusOne) {
+                    driver->pad0C[CTRL_STEER2] = minusOne;
                 }
             }
 
-            activeSlot = &player->slot[2];
-            if (!fn_801A8F10(activeSlot)) {
-                activeSlot = &player->slot[5];
-            } else if (useAltA && fn_801A8F10(&player->slot[5])) {
-                activeSlot = &player->slot[5];
+            /* Throttle: the analog pedal, or the button when the options ask
+             * for digital throttle (or when the pedal is not bound at all). */
+            binding = &driver->slot[BIND_THROTTLE];
+            if (!InputIsBound(binding)) {
+                binding = &driver->slot[BIND_DIG_THROTTLE];
+            } else if (digitalThrottle && InputIsBound(&driver->slot[BIND_DIG_THROTTLE])) {
+                binding = &driver->slot[BIND_DIG_THROTTLE];
             }
-            if (player->flag340 || useAltA || fn_801A8EE4(activeSlot)) {
+            if (driver->flag340 || digitalThrottle || InputIsDigital(binding)) {
                 f32 down;
                 f32 up;
-                up = k64 * player->level2C[5];
-                down = k5C * up;
-                if (fn_801A8E38(activeSlot)) {
-                    player->pad0C[5] = fn_801429E0(player->pad0C[5] + up * dt, lbl_80561C48);
+                up = throttleRate * driver->level2C[LEVEL_THROTTLE_SPEED];
+                down = releaseRate * up;
+                if (InputPressed(binding)) {
+                    driver->pad0C[CTRL_THROTTLE] = FloatMin(driver->pad0C[CTRL_THROTTLE] + up * dt, K_ONE);
                 } else {
-                    player->pad0C[5] = fn_801429D0(player->pad0C[5] - down * dt, lbl_80561C4C);
+                    driver->pad0C[CTRL_THROTTLE] = FloatMax(driver->pad0C[CTRL_THROTTLE] - down * dt, K_ZERO);
                 }
             } else {
-                player->pad0C[5] = fn_8017EB80(fn_801A7F98(activeSlot), player->level2C[3], player->level2C[4]);
+                driver->pad0C[CTRL_THROTTLE] = ShapeResponse(InputValue(binding), driver->level2C[LEVEL_THROTTLE_DEAD_SPOT], driver->level2C[LEVEL_THROTTLE_OVERSHOOT]);
             }
 
-            if (player->flag340 || fn_801A8EE4(&player->slot[7])) {
+            if (driver->flag340 || InputIsDigital(&driver->slot[BIND_THROTTLE2])) {
                 f32 down;
                 f32 up;
-                up = k64 * player->level2C[5];
-                down = k5C * up;
-                if (fn_801A8E38(&player->slot[7])) {
-                    player->pad0C[6] = fn_801429E0(player->pad0C[6] + up * dt, lbl_80561C48);
+                up = throttleRate * driver->level2C[LEVEL_THROTTLE_SPEED];
+                down = releaseRate * up;
+                if (InputPressed(&driver->slot[BIND_THROTTLE2])) {
+                    driver->pad0C[CTRL_THROTTLE2] = FloatMin(driver->pad0C[CTRL_THROTTLE2] + up * dt, K_ONE);
                 } else {
-                    player->pad0C[6] = fn_801429D0(player->pad0C[6] - down * dt, lbl_80561C4C);
+                    driver->pad0C[CTRL_THROTTLE2] = FloatMax(driver->pad0C[CTRL_THROTTLE2] - down * dt, K_ZERO);
                 }
             } else {
-                player->pad0C[6] = fn_8017EB80(fn_801A7F98(&player->slot[7]), player->level2C[3], player->level2C[4]);
+                driver->pad0C[CTRL_THROTTLE2] = ShapeResponse(InputValue(&driver->slot[BIND_THROTTLE2]), driver->level2C[LEVEL_THROTTLE_DEAD_SPOT], driver->level2C[LEVEL_THROTTLE_OVERSHOOT]);
             }
 
-            activeSlot = &player->slot[3];
-            if (!fn_801A8F10(activeSlot)) {
-                activeSlot = &player->slot[6];
-            } else if (useAltB && fn_801A8F10(&player->slot[6])) {
-                activeSlot = &player->slot[6];
+            /* Brake, same choice between pedal and button. */
+            binding = &driver->slot[BIND_BRAKING];
+            if (!InputIsBound(binding)) {
+                binding = &driver->slot[BIND_DIG_BRAKING];
+            } else if (digitalBraking && InputIsBound(&driver->slot[BIND_DIG_BRAKING])) {
+                binding = &driver->slot[BIND_DIG_BRAKING];
             }
-            if (player->flag340 || useAltB || fn_801A8EE4(activeSlot)) {
-                f32 up = k68 * player->level2C[8];
-                f32 down = k64 * player->level2C[8];
-                if (player->pad0C[2] > zero) {
-                    player->pad0C[2] = fn_801429D0(player->pad0C[2] - down * dt, zero);
+            if (driver->flag340 || digitalBraking || InputIsDigital(binding)) {
+                f32 up = brakeRate * driver->level2C[LEVEL_BRAKE_SPEED];
+                f32 down = throttleRate * driver->level2C[LEVEL_BRAKE_SPEED];
+                if (driver->pad0C[CTRL_BRAKE] > zero) {
+                    driver->pad0C[CTRL_BRAKE] = FloatMax(driver->pad0C[CTRL_BRAKE] - down * dt, zero);
                 }
-                if (fn_801A8E38(activeSlot)) {
-                    player->pad0C[2] += up * dt;
+                if (InputPressed(binding)) {
+                    driver->pad0C[CTRL_BRAKE] += up * dt;
                 }
-                if (player->pad0C[2] > one) {
-                    player->pad0C[2] = one;
+                if (driver->pad0C[CTRL_BRAKE] > one) {
+                    driver->pad0C[CTRL_BRAKE] = one;
                 }
             } else {
-                player->pad0C[2] = fn_8017EB80(fn_801A7F98(activeSlot), player->level2C[6], player->level2C[7]);
+                driver->pad0C[CTRL_BRAKE] = ShapeResponse(InputValue(binding), driver->level2C[LEVEL_BRAKE_DEAD_SPOT], driver->level2C[LEVEL_BRAKE_OVERSHOOT]);
             }
 
-            if (player->flag340 || fn_801A8EE4(&player->slot[8])) {
-                f32 up = k68 * player->level2C[8];
-                f32 down = k64 * player->level2C[8];
-                if (player->pad0C[3] > zero) {
-                    player->pad0C[3] = fn_801429D0(player->pad0C[3] - down * dt, zero);
+            if (driver->flag340 || InputIsDigital(&driver->slot[BIND_BRAKING2])) {
+                f32 up = brakeRate * driver->level2C[LEVEL_BRAKE_SPEED];
+                f32 down = throttleRate * driver->level2C[LEVEL_BRAKE_SPEED];
+                if (driver->pad0C[CTRL_BRAKE2] > zero) {
+                    driver->pad0C[CTRL_BRAKE2] = FloatMax(driver->pad0C[CTRL_BRAKE2] - down * dt, zero);
                 }
-                if (fn_801A8E38(&player->slot[8])) {
-                    player->pad0C[3] += up * dt;
+                if (InputPressed(&driver->slot[BIND_BRAKING2])) {
+                    driver->pad0C[CTRL_BRAKE2] += up * dt;
                 }
-                if (player->pad0C[3] > one) {
-                    player->pad0C[3] = one;
-                }
-            } else {
-                player->pad0C[3] = fn_8017EB80(fn_801A7F98(&player->slot[8]), player->level2C[6], player->level2C[7]);
-            }
-
-            player->pad0C[7] = fn_801A7F98(&player->slot[4]);
-            if (!player->flag341) {
-                player->flag5A = fn_801A8E38(&player->slot[9]) || fn_801A8E38(&player->slot[10]);
-            }
-
-            if (fn_801A8EE4(&player->slot[15])) {
-                if (fn_801A8E38(&player->slot[15])) {
-                    player->pad0C[4] += k6C * dt;
-                } else if (player->pad0C[4] > zero) {
-                    player->pad0C[4] = fn_801429D0(player->pad0C[4] - k70 * dt, zero);
-                }
-                if (player->pad0C[4] > one) {
-                    player->pad0C[4] = one;
+                if (driver->pad0C[CTRL_BRAKE2] > one) {
+                    driver->pad0C[CTRL_BRAKE2] = one;
                 }
             } else {
-                player->pad0C[4] = fn_801A7F98(&player->slot[15]);
+                driver->pad0C[CTRL_BRAKE2] = ShapeResponse(InputValue(&driver->slot[BIND_BRAKING2]), driver->level2C[LEVEL_BRAKE_DEAD_SPOT], driver->level2C[LEVEL_BRAKE_OVERSHOOT]);
             }
 
-            player->flag5B = fn_801A8E38(&player->slot[16]);
-            player->flag58 = fn_801A8E38(&player->slot[11]) || fn_801A8E38(&player->slot[12]);
-            player->flag5D = fn_801A8E68(&player->slot[2]);
-            if (fn_80179300() < 40) {
-                player->flag58 = 0;
+            driver->pad0C[CTRL_E_BRAKE] = InputValue(&driver->slot[BIND_E_BRAKE]);
+            if (!driver->flag341) {
+                driver->flag5A = InputPressed(&driver->slot[BIND_REVERSE]) || InputPressed(&driver->slot[BIND_ALT_REVERSE]);
             }
-            player->flag68 = fn_801A8E38(&player->slot[17]);
 
-            /* Camera/look axis is rate-limited towards the raw stick value. */
+            /* The clutch builds up while held and falls back on its own. */
+            if (InputIsDigital(&driver->slot[BIND_CLUTCH])) {
+                if (InputPressed(&driver->slot[BIND_CLUTCH])) {
+                    driver->pad0C[CTRL_CLUTCH] += clutchRate * dt;
+                } else if (driver->pad0C[CTRL_CLUTCH] > zero) {
+                    driver->pad0C[CTRL_CLUTCH] = FloatMax(driver->pad0C[CTRL_CLUTCH] - clutchRelease * dt, zero);
+                }
+                if (driver->pad0C[CTRL_CLUTCH] > one) {
+                    driver->pad0C[CTRL_CLUTCH] = one;
+                }
+            } else {
+                driver->pad0C[CTRL_CLUTCH] = InputValue(&driver->slot[BIND_CLUTCH]);
+            }
+
+            driver->flag5B = InputPressed(&driver->slot[BIND_HELP]);
+            driver->flag58 = InputPressed(&driver->slot[BIND_HORN]) || InputPressed(&driver->slot[BIND_HORN2]);
+            driver->flag5D = InputPressedOnce(&driver->slot[BIND_THROTTLE]);
+            if (SceneFrames() < 40) {
+                driver->flag58 = 0;
+            }
+            driver->flag68 = InputPressed(&driver->slot[BIND_AIRLIFT]);
+
+            /* Camera look: slew-limited toward the look buttons' value. */
             {
-                f32 leftAxis = fn_801A7F98(&player->slot[20]);
-                f32 steerInput = fn_8017EB80(-leftAxis + fn_801A7F98(&player->slot[21]), lbl_80561C60, lbl_80561C74);
-                f32 maxStep = k78 * dt;
-                player->pad30C[8] += fn_8014C8F8(steerInput - player->pad30C[8], -maxStep, maxStep);
+                f32 lookLeft = InputValue(&driver->slot[BIND_LOOK_LEFT]);
+                f32 look = ShapeResponse(-lookLeft + InputValue(&driver->slot[BIND_LOOK_RIGHT]), K_STEER_SMOOTH, K_LOOK_DEAD_SPOT);
+                f32 maxStep = lookRate * dt;
+                driver->pad30C[8] += ClampTo(look - driver->pad30C[8], -maxStep, maxStep);
             }
 
-            player->flag338 = fn_801A8E38(&player->slot[22]);
-            if (fn_801A8E38(&player->slot[33])) {
-                player->flag338 = 1;
-            }
-            {
-                f32 negAxis = fn_801A7F98(&player->slot[34]);
-                *(f32 *)&player->pad330[0] = fn_801A7F98(&player->slot[35]) - negAxis;
+            driver->flag338 = InputPressed(&driver->slot[BIND_LOOK_BACK]);
+            if (InputPressed(&driver->slot[BIND_MIRROR_CONTROL])) {
+                driver->flag338 = 1;
             }
             {
-                f32 negAxis = fn_801A7F98(&player->slot[36]);
-                *(f32 *)&player->pad330[4] = fn_801A7F98(&player->slot[37]) - negAxis;
+                f32 pitchUp = InputValue(&driver->slot[BIND_PITCH_UP]);
+                *(f32 *)&driver->pad330[0] = InputValue(&driver->slot[BIND_PITCH_DOWN]) - pitchUp;
+            }
+            {
+                f32 rollLeft = InputValue(&driver->slot[BIND_ROLL_LEFT]);
+                *(f32 *)&driver->pad330[4] = InputValue(&driver->slot[BIND_ROLL_RIGHT]) - rollLeft;
             }
 
-            /* Gear selection via +/- keys or the sequential gear slots. */
-            if (!player->flag341) {
-                if (fn_801A8E38(&player->slot[13])) {
-                    if (!player->flag59) {
-                        if (player->pad50[0] < player->pad50[1]) {
-                            player->pad50[0]++;
+            if (!driver->flag341) {
+                /* Sequential shifting: one step per press of the shift buttons. */
+                if (InputPressed(&driver->slot[BIND_UPSHIFT])) {
+                    if (!driver->flag59) {
+                        if (driver->pad50[0] < driver->pad50[1]) {
+                            driver->pad50[0]++;
                         }
-                        player->flag59 = 1;
+                        driver->flag59 = 1;
                     }
-                } else if (fn_801A8E38(&player->slot[14])) {
-                    if (!player->flag59) {
-                        if (player->pad50[0] > -1) {
-                            player->pad50[0]--;
+                } else if (InputPressed(&driver->slot[BIND_DOWNSHIFT])) {
+                    if (!driver->flag59) {
+                        if (driver->pad50[0] > -1) {
+                            driver->pad50[0]--;
                         }
-                        player->flag59 = 1;
+                        driver->flag59 = 1;
                     }
                 } else {
-                    player->flag59 = 0;
+                    driver->flag59 = 0;
                 }
             } else {
-                player->flag59 = 0;
-                player->pad50[0] = 0;
-                gearSlot = &player->slot[23];
-                for (gear = 0; gear < player->pad50[1]; gearSlot++, gear++) {
-                    if (fn_801A8E38(gearSlot)) {
-                        player->pad50[0] = gear + 1;
+                /* Free shifting: the gear buttons pick the gear directly. */
+                driver->flag59 = 0;
+                driver->pad50[0] = 0;
+                gearBinding = &driver->slot[BIND_FREE_G1];
+                for (gear = 0; gear < driver->pad50[1]; gearBinding++, gear++) {
+                    if (InputPressed(gearBinding)) {
+                        driver->pad50[0] = gear + 1;
                     }
                 }
-                if (fn_801A8E38(&player->slot[29])) {
-                    player->pad50[0] = -1;
+                if (InputPressed(&driver->slot[BIND_FREE_REVERSE])) {
+                    driver->pad50[0] = -1;
                 }
             }
-            fn_8017F628(player);
+            UpdateDriverSound(driver);
         }
     }
 }
