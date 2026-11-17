@@ -155,7 +155,11 @@ void fn_80171D20(int userData) { fn_80171A4C(userData - 4); }
 /* Callback wrapper: forward to fn_80171A80 with the pointer backed up to its enclosing structure (userData - 4). */
 void fn_80171D28(int userData) { fn_80171A80(userData - 4); }
 
-void fn_80171D30(int arg0) { fn_80171CE0(arg0 - 4); }
+/* Callback wrapper (like fn_80171D10 above): hand the callback's userData to
+ * fn_80171CE0 backed up to its enclosing structure (userData - 4).  Like
+ * fn_80171930, fn_80171CE0 is one of these handlers that the game left empty:
+ * its body is a single blr, so this wrapper does nothing at runtime. */
+void fn_80171D30(int userData) { fn_80171CE0(userData - 4); }
 
 /* Return nonzero if the indexed record has a nonzero flag at offset 0x20 + LFO table index (+0x30). */
 int fn_80171D38(int arg0) {
