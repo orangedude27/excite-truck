@@ -944,84 +944,92 @@ done:
 }
 #pragma push
 #pragma scheduling invalid_target
-int fn_801A8F10(int *__restrict arg0) {
-    struct Struct16 {
-        unsigned int a;
-        unsigned int b;
-        unsigned int c;
-        unsigned int d;
+/* ControlExists: report whether the control described by `control` (input type,
+ * device index, axis/button code) exists on that device, using the per-device
+ * axis and button presence masks held in the control-state table. */
+int fn_801A8F10(int *__restrict control) {
+#define gControlState lbl_80435050
+#define sUnhandledAxisMsg lbl_80334EE0
+#define Panic fn_802E317C
+    struct ControlFlags {
+        unsigned int axisMask;   /* +0x00 one bit per analog axis/direction */
+        unsigned int buttonMask; /* +0x04 one bit per digital button */
+        unsigned int unk08;
+        unsigned int unk0C;
     };
-    struct Entry {
+    struct ControlState {
         unsigned char pad[0x44];
-        struct Struct16 flags;
+        struct ControlFlags flags;
         unsigned char pad2[0x64 - 0x54];
     };
-    extern char lbl_80334EE0[];
-    extern void fn_802E317C(const char *, ...);
+    extern char sUnhandledAxisMsg[];
+    extern void Panic(const char *, ...);
 
-    int state = arg0[0];
-    int idx = arg0[1];
-    struct Entry *entry = &((struct Entry *)lbl_80435050)[idx];
-    struct Struct16 flags = entry->flags;
+    int inputType = control[0];
+    int deviceIndex = control[1];
+    struct ControlState *entry = &((struct ControlState *)gControlState)[deviceIndex];
+    struct ControlFlags flags = entry->flags;
 
-    if (state == 4) {
-        return (flags.a >> 15) & 1;
+    if (inputType == 4) {
+        return (flags.axisMask >> 15) & 1;
     }
-    if (state == 3) {
-        unsigned int bit = flags.b & (1 << arg0[2]);
-        return (unsigned int)(-bit | bit) >> 31;
+    if (inputType == 3) {
+        unsigned int button = flags.buttonMask & (1 << control[2]);
+        return (unsigned int)(-button | button) >> 31;
     }
-    if (state == 2) {
-        unsigned int axis = arg0[2];
+    if (inputType == 2) {
+        unsigned int axis = control[2];
         switch (axis) {
         case 0:
         case 1:
         case 16:
         case 24:
-            return flags.a & 1;
+            return flags.axisMask & 1;
         case 2:
         case 3:
         case 17:
         case 25:
-            return (flags.a >> 1) & 1;
+            return (flags.axisMask >> 1) & 1;
         case 4:
         case 5:
         case 18:
         case 26:
-            return (flags.a >> 3) & 1;
+            return (flags.axisMask >> 3) & 1;
         case 6:
         case 7:
         case 19:
         case 27:
-            return (flags.a >> 2) & 1;
+            return (flags.axisMask >> 2) & 1;
         case 8:
         case 9:
         case 20:
         case 28:
-            return (flags.a >> 4) & 1;
+            return (flags.axisMask >> 4) & 1;
         case 10:
         case 11:
         case 21:
         case 29:
-            return (flags.a >> 5) & 1;
+            return (flags.axisMask >> 5) & 1;
         case 12:
         case 13:
         case 22:
         case 30:
-            return (flags.a >> 6) & 1;
+            return (flags.axisMask >> 6) & 1;
         case 14:
         case 15:
         case 23:
         case 31:
-            return (flags.a >> 7) & 1;
+            return (flags.axisMask >> 7) & 1;
         default:
-            fn_802E317C(lbl_80334EE0, arg0[2]);
+            Panic(sUnhandledAxisMsg, control[2]);
             return 0;
         }
     }
-    return (unsigned int)(-state | state) >> 31;
+    return (unsigned int)(-inputType | inputType) >> 31;
+#undef gControlState
+#undef sUnhandledAxisMsg
+#undef Panic
 }
-#pragma pop
 extern void fn_801A7628(void);
 extern void fn_801A9110(void *, const char *);
 extern void *fn_801A9234(const char *);
