@@ -3770,63 +3770,84 @@ extern "C" s32 fn_800B5070(s32, s32 *);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 *arg6, s32 *arg7) {
+extern "C" s32 fn_800AA924(void *dir, void *entryInfo, s32 entryName, s32 readArg0, s32 readArg1, s32 readArg2, s32 *outValue, s32 *outIndex) {
+    /* Search a VFiP directory for an entry: copy the directory to the stack, seek the named
+     * entry (parsing a path number first when enabled), read its fields into entryInfo, and
+     * return its value/index; failures report 3 with 0xF423F sentinels in both outputs. */
+    #define SEEK_ENTRY     fn_800AC1B4
+    #define LOAD_ENTRY     fn_800A9DC0
+    #define PARSE_PATH_NUM fn_800B5070
+    #define FLAGS_WORD     lbl_803D2140[0x60 / 4]
+    #define PATH_MODE_BIT  2
+    #define ENTRY_STATE    iter[0x4C]
+    #define LONG_NAME_BIT  0x40
+    #define END_MARKER     0xE5
+    #define NO_RESULT      0xF423F
     struct Copy14 { s32 word[14]; };
-    s32 outValue;
-    s32 name = arg2;
+    s32 loadedValue;
+    s32 entryId = entryName;
     u8 iter[0x70];
-    struct Copy14 *src = (struct Copy14 *)arg0;
+    struct Copy14 *src = (struct Copy14 *)dir;
     struct Copy14 *dst = (struct Copy14 *)(iter + 8);
     u32 mode = 0;
     u32 flags;
     s32 result;
-    u8 state;
-    *arg6 = mode; *arg7 = mode;
-    *(u8 *)((u8 *)arg1 + 0x20A) = (u8)mode;
-    *(u8 *)((u8 *)arg1 + 0x20B) = (u8)mode;
-    *(u8 *)((u8 *)arg1 + 0x20C) = (u8)mode;
-    *(s16 *)arg1 = (s16)mode;
-    flags = lbl_803D2140[0x60 / 4];
-    outValue = mode;
-    if ((flags & 2) == 2) mode = fn_800B5070(arg3, &name);
+    u8 entryState;
+    *outValue = mode; *outIndex = mode;
+    *(u8 *)((u8 *)entryInfo + 0x20A) = (u8)mode;
+    *(u8 *)((u8 *)entryInfo + 0x20B) = (u8)mode;
+    *(u8 *)((u8 *)entryInfo + 0x20C) = (u8)mode;
+    *(s16 *)entryInfo = (s16)mode;
+    flags = FLAGS_WORD;
+    loadedValue = mode;
+    if ((flags & PATH_MODE_BIT) == PATH_MODE_BIT) mode = PARSE_PATH_NUM(readArg0, &entryId);
     *dst = *src;
     if (mode == 1) {
-        result = fn_800AC1B4(iter, name - 1);
-        if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
-        result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
-        if (result == 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return 3; }
-        if ((iter[0x4C] & 0x40) == 0) goto fail_main;
-        result = fn_800AC1B4(iter, name);
-        if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
-        result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
+        result = SEEK_ENTRY(iter, entryId - 1);
+        if (result != 0) { *outValue = NO_RESULT; *outIndex = NO_RESULT; return result; }
+        result = LOAD_ENTRY(entryInfo, iter, readArg0, readArg1, readArg2, &loadedValue);
+        if (result == 0) { *outValue = NO_RESULT; *outIndex = NO_RESULT; return 3; }
+        if ((ENTRY_STATE & LONG_NAME_BIT) == 0) goto fail_main;
+        result = SEEK_ENTRY(iter, entryId);
+        if (result != 0) { *outValue = NO_RESULT; *outIndex = NO_RESULT; return result; }
+        result = LOAD_ENTRY(entryInfo, iter, readArg0, readArg1, readArg2, &loadedValue);
         if (result == 0) {
-            *(s32 *)((u8 *)arg1 + 0x22C) = *(s32 *)((u8 *)arg0 + 0x34);
-            *arg6 = outValue; *arg7 = *(s32 *)iter;
+            *(s32 *)((u8 *)entryInfo + 0x22C) = *(s32 *)((u8 *)dir + 0x34);
+            *outValue = loadedValue; *outIndex = *(s32 *)iter;
             return 0;
         }
         goto fail_main;
     }
-    result = fn_800AC1B4(iter, name);
+    result = SEEK_ENTRY(iter, entryId);
     while (VFiPFENT_ITER_IsAtLogicalEnd(iter) == 0) {
-        if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
-        state = iter[0x4C];
-        if (state == 0) break;
-        if (state == 0xE5) {
-            *(u8 *)((u8 *)arg1 + 0x20A) = 0;
-            *(s16 *)arg1 = 0;
+        if (result != 0) { *outValue = NO_RESULT; *outIndex = NO_RESULT; return result; }
+        entryState = ENTRY_STATE;
+        if (entryState == 0) break;
+        if (entryState == END_MARKER) {
+            *(u8 *)((u8 *)entryInfo + 0x20A) = 0;
+            *(s16 *)entryInfo = 0;
         } else {
-            result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
+            result = LOAD_ENTRY(entryInfo, iter, readArg0, readArg1, readArg2, &loadedValue);
             if (result == 0) {
-                *(s32 *)((u8 *)arg1 + 0x22C) = *(s32 *)((u8 *)arg0 + 0x34);
-                *arg6 = outValue; *arg7 = *(s32 *)iter;
+                *(s32 *)((u8 *)entryInfo + 0x22C) = *(s32 *)((u8 *)dir + 0x34);
+                *outValue = loadedValue; *outIndex = *(s32 *)iter;
                 return 0;
             }
         }
         result = VFiPFENT_ITER_Advance(iter, 0);
     }
 fail_main:
-    *arg6 = 0xF423F; *arg7 = 0xF423F;
+    *outValue = NO_RESULT; *outIndex = NO_RESULT;
     return 3;
+    #undef SEEK_ENTRY
+    #undef LOAD_ENTRY
+    #undef PARSE_PATH_NUM
+    #undef FLAGS_WORD
+    #undef PATH_MODE_BIT
+    #undef ENTRY_STATE
+    #undef LONG_NAME_BIT
+    #undef END_MARKER
+    #undef NO_RESULT
 }
 #pragma pop
 // Forwards the incoming argument registers to the VFiPFPATH iterator in fn_800AA924 and
