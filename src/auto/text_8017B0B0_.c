@@ -1250,7 +1250,11 @@ void fn_8017D358(void) {
 
 }
 
-int fn_8017D35C(void) { return 0x20; }
+/* Vtable accessor: returns the fixed 0x20-byte size of the transform key record
+ * written by the sibling fn_8017D160/fn_8017D274 record writers. */
+int fn_8017D35C(void) {
+    return 0x20;
+}
 
 unsigned int fn_8017D364(void) { return 1; }
 
