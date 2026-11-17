@@ -44,6 +44,15 @@ typedef struct EfEmitter {
     int texHandle;  /* at 0xA4 */
 } EfEmitter;
 
+/* Cache of loaded effect tables: up to 40 0x18-byte entries keyed by resource
+ * name, with the number of live entries held at +0x600.  fn_8028EE34 looks an
+ * entry up, fn_8028EEB4 adds one and fn_8028EF44 releases one; fn_8028EE1C and
+ * fn_8028EE28 reset the count to empty the whole cache. */
+typedef struct EfTableCache {
+    char entries[0x600];
+    int count; /* at 0x600 */
+} EfTableCache;
+
 /* fn_8028F040's "the two lists share no texture", which fn_8028F114 also takes
  * as "no group to pin to the front / back of this run". */
 #define EF_NO_TEXTURE (-2)
