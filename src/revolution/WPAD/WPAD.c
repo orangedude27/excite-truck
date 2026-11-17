@@ -75,7 +75,7 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs);
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
 extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
 void fn_80060AFC(s32 chan);
-void WPADiDecode();
+void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed);
 typedef struct { f64 d[6]; } Cmd64;
 typedef struct {
     Cmd64 rmb;
