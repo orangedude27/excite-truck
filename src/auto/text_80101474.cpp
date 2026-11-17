@@ -627,12 +627,13 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
     return c;
 }
 
+struct CharWriterCtorColors { nw4hbm::ut::Color a, b, w; };
 extern "C" float lbl_80561154;
 extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2);
 nw4hbm::ut::CharWriter::CharWriter() {
     unsigned char *self = (unsigned char *)this;
     unsigned char *source1, *source2, *source3;
-    nw4hbm::ut::Color colorA, colorB, white;
+    nw4hbm::ut::Color colorA, colorB;
     unsigned int addr = (unsigned int)this;
     int r9 = 1, r10 = 1, r11 = 1, r12 = 1, r30 = 1, r29 = 1;
     unsigned int top = addr & 0xFF000000U;
@@ -672,14 +673,14 @@ nw4hbm::ut::CharWriter::CharWriter() {
     self[0x14] = source3[0]; self[0x15] = source3[1]; self[0x16] = source3[2];
     {
         int b0 = self[0xB];
-        int alpha = *(volatile unsigned char *)(self + 0x42);
+        int alpha = self[0x42];
         int product_b = b0 * alpha, product_f = self[0xF] * alpha;
         int product_13 = self[0x13] * alpha, product_17 = source3[3] * alpha;
         self[0xB] = product_b / 255; self[0xF] = product_f / 255;
         self[0x13] = product_13 / 255; self[0x17] = product_17 / 255;
     }
-    *(int *)&white = -1;
-    SetTextColor(white);
+    int whiteBits = -1;
+    SetTextColor(*(nw4hbm::ut::Color *)&whiteBits);
     CW_CHECK_THIS(this, 0x1E7);
     *(float *)(self + 0x24) = lbl_80561154;
     *(float *)(self + 0x28) = lbl_80561154;
@@ -1704,25 +1705,30 @@ extern "C" unsigned char lbl_8055DE90;
 extern "C" unsigned char lbl_8055DE94, lbl_8055DE95, lbl_8055DE96, lbl_8055DE97;
 extern "C" float lbl_80561150;
 extern "C" unsigned char lbl_8041D4D0[];
+#pragma opt_propagation off
 extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(unsigned int arg0, unsigned int arg1) {
-    unsigned char sp8[4], spc[4], sp10[4];
-    unsigned char r, g, b;
+    unsigned char sp10[4], spc[4], sp8[4];
+    unsigned char r, g, b, a;
+    unsigned char f0, f1, f2, f3;
+    unsigned char *p0 = (unsigned char *)arg0;
+    unsigned char *p1 = (unsigned char *)arg1;
     if ((signed char)lbl_8055DE90 == 0) {
-        lbl_8055DE94 = 0;
-        __register_global_object(&lbl_8055DE94, fn_800D2DD4, (void *)0x8041D4D0);
+        *(int *)&lbl_8055DE94 = 0;
+        __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
         lbl_8055DE90 = 1;
     }
-    sp8[0]=lbl_8055DE94; sp8[1]=lbl_8055DE95; sp8[2]=lbl_8055DE96; sp8[3]=lbl_8055DE97;
-    GXSetFog(0, sp8, lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+    f3=lbl_8055DE97; f2=lbl_8055DE96; f1=lbl_8055DE95; f0=lbl_8055DE94;
+    sp8[0]=f0; sp8[1]=f1; sp8[2]=f2; sp8[3]=f3;
+    GXSetFog((lbl_8055DE94, 0), sp8, f2, f1, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
     GXSetTevSwapModeTable(0,0,1,2,3); GXSetZTexture(0,0x11,0); GXSetNumChans(1);
     GXSetChanCtrl(4,0,0,1,0,0,2); GXSetChanCtrl(5,0,0,0,0,0,2);
     GXSetNumTexGens(1); GXSetTexCoordGen2(0,1,4,0x3c,0,0x7d); GXSetNumIndStages(0);
     GXSetBlendMode(1,4,5,0xf); GXSetNumTevStages(2); GXSetTevDirect(0); GXSetTevDirect(1);
     GXSetTevSwapMode(0,0,0); GXSetTevSwapMode(1,0,0); GXSetTevOrder(0,0,0,0xff);
-    r=((unsigned char *)&arg0)[0]; g=((unsigned char *)&arg0)[1]; b=((unsigned char *)&arg0)[2];
-    sp10[0]=r; sp10[1]=g; sp10[2]=b; sp10[3]=((unsigned char *)&arg0)[3]; GXSetTevColor(1,sp10,b,g,(s32)r);
-    r=((unsigned char *)&arg1)[0]; g=((unsigned char *)&arg1)[1]; b=((unsigned char *)&arg1)[2];
-    spc[0]=r; spc[1]=g; spc[2]=b; spc[3]=((unsigned char *)&arg1)[3]; GXSetTevColor(2,spc,b,g,r);
+    r=p0[0]; g=p0[1]; b=p0[2]; a=p0[3];
+    sp10[0]=r; sp10[1]=g; sp10[2]=b; sp10[3]=a; GXSetTevColor(1,sp10,b,g,r);
+    r=p1[0]; g=p1[1]; b=p1[2]; a=p1[3];
+    spc[0]=r; spc[1]=g; spc[2]=b; spc[3]=a; GXSetTevColor(2,spc,b,g,r);
     GXSetTevColorIn(0,2,4,8,0xf); GXSetTevAlphaIn(0,1,2,4,7);
     GXSetTevColorOp(0,0,0,0,1,0); GXSetTevAlphaOp(0,0,0,0,1,0);
     GXSetTevOrder(1,0xff,0xff,4); GXSetTevColorIn(1,0xf,0,0xa,0xf); GXSetTevAlphaIn(1,7,0,5,7);
@@ -1730,4 +1736,5 @@ extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5C
     GXSetVtxAttrFmt(0,9,1,4,0); GXSetVtxAttrFmt(0,0xb,1,5,0); GXSetVtxAttrFmt(0,0xd,1,2,0xf);
     GXClearVtxDesc(); GXSetVtxDesc(9,1); GXSetVtxDesc(0xb,1); GXSetVtxDesc(0xd,1);
 }
+#pragma opt_propagation reset
 namespace nw4hbm { namespace ut { struct Glyph { unsigned char pad[0x14]; unsigned short x; unsigned char pad16[2]; unsigned char y; unsigned char pad19[7]; unsigned short width; unsigned short height; unsigned char pad20[0x20]; }; }}
