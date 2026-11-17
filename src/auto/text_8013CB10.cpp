@@ -4027,6 +4027,9 @@ extern "C" void fn_80144300(void) {
 extern "C" void fn_80144308(void) {
 }
 
+/* No-op virtual stub: an empty callback slot of the ZoneMaster vtable group
+ * (lbl_8032CAF0), whose other stubs are fn_801442D4..fn_80144300.  Calling it
+ * does nothing. */
 extern "C" void fn_80144304(void) {
 }
 
