@@ -3357,8 +3357,9 @@ extern "C" void fn_80143138(u8 *self, u8 *out) {
         entryOut += 0x14;
     }
 }
-extern "C" void fn_801431F4(u8 *arg0) {
-    *(u8 *)(arg0 + 0x26C) = 1;
+extern "C" void fn_801431F4(ZoneMaster *self) {
+    /* Set the ZoneMaster's +0x26C boolean flag to true (its paired clear is fn_80143200). */
+    self->f26C = 1;
 }
 
 extern "C" void fn_80143200(u8 *obj) {
