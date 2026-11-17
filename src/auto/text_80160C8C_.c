@@ -1869,13 +1869,14 @@ extern "C" void fn_80162BA8(void *arg0) {
     s32 flag, off, i, j;
     int *cars;
     u8 *entry;
+    int *cars2;
     s32 offset;
     u8 *car;
     u8 *self = (u8 *)arg0;
     u8 *flags, *ui;
     f32 threshold, one, epsilon;
     f32 velocity[2];
-    f32 x, y, scale, length, dirX, dirY;
+    f32 scale, length, dirX, dirY;
     off = 0;
     for (s32 remaining = *(s32 *)(self + 0x574); remaining > 0; remaining--) {
         if (*(u8 *)(*(u8 **)(self + 0x570) + off + 8) == 0) {
@@ -1913,13 +1914,11 @@ done:
                             length = velocity[0] * velocity[0] + velocity[1] * velocity[1];
                             if (length > epsilon) {
                                 length = (f32)fn_8002F234(length);
-                                scale = one / length;
-                                x = velocity[0];
-                                y = velocity[1];
                                 dirY = *(f32 *)(entry + 0x30);
+                                scale = one / length;
                                 dirX = *(f32 *)(entry + 0x2C);
-                                velocity[0] = x * scale;
-                                velocity[1] = y * scale;
+                                velocity[0] *= scale;
+                                velocity[1] *= scale;
                                 if (velocity[0] * dirX + velocity[1] * dirY > threshold) {
                                     ++*(s32 *)(self + 0x94);
                                     entry[0x3C] = 0;
@@ -1950,9 +1949,9 @@ done:
     } else {
         if ((f32)__fabs(*(f32 *)(self + 0x8C)) <= *(f32 *)&lbl_80558DC4) {
             fn_80276DC8(0);
-            for (i = 0, entry = (u8 *)lbl_804348E8; i < fn_801B2F24(); entry += 4, i++) {
+            for (off = 0, cars2 = lbl_804348E8; off < fn_801B2F24(); cars2++, off++) {
                 void *manager = fn_801B83A0();
-                ((State_80162BA8 *)manager)->f37(*(s32 *)entry, i);
+                ((State_80162BA8 *)manager)->f37(*cars2, off);
             }
         }
         *(f32 *)(self + 0x8C) += lbl_80561858;
