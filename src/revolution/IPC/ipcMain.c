@@ -37,6 +37,7 @@ void* IPCGetBufferLo(void) {
     return IPCCurrentBufferLo;
 }
 
-void IPCSetBufferLo(void* lo) {
-    IPCCurrentBufferLo = lo;
+/* Set the current lower bound of the IPC buffer region. */
+void IPCSetBufferLo(void* bufferLo) {
+    IPCCurrentBufferLo = bufferLo;
 }
