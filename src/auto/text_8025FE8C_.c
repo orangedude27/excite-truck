@@ -913,8 +913,9 @@ s32 fn_802619A0(s32 *indexPtr) {
     return artNames[*indexPtr];
 }
 
-s32 fn_802619D8(s32 *arg0, s32 arg1) {
-    return *arg0 + arg1 * 4;
+/* Return the byte address of word `index` in the array whose base address is stored at *basePtr. */
+s32 fn_802619D8(s32 *basePtr, s32 index) {
+    return *basePtr + index * 4;
 }
 
 /* Initialize a debug-menu item of kind 5: store the label pointer and the data
