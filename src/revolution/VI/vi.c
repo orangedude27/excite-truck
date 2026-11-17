@@ -1516,6 +1516,9 @@ void __VIDisplayPositionToXY(s32 hpos, s32 vpos, s16 *px, s16 *py)
     *px = hpos - 1;
 }
 
+/* VI screen burn-in reduction: clear the WPAD (Wii Remote) idle flag that the
+ * retrace handler sets every field; called when a Wii Remote connects to cancel
+ * or reset the screen-dimming idle count. Returns success (1). */
 s32 fn_8005B00C(void) {
     lbl_8055DBBC = 0;
     return 1;
