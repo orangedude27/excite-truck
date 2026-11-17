@@ -271,6 +271,9 @@ float fn_80181AC0(void) {
 }
 
 #pragma dont_inline fn_80181AEC
+/* Return truck tuning parameter [3] from the shared "dirty"/interpolated
+ * parameter table lbl_80434930; fn_8018A098 uses it as the base scale when
+ * blending an object's value at +0x258C. */
 float fn_80181AEC(void) { return lbl_80434930[3]; }
 
 #pragma push
