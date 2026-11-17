@@ -4442,8 +4442,9 @@ unsigned short GXGetTexObjWrapT(void *texObj) {
     return (unsigned short)(((*(unsigned int *)((char *)texObj + 8)) >> 10) & 0x3ff) + 1;
 }
 
-int GXGetTexObjMipMap(void *arg0) {
-    return *(int *)((char *)arg0 + 0x14);
+/* Return the word at offset 0x14 of a GX texture object, used by callers as its mipmap value. */
+int GXGetTexObjMipMap(void *texObj) {
+    return *(int *)((char *)texObj + 0x14);
 }
 
 int GXGetTexObjLODAll(int *texObj) {
