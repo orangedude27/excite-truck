@@ -4131,11 +4131,11 @@ s32 hcisu_h2_receive_msg(u16 arg0, u8 *arg1) {
     register u8 *var_r22;
     register u8 var_r17;
     register u16 var_r18;
-    register u8 *buf;
-    register u16 offset;
-    register u16 remaining;
-    register u16 len;
-    register u16 got;
+    u8 *buf;
+    u16 offset;
+    u16 remaining;
+    u16 len;
+    u16 got;
 
     if (var_r15[0x1E] != 2) return 0;
     var_r16 = (u16)(arg0 + 1);
@@ -5684,6 +5684,7 @@ u8 bta_dm_pin_cback(u8 *bd_addr, u8 *pin_info, u8 *pin_name) {
     return 1;
 }
 
+/* Return the fixed constant 11 (0xB) used by the Bluetooth security layer. */
 s32 fn_80072EF4(void) { return 0xB; }
 
 static UINT8 bta_dm_new_link_key_cback(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, UINT8 *link_key) {
@@ -6640,12 +6641,14 @@ void bta_hh_api_disable(void) {
     }
 }
 
+#pragma scheduling invalid_target
 void bta_hh_disc_cmpl(void) {
-    volatile UINT8 status;
     UINT8 i;
+    UINT8 status;
     void (*cb)(int, void *);
+
     status = 0;
-    if (HID_HostDeregister() == 0)
+    if (HID_HostDeregister() == HID_SUCCESS)
         return;
     status = 6;
     for (i = 0; i < 0x10; i++)
@@ -6655,7 +6658,7 @@ void bta_hh_disc_cmpl(void) {
     (*cb)(1, (void *)&status);
     memset(lbl_803C0D48, 0, 0x230);
 }
-
+#pragma scheduling reset
 extern u8 bta_hh_tod_spt(void *, u8);
 /* SDP callback for HID host: on success, ensures device type is supported, adds the
  * host device if needed, updates device list, then frees discovery DB and notifies
