@@ -316,41 +316,44 @@ void fn_802BCA8C(void *arg0, void *arg1, struct Arg2 *arg2) {
     int value;
     void *result;
     float scale;
+    int flag;
     fn_802BC588((char *)arg0 + 0xC, sp28, arg0, arg1, arg2);
     value = fn_802C1500((char *)arg0 + 0xC, arg2->val28);
     if (*(unsigned char *)&lbl_8055FAB0 != 0) {
         scale = *(volatile float *)((char *)arg1 + 0x10);
         result = fn_801FA8E0(fn_802BC9B0(&arg2->curve, arg2->type2c, scale), sp28, value);
         *(void **)((char *)arg0 + 0x3C) = result;
+        flag = *(volatile unsigned char *)&arg2->flag30;
         *(float *)((char *)arg0 + 0x40) = *(float *)((char *)arg0 + 0x34) - *(float *)((char *)result + 0x28);
-        if (arg2->flag30 != 0 && arg2->type2c != 0x74) {
+        if (flag != 0 && arg2->type2c != 0x74) {
             float f3 = arg2->curve.f6;
             float f2 = arg2->curve.f7;
             float f0;
-            int r9, r8, r7, r6, r5, r0;
+            int w4, w3, w2, w1, w0, w5;
             curveData.f6 = f3;
             f0 = f3 + lbl_80564D28;
             f2 += lbl_80564D24;
-            r9 = arg2->curve.w0;
-            r8 = arg2->curve.w1;
-            r7 = arg2->curve.w2;
-            r6 = arg2->curve.w3;
-            r5 = arg2->curve.w4;
-            r0 = arg2->curve.w5;
-            curveData.w0 = r9;
-            curveData.w1 = r8;
-            curveData.w2 = r7;
-            curveData.w3 = r6;
-            curveData.w4 = r5;
-            curveData.w5 = r0;
+            w4 = arg2->curve.w4;
+            w3 = arg2->curve.w3;
+            w2 = arg2->curve.w2;
+            w1 = arg2->curve.w1;
+            w0 = arg2->curve.w0;
+            w5 = arg2->curve.w5;
+            curveData.w0 = w0;
+            scale = *(volatile float *)((char *)arg1 + 0x10);
+            curveData.w1 = w1;
+            curveData.w2 = w2;
+            curveData.w3 = w3;
+            curveData.w4 = w4;
+            curveData.w5 = w5;
             curveData.f7 = f2;
             curveData.f6 = f0;
-            scale = *(volatile float *)((char *)arg1 + 0x10);
             fn_801FA8E0(fn_802BC9B0(&curveData, 0x3EB, scale), sp28, value);
         }
     } else {
+        float neg = lbl_80564D14;
         *(void **)((char *)arg0 + 0x3C) = 0;
-        *(float *)((char *)arg0 + 0x40) = lbl_80564D14;
+        *(float *)((char *)arg0 + 0x40) = neg;
     }
     *(int *)((char *)arg0 + 4) = 0;
 }
@@ -472,7 +475,7 @@ extern "C" void fn_802BCBDC(void) {
 }
 
 #pragma push
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw on
 extern "C" void fn_802BCF04(void) {
     void *base;
     char *entry;
