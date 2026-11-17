@@ -470,10 +470,13 @@ void fn_801D9828(void) {
 }
 
 extern void fn_801D98F0(void **);
-int fn_801D985C(int *arg0) {
+int fn_801D985C(int *listHead) {
     register s32 zero = 0;
-    register void *node = *(void **)arg0;
+    register void *node = *(void **)listHead;
     register void *next;
+    /* Tear down the morph-group list: for each node free its sub-list at +0x24,
+     * clear the bookkeeping ints at +0x28/+0x2c/+0x30, free the node, then
+     * clear the list head. */
     while (node != 0) {
         next = *(void **)((char *)node + 0x54);
         if (node != 0) {
@@ -489,7 +492,7 @@ int fn_801D985C(int *arg0) {
         }
         node = next;
     }
-    *arg0 = 0;
+    *listHead = 0;
 }
 
 /* Frees every node in a singly-linked list (next pointer at offset 0xC) and clears the list head. */
