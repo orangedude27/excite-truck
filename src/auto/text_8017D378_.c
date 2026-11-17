@@ -543,7 +543,6 @@ void fn_8017DCB4(void *arg0) {
 #pragma scheduling on
 #pragma dont_inline on
 #pragma ppc_psq_save off
-#pragma opt_common_subs off
 void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
     extern int lbl_8055D430;
     extern float lbl_80561BE0, lbl_80561BF4, lbl_80561C0C;
