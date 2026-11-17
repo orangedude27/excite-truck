@@ -9961,6 +9961,7 @@ extern "C" s32 fn_800B77C0(void *);
 extern "C" void fn_800B783C(void *);
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559224[]; }
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055922C[]; }
+#pragma opt_lifetimes off
 extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
     u16 sp8[2];
     if (fn_800A4D44((u16 **)arg2) == 1U) {
@@ -9988,7 +9989,7 @@ extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
     }
     VFiPFPATH_transformFromUnicodeToNormal((u16 *)arg0, arg1);
 }
-
+#pragma opt_lifetimes reset
 extern "C" u8 lbl_80559230;
 extern "C" u8 lbl_80559231;
 extern "C" s32 fn_800B4D00(s32 name) {
@@ -13016,9 +13017,14 @@ extern "C" s32 fn_800BA3DC(void *obj, s32 param) {
     return 0;
 }
 
-extern "C" s32 fn_800BA3F4(Unk800B7E18Callback arg0, Unk800B7E18Callback arg1) {
-    lbl_8055DD40 = arg0;
-    lbl_8055DD44 = arg1;
+extern "C" s32 fn_800BA3F4(Unk800B7E18Callback callback0, Unk800B7E18Callback callback1) {
+    #define sStatusCallback0 lbl_8055DD40
+    #define sStatusCallback1 lbl_8055DD44
+    /* Install the two subsystem status callbacks and report success. */
+    sStatusCallback0 = callback0;
+    sStatusCallback1 = callback1;
+    #undef sStatusCallback0
+    #undef sStatusCallback1
     return 0;
 }
 
@@ -21314,7 +21320,7 @@ extern "C" s32 fn_800D3C44(register char *var_r24, void *arg1, register u32 var_
     char *temp_r23;
     char *temp_r3_4;
     char *temp_r3_5;
-    u8 c;
+    register u8 c;
 
     if (var_r26 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EC50, 0x25A, base + 0x1B4);
