@@ -1914,8 +1914,11 @@ void *fn_80007BEC(void) {
 }
 
 extern u8 lbl_802FB6D0[];
+/* Returns the "<unknown>" fallback name string. */
 void *fn_80007BF8(void) {
-    return lbl_802FB6D0;
+    #define s_unknownName lbl_802FB6D0
+    return s_unknownName;
+    #undef s_unknownName
 }
 
 extern u8 lbl_802FB604[];
