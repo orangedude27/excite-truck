@@ -1824,6 +1824,7 @@ int fn_8029169C(int object, int deleteFlag) {
     return object;
 }
 
+/* Constant predicate (returns 0 / false); a no-op virtual getter reached through a dispatch table. */
 int fn_802916DC(void) { return 0; }
 
 void fn_802916E4(void) {}
