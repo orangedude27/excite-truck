@@ -633,12 +633,16 @@ void fn_801ECFE0(void *arg0) {
             params[1] = cached;
             if ((float)__fabs((double)*(float *)(*(char **)(self+0x3C)+0x28C)) <= *(float *)&lbl_80558DC4)
                 fn_802DAC54();
-            handle = fn_802C7A40(1, *(char **)(self+0x3C)+(entry[0]+1)*12+0x2E0, entry[1]-entry[0], 1, params, 2);
+            {
+                char *ptr = *(char **)(self+0x3C) + (entry[0]+1)*12 + 0x2E0;
+                handle = fn_802C7A40(1, ptr, entry[1]-entry[0], 1, params, 2);
+            }
             for (j=0, offset=0; j<*(long *)(*(char **)(self+0x3C)+0xA78); offset+=0x34, j++) {
                 part = *(char **)(self+0x3C)+offset+0xA7C;
                 if (*(long *)(part+0x30) & mask) {
                     if (flag) {
-                        first = *(Unk_801ECFE0 *)part;
+                        *(Unk_801ECFE0Head *)&first = *(Unk_801ECFE0Head *)part;
+                        *(Unk_801ECFE0Tail *)((char *)&first+0x24) = *(Unk_801ECFE0Tail *)(part+0x24);
                         first.values[0] *= scale;
                         first.values[1] *= scale;
                         first.values[2] *= scale;
@@ -651,7 +655,8 @@ void fn_801ECFE0(void *arg0) {
             }
             if (!lbl_8055E614) {
                 if (flag) {
-                    second = *(Unk_801ECFE0 *)(self+0x4A0);
+                    *(Unk_801ECFE0Head *)&second = *(Unk_801ECFE0Head *)(self+0x4A0);
+                    *(Unk_801ECFE0Tail *)((char *)&second+0x24) = *(Unk_801ECFE0Tail *)(self+0x4A0+0x24);
                     second.values[0] *= scale;
                     second.values[1] *= scale;
                     second.values[2] *= scale;
