@@ -2033,45 +2033,49 @@ extern void C_MTXPerspective(void *, float, float, float, float);
 extern double atan(double);
 #pragma push
 #pragma processor 750
+/* Rebuild and upload the GX perspective projection matrix from the camera
+   settings in lbl_804C9778 (+0 is a one-shot request flag): compute the vertical
+   FOV and aspect, then optionally scale/offset the matrix for one tile of a
+   grid of viewports before calling GXSetProjection. */
 void fn_802D14D8(void) {
     float mtx[4][4];
-    float var_f3;
-    float temp_f1;
-    float temp_f31;
-    float temp_f4;
-    double temp_d;
-    register unsigned char *base;
-    float fov_scaled;
-    float aspect_scaled;
+    float aspectScale;
+    float halfAngle;
+    float aspect;
+    float fovRad;
+    double tanHalf;
+    register unsigned char *params;
+    float fovDegrees;
+    float aspectArg;
 
     if (lbl_804C9778[0] == 0) {
         return;
     }
     lbl_804C9778[0] = 0;
     if (lbl_8055FE24 != 0) {
-        var_f3 = lbl_80564F8C;
+        aspectScale = lbl_80564F8C;
     } else {
-        var_f3 = lbl_80564FC8;
+        aspectScale = lbl_80564FC8;
     }
-    base = lbl_804C9778;
-    temp_f31 = var_f3 / *(float *)(base + 0x14);
-    temp_f31 = *(float *)(base + 0x18) * temp_f31;
-    temp_f1 = lbl_80564F94 * *(float *)(base + 0x0C);
-    temp_d = fn_8002EF30((double)temp_f1);
-    temp_f4 = (float)atan((float)temp_d / temp_f31);
-    fov_scaled = (lbl_80564FCC * temp_f4) / lbl_80564FD0;
-    aspect_scaled = temp_f31;
-    C_MTXPerspective(mtx, fov_scaled, aspect_scaled, *(float *)(base + 4), *(float *)(base + 8));
+    params = lbl_804C9778;
+    aspect = aspectScale / *(float *)(params + 0x14);
+    aspect = *(float *)(params + 0x18) * aspect;
+    halfAngle = lbl_80564F94 * *(float *)(params + 0x0C);
+    tanHalf = fn_8002EF30((double)halfAngle);
+    fovRad = (float)atan((float)tanHalf / aspect);
+    fovDegrees = (lbl_80564FCC * fovRad) / lbl_80564FD0;
+    aspectArg = aspect;
+    C_MTXPerspective(mtx, fovDegrees, aspectArg, *(float *)(params + 4), *(float *)(params + 8));
     if ((lbl_8055FE24 == 0) && ((int)lbl_8055D0B8 >= 0) && ((int)lbl_8055D0B8 < lbl_8055D0BC * lbl_8055D0C0)) {
-        int h = lbl_8055D0C0;
-        int w = lbl_8055D0BC;
-        int id = (int)lbl_8055D0B8;
-        float dw = lbl_80564F8C / (float)w;
-        float dh = lbl_80564F8C / (float)h;
-        mtx[0][0] /= dw;
-        mtx[1][1] /= dh;
-        mtx[0][2] += (float)(((id % w) * 2 - w) + 1);
-        mtx[1][2] -= (float)(((id / w) * 2 - h) + 1);
+        int gridHeight = lbl_8055D0C0;
+        int gridWidth = lbl_8055D0BC;
+        int tileIndex = (int)lbl_8055D0B8;
+        float tileScaleY = lbl_80564F8C / (float)gridWidth;
+        float tileScaleX = lbl_80564F8C / (float)gridHeight;
+        mtx[0][0] /= tileScaleY;
+        mtx[1][1] /= tileScaleX;
+        mtx[0][2] += (float)(((tileIndex % gridWidth) * 2 - gridWidth) + 1);
+        mtx[1][2] -= (float)(((tileIndex / gridWidth) * 2 - gridHeight) + 1);
     }
     GXSetProjection(mtx, 0);
 }
