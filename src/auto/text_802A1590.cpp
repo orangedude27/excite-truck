@@ -1647,10 +1647,12 @@ extern "C" void *fn_802A44B8(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-extern "C" void fn_802A4524(void *arg0) {
+extern "C" void fn_802A4524(void *emitter) {
     f32 value = lbl_80564744;
-    *(volatile s32 *)((char *)arg0 + 0x4) = 0;
-    *(volatile f32 *)((char *)arg0 + 0x18) = value;
+    /* Reset the particle emitter: clear the count at +0x4 and zero the
+     * accumulator at +0x18 (lbl_80564744 is 0.0f). */
+    *(volatile s32 *)((char *)emitter + 0x4) = 0;
+    *(volatile f32 *)((char *)emitter + 0x18) = value;
 }
 
 extern "C" f32 fn_80287BC8(f32, f32);
