@@ -3608,7 +3608,7 @@ extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
     s32 var_r5;
     void *temp_r6;
     s32 var_r7;
-    s32 *temp_r4_3;
+    s32 *temp_r4_3 = 0;
     *(s32 *)((u8 *)arg0 + 0x260) = 0;
     if (*(u8 *)((u8 *)arg0 + 0x268) != 0) {
         if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
@@ -3637,8 +3637,8 @@ extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
             }
         }
         if (var_r5 >= 0 && var_r5 < *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x244) + 8)) {
-            arg0 = *(void **)((u8 *)arg0 + 0x25C);
-            *(s32 *)arg0 = var_r5;
+            void *dst = *(void **)((u8 *)arg0 + 0x25C);
+            *(s32 *)dst = var_r5;
         }
     }
 }
@@ -4493,7 +4493,7 @@ extern "C" s32 fn_8021F848(void *arg0, s32 arg1) {
 #pragma pop
 extern "C" s32 fn_8021FBC4(void *, s32, s32);
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8021FA98(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r3;
     s32 temp_r4;
@@ -4501,7 +4501,6 @@ extern "C" void fn_8021FA98(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r6;
     s32 span;
     s32 step;
-    f32 high;
     f32 low;
     f32 range;
     f32 dist;
@@ -4517,9 +4516,8 @@ extern "C" void fn_8021FA98(void *arg0, s32 arg1, s32 arg2) {
     temp_r4 = *(s32 *)((u8 *)arg0 + 0x26C);
     temp_r3 = *(s32 *)((u8 *)arg0 + 0x264);
     temp_r6 = temp_r5 - 1;
-    high = *(f32 *)((u8 *)arg0 + 0x24C);
+    range = *(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248);
     low = *(f32 *)((u8 *)arg0 + 0x248);
-    range = high - low;
     span = temp_r4 - temp_r4 / temp_r5;
     temp_r3 = arg1 - temp_r3;
     dist = ((f32)temp_r3 * range) / (f32)span;
@@ -5331,16 +5329,13 @@ struct Fn80221970Object {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-extern "C" void fn_80221970(void *arg0) {
-    struct Child { s32 base; s32 length; s32 offset; };
-    struct Object {
-        u8 pad0[4]; s32 x; s32 y; u8 padC[4]; s32 end;
-        u8 pad14[0x230]; Child *child; s32 texture; s32 overlay; s32 state; s32 flag;
-    };
-    Object *self = (Object *)arg0;
+extern "C" void fn_80221970(Fn80221970Object *self) {
+    typedef Fn80221970Child Child;
     s32 scroll;
     Child *child;
-    unsigned x;
+    Child *child0;
+    Child *child1;
+    s32 x;
     s32 left;
     long right;
     s32 y0;
@@ -5357,7 +5352,7 @@ extern "C" void fn_80221970(void *arg0) {
     spC = (f32)(self->x - lbl_8055FB9C / 2);
     sp8 = (f32)(lbl_8055FBA0 / 2 - self->y);
     fn_802C5320(self->texture, 0, spC, sp8, lbl_805634A8,
-                (f32)((Vf78 *)arg0)->get(), (f32)(self->end - self->y));
+                (f32)((Vf78 *)self)->get(), (f32)(self->end - self->y));
     child = self->child;
     base = child->base;
     if (child->length < base) {
@@ -5365,11 +5360,11 @@ extern "C" void fn_80221970(void *arg0) {
             x = self->x;
             left = x + 1;
             scale = (f32)(self->end - self->y) / (f32)base;
-            scroll = ((Vf78 *)arg0)->get();
+            scroll = ((Vf78 *)self)->get();
             right = x + scroll - 1;
-            child = self->child;
-            y0 = self->y + (s32)(scale * (f32)child->offset) + 5;
-            y1 = self->y + (s32)(scale * (f32)(child->offset + child->length)) - 5;
+            child0 = self->child;
+            y0 = self->y + (s32)(scale * (f32)child0->offset) + 5;
+            y1 = self->y + (s32)(scale * (f32)(child0->offset + child0->length)) - 5;
             if (y1 - 1 > y0 + 1 && right - 1 > left + 1) {
                 if (self->overlay != 0) {
                     diff = fn_802C51C0(self->texture) - fn_802C51C0(self->overlay);
@@ -5388,13 +5383,13 @@ extern "C" void fn_80221970(void *arg0) {
                 }
             }
         } else {
-            scroll = ((Vf78 *)arg0)->get();
-            child = self->child;
+            scroll = ((Vf78 *)self)->get();
+            child1 = self->child;
             scale = (f32)scroll / (f32)base;
             top = self->y + 1;
             bottom = self->end - 1;
-            register left = self->x + (s32)(scale * (f32)child->offset) + 5;
-            right = self->x + (s32)(scale * (f32)(child->offset + child->length)) - 5;
+            register left = self->x + (s32)(scale * (f32)child1->offset) + 5;
+            right = self->x + (s32)(scale * (f32)(child1->offset + child1->length)) - 5;
             if (right - 1 > left + 1 && bottom - 1 > top + 1) {
                 if (self->overlay != 0) {
                     diff = fn_802C5220(self->texture) - fn_802C5220(self->overlay);
