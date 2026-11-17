@@ -498,6 +498,7 @@ extern "C" void fn_801287D0(void *arg0) {
     heap->currentUsed = 0;
 }
 #pragma pop
+/* No-op stub that always returns 0 (used as a dummy allocator callback that reports failure). */
 s32 fn_801288A4(void) {
     return 0;
 }
