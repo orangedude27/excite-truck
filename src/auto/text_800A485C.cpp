@@ -19964,7 +19964,8 @@ extern "C" s32 contain__Q310homebutton3gui13PaneComponentFff(void *this_, f32 x,
     return 0;
 }
 
-extern "C" s32 fn_800D0814(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x24); }
+// Return the 32-bit field at offset 0x24 of the given GUI component.
+extern "C" s32 fn_800D0814(void *component) { return *(s32 *)((u8 *)component + 0x24); }
 
 #pragma cplusplus on
 extern "C" void draw__Q310homebutton3gui13PaneComponentFv(void *arg0) {
@@ -23395,7 +23396,7 @@ extern "C" void fn_800CA064(void) {
     s32 index = (s32)(userData >> 16);
     u32 low = userData & 0xFFFF;
     void *entry;
-    void *alarm;
+    u8 *alarm;
     if (fn_80060C7C((void *)index) == 0) goto setup;
     entry = *(void **)(base + index * 4 + 0x254);
     if (((s32 (*)(void *))fn_800D1548)(entry) != 0) goto do_call;
