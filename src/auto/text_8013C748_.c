@@ -147,14 +147,17 @@ int stricmp(const char *, const char *);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" int fn_8013C8E8(const char *arg0) {
-    class SearchResult {
+/* Searches the five car-class registry entries for a chassis whose name matches
+ * chassisName (case-insensitive). Returns the entry's class type (+4) on a match,
+ * otherwise 6 when no chassis matches. */
+extern "C" int fn_8013C8E8(const char *chassisName) {
+    class ChassisResult {
     public:
         virtual void v0();
         virtual void v1();
         virtual int query(int, int *, const char **) volatile;
     };
-    class SearchHead {
+    class ChassisList {
     public:
         virtual void v0();
         virtual void v1();
@@ -177,25 +180,25 @@ extern "C" int fn_8013C8E8(const char *arg0) {
         virtual void v18();
         virtual void v19();
         virtual void v20();
-        virtual SearchResult *get(const char *);
+        virtual ChassisResult *get(const char *);
     };
-    int i;
-    SearchResult *result;
-    int j;
-    int unused;
-    const char *name;
-    void *manager;
+    int classIndex;
+    ChassisResult *chassis;
+    int resultIndex;
+    int unusedIndex;
+    const char *candidateName;
+    void *classEntry;
 
-    i = 0;
+    classIndex = 0;
     do {
-        manager = ((void *(*)(int))fn_8013C800)(i);
-        result = ((SearchHead *)*(void **)((char *)manager + 8))->get(lbl_80559D10);
-        for (j = 0; ((volatile SearchResult *)result)->query(j, &unused, &name) != 0; j++) {
-            if (stricmp(name, arg0) == 0)
-                return *(int *)((char *)manager + 4);
+        classEntry = ((void *(*)(int))fn_8013C800)(classIndex);
+        chassis = ((ChassisList *)*(void **)((char *)classEntry + 8))->get(lbl_80559D10);
+        for (resultIndex = 0; ((volatile ChassisResult *)chassis)->query(resultIndex, &unusedIndex, &candidateName) != 0; resultIndex++) {
+            if (stricmp(candidateName, chassisName) == 0)
+                return *(int *)((char *)classEntry + 4);
         }
-        i++;
-    } while (i < 5);
+        classIndex++;
+    } while (classIndex < 5);
     return 6;
 }
 #pragma cplusplus off
