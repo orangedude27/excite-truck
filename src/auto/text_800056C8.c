@@ -1591,6 +1591,8 @@ void fn_800073D8(s32 mode) {
 }
 
 void fn_80007498(void) {
+    /* Dispatch hook: forward to fn_80011A50, which zero s_quadCount (no quads
+     * buffered) and flushes the buffered quads through fn_80234AEC. */
     fn_80011A50();
 }
 
