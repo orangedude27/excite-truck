@@ -640,25 +640,23 @@ extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPalet
                     0, lodTex[0x20], 0);
 }
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
-    extern float lbl_80560E78;
-    extern float lbl_80560E7C;
     extern char lbl_8031F618[];
     extern void memset(void*, int, unsigned int);
     extern void PSMTXIdentity(void*);
-    unsigned char* p = (unsigned char*)arg0;
-    float b = lbl_80560E7C;
-    float a = lbl_80560E78;
-    *(void**)p = (void*)lbl_8031F618;
-    *(float*)(p + 0x34) = a;
-    *(float*)(p + 0x38) = a;
-    *(float*)(p + 0x3C) = a;
-    *(float*)(p + 0x40) = a;
-    *(float*)(p + 0x44) = b;
-    *(float*)(p + 0x48) = b;
-    *(float*)(p + 0x4C) = b;
-    memset((void*)(p + 0x50), (int)0, (unsigned int)1);
-    PSMTXIdentity((void*)(p + 4));
-    return (void*)p;
+    u8* p = (u8*)arg0;
+    f32 b = 1.0f;
+    f32 a = 0.0f;
+    *(void**)p = lbl_8031F618;
+    *(f32*)(p + 0x34) = a;
+    *(f32*)(p + 0x38) = a;
+    *(f32*)(p + 0x3C) = a;
+    *(f32*)(p + 0x40) = a;
+    *(f32*)(p + 0x44) = b;
+    *(f32*)(p + 0x48) = b;
+    *(f32*)(p + 0x4C) = b;
+    memset(p + 0x50, 0, 1);
+    PSMTXIdentity(p + 4);
+    return arg0;
 }
 
 extern "C" s32 fn_800D67B8(s32 object, s32 deleteFlag) {
@@ -2072,12 +2070,12 @@ extern "C" void fn_800D8B28(void *self, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, 
     MatGXBits_800D8B28 *cap = (MatGXBits_800D8B28 *)((u8 *)self + 0x4C);
     MatGXBits_800D8B28 *cnt = (MatGXBits_800D8B28 *)((u8 *)self + 0x50);
     u8 *mem;
-    if (a1 > 8) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x295, data + 0x1E4);
-    if (a2 > 10) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x296, data + 0x218);
-    if (a3 > 8) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x297, data + 0x248);
-    if (a4 > 16) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x298, data + 0x284);
-    if (a6 > 4) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x299, data + 0x2BC);
-    if (a7 > 3) Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x29A, data + 0x2F8);
+    if (a1 > 8) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x295, data + 0x1E4);
+    if (a2 > 10) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x296, data + 0x218);
+    if (a3 > 8) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x297, data + 0x248);
+    if (a4 > 16) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x298, data + 0x284);
+    if (a6 > 4) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x299, data + 0x2BC);
+    if (a7 > 3) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x29A, data + 0x2F8);
     if (cap->tex < a1 || cap->srt < a2 || cap->gen < a3 || cap->g < a4 || cap->f < a5 ||
         cap->e < a6 || cap->ind < a7 || cap->h < h || cap->i < i || cap->j < j || cap->k < k) {
         if (*(u8 **)((u8 *)self + 0x58) != 0) {
@@ -4080,8 +4078,6 @@ extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self) {
     }
     return result;
 }
-#pragma scheduling on
-#pragma dont_inline InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl
 /* Returns the 32-bit word held at offset 0x28 of a layout object. */
 extern "C" s32 fn_800DC6DC(void *object) {
     return *(s32 *)((u8 *)object + 0x28);
