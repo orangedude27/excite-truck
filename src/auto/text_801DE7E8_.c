@@ -73,30 +73,32 @@ struct SoundObject {
 };
 
 #pragma scheduling invalid_target
-void fn_801DE7E8(int arg0) {
+/* Load popup resources into the popupId-th row (stride 0x1c) of lbl_804872B0:
+ * load the "betalyt.val" message object into the PopupEntry text field (+0xC);
+ * popup id 2 also registers "zonetex.tex" into the state field (+0x14). */
+void fn_801DE7E8(int popupId) {
 #pragma opt_common_subs off
     extern char lbl_804872B0[];
     extern char lbl_803394B0[], lbl_803394BC[];
     extern int fn_80145E70(const char *);
     extern int fn_802CAC28(const char *, int);
-    int index;
-    int value;
-    switch (arg0) {
+    int entryOffset;
+    int resource;
+    switch (popupId) {
     case 1:
-        value = fn_80145E70(lbl_803394B0);
-        index = arg0 * 0x1c;
-        *(int *)(lbl_804872B0 + index + 0xc) = value;
+        resource = fn_80145E70(lbl_803394B0);
+        entryOffset = popupId * 0x1c;
+        *(int *)(lbl_804872B0 + entryOffset + 0xc) = resource;
         break;
     case 2:
-        index = arg0 * 0x1c;
-        value = fn_80145E70(lbl_803394B0);
-        *(int *)(lbl_804872B0 + index + 0xc) = value;
-        value = fn_802CAC28(lbl_803394BC, 0);
-        *(int *)(lbl_804872B0 + index + 0x14) = value;
+        entryOffset = popupId * 0x1c;
+        resource = fn_80145E70(lbl_803394B0);
+        *(int *)(lbl_804872B0 + entryOffset + 0xc) = resource;
+        resource = fn_802CAC28(lbl_803394BC, 0);
+        *(int *)(lbl_804872B0 + entryOffset + 0x14) = resource;
         break;
     }
 }
-#pragma scheduling on
 void fn_801DE88C(void) {
 
 }
