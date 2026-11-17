@@ -3556,8 +3556,9 @@ void *GKI_remove_from_queue(BUFFER_Q *p_q, void *p_buf)
     return NULL;
 }
 
-s32 fn_8006DF60(s32 *arg0) {
-    return *arg0;
+/* Return the first buffer in a BTE GKI buffer queue (queue->p_first), or 0 when empty. */
+s32 fn_8006DF60(s32 *queue) {
+    return *queue;
 }
 
 extern void fn_8006EBAC(void);
