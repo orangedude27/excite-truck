@@ -1126,6 +1126,7 @@ void* fn_802C9C38(void) {
 }
 
 extern void *lbl_8055FC60;
+/* Get the current viewport's top-left y coordinate (lbl_8055FC60). */
 void* fn_802C9C40(void) {
     return lbl_8055FC60;
 }
