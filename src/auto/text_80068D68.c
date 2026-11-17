@@ -9870,7 +9870,7 @@ void btm_discovery_db_reset(void)
 }
 
 void fn_8007AD38(void) {
-
+    /* No-op callback for BTU timer event type 8 in btu_task: nothing to do when it fires. */
 }
 
 extern void fn_800853F8(u8 *, u16, u16);
