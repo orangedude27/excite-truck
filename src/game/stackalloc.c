@@ -384,7 +384,7 @@ void fn_802D9DE4(int arg0, void *arg1, int arg2) {
             dest[10] = t0;
             dest[11] = t1;
             src += 12; dest += 12;
-        } while (--ctr);
+        }
     }
 }
 #pragma pop
