@@ -46,10 +46,10 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
         virtual char *f1();
     };
     int values[36];
-    register int handle;
     int now;
-    int i;
     int length;
+    int handle;
+    int i;
     int *base;
     void *second;
     Obj *object;
@@ -209,6 +209,7 @@ s32 fn_8023ECF8(void) {
 
 extern unsigned char lbl_8055B860;
 extern int lbl_802FA2A8[5];
+#define REG_R7 "r7"
 #pragma use_lmw_stmw off
 void fn_8023ED30(void) {
     volatile int *config = (volatile int *)lbl_804987E0;
@@ -453,8 +454,8 @@ int fn_8023F2C4(void) {
     int pC = (int)(lbl_80341CC8 + 0x3E8);
     volatile int *config = (volatile int *)lbl_804987E0;
     volatile int *input = (volatile int *)lbl_802FA2D0;
-    register int config0, config1, config2, config3, config4;
-    register int arg0, arg1, arg2, arg3, arg4;
+    int config0, config1, config2, config3, config4;
+    int arg0, arg1, arg2, arg3, arg4;
     values[0] = (int)&lbl_8055B860;
     values[5] = (int)&lbl_8055B860;
     values[1] = 6;
@@ -670,97 +671,74 @@ extern unsigned char lbl_8055BD2C;
 #pragma use_lmw_stmw off
 extern int __cntlzw(unsigned int);
 int fn_8023F694(void) {
-    struct Header {
-        void *a;
-        int b;
-        int c;
-        int d;
-        int e;
-    };
-    struct Record {
-        void *a;
-        int b;
-        void *c;
-        int d;
-        int e;
-    };
-    struct Descriptor {
-        struct Header header;
-        struct Record records[9];
-        int config[5];
-    } data;
-    int args[5] = { 0, 0, 0, 0, 0 };
+    int data[59];
+    int args[5];
 
-    data.header.a = &lbl_8055B860;
-    data.header.b = 6;
-    data.header.c = 0;
-    data.header.d = -2;
-    data.header.e = 13;
+    data[7] = (int)&fn_8023F9E8;
+    data[0] = (int)&lbl_8055B860;
+    data[5] = (int)&lbl_8055B860;
+    data[8] = -1;
+    data[1] = 6;
+    data[6] = 6;
+    data[3] = -2;
+    data[25] = (int)&lbl_8055BCE8;
+    data[4] = 0xD;
+    data[9] = 0x1B;
+    data[12] = (int)(lbl_80341CC8 + 0x4A4);
+    data[30] = (int)&lbl_8055BCF0;
+    data[10] = (int)&lbl_8055BCA0;
+    data[15] = (int)&lbl_8055BCD8;
+    data[20] = (int)&lbl_8055BCE0;
+    data[35] = (int)&lbl_8055BCF8;
+    data[2] = 0;
+    data[11] = 3;
+    data[13] = 4;
+    data[14] = 0;
+    data[16] = 3;
+    data[17] = (int)(lbl_80341CC8 + 0x4B8);
+    data[18] = 4;
+    data[19] = 0;
+    data[21] = 3;
+    data[22] = (int)(lbl_80341CC8 + 0x4E0);
+    data[23] = 4;
+    data[24] = 0;
+    data[26] = 3;
+    data[27] = (int)(lbl_80341CC8 + 0x500);
+    data[28] = 4;
+    data[29] = 0;
+    data[31] = 3;
+    data[32] = (int)&lbl_8055BCB8;
+    data[33] = 4;
+    data[34] = 0;
+    data[36] = 3;
+    data[37] = (int)&lbl_8055BCB8;
+    data[38] = 4;
+    data[39] = 0;
+    data[41] = 3;
+    data[40] = (int)&lbl_8055BD08;
+    data[42] = (int)&lbl_8055BD2C;
+    data[43] = 4;
+    data[44] = 0;
+    data[46] = 3;
+    data[45] = (int)&lbl_8055BD00;
+    data[47] = (int)(lbl_80341CC8 + 0x3E8);
+    data[48] = 4;
+    data[49] = 0;
+    data[50] = lbl_804987E0[0];
+    data[51] = lbl_804987E0[1];
+    data[52] = lbl_804987E0[2];
+    data[53] = lbl_804987E0[3];
+    data[54] = lbl_804987E0[4];
 
-    data.records[0].a = &lbl_8055B860;
-    data.records[0].b = 6;
-    data.records[0].c = (void *)fn_8023F9E8;
-    data.records[0].d = -1;
-    data.records[0].e = 0x1B;
-
-    data.records[1].a = &lbl_8055BCA0;
-    data.records[1].b = 3;
-    data.records[1].c = lbl_80341CC8 + 0x4A4;
-    data.records[1].d = 4;
-    data.records[1].e = 0;
-
-    data.records[2].a = &lbl_8055BCD8;
-    data.records[2].b = 3;
-    data.records[2].c = lbl_80341CC8 + 0x4B8;
-    data.records[2].d = 4;
-    data.records[2].e = 0;
-
-    data.records[3].a = &lbl_8055BCE0;
-    data.records[3].b = 3;
-    data.records[3].c = lbl_80341CC8 + 0x4E0;
-    data.records[3].d = 4;
-    data.records[3].e = 0;
-
-    data.records[4].a = &lbl_8055BCE8;
-    data.records[4].b = 3;
-    data.records[4].c = lbl_80341CC8 + 0x500;
-    data.records[4].d = 4;
-    data.records[4].e = 0;
-
-    data.records[5].a = &lbl_8055BCF0;
-    data.records[5].b = 3;
-    data.records[5].c = &lbl_8055BCB8;
-    data.records[5].d = 4;
-    data.records[5].e = 0;
-
-    data.records[6].a = &lbl_8055BCF8;
-    data.records[6].b = 3;
-    data.records[6].c = &lbl_8055BCB8;
-    data.records[6].d = 4;
-    data.records[6].e = 0;
-
-    data.records[7].a = &lbl_8055BD08;
-    data.records[7].b = 3;
-    data.records[7].c = &lbl_8055BD2C;
-    data.records[7].d = 4;
-    data.records[7].e = 0;
-
-    data.records[8].a = &lbl_8055BD00;
-    data.records[8].b = 3;
-    data.records[8].c = lbl_80341CC8 + 0x3E8;
-    data.records[8].d = 4;
-    data.records[8].e = 0;
-
-    data.config[0] = lbl_804987E0[0];
-    data.config[1] = lbl_804987E0[1];
-    data.config[2] = lbl_804987E0[2];
-    data.config[3] = lbl_804987E0[3];
-    data.config[4] = lbl_804987E0[4];
-
-    args[0] = (int)((void *(*)(int, int, int, int, int, int, int, int))fn_8023E5A8)(
+    args[0] = 0;
+    args[1] = 0;
+    args[2] = 0;
+    args[3] = 0;
+    args[4] = 0;
+    args[0] = (int)((int (*)(int, int, int, int, int, int, int, int))fn_8023E5A8)(
         lbl_804987E0[3], lbl_804987E0[2], lbl_804987E0[1],
         (int)lbl_804987E0, lbl_804987E0[0], 3, 4, 0);
-    args[1] = (int)&data;
+    args[1] = (int)data;
     return (fn_802146BC(args, -999, -999, 1) + 2) == 0;
 }
 #pragma use_lmw_stmw on
