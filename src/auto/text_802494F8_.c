@@ -1215,7 +1215,8 @@ void fn_8024B830(void *container, s32 targetId) {
     }
 }
 
-s32 fn_8024B874(s32 arg0) { return arg0 + 0x64; }
+/* Return the address of the embedded field at offset 0x64 of base. */
+s32 fn_8024B874(s32 base) { return base + 0x64; }
 
 /* gEmptyString: shared zero buffer in .sdata, used as an empty C string fallback. */
 #define gEmptyString lbl_8055BFD8
