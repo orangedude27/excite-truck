@@ -20346,21 +20346,24 @@ extern "C" void *fn_800D0F1C(void *object, s32 freeMode) {
 }
 
 extern "C" s32 WPADProbe(s32, void *);
-extern "C" void fn_800D0F78(void *arg) {
-    homebutton::Controller *self = (homebutton::Controller *)arg;
-    s32 sp8;
-    s32 result;
+/* HomeButton setup for one remote: swap in the connect sampling callback, and
+ * when WPADProbe reports a connected remote also install the extension callback
+ * and mark it connected; a missing remote clears the connected flag. */
+extern "C" void fn_800D0F78(void *controller) {
+    homebutton::Controller *self = (homebutton::Controller *)controller;
+    s32 deviceType;
+    s32 probeResult;
     self->m_prevConnectCb = (void *)WPADSetSamplingCallback(self->m_channel, (void *)&wpadConnectCallback__Q210homebutton10ControllerFll);
-    result = WPADProbe(self->m_channel, &sp8);
-    if (result == 0) goto install;
-    if (result >= 0) goto done;
-    if (result >= -1) goto clear_byte;
+    probeResult = WPADProbe(self->m_channel, &deviceType);
+    if (probeResult == 0) goto installExtension;
+    if (probeResult >= 0) goto done;
+    if (probeResult >= -1) goto clearConnected;
     goto done;
-install:
+installExtension:
     self->m_prevExtensionCb = (void *)((s32 (*)(s32, void *))WPADSetSamplingCallback_800603D0)(self->m_channel, (void *)&wpadExtensionCallback__Q210homebutton10ControllerFll);
     self->pad40 = 1;
     goto done;
-clear_byte:
+clearConnected:
     self->pad40 = 0;
 done:
     return;
