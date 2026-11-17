@@ -2354,40 +2354,24 @@ typedef struct InitTail {
     u8 b19c;
 } InitTail;
 #pragma scheduling off
-void fn_80251D0C(void *arg0) {
+void fn_80251D0C(void *__restrict arg0) {
 #pragma scheduling on
-    struct Init {
-        u8 f0[0x28];
-        u8 b28;
-        u8 f1[0x1F];
-        u8 b48;
-        u8 f2[0x3F];
-        u8 b88;
-        u8 f3[0x7F];
-        u8 b108;
-        u8 f4[0x87];
-        s32 w190;
-        f32 f194;
-        f32 f198;
-        u8 b19c;
-    };
-    struct Init *p = (struct Init *)arg0;
     float value1;
     int zero;
     float value0;
-    fn_80255904(*(s32 *)((u8 *)arg0 + 0x20));
+    fn_80255904(*(s32 *)((char *)arg0 + 0x20));
     value1 = lbl_80563960;
     zero = 0;
     value0 = lbl_805639C0;
-    p->b28 = zero;
-    p->b48 = zero;
-    p->b88 = zero;
-    p->b108 = zero;
-    p->w190 = -1;
-    p->f194 = value1;
-    p->f198 = value0;
+    *(s32 *)((char *)arg0 + 0x190) = -1;
+    *(u8 *)((char *)arg0 + 0x28) = zero;
+    *(u8 *)((char *)arg0 + 0x48) = zero;
+    *(u8 *)((char *)arg0 + 0x88) = zero;
+    *(u8 *)((char *)arg0 + 0x108) = zero;
+    *(f32 *)((char *)arg0 + 0x194) = value1;
+    *(f32 *)((char *)arg0 + 0x198) = value0;
     fn_80214A9C(0x1F, value1);
-    p->b19c = zero;
+    *(u8 *)((char *)arg0 + 0x19C) = zero;
 }
 
 #pragma push
