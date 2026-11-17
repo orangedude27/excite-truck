@@ -19335,6 +19335,10 @@ extern "C" void fn_800CF288(void) {
 
 }
 
+/* No-op virtual stub: an empty method slot shared by the homebutton vtables
+ * (e.g. lbl_8031E700 at +0x2C and lbl_8031E780), alongside the other empty
+ * stubs fn_800CF280/fn_800CF284/fn_800CF288/fn_800CF290.  Calling it does
+ * nothing. */
 extern "C" void fn_800CF28C(void) {
 
 }
