@@ -645,8 +645,9 @@ float fn_801B8950(int arg0) {
 }
 
 extern float lbl_80436D08[];
-void fn_801B8964(int arg0, float arg1) {
-    lbl_80436D08[arg0] = arg1;
+/* Sets element @p index of the shared float array at lbl_80436D08 to @p value. */
+void fn_801B8964(int index, float value) {
+    lbl_80436D08[index] = value;
 }
 
 #pragma cplusplus on
