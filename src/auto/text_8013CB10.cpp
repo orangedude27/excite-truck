@@ -2938,9 +2938,10 @@ extern "C" s32 fn_80142978(void *timer) {
     return elapsed >= lbl_805614A4 && elapsed < *(f32 *)timer;
 }
 
-extern "C" f32 fn_801429D0(f32 arg0, f32 arg1) {
-    if (!(arg0 > arg1)) return arg1;
-    return arg0;
+extern "C" f32 fn_801429D0(f32 a, f32 b) {
+    /* Return the larger of two floats (a > b ? a : b). */
+    if (!(a > b)) return b;
+    return a;
 }
 
 extern "C" f32 fn_801429E0(f32 arg0, f32 arg1) {
