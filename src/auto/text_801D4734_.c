@@ -3422,7 +3422,7 @@ second_test:
 #pragma cplusplus reset
 
 #pragma cplusplus on
-extern "C" void fn_801D88AC(void *arg0) {
+extern "C" void fn_801D88AC(void *obj) {
     struct Dummy {
         virtual void v0();
         virtual void v1();
@@ -3437,7 +3437,8 @@ extern "C" void fn_801D88AC(void *arg0) {
         virtual void v10();
         virtual void v11();
     };
-    ((Dummy *)arg0)->v11();
+    /* Virtual-dispatch thunk: invoke the 12th virtual method (vtable +0x34). */
+    ((Dummy *)obj)->v11();
 }
 
 #pragma push
