@@ -709,23 +709,19 @@ extern s32 fn_80215228(void);
 extern s32 fn_8024A6EC(s32 *, void *);
 extern s32 fn_8024ACB4(s32 *, s32, void *);
 extern u8 lbl_8055F298;
-u8 fn_8024B070(s32 *arg0, s32 **arg1) {
-    s32 sp8;
+static inline s32 findEntry8024B070(s32 **arg1, s32 *arg0) {
     s32 i = 0;
     s32 offset = 0;
     s32 n = *(s32 *)((u8 *)arg1 + 4);
-    if (n > 0) {
-        do {
-            s32 item = *(s32 *)((u8 *)*arg1 + offset);
-            if (item == *arg0) {
-                goto found;
-            }
-            offset += 0x18;
-            i++;
-        } while (--n != 0);
+    for (; i < n; i++, offset += 0x18) {
+        if (*(s32 *)((u8 *)*arg1 + offset) == *arg0) return i;
     }
-    i = -1;
-found:
+    return -1;
+}
+
+u8 fn_8024B070(s32 *arg0, s32 **arg1) {
+    s32 sp8;
+    s32 i = findEntry8024B070(arg1, arg0);
     if (i >= 0) {
         sp8 = *(s32 *)((u8 *)*arg1 + i * 0x18 + 0xC);
     } else {
