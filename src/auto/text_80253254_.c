@@ -83,6 +83,8 @@ static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
 #define AO(T, o) (*(T *)((char *)arg0 + (o)))
 void fn_80253254(void) {}
 
+#pragma push
+#pragma scheduling on
 void fn_80253258(void) {
     extern float lbl_80563A04, lbl_80563A08, lbl_80563A0C, lbl_80563A10;
     extern void PSVECNormalize(float *, float *);
