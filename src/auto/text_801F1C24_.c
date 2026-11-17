@@ -1022,20 +1022,21 @@ void *fn_801F31A0(void *obj, int shouldFree) {
 }
 
 #pragma optimize_for_size on
-void fn_801F31E8(int arg0, unsigned char *arg1) {
-    unsigned char *p = arg1 + 0x2C;
-    int i;
-    for (i = 0; i < 0x20; i++) {
-        unsigned char t;
-        t = p[0]; p[0] = p[3]; p[3] = t;
-        t = p[1]; p[1] = p[2]; p[2] = t;
-        t = p[4]; p[4] = p[7]; p[7] = t;
-        t = p[5]; p[5] = p[6]; p[6] = t;
-        t = p[8]; p[8] = p[11]; p[11] = t;
-        t = p[9]; p[9] = p[10]; p[10] = t;
-        t = p[12]; p[12] = p[15]; p[15] = t;
-        t = p[13]; p[13] = p[14]; p[14] = t;
-        p += 0x10;
+void fn_801F31E8(int unused, unsigned char *data) {
+    /* Byte-swap each 4-byte word in the 0x200-byte table at offset 0x2C of data (32 blocks of 16 bytes). */
+    unsigned char *block = data + 0x2C;
+    int blockIndex;
+    for (blockIndex = 0; blockIndex < 0x20; blockIndex++) {
+        unsigned char temp;
+        temp = block[0]; block[0] = block[3]; block[3] = temp;
+        temp = block[1]; block[1] = block[2]; block[2] = temp;
+        temp = block[4]; block[4] = block[7]; block[7] = temp;
+        temp = block[5]; block[5] = block[6]; block[6] = temp;
+        temp = block[8]; block[8] = block[0xB]; block[0xB] = temp;
+        temp = block[9]; block[9] = block[0xA]; block[0xA] = temp;
+        temp = block[0xC]; block[0xC] = block[0xF]; block[0xF] = temp;
+        temp = block[0xD]; block[0xD] = block[0xE]; block[0xE] = temp;
+        block += 0x10;
     }
 }
 #pragma optimize_for_size reset
