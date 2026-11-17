@@ -174,7 +174,10 @@ void fn_8001EFB0(void *arg0) {
 }
 
 void fn_8001EFB4(void) {
-    fn_8001F724();
+#define MergePendingAchievements fn_8001F724
+    /* Thunk: merge this session's pending achievement statistics into the active block. */
+    MergePendingAchievements();
+#undef MergePendingAchievements
 }
 
 void fn_8001F76C(void);
