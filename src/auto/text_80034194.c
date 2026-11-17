@@ -3253,6 +3253,7 @@ s32 __DVDTestAlarm(void *alarm) {
     return DefaultAlarmTest();
 }
 #pragma small_data on
+/* Constant predicate in the DVD/alarm code (beside __DVDTestAlarm): always returns 1 (true). */
 u32 fn_80039CD8(void) { return 1; }
 
 void fn_80039CE0(void) {
