@@ -46,7 +46,7 @@ void* fn_800328E8(void) {
     return __AXNumVoices;
 }
 
-#pragma cplusplus on
+#pragma cplusplus off
 void fn_800328F0(void *arg0) {
     unsigned char *p = (unsigned char *)arg0;
     unsigned char *src;
@@ -225,7 +225,6 @@ void fn_800328F0(void *arg0) {
         }
     }
 }
-#pragma cplusplus reset
 
 #pragma use_lmw_stmw off
 /* __AXSyncPBs(baseCycles): once per audio frame, walk the voice stacks of the
@@ -419,7 +418,8 @@ void fn_800331A0(void) {
 }
 
 void fn_80033404(void) {
-
+    /* Empty no-op AX helper: TRKReadBuffer_ui32() calls it in a diagnostic
+     * sequence of audio routines, but it has no work to do and just returns. */
 }
 
 extern unsigned char lbl_80363C60[];
