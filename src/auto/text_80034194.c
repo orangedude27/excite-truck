@@ -874,7 +874,7 @@ static inline const char *entryName(s32 entry) {
 static inline u32 entryParent(s32 entry) {
     return *(u32 *)(FstStart_8055D840 + 4 + entry * 12);
 }
-static inline u32 myStrncpy(char *dest, char *src, u32 maxlen) {
+static inline u32 myStrncpy(char *dest, const char *src, u32 maxlen) {
     u32 i = maxlen;
     while (i > 0 && *src != 0) {
         *dest++ = *src++;
