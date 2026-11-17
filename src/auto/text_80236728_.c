@@ -182,7 +182,10 @@ extern void fn_80236A5C(void*, int);
 extern void fn_80236960();
 extern char *lbl_8055F0C0;
 void fn_80236900(void) {
-    lbl_8055F0C0[0x21] = 0;
+    /* Clear the +0x21 direction flag on the current uiAnime tail node. */
+#define sUiAnimeTail lbl_8055F0C0
+    sUiAnimeTail[0x21] = 0;
+#undef sUiAnimeTail
 }
 
 void fn_80236910(void) {
