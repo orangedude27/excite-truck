@@ -3228,23 +3228,25 @@ extern "C" s32 fn_8012C4E4(void *arg0, void *arg1, s32 arg2) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_8012C4E8(void) {
-    void *node;
-    s32 p;
+    /* Resource subsystem shutdown: destroy the TOC/async managers, release the
+     * TOC resource, then report any resource sets still loaded as fatal. */
+    void *set;
+    s32 tocObject;
 
     fn_8012DD00();
     fn_8012A67C();
-    p = lbl_8055DFFC;
-    if (p != 0) {
+    tocObject = lbl_8055DFFC;
+    if (tocObject != 0) {
         fn_8012BF24((void *)lbl_8032AEA8);
-        fn_80128668((void *)p);
+        fn_80128668((void *)tocObject);
     }
-    node = lbl_8055E000;
+    set = lbl_8055E000;
     lbl_8055DFFC = 0;
     lbl_8055DFF8 = 0;
-    if (node != NULL) {
-        while (node != NULL) {
-            fn_802E30C8(lbl_8032AB9C, node, *(s32 *)((u8 *)node + 0x9C));
-            node = *(void **)((u8 *)node + 0xA8);
+    if (set != NULL) {
+        while (set != NULL) {
+            fn_802E30C8(lbl_8032AB9C, set, *(s32 *)((u8 *)set + 0x9C));
+            set = *(void **)((u8 *)set + 0xA8);
         }
         fn_802E317C(lbl_8032ABC8);
     }
