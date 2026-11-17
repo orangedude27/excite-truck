@@ -2260,7 +2260,7 @@ extern "C" void fn_801638A0(void *arg0) {
     u8 *car,*flags,*ui;
     f32 velocity[2],length,scale;
     f32 threshold,one,epsilon;
-    f32 vx,vy,sqrtLen;
+    f32 dirX,dirY;
     if (((*(f32 *)(self+0x98)>*(f32 *)(self+0x84))&1)!=0) self[0x56D]=1;
     if (fn_801C5B60()==0) fn_801DF074(8,0);
     if (((Dummy_801638A0 *)self)->f7()==0) {
@@ -2279,13 +2279,13 @@ extern "C" void fn_801638A0(void *arg0) {
                             velocity[1]=*(f32 *)(car+0x120);
                             length=velocity[0]*velocity[0]+velocity[1]*velocity[1];
                             if (length>epsilon) {
-                                sqrtLen=(f32)fn_8002F234(length);
-                                vx=velocity[0];
-                                vy=velocity[1];
-                                scale=one/sqrtLen;
-                                velocity[0]=vx*scale;
-                                velocity[1]=vy*scale;
-                                if (velocity[0]**(f32 *)(entry+0x2C)+velocity[1]**(f32 *)(entry+0x30)>threshold) {
+                                length=(f32)fn_8002F234(length);
+                                dirY=*(f32 *)(entry+0x30);
+                                scale=one/length;
+                                dirX=*(f32 *)(entry+0x2C);
+                                velocity[0]*=scale;
+                                velocity[1]*=scale;
+                                if (velocity[0]*dirX+velocity[1]*dirY>threshold) {
                                     ++*(s32 *)(self+0x94);
                                     entry[0x3C]=0;
                                     ui=*(u8 **)(self+0xDC);
