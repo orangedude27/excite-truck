@@ -685,6 +685,9 @@ extern int lbl_8055CFF0;
 extern int lbl_8055CFF4;
 extern void fn_802C92DC(int, int, int, int, int);
 #pragma dont_inline on
+/* Set up drawlist/GX state through fn_802C8C04 with mode -1. The surrounding
+   dont_inline pragma keeps this wrapper a real call (a tail branch) rather than
+   letting fn_802C8C04 be inlined. */
 void fn_802C92D0(void) {
 #pragma dont_inline off
     fn_802C8C04(-1);
