@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-typedef struct { float values[9]; float tail[3]; } Unk_801ECFE0;
+typedef struct { float values[12]; } Unk_801ECFE0;
 extern void fn_802C70AC(int, void *, int, int);
 extern int fn_802C7A34(int, void *, int, float);
 extern float *fn_802C86DC();
