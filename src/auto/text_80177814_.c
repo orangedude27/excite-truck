@@ -609,27 +609,29 @@ s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_801B5318(void *);
-extern "C" void fn_801785A4(void *arg0) {
-    struct Dummy_801785A4 {
-        virtual void d0();
-        virtual void d1();
-        virtual void d2();
-        virtual void d3();
-        virtual void d4();
-        virtual void d5();
-        virtual void d6();
-        virtual void d7();
-        virtual void d8();
-        virtual void d9();
-        virtual void d10();
-        virtual void d11();
-        virtual void d12();
-        virtual void d13();
-        virtual int d14();
+extern "C" void fn_801785A4(void *object) {
+    /* Append the object to the global registered-object list (lbl_8055E434 / lbl_8055E438),
+     * then, if its slot-0x40 isValid() virtual reports true, run its post-register hook. */
+    struct RegisteredObject {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual int isValid();
     };
-    lbl_8055E434[lbl_8055E438++] = arg0;
-    if (((Dummy_801785A4 *)arg0)->d14() != 0) {
-        fn_801B5318(arg0);
+    lbl_8055E434[lbl_8055E438++] = object;
+    if (((RegisteredObject *)object)->isValid() != 0) {
+        fn_801B5318(object);
     }
 }
 #pragma pop
