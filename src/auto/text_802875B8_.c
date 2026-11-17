@@ -458,14 +458,14 @@ f32 fn_80287BC8(f32 farg0, f32 farg1) {
     return farg0 + diff * ratio;
 }
 #pragma pop
+extern void *memset(void *, int, unsigned int);
+#pragma scheduling invalid_target
 void *fn_80287C30(void *arg0) {
     *(s32 *)arg0 = 0;
-    memset((u8 *)arg0 + 4, (int)0, (unsigned int)0x20);
+    memset((u8 *)arg0 + 4, 0, 0x20);
     *(s32 *)((u8 *)arg0 + 0x24) = 0;
     return arg0;
 }
-
-#pragma scheduling invalid_target
 /* If the object is non-null, release its owned resource handle at offset 0, clear it, and optionally free the object when arg1 > 0. */
 void *fn_80287C80(void *object, s32 shouldFree) {
     if (object != 0) {
@@ -900,10 +900,8 @@ void fn_802887EC(void) {
     void (**callback)(void *, s32) = (void (**)(void *, s32))(base + 0x90);
     s32 *data = (s32 *)((u8 *)callback - 0x90);
     s32 i;
-
-    for (i = 0; i < lbl_8055F6C0; i++, callback++) {
-        (*callback)(base + 0x10, data[1]);
-    }
+    for (i = 0; i < lbl_8055F6C0; i++)
+        (callback[i])(base + 0x10, data[1]);
 }
 #pragma scheduling on
 /* Set the seed of the module's 31-bit LCG random generator (state lbl_8055F6C8, advanced by fn_80288870). */
