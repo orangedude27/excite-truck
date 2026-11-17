@@ -180,8 +180,12 @@ void fn_8001BA78(void) {
     fn_8001C9C4();
 }
 
+/* Tear down the statistics section: clear the initialized flag, then free its
+ * buffer and four slots (fn_8001CAF8) — the inverse of fn_8001BA78. */
 void fn_8001BA84(void) {
-    lbl_8055D5C8 = 0;
+#define s_statSectionActive lbl_8055D5C8
+    s_statSectionActive = 0;
+#undef s_statSectionActive
     fn_8001CAF8();
 }
 
