@@ -1167,7 +1167,8 @@ extern const s8 lbl_802F4D90[];
 extern const char lbl_803230A0[], lbl_803230AC[];
 extern const f32 lbl_80561030, lbl_80561034, lbl_80561038;
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
-extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *arg0) {
+extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *__restrict arg0) {
+    const f32 *__restrict zp = &lbl_80561018;
     s32 index;
     s32 valid;
     s8 tableValue;
@@ -1175,8 +1176,8 @@ extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *arg0) {
     f32 value;
     f32 currentLevel;
     u8 level;
-    if (lbl_80561018 == *(f32 *)arg0) return lbl_80561018;
-    if (*(u32 *)((u8 *)arg0 + 0x10) < *(u32 *)((u8 *)arg0 + 8)) return lbl_80561018;
+    if (*zp == *(f32 *)arg0) return *zp;
+    if (*(u32 *)((u8 *)arg0 + 0x10) < *(u32 *)((u8 *)arg0 + 8)) return *zp;
     valid = 0;
     angle = lbl_80561030 * (lbl_80561034 * *(f32 *)((u8 *)arg0 + 0x14));
     index = (s32)angle;
@@ -1309,6 +1310,7 @@ extern "C" s32 fn_800ECE24(void) {
 #undef kSourceFile
 }
 
+/* Constant getter in the nw4hbm sound subsystem: returns 32 (0x20). */
 extern "C" s32 fn_800ECE60(void) {
     return 0x20;
 }
@@ -2316,8 +2318,8 @@ extern "C" void* fn_800EE5E8(void* arg0, void* arg1) {
     u8 encodedBuffer[0x18];
     u8* file = lbl_80323840;
     if (first == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x101,
-                                     (const char*)file + 0x38);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)(file + 0), 0x101,
+                                     (const char*)(file + 0x38));
     if (state[1] != 0) {
         outerLevel = OSDisableInterrupts();
         if (WPADCanSendStreamData(*(s32*)(state + 0x2C)) == 0) {
@@ -2368,14 +2370,14 @@ scanDone:
                 if ((encoded = fn_80062278(
                          *(s32*)(state + 0x2C), encodedBuffer, 0x14)) != 0)
                     Warning__Q26nw4hbm2dbFPCciPCce(
-                        (const char*)file, 0x154,
-                        (const char*)file + 0x60, encoded);
+                        (const char*)(file + 0), 0x154,
+                        (const char*)(file + 0x60), encoded);
             }
             if (startAlarm != 0) {
                 u32 level = OSDisableInterrupts();
                 if (state[7] == 0) {
-                    u32 ticks = *(volatile u32*)0x800000F8 >> 2;
-                    u64 scaled = (u64)ticks * 0x1E0;
+                    u64 ticks = *(volatile u32*)0x800000F8 >> 2;
+                    u64 scaled = ticks * 0x1E0;
                     ((void (*)(void*, u32, u64, void (*)(void)))OSSetAlarm)(
                         state + 0x38, (u32)0, scaled,
                         (void (*)(void))fn_800EE910);
