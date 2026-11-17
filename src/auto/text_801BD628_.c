@@ -269,23 +269,28 @@ void fn_801BDA74(int idx, float *p) {
     o28[41] = f5; o28[42] = f2; o28[43] = f4; o28[44] = f3; o28[45] = f5; o28[46] = f2;
     s[48] = f3; s[50] = f2;
     o28[47] = f4;
-    for (i = 0; i < 4; i++) {
-        float *q = p + 32 + i * 9;
-        int lo = (i & 2) == 0;
-        int ev = (i & 1) == 0;
-        f4 = lo ? p[7] : K1 - p[7];
-        f5 = lbl_80562898 * (H * f4 * p[0]);
-        f2 = lo ? p[4] : p[5];
-        f12 = H * f2 * (ev ? M1 : K1);
-        f11 = lo ? K1 : M1;
-        f9 = K1 - f4;
-        o28[i * 4] = f12;
-        s[44] = f12;
-        s[46] = (f9 * p[6]) * f11;
-        s[45] = (((q[6] - q[0]) - p[8]) - f5 / q[1]) - f5 / q[7];
-        o28[i * 4 + 1] = s[45];
-        o28[i * 4 + 2] = s[46];
-        o28[i * 4 + 3] = s[47];
+    {
+        float *q = p + 32;
+        float *dst = o28;
+        for (i = 0; i < 4; i++) {
+            int lo = (i & 2) == 0;
+            int ev = (i & 1) == 0;
+            f4 = lo ? p[7] : K1 - p[7];
+            f5 = lbl_80562898 * (H * f4 * p[0]);
+            f2 = lo ? p[4] : p[5];
+            f12 = H * f2 * (ev ? M1 : K1);
+            f11 = lo ? K1 : M1;
+            f9 = K1 - f4;
+            dst[0] = f12;
+            s[44] = f12;
+            s[46] = (f9 * p[6]) * f11;
+            s[45] = (((q[6] - q[0]) - p[8]) - f5 / q[1]) - f5 / q[7];
+            dst[1] = s[45];
+            dst[2] = s[46];
+            dst[3] = s[47];
+            dst += 4;
+            q += 9;
+        }
     }
     o28[48] = p[33]; o28[49] = p[42]; o28[50] = p[51]; o28[51] = p[60];
     o28[52] = p[34]; o28[53] = p[43]; o28[54] = p[52]; o28[55] = p[61];
@@ -358,6 +363,9 @@ void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
     dst[20] = la.x; dst[21] = la.y; dst[22] = la.z; dst[23] = la.w;
     dst[24] = lb.x; dst[25] = lb.y; dst[26] = lb.z; dst[27] = lb.w;
 }
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801BE400(int index, float *m, float scale) {
     float out[4], t, q, inv;
     float *dst = (float *)(lbl_8055E794 + index * 0xB0);
@@ -457,12 +465,12 @@ void fn_801BEB44(int i, int j, float *target, float *velocity) {
     lerp.z = vel->z + t * (n.z - vel->z);
     Vec801BD_Copy(&n, &lerp);
     PSVECNormalize(&n, &n);
-    Vec801BD_Copy(&dead1, &n);
+    Vec801BD_Copy(&dead1, &b);
     lerp.x = tg->x + t * (b.x - tg->x);
     lerp.y = tg->y + t * (b.y - tg->y);
     lerp.z = tg->z + t * (b.z - tg->z);
     Vec801BD_Copy(&dead2, &lerp);
-    Vec801BD_Copy(&dead3, &n);
+    Vec801BD_Copy(&dead3, &b);
     p = base + off;
     Vec801BD_Copy((Vec801BD *)(p + 0x150), &lerp);
     *(float *)(p + 0x15C) = *(float *)(p + 0x24);
