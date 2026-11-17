@@ -3339,6 +3339,7 @@ void fn_80165820(void) {
 /* No-op default callback returning 0, one of the placeholder handlers for the challenge-list UI (fn_80165820/0x2C/0x40). */
 int fn_80165824(void) { return 0; }
 
+/* No-op default callback returning 0, sibling of fn_80165824 in the challenge-list UI placeholder block. */
 int fn_8016582C(void) { return 0; }
 
 /* AX "get studio name" accessor stub, dispatched indirectly through a function-pointer table; this build returns the placeholder label string "Challenge List" (lbl_8032FCB0). */
