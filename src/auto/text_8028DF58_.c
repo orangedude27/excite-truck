@@ -226,20 +226,21 @@ void fn_8028E1A4(void) {
 
 #pragma scheduling invalid_target
 void fn_8028E1D0(void) {
-    struct Table { int entries[64]; int count; } *base;
-    int *entries;
+    /* End a particle update pass: advance every effect in the primary list by the frame time, then disallow further adds. */
+    struct Table { int entries[64]; int count; } *list;
+    int *emitter;
     int i;
-    entries = (int *)&lbl_804B34B0;
-    base = (struct Table *)entries;
-    lbl_8055F73C = 0;
+    emitter = (int *)&lbl_804B34B0;
+    list = (struct Table *)emitter;
+    gAllowParticleAdd = 0;
     i = 0;
     goto test;
 body:
-    fn_8028F8E0(*entries, lbl_8055F738);
-    entries++;
+    fn_8028F8E0(*emitter, gParticleTime);
+    emitter++;
     i++;
 test:
-    if (i < base->count) goto body;
+    if (i < list->count) goto body;
 }
 
 #pragma push
