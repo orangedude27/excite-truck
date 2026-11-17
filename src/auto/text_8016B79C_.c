@@ -1595,8 +1595,9 @@ void fn_8016E15C(void *arg0) {
     }
 }
 
-s32 fn_8016E1A4(s32 *arg0, s32 arg1) {
-    return *arg0 + (arg1 * 0x14);
+/* Address of the index-th 0x14-byte element in the array whose base pointer is *basePtr. */
+s32 fn_8016E1A4(s32 *basePtr, s32 index) {
+    return *basePtr + (index * 0x14);
 }
 
 // Builds a formatted state label for this object, applies it via UI helper, resets the
