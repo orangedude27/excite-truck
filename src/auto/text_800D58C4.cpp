@@ -3113,9 +3113,15 @@ extern "C" void fn_800DAFC4(void* arg0, void* arg1) {
 extern "C" const char lbl_8031F1FC[];
 extern "C" const char lbl_8031F1D8[];
 
-extern "C" void fn_800DB084(void* arg0) {
-    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(int); };
-    ((Obj*)arg0)->v3(0);
+extern "C" void fn_800DB084(void *layoutObject) {
+    // Forward a zero argument to virtual slot 3 (0x14) of the layout interface object.
+    struct LayoutIf {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void invoke(int);
+    };
+    ((LayoutIf *)layoutObject)->invoke(0);
 }
 
 static inline void AssertNode(void* node) {
