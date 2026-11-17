@@ -1651,7 +1651,8 @@ int fn_80181784(void *object) {
     return ((struct Di718 *)object)->flag5A;
 }
 
-unsigned char fn_8018178C(void *arg0) { return *((unsigned char *)arg0 + 0x5B); }
+/* Return the unsigned control-flag byte flag5B (offset 0x5B) of this audio-driver object. */
+unsigned char fn_8018178C(void *object) { return ((struct Di718 *)object)->flag5B; }
 
 /* Return the driver's rate-limited camera/look axis (pad30C[8] at +0x32C). */
 float fn_80181794(void *driver) { return DRIVER(driver)->pad30C[8]; }
