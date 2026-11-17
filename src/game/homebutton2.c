@@ -104,33 +104,30 @@ void *fn_802EC598(void) {
 
 #pragma scheduling invalid_target
 void fn_802EC614(void) {
-    // Fix note: initialize the controller flags and configuration, then allocate and register the menu resources in target order.
-    u8 zero = 0;
     char *base = lbl_8034E9E0;
+    char *info = lbl_80558860;
     s32 *config;
-    char *info;
     void *buffer;
 
-    lbl_805600E9 = zero;
-    lbl_805600EA = zero;
+    lbl_805600E9 = 0;
+    lbl_805600EA = 0;
     OSInitFastCast();
 
     config = lbl_80558898;
-    config[3] = zero;
+    config[3] = 0;
     ((f32 *)config)[1] = lbl_805651E0;
     ((f32 *)config)[2] = lbl_805651E0;
     ((f32 *)config)[5] = lbl_805651E0;
     ((f32 *)config)[6] = lbl_805651E0;
-    config[7] = zero;
+    config[7] = 0;
     ((f32 *)config)[9] = lbl_805651E0;
     ((f32 *)config)[10] = lbl_805651E0;
-    config[11] = zero;
+    config[11] = 0;
     ((f32 *)config)[13] = lbl_805651E0;
     ((f32 *)config)[14] = lbl_805651E0;
-    config[15] = zero;
+    config[15] = 0;
     fn_801282EC(0x20);
 
-    info = lbl_80558860;
     buffer = (void *)fn_8012850C(0x80000, (void *)&lbl_8055D2F0);
     *(void **)(info + 0x10) = buffer;
     memset(buffer, 0, 0x80000);
@@ -140,9 +137,9 @@ void fn_802EC614(void) {
     *(s32 *)(info + 0x04) = fn_802EC4E8((s32)(base + 0x100));
     *(s32 *)(info + 0x08) = fn_802EC4E8((s32)(base + 0x110));
     *(s32 *)(info + 0x0C) = fn_802EC4E8((s32)(base + 0x11C));
-    *(s32 *)(info + 0x14) = zero;
-    *(s32 *)(info + 0x18) = zero;
-    *(s32 *)(info + 0x20) = zero;
+    *(s32 *)(info + 0x14) = 0;
+    *(s32 *)(info + 0x18) = 0;
+    *(s32 *)(info + 0x20) = 0;
     ((f32 *)info)[0x2C / 4] = lbl_805651E4;
     ((f32 *)info)[0x30 / 4] = lbl_805651E8;
     ((f32 *)info)[0x28 / 4] = lbl_805651EC;
@@ -151,7 +148,7 @@ void fn_802EC614(void) {
 
     buffer = (void *)fn_8012850C(0x19000, base + 0x128);
     lbl_805600E0 = (s32)buffer;
-    memset(buffer, zero, 0x19000);
+    memset(buffer, 0, 0x19000);
     lbl_805600E4 = fn_802EC4E8((s32)(base + 0x134));
     fn_800C64F4(info);
     lbl_805600EC = 1;
@@ -379,6 +376,9 @@ void fn_802ECBF8(void) {
 }
 
 char fn_802ECC10(void) {
+    /* Returns lbl_805600E8 (gHomeMenuActive), the flag raised by fn_802EC884
+     * while the Wii Home menu is open; callers use it to suppress gameplay and
+     * input handling. */
     return lbl_805600E8;
 }
 
