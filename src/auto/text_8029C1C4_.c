@@ -1600,8 +1600,9 @@ void fn_8029EF48(void *arg0) {
     *((unsigned char *)arg0 + 0x68) = 1;
 }
 
-void fn_8029EF54(void *arg0) {
-    *((unsigned char *)arg0 + 0x68) = 0;
+void fn_8029EF54(void *object) {
+    /* Clears the boolean flag at offset 0x68 (paired with fn_8029EF48/fn_8029EF60). */
+    *((unsigned char *)object + 0x68) = 0;
 }
 
 int fn_8029EF60(void *arg0) {
