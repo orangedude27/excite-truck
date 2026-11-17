@@ -178,6 +178,7 @@ void fn_8001BA74(void) {
 /* Enable the statistics memory-card subsystem: mark it active, then set it up. */
 #define s_statsEnabled lbl_8055D5C8
 void fn_8001BA78(void) {
+    /* 1 = the stats subsystem is active. */
     s_statsEnabled = 1;
     fn_8001C9C4();
 }
