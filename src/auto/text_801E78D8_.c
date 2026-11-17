@@ -850,8 +850,11 @@ void fn_801E8818(void* hi) {
     lbl_8055EB24 = hi;
 }
 
+/* Unregister the per-frame shutdown/reset hook installed by fn_801E8818. */
 void fn_801E8820(void) {
-    lbl_8055EB24 = 0;
+#define gShutdownHook lbl_8055EB24
+    gShutdownHook = 0;
+#undef gShutdownHook
 }
 
 extern char lbl_8055EB08;
