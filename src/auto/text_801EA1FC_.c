@@ -29,10 +29,11 @@ extern u8 lbl_8055EB60[5];
 extern char lbl_8055EB58;
 
 #pragma dont_inline on
+/* Convert the stored field-of-view angle (lbl_80562E38, 61.5 degrees) to radians and cache it in lbl_8055AF68 for the camera projection setup. */
 void fn_801EA1FC(void) {
-    float x = lbl_80562E38;
-    x = lbl_80562E3C * x;
-    lbl_8055AF68 = x;
+    float angleRadians = lbl_80562E38;
+    angleRadians = lbl_80562E3C * angleRadians;
+    lbl_8055AF68 = angleRadians;
 }
 
 #pragma dont_inline on
