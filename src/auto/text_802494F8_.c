@@ -18,6 +18,20 @@ static inline int find_sound_entry_inline(int *key) {
 static inline int has_sound_entry(int *key) {
     return find_sound_entry_inline(key) != -1;
 }
+static inline int find_sound_entry_first(int *key) {
+    void *table = lbl_8055F28C;
+    int i;
+    int byteOffset;
+    int count = *(int *)((char *)table + 4);
+    byteOffset = 0;
+    for (i = 0; i < count; i++) {
+        int value = *(int *)(*(char **)table + byteOffset);
+        int id = *key;
+        if (value == id) return i;
+        byteOffset += 0x18;
+    }
+    return -1;
+}
 static inline int find_sound_entry(int id);
 typedef signed long s32;
 typedef signed char s8;
@@ -65,8 +79,12 @@ void fn_80249588(void) {}
 
 #pragma scheduling on
 int fn_8024958C(int *arg0) {
+    #pragma scheduling invalid_target
     int result = arg0[2] == 0x180302;
-    if (result) result = find_sound_entry_inline(arg0) != -1;
+    if (result) {
+        int idx = find_sound_entry_inline(arg0);
+        result = idx != -1;
+    }
     if (result) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(arg0) * 0x18 + 0x14);
     return result;
 }
@@ -1341,7 +1359,7 @@ void fn_8024BA00(void *arg0) {
 void fn_8024BAA0(void *arg0) {
     int plus1 = *(int *)((char *)arg0 + 0x11C) + 1;
     *(int *)((char *)arg0 + 0x11C) = plus1 % *(int *)((char *)arg0 + 0x14);
-    ((void (*)(void *, int, int, int, int))(*(void ***)((char *)*(void **)((char *)arg0 + 0x124) + 0xC))[12])(*(void **)((char *)arg0 + 0x124), *(int *)((char *)arg0 + 0x120), *(*(int **)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0x11C) * 2 + 1), *(int *)((char *)arg0 + 0x14), plus1);
+    ((void (*)(void *, int, int, int, int))(*(void ***)((char *)*(void * volatile *)((char *)arg0 + 0x124) + 0xC))[12])(*(void * volatile *)((char *)arg0 + 0x124), *(int *)((char *)arg0 + 0x120), *(*(int **)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0x11C) * 2 + 1), *(int *)((char *)arg0 + 0x14), plus1);
     fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70, *(*(int **)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0x11C) * 2 + 1), (const char *)&lbl_8055BFF8);
 }
 #pragma scheduling on
