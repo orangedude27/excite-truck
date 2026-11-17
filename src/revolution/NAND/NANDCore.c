@@ -147,6 +147,7 @@ BOOL nandIsUnderPrivatePath(const char* path) {
     return FALSE;
 }
 
+/* Returns TRUE once NANDInit has finished and the NAND library is ready for use. */
 BOOL nandIsInitialized(void) {
     return s_libState == NAND_LIB_INITIALIZED ? TRUE : FALSE;
 }
