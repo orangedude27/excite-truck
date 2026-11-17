@@ -1337,20 +1337,16 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
 
 extern "C" void fn_8029A318(float*, float*, float*, float*, float, float, float);
 #pragma dont_inline on
-extern "C" void fn_8029A60C(void* arg0, void* arg1) {
+extern "C" void fn_8029A60C(void* arg0, void *__restrict arg1) {
     volatile float vectors[9];
     volatile unsigned int *src = (volatile unsigned int *)arg1;
     unsigned int v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0;
-    register float *pMid;
-    register float *pLow;
     float value = lbl_8056459C;
 
     v0 = src[0];
     vectors[6] = value;
     v1 = src[1];
-    pMid = (float *)&vectors[3];
     vectors[7] = value;
-    pLow = (float *)&vectors[0];
     v2 = src[2];
     vectors[8] = value;
     v3 = src[3];
@@ -1382,7 +1378,7 @@ extern "C" void fn_8029A60C(void* arg0, void* arg1) {
     *(unsigned int *)((char *)arg0 + 0x28) = v10;
     *(unsigned int *)((char *)arg0 + 0x2C) = v11;
 
-    ((void (*)(void*, float*, float*, float*))fn_8029A318)(arg0, (float *)&vectors[6], pMid, pLow);
+    ((void (*)(void*, float*, float*, float*))fn_8029A318)(arg0, (float *)&vectors[6], (float *)&vectors[3], (float *)&vectors[0]);
     fn_80298458((int)lbl_8055F7C0, *(int *)((char *)arg0 + 0x40), (void *)&vectors[6], (void *)&vectors[3], (void *)&vectors[0], *(short *)((char *)arg1 + 0x30));
 }
 
