@@ -4400,8 +4400,10 @@ int GXGetTexObjWrap_Internal(unsigned int *mode0) {
     return (*mode0 >> 2) & 3;
 }
 
-int GXGetTexObjAll(void *obj) {
-    return (*(unsigned char *)((char *)obj + 0x1F)) & 1;
+/* Return bit 0 of a GXTexObj's flags byte at +0x1F: the mipmap-enable flag that
+ * GXInitTexObj sets and __GXDefaultTexRegionCallback tests as "hasMipMap". */
+int GXGetTexObjAll(void *texObj) {
+    return (*(unsigned char *)((char *)texObj + 0x1F)) & 1;
 }
 
 // __GXData's texture-loading tail: the two region callbacks GXLoadTexObj and
