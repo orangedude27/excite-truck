@@ -99,6 +99,7 @@ void fn_80253258(void) {
     PSVECNormalize(&v[3], &v[3]);
     fn_802C9A1C(&v[3]);
 }
+#pragma pop
 void fn_802532BC(void *arg0) {
     struct Struct_802532BC_Offset28 {
         char pad[0x28];
