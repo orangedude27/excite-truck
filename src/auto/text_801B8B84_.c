@@ -21,7 +21,10 @@ void fn_801B8BBC(void) {
 }
 
 void __AXDSPInitCallback_801B8BE8(void) {
-    lbl_8055E764 = 0;
+    /* AX DSP init callback: reset the pending alarm-event count. */
+    #define s_alarmEventCount lbl_8055E764
+    s_alarmEventCount = 0;
+    #undef s_alarmEventCount
 }
 
 extern int lbl_8055E3C4;
