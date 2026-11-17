@@ -184,8 +184,11 @@ extern "C" s32 fn_800FDDE8(void* sound) {
     return *(s32*)((u8*)sound + 0x5F4) != 0;
 }
 
-extern "C" void fn_800FDDFC(void* arg0) {
-    fn_800FDE28(*(void**)((u8*)arg0 + 0x5F4));
+/* Detach this stream sound from its SoundHandle: pass the handle stored at
+ * +0x5F4 to SoundHandle::DetachSound (fn_800FDE28), which clears the handle
+ * and the sound's back-reference to it. */
+extern "C" void fn_800FDDFC(void* sound) {
+    fn_800FDE28(*(void**)((u8*)sound + 0x5F4));
 }
 
 extern "C" s32 fn_800FDE04(s8* arg0) {
