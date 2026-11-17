@@ -15,7 +15,7 @@ extern double cos(double);
 extern double sin(double);
 extern float fn_80144514(float, float, float, float, float, float);
 #define D6(a, b, c, d, e, f) fn_80144514(a, b, c, d, e, f)
-f32 *volatile g_alias_probe;
+static f32 *volatile g_alias_probe;
 #define M33CAT(a, b, ab)                                                   \
     { g_alias_probe = (ab);                                                \
     if (g_alias_probe == (b) || g_alias_probe == (a)) {                    \
