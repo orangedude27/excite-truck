@@ -429,8 +429,8 @@ extern "C" s32 fn_8012AC28(s32 arg0, s32 arg1) {
     s32 sp8;
     s32 result;
     spC = -1;
-    fn_802E4CA8(buffer, arg0, 0x104);
-    result = fn_802E7354(buffer);
+    fn_802E4CA8(&buffer[0], arg0, 0x104);
+    result = fn_802E7354(&buffer[0]);
     if (result != -1) {
         fn_802E746C(result, &spC, &sp8);
         if (arg1 != 0) *(s32 *)arg1 = sp8;
