@@ -98,7 +98,10 @@ void fn_80236728(void) {
 }
 #pragma pop
 void fn_80236774(void) {
-    lbl_8055F0C4 = 0;
+#define sUiAnimeStarted lbl_8055F0C4
+    /* Mark the uiAnime system as stopped so it can be started again. */
+    sUiAnimeStarted = 0;
+#undef sUiAnimeStarted
 }
 
 extern char *fn_80237C40(void);
