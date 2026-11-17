@@ -703,6 +703,7 @@ void* fn_801E85A4(void) {
 }
 
 extern void *lbl_8055EB30;
+/* Return sceneEntryCount (lbl_8055EB30), the registered-entry count snapshotted from fn_800167F4() at world start. */
 void* fn_801E85AC(void) {
     return lbl_8055EB30;
 }
