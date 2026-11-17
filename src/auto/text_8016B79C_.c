@@ -3281,7 +3281,10 @@ extern "C" s32 fn_80170F7C(void *object) {
     return 0;
 }
 #pragma cplusplus off
-u32 fn_80170FD4(void) { return 1; }
+u32 fn_80170FD4(void) {
+    /* Constant predicate (returns 1 / true); likely a virtual getter reached through a dispatch table. */
+    return 1;
+}
 
 extern f32 lbl_80561A1C;
 extern s32 fn_802AE220(s32, s32);
