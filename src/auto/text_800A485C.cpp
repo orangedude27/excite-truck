@@ -1301,8 +1301,9 @@ extern "C" s32 fn_800A61D0(void *arg0) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_800A625C(void *arg0, s32 arg1) {
-    *(s32 *)((char *)arg0 + 0x2C) = arg1;
+/* Bind a request to a device object (its +0x2C request field) and report success. */
+extern "C" s32 fn_800A625C(void *device, s32 request) {
+    *(s32 *)((char *)device + 0x2C) = request;
     return 0;
 }
 #pragma dont_inline reset
