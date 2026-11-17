@@ -793,8 +793,9 @@ void fn_8023E504(void *config, int *out) {
 extern int lbl_80341C40[];
 extern int fn_801A902C(void);
 extern void fn_8023E33C();
-int fn_8023E52C(int arg0) {
-    return lbl_80341C40[arg0];
+char *fn_8023E52C(int gripIndex) {
+    /* Return the controller grip-name string registered at the given scheme index. */
+    return (char *)lbl_80341C40[gripIndex];
 }
 
   extern s32 lbl_80341C40[];
