@@ -537,6 +537,8 @@ static void nandGetTypeCallback(s32 ipcResult, void* arg) {
     block->callback(nandConvertErrorCode(ipcResult), block);
 }
 
+/* Return a pointer to the current title's NAND home/data directory path, as set
+   by ES_GetDataDir() during NANDInit (e.g. "/title/00050010/.../data"). */
 const char* nandGetHomeDir(void) {
     return s_homeDir;
 }
