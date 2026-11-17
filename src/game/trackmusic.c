@@ -988,10 +988,16 @@ extern "C" void fn_80210904(void) {
 #pragma cplusplus off
 extern void *lbl_8055EED8;
 extern void *lbl_8055EEDC;
-void AXFXSetHooks_80210950(void *arg0, void *arg1) {
-    lbl_8055EED8 = arg0;
-    lbl_8055EEDC = arg1;
+#define s_AXFXAlloc lbl_8055EED8
+#define s_AXFXFree  lbl_8055EEDC
+/* Register the module-local AXFX alloc/free hooks used by the track-music
+ * effect: allocHook is called by the music-key handler, freeHook on shutdown. */
+void AXFXSetHooks_80210950(void *allocHook, void *freeHook) {
+    s_AXFXAlloc = allocHook;
+    s_AXFXFree = freeHook;
 }
+#undef s_AXFXAlloc
+#undef s_AXFXFree
 
 void fn_8021095C(void) {
 }
