@@ -405,8 +405,11 @@ void fn_801B4C9C(int arg0, int arg1) {
 #pragma pop
 extern float lbl_80562660;
 extern float lbl_80562658;
-float fn_801B4D10(int arg0, int arg1) {
-    return ((arg1 - ((int (*)(int))fn_801B4B9C)(arg0)) % 6) / lbl_80562658;
+float fn_801B4D10(int queue, int tick) {
+    /* Return the interpolation fraction (0..1) of tick within the replay
+       queue's current 6-tick frame: ticks elapsed past the frame's base tick,
+       modulo 6, divided by 6.0. */
+    return ((tick - ((int (*)(int))fn_801B4B9C)(queue)) % 6) / lbl_80562658;
 }
 
 extern float lbl_80562668, lbl_8056266C, lbl_80562670, lbl_80562674, lbl_80562678, lbl_8056267C, lbl_80562680;
