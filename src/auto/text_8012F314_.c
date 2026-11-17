@@ -4,5 +4,11 @@
 extern char lbl_8055E018[4];
 extern void fn_8000D838(void *queue);
 void fn_8012F314(void) {
-    fn_8000D838(lbl_8055E018);
+#define RegisterStaticDtor fn_8000D838
+#define s_dtorRecord lbl_8055E018
+    /* C++ static initializer (a .ctors entry): chain this module's
+     * static-destructor record onto the global list headed by lbl_8055D450. */
+    RegisterStaticDtor(s_dtorRecord);
+#undef s_dtorRecord
+#undef RegisterStaticDtor
 }
