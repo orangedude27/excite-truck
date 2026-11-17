@@ -1314,7 +1314,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
 extern "C" void* fn_800D57AC(void*, const void*, const void*);
 extern "C" const char lbl_8031F728[];
 extern "C" const char lbl_8031F854[];
-extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* pane, const ResBlockSetTmp* set) {
+extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* __restrict pane, const ResBlockSetTmp* __restrict set) {
     void* obj;
     switch (kind) {
     case 0x70616E31:
@@ -2401,12 +2401,13 @@ extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
 
 extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
     u8* p = (u8*)arg0;
-    const char *msg = lbl_8031F990;
+    struct MsgBlock { char text[0x400]; };
+    const struct MsgBlock *blk = (const struct MsgBlock*)lbl_8031F990;
     if (arg1 > ((*(u32*)(p + 0x4C) >> 15) & 7))
-        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3BE, msg + 0x3F8);
+        Panic__Q26nw4hbm2dbFPCciPCce(blk->text, 0x3BE, blk->text + 0x3F8);
     if (arg1 != 0) {
         if (*(void**)(p + 0x58) == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3C1, msg + 0x360);
+            Panic__Q26nw4hbm2dbFPCciPCce(blk->text, 0x3C1, blk->text + 0x360);
         u32 fmt = *(u32*)(p + 0x4C);
         u32 count = (*(u32*)(p + 0x50) >> 15) & 7;
         u32 width = (fmt >> 24) & 15;
@@ -2419,7 +2420,8 @@ extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
                 base[i * 4] = 0; base[i * 4 + 1] = 0; base[i * 4 + 2] = 0; base[i * 4 + 3] = 0;
             }
         }
-        *(u32*)(p + 0x50) = (*(u32*)(p + 0x50) & ~0x38000) | ((arg1 << 15) & 0x38000);
+        struct CountWord { u32 before : 15; u32 count : 3; u32 after : 14; };
+        ((CountWord*)(p + 0x50))->count = arg1;
     }
 }
 
@@ -3500,6 +3502,7 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt4PaneFUlUc(void* self, u32 index, 
     }
 }
 
+/* Return 0xFF, the default/invalid sentinel used by nw4hbm::lyt panes (color-element indices are 0..0x10). */
 extern "C" s32 fn_800DB958(void) { return 0xFF; }
 
 extern "C" void fn_800DB960(void) {
