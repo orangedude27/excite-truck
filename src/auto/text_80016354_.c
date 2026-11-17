@@ -598,12 +598,13 @@ __declspec(section ".sdata") extern char lbl_80558C08[];
 __declspec(section ".sdata") extern char lbl_80558C10[];
 __declspec(section ".sdata") extern char lbl_80558BD0[];
 extern char *fn_80029004(char *, int);
-extern char *fn_80131234(char *);
+extern "C" char *fn_80131234(char *);
 extern int fn_80016DD8(const char *);
 extern int fn_8013C8E8(char *);
 extern "C" void fn_802E317C(const char *, ...);
 extern "C" void fn_801345D8(char *, int, const char *, ...);
 extern "C" void fn_80017010(void *arg0) {
+#pragma dont_inline on
     struct Interface {
         virtual void m0();
         virtual void m1();
@@ -617,30 +618,23 @@ extern "C" void fn_80017010(void *arg0) {
         virtual void m9();
         virtual int m10(const char *, int);
     };
+    int v31, v30, v29;
     char *base;
     char *entry;
-    char *src;
-    int v29, v30, v31;
     char *r26;
-    int eidx, off;
+    int off, eidx;
     int c;
     int flag;
     base = lbl_802FCEA8;
     entry = (char *)lbl_8055D544 + (int)lbl_8055D550 * 0xA8;
     *(int *)entry = (int)lbl_8055D550;
     *(int *)(entry + 4) = (int)lbl_8055D550 | 0x40000000;
-    src = ((Interface *)arg0)->m3(lbl_80558C08, (int)lbl_8055D550);
     {
-        char *p = src;
-        char *q = entry + 0x2C;
-        int lim = 0x20;
-        for (;;) {
-            unsigned char ch = *p++;
-            *q++ = ch;
-            if ((signed char)ch != 0) {
-                lim--;
-                if (lim <= 0) { *(q - 1) = 0; break; }
-            } else break;
+        char *s = ((Interface *)arg0)->m3(lbl_80558C08, (int)lbl_8055D550);
+        char *dst = entry + 0x2C;
+        int n = 0x20;
+        while (*dst++ = *s++) {
+            if (--n <= 0) { dst[-1] = 0; break; }
         }
     }
     c = (signed char)*(unsigned char *)(entry + 0x2C);
@@ -662,81 +656,64 @@ extern "C" void fn_80017010(void *arg0) {
         *(int *)(entry + 8) = 0;
         {
             char sp88[64];
-            char *p = entry + 0x2C;
-            char *q = sp88;
-            int lim = 0x40;
-            for (;;) {
-                unsigned char ch = *p++;
-                *q++ = ch;
-                if ((signed char)ch != 0) {
-                    lim--;
-                    if (lim <= 0) { *(q - 1) = 0; break; }
-                } else break;
+            char *s = entry + 0x2C;
+            char *dst = sp88;
+            int n = 0x40;
+            while (*dst++ = *s++) {
+                if (--n <= 0) { dst[-1] = 0; break; }
             }
-            src = fn_80029004(sp88, 0x5F);
-            if (src != (char *)0) {
-                *src = 0;
-                eidx = 0;
-                off = 0;
-                while (eidx < (int)lbl_8055D550) {
-                    if (stricmp(sp88, (char *)lbl_8055D544 + off + 0x2C) == 0) {
-                        *(int *)(entry + 8) = *(int *)((char *)lbl_8055D544 + eidx * 0xA8 + 4);
-                        *(int *)((char *)lbl_8055D544 + eidx * 0xA8 + 8) = *(int *)(entry + 4);
-                        r26 = (char *)lbl_8055D544 + eidx * 0xA8 + 0x2C;
-                        break;
+            {
+                char *found = fn_80029004(sp88, 0x5F);
+                if (found != (char *)0) {
+                    *found = 0;
+                    eidx = 0;
+                    off = 0;
+                    while (eidx < (int)lbl_8055D550) {
+                        if (stricmp(sp88, (char *)lbl_8055D544 + off + 0x2C) == 0) {
+                            *(int *)(entry + 8) = *(int *)((char *)lbl_8055D544 + eidx * 0xA8 + 4);
+                            *(int *)((char *)lbl_8055D544 + eidx * 0xA8 + 8) = *(int *)(entry + 4);
+                            r26 = (char *)lbl_8055D544 + eidx * 0xA8 + 0x2C;
+                            break;
+                        }
+                        off += 0xA8;
+                        eidx++;
                     }
-                    off += 0xA8;
-                    eidx++;
+                    if (*(int *)(entry + 8) == 0) fn_802E317C(base + 0x94, entry + 0x2C);
+                } else {
+                    fn_802E317C(base + 0xC4, entry + 0x2C);
                 }
-                if (*(int *)(entry + 8) == 0) fn_802E317C(base + 0x94, entry + 0x2C);
-            } else {
-                fn_802E317C(base + 0xC4, entry + 0x2C);
             }
         }
     } else {
         *(int *)(entry + 8) = *(int *)(entry + 4);
     }
-    src = ((Interface *)arg0)->m4(base + 0xFC, r26 ? r26 : entry + 0x2C);
     {
-        char *p = src;
-        char *q = entry + 0xC;
-        int lim = 0x20;
-        for (;;) {
-            unsigned char ch = *p++;
-            *q++ = ch;
-            if ((signed char)ch != 0) {
-                lim--;
-                if (lim <= 0) { *(q - 1) = 0; break; }
-            } else break;
+        char *s = ((Interface *)arg0)->m4(base + 0xFC, r26 ? r26 : entry + 0x2C);
+        char *dst = entry + 0xC;
+        int n = 0x20;
+        while (*dst++ = *s++) {
+            if (--n <= 0) { dst[-1] = 0; break; }
         }
     }
     {
-        char *p = base + 0x10C;
-        char *q = entry + 0x4C;
-        int lim = 0x10;
-        for (;;) {
-            unsigned char ch = *p++;
-            *q++ = ch;
-            if ((signed char)ch != 0) {
-                lim--;
-                if (lim <= 0) { *(q - 1) = 0; break; }
-            } else break;
+        char *s = base + 0x10C;
+        char *dst = entry + 0x4C;
+        int n = 0x10;
+        while (*dst++ = *s++) {
+            if (--n <= 0) { dst[-1] = 0; break; }
         }
     }
     {
         char sp48[64];
+        char *s;
         fn_801345D8(sp48, 0x40, base + 0x118, (int)(entry + 0xC));
-        src = fn_80131234(sp48);
-        char *p = src;
-        char *q = entry + 0xC;
-        int lim = 0x20;
-        for (;;) {
-            unsigned char ch = *p++;
-            *q++ = ch;
-            if ((signed char)ch != 0) {
-                lim--;
-                if (lim <= 0) { *(q - 1) = 0; break; }
-            } else break;
+        s = fn_80131234(sp48);
+        {
+            char *dst = entry + 0xC;
+            int n = 0x20;
+            while (*dst++ = *s++) {
+                if (--n <= 0) { dst[-1] = 0; break; }
+            }
         }
     }
     *(int *)(entry + 0x98) = 0;
