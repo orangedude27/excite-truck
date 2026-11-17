@@ -2733,9 +2733,10 @@ extern "C" void fn_801FB420(void *arg0, void *arg1) {
     }
 }
 
-extern "C" void fn_801FBCF4(void **arg0, void *arg1) {
-    *(void **)((u8 *)arg1 + 0x44) = *arg0;
-    *arg0 = arg1;
+extern "C" void fn_801FBCF4(void **list, void *node) {
+    /* Prepend node to the linked list: store the old head at offset 0x44 of node, then make node the head. */
+    *(void **)((u8 *)node + 0x44) = *list;
+    *list = node;
 }
 
 extern "C" s32 fn_801FBD04(void) {
