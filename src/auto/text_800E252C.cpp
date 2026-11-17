@@ -4132,8 +4132,11 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(vo
 #pragma small_data off
 extern float lbl_80560FB0;
 #pragma pop
-extern "C" void fn_800E9B18(void *arg0, float farg0) {
-    *(float *)((char *)arg0 + 0x90) = farg0;
+extern "C" void fn_800E9B18(void *sound, float value) {
+    /* Set the BasicSound's float parameter at +0x90: the first of the
+       +0x90/+0x94 pair (fn_800E9B20 sets +0x94). The per-frame update reads
+       it and forwards it to the voice through its p30 setter. */
+    *(float *)((char *)sound + 0x90) = value;
 }
 
 extern "C" void fn_800E9B20(void *sound, float value) {
