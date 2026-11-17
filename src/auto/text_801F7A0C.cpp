@@ -1466,8 +1466,9 @@ done:
     return node;
 }
 
-extern "C" void fn_801F96A8(void *node) {
-    fn_801F95C4((void *)fn_801F9450, node);
+/* Look up a named "dyno" node: search the owner list via fn_801F95C4, using the dyno-type predicate fn_801F9450, for a node whose name matches `name`. */
+extern "C" void fn_801F96A8(void *name) {
+    fn_801F95C4((void *)fn_801F9450, name);
 }
 
 /* Look up a named "object_properties" node: search the owner list via fn_801F95C4, using the object-properties predicate fn_801F948C, for a node whose name matches `name`. */
