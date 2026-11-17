@@ -32,6 +32,7 @@ extern char lbl_80349900[];
 #pragma paired off
 #pragma paired_single off
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, float farg0, float farg1) {
     float sp10[3];
     float v;
