@@ -3,7 +3,7 @@
 
 extern unsigned char lbl_802FE850[];
 #pragma scheduling invalid_target
-/* mbtowc: tail-call the current locale's mbtowc hook at ctype_cmpts+0x20. */
+/* mbtowc: tail-call the current locale's mbtowc hook at ctype_cmpts+0x20, passing (pwc, s, n). */
 int fn_80024BD4(short *pwc, const char *s, int n) {
     return (*(int (**)(short *, const char *, int))(*(unsigned int *)(lbl_802FE850 + 0x38) + 0x20))(pwc, s, n);
 }
