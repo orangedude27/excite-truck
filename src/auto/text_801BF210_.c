@@ -851,8 +851,7 @@ int fn_801C0454(void *arg0) {
     extern void fn_801C092C(void *, void *, void *, int);
     extern void fn_801C0D3C(void *);
     extern void fn_801C0D6C(void *);
-#define FN_801C0E44_RET float
-    extern FN_801C0E44_RET fn_801C0E44();
+    extern float fn_801C0E44(FV3 *v);
     extern void fn_801C0E4C(void *, void *, void *);
     extern void fn_801C0E60(float *, float *, float *);
     extern float lbl_805628C8;
