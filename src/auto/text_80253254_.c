@@ -101,6 +101,7 @@ void fn_80253258(void) {
 }
 #pragma pop
 void fn_802532BC(void *arg0) {
+    #pragma scheduling invalid_target
     struct Struct_802532BC_Offset28 {
         char pad[0x28];
         int val;
@@ -108,7 +109,6 @@ void fn_802532BC(void *arg0) {
     extern void *memset(void *, int, unsigned long);
     extern float lbl_80563A04;
     extern float lbl_80563A14;
-    int len;
 
     *(unsigned char *)((char *)arg0 + 0x0) = 0;
     *(int *)((char *)arg0 + 0x14) = -1;
@@ -123,7 +123,6 @@ void fn_802532BC(void *arg0) {
         float one = lbl_80563A14;
 
         ((struct Struct_802532BC_Offset28 *)arg0)->val = -1;
-        len = 0x138;
 
         *(float *)((char *)arg0 + 0x598) = one;
         *(float *)((char *)arg0 + 0x59C) = zero;
@@ -205,7 +204,10 @@ void fn_802532BC(void *arg0) {
         *(float *)((char *)arg0 + 0x428) = zero;
     }
 
-    memset((char *)arg0 + 0x45C, 0, len);
+    {
+        int len = 0x138;
+        memset((char *)arg0 + 0x45C, 0, len);
+    }
 
     *(float *)((char *)arg0 + 0x594) = lbl_80563A04;
 }
@@ -706,8 +708,8 @@ void fn_802543FC(void *arg0) {
     union { s32 i; float f; } c, b, a;
     s32 index;
     u8 *point;
-    float difference;
     float zero;
+    float difference;
     float scale;
 
     if (*(s32 *)(base + 0x28) != -1) {
@@ -1911,6 +1913,7 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
     float height;
     int i, j;
     int n;
+    step = lbl_80563A94;
     fn_802C942C(-1);
     original = *(struct Matrix *)fn_802C86DC();
     ((double *)&adjusted)[0] = ((double *)&original)[0];
@@ -1947,7 +1950,7 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
     vertices[0].color = 0x20ffffff;
     vertices[0].u = lbl_80563A04;
     vertices[0].v = lbl_80563A04;
-    { step = lbl_80563A94; factor = lbl_80563A98; inner = lbl_80563A8C; outer = lbl_80563A9C;
+    { factor = lbl_80563A98; inner = lbl_80563A8C; outer = lbl_80563A9C;
     for (i = 0; i < 150; i++) {
         float fi = (float)i;
         float x = factor * (float)cos(fi * step);
@@ -2175,6 +2178,7 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
 
 
 #pragma scheduling on
+/* Stub getter: reports zero in this build, paired with the flag setters at 0x802571F8/0x80257204. */
 s32 fn_802571F0(void) { return 0; }
 
 /* Set the boolean flag at offset 0x18 of the object to true (pairs with fn_80257204). */
