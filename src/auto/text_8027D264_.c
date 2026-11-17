@@ -618,8 +618,8 @@ void fn_8027DE6C(void) {
 }
 
 #pragma dont_inline on
-int fn_8027DE98(int index) {
-    return *(int *)((char *)&lbl_804B2FD8 + index * 8);
+int fn_8027DE98(int playerIndex) {
+    return *(int *)((char *)&lbl_804B2FD8 + playerIndex * 8);
 }
 #pragma dont_inline reset
 
