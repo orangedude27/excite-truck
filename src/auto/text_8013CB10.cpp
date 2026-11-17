@@ -1652,8 +1652,9 @@ extern "C" unsigned int fn_8013EFC8(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x134) != 4;
 }
 #pragma scheduling on
-extern "C" s32 fn_8013F088(void *arg0) {
-    return (*(s32 *)((u8 *)arg0 + 0x134) - 2) == 0;
+extern "C" s32 fn_8013F088(void *zoneMaster) {
+    /* Zone-master predicate: true when its event-state field (+0x134) equals 2. */
+    return (*(s32 *)((u8 *)zoneMaster + 0x134) - 2) == 0;
 }
 
 extern "C" void fn_8013F09C(void) {
