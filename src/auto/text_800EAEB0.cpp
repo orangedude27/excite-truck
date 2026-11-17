@@ -1036,17 +1036,19 @@ void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)
     return (u8 *)block + 0x20;
 }
 #pragma pop
-extern "C" u32 fn_800EC56C(void *__restrict arg0) {
-    void **heap = (void **)arg0;
-    u32 size;
-    if (*heap == 0) {
+extern "C" u32 fn_800EC56C(void *__restrict soundHeapRef) {
+    void **frameHeap = (void **)soundHeapRef;
+    u32 allocSize;
+    /* Return the largest 32-byte-aligned block the sound archive's frame heap can
+     * still allocate (0 if under 0x20 bytes remain); panic on a null heap handle. */
+    if (*frameHeap == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D60, 0x127, (const char *)lbl_80322DA4);
     }
-    size = MEMGetAllocatableSizeForFrmHeapEx(*heap, 0x20);
-    if (size < 0x20) {
+    allocSize = MEMGetAllocatableSizeForFrmHeapEx(*frameHeap, 0x20);
+    if (allocSize < 0x20) {
         return 0;
     }
-    return (size - 0x20) & ~31;
+    return (allocSize - 0x20) & ~31;
 }
 
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
