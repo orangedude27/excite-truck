@@ -1127,9 +1127,9 @@ extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16Re
             }
             }
             if (result) {
-                void *it=(void *)((int)self+8);
+                void *it=(char *)self+8;
                 if (result==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F8C0,0x233,lbl_8031F89C);
-                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((void *)((int)self+4),(void **)&it,(char *)result+4);
+                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self+4,(void **)&it,(char *)result+4);
             }
             break;
         }
@@ -2240,6 +2240,8 @@ extern "C" s32 fn_800D947C(void* arg0) {
     return low4 + top;
 }
 
+#pragma push
+#pragma opt_propagation off
 extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *arg0) {
     register u32 x = *(u32*)((u8*)arg0 + 0x4C);
     register s32 base = *(s32*)((u8*)arg0 + 0x58);
