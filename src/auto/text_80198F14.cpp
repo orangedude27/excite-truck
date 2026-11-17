@@ -461,7 +461,7 @@ extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *
 #pragma scheduling invalid_target
 extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* arg4, f32 farg0) {
     Vec proj, d, a, b, p;
-    f32 dot, mag, limit;
+    f32 dot, mag, limit, k;
     s32 pa = *(s32*)((u8*)arg3+4);
     s32 pb = *(s32*)((u8*)arg4+4);
     if (pa) fn_8017B6D4(pa, &a, arg1);
@@ -474,14 +474,13 @@ extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* ar
     d.x-=proj.x; d.y-=proj.y; d.z-=proj.z;
     p.x=d.x*lbl_805622E4; p.y=d.y*lbl_805622E4; p.z=d.z*lbl_805622E4;
     mag=PSVECMag(&p);
-    limit=lbl_805622E8*farg0*(*(f32*)((u8*)arg4+0x14)+*(f32*)((u8*)arg3+0x14));
+    k = lbl_805622E8;
+    limit = k * farg0 * (*(f32*)((u8*)arg4+0x14)+*(f32*)((u8*)arg3+0x14));
     if (mag>limit) { f32 s=limit/mag; p.x*=s; p.y*=s; p.z*=s; }
     arg0->x = p.x;
     arg0->y = p.y;
     arg0->z = p.z;
 }
-
-#pragma dont_inline on
 extern "C" void fn_80199870(void* car, u32 key = 0) {
     /* Forward a car to fn_801A5C4C only when its +0x10 tag is 'PCAR' (0x50434152) or 'ACAR' (0x41434152). */
     u32 tag = *(u32*)((u8*)car + 0x10);
@@ -4964,8 +4963,12 @@ extern "C" void fn_801A3BE0(void *arg0, void *arg1)
 
 #pragma push
 #pragma small_data off
-__declspec(section ".data") extern s32 lbl_80333728;
+extern s32 lbl_80333728;
 extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+#pragma push
+#pragma small_data off
+    extern s32 lbl_80333728;
+#pragma pop
     struct Vec { f32 x, y, z; };
     void *object;
     Vec *vectors;
