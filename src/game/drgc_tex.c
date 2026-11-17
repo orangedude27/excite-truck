@@ -230,10 +230,16 @@ int fn_802D76DC(int format) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802D7780(void *arg0, void *arg1) {
+    struct FilterBits {
+        u32 reserved : 30;
+        u32 wrapT : 1;
+        u32 wrapS : 1;
+    };
     u32 filter = *(u32 *)((u8 *)arg1 + 0x10);
     u32 opts = *(u32 *)((u8 *)arg1 + 0x18);
-    int wrapS = filter & 1;
-    int wrapT = (filter & 2) != 0;
+    struct FilterBits *bits = (struct FilterBits *)&filter;
+    int wrapS = bits->wrapS;
+    int wrapT = bits->wrapT != 0;
     u32 firstMode;
     u32 transfer;
     u32 id;
@@ -955,6 +961,8 @@ void fn_802D9340(void *arg0) {
 }
 
 extern float lbl_80565018;
+/* Constant getter: returns 0.0f (lbl_80565018). A no-op-style float stub whose
+ * value callers such as fn_802C9A4C ignore. */
 float fn_802D93E0(void) {
     return lbl_80565018;
 }
