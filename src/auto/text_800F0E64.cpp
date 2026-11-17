@@ -1053,8 +1053,9 @@ extern "C" s32 fn_800F27D4(void *archive, s32 labelString) {
 }
 
 M2C_UNK GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(s32);
-extern "C" s32 fn_800F27E4(void *arg0) {
-    return GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(*(s32*)((u8*)arg0 + 4));
+extern "C" s32 fn_800F27E4(void *archive) {
+    /* Query this archive's file reader for a sound type. */
+    return GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(*(s32*)((u8*)archive + 4));
 }
 
 M2C_UNK ReadSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9SoundInfo(s32);
