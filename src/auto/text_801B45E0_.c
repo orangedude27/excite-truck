@@ -414,17 +414,6 @@ float fn_801B4D10(int queue, int tick) {
 }
 
 extern float lbl_80562668, lbl_8056266C, lbl_80562670, lbl_80562674, lbl_80562678, lbl_8056267C, lbl_80562680;
-extern double lbl_80562688;
-typedef union {
-    double d;
-    unsigned int u[2];
-} U16Float;
-static inline float cvt16(unsigned short x) {
-    U16Float v;
-    v.u[0] = 0x43300000;
-    v.u[1] = x;
-    return (float)(v.d - lbl_80562688);
-}
 int fn_801B4D80(void *arg0, int p1, int p2, float arg3) {
     void *arg1=(void *)p1, *arg2=(void *)p2;
     float a,b,c,d,e,f,t;
