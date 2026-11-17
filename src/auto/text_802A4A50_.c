@@ -114,17 +114,13 @@ extern void fn_801E8C84(f32 *);
 extern float fn_802C9A50(void);
 static inline void Mtx33MultVec_802A6470(const f32 *m, const f32 *src, f32 *dst) {
     if (src == dst) {
-        f32 o0 = src[2] * m[2] + (src[0] * m[0] + src[1] * m[1]);
-        f32 o1 = src[2] * m[5] + (src[0] * m[3] + src[1] * m[4]);
-        f32 o2 = src[2] * m[8] + (src[0] * m[6] + src[1] * m[7]);
-        dst[0] = o0; dst[1] = o1; dst[2] = o2;
+        dst[0] = src[2] * m[2] + (src[0] * m[0] + src[1] * m[1]);
+        dst[1] = src[2] * m[5] + (src[0] * m[3] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[6] + src[1] * m[7]);
     } else {
-        f32 x = src[0], y = src[1], z = src[2];
-        x = z * m[2] + (x * m[0] + y * m[1]);
-        dst[0] = x;
-        y = z * m[5] + (x * m[3] + y * m[4]);
-        dst[1] = y;
-        dst[2] = z * m[8] + (x * m[6] + y * m[7]);
+        dst[0] = src[2] * m[2] + (src[0] * m[0] + src[1] * m[1]);
+        dst[1] = src[2] * m[5] + (dst[0] * m[3] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (dst[0] * m[6] + dst[1] * m[7]);
     }
 }
 static inline void VecMtxMult_802A53B0(const f32 *m, const f32 *src, f32 *dst) {
@@ -1078,8 +1074,8 @@ void fn_802A6408(void *self) {
 #pragma processor 750
 void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     typedef struct { f32 x, y, z; } V3;
-    f32 v[3];
     f32 p[3];
+    f32 v[3];
     f32 ratioY, ratioX, scale, d;
     V3 *out;
     int i;
