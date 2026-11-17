@@ -99,18 +99,17 @@ s32 fn_802A9F90(s32 *args) {
     return 4;
 }
 
-#pragma optimize_for_size on
+#pragma opt_propagation off
 s32 fn_802A9FB0(void *arg0) {
-    int index = *(int *)arg0;
     extern int lbl_8055F928;
-    int offset = index * 0x108;
     unsigned char value = *((unsigned char *)arg0 + 4);
-    register unsigned one = 1;
+    int offset = *(int *)arg0 * 0x108;
+    register unsigned char one = 1;
     *(unsigned char *)(lbl_8055F928 + offset + (s32)0xEC) = one;
     *(unsigned char *)(lbl_8055F928 + offset + (unsigned)0xF4) = value;
     return 8;
 }
-#pragma optimize_for_size reset
+#pragma opt_propagation reset
 /* Clears the per-entry state block (0x00..0xD8) to the default float zero value. */
 void fn_802A9FE0(void *entry) {
     float zero = lbl_805649F0;
