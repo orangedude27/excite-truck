@@ -1398,11 +1398,12 @@ extern "C" f32 lbl_80560E88;
 extern "C" f32 lbl_80560E94;
 extern "C" f32 lbl_80560E98;
 extern "C" void fn_800D7D5C(void* arg0, f32* m) {
+    f32 maxT = lbl_80560E94;
     s8 scale=0;
     f32 a=m[0], b=m[1], c=m[2], d=m[3], e=m[4], f=m[5];
     f32 aa=__fabsf(a), bb=__fabsf(b), cc=__fabsf(c), dd=__fabsf(d), ee=__fabsf(e), ff=__fabsf(f);
-    if (aa <= lbl_80560E94 && bb <= lbl_80560E94 && cc <= lbl_80560E94 && dd <= lbl_80560E94 && ee <= lbl_80560E94 && ff <= lbl_80560E94) {
-        while (scale < 0x2E && aa <= lbl_80560E94 && bb <= lbl_80560E94 && cc <= lbl_80560E94 && dd <= lbl_80560E94 && ee <= lbl_80560E94 && ff <= lbl_80560E94) {
+    if (!(aa >= maxT || bb >= maxT || cc >= maxT || dd >= maxT || ee >= maxT || ff >= maxT)) {
+        while (scale < 0x2E && !(aa >= maxT || bb >= maxT || cc >= maxT || dd >= maxT || ee >= maxT || ff >= maxT)) {
             aa *= lbl_80560E88; a *= lbl_80560E88; b *= lbl_80560E88;
             c *= lbl_80560E88; d *= lbl_80560E88; e *= lbl_80560E88; f *= lbl_80560E88;
             bb *= lbl_80560E88; cc *= lbl_80560E88; dd *= lbl_80560E88; ee *= lbl_80560E88; ff *= lbl_80560E88;
@@ -1416,10 +1417,8 @@ extern "C" void fn_800D7D5C(void* arg0, f32* m) {
         } while (aa < lbl_80560E88 && bb < lbl_80560E88 && cc < lbl_80560E88 && dd < lbl_80560E88 && ee < lbl_80560E88 && ff < lbl_80560E88 && scale > -0x11);
     }
     if (scale <= -0x11) {
-        f32 mtx[2][3];
-        mtx[0][0] = a; mtx[0][1] = b; mtx[0][2] = c;
-        mtx[1][0] = d; mtx[1][1] = e; mtx[1][2] = f;
-        ((void (*)(void *, f32 (*)[3], s8))GXSetIndTexMtx)(arg0, mtx, scale);
+        f32 mtx[6] = {a, b, c, d, e, f};
+        ((void (*)(void *, f32 *, s8))GXSetIndTexMtx)(arg0, mtx, scale);
     }
 }
 
@@ -2381,13 +2380,13 @@ extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
         if (*(void**)(p + 0x58) == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3B0, msg + 0x360);
         u32 fmt = *(u32*)(p + 0x4C);
-        u32 count = (*(u32*)(p + 0x50) >> 9) & 0x1F;
         TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58)
             + (((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14
             + ((fmt >> 5) & 4) + ((fmt >> 12) & 4)
             + ((fmt >> 6) & 4) + ((fmt >> 4) & 4)
             + ((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C)
             + ((fmt >> 3) & 4) + ((fmt >> 13) & 0x1C));
+        u32 count = (*(u32*)(p + 0x50) >> 9) & 0x1F;
         if (count < arg1) {
             TevStageDefault def;
             TevStageMid_800D9844 mid = def.mid;
@@ -3471,7 +3470,7 @@ extern "C" void fn_800DB830(s32 *outValue) {
 }
 
 extern "C" void fn_800DB83C(void) {
-
+    /* Empty default hook in the nw4hbm layout code; no action to perform. */
 }
 
 /* Returns the requested color element for this pane, or the byte at 0xCD for index 0x10. */
