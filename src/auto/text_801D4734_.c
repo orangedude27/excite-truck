@@ -2857,38 +2857,51 @@ int fn_801D7C80(void *object, int direction) {
 }
 
 void fn_801D7D20(void *arg0) {
-    int temp_r31;
-    int temp_r0;
-    register float temp_f1;
-    float current;
-    float target;
-    float var_f6;
+    /* Advance a running WorldMorph_ASE element: blend its saved start value
+     * toward its end value over the element's duration, apply the result to
+     * the chosen morph group or audio parameter, then mark it finished. */
+    #define gFrameTick lbl_8055E3C4       /* global frame-tick counter */
+    #define kBlendMax lbl_80562AE0         /* 1.0f: upper bound on the blend */
+    #define kBlendMin lbl_80562ADC         /* 0.0f: lower bound / int->float bias */
+    #define ApplyGroupWeight fn_801D9AB8
+    #define SetAudioParam fn_80178DBC
+    struct WorldMorphAse *binding = (struct WorldMorphAse *)arg0;
+    int elapsed;
+    void *group;
+    register float duration;
+    float fromValue;
+    float toValue;
+    float fraction;
     float value;
 
-    if (*(int *)((char *)arg0 + 0x28) == 2) {
-        temp_r31 = (lbl_8055E3C4 - *(int *)((char *)arg0 + 0x1C)) -
-                   *(int *)((char *)arg0 + 0x10);
-        if (temp_r31 >= 0) {
-            var_f6 = lbl_80562AE0;
-            temp_f1 = (float)*(int *)((char *)arg0 + 0x0C);
-            target = *(float *)((char *)arg0 + 0x24);
-            current = *(float *)((char *)arg0 + 0x20);
-            var_f6 = var_f6 < (((float)temp_r31 - lbl_80562ADC) / (temp_f1 - lbl_80562ADC))
-                         ? var_f6
-                         : (((float)temp_r31 - lbl_80562ADC) / (temp_f1 - lbl_80562ADC));
-            var_f6 = var_f6 > lbl_80562ADC ? var_f6 : lbl_80562ADC;
-            value = current + var_f6 * (target - current);
-            temp_r0 = *(int *)((char *)arg0 + 4);
-            if (temp_r0 != 0) {
-                fn_801D9AB8((void *)temp_r0, value);
+    if (binding->state == 2) {
+        elapsed = (gFrameTick - binding->startTime) - binding->delay;
+        if (elapsed >= 0) {
+            fraction = kBlendMax;
+            duration = (float)binding->duration;
+            toValue = binding->toValue;
+            fromValue = binding->fromValue;
+            fraction = fraction < (((float)elapsed - kBlendMin) / (duration - kBlendMin))
+                           ? fraction
+                           : (((float)elapsed - kBlendMin) / (duration - kBlendMin));
+            fraction = fraction > kBlendMin ? fraction : kBlendMin;
+            value = fromValue + fraction * (toValue - fromValue);
+            group = binding->morphGroup;
+            if (group != 0) {
+                ApplyGroupWeight(group, value);
             } else {
-                fn_80178DBC(*(int *)((char *)arg0 + 8), value);
+                SetAudioParam(binding->audioParam, value);
             }
         }
-        if (temp_r31 >= *(int *)((char *)arg0 + 0x0C)) {
-            *(int *)((char *)arg0 + 0x28) = 3;
+        if (elapsed >= binding->duration) {
+            binding->state = 3;
         }
     }
+    #undef gFrameTick
+    #undef kBlendMax
+    #undef kBlendMin
+    #undef ApplyGroupWeight
+    #undef SetAudioParam
 }
 
 #pragma pop
