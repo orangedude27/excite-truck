@@ -777,9 +777,10 @@ void AXGetAuxACallback(void **callback, void **context) {
     *context = lbl_8055D71C;
 }
 
-void AXGetAuxBCallback(void **arg0, void **arg1) {
-    *arg0 = lbl_8055D724;
-    *arg1 = lbl_8055D718;
+/* Retrieve the registered AUX B DSP callback and its user context. */
+void AXGetAuxBCallback(void **callback, void **context) {
+    *callback = lbl_8055D724;
+    *context = lbl_8055D718;
 }
 
 /* Retrieve the AX auxiliary-C bus callbacks registered via AXRegisterAuxCCallback:
