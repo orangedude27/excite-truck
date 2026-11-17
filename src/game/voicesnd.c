@@ -1013,8 +1013,9 @@ void fn_8020BC98(void) {
 #undef kSndVoiceSet3DMsg
 }
 
-float fn_8020BCA8(void *arg0) {
-    return *(float *)((char *)arg0 + 0x48);
+/* Return the configured length (in seconds) of this voice sound. */
+float fn_8020BCA8(void *snd) {
+    return ((VoiceSnd *)snd)->length;
 }
 
 void fn_8020BCB0(void) {
