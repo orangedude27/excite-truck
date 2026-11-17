@@ -1951,6 +1951,7 @@ void *fn_801B2ED0(s32 arg0) {
 }
 #pragma dont_inline reset
 
+/* Return the cached contest lap-count target in lbl_8055E680, used as the completion cutoff for deity (AI truck) slots. */
 void* fn_801B2ED4(void) {
     return lbl_8055E680;
 }
