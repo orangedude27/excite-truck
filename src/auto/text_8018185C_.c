@@ -1,4 +1,5 @@
 extern float lbl_80561CA0, lbl_80561CA4, lbl_80561CA8;
+typedef struct { char pad[0xec]; signed char flag; } FlagStruct_8A654;
 extern void fn_8017D160(void *, unsigned char *, unsigned char *, int *, int *, float);
 extern float lbl_80561F54, lbl_80561F58, lbl_80561F5C, lbl_80561F60;
 extern float lbl_80561F64, lbl_80561F68, lbl_80561F6C;
