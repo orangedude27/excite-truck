@@ -4007,15 +4007,28 @@ extern "C" void fn_802C47B8(s32, s32, s32, s32, s32, s32);
 extern "C" void fn_802C3014(s32);
 extern "C" s32 lbl_8055FBF8;
 extern "C" void fn_8021EC1C(void* arg0, s32 arg1) {
-    class LocalVt { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23(); virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual s32 get(); };
-    s32 spC,sp8,r28,r29,r0,r7,r6,r3;
-    fn_802C3034(arg1); r28=*(s32*)((u8*)arg0+4); r29=*(s32*)((u8*)arg0+8); r0=((LocalVt*)arg0)->get(); r7=*(s32*)((u8*)arg0+0x10); r6=r28+r0;
-    fn_802C2FC8(arg1,r28,r29,r6,r7); ((void(*)(void*,s32))fn_802192A0)(arg0,arg1);
-    if (*(s32*)((u8*)arg0+0xA60)) { r29=*(s32*)((u8*)arg0+8); r0=((LocalVt*)arg0)->get(); r28=*(s32*)((u8*)arg0+4); fn_80228DC4(arg1,*(s32*)((u8*)arg0+0xA60),r28,r29,r0,0); }
-    r28=*(s32*)((u8*)arg0+4); r0=((LocalVt*)arg0)->get(); r29=*(s32*)((u8*)arg0+8); r7=*(s32*)((u8*)arg0+0x10); r6=r28+r0;
-    fn_802C2FC8(arg1,r28,r29,r6,r7);
+    s32 spC, sp8;
+    s32 t29, t28, t28_2, t29_2, t28_3, t29_3, t3, t6;
+    fn_802C3034(arg1);
+    t28 = *(s32*)((u8*)arg0+4);
+    t29 = *(s32*)((u8*)arg0+8);
+    fn_802C2FC8(arg1, t28, t29, t28 + ((Vf78*)arg0)->get(), *(s32*)((u8*)arg0+0x10));
+    ((void(*)(void*,s32))fn_802192A0)(arg0,arg1);
+    if (*(s32*)((u8*)arg0+0xA60)) {
+        t29_2 = *(s32*)((u8*)arg0+8);
+        t28_2 = *(s32*)((u8*)arg0+4);
+        fn_80228DC4(arg1, *(s32*)((u8*)arg0+0xA60), t28_2, t29_2, ((Vf78*)arg0)->get(), 0);
+    }
+    t28_3 = *(s32*)((u8*)arg0+4);
+    t29_3 = *(s32*)((u8*)arg0+8);
+    fn_802C2FC8(arg1, t28_3, t29_3, t28_3 + ((Vf78*)arg0)->get(), *(s32*)((u8*)arg0+0x10));
     fn_8022B91C(*(s32*)((u8*)arg0+0xA58),*(s32*)((u8*)arg0+4),*(s32*)((u8*)arg0+8),*(s32*)((u8*)arg0+0xA54),(*(u8*)((u8*)arg0+0x19)!=0));
-    if (*(u8*)((u8*)arg0+0x19)) { fn_8022B390(*(s32*)((u8*)arg0+0xA58),*(s32*)((u8*)arg0+0xA54),*(s32*)((u8*)arg0+0x250),&spC,&sp8); r0=sp8+*(s32*)((u8*)arg0+8); r3=spC+*(s32*)((u8*)arg0+4); ((void(*)(s32,s32,s32,s32,s32))fn_802C47B8)(r3,r0+2,r3,r0+0xC,lbl_8055FBF8); }
+    if (*(u8*)((u8*)arg0+0x19)) {
+        fn_8022B390(*(s32*)((u8*)arg0+0xA58),*(s32*)((u8*)arg0+0xA54),*(s32*)((u8*)arg0+0x250),&spC,&sp8);
+        t6 = sp8 + *(s32*)((u8*)arg0+8);
+        t3 = spC + *(s32*)((u8*)arg0+4);
+        ((void(*)(s32,s32,s32,s32,s32))fn_802C47B8)(t3,t6+2,t3,t6+0xC,lbl_8055FBF8);
+    }
     fn_802C3014(arg1);
 }
 
@@ -4351,21 +4364,19 @@ enum {
 
 extern "C" char lbl_8033D9B0[];
 extern "C" char lbl_8033D9BC[];
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void *fn_8021F678(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, f32 farg0, f32 farg1) {
-    s32 size;
     s32 end;
     s32 count;
     s32 len;
     fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
     *(s32 *)((u8 *)arg0 + 0x250) = arg5;
     s32 sign = arg6 >> 31;
-    void *vt = lbl_8033E878;
-    size = (sign ^ arg6) - sign;
+    s32 size = (sign ^ arg6) - sign;
     *(f32 *)((u8 *)arg0 + 0x248) = farg0;
     *(f32 *)((u8 *)arg0 + 0x24C) = farg1;
-    *(void **)arg0 = vt;
+    u32 vt = (u32)lbl_8033E878;
+    *(void **)arg0 = (void *)vt;
     *(u8 *)((u8 *)arg0 + 0x244) = 0;
     *(s32 *)((u8 *)arg0 + 0x254) = size;
     *(u8 *)((u8 *)arg0 + 0x258) = (u32)arg6 >> 31;
@@ -4387,7 +4398,6 @@ extern "C" void *fn_8021F678(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     *(s32 *)((u8 *)arg0 + 0x278) = fn_80228F40(arg1, arg2);
     return arg0;
 }
-#pragma pop
 
 /* Initialize this object's cached handle (+0x274) from table entry +0x278
  * under key +0x2C when fn_80129BC4() allows, then register it via fn_80219440
