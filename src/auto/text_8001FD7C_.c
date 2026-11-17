@@ -334,6 +334,7 @@ void fn_80020070(float *arg0) {
     arg0[7] = vec2[1];
     arg0[8] = vec2[2];
 }
+/* Disable the AXFX audio hooks by requesting the disabled state (enabled = 0). */
 void fn_8002017C(void) {
     fn_8000B3DC(0);
 }
