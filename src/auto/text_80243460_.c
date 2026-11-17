@@ -53,8 +53,10 @@ void fn_80243460(void* arg0) {
 }
 
 extern void fn_80241820(void*);
-void fn_80243468(void* arg0) {
-    fn_80241820((u8*)arg0 - 0x10);
+/* Vtable callback for the music-roll widget: `child` points 0x10 into the owning
+ * object, so recover its base before delegating to the mroll renderer fn_80241820. */
+void fn_80243468(void* child) {
+    fn_80241820((u8*)child - 0x10);
 }
 
 extern void fn_802408B0(void*);
