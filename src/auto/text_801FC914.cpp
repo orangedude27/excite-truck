@@ -843,14 +843,12 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
         *(float*)(obj + 0x40) = t_step;
     } else if (idx + 2 < *(int*)(track + 0x6D0)) {
         float inv_speed = one / *(float*)(node + 0x20);
-        int next_idx = *(volatile int*)(obj + 0x3C) + 1;
-        char* slot_ptr = *(char* volatile*)(obj + 4);
-        *(int*)(obj + 0x3C) = next_idx;
+        *(int*)(obj + 0x3C) += 1;
         float delta = farg0 - inv_speed;
         step -= one;
         *(float*)(obj + 0x40) = old_pos + delta;
 
-        node = GetTrackNodeLinear(*(char**)slot_ptr, next_idx);
+        node = GetTrackNodeLinear(**(char***)(obj + 4), *(int*)(obj + 0x3C));
 
         *(float*)(obj + 0x44) = *(float*)(obj + 0x54);
         *(float*)(obj + 0x48) = *(float*)(obj + 0x58);
@@ -873,9 +871,11 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
         return;
     }
 
-    char* call_track = **(char***)((char*)arg0 + 4);
-    int cur_idx = *(int*)((char*)arg0 + 0x3C);
-    char* prev = GetTrackNodeLinear(call_track, cur_idx - 1);
+    int prev_idx;
+    char* call_track = **(char***)(obj + 4);
+    int cur_idx = *(int*)(obj + 0x3C);
+    prev_idx = cur_idx - 1;
+    char* prev = GetTrackNodeLinear(call_track, prev_idx);
     char* next = GetTrackNodeLinear(call_track, cur_idx + 1);
     char* next2 = GetTrackNodeLinear(call_track, cur_idx + 2);
 
