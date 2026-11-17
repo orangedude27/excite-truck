@@ -898,7 +898,8 @@ void *fn_802C96DC(void *object, int shouldDelete) {
 
 /* Effective view/projection angle recomputed by fn_802C974C. */
 #define sViewAngle lbl_8055FC4C
-float fn_802C973C(void) { return lbl_8055FC4C; }
+/* Return the current effective view/projection angle maintained by fn_802C974C. */
+float fn_802C973C(void) { return sViewAngle; }
 
 float fn_802C9744(void) { return lbl_8055FC40; }
 
