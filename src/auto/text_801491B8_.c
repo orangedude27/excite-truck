@@ -4905,8 +4905,9 @@ void fn_801560F4(void) {
 
 }
 
-void fn_801560F8(void *arg0, s32 arg1) {
-    *(s32 *)((u8 *)arg0 + 0xF4) = arg1;
+/* Set the trailing 32-bit field at +0xF4 of a 0xF8-byte text-entry record. */
+void fn_801560F8(void *record, s32 value) {
+    *(s32 *)((u8 *)record + 0xF4) = value;
 }
 
 void fn_80156100(void) {
