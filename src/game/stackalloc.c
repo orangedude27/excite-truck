@@ -352,7 +352,7 @@ void fn_802D9DE4(int arg0, void *arg1, int arg2) {
                     i += 8;
                     src += 96;
                     dest += 96;
-                } while (--ctr);
+                }
             }
         }
         ctr = arg2 - i;
