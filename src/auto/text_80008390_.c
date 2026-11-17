@@ -153,9 +153,8 @@ extern int sprintf(char *, const char *, ...);
 static inline void IdList_Add(s32 *src) {
     s32 *data = lbl_8034F3D0.data;
     s32 n = lbl_8034F3D0.count;
-    s32 value = *src;
     lbl_8034F3D0.count = n + 1;
-    data[n] = value;
+    data[n] = *src;
 }
 #define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
 void fn_80008390(void) {
