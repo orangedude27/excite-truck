@@ -4289,6 +4289,10 @@ extern "C" void fn_801442FC(void) {
 extern "C" void fn_80144300(void) {
 }
 
+/* Empty no-op callback stub of the zone system: one of the run of empty
+ * virtual slots here (fn_801442D4/fn_801442D8/fn_801442FC/fn_80144300/
+ * fn_80144304 ...), several of them referenced by the ZoneMaster vtable
+ * lbl_8032CAF0.  Calling it does nothing; it compiles to a bare 'blr'. */
 extern "C" void fn_80144308(void) {
 }
 
