@@ -154,7 +154,8 @@ int fn_802C544C(void **a, void **b) {
  * level table at lbl_804C1348 (levels 1..9). */
 void *fn_802C54B4(int level) { return (void *)(lbl_804C1348 + (level - 1) * 8); }
 
-unsigned char fn_802C54CC(unsigned int arg0) { return (unsigned char)(arg0 >> 8); }
+/* Return bits 8-15 (the second byte) of the given value as an unsigned byte. */
+unsigned char fn_802C54CC(unsigned int value) { return (unsigned char)(value >> 8); }
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
@@ -1614,9 +1615,9 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
         float mz1 = rot[2] * z1;
         float mz2 = rot[2] * z2;
 
-        local.vector[0] = mz0 + (mx0 + my0);
-        local.vector[1] = mz1 + (mx1 + my1);
-        local.vector[2] = mz2 + (mx2 + my2);
+        local.vector[0] = mx0 + my0 + mz0;
+        local.vector[1] = mx1 + my1 + mz1;
+        local.vector[2] = mx2 + my2 + mz2;
     } else {
         float y0 = input[3];
         float x0 = input[0];
