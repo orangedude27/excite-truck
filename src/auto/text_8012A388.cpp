@@ -669,6 +669,17 @@ done2:
     }
     return node;
 }
+
+__declspec(section ".sdata") extern char lbl_805599AC[];
+extern "C" s32 fn_8012B2C4(s32 arg0, s32 arg1, s32 arg2) {
+    s32 result = 0;
+    if (arg2 == 0) {
+        sprintf((char *)arg0, lbl_805599AC, lbl_80559984, arg1);
+        result = arg0;
+    }
+    return result;
+}
+
 #pragma pop
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" s32 lbl_80559984;
