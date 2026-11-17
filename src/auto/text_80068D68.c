@@ -3775,8 +3775,9 @@ void gki_timers_init(void) {
 }
 
 s32 fn_8006E4F8(void) {
-    u8 *base = (u8 *)&lbl_803946C0 + 0x30000;
-    return *(s32 *)(base - 0x77D8);
+    /* Return the current GKI tick count from gki_cb.com (used as a timestamp for BTM inquiry results). */
+    u8 *gkiBase = (u8 *)&lbl_803946C0 + 0x30000;
+    return *(s32 *)(gkiBase - 0x77D8);
 }
 
 #pragma push
@@ -25385,6 +25386,7 @@ UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle)
     if (*p_handle == 0) *p_handle = *(UINT32 *)(lbl_803C4C40 + 0x121C);
     record = sdp_db_find_record(*p_handle);
     if (record != NULL) {
+        u8 *d1, *d2, *d3;
         memset(p_device_info, 0, 0xFA);
         result = 0;
         attr = fn_80096904(record, 0x200, 0x200);
@@ -25400,11 +25402,11 @@ UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle)
         attr = fn_80096904(record, 0x204, 0x204);
         if (attr != NULL) p_device_info->rec.primary_record = **(u8 **)((u8 *)attr + 4);
         attr = fn_80096904(record, 0xB, 0xB);
-        if (attr != NULL) { u8 *d = (u8 *)p_device_info->rec.client_executable_url; len = *(u32 *)attr; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); for (i = 0; i < (s32)len; i++) *d++ = *s++; }
+        if (attr != NULL) { len = *(u32 *)attr; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); d1 = (u8 *)p_device_info->rec.client_executable_url; for (i = 0; i < (s32)len; i++) *d1++ = *s++; }
         attr = fn_80096904(record, 0x101, 0x101);
-        if (attr != NULL) { u8 *d = (u8 *)p_device_info->rec.service_description; len = *(u32 *)attr; len = (0x50 <= len) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); for (i = 0; i < (s32)len; i++) *d++ = *s++; }
+        if (attr != NULL) { len = *(u32 *)attr; len = (0x50 <= len) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); d2 = (u8 *)p_device_info->rec.service_description; for (i = 0; i < (s32)len; i++) *d2++ = *s++; }
         attr = fn_80096904(record, 0xA, 0xA);
-        if (attr != NULL) { u8 *d = (u8 *)p_device_info->rec.documentation_url; len = *(u32 *)attr; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); for (i = 0; i < (s32)len; i++) *d++ = *s++; }
+        if (attr != NULL) { len = *(u32 *)attr; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); d3 = (u8 *)p_device_info->rec.documentation_url; for (i = 0; i < (s32)len; i++) *d3++ = *s++; }
     } else *p_handle = 0;
     return result;
 }
