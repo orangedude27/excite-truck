@@ -147,8 +147,9 @@ void fn_802607C4(void *widget) {
     *(u8 *)((u8 *)widget + 0x1D) = 1;
 }
 
-void fn_802607D0(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x1E) = 1;
+void fn_802607D0(void *row) {
+    /* Open this selector row's group: set the expanded flag at +0x1E (see SelectorGroupRow.expanded). */
+    *(u8 *)((u8 *)row + 0x1E) = 1;
 }
 
 /* Clear this selector row's expanded (+0x1E) and on-cursor (+0x1C) flags. */
