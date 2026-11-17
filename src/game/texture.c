@@ -237,47 +237,25 @@ int fn_802CA4E0(int textureDesc, int textureName, int mode, int param3, int para
 #pragma use_lmw_stmw on
 
 extern void fn_802D8DCC(void *, int);
-#pragma scheduling invalid_target
+#pragma push
+#pragma opt_propagation off
 void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
-    volatile unsigned char *base = (volatile unsigned char *)arg0;
-    unsigned char t14;
-    unsigned char t17;
-    unsigned char t15;
-    unsigned char t16;
-    unsigned char t0;
-    unsigned char t1;
-    unsigned char t2;
-    unsigned char t3;
-    unsigned char tC;
-    unsigned char tD;
+    unsigned char *base = (unsigned char *)arg0;
+    unsigned char t;
     char sp8[0x34];
     if ((base[5] & 0x80) == 0) {
-        t14 = base[0x14];
-        t17 = base[0x17];
-        t15 = base[0x15];
-        t16 = base[0x16];
-        base[0x14] = t17;
-        t0 = base[0];
-        t1 = base[1];
-        base[0x17] = t14;
-        t2 = base[2];
-        t3 = base[3];
-        base[0x15] = t16;
-        tC = base[0xC];
-        tD = base[0xD];
-        base[0x16] = t15;
-        base[0] = t1;
-        base[1] = t0;
-        base[2] = t3;
-        base[3] = t2;
-        base[0xC] = tD;
-        base[0xD] = tC;
+        t = base[0x14]; base[0x14] = base[0x17]; base[0x17] = t;
+        t = base[0x15]; base[0x15] = base[0x16]; base[0x16] = t;
+        t = base[0]; base[0] = base[1]; base[1] = t;
+        t = base[2]; base[2] = base[3]; base[3] = t;
+        t = base[0xC]; base[0xC] = base[0xD]; base[0xD] = t;
         *(int *)(base + 0x14) = (int)((unsigned char *)arg0 + *(int *)(base + 0x14));
         fn_802CA3F4(sp8, (int)arg0, 0, arg2, arg3);
         fn_802D8DCC(sp8, arg1);
         base[5] |= 0x80;
     }
 }
+#pragma pop
 extern int fn_8012C370(const char *, int *, int *, signed char *, unsigned char *);
 extern char lbl_8034B634[];
 extern char lbl_8034B658[];
@@ -1461,7 +1439,7 @@ void fn_802CC03C(int **arg0, int *arg1, int arg2) {
 
 #pragma optimization_level 2
 int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
-    register int result = 0;
+    int result = 0;
     char *table;
     char *node;
     char *pool;
@@ -1765,10 +1743,10 @@ char fn_802CC744(void) {
     return lbl_8055D07D;
 }
 
-#pragma push
-#pragma peephole off
+#pragma cplusplus on
+#pragma opt_propagation off
 int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
-#pragma pop
+#pragma opt_propagation reset
 extern float lbl_80564F4C;
 extern float lbl_80564F50;
 #pragma push
