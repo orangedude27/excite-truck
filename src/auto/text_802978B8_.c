@@ -106,8 +106,9 @@ void fn_8029798C(void *unused, void *arg1, int arg2, float farg0, float farg1) {
     fn_80297C3C(unused, arg1, arg2, farg0, farg1);
 }
 
-void fn_80297990(void* hi) {
-    lbl_8055F7B0 = hi;
+/* Set the static-shadow module's shadow-volume handle (0x50000000 sentinel at init, 0 to clear). */
+void fn_80297990(void* shadowVolumeHandle) {
+    lbl_8055F7B0 = shadowVolumeHandle;
 }
 
 
@@ -202,7 +203,7 @@ void fn_80297AFC(void) {
     void *camera;
     int offset;
     int i;
-    char *record;
+    StaticShadow *record;
     float speed;
     float minimum;
     float maximum;
@@ -222,14 +223,14 @@ void fn_80297AFC(void) {
     for (; i < lbl_8055F7AC; offset += 0x40, i++) {
         float cur;
         float tmp;
-        record = (char *)lbl_8055F7A8 + offset;
+        record = (StaticShadow *)((char *)gStaticShadowRecords + offset);
         speed = fn_801E88F0(-1);
         speed = speed * speed;
-        if (PSVECSquareDistance(cameraPosition, record + 0x2C) * speed >
-            *(float *)(record + 0x3C) * *(float *)(record + 0x3C)) {
+        if (PSVECSquareDistance(cameraPosition, record->matrix + 9) * speed >
+            record->range * record->range) {
             tmp = (float)fn_8002F234();
-            cur = *(float *)(record + 0x38);
-            value = tmp - *(float *)(record + 0x3C);
+            cur = record->fade;
+            value = tmp - record->range;
             value = (value - maximum) / divisor;
             if (value < minimum) {
                 value = minimum;
@@ -239,11 +240,11 @@ void fn_80297AFC(void) {
             }
             value = cur + value * (maximum - cur);
         } else {
-            value = *(float *)(record + 0x38);
+            value = record->fade;
         }
 
         if (!((float)__fabs((double)value) <= *(float *)lbl_80558DC4)) {
-            fn_802C7AE0(*(int *)record, record + 8, *(int *)(record + 4));
+            fn_802C7AE0((int)record->model, record->matrix, record->groupMask);
         }
     }
 }
