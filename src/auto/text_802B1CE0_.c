@@ -618,16 +618,13 @@ void fn_802B28BC(int *entries, int count) {
 #pragma push
 #pragma optimization_level 3
 #pragma opt_pointer_aliasing on
-void **fn_802B2934(void *vec, void **__restrict pValue) {
-    int index;
-    void **data;
-    int newIndex;
-    index = ((int *)vec)[1];
-    data = *(void ***)vec;
-    newIndex = index + 1;
-    ((int *)vec)[1] = newIndex;
-    data[index] = *pValue;
-    return &data[index];
+void **fn_802B2934(void *arg0, void **arg1) {
+    int count = ((int *)arg0)[1];
+    void *val = *arg1;
+    void **entry = *(void ***)arg0 + count;
+    ((int *)arg0)[1] = count + 1;
+    *entry = val;
+    return entry;
 }
 #pragma pop
 extern void fn_802B2C34(void (*)(void *), void *);
