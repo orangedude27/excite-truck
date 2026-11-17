@@ -1469,10 +1469,11 @@ void GXInitLightAttnA_80181454(void *light, float a, float b, float c) {
     *(float *)((char *)light + 0x314) = c;
 }
 
-void GXInitLightAttnK_80181464(void *arg0, float farg0, float farg1, float farg2) {
-    *(float *)((char *)arg0 + 0x318) = farg0;
-    *(float *)((char *)arg0 + 0x31C) = farg1;
-    *(float *)((char *)arg0 + 0x320) = farg2;
+void GXInitLightAttnK_80181464(void *light, float a, float b, float c) {
+    /* Set the three specular-attenuation coefficients a/b/c of the light object. */
+    *(float *)((char *)light + 0x318) = a;
+    *(float *)((char *)light + 0x31C) = b;
+    *(float *)((char *)light + 0x320) = c;
 }
 
 void fn_80181474(void *arg0, float arg1, float arg2) {
