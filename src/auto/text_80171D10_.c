@@ -140,7 +140,11 @@ public:
 };
 #pragma cplusplus reset
 
-void fn_80171D10(int arg0) { fn_80171930(arg0 - 4); }
+/* Callback wrapper (like fn_80171D18 below): forward to fn_80171930 with the
+ * pointer backed up to its enclosing structure (userData - 4).  fn_80171930 is
+ * one of the same family of handlers but the game left it empty: its body is a
+ * single blr. */
+void fn_80171D10(int userData) { fn_80171930(userData - 4); }
 
 /* Callback wrapper: forward to fn_80171934 with the pointer backed up to its enclosing structure (userData - 4). */
 void fn_80171D18(int userData) { fn_80171934(userData - 4); }
