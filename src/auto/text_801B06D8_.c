@@ -1962,8 +1962,12 @@ u8 fn_801B2F2C(s32 slotIndex) {
 #undef sDeitySlotBase
 }
 
-s32 fn_801B2F40(s32 arg0) {
-    return lbl_80435C30[arg0];
+s32 fn_801B2F40(s32 rankIndex) {
+    /* Return the deity (AI truck) slot index stored at the given 0-based rank
+       in the rank-sorted order table; callers pass rank - 1. */
+#define deitySlotOrderTable lbl_80435C30
+    return deitySlotOrderTable[rankIndex];
+#undef deitySlotOrderTable
 }
 
 typedef void (*VFnPtr)(void *);
