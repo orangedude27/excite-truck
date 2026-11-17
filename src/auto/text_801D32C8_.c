@@ -317,7 +317,6 @@ extern void fn_80179F94(void *, void *);
 extern char lbl_80333B98[];
 extern int lbl_80333B48[];
 extern float lbl_80562AAC, lbl_80562AB8;
-#pragma scheduling on
 struct Obj3910 {
     void *vtable;
     void *unk4;
