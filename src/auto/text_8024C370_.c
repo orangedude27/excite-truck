@@ -634,22 +634,23 @@ void fn_8024CFE8(void *arg0) {
     *(float *)((char *)arg0 + 0x40) = (float)numerator / (float)denominator;
 }
 #pragma scheduling on
-int fn_8024D054(void *arg0, int arg1) {
+/* Handle a message control code: 0x6f advances the revealed-character count at +0x30 up to the string length at +0x2c, 0x20 rewinds it toward zero; both set the byte at +0x48. */
+int fn_8024D054(void *widget, int code) {
     int len;
-    int lim;
-    switch (arg1) {
+    int count;
+    switch (code) {
     case 0x6f:
-        len = (int)strlen(*(char **)((char *)arg0 + 0x2c));
-        lim = *(int *)((char *)arg0 + 0x30) + 1;
-        if (len < lim)
-            lim = len;
-        *(int *)((char *)arg0 + 0x30) = lim;
-        *(char *)((char *)arg0 + 0x48) = 1;
+        len = (int)strlen(*(char **)((char *)widget + 0x2c));
+        count = *(int *)((char *)widget + 0x30) + 1;
+        if (len < count)
+            count = len;
+        *(int *)((char *)widget + 0x30) = count;
+        *(char *)((char *)widget + 0x48) = 1;
         break;
     case 0x20:
-        *(char *)((char *)arg0 + 0x48) = 1;
-        lim = *(int *)((char *)arg0 + 0x30) - 1;
-        *(int *)((char *)arg0 + 0x30) = lim & ~(lim >> 31);
+        *(char *)((char *)widget + 0x48) = 1;
+        count = *(int *)((char *)widget + 0x30) - 1;
+        *(int *)((char *)widget + 0x30) = count & ~(count >> 31);
         break;
     default:
         return 0;
