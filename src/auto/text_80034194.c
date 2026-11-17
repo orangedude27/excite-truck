@@ -2889,7 +2889,7 @@ void fn_80038870(u32 arg0) {
                 return;
             }
             if ((CMD == 1 || CMD == 4 || CMD == 5 || CMD == 0x21 || CMD == 0xE) &&
-                *(s32 *)((char *)executing_8055D8C8 + 0x20) == *(s32 *)((char *)executing_8055D8C8 + 0x14)) {
+                *(u32 *)((char *)executing_8055D8C8 + 0x20) == *(u32 *)((char *)executing_8055D8C8 + 0x14)) {
                 block = (char *)executing_8055D8C8;
                 if (lbl_8055D858 != 0) {
                     lbl_8055D85C = 0;
