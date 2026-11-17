@@ -1714,6 +1714,7 @@ s32 fn_80118F78(void *bink, s32 paused) {
 #pragma push
 #pragma opt_loop_invariants off
 s32 fn_801190B0(void *arg0, s32 arg1) {
+    s32 cond;
     s32 var_r31;
     s32 var_r30;
     s32 var_r29;
@@ -1724,7 +1725,6 @@ s32 fn_801190B0(void *arg0, s32 arg1) {
     s32 one;
     u8 *frame;
     s32 (*cb)(void *, s32);
-    s32 cond;
 
     var_r30 = 0;
     if (arg0 != 0) {
@@ -2380,30 +2380,32 @@ void *fn_8011A168(void *table) {
     return &fn_80119DD0;
 }
 
-#pragma unroll 8
 void fn_8011A1A0(u32 *data, u32 size) {
-    u32 count = (size + 3) >> 2;
-    if (count != 0) {
-        u32 groups = count >> 3;
-        if (groups != 0) {
-            while (groups--) {
-                *data = __lwbrx(0, (s32)data); data++;
-                *data = __lwbrx(0, (s32)data); data++;
-                *data = __lwbrx(0, (s32)data); data++;
-                *data = __lwbrx(0, (s32)data); data++;
-                *data = __lwbrx(0, (s32)data); data++;
-                *data = __lwbrx(0, (s32)data); data++;
-                *data = __lwbrx(0, (s32)data); data++;
-                *data = __lwbrx(0, (s32)data); data++;
-            }
-            count &= 7;
-        }
-        while (count--) {
-            *data = __lwbrx(0, (s32)data); data++;
-        }
+    #pragma scheduling off
+    union { u32 *p; u32 i; } u;
+    u32 count;
+    u32 groups;
+    register void *z = 0;
+    u.p = data;
+    count = (size + 3) >> 2;
+    if (count == 0) return;
+    groups = count >> 3;
+    while (groups--) {
+        *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
+        *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
+        *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
+        *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
+        *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
+        *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
+        *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
+        *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
+    }
+    count %= 8;
+    while (count--) {
+        *(u32 *)u.i = __lwbrx(z, u.i); u.i += 4;
     }
 }
-
+#pragma scheduling on
 u32 fn_8011A240(void *dvdFile, u32 startOffset, s32 dstAddr, u32 byteCount) {
     /* Synchronously read byteCount bytes from the DVD file at startOffset into
        dstAddr through an aligned stack buffer; returns bytes read, 0 on drive error. */
@@ -4736,7 +4738,7 @@ void fn_8011D7F8(void *arg0, void *arg1)
 
 void fn_8011D9E4(void *arg0, void *arg1) {
     u32 *bits;
-    u32 value, bitCount, available, count, code, len, bit;
+    u32 value, bitCount, available, count, code, len = 0, bit;
     u8 *lookup, *table, *dst;
     s32 symbol;
     if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
@@ -7093,7 +7095,7 @@ void fn_801233F8(s32 arg0, volatile f32 *input, f32 *arg2) {
     temp_r7 = arg0 >> 3;
     temp_r10 = arg0 & 0xFFFFFFF8;
     temp_r6 = temp_r7 * 2;
-    temp_r31 = (arg0 & ~7) * 2;
+    temp_r31 = (temp_r7 * 16);
     temp_r11 = temp_r7 * 6;
     temp_r12 = ((temp_r7 * 4) + 1) * 4;
     temp_r11_2 = temp_r11 * 4;
@@ -7221,8 +7223,7 @@ void fn_801233F8(s32 arg0, volatile f32 *input, f32 *arg2) {
             *(f32 *)((u8 *)arg1 + temp_r10_4 + 4) = (temp_f2_3 * temp_f11_4) + (temp_f1_3 * temp_f8_6);
             *(f32 *)((u8 *)arg1 + temp_r8_4) = (temp_f4_6 * temp_f9_5) + (temp_f3_4 * temp_f10_5);
             *(f32 *)((u8 *)arg1 + temp_r8_4 + 4) = (temp_f4_6 * temp_f10_5) - (temp_f3_4 * temp_f9_5);
-            var_ctr -= 1;
-        } while (var_ctr != 0);
+        } while (--var_ctr != 0);
     }
     temp_r9_4 = temp_r7 * 4;
     temp_r5 = temp_r7 * 0xC;
@@ -9386,16 +9387,85 @@ void fn_80125CC8(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, s32 arg
 }
 
 void fn_80126018(void *arg0, BitReader8011 *arg1) {
-    u32 tmp[32];
-    int i;
+    s16 coef[64];
+    u8 huff[6];
     u32 count = arg1->count;
     u32 *next = arg1->next;
     u32 value = arg1->value;
-    (void)arg0;
-    for (i = 0; i < 32; i++) tmp[i] = 0;
-    arg1->count = count;
+    s32 i, bits, n, symbol, sign, run, k;
+    u32 top, mask, v;
+
+    for (i = 0; i < 64; i++) coef[i] = 0;
+
+    if (count < 4) {
+        u32 w = *next++;
+        bits = (s32)((value | (w << count)) & 0xF);
+        value = w >> (4 - count);
+        count = count + 28;
+    } else {
+        bits = (s32)(value & 0xF);
+        value >>= 4;
+        count -= 4;
+    }
+
+    huff[0] = 0x10;
+    huff[1] = 0x60;
+    huff[2] = 0xB0;
+    huff[3] = 0x07;
+    huff[4] = 0x0B;
+    huff[5] = 0x0F;
+
+    for (n = bits - 1; n > 0; n--) {
+        top = 1U << (n - 1);
+        mask = top - 1;
+        for (k = 0; k < 6; k++) {
+            if (huff[k] == 0) continue;
+            if (count == 0) {
+                value = *next++;
+                count = 31;
+            } else {
+                value >>= 1;
+                count--;
+            }
+            if (value & 1) {
+                run = huff[k] & 3;
+                if (run == 0) {
+                    symbol = huff[k] >> 2;
+                    huff[k] = (u8)(((symbol + 4) * 4) + 1);
+                    coef[2 * symbol] = (s16)(value & 1);
+                } else if (run == 1) {
+                    symbol = huff[k] >> 2;
+                    huff[k] = (u8)(((symbol + 4) * 4) + 2);
+                    coef[2 * symbol + 1] = (s16)(value & 1);
+                } else if (run == 2) {
+                    huff[k] = 0;
+                }
+            }
+        }
+    }
+
+    if (bits != 0) {
+        for (k = 0; k < 6; k++) {
+            if (huff[k] == 0) continue;
+            if (count == 0) {
+                value = *next++;
+                count = 31;
+            } else {
+                value >>= 1;
+                count--;
+            }
+            sign = (s32)(value & 1);
+            v = (u32)huff[k] >> 2;
+            coef[v & 0x3F] = (s16)(sign ? -1 : 1);
+        }
+    }
+
     arg1->next = next;
     arg1->value = value;
+    arg1->count = count;
+    for (i = 0; i < 32; i++) {
+        ((s16 *)arg0)[i] = coef[i];
+    }
 }
 
 #pragma push
