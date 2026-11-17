@@ -33,11 +33,13 @@ int fn_80265D38(void *, int);
 extern char lbl_80333C48[];
 extern float PSVECDotProduct(float *, float *);
 #pragma scheduling invalid_target
-void *fn_801A520C(void *arg0, void *arg1) {
+/* Constructor for the object whose vtable is lbl_80333C48: run the base constructor,
+ * bind the subobject at +0x270C, then install the derived vtable and return self. */
+void *fn_801A520C(void *self, void *subobject) {
     fn_80182010();
-    *(void **)((char *)arg0 + 0x270C) = arg1;
-    *(void **)arg0 = lbl_80333C48;
-    return (void *)((char *)arg0 + 0);
+    *(void **)((char *)self + 0x270C) = subobject;
+    *(void **)self = lbl_80333C48;
+    return (void *)((char *)self + 0);
 }
 
 #pragma cplusplus on
