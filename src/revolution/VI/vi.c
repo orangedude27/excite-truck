@@ -1524,8 +1524,9 @@ s32 fn_8005B00C(void) {
     return 1;
 }
 
-/* Clear a VI retrace-state valid flag after external state changes so the next
- * retrace re-arms the cached display/dimming counters; return 1 for success. */
+/* Clear one of the VI retrace-state valid flags. External state changes (e.g.
+ * an SI/WUD device event) reset it so the next retrace re-arms the cached
+ * display/dimming counters; return 1 to signal success. */
 s32 fn_8005B01C(void) {
     lbl_8055DBB8 = 0;
     return 1;
