@@ -387,7 +387,8 @@ void fn_80176948(void *chunk, s32 *outOffset) {
 s32 fn_801769A8(void);
 extern u8 lbl_804303C8[12];
 s32 fn_801769A8(void) {
-    return ((s32*)lbl_804303C8)[1];
+    // Return the flags of the currently active physics command.
+    return ((PhysicsCommand*)lbl_804303C8)->flags;
 }
 
 void *fn_801769B8(void) { return *(void **)&lbl_804303C8; }
