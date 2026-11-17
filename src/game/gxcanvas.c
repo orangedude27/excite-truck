@@ -72,6 +72,8 @@ s32 fn_802C2CAC(s32 arg0) { unsigned int a = __rlwinm(arg0, 9, 8, 12); unsigned 
 #pragma push
 #pragma peephole off
 s32 fn_802C2CC4(s32 pixel16) {
+    /* Convert a 16-bit packed pixel from a format-4 canvas into a 32-bit GX
+       RGBA color word for blitting into a 4-byte-per-pixel canvas (fn_802C3D74). */
     unsigned int lowBits = (pixel16 << 3) & 0xF8;
     return (s32)(lowBits | __rlwimi(__rlwinm(pixel16, 8, 8, 12) | 0xFF000000, pixel16, 5, 16, 21));
 }
