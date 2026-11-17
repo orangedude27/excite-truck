@@ -97,7 +97,14 @@ extern void *lbl_8055BAC8;
 extern char lbl_80340C44[];
 extern char lbl_80340C24[];
 extern s32 lbl_8049870C[];
-void fn_80239AB8(void) { fn_80214CB4(lbl_8055BAC8); }
+void fn_80239AB8(void) {
+#define sSavedMenuIndex lbl_8055BAC8
+#define SetMenuIndex    fn_80214CB4
+    /* Restore the active UI window's menu index from the value saved by fn_80239A94. */
+    SetMenuIndex(sSavedMenuIndex);
+#undef sSavedMenuIndex
+#undef SetMenuIndex
+}
 
 void fn_80239AC0(void)
 {
@@ -256,13 +263,23 @@ extern void *fn_8023AB78(register void *arg0, register s32 arg1, register s32 ar
 extern void *fn_8023AA2C(register void *arg0, register s32 arg1, register s32 arg2, ...);
 extern void *fn_8023A8D8(register void *arg0, register s32 arg1, register s32 arg2, ...);
 extern s32 lbl_804986F8[];
+extern void fn_801331C4(s32, void *, void *);
+extern void fn_801332D0(s32, void *, void *);
+extern void *fn_8023AB78(register void *, register s32, register s32, ...);
+extern void *fn_8023AA2C(register void *, register s32, register s32, ...);
+extern void *fn_8023A8D8(register void *, register s32, register s32, ...);
+extern char lbl_80341038[];
+#pragma opt_propagation off
 void fn_80239F74(void) {
-    s32 *g = lbl_804986F8;
-    char buf0[0x40];
-    char buf1[0x40];
-    char buf2[0x40];
-    char buf3[0x40];
     s32 a, b, c;
+    char buf3[0x40];
+    char buf4[0x40];
+    char buf2[0x40];
+    char buf1[0x40];
+    char buf0[0x40];
+    char desc[0x1d0];
+    char desc2[0x24];
+    s32 *g = lbl_804986F8;
     g[5] = fn_802C83C4();
     g[6] = g[5];
     a = fn_80131234(lbl_80340B58 + 0x134);
@@ -280,13 +297,30 @@ void fn_80239F74(void) {
     b = fn_80131234(lbl_80340B58 + 0x198);
     c = fn_80131234(lbl_80340B58 + 0x180);
     fn_8023A8D8(buf2, (s32)(g + 11), c, b, a, 0);
+    *(float *)(g + 9) = lbl_80563730;
+    fn_801331C4(4, lbl_80340B58 + 0x1C8, g + 9);
+    *(float *)(g + 10) = lbl_80563730;
+    fn_801331C4(4, lbl_80340B58 + 0x1D8, g + 10);
+    *(s32 *)(desc2 + 0x14) = 0;
+    *(s32 *)desc2 = (s32)lbl_80341038;
+    *(s32 *)(desc2 + 0x1c) = 0;
+    desc2[0x20] = 0;
+    lbl_8055F10C = desc2;
+    g[13] = 0;
+    {
+        s32 t = fn_8000DA10();
+        fn_801332D0(t + 0xc, lbl_80340B58 + 0x1E8, g + 13);
+    }
+    a = fn_80131234(lbl_80340B58 + 0x204);
+    b = fn_80131234(lbl_80340B58 + 0x1F4);
+    fn_8023AA2C(buf4, (s32)(g + 13), b, a, 0);
     while (1) {
         s32 r = fn_802146BC(buf3, -999, -999, 1);
         if (r + 2 > 0x12) continue;
         break;
     }
 }
-
+#pragma opt_propagation reset
 extern s32 fn_80209030(float);
 extern s32 fn_802090BC(s32);
 extern s32 fn_8020A5F8(float);
