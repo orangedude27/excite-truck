@@ -90,18 +90,20 @@ long fn_80177988(void) {
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
+/* Zero-initialize the four parallel 75-entry weight tables: lbl_80430700 and
+   lbl_804305D4 directly, lbl_804424B0 / lbl_804425DC via the setters. */
 void fn_80177990(void) {
-    float tmp6 = 0.0f;
-    float *p1 = &lbl_80430700[0];
-    float *p2 = &lbl_804305D4[0];
+    float zero = 0.0f;
+    float *weightA = &lbl_80430700[0];
+    float *weightB = &lbl_804305D4[0];
     int i;
     for (i = 0; i < 0x4b; i++) {
-        *p1 = tmp6;
-        *p2 = tmp6;
-        fn_801DCEC8(i, tmp6);
+        *weightA = zero;
+        *weightB = zero;
+        fn_801DCEC8(i, zero);
         fn_801DCEDC(i, lbl_80561B48);
-        p1++;
-        p2++;
+        weightA++;
+        weightB++;
     }
 }
 #pragma pop
