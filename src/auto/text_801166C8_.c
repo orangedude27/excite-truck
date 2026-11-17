@@ -343,7 +343,7 @@ u32 fn_80116BD4(s32 arg0, s32 arg1, s32 arg2) {
     temp_r6 = temp_r10 & 0xFFFF;
     var_r4 = (u32)temp_r8 / temp_r5;
     temp_r0_2 = var_r4 * temp_r5;
-    var_r7 = ((temp_r9_2 >> 16) & 0xFFFF) | ((((u32)temp_r8 - temp_r0_2) & 0xFFFF) << 16);
+    var_r7 = ((((u32)temp_r8 - temp_r0_2) & 0xFFFF) << 16) | ((temp_r9_2 >> 16) & 0xFFFF);
     temp_r0 = var_r4 * temp_r6;
     if (var_r7 < temp_r0) {
         var_r7 += temp_r10;
@@ -368,18 +368,21 @@ u32 fn_80116BD4(s32 arg0, s32 arg1, s32 arg2) {
     return (var_r4 << 16) | var_r3;
 }
 
-void fn_80116CC4(s32 *arg0, u16 arg1, u32 arg2) {
+/* Fill `count` 16-bit samples at `dst` with `value`: two samples are written per word
+ * (the pattern replicated into both halves), and an odd last sample with a halfword store.
+ * The band decoder calls it to repeat one decoded sample (fn_8011DC5C). */
+void fn_80116CC4(s32 *dst, u16 value, u32 count) {
     u32 words;
     u32 fill;
-    words = arg2 >> 1;
-    fill = (arg1 << 16) | arg1;
+    words = count >> 1;
+    fill = (value << 16) | value;
     while (words != 0) {
-        *arg0 = fill;
-        arg0++;
+        *dst = fill;
+        dst++;
         words--;
     }
-    if (arg2 & 1) {
-        *(u16 *)arg0 = arg1;
+    if (count & 1) {
+        *(u16 *)dst = value;
     }
 }
 
