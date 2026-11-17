@@ -2083,7 +2083,7 @@ extern "C" void fn_8015A40C(void *arg0) {
  f32 z;
  int count=0, offset=0;
  int zero=0;
- z=lbl_80561754;
+ z=0.0f;
  goto check;
 loop:
  count++;
