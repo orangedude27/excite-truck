@@ -707,8 +707,9 @@ extern "C" float fn_801013DC(void* player) {
     return *(float*)((char*)player + 0x3C);
 }
 
-extern "C" float fn_801013E4(void* arg0) {
-    return *(float*)((char*)arg0 + 0x24);
+extern "C" float fn_801013E4(void* player) {
+    /* Return the sound player's float parameter at +0x24 (init 1.0 in WsdPlayer::InitParam). */
+    return *(float*)((char*)player + 0x24);
 }
 
 extern "C" int fn_801013EC(void* player) {
