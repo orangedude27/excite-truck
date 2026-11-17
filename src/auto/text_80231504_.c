@@ -404,59 +404,55 @@ s32 fn_80231730(s32 name) {
 }
 #pragma pop
 
+f32 outX, outY, outZ;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
 void fn_80231780(void *arg0) {
-    f32 f25;
-    f32 f26;
-    f32 f27;
-    f32 f28;
-    f32 f29;
-    f32 f30;
-    f32 f31;
-    volatile f32 sp10;
-    volatile f32 spC;
-    volatile f32 sp8;
-    f32 xx;
-    f32 yy;
-    f32 zz;
+#pragma opt_common_subs off
+    f32 f25, f26, f27, f28, f29, f30, f31;
+    volatile f32 sp10, spC, sp8;
+    f32 x, y, z;
     u8 *record;
     s32 color;
     s32 offset;
     s32 i;
     u8 *object;
     s32 index;
+
     f31 = lbl_80563680;
     f30 = lbl_80563684;
     f29 = lbl_80563688;
     i = 0;
     offset = 0;
     goto loop_test;
+
 loop_body:
     record = *(u8 **)&lbl_8049846C[0] + offset;
     index = *(s32 *)record;
     object = *(u8 **)lbl_80497F14 + index * 0x1C;
+
     if (object[0x14] != 0)
         color = *(s32 *)(record + 0x18);
     else
         color = fn_80230B9C((*(s32 *)(record + 0x18) & 0xFF000000) | 0x00FFFFFF);
+
     if (*(s32 *)(object + 0x0C) != 0) {
-        zz = *(f32 *)(record + 0x0C);
-        yy = *(f32 *)(record + 8);
-        xx = *(f32 *)(record + 4);
-        sp8 = xx;
-        spC = yy;
-        sp10 = zz;
+        z = *(f32 *)(record + 0x0C);
+        y = *(f32 *)(record + 8);
+        x = *(f32 *)(record + 4);
+        sp8 = x;
+        spC = y;
+        sp10 = z;
         if (arg0 != 0) {
-            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, xx, yy, zz);
+            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, x, y, z);
         }
         {
             f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
             f32 ratio;
-            if (rate <= f31) rate = f31;
+            rate = (rate > f31) ? rate : f31;
             ratio = f30 / rate;
             fn_802354A0(*(s32 *)(object + 0x0C), *(s32 *)(object + 0x10), color,
                         sp8 - f29 * (ratio * *(f32 *)(record + 0x14) - *(f32 *)(record + 0x14)),
@@ -482,11 +478,11 @@ loop_body:
     }
     offset += 0x1C;
     i += 1;
+
 loop_test:
     if (i < lbl_8049846C[1]) goto loop_body;
     lbl_8049846C[1] = 0;
 }
-#pragma scheduling on
 #pragma pop
 
 #pragma scheduling invalid_target
@@ -1192,9 +1188,11 @@ extern f32 fn_8023293C(s32, char *, f32);
 #pragma use_lmw_stmw off
 #pragma scheduling off
 void fn_80233010(char *arg0, s32 font, s32 color, s32 flags, s32 mode, f32 x, f32 y, f32 width, f32 scale, f32 spacing, f32 extra) {
+#pragma scheduling invalid_target
     char buffer[512];
     char *text = arg0;
     s32 line = 0;
+    s32 count;
     strlen(text);
     while ((s8)*text) {
         char *start = text;
@@ -1206,9 +1204,9 @@ void fn_80233010(char *arg0, s32 font, s32 color, s32 flags, s32 mode, f32 x, f3
         length = 0;
         while (scale * fn_8023293C(font, buffer, extra) < width && *text && (s8)*text != '\n' && (s8)*text != '|') {
             char *next;
-            s32 count;
-            if (((u8)*text & 0xF0) == 0xE0) next = text + 3;
-            else if (((u8)*text & 0xE0) == 0xC0) next = text + 2;
+            u8 ch = *(u8 *)text;
+            if ((ch & 0xF0) == 0xE0) next = text + 3;
+            else if ((ch & 0xE0) == 0xC0) next = text + 2;
             else next = text + 1;
             count = next - text;
             for (i = 0; i < count; i++) buffer[length++] = *text++;
@@ -1224,9 +1222,9 @@ void fn_80233010(char *arg0, s32 font, s32 color, s32 flags, s32 mode, f32 x, f3
         if (text == start) { text = saved; length = savedLength; }
         buffer[length] = 0;
         if ((s8)*text == ' ' || (s8)*text == '\n' || (s8)*text == '|') text++;
-        for (i = 0; i < length; i++) if ((u8)buffer[i] == '^') buffer[i] = ' ';
+        for (i = 0; i < length; i++) if (buffer[i] == '^') buffer[i] = ' ';
         {
-            f32 ypos = y - (f32)line * (scale * (f32)(s32)fn_80232B70((void *)font));
+            f32 ypos = y - (f32)line * (scale * (f32)((s32 (*)(void *))fn_80232B70)((void *)font));
             line++;
             if (mode == 0) fn_80232BA4(buffer, font, color, flags, x, ypos, scale, spacing, extra);
             else fn_802344CC((s32)buffer, color, flags, 0, x, ypos, scale);
@@ -1840,6 +1838,7 @@ extern void fn_802C8BD0(s32);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802346C8(void) {
+#pragma scheduling on
 f32 f30 = lbl_80563688;
 f32 f31 = lbl_8056368C;
 f32 f28;
