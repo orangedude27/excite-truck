@@ -1912,6 +1912,10 @@ struct ArenaMaster {
  * for the truck's element index. */
 #define CAR_TAG_TRAILER 0x54524C52 /* 'TRLR' */
 extern "C" int fn_80189BDC(void *truck) {
+    /* Whether the arena-event master still has something to do for this truck: a
+     * car that is not a trailer and whose race progress is already reset (state 1)
+     * or holds every checkpoint (state 3) reports 0; anything else is the master's
+     * answer for the truck's element index. */
     if ((unsigned int)*(int *)((char *)truck + 0x10) != CAR_TAG_TRAILER) {
         void *progress = *(void **)((char *)truck + 0x270);
         void *record = ((CarProgress *)progress)->getRecord();
