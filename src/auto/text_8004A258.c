@@ -722,13 +722,17 @@ extern void __OSDBINTSTART(void);
 extern void __OSDBINTEND(void);
 extern void *__OSSetExceptionHandler(u8, void *);
 extern void OSDefaultExceptionHandler(u8, void *);
+static const u32 __OSExceptionLocations[15] = {
+    0x0100, 0x0200, 0x0300, 0x0400, 0x0500, 0x0600, 0x0700, 0x0800,
+    0x0900, 0x0C00, 0x0D00, 0x0F00, 0x1300, 0x1400, 0x1700};
+#pragma use_lmw_stmw off
 void OSExceptionInit(void) {
+    u32 *dst;
+    u8 i;
     u32 *pInst;
     u32 inst;
     void *vectorCode;
     u32 vectorSize;
-    u32 *dst;
-    u8 i;
     int j;
     u32 *code;
     u32 size2;
@@ -749,15 +753,15 @@ void OSExceptionInit(void) {
     }
     for (i = 0; i < 15; i++) {
         if (BI2DebugFlag_8055D9F4 != 0 && *BI2DebugFlag_8055D9F4 >= 2 && __DBIsExceptionMarked(i)) {
-            DBPrintf(base + 0x370, i);
+            DBPrintf(base + 0x370, (u8)i);
         } else {
             *pInst = inst | i;
             if (__DBIsExceptionMarked(i)) {
-                DBPrintf(base + 0x3a0, i);
-                memcpy((void *)__DBVECTOR, (void *)__OSDBJUMPSTART, (u32)__OSDBJUMPEND - (u32)__OSDBJUMPSTART);
+                DBPrintf(base + 0x3a0, (u8)i);
+                memcpy((void *)__DBVECTOR, (void *)__OSDBJUMPSTART, (u32)__OSDBJUMPEND - (u32)__OSDBINTEND);
             } else {
                 code = (u32 *)__DBVECTOR;
-                for (j = 0; j < (u32)__OSDBJUMPEND - (u32)__OSDBJUMPSTART; j += 4, code++) {
+                for (j = 0; j < (u32)__OSDBJUMPEND - (u32)__OSDBINTEND; j += 4, code++) {
                     *code = 0x60000000;
                 }
             }
@@ -770,14 +774,11 @@ void OSExceptionInit(void) {
     }
     OSExceptionTable_8055D9D0 = (void **)0x80003000;
     for (i = 0; i < 15; i++) {
-        __OSSetExceptionHandler(i, (void *)OSDefaultExceptionHandler);
+        OSExceptionTable_8055D9D0[i] = (void *)OSDefaultExceptionHandler;
     }
     *pInst = inst;
     DBPrintf(base + 0x3d0);
 }
-
-#pragma pop
-
 void __OSDBIntegrator(void) {
     register volatile unsigned int *base = (volatile unsigned int *)0x40;
     base[3] = 0;
