@@ -2998,6 +2998,7 @@ void fn_8018B0D8(void *arg0, void *arg1, void *arg2, int *arg3, int *arg4, float
     }
     fn_801E9DD0((char *)arg0 + 0x6C, spC, sp8);
 }
+#pragma pop
 
 extern void fn_8017D274(void);
 extern int fn_801363A0(int);
