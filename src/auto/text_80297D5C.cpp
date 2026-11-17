@@ -1468,8 +1468,10 @@ extern "C" void* fn_8029A820(void *object, int shouldFree) {
     return object;
 }
 
-extern "C" void fn_8029A890(void *arg0, void *arg1) {
-    *(float *)((char *)arg0 + (int)arg1 * 0x2C + 0x24) = lbl_80564590;
+/* Reset the float field (+0x24) of one 0x2C-byte slot in the global animation
+ * table to its default value (lbl_80564590, 1.0f). */
+extern "C" void fn_8029A890(void *slots, void *slotIndex) {
+    *(float *)((char *)slots + (int)slotIndex * 0x2C + 0x24) = lbl_80564590;
 }
 
 extern "C" void fn_8029A8A4(void *arg0, void *arg1) {
