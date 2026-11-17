@@ -105,73 +105,76 @@ extern double lbl_80561268, lbl_80561278, lbl_80561280, lbl_80561290, lbl_805612
 #pragma processor 750
 #pragma use_lmw_stmw off
 int fn_80129E34(void *arg0, int arg1, int arg2) {
+    #pragma optimize_for_size on
+    extern double fn_8002EFB4(double, double);
+    extern float lbl_80561260, lbl_80561270;
+    extern double lbl_80561268, lbl_80561278, lbl_80561280, lbl_80561290, lbl_805612A0;
     int a = (int)(float)fn_8002EFB4((float)arg1 / lbl_80561260, lbl_80561268) + 2;
     int b = (int)(float)fn_8002EFB4((float)arg1, lbl_80561268) + 2;
     int c = (int)(float)fn_8002EFB4((float)arg2 / lbl_80561270, lbl_80561278) + 1;
     int d = (int)(float)fn_8002EFB4((float)arg2, lbl_80561280);
     float *out = (float *)arg0;
-    float k125c = lbl_8056125C;
-    float k1298 = lbl_80561298;
-    float k129c = lbl_8056129C;
-    float k12a8 = lbl_805612A8;
-    float k1288 = lbl_80561288;
+    float k125c = 0.0f;
+    float k1298 = 1.0f;
+    float k129c = 53.0f;
+    float k12a8 = 32.0f;
+    float k1288 = 0.5f;
     int i, j;
     for (i = 0; i <= 0x60; ++i) {
-        float total = k125c, v = k1288;
+        float total = 0.0f, v = 0.5f;
         for (j = 0; j <= 0x17; ++j) {
             int m = (int)(float)fn_8002EFB4((float)c * (float)fn_8002EFB4((float)(a * b), lbl_80561290), lbl_80561290);
             a = b; b = c; c = m;
-            d = (int)(float)fn_8002EFB4(k1298 + k129c * (float)d, lbl_80561280);
-            if ((float)fn_8002EFB4((float)(d * m), lbl_805612A0) >= k12a8) total += v;
-            v *= k1288;
+            d = (int)(float)fn_8002EFB4(1.0f + 53.0f * (float)d, lbl_80561280);
+            if ((float)fn_8002EFB4((float)(d * m), lbl_805612A0) >= 32.0f) total += v;
+            v *= 0.5f;
         }
         *++out = total;
     }
-    *(float *)((char *)arg0 + 0x188) = lbl_805612AC;
-    *(float *)((char *)arg0 + 0x18c) = lbl_805612B0;
-    *(float *)((char *)arg0 + 0x190) = lbl_805612B4;
+    *(float *)((char *)arg0 + 0x188) = 0.021602630615234375f;
+    *(float *)((char *)arg0 + 0x18c) = 0.45629203224182129f;
+    *(float *)((char *)arg0 + 0x190) = 0.99999982118606567f;
     *(int *)((char *)arg0 + 0x194) = 0x60;
     *(int *)((char *)arg0 + 0x198) = 0x20;
     *(char *)arg0 = 1;
-    return 0;
+    #pragma optimize_for_size reset
 }
 #pragma pop
 extern float lbl_8056125C;
 extern float lbl_80561298;
 float fn_8012A080(void *arg0) {
-    int index0 = *(int *)((char *)arg0 + 404);
-    int index1 = *(int *)((char *)arg0 + 408);
-    float *value0 = (float *)((char *)arg0 + index0 * 4 + 4);
-    float *value1 = (float *)((char *)arg0 + index1 * 4 + 4);
-    float v = *value0 - *value1;
-    float temp_f1;
-    float temp_f2;
-    if (v < lbl_8056125C) {
-        v += lbl_80561298;
-        *value0 = v;
-    }
-    index0 = *(int *)((char *)arg0 + 404) - 1;
-    *(int *)((char *)arg0 + 404) = index0;
-    if (index0 < 0)
-        *(int *)((char *)arg0 + 404) = 96;
-    index1 = *(int *)((char *)arg0 + 408) - 1;
-    *(int *)((char *)arg0 + 408) = index1;
-    if (index1 < 0)
-        *(int *)((char *)arg0 + 408) = 96;
-    temp_f2 = *(float *)((char *)arg0 + 392);
-    temp_f1 = *(float *)((char *)arg0 + 396);
-    temp_f1 = temp_f2 - temp_f1;
+    RngState *state = (RngState *)arg0;
+    int index0 = state->index0;
+    int index1 = state->index1;
+    float *value0 = &state->table[index0];
+    float *value1 = &state->table[index1];
+    float delta = *value0 - *value1;
+    if (delta < 0.0f)
+        delta = lbl_80561298 + delta;
+    *value0 = delta;
     {
-        int wrap = temp_f1 < lbl_8056125C;
-        *(volatile float *)((char *)arg0 + 392) = temp_f1;
-        if (wrap) {
-            temp_f1 += *(float *)((char *)arg0 + 400);
-            *(float *)((char *)arg0 + 392) = temp_f1;
+        int n = state->index0 - 1;
+        state->index0 = n;
+        if (n < 0) state->index0 = 96;
+    }
+    {
+        int n = state->index1 - 1;
+        state->index1 = n;
+        if (n < 0) state->index1 = 96;
+    }
+    {
+        float t = state->acc - state->lag;
+        *(volatile float *)&state->acc = t;
+        if (t < 0.0f) {
+            t = t + state->wrap;
+            *(float *)&state->acc = t;
         }
     }
-    temp_f1 = v - *(float *)((char *)arg0 + 392);
-    if (temp_f1 < lbl_8056125C)
-        return lbl_80561298 + temp_f1;
-    return temp_f1;
+    {
+        float result = delta - state->acc;
+        if (result < 0.0f)
+            return lbl_80561298 + result;
+        return result;
+    }
 }
 
