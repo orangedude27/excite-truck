@@ -1495,11 +1495,11 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
     s32 v;
 
     if (track == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u8*)str + 0), 0x31, str + 0x18);
+        Panic__Q26nw4hbm2dbFPCciPCce(str, 0x31, str + 0x18);
     }
     player = track->player;
     if (player == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u8*)str + 0), 0x33, str + 0x40);
+        Panic__Q26nw4hbm2dbFPCciPCce(str, 0x33, str + 0x40);
     }
     useArg = false;
     enabled = true;
@@ -1588,14 +1588,9 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
         case 0xd0:
             v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_BYTE);
             if (enabled) {
-                s32 w;
-                if ((s32)cmd >= 0xc5) {
-                    w = (u8)v;
-                } else if ((s32)cmd >= 0xc3) {
+                s32 w = (u8)v;
+                if ((s32)cmd < 0xc5 && (s32)cmd >= 0xc3)
                     w = (s8)(u8)v;
-                } else {
-                    w = (u8)v;
-                }
                 CommandProc(track, cmd, w, 0);
             }
             break;
@@ -1614,7 +1609,7 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
         case 0xf0:
             switch (cmd) {
             case 0xfe:
-                Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u8*)str + 0), 0x105, str + 0x6c);
+                Panic__Q26nw4hbm2dbFPCciPCce(str, 0x105, str + 0x6c);
                 break;
             case 0xff:
                 return 1;
@@ -1624,7 +1619,7 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
                 case 0xe0:
                     a = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
                     if (enabled) {
-                        CommandProc(track, (cmd << 8) + sub, a, 0);
+                        CommandProc(track, ((s32)cmd << 8) + sub, a, 0);
                     }
                     break;
                 case 0x80:
@@ -1632,7 +1627,7 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
                     a = *track->cur++;
                     b = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
                     if (enabled) {
-                        CommandProc(track, (cmd << 8) + sub, a, b);
+                        CommandProc(track, ((s32)cmd << 8) + sub, a, b);
                     }
                     break;
                 }
@@ -2161,8 +2156,10 @@ extern "C" void FreeTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm
 }
 #pragma pop
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, void*, u32, u32);
-extern "C" void fn_800EE428(void* arg0, void* arg1, u32 arg2) {
-    CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8*)arg0 + 8, arg1, arg2, 0xD4);
+extern "C" void fn_800EE428(void* allocator, void* buffer, u32 bufferSize) {
+    /* Initialise an MmlSeqTrackAllocator: set up the PoolImpl embedded at +8 as a
+     * free list of 0xD4-byte MmlSeqTrack slots carved out of the given buffer. */
+    CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8*)allocator + 8, buffer, bufferSize, 0xD4);
 }
 
 extern "C" void DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(void*);
