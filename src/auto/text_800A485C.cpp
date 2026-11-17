@@ -8297,10 +8297,10 @@ extern "C" s32 VFiPFFILE_p_finfo(void *arg0, void *arg1) {
     *(s32 *)((u8 *)arg1 + 4) = *(s32 *)((u8 *)arg0 + 0x1C);
     size = *(u16 *)file << *((u8 *)file + 0x21);
     if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x270) != 0) {
-        temp_r3 = fn_800A9470(arg0, (u8 *)arg1 + 0xC);
+        temp_r3 = fn_800A9470(arg0, (void *)((u32)arg1 + 0xC));
         if (temp_r3 != 0) return temp_r3;
         temp_r5 = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x264) % size;
-        *(s32 *)((u8 *)arg1 + 8) = ((volatile u32 *)arg1)[3] + (((-temp_r5 | temp_r5) >> 31) & (size - temp_r5));
+        *(s32 *)((u8 *)arg1 + 8) = *(u32 *)((u8 *)arg1 + 0xC) + (temp_r5 != 0 ? size - temp_r5 : 0);
     } else {
         *(s32 *)((u8 *)arg1 + 0xC) = 0;
         *(s32 *)((u8 *)arg1 + 8) = 0;
@@ -13488,7 +13488,7 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     scale = 9;
     factor = one << (((word0 >> 7) & 7) + 2);
     exponent = (word1 >> 8) & 0xF;
-    mantissa = (word0 >> 22) + ((word1 & 3) << 20);
+    mantissa = ((word1 & 3) << 10) | (word0 >> 22);
     mantissa++;
     size = mantissa * factor;
     if (exponent >= 9) {
