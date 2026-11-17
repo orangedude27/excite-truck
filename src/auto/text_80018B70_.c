@@ -30,6 +30,7 @@ extern u8 lbl_80357E0C[12];
 #define sUnlockManager lbl_8055D58C /* unlock/properties Manager loaded from common.res/unlock.val */
 #define sResetRequested lbl_8055D588 /* set when a quit/reset is requested */
 #define sUnlockValPath lbl_802FD2DC  /* "common.res/unlock.val" */
+#define sCarCategoryName lbl_80558C50 /* "car" unlockable category name */
 
 typedef struct UnlockableEntry {
     const char *name;
