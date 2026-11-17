@@ -4032,6 +4032,7 @@ void fn_801546D4(s32 arg0) {
     }
 }
 
+/* Default predicate: always reports true (1). */
 s32 fn_80154714(void) {
     return 1;
 }
