@@ -103,8 +103,10 @@ int fn_801AE618(int arg0) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
-int fn_801AE620(void *arg0) {
-    return fn_801AE618(*(unsigned short *)((char *)arg0 + 0xE));
+/* Test bit 0 of the 16-bit flag field at offset +0xE of a 0x1C-byte entry:
+ * fn_801AE618 masks off the low bit, so this marks the entry as active/valid. */
+int fn_801AE620(void *entry) {
+    return fn_801AE618(*(unsigned short *)((char *)entry + 0xE));
 }
 
 #pragma use_lmw_stmw off
