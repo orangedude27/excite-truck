@@ -445,10 +445,13 @@ s32 *fn_80149580(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80149588(s32 arg0) {
-    u8 sp8[0x20];
-    fn_80130980(sp8, 0x20, 3);
-    ((void (*)(s32, s32 *, void *, ...))fn_801474EC)(arg0, &lbl_80559EC4, sp8);
+/* Format the caller's time value (arriving in f1) as a level-3 time string
+ * (hours:minutes:seconds.tenths) into a 0x20-byte buffer, then append it to the
+ * text object through the printf-style text logger with a "%s" format. */
+void fn_80149588(s32 textObj) {
+    u8 timeStr[0x20];
+    fn_80130980(timeStr, 0x20, 3);
+    ((void (*)(s32, s32 *, void *, ...))fn_801474EC)(textObj, &lbl_80559EC4, timeStr);
 }
 #pragma pop
 extern s32 lbl_8055E3C4;
