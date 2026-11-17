@@ -15,7 +15,8 @@ extern void *fn_80276A44();
 extern void fn_8026A4A0(int, void *, float *);
 extern void fn_80276098(void *, void *, float, float, float, int, int);
 extern void *memcpy(void *, const void *, unsigned int);
-#pragma dont_inline on
+#pragma dont_inline fn_80276068
+#pragma dont_inline fn_80276098
 #pragma scheduling invalid_target
 /* Returns 1 when the camera mode is one of the chase/replay modes fn_80276DC8
  * keeps as-is (4, 5, 6, 9 and 23); 0 for a mode that needs the default fallback. */
