@@ -633,10 +633,7 @@ void fn_801ECFE0(void *arg0) {
             params[1] = cached;
             if ((float)__fabs((double)*(float *)(*(char **)(self+0x3C)+0x28C)) <= *(float *)&lbl_80558DC4)
                 fn_802DAC54();
-            {
-                char *ptr = *(char **)(self+0x3C) + (entry[0]+1)*12 + 0x2E0;
-                handle = fn_802C7A40(1, ptr, entry[1]-entry[0], 1, params, 2);
-            }
+            handle = fn_802C7A40(1, *(char **)(self+0x3C)+(entry[0]+1)*12+0x2E0, entry[1]-entry[0], 1, params, 2);
             for (j=0, offset=0; j<*(long *)(*(char **)(self+0x3C)+0xA78); offset+=0x34, j++) {
                 part = *(char **)(self+0x3C)+offset+0xA7C;
                 if (*(long *)(part+0x30) & mask) {
