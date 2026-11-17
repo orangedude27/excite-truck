@@ -7269,12 +7269,12 @@ extern f32 lbl_805634E0;
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void *fn_8022553C(void *arg0, void *arg1, void *arg2) {
-register u8 *obj = (u8 *)arg0;
-register u8 *ctx = (u8 *)arg2;
+u8 *obj = (u8 *)arg0;
+u8 *ctx = (u8 *)arg2;
 s32 count;
-register s32 offset;
-register s32 row;
-register s32 frame;
+s32 offset;
+s32 row;
+s32 frame;
 f32 half;
 f32 value;
 f32 temp_f4;
@@ -9470,8 +9470,9 @@ extern "C" void fn_80229D3C(void *widget, s32 screenX, s32 screenY) {
                 self);
 }
 extern "C" s32 fn_80229D5C(s32);
-extern "C" s32 fn_80229D5C(s32 arg0) {
-    return arg0 + 0x264;
+extern "C" s32 fn_80229D5C(s32 widget) {
+    /* Field-offset helper: return a pointer to a UI widget's field at +0x264. */
+    return widget + 0x264;
 }
 
 extern "C" void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229D64(void *self, s32 deletingFlag) {
