@@ -140,7 +140,7 @@ void fn_802C543C(void) {
 }
 #pragma dont_inline off
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_802C544C(void **a, void **b) {
     void *right = *b;
     void *left = *a;
@@ -149,7 +149,6 @@ int fn_802C544C(void **a, void **b) {
     if (y != x) return y - x;
     return stricmp(fn_802CAE34(*(char **)left), fn_802CAE34(*(char **)right));
 }
-#pragma scheduling on
 /* Return the 8-byte {items, count} record for a 1-based detail level in the
  * level table at lbl_804C1348 (levels 1..9). */
 void *fn_802C54B4(int level) { return (void *)(lbl_804C1348 + (level - 1) * 8); }
@@ -1365,6 +1364,7 @@ void fn_802C7734(void *transform) {
 
 void fn_802C7758(void);
 #pragma dont_inline fn_802C7758
+/* Select the default GX material/vertex state (null record handle) instead of a transform record. */
 void fn_802C7758(void) {
     fn_802D0610(0);
 }
