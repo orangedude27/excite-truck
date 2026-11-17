@@ -164,16 +164,14 @@ struct ArenaMaster {
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline fn_801B81E0
-int fn_801B81E0(void *arg0) {
+int fn_801B81E0(void *__restrict arg0) {
     extern int fn_8014145C(void);
     extern int fn_8014DE50(void);
     extern int fn_8016BE60(void);
     extern int fn_80172C28(void);
     extern void fn_802E317C(const char *, ...);
     extern char lbl_80336740[];
-    int value = *(int *)((char *)arg0 + 0x3E8);
-    int v = value;
-    switch (v) {
+    switch (*(int *)((char *)arg0 + 0x3E8)) {
     case 0x180201:
         return fn_8014145C();
     case 0x180303:
@@ -754,9 +752,11 @@ void fn_801B8A68(void *arg0, int arg1) {
     fn_801B0C78((void *)arg1);
 }
 
-void fn_801B8A70(void *arg0, int arg1, int arg2) {
+/* Callback adapter: ignores the context pointer and forwards (item index, payload)
+ * to fn_801B0F70, which builds and submits a request for that item. */
+void fn_801B8A70(void *ctx, int itemIndex, int payload) {
     extern void fn_801B0F70(int, int);
-    fn_801B0F70(arg1, arg2);
+    fn_801B0F70(itemIndex, payload);
 }
 
 void fn_801B8A7C(void *arg0, int arg1) {
