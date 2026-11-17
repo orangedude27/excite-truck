@@ -572,6 +572,8 @@ void fn_800060B8(void *state) {
     *(float *)((u8 *)state + 0x18) = defaultValue;
 }
 
+/* No-op companion hook to fn_800060E0 (sound-mode DSP init); reserved callback
+ * slot kept for ABI compatibility, with no work to do in this build. */
 void fn_800060DC(void) {
 }
 
