@@ -1068,9 +1068,9 @@ typeChecked:
     case 3:
     case 6:
     case 15:
-        *(f32 *)(dest + 0x58) = mgr->getF(lbl_8055B328);
-        *(f32 *)(dest + 0x5C) = mgr->getF(lbl_8055B32C);
-        *(f32 *)(dest + 0x60) = mgr->getF(lbl_8055B330);
+        *(f32 *)(dest + 0x58) = mgr->getF(lbl_8055B32C);
+        *(f32 *)(dest + 0x5C) = mgr->getF(lbl_8055B330);
+        *(f32 *)(dest + 0x60) = mgr->getF(lbl_8055B334);
         break;
     case 4:
         *(f32 *)(dest + 0x58) = mgr->getF(base + 0x1A8);
