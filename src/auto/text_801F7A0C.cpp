@@ -1460,8 +1460,9 @@ extern "C" void fn_801F96A8(void *node) {
     fn_801F95C4((void *)fn_801F9450, node);
 }
 
-extern "C" void fn_801F96B8(void *node) {
-    fn_801F95C4((void *)fn_801F948C, node);
+/* Look up a named "object_properties" node: search the owner list via fn_801F95C4, using the object-properties predicate fn_801F948C, for a node whose name matches `name`. */
+extern "C" void fn_801F96B8(void *name) {
+    fn_801F95C4((void *)fn_801F948C, name);
 }
 
 #pragma dont_inline on
@@ -2986,10 +2987,11 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
         virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
         virtual f32 value(const char *);
     };
+    struct Obj5c { u8 pad[0x5c]; f32 val; };
     volatile u32 *input = (volatile u32 *)arg1;
-    u32 w0 = input[0], w1 = input[1], w2 = input[2], w3 = input[3];
-    register u32 w4 = input[4], w5 = input[5], w6 = input[6], w7 = input[7];
-    u32 w8 = input[8], w9 = input[9], w10 = input[10], w11 = input[11];
+    u32 w11 = input[11], w10 = input[10], w9 = input[9], w8 = input[8];
+    register u32 w7 = input[7], w6 = input[6], w5 = input[5], w4 = input[4];
+    u32 w3 = input[3], w2 = input[2], w1 = input[1], w0 = input[0];
     *(u32 *)((u8 *)arg0 + 0x10c) = w0;
     *(u32 *)((u8 *)arg0 + 0x110) = w1;
     *(u32 *)((u8 *)arg0 + 0x114) = w2;
@@ -3005,6 +3007,7 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
 
     void *object = fn_801284F8(0x6c, (void *)lbl_8055B3A8);
     if (object) {
+        Obj5c *o5c = (Obj5c *)object;
         *(const char **)((u8 *)object + 0x64) = lbl_8055B3B0;
         void *resource = *(void **)((u8 *)arg1 + 0x34);
         *(void **)((u8 *)object + 0x30) =
@@ -3028,13 +3031,11 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
             *(u8 *)((u8 *)object + 0x59) = 1;
             if (resource != 0 && lbl_8055EC68 != 0) {
                 ((ManagerAt24 *)lbl_8055EC68)->action(lbl_8033B56C);
-                *(f32 *)((u8 *)object + 0x5c) =
-                    ((ManagerAt28 *)resource)->value(lbl_8033B56C);
+                o5c->val = ((ManagerAt28 *)resource)->value(lbl_8033B56C);
             } else {
-                *(f32 *)((u8 *)object + 0x5c) = lbl_8056301C;
+                o5c->val = lbl_8056301C;
             }
-            *(f32 *)((u8 *)object + 0x5c) =
-                *(f32 *)((u8 *)object + 0x5c) * *(f32 *)((u8 *)object + 0x5c);
+            o5c->val = o5c->val * o5c->val;
         } else {
             *(s32 *)((u8 *)object + 0x60) = 2;
             unsigned index = fn_80129D90(0, 0, *(s32 *)((u8 *)object + 0x54));
@@ -3043,8 +3044,8 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
                         entries[0x34 / 4], lbl_80562FF0);
         }
         *(u8 *)((u8 *)object + 0x5a) = 0;
-        register int a = *(u32 *)((u8 *)arg0 + 0x10c);
-        u32 b = *(u32 *)((u8 *)arg0 + 0x110);
+        u32 a = *(u32 *)((u8 *)arg0 + 0x10c);
+        register u32 b = *(u32 *)((u8 *)arg0 + 0x110);
         *(u32 *)((u8 *)object + 4) = b;
         *(u32 *)object = a;
         b = *(u32 *)((u8 *)arg0 + 0x118);
