@@ -1508,11 +1508,11 @@ extern char lbl_8033AF08[];
 #pragma use_lmw_stmw off
 void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
     char *data = lbl_8033AC68;
+    register void * volatile copy4;
     void *sp8[0x1A];
     void *temp_r30;
     void *temp_r29;
     void **allocated;
-    void *copy4;
 
     temp_r30 = ((void *(*)(void *))fn_802AE414)(arg1);
     if (temp_r30 == 0) {
@@ -1525,7 +1525,7 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
         ((void (*)(void *, void *, void *, void *, int))fn_801F6C04)(
             lbl_8055EC10, sp8, temp_r29, temp_r30, arg3);
         if (arg2 != 0 && lbl_8055EC1C == 0) {
-            allocated = ((void **(*)(int, void *))fn_801284F8)(4, data + 0x240);
+            allocated = (void **)fn_801284F8(4, data + 0x240);
             copy4 = allocated;
             if (allocated != 0) {
                 *allocated = lbl_8033AF20;
@@ -1536,7 +1536,7 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
     } else {
         fn_801F6F3C(lbl_8055EC14, (int)sp8, (int)temp_r29, temp_r30, arg3);
         if (arg2 != 0 && lbl_8055EC20 == 0) {
-            allocated = ((void **(*)(int, void *))fn_801284F8)(4, data + 0x254);
+            allocated = (void **)fn_801284F8(4, data + 0x254);
             copy4 = allocated;
             if (allocated != 0) {
                 *allocated = lbl_8033AF08;
@@ -1548,12 +1548,12 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
 }
 #pragma pop
 
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 void fn_801F76F8(void *arg0, unsigned char *p) {
-    unsigned int a0, b0, a1, b1, a2, b2, a3, b3;
-    unsigned int a4, b4, a5, b5, a6, b6, a7, b7;
+    unsigned char *q = p + 0x3c;
+    unsigned int a0, a1, a2, a3, a4, a5, a6, a7;
+    unsigned int b0, b1, b2, b3, b4, b5, b6, b7;
     int i;
-    unsigned char *q;
     unsigned char c0, d0, c1, d1, c2, d2;
     a0=p[0x2c]; b0=p[0x3b]; a1=p[0x2d]; b1=p[0x3a];
     a2=p[0x2e]; b2=p[0x39]; a3=p[0x2f]; b3=p[0x38];
@@ -1563,7 +1563,6 @@ void fn_801F76F8(void *arg0, unsigned char *p) {
     p[0x2e]=(unsigned char)b2; p[0x39]=(unsigned char)a2; p[0x2f]=(unsigned char)b3; p[0x38]=(unsigned char)a3;
     p[0x30]=(unsigned char)b4; p[0x37]=(unsigned char)a4; p[0x31]=(unsigned char)b5; p[0x36]=(unsigned char)a5;
     p[0x32]=(unsigned char)b6; p[0x35]=(unsigned char)a6; p[0x33]=(unsigned char)b7; p[0x34]=(unsigned char)a7;
-    q = p + 0x3c;
     for (i = 0; i < 3; i++, q += 0x18) {
         c0=q[0]; q[0]=q[3]; q[3]=c0; c1=q[1]; q[1]=q[2]; q[2]=c1;
         c2=q[4]; q[4]=q[7]; q[7]=c2; d0=q[5]; q[5]=q[6]; q[6]=d0;
@@ -1579,15 +1578,16 @@ void fn_801F76F8(void *arg0, unsigned char *p) {
     p[0x86]=(unsigned char)b2; p[0x8d]=(unsigned char)a2; p[0x87]=(unsigned char)b3; p[0x8c]=(unsigned char)a3;
     p[0x88]=(unsigned char)b4; p[0x8b]=(unsigned char)a4; p[0x89]=(unsigned char)b7; p[0x8a]=(unsigned char)a5;
 }
-#pragma scheduling on
+#pragma use_lmw_stmw on
 void fn_801F78D8(void) {
 
 }
 
 extern void fn_801F75A4();
 #pragma scheduling invalid_target
-void fn_801F78DC(void *arg0, void *arg1, void *arg2) {
-    fn_801F75A4(arg2, (char *)arg2 + 0x2C, arg1);
+void fn_801F78DC(void *unused, void *owner, void *object) {
+    /* Trampoline: forward (object, object+0x2C, owner) to fn_801F75A4; the first argument is unused. */
+    fn_801F75A4(object, (char *)object + 0x2C, owner);
 }
 #pragma scheduling on
 extern const char lbl_8033AECC[];
