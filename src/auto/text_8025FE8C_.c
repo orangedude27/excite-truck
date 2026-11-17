@@ -142,8 +142,9 @@ temp = *(int *)((char *)fn_80016464(0) + 4);
 (void)fn_80016464(0);
 (void)fn_8001285C();
 }
-void fn_802607C4(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x1D) = 1;
+void fn_802607C4(void *widget) {
+    /* Set this selector widget's dim flag at +0x1D. */
+    *(u8 *)((u8 *)widget + 0x1D) = 1;
 }
 
 void fn_802607D0(void *arg0) {
