@@ -758,7 +758,7 @@ extern float lbl_80565030;
 extern void fn_802E317C(char *, ...);
 extern int memcpy(void *, const void *, unsigned int);
 extern char lbl_80346798[];
-#pragma scheduling on
+#pragma scheduling off
 void *fn_802DA918(float x0, float x1, float x2) {
     unsigned char saved;
     unsigned char *base;
