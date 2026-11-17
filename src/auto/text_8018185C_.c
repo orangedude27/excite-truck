@@ -138,7 +138,6 @@ typedef struct PhysParamB {
     short unk42;
     int unk44, unk48, unk4C;
 } PhysParamB;
-#pragma pack(pop)
 typedef struct PhysParamA {
     int unk00;
     unsigned char b0, b1, b2, b3, b4, b5, b6, b7;
