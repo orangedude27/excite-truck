@@ -6366,10 +6366,10 @@ extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) 
             *arg4 = *(s32 *)((u8 *)fatInfo + 0x2C) + arg1;
             result = 0;
         }
-        if (result == 0)
-            return 0;
-        else
+        if (result != 0)
             return result;
+        else
+            return 0;
     }
     u8 shiftAmount = *(u8 *)((u8 *)fatInfo + 0x21);
     u32 shiftedOffset = arg1 >> shiftAmount;
@@ -6402,9 +6402,8 @@ cluster_result:
     shiftAmount = *(u8 *)((u8 *)fatInfo + 0x21);
     u32 base = *(u32 *)((u8 *)fatInfo + 0x30);
     u32 shiftedCluster = clusterIndex << shiftAmount;
-    u32 mask = clusterCount - 1;
-    u32 withinCluster = arg1 & mask;
-    *arg4 = (base + shiftedCluster) + withinCluster;
+    u32 combined = base + shiftedCluster;
+    *arg4 = combined + (arg1 & (clusterCount - 1));
     return 0;
 }
 
@@ -16546,10 +16545,11 @@ loop_25:
         temp_r3 -= arg4;
         var_r3_2 = (u32)temp_r3 >> 2;
         if (arg4 < arg1) {
+            u32 k;
             temp_r0 = var_r3_2 >> 3U; var_ctr = temp_r0;
             if (temp_r0 != 0) {
                 do {
-                    var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4; var_r5_2[4] = var_r4; var_r5_2[5] = var_r4; var_r5_2[6] = var_r4; var_r5_2[7] = var_r4; var_r5_2[8] = var_r4; var_r5_2[9] = var_r4; var_r5_2[10] = var_r4; var_r5_2[11] = var_r4; var_r5_2[12] = var_r4; var_r5_2[13] = var_r4; var_r5_2[14] = var_r4; var_r5_2[15] = var_r4; var_r5_2[16] = var_r4; var_r5_2[17] = var_r4; var_r5_2[18] = var_r4; var_r5_2[19] = var_r4; var_r5_2[20] = var_r4; var_r5_2[21] = var_r4; var_r5_2[22] = var_r4; var_r5_2[23] = var_r4; var_r5_2[24] = var_r4; var_r5_2[25] = var_r4; var_r5_2[26] = var_r4; var_r5_2[27] = var_r4; var_r5_2[28] = var_r4; var_r5_2[29] = var_r4; var_r5_2[30] = var_r4; var_r5_2[31] = var_r4;
+                    for (k = 0; k < 32; k++) var_r5_2[k] = var_r4;
                     var_r5_2 += 32; var_ctr -= 1;
                 } while (var_ctr != 0);
                 var_r3_2 &= 7;
@@ -16558,7 +16558,7 @@ loop_25:
 block_21:
                 var_ctr_2 = var_r3_2;
                 do {
-                    var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4;
+                    for (k = 0; k < 4; k++) var_r5_2[k] = var_r4;
                     var_r5_2 += 4; var_ctr_2 -= 1;
                 } while (var_ctr_2 != 0);
             }
