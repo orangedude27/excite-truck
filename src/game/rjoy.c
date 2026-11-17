@@ -596,9 +596,13 @@ unsigned char fn_802E8364(void *out, int index) {
     return src[0];
 }
 
-unsigned char fn_802E8504(int index) {
-    extern unsigned char lbl_80505978[];
-    return lbl_80505978[index * 0x638];
+/* Return byte 0 (the connected flag) of the given controller's record in the
+ * Wiimote/controller state table (0x638 bytes per controller). */
+unsigned char fn_802E8504(int controllerIndex) {
+#define gWiimoteStateTable lbl_80505978
+    extern unsigned char gWiimoteStateTable[];
+    return gWiimoteStateTable[controllerIndex * 0x638];
+#undef gWiimoteStateTable
 }
 
 void fn_802E8518(int arg0) {
