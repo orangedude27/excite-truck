@@ -1931,8 +1931,11 @@ extern "C" void fn_801B2D28(void *arg0) {
 #pragma cplusplus reset
 
 #pragma scheduling on
-void *fn_801B2EC0(s32 arg0) {
-    return (void *)((u8 *)lbl_8055E684 + (arg0 << 7));
+/* Return the 0x80-byte deity (AI truck) slot at slotIndex from the slot table. */
+void *fn_801B2EC0(s32 slotIndex) {
+#define sDeitySlotBase lbl_8055E684
+    return (void *)((u8 *)sDeitySlotBase + (slotIndex << 7));
+#undef sDeitySlotBase
 }
 #pragma dont_inline reset
 
