@@ -211,6 +211,7 @@ extern "C" int fn_800FFE70(int sound) {
 extern "C" int fn_800FFE78(int sound) { return sound + 0xD8; }
 
 extern "C" u32 *fn_800FFE80(void) {
+    /* Return the address of the sound-library pointer global initialized to the shared nw4r sound dummy value. */
     return &lbl_8055DE88;
 }
 #pragma use_lmw_stmw off
