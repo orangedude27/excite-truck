@@ -1194,25 +1194,27 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void *fn_8024FFF8(void *arg0, s32 arg1) {
+extern "C" void *fn_8024FFF8(void *object, s32 deleteFlag) {
+    /* Destroy the owned object at +0x188, reset this object's vtable to lbl_803443B0,
+     * and optionally free this object. */
     extern char lbl_803443B0[];
     class Entry {
     public:
         virtual void destroy(s32);
     };
-    void *child;
+    void *owned;
 
-    if (arg0 != 0) {
-        child = *(void **)((u8 *)arg0 + 0x188);
-        *(void **)arg0 = (void *)lbl_803443B0;
-        if (child != 0) {
-            if (child != 0)
-                ((Entry *)child)->destroy(1);
+    if (object != 0) {
+        owned = *(void **)((u8 *)object + 0x188);
+        *(void **)object = (void *)lbl_803443B0;
+        if (owned != 0) {
+            if (owned != 0)
+                ((Entry *)owned)->destroy(1);
         }
-        if (arg1 > 0)
-            ((s32 (*)(void *))fn_80128668)(arg0);
+        if (deleteFlag > 0)
+            ((s32 (*)(void *))fn_80128668)(object);
     }
-    return arg0;
+    return object;
 }
 #pragma pop
 
