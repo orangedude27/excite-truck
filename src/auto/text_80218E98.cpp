@@ -9606,8 +9606,9 @@ extern "C" void fn_80229EF4(void *widget) {
     (*(u8 *)((u8 *)widget + 0x18)) = 0;
 }
 
-extern "C" s32 fn_80229F14(void *arg0) {
-    return *(s32 *)((char *)arg0 + 0xA5C);
+/* Return this text widget's s32 field at +0xA5C (its ibeam cursor graphic handle). */
+extern "C" s32 fn_80229F14(void *widget) {
+    return *(s32 *)((char *)widget + 0xA5C);
 }
 
 extern "C" void fn_80229F1C(void *widget) {
