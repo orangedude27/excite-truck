@@ -965,8 +965,10 @@ extern "C" void fn_80219440(void *self, s32 tag, void *data, s32 size) {
 extern "C" void fn_802179A0(s32);
 extern void fn_80218198(s32, s32);
 #pragma dont_inline on
-extern "C" void fn_802194F4(void* arg0) {
-    fn_802179A0(*(s32*)((u8*)arg0 + 0x2C));
+// Tab handler: advance the focus of the menu group this widget belongs to
+// (its pointer is held at +0x2C) to the next selectable widget.
+extern "C" void fn_802194F4(void* widget) {
+    fn_802179A0(*(s32*)((u8*)widget + 0x2C));
 }
 #pragma dont_inline reset
 
