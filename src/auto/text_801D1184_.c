@@ -124,8 +124,14 @@ void fn_801D13FC(void) {
         i++;
     }
 }
-void fn_801D1458(void *arg0, int arg1) {
-    ((void (*)(int))fn_801D11D4)(lbl_8055E908 + arg1 * 0x34);
+void fn_801D1458(void *arg0, int entryIndex) {
+#define sEntries lbl_8055E908
+#define processEntry fn_801D11D4
+    /* Process the 0x34-byte entry at entryIndex in the entry array through the
+       per-entry trampoline (which tail-calls into fn_801D11D8). */
+    ((void (*)(int))processEntry)(sEntries + entryIndex * 0x34);
+#undef processEntry
+#undef sEntries
 }
 
 /* Allocates and initializes the lbl_8055E908 array with lbl_8055E8F8 entries of 0x34 bytes,
