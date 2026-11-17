@@ -243,6 +243,7 @@ void fn_80246DE8(void) {
 }
 
 extern unsigned char lbl_803432FC[];
+/* Create the Monster-logo menu from the "LogoMnst.lyt" layout file. */
 void fn_80246DF4(void) {
     fn_80246CB8(lbl_803432FC);
 }
