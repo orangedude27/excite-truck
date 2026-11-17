@@ -354,8 +354,9 @@ extern "C" int fn_8027D858(void *obj) {
     return -1;
 }
 #pragma cplusplus off
-void fn_8027D880(void *arg0) {
-    fn_8001D9B4((char *)arg0 + 0x14);
+/* Effect method: forward the embedded bounds array at +0x14 to fn_8001D9B4 (which resolves the first slot whose value is within the limit passed through in r4). */
+void fn_8027D880(void *effect) {
+    fn_8001D9B4((char *)effect + 0x14);
 }
 
 extern void fn_8001DA48(void *);
