@@ -1545,7 +1545,7 @@ extern char *lbl_80559F30;
 extern char *lbl_80559F38;
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_8014D840(void *arg0, void *arg1) {
+extern "C" void fn_8014D840(void *__restrict arg0, void *arg1) {
     struct Dummy {
         virtual void v0();
         virtual void m(const char *);
@@ -3948,8 +3948,9 @@ s32 fn_80154714(void) {
 
 extern void fn_801B0F70(s32, s32);
 extern void fn_80168104(void);
-void fn_8015471C(s32 arg0, s32 arg1, s32 arg2) {
-    fn_801B0F70(arg1, arg2);
+/* Callback adapter: drop the leading context argument and forward the item index and value to fn_801B0F70. */
+void fn_8015471C(s32 context, s32 itemIndex, s32 value) {
+    fn_801B0F70(itemIndex, value);
 }
 
 /* Runs the coin-record update pass when the bet/race manager (allocated as
