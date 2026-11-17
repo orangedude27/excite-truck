@@ -1248,8 +1248,9 @@ s32 fn_8024B8CC(s32 base) {
     return base + 0x4C;
 }
 
-s32 fn_8024B8D4(s32 arg0) {
-    return arg0 + 0x98;
+/* Return the address of the embedded field at offset 0x98 of base. */
+s32 fn_8024B8D4(s32 base) {
+    return base + 0x98;
 }
 
 /* Refreshes per-entry UI state: notifies the handler for the selected entry (0x9C),
