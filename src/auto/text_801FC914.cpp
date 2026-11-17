@@ -1399,8 +1399,9 @@ extern "C" void fn_801FEF90(void* holder) {
     if (manager != 0) manager->resetPools(0);
 }
 
-extern "C" void fn_801FEFB4(void* arg0) {
-    fn_801FF770((char*)arg0 + 0x1008);
+extern "C" void fn_801FEFB4(void* object) {
+    /* Process the entry pool held at offset 0x1008 of object via fn_801FF770. */
+    fn_801FF770((char*)object + 0x1008);
 }
 
 extern "C" void fn_801FEFBC(void) {
