@@ -431,9 +431,10 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     *(u16 *)(p + 0xB2) = 0xFFFF;
 }
 #pragma pop
-extern "C" void fn_800F1080(void *arg0, int arg1, int arg2) {
-    *(int *)((char *)arg0 + 0x50) = arg1;
-    *(int *)((char *)arg0 + 0x54) = arg1 + arg2;
+/* Set two adjacent 32-bit fields of the object: field 0x50 = base, field 0x54 = base + span. */
+extern "C" void fn_800F1080(void *self, int base, int span) {
+    *(int *)((char *)self + 0x50) = base;
+    *(int *)((char *)self + 0x54) = base + span;
 }
 
 extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *track) {
@@ -6025,17 +6026,14 @@ extern "C" const char lbl_80326518[];
 extern "C" const char lbl_80326688[];
 extern "C" const char lbl_80326738[];
 extern "C" char lbl_805598F8;
-#pragma push
-#pragma processor 750
 #pragma scheduling on
 extern "C" s32 fn_800FAB98(void *arg0, void *arg1) {
-    s32 valid;
+    void *base = arg0;
     void *ref;
     void *data;
-    valid = *(s32 *)arg0;
-    if (valid == 0)
+    if (*(s32 *)base == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326518, 0x89, lbl_80326688);
-    ref = *(void **)((u8 *)arg0 + 4);
+    ref = *(void **)((u8 *)base + 4);
     ref = (u8 *)ref + 8;
     if (*((u8 *)ref + 1) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598F8, 0x6F, lbl_80326738);
@@ -6058,7 +6056,6 @@ extern "C" s32 fn_800FAB98(void *arg0, void *arg1) {
     *(u32 *)((u8 *)arg1 + 0x34) = *(u32 *)((u8 *)data + 0x30);
     return 1;
 }
-#pragma pop
 extern "C" const char lbl_803266B4[];
 extern "C" const char lbl_803266E0[];
 extern "C" const char lbl_8032670C[];
