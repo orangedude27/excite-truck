@@ -633,11 +633,12 @@ float fn_801DCF0C(void) {
 }
 #pragma dont_inline reset
 #pragma scheduling on
-extern double fabs(double);
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
-float fn_801DCF48(void *arg0, float farg0, float farg1) {
+ extern double fabs(double);
+ extern double lbl_80562B78;
+ #pragma push
+ #pragma processor 750
+ #pragma use_lmw_stmw off
+ float fn_801DCF48(void *arg0, float farg0, float farg1) {
     extern float lbl_80562B84;
     extern float lbl_80562BBC;
     char *state = (char *)lbl_8055E990;
