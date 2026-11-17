@@ -934,6 +934,8 @@ void fn_80178C8C(void) {
 
 }
 
+/* Return a pointer to the static 20-byte audio replay-parameter scratch block
+   (two ints followed by three floats) written by fn_801B5060 during sound replay. */
 void *__AXGetStudio_80178C90(void) {
     return lbl_804305C0;
 }
