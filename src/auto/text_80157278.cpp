@@ -3360,8 +3360,9 @@ extern "C" s32 fn_8015CC30(void* arg0) {
     return (s32)r;
 }
 #pragma pop
-extern "C" void fn_8015CC6C(void* arg0, f32 farg0) {
-    *(f32*)((char*)arg0 + 0x250) = farg0;
+/* Set the gain applied to a record's value (field at +0x250) on this record player. */
+extern "C" void fn_8015CC6C(void* player, f32 gain) {
+    *(f32*)((char*)player + 0x250) = gain;
 }
 
 extern "C" void fn_8015CC74(Unk801577F0* object) {
