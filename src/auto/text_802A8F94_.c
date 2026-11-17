@@ -6,6 +6,12 @@ extern s32 lbl_8055CC58;
 extern char lbl_804BD740[];
 typedef struct { s32 a, b, c; f32 d; } Unk804BD790;
 __declspec(section ".data") extern Unk804BD790 lbl_804BD790[2];
+static inline void fn_802A9574_fill(Unk804BD790 *p, f32 f) {
+    p->c = -1;
+    p->b = -1;
+    p->a = -1;
+    p->d = f;
+}
 extern f32 lbl_80564978;
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -264,13 +270,14 @@ void fn_802A9428(void) {
 void fn_802A9574(void) {
     Unk804BD790 *p = lbl_804BD790;
     f32 f = lbl_80564978;
-    s32 i;
-    for (i = 0; i < 2; i++) {
-        p[i].c = -1;
-        p[i].b = -1;
-        p[i].a = -1;
-        p[i].d = f;
-    }
+    p[0].c = -1;
+    p[0].b = -1;
+    p[0].a = -1;
+    p[0].d = f;
+    p[1].c = -1;
+    p[1].b = -1;
+    p[1].a = -1;
+    p[1].d = f;
 }
 
 void fn_802A95A8(void) {
