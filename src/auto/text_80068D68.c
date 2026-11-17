@@ -9199,7 +9199,7 @@ void btm_reset_complete(void) {
     u32 two;
 
     if (lbl_803C0F78[0x27C0] >= 4)
-        fn_8007093C(0xD0003, "btm_reset_complete");
+        fn_8007093C(0xD0003, lbl_803160F0);
 
     callback = *(void (**)(void *))(lbl_803C0F78 + 0x620);
     if (callback != 0) {
