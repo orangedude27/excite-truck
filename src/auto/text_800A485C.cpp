@@ -20661,8 +20661,8 @@ extern "C" void fn_800D120C(void *arg0, void *arg1, s32 arg2) {
     (void)arg1;
     if (((u8 *)arg0)[0x41] == 0) {
         f32 value = *(f32 *)((u8 *)arg0 + 4);
-        signed char c = (signed char)(lbl_80560E40 * value);
-        Play__Q210homebutton9RemoteSpkFliSc(*(void **)((u8 *)arg0 + 0x24), *(s32 *)arg0, arg2, c);
+        Play__Q210homebutton9RemoteSpkFliSc(*(void **)((u8 *)arg0 + 0x24), *(s32 *)arg0, arg2,
+            (signed char)(lbl_80560E40 * value));
         if (fn_80060C7C(*(void **)arg0) != 0) {
             if (((u8 *)arg0)[0x42] == 0) {
                 OSTime time = OSGetTime();
