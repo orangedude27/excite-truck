@@ -2001,8 +2001,9 @@ extern "C" s32 fn_800D89FC(s32 base, s32 offset) {
     return base + offset;
 }
 
-extern "C" s32 fn_800D8A04(s32 arg0, s32 arg1) {
-    return arg0 + arg1;
+extern "C" s32 fn_800D8A04(s32 base, s32 offset) {
+    // Returns a pointer into the Material resource at base+offset (e.g. the texture base at 0x40).
+    return base + offset;
 }
 
 extern "C" void Init__Q34nw4r3lyt8MaterialFv(void *arg0) {
