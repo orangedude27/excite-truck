@@ -4114,8 +4114,9 @@ extern "C" s32 fn_80144454(void) { return 0; }
 
 extern "C" s32 fn_8013D1F0(s32);
 #pragma dont_inline off
-#pragma inline auto
+#pragma always_inline on
 static inline s32 fn_8014445C_id(s32 v) { return v; }
+#pragma always_inline reset
 #pragma dont_inline on
 extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
     arg0 = fn_8013D1F0(arg1) ^ 0xA;
