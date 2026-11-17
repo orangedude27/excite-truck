@@ -1641,7 +1641,7 @@ extern "C" void fn_8001DAE0(void *, f32);
    HUD gauge/text drawing path (the counterpart of fn_8013EFB0's 320.0f offset). */
 extern "C" f32 fn_8013EFBC(f32 value) { return lbl_80561514 - value; }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" unsigned int fn_8013EFC8(void *arg0) {
     f32 magnitude = __fabsf(*(f32 *)((u8 *)arg0 + 0x250));
     if (magnitude <= *(f32 *)&lbl_80558DC4) {
