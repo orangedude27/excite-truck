@@ -18,62 +18,41 @@ void *fn_80171698(void) {
     extern void fn_801777CC(void *);
     extern char lbl_80330EC8[];
     extern char lbl_80330ED8[];
-    struct Object {
-        void *vtable;
-        void *vtable2;
-        void *base;
-        s32 zero;
-        s32 count;
-    };
+    struct Object { void *a; void *b; void *c; s32 d; s32 e; };
     volatile struct Object *obj;
-    s32 diff;
-    s32 n;
-    s32 m;
-    s32 flag;
-    s32 check;
-    s32 hi;
-    s32 valid;
-    u32 start;
-    u32 end;
-
+    s32 hi; s32 check; s32 flag; s32 m; s32 n; s32 diff; s32 valid; u32 end; u32 start2;
     obj = (volatile struct Object *)fn_801284F8(0xA1C, lbl_80330EC8);
     if (obj != 0) {
-        obj->vtable = lbl_80330ED8;
-        obj->vtable2 = lbl_80330ED8 + 0x10;
-        obj->base = (char *)obj + 0x14;
-        start = (u32)obj + 0x3C;
+        obj->a = lbl_80330ED8;
+        obj->b = lbl_80330ED8 + 0x10;
+        obj->c = (char *)obj + 0x14;
+        start2 = (u32)obj + 0x3C;
         end = (u32)obj + 0xA14;
-        valid = start < end;
-        obj->count = 0x40;
-        obj->zero = 0;
+        valid = start2 < end;
+        obj->e = 0x40;
+        obj->d = 0;
         if (valid) {
-            diff = (s32)(end - start);
+            diff = (s32)(end - start2);
             n = (diff + 0x27) / 40;
             m = n + 1;
             if (m > 8) {
                 check = 0;
-                if (start <= end) {
+                if (start2 <= end) {
                     flag = 1;
-                    if ((diff & (s32)0x80000000) == 0 &&
-                        ((diff + 0x27) & (s32)0x80000000) != 0)
-                        flag = 0;
-                    if (flag != 0) {
-                        check = 1;
-                        hi = n & (s32)0x80000000;
-                        if (hi == 0 && hi != (m & (s32)0x80000000))
-                            check = 0;
-                    }
+                    if ((diff & (s32)0x80000000) == 0 && ((diff + 0x27) & (s32)0x80000000) != 0) flag = 0;
+                    if (flag != 0) { hi = n & (s32)0x80000000; flag = 1; if (hi == 0 && hi != (m & (s32)0x80000000)) flag = 0; }
+                    check = flag;
                 }
-                if (check != 0)
-                    fn_801414A4((char *)obj + 0xA14);
+                if (check != 0) fn_801414A4((char *)obj + 0xA14);
             }
         }
     }
-    if (obj != 0)
-        fn_801777CC((char *)obj + 4);
+    if (obj != 0) fn_801777CC((char *)obj + 4);
     return (void *)obj;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void *fn_801717B4(void *arg0, int arg1) {
     struct Local {
         void *field_00;
@@ -84,41 +63,43 @@ void *fn_801717B4(void *arg0, int arg1) {
         char pad[0xA00];
     };
     struct Local *obj = (struct Local *)arg0;
-    int i;
-    int offset;
+    void *p;
     unsigned char *item;
+    int offset;
+    int i;
     int zero;
 
     if (arg0 != 0) {
         obj->field_00 = lbl_80330ED8;
         obj->field_04 = lbl_80330ED8 + 0x10;
-        if (arg0 != 0) {
-            fn_801777D0(&obj->field_04);
-            i = 0;
-            offset = 0;
-            zero = 0;
-            while (i < obj->field_0C) {
-                item = obj->field_08 + offset;
-                fn_80128658(*(void **)(item + 0x18));
-                *(void **)(item + 0x18) = (void *)zero;
-                offset += 0x28;
-                i++;
-            }
-            __dt__Q210JASDrumSet5TPercFv((char *)obj + 0xA14, -1);
-            if (&obj->field_08 != 0) {
-                if (&obj->field_08 != 0) {
-                    obj->field_08 = (unsigned char *)zero;
-                    obj->field_0C = zero;
-                    obj->field_10 = zero;
-                }
-            }
-            if (arg1 > 0)
-                fn_80128668(obj);
+        p = arg0;
+        if (arg0 != 0)
+            p = &obj->field_04;
+        fn_801777D0(p);
+        i = 0;
+        offset = 0;
+        zero = 0;
+        while (i < obj->field_0C) {
+            item = obj->field_08 + offset;
+            fn_80128658(*(void **)(item + 0x18));
+            *(void **)(item + 0x18) = (void *)zero;
+            offset += 0x28;
+            i++;
         }
+        __dt__Q210JASDrumSet5TPercFv((char *)obj + 0xA14, -1);
+        if (&obj->field_08 != 0) {
+            if (&obj->field_08 != 0) {
+                obj->field_08 = (unsigned char *)zero;
+                obj->field_0C = zero;
+                obj->field_10 = zero;
+            }
+        }
+        if (arg1 > 0)
+            fn_80128668(obj);
     }
     return obj;
 }
-
+#pragma pop
   void fn_8017188C(void *arg0) {
     int i = 0;
     int offset = 0;
@@ -141,8 +122,8 @@ extern s32 fn_80139B5C(s32);
 extern void fn_801D488C(s32, s32, s32, f32 *, f32, f32, f32);
 extern f32 lbl_80561A30;
 #pragma push
-#pragma paired off
-#pragma paired_single off
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_80171934(void *p) {
     s32 outerCount;
     u8 *item;
@@ -183,12 +164,16 @@ void fn_80171934(void *p) {
 }
 #pragma pop
 void fn_80171A4C(void *arg0) {
+    #pragma scheduling invalid_target
     int offset;
     int count;
-
-    for (count = 0, offset = 0; count < *(int *)((char *)arg0 + 12); count++, offset += 0x28) {
+    count = 0;
+    offset = 0;
+    while (count < *(int *)((char *)arg0 + 12)) {
         unsigned char *base = *(unsigned char **)((char *)arg0 + 8);
+        count++;
         base[offset + 0x24] = 0;
+        offset += 0x28;
     }
 }
 
