@@ -2825,6 +2825,7 @@ s32 DVDGetDriveStatus(void) {
     return state;
 }
 
+/* Set the DVD cache-invalidation flag and return its previous value. */
 s32 fn_800393C4(s32 value) {
     s32 old;
 
