@@ -190,26 +190,18 @@ extern "C" s32 fn_80144FB0(void *outStr, s32 maxLen, s32 flags, const char *flag
 }
 #pragma scheduling on
 extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
-    s32 var_r0;
-    s32 temp_r3;
-    s32 temp_r4;
-    f32 var_f0;
-    f32 temp_f1 = (f32)arg0 + arg2 * ((f32)arg1 - (f32)arg0);
-    if (temp_f1 < lbl_805615D4) {
-        var_f0 = temp_f1 - lbl_805615D0;
+    s32 masked;
+    s32 rounded;
+    f32 adjusted;
+    f32 value = (f32)arg0 + arg2 * ((f32)arg1 - (f32)arg0);
+    if (value < lbl_805615D4) {
+        adjusted = value - lbl_805615D0;
     } else {
-        var_f0 = lbl_805615D0 + temp_f1;
+        adjusted = lbl_805615D0 + value;
     }
-    var_r0 = 0xFF;
-    temp_r4 = (s32)var_f0;
-    temp_r3 = -temp_r4;
-    temp_r3 &= ~temp_r4;
-    temp_r3 >>= 31;
-    temp_r3 &= temp_r4;
-    if (temp_r3 < 0xFF) {
-        var_r0 = temp_r3;
-    }
-    return (u8)var_r0;
+    rounded = (s32)adjusted;
+    masked = rounded & ((-rounded & ~rounded) >> 31);
+    return (u8)((masked < 0xFF) ? masked : 0xFF);
 }
 
 extern "C" s32 fn_80145140(void *container, const char *name) {
