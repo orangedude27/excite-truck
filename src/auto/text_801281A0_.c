@@ -300,7 +300,8 @@ s32 fn_80129170(void *region, u32 value) {
 
 s32 fn_8012919C(void *arg0) { return ((s32 *)arg0)[2]; }
 
-s32 fn_801291A4(void *arg0) { return ((s32 *)arg0)[3] - ((s32 *)arg0)[2]; }
+/* Difference of this descriptor's two 32-bit count fields (word 3 minus word 2), e.g. capacity minus used. */
+s32 fn_801291A4(void *region) { return ((s32 *)region)[3] - ((s32 *)region)[2]; }
 
 s32 fn_801291B4(void *arg0) { return ((s32 *)arg0)[3]; }
 
