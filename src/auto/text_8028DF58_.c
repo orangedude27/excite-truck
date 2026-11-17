@@ -1834,7 +1834,10 @@ void fn_802916EC(void) {}
 
 int fn_802916F0(void *arg0) { return ((int *)arg0)[1]; }
 
-int fn_802916F8(void *arg0) { return *(int *)((char *)arg0 + 0x118); }
+int fn_802916F8(void *object) {
+    /* Return the object's 32-bit field at offset 0x118 (paired with the +0x11C flag accessors). */
+    return *(int *)((char *)object + 0x118);
+}
 
 #pragma dont_inline on
 void fn_80291700(void) { fn_802916E8(); }
