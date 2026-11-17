@@ -586,7 +586,7 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
     f32 sp8;
     void *temp_r3;
     void *temp_r3_2;
-    void *temp_r3_3;
+    register void *temp_r3_3;
 
     if (lbl_8055E2E0 != 0) {
         temp_r3 = ((Service *)lbl_8055E2E0)->lookup((const char *)text + 0xC8);
@@ -600,9 +600,8 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
                 (s32)((Service *)lbl_8055E2E0)->create((const char *)text + 0xD4));
         }
         temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
-        f32 *fields = (f32 *)((u8 *)temp_r3_3 + 4);
-        f32 value4 = fields[0];
-        f32 value8 = fields[1];
+        f32 value4 = *(f32 *)((u8 *)temp_r3_3 + 4);
+        f32 value8 = *(f32 *)((u8 *)temp_r3_3 + 8);
         s32 valueC = *(s32 *)((u8 *)temp_r3_3 + 0xC);
         fn_80148134(&spC, &sp8, valueC, value4, value8);
         f32 firstValue = *(f32 *)((u8 *)temp_r3 + 0x10);
