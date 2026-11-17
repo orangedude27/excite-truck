@@ -594,6 +594,7 @@ void fn_802B4DC0(void *arg0) {
 }
 
 void fn_802B4E30(void) {
+    /* Clear the skag-table selection filter so every entry is accepted (see fn_802B40B0). */
     lbl_8055F9C8 = (void*)-1;
 }
 
