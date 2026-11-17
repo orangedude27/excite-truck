@@ -2070,10 +2070,10 @@ void fn_802D14D8(void) {
         int gridHeight = lbl_8055D0C0;
         int gridWidth = lbl_8055D0BC;
         int tileIndex = (int)lbl_8055D0B8;
-        float tileScaleY = lbl_80564F8C / (float)gridWidth;
-        float tileScaleX = lbl_80564F8C / (float)gridHeight;
-        mtx[0][0] /= tileScaleY;
-        mtx[1][1] /= tileScaleX;
+        float tileScaleX = lbl_80564F8C / (float)gridWidth;
+        float tileScaleY = lbl_80564F8C / (float)gridHeight;
+        mtx[0][0] /= tileScaleX;
+        mtx[1][1] /= tileScaleY;
         mtx[0][2] += (float)(((tileIndex % gridWidth) * 2 - gridWidth) + 1);
         mtx[1][2] -= (float)(((tileIndex / gridWidth) * 2 - gridHeight) + 1);
     }
