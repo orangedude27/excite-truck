@@ -198,8 +198,11 @@ void fn_801EA59C(s32 arg0, s32 arg1, void *arg2) {
     if (fn_802794AC(*(s32 *)arg2, 0) != 0 && arg0 >= *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4)) *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4) = arg0 + 1;
 }
 
+/* Return CarMgrTail.realCount: one past the highest car record whose type is real. */
 s32 fn_801EA994(void) {
-    return *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4);
+#define gCarInfoBlock lbl_8055EB78
+    return *(s32 *)((u8 *)(*(s32 *)&gCarInfoBlock) + 0x5E4);
+#undef gCarInfoBlock
 }
 
 /* Return the address of the CarMgr car record with the given index (records are 0xBC-byte CarMgrEntry structs in the lbl_8055EB78 table). */
