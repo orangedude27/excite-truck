@@ -844,6 +844,7 @@ void *fn_802E5DD8(const char *arg0, unsigned int arg1, int arg2, int arg3, int a
     char *slot, *dst;
     const char *src = arg0;
     unsigned char c;
+    float fB, fA;
     for (i = 0; i < 0x100; p += 0xB0, i++) if (*(int *)(p + 0x94) == 0) { index = i; break; }
     if (index < 0) fn_802E317C(lbl_8034D554, (int)arg0);
     slot = (char *)lbl_8055FF90 + index * 0xB0;
@@ -851,13 +852,16 @@ void *fn_802E5DD8(const char *arg0, unsigned int arg1, int arg2, int arg3, int a
     fn_801282EC(0x80); fn_801282F4();
     *(void **)(slot + 0x90) = fn_8012850C((void *)arg1, lbl_8034D578);
     memset(*(void **)(slot + 0x90), 0, arg1);
+    fA = 1.0f;
     slot[0x25] = 1;
     *(void **)(slot + 0x9C) = (void *)((unsigned int)*(void **)(slot + 0x90) + 0x80000000);
+    fB = 1000.0f;
     *(unsigned int *)(slot + 0xA0) = arg1;
     *(int *)(slot + 0x94) = 1; *(int *)(slot + 0x20) = 1;
     slot[0x24] = (arg2 == 1);
     *(int *)(slot + 0x88) = arg3; *(int *)(slot + 0x8C) = arg4; *(int *)(slot + 0x98) = 0;
-    *(float *)(slot + 0xA8) = lbl_80565128; *(float *)(slot + 0xA4) = lbl_80565148;
+    *(float *)(slot + 0xA8) = fA;
+    *(float *)(slot + 0xA4) = fB;
     dst = slot; i = 0x20;
     goto copy;
 chk:
