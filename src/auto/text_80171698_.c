@@ -137,6 +137,7 @@ void fn_8017188C(void *arg0) {
         i++;
     }
 }
+#pragma pop
 
 void fn_80171930(void) {
 }
