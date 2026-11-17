@@ -2816,9 +2816,10 @@ extern "C" void fn_800A8BA8(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" void fn_800A8BB8(void *arg0, s32 arg1) {
-    if (arg1 != 0) {
-        *(s32 *)((u8 *)arg0 + 0x1640) = arg1;
+/* Sets a volume's sectors-per-cluster (+0x1640); a zero value leaves it unchanged. */
+extern "C" void fn_800A8BB8(void *volume, s32 sectorsPerCluster) {
+    if (sectorsPerCluster != 0) {
+        *(s32 *)((u8 *)volume + 0x1640) = sectorsPerCluster;
     }
 }
 
@@ -13048,6 +13049,7 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
     u32 i;
     u8 *groupBase;
     u32 j;
+    register u32 dead;
 
     if (arg1 != 0) {
         if (arg2 == 0)
@@ -13058,6 +13060,7 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
     groupBase = (u8 *)lbl_803D2140;
     out = arg1;
     count = 0;
+    dead = 0;
     for (i = 0; i < 0x1A; i++) {
         if (fn_800A71C4((u32 *)record) != 0 &&
             *(u32 *)(record + 4) == (u32)arg0) {
@@ -13066,12 +13069,14 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
                 if (*(u32 *)(group + 0x1FBC) == (u32)record) {
                     count++;
                     *out++ = *(u8 *)(group + 0x1F8E);
+                    dead++;
                     if ((u32)count == (u32)arg2)
                         break;
                 }
                 if (*(u32 *)(group + 0x3F84) == (u32)record) {
                     count++;
                     *out++ = *(u8 *)(group + 0x3F56);
+                    dead++;
                     if ((u32)count == (u32)arg2)
                         break;
                 }
