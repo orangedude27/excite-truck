@@ -4963,7 +4963,7 @@ extern "C" void fn_801A3BE0(void *arg0, void *arg1)
 
 #pragma push
 #pragma small_data off
-extern s32 lbl_80333728;
+__declspec(section ".data") extern s32 lbl_80333728;
 extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     struct Vec { f32 x, y, z; };
     void *object;
@@ -4978,6 +4978,7 @@ extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     f32 var_f4;
     f32 var_f5;
     f32 var_f6;
+    f32 tp;
     *(volatile s32 *)((u8 *)arg0 + 0x0C) = arg1;
     *(volatile s32 *)((u8 *)arg0 + 0x04) = arg3;
     *(volatile s32 *)((u8 *)arg0 + 0x08) = 0;
@@ -5010,31 +5011,29 @@ extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         void *obj = *(void **)((u8 *)arg0 + 0x24);
         Vec *base = (Vec *)*(void **)((u8 *)obj + 0x08);
         Vec *point = (Vec *)((u8 *)base + offset);
-        f32 tz, ty, tx;
         var_f3 = *(volatile f32 *)((u8 *)arg0 + 0x30);
-        tz = point->z;
-        var_f3 = var_f3 < tz ? var_f3 : tz;
-        ty = point->y;
+        tp = point->z;
+        var_f3 = var_f3 < tp ? var_f3 : tp;
+        tp = point->y;
         var_f4 = *(volatile f32 *)((u8 *)arg0 + 0x2C);
-        var_f4 = var_f4 < ty ? var_f4 : ty;
-        tx = point->x;
+        var_f4 = var_f4 < tp ? var_f4 : tp;
+        tp = point->x;
         var_f5 = *(volatile f32 *)((u8 *)arg0 + 0x28);
-        var_f5 = var_f5 < tx ? var_f5 : tx;
+        var_f5 = var_f5 < tp ? var_f5 : tp;
         var_f6 = *(volatile f32 *)((u8 *)arg0 + 0x3C);
         *(volatile f32 *)((u8 *)arg0 + 0x28) = (f32)(f64)var_f5;
         *(volatile f32 *)((u8 *)arg0 + 0x2C) = (f32)(f64)var_f4;
         *(volatile f32 *)((u8 *)arg0 + 0x30) = (f32)(f64)var_f3;
         maxSpill.x = var_f5; maxSpill.y = var_f4; maxSpill.z = var_f3;
         Vec *minPoint = (Vec *)((u8 *)*(void **)((u8 *)*(void **)((u8 *)arg0 + 0x24) + 0x08) + offset);
-        f32 tz2, ty2, tx2;
-        tz2 = minPoint->z;
-        var_f6 = var_f6 > tz2 ? var_f6 : tz2;
-        ty2 = minPoint->y;
+        tp = minPoint->z;
+        var_f6 = var_f6 > tp ? var_f6 : tp;
+        tp = minPoint->y;
         var_f3_2 = *(volatile f32 *)((u8 *)arg0 + 0x38);
-        var_f3_2 = var_f3_2 > ty2 ? var_f3_2 : ty2;
-        tx2 = minPoint->x;
+        var_f3_2 = var_f3_2 > tp ? var_f3_2 : tp;
+        tp = minPoint->x;
         var_f1 = *(volatile f32 *)((u8 *)arg0 + 0x34);
-        var_f1 = var_f1 > tx2 ? var_f1 : tx2;
+        var_f1 = var_f1 > tp ? var_f1 : tp;
         minSpill.x = var_f1; minSpill.y = var_f3_2; minSpill.z = var_f6;
         *(volatile f32 *)((u8 *)arg0 + 0x34) = (f32)(f64)var_f1;
         *(volatile f32 *)((u8 *)arg0 + 0x38) = (f32)(f64)var_f3_2;
