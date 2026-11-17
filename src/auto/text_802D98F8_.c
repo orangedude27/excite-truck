@@ -182,5 +182,6 @@ void fn_802D9C18(void) {
 }
 
 void fn_802D9C4C(void) {
+    /* Unregister the AI DMA callback (the DVD state poller fn_802D992C) by clearing it to NULL. */
     AIRegisterDMACallback_800591F0(0);
 }
