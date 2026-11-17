@@ -19,9 +19,9 @@ static inline int has_sound_entry(int *key) {
     return find_sound_entry_inline(key) != -1;
 }
 static inline int find_sound_entry_first(int *key) {
+    int byteOffset;
     void *table = lbl_8055F28C;
     int i;
-    int byteOffset;
     int count = *(int *)((char *)table + 4);
     byteOffset = 0;
     for (i = 0; i < count; i++) {
@@ -81,10 +81,7 @@ void fn_80249588(void) {}
 int fn_8024958C(int *arg0) {
     #pragma scheduling invalid_target
     int result = arg0[2] == 0x180302;
-    if (result) {
-        int idx = find_sound_entry_inline(arg0);
-        result = idx != -1;
-    }
+    if (result) result = find_sound_entry_first(arg0) != -1;
     if (result) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(arg0) * 0x18 + 0x14);
     return result;
 }
