@@ -2155,7 +2155,10 @@ void fn_801B3284(void) {
 
 u8 fn_801B3288(void *arg0) { return *(u8 *)((u8 *)arg0 + 0x2C); }
 
-u32 fn_801B3290(void) { return 1; }
+u32 fn_801B3290(void) {
+    /* Constant predicate (returns 1 / true); likely a virtual getter reached through a dispatch table. */
+    return 1;
+}
 
 void fn_801B3298(void) {
 
