@@ -3,6 +3,7 @@
 // Static-init thunk fn_802D3ED4 (+ .ctors slot 0x802ED5C0) remains in
 // auto/text_802D3ED4_.c pending a promotion pass.
 #include <revolution/GX/GXTypes.h>
+#include "revolution/GX/GXHardware.h"
 typedef int M2C_UNK;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 extern void GXLoadTexObj(void *, int);
@@ -431,27 +432,27 @@ void fn_802CEF90(void) {
         lbl_8055FDB8 = 0;
     }
 }
-void fn_802CF048(int arg0) {
-    if (arg0 != 0) {
+void fn_802CF048(int enable) {
+    if (enable != 0) {
         GXSetGPMetric(0x23, 0x16);
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = 0x2402C004;
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = 0x23000020;
-        *(volatile unsigned char *)0xCC008000 = 0x10;
-        *(volatile unsigned short *)0xCC008000 = 0;
-        *(volatile unsigned short *)0xCC008000 = 0x1006;
-        *(volatile unsigned int *)0xCC008000 = 0x84400;
+        WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
+        WGPIPE.i = 0x2402C004;
+        WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
+        WGPIPE.i = 0x23000020;
+        WGPIPE.c = GX_FIFO_CMD_LOAD_XF_REG;
+        WGPIPE.us = 0;
+        WGPIPE.us = 0x1006;
+        WGPIPE.i = 0x84400;
         return;
     }
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = 0x24000000;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = 0x23000000;
-    *(volatile unsigned char *)0xCC008000 = 0x10;
-    *(volatile unsigned short *)0xCC008000 = 0;
-    *(volatile unsigned short *)0xCC008000 = 0x1006;
-    *(volatile unsigned int *)0xCC008000 = 0;
+    WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
+    WGPIPE.i = 0x24000000;
+    WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG;
+    WGPIPE.i = 0x23000000;
+    WGPIPE.c = GX_FIFO_CMD_LOAD_XF_REG;
+    WGPIPE.us = 0;
+    WGPIPE.us = 0x1006;
+    WGPIPE.i = 0;
 }
 
 #pragma dont_inline on
