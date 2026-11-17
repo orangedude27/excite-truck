@@ -975,7 +975,8 @@ void fn_801CCB48(int playerIndex) {
 }
 
 void fn_801CCBA4(void) {
-    *((s8 *)lbl_8055E884 + 0x10) = 1;
+    /* Set the paused flag of the award stat handler in lbl_8055E884. */
+    ((StatHandler *)lbl_8055E884)->paused = 1;
 }
 
 void fn_801CCBB4(void) {
