@@ -177,14 +177,17 @@ void fn_801EA098(s16 *indexPtr, void *position, s32 outPosition, s32 outIndex, f
     ((s32 (*)(s16 *, f32 *, void *, s32, s32))QueryGroundHeight)(&index, queryPos, position, outPosition, outIndex);
 #undef QueryGroundHeight
 }
-f32 fn_801EA0E8(f32 arg0, f32 arg1) {
-    f32 input[3];
-    f32 output[3];
-    input[0] = arg0;
-    input[1] = 0.0f;
-    input[2] = arg1;
-    if (((s32 (*)(void *, f32 *, f32 *, s32, s32))fn_801DCE14)(0, input, output, 0, 0) != 0)
-        return output[1];
+f32 fn_801EA0E8(f32 x, f32 z) {
+    /* Query the ground height at world X/Z: build a 3D query point (x, 0, z), run it
+     * through the ground-height lookup fn_801DCE14 and return the resolved Y coordinate;
+     * returns 0.0f when the query fails. */
+    f32 queryPos[3];
+    f32 resultPos[3];
+    queryPos[0] = x;
+    queryPos[1] = 0.0f;
+    queryPos[2] = z;
+    if (((s32 (*)(void *, f32 *, f32 *, s32, s32))fn_801DCE14)(0, queryPos, resultPos, 0, 0) != 0)
+        return resultPos[1];
     return 0.0f;
 }
 #pragma scheduling on
