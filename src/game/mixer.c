@@ -181,7 +181,10 @@ int fn_80208CFC(int object, int deleteFlag) {
 
 int fn_80208D3C(void) { return lbl_80489238[6]; }
 
-int fn_80208D4C(int index) { return lbl_80489238[index]; }
+int fn_80208D4C(int index) {
+    /* Return the mixer device handle registered at the given slot. */
+    return MIXER_DEVICES[index];
+}
 
 void fn_80208D60(int arg0) { lbl_80489238[7] = arg0; }
 
