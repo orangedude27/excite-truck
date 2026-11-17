@@ -70,10 +70,20 @@ int fn_802AC1BC(const char *justify, int unused) {
 }
 #pragma use_lmw_stmw on
 #pragma cplusplus on
-int fn_802AC2B4(void **arg0, int arg1, float *arg2) {
-    if (arg0 != 0 && ((int (*)(void *))((void **)*arg0)[3])(arg0) != 0) {
+extern "C" int fn_802AC2B4(void **obj, int arg1, float *arg2) {
+    struct Interface {
+        virtual void v0();
+        virtual int check();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual float getValue(int);
+    };
+    if (obj != 0 && ((Interface *)obj)->check() != 0) {
         if (arg2 != 0) {
-            *arg2 = ((float (*)(void *, int))((void **)*arg0)[9])(arg0, arg1);
+            *arg2 = ((Interface *)obj)->getValue(arg1);
         }
         return 1;
     }
