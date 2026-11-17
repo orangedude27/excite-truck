@@ -387,8 +387,9 @@ done:
     fn_801B08FC(slot, scratch.request);
 }
 #pragma cplusplus off
-s32 fn_801B0DE0(void *arg0) {
-    return *(s32 *)((u8 *)arg0 + 0x3C);
+/* Getter for the s32 field at offset 0x3C of the given object. */
+s32 fn_801B0DE0(void *obj) {
+    return *(s32 *)((u8 *)obj + 0x3C);
 }
 
 /* Address helper: returns the pointer advanced by 4 bytes (the field at +0x4). */
