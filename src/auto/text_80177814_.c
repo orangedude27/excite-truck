@@ -1725,8 +1725,12 @@ void fn_80179AF4(void *arg0, int arg1) {
     *(short *)(dst + 0x30) = *(short *)(src + 0x6C);
 }
 #pragma scheduling on
+/* Return a pointer to the per-racer state block at offset 0x2EE8 of the global race-state buffer
+   (the same sub-block fn_80179824 passes to each racer's virtual method). */
 int fn_80179CB0(void) {
-    return lbl_8055E450 + 0x2EE8;
+#define gRaceBuffer lbl_8055E450
+    return gRaceBuffer + 0x2EE8;
+#undef gRaceBuffer
 }
 
 extern unsigned char lbl_8055E46C;
