@@ -1853,6 +1853,9 @@ extern "C" void fn_802A4A04(void* plane) {
 
 extern "C" u32 fn_802A4A18(void) { return 1; }
 
+// getType() implementation for the type-2 terrain item handler (vtable lbl_80349B50):
+// returns its fixed type id, 2 (one of the ids 1-6 the fn_802A194C cache keys on;
+// id 2 selects the fn_802A2EEC handler).
 extern "C" u8 fn_802A4A20(void) {
     return 2;
 }
