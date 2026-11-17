@@ -35,8 +35,9 @@ void* OSGetArenaLo(void) {
     return OSGetMEM1ArenaLo();
 }
 
-void OSSetMEM1ArenaHi(void* hi) {
-    __OSArenaHi = hi;
+/* Set the high bound of the MEM1 arena. */
+void OSSetMEM1ArenaHi(void* arenaHi) {
+    __OSArenaHi = arenaHi;
 }
 
 void OSSetMEM2ArenaHi(void* hi) {
