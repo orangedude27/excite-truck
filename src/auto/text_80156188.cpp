@@ -75,7 +75,10 @@ void fn_80156190(s32 subobjectThis) { fn_80154750(subobjectThis - 4); }
  * routine. */
 void fn_80156198(s32 subobjectThis) { fn_80154754(subobjectThis - 4); }
 
-void fn_801561A0(s32 arg0) { fn_80154D30(arg0 - 4); }
+/* This-adjusting thunk: subtract the 4-byte multiple-inheritance offset to
+ * recover the base subobject's `this`, then forward to the fn_80154D30 object
+ * initialization routine. */
+void fn_801561A0(s32 subobjectThis) { fn_80154D30(subobjectThis - 4); }
 
 void fn_801561A8(s32 arg0) { fn_80155368(arg0 - 4); }
 
