@@ -25,11 +25,15 @@ void fn_801D11D4(void) {
 }
 
 #pragma scheduling on
-int fn_801D11D8(void *arg0, int arg1) {
-    char *p = (char *)lbl_804348E8[arg1];
-    char *q = p + 0x32c;
-    fn_801819A0((char *)arg0 + 4, q, p, lbl_80562A48 * *(float *)(p + 0x2dc), *(float *)(p + 0x2e4), *(float *)(p + 0x2e8));
-    *(float *)((char *)arg0 + 0x30) = *(float *)(q + 0x64);
+int fn_801D11D8(void *dstEntry, int index) {
+    /* Fill one 0x34-byte entry of lbl_8055E908 from the object pointed to by
+     * lbl_804348E8[index]: build the entry's embedded 6-float bundle with
+     * fn_801819A0 using a 1.25x-scaled value (lbl_80562A48) and two more floats
+     * from the source, then copy the float at source+0x390 into the entry's +0x30. */
+    char *source = (char *)lbl_804348E8[index];
+    char *fields = source + 0x32c;
+    fn_801819A0((char *)dstEntry + 4, fields, source, lbl_80562A48 * *(float *)(source + 0x2dc), *(float *)(source + 0x2e4), *(float *)(source + 0x2e8));
+    *(float *)((char *)dstEntry + 0x30) = *(float *)(fields + 0x64);
 }
 extern void *fn_801284F8(int, const char *);
 extern void fn_801D0FA4(void);
