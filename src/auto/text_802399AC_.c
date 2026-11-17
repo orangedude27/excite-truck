@@ -610,8 +610,9 @@ void fn_8023AED4(void *selector, s32 index) {
     *(s32 *)(*(char **)((char *)selector + 0x1C)) = index;
 }
 
-s32 fn_8023AEE0(void *arg0) {
-    return *(s32 *)(*(char **)((char *)arg0 + 0x1C));
+/* Return the selector's current index (held through its +0x1C pointer). */
+s32 fn_8023AEE0(void *selector) {
+    return *(s32 *)(*(char **)((char *)selector + 0x1C));
 }
 
 void fn_8023AEEC(void *arg0) {
