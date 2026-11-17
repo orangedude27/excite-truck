@@ -152,7 +152,10 @@ u32 fn_80215FDC(void) { return 1; }
 
 u32 fn_80215FE4(void) { return 1; }
 
-u8 fn_80215FEC(void *arg0) { return *(u8 *)((u8 *)arg0 + 8); }
+u8 fn_80215FEC(void *option) {
+    /* Return the byte field at offset 0x08 of the option object. */
+    return *(u8 *)((u8 *)option + 8);
+}
 
 u8 fn_80215FF4(u8 *arg0) { return *arg0; }
 
