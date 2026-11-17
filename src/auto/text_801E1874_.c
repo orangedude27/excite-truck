@@ -252,17 +252,20 @@ extern "C" void fn_801E1D9C(void) {
     struct Dummy_801E1D9C_Local {
         virtual void d1(int);
     };
-    typedef Dummy_801E1D9C_Local *LocalPtr;
-    // try recompute base
-    if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x18) != 0) {
-        if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x18) != 0) {
-            ((LocalPtr)*(LocalPtr *)((char *)&lbl_804874B8 + 0x18))->d1(1);
+    Dummy_801E1D9C_Local *p;
+
+    p = (Dummy_801E1D9C_Local *)*(void **)((char *)&lbl_804874B8 + 0x18);
+    if (p != 0) {
+        if (p != 0) {
+            p->d1(1);
         }
         *(void **)((char *)&lbl_804874B8 + 0x18) = 0;
     }
-    if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x14) != 0) {
-        if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x14) != 0) {
-            ((LocalPtr)*(LocalPtr *)((char *)&lbl_804874B8 + 0x14))->d1(1);
+
+    p = (Dummy_801E1D9C_Local *)*(void **)((char *)&lbl_804874B8 + 0x14);
+    if (p != 0) {
+        if (p != 0) {
+            p->d1(1);
         }
         *(void **)((char *)&lbl_804874B8 + 0x14) = 0;
     }
