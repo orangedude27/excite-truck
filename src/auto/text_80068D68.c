@@ -21553,25 +21553,21 @@ u8 l2cu_lcb_disconnecting(void) {
     u8 *entry = base + 8;
     register u32 i = 0;
 
-    for (; i < 4 && result == 0; i++) {
+    for (; i < 4; i++) {
         if (entry[0] != 0) {
             u8 *link = *(u8 **)(entry + 8);
-            if (link == 0 || (s32)*(u32 *)(entry + 4) == 5)
-                return 1;
+            if (link == 0 || (s32)*(u32 *)(entry + 4) == 5) { result = 1; return result; }
             if (link == *(u8 **)(entry + 0xC) &&
                 link[0] != 0 &&
-                (u32)(*(u32 *)(link + 4) - 7) <= 1)
-                return 1;
+                (u32)(*(u32 *)(link + 4) - 7) <= 1) { result = 1; return result; }
         }
         i++;
         if (entry[0x5C] != 0) {
             u8 *link = *(u8 **)(entry + 0x64);
-            if (link == 0 || (s32)*(u32 *)(entry + 0x60) == 5)
-                return 1;
+            if (link == 0 || (s32)*(u32 *)(entry + 0x60) == 5) { result = 1; return result; }
             if (link == *(u8 **)(entry + 0x68) &&
                 link[0] != 0 &&
-                (u32)(*(u32 *)(link + 4) - 7) <= 1)
-                return 1;
+                (u32)(*(u32 *)(link + 4) - 7) <= 1) { result = 1; return result; }
         }
         entry += 0xB8;
     }
@@ -24622,9 +24618,9 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     s32 temp_r10;
     s32 temp_r11;
     s32 temp_r8_3;
-    u8 *temp_r6;
     u8 *frame;
     u8 *temp_r7;
+    u8 *temp_r6;
     u16 temp_r8;
     u8 temp_r3;
     u8 temp_r3_2;
