@@ -168,7 +168,9 @@ extern "C" void *fn_802C6B44(void *);
 extern const char lbl_8055CE20[];
 __declspec(section ".sdata") extern const char lbl_8055CE20[];
 #pragma opt_propagation off
-extern "C" void fn_802B562C(void *arg0, void *arg1, void *arg2) {
+/* Fill one UMatSet from a "unified_material_set" archive item: resolve its name,
+ * texture list and four ground/road texture entries, then the model id. */
+extern "C" void fn_802B562C(void *outSet, void *setItem, void *setEntries) {
     class Manager {
     public:
         virtual void f0(); virtual void f1(); virtual void f2();
@@ -181,44 +183,44 @@ extern "C" void fn_802B562C(void *arg0, void *arg1, void *arg2) {
         virtual void *getLarge(const char *);
     };
     char nameBuffer[0x20];
-    register const char *labels;
-    register char *entry;
-    register void *name;
-    register int i;
-    register int tailItem;
+    register const char *labelTable;
+    register char *texEntry;
+    register void *texParent;
+    register int texIndex;
+    register int modelItem;
     register Manager *manager;
-    register void *item;
-    register int result;
-    manager = (Manager *)arg1;
-    labels = lbl_8034A510;
-    *(void **)arg0 = manager->getName(lbl_8055CE18);
-    item = manager->getLarge(labels + 0x40);
-    fn_802B0B20(manager, item);
+    register void *texItem;
+    register int lookupResult;
+    manager = (Manager *)setItem;
+    labelTable = lbl_8034A510;
+    *(void **)outSet = manager->getName(lbl_8055CE18);
+    texItem = manager->getLarge(labelTable + 0x40);
+    fn_802B0B20(manager, texItem);
     fn_802B224C(manager);
-    *(void **)((char *)arg0 + 4) = fn_802B1138(*(const char **)arg0);
-    *(int *)((char *)arg0 + 8) = fn_802B2C98(*(char **)arg0);
-    name = manager->getNamed(labels + 0x54, (void *)lbl_8055CE20);
-    entry = (char *)arg0;
-    i = 0;
+    *(void **)((char *)outSet + 4) = fn_802B1138(*(const char **)outSet);
+    *(int *)((char *)outSet + 8) = fn_802B2C98(*(char **)outSet);
+    texParent = manager->getNamed(labelTable + 0x54, (void *)lbl_8055CE20);
+    texEntry = (char *)outSet;
+    texIndex = 0;
     do {
-        fn_801345D8(nameBuffer, 0x20, labels + 0x60, i + 1);
-        item = manager->getNamed(nameBuffer, name);
-        *(void **)(entry + 0xC) = item;
-        result = fn_802B110C((int (*)(int))fn_802B539C, (int)item);
-        *(int *)(entry + 0x10) = result;
-        i++;
-        entry += 8;
-    } while (i < 4);
-    tailItem = (int)manager->getNamed(labels + 0x6C, 0);
-    if (tailItem != 0) {
-        result = fn_802B2C34(fn_802C6B44, (void *)tailItem);
+        fn_801345D8(nameBuffer, 0x20, labelTable + 0x60, texIndex + 1);
+        texItem = manager->getNamed(nameBuffer, texParent);
+        *(void **)(texEntry + 0xC) = texItem;
+        lookupResult = fn_802B110C((int (*)(int))fn_802B539C, (int)texItem);
+        *(int *)(texEntry + 0x10) = lookupResult;
+        texIndex++;
+        texEntry += 8;
+    } while (texIndex < 4);
+    modelItem = (int)manager->getNamed(labelTable + 0x6C, 0);
+    if (modelItem != 0) {
+        lookupResult = fn_802B2C34(fn_802C6B44, (void *)modelItem);
     } else {
-        result = 0;
+        lookupResult = 0;
     }
-    if (result != 0) {
-        *(int *)((char *)arg0 + 0x2C) = fn_802C6DC4((void *)tailItem, result, 0, 0);
+    if (lookupResult != 0) {
+        *(int *)((char *)outSet + 0x2C) = fn_802C6DC4((void *)modelItem, lookupResult, 0, 0);
     } else {
-        *(int *)((char *)arg0 + 0x2C) = -1;
+        *(int *)((char *)outSet + 0x2C) = -1;
     }
 }
 #pragma opt_propagation reset
