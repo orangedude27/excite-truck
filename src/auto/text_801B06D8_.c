@@ -1421,24 +1421,28 @@ extern "C" void *fn_801B2118(void *obj, s32 deleteFlag) {
 /* fn_801B2118 stub removed for prototype fix */
 
 #pragma scheduling on
-void *fn_801B21B8(void *arg0) {
-    register float value = lbl_805625BC;
+/* Constructor for the lbl_80335BFC-vtable object: install its vtable, zero its
+ * +4..+0x3B state bytes and its owned child pointers (+0x3C, +0x58), initialize two
+ * 0..10000 float counters (+0x40..+0x54), and set the -1 sentinels (+0x60, +0x6C)
+ * and trailing float (+0x70). */
+void *fn_801B21B8(void *obj) {
+    register float defaultValue = lbl_805625BC;
     register int zero = 0;
-    *(void **)arg0 = lbl_80335BFC;
-    *(s32 *)((u8 *)arg0 + 0x40) = zero;
-    *(s32 *)((u8 *)arg0 + 0x48) = 0x2710;
-    *(float *)((u8 *)arg0 + 0x44) = value;
-    *(s32 *)((u8 *)arg0 + 0x4C) = zero;
-    *(s32 *)((u8 *)arg0 + 0x54) = 0x2710;
-    *(float *)((u8 *)arg0 + 0x50) = value;
-    memset((u8 *)arg0 + 4, zero, 0x38);
-    *(float *)((u8 *)arg0 + 0x70) = lbl_805625BC;
-    *(s32 *)((u8 *)arg0 + 0x5C) = zero;
-    *(s32 *)((u8 *)arg0 + 0x60) = -1;
-    *(s32 *)((u8 *)arg0 + 0x6C) = -1;
-    *(s32 *)((u8 *)arg0 + 0x58) = zero;
-    *(s32 *)((u8 *)arg0 + 0x3C) = zero;
-    return arg0;
+    *(void **)obj = lbl_80335BFC;
+    *(s32 *)((u8 *)obj + 0x40) = zero;
+    *(s32 *)((u8 *)obj + 0x48) = 0x2710;
+    *(float *)((u8 *)obj + 0x44) = defaultValue;
+    *(s32 *)((u8 *)obj + 0x4C) = zero;
+    *(s32 *)((u8 *)obj + 0x54) = 0x2710;
+    *(float *)((u8 *)obj + 0x50) = defaultValue;
+    memset((u8 *)obj + 4, zero, 0x38);
+    *(float *)((u8 *)obj + 0x70) = lbl_805625BC;
+    *(s32 *)((u8 *)obj + 0x5C) = zero;
+    *(s32 *)((u8 *)obj + 0x60) = -1;
+    *(s32 *)((u8 *)obj + 0x6C) = -1;
+    *(s32 *)((u8 *)obj + 0x58) = zero;
+    *(s32 *)((u8 *)obj + 0x3C) = zero;
+    return obj;
 }
 s32 fn_801B224C(s32 object, s32 deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
