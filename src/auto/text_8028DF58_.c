@@ -1706,10 +1706,6 @@ void fn_802908CC(void *arg0, void *arg1, int arg2) {
 #pragma pop
 extern float lbl_80564460, lbl_80564464, lbl_80564468, lbl_8056446C, lbl_80564470;
 extern double lbl_80564478;
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
-#pragma scheduling on
 void fn_80290FC4(void *arg0, void *arg1, int arg2) {
     struct { EfVtx v[32]; short idx[48]; } buf;
     volatile int count;
