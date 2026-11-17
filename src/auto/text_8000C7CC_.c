@@ -398,7 +398,10 @@ extern "C" s32 fn_8000D540(s32 input) {
 
 #pragma cplusplus reset
 u8 fn_8000D75C(void) {
-    return lbl_8055D404;
+    /* Return the global audio-active flag (1 while audio is running). */
+#define sAudioActiveFlag lbl_8055D404
+    return sAudioActiveFlag;
+#undef sAudioActiveFlag
 }
 
 s32 fn_8000D764(void) {
@@ -476,7 +479,7 @@ extern s32 lbl_80560210, lbl_80560214;
 extern f32 lbl_8056021C, lbl_80560220, lbl_80560224, lbl_80560228;
 extern f32 lbl_8056022C, lbl_80560230, lbl_80560234, lbl_80560238;
 #pragma processor 750
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_8000C964(void) {
 class Dummy { public: virtual void *f2(); virtual s32 *get3(const char *); virtual void *f4(); virtual s32 *get5(const char *); };
@@ -487,15 +490,14 @@ char name0[0x20], name1[0x20];
 struct Info item;
 struct Update out;
 s32 labels[2];
-register s32 *entries;
 u8 alpha;
 f32 baseVal, scale, factor, selectedVal;
 f32 temp_f0, temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, temp_f7;
 s32 temp_r8, drawMode;
-register u8 *base = lbl_802FC058;
-register s32 i, selected;
-register s32 *labelp;
 register s32 *obj;
+register s32 selected, i;
+register s32 *labelp;
+u8 *base = lbl_802FC058;
 fn_80230B5C(matrix);
 fn_802C8638(matrix);
 fn_802C974C(lbl_80560218, lbl_8056021C, lbl_80560220);
@@ -503,8 +505,7 @@ fn_800109E4(0x7F000000, lbl_80560224, lbl_80560228, lbl_8056022C, lbl_80560230);
 if (lbl_8055D414 != 0) {
 labels[0] = lbl_80560210;
 labels[1] = lbl_80560214;
-entries = (s32 *)(base + 0x40);
-fn_801473F8(lbl_8055D414, (const char *)base + 0x68, lbl_80558A70, fn_80131234(entries[lbl_8055D400]));
+fn_801473F8(lbl_8055D414, (const char *)base + 0x68, lbl_80558A70, fn_80131234(((s32 *)(base + 0x40))[lbl_8055D400]));
 fn_801473F8(lbl_8055D414, (const char *)base + 0x78, lbl_80558A70, fn_80131234((s32)(base + 0x84)));
 factor = lbl_80560234;
 labelp = labels;
