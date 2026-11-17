@@ -844,61 +844,59 @@ extern double __fabs(double);
 #pragma processor 750
 #pragma cplusplus on
 extern "C" void fn_801EBF00(void) {
-    f32 m[12];
-    f32 pos[3];
-    f32 r[9];
+    struct Locals { f32 r[9]; volatile f32 pos[3]; f32 m[12]; } l;
     char *item;
     f32 *p;
-    f32 a, scale, c, s, t;
-    s32 v;
-    u8 b;
+    f32 scale, s, t, a, magnitude, c;
+    s32 v, b;
     if (lbl_8055EBA0 != 0) {
         ((EBF00Widget *)lbl_804885E8[3])->setVisible(0);
         if (lbl_8055AFB8 != -1) {
-            fn_802C8B08(m);
+            fn_802C8B08(l.m);
             scale = lbl_80562E68 - lbl_8055EBA4;
-            m[9] = m[9] * scale;
-            m[10] = m[10] * scale;
-            m[11] = m[11] * scale;
-            m[0] = lbl_80562E68;
-            m[1] = lbl_80562E74;
-            m[2] = lbl_80562E74;
-            m[3] = lbl_80562E74;
-            m[4] = lbl_80562E68;
-            m[5] = lbl_80562E74;
-            m[6] = lbl_80562E74;
-            m[7] = lbl_80562E74;
-            m[8] = lbl_80562E68;
-            fn_802C744C(lbl_8055AFB8, m);
+            l.m[9] = l.m[9] * scale;
+            l.m[10] = l.m[10] * scale;
+            l.m[11] = l.m[11] * scale;
+            l.m[0] = lbl_80562E68;
+            l.m[1] = lbl_80562E74;
+            l.m[2] = lbl_80562E74;
+            l.m[3] = lbl_80562E74;
+            l.m[4] = lbl_80562E68;
+            l.m[5] = lbl_80562E74;
+            l.m[6] = lbl_80562E74;
+            l.m[7] = lbl_80562E74;
+            l.m[8] = lbl_80562E68;
+            fn_802C744C(lbl_8055AFB8, l.m);
         }
         ((EBF00Widget *)lbl_804885E8[6])->setVisible(0);
         item = fn_801E7E34() + fn_801E85B4() * 0xE0;
         a = *(f32 *)(item + 0xD8);
-        if (!((f32)__fabs(a) <= lbl_80558DC4[0])) {
+        magnitude = (f32)__fabs((double)a);
+        if (!(magnitude <= lbl_80558DC4[0])) {
             v = (s32)(lbl_80562E78 * a);
             v = v > 0 ? v : 0;
             b = 0xFF;
             if (v < 0xFF) b = v;
-            fn_802C9474((b << 16) | (b << 8) | b | 0xFF000000);
+            fn_802C9474(0xFF000000 | ((b & 0xff) << 16) | ((b & 0xff) << 8) | (b & 0xff));
             p = fn_802C86DC();
-            pos[0] = p[9];
-            pos[1] = p[10];
-            pos[2] = p[11];
+            l.pos[0] = p[9];
+            l.pos[1] = p[10];
+            l.pos[2] = p[11];
             t = *(f32 *)(item + 0xE0);
             c = (f32)cos(t);
             s = (f32)sin(t);
-            r[0] = c;
-            r[1] = lbl_80562E74;
-            r[2] = -s;
-            r[3] = lbl_80562E74;
-            r[4] = lbl_80562E68;
-            r[5] = lbl_80562E74;
-            r[6] = s;
-            r[7] = lbl_80562E74;
-            r[8] = c;
+            l.r[0] = c;
+            l.r[1] = lbl_80562E74;
+            l.r[2] = -s;
+            l.r[3] = lbl_80562E74;
+            l.r[4] = lbl_80562E68;
+            l.r[5] = lbl_80562E74;
+            l.r[6] = s;
+            l.r[7] = lbl_80562E74;
+            l.r[8] = c;
             t = lbl_80562E7C * *(f32 *)(item + 0xD8);
             fn_802C9900(lbl_80562E68 < t ? lbl_80562E68 : t);
-            fn_802C744C(lbl_8055AFBC, r);
+            fn_802C744C(lbl_8055AFBC, l.r);
             fn_802C9904();
         }
     } else {
