@@ -340,8 +340,9 @@ extern "C" void fn_800F0E38(void* arg0) {
     fn_800F0E64(*(s32*)((u8*)arg0 + 0x1E0));
 }
 
-extern "C" s32 fn_800F0E40(s32 arg0) {
-    return arg0 + 0xD8;
+extern "C" s32 fn_800F0E40(s32 base) {
+    /* Return the address of the member/subobject at offset 0xD8 within the sound object `base`. */
+    return base + 0xD8;
 }
 
 extern "C" s32 fn_800F0E48(s32 arg0) {
