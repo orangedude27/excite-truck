@@ -6,6 +6,7 @@ extern unsigned char lbl_80333D18[];
 extern unsigned char lbl_8055E5C0;
 extern void fn_8000D838(void *);
 extern void fn_801312EC(void *, void *);
+struct Bases_801A937C { unsigned char *dst; unsigned char *src; };
 void fn_801A937C(void) {
     unsigned char *dst;
     unsigned char *src;
