@@ -423,10 +423,10 @@ s32 fn_8000C7CC(void) {
 #pragma scheduling invalid_target
 u32 fn_8000C7F4(s32 arg0) {
     switch (fn_8000C7CC()) {
-        default:
-            return (u32)((2 - arg0) | (arg0 - 2)) >> 31;
         case 0:
             return 1;
+        default:
+            return (u32)((2 - arg0) | (arg0 - 2)) >> 31;
     }
 }
 #pragma scheduling on
