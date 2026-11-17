@@ -137,8 +137,10 @@ char *fn_80215F9C(void *option) {
     return (char *)OptionOneLabel;
 }
 
-void fn_80215FBC(void *arg0) {
-    *(u32 *)((u8 *)arg0 + 0x10) ^= 1;
+void fn_80215FBC(void *option) {
+    /* Toggle the selector flag at +0x10 that fn_80215F9C reads to choose
+     * between "OPTION 1" and "OPTION 2". */
+    *(u32 *)((u8 *)option + 0x10) ^= 1;
 }
 
 /* Toggle the option selector at +0x10: flip its low bit so fn_80215F9C reports the other label (OPTION 1 <-> OPTION 2). */
