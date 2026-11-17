@@ -783,32 +783,9 @@ static inline s32 findLayout80145DD8(void *obj) {
 }
 
 extern "C" void fn_80145DD8(void *arg0) {
-    void **p;
-    s32 i;
-    s32 n;
-    s32 last;
-
-    p = lbl_8042FBC0.data;
-    i = 0;
-    n = *(volatile s32 *)&lbl_8042FBC0.count;
-    if (n > 0) {
-        for (;;) {
-            if (*p == arg0) {
-                break;
-            }
-            p++;
-            i++;
-            n--;
-            if (n == 0) {
-                goto not_found;
-            }
-        }
-    } else {
-    not_found:
-        i = -1;
-    }
+    s32 i = findLayout80145DD8(arg0);
     if ((i >= 0) && (i >= 0) && (i < lbl_8042FBC0.count)) {
-        last = lbl_8042FBC0.count - 1;
+        s32 last = lbl_8042FBC0.count - 1;
         if (i != last) {
             void **items = lbl_8042FBC0.data;
             items[i] = items[last];
