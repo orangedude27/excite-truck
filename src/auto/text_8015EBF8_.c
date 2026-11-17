@@ -1050,9 +1050,10 @@ s32 fn_8016024C(s32 a, s32 b) {
     return a;
 }
 
-void fn_8016025C(void *arg0, void *arg1, float farg0, float farg1, float farg2, float farg3) {
-    *(f32 *)((u8 *)arg0 + 0) = farg0;
-    *(f32 *)((u8 *)arg0 + 4) = farg1;
+/* Write the two-float pair (x, y) into the output at +0/+4; the remaining arguments are unused. */
+void fn_8016025C(void *out, void *context, float x, float y, float unusedA, float unusedB) {
+    *(f32 *)((u8 *)out + 0) = x;
+    *(f32 *)((u8 *)out + 4) = y;
 }
 
 /* Integer absolute value: (value ^ sign) - sign, with sign = value >> 31 (all ones if negative). */
