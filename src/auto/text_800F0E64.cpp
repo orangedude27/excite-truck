@@ -4277,8 +4277,9 @@ extern "C" void fn_800F8234(s32 thisAtOffsetC) {
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18SoundArchivePlayerFv(void *, s32);
-extern "C" void fn_800F823C(s32 arg0, s32 arg1) {
-    __dt__Q36nw4hbm3snd18SoundArchivePlayerFv((void *)(arg0 - 0xC), arg1);
+/* Deleting-destructor this-adjusting thunk for nw4h::bm::snd::SoundArchivePlayer: subtract the 0xC subobject offset to recover `this`, then forward the delete flag to its destructor. */
+extern "C" void fn_800F823C(s32 subobjectThis, s32 deleteFlag) {
+    __dt__Q36nw4hbm3snd18SoundArchivePlayerFv((void *)(subobjectThis - 0xC), deleteFlag);
 }
 
 /* nw4hbm::snd::SoundHandle::detail_AttachSound(detail::BasicSound*):
