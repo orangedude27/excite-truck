@@ -784,19 +784,16 @@ extern f32 fn_80287BC8(f32, f32);
 extern f32 lbl_80564328, lbl_805643A4, lbl_805643A8;
 extern void fn_8028BED4(void *, s32, void *, void *, f32);
 extern s32 lbl_8055F6F0, lbl_8055F6F4;
-#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_8028B93C(f32 *arg0) {
     f32 dir[3];
     f32 pos[3];
     f32 temp_y, temp_z, temp_x;
     f32 radius;
     s32 i;
-    f32 x;
-    f32 y;
-    f32 z;
-    x = arg0[0] * lbl_80564328;
-    y = arg0[1] * lbl_80564328;
-    z = arg0[2] * lbl_80564328;
+    f32 x = arg0[0] * lbl_80564328;
+    f32 y = arg0[1] * lbl_80564328;
+    f32 z = arg0[2] * lbl_80564328;
     dir[0] = x;
     dir[1] = y;
     dir[2] = z;
@@ -813,7 +810,7 @@ s32 fn_8028B93C(f32 *arg0) {
     }
     return 0x20;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 s32 fn_8028BA44(void *arg0) {
     struct {
         f32 sp8;
@@ -839,20 +836,20 @@ extern f32 lbl_80564394;
 extern s32 fn_80287B94(s32, s32, f32, f32, f32);
 extern s32 fn_8028CD80(s32, s32, void *, f32 *, f32);
 s32 fn_8028BA9C(void *arg0) {
-    f32 a, b, c, scale;
-    f32 values[3];
     s32 temp;
-    c = *(f32 *)((u8 *)arg0 + 0x14);
-    b = *(f32 *)((u8 *)arg0 + 0x10);
-    scale = lbl_805643A0;
+    f32 values[3];
+    f32 c, b, a, scale;
     a = *(f32 *)((u8 *)arg0 + 0xC);
+    scale = lbl_805643A0;
+    b = *(f32 *)((u8 *)arg0 + 0x10);
+    c = *(f32 *)((u8 *)arg0 + 0x14);
     a *= scale;
     b *= scale;
     c *= scale;
     values[0] = a;
     values[1] = b;
     values[2] = c;
-    temp = fn_80287B94(0x18, 0x30, a, b, c);
+    temp = ((s32 (*)(s32, s32))fn_80287B94)(0x18, 0x30);
     fn_8028CD80(lbl_8055F6F8, temp, arg0, values, lbl_80564394);
     return 0x1C;
 }
@@ -879,10 +876,10 @@ s32 fn_8028BB14(s32 payload) {
     return 0x18;
 }
 
+__declspec(section ".sdata") extern char lbl_8055C8BC[];
 #pragma cplusplus on
 extern "C" void fn_8028BC18(void);
 void *fn_8028BB68(void *arg0, s32 arg1, f32 farg0) {
-    extern char lbl_8055C8BC[];
     extern char lbl_80348C28[];
     extern f32 lbl_8056432C;
     extern f64 lbl_805643B0;
