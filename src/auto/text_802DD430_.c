@@ -18,6 +18,9 @@ DECL_SECTION(".ctors$00") funcptr_t D_802ED5DC = fn_802DD430;
 #pragma push
 #pragma scheduling invalid_target
 void fn_802DD430(void) {
+    /* Static initializer: register a destructor for lbl_8055FE90, initialize the
+     * global object lbl_804DB480 (self pointer +12, capacity 10, count 0) and
+     * register its destructor fn_802DD4A0. */
     fn_8000D838(&lbl_8055FE90);
     lbl_8055FE98 = 0x100;
     lbl_8055FE9A = 0x405;
