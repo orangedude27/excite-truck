@@ -626,20 +626,22 @@ typedef float f32;
 extern f32 lbl_80563F4C;
 #define DEG_TO_RAD lbl_80563F4C /* pi / 180: converts degrees to radians */
 #pragma opt_propagation off
-void fn_802715C4(void *arg0, void *arg1)
+/* Convert the three angles (degrees) in effect at +0xC/+0x10/+0x14 to radians
+   by multiplying with lbl_80563F4C (pi/180), and store them to out[0..2]. */
+void fn_802715C4(void *out, void *effect)
 {
-  f32 b, d, c, a;
-  f32 x, y, z;
-  a = *((f32 *) (((u8 *) arg1) + 0x14));
-  b = lbl_80563F4C;
-  c = *((f32 *) (((u8 *) arg1) + 0x10));
-  d = *((f32 *) (((u8 *) arg1) + 0xC));
-  x = b * a;
-  y = b * c;
-  z = b * d;
-  *((f32 *) (((u8 *) arg0) + 8)) = x;
-  *((f32 *) (((u8 *) arg0) + 0)) = z;
-  *((f32 *) (((u8 *) arg0) + 4)) = y;
+  f32 scale, degX, degY, degZ;
+  f32 radZ, radY, radX;
+  degZ = *((f32 *) (((u8 *) effect) + 0x14));
+  scale = lbl_80563F4C;
+  degY = *((f32 *) (((u8 *) effect) + 0x10));
+  degX = *((f32 *) (((u8 *) effect) + 0xC));
+  radZ = scale * degZ;
+  radY = scale * degY;
+  radX = scale * degX;
+  *((f32 *) (((u8 *) out) + 8)) = radZ;
+  *((f32 *) (((u8 *) out) + 0)) = radX;
+  *((f32 *) (((u8 *) out) + 4)) = radY;
 }
 #pragma opt_propagation reset
 extern f32 lbl_8055F540;
