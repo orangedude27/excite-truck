@@ -2918,6 +2918,7 @@ copy_done2:
 #pragma cplusplus reset
 #pragma pop
 extern char lbl_80338928[];
+/* Return the effect-name table ("PhysPath_ASE", "camera_shake", "track_effect", ...). */
 void *fn_801D8148(void) {
     return lbl_80338928;
 }
