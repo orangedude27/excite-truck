@@ -1895,25 +1895,46 @@ void fn_801195A0(void *voices) {
 }
 
 void fn_801195D8(void *arg0) {
-    u8 *base = (u8 *)arg0;
-    u32 available = *(u32 *)(base + 0x40);
+    /* Feed the stream voices: while the ring has more than the fill threshold
+     * free, copy the remaining decoded source bytes into the ring (deinterleave
+     * stereo 16-bit samples into the two channel buffers, or plain bytes for
+     * mono), flush the caches and advance the source cursor, ring position and
+     * counters under interrupts; restart the voices once the stream drains. */
+    #define SRC_BEGIN  (*(u8 **)(player + 0x2C))          /* decoded-source wrap pointer */
+    #define SRC_END    (*(u8 **)(player + 0x30))          /* decoded-source end */
+    #define SRC_CURSOR (*(u8 **)(player + 0x38))          /* decoded-source read cursor */
+    #define BYTES_FREE (*(u32 *)(player + 0x40))          /* free bytes in the voice ring */
+    #define LOW_WATER  (*(u32 *)(player + 0x54))          /* stop feeding at/below this */
+    #define CHANNELS   (*(s32 *)(player + 0x78))          /* 1 = mono, 2 = stereo */
+    #define LEFT_BUF   (*(u8 **)(player + 0x84))          /* left / mono ring buffer */
+    #define RIGHT_BUF  (*(u8 **)(player + 0x88))          /* right ring buffer */
+    #define RING_BYTES (*(u32 *)(player + 0x94))          /* ring capacity in bytes */
+    #define LOOPING    (*(s32 *)(player + 0xB0))
+    #define PAUSED     (*(s32 *)(player + 0xB4))
+    #define WRITE_POS       (*(u32 *)(player + 0xB8))
+    #define WRITE_POS_RELOAD (*(volatile u32 *)(player + 0xB8))
+    #define TO_PLAY    (*(u32 *)(player + 0xBC))          /* bytes still to be played */
+
+    u8 *player = (u8 *)arg0;
+    u32 freeBytes = BYTES_FREE;
     u8 *src;
-    u32 count, pos, capacity, state;
-    if (available > *(u32 *)(base + 0x54)) {
-        count = *(u32 *)(base + 0xbc);
-        if (count > available) count = available;
-        pos = *(u32 *)(base + 0xb8);
-        capacity = *(u32 *)(base + 0x94);
-        if (count + pos > capacity) count = capacity - pos;
-        src = *(u8 **)(base + 0x38);
-        if (src + count > *(u8 **)(base + 0x30)) count = *(u8 **)(base + 0x30) - src;
-        if (*(s32 *)(base + 0x78) != 1) {
-            u32 p = *(volatile u32 *)(base + 0xb8);
-            u16 *left = (u16 *)(*(u8 **)(base + 0x84) + (p >> 1));
+    u32 count, pos, ringBytes, irq;
+
+    if (freeBytes > LOW_WATER) {
+        count = TO_PLAY;
+        if (count > freeBytes) count = freeBytes;
+        pos = WRITE_POS;
+        ringBytes = RING_BYTES;
+        if (count + pos > ringBytes) count = ringBytes - pos;
+        src = SRC_CURSOR;
+        if (src + count > SRC_END) count = SRC_END - src;
+        if (CHANNELS != 1) {
+            u32 p = WRITE_POS_RELOAD;
+            u16 *left = (u16 *)(LEFT_BUF + (p >> 1));
             u16 *r, *right;
             u16 *l = left;
             u32 i;
-            right = (u16 *)(*(u8 **)(base + 0x88) + (p >> 1));
+            right = (u16 *)(RIGHT_BUF + (p >> 1));
             r = right;
             for (i = count >> 2; i != 0; --i) {
                 *l++ = *(u16 *)src; src += 2;
@@ -1922,25 +1943,39 @@ void fn_801195D8(void *arg0) {
             DCFlushRange(left, (l - left) * 2);
             DCFlushRange(right, (r - right) * 2);
         } else {
-            u8 *dst = *(u8 **)(base + 0x84) + pos;
+            u8 *dst = LEFT_BUF + pos;
             memcpy(dst, src, count);
             DCFlushRange(dst, count);
             src += count & ~1;
         }
-        state = OSDisableInterrupts();
-        *(u32 *)(base + 0x40) -= count;
-        OSRestoreInterrupts(state);
-        if (src >= *(u8 **)(base + 0x30)) src = *(u8 **)(base + 0x2c);
-        *(u8 **)(base + 0x38) = src;
-        pos = *(u32 *)(base + 0xb8) + count;
-        capacity = *(u32 *)(base + 0x94);
-        *(u32 *)(base + 0xb8) = pos;
-        if (pos >= capacity) *(u32 *)(base + 0xb8) = pos - capacity;
-        count = *(u32 *)(base + 0xbc) - count;
-        *(u32 *)(base + 0xbc) = count;
-        if (*(s32 *)(base + 0xb0) == 0 && count == 0 && *(s32 *)(base + 0xb4) == 0)
-            fn_80119558(base + 0x7c);
+        irq = OSDisableInterrupts();
+        BYTES_FREE -= count;
+        OSRestoreInterrupts(irq);
+        if (src >= SRC_END) src = SRC_BEGIN;
+        SRC_CURSOR = src;
+        pos = WRITE_POS + count;
+        ringBytes = RING_BYTES;
+        WRITE_POS = pos;
+        if (pos >= ringBytes) WRITE_POS = pos - ringBytes;
+        count = TO_PLAY - count;
+        TO_PLAY = count;
+        if (LOOPING == 0 && count == 0 && PAUSED == 0)
+            fn_80119558(player + 0x7c);
     }
+    #undef SRC_BEGIN
+    #undef SRC_END
+    #undef SRC_CURSOR
+    #undef BYTES_FREE
+    #undef LOW_WATER
+    #undef CHANNELS
+    #undef LEFT_BUF
+    #undef RIGHT_BUF
+    #undef RING_BYTES
+    #undef LOOPING
+    #undef PAUSED
+    #undef WRITE_POS
+    #undef WRITE_POS_RELOAD
+    #undef TO_PLAY
 }
 
 /* The pair of AX voices a stream is played through, plus the PCM ring buffers
