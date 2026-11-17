@@ -705,8 +705,9 @@ void fn_80135190(void) {
 void fn_80135194(void) {
 }
 
+/* NullDriver AIDriver virtual slot 8 (vtable offset 0x28) default implementation: a no-op, like the
+ * other unused virtuals in this NullDriver vtable (fn_80135190/94). */
 void fn_80135198(void) {
-
 }
 
 #pragma scheduling invalid_target
