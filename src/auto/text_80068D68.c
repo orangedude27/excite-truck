@@ -87,7 +87,7 @@ extern u8 fn_8006EB80(void);
   extern char lbl_80314128[];
   extern char lbl_803187B0[];
   void rfc_send_buf_uih();
-void rfc_process_mx_message(void *, BT_HDR *);
+void rfc_process_mx_message();
 
 /* logical struct used for decoding RFCOMM MX frames (see rfc_int.h) */
 typedef struct {
