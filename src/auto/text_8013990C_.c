@@ -106,11 +106,13 @@ extern "C" void *fn_801399FC(void *arg0) {
 
 #pragma cplusplus reset
 #pragma scheduling on
-void fn_80139B5C(void *arg0, int arg1) {
-    volatile float *p = (volatile float *)((char *)arg0 + 0x60);
-    float a = p[0];
-    float b = p[2];
-    fn_80139B70(arg1, a, b);
+/* Test whether the point whose x/y coordinates live at +0x60/+0x68 of point
+ * lies inside the polygon (the crossing test itself is fn_80139B70). */
+void fn_80139B5C(void *point, int polygon) {
+    volatile float *coords = (volatile float *)((char *)point + 0x60);
+    float x = coords[0];
+    float y = coords[2];
+    fn_80139B70(polygon, x, y);
 }
 
 extern float lbl_80561410;
