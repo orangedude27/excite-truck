@@ -421,6 +421,8 @@ extern "C" s32 fn_8012ABB0(const char *name, void *headerBuffer) {
     return handle;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" s32 fn_8012AC28(s32 arg0, s32 arg1) {
     u8 buffer[0x104];
     s32 spC;
@@ -435,8 +437,7 @@ extern "C" s32 fn_8012AC28(s32 arg0, s32 arg1) {
     }
     return spC;
 }
-
-#pragma dont_inline reset
+#pragma pop
 
 extern "C" void fn_8012AC98(s32 arg0) {
     fn_8012AC28(arg0, 0);
