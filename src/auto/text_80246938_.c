@@ -415,13 +415,15 @@ Obj_802470D4 *fn_802470D4(Obj_802470D4 *self, s32 deleteFlag) {
 #pragma push
 #pragma processor 750
 void fn_80247174(void) {
+    register float divisor = lbl_805638A8;
+    register float base = lbl_80563898;
     s32 i = 0;
     do {
-        fn_80246CAC(lbl_80563898 - (float)i / lbl_805638A8);
+        fn_80246CAC(base - (float)i / divisor);
         fn_80127464();
-        fn_802E2D74(16);
+        fn_802E2D74(0x10);
         i++;
-    } while (i < 50);
+    } while (i < 0x32);
     fn_8020A634();
     fn_80246CAC(lbl_80563898);
 }
@@ -552,7 +554,9 @@ extern void fn_801312EC(void *, const char *), fn_80131318(void *);
 extern void fn_80214FD8(void *, void *), fn_80239F74(void);
 extern s32 fn_8000DA10(void);
 extern int fn_8000DBAC(void);
-extern void fn_802E6FBC(void), fn_8000DC70(int), fn_800169F8(int), fn_80137C78(int);
+extern void fn_802E6FBC(void), fn_80137C78(int);
+extern char *fn_8000DC70(int);
+extern void fn_800169F8(const char *, ...);
 extern s32 fn_802E4A10(void);
 extern void fn_80137C84(int, int), fn_8023BCEC(void);
 extern void fn_8025812C(void), fn_8025C054(void), fn_800196FC(void), fn_80161DE4(void);
