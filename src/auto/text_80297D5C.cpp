@@ -450,43 +450,47 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
-    char *entry = (char *)arg1;
-    float remaining = *(float *)(entry + 0x24);
-    if (deltaTime > remaining) {
-        int index = ((int)arg1 - (int)arg0) / 0x2C;
-        ((void (*)(void *, int))fn_8029840C)(arg0, index);
+/* Per-frame update of one active 0x2C-byte slot in the four-slot pool managed
+ * by fn_802982C0: retire the slot once its remaining lifetime is shorter than
+ * deltaTime, otherwise age it and emit a particle at a position scattered
+ * randomly inside the disc spanned by the slot's two direction vectors. */
+extern "C" void fn_8029871C(void *slotPool, void *slot, float deltaTime) {
+    char *entry = (char *)slot;
+    float timeLeft = *(float *)(entry + 0x24);
+    if (deltaTime > timeLeft) {
+        int slotIndex = ((int)slot - (int)slotPool) / 0x2C;
+        ((void (*)(void *, int))fn_8029840C)(slotPool, slotIndex);
         return;
     }
-    *(float *)(entry + 0x24) = remaining - deltaTime;
-    float angle = fn_80129DC4(0, -1.0f, 1.0f);
-    float angle2 = angle * angle;
-    float otherAngle = (float)fn_8002F234(1.0f - angle2);
-    float cosine = fn_80129DC4(0, -otherAngle, otherAngle);
-    volatile float target[3];
-    volatile float positions[3];
+    *(float *)(entry + 0x24) = timeLeft - deltaTime;
+    float dirA = fn_80129DC4(0, -1.0f, 1.0f);
+    float dirASq = dirA * dirA;
+    float discRadius = (float)fn_8002F234(1.0f - dirASq);
+    float dirB = fn_80129DC4(0, -discRadius, discRadius);
+    volatile float zeroVec[3];
+    volatile float spawnPos[3];
     float zero = 0.0f;
-    target[0] = zero;
-    target[1] = zero;
-    target[2] = zero;
-    float x = *(float *)(entry + 0x00) + *(float *)(entry + 0x0C) * angle;
-    positions[0] = x;
-    float y = *(float *)(entry + 0x04) + *(float *)(entry + 0x10) * angle;
-    positions[1] = y;
-    float z = *(float *)(entry + 0x08) + *(float *)(entry + 0x14) * angle;
-    positions[2] = z;
-    float x2 = x + *(float *)(entry + 0x18) * cosine;
-    positions[0] = x2;
-    float yAdjusted = y + *(float *)(entry + 0x1C) * cosine;
-    positions[1] = yAdjusted;
-    float zOffset = *(float *)(entry + 0x20);
-    float zVelocity = zOffset * cosine;
-    positions[1] = yAdjusted + lbl_805645BC;
-    float zFinal = z + zVelocity;
-    positions[2] = zFinal;
+    zeroVec[0] = zero;
+    zeroVec[1] = zero;
+    zeroVec[2] = zero;
+    float baseX = *(float *)(entry + 0x00) + *(float *)(entry + 0x0C) * dirA;
+    spawnPos[0] = baseX;
+    float baseY = *(float *)(entry + 0x04) + *(float *)(entry + 0x10) * dirA;
+    spawnPos[1] = baseY;
+    float baseZ = *(float *)(entry + 0x08) + *(float *)(entry + 0x14) * dirA;
+    spawnPos[2] = baseZ;
+    float finalX = baseX + *(float *)(entry + 0x18) * dirB;
+    spawnPos[0] = finalX;
+    float finalY = baseY + *(float *)(entry + 0x1C) * dirB;
+    spawnPos[1] = finalY;
+    float velBZ = *(float *)(entry + 0x20);
+    float velBZScaled = velBZ * dirB;
+    spawnPos[1] = finalY + lbl_805645BC;
+    float finalZ = baseZ + velBZScaled;
+    spawnPos[2] = finalZ;
     ((void (*)(void *, float *, float *, float, float, float, float, float))fn_8028E584)(
-        *(void **)((char *)arg0 + 0xB0), (float *)positions, (float *)target, zVelocity, zOffset, z, y, x);
-    fn_80288A40((float *)positions, (float *)target);
+        *(void **)((char *)slotPool + 0xB0), (float *)spawnPos, (float *)zeroVec, velBZScaled, velBZ, baseZ, baseY, baseX);
+    fn_80288A40((float *)spawnPos, (float *)zeroVec);
 }
 #pragma pop
 
