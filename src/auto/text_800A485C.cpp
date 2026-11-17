@@ -25578,7 +25578,8 @@ extern "C" s32 fn_800A4B9C(u16 *left, u16 *right, s32 count) {
     return 0;
 }
 
-extern "C" s32 fn_800A4BE8(s32 arg0, s32 arg1) { return (arg0 << 16) + arg1; }
+/* Pack two 16-bit halfwords into one 32-bit word: highWord in the high half, lowWord in the low (fn_800A4BF4 splits them back). */
+extern "C" s32 fn_800A4BE8(s32 highWord, s32 lowWord) { return (highWord << 16) + lowWord; }
 
 extern "C" s32 fn_800A4BF4(s32 packed, u16 *outLength, s16 *inLength) {
     /* Unpack a Unicode-conversion callback result: high halfword is the bytes written (*outLength), low halfword the UTF-16 units consumed (*inLength). */
