@@ -83,6 +83,9 @@ int fn_8024958C(int *arg0) {
     if (result) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(arg0) * 0x18 + 0x14);
     return result;
 }
+/* "Accept all" filter callback used as the sound-entry filter when no filtering is
+ * requested: pairs with fn_8024958C (the conditional filter) and returns 1 so every
+ * entry is included.  Extra call arguments are ignored. */
 int fn_80249660(void) { return 1; }
 
 #pragma push
