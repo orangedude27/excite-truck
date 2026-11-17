@@ -211,11 +211,8 @@ void fn_8018185C(void *arg0, const float *arg1) {
 #pragma scheduling on
 
 void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, float farg2) {
+    float a, b, c, d;
     float values[6];
-    float a;
-    float b;
-    float c;
-    float d;
     a = *(float *)((char *)arg1 + 0x54);
     b = *(float *)((char *)arg1 + 0x50);
     c = *(float *)((char *)arg1 + 0x5C);
@@ -226,7 +223,7 @@ void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, fl
     values[2] = (b * scale) / lbl_80561CC8;
     values[1] = c * farg2;
     values[3] = d * farg1;
-    fn_8018185C(dst, values);
+    fn_8018185C(arg2, values);
 }
 float fn_80181A14(void *truck) {
 #define dirtyParams lbl_80434930
@@ -475,14 +472,21 @@ void *fn_80182010(void *object) {
     return object;
 }
 
-void fn_80182074(void *arg0, int arg1) {
+void fn_80182074(void *arg0, void *arg1) {
+    extern void *__AXFXGetLfoSinTable_801769CC(void);
+    int v;
+    void *tbl;
     *(unsigned char *)((char *)arg0 + 0x2680) = 0;
     *(int *)((char *)arg0 + 0x59C) = *(int *)((char *)arg1 + 0xE4);
     *(int *)((char *)arg0 + 0x5A4) = *(int *)((char *)arg1 + 0xE8);
-    {
-        int v = *(int *)((char *)arg1 + 0xDC);
-        if (v == 0) v = 0xFF807FF;
-        *(int *)((char *)arg0 + 0x5A0) = v;
+    v = *(int *)((char *)arg1 + 0xDC);
+    *(int *)((char *)arg0 + 0x5A0) = v;
+    if (v == 0) {
+        *(int *)((char *)arg0 + 0x5A0) = 0x0FF807FF;
+        tbl = __AXFXGetLfoSinTable_801769CC();
+        if (*(int *)((char *)tbl + 4) & 0x400) {
+            *(int *)((char *)arg0 + 0x5A0) |= 0x80000000;
+        }
     }
 }
 
@@ -1872,6 +1876,30 @@ void fn_8018956C(void *arg0, float *arg1, float *arg2, int mode, void *obj, int 
     }
 }
 
+#pragma cplusplus on
+struct V10 {
+    virtual void v0() {}
+    virtual void v1() {}
+    virtual void v2() {}
+    virtual void v3() {}
+    virtual void *get() { return 0; }
+};
+struct VCC {
+    virtual void c0() {} virtual void c1() {} virtual void c2() {} virtual void c3() {}
+    virtual void c4() {} virtual void c5() {} virtual void c6() {} virtual void c7() {}
+    virtual void c8() {} virtual void c9() {} virtual void c10() {} virtual void c11() {}
+    virtual void c12() {} virtual void c13() {} virtual void c14() {} virtual void c15() {}
+    virtual void c16() {} virtual void c17() {} virtual void c18() {} virtual void c19() {}
+    virtual void c20() {} virtual void c21() {} virtual void c22() {} virtual void c23() {}
+    virtual void c24() {} virtual void c25() {} virtual void c26() {} virtual void c27() {}
+    virtual void c28() {} virtual void c29() {} virtual void c30() {} virtual void c31() {}
+    virtual void c32() {} virtual void c33() {} virtual void c34() {} virtual void c35() {}
+    virtual void c36() {} virtual void c37() {} virtual void c38() {} virtual void c39() {}
+    virtual void c40() {} virtual void c41() {} virtual void c42() {} virtual void c43() {}
+    virtual void c44() {} virtual void c45() {} virtual void c46() {} virtual void c47() {}
+    virtual void c48() {} virtual void c49() {} virtual void c50() {}
+    virtual int get(int) { return 0; }
+};
 int fn_80189BDC(void *arg0) {
     struct Tbl { void *f[64]; };
     if ((unsigned int)(*(int *)((char *)arg0 + 0x10) + 0xABAE0000) != 0x4C52U) {
