@@ -1904,18 +1904,22 @@ extern "C" void fn_8000FF88(s32, s32, void *, f32, f32, f32);
 extern "C" void fn_8013F918(void *arg0, void *arg2) {
     u8 *a0 = (u8 *)arg0;
     u8 *b = (u8 *)arg2;
+    f32 outA[3];
+    f32 outB[3];
     f32 tmp = fn_8001DAE8(b + 0xA8) - *(f32 *)(b + 0xAC);
-    if (tmp >= lbl_805614A4 && tmp < *(f32 *)(b + 0xA8)) {
+    s32 flag = 0;
+    if (tmp >= lbl_805614A4 && tmp < *(f32 *)(b + 0xA8)) flag = 1;
+    if (flag != 0) {
         f32 v = fn_8001DAF0((f32 *)(b + 0xA8));
         s32 c = fn_8013F438(v);
         s32 col = (c << 24) | 0xFF7F00;
-        fn_8013F498(b + 0x18, b + 0x10, v);
+        fn_8013F498(outA, outB, v);
         f32 f = (v - lbl_805614E4) / lbl_80561554;
-        f = f < lbl_805614AC ? lbl_805614AC : f;
+        f = lbl_805614AC >= f ? lbl_805614AC : f;
         f = f > lbl_805614A4 ? lbl_805614A4 : f;
         f32 g = f * lbl_8056155C;
         f32 res = lbl_80561558 + g;
-        f32 sp = *(f32 *)(b + 0x1C);
+        f32 sp = outA[1];
         fn_8000FF88(col, 0xC, &lbl_8032C96C, res, lbl_805614A4, fn_8013EFBC(sp));
     }
     f32 x = *(f32 *)(b + 0x94);
@@ -2151,7 +2155,7 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
         fn_8013F0A0(arg0, (void *)arg1, (void *)tmp);
         fn_8013F434();
         fn_8013F580(arg0, (void *)arg1, (void *)tmp);
-        fn_8013F918(arg0, (void *)tmp);
+        ((void (*)(void *, void *, void *))fn_8013F918)(arg0, (void *)arg1, (void *)tmp);
         fn_8013FDB0(arg0, (void *)tmp);
         fn_8014052C(arg0, arg1, (unsigned char *)tmp);
         fn_80140728(arg0, (void *)arg1, (void *)tmp);
