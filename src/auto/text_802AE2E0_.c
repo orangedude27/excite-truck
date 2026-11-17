@@ -41,21 +41,23 @@ void fn_802AE374(void) {
     lbl_8055F959 = 1;
     lbl_804BD8CC[1] = 0;
 }
-#pragma pop
+#pragma opt_common_subs reset
 void fn_802AE394(void) {
-    int *global = (int *)&lbl_804BD8CC;
     int offset = 0;
     int i = 0;
-    while (i < global[1]) {
-        fn_80131818((void *)(*(int *)((char *)global[0] + offset)));
+    while (i < lbl_804BD8CC[1]) {
+        fn_80131818((void *)(*(int *)((char *)lbl_804BD8CC[0] + offset)));
         offset += 4;
         i += 1;
     }
-    global[1] = 0;
+    lbl_804BD8CC[1] = 0;
     lbl_8055F958 = 0;
     lbl_8055F959 = 0;
 }
-
+#pragma push
+#pragma scheduling invalid_target
+#pragma opt_common_subs off
+#pragma dont_inline on
 int fn_802AE414(void *arg0) {
     extern u8 lbl_8055F958;
     extern int lbl_804BD8CC[3];
