@@ -1221,6 +1221,10 @@ extern "C" f32 fn_8013E300(void *arg0) {
     f32 x = *(f32 *)arg0;
     return (f32)fn_8002F234(x * x + y * y);
 }
+/* Element-constructor callback for the 0x24-byte PathNode arrays of a path group:
+ * fn_8013D8D0 hands it to the runtime array constructor fn_8002F37C, which calls
+ * it as ctor(node, 1) for every node it lays out.  A PathNode is plain data that
+ * fn_8013E054/fn_8013E2AC fill in afterwards, so there is nothing to initialize. */
 extern "C" void fn_8013E338(void) {
 
 }
