@@ -1112,8 +1112,8 @@ float fn_802C0D2C(void) {
 unsigned int fn_802C0D34(void) {
 #define ENABLED_FLAG 1
     /* Constant-valued getter: reports the enabled flag so callers treat this object as active. */
-    unsigned int flags = ENABLED_FLAG;
-    return flags;
+    unsigned int enabled = ENABLED_FLAG;
+    return enabled;
 }
 
 /* Return the WaterQuad object's initialization-state byte (0 = setup incomplete, 1 = initialized). */
