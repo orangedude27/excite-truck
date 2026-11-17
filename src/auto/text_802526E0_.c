@@ -242,7 +242,7 @@ extern void fn_802E30C8(const char *, const char *);
 extern const char lbl_803447A8[];
 extern const char lbl_8055C120;
 #pragma push
-#pragma processor gekko
+#pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80252F50(f32 arg0) {
     f32 threshold = lbl_805639CC;
