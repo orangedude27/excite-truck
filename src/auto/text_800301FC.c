@@ -307,19 +307,20 @@ void TRKAppendBuffer_ui32(void) {
 }
 
 void TRKAppendBuffer1_ui64(void) {
+    u32 zero = 0;
     u32 *a = lbl_8035BF20;
     u32 *b = (u32 *)lbl_8035BEA0;
     s32 i = 2;
-    lbl_8055D6E8 = 0;
+    lbl_8055D6E8 = zero;
     do {
-        a[0] = 0; b[0] = 0; a[1] = 0; b[1] = 0;
-        a[2] = 0; b[2] = 0; a[3] = 0; b[3] = 0;
-        a[4] = 0; b[4] = 0; a[5] = 0; b[5] = 0;
-        a[6] = 0; b[6] = 0; a[7] = 0; b[7] = 0;
-        a[8] = 0; b[8] = 0; a[9] = 0; b[9] = 0;
-        a[10] = 0; b[10] = 0; a[11] = 0; b[11] = 0;
-        a[12] = 0; b[12] = 0; a[13] = 0; b[13] = 0;
-        a[14] = 0; b[14] = 0; a[15] = 0; b[15] = 0;
+        a[0] = zero; b[0] = zero; a[1] = zero; b[1] = zero;
+        a[2] = zero; b[2] = zero; a[3] = zero; b[3] = zero;
+        a[4] = zero; b[4] = zero; a[5] = zero; b[5] = zero;
+        a[6] = zero; b[6] = zero; a[7] = zero; b[7] = zero;
+        a[8] = zero; b[8] = zero; a[9] = zero; b[9] = zero;
+        a[10] = zero; b[10] = zero; a[11] = zero; b[11] = zero;
+        a[12] = zero; b[12] = zero; a[13] = zero; b[13] = zero;
+        a[14] = zero; b[14] = zero; a[15] = zero; b[15] = zero;
         a += 16; b += 16;
     } while (--i);
 }
@@ -1161,8 +1162,8 @@ void CircleBufferWriteBytes(void) {
 #undef ccMode
 }
 
+/* No-op MetroTRK stub: a reserved entry point invoked by the TRKReadBuffer_ui32 diagnostic sequence. */
 void fn_80031C68(void) {
-
 }
 
 extern void *lbl_8055D740;
@@ -1218,12 +1219,13 @@ extern void CircleBufferReadBytes(u32, u32, void *);
 extern void *__AXGetCurrentProfile(void);
 void CircleBufferInitialize(u32 arg0) {
     u8 *base = (u8 *)lbl_8035EE20;
+    u8 *dma;
     s32 start;
     s32 ring;
     s32 i;
     u8 *profile;
     void *ptrs[4];
-    *(u64 *)base = OSGetTime();
+    lbl_8035EE20[0] = OSGetTime();
     fn_80032EAC(arg0);
     __AXPrintStudio();
     arg0 = (u32)gdev_cc_initialize();
@@ -1232,12 +1234,12 @@ void CircleBufferInitialize(u32 arg0) {
     DSPSendMailToDSP(arg0);
     while (DSPCheckMailToDSP() != 0) { }
     TRKReadBuffer1_ui64();
-    *(u64 *)(base + 8) = OSGetTime();
+    lbl_8035EE20[1] = OSGetTime();
     InitMetroTRKCommTable();
-    *(u64 *)(base + 0x10) = OSGetTime();
-    *(u64 *)(base + 0x18) = OSGetTime();
+    lbl_8035EE20[2] = OSGetTime();
+    lbl_8035EE20[3] = OSGetTime();
     if (lbl_8055D774 != 0) ((void (*)(void))lbl_8055D774)();
-    *(u64 *)(base + 0x20) = OSGetTime();
+    lbl_8035EE20[4] = OSGetTime();
     start = lbl_8055D754;
     ptrs[0] = base + 0x40 + start * 2;
     ptrs[1] = base + 0x40 + start * 2 + 0x168;
@@ -1246,19 +1248,20 @@ void CircleBufferInitialize(u32 arg0) {
     ring = start + 0x12;
     if (ring >= lbl_8055D758) ring = 0;
     if (lbl_8055D750 >= start && lbl_8055D750 < start + 0x12) lbl_8055D750 = ring;
+    dma = base + 0x8E0;
     lbl_8055D754 = ring;
-    CircleBufferReadBytes((u32)(base + 0x5E0), (u32)(base + 0x8E0 + lbl_8055D788 * 0x180), ptrs);
-    ++lbl_8055D788;
-    if (lbl_8055D75C == 1) lbl_8055D788 %= 3;
+    CircleBufferReadBytes((u32)(base + 0x5E0), (u32)(dma + lbl_8055D788 * 0x180), ptrs);
+    lbl_8055D788++;
+    if (lbl_8055D75C == 1) lbl_8055D788 = (s32)((u32)lbl_8055D788 % 3u);
     else {
         lbl_8055D788 &= 1;
-        AIInitDMA(base + 0x8E0 + lbl_8055D788 * 0x180, 0x180);
+        AIInitDMA(dma + lbl_8055D788 * 0x180, 0x180);
     }
-    *(u64 *)(base + 0x28) = OSGetTime();
+    lbl_8035EE20[5] = OSGetTime();
     *(s32 *)(base + 0x30) = fn_800328E8();
     profile = __AXGetCurrentProfile();
     if (profile != 0) {
-        for (i = 0; i < 7; ++i) {
+        for (i = 0; i < 7; i++) {
             profile[0] = base[i * 8];
             profile[1] = base[i * 8 + 1];
             profile[2] = base[i * 8 + 2];
@@ -1434,33 +1437,24 @@ void fn_800320E8(s32 arg0) {
     lbl_8055D768 = zero;
 
     base = (u8 *)lbl_8035EE20;
+#pragma ctrloop on
+#pragma unroll off
     p = (s32 *)(base + 0x8E0);
     i = 0x20;
     do {
-        p[0] = zero;
-        p[1] = zero;
-        p[2] = zero;
-        p[3] = zero;
-        p[4] = zero;
-        p[5] = zero;
-        p[6] = zero;
-        p[7] = zero;
+        p[0] = zero; p[1] = zero; p[2] = zero; p[3] = zero;
+        p[4] = zero; p[5] = zero; p[6] = zero; p[7] = zero;
         p[8] = zero;
         p += 9;
     } while (--i != 0);
+
     DCFlushRange(base + 0x8E0, 0x480);
 
     p = (s32 *)(base + 0x5E0);
     i = 0x18;
     do {
-        p[0] = zero;
-        p[1] = zero;
-        p[2] = zero;
-        p[3] = zero;
-        p[4] = zero;
-        p[5] = zero;
-        p[6] = zero;
-        p[7] = zero;
+        p[0] = zero; p[1] = zero; p[2] = zero; p[3] = zero;
+        p[4] = zero; p[5] = zero; p[6] = zero; p[7] = zero;
         p += 8;
     } while (--i != 0);
     DCFlushRange(base + 0x5E0, 0x300);
@@ -1468,19 +1462,14 @@ void fn_800320E8(s32 arg0) {
     p = (s32 *)(base + 0x40);
     i = 0x24;
     do {
-        p[0] = zero;
-        p[1] = zero;
-        p[2] = zero;
-        p[3] = zero;
-        p[4] = zero;
-        p[5] = zero;
-        p[6] = zero;
-        p[7] = zero;
-        p[8] = zero;
-        p[9] = zero;
+        p[0] = zero; p[1] = zero; p[2] = zero; p[3] = zero;
+        p[4] = zero; p[5] = zero; p[6] = zero; p[7] = zero;
+        p[8] = zero; p[9] = zero;
         p += 10;
     } while (--i != 0);
     DCFlushRange(base + 0x40, 0x5A0);
+#pragma ctrloop reset
+#pragma unroll reset
 
     fn_80032004();
     fn_8003010C((u32)fn_80031ED4);
