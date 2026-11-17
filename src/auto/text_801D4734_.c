@@ -3363,7 +3363,10 @@ void fn_801D8710(int object) {
 }
 
 void *fn_801D8720(void) {
-    return lbl_8033905C;
+    /* Return the "SurfaceChange_ASE" name string. */
+    #define sSurfaceChangeAseName lbl_8033905C
+    return sSurfaceChangeAseName;
+    #undef sSurfaceChangeAseName
 }
 
 int fn_801D872C(int arg0) {
