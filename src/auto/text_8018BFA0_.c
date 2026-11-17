@@ -110,20 +110,20 @@ extern float lbl_80562038;
 extern float lbl_8056203C;
 extern float lbl_80562040;
 extern char lbl_80332758[];
-static inline void matVecAliasV_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
-    if (dest == src) {
-        float tx = src->y * m[3] + src->x * m[0] + src->z * m[6];
-        float ty = src->y * m[4] + src->x * m[1] + src->z * m[7];
-        float tz = src->y * m[5] + src->x * m[2] + src->z * m[8];
-        dest->x = tx;
-        dest->y = ty;
-        dest->z = tz;
-    } else {
-        dest->x = src->y * m[3] + src->x * m[0] + src->z * m[6];
-        dest->y = src->y * m[4] + src->x * m[1] + src->z * m[7];
-        dest->z = src->y * m[5] + src->x * m[2] + src->z * m[8];
-    }
-}
+ static inline void matVecAliasV_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
+     float y0 = src->y * m[3];
+     float y1 = src->y * m[4];
+     float y2 = src->y * m[5];
+     float x0 = src->x * m[0];
+     float x1 = src->x * m[1];
+     float x2 = src->x * m[2];
+     float z0 = src->z * m[6];
+     float z1 = src->z * m[7];
+     float z2 = src->z * m[8];
+     dest->x = z0 + (x0 + y0);
+     dest->y = z1 + (x1 + y1);
+     dest->z = z2 + (x2 + y2);
+ }
 typedef struct { char b[0x290]; } Blob290_8018;
 typedef struct { float a, b; int c, d; unsigned char e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17; } Blob22_8018;
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
@@ -700,8 +700,8 @@ extern float lbl_80561FEC, lbl_80561FF0, lbl_80561FF4;
 void fn_8018DE94(void *arg0, int arg1, float *arg2, int arg3, int arg4) {
     char *base = (char *)arg0;
     char *record = *(char **)(base + 0x26C) + arg1 * 0x34;
-    register float speed;
     register float factor;
+    register float speed;
     float gain;
     float damping;
     float scaled[3];
@@ -711,8 +711,7 @@ void fn_8018DE94(void *arg0, int arg1, float *arg2, int arg3, int arg4) {
     float delta[3];
     float next[3];
     float basis[3];
-    register float *velocity;
-    register char *velBase;
+    float *velocity;
     float dot;
     float clampLo;
     float clampHi;
@@ -737,8 +736,7 @@ void fn_8018DE94(void *arg0, int arg1, float *arg2, int arg3, int arg4) {
     scaled[2] = arg2[2] * factor;
     scaled[1] = scaled[1] < lbl_80561F74 ? lbl_80561F74 : scaled[1];
     damping = lbl_80561FC0;
-    velBase = base + *(int *)(record + 4) * 0xC;
-    velocity = (float *)(velBase + 0x5FC);
+    velocity = (float *)(base + *(int *)(record + 4) * 0xC + 0x5FC);
     velocity[0] = velocity[0] + scaled[0] * damping;
     velocity[1] = velocity[1] + scaled[1] * damping;
     velocity[2] = velocity[2] + scaled[2] * damping;
