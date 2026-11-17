@@ -542,10 +542,11 @@ extern int memset(void *, int, unsigned int);
 extern int lbl_8055E6D4;
 #pragma push
 #pragma small_data off
+/* Reset replay state: clear the 16-entry command callback table (lbl_80435C70+0x208) and its two header words, drop the replay packet queue and mode flag, and restore the default replay rate. */
 void fn_801B5274(void) {
     #pragma scheduling invalid_target
-    int n = 0x40;
-    memset((char *)&lbl_80435C70 + 0x208, 0, n);
+    int tableBytes = 0x40;
+    memset((char *)&lbl_80435C70 + 0x208, 0, tableBytes);
     *(int *)((char *)&lbl_80435C70 + 0x200) = 0;
     *(int *)((char *)&lbl_80435C70 + 0x204) = 0;
     lbl_8055E6D8 = 0;
