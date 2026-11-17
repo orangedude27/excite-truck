@@ -2042,6 +2042,7 @@ void fn_801F49F8(void *arg0, int arg1) {
 /* Stub: always returns the fixed value 4 (count/version for its interface). */
 int fn_801F4B04(void) { return 4; }
 
+/* Stub: always returns the fixed value 3 (count/version for its interface). */
 int fn_801F4B0C(void) { return 3; }
 
 void fn_801F4B14(void) {
