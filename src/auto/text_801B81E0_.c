@@ -846,6 +846,11 @@ int fn_801B8B08(void) {
     return statusFlags;
 }
 
+/* Default "yes" method of the arena-event master ("amaster") classes: reports 1
+ * without reading the object.  The "null_amaster" (vtable lbl_8033678C) uses
+ * the same one-instruction shape for its slots +0x28 / +0x2C (fn_801B8B40 and
+ * fn_801B8B48), where the real event masters answer with fn_801B8A20 and
+ * fn_801B8A44. */
 int fn_801B8B38(void) { return 1; }
 
 /* Null arena-event master virtual method ("null_amaster" vtable lbl_8033678C,
