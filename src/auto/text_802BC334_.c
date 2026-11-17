@@ -102,8 +102,10 @@ check:
     if (index < *(int *)((char *)table + 4)) goto loop;
 }
 
-void *fn_802BC4D4(void *arg0) {
-    return *(void **)(*(char **)((char *)arg0 + 4) + 0xC);
+/* Fetch the model pointer held at +0xC of the resource referenced by node+4;
+   callers pass it to fn_802B1DA0 to count that model's entries. */
+void *fn_802BC4D4(void *node) {
+    return *(void **)(*(char **)((char *)node + 4) + 0xC);
 }
 
 #pragma scheduling on
@@ -754,18 +756,19 @@ void fn_802BD5B0(void *arg0, int arg1) {
     extern float lbl_80564D30;
     unsigned char *p = arg0;
     unsigned char *entry;
-    register unsigned char tmp;
-    float zero;
     int offset;
     unsigned int i;
-    unsigned char b6, b2, b3, b0, b1, b4, b5;
-    b4 = p[4]; b5 = p[5]; b6 = p[6];
-    p[4] = p[7]; b0 = p[0]; b3 = p[3]; p[7] = b4;
-    b1 = p[1]; b2 = p[2]; p[5] = b6; p[6] = b5;
+    float zero;
+    unsigned char b7, b2, b3, b0, b1, b4, b5;
+    b4 = p[4]; b5 = p[5];
+    b7 = p[7];
+    p[4] = b7; b0 = p[0]; b3 = p[3]; p[7] = b4;
+    b1 = p[1]; b2 = p[2]; p[5] = p[6]; p[6] = b5;
     p[0] = b3; p[3] = b0; p[1] = b2; p[2] = b1;
     *(int *)(p + 4) = fn_802BD694(*(int *)(p + 4), arg1);
-    zero = lbl_80564D30; i = 0; offset = 0;
+    i = 0; zero = -1.0f; offset = 0;
     while (i < *(unsigned int *)p) {
+        unsigned char tmp;
         entry = *(unsigned char **)(p + 4) + offset;
         tmp = entry[4]; entry[4] = entry[5]; entry[5] = tmp;
         tmp = entry[6]; entry[6] = entry[7]; entry[7] = tmp;
@@ -1277,19 +1280,20 @@ extern float lbl_80564D3C, lbl_80564D40, lbl_80564D44, lbl_80564D48;
 #pragma processor 750
 #pragma cplusplus on
 extern "C" void fn_802BD814(void) {
-    float constant18 = lbl_80564D18;
-    float constant14 = lbl_80564D14;
-    float constant40 = lbl_80564D40;
-    float constant44 = lbl_80564D44;
-    float constant48 = lbl_80564D48;
-    float constant30 = lbl_80564D30;
-    float constant3C = lbl_80564D3C;
-    float constant34 = lbl_80564D34;
-    float constant38 = lbl_80564D38;
-    float matrix[9];
+    float constant40, constant3C, constant30, constant48, constant44, constant14, constant38, constant34, constant18;
     float transform[12];
+    float matrix[12];
     DrawEntriesBD814 *entries = (DrawEntriesBD814 *)&lbl_804C00D4;
     int entryIndex;
+    constant18 = lbl_80564D18;
+    constant14 = lbl_80564D14;
+    constant40 = lbl_80564D40;
+    constant44 = lbl_80564D44;
+    constant48 = lbl_80564D48;
+    constant30 = lbl_80564D30;
+    constant3C = lbl_80564D3C;
+    constant34 = lbl_80564D34;
+    constant38 = lbl_80564D38;
     lbl_8055FAAC = 0;
     lbl_8055FAA8 = 0;
     for (entryIndex = 0; entryIndex < entries->count; ++entryIndex) {
@@ -1308,10 +1312,12 @@ extern "C" void fn_802BD814(void) {
             DrawGroupBD814 *group = &groups->data[groupIndex];
             float t = (group->time - constant34) / constant38;
             float alpha;
+            int visible;
             if (constant18 < t) t = constant18;
             t = t > constant14 ? t : constant14;
             alpha = constant14 + t * constant18;
-            if (group->time >= constant14 && alpha > constant3C) {
+            visible = group->time >= constant14;
+            if (visible && alpha > constant3C) {
                 int index;
                 int handle = entry->firstHandle;
                 int cost = entry->firstCost;
@@ -1337,7 +1343,8 @@ extern "C" void fn_802BD814(void) {
             fn_801F1C24(matrix);
             for (groupIndex = 0; groupIndex < groups->count; ++groupIndex) {
                 DrawGroupBD814 *group = &groups->data[groupIndex];
-                if (group->time >= constant14) {
+                int visible = group->time >= constant14;
+                if (visible) {
                     float t = (group->time - constant44) / constant48;
                     float alpha;
                     if (constant18 < t) t = constant18;
