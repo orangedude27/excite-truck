@@ -665,7 +665,11 @@ void fn_80176A00(s32 mode) {
 extern void *lbl_8055A2F0;
 #pragma dont_inline on
 void* fn_80176A1C(void) {
-    return lbl_8055A2F0;
+    /* lbl_8055A2F0 is the global game-flow state (1 while setting up, 2 during
+     * active gameplay); callers compare the returned value against 2. */
+    #define sGameFlowState lbl_8055A2F0
+    return sGameFlowState;
+    #undef sGameFlowState
 }
 #pragma dont_inline reset
 
