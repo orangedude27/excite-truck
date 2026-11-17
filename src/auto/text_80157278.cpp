@@ -1729,9 +1729,12 @@ extern "C" u8 fn_80159124(void* arg0, void* arg1) {
     } else {
         *(f32*)(self + 0x270) = lbl_80561754;
     }
-    f32 result = lbl_80561754;
-    u8 prev = *(u8*)(self + 0x274);
-    f32 limit = *(f32*)(other + 0x25D4);
+    f32 limit;
+    f32 result;
+    u8 prev;
+    result = lbl_80561754;
+    prev = *(u8*)(self + 0x274);
+    limit = *(f32*)(other + 0x25D4);
     u8 flag;
     if ((f32)__fabs(*(f32*)(other + 0x2690)) <= lbl_80558DC4[0] && limit > lbl_80561788 && *(f32*)(self + 0x270) < lbl_80561760) {
         f32 d = (f32)__fabs(PSVECDotProduct(other + 0x118, other + 0x3C));
@@ -1746,17 +1749,11 @@ extern "C" u8 fn_80159124(void* arg0, void* arg1) {
         f32 d = (f32)__fabs(PSVECDotProduct(other + 0x118, other + 0x3C));
         f32 k = prev != 0 ? lbl_8056178C : lbl_80561790;
         f32 a = lbl_80561750 - lbl_80561794 * *(f32*)(self + 0x270);
-        if (a <= lbl_80561754) {
-            a = lbl_80561754;
-        }
+        a = (a <= lbl_80561754) ? lbl_80561754 : a;
         f32 b = lbl_80561750;
         f32 t = lbl_80561788 * (d / (lim2 * k) - b);
-        if (b >= t) {
-            b = t;
-        }
-        if (b <= lbl_80561754) {
-            b = lbl_80561754;
-        }
+        b = (b >= t) ? t : b;
+        b = (b <= lbl_80561754) ? lbl_80561754 : b;
         result = b * a;
     }
     u8* w = *(u8**)(self + 0x278);
@@ -4123,8 +4120,9 @@ extern "C" f32 fn_8015E338(void* arg0, void* arg1) {
     return sum;
 }
 #pragma pop
-extern "C" void fn_8015E4C4(Unk801577F0V* arg0, s8 arg1) {
-    arg0->m54 = arg1;
+extern "C" void fn_8015E4C4(Unk801577F0V* container, s8 active) {
+    /* Set the container's active flag (m54), which gates the child event dispatchers. */
+    container->m54 = active;
 }
 
 extern "C" void fn_8015E4CC(Unk801577F0V* container, s32 param, f32 value) {
