@@ -3152,12 +3152,13 @@ typedef struct {
 } ZQueryPool;
 
 #pragma dont_inline reset
+/* Release every depth query in the pool: mark all 64 unused/invisible and empty the pending queue. */
 void fn_802D37E4(void) {
     ZQueryPool *pool = (ZQueryPool *)lbl_804C9984;
-    int i;
-    for (i = 0; i < 64; i++) {
-        pool->query[i].used = 0;
-        pool->query[i].visible = 0;
+    int queryIndex;
+    for (queryIndex = 0; queryIndex < 64; queryIndex++) {
+        pool->query[queryIndex].used = 0;
+        pool->query[queryIndex].visible = 0;
     }
     *(int *)((char *)lbl_804C9984 + 0x700) = 0;
 }
