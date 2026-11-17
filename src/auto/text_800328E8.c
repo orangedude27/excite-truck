@@ -17,6 +17,7 @@ extern int fn_80031248(void);
 extern void *TRKReadBuffer_ui8(int);
 extern void __AXDepopVoice(void *);
 extern void *memcpy(void *, const void *, unsigned int);
+static inline void ax_copy_n(unsigned int n, const void *s, void *d) { memcpy(d, s, n); }
 typedef struct { unsigned char b[0x120]; } Block120;
 typedef struct { unsigned char b[0x30]; } Block30;
 typedef struct { int w[0x48]; } Words120;
@@ -49,7 +50,7 @@ void* fn_800328E8(void) {
 #pragma cplusplus on
 void fn_800328F0(void *arg0) {
     unsigned char *p = (unsigned char *)arg0;
-    unsigned char *src;
+    register unsigned char *src;
     unsigned char *dst;
     unsigned int flags;
     unsigned int n;
