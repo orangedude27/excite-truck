@@ -19334,8 +19334,8 @@ initial_done:
         }
         data->offset -= 8;
         frame = (u8 *)data + data->offset;
-        out = frame + 10;
         data->len += 4;
+        out = frame + 0xA;
         lcb = *(void **)(ctx + 0x10);
         flags = *(u16 *)((u8 *)lcb + 0x28) | 0x2000;
         frame[8] = flags;
@@ -28681,6 +28681,7 @@ s32 __InitParams(void *arg0) {
     return 1;
 }
 
+/* Default AXFX allocation hook: allocate `size` bytes from the current OS heap. */
 void* __AXFXAllocFunction(u32 size) {
     return OSAllocFromHeap(__OSCurrHeap, size);
 }
