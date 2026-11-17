@@ -21,6 +21,8 @@ extern int lbl_8056000C;
 extern unsigned char lbl_80560008;
 extern char fn_802E9A24(void);
   void fn_802E8528(int, float, float);
+/* Stub for the rjoy input-filter predicate (called with a controller channel):
+   always returns 0, so this filter path never marks input as filtered. */
 int fn_802E77B8(void) { return 0; }
 
 #pragma push
