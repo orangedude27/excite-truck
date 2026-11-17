@@ -150,6 +150,11 @@ s32 fn_80244C58(void *arg0, s32 arg1) {
     return 1;
 }
 
+/* Scroll auto-repeat.  fn_80244C58 stamps the time (+0xA8 for a scroll-up
+ * message, +0xAC for scroll-down) it last received one; the two flags the
+ * update below writes (+0xA0 up, +0xA4 down) stay set for SCROLL_REPEAT_MS
+ * after it, which is what keeps the list scrolling while a direction is held. */
+#define SCROLL_REPEAT_MS 250 /* ms one scroll step takes before it stops */
 #pragma scheduling invalid_target
 void fn_80244D0C(void *arg0) {
     int t = fn_802E2C20();
