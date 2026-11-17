@@ -1289,7 +1289,7 @@ unsigned short fn_802B0070(int point) {
     return fn_802B127C(lbl_8055F974, point);
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802B009C(void *arg0, int arg1, int arg2, int arg3) {
     float x = (float)arg2 * lbl_80564AF0;
     float z = (float)arg3 * lbl_80564AF0;
