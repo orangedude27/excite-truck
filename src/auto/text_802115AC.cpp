@@ -2710,9 +2710,10 @@ extern "C" void fn_80215B30(void *wrapper) {
     widget->vf8();
 }
 
-extern "C" void fn_80215B44(void *arg0) {
-    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf9();
+extern "C" void fn_80215B44(void *wrapper) {
+    /* Forward the vf9() virtual call to the widget wrapped at +0x244. */
+    VfObj *widget = *(VfObj **)((char *)wrapper + 0x244);
+    widget->vf9();
 }
 
 extern "C" void fn_802191F0(void);
