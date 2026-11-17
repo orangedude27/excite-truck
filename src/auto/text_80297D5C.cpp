@@ -304,11 +304,13 @@ extern "C" void* fn_802981EC(unsigned int transform, float scale) {
 }
 
 extern "C" void fn_802981F8(void* self) {
-    float sp8 = lbl_8056459C;
-    float spC = lbl_80564590;
-    float sp10 = sp8;
-    fn_8028E584(lbl_8055F7E0, self, &sp8, sp8);
-    fn_80288A40(self, &sp8);
+    #pragma scheduling invalid_target
+    volatile float sp[3];
+    sp[0] = 0.0f;
+    sp[1] = 1.0f;
+    sp[2] = 0.0f;
+    fn_8028E584(lbl_8055F7E0, self, (float *)sp, 0.0f);
+    fn_80288A40(self, (float *)sp);
 }
 
 /* Destructor for J2DAnmTexPatternTIMGPointer: releases the owned resource at +0xB0
@@ -400,6 +402,8 @@ extern "C" float PSVECDotProduct(const float*, const float*);
 extern "C" double fabs(double);
 extern int lbl_8055CA70;
 extern int lbl_8055CA7C;
+#pragma push
+#pragma processor 750
 extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, void* arg4, void* ctx) {
     float* out = (float*)arg1;
     float* base = (float*)arg2;
@@ -436,6 +440,7 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
     }
     return 1;
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
