@@ -99,17 +99,18 @@ s32 fn_802A9F90(s32 *args) {
     return 4;
 }
 
-#pragma scheduling invalid_target
-s32 fn_802A9FB0(void *__restrict arg0) {
+#pragma optimize_for_size on
+s32 fn_802A9FB0(void *arg0) {
     int index = *(int *)arg0;
     extern int lbl_8055F928;
     int offset = index * 0x108;
     unsigned char value = *((unsigned char *)arg0 + 4);
-    unsigned char one = 1;
+    register unsigned one = 1;
     *(unsigned char *)(lbl_8055F928 + offset + (s32)0xEC) = one;
     *(unsigned char *)(lbl_8055F928 + offset + (unsigned)0xF4) = value;
     return 8;
 }
+#pragma optimize_for_size reset
 /* Clears the per-entry state block (0x00..0xD8) to the default float zero value. */
 void fn_802A9FE0(void *entry) {
     float zero = lbl_805649F0;
@@ -1104,7 +1105,7 @@ void fn_802AB9E8(void) {
         frame.s1.field_5C = lbl_80564A7C;
         t31 = lbl_80564A68 * lbl_80564A68;
         t13 = lbl_80564A80 * (lbl_80564A70 / t31);
-        t3 = lbl_805649F4 * t13 * t31;
+        t3 = lbl_805649F4 * t13 * (lbl_80564A68 * lbl_80564A68);
         t2 = lbl_80564A84 - t3;
         t2 = t2 / lbl_80564A68;
         frame.s1.field_4C = t13;
