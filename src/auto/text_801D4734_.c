@@ -574,8 +574,9 @@ void fn_801D50A8(int arg0) {
     fn_801D5328(arg0, 1);
 }
 
-void fn_801D50B0(int arg0) {
-    fn_801D5328(arg0, 0);
+/* Start the action sequence with start flag 0; fn_801D50A8 is the flag-1 twin. */
+void fn_801D50B0(int sequence) {
+    fn_801D5328(sequence, 0);
 }
 
   #pragma push
