@@ -300,6 +300,7 @@ BOOL ARCReadDir(ARCDir *dir, ARCDirEntry *entry) {
 }
 
 u32 fn_80116BCC(void) {
+    /* Stub that always reports success (TRUE); checked after ARC directory iteration. */
     return 1;
 }
 
