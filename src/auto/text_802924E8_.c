@@ -653,8 +653,9 @@ void *__dt__Q34nw4r2ef6EffectFv_802930BC(void *this, int shouldDelete) {
     return this;
 }
 
-void fn_8029311C(void* arg0) {
-    *(s32*)((u8*)arg0 + 0x2fac) = 0;
+void fn_8029311C(void *effect) {
+    /* Empty a car chunk effect's records by zeroing its count at +0x2FAC (see ChunkSys). */
+    *(s32 *)((u8 *)effect + 0x2fac) = 0;
 }
 
 #pragma push
