@@ -146,92 +146,23 @@ void fn_80177A54(void) {
 }
 
 void fn_80177AE4(int arg0, int arg1) {
-    extern unsigned char lbl_80433880[];
+    typedef struct { unsigned char b[0x100]; } Bytes;
+    typedef struct { Bytes data; float time; int value; } Entry;
+    extern Entry lbl_80433880[8];
     extern float lbl_80561B4C;
     extern float lbl_8055E3C8;
-    unsigned char *base = lbl_80433880;
-    float f1 = *(float *)(base + 0x100);
-    float fsum = lbl_80561B4C + f1;
-    int i;
-    unsigned char *dst;
-    unsigned char *src;
-    (void)arg1;
-    if ((signed char)base[0] == 0) return;
-    if (lbl_8055E3C8 > fsum) return;
-    if (lbl_8055E3C8 < f1) return;
-    if (arg0 == 0) return;
-    if ((signed char)base[0x738] == 0) return;
-    dst = base - 1;
-    src = base + 0x107;
-    for (i = 0; i < 0x80; i++) {
-        unsigned char a = src[1];
-        unsigned char b = *(src += 2);
-        dst[1] = a;
-        *(dst += 2) = b;
+    int k;
+
+    if ((signed char)lbl_80433880[0].data.b[0] == 0) return;
+    if (lbl_8055E3C8 > lbl_80561B4C + lbl_80433880[0].time || lbl_8055E3C8 < lbl_80433880[0].time
+        || (arg0 != 0 && (signed char)lbl_80433880[7].data.b[0] != 0)) {
+        for (k = 0; k < 7; k++) {
+            lbl_80433880[k].data = lbl_80433880[k + 1].data;
+            lbl_80433880[k].time = lbl_80433880[k + 1].time;
+            lbl_80433880[k].value = lbl_80433880[k + 1].value;
+        }
+        memset(&lbl_80433880[7], 0, sizeof(Entry));
     }
-    *(float *)(base + 0x100) = *(float *)(base + 0x208);
-    *(int *)(base + 0x104) = *(int *)(base + 0x20C);
-    dst = base + 0x107;
-    src = base + 0x20F;
-    for (i = 0; i < 0x80; i++) {
-        unsigned char a = src[1];
-        unsigned char b = *(src += 2);
-        dst[1] = a;
-        *(dst += 2) = b;
-    }
-    *(float *)(base + 0x208) = *(float *)(base + 0x310);
-    *(int *)(base + 0x20C) = *(int *)(base + 0x314);
-    dst = base + 0x20F;
-    src = base + 0x317;
-    for (i = 0; i < 0x80; i++) {
-        unsigned char a = src[1];
-        unsigned char b = *(src += 2);
-        dst[1] = a;
-        *(dst += 2) = b;
-    }
-    *(float *)(base + 0x310) = *(float *)(base + 0x418);
-    *(int *)(base + 0x314) = *(int *)(base + 0x41C);
-    dst = base + 0x317;
-    src = base + 0x41F;
-    for (i = 0; i < 0x80; i++) {
-        unsigned char a = src[1];
-        unsigned char b = *(src += 2);
-        dst[1] = a;
-        *(dst += 2) = b;
-    }
-    *(float *)(base + 0x418) = *(float *)(base + 0x520);
-    *(int *)(base + 0x41C) = *(int *)(base + 0x524);
-    dst = base + 0x41F;
-    src = base + 0x527;
-    for (i = 0; i < 0x80; i++) {
-        unsigned char a = src[1];
-        unsigned char b = *(src += 2);
-        dst[1] = a;
-        *(dst += 2) = b;
-    }
-    *(float *)(base + 0x520) = *(float *)(base + 0x628);
-    *(int *)(base + 0x524) = *(int *)(base + 0x62C);
-    dst = base + 0x527;
-    src = base + 0x62F;
-    for (i = 0; i < 0x80; i++) {
-        unsigned char a = src[1];
-        unsigned char b = *(src += 2);
-        dst[1] = a;
-        *(dst += 2) = b;
-    }
-    *(float *)(base + 0x628) = *(float *)(base + 0x730);
-    *(int *)(base + 0x62C) = *(int *)(base + 0x734);
-    dst = base + 0x62F;
-    src = base + 0x737;
-    for (i = 0; i < 0x80; i++) {
-        unsigned char a = src[1];
-        unsigned char b = *(src += 2);
-        dst[1] = a;
-        *(dst += 2) = b;
-    }
-    *(float *)(base + 0x730) = *(float *)(base + 0x838);
-    *(int *)(base + 0x734) = *(int *)(base + 0x83C);
-    memset(base + 0x738, 0, 0x108);
 }
 
 #pragma dont_inline off
@@ -679,8 +610,6 @@ s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
 #pragma cplusplus on
 extern "C" void fn_801B5318(void *);
 extern "C" void fn_801785A4(void *arg0) {
-    int index = lbl_8055E438;
-    void **table = lbl_8055E434;
     struct Dummy_801785A4 {
         virtual void d0();
         virtual void d1();
@@ -698,8 +627,7 @@ extern "C" void fn_801785A4(void *arg0) {
         virtual void d13();
         virtual int d14();
     };
-    *(index + table) = arg0;
-    lbl_8055E438 = index + 1;
+    lbl_8055E434[lbl_8055E438++] = arg0;
     if (((Dummy_801785A4 *)arg0)->d14() != 0) {
         fn_801B5318(arg0);
     }
