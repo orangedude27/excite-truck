@@ -3755,8 +3755,9 @@ extern "C" void fn_80287304(void* arg0) {
 }
 #pragma cplusplus off
 #pragma cplusplus on
-extern "C" void fn_80287318(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v4();
+extern "C" void fn_80287318(void* plane) {
+    /* Forward to virtual method v4 of the title black plane's sub-object. */
+    ((ebi::title::TBlackPlane*)plane)->m_a->v4();
 }
 #pragma cplusplus on
 struct Obj8732C {
