@@ -1321,7 +1321,11 @@ void fn_80179308(void) {
 }
 
 void* fn_80179318(void) {
-    return (void *)lbl_8055E448;
+    /* lbl_8055E448 is the global step counter advanced by the audio update
+     * hooks (fn_80179110 / fn_80179308); return its current value. */
+    #define gStepCount lbl_8055E448
+    return (void *)gStepCount;
+    #undef gStepCount
 }
 
 #pragma dont_inline on
