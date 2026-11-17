@@ -20,6 +20,7 @@ void fn_8013A1F4(void) {
 }
 
 s32 fn_8013A1F8(void) {
+    // No-op stub among the adjacent empty functions; reports a zero/false result.
     return 0;
 }
 
