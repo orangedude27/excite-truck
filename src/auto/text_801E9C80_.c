@@ -74,14 +74,20 @@ void fn_801E9DD8(void) {
 }
 
 #pragma scheduling invalid_target
-f32 fn_801E9DDC(void *arg0, f32 farg0, f32 farg1) {
-    f32 input[3];
-    f32 output[3];
-    input[0] = farg0;
-    input[1] = 0.0f;
-    input[2] = farg1;
-    if (((s32 (*)(void *, f32 *, f32 *, s32, s32))fn_801DCE14)(arg0, input, output, 0, 0) != 0)
-        return output[1];
+/* Ground height at world (x, z): builds the query point (x, 0, z), runs it through
+   the ground lookup fn_801DCE14 (which resolves the tile under the point and
+   interpolates its height) and returns the resulting Y; 0.0f when the query fails.
+   outGroundIndex is the caller's optional 16-bit ground-info field, which the
+   lookup clears before sampling (fn_801E9DC4 resets the same field to -1);
+   fn_801EA0E8 is this query with no field to clear. */
+f32 fn_801E9DDC(void *outGroundIndex, f32 x, f32 z) {
+    f32 queryPos[3];
+    f32 resultPos[3];
+    queryPos[0] = x;
+    queryPos[1] = 0.0f;
+    queryPos[2] = z;
+    if (((s32 (*)(void *, f32 *, f32 *, s32, s32))fn_801DCE14)(outGroundIndex, queryPos, resultPos, 0, 0) != 0)
+        return resultPos[1];
     return 0.0f;
 }
 /* Copy a 3-word vector and query fn_801DCE14 against it, passing the original pointer as context. */
