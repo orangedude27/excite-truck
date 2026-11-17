@@ -2085,8 +2085,9 @@ extern "C" f32 fn_8015A368(void* arg0) {
 }
 #pragma dont_inline off
 
-extern "C" s32 fn_8015A404(void* arg0) {
-    return *(s32*)((u8*)arg0 + 0x2620);
+extern "C" s32 fn_8015A404(void *car) {
+    /* Return the car/player's +0x2620 state counter (0 = idle/stopped, >0 = running). */
+    return *(s32 *)((u8 *)car + 0x2620);
 }
 
 #pragma scheduling invalid_target
