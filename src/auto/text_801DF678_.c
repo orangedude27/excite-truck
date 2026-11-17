@@ -64,7 +64,7 @@ extern int fn_80207848(void *, int);
 extern int fn_802CAC28(void *, int);
 extern int stricmp(const char *, const char *);
 extern char lbl_803381C0[], lbl_803395D8[], lbl_80339744[];
-extern char lbl_8055AE44[], lbl_8055AE4C[];
+__declspec(section ".sdata") extern const char lbl_8055AE44[], lbl_8055AE4C[];
 extern void *lbl_8055EA04;
 #pragma use_lmw_stmw off
 void fn_801DF6FC(void) {
