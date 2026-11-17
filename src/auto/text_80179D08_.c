@@ -90,6 +90,17 @@ void *fn_80179D08(void *arg0) {
     return arg0;
 }
 #pragma scheduling on
+/* Head of a stream-loaded object (vtable lbl_80331C70).  fn_801783A8 creates one
+ * through its provider, records the size of the data block it came from and calls
+ * the first virtual method, fn_80179D94, which reads the block and stores its
+ * pointer at +0x0C. */
+struct StreamObjectHeader {
+    void *vtable;    /* 0x00: lbl_80331C70 */
+    s32 unk04;       /* 0x04: cleared by fn_80179D94 and fn_80179E00 */
+    s32 blockSize;   /* 0x08: size of the data block the object was loaded from */
+    void *block;     /* 0x0C: the data block itself */
+};
+
 void fn_80179D8C(void *arg0, s32 arg1) {
     ((s32 *)arg0)[2] = arg1;
 }
@@ -515,7 +526,7 @@ void fn_8017AE94(void *arg0, float *arg1, float *arg2, float farg0) {
     float *b = arg2;
     struct Temps { float sp8[3]; float sp14[3]; float sp20[3]; } temp;
     register int i;
-    for (i = 0; i < 2; ++i) {
+    for (i = 0; i < 2; i++) {
         float vb0, va0, vb1, d0, va1, vb2, d1, va2, p0, vb3;
         float p1, d2, va3, v0, vb4, d3, p2, va4, d4, vb5;
         float va5, p3, v1, d5, p4, p5, v2, v3, v4, v5;
