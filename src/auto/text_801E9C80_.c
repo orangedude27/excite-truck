@@ -158,15 +158,11 @@ f32 fn_801E9FDC(s16 *arg0, f32 farg0, f32 farg1) {
 
 #pragma scheduling invalid_target
 void fn_801EA03C(s16 *arg0, void *arg1) {
-    struct W { s32 a; f32 b; s32 c; } *p = arg1;
-    struct W data;
     s16 index = *arg0;
-    s32 zero = 0;
-    data = *p;
-    p->b = lbl_80562E2C;
-    ((s32 (*)(s16 *, struct W *, void *, s32, s32))fn_801DCE14)(&index, &data, p, zero, zero);
+    struct V { s32 a, b, c; } data = *(struct V *)arg1;
+    *(f32 *)((char *)arg1 + 4) = lbl_80562E2C;
+    ((s32 (*)(s16 *, struct V *, void *, s32, s32))fn_801DCE14)(&index, &data, arg1, 0, 0);
 }
-#pragma scheduling invalid_target
 /* RealName: QueryGroundPosAtXZ
  * Builds an XZ query position using the caller's X/Z and the input position's Y,
  * copies the index from *indexPtr, and queries ground/height info via fn_801DCE14. */
@@ -219,6 +215,8 @@ void fn_801EA18C(void *point, s32 arg1, s32 arg2) {
     fn_801DCE14(0, &pointCopy, (s32)point, arg1, arg2, temp);
 }
 #pragma scheduling on
+/* Thunk: reset the active-entry count via fn_801DCEF4, emptying the pending
+ * value-accumulation queue (sActiveEntryCount / lbl_8055E9A8). */
 void fn_801EA1D8(void) {
     fn_801DCEF4();
 }
