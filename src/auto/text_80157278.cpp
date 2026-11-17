@@ -988,29 +988,31 @@ extern "C" f32 lbl_80561764;
 extern "C" char lbl_8032EC98[];
 #pragma small_data off
 #pragma scheduling invalid_target
-extern "C" void* fn_80157F98(void* self, s32 arg1, s32 arg2) {
-    u8* ptr = (u8*)self + 0x14;
-    *(void**)((u8*)self + 8) = ptr;
+extern "C" void* fn_80157F98(void* self, s32 initialValue, s32 owner) {
+    /* Constructor for a 10-record track object: install the base vtable, zero the
+     * 0x38-byte records, then store the owner/initial values and final vtable. */
+    u8* record = (u8*)self + 0x14;
+    *(void**)((u8*)self + 8) = record;
     *(void**)self = lbl_8032F2BC;
     *(s32*)((u8*)self + 0x10) = 10;
     *(s32*)((u8*)self + 0xC) = 0;
     do {
-        memset(ptr, 0, 4);
-        ptr += 0x38;
-    } while (ptr < (u8*)self + 0x244);
-    f32 f0;
-    f32 f1 = 999.0f;
-    f0 = 0.0f;
+        memset(record, 0, 4);
+        record += 0x38;
+    } while (record < (u8*)self + 0x244);
+    f32 zero;
+    f32 initialLimit = 999.0f;
+    zero = 0.0f;
     *(s32*)((u8*)self + 0xC) = 0;
-    *(s32*)((u8*)self + 4) = arg2;
-    ((Fn80157CF0Obj*)self)->unk244 = arg1;
+    *(s32*)((u8*)self + 4) = owner;
+    ((Fn80157CF0Obj*)self)->unk244 = initialValue;
     *(s32*)((u8*)self + 0x258) = 0;
-    *(f32*)((u8*)self + 0x250) = f1;
+    *(f32*)((u8*)self + 0x250) = initialLimit;
     *(s32*)((u8*)self + 0x268) = 0;
     *(s32*)((u8*)self + 0x248) = 0;
     *(void**)self = lbl_8032EC98;
-    *(s32*)((u8*)self + 0x270) = arg2;
-    *(f32*)((u8*)self + 0x27C) = f0;
+    *(s32*)((u8*)self + 0x270) = owner;
+    *(f32*)((u8*)self + 0x27C) = zero;
     return self;
 }
 #pragma small_data off
