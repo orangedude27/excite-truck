@@ -595,8 +595,9 @@ int fn_8028EDA8(unsigned int *list, unsigned int emitter) {
     return 0;
 }
 #pragma pop
-void fn_8028EE1C(void *arg0) {
-    *(int *)((char *)arg0 + 0x600) = 0;
+void fn_8028EE1C(void *table) {
+    /* Empty the effect-table cache by resetting its live entry count to zero. */
+    ((EfTableCache *)table)->count = 0;
 }
 
 // Reset the entry count (at +0x600) of this 0x18-byte-entry cache table to zero.
