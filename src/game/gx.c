@@ -305,11 +305,8 @@ void fn_802CEC50(int arg0) {
     extern char lbl_8055FD3C;
     extern float lbl_80564F80, lbl_80564F84;
     unsigned long long now;
-    unsigned long long old;
     unsigned long long delta;
-    float previous;
     float value;
-    float difference;
     switch (arg0) {
     case 1:
         now = fn_802E2C9C();
@@ -319,14 +316,10 @@ void fn_802CEC50(int arg0) {
         break;
     case 2:
         now = fn_802E2C9C();
-        old = ((unsigned long long)lbl_8055FD10 << 32) | lbl_8055FD14;
-        delta = now - old;
-        value = fn_8002FD54((unsigned int)(delta >> 32), (unsigned int)delta);
-        previous = lbl_8055D0B4;
-        value = lbl_80564F80 * value;
-        difference = previous - value;
+        delta = now - (lbl_8055FD14 | ((unsigned long long)lbl_8055FD10 << 32));
+        value = lbl_80564F80 * fn_8002FD54((unsigned int)(delta >> 32), (unsigned int)delta);
         lbl_8055D0B0 = value;
-        lbl_8055D0B4 = value + lbl_80564F84 * difference;
+        lbl_8055D0B4 = value + lbl_80564F84 * (lbl_8055D0B4 - value);
         fn_802D3900();
         break;
     default:
@@ -3356,23 +3349,25 @@ void fn_802D3D94(int texMtxIndex, void *mtx) {
     GXLoadTexMtxImm(mtx, texMtxIndex * 3 + 30, 1);
 }
 
-#pragma scheduling on
+#pragma opt_propagation off
 void fn_802D3DAC(void) {
     int id;
-    if ((*(int *)&lbl_8055FDD0 & 0x3F) == 0) {
+
+    if ((lbl_8055FDD0 & 0x3F) == 0) {
         OSReport(lbl_8034C204);
     }
-    id = *(int *)&lbl_8055FDD0;
-    *(int *)&lbl_8055FDD0 = id + 1;
+    id = lbl_8055FDD0;
+    lbl_8055FDD0 = id + 1;
     GXInitVtxDescList(id);
     GXDisableBreakPt();
 }
+#pragma opt_propagation reset
 void fn_802D3DF8(int texObjBase, signed char scaleExp, float scaleS, float scaleT) {
     /* Set indirect texture matrix 1 from scale factors and load tex object (+0x24) into map 2. */
     float indMtx[2][3];
 
     lbl_804C5700[13] = 1;
-    GXLoadTexObj((char *)texObjBase + 0x24, 2, lbl_804C5700);
+    ((void (*)(void *, int, void *))GXLoadTexObj)((char *)texObjBase + 0x24, 2, lbl_804C5700);
     *(int *)&indMtx[0][0] = 0;
     *(int *)&indMtx[1][1] = 0;
     *(int *)&indMtx[0][1] = 0;
