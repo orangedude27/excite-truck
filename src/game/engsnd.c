@@ -298,7 +298,7 @@ extern "C" void *fn_8020999C(void *obj, s32 shouldFree) {
 
 extern "C" s32 fn_80178CA4(void);
 extern "C" s32 fn_8026A344(s32);
-extern const f32 lbl_8056325C, lbl_80563260, lbl_80563264, lbl_80563268, lbl_8056326C, lbl_80563270;
+extern f32 lbl_8056325C, lbl_80563260, lbl_80563264, lbl_80563268, lbl_8056326C, lbl_80563270;
 extern "C" s32 fn_80178CA4(void);
 extern "C" s32 fn_8026A344(s32);
 #pragma push
@@ -306,7 +306,6 @@ extern "C" s32 fn_8026A344(s32);
 #pragma use_lmw_stmw off
 extern "C" void fn_80209A64(void *obj, s32 muted) {
 #pragma scheduling invalid_target
-#pragma opt_loop_invariants off
     void *cfg = M2C_FIELD(obj, void **, 0x140);
     f32 old = M2C_FIELD(obj, f32 *, 0x154);
     f32 spdFactor = M2C_FIELD(cfg, f32 *, 0x25d0);
