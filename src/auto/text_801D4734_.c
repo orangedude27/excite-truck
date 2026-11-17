@@ -3659,11 +3659,11 @@ void fn_801D8B5C(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" int fn_801D8B60(void *arg0, void *arg1) {
+extern "C" int fn_801D8B60(void *effectPtr, void *valueReader) {
     extern char lbl_80339070[];
     extern char lbl_8055ACB8;
     extern char lbl_8055ACB0;
-    struct Dummy {
+    struct ValueReader {
         virtual void v0();
         virtual void v1();
         virtual void v2();
@@ -3672,17 +3672,22 @@ extern "C" int fn_801D8B60(void *arg0, void *arg1) {
         virtual void v5();
         virtual void v6();
         virtual void v7();
-        virtual float value(char *, float);
+        virtual float readFloat(char *, float);
     };
-    Dummy *obj = (Dummy *)arg1;
-    float temp;
+    ValueReader *reader = (ValueReader *)valueReader;
+    TimedEffect *effect = (TimedEffect *)effectPtr;
+    float zero;
 
-    *(float *)((char *)arg0 + 0x14) = obj->value(lbl_80339070, 999.0f);
-    *(int *)((char *)arg0 + 4) = 1;
-    temp = 0.0f;
-    *(float *)((char *)arg0 + 0x10) = temp;
-    *(float *)((char *)arg0 + 8) = obj->value(&lbl_8055ACB8, temp);
-    *(float *)((char *)arg0 + 0xC) = obj->value(&lbl_8055ACB0, 5.0f);
+    /* Initialize a timed cue from the named-value reader (vtable+0x28 reads a
+       float by name with a default): "interval" (default 999), "delay" (default
+       0) and "length" (default 5) fill the effect's fields, state 1 marks it
+       READY, and its start time is zeroed. */
+    effect->interval = reader->readFloat(lbl_80339070, 999.0f);
+    effect->state = 1;
+    zero = 0.0f;
+    effect->startTime = zero;
+    effect->delay = reader->readFloat(&lbl_8055ACB8, zero);
+    effect->length = reader->readFloat(&lbl_8055ACB0, 5.0f);
     return 1;
 }
 #pragma cplusplus reset
