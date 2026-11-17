@@ -1078,6 +1078,8 @@ public:
     virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12();
     virtual TVec2 v3C(const char *);
 };
+#pragma push
+#pragma processor 750
 extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
     u8 *out = (u8 *)outPtr;
     TVec2 center = ((TVec2 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D58);
@@ -1469,16 +1471,18 @@ extern "C" void fn_8013EB0C(void *owner, s32 index) {
 #pragma processor 750
 #pragma opt_common_subs off
 extern "C" void fn_8013EB30(void *arg0) {
-    struct Vec3U { u32 x, y, z; };
+    union Vec3 { u32 w[3]; f32 f[3]; };
     u8 *self = (u8 *)arg0;
     f32 elapsed = fn_8013CB3C() - *(f32 *)(self + 0x290);
-    u8 *obj = *(u8 **)(self + 0xB8) + fn_801E866C(0) * 0x12C;
+    s32 objOffset = fn_801E866C(0) * 0x12C;
+    u8 *objBase = *(u8 **)(self + 0xB8);
+    u8 *obj = objBase + objOffset;
     u8 *item = *(u8 **)(obj + 0x104);
     if (item != 0) {
         s32 idx = *(s32 *)(obj + 0xE8);
         s32 total = *(s32 *)(lbl_8042FB3C + 4);
         if (total - idx < 3) {
-            Vec3U a, b;
+            Vec3 a, b;
             while (item[0x1E] != 0) {
                 PathNode *nodes = PathGroupAt(self)->nodes;
                 PathNode *last = &nodes[PathGroupAt(self)->count] - 1;
@@ -1505,13 +1509,12 @@ extern "C" void fn_8013EB30(void *arg0) {
                     *(u8 **)(self + 0x28C) = item;
                     *(f32 *)(self + 0x290) = fn_8013CB3C();
                 }
-                a = *(Vec3U *)item;
-                b = *(Vec3U *)(item + 0xC);
-                y = *(f32 *)&a.y;
-                if (!(y > *(f32 *)&b.y)) y = *(f32 *)&b.y;
+                a = *(Vec3 *)item;
+                b = *(Vec3 *)(item + 0xC);
+                y = a.f[1] < b.f[1] ? b.f[1] : a.f[1];
                 y = lbl_80561508 + y;
-                b.y = *(u32 *)&y;
-                a.y = *(u32 *)&y;
+                b.f[1] = y;
+                a.f[1] = y;
                 r7 = 0;
                 r9 = 0x48;
                 if (*(s32 *)(self + 0x68) == *(s32 *)(lbl_8042FB3C + 0x14) - 1) {
