@@ -5827,14 +5827,23 @@ void bta_dm_acl_change(u8 *arg0) {
         return;
     }
     idx = 0;
-    while (idx < lbl_803C0C14[0x4D] && bdcmp(lbl_803C0C14 + idx * 0xB, bd) != 0)
-        idx++;
-    if (idx < lbl_803C0C14[0x4D]) {
+    goto s2cond;
+s2body:
+    if (bdcmp(lbl_803C0C14 + idx * 0xB, bd) != 0)
+        goto s2incr;
+    {
         u8 j = idx;
         for (; j < lbl_803C0C14[0x4D]; j++) {
             memcpy(lbl_803C0C14 + j * 0xB, lbl_803C0C14 + (j + 1) * 0xB, 0xB);
         }
     }
+    goto s2done;
+s2incr:
+    idx++;
+s2cond:
+    if (idx < lbl_803C0C14[0x4D])
+        goto s2body;
+s2done:
     lbl_803C0C14[0x4D]--;
     if (lbl_803C0B98[0x78] != 0 && bdcmp(lbl_803C0B98 + 0x1A, bd) == 0) {
         lbl_803C0B98[0x78] = 0;
