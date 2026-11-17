@@ -1659,7 +1659,8 @@ float fn_80181794(void *driver) { return DRIVER(driver)->pad30C[8]; }
 
 float fn_8018179C(void *arg0) { return *(float *)((char *)arg0 + 0x330); }
 
-float fn_801817A4(void *arg0) { return *(float *)((char *)arg0 + 0x334); }
+/* Return the float field at offset 0x334 of this audio-driver object. */
+float fn_801817A4(void *object) { return *(float *)((char *)object + 0x334); }
 
 unsigned char fn_801817AC(void *arg0) {
     return *((unsigned char *)arg0 + 0x338);
