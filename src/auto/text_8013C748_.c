@@ -25,10 +25,12 @@ void fn_8013C748(void);
 extern char lbl_8032C478[];
 void fn_8013C748(void) {
     #pragma scheduling invalid_target
-    int *p = (int *)&lbl_8032C478;
-    while (*p != 0) {
-        p[2] = 0;
-        p += 3;
+    /* Clear the cached object pointer (+8) of every car-class registry entry in the
+     * table at lbl_8032C478, stopping at the terminator entry whose name is null. */
+    int *entry = (int *)&lbl_8032C478;
+    while (*entry != 0) {
+        entry[2] = 0;
+        entry += 3;
     }
 }
 
