@@ -4276,8 +4276,6 @@ extern "C" s32 fn_800AB528(void *arg0, void *arg1, s32 arg2, u8 arg3, s32 arg4, 
     extern s32 fn_800B3754(s32, s32 *, s32);
     extern s32 fn_800B5070(s32, s32 *);
     extern s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
-    extern const char lbl_805591F0[];
-    extern const char lbl_805591F4[];
     u8 nameBuf[16];
     s32 sp14;
     u32 sp10;
