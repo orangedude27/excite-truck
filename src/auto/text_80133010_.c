@@ -116,7 +116,12 @@ extern int fn_80128668(int);
 extern int fn_80133E10(void **, int, int);
 extern int fn_8013323C(int, int, float);
 extern const char lbl_8032B920[];
-int fn_80133010(void) { int val=lbl_8055E07C; unsigned int tmp=(unsigned int)(-val)|(unsigned int)val; return tmp>>31; }
+int fn_80133010(void) {
+    /* Return nonzero once the options table (lbl_8055E07C) has been allocated. */
+    int tablePtr = lbl_8055E07C;
+    unsigned int nonzeroBits = (unsigned int)(-tablePtr) | (unsigned int)tablePtr;
+    return nonzeroBits >> 31;
+}
 extern const char lbl_8032B9FC[];
 
 extern int lbl_8055E078, lbl_8055E080;
