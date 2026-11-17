@@ -73,18 +73,14 @@ extern const char lbl_80347A08[];
 extern const char lbl_80347A1C[];
 extern const float lbl_80564120;
 void fn_80279CE4(void) {
+    #pragma scheduling invalid_target
     unsigned char *p = lbl_804A1968;
     int i = 0;
-    int cont;
-loop:
-    memset(p, 0, 0x44);
-    i++;
-    cont = i < 0x20;
-#pragma scheduling off
-    p += 0x44;
-#pragma scheduling on
-    if (cont)
-        goto loop;
+    do {
+        memset(p, 0, 0x44);
+        i++;
+        p += 0x44;
+    } while (i < 0x20);
 }
 
 void fn_80279D3C(void) {
