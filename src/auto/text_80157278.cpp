@@ -1942,8 +1942,9 @@ extern "C" void* fn_80159E74(void* arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" u8 fn_80159F24(void* arg0) {
-    return ((u8*)arg0)[0x2D1];
+extern "C" u8 fn_80159F24(void* tracker) {
+    /* Return the latched "started" flag of the bonus tracker at +0x2D1 (set by fn_8015A7D8). */
+    return ((u8*)tracker)[0x2D1];
 }
 
 extern "C" f32 lbl_8055E3C8;
