@@ -101,7 +101,8 @@ u8 SCGetSoundMode(void) {
 }
 
 void SCGetBtDeviceInfoArray(SCBtDeviceInfoArray* info) {
-    SCFindByteArrayItem(info, 0x461, SC_ITEM_BT_DINF);
+    /* Read the Bluetooth device-info array (id 0x15) from the system config into info. */
+    SCFindByteArrayItem(info, sizeof(SCBtDeviceInfoArray), SC_ITEM_BT_DINF);
 }
 
 /* Write the Bluetooth device info array (0x461 bytes) to the System Configuration's
