@@ -18,6 +18,8 @@ DECL_SECTION(".init") static void __check_pad3(void) {
     }
 }
 
+/* Set the boot-time "debug over BBA" flag when BI2 debug level 4 is detected;
+ * __get_debug_bba later uses it to trigger InitMetroTRK_BBA after OS init. */
 DECL_SECTION(".init") static void __set_debug_bba(void) {
     Debug_BBA = TRUE;
 }
