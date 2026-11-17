@@ -2730,7 +2730,13 @@ void fn_80252454(void *list, s32 chassisIndex, s32 value) {
 
 s32 fn_80252468(void *arg0) { return *(s32 *)((char *)arg0 + 8); }
 
-s32 fn_80252470(void *arg0, s32 arg1) { return *(s32 *)((char *)arg0 + 4) + arg1 * 0x48; }
+/* Returns the base address of the indexed 0x48-byte chassis record in the
+   ChassisList's array (the array pointer lives at +4 of the list). */
+s32 fn_80252470(void *list, s32 chassisIndex) {
+    s32 offset = chassisIndex * 0x48;
+    s32 *records = *(s32 **)((char *)list + 4);
+    return (s32)records + offset;
+}
 
 u8 fn_80252480(void *list, s32 chassisIndex) {
     // Read the u8 field at +0x20 of the indexed 0x48-byte chassis record.
