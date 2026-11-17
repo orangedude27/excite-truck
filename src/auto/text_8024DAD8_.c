@@ -2338,26 +2338,56 @@ extern f32 lbl_80563960, lbl_805639C0;
 __declspec(section ".data") extern f32 lbl_80558DC4;
 extern char lbl_8055C0E0[];
 extern char lbl_80344378[], lbl_80344384[], lbl_80344690[], lbl_803443B0[];
+typedef struct InitTail {
+    u8 f0[0x28];
+    u8 b28;
+    u8 f1[0x1F];
+    u8 b48;
+    u8 f2[0x3F];
+    u8 b88;
+    u8 f3[0x7F];
+    u8 b108;
+    u8 f4[0x87];
+    s32 w190;
+    f32 f194;
+    f32 f198;
+    u8 b19c;
+} InitTail;
 #pragma scheduling off
 void fn_80251D0C(void *arg0) {
 #pragma scheduling on
+    struct Init {
+        u8 f0[0x28];
+        u8 b28;
+        u8 f1[0x1F];
+        u8 b48;
+        u8 f2[0x3F];
+        u8 b88;
+        u8 f3[0x7F];
+        u8 b108;
+        u8 f4[0x87];
+        s32 w190;
+        f32 f194;
+        f32 f198;
+        u8 b19c;
+    };
+    struct Init *p = (struct Init *)arg0;
     float value1;
     int zero;
     float value0;
-    u8 *base = (u8 *)arg0;
-    fn_80255904(*(s32 *)(base + 0x20));
+    fn_80255904(*(s32 *)((u8 *)arg0 + 0x20));
     value1 = lbl_80563960;
     zero = 0;
     value0 = lbl_805639C0;
-    *(u8 *)(base + 0x28) = zero;
-    *(u8 *)(base + 0x48) = zero;
-    *(u8 *)(base + 0x88) = zero;
-    *(u8 *)(base + 0x108) = zero;
-    *(s32 *)(base + 0x190) = -1;
-    *(f32 *)(base + 0x194) = value1;
-    *(f32 *)(base + 0x198) = value0;
+    p->b28 = zero;
+    p->b48 = zero;
+    p->b88 = zero;
+    p->b108 = zero;
+    p->w190 = -1;
+    p->f194 = value1;
+    p->f198 = value0;
     fn_80214A9C(0x1F, value1);
-    *(u8 *)(base + 0x19C) = zero;
+    p->b19c = zero;
 }
 
 #pragma push
