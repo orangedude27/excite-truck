@@ -1688,7 +1688,8 @@ int fn_80181800(void *object) {
     return isActive;
 }
 
-unsigned char fn_8018184C(void *arg0) { return *((unsigned char *)arg0 + 0x344); }
+/* Return the audio driver's flag344 control byte at offset 0x344. */
+unsigned char fn_8018184C(void *object) { return ((struct Di718 *)object)->flag344; }
 extern int fn_801769F8(void);
 extern int fn_801B526C(void);
 extern int fn_801C5B60(void);
