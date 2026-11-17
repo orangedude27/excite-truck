@@ -1272,8 +1272,10 @@ void fn_8014C978(void *dst, void *srcObj) {
     *(f32 *)((u8 *)dst + 0x24) = y1;
 }
 
-int fn_8014C9CC(void *arg0) {
-    return ((int *)arg0)[1];
+/* Return the current node pointer (the word at +4) of a linked-list iterator.
+ * The caller uses it as the event object read by fn_8014AED8 / fn_8014AEC0. */
+int fn_8014C9CC(void *it) {
+    return ((int *)it)[1];
 }
 
 /* Copy a linked node's pair of values (at +0x11C/+0x120) into a record: store
