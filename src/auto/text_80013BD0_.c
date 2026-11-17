@@ -1404,6 +1404,7 @@ extern f32 lbl_805603BC;
 extern u8 lbl_8055E520;
 extern u8 lbl_802FCE04[];
 extern u8 lbl_802FCE88[];
+// Return the static data block at lbl_802FCE88 used as the AX FX LFO sine-table pointer.
 void *__AXFXGetLfoSinTable(void) {
     return lbl_802FCE88;
 }
