@@ -498,6 +498,7 @@ int fn_802092C8(int object, int deleteFlag) {
     return object;
 }
 
+/* Trivial mixer helper: always reports 1 (boolean true / success). */
 int fn_80209308(void) { return 1; }
 
 extern int fn_802E2C20(void);
