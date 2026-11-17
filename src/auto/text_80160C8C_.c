@@ -428,6 +428,9 @@ extern "C" char lbl_8055A0C4;
 extern "C" char lbl_8055A0CC;
 extern "C" f32 lbl_80561838;
 extern "C" f32 lbl_80561840;
+extern "C" char lbl_8032F8D0[];
+extern "C" char lbl_8032F7F0[];
+extern "C" char lbl_802F94A8[];
 extern "C" void fn_80160CF4(void) {
     struct Node {
         virtual void s0();
@@ -2532,11 +2535,11 @@ extern "C" void fn_80163F7C(void *arg0) {
             register s32 i;
             register s32 count;
             points = (f32 *)((u8 *)table + 8);
-            count = *(s32 *)table;
             {
                 f32 best = lbl_80561864;
                 f32 dx, dy, score;
                 bestIndex = -1;
+                count = *(s32 *)table;
                 for (i = 1; i <= count; i++) {
                         register s32 n = *(volatile s32 *)table;
                         s32 next = i % n;
