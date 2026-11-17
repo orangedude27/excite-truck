@@ -204,9 +204,10 @@ extern "C" s32 Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(void *arg0)
     OSRestoreInterrupts(temp_r31);
     return var_r29;
 }
-extern "C" s32 fn_800FE0DC(void *arg0) {
-    void *p = *(void **)((u8 *)arg0 + 0x18);
-    return *(s32 *)((u8 *)p + 0x40);
+// Read a count field from the task manager's frame heap (manager+0x18, heap+0x40); callers compare it against a minimum before allocating a task.
+extern "C" s32 fn_800FE0DC(void *manager) {
+    void *heap = *(void **)((u8 *)manager + 0x18);
+    return *(s32 *)((u8 *)heap + 0x40);
 }
 
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void *, void *, void *);
@@ -1063,36 +1064,36 @@ extern "C" void fn_800FF090(void *);
 extern u8 lbl_8032734C[], lbl_80327370[], lbl_8032746C[], lbl_80327490[];
 #pragma use_lmw_stmw off
 extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
-    extern unsigned char lbl_8041D4AC[];
-    void **end = (void **)(lbl_8041D4AC + 4);
-    void **node = (void **)*end;
-    void *entry, *player, *wave;
-    int i, offset;
+    extern u8 lbl_8041D4AC[];
+    void **end;
+    void **node;
+    void *entry, *player;
+    int i;
+    void **g = (void **)(lbl_8041D4AC + 4);
+    node = (void **)*g;
+    end = g;
     goto check_player;
 player_loop:
     entry = node;
     node = (void **)*node;
     if (!entry) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327370, 0x23d, (char *)lbl_8032734C);
-    player = (unsigned char *)entry - 0x94;
-    if (*((unsigned char *)entry - 0x77)) {
+    player = (u8 *)entry - 0x94;
+    if (*((u8 *)entry - 0x77)) {
         if (IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(player)) UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(player);
-        if (!*((unsigned char *)player + 0x1e) && *(unsigned int *)((unsigned char *)player + 4) >= 2) {
+        if (!*((u8 *)player + 0x1e) && *(u32 *)((u8 *)player + 4) >= 2) {
             i = 0;
-            wave = *(void **)((unsigned char *)player + 8);
-            void *list = *(void **)wave;
-            if (*(int *)((unsigned char *)player + 0x10) > 0) {
-                void *base = (unsigned char *)list - 0x18;
-                offset = 0;
-                for (i = 0; i < *(int *)((unsigned char *)player + 0x10); i++) {
+            void *list = *(void **)*(void **)((u8 *)player + 8);
+            if (*(s32 *)((u8 *)player + 0x10) > 0) {
+                void *base = (u8 *)list - 0x18;
+                for (; i < *(s32 *)((u8 *)player + 0x10); i++) {
                     if (!list) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327490, 0x23d, (char *)lbl_8032746C);
-                    SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)((unsigned char *)player + 0x18), i, *(void **)((unsigned char *)base + offset + 8), 0);
-                    offset += 4;
+                    SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)((u8 *)player + 0x18), i, *(void **)((u8 *)base + i * 4 + 8), 0);
                 }
             }
-            SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)((unsigned char *)player + 0x18), 1);
-            *((unsigned char *)player + 0x1e) = 1;
+            SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)((u8 *)player + 0x18), 1);
+            *((u8 *)player + 0x1e) = 1;
         }
-    } else if (*(int *)((unsigned char *)player + 4)) fn_800FF090(player);
+    } else if (*(s32 *)((u8 *)player + 4)) fn_800FF090(player);
 check_player:
     if (node != end) goto player_loop;
 }
