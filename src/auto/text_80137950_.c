@@ -152,6 +152,8 @@ void fn_80137BE4(void) {
     lbl_8055E0E0 = 0;
 }
 
+/* Return the index of the currently selected AI driver league held in lbl_80559C00
+ * (-1 means none is selected). */
 void* fn_80137C4C(void) {
     return lbl_80559C00;
 }
