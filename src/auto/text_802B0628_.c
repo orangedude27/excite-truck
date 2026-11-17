@@ -856,7 +856,8 @@ int fn_802B1AF8(int *base, int step) { return *base + step * 2; }
 /* Return the record count held in the word at +4 of a record-list node. */
 int fn_802B1B08(void *node) { return ((int *)node)[1]; }
 
-int fn_802B1B10(int *arg0) { return *arg0; }
+/* Return the first node of a slot's linked list (slot[0]); 0 means the slot is empty. */
+int fn_802B1B10(int *slot) { return *slot; }
 
 /* Return non-zero when the slot's stored handle is zero (the slot is empty). */
 int fn_802B1B18(int *slot) { return *slot == 0; }
