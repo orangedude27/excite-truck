@@ -114,6 +114,7 @@ void OSInitThreadQueue(OSThreadQueue* queue) {
 }
 
 OSThread* OSGetCurrentThread(void) {
+    /* Return a pointer to the currently running thread. */
     return OS_CURRENT_THREAD;
 }
 
