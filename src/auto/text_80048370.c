@@ -212,7 +212,7 @@ void MEMiInitHeapHead(MEMiHeapHead *heap, u32 magic, void *start, void *end, u16
     OSLockMutex((OSMutex *)lbl_8037D818);
     list = (MEMList *)lbl_8037D808;
     outer = 0;
-    while ((outer = (MEMiHeapHead *)MEMGetNextListObject(list, outer)) != 0) {
+    while ((outer = (MEMiHeapHead *)MEMGetNextListObject((MEMList *)lbl_8037D808, outer)) != 0) {
         if ((u32)outer->start <= (u32)heap && (u32)heap < (u32)outer->end) {
             child = 0;
             while ((child = (MEMiHeapHead *)MEMGetNextListObject(&outer->list, child)) != 0) {
@@ -973,6 +973,8 @@ void *MEMGetNextListObject(MEMList *list, void *object) {
 #pragma paired on
 #pragma paired_single on
 void PSMTXConcat(const Mtx a, const Mtx b, Mtx out) {
+#pragma paired on
+#pragma paired_single on
     int i;
     for (i = 0; i < 3; i++) {
         out[i][0] = a[i][0] * b[0][0] + a[i][1] * b[1][0] + a[i][2] * b[2][0];
@@ -1131,18 +1133,20 @@ void PSMTXRotTrig(register Mtx m, register Mtx r, register f32 sx, register f32 
 #pragma paired on
 #pragma paired_single on
 void PSMTXIdentity(float m[3][4]) {
-    m[0][0] = 1.0f;
-    m[0][1] = 0.0f;
-    m[0][2] = 0.0f;
-    m[0][3] = 0.0f;
-    m[1][0] = 0.0f;
-    m[1][1] = 1.0f;
-    m[1][2] = 0.0f;
-    m[1][3] = 0.0f;
-    m[2][0] = 0.0f;
-    m[2][1] = 0.0f;
-    m[2][2] = 1.0f;
-    m[2][3] = 0.0f;
+    float zero = 0.0f;
+    float one = 1.0f;
+    m[0][0] = one;
+    m[0][1] = zero;
+    m[0][2] = zero;
+    m[0][3] = zero;
+    m[1][0] = zero;
+    m[1][1] = one;
+    m[1][2] = zero;
+    m[1][3] = zero;
+    m[2][0] = zero;
+    m[2][1] = zero;
+    m[2][2] = one;
+    m[2][3] = zero;
 }
 
 void PSMTXCopy(const Mtx src, Mtx dst) { int i, j; for (i=0;i<3;i++) for (j=0;j<4;j++) dst[i][j]=src[i][j]; }
