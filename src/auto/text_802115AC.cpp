@@ -2791,6 +2791,9 @@ extern "C" s32 fn_80215BAC(void) {
     return -1;
 }
 
+/* Vtable slot 0x2C of the widget wrapper (vtable lbl_8033D480): empty default
+ * handler.  Unlike the neighbouring slots 0x24/0x28/0x30 it forwards nothing to
+ * the widget wrapped at +0x244. */
 extern "C" void fn_80215BB4(void) {
 
 }
