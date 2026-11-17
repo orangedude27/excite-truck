@@ -711,7 +711,7 @@ void fn_801B14BC(s32 *flags, s32 mask, s32 enable) {
     *flags &= ~mask;
 }
 
-extern f32 lbl_805625F8;
+extern const f32 lbl_805625F8;
 extern double lbl_805625E8;
 extern f32 lbl_805625FC;
 extern s32 fn_801366C0(s32,s32,f32);
