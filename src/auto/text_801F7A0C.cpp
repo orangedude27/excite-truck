@@ -380,6 +380,7 @@ extern "C" void fn_801F7A14(void *basis) {
 
 #pragma use_lmw_stmw off
 extern "C" s32 fn_801F7A88(void *self, s32 arg1, void *arg2, s32 arg3) {
+#pragma scheduling invalid_target
     s32 res = 0;
     if (((F7A88Class *)self)->vC()) {
         res = fn_8012F9E8(arg2, arg3, ((F7A88Class *)self)->v14(arg1));
