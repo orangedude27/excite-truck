@@ -331,8 +331,9 @@ s32 fn_801291C8(void *buffer, u32 value) {
 
 s32 fn_801291F4(void *arg0) { return ((s32 *)arg0)[1]; }
 
-s32 fn_801291FC(void *arg0) {
-    return ((s32 *)arg0)[2] - ((s32 *)arg0)[1];
+s32 fn_801291FC(void *region) {
+    /* Bytes currently used in this heap region: high-water mark (+0x08) minus base (+0x04). */
+    return ((s32 *)region)[2] - ((s32 *)region)[1];
 }
 
 s32 fn_8012920C(void *arg0) { return ((s32 *)arg0)[2]; }
