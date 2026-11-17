@@ -306,6 +306,7 @@ void fn_801D490C(void) {
         }
     }
 }
+#pragma pop
 
 #pragma dont_inline on
 void* fn_801D4B34(void* arg0) {
