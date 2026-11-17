@@ -132,8 +132,10 @@ void fn_80131810(s32 data) {
     fn_80131588((void *)data, 1);
 }
 
-void fn_80131818(void) {
-    fn_8012C4D8();
+/* Release the parsed value-file table in `table` (loaded by fn_80131588 /
+ * fn_80131808) by forwarding it to the resource decref/release path. */
+void fn_80131818(void *table) {
+    fn_8012C4D8(table);
 }
 
 extern void fn_802E30C8(const char*, ...);
@@ -162,21 +164,20 @@ s32 fn_8013181C(void) {
 #pragma scheduling invalid_target
 void* fn_8013184C(void) {
     if (lbl_8055E060 == 0) {
-        register void *vtable0 = (void*)lbl_8032B64C;
-        register void *vtable1 = (void*)lbl_8032B574;
-        register void **obj;
-        register int zero = 0;
-        ((void* volatile*)lbl_8042F53C)[0] = vtable0;
-        ((void* volatile*)lbl_8042F53C)[0] = vtable1;
-        obj = lbl_8042F53C;
-        ((void* volatile*)obj)[5] = (void*)zero;
-        ((void* volatile*)obj)[1] = &lbl_80559B0C;
-        ((void* volatile*)obj)[2] = &lbl_80559B08;
-        ((void* volatile*)obj)[3] = (void*)zero;
-        ((void* volatile*)obj)[4] = (void*)zero;
-        ((void* volatile*)obj)[5] = (void*)zero;
-        ((void* volatile*)obj)[6] = (void*)zero;
-        __register_global_object(obj, (void (*)(void*))fn_80131920, (void*)lbl_8042F530);
+        void *tmp = (void*)lbl_8032B64C;
+        ((void* volatile*)lbl_8042F53C)[0] = tmp;
+        tmp = (void*)lbl_8032B574;
+        ((void* volatile*)lbl_8042F53C)[0] = tmp;
+        ((void* volatile*)lbl_8042F53C)[5] = 0;
+        tmp = (void*)&lbl_80559B0C;
+        ((void* volatile*)lbl_8042F53C)[1] = tmp;
+        ((void* volatile*)lbl_8042F53C)[2] = &lbl_80559B08;
+        ((void* volatile*)lbl_8042F53C)[3] = 0;
+        ((void* volatile*)lbl_8042F53C)[4] = 0;
+        ((void* volatile*)lbl_8042F53C)[5] = 0;
+        ((void* volatile*)lbl_8042F53C)[6] = 0;
+        tmp = (void*)fn_80131920;
+        __register_global_object(lbl_8042F53C, (void (*)(void*))tmp, lbl_8042F530);
         lbl_8055E060 = 1;
     }
     return lbl_8042F53C;
@@ -330,7 +331,8 @@ s32 fn_80131B50(void *arg0) {
         s = *(char **)(base + off + 4);
         while (*s != 0) {
             hash += (s8)*s;
-            hash += 0xFABFACAB;
+            hash += (s32)0xFAC0000;
+            hash -= 0x5355;
             s++;
         }
         off += 8;
