@@ -368,8 +368,9 @@ void fn_802C88D4(unsigned int arg0) {
 }
 
 extern void PSVECSquareDistance(void *, unsigned int, void *);
-void fn_802C88E8(unsigned int arg0) {
-    PSVECSquareDistance((void *)&lbl_804C1410[9], arg0, lbl_804C1410);
+void fn_802C88E8(unsigned int point) {
+    /* Tail-call PSVECSquareDistance to measure squared distance from the cached Vec at lbl_804C1410+0x24 to *point (raw bit pointer). */
+    PSVECSquareDistance((void *)&lbl_804C1410[9], point, lbl_804C1410);
 }
 
 #pragma scheduling reset
