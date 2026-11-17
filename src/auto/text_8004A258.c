@@ -714,7 +714,7 @@ void OSInit(void) {
 }
 
 extern void DBPrintf(const char *, ...);
-extern u8 __DBIsExceptionMarked(u8);
+extern u32 __DBIsExceptionMarked(u8);
 extern void *memcpy(void *, const void *, unsigned int);
 extern void DCFlushRangeNoSync(const void *, u32);
 extern void ICInvalidateRange(const void *, u32);
@@ -732,13 +732,15 @@ void OSExceptionInit(void) {
     int j;
     u32 *code;
     u32 size2;
+    char *base = lbl_80303E08;
+    u32 *locations = (u32 *)(base + 0x318);
     pInst = (u32 *)__OSEVSetNumber;
     inst = *pInst;
     vectorCode = (void *)__OSEVStart;
     vectorSize = (u32)__OSEVEnd - (u32)__OSEVStart;
     dst = (u32 *)0x80000060;
     if (*dst == 0) {
-        DBPrintf("Installing OSDBIntegrator\n");
+        DBPrintf(base + 0x354);
         size2 = (u32)__OSDBINTEND - (u32)__OSDBINTSTART;
         memcpy(dst, (void *)__OSDBINTSTART, size2);
         DCFlushRangeNoSync(dst, size2);
@@ -747,11 +749,11 @@ void OSExceptionInit(void) {
     }
     for (i = 0; i < 15; i++) {
         if (BI2DebugFlag_8055D9F4 != 0 && *BI2DebugFlag_8055D9F4 >= 2 && __DBIsExceptionMarked(i)) {
-            DBPrintf(">>> OSINIT: exception %d commandeered by TRK\n", i);
+            DBPrintf(base + 0x370, i);
         } else {
             *pInst = inst | i;
             if (__DBIsExceptionMarked(i)) {
-                DBPrintf(">>> OSINIT: exception %d vectored to debugger\n", i);
+                DBPrintf(base + 0x3a0, i);
                 memcpy((void *)__DBVECTOR, (void *)__OSDBJUMPSTART, (u32)__OSDBJUMPEND - (u32)__OSDBJUMPSTART);
             } else {
                 code = (u32 *)__DBVECTOR;
@@ -759,7 +761,7 @@ void OSExceptionInit(void) {
                     *code = 0x60000000;
                 }
             }
-            dst = (u32 *)0x80000000;
+            dst = (u32 *)(0x80000000 + locations[i]);
             memcpy(dst, vectorCode, vectorSize);
             DCFlushRangeNoSync(dst, vectorSize);
             __sync();
@@ -771,7 +773,7 @@ void OSExceptionInit(void) {
         __OSSetExceptionHandler(i, (void *)OSDefaultExceptionHandler);
     }
     *pInst = inst;
-    DBPrintf("Exceptions initialized...\n");
+    DBPrintf(base + 0x3d0);
 }
 
 #pragma pop
