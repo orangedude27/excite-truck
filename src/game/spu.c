@@ -974,8 +974,9 @@ void fn_802E61BC(void *channel) {
     }
 }
 
-void fn_802E61D8(void *arg0) {
-    ((unsigned char *)arg0)[0x23] = 0;
+/* SND_Stop: clear the channel's want-play flag so it stops after the current frame. */
+void fn_802E61D8(void *channel) {
+    ((struct SpuChannel *)channel)->wantPlay = 0;
 }
 
 #define SoundOutputMode lbl_8055FF8C /* 0 = mono, 2 = surround */
