@@ -20,6 +20,7 @@ char fn_8020A640(void) {
 }
 
 extern void *lbl_8055EDE0;
+/* Return lbl_8055EDE0, the index of the currently active music track (compared against the requested track lbl_8055EDE4). */
 void* fn_8020A69C(void) {
     return lbl_8055EDE0;
 }
