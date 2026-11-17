@@ -90,9 +90,10 @@ void fn_8017D380(float *arg0, int arg1) {
     extern float lbl_80561BE4;
     extern double lbl_80561BE8;
     void *root = fn_80178C9C();
-    int scaled = arg1 * 2;
     void *sub = *(void **)((char *)root + 0x2C);
-    float *values = *(float **)((char *)sub + 0x1C);
+    int scaled = arg1 * 2;
+    volatile float *values = *(volatile float **)((char *)sub + 0x1C);
+
     arg0[0] = values[0];
     arg0[1] = lbl_80561BE0;
     arg0[1] = lbl_80561BE4 + (float)scaled;
@@ -542,6 +543,7 @@ void fn_8017DCB4(void *arg0) {
 #pragma scheduling on
 #pragma dont_inline on
 #pragma ppc_psq_save off
+#pragma opt_common_subs off
 void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
     extern int lbl_8055D430;
     extern float lbl_80561BE0, lbl_80561BF4, lbl_80561C0C;
@@ -693,8 +695,9 @@ void fn_8017E764(void *arg0, int arg1) {
     unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
     float delta = lbl_8055E460 - lbl_80561BF4;
     if ((float)__fabs((double)delta) <= lbl_80558DC4) {
-        unsigned int t0 = *(unsigned int *)(src + 0x70);
-        unsigned int t1 = *(unsigned int *)(src + 0x74);
+        unsigned int t1, t0;
+        t0 = *(unsigned int *)(src + 0x70);
+        t1 = *(unsigned int *)(src + 0x74);
         *(unsigned int *)(dst + 0x00) = t0;
         *(unsigned int *)(dst + 0x04) = t1;
         t0 = *(unsigned int *)(src + 0x78);
@@ -712,8 +715,9 @@ void fn_8017E764(void *arg0, int arg1) {
         t0 = *(unsigned int *)(src + 0x90);
         *(unsigned int *)(dst + 0x20) = t0;
         {
-            unsigned int u0 = *(unsigned int *)(src + 0x94);
-            unsigned int u1 = *(unsigned int *)(src + 0x98);
+            unsigned int u1, u0;
+            u0 = *(unsigned int *)(src + 0x94);
+            u1 = *(unsigned int *)(src + 0x98);
             *(unsigned int *)(dst + 0x24) = u0;
             *(unsigned int *)(dst + 0x28) = u1;
         }
