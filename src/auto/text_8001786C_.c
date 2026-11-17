@@ -159,8 +159,10 @@ s32 fn_80017A14(s32 arg0, s32 arg1) {
 #pragma dont_inline off
 
 extern s32 fn_800179E4(void *, s32, s32);
-s32 fn_80017A20(void *arg0, s32 *arg1) {
-    return fn_800179E4(arg0, (s32)(arg1 + 1), arg1[0]);
+/* Membership test: true when `key` is one of the words in the counted array
+ * pointed to by `countAndValues` (count at [0], values starting at [1]). */
+s32 fn_80017A20(void *key, s32 *countAndValues) {
+    return fn_800179E4(key, (s32)(countAndValues + 1), countAndValues[0]);
 }
 
 extern void *fn_80016464(s32);
