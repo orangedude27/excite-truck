@@ -22,17 +22,19 @@ static inline void mtx_to_quat(float m[3][3], float *q) {
         q[1] = inv * (m[2][0] - m[0][2]);
         q[2] = inv * (m[0][1] - m[1][0]);
     } else {
+        float *mi, *mj, *mk;
         i = 0;
         if (m[1][1] > m[0][0]) i = 1;
         if (m[2][2] > m[0][i]) i = 2;
         j = (i + 1) % 3;
         k = (j + 1) % 3;
-        sn = (float)fn_8002F234(lbl_80563E24 + (m[i][i] - (m[j][j] + m[k][k])));
+        mi = m[i]; mj = m[j]; mk = m[k];
+        sn = (float)fn_8002F234(lbl_80563E24 + (mi[i] - (mj[j] + mk[k])));
         inv = lbl_80563E28 / sn;
         q[i] = lbl_80563E28 * sn;
-        q[3] = inv * (m[j][k] - m[k][j]);
-        q[j] = inv * (m[i][j] + m[j][i]);
-        q[k] = inv * (m[i][k] + m[k][i]);
+        q[3] = inv * (mj[k] - mk[j]);
+        q[j] = inv * (mi[j] + mj[i]);
+        q[k] = inv * (mi[k] + mk[i]);
     }
 }
 extern float __fabsf(float);
@@ -61,31 +63,31 @@ void fn_8026E22C(float *out, float *a, float *b, float t) {
     }
 }
 
-void fn_8026E688(f32* arg0, f32* arg1, f32* arg2, f32* arg3) {
+void fn_8026E688(f32* arg0, f32* __restrict arg1, f32* __restrict arg2, f32* arg3) {
     volatile f32 delta[3];
     f32 z[3];
     f32 y[3];
     f32 x[3];
-    volatile f32* inputA = (volatile f32*)arg1;
-    volatile f32* inputB = (volatile f32*)arg2;
-    volatile f32* matrix = (volatile f32*)arg0;
-    f32 px, py, pz, qx, qy, qz;
-    f32 dx, dy, dz;
-    f32 one, zero;
+    f32* matrix = arg0;
     f32 x0, x1, x2, z0, z1, z2;
+    f32 one, zero;
+    f32 dy, dx;
+    f32 qz, qy, qx;
+    f32 pz, py, px;
+    f32 dz;
 
-    px = inputA[0];
-    qx = inputB[0];
-    py = inputA[1];
+    px = arg1[0];
+    qx = arg2[0];
+    py = arg1[1];
     dx = qx - px;
-    pz = inputA[2];
-    qy = inputB[1];
-    qz = inputB[2];
+    pz = arg1[2];
+    qy = arg2[1];
+    qz = arg2[2];
     dy = qy - py;
-    ((volatile f32*)arg0)[9] = px;
+    arg0[9] = px;
     dz = qz - pz;
-    ((volatile f32*)arg0)[10] = py;
-    ((volatile f32*)arg0)[11] = pz;
+    arg0[10] = py;
+    arg0[11] = pz;
     delta[0] = dx;
     delta[1] = dy;
     delta[2] = dz;
@@ -105,9 +107,10 @@ void fn_8026E688(f32* arg0, f32* arg1, f32* arg2, f32* arg3) {
     if (PSVECDotProduct((Vec*)delta, (Vec*)delta) < lbl_80563E24) {
         return;
     }
-    if (lbl_80563E2C > (f32)__fabs((double)delta[0]) &&
-        lbl_80563E2C > (f32)__fabs((double)delta[2])) {
-        return;
+    if ((f32)__fabs((double)delta[0]) < lbl_80563E2C) {
+        if ((f32)__fabs((double)delta[2]) < lbl_80563E2C) {
+            return;
+        }
     }
     matrix[6] = delta[0];
     matrix[7] = delta[1];
