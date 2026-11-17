@@ -2882,7 +2882,7 @@ extern "C" void fn_8021CBBC(void *arg0) {
     y = lbl_8055FBA0 / 2 - *(s32 *)((u8 *)arg0 + 8);
     b = (f32)y;
     fn_802C5310(*(s32 *)((u8 *)arg0 + 0x24C), 0,
-                a, b - lbl_80563500, lbl_805634A8);
+                a, b - 8.0f, 0.0f);
     rate = (*(V24x **)((u8 *)arg0 + 0x248))->get();
     x = ((VfObj *)arg0)->vf28();
     y = *(s32 *)((u8 *)arg0 + 0x254);
@@ -2890,7 +2890,7 @@ extern "C" void fn_8021CBBC(void *arg0) {
     fn_80230C30(&a, &b,
                 x + *(s32 *)((u8 *)arg0 + 4),
                 3 + *(s32 *)((u8 *)arg0 + 8));
-    fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), 0, a, b, lbl_805634A8);
+    fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), 0, a, b, 0.0f);
 }
 
 #pragma push
