@@ -91,20 +91,21 @@ s32 fn_80005564(void) {
 }
 
 #pragma dont_inline on
-s32 fn_80005580(s32 arg0) {
-    s32 flags = ((s32 *)fn_801E87A8())[1];
-    s32 obj = fn_801E86F8(arg0);
-    u8 *state = (u8 *)fn_801EA9CC();
+/* Per-player gate used by fn_8000561C: returns 1 when fn_801B8570 reports 0 for the player's car; otherwise, with mode flag 0x100 set, returns 1 only if the car's live state at +0x30 is 3 or its byte at +0x34 is nonzero; otherwise 0. */
+s32 fn_80005580(s32 playerIndex) {
+    s32 modeFlags = ((s32 *)fn_801E87A8())[1];
+    s32 carIndex = fn_801E86F8(playerIndex);
+    u8 *car = (u8 *)fn_801EA9CC();
 
-    if (fn_801B8570(obj) == 0) {
+    if (fn_801B8570(carIndex) == 0) {
         return 1;
     }
-    if (flags & 0x100) {
-        s32 result = 0;
-        if (*(s32 *)(state + 0x30) == 3 || state[0x34] != 0) {
-            result = 1;
+    if (modeFlags & 0x100) {
+        s32 passed = 0;
+        if (*(s32 *)(car + 0x30) == 3 || car[0x34] != 0) {
+            passed = 1;
         }
-        return result;
+        return passed;
     }
     return 0;
 }
