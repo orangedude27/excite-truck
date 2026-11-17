@@ -1444,6 +1444,7 @@ extern "C" void fn_801FF16C(void *obj) {
         fn_801FF3AC((char *)obj + 0xE08, value);
     }
 }
+/* Constant virtual getter (returns the fixed value 3); likely a count/type reported through a dispatch table. */
 extern "C" int fn_801FF1BC(void) { return 3; }
 
 extern "C" void fn_801FF1C4(void* arg0, int arg1, int arg2) {
