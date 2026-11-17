@@ -1747,8 +1747,9 @@ void fn_80291708(void *object) {
     *((unsigned char *)object + 0x11C) = 1;
 }
 
-void fn_80291714(void *arg0) {
-    *((unsigned char *)arg0 + 0x11C) = 0;
+/* Clear the object's boolean flag at offset 0x11C (paired with the set fn_80291708 and getter fn_80291720). */
+void fn_80291714(void *object) {
+    *((unsigned char *)object + 0x11C) = 0;
 }
 
 unsigned char fn_80291720(void *arg0) {
