@@ -4802,6 +4802,9 @@ done:
     return;
 }
 
+/* USB Bluetooth HCI transport read stub: the hcisu receiver calls it (through
+ * several read signatures) to pull bytes from the USB endpoint; nothing is
+ * available in this build, so it always reports 0. */
 s32 fn_8007011C(void) { return 0; }
 
 u16 UUSB_Write(s32 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
@@ -11201,9 +11204,7 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 st
 void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
     extern char lbl_80316530[];
     extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
-    typedef struct { u8 b[0x150]; } tLinkRec;
-    u8 *acl, *pm, *reg, *dev, *addr;
-    tLinkRec *link;
+    u8 *acl, *pm, *reg, *dev, *addr, *link;
     int offset, index, i;
     index = (u8)btm_handle_to_acl_index(handle);
     if (index >= 4) return;
@@ -11231,22 +11232,22 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
         if (reg[0x558] & 2)
             (*(void (**)(u8 *, u8, u16, u8))(reg + 0x554))(acl + 0x3c, mode, interval, status);
     }
-    link = (tLinkRec *)((u32)lbl_803C0F78 + offset);
-    if (link->b[0x14f] == 1) {
-        addr = (u8 *)link + 0x3c;
+    link = (u8 *)((u32)lbl_803C0F78 + offset);
+    if (link[0x14f] == 1) {
+        addr = link + 0x3c;
         dev = (u8 *)btm_find_dev(addr);
         if (dev != 0 && (dev[0x76] & 4)) {
             if (btsnd_hcic_set_conn_encrypt(handle, 0)) {
-                link->b[0x14f] = 2;
+                link[0x14f] = 2;
                 return;
             }
         } else {
             if (btsnd_hcic_switch_role(addr, (lbl_803C0F78 + offset)[0x14e] == 0)) {
-                link->b[0x14f] = 0;
+                link[0x14f] = 0;
                 return;
             }
         }
-        link->b[0x14f] = 0;
+        link[0x14f] = 0;
         if (*(void (**)(void *))(lbl_803C0F78 + 0x62c) != 0) {
             lbl_803C0F78[0x624] = status;
             (*(void (**)(void *))(lbl_803C0F78 + 0x62c))(lbl_803C0F78 + 0x624);
@@ -15318,8 +15319,8 @@ void gap_disconnect_ind(u16 cid, BOOLEAN ack_needed)
     for (group = 0; group < 2; group++) {
         for (slot = 0; slot < 4; slot++, entry += 0x60) {
             if (entry[0] == 0) goto next_slot;
-            if (*(u16 *)(entry + 6) != cid) goto next_slot;
-            goto found;
+            if (*(u16 *)(entry + 6) == cid) goto found;
+            goto next_slot;
         next_slot:
             i++;
         }
@@ -15341,8 +15342,8 @@ found:
     for (group = 0; group < 2; group++) {
         for (slot = 0; slot < 4; slot++, p += 0x60) {
             if (p[slot * 0x60] == 0) goto next_psm;
-            if (*(u16 *)(p + slot * 0x60 + 0x10) != psm) goto next_psm;
-            goto psm_found;
+            if (*(u16 *)(p + slot * 0x60 + 0x10) == psm) goto psm_found;
+            goto next_psm;
         next_psm:
             i++;
         }
