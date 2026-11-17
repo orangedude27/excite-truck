@@ -65,7 +65,9 @@ s32 fn_801281F4(s32 value, s32 alignment) {
     return ((value + alignment) - 1) & ~(alignment - 1);
 }
 #pragma scheduling on
-void fn_80128208(void) {
+/* No-op heap-manager begin hook: the caller passes a memory-region tag string,
+   but this stub ignores it and does nothing. */
+void fn_80128208(char *heapTag) {
 
 }
 
