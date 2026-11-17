@@ -1474,8 +1474,9 @@ int *__AXFXGetLfoSinTable_801D64F4(void) {
     return (int *)lbl_803387A8;
 }
 
-int fn_801D6500(int arg0) {
-    return ((int *)arg0)[1];
+int fn_801D6500(int effect) {
+    /* Return the state (enum TimedEffectState) of a timed effect cue. */
+    return ((int *)effect)[1];
 }
 
 /* Start a ready timed effect: when its state is READY (1), record the current frame tick as its start tick (+0x1C), move it to RUNNING (2) and report success (1). An effect that is not ready is left alone and reports failure (0). */
