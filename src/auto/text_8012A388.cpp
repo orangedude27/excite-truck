@@ -1071,6 +1071,7 @@ extern "C" const char lbl_805599A4[1];
 extern "C" s32 strstr(const char *, const char *);
 #pragma push
 #pragma scheduling invalid_target
+#pragma dont_inline off
 static inline s32 res_entry_use_count(s32 a, s32 b, struct ResEntry *entry) { return entry->useCount; }
 static inline u32 res_entry_flags(s32 a, s32 b, struct ResEntry *entry) { return entry->flags; }
 
