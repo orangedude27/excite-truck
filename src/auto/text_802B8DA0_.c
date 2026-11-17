@@ -597,8 +597,9 @@ extern short lbl_802FAB60[];
 #pragma push
 #pragma scheduling invalid_target
 int fn_802B9920(int arg0) {
-    short s = (short)(arg0 + 0x200);
-    short idx = (short)(s % 32);
+    short idx;
+    idx = arg0 + 0x200;
+    idx %= 32;
     return lbl_802FAB60[idx];
 }
 #pragma scheduling on
