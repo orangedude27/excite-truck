@@ -248,11 +248,11 @@ void fn_802AE774(void) {
     fn_802BAE50();
 }
 #pragma scheduling on
+/* Nonzero when the wave-table workspace buffer has been allocated
+   (lbl_8055F984 holds its base pointer). */
 int fn_802AE7AC(void) {
-    int val = *(int *)lbl_8055F984;
-    unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
-    return (int)(tmp >> 31);
-  }
+    return *(int *)lbl_8055F984 != 0;
+}
   #pragma dont_inline reset
   
 void fn_802AE7C0(void) {
