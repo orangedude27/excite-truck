@@ -1449,6 +1449,9 @@ extern "C" f32 fn_801589A8(Unk801577F0* self, s32 index) {
 /* Return nonzero when the car's +0x2620 state flag is 0 (car idle/stopped). */
 extern "C" s32 fn_80158A5C(void *unused, s32 *car) { return *(s32 *)((u8 *)car + 0x2620) == 0; }
 
+/* Always-false predicate stub of the frame-driven player module, reached only
+   through a callback table; the neighbouring fn_80158A5C is the one real test
+   (car flag 0x2620 clear), this one answers "no" for every caller. */
 extern "C" s32 fn_80158A6C(void) { return 0; }
 
 /* Set the frame-driven player's extra gain value (m274) and raise its enable flag byte at 0x272. */
