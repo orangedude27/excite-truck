@@ -87,8 +87,9 @@ s32 fn_802C2CC4(s32 pixel16) {
     return (s32)(lowBits | __rlwimi(__rlwinm(pixel16, 8, 8, 12) | 0xFF000000, pixel16, 5, 16, 21));
 }
 #pragma pop
-void fn_802C2CDC(void *arg0, s32 arg1, s32 arg2) {
-    fn_802C2CE8(arg0, arg1, arg2, (s8)lbl_8055CFF8);
+/* Build a canvas of the given size using the default pixel format held in lbl_8055CFF8 (3 in this build). */
+void fn_802C2CDC(void *canvas, s32 width, s32 height) {
+    fn_802C2CE8(canvas, width, height, (s8)lbl_8055CFF8);
 }
 
 void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {
