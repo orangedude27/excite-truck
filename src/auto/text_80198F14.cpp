@@ -5099,8 +5099,10 @@ extern "C" f32 fn_801A4460(s32 arg0) {
     return (f32)fn_8002F234(maxSqLen);
 }
 #pragma scheduling on
-extern "C" void fn_801A44C4(void* arg0) {
-    fn_801CFF18(*(s32*)((u8*)arg0 + 0x24), *(s32*)((u8*)arg0 + 0xC));
+/* Debug-draw callback: forwards the holder's drawable/mesh pointer (+0x24) and
+ * its transform matrix (+0xC, or null for identity) to fn_801CFF18. */
+extern "C" void fn_801A44C4(void* object) {
+    fn_801CFF18(*(s32*)((u8*)object + 0x24), *(s32*)((u8*)object + 0xC));
 }
 
 extern "C" void fn_801A44D4(void* arg0) {
