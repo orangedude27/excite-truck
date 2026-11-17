@@ -120,6 +120,7 @@ void fn_801F4DC4(void) {
     fn_801F7160(lbl_8055EC18);
 }
 
+/* Draw every 0x48-byte ClothEntry in the global cloth group (fn_801F7220 calls fn_801F6880 on each). */
 void fn_801F4DCC(void) {
     fn_801F7220(lbl_8055EC18);
 }
