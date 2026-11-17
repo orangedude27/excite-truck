@@ -1220,8 +1220,9 @@ void fn_801F3514(void *arg0) {
     fn_802C9A1C(v);
 }
 #pragma pop
-void fn_801F371C(int arg0) {
-    fn_8029231C(arg0 + 4);
+/* Advance the sun/flare position by the velocity vector stored at +4 of the object (tail-call into fn_8029231C). */
+void fn_801F371C(int object) {
+    fn_8029231C(object + 4);
 }
 
 int fn_801F3724(int object, int deleteFlag) {
