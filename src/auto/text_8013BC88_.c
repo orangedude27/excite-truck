@@ -3,6 +3,7 @@
 
 extern char lbl_8055E168[4];
 extern void fn_8000D838(void *queue);
+/* Register the static cleanup record lbl_8055E168 on the global static-destructor chain. */
 void fn_8013BC88(void) {
     fn_8000D838(lbl_8055E168);
 }
