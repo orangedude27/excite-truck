@@ -1280,10 +1280,10 @@ extern "C" void fn_802ADE60(s32, s32);
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-extern "C" void fn_8016D658(void *arg0, s32 arg1) {
+extern "C" void *fn_8016D658(void *arg0, s32 arg1) {
  class VObj { public: virtual void destroy(int); };
  struct List { void *vtable; VObj **items; s32 count; };
- VObj *old; s32 offset; VObj *p; s32 i;
+ VObj *old; VObj *p; s32 offset, i;
  if (arg0 != 0) {
   old = *(VObj **)((u8 *)arg0 + 0xA4); *(char **)arg0 = lbl_80330990;
   if (old != 0) { if (old != 0) old->destroy(1); }
@@ -1321,10 +1321,11 @@ p = *(VObj **)((u8 *)arg0 + 0x94); if (p != 0) { if (p != 0) p->destroy(1); }
    if ((u8 *)arg0 + 0x44 != 0) fn_80131818(*(s32 *)((u8 *)arg0 + 0x44));
    fn_802C2930((u8 *)arg0 + 0x30, 0);
   }
-  if ((u8 *)arg0 + 4 != 0) { *(s32 *)((u8 *)arg0 + 4) = 0; *(s32 *)((u8 *)arg0 + 8) = 0; *(s32 *)((u8 *)arg0 + 0xC) = 0; }
+  if ((u8 *)arg0 + 4 != 0) { if ((u8 *)arg0 + 4 != 0) { *(s32 *)((u8 *)arg0 + 4) = 0; *(s32 *)((u8 *)arg0 + 8) = 0; *(s32 *)((u8 *)arg0 + 0xC) = 0; } }
   if (arg1 > 0) fn_80128668(arg0);
  }
- }
+ return arg0;
+}
 #pragma opt_common_subs on
  #pragma scheduling on
  #pragma cplusplus off
@@ -2447,8 +2448,9 @@ void fn_8016FD9C(const f32 *timeSeconds, void *uiElement) {
     fn_801475D0(uiElement, (const char *)&lbl_8055A248, (const char *)&lbl_8055A268, formattedTime);
 }
 #pragma cplusplus on
-extern "C" void fn_8016FE1C(void *arg0) {
-    ((TObj4C *)arg0)->v4C();
+extern "C" void fn_8016FE1C(void *obj) {
+    /* C-linkage adapter: dispatch virtual slot v4C() at vtable offset 0x4C on a TObj4C object. */
+    ((TObj4C *)obj)->v4C();
 }
 
 extern f32 lbl_80561980, lbl_80561984, lbl_805619A4, lbl_80561A0C, lbl_805619D0, lbl_8055E3C8;
