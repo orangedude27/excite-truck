@@ -1209,8 +1209,9 @@ extern s32 fn_802BC09C();
 extern void fn_80204044();
 extern s32 fn_802C21DC();
 extern s32 fn_802B7300(s16, s16, s32, s32, float);
-void fn_802B7420(s16 arg0, s16 arg1, s32 arg2) {
-    fn_802B7300(arg0, arg1, arg2, -1, lbl_80564C8C);
+void fn_802B7420(s16 x, s16 y, s32 value) {
+    /* Render callback: draw a terrain-debug marker at grid cell (x, y) with the default 0.2 scale. */
+    fn_802B7300(x, y, value, -1, lbl_80564C8C);
 }
 
 extern s16 lbl_8055FA50[4];
