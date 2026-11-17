@@ -1225,6 +1225,21 @@ s32 fn_8024B9EC(void *selector) {
     return *(s32 *)(*(char **)((char *)selector + 0x10) + *(s32 *)((char *)selector + 0x11C) * 8);
 }
 
+/* Race-movie selector, the list fn_8024BA00/fn_8024BAA0 step through: +0x10 is an
+ * array of {id, name} pairs (+0x14 its count), +0x11C the current entry, +0x120 an
+ * argument handed to the handler object at +0x124, and +0x128 a 0x20-byte buffer
+ * holding the current entry's archive path "<name>/race.m2v". */
+typedef struct RaceMovieSelector {
+    char pad_00[0x10];
+    s32 *items;    /* 0x10: {id, name} pairs, 8 bytes each */
+    s32 count;     /* 0x14 */
+    char pad_18[0x104];
+    s32 index;     /* 0x11C: currently selected entry */
+    s32 handlerArg; /* 0x120: first argument of the handler's select() */
+    void *handler; /* 0x124: notified when the selection changes */
+    char path[0x20]; /* 0x128: "<name>/race.m2v" */
+} RaceMovieSelector;
+
 #pragma cplusplus on
 extern "C" void fn_8024BA00(void *arg0) {
     class Base {
