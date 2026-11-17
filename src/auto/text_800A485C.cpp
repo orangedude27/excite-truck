@@ -1794,8 +1794,9 @@ extern "C" s32 fn_800A71A0(s32 *handle) {
 
 #pragma dont_inline reset
 
-extern "C" s32 fn_800A71C4(u32 *arg0) {
-    return ((u32) *arg0 >> 2U) & 1;
+/* Return bit 2 of a cache record's flag word at +0x0 (its status flag). */
+extern "C" s32 fn_800A71C4(u32 *record) {
+    return ((u32) *record >> 2U) & 1;
 }
 
 extern "C" void fn_800A71D0(void *arg0, s32 arg1) {
@@ -9498,7 +9499,7 @@ static inline s32 CopyBaseName(u8 *out, const u8 *in) {
     }
     return last;
 }
-extern "C" void fn_800B3BEC(u8 *out, u8 *in, u8 flags) {
+extern "C" void fn_800B3BEC(u8 *__restrict out, u8 *__restrict in, u8 flags) {
     s32 last = -1;
     s32 ext;
     s32 i;
