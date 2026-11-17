@@ -5696,7 +5696,6 @@ s32 WPADiHIDParser(u8 port, u8* p_rpt) {
     return result;
 }
 
-#define wpad_store_status(dst, value) (*(dst) = (u8)(value))
 #pragma opt_propagation off
 void fn_80064A80(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
@@ -5710,7 +5709,7 @@ void fn_80064A80(s32 chan, s32 param_2) {
             s32 sign = (-val | val) >> 31;
             value = (u32)sign & 0xfc;
         }
-        *(u8*)((u8*)cb + 0x801) = (u8)value;
+        wpad_store_status((u8*)cb + 0x801, value);
         if (*(s32*)((u8*)cb + 0x7e0) != 0) {
             ((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
         }
