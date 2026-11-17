@@ -60,8 +60,9 @@ void fn_8012F418(s32 *obj) {
     fn_80128668();
 }
 
-void fn_8012F43C(void *arg0) {
-    ((s32 *)arg0)[1] = 0;
+/* Rewind a MemStreamPtr cursor to the start of its stream (set its byte position to 0). */
+void fn_8012F43C(MemStreamPtr *cursor) {
+    cursor->pos = 0;
 }
 
 void fn_8012F448(void *arg0, s32 arg1) {
