@@ -9,16 +9,18 @@ extern char lbl_80329FA0[];
 
 #pragma use_lmw_stmw off
 void fn_80127B5C(int arg0) {
+#pragma scheduling invalid_target
     char *base;
     char *entry;
     int i;
     int j;
     unsigned char *dest;
+    int saveArg = arg0;
 
     ((unsigned char *)lbl_8041E098)[0] = 1;
     base = (char *)lbl_8041E098;
-    entry = base + 8;
     dest = (unsigned char *)base;
+    entry = base + 8;
     for (i = 0; i < *(int *)(base + 4); i++, entry += 16) {
         void (*func)(void) = *(void (**)(void))entry;
         if (func != 0) {
@@ -54,9 +56,16 @@ void fn_80127B5C(int arg0) {
         }
     }
 
-    lbl_8055DF70 = arg0;
+    lbl_8055DF70 = saveArg;
 }
 #pragma use_lmw_stmw reset
+/* Start-up hook of the "bg" background-task manager (the module whose log
+ * strings read "bg: too many tasks (adding %s)" and "bg: Unfreed hook! \"%s\"").
+ * It has nothing to do: the hook table at lbl_8041E098 sits in .bss (168 bytes =
+ * an 8-byte header -- iteration flag at +0, entry count at +4 -- followed by 10
+ * 16-byte entries of callback/object/name/deleted), so it is already empty when
+ * the kernel start-up sequence (fn_802E2A5C) calls this.  fn_80127EF8 is the
+ * matching shut-down, which reports the hooks that were never removed. */
 void fn_80127C8C(void) {
 
 }
