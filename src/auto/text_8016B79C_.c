@@ -738,6 +738,7 @@ int fn_8016C760(void *list) { return ((int *)list)[1]; }
 
 void fn_8016CD10(void *);
 void fn_8016CD28(void *);
+#pragma cplusplus off
 #pragma cplusplus on
 extern "C" void fn_8016CD10(void *);
 extern "C" void fn_8016CD28(void *);
