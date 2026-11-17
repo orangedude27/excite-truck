@@ -26394,6 +26394,9 @@ UINT8 *add_attr(UINT8 *p, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_REC *p_rec, UINT16 
 #define MAX_NEST_LEVELS 5
 #define FREE_MEM(db) (*(UINT8 **)((UINT8 *)(db) + 0x68))
 #define COPY_ARRAY(p, a, len) {register int ijk; for (ijk = 0; ijk < (int)(len); ijk++) ((UINT8 *) a)[ijk] = *p++;}
+    /* Allocate a tSDP_DISC_ATTR from the discovery DB, decode one SDP data element
+       from the response stream into it, and link it into the record's attribute
+       list (or the parent's sub-attribute list); return the next stream byte. */
     char *p_trace_str = lbl_8031A028;
     UINT32 total_len;
     UINT32 size;
