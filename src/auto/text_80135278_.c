@@ -437,24 +437,27 @@ s32 fn_801357A4(Unk_80135278 *self, float *point) {
 }
 
 #pragma scheduling invalid_target
-void fn_80135B24(void *arg0, void *arg1, float farg0)
+/* Fill a path sample by walking the follower's circular stretch list from its
+ * current node until a stretch reaches the requested distance (or the chain
+ * ends), then set the sample's node and interpolation fraction. */
+void fn_80135B24(void *sample, void *follower, float distance)
 {
   void *node;
   void *base;
   float initial = lbl_80561320;
-  *((void **) arg0) = 0;
-  base = *((void **) (((char *) arg1) + 0x2C));
-  *((s32 *) (((char *) arg0) + 8)) = 0x2710;
-  *((float *) (((char *) arg0) + 4)) = initial;
+  *((void **) sample) = 0;
+  base = *((void **) (((char *) follower) + 0x2C));
+  *((s32 *) (((char *) sample) + 8)) = 0x2710;
+  *((float *) (((char *) sample) + 4)) = initial;
   node = *((void **) (((char *) base) + 0x20));
-  *((void **) arg0) = node;
+  *((void **) sample) = node;
   if (node != 0)
   {
     for (;;)
     {
-      node = *((void **) arg0);
+      node = *((void **) sample);
       base = *((void **) (((char *) node) + 0x14));
-      if ((*((float *) (((char *) base) + 0x1C))) >= farg0)
+      if ((*((float *) (((char *) base) + 0x1C))) >= distance)
       {
         break;
       }
@@ -462,12 +465,12 @@ void fn_80135B24(void *arg0, void *arg1, float farg0)
       {
         break;
       }
-      *((void **) arg0) = base;
+      *((void **) sample) = base;
     }
 
-    *((float *) (((char *) arg0) + 4)) = (farg0 - (*((float *) (((char *) node) + 0x1C)))) / (*((float *) (((char *) node) + 0x18)));
+    *((float *) (((char *) sample) + 4)) = (distance - (*((float *) (((char *) node) + 0x1C)))) / (*((float *) (((char *) node) + 0x18)));
   }
-  *((s32 *) (((char *) arg0) + 8)) = 0;
+  *((s32 *) (((char *) sample) + 8)) = 0;
 }
 #pragma scheduling on
 void fn_80135B9C(PathCursor *cursor, PathVec *posOut, PathVec *dirOut, float *valueOut, PathSample *sampleOut, float amount) {
