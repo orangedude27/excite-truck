@@ -203,10 +203,12 @@ void *fn_802B1F68(void *object, int shouldDelete) {
     return object;
 }
 
-void fn_802B1FC0(void *arg0) {
-    ((int *)arg0)[0] = 0;
-    ((int *)arg0)[2] = 0;
-    ((int *)arg0)[1] = 0;
+/* Zero the three 32-bit fields of a pool node; used as the element initializer
+ * callback passed to fn_8002F37C (paired with the fn_802B1F68 destructor). */
+void fn_802B1FC0(void *node) {
+    ((int *)node)[0] = 0;
+    ((int *)node)[2] = 0;
+    ((int *)node)[1] = 0;
 }
 
 #pragma push
