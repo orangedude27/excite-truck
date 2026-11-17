@@ -6,7 +6,7 @@ struct VObj_8017D93C { virtual void d0(int); };
 #pragma cplusplus reset
 
 #pragma small_data off
-extern float lbl_80558DC4;
+__declspec(section ".data") extern float lbl_80558DC4;
 #pragma small_data on
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
