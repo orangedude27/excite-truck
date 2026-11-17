@@ -620,9 +620,7 @@ extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
     key1 = *(s32 *)((u8 *)obj1->get() + 0x10);
     tie0 = *(s32 *)((u8 *)obj0 + 0x74);
     tie1 = *(s32 *)((u8 *)obj1 + 0x74);
-    if (flag0 == 0) goto fallback;
-    if (flag1 == 0) goto fallback;
-    {
+    if (flag0 != 0 && flag1 != 0) {
         f32 a = *(f32 *)((u8 *)obj0 + 0x70);
         f32 b = *(f32 *)((u8 *)obj1 + 0x70);
         f32 difference = (f32)(double)__fabsf(a - b);
@@ -630,14 +628,11 @@ extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
         if (b < a) return 1;
         return -1;
     }
-fallback:
     if (flag0 != 0) goto compare_keys;
     if (flag1 == 0) goto compare_keys;
-    if (flag0 == 0) return 1;
-    return -1;
+    return flag0 == 0 ? 1 : -1;
 compare_keys:
-    if (key0 == key1) return tie1 - tie0;
-    return key1 - key0;
+    return key0 == key1 ? tie1 - tie0 : key1 - key0;
 }
 #pragma pop
 #pragma scheduling on
