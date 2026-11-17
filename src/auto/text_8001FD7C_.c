@@ -436,6 +436,9 @@ extern "C" void fn_800201F0(void) {
     }
 }
 #pragma cplusplus reset
+/* RealName: Tips_HideOverlay
+ * Thunk for the race teardown: take the tips/results overlay off screen and
+ * clear the pause it may be waiting on (fn_8001FF24). */
 void fn_80020430(void) {
     fn_8001FF24();
 }
