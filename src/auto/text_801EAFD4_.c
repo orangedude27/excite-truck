@@ -815,8 +815,9 @@ void fn_801EBDCC(void) {
 
 extern void fn_802B0144(void);
 void fn_801EB634_keep(void);
-void fn_801EBEF4(f32 farg0) {
-    lbl_8055EB98[0] = farg0 * farg0;
+/* Store the square of scale into the first of the two global render scale factors. */
+void fn_801EBEF4(f32 scale) {
+    lbl_8055EB98[0] = scale * scale;
 }
 
 extern f32 lbl_80558DC4[];
