@@ -587,11 +587,12 @@ void fn_801BF12C(float *dst, float *src) {
     dst[3] = w;
 }
 
-void fn_801BF150(void *arg0, float farg0, float farg1, float farg2, float farg3) {
-    ((float *)arg0)[0] = farg0;
-    ((float *)arg0)[1] = farg1;
-    ((float *)arg0)[2] = farg2;
-    ((float *)arg0)[3] = farg3;
+/* Set the four components of a 4-component float vector. */
+void fn_801BF150(void *dst, float x, float y, float z, float w) {
+    ((float *)dst)[0] = x;
+    ((float *)dst)[1] = y;
+    ((float *)dst)[2] = z;
+    ((float *)dst)[3] = w;
 }
 
 /* Copy a 4-component float vector from src to dst. */
