@@ -1292,9 +1292,9 @@ void fn_80179320(void) {
     extern float lbl_8055E460;
     extern float lbl_80561B6C;
     float initial = lbl_80561B6C;
-    register char *base = (char *)lbl_80430590;
-    register int i;
     register int offset;
+    register int i;
+    register char *base = (char *)lbl_80430590;
     void *object;
     int old;
     int *field;
@@ -1486,8 +1486,13 @@ char fn_801796B4(void) {
     return lbl_8055E45D;
 }
 
-void fn_801796BC(unsigned char arg0) {
-    lbl_8055E45E = arg0;
+/* Set the "a menu holds the game" flag lbl_8055E45E.  The frame update
+ * (fn_80177F40) copies it to lbl_8055E45F, whose previous-frame value
+ * fn_801796C4 returns; vehicle/camera code reads it to snap positions instead
+ * of following normally.  The challenge level-select menu sets it while it is
+ * up (fn_80164F50) and clears it once the player confirms a choice. */
+void fn_801796BC(unsigned char menuActive) {
+    lbl_8055E45E = menuActive;
 }
 
 extern char lbl_8055E45F;
@@ -1666,8 +1671,7 @@ void fn_80179AF4(void *arg0, int arg1) {
     unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
     float base = lbl_80561B6C;
     float top = lbl_8055E460;
-    float delta = top - base;
-    if ((float)__fabs((double)delta) <= *(float *)lbl_80558DC4) {
+    if ((float)__fabs((double)(top - base)) <= *(float *)lbl_80558DC4) {
         struct WordPair *s = (struct WordPair *)(src + 0x70);
         struct WordPair *d = (struct WordPair *)dst;
         d[0] = s[0]; d[1] = s[1]; d[2] = s[2]; d[3] = s[3];
@@ -1676,10 +1680,11 @@ void fn_80179AF4(void *arg0, int arg1) {
         ((unsigned int *)dst)[11] = ((unsigned int *)(src + 0x70))[11];
     } else {
         float temp[12];
-        float *a = (float *)(src + 0x70);
-        float *b = (float *)(src + 0xA0);
-        float *out = temp;
+        float *a, *b, *out;
         int i;
+        out = temp;
+        b = (float *)(src + 0xA0);
+        a = (float *)(src + 0x70);
         for (i = 0; i < 2; i++) {
             float a0 = a[0], b0 = b[0];
             float a1 = a[1], b1 = b[1];
