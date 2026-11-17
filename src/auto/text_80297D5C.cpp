@@ -1337,49 +1337,51 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
 
 extern "C" void fn_8029A318(float*, float*, float*, float*, float, float, float);
 #pragma dont_inline on
-extern "C" void fn_8029A60C(void* arg0, void *__restrict arg1) {
+extern "C" void fn_8029A60C(void *xform, void *__restrict source) {
+    /* Copy the 3x4 transform at source into xform, compute three transformed vectors with
+       fn_8029A318, then submit them through fn_80298458. */
     volatile float vectors[9];
-    volatile unsigned int *src = (volatile unsigned int *)arg1;
-    unsigned int v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0;
-    float value = lbl_8056459C;
+    volatile unsigned int *words = (volatile unsigned int *)source;
+    unsigned int m11, m10, m9, m8, m7, m6, m5, m4, m3, m2, m1, m0;
+    float zero = lbl_8056459C;
 
-    v0 = src[0];
-    vectors[6] = value;
-    v1 = src[1];
-    vectors[7] = value;
-    v2 = src[2];
-    vectors[8] = value;
-    v3 = src[3];
-    vectors[3] = value;
-    v4 = src[4];
-    vectors[4] = value;
-    v5 = src[5];
-    vectors[5] = value;
-    v6 = src[6];
-    vectors[0] = value;
-    v7 = src[7];
-    vectors[1] = value;
-    v8 = src[8];
-    vectors[2] = value;
-    v9 = src[9];
-    v10 = src[10];
-    v11 = src[11];
+    m0 = words[0];
+    vectors[6] = zero;
+    m1 = words[1];
+    vectors[7] = zero;
+    m2 = words[2];
+    vectors[8] = zero;
+    m3 = words[3];
+    vectors[3] = zero;
+    m4 = words[4];
+    vectors[4] = zero;
+    m5 = words[5];
+    vectors[5] = zero;
+    m6 = words[6];
+    vectors[0] = zero;
+    m7 = words[7];
+    vectors[1] = zero;
+    m8 = words[8];
+    vectors[2] = zero;
+    m9 = words[9];
+    m10 = words[10];
+    m11 = words[11];
 
-    *(unsigned int *)((char *)arg0 + 0x00) = v0;
-    *(unsigned int *)((char *)arg0 + 0x04) = v1;
-    *(unsigned int *)((char *)arg0 + 0x08) = v2;
-    *(unsigned int *)((char *)arg0 + 0x0C) = v3;
-    *(unsigned int *)((char *)arg0 + 0x10) = v4;
-    *(unsigned int *)((char *)arg0 + 0x14) = v5;
-    *(unsigned int *)((char *)arg0 + 0x18) = v6;
-    *(unsigned int *)((char *)arg0 + 0x1C) = v7;
-    *(unsigned int *)((char *)arg0 + 0x20) = v8;
-    *(unsigned int *)((char *)arg0 + 0x24) = v9;
-    *(unsigned int *)((char *)arg0 + 0x28) = v10;
-    *(unsigned int *)((char *)arg0 + 0x2C) = v11;
+    *(unsigned int *)((char *)xform + 0x00) = m0;
+    *(unsigned int *)((char *)xform + 0x04) = m1;
+    *(unsigned int *)((char *)xform + 0x08) = m2;
+    *(unsigned int *)((char *)xform + 0x0C) = m3;
+    *(unsigned int *)((char *)xform + 0x10) = m4;
+    *(unsigned int *)((char *)xform + 0x14) = m5;
+    *(unsigned int *)((char *)xform + 0x18) = m6;
+    *(unsigned int *)((char *)xform + 0x1C) = m7;
+    *(unsigned int *)((char *)xform + 0x20) = m8;
+    *(unsigned int *)((char *)xform + 0x24) = m9;
+    *(unsigned int *)((char *)xform + 0x28) = m10;
+    *(unsigned int *)((char *)xform + 0x2C) = m11;
 
-    ((void (*)(void*, float*, float*, float*))fn_8029A318)(arg0, (float *)&vectors[6], (float *)&vectors[3], (float *)&vectors[0]);
-    fn_80298458((int)lbl_8055F7C0, *(int *)((char *)arg0 + 0x40), (void *)&vectors[6], (void *)&vectors[3], (void *)&vectors[0], *(short *)((char *)arg1 + 0x30));
+    ((void (*)(void*, float*, float*, float*))fn_8029A318)(xform, (float *)&vectors[6], (float *)&vectors[3], (float *)&vectors[0]);
+    fn_80298458((int)lbl_8055F7C0, *(int *)((char *)xform + 0x40), (void *)&vectors[6], (void *)&vectors[3], (void *)&vectors[0], *(short *)((char *)source + 0x30));
 }
 
 extern "C" void* memset(void*, int, unsigned long);
