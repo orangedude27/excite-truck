@@ -553,23 +553,27 @@ extern "C" void fn_80298B48(void* container) {
 #pragma scheduling on
 static inline void XformRot3(const float *m, const float *src, float *dst) {
     if (dst == src) {
-        float x = src[0], y = src[1], z = src[2];
-        float r0 = z * m[6] + (x * m[0] + y * m[3]);
-        float r1 = z * m[7] + (x * m[1] + y * m[4]);
-        float r2 = z * m[8] + (x * m[2] + y * m[5]);
-        dst[0] = r0;
-        dst[1] = r1;
-        dst[2] = r2;
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m11 = m[4]; m12 = m[5]; m00 = m[0]; m01 = m[1]; m02 = m[2]; m20 = m[6]; m21 = m[7]; m22 = m[8];
+        x = src[0]; y = src[1]; z = src[2];
+        dst[0] = z * m20 + (x * m00 + y * m10);
+        dst[1] = z * m21 + (x * m01 + y * m11);
+        dst[2] = z * m22 + (x * m02 + y * m12);
     } else {
-        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
-        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m00 = m[0]; m20 = m[6];
+        dst[0] = src[2] * m20 + (src[0] * m00 + src[1] * m10);
+        m11 = m[4]; m01 = m[1]; m21 = m[7];
+        dst[1] = src[2] * m21 + (src[0] * m01 + src[1] * m11);
+        m12 = m[5]; m02 = m[2]; m22 = m[8];
+        dst[2] = src[2] * m22 + (src[0] * m02 + src[1] * m12);
     }
 }
 #pragma push
 #pragma processor 750
 extern "C" void fn_80298BBC(void *arg0) {
-    float v[0x3];
+    float v[3];
     float now;
     float threshold;
     float reset;
@@ -583,7 +587,7 @@ extern "C" void fn_80298BBC(void *arg0) {
     goto test;
     do {
         char *items = *(char **)arg0;
-        if (*(float *)(items + offset + 28) > threshold) {
+        if (*(float *)(items + offset + 0x1C) > threshold) {
             const float *m = (const float *)fn_80287B24(i);
             float *p = (float *)(*(char **)arg0 + offset);
             XformRot3(m, p, v);
@@ -592,11 +596,11 @@ extern "C" void fn_80298BBC(void *arg0) {
             v[2] += m[11];
             p = (float *)(*(char **)arg0 + offset);
             if (fn_8029771C(*(void **)((char *)arg0 + 8), v, p, now - p[7]) == 0) {
-                *(float *)(*(char **)arg0 + offset + 28) = reset;
+                *(float *)(*(char **)arg0 + offset + 0x1C) = reset;
             }
         }
-        offset += 32;
-        i += 1;
+        offset += 0x20;
+        i++;
 test:;
     } while (i < fn_80287B14());
 }
@@ -850,11 +854,11 @@ extern "C" void fn_80299504(void* manager) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80299544(void* arg0) {
-    float dt = fn_801E7E24();
-    float f5 = lbl_80564590;
-    float f4 = lbl_8056459C;
-    float f6 = lbl_80564594;
-    float f2 = lbl_805645E0;
+    register float dt = fn_801E7E24();
+    register float f5 = lbl_80564590;
+    register float f4 = lbl_8056459C;
+    register float f6 = lbl_80564594;
+    register float f2 = lbl_805645E0;
     char* p = (char*)arg0;
     for (int i = 0; i < 4; i++, p += 0x40) {
         int state = *(int*)(p + 0x34);
@@ -1299,8 +1303,9 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     register void *data;
     float a[3], b[3], c[3], home[3], screen[6];
     int selector, handle;
-    int *src, *dst;
-    register int v0, v1;
+    unsigned int *src, *dst;
+    unsigned int t;
+    register unsigned int v1, v0;
 
     data = (void *)fn_80287B24(index);
     if ((unsigned int)index < 8U)
@@ -1310,14 +1315,14 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     handle = fn_801EE0C8(selector);
     fn_802C77F0(handle, screen);
 
-    src = (int *)data;
-    dst = (int *)dest;
-    v0=src[0]; v1=src[1]; dst[0]=v0; dst[1]=v1;
+    src = (unsigned int *)data;
+    dst = (unsigned int *)dest;
+    t = src[0]; v1 = src[1]; dst[0] = t; dst[1] = v1;
     v0=src[2]; v1=src[3]; dst[2]=v0; dst[3]=v1;
     v0=src[4]; v1=src[5]; dst[4]=v0; dst[5]=v1;
     v0=src[6]; v1=src[7]; dst[6]=v0; dst[7]=v1;
-    v0=src[8]; v1=src[9]; dst[8]=v0; dst[9]=v1;
-    dst[10]=src[10];
+    v0=src[8]; dst[8]=v0;
+    v0=src[9]; v1=src[10]; dst[9]=v0; dst[10]=v1;
     v0=src[11]; dst[11]=v0;
 
     home[2] = screen[4];
@@ -1328,9 +1333,9 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     *(float *)((char *)dest + 0x38) = home[2];
     *(unsigned int *)((char *)dest + 0x3C) = (unsigned int)index;
 
-    a[0] = lbl_8056459C; a[1] = lbl_8056459C; a[2] = lbl_8056459C;
-    b[0] = lbl_8056459C; b[1] = lbl_8056459C; b[2] = lbl_8056459C;
-    c[0] = lbl_8056459C; c[1] = lbl_8056459C; c[2] = lbl_8056459C;
+    a[0] = 0.0f; a[1] = 0.0f; a[2] = 0.0f;
+    b[0] = 0.0f; b[1] = 0.0f; b[2] = 0.0f;
+    c[0] = 0.0f; c[1] = 0.0f; c[2] = 0.0f;
     ((void (*)(void *, float *, float *, float *, float, float, float))fn_8029A318)
         (dest, a, b, c, home[0], home[1], home[2]);
     *(int *)((char *)dest + 0x40) =
