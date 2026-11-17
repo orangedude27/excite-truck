@@ -272,7 +272,7 @@ extern "C" void fn_8027D6FC(void *__restrict arg0) {
 #pragma cplusplus on
 #pragma scheduling on
 extern "C" void fn_8027D77C(void *__restrict arg0) {
-    struct S { int a, b, c, id; };
+    struct InArgs { unsigned char pad[0xC]; int id; };
     class Obj {
     public:
         virtual void v0();
@@ -280,10 +280,12 @@ extern "C" void fn_8027D77C(void *__restrict arg0) {
         virtual void v2();
         virtual void v3(int);
     };
-    int id = ((struct S *)arg0)->id;
-    void *res = fn_8001285C(id);
-    void *obj = *(void **)((char *)res + 0x20);
-    ((Obj *)obj)->v3((int)&lbl_8055C784);
+    /* Look up the 0x28-byte state-table entry for the id carried in arg0, then
+     * call the virtual handler stored at entry+0x20 with the "name" key. */
+    int id = ((struct InArgs *)arg0)->id;
+    void *entry = fn_8001285C(id);
+    void *handler = *(void **)((char *)entry + 0x20);
+    ((Obj *)handler)->v3((int)&lbl_8055C784);
 }
 #pragma scheduling invalid_target
 extern "C" void fn_8027D7B8(void *arg0) {
