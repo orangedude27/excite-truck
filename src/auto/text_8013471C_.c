@@ -710,6 +710,7 @@ int fn_8013519C(void) {
 }
 extern const char lbl_8032BD98[];
 extern s32 fn_802E317C(const char *, ...);
+/* Null-driver default for this driver-interface virtual (vtable slot +0x14): reports no capability flags, i.e. 0. */
 s32 fn_801351AC(void) {
     return 0;
 }
