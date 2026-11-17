@@ -16,10 +16,10 @@ extern float lbl_805626C0;
 extern float lbl_805626C4;
 extern char lbl_80335F40[];
 extern int strlen(const char *);
-#pragma scheduling on
+#pragma scheduling invalid_target
 int fn_801B64B4(void *p) {
     float converted[4];
-    switch (*(unsigned char *)p) {
+    switch (*(volatile unsigned char *)p) {
     case 0: {
         float f = *(float *)((unsigned char *)p + 0x1C);
         fn_801E3CB4((unsigned char *)p + 4, (unsigned char *)p + 0x10, *(int *)((unsigned char *)p + 0x20), f);
