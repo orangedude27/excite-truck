@@ -196,14 +196,15 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
     char *a0 = (char *)self;
     char *base = lbl_80347A50;
     long rate;
+    long off;
     long i;
     Entry *obj;
 
     *(void **)(a0 + 8) = arg1;
     *(unsigned char *)(a0 + 4) = 1;
     if (arg1) {
-        rate = 0;
         if (((Source *)arg1)->has(base + 0xCC) != 0) {
+            rate = 0;
             rate = fn_80204BB4((const char *)((Source *)arg1)->get(base + 0xCC));
             if (fn_8027D1F4() < rate) {
                 *(unsigned char *)(a0 + 4) = 0;
@@ -225,33 +226,33 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
                         if (idx < cnt) {
                             long last = cnt - 1;
                             if (idx != last) {
-                                char *b = *(char **)(a0 + 0x18);
+                                register char *b = *(char **)(a0 + 0x18);
                                 char *s = b + last * 0x3C;
-                                char *d = b + idx * 0x3C;
-                                d[4] = s[4];
-                                *(long *)(d + 8) = *(long *)(s + 8);
-                                *(long *)(d + 0xC) = *(long *)(s + 0xC);
-                                d[0x10] = s[0x10];
-                                d[0x11] = s[0x11];
-                                d[0x12] = s[0x12];
+                                b = b + idx * 0x3C;
+                                b[4] = s[4];
+                                *(long *)(b + 8) = *(long *)(s + 8);
+                                *(long *)(b + 0xC) = *(long *)(s + 0xC);
+                                b[0x10] = s[0x10];
+                                b[0x11] = s[0x11];
+                                b[0x12] = s[0x12];
                                 {
                                     long w14 = *(long *)(s + 0x14);
-                                    register long w18 = *(long *)(s + 0x18);
-                                    *(long *)(d + 0x14) = w14;
-                                    *(long *)(d + 0x18) = w18;
+                                    long w18 = *(long *)(s + 0x18);
+                                    *(volatile long *)(b + 0x14) = w14;
+                                    *(volatile long *)(b + 0x18) = w18;
                                 }
                                 {
                                     long w1c = *(long *)(s + 0x1C);
-                                    register long w20 = *(long *)(s + 0x20);
-                                    *(long *)(d + 0x1C) = w1c;
-                                    *(long *)(d + 0x20) = w20;
+                                    long w20 = *(long *)(s + 0x20);
+                                    *(volatile long *)(b + 0x1C) = w1c;
+                                    *(volatile long *)(b + 0x20) = w20;
                                 }
-                                *(long *)(d + 0x24) = *(long *)(s + 0x24);
-                                *(long *)((unsigned short)d + 0x28) = *(long *)(s + 0x28);
-                                *(long *)(d + 0x2C) = *(long *)(s + 0x2C);
-                                *(long *)(d + 0x30) = *(long *)(s + 0x30);
-                                *(long *)(d + 0x34) = *(long *)(s + 0x34);
-                                d[0x38] = s[0x38];
+                                *(long *)(b + 0x24) = *(long *)(s + 0x24);
+                                *(long *)(b + 0x28) = *(long *)(s + 0x28);
+                                *(long *)(b + 0x2C) = *(long *)(s + 0x2C);
+                                *(long *)(b + 0x30) = *(long *)(s + 0x30);
+                                *(long *)(b + 0x34) = *(long *)(s + 0x34);
+                                b[0x38] = s[0x38];
                             }
                             *(volatile long *)(a0 + 0x1C) = *(volatile long *)(a0 + 0x1C) - 1;
                         }
@@ -260,20 +261,18 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
                 i += 1;
             }
             if (*(long *)(a0 + 0x1C) > 0) {
-                long c;
                 *(char *)(a0 + 0x1F0) = fn_8027D0E0(*(long *)(a0 + 0x10));
                 *(char *)(a0 + 0x1F1) = fn_8027D068(*(long *)(a0 + 0x10));
-                i = 0;
+                off = 0;
                 *(unsigned char *)(a0 + 0x1F2) = 1;
-                c = *(long *)(a0 + 0x1C);
-                if (c > 0) {
-                    long off = 0;
-                    do {
+                if (*(long *)(a0 + 0x1C) > 0) {
+                    i = 0;
+                    while (off < *(volatile long *)(a0 + 0x1C)) {
                         *(unsigned char *)(a0 + 0x1F2) =
-                            (*(unsigned char *)(a0 + 0x1F2) & ((Entry *)(*(char **)(a0 + 0x18) + off))->check()) != 0;
-                        off += 0x3C;
-                        i++;
-                    } while (i < *(long *)(a0 + 0x1C));
+                            (*(unsigned char *)(a0 + 0x1F2) & ((Entry *)(*(char **)(a0 + 0x18) + i))->check()) != 0;
+                        i += 0x3C;
+                        off++;
+                    }
                 }
                 fn_8027D158(*(long *)(a0 + 0x10), a0 + 0x18C, 0x64);
                 *(char *)(a0 + 0x1F3) = rate > 0;
@@ -1064,8 +1063,9 @@ found:
     return index;
 }
 #pragma pop
-void *fn_8027C258(void *arg0, long arg1) {
-    return (char *)*(void **)((char *)arg0 + 0xAF0C) + arg1 * 0xC;
+void *fn_8027C258(void *container, long index) {
+    // Return the 0xC-byte record at index in the container's table (base pointer at +0xAF0C).
+    return (char *)*(void **)((char *)container + 0xAF0C) + index * 0xC;
 }
 
 /* Look up a named entry in the object's table and return a pointer to that 0xC-byte record, or 0 if not found. */
@@ -1350,15 +1350,16 @@ fetch:
     return 1;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 long fn_8027C850(void *arg0) {
-    char *name = (char *)*(volatile char **)((char *)arg0 + 4);
-    long index = fn_8027C1C8((void *)lbl_8055F654, name);
+    long index = fn_8027C1C8((void *)lbl_8055F654, *(char **)((char *)arg0 + 4));
     if (index == 0)
         return 1;
     return fn_8027C788(fn_8027C26C((void *)lbl_8055F654,
         *(char **)((char *)fn_8027C258((void *)lbl_8055F654, index - 1) + 4)));
 }
-
+#pragma pop
 long fn_8027C8B0(void) { return 1; }
 
 extern void fn_801345D8(void *, int, const char *, ...);
