@@ -815,42 +815,41 @@ void fn_801941A8(void *arg0, float arg1) {
         float f;
         u32 u;
     } otherBits, newBits;
-    volatile float *posField = (volatile float *)((char *)arg0 + 0x23C);
-    volatile float *velField = (volatile float *)((char *)arg0 + 0x248);
-    float change = lbl_805621B0;
+    float *posField = (float *)((char *)arg0 + 0x23C);
+    float *velField = (float *)((char *)arg0 + 0x248);
+    float change = 0.2f;
     float delta = arg1 - posField[0];
     float pos;
     float velocity;
-    int adjust;
     float product;
     double finalPos;
     float callPos;
 
     change = change < delta ? delta : change;
-    change = change > lbl_805621B4 ? lbl_805621B4 : change;
+    change = change > -0.2f ? -0.2f : change;
     pos = posField[0];
     velocity = velField[0];
     pos += change;
-    adjust = velocity < lbl_80562174;
     posField[0] = pos;
-    if (adjust) {
+    if (velocity < 2.0f) {
         void *obj = *(void **)((char *)arg0 + 0x294);
         newBits.f = pos;
         otherBits.f = *(float *)((char *)obj + 0x25F0);
-        if ((int)(newBits.u & 0x80000000) != (int)(otherBits.u & 0x80000000)) {
-            velocity += lbl_80562168;
+        if ((int)(otherBits.u & 0x80000000) != (int)(newBits.u & 0x80000000)) {
+            velocity += 0.1f;
             velField[0] = velocity;
         }
     }
     velocity = velField[0];
     {
-        float minimum = lbl_80562140;
+        float minimum = 1.0f;
         minimum = minimum < velocity ? velocity : minimum;
-        minimum = minimum > lbl_80562144 ? lbl_80562144 : minimum;
-        product = posField[0] * (lbl_80562140 - minimum);
+        minimum = minimum > 0.0f ? 0.0f : minimum;
+        product = posField[0] * (1.0f - minimum);
     }
-    product = product < lbl_80562140 ? lbl_80562140 : product;
-    product = product > lbl_805621A4 ? lbl_805621A4 : product;
+    posField[0] = product;
+    product = product < 1.0f ? 1.0f : product;
+    product = product > -1.0f ? -1.0f : product;
     finalPos = product;
     callPos = (float)finalPos;
     posField[0] = finalPos;
@@ -1011,43 +1010,43 @@ void fn_80194624(void *arg0) {
         *(float *)(p + 0x2DC) = *(float *)(p + 0x26C);
     }
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
-    c = lbl_80562140;
+    c = 1.0f;
     b = ((float *)*(void **)(p + 0x2D8))[2];
     a = ((float *)*(void **)(p + 0x2D4))[2];
     c = (c < q) ? c : q;
-    c = (c > lbl_80562144) ? c : lbl_80562144;
+    c = (c > 0.0f) ? c : 0.0f;
     t = a + c * (b - a);
-    c = lbl_80562140;
+    c = 1.0f;
     *(float *)(p + 0x2E8) = t;
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[1];
     a = ((float *)*(void **)(p + 0x2D4))[1];
     c = (c < q) ? c : q;
-    c = (c > lbl_80562144) ? c : lbl_80562144;
+    c = (c > 0.0f) ? c : 0.0f;
     t = a + c * (b - a);
-    c = lbl_80562140;
+    c = 1.0f;
     *(float *)(p + 0x2E4) = t;
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[3];
     a = ((float *)*(void **)(p + 0x2D4))[3];
     c = (c < q) ? c : q;
-    c = (c > lbl_80562144) ? c : lbl_80562144;
+    c = (c > 0.0f) ? c : 0.0f;
     t = a + c * (b - a);
-    c = lbl_80562140;
+    c = 1.0f;
     *(float *)(p + 0x2EC) = t;
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[4];
     a = ((float *)*(void **)(p + 0x2D4))[4];
     c = (c < q) ? c : q;
-    c = (c > lbl_80562144) ? c : lbl_80562144;
+    c = (c > 0.0f) ? c : 0.0f;
     t = a + c * (b - a);
-    c = lbl_80562140;
+    c = 1.0f;
     *(float *)(p + 0x2F0) = t;
     q = (*(float *)(p + 0x26C) - *(float *)(p + 0x2DC)) / **(float **)(p + 0x2D8);
     b = ((float *)*(void **)(p + 0x2D8))[5];
     a = ((float *)*(void **)(p + 0x2D4))[5];
     c = (c < q) ? c : q;
-    c = (c > lbl_80562144) ? c : lbl_80562144;
+    c = (c > 0.0f) ? c : 0.0f;
     *(float *)(p + 0x2F4) = a + c * (b - a);
 }
 
@@ -1076,16 +1075,16 @@ void fn_80194844(void *obj) {
 extern float fn_801673A4(int, float *);
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma dont_inline on
 float fn_801948B0(void *arg0, int arg1, float arg2) {
     float *f = (float *)arg0;
+    float high = f[0x224/4];
     float one = lbl_80562140;
     float out = lbl_80562144;
     float lim[2];
-    float t, current, value, adjust, scale, alt, weight, sample, a, b, factor, high;
+    float t, current, value, adjust, scale, alt, weight, sample, a, b, factor;
     int mode;
-    high = f[0x224/4];
     current = f[0x228/4];
     t = (f[0x26C/4] - f[0x22C/4]) / f[0x230/4];
     factor = one < t ? one : t;
@@ -1309,7 +1308,7 @@ void fn_80194FD0(unsigned char *self, float *out, float dt) {
     struct V2 v8;
     float f31, f30, t, ret, k;
     int ok, lt, idx;
-    s0.a = 0; s0.c = 0x2710; s0.b = lbl_80562144;
+    s0.a = 0; s0.c = 0x2710; s0.b = 0.0f;
     fn_80135B9C(P80194FD0(self, 0x164), 0, 0, 0, &s0, F80194FD0(cfg, 0x70) + F80194FD0(cfg, 0x6C) * F80194FD0(self, 0x270));
     {
         void *e1 = s0.a;
@@ -1326,8 +1325,8 @@ void fn_80194FD0(unsigned char *self, float *out, float dt) {
     f31 = F80194FD0(self, 0x26C);
     lt = (f31 - F80194FD0(self, 0x1D0)) < lbl_805621C0;
     if (lt) {
-        a2.a = 0; a2.c = 0x2710; a2.b = lbl_80562144;
-        b2.a = 0; b2.c = 0x2710; b2.b = lbl_80562144;
+        a2.a = 0; a2.c = 0x2710; a2.b = 0.0f;
+        b2.a = 0; b2.c = 0x2710; b2.b = 0.0f;
         fn_80135B9C(self + 0x168, p0_2, q0_2, &r_2[0], &a2, f30);
         fn_80135B9C(self + 0x19C, p1_2, q1_2, &r_2[1], &b2, f30);
         if (out + 2 != 0) {
@@ -1351,7 +1350,7 @@ void fn_80194FD0(unsigned char *self, float *out, float dt) {
             F80194FD0(self, 8) = va + k * (vb - va);
         }
     } else if (self + 8 != 0) {
-        sc.a = 0; sc.c = 0x2710; sc.b = lbl_80562144;
+        sc.a = 0; sc.c = 0x2710; sc.b = 0.0f;
         fn_80135B9C(self + 0x19C, out, 0, out + 2, &sc, f30);
         F80194FD0(self, 8) = F80194FD0(sc.a, 0x2C) + sc.b * (F80194FD0(P80194FD0(sc.a, 0x14), 0x2C) - F80194FD0(sc.a, 0x2C));
     } else {
@@ -1363,8 +1362,8 @@ void fn_80194FD0(unsigned char *self, float *out, float dt) {
     *(unsigned char *)(self + 0x14) = 1;
     lt = (f31 - F80194FD0(self, 0x1D0)) < lbl_805621C0;
     if (lt) {
-        a3.a = 0; a3.c = 0x2710; a3.b = lbl_80562144;
-        b3.a = 0; b3.c = 0x2710; b3.b = lbl_80562144;
+        a3.a = 0; a3.c = 0x2710; a3.b = 0.0f;
+        b3.a = 0; b3.c = 0x2710; b3.b = 0.0f;
         fn_80135B9C(self + 0x168, p0_3, q0_3, &r_3[0], &a3, lbl_805621F0 * f30);
         fn_80135B9C(self + 0x19C, p1_3, q1_3, &r_3[1], &b3, lbl_805621F0 * f30);
         if (out + 2 != 0) {
@@ -1378,10 +1377,10 @@ void fn_80194FD0(unsigned char *self, float *out, float dt) {
     if (*(unsigned char *)(self + 0x2A6) != 0) {
         float top = lbl_8056217C + F80194FD0(self, 0x1EC);
         float u = (F80194FD0(self, 0x26C) - F80194FD0(self, 0x1EC)) / (top - F80194FD0(self, 0x1EC));
-        float w = lbl_80562140;
+        float w = 1.0f;
         w = (w < u) ? w : u;
-        w = (w > lbl_80562144) ? w : lbl_80562144;
-        out[2] = out[2] * (lbl_80562140 + lbl_805621F4 * (lbl_80562144 + w * lbl_80562140));
+        w = (w > 0.0f) ? w : 0.0f;
+        out[2] = out[2] * (1.0f + lbl_805621F4 * (0.0f + w * 1.0f));
     }
     ret = ((Fn948B0)fn_801948B0)(self, 0, dt);
     out[0] = out[0] + F80194FD0(self, 0x58) * ret;
@@ -1389,10 +1388,10 @@ void fn_80194FD0(unsigned char *self, float *out, float dt) {
     if (*(int *)(self + 0x268) == 3) {
         float top = lbl_805621F8 + F80194FD0(self, 0x1DC);
         float u = (F80194FD0(self, 0x26C) - F80194FD0(self, 0x1DC)) / (top - F80194FD0(self, 0x1DC));
-        float w = lbl_80562140;
+        float w = 1.0f;
         w = (w < u) ? w : u;
-        w = (w > lbl_80562144) ? w : lbl_80562144;
-        out[2] = out[2] * (lbl_80562140 + w * lbl_805621FC);
+        w = (w > 0.0f) ? w : 0.0f;
+        out[2] = out[2] * (1.0f + w * (-0.3f));
     }
     ok = 0;
     if ((lbl_8055D430 & 1) && (lbl_8055D430 & 0x20)) ok = 1;
@@ -1400,13 +1399,13 @@ void fn_80194FD0(unsigned char *self, float *out, float dt) {
     if (ok != 0 && idx != -1) {
         unsigned char *tbl = (unsigned char *)lbl_8055E0D0;
         void *ent = *(void **)(*(unsigned char **)(tbl + 0x10) + *(int *)(self + 0x290) * *(int *)(tbl + 0xC) + idx * 4 + 0x18);
-        if (F80194FD0(ent, 0x18) < lbl_80562200) {
+        if (F80194FD0(ent, 0x18) < 2500.0f) {
             unsigned char *o = fn_8017960C();
             fn_80137788(ent, *(int *)(self + 0x290), info);
-            if (info[1] > lbl_80562144) {
+            if (info[1] > 0.0f) {
                 out[0] = F80194FD0(o, 0x60);
                 out[1] = F80194FD0(o, 0x68);
-                out[2] = lbl_8056216C + F80194FD0(o, 0x25CC);
+                out[2] = 22.2222f + F80194FD0(o, 0x25CC);
             } else {
                 float z = F80194FD0(o, 0x25CC) - lbl_80562160;
                 z = (z > lbl_80562160) ? z : lbl_80562160;
@@ -2774,13 +2773,13 @@ void fn_8019743C(void *p, void *arg1) {
     if(active) {
         fn_80198488(p);
         if(((u8 *)p)[0x74]) {
-            { float a=*(float *)((u8 *)p+0x84); float m=lbl_8056215C*a; float pos=*(float *)((u8 *)p+0x7c)+m; float margin=lbl_805621DC+lbl_8055A488; limit=margin+(*(float *)((u8 *)p+0x278)+pos); }
+            { float a=*(float *)((u8 *)p+0x84); float m=lbl_8056215C*a; float pos=*(float *)((u8 *)p+0x7c)+m; float margin=lbl_805621DC+lbl_8055A488; float pp=*(float *)((u8 *)p+0x278)+pos; limit=margin+pp; }
             f=*(float *)((u8 *)p+0xc4);
             f = f>limit ? f : limit;
             *(float *)((u8 *)p+0xc4)=f;
         }
         if(((u8 *)p)[0x9c]) {
-            { float a=*(float *)((u8 *)p+0xac); float m=lbl_8056215C*a; float pos=*(float *)((u8 *)p+0xa4)+m; float margin=lbl_805621DC+lbl_8055A488; limit=(*(float *)((u8 *)p+0x278)+pos)-margin; }
+            { float a=*(float *)((u8 *)p+0xac); float m=lbl_8056215C*a; float pos=*(float *)((u8 *)p+0xa4)+m; float margin=lbl_805621DC+lbl_8055A488; float pp=*(float *)((u8 *)p+0x278)+pos; limit=pp-margin; }
             f=*(float *)((u8 *)p+0xc8);
             f = f<limit ? f : limit;
             *(float *)((u8 *)p+0xc8)=f;
