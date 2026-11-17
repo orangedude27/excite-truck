@@ -708,8 +708,11 @@ extern "C" void *fn_802B2958(void *arg0, void *arg1) {
 #pragma pop
 
 #pragma scheduling invalid_target
-void fn_802B2C34(void (*fn)(void *), void *arg) {
-    fn(arg);
+/* Generic trampoline: invoke `callback` with `arg`. Callers cast this to other
+ * function-pointer types so the same bridge can adapt a callback's signature
+ * or return value (e.g. resolving a resource by name through fn_802C6B44). */
+void fn_802B2C34(void (*callback)(void *), void *arg) {
+    callback(arg);
 }
 #pragma scheduling invalid_target
 void fn_802B2D94(int *arg0) {
