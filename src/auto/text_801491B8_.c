@@ -440,6 +440,7 @@ void fn_8014953C(void *unused, float *delta, float *params) {
     params[4] = f2;
 }
 
+/* Getter returning a pointer to the "Scale" name string (lbl_80559EA4). */
 s32 *fn_80149580(void) {
     return &lbl_80559EA4;
 }
