@@ -384,7 +384,10 @@ void fn_801494B4(void *unused, f32 *delta, f32 *vec) {
 extern unsigned long lbl_80559E94;
 unsigned long *fn_801494D8(void) { return &lbl_80559E94; }
 
-int fn_801494E0(void) { return 0xFF0000FF; }
+int fn_801494E0(void) {
+    /* Return the packed color 0xFF0000FF - opaque blue in 0xAARRGGBB form. */
+    return 0xFF0000FF;
+}
 
 void fn_801494EC(void *arg0, float *arg1, float *arg2) {
     float f2 = arg2[1];
