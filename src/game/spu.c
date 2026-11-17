@@ -948,9 +948,11 @@ void fn_802E6138(void *arg0) {
     lbl_8055FF98 -= 1;
 }
 
-void fn_802E61A8(void *arg0) {
-    ((unsigned char *)arg0)[0x25] = 0;
-    ((unsigned char *)arg0)[0x23] = 1;
+/* SND_Start: start this SPU voice from the beginning by clearing its ADPCM flag
+ * (+0x25) and marking it as wanting to play (+0x23). */
+void fn_802E61A8(void *channel) {
+    ((struct SpuChannel *)channel)->adpcm = 0;
+    ((struct SpuChannel *)channel)->wantPlay = 1;
 }
 
 void fn_802E61BC(void *channel) {
