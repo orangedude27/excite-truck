@@ -384,6 +384,7 @@ void fn_802E5438(void) {
 #define gSoundSlotTable lbl_8055FF9C   /* "Spucache" */
 #define gSoundSlotCount lbl_8055FFA0   /* entries of it in use */
 #define gSpuRunning     lbl_8055FFA5   /* the voice refill (fn_802E4F98) may run */
+#define gSpuResetPending lbl_8055FFB5  /* set by the reset callback, forces a re-init */
 
 enum {
     SPU_ARAM_SIZE     = 0x20000,  /* all of ARAM, held as "aram_buf" */
