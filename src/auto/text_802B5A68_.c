@@ -165,9 +165,9 @@ s32 fn_802B5B74(void *arg0) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802B5C24(s32 arg0) {
-    s32 value;
-    s32 temp_r3;
     s32 temp_r31;
+    s32 temp_r3;
+    s32 value;
     void *object;
 
 loop_1:
@@ -176,7 +176,7 @@ loop_1:
     temp_r31 = value % 7;
     lbl_8055FA40 = temp_r31;
     object = ((void *(*)(void))fn_802B5B6C)();
-    if (temp_r31 >= fn_802B3F0C(*(s32 *)((unsigned char *)object + 8))) {
+    if (temp_r31 >= fn_802B3F0C(*(s32 *)((u8 *)object + 8))) {
         if (temp_r31 != 6) {
             goto loop_1;
         }
@@ -1712,6 +1712,7 @@ extern "C" void fn_802B7D4C(void) {
     workspace[2] = 0;
 }
 #pragma cplusplus reset
+#pragma opt_common_subs off
 s32 fn_802B8110(u32 arg0, s32 arg1) {
     struct Work {
         s32 *items;
@@ -1729,8 +1730,8 @@ s32 fn_802B8110(u32 arg0, s32 arg1) {
     s32 temp_r5;
     s32 var_r0;
     s32 var_r0_2;
-    var_r30 = 0;
     temp_r29 = fn_802B5D94(arg1);
+    var_r30 = 0;
     temp_r3 = ((void *(*)(void))fn_802B5B6C)();
     work.items = work.entries;
     work.capacity = 0x10;
