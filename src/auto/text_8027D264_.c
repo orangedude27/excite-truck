@@ -320,6 +320,9 @@ extern "C" void fn_8027D810(void *__restrict arg0) {
         virtual void v2();
         virtual void v3(int);
     };
+    /* Look up the 0x28-byte state-table entry for the id carried in arg0, then
+     * call the virtual handler stored at entry+0x20 with the "friendly_name"
+     * string key (lbl_80347DE8). */
     int id = ((struct InArgs *)arg0)->id;
     void *entry = fn_8001285C(id);
     void *handler = *(void **)((char *)entry + 0x20);
