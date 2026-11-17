@@ -177,8 +177,9 @@ void fn_80137C80(void) {
     fn_80016A44();
 }
 
-void fn_80137C84(int arg0, int arg1) {
-    lbl_8042F798[arg1] = arg1;
+void fn_80137C84(int unused, int context) {
+    /* Initialize one entry of the per-context league map to the identity: context 'context' maps to league 'context'. */
+    lbl_8042F798[context] = context;
 }
 
 /* Searches the first fn_800167F4() entries of lbl_8042F798 for value and returns its index, or -1 if not found. */
