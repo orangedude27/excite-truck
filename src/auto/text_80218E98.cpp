@@ -1192,12 +1192,13 @@ extern char lbl_8033D8B8[];
 #pragma push
 #pragma processor 750
 extern "C" void fn_80219AB4(void *arg0, s32 type, s32 name, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    const char *src = (const char *)name;
-    u8 *obj = (u8 *)arg0;
+    const char *str = (const char *)name;
+    const char *src = str;
     s32 count = 32;
+    u8 *obj = (u8 *)arg0;
     char *dst = (char *)obj + 0x25C;
     *(s32 *)(obj + 0x24C) = arg4;
-    *(s32 *)(obj + 0x258) = name;
+    *(s32 *)(obj + 0x258) = (s32)str;
     *(s32 *)(obj + 0x254) = arg5;
     *(s32 *)(obj + 0x250) = arg3;
     *(s32 *)(obj + 0x244) = type;
@@ -1217,7 +1218,7 @@ extern "C" void fn_80219AB4(void *arg0, s32 type, s32 name, s32 arg3, s32 arg4, 
             s32 n = fn_80232B70(*(s32 *)(obj+0x248));
             s32 m = n < 1 ? 1 : n;
             f32 a = (f32)((VfObj *)obj)->vf28() / (f32)m;
-            f32 b = fn_8023293C(*(s32 *)(obj+0x248),name,lbl_805634A4);
+            f32 b = fn_8023293C(*(s32 *)(obj+0x248),(s32)str,lbl_805634A4);
             b = b > lbl_805634A4 ? b : lbl_805634A4;
             f32 c = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / b;
             *(f32 *)(obj+0x27C) = a < c ? a : c;
@@ -1228,17 +1229,17 @@ extern "C" void fn_80219AB4(void *arg0, s32 type, s32 name, s32 arg3, s32 arg4, 
             *(s32 *)(obj+0x248) = fn_80232578(resource);
             s32 n = fn_80232B70(*(s32 *)(obj+0x248));
             f32 a = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / (f32)(n < 1 ? 1 : n);
-            f32 b = fn_8023293C(*(s32 *)(obj+0x248),name,lbl_805634A4);
+            f32 b = fn_8023293C(*(s32 *)(obj+0x248),(s32)str,lbl_805634A4);
             b = b > lbl_805634A4 ? b : lbl_805634A4;
             f32 c = (f32)((VfObj *)obj)->vf28() / b;
             *(f32 *)(obj+0x27C) = a < c ? a : c;
         }
         break;
     case 9:
-        *(s32 *)(obj+0x248) = fn_8023512C(name);
+        *(s32 *)(obj+0x248) = fn_8023512C((s32)str);
         break;
     case 3: case 6: case 8:
-        *(s32 *)(obj+0x248) = fn_8023512C(name);
+        *(s32 *)(obj+0x248) = fn_8023512C((s32)str);
         if(arg4) fn_80219440(obj,0,(void *)arg4,4);
         break;
     case 5:
@@ -1246,7 +1247,7 @@ extern "C" void fn_80219AB4(void *arg0, s32 type, s32 name, s32 arg3, s32 arg4, 
             *(s32 *)(obj+0x248) = fn_80232578(resource);
             s32 n = fn_80232B70(*(s32 *)(obj+0x248));
             f32 a = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / (f32)(n < 1 ? 1 : n);
-            f32 b = fn_8023293C(*(s32 *)(obj+0x248),name,lbl_805634A4);
+            f32 b = fn_8023293C(*(s32 *)(obj+0x248),(s32)str,lbl_805634A4);
             b = b > lbl_805634A4 ? b : lbl_805634A4;
             f32 c = (f32)((VfObj *)obj)->vf28() / b;
             *(f32 *)(obj+0x27C) = a < c ? a : c;
@@ -4495,10 +4496,10 @@ extern "C" s32 fn_8021FBC4(void *, s32, s32);
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8021FA98(void *arg0, s32 arg1, s32 arg2) {
-    s32 temp_r3;
-    s32 temp_r4;
-    s32 temp_r5;
-    s32 temp_r6;
+    register s32 temp_r3;
+    register s32 temp_r4;
+    register s32 temp_r5;
+    register s32 temp_r6;
     s32 span;
     s32 step;
     f32 high;
@@ -4507,6 +4508,7 @@ extern "C" void fn_8021FA98(void *arg0, s32 arg1, s32 arg2) {
     f32 dist;
     f32 fraction;
     f32 result;
+
     if (*(u8 *)((u8 *)arg0 + 0x244) == 0) {
         return;
     }
@@ -4953,16 +4955,11 @@ extern "C" void fn_80220A50(void *arg0, s32 arg1) {
     register s32 frame = arg1;
     register s32 field4 = *(s32 *)((u8 *)arg0 + 4);
     register s32 field250 = *(s32 *)((u8 *)arg0 + 0x250);
-    s32 duration = ((Dispatch *)arg0)->get();
+    register s32 duration = ((Dispatch *)arg0)->get();
     register s32 range = *(volatile s32 *)((u8 *)arg0 + 0x254);
-    register s32 time = frame - field4;
-    time -= 5;
-    register s32 distance = range - field250;
-    register s32 adjusted = distance * time;
-    duration -= 10;
-    adjusted /= duration;
-    register s32 result = field250;
-    result = result + adjusted;
+    s32 time = frame - field4 - 5;
+    s32 distance = range - field250;
+    register s32 result = field250 + distance * time / (duration - 10);
     result = result < field250 ? field250 : result;
     register s32 max = *(volatile s32 *)((u8 *)arg0 + 0x254);
     max -= 1;
