@@ -10035,8 +10035,11 @@ done:
     return 0;
 }
 
+/* Returns btm_cb.inq_active: the bitmask of inquiry types currently running. */
 u8 fn_8007B340(void) {
-    return lbl_803C0F78[0x1848];
+    #define btm_cb_inq_active (lbl_803C0F78[0x1848])
+    return btm_cb_inq_active;
+    #undef btm_cb_inq_active
 }
 
 extern u8 lbl_803163D0[];
