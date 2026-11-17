@@ -160,8 +160,11 @@ void fn_8001EFA8(void) {
 #undef GetAchievementThresholdCount
 }
 
-void fn_8001EFAC(void) {
-    fn_8001F3AC();
+/* RealName: Achievements_GetLevelModelName
+ * Thunk for the achievements UI: the model (rank) name string of threshold
+ * `level` (1-based) of lifetime counter `coefSet`, or 0 when it has none. */
+const char *fn_8001EFAC(s32 coefSet, s32 level) {
+    return (const char *)fn_8001F3AC(coefSet, level);
 }
 
 void fn_8001F908(void *);
