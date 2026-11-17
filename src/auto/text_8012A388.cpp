@@ -168,6 +168,7 @@ extern "C" void fn_8012A46C(void *, const char *) {
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
+#pragma scheduling invalid_target
     register const char *strings = lbl_8032A630;
     register char *buffer;
     s32 result;
@@ -2342,48 +2343,42 @@ extern "C" void fn_8012E2CC(void *);
 extern "C" void *fn_8012E460(void *);
 extern "C" s32 fn_8012E490(s32 *);
 extern "C" const char lbl_8032ACE0[];
-#pragma push
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" void fn_8012DDA8(s32 arg0) {
-    nw4r::ef::Effect *obj;
-    Unk8012DFCCNode *node;
     s32 found;
-    if (fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0) {
-        return;
-    }
-    obj = lbl_8055E014;
-    if (obj == 0) {
-        return;
-    }
+    ResTocManager *obj;
+    ResTocMount *node;
+    if (fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0) goto bd98;
+    obj = (ResTocManager *)lbl_8055E014;
+    if (obj == 0) goto bd98;
     found = 0;
-    node = (Unk8012DFCCNode *)fn_8012E490((s32 *)((char *)obj + 0xA18));
-    do {
-        if (stricmp(node->unk_0xC, (const char *)arg0) == 0) {
+    node = (ResTocMount *)fn_8012E490((s32 *)&obj->mounts);
+    while (node != 0) {
+        if (stricmp(node->name, (const char *)arg0) == 0) {
             found = 1;
-            node->unk_0x8 += 1;
+            node->uses += 1;
             break;
         }
         node = node->next;
-    } while (node != 0);
+    }
+    if (found != 0) goto check;
+    fn_802E30C8(lbl_8032ACE0, (const char *)arg0);
+    node = (ResTocMount *)fn_8012E460((ResTocNodePool *)&obj->pool);
+    if (node == 0) {
+        fn_8012E2CC(obj);
+        node = (ResTocMount *)fn_8012E460((ResTocNodePool *)&obj->pool);
+    }
+    if (node == 0) goto check;
+    fn_8012DFE8(node, (const char *)arg0, (s32)fn_8012E060(&obj->unk_0x4, (const char *)arg0));
+    fn_8012DFCC((Unk8012DFCCList *)&obj->mounts, (Unk8012DFCCNode *)node);
+    fn_8012DEE4(obj);
+    found = 1;
+check:
     if (found == 0) {
-        fn_802E30C8(lbl_8032ACE0, (const char *)arg0);
-        node = (Unk8012DFCCNode *)fn_8012E460((ResTocNodePool *)((char *)obj + 8));
-        if (node == 0) {
-            fn_8012E2CC(obj);
-            node = (Unk8012DFCCNode *)fn_8012E460((ResTocNodePool *)((char *)obj + 8));
-        }
-        if (node != 0) {
-            fn_8012DFE8(node, (const char *)arg0, (s32)fn_8012E060((char *)obj + 4, (const char *)arg0));
-            fn_8012DFCC((Unk8012DFCCList *)((char *)obj + 0xA18), node);
-            fn_8012DEE4(obj);
-            found = 1;
-        }
-        if (found == 0) {
-            ((void *(*)(const char *, void **))fn_8012BD98)((const char *)arg0, &lbl_8055E000);
-        }
+bd98:
+        ((void *(*)(const char *, void **))fn_8012BD98)((const char *)arg0, &lbl_8055E000);
     }
 }
-#pragma pop
 
 extern "C" s32 fn_8012CC24(void *, void *);
 #pragma push
@@ -2813,12 +2808,13 @@ extern "C" const char lbl_8032AD88[];
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012E81C(s32 arg0) {
+    #pragma opt_common_subs off
+    #pragma opt_propagation off
+    nw4r::ef::Effect *effect = lbl_8055E014;
     s32 limit;
     void *entry;
     s32 start;
     s32 current;
-    const char *format;
-    nw4r::ef::Effect *effect = lbl_8055E014;
 
     if (effect == 0) return;
     entry = (void *)fn_8012E490((s32 *)((u8 *)effect + 0xA18));
@@ -2827,13 +2823,12 @@ extern "C" void fn_8012E81C(s32 arg0) {
                     (const char *)((u8 *)entry + 0xC)) == 0) {
             start = fn_802E2C20();
             limit = start + 0x7D0;
-            format = lbl_8032AD88;
             do {
                 fn_80127464();
                 fn_802E2D74(0xA);
                 current = fn_802E2C20();
             } while (current <= limit);
-            fn_802E30C8(format, (const char *)((u8 *)entry + 0xC));
+            fn_802E30C8(lbl_8032AD88, (const char *)((u8 *)entry + 0xC));
             limit = current + 0x7D0;
             if (fn_8012D838(*(s32 *)((u8 *)entry + 0x4C)) == 2) {
                 fn_8012DEE4(effect);
