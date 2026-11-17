@@ -7,6 +7,7 @@ s32 fn_801AE59C(void) {
     return 0; // Default stub accessor: always reports zero.
 }
 
+/* No-op stub: does nothing and leaves its s32 return value unset. */
 s32 fn_801AE5A4(void) {
 
 }
