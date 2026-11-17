@@ -27,7 +27,8 @@ extern "C" void fn_801EF024(void *);
 extern "C" {
 extern u8 lbl_8033B418[], lbl_8033B53C[], lbl_8033B52C[], lbl_8033B51C[];
 extern u8 lbl_80333B98[], lbl_803337C8[], lbl_80333918[];
-extern f32 lbl_80563010, lbl_80562FFC;
+extern const f32 lbl_80563010;
+extern f32 lbl_80562FFC;
 void fn_801A324C(void*, s32, void*, f32, f32);
 }
 struct FAAVec { f32 x; f32 y; f32 z; };
