@@ -176,20 +176,16 @@ u8 fn_802E4A1C(s32 keyCode) {
 #undef gKeyStateTable
 }
 
-#pragma ctrloop on
-#pragma unroll off
 void fn_802E4A2C(void) {
     volatile u32 stack[65];
     volatile u32 *p;
-    u32 i;
     if ((s32)lbl_8055D1C0 < 0) return;
     p = &stack[1];
-    i = 0x20;
     do {
-        p[0] = 0;
+        *p = 0;
         p[1] = 0;
         p += 2;
-    } while (--i != 0);
+    } while (p < &stack[65]);
 }
 #pragma ctrloop reset
 #pragma unroll reset
