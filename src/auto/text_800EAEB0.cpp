@@ -1380,8 +1380,9 @@ extern "C" u32* fn_800ECFD8(void) {
     return &lbl_8055DEA0;
 }
 
-extern "C" s32 fn_800ECFE0(void *arg0) {
-    return ((s32 *)arg0)[0x18 / 4];
+extern "C" s32 fn_800ECFE0(void *stream) {
+    // Return a nw4r::snd MemoryFileStream's total size (buffer size at +0x18).
+    return ((s32 *)stream)[0x18 / 4];
 }
 
 extern u32 lbl_8055DEA0;
