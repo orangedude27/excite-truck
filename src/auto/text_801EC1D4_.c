@@ -456,30 +456,33 @@ long fn_801ECB60(void *vehicleRender) {
 float fn_802C88D4(void *);
 float fn_801E88F0(long);
 #pragma scheduling on
-void fn_801ECB80(void *arg0) {
-    float value;
-    long *count;
-    long offset;
-    long i;
-    value = fn_802C88D4((char *)arg0 + 0x28);
-    value *= fn_801E88F0(-1);
-    count = *(long **)((char *)arg0 + 0x174);
-    i = 0;
-    offset = 0;
-    *(long *)((char *)arg0 + 0x3F8) = *count - 1;
-    for (; i < *count; offset += 8, i++) {
-        if (value < *(float *)(*(char **)((char *)arg0 + 0x170) + offset)) {
-            *(long *)((char *)arg0 + 0x3F8) = i;
+/* Pick an index for a vehicle render object: scale the value derived from its +0x28
+ * quaternion, find the first +0x170 threshold above it, and store the clamped index
+ * at +0x3F8 (respecting the minimum at +0x3FC and the table count at +0x174). */
+void fn_801ECB80(void *vehicleRender) {
+    float amount;
+    long *levelCount;
+    long byteOffset;
+    long index;
+    amount = fn_802C88D4((char *)vehicleRender + 0x28);
+    amount *= fn_801E88F0(-1);
+    levelCount = *(long **)((char *)vehicleRender + 0x174);
+    index = 0;
+    byteOffset = 0;
+    *(long *)((char *)vehicleRender + 0x3F8) = *levelCount - 1;
+    for (; index < *levelCount; byteOffset += 8, index++) {
+        if (amount < *(float *)(*(char **)((char *)vehicleRender + 0x170) + byteOffset)) {
+            *(long *)((char *)vehicleRender + 0x3F8) = index;
             break;
         }
     }
-    if (*(long *)((char *)arg0 + 0x3F8) < *(long *)((char *)arg0 + 0x3FC))
-        *(long *)((char *)arg0 + 0x3F8) = *(long *)((char *)arg0 + 0x3FC);
-    if (*(long *)((char *)arg0 + 0x3F8) >= **(long **)((char *)arg0 + 0x174))
-        *(long *)((char *)arg0 + 0x3F8) = **(long **)((char *)arg0 + 0x174) - 1;
-    if (*(long *)((char *)arg0 + 0x40) == fn_801E866C(-1)) {
-        long n = *(long *)((char *)arg0 + 0x3F8);
-        *(long *)((char *)arg0 + 0x3F8) = n > 1 ? 1 : n;
+    if (*(long *)((char *)vehicleRender + 0x3F8) < *(long *)((char *)vehicleRender + 0x3FC))
+        *(long *)((char *)vehicleRender + 0x3F8) = *(long *)((char *)vehicleRender + 0x3FC);
+    if (*(long *)((char *)vehicleRender + 0x3F8) >= **(long **)((char *)vehicleRender + 0x174))
+        *(long *)((char *)vehicleRender + 0x3F8) = **(long **)((char *)vehicleRender + 0x174) - 1;
+    if (*(long *)((char *)vehicleRender + 0x40) == fn_801E866C(-1)) {
+        long chosen = *(long *)((char *)vehicleRender + 0x3F8);
+        *(long *)((char *)vehicleRender + 0x3F8) = chosen > 1 ? 1 : chosen;
     }
 }
 /* Apply the vehicle owner's draw scale, scaled by the saved global draw scale,
