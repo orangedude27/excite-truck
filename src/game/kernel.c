@@ -50,8 +50,11 @@ void fn_802E1728(void *obj) {
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
-unsigned int fn_802E176C(unsigned int arg0) {
-    return 1U << (32 - __cntlzw(arg0));
+/* Round up to the next power of two: 1 << bit_length(value), i.e. 1 for 0 and
+ * the smallest power of two strictly greater than value otherwise. Used by
+ * fn_802E1960 to size textures to a power-of-two width. */
+unsigned int fn_802E176C(unsigned int value) {
+    return 1U << (32 - __cntlzw(value));
 }
 #pragma scheduling invalid_target
 void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
