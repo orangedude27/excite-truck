@@ -377,6 +377,8 @@ extern "C" void fn_802BF508(void) {
     fn_802BF160();
 }
 #pragma cplusplus reset
+/* Returns the water surface height (world Y), the "gen_surf" scale loaded at
+   startup (default 0.7) that callers compare against to test submersion. */
 float fn_802BF590(void) { return lbl_8055FAF4; }
 
 #pragma cplusplus on
