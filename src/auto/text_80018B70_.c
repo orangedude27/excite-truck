@@ -267,8 +267,9 @@ void fn_80019708(void) {
     sResetRequested = 0;
 }
 
+/* Return the pending quit/reset request flag. */
 char fn_80019714(void) {
-    return lbl_8055D588;
+    return sResetRequested;
 }
 
 void fn_800196FC(void) {
