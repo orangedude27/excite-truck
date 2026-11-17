@@ -329,8 +329,9 @@ void fn_80209090(int quality) {
     gSoundQuality = 0;
 }
 
+/* Get the current sound-quality setting (config "quality", 0..2). */
 void* fn_802090B4(void) {
-    return lbl_8055EDA8;
+    return gSoundQuality;
 }
 
 extern void fn_802E30C8(const char *, ...);
