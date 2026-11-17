@@ -144,7 +144,10 @@ void fn_802AC458(void) {
 }
 
 void fn_802AC49C(void) {
-    lbl_8055F93C = 0;
+    /* Reset the loaded-animation count to zero, emptying the animation table. */
+#define sAnimCount lbl_8055F93C
+    sAnimCount = 0;
+#undef sAnimCount
 }
 
 __declspec(section ".sdata") extern char lbl_8055CCC0[], lbl_8055CCC8[], lbl_8055CCD0[], lbl_8055CCD8[], lbl_8055CCE0[], lbl_8055CCE8[], lbl_8055CCF0[];
