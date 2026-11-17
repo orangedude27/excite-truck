@@ -1293,12 +1293,14 @@ void fn_80010E94(f32 x, f32 y, f32 scaleX, f32 scaleY, s32 artSet, s32 pictureIn
 }
 #pragma scheduling off
 void fn_80010EF0(void) {
-    s8 *p;
-    s32 *q;
-    p = (s8 *)&lbl_80350F88;
-    q = (s32 *)(p + 0x288);
-    *q = 0;
-    *(s8 *)(p + 0x4) = 0;
+    /* Clear the HUD display list at lbl_80350F88: zero its entry count at
+     * +0x288 and its active flag at +0x4. */
+    s8 *list;
+    s32 *count;
+    list = (s8 *)&lbl_80350F88;
+    count = (s32 *)(list + 0x288);
+    *count = 0;
+    *(s8 *)(list + 0x4) = 0;
 }
 
 void fn_80010F08(void) {
