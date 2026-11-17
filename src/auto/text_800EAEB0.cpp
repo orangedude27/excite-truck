@@ -2095,9 +2095,10 @@ extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *this_) {
 }
 #pragma pop
 
-extern "C" void fn_800EE2E0(void *arg0, s32 arg1) {
+extern "C" void fn_800EE2E0(void *track, s32 doNoteOn) {
     extern s32 Parse__Q46nw4hbm3snd6detail9MmlParserCFPQ46nw4hbm3snd6detail11MmlSeqTrackb(void *, void *, s32);
-    Parse__Q46nw4hbm3snd6detail9MmlParserCFPQ46nw4hbm3snd6detail11MmlSeqTrackb(*(void **)((u8 *)arg0 + 0xBC), arg0, arg1);
+    /* Ask the MmlParser held at +0xBC of this MmlSeqTrack to parse it. */
+    Parse__Q46nw4hbm3snd6detail9MmlParserCFPQ46nw4hbm3snd6detail11MmlSeqTrackb(*(void **)((u8 *)track + 0xBC), track, doNoteOn);
 }
 
 extern "C" s32 fn_800EE2F4(s32 object, s32 deleteFlag) {
