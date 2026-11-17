@@ -65,8 +65,10 @@ void fn_8024BDF4(void* subobject) {
 }
 
 extern void __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(void*);
-void fn_8024BDFC(void* arg0) {
-    __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC((char*)arg0 - 0x18);
+/* C++ destructor thunk for a base subobject at +0x18: adjust the pointer back
+   to the object start and tail-call the MemorySoundArchive destructor. */
+void fn_8024BDFC(void* subobject) {
+    __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC((char*)subobject - 0x18);
 }
 
 #pragma push
