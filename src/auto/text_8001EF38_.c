@@ -183,7 +183,10 @@ void fn_8001EFB4(void) {
 void fn_8001F76C(void);
 
 void fn_8001EFB8(void) {
-    fn_8001F76C();
+#define ClearPendingAchievements fn_8001F76C
+    /* Thunk: clear this session's pending achievement statistics block. */
+    ClearPendingAchievements();
+#undef ClearPendingAchievements
 }
 
 void fn_8001EFBC(void) {
