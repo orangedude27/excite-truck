@@ -192,17 +192,17 @@ s32 fn_801B3398(void* src) {
     fn_801796CC(1, &local, 0x38);
     return 0x38;
 }
-#pragma use_lmw_stmw on
+#pragma push
+#pragma scheduling invalid_target
 void fn_801B3448(void) {
     void *p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
-    if (p != NULL) {
-        p = fn_801B3B70(p);
-        lbl_8055E6C0 = (s32)p;
-        fn_801B5364(1, fn_801B3390);
-        fn_801B5364(0xF, fn_801B3398);
-    }
+    if (p == NULL) return;
+    p = fn_801B3B70(p);
+    *(volatile s32 *)&lbl_8055E6C0 = (s32)p;
+    fn_801B5364(1, fn_801B3390);
+    fn_801B5364(0xF, fn_801B3398);
 }
-#pragma scheduling on
+#pragma pop
 /* Reset all collision-sound history when the game state is restarted.
    lbl_8055E6C0 is the global collision-sound manager; fn_801B3DBC clears its
    16 per-pair sound records (played object / key / time). lbl_80435C50 is the
@@ -516,6 +516,7 @@ extern "C" void fn_801B3E24(void *arg0, void *arg1, void *arg2, s32 arg3, s32 ar
     }
 }
 #pragma cplusplus reset
+/* Query stub: always answers 0 (false) in this build. */
 s32 fn_801B3FD0(void) {
     return 0;
 }
