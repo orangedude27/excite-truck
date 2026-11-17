@@ -1629,6 +1629,8 @@ extern "C" void fn_8021AA18(void *widget) {
     fn_8022EDB8();
 }
 #pragma dont_inline reset
+/* Reports a default value of 0 for the cursor-icon widget code: takes no
+ * input and has no side effects. */
 extern "C" s32 fn_8021AB88(void) { return 0; }
 
 /* The cursor-icon widget's own key handling defers to its owning menu group
