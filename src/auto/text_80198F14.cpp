@@ -4355,8 +4355,9 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
     }
 }
 
-extern "C" void* fn_801A2C9C(void* arg0) {
-    return (u8*)arg0 + 0x44;
+extern "C" void* fn_801A2C9C(void* node) {
+    /* Return a pointer to the embedded field at offset 0x44 of a collision/shape node. */
+    return (u8*)node + 0x44;
 }
 
 extern "C" f32 fn_801A2CA4(void* object) {
