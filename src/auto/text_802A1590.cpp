@@ -1860,4 +1860,7 @@ extern "C" u32 fn_802A4A30(void) { return 4; }
 // (one of the ids 1-6 the fn_802A194C cache keys on).
 extern "C" u32 fn_802A4A38(void) { return 5; }
 
-extern "C" u32 fn_802A4A40(void) { return 6; }
+extern "C" u32 fn_802A4A40(void) {
+    /* Return this ebi::title class's unique type identifier (6) in the 1-based sequence. */
+    return 6;
+}
