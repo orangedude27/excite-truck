@@ -1397,8 +1397,10 @@ void fn_80255918(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 0xC) = arg1;
 }
 
-void fn_80255920(void *arg0, s8 arg1) {
-    *(s8 *)((u8 *)arg0 + 0x118) = arg1;
+/* Set whether the UI car model is drawn tinted and scaled to the level's colour. */
+void fn_80255920(void *arg0, s8 tinted) {
+    typedef struct { char pad[0x118]; s8 tinted; } CarUIModelRec;
+    ((CarUIModelRec *)arg0)->tinted = tinted;
 }
 
 __declspec(section ".sdata") extern char lbl_8055C1C0[];
@@ -1506,6 +1508,7 @@ extern void fn_80252BF0(void);
 extern void fn_80252F50(float);
 extern s32 fn_802C6FC0(void *, s32, s32);
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_80255A84(void *arg0) {
     if (lbl_8055F340 == 0) {
         fn_80255604(*(s32 *)((char *)arg0 + 0x120));
@@ -1532,9 +1535,7 @@ void fn_80255A84(void *arg0) {
         *(float *)((char *)arg0 + 0xA4) = t3;
     }
 }
-
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80255B5C(void *arg0) {
     typedef struct {
         char name[0x20];
