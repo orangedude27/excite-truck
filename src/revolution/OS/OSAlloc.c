@@ -146,6 +146,7 @@ void OSFreeToHeap(s32 handle, void* block) {
     hd->freeList = DLInsert(hd->freeList, cell);
 }
 
+/* Set the current heap handle and return the previously active one. */
 s32 OSSetCurrentHeap(s32 handle) {
     s32 old = __OSCurrHeap;
     __OSCurrHeap = handle;
