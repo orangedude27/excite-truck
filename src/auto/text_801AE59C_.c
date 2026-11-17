@@ -4,7 +4,7 @@
 typedef signed long s32;
 
 s32 fn_801AE59C(void) {
-    return 0;
+    return 0; // Default stub accessor: always reports zero.
 }
 
 s32 fn_801AE5A4(void) {
