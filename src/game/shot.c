@@ -16,6 +16,7 @@ extern u16 lbl_804FC418[];
 extern s32 fn_802ECC10(void);
 extern s32 fn_802E2C20(void);
 extern void fn_802E47E8(void);
+typedef struct { volatile u16 *ptr; s32 idx; } QueueScan;
 #pragma dont_inline on
 void fn_802E46AC(void) {}
 #pragma dont_inline off
