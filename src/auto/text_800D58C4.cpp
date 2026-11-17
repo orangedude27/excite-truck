@@ -1801,8 +1801,10 @@ extern "C" s32 fn_800D878C(u32 *arg0) {
     return (*arg0 >> 15U) & 7;
 }
 
-extern "C" s32 fn_800D8798(u32 *arg0) {
-    return (*arg0 >> 18U) & 0x1F;
+/* Number of TEV stages: the 5-bit field at bits 18..22 of the material
+ * resource header (also how many 0x10-byte TEV stage entries follow). */
+extern "C" s32 fn_800D8798(u32 *resHeader) {
+    return (*resHeader >> 18U) & 0x1F;
 }
 
 // Copies one RGBA color (used by nw4r lyt material setup) from src into dst.
