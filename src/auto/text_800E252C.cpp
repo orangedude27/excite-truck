@@ -3444,6 +3444,8 @@ extern "C" int fn_800E80F0(int object, int deleteFlag) {
 }
 
 void *nw4hbm::snd::detail::Bank::NoteOn(const nw4hbm::snd::detail::NoteOnInfo &noteInfo) const {
+    /* Play one note: look up its instrument and wave data, allocate a channel,
+       then program its volume, envelope, and pan before starting playback. */
     unsigned char wave[0x98];
     unsigned char inst[0x10];
     void *bank = (void *)this;
