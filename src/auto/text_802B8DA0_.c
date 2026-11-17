@@ -691,7 +691,8 @@ void fn_802B9AA4(void *node, float *min, float *max) {
 void fn_802B9AC8(void) {
 }
 
-s32 fn_802B9ACC(void *arg0) { return ((s32 *)arg0)[2]; }
+/* Return the 32-bit "kind" discriminator at offset 0x8 of a scene/collision node (0/1/2 select different handling). */
+s32 fn_802B9ACC(void *node) { return ((s32 *)node)[2]; }
 
 /* Resets the three 32-bit fields of a container to zero and, when shouldFree
  * is positive, frees the container itself. */
@@ -1127,7 +1128,7 @@ extern "C" void fn_802BA348(void) {
         void *buf[4];
     } s;
     void *first, *cur, *p, *obj, *entry, *buffer, *items;
-    int i, total, off, j, n;
+    int i, k, total, off, j, n;
     s.name = lbl_8034A9D0;
     s.start = fn_802E2C20(lbl_8034A9D0);
     s.data = s.buf;
@@ -1145,7 +1146,7 @@ extern "C" void fn_802BA348(void) {
         if (cur == first || cur == 0) break;
     }
     total = 0;
-    for (i = 0, off = 0; i < s.count; off += 4, i++) {
+    for (k = 0, off = 0; k < s.count; off += 4, k++) {
         obj = *(void **)((char *)s.data + off);
         p = fn_80138B4C(obj, 0);
         if (p != 0) {
