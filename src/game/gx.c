@@ -1044,16 +1044,16 @@ extern unsigned long lbl_8055FD44;
 extern unsigned long lbl_8055FDAC;
 extern void fn_802D0C98(void);
 extern void fn_802D0BD8(void);
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802CFF10(void) {
-    lbl_8055FD44 = 0;
+    int zero = 0;
+    lbl_8055FD44 = zero;
     fn_802CF5D0();
     fn_802D0C98();
     fn_802D0BD8();
-    lbl_8055FDAC = 0;
-    lbl_8055FE39 = 0;
+    lbl_8055FDAC = zero;
+    lbl_8055FE39 = zero;
 }
-#pragma scheduling on
 extern void *lbl_8055FD20;
 #pragma push
 #pragma dont_inline on
@@ -1530,8 +1530,11 @@ void fn_802D08B4(int columns, int rows, unsigned char mode) {
 #undef tileModeFlag
 }
 
-void fn_802D08C4(unsigned char arg0) {
-    lbl_8055FD78 = arg0;
+/* GX render-enable flag: cleared just before the end-of-frame flush (fn_802C2B48) and set again after. */
+void fn_802D08C4(unsigned char enabled) {
+#define renderEnabled lbl_8055FD78
+    renderEnabled = enabled;
+#undef renderEnabled
 }
 
 /* Sets the GX cull mode from a small app-specific mode selector. */
@@ -3187,28 +3190,27 @@ extern float lbl_80564F88;
 #pragma processor 7400
 void *fn_802D39A4(float value) {
     unsigned char *p;
-    int index;
-    unsigned char *found;
+    int index = 0;
+    unsigned char *found = 0;
     int count;
     float initialValue;
+
     p = (unsigned char *)lbl_804C9984;
-    index = 0;
-    found = 0;
-    for (count = 0; count < 64; ++count) {
-        if (p[12] == 0) {
-            found = (unsigned char *)lbl_804C9984 + index * 24;
+    for (count = 0; count < 0x40; ++count) {
+        if (p[0xC] == 0) {
+            found = (unsigned char *)lbl_804C9984 + index * 0x18;
             break;
         }
-        p += 24;
+        p += 0x18;
         index++;
     }
     if (found == 0)
         fn_802E317C(lbl_8034C1E4);
     initialValue = lbl_80564F88;
-    found[12] = 1;
-    found[13] = 0;
-    *(float *)(found + 16) = value;
-    *(float *)(found + 20) = initialValue;
+    found[0xC] = 1;
+    found[0xD] = 0;
+    *(float *)(found + 0x10) = value;
+    *(float *)(found + 0x14) = initialValue;
     return found;
 }
 #pragma processor gekko
