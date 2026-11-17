@@ -107,6 +107,7 @@ void OSInitMutexQueue(OSMutexQueue* queue) {
     queue->head = NULL;
 }
 
+/* Initialize a thread queue as empty, with no head or tail thread. */
 void OSInitThreadQueue(OSThreadQueue* queue) {
     queue->tail = NULL;
     queue->head = NULL;
