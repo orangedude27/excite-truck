@@ -204,7 +204,10 @@ void fn_80138F38(void *arg0) {
     }
     fn_80138DF4(arg0);
 }
-void fn_80139030(void *arg0) {
-    lbl_8055E100 = -6;
-    fn_80138F38(arg0);
+void fn_80139030(MotionPair *motion) {
+    /* Seeds the motion status code to -6 so fn_80138F38's success path (+6) yields 0; failures set a negative code. */
+#define s_motionState lbl_8055E100
+    s_motionState = -6;
+#undef s_motionState
+    fn_80138F38(motion);
 }
