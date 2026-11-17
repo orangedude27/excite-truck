@@ -1900,7 +1900,11 @@ extern "C" s32 fn_80162FE8(void *arg0) {
 }
 #pragma cplusplus off
 #pragma pop
-s32 fn_80163058(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) == 1; }
+/* Return true when the object's state word at +8 equals 1. */
+s32 fn_80163058(void *object) {
+    struct ObjState { char pad0[8]; s32 state; } *d = (struct ObjState *)object;
+    return d->state == 1;
+}
 
 #pragma cplusplus on
 /* Dispatches an object action based on arg1 when the object is ready; for case 0, if the indexed table entry (lbl_804348E8[arg2]) has tag 'PCAR' at +0x10 it finalizes and sets a flag at +0x91. */
