@@ -759,19 +759,22 @@ extern void fn_802E317C(char *, ...);
 extern int memcpy(void *, const void *, unsigned int);
 extern char lbl_80346798[];
 #pragma scheduling on
-void *fn_802DA918(float x0, float x1, float x2) {
+void *fn_802DA918(float arg0, float arg1, float arg2) {
+    float vals[3];
     unsigned char saved;
     unsigned char *base;
     int off;
     void *result;
     void *st;
-    x2 = lbl_80565030 / (x2 * x2);
+    vals[0] = arg0;
+    vals[1] = arg1;
+    vals[2] = 1.0f / (arg2 * arg2);
     st = lbl_8055FE5C;
     saved = *(volatile unsigned char *)((char *)st + 0x25);
     *(volatile unsigned char *)((char *)st + 0x25) = 0;
     if (*(volatile int *)((char *)st + 0x10) + 0x2c > *(volatile int *)((char *)st + 0x0C)) {
-        int lim = *(volatile int *)((char *)st + 0x0C);
-        fn_802E317C(lbl_80346798, *(volatile int *)((char *)st + 8), 0x24, lim / 1024);
+        int limit = *(volatile int *)((char *)st + 0x0C);
+        fn_802E317C(lbl_80346798, *(volatile int *)((char *)st + 8), 0x24, limit / 1024);
         result = 0;
     } else {
         off = *(volatile int *)((char *)st + 4);
@@ -788,7 +791,7 @@ void *fn_802DA918(float x0, float x1, float x2) {
     *(int *)((char *)result + 0x0C) = 0;
     *(int *)((char *)result + 0x14) = 0;
     *((unsigned char *)result + 0x10) = saved;
-    memcpy((char *)result + 0x18, &x0, 0xc);
+    memcpy((char *)result + 0x18, vals, 0xc);
     return result;
 }
 extern void *memset(void *, int, unsigned int);
