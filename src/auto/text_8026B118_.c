@@ -8,6 +8,7 @@ extern void fn_8026B260(void);
 extern void fn_801331C4(int, void *, float *);
 extern void fn_8026B11C(void **, void *);
 extern unsigned char lbl_80346988[];
+/* JumpCam config table at lbl_80346988: a = UI/format strings; b = "effects_volume" key; c = "heart.sfx" key; d = "whosh.sfx" key. */
 typedef struct { unsigned char a[0xA0]; unsigned char b[0x10]; unsigned char c[0xC]; unsigned char d[1]; } T8026B644;
 extern int lbl_8055F4D0, lbl_8055F4CC, lbl_8055F4C8;
 extern float lbl_80563D68;
