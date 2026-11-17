@@ -226,8 +226,9 @@ void* ARCGetStartAddrInMem(ARCFileInfo* info) {
     return (void*)((s32)info->handle->archiveStartAddr + info->startOffset);
 }
 
-s32 fn_80116A30(void *arg0) {
-    return *(s32*)((u8*)arg0 + 8);
+/* Returns the byte length of the file described by the ARCFileInfo, from its header field at +8. */
+s32 fn_80116A30(ARCFileInfo *info) {
+    return info->length;
 }
 
 s32 fn_80116A38(void) {
