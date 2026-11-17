@@ -2778,7 +2778,7 @@ extern "C" void fn_80215BBC(void) {
 
 }
 
-/* Default widget-wrapper vtable method: returns 0 (false / no-error), the zero counterpart to fn_80215BAC's -1 sentinel. */
+/* Default widget-wrapper vtable method: returns 0 (false / no error), the zero counterpart to fn_80215BAC's -1 sentinel. */
 extern "C" s32 fn_80215BC0(void) {
     return 0;
 }
