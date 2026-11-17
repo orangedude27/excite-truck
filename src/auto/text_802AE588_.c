@@ -166,6 +166,10 @@ extern void fn_802AE774(void);
 extern int lbl_8055F970;
 extern char lbl_8034A048[];
 extern char lbl_8034A064[];
+/* Release the wave-table workspace buffer: pass fn_802AE64C the address of the
+ * global slot lbl_8055F984 that holds the buffer base (allocated by
+ * fn_802AE5E0), so it frees the buffer and zeroes the slot.  Called from the
+ * subsystem shutdown sequence in fn_802AE9D0. */
 void fn_802AE644(void) { fn_802AE64C(lbl_8055F984); }
 
 /* If the object holds a buffer pointer at offset 0, free it and clear the field. */
@@ -1249,17 +1253,16 @@ void fn_802AFF80(void *list, short value) {
         *(unsigned short *)((char *)list + 4) = count;
     }
 }
-#pragma opt_propagation reset
+#pragma scheduling invalid_target
 int fn_802AFFA8(int arg0, int arg1) {
     float out[3];
     float x = (float)arg0 * lbl_80564AF0;
     float z = (float)arg1 * lbl_80564AF0;
-    out[2] = z;
     out[0] = x;
+    out[2] = z;
     out[1] = fn_801DCF48(0, x, z);
     return (unsigned short)fn_802B127C(lbl_8055F974, (int)out);
 }
-#pragma scheduling on
 
 void fn_802B0024(void *arg0, short arg1) {
     u16 count = 0;
