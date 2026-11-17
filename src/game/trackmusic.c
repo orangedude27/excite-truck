@@ -73,6 +73,7 @@ extern void fn_802EC1C0();
 extern void fn_802EC1E4();
 extern long fn_802EC12C();
 extern long fn_802EC0FC(void);
+// Returns the "no song" sentinel (-1). Callers sometimes pass a mode argument (0/1/2), but this stub ignores it and always reports no song.
 long fn_8020F3B4(void) { return -1; }
  
 #pragma scheduling invalid_target
