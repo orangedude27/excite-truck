@@ -785,6 +785,7 @@ long fn_802104D0(void) {
 }
 
 long fn_802104FC(void) {
+    /* Return nonzero when no track-music entry is selected (the current track index is -1). */
     return (lbl_8055B658 + 1) == 0;
 }
 
