@@ -457,10 +457,13 @@ float fn_8013B5DC(int entryIndex, int randomState) {
 #pragma pop
 
 #pragma cplusplus off
+#pragma push
+#pragma processor 750
 float fn_8013B650(int arg0) {
     float temp = fn_80134B58((float *)lbl_8032C364, lbl_80561434);
     return fn_8013B5DC(arg0, 3) + temp;
 }
+#pragma pop
 
 /* Set both float fields (offsets +8 and +0xC) of table entry `index` to `value`. */
 void fn_8013B6A4(int index, float value) {
