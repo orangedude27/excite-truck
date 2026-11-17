@@ -92,6 +92,8 @@ extern int lbl_8055F824;
 extern unsigned char lbl_8055F73C;
 extern char lbl_8034981C[];
 extern int fn_801769F8(void);
+#pragma push
+#pragma scheduling invalid_target
 void fn_8029F03C(void) {
     lbl_8055F81C = 0;
     lbl_8055F818 = 0;
@@ -104,7 +106,7 @@ void fn_8029F03C(void) {
     fn_801EEFDC(&fn_802A0720, 11);
     lbl_8055F820 = fn_8012850C(fn_801E85AC() * 4, &lbl_80349810);
 }
-
+#pragma pop
 void fn_8029F0D0(void) {
     /* Shuts the particle / track-effect system down (counterpart of the init fn_8029F03C):
      * releases the per-view screen-rect table, unregisters the two effect event handlers
@@ -400,6 +402,7 @@ extern "C" void fn_8029F5C8(void *out, unsigned char *config) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_8029F658(void *arg0) {
+#pragma scheduling invalid_target
     class Obj {
     public:
         virtual const char *name();
@@ -438,7 +441,7 @@ extern "C" void fn_8029F658(void *arg0) {
     Fn8029Vec v2;
     Fn8029Vec v2copy;
     Fn8029Vec v3;
-    double pairDefaultBits;
+    Fn8029Pair pairDefault;
     Fn8029Pair out1;
     Fn8029Pair out2;
     Fn8029Pair out3;
@@ -456,8 +459,8 @@ extern "C" void fn_8029F658(void *arg0) {
     defaultVec.x = lbl_805646B4;
     defaultVec.y = lbl_805646B4;
     defaultVec.z = lbl_805646B4;
-    *(float *)&pairDefaultBits = lbl_805646B4;
-    *((float *)&pairDefaultBits + 1) = lbl_805646B4;
+    pairDefault.x = lbl_805646B4;
+    pairDefault.y = lbl_805646B4;
     *(int *)record = obj->getId(lbl_8055CAF0);
     str = obj->name();
     src = (char *)str + strlen(&table[0x44]);
@@ -481,23 +484,23 @@ done:
     *(float *)(record + 4) = obj->getFloat(lbl_805646B4, &table[0x50]);
     *(float *)(record + 8) = obj->getFloat(lbl_805646B4, lbl_8055CAF4);
     *(float *)(record + 0xC) = obj->getFloat(lbl_805646B4, lbl_8055CAFC);
-    out1 = obj->getPair(lbl_8055CB04, *(Fn8029Pair *)&pairDefaultBits);
+    out1 = obj->getPair(lbl_8055CB04, pairDefault);
     *(float *)(record + 0x10) = out1.x;
     *(float *)(record + 0x14) = out1.y;
-    out2 = obj->getPair(lbl_8055CB0C, *(Fn8029Pair *)&pairDefaultBits);
+    out2 = obj->getPair(lbl_8055CB0C, pairDefault);
     *(float *)(record + 0x18) = out2.x;
     *(float *)(record + 0x1C) = out2.y;
-    out3 = obj->getPair(lbl_8055CB14, *(Fn8029Pair *)&pairDefaultBits);
+    out3 = obj->getPair(lbl_8055CB14, pairDefault);
     *(float *)(record + 0x20) = out3.x;
     *(float *)(record + 0x24) = out3.y;
-    out4 = obj->getPair(lbl_8055CB18, *(Fn8029Pair *)&pairDefaultBits);
+    out4 = obj->getPair(lbl_8055CB18, pairDefault);
     *(float *)(record + 0x28) = out4.x;
     *(float *)(record + 0x2C) = out4.y;
     v1 = obj->getVec(lbl_8055CB1C, defaultVec);
     *(float *)(record + 0x30) = v1.x;
     *(float *)(record + 0x34) = v1.y;
     *(float *)(record + 0x38) = v1.z;
-    out5 = obj->getPair(lbl_8055CB28, *(Fn8029Pair *)&pairDefaultBits);
+    out5 = obj->getPair(lbl_8055CB28, pairDefault);
     *(float *)(record + 0x3C) = out5.x;
     *(float *)(record + 0x40) = out5.y;
     *(float *)(record + 0x44) = obj->getFloat(lbl_805646B8, lbl_8055CB30);
