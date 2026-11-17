@@ -695,13 +695,13 @@ void fn_80149F2C(void *arg0, void *arg1, void *arg2) {
             fn_801683F4(&d68, *(s32 *)base);
             c50 = d68; c58 = d70; c60 = d78;
             f0 = *(f32 *)(r30 + 8);
-            if (f0 > lbl_80561648) *(f32 *)(r30 + 8) = f0 - lbl_80561650;
+            if (lbl_80561648 < f0) *(f32 *)(r30 + 8) = f0 - lbl_80561650;
             f0 = *(f32 *)(r30 + 0xC);
-            if (f0 > lbl_80561648) *(f32 *)(r30 + 0xC) = f0 - lbl_80561650;
+            if (lbl_80561648 < f0) *(f32 *)(r30 + 0xC) = f0 - lbl_80561650;
             f0 = *(f32 *)(r30 + 0x10);
-            if (f0 > lbl_80561648) *(f32 *)(r30 + 8 + 8) = f0 - lbl_80561650;
+            if (lbl_80561648 < f0) *(f32 *)(r30 + 8 + 8) = f0 - lbl_80561650;
             f0 = *(f32 *)(r30 + 8 + 0xC);
-            if (f0 > lbl_80561648) *(f32 *)(r30 + 8 + 0xC) = f0 - lbl_80561650;
+            if (lbl_80561648 < f0) *(f32 *)(r30 + 8 + 0xC) = f0 - lbl_80561650;
             count = ((int *)&c50)[1];
             *(s32 *)(r30 + 4) += count * (*(s32 *)(r20 + 0xE8));
             if (count > 0) {
@@ -721,8 +721,7 @@ void fn_80149F2C(void *arg0, void *arg1, void *arg2) {
         u8 *r24 = *(u8 **)(base + 8);
         f32 f30 = lbl_80561648;
         fn_8014AF60(it, r24 + 0x124C, 0);
-/* Walk the zone-master iterator, clearing/populating per-entry fields as it goes. */
-while (fn_8014ADD0(it) != 0) {
+        while (fn_8014ADD0(it) != 0) {
             fn_8014AF58(it);
             fn_8014AEF0(it);
             fn_8014AF58(it);
@@ -5054,28 +5053,28 @@ extern "C" void *lbl_80559F90;
 extern "C" f32 lbl_80559EB4;
 extern "C" void fn_8013A0B0(void **, void *, void *);
 extern "C" void fn_8013A198(void **, s32);
-extern "C" void *fn_8015011C(void *, ...);
 extern "C" void *fn_80204CF0(void);
 extern "C" void *fn_80204BB4(void);
 extern "C" f32 fn_801EA0E8(f32, f32);
 extern "C" f64 fn_8002F234(void);
 extern "C" int sprintf(void *, void *, s32);
 extern "C" void fn_8014FC8C(s32 arg0) {
-    class EvalObj { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual float eval(void *, float); };
+    class EvalObj { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual f32 eval(void *, f32); };
     class LfoObj { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void *lookup(void *, void *); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15(); virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19(); virtual void d20(); virtual void d21(); virtual void *get(s32); };
     class Manager { public: virtual void d0(); virtual void *get(s32); };
     class Entry { public: virtual void d0(); virtual s32 has(void *); virtual void d2(); virtual void next(void *); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12(); virtual void *value(void *); };
-    unsigned char sp60[256];
-    unsigned char sp40[32];
-    float sp38, sp34, sp30, sp24, sp20, sp1C, sp18;
-    s32 sp2C, sp28, spC, sp8;
+    s32 sp8, spC;
     void *sp10p;
+    u8 sp60[288];
+    u8 sp40[32];
+    f32 sp38, sp34, sp30, sp24, sp20, sp1C, sp18;
+    s32 sp2C, sp28;
     void *manager;
     void *resource;
     void *entry;
-    s32 i;
-    float f29v, f31v, f1v;
-    unsigned char *strings = lbl_8032D358;
+    s32 i, j, k, size, handle;
+    f32 f1v;
+    u8 *strings = lbl_8032D358;
     lbl_8055E24C = lbl_805616D4;
     fn_8013A0B0(&sp10p, strings + 0xAB0, &lbl_80559F4C);
     {
@@ -5083,19 +5082,18 @@ extern "C" void fn_8014FC8C(s32 arg0) {
         if (o != 0) {
             lbl_8055E24C = lbl_805616D8 * ((EvalObj *)o)->eval(strings + 0xABC, lbl_805616DC);
             {
-                float v = ((EvalObj *)o)->eval(strings + 0xACC, lbl_8056164C);
+                f32 v = ((EvalObj *)o)->eval(strings + 0xACC, lbl_8056164C);
                 lbl_80559EB4 = v;
-                ((void (*)(char *, ...))fn_802E30C8)((char *)(strings + 0xADC), v);
+                fn_802E30C8(strings + 0xADC, v);
             }
         }
     }
     fn_8013A198(&sp10p, -1);
-    manager = fn_80131810((const char *)((LfoObj *)(*(void **)((unsigned char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20)))->lookup(strings + 0xAFC, strings + 0xB0C));
+    manager = fn_80131810((const char *)((LfoObj *)(*(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20)))->lookup(strings + 0xAFC, strings + 0xB0C));
     if (manager != 0) {
         s32 idx = 0;
-        while (1) {
-            void *e = ((Manager *)manager)->get(idx);
-            if (e == 0) break;
+        void *e;
+        while ((e = ((Manager *)manager)->get(idx)) != 0) {
             void *r = fn_80204CF0();
             void *check;
             if (((Entry *)e)->has(strings + 0xA30) != 0) {
@@ -5104,7 +5102,7 @@ extern "C" void fn_8014FC8C(s32 arg0) {
             } else check = r;
             if (check == r) {
                 void *alloc = (void *)fn_801284F8(0xD4, &lbl_80559F80);
-                if (alloc != 0) alloc = fn_8015011C(alloc, e);
+                if (alloc != 0) alloc = fn_8015011C(e);
                 spC = (s32)alloc;
                 fn_801500F8((void *)(arg0 + 0x14), &spC);
             }
@@ -5112,14 +5110,13 @@ extern "C" void fn_8014FC8C(s32 arg0) {
         }
         fn_80131818(manager);
     } else {
-        void *lfo = *(void **)((unsigned char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
+        void *lfo = *(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
         s32 idx = 0;
-        while (1) {
-            void *e = ((LfoObj *)lfo)->get(idx);
-            if (e == 0) break;
+        void *e;
+        while ((e = ((LfoObj *)lfo)->get(idx)) != 0) {
             if (((Entry *)e)->has(&lbl_80559F88) != 0) {
                 void *alloc = (void *)fn_801284F8(0xD4, &lbl_80559F80);
-                if (alloc != 0) alloc = fn_8015011C(alloc, e);
+                if (alloc != 0) alloc = fn_8015011C(e);
                 sp8 = (s32)alloc;
                 fn_801500F8((void *)(arg0 + 0x14), &sp8);
             }
@@ -5128,16 +5125,12 @@ extern "C" void fn_8014FC8C(s32 arg0) {
     }
     resource = fn_80131810((const char *)(strings + 0xB1C));
     if (resource != 0) {
-        f29v = lbl_80561648;
-        f31v = lbl_8056164C;
         s32 idx = 0;
-        while (1) {
-            entry = ((Manager *)resource)->get(idx);
-            if (entry == 0) break;
-            sp20 = f29v;
-            sp24 = f29v;
+        while ((entry = ((Manager *)resource)->get(idx)) != 0) {
+            sp20 = lbl_80561648;
+            sp24 = lbl_80561648;
             {
-                unsigned char *dst = sp60;
+                u8 *dst = sp60;
                 s32 n = 0;
                 while (1) {
                     sprintf(sp40, &lbl_80559F90, n);
@@ -5146,11 +5139,11 @@ extern "C" void fn_8014FC8C(s32 arg0) {
                     sp28 = (s32)tmp;
                     sp2C = (s32)tmp;
                     {
-                        float fy = *(float *)&sp28;
-                        float fx = *(float *)&sp2C;
+                        f32 fy = *(f32 *)&sp28;
+                        f32 fx = *(f32 *)&sp2C;
                         sp20 += fy;
-                        *(float *)dst = fy;
-                        *(float *)(dst + 4) = fx;
+                        *(f32 *)dst = fy;
+                        *(f32 *)(dst + 4) = fx;
                         sp24 += fx;
                     }
                     dst += 8;
@@ -5158,20 +5151,20 @@ extern "C" void fn_8014FC8C(s32 arg0) {
                 }
                 i = n;
                 {
-                    unsigned char *p = sp60;
-                    float avg1 = sp20 * (f31v / (float)n);
-                    float avg2 = sp24 * (f31v / (float)n);
+                    u8 *p = sp60;
+                    f32 avg1 = sp20 * (lbl_8056164C / (f32)n);
+                    f32 avg2 = sp24 * (lbl_8056164C / (f32)n);
                     sp20 = avg1;
                     sp24 = avg2;
                     if (n > 0) {
-                        float maxv = lbl_80561648;
+                        f32 maxv = lbl_80561648;
                         s32 ctr = n;
                         do {
-                            float dy = *(float *)(p + 4) - avg2;
-                            float dx = *(float *)p - avg1;
+                            f32 dy = *(f32 *)(p + 4) - avg2;
+                            f32 dx = *(f32 *)p - avg1;
                             sp1C = dy;
                             sp18 = dx;
-                            float dist = dx * dx + dy * dy;
+                            f32 dist = dx * dx + dy * dy;
                             if (!(maxv > dist)) maxv = dist;
                             p += 8;
                             ctr--;
@@ -5181,24 +5174,24 @@ extern "C" void fn_8014FC8C(s32 arg0) {
                 }
             }
             {
-                float rad = (float)fn_8002F234();
-                float diag = fn_801EA0E8(sp20, sp24);
+                f32 rad = (f32)fn_8002F234();
+                f32 diag = fn_801EA0E8(sp20, sp24);
                 sp34 = diag;
                 sp30 = sp20;
                 sp38 = sp24;
                 void *alloc = (void *)fn_801284F8(0x14, &lbl_80559F40);
                 if (alloc != 0) {
-                    *(float *)alloc = sp30;
-                    *(float *)((unsigned char *)alloc + 4) = sp34;
-                    *(float *)((unsigned char *)alloc + 8) = sp38;
-                    *(float *)((unsigned char *)alloc + 12) = rad;
-                    *((unsigned char *)alloc + 16) = 1;
+                    *(f32 *)alloc = sp30;
+                    *(f32 *)((u8 *)alloc + 4) = sp34;
+                    *(f32 *)((u8 *)alloc + 8) = sp38;
+                    *(f32 *)((u8 *)alloc + 12) = rad;
+                    *((u8 *)alloc + 16) = 1;
                 }
                 {
-                    s32 *a = (s32 *)(arg0 + 0x220);
+                    s32 **a = (s32 **)(arg0 + 0x220);
                     s32 cnt = *(s32 *)(arg0 + 0x224);
                     *(s32 *)(arg0 + 0x224) = cnt + 1;
-                    a[cnt] = (s32)alloc;
+                    (*a)[cnt] = (s32)alloc;
                 }
             }
             idx++;
