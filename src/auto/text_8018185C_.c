@@ -1880,8 +1880,6 @@ void fn_8018956C(void *arg0, float *arg1, float *arg2, int mode, void *obj, int 
 struct V10 {
     virtual void v0() {}
     virtual void v1() {}
-    virtual void v2() {}
-    virtual void v3() {}
     virtual void *get() { return 0; }
 };
 struct VCC {
@@ -1900,12 +1898,10 @@ struct VCC {
     virtual void c48() {} virtual void c49() {} virtual void c50() {}
     virtual int get(int) { return 0; }
 };
-int fn_80189BDC(void *arg0) {
-    struct Tbl { void *f[64]; };
+extern "C" int fn_80189BDC(void *arg0) {
     if ((unsigned int)(*(int *)((char *)arg0 + 0x10) + 0xABAE0000) != 0x4C52U) {
         void *obj = *(void **)((char *)arg0 + 0x270);
-        struct Tbl *vt = *(struct Tbl **)obj;
-        void *ret = ((void *(*)(void *))vt->f[4])(obj);
+        void *ret = ((V10 *)obj)->get();
         if (ret != 0) {
             int v = *(int *)((char *)ret + 0x24);
             if (v == 1 || v == 3) {
@@ -1913,11 +1909,8 @@ int fn_80189BDC(void *arg0) {
             }
         }
     }
-    {
-        void *tmp = (void *)fn_801B83A0();
-        struct Tbl *vt2 = *(struct Tbl **)tmp;
-        return ((int (*)(void *, int))vt2->f[51])(tmp, *(int *)((char *)arg0 + 0x1EC));
-    }
+    void *tmp = (void *)fn_801B83A0();
+    return ((VCC *)tmp)->get(*(int *)((char *)arg0 + 0x1EC));
 }
 #pragma cplusplus reset
 
