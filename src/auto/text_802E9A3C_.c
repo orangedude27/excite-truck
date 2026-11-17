@@ -1156,7 +1156,10 @@ void fn_802EC11C(void *arg0) {
 
 extern void *lbl_80560078;
 void* fn_802EC124(void) {
-    return lbl_80560078;
+#define gPendingSong lbl_80560078
+    /* Get the pending track-music song index the audio thread picks up (-1 = none). */
+    return gPendingSong;
+#undef gPendingSong
 }
 
 /* Clear the pending track-music song request: reset the song index the audio
