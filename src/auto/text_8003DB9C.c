@@ -4390,8 +4390,9 @@ int GXGetTexObjLODAll(int *texObj) {
     return *texObj & 3;
 }
 
-int GXGetTexObjWrap_Internal(unsigned int *arg0) {
-    return (*arg0 >> 2) & 3;
+/* Return the T-axis wrap mode (bits 2..3) from a raw GX texture mode0 word. */
+int GXGetTexObjWrap_Internal(unsigned int *mode0) {
+    return (*mode0 >> 2) & 3;
 }
 
 int GXGetTexObjAll(void *obj) {
