@@ -18839,8 +18839,9 @@ extern "C" s32 fn_800C673C(void) {
     return *(s32*)((u8*)lbl_8055DD98 + 0xAC);
 }
 
-extern "C" void fn_800C675C(u32 size) {
-    fn_800CEBE0(lbl_8055DD98, size);
+// Applies the home-button layout scale to the HBM manager singleton via fn_800CEBE0.
+extern "C" void fn_800C675C(u32 on) {
+    fn_800CEBE0(lbl_8055DD98, on);
 }
 
 // Returns the status/setting byte at offset 0x88 of the Home Button (HBM) manager singleton.
