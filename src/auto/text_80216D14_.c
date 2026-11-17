@@ -939,7 +939,9 @@ void fn_802180B0(void *screen) { fn_80217EC0(screen, 1, 0); }
 void fn_802180BC(void *screen) { fn_80217EC0(screen, 1, 1); }
 
 extern int fn_80217EC0(void *, int, int);
-void fn_802180C8(void *arg0) { fn_80217EC0(arg0, 0, 0); }
+/* MoveSelectionUp: ask fn_80217EC0 to pick the nearest eligible item above the
+ * current one (Y axis, negative direction). */
+void fn_802180C8(void *screen) { fn_80217EC0(screen, 0, 0); }
 
 /* Move the menu selection to the nearest eligible item above the current one. */
 void fn_802180D4(void *menu) { fn_80217EC0(menu, 0, 1); }
