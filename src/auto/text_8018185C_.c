@@ -1915,19 +1915,6 @@ void fn_80189C64(void *object) {
 
 #pragma opt_propagation off
 #pragma dont_inline on
-#pragma dont_inline off
-static void fn_80189CB4_mult(const float *m, const float *src, float *dst) {
-    if (src == dst) {
-        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
-        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
-    } else {
-        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
-        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
-    }
-}
-#pragma dont_inline on
 void fn_80189CB4(void *arg0, void *arg1) {
     volatile float scale[3];
     volatile float out[3];
