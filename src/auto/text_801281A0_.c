@@ -283,6 +283,7 @@ void fn_80128678(void) {
 }
 
 extern char lbl_8055DF88;
+/* Clear the save-state flag at lbl_8055DF88 (counterpart of fn_80128678, read by fn_80128690). */
 void fn_80128684(void) {
     lbl_8055DF88 = 0;
 }
