@@ -1646,7 +1646,7 @@ extern "C" void fn_8014D840(void *__restrict arg0, void *arg1) {
     u8 *manager;
     s32 i;
     s32 best;
-    u8 *entry;
+    u8 *entry = 0;
     s32 count;
     manager = *(u8 **)((u8 *)arg0 + 0x68);
     best = -1;
@@ -2338,16 +2338,19 @@ static inline void FreeAll8014E9C4(PtrArray8014E9C4 *a) {
     int i;
     for (i = 0; i < a->count; i++)
         fn_80128668(a->data[i]);
-    /* indexes; the compiler strength-reduces i*4 */
+}
+static inline void DeleteAll8014E9C4(PtrArray8014E9C4 *a) {
+    int i;
+    for (i = 0; i < a->count; i++)
+        DeleteItem8014E9C4((char *)a->data[i]);
 }
 #pragma cplusplus on
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *fn_8014E9C4(char *p, s32 arg1) {
-    int off;
     char *entry;
+    int j;
     int i;
-    char *item;
     Cleanup8014E9C4 *obj;
     char *sub;
     if (p) {
@@ -2373,7 +2376,7 @@ extern "C" void *fn_8014E9C4(char *p, s32 arg1) {
         if (obj) obj->destroy(1);
         lbl_8055E248 = 0;
         entry = p;
-        for (i=0; i<*(s32 *)(p+0xfe4); entry+=0xc0,i++) {
+        for (j=0; j<*(s32 *)(p+0xfe4); entry+=0xc0,j++) {
             obj = *(Cleanup8014E9C4 **)(entry+0x9f4);
             if (obj) obj->destroy(1);
             obj = *(Cleanup8014E9C4 **)(entry+0xa90);
@@ -2389,16 +2392,20 @@ extern "C" void *fn_8014E9C4(char *p, s32 arg1) {
             if (obj) obj->destroy(1);
             *(void **)(entry+0x9ec) = 0;
         }
-        for (i=0,off=0; i<*(s32 *)(p+0x18); off+=4,i++) {
-            item = *(char **)(*(char **)(p+0x14)+off);
-            if (item) {
-                DestroyItem8014E9C4(item);
-                fn_80128668(item);
-            }
+        for (i=0; i<*(s32 *)(p+0x18); i++)
+            DeleteItem8014E9C4((*(char ***)(p+0x14))[i]);
+        for (i=0; i<*(s32 *)(p+0x224); i++) {
+            void **arr = *(void ***)(p+0x220);
+            fn_80128668(arr[i]);
         }
-        FreeAll8014E9C4((PtrArray8014E9C4 *)(p+0x220));
-        FreeAll8014E9C4((PtrArray8014E9C4 *)(p+0x32c));
-        FreeAll8014E9C4((PtrArray8014E9C4 *)(p+0x3b8));
+        for (i=0; i<*(s32 *)(p+0x330); i++) {
+            void **arr = *(void ***)(p+0x32c);
+            fn_80128668(arr[i]);
+        }
+        for (i=0; i<*(s32 *)(p+0x3bc); i++) {
+            void **arr = *(void ***)(p+0x3b8);
+            fn_80128668(arr[i]);
+        }
         obj = *(Cleanup8014E9C4 **)(p+0x44c);
         if (obj) { if (obj) obj->destroy(1); }
         obj = *(Cleanup8014E9C4 **)(p+0x444);
