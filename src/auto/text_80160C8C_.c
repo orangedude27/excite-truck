@@ -1336,7 +1336,7 @@ void fn_80162174(void) {
 
 void fn_801F62178_dummy(void);
 #pragma cplusplus on
-extern "C" void fn_80162178(void *arg0, s32 arg1) {
+extern "C" void fn_80162178(void *controller, s32 arg1) {
     struct Dummy {
         virtual void f0();
         virtual void f1();
@@ -1350,14 +1350,16 @@ extern "C" void fn_80162178(void *arg0, s32 arg1) {
     s32 *entry;
     s32 i;
 
-    *(s32 *)((char *)arg0 + 8) = 0;
-    *(u8 *)((char *)arg0 + 0x10) = 0;
-    *(float *)((char *)arg0 + 0xC) = -1000.0f;
-    for (i = 0, offset = 0; i < *(s32 *)((char *)arg0 + 0x38); offset += 8, i++) {
-        void *obj = *(void **)((char *)arg0 + 4);
-        char *entries = *(char **)((char *)arg0 + 0x34);
+    /* Reset the controller's title state, then push one popup per list entry:
+     * the provider object builds it from the "title" descriptor and the entry. */
+    *(s32 *)((char *)controller + 8) = 0;
+    *(u8 *)((char *)controller + 0x10) = 0;
+    *(float *)((char *)controller + 0xC) = -1000.0f;
+    for (i = 0, offset = 0; i < *(s32 *)((char *)controller + 0x38); offset += 8, i++) {
+        void *provider = *(void **)((char *)controller + 4);
+        char *entries = *(char **)((char *)controller + 0x34);
         entry = (s32 *)(entries + offset);
-        void *result = ((Dummy *)obj)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
+        void *result = ((Dummy *)provider)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
         fn_801DF380(result, entry[0], fn_80161438, entry[1]);
     }
 }
