@@ -80,6 +80,10 @@ void fn_802DAE18(void) {
 void OSGetFontWidth(char *, int *);
 void fn_802C32B8(int, int, unsigned int);
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma use_lmw_stmw off
 int fn_802DAE64(int arg0, int arg1, char *arg2) {
     int sp18, sp14, sp10;
     void *spC;
@@ -109,7 +113,8 @@ int fn_802DAE64(int arg0, int arg1, char *arg2) {
         x = arg0 < 0 ? -arg0 : arg0;
     }
     zero = 0;
-    for (p = arg2; *p != 0; x += sp10, p++) {
+    p = arg2;
+    while (*p != 0) {
         if (*p == 0x20) {
             w = x;
             q = p + 1;
@@ -122,6 +127,7 @@ int fn_802DAE64(int arg0, int arg1, char *arg2) {
             if (w > 0x23A) {
                 x = 0x46;
                 y += 0x20;
+                p++;
                 continue;
             }
         }
@@ -147,16 +153,16 @@ int fn_802DAE64(int arg0, int arg1, char *arg2) {
             }
             row++;
         } while (row < 0x18);
+        x += sp10;
+        p++;
     }
     return 0;
 }
 #pragma pop
-#pragma scheduling on
 
 extern void *fn_802D2F78(int *, int *);
 extern void fn_802C3034(void *, int, int, int);
 extern void fn_802D2FD8(void);
-extern int fn_802DAE64(int, int, char *);
 extern char *strcpy(char *, const char *);
 void fn_802DB03C(char *arg0) {
     struct {
