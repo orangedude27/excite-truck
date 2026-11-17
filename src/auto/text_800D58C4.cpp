@@ -466,45 +466,47 @@ extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(bool hasColor, unsigned 
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const void *pos_, const void *size_, unsigned char count, const void *tex_, const void *col_) {
     const float *pos = (const float *)pos_;
     const float *size = (const float *)size_;
-    const unsigned int *col = (const unsigned int *)col_;
-    const float *tex = (const float *)tex_;
+    int i;
+    f32 x0, y0;
     GXBegin((GXPrimitive)0x80, (GXVtxFmt)0, (u16)4);
-    *(volatile float *)0xCC008000 = pos[0];
-    *(volatile float *)0xCC008000 = pos[1];
-    if (col != 0) *(volatile unsigned int *)0xCC008000 = col[0];
+    x0 = pos[0];
+    y0 = pos[1];
+    *(volatile float *)0xCC008000 = x0;
+    *(volatile float *)0xCC008000 = y0;
+    if (col_ != 0) *(volatile unsigned int *)0xCC008000 = ((const unsigned int *)col_)[0];
     {
-        const float *p = tex;
-        for (int i = 0; i < count; i++, p += 8) {
+        const float *p = (const float *)tex_;
+        for (i = 0; i < count; i++, p += 8) {
             *(volatile float *)0xCC008000 = p[0];
             *(volatile float *)0xCC008000 = p[1];
         }
     }
     *(volatile float *)0xCC008000 = pos[0] + size[0];
     *(volatile float *)0xCC008000 = pos[1];
-    if (col != 0) *(volatile unsigned int *)0xCC008000 = col[1];
+    if (col_ != 0) *(volatile unsigned int *)0xCC008000 = ((const unsigned int *)col_)[1];
     {
-        const float *p = (const float *)((const char *)tex + 8);
-        for (int i = 0; i < count; i++, p += 8) {
+        const float *p = (const float *)((const char *)tex_ + 8);
+        for (i = 0; i < count; i++, p += 8) {
             *(volatile float *)0xCC008000 = p[0];
             *(volatile float *)0xCC008000 = p[1];
         }
     }
     *(volatile float *)0xCC008000 = pos[0] + size[0];
     *(volatile float *)0xCC008000 = pos[1] + size[1];
-    if (col != 0) *(volatile unsigned int *)0xCC008000 = col[3];
+    if (col_ != 0) *(volatile unsigned int *)0xCC008000 = ((const unsigned int *)col_)[3];
     {
-        const float *p = (const float *)((const char *)tex + 0x18);
-        for (int i = 0; i < count; i++, p += 8) {
+        const float *p = (const float *)((const char *)tex_ + 0x18);
+        for (i = 0; i < count; i++, p += 8) {
             *(volatile float *)0xCC008000 = p[0];
             *(volatile float *)0xCC008000 = p[1];
         }
     }
     *(volatile float *)0xCC008000 = pos[0];
     *(volatile float *)0xCC008000 = pos[1] + size[1];
-    if (col != 0) *(volatile unsigned int *)0xCC008000 = col[2];
+    if (col_ != 0) *(volatile unsigned int *)0xCC008000 = ((const unsigned int *)col_)[2];
     {
-        const float *p = (const float *)((const char *)tex + 0x10);
-        for (int i = 0; i < count; i++, p += 8) {
+        const float *p = (const float *)((const char *)tex_ + 0x10);
+        for (i = 0; i < count; i++, p += 8) {
             *(volatile float *)0xCC008000 = p[0];
             *(volatile float *)0xCC008000 = p[1];
         }
@@ -932,12 +934,13 @@ extern "C" void fn_800D6EEC(void* arg0) {
 }
 #pragma scheduling on
 
+extern const char lbl_8031F920[];
+extern const char lbl_8031F8FC[];
+extern const char lbl_8031F8F0[];
+extern const char lbl_8031F8CC[];
 extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
+#pragma scheduling invalid_target
     extern char lbl_8031F868[];
-    extern const char lbl_8031F920[];
-    extern const char lbl_8031F8FC[];
-    extern const char lbl_8031F8F0[];
-    extern const char lbl_8031F8CC[];
     struct LayoutFields { u32 vtable; u32 link; };
     struct ResourceDispatch { virtual void Destroy(s32); };
     struct LayoutNodeDispatch { virtual void Destroy(s32); };
