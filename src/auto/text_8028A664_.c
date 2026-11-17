@@ -813,7 +813,7 @@ s32 fn_8028B93C(f32 *arg0) {
     }
     return 0x20;
 }
-#pragma scheduling reset
+#pragma scheduling on
 s32 fn_8028BA44(void *arg0) {
     struct {
         f32 sp8;
