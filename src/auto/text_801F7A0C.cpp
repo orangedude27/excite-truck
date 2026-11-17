@@ -2226,9 +2226,10 @@ extern "C" void fn_801F973C(void *, void *, u32);
 #pragma use_lmw_stmw on
 extern "C" void fn_801FA7F4(void *arg0, u32 *arg1, s32 arg2) {
     volatile u32 *src = (volatile u32 *)arg1;
-    s32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
-    s32 zero = 0;
+    register u32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    register u32 zero;
     f32 data[14];
+    zero = 0;
     t0 = src[0];
     ((u32 *)data)[13] = zero;
     t1 = src[1];
@@ -2896,7 +2897,7 @@ extern "C" void fn_801FBFE8(void* spawn) {
 #pragma pop
 
 extern u8 lbl_8033B54C[], lbl_80333B48[];
-extern const f32 lbl_80563014;
+extern f32 lbl_80563014;
 extern "C" void fn_8019EECC(void);
 #pragma push
 #pragma processor 750
