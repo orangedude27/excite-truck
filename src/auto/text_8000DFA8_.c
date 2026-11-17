@@ -1873,8 +1873,9 @@ f32 fn_80011EB0(s32 regionId) {
     return lbl_80350ED8[regionId * 5 + 2];
 }
 
-f32 fn_80011EC8(s32 arg0) {
-    return lbl_80350ED8[arg0 * 5];
+f32 fn_80011EC8(s32 regionId) {
+    /* Vertical anchor for layout region regionId: the [0] column of its 5-float record in lbl_80350ED8, the companion to the horizontal anchor at [2]. */
+    return lbl_80350ED8[regionId * 5];
 }
 
 __declspec(section ".sdata") extern char lbl_80558ACC[];
