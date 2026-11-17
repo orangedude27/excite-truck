@@ -844,59 +844,67 @@ extern double __fabs(double);
 #pragma processor 750
 #pragma cplusplus on
 extern "C" void fn_801EBF00(void) {
-    struct Locals { f32 r[9]; volatile f32 pos[3]; f32 m[12]; } l;
-    char *item;
-    f32 *p;
-    f32 scale, s, t, a, magnitude, c;
-    s32 v, b;
+    /* Draw the active weather layer while the EB effect is enabled: hide the two
+     * UI markers, draw model lbl_8055AFB8 with the view matrix scaled by
+     * (1 - lbl_8055EBA4), then draw model lbl_8055AFBC yawed by the entry's +0xE0
+     * angle and tinted/brightened by its +0xD8 fade. If disabled, run the fallback fn_802B05D8. */
+    struct Locals {
+        f32 rotMtx[9];           /* yaw-rotation matrix for lbl_8055AFBC */
+        volatile f32 viewPos[3]; /* camera translation, stored but never read */
+        f32 modelMtx[12];        /* view matrix with scaled translation for lbl_8055AFB8 */
+    } l;
+    char *entry;                 /* current 0xE0-byte weather entry */
+    f32 *viewMtx;
+    f32 scale, sine, tmp, fade, magnitude, cosine;
+    s32 scaled, intensity;
     if (lbl_8055EBA0 != 0) {
         ((EBF00Widget *)lbl_804885E8[3])->setVisible(0);
         if (lbl_8055AFB8 != -1) {
-            fn_802C8B08(l.m);
+            fn_802C8B08(l.modelMtx);
             scale = lbl_80562E68 - lbl_8055EBA4;
-            l.m[9] = l.m[9] * scale;
-            l.m[10] = l.m[10] * scale;
-            l.m[11] = l.m[11] * scale;
-            l.m[0] = lbl_80562E68;
-            l.m[1] = lbl_80562E74;
-            l.m[2] = lbl_80562E74;
-            l.m[3] = lbl_80562E74;
-            l.m[4] = lbl_80562E68;
-            l.m[5] = lbl_80562E74;
-            l.m[6] = lbl_80562E74;
-            l.m[7] = lbl_80562E74;
-            l.m[8] = lbl_80562E68;
-            fn_802C744C(lbl_8055AFB8, l.m);
+            l.modelMtx[9] = l.modelMtx[9] * scale;
+            l.modelMtx[10] = l.modelMtx[10] * scale;
+            l.modelMtx[11] = l.modelMtx[11] * scale;
+            l.modelMtx[0] = lbl_80562E68;
+            l.modelMtx[1] = lbl_80562E74;
+            l.modelMtx[2] = lbl_80562E74;
+            l.modelMtx[3] = lbl_80562E74;
+            l.modelMtx[4] = lbl_80562E68;
+            l.modelMtx[5] = lbl_80562E74;
+            l.modelMtx[6] = lbl_80562E74;
+            l.modelMtx[7] = lbl_80562E74;
+            l.modelMtx[8] = lbl_80562E68;
+            fn_802C744C(lbl_8055AFB8, l.modelMtx);
         }
         ((EBF00Widget *)lbl_804885E8[6])->setVisible(0);
-        item = fn_801E7E34() + fn_801E85B4() * 0xE0;
-        a = *(f32 *)(item + 0xD8);
-        magnitude = (f32)__fabs((double)a);
+        entry = fn_801E7E34() + fn_801E85B4() * 0xE0;
+        fade = *(f32 *)(entry + 0xD8);
+        magnitude = (f32)__fabs((double)fade);
         if (!(magnitude <= lbl_80558DC4[0])) {
-            v = (s32)(lbl_80562E78 * a);
-            v = v > 0 ? v : 0;
-            b = 0xFF;
-            if (v < 0xFF) b = v;
-            fn_802C9474(0xFF000000 | ((b & 0xff) << 16) | ((b & 0xff) << 8) | (b & 0xff));
-            p = fn_802C86DC();
-            l.pos[0] = p[9];
-            l.pos[1] = p[10];
-            l.pos[2] = p[11];
-            t = *(f32 *)(item + 0xE0);
-            c = (f32)cos(t);
-            s = (f32)sin(t);
-            l.r[0] = c;
-            l.r[1] = lbl_80562E74;
-            l.r[2] = -s;
-            l.r[3] = lbl_80562E74;
-            l.r[4] = lbl_80562E68;
-            l.r[5] = lbl_80562E74;
-            l.r[6] = s;
-            l.r[7] = lbl_80562E74;
-            l.r[8] = c;
-            t = lbl_80562E7C * *(f32 *)(item + 0xD8);
-            fn_802C9900(lbl_80562E68 < t ? lbl_80562E68 : t);
-            fn_802C744C(lbl_8055AFBC, l.r);
+            scaled = (s32)(lbl_80562E78 * fade);
+            scaled = scaled > 0 ? scaled : 0;
+            intensity = 0xFF;
+            if (scaled < 0xFF) intensity = scaled;
+            fn_802C9474(0xFF000000 | ((intensity & 0xff) << 16) | ((intensity & 0xff) << 8) | (intensity & 0xff));
+            viewMtx = fn_802C86DC();
+            l.viewPos[0] = viewMtx[9];
+            l.viewPos[1] = viewMtx[10];
+            l.viewPos[2] = viewMtx[11];
+            tmp = *(f32 *)(entry + 0xE0);
+            cosine = (f32)cos(tmp);
+            sine = (f32)sin(tmp);
+            l.rotMtx[0] = cosine;
+            l.rotMtx[1] = lbl_80562E74;
+            l.rotMtx[2] = -sine;
+            l.rotMtx[3] = lbl_80562E74;
+            l.rotMtx[4] = lbl_80562E68;
+            l.rotMtx[5] = lbl_80562E74;
+            l.rotMtx[6] = sine;
+            l.rotMtx[7] = lbl_80562E74;
+            l.rotMtx[8] = cosine;
+            tmp = lbl_80562E7C * *(f32 *)(entry + 0xD8);
+            fn_802C9900(lbl_80562E68 < tmp ? lbl_80562E68 : tmp);
+            fn_802C744C(lbl_8055AFBC, l.rotMtx);
             fn_802C9904();
         }
     } else {
