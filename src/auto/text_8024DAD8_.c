@@ -2747,8 +2747,9 @@ u8 fn_802524A8(void *arg0, s32 arg1) {
     return *(u8 *)((char *)base + offset + 0x41);
 }
 
-s32 fn_802524BC(void *arg0, s32 arg1) {
-    s32 offset = arg1 * 0x48;
-    s32 *base = *(s32 **)((char *)arg0 + 4);
-    return *(s32 *)((char *)base + offset + 0x44);
+s32 fn_802524BC(void *table, s32 recordIndex) {
+    // Read the s32 field at +0x44 of the given 0x48-byte record.
+    s32 byteOffset = recordIndex * 0x48;
+    s32 *records = *(s32 **)((char *)table + 4);
+    return *(s32 *)((char *)records + byteOffset + 0x44);
 }
