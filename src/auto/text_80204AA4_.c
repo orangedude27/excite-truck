@@ -491,21 +491,34 @@ inline DiffLookup802054EC::DiffLookup802054EC(int type, int stageIndex) {
     }
 }
 #pragma dont_inline off
-extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
-    DiffLookup802054EC l(arg1, arg2);
-    char buf[0x64];
-    const char *result = 0;
-    void *contest = l.contest;
-    int answer;
+extern "C" int fn_802054EC(const char *propName, int typeIndex, int stageIndex) {
+    /* Read a difficulty property as a boolean: resolve its value string first under the
+     * stage-specific "<contest>_<propName>" key, then under the plain name, panicking if
+     * no set defines it; return 1 when the value is "yes" or "true", otherwise 0. */
+    #define STAGE_KEY_FORMAT lbl_8055B4AC /* "%s_%s" */
+    #define NOT_FOUND_PANIC  lbl_8033BBF4 /* 'Difficulty: "%s" was not found' */
+    #define YES_VALUE        lbl_8055B4B4 /* "yes" */
+    #define TRUE_VALUE       lbl_8055B4B8 /* "true" */
+    #define KEY_BUF_SIZE     0x64
+    DiffLookup802054EC lookup(typeIndex, stageIndex);
+    char keyBuf[KEY_BUF_SIZE];
+    const char *value = 0;
+    void *contest = lookup.contest;
+    int isYes;
     if (contest != 0) {
-        ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, contest, arg0);
-        result = l.Find(buf);
+        ((int (*)(void *, int, const char *, ...))fn_801345D8)(keyBuf, KEY_BUF_SIZE, STAGE_KEY_FORMAT, contest, propName);
+        value = lookup.Find(keyBuf);
     }
-    if (result == 0) {
-        result = l.Find(arg0);
+    if (value == 0) {
+        value = lookup.Find(propName);
     }
-    if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
-    answer = 1;
-    if (stricmp(result, lbl_8055B4B4) != 0 && stricmp(result, lbl_8055B4B8) != 0) answer = 0;
-    return answer;
+    if (value == 0) fn_802E317C(NOT_FOUND_PANIC, propName);
+    isYes = 1;
+    if (stricmp(value, YES_VALUE) != 0 && stricmp(value, TRUE_VALUE) != 0) isYes = 0;
+    return isYes;
+    #undef STAGE_KEY_FORMAT
+    #undef NOT_FOUND_PANIC
+    #undef YES_VALUE
+    #undef TRUE_VALUE
+    #undef KEY_BUF_SIZE
 }
