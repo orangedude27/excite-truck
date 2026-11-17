@@ -3543,7 +3543,9 @@ void fn_8005EE20(void) {
     }
 }
 
-// fn_8005EE6C: tail call to WUDStartFastSyncSimple
+/* WPAD-internal fast-simple-sync starter: tail-calls WUDStartFastSyncSimple so
+   its result reaches callers such as the home-button sync-check alarm callback
+   (which casts this to an s32-returning function). */
 void fn_8005EE6C(void) { WUDStartFastSyncSimple(); }
 
 // fn_8005EE70: tail call to fn_8006AC4C
@@ -6881,6 +6883,7 @@ void fn_800684D0(s32 chan) {
 }
 
 void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed) {
+#pragma unroll 8
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* base = (u8*)cb;
     u16 i;
@@ -6888,8 +6891,7 @@ void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed) {
     if (len != 0) {
         for (i = 0; i < (u16)len; i++) {
             u8 idx = (seed + i) % 8;
-            u8 d = data[i];
-            data[i] = base[0x864 + idx] + (d ^ base[0x86C + idx]);
+            data[i] = base[0x864 + idx] + (data[i] ^ base[0x86C + idx]);
         }
     }
 }
