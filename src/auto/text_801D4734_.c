@@ -1941,6 +1941,8 @@ done_second:
 extern char lbl_80338868[];
 extern char lbl_80338B98[];
 extern char lbl_80338878[];
+/* Return the address of the "Text_ASE" name string, used to register and
+   identify that action-sequence element class. */
 int fn_801D6ED0(void) {
     return (int)lbl_80338878;
 }
