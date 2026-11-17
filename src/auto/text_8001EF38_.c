@@ -154,7 +154,10 @@ s32 fn_8001EFA4(s32 counter, s32 level) {
 }
 
 void fn_8001EFA8(void) {
-    fn_8001FA8C();
+#define GetAchievementThresholdCount fn_8001FA8C
+    /* Tail-call thunk: forwards the achievement/counter id to return how many thresholds that achievement has. */
+    GetAchievementThresholdCount();
+#undef GetAchievementThresholdCount
 }
 
 void fn_8001EFAC(void) {
