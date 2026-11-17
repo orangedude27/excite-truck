@@ -171,7 +171,10 @@ void fn_802368E0(void) {
 }
 
 int fn_802368EC(void) {
-    return (unsigned char)lbl_8055F0C0[0x21] == 0;
+    /* Return whether the current uiAnime node's +0x21 direction flag is clear. */
+#define sUiAnimeTail lbl_8055F0C0
+    return (unsigned char)sUiAnimeTail[0x21] == 0;
+#undef sUiAnimeTail
 }
 
 extern int fn_80215264(void);
