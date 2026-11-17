@@ -62,4 +62,6 @@ void fn_801B6604(void) {
     fn_801EEFDC(fn_801B64B4, 3);
 }
 #pragma scheduling reset
+/* Unregisters the fn_801B64B4 world-event handler (registered for type 3 by
+   fn_801B6604) by clearing its slot in the event handler table. */
 void fn_801B6614(void) { fn_801EF024(fn_801B64B4); }
