@@ -298,8 +298,13 @@ void fn_80128710(void) {
 
 }
 
+/* AX "get studio name" accessor stub, dispatched indirectly through a
+ * function-pointer table. Returns the studio-name string; this build keeps
+ * the placeholder "<unknown>" in lbl_8032A068. */
 const char* __AXGetStudio_80129164(void) {
-    return lbl_8032A068;
+    #define s_studioName lbl_8032A068
+    return s_studioName;
+    #undef s_studioName
 }
 
 s32 fn_80129170(void *region, u32 value) {
