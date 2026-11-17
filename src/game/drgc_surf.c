@@ -62,7 +62,7 @@ extern u8 lbl_804D6C44[];
 extern f32 lbl_804C56F0[];
 extern f32 lbl_804CA308[];
 extern f32 lbl_80564FF0;
-const f64 lbl_80565000 = 4503599629517976.0;
+extern f64 lbl_80565000;
 extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
 extern u32 lbl_8055FDE8;
