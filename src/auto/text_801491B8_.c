@@ -977,8 +977,10 @@ void fn_8014AEF0(void *object) {
     }
 }
 
-s32 fn_8014AF58(void *arg0) {
-    return ((s32 *)arg0)[1];
+/* Return the current node (the word at +4) of this linked-list iterator;
+ * a second getter identical to fn_8014AEB8. */
+s32 fn_8014AF58(void *it) {
+    return ((s32 *)it)[1];
 }
 
 /* Initializes an iterator over a container's first (useSecond==0) or second child list entry, caching fields at offsets 0x11C and 0x120 from the selected node. */
