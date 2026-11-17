@@ -24760,14 +24760,14 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     p_rx_frame->type = p_data[0] & 0xFC;
     if (!p_rx_frame->ea || !(UINT16)len) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_8007096C)(0x90000, msgs + 0x78, p_rx_frame->ea);
+            ((void (*)(u32, void *, u32))fn_8007096C)(0x90000, msgs + 0x78, lbl_803C4828[3]);
         GKI_freebuf(p_buf);
         return;
     }
     ll = p_data[1];
     p_data += 2;
     length = ll >> 1;
-    len = (UINT16)len - 2;
+    len = (UINT16)len + 0xFFFE;
     if (!(ll & 1)) {
         len--;
         length = length + (*p_data++ << 7);
@@ -24835,7 +24835,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
             UINT8 cr = (b & 2) >> 1;
             UINT8 d = b >> 2;
             p_rx_frame->dlci = d;
-            if (!ea || !cr || !d || d < 2 || d > 0x3D) {
+            if (!ea || !cr || !d || !d || d < 2 || d > 0x3D) {
                 if (lbl_803C4828[0x414] >= 1)
                     fn_8007093C(0x90000, msgs + 0xB8);
                 break;
@@ -24870,7 +24870,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
                 UINT8 cr = (b & 2) >> 1;
                 UINT8 d = b >> 2;
                 p_rx_frame->dlci = d;
-                if (!ea || !cr || !d || d < 2 || d > 0x3D) {
+                if (!ea || !cr || !d || !d || d < 2 || d > 0x3D) {
                     if (lbl_803C4828[0x414] >= 1)
                         fn_8007093C(0x90000, msgs + 0xC8);
                     break;
@@ -24902,7 +24902,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
                 UINT8 d = b >> 2;
                 p_rx_frame->dlci = d;
                 p_rx_frame->u.rls.line_status = p_data[1] & 0xFE;
-                if (!ea || !cr || !d || d < 2 || d > 0x3D) {
+                if (!ea || !cr || !d || !d || d < 2 || d > 0x3D) {
                     if (lbl_803C4828[0x414] >= 1)
                         fn_8007093C(0x90000, msgs + 0xC8);
                     break;
@@ -24916,16 +24916,16 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     }
     GKI_freebuf(p_buf);
     if (is_command) {
-        p_buf = GKI_getpoolbuf(2);
-        if (p_buf) {
+        BT_HDR *newbuf = GKI_getpoolbuf(2);
+        if (newbuf) {
             UINT8 *p;
-            p_buf->offset = 12;
-            p = (UINT8 *)(p_buf + 1) + 12;
+            newbuf->offset = 12;
+            p = (UINT8 *)(newbuf + 1) + 12;
             *p++ = 0x11;
             *p++ = 3;
             *p = p_rx_frame->type | (p_rx_frame->ea | (p_rx_frame->cr << 1));
-            p_buf->len = 3;
-            rfc_send_buf_uih(p_rfc_mcb, 0, p_buf);
+            newbuf->len = 3;
+            rfc_send_buf_uih(p_rfc_mcb, 0, newbuf);
         }
     }
 }
@@ -26883,7 +26883,7 @@ void sdp_conn_timeout(tCONN_CB *p_ccb) {
 
 extern void process_service_search(tCONN_CB *, UINT16, UINT16, UINT8 *);
 static void process_service_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
-typedef struct { UINT8 pad0[0x26]; UINT8 data[0x450]; volatile UINT16 cont_off; } tCCB_CONT_VIEW;
+typedef struct { UINT8 pad0[0x26]; UINT8 data[0x450]; UINT16 cont_off; } tCCB_CONT_VIEW;
 static void process_service_search_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
 /* Dispatch an incoming SDP server request PDU and route it to the appropriate handler. */
 void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
