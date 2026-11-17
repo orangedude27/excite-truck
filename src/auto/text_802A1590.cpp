@@ -1493,16 +1493,21 @@ extern "C" void fn_8028E61C(void *);
 extern "C" f32 lbl_8056472C, lbl_80564730, lbl_80564734, lbl_80564738;
 extern "C" f32 lbl_8056475C, lbl_80564760, lbl_805647C8, lbl_80564830;
 extern "C" u8 lbl_80349A8C[];
-extern "C" void fn_802A41D8(void *arg0, s32 arg1) {
-    u8 config[0xB0];
-    fn_8028E61C(config + 0x18);
+/* Create this terrain-effect object's "trail mud" particle effect: zero the
+ * 0x8C-byte effect creation descriptor (at config+0x18), fill in the mud
+ * trail's parameters, hand it to the effect manager (fn_8028E2F8) under the
+ * name "trail mud" with the object's texture resource, and keep the new
+ * effect handle at owner+4 (released by the destructor). */
+extern "C" void fn_802A41D8(void *owner, s32 textureResource) {
+    u8 config[0xB0]; /* the 0x8C-byte creation descriptor sits at +0x18 */
+    fn_8028E61C(config + 0x18); /* memset the descriptor to 0 */
     s32 mode = 2;
     s32 size = 0x100;
-    *(s32 *)(config + 0x18) = mode;
-    *(s32 *)(config + 0x1C) = size;
-    *(f32 *)(config + 0x20) = lbl_80564734;
-    *(f32 *)(config + 0x24) = lbl_80564830;
-    *(f32 *)(config + 0x0C) = lbl_80564730;
+    *(s32 *)(config + 0x18) = mode; /* emission mode */
+    *(s32 *)(config + 0x1C) = size; /* particle count 256 */
+    *(f32 *)(config + 0x20) = lbl_80564734; /* 0.5 */
+    *(f32 *)(config + 0x24) = lbl_80564830; /* 0.85 */
+    *(f32 *)(config + 0x0C) = lbl_80564730; /* 1.0 */
     *(f32 *)(config + 0x10) = lbl_80564730;
     *(f32 *)(config + 0x14) = lbl_80564730;
     *(f32 *)(config + 0x28) = lbl_80564730;
@@ -1514,20 +1519,20 @@ extern "C" void fn_802A41D8(void *arg0, s32 arg1) {
     *(f32 *)(config + 0x34) = lbl_80564730;
     *(f32 *)(config + 0x38) = lbl_80564730;
     *(f32 *)(config + 0x3C) = lbl_80564730;
-    *(f32 *)(config + 0x48) = lbl_80564738;
-    *(f32 *)(config + 0x4C) = lbl_8056472C;
+    *(f32 *)(config + 0x48) = lbl_80564738; /* 0.75 */
+    *(f32 *)(config + 0x4C) = lbl_8056472C; /* 0.35 */
     *(s32 *)(config + 0x5C) = 5;
-    *(f32 *)(config + 0x60) = lbl_80564738;
-    *(f32 *)(config + 0x6C) = lbl_805647C8;
-    *(f32 *)(config + 0x68) = lbl_80564760;
-    *(f32 *)(config + 0x74) = lbl_80564730;
-    *(f32 *)(config + 0x70) = lbl_8056475C;
+    *(f32 *)(config + 0x60) = lbl_80564738; /* 0.75 */
+    *(f32 *)(config + 0x6C) = lbl_805647C8; /* 0.3 */
+    *(f32 *)(config + 0x68) = lbl_80564760; /* 0.4 */
+    *(f32 *)(config + 0x74) = lbl_80564730; /* 1.0 */
+    *(f32 *)(config + 0x70) = lbl_8056475C; /* -1.0 */
     *(f32 *)(config + 0x8C) = lbl_80564730;
     *(f32 *)(config + 0x84) = lbl_80564730;
     *(f32 *)(config + 0x7C) = lbl_80564730;
     *(f32 *)(config + 0x94) = lbl_80564730;
-    *(s32 *)((u8 *)arg0 + 4) =
-        ((s32 (*)(void *, void *, s32))fn_8028E2F8)(config + 0x18, lbl_80349A8C, arg1);
+    *(s32 *)((u8 *)owner + 4) =
+        ((s32 (*)(void *, void *, s32))fn_8028E2F8)(config + 0x18, lbl_80349A8C, textureResource);
     (void)mode; (void)size;
 }
 
