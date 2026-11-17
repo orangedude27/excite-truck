@@ -1363,6 +1363,8 @@ extern void fn_801F6B98(void *);
 void fn_801F73E8(void) { fn_801F6B98(lbl_8055EC10); }
 
 extern void fn_801F6DF0();
+/* Run the manual cloth simulation pass (fn_801F6DF0) over the global
+ * 0x54-stride cloth group held in lbl_8055EC14; fn_801F73F8 is its draw twin. */
 void fn_801F73F0(void) { fn_801F6DF0(lbl_8055EC14); }
 
 #pragma dont_inline on
