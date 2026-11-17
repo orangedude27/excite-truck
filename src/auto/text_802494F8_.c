@@ -1080,8 +1080,9 @@ s32 fn_8024B5D4(void *config, s32 index) {
     return (s32)&gEmptyString;
 }
 
-s32 fn_8024B5F8(s32 arg0, s32 arg1) {
-    return arg0 + arg1 * 0x68 + 0xAA;
+s32 fn_8024B5F8(s32 base, s32 recordIndex) {
+    /* Address of the field at +0xAA in record recordIndex of a 0x68-byte-stride array based at base. */
+    return base + recordIndex * 0x68 + 0xAA;
 }
 
 s32 fn_8024B608(s32 arg0, s32 arg1) {
