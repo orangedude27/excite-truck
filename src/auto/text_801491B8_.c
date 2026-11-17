@@ -717,7 +717,8 @@ void fn_80149F2C(void *arg0, void *arg1, void *arg2) {
         u8 *r24 = *(u8 **)(base + 8);
         f32 f30 = lbl_80561648;
         fn_8014AF60(it, r24 + 0x124C, 0);
-        while (fn_8014ADD0(it) != 0) {
+/* Walk the zone-master iterator, clearing/populating per-entry fields as it goes. */
+while (fn_8014ADD0(it) != 0) {
             fn_8014AF58(it);
             fn_8014AEF0(it);
             fn_8014AF58(it);
