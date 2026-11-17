@@ -137,6 +137,7 @@ void fn_802E7744(void) {
 void fn_802E7748(void) {
 }
 
+/* Null stream-bank vtable method (+0x24): a do-nothing query that reports 0 (false). */
 s32 fn_802E774C(void) {
     return 0;
 }
