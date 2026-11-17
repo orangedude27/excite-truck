@@ -1,5 +1,6 @@
 #include <types.h>
 #include <string.h>
+typedef struct { char pad[0x18]; void *(*fn)(void); } VTab_1C56AC;
 extern char lbl_8055E7E1;
 extern char lbl_8055E7E2;
 extern char lbl_8055E7E3;
