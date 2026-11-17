@@ -240,10 +240,12 @@ int fn_8000DC70(int identIndex) {
 }
 
 #pragma push
-#pragma optimization_level 2
+#pragma optimization_level reset
 #pragma dont_inline on
 void fn_8000DC84(int arg0) {
-    volatile int *p;
+    int value;
+    int *p;
+    int t;
     switch (arg0) {
     case 1:
         fn_8000D984(*lbl_8055D46C);
@@ -254,24 +256,26 @@ void fn_8000DC84(int arg0) {
     case 3:
         fn_8000DF2C(1);
     case 4:
-        p = (volatile int *)lbl_8055D46C;
-        if (p[1] != 0) p[1] = 1;
-        p = (volatile int *)lbl_8055D46C;
-        if (p[7] != 0) p[7] = 1;
-        p = (volatile int *)lbl_8055D46C;
-        if (p[13] != 0) p[13] = 1;
-        p = (volatile int *)lbl_8055D46C;
-        if (p[19] != 0) p[19] = 1;
+        value = 1;
+        p = lbl_8055D46C;
+        t = p[1]; if (t != 0) p[1] = value;
+        p = lbl_8055D46C;
+        t = p[7]; if (t != 0) p[7] = value;
+        p = lbl_8055D46C;
+        t = p[13]; if (t != 0) p[13] = value;
+        p = lbl_8055D46C;
+        t = p[19]; if (t != 0) p[19] = value;
         break;
     case 5:
-        p = (volatile int *)lbl_8055D46C;
-        if (p[1] != 0) p[1] = 2;
-        p = (volatile int *)lbl_8055D46C;
-        if (p[7] != 0) p[7] = 2;
-        p = (volatile int *)lbl_8055D46C;
-        if (p[13] != 0) p[13] = 2;
-        p = (volatile int *)lbl_8055D46C;
-        if (p[19] != 0) p[19] = 2;
+        value = 2;
+        p = lbl_8055D46C;
+        t = p[1]; if (t != 0) p[1] = value;
+        p = lbl_8055D46C;
+        t = p[7]; if (t != 0) p[7] = value;
+        p = lbl_8055D46C;
+        t = p[13]; if (t != 0) p[13] = value;
+        p = lbl_8055D46C;
+        t = p[19]; if (t != 0) p[19] = value;
         break;
     }
 }
