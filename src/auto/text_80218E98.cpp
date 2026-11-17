@@ -6091,19 +6091,19 @@ outer_test:
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, void *arg3, s32 arg4) {
-    u8 *obj = (u8 *)self;
-    u8 *input = (u8 *)arg3;
-    s32 data = arg4;
-    s32 i;
-    u8 *row;
-    s32 offset;
-    s32 zero;
-    s32 one;
-    s32 minusOne;
+    register u8 *obj = (u8 *)self;
+    register u8 *input = (u8 *)arg3;
+    register s32 data = arg4;
+    register s32 i;
+    register u8 *row;
+    register s32 offset;
+    register s32 zero;
+    register s32 one;
+    register s32 minusOne;
     s32 scratch;
     s32 count;
     s32 texture;
-    f32 defaultValue;
+    register f32 defaultValue;
     f32 baseValue;
     f32 scale;
     f32 lastValue;
@@ -9514,8 +9514,9 @@ extern "C" s32 fn_80229C9C(s32 arg0) {
     return arg0 + 0x264;
 }
 
-extern "C" s32 fn_80229CA4(s32 arg0) {
-    return arg0 + 0x254;
+extern "C" s32 fn_80229CA4(s32 base) {
+    /* Return the address of a field at offset 0x254 within a UI widget (base + 0x254). */
+    return base + 0x254;
 }
 
 extern "C" s32 fn_80229CAC(s32);
