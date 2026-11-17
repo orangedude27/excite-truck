@@ -231,13 +231,15 @@ extern float lbl_80561A3C, lbl_80561A40;
 #pragma processor 750
 #pragma use_lmw_stmw off
 int fn_80171EF8(void *arg0, void *arg1) {
-    float coords[2];
-    double point;
+    struct Frame {
+        float coords[2];
+        volatile float savedY;
+        volatile float savedX;
+        double point;
+    } f;
     float dy;
     float dx;
     float sum;
-    volatile float savedY;
-    volatile float savedX;
     float distance;
     float limit;
     float step;
@@ -245,8 +247,8 @@ int fn_80171EF8(void *arg0, void *arg1) {
     dy = ((float *)arg0)[1] - ((float *)arg1)[1];
     dx = ((float *)arg0)[0] - ((float *)arg1)[0];
     sum = dy * dy + dx * dx;
-    savedY = dy;
-    savedX = dx;
+    f.savedX = dx;
+    f.savedY = dy;
     distance = (float)fn_8002F234(sum);
     step = lbl_80561A3C / distance;
     limit = lbl_80561A40 - step;
@@ -256,10 +258,10 @@ int fn_80171EF8(void *arg0, void *arg1) {
         float y0 = ((float *)arg0)[1];
         float x1 = ((float *)arg1)[0];
         float x0 = ((float *)arg0)[0];
-        coords[0] = x0 + (x1 - x0) * t;
-        coords[1] = y0 + (y1 - y0) * t;
-        point = *(double *)coords;
-        if (fn_80171E3C(&point) == 0)
+        f.coords[0] = x0 + (x1 - x0) * t;
+        f.coords[1] = y0 + (y1 - y0) * t;
+        f.point = *(double *)f.coords;
+        if (fn_80171E3C(&f.point) == 0)
             return 0;
         t += step;
     }
@@ -332,6 +334,7 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
     float k;
     int r;
     int i;
+
     L.v1[0] = lbl_80561A44;
     L.v1[1] = lbl_80561A50;
     L.v1[2] = lbl_80561A44;
@@ -414,8 +417,7 @@ extern float lbl_80561A70, lbl_80561A74, lbl_80561A7C;
 extern double lbl_80561A88;
 extern double lbl_80561A60;
 extern float lbl_80561A70, lbl_80561A74;
-#pragma optimization_level 3
-#pragma scheduling invalid_target
+#pragma optimization_level 4
 void fn_8017248C(int arg0) {
     float sp[3];
     void *state;
@@ -459,9 +461,6 @@ void fn_8017248C(int arg0) {
     sp[1] += offset;
     fn_801720FC(sp, -0x100, temp_f31);
 }
-#pragma scheduling on
-#pragma optimization_level reset
-#pragma dont_inline on
 float fn_801725C8(float arg0) {
     /* Remap arg0 from the range [lbl_8043038C[2], lbl_8043038C[3]] to
        [lbl_8043038C[0], lbl_8043038C[1]], clamping the normalized value to [0, 1]. */
@@ -1041,11 +1040,10 @@ void fn_8017353C(unsigned char *arg0, void *arg_sp0) {
     var_ctr = 0x18;
     var_r4 = (char *)&stack[45].i;
     do {
-        ((int *)var_r4)[1] = 0;
-        ((int *)var_r4)[2] = 0;
+        *(int *)(var_r4 + 4) = 0;
         var_r4 += 8;
-        var_ctr -= 1;
-    } while (var_ctr != 0);
+        *(int *)var_r4 = 0;
+    } while (--var_ctr != 0);
     temp_r0 = (int)(arg0 + 0xF8);
     stack[44].i = temp_r0;
     temp_r29 = lbl_80330F48 + 0x32C;
@@ -1830,7 +1828,7 @@ void fn_80174918(void *arg0, int arg1) {
     if (*(void **)((unsigned char *)arg0 + 0x1A8) != 0) {
         if (flag != 0) {
             void *tmp = *(void **)((unsigned char *)arg0 + 0x1A8);
-            if (((int (*)(void *, int))(*(void ***)arg0)[4])(arg0, idx) != 0)
+            if (((int (*)(void *, int))(*(void ***)arg0)[8])(arg0, idx) != 0)
                 fn_80139318(tmp, *(int *)((unsigned char *)arg0 + 0x198), idx, lbl_80561AD8);
         }
         obj = *(void **)((unsigned char *)arg0 + 0x1A8);
@@ -2261,13 +2259,13 @@ extern float fn_801725C8(float);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80175B0C(char *arg0) {
-    float k = lbl_80561B04;
-    float step = lbl_80561A38;
-    float shrink = lbl_80561B08;
-    float min26 = lbl_80561A80;
-    float min25 = lbl_80561B0C;
-    float shrink24 = lbl_80561ABC;
-    float min24 = lbl_80561A78;
+    register float k = lbl_80561B04;
+    register float step = lbl_80561A38;
+    register float shrink = lbl_80561B08;
+    register float min26 = lbl_80561A80;
+    register float min25 = lbl_80561B0C;
+    register float shrink24 = lbl_80561ABC;
+    register float min24 = lbl_80561A78;
     int i = 0;
     char *out = arg0;
     for (; i < *(int *)(arg0 + 0x124); i++, out += 0x24) {
@@ -2314,11 +2312,11 @@ void fn_80175B0C(char *arg0) {
             f26 = shrink * f26;
             a -= step;
             b += step;
-            if (f26 > min26) {} else f26 = min26;
+            f26 = (f26 > min26) ? f26 : min26;
             f25 = shrink * f25;
-            if (f25 > min25) {} else f25 = min25;
+            f25 = (f25 > min25) ? f25 : min25;
             f24 = shrink24 * f24;
-            if (f24 > min24) {} else f24 = min24;
+            f24 = (f24 > min24) ? f24 : min24;
         } while (n-- > 0);
         *(float *)(out + 0x18) = w[0];
         *(float *)(out + 0x1C) = w[1];
