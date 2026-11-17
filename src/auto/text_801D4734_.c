@@ -1932,8 +1932,6 @@ extern "C" int fn_801D6DC8(void *arg0, void *arg1) {
     extern char lbl_8055ACE8;
     extern char lbl_8055ACF0;
     extern char lbl_8055ACF4;
-    extern float lbl_80562B14;
-    float initial = lbl_80562B14;
     Dummy *obj = (Dummy *)arg1;
     char *src;
     int remaining1;
@@ -1941,7 +1939,7 @@ extern "C" int fn_801D6DC8(void *arg0, void *arg1) {
     int remaining2;
     char *dst2;
 
-    *(float *)((char *)arg0 + 8) = obj->value(&lbl_8055ACB0, initial);
+    *(float *)((char *)arg0 + 8) = obj->value(&lbl_8055ACB0, 5.0f);
     src = obj->get(&lbl_8055ACE8, &lbl_8055ACF0);
     dst1 = (char *)arg0 + 0xC;
     remaining1 = 0x40;
