@@ -42,6 +42,8 @@ void fn_8025C028(void) {
     lbl_8055C390 = fn_80214D04();
 }
 
+/* Menu action: restore the previously saved menu selection from lbl_8055C390
+   back into the active window via fn_80214CB4 (the inverse of fn_8025C028). */
 void fn_8025C04C(void) {
     fn_80214CB4(lbl_8055C390);
 }
@@ -195,8 +197,8 @@ void fn_8025C204(int arg0, int arg1) {
     if (lbl_8055F2E8 == 0) {
         obj = fn_801284F8(8, (void *)lbl_8055C114);
         if (obj != 0) {
-            *(int *)((char *)obj + 4) = 0;
             list = fn_80131808((void *)lbl_80344760);
+            *(int *)((char *)obj + 4) = 0;
             *(void **)obj = fn_8012850C(0xAF0, (void *)lbl_8055C10C);
             (void)list;
             lbl_8055F2E4 = (int)obj;
