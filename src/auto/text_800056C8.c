@@ -990,17 +990,39 @@ extern "C" void fn_800066B4(void *arg0) {
     fn_8001DFCC();
 }
 #pragma pop
-extern s32 fn_80010E94(s32, s32, f32, f32, f32, f32);
-extern f32 fn_80011E34(void);
-extern f32 fn_80011E54(void);
-extern void *fn_800122B4(s32, void *);
-extern void fn_801345D8(void *, s32, const char *, ...);
-extern s32 fn_801EA994(void);
-extern void *fn_801EA9B0(s32);
+/* Draw helpers for the awards list below. */
+extern s32 fn_80010E94(s32 artSet, s32 pictureIndex, f32 x, f32 y, f32 scaleX, f32 scaleY); /* queue a picture draw */
+extern f32 fn_80011E34(void); /* left edge of the whole-screen layout box */
+extern f32 fn_80011E54(void); /* top edge of the whole-screen layout box */
+extern void *fn_800122B4(s32 number, void *buffer); /* write number as decimal text */
+extern void fn_801345D8(void *buffer, s32 size, const char *fmt, ...); /* snprintf-style formatting */
+extern s32 fn_801EA994(void); /* number of real car records in the CarMgr table */
+extern void *fn_801EA9B0(s32 slot); /* CarMgr slot table -> car record, rank order */
 extern f32 lbl_80560118, lbl_80560170, lbl_80560178, lbl_8056017C;
 extern f32 lbl_80560180, lbl_80560188;
 extern const f32 lbl_80560174, lbl_80560184, lbl_8056018C;
 extern const char lbl_80558930[4], lbl_80558934[6], lbl_80558940[8];
+
+/* Awards-list layout constants (.sdata2): the row bar is 200.0 x 27.0
+ * (lbl_80560118, lbl_8056017C), the list starts 24.0 below the screen top
+ * (lbl_80560170), rows step 54.0 (lbl_80560174), the bar sits 21.6 above the
+ * row line (lbl_80560178) and the text 27.0 above it (lbl_8056017C again),
+ * list text scales by 1.5 (lbl_80560180), 100.0 turns seconds into
+ * centiseconds (lbl_80560188), and the name column starts 85.0 or 135.0
+ * right of the left column (lbl_80560184, lbl_8056018C). */
+
+/* The fields of a CarMgr car record (the 0xBC-byte CarMgrEntry described in
+ * src/auto/text_801EA4C4_.c) that the awards list reads. */
+struct AwardCar {
+    u8 pad00[0x0C];
+    s32 displayFlags; /* 0x0C: bit0 show displayValue, bit1 show bestTime,
+                       * neither: show the row number */
+    s32 rank;         /* 0x10: rank the CarMgr slot table is sorted by */
+    s32 displayValue; /* 0x14: a count, drawn with "%d" */
+    f32 bestTime;     /* 0x18: best time in seconds; negative shows "--:--" */
+    u8 pad1C[0x48 - 0x1C];
+    char name[0x74];  /* 0x48: car name, first field of the copied definition */
+};                    /* 0xBC */
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -1708,13 +1730,13 @@ extern s32 fn_8000561C(void *, void *);
 extern void fn_80276DC8(s32);
 extern void *fn_801E87A8(void);
 extern s32 fn_801CB8FC(void);
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_800077E4(void *arg0) {
     void *base = lbl_8055D350;
-    void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
-    *(f32 *)((u8 *)p + 4) = ((f32 *)base)[4];
+    f32 *p = (f32 *)arg0 + ((s32 *)base)[7];
+    p[1] = ((f32 *)base)[4];
     if (fn_8000561C(p, base)) {
-        *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
+        ((f32 *)arg0)[6] = ((f32 *)lbl_8055D350)[4];
         fn_80276DC8(((s32 *)lbl_8055D350)[7]);
     }
 }
