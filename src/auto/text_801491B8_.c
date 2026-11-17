@@ -1163,7 +1163,8 @@ s32 fn_8014C830(s32 obj) { return obj + 0x14; }
 /* Return the timestamp (f32 at offset 0x10) stamped on this node by fn_8014AE54. */
 f32 fn_8014C838(void *node) { return *(f32 *)((u8 *)node + 0x10); }
 
-s32 fn_8014C840(void *arg0) { return ((s32 *)arg0)[1]; }
+/* Return the current node (the s32 word at +4) of this linked-list iterator; zero when exhausted. */
+s32 fn_8014C840(void *it) { return ((s32 *)it)[1]; }
 
 /* Advance the iterator to its next node and return whether a current node remains. */
 s32 fn_8014C848(void *iter) {
