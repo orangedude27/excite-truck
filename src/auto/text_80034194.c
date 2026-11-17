@@ -887,11 +887,7 @@ static inline u32 entryToPathA(u32 entry, char *path, u32 maxlen) {
     u32 loc;
     if (entry == 0) return 0;
     name = (char *)FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF);
-    loc = DVDConvertEntrynumToPath(*(u32 *)(FstStart_8055D840 + 4 + entry * 12), path, maxlen);
-    if (loc == maxlen) return loc;
-    path[loc++] = '/';
-    loc += myStrncpy(path + loc, name, maxlen - loc);
-    return loc;
+    return appendPathPart(path, DVDConvertEntrynumToPath(*(u32 *)(FstStart_8055D840 + 4 + entry * 12), path, maxlen), maxlen, name);
 }
 static inline u32 entryToPathB(u32 entry, char *path, u32 maxlen) {
     register char *name;
