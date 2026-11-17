@@ -2839,6 +2839,7 @@ extern "C" void fn_8016464C(void *arg0) {
     s32 count;
     void *iterator;
     s32 i;
+
     self->entryCount = 0;
     iterator = fn_80131810(lbl_8032FB90);
     count = 0;
@@ -2846,15 +2847,14 @@ extern "C" void fn_8016464C(void *arg0) {
         count++;
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, count);
     } while (((NameList_8016464C *)self->list)->hasName(name) != 0);
+
     i = 0;
     while (i < count - 1) {
-        unsigned long n = self->entryCount;
-        unsigned long index = i + 1;
-        self->entryCount = n + 1;
-        entry = (Entry_8016464C *)self->entries + n;
-        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, (s32)index);
+        s32 index = i + 1;
+        entry = &((Entry_8016464C *)self->entries)[self->entryCount++];
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, index);
         entry->object = ((NameList_8016464C *)self->list)->getValue(name);
-        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A118, (s32)index);
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A118, index);
         entry->value = 0;
         if (((NameList_8016464C *)self->list)->hasName(name) != 0) {
             void *value = ((NameList_8016464C *)self->list)->getValue(name);
