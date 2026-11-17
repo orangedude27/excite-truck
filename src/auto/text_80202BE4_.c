@@ -420,10 +420,10 @@ void fn_80203380(void *argp) {
     minMag = lbl_805630F8;
     height = (f32 *)work.heights;
     bias = lbl_805630E8;
-    one = lbl_805630D4;
     angleScale = lbl_805630E0;
     angleDivisor = lbl_80563120;
     radius = lbl_805630CC;
+    one = lbl_805630D4;
     colorScale = lbl_80563124;
     secondY = lbl_80563128;
 
@@ -846,6 +846,8 @@ void fn_80203EF4(void) {
     fn_80202BFC(lbl_8055ECFC);
 }
 
+/* Empty hook closing the scene draw group, right after the shadow/SWL-map pass
+ * fn_80203EF4: the shipped game leaves it a bare `blr`. */
 void fn_80203F0C(void) {
 
 }
