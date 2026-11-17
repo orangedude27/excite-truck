@@ -8628,9 +8628,10 @@ extern "C" void fn_80228A38(s32 object) {
     fn_80228AEC(object, fn_80214D48());
 }
 
-extern "C" void fn_80228A6C(void *arg0) {
-    void *obj = *(void **)((u8 *)arg0 + 0x268);
-    ((VfObj *)obj)->vf4();
+/* Forward vf4() to the child VfObj stored at +0x268 of the given container. */
+extern "C" void fn_80228A6C(void *container) {
+    void *child = *(void **)((u8 *)container + 0x268);
+    ((VfObj *)child)->vf4();
 }
 
 extern "C" void fn_80228A80(void) {
