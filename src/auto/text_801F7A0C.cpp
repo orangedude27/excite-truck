@@ -1631,12 +1631,20 @@ get_cur:
     }
 }
 extern "C" void fn_801F99CC(F92Obj *obj) {
+    class Base {
+    public:
+        char pad[0x108];
+    };
+    class Node : public Base {
+    public:
+        virtual void destroy(int);
+    };
     F92Obj *cur = (F92Obj *)*(void **)((char *)obj + 0x24);
     F92Obj *next;
     while (cur != NULL) {
         next = (F92Obj *)*(void **)((char *)cur + 0x24);
         if (cur != NULL) {
-            ((void (*)(F92Obj *, s32))(*(void **)((u8 *)*(void **)((char *)cur + 0x108) + 8)))(cur, 1);
+            ((Node *)cur)->destroy(1);
         }
         cur = next;
     }
