@@ -3351,6 +3351,7 @@ void *__AXGetStudio_80165834(void) {
     #undef sStudioName
 }
 
+/* No-op default callback returning 0, sibling of fn_80165824/0x2C in the challenge-list UI placeholder block. */
 int fn_80165840(void) {
     return 0;
 }
