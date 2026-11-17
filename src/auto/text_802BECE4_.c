@@ -1109,7 +1109,7 @@ float fn_802C0D2C(void) {
     return lbl_80564D80;
 }
 
-unsigned int fn_802C0D34(void) { /* Constant-valued getter: reports the enabled flag as 1. */ unsigned int result = 1; return result; }
+unsigned int fn_802C0D34(void) { /* Constant-valued getter: reports the enabled flag as 1. */ unsigned int flags = 1; return flags; }
 
 /* Return the WaterQuad object's initialization-state byte (0 = setup incomplete, 1 = initialized). */
 unsigned char fn_802C0D3C(void *object) {
