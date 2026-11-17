@@ -382,33 +382,33 @@ typedef struct BodyPose {
 } BodyPose;
 
 /* Carry a point given in a body's own frame out into the world:
- * dst = axes[0]*src.x + axes[1]*src.y + axes[2]*src.z + position, the 3x3 of the
- * body's world frame at 0x3C (one axis per column) times the point, plus the
- * body's world position at 0x60 (see BodyPose above).  The point is read into
- * temporaries first when dst and src are the same Vec, so the transform can be
- * applied in place. */
-void fn_8017AB84(void *body, float *dst, const float *src) {
+ * dst = axes[0]*src->x + axes[1]*src->y + axes[2]*src->z + position, the 3x3 of
+ * the body's world frame at 0x3C (one axis per column) times the point, plus the
+ * body's world position at 0x60, which m[9..11] point at (see BodyPose above).
+ * The point is read into temporaries first when dst and src are the same Vec, so
+ * the transform can be applied in place. */
+void fn_8017AB84(void *body, Vec *dst, const Vec *src) {
     float *m = (float *)((BodyPose *)body)->axes;
-    if (dst == src) {
+    if ((const Vec *)dst == src) {
         float x, y, z;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
         m10 = m[3]; m11 = m[4]; m12 = m[5]; m00 = m[0]; m01 = m[1]; m02 = m[2]; m20 = m[6]; m21 = m[7]; m22 = m[8];
-        x = src[0]; y = src[1]; z = src[2];
-        dst[0] = z * m20 + (x * m00 + y * m10);
-        dst[1] = z * m21 + (x * m01 + y * m11);
-        dst[2] = z * m22 + (x * m02 + y * m12);
+        x = src->x; y = src->y; z = src->z;
+        dst->x = z * m20 + (x * m00 + y * m10);
+        dst->y = z * m21 + (x * m01 + y * m11);
+        dst->z = z * m22 + (x * m02 + y * m12);
     } else {
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
         m10 = m[3]; m00 = m[0]; m20 = m[6];
-        dst[0] = src[2] * m20 + (src[0] * m00 + src[1] * m10);
+        dst->x = src->z * m20 + (src->x * m00 + src->y * m10);
         m11 = m[4]; m01 = m[1]; m21 = m[7];
-        dst[1] = src[2] * m21 + (src[0] * m01 + src[1] * m11);
+        dst->y = src->z * m21 + (src->x * m01 + src->y * m11);
         m12 = m[5]; m02 = m[2]; m22 = m[8];
-        dst[2] = src[2] * m22 + (src[0] * m02 + src[1] * m12);
+        dst->z = src->z * m22 + (src->x * m02 + src->y * m12);
     }
-    dst[0] += m[9];
-    dst[1] += m[10];
-    dst[2] += m[11];
+    dst->x += m[9];
+    dst->y += m[10];
+    dst->z += m[11];
 }
 
 
