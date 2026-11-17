@@ -298,6 +298,310 @@ int fn_8017ECC0(int object, int deleteFlag) {
     return object;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+void fn_8017ED00(f32 dt) {
+    struct {
+        u8 pad00[0x50];
+        u32 flags;
+        u8 pad54[0x1C];
+    } ctrlInfo;
+    u8 useAltB;
+    u8 useAltA;
+    struct Di718 **playerPtr;
+    struct Di718 *player;
+    s32 playerIdx;
+
+    if ((u8)lbl_8055E4B8 != 0) {
+        return;
+    }
+    {
+        f32 k78;
+        f32 k70;
+        f32 k6C;
+        f32 k64;
+        f32 k68;
+        f32 k5C;
+        f32 minusOne;
+        f32 one;
+        f32 zero;
+        f32 k50;
+        f32 k54;
+        fn_802E317C(lbl_80331E28);
+        fn_801A7844(1);
+        zero = lbl_80561C4C;
+        k70 = lbl_80561C70;
+        k6C = lbl_80561C6C;
+        k68 = lbl_80561C68;
+        k64 = lbl_80561C64;
+        k5C = lbl_80561C5C;
+        k54 = lbl_80561C54;
+        k50 = lbl_80561C50;
+        one = lbl_80561C48;
+        minusOne = lbl_80561C58;
+        k78 = lbl_80561C78;
+        playerPtr = (struct Di718 **)lbl_804348D8;
+        for (playerIdx = 0; playerIdx < 4; playerIdx++, playerPtr++) {
+            s32 slotValue;
+            struct Di718Slot *activeSlot;
+            struct Di718Slot *gearSlot;
+            s32 gear;
+
+            player = *playerPtr;
+            if (player == NULL) {
+                continue;
+            }
+            if (player->axStackHead != __AXGetStackHead_80137CFC(player->index)) {
+                fn_802E30C8(lbl_80332280, player->index);
+                fn_8017F718(player);
+            }
+            useAltA = player->pad345[0];
+            useAltB = player->pad345[1];
+            player->flag342 = 0;
+            player->flag343 = 0;
+            slotValue = player->slot[2].value;
+            if (fn_802E85B0(slotValue) == 4) {
+                player->flag343 = 1;
+                useAltA = 0;
+                useAltB = 0;
+            }
+            if (fn_801298E8(&ctrlInfo, slotValue) != 0) {
+                if (ctrlInfo.flags & 2) {
+                    player->flag343 = 1;
+                    useAltA = 0;
+                    useAltB = 0;
+                }
+                if (ctrlInfo.flags & 8) {
+                    player->flag342 = 1;
+                    player->flag343 = 1;
+                }
+            }
+
+            if (player->flag340 || fn_801A8EE4(&player->slot[0]) || fn_801A8EE4(&player->slot[1])) {
+                f32 base = k54 * player->level2C[2];
+                f32 rate = k50 * base;
+                f32 fast = rate + base;
+                if (player->pad0C[0] > zero) {
+                    player->pad0C[0] = fn_801429D0(player->pad0C[0] - rate * dt, zero);
+                }
+                if (player->pad0C[0] < zero) {
+                    player->pad0C[0] = fn_801429E0(player->pad0C[0] + rate * dt, zero);
+                }
+                if (fn_801A8E38(&player->slot[0])) {
+                    player->pad0C[0] -= fast * dt;
+                }
+                if (fn_801A8E38(&player->slot[1])) {
+                    player->pad0C[0] += fast * dt;
+                }
+                if (player->pad0C[0] > one) {
+                    player->pad0C[0] = one;
+                }
+                if (player->pad0C[0] < minusOne) {
+                    player->pad0C[0] = minusOne;
+                }
+            } else {
+                f32 prevSteer = player->pad0C[0];
+                f32 rightAxis = fn_801A7F98(&player->slot[1]);
+                f32 leftAxis = fn_801A7F98(&player->slot[0]);
+                f32 steerInput = -leftAxis + rightAxis;
+                if (player->flag344) {
+                    player->pad0C[0] = fn_8017EB80(steerInput, player->level2C[0], player->level2C[1]);
+                } else if (!player->flag343) {
+                    player->pad0C[0] = fn_8017EB80(steerInput, player->level2C[0], player->level2C[1]);
+                    player->pad0C[0] *= (one + player->pad60 * fn_8017F70C(player->pad0C[0])) - player->pad60;
+                    player->pad0C[0] *= (one + player->pad64 * fn_8017F70C(player->pad0C[0])) - player->pad64;
+                } else {
+                    player->pad0C[0] = steerInput;
+                    if (player->flag342) {
+                        player->pad0C[0] *= k5C;
+                    }
+                }
+                if ((u8)lbl_8055E4B9 != 0) {
+                    player->pad0C[0] = fn_80144C80(player->pad0C[0], prevSteer, lbl_80561C60);
+                }
+            }
+
+            {
+                f32 base = k54 * player->level2C[2];
+                f32 rate = k50 * base;
+                f32 fast = rate + base;
+                if (player->pad0C[1] > zero) {
+                    player->pad0C[1] = fn_801429D0(player->pad0C[1] - rate * dt, zero);
+                }
+                if (player->pad0C[1] < zero) {
+                    player->pad0C[1] = fn_801429E0(player->pad0C[1] + rate * dt, zero);
+                }
+                if (fn_801A8E38(&player->slot[18])) {
+                    player->pad0C[1] -= fast * dt;
+                }
+                if (fn_801A8E38(&player->slot[19])) {
+                    player->pad0C[1] += fast * dt;
+                }
+                if (player->pad0C[1] > one) {
+                    player->pad0C[1] = one;
+                }
+                if (player->pad0C[1] < minusOne) {
+                    player->pad0C[1] = minusOne;
+                }
+            }
+
+            activeSlot = &player->slot[2];
+            if (!fn_801A8F10(activeSlot)) {
+                activeSlot = &player->slot[5];
+            } else if (useAltA && fn_801A8F10(&player->slot[5])) {
+                activeSlot = &player->slot[5];
+            }
+            if (player->flag340 || useAltA || fn_801A8EE4(activeSlot)) {
+                f32 down;
+                f32 up;
+                up = k64 * player->level2C[5];
+                down = k5C * up;
+                if (fn_801A8E38(activeSlot)) {
+                    player->pad0C[5] = fn_801429E0(player->pad0C[5] + up * dt, lbl_80561C48);
+                } else {
+                    player->pad0C[5] = fn_801429D0(player->pad0C[5] - down * dt, lbl_80561C4C);
+                }
+            } else {
+                player->pad0C[5] = fn_8017EB80(fn_801A7F98(activeSlot), player->level2C[3], player->level2C[4]);
+            }
+
+            if (player->flag340 || fn_801A8EE4(&player->slot[7])) {
+                f32 down;
+                f32 up;
+                up = k64 * player->level2C[5];
+                down = k5C * up;
+                if (fn_801A8E38(&player->slot[7])) {
+                    player->pad0C[6] = fn_801429E0(player->pad0C[6] + up * dt, lbl_80561C48);
+                } else {
+                    player->pad0C[6] = fn_801429D0(player->pad0C[6] - down * dt, lbl_80561C4C);
+                }
+            } else {
+                player->pad0C[6] = fn_8017EB80(fn_801A7F98(&player->slot[7]), player->level2C[3], player->level2C[4]);
+            }
+
+            activeSlot = &player->slot[3];
+            if (!fn_801A8F10(activeSlot)) {
+                activeSlot = &player->slot[6];
+            } else if (useAltB && fn_801A8F10(&player->slot[6])) {
+                activeSlot = &player->slot[6];
+            }
+            if (player->flag340 || useAltB || fn_801A8EE4(activeSlot)) {
+                f32 up = k68 * player->level2C[8];
+                f32 down = k64 * player->level2C[8];
+                if (player->pad0C[2] > zero) {
+                    player->pad0C[2] = fn_801429D0(player->pad0C[2] - down * dt, zero);
+                }
+                if (fn_801A8E38(activeSlot)) {
+                    player->pad0C[2] += up * dt;
+                }
+                if (player->pad0C[2] > one) {
+                    player->pad0C[2] = one;
+                }
+            } else {
+                player->pad0C[2] = fn_8017EB80(fn_801A7F98(activeSlot), player->level2C[6], player->level2C[7]);
+            }
+
+            if (player->flag340 || fn_801A8EE4(&player->slot[8])) {
+                f32 up = k68 * player->level2C[8];
+                f32 down = k64 * player->level2C[8];
+                if (player->pad0C[3] > zero) {
+                    player->pad0C[3] = fn_801429D0(player->pad0C[3] - down * dt, zero);
+                }
+                if (fn_801A8E38(&player->slot[8])) {
+                    player->pad0C[3] += up * dt;
+                }
+                if (player->pad0C[3] > one) {
+                    player->pad0C[3] = one;
+                }
+            } else {
+                player->pad0C[3] = fn_8017EB80(fn_801A7F98(&player->slot[8]), player->level2C[6], player->level2C[7]);
+            }
+
+            player->pad0C[7] = fn_801A7F98(&player->slot[4]);
+            if (!player->flag341) {
+                player->flag5A = fn_801A8E38(&player->slot[9]) || fn_801A8E38(&player->slot[10]);
+            }
+
+            if (fn_801A8EE4(&player->slot[15])) {
+                if (fn_801A8E38(&player->slot[15])) {
+                    player->pad0C[4] += k6C * dt;
+                } else if (player->pad0C[4] > zero) {
+                    player->pad0C[4] = fn_801429D0(player->pad0C[4] - k70 * dt, zero);
+                }
+                if (player->pad0C[4] > one) {
+                    player->pad0C[4] = one;
+                }
+            } else {
+                player->pad0C[4] = fn_801A7F98(&player->slot[15]);
+            }
+
+            player->flag5B = fn_801A8E38(&player->slot[16]);
+            player->flag58 = fn_801A8E38(&player->slot[11]) || fn_801A8E38(&player->slot[12]);
+            player->flag5D = fn_801A8E68(&player->slot[2]);
+            if (fn_80179300() < 40) {
+                player->flag58 = 0;
+            }
+            player->flag68 = fn_801A8E38(&player->slot[17]);
+
+            {
+                f32 leftAxis = fn_801A7F98(&player->slot[20]);
+                f32 steerInput = fn_8017EB80(-leftAxis + fn_801A7F98(&player->slot[21]), lbl_80561C60, lbl_80561C74);
+                f32 maxStep = k78 * dt;
+                player->pad30C[8] += fn_8014C8F8(steerInput - player->pad30C[8], -maxStep, maxStep);
+            }
+
+            player->flag338 = fn_801A8E38(&player->slot[22]);
+            if (fn_801A8E38(&player->slot[33])) {
+                player->flag338 = 1;
+            }
+            {
+                f32 negAxis = fn_801A7F98(&player->slot[34]);
+                *(f32 *)&player->pad330[0] = fn_801A7F98(&player->slot[35]) - negAxis;
+            }
+            {
+                f32 negAxis = fn_801A7F98(&player->slot[36]);
+                *(f32 *)&player->pad330[4] = fn_801A7F98(&player->slot[37]) - negAxis;
+            }
+
+            if (!player->flag341) {
+                if (fn_801A8E38(&player->slot[13])) {
+                    if (!player->flag59) {
+                        if (player->pad50[0] < player->pad50[1]) {
+                            player->pad50[0]++;
+                        }
+                        player->flag59 = 1;
+                    }
+                } else if (fn_801A8E38(&player->slot[14])) {
+                    if (!player->flag59) {
+                        if (player->pad50[0] > -1) {
+                            player->pad50[0]--;
+                        }
+                        player->flag59 = 1;
+                    }
+                } else {
+                    player->flag59 = 0;
+                }
+            } else {
+                player->flag59 = 0;
+                player->pad50[0] = 0;
+                gearSlot = &player->slot[23];
+                for (gear = 0; gear < player->pad50[1]; gearSlot++, gear++) {
+                    if (fn_801A8E38(gearSlot)) {
+                        player->pad50[0] = gear + 1;
+                    }
+                }
+                if (fn_801A8E38(&player->slot[29])) {
+                    player->pad50[0] = -1;
+                }
+            }
+            fn_8017F628(player);
+        }
+    }
+}
+#pragma pop
+
 extern int fn_801769F8(void);
 extern int fn_801B526C(void);
 extern int fn_801C5B60(void);
