@@ -339,10 +339,12 @@ void fn_801DC32C(void *base) {
         swap32(node + 4);
         for (j = 0; j < 32; j++) {
             q = node + 8;
+#pragma opt_unroll_loops on
             for (k = 0; k < 32; k++) {
                 swap16(q + j * 2);
                 q += 0x40;
             }
+#pragma opt_unroll_loops off
         }
         swap32(node + 0x808);
         swap32(node + 0x80C);
@@ -631,7 +633,7 @@ void fn_801DCF00(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 float fn_801DCF0C(void) {
-    float sp8 = lbl_80562BB8;
+    float sp8 = -1000.0f;
     ((int (*)(float *, int, int, int))fn_801DC258)(&sp8, 0, 0, 0);
     return sp8;
 }
