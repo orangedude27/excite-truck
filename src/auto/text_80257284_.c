@@ -438,4 +438,9 @@ int fn_80257B7C(int table) {
 }
 #pragma scheduling on
 
-void fn_80257BB8(void *arg0, int arg1) { *(int *)((char *)arg0 + 0x30) = arg1; fn_80257A8C(arg0); }
+/* Point the value table at one of the records (its recordSet, +0x30) and rebuild
+ * its seven rows to list that record's values. */
+void fn_80257BB8(void *table, int recordSet) {
+    ((struct UITable *)table)->recordSet = recordSet;
+    fn_80257A8C((struct UITable *)table);
+}
