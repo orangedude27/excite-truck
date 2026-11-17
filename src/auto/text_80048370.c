@@ -357,22 +357,26 @@ static inline void* RoundUpPtr_(void* ptr, s32 align) {
     return (void*)(((u32)ptr + (align - 1)) & ~(align - 1));
 }
 
+static inline void* AddU32ToPtr_(void* ptr, u32 val) {
+    return (void*)((u32)ptr + val);
+}
+
 static inline u32 GetOffsetFromPtr_(void* start, void* end) {
     return (u32)end - (u32)start;
 }
 
-void* AllocFromHead_(MEMiHeapHead* heap, u32 size, s32 align) {
+void* AllocFromHead_(MEMiHeapHead* heap, u32 size, int align) {
     extern void* AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead*, MEMiExpHeapMBlock*, void*, u32, u16);
     MEMiExpHeapHead* exp = (MEMiExpHeapHead*)(heap + 1);
     BOOL isFastAlloc = exp->allocMode == MEM_EXP_HEAP_ALLOC_FAST;
     MEMiExpHeapMBlock* it = 0;
     MEMiExpHeapMBlock* bestBlk = 0;
-    u32 bestBlkSize = 0xFFFFFFFF;
+    unsigned int bestBlkSize = 0xFFFFFFFF;
     void* bestBlkMemPtr = 0;
     for (it = exp->freeMBlocks.head; it != 0; it = it->next) {
         void* const start = it + 1;
-        void* const end = (void*)((align + (u32)start - 1) & ~(align - 1));
-        const u32 offset = (u32)end - (u32)start;
+        void* const end = (void*)(((unsigned int)start + (align - 1)) & ~(align - 1));
+        const unsigned int offset = (unsigned int)end - (unsigned int)start;
         if (it->size >= size + offset && bestBlkSize > it->size) {
             bestBlk = it;
             bestBlkSize = it->size;
@@ -736,46 +740,40 @@ u32 MEMGetAllocatableSizeForFrmHeapEx(MEMiHeapHead *heap, s32 align) {
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
 MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 align, u16 opt) {
-    u32 base = ((u32)start + 3) & ~3;
-    u32 end = (size + (u32)start) & ~3;
-    u32 area;
-    u32 mask;
-    u32 alignStart;
-    u32 strideEnd;
-    u32 head;
-    u32 stride;
-    u32 count;
-    u32 remaining;
-    u32 next;
-    if ((s32)(base - end) > 0) {
+    void *startAddr = (void *)(((u32)start + 3) & ~3);
+    void *heapEnd = (void *)((size + (u32)start) & ~3);
+    if ((s32)((u32)startAddr - (u32)heapEnd) > 0) {
         return 0;
     }
-    area = base + 0x3C;
-    mask = ~((align - 1) | (align - 1));
-    alignStart = area + align;
-    strideEnd = align + unitSize;
-    stride = mask & (strideEnd - 1);
-    head = mask & (alignStart + 7);
-    if ((s32)(head - end) > 0) {
-        return 0;
+    {
+        u32 *untHead;
+        u8 *mblk;
+        u32 elementNum;
+        u32 mask = ~((align - 1) | (align - 1));
+        untHead = (u32 *)((u8 *)startAddr + 0x3C);
+        unitSize = mask & (align + unitSize - 1);
+        mblk = (u8 *)(mask & ((u32)untHead + align + 7));
+        if ((s32)((u32)mblk - (u32)heapEnd) > 0) {
+            return 0;
+        }
+        elementNum = ((u32)heapEnd - (u32)mblk) / unitSize;
+        if (elementNum == 0) {
+            return 0;
+        }
+        heapEnd = &mblk[elementNum * unitSize];
+        MEMiInitHeapHead((MEMiHeapHead *)startAddr, 0x554E5448, mblk, heapEnd, opt);
+        untHead[0] = (u32)mblk;
+        untHead[1] = unitSize;
+        {
+            u32 *blk = (u32 *)untHead[0];
+            u32 i;
+            for (i = 0; i < elementNum - 1; ++i, blk = (u32 *)*blk) {
+                *blk = unitSize + (u32)blk;
+            }
+            *blk = 0;
+        }
+        return (MEMiHeapHead *)startAddr;
     }
-    count = (end - head) / stride;
-    if (count == 0) {
-        return 0;
-    }
-    MEMiInitHeapHead((MEMiHeapHead *)base, 0x554E5448, (void *)head, (void *)(head + count * stride), opt);
-    remaining = count - 1;
-    *(u32 *)(area + 0) = head;
-    *(u32 *)(area + 4) = stride;
-    next = head;
-    while (remaining > 0) {
-        u32 following = next + stride;
-        *(u32 *)next = following;
-        next = following;
-        remaining -= 1;
-    }
-    *(u32 *)next = 0;
-    return (MEMiHeapHead *)base;
 }
 #pragma pop
 BOOL MEMFreeByStateToFrmHeap(MEMiHeapHead* heap, u32 id) {
