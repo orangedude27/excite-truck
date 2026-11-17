@@ -236,12 +236,17 @@ s32 fn_8022EDC4(void) {
 #pragma push
 #pragma processor 750
 #pragma scheduling on
-void *fn_8022EDE4(float *arg0, float farg0) {
-    int t0 = 0;
-    int *dst = (int *)((void *(*)(int, void *))fn_8022EAB8)(0x3C, (void *)&lbl_80340344);
-    int *src = (int *)arg0;
-    int t1;
-    float k;
+void *fn_8022EDE4(f32 *proto, f32 brightness) {
+    /* Take a fresh UIContext off the "UIContext::pool" pool and start it as a copy
+     * of the draw transform `proto` -- its 3x3 matrix and the three offsets, the
+     * first 0x30 bytes of a UIContext, word by word through two temporaries --
+     * with the given brightness and scale and rate both 1.0.  Callers push the
+     * result (fn_8022ED00) to draw a widget in this new context. */
+    s32 t0 = 0;
+    s32 *dst = (s32 *)UIContext_New();
+    s32 *src = (s32 *)proto;
+    s32 t1;
+    f32 one;
     t1 = src[0];
     t0 = src[1];
     dst[0] = t1;
@@ -265,11 +270,11 @@ void *fn_8022EDE4(float *arg0, float farg0) {
     dst[9] = t0;
     t0 = src[11];
     dst[10] = t1;
-    k = lbl_805635E0;
+    one = lbl_805635E0; /* 1.0f */
     dst[11] = t0;
-    ((float *)dst)[12] = farg0;
-    ((float *)dst)[13] = k;
-    ((float *)dst)[14] = k;
+    ((UIContext *)dst)->brightness = brightness;
+    ((UIContext *)dst)->scale = one;
+    ((UIContext *)dst)->rate = one;
     return dst;
 }
 #pragma pop
