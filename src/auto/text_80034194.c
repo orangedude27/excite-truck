@@ -974,6 +974,7 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     u32 offset;
     u32 parentIndex;
     u32 nextParent;
+    u32 n;
     u32 pos;
     u32 start;
     u32 left;
@@ -993,44 +994,53 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     name = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
     if (parentIndex == 0) {
         pos = 0;
-    } else {
-        offset = parentIndex * 12;
-        nextParent = *(u32 *)(parentTable + offset);
-        parentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
-        if (nextParent == 0) {
-            pos = 0;
-        } else {
-            offset = nextParent * 12;
-            grandparentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
-            pos = DVDConvertEntrynumToPath(*(u32 *)(parentTable + offset), path, max);
-            if (pos != max) {
-                start = pos + 1;
-                initialLeft = max - start;
-                path[pos] = '/';
-                dst = path + start;
-                left = initialLeft;
-                src = grandparentName;
-                do {
-                    *dst++ = *src++;
-                    left--;
-                } while (left != 0 && *src != 0);
-                pos = start + (initialLeft - left);
-            }
-        }
-        if (pos != max) {
-            start = pos + 1;
-            initialLeft = max - start;
-            path[pos] = '/';
-            dst = path + start;
-            left = initialLeft;
-            src = parentName;
-            do {
-                *dst++ = *src++;
-                left--;
-            } while (left != 0 && *src != 0);
-            pos = start + (initialLeft - left);
-        }
+        goto append_name;
     }
+
+    offset = parentIndex * 12;
+    nextParent = *(u32 *)(parentTable + offset);
+    parentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
+    if (nextParent == 0) {
+        pos = 0;
+        goto append_parent;
+    }
+
+    offset = nextParent * 12;
+    n = *(u32 *)(parentTable + offset);
+    grandparentName = (char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
+    n = DVDConvertEntrynumToPath(n, path, max);
+    pos = n;
+    if (pos != max) goto copy_grandparent;
+    goto append_parent;
+copy_grandparent:
+    start = pos + 1;
+    initialLeft = max - start;
+    path[pos] = '/';
+    dst = path + start;
+    left = initialLeft;
+    src = grandparentName;
+    while (left != 0 && *src != 0) {
+        *dst++ = *src++;
+        left--;
+    }
+    pos = start + (initialLeft - left);
+
+append_parent:
+    if (pos != max) {
+        start = pos + 1;
+        initialLeft = max - start;
+        path[pos] = '/';
+        dst = path + start;
+        left = initialLeft;
+        src = parentName;
+        while (left != 0 && *src != 0) {
+            *dst++ = *src++;
+            left--;
+        }
+        pos = start + (initialLeft - left);
+    }
+
+append_name:
     if (pos != max) {
         start = pos + 1;
         initialLeft = max - start;
@@ -1038,10 +1048,10 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
         dst = path + start;
         left = initialLeft;
         src = name;
-        do {
+        while (left != 0 && *src != 0) {
             *dst++ = *src++;
             left--;
-        } while (left != 0 && *src != 0);
+        }
         pos = start + (initialLeft - left);
     }
     return pos;
@@ -1109,7 +1119,8 @@ void fn_800356F4(s32 error, s32 param1, s32 param2) {
 }
 #pragma pop
 void fn_800357A8(void) {
-
+    /* Empty no-op hook in the DVD library: between the DVDPatch error recorder
+     * and DVDInit, it has no work to do and simply returns. */
 }
 
 void DVDInit(void) {
