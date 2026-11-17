@@ -1427,12 +1427,13 @@ extern "C" void fn_800D7D5C(void* arg0, f32* m) {
 }
 
 #pragma dont_inline fn_800D7F58
-extern "C" f32 fn_800D7F58(f32 *arg0, const f32 *arg1) {
-    f32 v0 = arg1[0];
-    f32 v1 = arg1[1];
-    arg0[0] = v0;
-    arg0[1] = v1;
-    return v0;
+extern "C" f32 fn_800D7F58(f32 *out, const f32 *src) {
+    /* Copy a 2D vector into out, returning its X component. */
+    f32 x = src[0];
+    f32 y = src[1];
+    out[0] = x;
+    out[1] = y;
+    return x;
 }
 
 extern "C" void fn_800D7F6C(s32 *arg0) {
