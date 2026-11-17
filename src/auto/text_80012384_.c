@@ -108,6 +108,8 @@ void fn_8001255C(const char *arg0, float farg0) {
 }
 #pragma pop
 
+/* Advance the progress message: set its text to "ProgressUpdate" (lbl_802FC600)
+   and add 100.0f (lbl_80560350) to its accumulated progress. */
 void fn_800125C4(void) {
     ((void(*)(const char *, float))fn_8001255C)(lbl_802FC600, lbl_80560350);
 }
