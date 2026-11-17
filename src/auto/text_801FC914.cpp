@@ -1555,13 +1555,14 @@ extern "C" void fn_801FF58C(void*, char*, const char*);
 extern "C" void fn_801FF484(void *arg0, void *arg1) {
     const char *name = *(const char **)arg1;
     int i = 0;
-    char *entry = (char *)arg0;
+    char *scan = (char *)arg0;
+    char *entry;
     while (i < *(int *)((char *)arg0 + 0x2C0)) {
-        if (stricmp(name, entry) == 0) {
+        if (stricmp(name, scan) == 0) {
             entry = (char *)arg0 + i * 0x58;
             goto found;
         }
-        entry += 0x58;
+        scan += 0x58;
         i++;
     }
     entry = 0;
