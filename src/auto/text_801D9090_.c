@@ -121,8 +121,12 @@ void fn_801D90E8(s32 userData) {
     fn_801D611C(userData - 4);
 }
 
-void fn_801D90F0(s32 arg0) {
-    fn_801D77E8(arg0 - 4);
+/* Callback wrapper of the action-group operations (like fn_801D90E8 next door):
+ * the callback is handed the group's +0x4 field, so back the pointer up to the
+ * group's start before calling.  fn_801D77E8 is the operation of this family
+ * that the game left empty (its body is a single blr). */
+void fn_801D90F0(s32 userData) {
+    fn_801D77E8(userData - 4);
 }
 
 /* Callback wrapper: forward to fn_801D77EC with the pointer backed up to its enclosing structure (userData - 4). */
