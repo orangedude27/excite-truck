@@ -1026,70 +1026,76 @@ struct AwardCar {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_80006B18(void *arg0) {
-    u8 sp10[16];
-    u8 sp8[8];
-    f32 start;
-    f32 now;
-    f32 offset;
-    f32 percentScale;
-    f32 percent;
-    f32 unk11C;
-    f32 threshold;
-    f32 gap;
-    f32 scale;
-    f32 y;
-    f32 advance;
-    f32 value;
-    s32 i;
+void fn_80006B18(void *screen) {
+    /* Draw the awards list (fn_800064A8's state 1): one row per real car
+     * record, in the order of the CarMgr slot table (rank order).  Each row
+     * is a background bar plus two text columns: the left column shows the
+     * record's count (flag bit 0), its best time as "s:cc" (flag bit 1,
+     * "--:--" when there is none) or else the row number, and the right
+     * column shows the car's name. */
+    char rankText[16];
+    char timeText[8];
+    f32 rowX;        /* left edge of the screen box */
+    f32 listTop;     /* screen top, raised by 24.0 */
+    f32 nameAdvance; /* 85.0: x step after a count or a row number */
+    f32 timeAdvance; /* 135.0: x step after a time */
+    f32 hundred;     /* 100.0: seconds -> centiseconds */
+    f32 zero;        /* 0.0 */
+    f32 textLift;    /* 27.0: text above the row line */
+    f32 rowGap;      /* 21.6: bar above the row line */
+    f32 rowStep;     /* 54.0: distance between rows */
+    f32 rowY;
+    f32 textX;
+    f32 bestTime;
+    s32 slot;
     s32 flags;
-    s32 whole;
-    s32 remainder;
-    void *entry;
-    start = fn_80011E34();
-    now = fn_80011E54() - lbl_80560170;
-    i = 0;
-    gap = lbl_80560178;
-    threshold = lbl_8056017C;
-    unk11C = lbl_8056011C;
-    percent = lbl_80560188;
-    for (; i < fn_801EA994(); i++) {
-        entry = fn_801EA9B0(i);
-        y = (f32)i;
-        scale = lbl_80560174;
-        offset = lbl_80560184;
-        percentScale = lbl_8056018C;
-        y = now - scale * y;
-        fn_80010E94(*(s32 *)((u8 *)arg0 + 0x14), 0, start,
-                    y - gap, lbl_80560118, lbl_8056017C);
-        flags = *(s32 *)((u8 *)entry + 0xC);
-        advance = start + scale;
+    s32 seconds;
+    s32 centis;
+    struct AwardCar *car;
+    rowX = fn_80011E34();
+    listTop = fn_80011E54() - lbl_80560170;
+    slot = 0;
+    rowGap = lbl_80560178;
+    textLift = lbl_8056017C;
+    zero = lbl_8056011C;
+    hundred = lbl_80560188;
+    for (; slot < fn_801EA994(); slot++) {
+        car = fn_801EA9B0(slot);
+        rowY = (f32)slot;
+        rowStep = lbl_80560174;
+        nameAdvance = lbl_80560184;
+        timeAdvance = lbl_8056018C;
+        rowY = listTop - rowStep * rowY;
+        fn_80010E94(*(s32 *)((u8 *)screen + 0x14), 0, rowX,
+                    rowY - rowGap, lbl_80560118, lbl_8056017C);
+        flags = car->displayFlags;
+        textX = rowX + rowStep;
         if (flags & 1) {
             fn_8000FF88(-0x100, 0x41, (void *)lbl_80558930,
-                        lbl_80560180, advance, (y - gap) - threshold,
-                        *(void **)((u8 *)entry + 0x14));
-            advance += offset;
+                        lbl_80560180, textX, (rowY - rowGap) - textLift,
+                        (void *)car->displayValue);
+            textX += nameAdvance;
         } else if (flags & 2) {
-            value = *(f32 *)((u8 *)entry + 0x18);
-            if (value < unk11C) {
-                fn_801345D8(sp8, 8, lbl_80558934);
+            bestTime = car->bestTime;
+            if (bestTime < zero) {
+                fn_801345D8(timeText, 8, lbl_80558934);
             } else {
-                whole = (s32)value;
-                remainder = (s32)(percent * value) - whole * 100;
-                fn_801345D8(sp8, 8, lbl_80558940, whole, remainder);
+                seconds = (s32)bestTime;
+                centis = (s32)(hundred * bestTime) - seconds * 100;
+                fn_801345D8(timeText, 8, lbl_80558940, seconds, centis);
             }
             fn_8000FF88(-0x100, 0x41, (void *)&lbl_80558948,
-                        lbl_80560180, advance, (y - gap) - threshold, sp8);
-            advance += percentScale;
+                        lbl_80560180, textX, (rowY - rowGap) - textLift, timeText);
+            textX += timeAdvance;
         } else {
             fn_8000FF88(-0x100, 0x41, (void *)&lbl_80558948,
-                        lbl_80560180, advance, (y - gap) - threshold,
-                        fn_800122B4(i + 1, sp10));
-            advance += offset;
+                        lbl_80560180, textX, (rowY - rowGap) - textLift,
+                        fn_800122B4(slot + 1, rankText));
+            textX += nameAdvance;
         }
         fn_8000FF88(-0x100, 0x21, (void *)&lbl_80558948,
-                    lbl_80560130, advance, (y - gap) - threshold,
-                    (u8 *)entry + 0x48);
+                    lbl_80560130, textX, (rowY - rowGap) - textLift,
+                    car->name);
     }
 }
 #pragma pop
