@@ -1005,6 +1005,7 @@ void fn_80136764(void) {
     fn_801564B0();
 }
 
+/* RealName: destroySceneCallbackSingleton. Scene-teardown wrapper: forwards to fn_801569FC, which destroys the global PSSystem callback singleton (lbl_8055E27C) installed by the scene-init wrapper fn_80136764. */
 void fn_80136768(void) {
     fn_801569FC();
 }
