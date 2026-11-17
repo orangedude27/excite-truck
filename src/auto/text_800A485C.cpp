@@ -25798,8 +25798,11 @@ extern "C" void fn_800A535C(u32 arg0) {
     }
 }
 
-extern "C" s32 fn_800A53B4(void *arg0) {
-    return (((u16)*(u16 *)((u8 *)arg0 + 0x1F8C)) >> 2) & 1;
+/* Return whether media is present in this volume's drive: bit 2
+ * (VF_VOL_MEDIA_PRESENT) of the VFiPFVolume.flags word at +0x1F8C, which the
+ * media-change callbacks set and the sector reads test before proceeding. */
+extern "C" s32 fn_800A53B4(void *volume) {
+    return (((u16)*(u16 *)((u8 *)volume + 0x1F8C)) >> 2) & 1;
 }
 
 extern "C" s32 fn_800A53C0(void *arg0) {
