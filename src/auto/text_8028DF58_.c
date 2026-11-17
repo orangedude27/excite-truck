@@ -224,8 +224,7 @@ void fn_8028E1A4(void) {
     gAllowParticleAdd = 1;
 }
 
-#pragma push
-#pragma small_data off
+#pragma scheduling invalid_target
 void fn_8028E1D0(void) {
     struct Table { int entries[64]; int count; } *base;
     int *entries;
@@ -242,7 +241,6 @@ body:
 test:
     if (i < base->count) goto body;
 }
-#pragma pop
 
 #pragma push
 #pragma processor 750
