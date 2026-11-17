@@ -5603,8 +5603,10 @@ extern "C" s32 fn_801A51B0(void* owner) {
     return -1;
 }
 
-extern "C" s32 fn_801A51CC(void* arg0) {
-    return *(s32*)((u8*)arg0 + 0x34);
+/* Getter for the s32 field at offset 0x34 of the object (paired with the
+ * setter fn_801A51D4). */
+extern "C" s32 fn_801A51CC(void* object) {
+    return *(s32*)((u8*)object + 0x34);
 }
 
 extern "C" void fn_801A51D4(void* arg0, s32 arg1) {
