@@ -49,6 +49,7 @@ void OSSetArenaHi(void* arenaHi) {
     OSSetMEM1ArenaHi(arenaHi);
 }
 
+/* Set the lower bound of the MEM1 arena. */
 void OSSetMEM1ArenaLo(void* lo) {
     __OSArenaLo = lo;
 }
