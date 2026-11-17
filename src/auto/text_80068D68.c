@@ -5806,48 +5806,52 @@ extern u8 fn_80077DD8(void);
 extern void bta_dm_discover_next_device(void);
 extern void fn_80073464(void);
 #pragma opt_propagation off
-void bta_dm_acl_change(u8 *arg0) {
-    u8 *bd = arg0 + 0xB;
-    u8 idx;
-    u8 sp[0x110];
+/* Handles a BTA_DM_ACL_CHANGE_EVT message: on link-up adds the peer to bta_dm_cb's
+ * connected-device list and reports BTA_DM_LINK_UP_EVT; on link-down removes it,
+ * clears a pending discovery for that peer, schedules the disable timer when no
+ * ACL links remain, and reports BTA_DM_LINK_DOWN_EVT with the disconnect reason. */
+void bta_dm_acl_change(u8 *pMsg) {
+    u8 *bdAddr = pMsg + 0xB;
+    u8 deviceIndex;
+    u8 secEvent[0x110];
     u8 *entry;
 
-    if (arg0[0xA] != 0) {
-        for (idx = 0; idx < lbl_803C0C14[0x4D]; idx++) {
-            if (bdcmp(lbl_803C0C14 + idx * 0xB, bd) == 0)
+    if (pMsg[0xA] != 0) {
+        for (deviceIndex = 0; deviceIndex < lbl_803C0C14[0x4D]; deviceIndex++) {
+            if (bdcmp(lbl_803C0C14 + deviceIndex * 0xB, bdAddr) == 0)
                 break;
         }
-        if (idx == lbl_803C0C14[0x4D]) {
-            fn_80070FA4(lbl_803C0C14 + lbl_803C0C14[0x4D] * 0xB, bd);
+        if (deviceIndex == lbl_803C0C14[0x4D]) {
+            bdcpy(lbl_803C0C14 + lbl_803C0C14[0x4D] * 0xB, bdAddr);
             lbl_803C0C14[0x4D]++;
         }
-        entry = lbl_803C0C14 + idx * 0xB;
+        entry = lbl_803C0C14 + deviceIndex * 0xB;
         entry[6] = 1;
         entry[7] = 0;
-        fn_80070FA4(sp, bd);
-        ((void (*)(int, void *))(*(void **)(lbl_803C0C14 + 0x50)))(5, sp);
+        bdcpy(secEvent, bdAddr);
+        ((void (*)(int, void *))(*(void **)(lbl_803C0C14 + 0x50)))(BTA_DM_LINK_UP_EVT, secEvent);
         return;
     }
-    idx = 0;
+    deviceIndex = 0;
     goto s2cond;
 s2body:
-    if (bdcmp(lbl_803C0C14 + idx * 0xB, bd) != 0)
+    if (bdcmp(lbl_803C0C14 + deviceIndex * 0xB, bdAddr) != 0)
         goto s2incr;
     {
-        u8 j = idx;
+        u8 j = deviceIndex;
         for (; j < lbl_803C0C14[0x4D]; j++) {
             memcpy(lbl_803C0C14 + j * 0xB, lbl_803C0C14 + (j + 1) * 0xB, 0xB);
         }
     }
     goto s2done;
 s2incr:
-    idx++;
+    deviceIndex++;
 s2cond:
-    if (idx < lbl_803C0C14[0x4D])
+    if (deviceIndex < lbl_803C0C14[0x4D])
         goto s2body;
 s2done:
     lbl_803C0C14[0x4D]--;
-    if (lbl_803C0B98[0x78] != 0 && bdcmp(lbl_803C0B98 + 0x1A, bd) == 0) {
+    if (lbl_803C0B98[0x78] != 0 && bdcmp(lbl_803C0B98 + 0x1A, bdAddr) == 0) {
         lbl_803C0B98[0x78] = 0;
         if (lbl_803C0B98[0x79] != 0) {
             if (lbl_8055DC80 >= 4)
@@ -5862,9 +5866,9 @@ s2done:
         *(void **)(lbl_803C0C14 + 0x7C) = fn_80073464;
         fn_8007146C((s32)(lbl_803C0C14 + 0x74), 0, 0x3E8);
     }
-    fn_80070FA4(sp, bd);
-    sp[6] = fn_80077DD8();
-    ((void (*)(int, void *))(*(void **)(lbl_803C0C14 + 0x50)))(6, sp);
+    bdcpy(secEvent, bdAddr);
+    secEvent[6] = fn_80077DD8();
+    ((void (*)(int, void *))(*(void **)(lbl_803C0C14 + 0x50)))(BTA_DM_LINK_DOWN_EVT, secEvent);
 }
 #pragma opt_propagation reset
 extern void fn_80070FA4(void *, const void *);
