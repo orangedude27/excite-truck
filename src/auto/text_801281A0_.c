@@ -128,7 +128,12 @@ void fn_801282E8(void) {
 
 }
 
-void fn_801282EC(s32 arg0) { lbl_8055DF8C = arg0; }
+void fn_801282EC(s32 size) {
+    /* Set the pending heap allocation size, consumed by the next fn_8012834C alloc. */
+    #define heapPendingSize lbl_8055DF8C
+    heapPendingSize = size;
+    #undef heapPendingSize
+}
 
 void fn_801282F4(void) {
     /* Select the secondary heap ring (lbl_8055DF81 = 1) when its size word is positive.
@@ -229,23 +234,23 @@ void fn_8012850C(void *size, void *name) {
     fn_8012834C(name, size, 0);
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 s32 fn_80128520(s32 arg0) {
+    s32 ptrval;
     if (lbl_8055DF80 == 0)
         goto do_log;
-    if (*(volatile s32 **)&lbl_8055DF84 == NULL)
-        goto do_special;
-    goto do_log;
-do_special:
-    fn_8012834C(lbl_8032A068, (void *)arg0, 3);
-    goto done;
+    ptrval = (s32)lbl_8055DF84;
+    switch (ptrval) {
+    case 0:
+        return ((s32 (*)(void *, void *, s32))fn_8012834C)(lbl_8032A068, (void *)arg0, 3);
+    default:
+        goto do_log;
+    }
 do_log:
     ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A074, arg0);
-done:
     return lbl_8055DF98;
 }
-#pragma pop
+#pragma opt_propagation reset
 extern char lbl_8032A0A0[];
 void fn_80128AA4(void *, u8 *, s32, s32);
 #pragma dont_inline on
