@@ -1094,8 +1094,9 @@ extern "C" s32 fn_800F2814(void *archive) {
 }
 
 extern "C" s32 ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8BankInfo(void *, u32, void *);
-extern "C" s32 fn_800F281C(void *arg0, u32 index, void *out) {
-    return ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8BankInfo(*(void **)((u8 *)arg0 + 4), index, out);
+extern "C" s32 fn_800F281C(void *archive, u32 bankIndex, void *bankInfo) {
+    /* Read bank info for the given bank index from this sound archive's file reader. */
+    return ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8BankInfo(*(void **)((u8 *)archive + 4), bankIndex, bankInfo);
 }
 
 extern "C" s32 ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(void *, u32, void *);
