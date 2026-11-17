@@ -1,3 +1,6 @@
+#define CAT2(a, b) a##b
+#define CAT(a, b) CAT2(a, b)
+#define REGV(t, n, r) register t n CAT(as, m)("r" #r)
 void fn_802BD814(void);
 #include "revolution/MTX/mtxtypes.h"
 extern int lbl_8034AC48, lbl_8055FAA8, lbl_8055FAAC;
@@ -1039,14 +1042,15 @@ void fn_802DBECC(void);
 #pragma use_lmw_stmw off
 void fn_802BDD8C(float arg0) {
     float out[12];
-    float mtx[9];
+    float mtx[12];
     int i, j;
     fn_802DBE4C();
     if (fn_8020403C() != 0) {
         float one = lbl_80564D18;
         float lim = lbl_80564D14;
-        float sq, den;
+        float den;
         float half = lbl_80564D4C;
+        float sq;
         lbl_8055FAAC = 0;
         lbl_8055FAA8 = 0;
         for (i = 0; i < *(int *)((char *)&lbl_804C00D4 + 4); i++) {
