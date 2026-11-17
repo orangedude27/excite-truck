@@ -287,8 +287,9 @@ void *fn_80297654(void *arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_802976D0(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 0x10) = 0;
+/* Initialize one entry of the array: clear its held object pointer at +0x10 to null. */
+void fn_802976D0(void *entry) {
+    *(s32 *)((u8 *)entry + 0x10) = 0;
 }
 
 /* Deleting destructor for the entry holder: destroy its array of entries, then free the holder. */
