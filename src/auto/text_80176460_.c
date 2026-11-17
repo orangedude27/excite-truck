@@ -414,7 +414,13 @@ void *__AXFXGetLfoSinTable_801769CC(void) {
     #undef s_lfoSinTable
 }
 
-u32 *fn_801769D8(void) { return &lbl_8055E3F8; }
+/* Return a pointer to the configured car/vehicle count (saved from fn_80176460's
+ * arg2[0] and copied into lbl_8055E8F8 when the race arrays are built). */
+u32 *fn_801769D8(void) {
+    #define sCarCount lbl_8055E3F8
+    return &sCarCount;
+    #undef sCarCount
+}
 
 extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_801769EC(void);
