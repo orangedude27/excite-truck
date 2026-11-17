@@ -1,18 +1,3 @@
-typedef struct WaterGrid_8029E130 {
-    float f0;
-    short *data;
-    float f8;
-    int width;
-    int height;
-    char pad14[0x24];
-    float x0;
-    float y0;
-    float z0;
-    float m44;
-    float m48;
-    float m4c;
-    float m50;
-} WaterGrid_8029E130;
 __declspec(section ".data") extern float lbl_80558DC4;
 extern void *fn_802C86DC(void);
 extern void fn_802C8BD0(int);
@@ -1247,9 +1232,11 @@ int fn_8029DFE0(void *arg0, void *arg1) {
     float u = z * *(float *)((char *)arg0 + 0x48) + x * *(float *)((char *)arg0 + 0x44);
     float v = z * *(float *)((char *)arg0 + 0x50) + x * *(float *)((char *)arg0 + 0x4C);
     float upper = (float)*(int *)((char *)arg0 + 0xC) - lbl_805646A0;
-    int result = 0, inside = 0, test = 0;
+    int result = 0, inside = 0, test;
+
     delta.x = x;
     delta.z = z;
+    test = 0;
     if (u >= lbl_8056465C - lbl_80558DC4 &&
         u <= upper + lbl_80558DC4)
         test = 1;
