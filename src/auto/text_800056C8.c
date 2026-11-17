@@ -740,6 +740,7 @@ extern "C" void fn_80006378(s32 unused, s32 playerIndex) {
 #pragma scheduling on
 #pragma cplusplus off
 s32 fn_8000639C(void) {
+    /* Constant predicate (returns 0 / false); likely a virtual getter reached through a dispatch table. */
     return 0;
 }
 
