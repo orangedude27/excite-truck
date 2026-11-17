@@ -515,7 +515,10 @@ void fn_80292EA8(void *cache) {
     ((ChunkCache *)cache)->count = 0;
 }
 
-void fn_80292EB4(void *arg0) { *(s32 *)((u8 *)arg0 + 0x180) = 0; }
+void fn_80292EB4(void *cache) {
+    /* Empty the chunk cache by resetting its in-use count to zero (see ChunkCache.count). */
+    ((ChunkCache *)cache)->count = 0;
+}
 
 #pragma push
 #pragma use_lmw_stmw off
