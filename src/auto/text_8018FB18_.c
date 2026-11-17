@@ -2427,7 +2427,8 @@ void fn_80192BE4(void) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_80192BE8(void *arg0) {
+extern "C" void fn_80192BE8(void *self) {
+    /* Forward the f17() virtual call to the child object held at +4 of the container. */
     class VTable {
     public:
         virtual void f0();
@@ -2449,8 +2450,8 @@ extern "C" void fn_80192BE8(void *arg0) {
         virtual void f16();
         virtual void f17();
     };
-    VTable *obj = *(VTable **)((char *)arg0 + 4);
-    obj->f17();
+    VTable *child = *(VTable **)((char *)self + 4);
+    child->f17();
 }
 
 #pragma cplusplus on
