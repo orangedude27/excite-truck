@@ -161,8 +161,8 @@ void fn_801D9118(s32 userData) { fn_801D89C0(userData - 4); }
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
-void fn_801D9120(float *__restrict out, float *__restrict values, int count, float weight) {
+#pragma scheduling on
+void fn_801D9120(float *out, float *values, int count, float weight) {
     float value = values[count - 1];
     if (count == 1) {
         float inv = lbl_80562B28 - value;
