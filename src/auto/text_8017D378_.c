@@ -197,16 +197,18 @@ void *fn_8017D688(void) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 #pragma ppc_psq_save off
+#pragma opt_propagation off
 extern "C" void fn_8017D6E0(void *arg0, void *arg1) {
     char *a = (char *)arg0;
     char *b = (char *)arg1;
     float v[3];
     float pos[3];
-    float f31, f30, f29, f5, sq;
+    float f31, f30, f29, f5, sq, prod;
     char *obj;
     void *sub;
     fn_8017B0F8();
-    f5 = lbl_80561C08 * *(float *)(b + 0x24) / lbl_80561C04;
+    prod = lbl_80561C08 * *(float *)(b + 0x24);
+    f5 = prod / lbl_80561C04;
     f31 = *(float *)(b + 0x2C);
     v[0] = lbl_80561BE0;
     v[1] = lbl_80561BE0;
@@ -226,6 +228,7 @@ extern "C" void fn_8017D6E0(void *arg0, void *arg1) {
     *(float *)(a + 0x22C) = *(float *)(b + 0x3C);
     obj = (char *)fn_801284F8(0x54, lbl_80331DB4);
     if (obj != 0) {
+        f32 zero = lbl_80561BE0;
         *(void **)(obj + 0xC) = a + 0x3C;
         *(void **)(obj + 4) = arg0;
         *(int *)(obj + 8) = 0;
@@ -236,14 +239,14 @@ extern "C" void fn_8017D6E0(void *arg0, void *arg1) {
         *(int *)(obj + 0x1C) = 0;
         *(void **)obj = lbl_80333B48;
         *(float *)(obj + 0x24) = f30;
-        *(float *)(obj + 0x34) = lbl_80561BE0;
-        *(float *)(obj + 0x38) = lbl_80561BE0;
-        *(float *)(obj + 0x3C) = lbl_80561BE0;
-        *(float *)(obj + 0x40) = lbl_80561BE0;
-        *(float *)(obj + 0x44) = lbl_80561BE0;
-        *(float *)(obj + 0x48) = lbl_80561BE0;
+        *(float *)(obj + 0x34) = zero;
+        *(float *)(obj + 0x38) = zero;
+        *(float *)(obj + 0x3C) = zero;
+        *(float *)(obj + 0x40) = zero;
+        *(float *)(obj + 0x44) = zero;
+        *(float *)(obj + 0x48) = zero;
         *(char *)(obj + 0x4C) = 0;
-        *(float *)(obj + 0x50) = lbl_80561BE0;
+        *(float *)(obj + 0x50) = zero;
         *(float *)(obj + 0x28) = v[0];
         *(float *)(obj + 0x2C) = v[1];
         *(float *)(obj + 0x30) = v[2];
