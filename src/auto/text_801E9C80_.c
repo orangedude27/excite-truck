@@ -18,36 +18,36 @@ extern double __fabs(double);
 #pragma push
 #pragma processor 750
 s32 fn_801E9C84(f32 *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, s32 arg5, f32 farg0) {
-    struct S { s32 x, y, z; };
-    struct S original;
+    #pragma scheduling invalid_target
+    s32 original[3];
     f32 normal[3];
     f32 delta[3];
-    s32 first = ((struct S *)arg0)->x;
-    s32 last = ((struct S *)arg0)->z;
+    s32 first = ((s32 *)arg0)[0];
+    s32 last = ((s32 *)arg0)[2];
     f32 diffX;
     f32 diffY;
     f32 diffZ;
     f32 dot;
-    original.x = first;
-    original.y = ((struct S *)arg0)->y;
-    original.z = last;
-    if (fn_801DCE14((void *)arg4, arg0, (s32)&original, (s32)normal, arg5, arg5) == 0)
+    original[0] = first;
+    original[1] = ((s32 *)arg0)[1];
+    original[2] = last;
+    if (fn_801DCE14((void *)arg4, arg0, (s32)original, (s32)normal, arg5, arg5) == 0)
         return 0;
-    diffX = ((f32 *)arg1)[0] - ((f32 *)&original)[0];
-    diffY = ((f32 *)arg1)[1] - ((f32 *)&original)[1];
-    diffZ = ((f32 *)arg1)[2] - ((f32 *)&original)[2];
+    diffX = ((f32 *)arg1)[0] - ((f32 *)original)[0];
+    diffY = ((f32 *)arg1)[1] - ((f32 *)original)[1];
+    diffZ = ((f32 *)arg1)[2] - ((f32 *)original)[2];
     delta[0] = diffX;
     delta[1] = diffY;
     delta[2] = diffZ;
     dot = PSVECDotProduct(normal, delta);
     if ((f32)__fabs((double)dot) < farg0) {
-        f32 valueX = ((f32 *)arg1)[0];
-        f32 valueY = ((f32 *)arg1)[1];
-        f32 valueZ = ((f32 *)arg1)[2];
-        dot = -dot;
-        ((f32 *)arg2)[0] = valueX + normal[0] * dot;
-        ((f32 *)arg2)[1] = valueY + normal[1] * dot;
-        ((f32 *)arg2)[2] = valueZ + normal[2] * dot;
+        register f32 valueZ = ((f32 *)arg1)[2];
+        register f32 valueY = ((f32 *)arg1)[1];
+        register f32 valueX = ((f32 *)arg1)[0];
+        f32 ndot = -dot;
+        ((f32 *)arg2)[0] = valueX + normal[0] * ndot;
+        ((f32 *)arg2)[1] = valueY + normal[1] * ndot;
+        ((f32 *)arg2)[2] = valueZ + normal[2] * ndot;
         ((f32 *)arg3)[0] = normal[0];
         ((f32 *)arg3)[1] = normal[1];
         ((f32 *)arg3)[2] = normal[2];
@@ -181,11 +181,11 @@ f32 fn_801EA0E8(f32 arg0, f32 arg1) {
     f32 input[3];
     f32 output[3];
     input[0] = arg0;
-    input[1] = lbl_80562E2C;
+    input[1] = 0.0f;
     input[2] = arg1;
     if (((s32 (*)(void *, f32 *, f32 *, s32, s32))fn_801DCE14)(0, input, output, 0, 0) != 0)
         return output[1];
-    return lbl_80562E2C;
+    return 0.0f;
 }
 #pragma scheduling on
 /* Forwards a 3-word point through fn_801DCE14 with a null context, using a stack copy of the point. */
