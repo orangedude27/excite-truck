@@ -1512,6 +1512,7 @@ int fn_801742FC(void *state) {
 }
 
 int fn_80174314(void) {
+    /* Return the fixed constant 8. */
     return 8;
 }
 
