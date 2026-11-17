@@ -521,7 +521,10 @@ loop_done:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma dont_inline on
-s32 fn_8024739C(void) { return 0; }
+s32 fn_8024739C(void) {
+    /* No-op hook: does nothing and returns 0. Kept out of line for its callers. */
+    return 0;
+}
 #pragma dont_inline reset
 #pragma pop
 
