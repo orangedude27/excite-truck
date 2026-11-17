@@ -287,6 +287,7 @@ extern "C" f64 __fabs(f64);
 #pragma paired off
 #pragma paired_single off
 #pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *arg4, float *arg5, float farg0) {
     f32 *pt = (f32 *)arg0;
     u8 *obj = (u8 *)arg1;
