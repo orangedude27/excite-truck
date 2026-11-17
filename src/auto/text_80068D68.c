@@ -18817,7 +18817,7 @@ void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
     char *p_str = (char *)jumptable_803183B0;
     void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
     void (*disconnect_ind)(u16, u8) = *(void (**)(u16, u8))((u8 *)p_rcb + 0x18);
-    void (*connect_cfm)(u16, u8) = *(void (**)(u16, u8))((u8 *)p_rcb + 8);
+    void (*connect_cfm)(u16, u16) = *(void (**)(u16, u16))((u8 *)p_rcb + 8);
     u16 local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
     if (lbl_803C4040[0] >= 4) fn_80070954(0x80003, p_str + 0x24, event);
     switch (event) {
@@ -18854,7 +18854,7 @@ void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
         break;
     }
     case 9: {
-        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), 1);
+        if (lbl_803C4040[0] >= 3) ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), 0xEEEE);
         l2cu_release_ccb(p_ccb);
         connect_cfm(local_cid, 3);
         break;
@@ -18866,15 +18866,15 @@ void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
         break;
     }
     case 19: {
-        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), 1);
+        if (lbl_803C4040[0] >= 3) ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), 0xEEEE);
         l2cu_release_ccb(p_ccb);
-        connect_cfm(local_cid, 1);
+        connect_cfm(local_cid, 0xEEEE);
         break;
     }
     case 20: {
-        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), 1);
+        if (lbl_803C4040[0] >= 3) ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x80002, p_str + 0x84, *(u16 *)((u8 *)p_ccb + 0x14), 0xEEEE);
         l2cu_release_ccb(p_ccb);
-        connect_cfm(local_cid, 1);
+        connect_cfm(local_cid, 0xEEEE);
         break;
     }
     case 30:
@@ -22738,7 +22738,9 @@ void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
 }
 
 void fn_800911DC(void) {
-
+    /* No-op L2CAP QoS-violation indication callback. Registered as
+     * pL2CA_QoSViolationInd_Cb in rfcomm_l2cap_if_init; RFCOMM ignores
+     * QoS violations, so it does nothing. */
 }
 
 void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
