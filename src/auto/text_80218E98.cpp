@@ -9157,6 +9157,7 @@ extern "C" u32 fn_80229614(void) { return 1; }
 extern "C" void fn_8022961C(void) {
 }
 
+/* Default widget-manager callback: an always-true predicate, reporting success to its caller. */
 extern "C" u32 fn_80229620(void) { return 1; }
 
 extern "C" void fn_80229628(void *widget) {
