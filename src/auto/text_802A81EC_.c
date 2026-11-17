@@ -146,40 +146,52 @@ extern void fn_802C6CF8(s32);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+/* Release every model group tracked by the global registry: delete each group's
+   model handles, clear its counters/lists and free the group object itself. */
 void fn_802A85C8(void) {
-    void *entry;
+    typedef struct {
+        u8 unk_0x0[0x28];
+        s32 *modelHandles;
+        s32 modelHandleCount;
+        s32 modelHandleCapacity;
+        u8 unk_0x34[0x38];
+        s32 *extraList;
+        s32 extraCount;
+        s32 extraCapacity;
+    } ModelGroup;
+    ModelGroup *group;
     s32 j;
     s32 offset;
     s32 suboffset;
     s32 i;
     offset = i = 0;
     while (i < lbl_804BD6C4[1]) {
-        entry = *(void **)((u32)lbl_804BD6C4[0] + offset);
-        if (entry != 0) {
+        group = *(ModelGroup **)((u32)lbl_804BD6C4[0] + offset);
+        if (group != 0) {
             j = 0;
             suboffset = 0;
-            while (j < *(s32 *)((u8 *)entry + 0x2C)) {
-                fn_802C6CF8(*(s32 *)((u32)*(u32 *)((u8 *)entry + 0x28) + suboffset));
+            while (j < group->modelHandleCount) {
+                fn_802C6CF8(*(s32 *)((u32)group->modelHandles + suboffset));
                 suboffset += 4;
                 j++;
             }
-            *(s32 *)((u8 *)entry + 0x2C) = 0;
-            *(s32 *)((u8 *)entry + 0x70) = 0;
-            if ((u32)entry + 0x6C != 0) {
-                if ((u32)entry + 0x6C != 0) {
-                    *(s32 *)((u8 *)entry + 0x6C) = 0;
-                    *(s32 *)((u8 *)entry + 0x70) = 0;
-                    *(s32 *)((u8 *)entry + 0x74) = 0;
+            group->modelHandleCount = 0;
+            group->extraCount = 0;
+            if ((u32)group + 0x6C != 0) {
+                if ((u32)group + 0x6C != 0) {
+                    group->extraList = 0;
+                    group->extraCount = 0;
+                    group->extraCapacity = 0;
                 }
             }
-            if ((u32)entry + 0x28 != 0) {
-                if ((u32)entry + 0x28 != 0) {
-                    *(s32 *)((u8 *)entry + 0x28) = 0;
-                    *(s32 *)((u8 *)entry + 0x2C) = 0;
-                    *(s32 *)((u8 *)entry + 0x30) = 0;
+            if ((u32)group + 0x28 != 0) {
+                if ((u32)group + 0x28 != 0) {
+                    group->modelHandles = 0;
+                    group->modelHandleCount = 0;
+                    group->modelHandleCapacity = 0;
                 }
             }
-            fn_80128668(entry);
+            fn_80128668(group);
         }
         offset += 4;
         i++;
