@@ -94,8 +94,11 @@ void fn_801D32CC(void) {
 }
 
 extern void *lbl_8055E940;
+/* AX DSP init callback: clear the DSP init flag so the next init pass starts fresh. */
 void __AXDSPInitCallback_801D32D0(void) {
-    lbl_8055E940 = 0;
+#define sAXDspInitFlag lbl_8055E940
+    sAXDspInitFlag = 0;
+#undef sAXDspInitFlag
 }
 
 void fn_801D32DC(void) {
