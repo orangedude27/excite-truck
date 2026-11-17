@@ -404,8 +404,9 @@ void fn_802BAFF8(int, void *);
 typedef struct { float x, y, z; } Vec3_802B;
 #pragma push
 #pragma scheduling invalid_target
-void fn_802B110C(void (*fn)(void *), void *arg) {
-    fn(arg);
+/* Generic indirect-call trampoline: invoke the callback with one opaque argument. */
+void fn_802B110C(void (*callback)(void *), void *arg) {
+    callback(arg);
 }
 #pragma scheduling invalid_target
 void fn_802B111C(void *object) {
