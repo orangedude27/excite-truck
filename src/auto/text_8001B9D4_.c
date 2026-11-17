@@ -238,9 +238,10 @@ s32 fn_8001BC18(s32 arg0) { return arg0 + 0x14; }
 
 s32 fn_8001BC20(s32 arg0) { return arg0 + 0x1C; }
 
-void fn_8001BC28(void *arg0, s32 arg1) {
-    *(s32 *)((char *)arg0 + 0x1C) = arg1;
-    *(s8 *)((char *)arg0 + 0x20) = 1;
+void fn_8001BC28(void *record, s32 value) {
+    /* Store an override value in the record's field at +0x1C and flag it present at +0x20. */
+    *(s32 *)((char *)record + 0x1C) = value;
+    *(s8 *)((char *)record + 0x20) = 1;
 }
 
 #pragma push
