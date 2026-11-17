@@ -382,8 +382,11 @@ char fn_802ECC10(void) {
     return lbl_805600E8;
 }
 
-void fn_802ECC18(u8 arg0) {
-    lbl_805600E9 = arg0;
+void fn_802ECC18(u8 mode) {
+#define gHomeMenuMode lbl_805600E9
+    /* Set the home-menu mode flag; zero selects the normal shutdown message. */
+    gHomeMenuMode = mode;
+#undef gHomeMenuMode
 }
 
 #pragma dont_inline on
