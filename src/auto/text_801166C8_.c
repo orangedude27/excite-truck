@@ -799,6 +799,7 @@ void fn_80117618(void *arg0, void *arg1) {
     layout[27] = temp_r5; layout[28] = 0; layout[29] = 0;
 }
 
+/* Record the address of the video's layout descriptor in the Bink handle, if it is open. */
 void fn_801176FC(void* bink, s32 layout){if(bink)*(s32*)((u8*)bink+0xb8)=layout;}
 
 extern u32 lbl_80559944;
