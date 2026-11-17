@@ -33,6 +33,7 @@ extern char lbl_80558C70[8];
 extern char lbl_80558C78[8];
 extern char lbl_80558C80[8];
 extern char lbl_80558C88[8];
+extern float lbl_80560420, lbl_80560424;
 extern float lbl_80560428, lbl_8056042C, lbl_80560430, lbl_80560434, lbl_80560438;
 extern void *fn_801284F8(int, void*);
 extern void* fn_8023512C(void*);
