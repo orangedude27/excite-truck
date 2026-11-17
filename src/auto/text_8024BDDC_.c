@@ -46,8 +46,11 @@ void fn_8024BDE4(void* arg0) {
     __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110((char*)arg0 - 0x34);
 }
 
-void fn_8024BDEC(void* arg0) {
-    fn_8024BBF4((char*)arg0 - 0x18);
+/* C++ this-adjusting thunk: the pointer received is a base subobject at +0x18
+   inside the derived object, so adjust back to the object start and tail-call
+   the real method fn_8024BBF4. */
+void fn_8024BDEC(void* subobject) {
+    fn_8024BBF4((char*)subobject - 0x18);
 }
 
 extern void fn_8024BCC0(void*);
