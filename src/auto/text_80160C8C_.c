@@ -3183,8 +3183,9 @@ unsigned char fn_80165040(void *menu) {
     return ((struct LevelSelectMenu *)menu)->done;
 }
 
-unsigned char fn_80165048(void *arg0) {
-    return *((unsigned char *)arg0 + 5);
+/* Level-select menu vtable getter (slot 0x28): reports the `done` flag; identical to siblings fn_80165040/0x50. */
+unsigned char fn_80165048(void *menu) {
+    return ((struct LevelSelectMenu *)menu)->done;
 }
 
 unsigned char fn_80165050(void *arg0) {
