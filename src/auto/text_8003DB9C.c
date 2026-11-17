@@ -3820,10 +3820,11 @@ void GXInitLightDistAttn_Internal(GXLightObjImpl* light, f32 distance, f32 brigh
     light->kc = c;
 }
 
-void GXInitLightPos(void *arg0, float farg0, float farg1, float farg2) {
-    *(float *)((char *)arg0 + 0x28) = farg0;
-    *(float *)((char *)arg0 + 0x2C) = farg1;
-    *(float *)((char *)arg0 + 0x30) = farg2;
+/* Set the light object's position vector (fields at 0x28/0x2C/0x30). */
+void GXInitLightPos(void *light, float x, float y, float z) {
+    *(float *)((char *)light + 0x28) = x;
+    *(float *)((char *)light + 0x2C) = y;
+    *(float *)((char *)light + 0x30) = z;
 }
 
 /* Large magnitude (~1.7e26) used to push the light's position far along its
