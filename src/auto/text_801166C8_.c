@@ -1807,8 +1807,10 @@ void fn_80119498(void *voices) {
 #undef SetVoicePairState
 }
 
-s32 fn_801194D0(void* arg0) {
- return *(u16*)((u8*)arg0+0x1be) + (*(u16*)((u8*)arg0+0x1bc)<<16);
+/* Combines the voice's split 16-bit read position (+0x1BC high, +0x1BE low)
+   into one 32-bit sample offset. */
+s32 fn_801194D0(void *voice) {
+    return *(u16 *)((u8 *)voice + 0x1BE) + (*(u16 *)((u8 *)voice + 0x1BC) << 16);
 }
 
 s32 fn_801194E4(void *voiceState) {
