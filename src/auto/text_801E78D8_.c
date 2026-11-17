@@ -367,6 +367,8 @@ void* fn_801E7E34(void) {
 }
 
 long fn_801E7E3C(void) {
+    /* Return (as a long) a pointer to the game-state sub-object stored at
+     * offset 0x560 of the global base lbl_8055EB04. */
     return (long)lbl_8055EB04 + 0x560;
 }
 
