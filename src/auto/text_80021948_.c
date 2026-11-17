@@ -3,7 +3,8 @@
 
 /* No-op default constructor registered by fn_800218FC for the 8-element array of 0x70-byte records at lbl_8035B758; leaves each element untouched. */
 void fn_80021948(void) {
-
+    /* Empty default callback registered as the handler in the 8-slot, 0x70-byte
+       task table set up by fn_800218FC; reserved, with no work in this build. */
 }
 
 void *fn_8002194C(void *arg0, unsigned int size, unsigned int *outMax) {
