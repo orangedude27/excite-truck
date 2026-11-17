@@ -4,5 +4,8 @@
 extern char lbl_8055E648[4];
 extern void fn_8000D838(void *queue);
 void fn_801B06C0(void) {
-    fn_8000D838(lbl_8055E648);
+#define gStaticDtorRecord lbl_8055E648
+    /* Push the static-destructor record onto the global destructor list. */
+    fn_8000D838(gStaticDtorRecord);
+#undef gStaticDtorRecord
 }
