@@ -366,6 +366,7 @@ extern "C" void Pause__Q46nw4hbm3snd6detail9WsdPlayerFb(void *player, unsigned c
 }
 
 extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_80100820(void *self, float volume) {
+    /* Set the WSD player's volume (offset 0x24), asserting it is non-negative. */
     if (!(volume >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327930, 0xFA, (const char *)lbl_80327944);
     unsigned int interruptLevel = OSDisableInterrupts();
     *(float *)((unsigned char *)self + 0x24) = volume;
