@@ -202,8 +202,9 @@ s32 fn_801EA994(void) {
     return *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4);
 }
 
-s32 fn_801EA9A0(s32 arg0) {
-    return lbl_8055EB78 + (arg0 * 0xBC);
+/* Return the address of the CarMgr car record with the given index (records are 0xBC-byte CarMgrEntry structs in the lbl_8055EB78 table). */
+s32 fn_801EA9A0(s32 index) {
+    return lbl_8055EB78 + (index * sizeof(struct CarMgrEntry));
 }
 
 s32 fn_801EA9B0(s32 slot) {
