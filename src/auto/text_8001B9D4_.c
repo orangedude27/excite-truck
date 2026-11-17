@@ -240,7 +240,8 @@ void fn_8001BBBC(EntryRef *out, s32 encoded) {
     *out = value;
 }
 
-s32 ARCGetStartOffset(void *arg0) { return ((s32 *)arg0)[2]; }
+/* Return the start offset (the s32 at +0x8) of the ARC info record. */
+s32 ARCGetStartOffset(void *info) { return ((s32 *)info)[2]; }
 
 /* Address helper: returns a pointer to the field at offset +0x14 of `record`.
  * Called through casts by field accessors such as fn_8001BEC4 / fn_8001C0A0. */
