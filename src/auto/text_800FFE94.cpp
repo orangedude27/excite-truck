@@ -682,8 +682,9 @@ extern "C" void fn_801013B0(void) {
     return;
 }
 
-extern "C" float fn_801013B4(void* arg0) {
-    return *(float*)((char*)arg0 + 0x40);
+/* Return the sound player's float parameter at +0x40. */
+extern "C" float fn_801013B4(void* player) {
+    return *(float*)((char*)player + 0x40);
 }
 
 extern "C" float fn_801013BC(void* arg0) {
