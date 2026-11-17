@@ -4136,8 +4136,11 @@ extern "C" void fn_800E9B18(void *arg0, float farg0) {
     *(float *)((char *)arg0 + 0x90) = farg0;
 }
 
-extern "C" void fn_800E9B20(void *arg0, float arg1) {
-    *(float *)((char *)arg0 + 0x94) = arg1;
+extern "C" void fn_800E9B20(void *sound, float value) {
+    /* Set the BasicSound's float parameter at +0x94: the second of the
+       +0x90/+0x94 pair (fn_800E9B18 sets +0x90). The per-frame update reads
+       it and forwards it to the voice through its p34 setter. */
+    *(float *)((char *)sound + 0x94) = value;
 }
 
 extern "C" void fn_800E9B28(void *arg0, float arg1) {
