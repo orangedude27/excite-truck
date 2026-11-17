@@ -1610,20 +1610,24 @@ struct Self_80195D80 {
     int f2c8;
     float f2cc;
 };
-#pragma opt_propagation off
+#pragma opt_propagation reset
 extern "C" void fn_80195D80(void *arg0, float arg1) {
     Self_80195D80 *self = (Self_80195D80 *)arg0;
     Obj_80195D80 *obj = ((Vt_80195D80 *)self->src)->v5();
+    Shape_80195D80 *next;
     int changed;
     int cond;
     float vec[5];
     Other_80195D80 *o;
+    Shape_80195D80 *shape;
     self->f2cc = obj->snap.shape->f14;
     self->f2c8 = obj->snap.shape->f28;
     self->f18 = fn_801388F4(obj->snap.h.w0);
     changed = 0;
+    shape = self->cur.shape;
     o = self->other;
-    if (self->cur.shape != 0 && (unsigned int)self->cur.shape != (unsigned int)obj->snap.shape) {
+    next = obj->snap.shape;
+    if (shape != 0 && shape != next) {
         changed = 1;
     }
     if (changed) {
@@ -1646,21 +1650,25 @@ extern "C" void fn_80195D80(void *arg0, float arg1) {
     self->cur.b = obj->snap.b;
     self->cur.shape = obj->snap.shape;
     self->cur.w2 = obj->snap.w2;
-    cond = arg1 - self->f1d0 < lbl_805621C0;
+    cond = arg1 - self->f1d0 < 1.5f;
     if (cond) {
-        float s = o->a5bc;
-        float x = o->a94 + o->a54 * s;
-        float y = o->a98 + o->a58 * s;
-        float z = o->a9c + o->a5c * s;
-        vec[0] = x;
-        vec[1] = z;
+        float dy, dz, dx, s;
+        float x, y, z;
+        s = o->a5bc;
+        dx = o->a54;
+        dy = o->a58;
+        dz = o->a5c;
+        x = o->a94 + dx * s;
+        y = o->a98 + dy * s;
         vec[2] = x;
+        z = o->a9c + dz * s;
+        vec[0] = x;
         vec[3] = y;
         vec[4] = z;
+        vec[1] = z;
         fn_801353C4(self->f168, vec);
     }
 }
-#pragma opt_propagation reset
 extern "C" void fn_80135B9C(void *, void *, void *, void *, void *, float);
 extern "C" int fn_802E30C8(const char *, ...);
 void fn_80195F6C(void *arg0, void *arg1) {
@@ -2254,6 +2262,10 @@ done:
 
 #pragma push
 #pragma use_lmw_stmw off
+static inline int fn_80196C90_signbit(float x) {
+    return (int)(*(int *)&x & 0x80000000);
+}
+
 void fn_80196C90(void *arg0) {
     extern float lbl_80562260;
     extern float lbl_8055E548, lbl_8055E54C;
@@ -2274,7 +2286,7 @@ void fn_80196C90(void *arg0) {
     if (flag != 0) {
         f1 = *(float *)(obj + 0x144);
         f0 = *(float *)(obj + 0xCC);
-        if ((int)(*(int *)&f1 & 0x80000000) == (int)(*(int *)&f0 & 0x80000000)) {
+        if (((int)(*(int *)&f1 & 0x80000000) == (int)(*(int *)&f0 & 0x80000000)) != 0) {
             *(float *)(obj + 0x144) = f1 * lbl_80562260;
         }
     }
