@@ -495,7 +495,12 @@ s32 fn_8001C0C4(void) {
 
 #pragma dont_inline reset
 void fn_8001C0E8(void) {
-    ((void (*)(void))fn_8001BC28)();
+    /* Trampoline that tail-calls the stat-record override setter with its raw
+     * record/value arguments (r3/r4 still in place); the cast keeps it a plain
+     * branch rather than a typed two-argument call. */
+#define setRecordOverride fn_8001BC28
+    ((void (*)(void))setRecordOverride)();
+#undef setRecordOverride
 }
 
 extern const char lbl_802FD718[];
