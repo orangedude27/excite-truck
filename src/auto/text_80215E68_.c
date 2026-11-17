@@ -163,7 +163,10 @@ u8 fn_80215FEC(void *option) {
     return *(u8 *)((u8 *)option + 8);
 }
 
-u8 fn_80215FF4(u8 *arg0) { return *arg0; }
+/* Read and return the byte at the given pointer. */
+u8 fn_80215FF4(u8 *pValue) {
+    return *pValue;
+}
 
 #pragma push
 #pragma scheduling on
