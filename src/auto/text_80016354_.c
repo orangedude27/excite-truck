@@ -94,6 +94,8 @@ void *fn_80016474(int id) {
 }
 
 void* fn_80016508(void) {
+    /* Return the number of registered car definitions (sCarDefCount /
+     * lbl_8055D54C), i.e. the entry count of the lbl_8055D540 car-def table. */
     return lbl_8055D54C;
 }
 
