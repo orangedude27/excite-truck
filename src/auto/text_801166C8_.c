@@ -9140,6 +9140,7 @@ void fn_80127440(void* alarm) {
 #pragma dont_inline reset
 
 void fn_80127464(void *alarm) {
+    /* Tail-call thunk: forward the alarm to the periodic callback that drains home-button work and dispatches background tasks. */
     fn_80127440(alarm);
 }
 
