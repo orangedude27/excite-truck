@@ -306,6 +306,8 @@ s32 fn_80128690(void) {
     return flag == 0;
 }
 
+/* No-op release callback for the primary heap buffer handle: heap shutdown
+ * (fn_801282A0) invokes it with the buffer handle, but this build does nothing. */
 void fn_80128710(void) {
 
 }
