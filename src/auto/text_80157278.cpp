@@ -4366,6 +4366,7 @@ extern "C" void fn_8015EB28(void *arg0) {
 
 #pragma scheduling on
 extern "C" s32 fn_80159338(void) {
+    /* Return this class's constant type identifier (3). */
     return 3;
 }
 
