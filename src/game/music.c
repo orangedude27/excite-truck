@@ -14,6 +14,7 @@ void fn_8020A634(void) {
 }
 #pragma dont_inline off
 
+/* Return the global music-play enabled flag (set by fn_8020A600, cleared by fn_8020A634). */
 char fn_8020A640(void) {
     return lbl_8055EDDC;
 }
