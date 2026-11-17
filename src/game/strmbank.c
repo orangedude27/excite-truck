@@ -116,6 +116,8 @@ s32 fn_802E76F0(s32 object, s32 deleteFlag) {
     return object;
 }
 
+/* Vtable method (slot +0x0C) of the "null" stream-bank manager. This do-nothing
+ * fallback has no real bank to query, so its status query always reports success (true). */
 s32 fn_802E7730(void) {
     return 1;
 }
