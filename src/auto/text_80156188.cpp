@@ -98,8 +98,9 @@ extern "C" void fn_801561D0(s32 subobjectThis) {
 }
 
 extern "C" s32 fn_80155AEC(s32);
-extern "C" void fn_801561D8(s32 arg0) {
-    fn_80155AEC(arg0 - 0xC);
+/* Adjustor thunk: recover the owning object from a sub-object pointer (subtract 0xC) and call its fn_80155AEC method. */
+extern "C" void fn_801561D8(s32 subObject) {
+    fn_80155AEC(subObject - 0xC);
 }
 
 extern "C" s32 fn_80155AF0(s32);
