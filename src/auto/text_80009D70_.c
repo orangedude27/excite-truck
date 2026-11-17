@@ -94,6 +94,7 @@ void* fn_80009D70(void* object, s32 shouldDelete) {
     return object;
 }
 
+#pragma use_lmw_stmw off
 void fn_80009DC8(void *arg0) {
     ListEntry_80009DC8 *list = (ListEntry_80009DC8 *)((u8 *)arg0 + 0x20);
     s32 *countp = (s32 *)((u8 *)arg0 + 0x3E0);
