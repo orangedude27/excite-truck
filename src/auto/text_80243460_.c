@@ -84,14 +84,19 @@ s32 fn_80243478(s32 arg0) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_80243528(s32 arg0, s32 arg1) {
-    s32 *base = (s32 *)lbl_803428B0 + arg1 * 48;
-    s32 sum = 0;
+/* MenuTable_OffsetOfEntry: return the cumulative horizontal offset (in grid
+ * cells) of a menu entry -- the sum of the `width` fields of entries 0 through
+ * entryIndex-1 in the given menu-table group (see MenuTableEntry/MENU_TABLE above).
+ * MenuList_MoveCursor uses it to keep the cursor at the same offset when it moves
+ * to another group. */
+s32 fn_80243528(s32 entryIndex, s32 group) {
+    s32 *entries = (s32 *)lbl_803428B0 + group * 48;
+    s32 offset = 0;
     s32 i;
-    for (i = 0; i < arg0; i++) {
-        sum += base[i * 3 + 1];
+    for (i = 0; i < entryIndex; i++) {
+        offset += entries[i * 3 + 1];
     }
-    return sum;
+    return offset;
 }
 /* MenuTable_EntryAtOffset: given a cumulative horizontal offset (the sum of
  * entry widths before the cursor, from MenuTable_OffsetOfEntry) within a menu
