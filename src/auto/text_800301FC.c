@@ -118,7 +118,10 @@ void TRKPostEvent(s32 arg0) {
 }
 
 void TRKConstructEvent(void) {
-    lbl_8055D6A8 = 0;
+    /* Reset the TRK event flag so the next TRKPostEvent reinitializes the debug nub. */
+#define sTrkEventFlag lbl_8055D6A8
+    sTrkEventFlag = 0;
+#undef sTrkEventFlag
 }
 
 void TRKGetNextEvent(void *arg0, void *restoreContext) {
