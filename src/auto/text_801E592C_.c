@@ -7,6 +7,7 @@ extern void fn_801BFD34(void *, void *, void *);
 extern void fn_80015B20(void *, void *, void *);
 extern void fn_802C7A38(s32, void *, s32);
 struct Rec14 { s32 v[14]; };
+struct Rec8 { s32 v[8][14]; };
 struct SrcHdr { s32 unk[2]; s32 count; s32 unk2; struct Rec14 data[1]; };
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -41,11 +42,11 @@ s32 fn_801E5990(void *header) {
 }
 
 #pragma scheduling on
-void fn_801E5998(void *src, void *dst, s32 *outCount) {
-    s32 count = ((s32 *)src)[2];
+void fn_801E5998(struct SrcHdr *src, struct Rec14 *dst, s32 *outCount) {
+    s32 count = src->count;
     s32 i;
     for (i = 0; i < count; i++) {
-        ((struct Rec14 *)dst)[i] = *(struct Rec14 *)((u8 *)src + i * 0x38 + 0x10);
+        dst[i] = src->data[i];
     }
     *outCount = count;
 }
