@@ -4712,6 +4712,9 @@ struct BasicSoundVirtualsEarly {
 struct AmbientArgAllocaterCallbackEarly {
     virtual void *detail_AllocAmbientArg(s32 size);
 };
+struct AmbientParamUpdateCallbackEarly {
+    virtual void detail_Update(void *param, s32 soundId, s32 unk, s32 arg, s32 flags);
+};
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
