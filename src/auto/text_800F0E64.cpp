@@ -7739,8 +7739,9 @@ extern "C" int fn_800FD8B8(void *player) {
     return *(unsigned char *)((char *)player + 0x4B) != 0;
 }
 
-extern "C" int fn_800FD8CC(void *arg0) {
-    return *(unsigned char *)((char *)arg0 + 0x49) != 0;
+extern "C" int fn_800FD8CC(void *player) {
+    /* Return nonzero if this StrmPlayer's active flag (offset 0x49) is set. */
+    return *(u8 *)((u8 *)player + 0x49) != 0;
 }
 
 extern "C" int fn_800FD8E0(void *player) {
