@@ -358,40 +358,45 @@ extern void fn_8001BC38(void *, s32, s32, s32, s32);
 extern s32 fn_8001BCF0(void *);
 extern s32 fn_8001BD6C(void *, void *);
 extern void fn_802E317C(char *, s32);
+#pragma opt_propagation off
 void *fn_801CB954(s32 arg0, void *arg1, s32 arg2) {
- s32 mode=arg0&0x300; void *result,*item; s32 i,j,best,best2; s32 sp[9],sp2[9],sp3[9];
- switch (mode) {
- case 0x200:
-  result=fn_801284F8(0x10,lbl_80337AC8+0x40); if(!result)return result;
-  item=fn_801284F8(0x24,lbl_80337AC8+0x4C);
-  if(item)item=fn_8001C070(item,fn_8000DA10(),arg0,*(s32*)arg1,*(s32*)((char*)arg1+4));
+ void *a1=arg1; char *base=lbl_80337AC8; s32 a0=arg0; void *result; s32 i,j,best,best2; s32 sp[9],sp2[9],sp3[9],sp4[9];
+ switch (a0&0x300) {
+ default:
+  ((void (*)(char *, ...))fn_802E317C)(base,a0); return 0;
+ case 0x200: {
+  void *item;
+  result=fn_801284F8(0x10,base+0x40); if(!result)return result;
+  item=fn_801284F8(0x24,base+0x4C);
+  if(item)item=fn_8001C070(item,fn_8000DA10(),a0,*(s32*)a1,*(s32*)((char*)a1+4));
   *(void**)result=item; *(void**)((char*)result+4)=lbl_80338024; *(void**)((char*)result+8)=0; *(s32*)((char*)result+0xC)=0;
   best=-1;best2=-1;
   for(j=0;j<3;j++)for(i=0;i<fn_80012854();i++){
-   if(i==*(s32*)arg1&&j==*(s32*)((char*)arg1+4))continue;
-   fn_8001BC38(sp,fn_8000DA10(),arg0,i,j);
-   if(fn_8001BCF0(sp)){if(best<0){best=i;best2=j;}else{fn_8001BC38(sp2,fn_8000DA10(),arg0,best,best2);if(fn_8001BD6C(sp,sp2)){best=i;best2=j;}}}
+   if(i==*(s32*)a1&&j==*(s32*)((char*)a1+4))continue;
+   fn_8001BC38(sp,fn_8000DA10(),a0,i,j);
+   if(fn_8001BCF0(sp)){if(best<0){best=i;best2=j;}else{fn_8001BC38(sp2,fn_8000DA10(),a0,best,best2);if(fn_8001BD6C(sp,sp2)){best=i;best2=j;}}}
   }
-  if(best>=0){item=fn_801284F8(0x24,lbl_80337AC8+0x4C);if(item)item=fn_8001C070(item,fn_8000DA10(),arg0,best,best2);*(void**)((char*)result+8)=item;}
+  if(best>=0){item=fn_801284F8(0x24,base+0x4C);if(item)item=fn_8001C070(item,fn_8000DA10(),a0,best,best2);*(void**)((char*)result+8)=item;}
   return result;
- case 0x100:
-  result=fn_801284F8(0x10,lbl_80337AC8+0x58);if(!result)return result;
-  item=fn_801284F8(0x24,lbl_80337AC8+0x64);
-  if(item)item=fn_8001BE94(item,fn_8000DA10(),arg0,*(s32*)arg1,*(s32*)((char*)arg1+4));
+ }
+ case 0x100: {
+  void *item;
+  result=fn_801284F8(0x10,base+0x58);if(!result)return result;
+  item=fn_801284F8(0x24,base+0x64);
+  if(item)item=fn_8001BE94(item,fn_8000DA10(),a0,*(s32*)a1,*(s32*)((char*)a1+4));
   *(void**)result=item;*(void**)((char*)result+4)=lbl_80338010;*(void**)((char*)result+8)=0;*(s32*)((char*)result+0xC)=0;
   best=-1;best2=-1;
   for(j=0;j<3;j++)for(i=0;i<fn_80012854();i++){
-   if(i==*(s32*)arg1&&j==*(s32*)((char*)arg1+4))continue;
-   fn_8001BC38(sp3,fn_8000DA10(),arg0,i,j);
-   if(fn_8001BCF0(sp3)){if(best<0){best=i;best2=j;}else{fn_8001BC38(sp2,fn_8000DA10(),arg0,best,best2);if(fn_8001BD6C(sp3,sp2)){best=i;best2=j;}}}
+   if(i==*(s32*)a1&&j==*(s32*)((char*)a1+4))continue;
+   fn_8001BC38(sp3,fn_8000DA10(),a0,i,j);
+   if(fn_8001BCF0(sp3)){if(best<0){best=i;best2=j;}else{fn_8001BC38(sp4,fn_8000DA10(),a0,best,best2);if(fn_8001BD6C(sp3,sp4)){best=i;best2=j;}}}
   }
-  if(best>=0){item=fn_801284F8(0x24,lbl_80337AC8+0x64);if(item)item=fn_8001BE94(item,fn_8000DA10(),arg0,best,best2);*(void**)((char*)result+8)=item;}
+  if(best>=0){item=fn_801284F8(0x24,base+0x64);if(item)item=fn_8001BE94(item,fn_8000DA10(),a0,best,best2);*(void**)((char*)result+8)=item;}
   return result;
- default:
-  fn_802E317C(lbl_80337AC8,arg0); return 0;
+ }
  }
 }
-#pragma pop
+#pragma opt_propagation reset
 
 void *__dt__Q34nw4r2ef6EffectFv_801CBCA4(void *arg0, int arg1) {
     /* Destructor for nw4r2ef::Effect variant: restore vtable at +4, run cleanup, and optionally free. */
@@ -621,8 +626,15 @@ extern void fn_801CC594(void *);
 extern void *fn_80207848(void *, int);
 extern void *fn_8023512C(void *);
 extern float lbl_80562A04;
+#pragma opt_propagation off
 void fn_801CC470(void) {
-    register void *object; register int i; s32 *table; register void *item; void **slot; void *field;;;;;;
+    register void *object;
+    register int i;
+    register s32 *table;
+    register void *item;
+    void **slot;
+    void *field;
+
     object = fn_801284F8(0x618, lbl_80337AC8 + 0x190);
     if (object != 0) {
         fn_801CC8FC((char *)object + 0x18);
@@ -632,26 +644,30 @@ void fn_801CC470(void) {
         *(int *)((char *)object + 0x2A4) = fn_80145E70(lbl_80337AC8 + 0x1AC);
         *((unsigned char *)object + 0x10) = 0;
         table = __AXFXGetLfoSinTable_801769CC();
-        *(s32 *)object = table[0]; *((s32 *)object + 1) = table[2];
-        *((unsigned char *)object + 0x11) = 1; *((unsigned char *)object + 0x12) = 1;
-        *((unsigned char *)object + 0x13) = 1; *((unsigned char *)object + 0x14) = 1;
+        *(s32 *)object = table[0];
+        *((s32 *)object + 1) = table[2];
+        *((unsigned char *)object + 0x11) = 1;
+        *((unsigned char *)object + 0x12) = 1;
+        *((unsigned char *)object + 0x13) = 1;
+        *((unsigned char *)object + 0x14) = 1;
         i = 1;
         do {
             int mode = fn_8001BA74(i);
             item = ((void *(*)(int, void *))fn_801CB954)(mode, object);
             slot = fn_801CC784((char *)object + 0x18);
-            i++; *slot = item;
+            i++;
+            *slot = item;
         } while (i <= 7);
         field = fn_80207848(lbl_80337AC8 + 0x1BC, 1);
         *(void **)((char *)object + 8) = field;
-        if (field != 0) fn_801CC768(field, lbl_80562A04);
+        if (field != 0)
+            fn_801CC768(field, lbl_80562A04);
         *(void **)((char *)object + 0xC) = fn_8023512C(lbl_80337AC8 + 0x1C8);
         fn_801CC594(object);
     }
     lbl_8055E884 = (s32 *)object;
 }
-
-#pragma scheduling invalid_target
+#pragma opt_propagation reset
 void fn_801CC594(void *arg0) {
     u8 *base = (u8 *)arg0;
     register s32 offset;
@@ -1608,15 +1624,17 @@ extern f32 lbl_805629FC;
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801CD7BC(int arg0, int arg1, f32 farg0) {
-    s32 statusIndex;
-    register s32 offset;
+    #pragma opt_propagation off
+    register u8 *base;
+    register s32 high;
+    register s32 id;
     register s32 index;
+    register s32 offset;
+    s32 statusIndex;
     u8 *object;
     s32 status;
-    u8 *base;
     s32 mapIndex;
     s32 current;
-    register s32 id;
     if (fn_801CE898() != 0)
         goto done;
     base = (u8 *)lbl_8055E884;
@@ -1637,18 +1655,20 @@ extern "C" void fn_801CD7BC(int arg0, int arg1, f32 farg0) {
     if (object[0] == 0 || arg1 == 0)
         goto done;
     if (*(f32 *)(base + 0x2B8) < lbl_805629FC) {
-        id = 0x20507;
+        high = 0x20000;
+        id = high + 0x507;
         index = 0;
         offset = 0;
-loop:
-        if (fn_801CB900(*(int **)((u8 *)*(s32 **)(base + 0x18) + offset), id) == 0)
-            goto increment;
-        goto found;
-increment:
-        offset += 4;
-        index++;
-        if (index < *(s32 *)(base + 0x1C))
-            goto loop;
+        while (index < *(s32 *)(base + 0x1C)) {
+            switch (fn_801CB900(*(int **)((u8 *)*(s32 **)(base + 0x18) + offset), high + 0x507)) {
+            case 0:
+                offset += 4;
+                index++;
+                break;
+            default:
+                goto found;
+            }
+        }
         index = -1;
 found:
         if (index < 0)
