@@ -2348,55 +2348,77 @@ extern char __GXIsGPFifoReady(void);
 extern signed long long OSGetTime(void);
 #pragma dont_inline on
 #pragma use_lmw_stmw off
+/* RealName: GXAbortFrame (RVL SDK GXMisc.c) -- the name this unit was given is
+ * the SDK's vertex-format getter, which lives in GXAttr.c.
+ *
+ * Wait for the GP read pointer to hold still for 8 ticks (the command FIFO has
+ * drained and the Graphics processor is idle), then pulse the PI frame-abort
+ * register to kill the frame in flight.  __GXShutdown() runs this right after
+ * marking the GX FIFO live; the longer sibling below is the same wait followed
+ * by the FIFO cleanup. */
 void GXGetVtxAttrFmt(void) {
-    unsigned int old, value;
+    #define GX_FIFO_LIVE     0x5FA                            /* __GXData byte: the GX FIFO is set up */
+    #define GP_READ_PTR_HI   0x4E                             /* __memReg: GP read pointer, high half */
+    #define GP_READ_PTR_LO   0x50                             /* __memReg: GP read pointer, low half */
+    #define PI_FRAME_ABORT   (*(volatile unsigned int *)0xCC003018) /* __piReg[6]: abort the frame in flight */
+    #define FIFO_IDLE_TICKS  8                                /* the read pointer must hold still this long */
+    #define ABORT_HOLD_TICKS 50                               /* frame abort held active */
+    #define ABORT_GAP_TICKS  5                                /* and idle after it drops */
+    unsigned int prevPtr, curPtr;
     signed long long startTime, nowTime;
     unsigned int *gxData = __GXData;
 
-    if (*(unsigned char *)((char *)gxData + 0x5FA) &&
+    if (*(unsigned char *)((char *)gxData + GX_FIFO_LIVE) &&
         (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0)) {
         unsigned int hi, prevHi, lo;
         volatile unsigned short *reg = (volatile unsigned short *)__memReg;
-        hi = reg[0x4E / 2];
+        hi = reg[GP_READ_PTR_HI / 2];
         do {
             prevHi = hi;
-            lo = reg[0x50 / 2];
-            hi = reg[0x4E / 2];
+            lo = reg[GP_READ_PTR_LO / 2];
+            hi = reg[GP_READ_PTR_HI / 2];
         } while (hi != prevHi);
-        old = (hi << 16) | lo;
+        prevPtr = (hi << 16) | lo;
 
         for (;;) {
             unsigned int hi2, prevHi2, lo2;
             startTime = OSGetTime();
             do {
                 nowTime = OSGetTime();
-            } while (nowTime - startTime <= 8);
+            } while (nowTime - startTime <= FIFO_IDLE_TICKS);
             {
                 volatile unsigned short *reg2 = (volatile unsigned short *)__memReg;
-                hi2 = reg2[0x4E / 2];
+                hi2 = reg2[GP_READ_PTR_HI / 2];
                 do {
                     prevHi2 = hi2;
-                    lo2 = reg2[0x50 / 2];
-                    hi2 = reg2[0x4E / 2];
+                    lo2 = reg2[GP_READ_PTR_LO / 2];
+                    hi2 = reg2[GP_READ_PTR_HI / 2];
                 } while (hi2 != prevHi2);
             }
-            value = (hi2 << 16) | lo2;
+            curPtr = (hi2 << 16) | lo2;
             {
-                unsigned int previous = old;
-                old = value;
-                if (value != previous)
+                unsigned int previous = prevPtr;
+                prevPtr = curPtr;
+                if (curPtr != previous)
                     continue;
             }
             break;
         }
     }
 
-    *(volatile unsigned int *)0xCC003018 = 1;
+    PI_FRAME_ABORT = 1;
     startTime = OSGetTime();
-    do { nowTime = OSGetTime(); } while (nowTime - startTime <= 50);
-    *(volatile unsigned int *)0xCC003018 = 0;
+    do { nowTime = OSGetTime(); } while (nowTime - startTime <= ABORT_HOLD_TICKS);
+    PI_FRAME_ABORT = 0;
     startTime = OSGetTime();
-    do { nowTime = OSGetTime(); } while (nowTime - startTime <= 5);
+    do { nowTime = OSGetTime(); } while (nowTime - startTime <= ABORT_GAP_TICKS);
+    #undef GX_FIFO_LIVE
+    #undef GP_READ_PTR_HI
+    #undef GP_READ_PTR_LO
+    #undef PI_FRAME_ABORT
+    #undef FIFO_IDLE_TICKS
+    #undef ABORT_HOLD_TICKS
+    #undef ABORT_GAP_TICKS
 }
 #pragma dont_inline reset
 #pragma use_lmw_stmw off
