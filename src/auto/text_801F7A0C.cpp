@@ -1387,8 +1387,7 @@ extern "C" s32 fn_801F948C(void *node) {
 extern u8 lbl_8033B200[];
 void *fn_80131810(char *);
 void fn_80131818(void);
-int vsprintf(char *, const char *, va_list);
-extern int vsprintf(char *, const char *, va_list);
+extern "C" int vsprintf(char *, const char *, va_list);
 extern void *fn_801284F8(u32, void *);
 extern void *fn_80131810(char *);
 extern void fn_80131818(void);
