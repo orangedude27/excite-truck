@@ -113,6 +113,7 @@ s32 fn_801EB110(void *node) {
 #pragma dont_inline off
 
 #pragma dont_inline on
+/* Reset the pair of global float scale factors (passed to the scene render call) to 1.0. */
 void fn_801EB128(void) {
     lbl_8055EB98[0] = lbl_80562E68;
     lbl_8055EB98[1] = lbl_80562E68;
