@@ -180,6 +180,8 @@ void *FindContainHeap_(MEMList *list, u32 addr) {
     return 0;
 }
 
+#pragma push
+#pragma processor 750
 void MEMiInitHeapHead(MEMiHeapHead *heap, u32 magic, void *start, void *end, u16 opt) {
     MEMiHeapHead *child;
     MEMiHeapHead *outer;
@@ -199,8 +201,8 @@ void MEMiInitHeapHead(MEMiHeapHead *heap, u32 magic, void *start, void *end, u16
     }
     OSInitMutex(&heap->mutex);
     OSLockMutex((OSMutex *)lbl_8037D818);
-    outer = 0;
     list = (MEMList *)lbl_8037D808;
+    outer = 0;
     while ((outer = (MEMiHeapHead *)MEMGetNextListObject(list, outer)) != 0) {
         if ((u32)outer->start <= (u32)heap && (u32)heap < (u32)outer->end) {
             child = 0;
@@ -210,22 +212,19 @@ void MEMiInitHeapHead(MEMiHeapHead *heap, u32 magic, void *start, void *end, u16
                     while ((block = (MEMiHeapHead *)MEMGetNextListObject(&child->list, block)) != 0) {
                         if ((u32)block->start <= (u32)heap && (u32)heap < (u32)block->end) {
                             res = (MEMiHeapHead *)FindContainHeap_(&block->list, (u32)heap);
-                            if (res == 0)
-                                res = block;
+                            switch ((u32)res) { case 0: res = block; break; default: break; }
                             goto found_inner;
                         }
                     }
                     res = 0;
                 found_inner:
-                    if (res == 0)
-                        res = child;
+                    switch ((u32)res) { case 0: res = child; break; default: break; }
                     goto found_middle;
                 }
             }
             res = 0;
         found_middle:
-            if (res == 0)
-                res = outer;
+            switch ((u32)res) { case 0: res = outer; break; default: break; }
             goto found_outer;
         }
     }
@@ -236,7 +235,7 @@ found_outer:
     MEMAppendListObject(list, heap);
     OSUnlockMutex((OSMutex *)lbl_8037D818);
 }
-
+#pragma pop
 extern char lbl_8037D808[];
 extern char lbl_8037D818[];
 void MEMiFinalizeHeap(MEMiHeapHead *heap) {
@@ -715,19 +714,16 @@ void MEMFreeToFrmHeap(MEMiHeapHead* heap, u32 flags) {
 }
 
 u32 MEMGetAllocatableSizeForFrmHeapEx(MEMiHeapHead *heap, s32 align) {
-    u32 size = (align < 0) ? (0 - align) : align;
-    u32 start;
-    u32 end;
-    u32 result;
     BOOL enabled;
+    u32 result;
+    void *block;
+    align = __abs(align);
     enabled = OSDisableInterrupts();
-    start = *(u32 *)((u8 *)heap + 0x3C);
-    end = *(u32 *)((u8 *)heap + 0x40);
-    result = (size + start - 1) & (size - 1);
-    if (result <= end) {
-        result = end - result;
-    } else {
+    block = (void *)((*(u32 *)((u8 *)heap + 0x3C) + (align - 1)) & ~(align - 1));
+    if ((u32)block > *(u32 *)((u8 *)heap + 0x40)) {
         result = 0;
+    } else {
+        result = *(u32 *)((u8 *)heap + 0x40) - (u32)block;
     }
     OSRestoreInterrupts(enabled);
     return result;
@@ -743,11 +739,11 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 
     u32 mask;
     u32 alignStart;
     u32 strideEnd;
-    void *head;
+    u32 head;
     u32 stride;
     u32 count;
     u32 remaining;
-    void *next;
+    u32 next;
     if ((s32)(base - end) > 0) {
         return 0;
     }
@@ -755,23 +751,23 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 
     mask = ~((align - 1) | (align - 1));
     alignStart = area + align;
     strideEnd = align + unitSize;
-    head = (void *)(mask & (alignStart + 7));
-    if ((s32)((u32)head - end) > 0) {
+    stride = mask & (strideEnd - 1);
+    head = mask & (alignStart + 7);
+    if ((s32)(head - end) > 0) {
         return 0;
     }
-    stride = mask & (strideEnd - 1);
-    count = (end - (u32)head) / stride;
+    count = (end - head) / stride;
     if (count == 0) {
         return 0;
     }
-    MEMiInitHeapHead((MEMiHeapHead *)base, 0x554E5448, head, (void *)((u32)head + count * stride), opt);
+    MEMiInitHeapHead((MEMiHeapHead *)base, 0x554E5448, (void *)head, (void *)(head + count * stride), opt);
     remaining = count - 1;
-    *(u32 *)(area + 0) = (u32)head;
+    *(u32 *)(area + 0) = head;
     *(u32 *)(area + 4) = stride;
     next = head;
-    while (remaining != 0) {
-        void *following = (void *)((u32)next + stride);
-        *(void **)next = following;
+    while (remaining > 0) {
+        u32 following = next + stride;
+        *(u32 *)next = following;
         next = following;
         remaining -= 1;
     }
