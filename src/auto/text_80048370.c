@@ -850,6 +850,7 @@ static void AllocatorFreeForExpHeap_(MEMAllocator* allocator, void* block) {
     MEMFreeToExpHeap(allocator->heap, block);
 }
 
+/* Allocator alloc callback: allocate `size` bytes from the allocator's frame heap using its stored alignment (heapParam1). */
 static void* AllocatorAllocForFrmHeap_(MEMAllocator* allocator, u32 size) {
     return MEMAllocFromFrmHeapEx(allocator->heap, size, allocator->heapParam1);
 }
