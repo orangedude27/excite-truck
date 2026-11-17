@@ -4371,7 +4371,6 @@ extern "C" void fn_801A2CAC(void *shape) {
     fn_801E3FC8(child + 0x24, lbl_8055E598, child, *(f32 *)((u8 *)shape + 0x24));
 }
 
-extern void fn_8019ECC4();
 extern char lbl_803337C8;
 extern void fn_801E3FC8(s32, s32, s32, f32);
 extern s32 lbl_8055E598;
