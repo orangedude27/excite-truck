@@ -1666,8 +1666,10 @@ void fn_8016E314(void *pair) {
 }
 #pragma dont_inline reset
 
-u8 fn_8016E320(void *arg0) {
-    return *(u8 *)((u8 *)arg0 + 0x9c);
+/* Read the enable flag byte at +0x9C of the TObj4C object (set to 1 on creation,
+ * cleared on reset, gates its +0xA0 timer/countdown logic). */
+u8 fn_8016E320(void *object) {
+    return *(u8 *)((u8 *)object + 0x9c);
 }
 
 #pragma cplusplus on
