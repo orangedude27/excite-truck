@@ -1133,10 +1133,12 @@ void fn_802BDFBC(void *cell, int distanceBand, float fadeWeight) {
 extern float lbl_80564D14;
 extern float lbl_80564D18;
 void fn_802BAF98(void *, int);
-void fn_802BDFF4(void *arg0, int arg1) {
-    arg0 = *(void **)((char *)arg0 - 8);
-    if (arg0 != 0) {
-        fn_802BAF98(arg0, arg1);
+/* If the owner back-pointer stored 8 bytes before `node` is non-null, set the
+ * owner's +0xC byte field to `value` via fn_802BAF98. */
+void fn_802BDFF4(void *node, int value) {
+    node = *(void **)((char *)node - 8);
+    if (node != 0) {
+        fn_802BAF98(node, value);
     }
 }
 
