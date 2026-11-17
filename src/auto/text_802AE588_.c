@@ -1230,8 +1230,9 @@ int fn_802AFF5C(int *arg0, int arg1) {
     return *arg0 + arg1 * 0x24;
 }
 
-void fn_802AFF6C(void *arg0) {
-    *(unsigned short *)*(void **)arg0 = *(unsigned short *)((char *)arg0 + 4) - 1;
+/* Finalize the u16 list builder: write the stored entry count into its reserved first slot. */
+void fn_802AFF6C(void *list) {
+    *(unsigned short *)*(void **)list = *(unsigned short *)((char *)list + 4) - 1;
 }
 
 #pragma optimization_level 3
@@ -1473,7 +1474,7 @@ s32 fn_802B03C0(void *arg0) {
     v31 = 0;
     if ((fn_802AE7AC() != 0) && (lbl_8055F970 != 0)) {
         v0 = 0;
-        d = lbl_80564B84 * lbl_80564AF0 * lbl_80564B6C;
+        d = lbl_80564B84 * lbl_80564B6C * lbl_80564AF0;
         a = *(f32 *)arg0;
         c = -d;
         if ((a > c) && (a < d)) {
