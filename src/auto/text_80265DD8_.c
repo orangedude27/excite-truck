@@ -1613,15 +1613,17 @@ extern void PSVECCrossProduct(void*, void*, void*);
 extern double cos(float);
 extern double sin(float);
 #pragma push
-#pragma processor 750
 void fn_80268BD4(void *out, int arg1, float t, float angle) {
+#pragma scheduling on
     float *inp = (float *)arg1;
     float *b = *(float **)((char *)inp + 0x14);
-    volatile float sp[4];
+    float vec[4];
+    float rot[2];
     float x;
     float y;
     float z;
     float w;
+    float sumSq;
     float scale;
     float xScaled;
     float yScaled;
@@ -1630,30 +1632,32 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     float sine;
 
     x = inp[2] + t * (b[2] - inp[2]);
-    sp[0] = x;
     y = inp[3] + t * (b[3] - inp[3]);
-    sp[1] = y;
+    sumSq = x * x + y * y;
     z = inp[0] + t * (b[0] - inp[0]);
     w = inp[1] + t * (b[1] - inp[1]);
-    sp[2] = z;
-    sp[3] = w;
+    vec[0] = x;
+    vec[1] = y;
+    vec[2] = z;
+    vec[3] = w;
 
     scale = lbl_80563C2C /
         (float)((double (*)(void *, float, float, float, float, float, float, float, float))fn_8002F234)(
-            out, x * x + y * y, x * x, t * (b[1] - inp[1]),
-            z, inp[0], inp[1], y, x);
-    xScaled = sp[0] * scale;
-    yScaled = sp[1] * scale;
-    sp[0] = yScaled;
-    sp[1] = -xScaled;
+            out, sumSq, x * x, t * (b[1] - inp[1]), z, inp[0], inp[1], y, x);
+    xScaled = vec[0] * scale;
+    yScaled = vec[1] * scale;
+    vec[0] = yScaled;
+    vec[1] = -xScaled;
 
     *(float *)((char *)out + 0x28) = lbl_80563C20;
     rotation = lbl_80563C8C * inp[10] - lbl_80563C90;
-    *(float *)((char *)out + 0x24) = sp[2] + yScaled * rotation;
-    *(float *)((char *)out + 0x2C) = sp[3] + sp[1] * rotation;
-    fn_801EA140((char *)out + 0x24, sp[3],
-                sp[2] + yScaled * rotation, yScaled * rotation,
-                rotation, sp[1], yScaled, xScaled);
+    rot[0] = vec[2] + yScaled * rotation;
+    rot[1] = vec[3] + vec[1] * rotation;
+    *(float *)((char *)out + 0x24) = rot[0];
+    *(float *)((char *)out + 0x2C) = rot[1];
+    fn_801EA140((char *)out + 0x24, vec[3],
+                vec[2] + yScaled * rotation, yScaled * rotation,
+                rotation, vec[1], yScaled, xScaled);
     *(float *)((char *)out + 0x28) += lbl_80563C94;
 
     cosine = (float)cos(angle);
@@ -1661,9 +1665,9 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     *(float *)((char *)out + 0xC) = lbl_80563C20;
     *(float *)((char *)out + 0x10) = lbl_80563C2C;
     *(float *)((char *)out + 0x14) = lbl_80563C20;
-    *(float *)((char *)out + 0x18) = yScaled * cosine - sp[1] * sine;
+    *(float *)((char *)out + 0x18) = yScaled * cosine - vec[1] * sine;
     *(float *)((char *)out + 0x1C) = lbl_80563C20;
-    *(float *)((char *)out + 0x20) = yScaled * sine + sp[1] * cosine;
+    *(float *)((char *)out + 0x20) = yScaled * sine + vec[1] * cosine;
     PSVECCrossProduct((char *)out + 0xC, (char *)out + 0x18, out);
 }
 #pragma pop
