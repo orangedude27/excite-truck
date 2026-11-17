@@ -3299,7 +3299,7 @@ public:
 };
 extern "C" u32 fn_80170FDC(void *arg0) {
     s32 temp_r4;
-    if ((lbl_8055E3C8 - *(volatile f32 *)((u8 *)arg0 + 0xA0)) < lbl_80561A1C) {
+    if ((lbl_8055E3C8 - *(f32 *)((u8 *)arg0 + 0xA0)) < 2.25f) {
         ((Q70FDC *)arg0)->f17();
     } else {
         if (*(u8 *)((u8 *)arg0 + 0xB4) != 0)
@@ -3394,8 +3394,9 @@ s32 fn_801711F8(void *obj) {
     return ((CountdownObj *)obj)->countdownDone == 0;
 }
 
-void fn_80171208(void *arg0, s32 arg1) {
-    fn_801B0C78((void *)arg1);
+/* Member callback: ignores the object and forwards the slot index to the per-slot request builder. */
+void fn_80171208(void *self, s32 slotIndex) {
+    fn_801B0C78((void *)slotIndex);
 }
 
 extern void fn_801B8060(void *, void *);
