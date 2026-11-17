@@ -244,7 +244,9 @@ extern const char lbl_8055C120;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_80252F50(f32 arg0) {
+#pragma scheduling on
     f32 threshold = lbl_805639CC;
     f32 step = lbl_805639F8;
     s32 count = 0;
@@ -313,34 +315,33 @@ typedef struct {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
-    s32 slot = arg0;
     f32 z, y, x;
     u32 args[12];
     CamEntry80253104 *cam = (CamEntry80253104 *)lbl_80498D00;
     x = *(volatile f32 *)((u8 *)arg1 + 0x12C);
     y = *(volatile f32 *)((u8 *)arg1 + 0x130);
     z = *(volatile f32 *)((u8 *)arg1 + 0x134);
-    cam[slot].f34 = x;
-    cam[slot].f38 = y;
-    cam[slot].f3c = z;
-    fn_801BDA74(slot, arg1);
-    if (cam[slot].flag30 == 0) {
-        fn_80252B88(slot);
+    cam[arg0].f34 = x;
+    cam[arg0].f38 = y;
+    cam[arg0].f3c = z;
+    fn_801BDA74(arg0, arg1);
+    if (cam[arg0].flag30 == 0) {
+        fn_80252B88(arg0);
     } else {
-        args[9] = cam[slot].w24;
-        args[11] = cam[slot].w2c;
-        args[0] = *(u32 *)&cam[slot].pad0[0x00];
-        args[1] = *(u32 *)&cam[slot].pad0[0x04];
-        args[2] = *(u32 *)&cam[slot].pad0[0x08];
-        args[3] = *(u32 *)&cam[slot].pad0[0x0C];
-        args[4] = *(u32 *)&cam[slot].pad0[0x10];
-        args[5] = *(u32 *)&cam[slot].pad0[0x14];
-        args[6] = *(u32 *)&cam[slot].pad0[0x18];
-        args[7] = *(u32 *)&cam[slot].pad0[0x1C];
-        args[8] = *(u32 *)&cam[slot].pad0[0x20];
-        args[10] = cam[slot].w28;
+        args[9] = cam[arg0].w24;
+        args[11] = cam[arg0].w2c;
+        args[0] = *(u32 *)&cam[arg0].pad0[0x00];
+        args[1] = *(u32 *)&cam[arg0].pad0[0x04];
+        args[2] = *(u32 *)&cam[arg0].pad0[0x08];
+        args[3] = *(u32 *)&cam[arg0].pad0[0x0C];
+        args[4] = *(u32 *)&cam[arg0].pad0[0x10];
+        args[5] = *(u32 *)&cam[arg0].pad0[0x14];
+        args[6] = *(u32 *)&cam[arg0].pad0[0x18];
+        args[7] = *(u32 *)&cam[arg0].pad0[0x1C];
+        args[8] = *(u32 *)&cam[arg0].pad0[0x20];
+        args[10] = cam[arg0].w28;
         *(f32 *)&args[10] = lbl_805639FC + fn_801DCF48(0, args[9], args[8], args[7], args[6], args[5], args[4], args[3], *(f32 *)&args[9], *(f32 *)&args[11]);
-        fn_801BE400(slot, args, lbl_805639E8);
+        fn_801BE400(arg0, args, lbl_805639E8);
     }
 }
 extern s8 lbl_8055F308;
