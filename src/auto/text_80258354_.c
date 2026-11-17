@@ -237,8 +237,8 @@ copied:
         ((int *)p)[0] = 0;
         ((int *)p)[1] = -1;
         ((int *)p)[2] = 9;
-        ((float *)p)[3] = lbl_80563AC8;
-        ((float *)p)[4] = lbl_80563AC8;
+        ((float *)p)[3] = 1.0f;
+        ((float *)p)[4] = 1.0f;
         ((int *)p)[0] = fn_80232578(arg2);
     }
     *(void **)(base + 0x20) = p;
@@ -336,45 +336,72 @@ void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, flo
   }
   ((void (*)(int, int, int, float, float, float, float, float)) fn_802354A0)(new_var2, *((int *) (index + 0x44)), arg3, x, y, lbl_80563AD0, cosine, sine);
 }
-void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, float y, float scale) {
-    int index = 0;
-    int offset = 0;
-    int result;
-    register float c;
-    float s;
-    goto check;
-loop:
-    result = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1);
-    switch (((unsigned int)__cntlzw(result) >> 5)) {
-    case 0:
-        offset += 0x48;
-        index++;
-        goto check;
-    default:
-        goto found;
-    }
-check:
-    if (index < *(int *)((char *)arg0 + 8))
-        goto loop;
-    index = -1;
-found:
-    if (index < 0)
-        return;
-    index = *(int *)((char *)arg0 + 4) + index * 0x48;
-    c = scale * fn_80235EF0(*(int *)(index + 0x40), *(int *)(index + 0x44));
-    s = scale * fn_80235F64(*(int *)(index + 0x40), *(int *)(index + 0x44));
-    if (flags & 2)
-        x -= c;
-    else if (flags & 4)
-        x -= lbl_80563ACC * c;
-    if (flags & 0x40)
-        y += s;
-    else if (flags & 0x10)
-        y += lbl_80563ACC * s;
-    ((void (*)(int, int, int, float, float, float, float, float))fn_802354A0)(*(int *)(index + 0x40), *(int *)(index + 0x44), arg3, x, y, lbl_80563AD0, c, s);
-}
 #pragma scheduling on
-#pragma pop
+void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, float y, float scale)
+{
+  int index = 0;
+  int offset = 0;
+  int result;
+  int new_var;
+  float c;
+  float s;
+  goto check;
+  loop:
+  result = stricmp((const char *) ((*((unsigned int *) (((char *) arg0) + 4))) + offset), arg1);
+
+  switch (((unsigned int) __cntlzw(result)) >> 5)
+  {
+    case 0:
+      offset += 0x48;
+      index++;
+      goto check;
+
+    default:
+      goto found;
+
+  }
+
+  check:
+  if (index < (*((int *) (((char *) arg0) + 8))))
+  {
+    goto loop;
+  }
+
+  index = -1;
+  found:
+  if (index < 0)
+  {
+    return;
+  }
+
+  index = (*((int *) (((char *) arg0) + 4))) + (index * 0x48);
+  new_var = flags & 0x10;
+  c = scale * fn_80235EF0(*((int *) (index + 0x40)), *((int *) (index + 0x44)));
+  s = scale * fn_80235F64(*((int *) (index + 0x40)), *((int *) (index + 0x44)));
+  if (flags & 2)
+  {
+    x -= c;
+  }
+  else
+    if (flags & 4)
+  {
+    x -= lbl_80563ACC * c;
+  }
+  if (flags & 0x40)
+  {
+    y += s;
+  }
+  else
+  {
+ do { } while (0);
+    if (new_var)
+    {
+      y += lbl_80563ACC * s;
+    }
+  }
+  ((void (*)(int, int, int, float, float, float, float, float)) fn_802354A0)(*((int *) (index + 0x40)), *((int *) (index + 0x44)), arg3, x, y, lbl_80563AD0, c, s);
+}
+#pragma scheduling invalid_target
 /* Look up a named entry in a 0x48-byte stride table and return its value via fn_80235EF0, or 0.0f if not found. */
 float fn_80258A00(void *table, int name) {
     int index = 0;
