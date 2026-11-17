@@ -462,8 +462,9 @@ void fn_801E0890(void *arg0) {
     }
 }
 #pragma pop
-int fn_801E0ED4(int arg0, int arg1) {
-    return arg1 > arg0 ? arg1 : arg0;
+/* Return the larger of two ints; callers use it to clamp a value to a minimum. */
+int fn_801E0ED4(int minValue, int value) {
+    return value > minValue ? value : minValue;
 }
 
 #pragma scheduling off
