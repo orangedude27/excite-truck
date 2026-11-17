@@ -389,8 +389,9 @@ void fn_802DBD88(void) {
 #define sCachedPositionArray lbl_8055FEA8
 #define sCachedVertexCount   lbl_8055FEAC
 void fn_802DBDD8(void) {
-    lbl_8055FEA8 = 0;
-    lbl_8055FEAC = 0;
+    // Invalidate the cached GX position vertex array so the next setup call reconfigures it.
+    sCachedPositionArray = 0;
+    sCachedVertexCount = 0;
 }
 
 #pragma scheduling off
