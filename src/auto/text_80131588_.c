@@ -956,6 +956,8 @@ extern "C" f32 fn_80132BD0(void *table, s32 key, f32 defaultValue) {
 }
 #pragma cplusplus reset
 
+/* ValueTable integer accessor: a virtual hook that simply yields the default
+ * integer value 0 (it ignores any dispatch arguments). */
 s32 fn_80132C48(void) { return 0; }
 
 // Returns a pointer (as s32) to the 0x1C-byte record at `index` in the table,
