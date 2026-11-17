@@ -1527,10 +1527,8 @@ extern "C" void fn_802A41D8(void *arg0, s32 arg1) {
     *(f32 *)(config + 0x7C) = lbl_80564730;
     *(f32 *)(config + 0x94) = lbl_80564730;
     *(s32 *)((u8 *)arg0 + 4) =
-        ((s32 (*)(void *, void *, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32))fn_8028E2F8)(
-            config + 0x18, lbl_80349A8C, arg1, size, mode,
-            lbl_80564760, lbl_805647C8, lbl_8056472C,
-            lbl_80564738, lbl_80564730, lbl_80564830, lbl_80564734);
+        ((s32 (*)(void *, void *, s32))fn_8028E2F8)(config + 0x18, lbl_80349A8C, arg1);
+    (void)mode; (void)size;
 }
 
 #pragma push
