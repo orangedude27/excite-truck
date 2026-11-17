@@ -396,6 +396,7 @@ extern int fn_802E8AE8(const char *);
 extern int fn_802E8BE4(void);
 extern void fn_802E8C2C(void);
 extern void fn_802E8920(int);
+/* NAND device availability check: hardwired to 1 (device present) in this build, gating save/menu paths that call it. */
 u32 fn_802E8D84(void) { return 1; }
 
 /* Names for the state and helpers of this "rmemcard" NAND module (the debug
