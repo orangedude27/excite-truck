@@ -51,9 +51,6 @@ void fn_80129374(int channel, int enabled) {
         level = FULL_LEVEL;
     else
         level = HALF_LEVEL;
-    if (enabled != 0)
-        setStreamBankLevel(level);
-    else
-        setStreamBankLevel(MUTE_LEVEL);
+    setStreamBankLevel(enabled != 0 ? level : MUTE_LEVEL);
 }
 
