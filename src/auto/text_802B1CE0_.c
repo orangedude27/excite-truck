@@ -437,7 +437,6 @@ extern void fn_802B257C(void *);
 #pragma dont_inline on
 #pragma opt_common_subs off
 #pragma opt_loop_invariants off
-#pragma unroll 1
 extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
     class Obj {
     public:
@@ -452,8 +451,8 @@ extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
     void *item;
     void *alloc;
     void *sp8;
-    char *p = (char *)arg0;
     int i = 16;
+    char *p = (char *)arg0;
     *(int *)((char *)arg0 + 0x40C) = 0;
     *(int *)((char *)arg0 + 0x410) = i;
     *(void **)((char *)arg0 + 0x408) = (char *)arg0 + 0x414;
