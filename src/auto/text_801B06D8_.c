@@ -199,11 +199,13 @@ void fn_801B07B4(void *arg0, void *arg1) {
 }
 #pragma scheduling on
 #pragma dont_inline on
-u32 fn_801B08E8(u32 arg0, u32 arg1, s32 arg2) {
-    u32 var_r4;
-    var_r4 = arg1;
-    if (var_r4 < arg0) var_r4 += arg2;
-    return var_r4 - arg0;
+/* Forward distance from a base position to a target on a wrapped coordinate:
+ * add the wrap span when the target lies behind the base, then subtract the base. */
+u32 fn_801B08E8(u32 basePos, u32 targetPos, s32 wrapSpan) {
+    u32 wrapped;
+    wrapped = targetPos;
+    if (wrapped < basePos) wrapped += wrapSpan;
+    return wrapped - basePos;
 }
 #pragma dont_inline reset
 
