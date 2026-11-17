@@ -3642,7 +3642,10 @@ void fn_801533E8(void *arg0, f32 *arg1) {
 }
 
 #pragma pop
-void fn_801537C8(s32 *arg0) {
+/* Initialises a GX light struct built on the caller's stack.  This build links an
+ * empty routine: the light index the caller stores at offset 0 is never used, so
+ * the light's remaining fields are taken straight from the caller's scratch buffer. */
+void fn_801537C8(s32 *light) {
 
 }
 
