@@ -399,6 +399,8 @@ void fn_8013B4E0(void *arg0) {
 }
 
 void fn_8013B56C(void) {
+    /* Clear the flag raised by fn_8013B4E0 when it builds the AI skill/speed table;
+       called during subsystem teardown (fn_8013490C). */
     lbl_8055E160 = 0;
 }
 
