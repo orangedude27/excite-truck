@@ -302,8 +302,9 @@ void fn_802A8978(void) {
     }
 }
 
-s32 fn_802A8A34(void* ptr) {
-    return ((s32*)ptr)[1];
+/* Return the element count (field at +4) of the array descriptor whose base pointer is at arrayDesc. */
+s32 fn_802A8A34(void* arrayDesc) {
+    return ((s32*)arrayDesc)[1];
 }
 
 /* Return the address of element index in the 0x28-byte record array whose base address is held in *basePtr. */
