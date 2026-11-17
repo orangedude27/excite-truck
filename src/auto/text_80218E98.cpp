@@ -7633,8 +7633,11 @@ extern "C" void fn_80226708(void *arg0) {
     fn_80219440(arg0, 1, result, 4);
 }
 
-extern "C" void fn_80226758(void *arg0) {
-    *(s32 *)*(u32 *)((u8 *)arg0 + 0x264) = *(s32 *)((u8 *)arg0 + 0x260);
+extern "C" void fn_80226758(void *self) {
+    /* Update the id this object tracks (+0x264) to its cached value (+0x260). */
+    s32 value = *(s32 *)((u8 *)self + 0x260);
+    s32 *tracked = *(s32 **)((u8 *)self + 0x264);
+    *tracked = value;
 }
 
 extern "C" void fn_80226768(void *self) {
