@@ -814,8 +814,9 @@ void fn_8023E548(s32 arg0) {
 }
 
 int fn_8023E3D8(int, int);
-void fn_8023E550(int arg0) {
-    fn_8023E3D8(arg0, -1);
+/* Wrapper: step the record's +0x10 counter down by one (with wraparound) via fn_8023E3D8. */
+void fn_8023E550(int record) {
+    fn_8023E3D8(record, -1);
 }
 
   extern s32 fn_8023DD4C(void);
