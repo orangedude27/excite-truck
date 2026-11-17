@@ -1249,6 +1249,7 @@ void fn_80068F28(s32 result) {
 }
 
 void fn_80068F80(void) {
+    /* WUD sync alarm handler: set the control block's syncState byte (+0xC) to the syncing state (1). */
     lbl_80392960[0xC] = 1;
 }
 
