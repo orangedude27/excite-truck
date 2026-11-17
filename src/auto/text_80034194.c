@@ -2592,7 +2592,7 @@ void fn_80038040(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern void fn_80038870(void);
+extern void fn_80038870();
 extern void fn_8003B9CC(u32, void *);
 extern void fn_8003B508(u32, u32, void *);
 extern void fn_8003B0B0(void *, void *);
