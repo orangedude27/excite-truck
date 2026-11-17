@@ -219,6 +219,7 @@ void fn_802CE7D4(int modelData, int dataSize, void *userData) {
 #undef mrModelFixupResource
 }
 
-int fn_802CE850(void *arg0) {
-    return *(int *)((char *)arg0 + 0x38);
+/* Return the load state of this ModPool slot (0 = unused, 1 = loading, 2 = loaded). */
+int fn_802CE850(void *slot) {
+    return *(int *)((char *)slot + 0x38);
 }
