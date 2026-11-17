@@ -632,9 +632,19 @@ loop_body:
     }
 }
 
+extern int fn_802C9A58(void);
+extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
+extern int lbl_8055CFF4, lbl_8055D66C;
+extern unsigned char lbl_8055D646;
+extern float lbl_805604B8, lbl_805604F8, lbl_805604FC, lbl_80560500, lbl_80560504;
 void fn_800209A0(int arg0, float arg1) {
-    (void)arg0;
-    (void)arg1;
+    float f5 = fn_802C9A58() ? lbl_80560500 : lbl_805604B4;
+    int color = 0;
+    if (lbl_8055D646 != 0) color = (arg0 << 24) | 0x00FFFFFF;
+    fn_80231220(lbl_80558D80, color, f5, f5, 0.0f, 0.0f, f5, f5, f5, f5);
+    fn_80231220(lbl_80558D84, color, f5, f5, 0.0f, 0.0f, f5, f5, f5, f5);
+    fn_80231220(lbl_80558D78, color, f5, f5, 0.0f, 0.0f, f5, f5, f5, f5);
+    fn_80231220(lbl_80558D7C, color, f5, f5, 0.0f, 0.0f, f5, f5, f5, f5);
 }
 
 #pragma pop
