@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct { float values[12]; } Unk_801ECFE0;
+typedef struct { float v[9]; } Unk_801ECFE0Head;
+typedef struct { float v[3]; } Unk_801ECFE0Tail;
 extern void fn_802C70AC(int, void *, int, int);
 extern int fn_802C7A34(int, void *, int, float);
 extern float *fn_802C86DC();
@@ -625,7 +627,7 @@ void fn_801ECFE0(void *arg0) {
         entry = (long *)(self+0x154);
         cached = lbl_8055EBC0;
         scale = lbl_80562E98;
-        for (i=0; i<*(long *)(self+0x150); i++, entry+=3) {
+        for (i=0; i<*(long *)(self+0x150); entry+=3, i++) {
             mask = *(long *)(*(char **)(self+0x3C)+0x29C) & entry[2];
             params[0] = *(long *)(self+0x3EC);
             params[1] = cached;
