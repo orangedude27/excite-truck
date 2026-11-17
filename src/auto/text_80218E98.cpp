@@ -2561,8 +2561,8 @@ extern "C" void fn_8021C478(void *self) {
 /* Update a scrollable text/list widget: notify the base, register a selection
  * rectangle for the current line based on its mode, then draw start/end
  * markers through the callback when the two line positions differ. */
-extern "C" void fn_8021C4D4(void *widget) {
-    register u8 *self = (u8 *)widget;
+extern "C" void fn_8021C4D4(void *arg0) {
+    register u8 *self = (u8 *)arg0;
     s32 *statusPtr;
     s32 mode;
     s32 isActive;
