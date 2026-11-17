@@ -451,25 +451,24 @@ int fn_80019258(const char *name, int *outValue0, int *outValue1, int unused) {
 extern s32 fn_8001EFC0(s32, s32);
 extern void *lbl_802FD2A0;
 #pragma push
-#pragma use_lmw_stmw off
 #pragma small_data off
 #pragma scheduling invalid_target
 void fn_8001931C(s32 name) {
     register s32 name_r = name;
     register char *strings = (char *)&lbl_802FD2A0;
-    register s32 i = 0;
-    register s32 offset = 0;
+    register s32 i;
+    register s32 offset;
     char *p;
 
-loop:
-    if (stricmp(*(const char **)(*(char **)&lbl_803580A4 + offset), (const char *)name_r) != 0)
-        goto advance;
-    goto found;
-advance:
-    offset += 0x10;
-    i++;
-    if (i < *(s32 *)((char *)&lbl_803580A4 + 4))
-        goto loop;
+    for (i = 0, offset = 0; i < *(s32 *)((char *)&lbl_803580A4 + 4); ) {
+        switch (stricmp(*(const char **)(*(char **)&lbl_803580A4 + offset), (const char *)name_r)) {
+        case 0: goto found;
+        default:
+            offset += 0x10;
+            i++;
+            break;
+        }
+    }
     i = -1;
 found:
     p = *(char **)&lbl_803580A4 + i * 0x10 + 4;
@@ -560,8 +559,9 @@ done:
     return 0;
 }
 
+/* Return the number of entries in the unlockable table. */
 s32 fn_80019088(void) {
-    return ((s32*)lbl_80357E0C)[1];
+    return ((UnlockableTable *)sUnlockableTable)->count;
 }
 
 __declspec(section ".data") extern void *lbl_802FD2DC;
