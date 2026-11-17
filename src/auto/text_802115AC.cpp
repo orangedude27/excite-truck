@@ -506,7 +506,12 @@ extern "C" void fn_80211F44(void) { fn_80211690(1); }
 
 extern "C" void fn_80211F4C(void) { fn_80211D24(1); }
 
-extern "C" int fn_80211F54(void) { return lbl_8055EF40 == 0; }
+extern "C" int fn_80211F54(void) {
+    /* True while the UI subsystem set up by fn_80211690 has no mode active (its mode flag is still 0). */
+    #define s_uiMode lbl_8055EF40
+    return s_uiMode == 0;
+    #undef s_uiMode
+}
 
 extern "C" void fn_80211F64(void) {
     /* Update a global delta-time value from the frame timer unless paused/disabled; always store the last tick. */
