@@ -40,29 +40,33 @@ extern char *strstr(const char *, const char *);
 extern int lbl_802FAA50[];
 struct AcTable { int w[24]; };
 #pragma use_lmw_stmw off
-int fn_802AC1BC(const char *arg0, int arg1) {
+int fn_802AC1BC(const char *justify, int unused) {
+    /* Parse a text "justify" attribute into an alignment bitmask.
+       lbl_802FAA50 is a table of 12-byte { substring, flagBit, horizontal } records:
+       left=1, right=2, center=4 (horizontal); top=8, middle=0x10, bottom=0x20,
+       baseline=0x40 (vertical). Missing an axis defaults to center (4) / middle (0x10). */
     struct AcTable entries;
-    int flags = 0;
-    int has_align = 0;
-    int has_no_align = 0;
+    int alignFlags = 0;
+    int sawHorizontal = 0;
+    int sawVertical = 0;
     entries = *(struct AcTable *)lbl_802FAA50;
     {
         int *entry = (int *)&entries;
         while (entry[0] != 0) {
-            if (strstr(arg0, (const char *)entry[0]) != 0) {
-                int masked = flags & 7;
-                unsigned char align = ((unsigned char *)entry)[8];
-                if (align != 0) masked = flags & ~7;
-                flags = masked | entry[1];
-                has_align = (has_align != 0 || align != 0);
-                has_no_align = (has_no_align != 0 || align == 0);
+            if (strstr(justify, (const char *)entry[0]) != 0) {
+                int masked = alignFlags & 7;
+                unsigned char horizontal = ((unsigned char *)entry)[8];
+                if (horizontal != 0) masked = alignFlags & ~7;
+                alignFlags = masked | entry[1];
+                sawHorizontal = (sawHorizontal != 0 || horizontal != 0);
+                sawVertical = (sawVertical != 0 || horizontal == 0);
             }
             entry = (int *)((char *)entry + 12);
         }
     }
-    if (has_align == 0) flags |= 4;
-    if (has_no_align == 0) flags |= 0x10;
-    return flags;
+    if (sawHorizontal == 0) alignFlags |= 4;
+    if (sawVertical == 0) alignFlags |= 0x10;
+    return alignFlags;
 }
 #pragma use_lmw_stmw on
 int fn_802AC2B4(void **arg0, int arg1, float *arg2) {
