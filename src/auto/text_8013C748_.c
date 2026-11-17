@@ -24,10 +24,10 @@ void fn_8013C748(void);
 
 extern char lbl_8032C478[];
 void fn_8013C748(void) {
-    unsigned char *p = (unsigned char *)&lbl_8032C478;
-    while (*(int *)p != 0) {
-        *(int *)(p + 8) = 0;
-        p += 12;
+    int *p = (int *)&lbl_8032C478;
+    while (*p != 0) {
+        p[2] = 0;
+        p += 3;
     }
 }
 
@@ -185,16 +185,15 @@ extern "C" int fn_8013C8E8(const char *arg0) {
     int unused;
     const char *name;
     void *manager;
+
     i = 0;
     do {
         manager = ((void *(*)(int))fn_8013C800)(i);
         result = ((SearchHead *)*(void **)((char *)manager + 8))->get(lbl_80559D10);
-        j = 0;
-        do {
-            if (stricmp(name, arg0) == 0) {
+        for (j = 0; ((volatile SearchResult *)result)->query(j, &unused, &name) != 0; j++) {
+            if (stricmp(name, arg0) == 0)
                 return *(int *)((char *)manager + 4);
-            }
-        } while (((volatile SearchResult *)result)->query(++j, &unused, &name) != 0);
+        }
         i++;
     } while (i < 5);
     return 6;
