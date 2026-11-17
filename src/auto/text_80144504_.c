@@ -176,7 +176,12 @@ void fn_80144C54(void *arg0) {
     ((u8 *)arg0)[0x4C] = 0;
 }
 
-unsigned int fn_80144C68(unsigned int arg0, unsigned int arg1, unsigned int arg2, unsigned int arg3) { unsigned int a = (arg3 & 0xFF) | ((arg2 << 8) & 0xFF00); unsigned int b = (arg0 << 24) | ((arg1 << 16) & 0xFF0000); return a | b; }
+unsigned int fn_80144C68(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha) {
+    /* Pack four byte components into a 32-bit RGBA color word (red in the high byte, alpha in the low byte). */
+    unsigned int low = (alpha & 0xFF) | ((blue << 8) & 0xFF00);
+    unsigned int high = (red << 24) | ((green << 16) & 0xFF0000);
+    return low | high;
+}
 #pragma scheduling invalid_target
 #pragma scheduling on
 float fn_80144C80(float farg0, float farg1, float farg2) {
