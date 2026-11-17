@@ -140,10 +140,9 @@ extern "C" void fn_802063D8(void) {
 }
 
 extern "C" int fn_80206430(void) {
+    /* Returns 1 if the global status flag lbl_8055ED80 is set, 0 otherwise. */
     extern int lbl_8055ED80;
-    int val = lbl_8055ED80;
-    unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
-    return (int)(tmp >> 31);
+    return lbl_8055ED80 != 0;
 }
 
 extern "C" void fn_80206444(void) {
