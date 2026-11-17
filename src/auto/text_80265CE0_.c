@@ -48,6 +48,7 @@ void fn_80265D74(void) {}
 
 void fn_80265D78(void) {}
 
+/* CarMgr query stub: always answers 0 (false), so CAR_TYPE_R ('R') cars are never in play in this build. */
 int fn_80265D7C(void) { return 0; }
 
 void fn_80265D84(void) {}
