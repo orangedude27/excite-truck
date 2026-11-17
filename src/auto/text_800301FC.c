@@ -760,9 +760,10 @@ void InitMetroTRKCommTable(void) {
     lbl_8055D6F0 = ((u32)lbl_8055D6F0 + 1) % 3;
 }
 
-void AXRegisterAuxACallback(void *arg0, void *arg1) {
-    lbl_8055D728 = arg0;
-    lbl_8055D71C = arg1;
+void AXRegisterAuxACallback(void *callback, void *context) {
+    /* Register the AX auxiliary-A bus DSP callback and the user context passed to it. */
+    lbl_8055D728 = callback;
+    lbl_8055D71C = context;
 }
 
 void AXRegisterAuxBCallback(void *callback, void *context) {
