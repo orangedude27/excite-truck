@@ -3836,8 +3836,9 @@ extern "C" void fn_802874A0(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v9();
 }
 #pragma cplusplus on
-extern "C" void fn_802874B4(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v10();
+extern "C" void fn_802874B4(void* plane) {
+    /* Forward v10() to the sub-object m_a of this black plane. */
+    ((ebi::title::TBlackPlane*)plane)->m_a->v10();
 }
 #pragma cplusplus off
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
