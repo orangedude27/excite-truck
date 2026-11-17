@@ -1166,9 +1166,16 @@ extern "C" void fn_800D76BC(void *holder, int value) {
     if (target) target->forward(value, 1);
 }
 
-extern "C" void fn_800D76E0(void *arg0) {
-    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(int); };
-    ((Obj*)arg0)->v4(0);
+extern "C" void fn_800D76E0(void *layoutObject) {
+    // Forward a zero argument to virtual slot 6 (0x18) of the layout interface object.
+    struct LayoutIf {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void invoke(int);
+    };
+    ((LayoutIf *)layoutObject)->invoke(0);
 }
 
 extern "C" void fn_800D76F4(void *holder, int valueA, int valueB) {
@@ -3283,38 +3290,51 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
 extern "C" const char lbl_8031E908[];
 extern "C" const char lbl_8031E92C[];
 extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
-    if (self != 0) {
-        *(void **)self = lbl_8032012C;
-        void *head = (u8 *)self + 0x14;
-        void *cur = *(void **)((u8 *)self + 0x14);
-        while (cur != head) {
-            void *node = cur;
-            cur = *(void **)node;
-            void *it = node;
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)self + 0x10, &it);
-            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            if (*(u8 *)((u8 *)node + 0xCC) == 0) {
-                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-                void **vt = *(void ***)((u8 *)node - 4);
-                ((void (*)(void *, s32))vt[2])((u8 *)node - 4, -1);
-                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-                node = (u8 *)node - 4;
-                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-                MEMFreeToAllocator(lbl_8055DDF0, node);
+    struct PaneDispatch { virtual void Destroy(s32); };
+    struct PaneObject : PaneDispatch, GroupListNode {};
+    struct PaneList { u32 count; GroupListNode* first; GroupListNode* last; };
+    struct PaneLayout {
+        void* vtable;
+        u32 pad0, pad1, pad2;
+        PaneList childList;
+        PaneList secondList;
+    };
+    PaneLayout* pane = (PaneLayout*)self;
+    GroupListNode* node;
+    GroupListNode* end;
+    GroupListNode* current;
+    if (pane != 0) {
+        node = pane->childList.first;
+        end = (GroupListNode*)&pane->childList.first;
+        pane->vtable = lbl_8032012C;
+        while (node != end) {
+            current = node;
+            void* slot;
+            node = node->next;
+            slot = current;
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&pane->childList, &slot);
+            if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+            if (*(u8*)((char*)current + 0xCC) == 0) {
+                if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+                static_cast<PaneObject&>(*current).Destroy(-1);
+                if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+                char* p = (char*)current - 4;
+                if (p == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+                MEMFreeToAllocator(lbl_8055DDF0, p);
             }
         }
-        void **vt0 = *(void ***)self;
-        ((void (*)(void *, s32))vt0[0x50 / 4])(self, 0);
-        void *child = *(void **)((u8 *)self + 0x28);
-        if (child != 0 && *(u8 *)((u8 *)child + 0x54) == 0) {
-            void **cvt = *(void ***)child;
-            ((void (*)(void *, s32))cvt[2])(child, -1);
-            MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)self + 0x28));
+        void** vt0 = *(void***)self;
+        ((void (*)(void*, s32))vt0[0x50 / 4])(self, 0);
+        void* child = *(void**)((char*)self + 0x28);
+        if (child != 0 && *(u8*)((char*)child + 0x54) == 0) {
+            void** cvt = *(void***)child;
+            ((void (*)(void*, s32))cvt[2])(child, -1);
+            MEMFreeToAllocator(lbl_8055DDF0, *(void**)((char*)self + 0x28));
         }
-        if ((u32)self + 0x1C != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x1C, 0);
-        if ((u32)self + 0x10 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + (unsigned)0x10, 0);
+        if (&pane->secondList != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&pane->secondList, 0);
+        if (&pane->childList != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&pane->childList, 0);
     }
-    if (del > 0) ((void (*)(void *))fn_80128668)(self);
+    if (del > 0) ((void (*)(void*))fn_80128668)(self);
     return self;
 }
 
