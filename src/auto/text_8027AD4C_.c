@@ -70,8 +70,8 @@ extern char lbl_804A4380[];
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
+#pragma scheduling invalid_target
     extern char lbl_80347A50[];
-    extern int fn_802E30C8b(const char *, ...);
     class First {
     public:
         virtual char *m0();
@@ -108,9 +108,10 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
     char *name;
     int found, i;
     void *res;
+
     *(void **)(a0 + 8) = arg1;
     *(unsigned char *)(a0 + 4) = 1;
-    if (stricmp(((First *)arg1)->m0(), base) == 0) {
+    if (stricmp(((First *)arg1)->m0(), lbl_80347A50) == 0) {
         name = ((First *)arg1)->m3(base + 0xC);
         *(long *)(a0 + 0x30) = fn_8027D1F4();
         found = 0;
@@ -119,7 +120,7 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
             if ((*(Second **)(p + 0x20))->m1(&lbl_8055C758) != 0) {
                 if (stricmp((*(Second **)(p + 0x20))->m3(&lbl_8055C758), name) == 0) {
                     if (found != 0) {
-                        fn_802E30C8b(base + 0x1C, name);
+                        fn_802E30C8(base + 0x1C, name);
                     } else {
                         long id, r, key;
                         key = *(long *)p;
@@ -130,7 +131,7 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
                         if ((((unsigned long)(-r | r)) >> 31) != 0) {
                             fn_8001D8B4(a0 + 0x14, (*(Second **)(p + 0x20))->m21(id));
                         } else {
-                            fn_802E30C8b(base + 0x6C, name, id);
+                            fn_802E30C8(base + 0x6C, name, id);
                         }
                     }
                 }
@@ -166,7 +167,10 @@ unsigned char fn_8027AF84(void *entry) {
 }
 
 #pragma dont_inline on
-unsigned char fn_8027AF8C(void *arg0) { return *((unsigned char *)arg0 + 0x10); }
+/* Return the event_goal object's +0x10 byte, which fn_8027AD4C filled from the
+ * contest name via fn_8027CEC4: whether the contest's save record has reached
+ * its passing grade. */
+unsigned char fn_8027AF8C(void *eventGoal) { return *((unsigned char *)eventGoal + 0x10); }
 /* Reset an effect entry by clearing its active/valid flag at offset 4 (Entry_reset). */
 void fn_8027AF94(void *entry) { ((unsigned char *)entry)[4] = 0; }
 
