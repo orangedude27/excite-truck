@@ -2185,8 +2185,10 @@ extern "C" void fn_800F27AC(void*);
 extern u8 lbl_803237D0[];
 extern u8 lbl_803237EC[];
 #pragma pop
-extern "C" void fn_800EE434(void* arg0) {
-    DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl((u8*)arg0 + 8);
+extern "C" void fn_800EE434(void* allocator) {
+    /* Tear down an MmlSeqTrackAllocator (SDK MmlSeqTrackAllocator::~...): destroy
+     * the PoolImpl embedded at +8 that fn_800EE428 set up. */
+    DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl((u8*)allocator + 8);
 }
 
 #pragma push
