@@ -704,9 +704,9 @@ void fn_801ED354(void *arg0) {
         fn_801ECF58(arg0);
         fn_801ECFE0(arg0);
         if (*(unsigned char *)((char *)*(void **)((char *)arg0 + 0x170) + *(int *)((char *)arg0 + 0x3F8) * 8 + 4) != 0) {
-            int i;
-            long offset;
             char *current;
+            long offset;
+            int i;
             char *p;
             current = (char *)arg0;
             i = 0;
@@ -1050,7 +1050,36 @@ void fn_801EE0D0(long table, long index) {
 extern void *fn_80131808(void *);
 extern char lbl_8055AFFC[], lbl_8055B000[], lbl_8055B004[], lbl_8055B00C[];
 void fn_801EE0E0(void *arg0, char *arg1, int arg2, int arg3, char *arg4) {
-    (void)arg0; (void)arg1; (void)arg2; (void)arg3; (void)arg4;
+#define VC1(o,sl,t,a) (((t)(*(void ***)(o))[(sl)/4])(o,a))
+    char nameBuf[0x100];
+    char small[0x40];
+    char *table;
+    void *found = 0, *node;
+    int i, v;
+    (void)arg2;
+    *(int *)((char *)arg0 + 8) = arg3;
+    fn_801345D8(nameBuf, 0x100, lbl_8033A060 + 0x64, arg1);
+    table = (char *)fn_80131808(nameBuf);
+    *(void **)((char *)arg0 + 0x5A0) = table;
+    for (i = 4; i >= 0; i--) {
+        fn_801345D8(small, 0x40, lbl_8033A060 + 0x74, i + 1);
+        found = VC1(table, 8, void *(*)(void *, void *), small);
+        if (found != 0) break;
+    }
+    if (found == 0) {
+        fn_802E317C(lbl_8033A060 + 0x80, arg1);
+        return;
+    }
+    node = VC1(found, 0x14, void *(*)(void *, void *), lbl_8055AFFC);
+    node = VC1(table, 8, void *(*)(void *, void *), node);
+    *(int *)((char *)arg0 + 0x3FC) = VC1(found, 0x1C, int (*)(void *, void *), lbl_8055B000);
+    VC1(found, 0x24, void (*)(void *, void *), lbl_8055B004);
+    v = VC1(found, 0x1C, int (*)(void *, void *), lbl_8055B00C);
+    *(int *)((char *)arg0 + 0x14C) = v;
+    if (v < *(int *)((char *)arg0 + 0x3FC)) {
+        *(int *)((char *)arg0 + 0x3FC) = v;
+        *(int *)((char *)arg0 + 0x148) = 0;
+    }
 }
 
 extern char lbl_8033A1C8[];
