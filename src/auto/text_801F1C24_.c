@@ -1630,10 +1630,10 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     struct Config { int unused; int kind; char pad0[0x18]; float x, y, z; float start, end; };
     struct Record { int unused; float x, y, z; int kind; float rate, end; int id; };
     struct Owner *owner = (struct Owner *)arg0;
-    volatile struct Config *config = (volatile struct Config *)arg2;
-    volatile struct Record *entry;
+    struct Config *config = (struct Config *)arg2;
+    struct Record *entry;
     struct Pool *pool;
-    volatile float v[6];
+    float v[6];
     int count, kind;
     float hi, start, end, scaled, baseY, baseX, lo;
     if (owner->pool == 0) {
@@ -1649,8 +1649,8 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     count = pool->count;
     if (count >= 0x30) fn_802E317C(lbl_8033AB18);
     count = pool->count;
-    entry = (volatile struct Record *)((char *)pool + count * 0x1C);
-    fn_802C77F0(config->kind, (float *)v);
+    entry = (struct Record *)((char *)pool + count * 0x1C);
+    fn_802C77F0(config->kind, v);
     hi = v[1];
     lo = v[0];
     hi = hi - lo;
@@ -1684,7 +1684,7 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     entry->kind = kind;
     entry->rate = hi;
     entry->end = end;
-    ((volatile int *)((char *)pool + pool->count * 0x1C))[7] = arg3;
+    ((int *)((char *)pool + pool->count * 0x1C))[7] = arg3;
     pool->count = pool->count + 1;
 }
 /* Byte-reverses five contiguous 4-byte fields at offsets 0x2C-0x3F in place. */
@@ -1704,7 +1704,10 @@ void fn_801F41CC(int unused, volatile unsigned char *bytes) {
 
 #pragma scheduling invalid_target
 void fn_801F4270(void) {
-    fn_802E317C(lbl_8033AAE0);
+    /* Abort with a panic: local flare sources are not supported by trackmod. */
+    #define sLocalFlareUnsupported lbl_8033AAE0
+    fn_802E317C(sLocalFlareUnsupported);
+    #undef sLocalFlareUnsupported
 }
 
 void fn_801F4280(void) {
@@ -1916,59 +1919,60 @@ extern float fn_80144514(float, float, float, float, float, float);
 extern void fn_802CDAB4(int, int, float *);
 #pragma scheduling invalid_target
 void fn_801F4684(register void *r25, register int r26) {
+    register float *matrix;
+    register int r29;
     register int r28 = 0;
-    register int r29 = 0;
-    int count;
     if (*(int *)((char *)r25 + 8) > 0) {
-        register float f22;
         register float f23;
+        register float f22;
         f22 = lbl_80562F40;
         f23 = lbl_80562F44;
-        do {
+        r29 = 0;
+        while (r28 < *(int *)((char *)r25 + 8)) {
             register char *entry;
+            register float c;
+            register float angle;
+            register float s;
+            float transform[12];
             entry = *(char **)((char *)r25 + 4) + r29;
-            {
-                register float angle = *(float *)(entry + 0x14) * fn_801E7E18();
-                register float c = (float)cos(angle);
-                register float s = (float)sin(angle);
-                float transform[12];
-                register float *matrix;
-                transform[0] = c; transform[1] = f22; transform[2] = -s;
-                transform[3] = f22; transform[4] = f23; transform[5] = f22;
-                transform[6] = s; transform[7] = f22; transform[8] = c;
-                matrix = *(float **)(entry + 0x10);
-                if (matrix == &transform[0] || matrix == transform) {
-                    float v0 = fn_80144514(matrix[0], transform[0], matrix[3], transform[1], matrix[6], transform[2]);
-                    float v1 = fn_80144514(matrix[0], transform[3], matrix[3], transform[4], matrix[6], transform[5]);
-                    float v2 = fn_80144514(matrix[0], transform[6], matrix[3], transform[7], matrix[6], transform[8]);
-                    float v3 = fn_80144514(matrix[1], transform[0], matrix[4], transform[1], matrix[7], transform[2]);
-                    float v4 = fn_80144514(matrix[1], transform[3], matrix[4], transform[4], matrix[7], transform[5]);
-                    float v5 = fn_80144514(matrix[1], transform[6], matrix[4], transform[7], matrix[7], transform[8]);
-                    float v6 = fn_80144514(matrix[2], transform[0], matrix[5], transform[1], matrix[8], transform[2]);
-                    float v7 = fn_80144514(matrix[2], transform[3], matrix[5], transform[4], matrix[8], transform[5]);
-                    float v8 = fn_80144514(matrix[2], transform[6], matrix[5], transform[7], matrix[8], transform[8]);
-                    transform[0]=v0; transform[3]=v1; transform[6]=v2;
-                    transform[1]=v3; transform[4]=v4; transform[7]=v5;
-                    transform[2]=v6; transform[5]=v7; transform[8]=v8;
-                } else {
-                    transform[0] = fn_80144514(matrix[0], transform[0], matrix[3], transform[1], matrix[6], transform[2]);
-                    transform[3] = fn_80144514(matrix[0], transform[3], matrix[3], transform[4], matrix[6], transform[5]);
-                    transform[6] = fn_80144514(matrix[0], transform[6], matrix[3], transform[7], matrix[6], transform[8]);
-                    transform[1] = fn_80144514(matrix[1], transform[0], matrix[4], transform[1], matrix[7], transform[2]);
-                    transform[4] = fn_80144514(matrix[1], transform[3], matrix[4], transform[4], matrix[7], transform[5]);
-                    transform[7] = fn_80144514(matrix[1], transform[6], matrix[4], transform[7], matrix[7], transform[8]);
-                    transform[2] = fn_80144514(matrix[2], transform[0], matrix[5], transform[1], matrix[8], transform[2]);
-                    transform[5] = fn_80144514(matrix[2], transform[3], matrix[5], transform[4], matrix[8], transform[5]);
-                    transform[8] = fn_80144514(matrix[2], transform[6], matrix[5], transform[7], matrix[8], transform[8]);
-                }
-                transform[9] = *(float *)(entry + 4);
-                transform[10] = *(float *)(entry + 8);
-                transform[11] = *(float *)(entry + 0xC);
-                fn_802CDAB4(r26, *(int *)entry, transform);
+            angle = *(float *)(entry + 0x14) * fn_801E7E18();
+            c = (float)cos(angle);
+            s = (float)sin(angle);
+            transform[0] = c; transform[1] = f22; transform[2] = -s;
+            transform[3] = f22; transform[4] = f23; transform[5] = f22;
+            transform[6] = s; transform[7] = f22; transform[8] = c;
+            matrix = *(float **)(entry + 0x10);
+            if (&transform[0] == matrix || transform == matrix) {
+                float v0 = fn_80144514(matrix[0], transform[0], matrix[3], transform[1], matrix[6], transform[2]);
+                float v1 = fn_80144514(matrix[0], transform[3], matrix[3], transform[4], matrix[6], transform[5]);
+                float v2 = fn_80144514(matrix[0], transform[6], matrix[3], transform[7], matrix[6], transform[8]);
+                float v3 = fn_80144514(matrix[1], transform[0], matrix[4], transform[1], matrix[7], transform[2]);
+                float v4 = fn_80144514(matrix[1], transform[3], matrix[4], transform[4], matrix[7], transform[5]);
+                float v5 = fn_80144514(matrix[1], transform[6], matrix[4], transform[7], matrix[7], transform[8]);
+                float v6 = fn_80144514(matrix[2], transform[0], matrix[5], transform[1], matrix[8], transform[2]);
+                float v7 = fn_80144514(matrix[2], transform[3], matrix[5], transform[4], matrix[8], transform[5]);
+                float v8 = fn_80144514(matrix[2], transform[6], matrix[5], transform[7], matrix[8], transform[8]);
+                transform[0]=v0; transform[3]=v1; transform[6]=v2;
+                transform[1]=v3; transform[4]=v4; transform[7]=v5;
+                transform[2]=v6; transform[5]=v7; transform[8]=v8;
+            } else {
+                transform[0] = fn_80144514(matrix[0], transform[0], matrix[3], transform[1], matrix[6], transform[2]);
+                transform[3] = fn_80144514(matrix[0], transform[3], matrix[3], transform[4], matrix[6], transform[5]);
+                transform[6] = fn_80144514(matrix[0], transform[6], matrix[3], transform[7], matrix[6], transform[8]);
+                transform[1] = fn_80144514(matrix[1], transform[0], matrix[4], transform[1], matrix[7], transform[2]);
+                transform[4] = fn_80144514(matrix[1], transform[3], matrix[4], transform[4], matrix[7], transform[5]);
+                transform[7] = fn_80144514(matrix[1], transform[6], matrix[4], transform[7], matrix[7], transform[8]);
+                transform[2] = fn_80144514(matrix[2], transform[0], matrix[5], transform[1], matrix[8], transform[2]);
+                transform[5] = fn_80144514(matrix[2], transform[3], matrix[5], transform[4], matrix[8], transform[5]);
+                transform[8] = fn_80144514(matrix[2], transform[6], matrix[5], transform[7], matrix[8], transform[8]);
             }
+            transform[9] = *(float *)(entry + 4);
+            transform[10] = *(float *)(entry + 8);
+            transform[11] = *(float *)(entry + 0xC);
+            fn_802CDAB4(r26, *(int *)entry, transform);
             r29 += 0x18;
             r28 += 1;
-        } while (r28 < *(int *)((char *)r25 + 8));
+        }
     }
 }
 #pragma scheduling on
