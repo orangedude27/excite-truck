@@ -111,7 +111,7 @@ s32 fn_802E9A14(void) {
     return sConfigSoundMode;
 }
 
-/** @brief 1 when the display is set to progressive (non-interlaced). */
+/** @brief Returns the cached display config flag: 1 for progressive (non-interlaced) output. */
 char fn_802E9A1C(void) {
     return sConfigProgressive;
 }
