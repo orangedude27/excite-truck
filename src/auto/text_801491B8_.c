@@ -422,6 +422,7 @@ extern s32 lbl_80559EC4;
 extern void *fn_8017960C(s32 arg0);
 extern void fn_80149D64(void *arg0, void *arg1, s32 arg2);
 extern f32 lbl_80561648;
+// Getter returning a pointer to the "Resize" name string (lbl_80559E9C).
 unsigned long *fn_80149528(void) { return &lbl_80559E9C; }
 
 int fn_80149530(void) {
