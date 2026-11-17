@@ -1019,6 +1019,7 @@ void fn_801D4598(void *arg0, float farg0) {
 }
 #pragma pop
 
+/* Default no-op handler: takes no inputs and reports 0 (nothing handled / failure). */
 int fn_801D470C(void) { return 0; }
 
 /* No-op/default handler: simply clears the two output values. */
