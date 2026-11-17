@@ -937,6 +937,7 @@ void fn_80232928(void* hi) {
     lbl_8055F060 = hi;
 }
 
+/* Reset the persistent font/outline template word lbl_8055F060 to its default held in lbl_8055F04C (zero at boot) -- the base word fn_80231718 merges primary styling into. */
 void fn_80232930(void) {
     lbl_8055F060 = (void *)lbl_8055F04C;
 }
