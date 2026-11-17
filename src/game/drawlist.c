@@ -292,8 +292,11 @@ void fn_802C8638(unsigned int *arg0) {
     fn_802D03F4((unsigned int *)dst, v10, v9, v8, v7, v6, v5, v4);
 }
 #pragma scheduling on
+/* Return the buffer holding the current camera/view matrix (a 3x4 float matrix). */
 void *fn_802C86DC(void) {
-    return lbl_804C1410;
+#define sCurrentMatrix lbl_804C1410
+    return sCurrentMatrix;
+#undef sCurrentMatrix
 }
 
 extern void *lbl_8055D018;
