@@ -956,8 +956,9 @@ typedef struct ExtraDelayItem {
     float field1C;
 } ExtraDelayItem;
 
-void fn_8026557C(void *arg0, float farg0) {
-    *(float *)((char *)arg0 + 0x18) = farg0;
+void fn_8026557C(void *arg0, float extraDelay) {
+    /* ExtraDelay credits item: store the delay time into the float field at +0x18. */
+    ((ExtraDelayItem *)arg0)->delay = extraDelay;
 }
 
 void fn_80265584(void *obj) {
