@@ -2441,6 +2441,7 @@ extern "C" void fn_802154A0(void *widget) {
     }
 }
 
+// Default VfWidget hook: reports 1 (true); subclasses may override it.
 extern "C" u32 fn_802154B8(void) { return 1; }
 
 extern "C" s32 fn_802154C0(s32 object, s32 deleteFlag) {
