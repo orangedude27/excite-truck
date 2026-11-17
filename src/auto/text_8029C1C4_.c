@@ -242,28 +242,38 @@ void fn_8029C450(void *arg0, int arg1) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_8029C570(void) {
- extern float lbl_80564640, lbl_80564644;
- extern char lbl_80349560[];
- extern int lbl_8055CAAC;
- extern int fn_8012C33C(void *);
- extern int fn_802C6FC0(void *, int, int);
- extern void **fn_802AE414(void *);
- extern void fn_802C8230(float), fn_802C8234(float);
- float a, b;
- char *base, *p, *q;
- void **obj;
- int result;
- a=lbl_80564640; b=lbl_80564644;
- base=lbl_80349560; p=base+0x70; q=base+0x7C;
- if(fn_8012C33C(q)) result=fn_802C6FC0(q,0,0); else result=-1;
- lbl_8055CAA8=result;
- obj=fn_802AE414(p);
- if(obj) {
-  a=(*(float (**)(void *, void *))((char *)*obj+0x4C))(obj,&lbl_8055CAAC);
-  b=(*(float (**)(void *, void *))((char *)*obj+0x4C))(obj,base+0x18);
- }
- fn_802C8230(a); fn_802C8234(b);
+#pragma cplusplus on
+extern "C" void fn_8029C570(void) {
+    extern float lbl_80564640, lbl_80564644;
+    extern char lbl_80349560[];
+    extern int lbl_8055CAAC;
+    extern int fn_8012C33C(void *);
+    extern int fn_802C6FC0(void *, int, int);
+    extern void **fn_802AE414(void *);
+    extern void fn_802C8230(float), fn_802C8234(float);
+    struct Dummy {
+        virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3();
+        virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7();
+        virtual void p8(); virtual void p9(); virtual void p10(); virtual void p11();
+        virtual void p12(); virtual void p13(); virtual void p14(); virtual void p15();
+        virtual void p16();
+        virtual float get(void *);
+    };
+    float a = *(volatile float *)&lbl_80564640;
+    float b = *(volatile float *)&lbl_80564644;
+    char *base = lbl_80349560;
+    char *p = base + 0x70;
+    char *q = base + 0x7C;
+    int result;
+    void *obj;
+    if (fn_8012C33C(q)) result = fn_802C6FC0(q, 0, 0); else result = -1;
+    lbl_8055CAA8 = result;
+    obj = fn_802AE414(p);
+    if (obj) {
+        a = ((Dummy *)obj)->get(&lbl_8055CAAC);
+        b = ((Dummy *)obj)->get(base + 0x18);
+    }
+    fn_802C8230(a); fn_802C8234(b);
 }
 #pragma pop
 
@@ -1105,15 +1115,15 @@ extern float lbl_8056462C, lbl_80564634, lbl_80564640, lbl_80564658, lbl_8056469
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8029DDB8(void *arg0) {
-    register unsigned char *base = (unsigned char *)arg0;
+    unsigned char *base = (unsigned char *)arg0;
+    int rowPlus;
+    int rowMinus;
+    short *cell;
     short *src;
     short *dst;
-    short *cell;
     int width;
     int y;
     int x;
-    int rowPlus;
-    int rowMinus;
     int index;
     int indexPlus;
     int indexMinus;
@@ -1122,6 +1132,7 @@ void fn_8029DDB8(void *arg0) {
     int clamped;
     float scale;
     float coeff;
+    float amp;
     float waveSquared;
     float wave;
     float center;
@@ -1129,18 +1140,18 @@ void fn_8029DDB8(void *arg0) {
 
     scale = lbl_80564634 * *(float *)(base + 0x20);
     center = lbl_8056462C + scale;
-    wave = ((float (*)(float, float))fn_801E7E24)(scale, lbl_80564634);
+    amp = ((float (*)(float, float))fn_801E7E24)(scale, lbl_80564634);
     y = 1;
     coeff = lbl_80564694 * (lbl_80564658 - *(float *)(base + 0x1C));
-    wave = coeff * wave;
-    waveSquared = wave * wave;
+    amp = coeff * amp;
+    waveSquared = amp * amp;
     wave = lbl_80564640 - lbl_80564698 * waveSquared;
 
-    while (y < *(volatile int *)(base + 0x10) - 1) {
+    while (y < *(int *)(base + 0x10) - 1) {
         rowPlus = y + 1;
         rowMinus = y - 1;
         x = 1;
-        while (x < (width = *(volatile int *)(base + 0xC)) - 1) {
+        while (x < (width = *(int *)(base + 0xC)) - 1) {
             index = x + y * width;
             indexPlus = x + rowPlus * width;
             indexMinus = x + rowMinus * width;
@@ -1494,8 +1505,10 @@ void fn_8029EA34(void *area, void **__restrict targetRef) {
         } while (index < 4);
     }
 }
+#pragma scheduling on
 int fn_8029EAE8(void *arg0) {
-    register float temp_f31 = *(volatile float *)&lbl_805646A8;
+    float *thresholdPtr = &lbl_805646A8;
+    register float temp_f31 = *thresholdPtr;
     int result = 0;
     if (fn_802C88E8((char *)arg0 + 0x30) < temp_f31) {
         void *second_obj = (char *)arg0 + 0x18;
@@ -1507,7 +1520,6 @@ int fn_8029EAE8(void *arg0) {
     }
     return result;
 }
-#pragma pop
 int fn_8029EB54(void *arg0, void *arg1) {
     float *a=(float *)arg0, *b=(float *)arg1;
     float minX, maxX, minY, maxY, point;
@@ -1612,8 +1624,10 @@ void fn_8029EF54(void *object) {
     *((unsigned char *)object + 0x68) = 0;
 }
 
-int fn_8029EF60(void *arg0) {
-    return *(unsigned char *)((char *)arg0 + 0x68);
+/* nw4r::ef::Effect virtual getter: returns this effect's boolean flag at +0x68
+   (paired with fn_8029EF48/fn_8029EF54, which set and clear it). */
+int fn_8029EF60(void *effect) {
+    return *(unsigned char *)((char *)effect + 0x68);
 }
 extern float fn_801E7E24(void);
 extern void fn_8029D574(int);
