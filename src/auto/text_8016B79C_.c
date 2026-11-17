@@ -629,16 +629,13 @@ get:
         obj = fn_8016C598(obj, *(s32 *)((u8 *)arg0 + 0x38), (int)(base + 0xE8));
     }
     *(void **)((u8 *)arg0 + 0x1C) = obj;
-    {
-        f32 zero = lbl_80561998;
-        for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x38); i++) {
-            Entry e;
-            e.b = 0;
-            e.w = -1;
-            e.a = zero;
-            e.c = zero;
-            fn_8016C55C(*(void **)((u8 *)arg0 + 0x1C), &e);
-        }
+    for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x38); i++) {
+        Entry e;
+        e.b = 0;
+        e.w = -1;
+        e.a = lbl_80561998;
+        e.c = lbl_80561998;
+        fn_8016C55C(*(void **)((u8 *)arg0 + 0x1C), &e);
     }
 }
 #pragma cplusplus reset
