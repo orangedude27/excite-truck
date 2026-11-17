@@ -118,7 +118,11 @@ void fn_80294C68(void) {
     }
 }
 #pragma scheduling on
-void fn_80294CC0(void) {}
+/* No-op subsystem-init hook called from the startup sequence (fn_80287914);
+ * the truck-effects setup it stands in for actually runs in fn_80294970. */
+void fn_80294CC0(void) {
+
+}
 
 void fn_80294CC4(void) {}
 
