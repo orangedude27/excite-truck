@@ -40,8 +40,9 @@ void OSSetMEM1ArenaHi(void* arenaHi) {
     __OSArenaHi = arenaHi;
 }
 
-void OSSetMEM2ArenaHi(void* hi) {
-    s_mem2ArenaHi = hi;
+/* Set the upper bound of the MEM2 arena. */
+void OSSetMEM2ArenaHi(void* arenaHi) {
+    s_mem2ArenaHi = arenaHi;
 }
 
 /* Set the high bound of the default (MEM1) arena. */
