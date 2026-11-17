@@ -563,7 +563,9 @@ void fn_802CF5A8(void) {
 
 #pragma push
 #pragma dont_inline on
-void fn_802CF5D0(void) {}
+void fn_802CF5D0(void) {
+    /* No-op hook in the GX state-reset path (fn_802CFF10 / ResetGxState); nothing to undo. */
+}
 #pragma pop
 
 #define alphaCompareRef lbl_8055FD24        /* cached alpha-reference byte (GXSetAlphaCompare ref0) */
@@ -1255,10 +1257,7 @@ void fn_802D02F8(int arg0, signed char arg1) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
-    extern float lbl_80564F94;
-    extern unsigned char lbl_804C9778[];
-    extern unsigned char lbl_804C97B0[];
-    extern double fn_8002EF30(double);
+#pragma scheduling on
     register unsigned char *p = lbl_804C9778;
     register int one = 1;
     float result;
@@ -1384,52 +1383,42 @@ void fn_802D0610(int arg0) {
     unsigned char *rec8;
     float tmp[12];
 
-    if (arg0 == lbl_8055FD8C) {
+    if ((unsigned)arg0 == (unsigned)lbl_8055FD8C) {
         return;
     }
     if (arg0 != 0) {
+        int *d;
+        unsigned char *a;
         rec32 = (int *)((char *)lbl_8055FDB0 + (arg0 - 1) * 0x4C);
         rec8 = (unsigned char *)rec32;
-        ((int *)lbl_804C5690)[0] = rec32[0]; ((int *)lbl_804C5690)[1] = rec32[1];
-        ((int *)lbl_804C5690)[2] = rec32[2]; ((int *)lbl_804C5690)[3] = rec32[3];
-        ((int *)lbl_804C5690)[4] = rec32[4]; ((int *)lbl_804C5690)[5] = rec32[5];
-        ((int *)lbl_804C5690)[6] = rec32[6]; ((int *)lbl_804C5690)[7] = rec32[7];
-        ((int *)lbl_804C5690)[8] = rec32[8]; ((int *)lbl_804C5690)[9] = rec32[9];
-        ((int *)lbl_804C5690)[10] = rec32[10]; ((int *)lbl_804C5690)[11] = rec32[11];
+        d = (int *)lbl_804C5690;
+        *d++ = rec32[0]; *d++ = rec32[1]; *d++ = rec32[2];
+        *d++ = rec32[3]; *d++ = rec32[4]; *d++ = rec32[5];
+        *d++ = rec32[6]; *d++ = rec32[7]; *d++ = rec32[8];
+        *d++ = rec32[9]; *d++ = rec32[10]; *d = rec32[11];
         lbl_8055FD70 = 1;
-        ((unsigned char *)&lbl_804C97D0)[0] = rec8[0x30];
-        ((unsigned char *)&lbl_804C97D0)[1] = rec8[0x31];
-        ((unsigned char *)&lbl_804C97D0)[2] = rec8[0x32];
-        ((unsigned char *)&lbl_804C97D0)[3] = rec8[0x33];
-        ((unsigned char *)&lbl_804C97D0)[4] = rec8[0x34];
-        ((unsigned char *)&lbl_804C97D0)[5] = rec8[0x35];
-        ((unsigned char *)&lbl_804C97D0)[6] = rec8[0x36];
-        ((unsigned char *)&lbl_804C97D0)[7] = rec8[0x37];
-        ((unsigned char *)&lbl_804C97D0)[8] = rec8[0x38];
-        *(int *)((char *)&lbl_804C97D0 + 0x0c) = *(int *)(rec8 + 0x3c);
-        *(int *)((char *)&lbl_804C97D0 + 0x10) = *(int *)(rec8 + 0x40);
-        *(int *)((char *)&lbl_804C97D0 + 0x14) = *(int *)(rec8 + 0x44);
-        *(float *)((char *)&lbl_804C97D0 + 0x18) = *(float *)(rec8 + 0x48);
-        ((unsigned char *)&lbl_804C97D0)[0x5c] = 1;
+        a = (unsigned char *)&lbl_804C97D0;
+        *a++ = rec8[0x30]; *a++ = rec8[0x31]; *a++ = rec8[0x32];
+        *a++ = rec8[0x33]; *a++ = rec8[0x34]; *a++ = rec8[0x35];
+        *a++ = rec8[0x36]; *a++ = rec8[0x37]; *a = rec8[0x38];
+        *(int *)(a + 0x4) = *(int *)(rec8 + 0x3c);
+        *(int *)(a + 0x8) = *(int *)(rec8 + 0x40);
+        *(int *)(a + 0xc) = *(int *)(rec8 + 0x44);
+        *(float *)(a + 0x10) = *(float *)(rec8 + 0x48);
+        a[0x54] = 1;
     } else {
+        float *t = tmp;
+        int *d = (int *)lbl_804C5690;
         tmp[0] = lbl_80564F8C; tmp[1] = lbl_80564F88;
         tmp[2] = lbl_80564F88; tmp[3] = lbl_80564F88;
         tmp[4] = lbl_80564F8C; tmp[5] = lbl_80564F88;
         tmp[6] = lbl_80564F88; tmp[7] = lbl_80564F88;
         tmp[8] = lbl_80564F8C; tmp[9] = lbl_80564F88;
         tmp[10] = lbl_80564F88; tmp[11] = lbl_80564F88;
-        ((int *)lbl_804C5690)[0] = ((int *)tmp)[0];
-        ((int *)lbl_804C5690)[1] = ((int *)tmp)[1];
-        ((int *)lbl_804C5690)[2] = ((int *)tmp)[2];
-        ((int *)lbl_804C5690)[3] = ((int *)tmp)[3];
-        ((int *)lbl_804C5690)[4] = ((int *)tmp)[4];
-        ((int *)lbl_804C5690)[5] = ((int *)tmp)[5];
-        ((int *)lbl_804C5690)[6] = ((int *)tmp)[6];
-        ((int *)lbl_804C5690)[7] = ((int *)tmp)[7];
-        ((int *)lbl_804C5690)[8] = ((int *)tmp)[8];
-        ((int *)lbl_804C5690)[9] = ((int *)tmp)[9];
-        ((int *)lbl_804C5690)[10] = ((int *)tmp)[10];
-        ((int *)lbl_804C5690)[11] = ((int *)tmp)[11];
+        *d++ = ((int *)t)[0]; *d++ = ((int *)t)[1]; *d++ = ((int *)t)[2];
+        *d++ = ((int *)t)[3]; *d++ = ((int *)t)[4]; *d++ = ((int *)t)[5];
+        *d++ = ((int *)t)[6]; *d++ = ((int *)t)[7]; *d++ = ((int *)t)[8];
+        *d++ = ((int *)t)[9]; *d++ = ((int *)t)[10]; *d = ((int *)t)[11];
         lbl_8055FD70 = 1;
     }
     lbl_8055FD8C = arg0;
@@ -3459,23 +3448,32 @@ extern char lbl_8055D100;
       extern void fn_802E2E0C(void (*)(void), void *);
     extern int lbl_804C9760[];
 
-  void fn_802D2D1C(void) {
-      float *src = (float *)lbl_804C56C0;
-      float *dst = (float *)lbl_804CA2D8;
-      dst[0] = src[0];
-      dst[1] = src[1];
-      dst[2] = src[2];
-      dst[3] = src[3];
-      dst[4] = src[4];
-      dst[5] = src[5];
-      dst[6] = src[6];
-      dst[7] = src[7];
-      dst[8] = src[8];
-      dst[9] = src[9];
-      dst[10] = src[10];
-      dst[11] = src[11];
-      GXSetCurrentMtx(0);
-  }
+void fn_802D2D1C(void) {
+    int *si = (int *)lbl_804C56C0;
+    int *di = (int *)lbl_804CA2D8;
+    float *src = (float *)lbl_804C56C0;
+    float *dst = (float *)lbl_804CA2D8;
+    float t;
+    di[1] = si[1]; di[2] = si[2]; di[3] = si[3];
+    di[5] = si[5]; di[6] = si[6]; di[7] = si[7];
+    di[0] = si[0]; di[4] = si[4]; di[8] = si[8];
+    t = dst[1]; dst[1] = dst[3]; dst[3] = t;
+    t = dst[2]; dst[2] = dst[6]; dst[6] = t;
+    t = dst[5]; dst[5] = dst[7]; dst[7] = t;
+    if (&dst[0x24] == &src[0x24]) {
+        dst[9] = src[11]*src[2] + (src[9]*src[0] + src[10]*src[1]);
+        dst[10] = src[11]*src[5] + (src[9]*src[3] + src[10]*src[4]);
+        dst[11] = src[11]*src[8] + (src[9]*src[6] + src[10]*src[7]);
+    } else {
+        dst[9] = src[11]*src[2] + (src[9]*src[0] + src[10]*src[1]);
+        dst[10] = src[11]*src[5] + (src[9]*src[3] + src[10]*src[4]);
+        dst[11] = src[11]*src[8] + (src[9]*src[6] + src[10]*src[7]);
+    }
+    dst[9] *= lbl_80564F90;
+    dst[10] *= lbl_80564F90;
+    dst[11] *= lbl_80564F90;
+    GXSetCurrentMtx(0);
+}
 /* Apply the pending viewport change held in the sViewport settings block (+1 is
    the dirty flag): clear it, set the GX viewport (jittered by field when field
    rendering is enabled), set the matching scissor box, then invalidate the
