@@ -1293,8 +1293,10 @@ void fn_802B009C(void *arg0, int arg1, int arg2, int arg3) {
 void fn_802B0114(void) {
 }
 
-s32 fn_802B0118(void *arg0) {
-    return (*(u32 *)((u8 *)arg0 + 8) >> 6) & 7;
+/* Return the 3-bit field at bits 6-8 of the packed flags word at +8 of a map
+   piece; callers use it as a row/layer index into a spatial region grid. */
+s32 fn_802B0118(void *piece) {
+    return (*(u32 *)((u8 *)piece + 8) >> 6) & 7;
 }
 
 /* Read flag bit 23 of the packed config word at +0x08 of an entry. */
