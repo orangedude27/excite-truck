@@ -3130,7 +3130,7 @@ static inline void fn_801C9708_append(char *str, char c) {
     u32 length = strlen(str);
     if (length < 0xFF) {
         str[length] = c;
-        *(char *)(length + 1 + (u32)str) = 0;
+        str[1 + length] = 0;
     }
 }
 
