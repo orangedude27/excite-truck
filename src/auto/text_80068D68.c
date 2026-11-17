@@ -8215,8 +8215,11 @@ u16 BTM_GetNumAclLinks(void)
     return aclCount;
 }
 
+/* Returns btm_cb.acl_disc_reason: the reason the last ACL link was dropped. */
 u8 fn_80077DD8(void) {
-    return lbl_803C0F78[0x27BF];
+    #define btm_cb_acl_disc_reason (lbl_803C0F78[0x27BF])
+    return btm_cb_acl_disc_reason;
+    #undef btm_cb_acl_disc_reason
 }
 
 u16 BTM_GetHCIConnHandle(u8 *arg0) {
