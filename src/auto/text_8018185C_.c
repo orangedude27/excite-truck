@@ -1877,12 +1877,20 @@ void fn_8018956C(void *arg0, float *arg1, float *arg2, int mode, void *obj, int 
 }
 
 #pragma cplusplus on
-struct V10 {
+/* The truck's per-car race-progress entry: the 0x80-byte block
+ * lbl_8055E684 + carIndex * 0x80 that the truck keeps at +0x270.  Its slot 0x10
+ * hands back the progress record kept inline in the entry (entry + 4); that
+ * record's +0x24 is the car's state: 0 racing, 1 just reset, 3 every checkpoint
+ * done. */
+struct CarProgress {
     virtual void v0() {}
     virtual void v1() {}
-    virtual void *get() { return 0; }
+    virtual void *getRecord() { return 0; }
 };
-struct VCC {
+/* The arena-event master fn_801B83A0 returns (lbl_8055E744).  MWCC keeps two
+ * reserved words above the first declared virtual, so slotCC is the vtable slot
+ * at 0xCC, the master's answer about the car of a given element index. */
+struct ArenaMaster {
     virtual void c0() {} virtual void c1() {} virtual void c2() {} virtual void c3() {}
     virtual void c4() {} virtual void c5() {} virtual void c6() {} virtual void c7() {}
     virtual void c8() {} virtual void c9() {} virtual void c10() {} virtual void c11() {}
@@ -1896,22 +1904,28 @@ struct VCC {
     virtual void c40() {} virtual void c41() {} virtual void c42() {} virtual void c43() {}
     virtual void c44() {} virtual void c45() {} virtual void c46() {} virtual void c47() {}
     virtual void c48() {}
-    virtual int get(int) { return 0; }
+    virtual int slotCC(int) { return 0; }
 };
-extern "C" int fn_80189BDC(void *arg0) {
-    if ((unsigned int)(*(int *)((char *)arg0 + 0x10) + 0xABAE0000) != 0x4C52U) {
-        void *obj = *(void **)((char *)arg0 + 0x270);
-        void *ret = ((V10 *)obj)->get();
-        if (ret != 0) {
-            int v = *(int *)((char *)ret + 0x24);
-            if (v == 1 || v == 3) {
+/* Whether the arena-event master still has something to do for this truck: a car
+ * that is not a trailer and whose race progress is already reset (state 1) or has
+ * every checkpoint (state 3) reports 0, everything else is the master's answer
+ * for the truck's element index. */
+#define CAR_TAG_TRAILER 0x54524C52 /* 'TRLR' */
+extern "C" int fn_80189BDC(void *truck) {
+    if ((unsigned int)*(int *)((char *)truck + 0x10) != CAR_TAG_TRAILER) {
+        void *progress = *(void **)((char *)truck + 0x270);
+        void *record = ((CarProgress *)progress)->getRecord();
+        if (record != 0) {
+            int state = *(int *)((char *)record + 0x24);
+            if (state == 1 || state == 3) {
                 return 0;
             }
         }
     }
-    void *tmp = (void *)fn_801B83A0();
-    return ((VCC *)tmp)->get(*(int *)((char *)arg0 + 0x1EC));
+    void *amaster = (void *)fn_801B83A0();
+    return ((ArenaMaster *)amaster)->slotCC(*(int *)((char *)truck + 0x1EC));
 }
+#undef CAR_TAG_TRAILER
 #pragma cplusplus reset
 
 #pragma pop
