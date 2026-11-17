@@ -1014,12 +1014,13 @@ void fn_801776C4(u32 listener) {
     lbl_8055E400++;
 }
 
-void fn_80177720(u32 arg0) {
+void fn_80177720(u32 listener) {
+    /* Unregister a physics state listener: drop its handle from the registered array and shift the rest down, or abort if it was never registered. */
     s32 i;
     u32 *entry = (u32 *)lbl_80430570;
     u32 *dest;
     for (i = 0; i < lbl_8055E400; entry++, i++) {
-        if (arg0 == *entry) {
+        if (listener == *entry) {
             lbl_8055E400--;
             dest = (u32 *)lbl_80430570 + i;
             memmove(dest, dest + 1, (lbl_8055E400 - i) * 4);
