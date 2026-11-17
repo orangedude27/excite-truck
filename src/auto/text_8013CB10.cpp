@@ -4331,6 +4331,8 @@ extern "C" s32 fn_8014432C(void) {
     return 0;
 }
 
+/* Empty virtual slot in the same run of unimplemented zone-system callbacks
+ * (fn_801442D4..fn_80144358); calling it does nothing. */
 extern "C" void fn_80144334(void) {
 }
 
