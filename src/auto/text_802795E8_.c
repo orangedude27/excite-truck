@@ -176,8 +176,8 @@ f32 fn_802798E8(void *entry) {
 extern f32 lbl_805640F0;
 extern f32 lbl_805640F4;
 extern f32 lbl_805640F0;
+#pragma opt_propagation off
 unsigned char fn_802798F0(u32 arg0, u32 arg1, f32 farg0) {
-    s32 var_r0;
     s32 temp_r3;
     s32 temp_r4;
     f32 var_f0;
@@ -186,16 +186,11 @@ unsigned char fn_802798F0(u32 arg0, u32 arg1, f32 farg0) {
     } else {
         var_f0 = lbl_805640F4 + ((f32)arg0 + (farg0 * ((f32)arg1 - (f32)arg0)));
     }
-    var_r0 = 0xFF;
     temp_r4 = (s32)var_f0;
-    temp_r3 = -temp_r4;
-    temp_r3 &= ~temp_r4;
-    temp_r3 >>= 31;
-    temp_r3 = temp_r3 & temp_r4;
-    if (temp_r3 < 0xFF) var_r0 = temp_r3;
-    return (unsigned char)var_r0;
+    temp_r3 = temp_r4 & ((-temp_r4 & ~temp_r4) >> 31);
+    return (unsigned char)((temp_r3 < 0xFF) ? temp_r3 : 0xFF);
 }
-
+#pragma opt_propagation reset
 extern unsigned char fn_802798F0(unsigned int, unsigned int, float);
 extern float lbl_80564100, lbl_80564104;
 #pragma push
@@ -333,10 +328,10 @@ void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
 }
 #pragma optimize_for_size reset
 void fn_80279C00(unsigned char *dst, unsigned char *src) {
+    #pragma scheduling invalid_target
     unsigned char *source = src - 1;
     unsigned char *target = dst + 3;
     int count = 0x148;
-
     do {
         unsigned char first;
         unsigned char second;
@@ -345,7 +340,6 @@ void fn_80279C00(unsigned char *dst, unsigned char *src) {
         target[1] = first;
         *(target += 2) = second;
     } while (--count != 0);
-
     *(f32 *)(dst + 0x294) = *(f32 *)(src + 0x290);
     *(f32 *)(dst + 0x298) = *(f32 *)(src + 0x294);
     *(s32 *)(dst + 0x29C) = *(s32 *)(src + 0x298);
