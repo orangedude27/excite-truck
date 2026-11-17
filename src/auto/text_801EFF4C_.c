@@ -81,6 +81,7 @@ void fn_801F0000(int instance) {
     fn_801F0F18(instance, KEEP_ALLOCATED);
 }
 
+/* Returns the fixed 0x4C-byte size of a wheel/buffer object, used when allocating the front/rear wheel buffers ("fwheelbuf"/"rwheelbuf"). */
 int fn_801F0008(void) {
     return 0x4C;
 }
