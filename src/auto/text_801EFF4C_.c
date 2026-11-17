@@ -64,8 +64,10 @@ void fn_801EFF94(int arg0, int arg1, int arg2) {
         fn_801F0DC0(result, arg0, arg1, arg2);
     }
 }
-void fn_801EFFF8(int arg0) {
-    fn_801F0F18(arg0, 1);
+/* WheelInstance deleting destructor: unregister the wheel and free the object
+ * via the destructor with doDelete = 1 (see fn_801F0000 for the keep-allocated form). */
+void fn_801EFFF8(int wheel) {
+    fn_801F0F18(wheel, 1);
 }
 
 int fn_801F0F18(int, int);
