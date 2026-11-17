@@ -1650,26 +1650,32 @@ extern "C" void fn_801F99CC(F92Obj *obj) {
     }
 }
 #pragma scheduling on
-extern "C" void fn_801F9A24(F92Node **arg0) {
-    class Base {
+/* Destroy every placed object on the list whose head is *list: an object first
+ * loses the child chain hanging off its +0x24 link (fn_801F99CC), then itself,
+ * and the list head is cleared once the walk is done. */
+extern "C" void fn_801F9A24(F92Node **list) {
+    /* A placed object keeps its dispatch table at +0x108; MWCC reaches it through
+     * a base class of that size, whose first declared virtual is the table's slot
+     * 8 - the destructor, called here with the delete flag set. */
+    class DispatchPad {
     public:
         char pad[0x108];
     };
-    class Node : public Base {
+    class Destroyable : public DispatchPad {
     public:
         virtual void destroy(int);
     };
-    F92Node *node = *arg0;
+    F92Node *node = *list;
     F92Node *next;
     while (node != 0) {
         fn_801F99CC((F92Obj *)node);
         next = node->next;
         if (node != 0) {
-            ((Node *)node)->destroy(1);
+            ((Destroyable *)node)->destroy(1);
         }
         node = next;
     }
-    *arg0 = 0;
+    *list = 0;
 }
 
 #pragma dont_inline on
