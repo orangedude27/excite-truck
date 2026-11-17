@@ -1509,10 +1509,17 @@ int fn_802E2C20(void);
 void fn_802E30C8(const char *, ...);
 void fn_802E3734(int *);
 int fn_802E3D68(unsigned char *);
-void fn_802D08B4(int arg0, int arg1, unsigned char arg2) {
-    lbl_8055FD18 = arg2;
-    lbl_8055D0BC = (unsigned long)arg0;
-    lbl_8055D0C0 = (unsigned long)arg1;
+/* Configure the tiled offscreen-render grid: set its column count, row count and mode flag. */
+void fn_802D08B4(int columns, int rows, unsigned char mode) {
+#define tileGridWidth lbl_8055D0BC
+#define tileGridHeight lbl_8055D0C0
+#define tileModeFlag lbl_8055FD18
+    tileModeFlag = mode;
+    tileGridWidth = (unsigned long)columns;
+    tileGridHeight = (unsigned long)rows;
+#undef tileGridWidth
+#undef tileGridHeight
+#undef tileModeFlag
 }
 
 void fn_802D08C4(unsigned char arg0) {
