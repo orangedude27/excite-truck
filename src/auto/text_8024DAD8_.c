@@ -1234,11 +1234,10 @@ void fn_80250108(void *arg0) {
     s32 i;
     f32 current;
     f32 coef;
-    f32 value;
     i = 0;
     offset = 0;
-    limit = lbl_80563960;
     speed = lbl_8056396C;
+    limit = lbl_80563960;
     coef = lbl_80563968;
     current = *(f32 *)((u8 *)arg0 + 0x28);
     *(f32 *)((u8 *)arg0 + 0x28) = current + coef * ((f32)*(s32 *)((u8 *)arg0 + 0x2C) - current);
@@ -1253,7 +1252,7 @@ void fn_80250108(void *arg0) {
                 *(f32 *)(entry + 8) -= subtract;
             }
         } else {
-            value = *(f32 *)(entry + 8) + speed * dt;
+            f32 value = *(f32 *)(entry + 8) + speed * dt;
             if (limit < value) value = limit;
             *(f32 *)(entry + 8) = value;
         }
@@ -2047,63 +2046,62 @@ extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
         u8 *dest;
         s32 newIndex, index, context;
 
-        if (*(s32 *)(arg0 + 0x2C) <= 0)
-            goto done_prev;
-        newIndex = *(s32 *)(arg0 + 0x2C) - 1;
-        *(s32 *)(arg0 + 0x2C) = newIndex;
+        if (*(s32 *)(arg0 + 0x2C) > 0) {
+            newIndex = *(s32 *)(arg0 + 0x2C) - 1;
+            *(s32 *)(arg0 + 0x2C) = newIndex;
 
-        context = fn_8001668C((s32)(arg0 + 0x60), 0);
-        if (lbl_80498C48[4] != 0)
-            ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0] = newIndex;
-        else
-            ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1] = newIndex;
+            context = fn_8001668C((s32)(arg0 + 0x60), 0);
+            if (lbl_80498C48[4] != 0)
+                ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0] = newIndex;
+            else
+                ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1] = newIndex;
 
-        newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
-        if (lbl_80498C48[4] != 0)
-            ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[0] = *(s32 *)(arg0 + 0x2C);
-        else
-            ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[1] = *(s32 *)(arg0 + 0x2C);
+            newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
+            if (lbl_80498C48[4] != 0)
+                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[0] = *(s32 *)(arg0 + 0x2C);
+            else
+                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[1] = *(s32 *)(arg0 + 0x2C);
 
-        index = *(s32 *)(arg0 + 0x2C);
-        *(*(s32 **)(arg0 + 0xDC)) =
-            *(s32 *)((u8 *)newIndex + index * 4 + 0x64);
+            index = *(s32 *)(arg0 + 0x2C);
+            *(*(s32 **)(arg0 + 0xDC)) =
+                *(s32 *)((u8 *)newIndex + index * 4 + 0x64);
 
-        newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
-        context = fn_8001668C((s32)(arg0 + 0x60), 0);
-        if (lbl_80498C48[4] != 0)
-            context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0];
-        else
-            context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1];
+            newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
+            context = fn_8001668C((s32)(arg0 + 0x60), 0);
+            if (lbl_80498C48[4] != 0)
+                context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0];
+            else
+                context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1];
 
-        index = *(s32 *)((u8 *)*(s32 **)(arg0 + 0xCC) +
-                         *(s32 *)(arg0 + 0x2C) * 0x14 + 0x10);
-        source = *(u8 **)(arg0 + 0x4C);
-        fn_80255918(source,
-                     index != 0 ? index :
-                     *(s32 *)((u8 *)newIndex + context * 4 + 0x64));
+            index = *(s32 *)((u8 *)*(s32 **)(arg0 + 0xCC) +
+                             *(s32 *)(arg0 + 0x2C) * 0x14 + 0x10);
+            source = *(u8 **)(arg0 + 0x4C);
+            fn_80255918(source,
+                         index != 0 ? index :
+                         *(s32 *)((u8 *)newIndex + context * 4 + 0x64));
 
-        fn_801345D8(arg0 + 0xE0, 0x100, lbl_8034287C,
-                    *(s32 *)(arg0 + 0x2C) + 1);
-        source = fn_80131234(arg0 + 0xE0);
-        dest = arg0 + 0xE0;
-        count = 0x100;
-        goto copy_loop_1;
-    copy_count_1:
-        count -= 1;
-        if (count > 0)
+            fn_801345D8(arg0 + 0xE0, 0x100, lbl_8034287C,
+                        *(s32 *)(arg0 + 0x2C) + 1);
+            source = fn_80131234(arg0 + 0xE0);
+            dest = arg0 + 0xE0;
+            count = 0x100;
             goto copy_loop_1;
-        dest[-1] = 0;
-        goto copy_done_1;
-    copy_loop_1:
-        ch = *source++;
-        *dest++ = ch;
-        if ((signed char)ch != 0)
-            goto copy_count_1;
-        else
+        copy_count_1:
+            count -= 1;
+            if (count > 0)
+                goto copy_loop_1;
+            dest[-1] = 0;
             goto copy_done_1;
-    copy_done_1:;
+        copy_loop_1:
+            ch = *source++;
+            *dest++ = ch;
+            if ((signed char)ch != 0)
+                goto copy_count_1;
+            else
+                goto copy_done_1;
+        copy_done_1:;
+        }
 
-    done_prev:
         fn_80216D28();
         fn_80214D50(1);
         return 1;
@@ -2115,63 +2113,62 @@ extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
         u8 *dest;
         s32 newIndex, index, context;
 
-        if (*(s32 *)(arg0 + 0x2C) >= *(s32 *)(arg0 + 0x1C) - 1)
-            goto done_next;
-        newIndex = *(s32 *)(arg0 + 0x2C) + 1;
-        *(s32 *)(arg0 + 0x2C) = newIndex;
+        if (*(s32 *)(arg0 + 0x2C) < *(s32 *)(arg0 + 0x1C) - 1) {
+            newIndex = *(s32 *)(arg0 + 0x2C) + 1;
+            *(s32 *)(arg0 + 0x2C) = newIndex;
 
-        context = fn_8001668C((s32)(arg0 + 0x60), 0);
-        if (lbl_80498C48[4] != 0)
-            ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0] = newIndex;
-        else
-            ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1] = newIndex;
+            context = fn_8001668C((s32)(arg0 + 0x60), 0);
+            if (lbl_80498C48[4] != 0)
+                ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0] = newIndex;
+            else
+                ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1] = newIndex;
 
-        newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
-        if (lbl_80498C48[4] != 0)
-            ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[0] = *(s32 *)(arg0 + 0x2C);
-        else
-            ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[1] = *(s32 *)(arg0 + 0x2C);
+            newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
+            if (lbl_80498C48[4] != 0)
+                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[0] = *(s32 *)(arg0 + 0x2C);
+            else
+                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[1] = *(s32 *)(arg0 + 0x2C);
 
-        index = *(s32 *)(arg0 + 0x2C);
-        *(*(s32 **)(arg0 + 0xDC)) =
-            *(s32 *)((u8 *)newIndex + index * 4 + 0x64);
+            index = *(s32 *)(arg0 + 0x2C);
+            *(*(s32 **)(arg0 + 0xDC)) =
+                *(s32 *)((u8 *)newIndex + index * 4 + 0x64);
 
-        newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
-        context = fn_8001668C((s32)(arg0 + 0x60), 0);
-        if (lbl_80498C48[4] != 0)
-            context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0];
-        else
-            context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1];
+            newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
+            context = fn_8001668C((s32)(arg0 + 0x60), 0);
+            if (lbl_80498C48[4] != 0)
+                context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0];
+            else
+                context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1];
 
-        index = *(s32 *)((u8 *)*(s32 **)(arg0 + 0xCC) +
-                         *(s32 *)(arg0 + 0x2C) * 0x14 + 0x10);
-        source = *(u8 **)(arg0 + 0x4C);
-        fn_80255918(source,
-                     index != 0 ? index :
-                     *(s32 *)((u8 *)newIndex + context * 4 + 0x64));
+            index = *(s32 *)((u8 *)*(s32 **)(arg0 + 0xCC) +
+                             *(s32 *)(arg0 + 0x2C) * 0x14 + 0x10);
+            source = *(u8 **)(arg0 + 0x4C);
+            fn_80255918(source,
+                         index != 0 ? index :
+                         *(s32 *)((u8 *)newIndex + context * 4 + 0x64));
 
-        fn_801345D8(arg0 + 0xE0, 0x100, lbl_8034287C,
-                    *(s32 *)(arg0 + 0x2C) + 1);
-        source = fn_80131234(arg0 + 0xE0);
-        dest = arg0 + 0xE0;
-        count = 0x100;
-        goto copy_loop_2;
-    copy_count_2:
-        count -= 1;
-        if (count > 0)
+            fn_801345D8(arg0 + 0xE0, 0x100, lbl_8034287C,
+                        *(s32 *)(arg0 + 0x2C) + 1);
+            source = fn_80131234(arg0 + 0xE0);
+            dest = arg0 + 0xE0;
+            count = 0x100;
             goto copy_loop_2;
-        dest[-1] = 0;
-        goto copy_done_2;
-    copy_loop_2:
-        ch = *source++;
-        *dest++ = ch;
-        if ((signed char)ch != 0)
-            goto copy_count_2;
-        else
+        copy_count_2:
+            count -= 1;
+            if (count > 0)
+                goto copy_loop_2;
+            dest[-1] = 0;
             goto copy_done_2;
-    copy_done_2:;
+        copy_loop_2:
+            ch = *source++;
+            *dest++ = ch;
+            if ((signed char)ch != 0)
+                goto copy_count_2;
+            else
+                goto copy_done_2;
+        copy_done_2:;
+        }
 
-    done_next:
         fn_80216D28();
         fn_80214D50(1);
         return 1;
@@ -2668,14 +2665,12 @@ void *fn_802522A8(void *arg0, s32 deleteFlags) {
     return arg0;
 }
 void fn_80252320(void *arg0, u8 *arg1, signed char arg2, int arg3) {
-    register s32 index;
-    u8 *record;
+    register s32 index = *(s32 *)((u8 *)arg0 + 8);
+    u8 *record = *(u8 **)((u8 *)arg0 + 4) + index * 0x48;
     register u8 *dst;
     register u8 *src;
     register s32 count;
     u8 c;
-    index = *(s32 *)((u8 *)arg0 + 8);
-    record = *(u8 **)((u8 *)arg0 + 4) + index * 0x48;
     *(s32 *)((u8 *)arg0 + 8) = index + 1;
     dst = record;
     src = arg1;
@@ -2739,10 +2734,11 @@ u8 fn_80252480(void *arg0, s32 arg1) {
     return *(u8 *)((char *)base + offset + 0x20);
 }
 
-char *fn_80252494(void *arg0, s32 arg1) {
-    s32 offset = arg1 * 0x48;
-    char *base = *(char **)((char *)arg0 + 4);
-    return base + offset + 0x21;
+char *fn_80252494(void *table, s32 recordIndex) {
+    // Address of the name string (+0x21) inside the given 0x48-byte record.
+    s32 byteOffset = recordIndex * 0x48;
+    char *records = *(char **)((char *)table + 4);
+    return records + byteOffset + 0x21;
 }
 
 u8 fn_802524A8(void *arg0, s32 arg1) {
