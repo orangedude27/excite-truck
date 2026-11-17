@@ -2220,6 +2220,7 @@ void fn_8014E740(void *arg0, f32 arg1) {
         entryList[count] = puddleEntry;
     }
 }
+/* Trivial stub callback between the puddle-entry adder and the score lookup; does nothing. */
 void fn_8014E7D8(void) {
 
 }
