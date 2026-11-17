@@ -6509,7 +6509,12 @@ extern "C" void fn_80223A58(MenuSoundList *list) {
 #undef drawRows
 }
 
-// Trivial callback stub: always reports 1 (true).
+/* Always-true stub of the menu-list class family implemented here: reports 1
+ * ("yes" / "message handled") without looking at the object or its arguments.
+ * The base version of the same hook answers 0 (fn_802192A4) and the working
+ * overrides are fn_80223760 (cursor keys) and fn_802239C8; this one is not a
+ * slot of the sibling vtables lbl_8033E3D4, lbl_8033E458 or lbl_8033E4DC, so
+ * it stands in for a virtual as a plain always-true callback. */
 extern "C" u32 fn_80223AAC(void) { return 1; }
 
 #pragma push
