@@ -199,6 +199,7 @@ void fn_802B5CB4(s32 delta) {
 }
 #pragma pop
 
+/* Advance the "tedash.val" debug viewer's current material set to the next one (delta +1). */
 void fn_802B5CC4(void) {
     fn_802B5CB4(1);
 }
