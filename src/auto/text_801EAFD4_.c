@@ -912,6 +912,7 @@ f32 fn_801EC114(void) {
 }
 
 void fn_801EC11C(void) {
+    // If the EB resource context was never loaded, run its fallback path.
     if (*(s32 *)&lbl_8055EBA0 == 0) {
         fn_802AEAA8();
     }
