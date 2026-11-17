@@ -1800,8 +1800,9 @@ extern "C" s32 fn_800A71C4(u32 *record) {
     return ((u32) *record >> 2U) & 1;
 }
 
-extern "C" void fn_800A71D0(void *arg0, s32 arg1) {
-    (*(s32 *)((u8 *)arg0 + 0x14)) = arg1;
+extern "C" void fn_800A71D0(void *request, s32 result) {
+    /* Store a device request's result/return value in its word at +0x14. */
+    (*(s32 *)((u8 *)request + 0x14)) = result;
 }
 
 extern "C" s32 fn_800A6268(s32, void *);
