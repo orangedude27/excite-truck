@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern unsigned char lbl_8055E1A8;
-extern int lbl_8042FB28[5];
+extern volatile int lbl_8042FB28[];
 extern void fn_8000D838(void *);
 extern int lbl_8055E1B0;
 extern int lbl_8055E1B4;
