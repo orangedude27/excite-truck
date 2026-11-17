@@ -158,8 +158,9 @@ void fn_802607DC(void *row) {
     *(u8 *)((u8 *)row + 0x1C) = 0;
 }
 
-void fn_802607EC(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x1D) = 0;
+void fn_802607EC(void *widget) {
+    /* Clear this selector widget's dim flag at +0x1D. */
+    *(u8 *)((u8 *)widget + 0x1D) = 0;
 }
 
 void fn_802607F8(void *self) {
