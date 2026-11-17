@@ -268,35 +268,38 @@ s32 fn_80005930(void) {
     extern s32 fn_80010EC8(void);
     extern s32 fn_8001123C(s32);
     extern s32 lbl_8055CFF0, lbl_8055CFF4;
-    s32 sp28[4], sp18[4], count = fn_801E85A4(), i;
+    s32 sp8[4], sp18[4], sp28[4], count = fn_801E85A4();
     s32 *entry = lbl_8034EEB8;
-    for (i = 0; i < count; i++, entry += 4) {
-        void *obj;
-        fn_80005740(i); obj = *(void **)(entry + 4);
-        if (obj != *(void **)(entry + 5)) {
-            if (obj) (*(void (**)(void))((u8 *)*(void **)obj + 0x18))();
-            obj = *(void **)(entry + 4);
+    s32 i;
+    for (i = 0; i < count; entry += 4, i++) {
+        void *obj, *other;
+        fn_80005740(i); obj = *(void **)(entry + 4); other = *(void **)(entry + 5);
+        if (obj != other) {
+            if (other) (*(void (**)(void))((u8 *)*(void **)other + 0x18))();
             (*(void (**)(void *))((u8 *)*(void **)obj + 0x14))(obj);
             *(void **)(entry + 5) = obj;
         }
         fn_80010EC8();
         if ((*(s32 (**)(void *))((u8 *)*(void **)obj + 0x28))(obj)) {
-            sp28[1] = 0; sp28[0] = 0; sp28[2] = lbl_8055CFF0; sp28[3] = lbl_8055CFF4;
-        } else fn_801E88B4(&sp28[1], &sp28[0], &sp28[2], &sp28[3], i);
-        fn_802C86F0(&sp28[0], sp28[1], sp28[0], sp28[2], sp28[3]);
+            sp28[3] = 0; sp28[2] = 0; sp28[1] = lbl_8055CFF0; sp28[0] = lbl_8055CFF4;
+        } else fn_801E88B4(&sp28[3], &sp28[2], &sp28[1], &sp28[0], i);
+        fn_802C86F0(sp8, sp28[3], sp28[2], sp28[1], sp28[0]);
         (*(void (**)(void *))((u8 *)*(void **)obj + 0x20))(obj);
-        if (fn_801E89EC() != 3 && (fn_8000D75C(), (*(s32 (**)(void *))((u8 *)*(void **)obj + 0x28))(obj) != 0 || i == 0))
-            (*(void (**)(void *))((u8 *)*(void **)obj + 0x24))(obj);
-        fn_8001123C(*(s32 *)((u8 *)lbl_8055D350 + 0x1C)); fn_80011A2C(); fn_802C8750(&sp28[0], -1);
+        if (fn_801E89EC() != 3) {
+            fn_8000D75C();
+            if ((*(s32 (**)(void *))((u8 *)*(void **)obj + 0x28))(obj) == 0 || i == 0)
+                (*(void (**)(void *))((u8 *)*(void **)obj + 0x24))(obj);
+        }
+        fn_8001123C(*(s32 *)((u8 *)lbl_8055D350 + 0x1C)); fn_80011A2C(); fn_802C8750(sp8, -1);
     }
     entry = lbl_8034EEB8;
-    for (i = 0; i < count; i++, entry += 4) {
+    for (i = 0; i < count; entry += 4, i++) {
         void *obj;
         fn_80005740(i); obj = *(void **)(entry + 4); fn_80010EC8();
-        fn_802C86F0(&sp18[0], 0, 0, lbl_8055CFF0, lbl_8055CFF4);
+        fn_802C86F0(sp18, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
         (*(void (**)(void *))((u8 *)*(void **)obj + 0x20))(obj);
         if (fn_801E89EC() != 3) { fn_8000D75C(); (*(void (**)(void *, s32))((u8 *)*(void **)obj + 0x2C))(obj, i); }
-        fn_8001123C(*(s32 *)((u8 *)lbl_8055D350 + 0x1C)); fn_80011A2C(); fn_802C8750(&sp18[0], -1);
+        fn_8001123C(*(s32 *)((u8 *)lbl_8055D350 + 0x1C)); fn_80011A2C(); fn_802C8750(sp18, -1);
     }
 }
 #pragma dont_inline reset
@@ -1767,6 +1770,7 @@ extern "C" void fn_80007898(void *object) {
     fn_8000FF88(-1, 0x11, lbl_802FB6B4, lbl_805601AC, xPos, yPos);
 }
 #pragma cplusplus reset
+/* Virtual method of the ClosureOverlay UI class (alongside fn_8000797C/fn_80007984/fn_80007990): reports a constant enabled value (1). */
 u32 fn_80007974(void) { return 1; }
 
 /* Return this UI overlay's flag byte at offset 0x14. */
