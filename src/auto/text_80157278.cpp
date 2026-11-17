@@ -3348,20 +3348,21 @@ extern "C" void fn_8015CC6C(void* arg0, f32 farg0) {
     *(f32*)((char*)arg0 + 0x250) = farg0;
 }
 
-extern "C" void fn_8015CC74(Unk801577F0* arg0) {
+extern "C" void fn_8015CC74(Unk801577F0* object) {
     f32 zero = 0.0f;
-    s32 i = 0;
-    s32 offset = 0;
-    s32 value = 0;
-    for (; i < arg0->mCount; i++) {
-        *(s32*)(arg0->mData + offset) = value;
-        *(s32*)(arg0->mData + offset + 4) = value;
-        *(s32*)(arg0->mData + offset + 8) = value;
-        *(f32*)(arg0->mData + offset + 0xC) = zero;
-        offset += 0x38;
+    s32 index = 0;
+    s32 byteOffset = 0;
+    s32 zeroInt = 0;
+    /* Reset the three integer and one float field of every 0x38-byte per-entry record. */
+    for (; index < object->mCount; index++) {
+        *(s32*)(object->mData + byteOffset) = zeroInt;
+        *(s32*)(object->mData + byteOffset + 4) = zeroInt;
+        *(s32*)(object->mData + byteOffset + 8) = zeroInt;
+        *(f32*)(object->mData + byteOffset + 0xC) = zero;
+        byteOffset += 0x38;
     }
-    arg0->v31();
-    *(f32*)((u8*)arg0 + 0x250) = lbl_805617C8;
+    object->v31();
+    *(f32*)((u8*)object + 0x250) = lbl_805617C8;
 }
 
 extern "C" void fn_8015CD0C(void) {
