@@ -247,7 +247,10 @@ copied:
     return line;
 }
 #pragma scheduling on
-void fn_8013BFE0(void) {
+/* First of the two hooks the cache lookup fn_8013BFE8 runs on a freshly built
+ * CacheResource before filing it in the cache table (lbl_8042F8C8); the shipped
+ * game leaves it empty, as it does fn_8013BFE4. */
+void fn_8013BFE0(CacheResource *resource) {
 
 }
 
