@@ -306,77 +306,123 @@ extern int fn_80012854(void);
 #pragma dont_inline on
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" int fn_80205268(const char *arg0, int arg1, int arg2) {
-    class Manager { public: virtual void *get(int); };
-    class Stage { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void *get(int); };
-    class Resource { public: virtual void f0(); virtual int has(const char *); virtual void f2(); virtual const char *get(const char *); };
-    volatile struct { int arg1; void *mgr; void *cur; void *val; void *sel; } s;
-    char buf[0x64];
-    char *entry;
+extern "C" int fn_80205268(const char *propName, int typeIndex, int stageIndex) {
+    /* Look up a difficulty property string.
+     *
+     * Opens the "difficulty.val" value group and takes the property set it holds
+     * for this scene type's property key (sTypeEntries[typeIndex] + 8).  When
+     * stageIndex names a live stage, that stage's own property set and its
+     * contest name join the search.  The property is looked for first under the
+     * stage-specific name "<contest>_<propName>" and then under the plain
+     * propName, testing the stage's set before the type's default one.  Returns
+     * the value string; panics if no set defines the property.
+     */
+    class ValueGroup { public: virtual void *get(int typeKey); };
+    class StageProps { public:
+        virtual void unused0(); virtual void unused1(); virtual void unused2(); virtual void unused3();
+        virtual void unused4(); virtual void unused5(); virtual void unused6(); virtual void unused7();
+        virtual void unused8(); virtual void unused9(); virtual void unused10(); virtual void unused11();
+        virtual void unused12(); virtual void unused13(); virtual void unused14(); virtual void unused15();
+        virtual void unused16(); virtual void unused17(); virtual void unused18(); virtual void unused19();
+        virtual void unused20();
+        virtual void *get(int typeKey); /* the stage's PropertySet for a scene type */
+    };
+    class PropertySet { public:
+        virtual void unused0();
+        virtual int has(const char *name);
+        virtual void unused2();
+        virtual const char *get(const char *name);
+    };
+    typedef int (*StringFormat)(void *, int, const char *, ...);
+    typedef const char *(*ContestNameOf)(int);
+    typedef void *(*StageEntryOf)(int);
+
+    #define DIFFICULTY_VAL   lbl_8033BBE4 /* "difficulty.val" value group */
+    #define STAGE_KEY_FORMAT lbl_8055B4AC /* "%s_%s" */
+    #define NOT_FOUND_PANIC  lbl_8033BBF4 /* 'Difficulty: "%s" was not found' */
+    #define KEY_BUF_SIZE     0x64
+
+    volatile struct {
+        int typeIndex;
+        void *group;   /* ValueGroup opened on "difficulty.val" */
+        void *current; /* the type's default PropertySet */
+        void *stage;   /* the stage's own PropertySet, if it has one */
+        void *contest; /* the stage's contest name, if any */
+    } lookup;
+    char keyBuf[KEY_BUF_SIZE];
+    char *typeEntry;
     int result;
-    const char *t;
-    void *o;
-    void *sel;
-    void *mgr;
-    s.arg1 = arg1;
-    s.mgr = 0;
-    s.cur = 0;
-    s.val = 0;
-    s.sel = 0;
-    s.mgr = fn_80131808(lbl_8033BBE4);
-    entry = (char *)fn_80204B18(arg1);
-    s.cur = ((Manager *)s.mgr)->get(*(int *)(entry + 8));
-    if (arg2 >= 0 && arg2 < fn_80012854()) {
-        void *stage = *(void **)((char *)((void *(*)(int))fn_8001285C)(arg2) + 0x20);
-        int ok = ((Stage *)stage)->get(*(int *)(entry + 8)) != 0;
-        if (ok) {
-            s.val = ((Stage *)stage)->get(*(int *)(entry + 8));
+    const char *value;
+    void *set;
+    void *contest;
+    void *group;
+
+    lookup.typeIndex = typeIndex;
+    lookup.group = 0;
+    lookup.current = 0;
+    lookup.stage = 0;
+    lookup.contest = 0;
+    lookup.group = fn_80131808(DIFFICULTY_VAL);
+    typeEntry = (char *)fn_80204B18(typeIndex);
+    lookup.current = ((ValueGroup *)lookup.group)->get(*(int *)(typeEntry + 8));
+    if (stageIndex >= 0 && stageIndex < fn_80012854()) {
+        void *stageProps = *(void **)((char *)((StageEntryOf)fn_8001285C)(stageIndex) + 0x20);
+        int stageHasValue = ((StageProps *)stageProps)->get(*(int *)(typeEntry + 8)) != 0;
+        if (stageHasValue) {
+            lookup.stage = ((StageProps *)stageProps)->get(*(int *)(typeEntry + 8));
         }
-        s.sel = ((void *(*)(int))fn_80204AA4)(arg2);
+        lookup.contest = (void *)((ContestNameOf)fn_80204AA4)(stageIndex);
     }
     result = 0;
-    sel = s.sel;
-    if (sel != 0) {
-        ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, sel, arg0);
-        o = s.val;
-        if (o != 0 && ((Resource *)o)->has(buf) != 0) {
-            o = s.val;
-            t = ((Resource *)o)->get(buf);
+    contest = lookup.contest;
+    if (contest != 0) {
+        /* "<contest>_<propName>": the contest-specific spelling of the property. */
+        ((StringFormat)fn_801345D8)(keyBuf, KEY_BUF_SIZE, STAGE_KEY_FORMAT, contest, propName);
+        set = lookup.stage;
+        if (set != 0 && ((PropertySet *)set)->has(keyBuf) != 0) {
+            set = lookup.stage;
+            value = ((PropertySet *)set)->get(keyBuf);
         } else {
-            o = s.cur;
-            if (((Resource *)o)->has(buf) != 0) {
-                o = s.cur;
-                t = ((Resource *)o)->get(buf);
+            set = lookup.current;
+            if (((PropertySet *)set)->has(keyBuf) != 0) {
+                set = lookup.current;
+                value = ((PropertySet *)set)->get(keyBuf);
             } else {
-                t = 0;
+                value = 0;
             }
         }
-        result = (int)t;
+        result = (int)value;
     }
     if (result == 0) {
-        o = s.val;
-        if (o != 0 && ((Resource *)o)->has(arg0) != 0) {
-            o = s.val;
-            t = ((Resource *)o)->get(arg0);
+        /* Fall back to the plain property name. */
+        set = lookup.stage;
+        if (set != 0 && ((PropertySet *)set)->has(propName) != 0) {
+            set = lookup.stage;
+            value = ((PropertySet *)set)->get(propName);
         } else {
-            o = s.cur;
-            if (((Resource *)o)->has(arg0) != 0) {
-                o = s.cur;
-                t = ((Resource *)o)->get(arg0);
+            set = lookup.current;
+            if (((PropertySet *)set)->has(propName) != 0) {
+                set = lookup.current;
+                value = ((PropertySet *)set)->get(propName);
             } else {
-                t = 0;
+                value = 0;
             }
         }
-        result = (int)t;
+        result = (int)value;
     }
-    if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
-    mgr = s.mgr;
-    s.sel = 0;
-    s.cur = 0;
-    s.val = 0;
-    fn_80131818((int)mgr);
-    s.mgr = 0;
+    if (result == 0) fn_802E317C(NOT_FOUND_PANIC, propName);
+    group = lookup.group;
+    lookup.contest = 0;
+    lookup.current = 0;
+    lookup.stage = 0;
+    fn_80131818((int)group);
+    lookup.group = 0;
     return result;
+
+    #undef DIFFICULTY_VAL
+    #undef STAGE_KEY_FORMAT
+    #undef NOT_FOUND_PANIC
+    #undef KEY_BUF_SIZE
 }
 extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
     class Manager { public: virtual void *get(int); };
