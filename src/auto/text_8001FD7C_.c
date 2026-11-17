@@ -291,8 +291,7 @@ typedef void (*Cross3)(float *, float *, float *);
 typedef void (*Cross4)(float *, float *, float *, float);
 typedef void (*Cross5)(float *, float *, float *, float, float);
 typedef void (*Cross7)(float *, float *, float *, float, float, float, float);
-#pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80020070(float *arg0) {
     float axis[3];
     float vec2[3];
@@ -844,8 +843,9 @@ int fn_800216D0(void) {
     }
     return active;
 }
+/* Returns whether the tips/results overlay is currently being shown. */
 unsigned char fn_800216F4(void) {
-    return lbl_8055D644;
+    return OVERLAY_ON;
 }
 
 int fn_800216FC(void) {
