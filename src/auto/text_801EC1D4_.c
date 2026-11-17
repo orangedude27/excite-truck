@@ -1258,7 +1258,7 @@ void fn_801EEF44(void *renderState, void *vehicle) {
 unsigned int fn_801EEF74(void) {
 #define ALWAYS_TRUE 1
     /* Constant predicate: always reports true so callers take the enabled path. */
-    unsigned int available = ALWAYS_TRUE;
-    return available;
+    unsigned int enabled = ALWAYS_TRUE;
+    return enabled;
 }
 
