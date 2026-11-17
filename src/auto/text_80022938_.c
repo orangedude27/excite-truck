@@ -18,63 +18,71 @@ DECL_SECTION(".extabindex") const ET_ExtabIndex eti_80004778 = {
 // split_file divides it into the game's real files (file_status shows its range).
 
 #pragma opt_propagation off
+/* MSL: multiply two decimals.  Each sig.text byte holds one decimal digit, most
+ * significant first.  The operands' digits are convolved one output digit at a
+ * time, the base-10 carry being kept between digits, into a scratch buffer that
+ * is filled from the back; the SIGDIGLEN most significant digits are then copied
+ * to the result and the next digit rounds them, ties going to even.  The
+ * exponent is the sum of the operands' exponents, plus one for a carry out of
+ * the convolution and plus one if the rounding carried through every digit.
+ * The result's sign is simply cleared (both operands are unsigned here). */
 void __timesdec(decimal *out, const decimal *a, const decimal *b)
 {
-    register unsigned int carry asm("r11") = 0;
-    register int k asm("r12");
-    register unsigned char *p asm("r6");
-    register unsigned char *end asm("r0");
-    register int j asm("r31"), count asm("r31");
-    register int i asm("r30");
-    register const unsigned char *pa asm("r30"), *pb asm("r29");
-    unsigned char buf[72], *q;
-    register unsigned char *dst asm("r5");
-    int n;
-    k = a->sig.length + b->sig.length - 1;
-    p = buf + k + 1;
-    end = p;
+    register unsigned int carry asm("r11") = 0; /* running base-10 carry */
+    register int digit asm("r12");              /* output digit being built, counting down to 1 */
+    register unsigned char *wp asm("r6");       /* write cursor, walks back through buf */
+    register unsigned char *end asm("r0");      /* one past the last digit written */
+    register int bi asm("r31"), count asm("r31");   /* index into b, then digits to add */
+    register int ai asm("r30");                 /* index into a, then digits copied out */
+    register const unsigned char *ap asm("r30"), *bp asm("r29");
+    unsigned char buf[SIGDIGLEN * 2], *scan;
+    register unsigned char *rp asm("r5");
+    int avail;
+    digit = a->sig.length + b->sig.length - 1;
+    wp = buf + digit + 1;
+    end = wp;
     out->sign = 0;
-    while (k > 0) {
-        j = b->sig.length - 1;
-        i = k - j - 1;
-        if (i < 0) { i = 0; j = k - 1; }
-        count = j + 1;
-        pa = a->sig.text + i;
-        pb = b->sig.text + j;
-        n = a->sig.length - i;
-        if (count > n) count = n;
-        while (count-- > 0) carry += *pa++ * *pb--;
-        *--p = carry % 10;
+    while (digit > 0) {
+        bi = b->sig.length - 1;
+        ai = digit - bi - 1;
+        if (ai < 0) { ai = 0; bi = digit - 1; }
+        count = bi + 1;
+        ap = a->sig.text + ai;
+        bp = b->sig.text + bi;
+        avail = a->sig.length - ai;
+        if (count > avail) count = avail;
+        while (count-- > 0) carry += *ap++ * *bp--;
+        *--wp = carry % 10;
         carry /= 10;
-        --k;
+        --digit;
     }
     out->exp = a->exp + b->exp;
-    if (carry) { *--p = carry; out->exp++; }
-    i = 0;
-    while (i < 36 && p < end) {
-        out->sig.text[i] = *p;
-        i++;
-        p++;
+    if (carry) { *--wp = carry; out->exp++; }
+    ai = 0;
+    while (ai < SIGDIGLEN && wp < end) {
+        out->sig.text[ai] = *wp;
+        ai++;
+        wp++;
     }
-    out->sig.length = i;
-    if (p < end && *p >= 5) {
-        if (*p == 5) {
-            for (q = p + 1; q < end; q++) {
-                if (*q != 0) goto round;
+    out->sig.length = ai;
+    if (wp < end && *wp >= 5) {
+        if (*wp == 5) {
+            /* an exact tie: round up only if that makes the last digit odd */
+            for (scan = wp + 1; scan < end; scan++) {
+                if (*scan != 0) goto round;
             }
-            if (!(p[-1] & 1)) return;
+            if (!(wp[-1] & 1)) return;
         }
     round:
         {
             register int len asm("r4") = out->sig.length;
             unsigned char *base = out->sig.text;
-            dst = base + len - 1;
+            rp = base + len - 1;
             for (;;) {
-                if (*dst < 9) { ++*dst; break; }
-                if (dst == base) { *dst = 1; out->exp++; break; }
-                *dst-- = 0;
+                if (*rp < 9) { ++*rp; break; }
+                if (rp == base) { *rp = 1; out->exp++; break; }
+                *rp-- = 0;
             }
         }
     }
 }
-#pragma opt_propagation reset
