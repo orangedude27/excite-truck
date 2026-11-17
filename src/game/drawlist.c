@@ -1047,6 +1047,9 @@ float fn_802C9A50(void) { return lbl_8055D020; }
 
 #pragma dont_inline off
 char fn_802C9A58(void) {
+    /* Returns lbl_8055FC8C, the widescreen flag set by fn_802C82C4 from the
+     * aspect-ratio setting; callers use it to pick widescreen layouts and
+     * scissor regions instead of the standard ones. */
     return lbl_8055FC8C;
 }
 
