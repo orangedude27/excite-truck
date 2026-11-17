@@ -303,6 +303,10 @@ int fn_8017ECC0(int object, int deleteFlag) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 void fn_8017ED00(f32 dt) {
+    /* Per-frame input update for all four players: translate each bound slot into a
+     * control value (fn_801A7F98), apply analog rates/dead-zones and digital presses,
+     * and write the results into the player's pad0C[] controls and flag bytes.
+     * Does nothing while lbl_8055E4B8 is nonzero; dt is the frame delta time. */
     struct {
         u8 pad00[0x50];
         u32 flags;
@@ -379,6 +383,7 @@ void fn_8017ED00(f32 dt) {
                 }
             }
 
+            /* Steering: digital left/right or the analog axis difference. */
             if (player->flag340 || fn_801A8EE4(&player->slot[0]) || fn_801A8EE4(&player->slot[1])) {
                 f32 base = k54 * player->level2C[2];
                 f32 rate = k50 * base;
@@ -423,6 +428,7 @@ void fn_8017ED00(f32 dt) {
                 }
             }
 
+            /* Acceleration/brake axis. */
             {
                 f32 base = k54 * player->level2C[2];
                 f32 rate = k50 * base;
@@ -545,6 +551,7 @@ void fn_8017ED00(f32 dt) {
             }
             player->flag68 = fn_801A8E38(&player->slot[17]);
 
+            /* Camera/look axis is rate-limited towards the raw stick value. */
             {
                 f32 leftAxis = fn_801A7F98(&player->slot[20]);
                 f32 steerInput = fn_8017EB80(-leftAxis + fn_801A7F98(&player->slot[21]), lbl_80561C60, lbl_80561C74);
@@ -565,6 +572,7 @@ void fn_8017ED00(f32 dt) {
                 *(f32 *)&player->pad330[4] = fn_801A7F98(&player->slot[37]) - negAxis;
             }
 
+            /* Gear selection via +/- keys or the sequential gear slots. */
             if (!player->flag341) {
                 if (fn_801A8E38(&player->slot[13])) {
                     if (!player->flag59) {
