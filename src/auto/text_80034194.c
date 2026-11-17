@@ -2709,11 +2709,214 @@ void fn_80038368(void *block) {
  }
 }
 
-void fn_80038870(void) {
-s32 interrupts;
-interrupts = OSDisableInterrupts();
-OSRestoreInterrupts(interrupts);
-fn_80038040();
+void fn_80038870(u32 arg0) {
+#define CMD (*(volatile u32 *)&lbl_8055D8BC)
+    char *block;
+    void *cbp;
+    s32 flag;
+    s32 interrupts;
+    u32 tlow;
+    u64 now, start;
+    s64 diff;
+    u32 result;
+
+    interrupts = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+        *(u32 *)(__ErrorInfo + 0x78) = arg0;
+    } else {
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = arg0;
+    }
+    OSRestoreInterrupts(interrupts);
+
+    if (arg0 == 0x10) {
+        fn_8003A1A0(0x01234568, &fn_80035C78);
+        return;
+    }
+    if (arg0 == 0x20) {
+        fn_8003A1A0(0x01234569, &fn_80035C78);
+        return;
+    }
+    if (CMD == 3 || CMD == 0xF) {
+        if (arg0 & 2) {
+            fn_8003A1A0(0x01234567, &fn_80035C64);
+            return;
+        }
+        lbl_8055D860 = 0;
+        if (CMD == 0xF) lbl_8055D8AC = 1;
+        if (lbl_8055D858 != 0) {
+            block = (char *)executing_8055D8C8;
+            lbl_8055D85C = 7;
+            lbl_8055D858 = 0;
+            executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+            *(s32 *)(block + 0xC) = 0xA;
+            cbp = *(void **)(block + 0x28);
+            if (cbp != 0) ((void (*)(s32, void *))cbp)(-3, block);
+            if (lbl_8055D8B8 != 0) lbl_8055D8B8(0, block);
+            fn_80038040();
+            flag = 1;
+        } else flag = 0;
+        if (flag == 0 && MotorState_8055D8A8 != 2) {
+            *(s32 *)((char *)executing_8055D8C8 + 0xC) = 7;
+            MotorState_8055D8A8 = 1;
+            if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+                lbl_8055D870 = 1;
+                OSCreateAlarm(&lbl_80376AD0);
+                {
+                    s32 tick = OSGetTick();
+                    u32 period = (u32)(((u64)(*(volatile u32 *)0x800000F8 >> 2) * (u32)0x10624DD3U) >> 32);
+                    period = (period >> 6) * 100;
+                    OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period, fn_8003801C);
+                }
+            }
+        }
+    } else {
+        if (CMD == 1 || CMD == 4 || CMD == 5 || CMD == 0x21 || CMD == 0xE || CMD == lbl_80558E14) {
+            s32 add = (arg0 & 9) ? *(s32 *)((char *)executing_8055D8C8 + 0x1C) : 0;
+            *(s32 *)((char *)executing_8055D8C8 + 0x20) += add;
+        }
+        if (lbl_8055D86C != 0) {
+            block = (char *)executing_8055D8C8;
+            lbl_8055D86C = 0;
+            lbl_8055D858 = 0;
+            executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+            *(s32 *)(block + 0xC) = 0xA;
+            cbp = *(void **)(block + 0x28);
+            if (cbp != 0) ((void (*)(s32, void *))cbp)(-3, block);
+            if (lbl_8055D8B8 != 0) lbl_8055D8B8(0, block);
+            fn_80038040();
+            return;
+        }
+        if (arg0 & 1) {
+            lbl_8055D860 = 0;
+            if (CMD == 0x10) {
+                block = (char *)executing_8055D8C8;
+                MotorState_8055D8A8 = (*(s32 *)(block + 0x10) != 0) + 1;
+                executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+                *(s32 *)(block + 0xC) = 0;
+                cbp = *(void **)(block + 0x28);
+                if (cbp != 0) ((void (*)(s32, void *))cbp)(0, block);
+                fn_80038040();
+                return;
+            }
+            if (CMD == 0x20) {
+                block = (char *)executing_8055D8C8;
+                now = __OSGetSystemTime();
+                lbl_8055D8A4 = (u32)now;
+                lbl_8055D8A0 = (s32)now;
+                lbl_8055D8AC = 0;
+                lbl_8055D85C = 0;
+                executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+                *(s32 *)(block + 0xC) = 0;
+                cbp = *(void **)(block + 0x28);
+                if (cbp != 0) ((void (*)(s32, void *))cbp)(0, block);
+                fn_80038040();
+                return;
+            }
+            if (lbl_8055D858 != 0) {
+                block = (char *)executing_8055D8C8;
+                lbl_8055D85C = 0;
+                lbl_8055D858 = 0;
+                executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+                *(s32 *)(block + 0xC) = 0xA;
+                cbp = *(void **)(block + 0x28);
+                if (cbp != 0) ((void (*)(s32, void *))cbp)(-3, block);
+                if (lbl_8055D8B8 != 0) lbl_8055D8B8(0, block);
+                fn_80038040();
+                flag = 1;
+            } else flag = 0;
+            if (flag == 0) {
+                if (CMD == 0x26) {
+                    result = fn_8003BB48();
+                    now = __OSGetSystemTime();
+                    start = ((u64)(u32)lbl_8055D8A4 << 32) | (u32)lbl_8055D8A0;
+                    tlow = (*(u32 *)0x800000F8 / 4) * 100;
+                    diff = (s64)(now - start) - tlow;
+                    if (diff >= 0) flag = 0; else flag = -(s32)(result & 1) + 2;
+                    block = (char *)executing_8055D8C8;
+                    executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+                    *(s32 *)(block + 0xC) = 0;
+                    *(s32 *)(block + 0x10) = flag;
+                    cbp = *(void **)(block + 0x28);
+                    if (cbp != 0) ((void (*)(void))cbp)();
+                    fn_80038040();
+                    return;
+                }
+                if (CMD == 0x24) {
+                    result = fn_8003BB48();
+                    if (result & 4 || result & 1) flag = 0;
+                    else flag = (lbl_8055D85C == 0);
+                    block = (char *)executing_8055D8C8;
+                    executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+                    *(s32 *)(block + 0xC) = 0;
+                    *(s32 *)(block + 0x10) = flag;
+                    cbp = *(void **)(block + 0x28);
+                    if (cbp != 0) ((void (*)(void))cbp)();
+                    fn_80038040();
+                    return;
+                }
+                if (CMD == 1 || CMD == 4 || CMD == 5 || CMD == 0x21 || CMD == 0xE || CMD == lbl_80558E14) {
+                    block = (char *)executing_8055D8C8;
+                    if (*(s32 *)(block + 0x20) != *(s32 *)(block + 0x14)) {
+                        fn_80038368(block);
+                        return;
+                    }
+                    executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+                    *(s32 *)(block + 0xC) = 0;
+                    cbp = *(void **)(block + 0x28);
+                    if (cbp != 0) ((void (*)(s32, void *))cbp)(*(s32 *)(block + 0x20), block);
+                    fn_80038040();
+                    return;
+                }
+                if ((u32)(CMD - 9) <= 3 || CMD == *(u32 *)lbl_8030228C || CMD == *(u32 *)(lbl_8030228C + 4) || CMD == *(u32 *)(lbl_8030228C + 8)) {
+                    fn_8003BCC0();
+                    block = (char *)executing_8055D8C8;
+                    executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+                    *(s32 *)(block + 0xC) = 0;
+                    cbp = *(void **)(block + 0x28);
+                    if (cbp != 0) ((void (*)(void))cbp)();
+                    fn_80038040();
+                    return;
+                }
+                block = (char *)executing_8055D8C8;
+                executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+                *(s32 *)(block + 0xC) = 0;
+                cbp = *(void **)(block + 0x28);
+                if (cbp != 0) ((void (*)(s32, void *))cbp)(0, block);
+                fn_80038040();
+            }
+        } else {
+            if (CMD == 0xE) {
+                fn_8003A1A0(0x01234567, &fn_80035C64);
+                return;
+            }
+            if ((CMD == 1 || CMD == 4 || CMD == 5 || CMD == 0x21 || CMD == 0xE) &&
+                *(s32 *)((char *)executing_8055D8C8 + 0x20) == *(s32 *)((char *)executing_8055D8C8 + 0x14)) {
+                block = (char *)executing_8055D8C8;
+                if (lbl_8055D858 != 0) {
+                    lbl_8055D85C = 0;
+                    lbl_8055D858 = 0;
+                    executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+                    *(s32 *)(block + 0xC) = 0xA;
+                    cbp = *(void **)(block + 0x28);
+                    if (cbp != 0) ((void (*)(s32, void *))cbp)(-3, block);
+                    if (lbl_8055D8B8 != 0) lbl_8055D8B8(0, block);
+                    fn_80038040();
+                    flag = 1;
+                } else flag = 0;
+                if (flag == 0) {
+                    executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+                    *(s32 *)(block + 0xC) = 0;
+                    cbp = *(void **)(block + 0x28);
+                    if (cbp != 0) ((void (*)(s32))cbp)(*(s32 *)(block + 0x20));
+                    fn_80038040();
+                }
+            } else {
+                fn_800356F4(0x27, 0, 0);
+                fn_8003B218(fn_80035E6C);
+            }
+        }
+    }
+#undef CMD
 }
 
 #pragma pop
