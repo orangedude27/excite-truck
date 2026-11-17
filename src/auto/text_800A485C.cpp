@@ -12428,7 +12428,6 @@ extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
     u8 *found = 0;
     u32 sectors;
     u32 groups;
-    u16 cyl;
     u8 *out = (u8 *)arg1;
 
     fn_800B8004(lbl_8055DD30);
@@ -12448,15 +12447,14 @@ extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
         return -0x14;
     }
     sectors = *(u32 *)(found + 0x54) >> 9;
-    out[7] = 0x3F;
-    out[6] = 0xFF;
+    groups = sectors / 255;
+    *(u8 *)(out + 7) = 0x3F;
+    *(u8 *)(out + 6) = 0xFF;
     *(u32 *)(out + 0xC) = 0;
     *(u32 *)(out + 0x10) = 0;
-    groups = sectors / 255;
     *(u32 *)out = sectors;
     *(u16 *)(out + 8) = 0x200;
-    cyl = (groups / 63) >> 9;
-    *(u16 *)(out + 4) = cyl;
+    *(u16 *)(out + 4) = (groups / 63) >> 9;
     fn_800B8048(lbl_8055DD30);
     return 0;
 }
@@ -18702,7 +18700,10 @@ extern "C" s32 WENCGetEncodeData(void *infoArg, u32 flag, const s16 *pcmData, s3
 }
 
 extern "C" void* fn_800C64DC(u32 size) {
-    return MEMAllocFromAllocator(lbl_80559708, size);
+#define s_hbmAllocator lbl_80559708
+    /* AXFX allocation hook: allocate `size` bytes from the home-button manager's allocator. */
+    return MEMAllocFromAllocator(s_hbmAllocator, size);
+#undef s_hbmAllocator
 }
 
 extern "C" void fn_800CF170(void*);
