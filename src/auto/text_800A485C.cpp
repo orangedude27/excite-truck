@@ -8286,29 +8286,30 @@ typedef struct PFFileInfo {
     u32 unk18;       /* 0x18 */
     u32 unk1C;       /* 0x1C */
 } PFFileInfo;
-extern "C" s32 VFiPFFILE_p_finfo(void *arg0, void *arg1) {
-    s32 temp_r3, temp_r5;
-    u32 size;
-    void *file;
-    *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x34) = (u8 *)arg0 + 0xC;
-    if (arg0 == 0) file = 0;
-    else file = *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
-    *(s32 *)arg1 = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x264);
-    *(s32 *)((u8 *)arg1 + 4) = *(s32 *)((u8 *)arg0 + 0x1C);
-    size = *(u16 *)file << *((u8 *)file + 0x21);
-    if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x270) != 0) {
-        temp_r3 = fn_800A9470(arg0, (void *)((u32)arg1 + 0xC));
-        if (temp_r3 != 0) return temp_r3;
-        temp_r5 = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x264) % size;
-        *(s32 *)((u8 *)arg1 + 8) = *(u32 *)((u8 *)arg1 + 0xC) + (temp_r5 != 0 ? size - temp_r5 : 0);
+/* Fill a PFFileInfo from a file handle's stream: copy its size, position, FAT-chain byte counts and attributes, using fn_800A9470 to compute the chain tail when the stream has a first cluster (otherwise the chain fields are zeroed). Returns 0 or an error from fn_800A9470. */
+extern "C" s32 VFiPFFILE_p_finfo(void *fileObj, void *info) {
+    s32 error, remainder;
+    u32 clusterBytes;
+    void *volume;
+    *(void **)((u8 *)*(void **)((u8 *)fileObj + 8) + 0x34) = (u8 *)fileObj + 0xC;
+    if (fileObj == 0) volume = 0;
+    else volume = *(void **)((u8 *)*(void **)((u8 *)fileObj + 8) + 0x268);
+    ((PFFileInfo *)info)->size = *(s32 *)((u8 *)*(void **)((u8 *)fileObj + 8) + 0x264);
+    ((PFFileInfo *)info)->position = *(s32 *)((u8 *)fileObj + 0x1C);
+    clusterBytes = *(u16 *)volume << *((u8 *)volume + 0x21);
+    if (*(s32 *)((u8 *)*(void **)((u8 *)fileObj + 8) + 0x270) != 0) {
+        error = fn_800A9470(fileObj, (void *)((u32)info + 0xC));
+        if (error != 0) return error;
+        remainder = *(u32 *)((u8 *)*(void **)((u8 *)fileObj + 8) + 0x264) % clusterBytes;
+        ((PFFileInfo *)info)->allocated = ((PFFileInfo *)info)->chainBytes + (remainder != 0 ? clusterBytes - remainder : 0);
     } else {
-        *(s32 *)((u8 *)arg1 + 0xC) = 0;
-        *(s32 *)((u8 *)arg1 + 8) = 0;
+        ((PFFileInfo *)info)->chainBytes = 0;
+        ((PFFileInfo *)info)->allocated = 0;
     }
-    *(s32 *)((u8 *)arg1 + 0x10) = *(u16 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x27C) & 3;
-    *(s32 *)((u8 *)arg1 + 0x14) = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x284);
-    *(s32 *)((u8 *)arg1 + 0x18) = *(u16 *)((u8 *)arg0 + 0x2C);
-    *(s32 *)((u8 *)arg1 + 0x1C) = *(u16 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x27E);
+    ((PFFileInfo *)info)->attr = *(u16 *)((u8 *)*(void **)((u8 *)fileObj + 8) + 0x27C) & 3;
+    ((PFFileInfo *)info)->unk14 = *(s32 *)((u8 *)*(void **)((u8 *)fileObj + 8) + 0x284);
+    ((PFFileInfo *)info)->unk18 = *(u16 *)((u8 *)fileObj + 0x2C);
+    ((PFFileInfo *)info)->unk1C = *(u16 *)((u8 *)*(void **)((u8 *)fileObj + 8) + 0x27E);
     return 0;
 }
 
@@ -13467,9 +13468,9 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     u32 one;
     u32 word1;
     u16 scale;
+    u16 clamp;
     u16 factor;
     u16 exponent;
-    u16 shift;
     u16 multiplier;
     u32 mantissa;
     u32 size;
@@ -13485,19 +13486,19 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     word0 = info[1];
     one = 1;
     word1 = info[2];
-    scale = 9;
-    factor = one << (((word0 >> 7) & 7) + 2);
+    factor = 1 << (((word0 >> 7) & 7) + 2);
     exponent = (word1 >> 8) & 0xF;
     mantissa = ((word1 & 3) << 10) | (word0 >> 22);
     mantissa++;
     size = mantissa * factor;
-    if (exponent >= 9) {
+
+    scale = 9;
+    if (exponent >= 9)
         scale = exponent;
-        if (scale > 0xB)
-            scale = 0xB;
-    }
-    shift = scale - 9;
-    multiplier = one << shift;
+    clamp = 0xB;
+    if (scale <= 0xB)
+        clamp = scale;
+    multiplier = 1 << (u16)(clamp - 9);
     *outSize = size * multiplier;
     *outBlockSize = 0x200;
     return 0;
@@ -17411,6 +17412,7 @@ extern "C" void fn_800C280C(register s32 *a0, register s32 *a1, register s32 *o2
 }
 
 extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, volatile s32 *d) {
+    volatile const s32 *k = lbl_8031D700;
     s32 n0 = -a[0]; c[0] = b[0]; d[0] = n0 + b[17];
     s32 n1 = -a[1]; c[64] = b[1]; d[-64] = n1 + b[16];
     s32 n2 = -a[2]; c[128] = b[2]; d[-128] = n2 + b[15];
@@ -17418,7 +17420,6 @@ extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, v
     s32 n4 = -a[4]; c[256] = b[4]; d[-256] = n4 + b[13];
     s32 n5 = -a[5]; c[320] = b[5]; d[-320] = n5 + b[12];
 
-    volatile const s32 *k = lbl_8031D700;
     s32 value, coefficient0, coefficient1;
     s32 result, reverse;
     s64 product;
