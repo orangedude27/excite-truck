@@ -114,7 +114,11 @@ extern "C" f32 fn_8001DA5C(s32 arg0) {
     return lbl_80560464 + lbl_80560464 * (f32)sin((double)x);
 }
 #pragma pop
-extern "C" void fn_8001DAD8(void) { extern int fn_8001DA5C(int); fn_8001DA5C(0x40); }
+extern "C" void fn_8001DAD8(void) {
+    /* Return the overlay's 0..1 sine pulse (period 64 frames) from the global clock. */
+    extern int fn_8001DA5C(int period);
+    fn_8001DA5C(0x40);
+}
 
 extern "C" void fn_8001DAE0(f32* dest, f32 value) {
     /* Store a float into a field: a tiny setter used to initialize f32 members. */
