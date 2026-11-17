@@ -2600,6 +2600,7 @@ extern "C" s32 fn_8015B2E0(void* arg0) {
     return (s32)*(float*)((unsigned char*)arg0 + 0x28C);
 }
 #pragma scheduling reset
+/* Return the fixed constant 12 (0xC) used by this subsystem. */
 extern "C" s32 fn_8015B338(void) { return 0xC; }
 
 extern "C" void fn_8015B340(Unk801577F0* self) {
