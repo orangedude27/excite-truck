@@ -2042,6 +2042,9 @@ extern void fn_802B7D4C(void), fn_802B69FC(void), fn_802B7D1C(void), fn_802B7CF0
 extern void fn_8001123C(s32), fn_80011A2C(void);
 #pragma cplusplus on
 extern "C" void fn_802B8848(void) {
+    // One per-frame update of the "tedash.val" debug viewer: mode input, panel refresh and the mode label.
+#define uiFrame     lbl_8055FA48 /* the "tedash.val" UI object fn_802B8744() creates */
+#define viewMode    lbl_8055FA38 /* 0 "Objects", 1 "Advanced", 2 "Material-Map", 3 "Road-Opacity" */
     class UiFrame {
     public:
         virtual void v0();
@@ -2051,20 +2054,22 @@ extern "C" void fn_802B8848(void) {
         virtual void v4();
         virtual void v5();
     };
-    s32 sp8[12], temp_r31;
-    if (lbl_8055FA48 != 0) {
-        if ((u32)(lbl_8055FA38 - 2) <= 1U) fn_802B773C();
+    s32 scratch[12], label;
+    if (uiFrame != 0) {
+        if ((u32)(viewMode - 2) <= 1U) fn_802B773C();
         if ((u8)lbl_8055FA32 != 0 && lbl_8055FA34 != -1) fn_802C7040(lbl_8055FA34);
-        fn_80230B5C(sp8); fn_802C8638(sp8);
+        fn_80230B5C(scratch); fn_802C8638(scratch);
         fn_802C974C(lbl_80564CA0, lbl_80564C70, lbl_80564CA4);
         fn_802B86F8(); fn_802B676C();
-        if (lbl_8055FA38 != 2 && lbl_8055FA38 != 3) fn_802B6804();
-        switch (lbl_8055FA38) { case 0: fn_802B7D4C(); break; case 1: fn_802B69FC(); break; case 2: fn_802B7D1C(); break; case 3: fn_802B7CF0(); break; }
-        temp_r31 = fn_802B5B18(lbl_8055FA38 % 4);
-        fn_802B6568(((UiFrame *)lbl_8055FA48)->v1(lbl_8034A6C0), (const char *)temp_r31);
-        ((UiFrame *)lbl_8055FA48)->v5();
+        if (viewMode != 2 && viewMode != 3) fn_802B6804();
+        switch (viewMode) { case 0: fn_802B7D4C(); break; case 1: fn_802B69FC(); break; case 2: fn_802B7D1C(); break; case 3: fn_802B7CF0(); break; }
+        label = fn_802B5B18(viewMode % 4);
+        fn_802B6568(((UiFrame *)uiFrame)->v1(lbl_8034A6C0), (const char *)label);
+        ((UiFrame *)uiFrame)->v5();
         fn_8001123C(0); fn_80011A2C();
     }
+#undef uiFrame
+#undef viewMode
 }
 #pragma cplusplus reset
 extern char lbl_8055FA59;
