@@ -249,6 +249,7 @@ void fn_80246DF4(void) {
 }
 
 extern unsigned char lbl_8034330C[];
+/* Create the Dolby-logo menu from the "LogoDlby.lyt" layout file. */
 void fn_80246E00(void) {
     fn_80246CB8(lbl_8034330C);
 }
