@@ -1021,21 +1021,25 @@ done:
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_8028FAE4(void *arg0, int arg1, float *arg2, float farg0) {
+/* Emit one effect entry when the emitter's wrapped phase at +0x9C has reached
+ * 1.0 (1.0 - lbl_80558DC4) and its playback index at +0x90 differs from the entry
+ * count at +0x94: build a random 3D value from the +0x10/+0x1C/+0x28 fields and
+ * forward it with fn_8028FEE4. */
+void fn_8028FAE4(void *emitter, int posA, float *basePos, float angle) {
     extern void fn_8028FEE4(void *, int, float *, float, float);
-    float sp8[3];
-    int result = 0;
+    float generatedPos[3];
+    int shouldEmit = 0;
 
-    if (*(float *)((char *)arg0 + 0x9C) >=
+    if (*(float *)((char *)emitter + 0x9C) >=
             1.0f - lbl_80558DC4 &&
-        *(int *)((char *)arg0 + 0x90) != *(int *)((char *)arg0 + 0x94))
-        result = 1;
-    if (result != 0) {
-        fn_8028F444(sp8, arg2,
-                    (float *)((char *)arg0 + 0x10),
-                    (float *)((char *)arg0 + 0x1C),
-                    *(float *)((char *)arg0 + 0x28), lbl_80564424);
-        fn_8028FEE4(arg0, arg1, sp8, lbl_80564420, farg0);
+        *(int *)((char *)emitter + 0x90) != *(int *)((char *)emitter + 0x94))
+        shouldEmit = 1;
+    if (shouldEmit != 0) {
+        fn_8028F444(generatedPos, basePos,
+                    (float *)((char *)emitter + 0x10),
+                    (float *)((char *)emitter + 0x1C),
+                    *(float *)((char *)emitter + 0x28), lbl_80564424);
+        fn_8028FEE4(emitter, posA, generatedPos, lbl_80564420, angle);
     }
 }
 #pragma scheduling on
