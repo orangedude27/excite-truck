@@ -246,7 +246,9 @@ s32 ARCGetStartOffset(void *arg0) { return ((s32 *)arg0)[2]; }
  * Called through casts by field accessors such as fn_8001BEC4 / fn_8001C0A0. */
 s32 fn_8001BC18(s32 record) { return record + 0x14; }
 
-s32 fn_8001BC20(s32 arg0) { return arg0 + 0x1C; }
+/* Address helper: returns a pointer to the field at offset +0x1C of `record`.
+ * Called through casts by field accessors such as fn_8001BEE8 / fn_8001C0C4. */
+s32 fn_8001BC20(s32 record) { return record + 0x1C; }
 
 void fn_8001BC28(void *record, s32 value) {
     /* Store an override value in the record's field at +0x1C and flag it present at +0x20. */
