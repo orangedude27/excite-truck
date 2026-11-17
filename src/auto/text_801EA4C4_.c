@@ -76,6 +76,9 @@ void fn_801EA56C(void) {
 #undef freeCarInfo
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_801EA59C(s32 arg0, s32 arg1, void *arg2) {
     u8 *entry;
     s32 version;
@@ -197,7 +200,7 @@ void fn_801EA59C(s32 arg0, s32 arg1, void *arg2) {
     if (arg0 >= *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E0)) *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E0) = arg0 + 1;
     if (fn_802794AC(*(s32 *)arg2, 0) != 0 && arg0 >= *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4)) *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4) = arg0 + 1;
 }
-
+#pragma pop
 /* Return CarMgrTail.realCount: one past the highest car record whose type is real. */
 s32 fn_801EA994(void) {
 #define gCarInfoBlock lbl_8055EB78
