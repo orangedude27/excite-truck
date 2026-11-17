@@ -6048,7 +6048,7 @@ void fn_80073A00(void) {
 }
 
 void fn_80073A1C(void) {
-
+    /* No-op completion callback for BTM_SendHciReset, used by bta_dm_send_hci_reset when it issues an HCI reset. */
 }
 
 /* Sends an HCI reset for the BTA device manager: marks the system control
