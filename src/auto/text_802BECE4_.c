@@ -108,12 +108,14 @@ extern "C" void fn_802BEDFC(void) {
     char *strings = lbl_8034ACA0;
     Resource *resource;
     Resource *style;
-    lbl_8055FAE4 = (int)(0xE0000000u | 0x5030u);
-    lbl_8055FAEC = (int)((0x20u << 16) | 0x2040u);
-    lbl_8055FAE0 = lbl_80564D84;
-    lbl_8055FAE8 = (int)(0xE1000000u - 1);
-    lbl_8055FAF0 = (int)(0xE0000000u | 0x1040u);
-    resource = (Resource *)fn_80131808(strings + 0x2C, (int)(0xE1000000u - 1), (int)0xE0000000u);
+    u32 baseE000 = 0xE0000000u;
+    float scale = 0.7f;
+    lbl_8055FAE0 = scale;
+    lbl_8055FAE4 = baseE000 + 0x5030;
+    lbl_8055FAEC = 0x202040;
+    lbl_8055FAE8 = 0xE0FFFFFF;
+    lbl_8055FAF0 = baseE000 + 0x1040;
+    resource = (Resource *)fn_80131808(strings + 0x2C, 0xE0FFFFFF, baseE000);
     if (resource != 0) {
         if (resource->hasStyle(strings + 0x38) != 0)
             style = (Resource *)resource->getStyle(strings + 0x38);
@@ -482,18 +484,19 @@ int fn_802BF740(int object, int deleteFlag) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void *fn_802BF780(void *arg0) {
+    char *strings = lbl_8034ACA0;
     float zero, neg, one;
-    float temp_f30;
     float temp_f31;
+    float temp_f30;
     char *temp_r3;
-    char *var_r26;
-    char *var_r27;
-    int *var_r28;
-    int var_r30;
+    register char *var_r26;
+    register char *var_r27;
+    register int *var_r28;
+    register int var_r30;
     void *temp_r26;
     void *temp_r26_2;
     void *temp_r30;
-    char *strings = lbl_8034ACA0;
+
     (*(char **)((char *)(arg0) + (0))) = lbl_8034AE40;
     (*(int *)((char *)(arg0) + (8))) = fn_802CB128(0x100, 0x100, 0, 0);
     temp_r26 = strings + 0xFC;
@@ -1026,10 +1029,12 @@ extern "C" void fn_802C03B4(void *self) {
 
 #pragma push
 #pragma peephole off
-int fn_802C03E0(unsigned int arg0) {
-    unsigned int a = __rlwinm(arg0, 8, 8, 23);
-    unsigned int b = (arg0 << 8) & 0xFF0000FF;
-    return a | b;
+/* Repack a packed 32-bit color word's component bytes (byte rotate used by the
+   pixel-format conversion routines in this file). */
+int fn_802C03E0(unsigned int color) {
+    unsigned int middle = __rlwinm(color, 8, 8, 23);
+    unsigned int outer = (color << 8) & 0xFF0000FF;
+    return middle | outer;
 }
 
 extern void fn_802C98DC(float *, float *, float *, float *, float);
