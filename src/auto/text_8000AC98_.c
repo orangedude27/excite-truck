@@ -924,7 +924,8 @@ int fn_8000BD9C(int arg0, int command, int outPtr) {
     return 0;
 }
 
-void fn_8000BF10(int arg0, int arg1) { fn_8000BD9C(0, arg0, arg1); }
+/* Forward a command to the dispatcher fn_8000BD9C with slot 0, writing its result through outPtr. */
+void fn_8000BF10(int command, int outPtr) { fn_8000BD9C(0, command, outPtr); }
 
 extern char lbl_802FC02C[];
 extern float lbl_8055D0B4;
