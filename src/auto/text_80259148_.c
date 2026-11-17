@@ -808,7 +808,6 @@ extern float lbl_80498EAC[3];
 #pragma dont_inline on
 #pragma opt_common_subs off
 #pragma opt_propagation off
-#pragma optimization_level 3
 void fn_8025AA90(void *arg0, float farg0) {
     unsigned char info[0x60];
     float rot[9];
