@@ -696,6 +696,8 @@ extern "C" void fn_80006254(s32 arg0, s32 arg1) {
 }
 #pragma cplusplus reset
 void fn_800062E4(void) {
+    /* No-op stub in the HUD/race-timer callback cluster (beside fn_800062E8);
+     * a reserved callback slot with no work to do in this build. */
     return;
 }
 
