@@ -437,49 +437,29 @@ extern void fn_802B257C(void *);
 #pragma dont_inline on
 #pragma opt_common_subs off
 #pragma opt_loop_invariants off
-#pragma unroll off
+#pragma unroll 1
 extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
     class Obj {
     public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual int v10(const char *, int);
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual void v14();
-        virtual void v15();
-        virtual void v16();
-        virtual void v17();
-        virtual void v18();
-        virtual void v19();
-        virtual void v20();
-        virtual void v21();
-        virtual void *v22(int);
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual int v10(const char *, int);
+        virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
+        virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18();
+        virtual void v19(); virtual void v20(); virtual void v21(); virtual void *v22(int);
     };
-
     int j;
     void *item;
     void *alloc;
     void *sp8;
-    int val = 0;
     char *p = (char *)arg0;
     int i = 16;
-
     *(int *)((char *)arg0 + 0x40C) = 0;
     *(int *)((char *)arg0 + 0x410) = i;
     *(void **)((char *)arg0 + 0x408) = (char *)arg0 + 0x414;
     *(char *)((char *)arg0 + 4) = 0;
     *(char *)((char *)arg0 + 5) = 0;
-
+    int val = 0;
     do {
         *(int *)(p + 8) = val++;
         *(int *)(p + 0xC) = val++;
@@ -491,11 +471,9 @@ extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
         *(int *)(p + 0x24) = val++;
         p += 0x20;
     } while (--i);
-
     fn_802B2504((int *)((char *)arg0 + 8), 0x80);
     *(char *)((char *)arg0 + 5) = ((Obj *)arg1)->v10(&lbl_8055CDD8, 1);
     *(char *)((char *)arg0 + 4) = *(char *)((char *)arg0 + 5);
-
     for (j = 0; (item = ((Obj *)arg1)->v22(j)) != 0; j++) {
         if (fn_802B1DE8(item) != 0) {
             alloc = fn_801284F8(0x2A8, lbl_8034A2E8);
@@ -505,7 +483,6 @@ extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
             }
         }
     }
-
     fn_802B257C(arg0);
     *(void **)arg0 = arg2;
     return arg0;
