@@ -279,6 +279,7 @@ void fn_8023C94C(void) {
     fn_8023C55C(lbl_80341430);
 }
 
+/* Initialise the sound-sequence heap/layout from the "display.lyt" layout resource. */
 void fn_8023C958(void) {
     fn_8023C55C(lbl_8034143C);
 }
