@@ -478,11 +478,12 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
     u8 *a = (u8 *)aArg;
     u8 *list = (u8 *)listArg;
     u8 buf[0x32];
+    u8 *tbl = lbl_8032D358;
     s32 s30, s25, s26;
     f32 f4, t;
     int i;
     u8 *p;
-    u8 *tbl = lbl_8032D358;
+    u8 *dst1, *dst2, *srcp;
     if (*(s32 *)(self + 8) == 0) return 0;
     s30 = *(s32 *)(a + 4);
     fn_801345D8(self + 0x2C, 0x14, lbl_80559F04, s30);
@@ -512,14 +513,18 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
     else StrCopyN80149658(self + 0x81, lbl_80559F0C, 10);
     if (*(s32 *)(a + 0x30) != -1) StrCopyN80149658(self + 0x8B, __AXGetStackHead(), 10);
     else StrCopyN80149658(self + 0x8B, lbl_80559F0C, 10);
+    dst1 = self + 0x95;
+    dst2 = self + 0x149;
     for (i = 0; i < *(s32 *)(list + 8); i++) {
-        p = *(u8 **)(list + 4) + i * 0xF8;
-        StrCopyN80149658(self + 0x95 + i * 0x14, p + 4, 0x14);
-        StrCopyN80149658(self + 0x149 + i * 0x14, p + 0xA4, 0x14);
+        srcp = *(u8 **)(list + 4) + i * 0xF8;
+        StrCopyN80149658(dst1, srcp + 4, 0x14);
+        StrCopyN80149658(dst2, srcp + 0xA4, 0x14);
+        dst1 += 0x14; dst2 += 0x14;
     }
     for (; i < 9; i++) {
-        StrCopyN80149658(self + 0x95 + i * 0x14, lbl_80559F0C, 0x14);
-        StrCopyN80149658(self + 0x149 + i * 0x14, lbl_80559F0C, 0x14);
+        StrCopyN80149658(dst1, lbl_80559F0C, 0x14);
+        StrCopyN80149658(dst2, lbl_80559F0C, 0x14);
+        dst1 += 0x14; dst2 += 0x14;
     }
     fn_802AE168(*(s32 *)(self + 8));
     switch (*(s32 *)self) {
@@ -4786,7 +4791,10 @@ void fn_80155E40(void *arg0, s32 arg1) {
     obj->active = 1;
 }
 
-void fn_80155E50(void *arg0, int arg1) { *(int *)((char *)arg0 + 0x10C) = arg1; }
+void fn_80155E50(void *event, int value) {
+    /* Set the s32 type/id field at +0x10C of an event object. */
+    *(int *)((char *)event + 0x10C) = value;
+}
 
 /* Clear the byte flag at offset +4 of the object. */
 void fn_80155E58(void *object) {
