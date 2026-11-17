@@ -243,7 +243,8 @@ copy_loop:
 }
 
 #pragma pop
-s32 fn_8024EB94(void *arg0) { return *(s32 *)((char *)arg0 + 0x1C); }
+/* Return the 32-bit field at offset 0x1C of `object` (used as a count/limit in menu comparisons). */
+s32 fn_8024EB94(void *object) { return *(s32 *)((char *)object + 0x1C); }
 
 /* Address of the 20-byte (0x14) record at `index` in the table whose base
    pointer is stored at `obj` + 0xCC. */
