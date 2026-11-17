@@ -420,8 +420,8 @@ void fn_802D479C(void *arg0) {
 }
 
 #pragma push
+#pragma processor 750
 void fn_802D4988(void *arg0) {
-    #pragma scheduling invalid_target
     extern s32 lbl_8055FE00;
     extern u8 lbl_804D2C40[];
     extern void PSQUATMultiply(void *, void *);
