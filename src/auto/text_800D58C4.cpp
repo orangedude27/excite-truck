@@ -3811,7 +3811,6 @@ extern "C" void fn_800DC204(void* pane, void* flag) {
 }
 
 #pragma push
-#pragma opt_propagation off
 extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* pane, void* anim) {
     extern const char lbl_8031F1FC[];
     extern const char lbl_8031F1D8[];
