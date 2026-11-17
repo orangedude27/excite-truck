@@ -1971,6 +1971,10 @@ typedef struct StreamPlayer {
     void *setPause;     /* 0x14 fn_80119CB0 */
     void *setPlay;      /* 0x18 fn_80119C0C */
     void *release;      /* 0x1C fn_80119D40 */
+    /* 0x20..0x5B: decoded-source ring (start 0x2C, end 0x30, read cursor 0x38),
+     * free-byte counter at 0x40, 16->8-bit sample flag at 0x44 and fill
+     * thresholds at 0x48/0x54/0x58 (see STREAM_AT above).  fn_801195D8 feeds
+     * the voice ring from this source ring while free bytes exceed 0x54. */
     char pad_20[0x3C];
     s32 resynced;       /* 0x5C the ring ran dry and was skipped over with silence */
     char pad_60[4];
