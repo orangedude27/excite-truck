@@ -543,13 +543,15 @@ extern f32 lbl_80564858, lbl_8056485C, lbl_80564878;
 extern char lbl_80349C94[];
 s32 fn_801284F8(s32, char *);
 void *fn_802A5AE8(void *, s32, s32);
+#pragma processor 750
 #pragma scheduling on
 void fn_802A52FC(f32 arg0) {
-    register f32 value = lbl_8056485C;
+    f32 value;
     s32 result;
     s32 amount;
-    value = (value < arg0) ? value : arg0;
-    value = (value > lbl_80564858) ? value : lbl_80564858;
+
+    value = 1.0f < arg0 ? 1.0f : arg0;
+    value = value > lbl_80564858 ? value : lbl_80564858;
     amount = (s32)(lbl_80564878 * value);
     result = fn_801284F8(0xBC, lbl_80349C94);
     if (result != 0) result = (s32)fn_802A5AE8((void *)result, amount, 0);
