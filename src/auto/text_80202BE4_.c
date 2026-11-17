@@ -106,53 +106,56 @@ extern void fn_802C8DB8(f32*, s32, u16*, s32);
 #pragma paired_single off
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_80202BFC(s32 arg0) {
+/* Two passes of shadow/SWL-map setup for the given map slot: feed each id to
+   fn_802C8C04, then build a 24-value parameter block from the global constants
+   and the u16 table and dispatch it via fn_802C8DB8/fn_802C8D74. */
+void fn_80202BFC(s32 mapSlot) {
     typedef union { f32 f; s32 s; } WorkValue;
     typedef struct { s32 pair2[2]; s32 pair1[2]; u16 table[6]; u16 pad[2]; WorkValue values[24]; } Work;
     Work work;
-    register f32 f31;
-    register f32 f30;
-    register f32 f29;
-    register f32 f28;
+    register f32 coefD;
+    register f32 coefC;
+    register f32 coefB;
+    register f32 coefA;
     register volatile u16 *table;
-    register s32 *p1;
-    register s32 *p2;
-    register u32 i;
-    u16 v0, v1, v2, v3, v4, v5;
-    s32 pair;
+    register s32 *idPtr;
+    register s32 *rawPtr;
+    register u32 iter;
+    u16 tbl0, tbl1, tbl2, tbl3, tbl4, tbl5;
+    s32 rawWord;
 
-    p1 = work.pair1;
+    idPtr = work.pair1;
     work.pair1[0] = *(volatile s32 *)&lbl_805630B8;
-    p2 = work.pair2;
-    f28 = lbl_805630C8;
+    rawPtr = work.pair2;
+    coefA = lbl_805630C8;
     table = (volatile u16 *)lbl_802F9D48;
-    work.pair1[1] = arg0;
-    f29 = lbl_805630CC;
-    i = 0;
+    work.pair1[1] = mapSlot;
+    coefB = lbl_805630CC;
+    iter = 0;
     work.pair2[0] = *(volatile s32 *)&lbl_805630C0;
-    f30 = lbl_805630D0;
+    coefC = lbl_805630D0;
     work.pair2[1] = *(volatile s32 *)&lbl_805630C4;
-    f31 = lbl_805630D4;
+    coefD = lbl_805630D4;
     do {
-        fn_802C8C04(*p1);
-        v0 = table[0]; v1 = table[1]; v2 = table[2];
-        v3 = table[3]; v4 = table[4]; v5 = table[5];
-        work.table[0] = v0; work.table[1] = v1; work.table[2] = v2;
-        work.table[3] = v3; work.table[4] = v4; work.table[5] = v5;
-        work.values[0].f = f28; work.values[1].f = f28; work.values[2].f = f29;
-        work.values[6].f = f30; work.values[7].f = f28; work.values[8].f = f29;
-        work.values[12].f = f28; work.values[13].f = f30; work.values[14].f = f29;
-        work.values[18].f = f30; work.values[19].f = f30; work.values[20].f = f29;
-        work.values[16].f = f29; work.values[4].f = f29; work.values[22].f = f31;
-        work.values[10].f = f31; work.values[11].f = f29; work.values[5].f = f29;
-        work.values[23].f = f31; work.values[17].f = f31;
-        pair = *p2;
-        work.values[21].s = pair; work.values[15].s = pair;
-        work.values[9].s = pair; work.values[3].s = pair;
+        fn_802C8C04(*idPtr);
+        tbl0 = table[0]; tbl1 = table[1]; tbl2 = table[2];
+        tbl3 = table[3]; tbl4 = table[4]; tbl5 = table[5];
+        work.table[0] = tbl0; work.table[1] = tbl1; work.table[2] = tbl2;
+        work.table[3] = tbl3; work.table[4] = tbl4; work.table[5] = tbl5;
+        work.values[0].f = coefA; work.values[1].f = coefA; work.values[2].f = coefB;
+        work.values[6].f = coefC; work.values[7].f = coefA; work.values[8].f = coefB;
+        work.values[12].f = coefA; work.values[13].f = coefC; work.values[14].f = coefB;
+        work.values[18].f = coefC; work.values[19].f = coefC; work.values[20].f = coefB;
+        work.values[16].f = coefB; work.values[4].f = coefB; work.values[22].f = coefD;
+        work.values[10].f = coefD; work.values[11].f = coefB; work.values[5].f = coefB;
+        work.values[23].f = coefD; work.values[17].f = coefD;
+        rawWord = *rawPtr;
+        work.values[21].s = rawWord; work.values[15].s = rawWord;
+        work.values[9].s = rawWord; work.values[3].s = rawWord;
         fn_802C8DB8(&work.values[0].f, 4, work.table, 6);
         fn_802C8D74();
-        i++; p1++; p2++;
-    } while (i < 2);
+        iter++; idPtr++; rawPtr++;
+    } while (iter < 2);
 }
 
 #pragma push
