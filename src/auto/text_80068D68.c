@@ -4654,7 +4654,7 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
 void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
-    register u8 *control;
+    register uusb_cb_t *control;
     register int status = arg0;
     register char *report = lbl_803142C8;
     u16 offset;
@@ -4671,22 +4671,22 @@ void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
         fn_8006EB88();
     }
     {
-        control = (u8 *)&lbl_803BD1E0;
-        if (control[0x38] < 5 && *(u16 *)(control + 0x34) != 0) {
-            arg1 = (s32)GKI_dequeue((BUFFER_Q *)(control + 0x2C));
+        control = &lbl_803BD1E0;
+        if (((u8 *)control)[0x38] < 5 && *(u16 *)((u8 *)control + 0x34) != 0) {
+            arg1 = (s32)GKI_dequeue((BUFFER_Q *)((u8 *)control + 0x2C));
             offset = *(u16 *)((u8 *)arg1 + 4);
-            if (IUSB_WriteBlkMsgAsync(lbl_803BD1E0.fd, control[0x10],
+            if (IUSB_WriteBlkMsgAsync(lbl_803BD1E0.fd, ((u8 *)control)[0x10],
                                       *(u16 *)((u8 *)arg1 + 2),
                                       (u8 *)arg1 + offset + 8,
                                       (void (*)(void))uusb_WriteBulkDataCB, (void *)arg1) < 0) {
-                if (control[0x28] != 0) {
+                if (((u8 *)control)[0x28] != 0) {
                     OSReport(report + 0x588);
                 }
                 GKI_enqueue_head((BUFFER_Q *)((u8 *)&lbl_803BD1E0 + 0x2C), (void *)arg1);
                 return;
             }
             fn_8006EBAC();
-            control[0x38] = control[0x38] + 1;
+            ((u8 *)control)[0x38] = ((u8 *)control)[0x38] + 1;
             fn_8006EB88();
         }
     }
@@ -4926,23 +4926,20 @@ done:
 
 void UUSB_Close(void *arg0) {
     extern s32 IUSB_CloseDeviceAsync(s32, void (*)(void), void *);
+    register u8 *base = 0;
     fn_8006EBAC();
-    {
-        u8 *base = (u8 *)&lbl_803BD1E0;
-        base[0x29] = 0;
-        fn_8006EB88();
-        if (*(u16 *)(base + 0x34) != 0) {
-            while (*(u16 *)(base + 0x34) != 0) {
-                GKI_freebuf(GKI_dequeue((BUFFER_Q *)(base + 0x2C)));
-            }
+    base = (u8 *)&lbl_803BD1E0;
+    *(u8 *)(base + 0x29) = 0;
+    fn_8006EB88();
+    if (*(u16 *)(base + 0x34) != 0) {
+        while (*(u16 *)(base + 0x34) != 0) {
+            GKI_freebuf(GKI_dequeue((BUFFER_Q *)(base + 0x2C)));
         }
     }
-    {
-        u8 *base = (u8 *)&lbl_803BD1E0;
-        if (*(u16 *)(base + 0x44) != 0) {
-            while (*(u16 *)(base + 0x44) != 0) {
-                GKI_freebuf(GKI_dequeue((BUFFER_Q *)(base + 0x3C)));
-            }
+    base = (u8 *)&lbl_803BD1E0;
+    if (*(u16 *)(base + 0x44) != 0) {
+        while (*(u16 *)(base + 0x44) != 0) {
+            GKI_freebuf(GKI_dequeue((BUFFER_Q *)(base + 0x3C)));
         }
     }
     IUSB_CloseDeviceAsync(*(s32 *)&lbl_803BD1E0,
@@ -8647,42 +8644,36 @@ void btm_read_link_quality_complete(u8 *arg0) {
         u8 quality;
         u8 address[6];
     } result;
-    u8 *control = lbl_803C0F78;
-    Callback callback = *(Callback *)(control + 0x5FC);
-    u8 *connection = control + 0x34;
-    u8 logLevel;
-    u8 high;
-    u8 low;
-    u32 status;
+    Callback callback;
     u16 handle;
+    u8 *connection;
     u8 i;
-    fn_80070F90(control + 0x5C8);
-    *(Callback *)(control + 0x5FC) = 0;
-    if (callback == 0) {
-        return;
-    }
-    status = arg0[0];
-    result.status = (u8)status;
-    if (status == 0) {
-        result.result = 0;
-        logLevel = control[0x27C0];
-        high = arg0[2];
-        low = arg0[1];
-        result.quality = arg0[3];
-        handle = (u16)(low + (high << 8));
-        if (logLevel >= 4) {
-            ((void (*)(u32, void *))fn_8007096C)(0xD0003, lbl_80315FEC);
-        }
-        for (i = 0; i < 4; i++, connection += 0x11C) {
-            if (connection[0x119] != 0 && handle == *(u16 *)connection) {
-                memcpy(result.address, connection + 8, 6);
-                break;
+
+    callback = *(Callback *)(lbl_803C0F78 + 0x5FC);
+    connection = lbl_803C0F78 + 0x34;
+    fn_80070F90(lbl_803C0F78 + 0x5C8);
+    *(Callback *)(lbl_803C0F78 + 0x5FC) = 0;
+
+    if (callback != 0) {
+        result.status = arg0[0];
+        if (result.status == 0) {
+            result.result = 0;
+            handle = (u16)(arg0[1] + (arg0[2] << 8));
+            result.quality = arg0[3];
+            if (lbl_803C0F78[0x27C0] >= 4) {
+                ((void (*)(u32, void *, u32, u32))fn_8007096C)(0xD0003, lbl_80315FEC, result.quality, result.status);
             }
+            for (i = 0; i < 4; i++, connection += 0x11C) {
+                if (connection[0x119] != 0 && handle == *(u16 *)connection) {
+                    memcpy(result.address, connection + 8, 6);
+                    break;
+                }
+            }
+        } else {
+            result.result = 0xA;
         }
-    } else {
-        result.result = 0xA;
+        callback(&result.result);
     }
-    callback(&result.result);
 }
 
 tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
@@ -8712,9 +8703,9 @@ found:
 }
 
 void btm_chg_all_acl_pkt_types(BOOLEAN start) {
-    u8 * const log = lbl_80315CA0;
+    register u32 i;
+    register u8 * const log = lbl_80315CA0;
     u8 *p = lbl_803C0F78 + 0x34;
-    u32 i;
     u16 mask, pkt, temp;
     u8 mode, sp8;
     u8 spC[12];
@@ -9326,14 +9317,14 @@ extern char lbl_803160C0[];
 extern void fn_8007F5A4(void);
 void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
     register u8 *cb;
-    register u32 strings;
+    register u8 (*strings)[1];
     register u8 temp_r29;
     register void (*temp_r28)(s32);
     register u8 temp_r27;
     register u8 temp_r0;
     u8 flags;
     cb = lbl_803C0F78;
-    strings = (u32)lbl_803160C0;
+    strings = (u8 (*)[1])lbl_803160C0;
     temp_r28 = *(void (**)(s32))(cb + 0x58C);
     *(void (**)(s32))(cb + 0x58C) = 0;
     if (arg0[0] == 0) {
@@ -9358,7 +9349,7 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
                 if (!(cb[0x645] & 1)) *(u16 *)(lbl_803C0F78 + 0x654) |= 0x3000;
             }
         }
-        if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 5) fn_80070954(0xD0004, (void *)(strings + 0x44), *(u16 *)(lbl_803C0F78 + 0x654));
+        if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 5) fn_80070954(0xD0004, strings[0x44], *(u16 *)(lbl_803C0F78 + 0x654));
         *(u16 *)(lbl_803C0F78 + 0x656) = 0;
         *(u8 *)(lbl_803C0F78 + 0x1908) = 0;
         if (cb[0x641] & 8) {
@@ -9384,7 +9375,7 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
                 *(u16 *)(lbl_803C0F78 + 0x656) |= 0x280;
             }
         }
-        if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 5) fn_80070954(0xD0004, (void *)(strings + 0x70), *(u16 *)(lbl_803C0F78 + 0x656));
+        if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 5) fn_80070954(0xD0004, strings[0x70], *(u16 *)(lbl_803C0F78 + 0x656));
         if (cb[0x640] & 0x20) *(u16 *)(lbl_803C0F78 + 0x4C4) |= 1;
         else *(u16 *)(lbl_803C0F78 + 0x4C4) &= 0xFFFE;
         if (cb[0x640] & 0x40) *(u16 *)(lbl_803C0F78 + 0x4C4) |= 2;
@@ -9400,7 +9391,7 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
             (*(u8 *)(lbl_803C0F78 + 0x27BE)) = 0xFF;
             (*(u8 *)(lbl_803C0F78 + 0x27BD)) = 0xFF;
             if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 3) {
-                ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, (void *)(strings + 0), temp_r27, 0xFF, temp_r29, 0xFF);
+                ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, strings[0], temp_r27, 0xFF, temp_r29, 0xFF);
             }
             flags = *(u8 *)(lbl_803C0F78 + 0x645);
             if (((flags & 8) || (*(u8 *)(lbl_803C0F78 + 0x644) & 0x10) || (flags & 0x10)) && (((*(u8 *)(lbl_803C0F78 + 0x27BD)) != temp_r27) || ((*(u8 *)(lbl_803C0F78 + 0x27BE)) != temp_r29)) && btsnd_hcic_set_afh_channels(temp_r27, temp_r29)) {
@@ -22344,7 +22335,7 @@ void port_select_mtu(void *arg0) {
         packet_size = raw_size;
         if (packet_size == 0) {
             if (lbl_803C4828[0x414] >= 2)
-                fn_8007093C(0x90001, (void *)((u32)messages + 0));
+                ((void (*)(u32, char *))fn_8007093C)(0x90001, messages);
             *(u16 *)(port + 0x12) = 0x7F;
         } else if (packet_size <= 0x69F) {
             mtu = ((0x69F / packet_size) * raw_size) - 0xA;
