@@ -83,6 +83,7 @@ extern "C" void fn_800DCE50(void **this_) {
     *this_ = (void *)&lbl_80320548;
 }
 
+/* Default status callback: always reports zero (false / no error). */
 extern "C" s32 fn_800DCE60(void) {
     return 0;
 }
