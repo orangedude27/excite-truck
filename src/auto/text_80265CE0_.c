@@ -41,6 +41,7 @@ int fn_80265D64(void) {
     return 0;
 }
 
+/* MP-client query stub: always answers 0 (false / nothing to report). */
 int fn_80265D6C(void) { return 0; }
 
 void fn_80265D74(void) {}
