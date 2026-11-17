@@ -142,8 +142,12 @@ int fn_80129E34(void *arg0, int arg1, int arg2) {
 #pragma pop
 extern float lbl_8056125C;
 extern float lbl_80561298;
-float fn_8012A080(void *arg0) {
-    RngState *state = (RngState *)arg0;
+/* Advance one RNG state block by a subtract-with-borrow step and return the next
+ * float in [0,1): difference the two table cursors (wrapping negatives back into
+ * range), decrement both cursors, update the second-stage accumulator, then return
+ * the delta minus that accumulator wrapped into range. */
+float fn_8012A080(void *rngState) {
+    RngState *state = (RngState *)rngState;
     int index0 = state->index0;
     int index1 = state->index1;
     float *value0 = &state->table[index0];
