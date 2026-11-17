@@ -172,8 +172,12 @@ void fn_802368D0(void) {
 }
 
 extern char lbl_8055F0C5;
+/* Set the uiAnime flag that forces queued anime nodes to be marked active
+   even when a mode is selected (lbl_8055F0C5). */
 void fn_802368E0(void) {
-    lbl_8055F0C5 = 1;
+#define sUiAnimeForceActive lbl_8055F0C5
+    sUiAnimeForceActive = 1;
+#undef sUiAnimeForceActive
 }
 
 int fn_802368EC(void) {
