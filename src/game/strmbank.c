@@ -81,6 +81,7 @@ extern char lbl_8034D84C[];
 extern char lbl_8034D860[];
 #pragma cplusplus on
 extern "C" void fn_802E7684(s32 level) {
+    /* Set the stream-bank manager's mix level via virtual slot +0x20. */
     ((Dummy_8055FFF0*)lbl_8055FFF0)->f24(level);
 }
 #pragma cplusplus reset
