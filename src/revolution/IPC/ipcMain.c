@@ -23,6 +23,7 @@ u32 IPCReadReg(s32 index) {
     return IPC_HW_REGS_PPC[index];
 }
 
+/* Write a 32-bit value to an IPC hardware register in the PPC-side register window. */
 void IPCWriteReg(s32 index, u32 value) {
     IPC_HW_REGS_PPC[index] = value;
 }
