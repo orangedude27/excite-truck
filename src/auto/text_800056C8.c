@@ -317,7 +317,8 @@ void fn_80005B64(void) {
 }
 
 void fn_80005B68(void) {
-
+    /* Empty no-op stub: one of a run of default callback slots that do nothing. */
+    return;
 }
 
 #pragma push
@@ -906,7 +907,6 @@ extern "C" void fn_800066B4(void *arg0) {
     struct Table { u32 words[12]; };
     struct Item { u32 first[4]; f32 four; u32 rest[3]; };
     struct Out { u32 first[4]; f32 four, five; u32 color; };
-    register u32 dummy;
     u8 *base = lbl_802FB0C8;
     void *obj;
     u32 table[12];
@@ -917,7 +917,6 @@ extern "C" void fn_800066B4(void *arg0) {
     u8 alpha;
     void *(*get)(void *, s32);
     void *(*get2)(void *, s32, s32);
-    (void)dummy;
     fn_8027AA48();
     fn_80011E70();
     fn_80011E90();
@@ -959,9 +958,7 @@ extern "C" void fn_800066B4(void *arg0) {
             alpha = 0xFF;
             if (selected) fn_80230F78(&alpha, &val, &item[6], 1);
             obj = *(void **)((u8 *)arg0 + 0x1C);
-            s32 mode;
-            if (selected) mode = 1;
-            else mode = 2;
+            s32 mode = selected ? 1 : 2;
             obj = ((Menu *)obj)->get2(entry[3], mode);
             {
                 u32 out[7];
