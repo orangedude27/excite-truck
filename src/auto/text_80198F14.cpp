@@ -98,14 +98,14 @@ extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
 static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
     f32 x, y, z;
     if (dst == src) {
-        x = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
-        y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+        x = m[6] * src[2] + (m[0] * src[0] + m[3] * src[1]);
+        y = m[7] * src[2] + (m[1] * src[0] + m[4] * src[1]);
+        z = m[8] * src[2] + (m[2] * src[0] + m[5] * src[1]);
         dst[0] = x; dst[1] = y; dst[2] = z;
     } else {
-        dst[0] = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
-        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+        dst[0] = m[6] * src[2] + (m[0] * src[0] + m[3] * src[1]);
+        dst[1] = m[7] * src[2] + (m[1] * src[0] + m[4] * src[1]);
+        dst[2] = m[8] * src[2] + (m[2] * src[0] + m[5] * src[1]);
     }
 }
 #pragma always_inline reset
@@ -1370,8 +1370,8 @@ extern "C" s32 fn_8019CCCC(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
     pos.z = trans[2] + axis[2] * dim;
     neg.z = trans[2] + axis[2] * negDim;
     radius = *(f32*)((u8*)arg2 + 0x24);
-    s32 a = fn_8019AA34(arg0, arg1, arg2, &pos, 0, 0, farg0, radius) != 0;
-    s32 b = fn_8019AA34(arg0, arg1, arg2, &neg, 0, 0, farg0, radius);
+    u16 a = fn_8019AA34(arg0, arg1, arg2, &pos, 0, 0, farg0, radius) != 0;
+    u16 b = fn_8019AA34(arg0, arg1, arg2, &neg, 0, 0, farg0, radius) != 0;
     return (a | b) != 0;
 }
 
@@ -1928,8 +1928,9 @@ extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *ar
         f32 denominator = lbl_805622E0 / farg0 + PSVECDotProduct(&normal, &result);
         if ((f32)__fabs((f64)denominator) > lbl_8056235C) {
             f32 impulse = (-(lbl_805622E0 + farg1) * PSVECDotProduct(&velocity, &normal)) / denominator;
-            if (lbl_80562360 < impulse) impulse = lbl_80562360;
-            return impulse;
+            f32 ret = lbl_80562360;
+            if (lbl_80562360 >= impulse) ret = impulse;
+            return ret;
         }
     }
     return lbl_805622D0;
@@ -2938,24 +2939,24 @@ extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
     volatile f32 inputB[4];
     volatile f32* first = (volatile f32*)arg1;
     volatile f32* second = (volatile f32*)arg2;
-    register f32 value = *(f32*)((u8*)arg0 + 0x178);
+    f32 value = *(f32*)((u8*)arg0 + 0x178);
     f32 scaleA = value * lbl_805622DC;
-    void* base = *(void**)((u8*)arg0 + 0xC);
-    register f32 x = *(f32*)((u8*)base + 0x24);
-    register f32 y = *(f32*)((u8*)base + 0x28);
     f32 scaleB = value * lbl_805622E0;
-    register f32 z = *(f32*)((u8*)base + 0x2C);
+    void* base = *(void**)((u8*)arg0 + 0xC);
+    f32 x = *(f32*)((u8*)base + 0x24);
+    f32 y = *(f32*)((u8*)base + 0x28);
+    f32 z = *(f32*)((u8*)base + 0x2C);
     f32 x0 = x + scaleA;
     f32 y0 = y + scaleA;
-    inputA[0] = value;
     f32 z0 = z + scaleA;
-    first[0] = x0;
     f32 x1 = x + scaleB;
     f32 y1 = y + scaleB;
-    first[1] = y0;
     f32 z1 = z + scaleB;
-    first[2] = z0;
+    inputA[0] = value;
+    first[0] = x0;
     inputA[1] = value;
+    first[1] = y0;
+    first[2] = z0;
     inputB[0] = value;
     inputB[1] = x;
     inputB[2] = y;
