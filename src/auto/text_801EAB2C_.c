@@ -28,16 +28,18 @@ extern void fn_801EABA8(void *, void *);
 extern void fn_801EAB80(void*, s32);
 extern u8 lbl_80339E3C[];
 
+extern int fn_80128668();
 extern int fn_80176948(int, int, int);
 extern float lbl_80562E60;
 extern float lbl_80562E64;
 extern short lbl_80562E28;
 extern u8 lbl_80339E60[];
 void fn_801EAB2C(void *arg0) {
+    float b;
     float a = lbl_80562E60;
     void *vptr = &lbl_80339E60;
-    float b = lbl_80562E64;
     float *p = (float *)arg0;
+    b = lbl_80562E64;
     p[1] = a;
     *(short *)((char *)arg0 + 0x38) = lbl_80562E28;
     *(int *)arg0 = (int)vptr;
