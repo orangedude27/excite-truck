@@ -545,17 +545,20 @@ s32 fn_801284F8(s32, char *);
 void *fn_802A5AE8(void *, s32, s32);
 #pragma processor 750
 #pragma scheduling on
-void fn_802A52FC(f32 arg0) {
-    f32 value;
-    s32 result;
-    s32 amount;
+/* Spawn the snow system: clamp intensity to 0..1, turn it into a flake count
+ * (0..512), allocate/init the "snow system" object via fn_802A5AE8 and publish
+ * it to the global snow-system handle lbl_8055F888. */
+void fn_802A52FC(f32 intensity) {
+    f32 norm;
+    s32 system;
+    s32 flakeCount;
 
-    value = 1.0f < arg0 ? 1.0f : arg0;
-    value = value > lbl_80564858 ? value : lbl_80564858;
-    amount = (s32)(lbl_80564878 * value);
-    result = fn_801284F8(0xBC, lbl_80349C94);
-    if (result != 0) result = (s32)fn_802A5AE8((void *)result, amount, 0);
-    lbl_8055F888 = result;
+    norm = 1.0f < intensity ? 1.0f : intensity;
+    norm = norm > lbl_80564858 ? norm : lbl_80564858;
+    flakeCount = (s32)(lbl_80564878 * norm);
+    system = fn_801284F8(0xBC, lbl_80349C94);
+    if (system != 0) system = (s32)fn_802A5AE8((void *)system, flakeCount, 0);
+    lbl_8055F888 = system;
 }
 void fn_802A5270(f32);
 #define SpawnRainSystem fn_802A5270 /* creates the "rain system" effect (resource 0x44) */
