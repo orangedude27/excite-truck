@@ -1048,6 +1048,8 @@ extern "C" void fn_8012BA1C(void *arg0) {
 extern "C" void fn_8012BC24(void **, void *);
 extern "C" void fn_8012C4D8(void *);
 extern "C" s32 fn_80128668(void *);
+/* Always-true gate used by fn_8012BB20: it is called through a u32(void*) pointer
+ * with a resource-set pointer, ignores that argument, and never vetoes cleanup. */
 extern "C" u32 fn_8012BB18(void) { return 1; }
 
 #pragma scheduling invalid_target
