@@ -21,5 +21,4 @@ void fn_80144DE0(void) {
     lbl_8042FB88.f10 = 0;
     lbl_8055E1DC = 0x7F000000;
 }
-#pragma pop
 #pragma scheduling on
