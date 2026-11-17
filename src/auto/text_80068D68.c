@@ -5626,6 +5626,8 @@ u8 bta_dm_authorize_cback(const void *bd_addr, const void *dev_class, const char
  * DM security event is this long, the terminating NUL included. */
 #define DM_BD_NAME_LEN 0x21
 #define BTA_DM_PIN_REQ_EVT 2 /* tBTA_DM_SEC_EVT of bta_api.h, which is not included here */
+#define BTA_DM_LINK_UP_EVT 5
+#define BTA_DM_LINK_DOWN_EVT 6
 /* The part of tBTA_DM_SEC - the union of the DM security event data - that the
  * PIN-request path fills; the rest of the 0x108 byte event belongs to the other
  * members of that union. */
