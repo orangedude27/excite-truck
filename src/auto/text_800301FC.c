@@ -172,7 +172,7 @@ void TRKInitializeNub(void) {
     s64 deadline = 0;
     u32 status = 0;
     u32 control = 0;
-    u32 tmp;
+    u32 tmp = 0;
     goto continuation;
 measure:
     control = *(volatile u32 *)0xCD006C00;
@@ -194,10 +194,10 @@ measure:
     control = *(volatile u32 *)0xCD006C00;
     *(volatile u32 *)0xCD006C00 = (control & ~1U) | 1U;
     do {
-        tmp = *(volatile u32 *)0xCD006C08;
-        status = tmp & 0x7FFFFFFFU;
-        tmp = *(volatile u32 *)0xCD006C08;
-        control = tmp & 0x7FFFFFFFU;
+        status = *(volatile u32 *)0xCD006C08;
+        status &= 0x7FFFFFFFU;
+        control = *(volatile u32 *)0xCD006C08;
+        control &= 0x7FFFFFFFU;
     } while (status == control);
     now = (s64)OSGetTime();
     control = *(volatile u32 *)0xCD006C00;
@@ -684,28 +684,32 @@ void __AXGetAuxCOutput(void **out) {
     *out = lbl_8035DAA0 + lbl_8055D6F4 * 0x480;
 }
 
+#pragma opt_common_subs off
 void InitMetroTRKCommTable(void) {
     void *a[4];
     void *c[3];
     void *b[4];
     void *d[3];
     void *e[3];
-    u8 *base0 = lbl_8035BFA0;
-    u8 *base1 = lbl_8035BFA0 + 0xD80;
-    u8 *base2 = lbl_8035BFA0 + 0x1B00;
+    u8 *base = lbl_8035BFA0;
     s32 i8 = lbl_8055D6F8 * 0x480;
     s32 i4 = lbl_8055D6F4 * 0x480;
-    lbl_8055D710 = base0 + i8;
-    lbl_8055D70C = base0 + i4;
-    lbl_8055D708 = base1 + i8;
-    lbl_8055D704 = base1 + i4;
-    lbl_8055D700 = base2 + i8;
-    lbl_8055D6FC = base2 + i4;
+    {
+        u8 *b2 = base + 0x1B00;
+        u8 *b1 = base + 0xD80;
+        lbl_8055D710 = base + i8;
+        lbl_8055D70C = base + i4;
+        lbl_8055D708 = b1 + i8;
+        lbl_8055D704 = b1 + i4;
+        lbl_8055D700 = b2 + i8;
+        lbl_8055D6FC = b2 + i4;
+    }
     if (lbl_8055D728 != 0) {
+        u8 *b2 = base + 0x1B00;
         if ((u32)lbl_8055D740 == 2) {
             s32 o = lbl_8055D6F0 * 0x480;
-            u8 *p = base0 + o;
-            u8 *q = base2 + o;
+            u8 *p = base + o;
+            u8 *q = b2 + o;
             a[0] = p;
             a[1] = p + 0x180;
             a[2] = p + 0x300;
@@ -716,7 +720,7 @@ void InitMetroTRKCommTable(void) {
             DCFlushRangeNoSync(a[0], 0x480);
             DCFlushRangeNoSync(a[3], 0x180);
         } else {
-            u8 *p = base0 + lbl_8055D6F0 * 0x480;
+            u8 *p = base + lbl_8055D6F0 * 0x480;
             c[0] = p;
             c[1] = p + 0x180;
             c[2] = p + 0x300;
@@ -726,10 +730,12 @@ void InitMetroTRKCommTable(void) {
         }
     }
     if (lbl_8055D724 != 0) {
+        u8 *b2 = base + 0x1B00;
+        u8 *b1 = base + 0xD80;
         if ((u32)lbl_8055D740 == 2) {
             s32 o = lbl_8055D6F0 * 0x480;
-            u8 *p = base1 + o;
-            u8 *q = base2 + o;
+            u8 *p = b1 + o;
+            u8 *q = b2 + o;
             b[0] = p;
             b[1] = p + 0x180;
             b[2] = p + 0x300;
@@ -740,7 +746,7 @@ void InitMetroTRKCommTable(void) {
             DCFlushRangeNoSync(b[0], 0x480);
             DCFlushRangeNoSync(b[3], 0x180);
         } else {
-            u8 *p = base1 + lbl_8055D6F0 * 0x480;
+            u8 *p = b1 + lbl_8055D6F0 * 0x480;
             d[0] = p;
             d[1] = p + 0x180;
             d[2] = p + 0x300;
@@ -750,7 +756,8 @@ void InitMetroTRKCommTable(void) {
         }
     }
     if (lbl_8055D720 != 0 && (u32)lbl_8055D740 != 2) {
-        u8 *p = base2 + lbl_8055D6F0 * 0x480;
+        u8 *b2 = base + 0x1B00;
+        u8 *p = b2 + lbl_8055D6F0 * 0x480;
         e[0] = p;
         e[1] = p + 0x180;
         e[2] = p + 0x300;
@@ -762,7 +769,7 @@ void InitMetroTRKCommTable(void) {
     lbl_8055D6F4 = ((u32)lbl_8055D6F4 + 1) % 3;
     lbl_8055D6F0 = ((u32)lbl_8055D6F0 + 1) % 3;
 }
-
+#pragma opt_common_subs reset
 void AXRegisterAuxACallback(void *callback, void *context) {
     /* Register the AX auxiliary-A bus DSP callback and the user context passed to it. */
     lbl_8055D728 = callback;
@@ -801,6 +808,8 @@ void AXGetAuxCCallback(void **outCallback, void **outArg) {
 }
 
 void* fn_80031248(void) {
+    /* Return the running total of items written into the current gdev CC
+     * audio-state message (global lbl_8055D73C / ccMessageId). */
     return lbl_8055D73C;
 }
 
