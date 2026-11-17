@@ -1292,6 +1292,7 @@ int fn_80167728(int entryIndex) {
            *(float *)((char *)&lbl_8042FE38 + 0x68);
 }
 #pragma pop
+/* Return the orbit-config flag byte at lbl_8042FE38+0x4E, just before the turbo-enabled throttle threshold. */
 unsigned char fn_80167758(void) { return *((unsigned char *)&lbl_8042FE38 + 0x4E); }
 int fn_80167768(float throttle) {
     /* Return whether the given throttle exceeds the orbit config's
