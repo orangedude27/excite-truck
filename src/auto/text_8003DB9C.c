@@ -4371,8 +4371,9 @@ void GXInitTexObjFilter(s32 *texObj, s32 minFilter, s32 magFilter) {
     *texObj = data.value;
 }
 
-void GXGetTexObjWidth(void *arg0, s32 arg1) {
-    *(s32 *)((char *)arg0 + 0x10) = arg1;
+/* Write the packed width/height word at offset 0x10 of a GX texture object (the word GXGetTexObjHeight reads) to value. */
+void GXGetTexObjWidth(void *texObj, s32 value) {
+    *(s32 *)((char *)texObj + 0x10) = value;
 }
 
 int GXGetTexObjHeight(void *texObj) {
