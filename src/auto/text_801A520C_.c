@@ -32,6 +32,7 @@ void fn_8018B09C(void);
 int fn_80265D38(void *, int);
 extern char lbl_80333C48[];
 extern float PSVECDotProduct(float *, float *);
+#pragma scheduling invalid_target
 void *fn_801A520C(void *arg0, void *arg1) {
     fn_80182010();
     *(void **)((char *)arg0 + 0x270C) = arg1;
@@ -334,31 +335,25 @@ extern double __fabs(double);
 extern "C" void fn_8017B3A8(void *, float *, float *);
 extern "C" float fn_801A5A7C(void *, float *, float *);
 extern "C" void fn_801A56A0(void *arg0, void *arg1, float *arg2) {
-    float v[3], point[3], impulse[3], scaled[3], contact[3], direction[3];
-    register float dot;
-    register float ratio;
-    register float movement;
-    register float other;
-    register float push;
-    register float f;
-    register float scale;
-    register float limit;
+    struct Vec { float x, y, z; };
+    Vec v, point, impulse, scaled, contact, direction;
+    float dot, ratio, movement, other, push, f, scale, limit;
     int active;
     char *a = (char *)arg0;
     char *b = (char *)arg1;
     if (*(void **)(a + 0x20) != 0) {
-        v[0] = arg2[0] + *(float *)(b + 0x118);
-        v[1] = arg2[1] + *(float *)(b + 0x11c);
-        v[2] = arg2[2] + *(float *)(b + 0x120);
-        dot = PSVECDotProduct(v, (float *)arg0);
+        v.x = arg2[0] + *(float *)(b + 0x118);
+        v.y = arg2[1] + *(float *)(b + 0x11c);
+        v.z = arg2[2] + *(float *)(b + 0x120);
+        dot = PSVECDotProduct((float *)&v, (float *)arg0);
         ratio = *(float *)(a + 0x18) / *(float *)(a + 0x1c);
         ratio = lbl_805623CC < ratio ? lbl_805623CC : ratio;
         ratio = ratio > lbl_805623C8 ? ratio : lbl_805623C8;
-        point[0] = *(float *)(b + 0x60) + v[0] * lbl_805623D0;
-        point[1] = *(float *)(b + 0x64) + v[1] * lbl_805623D0;
-        point[2] = *(float *)(b + 0x68) + v[2] * lbl_805623D0;
+        point.x = *(float *)(b + 0x60) + v.x * lbl_805623D0;
+        point.y = *(float *)(b + 0x64) + v.y * lbl_805623D0;
+        point.z = *(float *)(b + 0x68) + v.z * lbl_805623D0;
         movement = *(float *)(a + 0xc) + ratio * (*(float *)(a + 0x10) - *(float *)(a + 0xc));
-        other = fn_801A5A7C(arg0, point, (float *)((char *)*(void **)((char *)*(void **)(a + 0x20) + 0xc) + 0x24));
+        other = fn_801A5A7C(arg0, (float *)&point, (float *)((char *)*(void **)((char *)*(void **)(a + 0x20) + 0xc) + 0x24));
         active = *(float *)(a + 0x18) < *(float *)(a + 0x1c);
         if (active) {
             push = movement - dot;
@@ -372,36 +367,36 @@ extern "C" void fn_801A56A0(void *arg0, void *arg1, float *arg2) {
                 f = push + ratio * ((lbl_805623DC + -dot) - push);
             }
             scale = f + push;
-            impulse[0] = *(float *)(a + 0) * scale;
-            impulse[1] = *(float *)(a + 4) * scale;
-            impulse[2] = *(float *)(a + 8) * scale;
-            arg2[0] += impulse[0]; arg2[1] += impulse[1]; arg2[2] += impulse[2];
+            impulse.x = *(float *)(a + 0) * scale;
+            impulse.y = *(float *)(a + 4) * scale;
+            impulse.z = *(float *)(a + 8) * scale;
+            arg2[0] += impulse.x; arg2[1] += impulse.y; arg2[2] += impulse.z;
             ratio = *(float *)(b + 0xd4) / lbl_805623D0;
-            scaled[0] = impulse[0] * ratio; scaled[1] = impulse[1] * ratio; scaled[2] = impulse[2] * ratio;
+            scaled.x = impulse.x * ratio; scaled.y = impulse.y * ratio; scaled.z = impulse.z * ratio;
             limit = lbl_805623E0;
-            if (v[1] > limit && *(int *)(b + 0x2620) == 0) {
-                other = lbl_805623E4 * v[1];
+            if (v.y > limit && *(int *)(b + 0x2620) == 0) {
+                other = lbl_805623E4 * v.y;
                 limit = limit < other ? limit : other;
-                scaled[1] = -limit * (*(float *)(b + 0xd4) / lbl_805623D0);
+                scaled.y = -limit * (*(float *)(b + 0xd4) / lbl_805623D0);
             }
             scale = push + f;
-            direction[0] = *(float *)(b + 0x54);
-            direction[1] = *(float *)(b + 0x58);
-            direction[2] = *(float *)(b + 0x5c);
-            direction[1] = lbl_805623C8;
-            if ((float)__fabs(scale) > lbl_80558DC4 && PSVECDotProduct(direction, (float *)arg0) < lbl_805623C8 && (float)__fabs(*(float *)(b + 0x128)) < lbl_805623E8) {
+            direction.x = *(float *)(b + 0x54);
+            direction.y = *(float *)(b + 0x58);
+            direction.z = *(float *)(b + 0x5c);
+            direction.y = lbl_805623C8;
+            if ((float)__fabs(scale) > lbl_80558DC4 && PSVECDotProduct((float *)&direction, (float *)arg0) < lbl_805623C8 && (float)__fabs(*(float *)(b + 0x128)) < lbl_805623E8) {
                 ratio = lbl_805623EC / scale;
                 ratio = lbl_805623CC < ratio ? lbl_805623CC : ratio;
                 ratio *= lbl_805623F0;
-                contact[0] = *(float *)(b + 0x60) + direction[0] * ratio;
-                contact[1] = *(float *)(b + 0x64) + direction[1] * ratio;
-                contact[2] = *(float *)(b + 0x68) + direction[2] * ratio;
+                contact.x = *(float *)(b + 0x60) + direction.x * ratio;
+                contact.y = *(float *)(b + 0x64) + direction.y * ratio;
+                contact.z = *(float *)(b + 0x68) + direction.z * ratio;
             } else {
-                contact[0] = *(float *)(b + 0x60);
-                contact[1] = *(float *)(b + 0x64);
-                contact[2] = *(float *)(b + 0x68);
+                contact.x = *(float *)(b + 0x60);
+                contact.y = *(float *)(b + 0x64);
+                contact.z = *(float *)(b + 0x68);
             }
-            fn_8017B3A8(arg1, scaled, contact);
+            fn_8017B3A8(arg1, (float *)&scaled, (float *)&contact);
             *(float *)(b + 0x26b4) = lbl_805623C8;
             *(float *)(b + 0x26b8) = lbl_805623C8;
             *(float *)(b + 0x26bc) = lbl_805623C8;
