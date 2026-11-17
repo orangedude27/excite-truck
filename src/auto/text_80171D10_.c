@@ -1981,7 +1981,10 @@ extern "C" int fn_801757B8(void *self, int index) {
 }
 #pragma cplusplus reset
 #pragma pop
-int fn_801758B8(void *arg0) { return *(int *)((char *)arg0 + 0x1AC) == 2; }
+/* Return nonzero when the crushmaster's round has reached the ended state (results shown, awaiting finish). */
+int fn_801758B8(CrushMaster *master) {
+    return master->round.state == CRUSH_ROUND_ENDED;
+}
 
 extern void fn_802AE118(void);
 extern float lbl_8055E3C8, lbl_80561A40, lbl_80561A44;
