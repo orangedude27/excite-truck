@@ -28631,9 +28631,10 @@ void AXFXSetHooks_8009CDB0(void *arg0, void *arg1) {
     lbl_805590B4 = arg1;
 }
 
-void AXGetAuxACallback_8009CDBC(void **arg0, void **arg1) {
-    *arg0 = lbl_805590B0;
-    *arg1 = lbl_805590B4;
+/* Retrieve the currently registered AXFX alloc/free hooks into *outAlloc / *outFree. */
+void AXGetAuxACallback_8009CDBC(void **outAlloc, void **outFree) {
+    *outAlloc = lbl_805590B0;
+    *outFree = lbl_805590B4;
 }
 
 extern char lbl_8031AD78[];
