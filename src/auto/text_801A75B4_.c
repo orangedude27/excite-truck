@@ -943,8 +943,8 @@ done:
     return isValid;
 }
 #pragma push
-#pragma processor 750
-int fn_801A8F10(int *arg0) {
+#pragma scheduling invalid_target
+int fn_801A8F10(int *__restrict arg0) {
     struct Struct16 {
         unsigned int a;
         unsigned int b;
