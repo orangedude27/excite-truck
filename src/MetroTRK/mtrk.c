@@ -2,6 +2,7 @@
 
 extern u32 lbl_8055D6E0;
 
+// MetroTRK query stub: always reports true (1).
 u32 fn_800300F4(void) {
     return 1;
 }
