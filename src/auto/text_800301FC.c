@@ -330,9 +330,12 @@ void TRKReadBuffer(void *buffer) {
     *(u32 *)((u8 *)buffer + 0xC) = 0;
 }
 
-void TRKAppendBuffer(void *arg0) {
-    *(u32 *)((u8 *)arg0 + 8) = lbl_8055D6E8;
-    lbl_8055D6E8 = (u32)arg0;
+void TRKAppendBuffer(void *buf) {
+    /* Push a TRK message buffer onto the front of the pending queue (linked via +0x08). */
+#define sPendingQueue lbl_8055D6E8
+    *(u32 *)((u8 *)buf + 8) = sPendingQueue;
+    sPendingQueue = (u32)buf;
+#undef sPendingQueue
 }
 
 /* Remove a message buffer from the per-pool doubly-linked list indicated by buffer->poolIndex (+0xC). */
