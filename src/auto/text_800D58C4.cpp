@@ -1719,7 +1719,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             } while (j < (u8)tevStageNum);
         }
-        off += (u8)fn_800D8798((s32*)((const u8*)res + 0x3C)) << 4;
+off += (u8)fn_800D8798((s32*)((const u8*)res + 0x3C)) << 4;  // count of TEV stages, each 0x10 bytes
         if (chanB != 0) {
             if (fn_800D893C(self) == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x238, strBase + 0x18C);
