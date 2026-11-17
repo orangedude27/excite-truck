@@ -1223,7 +1223,7 @@ ret0:
     return 0;
 }
 #pragma pop
-void fn_802C4C80(void* stamp) {
+void fn_802C4C80(Stamp *stamp) {
     // Release a loaded STMP stamp back through the resource manager; NULL is a no-op.
     if (stamp == NULL) {
         return;
