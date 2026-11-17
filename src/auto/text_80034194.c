@@ -2711,7 +2711,7 @@ void fn_80038368(void *block) {
 
 void fn_80038870(u32 arg0) {
 #define CMD (*(volatile u32 *)&lbl_8055D8BC)
-#define CMDN lbl_8055D8BC
+#define CMDN (*(u32 *)&lbl_8055D8BC)
     char *block;
     void *cbp;
     s32 flag;
@@ -2769,9 +2769,9 @@ void fn_80038870(u32 arg0) {
                 }
             }
         }
-         } else {
-         if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE || CMDN == lbl_80558E14) {
-             s32 add = (arg0 & 9) ? *(s32 *)((char *)executing_8055D8C8 + 0x1C) : 0;
+    } else {
+        if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE || CMDN == lbl_80558E14) {
+            s32 add = (arg0 & 9) ? *(s32 *)((char *)executing_8055D8C8 + 0x1C) : 0;
             *(s32 *)((char *)executing_8055D8C8 + 0x20) += add;
         }
         if (lbl_8055D86C != 0) {
@@ -2854,9 +2854,9 @@ void fn_80038870(u32 arg0) {
                     fn_80038040();
                     return;
                 }
-                                 if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE || CMDN == lbl_80558E14) {
-                     block = (char *)executing_8055D8C8;
-                     if (*(u32 *)(block + 0x20) != *(u32 *)(block + 0x14)) {
+                if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE || CMDN == lbl_80558E14) {
+                    block = (char *)executing_8055D8C8;
+                    if (*(u32 *)(block + 0x20) != *(u32 *)(block + 0x14)) {
                         fn_80038368(block);
                         return;
                     }
@@ -2917,6 +2917,7 @@ void fn_80038870(u32 arg0) {
         }
     }
 #undef CMD
+#undef CMDN
 }
 
 #pragma pop
