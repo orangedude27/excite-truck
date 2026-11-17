@@ -3574,7 +3574,6 @@ check:
     *(f32*)((u8*)dst + 0x2c) = tailZ;
 }
 
-extern "C" void fn_8019ECC4(void);
 __declspec(section ".data") extern void* lbl_80333968;
 extern f32 lbl_80562370;
 #pragma push
