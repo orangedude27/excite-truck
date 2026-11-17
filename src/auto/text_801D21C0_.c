@@ -273,7 +273,7 @@ extern void fn_801D2AD4(void *);
 void fn_801D21C0(void) {
     register u8 *base = lbl_803382A8;
     lbl_8055E930 = 0;
-    fn_801D2AD4(&base[0]);
+    fn_801D2AD4(base + 0);
     fn_801D2AD4(base + 0x14);
     fn_801D2AD4(base + 0x24);
     fn_801D2C04();
