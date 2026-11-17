@@ -38,8 +38,8 @@ float fn_801EF190(int boundsId) {
 }
 void **fn_801EF1F0(void **arg0, void *arg1) {
     Lbl801EF *L = (Lbl801EF *)lbl_8033A380;
-    *arg0 = fn_801284F8(0x4C, lbl_8033A380 + 0 * (int)arg1);
-    * (void **)*arg0 = fn_802C6FC0(arg1, 0, 0);
+    *arg0 = fn_801284F8(0x4C, (const char *)&lbl_8033A380);
+    *(void **)*arg0 = fn_802C6FC0(arg1, 0, 0);
     *((float *)*arg0 + 9) = lbl_80562EE8;
     *((void **)*arg0 + 1) = fn_802C6FC0(L->s10, 0, 0);
     *((void **)*arg0 + 10) = fn_802C6FC0(L->s1C, 0, 0);
@@ -97,6 +97,9 @@ extern void fn_801E34E4(void *, Matrix801EF *);
 extern void PSVECNormalize(Vec801EF *, Vec801EF *);
 extern float PSVECDotProduct(Vec801EF *, Vec801EF *);
 extern double fn_8002EFB0(float, float);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801EF53C(void *p0, Matrix801EF *arg1, void *p2) {
     void **arg0 = (void **)p0;
     Matrix801EF *arg2 = (Matrix801EF *)p2;
