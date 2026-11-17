@@ -60,8 +60,9 @@ long fn_80160C18(void) {
 extern float lbl_80561834;
 extern float lbl_80561830;
 double fn_8002F234(float);
+/* Return the constant 5.0f (the original keeps it as a .sdata2 float, lbl_80561834). */
 float fn_80160C20(void) {
-    return lbl_80561834;
+    return 5.0f;
 }
 
 void fn_80160C28(void) {
