@@ -728,19 +728,18 @@ void *fn_802E0C04(u32 size) {
 #pragma pop
 
 void fn_802E0D44(u32 size) {
+    u32 align0 = *(u32 *)((u8 *)lbl_8055FEE8 + 4);
     u8 *head = (u8 *)lbl_8055FEE8;
-    u32 align0 = *(u32 *)(head + 4);
     u8 **link = (u8 **)(head + 12);
     u8 *block = (u8 *)(size - (align0 + 1));
-    u8 *node = (u8 *)size;
-    do {
+    u8 *node;
+    while ((node = *link) != 0) {
         if (node == block) {
             *link = *(u8 **)(block + 8);
             break;
         }
         link = (u8 **)(node + 8);
-        node = *link;
-    } while (node != 0);
+    }
     *(u8 **)(block + 8) = *(u8 **)(head + 8);
     *(u8 **)(head + 8) = block;
     {
@@ -1119,5 +1118,9 @@ extern void fn_802E0D44(u32);
 extern char lbl_8034CBD0[];
 extern u8 lbl_8055D150, lbl_8055D158, lbl_8055D160;
 extern void *lbl_8055FEE8, *lbl_8055FEEC;
+/* Movie-layer query stub: always answers 0.  The movie player's wrapper
+ * fn_802ED040 hands it the handle stored in its MoviePlayInfo record (the one
+ * fn_802E11A4 opened) and drops the answer, so whatever movie state this would
+ * report never reads as set in this build. */
 s32 fn_802E1718(void) { return 0; }
 
