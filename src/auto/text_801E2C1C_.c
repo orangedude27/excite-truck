@@ -31,19 +31,17 @@ void *fn_801E3004();
 #pragma small_data off
 #pragma pop
 int fn_801E2C1C(void *arg0, int arg1, void **arg2, void **arg3) {
+#pragma scheduling invalid_target
     int table = fn_802C6C34();
     int count = *(int *)(table + 0x10);
-    int offset;
-    offset = 0;
+    int offset = 0;
     while (count > 0) {
         int entry = *(int *)(*(int *)(table + 0x14) + offset);
-        if (*(unsigned int *)entry == 0x4D524A54) {
-            if (arg1 >= 0 && arg1 < *(int *)(entry + 8)) {
-                int item = entry + arg1 * 0x50;
-                *arg2 = (void *)(item + 0xC);
-                *arg3 = (void *)(item + 0x2C);
-                return 1;
-            }
+        if (*(unsigned int *)entry == 0x4D524A54 && arg1 >= 0 && arg1 < *(int *)(entry + 8)) {
+            int item = entry + arg1 * 0x50;
+            *arg2 = (void *)(item + 0xC);
+            *arg3 = (void *)(item + 0x2C);
+            return 1;
         }
         offset += 4;
         count--;
@@ -329,8 +327,8 @@ void fn_801E3284(void *out, void *in, s32 arg2) {
         register s32 a4;
         register s32 a3;
         register s32 a2;
-        register s32 a0;
         register s32 a1;
+        register s32 a0;
         a0=src[0]; a1=src[11]; a2=src[1]; a3=src[2];
         a4=src[3]; a5=src[4]; a6=src[5]; a7=src[6];
         a8=src[7]; a9=src[8]; a10=src[9]; a11=src[10];
