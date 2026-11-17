@@ -462,6 +462,7 @@ void fn_802CF048(int arg0) {
 }
 
 #pragma dont_inline on
+/* Enable GX performance metrics and emit their FIFO setup commands by calling fn_802CF048 with its enable flag set. */
 void fn_802CF104(void) {
     fn_802CF048(1);
 }
