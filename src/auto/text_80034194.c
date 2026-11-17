@@ -2854,9 +2854,9 @@ void fn_80038870(u32 arg0) {
                     fn_80038040();
                     return;
                 }
-                if (CMD == 1 || CMD == 4 || CMD == 5 || CMD == 0x21 || CMD == 0xE || CMD == lbl_80558E14) {
-                    block = (char *)executing_8055D8C8;
-                    if (*(u32 *)(block + 0x20) != *(u32 *)(block + 0x14)) {
+                                 if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE || CMDN == lbl_80558E14) {
+                     block = (char *)executing_8055D8C8;
+                     if (*(u32 *)(block + 0x20) != *(u32 *)(block + 0x14)) {
                         fn_80038368(block);
                         return;
                     }
