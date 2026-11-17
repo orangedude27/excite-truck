@@ -3584,7 +3584,7 @@ extern "C" void* fn_801A1520(void* self, void* unused, s32 doSwap) {
     u8 b28;
     u8 b25;
     u8 b29;
-    fn_8019ECC4();
+    ((void(*)(void*,s32,s32))fn_8019ECC4)(self, (s32)unused, doSwap);
     *(void**)self = &lbl_80333968;
     if (doSwap != 0) {
         b24 = *(u8*)((u8*)self + 0x24);
