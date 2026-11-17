@@ -987,6 +987,11 @@ extern "C" void *fn_80146204(void *collection, const char *wantedName, s32 unuse
 #pragma dont_inline reset
 #pragma pop
 
+/* Per-element constructor for the 0x1C-byte on-screen text entries
+ * (TextSizeEntry80145538) whose array fn_80146204() builds: it is handed to the
+ * runtime's array constructor fn_8002F37C(), which calls it as ctor(entry, 1)
+ * for every element.  Empty because the entry is plain data -- fn_80145538()
+ * fills each one in from the level's properties afterwards. */
 extern "C" void fn_8014630C(void) {
 }
 
@@ -1941,10 +1946,12 @@ extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
 }
 #pragma scheduling invalid_target
 extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
+#pragma scheduling invalid_target
     union Pair { struct { f32 x; f32 y; } f; f64 raw; };
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     u8 *other = (u8 *)arg2;
+    f32 factor = (f32)arg3;
     f32 zSource = *(f32 *)(src + 0x10);
     f32 zOther = *(f32 *)(other + 0x10);
     f32 yOther = *(f32 *)(other + 8);
@@ -1954,7 +1961,6 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
     yOther = yOther - ySource;
     xOther = xOther - xSource;
     zOther = zOther - zSource;
-    f32 factor = (f32)arg3;
     f32 y = ySource + factor * yOther;
     f32 x = xSource + factor * xOther;
     f32 z = zSource + factor * zOther;
@@ -1970,18 +1976,20 @@ extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
     u32 w0 = *(u32 *)(src + 0);
     u32 w8 = *(u32 *)(src + 8);
     u32 w4 = *(u32 *)(src + 4);
+    u32 other18 = *(u32 *)(other + 0x18);
+    *(f32 *)(dst + 0x10) = zSource;
     volatile u32 *d = (volatile u32 *)dst;
-    *(volatile f32 *)(dst + 0x10) = zSource;
     d[1] = w4; d[2] = w8; d[0] = w0; d[3] = wc;
     d[5] = w14; d[6] = w18; d[7] = w1c;
-    *(volatile f32 *)(dst + 4) = second.f.x;
-    *(volatile f32 *)(dst + 8) = second.f.y;
-    *(volatile f32 *)(dst + 0x10) = z;
-    d[6] = fn_80147C50(w18, *(u32 *)(other + 0x18), factor);
+    *(f32 *)(dst + 4) = second.f.x;
+    *(f32 *)(dst + 8) = second.f.y;
+    *(f32 *)(dst + 0x10) = z;
+    d[6] = fn_80147C50(w18, other18, factor);
 }
 #pragma push
 #pragma scheduling on
 extern "C" void fn_80147DC0(void *dst, s32 srcArg, s32 endArg, f32 t) {
+#pragma scheduling invalid_target
     struct State { u32 m0; f32 m4; f32 m8; u32 mC; f32 m10; f32 m14; f32 m18; f32 m1C; f32 m20; f32 m24; };
     union Pair { struct { f32 x; f32 y; } f; f64 raw; };
     volatile State *src = (volatile State *)srcArg;
@@ -2600,8 +2608,8 @@ extern "C" void fn_80148FA4(void *object, void *unused) {
             }
         }
         {
-            register s32 thirdIndex = 0;
-            register s32 thirdOffset = 0;
+            s32 thirdIndex = 0;
+            s32 thirdOffset = 0;
             while (thirdIndex < *(s32 *)(*(u8 **)(self + 0xC) + 4)) {
                 u8 *entry = *(u8 **)(*(u8 **)(self + 0xC)) + thirdOffset;
                 const char *format = (const char *)&lbl_80559E1C;
