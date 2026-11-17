@@ -2894,9 +2894,8 @@ extern "C" void fn_80215CE0(void) {
 
 }
 
-extern "C" s32 fn_80215CE4(void) {
-    return 0;
-}
+// Default no-op handler among the empty stubs: returns 0 (no result available).
+extern "C" s32 fn_80215CE4(void) { return 0; }
 
 extern "C" s32 fn_80215CEC(void) {
     return 0;
