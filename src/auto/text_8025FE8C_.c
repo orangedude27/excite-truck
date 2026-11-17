@@ -186,8 +186,9 @@ void fn_8026083C(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1C) = 0;
 }
 
-void fn_80260848(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x1D) = 1;
+void fn_80260848(void *item) {
+    /* Set this selector item widget's dim flag at +0x1D. */
+    *(u8 *)((u8 *)item + 0x1D) = 1;
 }
 
 /* --- one group row of the challenge-difficulty selector ------------------ */
