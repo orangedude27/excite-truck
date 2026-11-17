@@ -150,44 +150,102 @@ float fn_801B79AC(void) {
 #undef getCurrentLeague
 }
 
+#pragma dont_inline fn_801B79AC
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" float lbl_80562700, lbl_80562708, lbl_8056270C, lbl_80562710, lbl_80562714;
+extern "C" double lbl_80562718;
+extern "C" void *fn_801B2ED0(unsigned int);
+extern "C" unsigned int fn_801B3050(unsigned int);
+extern "C" float fn_80139048(void);
+extern "C" void *fn_80156A40(float);
+extern "C" float fn_801B79AC(void);
+extern "C" float fn_80134C1C(void);
+extern "C" void fn_801B78EC(int, int, int, float, float, float);
+extern "C" void *__AXFXGetLfoSinTable_801769CC(void);
+extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
+    struct V1 {
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v3(); virtual void v4(); virtual void v5();
+        virtual void v6(); virtual int v5x();
+    };
+    struct V2 {
+        virtual void w0(); virtual void *w1(int); virtual void w2();
+        virtual void *w3();
+    };
+    struct Node {
+        unsigned int key;
+        Node *next;
+        float value;
+    };
+    unsigned int var28 = arg1;
+    int r30 = ((V1 *)fn_801B2ED0(var28))->v5x();
+    float f31 = fn_80139048();
+    float sum = lbl_8056270C + (fn_801B79AC() + f31);
+    if (arg2 != 0x53 && arg2 != 0x54) var28 = fn_801B3050(var28);
+    float f30 = (var28 & 1) ? lbl_80562700 : -lbl_80562700;
+    float f1 = -fn_801B79AC() * lbl_80562710;
+    float f29 = lbl_80562714;
+    float v31 = f1 - (float)((int)((var28 >> 31) + var28) >> 1) * sum;
+    V2 *holder = (V2 *)((V2 *)fn_80156A40(f1))->w1(0);
+    Node *head = (Node *)(((char *)holder) + 0x1C);
+    Node *cur = head;
+    Node *best = head;
+    do {
+        if (cur->key > best->key) best = cur;
+        cur = cur->next;
+    } while (cur != head);
+    f29 = best->value - f29;
+    if (((int *)((char *)__AXFXGetLfoSinTable_801769CC() + 0x10))[0] & 1) { } else v31 += f29;
+    fn_801B78EC((int)arg0, r30, 0, f30, v31, lbl_80562708);
+    if (*(int *)((char *)arg0 + 0x44) == 1) {
+        float scale = fn_80134C1C();
+        *(float *)((char *)arg0 + 0x30) = *(float *)((char *)arg0 + 0x18) * scale;
+        *(float *)((char *)arg0 + 0x34) = *(float *)((char *)arg0 + 0x1C) * scale;
+        *(float *)((char *)arg0 + 0x38) = *(float *)((char *)arg0 + 0x20) * scale;
+    } else {
+        *(float *)((char *)arg0 + 0x30) = lbl_80562708;
+        *(float *)((char *)arg0 + 0x34) = lbl_80562708;
+        *(float *)((char *)arg0 + 0x38) = lbl_80562708;
+    }
+}
+#pragma cplusplus off
+#pragma pop
+
 void PSVECCrossProduct(float *, float *, float *);
 void PSVECNormalize(float *, float *);
+#pragma opt_propagation off
 void fn_801B7BA8(float *arg0, float *arg1, float *arg2) {
     float a[3];
     float b[3];
     float c[3];
-    register float x;
-    register float y;
-    register float z;
-    register float u;
-    register float v;
+    float v, w, u, z, y, x;
+
     x = arg1[0];
     y = arg1[1];
     z = arg1[2];
     u = arg2[0];
     v = arg2[1];
+    w = lbl_80562708;
     a[0] = x;
     a[1] = y;
     a[2] = z;
     b[0] = u;
-    b[1] = lbl_80562708;
+    b[1] = w;
     b[2] = v;
     PSVECCrossProduct(a, b, c);
     PSVECCrossProduct(c, a, b);
     PSVECNormalize(c, c);
     PSVECNormalize(a, a);
     PSVECNormalize(b, b);
-    arg0[0] = c[0];
-    arg0[1] = c[1];
-    arg0[2] = c[2];
-    arg0[3] = a[0];
-    arg0[4] = a[1];
-    arg0[5] = a[2];
-    arg0[6] = b[0];
-    arg0[7] = b[1];
-    arg0[8] = b[2];
+    arg0[0] = c[0]; arg0[1] = c[1]; arg0[2] = c[2];
+    arg0[3] = a[0]; arg0[4] = a[1]; arg0[5] = a[2];
+    arg0[6] = b[0]; arg0[7] = b[1]; arg0[8] = b[2];
 }
-
+#pragma opt_propagation reset
 void fn_801E9DC4(void *, float *, float *);
 int fn_801E9E30(void *, float *);
 void fn_801E9E78(void *, float *, float *, int *);
