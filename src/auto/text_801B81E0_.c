@@ -709,8 +709,9 @@ int fn_801B89F8(void) {
 extern float lbl_8055E750;
 extern float lbl_8056274C;
 extern void fn_801CB6B4(int, int, int);
-void fn_801B8A10(void* arg0, int arg1, int arg2) {
-    fn_801CB6B4(arg1, arg2, 2);
+/* Callback adapter: ignores its user-data pointer and forwards the id and event id to the event gate with event category 2. */
+void fn_801B8A10(void* context, int id, int eventId) {
+    fn_801CB6B4(id, eventId, 2);
 }
 
 #pragma cplusplus on
