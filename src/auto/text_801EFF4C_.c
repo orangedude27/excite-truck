@@ -998,8 +998,10 @@ void fn_801F163C(void *instance, int lodIndex, float spinAngle) {
 }
 
 #pragma pop
+/* Reset callback: clear all 64 wheel-module slots in the (car, wheel) entry
+ * table. The alarm-derived argument passed by the caller is not used. */
 void fn_801F17C8(int unused) {
-    memset(lbl_80488798, 0, 0x100);
+    memset(lbl_80488798, 0, sizeof(lbl_80488798));
 }
 
 #pragma push
