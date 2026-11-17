@@ -869,8 +869,9 @@ int fn_802B1B40(int *arg0, int arg1) {
     return *arg0 + (arg1 * 0x10);
 }
 
-int fn_802B1B50(int *arg0, int arg1) {
-    return *arg0 + (arg1 << 7);
+/* Indexed accessor: returns the stored base advanced by 128 per step (slot-group stride). */
+int fn_802B1B50(int *base, int step) {
+    return *base + (step << 7);
 }
 
 
