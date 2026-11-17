@@ -280,6 +280,8 @@ void *fn_80135420(float *point, void *unused, void *list) {
     return best;
 }
 #pragma pop
+/* Thin alias for fn_801357A4: tail-calls the path-follower step routine that advances a path
+ * tracker toward a target point (callers pass r3=tracker, r4=point straight through). */
 s32 fn_801353C4(void) {
     return fn_801357A4();
 }
