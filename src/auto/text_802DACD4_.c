@@ -235,30 +235,31 @@ typedef struct {
     int height2;
 } CanvasConfig;
 void fn_802DB168(void) {
+    /* LOADING screen: clear the external framebuffer to a gray background, install a canvas over it, draw the centered "LOADING" label, then present the frame. */
     #pragma scheduling invalid_target
-    struct { unsigned char kind, format; unsigned char pad[2]; void *buffer; int width, height, size; int pad2[2]; int width2, height2; } config;
-    int width = 0, height = 0;
-    unsigned char *base = fn_802D2F78(&width, &height);
-    unsigned char *cursor = base;
+    CanvasConfig canvas;
+    int fbWidth = 0, fbHeight = 0;
+    unsigned char *framebuffer = fn_802D2F78(&fbWidth, &fbHeight);
+    unsigned char *cursor = framebuffer;
     int row;
-    for (row = 0; row < height; row++) {
+    for (row = 0; row < fbHeight; row++) {
         int col;
-        for (col = 0; col < width; col++) {
+        for (col = 0; col < fbWidth; col++) {
             cursor[0] = 0x10;
             cursor[1] = 0x80;
             cursor += 2;
         }
     }
-    memset(&config, 0, 0x24);
-    config.kind = 4;
-    config.format = 0x80;
-    config.buffer = base;
-    config.width = width;
-    config.height = height;
-    config.size = width * 2;
-    config.width2 = width;
-    config.height2 = height;
-    ((void (*)(void *))fn_802C3034)(&config);
+    memset(&canvas, 0, 0x24);
+    canvas.kind = 4;
+    canvas.format = 0x80;
+    canvas.buffer = framebuffer;
+    canvas.width = fbWidth;
+    canvas.height = fbHeight;
+    canvas.size = fbWidth * 2;
+    canvas.width2 = fbWidth;
+    canvas.height2 = fbHeight;
+    ((void (*)(void *))fn_802C3034)(&canvas);
     fn_802DAE64(-0x1C2, 0x17C, lbl_8055D140);
     fn_802D2FD8();
     fn_802CED50(0x1C2, 0x17C, 0x78, 0x1E);
