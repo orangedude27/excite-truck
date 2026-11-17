@@ -9673,6 +9673,7 @@ extern "C" void fn_80229EB4(void *widget) {
     *(s32 *)((char *)widget + 0x260) = 0;
 }
 
+/* Default widget-manager callback: an always-true predicate, reporting success to its caller. */
 extern "C" u32 fn_80229EC4(void) { return 1; }
 
 extern "C" u32 fn_80229ECC(void) { return 1; }
