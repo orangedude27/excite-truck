@@ -33,6 +33,12 @@ extern void fn_8019EECC(void *, void *);
 extern void fn_80179F94(void *, void *);
 extern void *lbl_80435BA8[];
 
+/* Registry of active sound/effect objects: lbl_80435BA8 holds the pointers,
+ * sEffectCount how many are registered, sEffectCursor the current round-robin
+ * slot that fn_801AFC44 advances through. */
+#define sEffectCount  lbl_8055E650
+#define sEffectCursor lbl_8055E654
+
 void fn_801AFC28(void) {
     lbl_8055E650 = 0;
     lbl_8055E654 = 0;
@@ -331,18 +337,25 @@ void fn_801B02E0(void *arg0) {
     s32 result[3];
     f32 crossAxis[3];
     f32 axis[3];
+    f32 v124, v128, v12c, v118, v11c, v120;
     f32 out124, out128, out12c, out118, out11c, out120;
     s32 active;
     if (*(u8 *)(self + 0x1F8) != 0) {
         fn_8017B81C();
         if (*(f32 *)(self + 0x64) < lbl_80562598)
             *(f32 *)(self + 0x64) = lbl_80562598;
-        out124 = *(f32 *)(self + 0x124) * lbl_8056259C;
-        out128 = *(f32 *)(self + 0x128) * lbl_8056259C;
-        out12c = *(f32 *)(self + 0x12C) * lbl_8056259C;
-        out118 = *(f32 *)(self + 0x118) * lbl_805625A0;
-        out11c = *(f32 *)(self + 0x11C) * lbl_805625A0;
-        out120 = *(f32 *)(self + 0x120) * lbl_805625A0;
+        v124 = *(f32 *)(self + 0x124);
+        v128 = *(f32 *)(self + 0x128);
+        out124 = v124 * lbl_8056259C;
+        v12c = *(f32 *)(self + 0x12C);
+        out128 = v128 * lbl_8056259C;
+        v118 = *(f32 *)(self + 0x118);
+        out12c = v12c * lbl_8056259C;
+        v11c = *(f32 *)(self + 0x11C);
+        out118 = v118 * lbl_805625A0;
+        v120 = *(f32 *)(self + 0x120);
+        out11c = v11c * lbl_805625A0;
+        out120 = v120 * lbl_805625A0;
         *(f32 *)(self + 0x124) = out124;
         *(f32 *)(self + 0x128) = out128;
         *(f32 *)(self + 0x12C) = out12c;
