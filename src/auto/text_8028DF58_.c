@@ -1378,8 +1378,8 @@ extern unsigned char lbl_8055F74C;
 void fn_8028FEE4(void *arg0, int arg1, float *arg2, float farg0, float farg1) {
     EfEntry2 e;
     EfEntry2 *d;
+    EfObj *o = (EfObj *)arg0;
     float *a = (float *)arg1;
-    char *o = (char *)arg0;
     if (lbl_8055F73C == 0 && lbl_8055F74C == 0) {
         lbl_8055F74C = 1;
         fn_802E30C8(lbl_8055C918, lbl_80349024);
@@ -1392,23 +1392,23 @@ void fn_8028FEE4(void *arg0, int arg1, float *arg2, float farg0, float farg1) {
     e.p.b.z = arg2[2];
     e.v6 = lbl_8055F738;
     e.f1 = farg1;
-    switch (*(int *)o) {
+    switch (o->mode) {
     case 0:
-        e.c0 = *(unsigned char *)(o + 0x38) ? fn_80287B5C(4) : 0;
+        e.c0 = o->en38 ? fn_80287B5C(4) : 0;
         break;
     case 1:
-        e.c1 = *(unsigned char *)(o + 0x88) ? fn_80287B5C(*(int *)(o + 0x84)) : 0;
+        e.c1 = o->en88 ? fn_80287B5C(o->v84) : 0;
         break;
     case 2:
-        e.c2 = *(unsigned char *)(o + 0x38) ? fn_80287B5C(0xff) : 0;
+        e.c2 = o->en38 ? fn_80287B5C(0xff) : 0;
         e.f0 = farg0;
         break;
     default:
-        fn_802E317C(lbl_80349078);
+        fn_802E317C(lbl_80349078, o->mode);
         break;
     }
-    if (*(int *)(o + 0x90) < 0) {
-        d = *(EfEntry2 **)(o + 0x8c);
+    if (o->head < 0) {
+        d = (EfEntry2 *)o->buf;
         d->p = e.p;
         d->v6 = e.v6;
         d->c0 = e.c0;
@@ -1416,11 +1416,11 @@ void fn_8028FEE4(void *arg0, int arg1, float *arg2, float farg0, float farg1) {
         d->c2 = e.c2;
         d->f0 = e.f0;
         d->f1 = e.f1;
-        *(int *)(o + 0x90) = 0;
-        *(int *)(o + 0x94) = 1;
+        o->head = 0;
+        o->tail = 1;
         return;
     }
-    d = *(EfEntry2 **)(o + 0x8c) + *(int *)(o + 0x94);
+    d = (EfEntry2 *)o->buf + o->tail;
     d->p = e.p;
     d->v6 = e.v6;
     d->c0 = e.c0;
@@ -1428,7 +1428,7 @@ void fn_8028FEE4(void *arg0, int arg1, float *arg2, float farg0, float farg1) {
     d->c2 = e.c2;
     d->f0 = e.f0;
     d->f1 = e.f1;
-    *(int *)(o + 0x94) = (*(int *)(o + 0x94) + 1) % *(int *)(o + 0x98);
+    o->tail = (o->tail + 1) % *(int *)((char *)o + 0x98);
 }
 #pragma cplusplus reset
 extern float lbl_80564424, lbl_80564448, lbl_8056444C, lbl_80564450, lbl_80564454, lbl_80564458;
