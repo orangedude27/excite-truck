@@ -6450,8 +6450,9 @@ void fn_80066634(s32 chan, u8* data)
     OSRestoreInterrupts(enabled);
 }
 
-// fn_80066EAC: WPAD data processing
-void fn_80066EAC(void) { /* stub */ }
+// Empty placeholder: this WPAD function has no body in the original.
+void fn_80066EAC(void) {
+}
 
 // fn_80066EB0: WPAD data processing
 void fn_80066EB0(s32 arg0, u8 *arg1) {
