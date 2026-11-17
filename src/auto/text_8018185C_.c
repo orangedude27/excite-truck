@@ -241,15 +241,17 @@ float fn_80181A14(void *truck) {
 }
 
 float fn_80181A48(void *arg0) {
- volatile float *p = lbl_804348E8;
- if (*((unsigned char *)arg0 + 0x259D)) {
-   p += 18;
- } else if (lbl_8055E4F4) {
-   p += 26;
- } else {
-   p += 8;
- }
- return *((float *)((unsigned char *)arg0 + 0x2D0)) + p[7];
+    volatile float *p = lbl_804348E8;
+    float f;
+    if (*((unsigned char *)arg0 + 0x259D)) {
+        p += 18;
+    } else if (lbl_8055E4F4) {
+        p += 26;
+    } else {
+        p += 8;
+    }
+    f = p[7];
+    return *((float *)((unsigned char *)arg0 + 0x2D0)) + f;
 }
 /* Return a truck tuning value from the alternate parameter table when the LFO mode flag is set, otherwise from the normal table. */
 float fn_80181A94(void) {
@@ -394,7 +396,6 @@ extern float lbl_80561CFC;
 extern float fn_80129DC4(int, float, float);
 extern float fn_802798E8(int);
 extern void fn_802799EC(int, float);
-#pragma ppc_psq_save off
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
@@ -410,10 +411,6 @@ void fn_80181EAC(int arg0) {
     if ((temp_f1 > temp_f30) && (temp_f1 > temp_f31))
         fn_802799EC(arg0, temp_f1 - temp_f31);
 }
-#pragma dont_inline off
-#pragma pop
-#pragma push
-#pragma small_data off
 void fn_80181F30(void) {
     /* Reset vehicle/audio state, read AXFX LFO config mode, and initialize related subsystems. */
     unsigned int lfoConfig = *(unsigned int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4);
@@ -1217,6 +1214,7 @@ void fn_80183E7C(void *arg0) {
            }
        }
    }
+// Default callback / stub: always reports failure (0).
 int fn_80186DDC(void) { return 0; }
 
 void fn_80186DE4(void) {
@@ -2694,10 +2692,10 @@ int fn_8018AF04(void *arg0) {
         float z;
         float w;
     } frame;
-    unsigned a;
-    unsigned b;
-    unsigned c;
-    unsigned d;
+    int a;
+    int b;
+    int c;
+    int d;
     int index;
     float tx;
     float ty;
@@ -2713,26 +2711,26 @@ int fn_8018AF04(void *arg0) {
     else
         path = p + 0x20F8;
     fn_8018F2C0(arg0, path);
-    a = *(unsigned *)(p + 0x241C);
-    b = *(unsigned *)(p + 0x2490);
-    a &= ~8u;
-    d = *(unsigned *)(p + 0x2578);
+    a = *(int *)(p + 0x241C);
+    b = *(int *)(p + 0x2490);
+    a &= ~8;
+    d = *(int *)(p + 0x2578);
     tx = *(float *)(p + 0x23E8);
-    b &= ~8u;
-    c = *(unsigned *)(p + 0x2504);
-    d &= ~8u;
+    b &= ~8;
+    c = *(int *)(p + 0x2504);
+    d &= ~8;
     ty = *(float *)(p + 0x245C);
-    c &= ~8u;
+    c &= ~8;
     tz = *(float *)(p + 0x24D0);
     tw = *(float *)(p + 0x2544);
-    *(unsigned *)(p + 0x241C) = a;
+    *(int *)(p + 0x241C) = a;
     index = *(int *)(p + 0x1EC);
     frame.x = tx;
-    *(unsigned *)(p + 0x2490) = b;
+    *(int *)(p + 0x2490) = b;
     frame.y = ty;
-    *(unsigned *)(p + 0x2504) = c;
+    *(int *)(p + 0x2504) = c;
     frame.z = tz;
-    *(unsigned *)(p + 0x2578) = d;
+    *(int *)(p + 0x2578) = d;
     frame.w = tw;
     fn_801BEB30(index, (int *)&frame.obj);
     x = frame.x;
@@ -2745,13 +2743,11 @@ int fn_8018AF04(void *arg0) {
     *(float *)(obj + 0x78) = z;
     zero = lbl_80561CAC;
     *(float *)(obj + 0x7C) = w;
-    obj = (unsigned char *)frame.obj;
     frame.values[0] = x;
     *(float *)(obj + 0x130) = zero;
     *(float *)(obj + 0x134) = zero;
     *(float *)(obj + 0x138) = zero;
     *(float *)(obj + 0x13C) = zero;
-    obj = (unsigned char *)frame.obj;
     frame.values[1] = y;
     *(float *)(obj + 0x140) = zero;
     *(float *)(obj + 0x144) = zero;
