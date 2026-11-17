@@ -2246,6 +2246,7 @@ extern "C" void* fn_8021525C(void) {
 }
 
 extern u8 lbl_8033CAE8[];
+// Return the base of the layout string table, whose first entry is the "__OOPS_NO_LAST_LAYOUT__" sentinel.
 extern "C" void *fn_80215264(void) {
     return lbl_8033CAE8;
 }
