@@ -432,6 +432,9 @@ void fn_802CEF90(void) {
         lbl_8055FDB8 = 0;
     }
 }
+/* Emit GX FIFO commands that set up performance-metric state: when enable is
+ * set, program GP metrics and load nonzero BP/XF register values; otherwise
+ * load the same registers with their zero (idle) values. */
 void fn_802CF048(int enable) {
     if (enable != 0) {
         GXSetGPMetric(0x23, 0x16);
