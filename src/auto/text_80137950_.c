@@ -174,6 +174,7 @@ void fn_80137C74(void) {
     fn_800167F4();
 }
 
+/* RealName: setBaseEntryCount. Forwards to fn_800167FC, which writes the argument ('count', passed through in this tail call) into lbl_8055D554, the base-table entry/player count read by fn_80137C74 (getBaseEntryCount). */
 void fn_80137C78(void) {
     fn_800167FC();
 }
