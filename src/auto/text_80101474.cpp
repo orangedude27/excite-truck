@@ -138,8 +138,10 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80101474(void *self, 
     return self;
 }
 
-extern "C" void fn_801014CC(s32 arg0) {
-    fn_801013B0(arg0 - 8);
+/* This-adjusting thunk: subtract the 8-byte multiple-inheritance offset to
+   recover the base subobject's `this`, then tail-call fn_801013B0. */
+extern "C" void fn_801014CC(s32 subobjectThis) {
+    fn_801013B0(subobjectThis - 8);
 }
 
 /* This-adjusting thunk: subtract the 8-byte multiple-inheritance offset to recover the base WsdPlayer subobject's `this`, then tail-call WsdPlayer::InvalidateData (the range arguments pass through unchanged in r4/r5). */
