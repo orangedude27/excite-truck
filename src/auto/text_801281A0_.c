@@ -809,9 +809,12 @@ void fn_80129088(void *arg0) {
 }
 #pragma dont_inline reset
 
-void fn_801290CC(void *arg0, void *arg1) {
-    *(s32 *)((u8 *)arg1 - 0x10) = 0x06630216;
-    fn_80129088(arg0);
+void fn_801290CC(void *arena, void *block) {
+    /* Mark the block's header tag as free, then rewind the arena to the last allocated block. */
+#define ALLOC_BLOCK_FREE_TAG 0x06630216
+    *(s32 *)((u8 *)block - 0x10) = ALLOC_BLOCK_FREE_TAG;
+    fn_80129088(arena);
+#undef ALLOC_BLOCK_FREE_TAG
 }
 
 s32 fn_801290DC(void *region, s32 size) {
