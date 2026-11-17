@@ -429,7 +429,7 @@ extern char lbl_8055CDD8;
 extern void *fn_801284F8(int, const char *);
 extern void fn_802B2504(int *, int);
 extern void *fn_802B2958(void *, void *);
-extern void **fn_802B2934(void *, void **__restrict);
+extern void *fn_802B2934(void *, void **__restrict);
 extern void fn_802B257C(void *);
 #pragma push
 #pragma cplusplus on
@@ -616,7 +616,7 @@ void fn_802B28BC(int *entries, int count) {
 
 #pragma push
 #pragma optimization_level 3
-void **fn_802B2934(void *arg0, void **arg1) {
+void *fn_802B2934(void *arg0, void **arg1) {
     int count = ((int *)arg0)[1];
     void *val = *arg1;
     void **entry = *(void ***)arg0 + count;
