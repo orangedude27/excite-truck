@@ -5601,8 +5601,7 @@ extern "C" float fn_801A5124(void* object) {
     return *(float*)((char*)object + 0x28);
 }
 
-/* Default vtable method for this collision/solid object class: takes no
- * arguments and reports the constant 0 (false / no value). */
+/* Default vtable method returning the constant 0. */
 extern "C" s32 fn_801A512C(void) {
     return 0;
 }
