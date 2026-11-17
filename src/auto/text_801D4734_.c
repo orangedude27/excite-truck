@@ -3246,7 +3246,12 @@ void fn_801D85D8(int object) {
 }
 
 int fn_801D85F0(void *arg0) {
-    return (unsigned int)__cntlzw(*(unsigned char *)((char *)arg0 + 0x14)) >> 5;
+    /* Returns nonzero while this object's flag byte at +0x14 is clear (zero). */
+    typedef struct {
+        unsigned char _pad[0x14];
+        unsigned char flag;
+    } FlagObj;
+    return ((FlagObj *)arg0)->flag == 0;
 }
 
 /* If the object's state is set (nonzero), clamp it to 1; leave state 0 alone. */
