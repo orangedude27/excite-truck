@@ -70,6 +70,7 @@ void *fn_800126CC(int modeId) DECOMP_DONT_INLINE {
 /* Initialize/load the resource set for game mode id 0x12F (a thin wrapper over fn_80012984). */
 void fn_80012778(void) { fn_80012984(0x12F); }
 
+/* Initialize/load the resource set for game mode id 0x130 (a thin wrapper over fn_80012984). */
 void fn_80012780(void) { fn_80012984(0x130); }
 
 void fn_80012788(void) { fn_80012984(0x132); }
