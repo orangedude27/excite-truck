@@ -845,8 +845,9 @@ float fn_80166DD4(void *entry) {
     return outStart + t * (outEnd - outStart);
 }
 
-void fn_80166E54(void *arg0) {
-    *(float *)((char *)arg0 + 0xC) += lbl_805618F0;
+/* Advance this state object's elapsed time (+0xC) by one frame step. */
+void fn_80166E54(void *state) {
+    *(float *)((char *)state + 0xC) += FRAME_TIME_STEP;
 }
 
 /* Retarget a time-based float ramp. The ramp stores {value, target, startTime, endTime, rate}
