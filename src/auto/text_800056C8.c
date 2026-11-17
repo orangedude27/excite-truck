@@ -1789,7 +1789,10 @@ void *fn_800079D8(void) {
 
 extern u8 lbl_802FB678[];
 void *fn_800079E4(void) {
-    return lbl_802FB678;
+    /* Return the "IntroOverlay" name string. */
+    #define s_introOverlayName lbl_802FB678
+    return s_introOverlayName;
+    #undef s_introOverlayName
 }
 
 #pragma cplusplus on
