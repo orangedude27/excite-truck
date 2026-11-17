@@ -644,7 +644,6 @@ get:
 #pragma cplusplus reset
 
 #pragma ppc_psq_save on
-#pragma scheduling invalid_target
 void fn_8016C55C(void *arg0, void *arg1) {
     int index;
     void *dst;
