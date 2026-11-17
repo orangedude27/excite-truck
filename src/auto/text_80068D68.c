@@ -16631,7 +16631,7 @@ s32 btsnd_hcic_write_policy_set_80085668(u16 handle, u16 settings) {
     return 1;
 }
 
-#pragma unroll off
+#pragma unroll 1
 void btsnd_hcic_write_cur_iac_lap(u8 *p_buf, u8 num_cur_iac, u8 *cur_iac_lap) {
     u8 *p = p_buf + 12;
     u8 *q = cur_iac_lap;
