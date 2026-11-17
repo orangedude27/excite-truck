@@ -1366,7 +1366,10 @@ void __AXDSPDoneCallback(void) {
 }
 
 void fn_80032000(void) {
-
+    /* Empty DSPTask.requestCallback (task + 0x34) for the AX output DSP task:
+     * fn_80032004 stores it alongside the init/resume/done callbacks, and the
+     * DSP invokes it on a request mail.  AX output has no work for that mail,
+     * so it simply returns. */
 }
 
 extern u8 lbl_8035FBD0[];
