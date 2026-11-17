@@ -863,6 +863,7 @@ int fn_8003B38C(void *arg0) {
     }
     return 1;
 }
+#pragma scheduling on
 #pragma opt_propagation off
 int fn_8003B508(int arg0, int arg1, int arg2) {
     const char *msg = lbl_80302848;
