@@ -2415,7 +2415,8 @@ void fn_8018AE24(void *object, signed char value) {
 /* Set the car's float tuning parameter at offset 0x2600 (next to the 0x2604 field) to value. */
 void fn_8018AE2C(void *car, f32 value) { *(f32 *)((u8 *)car + 0x2600) = value; }
 
-void fn_8018AE34(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x2604) = farg0; }
+/* Set the car's float tuning parameter at offset 0x2604 (next to the 0x2600 field) to value. */
+void fn_8018AE34(void *car, f32 value) { *(f32 *)((u8 *)car + 0x2604) = value; }
 
 extern f32 fn_8018AE3C(void);
 f32 fn_8018AE3C(void) {
