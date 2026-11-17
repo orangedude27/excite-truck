@@ -47,8 +47,11 @@ void fn_802365D8(void) {
 #undef UpdateTimerState
 }
 
+/* Pause the timer: set the paused flag so elapsed time stops accumulating. */
 void fn_80236600(void) {
-    lbl_8055F0A0 = 1;
+#define timerPausedFlag lbl_8055F0A0
+    timerPausedFlag = 1;
+#undef timerPausedFlag
 }
 
 /* Unpause/update the timer accumulator: when the paused flag is set, fold elapsed time since pause into the base and clamp it above 1, then refresh timing state. */
