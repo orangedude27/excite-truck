@@ -1297,8 +1297,9 @@ s32 fn_802B0118(void *arg0) {
     return (*(u32 *)((u8 *)arg0 + 8) >> 6) & 7;
 }
 
-s32 fn_802B0124(void *arg0) {
-    return (*(u32 *)((u8 *)arg0 + 8) >> 23) & 1;
+/* Read flag bit 23 of the packed config word at +0x08 of an entry. */
+s32 fn_802B0124(void *entry) {
+    return (*(u32 *)((u8 *)entry + 8) >> 23) & 1;
 }
 
 s32 fn_802B0130(void *entry) {
