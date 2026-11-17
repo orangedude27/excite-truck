@@ -125,8 +125,13 @@ extern "C" void fn_8001DAE0(f32* dest, f32 value) {
     *dest = value;
 }
 
+/* Getter for the game-wide elapsed time in seconds (the frame counter scaled
+ * by one NTSC frame, written by fn_80176A34).  Callers subtract the value they
+ * stored last frame to get the time step. */
 extern "C" f32 fn_8001DAE8(void) {
-    return lbl_8055E3C8;
+    #define sFrameTime lbl_8055E3C8 /* global clock, in seconds */
+    return sFrameTime;
+    #undef sFrameTime
 }
 
 #pragma dont_inline on
