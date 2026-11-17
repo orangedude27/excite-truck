@@ -621,29 +621,11 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
     }
 }
 
-#pragma scheduling invalid_target
 void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *arg5, int arg6) {
-    float fa;
-    float fb;
-    float fc;
-    int temp_r21;
-    int temp_r22;
-    int temp_r23;
-    int temp_r24;
-    int temp_r25;
-    int temp_r26;
-    int temp_r27;
-    int temp_r12;
-    int temp_r11;
-    int temp_r7;
-    int temp_r6;
-    int temp_r4;
-    int temp_r4_2;
-    int temp_r5;
-    int temp_r6_2;
-    int r0;
-    int zero;
-    int t0, t1, t2, t3;
+    float fa, fb, fc;
+    int temp_r21, temp_r22, temp_r23, temp_r24, temp_r25, temp_r26, temp_r27;
+    int temp_r12, temp_r11, temp_r7, temp_r6, temp_r4, temp_r4_2, temp_r5, temp_r6_2;
+    int r0, zero, t0, t1, t2, t3;
 
     temp_r11 = ((int *)arg3)[0];
     temp_r27 = ((int *)arg3)[1];
