@@ -687,8 +687,10 @@ extern "C" float fn_801013B4(void* player) {
     return *(float*)((char*)player + 0x40);
 }
 
-extern "C" float fn_801013BC(void* arg0) {
-    return *(float*)((char*)arg0 + 0x38);
+/* Return the WsdPlayer's mExtSurroundPan2 (+0x38), the surround-pan value set
+ * by SetSurroundPan2 (fn_801009C8). */
+extern "C" float fn_801013BC(void* player) {
+    return *(float*)((char*)player + 0x38);
 }
 
 extern "C" float fn_801013C4(void* player) {
