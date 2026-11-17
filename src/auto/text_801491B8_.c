@@ -1278,7 +1278,9 @@ extern u8 lbl_8042FCB4[], lbl_8042FCC0[], lbl_8042FCCC[], lbl_8042FCD8[], lbl_80
 extern u8 lbl_8055E25C, lbl_8055E25D, lbl_8055E25E, lbl_8055E25F, lbl_8055E260, lbl_8055E261, lbl_8055E262;
 extern f32 lbl_80561680, lbl_80561684, lbl_8056168C, lbl_80561690, lbl_80561694, lbl_80561698, lbl_8056169C;
 extern f64 lbl_805616B0;
-extern u8 lbl_802F9410[], lbl_802F9458[], lbl_80559F10[];
+extern u8 lbl_802F9410[], lbl_802F9458[];
+extern char lbl_80559F10[8];
+extern f32 fn_80144C80(f32, f32, f32);
 extern void fn_801476D8(void *, ...);
 extern void fn_80147EE0(void *, f32);
 extern s32 fn_80144C68(u8, u8, u8, u8);
