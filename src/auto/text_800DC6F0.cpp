@@ -311,5 +311,6 @@ extern "C" void DrawSelf__Q36nw4hbm3lyt7PictureFRCQ36nw4hbm3lyt8DrawInfo(void* t
 }
 
 extern "C" u32* fn_800DCDFC(void) {
+    /* Return the address of the global sentinel tag used to mark the end of a layout node list. */
     return &lbl_8055DE00;
 }
