@@ -256,57 +256,55 @@ extern void fn_80017D5C(void *);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80017C18(void *arg0, s32 *arg1) {
+    register s32 *entry;
+    register s32 *items;
+    register void *cursor;
     register s32 i;
     register s32 n;
     register void *object;
-    register void *cursor;
-    register s32 *items;
+    register s32 k;
     s32 j;
-    s32 found;
     s32 offset;
-    register s32 *entry;
+    unsigned long target;
 
+    entry = arg1;
     object = fn_80016510(0);
     cursor = object;
     i = 0;
-    do {
+    while (i < *(s32 *)((char *)object + 0x98)) {
         n = *(s32 *)((char *)arg0 + 4);
         i++;
         items = *(s32 **)arg0;
         *(s32 *)((char *)arg0 + 4) = n + 1;
         items[n] = *(s32 *)((char *)cursor + 0x64);
         cursor = (char *)cursor + 4;
-    } while (i < *(s32 *)((char *)object + 0x98));
+    }
 
-    entry = arg1;
-    i = 0;
-    while (i < arg1[0]) {
+    k = 0;
+    while (k < arg1[0]) {
         object = fn_80016474(entry[1]);
         n = *(s32 *)((char *)arg0 + 4);
         j = 0;
         offset = 0;
-        found = -1;
+        target = *(unsigned long *)((char *)object + 0x50);
         while (j < n) {
-            if (*(void **)((char *)object + 0x50) == *(void **)(*(s32 **)arg0 + offset / 4)) {
-                found = j;
-                break;
-            }
+            if (*(unsigned long *)((char *)*(s32 **)arg0 + offset) == target) goto found;
             offset += 4;
             j++;
         }
-        if (found == -1) {
-            found = -1;
-        }
-        if (found < 0) {
-        } else if (found < n) {
-            if (found != n - 1) {
+        j = -1;
+found:
+        if (j == -1) {
+        } else if (j < 0) {
+        } else if (j < *(s32 *)((char *)arg0 + 4)) {
+            if (j != *(s32 *)((char *)arg0 + 4) - 1) {
                 items = *(s32 **)arg0;
-                items[found] = items[n - 1];
+                items[j] = items[*(s32 *)((char *)arg0 + 4) - 1];
             }
-            *(s32 *)((char *)arg0 + 4) = n - 1;
+            *(s32 *)((char *)arg0 + 4) = *(s32 *)((char *)arg0 + 4) - 1;
         }
         entry++;
-        i++;
+        k++;
     }
     fn_80017D5C(arg0);
 }
@@ -554,22 +552,28 @@ s32 fn_800183C0(void *entry) {
 }
 #pragma pop
 extern void *fn_8001285C(s32);
-#pragma push
-#pragma dont_inline on
-void fn_80018440(EntryPairList *arg0, s32 arg1, EntryPairList *arg2) {
-    s32 count, i, n, m;
-    count = fn_800183C0(fn_8001285C(arg1));
-    memset(arg0, 0, 0x48);
+#pragma use_lmw_stmw off
+void fn_80018440(EntryPairList *arg0, s32 arg1, const EntryPairList *arg2)
+{
+  s32 count;
+  s32 i;
+  s32 n;
+  s32 m;
+  int new_var;
+  count = fn_800183C0(fn_8001285C(arg1));
+  new_var = 0x48;
+  memset(arg0, 0, new_var);
+  for (i = 0; i < count; i++)
+  {
     n = arg2->driverCount;
-    m = arg2->vehicleCount;
-    for (i = 0; i < count; i++) {
-        arg0->driverNums[i] = arg2->driverNums[n - 1 - i];
-        arg0->driverCount++;
-        arg0->vehicleNums[i] = arg2->vehicleNums[m - 1 - i];
-        arg0->vehicleCount++;
-    }
+    ;
+    arg0->driverNums[i] = arg2->driverNums[(n - 1) - i];
+    arg0->driverCount++;
+    arg0->vehicleNums[i] = arg2->vehicleNums[(arg2->vehicleCount - 1) - i];
+    arg0->vehicleCount++;
+  }
+
 }
-#pragma pop
 
 /* Set the forced entry-count override (lbl_8055D560) to atoi()'s result. */
 void fn_80018794(void) {
