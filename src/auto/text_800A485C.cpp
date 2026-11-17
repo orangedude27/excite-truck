@@ -1,12 +1,14 @@
   #include <types.h>
-extern "C" u8 lbl_805591F8[];
+extern "C" {
+__declspec(section ".sdata") extern u8 lbl_805591F8[];
 /* 12.20 fixed-point multiply. */
 static inline s32 fn_800C0E7C_fxmul(s32 a, s32 b) {
     return (s32)(((s64)a * b) >> 20);
 }
-extern "C" u8 lbl_805591FC[];
-extern "C" u8 lbl_80559200[];
-extern "C" u8 lbl_80559204[];
+__declspec(section ".sdata") extern u8 lbl_805591FC[];
+__declspec(section ".sdata") extern u8 lbl_80559200[];
+__declspec(section ".sdata") extern u8 lbl_80559204[];
+}
 extern "C" s32 fn_800B6200(void *, void *);
 extern "C" void fn_800B3330(void *, s32, s32);
 extern "C" s32 fn_800AC708(void *, u8 *, u32, s32 *);
@@ -4688,8 +4690,8 @@ loop_64:
                 if (var_r21 != 0) {
                     return var_r21;
                 }
-                 sp30buf[0x21C] = M2C_FIELD(p1, u8 *, 0x21C);
- *(u32 *)(sp30buf + 0x234) = M2C_FIELD(p1, u32 *, 0x234);
+                sp30buf[0x21C] = M2C_FIELD(p1, u8 *, 0x21C);
+                *(u32 *)(sp30buf + 0x234) = M2C_FIELD(p1, u32 *, 0x234);
                 temp_r3 = fn_800AC708(p0, sp30buf, (u32)temp_r27_2, &sp10);
                 if (temp_r3 != 0) {
                     return temp_r3;
