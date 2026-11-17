@@ -3051,6 +3051,7 @@ extern "C" void fn_8015180C(void *ctx, void *objA, void *objB, void *unused, voi
 }
 #pragma cplusplus off
 
+/* No-op callback in the collision/clear handler group (reached through the handler table): does nothing. */
 void fn_80151914(void) {
 
 }
