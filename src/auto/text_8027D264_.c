@@ -414,7 +414,8 @@ int fn_8027D8FC(void *effect) {
 
 int fn_8027D904(void *arg0) { return *(int *)((char *)arg0 + 0x14); }
 
-int fn_8027D90C(void *arg0) { return *(int *)((char *)arg0 + 0x1C); }
+/* Return the int field at offset 0x1C of the nw4r::ef effect object. */
+int fn_8027D90C(void *effect) { return *(int *)((char *)effect + 0x1C); }
 
 int fn_8027D914(void *container, int index) {
     // Return the address of the index-th 0x3C-byte effect element in the container's embedded array (base at +0x18).
