@@ -2881,8 +2881,10 @@ extern "C" void fn_801FBF48(void *arg0) {
         *(volatile f32 *)((char *)obj + 0x28) = y;
     }
 }
+#pragma push
+#pragma processor 750
 extern "C" void fn_801FBFE8(void* arg0) {
-    register f32 value = lbl_80563010;
+    register f32 value = 50000.0f;
     void* obj = fn_801284F8(0xE0, lbl_8033B53C);
     if (obj != 0) fn_801A324C(obj, 0, (char*)arg0 + 0x58, value, *(f32*)((char*)arg0 + 0x4C));
 }
