@@ -750,24 +750,29 @@ extern "C" f32 lbl_80564744;
 extern "C" int lbl_80349AB0[];
 extern "C" void fn_8028E584(void*, void*);
 extern "C" s32 fn_80287B14(void*);
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 extern "C" void fn_802A2A38(void* arg0, void* arg1) {
-    register s32 index = *(s32*)((char*)arg1 + 0x28);
-    register f32* value = (f32*)((char*)arg0 + (index << 4) + 0x20);
-    register f32 limit = lbl_80564730 - lbl_80558DC4;
-    register int shouldCall = *value > limit;
+    f32 max = lbl_80564730;
+    s32 index = *(s32*)((char*)arg1 + 0x28);
+    f32* value = (f32*)((char*)arg0 + (index << 4) + 0x20);
+    f32 limit = max - lbl_80558DC4;
+    f32 v = *value;
+    int shouldCall = v > limit;
     if (shouldCall) {
         ((void (*)(void*, void*, void*))fn_8028E584)(
             *(void**)((char*)arg0 + 0xC), arg1, (char*)arg1 + 0xC);
     }
     index = *(s32*)((char*)arg1 + 0x28);
     value = (f32*)((char*)arg0 + (index << 4) + 0x20);
-    if (*value > lbl_80564730 - lbl_80558DC4) {
-        *value -= lbl_80564730;
+    f32 limit2 = lbl_80564730 - lbl_80558DC4;
+    f32 v2 = *value;
+    if (v2 > limit2) {
+        *value = v2 - lbl_80564730;
     }
     *value += lbl_80564750;
 }
-#pragma scheduling on
+#pragma pop
 extern "C" void fn_802A2AE8(void* arg0, s32 arg1) {
     /* Builds effect/config params in a stack buffer (0xA8 bytes), initializes via fn_8028E61C,
        fills many fields from lbl_805647xx float constants, then creates/stores an effect object
@@ -1851,6 +1856,8 @@ extern "C" void fn_802A4A04(void* plane) {
     ((ebi::title::TBlackPlane*)plane)->m_a->v7();
 }
 
+/* getType() implementation for the type-1 terrain item handler: returns its fixed type id, 1
+ * (one of the ids 1-6 the fn_802A194C cache keys on; id 1 selects the fn_802A1DF4 handler). */
 extern "C" u32 fn_802A4A18(void) { return 1; }
 
 // getType() implementation for the type-2 terrain item handler (vtable lbl_80349B50):
