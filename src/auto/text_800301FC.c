@@ -1206,7 +1206,7 @@ void fn_80031C9C(unsigned short mask) {
 extern u64 lbl_8035EE20[];
 extern s32 lbl_8055D788;
 extern s32 lbl_8055D754, lbl_8055D758, lbl_8055D750;
-extern void fn_80032EAC(u32, void *);
+extern void fn_80032EAC(u32);
 extern void __AXPrintStudio(void);
 extern void *gdev_cc_initialize(void);
 extern void DSPSendMailToDSP(u32);
@@ -1224,7 +1224,7 @@ void CircleBufferInitialize(u32 arg0) {
     u8 *profile;
     void *ptrs[4];
     *(u64 *)base = OSGetTime();
-    fn_80032EAC(arg0, base);
+    fn_80032EAC(arg0);
     __AXPrintStudio();
     arg0 = (u32)gdev_cc_initialize();
     DSPSendMailToDSP(0xBABE0080);
@@ -1563,7 +1563,7 @@ s32 AXRmtGetSamplesLeft(void) {
 
 extern u8 lbl_8035EE60[];
 extern void DCInvalidateRange(void *, u32);
-s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
+s32 AXRmtGetSamples(register s32 arg0, s16 *arg1, s32 arg2) {
     s32 count;
     s32 index;
     s32 i;
@@ -1571,11 +1571,10 @@ s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
     if (count < 0) count += lbl_8055D758;
     count = count - lbl_8055D750;
     if (count < 0) count += lbl_8055D758;
-    if (arg2 <= count) {
-    } else {
+    if (arg2 > count) {
         count = arg2;
     }
-    index = lbl_8055D750;
+    index = *(volatile s32 *)&lbl_8055D750;
     for (i = count; i > 0; i--) {
         *arg1++ = *(s16 *)(lbl_8035EE60 + arg0 * 0x168 + index * 2);
         index++;
