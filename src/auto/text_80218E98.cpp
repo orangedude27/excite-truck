@@ -9609,8 +9609,9 @@ extern "C" void fn_80229F38(void *widget) {
 }
 
 extern "C" s32 fn_80229F58(s32);
-extern "C" s32 fn_80229F58(s32 arg0) {
-    return arg0 + 0x254;
+extern "C" s32 fn_80229F58(s32 widget) {
+    /* Field-offset helper: return a pointer to a UI widget's field at +0x254. */
+    return widget + 0x254;
 }
 
 extern "C" s32 fn_80229F60(void *widget) {
