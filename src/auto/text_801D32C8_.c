@@ -1025,6 +1025,7 @@ int fn_801D470C(void) { return 0; }
 /* No-op/default handler: simply clears the two output values. */
 void fn_801D4714(void *unused0, void *unused1, void *unused2, int *out0, int *out1) { *out1 = 0; *out0 = 0; }
 
+/* Default handler: reports failure/unavailable by returning 0. */
 int fn_801D4724(void) { return 0; }
 
 
