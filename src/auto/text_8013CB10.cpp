@@ -1694,9 +1694,10 @@ extern "C" void fn_8013CB90(void *arg0);
 struct RenderData { u32 f0; f32 f4; f32 f8; u32 fC; f32 f10; f32 f14; f32 f18; f32 f1C; f32 f20; f32 f24; };
 #pragma scheduling invalid_target
 extern "C" void fn_8013F0A0(void *arg0, void *arg1, void *arg2) {
+    #pragma scheduling invalid_target
     struct VStringFloat { virtual void d0(); virtual void d1(); virtual u8 *v10(const char *, f32); };
     struct RenderData { u32 f0; u32 f4; u32 f8; u32 fC; f32 f10; f32 f14; f32 f18; f32 f1C; f32 f20; f32 f24; };
-    f32 delta, scale, normalized, progress, factor, f27, f29, f28;
+    f32 delta, progress, normalized, scale, factor, f27, f29, f28;
     register u8 *dataObj;
     register char *labels;
     s32 drawCount, active = 0;
@@ -3730,8 +3731,8 @@ extern "C" void fn_80143DC8(void *arg0) {
     u8 temp_r4_2;
     u8 temp_r4_3;
     u8 temp_r5_2;
-    s32 one;
     s32 three;
+    s32 one;
     s32 sp188;
     s32 sp18c;
     s32 sp190;
@@ -4117,7 +4118,8 @@ extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
     return ((v >> 1) - (v & 0xA)) < 0;
 }
 #pragma dont_inline off
-extern "C" s32 fn_80144494(s32 arg0, s32 arg1) { return arg1; }
+/* Vtable callback that ignores its first argument and returns the second unchanged. */
+extern "C" s32 fn_80144494(s32 self, s32 value) { return value; }
 struct Fn8013FC6CDispatch {
     virtual void unused0();
     virtual void unused1();
