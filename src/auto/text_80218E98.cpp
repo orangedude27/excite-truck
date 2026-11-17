@@ -9174,8 +9174,9 @@ extern "C" void fn_80229884(void *widget) {
     (*(u8 *)((u8 *)widget + 0x18)) = 0;
 }
 
-extern "C" s32 fn_802298A4(s32 arg0) {
-    return arg0 + 0x258;
+extern "C" s32 fn_802298A4(s32 widget) {
+    /* Field-offset helper: return a pointer to a UI widget's field at +0x258. */
+    return widget + 0x258;
 }
 
 extern "C" s32 fn_802298AC(void *self) {
