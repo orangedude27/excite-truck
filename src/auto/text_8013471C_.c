@@ -710,12 +710,13 @@ s32 fn_801351AC(void) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_801351B4(void* obj) {
-    struct Dummy {
+    /* C-linkage adapter: dispatch virtual slot f2 (vtable offset 0x10) on obj. */
+    struct VtableInterface {
         virtual void f0();
         virtual void f1();
         virtual void f2();
     };
-    ((Dummy*)obj)->f2();
+    ((VtableInterface*)obj)->f2();
 }
 #pragma cplusplus reset
 #pragma pop
