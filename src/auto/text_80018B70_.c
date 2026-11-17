@@ -187,7 +187,11 @@ get_next:
 #pragma push
 #pragma dont_inline on
 s32 fn_80018E3C(void) {
-    fn_80018B74();
+#define GetCurrentPlayerScore fn_80018B74
+    /* GetCurrentPlayerCarUnlockMode: tail-call thunk forwarding to the current
+       player's lifetime "score" achievement read, whose result gates car unlockables. */
+    GetCurrentPlayerScore();
+#undef GetCurrentPlayerScore
 }
 
 s32 fn_80018E40(void) {
