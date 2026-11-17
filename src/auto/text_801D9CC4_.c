@@ -256,7 +256,7 @@ extern double sin(double);
 extern double __fabs(double);
 extern int fn_801DA1F8(void *, void **, void **, float *);
 extern float __fabsf(float);
-#pragma processor gekko
+#pragma processor 750
 #pragma scheduling invalid_target
 int fn_801DA294(void *arg0, void *arg1, void *arg2, void *arg3) {
     float *a, *b;
