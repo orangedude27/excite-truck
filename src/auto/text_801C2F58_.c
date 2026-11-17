@@ -216,10 +216,12 @@ s32 fn_801C34CC(f32 a, f32 b) {
 }
 #pragma dont_inline reset
 
-f32 fn_801C34F4(f32 arg0) {
+/* Convert an angle from radians to degrees: x * 180 / pi
+ * (lbl_80562988 = 180, lbl_8056298C = pi). */
+f32 fn_801C34F4(f32 radians) {
     extern f32 lbl_80562988;
     extern f32 lbl_8056298C;
-    return (lbl_80562988 * arg0) / lbl_8056298C;
+    return (lbl_80562988 * radians) / lbl_8056298C;
 }
 
 /* Return nonzero when `player` is set in the player bitmask `mask`. */
