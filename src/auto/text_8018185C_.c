@@ -2993,7 +2993,10 @@ void fn_8018BF60(void) {
 
 }
 
-int fn_8018BF64(void) { return 0x44; }
+int fn_8018BF64(void) {
+    /* Virtual accessor returning the fixed constant 0x44 (68). */
+    return 0x44;
+}
 extern int fn_80128668(void);
 extern void fn_8017A580(int, int, int, int, int, int, int);
 extern void fn_8017B164(void *);
