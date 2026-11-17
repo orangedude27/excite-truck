@@ -411,16 +411,16 @@ void fn_802CEF90(void) {
     extern int lbl_8055FD38;
     extern unsigned int lbl_8055FDB8;
     extern unsigned int lbl_8055FDBC;
-    unsigned char status;
+    unsigned char gpStatus;
     unsigned char dummy;
-    unsigned int thread;
+    unsigned int gxThread;
 
     if (lbl_8055FD34 != 0) {
         lbl_8055FD38++;
     }
-    GXGetGPStatus((char *)&status, (char *)&dummy, (char *)&dummy, (char *)&dummy, (char *)&dummy);
-    thread = (unsigned int)GXGetCurrentGXThread();
-    if (status != 0 && thread == lbl_8055FDBC) {
+    GXGetGPStatus((char *)&gpStatus, (char *)&dummy, (char *)&dummy, (char *)&dummy, (char *)&dummy);
+    gxThread = (unsigned int)GXGetCurrentGXThread();
+    if (gpStatus != 0 && gxThread == lbl_8055FDBC) {
         lbl_8055FDB8++;
         if (lbl_8055FDB8 >= 10) {
             OSReport(lbl_8034BF34);
@@ -428,7 +428,7 @@ void fn_802CEF90(void) {
             OSPanic(lbl_8055D0F8, 0x201, lbl_8034BF70);
         }
     } else {
-        lbl_8055FDBC = thread;
+        lbl_8055FDBC = gxThread;
         lbl_8055FDB8 = 0;
     }
 }
