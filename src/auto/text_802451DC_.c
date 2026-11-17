@@ -761,8 +761,9 @@ void *fn_80246428(void *object, int shouldDelete) {
 }
 #pragma small_data on
 
-void fn_80246498(void *arg0) {
-    fn_80214CB4(*(unsigned char *)((char *)arg0 + 0x18) == 0);
+void fn_80246498(void *widget) {
+    /* Set the active window's menu index from the widget's flag at +0x18: index 1 when clear, else 0. */
+    fn_80214CB4(*(unsigned char *)((char *)widget + 0x18) == 0);
 }
 
 void fn_802464A8(void *arg0) {
