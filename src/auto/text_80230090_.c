@@ -618,12 +618,12 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     #pragma scheduling invalid_target
     f32 f2, f0, f1, f3, f4;
     s32 r5, r6;
-    f32 mode = fn_802C9A68() ? 0.9f : 0.85f;
-    f0 = 1.0f;
-    f2 = 640.0f;
+    f32 mode = fn_802C9A68() ? lbl_80563670 : lbl_80563674;
+    f0 = lbl_80563610;
+    f2 = lbl_80563678;
     f3 = f0 - mode;
-    f0 = 480.0f;
-    f1 = 0.5f;
+    f0 = lbl_8056367C;
+    f1 = lbl_8056365C;
     f2 = f2 * f3;
     f0 = f0 * f3;
     f2 = f1 * f2;
@@ -643,9 +643,9 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     if (!fn_802C9A60() && fn_802C9A58()) {
         f4 = 1.0f;
         f0 = lbl_8055D020;
+        f1 = 0.5f;
         f2 = 640.0f;
         f3 = f4 / f0;
-        f1 = 0.5f;
         f0 = 0.0f;
         f3 = f3 - f4;
         f2 = f2 * f3;
@@ -654,8 +654,8 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
         else f0 = f1 + f2;
         *arg2 -= (s32)f0;
         f4 = 1.0f;
-        f2 = 640.0f;
         f1 = 0.5f;
+        f2 = 640.0f;
         f0 = 0.0f;
         f3 = f4 / lbl_8055D020;
         f3 = f3 - f4;
@@ -714,6 +714,7 @@ void fn_80231380(void *arg0, s32 color, f32 x, f32 y, f32 z, f32 s, f32 t) {
     v->e = s; v->f = t;
 }
 
+#pragma unroll off
 void *fn_8023139C(void *buf, int len, u32 val) {
     int temp = len - 1;
     int n = temp - (temp - 1) / 3;
