@@ -757,7 +757,7 @@ void fn_80264D5C(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80264FD4(void *arg0) {
+extern "C" void fn_80264FD4(void *obj) {
     struct Dummy {
         virtual void f0();
         virtual void f1();
@@ -766,7 +766,8 @@ extern "C" void fn_80264FD4(void *arg0) {
         virtual void f4();
         virtual void f5();
     };
-    ((Dummy*)arg0)->f5();
+    /* Virtual-dispatch thunk: invoke the 6th virtual method (vtable +0x1c). */
+    ((Dummy*)obj)->f5();
 }
 
 #pragma push
