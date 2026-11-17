@@ -1954,8 +1954,11 @@ void* fn_801B2F24(void) {
     return lbl_8055E678;
 }
 
-u8 fn_801B2F2C(s32 arg0) {
-    return ((u8 *)lbl_8055E684)[(arg0 << 7) + 0x79];
+u8 fn_801B2F2C(s32 slotIndex) {
+    /* Return the +0x79 completion flag of the given AI-truck (deity) slot. */
+#define sDeitySlotBase lbl_8055E684
+    return ((u8 *)sDeitySlotBase)[(slotIndex << 7) + 0x79];
+#undef sDeitySlotBase
 }
 
 s32 fn_801B2F40(s32 arg0) {
