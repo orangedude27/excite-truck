@@ -1302,9 +1302,10 @@ s32 fn_802B0124(void *arg0) {
     return (*(u32 *)((u8 *)arg0 + 8) >> 23) & 1;
 }
 
-s32 fn_802B0130(void *arg0) {
-    s16 value = *(s16 *)((u8 *)arg0 + 4);
-    return (s32)(((u32)value >> 31) + value) >> 1;
+s32 fn_802B0130(void *entry) {
+    /* Return the signed 16-bit field at +4 of the entry, halved (rounded toward zero). */
+    s16 field = *(s16 *)((u8 *)entry + 4);
+    return (s32)(((u32)field >> 31) + field) >> 1;
 }
 
 extern int fn_801E8718(int);
