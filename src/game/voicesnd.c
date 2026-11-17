@@ -997,9 +997,8 @@ void fn_8020BC80(void *arg0, float arg1) {
     *(float *)((char *)arg0 + 0x30) = arg1;
 }
 
-void fn_8020BC88(void *arg0, float arg1) {
-    *(float *)((char *)arg0 + 0x34) = arg1;
-}
+/* Store the unused effect float at +0x34 of a VoiceSnd (its voice setter does nothing in this build). */
+void fn_8020BC88(VoiceSnd *snd, float value) { snd->unused34 = value; }
 
 /* Set the effect-send (aux) flags of a VoiceSnd (consumed by the mixer fn_802E6264). */
 void fn_8020BC90(VoiceSnd *snd, int auxFlags) { snd->auxFlags = auxFlags; }
