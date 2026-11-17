@@ -2249,8 +2249,9 @@ extern "C" void fn_80148280(void) {
 
 }
 
-extern "C" void fn_80148284(void *arg0, s32 arg1) {
-    fn_80148294((const char *)arg1, *(void **)((u8 *)arg0 + 0x30));
+/* Look up a 0x20-byte table entry by name: obj holds the table pointer at +0x30 and name is the case-insensitive lookup key. */
+extern "C" void fn_80148284(void *obj, s32 name) {
+    fn_80148294((const char *)name, *(void **)((u8 *)obj + 0x30));
 }
 
 #pragma push
