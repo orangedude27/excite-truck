@@ -119,6 +119,7 @@ int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling reset
 float fn_80138DF4(void *arg0) {
     float spC;
     float sp8;
@@ -126,16 +127,19 @@ float fn_80138DF4(void *arg0) {
     float temp_f1_2;
     float temp_f2;
     float temp_f3;
+    float temp_f3_2;
     float var_f31;
     float var_f4;
     int state;
     if (fn_80138BFC(*(float *)((char *)arg0 + 0xC) - *(float *)arg0) == 0) {
-        if (fn_80138BFC(*(float *)((char *)arg0 + 0x14) - *(float *)((char *)arg0 + 8)) == 0) {
-            if (fn_80138C28(arg0, &spC, &sp8)) {
+        float b = *(float *)((char *)arg0 + 8);
+        float a = *(float *)((char *)arg0 + 0x14);
+        if (fn_80138BFC(a - b) == 0) {
+            if (fn_80138C28(arg0, &spC, &sp8) != 0) {
+                float pos14 = *(float *)((char *)arg0 + 0x14);
                 var_f4 = spC;
-                temp_f1 = (*(float *)((char *)arg0 + 0x10) + (var_f4 * *(float *)((char *)arg0 + 0x14))) - *(float *)((char *)arg0 + 4);
-                if (var_f4 <= lbl_805613D0)
-                    var_f4 = lbl_805613D0;
+                temp_f1 = (*(float *)((char *)arg0 + 0x10) + (var_f4 * pos14)) - *(float *)((char *)arg0 + 4);
+                var_f4 = (var_f4 > lbl_805613D0) ? var_f4 : lbl_805613D0;
                 var_f31 = temp_f1 / var_f4;
                 lbl_8055E100 = -5;
             } else {
@@ -147,14 +151,18 @@ float fn_80138DF4(void *arg0) {
             temp_f1_2 = *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 4);
             temp_f3 = temp_f1_2 * temp_f1_2;
             var_f31 = temp_f3 / (lbl_805613C8 * temp_f2);
-            if (fn_80138BE4(temp_f1_2, temp_f2))
+            if (fn_80138BE4(temp_f1_2, temp_f2) != 0) {
                 var_f31 = -var_f31;
-            temp_f2 = *(float *)((char *)arg0 + 0xC) - *(float *)arg0;
+            }
+            temp_f3_2 = *(float *)((char *)arg0 + 0xC);
+            temp_f2 = temp_f3_2 - *(float *)arg0;
             temp_f1_2 = *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 4);
-            if (fn_80138BE4(temp_f1_2, temp_f2) == 0)
+            {
+                int result = fn_80138BE4(temp_f1_2, temp_f2);
                 state = -2;
-            else
-                state = -3;
+                if (result != 0)
+                    state = -3;
+            }
             lbl_8055E100 = state;
         }
     } else {
