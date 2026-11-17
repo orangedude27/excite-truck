@@ -580,8 +580,10 @@ int fn_801D50A0(void) {
 }
 
 #pragma dont_inline on
-void fn_801D50A8(int arg0) {
-    fn_801D5328(arg0, 1);
+/* Start the given loaded action sequence (fn_801D5328) with start flag 1;
+ * fn_801D50B0 is the flag-0 twin. */
+void fn_801D50A8(int sequence) {
+    fn_801D5328(sequence, 1);
 }
 
 /* Start the action sequence with start flag 0; fn_801D50A8 is the flag-1 twin. */
