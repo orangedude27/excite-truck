@@ -191,6 +191,7 @@ f32 fn_802A4A50(void) {
     return fn_801E7E24();
 }
 
+/* Return the cached frame delta time in seconds, refreshed each frame by fn_802A4C60 via fn_802A4A50. */
 f32 fn_802A4AD4(void) {
     return lbl_8055F8A0;
 }
@@ -803,7 +804,7 @@ void *fn_802A5AE8(void *arg0, s32 arg1, s32 arg2) {
 extern s32 lbl_804BCFA8[];
 extern s32 lbl_8055F890;
 s32 fn_802A7680(s32);
-#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_802A5B8C(s32 arg0, s32 arg1) {
     s32 temp;
     s32 *p = (s32 *)arg0;
@@ -819,7 +820,6 @@ s32 fn_802A5B8C(s32 arg0, s32 arg1) {
     }
     return arg0;
 }
-#pragma scheduling on
 void fn_802A5C1C(void *arg0) {
     f32 zero = lbl_80564858;
     f32 a = lbl_8056485C;
@@ -953,9 +953,9 @@ void fn_802A5FE4(void *arg0) {
         fn_802C8D74();
         fn_802C9A4C(saved);
         fn_802C90F0(o->unk10);
-        one = lbl_8056485C;
         c884 = lbl_80564884;
         c888 = lbl_80564888;
+        one = lbl_8056485C;
         i = 0;
         while (i < lbl_8055CFF0 / 64 + 1) {
             j = 0;
@@ -1272,6 +1272,7 @@ s32 fn_802A6A44(s32 *arg0) {
 #pragma scheduling on
 extern f32 lbl_805648A4;
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802A6A7C(void *arg0) {
     struct Obj { u8 pad0[0x10]; s32 model; u8 pad14[0xC]; f32 pos[3]; f32 vel[3]; f32 axis[3]; } *obj = (struct Obj *)arg0;
     f32 *m = (f32 *)fn_801E8718(obj->model);
@@ -1279,8 +1280,8 @@ void fn_802A6A7C(void *arg0) {
     f32 in[3];
     fn_802A6E34(obj);
     {
-        f32 y = lbl_8056485C, x = lbl_80564858, z = lbl_80564858;
-        in[0] = x; in[1] = y; in[2] = z;
+        f32 y = lbl_8056485C, x = lbl_80564858;
+        in[0] = x; in[1] = y; in[2] = x;
         if (obj->axis == &in[0]) {
             f32 xy1 = y * m[1];
             f32 xx0 = x * m[0];
@@ -1291,9 +1292,9 @@ void fn_802A6A7C(void *arg0) {
             f32 s0 = xx0 + xy1;
             f32 s1 = xx1 + yy4;
             f32 s2 = xx2 + yy5;
-            f32 o0 = z * m[2] + s0;
-            f32 o1 = z * m[5] + s1;
-            f32 o2 = z * m[8] + s2;
+            f32 o0 = x * m[2] + s0;
+            f32 o1 = x * m[5] + s1;
+            f32 o2 = x * m[8] + s2;
             obj->axis[0] = o0; obj->axis[1] = o1; obj->axis[2] = o2;
         } else {
             obj->axis[0] = in[2] * m[2] + (in[0] * m[0] + in[1] * m[1]);
@@ -1346,6 +1347,7 @@ void fn_802A6A7C(void *arg0) {
     obj->pos[1] = m[10];
     obj->pos[2] = m[11];
 }
+#pragma opt_propagation reset
 extern float lbl_8055F884;
 extern float lbl_805648B4;
 extern float fn_802C9A4C(float);
@@ -1882,28 +1884,35 @@ s32 fn_802A79CC(s32 arg0) {
     s32 alpha;
     s32 offset;
     s32 i;
-    distance = PSQUATMultiply((u8 *)fn_802C86DC() + 36, object + 12);
+
+    distance = PSQUATMultiply((u8 *)fn_802C86DC() + 0x24, object + 0xC);
     radiusScale = lbl_80564850;
-    alpha = 255;
-    radius = *(f32 *)(object + 24);
+    alpha = 0xFF;
+    radius = *(f32 *)(object + 0x18);
     delta = distance - (radiusScale * radius);
     scaled = lbl_805648D8 * (lbl_80564854 * delta);
     raw = (s32)scaled;
     magnitude = raw & ((-raw & ~raw) >> 31);
-    if (magnitude < 255)
+    if (magnitude < 0xFF)
         alpha = magnitude;
+
     if (alpha > 0) {
-        rate = fn_802C9A4C(*(f32 *)(object + 48));
-        fn_802C8BD0(*(s32 *)(object + 44));
+        rate = fn_802C9A4C(*(f32 *)(object + 0x30));
+        fn_802C8BD0(*(s32 *)(object + 0x2C));
+
         if (fn_802CE860(*(s32 *)(object + 4)) != 0) {
             u32 alphaWord = (u32)alpha ^ 0x80000000;
             u32 highWord = 0x43300000;
             volatile union {
                 double value;
-                struct { u32 high; u32 low; } words;
+                struct {
+                    u32 high;
+                    u32 low;
+                } words;
             } conversion;
+
             intBias = lbl_80564848;
-            radius = *(f32 *)(object + 24);
+            radius = *(f32 *)(object + 0x18);
             radiusSquared = radius * radius;
             conversion.words.low = alphaWord;
             conversion.words.high = highWord;
@@ -1912,10 +1921,11 @@ s32 fn_802A79CC(s32 arg0) {
             i = 0;
             offset = 0;
             goto check;
+
         loop:
             {
                 u8 *point = *(u8 **)object + offset;
-                f32 distSq = PSVECSquareDistance(point, object + 12);
+                f32 distSq = PSVECSquareDistance(point, object + 0xC);
                 f32 pointScale = pointScaleFactor * *(f32 *)(object + 8);
                 f32 pointX = *(f32 *)(point + 0);
                 f32 pointY = *(f32 *)(point + 4);
@@ -1928,8 +1938,9 @@ s32 fn_802A79CC(s32 arg0) {
                     raw = magnitude;
                 else
                     raw = alpha;
-                fn_802CE86C((void *)((raw << 24) | 0x00FFFFFF), i, pointScale, pointX, pointY, pointZ);
-                offset += 12;
+                fn_802CE86C((void *)((raw << 24) | 0x00FFFFFF), i,
+                            pointScale, pointX, pointY, pointZ);
+                offset += 0xC;
                 i++;
             }
         check:
@@ -1937,9 +1948,11 @@ s32 fn_802A79CC(s32 arg0) {
                 goto loop;
             fn_802CE868();
         }
+
         fn_802C8D74();
         fn_802C9A4C(rate);
     }
+
     fn_802D3D50();
 }
 #pragma scheduling on
