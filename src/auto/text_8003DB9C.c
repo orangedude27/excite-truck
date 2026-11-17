@@ -4369,8 +4369,10 @@ int GXGetTexObjHeight(void *arg0) {
     return ((int *)arg0)[4];
 }
 
-s32 GXGetTexObjFmt(void *arg0) {
-    return (*(s32 *)((char *)arg0 + 0xC) << 5) & 0x1FFFFFE0;
+/* Return the texture format of a GXTexObj: the format field packed into the
+ * word at +0xC, shifted into place for the hardware texture-mode encoding. */
+s32 GXGetTexObjFmt(void *texObj) {
+    return (*(s32 *)((char *)texObj + 0xC) << 5) & 0x1FFFFFE0;
 }
 
 /* Return the S-axis wrap mode of a GXTexObj: bits 0..9 of mode0 (+8), plus one
