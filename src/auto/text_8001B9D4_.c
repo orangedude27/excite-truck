@@ -297,8 +297,7 @@ done:
     return flagged;
 }
 
-/* Return a stat object's type word at +0x04 (e.g. 0x22205 or 0x20507); the
- * comparison helpers mask off bits 0x60000 of it to choose how to rank its value. */
+/* Return a stat object's type word at +0x04 (e.g. 0x22205 or 0x20507); bits 0x60000 of it select the comparison mode. */
 s32 fn_8001BD28(void *stat) {
     return ((s32 *)stat)[1];
 }
