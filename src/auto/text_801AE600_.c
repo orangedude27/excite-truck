@@ -351,12 +351,11 @@ int fn_801AEB58(const void *a, const void *b) {
 
 #pragma scheduling invalid_target
 void fn_801AEBD0(void) {
-    register int value = lbl_8055E62C;
-    register int count = lbl_80435780[0x3C0 / 4];
-    register int i;
-    register int share;
-    register int remainder;
-    register int offset;
+    int value = lbl_8055E62C;
+    int count = lbl_80435780[0x3C0 / 4];
+    int i;
+    int share;
+    int remainder;
 
     for (i = 0; i < count; i++) {
         short *item = (short *)(*lbl_8055E624 + i * 0x1C);
@@ -366,15 +365,18 @@ void fn_801AEBD0(void) {
     share = value / 3;
     remainder = value % 3;
 
-    for (offset = 0, i = 0;
-         i < *(volatile int *)((char *)lbl_80435780 + 0x3C0);
-         offset += 0x1C, i++) {
-        char *entry = (char *)*(volatile int *)lbl_8055E624 + offset;
-        short type = *(short *)(entry + 0xC);
-        if (type < 4) {
-            *(short *)(entry + 0x14) += share;
-            if (type == 1)
-                *(short *)(entry + 0x14) += remainder;
+    {
+        int offset;
+        for (i = 0, offset = 0;
+             i < *(volatile int *)((char *)lbl_80435780 + 0x3C0);
+             i++, offset += 0x1C) {
+            char *entry = (char *)*(volatile int *)lbl_8055E624 + offset;
+            short type = *(short *)(entry + 0xC);
+            if (type < 4) {
+                *(short *)(entry + 0x14) += share;
+                if (type == 1)
+                    *(short *)(entry + 0x14) += remainder;
+            }
         }
     }
 }
@@ -383,6 +385,7 @@ void fn_801AED54(void) {
 
 }
 
+/* No-op teardown stub: called during the menu/bootstrap shutdown sequence but does nothing. */
 void fn_801AED58(void) {
 
 }
@@ -814,7 +817,8 @@ done:
 #pragma use_lmw_stmw reset
 #pragma small_data on
 float fn_801AF9EC(int arg0, float *arg1) {
-    if (arg1 != 0) *arg1 = ((float (*)[2])lbl_80435740)[arg0][1];
+    #pragma opt_common_subs off
+    if (arg1 != 0) *arg1 = *(float *)((char *)lbl_80435740 + (arg0 << 3) + 4);
     return lbl_80435740[arg0 * 2];
 }
 
