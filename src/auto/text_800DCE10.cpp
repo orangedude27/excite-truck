@@ -1294,6 +1294,7 @@ extern "C" void fn_800DF81C(f32 *rect, void *textWriter, const u16 *str, s32 len
     }
 }
 
+/* Return the address of the global sentinel state node (lbl_8055DE08) used to mark the state-list anchor. */
 extern "C" unsigned int* fn_800DFC54(void) {
     extern unsigned int lbl_8055DE08;
     return &lbl_8055DE08;
