@@ -15082,7 +15082,7 @@ typedef struct {
     u8 disc_succ[0x28];
     u8 rem_name[1];
 } GapTraceStrings;
-extern void gap_connect_cfm(), gap_config_ind(u16, void *), gap_config_cfm(u32, u16 *), gap_disconnect_ind(u16, BOOLEAN), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
+extern void gap_connect_cfm(u32, s32), gap_config_ind(u16, void *), gap_config_cfm(u32, u16 *), gap_disconnect_ind(u16, BOOLEAN), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
 void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status);
 /* Registers GAP's L2CAP application callbacks in the GAP control block (lbl_803C3740). */
 void fn_800826D4(void) {
@@ -15138,7 +15138,7 @@ void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status) {
     L2CA_ConfigReq(cid, (tL2CAP_CFG_INFO *)&ccb->my_cfg);
 }
 
-#pragma opt_common_subs off
+#pragma optimization_level 3
 void gap_connect_cfm(u32 cid, s32 result) {
     u8 *entry = lbl_803C3740 + 0xAC;
     u8 i;
@@ -15172,7 +15172,7 @@ found:
     }
     L2CA_Deregister(psm);
 }
-#pragma opt_common_subs reset
+#pragma optimization_level reset
 void gap_config_ind(u16 cid, void *p_cfg) {
     u8 *conn = lbl_803C3740 + 0xAC;
     u32 outer = 2;
