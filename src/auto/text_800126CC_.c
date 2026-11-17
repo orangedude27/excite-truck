@@ -95,6 +95,8 @@ void* fn_80012818(void) {
 }
 
 extern int lbl_8055D508;
+/* Return the number of registered contest/per-slot entries held in lbl_8055D508
+ * (the count of 0x28-byte records in the global table lbl_80352AD0), as a void*. */
 void* fn_80012854(void) {
     return (void*)lbl_8055D508;
 }
