@@ -473,6 +473,8 @@ f32 fn_801495D4(s32 arg0) {
 #pragma dont_inline off
 #pragma scheduling on
 
+/* Evaluate the shared frame-counter-driven sine oscillation with period 0x40;
+ * a tail call into fn_801495D4 (callers read its f32 result from f1). */
 void fn_80149650(void) { fn_801495D4(0x40); }
 
 u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
