@@ -50,8 +50,9 @@ void OSSetMEM2ArenaLo(void* lo) {
     s_mem2ArenaLo = lo;
 }
 
-void OSSetArenaLo(void* lo) {
-    OSSetMEM1ArenaLo(lo);
+/* Set the low bound of the default (MEM1) arena. */
+void OSSetArenaLo(void* arenaLo) {
+    OSSetMEM1ArenaLo(arenaLo);
 }
 
 void* OSAllocFromMEM1ArenaLo(size_t size, u32 align) {
