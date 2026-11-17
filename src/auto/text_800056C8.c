@@ -997,8 +997,9 @@ extern void *fn_800122B4(s32, void *);
 extern void fn_801345D8(void *, s32, const char *, ...);
 extern s32 fn_801EA994(void);
 extern void *fn_801EA9B0(s32);
-extern f32 lbl_80560118, lbl_80560170, lbl_80560174, lbl_80560178, lbl_8056017C;
-extern f32 lbl_80560180, lbl_80560184, lbl_80560188, lbl_8056018C;
+extern f32 lbl_80560118, lbl_80560170, lbl_80560178, lbl_8056017C;
+extern f32 lbl_80560180, lbl_80560188;
+extern const f32 lbl_80560174, lbl_80560184, lbl_8056018C;
 extern const char lbl_80558930[4], lbl_80558934[6], lbl_80558940[8];
 #pragma push
 #pragma processor 750
@@ -1025,11 +1026,11 @@ void fn_80006B18(void *arg0) {
     void *entry;
     start = fn_80011E34();
     now = fn_80011E54() - lbl_80560170;
-    i = 0;
     gap = lbl_80560178;
     threshold = lbl_8056017C;
     unk11C = lbl_8056011C;
     percent = lbl_80560188;
+    i = 0;
     scale = lbl_80560174;
     offset = lbl_80560184;
     percentScale = lbl_8056018C;
