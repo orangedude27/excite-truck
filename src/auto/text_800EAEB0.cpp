@@ -503,30 +503,34 @@ extern "C" f32 fn_800EB430(void* env) {
 extern const f32 lbl_80560FF8;
 extern const s16 lbl_802F4A90[];
 extern u8 lbl_80322B98[];
-extern "C" void Update__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *arg0, s32 arg1) {
-    s32 idx, step=arg1, state=*(s32 *)arg0, valid;
-    f32 value, target;
+extern "C" void Update__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *env, s32 steps) {
+    /* Advance a note's envelope by `steps` ticks.  Attack (0) multiplies the
+     * volume by attackFactor each tick until it reaches full, then falls through
+     * to decay (1), which subtracts decayStep until the sustain level is hit;
+     * release (3) subtracts releaseStep and sustain (2) holds. */
+    s32 sustainIdx, remaining = steps, state = ((nw4hbm::snd::detail::EnvGenerator *)env)->state, valid;
+    f32 volume, target;
     switch(state) {
     case 0:
-        while(step>0) {
-            step--;
-            value=*(f32 *)((u8 *)arg0+4)*(*(f32 *)((u8 *)arg0+0x10));
-            *(f32 *)((u8 *)arg0+4)=value;
-            if(value>-0.03125f) { *(f32 *)((u8 *)arg0+4)=0.0f; *(s32 *)arg0=1; }
+        while(remaining > 0) {
+            remaining--;
+            volume = ((nw4hbm::snd::detail::EnvGenerator *)env)->volume * ((nw4hbm::snd::detail::EnvGenerator *)env)->attackFactor;
+            ((nw4hbm::snd::detail::EnvGenerator *)env)->volume = volume;
+            if(volume > -0.03125f) { ((nw4hbm::snd::detail::EnvGenerator *)env)->volume = 0.0f; ((nw4hbm::snd::detail::EnvGenerator *)env)->state = 1; }
         }
-        if(*(s32 *)arg0!=1) return;
+        if(((nw4hbm::snd::detail::EnvGenerator *)env)->state != 1) return;
     case 1:
-        idx=(s32)*((u8 *)arg0+0x14); valid=0;
-        if(idx>=0 && idx<=0x7f) valid=1;
-        if(valid==0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322B80,0x141,(const char *)lbl_80322B98,idx,0,0x7f);
-        target=(f32)lbl_802F4A90[idx];
-        value=*(f32 *)((u8 *)arg0+4)-(*(f32 *)((u8 *)arg0+8)*(f32)step);
-        *(f32 *)((u8 *)arg0+4)=value;
-        if(!(value>target)) { *(f32 *)((u8 *)arg0+4)=target; *(s32 *)arg0=2; return; }
+        sustainIdx = (s32)((nw4hbm::snd::detail::EnvGenerator *)env)->sustain; valid=0;
+        if(sustainIdx>=0 && sustainIdx<=0x7f) valid=1;
+        if(valid==0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322B80,0x141,(const char *)lbl_80322B98,sustainIdx,0,0x7f);
+        target=(f32)lbl_802F4A90[sustainIdx];
+        volume=((nw4hbm::snd::detail::EnvGenerator *)env)->volume - (((nw4hbm::snd::detail::EnvGenerator *)env)->decayStep*(f32)remaining);
+        ((nw4hbm::snd::detail::EnvGenerator *)env)->volume = volume;
+        if(!(volume>target)) { ((nw4hbm::snd::detail::EnvGenerator *)env)->volume = target; ((nw4hbm::snd::detail::EnvGenerator *)env)->state = 2; return; }
         break;
     case 3:
-        value=*(f32 *)((u8 *)arg0+4)-(*(f32 *)((u8 *)arg0+0xc)*(f32)arg1);
-        *(f32 *)((u8 *)arg0+4)=value; break;
+        volume=((nw4hbm::snd::detail::EnvGenerator *)env)->volume - (((nw4hbm::snd::detail::EnvGenerator *)env)->releaseStep*(f32)steps);
+        ((nw4hbm::snd::detail::EnvGenerator *)env)->volume = volume; break;
     case 2: return;
     }
 }
