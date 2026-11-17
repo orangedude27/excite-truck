@@ -1590,7 +1590,7 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     buffer[15] = b14;
     fn_802E3A64(arg0, buffer, 0x12, b13, b11, b9, 24, 2);
 }
-#pragma pop
+#pragma scheduling on
 void fn_802D09E4(void) {
 }
 
