@@ -135,7 +135,8 @@ int fn_802E18D4(int width, int height, int format, int wrapMode, void *texObj, i
     return 1;
 }
 #pragma scheduling on
-int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
+/* Round size up to the next multiple of 128 (128-byte texture/cache-line alignment). */
+int fn_802E1954(int size) { return (size + 0x7F) & 0xFFFFFF80; }
 
 unsigned int fn_802E1960(unsigned int size) {
     /* Return a power-of-two texture width: size/8 rounded up to a multiple of 4,
