@@ -99,47 +99,125 @@ extern void fn_801A7974(void *, const char *, int);
 extern void fn_801A7DFC(int, int, int);
 extern void fn_801A9110(void *, const char *);
 extern int sprintf(char *, const char *, ...);
+/* One of a driver's 42 input bindings (object +0x6C).  fn_8017F718 fills one
+ * from the player's options by control name ("steer_left", "throttle", ...);
+ * the input layer (fn_801A7F98 and friends) reads it back: `type` says how the
+ * value is produced, `value` selects a 0x64-byte control record and `axis` the
+ * axis, key code or bit mask within it. */
 struct Di718Slot {
-    void *handler;
-    s32 value;
-    u8 pad08[4];
-    u8 inUse;
+    s32 type;   /* 0x00 1 key, 2 analog axis, 3 button byte, 4 button mask,
+                 *      5 special axis, 6 special button (0 = unbound) */
+    s32 value;  /* 0x04 control record holding the device's state */
+    s32 axis;   /* 0x08 axis / key code / bit mask within that record */
+    u8 inUse;   /* 0x0C rising-edge latch (fn_801A8E68); cleared when rebound */
     u8 pad0D[3];
 };
+
+/* The control values the bindings drive (object +0x0C), written every frame by
+ * PhysDriverUpdate (fn_8017ED00) and read by the physics driver. */
+enum DriverControl {
+    CTRL_STEER,      /* 0 steering, -1..1 */
+    CTRL_STEER2,     /* 1 the second steering axis (steer2_*) */
+    CTRL_BRAKE,      /* 2 */
+    CTRL_BRAKE2,     /* 3 the second brake pedal */
+    CTRL_CLUTCH,     /* 4 ramps up while the clutch is held */
+    CTRL_THROTTLE,   /* 5 */
+    CTRL_THROTTLE2,  /* 6 the second throttle */
+    CTRL_E_BRAKE     /* 7 the hand brake axis */
+};
+
+/* The response levels fn_8017F718 registers with the level system (object
+ * +0x02C) under those names, so the options can tune them per driver. */
+enum DriverLevel {
+    LEVEL_STEER_DEAD_SPOT,    /* "steer_dead_spot" */
+    LEVEL_STEER_OVERSHOOT,    /* "steer_overshoot" */
+    LEVEL_STEER_SPEED,        /* "steer_speed" */
+    LEVEL_THROTTLE_DEAD_SPOT, /* "throttle_dead_spot" */
+    LEVEL_THROTTLE_OVERSHOOT, /* "throttle_overshoot" */
+    LEVEL_THROTTLE_SPEED,     /* "throttle_speed" */
+    LEVEL_BRAKE_DEAD_SPOT,    /* "brake_dead_spot" */
+    LEVEL_BRAKE_OVERSHOOT,    /* "brake_overshoot" */
+    LEVEL_BRAKE_SPEED         /* "brake_speed" */
+};
+
+/* The slot[] bindings, in the order fn_8017F718 resolves them from the
+ * options.  The gaps are the bindings this file's update does not read. */
+enum DriverBinding {
+    BIND_STEER_LEFT,        /* "steer_left" */
+    BIND_STEER_RIGHT,       /* "steer_right" */
+    BIND_THROTTLE,          /* "throttle" */
+    BIND_BRAKING,           /* "braking" */
+    BIND_E_BRAKE,           /* "e_brake" */
+    BIND_DIG_THROTTLE,      /* "dig_throttle": the throttle button */
+    BIND_DIG_BRAKING,       /* "dig_braking": the brake button */
+    BIND_THROTTLE2,         /* "throttle2" */
+    BIND_BRAKING2,          /* "braking2" */
+    BIND_REVERSE,           /* "reverse" */
+    BIND_ALT_REVERSE,       /* "alt_reverse" */
+    BIND_HORN,              /* "horn" */
+    BIND_HORN2,             /* "horn2" */
+    BIND_UPSHIFT,           /* "upshift" */
+    BIND_DOWNSHIFT,         /* "downshift" */
+    BIND_CLUTCH,            /* "clutch" */
+    BIND_HELP,              /* "help" */
+    BIND_AIRLIFT,           /* "airlift" */
+    BIND_STEER2_LEFT,       /* "steer2_left" */
+    BIND_STEER2_RIGHT,      /* "steer2_right" */
+    BIND_LOOK_LEFT,         /* "look_left" */
+    BIND_LOOK_RIGHT,        /* "look_right" */
+    BIND_LOOK_BACK,         /* "look_back" */
+    BIND_FREE_G1 = 23,      /* "free_g1".."free_g6": the gear buttons */
+    BIND_FREE_REVERSE = 29, /* "free_reverse" */
+    BIND_MIRROR_CONTROL = 33, /* "mirror_control" */
+    BIND_PITCH_UP = 34,     /* "pitch_up" */
+    BIND_PITCH_DOWN = 35,   /* "pitch_down" */
+    BIND_ROLL_LEFT = 36,    /* "roll_left" */
+    BIND_ROLL_RIGHT = 37    /* "roll_right" */
+};
+
+/* The per-player "DriverInterface" object (the name it is heap-allocated
+ * under, lbl_80331E68): one per driver index, created on demand by
+ * fn_8018108C and kept in lbl_804348D8[].  Its vtable is lbl_80331E78
+ * (fn_80181428 is the base constructor).  fn_8017F718 fills one from the
+ * player's options - the bindings, the response levels and the option bytes
+ * below - and PhysDriverUpdate (fn_8017ED00) turns those bindings into the
+ * control values each frame.  Only the fields this file's code touches are
+ * named; struct DriverInterface further down is an alias for this tag. */
 struct Di718 {
     void *vtable;
     s32 index;
-    s32 axStackHead;
-    f32 pad0C[8];
-    f32 level2C[9];
-    s32 pad50[2];
-    u8 flag58;
-    u8 flag59;
-    u8 flag5A;
-    u8 flag5B;
-    u8 flag5C;
-    u8 flag5D;
-    u8 flag5E;
+    s32 axStackHead;              /* 0x008 __AXGetStackHead_80137CFC(index) */
+    f32 pad0C[8];                 /* 0x00C control values, see DriverControl */
+    f32 level2C[9];               /* 0x02C response levels, see DriverLevel */
+    s32 pad50[2];                 /* 0x050 [0] gear (-1 = reverse), [1] gear count */
+    u8 flag58;                    /* 0x058 horn */
+    u8 flag59;                    /* 0x059 a shift button is held (one step per press) */
+    u8 flag5A;                    /* 0x05A reverse */
+    u8 flag5B;                    /* 0x05B help */
+    u8 flag5C;                    /* 0x05C sound parameters are being driven */
+    u8 flag5D;                    /* 0x05D throttle pressed (rising edge) */
+    u8 flag5E;                    /* 0x05E */
     u8 pad5F;
-    f32 pad60;
-    f32 pad64;
-    u8 flag68;
+    f32 pad60;                    /* 0x060 steering curve expansion, pass 1 */
+    f32 pad64;                    /* 0x064 steering curve expansion, pass 2 */
+    u8 flag68;                    /* 0x068 airlift */
     u8 pad69[3];
-    struct Di718Slot slot[42];
-    f32 pad30C[9];
-    u8 pad330[8];
-    u8 flag338;
+    struct Di718Slot slot[42];    /* 0x06C input bindings, see DriverBinding */
+    f32 pad30C[9];                /* 0x30C [8] camera look, slew-limited */
+    u8 pad330[8];                 /* 0x330 [0] pitch, [4] roll (both f32) */
+    u8 flag338;                   /* 0x338 look back / mirror control */
     u8 pad339[3];
-    f32 pad33C;
-    u8 flag340;
-    u8 flag341;
-    u8 flag342;
-    u8 flag343;
-    u8 flag344;
-    u8 pad345[3];
-    s32 mode348;
-    s32 soundId;
-    u8 flag350;
+    f32 pad33C;                   /* 0x33C */
+    u8 flag340;                   /* 0x340 option "game_pad": ramp every axis */
+    u8 flag341;                   /* 0x341 option "free_shift": gear buttons */
+    u8 flag342;                   /* 0x342 controller status flag & 8 */
+    u8 flag343;                   /* 0x343 digital steering (status flag & 2) */
+    u8 flag344;                   /* 0x344 controller status flag & 0x10 */
+    u8 pad345[3];                 /* 0x345 options "digital_throttle" and
+                                   *       "digital_braking" */
+    s32 mode348;                  /* 0x348 0x10, or the index + 0xC */
+    s32 soundId;                  /* 0x34C axStackHead + 8 */
+    u8 flag350;                   /* 0x350 */
     u8 pad351[3];
 };
 extern void fn_8017E930(void *);
