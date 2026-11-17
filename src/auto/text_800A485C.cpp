@@ -5070,8 +5070,10 @@ extern "C" void fn_800ACA44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     ((s32 (*)(s32, s32, s32, s32, s32, s32))fn_800ABC60)(arg0, arg1, arg2, arg3, 0, arg4);
 }
 
-extern "C" void fn_800ACA50(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    ((s32 (*)(s32, s32, s32, s32, s32, s32))fn_800ABC60)(arg0, arg1, arg2, arg3, 1, 1);
+typedef s32 (*PathResolveCall)(s32, s32, s32, s32, s32, s32);
+/* Resolve a VFS path into the caller's parser/state blocks via fn_800ABC60, using the short-path flags (arg4=arg5=1). */
+extern "C" void fn_800ACA50(s32 parserOut, s32 stateOut, s32 volume, s32 path) {
+    ((PathResolveCall)fn_800ABC60)(parserOut, stateOut, volume, path, 1, 1);
 }
 
 extern "C" s32 fn_800ACA5C(void *arg0, void *arg1, u32 arg2) {
@@ -10673,25 +10675,33 @@ extern "C" s32 fn_800B6004(void *arg0) {
                     *(s32 *)((u8 *)arg0 + 0x1AE4) = 0;
                     *(s32 *)((u8 *)arg0 + 0x1D2C) = 0;
                 }
-                *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & ~8);
+                *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0xFFFFFFF7);
             }
             fn_800A53E8(arg0);
-            lbl_803D2140[13]--;
+            lbl_803D2140[13] = lbl_803D2140[13] - 1;
         }
         if (fn_800A53C0(arg0) != 0) {
-            if ((*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) == 0) {
+            if (!(*(u16 *)((u8 *)arg0 + 0x1F8C) & 8)) {
                 result = fn_800B5988(arg0);
                 if (result != 0) {
                 } else {
-                    *(u16 *)((u8 *)arg0 + 0x1FAC) = (u16)(*(u16 *)((u8 *)arg0 + 0x1FAC) & ~7);
+                    *(u16 *)((u8 *)arg0 + 0x1FAC) = (u16)(*(u16 *)((u8 *)arg0 + 0x1FAC) & 0xFFF8);
                     fn_800A53E8(arg0);
-                    lbl_803D2140[13]++;
-                    fn_800A53CC(arg0);
-                    result = 0;
+                    lbl_803D2140[13] = lbl_803D2140[13] + 1;
+                    goto block_13;
                 }
-            } else { fn_800A53CC(arg0); result = 0; }
-            if (result == 0) goto done;
-        } else goto done;
+            } else {
+block_13:
+                fn_800A53CC(arg0);
+                result = 0;
+            }
+            if (result != 0) {
+            } else {
+                goto block_25;
+            }
+        } else {
+            goto block_25;
+        }
     } else {
         if (fn_800A53DC(arg0) != 0 && (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) == 0) {
             VFiPFFILE_FinalizeAllFiles((u8 *)arg0);
@@ -10703,19 +10713,22 @@ extern "C" s32 fn_800B6004(void *arg0) {
                     *(s32 *)((u8 *)arg0 + 0x1AE4) = 0;
                     *(s32 *)((u8 *)arg0 + 0x1D2C) = 0;
                 }
-                *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & ~8);
+                *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0xFFFFFFF7);
             }
             fn_800A53E8(arg0);
-            lbl_803D2140[13]--;
+            lbl_803D2140[13] = lbl_803D2140[13] - 1;
         }
-        if (fn_800A53C0(arg0) != 0) fn_800A53CC(arg0);
-done:
+        if (fn_800A53C0(arg0) != 0) {
+            fn_800A53CC(arg0);
+        }
+block_25:
         result = 0;
     }
-    if (result != 0) return result;
+    if (result != 0) {
+        return result;
+    }
     flags = *(u16 *)((u8 *)arg0 + 0x1F8C);
-    if ((flags & 8) == 0) return 9;
-    return -((flags >> 1) & 1) & 0xB;
+    return (flags & 8) ? -((flags >> 1) & 1) & 0xB : 9;
 }
 
 struct CacheKey { u32 flag; s32 key; };
