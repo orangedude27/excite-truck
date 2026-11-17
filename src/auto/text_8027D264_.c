@@ -418,8 +418,9 @@ int fn_8027D94C(void *arg0) {
     return ((int *)arg0)[3];
 }
 
-int fn_8027D954(void *arg0, int arg1) {
-    return ((int *)arg0)[2] + arg1 * 0x1F4;
+/* Address of the index-th 0x1F4-byte element in the container's table (base pointer at +0x8). */
+int fn_8027D954(void *container, int index) {
+    return ((int *)container)[2] + index * 0x1F4;
 }
 
 unsigned char fn_8027D964(void *arg0) { return ((unsigned char *)arg0)[0xBCC]; }
