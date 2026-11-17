@@ -1997,6 +1997,8 @@ void *fn_80007C04(void) {
 
 extern int __cntlzw(unsigned int);
 void fn_80007C10(void *obj) {
+    /* Normalize the mode query fn_801769B8 to a 0/1 boolean (two count-leading-
+     * zeros) into this overlay object's flag byte at +4, and clear byte +5. */
     s32 state = fn_801769B8();
     s32 isNonZero = (u32)__cntlzw(state) >> 5;
     isNonZero = (u32)__cntlzw(isNonZero) >> 5;
