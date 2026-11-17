@@ -1328,6 +1328,7 @@ void fn_80262158(void) {
 void fn_8026215C(void) {
 }
 
+/* Stub returning a default value of 0. */
 s32 fn_80262160(void) {
     return 0;
 }
