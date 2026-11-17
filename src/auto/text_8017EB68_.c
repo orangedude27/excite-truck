@@ -1663,9 +1663,8 @@ float fn_8018179C(void *driver) { return *(float *)((char *)driver + 0x330); }
 /* Return the float field at offset 0x334 of this audio-driver object. */
 float fn_801817A4(void *object) { return *(float *)((char *)object + 0x334); }
 
-unsigned char fn_801817AC(void *arg0) {
-    return *((unsigned char *)arg0 + 0x338);
-}
+/* Return the unsigned control-flag byte flag338 (offset 0x338) of this audio-driver object. */
+unsigned char fn_801817AC(void *object) { return ((struct Di718 *)object)->flag338; }
 
 /* RealName: IsSubobjectActiveAt9C (tentative). Returns 1 if object has flag set at 0x340 or the subobject at offset 0x9C is active per fn_801A8EE4, else 0. */
 int fn_801817B4(void *object) {
