@@ -27,8 +27,10 @@ int fn_802C5130(char* imageName) {
     return fn_8023512C(imageName);
 }
 #pragma pop
-void fn_802C519C(void* arg0) {
-    if (arg0 == 0) return;
+/* Release the referenced art set through fn_80235380 when `artSet` is non-null;
+   a null handle is ignored. */
+void fn_802C519C(void* artSet) {
+    if (artSet == 0) return;
     fn_80235380();
 }
 
