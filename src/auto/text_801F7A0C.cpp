@@ -2896,7 +2896,7 @@ extern "C" void fn_801FBFE8(void* spawn) {
 #pragma pop
 
 extern u8 lbl_8033B54C[], lbl_80333B48[];
-extern f32 lbl_80563014;
+extern const f32 lbl_80563014;
 extern "C" void fn_8019EECC(void);
 #pragma push
 #pragma processor 750
