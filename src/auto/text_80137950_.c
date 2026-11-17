@@ -184,7 +184,7 @@ void fn_80137C7C(void) {
     fn_8001683C();
 }
 
-void fn_80137C80(void) {
+void fn_80137C80(int index) {
     fn_80016A44();
 }
 
