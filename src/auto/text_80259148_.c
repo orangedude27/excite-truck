@@ -91,7 +91,7 @@ struct Loc_8025AA90 {
 
 #pragma push
 #pragma dont_inline on
-int fn_8025921C(void) { /* Achievement/menu predicate stub: always reports false, so callers take their default path. */ int result = 0; return result; }
+int fn_8025921C(void) { /* Achievement/menu predicate stub: always reports false, so callers take their default path. */ int isEnabled = 0; return isEnabled; }
 #pragma pop
 
 extern void *fn_801284F8(int, const char *);
