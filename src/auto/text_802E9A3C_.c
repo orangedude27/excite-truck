@@ -1207,8 +1207,10 @@ void fn_802EC1C0(float volume) {
 }
 #pragma dont_inline reset
 #pragma pop
+/* Request an abort of the current MP3 track: set when the song changes, then
+ * polled by fn_802EC1E4 until the stream thread clears it. */
 void fn_802EC1D8(void) {
-    lbl_805600C8 = 1;
+    gMp3AbortRequested = 1;
 }
 
 extern void OSSleepTicks(unsigned long long);
