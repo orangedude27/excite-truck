@@ -1355,6 +1355,8 @@ extern "C" void fn_801F7280(void *arg0, void *arg1, void *arg2) {
 }
 #pragma cplusplus reset
 extern void fn_801F6A98();
+/* Run one wind/simulation pass (fn_801F6A98) over the global uniform cloth group
+ * held in lbl_8055EC10; fn_801F73E8 is its draw twin. */
 void fn_801F73E0(void) {
     fn_801F6A98(lbl_8055EC10);
 }
