@@ -1132,6 +1132,7 @@ void* fn_802C9C40(void) {
 }
 
 extern void *lbl_8055FC64;
+/* Get the current viewport width (lbl_8055FC64). */
 void* fn_802C9C48(void) {
     return lbl_8055FC64;
 }
