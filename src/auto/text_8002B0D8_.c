@@ -1503,6 +1503,7 @@ double fn_8002EF30(double x) {
 
 extern double __ieee754_acos(double);
 
+/* MSL acos() wrapper: tail-call the fdlibm arccosine kernel on x. */
 double fn_8002EFA8(double x) {
     return __ieee754_acos(x);
 }
