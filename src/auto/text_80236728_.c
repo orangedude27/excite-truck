@@ -163,7 +163,9 @@ void fn_802368B4(int flagIndex) {
 
 void fn_802368D0(void) {
     /* Set the +0x21 direction flag on the current uiAnime tail node. */
-    lbl_8055F0C0[0x21] = 1;
+#define sUiAnimeTail lbl_8055F0C0
+    sUiAnimeTail[0x21] = 1;
+#undef sUiAnimeTail
 }
 
 extern char lbl_8055F0C5;
