@@ -162,6 +162,7 @@ void *fn_801B3338(void *container) {
 #pragma dont_inline off
 
 int fn_801B3390(void) {
+    /* Handler registered for replay event 1: reports its fixed payload size, 0x14 bytes. */
     return 0x14;
 }
 
