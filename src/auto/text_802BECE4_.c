@@ -132,6 +132,7 @@ extern "C" void fn_802BEDFC(void) {
 #pragma scheduling on
 #pragma cplusplus reset
 
+#pragma dont_inline on
 float fn_802BEFB4(void) {
     float value;
     float limit;
@@ -144,6 +145,7 @@ float fn_802BEFB4(void) {
     result = limit * lbl_80564D94;
     return lbl_80564D84 + result;
 }
+#pragma dont_inline reset
 
 extern u32 lbl_802FABA0[];
 float fn_802BF02C(float x, int unused) {
