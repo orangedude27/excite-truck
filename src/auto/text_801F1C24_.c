@@ -1416,7 +1416,10 @@ void fn_801F3BE4(void *fog) {
 
 #pragma scheduling invalid_target
 void fn_801F3C04(void) {
-    fn_802E317C(lbl_8033AB3C);
+    #define sFogColorNoDrawMsg lbl_8033AB3C /* "FogColorTMH: shouldn't draw!" */
+    /* Report a fatal panic: a FogColorTMH parameter must never be drawn. */
+    fn_802E317C(sFogColorNoDrawMsg);
+    #undef sFogColorNoDrawMsg
 }
 
 void fn_801F3C14(int unused, unsigned char *data) {
