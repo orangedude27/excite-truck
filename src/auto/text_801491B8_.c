@@ -928,7 +928,8 @@ s32 fn_8014AEB8(void *arg0) { return ((s32 *)arg0)[1]; }
 /* Return the s32 type/id field at offset 0x10C of this event object. */
 s32 fn_8014AEC0(void *event) { return *(s32 *)((u8 *)event + 0x10C); }
 
-f32 fn_8014AEC8(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x2690); }
+/* Return the floating-point field at offset 0x2690 of this event object. */
+f32 fn_8014AEC8(void *event) { return *(f32 *)((u8 *)event + 0x2690); }
 
 void fn_8014AED0(void *event, f32 value) {
     /* Set the floating-point value at offset 0x104 of the event object (paired getter: fn_8014AED8). */
