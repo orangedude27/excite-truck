@@ -3652,6 +3652,7 @@ extern "C" void fn_8015D400(Unk801577F0* arg0) {
     arg0->m25c = resetValue;
 }
 
+// Trivial callback stub in this player's vtable group; always returns 1 (true).
 extern "C" u32 fn_8015D498(void) { return 1; }
 
 extern "C" f32 fn_8015D4A0(Unk801577F0* arg0, s32 index) {
