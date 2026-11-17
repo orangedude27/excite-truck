@@ -19745,9 +19745,10 @@ void l2c_link_process_num_completed_pkts(u8 *p, u16 evt_len) {
     }
 }
 
-void fn_8008C04C(s16 arg0) {
-    *(s16 *)(lbl_803C4040 + 2) = arg0;
-    *(s16 *)(lbl_803C4040 + 4) = arg0;
+/* Set l2cb's ACL buffer count (+2) and its matching transmit window (+4) to the controller's buffer count. */
+void fn_8008C04C(s16 numAclBuffers) {
+    *(s16 *)(lbl_803C4040 + 2) = numAclBuffers;
+    *(s16 *)(lbl_803C4040 + 4) = numAclBuffers;
 }
 
 BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
