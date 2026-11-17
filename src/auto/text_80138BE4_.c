@@ -116,6 +116,9 @@ int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
     return 0;
 }
 #pragma pop
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 float fn_80138DF4(void *arg0) {
     float spC;
     float sp8;
