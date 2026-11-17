@@ -296,6 +296,7 @@ enum { MOTOR_STATE_WORKING, MOTOR_STATE_PENDING_STOP, MOTOR_STATE_STOPPED };
 #define DriveErrorCount lbl_8055D860
 
 extern void *lbl_8055D808;
+#define DSPInitFlag lbl_8055D808 // set to 1 once the DSP subsystem has been initialized
 void DSPInit(void) {
     s32 interrupts;
 
