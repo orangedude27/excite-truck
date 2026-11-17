@@ -804,7 +804,8 @@ extern "C" void *fn_80207218(void *arg0, int arg1, int arg2, int arg3, int arg4)
 #pragma scheduling on
 #define SOUND_DEFAULT_VALUE lbl_805631FC  /* .sdata2: pooled 0.0f, default for sound parameters */
 extern "C" f32 fn_802072DC(void) {
-    return lbl_805631FC;
+    /* Return the shared default sound-parameter value (0.0f). */
+    return SOUND_DEFAULT_VALUE;
 }
 
 #pragma scheduling on
