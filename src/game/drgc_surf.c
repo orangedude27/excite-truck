@@ -1084,17 +1084,14 @@ void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
     extern void GXBeginDisplayList(void *, u32);
     extern u32 GXEndDisplayList(void);
     extern void fn_802D5DE8(u32);
-    register CacheEntry *scan;
-    register u8 key;
-    register u32 id;
-    s32 count;
+    register CacheEntry *scan = (CacheEntry *)lbl_804CA438;
+    u8 key = *(u8 *)((u8 *)arg0 + 9);
+    u32 id = *(u32 *)((u8 *)arg0 + 0xC);
+    s32 count = lbl_8055FDF0;
     s32 i;
     CacheEntry *write;
     s32 size;
-    scan = (CacheEntry *)lbl_804CA438;
-    key = *(u8 *)((u8 *)arg0 + 9);
-    id = *(u32 *)((u8 *)arg0 + 0xC);
-    count = lbl_8055FDF0;
+
     for (i = 0; i < count; i++, scan++) {
         if (scan->id == id && scan->key == key) {
             *arg1 = scan->start;
@@ -1102,6 +1099,7 @@ void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
             return;
         }
     }
+
     count = lbl_8055FDF0;
     write = (CacheEntry *)lbl_804CA438 + count;
     write->id = id;
@@ -1553,8 +1551,9 @@ void fn_802D754C(u8 arg0) {
 }
 
 extern u8 lbl_8055FDFC;
-void fn_802D7554(u8 arg0) {
-    lbl_8055FDFC = arg0;
+void fn_802D7554(u8 value) {
+    // Sets the global byte flag consulted by the surf packet handler (fn_802D61BC).
+    lbl_8055FDFC = value;
 }
 extern s32 lbl_8055FE00;
 extern const char lbl_8034C3F4[];
