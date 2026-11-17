@@ -1027,7 +1027,7 @@ void fn_8028FAE4(void *arg0, int arg1, float *arg2, float farg0) {
     int result = 0;
 
     if (*(float *)((char *)arg0 + 0x9C) >=
-            lbl_80564424 - lbl_80558DC4 &&
+            1.0f - lbl_80558DC4 &&
         *(int *)((char *)arg0 + 0x90) != *(int *)((char *)arg0 + 0x94))
         result = 1;
     if (result != 0) {
