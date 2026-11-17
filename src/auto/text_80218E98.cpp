@@ -6509,6 +6509,7 @@ extern "C" void fn_80223A58(MenuSoundList *list) {
 #undef drawRows
 }
 
+// Trivial callback stub: always reports 1 (true).
 extern "C" u32 fn_80223AAC(void) { return 1; }
 
 #pragma push
@@ -9150,6 +9151,7 @@ extern "C" void fn_80229604(void *widget) {
 extern "C" void fn_80229610(void) {
 }
 
+/* Default widget-manager callback: an always-true predicate, reporting success to its caller. */
 extern "C" u32 fn_80229614(void) { return 1; }
 
 extern "C" void fn_8022961C(void) {
