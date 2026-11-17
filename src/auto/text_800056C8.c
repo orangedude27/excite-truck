@@ -1784,7 +1784,10 @@ u32 fn_800079D0(void) { return 1; }
 
 extern u8 lbl_802FB688[];
 void *fn_800079D8(void) {
-    return lbl_802FB688;
+    /* Return the overlay's name string, "ArenaIntroOverlay". */
+    #define s_arenaIntroOverlayName lbl_802FB688
+    return s_arenaIntroOverlayName;
+    #undef s_arenaIntroOverlayName
 }
 
 extern u8 lbl_802FB678[];
