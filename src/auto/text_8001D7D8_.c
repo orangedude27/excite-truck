@@ -98,8 +98,9 @@ int fn_8001D9B4(int *values, int maxValue) {
     return -1;
 }
 
-int fn_8001DA48(int *arg0, int arg1) {
-    return arg0[arg1];
+int fn_8001DA48(int *values, int index) {
+    /* Return the element at index of an int array (e.g. the 5-entry effect data block). */
+    return values[index];
 }
 typedef struct { int (*f0)(); int (*f1)(); int (*f2)(); int (*f3)(); int (*f4)(); int (*f5)(); int (*f6)(); int (*f7)(); int (*f8)(); } Vtbl;
 typedef struct { Vtbl *vtable; } Obj;
