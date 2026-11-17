@@ -143,9 +143,10 @@ void fn_802D9C5C(int arg0, void *arg1, int arg2) {
 }
 
 #pragma push
+#pragma opt_propagation reset
 void fn_802D9DE4(int arg0, void *arg1, int arg2) {
     unsigned int *src, *dest;
-    int i = 0, n, ctr, safe, c;
+    int i = 0, n, ctr, safe;
     unsigned int t0, t1;
     if (arg2 > 0) {
         n = arg2 - 8;
@@ -153,10 +154,9 @@ void fn_802D9DE4(int arg0, void *arg1, int arg2) {
             safe = 0;
             if ((arg2 >= 0) && (arg2 <= 0x7ffffffe)) safe = 1;
             if (safe) {
-                ctr = (unsigned int)(n + 7) >> 3;
                 src = (unsigned int *)arg1;
                 dest = (unsigned int *)((char *)lbl_804DAC48 + arg0 * 0x30);
-                if (n > 0) for (c = 0; c < ctr; c++) {
+                while (i < n) {
                 t0 = src[0];
                 t1 = src[1];
                 dest[0] = t0;
@@ -358,7 +358,7 @@ void fn_802D9DE4(int arg0, void *arg1, int arg2) {
         ctr = arg2 - i;
         src = (unsigned int *)((char *)arg1 + i * 0x30);
         dest = (unsigned int *)((char *)lbl_804DAC48 + i * 0x30 + arg0 * 0x30);
-        if (i < arg2) for (c = 0; c < ctr; c++) {
+        if (i < arg2) do {
             t0 = src[0];
             t1 = src[1];
             dest[0] = t0;
@@ -384,10 +384,11 @@ void fn_802D9DE4(int arg0, void *arg1, int arg2) {
             dest[10] = t0;
             dest[11] = t1;
             src += 12; dest += 12;
-        }
+        } while (--ctr);
     }
 }
 #pragma pop
+#pragma unroll off
 void fn_802DA1F4(int arg0, void *arg1, int arg2) {
     extern int lbl_804DB458[];
     extern signed char lbl_8055FE58;
@@ -473,10 +474,10 @@ void fn_802DA2F4(void) {
         *(void **)((char *)object + 0x1C) = (void *)fn_802DA1F4;
     }
     lbl_8055FE5C = object;
-    count = 0xB;
     value0 = lbl_80565030;
     value1 = lbl_80565034;
     matrix = lbl_804DAC48;
+    count = 0xB;
     do {
         matrix[0] = value0;
         matrix[1] = value1;
@@ -504,18 +505,18 @@ void fn_802DA2F4(void) {
         matrix[23] = value1;
         matrix += 24;
     } while (--count != 0);
-    value0 = lbl_80565030;
-    value1 = lbl_80565034;
+    value1 = lbl_80565030;
+    value0 = lbl_80565034;
     last = lbl_804DB434;
-    *last++ = value0;
-    *last++ = value1;
-    *last++ = value1;
     *last++ = value1;
     *last++ = value0;
+    *last++ = value0;
+    *last++ = value0;
     *last++ = value1;
-    *last++ = value1;
-    *last++ = value1;
-    *last = value0;
+    *last++ = value0;
+    *last++ = value0;
+    *last++ = value0;
+    *last = value1;
 }
 
 #pragma scheduling on
