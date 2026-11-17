@@ -853,7 +853,6 @@ extern "C" s32 fn_801328D4(void *arg0, s32 arg1) {
 #pragma small_data off
 struct Unk80132968Vector { s32 x, y, z; };
 #pragma cplusplus on
-#pragma scheduling invalid_target
 extern "C" struct Unk80132968Vector fn_80132968(void *arg1, s32 arg2, struct Unk80132968Vector *arg3) {
     class A {
     public:
