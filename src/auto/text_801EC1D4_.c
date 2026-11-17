@@ -868,9 +868,11 @@ void fn_801ED718(void *arg0) {
     }
 }
 
-void fn_801EDD68(void *arg0) {
-    fn_801EFC90(*(long *)((char *)arg0 + 0x3F0),
-                *(long *)((char *)arg0 + 0x3C), (char *)arg0 + 0x4D4);
+/* Build a vehicle effect's left/right offset transforms from its owner matrix:
+   pass its effect-data list, the owner transform, and its four transform slots. */
+void fn_801EDD68(void *vehicleRender) {
+    fn_801EFC90(*(long *)((char *)vehicleRender + 0x3F0),
+                *(long *)((char *)vehicleRender + 0x3C), (char *)vehicleRender + 0x4D4);
 }
 
 extern void fn_801EABA8(void *, void *);
