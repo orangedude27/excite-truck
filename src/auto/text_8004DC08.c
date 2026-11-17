@@ -85,8 +85,9 @@ void __OSGetExecParams(OSExecParams *out) {
     out->WORD_0x0 = 0;
 }
 
-void fn_8004DDF4(void* hi) {
-    lbl_8055DA2C = hi;
+/* Async I/O completion callback: publish the operation's result code into the volatile word lbl_8055DA2C polled by fn_8004DDFC. */
+void fn_8004DDF4(void* result) {
+    lbl_8055DA2C = result;
 }
 
 extern unsigned char lbl_8037D900[];
