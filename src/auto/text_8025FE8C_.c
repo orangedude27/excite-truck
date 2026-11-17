@@ -154,6 +154,7 @@ extern void *fn_80232578(void *);
 extern void *fn_80207848(void *, s32);
 extern s32 fn_802E8D84(void);
 extern void fn_802E7128(void);
+extern void *memset(void *, int, unsigned int);
 #pragma cplusplus reset
 void fn_8026003C(void) {
 int temp;
