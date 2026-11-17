@@ -645,15 +645,16 @@ int fn_8024D054(void *arg0, int arg1) {
             lim = len;
         *(int *)((char *)arg0 + 0x30) = lim;
         *(char *)((char *)arg0 + 0x48) = 1;
-        return 1;
+        break;
     case 0x20:
         *(char *)((char *)arg0 + 0x48) = 1;
         lim = *(int *)((char *)arg0 + 0x30) - 1;
         *(int *)((char *)arg0 + 0x30) = lim & ~(lim >> 31);
-        return 1;
+        break;
     default:
         return 0;
     }
+    return 1;
 }
 
 /* One on-screen message widget, drawn by fn_8024D0EC.
