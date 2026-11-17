@@ -709,13 +709,11 @@ extern s32 fn_80215228(void);
 extern s32 fn_8024A6EC(s32 *, void *);
 extern s32 fn_8024ACB4(s32 *, s32, void *);
 extern u8 lbl_8055F298;
-static inline s32 findEntry8024B070(s32 **arg1, s32 *arg0) {
+static inline s32 findEntry8024B070(s32 **arg1, s32 *arg0, s32 n) {
     s32 offset;
     s32 i;
-    s32 n;
     i = 0;
     offset = 0;
-    n = *(s32 *)((u8 *)arg1 + 4);
     for (; i < n; offset += 0x18, i++) {
         s32 item = *(s32 *)((u8 *)*arg1 + offset);
         s32 key = *arg0;
@@ -727,7 +725,8 @@ static inline s32 findEntry8024B070(s32 **arg1, s32 *arg0) {
 #pragma scheduling reset
 u8 fn_8024B070(s32 *arg0, s32 **arg1) {
     s32 sp8;
-    s32 i = findEntry8024B070(arg1, arg0);
+    s32 n = *(s32 *)((u8 *)arg1 + 4);
+    s32 i = findEntry8024B070(arg1, arg0, n);
     if (i >= 0) {
         sp8 = *(s32 *)((u8 *)*arg1 + i * 0x18 + 0xC);
     } else {
