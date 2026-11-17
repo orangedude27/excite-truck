@@ -68,28 +68,31 @@ extern void fn_80179E00_virtual_call(void *);
 #pragma scheduling off
 static f32 fn_load(void) { return lbl_80561B78; }
 #pragma scheduling invalid_target
-void *fn_80179D08(void *arg0) {
-    f32 a = 0.0f;
-    f32 b = 1.0f;
-    s32 zero;
-    *(s32 *)arg0 = (s32)&lbl_80331C70[0];
-    zero = 0;
-    *(s32 *)((u8 *)arg0 + 0xC) = zero;
-    *(f32 *)((u8 *)arg0 + 0x3C) = b;
-    *(f32 *)((u8 *)arg0 + 0x40) = a;
-    *(f32 *)((u8 *)arg0 + 0x44) = a;
-    *(f32 *)((u8 *)arg0 + 0x48) = a;
-    *(f32 *)((u8 *)arg0 + 0x4C) = b;
-    *(f32 *)((u8 *)arg0 + 0x50) = a;
-    *(f32 *)((u8 *)arg0 + 0x54) = a;
-    *(f32 *)((u8 *)arg0 + 0x58) = a;
-    *(f32 *)((u8 *)arg0 + 0x5C) = b;
-    *(f32 *)((u8 *)arg0 + 0x60) = a;
-    *(f32 *)((u8 *)arg0 + 0x64) = a;
-    *(f32 *)((u8 *)arg0 + 0x68) = a;
-    fn_8017A580(arg0);
-    fn_801E9DC4((u8 *)arg0 + 0x6C);
-    return arg0;
+/* Initialize a freshly created stream object: install the vtable lbl_80331C70,
+   clear its data-block pointer, set the identity transform matrix at +0x3C,
+   then refresh the transform and initialize the subobject at +0x6C. */
+void *fn_80179D08(void *object) {
+    f32 zeroF = 0.0f;
+    f32 oneF = 1.0f;
+    s32 noBlock;
+    *(s32 *)object = (s32)&lbl_80331C70[0];
+    noBlock = 0;
+    *(s32 *)((u8 *)object + 0xC) = noBlock;
+    *(f32 *)((u8 *)object + 0x3C) = oneF;
+    *(f32 *)((u8 *)object + 0x40) = zeroF;
+    *(f32 *)((u8 *)object + 0x44) = zeroF;
+    *(f32 *)((u8 *)object + 0x48) = zeroF;
+    *(f32 *)((u8 *)object + 0x4C) = oneF;
+    *(f32 *)((u8 *)object + 0x50) = zeroF;
+    *(f32 *)((u8 *)object + 0x54) = zeroF;
+    *(f32 *)((u8 *)object + 0x58) = zeroF;
+    *(f32 *)((u8 *)object + 0x5C) = oneF;
+    *(f32 *)((u8 *)object + 0x60) = zeroF;
+    *(f32 *)((u8 *)object + 0x64) = zeroF;
+    *(f32 *)((u8 *)object + 0x68) = zeroF;
+    fn_8017A580(object);
+    fn_801E9DC4((u8 *)object + 0x6C);
+    return object;
 }
 #pragma scheduling on
 /* Head of a stream-loaded object (vtable lbl_80331C70).  fn_801783A8 creates one
