@@ -423,13 +423,15 @@ extern "C" void *fn_8016BE60(void *arg0) {
         }
         fn_8016A0B0();
         fn_8016C328(object + 0x30);
-        s32 zero = 0;
-        f32 initialValue = lbl_80561998;
-        *(s32 *)(object + 0x98) = zero;
-        *(u8 *)(object + 0x9C) = 1;
-        *(f32 *)(object + 0xA0) = initialValue;
-        *(s32 *)(object + 0xA4) = fn_80207848(strings + 0x3C, 1);
-        *(u8 *)(object + 0xA8) = zero;
+        {
+            register s32 zero = 0;
+            f32 initialValue = lbl_80561998;
+            *(s32 *)(object + 0x98) = zero;
+            *(u8 *)(object + 0x9C) = 1;
+            *(f32 *)(object + 0xA0) = initialValue;
+            *(s32 *)(object + 0xA4) = fn_80207848(strings + 0x3C, 1);
+            *(u8 *)(object + 0xA8) = zero;
+        }
     }
     return object;
 }
@@ -3220,7 +3222,9 @@ s32 fn_80170E88(void *arg0) {
     return fn_8017960C(*(s32 *)((u8 *)arg0 + 4));
 }
 
-u8 fn_80170E90(void *arg0) { return *(u8 *)((u8 *)arg0 + 8); }
+/* Read the byte flag at +8 of an item/entry object handled by the TObj4C
+ * accessor family (fn_80170E78/80/88 are its sibling field getters). */
+u8 fn_80170E90(void *entry) { return *(u8 *)((u8 *)entry + 8); }
 
 extern char lbl_803306D0[];
 extern char lbl_80330AEC[];
