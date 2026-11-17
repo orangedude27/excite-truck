@@ -588,6 +588,8 @@ extern "C" s32 fn_801B1130(s32 slotIndex) {
 }
 #pragma dont_inline reset
 #pragma cplusplus on
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 __declspec(section ".data") extern float lbl_80558DC4;
 extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
     extern int __cntlzw(unsigned int);
