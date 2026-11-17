@@ -4,11 +4,8 @@
 extern void fn_8000D838(void *);
 __declspec(section ".sdata") extern unsigned char lbl_8055FC18;
 extern char lbl_804C1338[];
-static void clear_node(int *p) {
-    p[0] = 0;
-    p[2] = 0;
-    p[1] = 0;
-}
+#pragma push
+#pragma scheduling invalid_target
 void fn_802C8238(void) {
     unsigned char *base = (unsigned char *)lbl_804C1338;
     int *p0 = (int *)(base + 0x00);
@@ -33,3 +30,4 @@ void fn_802C8238(void) {
     p4[1] = 0;
     p4[0] = 0;
 }
+#pragma pop
