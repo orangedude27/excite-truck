@@ -1845,7 +1845,7 @@ extern f32 lbl_80562350;
 extern f32 lbl_80562354;
 extern f32 lbl_80562358;
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __restrict arg4, void *arg5, f32 farg0) {
     f32 * __restrict vec0 = (f32 *)arg0;
     f32 * __restrict vec2 = (f32 *)arg4;
