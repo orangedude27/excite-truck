@@ -1039,8 +1039,9 @@ u8 fn_80232B70(void *font) {
     return ((u8 *)font)[4];
 }
 
-u8 fn_80232B78(void *arg0) {
-    return ((u8 *)arg0)[5];
+/* Return a font's baseline byte (offset +5), the descent used for baseline text alignment and layout. */
+u8 fn_80232B78(void *font) {
+    return ((u8 *)font)[5];
 }
 
 // Selects the text-layout routine and coordinate-transform hook: with a transform
@@ -1110,16 +1111,10 @@ void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 sca
 }
 #pragma push
 #pragma opt_common_subs off
-void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
+void fn_80232DF4(u8 *__restrict text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
     s32 sp10;
     f32 spC;
     f32 sp8;
-    s32 curColor;
-    u8 *start;
-    s32 textOffset;
-    s32 passes;
-    s32 curFont;
-    u8 *end;
     sp8 = x;
     spC = y;
     sp10 = color;
@@ -1132,14 +1127,16 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
         fn_80233BF0(text, (u8 *)font, &sp8, &spC, flags, scale, extra);
         {
             f32 startX = sp8;
+            s32 passes;
 
             strlen((const char *)text);
             passes = (*(void **)(font + 8) != NULL) + 1;
             while (passes > 0) {
-                curColor = sp10;
+                s32 curColor = sp10;
+                s32 curFont = font;
+                s32 textOffset = 0;
+
                 sp8 = startX;
-                curFont = font;
-                textOffset = 0;
                 if (passes == 2) {
                     curFont = *(s32 *)(font + 8);
                     curColor = fn_80231718(curColor);
@@ -1147,10 +1144,11 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
                 fn_80233E80((s32 *)curFont, curColor);
                 while ((s8)text[textOffset] != 0) {
                     u8 first = text[textOffset];
+                    u8 *start = text + textOffset;
+                    u8 *end;
                     u32 code;
                     s32 offset;
 
-                    start = text + textOffset;
                     if ((first & 0xF0) == 0xE0) {
                         code = ((first & 0x0F) << 12) | ((start[1] & 0x3F) << 6) | (start[2] & 0x3F);
                         end = start + 3;
