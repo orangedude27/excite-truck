@@ -132,6 +132,7 @@ void fn_8020F5C8(void) {
 }
 #pragma dont_inline reset
  
+/* Mark all three track-music load slots as unloaded (the inverse of fn_8020F5C8). */
 void fn_8020F5DC(void) {
     lbl_8055EEF6 = 0;
     lbl_8055EEF5 = 0;
