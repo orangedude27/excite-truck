@@ -1856,6 +1856,8 @@ extern "C" u32 fn_802A4A28(void) { return 3; }
 
 extern "C" u32 fn_802A4A30(void) { return 4; }
 
+// getType() implementation for a terrain item handler: returns its fixed type id, 5
+// (one of the ids 1-6 the fn_802A194C cache keys on).
 extern "C" u32 fn_802A4A38(void) { return 5; }
 
 extern "C" u32 fn_802A4A40(void) { return 6; }
