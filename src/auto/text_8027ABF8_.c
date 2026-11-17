@@ -42,14 +42,16 @@ int fn_8027AC80(void *arg0) {
     return fn_8027ACBC((void *)&lbl_804A433C, *(void **)((char *)arg0 + 0xE8)) != 0;
 }
 
-void *fn_8027ACBC(void *arg0, void *arg1) {
-    void **entry = (void **)arg0;
-    int i;
-    int count = *(int *)((char *)arg0 + 0x30);
-    for (i = 0; i < count; i++) {
-        int *p = *(int **)entry;
-        if ((int)arg1 == *p)
-            return ((void **)arg0)[i];
+void *fn_8027ACBC(void *table, void *key) {
+    /* Search the global registry table (count at +0x30) for the entry whose first
+       int field equals key; return that entry pointer, or NULL if not found. */
+    void **entry = (void **)table;
+    int index;
+    int count = *(int *)((char *)table + 0x30);
+    for (index = 0; index < count; index++) {
+        int *entryKey = *(int **)entry;
+        if ((int)key == *entryKey)
+            return ((void **)table)[index];
         entry++;
     }
     return (void *)0;
