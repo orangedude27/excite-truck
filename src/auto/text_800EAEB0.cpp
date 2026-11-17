@@ -1380,6 +1380,7 @@ extern "C" u32 fn_800ECFC8(void) { return 1; }
 extern "C" u32 fn_800ECFD0(void) { return 1; }
 
 extern "C" u32* fn_800ECFD8(void) {
+    /* nw4r::snd memory archive: return a pointer to the global object-chain sentinel node. */
     return &lbl_8055DEA0;
 }
 
