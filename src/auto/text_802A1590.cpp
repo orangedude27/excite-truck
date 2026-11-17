@@ -1832,8 +1832,9 @@ extern "C" void fn_802A49DC(void* plane) {
     ((ebi::title::TBlackPlane*)plane)->m_a->v5();
 }
 
-extern "C" void fn_802A49F0(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v6();
+// Forwards the virtual v6() call to the TPlaneSub member (m_a) of the given TBlackPlane.
+extern "C" void fn_802A49F0(void* plane) {
+    ((ebi::title::TBlackPlane*)plane)->m_a->v6();
 }
 
 extern "C" void fn_802A4A04(void* arg0) {
