@@ -29073,6 +29073,7 @@ void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32
 #undef DebugPrintf
 }
 #pragma pop
+/* BTA HID-host call-out for an opened connection: emit the "bta_hh_co_open()" debug trace (DBPrintf is a no-op stub in this build). Called by bta_hh_open_cmpl_act. */
 void fn_8006CF80(void) {
     DBPrintf_8006CFA8(lbl_803140E8);
 }
