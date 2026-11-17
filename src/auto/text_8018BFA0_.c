@@ -112,9 +112,9 @@ extern float lbl_80562040;
 extern char lbl_80332758[];
  static inline void matVecAliasV_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
      if (dest == src) {
-         float tx = src->y * m[3] + src->x * m[0] + src->z * m[6];
-         float ty = src->y * m[4] + src->x * m[1] + src->z * m[7];
-         float tz = src->y * m[5] + src->x * m[2] + src->z * m[8];
+                 float tx = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        float ty = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
+        float tz = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
          dest->x = tx;
          dest->y = ty;
          dest->z = tz;
