@@ -20285,7 +20285,8 @@ extern "C" void fn_800D1200(void) {
 
 }
 
-extern "C" void fn_800D1204(void* arg0, f32 arg1) { *(f32*)((u8*)arg0 + 4) = arg1; }
+// Set the float field at offset 4 of the given control object.
+extern "C" void fn_800D1204(void* control, f32 value) { *(f32*)((u8*)control + 4) = value; }
 
 extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *, long, int, signed char);
 extern "C" OSTime OSGetTime(void);
