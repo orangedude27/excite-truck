@@ -209,7 +209,6 @@ s32 fn_8023ECF8(void) {
 
 extern unsigned char lbl_8055B860;
 extern int lbl_802FA2A8[5];
-#define REG_R7 "r7"
 #pragma use_lmw_stmw off
 void fn_8023ED30(void) {
     volatile int *config = (volatile int *)lbl_804987E0;
