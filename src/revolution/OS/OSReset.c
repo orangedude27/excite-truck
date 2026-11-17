@@ -49,9 +49,9 @@ void OSRegisterShutdownFunction(OSShutdownFunctionInfo* info) {
     }
 }
 
-/* Run registered shutdown functions in priority order, stopping early on failure
- * when the priority changes, then sync SRAM. Returns TRUE if all succeeded. */
-BOOL __OSCallShutdownFunctions(u32 arg0, u32 arg1) {
+/* Run the registered shutdown callbacks in priority order, passing them the final
+   flag and shutdown event, then sync SRAM; returns TRUE if none failed. */
+BOOL __OSCallShutdownFunctions(u32 final, u32 event) {
     OSShutdownFunctionInfo* iter;
     BOOL failure;
     u32 prio;
@@ -64,7 +64,7 @@ BOOL __OSCallShutdownFunctions(u32 arg0, u32 arg1) {
             break;
         }
 
-        failure |= !iter->func(arg0, arg1);
+        failure |= !iter->func(final, event);
         prio = iter->prio;
     }
 
