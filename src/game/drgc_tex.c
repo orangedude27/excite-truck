@@ -909,6 +909,8 @@ extern unsigned int GXGetTexObjTlut(void *);
 extern void fn_802D78D4(void *, void *, unsigned int, unsigned int);
 extern void GXInvalidateTexAll(void);
 extern void fn_802D9230(void *);
+/* Re-apply the active environment-map texture after a GX state reset: rebind
+ * the cached record lbl_8055FE1C through fn_802D9230 to reload its GX slots. */
 void fn_802D92B0(void) {
     fn_802D9230(lbl_8055FE1C);
 }
