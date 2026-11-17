@@ -2617,8 +2617,10 @@ void __GXSetGenMode(void) {
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
-void GXGetCullMode(s32 arg0, u8 arg1) {
-    __peReg[3] = (arg0 << 8) | arg1;
+/* Poke the alpha-compare mode (compare function and 8-bit threshold) into PE register 3.
+ * Despite the symbol name this is the SDK's GXPokeAlphaMode, called by GXInit. */
+void GXGetCullMode(s32 func, u8 threshold) {
+    __peReg[3] = (func << 8) | threshold;
 }
 
 /* Pokes the 2-bit line width into PE register 4, with the fixed format bit 2 set. */
