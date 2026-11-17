@@ -10,6 +10,7 @@ void* __OSGetIPCBufferHi(void) {
 
 /* Return the cached lower bound of the IPC buffer. */
 void* __OSGetIPCBufferLo(void) {
+    /* Return the cached lower bound of the IPC buffer. */
     return IpcBufferLo;
 }
 
