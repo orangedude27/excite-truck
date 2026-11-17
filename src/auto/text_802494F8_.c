@@ -1180,7 +1180,7 @@ void *fn_8024B73C(void *arg0, const char *arg1, void *arg2) {
     s32 fn_8024B178(s32);
     char *entry;
     s32 offset, index;
-    *(volatile s32 *)((char *)arg0 + 0x14) = 0;
+    *(s32 *)((char *)arg0 + 0x14) = 0;
     *(void **)arg0 = lbl_80343B70;
     *(void **)((char *)arg0 + 0x18) = (char *)arg0 + 0x24;
     *(s32 *)((char *)arg0 + 0x20) = 10;
@@ -1191,26 +1191,20 @@ void *fn_8024B73C(void *arg0, const char *arg1, void *arg2) {
     while (index < *(s32 *)((char *)arg2 + 4)) {
         entry = *(char **)arg2 + offset;
         if (stricmp(arg1, *(char **)(entry + 0xC)) == 0) {
-            register s32 next;
-            register void **array;
             register s32 n;
+            register void **array;
             n = *(s32 *)((char *)arg0 + 0x1C);
             array = *(void ***)((char *)arg0 + 0x18);
-            next = n + 1;
-            *(s32 *)((char *)arg0 + 0x1C) = next;
+            *(s32 *)((char *)arg0 + 0x1C) = n + 1;
             array[n] = entry;
             fn_80236134((char *)arg0 + 0x4C, *(s32 *)entry, fn_8024B178(*(s32 *)entry));
         }
         offset += 0x18;
         index++;
     }
-    {
-        register s32 zero = 0;
-        register s32 invalid = -1;
-        *(s32 *)((char *)arg0 + 0x98) = invalid;
-        *(char *)((char *)arg0 + 0x64) = zero;
-        *(s32 *)((char *)arg0 + 0x9C) = invalid;
-    }
+    *(char *)((char *)arg0 + 0x64) = 0;
+    *(s32 *)((char *)arg0 + 0x98) = -1;
+    *(s32 *)((char *)arg0 + 0x9C) = -1;
     return arg0;
 }
 #pragma pop
