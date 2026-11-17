@@ -296,12 +296,6 @@ extern "C" const char lbl_80324314[];
 extern "C" const char lbl_803242F0[];
 #pragma push
 #pragma use_lmw_stmw off
-static inline int ClampSeqPriority(int value) {
-    if (value > 0x7F)
-        return 0x7F;
-    return value & ~(value >> 31);
-}
-
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, int arg1) {
     int priority;
     void *list;
