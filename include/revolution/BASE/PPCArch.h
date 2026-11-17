@@ -20,6 +20,7 @@ void PPCMthid0(u32 val);
 u32 PPCMfl2cr(void);
 void PPCMtl2cr(u32 val);
 
+/* Load the Decrementer special-purpose register (mtdec) with val. */
 void PPCMtdec(u32 val);
 
 /* Issue a system call (sc), which on the Broadway/Gekko acts as a full
