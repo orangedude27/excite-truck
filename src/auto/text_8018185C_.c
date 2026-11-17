@@ -2926,17 +2926,15 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     }
     return 0x44;
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma cplusplus reset
 void fn_8018BDEC(void *arg0) {
-    f32 zero = lbl_80561CAC;
-    f32 one = lbl_80561CD0;
     f32 sp[12];
     f32 *matrix = sp;
     int value;
-    sp[0]=one; sp[1]=zero; sp[2]=zero; sp[3]=zero;
-    sp[4]=one; sp[5]=zero; sp[6]=zero; sp[7]=zero;
-    sp[8]=one; sp[9]=zero; sp[10]=zero; sp[11]=zero;
+    sp[0]=lbl_80561CD0; sp[1]=lbl_80561CAC; sp[2]=lbl_80561CAC; sp[3]=lbl_80561CAC;
+    sp[4]=lbl_80561CD0; sp[5]=lbl_80561CAC; sp[6]=lbl_80561CAC; sp[7]=lbl_80561CAC;
+    sp[8]=lbl_80561CD0; sp[9]=lbl_80561CAC; sp[10]=lbl_80561CAC; sp[11]=lbl_80561CAC;
     value=*(int *)((u8 *)arg0+0x26C4);
     if(value) fn_801C2BF8(value,matrix);
 }
