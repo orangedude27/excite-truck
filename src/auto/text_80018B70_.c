@@ -583,5 +583,10 @@ void fn_80018F40(void) {
     sResetRequested = 0;
 }
 void fn_80018B74(void) {
-    fn_8001EF60(0);
+#define ReadCurrentPlayerAchCounter fn_8001EF60
+#define ACH_COUNTER_SCORE 0
+    /* Alarm callback wrapper: read the current player's stored lifetime "score" (counter 0) achievement value. */
+    ReadCurrentPlayerAchCounter(ACH_COUNTER_SCORE);
+#undef ACH_COUNTER_SCORE
+#undef ReadCurrentPlayerAchCounter
 }
