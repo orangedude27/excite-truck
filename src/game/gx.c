@@ -1087,8 +1087,10 @@ int fn_802CFFA0(int arg0) {
 }
 #pragma dont_inline reset
 
-void fn_802CFFA4(unsigned short arg0) {
-    lbl_8055FD86 = arg0;
+void fn_802CFFA4(unsigned short blendMode) {
+    /* Store the requested 16-bit GX blend mode (high byte = src factor, low byte = dst factor).
+       The pipeline rebuild (fn_802D3144) compares this with the applied copy lbl_8055FD88. */
+    lbl_8055FD86 = blendMode;
 }
 
 #pragma scheduling on
@@ -1314,16 +1316,14 @@ void fn_802D050C(void* stateBlock) {
 
 int fn_802D0514(void *source) {
     extern unsigned long lbl_8055FDAC;
-    struct Entry { int w[12]; unsigned char b[9]; unsigned char pad[3]; int x, y, z; float f; };
-    struct Aux { unsigned char b[9]; unsigned char pad2[3]; int x, y, z; float f; };
     int index;
+    unsigned char *aux;
     unsigned long next;
     unsigned int *src;
     unsigned char *dst;
     unsigned int a;
     unsigned int b;
     unsigned int c;
-    unsigned char *aux;
     index = (int)lbl_8055FDAC;
     if (index >= 0x800) return 0;
     src = (unsigned int *)source;
