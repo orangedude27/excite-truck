@@ -42,12 +42,12 @@ s32 fn_801E5990(void *header) {
     return ((struct SrcHdr *)header)->count;
 }
 
-#pragma scheduling invalid_target
-void fn_801E5998(void *src, void *dst, s32 *outCount) {
-    s32 count = ((s32 *)src)[2];
+#pragma scheduling on
+void fn_801E5998(struct SrcHdr *src, struct Rec14 *dst, s32 *outCount) {
+    s32 count = src->count;
     s32 i;
     for (i = 0; i < count; i++) {
-        ((U14 *)dst)[i] = *(U14 *)((u8 *)src + i * 0x38 + 0x10);
+        dst[i] = src->data[i];
     }
     *outCount = count;
 }
