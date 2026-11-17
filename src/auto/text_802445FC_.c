@@ -9,13 +9,14 @@ extern char lbl_80342DC8[];
 extern int lbl_80498860[];
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_802445FC(int arg0, int arg1, int arg2) {
     int work[0x1B];
     int *ctx;
     int v0, v1, v2, v3, v4;
+    int s0, s1, s2, s3, s4;
     work[22] = fn_80012870();
     work[16] = (int)lbl_80342DC8;
     ctx = &work[16];
@@ -25,25 +26,30 @@ void fn_802445FC(int arg0, int arg1, int arg2) {
     work[25] = 1000;
     *(float *)&work[26] = fn_8020A5F0();
     v1 = lbl_802FA320[1];
-    work[1] = v1;
-    work[11] = lbl_80498860[0];
-    work[12] = lbl_80498860[1];
-    work[7] = 5;
-    work[13] = lbl_80498860[2];
-    work[14] = lbl_80498860[3];
-    work[15] = lbl_80498860[4];
+    s3 = lbl_80498860[3];
+    s4 = lbl_80498860[4];
+    s0 = lbl_80498860[0];
+    s1 = lbl_80498860[1];
+    s2 = lbl_80498860[2];
     v0 = lbl_802FA320[0];
-    work[0] = v0;
     v2 = lbl_802FA320[2];
-    work[2] = v2;
     v3 = lbl_802FA320[3];
-    work[3] = v3;
     v4 = lbl_802FA320[4];
-    work[4] = v4;
+    work[1] = v1;
+    work[7] = 5;
     work[6] = 0;
     work[8] = (int)ctx;
     work[9] = 0;
     work[10] = 0;
+    work[11] = s0;
+    work[12] = s1;
+    work[13] = s2;
+    work[14] = s3;
+    work[15] = s4;
+    work[0] = v0;
+    work[2] = v2;
+    work[3] = v3;
+    work[4] = v4;
     work[1] = (int)&work[6];
     fn_802146BC(work, -999, -999, 1, v4, v3, v2, v0);
 }
