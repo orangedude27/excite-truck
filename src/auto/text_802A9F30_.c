@@ -100,13 +100,16 @@ s32 fn_802A9F90(s32 *args) {
 }
 
 #pragma opt_propagation off
-s32 fn_802A9FB0(void *arg0) {
+/* Trail-state callback (registered with id 0x11): args[0] selects a 0x108-byte
+ * per-entry record in lbl_8055F928; set that record's flag byte at 0xEC and copy
+ * the low byte of args[1] into its byte at 0xF4. Returns 8 bytes of args consumed. */
+s32 fn_802A9FB0(void *args) {
     extern int lbl_8055F928;
-    unsigned char value = *((unsigned char *)arg0 + 4);
-    int offset = *(int *)arg0 * 0x108;
+    unsigned char value = *((unsigned char *)args + 4);
+    int blockOffset = *(int *)args * 0x108;
     register unsigned char one = 1;
-    *(unsigned char *)(lbl_8055F928 + offset + (s32)0xEC) = one;
-    *(unsigned char *)(lbl_8055F928 + offset + (unsigned)0xF4) = value;
+    *(unsigned char *)(lbl_8055F928 + blockOffset + (s32)0xEC) = one;
+    *(unsigned char *)(lbl_8055F928 + blockOffset + (unsigned)0xF4) = value;
     return 8;
 }
 #pragma opt_propagation reset
