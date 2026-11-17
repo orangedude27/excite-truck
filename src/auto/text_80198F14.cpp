@@ -5549,8 +5549,9 @@ extern "C" f32 fn_801A511C(void *object) {
     return ((f32 *)object)[0x24 / 4];
 }
 
-extern "C" float fn_801A5124(void* arg0) {
-    return *(float*)((char*)arg0 + 0x28);
+extern "C" float fn_801A5124(void* object) {
+    /* Return the floating-point field at offset 0x28 of object. */
+    return *(float*)((char*)object + 0x28);
 }
 
 extern "C" s32 fn_801A512C(void) {
