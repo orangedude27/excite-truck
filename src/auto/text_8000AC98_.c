@@ -27,6 +27,8 @@ extern int lbl_80558A50, lbl_80558A58, lbl_80558A60, lbl_80558A68;
 // split_file divides it into the game's real files (file_status shows its range).
 
 void fn_8000AC98(void) {
+    /* No-op stub: the first of a run of empty default callback slots in this
+     * module (fn_8000AC9C, fn_8000ACA4, ...); does nothing in this build. */
 }
 
 /* No-argument stub predicate that always reports false (0) in this build. */
