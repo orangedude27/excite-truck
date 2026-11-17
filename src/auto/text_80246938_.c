@@ -1642,7 +1642,7 @@ extern char lbl_8055BF00, lbl_8055BF08;
 extern float fn_80235EF0(s32, s32);
 extern void fn_802353F4(s32, s32, float, float, float);
 extern void fn_802354A0(s32, s32, s32, float, float, float, float, float);
-extern void fn_80234AFC(s32, char *, float, float);
+extern void fn_80234AFC(s32, char *, float, float, ...);
 extern int __cntlzw(unsigned int);
 #pragma push
 #pragma processor 750
@@ -1650,7 +1650,9 @@ extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
 void fn_802491A8(void *arg0) {
     char *base = (char *)arg0;
+    int obj;
     int i = 0;
+    int selected;
     float scale = lbl_805638E0;
     float sub = lbl_805638E4;
     float origin = lbl_805638E8;
@@ -1658,10 +1660,10 @@ void fn_802491A8(void *arg0) {
     float yOrigin = lbl_805638F8;
     for (; i < *(int *)(base + 0x24); i++) {
         float fi = (float)i;
-        int selected = *(int *)(base + 0x28) == i;
-        int obj;
-        float offset = scale * (fi - *(float *)(base + 0x2C)) - sub;
+        float offset;
         float x;
+        selected = i == *(int *)(base + 0x28);
+        offset = scale * (fi - *(float *)(base + 0x2C)) - sub;
         if (selected)
             obj = *(int *)(base + 0x18);
         else
