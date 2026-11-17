@@ -503,7 +503,7 @@ extern "C" void fn_802440CC(void *arg0) {
         virtual void f20(); virtual void f21(); virtual void f22();
         virtual void action(); virtual void other();
     };
-    float spacing = lbl_805637AC;
+    float spacing = 1.0f;
     s32 *entry;
     s32 buffer[8];
     char *src;
