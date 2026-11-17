@@ -437,7 +437,7 @@ void *fn_801B9274(struct TrlrCar *car, s32 deleteFlag) {
 #undef trlrCarCount
     return car;
 }
-#pragma cplusplus off
+#pragma cplusplus reset
 #pragma scheduling on
 extern float lbl_80562750;
 extern float lbl_80562768;
