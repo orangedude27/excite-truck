@@ -99,6 +99,7 @@ void fn_802E4D70(void) {
 }
 
 int fn_802E4D74(void) {
+    /* VirtualMemory vmethod (vtable slot 0x1C): a boolean query that always answers yes (true). */
     return 1;
 }
 
