@@ -2344,6 +2344,7 @@ extern "C" void fn_802153A0(void) {
 extern "C" s32 fn_802168BC(s32);
 extern "C" void fn_8021915C(void *, unsigned int);
 extern "C" s32 fn_802153A4(void) {
+    /* Stub predicate in the nw4hbm::snd sound-archive group: always reports failure/zero. */
     return 0;
 }
 
