@@ -138,37 +138,39 @@ void *fn_8025D96C(void *self, int shouldDelete)
   return self;
 }
 
-void *fn_8025D9D0(void *arg0) {
+/* Initialize a UI/record object: clear its status fields, load the "caricona.art" art set into +0x434,
+ * copy the (empty) default name into the 20-byte inline buffer at +4, and point the name fields at it. */
+void *fn_8025D9D0(void *self) {
 #pragma scheduling invalid_target
-    char *src;
-    int count;
-    char *dst;
-    char *endSrc;
-    *(volatile int *)((char *)arg0 + 0x420) = 0;
-    *(volatile void **)((char *)arg0 + 0x40C) = lbl_80345718;
-    *(int *)((char *)arg0 + 0x424) = 0;
-    *((char *)arg0 + 0x42C) = 0;
-    *(void **)((char *)arg0 + 0x434) = ((void *(*)(const char *))fn_8023512C)(lbl_80345694);
-    dst = (char *)arg0 + 4;
-    *(void **)arg0 = (void *)&lbl_8055C3E0;
-    src = (char *)&lbl_8055C3E0;
-    count = 0x14;
+    char *defaultName;
+    int remaining;
+    char *nameDst;
+    char *defaultNameEnd;
+    *(volatile int *)((char *)self + 0x420) = 0;
+    *(volatile void **)((char *)self + 0x40C) = lbl_80345718;
+    *(int *)((char *)self + 0x424) = 0;
+    *((char *)self + 0x42C) = 0;
+    *(void **)((char *)self + 0x434) = ((void *(*)(const char *))fn_8023512C)(lbl_80345694);
+    nameDst = (char *)self + 4;
+    *(void **)self = (void *)&lbl_8055C3E0;
+    defaultName = (char *)&lbl_8055C3E0;
+    remaining = 0x14;
     goto copy;
     do {
-        if (--count <= 0) {
-            dst[-1] = 0;
+        if (--remaining <= 0) {
+            nameDst[-1] = 0;
             break;
         }
     copy:
-        *dst++ = *src++;
-    } while (dst[-1]);
-    endSrc = (char *)&lbl_8055C3E0;
-    *(int *)((char *)arg0 + 0x408) = 0;
-    *(void **)((char *)arg0 + 0x1C) = endSrc;
-    *(void **)((char *)arg0 + 0x18) = endSrc;
-    *((char *)arg0 + 0x20) = 0;
-    *((char *)arg0 + 0x42C) = 0;
-    return arg0;
+        *nameDst++ = *defaultName++;
+    } while (nameDst[-1]);
+    defaultNameEnd = (char *)&lbl_8055C3E0;
+    *(int *)((char *)self + 0x408) = 0;
+    *(void **)((char *)self + 0x1C) = defaultNameEnd;
+    *(void **)((char *)self + 0x18) = defaultNameEnd;
+    *((char *)self + 0x20) = 0;
+    *((char *)self + 0x42C) = 0;
+    return self;
 }
 
 /* Destructor for PSSystem::SeqHeap (address-suffixed variant): restore vtable, release the owned subobject/resource, and conditionally delete storage. */
