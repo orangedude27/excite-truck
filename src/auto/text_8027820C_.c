@@ -418,8 +418,11 @@ void fn_8027888C(char arg0) {
     lbl_8055F5C8 = arg0;
 }
 
-void fn_80278894(char arg0) {
-    lbl_8055F5BB = arg0;
+void fn_80278894(char demoActive) {
+    /* Set the global scripted-replay/demo active flag. */
+#define sDemoActive lbl_8055F5BB
+    sDemoActive = demoActive;
+#undef sDemoActive
 }
 extern int lbl_8055F5B4;
 extern char lbl_8055F5B8;
