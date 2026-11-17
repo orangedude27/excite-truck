@@ -206,8 +206,11 @@ int fn_8001EFC0(s32 counter, const char *name) {
 #undef QueryAchievementTotal
 }
 
-void fn_8001EFC4(void) {
-    fn_8001FBE4();
+/* RealName: AchAddPendingNamedValue
+ * Thunk for gameplay code: add `amount` to lifetime statistic `stat` of the
+ * object `objectName` in this session's pending achievements block. */
+void fn_8001EFC4(s32 stat, const char *objectName, s32 amount) {
+    fn_8001FBE4(stat, objectName, amount);
 }
 
 void fn_8001EFC8(void) {
