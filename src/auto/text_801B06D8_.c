@@ -1476,9 +1476,13 @@ void fn_801B2320(void) {
     lbl_8055E688 = *(s32 *)((u8 *)*(void **)((u8 *)fn_80178C9C() + 0x2C) + 0x18);
 }
 
-void fn_801B234C(f32 farg0) {
-    lbl_8055E6A4 = farg0;
-    lbl_8055E6A0 = 1;
+void fn_801B234C(f32 deadline) {
+    #define sDeadline      lbl_8055E6A4 /* time at which the scheduled event fires */
+    #define sDeadlineArmed lbl_8055E6A0 /* 1 while that deadline is active */
+    sDeadline = deadline;
+    sDeadlineArmed = 1;
+    #undef sDeadline
+    #undef sDeadlineArmed
 }
 
 void fn_801B235C(void) {
