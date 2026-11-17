@@ -62,7 +62,11 @@ extern "C" const char lbl_8032C064[];
 extern "C" const char lbl_8032C090[];
 extern "C" __declspec(section ".sdata") const char lbl_80559C48[];
 #pragma use_lmw_stmw off
-extern "C" void *fn_801399FC(void *arg0) {
+/* Collect an object's numbered string entries into an array of integer pairs:
+   each slot name that parses as two numbers is appended as a pair, malformed
+   entries are warned about and skipped, and fewer than three pairs resets the
+   result. The array is then trimmed to the used length and returned. */
+extern "C" void *fn_801399FC(void *namedObject) {
     class Object {
     public:
         virtual char *getName(void);
@@ -71,43 +75,43 @@ extern "C" void *fn_801399FC(void *arg0) {
         virtual int f3(void);
         virtual char *check(char *, int);
     };
-    char buffer[12];
-    void *table;
-    int *cursor;
+    char nameBuffer[12];
+    void *result;
+    int *write;
     int count;
-    char *entry;
-    Object *obj = (Object *)arg0;
-    count = fn_8013990C(arg0);
-    table = fn_801284E8(&lbl_8032C108, count * 8 + 8);
-    *(int *)((char *)table + 4) = count;
-    *(int *)table = count;
-    cursor = (int *)((char *)table + 8);
+    char *valueText;
+    Object *obj = (Object *)namedObject;
+    count = fn_8013990C(namedObject);
+    result = fn_801284E8(&lbl_8032C108, count * 8 + 8);
+    *(int *)((char *)result + 4) = count;
+    *(int *)result = count;
+    write = (int *)((char *)result + 8);
     count = 0;
     do {
-        sprintf(buffer, lbl_80559C40, count);
-        entry = obj->check(buffer, 0);
-        if (entry != 0) {
-            if (sscanf(entry, lbl_80559C48, cursor, cursor + 1) == 2) {
-                cursor += 2;
+        sprintf(nameBuffer, lbl_80559C40, count);
+        valueText = obj->check(nameBuffer, 0);
+        if (valueText != 0) {
+            if (sscanf(valueText, lbl_80559C48, write, write + 1) == 2) {
+                write += 2;
                 count++;
             } else {
-                fn_802E30C8(lbl_8032C064, obj->getName(), entry);
+                fn_802E30C8(lbl_8032C064, obj->getName(), valueText);
                 break;
             }
         }
-    } while (entry != 0);
+    } while (valueText != 0);
     if (count < 3) {
-        fn_802E30C8(lbl_8032C090, obj->getName(), *(int *)table);
+        fn_802E30C8(lbl_8032C090, obj->getName(), *(int *)result);
         count = 0;
     }
     {
-        char *oldEnd = (char *)table + (*(int *)table * 8 + 8);
-        char *newEnd = (char *)table + (count * 8 + 8);
-        fn_801286A0(table, oldEnd - newEnd);
+        char *oldEnd = (char *)result + (*(int *)result * 8 + 8);
+        char *newEnd = (char *)result + (count * 8 + 8);
+        fn_801286A0(result, oldEnd - newEnd);
     }
-    *(int *)((char *)table + 4) = count;
-    *(int *)table = count;
-    return table;
+    *(int *)((char *)result + 4) = count;
+    *(int *)result = count;
+    return result;
 }
 
 #pragma cplusplus reset
@@ -127,7 +131,7 @@ int fn_80139B70(int arg0, float arg1, float arg2) {
     int count;
     int result;
     int i;
-    float th;
+    register float th = lbl_80561410;
     float v0;
     float v1;
     float v2;
@@ -136,7 +140,6 @@ int fn_80139B70(int arg0, float arg1, float arg2) {
     count = *(int *)arg0;
     p = (volatile float *)(arg0 + 8);
     result = 0;
-    th = lbl_80561410;
     for (i = 0; i < count; p += 2, i++) {
         float y0 = p[1];
         int next = i + 1;
@@ -156,7 +159,6 @@ int fn_80139B70(int arg0, float arg1, float arg2) {
             float dx = x1 - x0;
             float y0b = p[1];
             float y1b = q[3];
-            float tth;
             v[0] = arg1 - x0;
             v[1] = arg2 - y0b;
             v[2] = y1b - y0b;
@@ -165,8 +167,7 @@ int fn_80139B70(int arg0, float arg1, float arg2) {
             v1 = v[1];
             v2 = v[2];
             v3 = v[3];
-            tth = th;
-            if (rising == (v2 * v0 + v3 * v1 < tth)) result++;
+            if (rising == (v2 * v0 + v3 * v1 < th)) result++;
         }
     }
     return result & 1;
