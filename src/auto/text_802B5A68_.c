@@ -2054,7 +2054,7 @@ extern "C" void fn_802B8848(void) {
     s32 sp8[12], temp_r31;
     if (lbl_8055FA48 != 0) {
         if ((u32)(lbl_8055FA38 - 2) <= 1U) fn_802B773C();
-        if ((u8)lbl_8055FA32 != 0 && lbl_8055FA34 != -1) ((void (*)(s32))fn_802C7040)(lbl_8055FA34);
+        if ((u8)lbl_8055FA32 != 0 && lbl_8055FA34 != -1) fn_802C7040(lbl_8055FA34);
         fn_80230B5C(sp8); fn_802C8638(sp8);
         fn_802C974C(lbl_80564CA0, lbl_80564C70, lbl_80564CA4);
         fn_802B86F8(); fn_802B676C();
