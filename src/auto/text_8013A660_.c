@@ -262,11 +262,17 @@ extern int fn_80016508(void *);
 extern int fn_80129D90(int, int, int);
 extern void qsort(void *, int, int, int (*)(void *, void *));
 extern int fn_8013A6C4(void *, void *);
-#pragma cplusplus off
+extern "C" int *fn_801E87A8(void);
+extern "C" int fn_80135108(void);
+extern "C" void fn_801E879C(void);
+extern "C" void *fn_80016464(int);
+extern "C" int fn_80016508(void *);
+extern "C" int fn_80129D90(int, int, int);
+extern "C" void qsort(void *, int, int, int (*)(void *, void *));
 #pragma push
-#pragma ppc_psq_save off
+#pragma processor 750
 #pragma use_lmw_stmw off
-void fn_8013AC78(int arg0, int *arg1) {
+extern "C" void fn_8013AC78(int arg0, int *arg1) {
     char *base = lbl_8032C1A0;
     struct Entry { int idx; int key; int score; } es[8];
     int pr[100];
