@@ -8,8 +8,9 @@ extern char lbl_804A433C[];
 extern void *fn_8027ACBC(void *, void *);
 #pragma push
 #pragma small_data off
-void fn_8027ABF8(void *node) {
-    fn_8027ACBC(lbl_804A433C, node);
+/* Look up item in the global registry table via fn_8027ACBC. */
+void fn_8027ABF8(void *item) {
+    fn_8027ACBC(lbl_804A433C, item);
 }
 int fn_8027AC08(void *arg0, int arg1) {
     int i = 0;
