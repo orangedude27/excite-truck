@@ -5436,8 +5436,9 @@ extern "C" s32 fn_80221EA8(void *arg0) {
     return 0;
 }
 
-extern "C" void fn_80221F94(void *arg0, s32 arg1) {
-    fn_802168BC((void *)arg1);
+extern "C" void fn_80221F94(void *context, s32 result) {
+    /* Callback thunk: ignore the context and request a fade with the given result. */
+    fn_802168BC((void *)result);
 }
 
 extern "C" s32 lbl_8055FBE4;
