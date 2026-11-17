@@ -4305,14 +4305,8 @@ extern "C" void fn_801A7A5C(void);
 extern "C" s32 fn_802146BC(void *, s32, s32, s32, void *, s32, s32, s32);
 extern "C" void fn_802194FC(void *);
 #pragma use_lmw_stmw off
-typedef struct {
-    s32 f0, f1, f2, f3, f4, f5, f6, f7, f8, f9;
-    s32 f10, f11, f12, f13, f14, f15, f16, f17, f18, f19;
-    s32 f20, f21, f22, f23, f24, f25, f26, f27, f28, f29;
-} Args8021F4F0;
 extern "C" void fn_8021F4F0(void *arg0, void *) {
-    Args8021F4F0 a;
-    s32 *args = (s32 *)&a;
+    s32 args[30];
 
     fn_801A7A5C();
     strcpy((char *)lbl_80490934, (char *)arg0 + 0x254);
