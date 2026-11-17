@@ -1752,15 +1752,34 @@ extern "C" u8 lbl_8055B860;
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" s32 fn_8021481C(void *arg0) {
-    u8 *base = lbl_8033CAE8; s32 *values; s32 *map; s32 args[20];;;
+    u8 *base = lbl_8033CAE8;
+    s32 *values;
+    s32 *map;
+    s32 args[20];
     if (fn_802ECEEC() == 0) {
         fn_802E30C8((const char *)(base + 0x72C), arg0);
-        values = lbl_80490510; map = lbl_802F9EA4;
-        args[0] = map[0]; args[1] = 0; args[2] = map[2]; args[3] = map[3]; args[4] = map[4];
-        args[5] = (s32)(base + 0x750); args[6] = 3; args[7] = (s32)arg0;
-        args[8] = 0; args[9] = 0; args[10] = (s32)&lbl_8055B860; args[11] = 6;
-        args[12] = 0; args[13] = -2; args[14] = 0xD;
-        args[15] = values[0]; args[16] = values[1]; args[17] = values[2]; args[18] = values[3]; args[19] = values[4];
+        values = lbl_80490510;
+        map = lbl_802F9EA4;
+        args[0] = map[0];
+        args[1] = 0;
+        args[2] = map[2];
+        args[3] = map[3];
+        args[4] = map[4];
+        args[5] = (s32)(base + 0x750);
+        args[6] = 3;
+        args[7] = (s32)arg0;
+        args[8] = 0;
+        args[9] = 0;
+        args[10] = (s32)&lbl_8055B860;
+        args[11] = 6;
+        args[12] = 0;
+        args[13] = -2;
+        args[14] = 0xD;
+        args[15] = values[0];
+        args[16] = values[1];
+        args[17] = values[2];
+        args[18] = values[3];
+        args[19] = values[4];
         args[1] = (s32)&args[5];
         fn_802146BC(args, -0x3E7, -0x3E7, 1, map[4], map[3], map[2], map[0]);
         fn_802E30C8((const char *)(base + 0x760), arg0);
@@ -2138,6 +2157,9 @@ extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(u8 *)((u8 *)stack + 0x2C) = (u8)arg3;
     ctx = lbl_802F9ECC;
     ctx2 = ctx[2];
+    ctx0 = ctx[0];
+    ctx3 = ctx[3];
+    ctx4 = ctx[4];
     stack[2] = ctx2;
     values = lbl_80490510;
     value0 = values[0];
@@ -2190,9 +2212,6 @@ extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     stack[44] = value2;
     stack[45] = value3;
     stack[46] = value4;
-    ctx0 = ctx[0];
-    ctx3 = ctx[3];
-    ctx4 = ctx[4];
     stack[0] = ctx0;
     stack[3] = ctx3;
     stack[4] = ctx4;
@@ -2246,8 +2265,10 @@ extern "C" s32 fn_80215228(void) {
 }
 
 extern void *lbl_8055EF38;
+#define gCurrentItemIndex lbl_8055EF38 // scratch item index handed to widget constructors
 extern "C" void* fn_8021525C(void) {
-    return lbl_8055EF38;
+    /* Return the current item index that widget constructors copy into field +0x23C. */
+    return gCurrentItemIndex;
 }
 
 extern u8 lbl_8033CAE8[];
