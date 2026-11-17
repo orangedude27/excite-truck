@@ -1382,9 +1382,10 @@ extern "C" void fn_801FEEC0(void *slot, int context, int start, int unused) {
     fn_801FF2B8(*(void **)((char *)slot + 4), start, end);
 }
 #pragma pop
-extern "C" void fn_801FEF80(void* arg0) {
-    *(int*)arg0 = 0;
-    *((int*)arg0 + 1) = 0;
+/* Construction callback for fn_8002F53C's pool: zero each element's first two words (its list links). */
+extern "C" void fn_801FEF80(void* element) {
+    *(int*)element = 0;
+    *((int*)element + 1) = 0;
 }
 
 extern "C" char* strncpy(char*, const char*, unsigned long);
