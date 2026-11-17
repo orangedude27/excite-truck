@@ -588,6 +588,7 @@ extern "C" void fn_801B880C(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f31();
 }
 #pragma cplusplus on
+/* Forward to the arena-event master (lbl_8055E744) via its f14 vtable slot. */
 extern "C" void fn_801B8820(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f14();
 }
