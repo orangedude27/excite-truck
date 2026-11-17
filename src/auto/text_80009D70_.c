@@ -248,6 +248,7 @@ extern "C" void fn_8000A6D8(void) {
 #pragma cplusplus reset
 
 void fn_8000AADC(void* arg0) {
+    /* Tail-call thunk: queue this session's track effect resource sets for loading via fn_8000A7A8. */
     fn_8000A7A8();
 }
 
