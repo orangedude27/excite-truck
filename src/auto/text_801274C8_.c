@@ -265,8 +265,11 @@ void fn_80127930(void* alarm) {
 #undef clearSoundSystem
 }
 
+// Profiler's periodic elapsed-time refresh callback: samples the millisecond clock, discarding the result.
 void fn_80127954(void) {
-    fn_802E2C20();
+#define sampleElapsedMs fn_802E2C20
+    sampleElapsedMs();
+#undef sampleElapsedMs
 }
 
 void fn_80127958(void) {
