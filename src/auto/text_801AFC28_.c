@@ -40,8 +40,9 @@ extern void *lbl_80435BA8[];
 #define sEffectCursor lbl_8055E654
 
 void fn_801AFC28(void) {
-    lbl_8055E650 = 0;
-    lbl_8055E654 = 0;
+    // Clear the sound/effect object registry: reset both the entry count and the round-robin cursor.
+    sEffectCount = 0;
+    sEffectCursor = 0;
 }
 
 #pragma scheduling invalid_target
