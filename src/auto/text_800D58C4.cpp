@@ -1925,8 +1925,9 @@ extern "C" void fn_800D8948(GXColor *dst, const GXColor *src) {
     *dst = *src;
 }
 
-extern "C" s32 fn_800D896C(void *arg0) {
-    return ((u32)*(u32*)((u8*)arg0 + 0x4C) >> 5U) & 1;
+extern "C" s32 fn_800D896C(void *material) {
+    /* Returns flag bit 5 of the nw4r::lyt material's flags word at +0x4C, checked during material setup before copying its trailing color block. */
+    return ((u32)*(u32*)((u8*)material + 0x4C) >> 5U) & 1;
 }
 
 // Copies one RGBA color (used by nw4r lyt material setup) from src into dst.
