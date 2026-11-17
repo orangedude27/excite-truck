@@ -241,44 +241,47 @@ extern char lbl_8037D818[];
 #pragma push
 #pragma scheduling reset
 void MEMiFinalizeHeap(MEMiHeapHead *heap) {
-    MEMiHeapHead *child;
-    MEMiHeapHead *outer;
-    MEMiHeapHead *block;
-    MEMiHeapHead *res;
-    MEMList *list;
+    /* Unlink a heap from the deepest heap list whose range contains it (the
+       root list's three nested levels plus a recursive search), then invalidate
+       its magic so the heap can no longer be used. */
+    MEMiHeapHead *childHeap;
+    MEMiHeapHead *rootHeap;
+    MEMiHeapHead *blockHeap;
+    MEMiHeapHead *container;
+    MEMList *parentList;
     OSLockMutex((OSMutex *)lbl_8037D818);
-    list = (MEMList *)lbl_8037D808;
-    outer = 0;
-    while ((outer = (MEMiHeapHead *)MEMGetNextListObject((MEMList *)lbl_8037D808, outer)) != 0) {
-        if ((u32)outer->start <= (u32)heap && (u32)heap < (u32)outer->end) {
-            child = 0;
-            while ((child = (MEMiHeapHead *)MEMGetNextListObject(&outer->list, child)) != 0) {
-                if ((u32)child->start <= (u32)heap && (u32)heap < (u32)child->end) {
-                    block = 0;
-                    while ((block = (MEMiHeapHead *)MEMGetNextListObject(&child->list, block)) != 0) {
-                        if ((u32)block->start <= (u32)heap && (u32)heap < (u32)block->end) {
-                            res = (MEMiHeapHead *)FindContainHeap_(&block->list, (u32)heap);
-                            switch ((u32)res) { case 0: res = block; break; default: break; }
+    parentList = (MEMList *)lbl_8037D808;
+    rootHeap = 0;
+    while ((rootHeap = (MEMiHeapHead *)MEMGetNextListObject((MEMList *)lbl_8037D808, rootHeap)) != 0) {
+        if ((u32)rootHeap->start <= (u32)heap && (u32)heap < (u32)rootHeap->end) {
+            childHeap = 0;
+            while ((childHeap = (MEMiHeapHead *)MEMGetNextListObject(&rootHeap->list, childHeap)) != 0) {
+                if ((u32)childHeap->start <= (u32)heap && (u32)heap < (u32)childHeap->end) {
+                    blockHeap = 0;
+                    while ((blockHeap = (MEMiHeapHead *)MEMGetNextListObject(&childHeap->list, blockHeap)) != 0) {
+                        if ((u32)blockHeap->start <= (u32)heap && (u32)heap < (u32)blockHeap->end) {
+                            container = (MEMiHeapHead *)FindContainHeap_(&blockHeap->list, (u32)heap);
+                            switch ((u32)container) { case 0: container = blockHeap; break; default: break; }
                             goto found_inner;
                         }
                     }
-                    res = 0;
+                    container = 0;
                 found_inner:
-                    switch ((u32)res) { case 0: res = child; break; default: break; }
+                    switch ((u32)container) { case 0: container = childHeap; break; default: break; }
                     goto found_middle;
                 }
             }
-            res = 0;
+            container = 0;
         found_middle:
-            switch ((u32)res) { case 0: res = outer; break; default: break; }
+            switch ((u32)container) { case 0: container = rootHeap; break; default: break; }
             goto found_outer;
         }
     }
-    res = 0;
+    container = 0;
 found_outer:
-    if (res != 0)
-        list = &res->list;
-    MEMRemoveListObject(list, heap);
+    if (container != 0)
+        parentList = &container->list;
+    MEMRemoveListObject(parentList, heap);
     OSUnlockMutex((OSMutex *)lbl_8037D818);
     heap->magic = 0;
 }
