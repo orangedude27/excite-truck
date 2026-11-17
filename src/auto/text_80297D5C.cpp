@@ -1420,7 +1420,7 @@ extern "C" unsigned int lbl_8055CA8C;
 extern "C" char lbl_803494FC[];
 extern float lbl_805645C0;
 extern float lbl_8056460C;
-#pragma scheduling reset
+#pragma scheduling invalid_target
 extern "C" void *fn_8029A6F4(void *arg0) {
     struct Local {
         float extra[6];
@@ -1432,15 +1432,18 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     memset(local.config, 0, 0x8C);
 
     float value90 = lbl_80564590;
+    int one = 1;
     float value9C = lbl_8056459C;
+    int size = 0x1F4;
     float valueB8 = lbl_805645B8;
     float value98 = lbl_80564598;
+    int two = 2;
     float valueC0 = lbl_805645C0;
     int forty = 0x40;
     float value6460C = lbl_8056460C;
 
-    *(int *)local.config = 1;
-    *(int *)(local.config + 0x04) = 0x1F4;
+    *(int *)local.config = one;
+    *(int *)(local.config + 0x04) = size;
     *(float *)(local.config + 0x08) = value98;
     *(float *)(local.config + 0x0C) = value90;
     local.extra[3] = value9C;
@@ -1457,7 +1460,7 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     *(float *)(local.config + 0x24) = value90;
     *(float *)(local.config + 0x30) = valueB8;
     *(float *)(local.config + 0x34) = valueC0;
-    *(int *)(local.config + 0x44) = 2;
+    *(int *)(local.config + 0x44) = two;
     *(float *)(local.config + 0x50) = value90;
     *(float *)(local.config + 0x54) = value90;
     *(float *)(local.config + 0x58) = valueB8;
@@ -1470,13 +1473,13 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     *(float *)(local.config + 0x64) = value90;
     *(float *)(local.config + 0x80) = value6460C;
     *(int *)(local.config + 0x84) = forty;
-    local.config[0x88] = 1;
-    local.config[0x89] = 1;
+    local.config[0x88] = (unsigned char)one;
+    local.config[0x89] = (unsigned char)one;
 
     *(void **)((char *)arg0 + 0x160) =
         ((void *(*)(void *, const char *, int, int, int, int,
                     float, float, float, float, float))fn_8028E2F8)(
-            local.config, lbl_803494FC, lbl_8055CA8C, 2, 0x1F4, 1,
+            local.config, lbl_803494FC, lbl_8055CA8C, two, size, one,
             valueC0, valueB8, value9C, value90, value98);
     fn_801EEFDC((void *)fn_8029C054, 0xE);
     fn_801EEFDC((void *)fn_8029C024, 0xD);
