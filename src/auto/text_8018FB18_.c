@@ -2751,8 +2751,9 @@ void fn_80193018(float * __restrict dst, float * __restrict src) {
     dst[6] = z;
 }
 
-void fn_8019304C(void *arg0) {
-    *(float *)((char *)arg0 + 0x40) = lbl_8056208C;
+/* Reset the float field at offset 0x40 of the object (its path-progress value) to 0.0f. */
+void fn_8019304C(void *object) {
+    *(float *)((char *)object + 0x40) = lbl_8056208C;
 }
 
 void fn_80193058(void) {
