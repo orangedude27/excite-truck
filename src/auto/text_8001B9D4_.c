@@ -301,6 +301,7 @@ s32 fn_8001BD28(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
+/* Return the flag byte at offset 0x10 of this record (tested as zero/non-zero by the ARC-data comparison helpers). */
 u8 fn_8001BD30(void *record) {
     return *(u8 *)((u8 *)record + 0x10);
 }
