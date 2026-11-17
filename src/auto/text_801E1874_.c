@@ -249,25 +249,24 @@ void fn_801E1D38(void) {
 #pragma cplusplus on
 #pragma opt_common_subs off
 extern "C" void fn_801E1D9C(void) {
-    struct Dummy_801E1D9C_Local {
-        virtual void d1(int);
+    /* Release the level's rain and thunder sounds: destroy each Sound object
+     * via its deleting virtual destructor and clear its slot in the
+     * WeatherSound so it cannot be released a second time. */
+    struct SoundDeleter {
+        virtual ~SoundDeleter();
     };
-    Dummy_801E1D9C_Local *p;
+    SoundDeleter *sound;
 
-    p = (Dummy_801E1D9C_Local *)*(void **)((char *)&lbl_804874B8 + 0x18);
-    if (p != 0) {
-        if (p != 0) {
-            p->d1(1);
-        }
-        *(void **)((char *)&lbl_804874B8 + 0x18) = 0;
+    sound = (SoundDeleter *)*(void **)((char *)&gWeatherSound + 0x18);
+    if (sound != 0) {
+        delete sound;
+        *(void **)((char *)&gWeatherSound + 0x18) = 0;
     }
 
-    p = (Dummy_801E1D9C_Local *)*(void **)((char *)&lbl_804874B8 + 0x14);
-    if (p != 0) {
-        if (p != 0) {
-            p->d1(1);
-        }
-        *(void **)((char *)&lbl_804874B8 + 0x14) = 0;
+    sound = (SoundDeleter *)*(void **)((char *)&gWeatherSound + 0x14);
+    if (sound != 0) {
+        delete sound;
+        *(void **)((char *)&gWeatherSound + 0x14) = 0;
     }
 }
 #pragma pop
