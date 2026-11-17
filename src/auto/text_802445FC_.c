@@ -102,31 +102,30 @@ void fn_802447C4(void *fadeState) {
 #undef HideOverlay
 }
 
+#pragma scheduling invalid_target
 void fn_802447FC(void *arg0) {
     float val;
     int elapsed;
     float blend;
     elapsed = fn_802E2C20() - *(int *)((char *)arg0 + 0x20);
-    val = lbl_805637F0 - ((float)elapsed / (float)*(int *)((char *)arg0 + 0x24));
     blend = lbl_805637F4;
+    val = lbl_805637F0 - ((float)elapsed / (float)*(int *)((char *)arg0 + 0x24));
     blend = blend > val ? blend : val;
     fn_8020A5F8(*(float *)((char *)arg0 + 0x28) * blend);
     if (elapsed > *(int *)((char *)arg0 + 0x24) && fn_802ECC10() == 0) {
         fn_80221F94(arg0, 0);
     }
 }
-
 void fn_802448BC(void *arg0) {
-    int a;
-    int b;
+    int elapsed;
+    int numerator;
+    int value;
     unsigned char result;
     fn_80021680();
-    a = fn_802E2C20() - *(int *)((char *)arg0 + 0x20);
-    b = (a << 8) - a;
-    a = 0xFF - (b / (*(int *)((char *)arg0 + 0x24) - 0x32));
-    result = a & ((-a & ~a) >> 31);
-    if (result != 0) {
-        fn_802C942C(result << 24);
-    }
+    elapsed = fn_802E2C20() - *(int *)((char *)arg0 + 0x20);
+    numerator = (elapsed << 8) - elapsed;
+    value = 0xFF - numerator / (*(int *)((char *)arg0 + 0x24) - 0x32);
+    result = value & ((-value & ~value) >> 31);
+    if (result != 0) fn_802C942C(result << 24);
 }
 
