@@ -2613,12 +2613,17 @@ void fn_8019724C(void *arg0, float *arg1) {
     }
 }
 
+static inline void sub_801973FC(Vec2_801973FC *out, float *a, float *b) {
+    out->x = a[0] - b[0];
+    out->y = a[1] - b[1];
+}
+static inline float dot_801973FC(float *a, Vec2_801973FC *b) {
+    return a[0] * b->x + a[1] * b->y;
+}
 float fn_801973FC(float *arg0, float *arg1, void *arg2) {
-    float dy;
-    float dx;
-    dx = arg1[0] - ((float *)arg2)[0];
-    dy = arg1[1] - ((float *)arg2)[1];
-    return arg0[0] * dx + arg0[1] * dy;
+    Vec2_801973FC diff;
+    sub_801973FC(&diff, arg1, (float *)arg2);
+    return dot_801973FC(arg0, &diff);
 }
 
 #pragma push
