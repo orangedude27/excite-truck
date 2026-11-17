@@ -19251,8 +19251,9 @@ extern "C" s32 fn_800C771C(s32 object, s32 deleteFlag) {
     return object;
 }
 
-extern "C" void fn_800C775C(void *arg0, s32 arg1) {
-    (*(u32 *)((u8 *)arg0 + 4)) = arg1;
+/* Store value into the 32-bit word at offset +0x04 of obj. */
+extern "C" void fn_800C775C(void *obj, s32 value) {
+    (*(u32 *)((u8 *)obj + 4)) = value;
 }
 
 extern "C" void fn_800CF280(void) {
