@@ -713,13 +713,16 @@ extern "C" void fn_80145C7C(void * __restrict arg0, u32 arg1) {
 #pragma processor 750
 #pragma dont_inline on
 #pragma scheduling invalid_target
-extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
+extern "C" void fn_80145CF4(void *__restrict arg0, void *arg1, u32 arg2) {
     f32 temp_f31;
     f32 temp_f30;
+    f32 input10;
     f32 input4;
     s32 mode;
     f32 value;
-    temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
+    input10 = *(f32 *)((u8 *)arg0 + 0x10);
+    mode = *(s32 *)((u8 *)arg0 + 0xC);
+    temp_f30 = fn_801452A0(mode, input10);
     temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     input4 = *(f32 *)((u8 *)arg0 + 4);
     mode = *(s32 *)((u8 *)arg0 + 0xC);
