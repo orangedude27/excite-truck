@@ -47,15 +47,14 @@ s32 fn_8012A17C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8012A218(void *arg0) {
-    PoolList_8012A218 *l = (PoolList_8012A218 *)arg0;
+    char *base = (char *)*(int *)((char *)arg0 + 0x10);
+    char *end = base + (*(int *)((char *)arg0 + 0x18) - 1) * *(volatile int *)((char *)arg0 + 0x14);
     char *p;
-    char *end = (char *)((l->count - 1) * l->stride + (int)l->base);
-    for (p = l->base; p < end; p += l->stride) {
-        int *q = (int *)p;
-        *q = (int)p + l->stride;
+    for (p = base; p < end; p += *(volatile int *)((char *)arg0 + 0x14)) {
+        *(char **)p = p + *(volatile int *)((char *)arg0 + 0x14);
     }
     *(int *)end = 0;
-    l->head = 0;
+    *(int *)((char *)arg0 + 0x1c) = 0;
 }
 #pragma pop
 /* Destructor of the fixed-size block pool (built by fn_8012A13C/fn_8012A17C, which
