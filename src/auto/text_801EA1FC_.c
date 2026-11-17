@@ -37,7 +37,17 @@ void fn_801EA1FC(void) {
     lbl_8055AF68 = angleRadians;
 }
 
-#pragma dont_inline on
+#pragma processor 750
+void fn_801EA210(s32 arg0, f32 farg0) {
+    #pragma scheduling invalid_target
+    f32 temp_f31;
+    if ((u8)lbl_8055EB58 == 0) {
+        temp_f31 = fn_801E8874();
+        fn_802C974C(temp_f31, fn_801E8894(arg0), farg0);
+        return;
+    }
+    fn_802C974C(lbl_80562E40, lbl_80562E44, lbl_8055AF68);
+}
 void fn_801EA28C(s32 playerIndex, f32 fov) {
     #pragma scheduling invalid_target
     /* Refresh the projection/view parameters from the player's stored near/far
