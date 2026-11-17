@@ -681,8 +681,9 @@ handled:
     return 1;
 }
 #pragma cplusplus off
-u8 fn_80244550(void *arg0) {
-    return *((u8 *)arg0 + 0x28);
+/* MenuList_GetEdited: returns the edited flag (MenuListObject.edited at +0x28), set when the text field is finalized. */
+u8 fn_80244550(void *menu) {
+    return ((MenuListObject *)menu)->edited;
 }
 
 s32 fn_80244558(void *arg0) {
