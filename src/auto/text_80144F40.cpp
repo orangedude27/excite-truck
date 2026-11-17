@@ -647,8 +647,10 @@ extern "C" f32 fn_801452A0(s32, f32);
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern "C" s32 lbl_80559E1C;
 extern "C" void fn_80145B50(void *arg0, s32 arg1) {
-    f32 multiplier = lbl_80561608;
-    f32 value = (f32)arg1;
+    f32 multiplier;
+    f32 value;
+    value = (f32)arg1;
+    multiplier = lbl_80561608;
     *(f32 *)((u8 *)arg0 + 4) = lbl_805615D4;
     *(f32 *)((u8 *)arg0 + 0xC) = multiplier;
     *(f32 *)((u8 *)arg0 + 8) = multiplier;
@@ -2194,6 +2196,7 @@ extern "C" void fn_80148224(void) {
 extern "C" void fn_80148228(void) {
 }
 
+/* No-op stub in this callback/vtable group; does nothing. */
 extern "C" void fn_80148244(void) {
 }
 
