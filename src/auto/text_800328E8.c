@@ -418,6 +418,7 @@ void fn_800331A0(void) {
     }
     DCFlushRange(lbl_80363C60, 0x4800);
 }
+#pragma pop
 
 void fn_80033404(void) {
     /* Empty no-op AX helper: TRKReadBuffer_ui32() calls it in a diagnostic
