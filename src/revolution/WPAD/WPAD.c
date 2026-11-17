@@ -3233,7 +3233,9 @@ extern OSAlarm lbl_8038F4C0;
 extern u8 lbl_8055DC19;
 extern u8 lbl_8055DC12;
 
-// fn_8005EE78: tail call wrapper
+/* WPAD-internal callback installer: tail-calls fn_8006A7D0, which stores the
+   two callbacks the caller passes into the WUD control block during input
+   initialization (the caller's argument registers flow through the tail call). */
 void fn_8005EE78(void) { fn_8006A7D0(); }
 
 // fn_8005EE7C: tail call wrapper
