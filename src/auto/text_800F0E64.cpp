@@ -1040,8 +1040,9 @@ extern "C" s32 fn_800F27C4(void *arg0) {
 
 M2C_UNK GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
 #pragma dont_inline on
-extern "C" s32 fn_800F27CC(void *arg0) {
-    return GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(*(s32*)((u8*)arg0 + 4));
+extern "C" s32 fn_800F27CC(void *archive) {
+    /* Return the number of sound groups reported by this archive's file reader. */
+    return GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(*(s32*)((u8*)archive + 4));
 }
 #pragma dont_inline off
 
