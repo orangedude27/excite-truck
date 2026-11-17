@@ -144,8 +144,9 @@ enum {
 #pragma scheduling invalid_target
 #pragma push
 #pragma dont_inline on
-void fn_800056C8(s32 arg0, s32 arg1) {
-    lbl_8034EEB8[arg0 * 4 + 4] = arg1;
+/* Set the active HUD overlay pointer for one player slot in the session table. */
+void fn_800056C8(s32 playerIndex, s32 overlay) {
+    lbl_8034EEB8[playerIndex * 4 + 4] = overlay;
 }
 #pragma pop
 #pragma scheduling on
