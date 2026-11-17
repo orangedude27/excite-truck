@@ -3587,8 +3587,10 @@ extern "C" s32 fn_8015D36C(void* object) {
     return *(s32*)((u8*)object + 0x264);
 }
 
-extern "C" s32 fn_8015D374(void* arg0) {
-    return *(s32*)((u8*)arg0 + 0x264);
+/* Getter: return the m264 progress counter at +0x264 of the object (same field
+ * as the adjacent fn_8015D36C). */
+extern "C" s32 fn_8015D374(void* object) {
+    return *(s32*)((u8*)object + 0x264);
 }
 
 extern "C" u32 fn_8015D37C(void) { return 1; }
