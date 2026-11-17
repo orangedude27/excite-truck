@@ -16,49 +16,39 @@ extern float lbl_805626C0;
 extern float lbl_805626C4;
 extern char lbl_80335F40[];
 extern int strlen(const char *);
-#pragma scheduling off
+#pragma scheduling on
 int fn_801B64B4(void *p) {
-    unsigned char *data = (unsigned char *)p;
-    unsigned char type = data[0];
-    struct {
-        float value[2];
-        float padding[2];
-    } converted;
-
-    switch (type) {
+    float converted[4];
+    switch (*(unsigned char *)p) {
     case 0: {
-        float f = *(float *)(data + 0x1C);
-        fn_801E3CB4(data + 4, data + 0x10, *(int *)(data + 0x20), f);
+        float f = *(float *)((unsigned char *)p + 0x1C);
+        fn_801E3CB4((unsigned char *)p + 4, (unsigned char *)p + 0x10, *(int *)((unsigned char *)p + 0x20), f);
         return 0x24;
     }
     case 1: {
-        float f = *(float *)(data + 0x1C);
-        fn_801E4040(data + 4, data + 0x10, *(int *)(data + 0x20), *(int *)(data + 0x24), f);
+        float f = *(float *)((unsigned char *)p + 0x1C);
+        fn_801E4040((unsigned char *)p + 4, (unsigned char *)p + 0x10, *(int *)((unsigned char *)p + 0x20), *(int *)((unsigned char *)p + 0x24), f);
         return 0x28;
     }
     case 2: {
-        float f = *(float *)(data + 0x10);
-        fn_801E3FC8(data + 4, *(int *)(data + 0x14), f);
+        float f = *(float *)((unsigned char *)p + 0x10);
+        fn_801E3FC8((unsigned char *)p + 4, *(int *)((unsigned char *)p + 0x14), f);
         return 0x18;
     }
     case 3:
-        fn_802C8E70(data + 4, converted.value);
-        if (fn_802C8FF4(converted.value, lbl_805626C0) != 0) {
-            volatile float x = converted.value[0];
-            volatile float y = converted.value[1];
-            int a = (int)x;
-            int b = (int)y;
-            fn_80010724(a, b, data + 0x10);
+        fn_802C8E70((unsigned char *)p + 4, converted);
+        if (fn_802C8FF4(converted, lbl_805626C0) != 0) {
+            fn_80010724((int)converted[0], (int)converted[1], (unsigned char *)p + 0x10);
         }
-        return strlen((char *)(data + 0x10)) + 0x11;
+        return strlen((char *)((unsigned char *)p + 0x10)) + 0x11;
     case 4: {
-        float f = *(float *)(data + 0x10);
-        fn_801E41E0(data + 4, *(int *)(data + 0x14), f);
+        float f = *(float *)((unsigned char *)p + 0x10);
+        fn_801E41E0((unsigned char *)p + 4, *(int *)((unsigned char *)p + 0x14), f);
         return 0x18;
     }
     case 5: {
-        float f = *(float *)(data + 0x34);
-        fn_801E43BC(data + 4, f, lbl_805626C4);
+        float f = *(float *)((unsigned char *)p + 0x34);
+        fn_801E43BC((unsigned char *)p + 4, f, lbl_805626C4);
         return 0x38;
     }
     default:
@@ -66,8 +56,9 @@ int fn_801B64B4(void *p) {
         return 0;
     }
 }
-#pragma scheduling reset
+#pragma scheduling off
 void fn_801B6604(void) {
+    /* Register fn_801B64B4 as a handler for world event type 3. */
     fn_801EEFDC(fn_801B64B4, 3);
 }
 #pragma scheduling reset
