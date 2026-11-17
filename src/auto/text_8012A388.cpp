@@ -3230,8 +3230,9 @@ extern "C" void *lbl_8055E000;
 
 extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2);
 
-extern "C" s32 fn_8012C4E4(void *arg0, void *arg1, s32 arg2) {
-    return fn_8012BC50(arg0, arg1, arg2);
+/* Thin C-linkage alias forwarding to the refcounted resource release fn_8012BC50. */
+extern "C" s32 fn_8012C4E4(void *ownerPtr, void *onRelease, s32 releaseArg) {
+    return fn_8012BC50(ownerPtr, onRelease, releaseArg);
 }
 
 #pragma scheduling invalid_target
