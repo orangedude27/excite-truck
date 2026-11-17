@@ -28,6 +28,7 @@ extern int fn_802CAC54(int);
 extern int fn_802C6CF8(int);
 extern int lbl_8055EA6C, lbl_8055EA64;
 extern float lbl_8055EA68, lbl_80562D08;
+typedef struct { float x, y, z; } Vec3;
 extern char lbl_80339910[], lbl_80339920[];
 extern int fn_802CAC28(char *, int);
 extern int fn_802C6FC0(char *, int, int);
