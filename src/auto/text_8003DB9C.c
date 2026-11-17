@@ -2961,125 +2961,128 @@ void __GXPEInit(void) {
     __peReg[5] |= 0xF;
 }
 
+/* Flush the GX state marked dirty in __GXData: resend changed texture/BP/VCD/VAT
+ * registers, then each dirty XF register group (ambient+material, light channels,
+ * tex gens, matrix indices, projection, viewport) to the write-gather FIFO. */
 void __GXSetDirtyState(void) {
-    unsigned int *data = __GXData;
-    unsigned int dirty = data[0x5FC / 4];
-    unsigned int r4;
-    unsigned int reg;
-    unsigned int count1;
-    u8 *ptr1;
-    unsigned int reg2;
-    u8 *ptr2;
-    unsigned int count2;
+    unsigned int *gxdt = __GXData;
+    unsigned int dirtyFlags = gxdt[0x5FC / 4];
+    unsigned int ambMatFlags;
+    unsigned int xfReg;
+    unsigned int chanBits;
+    u8 *colorCtrl;
+    unsigned int dualTexReg;
+    u8 *texRegs;
+    unsigned int texBits;
 
-    if (dirty & 1) {
+    if (dirtyFlags & GXD_SU_TEX) {
         __GXSetSUTexRegs();
     }
-    if (dirty & 2) {
+    if (dirtyFlags & GXD_BP_MASK) {
         __GXUpdateBPMask();
     }
-    if (dirty & 4) {
+    if (dirtyFlags & GXD_GEN_MODE) {
         WGPIPE.c = 0x61;
         WGPIPE.i = __GXData[0x254 / 4];
         *(unsigned short *)((char *)__GXData + 2) = 0;
     }
-    if (dirty & 8) {
+    if (dirtyFlags & GXD_VCD) {
         __GXSetVCD();
     }
-    if (dirty & 0x10) {
+    if (dirtyFlags & GXD_VAT) {
         __GXSetVAT();
     }
-    if (dirty & 0x18) {
+    if (dirtyFlags & (GXD_VCD | GXD_VAT)) {
         __GXCalculateVLim();
     }
-    dirty &= ~0xFF;
-    if (dirty) {
-        r4 = dirty & 0xF00;
-        if (r4) {
-            if (r4 & 0x100) {
+    dirtyFlags &= ~0xFF;
+    if (dirtyFlags) {
+        ambMatFlags = dirtyFlags & GXD_AMB_MAT_MASK;
+        if (ambMatFlags) {
+            if (ambMatFlags & GXD_AMB_COLOR0) {
                 WGPIPE.c = 0x10;
                 WGPIPE.i = 0x100A;
-                WGPIPE.i = data[0xA8 / 4];
+                WGPIPE.i = gxdt[0xA8 / 4];
             }
-            if (r4 & 0x200) {
+            if (ambMatFlags & GXD_AMB_COLOR1) {
                 WGPIPE.c = 0x10;
                 WGPIPE.i = 0x100B;
-                WGPIPE.i = data[0xAC / 4];
+                WGPIPE.i = gxdt[0xAC / 4];
             }
-            if (r4 & 0x400) {
+            if (ambMatFlags & GXD_MAT_COLOR0) {
                 WGPIPE.c = 0x10;
                 WGPIPE.i = 0x100C;
-                WGPIPE.i = data[0xB0 / 4];
+                WGPIPE.i = gxdt[0xB0 / 4];
             }
-            if (r4 & 0x800) {
+            if (ambMatFlags & GXD_MAT_COLOR1) {
                 WGPIPE.c = 0x10;
                 WGPIPE.i = 0x100D;
-                WGPIPE.i = data[0xB4 / 4];
+                WGPIPE.i = gxdt[0xB4 / 4];
             }
         }
-        count1 = dirty & 0x0100F000;
-        if (count1) {
-            reg = 0x100E;
-            if (count1 & 0x01000000) {
-                unsigned int val = (data[0x254 / 4] >> 4) & 7;
+        chanBits = dirtyFlags & GXD_LIGHT_CHAN_MASK;
+        if (chanBits) {
+            xfReg = 0x100E;
+            if (chanBits & GXD_NUM_COLORS) {
+                unsigned int numColors = (gxdt[0x254 / 4] >> 4) & 7;
                 WGPIPE.c = 0x10;
                 WGPIPE.i = 0x1009;
-                WGPIPE.i = val;
+                WGPIPE.i = numColors;
             }
-            ptr1 = (u8*)data;
-            count1 >>= 12;
-            count1 &= 0xF;
-            while (count1) {
-                if (count1 & 1) {
+            colorCtrl = (u8*)gxdt;
+            chanBits >>= 12;
+            chanBits &= 0xF;
+            while (chanBits) {
+                if (chanBits & 1) {
                     WGPIPE.c = 0x10;
-                    WGPIPE.i = reg;
-                    WGPIPE.i = *(u32*)(ptr1 + 0xB8);
+                    WGPIPE.i = xfReg;
+                    WGPIPE.i = *(u32*)(colorCtrl + 0xB8);
                 }
-                count1 >>= 1;
-                ptr1 += 4;
-                reg += 1;
+                chanBits >>= 1;
+                colorCtrl += 4;
+                xfReg += 1;
             }
         }
-        count2 = dirty & 0x02FF0000;
-        if (count2) {
-            reg = 0x1040;
-            if (count2 & 0x02000000) {
-                unsigned int val = data[0x254 / 4] & 0xF;
+        texBits = dirtyFlags & GXD_TEX_GEN_MASK;
+        if (texBits) {
+            xfReg = 0x1040;
+            if (texBits & GXD_NUM_TEX) {
+                unsigned int numTex = gxdt[0x254 / 4] & 0xF;
                 WGPIPE.c = 0x10;
                 WGPIPE.i = 0x103F;
-                WGPIPE.i = val;
+                WGPIPE.i = numTex;
             }
-            ptr2 = (u8*)data;
-            count2 >>= 16;
-            count2 &= 0xFF;
-            while (count2 != 0) {
-                reg2 = reg + 0x10;
-                if (count2 & 1) {
+            texRegs = (u8*)gxdt;
+            texBits >>= 16;
+            texBits &= 0xFF;
+            while (texBits != 0) {
+                dualTexReg = xfReg + 0x10;
+                if (texBits & 1) {
                     WGPIPE.c = 0x10;
-                    WGPIPE.i = reg;
-                    WGPIPE.i = *(u32*)(ptr2 + 0xC8);
+                    WGPIPE.i = xfReg;
+                    WGPIPE.i = *(u32*)(texRegs + 0xC8);
                     WGPIPE.c = 0x10;
-                    WGPIPE.i = reg2;
-                    WGPIPE.i = *(u32*)(ptr2 + 0xE8);
+                    WGPIPE.i = dualTexReg;
+                    WGPIPE.i = *(u32*)(texRegs + 0xE8);
                 }
-                count2 >>= 1;
-                reg++;
-                ptr2 += 4;
+                texBits >>= 1;
+                xfReg++;
+                texRegs += 4;
             }
         }
-        if (dirty & 0x04000000) {
+        if (dirtyFlags & GXD_MTX_IDX) {
             __GXSetMatrixIndex(0);
             __GXSetMatrixIndex(5);
         }
-        if (dirty & 0x10000000) {
+        if (dirtyFlags & GXD_VIEWPORT) {
             __GXSetViewport();
         }
-        if (dirty & 0x08000000) {
+        if (dirtyFlags & GXD_PROJECTION) {
             __GXSetProjection();
         }
-        *(unsigned short *)((char *)data + 2) = 1;
+        *(unsigned short *)((char *)gxdt + 2) = 1;
     }
-    data[0x5FC / 4] = 0;
+    gxdt[0x5FC / 4] = 0;
 }
 
 void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts) {
@@ -4815,9 +4818,8 @@ void __GXSetSUTexRegs(void) {
             if ((gx[0x5E4 / 4] & (1 << coord)) == 0) __SetSURegs(map, coord);
         }
         g2 = GXD;
-        i = 0;
         tr = (char *)g2 + 0x150;
-        for (; i < limit; i++) {
+        for (i = 0; i < limit; i++) {
             off = (i & ~1) << 1;
             map = g2[0x5A4 / 4 + i] & ~0x100;
             if (i & 1) coord = (*(unsigned int *)(tr + off) >> 15) & 7;
