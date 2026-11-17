@@ -234,7 +234,7 @@ void fn_801AE158(void *obj) {
     *(f32 *)((u8 *)obj + 0x24) = zeroVec.z;
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void *fn_801AE180(void) {
      union { u32 d; u8 b[4]; } u320, u40;
      s32 var_r8;
