@@ -905,12 +905,15 @@ extern "C" void fn_80177608(void* listener) {
     ((Dummy*)listener)->f0();
 }
 
-extern "C" void fn_80177618(int* obj) {
+extern "C" void fn_80177618(int* listener) {
+    /* Physics-listener fan-out invoker: call the listener's 2nd virtual method
+       (vtable +0xC). fn_8017779C passes this to fn_80177658 to run that slot
+       on every registered listener. */
     struct Dummy {
         virtual void f0();
         virtual void f1();
     };
-    ((Dummy*)obj)->f1();
+    ((Dummy*)listener)->f1();
 }
 
 extern "C" void fn_80177628(void* obj) {
