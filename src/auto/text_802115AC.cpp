@@ -2502,7 +2502,8 @@ typedef struct CanvasHandleObj {
     s32 canvas;
 } CanvasHandleObj;
 extern "C" s32 fn_80215730(void *arg0) {
-    return fn_802C4F14(*(s32*)((u8*)arg0 + 4));
+    /* Return the tile/cell count of the canvas handle held in this object's owned handle (+4). */
+    return fn_802C4F14(((CanvasHandleObj *)arg0)->canvas);
 }
 
   void fn_802C2FC4(int);
