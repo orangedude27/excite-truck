@@ -1632,7 +1632,10 @@ void fn_801C7374(void) {
 }
 
 void fn_801C737C(void) {
-    lbl_8055E839 = 1;
+#define sEntryListShown lbl_8055E839
+    /* Show the debug timeline entry-list panel. */
+    sEntryListShown = 1;
+#undef sEntryListShown
 }
 
 extern char lbl_8055E839;
