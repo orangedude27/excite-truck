@@ -2054,21 +2054,22 @@ void fn_802D14D8(void) {
         var_f3 = lbl_80564FC8;
     }
     base = lbl_804C9778;
-    temp_f1 = lbl_80564F94 * *(float *)(base + 0x0C);
     temp_f31 = var_f3 / *(float *)(base + 0x14);
     temp_f31 = *(float *)(base + 0x18) * temp_f31;
+    temp_f1 = lbl_80564F94 * *(float *)(base + 0x0C);
     temp_d = fn_8002EF30((double)temp_f1);
     temp_f4 = (float)atan((float)temp_d / temp_f31);
     fov_scaled = (lbl_80564FCC * temp_f4) / lbl_80564FD0;
     aspect_scaled = temp_f31;
     C_MTXPerspective(mtx, fov_scaled, aspect_scaled, *(float *)(base + 4), *(float *)(base + 8));
     if ((lbl_8055FE24 == 0) && ((int)lbl_8055D0B8 >= 0) && ((int)lbl_8055D0B8 < lbl_8055D0BC * lbl_8055D0C0)) {
-        int w, h, id;
-        w = lbl_8055D0BC;
-        h = lbl_8055D0C0;
-        id = (int)lbl_8055D0B8;
-        mtx[0][0] /= lbl_80564F8C / (float)w;
-        mtx[1][1] /= lbl_80564F8C / (float)h;
+        int h = lbl_8055D0C0;
+        int w = lbl_8055D0BC;
+        int id = (int)lbl_8055D0B8;
+        float dw = lbl_80564F8C / (float)w;
+        float dh = lbl_80564F8C / (float)h;
+        mtx[0][0] /= dw;
+        mtx[1][1] /= dh;
         mtx[0][2] += (float)(((id % w) * 2 - w) + 1);
         mtx[1][2] -= (float)(((id / w) * 2 - h) + 1);
     }
