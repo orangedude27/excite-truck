@@ -24,6 +24,7 @@ void* OSGetMEM1ArenaLo(void) {
 }
 
 void* OSGetMEM2ArenaLo(void) {
+    /* Return the low bound of the MEM2 arena. */
     return s_mem2ArenaLo;
 }
 
