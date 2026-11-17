@@ -531,6 +531,10 @@ extern "C" void fn_801B50B4(void **arg0, int arg1) {
 #pragma pop
 
 char fn_801B526C(void) {
+    /* Returns the replay-state flag byte lbl_8055E6D0 (grouped with the replay
+     * packet queue globals and cleared by the replay reset fn_801B5274).
+     * Callers test it as a boolean mode flag to gate driving effects and to
+     * bypass the track-order remap. */
     return lbl_8055E6D0;
 }
 
