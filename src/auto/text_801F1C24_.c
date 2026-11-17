@@ -1007,8 +1007,9 @@ float fn_801F3174(void) {
     return fn_8002EFB0();
 }
 
-void fn_801F3198(void *arg0) {
-    PSVECNormalize(arg0, arg0);
+// Normalize a 3D vector in place.
+void fn_801F3198(void *vec) {
+    PSVECNormalize(vec, vec);
 }
 
 void *fn_801F31A0(void *obj, int shouldFree) {
