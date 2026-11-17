@@ -323,7 +323,8 @@ void fn_8017F628(void *arg0) {
     } else ((void (*)(int))fn_802E8518)(*(int *)((char *)arg0 + 8));
 }
 #pragma pop
-float fn_8017F70C(float arg0) { double temp = __fabs(arg0); return temp; }
+/* Single-precision absolute value (computed in double, then rounded back to float). */
+float fn_8017F70C(float value) { double temp = __fabs(value); return temp; }
 
 #pragma scheduling invalid_target
 void fn_8017F718(void *arg0) {
