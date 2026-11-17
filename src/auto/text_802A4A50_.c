@@ -520,19 +520,22 @@ extern "C" void fn_802A50F8(void) {
 }
 #pragma cplusplus reset
 #pragma scheduling invalid_target
-void fn_802A5270(f32 arg0) {
-    f32 value;
-    s32 amount;
-    s32 result;
+void fn_802A5270(f32 intensity) {
+    /* Spawn the rain system: clamp intensity to 0..1, turn it into a drop count
+     * (0..512), allocate/init the "rain system" object, publish it to the
+     * global rain handle and build its render tracks. */
+    f32 norm;
+    s32 dropCount;
+    s32 system;
 
-    value = 1.0f < arg0 ? 1.0f : arg0;
-    value = value > lbl_80564858 ? value : lbl_80564858;
-    amount = (s32)(lbl_80564878 * value);
-    result = fn_801284F8(0x44, lbl_80349C88);
-    if (result != 0) {
-        result = fn_802A6944(result, amount, 0);
+    norm = 1.0f < intensity ? 1.0f : intensity;
+    norm = norm > lbl_80564858 ? norm : lbl_80564858;
+    dropCount = (s32)(lbl_80564878 * norm);
+    system = fn_801284F8(0x44, lbl_80349C88);
+    if (system != 0) {
+        system = fn_802A6944(system, dropCount, 0);
     }
-    lbl_8055F88C = result;
+    lbl_8055F88C = system;
     fn_802A50F8();
 }
 #pragma scheduling on
