@@ -24,6 +24,7 @@ extern u32 lbl_8055AC20;
 extern f32 lbl_80562A90;
 extern f32 lbl_80562A94;
 extern u8 lbl_803382A8[];
+typedef struct { u8 first; } Head0;
 __declspec(section ".sdata") extern u8 lbl_8055ABE8[];
 __declspec(section ".sdata") extern u8 lbl_8055ABF8[];
 __declspec(section ".sdata") extern u8 lbl_8055AC00[];
@@ -268,15 +269,16 @@ void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
 
 #pragma dont_inline on
 extern void fn_801D2AD4(void *);
-#pragma dont_inline on
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801D21C0(void) {
+    register u8 *base = lbl_803382A8;
     lbl_8055E930 = 0;
-    fn_801D2AD4(lbl_803382A8);
-    fn_801D2AD4(lbl_803382A8 + 0x14);
-    fn_801D2AD4(lbl_803382A8 + 0x24);
+    fn_801D2AD4(&base[0]);
+    fn_801D2AD4(base + 0x14);
+    fn_801D2AD4(base + 0x24);
     fn_801D2C04();
 }
+#pragma opt_propagation reset
 void fn_801D2210(void) {
     fn_801D2B94();
 }
@@ -308,21 +310,21 @@ void fn_801D2214(void) {
                 u8 *object = (u8 *)*objects;
                 if (&temp.position[0] == &record->position[0]) {
                     volatile f32 *matrix = (volatile f32 *)object;
-                    f32 x = record->position[0];
+                    f32 m48 = matrix[0x48 / 4];
                     f32 y = record->position[1];
+                    f32 m4c = matrix[0x4C / 4];
+                    f32 m3c = matrix[0x3C / 4];
+                    f32 x = record->position[0];
+                    f32 m40 = matrix[0x40 / 4];
                     f32 z = record->position[2];
-                    f32 out0 = x * matrix[0x3C / 4] +
-                               z * matrix[0x54 / 4] +
-                               y * matrix[0x48 / 4];
-                    f32 out1 = x * matrix[0x40 / 4] +
-                               z * matrix[0x58 / 4] +
-                               y * matrix[0x4C / 4];
-                    f32 out2 = x * matrix[0x44 / 4] +
-                               z * matrix[0x5C / 4] +
-                               y * matrix[0x50 / 4];
-                    temp.position[0] = out0;
-                    temp.position[1] = out1;
-                    temp.position[2] = out2;
+                    f32 m44 = matrix[0x44 / 4];
+                    f32 m50 = matrix[0x50 / 4];
+                    f32 m54 = matrix[0x54 / 4];
+                    f32 m58 = matrix[0x58 / 4];
+                    f32 m5c = matrix[0x5C / 4];
+                    temp.position[0] = x * m3c + y * m48 + z * m54;
+                    temp.position[1] = x * m40 + y * m4c + z * m58;
+                    temp.position[2] = x * m44 + y * m50 + z * m5c;
                 } else {
                     volatile f32 *matrix = (volatile f32 *)object;
                     f32 m48, x, m3c, y, m54, z, m4c, m40, m58, m50, m44, m5c;
