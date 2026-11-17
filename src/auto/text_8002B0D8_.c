@@ -1530,8 +1530,9 @@ double fn_8002EFB8(void) {
     return __ieee754_log();
 }
 
-void fn_8002EFBC(void) {
-    __ieee754_pow();
+/* MSL pow() wrapper: tail-call the fdlibm power kernel on x and y. */
+double fn_8002EFBC(double x, double y) {
+    return __ieee754_pow(x, y);
 }
 
 /* IEEE 754 double fields as MSL's e_sqrt.c uses them: a double is the word pair
