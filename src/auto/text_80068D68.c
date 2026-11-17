@@ -4977,7 +4977,8 @@ void fn_80070820(void) {
 }
 
 void fn_80070844(void *p_msg) {
-    GKI_send_msg(2, 0, p_msg);
+    /* Post a message to the A2DP media task's mailbox 0. */
+    GKI_send_msg(A2DP_MEDIA_TASK, TASK_MBOX_0, p_msg);
 }
 
 void fn_80070854(void) {
