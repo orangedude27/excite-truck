@@ -22,9 +22,6 @@
 #include "revolution/WPAD/WPAD.h"
 #include "revolution/WPAD/WPADInternal.h"
 
-static inline s32 WPADiGetBackIndex(const WPADCommandQueue* pQueue) {
-    return pQueue->back;
-}
 
 extern void DBPrintf_80068D68(const char* pFmt, ...);
 extern volatile u16 lbl_80560CC8, lbl_80560CCA, lbl_80560CCC, lbl_80560CCE;
@@ -5269,6 +5266,7 @@ BOOL fn_80063744(WPADCommandQueue *p, u8 idx, u32 val1, WPADCallback callback) {
     BOOL enabled;
     BOOL innerEnabled;
     s8 diff;
+    s32 backIndex;
     s32 index;
     s32 lastIndex;
     s32 wrapMask;
@@ -5300,7 +5298,8 @@ BOOL fn_80063744(WPADCommandQueue *p, u8 idx, u32 val1, WPADCallback callback) {
     }
     memset(p->buffer + (s8)p->back, 0, sizeof(WPADCommand));
     memcpy(p->buffer + (s8)p->back, (u8 *)buffer + 0x30, sizeof(WPADCommand));
-    index = p->back;
+    backIndex = p->back;
+    index = backIndex;
     lastIndex = p->capacity - 1;
     wrapMask = ~((index - lastIndex) | (lastIndex - index)) >> 31;
     p->back = (index + 1) & ~wrapMask;
