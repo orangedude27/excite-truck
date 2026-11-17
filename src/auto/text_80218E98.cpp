@@ -9410,8 +9410,9 @@ extern "C" s32 fn_80229CA4(s32 arg0) {
 }
 
 extern "C" s32 fn_80229CAC(s32);
-extern "C" s32 fn_80229CAC(s32 arg0) {
-    return arg0 + 0x254;
+extern "C" s32 fn_80229CAC(s32 base) {
+    /* Return the address of a field at offset 0x254 within a UI widget (base + 0x254). */
+    return base + 0x254;
 }
 
 extern "C" void fn_80229CB4(void *widget) {
