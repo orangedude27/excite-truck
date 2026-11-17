@@ -106,6 +106,7 @@ extern "C" int fn_802B3FC4(void *item) {
 }
 #pragma cplusplus reset
 #pragma pop
+/* Increment the 16-bit counter held in lbl_8055F9CC. */
 void fn_802B4004(void) {
     lbl_8055F9CC += 1;
 }
