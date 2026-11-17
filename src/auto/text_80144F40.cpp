@@ -2372,7 +2372,8 @@ extern "C" void fn_80148610(void *obj) {
     *enabled = !*enabled;
 }
 
-extern "C" u8 fn_80148624(void *arg0) { return ((u8 *)arg0)[4]; }
+/* Return this object's "enabled" boolean flag (the byte at offset 4). */
+extern "C" u8 fn_80148624(void *obj) { return ((u8 *)obj)[4]; }
 
 extern "C" s32 fn_80127A50(void *);
 extern "C" void fn_80010B80(s32, f32, f32, f32, f32);
