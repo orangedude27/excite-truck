@@ -104,7 +104,7 @@ s32 fn_801D2C20(s32 arg0) {
 extern u8 lbl_80438898[];
 extern f32 lbl_8055E3C8;
 extern void fn_801796CC(s32, f32 *, s32);
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     struct Temp {
         f32 position[3];
