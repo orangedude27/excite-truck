@@ -303,6 +303,7 @@ extern "C" void fn_80208E90(void *objectPtr, int mode) {
 #pragma cplusplus reset
 
 #pragma cplusplus reset
+/* Return the effective master volume (relative to the configured effects volume), recomputed by fn_80208A50 from the active mixer volume handles. */
 float fn_80209028(void) {
     return lbl_8055B4D4;
 }
