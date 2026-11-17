@@ -15,6 +15,7 @@ extern void *fn_80276A44();
 extern void fn_8026A4A0(int, void *, float *);
 extern void fn_80276098(void *, void *, float, float, float, int, int);
 extern void *memcpy(void *, const void *, unsigned int);
+#pragma dont_inline on
 #pragma scheduling invalid_target
 /* Returns 1 when the camera mode is one of the chase/replay modes fn_80276DC8
  * keeps as-is (4, 5, 6, 9 and 23); 0 for a mode that needs the default fallback. */
@@ -404,6 +405,7 @@ void fn_80276D3C(int unused, int mode) {
     }
 }
 
+#pragma dont_inline fn_80276068
 void fn_80276DC8(int arg0) {
     struct TruckState *dst;
     struct TruckState *src;
@@ -614,9 +616,9 @@ void fn_80276DC8(int arg0) {
     mag = PSVECMag(&input);
     if (mag > lbl_8056406C) {
         float inv = lbl_8056404C / mag;
-        float x = input.x * inv;
-        float y = input.y * inv;
-        float z = input.z * inv;
+        float x = inv * input.x;
+        float y = inv * input.y;
+        float z = inv * input.z;
         float s = (float)sin(mag);
         float c = (float)cos(mag);
         float t = lbl_8056404C - c;
@@ -648,7 +650,6 @@ void fn_80276DC8(int arg0) {
 
     fn_80276098((char *)src + 0x58, rot, src->unk_BC, lbl_80564068 * lbl_802FA818[6], lbl_80564060, arg0, 0x22);
 }
-
 /* Return a camera blend's interpolation factor (elapsed / duration), or -1.0f if it is inactive. */
 float fn_80277704(int blendIndex) {
     volatile unsigned char *blends = (volatile unsigned char *)&gCameraBlends;
