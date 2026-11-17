@@ -1129,7 +1129,9 @@ void fn_80190F90(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80190F94(void *arg0) {
+/* Thunk: dispatch virtual method f12 on the child object referenced at +0x10
+ * of holder. The two leading CodeWarrior vtable slots put f12 at offset 0x38. */
+extern "C" void fn_80190F94(void *holder) {
     class VTable {
     public:
         virtual void f0();
@@ -1146,8 +1148,8 @@ extern "C" void fn_80190F94(void *arg0) {
         virtual void f11();
         virtual void f12();
     };
-    VTable *obj = *(VTable **)((char *)arg0 + 0x10);
-    obj->f12();
+    VTable *child = *(VTable **)((char *)holder + 0x10);
+    child->f12();
 }
 
 #pragma cplusplus on
