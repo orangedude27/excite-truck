@@ -543,6 +543,7 @@ extern int lbl_8055E6D4;
 #pragma push
 #pragma small_data off
 void fn_801B5274(void) {
+    #pragma scheduling invalid_target
     int n = 0x40;
     memset((char *)&lbl_80435C70 + 0x208, 0, n);
     *(int *)((char *)&lbl_80435C70 + 0x200) = 0;
