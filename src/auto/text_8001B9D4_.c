@@ -1466,7 +1466,8 @@ void fn_8001D728(s32 slot, s32 event) {
 #undef Debug_printf
 }
 void fn_8001D7A4(void) {
-
+    /* One-time statistics initialization hook, called by the 'Stat' memory-card
+     * callback on the very first load of the section; a no-op in this build. */
 }
 #pragma paired off
 #pragma paired_single off
