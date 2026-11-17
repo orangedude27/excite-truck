@@ -1258,9 +1258,10 @@ int fn_802AFFA8(int arg0, int arg1) {
 #pragma scheduling on
 
 void fn_802B0024(void *arg0, short arg1) {
-    unsigned short temp;
-    *(unsigned short *)((char *)arg0 + 4) = 0;
-    if (*(unsigned short *)((char *)arg0 + 6) > 0) {
+    u16 count = 0;
+    u32 temp;
+    *(unsigned short *)((char *)arg0 + 4) = count;
+    if (count < *(unsigned short *)((char *)arg0 + 6)) {
         *(short *)*(void **)arg0 = 0;
         *(unsigned short *)((char *)arg0 + 4) = 1;
     }
@@ -1539,6 +1540,9 @@ void* fn_802B05DC(void) {
 }
 
 char fn_802B05E4(void) {
+    /* Returns lbl_8055F980, the startup flag (set by fn_8012C33C on
+     * "swlmap.tex") recording whether the soft-water map texture is present;
+     * callers use it to pick the no-texture fallback when it is 0. */
     return lbl_8055F980;
 }
 
