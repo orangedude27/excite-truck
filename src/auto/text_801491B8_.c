@@ -2164,6 +2164,7 @@ extern "C" s32 fn_8014E708(s32 index) {
     return 0;
 }
 #pragma cplusplus reset
+/* Trivial stub callback in the bonus-entry group; always returns 0 (false). */
 s32 fn_8014E738(void) { return 0; }
 
 #pragma processor 750
