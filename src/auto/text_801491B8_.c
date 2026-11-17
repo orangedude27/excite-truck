@@ -4156,6 +4156,7 @@ void fn_8015474C(void) {
 
 }
 
+/* Fourth and last of the empty default handlers at 0x80154744-0x80154750; no-op. */
 void fn_80154750(void) {
 
 }
