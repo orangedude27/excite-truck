@@ -191,6 +191,9 @@ void *fn_8017D688(void) {
     return obj;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
 #pragma ppc_psq_save off
