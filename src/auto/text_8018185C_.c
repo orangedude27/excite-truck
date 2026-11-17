@@ -131,6 +131,31 @@ extern double fn_8002EFB4(float, double);
 extern double lbl_80561F20, lbl_80561F30, lbl_80561F40;
 extern float lbl_80561F38, lbl_80561F3C, lbl_80561F48, lbl_80561F4C, lbl_80561F50;
 typedef struct Mtx3x4Words { int value[12]; } Mtx3x4Words;
+typedef struct PhysParamA {
+    int unk00;
+    unsigned char bytes[0x40];
+    char name[0x20];
+    int unk64, unk68, unk6C;
+    unsigned char unk70;
+    int unk74;
+} PhysParamA;
+typedef struct PhysParamB {
+    int words[16];
+    short unk40;
+    short unk42;
+    int unk44, unk48, unk4C;
+} PhysParamB;
+typedef struct PhysRecord {
+    unsigned char pad[0x18];
+    float value;
+    unsigned char pad2[8];
+} PhysRecord;
+typedef struct PhysState {
+    float m[32];
+    PhysRecord rec[4];
+    float g[7];
+    int tail[3];
+} PhysState;
 #pragma cplusplus on
 struct BA54Obj {
     virtual void unused0();
