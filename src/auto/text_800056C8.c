@@ -1894,8 +1894,11 @@ void fn_80007BBC(void) {
 }
 
 extern u8 lbl_802FB630[];
+/* Returns the "ArenaOverlay" scene name string. */
 void *fn_80007BDC(void) {
-    return lbl_802FB630;
+    #define s_arenaOverlayName lbl_802FB630
+    return s_arenaOverlayName;
+    #undef s_arenaOverlayName
 }
 
 void fn_80007BE8(void) {
