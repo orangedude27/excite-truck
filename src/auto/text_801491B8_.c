@@ -3826,7 +3826,10 @@ extern "C" void fn_80153C44(void *self, s32 id) {
 #pragma use_lmw_stmw reset
 #pragma cplusplus reset
 
-u32 fn_80153CF8(void) { return 1; }
+u32 fn_80153CF8(void) {
+    /* Constant predicate (returns 1 / true); likely a virtual getter reached through a dispatch table. */
+    return 1;
+}
 
 extern void *fn_801E7E3C(void);
 extern void fn_8000FBE4(void);
