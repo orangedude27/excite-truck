@@ -1173,39 +1173,42 @@ done:
 #pragma opt_loop_invariants off
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-void *fn_8024B73C(void *arg0, const char *arg1, void *arg2) {
+void *fn_8024B73C(void *soundList, const char *searchName, void *entryTable) {
     extern char lbl_80343B70[];
     void fn_80236008(void *, s32, s32);
     void fn_80236134(void *, s32, s32);
     s32 fn_8024B178(s32);
     char *entry;
-    s32 offset, index;
-    *(s32 *)((char *)arg0 + 0x14) = 0;
-    *(void **)arg0 = lbl_80343B70;
-    *(void **)((char *)arg0 + 0x18) = (char *)arg0 + 0x24;
-    *(s32 *)((char *)arg0 + 0x20) = 10;
-    *(s32 *)((char *)arg0 + 0x1C) = 0;
-    fn_80236008((char *)arg0 + 0x4C, 10, 0);
+    s32 byteOffset, index;
+    /* Build a sound-archive search result: set up its vtable, match array (capacity
+     * 10) and name pool, record every entry whose name equals searchName, then
+     * clear the current-selection fields. */
+    *(s32 *)((char *)soundList + 0x14) = 0;
+    *(void **)soundList = lbl_80343B70;
+    *(void **)((char *)soundList + 0x18) = (char *)soundList + 0x24;
+    *(s32 *)((char *)soundList + 0x20) = 10;
+    *(s32 *)((char *)soundList + 0x1C) = 0;
+    fn_80236008((char *)soundList + 0x4C, 10, 0);
     index = 0;
-    offset = 0;
-    while (index < *(s32 *)((char *)arg2 + 4)) {
-        entry = *(char **)arg2 + offset;
-        if (stricmp(arg1, *(char **)(entry + 0xC)) == 0) {
-            register s32 n;
-            register void **array;
-            n = *(s32 *)((char *)arg0 + 0x1C);
-            array = *(void ***)((char *)arg0 + 0x18);
-            *(s32 *)((char *)arg0 + 0x1C) = n + 1;
-            array[n] = entry;
-            fn_80236134((char *)arg0 + 0x4C, *(s32 *)entry, fn_8024B178(*(s32 *)entry));
+    byteOffset = 0;
+    while (index < *(s32 *)((char *)entryTable + 4)) {
+        entry = *(char **)entryTable + byteOffset;
+        if (stricmp(searchName, *(char **)(entry + 0xC)) == 0) {
+            register s32 matchCount;
+            register void **matches;
+            matchCount = *(s32 *)((char *)soundList + 0x1C);
+            matches = *(void ***)((char *)soundList + 0x18);
+            *(s32 *)((char *)soundList + 0x1C) = matchCount + 1;
+            matches[matchCount] = entry;
+            fn_80236134((char *)soundList + 0x4C, *(s32 *)entry, fn_8024B178(*(s32 *)entry));
         }
-        offset += 0x18;
+        byteOffset += 0x18;
         index++;
     }
-    *(char *)((char *)arg0 + 0x64) = 0;
-    *(s32 *)((char *)arg0 + 0x98) = -1;
-    *(s32 *)((char *)arg0 + 0x9C) = -1;
-    return arg0;
+    *(char *)((char *)soundList + 0x64) = 0;
+    *(s32 *)((char *)soundList + 0x98) = -1;
+    *(s32 *)((char *)soundList + 0x9C) = -1;
+    return soundList;
 }
 #pragma pop
 void fn_8024B830(void *container, s32 targetId) {
