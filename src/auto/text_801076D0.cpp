@@ -1520,8 +1520,9 @@ extern "C" s32 fn_8010CBAC(void *self, void *arg0, s32 arg1, void *arg2) {
 }
 
 extern "C" void lbl_80329508(void);
-extern "C" void fn_8010D0E0(void **arg0) {
-    *arg0 = (void *)&lbl_80329508;
+extern "C" void fn_8010D0E0(void **outVtable) {
+    /* Write this class's vtable address (lbl_80329508) through outVtable. */
+    *outVtable = (void *)&lbl_80329508;
 }
 
 extern "C" s32 fn_8010D0F0(s32 object, s32 deleteFlag) {
