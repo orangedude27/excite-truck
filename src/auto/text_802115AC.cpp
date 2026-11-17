@@ -2770,8 +2770,10 @@ extern "C" s32 fn_80215BC8(WidgetRect *rect, s32 x, s32 y) {
     return inside;
 }
 
+/* Returns the width (right minus left) of a widget's rectangle. */
 extern "C" s32 fn_80215C08(void *arg0) {
-    return *(s32 *)((char *)arg0 + 0xC) - *(s32 *)((char *)arg0 + 4);
+    WidgetRect *rect = (WidgetRect *)arg0;
+    return rect->right - rect->left;
 }
 
 extern "C" void fn_80215C18(void *arg0) {
