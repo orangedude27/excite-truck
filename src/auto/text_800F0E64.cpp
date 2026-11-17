@@ -7806,8 +7806,9 @@ extern "C" void fn_800FD8A8(void *player, float value) {
     *(float *)((char *)player + 0x450) = value;
 }
 
-extern "C" void fn_800FD8B0(void *arg0, float farg0) {
-    *(float *)((char *)arg0 + 0x43C) = farg0;
+/* Set this sound player's float field at +0x43C (paired with getter fn_800FD878). */
+extern "C" void fn_800FD8B0(void *player, float value) {
+    *(float *)((char *)player + 0x43C) = value;
 }
 
 /* Return nonzero when the sound stream player is paused (its flag at +0x4B). */
