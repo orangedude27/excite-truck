@@ -404,11 +404,10 @@ void *fn_80266120(void *cursor) {
     return cursor;
 }
 
-#pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_80266150(void *arg0) {
     int zero = 0;
-    float f0 = *(volatile float *)&lbl_80563C2C;
+    float f0 = lbl_80563C2C;
     float f1;
     *(int *)((char *)arg0 + 4) = zero;
     *(int *)((char *)arg0 + 0) = zero;
@@ -416,7 +415,6 @@ void fn_80266150(void *arg0) {
     *(float *)((char *)arg0 + 8) = f1;
     *(float *)((char *)arg0 + 0xC) = f0;
 }
-#pragma pop
 
 void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     float temp_f0;
@@ -447,7 +445,7 @@ void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     temp_r0_2 = *(int *)((char *)arg0 + 4);
     temp_r0 = arg1 - temp_r0;
     *(int *)((char *)arg0 + 0) = arg1;
-    temp_r0 += temp_r0_2;
+    temp_r0 = temp_r0_2 + temp_r0;
     *(int *)((char *)arg0 + 4) = temp_r0;
     var_f4 = lbl_80563C2C;
     temp_f0 = (float)lbl_8055C4B4;
@@ -503,8 +501,6 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
     float rot[9];
     Res_80266388 r;
     Res_80266388 r2;
-    volatile float w[3];
-    float v[3];
     float p2[2];
     float q[2];
     float t9, t11, tq0, tq2;
@@ -543,29 +539,18 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
         if (sel != 0) {
             t = (*(float *)(sel + 0x25CC) - lbl_8055C4D0) / (lbl_8055C4D4 - lbl_8055C4D0);
             a = lbl_80563C2C;
-            if (a < t) {
-            } else {
-                a = t;
-            }
-            if (a > lbl_80563C20) {
-            } else {
-                a = lbl_80563C20;
-            }
+            if (a >= t) a = t;
+            if (a < lbl_80563C20) a = lbl_80563C20;
             u = (best - lbl_8055F49C) / (lbl_80563C20 - lbl_8055F49C);
             ka = lbl_80563C20 + a * lbl_80563C2C;
             b = lbl_80563C2C;
-            if (b < u) {
-            } else {
-                b = u;
-            }
-            if (b > lbl_80563C20) {
-            } else {
-                b = lbl_80563C20;
-            }
+            if (b >= u) b = u;
+            if (b < lbl_80563C20) b = lbl_80563C20;
             kb = lbl_80563C20 + b * lbl_80563C2C;
             s1 = lbl_8055C4D8 * (ka * kb);
             s2 = lbl_8055C4DC * (ka * kb);
             if (lbl_8055F498 != 0) {
+                volatile float w[3];
                 double c1 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
                 double c2 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
                 double c3 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
@@ -575,6 +560,7 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
                 matrix[11] = matrix[11] + (float)c1;
             }
             if (lbl_8055C4C8 != 0) {
+                float v[3];
                 float mag, x, y, z, sn, cs, one, scale;
                 double c1 = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
                 double c2 = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
@@ -2119,6 +2105,8 @@ int fn_8026A368(int cameraIndex) {
 int fn_802678C0(void) {
     return (int)&((Camera *)fn_80267EE4())->transform;
 }
+/* Returns lbl_8055F488 (sSpinActive): nonzero while a camera spin
+ * (fn_80267EF8) is in progress. */
 char fn_8026A38C(void) {
     return lbl_8055F488;
 }
