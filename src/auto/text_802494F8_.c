@@ -324,8 +324,10 @@ void fn_8024A4B8(const char** lhs, const char** rhs) {
 }
 
 s32 fn_8024974C();
-void fn_8024A4C4(s32 arg0, s32 arg1, s32 arg2) {
-    fn_8024974C(arg0, arg1, arg2, 0);
+/* Run the selection-menu setup with the conditional filter disabled (accept
+ * all), passing through the three output slots that receive the selection. */
+void fn_8024A4C4(s32 out0, s32 out1, s32 out2) {
+    fn_8024974C(out0, out1, out2, 0);
 }
 
 extern int fn_80012818(void);
@@ -666,6 +668,9 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     register char *name = lbl_80343998;
     register s32 zero = 0;
     register s32 three = 3;
+    register s32 five = 5;
+    register s32 minusOne = -1;
+    register s32 hex12 = 0x12;
     register s32 *configStackPointer;
     s32 result;
 
@@ -680,7 +685,7 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     configStackPointer[49] = zero;
     configStackPointer[46] = (s32)&lbl_8055BF68;
     configStackPointer[48] = (s32)work;
-    configStackPointer[47] = 5;
+    configStackPointer[47] = five;
     configStackPointer[50] = zero;
 
     configStackPointer[53] = fn_8024B87C(work, 0);
@@ -739,7 +744,7 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     configStackPointer[100] = zero;
 
     configStackPointer[101] = (s32)(name + 0xCC);
-    configStackPointer[102] = 0x12;
+    configStackPointer[102] = hex12;
     configStackPointer[103] = fn_8024B8CC((s32)work);
     configStackPointer[104] = zero;
     configStackPointer[105] = (s32)work;
@@ -756,7 +761,7 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     configStackPointer[116] = (s32)&lbl_8055B860;
     configStackPointer[117] = 6;
     configStackPointer[118] = zero;
-    configStackPointer[119] = -1;
+    configStackPointer[119] = minusOne;
     configStackPointer[120] = 0x1B;
     configStackPointer[121] = lbl_80498998[0];
     configStackPointer[122] = lbl_80498998[1];
