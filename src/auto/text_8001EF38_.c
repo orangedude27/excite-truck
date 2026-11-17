@@ -113,7 +113,10 @@ void fn_8001EF38(void) {
 }
 
 void fn_8001EF5C(void) {
-    fn_8001F7E4();
+#define AddPendingCounterValue fn_8001F7E4
+    /* Tail-call thunk: add `amount` to lifetime counter `counterId` in this session's pending achievements block. */
+    AddPendingCounterValue();
+#undef AddPendingCounterValue
 }
 
 void fn_8001EF60(void* alarm) {
