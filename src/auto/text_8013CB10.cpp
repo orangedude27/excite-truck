@@ -3447,9 +3447,9 @@ public:
     virtual void f36(); virtual void f37(); virtual void f38(); virtual void f39();
     virtual void f40(); virtual void f41(); virtual void f42(); virtual void f43();
 };
-/* Thunk: forward the call to virtual slot 41 (f41) of the object. */
-extern "C" void fn_80143398(void *self) {
-    ((VTable43398 *)self)->f41();
+/* Forward a call through the object's vtable slot 41 (offset 0xAC). */
+extern "C" void fn_80143398(void *obj) {
+    ((VTable43398 *)obj)->f41();
 }
 
 #pragma push
