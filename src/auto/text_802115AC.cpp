@@ -2230,7 +2230,10 @@ extern "C" void fn_80215214(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_80214FE0(arg0, arg1, arg2, 1);
 }
 
-extern "C" void fn_8021521C(s32 arg0, s32 arg1, s32 arg2) { fn_80214FE0(arg0, arg1, 0, arg2); }
+extern "C" void fn_8021521C(s32 headingMsg, s32 bodyMsg, s32 flag) {
+    /* Show a confirmation message box with the given heading/body message ids. */
+    fn_80214FE0(headingMsg, bodyMsg, 0, flag);
+}
 
 extern "C" s32 fn_80215228(void) {
     /* Return TRUE when the stored last-layout name matches the current layout name (case-insensitive). */
