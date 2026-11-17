@@ -333,18 +333,21 @@ void fn_8017B6D4(RigidBody * __restrict body, Vec * __restrict pointVel, const V
 }
 extern void PSVECCrossProduct(const float *, const float *, float *);
 #pragma scheduling on
-void fn_8017B778(void *__restrict arg0, float *__restrict arg1, float *__restrict arg2) {
-    float lever[3];
-    float px = arg2[0];
-    float py = arg2[1];
-    float pz = arg2[2];
-    lever[0] = px - *(float *)((char *)arg0 + 0x60);
-    lever[1] = py - *(float *)((char *)arg0 + 0x64);
-    lever[2] = pz - *(float *)((char *)arg0 + 0x68);
-    PSVECCrossProduct((const float *)((char *)arg0 + 0x178), lever, arg1);
-    arg1[0] += *(float *)((char *)arg0 + 0x16C);
-    arg1[1] += *(float *)((char *)arg0 + 0x170);
-    arg1[2] += *(float *)((char *)arg0 + 0x174);
+/* Velocity of a world point on a moving rigid body: cross the body's angular
+   velocity with the lever from its position to the point, then add its linear
+   velocity. Uses the body's second velocity/angular-velocity pair. */
+void fn_8017B778(RigidBody * __restrict body, Vec * __restrict pointVel, const Vec * __restrict worldPoint) {
+    Vec lever;
+    float px = worldPoint->x;
+    float py = worldPoint->y;
+    float pz = worldPoint->z;
+    lever.x = px - body->position.x;
+    lever.y = py - body->position.y;
+    lever.z = pz - body->position.z;
+    PSVECCrossProduct((const float *)&body->angularVelocity2, (const float *)&lever, (float *)pointVel);
+    pointVel->x += body->velocity2.x;
+    pointVel->y += body->velocity2.y;
+    pointVel->z += body->velocity2.z;
 }
 extern float lbl_80561BB8, lbl_80561BBC, lbl_80561BC0, lbl_80561BC4, lbl_80561BC8, lbl_80561BCC, lbl_80561BD0, lbl_80561BD4, lbl_80561BD8;
 extern void fn_8017D0C8(void *);
