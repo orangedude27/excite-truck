@@ -154,8 +154,9 @@ void fn_801AE628(int arg0) {
         }
     }
 }
-int fn_801AE790(void *arg0) {
-    return *((unsigned char *)arg0 + 0x70) & 3;
+/* Return the placement state (low 2 bits of byte 0x70) of a race competitor; 0 means still unplaced. */
+int fn_801AE790(void *entry) {
+    return ((Ent78 *)entry)->f70 & 3;
 }
 #pragma dont_inline reset
 
