@@ -356,10 +356,11 @@ void *fn_80297814(FlipBookElem *elem, s32 deleteFlag) {
     return elem;
 }
 
+/* FlipBookElem::isValid -- nonzero when this element holds a FlipBook collection. */
 s32 fn_8029788C(void *arg0) {
-    s32 val = *(s32 *)((u8 *)arg0 + 4);
-    s32 neg = -val;
-    return (neg | val) >> 31 & 1;
+    s32 book = *(s32 *)((u8 *)arg0 + 4);
+    s32 neg = -book;
+    return (neg | book) >> 31 & 1;
 }
 
 extern s32 fn_80296D2C(s32);
