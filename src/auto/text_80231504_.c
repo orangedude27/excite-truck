@@ -635,6 +635,12 @@ extern void fn_80233DD8(s32 *, s32);
 extern void fn_80233E34(s32 *, s32, s32);
 extern void fn_80233EBC(void);
 extern void fn_80233EC0(void *, s32, f32, f32, f32, f32, f32, f32);
+static inline u8 *skip_utf8_80233354(u8 *p) {
+    u8 c = *p;
+    if ((c & 0xF0) == 0xE0) return p + 3;
+    if ((c & 0xE0) == 0xC0) return p + 2;
+    return p + 1;
+}
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -1249,8 +1255,12 @@ void fn_80233354(u8 *text, u8 *ctx, s32 arg2, s32 flags, f32 x, f32 y, f32 sx, f
     if ((s8)*text != 0) {
         u8 c0 = *text;
         charW = (f32)ctx[4] * sx;
-        if ((c0 & 0xF0) == 0xE0) {
-        } else if ((c0 & 0xE0) == 0xC0) {
+        switch (c0 & 0xF0) {
+        case 0xE0:
+            break;
+        default:
+            if ((c0 & 0xE0) == 0xC0) { }
+            break;
         }
         if (flags & 1) {
         } else if (flags & 2) {
