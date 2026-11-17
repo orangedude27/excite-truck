@@ -1629,8 +1629,9 @@ void fn_80181720(void *arg0) {
     }
 }
 
-int fn_8018176C(void *arg0) {
-    return *(unsigned char *)((char *)arg0 + 0x58);
+/* Return the unsigned byte field at offset 0x58 of this object. */
+int fn_8018176C(void *object) {
+    return *(unsigned char *)((char *)object + 0x58);
 }
 
 int fn_80181774(void *arg0) {
