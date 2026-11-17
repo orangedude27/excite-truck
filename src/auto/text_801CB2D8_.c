@@ -802,8 +802,14 @@ void *fn_801CC7A0(void *arg0) {
 }
 
 void fn_801CC8EC(void *arg0) {
-    *(void **)((char *)arg0 + 4) = arg0;
-    *(int *)arg0 = 0;
+    /* Initialize the stat-node free-list head: empty head at +0 and tail pointing back at the head at +4. */
+    typedef struct {
+        void *head;
+        void **tail;
+    } FreeListHead;
+    FreeListHead *list = (FreeListHead *)arg0;
+    list->tail = &list->head;
+    list->head = 0;
 }
 
 void fn_801CC8FC(void *object) {
