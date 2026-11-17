@@ -2014,9 +2014,11 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
     register SeqTrack *rtrack = track;
     register const char *rbase = (const char*)::lbl_80323268;
     s32 res;
-    if (type == (SeqArgType)2) {
-        s32 count = 0;
+    switch (type) {
+    case (SeqArgType)2: {
+        s32 count;
         res = 0;
+        count = 0;
         for (;;) {
             const u8 *p;
             u8 b;
@@ -2028,48 +2030,55 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
             *rpp = p + 1;
             b = *p;
             res |= (b & 0x7F);
-            if ((b & 0x80) == 0) break;
+            if ((b & 0x80) == 0) goto done;
             count++;
         }
-    } else if (type == (SeqArgType)0) {
+    }
+    case (SeqArgType)0: {
         const u8 *p = *rpp;
         *rpp = p + 1;
         res = *p;
-    } else if (type == (SeqArgType)1) {
+        break;
+    }
+    case (SeqArgType)1: {
         const u8 *p = *rpp;
-        u8 b0 = *p;
         *rpp = p + 1;
-        u8 b1 = *(p + 1);
+        u8 b0 = *p;
         *rpp = p + 2;
+        u8 b1 = *(p + 1);
         res = (b0 << 8) | b1;
-    } else if (type == (SeqArgType)4) {
+        break;
+    }
+    case (SeqArgType)4: {
         const u8 *p = *rpp;
+        *rpp = p + 1;
         u8 v = *p;
         s16 *ptr;
-        *rpp = p + 1;
         if (v > 0x30) {
             Panic__Q26nw4hbm2dbFPCciPCce(rbase, 0x370, rbase + 0xC8, v, 0, 0x30);
         }
         if (v < 0x20) {
-            ptr = GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi((void*)rplayer, v);
+            ptr = (s16*)GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi((void*)rplayer, v);
         } else if (v < 0x30) {
-            ptr = GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi((void*)rtrack, v - 0x20);
+            ptr = (s16*)GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi((void*)rtrack, v - 0x20);
         } else {
             ptr = 0;
         }
         if (ptr == 0) return 0;
         res = *ptr;
-    } else if (type == (SeqArgType)3) {
+        break;
+    }
+    case (SeqArgType)3: {
         const u8 *p = *rpp;
-        u8 b0 = *p;
         *rpp = p + 1;
-        u8 b1 = *(p + 1);
+        u8 b0 = *p;
         *rpp = p + 2;
+        u8 b1 = *(p + 1);
         s16 first = (s16)((b0 << 8) | b1);
-        u8 b2 = *(p + 2);
         *rpp = p + 3;
-        u8 b3 = *(p + 3);
+        u8 b2 = *(p + 2);
         *rpp = p + 4;
+        u8 b3 = *(p + 3);
         s16 second = (s16)((b2 << 8) | b3);
         u32 rnd = fn_800FEB9C();
         u32 low = rnd & 0xFFFF;
@@ -2077,9 +2086,13 @@ s32 nw4hbm::snd::detail::MmlParser::ReadArg(const u8 **pp, SeqPlayer *player, Se
         s32 range = diff + 1;
         s32 scaled = (s32)(low * (u32)range) >> 16;
         res = (s32)first + scaled;
-    } else {
-        res = 0;
+        break;
     }
+    default:
+        res = 0;
+        break;
+    }
+done:
     return res;
 }
 #pragma pop
@@ -3228,65 +3241,68 @@ extern "C" void InvalidateData__Q46nw4hbm3snd6detail9SeqPlayerFPCvPCv(void *play
     extern u8 lbl_80323B28[], lbl_80323B3C[];
     extern u8 lbl_80324054[], lbl_80324030[];
     extern u8 lbl_80412A6C[];
-    extern void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
-    extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
-    extern void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
-    extern void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *, void *);
-    extern u32 OSDisableInterrupts(void);
-    extern void OSRestoreInterrupts(u32);
     struct Manager {
-        virtual void unused0();
-        virtual void unused1();
-        virtual void RemoveTrack(void *);
+        virtual void m0();
+        virtual void m1();
+        virtual void RemoveTrack(void*);
     };
-    u32 level = OSDisableInterrupts();
-    if (*(u8*)((u8*)player + 0x15) == 0) {
-        OSRestoreInterrupts(level);
-        return;
-    }
-    if (*(u8*)((u8*)player + 0x17) != 0) {
-        if (player == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324054, 0x233, (const char*)lbl_80324030);
-        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void*)lbl_80412A6C, (u8*)player + 0x100);
-    }
-    if (*(u8*)((u8*)player + 0x15) != 0) {
-        void *callbackObj = player;
-        if (player != 0) callbackObj = (u8*)player + 8;
-        void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-        UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, callbackObj);
-    }
-    OSRestoreInterrupts(level);
-    int i = 0;
-    u8 *entry = (u8*)player;
-    void *seq;
-    do {
-        if (i >= 0 && i < 16) {
-            seq = *(void**)(entry + 0x9C);
-            if (seq != 0) {
-                void **trackInfo = (void**)((u8*)seq + 0x50);
-                if (((const u8*)arg1 <= (u8*)trackInfo[0]) && ((u8*)trackInfo[0] < (u8*)arg2)) {
-                    level = OSDisableInterrupts();
-                    if (*(u8*)((u8*)player + 0x17) != 0) {
-                        if (player == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324054, 0x233, (const char*)lbl_80324030);
-                        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void*)lbl_80412A6C, (u8*)player + 0x100);
-                    }
-                    if (*(u8*)((u8*)player + 0x15) != 0) {
-                        void *callbackObj2 = player;
-                        if (player != 0) callbackObj2 = (u8*)player + 8;
-                        void *manager2 = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-                        UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager2, callbackObj2);
-                    }
-                    OSRestoreInterrupts(level);
-                    Close__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
-                    void *manager = *(void**)((u8*)player + 0x98);
-                    ((Manager*)manager)->RemoveTrack(*(void**)(entry + 0x9C));
-                    *(void**)(entry + 0x9C) = 0;
+    register void* seqPlayer = player;
+    register s32 index;
+    struct { u32 value; } interrupt;
+    u32& irqLevel = interrupt.value;
+    struct { u32 value; } interrupt2;
+    u32& level2 = interrupt2.value;
+    void* track;
+    s32 inRange;
+    void* cbManager;
+    void** trackInfo;
+    void* trackManager;
+    register u8* slotCursor;
+
+    irqLevel = OSDisableInterrupts();
+    if (*(u8*)((u8*)seqPlayer + 0x15) == 0) goto restore;
+    for (index = 0; index < 16; index++) {
+        u8* slot = (u8*)seqPlayer + index * 4;
+        track = index > 15 ? 0 : *(void**)(slot + 0x9C);
+        if (track != 0) {
+            trackInfo = (void**)((u8*)track + 0x50);
+            if ((const u8*)arg1 <= (u8*)trackInfo[0] && (u8*)trackInfo[0] <= (const u8*)arg2) {
+                level2 = OSDisableInterrupts();
+                if (*(u8*)((u8*)seqPlayer + 0x17) != 0) {
+                    if (seqPlayer == 0)
+                        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324054, 0x233, (const char*)lbl_80324030);
+                    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void*)lbl_80412A6C, (u8*)seqPlayer + 0x100);
                 }
+                if (*(u8*)((u8*)seqPlayer + 0x15) != 0) {
+                    index = (s32)seqPlayer;
+                    if (index != 0) index += 8;
+                    cbManager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+                    UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(cbManager, (void*)index);
+                }
+                OSRestoreInterrupts(level2);
+                index = 0;
+                slotCursor = (u8*)seqPlayer;
+                for (; index < 16; index++) {
+                    inRange = 0;
+                    if (index >= 0 && index < 16) inRange = 1;
+                    if (inRange == 0)
+                        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x2FD, (const char*)lbl_80323B3C, index, 0, 16);
+                    track = index > 15 ? 0 : *(void**)(slotCursor + 0x9C);
+                    if (track != 0) {
+                        Close__Q46nw4hbm3snd6detail8SeqTrackFv(track);
+                        trackManager = *(void**)((u8*)seqPlayer + 0x98);
+                        ((Manager*)trackManager)->RemoveTrack(*(void**)(slotCursor + 0x9C));
+                        *(void**)(slotCursor + 0x9C) = 0;
+                    }
+                    slotCursor += 4;
+                }
+                *(u8*)((u8*)seqPlayer + 0x15) = 0;
+                goto restore;
             }
         }
-        i++;
-        entry += 4;
-    } while (i < 16);
-    *(u8*)((u8*)player + 0x15) = 0;
+    }
+restore:
+    OSRestoreInterrupts(irqLevel);
 }
 
 // Returns the SeqTrack pointer at trackNo from the player's 16-entry track array at +0x9C, or 0 if out of range.
