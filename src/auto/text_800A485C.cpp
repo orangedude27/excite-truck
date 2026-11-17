@@ -9126,10 +9126,18 @@ extern "C" s32 fn_800B3304(void *left, void *right) {
     return fn_800A4AD0((u8 *)left, (u8 *)right) != 0;
 }
 
-extern "C" void fn_800B3330(void *arg0, s32 arg1, s32 arg2) {
-(*(s32 *)((u8 *)arg0 + 0)) = arg1;
-(*(s32 *)((u8 *)arg0 + 4)) = arg1;
-(*(s32 *)((u8 *)arg0 + 0xC)) = arg2;
+extern "C" void fn_800B3330(void *cursor, s32 firstChar, s32 code) {
+    /* Initialize a NAND path string cursor: pos and read both start at the
+     * first character, and code selects the encoding (1 = byte, 2 = Unicode). */
+    struct StrPos {
+        u8 *pos;   /* 0x00 */
+        u8 *read;  /* 0x04 */
+        u8 *end;   /* 0x08 */
+        u32 code;  /* 0x0C */
+    };
+    ((StrPos *)cursor)->pos = (u8 *)firstChar;
+    ((StrPos *)cursor)->read = (u8 *)firstChar;
+    ((StrPos *)cursor)->code = code;
 }
 
 extern "C" s32 VFiPFSTR_StrNCmp(s32, const void *, s32, s32, s32);
