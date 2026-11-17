@@ -1098,18 +1098,24 @@ extern char lbl_8033A1C8[];
 extern char lbl_8055B070[8];
 extern char lbl_8055B078[8];
 long fn_801EFF94(void *, long, long);
-#pragma push
 #pragma use_lmw_stmw off
-void fn_801EE974(void *arg0, void *arg1) {
+#pragma cplusplus on
+extern "C" void fn_801EE974(void *arg0, void *arg1) {
+    class VObj {
+    public:
+        virtual void *m0(void *);
+        virtual void *m1(void *);
+        virtual void *m2(void *);
+        virtual void *m3(void *);
+    };
     char *entries;
     char *out;
     long i;
     long flag;
-    void *object;
-    void *result;
-    void *(*method)(void *, void *);
-    out = arg1;
-    entries = arg0;
+    VObj *object;
+    VObj *result;
+    out = (char *)arg1;
+    entries = (char *)arg0;
     i = 0;
     do {
         flag = 0;
@@ -1119,15 +1125,13 @@ void fn_801EE974(void *arg0, void *arg1) {
         flag = 1;
     checked:
         if (flag) {
-            object = *(void **)(*(char **)((char *)arg0 + 0x188) + 0x2134);
-            method = *(void *(**)(void *, void *))((char *)*(void **)object + 8);
-            result = method(object, lbl_8055B070);
-            method = *(void *(**)(void *, void *))((char *)*(void **)result + 0x14);
-            result = method(result, lbl_8033A1C8);
+            object = (VObj *)*(void **)(*(char **)((char *)arg0 + 0x188) + 0x2134);
+            result = (VObj *)object->m0(lbl_8055B070);
+            result = (VObj *)result->m3(lbl_8033A1C8);
         } else {
-            object = *(void **)(*(char **)((char *)arg0 + 0x188) + 0x2134);
-            result = (*(void *(**)(void *, void *))((char *)*(void **)object + 8))(object, lbl_8055B078);
-            result = (*(void *(**)(void *, void *))((char *)*(void **)result + 0x14))(result, lbl_8033A1C8);
+            object = (VObj *)*(void **)(*(char **)((char *)arg0 + 0x188) + 0x2134);
+            result = (VObj *)object->m0(lbl_8055B078);
+            result = (VObj *)result->m3(lbl_8033A1C8);
         }
         *(long *)(entries + 0x4D4) = fn_801EFF94(result, *(long *)((char *)arg0 + 0x40), i);
         *(float *)(out + 0x10C) = fn_801F159C(*(long *)(entries + 0x4D4));
@@ -1136,7 +1140,7 @@ void fn_801EE974(void *arg0, void *arg1) {
         out += 4;
     } while (i < 4);
 }
-
+#pragma cplusplus reset
 extern void fn_801345D8(void *, int, const char *, ...);
 extern void *fn_80131810(void *);
 extern void fn_80131818(void *);
