@@ -886,8 +886,11 @@ void fn_802E2E38(int mode) {
 #pragma pop
 
 #pragma scheduling invalid_target
-void fn_802E300C(int arg0) {
-    fn_802E317C(lbl_8034CEE4, arg0);
+void fn_802E300C(int exitCode) {
+    /* Log "PlatExitProcess(%d)" with the given exit code. */
+#define KERNEL_LOG_PLAT_EXIT lbl_8034CEE4
+    fn_802E317C(KERNEL_LOG_PLAT_EXIT, exitCode);
+#undef KERNEL_LOG_PLAT_EXIT
 }
 #pragma scheduling on
 extern unsigned int fn_802E176C(unsigned int);
