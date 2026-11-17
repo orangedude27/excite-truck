@@ -1314,6 +1314,66 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
     }
     return result;
 }
+
+extern "C" s32 fn_801D5E94(void *arg0) {
+    struct Vec { f32 x, y, z; };
+    struct Obj {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5();
+        virtual void v8(s32);
+        virtual void v9(void *, void *);
+    };
+    char *self = (char *)arg0;
+    Vec pos, vec;
+    f32 b3c, b48, b40, b44, t50, t4c;
+    f32 d0, d1, d2;
+    f32 scale, amount;
+    f32 zero = lbl_80562ADC;
+    s32 offset, i;
+
+    if (*(s32 *)(self + 8) == 1) {
+        i = 0;
+        offset = 0;
+        while (i < *(s32 *)(self + 0x74)) {
+            scale = fn_80129DC4(4, lbl_80562ADC, lbl_80562AE0);
+            amount = fn_80129DC4(4, lbl_80562ADC, lbl_80562AE0);
+            t50 = *(f32 *)(self + 0x50);
+            b44 = *(f32 *)(self + 0x44);
+            t4c = *(f32 *)(self + 0x4C);
+            b40 = *(f32 *)(self + 0x40);
+            b48 = *(f32 *)(self + 0x48);
+            b3c = *(f32 *)(self + 0x3C);
+            d2 = b44 + amount * (t50 - b44);
+            d1 = b40 + amount * (t4c - b40);
+            d0 = b3c + amount * (b48 - b3c);
+            pos.x = d0; pos.y = d1; pos.z = d2;
+            scale = *(f32 *)(self + 0x60) + scale * (*(f32 *)(self + 0x64) - *(f32 *)(self + 0x60));
+            vec.x = zero; vec.y = zero; vec.z = zero;
+            if (lbl_80558DC4 >= (float)fabs(PSVECDotProduct(&pos, &pos)) ||
+                lbl_80558DC4 >= (float)fabs(scale)) {
+                Obj *obj = *(Obj **)(*(char **)(self + 0x70) + offset);
+                obj->v8(1);
+            } else {
+                Obj *obj;
+                PSVECNormalize(&pos, &pos);
+                vec.x = pos.x * scale; vec.y = pos.y * scale; vec.z = pos.z * scale;
+                obj = *(Obj **)(*(char **)(self + 0x70) + offset);
+                obj->v9(&vec, self + 0x54);
+            }
+            offset += 4;
+            i += 1;
+        }
+        if (*(s32 *)(self + 0x68) > 0) {
+            *(s32 *)(self + 8) = 2;
+            *(s32 *)(self + 0x6C) = lbl_8055E3C4;
+        } else {
+            *(s32 *)(self + 8) = 3;
+        }
+        return 1;
+    }
+    return 0;
+}
+
 #pragma cplusplus reset
 #pragma scheduling reset
 #pragma pop
@@ -2798,12 +2858,12 @@ void fn_801D7D20(void *arg0) {
                    *(int *)((char *)arg0 + 0x10);
         if (temp_r31 >= 0) {
             var_f6 = lbl_80562AE0;
-            temp_f1 = (float)*(int *)((char *)arg0 + 0x0C) - lbl_80562ADC;
+            temp_f1 = (float)*(int *)((char *)arg0 + 0x0C);
             target = *(float *)((char *)arg0 + 0x24);
             current = *(float *)((char *)arg0 + 0x20);
-            var_f6 = var_f6 < (((float)temp_r31 - lbl_80562ADC) / temp_f1)
+            var_f6 = var_f6 < (((float)temp_r31 - lbl_80562ADC) / (temp_f1 - lbl_80562ADC))
                          ? var_f6
-                         : ((float)temp_r31 - lbl_80562ADC) / temp_f1;
+                         : (((float)temp_r31 - lbl_80562ADC) / (temp_f1 - lbl_80562ADC));
             var_f6 = var_f6 > lbl_80562ADC ? var_f6 : lbl_80562ADC;
             value = current + var_f6 * (target - current);
             temp_r0 = *(int *)((char *)arg0 + 4);
