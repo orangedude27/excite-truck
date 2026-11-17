@@ -323,8 +323,9 @@ int fn_802E43D8(void *file, int pos) {
     return 0;
 }
 
-int fn_802E4400(void *arg0) {
-    return *(int *)((char *)arg0 + 0x84);
+/* Return the cached file length stored at offset 0x84 of the DVD file node (FileDisk::length). */
+int fn_802E4400(void *file) {
+    return *(int *)((char *)file + 0x84);
 }
 
 #pragma push
