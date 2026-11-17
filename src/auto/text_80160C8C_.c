@@ -3411,6 +3411,9 @@ extern "C" int fn_80165894(s32 unused0, s32 unused1, float *outValue, s32 index)
 #undef cacheDefaultValue
 }
 #pragma cplusplus off
+/* Placeholder handler for the challenge-list UI: always answers "yes".  Reached only
+ * through the module's callback table, and paired with fn_80165908, which always
+ * answers "no". */
 int fn_80165900(void) { return 1; }
 
 /* Default stub handler: returns 0 (companion to fn_80165900, which returns 1). */
