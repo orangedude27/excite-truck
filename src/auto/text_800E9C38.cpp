@@ -203,12 +203,9 @@ extern float lbl_80560FC4;
 extern void fn_800EB3E4(void *, void *, unsigned long, float);
 extern void fn_800EC890(void *);
 extern "C" void InitParam__Q46nw4hbm3snd6detail7ChannelFPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(void *arg0, void (*arg1)(void *, int, unsigned long), unsigned long arg2) {
-    float a = *(volatile float *)&lbl_80560FC0;
-    int one = 1;
-    int sixty = 0x3C;
-    float b = *(volatile float *)&lbl_80560FC4;
+    int zero = 0, one = 1, sixty = 0x3C;
     unsigned char ff = 0xFF;
-    int zero = 0;
+    float a = 0.0f, b = 1.0f;
     *(int *)((char *)arg0 + 0xE4) = zero;
     *(void (**)(void *, int, unsigned long))((char *)arg0 + 0xD8) = arg1;
     *(unsigned long *)((char *)arg0 + 0xDC) = arg2;
@@ -254,7 +251,7 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail7ChannelFPFPQ46nw4hbm3snd6detail7
     *(float *)((char *)arg0 + 0xA8) = a;
     *(int *)((char *)arg0 + 0xB0) = zero;
     *(int *)((char *)arg0 + 0xAC) = zero;
-    fn_800EB3E4((char *)arg0 + 8, arg1, arg2, b);
+    ((void (*)(void *))fn_800EB3E4)((char *)arg0 + 8);
     fn_800EC890((char *)arg0 + 0x20);
     *((unsigned char *)arg0 + 0x38) = 0;
 }
@@ -523,22 +520,25 @@ extern "C" int OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(int);
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void *, void **, void *);
 extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
-    void *voice, *callback;
     int enabled;
+    void *iterator;
     char *manager;
-    void *head, *tail, *iter;
+    void *voice, *callback;
+    void *head, *tail;
+    void *channel = arg0;
     enabled = OSDisableInterrupts();
-    voice = *(void **)((char *)arg0 + 0xE0);
+    voice = *(void **)((char *)channel + 0xE0);
     if (!voice) { OSRestoreInterrupts(enabled); return; }
     Stop__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
-    Free__Q46nw4hbm3snd6detail7AxVoiceFv(*(void **)((char *)arg0 + 0xE0));
-    int isActive = *(unsigned char *)((char *)arg0 + 0x3B);
+    Free__Q46nw4hbm3snd6detail7AxVoiceFv(*(void **)((char *)channel + 0xE0));
+
+    int active = *(unsigned char *)((char *)channel + 0x3B);
     int zero = 0;
-    *(int *)((char *)arg0 + 0xE0) = zero;
-    *(unsigned char *)((char *)arg0 + 0x39) = zero;
-    *(unsigned char *)((char *)arg0 + 0x3A) = zero;
-    if (isActive) {
-        *(unsigned char *)((char *)arg0 + 0x3B) = zero;
+    *(int *)((char *)channel + 0xE0) = zero;
+    *(unsigned char *)((char *)channel + 0x39) = zero;
+    *(unsigned char *)((char *)channel + 0x3A) = zero;
+    if (active) {
+        *(unsigned char *)((char *)channel + 0x3B) = zero;
         if ((signed char)lbl_8055DE28 == 0) {
             manager = lbl_80412778;
             *(volatile int *)manager = zero;
@@ -553,21 +553,21 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
             *(volatile int *)(manager + 0xC) = zero;
             *(void * volatile *)(manager + 0x10) = tail;
             *(void * volatile *)(manager + 0x14) = tail;
-            __register_global_object(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv, lbl_8040EC78, tail, (void *)0, head);
+            __register_global_object(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv, lbl_8040EC78, tail, (void *)zero, head);
             lbl_8055DE28 = 1;
         }
         manager = lbl_80412778;
-        if (!arg0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322A64,0x77,lbl_80322A3C);
+        if (!channel) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322A64,0x77,lbl_80322A3C);
         if (*(int *)(manager + 0xC)) {
-            if (!arg0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8,0x233,lbl_80322AB4);
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(manager+0xC,arg0);
-            if (!arg0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8,0x233,lbl_80322AB4);
-            iter = manager + 4;
-            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(manager,&iter,arg0);
+            if (!channel) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8,0x233,lbl_80322AB4);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(manager+0xC,channel);
+            if (!channel) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8,0x233,lbl_80322AB4);
+            iterator = manager + 4;
+            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(manager,&iterator,channel);
         }
     }
-    callback = *(void **)((char *)arg0+0xD8);
-    if (callback) ((void (*)(void *,int,unsigned long))callback)(arg0,0,*(unsigned long *)((char *)arg0+0xDC));
+    callback = *(void **)((char *)channel+0xD8);
+    if (callback) ((void (*)(void *,int,unsigned long))callback)(channel,0,*(unsigned long *)((char *)channel+0xDC));
     OSRestoreInterrupts(enabled);
 }
 
@@ -591,63 +591,51 @@ extern "C" void fn_800EA8A0(void *channel, int frameLimit, signed char slideFlag
 }
 
 extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7ChannelFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv(void *arg0, int arg1, void *arg2) {
+    int zero = 0;
     char *channel = (char *)arg2;
     char *manager;
-    void *head;
-    void *tail;
     void (*callback)(void *, int, unsigned long);
     if (channel == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803228E8, 0x1C4, lbl_80322924);
     switch (arg1) {
-    case 0:
-        arg1 = 2;
-        Free__Q46nw4hbm3snd6detail7AxVoiceFv(arg0);
-        break;
-    case 1:
-        arg1 = 3;
-        Free__Q46nw4hbm3snd6detail7AxVoiceFv(arg0);
-        break;
+    case 0: arg1 = 2; Free__Q46nw4hbm3snd6detail7AxVoiceFv(arg0); break;
+    case 1: arg1 = 3; Free__Q46nw4hbm3snd6detail7AxVoiceFv(arg0); break;
     case 2:
-    case 3:
-        arg1 = 1;
-        break;
-    default:
-        break;
+    case 3: arg1 = 1; break;
+    default: break;
     }
     callback = *(void (**)(void *, int, unsigned long))(channel + 0xD8);
-    if (callback)
-        callback(channel, arg1, *(unsigned long *)(channel + 0xDC));
-    *(int *)(channel + 0xE0) = 0;
-    channel[0x39] = 0;
-    channel[0x3A] = 0;
-    channel[0x3B] = 0;
+    if (callback) callback(channel, arg1, *(unsigned long *)(channel + 0xDC));
+    *(int *)(channel + 0xE0) = zero;
+    channel[0x39] = zero;
+    channel[0x3A] = zero;
+    channel[0x3B] = zero;
     if ((signed char)lbl_8055DE28 == 0) {
-        manager = lbl_80412778;
-        *(volatile int *)manager = 0;
-        head = manager + 4;
-        tail = manager + 0x10;
-        *(volatile void **)(manager + 4) = 0;
-        *(volatile void **)(manager + 8) = 0;
-        *(volatile void **)(manager + 0x10) = 0;
-        *(volatile void **)(manager + 0x14) = 0;
-        *(volatile void **)(manager + 4) = head;
-        *(volatile void **)(manager + 8) = head;
-        *(volatile int *)(manager + 0xC) = 0;
-        *(volatile void **)(manager + 0x10) = tail;
-        *(volatile void **)(manager + 0x14) = tail;
-        __register_global_object(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv,
-                                 lbl_8040EC78, tail, (void *)0, head);
+        ChannelManagerLayout *globalManager = (ChannelManagerLayout *)lbl_80412778;
+        *(volatile int *)lbl_80412778 = zero;
+        *(void * volatile *)((char *)globalManager + 0x4) = 0;
+        void *idleSentinel = &globalManager->idle.head;
+        void *activeSentinel = &globalManager->active.head;
+        *(void * volatile *)((char *)globalManager + 0x8) = 0;
+        *(void * volatile *)((char *)globalManager + 0x10) = 0;
+        *(void * volatile *)((char *)globalManager + 0x14) = 0;
+        *(void **)((char *)globalManager + 0x4) = idleSentinel;
+        *(void **)((char *)globalManager + 0x8) = idleSentinel;
+        *(int *)((char *)globalManager + 0xC) = zero;
+        *(void **)((char *)globalManager + 0x10) = activeSentinel;
+        *(void **)((char *)globalManager + 0x14) = activeSentinel;
+        ((void (*)(void *, void *, void *, void *, void *))__register_global_object)(
+            globalManager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv,
+            lbl_8040EC78, activeSentinel, idleSentinel);
         lbl_8055DE28 = 1;
     }
     manager = lbl_80412778;
-    if (channel == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322A64, 0x77, lbl_80322A3C);
+    if (channel == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322A64, 0x77, lbl_80322A3C);
     if (*(int *)(manager + 0xC)) {
-        if (channel == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8, 0x233, lbl_80322AB4);
+        void *head;
+        if (channel == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8, 0x233, lbl_80322AB4);
         Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(manager + 0xC, channel);
-        if (channel == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8, 0x233, lbl_80322AB4);
+        if (channel == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8, 0x233, lbl_80322AB4);
         head = manager + 4;
         Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(manager, &head, channel);
     }
