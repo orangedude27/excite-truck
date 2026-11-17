@@ -1255,5 +1255,5 @@ void fn_801EEF44(void *renderState, void *vehicle) {
     fn_801EDD7C(renderState, (long)vehicle);
 }
 
-unsigned int fn_801EEF74(void) { /* Constant predicate: always reports true (1) to callers. */ unsigned int result = 1; return result; }
+unsigned int fn_801EEF74(void) { /* Constant predicate: always reports true (1) to callers. */ unsigned int available = 1; return available; }
 
