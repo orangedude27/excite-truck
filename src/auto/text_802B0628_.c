@@ -853,7 +853,8 @@ int fn_802B1AF0(void *container) {
 /* Indexed accessor: returns the stored base value advanced by two per step (stride of a two-word record). */
 int fn_802B1AF8(int *base, int step) { return *base + step * 2; }
 
-int fn_802B1B08(void *arg0) { return ((int *)arg0)[1]; }
+/* Return the record count held in the word at +4 of a record-list node. */
+int fn_802B1B08(void *node) { return ((int *)node)[1]; }
 
 int fn_802B1B10(int *arg0) { return *arg0; }
 
