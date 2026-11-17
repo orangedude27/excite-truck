@@ -97,8 +97,9 @@ short fn_801AE610(int arg0, short arg1) {
 }
 
 #pragma dont_inline on
-int fn_801AE618(int arg0) {
-    return arg0 & 1;
+/* Returns bit 0 of `flags` (1 when the low bit is set); callers use it to test whether an entry's 16-bit flag field marks it active/valid. */
+int fn_801AE618(int flags) {
+    return flags & 1;
 }
 #pragma dont_inline reset
 
@@ -678,7 +679,7 @@ extern void fn_801B3208(int, int, float);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_801AF6FC(void) {
-    register char *base = (char *)lbl_80435740;
+    register Pair8 *pairs = (Pair8 *)lbl_80435740;
     register int mode;
     register unsigned int notTwo;
     register float *value;
@@ -696,7 +697,7 @@ void fn_801AF6FC(void) {
         fn_801AE928();
     }
     fn_801AF65C();
-    for (entryOffset = 0, entryCount = 0; entryCount < *(int *)((char *)lbl_8055E620 + 0x20); entryOffset += 4, entryCount++) {
+    for (entryCount = 0, entryOffset = 0; entryCount < *(int *)((char *)lbl_8055E620 + 0x20); entryOffset += 4, entryCount++) {
         int *entry = *(int **)((char *)lbl_8055E620 + entryOffset);
         if (entry != 0) {
             ((void (*)(int, int, int))fn_801AFAB0)(lbl_8055E628, entry[0], entry[1]);
@@ -706,22 +707,22 @@ void fn_801AF6FC(void) {
         ((void (*)(int, int, int))fn_801AFAB4)(lbl_8055E628, lbl_8055E624[0], lbl_8055E624[1]);
     }
     if (mode == 1) {
-        char *tbl = base + 0x40;
-        value = (float *)base;
-        for (dataIndex = 0; dataIndex < *(int *)(tbl + 0x3C0); dataIndex++, value += 2) {
+        register CompetitorTable *tbl = (CompetitorTable *)&pairs[8];
+        value = (float *)pairs;
+        for (dataIndex = 0; dataIndex < tbl->count; dataIndex++, value += 2) {
             value[0] = fn_801AE9E0(dataIndex, value + 1);
         }
     }
     {
-        char *tbl = base + 0x40;
-        sorted = (int *)(tbl + 0x3C8);
-        qsort(sorted, *(int *)(tbl + 0x3C0), 4, (mode == 1) ? fn_801AEB58 : fn_801AEAA4);
+        register CompetitorTable *tbl = (CompetitorTable *)&pairs[8];
+        sorted = (int *)((char *)tbl + 0x3C8);
+        qsort(sorted, tbl->count, 4, (mode == 1) ? fn_801AEB58 : fn_801AEAA4);
     }
     {
-        char *tbl = base + 0x40;
+        register CompetitorTable *tbl = (CompetitorTable *)&pairs[8];
         rank = 0;
-        sorted = (int *)(tbl + 0x3C8);
-        for (; rank < *(int *)(tbl + 0x3C0); rank++, sorted++) {
+        sorted = (int *)((char *)tbl + 0x3C8);
+        for (; rank < tbl->count; rank++, sorted++) {
             int index = *sorted;
             short rankValue = rank + 1;
             *(short *)((char *)lbl_8055E624[0] + index * 0x1C + 0xC) = rankValue;
@@ -734,9 +735,9 @@ void fn_801AF6FC(void) {
     }
     fn_801AE79C(mode);
     if (mode == 1) {
-        char *tbl = base + 0x40;
-        finalSorted = (int *)(tbl + 0x3C8);
-        for (finalIndex = 0; finalIndex < *(int *)(tbl + 0x3C0); finalSorted++, finalIndex++) {
+        register CompetitorTable *tbl = (CompetitorTable *)&pairs[8];
+        finalSorted = (int *)((char *)tbl + 0x3C8);
+        for (finalIndex = 0; finalIndex < tbl->count; finalSorted++, finalIndex++) {
             int index = *finalSorted;
             float itemValue = fn_801AF9EC(index, 0);
             fn_801B3208(index, finalIndex, itemValue);
