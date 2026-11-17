@@ -12063,8 +12063,11 @@ void bta_dm_discover(void *data) {
 
 /* tBTA_DM_SEARCH_EVT codes for the application's search callback. */
 #ifndef BTA_DM_INQ_CMPL_EVT
+#define BTA_DM_INQ_RES_EVT                      0
 #define BTA_DM_INQ_CMPL_EVT                     1
 #define BTA_DM_DISC_RES_EVT                     2
+#define BTA_DM_DISC_CMPL_EVT                    3
+#define BTA_DM_SEARCH_CANCEL_CMPL_EVT           4
 #endif
 
 /* tBTA_DM_SEARCH: what the search callback is handed with each event. */
