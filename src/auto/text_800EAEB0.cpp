@@ -2973,10 +2973,11 @@ extern "C" void Pause__Q46nw4hbm3snd6detail9SeqPlayerFb(void* self, bool pause) 
 }
 
 void nw4hbm::snd::detail::SeqPlayer::SetVolume(float volume) {
+    /* Set the sequence player's volume (offset 0x1C), asserting it is non-negative. */
     if (!(volume >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x15d, (const char*)lbl_80323BEC);
-    u32 level = OSDisableInterrupts();
+    u32 interruptLevel = OSDisableInterrupts();
     *(float*)((unsigned char*)this + 0x1c) = volume;
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(interruptLevel);
 }
 
 extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(void* self, float volume) {
