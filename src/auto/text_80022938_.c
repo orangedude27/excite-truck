@@ -9,9 +9,9 @@ typedef struct {
 } ET_ExtabIndex;
 
 #pragma section ".extab"
-DECL_SECTION(".extab") const unsigned long long etb_80004570 = 0x1808000000000000ULL;
+DECL_SECTION(".extab") static const unsigned long long etb_80004570 = 0x1808000000000000ULL;
 #pragma section ".extabindex"
-DECL_SECTION(".extabindex") const ET_ExtabIndex eti_80004778 = {
+DECL_SECTION(".extabindex") static const ET_ExtabIndex eti_80004778 = {
     __timesdec, 0x288, &etb_80004570
 };
 // Code of main that had no source file yet: decomp.wtf gave it this one.
