@@ -263,16 +263,3 @@ void fn_802DB168(void) {
     fn_802D2FD8();
     fn_802CED50(0x1C2, 0x17C, 0x78, 0x1E);
 }
-
-typedef struct {
-    unsigned char kind;
-    unsigned char format;
-    unsigned char pad2[2];
-    void *buffer;
-    int width;
-    int height;
-    int size;
-    int pad14[2];
-    int width2;
-    int height2;
-} DB168Config;
