@@ -5097,9 +5097,11 @@ void *fn_8011FF2C(s32 baseSize) {
     return block;
 }
 
-void AXFXSetHooks_8011FFB8(void *arg0, void *arg1) {
-    lbl_8055DEF8 = arg0;
-    lbl_8055DEFC = arg1;
+/* Install the custom allocator and free hooks used by the 32-byte-aligned
+   AXFX allocator (fn_8011FFC4) and deallocator (fn_80120084). */
+void AXFXSetHooks_8011FFB8(void *allocHook, void *freeHook) {
+    lbl_8055DEF8 = allocHook;
+    lbl_8055DEFC = freeHook;
 }
 
 extern void *malloc(u32);
