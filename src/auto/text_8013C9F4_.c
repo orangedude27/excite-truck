@@ -61,6 +61,11 @@ void fn_8013CAA0(void) {
 
 }
 
+/* Base-class default for slot +0x20 of the sub-task manager interface, shared by
+ * the "csubtasktmgr" vtable (lbl_8032C500) and the "chalsubtaskmgr" vtable
+ * (lbl_8032F760).  fn_801B24B8 calls it on the current manager (lbl_8055E68C)
+ * once every queued timed entry has been applied -- a "wave finished" notice the
+ * two managers shipped in this game both ignore. */
 void fn_8013CAA4(void) {
 
 }
