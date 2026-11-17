@@ -10,6 +10,11 @@ void fn_801072C4(void);
 #pragma section ".ctors$00"
 DECL_SECTION(".ctors$00") funcptr_t D_802ED110 = fn_801072C4;
 
+/* Point a registered-object chain pointer at the chain's leaf global. */
 void fn_801072C4(void) {
-    lbl_8055DEA0 = (u32)&lbl_8055DEA8;
+#define sLeafObject lbl_8055DEA8
+#define gpObjectChainNode lbl_8055DEA0
+    gpObjectChainNode = (u32)&sLeafObject;
+#undef gpObjectChainNode
+#undef sLeafObject
 }
