@@ -1936,8 +1936,9 @@ extern "C" void fn_800D8978(GXColor *dst, const GXColor *src) {
     *dst = *src;
 }
 
-extern "C" s32 fn_800D899C(s32 arg0, s32 arg1) {
-    return arg0 + arg1;
+/* Compute base + offset as an integer address (used to index resource data). */
+extern "C" s32 fn_800D899C(s32 base, s32 offset) {
+    return base + offset;
 }
 
 /* Compute base + offset as an integer address (used to index resource data). */
@@ -2259,7 +2260,7 @@ extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *arg0) {
     scaled = scaled + top;
     low4 = low4 + low1;
     mid2 = mid2 + low5;
-    scaled = low4 + scaled;
+    scaled = scaled + low4;
     base = base + mid2;
     return scaled + base;
 }
