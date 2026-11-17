@@ -2935,6 +2935,7 @@ extern "C" void fn_80284760(void *widget) {
 
 extern "C" int fn_80214AF0(int);
 extern "C" int fn_80214A9C(int);
+extern "C" void fn_80214BE4(int, int, int);
 extern "C" float fn_80214D48(void);
 extern "C" void fn_80236958(char *);
 extern "C" float lbl_805641FC;
