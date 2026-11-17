@@ -604,8 +604,9 @@ void fn_80230F78(signed char *outByte, float *outFloat, long arg2, long arg3) {
     fn_80230F6C((s32 *)arg2);
 }
 #pragma dont_inline reset
-void fn_8023108C(u8 arg0) {
-    lbl_8055B998 = arg0;
+/* Set the global flag that enables time-based value computation in fn_80230EF4. */
+void fn_8023108C(u8 enabled) {
+    lbl_8055B998 = enabled;
 }
 
 extern s32 fn_802C9A58(void);
@@ -614,15 +615,15 @@ extern s32 fn_802C9A68(void);
 extern f32 lbl_8055D020, lbl_80563610, lbl_80563614, lbl_8056365C;
 extern f32 lbl_80563670, lbl_80563674, lbl_80563678, lbl_8056367C;
 void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
-    f32 f0, f1, f2, f3, f4;
+    #pragma scheduling invalid_target
+    f32 f2, f0, f1, f3, f4;
     s32 r5, r6;
-    if (fn_802C9A68()) f1 = lbl_80563670;
-    else f1 = lbl_80563674;
-    f0 = lbl_80563610;
-    f2 = lbl_80563678;
-    f3 = f0 - f1;
-    f0 = lbl_8056367C;
-    f1 = lbl_8056365C;
+    f32 mode = fn_802C9A68() ? 0.9f : 0.85f;
+    f0 = 1.0f;
+    f2 = 640.0f;
+    f3 = f0 - mode;
+    f0 = 480.0f;
+    f1 = 0.5f;
     f2 = f2 * f3;
     f0 = f0 * f3;
     f2 = f1 * f2;
@@ -640,23 +641,27 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     *arg0 = 0x18;
     *arg1 = 4;
     if (!fn_802C9A60() && fn_802C9A58()) {
-        f4 = lbl_80563610;
+        f4 = 1.0f;
         f0 = lbl_8055D020;
-        f2 = lbl_80563678;
+        f2 = 640.0f;
         f3 = f4 / f0;
-        f1 = lbl_8056365C;
-        f0 = lbl_80563614;
+        f1 = 0.5f;
+        f0 = 0.0f;
         f3 = f3 - f4;
         f2 = f2 * f3;
         f2 = f1 * f2;
         if (f2 < f0) f0 = f2 - f1;
         else f0 = f1 + f2;
         *arg2 -= (s32)f0;
+        f4 = 1.0f;
+        f2 = 640.0f;
+        f1 = 0.5f;
+        f0 = 0.0f;
         f3 = f4 / lbl_8055D020;
         f3 = f3 - f4;
-        f2 = lbl_80563678 * f3;
+        f2 = f2 * f3;
         f2 = f1 * f2;
-        if (f2 < lbl_80563614) f0 = f2 - f1;
+        if (f2 < f0) f0 = f2 - f1;
         else f0 = f1 + f2;
         *arg3 -= (s32)f0;
     }
