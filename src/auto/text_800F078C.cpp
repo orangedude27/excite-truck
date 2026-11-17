@@ -336,8 +336,9 @@ extern "C" s32 fn_800F0E24(void* sound) {
     return *(s32*)((u8*)sound + 0x1E0) != 0;
 }
 
-extern "C" void fn_800F0E38(void* arg0) {
-    fn_800F0E64(*(s32*)((u8*)arg0 + 0x1E0));
+/* Detach the SoundHandle assigned to this SeqSound (the pointer at +0x1E0). */
+extern "C" void fn_800F0E38(void* sound) {
+    fn_800F0E64(*(s32*)((u8*)sound + 0x1E0));
 }
 
 extern "C" s32 fn_800F0E40(s32 base) {
