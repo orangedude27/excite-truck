@@ -551,16 +551,17 @@ extern s32 fn_801B4428(u32 *, u32 *);
 extern void *fn_801B447C(void *, void *, s32);
 extern void qsort(void *, u32, u32, s32 (*)(u32 *, u32 *));
 void fn_801B4204(void *arg0) {
+    typedef struct { s32 key, ptr, z0, z1; } Rec;
     s32 i;
     s32 *src;
-    u8 *dst;
+    Rec *dst;
     s32 a;
     s32 b;
     s32 key;
     s32 n;
 
     src = lbl_802F96CC;
-    dst = (u8 *)arg0 + 0x48;
+    dst = (Rec *)((u8 *)arg0 + 0x48);
     for (i = 0; i < 0x2B; i++) {
         a = src[1];
         b = src[2];
@@ -572,12 +573,12 @@ void fn_801B4204(void *arg0) {
             key = (b & 0xFFFF) | (a << 16);
         }
         n = src[0];
-        *(s32 *)(dst + 0) = key;
-        *(s32 *)(dst + 4) = (s32)arg0 + n * 0xC;
-        *(s32 *)(dst + 8) = 0;
-        *(s32 *)(dst + 0xC) = 0;
+        dst->key = key;
+        dst->ptr = (s32)arg0 + n * 0xC;
+        dst->z0 = 0;
+        dst->z1 = 0;
         src += 3;
-        dst += 0x10;
+        dst++;
     }
     qsort((u8 *)arg0 + 0x48, 0x2B, 0x10, fn_801B4428);
     *(void **)((u8 *)arg0 + 0x2F8) = fn_801B447C(arg0, (u8 *)arg0 + 0x48, 0x2B);
@@ -673,20 +674,22 @@ void *fn_801B4528(void *tree, u32 *node, u32 key) {
     }
     return node;
 }
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+typedef struct Node801B4570 { s32 *data; s32 count; s32 idx; } Node801B4570;
 void* fn_801B4570(void* arg0, u32 arg1) {
-    void* found;
-    s32* node;
-    u32 idx;
-    u32 count;
-    u32* data;
+    void *cur;
+    void *found;
+    s32 *data;
+    s32 idx;
+    cur = arg0;
     found = fn_801B4528(arg0, *(void**)((u8*)arg0 + 0x2F8), arg1);
-    if (found == NULL) return NULL;
-    node = *(s32**)((u8*)found + 4);
-    idx = node[2];
-    count = node[1];
-    node[2] = (idx + 1) % count;
-    data = (u32*)node[0];
-    return data + idx * 2;
+    if (found != NULL) {
+        cur = *(void**)((u8*)found + 4);
+    }
+    idx = *(s32*)((u8*)cur + 8);
+    data = *(s32**)((u8*)cur + 0);
+    *(s32*)((u8*)cur + 8) = (idx + 1) % *(s32*)((u8*)cur + 4);
+    found = (void*)((u8*)data + idx * 8);
+    return found;
 }
-
-#pragma dont_inline off
