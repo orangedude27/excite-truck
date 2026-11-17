@@ -1054,6 +1054,9 @@ char fn_802C9A58(void) {
 }
 
 extern char lbl_8055FC8D;
+/* Returns lbl_8055FC8D, the display/viewport mode flag set by fn_802C82C4
+ * when mode 2 is selected; callers use it to apply the letterbox viewport and
+ * draw the top/bottom black bars. */
 char fn_802C9A60(void) {
     return lbl_8055FC8D;
 }
