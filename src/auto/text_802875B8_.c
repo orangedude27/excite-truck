@@ -817,7 +817,6 @@ extern u8 lbl_804B3160[];
 extern s32 fn_802885C4(void *, void *);
 extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
 #pragma scheduling reset
-#pragma paired_single off
 void fn_802885F0(void) {
     struct Pair { s32 a; s32 b; };
     struct Entry {
