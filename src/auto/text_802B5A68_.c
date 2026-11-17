@@ -127,36 +127,43 @@ u32 fn_802B5B18(s32 mode) {
     return (u32)&lbl_8055CE30;
 }
 
+/* Return the material set the debug viewer is currently on: the UMatSet entry
+ * at the global material-set index (callers use the tail-call's return value). */
 void fn_802B5B6C(void) {
-    fn_802B59A4(lbl_8055FA3C);
+#define matSetIndex lbl_8055FA3C /* which UMatSet (material set) the viewer is on */
+    fn_802B59A4(matSetIndex);
+#undef matSetIndex
 }
 
 extern void *lbl_8055FA44;
 s32 fn_802B5B74(void *arg0) {
-    struct Work { s32 *items; s32 count; s32 capacity; s32 entries[48]; } work;
+#pragma opt_propagation off
+    s32 workspace[51];
     s32 result;
     s32 index;
     void *object;
-    work.capacity = 0x10;
-    work.items = (s32 *)&work.entries;
-    work.count = 0;
+
+    workspace[2] = 0x10;
+    workspace[0] = (s32)&workspace[3];
+    workspace[1] = 0;
     object = ((void *(*)(void))fn_802B5B6C)();
     ((void (*)(void *, s32, s32, s32))fn_802B321C)(
-        &work, 0, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
+        workspace, 0, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
+
     index = (s32)lbl_8055FA44;
     result = 0;
-    if (index >= 0 && index < work.count) {
+    if (index >= 0 && index < workspace[1]) {
         result = 1;
     }
     if (result != 0) {
-        s32 *entry = work.items + index * 3;
+        s32 *entry = (s32 *)workspace[0] + index * 3;
         ((s32 *)arg0)[0] = entry[0];
         ((s32 *)arg0)[1] = entry[1];
         ((s32 *)arg0)[2] = entry[2];
     }
-    work.items = 0;
-    work.count = 0;
-    work.capacity = 0;
+    workspace[0] = 0;
+    workspace[1] = 0;
+    workspace[2] = 0;
     return result;
 }
 
