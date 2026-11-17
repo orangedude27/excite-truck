@@ -1247,6 +1247,9 @@ extern "C" void fn_801791A8(void) {
     fn_801D0CFC();
 }
 #pragma cplusplus off
+/* Tail-call thunk for external callers of fn_801E21B4, which caches its
+ * argument as the active secondary collision group (the primary one is cached
+ * by fn_801E2188): the pointer passes straight through the branch. */
 void fn_801792F4(void) {
     fn_801E21B4();
 }
