@@ -2069,6 +2069,7 @@ extern s32 fn_801199A4(void *, s32);
 /* Default no-op callback in the stream-player dispatch table: reports 0. */
 s32 fn_80119994(void) { return 0; }
 
+/* Default no-op callback in the stream-player dispatch table: reports 0. */
 s32 fn_8011999C(void) { return 0; }
 
 /* Configures a rect parameter block and applies it to the primary target (and optional secondary target) via fn_8003381C. When useMidpointLimit is non-zero, each axis limit is set to its midpoint; otherwise it is read from the target object at +0x1BC. */
