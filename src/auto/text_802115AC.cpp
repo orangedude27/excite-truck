@@ -100,8 +100,8 @@ extern "C" int strcmp(const char *, const char *);
 extern "C" void fn_80236914(void);
 extern "C" char lbl_8033D590[];
 extern "C" char lbl_8055B6A8;
-extern "C" char lbl_8055B7F8[];
-extern "C" char lbl_8055B7FC[];
+extern "C" char lbl_8055B7F8[8];
+extern "C" char lbl_8055B7FC[8];
 extern "C" s32 lbl_8055CFF0;
 extern "C" s32 lbl_8055CFF4;
 extern "C" void *lbl_8055EF44;
@@ -1467,7 +1467,6 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
 #pragma dont_inline on
 #pragma small_data on
 void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-#pragma small_data on
     void *head = *(void **)((u8 *)arg1 + 4);
     register u8 *base = lbl_8033CAE8;
     void *node;
