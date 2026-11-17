@@ -1901,7 +1901,8 @@ extern "C" s32 fn_8013F438(f32);
 extern "C" void fn_8013F498(void *, void *, f32);
 extern "C" f32 fn_8013EFBC(f32);
 extern "C" void fn_8000FF88(s32, s32, void *, f32, f32, f32);
-extern "C" void fn_8013F918(void *arg0, void *arg2) {
+#pragma dont_inline fn_8013F438
+extern "C" void fn_8013F918(void *arg0, void *arg1, void *arg2) {
     u8 *a0 = (u8 *)arg0;
     u8 *b = (u8 *)arg2;
     f32 outA[3];
@@ -1915,8 +1916,8 @@ extern "C" void fn_8013F918(void *arg0, void *arg2) {
         s32 col = (c << 24) | 0xFF7F00;
         fn_8013F498(outA, outB, v);
         f32 f = (v - lbl_805614E4) / lbl_80561554;
-        f = lbl_805614AC >= f ? lbl_805614AC : f;
-        f = f > lbl_805614A4 ? lbl_805614A4 : f;
+        if (f < lbl_805614AC) f = lbl_805614AC;
+        if (f > lbl_805614A4) f = lbl_805614A4;
         f32 g = f * lbl_8056155C;
         f32 res = lbl_80561558 + g;
         f32 sp = outA[1];
@@ -1926,8 +1927,8 @@ extern "C" void fn_8013F918(void *arg0, void *arg2) {
     if (x < *(f32 *)(lbl_8042FB3C + 8)) {
         f32 low = lbl_805614AC;
         f32 q = x / *(f32 *)(lbl_8042FB3C + 8);
-        low = low < q ? low : q;
-        low = low > lbl_805614A4 ? lbl_805614A4 : low;
+        if (low > q) low = q;
+        if (low > lbl_805614A4) low = lbl_805614A4;
         f32 diff = lbl_805614AC - low;
         s32 c2 = (s32)(lbl_8056151C * diff);
         c2 = (c2 << 24) | 0xFFFFFF;
