@@ -25375,12 +25375,6 @@ UINT16 SDP_SetLocalDiRecord(tSDP_DI_RECORD *p_device_info, UINT32 *p_handle) {
 }
 
 extern void *fn_80096904(void *, u32, u32);
-#pragma always_inline on
-static inline void SdpCopyBytes(u8 *dst, const u8 *src, unsigned len) {
-    s32 i;
-    for (i = 0; i < (s32)len; i++) *dst++ = *src++;
-}
-#pragma always_inline reset
 UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle) {
     UINT16 result = 9;
     tSDP_RECORD *record;
