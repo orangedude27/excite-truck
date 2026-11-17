@@ -1126,6 +1126,7 @@ extern "C" void *fn_80146490(void *obj) {
     return obj;
 }
 
+#pragma dont_inline on
 extern "C" void *fn_801464DC(void *obj, s32 shouldDelete) {
     /* Destructor-like cleanup for object with vtable lbl_8032D1E8: unregister, release member at 0x28, destroy subobjects, optionally delete self. */
     if (obj != NULL) {
