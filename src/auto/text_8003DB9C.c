@@ -2648,8 +2648,9 @@ void GXInitLightAttnA(s32 fn, s32 aa, s32 ab, s32 ac) {
     __peReg[1] = regValue;
 }
 
-void GXInitLightAttnK(s32 arg0) {
-    ((GXAttnKReg *)&__peReg[1])->attenuationK = arg0;
+void GXInitLightAttnK(s32 attenuationK) {
+    /* Set the light attenuation-K bit in PE register 1. */
+    ((GXAttnKReg *)&__peReg[1])->attenuationK = attenuationK;
 }
 
 void GXInitLightSpot(s32 enable, s32 alpha) {
