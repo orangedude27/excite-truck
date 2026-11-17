@@ -344,7 +344,9 @@ extern float lbl_80558DC4;
 extern float lbl_80562CB0, lbl_80562CB4, lbl_80562CB8, lbl_80562CBC, lbl_80562CC0, lbl_80562CC4;
 extern int fn_80129D18(int, int);
 extern float fn_80129DC4(int, float, float);
+/* Request an immediate weather change: fn_801E1B30 clears this flag on its next
+ * update and picks a new weather mode without waiting for the usual conditions. */
 void fn_801E1F78(void) {
-    lbl_8055EA21 = 1;
+    gForceWeather = 1;
 }
 typedef struct { int pad0; float x; float y; float z; char pad10[4]; void *p14; void *p18; } Obj;
