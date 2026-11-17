@@ -1252,8 +1252,9 @@ void GXGetFifoPtrs(const void *fifo, void **rdPtr, void **wrPtr) {
     *wrPtr = realFifo->wrPtr;
 }
 
-int GXGetFifoBase(int *arg0) {
-    return *arg0;
+/* Return the base address of the graphics FIFO described by fifo. */
+int GXGetFifoBase(void *fifo) {
+    return *(int *)fifo;
 }
 
 /* Return the configured size of the graphics FIFO's base buffer. */
@@ -3248,13 +3249,12 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
     data[0x244 / 4] = dst.value;
 }
 
+#pragma scheduling on
 void GXSetDispCopyDst(s32 value) {
-    u32 *gx = (u32 *)__GXData;
     u32 reg = __rlwimi(0, ((value << 1) & 0xFFFE) >> 5, 0, 22, 31);
     reg = __rlwimi(reg, 0x4D, 24, 0, 7);
-    gx[0x238 / 4] = reg;
+    *((u32 *)__GXData + 0x238 / 4) = reg;
 }
-
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
     typedef struct {
