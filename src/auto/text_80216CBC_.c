@@ -9,7 +9,6 @@ extern char lbl_8055EF60[4];
 extern int lbl_804908B0[];
 extern u32 lbl_8055EF68;
 extern u32 lbl_8055EF6C;
-typedef struct B0Fields { int f0, f1, f2, f3, f4; } B0Fields;
 
 #pragma scheduling invalid_target
 void fn_80216CBC(void) {
