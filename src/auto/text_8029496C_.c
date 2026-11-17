@@ -30,7 +30,12 @@ int fn_802CAC54(int);
 extern int lbl_8055C990;
 extern int lbl_8055C994;
 #pragma scheduling off
-void fn_8029496C(void) {}
+/* Trivial constructor registered for the RotationAxis object pool (see
+ * text_80294918_.c): the pooled type needs no initialization, so this does
+ * nothing. */
+void fn_8029496C(void) {
+
+}
 
 #pragma push
 #pragma processor 750
