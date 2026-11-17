@@ -2612,8 +2612,9 @@ extern "C" void fn_80215998(void *arg0) {
     ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf11();
 }
 
-extern "C" void fn_802159AC(void *arg0) {
-    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf13();
+/* Forward vf13 (vtable slot 0x3C) to the widget held at +0x244 of the wrapper. */
+extern "C" void fn_802159AC(void *wrapper) {
+    ((VfObj *)*(void **)((char *)wrapper + 0x244))->vf13();
 }
 
 // Forward vf14() to the VfObj subobject stored at offset 0x244 of the given container.
