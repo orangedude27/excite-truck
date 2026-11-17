@@ -334,6 +334,7 @@ void fn_80005B6C(void) {
 #pragma pop
 
 void fn_80005B70(void) {
+    /* Empty no-op stub: one of a run of default callback slots that do nothing. */
 }
 
 #pragma cplusplus on
