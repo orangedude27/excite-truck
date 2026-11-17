@@ -384,6 +384,8 @@ s32 fn_801291FC(void *region) {
 /* Return this heap region's high-water-mark field (offset 0x8), the upper bound used by fn_801291FC. */
 s32 fn_8012920C(void *region) { return ((s32 *)region)[2]; }
 
+/* No-op placeholder hook; one of a run of adjacent empty stubs
+ * (fn_80129214, fn_80129218, ...) that intentionally do nothing. */
 void fn_80129214(void) {
 
 }
