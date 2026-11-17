@@ -469,8 +469,7 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(float*)(dst + 0x2C) = m22;
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma processor 750
 extern "C" void fn_801FD144(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, float farg0) {
     Vec dA;
     Vec dB;
@@ -496,29 +495,30 @@ extern "C" void fn_801FD144(void *arg0, void *arg1, void *arg2, void *arg3, void
         dB.y = a->y - b->y;
         dB.z = a->z - b->z;
     }
-    float f6 = farg0 * farg0;
-    float f10 = farg0 * f6;
+    float t2 = farg0 * farg0;
+    float t3 = farg0 * t2;
     float c38 = lbl_80563038;
-    float c3c = lbl_8056303C;
-    float c30 = lbl_80563030;
-    float c44 = lbl_80563044;
     float c40 = lbl_80563040;
-    float f30 = c3c * f6;
-    float t = f10 - c38 * f6;
-    float f8 = c40 * (farg0 + t);
-    float f31 = c30 + (c38 * f10 - f30);
-    float f7 = c40 * (f10 - f6);
-    float f4 = c44 * f10 + f30;
-    float px = b->x * f31 + dA.x * f8 + dB.x * f7;
-    float py = b->y * f31 + dA.y * f8 + dB.y * f7;
-    float pz = b->z * f31 + dA.z * f8 + dB.z * f7;
-    ((float *)arg0)[12] = px + a->x * f4;
-    ((float *)arg0)[13] = py + a->y * f4;
-    ((float *)arg0)[14] = pz + a->z * f4;
+    float h01helper = lbl_8056303C * t2;
+    float h00 = lbl_80563030 + (c38 * t3 - h01helper);
+    float h10 = c40 * (farg0 + (t3 - c38 * t2));
+    float h01 = c40 * (t3 - t2);
+    float c44t3 = lbl_80563044 * t3;
+    float bx = b->x, by = b->y, bz = b->z;
+    float dax = dA.x, day = dA.y, daz = dA.z;
+    float dbx = dB.x, dby = dB.y, dbz = dB.z;
+    float ax = a->x, ay = a->y, az = a->z;
+    float h11 = c44t3 + h01helper;
+    float sx = (bx*h00 + dax*h10) + dbx*h01;
+    float sy = (by*h00 + day*h10) + dby*h01;
+    float sz = (bz*h00 + daz*h10) + dbz*h01;
+    float px = sx + ax*h11;
+    float py = sy + ay*h11;
+    float pz = sz + az*h11;
+    ((float *)arg0)[12] = px;
+    ((float *)arg0)[13] = py;
+    ((float *)arg0)[14] = pz;
 }
-#pragma pop
-
-#pragma pop
 extern "C" double cos(double);
 extern "C" double sin(double);
 extern "C" double fn_8002F234(float);
@@ -585,22 +585,25 @@ extern "C" void fn_801FD320(void* arg0, float t) {
     float q[4];
     fn_8012F57C(q, (char*)arg0 + 0x44, (char*)arg0 + 0x54, t);
     volatile float* pq = q;
-    float x = pq[0];
-    float y = pq[1];
-    float z = pq[2];
-    float x2 = x + x;
-    float y2 = y + y;
-    float w = pq[3];
-    float z2 = z + z;
-    float xx = x * x2;
-    float yy = y * y2;
-    float zz = z * z2;
-    float one = lbl_80563030;
+    register float x, y, z, w;
+    x = pq[0];
+    y = pq[1];
+    z = pq[2];
+    register float z2, y2, x2;
+    x2 = x + x;
+    y2 = y + y;
+    w = pq[3];
+    z2 = z + z;
+    register float zz, yy, xx;
+    xx = x * x2;
+    yy = y * y2;
+    zz = z * z2;
     float wx = w * x2;
     float yz = y * z2;
     float sum0 = yy + zz;
     float sum1 = xx + zz;
     float sum2 = xx + yy;
+    float one = lbl_80563030;
     float r0 = one - sum0;
     float r1 = one - sum1;
     float r2 = one - sum2;
@@ -612,10 +615,10 @@ extern "C" void fn_801FD320(void* arg0, float t) {
     float wz = w * z2;
     *(float*)((char*)arg0 + 0x1C) = r1;
     float xy = x * y2;
-    float m24 = xy + wz;
-    float m14 = xy - wz;
-    float m18 = xz - wy;
-    float m10 = xz + wy;
+    float m24 = xz + wy;
+    float m14 = xz - wy;
+    float m18 = xy - wz;
+    float m10 = xy + wz;
     *(float*)((char*)arg0 + 0x28) = m28;
     *(float*)((char*)arg0 + 0x24) = m24;
     *(float*)((char*)arg0 + 0x18) = m18;
@@ -1808,6 +1811,8 @@ extern "C" void fn_801FF108(void* manager) {
     fn_801FF420((char*)manager + 0xE08);
 }
 
+/* No-op DroneManager hook: retained as an empty function (its body does nothing
+ * in this build), adjacent to the draw-pass wrapper fn_801FF108. */
 extern "C" void fn_801FF110(void) {
 
 }
