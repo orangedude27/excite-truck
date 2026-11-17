@@ -1068,6 +1068,7 @@ void fn_802C9A4C(void) {
     fn_802D93E0();
 }
 
+/* Get the horizontal display/UI scale factor (1.0 normal, 0.75 widescreen/letterbox). */
 float fn_802C9A50(void) { return lbl_8055D020; }
 
 #pragma dont_inline off
