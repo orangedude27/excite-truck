@@ -1865,98 +1865,102 @@ extern "C" void fn_80162A14(void *arg0) {
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_80162BA8(void *arg0) {
-    s32 flag, off, i, j;
-    int *cars;
-    u8 *entry;
-    int *cars2;
-    s32 offset;
+/* Per-frame update for the checkpoint challenge: when every checkpoint is passed it
+ * scores player trucks against each active gate (velocity alignment or proximity),
+ * advances the completion timers and changes step once the goal is met; otherwise it
+ * resets the trucks and advances the intro step. */
+extern "C" void fn_80162BA8(void *challengeMgr) {
+    s32 allCheckpointsPassed, index, carIndex, gateIndex;
+    int *carTable;
+    u8 *gate;
+    int *carTable2;
+    s32 gateOffset;
     u8 *car;
-    u8 *self = (u8 *)arg0;
-    u8 *flags, *ui;
-    f32 threshold, one, epsilon;
+    u8 *mgr = (u8 *)challengeMgr;
+    u8 *gateFlags, *uiState;
+    f32 minAlignment, one, minSpeedSq;
     f32 velocity[2];
     f32 scale, length, dirX, dirY;
-    off = 0;
-    for (s32 remaining = *(s32 *)(self + 0x574); remaining > 0; remaining--) {
-        if (*(u8 *)(*(u8 **)(self + 0x570) + off + 8) == 0) {
-            flag = 0;
+    index = 0;
+    for (s32 checkpointsLeft = *(s32 *)(mgr + 0x574); checkpointsLeft > 0; checkpointsLeft--) {
+        if (*(u8 *)(*(u8 **)(mgr + 0x570) + index + 8) == 0) {
+            allCheckpointsPassed = 0;
             goto done;
         }
-        off += 0xC;
+        index += 0xC;
     }
-    flag = 1;
+    allCheckpointsPassed = 1;
 done:
-    if (flag != 0) {
-        *(f32 *)(self + 0x5B4) += lbl_80561858;
-        self[0x9C] = 1;
-        if (self[0x5B0] != 0 && *(s32 *)(self + 0x574) > 0) {
-            ((State_80162BA8 *)self)->f24(1);
+    if (allCheckpointsPassed != 0) {
+        *(f32 *)(mgr + 0x5B4) += lbl_80561858;
+        mgr[0x9C] = 1;
+        if (mgr[0x5B0] != 0 && *(s32 *)(mgr + 0x574) > 0) {
+            ((State_80162BA8 *)mgr)->f24(1);
         }
     } else {
-        self[0x9C] = 0;
+        mgr[0x9C] = 0;
     }
     if (fn_801C5B60() == 0) fn_801DF074(8, 0);
-    if (((State_80162BA8 *)self)->f9() == 0) {
-        one = lbl_80561840; threshold = lbl_80561854; epsilon = lbl_80561850;
-        for (i = 0, cars = lbl_804348E8; i < fn_801B2F24(); cars++, i++) {
-            car = (u8 *)*cars;
+    if (((State_80162BA8 *)mgr)->f9() == 0) {
+        one = lbl_80561840; minAlignment = lbl_80561854; minSpeedSq = lbl_80561850;
+        for (carIndex = 0, carTable = lbl_804348E8; carIndex < fn_801B2F24(); carTable++, carIndex++) {
+            car = (u8 *)*carTable;
             if (*(u32 *)(car + 0x10) != 0x50434152) continue;
-            for (j = 0, offset = 0; j < *(s32 *)(self + 0xE4); offset += 0x48, j++) {
-                entry = *(u8 **)(self + 0xE0) + offset;
-                if (!entry[0x3C]) continue;
-                if (*(s32 *)(entry + 0x34)) {
-                    if (fn_80139B5C(car, *(s32 *)(entry + 0x34))) {
-                        flags = entry + i;
-                        if (!flags[0x3D]) {
+            for (gateIndex = 0, gateOffset = 0; gateIndex < *(s32 *)(mgr + 0xE4); gateOffset += 0x48, gateIndex++) {
+                gate = *(u8 **)(mgr + 0xE0) + gateOffset;
+                if (!gate[0x3C]) continue;
+                if (*(s32 *)(gate + 0x34)) {
+                    if (fn_80139B5C(car, *(s32 *)(gate + 0x34))) {
+                        gateFlags = gate + carIndex;
+                        if (!gateFlags[0x3D]) {
                             velocity[0] = *(f32 *)(car + 0x118);
                             velocity[1] = *(f32 *)(car + 0x120);
                             length = velocity[0] * velocity[0] + velocity[1] * velocity[1];
-                            if (length > epsilon) {
+                            if (length > minSpeedSq) {
                                 length = (f32)fn_8002F234(length);
-                                dirY = *(f32 *)(entry + 0x30);
+                                dirY = *(f32 *)(gate + 0x30);
                                 scale = one / length;
-                                dirX = *(f32 *)(entry + 0x2C);
+                                dirX = *(f32 *)(gate + 0x2C);
                                 velocity[0] *= scale;
                                 velocity[1] *= scale;
-                                if (velocity[0] * dirX + velocity[1] * dirY > threshold) {
-                                    ++*(s32 *)(self + 0x94);
-                                    entry[0x3C] = 0;
-                                    ui = *(u8 **)(self + 0xDC);
-                                    ui[0x49] = 1; ui[0x4B] = 0; ui[0x4A] = 0;
+                                if (velocity[0] * dirX + velocity[1] * dirY > minAlignment) {
+                                    ++*(s32 *)(mgr + 0x94);
+                                    gate[0x3C] = 0;
+                                    uiState = *(u8 **)(mgr + 0xDC);
+                                    uiState[0x49] = 1; uiState[0x4B] = 0; uiState[0x4A] = 0;
                                 }
                             }
                         }
-                        flags[0x3D] = 1;
+                        gateFlags[0x3D] = 1;
                         break;
-                    } else if (entry[0x3C]) (entry + i)[0x3D] = 0;
-                } else if (PSVECSquareDistance(entry, car + 0x60) < *(f32 *)(self + 0xCC) * *(f32 *)(self + 0xCC)) {
-                    ++*(s32 *)(self + 0x94);
-                    entry[0x3C] = 0;
-                    ui = *(u8 **)(self + 0xDC);
-                    ui[0x49] = 1; ui[0x4B] = 0; ui[0x4A] = 0;
+                    } else if (gate[0x3C]) (gate + carIndex)[0x3D] = 0;
+                } else if (PSVECSquareDistance(gate, car + 0x60) < *(f32 *)(mgr + 0xCC) * *(f32 *)(mgr + 0xCC)) {
+                    ++*(s32 *)(mgr + 0x94);
+                    gate[0x3C] = 0;
+                    uiState = *(u8 **)(mgr + 0xDC);
+                    uiState[0x49] = 1; uiState[0x4B] = 0; uiState[0x4A] = 0;
                     break;
                 }
             }
         }
-        *(f32 *)(self + 0x98) += lbl_80561858;
-        if (*(f32 *)(self + 0x98) >= *(f32 *)(self + 0x84))
-            ((State_80162BA8 *)self)->f24(3);
-        if (*(s32 *)(self + 0x94) >= *(s32 *)(self + 0x80) && self[0x9C]) {
-            ((State_80162BA8 *)self)->f24(1);
-            self[0x88] = 1;
+        *(f32 *)(mgr + 0x98) += lbl_80561858;
+        if (*(f32 *)(mgr + 0x98) >= *(f32 *)(mgr + 0x84))
+            ((State_80162BA8 *)mgr)->f24(3);
+        if (*(s32 *)(mgr + 0x94) >= *(s32 *)(mgr + 0x80) && mgr[0x9C]) {
+            ((State_80162BA8 *)mgr)->f24(1);
+            mgr[0x88] = 1;
         }
     } else {
-        if ((f32)__fabs(*(f32 *)(self + 0x8C)) <= *(f32 *)&lbl_80558DC4) {
+        if ((f32)__fabs(*(f32 *)(mgr + 0x8C)) <= *(f32 *)&lbl_80558DC4) {
             fn_80276DC8(0);
-            for (off = 0, cars2 = lbl_804348E8; off < fn_801B2F24(); cars2++, off++) {
+            for (index = 0, carTable2 = lbl_804348E8; index < fn_801B2F24(); carTable2++, index++) {
                 void *manager = fn_801B83A0();
-                ((State_80162BA8 *)manager)->f37(*cars2, off);
+                ((State_80162BA8 *)manager)->f37(*carTable2, index);
             }
         }
-        *(f32 *)(self + 0x8C) += lbl_80561858;
-        if (self[0x90]) {
-            if (((State_80162BA8 *)self)->f10() && lbl_8055E304 == fn_80160CE4()) {
+        *(f32 *)(mgr + 0x8C) += lbl_80561858;
+        if (mgr[0x90]) {
+            if (((State_80162BA8 *)mgr)->f10() && lbl_8055E304 == fn_80160CE4()) {
                 s32 tmp = lbl_8055A0B8;
                 lbl_8055E2DC = 1;
                 lbl_8055A0B4 = tmp;
@@ -1966,8 +1970,8 @@ done:
             if (*(s32 *)(lbl_8042FDEC + 4) > 0) fn_80176734();
         }
     }
-    if (flag == 0 && *(s32 *)(self + 0x94) >= *(s32 *)(self + 0x80)) {
-        ((State_80162BA8 *)self)->f24(4);
+    if (allCheckpointsPassed == 0 && *(s32 *)(mgr + 0x94) >= *(s32 *)(mgr + 0x80)) {
+        ((State_80162BA8 *)mgr)->f24(4);
     }
 }
 #pragma pop
