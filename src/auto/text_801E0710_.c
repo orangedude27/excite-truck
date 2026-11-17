@@ -533,8 +533,11 @@ void NWC24Data_Init_801E1028(void *data) {
 }
 
 extern void lbl_8032CE98(void);
-void fn_801E1038(void **arg0) {
-    *arg0 = (void *)&lbl_8032CE98;
+void fn_801E1038(void **object) {
+    #define sInitialTable lbl_8032CE98 /* zeroed initial vtable/table installed by this ctor */
+    /* Initialize the object's leading pointer to its initial (zeroed) table. */
+    *object = (void *)&sInitialTable;
+    #undef sInitialTable
 }
 
 s32 fn_801E1048(void) {
