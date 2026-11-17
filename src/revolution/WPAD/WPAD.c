@@ -6810,8 +6810,9 @@ void fn_80067ECC(s32 chan, void* data) {
     (void)dst;
 }
 
-// fn_800684CC: WPAD data processing
-void fn_800684CC(void) { /* stub */ }
+// Empty placeholder: this WPAD function has no body in the original.
+void fn_800684CC(void) {
+}
 
 void fn_800684D0(s32 chan) {
     WPADCB *cb;
