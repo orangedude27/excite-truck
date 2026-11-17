@@ -148,7 +148,11 @@ void fn_801D9108(s32 userData) { fn_801D8938(userData - 4); }
  * which removes the 12-byte entry with this id from the group's list. */
 void fn_801D9110(s32 userData) { fn_801D893C(userData - 4); }
 
-void fn_801D9118(int arg0) { fn_801D89C0(arg0 - 4); }
+/* Callback wrapper of the action-group operations (like fn_801D90E8): the
+ * callback is handed the group's +0x4 field, so back the pointer up to the
+ * group's start before calling fn_801D89C0, which appends a record to the
+ * group's list. */
+void fn_801D9118(s32 userData) { fn_801D89C0(userData - 4); }
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
