@@ -3374,6 +3374,7 @@ extern "C" void fn_80143200(u8 *obj) {
 }
 
 extern "C" s32 fn_8014320C(void) {
+    /* Return this getter's fixed value 0x1008 (an object-kind/size tag). */
     return 0x1008;
 }
 
