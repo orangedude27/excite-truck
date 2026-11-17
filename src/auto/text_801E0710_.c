@@ -468,7 +468,7 @@ int fn_801E0ED4(int minValue, int value) {
     return value > minValue ? value : minValue;
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 float fn_801E0EE4(void *arg0, void *arg1) {
     float delta[2];
     delta[1] = *(float *)((char *)arg0 + 4) - *(float *)((char *)arg1 + 4);
