@@ -904,31 +904,50 @@ void fn_802C6C30(void) {}
 
 void *fn_802C6C34(int arg0) { return (void *)fn_802C53A8(arg0); }
 
+#pragma scheduling invalid_target
 void fn_802C6C38(int arg0) {
-    void *manager = fn_802C5390(arg0);
-    int *count = *(int **)manager;
-    if (--*count > 0) {
-        int *outer_info = *(int **)((char *)manager + 4);
-        int *outer_count = *(int **)((char *)outer_info + 8);
-        int *outer_table = *(int **)((char *)outer_info + 4);
-        int i;
-        for (i = 0; i < *outer_count; i++) {
-            int *inner_info = *(int **)((char *)outer_table + i * 4);
-            int *inner_count = *(int **)inner_info;
-            int *inner_table = *(int **)((char *)inner_info + 4);
-            int j;
-            for (j = 0; j < *inner_count; j++) {
-                int *item = *(int **)((char *)inner_table + j * 4);
-                int *node = *(int **)((char *)item + (*(int *)((char *)manager + 8) << 2) + 0x14);
-                *(int **)((char *)item + (*(int *)((char *)manager + 8) << 2) + 0x14) = 0;
-                fn_802C5BA0(node);
-            }
-        }
-        *(void **)((char *)manager + 4) = 0;
-        *(int **)((char *)manager + 0xC) = 0;
+    u8 *manager = (u8 *)fn_802C5390(arg0);
+    s32 outerOff, innerOff, i;
+    u8 *innerInfo;
+    s32 j;
+    u8 *outerInfo, *outerTable, *innerTable, *item;
+    u8 *node;
+
+    if (--*(s32 *)manager > 0) {
+        i = 0;
+        outerOff = 0;
+        goto outer_check;
+
+    outer_setup:
+        outerInfo = *(u8 **)(manager + 4);
+        outerTable = *(u8 **)(outerInfo + 0xC);
+        innerInfo = *(u8 **)(outerTable + outerOff);
+        j = 0;
+        innerOff = 0;
+        goto inner_check;
+
+    inner_body:
+        innerTable = *(u8 **)(innerInfo + 4);
+        item = *(u8 **)(innerTable + innerOff);
+        node = *(u8 **)(item + (*(s32 *)(manager + 8) << 2) + 0x14);
+        *(u8 **)(item + (*(s32 *)(manager + 8) << 2) + 0x14) = 0;
+        fn_802C5BA0((int *)node);
+        innerOff += 4;
+        j++;
+
+    inner_check:
+        if (j < *(s32 *)innerInfo) goto inner_body;
+        outerOff += 4;
+        i++;
+
+    outer_check:
+        outerInfo = *(u8 **)(manager + 4);
+        if (i < *(s32 *)(outerInfo + 8)) goto outer_setup;
+
+        *(void **)(manager + 4) = 0;
+        *(void **)(manager + 0xC) = 0;
     }
 }
-
 /* mrModelUnload: release a model instance handle, or warn if MODEL_INVALID (-1). */
 void fn_802C6CF8(int modelHandle) {
     int resource;
@@ -1277,6 +1296,7 @@ void fn_802C7458(int instanceId, int groupMask) {
     }
 }
 
+#pragma scheduling on
 void fn_802C74D8(int arg0, void *arg1, int arg2) {
     int i;
     struct LocalResult {
@@ -1296,29 +1316,33 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
     out = local.vector;
     input = (float *)arg1;
     if (local.vector == rot) {
-        float y = input[3];
-        float y0 = y * rot[1];
-        float y1 = input[4] * rot[1];
-        float y2 = input[5] * rot[1];
-        float x = input[0];
-        float x0 = x * rot[0];
-        float x1 = input[1] * rot[0];
-        float x2 = input[2] * rot[0];
-        float z = input[6];
-        float z0 = z * rot[2];
-        float z1 = input[7] * rot[2];
-        float z2 = input[8] * rot[2];
+        float y0 = input[3];
+        float y1 = input[4];
+        float y2 = input[5];
+        float x0 = input[0];
+        float x1 = input[1];
+        float x2 = input[2];
+        float z0 = input[6];
+        float z1 = input[7];
+        float z2 = input[8];
 
-        out[0] = (x0 + y0) + z0;
-        out[1] = (x1 + y1) + z1;
-        out[2] = (x2 + y2) + z2;
+        float my0 = rot[1] * y0;
+        float my1 = rot[1] * y1;
+        float mx0 = rot[0] * x0;
+        float mx1 = rot[0] * x1;
+        float mx2 = rot[0] * x2;
+        float my2 = rot[1] * y2;
+        float mz0 = rot[2] * z0;
+        float mz1 = rot[2] * z1;
+        float mz2 = rot[2] * z2;
+
+        out[0] = mz0 + (mx0 + my0);
+        out[1] = mz1 + (mx1 + my1);
+        out[2] = mz2 + (mx2 + my2);
     } else {
-        out[0] = (rot[1] * input[3] + rot[0] * input[0]) +
-                 rot[2] * input[6];
-        out[1] = (rot[1] * input[4] + rot[0] * input[1]) +
-                 rot[2] * input[7];
-        out[2] = (rot[1] * input[5] + rot[0] * input[2]) +
-                 rot[2] * input[8];
+        out[0] = rot[2] * input[6] + (rot[0] * input[0] + rot[1] * input[3]);
+        out[1] = rot[2] * input[7] + (rot[1] * input[4] + rot[0] * input[1]);
+        out[2] = rot[2] * input[8] + (rot[1] * input[5] + rot[0] * input[2]);
     }
     {
         float tx = out[0] + input[9];
@@ -1347,7 +1371,6 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
         }
     }
 }
-
 void fn_802C7730(void) { fn_802DABA4(); }
 
 /* Queue the caller's 12-float model transform as a draw record, then apply it
@@ -1387,24 +1410,26 @@ float fn_802C7808(int instanceId) {
     return *(float *)((char *)(*(void **)((char *)fn_802C5390(instanceId) + 4)) + 0x1C);
 }
 
-s32 fn_802C7830(char *arg0) {
-    s32 value = 0;
+/* Parse a NUL-terminated hexadecimal string (0-9 and uppercase A-F) into an
+ * integer: shift the result left four bits per character and OR in its digit. */
+s32 fn_802C7830(char *hexStr) {
+    s32 result = 0;
     s32 digit;
-    s32 is_digit;
+    s32 isDigit;
     u8 c;
-    while (*arg0 != 0) {
-        value <<= 4;
-        c = *arg0;
-        is_digit = 0;
+    while (*hexStr != 0) {
+        result <<= 4;
+        c = *hexStr;
+        isDigit = 0;
         if ((s8)c >= '0' && (s8)c <= '9')
-            is_digit = 1;
+            isDigit = 1;
         digit = (s8)c - '7';
-        if (is_digit != 0)
+        if (isDigit != 0)
             digit = (s8)c - '0';
-        value |= digit;
-        arg0++;
+        result |= digit;
+        hexStr++;
     }
-    return value;
+    return result;
 }
 
 #pragma scheduling on
