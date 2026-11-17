@@ -24747,7 +24747,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     BOOLEAN is_command;
     MX_FRAME *p_rx_frame = (MX_FRAME *)lbl_803C4828;
     UINT8 *p_data;
-    s32 len;
+    u32 len;
     UINT8 length;
     UINT8 ll;
     UINT8 b;
@@ -26883,7 +26883,7 @@ void sdp_conn_timeout(tCONN_CB *p_ccb) {
 
 extern void process_service_search(tCONN_CB *, UINT16, UINT16, UINT8 *);
 static void process_service_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
-typedef struct { UINT8 pad0[0x26]; UINT8 data[0x450]; UINT16 cont_off; } tCCB_CONT_VIEW;
+typedef struct { UINT8 pad0[0x26]; UINT8 data[0x450]; volatile UINT16 cont_off; } tCCB_CONT_VIEW;
 static void process_service_search_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
 /* Dispatch an incoming SDP server request PDU and route it to the appropriate handler. */
 void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
@@ -27190,7 +27190,9 @@ param_len_ptr[1] = send_len;
 L2CA_DataWrite(*(UINT16 *)((UINT8 *)arg0 + 0x22), buf);
 }
 
-static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len, UINT8 *p_req, UINT8 *p_req_end) {
+static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
+                                               UINT16 param_len, UINT8 *p_req,
+                                               UINT8 *p_req_end) {
     UINT16 max_list_len;
     UINT16 len_to_send, req_offset;
     UINT16 rsp_param_len, xx;
@@ -27206,20 +27208,24 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num, U
     BT_HDR *p_buf;
     BOOLEAN maxxed_out = FALSE;
     (void)p_req_end;
+
     p_req = sdpu_extract_uid_seq(p_req, param_len, &uid_seq);
     if (p_req == NULL || uid_seq.num_uids == 0) {
         sdpu_build_n_send_error(p_ccb, trans_num, 3, NULL);
         return;
     }
+
     max_list_len = ((UINT16)p_req[0] << 8) + p_req[1];
     if (max_list_len > p_ccb->rem_mtu_size - 0xA)
         max_list_len = p_ccb->rem_mtu_size - 0xA;
+
     p_req = sdpu_extract_attr_seq(p_req + 2, param_len, &attr_seq);
     if (p_req == NULL || attr_seq.num_attr == 0) {
         sdpu_build_n_send_error(p_ccb, trans_num, 3, NULL);
         return;
     }
     attr_seq_sav = attr_seq;
+
     if (*p_req != 0) {
         if (*p_req != 2) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, NULL);
@@ -27244,7 +27250,8 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num, U
                 UINT16 end = *(UINT16 *)(entry + 4);
                 p_attr = fn_80096904(p_rec, start, end);
                 if (p_attr != NULL) {
-                    if ((UINT32)p_attr->len > (UINT32)((UINT16)(0x3E8 - (UINT16)(p_rsp - ((tCCB_CONT_VIEW *)p_ccb)->data)) - 6)) {
+                    if ((UINT32)p_attr->len >
+                        (UINT32)((UINT16)(0x3E8 - (UINT16)(p_rsp - ((UINT8 *)p_ccb + 0x26))) - 6)) {
                         maxxed_out = TRUE;
                         break;
                     }
@@ -27267,26 +27274,28 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num, U
             }
             p_rec = sdp_db_service_search(p_rec, &uid_seq);
         }
-        len_to_send = (UINT16)(p_rsp - ((tCCB_CONT_VIEW *)p_ccb)->data);
+        len_to_send = (UINT16)(p_rsp - ((UINT8 *)p_ccb + 0x26));
         p_ccb->list_len = len_to_send;
         if (len_to_send > 0xFF) {
             UINT16 adjusted = len_to_send - 3;
-            ((tCCB_CONT_VIEW *)p_ccb)->data[0] = 0x36;
-            ((tCCB_CONT_VIEW *)p_ccb)->data[1] = adjusted >> 8;
-            ((tCCB_CONT_VIEW *)p_ccb)->data[2] = adjusted;
+            *((UINT8 *)p_ccb + 0x26) = 0x36;
+            *((UINT8 *)p_ccb + 0x27) = adjusted >> 8;
+            *((UINT8 *)p_ccb + 0x28) = adjusted;
         } else {
             ((tCCB_CONT_VIEW *)p_ccb)->cont_off = 1;
-            ((tCCB_CONT_VIEW *)p_ccb)->data[1] = 0x35;
-            ((tCCB_CONT_VIEW *)p_ccb)->data[2] = len_to_send - 3;
+            *((UINT8 *)p_ccb + 0x27) = 0x35;
+            *((UINT8 *)p_ccb + 0x28) = len_to_send - 3;
             p_ccb->list_len = len_to_send - 1;
         }
     }
+
     p_buf = (BT_HDR *)GKI_getpoolbuf(2);
     if (p_buf == NULL) {
         if (lbl_803C4C40[0x4630] >= 1)
             fn_8007093C(0xA0000, lbl_8031A50C);
         return;
     }
+
     p_buf->offset = 9;
     p_rsp = p_rsp_start = (UINT8 *)p_buf + 0x11;
     p_rsp[0] = 7;
@@ -27299,7 +27308,7 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num, U
     p_rsp_param_len[2] = len_to_send >> 8;
     p_rsp_param_len[3] = len_to_send;
     p_rsp = p_rsp_param_len + 4;
-    memcpy(p_rsp, ((tCCB_CONT_VIEW *)p_ccb)->data + ((tCCB_CONT_VIEW *)p_ccb)->cont_off, len_to_send);
+    memcpy(p_rsp, (UINT8 *)p_ccb + ((tCCB_CONT_VIEW *)p_ccb)->cont_off + 0x26, len_to_send);
     p_rsp += len_to_send;
     p_ccb->list_len -= len_to_send;
     ((tCCB_CONT_VIEW *)p_ccb)->cont_off += len_to_send;
