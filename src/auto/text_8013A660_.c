@@ -253,7 +253,6 @@ extern "C" void fn_8013AC2C(int *arg0) {
     Target *object = *(Target **)((char *)parent + 0x80);
     object->f8(lbl_8032C264, lbl_80561440);
 }
-
 extern int *fn_801E87A8(void);
 extern int fn_80135108(void);
 extern void fn_801E879C(void);
