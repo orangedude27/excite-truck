@@ -112,8 +112,12 @@ extern void fn_802E317C(const char *, ...);
 #pragma use_lmw_stmw off
 #pragma optimization_level 4
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 s32 fn_80246938(void) {
-    s32 index;
+    register s32 z14 asm("r14");
+    register s32 z18 asm("r18");
+    register s32 index asm("r19");
+    register s32 zero asm("r22");
     struct {
         volatile s32 args[5];
         s32 text;
@@ -127,25 +131,28 @@ s32 fn_80246938(void) {
     index = fn_802E4A10();
     if (index >= 0 && index < 4) {
         fn_80214A9C(0x1F);
+        zero = 0;
+        z14 = 0;
+        z18 = 0;
         while (((s32 (*)(s32))fn_802E8690)(index) != 0) {
-            frame.zero = 0;
+            frame.zero = zero;
             frame.text = (s32)lbl_80343720;
             frame.itemIndex = index;
-            frame.values[0] = 0;
+            frame.values[0] = zero;
             frame.values[1] = 5;
             frame.values[2] = (s32)&frame.text;
-            frame.values[3] = 0;
-            frame.values[4] = 0;
+            frame.values[3] = zero;
+            frame.values[4] = zero;
             frame.values[7] = fn_80131234((s32 *)lbl_80343280);
             frame.values[6] = 3;
             frame.values[5] = (s32)&lbl_8055BE80;
-            frame.values[8] = 0;
-            frame.values[9] = 0;
+            frame.values[8] = z14;
+            frame.values[9] = zero;
             frame.values[12] = fn_80131234((s32 *)lbl_80343294);
             frame.values[11] = 3;
             frame.values[10] = (s32)&lbl_8055BE88;
-            frame.values[13] = 0;
-            frame.values[14] = 0;
+            frame.values[13] = z18;
+            frame.values[14] = zero;
             frame.values[15] = lbl_804988F0[0];
             frame.values[16] = lbl_804988F0[1];
             frame.values[17] = lbl_804988F0[2];
@@ -163,7 +170,7 @@ s32 fn_80246938(void) {
     }
     return 1;
 }
-#pragma pop
+#pragma opt_propagation reset
 
 int fn_80246AA8(int object, int deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
@@ -197,6 +204,7 @@ extern void fn_802146BC(void *, s32, s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma optimization_level 3
+#pragma opt_propagation off
 void fn_80246CB8(void *arg0) {
     s32 text[12];
     s32 item[10];
@@ -1249,7 +1257,6 @@ void fn_80248668(s32 arg0) {
     s32 item[10];
     s32 menu[6];
     s32 taddr = (s32)text;
-    s32 tmp;
     if (fn_8020A640() != 0)
         return;
     fn_8020A600();
@@ -1259,7 +1266,6 @@ void fn_80248668(s32 arg0) {
     text[9] = 1;
     text[10] = 0;
     text[7] = ((s32 (*)(void *))fn_802E2C20)(lbl_803436C0);
-    tmp = lbl_802FA498[1];
     text[6] = 1;
     item[1] = 5;
     item[0] = 0;
@@ -1271,7 +1277,7 @@ void fn_80248668(s32 arg0) {
     item[7] = lbl_804988F0[2];
     item[8] = lbl_804988F0[3];
     item[9] = lbl_804988F0[4];
-    menu[1] = tmp;
+    menu[1] = lbl_802FA498[1];
     menu[0] = lbl_802FA498[0];
     menu[2] = lbl_802FA498[2];
     menu[3] = lbl_802FA498[3];
