@@ -1656,8 +1656,9 @@ void fn_8016E1B4(void *arg0, s32 arg1) {
 }
 
 #pragma dont_inline on
-void fn_8016E314(void *arg0) {
-    *(f32 *)((u8 *)arg0 + 0) = *(f32 *)((u8 *)arg0 + 4);
+void fn_8016E314(void *pair) {
+    /* Copy this two-float pair's second float (+4) into its first (+0). */
+    *(f32 *)((u8 *)pair + 0) = *(f32 *)((u8 *)pair + 4);
 }
 #pragma dont_inline reset
 
