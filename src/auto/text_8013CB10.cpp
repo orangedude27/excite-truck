@@ -1779,6 +1779,10 @@ extern "C" void fn_8013F0A0(void *arg0, void *arg1, void *arg2) {
     }
 }
 #pragma scheduling on
+/* Empty no-op stage of the zone HUD draw pass (fn_80140A6C): called with no
+ * arguments between the progress-gauge stage fn_8013F0A0 and the icon/text
+ * stage fn_8013F580, and its body compiles to a bare 'blr'.  The original
+ * kept the call site, so the (empty) function has to stay in the build. */
 extern "C" void fn_8013F434(void) {
 
 }
