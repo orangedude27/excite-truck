@@ -5529,8 +5529,9 @@ extern "C" s32 fn_801A50C0(s32 ptr, s32 count) {
     return ptr;
 }
 
-extern "C" f32 fn_801A5100(void *arg0) {
-    return ((f32 *)arg0)[0x24 / 4];
+/* Returns the object's collision radius, the float stored at +0x24. */
+extern "C" f32 fn_801A5100(void *object) {
+    return ((f32 *)object)[0x24 / 4];
 }
 
 extern "C" void fn_801A5108(void* container) {
