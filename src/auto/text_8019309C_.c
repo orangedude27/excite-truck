@@ -2278,8 +2278,8 @@ static inline int fn_80196C90_signbit(float x) { /* MSL float.h __signbitf() */
 
      - decay it by the per-instance factor at +0x14C (drawn at random by
        fn_801981A0);
-     - when a new best record was just set on either side this frame (+0x9C for
-       the positive side, +0x74 for the negative one, both raised by fn_80197...
+            - when a new best record was just set on either side this frame (+0x9C for
+       the positive side, +0x74 for the negative one, both raised by fn_8019703C
        together with the record's signed Y at +0xCC) and that Y has the same sign
        as the shake value, damp the value further by lbl_80562260 (0.81f);
      - when the value has lost magnitude since last frame (+0x148 holds it) and
