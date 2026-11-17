@@ -1731,9 +1731,10 @@ extern "C" void fn_801475D0(void *arg0, s32 arg1, const char *format, ...) {
     }
 }
 
-extern "C" void fn_801476C4(void *arg0) {
-    if (arg0 != 0)
-        fn_80145B94(arg0, *(u32 *)((u8 *)arg0 + 0x1c));
+/* Draw this text entry using the text/value pointer held in its +0x1C field. */
+extern "C" void fn_801476C4(void *entry) {
+    if (entry != 0)
+        fn_80145B94(entry, *(u32 *)((u8 *)entry + 0x1c));
 }
 
 #pragma push
