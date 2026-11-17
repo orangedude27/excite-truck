@@ -1154,6 +1154,8 @@ void __GXSaveFifo(void) {
 }
 
 #pragma dont_inline on
+/* Returns lbl_8055D949 (GpFifoReady / __FifoIdle): nonzero once the graphics
+ * processor's FIFO has gone idle and is ready for more commands. */
 char __GXIsGPFifoReady(void) {
     return lbl_8055D949;
 }
