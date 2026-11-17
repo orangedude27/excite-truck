@@ -1839,6 +1839,7 @@ void fn_801C7770(void) {
 }
 
 void fn_801C7784(void) {
+    /* Toggle the debug-timeline boolean flag lbl_8055E83F via its menu callback. */
     *(s8*)&lbl_8055E83F = !lbl_8055E83F;
 }
 
