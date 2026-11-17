@@ -2621,7 +2621,8 @@ extern "C" void fn_8019F560(void) {
 #pragma dont_inline on
 extern "C" void *fn_8019F564(void *arg0,s32 arg1,void *arg2,s32 arg3,f32 a,f32 b,f32 c,f32 d,f32 e,f32 f) {
  extern void* lbl_80333A58;
- f32 z=lbl_805622D0,m=f; if(e>m)m=e;if(d>m)m=d;
+ f32 z, z2, e8; f32 m=f; if(e>m)m=e;if(d>m)m=d;
+ z=lbl_805622D0;
  *(s32*)((u8*)arg0+0xC)=arg1;*(s32*)((u8*)arg0+4)=arg3;*(s32*)((u8*)arg0+8)=0;
  *(s32*)((u8*)arg0+0x18)=0x53504852;*(f32*)((u8*)arg0+0x10)=a;*(f32*)((u8*)arg0+0x14)=b;
  *(s32*)((u8*)arg0+0x20)=100;*(s32*)((u8*)arg0+0x1C)=0;*(void**)arg0=&lbl_80333B48;
@@ -2630,14 +2631,16 @@ extern "C" void *fn_8019F564(void *arg0,s32 arg1,void *arg2,s32 arg3,f32 a,f32 b
  *(f32*)((u8*)arg0+0x44)=z;*(f32*)((u8*)arg0+0x48)=z;*(u8*)((u8*)arg0+0x4C)=0;*(f32*)((u8*)arg0+0x50)=z;
  *(f32*)((u8*)arg0+0x28)=*(f32*)arg2;*(f32*)((u8*)arg0+0x2C)=*(f32*)((u8*)arg2+4);*(f32*)((u8*)arg0+0x30)=*(f32*)((u8*)arg2+8);
  if(arg3)fn_8019EECC((void*)arg3,(Vec*)((u8*)arg0+0x28));
+ e8=*(volatile f32 *)&lbl_805622E8;
+ z2=*(volatile f32 *)&lbl_805622D0;
  *(void**)arg0=&lbl_80333A58;*(f32*)((u8*)arg0+0x54)=c;
- *(f32*)((u8*)arg0+0x58)=lbl_805622E8*d;*(f32*)((u8*)arg0+0x5C)=lbl_805622E8*e;*(f32*)((u8*)arg0+0x60)=lbl_805622E8*f;
- *(f32*)((u8*)arg0+0x64)=z;*(f32*)((u8*)arg0+0x68)=z;*(f32*)((u8*)arg0+0x6C)=z;*(f32*)((u8*)arg0+0x70)=z;
- *(f32*)((u8*)arg0+0x74)=z;*(f32*)((u8*)arg0+0x78)=z;*(f32*)((u8*)arg0+0x7C)=z;*(f32*)((u8*)arg0+0x80)=z;
- *(f32*)((u8*)arg0+0x84)=z;*(f32*)((u8*)arg0+0x88)=z;*(f32*)((u8*)arg0+0x8C)=z;*(f32*)((u8*)arg0+0x90)=z;
- *(f32*)((u8*)arg0+0x94)=z;*(f32*)((u8*)arg0+0x98)=z;*(f32*)((u8*)arg0+0x9C)=z;*(f32*)((u8*)arg0+0xA0)=z;
- *(f32*)((u8*)arg0+0xA4)=z;*(f32*)((u8*)arg0+0xA8)=z;*(f32*)((u8*)arg0+0xAC)=z;*(f32*)((u8*)arg0+0xB0)=z;
- *(f32*)((u8*)arg0+0xB4)=z;*(f32*)((u8*)arg0+0xB8)=z;*(f32*)((u8*)arg0+0xBC)=z;*(f32*)((u8*)arg0+0xC0)=z;return arg0;
+ *(f32*)((u8*)arg0+0x58)=e8*d;*(f32*)((u8*)arg0+0x5C)=e8*e;*(f32*)((u8*)arg0+0x60)=e8*f;
+ *(f32*)((u8*)arg0+0x64)=z2;*(f32*)((u8*)arg0+0x68)=z2;*(f32*)((u8*)arg0+0x6C)=z2;*(f32*)((u8*)arg0+0x70)=z2;
+ *(f32*)((u8*)arg0+0x74)=z2;*(f32*)((u8*)arg0+0x78)=z2;*(f32*)((u8*)arg0+0x7C)=z2;*(f32*)((u8*)arg0+0x80)=z2;
+ *(f32*)((u8*)arg0+0x84)=z2;*(f32*)((u8*)arg0+0x88)=z2;*(f32*)((u8*)arg0+0x8C)=z2;*(f32*)((u8*)arg0+0x90)=z2;
+ *(f32*)((u8*)arg0+0x94)=z2;*(f32*)((u8*)arg0+0x98)=z2;*(f32*)((u8*)arg0+0x9C)=z2;*(f32*)((u8*)arg0+0xA0)=z2;
+ *(f32*)((u8*)arg0+0xA4)=z2;*(f32*)((u8*)arg0+0xA8)=z2;*(f32*)((u8*)arg0+0xAC)=z2;*(f32*)((u8*)arg0+0xB0)=z2;
+ *(f32*)((u8*)arg0+0xB4)=z2;*(f32*)((u8*)arg0+0xB8)=z2;*(f32*)((u8*)arg0+0xBC)=z2;*(f32*)((u8*)arg0+0xC0)=z2;return arg0;
 }
 #pragma dont_inline off
 extern "C" void fn_8019F6F0(void *arg0) {
@@ -4112,7 +4115,7 @@ extern "C" void fn_801A22A4(void* obj) {
     ((Fn801E44F4)fn_801E44F4)(words, 0x50000000, value9, tailX, tailY, tailZ);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     extern f32 lbl_80562300;
     extern char lbl_80333868[];
