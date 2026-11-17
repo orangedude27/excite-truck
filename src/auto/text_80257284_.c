@@ -50,7 +50,6 @@ public:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80257284(void) {
-    // Fix note: set descriptor fields in target order and keep the global menu table addresses explicit.
     typedef struct { int v[5]; } Header;
     typedef struct { int label; int type; int value; int flags; int id; } Entry;
     typedef struct { Header header; Entry entries[9]; int object[0x74]; } Frame;
@@ -65,40 +64,44 @@ void fn_80257284(void) {
     register int number asm("r27");
     register int second_label asm("r28");
     register int handler asm("r29");
-    register int second_count asm("r30");
+    register int second_count asm("r30") = 0;
     register int *table asm("r7");
+    int *p0, *p7, *p21, *p99;
 
     if (fn_80247624()) { fn_80012794(); fn_80012780(); }
     fn_80257470(frame.object);
 
-    frame.entries[0].value = (int)&frame.object[0];
+    p0 = &frame.object[0];
+    p7 = &frame.object[7];
+    p21 = &frame.object[21];
+    p99 = &frame.object[99];
+    frame.entries[0].value = (int)p0;
     frame.entries[0].type = 5;
     frame.entries[0].label = 0;
     frame.entries[0].flags = 0;
     frame.entries[0].id = 0;
     frame.entries[1].type = 13;
     frame.entries[1].label = (int)&lbl_8055C1D8;
-    frame.entries[1].value = (int)&frame.object[0];
+    frame.entries[1].value = (int)p0;
     frame.entries[1].flags = 0;
     frame.entries[1].id = 0;
     frame.entries[2].type = 13;
     frame.entries[2].label = (int)&lbl_8055C1E0;
-    frame.entries[2].value = (int)&frame.object[7];
+    frame.entries[2].value = (int)p7;
     frame.entries[2].flags = 0;
     frame.entries[2].id = 0;
     frame.entries[3].type = 13;
     frame.entries[3].label = (int)&lbl_8055C1E8;
-    frame.entries[3].value = (int)&frame.object[21];
+    frame.entries[3].value = (int)p21;
     frame.entries[3].flags = 0;
     frame.entries[3].id = 0;
     frame.entries[4].type = 13;
     frame.entries[4].label = (int)&lbl_8055C1F0;
-    frame.entries[4].value = (int)&frame.object[99];
+    frame.entries[4].value = (int)p99;
     frame.entries[4].flags = 1;
     frame.entries[4].id = 0;
 
-    fn_8000DA10((int)&frame.object[99], (int)&frame.object[21],
-                (int)&frame.object[7], 13,
+    fn_8000DA10((int)p99, (int)p21, (int)p7, 13,
                 &lbl_8055C1D8, &lbl_8055C1E0, &lbl_8055C1E8, &lbl_8055C1F0);
     result = fn_8000DB34();
     frame.entries[5].value = result;
@@ -118,14 +121,13 @@ void fn_80257284(void) {
     mask = 0x1B;
     second_label = (int)&lbl_8055BAB8;
     handler = (int)fn_80236914;
-    second_count = 6;
 
     frame.entries[5].label = arg_label;
     frame.entries[5].type = number;
-    frame.entries[5].flags = zero;
+    frame.entries[5].flags = second_count;
     frame.entries[5].id = zero;
     frame.entries[6].label = setting;
-    frame.entries[6].type = second_count;
+    frame.entries[6].type = six;
     frame.entries[6].value = zero;
     frame.entries[6].flags = minus_one;
     frame.entries[6].id = mask;
@@ -206,6 +208,7 @@ int fn_802574E0(int self, int deletingFlag) {
     return self;
 }
 
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_80257558(void *arg0, void *arg1) {
     int outer;
