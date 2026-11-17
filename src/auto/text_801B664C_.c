@@ -31,6 +31,7 @@ void fn_801B6664(void) {
 
 }
 
+/* Default/stub query hook: always reports false (zero) to the callers that gate optional callbacks on it. */
 s32 fn_801B6668(void) {
     return 0;
 }
