@@ -3084,8 +3084,9 @@ extern "C" s32 fn_8012EDA8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     return 1;
 }
 
+/* Returns the stream's boundary: the file offset the read-ahead reader has reached. */
 extern "C" s32 fn_8012EE78(void *arg0) {
-    return *(s32 *)((u8 *)arg0 + 0x28);
+    return ((ResourceStream *)arg0)->boundary;
 }
 
 extern "C" s32 fn_8012C7FC(void *, s32 *);
