@@ -424,9 +424,9 @@ s32 fn_8000C7CC(void) {
 u32 fn_8000C7F4(s32 arg0) {
     switch (fn_8000C7CC()) {
         case 0:
-            return 1;
-        default:
             return (u32)((2 - arg0) | (arg0 - 2)) >> 31;
+        default:
+            return 1;
     }
 }
 #pragma scheduling on
