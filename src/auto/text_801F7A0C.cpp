@@ -1643,18 +1643,25 @@ extern "C" void fn_801F99CC(F92Obj *obj) {
 }
 #pragma scheduling on
 extern "C" void fn_801F9A24(F92Node **arg0) {
-    struct NN { u8 pad[0x20]; void *next; u8 pad2[0x108-0x24]; void **tbl; };
-    NN *node = *(NN **)arg0;
-    void *nxt;
+    class Base {
+    public:
+        char pad[0x108];
+    };
+    class Node : public Base {
+    public:
+        virtual void destroy(int);
+    };
+    F92Node *node = *arg0;
+    F92Node *next;
     while (node != 0) {
         fn_801F99CC((F92Obj *)node);
-        nxt = node->next;
+        next = node->next;
         if (node != 0) {
-            ((void (*)(void *, int))node->tbl[2])((void *)node, 1);
+            ((Node *)node)->destroy(1);
         }
-        node = (NN *)nxt;
+        node = next;
     }
-    *(void **)arg0 = 0;
+    *arg0 = 0;
 }
 
 #pragma dont_inline on
@@ -2065,20 +2072,22 @@ extern "C" void fn_801FA2C4(void) {
                 if (flag == 0) {
                     lbl_8055EC64 = lbl_8055EC64 - 1;
                     *(s32 *)(p + 0x60) = one;
-                    if (one == 1)
+                    if (one != 1) {
+                        s32 idx = ((s32 (*)(s32, s32, s32))fn_80129D90)(zero, zero, *(s32 *)(p + 0x54));
+                        fn_801E6CD0(*(void **)(p + 0x30), *(s32 *)(p + idx * 4 + 0x34), lbl_80562FF0);
+                    } else
                         fn_801E6CD0(*(void **)(p + 0x30), zero, lbl_80562FF0);
-                    else
-                        fn_801E6CD0(*(void **)(p + 0x30), *(s32 *)(p + ((s32 (*)(s32, s32, s32))fn_80129D90)(zero, zero, *(s32 *)(p + 0x54)) * 4 + 0x34), lbl_80562FF0);
                 }
                 break;
             case 1:
                 if (flag != 0 && lbl_8055EC64 < fn_801E7698()) {
                     lbl_8055EC64 = lbl_8055EC64 + 1;
                     *(s32 *)(p + 0x60) = zero;
-                    if (zero == 1)
+                    if (zero != 1) {
+                        s32 idx = ((s32 (*)(s32, s32, s32))fn_80129D90)(zero, zero, *(s32 *)(p + 0x54));
+                        fn_801E6CD0(*(void **)(p + 0x30), *(s32 *)(p + idx * 4 + 0x34), lbl_80562FF0);
+                    } else
                         fn_801E6CD0(*(void **)(p + 0x30), zero, lbl_80562FF0);
-                    else
-                        fn_801E6CD0(*(void **)(p + 0x30), *(s32 *)(p + ((s32 (*)(s32, s32, s32))fn_80129D90)(zero, zero, *(s32 *)(p + 0x54)) * 4 + 0x34), lbl_80562FF0);
                 }
                 break;
             }
@@ -2086,23 +2095,24 @@ extern "C" void fn_801FA2C4(void) {
         fn_801E6E9C(*(void **)(p + 0x30), dt);
         if (*(s32 *)(p + 0x54) > 1 && fn_801E7650(*(void **)(p + 0x30)) != 0) {
             s32 mode = *(s32 *)(p + 0x60);
-            if (mode == 1)
+            if (mode != 1) {
+                s32 idx = ((s32 (*)(s32, s32, s32))fn_80129D90)(zero, zero, *(s32 *)(p + 0x54));
+                fn_801E6CD0(*(void **)(p + 0x30), *(s32 *)(p + idx * 4 + 0x34), lbl_80562FF0);
+            } else
                 fn_801E6CD0(*(void **)(p + 0x30), zero, lbl_80562FF0);
-            else
-                fn_801E6CD0(*(void **)(p + 0x30), *(s32 *)(p + ((s32 (*)(s32, s32, s32))fn_80129D90)(zero, zero, *(s32 *)(p + 0x54)) * 4 + 0x34), lbl_80562FF0);
         }
     }
-    u8 *q = *(u8 **)&lbl_8055EC6C;
-    for (; q != 0; q = *(u8 **)(q + 0x14)) {
-        u8 *r = *(u8 **)(q + 0x10);
-        if (r != 0) {
-            if (q[0xc] == ec40[1]) {
-                r[0x4a] = 0;
-                r[0x4b] = 1;
-                r[0x49] = 1;
+    u8 *r = *(u8 **)&lbl_8055EC6C;
+    for (; r != 0; r = *(u8 **)(r + 0x14)) {
+        u8 *q = *(u8 **)(r + 0x10);
+        if (q != 0) {
+            if (r[0xc] == ((u8 *)&lbl_8055EC40)[1]) {
+                q[0x4a] = 0;
+                q[0x4b] = 1;
+                q[0x49] = 1;
             } else {
-                r[0x4a] = 1;
-                r[0x4c] = 0;
+                q[0x4a] = 1;
+                q[0x4c] = 0;
             }
         }
     }
@@ -2674,7 +2684,7 @@ extern "C" void fn_801FB420(void *arg0, void *arg1) {
         int need = 0;
         {
             unsigned int t = (unsigned int)(v15c - 6);
-            if (t < 0x11 && (((1u << t) & 0x12319u) != 0)) need = 1;
+            if (t <= 0x10 && (((1u << t) & 0x12319u) != 0)) need = 1;
         }
         if (need != 0) {
             int cnt = lbl_8055EC78;
