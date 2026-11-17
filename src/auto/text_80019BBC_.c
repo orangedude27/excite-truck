@@ -819,8 +819,9 @@ extern "C" int fn_8001B754(float arg0) {
 #pragma cplusplus reset
 #pragma pop
 
-void fn_8001B7B8(void) {
-    fn_802D3050();
+void fn_8001B7B8(int enable) {
+    /* Tail-call thunk: forwards the alpha-update enable flag to the render-state setter. */
+    fn_802D3050(enable);
 }
 extern char lbl_802FD618[];
 extern char lbl_802FD6CC[];
