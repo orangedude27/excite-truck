@@ -8720,9 +8720,10 @@ extern "C" void fn_80228D90(void *widget) {
 
 extern "C" s32 fn_80228DA4(void) { return 0; }
 
-extern "C" void fn_80228DAC(void *arg0) {
-    TruckIface *obj = *(TruckIface **)((u8 *)arg0 + 0x268);
-    obj->vf7();
+// Forward vf7() to the TruckIface stored at offset 0x268 of the given widget.
+extern "C" void fn_80228DAC(void *widget) {
+    TruckIface *iface = *(TruckIface **)((u8 *)widget + 0x268);
+    iface->vf7();
 }
 
 extern "C" void fn_80228DC0(void) { }
