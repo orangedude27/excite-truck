@@ -723,8 +723,9 @@ extern "C" int fn_80101414(void* arg0) {
     return *((unsigned char*)arg0 + 0x1F) != 0;
 }
 
-extern "C" int fn_80101428(void* arg0) {
-    return *((unsigned char*)arg0 + 0x1D) != 0;
+extern "C" int fn_80101428(void* player) {
+    /* Return the boolean flag stored at offset 0x1D of the sound player. */
+    return *((unsigned char*)player + 0x1D) != 0;
 }
 extern "C" int fn_800FEC1C(void*, const void*);
 extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void*, void*, const void*);
