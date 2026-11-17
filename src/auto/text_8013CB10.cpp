@@ -4345,6 +4345,9 @@ extern "C" void fn_80144338(void) {
 extern "C" void fn_8014433C(void) {
 }
 
+/* Empty virtual slot in the zone system's run of unimplemented callbacks
+ * (fn_801442D4..fn_80144358), where void no-ops alternate with stubs that
+ * just return 0 or 1.  Calling it does nothing. */
 extern "C" void fn_80144340(void) {
 }
 
