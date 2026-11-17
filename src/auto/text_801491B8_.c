@@ -2535,8 +2535,9 @@ s32 fn_80150B18(s32 object, s32 deleteFlag) {
     return object;
 }
 
-void fn_80150B58(void *arg0, s32 arg1) {
-    ((s32 *)arg0)[8] = arg1;
+void fn_80150B58(void *obj, s32 value) {
+    // Store a value in the s32 field at offset 0x20 of an object.
+    ((s32 *)obj)[8] = value;
 }
 
 s32 fn_8014F088(s32 arg0, s32 arg1);
