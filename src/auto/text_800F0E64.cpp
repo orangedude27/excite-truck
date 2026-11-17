@@ -3522,11 +3522,12 @@ extern "C" BOOL fn_800F6C7C(void *arg0, u32 arg1, void *arg2, u32 arg3) {
     void *waveDataAddress;
     u8 loader[0x220];
     u32 *table;
+
     if (*(void * volatile *)((u8 *)arg0 + 0x10) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x518, fileName + 0x2A0);
+        Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x518, fileName + 0x2A0);
     }
     if (arg3 & 0x1F) {
-        Panic__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x519, fileName + 0x4D4, arg3);
+        Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x519, fileName + 0x4D4, arg3);
     }
     if ((*(void * volatile *)((u8 *)arg0 + 0x10) == 0 ? 0 : fn_800F273C(*(void * volatile *)((u8 *)arg0 + 0x10))) == 0) {
         return 0;
@@ -3534,11 +3535,12 @@ extern "C" BOOL fn_800F6C7C(void *arg0, u32 arg1, void *arg2, u32 arg3) {
     if (arg1 >= (u32)fn_800F27CC(*(void * volatile *)((u8 *)arg0 + 0x10))) {
         return 0;
     }
+
     table = *(u32 **)((u8 *)arg0 + 0x14);
     u32 loaded = 0;
     if (table == 0) {
         if (table == 0)
-            Warning__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x333, fileName + 0x2D0);
+            Warning__Q26nw4hbm2dbFPCciPCce(fileName, 0x333, fileName + 0x2D0);
     } else if (arg1 >= table[0]) {
         loaded = 0;
     } else {
@@ -3550,35 +3552,40 @@ extern "C" BOOL fn_800F6C7C(void *arg0, u32 arg1, void *arg2, u32 arg3) {
     if (arg2 == 0) {
         return 0;
     }
+
     fn_800F41D0(loader, (s32)*(void * volatile *)((u8 *)arg0 + 0x10));
-    arg3 = (u32)LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatablePPvUl(loader, arg1, arg2, &waveDataAddress, arg3);
+    arg3 = (u32)LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatablePPvUl(
+        loader, arg1, arg2, &waveDataAddress, arg3);
     if (arg3 == 0) {
         fn_800F420C((s32)loader, -1);
         return 0;
     }
+
     table = *(u32 **)((u8 *)arg0 + 0x14);
     if (table == 0) {
         if (table == 0)
-            Warning__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x34D, fileName + 0x388);
+            Warning__Q26nw4hbm2dbFPCciPCce(fileName, 0x34D, fileName + 0x388);
     } else {
         if (arg1 >= table[0]) {
-            Panic__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x351, fileName + 0x3E0, arg1, 0);
+            Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x351, fileName + 0x3E0, arg1, 0);
         }
         table = *(u32 **)((u8 *)arg0 + 0x14);
         *(u32 *)((u8 *)table + arg1 * 8 + 4) = arg3;
     }
+
     arg3 = (u32)waveDataAddress;
     table = *(u32 **)((u8 *)arg0 + 0x14);
     if (table == 0) {
         if (table == 0)
-            Warning__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x380, fileName + 0x420);
+            Warning__Q26nw4hbm2dbFPCciPCce(fileName, 0x380, fileName + 0x420);
     } else {
         if (arg1 >= table[0]) {
-            Panic__Q26nw4hbm2dbFPCciPCce(fileName+0, 0x384, fileName + 0x3E0, arg1, 0);
+            Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x384, fileName + 0x3E0, arg1, 0);
         }
         table = *(u32 **)((u8 *)arg0 + 0x14);
         *(u32 *)((u8 *)table + arg1 * 8 + 8) = arg3;
     }
+
     fn_800F420C((s32)loader, -1);
     return 1;
 }
@@ -4557,7 +4564,14 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(vo
 /* Return the 32-bit field at offset 0x30 of a sound player object (its voice/player id). */
 extern "C" s32 fn_800F87E8(void *player) { return *(s32 *)((u8 *)player + 0x30); }
 
-extern "C" u8 fn_800F87F0(void *arg0) { return *(u8 *)((u8 *)arg0 + 0x2C); }
+extern "C" u8 fn_800F87F0(void *soundPlayer) {
+    /* nw4hbm::snd::SoundPlayer: whether this player supplies its own value for the
+     * integer BasicSound::Update hands down to the sound's player.  When this flag
+     * (cleared by the SoundPlayer constructor) is set, Update takes the player's
+     * s32 at +0x30 -- fn_800F87E8 -- instead of the default 1, unless the sound
+     * overrides it again with its own pair at +0x9C / +0xA0. */
+    return *(u8 *)((u8 *)soundPlayer + 0x2C);
+}
 
 /* Get the FX send level for an aux bus (0..3) on this sound player. */
 extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800F87F8(s32 self, s32 auxBus) {
