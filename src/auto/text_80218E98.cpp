@@ -8712,9 +8712,10 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     ((Vf14Apply *)*(void **)(arg0 + 0x268))->apply(*(s32 *)(arg0 + 0x270), *(s32 *)(arg0 + 0x274), *(s32 *)(arg0 + 0x278), saved_arg);
 }
 #pragma pop
-extern "C" void fn_80228D90(void *arg0) {
-    TruckIface *obj = *(TruckIface **)((u8 *)arg0 + 0x268);
-    obj->vf6();
+// Forward vf6() to the TruckIface stored at offset 0x268 of the given widget.
+extern "C" void fn_80228D90(void *widget) {
+    TruckIface *iface = *(TruckIface **)((u8 *)widget + 0x268);
+    iface->vf6();
 }
 
 extern "C" s32 fn_80228DA4(void) { return 0; }
