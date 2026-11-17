@@ -69,10 +69,12 @@ extern void fn_80179E00_virtual_call(void *);
 static f32 fn_load(void) { return lbl_80561B78; }
 #pragma scheduling invalid_target
 void *fn_80179D08(void *arg0) {
-    f32 a = lbl_80561B7C;
-    f32 b = lbl_80561B78;
+    f32 a = 0.0f;
+    f32 b = 1.0f;
+    s32 zero;
     *(s32 *)arg0 = (s32)&lbl_80331C70[0];
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
+    zero = 0;
+    *(s32 *)((u8 *)arg0 + 0xC) = zero;
     *(f32 *)((u8 *)arg0 + 0x3C) = b;
     *(f32 *)((u8 *)arg0 + 0x40) = a;
     *(f32 *)((u8 *)arg0 + 0x44) = a;
