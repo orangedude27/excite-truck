@@ -23,6 +23,7 @@ extern char lbl_8056004D;
 extern s32 lbl_80560044;
 extern s32 lbl_80560048;
 extern f32 lbl_80560050;
+/* SD-card mount stub: returns a null file-system handle (0 in this build). */
 s32 fn_802E98C8(void) {
     return 0;
 }
