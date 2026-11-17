@@ -2582,9 +2582,10 @@ public:
     virtual void vf3();
 };
 
-extern "C" void fn_802158DC(void *arg0) {
-    Vf4Obj *obj = *(Vf4Obj **)((char *)arg0 + 0x244);
-    obj->vf2();
+extern "C" void fn_802158DC(void *wrapper) {
+    /* Forward vf2() (vtable slot 0x10) to the widget held at +0x244 of the wrapper. */
+    Vf4Obj *widget = *(Vf4Obj **)((char *)wrapper + 0x244);
+    widget->vf2();
 }
 
 extern "C" void fn_802158F0(void *wrapper) {
