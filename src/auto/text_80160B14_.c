@@ -52,6 +52,7 @@ float fn_80160BE0(float *arg0, float *arg1) {
     float dy = arg0[0] - arg1[0];
     return dx * dx + dy * dy;
 }
+/* Return zero: the default/null value for this accessor stub. */
 long fn_80160C18(void) {
     return 0;
 }
