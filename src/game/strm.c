@@ -21,8 +21,9 @@ extern signed char lbl_8055FFE0;
 extern const char lbl_8034D7D8[];
 extern int fn_802E30C8(const char *, ...);
 #pragma dont_inline on
-int fn_802E72B8(int arg0) {
-    return (arg0 + 0x7ff) / 2048;
+/* Round a byte count up to a whole number of 2048-byte sectors (ceil(size/2048)). */
+int fn_802E72B8(int size) {
+    return (size + 0x7ff) / 2048;
 }
 
 int fn_802E72C8(int arg0) {
