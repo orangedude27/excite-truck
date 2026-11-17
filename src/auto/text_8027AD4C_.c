@@ -1482,6 +1482,8 @@ long fn_8027CAB4(void *event) {
     return flag;
 }
 
+/* Challenge-path branch handler for fn_8027CE4C: a constant "return true" predicate,
+ * paired with the identically behaving career handler fn_8027C8B0. */
 long fn_8027CB20(void) { return 1; }
 
 #pragma cplusplus on
