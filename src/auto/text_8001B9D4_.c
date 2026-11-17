@@ -183,7 +183,11 @@ void fn_8001BA70(void) {
 }
 
 void fn_8001BA74(void) {
-    fn_8001C960();
+    /* Tail-call the stat-type lookup: fn_8001C960 scans the stat-type table for
+     * the entry whose id low byte matches the incoming index and returns its code. */
+#define lookupStatType fn_8001C960
+    lookupStatType();
+#undef lookupStatType
 }
 
 /* Enable the statistics memory-card subsystem: mark it active, then set it up. */
