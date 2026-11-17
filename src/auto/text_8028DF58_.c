@@ -1833,7 +1833,8 @@ void fn_802916E8(void) {}
 
 void fn_802916EC(void) {}
 
-int fn_802916F0(void *arg0) { return ((int *)arg0)[1]; }
+/* Return the 32-bit field at offset 0x4 of the given object (a virtual getter). */
+int fn_802916F0(void *obj) { return ((int *)obj)[1]; }
 
 int fn_802916F8(void *object) {
     /* Return the object's 32-bit field at offset 0x118 (paired with the +0x11C flag accessors). */
