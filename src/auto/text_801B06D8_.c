@@ -599,20 +599,20 @@ extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
         virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
         virtual void d12(); virtual void d13(); virtual void *get();
     };
-    u32 idx0 = *(volatile const u32 *)arg0;
-    u32 cutoff = *(volatile u32 *)&lbl_8055E680;
+    u32 idx0 = *(const u32 *)arg0;
+    u32 cutoff = *(u32 *)&lbl_8055E680;
     u32 off0 = idx0 << 7;
-    void *base = *(void * volatile *)&lbl_8055E684;
-    u32 idx1 = *(volatile const u32 *)arg1;
+    void *base = *(void **)&lbl_8055E684;
+    u32 idx1 = *(const u32 *)arg1;
     u32 off1 = idx1 << 7;
     Item *obj0 = (Item *)((u8 *)base + off0);
     Item *obj1 = (Item *)((u8 *)base + off1);
     u32 flag0;
     u32 flag1;
-    s32 key0;
-    s32 key1;
     s32 tie0;
     s32 tie1;
+    s32 key0;
+    s32 key1;
     cutoff += 1;
     flag0 = (u32)__cntlzw(*(u32 *)((u8 *)obj0 + 0x68) - cutoff) >> 5;
     flag1 = (u32)__cntlzw(*(u32 *)((u8 *)obj1 + 0x68) - cutoff) >> 5;
@@ -620,7 +620,9 @@ extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
     key1 = *(s32 *)((u8 *)obj1->get() + 0x10);
     tie0 = *(s32 *)((u8 *)obj0 + 0x74);
     tie1 = *(s32 *)((u8 *)obj1 + 0x74);
-    if (flag0 != 0 && flag1 != 0) {
+    if (flag0 == 0) goto fallback;
+    if (flag1 == 0) goto fallback;
+    {
         f32 a = *(f32 *)((u8 *)obj0 + 0x70);
         f32 b = *(f32 *)((u8 *)obj1 + 0x70);
         f32 difference = (f32)(double)__fabsf(a - b);
@@ -628,9 +630,9 @@ extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
         if (b < a) return 1;
         return -1;
     }
-    if (flag0 != 0) goto compare_keys;
-    if (flag1 == 0) goto compare_keys;
-    return flag0 == 0 ? 1 : -1;
+fallback:
+    if (flag0 == 0 && flag1 == 0) goto compare_keys;
+    return flag0 ? -1 : 1;
 compare_keys:
     return key0 == key1 ? tie1 - tie0 : key1 - key0;
 }
