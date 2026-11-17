@@ -3126,9 +3126,11 @@ extern "C" void fn_801FC4E8(void *self, void *arg1) {
 #pragma scheduling on
 #pragma pop
 #pragma dont_inline reset
-extern "C" void fn_801FC644(void **arg0, void *arg1) {
-    *(void **)((u8 *)arg1 + 0x14) = *arg0;
-    *arg0 = arg1;
+/* Push node onto the front of the intrusive singly-linked list whose head pointer is list;
+ * each node's next link is stored at offset 0x14. */
+extern "C" void fn_801FC644(void **list, void *node) {
+    *(void **)((u8 *)node + 0x14) = *list;
+    *list = node;
 }
 
 extern "C" s32 lbl_8055EC70;
