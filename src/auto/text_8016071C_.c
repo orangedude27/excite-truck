@@ -17,6 +17,7 @@ typedef struct Obj { void **vtable; } Obj;
 typedef int (*Callback)(Obj *, int, int);
 #pragma cplusplus on
 extern "C" void fn_8016071C(void *obj_) {
+    #pragma scheduling invalid_target
     class ObjV {
     public:
         virtual void v0();
@@ -25,18 +26,20 @@ extern "C" void fn_8016071C(void *obj_) {
         virtual void v3();
         virtual void v4();
         virtual void v5();
-        virtual int meth(int h, int y);
+        virtual int meth(int head, int x);
     };
     int i;
-    int h;
+    int head;
+    void *result;
     void *mem = (void *)fn_801284F8(0x18, lbl_8032F4C8);
     if (mem != 0) {
-        lbl_8055E2BC = (void *)((int (*)(void *, void *))fn_8001D884)(mem, obj_);
+        result = (void *)((int (*)(void *, void *))fn_8001D884)(mem, obj_);
     }
+    lbl_8055E2BC = result;
     ObjV *obj = (ObjV *)obj_;
     for (i = 0; i < 5; i++) {
-        h = __AXGetStackHead(i);
-        lbl_8042FD60[i] = obj->meth(h, -1);
+        head = __AXGetStackHead(i);
+        lbl_8042FD60[i] = obj->meth(head, -1);
     }
 }
 #pragma cplusplus off
