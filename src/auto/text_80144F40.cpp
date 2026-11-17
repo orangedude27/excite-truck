@@ -782,13 +782,15 @@ static inline s32 findLayout80145DD8(void *obj) {
     return -1;
 }
 
-extern "C" void fn_80145DD8(void *arg0) {
-    s32 i = findLayout80145DD8(arg0);
-    if ((i >= 0) && (i >= 0) && (i < lbl_8042FBC0.count)) {
-        s32 last = lbl_8042FBC0.count - 1;
-        if (i != last) {
+extern "C" void fn_80145DD8(void *layout) {
+    /* OVEdit_RemoveLayout: remove a layout pointer from sOVEditLayoutQueue
+       (lbl_8042FBC0) by swapping the last entry into its slot, then shrinking. */
+    s32 slotIndex = findLayout80145DD8(layout);
+    if ((slotIndex >= 0) && (slotIndex >= 0) && (slotIndex < lbl_8042FBC0.count)) {
+        s32 lastIndex = lbl_8042FBC0.count - 1;
+        if (slotIndex != lastIndex) {
             void **items = lbl_8042FBC0.data;
-            items[i] = items[last];
+            items[slotIndex] = items[lastIndex];
         }
         lbl_8042FBC0.count = lbl_8042FBC0.count - 1;
     }
