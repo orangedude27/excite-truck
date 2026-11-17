@@ -361,6 +361,7 @@ struct F9List {
 };
 
 #pragma dont_inline on
+/* Model-draw gate consulted by the batched GOB draw passes; always open, so every eligible node may be submitted. */
 extern "C" u32 fn_801F7A0C(void) { return 1; }
 
 extern "C" void PSVECCrossProduct(const f32 *, f32 *);
@@ -1506,37 +1507,36 @@ extern "C" void fn_80204018(void *, void *);
 extern "C" u8 lbl_8055EC7C;
 extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2) {
     u8 scratch[0x38];
-    u32 state;
+    u32 temp;
     u32 flags;
     register s32 zero;
     void *node;
 
-    if (arg2 & 2) {
-        state = *(volatile u8 *)&lbl_8055EC7C;
-        flags = *(volatile s32 *)((u8 *)arg0 + 0x24);
-        state = (state == 0);
-        *(volatile u8 *)&lbl_8055EC7C = state;
-        flags = flags != 0;
-        if (state != 0) {
+    if ((arg2 & 2) != 0) {
+        temp = *(volatile u8 *)&lbl_8055EC7C == 0;
+        flags = *(volatile u32 *)((u8 *)arg0 + 0x24) != 0;
+        *(volatile u8 *)&lbl_8055EC7C = temp;
+        if (temp != 0)
             flags |= 2;
-            node = arg0;
-            zero = 0;
-            goto next_node;
-        loop_body:
-            *(s32 *)(scratch + 0x34) = zero;
-            *(s32 *)(scratch + 0x30) = zero;
-            fn_801BFD34(scratch + 0x24, (u8 *)node + 0x54, arg1);
-            fn_80015B20(scratch, (u8 *)node + 0x30, arg1);
-            s32 value = *(s32 *)((u8 *)arg1 + 0x34);
-            *(s32 *)(scratch + 0x30) = flags;
-            *(s32 *)(scratch + 0x34) = value;
-            ((void (**)(void *, void *))*(void **)((u8 *)node + 0x108))[4](node, scratch);
-        next_node:
-            node = *(void **)((u8 *)node + 0x24);
-            if (node != 0) goto loop_body;
-        }
+        node = arg0;
+        zero = 0;
+        goto next_node;
+    loop_body:
+        *(s32 *)(scratch + 0x34) = zero;
+        *(s32 *)(scratch + 0x30) = zero;
+        fn_801BFD34(scratch + 0x24, (u8 *)node + 0x54, arg1);
+        fn_80015B20(scratch, (u8 *)node + 0x30, arg1);
+        s32 value = *(s32 *)((u8 *)arg1 + 0x34);
+        *(s32 *)(scratch + 0x30) = flags;
+        *(s32 *)(scratch + 0x34) = value;
+        void (**vt)(void *, void *) = (void (**)(void *, void *))*(u32 *)((u8 *)node + 0x108);
+        void (*fn)(void *, void *) = vt[4];
+        fn(node, scratch);
+    next_node:
+        node = *(void **)((u8 *)node + 0x24);
+        if (node != 0) goto loop_body;
     }
-    if (arg2 & 1) fn_80204018(arg0, arg1);
+    if ((arg2 & 1) != 0) fn_80204018(arg0, arg1);
 }
 
 extern "C" void *fn_801F981C(void *object, s32 flags) {
@@ -2619,7 +2619,9 @@ extern "C" void fn_801FB284(void *arg0, void *arg1) {
     }
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801FB354(void *arg0, void *arg1) {
+    u32 check = *(u32 *)((u8 *)arg0 + 0x190);
     s32 result;
     s32 flags;
     f32 cz;
@@ -2631,7 +2633,7 @@ extern "C" void fn_801FB354(void *arg0, void *arg1) {
     f32 delta[3];
     void *camera;
 
-    if (((u32 *)arg0)[100] & 1) {
+    if (check & 1) {
         camera = fn_802C86DC();
         x = *(f32 *)((u8 *)arg1 + 0x24);
         y = *(f32 *)((u8 *)arg1 + 0x28);
@@ -2649,7 +2651,6 @@ extern "C" void fn_801FB354(void *arg0, void *arg1) {
     }
     fn_802C70AC(*(s32 *)((u8 *)arg0 + 0x74), arg1, -1, flags);
 }
-
 extern "C" void fn_801FB40C(void *sender, s32 code, void *target) {
     // Forward a notification to the no-op handler: pull a field from each object and append the sender.
     fn_80204014(code, *(s32 *)((u8 *)target + 0x34), *(s32 *)((u8 *)sender + 0x19C), sender);
@@ -2899,17 +2900,16 @@ extern "C" void fn_8019EECC(void);
 #pragma push
 #pragma processor 750
 extern "C" void fn_8019EECC(void);
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_801FC048(void *arg0) {
     volatile f32 sp10;
     volatile f32 spC;
     volatile f32 sp8;
-    register f32 temp_f31 = lbl_80563010;
     void *heap = lbl_8033B54C;
+    register f32 temp_f31 = lbl_80563010;
     void *obj = fn_801284F8(0x54, heap);
     if (obj != 0) {
-        f32 value, zero;
-        register f32 x;
+        f32 value, zero, x;
         value = lbl_80563014;
         zero = lbl_80562FF0;
         *(volatile void **)obj = lbl_80333B98;
@@ -2942,6 +2942,7 @@ extern "C" void fn_801FC048(void *arg0) {
         fn_8019EECC();
     }
 }
+#pragma scheduling invalid_target
 extern f32 lbl_80563014, lbl_80563018;
 extern u8 lbl_803338C0[], lbl_8033B55C[];
 extern "C" f64 fn_8002F234(void);
