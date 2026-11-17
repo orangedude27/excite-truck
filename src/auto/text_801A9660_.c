@@ -106,7 +106,7 @@ extern void *fn_801AE180(void);
 extern f32 lbl_80562478, lbl_8056247C;
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801A9798(void *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
     struct Node_801A9798 { void *next; f32 values[9]; };
     struct Node_801A9798 *node;
