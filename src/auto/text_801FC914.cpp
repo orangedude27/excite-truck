@@ -212,9 +212,11 @@ extern "C" void fn_801FCA54(void* arg0, int arg1, int arg2) {
 
 extern "C" void fn_801FCB40(void*, float);
 #pragma dont_inline on
-extern "C" void fn_801FCAAC(void* arg0, float farg0) {
-    if (*(void**)((char*)arg0 + 4) != 0) {
-        fn_801FCB40(arg0, farg0);
+extern "C" void fn_801FCAAC(void* drone, float dt) {
+    /* Advance an active path drone along its path by dt; do nothing when it
+       has no path (the state pointer at +4 is null). */
+    if (*(void**)((char*)drone + 4) != 0) {
+        fn_801FCB40(drone, dt);
     }
 }
 #pragma dont_inline reset
@@ -1036,18 +1038,19 @@ extern "C" void fn_801FE550(void *path) {
 #pragma use_lmw_stmw off
 #pragma scheduling on
 extern "C" void fn_801FE568(void* arg0, unsigned char* p) {
+    unsigned char a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15;
     unsigned char t;
     unsigned char *ptr;
     int i;
 
-    t = p[0x2c]; p[0x2c] = p[0x3b]; p[0x3b] = t;
-    t = p[0x2d]; p[0x2d] = p[0x3a]; p[0x3a] = t;
-    t = p[0x2e]; p[0x2e] = p[0x39]; p[0x39] = t;
-    t = p[0x2f]; p[0x2f] = p[0x38]; p[0x38] = t;
-    t = p[0x30]; p[0x30] = p[0x37]; p[0x37] = t;
-    t = p[0x31]; p[0x31] = p[0x36]; p[0x36] = t;
-    t = p[0x32]; p[0x32] = p[0x35]; p[0x35] = t;
-    t = p[0x33]; p[0x33] = p[0x34]; p[0x34] = t;
+    a0 = p[0x2c]; p[0x2c] = p[0x3b]; p[0x3b] = a0;
+    a1 = p[0x2d]; p[0x2d] = p[0x3a]; p[0x3a] = a1;
+    a2 = p[0x2e]; p[0x2e] = p[0x39]; p[0x39] = a2;
+    a3 = p[0x2f]; p[0x2f] = p[0x38]; p[0x38] = a3;
+    a4 = p[0x30]; p[0x30] = p[0x37]; p[0x37] = a4;
+    a5 = p[0x31]; p[0x31] = p[0x36]; p[0x36] = a5;
+    a6 = p[0x32]; p[0x32] = p[0x35]; p[0x35] = a6;
+    a7 = p[0x33]; p[0x33] = p[0x34]; p[0x34] = a7;
 
     ptr = p + 0x3c;
     for (i = 0; i < 0x48; i++) {
@@ -1066,8 +1069,8 @@ extern "C" void fn_801FE568(void* arg0, unsigned char* p) {
         ptr += 0x18;
     }
 
-    t = p[0x6fc]; p[0x6fc] = p[0x6ff]; p[0x6ff] = t;
-    t = p[0x6fd]; p[0x6fd] = p[0x6fe]; p[0x6fe] = t;
+    a8 = p[0x6fc]; p[0x6fc] = p[0x6ff]; p[0x6ff] = a8;
+    a9 = p[0x6fd]; p[0x6fd] = p[0x6fe]; p[0x6fe] = a9;
 }
 #pragma pop
 extern "C" void fn_801FE708(void *container, void *entry) {
