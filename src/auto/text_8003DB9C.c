@@ -2624,8 +2624,9 @@ void GXGetLineWidth(s32 width) {
     __peReg[4] = *(unsigned short *)&reg | 4;
 }
 
-void GXGetPointSize(s32 arg0) {
-    ((GXPointSizeReg *)&__peReg[1])->pointSize = arg0;
+void GXGetPointSize(s32 pointSize) {
+    /* Store the one-bit point-size flag into the point-size register word. */
+    ((GXPointSizeReg *)&__peReg[1])->pointSize = pointSize;
 }
 
 void GXInitLightAttnA(s32 fn, s32 aa, s32 ab, s32 ac) {
