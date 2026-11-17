@@ -1805,8 +1805,9 @@ extern "C" void fn_800A71D0(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_800A6268(s32, void *);
-extern "C" s32 fn_800A71D8(void *arg0) {
-    return (*(s32 *)((u8 *)arg0 + 0x14));
+extern "C" s32 fn_800A71D8(void *device) {
+    /* Return the device's result/parsed-value word at +0x14 (the field fn_800A71D0 writes). */
+    return (*(s32 *)((u8 *)device + 0x14));
 }
 
 /* Reads the device's info record into *info; forwards the copy helper's result
@@ -21835,7 +21836,7 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
                     Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x107, file + 0xB0);
                 f32 result = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
                 result += half;
-                s16 value = result;
+                s16 value = (s16)result;
                 value = (value < -0x400) ? -0x400 : value;
                 value = (value > 0x3FF) ? 0x3FF : value;
                 SetColorElement__Q36nw4hbm3lyt8MaterialFUls(arg2, item[1], value);
