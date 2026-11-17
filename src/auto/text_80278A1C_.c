@@ -274,61 +274,65 @@ extern "C" void* fn_80279004(s32 name, s32 arg1) {
     char path[0x80];
     char path2[0x80];
     char key[0x20];
-    char* base = lbl_80347690;
-    char* p;
-    char* object;
-    void* file2;
-    void* file;
-    Res_Vtable_80279004* resource;
-    s32 i;
-    char* arg0 = (char*)name;
-    Vec3_80279004 v;
-    Vec3_80279004 w;
+    char* formatStrings = lbl_80347690;
+    char* boundsPtr;
+    char* carObj;
+    void* altBoneFile;
+    void* boneFile;
+    Res_Vtable_80279004* boundsRes;
+    s32 boundIndex;
+    char* carName = (char*)name;
+    Vec3_80279004 minVec;
+    Vec3_80279004 maxVec;
 
-    object = (char*)fn_801284F8(0x2464, lbl_8055C6C8);
-    sprintf(path, base + 0xF4, arg0);
-    *(void**)(object + 0x2438) = fn_80131808(path);
-    sprintf(path, base + 0x108, arg0);
+    /* Load a car layout: allocate the car object, attach its physics file, load the
+     * bone-info file (with a .mvl/.val fallback) and build the bone layout, then copy
+     * the per-bone min/max bounds out of the "bounds" resource, and register the car
+     * at the head of the global car list. */
+    carObj = (char*)fn_801284F8(0x2464, lbl_8055C6C8);
+    sprintf(path, formatStrings + 0xF4, carName);
+    *(void**)(carObj + 0x2438) = fn_80131808(path);
+    sprintf(path, formatStrings + 0x108, carName);
     if (fn_8012C33C(path) == 0) {
-        sprintf(path, base + 0x118, arg0);
+        sprintf(path, formatStrings + 0x118, carName);
     }
-    file = fn_80131808(path);
-    sprintf(path2, base + 0x128, arg0);
+    boneFile = fn_80131808(path);
+    sprintf(path2, formatStrings + 0x128, carName);
     if (fn_8012C33C(path2) != 0) {
-        file2 = fn_80131808(path2);
+        altBoneFile = fn_80131808(path2);
     } else {
-        file2 = NULL;
+        altBoneFile = NULL;
     }
-    fn_80278A64((CarObject*)object, (File_80279004*)file, (File_80279004*)file2, (s32)arg0);
-    memset(object + 0x2138, 0, 0x300);
-    if (((File_Vtable_80279004*)file)->hasRes(lbl_8055C6D0) != 0) {
-        resource = ((File_Vtable_80279004*)file)->getRes(lbl_8055C6D0);
-        p = object;
-        for (i = 0; i < 0x20; i++) {
-            sprintf(key, lbl_8055C6D8, i);
-            v = resource->getVec(key);
-            *(f32*)(p + 0x2138) = v.x;
-            *(f32*)(p + 0x213C) = v.y;
-            *(f32*)(p + 0x2140) = v.z;
-            sprintf(key, lbl_8055C6E0, i);
-            w = resource->getVec(key);
-            *(f32*)(p + 0x2144) = w.x;
-            *(f32*)(p + 0x2148) = w.y;
-            *(f32*)(p + 0x214C) = w.z;
-            p += 0x18;
+    fn_80278A64((CarObject*)carObj, (File_80279004*)boneFile, (File_80279004*)altBoneFile, (s32)carName);
+    memset(carObj + 0x2138, 0, 0x300);
+    if (((File_Vtable_80279004*)boneFile)->hasRes(lbl_8055C6D0) != 0) {
+        boundsRes = ((File_Vtable_80279004*)boneFile)->getRes(lbl_8055C6D0);
+        boundsPtr = carObj;
+        for (boundIndex = 0; boundIndex < 0x20; boundIndex++) {
+            sprintf(key, lbl_8055C6D8, boundIndex);
+            minVec = boundsRes->getVec(key);
+            *(f32*)(boundsPtr + 0x2138) = minVec.x;
+            *(f32*)(boundsPtr + 0x213C) = minVec.y;
+            *(f32*)(boundsPtr + 0x2140) = minVec.z;
+            sprintf(key, lbl_8055C6E0, boundIndex);
+            maxVec = boundsRes->getVec(key);
+            *(f32*)(boundsPtr + 0x2144) = maxVec.x;
+            *(f32*)(boundsPtr + 0x2148) = maxVec.y;
+            *(f32*)(boundsPtr + 0x214C) = maxVec.z;
+            boundsPtr += 0x18;
         }
     } else {
-        fn_802E30C8(base + 0x13C, (s32)arg0);
+        fn_802E30C8(formatStrings + 0x13C, (s32)carName);
     }
-    fn_80131818(file);
-    if (file2 != NULL) fn_80131818(file2);
-    *(s32*)(object + 0x245C) = 1;
-    strncpy(object + 0x243C, arg0, 0x20);
-    *(u8*)(object + 0x245B) = 0;
-    *(void**)(object + 0x2134) = *(void**)(object + 0x2438);
-    *(void**)(object + 0x2460) = lbl_8055F5F0;
-    lbl_8055F5F0 = object;
-    return object;
+    fn_80131818(boneFile);
+    if (altBoneFile != NULL) fn_80131818(altBoneFile);
+    *(s32*)(carObj + 0x245C) = 1;
+    strncpy(carObj + 0x243C, carName, 0x20);
+    *(u8*)(carObj + 0x245B) = 0;
+    *(void**)(carObj + 0x2134) = *(void**)(carObj + 0x2438);
+    *(void**)(carObj + 0x2460) = lbl_8055F5F0;
+    lbl_8055F5F0 = carObj;
+    return carObj;
 }
 #pragma cplusplus reset
 
