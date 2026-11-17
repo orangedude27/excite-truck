@@ -3668,8 +3668,10 @@ extern "C" int fn_801D8B60(void *arg0, void *arg1) {
 #pragma cplusplus reset
 #pragma pop
 
-void fn_801D8C0C(void *arg0) {
-    *(int *)((char *)arg0 + 0x18) = -1;
+/* Invalidate the cached index at +0x18 (set it to -1) so the next check in
+   fn_801D8C1C sees a change and forces a refresh via gForceWeather. */
+void fn_801D8C0C(void *state) {
+    *(int *)((char *)state + 0x18) = -1;
 }
 
 void fn_801D8C18(void) {
