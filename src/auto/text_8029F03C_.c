@@ -665,8 +665,9 @@ void fn_8029FDDC(void) {
 
 #pragma pop
 
-int fn_8029FDF0(int *arg0, int *arg1) {
-    return *arg0 - *arg1;
+/* Ascending numeric comparator for qsort/bsearch over int-keyed tables. */
+int fn_8029FDF0(int *a, int *b) {
+    return *a - *b;
 }
 
 void fn_8029FE00(void) {
