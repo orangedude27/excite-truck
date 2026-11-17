@@ -277,16 +277,19 @@ void fn_802C8588(float *arg0, float *arg1, float *arg2) {
 extern void fn_802D03F4(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
 #pragma scheduling invalid_target
 void fn_802C8638(unsigned int *arg0) {
-    unsigned int v3, v2, v1, v0;
-    unsigned int v4, v5, v6, v7, v8, v9, v10, v11;
-    volatile unsigned int *dst;
-    v2 = arg0[2];
-    v3 = arg0[3];
-    v1 = arg0[1];
-    v0 = arg0[0];
-    dst = (volatile unsigned int *)lbl_804C1410;
-    v4 = arg0[4]; v5 = arg0[5]; v6 = arg0[6]; v7 = arg0[7];
-    v8 = arg0[8]; v9 = arg0[9]; v10 = arg0[10]; v11 = arg0[11];
+    register unsigned int v3 = arg0[3];
+    register unsigned int v2 = arg0[2];
+    register unsigned int v1 = arg0[1];
+    register unsigned int v0 = arg0[0];
+    unsigned int v4 = arg0[4];
+    unsigned int v5 = arg0[5];
+    unsigned int v6 = arg0[6];
+    unsigned int v7 = arg0[7];
+    unsigned int v8 = arg0[8];
+    unsigned int v9 = arg0[9];
+    unsigned int v10 = arg0[10];
+    unsigned int v11 = arg0[11];
+    volatile unsigned int *dst = (volatile unsigned int *)lbl_804C1410;
     dst[0] = v0; dst[1] = v1; dst[2] = v2; dst[3] = v3;
     dst[4] = v4; dst[5] = v5; dst[6] = v6; dst[7] = v7;
     dst[8] = v8; dst[9] = v9; dst[10] = v10; dst[11] = v11;
@@ -829,8 +832,10 @@ int fn_802C9638(void *position, unsigned char *status, float tolerance) {
 }
 
 #pragma dont_inline on
-int fn_802C9640(void *arg0, float tolerance) {
-    return fn_802C9638(arg0, 0, tolerance);
+int fn_802C9640(void *position, float tolerance) {
+    /* View-volume containment test for a position, discarding both the status
+       byte and the distance output. */
+    return fn_802C9638(position, 0, tolerance);
 }
 #pragma dont_inline off
 extern int fn_802C9638(void *, unsigned char *, float);
