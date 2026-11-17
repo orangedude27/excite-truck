@@ -20554,7 +20554,8 @@ extern "C" void fn_800D11F0(void *spkChannel) {
     Connect__Q210homebutton9RemoteSpkFl(*(void **)((char *)spkChannel + 0x24), *(s32 *)spkChannel);
 }
 extern "C" void fn_800D1200(void) {
-
+    /* No-op reset hook invoked on each homebutton::Controller while the
+       HomeButton overlay is set up; this step needs no work for the controller. */
 }
 
 // Set the float field at offset 4 of the given control object.
