@@ -947,10 +947,12 @@ void fn_8026557C(void *arg0, float farg0) {
     *(float *)((char *)arg0 + 0x18) = farg0;
 }
 
-void fn_80265584(void *arg0) {
+void fn_80265584(void *obj) {
     extern float lbl_8055C454;
-    *(float *)((char *)arg0 + 0x1C) = lbl_8055C454;
-    lbl_8055C454 = *(float *)((char *)arg0 + 0x18);
+    /* Store the shared timer (lbl_8055C454) into this object's timer field at
+     * +0x1C, then reload the global from the object's gate field at +0x18. */
+    *(float *)((char *)obj + 0x1C) = lbl_8055C454;
+    lbl_8055C454 = *(float *)((char *)obj + 0x18);
 }
 
 extern char lbl_80346558[];
