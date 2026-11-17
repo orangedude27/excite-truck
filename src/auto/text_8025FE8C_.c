@@ -1377,6 +1377,7 @@ void fn_80262574(void) {
 void fn_80262578(void) {
 }
 
+/* Default value-returning callback stub (alongside the no-op handlers fn_80262574/fn_80262578): reports a zero result. */
 s32 fn_8026257C(void) {
     return 0;
 }
