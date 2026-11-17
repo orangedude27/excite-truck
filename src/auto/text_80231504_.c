@@ -1967,8 +1967,9 @@ if (mode > 0) goto outer_body;
 #pragma scheduling on
 #pragma pop
 
+/* Reset the on-screen text draw queue to empty by zeroing its entry count (gActiveFont + 4). */
 void fn_80234AEC(void) {
-    *(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
+    *(s32 *)((u8 *)&gActiveFont + 4) = 0;
 }
 
 /* Text draw settings kept inside a HUD/screen object; fn_80234AFC and friends read
