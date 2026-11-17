@@ -13,6 +13,8 @@ u32 OSGetPhysicalMem2Size(void) {
     return OS_PHYSICAL_MEM2_SIZE;
 }
 
+/* Return the simulated MEM1 size from the OS globals area (0x80003104),
+ * used to cap MEM1 when running with a simulated console memory size. */
 u32 OSGetConsoleSimulatedMem1Size(void) {
     return OS_SIMULATED_MEM1_SIZE;
 }
