@@ -41,8 +41,9 @@ extern void TRKAppendBuffer(void *);
 #define __AXUpdatePB          fn_800328F0      /* vpb->pb -> DSP PB, per vpb->sync */
 #define __AXGetMixCycles      fn_80031248      /* mixer command list's cycles */
 
+/* Return __AXNumVoices: the number of AX voice parameter blocks copied this frame. */
 void* fn_800328E8(void) {
-    return lbl_8055D7E0;
+    return __AXNumVoices;
 }
 
 #pragma cplusplus on
