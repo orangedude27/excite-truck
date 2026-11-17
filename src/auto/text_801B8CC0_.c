@@ -231,39 +231,30 @@ static inline void transform_vec_scheduled_reload(float *out, const float *m, fl
     } else {
         {
             float m3 = m[3];
-            float y = in[1];
+            float y0 = in[1] * m3;
             float m0 = m[0];
-            float x = in[0];
+            float x0 = in[0] * m0;
             float m6 = m[6];
-            float z = in[2];
-            y *= m3;
-            x *= m0;
-            z *= m6;
-            out[0] = (x + y) + z;
+            float z0 = in[2] * m6;
+            out[0] = (x0 + y0) + z0;
         }
         {
             float m4 = m[4];
-            float y = in[1];
+            float y1 = in[1] * m4;
             float m1 = m[1];
-            float x = in[0];
+            float x1 = in[0] * m1;
             float m7 = m[7];
-            float z = in[2];
-            y *= m4;
-            x *= m1;
-            z *= m7;
-            out[1] = (x + y) + z;
+            float z1 = in[2] * m7;
+            out[1] = (x1 + y1) + z1;
         }
         {
             float m5 = m[5];
-            float y = in[1];
+            float y2 = in[1] * m5;
             float m2 = m[2];
-            float x = in[0];
+            float x2 = in[0] * m2;
             float m8 = m[8];
-            float z = in[2];
-            y *= m5;
-            x *= m2;
-            z *= m8;
-            out[2] = (x + y) + z;
+            float z2 = in[2] * m8;
+            out[2] = (x2 + y2) + z2;
         }
     }
 }
