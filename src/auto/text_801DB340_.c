@@ -590,6 +590,7 @@ int fn_801DCE14(short *arg0, float *arg1, float *arg2, int arg3, int *arg4) {
     return 0;
 }
 #pragma pop
+/* Return the shared constant 1.0f, the unity/default factor used by this terrain-overlay code. */
 float fn_801DCEC0(void) {
     return lbl_80562B70;
 }
@@ -892,67 +893,75 @@ void fn_801DD808(void) {
 
 extern float lbl_80562B84;
 extern float fn_801DCF0C(void);
-#pragma dont_inline fn_801DCF0C
+#pragma scheduling invalid_target
 void fn_801DD88C(void) {
+    int i, j;
     float temp[75];
-    int i;
 
     for (i = 0; i < 72; i += 8) {
         temp[i + 0] = lbl_804424B0[i + 0];
-        lbl_804424B0[i + 0] = lbl_80562B84;
+        lbl_804424B0[i + 0] = 0.0f;
         temp[i + 1] = lbl_804424B0[i + 1];
-        lbl_804424B0[i + 1] = lbl_80562B84;
+        lbl_804424B0[i + 1] = 0.0f;
         temp[i + 2] = lbl_804424B0[i + 2];
-        lbl_804424B0[i + 2] = lbl_80562B84;
+        lbl_804424B0[i + 2] = 0.0f;
         temp[i + 3] = lbl_804424B0[i + 3];
-        lbl_804424B0[i + 3] = lbl_80562B84;
+        lbl_804424B0[i + 3] = 0.0f;
         temp[i + 4] = lbl_804424B0[i + 4];
-        lbl_804424B0[i + 4] = lbl_80562B84;
+        lbl_804424B0[i + 4] = 0.0f;
         temp[i + 5] = lbl_804424B0[i + 5];
-        lbl_804424B0[i + 5] = lbl_80562B84;
+        lbl_804424B0[i + 5] = 0.0f;
         temp[i + 6] = lbl_804424B0[i + 6];
-        lbl_804424B0[i + 6] = lbl_80562B84;
+        lbl_804424B0[i + 6] = 0.0f;
         temp[i + 7] = lbl_804424B0[i + 7];
-        lbl_804424B0[i + 7] = lbl_80562B84;
+        lbl_804424B0[i + 7] = 0.0f;
     }
-    temp[72] = lbl_804424B0[72];
-    lbl_804424B0[72] = lbl_80562B84;
-    temp[73] = lbl_804424B0[73];
-    lbl_804424B0[73] = lbl_80562B84;
-    temp[74] = lbl_804424B0[74];
-    lbl_804424B0[74] = lbl_80562B84;
+    {
+        float *p = lbl_804424B0 + i;
+        float *q = temp + i;
+        q[0] = p[0];
+        p[0] = 0.0f;
+        q[1] = p[1];
+        p[1] = 0.0f;
+        q[2] = p[2];
+        p[2] = 0.0f;
+    }
 
     fn_801DCF0C();
 
-    for (i = 0; i < 72; i += 24) {
-        lbl_804424B0[i + 0] = temp[i + 0];
-        lbl_804424B0[i + 1] = temp[i + 1];
-        lbl_804424B0[i + 2] = temp[i + 2];
-        lbl_804424B0[i + 3] = temp[i + 3];
-        lbl_804424B0[i + 4] = temp[i + 4];
-        lbl_804424B0[i + 5] = temp[i + 5];
-        lbl_804424B0[i + 6] = temp[i + 6];
-        lbl_804424B0[i + 7] = temp[i + 7];
-        lbl_804424B0[i + 8] = temp[i + 8];
-        lbl_804424B0[i + 9] = temp[i + 9];
-        lbl_804424B0[i + 10] = temp[i + 10];
-        lbl_804424B0[i + 11] = temp[i + 11];
-        lbl_804424B0[i + 12] = temp[i + 12];
-        lbl_804424B0[i + 13] = temp[i + 13];
-        lbl_804424B0[i + 14] = temp[i + 14];
-        lbl_804424B0[i + 15] = temp[i + 15];
-        lbl_804424B0[i + 16] = temp[i + 16];
-        lbl_804424B0[i + 17] = temp[i + 17];
-        lbl_804424B0[i + 18] = temp[i + 18];
-        lbl_804424B0[i + 19] = temp[i + 19];
-        lbl_804424B0[i + 20] = temp[i + 20];
-        lbl_804424B0[i + 21] = temp[i + 21];
-        lbl_804424B0[i + 22] = temp[i + 22];
-        lbl_804424B0[i + 23] = temp[i + 23];
+    for (j = 0; j < 72; j += 24) {
+        lbl_804424B0[j + 0] = temp[j + 0];
+        lbl_804424B0[j + 1] = temp[j + 1];
+        lbl_804424B0[j + 2] = temp[j + 2];
+        lbl_804424B0[j + 3] = temp[j + 3];
+        lbl_804424B0[j + 4] = temp[j + 4];
+        lbl_804424B0[j + 5] = temp[j + 5];
+        lbl_804424B0[j + 6] = temp[j + 6];
+        lbl_804424B0[j + 7] = temp[j + 7];
+        lbl_804424B0[j + 8] = temp[j + 8];
+        lbl_804424B0[j + 9] = temp[j + 9];
+        lbl_804424B0[j + 10] = temp[j + 10];
+        lbl_804424B0[j + 11] = temp[j + 11];
+        lbl_804424B0[j + 12] = temp[j + 12];
+        lbl_804424B0[j + 13] = temp[j + 13];
+        lbl_804424B0[j + 14] = temp[j + 14];
+        lbl_804424B0[j + 15] = temp[j + 15];
+        lbl_804424B0[j + 16] = temp[j + 16];
+        lbl_804424B0[j + 17] = temp[j + 17];
+        lbl_804424B0[j + 18] = temp[j + 18];
+        lbl_804424B0[j + 19] = temp[j + 19];
+        lbl_804424B0[j + 20] = temp[j + 20];
+        lbl_804424B0[j + 21] = temp[j + 21];
+        lbl_804424B0[j + 22] = temp[j + 22];
+        lbl_804424B0[j + 23] = temp[j + 23];
     }
-    lbl_804424B0[72] = temp[72];
-    lbl_804424B0[73] = temp[73];
-    lbl_804424B0[74] = temp[74];
+    {
+        float *p = lbl_804424B0 + j;
+        float *q = temp + j;
+        p[0] = q[0];
+        p[1] = q[1];
+        p[2] = q[2];
+    }
 }
 extern int lbl_8055E99C;
 extern int lbl_8055E9A0;
