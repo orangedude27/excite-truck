@@ -60,29 +60,22 @@ void fn_8020C140(void) {
     f32 v2;
     f32 v31;
     f32 dc;
+    void *obj;
     s32 *base;
     s32 ctr;
-    void *obj;
+    int k;
     v1 = lbl_8055EE48 * lbl_8055EE4C;
     if ((u8)lbl_8055EE58 != 0) {
         if ((u8)lbl_8055EE40 != 0)
             v1 = lbl_805632D8 * v1;
         fn_80210510(v1);
         dc = lbl_805632DC;
-        obj = *(void **)((char *)&lbl_80489BE0 + 0x20);
-        if (obj != 0 && dc != *(f32 *)((char *)obj + 8)) {
-            *(char *)((char *)obj + 0x4D) = 1;
-            *(f32 *)((char *)obj + 8) = dc;
-        }
-        obj = *(void **)((char *)&lbl_80489BE0 + 0x44);
-        if (obj != 0 && dc != *(f32 *)((char *)obj + 8)) {
-            *(char *)((char *)obj + 0x4D) = 1;
-            *(f32 *)((char *)obj + 8) = dc;
-        }
-        obj = *(void **)((char *)&lbl_80489BE0 + 0x68);
-        if (obj != 0 && dc != *(f32 *)((char *)obj + 8)) {
-            *(char *)((char *)obj + 0x4D) = 1;
-            *(f32 *)((char *)obj + 8) = dc;
+        for (k = 0; k < 3; k++) {
+            obj = *(void **)((char *)&lbl_80489BE0 + 0x20 + k * 0x24);
+            if (obj != 0 && dc != *(f32 *)((char *)obj + 8)) {
+                *(char *)((char *)obj + 0x4D) = 1;
+                *(f32 *)((char *)obj + 8) = dc;
+            }
         }
     } else {
         v31 = v1 * lbl_8055EE54;
@@ -456,11 +449,13 @@ extern s32 lbl_8055B5DC;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_8020C920(s32 arg0) {
+    const char *base = lbl_8033C5D8;
     s32 i = 0;
     s32 j = 0;
     char *dst = (char *)&lbl_80489BE0;
-    fn_801345D8((char *)&lbl_80489C50, 32, lbl_8033C5D8 + 52, arg0);
+    fn_801345D8((char *)&lbl_80489C50, 0x20, base + 0x34, arg0);
     fn_8012DDA8(&lbl_80489C50);
     fn_8012DDA8(lbl_8055B5D0);
     fn_8012DDA8(lbl_8055B5D4);
@@ -468,19 +463,21 @@ void fn_8020C920(s32 arg0) {
         switch (i) {
         case 0:
             if (j != 1)
-                fn_801345D8(dst, 32, lbl_8033C5D8 + 64, arg0, &lbl_8055B5DC);
+                fn_801345D8(dst, 0x20, base + 0x40, arg0, &lbl_8055B5DC);
             else
-                fn_801345D8(dst, 32, lbl_8033C5D8 + 64, arg0, &lbl_8055B5D8);
+                fn_801345D8(dst, 0x20, base + 0x40, arg0, &lbl_8055B5D8);
             break;
         case 1:
-            fn_801345D8(dst, 32, lbl_8033C5D8 + 80, arg0);
+            fn_801345D8(dst, 0x20, base + 0x50, arg0);
+            break;
+        case 2:
+            fn_801345D8(dst, 0x20, base + 0x60, arg0);
             break;
         default:
-            fn_801345D8(dst, 32, lbl_8033C5D8 + 96, arg0);
             break;
         }
         i++;
-        dst += 36;
+        dst += 0x24;
     } while (i < 3);
 }
 #pragma pop
