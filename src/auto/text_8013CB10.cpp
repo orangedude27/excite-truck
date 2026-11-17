@@ -4074,6 +4074,7 @@ extern "C" u32 fn_801443E8(void) { return 1; }
 
 extern "C" s32 fn_801443F0(void) { return 0; }
 
+// Trivial stub in this vtable's callback group; always returns 0 (false).
 extern "C" s32 fn_801443F8(void) { return 0; }
 
 extern "C" s32 fn_80144400(void) { return 0; }
