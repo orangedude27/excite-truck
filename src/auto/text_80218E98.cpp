@@ -2871,26 +2871,30 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     start = *(s32 *)((unsigned char *)arg0 + 0x254);
     spC = (result - start) ^ 0x80000000;
 }
-extern "C" void fn_8021CBBC(void *arg0) {
-    register s32 x;
-    register s32 y;
-    f32 a;
-    f32 b;
-    register f32 rate;
-    x = *(s32 *)((u8 *)arg0 + 4) - lbl_8055FB9C / 2;
-    a = (f32)x;
-    y = lbl_8055FBA0 / 2 - *(s32 *)((u8 *)arg0 + 8);
-    b = (f32)y;
-    fn_802C5310(*(s32 *)((u8 *)arg0 + 0x24C), 0,
-                a, b - 8.0f, 0.0f);
-    rate = (*(V24x **)((u8 *)arg0 + 0x248))->get();
-    x = ((VfObj *)arg0)->vf28();
-    y = *(s32 *)((u8 *)arg0 + 0x254);
-    x = (s32)(rate * (f32)(x - y));
-    fn_80230C30(&a, &b,
-                x + *(s32 *)((u8 *)arg0 + 4),
-                3 + *(s32 *)((u8 *)arg0 + 8));
-    fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), 0, a, b, 0.0f);
+/* Draw a slider/tab widget: draw its track at the widget's screen-centred
+ * position, then offset the tab by scrollRate * (current value - base value)
+ * and draw it there.  The integer scratch registers hold the centred screen
+ * position first, then the tab's screen position. */
+extern "C" void fn_8021CBBC(void *widget) {
+    register s32 screenX;
+    register s32 screenY;
+    f32 drawX;
+    f32 drawY;
+    register f32 scrollRate;
+    screenX = *(s32 *)((u8 *)widget + 4) - lbl_8055FB9C / 2;
+    drawX = (f32)screenX;
+    screenY = lbl_8055FBA0 / 2 - *(s32 *)((u8 *)widget + 8);
+    drawY = (f32)screenY;
+    fn_802C5310(*(s32 *)((u8 *)widget + 0x24C), 0,
+                drawX, drawY - 8.0f, 0.0f);
+    scrollRate = (*(V24x **)((u8 *)widget + 0x248))->get();
+    screenX = ((VfObj *)widget)->vf28();
+    screenY = *(s32 *)((u8 *)widget + 0x254);
+    screenX = (s32)(scrollRate * (f32)(screenX - screenY));
+    fn_80230C30(&drawX, &drawY,
+                screenX + *(s32 *)((u8 *)widget + 4),
+                3 + *(s32 *)((u8 *)widget + 8));
+    fn_802C5310(*(s32 *)((u8 *)widget + 0x250), 0, drawX, drawY, 0.0f);
 }
 
 #pragma push
