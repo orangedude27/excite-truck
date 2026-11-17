@@ -2424,14 +2424,14 @@ void WPADSetSpeakerVolume(u8 volume) {
     OSRestoreInterrupts(enabled);
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 static BOOL IsBusyStream(s32 chan) {
     BOOL enabled;
-    WPADCB* const p = lbl_8038F4F0[chan];
+    WPADCB* p = lbl_8038F4F0[chan];
     u8 radioQuality;
     u32 devType;
     u8 bufferStatus;
+    u16 bteBufferStatus;
     u16 btmBufferStatus;
     u8 audioFrames;
     s8 queueSize;
@@ -2458,8 +2458,10 @@ static BOOL IsBusyStream(s32 chan) {
         status = *(s32*)((u8*)p + 0x7FC);
         handle = *(s8*)((u8*)p + 0x803);
         OSRestoreInterrupts(enabled);
-        if (status != WPAD_ERR_NO_CONTROLLER) {
-            _WUDGetQueuedSize(handle);
+        if (status == WPAD_ERR_NO_CONTROLLER) {
+            bteBufferStatus = 0;
+        } else {
+            bteBufferStatus = _WUDGetQueuedSize(handle);
         }
     }
     {
@@ -2488,7 +2490,7 @@ static BOOL IsBusyStream(s32 chan) {
         return FALSE;
     }
 }
-#pragma pop
+#pragma opt_propagation reset
 /* Return whether stream data can be sent to the controller on `chan` (connected, handshake complete, and stream not busy). */
 BOOL WPADCanSendStreamData(s32 chan) {
     WPADCB* cb = lbl_8038F4F0[chan];
@@ -5694,10 +5696,7 @@ s32 WPADiHIDParser(u8 port, u8* p_rpt) {
     return result;
 }
 
-#pragma push
-#pragma dont_inline off
-static inline void wpad_store_status(u8 *dst, u32 value) { *dst = (u8)value; }
-#pragma pop
+#define wpad_store_status(dst, value) (*(dst) = (u8)(value))
 #pragma opt_propagation off
 void fn_80064A80(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
