@@ -276,10 +276,11 @@ extern "C" void fn_801B08FC(void *arg0, void *arg1) {
 #pragma cplusplus reset
 #pragma use_lmw_stmw reset
 
-void fn_801B0B8C(void *arg0) {
-    register f32 value = lbl_805625F0;
-    *(u8 *)((u8 *)arg0 + 0x2C) = 0;
-    *(f32 *)((u8 *)arg0 + 0x30) = value;
+void fn_801B0B8C(void *obj) {
+    /* Reset this object's +0x2C flag to 0 and its +0x30 value to the -1.0 default. */
+    register f32 defaultValue = lbl_805625F0;
+    *(u8 *)((u8 *)obj + 0x2C) = 0;
+    *(f32 *)((u8 *)obj + 0x30) = defaultValue;
 }
 
 s32 fn_801B0BA0(void *arg0) {
