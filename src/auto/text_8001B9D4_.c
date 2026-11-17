@@ -1174,10 +1174,12 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
 
 #pragma pop
 #pragma scheduling reset
-u32 fn_8001D220(u32 arg0, u32 arg1, u32 arg2) {
-    u32 result = arg0 | (arg2 << 16);
-    result |= arg1 << 8;
-    return result;
+u32 fn_8001D220(u32 entryIndex, u32 valueIndex, u32 flag) {
+    /* Pack an EntryRef (entry index, value index, flag) into the low three bytes
+       of one word; fn_8001D234 decodes it. */
+    u32 packed = entryIndex | (flag << 16);
+    packed |= valueIndex << 8;
+    return packed;
 }
 
 #pragma scheduling invalid_target
