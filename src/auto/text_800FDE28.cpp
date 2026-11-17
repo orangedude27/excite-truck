@@ -671,8 +671,10 @@ extern "C" void *GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6
     return NULL;
 }
 
-extern "C" void fn_800FEC1C(s32 *arg0, s32 arg1) {
-    *arg0 = arg1;
+/* Store value through out. The wave-parameter readers use this to place a
+ * resolved wave-file pointer into their local ref-address buffer. */
+extern "C" void fn_800FEC1C(s32 *out, s32 value) {
+    *out = value;
 }
 
 extern "C" u32 GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void *, u32, u32);
