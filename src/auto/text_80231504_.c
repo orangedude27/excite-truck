@@ -951,8 +951,8 @@ f32 fn_8023293C(s32 font, char *text, f32 extra) {
     f32 escapeScale;
     register s32 index;
     register u8 *recordCount;
-    s32 tokenOffset;
     s32 tokenIndex;
+    s32 tokenOffset;
     u8 *character;
     const char *token;
     register u8 *next;
@@ -978,9 +978,9 @@ char_body:
     escapeWidth = (f32)*(u8 *)(font + 4);
     escapeScale = (f32)*(u8 *)(font + 4);
 
-    if ((s8)text[index] == '\\') {
+    if ((s8)*(volatile u8 *)(text + index) == '\\') {
         character = (u8 *)text + index + 1;
-        for (tokenOffset = 0, tokenIndex = 0; tokenIndex < *(s32 *)recordCount; tokenOffset += 0x1C, tokenIndex++) {
+        for (tokenIndex = 0, tokenOffset = 0; tokenIndex < *(s32 *)recordCount; tokenOffset += 0x1C, tokenIndex++) {
             token = *(const char **)(*(u8 **)lbl_80497F14 + tokenOffset);
             if (fn_8002B1D8((const char *)character, token, strlen(token)) == 0) {
                 tokenOffset = tokenIndex * 0x1C;
@@ -1028,14 +1028,15 @@ match: ;
     height += *(f32 *)glyph + *(f32 *)(glyph + 8);
 
 char_test:
-    if ((s8)text[index] != 0) goto char_body;
+    if ((s8)*(volatile u8 *)(text + index) != 0) goto char_body;
 
     height *= extra;
     return (width + height) * *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
 }
 #pragma pop
-u8 fn_80232B70(void *arg0) {
-    return ((u8 *)arg0)[4];
+/* Return a font's height byte (stored at offset 4), used as the glyph size for text layout and scaling. */
+u8 fn_80232B70(void *font) {
+    return ((u8 *)font)[4];
 }
 
 u8 fn_80232B78(void *arg0) {
@@ -1107,10 +1108,18 @@ void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 sca
         fn_80232040(text, font, adjustedColor, x, flags, y, scaleX, scaleY, spacing, alpha, lbl_8056368C);
     }
 }
+#pragma push
+#pragma opt_common_subs off
 void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
     s32 sp10;
     f32 spC;
     f32 sp8;
+    s32 curColor;
+    u8 *start;
+    s32 textOffset;
+    s32 passes;
+    s32 curFont;
+    u8 *end;
     sp8 = x;
     spC = y;
     sp10 = color;
@@ -1123,16 +1132,14 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
         fn_80233BF0(text, (u8 *)font, &sp8, &spC, flags, scale, extra);
         {
             f32 startX = sp8;
-            s32 passes;
 
             strlen((const char *)text);
             passes = (*(void **)(font + 8) != NULL) + 1;
             while (passes > 0) {
-                s32 curColor = sp10;
-                s32 curFont = font;
-                s32 textOffset = 0;
-
+                curColor = sp10;
                 sp8 = startX;
+                curFont = font;
+                textOffset = 0;
                 if (passes == 2) {
                     curFont = *(s32 *)(font + 8);
                     curColor = fn_80231718(curColor);
@@ -1140,11 +1147,10 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
                 fn_80233E80((s32 *)curFont, curColor);
                 while ((s8)text[textOffset] != 0) {
                     u8 first = text[textOffset];
-                    u8 *start = text + textOffset;
-                    u8 *end;
                     u32 code;
                     s32 offset;
 
+                    start = text + textOffset;
                     if ((first & 0xF0) == 0xE0) {
                         code = ((first & 0x0F) << 12) | ((start[1] & 0x3F) << 6) | (start[2] & 0x3F);
                         end = start + 3;
