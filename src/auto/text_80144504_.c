@@ -203,14 +203,16 @@ float fn_80144C80(float a, float b, float t) {
 extern f32 lbl_805615C0;
 #pragma push
 #pragma scheduling on
-s32 fn_80144C90(f32 farg0) {
-    f32 x;
-    if (farg0 < 0.0f) {
-        x = farg0 - 0.5f;
+/* Round a float to the nearest integer, halves away from zero: bias by 0.5 in
+ * the sign's direction, then truncate toward zero. */
+s32 fn_80144C90(f32 value) {
+    f32 rounded;
+    if (value < 0.0f) {
+        rounded = value - 0.5f;
     } else {
-        x = 0.5f + farg0;
+        rounded = 0.5f + value;
     }
-    return (s32)x;
+    return (s32)rounded;
 }
 #pragma pop
 /* Return the square of value. */
