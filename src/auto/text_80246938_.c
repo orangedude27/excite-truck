@@ -784,31 +784,29 @@ void fn_80247880(void) {
     gSelectedMenuIndex = (void*)fn_80214D04();
 }
 
-#pragma push
-#pragma use_lmw_stmw off
-#pragma optimization_level 3
-#pragma scheduling invalid_target
+#pragma optimization_level 4
 void fn_802478A4(void) {
     extern s32 lbl_802FA3F0[];
     extern s32 lbl_8055BAC0, lbl_8055BABC, lbl_8055B860;
-    s32 data[40];
+    struct Desc {
+        s32 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
+        s32 b0, b1, b2, b3, b4, b5, b6, b7, b8, b9;
+        s32 c0, c1, c2, c3, c4, c5, c6, c7, c8, c9;
+        s32 d0, d1, d2, d3, d4, d5, d6, d7, d8, d9;
+    } *data = (struct Desc *)((void *)0);
+    struct Desc local;
     volatile s32 *q = (volatile s32 *)lbl_804988F0;
     volatile s32 *p = (volatile s32 *)lbl_802FA3F0;
-    register s32 eight, three, four, five, six;
     s32 b0 = lbl_804988F0[0];
     s32 b1, b2, b3, b4;
     s32 a0, a2, a3, a4;
     s32 stringBase;
+    (void)data;
 
-    eight = 8;
-    three = 3;
-    four = 4;
-    five = 5;
-    six = 6;
     b1 = q[1];
-    data[6] = eight;
+    local.a6 = 8;
     b2 = q[2];
-    data[11] = eight;
+    local.b1 = 8;
     a0 = *p++;
     stringBase = (s32)lbl_80343270;
     b3 = q[3];
@@ -816,51 +814,48 @@ void fn_802478A4(void) {
     b4 = q[4];
     a3 = p[2];
     a4 = p[3];
-
-    data[7] = (s32)fn_8024778C;
-    data[12] = (s32)fn_80247880;
-    data[5] = (s32)&lbl_8055BAC0;
-    data[10] = (s32)&lbl_8055BABC;
-    data[13] = 1;
-    data[8] = 0;
-    data[9] = 0;
-    data[14] = 0;
-    data[15] = stringBase + 0x2A0;
-    data[16] = 0;
-    data[17] = 0;
-    data[18] = three;
-    data[19] = 0;
-    data[20] = stringBase + 0x2AC;
-    data[21] = 0;
-    data[22] = 0;
-    data[23] = four;
-    data[24] = 0;
-    data[25] = stringBase + 0x2B8;
-    data[26] = 0;
-    data[27] = 0;
-    data[28] = five;
-    data[29] = 0;
-    data[30] = (s32)&lbl_8055B860;
-    data[31] = six;
-    data[32] = 0;
-    eight = -1;
-    data[33] = eight;
-    data[34] = 0x1B;
-    data[35] = b0;
-    data[36] = b1;
-    data[37] = b2;
-    data[38] = b3;
-    data[39] = b4;
-    data[0] = a0;
-    data[2] = a2;
-    data[3] = a3;
-    data[4] = a4;
-    data[1] = (s32)&data[5];
+    local.a7 = (s32)fn_8024778C;
+    local.b2 = (s32)fn_80247880;
+    local.a5 = (s32)&lbl_8055BAC0;
+    local.b0 = (s32)&lbl_8055BABC;
+    local.b3 = 1;
+    local.a8 = 0;
+    local.a9 = 0;
+    local.b4 = 0;
+    local.b5 = stringBase + 0x2A0;
+    local.b6 = 0;
+    local.b7 = 0;
+    local.b8 = 3;
+    local.b9 = 0;
+    local.c0 = stringBase + 0x2AC;
+    local.c1 = 0;
+    local.c2 = 0;
+    local.c3 = 4;
+    local.c4 = 0;
+    local.c5 = stringBase + 0x2B8;
+    local.c6 = 0;
+    local.c7 = 0;
+    local.c8 = 5;
+    local.c9 = 0;
+    local.d0 = (s32)&lbl_8055B860;
+    local.d1 = 6;
+    local.d2 = 0;
+    local.d3 = -1;
+    local.d4 = 0x1B;
+    local.d5 = b0;
+    local.d6 = b1;
+    local.d7 = b2;
+    local.d8 = b3;
+    local.d9 = b4;
+    local.a0 = a0;
+    local.a2 = a2;
+    local.a3 = a3;
+    local.a4 = a4;
+    local.a1 = (s32)&local.a5;
     ((void (*)(s32 *, s32, s32, s32, s32, s32, s32, s32))fn_802146BC)(
-        data, -999, -999, 1, stringBase + 0x2A0,
-        stringBase + 0x2AC, stringBase + 0x2B8, (s32)&data[5]);
+        (s32 *)&local, -999, -999, 1, stringBase + 0x2A0,
+        stringBase + 0x2AC, stringBase + 0x2B8, (s32)&local.a5);
 }
-#pragma pop
 
 
 static void fn_80247A0C_init(s32 a, s32 b) {
@@ -1041,39 +1036,40 @@ extern float lbl_805638AC, lbl_805638B0, lbl_805638B4, lbl_805638B8;
 extern double sin(double);
 extern float lbl_802FA430[18];
 extern void *memcpy(void *, const void *, unsigned long);
+extern float lbl_80563898, lbl_805638AC, lbl_805638B0, lbl_805638B4, lbl_805638B8;
 #pragma push
 #pragma processor 750
 void fn_802481A0(float *arg0, float *arg1, float farg0, float farg1) {
     typedef struct { float v[18]; } Table;
     Table tbl;
-    register float x = farg0;
-    register float y = farg1;
-    s32 time;
-    float phase;
-    s32 index;
-    float t;
-    float a;
-    float b;
+    float lo, hi, lo1, hi1, t;
+    float pclamp, phase;
+    float traw;
+    s32 tm, idx, offIdx, offPrev;
 
-    time = (fn_802E2C20() - lbl_8055F274) - 0x5DC;
-    phase = (lbl_80563898 < (float)time / lbl_805638AC) ? lbl_80563898 : (float)time / lbl_805638AC;
-    phase = (phase > lbl_805638B0) ? phase : lbl_805638B0;
-    phase = lbl_80563898 - phase;
-    *arg0 = x + lbl_805638B8 * (float)sin((double)(lbl_805638B4 * phase));
-
+    tm = (fn_802E2C20() - lbl_8055F274) - 0x5DC;
+    pclamp = (lbl_80563898 < (float)tm / lbl_805638AC) ? lbl_80563898 : (float)tm / lbl_805638AC;
+    pclamp = (pclamp > lbl_805638B0) ? pclamp : lbl_805638B0;
+    phase = lbl_80563898 - pclamp;
+    *arg0 = farg0 + (lbl_805638B8 * (float)sin(lbl_805638B4 * phase));
     tbl = *(Table *)lbl_802FA430;
-
-    for (index = 1; index < 8; index++) {
-        if (x < tbl.v[index * 2]) break;
+    for (idx = 1; idx < 8; idx++) {
+        if (farg0 < tbl.v[idx * 2]) break;
     }
-
-    t = (x - tbl.v[(index - 1) * 2]) /
-        (tbl.v[index * 2] - tbl.v[(index - 1) * 2]);
-    if (t < lbl_80563898) t = lbl_80563898;
-    if (t > lbl_805638B0) t = lbl_805638B0;
-    a = tbl.v[(index - 1) * 2 + 1];
-    b = tbl.v[index * 2 + 1];
-    *arg1 = y + phase * (a + t * (b - a));
+    offIdx = idx * 8;
+    offPrev = (idx - 1) * 8;
+    lo = *(float *)((char *)tbl.v + offPrev);
+    hi = *(float *)((char *)tbl.v + offIdx);
+    hi1 = *(float *)((char *)tbl.v + 4 + offIdx);
+    lo1 = *(float *)((char *)tbl.v + 4 + offPrev);
+    traw = (farg0 - lo) / (hi - lo);
+    if (lbl_80563898 < traw) {
+        t = lbl_80563898;
+    } else {
+        t = traw;
+    }
+    t = (t > lbl_805638B0) ? t : lbl_805638B0;
+    *arg1 = farg1 + (phase * (lo1 + (t * (hi1 - lo1))));
 }
 #pragma pop
 void fn_80248398(void) {
