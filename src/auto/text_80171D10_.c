@@ -1870,6 +1870,7 @@ extern "C" void fn_80175080(void **arg0, int arg1, int arg2, char *fmt, double f
         virtual void *unused();
         virtual void *get(int);
     };
+    struct Pair { int b, c; };
     extern void *fn_80147CEC(void *, void *, void *, double);
     extern void fn_80147230(void *, const char *, ...);
     extern void fn_801476C4(void *);
@@ -1889,12 +1890,10 @@ extern "C" void fn_80175080(void **arg0, int arg1, int arg2, char *fmt, double f
     } else {
         int *dst = (int *)result;
         int *src = (int *)p;
-        int w8, w4;
         dst[0] = src[0];
-        w4 = src[1];
-        w8 = src[2];
-        dst[2] = w8;
-        dst[1] = w4;
+#pragma cplusplus reset
+        *(struct Pair *)(dst + 1) = *(struct Pair *)(src + 1);
+#pragma cplusplus on
         dst[3] = src[3];
         *(float *)(result + 0x10) = *(float *)((char *)p + 0x10);
         dst[5] = src[5];
