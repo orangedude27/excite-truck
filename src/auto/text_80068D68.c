@@ -9458,6 +9458,7 @@ tBTM_STATUS BTM_SetDeviceClass(DEV_CLASS dev_class) {
 
 void *fn_8007A394(void) { return lbl_803C0F78 + 0x648; }
 
+/* Return a pointer to the BTM control block's local_features array (btm_cb.devcb.local_features). */
 void *fn_8007A3A4(void) { return lbl_803C0F78 + 0x640; }
 
 /* btm_cb.dev_status_cb: the WUD device-status callback slot (+0x568). */
