@@ -648,8 +648,9 @@ loop_test:
     fn_802A4658(*(s32 *)((char *)arg0 + 0x10));
 }
 #pragma pop
-extern "C" void fn_802A2118(void *arg0) {
-    fn_802A47A8((void*)*(void**)((char*)arg0 + 0x10));
+extern "C" void fn_802A2118(void *owner) {
+    // Render the particle system held at offset 0x10 of the owner object (tail call).
+    fn_802A47A8((void*)*(void**)((char*)owner + 0x10));
 }
 
 extern "C" float lbl_80564730;
