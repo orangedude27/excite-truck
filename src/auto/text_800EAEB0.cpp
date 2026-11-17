@@ -3069,8 +3069,9 @@ extern u8 lbl_80323C74[];
 extern u8 lbl_80323C3C[];
 extern u8 lbl_80323B28[];
 #pragma pop
-extern "C" s32 fn_800EFBAC(void* arg0) {
-    return *(s32*)&((u8*)arg0)[0x3C];
+extern "C" s32 fn_800EFBAC(void* seqPlayer) {
+    /* Return the sequence player's interrupt-protected s32 field at +0x3C (the value written by fn_800EFB6C). */
+    return *(s32*)&((u8*)seqPlayer)[0x3C];
 }
 
 #pragma push
