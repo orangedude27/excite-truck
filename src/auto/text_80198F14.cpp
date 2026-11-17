@@ -5726,7 +5726,6 @@ extern "C" s32 fn_801A51CC(void* object) {
 extern "C" void fn_801A51D4(void* object, s32 value) {
     *(s32*)((u8*)object + 0x34) = value;
 }
-extern void fn_8019ECC4(void);
 extern void* lbl_80333968;
 extern f32 lbl_80562370;
 typedef void (*VFunc)(void*);
