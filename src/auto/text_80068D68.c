@@ -19473,7 +19473,6 @@ BOOLEAN l2c_link_hci_conn_comp(UINT8 status, UINT16 handle, UINT8 *p_bda) {
     extern void l2cu_release_lcb(void *);
     extern void l2c_process_held_packets(u8 timed_out);
     extern void l2cu_send_peer_echo_req(void *p_lcb, u8 *p_data, s32 data_len);
-    extern u8 l2cu_lcb_disconnecting(void);
     tL2C_LCB_VIEW *p_lcb;
     u8 *p_buf;
     u8 *next;
