@@ -2247,27 +2247,28 @@ extern "C" s32 fn_8015A814(void) {
 }
 
 #pragma scheduling invalid_target
+/* Reset a bonus tracker: zero every 0x38-byte entry record (three counters and a value), clear the header fields, run v31, then clear two trailing fields. */
 extern "C" void fn_8015A81C(Unk801577F0* arg0) {
     f32 entryValue = 0.0f;
-    s32 r6 = 0;
-    s32 r7 = 0;
-    s32 r5 = 0;
-    for (; r6 < arg0->mCount; r6++) {
-        *(s32*)(arg0->mData + r7) = r5;
-        *(s32*)(arg0->mData + r7 + 4) = r5;
-        *(s32*)(arg0->mData + r7 + 8) = r5;
-        *(f32*)(arg0->mData + r7 + 0xC) = entryValue;
-        r7 += 0x38;
+    s32 entryIndex = 0;
+    s32 entryOffset = 0;
+    s32 zeroWord = 0;
+    for (; entryIndex < arg0->mCount; entryIndex++) {
+        *(s32*)(arg0->mData + entryOffset) = zeroWord;
+        *(s32*)(arg0->mData + entryOffset + 4) = zeroWord;
+        *(s32*)(arg0->mData + entryOffset + 8) = zeroWord;
+        *(f32*)(arg0->mData + entryOffset + 0xC) = entryValue;
+        entryOffset += 0x38;
     }
     f32 resetValue = 0.0f;
     entryValue = 1.0f;
-    arg0->m264 = r5;
-    arg0->m260 = r5;
+    arg0->m264 = zeroWord;
+    arg0->m260 = zeroWord;
     arg0->m254 = resetValue;
     arg0->m25c = entryValue;
     arg0->v31();
-    *(s32*)((u8*)arg0 + 0x26c) = r5;
-    *(u8*)((u8*)arg0 + 0x2f0) = (u8)r5;
+    *(s32*)((u8*)arg0 + 0x26c) = zeroWord;
+    *(u8*)((u8*)arg0 + 0x2f0) = (u8)zeroWord;
 }
 
 extern "C" s32 fn_801D48FC(s32);
