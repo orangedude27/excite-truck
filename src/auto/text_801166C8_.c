@@ -1425,6 +1425,9 @@ void fn_80118C1C(void *object, s32 endTick) {
 }
 
 extern s32 fn_801190B0(void*, s32);
+#pragma push
+#pragma opt_loop_invariants off
+#pragma opt_common_subs off
 void fn_80118C44(void* arg0) {
     s32 temp_r5;
     s32 var_r4;
@@ -1471,10 +1474,11 @@ void fn_80118C44(void* arg0) {
                 temp_r5_2 = *(u32*)((u8*)arg0 + 0x13C);
                 temp_r7 = (temp_r7 * 0x1D) >> 5;
                 if (temp_r5_2 >= temp_r7) break;
-                if (((s32 (*)(void*))(*(void**)((u8*)arg0 + 0x100)))((u8*)arg0 + 0xF0) == 0) {
-                    *(s32*)((u8*)arg0 + 0x268) = 0;
-                    *(s32*)((u8*)arg0 + 0x328) = 0;
-                    *(s32*)((u8*)arg0 + 0x330) = 0;
+                temp_r5_2 = ((s32 (*)(void*))(*(void**)((u8*)arg0 + 0x100)))((u8*)arg0 + 0xF0);
+                if (temp_r5_2 == 0) {
+                    *(s32*)((u8*)arg0 + 0x268) = temp_r5_2;
+                    *(s32*)((u8*)arg0 + 0x328) = temp_r5_2;
+                    *(s32*)((u8*)arg0 + 0x330) = temp_r5_2;
                     fn_801190B0(arg0, 1);
                     fn_8011C2EC(lbl_8055DED4, (u8*)arg0 + 0x340);
                 }
@@ -1492,7 +1496,7 @@ void fn_80118C44(void* arg0) {
         *flag = 0;
     }
 }
-
+#pragma pop
 /* --- RAD Bink movie player (this unit is the Bink library itself) -------- */
 
 /* The file interface a movie reads through; fn_8011770C (BinkOpen) installs
@@ -2744,16 +2748,12 @@ extern void fn_8011A1A0(u32 *, u32);
 u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     u8 *obj = (u8 *)arg0;
     u8 *buf = (u8 *)arg3;
-    u32 len = arg4;
     u8 *buf0 = buf;
+    u32 len = arg4;
     u32 total = 0;
     s32 seek = arg2;
-    u32 t0;
-    u32 t1;
-    u32 chunk;
-    u32 first;
-    volatile u32 *rd;
-
+    u32 t0, t1, chunk, first;
+    u32 *rd;
     if (*(s32 *)(obj + 0x20) != 0)
         return 0;
     t0 = fn_80116D30();
@@ -2793,7 +2793,7 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
             *(s32 *)(obj + 0x20) = 1;
             fn_8011A330(arg0);
         }
-        rd = (volatile u32 *)(obj + 0x98);
+        rd = (u32 *)(obj + 0x98);
         *(u32 *)(obj + 0x90) += total;
         *rd += total;
         *(u32 *)(obj + 0x28) += total;
@@ -2805,7 +2805,7 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
             *(u32 *)(obj + 0x34) += now - t0;
         }
     } else {
-        rd = (volatile u32 *)(obj + 0x98);
+        rd = (u32 *)(obj + 0x98);
         while (len != 0 && *(s32 *)(obj + 0x20) == 0) {
             fn_8011A6A0(arg0);
             chunk = *(u32 *)(obj + 0x4C);
@@ -3435,19 +3435,22 @@ void *fn_8011B584(u32 arg0, s32 arg1, s32 arg2, s32 arg_sp0) {
 
 void fn_8011B94C(void *arg0, s32 *arg1, s32 *arg2, s32 arg3, s32 *arg4, s32 arg5, u32 *arg6, u32 arg7, f32 arg8, s32 arg9) {
     u8 *p = (u8 *)arg0;
-    u32 count = *(u32 *)(p + 0xC) >> 1;
-    u32 i;
-    s32 result = fn_8011B2AC(*(s32 *)p, *(u32 *)(p + 0x10), *(s32 *)(p + 0x30), *(s32 *)(p + 0x24), *(s32 *)(p + 0x28), *(s32 *)(p + 0x14), arg6, *(u32 *)(p + 0x1C), *(f32 *)(p + 4), *(u32 *)(p + 0x20));
+    u32 i, count;
+    s32 result = fn_8011B2AC(*(s32 *)p, *(u32 *)(p + 0x10), *(s32 *)(p + 0x30), *(s32 *)(p + 0x24), *(s32 *)(p + 0x28), *(s32 *)(p + 0x14), (u32 *)arg3, *(u32 *)(p + 0x1C), *(f32 *)(p + 4), *(u32 *)(p + 0x20));
     if (*(s32 *)(p + 0x18)) *(s32 *)(p + 0x18) = 0;
-    else for (i = 0; i < count; i++) {
-        s16 *a = *(s16 **)(p + 0x14);
-        s16 *b = *(s16 **)(p + 0x2C);
-        a[i] = (s16)(((u32)i * a[i] + (u32)(count - i) * b[i]) / count);
+    else {
+        i = 0;
+        count = *(u32 *)(p + 0xC) >> 1;
+        for (; i < count; i++) {
+            s16 *a = *(s16 **)(p + 0x14);
+            s16 *b = *(s16 **)(p + 0x2C);
+            a[i] = (s16)(((u32)i * a[i] + b[i] * (u32)(count - i)) / count);
+        }
     }
     memcpy(*(void **)(p + 0x2C), (u8 *)*(void **)(p + 0x14) + (*(u32 *)(p + 8) - *(u32 *)(p + 0xC)), *(u32 *)(p + 0xC));
     if (arg2) *arg2 = *(u32 *)(p + 8) - *(u32 *)(p + 0xC);
     if (arg1) *arg1 = (s32)*(void **)(p + 0x14);
-    if (arg4) *arg4 = arg6[0] + result;
+    if (arg4) *arg4 = arg3 + result;
 }
 
 void fn_8011BC48(void) {
@@ -7597,31 +7600,27 @@ void fn_801237C4(s32 arg0, void *arg1, void *arg2) {
     *(f32 *)((u8 *)arg1 + temp_r9_6) = temp_f3_7 + temp_f5_8;
 }
 
+#pragma scheduling reset
 void fn_80123CEC(s32 count, void *dst, s32 srcIndex, void *src) {
     void *srcBase = src;
-    void *temp_r31;
+    void *coeffPtr1;
+    void *coeffPtr2;
     if (count == 0x80) {
-        temp_r31 = (u8 *)srcBase + ((srcIndex - 8) * 4);
-        fn_80123E98(dst, temp_r31);
-        {
-            void *dst80 = (u8 *)dst + 0x80;
-            fn_8012440C(dst80, (u8 *)srcBase + ((srcIndex - 0x20) * 4));
-        }
-        fn_80123E98((u8 *)dst + 0x100, temp_r31);
-        fn_80123E98((u8 *)dst + 0x180, temp_r31);
+        coeffPtr1 = (u8 *)srcBase + ((srcIndex - 8) * 4);
+        fn_80123E98(dst, coeffPtr1);
+        coeffPtr2 = (u8 *)srcBase + ((srcIndex - 0x20) * 4);
+        fn_8012440C((u8 *)dst + 0x80, coeffPtr2);
+        fn_80123E98((u8 *)dst + 0x100, coeffPtr1);
+        fn_80123E98((u8 *)dst + 0x180, coeffPtr1);
         return;
     } else {
-        void *tempElse;
-        void *dst0 = dst;
-        tempElse = (u8 *)srcBase + ((srcIndex - 0x10) * 4);
-        fn_80124AD8(dst0, tempElse);
-        fn_80124CE8((u8 *)dst + 0x40, tempElse);
-        fn_80124AD8((u8 *)dst + 0x80, tempElse);
-        fn_80124AD8((u8 *)dst + 0xC0, tempElse);
+        void *coeffPtr = (u8 *)srcBase + ((srcIndex - 0x10) * 4);
+        fn_80124AD8(dst, coeffPtr);
+        fn_80124CE8((u8 *)dst + 0x40, coeffPtr);
+        fn_80124AD8((u8 *)dst + 0x80, coeffPtr);
+        fn_80124AD8((u8 *)dst + 0xC0, coeffPtr);
     }
 }
-
-#pragma scheduling reset
 extern void fn_8012440C(void *, void *);
 extern void fn_80124CE8(void *, void *);
 void fn_80123DC0(s32 count, void *dst, s32 srcIndex, void *src) {
@@ -8292,9 +8291,9 @@ void fn_80124F90(void *arg0) {
 void fn_80125014(void *arg0) {
     f32 temp_f0;
     f32 temp_f1;
-    f32 temp_f2;
     f32 temp_f3;
     f32 temp_f4;
+    f32 temp_f2;
     f32 temp_f5;
     f32 temp_f6;
     f32 temp_f7;
@@ -8313,13 +8312,13 @@ void fn_80125014(void *arg0) {
     temp_f3 = *(f32 *)((u8 *)arg0 + 8);
     temp_f2 = *(f32 *)((u8 *)arg0 + 0x18);
     temp_f7 = temp_f5 + temp_f4;
-    temp_f1 = *(f32 *)((u8 *)arg0 + 0xC);
     temp_f0 = *(f32 *)((u8 *)arg0 + 0x1C);
+    temp_f1 = *(f32 *)((u8 *)arg0 + 0xC);
     temp_f9 = temp_f5 - temp_f4;
-    temp_f10 = temp_f3 + temp_f2;
-    temp_f11 = temp_f3 - temp_f2;
     temp_f12 = temp_f1 - temp_f0;
     temp_f4 = temp_f1 + temp_f0;
+    temp_f10 = temp_f3 + temp_f2;
+    temp_f11 = temp_f3 - temp_f2;
     *(f32 *)((u8 *)arg0 + 0) = temp_f6 + temp_f10;
     *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f4;
     *(f32 *)((u8 *)arg0 + 0x10) = temp_f6 - temp_f10;
