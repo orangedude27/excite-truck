@@ -293,6 +293,7 @@ void OSSetAlarmUserData(OSAlarm* alarm, void* userData) {
     alarm->userData = userData;
 }
 
+/* Return the opaque user-data pointer stored on the alarm. */
 void* OSGetAlarmUserData(const OSAlarm* alarm) {
     return alarm->userData;
 }
