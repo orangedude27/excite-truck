@@ -3513,7 +3513,9 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt4PaneFUlUc(void* self, u32 index, 
 extern "C" s32 fn_800DB958(void) { return 0xFF; }
 
 extern "C" void fn_800DB960(void) {
-
+    /* Base nw4hbm::lyt::Pane virtual color-element setter (vtable slot 12, the
+     * target of SetColorElement()'s call for indices 0..0xF): the base class
+     * stores nothing, so this override does nothing. Subclasses override it. */
 }
 
 #pragma use_lmw_stmw off
