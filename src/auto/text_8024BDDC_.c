@@ -42,8 +42,11 @@ void fn_8024BDDC(void* subobject) {
 }
 
 extern void __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110(void*);
-void fn_8024BDE4(void* arg0) {
-    __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110((char*)arg0 - 0x34);
+/* C++ this-adjusting destructor thunk: the pointer received is a base subobject
+   at +0x34 inside a DisposeCallbackManager, so adjust back to the object start
+   and tail-call the real destructor. */
+void fn_8024BDE4(void* subobject) {
+    __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110((char*)subobject - 0x34);
 }
 
 /* C++ this-adjusting thunk: the pointer received is a base subobject at +0x18
