@@ -12,14 +12,13 @@ extern void *fn_8027ACBC(void *, void *);
 void fn_8027ABF8(void *item) {
     fn_8027ACBC(lbl_804A433C, item);
 }
+#pragma scheduling invalid_target
 int fn_8027AC08(void *arg0, int arg1) {
-    int i = 0;
+    int i;
     char *entry = (char *)arg0;
-    while (i < *(int *)((char *)arg0 + 0x88)) {
+    for (i = 0; i < *(int *)((char *)arg0 + 0x88); entry += 8, i++) {
         if (arg1 == *(int *)(entry + 0x30))
             return *(int *)((char *)arg0 + 0x34 + i * 8);
-        entry += 8;
-        i++;
     }
     return 0;
 }
