@@ -700,15 +700,16 @@ extern "C" void fn_800E2E24(void *self) {
         if (AIGetDMAStatus() == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x6E, lbl_80321F94);
 
-        int i = 0;
-        int offset = 0;
+        unsigned long base = (unsigned long)self;
         nw4hbm::ut::detail::LinkListImpl::Iterator iterator;
+        long offset = 0;
+        long i = 0;
         do {
-            if ((char *)self + offset + 0x2C == 0)
+            if (base + offset + 0x2C == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
-            iterator.node = (nw4hbm::ut::detail::LinkListNode *)((char *)self + 0x24);
-            ((nw4hbm::ut::detail::LinkListImpl *)((char *)self + 0x20))->Insert(
-                iterator, (nw4hbm::ut::detail::LinkListNode *)((char *)self + offset + 0x1D4));
+            iterator.node = (nw4hbm::ut::detail::LinkListNode *)(base + 0x24);
+            ((nw4hbm::ut::detail::LinkListImpl *)(base + 0x20))->Insert(
+                iterator, (nw4hbm::ut::detail::LinkListNode *)(base + offset + 0x1D4));
             i++;
             offset += 0x1B0;
         } while (i < 0x40);
@@ -716,7 +717,7 @@ extern "C" void fn_800E2E24(void *self) {
         memset(lbl_80407E60, 0, 0x100);
         DCFlushRange(lbl_80407E60, 0x100);
         *(void **)((char *)self + 4) = lbl_80407E60;
-        unsigned int irq = OSDisableInterrupts();
+        unsigned long irq = OSDisableInterrupts();
         AXGetAuxACallback((char *)self + 0x6CF0, (char *)self + 0x6CFC);
         AXGetAuxBCallback((char *)self + 0x6CF4, (char *)self + 0x6D00);
         AXGetAuxCCallback((char *)self + 0x6CF8, (char *)self + 0x6D04);
@@ -1143,12 +1144,13 @@ extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7
     }
     unsigned int firstState = OSDisableInterrupts();
     unsigned int secondState = OSDisableInterrupts();
-    if (voice == 0) {
+    void *v = voice;
+    if (v == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     }
-    void *link = (char *)voice + 0x1A8;
+    void *link = (char *)v + 0x1A8;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)manager + 0x14, link);
-    if (voice == 0) {
+    if (v == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     }
     void *iterator = (char *)manager + 0x24;
@@ -4150,8 +4152,9 @@ extern "C" int fn_800E9B88(void *sound) {
 }
 
 extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void *);
-extern "C" void fn_800E9B9C(void *arg0) {
-    DetachSound__Q34nw4r3snd11SoundHandleFv(*(void **)((char *)arg0 + 8));
+/* Detach the general SoundHandle (mGeneralHandle, +0x08) from this BasicSound. */
+extern "C" void fn_800E9B9C(void *sound) {
+    DetachSound__Q34nw4r3snd11SoundHandleFv(*(void **)((char *)sound + 8));
 }
 
 #pragma push
