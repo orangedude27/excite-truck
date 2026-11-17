@@ -22,19 +22,17 @@ static inline void mtx_to_quat(float m[3][3], float *q) {
         q[1] = inv * (m[2][0] - m[0][2]);
         q[2] = inv * (m[0][1] - m[1][0]);
     } else {
-        float *mi, *mj, *mk;
         i = 0;
         if (m[1][1] > m[0][0]) i = 1;
         if (m[2][2] > m[0][i]) i = 2;
         j = (i + 1) % 3;
         k = (j + 1) % 3;
-        mi = m[i]; mj = m[j]; mk = m[k];
-        sn = (float)fn_8002F234(lbl_80563E24 + (mi[i] - (mj[j] + mk[k])));
+        sn = (float)fn_8002F234(lbl_80563E24 + (m[i][i] - (m[j][j] + m[k][k])));
         inv = lbl_80563E28 / sn;
         q[i] = lbl_80563E28 * sn;
-        q[3] = inv * (mj[k] - mk[j]);
-        q[j] = inv * (mi[j] + mj[i]);
-        q[k] = inv * (mi[k] + mk[i]);
+        q[3] = inv * (m[j][k] - m[k][j]);
+        q[j] = inv * (m[i][j] + m[j][i]);
+        q[k] = inv * (m[i][k] + m[k][i]);
     }
 }
 extern float __fabsf(float);
