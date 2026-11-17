@@ -268,21 +268,21 @@ void fn_80207C4C(void) {
 	return;
 }
 
-#pragma push
-#pragma opt_common_subs off
+#pragma scheduling invalid_target
 void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
     signed long c, b, a;
     signed long offset = arg2 * 0xC;
     volatile signed long *p = (volatile signed long *)arg1;
+    volatile signed long *q = p + 2;
     a = p[0];
     b = p[1];
-    c = p[2];
+    c = *q;
     arg0 = (char*)arg0 + offset;
     *(signed long*)((char*)arg0 + 0x5C) = a;
     *(signed long*)((char*)arg0 + 0x60) = b;
     *(signed long*)((char*)arg0 + 0x64) = c;
 }
-#pragma pop
+#pragma scheduling on
 /* Set the flag at offset 0x8C of a sound object. */
 void fn_80207C74(void *object, signed long value) {
     struct SoundObject {
@@ -300,36 +300,40 @@ void fn_80207E70(void* arg0);
 void fn_80207F34(void *arg0);
 typedef struct SlotLimits { signed long total; signed long lim[9]; signed long pad; } SlotLimits;
 
-void fn_80207C80(void *arg0) {
+/* SoundManager per-frame update: run the audibility pass (fn_802067C8) over
+ * every tracked sound, flush the queued mix values (fn_8020835C/fn_80207F34),
+ * run each sound's own update (fn_80206824), then finish with
+ * fn_8020815C/fn_80207E70. */
+void fn_80207C80(void *soundMgr) {
     struct Object {
         char pad0[0xC];
-        int *items;
+        int *sounds;
         signed long count;
         char pad14[0x48];
-        char field5c[0x30];
-        signed long field8c;
+        char context[0x30];
+        signed long arg;
     };
-    struct Object *object = (struct Object *)arg0;
+    struct Object *object = (struct Object *)soundMgr;
     signed long i;
     signed long offset;
     offset = 0;
     i = 0;
     while (i < object->count) {
-        fn_802067C8(*(int *)((char *)object->items + offset), (void *)object->field5c, object->field8c);
+        fn_802067C8(*(int *)((char *)object->sounds + offset), (void *)object->context, object->arg);
         offset += 4;
         ++i;
     }
-    fn_8020835C(arg0);
-    fn_80207F34(arg0);
+    fn_8020835C(soundMgr);
+    fn_80207F34(soundMgr);
     i = 0;
     offset = 0;
     while (i < object->count) {
-        fn_80206824(*(int *)((char *)object->items + offset), (void *)object->field5c, object->field8c);
+        fn_80206824(*(int *)((char *)object->sounds + offset), (void *)object->context, object->arg);
         offset += 4;
         ++i;
     }
-    fn_8020815C(arg0);
-    fn_80207E70(arg0);
+    fn_8020815C(soundMgr);
+    fn_80207E70(soundMgr);
 }
 
 #pragma dont_inline on
