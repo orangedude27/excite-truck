@@ -1124,6 +1124,7 @@ extern "C" int fn_802656C8(void *arg0) {
 #pragma cplusplus off
 extern char lbl_8055C4A8[4];
 extern void fn_80236954(void *queue);
+/* Start the "fade_in" trail: activate its named table entry and clear its group. */
 void fn_802658FC(void) {
     fn_80236954(lbl_8055C4A8);
 }
