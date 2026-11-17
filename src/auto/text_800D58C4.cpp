@@ -1798,8 +1798,10 @@ extern "C" u32 fn_800D875C(u32 *flags) {
     return (*flags >> 12) & 1;
 }
 
-extern "C" s32 fn_800D8768(u32* arg0) {
-    return ((u32)*arg0 >> 0x17U) & 1;
+/* Returns bit 23 of a nw4r lyt material flag word (res+0x3C): the "chanB"
+ * channel-B selector the material constructor passes to its setup. */
+extern "C" s32 fn_800D8768(u32 *flags) {
+    return ((u32)*flags >> 0x17U) & 1;
 }
 
 extern "C" s32 fn_800D8774(u32* arg0) {
