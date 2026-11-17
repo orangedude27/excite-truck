@@ -229,9 +229,9 @@ static inline void transform_vec_scheduled_reload(float *out, const float *m, fl
         out[1] = z * m7 + (x * m1 + y * m4);
         out[2] = z * m8 + (x * m2 + y * m5);
     } else {
-        out[0] = in[2] * m[6] + (in[0] * m[0] + in[1] * m[3]);
-        out[1] = in[2] * m[7] + (in[0] * m[1] + in[1] * m[4]);
-        out[2] = in[2] * m[8] + (in[0] * m[2] + in[1] * m[5]);
+        out[0] = in[1] * m[3] + in[0] * m[0] + in[2] * m[6];
+        out[1] = in[1] * m[4] + in[0] * m[1] + in[2] * m[7];
+        out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
     }
 }
 /* Same source as the out-of-line fn_801E67B4 (out = in * 3x3 m, safe in place). */
@@ -662,15 +662,7 @@ extern "C" void fn_801B97D8(struct TrlrCar *car) {
         localDelta[0] = player->position.x - ((Vec *)((char *)car + 0x60))->x;
         localDelta[1] = player->position.y - ((Vec *)((char *)car + 0x60))->y;
         localDelta[2] = player->position.z - ((Vec *)((char *)car + 0x60))->z;
-        {
-            const f32 *m = (const f32 *)((char *)car + 0x3C);
-            f32 x = localDelta[0];
-            f32 y = localDelta[1];
-            f32 z = localDelta[2];
-            localDelta[0] = x * m[0] + y * m[1] + z * m[2];
-            localDelta[1] = x * m[3] + y * m[4] + z * m[5];
-            localDelta[2] = x * m[6] + y * m[7] + z * m[8];
-        }
+        rotate_vec_in_place(localDelta, (const f32 *)((char *)car + 0x3C));
         speedDelta[0] = ((Vec *)((char *)car + 0x118))->x - player->velocity.x;
         speedDelta[1] = ((Vec *)((char *)car + 0x118))->y - player->velocity.y;
         speedDelta[2] = ((Vec *)((char *)car + 0x118))->z - player->velocity.z;
