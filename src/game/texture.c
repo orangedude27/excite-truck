@@ -238,8 +238,9 @@ int fn_802CA4E0(int textureDesc, int textureName, int mode, int param3, int para
 
 extern void fn_802D8DCC(void *, int);
 #pragma push
-#pragma opt_propagation off
+#pragma opt_propagation on
 void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
+#pragma opt_propagation on
     unsigned char *base = (unsigned char *)arg0;
     unsigned char t;
     char sp8[0x34];
@@ -1645,7 +1646,9 @@ void fn_802CC518(int arg0, float arg1) {
     result = (lbl_80564F30 * arg1) / (float)(number - magic);
     lbl_8055FCC4 = result;
 }
+#pragma dont_inline on
 void fn_802CC550(int arg0, float arg1, float arg2) {
+    #pragma scheduling invalid_target
     int offset;
     char *entry;
     float limit;
@@ -1655,18 +1658,18 @@ void fn_802CC550(int arg0, float arg1, float arg2) {
         return;
     offset = arg0 * 0x4C;
     entry = (char *)lbl_8055FCB0 + offset;
-    if (lbl_8055D07D == 0 || *(int *)(entry + 0x3C) == 0)
+    if ((unsigned char)lbl_8055D07D == 0)
+        return;
+    if (*(int *)(entry + 0x3C) == 0)
         return;
     limit = lbl_80564F40;
-    if (limit <= arg1)
-        limit = arg1;
+    limit = (limit <= arg1) ? arg1 : limit;
     value = *(float *)(entry + 0x38);
     result = arg2 * (lbl_8055FCC4 * limit);
-    if (value < result)
-        value = result;
+    value = (value < result) ? result : value;
     *(float *)(entry + 0x38) = value;
 }
-
+#pragma dont_inline off
 /* Marks a texture slot as used this pass: raises its keep-alive weight (+0x38)
  * to the floor fn_802CC550 keeps (the 1.0f / 1e-5f pair in .sdata2) and stamps
  * its use count (+0x48) with 1000000, so the eviction pass fn_802CC770 - which
@@ -1688,47 +1691,45 @@ void fn_802CC5B8(int textureIndex) {
 extern int lbl_8055FCC0;
 extern float lbl_80564F48;
 extern int fn_802E2C20(void);
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802CC60C(void) {
-    void *root;
     int offset = 0;
     int i;
     int counter;
     int zero = 0;
     int next;
-    float value = lbl_80564F48;
+    void *root;
 
     for (i = 0; i < 0x40; i++) {
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x38) = value;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x38) = lbl_80564F48;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x48) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x84) = value;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x84) = lbl_80564F48;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x94) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0xD0) = value;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0xD0) = lbl_80564F48;
         *(int *)((char *)lbl_8055FCB0 + offset + 0xE0) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x11C) = value;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x11C) = lbl_80564F48;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x12C) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x168) = value;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x168) = lbl_80564F48;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x178) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x1B4) = value;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x1B4) = lbl_80564F48;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x1C4) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x200) = value;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x200) = lbl_80564F48;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x210) = zero;
-        *(float *)((char *)lbl_8055FCB0 + offset + 0x24C) = value;
+        *(float *)((char *)lbl_8055FCB0 + offset + 0x24C) = lbl_80564F48;
         *(int *)((char *)lbl_8055FCB0 + offset + 0x25C) = zero;
         offset += 0x260;
     }
 
     root = *(void **)lbl_8055FCBC;
+    *(int *)((char *)root + 0x2844) = 0;
     counter = lbl_8055FCC0;
-    *(int *)((char *)root + 0x2844) = zero;
-    *(int *)((char *)root + 0x283C) = zero;
+    *(int *)((char *)root + 0x283C) = 0;
     next = counter + 1;
-    *(int *)((char *)root + 0x2840) = zero;
+    *(int *)((char *)root + 0x2840) = 0;
     lbl_8055FCC0 = next;
     if ((unsigned char)counter == 0)
         *(int *)((char *)root + 0x1C) = fn_802E2C20();
 }
-#pragma scheduling on
 
 /* Set the texture-system flag (lbl_8055D07D): zero disables per-entry texture
  * processing/updates; nonzero enables it. Read back by fn_802CC744. */
@@ -1742,13 +1743,24 @@ char fn_802CC744(void) {
     return lbl_8055D07D;
 }
 
-#pragma cplusplus on
-#pragma opt_propagation off
-int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
-#pragma opt_propagation reset
+#pragma push
+#pragma peephole off
+int fn_802CC74C(void) {
+    char *p = *(char **)lbl_8055FCBC;
+    int result = 0;
+
+    if (p != 0) {
+        if (*(int *)(p + 4) != 0) {
+            result = 1;
+        }
+    }
+    return result;
+}
+#pragma pop
 extern float lbl_80564F4C;
 extern float lbl_80564F50;
 #pragma push
+#pragma cplusplus reset
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802CC770(void) {
