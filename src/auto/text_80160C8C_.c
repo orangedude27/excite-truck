@@ -1043,9 +1043,8 @@ void fn_80161C18(void) {
 }
 
 s32 fn_80161C38(void) {
-    s32 val = lbl_8055E300;
-    u32 tmp = (u32)(-val) | (u32)val;
-    return (s32)(tmp >> 31);
+    // Nonzero while a challenge sub-task is active; lbl_8055E300 holds its pointer.
+    return lbl_8055E300 != 0;
 }
 
 #pragma cplusplus on
