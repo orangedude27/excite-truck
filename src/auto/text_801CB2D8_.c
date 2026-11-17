@@ -2127,22 +2127,31 @@ extern void fn_801CBD04(void *);
 extern int fn_8001C0EC(int);
 extern int fn_8001C0E8(int, int);
 #pragma scheduling on
-int fn_801CEA6C(void *arg0, int arg1) {
-    int value;
-    value = *(int *)arg0;
-    if (fn_8001C0EC(value) == 0) goto fail;
-    fn_8001C0E8(value, arg1);
-    value = *(int *)((char *)arg0 + 8);
-    if (value != 0) {
-        if (((int (*)(int, int))fn_8001C0EC)(value, arg1) == 0) goto fail;
+int fn_801CEA6C(void *obj, int value) {
+    /* Integer twin of fn_801CEBD8: `obj` holds up to three stat records, a primary
+     * one at +0x0 and two optional ones at +0x8 and +0xC.  `value` has to beat the
+     * primary record's current value, and is then stored into that record as its
+     * override; every optional record that is set has to accept `value` too.
+     * Returns 0 as soon as one of them refuses, 1 when all of them accept. */
+#define BeatsRecord fn_8001C0EC /* (record, value): does value beat the record? */
+#define SetOverride fn_8001C0E8 /* (record, value): store value in the record */
+    int record;
+    record = *(int *)obj;
+    if (BeatsRecord(record) == 0) goto fail; /* r4 still carries `value` here */
+    SetOverride(record, value);
+    record = *(int *)((char *)obj + 8);
+    if (record != 0) {
+        if (((int (*)(int, int))BeatsRecord)(record, value) == 0) goto fail;
     }
-    value = *(int *)((char *)arg0 + 0xC);
-    if (value != 0) {
-        if (((int (*)(int, int))fn_8001C0EC)(value, arg1) == 0) goto fail;
+    record = *(int *)((char *)obj + 0xC);
+    if (record != 0) {
+        if (((int (*)(int, int))BeatsRecord)(record, value) == 0) goto fail;
     }
     return 1;
 fail:
     return 0;
+#undef BeatsRecord
+#undef SetOverride
 }
 
 #pragma scheduling on
