@@ -548,9 +548,9 @@ void fn_801C4BAC(void) {
     lbl_8055E7F4 = zero;
     lbl_8055E7E3 = zero;
     lbl_8055E7E4 = lbl_80562970;
-    memset(state->x00, zero, 0x9C);
-    lo = (u8 *)state->x00;
-    hi = (u8 *)&state->x9C;
+    lo = (u8 *)state;
+    hi = (u8 *)state + 0x9C;
+    memset(lo, zero, 0x9C);
     *(f32 *)(lo + 0x14) = lbl_8056296C;
     *(f32 *)(lo + 0x18) = lbl_80562970;
     *(f32 *)(lo + 0x1C) = lbl_80562970;
@@ -575,7 +575,7 @@ void fn_801C4BAC(void) {
     *(f32 *)(lo + 0x94) = lbl_80562970;
     *(f32 *)(lo + 0x98) = lbl_805629A8;
     *(f32 *)(hi + 0x8) = lbl_80562994;
-    state->x9C = zero;
+    *(s32 *)(lo + 0x9C) = zero;
     if (lbl_8055E7F0 == 0) {
         lbl_8055E7E2 = zero;
         return;
@@ -588,7 +588,7 @@ void fn_801C4BAC(void) {
     flag = (fn_801769A8() >> 14) & 1;
     lbl_8055E7E2 = flag;
     if (flag != 0) {
-        memset((u8 *)state + 0xA8, zero, 0xA0);
+        memset(lo + 0xA8, zero, 0xA0);
         fn_8017960C(fn_80179630(0));
     }
 }
@@ -1086,6 +1086,8 @@ void fn_801C56AC(void) {
     }
 }
 #pragma pop
+/* Returns the debug-mode-enabled flag stored in lbl_8055E7E2: nonzero while the
+ * debug overlay/input mode (toggled via fn_801C4BAC) is active. */
 s32 fn_801C5B60(void) {
     return (u8)lbl_8055E7E2;
 }
