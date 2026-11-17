@@ -629,7 +629,6 @@ void fn_802AD414(void *arg0, float farg0) {
 }
 
 extern float lbl_80564AB4, lbl_80564ACC, lbl_80564AD0, lbl_80564AD4, lbl_80564AD8, lbl_80564AC0;
-extern double lbl_80564AE0;
 extern char lbl_8055CD68;
 extern int fn_802C2C00(int);
 extern void fn_8012F57C(float *, void *, void *, float);
