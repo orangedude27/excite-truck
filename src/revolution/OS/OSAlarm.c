@@ -288,6 +288,7 @@ BOOL OnReset(BOOL final, u32 event) {
     return TRUE;
 }
 
+/* Store an opaque user-data pointer on the alarm, handed to its callback when it fires. */
 void OSSetAlarmUserData(OSAlarm* alarm, void* userData) {
     alarm->userData = userData;
 }
