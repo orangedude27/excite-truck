@@ -15290,7 +15290,7 @@ found:
 
 void gap_config_cfm(u32 cid, u16 *p_cfg) {
     u8 *ccb = (u8 *)&lbl_803C3740 + 0xAC;
-    register u8 i = 0;
+    u8 i = 0;
     u16 psm;
     while (i < 8) {
         if (ccb[0] != 0 && *(u16 *)(ccb + 6) == cid)
@@ -15316,8 +15316,8 @@ found:
         GKI_freebuf(GKI_dequeue((BUFFER_Q *)(ccb + 0x14)));
     ccb[0] = 0;
     {
-        u8 *scan = (u8 *)&lbl_803C3740 + 0xAC;
-        register u8 j = 0;
+        u8 *scan = (u8 *)lbl_803C3740 + 0xAC;
+        u8 j = 0;
         while (j < 8) {
             if (scan[0] != 0 && *(u16 *)(scan + 0x10) == psm)
                 return;
@@ -18728,7 +18728,7 @@ extern void l2c_csm_term_w4_sec_comp(void *, s32, void *);
 extern void l2c_csm_w4_l2cap_connect_rsp(tL2C_CCB_VIEW *, u16, void *);
 extern void l2c_csm_w4_l2ca_connect_rsp(void *, u16, void *);
 extern void *jumptable_803187D4[];
-#define L2C_CSM_EVT s32
+#define L2C_CSM_EVT u16
 extern void l2c_csm_config(void *, L2C_CSM_EVT, void *);
 extern void l2c_csm_open(tL2C_CCB_VIEW *, u16, void *);
 extern void l2c_csm_w4_l2cap_disconnect_rsp(void *, u16, void *);
