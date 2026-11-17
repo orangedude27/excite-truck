@@ -106,6 +106,7 @@ void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
     fn_801B7C8C(arg0, &value[2], value);
     *(int *)((char *)arg0 + 0x3C) = 0;
 }
+#pragma pop
 #pragma scheduling on
 extern void fn_80135B24(void *, float);
 extern void fn_80136468(void *, float);
