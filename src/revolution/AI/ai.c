@@ -43,6 +43,7 @@ void AIStopDMA(void) {
     DSP_HW_REGS[DSP_AI_DMA_CSR] &= ~DSP_AI_DMA_CSR_PLAY;
 }
 
+/* Return the AI DMA engine's cached control/status word. */
 u32 AIGetDMAStatus(void) {
     return lbl_8055D6A8;
 }
