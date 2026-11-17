@@ -19513,14 +19513,19 @@ extern "C" void setAllComponentTriggerTarget__Q310homebutton3gui7ManagerFb(void 
     ManagerLayout *self = (ManagerLayout *)arg0;
     void *list = &self->list;
     u32 i = 0;
-    while (i < self->count) {
+    goto check;
+loop:
+    {
         void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(&self->list, (u16)i);
         void *obj = *(void **)((u8 *)entry + 4);
         ((Dummy *)obj)->Set(arg1);
-        i++;
-        if (list == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+        ++i;
     }
+check:
+    if (list == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    if (i < self->count)
+        goto loop;
 }
 
 homebutton::gui::PaneManager::~PaneManager() {
