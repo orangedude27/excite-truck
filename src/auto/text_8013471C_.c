@@ -756,8 +756,9 @@ void fn_801351CC(void *arg0) {
     fn_8018ADA4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
 }
 #pragma pop
+/* ParkDriver AIDriver virtual slot 8 (vtable offset 0x28) default implementation: a no-op, the
+ * park-driving counterpart to NullDriver's fn_80135198 stub. */
 void fn_80135218(void) {
-
 }
 
 
