@@ -803,6 +803,7 @@ void fn_801B8AD8(void) {
 
 }
 
+/* Null arena-event master virtual method (lbl_8033678C slot +0x20): reports true (1). */
 int fn_801B8ADC(void) { return 1; }
 
 /* Null arena-event master virtual method (vtable lbl_8033678C slot +0x24).
