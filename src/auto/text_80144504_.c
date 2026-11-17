@@ -98,10 +98,17 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
 }
 #pragma pop
 
-void GXInitLightAttnA_80144B44(void *arg0, f32 farg0, f32 farg1, f32 farg2) {
-    ((f32 *)arg0)[0] = farg0;
-    ((f32 *)arg0)[1] = farg1;
-    ((f32 *)arg0)[2] = farg2;
+void GXInitLightAttnA_80144B44(void *attn, f32 aa, f32 ab, f32 ac) {
+    /* Store the three light distance-attenuation coefficients into a 12-byte
+     * attenuation triple. */
+    struct Attn {
+        f32 aa;
+        f32 ab;
+        f32 ac;
+    };
+    ((struct Attn *)attn)->aa = aa;
+    ((struct Attn *)attn)->ab = ab;
+    ((struct Attn *)attn)->ac = ac;
 }
 
 void fn_80144B54(void *dst, void *src) {
