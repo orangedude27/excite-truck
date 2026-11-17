@@ -93,6 +93,7 @@ extern "C" void fn_801EB000(s32 *firstNode, void *context) {
 }
 #pragma scheduling reset
 #pragma cplusplus reset
+/* Stub: reports 0 (no result / success). Unused placeholder in this graphics-model utility unit. */
 s32 fn_801EB0E8(void) { return 0; }
 
 #pragma dont_inline on
