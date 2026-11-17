@@ -3852,7 +3852,10 @@ void GXGetLightDir_Internal(void *light, float posDirX, float posDirY, float pos
  *(volatile float *)((char *)light + 0x30) = scaledZ;
 }
 
-void GXInitLightColor(void *arg0, s32 *arg1) { *(s32 *)((char *)arg0 + 0xC) = *arg1; }
+void GXInitLightColor(void *light, s32 *color) {
+    /* Copy the packed RGBA word into the light object's color field at +0xC. */
+    *(s32 *)((char *)light + 0xC) = *color;
+}
 
 void GXLoadLightObjImm(void *arg0, s32 arg1) {
     volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
