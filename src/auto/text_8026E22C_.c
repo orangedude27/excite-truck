@@ -61,7 +61,6 @@ void fn_8026E22C(float *out, float *a, float *b, float t) {
     }
 }
 
-#pragma scheduling reset
 void fn_8026E688(f32* arg0, f32* arg1, f32* arg2, f32* arg3) {
     volatile f32 delta[3];
     f32 z[3];
