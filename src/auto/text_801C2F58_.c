@@ -1835,6 +1835,7 @@ extern s32 lbl_8055E82C;
 void fn_801C855C(void);
 extern unsigned char lbl_8055E83E;
 void fn_801C7770(void) {
+    /* Toggle the debug sound-sample "Overlap" flag lbl_8055E83E via its menu callback. */
     *(s8*)&lbl_8055E83E = !lbl_8055E83E;
 }
 
