@@ -1947,8 +1947,9 @@ void *fn_80007CC4(void) {
     return lbl_802FB5F0;
 }
 
-void fn_80007CD0(void *arg0) {
-    ((u8 *)arg0)[4] = 0;
+/* Clear the boolean flag at byte 4 of an arena overlay object (inverse of fn_80007CF0). */
+void fn_80007CD0(void *obj) {
+    ((u8 *)obj)[4] = 0;
 }
 
 u8 fn_80007CDC(void *arg0) {
