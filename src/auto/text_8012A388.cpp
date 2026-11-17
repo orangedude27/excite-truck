@@ -38,7 +38,9 @@ struct ResManager {
     /* 0x80 */ s32 dataOffset; /* where the set's data starts in the archive */
     char pad84[4];
     /* 0x88 */ s32 entryCount;
-    char pad8C[0x1C];
+    char pad8C[0x10];
+    /* 0x9C */ s32 useCount; /* live references held on this set */
+    char padA0[0x8];
     /* 0xA8 */ struct ResManager *next;
 };
 extern "C" int sprintf(char *, const char *, ...);
