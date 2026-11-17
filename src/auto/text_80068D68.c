@@ -8636,6 +8636,15 @@ void btm_read_rssi_complete(u8 *hciEvent) {
 }
 
 extern char lbl_80315FEC[];
+
+/* btm_cb.devcb.p_lnk_qual_cmpl_cb: callback of the outstanding BTM_ReadLinkQuality */
+#define btm_cb_lnk_qual_cmpl_cb (*(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5FC))
+/* btm_cb.devcb.rssi_timer: the timeout the read-RSSI/link-quality commands share */
+#define btm_cb_rssi_timer       (lbl_803C0F78 + 0x5C8)
+/* btm_cb.acl_db[0]: one tACL_CONN every 0x11C bytes (this build's tACL_CONN is 0x120) */
+#define btm_cb_acl_db           (lbl_803C0F78 + 0x34)
+#define BTM_LNK_QUALITY_TRACE_FMT lbl_80315FEC /* "BTM Link Quality Complete: Link Quality %d, hci status 0x%02x" */
+
 void btm_read_link_quality_complete(u8 *arg0) {
     typedef void (*Callback)(s8 *);
     struct Result {
@@ -26791,10 +26800,10 @@ void sdp_disconnect_ind(u16 handle, u8 reason) {
     u8 *ccb;
     void (*callback)(u16, s32, u8);
     u8 state;
-    s32 stateDelta;
     s32 reverseDelta;
-    u32 equalityMask;
     u16 result;
+    s32 stateDelta;
+    u32 equalityMask;
     ccb = (u8 *)l2cu_find_lcb_by_handle_80099E54(handle);
     if (ccb == 0) {
         if (lbl_803C4C40[0x4630] >= 2) {
