@@ -317,6 +317,8 @@ int fn_801BF754(int object) {
     return object + 0x124;
 }
 
+/* Dot product of two 3-vectors handed over as six scalars: (ax,ay,az) . (bx,by,bz),
+ * summed as (az*bz) + ((ax*bx) + (ay*by)). */
 extern float fn_80144514(float, float, float, float, float, float);
 #pragma push
 #pragma processor 750
