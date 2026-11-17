@@ -396,8 +396,11 @@ void fn_801AED5C(void) {
     fn_801B8778();
 }
 
+/* Disable the arena event: clear its active flag and invoke the master object's stop handler (fn_801B878C). */
 void fn_801AED68(void) {
-    lbl_8055E634 = 0;
+#define s_arenaEventActive lbl_8055E634 /* nonzero while the arena event is enabled */
+    s_arenaEventActive = 0;
+#undef s_arenaEventActive
     fn_801B878C();
 }
 
