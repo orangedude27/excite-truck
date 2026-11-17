@@ -215,57 +215,60 @@ extern unsigned char lbl_80498F78[];
         items_[count_] = (obj); \
     } while (0)
 #pragma dont_inline on
-extern "C" void fn_802640C4(void *arg0, void *arg1) {
+extern "C" void fn_802640C4(void *item, void *entry) {
+    /* Builds one 0x14-byte credits-page item descriptor from a .val entry: reads the "type"
+       property and dispatches to the string, firetext, extra_delay or allow_keys constructor,
+       registering constructed items in the global credits item list. */
     extern char lbl_8055C45C[4], lbl_8055C464[4], lbl_8055C46C[4], lbl_8055C474[4], lbl_8055C47C[4], lbl_8055C484[4];
     extern void *fn_801284F8(unsigned int, void *);
     extern void fn_8026523C(void *), fn_80265558(void *), fn_802655A4(void *);
     extern void fn_80265268(void *, int, char *, float), fn_8026557C(void *, float), fn_80265610(void *, float);
-    char *base=lbl_80346338;
-    char *kind;
-    PropertyReader802640C4 *properties = (PropertyReader802640C4 *)arg1;
-    void *obj;
-    char *name;
-    int val;
-    float value;
-    void *delay;
-    void *keys;
-    kind = properties->getString(lbl_8055C45C);
-    if (stricmp(kind,lbl_8055C464)==0) {
-        *(char **)arg0=properties->getString(lbl_8055C46C);
-        fn_80264098(arg0,3);
-        *(char **)((char *)arg0+8)=properties->getString(lbl_8055C474);
-        *(int *)((char *)arg0+12)=0;
-    } else if (stricmp(kind,base+0xf0)==0) {
-        obj=fn_801284F8(0xbc,base+0xfc);
-        if (obj) obj=((void *(*)(void *))fn_8026523C)(obj);
-        value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
-        name=properties->getString(lbl_8055C474);
-        val=properties->getInt(lbl_8055C47C);
-        fn_80265268(obj,val,name,value);
-        ADD_CREDITS_ITEM(obj);
-        *(char **)arg0=properties->getString(lbl_8055C46C);
-        fn_80264098(arg0,5);
-        *(void **)((char *)arg0+8)=obj;
-    } else if (stricmp(kind,base+0x108)==0) {
-        delay=fn_801284F8(0x20,base+0x114);
-        if(delay) delay=((void *(*)(void *))fn_80265558)(delay);
-        value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
-        fn_8026557C(delay,value);
-        ADD_CREDITS_ITEM(delay);
-        *(int *)arg0=0;
-        fn_80264098(arg0,5);
-        *(void **)((char *)arg0+8)=delay;
-    } else if (stricmp(kind,base+0x120)==0) {
-        keys=fn_801284F8(0x24,base+0x12c);
-        if(keys) keys=((void *(*)(void *))fn_802655A4)(keys);
-        value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
-        fn_80265610(keys,value);
-        ADD_CREDITS_ITEM(keys);
-        *(int *)arg0=0;
-        fn_80264098(arg0,5);
-        *(void **)((char *)arg0+8)=keys;
+    char *strings=lbl_80346338;
+    char *type;
+    PropertyReader802640C4 *props = (PropertyReader802640C4 *)entry;
+    void *textItem;
+    char *line;
+    int fontId;
+    float timer;
+    void *delayItem;
+    void *keyItem;
+    type = props->getString(lbl_8055C45C);
+    if (stricmp(type,lbl_8055C464)==0) {
+        *(char **)item=props->getString(lbl_8055C46C);
+        fn_80264098(item,3);
+        *(char **)((char *)item+8)=props->getString(lbl_8055C474);
+        *(int *)((char *)item+12)=0;
+    } else if (stricmp(type,strings+0xf0)==0) {
+        textItem=fn_801284F8(0xbc,strings+0xfc);
+        if (textItem) textItem=((void *(*)(void *))fn_8026523C)(textItem);
+        timer=props->getFloat(lbl_8055C484,lbl_80563BF0);
+        line=props->getString(lbl_8055C474);
+        fontId=props->getInt(lbl_8055C47C);
+        fn_80265268(textItem,fontId,line,timer);
+        ADD_CREDITS_ITEM(textItem);
+        *(char **)item=props->getString(lbl_8055C46C);
+        fn_80264098(item,5);
+        *(void **)((char *)item+8)=textItem;
+    } else if (stricmp(type,strings+0x108)==0) {
+        delayItem=fn_801284F8(0x20,strings+0x114);
+        if(delayItem) delayItem=((void *(*)(void *))fn_80265558)(delayItem);
+        timer=props->getFloat(lbl_8055C484,lbl_80563BF0);
+        fn_8026557C(delayItem,timer);
+        ADD_CREDITS_ITEM(delayItem);
+        *(int *)item=0;
+        fn_80264098(item,5);
+        *(void **)((char *)item+8)=delayItem;
+    } else if (stricmp(type,strings+0x120)==0) {
+        keyItem=fn_801284F8(0x24,strings+0x12c);
+        if(keyItem) keyItem=((void *(*)(void *))fn_802655A4)(keyItem);
+        timer=props->getFloat(lbl_8055C484,lbl_80563BF0);
+        fn_80265610(keyItem,timer);
+        ADD_CREDITS_ITEM(keyItem);
+        *(int *)item=0;
+        fn_80264098(item,5);
+        *(void **)((char *)item+8)=keyItem;
     } else {
-        fn_802E317C(base+0x138,kind);
+        fn_802E317C(strings+0x138,type);
     }
 }
 #pragma pop
