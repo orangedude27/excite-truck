@@ -145,15 +145,14 @@ extern void fn_802C6CF8(s32);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802A85C8(void) {
     void *entry;
     s32 j;
     s32 offset;
     s32 suboffset;
     s32 i;
-
-    i = 0;
-    offset = 0;
+    offset = i = 0;
     while (i < lbl_804BD6C4[1]) {
         entry = *(void **)((u32)lbl_804BD6C4[0] + offset);
         if (entry != 0) {
@@ -167,7 +166,6 @@ void fn_802A85C8(void) {
             *(s32 *)((u8 *)entry + 0x2C) = 0;
             *(s32 *)((u8 *)entry + 0x70) = 0;
             if ((u32)entry + 0x6C != 0) {
-                *(s32 *)((u8 *)entry + 0x70) = 0;
                 if ((u32)entry + 0x6C != 0) {
                     *(s32 *)((u8 *)entry + 0x6C) = 0;
                     *(s32 *)((u8 *)entry + 0x70) = 0;
@@ -186,9 +184,8 @@ void fn_802A85C8(void) {
         offset += 4;
         i++;
     }
-    lbl_804BD6C4[1] = 0;
+    *(s32 *)((u8 *)lbl_804BD6C4 + 4) = 0;
 }
-#pragma pop
 
 #pragma push
 #pragma processor 750
@@ -307,7 +304,7 @@ extern f64 lbl_80564960;
 void fn_802A8A4C(s32 arg0, s32 arg1) {
     f32 m[9], v[2], d[2], p[2], q[2];
     f32 *a = (f32 *)arg0, *b = (f32 *)arg1;
-    f32 length, dot, angle, scale, t, c, s, x, y, z;
+    f32 length, angle, dot, scale, t, c, s, x, y, z;
     v[0]=a[3]; v[1]=a[5];
     scale=lbl_8056494C/(f32)fn_8002F234(v[0]*v[0]+v[1]*v[1]);
     v[0]*=scale; v[1]*=scale;
@@ -366,9 +363,9 @@ void fn_802A8DE8(void) {
     f32 fx;
     f32 fy;
     register s32 i;
-    register s32 *table;
+    s32 *table;
     register s32 offset;
-    register u8 *vec;
+    register s32 vec;
     register void *entry;
     register s32 j;
 
@@ -380,9 +377,9 @@ void fn_802A8DE8(void) {
     while (i < table[1]) {
         entry = *(void **)((u32)lbl_804BD6C4[0] + offset);
         j = 0;
-        vec = (u8 *)0;
+        vec = 0;
         while (j < *(s32 *)((u8 *)entry + 0x70)) {
-            f32 *src = (f32 *)(*(u32 *)((u8 *)entry + 0x6C) + (u32)vec);
+            f32 *src = (f32 *)(*(u32 *)((u8 *)entry + 0x6C) + vec);
             vecData[3] = src[0];
             vecData[4] = src[1];
             vecData[5] = src[2];
@@ -400,7 +397,7 @@ void fn_802A8DE8(void) {
             crossIn[2] = fy;
             PSVECCrossProduct(crossIn, &vecData[0], crossOut);
             fn_802C744C(*(s32 *)(*(u32 *)((u8 *)entry + 0x28) + ((j % *(s32 *)((u8 *)entry + 0x2C)) * 4)), crossOut);
-            vec = (u8 *)((u32)vec + 0x28);
+            vec += 0x28;
             j++;
         }
         offset += 4;
