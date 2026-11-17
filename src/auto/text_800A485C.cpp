@@ -1539,9 +1539,10 @@ extern "C" s32 fn_800A6808(void *arg0) {
 }
 
 extern "C" void fn_800A76B4(void *, s32);
-extern "C" void fn_800A68C8(void *arg0) {
-    *(u32 *)arg0 &= 0xFFFFFFFB;
-    fn_800A76B4(arg0, 0);
+/* Clear flag bit 2 on object and notify its registered listeners (fn_800A76B4, callback 0). */
+extern "C" void fn_800A68C8(void *object) {
+    *(u32 *)object &= 0xFFFFFFFB;
+    fn_800A76B4(object, 0);
 }
 
 #pragma dont_inline on
