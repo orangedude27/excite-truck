@@ -7,7 +7,7 @@ extern s32 lbl_8055EBB0, lbl_8055EBB8, lbl_8055EBC0;
 extern f32 lbl_8055EBB4, lbl_8055EBBC;
 extern const f32 lbl_80562ED8, lbl_80562EDC;
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801EEF7C(void) {
     fn_8000D838(&lbl_8055EBA8);
     *(volatile s32 *)&lbl_8055EBC0 = -0x100;
