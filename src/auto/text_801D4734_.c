@@ -255,6 +255,8 @@ extern char lbl_80442310[];
 extern char lbl_8055AD58[3], lbl_8055AD5C[3];
 extern float lbl_8055E3C8, lbl_80562AD8, lbl_80562ADC, lbl_80562AE0, lbl_80562AE4, lbl_80562AE8, lbl_80562AEC, lbl_80562AF0, lbl_80562AF4, lbl_80562AF8, lbl_80562AFC;
 extern char *strchr(char *, int);
+#pragma push
+#pragma processor 750
 void fn_801D490C(void) {
     float alpha, right, width, x, t, edge, dy, y;
     int color, n;
