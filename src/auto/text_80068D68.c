@@ -8054,8 +8054,9 @@ found:
     return 7;
 }
 
-void fn_800778C8(s16 arg0) {
-    *(s16 *)(lbl_803C0F78 + 0x4C4) = arg0;
+/* Set btm_cb's default ACL link policy mask (btm_def_link_policy at +0x4C4). */
+void fn_800778C8(s16 linkPolicy) {
+    *(s16 *)(lbl_803C0F78 + 0x4C4) = linkPolicy;
 }
 
 /* Handles HCI Read Link Policy Settings complete: stores status/settings for the ACL connection and invokes the pending callback. */
