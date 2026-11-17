@@ -2353,26 +2353,21 @@ extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigne
 }
 
 struct CountField_800D9844 { u32 pad : 9; u32 cnt : 5; u32 rest : 18; };
-struct MatBits_800D9844 {
-    u32 K : 4; u32 B : 4; u32 L : 4; u32 A : 2; u32 Q : 3;
-    u32 F : 1; u32 pad1 : 5; u32 G : 1; u32 E : 1; u32 I : 1;
-    u32 P : 1; u32 pad0 : 5;
-};
 struct TevStageDefault {
-    u8 b[16];
+    u8 head[4];
+    u8 mid[8];
+    u8 tail[4];
     TevStageDefault() {
-        b[0] = 0xFF; b[1] = 4; b[2] = 0xFF; b[3] = 0;
-        b[4] = 0xFF; b[5] = 0xAF; b[6] = 0; b[7] = 0x61;
-        b[8] = 0x77; b[9] = 0x57; b[10] = 0; b[11] = 0x81;
-        b[12] = 0; b[13] = 0; b[14] = 0; b[15] = 0;
+        head[0] = 0xFF; head[1] = 4; head[2] = 0xFF; head[3] = 0;
+        mid[0] = 0xFF; mid[1] = 0xAF; mid[2] = 0; mid[3] = 0x61;
+        mid[4] = 0x77; mid[5] = 0x57; mid[6] = 0; mid[7] = 0x81;
+        tail[0] = 0; tail[1] = 0; tail[2] = 0; tail[3] = 0;
     }
-    // nw4r::lyt::TevStage copy assignment: copy all 16 byte-sized TEV
-    // register fields from other into this stage.
     TevStageDefault &operator=(const TevStageDefault &other) {
-        b[0] = 0xFF; b[1] = 4; b[2] = 0xFF; b[3] = 0;
-        b[4] = other.b[4]; b[5] = other.b[5]; b[6] = other.b[6]; b[7] = other.b[7];
-        b[8] = other.b[8]; b[9] = other.b[9]; b[10] = other.b[10]; b[11] = other.b[11];
-        b[12] = 0; b[13] = 0; b[14] = 0; b[15] = 0;
+        head[0] = 0xFF; head[1] = 4; head[2] = 0xFF; head[3] = 0;
+        mid[0] = other.mid[0]; mid[1] = other.mid[1]; mid[2] = other.mid[2]; mid[3] = other.mid[3];
+        mid[4] = other.mid[4]; mid[5] = other.mid[5]; mid[6] = other.mid[6]; mid[7] = other.mid[7];
+        tail[0] = 0; tail[1] = 0; tail[2] = 0; tail[3] = 0;
         return *this;
     }
 };
