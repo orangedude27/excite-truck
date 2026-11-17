@@ -4055,8 +4055,9 @@ void GKI_shutdown(void) {
     }
 }
 
-void fn_8006EACC(void) {
-
+/* GKI OS-abstraction no-op stub, invoked once with argument 0 during Bluetooth
+ * stack startup; this single-threaded build has no work to do here. */
+void fn_8006EACC(s32 unused) {
 }
 
 void fn_8006EAD0(void) {
