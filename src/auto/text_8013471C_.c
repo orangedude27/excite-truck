@@ -365,9 +365,12 @@ extern "C" s32 fn_80134B9C(s32 key, s32 defaultValue) {
 #pragma cplusplus reset
 #pragma pop
   
-  f32 fn_80134C1C(void) {
-      return lbl_8055E0A8;
-  }
+/* Returns the global AI rate scale in lbl_8055E0A8, computed from track data
+ * during setup (fn_8013477C) and used as a multiplier in AI driver math
+ * (fn_80134E34, fn_80194C4C). */
+f32 fn_80134C1C(void) {
+    return lbl_8055E0A8;
+}
   
 s32 fn_80134C24(s32 playerIndex) {
     extern void *fn_8017960C(void);
