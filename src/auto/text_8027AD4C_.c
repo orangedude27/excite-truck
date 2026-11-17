@@ -289,8 +289,10 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
 #pragma cplusplus reset
 #pragma pop
 
-unsigned char fn_8027B280(void *arg0) {
-    return *((unsigned char *)arg0 + 0x12);
+/* Return the event_goal object's +0x12 byte, which fn_8027AD4C filled from the
+ * contest name via fn_8027CF3C (the event-path / grade-derived flag). */
+unsigned char fn_8027B280(void *goal) {
+    return *((unsigned char *)goal + 0x12);
 }
 
 /* Resets all entries in a container's object array and clears its count/state
