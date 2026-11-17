@@ -4596,32 +4596,35 @@ extern "C" void fn_8021FD68(void *arg0, s32 arg1) {
 #pragma pop
 
 #pragma paired_single off
-extern "C" void *fn_8021FF34(void *arg0, void *arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
-    f32 temp_f0;
-    f32 temp_f2;
-    s32 temp_r4;
-    s32 temp_r8;
-    temp_r8 = *(s32 *)((u8 *)arg1 + 0xC);
-    temp_r4 = *(s32 *)((u8 *)arg1 + 8);
-    fn_80218F34(arg0, temp_r4, temp_r8,
-                temp_r4 + *(s32 *)((u8 *)arg1 + 0x14),
-                temp_r8 + *(s32 *)((u8 *)arg1 + 0x18), 0);
-    temp_f2 = farg1 - farg0;
-    *(void **)arg0 = lbl_8033E7F4;
-    *(s32 *)((u8 *)arg0 + 0x244) = arg2;
-    *(f32 *)((u8 *)arg0 + 0x248) = farg0;
-    *(f32 *)((u8 *)arg0 + 0x24C) = farg1;
-    *(f32 *)((u8 *)arg0 + 0x250) = temp_f2 / (f32)arg3;
-    *(s32 *)((u8 *)arg0 + 0x254) =
+/* Construct a slider widget: set up base bounds and vtable, then store its type,
+ * value range and per-step size, load the slider2.img handle, assign a packed cell
+ * id, and cache the current time minus a fixed 0.3s offset. */
+extern "C" void *fn_8021FF34(void *self, void *bounds, s32 type, s32 steps, f32 minValue, f32 maxValue) {
+    f32 timeOffset;
+    f32 range;
+    s32 left;
+    s32 top;
+    top = *(s32 *)((u8 *)bounds + 0xC);
+    left = *(s32 *)((u8 *)bounds + 8);
+    fn_80218F34(self, left, top,
+                left + *(s32 *)((u8 *)bounds + 0x14),
+                top + *(s32 *)((u8 *)bounds + 0x18), 0);
+    range = maxValue - minValue;
+    *(void **)self = lbl_8033E7F4;
+    *(s32 *)((u8 *)self + 0x244) = type;
+    *(f32 *)((u8 *)self + 0x248) = minValue;
+    *(f32 *)((u8 *)self + 0x24C) = maxValue;
+    *(f32 *)((u8 *)self + 0x250) = range / (f32)steps;
+    *(s32 *)((u8 *)self + 0x254) =
         ((s32 (*)(void *, void *))fn_802C5130)(lbl_8033D9BC, lbl_8033E7F4);
-    *(s32 *)((u8 *)arg0 + 0x258) = 0;
-    *(s32 *)((u8 *)arg0 + 0x25C) =
-        fn_80228F40(*(s32 *)((u8 *)arg1 + 8),
-                    *(s32 *)((u8 *)arg1 + 0xC));
-    temp_f0 = fn_8023659C() - lbl_805634E8;
-    *(f32 *)((u8 *)arg0 + 0x264) = temp_f0;
-    *(f32 *)((u8 *)arg0 + 0x260) = temp_f0;
-    return arg0;
+    *(s32 *)((u8 *)self + 0x258) = 0;
+    *(s32 *)((u8 *)self + 0x25C) =
+        fn_80228F40(*(s32 *)((u8 *)bounds + 8),
+                    *(s32 *)((u8 *)bounds + 0xC));
+    timeOffset = fn_8023659C() - lbl_805634E8;
+    *(f32 *)((u8 *)self + 0x264) = timeOffset;
+    *(f32 *)((u8 *)self + 0x260) = timeOffset;
+    return self;
 }
 extern "C" u8 lbl_8033E7F4[];
 /* Destroys a Game::MemoryCard::Resource instance and optionally frees its storage. */
