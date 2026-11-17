@@ -196,6 +196,7 @@ _exit:
     return allocatedBlock;
 }
 
+// Allocates size bytes from the IOS heap handle with the default 32-byte alignment.
 void* iosAlloc(s32 handle, u32 size) {
     return __iosAlloc(handle, size, 32);
 }
