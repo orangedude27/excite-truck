@@ -1093,7 +1093,9 @@ extern float PSVECDotProduct(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern float lbl_805628B8;
 extern float lbl_805628BC;
-FN_801C0E44_RET fn_801C0E44(void *arg0) { PSVECDotProduct(arg0, arg0); }
+/* Squared length of a 3D vector: its dot product with itself. Callers test a cross
+   product with it to tell a usable basis from a degenerate (near-parallel) one. */
+float fn_801C0E44(FV3 *v) { return PSVECDotProduct(v, v); }
 
 /* Compute the cross product of vectors `a` and `b` into `out`. */
 void fn_801C0E4C(void *out, void *a, void *b) {
