@@ -720,25 +720,27 @@ extern s32 fn_8026A27C(s32);
 extern void fn_801B1390(s32, s32);
 #pragma scheduling on
 #pragma dont_inline on
-void fn_801B14E4(void *arg0) {
+/* Set the vehicle's "wrong way" flag after roughly 30 consecutive frames of being driven
+ * backwards along the path; any other frame resets the counter and clears the flag. */
+void fn_801B14E4(void *vehicle) {
     struct {
         u8 unk0[0x58];
-        s32 field58;
-        s32 field5C;
+        s32 follower;
+        s32 vecBase;
         u8 unk60[4];
-        s32 count;
-    } *base = (void *)arg0;
-    s32 v5c = base->field5C;
-    s32 v58 = *(s32 *)((u8 *)arg0 + 0x58);
-    s32 passed;
+        s32 wrongWayFrames;
+    } *base = (void *)vehicle;
+    s32 vectorBase = base->vecBase;
+    s32 pathFollower = *(s32 *)((u8 *)vehicle + 0x58);
+    s32 wrongWay;
 
-    if (fn_801366C0(v58, v5c + 0x118, lbl_805625F8)) {
-        base->count += 1;
+    if (fn_801366C0(pathFollower, vectorBase + 0x118, lbl_805625F8)) {
+        base->wrongWayFrames += 1;
     } else {
-        base->count = 0;
+        base->wrongWayFrames = 0;
     }
-    passed = (f32)base->count > lbl_805625FC;
-    fn_801B14BC((s32 *)((u8 *)base + 4), 4, passed);
+    wrongWay = (f32)base->wrongWayFrames > lbl_805625FC;
+    fn_801B14BC((s32 *)((u8 *)base + 4), 4, wrongWay);
 }
 #pragma scheduling invalid_target
 void fn_801B157C(void *state, s32 eventId) {
