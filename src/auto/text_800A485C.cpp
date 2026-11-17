@@ -4692,8 +4692,8 @@ loop_64:
                 if (var_r21 != 0) {
                     return var_r21;
                 }
-                sp24C = M2C_FIELD(p1, u8 *, 0x21C);
-                sp264 = M2C_FIELD(p1, u32 *, 0x234);
+                 sp30buf[0x21C] = M2C_FIELD(p1, u8 *, 0x21C);
+ *(u32 *)(sp30buf + 0x234) = M2C_FIELD(p1, u32 *, 0x234);
                 temp_r3 = fn_800AC708(p0, sp30buf, (u32)temp_r27_2, &sp10);
                 if (temp_r3 != 0) {
                     return temp_r3;
