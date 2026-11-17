@@ -626,7 +626,10 @@ void __AXDSPInitCallback_801769E0(void) {
 }
 
 void fn_801769EC(void) {
-    lbl_8055E3C0 = 2;
+    /* Request sound-init state 2 (reset the one-shot flag), then run the DSP init hook. */
+#define sSoundInitState lbl_8055E3C0
+    sSoundInitState = 2;
+#undef sSoundInitState
     fn_8013A208();
 }
 
