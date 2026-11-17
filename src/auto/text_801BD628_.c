@@ -432,9 +432,6 @@ void fn_801BEB30(int slot, int *outRecord) {
 extern float lbl_80562838, lbl_8056283C, lbl_805628A8, lbl_805628AC, lbl_805628B0;
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
 void fn_801BEB44(int i, int j, float *target, float *velocity) {
     unsigned char *base = (unsigned char *)lbl_8055E798 + i * 0x1F0;
     int off = j * 16;
