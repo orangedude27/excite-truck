@@ -633,6 +633,8 @@ typedef struct t_l2c_ccb_view {
 #define L2CEVT_L2CAP_CONNECT_RSP_PND 12 /* peer connection response pending */
 #define L2CEVT_L2CAP_CONNECT_RSP_NEG 13 /* peer connection response (failed) */
 #define L2CEVT_L2CAP_CONFIG_REQ      14 /* peer configuration request */
+#define L2CEVT_L2CAP_CONFIG_RSP      15 /* peer configuration response */
+#define L2CEVT_L2CAP_CONFIG_RSP_NEG  16 /* peer configuration response (failed) */
 #define L2CEVT_L2CAP_DISCONNECT_REQ  17 /* peer disconnect request */
 #define L2CEVT_L2CAP_DATA            19 /* peer data */
 #define L2CEVT_L2CA_CONNECT_REQ      20 /* upper layer connect request */
