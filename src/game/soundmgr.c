@@ -101,9 +101,10 @@ signed long fn_80207964(signed long sndClass) {
 }
 
 #pragma dont_inline on
-void fn_80207980(void* arg0) {
-    *(signed long*)arg0 = 0;
-    *((signed long*)arg0 + 1) = 0;
+void fn_80207980(void* entry) {
+    /* Clear a two-word slot (a pointer plus a word) by zeroing both of its 32-bit halves. */
+    *(signed long*)entry = 0;
+    *((signed long*)entry + 1) = 0;
 }
 #pragma dont_inline reset
 
