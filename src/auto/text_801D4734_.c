@@ -3429,6 +3429,9 @@ int fn_801D872C(struct SurfaceChangeAse *action) {
     return action->state;
 }
 
+/* SurfaceChange_ASE virtual hook at vtable +0x1C (the slot between state() and
+ * apply()).  The shared ActionSequenceEvent default for this slot, fn_801D544C,
+ * returns 0, and this effect keeps that default: it reports no extra result. */
 int fn_801D8734(void) {
     return 0;
 }
