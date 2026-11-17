@@ -314,18 +314,12 @@ struct SeqListLink {
     u8 priorityOffset;
 };
 
-static inline int ClampPriority(int value, int limit) {
-    if (value > limit) return limit;
-    return value & ~(value >> 31);
-}
-
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, int arg1) {
     #pragma opt_common_subs off
-    #pragma opt_propagation off
     void *node;
     void *sentinel;
     void *list;
-    int priority;
+    s32 priority;
     void *soundNode;
 
     SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
@@ -341,7 +335,7 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, i
     node = *(void **)((u8 *)list + 8);
     sentinel = (u8 *)list + 8;
     while (node != sentinel) {
-        int nodePriority;
+        s32 nodePriority;
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324314, 0x23D, lbl_803242F0);
         nodePriority = *(u8 *)((u8 *)node - 0x44) + *(int *)((u8 *)node - 0x78);
         if (nodePriority > 0x7F)
