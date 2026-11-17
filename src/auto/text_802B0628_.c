@@ -865,8 +865,9 @@ int fn_802B1B38(void *arg0) {
     return ((int *)arg0)[1];
 }
 
-int fn_802B1B40(int *arg0, int arg1) {
-    return *arg0 + (arg1 * 0x10);
+/* Address of the 16-byte object record at `index` in the table whose base pointer is stored at `basePtr`. */
+int fn_802B1B40(int *basePtr, int index) {
+    return *basePtr + (index * 0x10);
 }
 
 /* Indexed accessor: returns the stored base advanced by 128 per step (slot-group stride). */
