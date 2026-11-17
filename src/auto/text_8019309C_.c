@@ -1290,8 +1290,9 @@ void fn_80194FC4(void) {
 
 }
 
-void fn_80194FC8(void *arg0) {
-    fn_8013B744(*(int *)((unsigned char *)arg0 + 0x290));
+/* Fetch the per-car scale for this driver's car index (+0x290); the float result is left in f1 for callers, which cast this to Fn94FC8. */
+void fn_80194FC8(void *driver) {
+    fn_8013B744(*(int *)((unsigned char *)driver + 0x290));
 }
 
 void fn_80194FD0(unsigned char *self, float *out, float dt) {
@@ -1551,11 +1552,12 @@ extern char lbl_803332D8[];
 extern float lbl_805621A0;
 extern void fn_802E317C(const char *, ...);
 void fn_801958D8(void *arg0) {
-    register void *tmp = *(void **)((char *)arg0 + 0x288);
-    register int cur = *(int *)((char *)arg0 + 0x268);
-    int state = *(int *)((char *)tmp + 0x24);
+    void *tmp;
+    int state;
     float f;
-    if (cur != state) {
+    tmp = *(void **)((char *)arg0 + 0x288);
+    state = *(int *)((char *)tmp + 0x24);
+    if (*(int *)((char *)arg0 + 0x268) != state) {
         switch (state) {
         case 0:
             *(float *)((char *)arg0 + 0x1E4) = *(float *)((char *)arg0 + 0x26C);
@@ -2009,15 +2011,16 @@ finish:
   extern void fn_8018AE24(int, int);
   extern void fn_80136EA4(int, int);
   extern void fn_80136E8C(int, int, int);
+#pragma scheduling invalid_target
 void fn_80196328(void *arg0) {
-    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), lbl_80562140);
+    const f32 one = lbl_80562140;
+    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), one);
     fn_8018ADB4(*(int *)((char *)arg0 + 0x294), lbl_80562144);
     fn_8018ADAC(*(void **)((char *)arg0 + 0x294), lbl_80562144);
     fn_8018AE24(*(int *)((char *)arg0 + 0x294), 0);
     fn_80136EA4(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290));
     fn_80136E8C(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 0);
 }
-
       extern int fn_801B2F24(void);
     extern void fn_801B2F40(int);
           extern int fn_8019643C();
@@ -2363,11 +2366,11 @@ void fn_80196AA0(void *arg0) {
     }
     if (state == 0) goto case0;
     if (state >= 0) goto nonnegative;
-    if (state >= -1) goto transition;
-    goto transition;
+    if (state < -1) goto transition;
+    goto done;
 nonnegative:
-    if (state >= 2) goto transition;
-    goto case1;
+    if (state < 2) goto case1;
+    goto transition;
 case0: {
         void *object = *(void **)((char *)arg0 + 0x294);
         void *outputBase;
@@ -2388,7 +2391,7 @@ case1: {
                          (-high * *(float *)((char *)arg0 + 0x44)));
         slots[0] = high;
         slots[1] = low;
-        value = result > value ? result : value;
+        value = value < result ? result : value;
         value = value > lbl_805621A4 ? lbl_805621A4 : value;
         fn_8018ADAC(*(void **)((char *)arg0 + 0x294), value);
         fn_8018ADD4(*(void **)((char *)arg0 + 0x294), -1);
