@@ -203,9 +203,8 @@ __declspec(section ".sdata") extern char lbl_8055CA1C[];
 __declspec(section ".sdata") extern char lbl_8055CA24[];
 extern float lbl_80564550;
 extern float lbl_80564554;
-#pragma scheduling on
+#pragma cplusplus on
 extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
-    #pragma scheduling on
     struct Vec3 { float x, y, z; };
     class Node {
     public:
