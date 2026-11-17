@@ -358,6 +358,7 @@ extern "C" void fn_801B84F8(void) {
 }
 #pragma cplusplus off
 extern char lbl_8055E748;
+/* Returns the arena-event master active flag (gStatusFlag). */
 char fn_801B8514(void) {
     return lbl_8055E748;
 }
