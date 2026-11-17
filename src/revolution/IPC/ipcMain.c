@@ -18,6 +18,7 @@ void IPCInit(void) {
     }
 }
 
+/* Read a 32-bit IPC hardware register from the PPC-side register window. */
 u32 IPCReadReg(s32 index) {
     return IPC_HW_REGS_PPC[index];
 }
