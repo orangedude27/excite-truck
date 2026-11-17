@@ -205,12 +205,15 @@ extern void fn_802146BC(void *, s32, s32, s32);
 #pragma use_lmw_stmw off
 #pragma optimization_level 3
 #pragma opt_propagation off
-void fn_80246CB8(void *arg0) {
+/* Build a logo-layout menu descriptor from a layout filename (e.g. "LogoNint.lyt") and open it.
+   The descriptor has a text block, an item list that points to it and copies five shared globals,
+   and a menu argument block; fn_80216CA8 prepares it before fn_802146BC displays it. */
+void fn_80246CB8(void *layoutName) {
     s32 text[12];
     s32 item[10];
     s32 menu[6];
-    s32 taddr = (s32)text;
-    s32 a = (s32)arg0;
+    s32 textAddr = (s32)text;
+    s32 layoutAddr = (s32)layoutName;
     text[5] = 0;
     text[0] = (s32)lbl_803436C0;
     text[8] = 2500;
@@ -220,7 +223,7 @@ void fn_80246CB8(void *arg0) {
     text[6] = 1;
     item[1] = 5;
     item[0] = 0;
-    item[2] = taddr;
+    item[2] = textAddr;
     item[3] = 0;
     item[4] = 0;
     item[5] = lbl_804988F0[0];
@@ -231,7 +234,7 @@ void fn_80246CB8(void *arg0) {
     menu[2] = 0;
     menu[3] = 0;
     menu[4] = 0;
-    menu[0] = a;
+    menu[0] = layoutAddr;
     menu[1] = (s32)item;
     fn_80216CA8();
     fn_802146BC(menu, -999, -999, 1);
