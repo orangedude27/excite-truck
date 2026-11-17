@@ -11634,8 +11634,9 @@ void fn_8007DEF4(void *arg0) {
     GKI_freebuf(arg0);
 }
 
-void fn_80071508(u8 arg0) {
-    lbl_8055DC80 = arg0;
+/* Set the BTA subsystem trace level, which controls debug logging verbosity across the Bluetooth modules. */
+void fn_80071508(u8 level) {
+    lbl_8055DC80 = level;
 }
 
 /* Initializes a BTA protocol timer control block with its period (ms) and timer id. */
@@ -19305,10 +19306,11 @@ void l2c_csm_w4_l2ca_disconnect_rsp(void *p_ccb, u16 event, void *p_data)
 void forward_peer_data(void *arg0, void *arg1) {
     extern u8 lbl_80318BC0[];
     extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
+    struct OutBytes { u8 b0, b1, b2, b3; };
     register u8 *ctx = (u8 *)arg0;
     register BT_HDR *data = (BT_HDR *)arg1;
     register u8 *frame;
-    register u8 *out;
+    register struct OutBytes *out;
     u16 count;
     u16 flags;
     void *lcb;
@@ -19334,8 +19336,8 @@ initial_done:
         }
         data->offset -= 8;
         frame = (u8 *)data + data->offset;
+        out = (struct OutBytes *)(frame + 0xA);
         data->len += 4;
-        out = frame + 0xA;
         lcb = *(void **)(ctx + 0x10);
         flags = *(u16 *)((u8 *)lcb + 0x28) | 0x2000;
         frame[8] = flags;
@@ -19343,18 +19345,18 @@ initial_done:
         flags = *(u16 *)((u8 *)lcb + 0x28) | 0x2000;
         frame[9] = flags >> 8;
         if (data->len > *(u16 *)(lbl_803C0A50 + 0x7C)) {
-            out[0] = *(u16 *)(lbl_803C0A50 + 0x7C);
-            out[1] = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
+            out->b0 = *(u16 *)(lbl_803C0A50 + 0x7C);
+            out->b1 = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
         } else {
-            out[0] = data->len;
-            out[1] = data->len >> 8;
+            out->b0 = data->len;
+            out->b1 = data->len >> 8;
         }
-        out += 2;
+        out++;
         count = data->len;
-        out[0] = count - 4;
-        out[1] = (count - 4) >> 8;
-        out[2] = *(u16 *)(ctx + 0x16);
-        out[3] = *(u16 *)(ctx + 0x16) >> 8;
+        out->b0 = count - 4;
+        out->b1 = (count - 4) >> 8;
+        out->b2 = *(u16 *)(ctx + 0x16);
+        out->b3 = *(u16 *)(ctx + 0x16) >> 8;
         data->len += 4;
         ((void (*)(void *, u8, void *, u16))l2c_link_check_send_pkts)(*(void **)(ctx + 0x10), 0u, data, count);
         data = (BT_HDR *)GKI_dequeue((BUFFER_Q *)(ctx + 0x70));
@@ -24527,7 +24529,6 @@ void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
     u8 *dst;
     u8 byte;
     s32 tmp;
-    u16 old;
     u16 new_len;
     u8 *q;
     if (len < 0x10) {
@@ -24545,8 +24546,7 @@ void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
         *(u16 *)(p + 4) = 0x10;
     }
     tmp = -arg1 | arg1;
-    old = *(u16 *)(p + 4);
-    new_len = old - 2;
+    new_len = *(u16 *)(p + 4) - 2;
     *(u16 *)(p + 4) = new_len;
     q = p + new_len;
     q[8] = ((tmp >> 31) & 2) | 0x21;
@@ -28276,33 +28276,32 @@ extern BOOL __AllocDelayLine(AXFX_REVERBHI_EXP_FREE_VIEW *);
 extern s32 __InitParams(void *);
 BOOL AXFXReverbHiExpInit(void *arg0) {
     BOOL mask;
-    AXFX_REVERBHI_EXP_VIEW *fx;
     f32 preMax;
-    fx = (AXFX_REVERBHI_EXP_VIEW *)arg0;
+    void *fx = arg0;
     mask = OSDisableInterrupts();
-    preMax = fx->preDelayTimeMax;
-    fx->active = 1;
+    preMax = *(f32 *)((char *)fx + 0x114);
+    *(u32 *)((char *)fx + 0x10c) = 1;
     if (preMax < lbl_80560D5C) {
         BOOL m2 = OSDisableInterrupts();
-        fx->active |= 1;
+        *(u32 *)((char *)fx + 0x10c) |= 1;
         __FreeDelayLine(fx);
         OSRestoreInterrupts(m2);
         OSRestoreInterrupts(mask);
         return FALSE;
     }
-    fx->earlyMaxLength = *(u32 *)(lbl_8031ABD8 + 0x5C);
-    fx->preDelayMaxLength = (u32)(lbl_80560D58 * preMax);
-    fx->combMaxLength[0] = *(u32 *)(lbl_8031AC98 + 0xC0);
-    fx->combMaxLength[1] = *(u32 *)(lbl_8031AC98 + 0xC4);
-    fx->combMaxLength[2] = *(u32 *)(lbl_8031AC98 + 0xC8);
-    fx->allpassMaxLength[0] = *(u32 *)(lbl_8031AC98 + 0xCC);
-    fx->allpassMaxLength[1] = *(u32 *)(lbl_8031AC98 + 0xD0);
-    fx->lastAllpassMaxLength[0] = *(u32 *)(lbl_8031AC98 + 0xD4);
-    fx->lastAllpassMaxLength[1] = *(u32 *)(lbl_8031AC98 + 0xD8);
-    fx->lastAllpassMaxLength[2] = *(u32 *)(lbl_8031AC98 + 0xDC);
+    *(u32 *)((char *)fx + 0x1c) = *(u32 *)(lbl_8031ABD8 + 0x5C);
+    *(u32 *)((char *)fx + 0x40) = (u32)(lbl_80560D58 * preMax);
+    *(u32 *)((char *)fx + 0x80) = *(u32 *)(lbl_8031AC98 + 0xC0);
+    *(u32 *)((char *)fx + 0x84) = *(u32 *)(lbl_8031AC98 + 0xC4);
+    *(u32 *)((char *)fx + 0x88) = *(u32 *)(lbl_8031AC98 + 0xC8);
+    *(u32 *)((char *)fx + 0xC0) = *(u32 *)(lbl_8031AC98 + 0xCC);
+    *(u32 *)((char *)fx + 0xC4) = *(u32 *)(lbl_8031AC98 + 0xD0);
+    *(u32 *)((char *)fx + 0xEC) = *(u32 *)(lbl_8031AC98 + 0xD4);
+    *(u32 *)((char *)fx + 0xF0) = *(u32 *)(lbl_8031AC98 + 0xD8);
+    *(u32 *)((char *)fx + 0xF4) = *(u32 *)(lbl_8031AC98 + 0xDC);
     if (!__AllocDelayLine((AXFX_REVERBHI_EXP_FREE_VIEW *)fx)) {
         BOOL m2 = OSDisableInterrupts();
-        fx->active |= 1;
+        *(u32 *)((char *)fx + 0x10c) |= 1;
         __FreeDelayLine(fx);
         OSRestoreInterrupts(m2);
         OSRestoreInterrupts(mask);
@@ -28311,13 +28310,13 @@ BOOL AXFXReverbHiExpInit(void *arg0) {
     __BzeroDelayLines(fx);
     if (!__InitParams(fx)) {
         BOOL m2 = OSDisableInterrupts();
-        fx->active |= 1;
+        *(u32 *)((char *)fx + 0x10c) |= 1;
         __FreeDelayLine(fx);
         OSRestoreInterrupts(m2);
         OSRestoreInterrupts(mask);
         return FALSE;
     }
-    fx->active &= ~1;
+    *(u32 *)((char *)fx + 0x10c) &= ~1U;
     OSRestoreInterrupts(mask);
     return TRUE;
 }
