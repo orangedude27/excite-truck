@@ -9,6 +9,7 @@ u32 OSGetPhysicalMem1Size(void) {
 }
 
 u32 OSGetPhysicalMem2Size(void) {
+    /* Return the console's physical MEM2 size from the hardware config globals. */
     return OS_PHYSICAL_MEM2_SIZE;
 }
 
