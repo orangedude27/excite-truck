@@ -245,37 +245,40 @@ test:
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+/* Draw all emitters in the primary list, batching by texture slot (+0xa4):
+ * switch the material only when the slot changes, wrapped in a save/restore
+ * of the graphics state. */
 void fn_8028E240(void) {
-    register float temp_f31;
+    register float savedState;
     int *base;
-    int value;
-    int *entries;
-    int current;
-    int i;
+    int textureSlot;
+    int *entry;
+    int currentSlot;
+    int index;
     if (lbl_8055F740 == 0) {
         return;
     }
-    temp_f31 = fn_802C9A4C(lbl_80564420);
-    current = *(int *)((char *)lbl_8055F740 + 0xa4);
-    fn_802C8BD0(current);
-    entries = &lbl_804B34B0;
-    base = entries;
-    i = (int)(base - base);
+    savedState = fn_802C9A4C(lbl_80564420);
+    currentSlot = *(int *)((char *)lbl_8055F740 + 0xa4);
+    fn_802C8BD0(currentSlot);
+    entry = &lbl_804B34B0;
+    base = entry;
+    index = (int)(base - base);
     goto test;
 loop:
-    value = *(int *)((char *)*entries + 0xa4);
-    if (value != current) {
+    textureSlot = *(int *)((char *)*entry + 0xa4);
+    if (textureSlot != currentSlot) {
         fn_802C8D74();
-        fn_802C8BD0(value);
-        current = value;
+        fn_802C8BD0(textureSlot);
+        currentSlot = textureSlot;
     }
-    fn_8028FA1C(*entries);
-    entries++;
-    i++;
+    fn_8028FA1C(*entry);
+    entry++;
+    index++;
 test:
-    if (i < base[64]) goto loop;
+    if (index < base[64]) goto loop;
     fn_802C8D74();
-    fn_802C9A4C(temp_f31);
+    fn_802C9A4C(savedState);
 }
 #pragma pop
 int fn_8028E2F8(int initData, int postArg, int resourceId) {
