@@ -5124,8 +5124,9 @@ check:
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_801A4538(void* arg0) {
-    fn_8012C4E4(arg0, &fn_801A44D4, 0);
+extern "C" void fn_801A4538(void* resource) {
+    /* Release callback for a loaded SOLB resource: run the release path again with the list-notification callback (fn_801A44D4), which notifies every object in the resource's list. */
+    fn_8012C4E4(resource, &fn_801A44D4, 0);
 }
 
 extern "C" s32 fn_8012C370(s32, s32*, s32, s32, s32, s32);
