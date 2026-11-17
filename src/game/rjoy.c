@@ -644,6 +644,8 @@ void fn_802E85A8(void) {}
 
 void fn_802E85AC(void) {}
 
+/* rjoy stub: reports a fixed controller-type id of 3 regardless of input.
+ * Callers compare it against 4 to detect a type-4 controller, which never matches here. */
 int fn_802E85B0(void) { return 3; }
 
 extern int lbl_802FAE80[4];
