@@ -9659,8 +9659,10 @@ extern "C" void fn_80229FF0(void *widget) {
     ((VfObj *)widget)->vf17();
 }
 
-extern "C" void fn_8022A008(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x244) = 0;
+/* Disable a UI widget by clearing its enabled flag byte at +0x244
+   (the mirror of fn_80229FF0). */
+extern "C" void fn_8022A008(void *widget) {
+    *(u8 *)((u8 *)widget + 0x244) = 0;
 }
 
 extern "C" void fn_8022A014(void *widget) {
