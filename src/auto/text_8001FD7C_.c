@@ -794,7 +794,10 @@ void fn_80021464(int arg1, KArg *a) {
 
 #pragma pop
 void fn_8002167C(void) {
-    fn_8001FF24();
+    #define HideOverlay fn_8001FF24
+    /* Hide the tips/results overlay: clear the on-screen flag and any pending pause. */
+    HideOverlay();
+    #undef HideOverlay
 }
 
 void fn_80021680(void) {
