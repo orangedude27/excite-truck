@@ -469,25 +469,26 @@ test_char:
     return (float)(unsigned int)fn_80133844(p);
 }
 #pragma opt_propagation off
-int fn_80133A08(char **arg0, int arg1, char *arg2, int arg3) {
-    char *p;
-    int c, oor, test;
-    int table;
-    char *start;
-    char *end;
-    char *limit;
-    p = *arg0;
-    limit = arg2 + arg3 - 1;
-    table = *(int *)((char *)&lbl_802FE850 + 0x38);
-    start = arg2;
-    end = p + arg1;
-    while (p < end && ((c = (signed char)*p, oor = (c < 0 || c >= 256), test = oor ? 0 : (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100), test)))
-        p++;
-    while (p < end && arg2 < limit && (signed char)*p != 13 && (signed char)*p != 10)
-        *arg2++ = *p++;
-    *arg2 = 0;
-    *arg0 = p;
-    return arg2 != start;
+/* Read one line from the text at *srcPtr into dst for fn_80133BA0's BOPT parser: skip leading whitespace (ctype table bit 0x100), copy up to dstCapacity-1 bytes until CR/LF, NUL-terminate, advance the source cursor, and return whether any bytes were copied. */
+int fn_80133A08(char **srcPtr, int srcRemaining, char *dst, int dstCapacity) {
+    char *src;
+    int ch, outOfRange, isSpace;
+    int ctypeTable;
+    char *dstStart;
+    char *srcEnd;
+    char *dstLimit;
+    src = *srcPtr;
+    dstLimit = dst + dstCapacity - 1;
+    ctypeTable = *(int *)((char *)&lbl_802FE850 + 0x38);
+    dstStart = dst;
+    srcEnd = src + srcRemaining;
+    while (src < srcEnd && ((ch = (signed char)*src, outOfRange = (ch < 0 || ch >= 256), isSpace = outOfRange ? 0 : (*(unsigned short *)(*(int *)(ctypeTable + 8) + ch * 2) & 0x100), isSpace)))
+        src++;
+    while (src < srcEnd && dst < dstLimit && (signed char)*src != 13 && (signed char)*src != 10)
+        *dst++ = *src++;
+    *dst = 0;
+    *srcPtr = src;
+    return dst != dstStart;
 }
 #pragma opt_propagation reset
 extern void *memcpy(void *, const void *, unsigned long);
