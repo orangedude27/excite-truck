@@ -202,27 +202,9 @@ static inline void rotate_vec_in_place(Vec *v, const Vec *axes) {
     f32 x = v->x;
     f32 y = v->y;
     f32 z = v->z;
-    f32 m0 = axes[0].x;
-    f32 p0 = x * m0;
-    f32 m3 = axes[1].x;
-    f32 p1 = x * m3;
-    f32 m1 = axes[0].y;
-    f32 p2 = y * m1;
-    f32 m4 = axes[1].y;
-    f32 p3 = y * m4;
-    f32 m6 = axes[2].x;
-    f32 p4 = x * m6;
-    f32 m7 = axes[2].y;
-    f32 p5 = y * m7;
-    f32 m2 = axes[0].z;
-    f32 p6 = z * m2;
-    f32 m5 = axes[1].z;
-    f32 p7 = z * m5;
-    f32 m8 = axes[2].z;
-    f32 p8 = z * m8;
-    v->x = p0 + p2 + p6;
-    v->y = p1 + p3 + p7;
-    v->z = p4 + p5 + p8;
+    v->x = axes[0].x * x + axes[0].y * y + axes[0].z * z;
+    v->y = axes[1].x * x + axes[1].y * y + axes[1].z * z;
+    v->z = axes[2].x * x + axes[2].y * y + axes[2].z * z;
 }
 /* The same scheduled transform as transform_vec_scheduled, but with the
    non-alias path written so each row re-reads the source vector
