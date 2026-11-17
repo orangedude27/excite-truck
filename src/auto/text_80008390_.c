@@ -161,21 +161,21 @@ static inline void IdList_Add(s32 *src) {
 #pragma scheduling invalid_target
 void fn_80008390(void) {
     s32 *base = lbl_802ED6D8;
-    s32 *p;
+    register s32 *p asm("r8");
     s32 i;
     ID_LIST->count = 0;
     if (fn_800167F4() > 1) IdList_Add(&lbl_805601B0);
     if (lbl_8055D370 == 0) {
         p = base;
-        IdList_Add(p++); IdList_Add(p++); IdList_Add(p++); IdList_Add(p);
+        IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
     } else {
         p = base + 4;
-        IdList_Add(p++); IdList_Add(p++); IdList_Add(p++); IdList_Add(p++); IdList_Add(p);
+        IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3); IdList_Add(p + 4);
     }
     for (i = 0; i < ID_LIST->count; i++) {
         if (ID_LIST->data[i] == 1) {
             p = base + 10;
-            IdList_Add(p++); IdList_Add(p++); IdList_Add(p++); IdList_Add(p);
+            IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
             break;
         }
     }
@@ -946,7 +946,11 @@ skip16:
     ((u8 *)&lbl_8055D378)[1] = var16 == 2;
 }
 void fn_80009C80(void) {
-    fn_80009534();
+#define RunSceneLoop fn_80009534
+    /* Main-loop entry thunk: tail-call the scene loop, which initializes the
+       subsystems, runs the per-frame update/dispatch cycle and tears down on exit. */
+    RunSceneLoop();
+#undef RunSceneLoop
 }
 
 extern char lbl_8055D36D;
