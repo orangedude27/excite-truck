@@ -2508,15 +2508,16 @@ typedef struct DvdStream {
 #pragma push
 #pragma scheduling on
 #pragma dont_inline on
-void fn_8011A330(register void* arg0) {
-    register s32 status;
-    *(s32*)((u8*)arg0 + 0xC4) = 1;
-    DVDCancel((DVDCommandBlock*)((u8*)arg0 + 0x54));
+void fn_8011A330(void *arg0) {
+    s32 *p = (s32 *)arg0;
+    s32 status;
+    p[0xC4 / 4] = 1;
+    DVDCancel((DVDCommandBlock *)((u8 *)arg0 + 0x54));
     do {
         status = DVDGetDriveStatus();
     } while (status == 2 || status == 1);
-    *(s32*)((u8*)arg0 + 0xC4) = 0;
-    *(s32*)((u8*)arg0 + 0x24) = 0;
+    p[0xC4 / 4] = 0;
+    p[0x24 / 4] = 0;
 }
 #pragma dont_inline reset
 #pragma pop
@@ -4739,77 +4740,105 @@ void fn_8011D7F8(void *arg0, void *arg1)
   }
 }
 
-void fn_8011D9E4(void *arg0, void *arg1) {
-    u32 *bits;
-    u32 value, bitCount, available, count, code, len = 0, bit;
+/* Decodes one block of signed 8-bit values of a band from the bit stream.  As
+ * in the other band decoders, nothing is done while the block of the previous
+ * call is still published ([start, end)).  The block opens with its value count
+ * (countBits wide); a count of zero only marks the band as empty.  One bit then
+ * says how the values are stored: cleared, each value is a lookup-table index
+ * whose low nibble selects the band's symbol table and whose high nibble is the
+ * index' width, and every non-zero symbol is followed by its sign bit; set, a
+ * single 4-bit value (again signed) is repeated over the whole block. */
+void fn_8011D9E4(void *arg0, BitReader8011 *reader) {
+    /* One band of the stream; see the BandState8011 layout above fn_8011DC5C. */
+    struct Band {
+        u8 *start;      /* 0x00 first value of the published block */
+        u8 *end;        /* 0x04 one past its last value */
+        u32 valueBits;  /* 0x08 */
+        u32 signMask;   /* 0x0C */
+        u8 symbol[16];  /* 0x10 magnitude of each 4-bit symbol */
+        u32 indexBits;  /* 0x20 bits of a lookup index */
+        u8 *lookup;     /* 0x24 index -> coded entry */
+        u32 countBits;  /* 0x28 bits of a block's value count */
+        u8 *output;     /* 0x2C where the next block is decoded to */
+    };
+    struct Band *band = (struct Band *)arg0;
+    u32 *in;
+    u32 value, bitCount, fieldBits, count, code, entry = 0, bit;
     u8 *lookup, *table, *dst;
     s32 symbol;
-    if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
-    bitCount = *(u32 *)((u8 *)arg1 + 8);
-    available = *(u32 *)((u8 *)arg0 + 0x28);
-    bits = *(u32 **)((u8 *)arg1 + 4);
-    value = *(u32 *)arg1;
-    if (bitCount < available) {
-        u32 next = *bits++;
-        count = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - available));
-        value = next >> (available - bitCount);
-        bitCount = bitCount + 32 - available;
+    if (band->start != band->end) return;
+    bitCount = reader->count;
+    fieldBits = band->countBits;
+    in = reader->next;
+    value = reader->value;
+    /* How many values this block holds. */
+    if (bitCount < fieldBits) {
+        u32 next = *in++;
+        count = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - fieldBits));
+        value = next >> (fieldBits - bitCount);
+        bitCount = bitCount + 32 - fieldBits;
     } else {
-        count = value & (0xFFFFFFFFU >> (32 - available));
-        value >>= available;
-        bitCount -= available;
+        count = value & (0xFFFFFFFFU >> (32 - fieldBits));
+        value >>= fieldBits;
+        bitCount -= fieldBits;
     }
     if (count != 0) {
-        dst = *(u8 **)((u8 *)arg0 + 0x2C);
-        *(u8 **)arg0 = dst;
-        *(u8 **)((u8 *)arg0 + 4) = dst + count;
-        if (bitCount == 0) { bit = *bits++; value = bit >> 1; bitCount = 31; }
+        dst = band->output;
+        band->start = dst;
+        band->end = dst + count;
+        /* The coding bit, refilling the buffer when it ran dry. */
+        if (bitCount == 0) { bit = *in++; value = bit >> 1; bitCount = 31; }
         else { bit = value; bitCount--; value >>= 1; }
         if ((bit & 1) == 0) {
-            dst = *(u8 * volatile *)((u8 *)arg0 + 0x2c);
-            table = (u8 *)arg0 + 0x10;
-            lookup = *(u8 **)((u8 *)arg0 + 0x24);
-            available = *(u32 *)((u8 *)arg0 + 0x20);
+            /* One value at a time, straight out of the band's symbol table. */
+            dst = *(u8 * volatile *)&band->output;
+            table = band->symbol;
+            lookup = band->lookup;
+            fieldBits = band->indexBits;
             do {
                 count--;
-                if (bitCount >= available) {
-                    code = value & (0xFFFFFFFFU >> (32 - available)); code = lookup[code]; len = code >> 4; symbol = code;
-                    symbol = table[symbol & 15]; value >>= len; bitCount -= len;
+                if (bitCount >= fieldBits) {
+                    code = value & (0xFFFFFFFFU >> (32 - fieldBits)); code = lookup[code]; entry = code >> 4; symbol = code;
+                    symbol = table[symbol & 15]; value >>= entry; bitCount -= entry;
                 } else {
-                    u32 next = *bits;
-                    code = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - available));
-                    len = lookup[code];
-                    symbol = table[len & 15];
-                    len >>= 4;
-                    if (bitCount >= len) { value >>= len; bitCount -= len; }
-                    else { value = next >> (len - bitCount); bits++; bitCount = bitCount + 32 - len; }
+                    u32 next = *in;
+                    code = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - fieldBits));
+                    entry = lookup[code];
+                    symbol = table[entry & 15];
+                    entry >>= 4;
+                    if (bitCount >= entry) { value >>= entry; bitCount -= entry; }
+                    else { value = next >> (entry - bitCount); in++; bitCount = bitCount + 32 - entry; }
                 }
+                /* A non-zero magnitude is followed by its sign bit. */
                 if (symbol != 0) {
-                    if (bitCount == 0) { bit = *bits++; value = bit >> 1; bitCount = 31; }
+                    if (bitCount == 0) { bit = *in++; value = bit >> 1; bitCount = 31; }
                     else { bit = value; bitCount--; value >>= 1; }
                     if (bit & 1) symbol = -symbol;
                 }
                 *dst++ = symbol;
             } while (count != 0);
         } else {
+            /* A 4-bit value, signed, repeated over the whole block. */
             if (bitCount < 4) {
-                u32 next = *bits++;
+                u32 next = *in++;
                 code = (value | (next << bitCount)) & 15;
                 value = next >> (4 - bitCount); bitCount += 28;
             } else { code = value & 15; value >>= 4; bitCount -= 4; }
             if (code != 0) {
-                if (bitCount == 0) { bit = *bits++; value = bit >> 1; bitCount = 31; }
+                if (bitCount == 0) { bit = *in++; value = bit >> 1; bitCount = 31; }
                 else { bit = value; bitCount--; value >>= 1; }
                 if (bit & 1) code = -code;
             }
-            memset(*(void **)((u8 *)arg0 + 0x2C), code, count);
+            memset(band->output, code, count);
         }
     } else {
-        dst = *(u8 **)((u8 *)arg0 + 0x2C);
-        *(u8 **)((u8 *)arg0 + 4) = dst; *(u8 **)arg0 = dst + 4;
+        /* An empty block: publish nothing, but leave the band out of step so
+         * the next call knows there is nothing to keep. */
+        dst = band->output;
+        band->end = dst; band->start = dst + 4;
     }
-    *(u32 **)((u8 *)arg1 + 4) = bits;
-    *(u32 *)arg1 = value; *(u32 *)((u8 *)arg1 + 8) = bitCount;
+    reader->next = in;
+    reader->value = value; reader->count = bitCount;
 }
 
 /* One band of the compressed stream that fn_8011C3A8 sets up (see the table of
