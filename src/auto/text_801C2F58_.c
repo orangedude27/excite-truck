@@ -1636,7 +1636,10 @@ void fn_801C737C(void) {
 
 extern char lbl_8055E839;
 void fn_801C7388(void) {
-    lbl_8055E839 = 0;
+#define sEntryListShown lbl_8055E839
+    /* Hide the debug timeline entry-list panel. */
+    sEntryListShown = 0;
+#undef sEntryListShown
 }
 
 /* RealName: TimelineDeleteSelectedEntry (rename_symbol unavailable)
