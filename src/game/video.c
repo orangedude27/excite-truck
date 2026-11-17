@@ -196,8 +196,9 @@ void fn_802DF21C(void) {
     GXSetNumTevStages(1);
 }
 
+/* Reset TEV stage 0 to use swap table 0 for both the rasterized and texture colors. */
 void fn_802DF2F0(void) {
-    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
 
 void *fn_802D3138(void);
