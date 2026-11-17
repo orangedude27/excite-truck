@@ -8451,7 +8451,8 @@ extern "C" void *fn_802284BC(void *obj, s32 shouldFree) {
 extern "C" void fn_8022854C(void *obj){fn_8023976C(*(s32*)((u8*)obj+0x244));}
 
 extern "C" void fn_802396BC(s32);
-extern "C" void fn_80228554(void *p){fn_802396BC(*(s32*)((u8*)p+0x244));}
+// Advance the SWF animation this UI element owns (state handle at +0x244) to its next frame.
+extern "C" void fn_80228554(void *obj){fn_802396BC(*(s32*)((u8*)obj+0x244));}
 
 extern "C" void *fn_8022855C(void *obj, void *config, s32 value244, s32 value248)
 {
