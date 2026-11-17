@@ -816,6 +816,11 @@ void fn_8014ACD0(void) {
 
 }
 
+/* Does nothing: the last of the five trivial callbacks laid out back to back at
+ * fn_8014ACBC .. fn_8014ACD4 (two that answer 0, then three empty ones). It sits
+ * directly before fn_8014ACD8, slot 8 of this file's big interface table
+ * lbl_8032D970, but is not itself an entry of that table; nothing calls it by
+ * name, so it only ever runs through whichever pointer table holds it. */
 void fn_8014ACD4(void) {
 
 }
