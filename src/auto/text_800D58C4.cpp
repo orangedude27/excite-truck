@@ -2006,14 +2006,17 @@ extern "C" s32 fn_800D8A04(s32 base, s32 offset) {
     return base + offset;
 }
 
+#pragma scheduling on
 extern "C" void Init__Q34nw4r3lyt8MaterialFv(void *arg0) {
     volatile short *defaults = (volatile short *)&lbl_80565230;
+    unsigned int v50 = *(unsigned int *)((char *)arg0 + 0x50);
+    unsigned int v4c = *(unsigned int *)((char *)arg0 + 0x4c);
     short c0 = defaults[0];
     short c1 = defaults[1];
     short c2 = defaults[2];
     short c3 = defaults[3];
-    unsigned int mask4c = *(unsigned int *)((char *)arg0 + 0x4c) & 0x1f;
-    unsigned int mask50 = *(unsigned int *)((char *)arg0 + 0x50) & 0x1f;
+    v4c &= 0x1f;
+    v50 &= 0x1f;
     *(short *)((char *)arg0 + 0x24) = c0;
     *(short *)((char *)arg0 + 0x26) = c1;
     *(short *)((char *)arg0 + 0x28) = c2;
@@ -2026,12 +2029,11 @@ extern "C" void Init__Q34nw4r3lyt8MaterialFv(void *arg0) {
     *(short *)((char *)arg0 + 0x36) = 0xff;
     *(short *)((char *)arg0 + 0x38) = 0xff;
     *(short *)((char *)arg0 + 0x3a) = 0xff;
-    *(unsigned int *)((char *)arg0 + 0x4c) = mask4c;
-    *(unsigned int *)((char *)arg0 + 0x50) = mask50;
+    *(unsigned int *)((char *)arg0 + 0x4c) = v4c;
+    *(unsigned int *)((char *)arg0 + 0x50) = v50;
     *(unsigned char *)((char *)arg0 + 0x54) = 0;
     *(unsigned int *)((char *)arg0 + 0x58) = 0;
 }
-
 extern "C" void fn_8002F634(void *, void *, s32, s32);
 extern "C" void fn_800D2DD4(void);
 extern "C" s32 fn_80128668(void);
@@ -2186,17 +2188,15 @@ extern "C" s32 fn_800D9364(void *self) {
 }
 
 extern "C" s32 fn_800D938C(void* arg0) {
-    s32 bits = *(s32*)((u8*)arg0 + 0x4C);
-    s32 high = (bits >> 24) & 0xF;
-    s32 mid = (bits >> 18) & 0x3C;
-    s32 scaled = high * 0x14;
-    s32 top = (bits >> 23) & 0x1E0;
-    s32 low = (bits >> 6) & 4;
+    u32 bits = *(u32*)((u8*)arg0 + 0x4C);
     s32 base = *(s32*)((u8*)arg0 + 0x58);
-    mid += top;
-    scaled += low;
-    mid += base;
-    return scaled + mid;
+    u32 high = (bits >> 0x18) & 0xF;
+    u32 mid = (bits >> 0x12) & 0x3C;
+    u32 scaled = high * 0x14;
+    u32 low = (bits >> 0x06) & 4;
+    u32 top = (bits >> 0x17) & 0x1E0;
+    s32 past = base + (mid + top);
+    return past + (scaled + low);
 }
 
 extern "C" s32 fn_800D93BC(void *arg0) {
@@ -3233,8 +3233,11 @@ extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13Animati
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)material + 0x18, &iterSlot, animLink);
 }
 
-extern "C" void fn_800DB1E0(char* arg0) {
-    fn_800D4F98(arg0 + 0x18);
+extern "C" void fn_800DB1E0(char* material) {
+    /* Material::FindAnimationLink thunk: advance from the Material to its
+     * animation-link list (ut::detail::LinkListImpl at +0x18) and forward to
+     * the circular-list search by animation transform. */
+    fn_800D4F98(material + 0x18);
 }
 
 extern "C" void fn_800DB1E8(void *obj, void *unused, s32 flag) {
