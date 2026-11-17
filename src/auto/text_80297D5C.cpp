@@ -404,6 +404,7 @@ extern int lbl_8055CA70;
 extern int lbl_8055CA7C;
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, void* arg4, void* ctx) {
     float* out = (float*)arg1;
     float* base = (float*)arg2;
@@ -415,9 +416,15 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
     float e1[3];
     float e2[3];
     float l2;
-    p0[0] = base[0]; p0[1] = base[1]; p0[2] = base[2];
-    p1[0] = p0[0] + d1[0]; p1[1] = p0[1] + d1[1]; p1[2] = p0[2] + d1[2];
-    p2[0] = p0[0] + d2[0]; p2[1] = p0[1] + d2[1]; p2[2] = p0[2] + d2[2];
+    ((int*)p0)[0] = ((int*)base)[0];
+    ((int*)p0)[1] = ((int*)base)[1];
+    ((int*)p0)[2] = ((int*)base)[2];
+    p1[1] = p0[1] + d1[1];
+    p1[0] = p0[0] + d1[0];
+    p2[0] = p0[0] + d2[0];
+    p2[1] = p0[1] + d2[1];
+    p1[2] = p0[2] + d1[2];
+    p2[2] = p0[2] + d2[2];
     fn_801E9DD4(lbl_8055CA70, lbl_8055CA7C);
     if (fn_801E9E30(ctx, p0) == 0 || fn_801E9E30(ctx, p1) == 0 || fn_801E9E30(ctx, p2) == 0) {
         fn_801E9DD8();
