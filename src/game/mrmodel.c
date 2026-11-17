@@ -1131,6 +1131,8 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
     float *rot;
     float *out;
     float *input;
+    void *manager;
+    void *groupHeader;
     int previousMask;
     int ok;
 
@@ -1138,33 +1140,32 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
         return;
     previousMask = lbl_8055D008;
     lbl_8055D008 = arg3;
-    rot = (float *)((char *)*(void **)((char *)fn_802C5390(arg0) + 4) + 0x20);
+    manager = fn_802C5390(arg0);
+    groupHeader = *(void **)((char *)manager + 4);
+    rot = (float *)((char *)groupHeader + 0x20);
     out = local.vector;
     input = (float *)arg1;
     if (out == rot) {
         float y = input[3];
-        float y0 = y * rot[1];
-        float y1 = input[4] * rot[1];
-        float y2 = input[5] * rot[1];
+        float y0 = rot[1] * y;
+        float y1 = rot[1] * input[4];
+        float y2 = rot[1] * input[5];
         float x = input[0];
-        float x0 = x * rot[0];
-        float x1 = input[1] * rot[0];
-        float x2 = input[2] * rot[0];
+        float x0 = rot[0] * x;
+        float x1 = rot[0] * input[1];
+        float x2 = rot[0] * input[2];
         float z = input[6];
-        float z0 = z * rot[2];
-        float z1 = input[7] * rot[2];
-        float z2 = input[8] * rot[2];
+        float z0 = rot[2] * z;
+        float z1 = rot[2] * input[7];
+        float z2 = rot[2] * input[8];
 
         out[0] = (x0 + y0) + z0;
         out[1] = (x1 + y1) + z1;
         out[2] = (x2 + y2) + z2;
     } else {
-        out[0] = (rot[1] * input[3] + rot[0] * input[0]) +
-                 rot[2] * input[6];
-        out[1] = (rot[1] * input[4] + rot[0] * input[1]) +
-                 rot[2] * input[7];
-        out[2] = (rot[1] * input[5] + rot[0] * input[2]) +
-                 rot[2] * input[8];
+        out[0] = (rot[1] * input[3] + rot[0] * input[0]) + rot[2] * input[6];
+        out[1] = (rot[1] * input[4] + rot[0] * input[1]) + rot[2] * input[7];
+        out[2] = (rot[1] * input[5] + rot[0] * input[2]) + rot[2] * input[8];
     }
     {
         float tx = out[0] + input[9];
@@ -1174,7 +1175,7 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
         out[1] = ty;
         out[2] = tz;
     }
-    ok = fn_802C94A0(out, &local.status, &local.scalar, rot[-1]);
+    ok = fn_802C94A0(out, &local.status, &local.scalar, *(float *)((char *)groupHeader + 0x1C));
     if (ok != 0)
         fn_802C57B4(arg0, fn_802D0514(arg1), arg2, local.status, local.scalar);
     lbl_8055D008 = previousMask;
@@ -1310,11 +1311,12 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
     float *rot;
     float *out;
     float *input;
+    void *a1 = arg1;
     void *inst = fn_802C5390(arg0);
     rot = (float *)((char *)*(void **)((char *)inst + 4) + 0x20);
     entry = *(void **)((char *)inst + 4);
     out = local.vector;
-    input = (float *)arg1;
+    input = (float *)a1;
     if (local.vector == rot) {
         float y0 = input[3];
         float y1 = input[4];
@@ -1355,13 +1357,13 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
     if (fn_802C94A0(out, &local.status, &local.scalar, rot[-1])) {
         if ((u8)lbl_8055FC20 != 0) {
             node = fn_802C5EFC(arg2);
-            arg1 = (void *)fn_802D0514(arg1);
+            a1 = (void *)fn_802D0514(a1);
             for (i = 0; i < *(int *)entry; i++) {
                 char *item = *(char **)((char *)entry + 4) + i * 0x10;
-                fn_802C53C4(item, node, (int)arg1, -1, local.status);
+                fn_802C53C4(item, node, (int)a1, -1, local.status);
             }
         } else {
-            fn_802C8B98(arg2, arg1);
+            fn_802C8B98(arg2, a1);
             fn_802DB2BC(local.status);
             for (i = 0; i < *(int *)entry; i++) {
                 char *item = *(char **)((char *)entry + 4) + i * 0x10;
@@ -1552,6 +1554,8 @@ void fn_802C7A10(void* modelIndex) {
 void fn_802C7A34(void) { fn_802DA704(); }
 
 extern void fn_802DA80C(void);
+/* Tail-call thunk: forward to fn_802DA80C, the model stack-record allocator
+   (records of 0x30 bytes per element, tagged kind 7). */
 void fn_802C7A38(void) { fn_802DA80C(); }
 
 extern void fn_802DA918(void);
