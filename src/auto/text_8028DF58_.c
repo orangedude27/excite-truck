@@ -613,21 +613,15 @@ int fn_8028EE34(void *table, int name, int *outIndex) {
 #pragma pop
 extern int fn_8002B1D8(int, void *, int);
 extern char *strncpy(char *, const char *, unsigned int);
+#pragma scheduling invalid_target
 void fn_8028EEB4(void *arg0, int arg1, const char *arg2) {
-    int count = *(int *)((char *)arg0 + 0x600);
-    char *p = (char *)arg0 + count * 0x18;
-    int zero = 0;
-    int one = 1;
-    strncpy(p, arg2, 0x10);
-    p = (char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18;
-    p[0xF] = (char)zero;
-    p = (char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18;
-    *(int *)(p + 0x10) = arg1;
-    p = (char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18;
-    *(int *)(p + 0x14) = one;
-    (*(int *)((char *)arg0 + 0x600))++;
+    strncpy((char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18, arg2, 0x10);
+    *(char *)((char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18 + 0xF) = 0;
+    *(int *)((char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18 + 0x10) = arg1;
+    *(int *)((char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18 + 0x14) = 1;
+    ++*(int *)((char *)arg0 + 0x600);
 }
-
+#pragma scheduling on
 int fn_8028EF44(void *arg0, unsigned int arg1) {
     char *base = (char *)arg0;
     char *p = base;
