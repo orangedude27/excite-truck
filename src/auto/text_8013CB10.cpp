@@ -1028,7 +1028,6 @@ extern "C" s32 fn_8013DE7C(TObj60 *container, const char *name) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
 extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
     f32 *from = (f32 *)arg1;
     f32 *to = (f32 *)arg2;
