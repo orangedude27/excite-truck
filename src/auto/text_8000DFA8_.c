@@ -562,6 +562,9 @@ extern "C" void fn_8000FB44(void) {
 #pragma scheduling on
 extern void fn_8000F4F0(void);
 void fn_8000FBE4(void) {
+    /* Tail-call thunk forwarding to the countdown/start-timer renderer
+     * (fn_8000F4F0), invoked by race setup once the remaining time drops
+     * below its display threshold. */
     fn_8000F4F0();
 }
 
@@ -1113,21 +1116,25 @@ void fn_80010C74(f32 farg0, f32 farg1, f32 farg2) {
     volatile f32 sp10;
     volatile f32 spC;
     volatile f32 sp8;
+    f32 bias;
+    f32 r0, r1, r2;
     f32 temp_f4;
     f32 temp_f5;
-    f32 temp_f6;
     s32 index;
     s32 next;
     index = lbl_8055D4A8;
     if (index < 0xFF) {
+        bias = lbl_80560264;
+        r0 = (f32)(double)farg0;
+        r1 = (f32)(double)farg1;
+        r2 = (f32)(double)farg2;
+        temp_f5 = bias + farg0;
+        temp_f4 = farg1 - bias;
         *(volatile u32 *)&sp2C = lbl_802ED758[3];
-        temp_f6 = farg2;
-        temp_f5 = lbl_80560264 + farg0;
-        temp_f4 = farg1 - lbl_80560264;
-        lbl_8034F6B0[index].unk_0x00 = farg0;
+        lbl_8034F6B0[index].unk_0x00 = r0;
         next = index + 1;
-        lbl_8034F6B0[index].unk_0x04 = farg1;
-        lbl_8034F6B0[index].unk_0x08 = farg2;
+        lbl_8034F6B0[index].unk_0x04 = r1;
+        lbl_8034F6B0[index].unk_0x08 = r2;
         lbl_8034F6B0[index].unk_0x0C = sp2C;
         lbl_8034F6B0[index].unk_0x10 = lbl_8055D484;
         lbl_8034F6B0[index].unk_0x14 = lbl_8055D484;
@@ -1135,7 +1142,7 @@ void fn_80010C74(f32 farg0, f32 farg1, f32 farg2) {
         lbl_8034F6B0[next].unk_0x00 = temp_f5;
         *(volatile u32 *)&sp20 = lbl_802ED758[0];
         lbl_8034F6B0[next].unk_0x04 = temp_f4;
-        lbl_8034F6B0[next].unk_0x08 = temp_f6;
+        lbl_8034F6B0[next].unk_0x08 = r2;
         *(volatile u32 *)&sp24 = lbl_802ED758[1];
         *(volatile u32 *)&sp28 = lbl_802ED758[2];
         *(volatile u32 *)&sp8 = lbl_802ED770[0];
@@ -1165,26 +1172,16 @@ extern s32 lbl_8055D488;
 #pragma push
 #pragma scheduling invalid_target
 void fn_80010D88(f64 farg0, f64 farg1, f64 farg2) {
-    volatile s32 sp34;
-    volatile s32 sp30;
-    volatile f32 sp2C;
-    volatile f32 sp28;
-    volatile f32 sp24;
-    volatile f32 sp20;
-    volatile s32 sp1C;
-    volatile s32 sp18;
-    volatile f32 sp14;
-    volatile f32 sp10;
-    volatile f32 spC;
-    volatile f32 sp8;
-    register s32 index;
-    register s32 next;
-    register s32 offset;
+    volatile s32 sp34, sp30;
+    volatile f32 sp2C, sp28, sp24, sp20;
+    volatile s32 sp1C, sp18;
+    volatile f32 sp14, sp10, spC, sp8;
+    register s32 index, next, offset;
     register Unk0x18 *base;
+    register u32 *configB;
+    register u32 *configA;
     register Unk0x18 *current;
     register Unk0x18 *following;
-    register u32 *configA;
-    register u32 *configB;
     register s32 value484;
     register s32 value488;
     register f32 temp_f0;
@@ -1206,8 +1203,8 @@ void fn_80010D88(f64 farg0, f64 farg1, f64 farg2) {
         temp_f6 = (f32)farg2;
         *(volatile u32 *)&sp28 = word;
         current = (Unk0x18 *)((u8 *)base + offset);
-        current->unk_0x00 = temp_f0;
         next = index + 1;
+        current->unk_0x00 = temp_f0;
         current->unk_0x04 = temp_f5;
         current->unk_0x08 = sp28;
         current->unk_0x0C = temp_f6;
