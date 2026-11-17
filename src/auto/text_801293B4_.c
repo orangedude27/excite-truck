@@ -18,8 +18,9 @@ void fn_801293C4(void) {
 }
 
 extern void *lbl_8055DFC0;
-void fn_801293C8(void* hi) {
-    lbl_8055DFC0 = hi;
+void fn_801293C8(void* flag) {
+    /* Set the AX DSP initialization flag global (sAXDspInitFlag). */
+    lbl_8055DFC0 = flag;
 }
 
 /* AX DSP init callback: clear the DSP init flag so the next init pass starts fresh. */
