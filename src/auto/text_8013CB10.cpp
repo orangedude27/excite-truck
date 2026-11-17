@@ -2031,12 +2031,15 @@ extern f32 lbl_805614C4;
 extern f32 fn_8001DAF0(f32 *);
 extern f32 fn_8013CB3C(void);
 #pragma processor 750
+#pragma processor 750
 #pragma push
 #pragma optimize level=4
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
+    struct VString { virtual void d0(); virtual void d1(); virtual u8 *get(const char *); };
     u8 *base = lbl_8032C530;
-    f32 temp_f1 = fn_8001DAE8((u8 *)arg2 + 0xD8) - *(f32 *)((u8 *)arg2 + 0xDC);
+    f32 temp_f1 = fn_8001DAE8((void *)((s32 *)arg2 + 0x36)) - *(f32 *)((u8 *)arg2 + 0xDC);
     s32 var_r0 = 0;
     void *temp_r28;
     void *temp_r29;
@@ -2046,9 +2049,9 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
     }
     if (var_r0 != 0) {
         fn_8001DAF0((f32 *)((u8 *)arg2 + 0xD8));
-        temp_r28 = ((void *(*)(void *, void *))(*(void ***) *(void **)((u8 *)arg0 + 0x54))[4])(*(void **)((u8 *)arg0 + 0x54), base + 0x3B0);
-        temp_r29 = ((void *(*)(void *, void *))(*(void ***) *(void **)((u8 *)arg0 + 0x54))[4])(*(void **)((u8 *)arg0 + 0x54), base + 0x448);
-        temp_r3 = ((void *(*)(void *, void *))(*(void ***) *(void **)((u8 *)arg0 + 0x54))[4])(*(void **)((u8 *)arg0 + 0x54), base + 0x3A0);
+        temp_r28 = ((VString *)*(void **)((u8 *)arg0 + 0x54))->get((const char *)(base + 0x3B0));
+        temp_r29 = ((VString *)*(void **)((u8 *)arg0 + 0x54))->get((const char *)(base + 0x448));
+        temp_r3 = ((VString *)*(void **)((u8 *)arg0 + 0x54))->get((const char *)(base + 0x3A0));
         if ((temp_r28 != NULL) && (temp_r29 != NULL) && (temp_r3 != NULL)) {
             u8 sp58[0x28];
             u8 sp30[0x28];
@@ -2113,7 +2116,6 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
         }
     }
 }
-
 extern "C" void fn_80140A6C(void *arg0, int arg1) {
     extern char lbl_8032CA64[];
     int base;
