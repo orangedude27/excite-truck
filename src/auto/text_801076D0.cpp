@@ -1034,14 +1034,12 @@ extern "C" s8 fn_8010B2BC(void *arg0) {
     volatile u8 c;
     volatile u8 b;
     volatile u8 a;
-    u8 tmp;
-    s8 ret;
+    u8 t;
     a = (u8)(value >> 24);
     b = (u8)(value >> 16);
-    tmp = (u8)(value >> 8);
-    ret = tmp;
-    c = tmp;
-    return ret;
+    t = (u8)(value >> 8);
+    c = t;
+    return (s8)t;
 }
 #pragma pop
 extern "C" const char lbl_80329140[];
@@ -1427,8 +1425,10 @@ found:
 }
 #pragma pop
 extern "C" void lbl_8032951C(void);
-extern "C" void fn_8010C7DC(void **arg0) {
-    *arg0 = (void *)&lbl_8032951C;
+/* Compiler-generated lazy initializer: store the address of the font writer's
+ * vtable (lbl_8032951C) into the given global object's vtable-pointer slot. */
+extern "C" void fn_8010C7DC(void **vtableSlot) {
+    *vtableSlot = (void *)&lbl_8032951C;
 }
 
 extern "C" s32 fn_8010C7EC(s32 object, s32 deleteFlag) {
