@@ -1440,9 +1440,10 @@ extern "C" s32 fn_80158A5C(void *arg0, s32 *arg1) { return *(s32 *)((u8 *)arg1 +
 
 extern "C" s32 fn_80158A6C(void) { return 0; }
 
-extern "C" void fn_80158A74(void *arg0, f32 farg0) {
-    *(f32 *)((u8 *)arg0 + 0x274) = farg0;
-    *((u8 *)arg0 + 0x272) = 1;
+/* Set the frame-driven player's extra gain value (m274) and raise its enable flag byte at 0x272. */
+extern "C" void fn_80158A74(Unk801577F0 *player, f32 value) {
+    player->m274 = value;
+    *((u8 *)player + 0x272) = 1;
 }
 
 extern "C" f32 lbl_80561754;
