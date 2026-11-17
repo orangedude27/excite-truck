@@ -9437,6 +9437,7 @@ extern "C" void fn_80229B0C(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0x248) = temp_r3;
 }
 
+/* Default no-op virtual for this UI widget: returns 0 (unimplemented query). */
 extern "C" s32 fn_80229B68(void) { return 0; }
 
 // Getter: return the 32-bit value this object stores at +0x254 (a bound handle/selection used by UI widgets).
