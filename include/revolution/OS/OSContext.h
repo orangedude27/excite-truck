@@ -36,6 +36,7 @@ void OSSetCurrentContext(OSContext* ctx);
 OSContext* OSGetCurrentContext(void);
 BOOL OSSaveContext(OSContext* ctx);
 void OSLoadContext(OSContext* ctx);
+/* Return the current stack pointer (GPR r1); hand-written assembly. */
 void* OSGetStackPointer(void);
 void OSSwitchFiber(void* func, void* stack);
 void OSSwitchFiberEx(u32 r3, u32 r4, u32 r5, u32 r6, void* func, void* stack);
