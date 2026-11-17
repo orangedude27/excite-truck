@@ -400,7 +400,7 @@ s32 fn_801357A4(Unk_80135278 *self, float *point) {
                     if (!(t>d)) t=d;
                     break;
                 }
-            } while (--count > 0);
+            } while (--count);
         } else {
             t+=d;
             if (t < lbl_80561320) {
@@ -437,33 +437,37 @@ s32 fn_801357A4(Unk_80135278 *self, float *point) {
 }
 
 #pragma scheduling invalid_target
-void fn_80135B24(void *arg0, void *arg1, float farg0) {
-    register void *entry;
-    register void *node;
-    void *base;
-    float initial = lbl_80561320;
-    *(void **)arg0 = 0;
-    base = *(void **)((char *)arg1 + 0x2C);
-    *(s32 *)((char *)arg0 + 8) = 0x2710;
-    *(float *)((char *)arg0 + 4) = initial;
-    node = *(void **)((char *)base + 0x20);
-    *(void **)arg0 = node;
-    if (node == 0) goto done;
-    for (;;) {
-        node = *(void **)arg0;
-        entry = *(void **)((char *)node + 0x14);
-        if (*(float *)((char *)entry + 0x1C) >= farg0) {
-            break;
-        }
-        if (*((u8 *)entry + 0x34) != 3) {
-            break;
-        }
-        *(void **)arg0 = entry;
+void fn_80135B24(void *arg0, void *arg1, float farg0)
+{
+  void *node;
+  void *base;
+  float initial = lbl_80561320;
+  *((void **) arg0) = 0;
+  base = *((void **) (((char *) arg1) + 0x2C));
+  *((s32 *) (((char *) arg0) + 8)) = 0x2710;
+  *((float *) (((char *) arg0) + 4)) = initial;
+  node = *((void **) (((char *) base) + 0x20));
+  *((void **) arg0) = node;
+  if (node != 0)
+  {
+    for (;;)
+    {
+      node = *((void **) arg0);
+      base = *((void **) (((char *) node) + 0x14));
+      if ((*((float *) (((char *) base) + 0x1C))) >= farg0)
+      {
+        break;
+      }
+      if ((*(((u8 *) base) + 0x34)) != 3)
+      {
+        break;
+      }
+      *((void **) arg0) = base;
     }
-    *(float *)((char *)arg0 + 4) = (farg0 - *(float *)((char *)node + 0x1C)) / *(float *)((char *)node + 0x18);
-    *(s32 *)((char *)arg0 + 8) = 0;
-done:
-    return;
+
+    *((float *) (((char *) arg0) + 4)) = (farg0 - (*((float *) (((char *) node) + 0x1C)))) / (*((float *) (((char *) node) + 0x18)));
+  }
+  *((s32 *) (((char *) arg0) + 8)) = 0;
 }
 #pragma scheduling on
 void fn_80135B9C(PathCursor *cursor, PathVec *posOut, PathVec *dirOut, float *valueOut, PathSample *sampleOut, float amount) {
@@ -702,7 +706,6 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
     unsigned int start;
     unsigned int end;
     int keep;
-    float dist;
     float length;
     float old48;
     float old40;
@@ -728,24 +731,26 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
         if (arg2 != 0) {
         char *walk = locals.node;
         float total = lbl_80561324 - locals.fraction;
-        {
-            unsigned int index;
-            do {
-                total += lbl_80561324;
-                walk = *(char **)(walk + 0x14);
-                index = *(unsigned int *)(walk + 0x10);
-                if (base != 0) {
-                    unsigned int size = *(unsigned int *)((char *)*(void **)(self + 0x2C) + 0x18);
-                    index = (size + (index - base)) % size;
-                }
-            } while (index > start);
+        unsigned int index;
+        goto kpad_cond;
+kpad_body:
+        total += lbl_80561324;
+kpad_cond:
+        walk = *(char **)(walk + 0x14);
+        index = *(unsigned int *)(walk + 0x10);
+        if (base != 0) {
+            unsigned int size = *(unsigned int *)((char *)*(void **)(self + 0x2C) + 0x18);
+            index = (size + (index - base)) % size;
         }
+        if (index > start) goto kpad_body;
         walk = locals.node;
         length = lbl_80561324 - locals.fraction;
-        do {
-            length += lbl_80561324;
-            walk = *(char **)(walk + 0x14);
-        } while (walk != head);
+        goto len_cond;
+len_body:
+        length += lbl_80561324;
+len_cond:
+        walk = *(char **)(walk + 0x14);
+        if (walk != head) goto len_body;
         *(float *)arg2 = lbl_80561340 * (lbl_80561324 - (total / (length + *(float *)(self + 8))));
         }
     }
@@ -779,8 +784,10 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
     {
         old48 = *(float *)(self + 0x48);
         old40 = *(float *)(self + 0x40);
-        *(float *)(self + 0x48) = *(float *)(*(char **)(self + 4) + 0x1C) + *(float *)(*(char **)(self + 4) + 0x18) * *(float *)(self + 8);
-        *(float *)(self + 0x40) = *(float *)(self + 0x14) * *(float *)(self + 0x18) + -*(float *)(self + 0x10) * *(float *)(self + 0x1C);
+        *(float *)(self + 0x48) = *(float *)(*(char **)(self + 4) + 0x1C) +
+                                  *(float *)(*(char **)(self + 4) + 0x18) * *(float *)(self + 8);
+        *(float *)(self + 0x40) = *(float *)(self + 0x14) * *(float *)(self + 0x18) +
+                                  -*(float *)(self + 0x10) * *(float *)(self + 0x1C);
         keep = 1;
         if (!changed) {
             if (*(unsigned char *)(*(char **)(self + 4) + 0x35) == *(unsigned char *)(locals.node + 0x35) &&
@@ -788,16 +795,17 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
                 keep = 0;
             }
         }
-    if (!keep) {
-        value = *(float *)(self + 0x48) - old48;
-        *(float *)(self + 0x4C) = value;
-        edge = *(float *)(*(char **)(self + 0x2C) + *(unsigned char *)(*(char **)(self + 4) + 0x34) * 4 + 8);
-        if (value < -edge * lbl_80561338) {
-            *(float *)(self + 0x4C) = value + edge;
-        }
-        delta = lbl_80561344 * (*(float *)(self + 0x40) - old40);
-        *(float *)(self + 0x4C) *= lbl_80561344;
-        *(float *)(self + 0x44) = delta + lbl_80561348 * (*(float *)(self + 0x44) - delta);
+        if (!keep) {
+            value = *(float *)(self + 0x48) - old48;
+            *(float *)(self + 0x4C) = value;
+            edge = *(float *)(*(char **)(self + 0x2C) +
+                              *(unsigned char *)(*(char **)(self + 4) + 0x34) * 4 + 8);
+            if (value < -edge * lbl_80561338) {
+                *(float *)(self + 0x4C) = value + edge;
+            }
+            delta = lbl_80561344 * (*(float *)(self + 0x40) - old40);
+            *(float *)(self + 0x4C) *= lbl_80561344;
+            *(float *)(self + 0x44) = delta + lbl_80561348 * (*(float *)(self + 0x44) - delta);
         }
     }
     *(char **)(self + 0x60) = *(char **)(self + 4);
