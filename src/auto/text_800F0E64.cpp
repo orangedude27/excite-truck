@@ -1722,8 +1722,7 @@ extern "C" const char lbl_80324C84[];
 extern "C" const char lbl_80324C2C[];
 extern "C" const char lbl_80324C58[];
 extern "C" const char lbl_80321F50[];
-#pragma push
-#pragma use_lmw_stmw off
+#pragma opt_common_subs off
 extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8FileInfo(void *self, u32 fileIndex, void *out) {
     register u32 file = fileIndex;
     register u8 *archive = *(u8 **)((u8 *)self + 0x28);
@@ -1731,7 +1730,6 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
     register void *fileInfo = out;
     u8 *files;
     u8 *detail;
-    u8 *player;
 
     if (*((u8 *)archive + 0x19) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559898, 0x6F, lbl_80324C84);
@@ -1747,21 +1745,18 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
     file = *(u32 *)((u8 *)reader + 0x28);
     if (*((u8 *)detail + 0x15) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559890, 0x6F, lbl_80324C58);
-    player = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)detail + 0x14), *(u32 *)((u8 *)detail + 0x18), (void *)file);
-    if (player == 0) return 0;
-    {
-        u32 first = *(u32 *)detail;
-        archive = *(u8 **)((u8 *)reader + 0x28);
-        *(u32 *)fileInfo = first;
-    }
+    file = (u32)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)detail + 0x14), *(u32 *)((u8 *)detail + 0x18), (void *)file);
+    if (file == 0) return 0;
+    archive = *(u8 **)((u8 *)reader + 0x28);
+    *(u32 *)fileInfo = *(u32 *)detail;
     *(u32 *)((u8 *)fileInfo + 4) = *(u32 *)((u8 *)detail + 4);
     if (*((u8 *)detail + 0xD) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559810, 0x6F, lbl_80321F50);
     *(void **)((u8 *)fileInfo + 8) = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)detail + 0xC), *(u32 *)((u8 *)detail + 0x10), archive);
-    *(u32 *)((u8 *)fileInfo + 0xC) = *(u32 *)player;
+    *(u32 *)((u8 *)fileInfo + 0xC) = *(u32 *)file;
     return 1;
 }
-#pragma use_lmw_stmw off
+#pragma opt_common_subs reset
 extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive7FilePos(void *arg0, u32 arg1, u32 arg2, void *arg3) {
     extern const char lbl_80559898;
     extern const char lbl_80559880;
@@ -4460,17 +4455,21 @@ extern "C" void *__dt__Q36nw4hbm3snd11SoundPlayerFv(void *arg0, s32 arg1) {
 }
 #pragma use_lmw_stmw reset
 #pragma opt_common_subs off
-void Update__Q36nw4hbm3snd11SoundPlayerFv(void *self) {
-    struct Dummy {
-        virtual ~Dummy();
-        virtual void f0();
+void Update__Q36nw4hbm3snd11SoundPlayerFv(void *player) {
+    /* Advance every sound on this SoundPlayer's priority list once, then re-sort
+     * the list by priority. The list is a nw4 LinkList with a sentinel at +4 of
+     * the player; each node sits 0xC0 into its sound object, whose virtual
+     * update() (vtable slot 4) does the per-frame work. */
+    struct SoundNodeBase {
+        virtual ~SoundNodeBase();
+        virtual void unusedVirtual();
         virtual void update();
     };
     struct { void *head; } cursor;
-    cursor.head = *(void **)((u8 *)self + 4);
+    cursor.head = *(void **)((u8 *)player + 4);
     void *&head = cursor.head;
     struct { void *end; } sentinel;
-    sentinel.end = (u8 *)self + 4;
+    sentinel.end = (u8 *)player + 4;
     void *&end = sentinel.end;
     void *node;
     while (head != end) {
@@ -4479,9 +4478,9 @@ void Update__Q36nw4hbm3snd11SoundPlayerFv(void *self) {
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262E8, 0x23D, (const char *)lbl_803262C4);
         }
-        ((Dummy *)((u8 *)node - 0xC0))->update();
+        ((SoundNodeBase *)((u8 *)node - 0xC0))->update();
     }
-    detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(self);
+    detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(player);
 }
 #pragma opt_common_subs reset
 void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
