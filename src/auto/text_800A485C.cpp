@@ -22321,8 +22321,9 @@ extern "C" u32* fn_800D58B0(void) {
     return &lbl_8055DDE0;
 }
 
-extern "C" void fn_800C7764(void *arg0, s8 arg1) {
-    ((u8 *)arg0)[0x24] = (u8)arg1;
+extern "C" void fn_800C7764(void *obj, s8 value) {
+    /* Set the byte field at offset 0x24 (the slot fn_800C776C writes as a word). */
+    ((u8 *)obj)[0x24] = (u8)value;
 }
 
 extern "C" void fn_800C776C(void *arg0, s32 arg1) {
