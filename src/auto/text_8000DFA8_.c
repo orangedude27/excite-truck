@@ -2386,6 +2386,7 @@ void fn_8000E874(s32 arg0) {
     y = (limit > 0.0f ? limit : 0.0f) + y;
     base = (char *)&lbl_80351214;
     inset = *(u8 *)(base+4) ? 56.0f : 0.0f;
+    
     half = lbl_8056025C; twenty = lbl_805602B4;
     entry = base + 8;
     end = (char *)&lbl_80351214;
@@ -2526,8 +2527,10 @@ void fn_8000EF74(s32 arg0) {
     extern void fn_80010074(s32, s32, const char *, f32, f32, f32, ...);
     extern f32 fn_80011E70(void);
     u8 *root;
-    u8 *entry;
-    s32 i;
+    u8 *entry1;
+    u8 *entry2;
+    s32 i1;
+    s32 i2;
     f32 temp_f28;
     f32 temp_f29;
     f32 temp_f30;
@@ -2538,34 +2541,33 @@ void fn_8000EF74(s32 arg0) {
     if (*(s32 *)((u8 *)&lbl_803514A0 + 0x288) != 0) {
         if (arg0 < 0) temp_f29 = fn_80011E70();
         else temp_f29 = fn_80011E04(arg0);
-        entry = (u8 *)&lbl_803514A0;
-        root = entry;
+        root = (u8 *)&lbl_803514A0;
+        entry1 = root;
         temp_f30 = lbl_80560280;
-        i = 0;
-        while (i < *(s32 *)(root + 0x288)) {
-            temp_f30 += fn_8000EDC0(*(s32 *)(entry + 0x40));
-            entry += 0x40;
-            i++;
+        i1 = 0;
+        while (i1 < *(s32 *)(root + 0x288)) {
+            temp_f30 += fn_8000EDC0(*(s32 *)(entry1 + 0x40));
+            entry1 += 0x40;
+            i1++;
         }
         temp_f30 *= (f32)lbl_80558A90;
         temp_f28 = fn_8000EEC8(arg0, temp_f30);
         temp_f31 = lbl_8056025C;
-        entry = root + 8;
-        i = 0;
-        while (i < *(s32 *)(root + 0x288)) {
-            temp_f27 = fn_8000EDC0(*(s32 *)(entry + 0x38));
+        entry2 = root + 8;
+        i2 = 0;
+        while (i2 < *(s32 *)(root + 0x288)) {
+            temp_f27 = fn_8000EDC0(*(s32 *)(entry2 + 0x38));
             temp_f26 = temp_f27 * (f32)lbl_80558A90;
             temp_f25 = temp_f28 - temp_f31 * temp_f26;
-            fn_80010074(fn_8000EE54(*(s32 *)(entry + 0x38)), 0x14,
-                        (const char *)entry, temp_f27, temp_f29, temp_f25);
+            fn_80010074(fn_8000EE54(*(s32 *)(entry2 + 0x38)), 0x14,
+                        (const char *)entry2, temp_f27, temp_f29, temp_f25);
             temp_f28 -= temp_f26;
-            entry += 0x40;
-            i++;
+            entry2 += 0x40;
+            i2++;
         }
     }
 }
-
-#pragma dont_inline reset
+#pragma opt_propagation reset
 /* Initialize UI font/text handles and scaling: cache the default font handle and its scaled metric, store the computed scale factor, and load the big text texture. */
 void fn_8000F0E4(void) {
 #define defaultUiFontHandle   lbl_8055D490
