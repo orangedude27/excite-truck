@@ -17051,12 +17051,12 @@ extern "C" void fn_800C1E88(const s32 *a, const s32 *b, s32 *out) {
     s32 a3 = a[3];
     s32 i;
     for (i = 0; i < 4; i++) {
-        s32 b0 = b[0];
         s32 b1 = b[1];
-        s32 b2 = b[2];
+        s32 b0 = b[0];
         s32 b3 = b[3];
-        s32 b4 = b[4];
+        s32 b2 = b[2];
         s32 b5 = b[5];
+        s32 b4 = b[4];
         b += 6;
         s64 p = 0;
         p += (s64)a0 * b0;
@@ -20343,6 +20343,27 @@ extern "C" void *fn_800D0F1C(void *object, s32 freeMode) {
         }
     }
     return object;
+}
+
+extern "C" s32 WPADProbe(s32, void *);
+extern "C" void fn_800D0F78(void *arg) {
+    homebutton::Controller *self = (homebutton::Controller *)arg;
+    s32 sp8;
+    s32 result;
+    self->m_prevConnectCb = (void *)WPADSetSamplingCallback(self->m_channel, (void *)&wpadConnectCallback__Q210homebutton10ControllerFll);
+    result = WPADProbe(self->m_channel, &sp8);
+    if (result == 0) goto install;
+    if (result >= 0) goto done;
+    if (result >= -1) goto clear_byte;
+    goto done;
+install:
+    self->m_prevExtensionCb = (void *)((s32 (*)(s32, void *))WPADSetSamplingCallback_800603D0)(self->m_channel, (void *)&wpadExtensionCallback__Q210homebutton10ControllerFll);
+    self->pad40 = 1;
+    goto done;
+clear_byte:
+    self->pad40 = 0;
+done:
+    return;
 }
 
 /* Hand WPAD back the two callbacks this controller had installed: each saved
