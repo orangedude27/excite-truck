@@ -22322,8 +22322,9 @@ extern "C" void fn_800C7764(void *obj, s8 value) {
     ((u8 *)obj)[0x24] = (u8)value;
 }
 
-extern "C" void fn_800C776C(void *arg0, s32 arg1) {
-    ((u32 *)arg0)[0x24 / 4] = (u32)arg1;
+extern "C" void fn_800C776C(void *obj, s32 value) {
+    /* Store a 32-bit value in the word at offset 0x24 of obj. */
+    ((u32 *)obj)[0x24 / 4] = (u32)value;
 }
 
 extern "C" void fn_800C7774(u8 *arg0)
