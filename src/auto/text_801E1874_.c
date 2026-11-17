@@ -247,6 +247,7 @@ void fn_801E1D38(void) {
 
 #pragma push
 #pragma cplusplus on
+#pragma opt_common_subs off
 extern "C" void fn_801E1D9C(void) {
     struct Dummy_801E1D9C_Local {
         virtual void d1(int);
