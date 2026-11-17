@@ -1773,59 +1773,42 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
     extern f32 fn_801452A0(s32, f32);
-    f32 angle;
     f32 tx;
+    f32 angle;
+    f32 x;
     if (arg0 != 0) {
         fn_802C8BD0(arg2);
         if (fn_802C8DBC(4) != 0) {
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-            {
-                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
-                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
-                tx = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
-            }
+            x = *(f32 *)((u8 *)arg0 + 4);
+            tx = ((f32 (*)(s32, f32))fn_801451DC)(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
             fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x18),
                         *(f32 *)((u8 *)arg0 + 0x1C));
 
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-            {
-                f32 scaleInput = *(volatile f32 *)((u8 *)arg0 + 0x10);
-                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
-                tx = fn_801452A0(mode, scaleInput);
-            }
-            {
-                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
-                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
-                tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
-            }
+            x = *(f32 *)((u8 *)arg0 + 0x10);
+            tx = fn_801452A0(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
+            x = *(f32 *)((u8 *)arg0 + 4);
+            tx += ((f32 (*)(s32, f32))fn_801451DC)(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
             fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x20),
                         *(f32 *)((u8 *)arg0 + 0x1C));
 
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8) +
                                 *(f32 *)((u8 *)arg0 + 0x14));
-            {
-                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
-                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
-                tx = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
-            }
+            x = *(f32 *)((u8 *)arg0 + 4);
+            tx = ((f32 (*)(s32, f32))fn_801451DC)(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
             fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x18),
                         *(f32 *)((u8 *)arg0 + 0x24));
 
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8) +
                                 *(f32 *)((u8 *)arg0 + 0x14));
-            {
-                f32 scaleInput = *(volatile f32 *)((u8 *)arg0 + 0x10);
-                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
-                tx = fn_801452A0(mode, scaleInput);
-            }
-            {
-                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
-                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
-                tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
-            }
+            x = *(f32 *)((u8 *)arg0 + 0x10);
+            tx = fn_801452A0(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
+            x = *(f32 *)((u8 *)arg0 + 4);
+            tx += ((f32 (*)(s32, f32))fn_801451DC)(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
             fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x20),
                         *(f32 *)((u8 *)arg0 + 0x24));
@@ -2245,6 +2228,8 @@ extern "C" u32 *fn_80148264(void) {
     return &lbl_80559E68;
 }
 
+/* SDK DVDGetCurrentDiskID: this build has no on-disc ID loaded, so it returns the
+ * fixed address 0x40000000 (normally the address of the current DVDDiskID). */
 extern "C" s32 DVDGetCurrentDiskID(void) {
     return 0x40000000;
 }
