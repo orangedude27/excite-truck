@@ -4060,8 +4060,10 @@ void GKI_shutdown(void) {
 void fn_8006EACC(s32 unused) {
 }
 
+/* GkiSchedLock: no-op scheduler-lock stub.  This build pins all Bluetooth work
+ * to one fiber, so locking the scheduler does nothing; BTM code still brackets
+ * state reads with it for symmetry with the other GKI ports. */
 void fn_8006EAD0(void) {
-
 }
 
 void fn_8006EAD4(void) {
