@@ -430,7 +430,7 @@ extern "C" f32 lbl_80561838;
 extern "C" f32 lbl_80561840;
 extern "C" char lbl_8032F8D0[];
 extern "C" char lbl_8032F7F0[];
-extern "C" char lbl_802F94A8[];
+extern "C" char *lbl_802F94A8[];
 extern "C" void fn_80160CF4(void) {
     struct Node {
         virtual void s0();
