@@ -338,6 +338,11 @@ typedef struct Vec {
     float x, y, z;
 } Vec;
 
+struct TruckStateArray {
+    char pad[0xF08];
+    struct TruckState states[1];
+};
+
 extern void *fn_802678E4(int);
 extern float fn_802704E0(int, float);
 extern void PSVECCrossProduct(void *, void *, void *);
