@@ -680,7 +680,9 @@ void fn_80176A24(f32 scale) {
 
 extern f32 fn_80176A2C(void);
 f32 fn_80176A2C(void) {
-    return lbl_8055A2F4;
+    #define sTimeScale lbl_8055A2F4
+    return sTimeScale;
+    #undef sTimeScale
 }
 
 #define sFrameCount   lbl_8055E3C4 /* global frame/tick counter */
