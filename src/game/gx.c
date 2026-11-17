@@ -2906,8 +2906,10 @@ void fn_802D307C(void) {
 }
 
 extern void *lbl_8055FD5C;
-void fn_802D30DC(void* hi) {
-    lbl_8055FD5C = hi;
+/* Set the global graphics-state object pointer (read by fn_802D3104 et al.
+   for the GXTexObj/indirect-texture state at +0x24). */
+void fn_802D30DC(void* state) {
+    lbl_8055FD5C = state;
 }
 
 /* Return the GXTexObj at +0x24 of the global GX state block; the caller loads it
