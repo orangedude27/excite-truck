@@ -1366,6 +1366,7 @@ unsigned int fn_802C4FF8(const char *text) { return strlen(text) * CANVAS_CHAR_W
 
 /* The canvas font's character height/width. */
 int fn_802C501C(void) {
+    /* Return the canvas font's fixed character width in pixels. */
     return CANVAS_CHAR_WIDTH;
 }
 
