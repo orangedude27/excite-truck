@@ -282,7 +282,8 @@ s32 fn_801353C4(void) {
     return fn_801357A4();
 }
 
-s32 fn_801355B8(void *arg0, void *arg1, void *arg2, void *arg3) {
+/* Default point/state hook: allow the operation to continue by always returning 0. */
+s32 fn_801355B8(void *object, void *point, void *stateOut, void *fracOut) {
     return 0;
 }
 
@@ -802,19 +803,19 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
     *(char **)(self + 0x60) = *(char **)(self + 4);
     return status;
 }
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 int fn_801363A0(void *arg0, void *arg1) {
-    void *temp_r6;
-    int temp_r31;
-    int var;
-    temp_r6 = *(void **)arg1;
-    temp_r31 = *(int *)((char *)temp_r6 + 0x10);
-    var = *(int *)((char *)*(void **)((char *)temp_r6 + 0x14) + 0x10);
+    volatile void *temp_r6 = *(void **)arg1;
+    int temp_r31 = *(int *)((char *)temp_r6 + 0x10);
+    int var = *(int *)((char *)*(void **)((char *)temp_r6 + 0x14) + 0x10);
     if (var == 0) {
         var = *(int *)((char *)*(void **)((char *)arg0 + 0x2C) + 0x18);
     }
     return temp_r31 + (unsigned int)(*(float *)((char *)arg1 + 4) * (float)(var - temp_r31));
 }
-#pragma scheduling on
+#pragma pop
 extern float lbl_80561358;
 extern double lbl_80561360;
 void fn_80136414(void *arg0, void *arg1, s32 arg2) {
@@ -852,9 +853,9 @@ extern "C" void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
     char *p = (char *)*(void **)((char *)self + 0x2c);
     char *latestP;
     char *sentinel;
-    char *cursor;
+    register char *cursor;
     char *q;
-    register float *period;
+    float *period;
     float d;
     s32 mode;
     s32 limit;
@@ -866,10 +867,11 @@ extern "C" void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
         return;
     }
     mode = *(s32 *)((char *)self + 0xc);
-    period = (float *)(p + 8);
     if (f > lbl_80561320) {
+        period = (float *)(p + 8);
         d = (float)fn_8002EFB4((double)f, (double)*period);
     } else {
+        period = (float *)(p + 8);
         d = *period - (float)fn_8002EFB4((double)-f, (double)*period);
     }
     limit = 0x2710;
