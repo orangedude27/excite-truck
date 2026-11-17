@@ -149,41 +149,44 @@ void WPADiSamplingCallback(s32 chan, s32 result) {
 
 #pragma push
 #pragma scheduling reset
+/* Find the innermost heap in `list` whose [start, end) range contains `addr`.
+   Walks three nested list levels and recurses into the deepest match, falling
+   back to the shallowest enclosing heap; returns 0 if none contains the address. */
 void *FindContainHeap_(MEMList *list, u32 addr) {
-    MEMiHeapHead *child;
-    MEMiHeapHead *block;
-    MEMiHeapHead *heap;
-    MEMiHeapHead *found;
+    MEMiHeapHead *childHeap;
+    MEMiHeapHead *blockHeap;
+    MEMiHeapHead *rootHeap;
+    MEMiHeapHead *container;
 
-    heap = 0;
-    while ((heap = (MEMiHeapHead *)MEMGetNextListObject(list, heap)) != 0) {
-        if ((u32)heap->start <= addr && addr < (u32)heap->end) {
-            child = 0;
-            while ((child = (MEMiHeapHead *)MEMGetNextListObject(&heap->list, child)) != 0) {
-                if ((u32)child->start <= addr && addr < (u32)child->end) {
-                    block = 0;
-                    while ((block = (MEMiHeapHead *)MEMGetNextListObject(&child->list, block)) != 0) {
-                        if ((u32)block->start <= addr && addr < (u32)block->end) {
-                            found = (MEMiHeapHead *)FindContainHeap_(&block->list, addr);
-                            switch ((u32)found) { case 0: found = block; break; default: break; }
+    rootHeap = 0;
+    while ((rootHeap = (MEMiHeapHead *)MEMGetNextListObject(list, rootHeap)) != 0) {
+        if ((u32)rootHeap->start <= addr && addr < (u32)rootHeap->end) {
+            childHeap = 0;
+            while ((childHeap = (MEMiHeapHead *)MEMGetNextListObject(&rootHeap->list, childHeap)) != 0) {
+                if ((u32)childHeap->start <= addr && addr < (u32)childHeap->end) {
+                    blockHeap = 0;
+                    while ((blockHeap = (MEMiHeapHead *)MEMGetNextListObject(&childHeap->list, blockHeap)) != 0) {
+                        if ((u32)blockHeap->start <= addr && addr < (u32)blockHeap->end) {
+                            container = (MEMiHeapHead *)FindContainHeap_(&blockHeap->list, addr);
+                            switch ((u32)container) { case 0: container = blockHeap; break; default: break; }
                             goto found_inner;
                         }
                     }
-                    found = 0;
+                    container = 0;
                 found_inner:
-                    switch ((u32)found) { case 0: found = child; break; default: break; }
+                    switch ((u32)container) { case 0: container = childHeap; break; default: break; }
                     goto found_middle;
                 }
             }
-            found = 0;
+            container = 0;
         found_middle:
-            switch ((u32)found) { case 0: found = heap; break; default: break; }
+            switch ((u32)container) { case 0: container = rootHeap; break; default: break; }
             goto found_outer;
         }
     }
-    found = 0;
+    container = 0;
 found_outer:
-    return found;
+    return container;
 }
 
 #pragma push
