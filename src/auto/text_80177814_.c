@@ -941,6 +941,8 @@ void *__AXGetStudio_80178C90(void) {
 }
 
 extern void *lbl_8055E414;
+/* Return the session/scene Owner singleton pointer held in lbl_8055E414
+ * (destroyed during global teardown). */
 void* fn_80178C9C(void) {
     return lbl_8055E414;
 }
