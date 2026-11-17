@@ -9,6 +9,7 @@ extern const char lbl_8033C308[];
 extern void fn_802E30C8(const char*, ...);
 #pragma dont_inline on
 void fn_8020A634(void) {
+    /* Clear the global music-play flag (set by fn_8020A600 with "music: play!"), stopping playback. */
     lbl_8055EDDC = 0;
 }
 #pragma dont_inline off
