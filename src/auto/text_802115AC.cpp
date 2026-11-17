@@ -2544,8 +2544,9 @@ extern "C" void fn_802157DC(void *pane, s32 x, s32 y, s32 *outX, s32 *outY, s32 
     *outYPlusOffset = *outY + *(s32 *)((u8 *)pane + 8);
 }
 
-extern "C" s32 fn_8021581C(void *arg0) {
-    return ((s32 *)arg0)[0xC / 4];
+extern "C" s32 fn_8021581C(void *obj) {
+    // Returns the 32-bit field at offset 0xC of obj (e.g. a layout pane's parent pointer).
+    return ((s32 *)obj)[0xC / 4];
 }
 
 extern "C" void fn_80215824(void) {
