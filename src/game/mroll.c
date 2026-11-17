@@ -956,16 +956,21 @@ void fn_80241820(void *arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80241DE8(void *arg0) {
+/* Refresh every entry of a selection menu: for each of the count (+0x2C) item
+ * pointers in the array at +0x18, store whether that row is the selected one
+ * (menu enabled at +0x38 and this index == the selected index at +0x30) into the
+ * item's flag byte at +0, and the value the menu follows (*+0x34) into its word
+ * at +4. Same refresh as fn_802409AC, without appending an entry first. */
+void fn_80241DE8(void *menu) {
     void *item;
     s32 index;
     s32 value;
-    char *entryCursor = (char *)arg0;
+    char *entryCursor = (char *)menu;
     s32 isSelected;
 
-    for (index = 0; index < *(s32 *)((char *)arg0 + 0x2C);) {
-        value = **(s32 **)((char *)arg0 + 0x34);
-        isSelected = *(u8 *)((char *)arg0 + 0x38) != 0 && index == *(s32 *)((char *)arg0 + 0x30);
+    for (index = 0; index < *(s32 *)((char *)menu + 0x2C);) {
+        value = **(s32 **)((char *)menu + 0x34);
+        isSelected = *(u8 *)((char *)menu + 0x38) != 0 && index == *(s32 *)((char *)menu + 0x30);
         item = *(void **)(entryCursor + 0x18);
         entryCursor += 4;
         index++;
