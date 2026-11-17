@@ -379,13 +379,15 @@ extern "C" void fn_801F7A14(void *basis) {
 }
 
 #pragma use_lmw_stmw off
-extern "C" s32 fn_801F7A88(void *self, s32 arg1, void *arg2, s32 arg3) {
+extern "C" s32 fn_801F7A88(void *self, s32 sourceId, void *outBuf, s32 outMax) {
 #pragma scheduling invalid_target
-    s32 res = 0;
+    /* If this object reports an encoded value, fetch the encoded string for sourceId
+       (v14) and base64-decode it into outBuf (up to outMax bytes); 1 on success, 0 else. */
+    s32 decoded = 0;
     if (((F7A88Class *)self)->vC()) {
-        res = fn_8012F9E8(arg2, arg3, ((F7A88Class *)self)->v14(arg1));
+        decoded = fn_8012F9E8(outBuf, outMax, ((F7A88Class *)self)->v14(sourceId));
     }
-    return res;
+    return decoded;
 }
 #pragma use_lmw_stmw on
 extern "C" void fn_801F7A14(void *);
