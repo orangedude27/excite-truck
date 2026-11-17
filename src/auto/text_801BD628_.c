@@ -635,9 +635,10 @@ void fn_801BF1B4(void) {
 
 }
 
-void fn_801BF1B8(int arg0, char arg1) {
+void fn_801BF1B8(int slot, char flag) {
+    /* Set the per-slot flag byte in the vehicle pool's aList (one flag per slot). */
     extern int lbl_8055E7A0;
-    ((char *)lbl_8055E7A0)[arg0] = arg1;
+    ((char *)aList)[slot] = flag;
 }
 
 extern float lbl_80562838;
