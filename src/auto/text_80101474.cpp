@@ -149,8 +149,9 @@ extern "C" void fn_801014D4(s32 subobjectThis) {
     InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(subobjectThis - 8);
 }
 
-extern "C" void fn_801014DC(s32 arg0) {
-    fn_800FFA6C(arg0 - 8);
+extern "C" void fn_801014DC(s32 baseObject) {
+    /* Deleting-dtor thunk: adjust a secondary base pointer back to the complete object (-8) via the deleting-destructor helper. */
+    fn_800FFA6C(baseObject - 8);
 }
 
 extern int fn_800EC890(void *, void *, int, int, int);
