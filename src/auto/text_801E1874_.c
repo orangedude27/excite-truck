@@ -73,6 +73,7 @@ typedef struct WeatherState {
 #define gWeatherState  lbl_804874D4 /* the WeatherState above */
 #define gWeatherLoaded lbl_8055EA20 /* 0: reload the parameters next time */
 #define gLightningOn   lbl_8055EA22 /* lightning flashes with this weather */
+#define gForceWeather  lbl_8055EA21 /* set to force an immediate weather change */
 
 /* A sound the game plays through the sound manager: the "Sound" pool class of
  * text_802062E8.cpp, which fn_80207848 makes.  The flags at +0x48 are requests
