@@ -55,8 +55,9 @@ void fn_801EAB2C(void *arg0) {
     p[12] = b;
 }
 
-void fn_801EAB80(void *arg0, long arg1) {
-    fn_80176948(arg1, (long)arg0 + 0x34, (long)arg0);
+/* Trampoline during SeqHeap setup: forward (id, object+0x34, object) to fn_80176948. */
+void fn_801EAB80(void *object, long id) {
+    fn_80176948(id, (long)object + 0x34, (long)object);
 }
 
 #pragma cplusplus on
