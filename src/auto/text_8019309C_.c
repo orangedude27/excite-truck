@@ -298,8 +298,9 @@ void fn_8019330C(void *out, void *in, int arg2) {
 #pragma dont_inline reset
 
 #pragma scheduling off
-void fn_801933FC(void *arg0, void *arg1) {
-    fn_8019330C(arg1, arg1, (arg0 = *(void **)((char *)arg0 + 0x294), (int)((char *)arg0 + 0x70)));
+/* Projects the 2D point (used as both input and output) into the local frame of the object's vehicle at +0x294 (+0x70). */
+void fn_801933FC(void *owner, void *point) {
+    fn_8019330C(point, point, (owner = *(void **)((char *)owner + 0x294), (int)((char *)owner + 0x70)));
 }
 #pragma scheduling reset
 int fn_80193524(void *first, void *second) {
