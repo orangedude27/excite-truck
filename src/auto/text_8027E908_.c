@@ -213,12 +213,12 @@ extern "C" void fn_8027E908(void) {
         virtual void v4();
         virtual void v5();
     };
-    register const char *base = lbl_80347E50;
+    const char *base = lbl_80347E50;
     void *object;
     const char *idName;
     object = fn_80258354();
     lbl_8055F680 = object;
-    ((InitObj *)object)->v1(base+0x0, base+0x14, 4);
+    ((InitObj *)object)->v1(base, base+0x14, 4);
     object = lbl_8055F680;
     ((InitObj *)object)->v1(base+0x24, base+0x14, 3);
     object = lbl_8055F680;
@@ -300,13 +300,14 @@ extern "C" void fn_8027ED2C(void) {
 #pragma cplusplus reset
 #pragma pop
 #pragma dont_inline reset
-
+#pragma dont_inline on
 void* fn_8027ED70(void) {
 #define gCareerObj lbl_8055F680
     /* Get the singleton career/UI manager object created by fn_8027E908. */
     return gCareerObj;
 #undef gCareerObj
 }
+#pragma dont_inline reset
 
 extern int fn_802146BC(int *, int, int, int, int, int, int, int);
 extern int lbl_802FA848;
@@ -3220,173 +3221,168 @@ void fn_802857A8(void *arg0) {
     p[0x18] = 1;
     *(int *)(p + 0x1c) = fn_80221EA8();
     obj = *(void **)(p + 0x60);
-    if (obj == 0) {
-        *(int *)(p + 0x20) = 1;
-    } else {
+    if (obj != 0) {
         *(int *)(p + 0x20) = 0;
         p[0x50] = 1;
         *(int *)(p + 0x48) = *(int *)(p + 4);
         *(int *)(p + 0x4c) = *(int *)(p + 8);
         *(int *)(p + 0x68) = *(int *)(p + 4);
         *(float *)(p + 0x64) = lbl_80564200;
-#pragma cplusplus on
-        {
-            class Child {
-            public:
-                virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-                virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-                virtual void v8(); virtual void v9();
-                virtual int v10(); virtual int v11();
-                virtual void v12(); virtual void v13(); virtual void v14();
-                virtual int v15(); virtual int v16(); virtual int v17(); virtual int v18();
-            };
-            class Drawer {
-            public:
-                virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-                virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-                virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-                virtual void v12(); virtual void v13(); virtual void v14(const char *);
-            };
-            Child *c = (Child *)obj;
-            p[0x98] = (unsigned char)c->v16();
-            c = (Child *)*(void **)(p + 0x60);
-            p[0x99] = (unsigned char)c->v18();
-            c = (Child *)*(void **)(p + 0x60);
-            if (c != 0) {
-                fn_801308F4((char *)(p + 0x6c), 0x1e, (const char *)c->v10());
-                {
-                    char *d = (char *)(p + 0x6c);
-                    const char *s = lbl_8055C818;
-                    i = 0x1e;
-                    while (*d != 0) { --i; ++d; }
-                    if (i > 0) {
-                        for (;;) {
-                            char ch = *s++;
-                            *d = ch;
-                            ++d;
-                            if (ch == 0) break;
-                            if (--i <= 0) { d[-1] = 0; break; }
-                        }
+        obj = *(void **)(p + 0x60);
+        vt = *(void ***)obj;
+        p[0x98] = (unsigned char)((int (*)(void *))vt[16])(obj);
+        obj = *(void **)(p + 0x60);
+        vt = *(void ***)obj;
+        p[0x99] = (unsigned char)((int (*)(void *))vt[18])(obj);
+        obj = *(void **)(p + 0x60);
+        if (obj != 0) {
+            vt = *(void ***)obj;
+            fn_801308F4((char *)(p + 0x6c), 0x1e, ((const char *(*)(void *))vt[10])(obj));
+            {
+                char *d = (char *)(p + 0x6c);
+                const char *s = lbl_8055C818;
+                i = 0x1e;
+                while (*d != 0) { --i; ++d; }
+                if (i > 0) {
+                    for (;;) {
+                        char ch = *s++;
+                        *d = ch;
+                        ++d;
+                        if (ch == 0) break;
+                        if (--i <= 0) { d[-1] = 0; break; }
                     }
                 }
-                c = (Child *)*(void **)(p + 0x60);
-                fn_801308F4(other, 0x14, (const char *)c->v15());
-                {
-                    char *d = (char *)(p + 0x6c);
-                    char *s = other + 1;
-                    i = 0x1e;
-                    while (*d != 0) { --i; ++d; }
-                    if (i > 0) {
-                        for (;;) {
-                            char ch = *s++;
-                            *d = ch;
-                            ++d;
-                            if (ch == 0) break;
-                            if (--i <= 0) { d[-1] = 0; break; }
-                        }
-                    }
-                }
-                if (p[0x98] == 0) {
-                    c = (Child *)*(void **)(p + 0x60);
-                    if (c->v16() != 0) {
-                        ((Drawer *)fn_8027ED70())->v14(base + 0x1bc);
-                        {
-                            void **items = (void **)lbl_804B30D8[0];
-                            count = lbl_804B30D8[1];
-                            i = 0;
-                            for (; i < count; i++, items++) {
-                                if (*items == arg0) goto found_0;
-                            }
-                            i = -1;
-                        found_0:;
-                        }
-                        fn_801345D8(tmp0, 0x64, &lbl_8055C86C, base + 0xb00, i + 1);
-                        fn_80236954(tmp0);
-                        fn_8027F204(tmp0);
-                    }
-                }
-                if (p[0x99] == 0) {
-                    c = (Child *)*(void **)(p + 0x60);
-                    if (c->v18() != 0) {
-                        ((Drawer *)fn_8027ED70())->v14(base + 0x1e0);
-                        {
-                            void **items = (void **)lbl_804B30D8[0];
-                            count = lbl_804B30D8[1];
-                            i = 0;
-                            for (; i < count; i++, items++) {
-                                if (*items == arg0) goto found_1;
-                            }
-                            i = -1;
-                        found_1:;
-                        }
-                        fn_801345D8(tmp1, 0x64, &lbl_8055C86C, base + 0xb10, i + 1);
-                        fn_80236954(tmp1);
-                        fn_8027F204(tmp1);
-                    }
-                }
-                c = (Child *)*(void **)(p + 0x60);
-                if (c->v16() != 0) *(int *)(p + 0x9c) = 1;
-                else *(int *)(p + 0x9c) = 0;
-                c = (Child *)*(void **)(p + 0x60);
-                mode = c->v11();
-                if (mode >= 0 && mode < 5) {
-                    stack = (char *)__AXGetStackHead();
-                    if (stricmp(stack, (char *)(p + 0x8a)) != 0) {
-                        if (mode == 0) {
-                            ((Drawer *)fn_8027ED70())->v14(base + 0x1a0);
-                            {
-                                void **items = (void **)lbl_804B30D8[0];
-                                count = lbl_804B30D8[1];
-                                i = 0;
-                                for (; i < count; i++, items++) {
-                                    if (*items == arg0) goto found_2;
-                                }
-                                i = -1;
-                            found_2:;
-                            }
-                            fn_801345D8(tmp2, 0x64, &lbl_8055C86C, base + 0xb24, i + 1);
-                            fn_80236954(tmp2);
-                            fn_8027F204(tmp2);
-                        } else {
-                            ((Drawer *)fn_8027ED70())->v14(base + 0x180);
-                            {
-                                void **items = (void **)lbl_804B30D8[0];
-                                count = lbl_804B30D8[1];
-                                i = 0;
-                                for (; i < count; i++, items++) {
-                                    if (*items == arg0) goto found_3;
-                                }
-                                i = -1;
-                            found_3:;
-                            }
-                            fn_801345D8(tmp3, 0x64, &lbl_8055C86C, base + 0xb30, i + 1);
-                            fn_80236954(tmp3);
-                            fn_8027F204(tmp3);
-                        }
-                    }
-                    {
-                        char *d = (char *)(p + 0x8a);
-                        i = 10;
-                        for (;;) {
-                            char ch = *stack++;
-                            *d = ch;
-                            ++d;
-                            if (ch == 0) break;
-                            if (--i <= 0) { d[-1] = 0; break; }
-                        }
-                    }
-                }
-                if (arg0 == lbl_8055F698) *(int *)(p + 0x94) = 1;
-                else *(int *)(p + 0x94) = 0;
-            } else {
-                p[0x6c] = 0;
-                p[0x8a] = 0;
-                p[0x98] = 0;
-                p[0x99] = 0;
-                *(int *)(p + 0x94) = 0;
             }
+            obj = *(void **)(p + 0x60);
+            vt = *(void ***)obj;
+            fn_801308F4(other, 0x14, ((const char *(*)(void *))vt[15])(obj));
+            {
+                char *d = (char *)(p + 0x6c);
+                char *s = other + 1;
+                i = 0x1e;
+                while (*d != 0) { --i; ++d; }
+                if (i > 0) {
+                    for (;;) {
+                        char ch = *s++;
+                        *d = ch;
+                        ++d;
+                        if (ch == 0) break;
+                        if (--i <= 0) { d[-1] = 0; break; }
+                    }
+                }
+            }
+            if (p[0x98] == 0) {
+                obj = *(void **)(p + 0x60);
+                vt = *(void ***)obj;
+                if (((int (*)(void *))vt[16])(obj) != 0) {
+                    void *dr = fn_8027ED70();
+                    vt = *(void ***)dr;
+                    ((void (*)(void *, const char *))vt[14])(dr, base + 0x1bc);
+                    {
+                        void **items = (void **)lbl_804B30D8[0];
+                        count = lbl_804B30D8[1];
+                        i = 0;
+                        for (; i < count; i++, items++) {
+                            if (*items == arg0) goto found_0;
+                        }
+                        i = -1;
+                    found_0:;
+                    }
+                    fn_801345D8(tmp0, 0x64, &lbl_8055C86C, base + 0xb00, i + 1);
+                    fn_80236954(tmp0);
+                    fn_8027F204(tmp0);
+                }
+            }
+            if (p[0x99] == 0) {
+                obj = *(void **)(p + 0x60);
+                vt = *(void ***)obj;
+                if (((int (*)(void *))vt[18])(obj) != 0) {
+                    void *dr = fn_8027ED70();
+                    vt = *(void ***)dr;
+                    ((void (*)(void *, const char *))vt[14])(dr, base + 0x1e0);
+                    {
+                        void **items = (void **)lbl_804B30D8[0];
+                        count = lbl_804B30D8[1];
+                        i = 0;
+                        for (; i < count; i++, items++) {
+                            if (*items == arg0) goto found_1;
+                        }
+                        i = -1;
+                    found_1:;
+                    }
+                    fn_801345D8(tmp1, 0x64, &lbl_8055C86C, base + 0xb10, i + 1);
+                    fn_80236954(tmp1);
+                    fn_8027F204(tmp1);
+                }
+            }
+            obj = *(void **)(p + 0x60);
+            vt = *(void ***)obj;
+            if (((int (*)(void *))vt[16])(obj) != 0) *(int *)(p + 0x9c) = 1;
+            else *(int *)(p + 0x9c) = 0;
+            obj = *(void **)(p + 0x60);
+            vt = *(void ***)obj;
+            mode = ((int (*)(void *))vt[11])(obj);
+            if (mode >= 0 && mode < 5) {
+                stack = (char *)__AXGetStackHead();
+                if (stricmp(stack, (char *)(p + 0x8a)) != 0) {
+                    if (mode == 0) {
+                        void *dr = fn_8027ED70();
+                        vt = *(void ***)dr;
+                        ((void (*)(void *, const char *))vt[14])(dr, base + 0x1a0);
+                        {
+                            void **items = (void **)lbl_804B30D8[0];
+                            count = lbl_804B30D8[1];
+                            i = 0;
+                            for (; i < count; i++, items++) {
+                                if (*items == arg0) goto found_2;
+                            }
+                            i = -1;
+                        found_2:;
+                        }
+                        fn_801345D8(tmp2, 0x64, &lbl_8055C86C, base + 0xb24, i + 1);
+                        fn_80236954(tmp2);
+                        fn_8027F204(tmp2);
+                    } else {
+                        void *dr = fn_8027ED70();
+                        vt = *(void ***)dr;
+                        ((void (*)(void *, const char *))vt[14])(dr, base + 0x180);
+                        {
+                            void **items = (void **)lbl_804B30D8[0];
+                            count = lbl_804B30D8[1];
+                            i = 0;
+                            for (; i < count; i++, items++) {
+                                if (*items == arg0) goto found_3;
+                            }
+                            i = -1;
+                        found_3:;
+                        }
+                        fn_801345D8(tmp3, 0x64, &lbl_8055C86C, base + 0xb30, i + 1);
+                        fn_80236954(tmp3);
+                        fn_8027F204(tmp3);
+                    }
+                }
+                {
+                    char *d = (char *)(p + 0x8a);
+                    i = 10;
+                    for (;;) {
+                        char ch = *stack++;
+                        *d = ch;
+                        ++d;
+                        if (ch == 0) break;
+                        if (--i <= 0) { d[-1] = 0; break; }
+                    }
+                }
+            }
+            *(int *)(p + 0x94) = (lbl_8055F698 == arg0);
+        } else {
+            p[0x6c] = 0;
+            p[0x8a] = 0;
+            p[0x98] = 0;
+            p[0x99] = 0;
+            *(int *)(p + 0x94) = 0;
         }
-#pragma cplusplus reset
+    } else {
+        *(int *)(p + 0x20) = 1;
     }
 }
 
