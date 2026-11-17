@@ -442,9 +442,9 @@ void fn_8026EF48(void *arg0, void *arg1, void *arg2, f32 farg0) {
     entry = lbl_8049A218 + (*(s32 *)arg0 * 4);
     if (fn_801769F8() == 0) {
         sp48 = *(Vec *)((char *)sub + 0x60);
-        flag = *(s32 *)((char *)sub + 0x2620) > 0;
         f30 = sp48.z;
         f31 = sp48.y;
+        flag = *(s32 *)((char *)sub + 0x2620) > 0;
         rec = (char *)sub + 0x6C;
         f29 = fn_801E9FDC(rec, lbl_80563E84 + sp48.x, lbl_80563E84 + f30);
         sp3C.x = lbl_80563E84 + sp48.x;
@@ -541,6 +541,9 @@ s32 fn_8026F408(s32 objectType) { return objectType <= 8; }
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
+#pragma scheduling invalid_target
+#pragma dont_inline on
+#pragma opt_common_subs off
     f32 sp8;
     Vec spC;
     Vec sp18;
@@ -566,7 +569,8 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
     f32 limit;
     int cond;
     int is_seven;
-    int tmp;
+    int cond24;
+    int flag;
     cond = fn_80178CA4() > 1;
     if (arg0 == 8) {
         f1 = cond ? lbl_80563EB8 : lbl_80563EBC;
@@ -577,8 +581,8 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
     sp8 = f1 + *(f32 *)(*(char **)((char *)arg2 + 0x140) + 0x5B4);
     f1 = *(f32 *)(*(char **)((char *)arg2 + 0x140) + 0x2688);
     f31 = *(f32 *)(*(char **)((char *)arg2 + 0x140) + 0x5B8);
-    tmp = f1 > lbl_80563E78;
-    if (*(u8 *)((char *)arg2 + 0x138) != 0 || tmp) {
+    cond24 = f1 > lbl_80563E78;
+    if (*(u8 *)((char *)arg2 + 0x138) != 0 || cond24) {
         *(f32 *)((char *)arg2 + 0xC) = lbl_80563E78;
         if (fn_8026EA14(arg1) == 0 && arg0 != 0x17) {
             *(s32 *)((char *)arg2 + 0x18) = 4;
@@ -589,7 +593,7 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
         if ((*(s32 *)((char *)arg2 + 0x18) != 0x17 && arg0 != 0x17) || *(u8 *)((char *)arg2 + 0x139) != 0) {
             *(f32 *)((char *)arg2 + 0x8) = lbl_80563E78;
         }
-        if (fn_8026EA14(arg1) == 0 || *(u8 *)((char *)arg2 + 0x139) != 0 || tmp) {
+        if (fn_8026EA14(arg1) == 0 || *(u8 *)((char *)arg2 + 0x139) != 0 || cond24) {
             *(s32 *)((char *)arg2 + 0x114) = *(s32 *)((char *)arg2 + 0xE4);
             *(s32 *)((char *)arg2 + 0x118) = *(s32 *)((char *)arg2 + 0xE8);
             *(s32 *)((char *)arg2 + 0x11C) = *(s32 *)((char *)arg2 + 0xEC);
@@ -667,12 +671,12 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
     sp30.y = lbl_80563E30;
     sp30.z = lbl_80563E78;
     fn_8026E870((Vec *)((char *)arg2 + 0x7C), &sp48, arg2, &sp30);
-    tmp = 0;
+    flag = 0;
     sp3C.x = lbl_80563E78;
     sp3C.y = lbl_80563E78;
     sp3C.z = lbl_80563E78;
     if (PSVECDotProduct((Vec *)((char *)arg2 + 0x120), (Vec *)((char *)arg2 + 0x120)) < lbl_80563E30) {
-        tmp = 1;
+        flag = 1;
         sp3C.x = ((Vec *)((char *)arg2 + 0x120))->x;
         sp3C.y = ((Vec *)((char *)arg2 + 0x120))->y;
         sp3C.z = ((Vec *)((char *)arg2 + 0x120))->z;
@@ -683,7 +687,7 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
         sp3C.z = ((Vec *)((char *)arg2 + 0x120))->z * inv_mag;
     }
     if (fn_801769F8() == 0) {
-        if (tmp != 0 || PSVECDotProduct(&sp3C, (Vec *)((char *)arg2 + 0x70)) >= lbl_80563E78) {
+        if (flag != 0 || PSVECDotProduct(&sp3C, (Vec *)((char *)arg2 + 0x70)) >= lbl_80563E78) {
             scale = lbl_80563ECC * PSVECDotProduct(&sp3C, (Vec *)((char *)arg2 + 0x58));
         } else {
             sign = PSVECDotProduct(&sp3C, (Vec *)((char *)arg2 + 0x58)) > lbl_80563E78 ? lbl_80563E30 : lbl_80563E6C;
@@ -1162,7 +1166,7 @@ void fn_802704E4(Car *car) {
         sp3C.y = sp48.y - car->v114.y;
         sp3C.z = sp48.z - car->v114.z;
         f1 = PSVECMag(&sp3C);
-        if (f1 <= lbl_80563EA8) f1 = lbl_80563EA8;
+        f1 = f1 > lbl_80563EA8 ? f1 : lbl_80563EA8;
         f1 = lbl_80563E30 / f1;
         car->v108.x = sp3C.x * f1;
         car->v108.y = sp3C.y * f1;
@@ -1170,8 +1174,8 @@ void fn_802704E4(Car *car) {
         f1 = PSVECMag(&car->v12C);
         f0 = (f1 - lbl_80563F00) / lbl_80563F04;
         f1 = lbl_80563E30;
-        if (f1 >= f0) f1 = f0;
-        if (f1 <= lbl_80563E78) f1 = lbl_80563E78;
+        f1 = f1 < f0 ? f1 : f0;
+        f1 = f1 > lbl_80563E78 ? f1 : lbl_80563E78;
         if (((cond != 0) && (cond29 == 0)) || ((cond29 != 0) && (cond == 0))) {
             f1 *= lbl_80563EA8;
         } else {
@@ -1188,7 +1192,7 @@ void fn_802704E4(Car *car) {
         sp30.y *= lbl_80563EA4;
         f1 = PSVECMag(&sp30);
         f0 = lbl_80563E60;
-        if (f0 <= f1) f0 = f1;
+        f0 = f0 > f1 ? f0 : f1;
         f7 = lbl_80563E30 / f0;
         sp30.x *= f7;
         sp30.y *= f7;
