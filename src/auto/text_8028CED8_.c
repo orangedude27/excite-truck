@@ -111,7 +111,7 @@ void fn_8028CFB0(void) {
     }
 }
 #pragma pop
-extern int fn_802CAC28(int);
+extern int fn_802CAC28(int, int);
 extern int fn_802E317C(char *, ...);
 extern char lbl_80348C50[];
 extern char lbl_8055C8C8[];
@@ -133,8 +133,7 @@ extern "C" void fn_8028D084(void *arg0, void *arg1) {
     extern char lbl_8055C8C8[8];
     char *base = lbl_80348C50;
     int value;
-    ((Obj8028D084 *)arg1)->f5(lbl_8055C8C8);
-    *(int *)arg0 = fn_802CAC28(0);
+    *(int *)arg0 = fn_802CAC28(((Obj8028D084 *)arg1)->f5(lbl_8055C8C8), 0);
     *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9(base);
     *(float *)((char *)arg0 + 8) = ((Obj8028D084 *)arg1)->f9(base + 0xC);
     *(float *)((char *)arg0 + 0xC) = ((Obj8028D084 *)arg1)->f9(base + 0x18);
