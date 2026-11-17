@@ -751,37 +751,35 @@ static inline void helper_80274F74(void *arg0, void *arg1) {
 
 #pragma scheduling invalid_target
 void fn_80274F74(void *arg0, void *arg1, float angle) {
-    float *p;
-    p = (float *)((char *)arg0 + 0xBC);
     helper_80274F74(arg0, arg1);
-    *p = angle;
+    *(float *)((char *)arg0 + 0xBC) = angle;
 }
 
 extern float PSVECDotProduct(float *, float *);
 extern void fn_8026E850(float *, float *, void *, float *);
-#pragma push
-#pragma processor 750
-#pragma scheduling on
+#pragma processor 7400
 void fn_802750C4(void *arg0, float arg1, float arg2) {
     float sp14[3];
     float sp8[3];
     float dot;
+    float d;
     float scale;
     char *p = (char *)arg0;
-    sp8[0] = lbl_80563FB0;
-    sp8[1] = lbl_80563FAC;
-    sp8[2] = lbl_80563FB0;
+    sp8[0] = 0.0f;
+    sp8[1] = 1.0f;
+    sp8[2] = 0.0f;
     fn_8026E850((float *)(p + 0x7C), (float *)(p + 0xE4), arg0, sp8);
     sp14[0] = *(float *)(p + 0xE4) - *(float *)(p + 0x7C);
     sp14[1] = *(float *)(p + 0xE8) - *(float *)(p + 0x80);
     sp14[2] = *(float *)(p + 0xEC) - *(float *)(p + 0x84);
     dot = PSVECDotProduct((float *)(p + 0x70), sp14);
-    scale = (dot - arg2) * arg1;
+    d = dot - arg2;
+    scale = d * arg1;
     *(float *)(p + 0x7C) += *(float *)(p + 0x70) * scale;
     *(float *)(p + 0x80) += *(float *)(p + 0x74) * scale;
     *(float *)(p + 0x84) += *(float *)(p + 0x78) * scale;
 }
-#pragma pop
+#pragma processor 750
 void fn_802751AC(void *arg0, float angle) {
     float axis[3], input[3], matrix[12];
     float mag, scale, x, y, z, s, c, t;
