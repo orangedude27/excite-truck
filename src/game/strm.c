@@ -26,12 +26,13 @@ int fn_802E72B8(int size) {
     return (size + 0x7ff) / 2048;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 int fn_802E72C8(int arg0) {
-    unsigned char *entry;
-    int index;
+    unsigned char *entry = lbl_804FC978;
+    int index = 0;
     int remaining;
-    entry = lbl_804FC978;
-    for (remaining = lbl_8055FFD8, index = 0; remaining > 0; remaining--) {
+    for (remaining = lbl_8055FFD8; remaining > 0; remaining--) {
         if (arg0 >= *(int *)entry && arg0 < *(int *)(entry + 4))
             return index;
         entry += 0x90;
@@ -39,8 +40,7 @@ int fn_802E72C8(int arg0) {
     }
     return -1;
 }
-
-#pragma dont_inline reset
+#pragma pop
 
 void fn_802E7318(void) {
     /* Begin streaming: reset the sector cursor and entry count, and set the active flag. */
