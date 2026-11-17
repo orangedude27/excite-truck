@@ -894,7 +894,7 @@ static inline u32 entryToPathA(u32 entry, char *path, u32 maxlen) {
     return loc;
 }
 static inline u32 entryToPathB(u32 entry, char *path, u32 maxlen) {
-    char *name;
+    register char *name;
     u32 loc;
     if (entry == 0) return 0;
     name = (char *)FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF);
