@@ -1408,8 +1408,13 @@ void fn_802D6C54(int index, float value) {
 }
 
 void fn_802D6C68(void) {
-    lbl_8055FDE8 = 0;
-    lbl_8055FDEC = 0;
+    /* Invalidate the renderer's cached vertex-format descriptor and mode byte. */
+#define sCachedFormat lbl_8055FDE8
+#define sCachedMode   lbl_8055FDEC
+    sCachedFormat = 0;
+    sCachedMode = 0;
+#undef sCachedMode
+#undef sCachedFormat
 }
 
 void fn_802D6C78(void) {
