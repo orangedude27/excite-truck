@@ -1683,6 +1683,7 @@ void fn_801AD148(void *arg0, void *arg1, void *arg2, f32 farg0, f32 farg1) {
     Vec sp8;
     f32 diffX, diffY, diffZ;
     f32 outX, outY, outZ;
+
     fn_8017AB84(*(void **)((char *)arg0 + 0x34), &sp14, arg1);
     if (arg2 != 0) {
         diffX = sp14.x - *(f32 *)((char *)arg2 + 0x60);
@@ -1691,9 +1692,11 @@ void fn_801AD148(void *arg0, void *arg1, void *arg2, f32 farg0, f32 farg1) {
         sp8.y = diffY;
         diffZ = sp14.z - *(f32 *)((char *)arg2 + 0x68);
         sp8.z = diffZ;
-        outX = (diffZ * *(f32 *)((char *)arg2 + 0x44)) + ((diffY * *(f32 *)((char *)arg2 + 0x40)) + (diffX * *(f32 *)((char *)arg2 + 0x3C)));
-        outY = (diffZ * *(f32 *)((char *)arg2 + 0x50)) + ((diffY * *(f32 *)((char *)arg2 + 0x4C)) + (diffX * *(f32 *)((char *)arg2 + 0x48)));
-        outZ = (diffZ * *(f32 *)((char *)arg2 + 0x5C)) + ((diffY * *(f32 *)((char *)arg2 + 0x58)) + (diffX * *(f32 *)((char *)arg2 + 0x54)));
+
+        outX = ((diffY * *(f32 *)((char *)arg2 + 0x40)) + (diffX * *(f32 *)((char *)arg2 + 0x3C))) + (diffZ * *(f32 *)((char *)arg2 + 0x44));
+        outY = ((diffY * *(f32 *)((char *)arg2 + 0x4C)) + (diffX * *(f32 *)((char *)arg2 + 0x48))) + (diffZ * *(f32 *)((char *)arg2 + 0x50));
+        outZ = ((diffY * *(f32 *)((char *)arg2 + 0x58)) + (diffX * *(f32 *)((char *)arg2 + 0x54))) + (diffZ * *(f32 *)((char *)arg2 + 0x5C));
+
         sp8.x = outX;
         sp8.y = outY;
         sp8.z = outZ;
@@ -1980,17 +1983,16 @@ void fn_801AD750(void *arg0, void *arg1) {
     }
 }
 #pragma peephole off
+#pragma scheduling on
 void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
+    char *p;
+    void *q;
     if (arg3 >= 8) return;
-    if (arg0 == 0) goto done;
-    {
-        void *p = (char *)arg0 + 0x23c;
-        fn_801D0A24(p, arg2);
-    }
-done:
-    return;
+    if (arg0 == 0) return;
+    p = (char *)arg0 + 0x23C;
+    q = arg2;
+    fn_801D0A24(p, q);
 }
-
 void fn_801AD7C4(void *arg0, float *arg1, float *arg2, int arg3, void *arg4) {
     void *obj = arg4;
     fn_801AC0A0(arg0, arg1, arg2, arg3, (int)obj);
@@ -2177,6 +2179,7 @@ long fn_801ADAB8(void *owner) {
     return *(long *)((char *)owner + 0x240);
 }
 
-void fn_801ADAC0(void *arg0, long arg1) {
-    fn_801AC240((void *)arg1);
+/* Activates the object whose handle is passed in arg1 via fn_801AC240; arg0 is the unused interface owner. */
+void fn_801ADAC0(void *owner, long obj) {
+    fn_801AC240((void *)obj);
 }
