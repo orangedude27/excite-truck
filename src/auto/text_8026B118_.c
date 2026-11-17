@@ -314,7 +314,8 @@ int fn_8026B768(int slotIndex, int objectIndex) {
     return 0;
 }
 
-unsigned char fn_8026B7B4(int arg0) {
-    return lbl_8049A0E8[arg0 * 0x10];
+unsigned char fn_8026B7B4(int slotIndex) {
+    // Nonzero if this slot's per-frame state record has its 'on' (active) flag set.
+    return lbl_8049A0E8[slotIndex * 0x10];
 }
 
