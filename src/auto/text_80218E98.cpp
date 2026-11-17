@@ -28,6 +28,7 @@ enum {
 };
 
 extern "C" f64 lbl_805634B8;
+static const f64 conv_magic_test_80219FE0 = 0x4330000080000000;
 extern "C" char lbl_8033DAD8[];
 extern "C" s32 fn_80129D90(s32, s32, s32);
 extern "C" s32 fn_80131234(void *);
@@ -1328,6 +1329,7 @@ extern "C" void fn_80219F14(void *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_80219FE0(void *arg0) {
     u8 *self = (u8 *)arg0;
     f32 time = fn_8023659C();
@@ -1343,7 +1345,8 @@ extern "C" void fn_80219FE0(void *arg0) {
             flag = 1;
         s32 h = *(s32 *)(self + 0x10) - *(s32 *)(self + 8);
         f32 wf = (f32)((VfObj *)self)->vf28();
-        fn_80230150(*(s32 *)(self + 0x254), flag | 8, x, y - (f32)h, zero, wf, (f32)h,
+        s32 id = *(s32 *)(self + 0x254);
+        fn_80230150(id, flag | 8, x, y - (f32)h, zero, wf, (f32)h,
                     (f32)*(s32 *)(self + 0x250), time, lbl_805634C0);
         break;
     }
@@ -1435,8 +1438,7 @@ extern "C" void fn_80219FE0(void *arg0) {
     }
     }
 }
-
-#pragma pop
+#pragma scheduling on
 extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" u8 lbl_8033F3B0[];
 extern "C" u8 lbl_8033F434[];
