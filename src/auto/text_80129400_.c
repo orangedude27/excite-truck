@@ -292,6 +292,8 @@ void *fn_80129AE8(void *arg0, int arg1) {
 }
 
 extern void *lbl_8055DFD4;
+/* Return the index of the active/focused controller held in lbl_8055DFD4
+ * (-1 means none), used to gate per-controller processing. */
 void* fn_80129AF4(void) {
     return lbl_8055DFD4;
 }
