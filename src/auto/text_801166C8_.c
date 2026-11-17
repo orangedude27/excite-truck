@@ -731,9 +731,9 @@ s32 fn_80117598(s32 arg0, s32 arg1) {
     register s32 off;
     register s32 base;
     s32 value;
+    s32 inv;
+    s32 sign;
     s32 diff;
-    register s32 sign;
-    register s32 inv;
     off = arg0 + 0x340;
     off -= arg0;
     base = arg0 - off;
@@ -741,7 +741,7 @@ s32 fn_80117598(s32 arg0, s32 arg1) {
     diff = (value - arg1) | (arg1 - value);
     sign = diff >> 31;
     inv = -1 - value;
-    return sign & inv;
+    return inv & sign;
 }
 #pragma opt_propagation reset
 /* Tick-list "finish" callback for the audio stream manager, registered by
