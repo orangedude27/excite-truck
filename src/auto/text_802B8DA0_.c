@@ -588,8 +588,9 @@ void fn_802B98D0(void *arg0) {
     }
 }
 
-int fn_802B9914(void *arg0) {
-    return (short)((int *)arg0)[6];
+/* Return the signed short at +0x18 of a racing-line RoadObject (companion to fn_802B9954's +0x14 index). */
+int fn_802B9914(void *roadObject) {
+    return (short)((int *)roadObject)[6];
 }
 
 extern short lbl_802FAB60[];
