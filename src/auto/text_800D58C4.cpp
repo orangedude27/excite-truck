@@ -1996,8 +1996,9 @@ extern "C" s32 fn_800D89F4(s32 base, s32 offset) {
     return base + offset;
 }
 
-extern "C" s32 fn_800D89FC(s32 arg0, s32 arg1) {
-    return arg0 + arg1;
+/* Compute base + offset as an integer address (used to index resource data). */
+extern "C" s32 fn_800D89FC(s32 base, s32 offset) {
+    return base + offset;
 }
 
 extern "C" s32 fn_800D8A04(s32 arg0, s32 arg1) {
