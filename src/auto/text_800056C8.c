@@ -1867,6 +1867,7 @@ extern "C" void fn_80007AC4(void *arg0) {
 u32 fn_80007B84(void) { return 1; }
 
 s32 fn_80007B8C(void) {
+    /* Queue a one-shot override of game-setting value 0x20 for all four players (-1). */
     return fn_8000C630(0x20, -1);
 }
 
