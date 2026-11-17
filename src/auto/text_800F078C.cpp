@@ -314,6 +314,11 @@ struct SeqListLink {
     u8 priorityOffset;
 };
 
+static inline int ClampPriority(int value) {
+    if (value > 0x7F) return 0x7F;
+    return value & ~(value >> 31);
+}
+
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, int arg1) {
     int priority;
     void *list;
