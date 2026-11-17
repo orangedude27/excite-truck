@@ -787,8 +787,9 @@ void fn_801ED68C(long arg0) {
     fn_801ECCE0(arg0, 1);
 }
 
-void fn_801ED694(long arg0) {
-    fn_801ECCE0(arg0, 0);
+/* Wrapper: run the effect/class-1 vehicle render pass (fn_801ECCE0 with group key 0). */
+void fn_801ED694(long renderObj) {
+    fn_801ECCE0(renderObj, 0);
 }
 
 /* If this vehicle is the active camera target and the interior view flag is set,
