@@ -1981,8 +1981,9 @@ void fn_80007CD0(void *obj) {
     ((u8 *)obj)[4] = 0;
 }
 
-u8 fn_80007CDC(void *arg0) {
-    return ((u8 *)arg0)[4];
+/* Return the boolean flag at byte 4 of an arena overlay object. */
+u8 fn_80007CDC(void *obj) {
+    return ((u8 *)obj)[4];
 }
 
 s32 fn_80007CE4(void) {
