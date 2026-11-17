@@ -1515,6 +1515,7 @@ void fn_801796BC(unsigned char arg0) {
 
 extern char lbl_8055E45F;
 char fn_801796C4(void) {
+    /* Return the second cached global mode flag byte (a per-frame snapshot of lbl_8055E45E), paired with fn_801796B4. */
     return lbl_8055E45F;
 }
 
