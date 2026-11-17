@@ -292,6 +292,7 @@ void fn_801279B8(void) {
     fn_80127954();
 }
 
+/* Increment the global sound-system counter lbl_8055DF30. */
 void fn_801279D0(void) {
     lbl_8055DF30 += 1;
 }
