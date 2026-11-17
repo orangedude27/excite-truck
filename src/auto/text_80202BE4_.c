@@ -158,8 +158,7 @@ void fn_80202BFC(s32 mapSlot) {
     } while (iter < 2);
 }
 
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 void fn_80202D50(f32 *arg0) {
     f32 mag, inv, y, ny, lo, t, th;
     s32 i, n, r;
@@ -167,6 +166,10 @@ void fn_80202D50(f32 *arg0) {
     lbl_8048897C_entry *a;
     lbl_8048897C_entry *b;
     s32 ha, hb;
+    f64 bias;
+    union { f64 d; u32 w[2]; } cvt1, cvt2;
+    cvt1.w[0] = 0x43300000;
+    cvt2.w[0] = 0x43300000;
     mag = PSVECMag(arg0);
     mag = (mag > lbl_805630D8) ? mag : lbl_805630D8;
     inv = lbl_805630D4 / mag;
@@ -181,21 +184,29 @@ void fn_80202D50(f32 *arg0) {
     e = lbl_8048897C.ptr + 1;
     n = lbl_8048897C.count;
     r = 0;
-    for (i = 1; i < n; i++, e++) {
-        if ((f32)e->w1 > th) {
-            f32 u = lbl_805630D4;
-            a = lbl_8048897C.ptr + i;
-            b = lbl_8048897C.ptr + (i - 1);
-            t = ((th - (f32)b->w1) / ((f32)a->w1 - (f32)b->w1));
-            u = (u < t) ? u : t;
-            u = (u > lbl_805630CC) ? u : lbl_805630CC;
-            t = lbl_805630CC + u * lbl_805630D4;
-            ha = ((s32 (*)(s32))fn_802CA294)(a->w0);
-            hb = ((s32 (*)(s32))fn_802CA294)(b->w0);
-            fn_802CA294(lbl_8055ED0C);
-            fn_802D94E4(t, hb, ha);
-            r = ((s32 (*)(s32))fn_802CA294)(lbl_8055ED0C);
-            break;
+    {
+        f64 bias = lbl_805630E8;
+        for (i = 1; i < n; i++, e++) {
+            cvt1.w[1] = (u32)e->w1 ^ 0x80000000U;
+            if ((f32)(cvt1.d - bias) > th) {
+                f32 u = lbl_805630D4;
+                a = lbl_8048897C.ptr + i;
+                b = lbl_8048897C.ptr + (i - 1);
+                cvt1.w[0] = 0x43300000;
+                cvt1.w[1] = (u32)a->w1 ^ 0x80000000U;
+                cvt2.w[0] = 0x43300000;
+                cvt2.w[1] = (u32)b->w1 ^ 0x80000000U;
+                t = ((th - (f32)(cvt2.d - bias)) / ((f32)(cvt1.d - bias) - (f32)(cvt2.d - bias)));
+                u = (u < t) ? u : t;
+                u = (u > lbl_805630CC) ? u : lbl_805630CC;
+                t = lbl_805630CC + u * lbl_805630D4;
+                ha = ((s32 (*)(s32))fn_802CA294)(a->w0);
+                hb = ((s32 (*)(s32))fn_802CA294)(b->w0);
+                fn_802CA294(lbl_8055ED0C);
+                fn_802D94E4(t, hb, ha);
+                r = ((s32 (*)(s32))fn_802CA294)(lbl_8055ED0C);
+                break;
+            }
         }
     }
     if (r == 0) {
@@ -203,7 +214,6 @@ void fn_80202D50(f32 *arg0) {
     }
     fn_802D30DC(r);
 }
-#pragma pop
 
 #pragma push
 #pragma processor 750
@@ -517,6 +527,7 @@ void fn_80203380(void *argp) {
 void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
     struct { f32 n[2]; f32 d[3]; f32 v[3]; f32 p[3]; } s;
     f32 f31, f28, f27, f26;
+    f32 a0, a1;
     f32* g;
     s32 j;
     s32 bit1, bit0;
@@ -527,6 +538,8 @@ void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
     f32 inv;
     f32 den;
     f32 a, b, c;
+    a0 = farg0;
+    a1 = farg1;
     if (arg0 != lbl_8055ED1C) {
         lbl_8055ED1C = arg0;
         fn_802C8D74();
@@ -560,15 +573,15 @@ void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
                     s.p[2] = ((f32*)e)[2];
                     bit0 = j & 1;
                     if (bit0 != 0) {
-                        s.p[0] = s.p[0] + s.n[0] * farg0;
-                        s.p[2] = s.p[2] + s.n[1] * farg0;
+                        s.p[0] = s.p[0] + s.n[0] * a0;
+                        s.p[2] = s.p[2] + s.n[1] * a0;
                     } else {
-                        s.p[0] = s.p[0] - s.n[0] * farg0;
-                        s.p[2] = s.p[2] - s.n[1] * farg0;
+                        s.p[0] = s.p[0] - s.n[0] * a0;
+                        s.p[2] = s.p[2] - s.n[1] * a0;
                     }
                     bit1 = j & 2;
                     if (bit1 != 0) {
-                        s.p[1] += farg1;
+                        s.p[1] += a1;
                     }
                     a = s.p[0] - g[9];
                     b = s.p[1] - g[10];
@@ -811,6 +824,7 @@ void fn_80203E88(void) {
     #undef EnvMapSlot
 }
 
+/* No-op stub in the rendering group: called during the scene draw sequence but does nothing. */
 void fn_80203EC0(void) {
 
 }
