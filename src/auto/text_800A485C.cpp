@@ -21066,7 +21066,7 @@ extern "C" s32 fn_800D2E14(void) {
 void fn_800D2E3C(s32 x, s32 y, s32 width, s32 height) {
     s32 right, bottom, startX, startY, row, col;
     u16 *dest;
-    u32 w, h;
+    u16 w, h;
     s32 endX, endY, stride;
     if (lbl_80407BD8[0] == 0)
         return;
@@ -21310,6 +21310,13 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     }
 }
 
+static inline void fn_800D3634_initVideo(u16 width, u16 height) {
+    (*(u16 *)((u8 *)lbl_80407BD8 + 8)) = width;
+    lbl_80407BD8[0] = 0;
+    (*(u16 *)((u8 *)lbl_80407BD8 + 10)) = height;
+    (*(u16 *)((u8 *)lbl_80407BD8 + 12)) = width;
+    lbl_80407BD8[1] = width * height * 2;
+}
 extern "C" s32 fn_800D3634(s32 arg0) {
     u8 *mode = (u8 *)arg0;
     u8 *fb;
