@@ -70,8 +70,9 @@ void fn_801ADAF4(void *arg0) {
 }
 
 extern void fn_801AD8C8(void **);
-void fn_801ADAFC(void *arg0) {
-    fn_801AD8C8((void **)((u8 *)arg0 - 0x23C));
+/* Calls fn_801AD8C8 on the owning object, recovered from an embedded sub-object pointer by subtracting 0x23C. */
+void fn_801ADAFC(void *subObject) {
+    fn_801AD8C8((void **)((u8 *)subObject - 0x23C));
 }
 
 extern void fn_801AD99C(void **);
@@ -413,11 +414,12 @@ void *fn_801AE180(void) {
 #pragma scheduling on
 void fn_801AE4C4(void) {
     void *result = (void *)fn_801284F8(8, &lbl_8033596C);
-    if (result != NULL) {
-        *(s32 *)result = 0;
-        *(void **)((u8 *)result + 4) = &lbl_8055A8B8;
-        lbl_8055E604 = result;
+    if (result == NULL) {
+        return;
     }
+    *(s32 *)result = 0;
+    *(void **)((u8 *)result + 4) = &lbl_8055A8B8;
+    lbl_8055E604 = result;
 }
 
 #pragma scheduling off
