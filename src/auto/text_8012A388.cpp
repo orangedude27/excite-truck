@@ -736,6 +736,8 @@ extern "C" void fn_8012B324(void) {
 
 }
 
+/* No-op resource-load success hook: invoked when a resource node is resolved
+ * (paired with the failure hook fn_8012B324); does nothing. */
 extern "C" void fn_8012B328(void) {
 
 }
