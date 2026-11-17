@@ -1130,6 +1130,22 @@ void fn_801E8CE4(void) {
     lbl_8055EB18 = lbl_80562DBC;
     lbl_8055EB14 = lbl_80562DBC;
 }
+/* Creation record of a wheel object ('WHLP'): header plus eight wheel
+ * parameters. fn_801F19FC has fn_80176948 copy `size` bytes of it into the
+ * scene's object stream and keeps that stream offset in the object at +0x34. */
+struct WheelInitRec {
+    /* 0x00 */ long tag;  /* 'WHLP' */
+    /* 0x04 */ long size; /* sizeof record = 0x28 */
+    /* 0x08 */ float p08; /* 60.0 */
+    /* 0x0C */ float p0C; /* 90.0 */
+    /* 0x10 */ float p10; /* 15.0 */
+    /* 0x14 */ float p14; /* 15.0 */
+    /* 0x18 */ float p18; /* 18.0 */
+    /* 0x1C */ float p1C; /* 500.0 */
+    /* 0x20 */ float p20; /* 0.6 */
+    /* 0x24 */ float p24; /* 0.8 */
+};
+
 #pragma scheduling on
 void fn_801E8D48(void) {
     struct Init { void *name; int size; float a,b,c,d,e,f,g,h; } init;
