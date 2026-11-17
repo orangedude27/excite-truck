@@ -2369,7 +2369,10 @@ void fn_8018ADA4(void *truck, f32 value) { *(f32 *)((u8 *)truck + 0x25DC) = valu
 
 void fn_8018ADAC(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25DC) = farg0; }
 
-void fn_8018ADB4(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25E0) = farg0; }
+void fn_8018ADB4(void *car, f32 value) {
+    /* Set the car's float tuning parameter at offset 0x25E0 (one of a run of interpolated fields). */
+    *(f32 *)((u8 *)car + 0x25E0) = value;
+}
 
 void fn_8018ADBC(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25E4) = farg0; }
 
