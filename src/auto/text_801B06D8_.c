@@ -26,7 +26,6 @@ void *fn_801B2118(void *, s32);
 extern void *fn_801B21B8(void *);
 extern void *__AXFXGetLfoSinTable_801769CC(void);
 extern char lbl_80335BFC[];
-extern f32 lbl_805625BC;
 extern f32 lbl_80562604;
 extern f32 lbl_80562610;
 extern void *memset(void *, int, unsigned long);
@@ -1420,8 +1419,9 @@ extern "C" void *fn_801B2118(void *obj, s32 deleteFlag) {
 
 /* fn_801B2118 stub removed for prototype fix */
 
+#pragma scheduling on
 void *fn_801B21B8(void *arg0) {
-    register float value = lbl_805625BC;
+    const f32 value = lbl_805625BC;
     register int zero = 0;
     *(void **)arg0 = lbl_80335BFC;
     *(s32 *)((u8 *)arg0 + 0x40) = zero;
@@ -1439,7 +1439,6 @@ void *fn_801B21B8(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x3C) = zero;
     return arg0;
 }
-
 s32 fn_801B224C(s32 object, s32 deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) {
