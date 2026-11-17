@@ -974,7 +974,8 @@ void fn_8020B9D4(void *self) {
     }
 }
 #pragma pop
-void fn_8020BC50(void *arg0, float farg0) { *(float *)((char *)arg0 + 0x24) = farg0; }
+/* Set the playback rate (offset 0x24) of a VoiceSnd, mixed into its voices every frame. */
+void fn_8020BC50(VoiceSnd *snd, float rate) { snd->rate = rate; }
 
 typedef float f32;
 typedef signed int s32;
