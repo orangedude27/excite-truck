@@ -15,6 +15,7 @@ void* OSGetMEM2ArenaHi(void) {
     return s_mem2ArenaHi;
 }
 
+/* Return the upper bound of the default (MEM1) arena. */
 void* OSGetArenaHi(void) {
     return OSGetMEM1ArenaHi();
 }
