@@ -1054,8 +1054,9 @@ void fn_802B3E00(void *arg0, void *arg1, short arg2, float farg0) {
     } else lbl_8055F9B8 += 1;
 }
 #pragma pop
-int fn_802B3F0C(void *arg0) {
-    return ((int *)arg0)[1];
+/* Return the element count at +4 of a container (whose base pointer is at +0). */
+int fn_802B3F0C(void *container) {
+    return ((int *)container)[1];
 }
 
 typedef struct {
