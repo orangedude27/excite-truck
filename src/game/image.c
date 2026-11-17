@@ -91,7 +91,8 @@ extern void fn_802354A0(void*, void*, int);
 extern void fn_80235758(void*, float, float, float, float, float, float, int);
 void fn_802C5310(void* arg0) { if (arg0 != 0) fn_802353F4(); }
 
-void fn_802C5320(void* arg0, void* arg1) { if (arg0 != 0) fn_802354A0(arg0, arg1, -1); }
+/* If the image set is non-null, draw picture `picture` with the default tint (-1). */
+void fn_802C5320(void* imageSet, void* picture) { if (imageSet != 0) fn_802354A0(imageSet, picture, -1); }
 
 /* Guarded image-draw wrapper: if artSet is non-null, draw picture `pictureIndex`
    as a textured quad with color -1 (use the texture's own tint). The caller's
