@@ -144,8 +144,12 @@ void fn_801E2188(void) {
     lbl_8055EA3C = fn_801A4548(&lbl_80339890[0]);
 }
 
-void fn_801E21B4(void* hi) {
-    lbl_8055EA40 = hi;
+void fn_801E21B4(void *collisionGroup) {
+    /* Cache `collisionGroup` as the active secondary collision group, paired
+     * with the primary group cached by fn_801E2188. */
+    #define gSecondaryCollisionGroup lbl_8055EA40
+    gSecondaryCollisionGroup = collisionGroup;
+    #undef gSecondaryCollisionGroup
 }
 
 #pragma scheduling invalid_target
