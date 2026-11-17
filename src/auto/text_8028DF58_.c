@@ -1375,60 +1375,61 @@ extern char lbl_80349024[];
 extern char lbl_80349078[];
 extern unsigned char lbl_8055F74C;
 #pragma cplusplus on
-void fn_8028FEE4(void *arg0, int arg1, float *arg2, float farg0, float farg1) {
-    EfEntry2 e;
-    EfEntry2 *d;
-    EfObj *o = (EfObj *)arg0;
-    float *a = (float *)arg1;
+void fn_8028FEE4(void *emitterPtr, int basePosAddr, float *generatedPos, float angle, float scale) {
+    /* Append one particle entry to the emitter's ring buffer: pack the base/generated position pair and the mode-dependent color/rotation byte, warn once if called outside the particle update window. */
+    EfEntry2 entry;
+    EfEntry2 *dst;
+    EfObj *emitter = (EfObj *)emitterPtr;
+    float *basePos = (float *)basePosAddr;
     if (lbl_8055F73C == 0 && lbl_8055F74C == 0) {
         lbl_8055F74C = 1;
         fn_802E30C8(lbl_8055C918, lbl_80349024);
     }
-    e.p.a.x = a[0];
-    e.p.a.y = a[1];
-    e.p.a.z = a[2];
-    e.p.b.x = arg2[0];
-    e.p.b.y = arg2[1];
-    e.p.b.z = arg2[2];
-    e.v6 = lbl_8055F738;
-    e.f1 = farg1;
-    switch (o->mode) {
+    entry.p.a.x = basePos[0];
+    entry.p.a.y = basePos[1];
+    entry.p.a.z = basePos[2];
+    entry.p.b.x = generatedPos[0];
+    entry.p.b.y = generatedPos[1];
+    entry.p.b.z = generatedPos[2];
+    entry.v6 = lbl_8055F738;
+    entry.f1 = scale;
+    switch (emitter->mode) {
     case 0:
-        e.c0 = o->en38 ? fn_80287B5C(4) : 0;
+        entry.c0 = emitter->en38 ? fn_80287B5C(4) : 0;
         break;
     case 1:
-        e.c1 = o->en88 ? fn_80287B5C(o->v84) : 0;
+        entry.c1 = emitter->en88 ? fn_80287B5C(emitter->v84) : 0;
         break;
     case 2:
-        e.c2 = o->en38 ? fn_80287B5C(0xff) : 0;
-        e.f0 = farg0;
+        entry.c2 = emitter->en38 ? fn_80287B5C(0xff) : 0;
+        entry.f0 = angle;
         break;
     default:
-        fn_802E317C(lbl_80349078, o->mode);
+        fn_802E317C(lbl_80349078, emitter->mode);
         break;
     }
-    if (o->head < 0) {
-        d = (EfEntry2 *)o->buf;
-        d->p = e.p;
-        d->v6 = e.v6;
-        d->c0 = e.c0;
-        d->c1 = e.c1;
-        d->c2 = e.c2;
-        d->f0 = e.f0;
-        d->f1 = e.f1;
-        o->head = 0;
-        o->tail = 1;
+    if (emitter->head < 0) {
+        dst = (EfEntry2 *)emitter->buf;
+        dst->p = entry.p;
+        dst->v6 = entry.v6;
+        dst->c0 = entry.c0;
+        dst->c1 = entry.c1;
+        dst->c2 = entry.c2;
+        dst->f0 = entry.f0;
+        dst->f1 = entry.f1;
+        emitter->head = 0;
+        emitter->tail = 1;
         return;
     }
-    d = (EfEntry2 *)o->buf + o->tail;
-    d->p = e.p;
-    d->v6 = e.v6;
-    d->c0 = e.c0;
-    d->c1 = e.c1;
-    d->c2 = e.c2;
-    d->f0 = e.f0;
-    d->f1 = e.f1;
-    o->tail = (o->tail + 1) % *(int *)((char *)o + 0x98);
+    dst = (EfEntry2 *)emitter->buf + emitter->tail;
+    dst->p = entry.p;
+    dst->v6 = entry.v6;
+    dst->c0 = entry.c0;
+    dst->c1 = entry.c1;
+    dst->c2 = entry.c2;
+    dst->f0 = entry.f0;
+    dst->f1 = entry.f1;
+    emitter->tail = (emitter->tail + 1) % emitter->cap;
 }
 #pragma cplusplus reset
 extern float lbl_80564424, lbl_80564448, lbl_8056444C, lbl_80564450, lbl_80564454, lbl_80564458;
