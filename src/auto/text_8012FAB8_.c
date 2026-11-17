@@ -205,37 +205,40 @@ void fn_8012FAB8(void *arg0) {
     }
 }
 
-void fn_801301E0(unsigned char *arg0) {
+/* Byte-swap a loaded big-endian LANG table in place: the 32-bit entry count at
+   +0x40 is swapped first, then every stored pointer offset at +0x44 onward is
+   byte-swapped and relocated by adding the table base address. */
+void fn_801301E0(unsigned char *table) {
     #pragma scheduling invalid_target
-    unsigned char d, b, a;
-    unsigned char *p;
-    unsigned char *q;
-    unsigned char *base;
-    unsigned char c;
+    unsigned char t3, t1, t0;
+    unsigned char *wordA;
+    unsigned char *wordB;
+    unsigned char *reloc;
+    unsigned char t2;
     int i;
 
-    a = arg0[0x40];
-    base = arg0;
-    b = arg0[0x42];
-    p = arg0 + 0x44;
-    c = arg0[0x41];
-    d = arg0[0x43];
-    q = arg0 + 0x48;
-    arg0[0x40] = arg0[0x43];
+    t0 = table[0x40];
+    reloc = table;
+    t1 = table[0x42];
+    wordA = table + 0x44;
+    t2 = table[0x41];
+    t3 = table[0x43];
+    wordB = table + 0x48;
+    table[0x40] = table[0x43];
     i = 0;
-    arg0[0x43] = a;
-    arg0[0x41] = arg0[0x42];
-    arg0[0x42] = c;
-    for (; i < *(int *)(arg0 + 0x40); i++) {
-        b = p[0]; d = p[3]; p[0] = d; p[3] = b;
-        d = p[1]; b = p[2]; p[1] = b; p[2] = d;
-        p += 8;
-        d = q[0]; b = q[3]; q[0] = b; q[3] = d;
-        d = q[1]; b = q[2]; q[1] = b; q[2] = d;
-        q += 8;
-        *(unsigned int *)(base + 0x44) += (unsigned int)arg0;
-        *(unsigned int *)(base + 0x48) += (unsigned int)arg0;
-        base += 8;
+    table[0x43] = t0;
+    table[0x41] = table[0x42];
+    table[0x42] = t2;
+    for (; i < *(int *)(table + 0x40); i++) {
+        t1 = wordA[0]; t3 = wordA[3]; wordA[0] = t3; wordA[3] = t1;
+        t3 = wordA[1]; t1 = wordA[2]; wordA[1] = t1; wordA[2] = t3;
+        wordA += 8;
+        t3 = wordB[0]; t1 = wordB[3]; wordB[0] = t1; wordB[3] = t3;
+        t3 = wordB[1]; t1 = wordB[2]; wordB[1] = t1; wordB[2] = t3;
+        wordB += 8;
+        *(unsigned int *)(reloc + 0x44) += (unsigned int)table;
+        *(unsigned int *)(reloc + 0x48) += (unsigned int)table;
+        reloc += 8;
     }
 }
 
