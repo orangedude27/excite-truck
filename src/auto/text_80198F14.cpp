@@ -2362,8 +2362,10 @@ extern "C" void fn_8019F064(void *arg0, void *arg1) {
     }
 }
 
-extern "C" void fn_8019F1A4(void* arg0) {
-    fn_8019AC44(arg0, (u8*)arg0 + 0x34, (u8*)arg0 + 0x40, *(f32*)((u8*)arg0 + 0x24));
+/* Forward to the collision-response helper fn_8019AC44, supplying obj's embedded
+ * position vector (obj+0x34), its result vector (obj+0x40) and the scale at obj+0x24. */
+extern "C" void fn_8019F1A4(void* obj) {
+    fn_8019AC44(obj, (u8*)obj + 0x34, (u8*)obj + 0x40, *(f32*)((u8*)obj + 0x24));
 }
 
 /* Forward to the collision-response helper fn_8019DDFC, supplying obj's embedded
