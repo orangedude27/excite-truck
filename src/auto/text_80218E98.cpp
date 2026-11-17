@@ -8447,7 +8447,8 @@ extern "C" void *fn_802284BC(void *obj, s32 shouldFree) {
     return obj;
 }
 
-extern "C" void fn_8022854C(void *p){fn_8023976C(*(s32*)((u8*)p+0x244));}
+// Draw the current frame of the SWF animation this UI element owns (state handle at +0x244).
+extern "C" void fn_8022854C(void *obj){fn_8023976C(*(s32*)((u8*)obj+0x244));}
 
 extern "C" void fn_802396BC(s32);
 extern "C" void fn_80228554(void *p){fn_802396BC(*(s32*)((u8*)p+0x244));}
