@@ -977,7 +977,8 @@ void fn_8020BC50(void *arg0, float farg0) { *(float *)((char *)arg0 + 0x24) = fa
 
 typedef float f32;
 typedef signed int s32;
-void fn_8020BC58(void *arg0, f32 farg0) { *(f32 *)((char *)arg0 + 0x1C) = farg0; }
+/* Set the per-sound volume of a VoiceSnd (mixed into its voices every frame). */
+void fn_8020BC58(VoiceSnd *snd, f32 volume) { snd->volume = volume; }
 
 s32 fn_8020BC60(void) { return 0; }
 
