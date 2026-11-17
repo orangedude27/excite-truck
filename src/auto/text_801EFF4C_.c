@@ -900,8 +900,9 @@ int fn_801F1494(int arg0, void *arg1, short arg2) {
     }
 }
 #pragma pop
-float fn_801F159C(void **arg0) {
-    return *(float *)((char *)*arg0 + 0x18);
+float fn_801F159C(void **objHandle) {
+    /* Returns the float at offset 0x18 of the object referenced by *objHandle (its Y position / elevation). */
+    return *(float *)((char *)*objHandle + 0x18);
 }
 
 #pragma push
