@@ -841,6 +841,7 @@ u32 MEMResizeForMBlockFrmHeap(MEMiHeapHead *heap, void *memBlock, u32 size) {
     return count;
 }
 #pragma dont_inline MEMAllocFromExpHeapEx
+/* Allocator alloc callback: allocate `size` bytes from the allocator's expanded heap using its stored alignment (heapParam1). */
 static void* AllocatorAllocForExpHeap_(MEMAllocator* allocator, u32 size) {
     return MEMAllocFromExpHeapEx(allocator->heap, size, allocator->heapParam1);
 }
