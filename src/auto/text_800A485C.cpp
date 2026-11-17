@@ -10685,12 +10685,14 @@ extern "C" s32 fn_800B6004(void *arg0) {
         if (fn_800A53C0(arg0) != 0) {
             if (!(*(u16 *)((u8 *)arg0 + 0x1F8C) & 8)) {
                 result = fn_800B5988(arg0);
-                if (result != 0) {
-                } else {
+                switch (result) {
+                case 0:
                     *(u16 *)((u8 *)arg0 + 0x1FAC) = (u16)(*(u16 *)((u8 *)arg0 + 0x1FAC) & 0xFFF8);
                     fn_800A53E8(arg0);
                     lbl_803D2140[13] = lbl_803D2140[13] + 1;
                     goto block_13;
+                default:
+                    break;
                 }
             } else {
 block_13:
@@ -10730,10 +10732,7 @@ block_25:
         return result;
     }
     flags = *(u16 *)((u8 *)arg0 + 0x1F8C);
-    if (flags & 8) goto use_flags;
-    return 9;
-use_flags:
-    return -((flags >> 1) & 1) & 0xB;
+    return (flags & 8) ? -((flags >> 1) & 1) & 0xB : 9;
 }
 
 struct CacheKey { u32 flag; s32 key; };
@@ -22170,6 +22169,7 @@ extern "C" void DrawSelf__Q36nw4hbm3lyt8BoundingFRCQ36nw4hbm3lyt8DrawInfo(Boundi
 }
 
 extern u32 lbl_8055DDE0;
+/* Returns the root-parent sentinel word used when walking bounding-box component parents in the home-button GUI. */
 extern "C" u32* fn_800D58B0(void) {
     return &lbl_8055DDE0;
 }
