@@ -427,6 +427,7 @@ u32 fn_8000C7F4(s32 arg0) {
 }
 #pragma scheduling on
 #pragma dont_inline off
+/* Slot-availability predicate for the menu: always reports the queried slot as enabled (nonzero). */
 s32 fn_8000C840(void) {
     return 1;
 }
