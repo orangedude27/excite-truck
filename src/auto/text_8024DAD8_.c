@@ -2354,24 +2354,27 @@ typedef struct InitTail {
     u8 b19c;
 } InitTail;
 #pragma scheduling off
-void fn_80251D0C(void *__restrict arg0) {
+/* Reset the tail of an object: forward its +0x20 handle through fn_80255904,
+ * clear flag bytes at +0x28/+0x48/+0x88/+0x108 and +0x19C, set +0x190 to -1,
+ * initialize +0x194/+0x198 to 0.0/20.0, and hide UI group 0x1F. */
+void fn_80251D0C(void *__restrict object) {
 #pragma scheduling on
-    float value1;
+    float zeroValue;
     int zero;
-    float value0;
-    fn_80255904(*(s32 *)((char *)arg0 + 0x20));
-    value1 = lbl_80563960;
+    float maxValue;
+    fn_80255904(*(s32 *)((char *)object + 0x20));
+    zeroValue = lbl_80563960;
     zero = 0;
-    value0 = lbl_805639C0;
-    *(s32 *)((char *)arg0 + 0x190) = -1;
-    *(u8 *)((char *)arg0 + 0x28) = zero;
-    *(u8 *)((char *)arg0 + 0x48) = zero;
-    *(u8 *)((char *)arg0 + 0x88) = zero;
-    *(u8 *)((char *)arg0 + 0x108) = zero;
-    *(f32 *)((char *)arg0 + 0x194) = value1;
-    *(f32 *)((char *)arg0 + 0x198) = value0;
-    fn_80214A9C(0x1F, value1);
-    *(u8 *)((char *)arg0 + 0x19C) = zero;
+    maxValue = lbl_805639C0;
+    *(s32 *)((char *)object + 0x190) = -1;
+    *(u8 *)((char *)object + 0x28) = zero;
+    *(u8 *)((char *)object + 0x48) = zero;
+    *(u8 *)((char *)object + 0x88) = zero;
+    *(u8 *)((char *)object + 0x108) = zero;
+    *(f32 *)((char *)object + 0x194) = zeroValue;
+    *(f32 *)((char *)object + 0x198) = maxValue;
+    fn_80214A9C(0x1F, zeroValue);
+    *(u8 *)((char *)object + 0x19C) = zero;
 }
 
 #pragma push
