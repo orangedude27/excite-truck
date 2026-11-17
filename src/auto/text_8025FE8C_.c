@@ -1135,39 +1135,22 @@ static inline void Selector_Repaint(void) {
 }
 #pragma scheduling invalid_target
 extern "C" void fn_80261C68(s32 *arg0) {
-    struct Dummy {
-        virtual void slot0();
-        virtual s32 slot1();
-        virtual void *slot2(s32);
-        virtual void slot3();
-        virtual s32 slot4();
-        virtual void *slot5(s32);
-        virtual void slot6();
-        virtual void slot7();
-        virtual void slot8();
-        virtual void slot9();
-        virtual void slot10();
-        virtual void slot11();
-        virtual void slot12();
-        virtual void slot13();
-        virtual void slot14();
-        virtual void slot15();
-        virtual void slot16();
-        virtual void slot17();
-        virtual void slot18();
-        virtual void slot19();
-        virtual void slot20();
-        virtual void slot21();
-        virtual void slot22();
-        virtual void slot23();
-        virtual void slot24();
-        virtual void slot25();
-        virtual void slot26();
-    };
+    /* Build both widget lists of the challenge-difficulty selector.
+     *
+     * arg0 is the screen's frame header, which becomes lbl_8055F420 (SELECTOR).
+     * For every group of the data source (at most 3) one SelectorGroupRow is
+     * allocated and pushed on the group list at 0x3C, and for every one of its
+     * items (at most 6) one SelectorItem is allocated and pushed on the item
+     * list at 0x18; the group's data node goes to 0x54 and each item's data
+     * node to 0x60.  Both kinds of row start off-cursor and dimmed (byte 0x1D)
+     * and hold the gArt animation and gText font Draw needs.  The value display
+     * named at stringBase + 0x178 is looked up for the header's 0x14 slot, and
+     * both lists are finally painted for the cursor state -- the same painting
+     * Selector_Repaint() does, which the original keeps inline here. */
     u8 *stringBase;
-    u8 *group;
-    s32 outer;
-    s32 inner;
+    u8 *groupList;
+    s32 groupIndex;
+    s32 itemIndex;
     s32 i;
     s32 j;
     s32 count;
@@ -1175,87 +1158,91 @@ extern "C" void fn_80261C68(s32 *arg0) {
     void *object;
     void *item;
     float targetValue;
-    u32 *base;
+    SelectorView *base;
 
     stringBase = (u8 *)&lbl_80345B40;
-    *(s32 *)((u8 *)arg0 + 8) = 0;
-    *(s32 *)((u8 *)arg0 + 0xC) = ((Dummy *)lbl_8055F3E4)->slot1();
-    memset((u8 *)arg0 + 0x60, 0, 0x18);
-    memset((u8 *)arg0 + 0x54, 0, 0xC);
-    *(s32 *)((u8 *)arg0 + 0x1C) = 0;
-    *(s32 *)((u8 *)arg0 + 0x40) = 0;
-    group = (u8 *)arg0;
-    outer = 0;
+    ((SelectorView *)arg0)->item_count = 0;
+    ((SelectorView *)arg0)->group_count = ((SelectorData *)lbl_8055F3E4)->groupCount();
+    memset((char *)arg0 + 0x60, 0, 0x18);
+    memset((char *)arg0 + 0x54, 0, 0xC);
+    ((SelectorView *)arg0)->item_widget_count = 0;
+    ((SelectorView *)arg0)->group_widget_count = 0;
+    groupList = (u8 *)arg0;
+    groupIndex = 0;
     goto outerCheck;
 outerBody:
-    *(void **)(group + 0x54) = ((Dummy *)lbl_8055F3E4)->slot2(outer);
-    object = fn_801284F8(0x2C, stringBase + 0x144);
+    /* the group's data node, kept at 0x54 so the inner loop can reach it */
+    *(SelectorDataGroup **)(groupList + 0x54) =
+        ((SelectorData *)lbl_8055F3E4)->group(groupIndex);
+    object = fn_801284F8(0x2C, stringBase + 0x144); /* one SelectorGroupRow */
     if (object != 0) {
-        item = ((Dummy *)lbl_8055F3E4)->slot2(outer);
-        *(s32 *)((u8 *)object + 0x14) = 0;
-        *(void **)object = lbl_80345E28;
-        *(s32 *)((u8 *)object + 0x20) = outer;
-        *(void **)((u8 *)object + 0x18) = item;
-        *(u8 *)((u8 *)object + 0x1C) = 0;
-        *(u8 *)((u8 *)object + 0x1D) = 1;
-        *(u8 *)((u8 *)object + 0x1E) = 0;
-        *(u8 *)((u8 *)object + 0x1F) = 0;
-        *(void **)((u8 *)object + 0x24) = fn_8023512C(stringBase + 0x150);
-        *(void **)((u8 *)object + 0x28) = fn_80232578(stringBase + 0x15C);
+        item = (void *)((SelectorData *)lbl_8055F3E4)->group(groupIndex);
+        ((SelectorGroupRow *)object)->unused_0x14 = 0;
+        ((SelectorGroupRow *)object)->vtable = &SELECTOR_GROUP_VTABLE;
+        ((SelectorGroupRow *)object)->group = groupIndex;
+        ((SelectorGroupRow *)object)->data = item;
+        ((SelectorGroupRow *)object)->on_cursor = 0;
+        ((SelectorGroupRow *)object)->dim = 1;
+        ((SelectorGroupRow *)object)->expanded = 0;
+        ((SelectorGroupRow *)object)->pad_0x1F = 0;
+        ((SelectorGroupRow *)object)->art = fn_8023512C(stringBase + 0x150);
+        ((SelectorGroupRow *)object)->font = fn_80232578(stringBase + 0x15C);
     }
     {
-        u32 *array = *(u32 **)((u8 *)arg0 + 0x3C);
-        count = *(s32 *)((u8 *)arg0 + 0x40);
-        *(s32 *)((u8 *)arg0 + 0x40) = count + 1;
-        array[count] = (u32)object;
+        void **array = (void **)((SelectorView *)arg0)->group_widgets;
+        count = ((SelectorView *)arg0)->group_widget_count;
+        ((SelectorView *)arg0)->group_widget_count = count + 1;
+        array[count] = object;
     }
-    inner = 0;
+    itemIndex = 0;
     goto innerCheck;
 innerBody:
-    item = ((Dummy *)*(void **)(group + 0x54))->slot5(inner);
-    count = *(s32 *)((u8 *)arg0 + 8);
-    ((u32 *)arg0 + count)[0x18] = (u32)item;
-    item = fn_801284F8(0x28, stringBase + 0x168);
+    item = (void *)((SelectorDataGroup *)*(void **)(groupList + 0x54))->item(itemIndex);
+    count = ((SelectorView *)arg0)->item_count;
+    ((SelectorView *)arg0)->group_item_data[count] = (s32)item;
+    item = fn_801284F8(0x28, stringBase + 0x168); /* one SelectorItem */
     if (item != 0) {
-        object = ((Dummy *)lbl_8055F3E4)->slot2(outer);
-        object = ((Dummy *)object)->slot5(inner);
-        *(s32 *)((u8 *)item + 0x14) = 0;
-        *(void **)item = lbl_80345EA0;
-        *(void **)((u8 *)item + 0x18) = object;
-        *(u8 *)((u8 *)item + 0x1E) = 0;
-        *(u8 *)((u8 *)item + 0x1C) = 0;
-        *(u8 *)((u8 *)item + 0x1D) = 1;
-        *(void **)((u8 *)item + 0x20) = fn_8023512C(stringBase + 0x150);
-        *(void **)((u8 *)item + 0x24) = fn_80232578(stringBase + 0x15C);
+        object = ((SelectorData *)lbl_8055F3E4)->group(groupIndex);
+        object = ((SelectorDataGroup *)object)->item(itemIndex);
+        ((SelectorItem *)item)->unused_0x14 = 0;
+        ((SelectorItem *)item)->vtable = &SELECTOR_ITEM_VTABLE;
+        ((SelectorItem *)item)->data = object;
+        ((SelectorItem *)item)->expanded = 0;
+        ((SelectorItem *)item)->on_cursor = 0;
+        ((SelectorItem *)item)->dim = 1;
+        ((SelectorItem *)item)->art = fn_8023512C(stringBase + 0x150);
+        ((SelectorItem *)item)->font = fn_80232578(stringBase + 0x15C);
     }
     {
-        u32 *array = *(u32 **)((u8 *)arg0 + 0x18);
-        count = *(s32 *)((u8 *)arg0 + 0x1C);
-        *(s32 *)((u8 *)arg0 + 0x1C) = count + 1;
-        array[count] = (u32)item;
+        void **array = (void **)((SelectorView *)arg0)->item_widgets;
+        count = ((SelectorView *)arg0)->item_widget_count;
+        ((SelectorView *)arg0)->item_widget_count = count + 1;
+        array[count] = item;
     }
-    inner++;
-    *(s32 *)((u8 *)arg0 + 8) += 1;
+    itemIndex++;
+    ((SelectorView *)arg0)->item_count += 1;
 innerCheck:
-    count = ((Dummy *)*(void **)(group + 0x54))->slot4();
+    /* a group shows at most six of its items */
+    count = ((SelectorDataGroup *)*(void **)(groupList + 0x54))->itemCount();
     max = 6;
     if (count < 6) max = count;
-    if (inner < max) goto innerBody;
-    group += 4;
-    outer++;
+    if (itemIndex < max) goto innerBody;
+    groupList += 4;
+    groupIndex++;
 outerCheck:
-    count = ((Dummy *)lbl_8055F3E4)->slot1();
+    /* and the screen offers at most three groups */
+    count = ((SelectorData *)lbl_8055F3E4)->groupCount();
     max = 3;
     if (count < 3) max = count;
-    if (outer < max) goto outerBody;
+    if (groupIndex < max) goto outerBody;
 
     object = fn_80207848(stringBase + 0x178, 0);
-    *(void **)((u8 *)arg0 + 0x14) = object;
+    ((SelectorView *)arg0)->value_widget = object;
     if (object != 0) {
         targetValue = lbl_80563B88;
-        if (targetValue != *(float *)((u8 *)object + 8)) {
-            *(u8 *)((u8 *)object + 0x4D) = 1;
-            *(float *)((u8 *)object + 8) = targetValue;
+        if (targetValue != *(float *)((char *)object + 8)) {
+            *(u8 *)((char *)object + 0x4D) = 1;
+            *(float *)((char *)object + 8) = targetValue;
         }
     } else {
         fn_802E317C(stringBase + 0x188);
@@ -1265,45 +1252,45 @@ outerCheck:
     j = 0;
     goto firstCheck;
 firstBody:
-    if (lbl_8055F3EB == 0) {
-        object = *(void **)((u8 *)base[6] + j);
-        ((Dummy *)object)->slot22();
-        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
-        ((Dummy *)object)->slot25();
-    } else if (i == (s32)base[0]) {
-        object = *(void **)((u8 *)base[6] + j);
-        ((Dummy *)object)->slot24();
-    } else if (i == (s32)base[1] * 2 || i == (s32)base[1] * 2 + 1) {
-        object = *(void **)((u8 *)base[6] + j);
-        ((Dummy *)object)->slot23();
-        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
-        ((Dummy *)object)->slot25();
+    if (SELECTOR_IN_ITEMS == 0) {
+        object = *(void **)(base->item_widgets + j);
+        ((SelectorWidget *)object)->setDim();
+        object = *(void **)(SELECTOR->item_widgets + j);
+        ((SelectorWidget *)object)->clearCursor();
+    } else if (i == base->cursor) {
+        object = *(void **)(base->item_widgets + j);
+        ((SelectorWidget *)object)->setCursor();
+    } else if (i == base->group * 2 || i == base->group * 2 + 1) {
+        object = *(void **)(base->item_widgets + j);
+        ((SelectorWidget *)object)->clearDim();
+        object = *(void **)(SELECTOR->item_widgets + j);
+        ((SelectorWidget *)object)->clearCursor();
     } else {
-        object = *(void **)((u8 *)base[6] + j);
-        ((Dummy *)object)->slot25();
+        object = *(void **)(base->item_widgets + j);
+        ((SelectorWidget *)object)->clearCursor();
     }
     j += 4;
     i++;
 firstCheck:
-    base = (u32 *)lbl_8055F420;
-    if (i < (s32)base[2]) goto firstBody;
+    base = SELECTOR;
+    if (i < base->item_count) goto firstBody;
 
     i = 0;
-    for (j = 0; base = (u32 *)lbl_8055F420, i < (s32)base[3]; i++) {
-        if (lbl_8055F3EB == 0) {
-            if (i == (s32)base[1]) {
-                ((Dummy *)*(void **)((u8 *)base[0xF] + j))->slot24();
+    for (j = 0; base = SELECTOR, i < base->group_count; i++) {
+        if (SELECTOR_IN_ITEMS == 0) {
+            if (i == base->group) {
+                ((SelectorWidget *)*(void **)(base->group_widgets + j))->setCursor();
             } else {
-                ((Dummy *)*(void **)((u8 *)base[0xF] + j))->slot23();
-                ((Dummy *)*(void **)((u8 *)((u32 *)lbl_8055F420)[0xF] + j))->slot25();
+                ((SelectorWidget *)*(void **)(base->group_widgets + j))->clearDim();
+                ((SelectorWidget *)*(void **)(SELECTOR->group_widgets + j))->clearCursor();
             }
-        } else if (i == (s32)base[1]) {
-            ((Dummy *)*(void **)((u8 *)base[0xF] + j))->slot24();
-            base = (u32 *)lbl_8055F420;
-            ((Dummy **)base[0xF])[base[1]]->slot26();
+        } else if (i == base->group) {
+            ((SelectorWidget *)*(void **)(base->group_widgets + j))->setCursor();
+            base = SELECTOR;
+            ((SelectorWidget **)base->group_widgets)[base->group]->setExpanded();
         } else {
-            ((Dummy *)*(void **)((u8 *)base[0xF] + j))->slot22();
-            ((Dummy *)*(void **)((u8 *)((u32 *)lbl_8055F420)[0xF] + j))->slot25();
+            ((SelectorWidget *)*(void **)(base->group_widgets + j))->setDim();
+            ((SelectorWidget *)*(void **)(SELECTOR->group_widgets + j))->clearCursor();
         }
         j += 4;
     }
