@@ -20640,7 +20640,9 @@ void *l2cu_find_lcb_by_handle(u16 handle) {
     return 0;
 }
 
-u8 fn_8008D7C4(void) { return lbl_803C4040[1]; }
+/* Returns l2cb.link_role, the default ACL link role (master/slave) that a new
+ * L2CAP link control block inherits. */
+u8 fn_8008D7C4(void) { return l2cb_link_role; }
 
 /* Build an L2CAP signaling command header in a command-pool buffer. */
 void *l2cu_build_header(u16 arg0, u8 arg1, u8 arg2, s32 arg3) {
