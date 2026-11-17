@@ -2888,7 +2888,7 @@ extern "C" void fn_80215CB8(void) {
 }
 
 extern "C" void fn_80215CBC(void) {
-
+    /* Empty no-op: a default widget-wrapper vtable method with no behaviour. */
 }
 
 extern "C" void fn_80215CC0(void) {
