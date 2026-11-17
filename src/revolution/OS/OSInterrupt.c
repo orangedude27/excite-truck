@@ -67,6 +67,7 @@ set_msr:
     // clang-format on
 }
 
+// Replace the handler for `type` and return the previously installed one.
 OSInterruptHandler
     __OSSetInterruptHandler(OSInterruptType type, OSInterruptHandler handler) {
     OSInterruptHandler old = InterruptHandlerTable[type];
