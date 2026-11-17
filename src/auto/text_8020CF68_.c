@@ -30,7 +30,7 @@ public:
 #pragma cplusplus off
 
 extern Names8020D2D4 lbl_802F9E58;
-extern char lbl_8055B630[], lbl_8055B638[], lbl_8055B63C[];
+__declspec(section ".sdata") extern char lbl_8055B630[], lbl_8055B638[], lbl_8055B63C[];
 extern float lbl_80563324, lbl_80563328, lbl_80563330, lbl_80563334, lbl_80563338, lbl_8056333C;
 extern float lbl_80563340, lbl_80563344, lbl_80563348, lbl_8056334C, lbl_80563350, lbl_80563354, lbl_80563358, lbl_8056335C;
 extern void fn_80230B5C(void *);
