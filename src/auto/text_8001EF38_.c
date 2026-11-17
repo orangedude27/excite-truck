@@ -196,8 +196,11 @@ void fn_8001EFBC(void) {
 #undef FinalizeAchievements
 }
 
-void fn_8001EFC0(void) {
-    fn_8001FAC8();
+int fn_8001EFC0(s32 counter, const char *name) {
+#define QueryAchievementTotal fn_8001FAC8
+    /* Tail-call alias: return the named achievement's summed statistic value for the given value slot. */
+    return QueryAchievementTotal(counter, name);
+#undef QueryAchievementTotal
 }
 
 void fn_8001EFC4(void) {
