@@ -430,8 +430,9 @@ unsigned char fn_8027D92C(void *entry) { return ((unsigned char *)entry)[0x1F1];
 /* Return the third byte of the 4-byte field at offset 0x1F0 of the entry. */
 unsigned char fn_8027D934(void *entry) { return ((unsigned char *)entry)[0x1F2]; }
 
-unsigned char fn_8027D93C(void *arg0) {
-    return ((unsigned char *)arg0)[0x1F3];
+/* Return the fourth byte of the 4-byte field at offset 0x1F0 of the entry. */
+unsigned char fn_8027D93C(void *entry) {
+    return ((unsigned char *)entry)[0x1F3];
 }
 
 int fn_8027D944(int arg0) {
