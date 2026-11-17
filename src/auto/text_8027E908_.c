@@ -300,7 +300,10 @@ extern "C" void fn_8027ED2C(void) {
 #pragma dont_inline reset
 
 void* fn_8027ED70(void) {
-    return lbl_8055F680;
+#define gCareerObj lbl_8055F680
+    /* Get the singleton career/UI manager object created by fn_8027E908. */
+    return gCareerObj;
+#undef gCareerObj
 }
 
 extern int fn_802146BC(int *, int, int, int, int, int, int, int);
