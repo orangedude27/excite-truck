@@ -3402,8 +3402,10 @@ struct SurfaceChangeAse {
     int targetCount;   /* 0x28 */
 };
 
-int fn_801D872C(int arg0) {
-    return ((int *)arg0)[6];
+/* State getter of a SurfaceChange_ASE action: 1 = idle, 2 = running
+ * (fn_801D873C starts it, fn_801D88BC resets it, fn_801D875C steps it while 2). */
+int fn_801D872C(struct SurfaceChangeAse *action) {
+    return action->state;
 }
 
 int fn_801D8734(void) {
