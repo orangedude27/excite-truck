@@ -5299,8 +5299,9 @@ void fn_801A48E4(void* arg0) {
     }
 }
 
-void fn_801A49E8(void* arg0) {
-    if (*(s32*)((u8*)arg0 + 0x48) != 0) {
+/* If the solid/instance has a notify interface at +0x48, dispatch it to every registered listener (fn_801D0650). */
+void fn_801A49E8(void* solid) {
+    if (*(s32*)((u8*)solid + 0x48) != 0) {
         fn_801D0650();
     }
 }
