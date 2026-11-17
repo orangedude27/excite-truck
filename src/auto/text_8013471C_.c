@@ -323,11 +323,13 @@ void fn_80134A8C(void) {
 }
 #pragma scheduling on
   
-  void fn_80134B50(void) {
-      extern void *lbl_8055E0D4;
-      extern void fn_80136F08(void *);
-      fn_80136F08(lbl_8055E0D4);
-  }
+/* Rebuild the global Proxer proximity tracker: refresh each entry's cached
+ * data from its car/actor and recompute all pairwise deltas. */
+void fn_80134B50(void) {
+    extern void *lbl_8055E0D4;
+    extern void fn_80136F08(void *proxer);
+    fn_80136F08(lbl_8055E0D4);
+}
   
 #pragma push
 #pragma processor 750
