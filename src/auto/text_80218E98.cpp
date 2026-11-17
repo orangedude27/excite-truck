@@ -9553,9 +9553,10 @@ extern "C" void fn_80229E74(void *arg0) {
     }
 }
 
-extern "C" void fn_80229EB4(void *arg0) {
-    *(u8 *)((char *)arg0 + 0x268) = 0;
-    *(s32 *)((char *)arg0 + 0x260) = 0;
+extern "C" void fn_80229EB4(void *widget) {
+    /* Reset the list widget's selection/step result (+0x260) and its active flag (+0x268). */
+    *(u8 *)((char *)widget + 0x268) = 0;
+    *(s32 *)((char *)widget + 0x260) = 0;
 }
 
 extern "C" u32 fn_80229EC4(void) { return 1; }
