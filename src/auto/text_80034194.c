@@ -908,7 +908,16 @@ static inline u32 entryToPathC(u32 entry, char *path, u32 maxlen) {
     loc = entryToPathB(*(u32 *)(FstStart_8055D840 + 4 + entry * 12), path, maxlen);
     if (loc == maxlen) return loc;
     path[loc++] = '/';
-    loc += myStrncpy(path + loc, name, maxlen - loc);
+    {
+        char *dest = path + loc;
+        u32 i = maxlen - loc;
+        u32 n = i;
+        while (i > 0 && *name != 0) {
+            *dest++ = *name++;
+            i--;
+        }
+        loc += n - i;
+    }
     return loc;
 }
 static inline BOOL convertEntrynumToPath(s32 entrynum, char *path, u32 maxlen) {
