@@ -11,7 +11,7 @@ extern float lbl_8055F47C;
 extern float lbl_8055F49C;
 extern float lbl_80563CF4, lbl_80563CF8, lbl_80563CFC, lbl_80563D00, lbl_80563D04;
 extern void *fn_8026A600(void *);
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8026A584(void) {
 #pragma scheduling on
     fn_8000D838(&lbl_8055F470);
