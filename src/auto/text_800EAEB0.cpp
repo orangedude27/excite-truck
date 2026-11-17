@@ -925,39 +925,42 @@ free_heap:
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void fn_800EC1A4(void *arg0) {
+    struct AssertFile *file = (struct AssertFile *)lbl_80322D60;
     FrameHeapDestroyView *state = (FrameHeapDestroyView *)arg0;
-    register const char *file = (const char *)lbl_80322D60;
+    struct { FrameHeapDestroyListView *p; } headBox;
+    FrameHeapDestroyListView *&head = headBox.p;
+    struct { void *p; } listBox;
+    void *&list = listBox.p;
     if (state->heap == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x87, file + 0x44);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)file + 0, 0x87, (const char *)file + 0x44);
     }
-    register void *head;
     if (state->count == 0) goto skip_loop;
-    head = (u8 *)state + 8;
+    head = &state->list;
     goto loop_test;
 loop_body:
     if (state->count == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
     }
-    {
-        void *list = *(void **)((u8 *)head + 4);
-        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
-        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
-        if (list != 0) {
-            register void *node = (u8 *)list + 0xC;
-            while (node != *(void **)((u8 *)list + 12)) {
-                void (*callback)(void *, void *, void *);
-                node = *(void **)((u8 *)node + 4);
-                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
-                if (node != 0) {
-                    callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
-                    if (callback != 0) callback((u8 *)node + 0x20, *(void **)((u8 *)node + 8), *(void **)((u8 *)node + 0x10));
-                }
+    list = head->tail;
+    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
+    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
+    if (list != 0) {
+        struct { void *p; } nodeBox;
+        void *&node = nodeBox.p;
+        node = (u8 *)list + 0xC;
+        while (node != *(void **)((u8 *)list + 12)) {
+            void (*callback)(void *, void *, void *);
+            node = *(void **)((u8 *)node + 4);
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
+            if (node != 0) {
+                callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
+                if (callback != 0) callback((u8 *)node + 0x20, *(void **)((u8 *)node + 8), *(void **)((u8 *)node + 0x10));
             }
-            if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
         }
-        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
-        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)head - 4, list);
+        if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
     }
+    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&state->count, list);
 loop_test:
     if (state->count != 0) goto loop_body;
 skip_loop:
@@ -977,16 +980,16 @@ skip_loop:
             *((void **)temp_r3_2 + 3) = temp_r4;
             *((void **)temp_r3_2 + 4) = temp_r4;
         }
-        head = (u8 *)state + 8;
+        head = &state->list;
         if (temp_r3_2 == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
         }
         void *sp8 = head;
-        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)state + 4, &sp8, temp_r3_2);
+        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&state->count, &sp8, temp_r3_2);
         var_r0 = 1;
     }
     if (var_r0 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x91, file + 0x68);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)file + 0, 0x91, (const char *)file + 0x68);
     }
 }
 #pragma pop
@@ -1002,6 +1005,7 @@ extern "C" u32 MEMGetAllocatableSizeForFrmHeapEx(void *, s32);
 #pragma push
 #pragma use_lmw_stmw off
 void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)(void *, unsigned long, void *), void *user) {
+    register void (*cb)(void *, unsigned long, void *) = callback;
     register void *block;
     register void *list;
     register void *link;
@@ -1014,7 +1018,7 @@ void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)
     *(u32 *)block = 0;
     *((u32 *)block + 1) = 0;
     *((u32 *)block + 2) = size;
-    *((void **)block + 3) = (void *)callback;
+    *((void **)block + 3) = (void *)cb;
     *((void **)block + 4) = user;
     if (*(void **)((u8 *)this + 4) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1fb, (const char *)lbl_80322FF8);
@@ -1032,7 +1036,7 @@ void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)
     return (u8 *)block + 0x20;
 }
 #pragma pop
-extern "C" u32 fn_800EC56C(void *arg0) {
+extern "C" u32 fn_800EC56C(void *__restrict arg0) {
     void **heap = (void **)arg0;
     u32 size;
     if (*heap == 0) {
