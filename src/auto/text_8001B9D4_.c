@@ -241,7 +241,12 @@ s32 fn_8001BBB4(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
 }
 
 void fn_8001BBB8(void) {
-    fn_8001CF8C();
+    /* Tail-call the contest-score ranking helper: fn_8001CF8C finds the contest's
+     * StatRecord and returns the insert/rank index for the incoming key and score
+     * (5 when the contest has no record). Args pass through in r3-r6 and f1. */
+#define rankContestScore fn_8001CF8C
+    rankContestScore();
+#undef rankContestScore
 }
 
 extern void fn_8001D234(s32 packed, s32 *entryIndex, s32 *valueIndex, s32 *flag);
