@@ -38,6 +38,10 @@ void fn_80204008(void) {
 
 }
 
+/* One of this unit's run of trivial virtual-method stubs (the class whose global
+ * instance fn_80203F10 registers for destruction): always answers 0/false.  No
+ * code in the decomp calls it directly, so it is only reached through the
+ * object's table of methods. */
 int fn_8020400C(void) {
     return 0;
 }
@@ -122,31 +126,20 @@ static inline f32 fn_80204054_cvt(u32 value, f64 bias) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, s32 screenY) {
-    union { f64 d; u32 w[2]; } cvt1, cvt2, cvt3;
-    f64 bias;
     Vec dir;
     Vec pos;
     Vec hit;
     Vec orig;
     s32 info;
     s16 localContext;
-    f32 scale, dx, dy;
-    f32 a, b, c, p, q, r, x, y, z;
+    f32 x, y, z, p, q, r, a, b, c;
+    f32 dy, dx, scale;
     register f32 step, dist, minStep, maxDist, mult, tol;
     s32 noHit, flagB, found;
 
-#pragma fp_contract on
-    bias = lbl_80563160;
-    cvt1.w[0] = 0x43300000;
-    cvt1.w[1] = (u32)((lbl_8055CFF0 / 2) ^ 0x80000000);
-    scale = (f32)(cvt1.d - bias) / lbl_8055FC88;
-    cvt2.w[0] = 0x43300000;
-    cvt2.w[1] = (u32)((screenX - lbl_8055CFF0 / 2) ^ 0x80000000);
-    dx = (f32)(cvt2.d - bias);
-    cvt3.w[0] = 0x43300000;
-    cvt3.w[1] = (u32)((screenY - lbl_8055CFF4 / 2) ^ 0x80000000);
-    dy = -(f32)(cvt3.d - bias);
-#pragma fp_contract off
+    scale = (f32)(lbl_8055CFF0 / 2) / lbl_8055FC88;
+    dx = (f32)(screenX - lbl_8055CFF0 / 2);
+    dy = (f32)(screenY - lbl_8055CFF4 / 2);
 
     a = m[6] * scale;
     b = m[7] * scale;
@@ -154,6 +147,7 @@ s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, 
     p = m[0] * dx;
     q = m[1] * dx;
     r = m[2] * dx;
+    dy = -dy;
     x = m[3] * dy;
     y = m[4] * dy;
     z = m[5] * dy;
@@ -166,23 +160,26 @@ s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, 
         context = &localContext;
     }
 
-    step = lbl_80563148;
-    tol = lbl_8056314C;
+    step = 10.0f;
+    tol = 0.0254f;
     dist = step;
-    mult = lbl_80563150;
-    maxDist = lbl_80563154;
-    minStep = lbl_80563158;
+    mult = 0.5f;
+    maxDist = 10000000.0f;
+    minStep = 0.01f;
     flagB = 0;
 
     for (;;) {
-        f32 d = dist;
+        f32 px, py, pz;
         found = 0;
-        pos.x = m[9] + dir.x * d;
-        pos.y = m[10] + dir.y * d;
-        pos.z = m[11] + dir.z * d;
-        orig.x = pos.x;
-        orig.y = pos.y;
-        orig.z = pos.z;
+        px = m[9] + dir.x * dist;
+        py = m[10] + dir.y * dist;
+        pz = m[11] + dir.z * dist;
+        orig.x = px;
+        orig.y = py;
+        orig.z = pz;
+        pos.x = px;
+        pos.y = py;
+        pos.z = pz;
 
         fn_801E9DC4(context);
         noHit = (fn_801E9E78(context, &pos, (s32)&hit, (s32)&info) == 0);
