@@ -559,9 +559,6 @@ extern "C" s32 fn_802C49E8(s32);
 extern "C" s32 fn_802C2DD4(s32);
 extern "C" void *fn_802228B0(void *, s32, s32, s32);
 extern "C" void *fn_802226D4(s32);
-#pragma push
-#pragma small_data on
-#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 extern "C" void *fn_8021203C(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     extern int lbl_8033D528[];
@@ -612,10 +609,6 @@ extern "C" void *fn_8021203C(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4)
     ((s32 (*)(const char *, const char *, ...))fn_802E317C)(lbl_8033CDA4, name + 1);
     return 0;
 }
-#pragma use_lmw_stmw on
-#pragma scheduling on
-#pragma small_data off
-#pragma pop
 
 extern "C" s32 fn_80128668(void);
 /* If ptr is set and count is positive, free the object (fn_80128668 receives
