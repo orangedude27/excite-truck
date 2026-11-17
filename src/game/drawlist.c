@@ -990,7 +990,14 @@ int fn_802C9994(int packedColor) {
 extern char lbl_804C1440[];
 extern float lbl_8055D01C;
 void fn_802C99D8(void) {
-    fn_802D01B0(lbl_804C1440, lbl_8055D01C);
+#define s_direction lbl_804C1440
+#define s_drawScalar lbl_8055D01C
+#define ApplyDirection fn_802D01B0
+    /* Applies the global 3-component direction vector and draw scalar to the draw state. */
+    ApplyDirection(s_direction, s_drawScalar);
+#undef s_direction
+#undef s_drawScalar
+#undef ApplyDirection
 }
 
 #pragma dont_inline on
