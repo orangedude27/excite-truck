@@ -788,7 +788,7 @@ void fn_801E1688(void) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_801E168C(void *arg0) {
     f32 y = lbl_80562C7C;
     f32 x = lbl_80562C78;
