@@ -2269,8 +2269,9 @@ extern "C" void *fn_80148294(const char *name, void *table) {
 }
 #pragma pop
 extern "C" void *fn_80148334(s32, s32, void *);
-extern "C" void fn_80148324(void *arg0, s32 arg1) {
-    fn_80148334(arg1, *(s32 *)((u8 *)arg0 + 0x2C), arg0);
+/* Look up a 0x28-byte table entry by name: obj holds the table pointer at +0x2C and name is the case-insensitive lookup key. */
+extern "C" void fn_80148324(void *obj, s32 name) {
+    fn_80148334(name, *(s32 *)((u8 *)obj + 0x2C), obj);
 }
 
 /* Find a 0x28-byte table entry by case-insensitively matching its name string. */
