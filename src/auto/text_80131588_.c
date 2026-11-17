@@ -657,17 +657,22 @@ extern unsigned long strlen(const char*);
 extern char lbl_8032B790[];
 #pragma push
 #pragma scheduling invalid_target
-s32 fn_80132290(void* arg0, const char* arg1, const char* arg2) {
-    void **vtable = *(void ***)arg0;
-    const char *value = ((char *(*)(void *))vtable[5])(arg0);
+extern "C" s32 fn_80132290(void* arg0, const char* arg1, const char* arg2) {
+    class Node {
+    public:
+        virtual char *getFirst();
+        virtual void v1();
+        virtual void v2();
+        virtual char *getString();
+    };
+    const char *value = ((Node *)arg0)->getString();
     s32 index = 0;
     while ((s8)*arg2 != 0) {
         if (stricmp(arg2, value) == 0) return index;
-        arg2 = strlen(arg2) + arg2 + 1;
+        arg2 += strlen(arg2) + 1;
         index++;
     }
-    fn_802E317C(lbl_8032B790, value, arg1,
-        ((char *(*)(void *))((void **)*(void **)arg0)[2])(arg0));
+    fn_802E317C(lbl_8032B790, value, arg1, ((Node *)arg0)->getFirst());
     return -1;
 }
 #pragma processor 750
