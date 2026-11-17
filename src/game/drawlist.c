@@ -1082,10 +1082,12 @@ void fn_802C9A70(int drawBars) {
     lbl_8055FC74 = 0;
 }
 #pragma dont_inline reset
-int fn_802C9C24(void *arg0) {
-    void *p = *(void **)((char *)arg0 + 8);
-    void *q = *(void **)((char *)p + 4);
-    return *(int *)q + 4;
+/* Returns the address of a resource entry's name string: arg0->+8 is a node,
+   node->+4 points at the name holder whose first word plus 4 is the string. */
+int fn_802C9C24(void *entry) {
+    void *node = *(void **)((char *)entry + 8);
+    void *nameHolder = *(void **)((char *)node + 4);
+    return *(int *)nameHolder + 4;
 }
 
 extern void *lbl_8055FC68;
