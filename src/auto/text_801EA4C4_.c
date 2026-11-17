@@ -78,12 +78,11 @@ void fn_801EA56C(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma opt_propagation off
 void fn_801EA59C(s32 arg0, s32 arg1, void *arg2) {
+    u8 active;
+    s32 allow;
     u8 *entry;
     s32 version;
-    s32 allow;
-    u8 active;
     entry = (u8 *)(*(s32 *)&lbl_8055EB78 + arg0 * 0xBC);
     version = *(s32 *)arg2;
     *(s32 *)(entry + 0x44) = version;
