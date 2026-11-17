@@ -201,8 +201,10 @@ void fn_801284F0(void *arg0, void *arg1) {
     fn_8012834C(arg0, arg1, 2);
 }
 
-void fn_801284F8(void *arg0, void *arg1) {
-    fn_8012834C(arg1, arg0, 3);
+/* Named heap allocation through C++ operator new (source id 3): allocates
+   `size` bytes and records `label` as the allocation's source name. */
+void fn_801284F8(void *size, void *label) {
+    fn_8012834C(label, size, 3);
 }
 
 void fn_8012850C(void *arg0, void *arg1) {
