@@ -987,8 +987,11 @@ void fn_802E61D8(void *channel) {
 #define SoundOutputMode lbl_8055FF8C /* 0 = mono, 2 = surround */
 #define PanCenter lbl_8056512C
 #define SurroundPanDefault lbl_80565128
-void fn_802E61E4(void *arg0, float farg0) {
-    *(float *)((char *)arg0 + 8) = farg0;
+/* SND_SetVolume: set a voice channel's volume (+0x08); the voice mixer in
+ * src/game/voicesnd.c rewrites it every frame with the speaker's volume scaled
+ * by the voice's own level and distance falloff. */
+void fn_802E61E4(void *voice, float volume) {
+    ((struct SpuChannel *)voice)->volume = volume;
 }
 
 void fn_802E61EC(void *voice, float pan) {
