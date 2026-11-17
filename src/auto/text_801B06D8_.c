@@ -1873,11 +1873,11 @@ s32 fn_801B2C70(void *arg0) {
     return 1;
 }
 extern int fn_801E89EC();
+typedef struct { u32 a, b; } WordPair_801B2D28;
 #pragma cplusplus on
 extern "C" s32 fn_801B2F40(s32);
 extern "C" f32 fn_801B306C(void);
 extern "C" void *fn_801B307C(void);
-typedef struct { u32 a, b; } WordPair_801B2D28;
 extern "C" void fn_801B2D28(void *arg0) {
     struct Item {
         virtual void d0();
