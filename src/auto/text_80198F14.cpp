@@ -1651,8 +1651,7 @@ extern "C" s32 fn_8019D484(const Vec *p0, const Vec *v0, const Vec *p1, const Ve
 s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
     f32* aMat = *(f32**)((u8*)arg0 + 0xC);
     f32* bMat = *(f32**)((u8*)arg1 + 0xC);
-    Vec aAxis, bAxis, aPos, bPos, diff, cross;
-    Vec mid, da, db, p, q, delta, normal, center;
+    Vec aPos, bPos, p, q, aAxis, bAxis, diff, cross, mid, da, db, normal, center, delta;
     f32 den, t0, t1;
     f32 h0 = *(f32*)((u8*)arg0 + 0x28);
     f32 h1 = *(f32*)((u8*)arg1 + 0x28);
@@ -1846,7 +1845,7 @@ extern f32 lbl_80562350;
 extern f32 lbl_80562354;
 extern f32 lbl_80562358;
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling reset
 extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __restrict arg4, void *arg5, f32 farg0) {
     f32 * __restrict vec0 = (f32 *)arg0;
     f32 * __restrict vec2 = (f32 *)arg4;
@@ -4243,12 +4242,12 @@ extern "C" void fn_801A2674(void* obj, s32 param28, s32 param2C, f32 extent) {
 
 extern f32 lbl_805622E0;
 extern "C" void fn_801A2684(void* arg0, f32* arg1, f32* arg2) {
-    f32 sp10, spC, sp8;
+    f32 temp_f1, temp_f2, sp10, spC, sp8;
     f32 temp_f0 = *(f32*)((u8*)arg0 + 0x24);
     void* temp_r3 = *(void**)((u8*)arg0 + 0xC);
-    f32 temp_f1 = lbl_805622E0 * temp_f0;
+    temp_f2 = lbl_805622E0 * -temp_f0;
     sp8 = lbl_805622E0;
-    f32 temp_f2 = lbl_805622E0 * -temp_f0;
+    temp_f1 = lbl_805622E0 * temp_f0;
     spC = lbl_805622E0;
     sp10 = lbl_805622E0;
     arg1[0] = *(f32*)((u8*)temp_r3 + 0x24) + temp_f2;
@@ -5154,12 +5153,12 @@ extern "C" void fn_801A401C(void *arg0, void *arg1) {
     }
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling reset
 extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4) {
-    f32 stack[9]; // resubmit baseline
+    f32 stack[9];
     f32 ix = arg1[0];
     f32 iy = arg1[1];
-    f32 *m = (f32 *)*(void * volatile *)((u8 *)arg0 + 0xC);
+    f32 *m = (f32 *)*(void **)((u8 *)arg0 + 0xC);
     f32 dx = ix - m[9];
     f32 iz = arg1[2];
     stack[6] = dx;
@@ -5167,71 +5166,52 @@ extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4
     stack[7] = dy;
     f32 dz = iz - m[11];
     stack[8] = dz;
-    {
-        f32 y0 = dy * m[1];
-        f32 x0 = dx * m[0];
-        f32 x1 = dx * m[3];
-        f32 y1 = dy * m[4];
-        f32 x2 = dx * m[6];
-        f32 y2 = dy * m[7];
-        f32 z0 = dz * m[2];
-        f32 z1 = dz * m[5];
-        f32 z2 = dz * m[8];
-        stack[6] = z0 + (x0 + y0);
-        stack[7] = z1 + (x1 + y1);
-        stack[8] = z2 + (x2 + y2);
-    }
-    f32 *m2 = (f32 *)*(void * volatile *)((u8 *)arg0 + 0xC);
+    f32 m8, m7, m6, m5, m4, m3, m2, m1, m0;
+    m0 = m[0]; m1 = m[1]; m2 = m[2]; m3 = m[3]; m4 = m[4];
+    m5 = m[5]; m6 = m[6]; m7 = m[7]; m8 = m[8];
+    stack[6] = (dz * m2) + ((dy * m1) + (dx * m0));
+    stack[7] = (dz * m5) + ((dy * m4) + (dx * m3));
+    stack[8] = (dz * m8) + ((dy * m7) + (dx * m6));
+    f32 *m2p = (f32 *)*(void **)((u8 *)arg0 + 0xC);
     if (&stack[3] == arg2) {
-        f32 y = arg2[1];
-        f32 x = arg2[0];
-        f32 z = arg2[2];
-        f32 y0 = y * m2[1];
-        f32 x0 = x * m2[0];
-        f32 x1 = x * m2[3];
-        f32 y1 = y * m2[4];
-        f32 x2 = x * m2[6];
-        f32 y2 = y * m2[7];
-        f32 z0 = z * m2[2];
-        f32 z1 = z * m2[5];
-        f32 z2 = z * m2[8];
-        stack[3] = z0 + (x0 + y0);
-        stack[4] = z1 + (x1 + y1);
-        stack[5] = z2 + (x2 + y2);
+        f32 y = arg2[1]; f32 x = arg2[0]; f32 z = arg2[2];
+        f32 a8, a7, a6, a5, a4, a3, a2, a1, a0;
+        a0 = m2p[0]; a1 = m2p[1]; a2 = m2p[2]; a3 = m2p[3]; a4 = m2p[4];
+        a5 = m2p[5]; a6 = m2p[6]; a7 = m2p[7]; a8 = m2p[8];
+        stack[3] = (z * a2) + ((x * a0) + (y * a1));
+        stack[4] = (z * a5) + ((x * a3) + (y * a4));
+        stack[5] = (z * a8) + ((x * a6) + (y * a7));
     } else {
-        stack[3] = (arg2[2] * m2[2]) + ((arg2[0] * m2[0]) + (arg2[1] * m2[1]));
-        stack[4] = (arg2[2] * m2[5]) + ((arg2[0] * m2[3]) + (arg2[1] * m2[4]));
-        stack[5] = (arg2[2] * m2[8]) + ((arg2[0] * m2[6]) + (arg2[1] * m2[7]));
+        { f32 c2, c0, c1; c1 = m2p[1]; c0 = m2p[0]; c2 = m2p[2];
+          stack[3] = (arg2[2] * c2) + ((arg2[0] * c0) + (arg2[1] * c1)); }
+        { f32 c5, c3, c4; c4 = m2p[4]; c3 = m2p[3]; c5 = m2p[5];
+          stack[4] = (arg2[2] * c5) + ((arg2[0] * c3) + (arg2[1] * c4)); }
+        { f32 c8, c6, c7; c7 = m2p[7]; c6 = m2p[6]; c8 = m2p[8];
+          stack[5] = (arg2[2] * c8) + ((arg2[0] * c6) + (arg2[1] * c7)); }
     }
     typedef s32 (*Call)(s32, f32 *, f32 *, s32, f32 *);
     if (((Call)fn_801CF828)(*(s32 *)((u8 *)arg0 + 0x24), &stack[6], &stack[3], arg3, &stack[0]) != 0) {
         f32 *m3 = (f32 *)*(void **)((u8 *)arg0 + 0xC);
         if (arg4 == &stack[0]) {
-            f32 y = stack[1];
-            f32 x = stack[0];
-            f32 z = stack[2];
-            f32 y0 = y * m3[3];
-            f32 y1 = y * m3[4];
-            f32 x0 = x * m3[0];
-            f32 x1 = x * m3[1];
-            f32 x2 = x * m3[2];
-            f32 y2 = y * m3[5];
-            f32 z0 = z * m3[6];
-            f32 z1 = z * m3[7];
-            f32 z2 = z * m3[8];
-            arg4[0] = z0 + (x0 + y0);
-            arg4[1] = z1 + (x1 + y1);
-            arg4[2] = z2 + (x2 + y2);
+            f32 y = stack[1]; f32 x = stack[0]; f32 z = stack[2];
+            f32 b8, b7, b6, b5, b4, b3, b2, b1, b0;
+            b0 = m3[0]; b1 = m3[1]; b2 = m3[2]; b3 = m3[3]; b4 = m3[4];
+            b5 = m3[5]; b6 = m3[6]; b7 = m3[7]; b8 = m3[8];
+            arg4[0] = (z * b6) + ((x * b0) + (y * b3));
+            arg4[1] = (z * b7) + ((x * b1) + (y * b4));
+            arg4[2] = (z * b8) + ((x * b2) + (y * b5));
         } else {
-            arg4[0] = (stack[2] * m3[6]) + ((stack[0] * m3[0]) + (stack[1] * m3[3]));
-            arg4[1] = (stack[2] * m3[7]) + ((stack[0] * m3[1]) + (stack[1] * m3[4]));
-            arg4[2] = (stack[2] * m3[8]) + ((stack[0] * m3[2]) + (stack[1] * m3[5]));
+            { f32 d6, d0, d3; d3 = m3[3]; d0 = m3[0]; d6 = m3[6];
+              arg4[0] = (stack[2] * d6) + ((stack[0] * d0) + (stack[1] * d3)); }
+            { f32 d7, d1, d4; d4 = m3[4]; d1 = m3[1]; d7 = m3[7];
+              arg4[1] = (stack[2] * d7) + ((stack[0] * d1) + (stack[1] * d4)); }
+            { f32 d8, d2, d5; d5 = m3[5]; d2 = m3[2]; d8 = m3[8];
+              arg4[2] = (stack[2] * d8) + ((stack[0] * d2) + (stack[1] * d5)); }
         }
         return 1;
     }
     return 0;
 }
-#pragma scheduling on
 extern "C" void fn_801A442C(void* source, void* outFirst, void* outSecond) {
     /* Copy the two 3D vectors at offsets 0x28 and 0x34 of source into outFirst and outSecond. */
     f32 firstZ, firstY, firstX, secondZ, secondY, secondX;
