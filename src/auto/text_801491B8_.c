@@ -4138,6 +4138,8 @@ s32 fn_8015473C(void) {
     return 0;
 }
 
+/* Empty default handler: one of a run of do-nothing callbacks this unit hands out
+ * where a handler pointer must not be NULL (see fn_80154714 / fn_8015473C next to it). */
 void fn_80154744(void) {
 
 }
