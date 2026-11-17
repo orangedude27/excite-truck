@@ -2938,6 +2938,7 @@ extern "C" int fn_80214A9C(int);
 extern "C" void fn_80214BE4(int, int, int);
 extern "C" float fn_80214D48(void);
 extern "C" void fn_80236958(char *);
+extern "C" void *lbl_8055F694;
 extern "C" float lbl_805641FC;
 extern "C" float lbl_8056420C;
 extern "C" float lbl_80564210;
