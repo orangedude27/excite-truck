@@ -3747,8 +3747,9 @@ extern "C" void fn_802872DC(void* plane) {
     ((ebi::title::TBlackPlane*)plane)->m_a->v1();
 }
 #pragma cplusplus on
-extern "C" void fn_802872F0(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v2();
+extern "C" void fn_802872F0(void* plane) {
+    /* Forward to virtual method v2 of the title black plane's sub-object. */
+    ((ebi::title::TBlackPlane*)plane)->m_a->v2();
 }
 #pragma cplusplus on
 extern "C" void fn_80287304(void* plane) {
