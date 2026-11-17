@@ -99,8 +99,9 @@ void fn_801ADB1C(void *arg0) {
 }
 
 extern void fn_801ADA8C(void **);
-void fn_801ADB24(void *arg0) {
-    fn_801ADA8C((void **)((u8 *)arg0 - 0x23C));
+/* Forwards to fn_801ADA8C, which returns the owning object's sub-field at +0x118; the owner is recovered from a sub-object pointer by subtracting 0x23C. */
+void fn_801ADB24(void *subObject) {
+    fn_801ADA8C((void **)((u8 *)subObject - 0x23C));
 }
 
 extern void fn_801ADA94(void **);
