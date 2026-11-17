@@ -420,8 +420,11 @@ void fn_8020C8FC(void) {
 
 }
 
-void fn_8020C900(s8 arg0) {
-    lbl_8055EE40 = arg0;
+void fn_8020C900(s8 audioActive) {
+#define gAudioActive lbl_8055EE40
+    /* Set the cached audio-active flag used to scale pre-race music volume. */
+    gAudioActive = audioActive;
+#undef gAudioActive
 }
 
 void fn_8020C908(f32 musicVolume) {
