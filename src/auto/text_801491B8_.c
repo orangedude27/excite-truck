@@ -827,8 +827,9 @@ extern "C" s32 fn_8014ACD8(void *arg0, s32 arg1) {
 /* Returns the 32-bit integer field at offset 0x108 of the given object. */
 s32 fn_8014AD64(void *object) { return *(s32 *)((u8 *)object + 0x108); }
 
-f32 fn_8014AD6C(void *arg0) {
-    return *(f32 *)((u8 *)arg0 + 8);
+/* Getter: return the float timer at +0x8 of the object (advanced by fn_8014AD74). */
+f32 fn_8014AD6C(void *object) {
+    return *(f32 *)((u8 *)object + 8);
 }
 
 extern s32 fn_80176A1C(void);
