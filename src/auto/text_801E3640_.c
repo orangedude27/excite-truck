@@ -28,7 +28,6 @@ extern int fn_802CAC54(int);
 extern int fn_802C6CF8(int);
 extern int lbl_8055EA6C, lbl_8055EA64;
 extern float lbl_8055EA68, lbl_80562D08;
-typedef struct { float x, y, z; } Vec3;
 extern char lbl_80339910[], lbl_80339920[];
 extern int fn_802CAC28(char *, int);
 extern int fn_802C6FC0(char *, int, int);
@@ -290,15 +289,14 @@ void fn_801E3FC8(void *arg0, float farg0) {
 #pragma processor 750
 #pragma scheduling invalid_target
 int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
+#pragma opt_common_subs off
     float *a = (float *)arg0;
     float *b = (float *)arg1;
     float delta[3];
     float matrix[4][3];
     float mag;
     float scale;
-    float tx;
-    float ty;
-    float tz;
+    float tx, ty, tz;
     delta[0] = b[0] - a[0];
     delta[1] = b[0x1] - a[1];
     delta[2] = b[2] - a[2];
