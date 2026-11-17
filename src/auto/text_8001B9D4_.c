@@ -1273,8 +1273,11 @@ s32 fn_8001D2E4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return *(u8 *)(arg2 + arg3 * 0xC + 0x10);
 }
 
-s32 fn_8001D464(s32 arg0) {
-    return arg0 + *lbl_8055D5D0;
+/* Relocate a saved record pointer: add the statistics string archive's base address
+ * (the first field of the descriptor pointed to by lbl_8055D5D0) to an archive-relative
+ * offset. Used as the apply callback by fn_8001D484; inverse of fn_8001D474. */
+s32 fn_8001D464(s32 offset) {
+    return offset + *lbl_8055D5D0;
 }
 
 s32 fn_8001D474(s32 arg0) {
