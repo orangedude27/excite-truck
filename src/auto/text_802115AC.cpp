@@ -2867,6 +2867,7 @@ extern "C" void fn_80215CA4(void) {
 }
 
 extern "C" void fn_80215CA8(void) {
+	/* Widget-wrapper vtable method: forward to the helper that marks the wrapped VfWidget dirty. */
 	fn_80221E7C();
 }
 
