@@ -214,8 +214,9 @@ extern "C" void fn_8012834C(void *arg0, void *arg1, s32 arg2) {
 #pragma scheduling on
 #pragma cplusplus off
 
-s32 fn_801284E8(void *arg0, void *arg1) {
-    fn_8012834C(arg0, arg1, 1);
+/* Debug heap allocation wrapper: allocate `size` bytes tagged with `label`, using allocation source id 1 ("MemAlloc"). */
+s32 fn_801284E8(void *label, void *size) {
+    fn_8012834C(label, size, 1);
 }
 
 /* Debug heap allocation wrapper: allocate `size` bytes tagged with `label`, using allocation source id 2. */
@@ -787,27 +788,40 @@ extern s32 fn_801281F4(s32, s32);
 extern s32 fn_802E317C(void *, void *);
 extern char lbl_8032A470[];
 void *fn_80128F94(void *arg0, s32 arg1, void *arg2, s32 arg3) {
-    u32 *header = (u32 *)arg0;
-    void *logArg = arg2;
-    s32 size = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x10);
-    s32 total = size + 0x20;
-    if (header[2] + total > header[3]) {
+    register u32 *header = (u32 *)arg0;
+    register void *logArg = arg2;
+    s32 total;
+    s32 size;
+    u32 used;
+    u8 *start;
+    u8 *base;
+    u8 *result;
+    u8 *tag;
+    volatile u32 *vh;
+    s32 h2;
+    s32 h4;
+
+    size = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x10);
+    total = size + 0x20;
+    if (total + header[2] > header[3]) {
         ((void (*)(void *, ...))fn_802E317C)(lbl_8032A470, logArg, size / 1024);
     }
-    {
-        u32 used = header[2];
-        u8 *start = (u8 *)header[1];
-        u8 *base = start + used;
-        u8 *result = base + 0x10;
-        *(u32 *)(start + used) = 0xAAAA5555;
-        *(s32 *)(base + 4) = arg3;
-        *(u32 *)(result + size) = 0xFEEDFACE;
-        *(s32 *)(result + size + 4) = size;
-        header[2] = header[2] + total;
-        memset(result, 0xE3, size);
-        if (header[2] > header[4]) header[4] = header[2];
-        return result;
-    }
+    used = header[2];
+    start = (u8 *)header[1];
+    base = start + used;
+    result = base + 0x10;
+    *(u32 *)base = 0xAAAA5555;
+    *(s32 *)(base + 4) = arg3;
+    vh = header;
+    tag = (u8 *)(vh[1] + vh[2]) + size;
+    *(u32 *)(tag + 0x10) = 0xFEEDFACE;
+    *(s32 *)(tag + 0x14) = size;
+    header[2] = header[2] + total;
+    memset(result, 0xE3, size);
+    h2 = (s32)header[2];
+    h4 = (s32)header[4];
+    if (h2 > h4) header[4] = header[2];
+    return result;
 }
 
 #pragma dont_inline on
