@@ -6,22 +6,16 @@ extern int fn_80161ECC(void);
 extern void fn_80161E40(int);
 extern int fn_8016208C(void);
 #pragma push
-#pragma dont_inline on
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 int fn_80257FB8(void) {
-    register int total asm("r30");
-    register int count asm("r31");
-    register int accum asm("r29");
-    register int i asm("r28");
-    total = fn_80161D14();
-    count = fn_80161ECC();
-    accum = 0;
-    i = 0;
+    int total = fn_80161D14();
+    int count = fn_80161ECC();
+    int accum = 0;
+    int i = 0;
     while (i < count) {
         fn_80161E40(i);
         accum += fn_8016208C();
-        if (total <= accum)
-            return i;
+        if (total <= accum) return i;
         i++;
     }
     return 0;
@@ -105,6 +99,7 @@ void fn_8025812C(void) {
     MenuArgs args;
     int result, previous, current;
     MenuHeader hdr, ftr;
+    int zero = 0, eight = 8, one = 1, two = 2;
 
     lbl_8055F368 = fn_80257FB8();
     current = fn_8000DA10();
@@ -114,47 +109,47 @@ void fn_8025812C(void) {
         *(volatile int *)&lbl_8055F370 = old;
     }
 
-    args.entries[0].label = &lbl_8055BAC0;
-    args.entries[0].type = 8;
     args.entries[0].value = (void *)fn_80258040;
-    args.entries[0].flags = 0;
-    args.entries[0].id = 0;
+    args.entries[0].label = &lbl_8055BAC0;
+    args.entries[0].type = eight;
+    args.entries[0].flags = zero;
+    args.entries[0].id = zero;
 
+    args.entries[1].type = zero;
     args.entries[1].label = &lbl_8055C238;
-    args.entries[1].type = 0;
     args.entries[1].value = 0;
-    args.entries[1].flags = 0;
-    args.entries[1].id = 0;
+    args.entries[1].flags = zero;
+    args.entries[1].id = zero;
 
+    args.entries[2].type = zero;
     args.entries[2].label = &lbl_8055C240;
-    args.entries[2].type = 0;
     args.entries[2].value = 0;
-    args.entries[2].flags = 1;
-    args.entries[2].id = 0;
+    args.entries[2].flags = one;
+    args.entries[2].id = zero;
 
+    args.entries[3].type = zero;
     args.entries[3].label = &lbl_8055C248;
-    args.entries[3].type = 0;
     args.entries[3].value = 0;
-    args.entries[3].flags = 2;
-    args.entries[3].id = 0;
+    args.entries[3].flags = two;
+    args.entries[3].id = zero;
 
+    args.entries[4].type = zero;
     args.entries[4].label = &lbl_8055C250;
-    args.entries[4].type = 0;
     args.entries[4].value = 0;
     args.entries[4].flags = 3;
-    args.entries[4].id = 0;
+    args.entries[4].id = zero;
 
-    args.entries[5].label = &lbl_8055B860;
     args.entries[5].type = 6;
+    args.entries[5].label = &lbl_8055B860;
     args.entries[5].value = 0;
     args.entries[5].flags = -1;
     args.entries[5].id = 0x1b;
 
+    args.entries[6].type = eight;
     args.entries[6].label = &lbl_8055BAB8;
-    args.entries[6].type = 8;
     args.entries[6].value = (void *)fn_80236914;
-    args.entries[6].flags = 2;
-    args.entries[6].id = 0;
+    args.entries[6].flags = two;
+    args.entries[6].id = zero;
 
     ftr = lbl_80498E68;
     hdr = lbl_802FA610;
