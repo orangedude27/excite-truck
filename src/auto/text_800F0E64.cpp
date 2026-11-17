@@ -1102,8 +1102,9 @@ extern "C" s32 fn_800F281C(void *archive, u32 bankIndex, void *bankInfo) {
 
 extern "C" s32 ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(void *, u32, void *);
 #pragma dont_inline on
-extern "C" s32 fn_800F2824(void *arg0, u32 group, void *out) {
-    return ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(*(void **)((u8 *)arg0 + 4), group, out);
+extern "C" s32 fn_800F2824(void *archive, u32 groupIndex, void *groupInfo) {
+    /* Read group info for the given group index from this sound archive's file reader. */
+    return ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(*(void **)((u8 *)archive + 4), groupIndex, groupInfo);
 }
 #pragma dont_inline reset
 
