@@ -2407,8 +2407,9 @@ void fn_8018AE08(void *object) {
     *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)object + 0x1EC) * 0x9C) + 8) = -10;
 }
 
-void fn_8018AE24(void *arg0, signed char arg1) {
-    *((signed char *)arg0 + 0x260D) = arg1;
+/* Set the signed-byte state flag at offset 0x260D of the given object. */
+void fn_8018AE24(void *object, signed char value) {
+    *((signed char *)object + 0x260D) = value;
 }
 
 void fn_8018AE2C(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x2600) = farg0; }
