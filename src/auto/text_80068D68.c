@@ -4125,7 +4125,10 @@ s32 fn_8006EBF4(void) {
 
 extern void fn_80068E08(s32);
 void fn_8006EC20(void) {
-    ((void (*)(void))fn_80068E08)();
+    /* GKI pool-memory free: release the pool block passed in r3 via App_MEMfree, which logs and calls the WUD freeFunc hook. */
+#define app_mem_free fn_80068E08
+    ((void (*)(void))app_mem_free)();
+#undef app_mem_free
 }
 
 void fn_8006EC24(s32 event, s32 status) {
@@ -17365,28 +17368,36 @@ scan_done:
 #pragma use_lmw_stmw off
 u8 HID_HostRemoveDev(u32 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
-    register tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
-    u32 offset;
+    u8 *deviceEntry;
+    register u8 *devices = lbl_803C3C38;
+    u32 entryOffset;
+    u8 disconnecting = 1;
+    u8 cleared = 0;
+    u8 isRegistered = devices[0x400];
+    u8 isInUse;
 
-    if (lbl_803C3C38[0x400] == 0)
+    if (isRegistered == 0)
         return 1;
     if (dev_handle > 0x10)
         return 5;
-    offset = dev_handle * 0x34;
-    if (devices[dev_handle].in_use == 0)
+    entryOffset = dev_handle * 0x34;
+    deviceEntry = devices + entryOffset;
+    isInUse = devices[entryOffset];
+    if (isInUse == 0)
         return 5;
-    if (devices[dev_handle].state == 1) {
-        devices[dev_handle].conn_tries = 1;
-        fn_80070F90(devices[dev_handle].timer_entry);
-        if (devices[dev_handle].state == 1) {
-            devices[dev_handle].conn_tries = 1;
-            hidh_conn_disconnect(dev_handle);
-        }
-    }
-    devices[dev_handle].in_use = 0;
-    lbl_803C3C38[offset + 0x10] = 0;
-    *(u16 *)(lbl_803C3C38 + offset + 0x16) = 0;
-    *(u16 *)(lbl_803C3C38 + offset + 0x14) = 0;
+    if (isRegistered == 0 || dev_handle > 0x10 || isInUse == 0)
+        goto clear_entry;
+    deviceEntry[0xC] = disconnecting;
+    fn_80070F90(deviceEntry + 0x1C);
+    if (deviceEntry[0xA] != 1)
+        goto clear_entry;
+    deviceEntry[0xC] = disconnecting;
+    hidh_conn_disconnect(dev_handle);
+clear_entry:
+    deviceEntry[0] = cleared;
+    devices[entryOffset + 0x10] = cleared;
+    *(u16 *)(devices + entryOffset + 0x16) = 0;
+    *(u16 *)(devices + entryOffset + 0x14) = 0;
     return 0;
 }
 #pragma pop
