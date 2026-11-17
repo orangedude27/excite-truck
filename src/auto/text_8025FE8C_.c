@@ -170,8 +170,9 @@ void fn_802607F8(void *self) {
     }
 }
 
-void fn_80260814(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x1D) = 0;
+void fn_80260814(void *row) {
+    /* Draw this selector row normally: clear the dim flag at +0x1D (see SelectorGroupRow.dim). */
+    *(u8 *)((u8 *)row + 0x1D) = 0;
 }
 
 void fn_80260820(void *self) {
