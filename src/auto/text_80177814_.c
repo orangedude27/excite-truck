@@ -476,6 +476,7 @@ void fn_80177F40(void) {
 #pragma pop
 extern char jumptable_803318F8[];
 #pragma dont_inline off
+/* Constant getter in the game/mode code: always returns 0. */
 long fn_801781B8(void) { return 0; }
 
 #pragma scheduling invalid_target
