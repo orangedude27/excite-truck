@@ -640,7 +640,9 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
 }
 #pragma pop
 void fn_8001C4D4(void) {
-
+    /* No-op lock/unlock hook at the base of the statistics code's lock-hook
+     * chain (fn_8001C4DC -> fn_8001C4D8 -> here); locking is compiled out of
+     * this build, so it simply returns. */
 }
 
 void fn_8001C4D8(void) {
