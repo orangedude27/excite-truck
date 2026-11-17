@@ -1,5 +1,9 @@
 #include <types.h>
 #include <string.h>
+typedef int M2C_UNK;
+#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
+#define M2C_BITWISE(T, x) (*(T *)&(x))
+#define M2C_STRUCT_COPY(d, s, n) do { char *_d=(char*)(d), *_s=(char*)(s); int _n=(n); while(_n--) *_d++=*_s++; } while(0)
 extern char lbl_8055E7E1;
 extern char lbl_8055E7E2;
 extern char lbl_8055E7E3;
@@ -202,7 +206,7 @@ f32 fn_801C2F58(s32 count, f32 factor) {
 }
 #pragma scheduling on
 void fn_801C2FF4(float *out, float *a, float *b, float weight) {
-    float q[4], av[4], bv[4], t9, t10, t11;
+    float q[4], av[4], bv[4];
     mtx_to_quat((float (*)[3])a, av);
     mtx_to_quat((float (*)[3])b, bv);
     fn_8012F57C(q, av, bv, weight);
