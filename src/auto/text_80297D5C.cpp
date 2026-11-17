@@ -1474,8 +1474,9 @@ extern "C" void fn_8029A890(void *slots, void *slotIndex) {
     *(float *)((char *)slots + (int)slotIndex * 0x2C + 0x24) = lbl_80564590;
 }
 
-extern "C" void fn_8029A8A4(void *arg0, void *arg1) {
-    *(unsigned char *)((char *)arg0 + (int)arg1 * 0x2C + 0x28) = 1u;
+extern "C" void fn_8029A8A4(void *slots, void *slotIndex) {
+    /* Set the +0x28 active flag of one 0x2C-byte slot in the global animation table. */
+    *(unsigned char *)((char *)slots + (int)slotIndex * 0x2C + 0x28) = 1u;
 }
 
 /* Resets eight 0x2C-byte slots (float at +0x24, flag byte at +0x28) to their default value and cleared state. */
