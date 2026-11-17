@@ -1105,39 +1105,54 @@ extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const wch
     u32 stringLength = fn_8002AEE8((const u16 *)str);
     ((TextBox *)this_ptr)->setString(str, len, (u32)(u16)stringLength);
 }
-extern "C" u16 SetString__Q36nw4hbm3lyt7TextBoxFPCwUsUs(void *this_ptr, const u16 *str, u16 offset, u16 len) {
-    const char *msg = lbl_80320560;
-    u16 count;
-    u16 max;
-    if (*(void **)((u8 *)this_ptr + 0xD4) == 0) {
-        ((void (*)(const char *, s32, const char *, ...))Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2C4, msg + 0x328);
-        return 0;
-    }
-    if (*(u16 *)((u8 *)this_ptr + 0xF8) == 0) {
-        max = 0;
-    } else {
-        if (*(u16 *)((u8 *)this_ptr + 0xF8) < 2)
-            ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x25D, msg + 0x2EC);
-        max = (u16)(((unsigned)*(u16 *)((u8 *)this_ptr + 0xF8) >> 1) - 1);
-    }
-    if (offset >= max) {
-        ((void (*)(const char *, s32, const char *, ...))Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2CC, msg + 0x33C);
-        return 0;
-    }
-    max = (u16)(max - offset);
-    count = len;
-    if (len > max) count = max;
-    if (count < len)
-        ((void (*)(const char *, s32, const char *, ...))Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2D1, msg + 0x358, (unsigned)(len - count));
-    memcpy(*(u16 **)((u8 *)this_ptr + 0xD4) + offset, str, (unsigned)count * 2);
+#pragma use_lmw_stmw off
+extern "C" u16 SetString__Q36nw4hbm3lyt7TextBoxFPCwUsUs(void *this_ptr, const u16 *str, u32 offset, u32 len)
+{
+  u8 *new_var;
+  u32 count;
+  u32 max;
+  const char *msg = lbl_80320560;
+  if ((*((void **) (((u8 *) this_ptr) + 0xD4))) == 0)
+  {
+    ((void (*)(const char *, s32, const char *, ...)) Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2C4, msg + 0x328);
+    return 0;
+  }
+  new_var = (u8 *) this_ptr;
+  if ((*((u16 *) (((u8 *) this_ptr) + 0xF8))) == 0)
+  {
+    max = 0;
+  }
+  else
+  {
+    if ((*((u16 *) (new_var + 0xF8))) < 2)
     {
-        u16 end = (u16)(offset + count);
-        *(u16 *)((u8 *)this_ptr + 0xFA) = end;
-        (*(u16 **)((u8 *)this_ptr + 0xD4))[end] = 0;
+      ((void (*)(const char *, s32, const char *, ...)) Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x25D, msg + 0x2EC);
     }
-    return count;
+    max = ((((u32) (*((u16 *) (new_var + 0xF8)))) >> 1) - 1) & 0xffff;
+  }
+  if (offset >= max)
+  {
+    ((void (*)(const char *, s32, const char *, ...)) Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2CC, msg + 0x33C);
+    return 0;
+  }
+  max = (max - offset) & 0xffff;
+  count = len;
+  if (len > max)
+  {
+    count = max;
+  }
+  if (((u16) count) < len)
+  {
+    ((void (*)(const char *, s32, const char *, ...)) Warning__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x2D1, msg + 0x358, len - ((u16) count));
+  }
+  memcpy(((u8 *) (*((u16 **) (new_var + 0xD4)))) + (((u16) offset) * 2), str, ((u16) count) * 2);
+  {
+    u32 end = offset + count;
+    *((u16 *) (((u8 *) this_ptr) + 0xFA)) = (u16) end;
+    ((u16 *) (*((u16 **) (new_var + 0xD4))))[(u16) end] = 0;
+  }
+  return count;
 }
-#pragma use_lmw_stmw reset
 extern "C" s32 fn_800DF1C8(s32 object, s32 deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) {
