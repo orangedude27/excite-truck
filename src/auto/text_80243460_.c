@@ -48,8 +48,10 @@ extern float lbl_805637D4, lbl_805637D8, lbl_805637DC, lbl_805637E0;
 extern float lbl_805637E4;
 extern double lbl_805637C8, lbl_805637E8;
 
-void fn_80243460(void* arg0) {
-    fn_80241354((u8*)arg0 - 0x10);
+/* This-adjusting thunk: subObject points 0x10 into the owning menu-roll object
+ * (an embedded base subobject). Recover that object and tail-call its real handler. */
+void fn_80243460(void* subObject) {
+    fn_80241354((u8*)subObject - 0x10);
 }
 
 extern void fn_80241820(void*);
