@@ -1063,6 +1063,9 @@ char fn_802C9A60(void) {
 
 extern char lbl_8055FC8E;
 char fn_802C9A68(void) {
+    /* Returns lbl_8055FC8E, a display-scaling flag sitting next to the
+     * widescreen/linedouble flags; fn_80231094 tests it to choose the viewport
+     * margin factor (0.9 instead of 0.85) for its scissor rectangle. */
     return lbl_8055FC8E;
 }
 
