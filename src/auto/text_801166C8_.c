@@ -689,21 +689,24 @@ void fn_80117380(void *arg0, s32 arg1) {
 
 u32 fn_80116BD4(s32, s32, s32);
 u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag) {
-    s32 byteOffset;
-    u32 *base;
     u32 *value;
+    u32 *base;
+    s32 remaining;
+    s32 byteOffset;
     s32 i;
     u32 diff;
     u32 maxDiff;
     s32 index;
     s32 allOdd;
+
     maxDiff = 0;
     index = 0;
     allOdd = 1;
-    base = values + offset;
     value = values;
+    base = values + offset;
+    remaining = count - offset;
     byteOffset = 0;
-    for (i = 0; i < count - offset; i++) {
+    for (i = 0; i < remaining; i++) {
         diff = base[byteOffset / 4] - *value;
         if (diff > maxDiff) {
             maxDiff = diff;
