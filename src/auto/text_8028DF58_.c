@@ -559,7 +559,10 @@ extern char lbl_80348CF8[];
 extern char lbl_80348D28[];
 extern int stricmp(const char *, const char *);
 
-void fn_8028ED74(void *arg0) { *(int *)((char *)arg0 + 0x100) = 0; }
+void fn_8028ED74(void *list) {
+    /* Empty this emitter list by resetting its item count to zero. */
+    ((EfList *)list)->count = 0;
+}
 
 void fn_8028ED80(void *arg0) { *(int *)((char *)arg0 + 0x100) = 0; }
 
