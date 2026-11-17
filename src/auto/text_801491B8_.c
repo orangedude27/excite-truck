@@ -1147,7 +1147,8 @@ s32 fn_8014C828(s32 obj) { return obj + 0x64; }
  * (e.g. the label string used by the HUD), sibling of fn_8014C828 (+0x64). */
 s32 fn_8014C830(s32 obj) { return obj + 0x14; }
 
-f32 fn_8014C838(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x10); }
+/* Return the timestamp (f32 at offset 0x10) stamped on this node by fn_8014AE54. */
+f32 fn_8014C838(void *node) { return *(f32 *)((u8 *)node + 0x10); }
 
 s32 fn_8014C840(void *arg0) { return ((s32 *)arg0)[1]; }
 
