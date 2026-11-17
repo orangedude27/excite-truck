@@ -226,6 +226,21 @@ extern "C" void fn_8013AB08(float *skill_speed, int *entry) {
 #pragma pop
 
 #pragma cplusplus off
+void fn_8013B6C0(int *, float *, int);
+float fn_8013A90C(void *, int, int, float);
+int fn_8013A9C0(void *arg0, void *arg1, void *arg2, void *arg3) {
+    typedef int (*Fn)(void *, void *);
+    int result;
+    int spC;
+    float sp8;
+    result = ((Fn *)(*(void **)arg1))[3](arg1, (char *)arg3 + 0x64);
+    if (result != 0) {
+        fn_8013B6C0(&spC, &sp8, *(int *)((char *)arg2 + 0xC));
+        *(float *)arg0 = fn_8013A90C(arg1, (int)((char *)arg3 + 0x58), spC, sp8);
+        *(float *)((char *)arg0 + 4) = fn_8013A90C(arg1, (int)((char *)arg3 + 0x48), spC, sp8);
+    }
+    return result;
+}
 extern void *fn_8001285C(int);
 extern void *fn_80012820(int);
 extern int fn_8013A760(unkVtable **, int);
