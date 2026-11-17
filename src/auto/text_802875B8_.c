@@ -899,6 +899,7 @@ void fn_802885F0(void) {
     }
     qsort(lbl_804B3160, *(s32 *)(lbl_804B3150 + 4), 0x10, (int (*)(const void *, const void *))fn_802885C4);
 }
+#pragma paired_single reset
 void fn_802887EC(void) {
     u8 *base = lbl_804B3150;
     void (**callback)(void *, s32) = (void (**)(void *, s32))(base + 0x90);
