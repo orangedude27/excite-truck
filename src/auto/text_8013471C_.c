@@ -90,9 +90,13 @@ extern "C" void fn_8013472C(void) {
 #pragma cplusplus reset
 #pragma pop
   #pragma dont_inline __AXDSPInitCallback_80134770
+/* DSP init callback: clear the cached AI service interface for the current
+ * scene, which fn_8013472C re-fetches via getService. */
 void __AXDSPInitCallback_80134770(void) {
-      lbl_8055E0AC = 0;
-  }
+    #define s_aiService lbl_8055E0AC
+    s_aiService = 0;
+    #undef s_aiService
+}
 
 extern char lbl_8032BBE8[];
 extern f32 lbl_805612E8, lbl_805612EC, lbl_805612F0, lbl_805612F8, lbl_805612FC, lbl_80561300;
