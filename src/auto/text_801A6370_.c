@@ -156,7 +156,7 @@ void fn_801A6524(void *object) {
     fn_801A6558(object);
 }
 
-#pragma dont_inline on
+#pragma push
 #pragma scheduling invalid_target
 void fn_801A6558(void *arg0) {
     float zero;
@@ -183,12 +183,15 @@ void fn_801A6558(void *arg0) {
     *(float *)(p + 0x2720) = zero;
     *(float *)(p + 0x2724) = zero;
     *(float *)(p + 0x2728) = zero;
-    memset(*(void **)(p + 0x2700), 0, 0xE7);
+    {
+        int n = 0xE7;
+        memset(*(void **)(p + 0x2700), 0, n);
+    }
     if (*(unsigned char *)(p + 0x2740))
         fn_801A67B0(arg0);
 }
 #pragma scheduling on
-#pragma dont_inline reset
+#pragma pop
 extern void fn_80182074(void);
 extern void *fn_801B2EC0(int);
 extern void fn_80265D40(void *, int, float);
@@ -261,10 +264,12 @@ int fn_801A6724(void *arg0) {
 #pragma dont_inline reset
 
 extern float lbl_80562438;
-void fn_801A67B0(void *arg0) {
-    float value = lbl_80562438;
-    *(int *)((char *)arg0 + 0x2704) = 1;
-    *(float *)((char *)arg0 + 0x11C) = value;
+void fn_801A67B0(void *camera) {
+    /* When a move starts attached, mark the followed move as running (0x2704 = 1)
+       and seed the camera's up/side vector block (0x11C) with -1.0f. */
+    float negativeOne = lbl_80562438;
+    *(int *)((char *)camera + 0x2704) = 1;
+    *(float *)((char *)camera + 0x11C) = negativeOne;
 }
 
 extern void fn_8017A580(void *);
