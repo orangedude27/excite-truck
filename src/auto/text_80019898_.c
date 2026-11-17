@@ -227,6 +227,7 @@ int fn_80019B60(void) { return (lbl_8055D5A0 >> 3) & 1; }
 /* Return bit 6 of the locale/language flag word assembled by fn_800199B8. */
 int fn_80019B6C(void) { return (lbl_8055D5A0 >> 6) & 1; }
 
+/* Return bit 7 of the locale/language flag word assembled by fn_800199B8. */
 int fn_80019B78(void) { return (lbl_8055D5A0 >> 7) & 1; }
 
 int fn_80019B84(void) { return (lbl_8055D5A0 >> 8) & 1; }
