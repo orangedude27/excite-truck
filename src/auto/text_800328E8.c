@@ -18,6 +18,7 @@ extern void *TRKReadBuffer_ui8(int);
 extern void __AXDepopVoice(void *);
 extern void *memcpy(void *, const void *, unsigned int);
 static inline void ax_copy_n(unsigned int n, const void *s, void *d) { memcpy(d, s, n); }
+static inline void ax_copy_s(const void *s, void *d, unsigned int n) { memcpy(d, s, n); }
 typedef struct { unsigned char b[0x120]; } Block120;
 typedef struct { unsigned char b[0x30]; } Block30;
 typedef struct { int w[0x48]; } Words120;
@@ -50,7 +51,7 @@ void* fn_800328E8(void) {
 #pragma cplusplus on
 void fn_800328F0(void *arg0) {
     unsigned char *p = (unsigned char *)arg0;
-    register unsigned char *src;
+    unsigned char *src;
     unsigned char *dst;
     unsigned int flags;
     unsigned int n;
@@ -70,7 +71,7 @@ void fn_800328F0(void *arg0) {
         return;
     }
     if (flags & 0x80000000) {
-        memcpy(src, dst, 0x120);
+        ax_copy_n(0x120, dst, src);
         n = *(unsigned int *)(p + 0x28);
         if (n != 0) {
             cs = (unsigned int *)(p + 0x34);
@@ -97,7 +98,7 @@ void fn_800328F0(void *arg0) {
             *(unsigned short *)(src + 0x12) = *(unsigned short *)(dst + 0x12);
         }
         if (flags & 0x10) {
-            memcpy(src + 0x14, dst + 0x14, 0x30);
+            ax_copy_n(0x30, dst + 0x14, src + 0x14);
         }
         if (flags & 0x40) {
             *(unsigned short *)(src + 0x4E) = *(unsigned short *)(dst + 0x4E);
