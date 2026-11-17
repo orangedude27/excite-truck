@@ -1559,6 +1559,10 @@ extern void fn_802DA80C(void);
 void fn_802C7A38(void) { fn_802DA80C(); }
 
 extern void fn_802DA918(void);
+/* Tail-call thunk: branches to the stack-allocator helper fn_802DA918, which
+ * queues a three-float record {x, y, 1/(z*z)} in the BoneHandleAlloc arena.
+ * The float arguments (f1-f3) pass straight through the branch; callers use
+ * this as void *(*)(float, float, float). */
 void fn_802C7A3C(void) { fn_802DA918(); }
 
 extern void fn_802DA80C(void);
