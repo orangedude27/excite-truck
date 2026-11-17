@@ -2165,8 +2165,10 @@ void *fn_801D7200(void) {
 #undef STR_RING_MASTER_ASE
 }
 
-int fn_801D720C(int arg0) {
-    return ((int *)arg0)[1];
+/* State getter of a RingMaster_ASE action-sequence element (vtable +0x18):
+ * returns its +0x04 state word (1 ready, 2 running), as set by fn_801D7214. */
+int fn_801D720C(int element) {
+    return ((int *)element)[1];
 }
 
 int fn_801D7214(int self) {
