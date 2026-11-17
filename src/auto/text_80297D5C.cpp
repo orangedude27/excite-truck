@@ -2325,13 +2325,13 @@ extern "C" void fn_8029BDC4(void* arg0) {
     float values[3];
     char* entry = (char*)arg0 + 4;
     int i = 0;
-    values[0] = lbl_8056459C;
-    values[1] = lbl_8056459C;
-    values[2] = lbl_8056459C;
+    values[0] = 0.0f;
+    values[1] = 0.0f;
+    values[2] = 0.0f;
     while (i < *(int*)((char*)arg0 + 0xA4)) {
         if (*(unsigned char*)(entry + 0x10)) {
             fn_80288A58(entry, values);
-            fn_8028E584(*(void**)arg0, entry, values, 0.0f);
+            ((void (*)(void *, void *, float *))fn_8028E584)(*(void**)arg0, entry, values);
         }
         entry += 0x14;
         i++;
