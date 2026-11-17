@@ -111,9 +111,9 @@ void fn_801C1218(void *arg0) {
     int offset;
     int count;
     count = 0;
-    register float factor0 = lbl_80562910;
+    float factor0 = lbl_80562910;
     offset = 0;
-    register float factor1 = lbl_80562914;
+    float factor1 = lbl_80562914;
     char *p0;
     char *p1;
     char *p2;
@@ -121,9 +121,6 @@ void fn_801C1218(void *arg0) {
     float y;
     float z;
     float scale;
-    float t0;
-    float t1;
-    float t2;
     unsigned int savedZ;
     unsigned int savedY;
     unsigned int savedX;
@@ -146,20 +143,17 @@ loop:
     *(float *)(p0 + 4) = y;
     z = *(float *)(p0 + 8) * factor0;
     *(float *)(p0 + 8) = z;
-    t0 = *(float *)(p1 + 0) * factor1;
-    x += t0;
+    x += *(float *)(p1 + 0) * factor1;
     *(float *)(p0 + 0) = x;
-    t1 = *(float *)(p1 + 4) * factor1;
-    y += t1;
+    y += *(float *)(p1 + 4) * factor1;
     *(float *)(p0 + 4) = y;
-    t2 = *(float *)(p1 + 8) * factor1;
-    z += t2;
+    z += *(float *)(p1 + 8) * factor1;
     *(float *)(p0 + 8) = z;
     scale = *(float *)(base + 0x54);
     scale = scale * scale;
-    *(float *)(p0 + 0) = x + *(float *)(p2 + 0) * scale;
-    *(float *)(p0 + 4) = y + *(float *)(p2 + 4) * scale;
     *(float *)(p0 + 8) = z + *(float *)(p2 + 8) * scale;
+    *(float *)(p0 + 4) = y + *(float *)(p2 + 4) * scale;
+    *(float *)(p0 + 0) = x + *(float *)(p2 + 0) * scale;
     *(float *)(p1 + 0) = *(float *)&savedX;
     *(float *)(p1 + 4) = *(float *)&savedY;
     *(float *)(p1 + 8) = *(float *)&savedZ;
@@ -206,8 +200,9 @@ extern "C" float lbl_80562904, lbl_8056290C, lbl_80562918, lbl_8056291C, lbl_805
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_801C1364(int arg0) {
-    register char *base = (char *)arg0;
+    char *base = (char *)arg0;
     int iter;
     register float c90C;
     register float c924;
@@ -301,8 +296,7 @@ void fn_801C1364(int arg0) {
                 scaled[2] = frame[2] * dot;
                 mag = PSVECMag(scaled);
                 scale = mag * (w1 + w2);
-                if (scale > c91C) {
-                } else {
+                if (scale <= c91C) {
                     scale = c91C;
                 }
                 ratio = *(float *)(en + 8) * mag / scale;
@@ -343,8 +337,7 @@ void fn_801C1364(int arg0) {
                 diffB[2] = p2[2] - p1[2];
                 mag = PSVECMag(diffB);
                 scale = mag * (w2 + w1);
-                if (scale > c91C) {
-                } else {
+                if (scale <= c91C) {
                     scale = c91C;
                 }
                 ratio = *(float *)(en + 0x10) * (mag - *(float *)(en + 8)) / scale;
@@ -612,6 +605,7 @@ extern "C" double __fabs(double);
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_801C2170(void *arg0, void *arg1, float *m) {
+    #pragma scheduling invalid_target
     char *a = (char *)arg0;
     char *b = (char *)arg1;
     char *p, *q;
@@ -660,19 +654,20 @@ extern "C" void fn_801C2170(void *arg0, void *arg1, float *m) {
     }
     bound = lbl_80562928;
     for (k = 0; k < *(int *)(b + 0x14); k++) {
+        char *qbase = *(char **)(a + 0x48);
         p = *(char **)(b + 4) + k * 0x10;
         index = *(int *)(a + 0x18);
-        q = *(char **)(a + 0x48) + index * 0x14;
         e = *(float *)(p + 12); d = *(float *)(p + 8);
         second = *(int *)(p + 4); first = *(int *)p;
         *(int *)(a + 0x18) = index + 1;
-        *(int *)q = first; *(int *)(q + 4) = second;
+        *(int *)(qbase + index * 0x14) = first;
+        *(int *)(qbase + index * 0x14 + 4) = second;
         base = *(float **)(a + 0x24);
         x = PSQUATMultiply((float *)((char *)base + first*12), (float *)((char *)base + second*12), (void *)first);
         y = (float)__fabs(e);
-        *(float *)(q + 8) = d + x;
-        *(float *)(q + 0x10) = y;
-        *(unsigned char *)(q + 0xc) = e < bound;
+        *(float *)(qbase + index * 0x14 + 8) = d + x;
+        *(float *)(qbase + index * 0x14 + 0x10) = y;
+        *(unsigned char *)(qbase + index * 0x14 + 0xc) = e < bound;
     }
     j = 0;
     for (i = 0; i < *(int *)(b + 0x18); j += 0xc, i++) {
@@ -689,20 +684,18 @@ extern "C" void fn_801C2170(void *arg0, void *arg1, float *m) {
         (*(int **)(a + 0x38))[first] = 0;
     }
     for (i = 0; i < *(int *)(b + 0x1c); i++) {
-        p = *(char **)(b + 0xc) + i * 0x1c;
+        char *p2 = *(char **)(b + 0xc) + i * 0x1c;
+        char *qbase = *(char **)(a + 0x50);
         index = *(int *)(a + 0x20);
-        {
-            int *qi = (int *)(*(char **)(a + 0x50)) + index * 7;
-            float *qf = (float *)qi;
-            d = *(float *)(p + 8); second = *(int *)(p + 4); first = *(int *)p;
-            *(int *)(a + 0x20) = index + 1;
-            qi[1] = second; qi[0] = first;
-            qf[2] = d;
-            qf[3] = *(float *)(p + 0xc);
-            qf[4] = *(float *)(p + 0x10);
-            qf[5] = *(float *)(p + 0x14);
-            *(float **)(qi + 6) = m;
-        }
+        d = *(float *)(p2 + 8); second = *(int *)(p2 + 4); first = *(int *)p2;
+        *(int *)(a + 0x20) = index + 1;
+        *(int *)(qbase + index * 0x1c) = first;
+        *(int *)(qbase + index * 0x1c + 4) = second;
+        *(float *)(qbase + index * 0x1c + 8) = d;
+        *(float *)(qbase + index * 0x1c + 12) = *(float *)(p2 + 0xc);
+        *(float *)(qbase + index * 0x1c + 16) = *(float *)(p2 + 0x10);
+        *(float *)(qbase + index * 0x1c + 20) = *(float *)(p2 + 0x14);
+        *(float **)(qbase + index * 0x1c + 24) = m;
     }
 }
 #pragma pop
@@ -714,6 +707,7 @@ extern "C" void PSVECCrossProduct(const float *, const float *, float *);
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_801C256C(void *arg0, float *arg1, float *arg2, float *arg3) {
+#pragma opt_common_subs off
     char *base = (char *)arg0;
     volatile float cross[3];
     float delta[3];
@@ -741,13 +735,13 @@ loop:
         float xs = x * scale;
         char *srcBase = *(char **)(base + 0x24);
         char *dstBase = *(char **)(base + 0x28);
-        float sourceOutX = *(float *)(srcBase + offset);
-        char *src = srcBase + offset;
         char *dst = dstBase + offset;
-        *(float *)dst = sourceOutX + xs;
+        char *src = srcBase + offset;
+        float sourceOutX = *(float *)(srcBase + offset);
+        *(float *)(dstBase + offset) = sourceOutX + xs;
         offset += 0xC;
-        *(float *)(dstBase + offset + 4 - 0xC) = *(float *)(srcBase + offset + 4 - 0xC) + y * scale;
-        *(float *)(dstBase + offset + 8 - 0xC) = *(float *)(srcBase + offset + 8 - 0xC) + z * scale;
+        *(float *)(dst + 4) = *(float *)(src + 4) + cross[1] * scale;
+        *(float *)(dst + 8) = *(float *)(src + 8) + cross[2] * scale;
     }
 check:
     if (index < *(int *)(base + 0x14))
@@ -963,9 +957,9 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
         float sx = src->x;
         float sy = src->y;
         float sz = src->z;
-        float x = sz * m[6] + (sx * m[0] + sy * m[3]);
-        float y = sz * m[7] + (sx * m[1] + sy * m[4]);
-        float z = sz * m[8] + (sx * m[2] + sy * m[5]);
+        float x = sz * m[6] + (sy * m[3] + sx * m[0]);
+        float y = sz * m[7] + (sy * m[4] + sx * m[1]);
+        float z = sz * m[8] + (sy * m[5] + sx * m[2]);
         dst->x = x;
         dst->y = y;
         dst->z = z;
