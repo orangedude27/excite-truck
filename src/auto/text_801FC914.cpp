@@ -1480,9 +1480,12 @@ extern "C" void fn_801FF2B8(void* manager, int record, int name) {
  ++DMGR_PATH_COUNT(mgr);
 }
 
-extern "C" void fn_801FF354(void* arg0) {
- lbl_8055EC98 = arg0;
- *(int*)((char*)arg0 + 0x2C0) = 0;
+/* Install a path-pool table as the global one and reset its pool count to zero. */
+extern "C" void fn_801FF354(void *poolTable) {
+#define s_pathPoolTable lbl_8055EC98
+    s_pathPoolTable = poolTable;
+    *(int *)((char *)poolTable + 0x2C0) = 0;
+#undef s_pathPoolTable
 }
 
 extern "C" void* fn_801FF364(void* pool, int shouldFree) {
