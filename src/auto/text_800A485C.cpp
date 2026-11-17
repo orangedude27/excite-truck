@@ -11429,7 +11429,7 @@ extern "C" s16 fn_800B7200(s32 oemText) {
     return count;
 }
 
-extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(u8 arg0, s32 arg1) {
+extern "C" s32 VFiPFCODE_CP932_isOEMMBchar_impl(s32 arg0, s32 arg1) {
     if (arg1 == 2) {
         if (arg0 < 0x40) return 0;
         if (arg0 <= 0x7e) return 1;
@@ -14991,7 +14991,7 @@ extern "C" s16 fn_800BDE18(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
     s32 position = *arg3;
     s32 piece;
     s16 result = 0;
-    u8 *data = (u8 *)arg1 + (position >> 3);
+    volatile u8 *data = (volatile u8 *)arg1 + (position >> 3);
 
     bitsInByte = 8 - (position & 7);
     while (remaining > 0) {
@@ -17211,11 +17211,12 @@ extern "C" void fn_800C2090(volatile s32 *output, const volatile s32 *left, cons
 }
 
 extern s32 lbl_8031D5E0[];
+#pragma push
 #pragma scheduling off
 extern "C" void fn_800C21D8(s32* arg0, s32* arg1) {
+    s32* p = (s32*)((u32)arg0 + 72);
+    s32* q = (s32*)((u32)arg1 + 72);
     s32* coeff = lbl_8031D5E0;
-    s32* p = arg0 + 18;
-    s32* q = arg1 + 18;
     s32 c0, c1, value;
     c0 = *coeff++;
     value = p[-18];
@@ -17308,7 +17309,7 @@ extern "C" void fn_800C21D8(s32* arg0, s32* arg1) {
     p[8] = (s32)(((s64)value * c0) >> 20);
     q[-8] = (s32)(((s64)value * c1) >> 20);
 }
-#pragma scheduling on
+#pragma pop
 extern "C" s32 lbl_8031D670[];
 extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     s32 *t = (s32 *)lbl_8031D670;
