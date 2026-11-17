@@ -148,7 +148,10 @@ void fn_80215FCC(void *option) {
     *(u32 *)((u8 *)option + 0x10) ^= 1;
 }
 
-u32 fn_80215FDC(void) { return 1; }
+/* Query stub in the option UI: always answers 1 (true) in this build. */
+u32 fn_80215FDC(void) {
+    return 1;
+}
 
 u32 fn_80215FE4(void) { return 1; }
 
