@@ -646,6 +646,7 @@ s32 ARCClose(void) {
     return 0;
 }
 
+/* No-op stub that always reports success (zero). */
 s32 fn_80006244(void) {
     return 0;
 }
