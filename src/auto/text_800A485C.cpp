@@ -20,19 +20,6 @@ extern "C" s32 OSWaitSemaphore(void *);
 extern "C" s32 OSInitSemaphore(void *, s32);
 extern "C" const char lbl_8031B1E4[];
 struct KeySlot63FC { u32 flags; s32 key; };
-struct VFiCacheNode {
-    u16 flags;
-    u16 unused2;
-    u32 field4;
-    u32 field8;
-    u32 fieldC;
-    u32 field10;
-    u32 size;
-    s32 field18;
-    u32 field1C;
-    void *field20;
-    void *field24;
-};
 static inline s32 KeySlot63FCMatch(KeySlot63FC *e, s32 k) {
     e->flags &= 1;
     return e->flags && e->key == k;
