@@ -766,8 +766,9 @@ void fn_80246498(void *widget) {
     fn_80214CB4(*(unsigned char *)((char *)widget + 0x18) == 0);
 }
 
-void fn_802464A8(void *arg0) {
-    *((signed char *)arg0 + 0x19) = 0;
+void fn_802464A8(void *widget) {
+    /* Clear the widget's direction-mode flag at +0x19, returning it to the normal selection/value path (see fn_802464B4). */
+    *((signed char *)widget + 0x19) = 0;
 }
 
 extern int fn_80230E90(int);
