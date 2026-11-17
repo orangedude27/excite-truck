@@ -169,6 +169,7 @@ BOOL fn_802D9BF0(void) {
     return lbl_8055FE3C != 0;
 }
 
+/* Return TRUE when the DVD-drive state variable (lbl_8055FE3C) is 1 (ready). */
 BOOL fn_802D9C04(void) {
     return (lbl_8055FE3C - 1) == 0;
 }
