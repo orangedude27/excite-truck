@@ -1,6 +1,6 @@
 #define CAT2(a, b) a##b
 #define CAT(a, b) CAT2(a, b)
-#define REGV(t, n, r) register t n CAT(as, m)("r" #r)
+#define REGV(t, n, r) register t n CAT(as, m)(#r)
 void fn_802BD814(void);
 #include "revolution/MTX/mtxtypes.h"
 extern int lbl_8034AC48, lbl_8055FAA8, lbl_8055FAAC;
