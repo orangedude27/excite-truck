@@ -2012,8 +2012,9 @@ void fn_801AD7C4(void *arg0, float *arg1, float *arg2, int arg3, void *arg4) {
 }
 
 #pragma peephole on
-unsigned char fn_801AD860(void *arg0) {
-    return ((unsigned char *)arg0)[0x220];
+/* Return this object's active-flag byte at offset 0x220. */
+unsigned char fn_801AD860(void *object) {
+    return ((unsigned char *)object)[0x220];
 }
 
 long fn_801AD868(void) {
