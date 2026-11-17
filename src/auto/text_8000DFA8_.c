@@ -1846,6 +1846,7 @@ f32 fn_80011E54(void) {
 }
 
 extern f32 lbl_80350EC4[];
+/* Bottom edge of the whole-screen layout box lbl_80350EC4, stored as {top, left, right, bottom}. */
 f32 fn_80011E60(void) {
     return lbl_80350EC4[3];
 }
