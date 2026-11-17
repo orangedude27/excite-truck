@@ -47,7 +47,20 @@ extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f3
 #define WARNING ((void (*)(const char *, s32, const char *, ...))Warning__Q26nw4hbm2dbFPCciPCce)
 
 struct Vec2f { f32 x, y; };
-struct CWBuf { u8 b[0x60]; };
+struct CWBuf {
+    u32 a, b;
+    u8 c[0x18];
+    u32 d;
+    f64 e, f;
+    u32 g;
+    f64 h;
+    u16 i;
+    u8 j, k;
+    f32 l;
+    u32 m;
+    f32 n, o;
+    u32 p, q, r;
+};
 extern "C" unsigned long lbl_80559800;
 /* nw4hbm::ut::Rect, as the text helpers pass it around: left, top, right, bottom. */
 struct Rect { f32 left, top, right, bottom; };
@@ -423,7 +436,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *);
 extern "C" void fn_80112528(void *, const u16 *, s32);
 extern "C" void fn_80112960(void *, void *);
 extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2);
-extern "C" void fn_800DD70C(u8 *self) {
+extern "C" void fn_800DD70C(register u8 *self) {
     CWBuf w;
     f32 bounds[4];
     f32 line[4];
@@ -436,7 +449,7 @@ extern "C" void fn_800DD70C(u8 *self) {
     f32 zero;
     const u16 *str;
     s32 n;
-    const char *msg = lbl_80320560;
+    register const char *msg = lbl_80320560;
     if (*(s32 *)(self + 0xD4) != 0 && *(s32 *)(self + 0xE0) != 0) {
     if (*(s32 *)(self + 0x28) == 0) return;
     (*(void (**)(void *))(*(u8 **)self + 0x60))(self);
