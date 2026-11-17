@@ -1359,6 +1359,7 @@ void fn_8026DAA8(void *arg0) {
     lbl_8049A1C0[10] = *(u32 *)((u8 *)self + 0x80);
     lbl_8049A1C0[11] = *(u32 *)((u8 *)self + 0x84);
 }
+/* Get the current camera-mode selector (lbl_8055F4E0), which the camera update switches on. */
 void* fn_8026DDD0(void) {
     return lbl_8055F4E0;
 }
