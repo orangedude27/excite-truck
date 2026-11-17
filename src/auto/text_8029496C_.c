@@ -561,7 +561,3 @@ void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *p
 #pragma pop
 
 #pragma scheduling on
-
-#pragma push
-#pragma processor 750
-#pragma dont_inline on
