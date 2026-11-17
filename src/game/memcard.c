@@ -286,6 +286,8 @@ loop_check:
 }
 #pragma pop
 
+/* Public "save now" entry point: builds the MCSH memory-card image from the
+ * registered save records and writes it to the card (fn_802E6FBC). */
 void fn_802E7128(void) { fn_802E6FBC(); }
 
 void fn_802E712C(void) {}
