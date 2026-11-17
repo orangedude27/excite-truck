@@ -2392,8 +2392,9 @@ extern "C" void fn_80215478(void* arg0) {
     *(u8*)((char*)arg0 + 0x18) = 1;
 }
 
-extern "C" void fn_80215484(void* arg0) {
-    *(u8*)((char*)arg0 + 0x18) = 0;
+/* Disable the widget: clear its enable flag at +0x18 (the clear twin of fn_80215478). */
+extern "C" void fn_80215484(void* widget) {
+    *(u8*)((char*)widget + 0x18) = 0;
 }
 
 extern "C" s32 fn_80215490(void) {
