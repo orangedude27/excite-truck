@@ -946,6 +946,8 @@ void* fn_80178C9C(void) {
 }
 
 extern void *lbl_8055E444;
+/* Return the cached global count in lbl_8055E444, mirrored from lbl_8055E440
+ * into field +0x394 of the session state (e.g. the relevant lobby/version count). */
 void* fn_80178CA4(void) {
     return lbl_8055E444;
 }
