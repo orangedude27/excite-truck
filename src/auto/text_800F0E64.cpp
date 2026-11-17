@@ -1505,7 +1505,6 @@ extern "C" s32 ReadStrmSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
     }
     return ret;
 }
-
 extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13WaveSoundInfo(void *reader, u32 soundId, void *waveSoundInfo) {
     extern const char lbl_80324B7C[];
     extern char lbl_80559868;
