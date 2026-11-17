@@ -57,10 +57,12 @@ void* fn_802BE30C(void* object, s32 shouldDelete) {
     return object;
 }
 
-void fn_802BE364(void *arg0) {
-    *(s32 *)((char *)arg0 + 4) = 0;
-    *(s32 *)((char *)arg0 + 0) = 0;
-    *(s32 *)((char *)arg0 + 8) = 0;
+/* Zero a FanInfo cell (the three-word FanEntry at cell). */
+void fn_802BE364(void *cell) {
+    FanEntry *entry = (FanEntry *)cell;
+    entry->unk4 = 0;
+    entry->unk0 = 0;
+    entry->field = 0;
 }
 
 s32 fn_802BE378(s32 arg0) {
