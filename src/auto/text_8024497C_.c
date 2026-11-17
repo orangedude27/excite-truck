@@ -156,14 +156,18 @@ s32 fn_80244C58(void *arg0, s32 arg1) {
  * after it, which is what keeps the list scrolling while a direction is held. */
 #define SCROLL_REPEAT_MS 250 /* ms one scroll step takes before it stops */
 #pragma scheduling invalid_target
-void fn_80244D0C(void *arg0) {
-    int t = fn_802E2C20();
-    int *a = (int *)((char *)arg0 + 0xA0);
-    int v;
-    v = a[2] + 0xFA;
-    a[0] = t <= v;
-    v = a[3] + 0xFA;
-    a[1] = t <= v;
+/* Window update (vtable slot 0x1C) of the unlockable list: refresh its two
+ * scroll auto-repeat flags.  Each direction counts as still held while the
+ * clock is within SCROLL_REPEAT_MS of the time fn_80244C58 stamped for its
+ * last message (+0xA8 up, +0xAC down). */
+void fn_80244D0C(void *window) {
+    int now = fn_802E2C20(); /* milliseconds since the clock started */
+    int *repeat = (int *)((char *)window + 0xA0); /* [0]/[1]: up/down held, [2]/[3]: last pressed */
+    int deadline;
+    deadline = repeat[2] + SCROLL_REPEAT_MS;
+    repeat[0] = now <= deadline;
+    deadline = repeat[3] + SCROLL_REPEAT_MS;
+    repeat[1] = now <= deadline;
 }
 #pragma scheduling reset
 extern void fn_80230C30(float *, float *, int, int);
