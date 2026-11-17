@@ -1779,9 +1779,10 @@ done:
 }
 #pragma dont_inline reset
 #pragma pop
-void fn_802735F4(int arg0, signed char arg1) {
-    if (arg0 == 0) {
-        lbl_8055F558 = arg1;
+/* When objectIndex is 0 (the primary object), store `state` into the global gate byte. */
+void fn_802735F4(int objectIndex, signed char state) {
+    if (objectIndex == 0) {
+        lbl_8055F558 = state;
     }
 }
 
