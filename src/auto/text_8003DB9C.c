@@ -4340,8 +4340,9 @@ void GXInitTexObjWrapMode(int *obj, int wrap_s, int wrap_t) {
     ((GXTexWrapReg *)obj)->wrapT = wrap_t;
 }
 
-void GXInitTexObjTlut(void* arg0, int arg1) {
-    *(int*)((char*)arg0 + 0x18) = arg1;
+/* Set a texture object's TLUT name field (offset 0x18). */
+void GXInitTexObjTlut(void* obj, int tlut_name) {
+    *(int*)((char*)obj + 0x18) = tlut_name;
 }
 
 void GXInitTexObjFilter(s32 *texObj, s32 minFilter, s32 magFilter) {
