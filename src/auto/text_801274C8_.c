@@ -76,6 +76,9 @@ s32 fn_801274C8(void) {
 }
 #pragma scheduling invalid_target
 s32 fn_80127538(void) {
+    /* Initialize the profiler / background-task subsystem: clear the profiling
+     * data regions, sample the initial time, register fn_80127968 as the
+     * "ProfUpdate" background task, zero the time counters, return success. */
     memset(lbl_8041D790, 0, 0x480);
     memset(lbl_8041DC10, 0, 0x10);
     fn_80127968();
