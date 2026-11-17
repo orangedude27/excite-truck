@@ -4026,7 +4026,10 @@ extern "C" s32 fn_8014431C(void) {
 
 extern "C" s32 fn_80144324(void) { return 0; }
 
-extern "C" s32 fn_8014432C(void) { return 0; }
+extern "C" s32 fn_8014432C(void) {
+    /* Trivial stub in this vtable's callback group; always returns 0 (false). */
+    return 0;
+}
 
 extern "C" void fn_80144334(void) {
 }
