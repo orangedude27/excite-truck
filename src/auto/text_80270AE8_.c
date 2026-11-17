@@ -593,6 +593,8 @@ extern "C" void fn_802712F8(void *rootNode) {
 #pragma scheduling on
 extern char lbl_80346E90[];
 void fn_802712F8(void *);
+/* Populate the camera and region tables by traversing the "camera3.val"
+   resource (fn_802712F8 resets the tables, then collects its entries). */
 void fn_8027156C(void) {
     fn_802712F8(lbl_80346E90);
 }
@@ -1541,11 +1543,11 @@ extern "C" float lbl_80563F98;
 extern "C" float lbl_80563F50;
 #pragma processor gekko
 extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
+    int a, b, c, d;
+    unsigned char flags;
     char *name = lbl_80346B00;
     Parser2 *p = arg1;
     char *o = (char *)arg0;
-    int a, b, c, d;
-    unsigned char flags;
 
     if (p->has(lbl_8055C5BC) != 0 && p->has(lbl_8055C5C0) != 0 && p->has(lbl_8055C5C4) != 0
         && (p->has(lbl_8055C5C8) != 0 || p->has(lbl_8055C5D0) != 0) && p->has(lbl_8055C5D8) != 0) {
