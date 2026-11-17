@@ -359,7 +359,8 @@ s32 fn_801291FC(void *region) {
     return ((s32 *)region)[2] - ((s32 *)region)[1];
 }
 
-s32 fn_8012920C(void *arg0) { return ((s32 *)arg0)[2]; }
+/* Return this heap region's high-water-mark field (offset 0x8), the upper bound used by fn_801291FC. */
+s32 fn_8012920C(void *region) { return ((s32 *)region)[2]; }
 
 void fn_80129214(void) {
 
