@@ -1657,7 +1657,8 @@ unsigned char fn_8018178C(void *object) { return ((struct Di718 *)object)->flag5
 /* Return the driver's rate-limited camera/look axis (pad30C[8] at +0x32C). */
 float fn_80181794(void *driver) { return DRIVER(driver)->pad30C[8]; }
 
-float fn_8018179C(void *arg0) { return *(float *)((char *)arg0 + 0x330); }
+/* Return the driver's float value at +0x330, just past the pad30C history block. */
+float fn_8018179C(void *driver) { return *(float *)((char *)driver + 0x330); }
 
 /* Return the float field at offset 0x334 of this audio-driver object. */
 float fn_801817A4(void *object) { return *(float *)((char *)object + 0x334); }
