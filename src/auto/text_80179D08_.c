@@ -370,6 +370,17 @@ s32 fn_8017A804(void *arg0, void *arg1) {
 }
 #pragma pop
 
+/* A moving body's pose, whose frame fn_8017AB84 transforms points into: the
+ * body's world frame as three axes (the columns of the 3x3 at 0x3C) and its
+ * world position at 0x60 -- the layout the RigidBody note in
+ * src/auto/text_8017B0B0_.c describes. */
+typedef struct Vec { f32 x, y, z; } Vec;
+typedef struct BodyPose {
+    char pad_00[0x3C];
+    Vec axes[3];    /* 0x3C the body's world frame, one axis per column */
+    Vec position;   /* 0x60 the body's world position */
+} BodyPose;
+
 void fn_8017AB84(void *matrix, float *dst, const float *src) {
     float *m = (float *)((char *)matrix + 0x3C);
     if (dst == src) {
