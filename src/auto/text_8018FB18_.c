@@ -1001,10 +1001,8 @@ int fn_80190CD0(float a, float b, float c) {
 int fn_80190D38(float a, float b, float c) { float lower; float value; lower = lbl_80562090; value = (a - b) / (c - b); if (lower < value) { lower = value; } else { lower = lower; } if (lower > lbl_8056208C) { lower = lbl_8056208C; } else { lower = lower; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC))); }
 
 extern float lbl_805620B8;
-#pragma scheduling invalid_target
+#pragma scheduling reset
 int fn_80190D9C(float a, float b, float c) { float lower; float value; lower = lbl_80562090; value = (a - b) / (c - b); if (lower < value) { lower = lower; } else { lower = value; } if (lower > lbl_8056208C) { lower = lower; } else { lower = lbl_8056208C; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620B8))); }
-
-#pragma scheduling pop
 int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
 
 #pragma dont_inline on
@@ -1687,23 +1685,30 @@ void *fn_801916AC(void *obj, int doDestroy) {
     return obj;
 }
 
-void fn_801916F4(void *arg0) {
-    register void *obj;
-    register void **vtable;
-    f32 value;
-    s32 invalid;
-    obj = *(void **)((u8 *)arg0 + 0x38);
-    vtable = *(void ***)obj;
-    ((void (**)(void *, s32))vtable)[9](obj, 0);
+#pragma cplusplus on
+#pragma scheduling on
+extern "C" void fn_801916F4(void *arg0) {
+    struct Obj {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7(int);
+    };
+    Obj *obj = (Obj *)*(void **)((u8 *)arg0 + 0x38);
+    obj->f7(0);
     if (*(s32 *)((u8 *)arg0 + 0x30) != 0) {
         *(s32 *)((u8 *)arg0 + 0x30) = 4;
-        value = lbl_8056208C;
-        invalid = -1;
+        f32 value = lbl_8056208C;
+        s32 invalid = -1;
         *(s32 *)((u8 *)arg0 + 0x0C) = invalid;
         *(f32 *)((u8 *)arg0 + 0x40) = value;
     }
 }
-
+#pragma cplusplus off
 extern char *strcpy(char *, const char *);
 extern unsigned char lbl_804A16E8[];
 /* Global table of 0xA0-byte car records this function fills from a car. */
@@ -2745,8 +2750,9 @@ extern "C" int fn_80192F58(void *self) {
 #pragma cplusplus off
 
 #pragma scheduling on
-unsigned char fn_80192F6C(void *arg0) {
-    return *((unsigned char *)arg0 + 0x12);
+/* Returns the byte-sized field at offset 0x12 of the object. */
+unsigned char fn_80192F6C(void *object) {
+    return *((unsigned char *)object + 0x12);
 }
 
 void fn_80192F74(void *object) {
