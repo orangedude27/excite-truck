@@ -32,6 +32,8 @@ extern int lbl_8055C994;
 #pragma scheduling off
 void fn_8029496C(void) {}
 
+#pragma push
+#pragma processor 750
 void fn_80294970(void) {
     extern char lbl_803492D0[];
     extern char lbl_804B42F0[];
