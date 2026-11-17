@@ -1053,6 +1053,7 @@ extern void *lbl_8055FD20;
 #pragma push
 #pragma dont_inline on
 void fn_802CFF50(void) {
+    /* Reset the GX state-change mask to "everything needs updating" (-1). */
     lbl_8055FD20 = (void*)-1;
 }
 #pragma pop
