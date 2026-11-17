@@ -96,24 +96,18 @@ s32 fn_80243528(s32 arg0, s32 arg1) {
 
 #pragma unroll on
 s32 fn_8024360C(s32 value, s32 tableIndex) {
+#pragma scheduling invalid_target
+    s32 length;
     s32 start = 0;
     s32 best = 0;
     s32 index = 0;
-    s32 length;
     s32 end;
-    s32 i;
-    s32 j;
-    for (i = 0; i < 4; i++) {
-        for (j = 0; j < 4; j++) {
-            length = lbl_803428B0[tableIndex][i * 4 + j][1];
-            end = start + length;
-            if (length > 0)
-                best = index;
-            if (value >= start && value < end)
-                return index;
-            start = end;
-            index++;
-        }
+    for (index = 0; index < 16; index++) {
+        length = lbl_803428B0[tableIndex][index][1];
+        end = start + length;
+        if (length > 0) best = index;
+        if (value >= start && value < end) return index;
+        start = end;
     }
     return best;
 }
