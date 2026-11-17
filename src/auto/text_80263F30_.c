@@ -577,7 +577,10 @@ void *fn_80264968(void *obj, int freeFlag) {
 
 extern void *lbl_8055F448;
 void* fn_80264A54(void) {
-    return lbl_8055F448;
+#define currentCreditsObject lbl_8055F448
+    /* Return the current credits page object created by fn_802646D0 (0 if none). */
+    return currentCreditsObject;
+#undef currentCreditsObject
 }
 
 #pragma push
