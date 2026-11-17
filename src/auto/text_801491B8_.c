@@ -2086,14 +2086,21 @@ void *fn_8014E4BC(void *arg0) {
     return arg0;
 }
 extern s32 fn_801DF074(s32, s32);
-#pragma paired_single off
-void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
+#pragma cplusplus on
+extern "C" void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
     extern void *lbl_8055E268;
     extern s32 fn_801DF074(s32, s32);
+    class V8014E61C {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8();
+        virtual void call(void *, s32, f64);
+    };
     u8 *entry;
-    f32 value;
+    f64 value;
     void *other;
-    void **obj;
+    V8014E61C *obj;
     if (lbl_8055E268 != 0) {
         entry = (u8 *)lbl_8055E268 + arg0 * 0xC0 + 0x9E4;
         if (entry != 0) {
@@ -2114,12 +2121,12 @@ void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
                 break;
             }
             other = fn_8017960C(arg0);
-            obj = *(void ***)(entry + 0x10);
-            (*(void (**)(void *, void *, s32, f32))((u8 *)*obj + 0x2C))(obj, other, arg1, value);
+            obj = *(V8014E61C **)(entry + 0x10);
+            obj->call(other, arg1, value);
         }
     }
 }
-#pragma paired_single reset
+#pragma cplusplus reset
 void fn_8014E704(void) {
 
 }
@@ -3708,7 +3715,10 @@ s32 fn_80153A38(void *base) {
     return 1;
 }
 
-u32 fn_80153AC8(void) { return 1; }
+u32 fn_80153AC8(void) {
+    /* Constant predicate (returns 1 / true); likely a virtual getter reached through a dispatch table. */
+    return 1;
+}
 
 #pragma cplusplus on
 #pragma use_lmw_stmw off
