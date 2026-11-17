@@ -415,8 +415,9 @@ extern "C" void fn_8012921C(void *arg0, s32 arg1) {
 #pragma cplusplus off
 void fn_80128584(s32, s32);
 
-void fn_80128658(s32 arg0) {
-    fn_80128584(arg0, 1);
+void fn_80128658(s32 block) {
+    /* Free a "MemAlloc" heap block (allocation source id 1) through the ring-buffer free routine. */
+    fn_80128584(block, 1);
 }
 
 /* Free a block that was allocated through MemAllocPhys (allocator source id 2):
