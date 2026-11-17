@@ -967,6 +967,9 @@ void fn_80178DBC(int index, float weight) {
 }
 
 #pragma dont_inline on
+/* Tail-call wrapper for external callers of fn_80177990: zero the four parallel
+ * 75-entry weight tables (lbl_80430700 / lbl_804305D4 and, through the setters,
+ * lbl_804424B0 / lbl_804425DC). */
 void fn_80178DD0(void) {
     fn_80177990();
 }
