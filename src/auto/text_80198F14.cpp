@@ -5047,7 +5047,7 @@ extern "C" void fn_801CFA48(void*);
 __declspec(section ".data") extern s32 lbl_80333728;
 /* Initialize a SeqHeap object: set its vtable and, when requested, set up the embedded heap at +0x40. */
 extern "C" void* fn_801A3F5C(void* thisPtr, s32 arg1, s32 initEmbeddedHeap) {
-    fn_8019ECC4();
+    ((void(*)(void*,s32,s32))fn_8019ECC4)(thisPtr, arg1, initEmbeddedHeap);
     *(void**)thisPtr = &lbl_80333728;
     if (initEmbeddedHeap != 0) {
         *(void**)((u8*)thisPtr + 0x24) = (u8*)thisPtr + 0x40;
