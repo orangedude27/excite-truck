@@ -132,8 +132,9 @@ done:
     return self;
 }
 
-void fn_801659C8(int arg0) {
-    fn_80163550(arg0 - 0x56C);
+void fn_801659C8(int subObject) {
+    /* Adjust a +0x56C subobject pointer back to its owning TutorialLevel and forward the tutorial-event arguments. */
+    fn_80163550(subObject - 0x56C);
 }
 
 #pragma push
@@ -179,18 +180,12 @@ extern "C" void fn_80165A30(void *arg0, int arg1) {
         virtual void d4(); virtual void d5(); virtual void d6();
         virtual float getValue(const char *);
     };
+    float scaleY = lbl_805618A0, scaleX = lbl_80561898;
+    float y, x, z;
+    void *entry = 0;
+    Entry *item = 0;
+    int j, count, minusOne;
     List *list;
-    int j;
-    Entry *item;
-    int count;
-    void *base;
-    void *entry;
-    float scaleY, scaleX;
-    float y, x;
-    float z;
-    int minusOne;
-    scaleX = lbl_80561898;
-    scaleY = lbl_805618A0;
     *(int *)((char *)&lbl_8042FEB0 + 4) = 0;
     list = (List *)arg0;
     j = 0;
@@ -199,9 +194,9 @@ extern "C" void fn_80165A30(void *arg0, int arg1) {
 body:
     if (strcmp(item->getName(), lbl_8055A150) == 0) {
         count = *(int *)((char *)&lbl_8042FEB0 + 4);
-        base = *(void **)&lbl_8042FEB0;
+        void *b = *(void **)&lbl_8042FEB0;
         *(int *)((char *)&lbl_8042FEB0 + 4) = count + 1;
-        entry = (char *)base + count * 0x14;
+        entry = (char *)b + count * 0x14;
         x = item->getValue(lbl_8055A158);
         y = item->getValue(lbl_8055A160);
         *(float *)entry = item->getValue(lbl_8055A168);
@@ -910,8 +905,9 @@ extern float lbl_805618A0, lbl_805618F4, lbl_805618F8, lbl_805618FC;
 #pragma push
 #pragma optimization_level 2
 #pragma scheduling on
-float fn_80166F90(float *arg0) {
-    float prod = lbl_805618A0 * arg0[2];
+float fn_80166F90(float * __restrict arg0) {
+    float a = lbl_805618A0;
+    float prod = a * arg0[2];
     float diff = lbl_8055E318 - arg0[3];
     float x;
     float value;
