@@ -11171,7 +11171,7 @@ void btm_pm_proc_cmd_status(UINT8 status) {
 }
 
 /* Continue a role switch / encryption change that waited for the mode change. */
-static inline void btm_pm_cont_rswitch_inl(u8 *link, int offset, u16 handle, u8 status) {
+static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 status) {
     u8 *addr;
     u8 *dev;
     if (link[0x14f] == 1) {
@@ -11183,7 +11183,7 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, int offset, u16 handle, u8 
                 return;
             }
         } else {
-            if (btsnd_hcic_switch_role(addr, *(u8 *)((u32)lbl_803C0F78 + offset + 0x14e) == 0)) {
+            if (btsnd_hcic_switch_role(addr, conn[0x14e] == 0)) {
                 link[0x14f] = 0;
                 return;
             }
