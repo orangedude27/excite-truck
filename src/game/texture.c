@@ -493,8 +493,9 @@ copy2_done:
 #pragma dont_inline reset
 #pragma scheduling on
 #pragma use_lmw_stmw reset
-void fn_802CAC28(int arg0, int arg1) {
-    fn_802CA898(arg0, arg1, 0, 0xE);
+void fn_802CAC28(int name, int sceneId) {
+    /* Register a named texture with a scene id and fixed type 0xE, with no backing resource. */
+    fn_802CA898(name, sceneId, 0, 0xE);
 }
 
 void fn_802CAC34(int name, int resource) {
