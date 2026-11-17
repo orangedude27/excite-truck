@@ -862,6 +862,7 @@ void* MEMAllocFromAllocator(MEMAllocator* allocator, u32 size) {
     return allocator->funcs->allocFunc(allocator, size);
 }
 
+// Free block by dispatching through the allocator's virtual freeFunc.
 void MEMFreeToAllocator(MEMAllocator* allocator, void* block) {
     allocator->funcs->freeFunc(allocator, block);
 }
