@@ -406,7 +406,10 @@ void fn_802DD898(void *arg0,float farg0,float farg1) {
 }
 #pragma scheduling on
 void fn_802DE774(void) {
-    *(int *)((char *)lbl_804DB6A0 + 0x90) = 0;
+    /* Clear the texture-copy cache by resetting its valid-entry count to zero. */
+#define gTexCopyCache lbl_804DB6A0
+    *(int *)((char *)gTexCopyCache + 0x90) = 0;
+#undef gTexCopyCache
 }
 
 extern unsigned int lbl_802FAD58[];
