@@ -97,7 +97,7 @@ struct ModelElement {
 #pragma push
 #pragma scheduling off
 void *fn_802C5390(int instanceId) {
-    /* Return the 0x10-byte ModelInstance record at instanceId from the manager's instance table. */
+    /* Return the 0x10-byte ModelInstance at instanceId from the manager's instance table. */
     u32 instances = *(u32 *)((char *)lbl_804C139C + 8);
     return (void *)(instances + (instanceId << 4));
 }
