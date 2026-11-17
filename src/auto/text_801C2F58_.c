@@ -2101,8 +2101,12 @@ void fn_801C7C04(void) {
 #pragma pop
 extern s32 lbl_8055E850;
 extern void fn_801C78D8(void);
+/* Menu action: clear the selected name-list index, then reinitialize the
+ * name-list state flags and default handler. */
 void fn_801C7EF4(void) {
-    lbl_8055E850 = 0;
+#define gNameListIndex lbl_8055E850
+    gNameListIndex = 0;
+#undef gNameListIndex
     fn_801C78D8();
 }
 
