@@ -1021,7 +1021,7 @@ extern float lbl_80565028;
 #pragma paired off
 #pragma paired_single off
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma unroll off
 void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     struct TexWrap { u8 pad[0x24]; u8 tex; } *t0 = arg0;
@@ -1044,7 +1044,7 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     unsigned int c3;
     wrapS = GXGetTexObjWrapS(&t0->tex);
     wrapT = GXGetTexObjWrapT(&t0->tex);
-    count = (wrapS * wrapT * 16) / 32;
+    count = (wrapT * wrapS * 16) / 32;
     dst = (unsigned int *)((char *)GXGetTexObjFmt(&t0->tex) - 0x40000000);
     src1 = (unsigned int *)((char *)GXGetTexObjFmt(&t1->tex) - 0x40000000);
     src2 = (unsigned int *)((char *)GXGetTexObjFmt(&t2->tex) - 0x40000000);
