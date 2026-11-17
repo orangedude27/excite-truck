@@ -2801,11 +2801,23 @@ void *fn_801D7C6C(void) {
 #undef STR_WORLD_MORPH_ASE
 }
 
-/* A WorldMorph_ASE action-sequence element. */
+/* A WorldMorph_ASE action-sequence element.  fn_801D7C80 starts the blend by
+ * stamping startTime and copying fromValue/toValue; fn_801D7D20 steps it;
+ * fn_801D7E54 restores it.  Values blend from fromValue to toValue over
+ * duration ticks after a delay, and go to a terrain morph group or an
+ * indexed audio parameter. */
 struct WorldMorphAse {
-    void *vtable; /* 0x00 */
-    char pad[0x24];
-    int state; /* 0x28, 1 = idle/ready, 2 = running */
+    void *vtable;       /* 0x00 */
+    void *morphGroup;   /* 0x04 target terrain-morph group (else audio param) */
+    int audioParam;     /* 0x08 index passed to SetAudioParam */
+    int duration;       /* 0x0C blend length in ticks */
+    int delay;          /* 0x10 ticks to wait before the blend starts */
+    float baseValue;    /* 0x14 weight restored by fn_801D7E54 */
+    char unused18[4];   /* 0x18 */
+    int startTime;      /* 0x1C frame tick the blend was started at */
+    float fromValue;    /* 0x20 blend start value */
+    float toValue;      /* 0x24 blend end value */
+    int state;          /* 0x28 1 = idle/ready, 2 = running, 3 = finished */
 };
 
 /* Return the current state of a WorldMorph_ASE action-sequence element (the
