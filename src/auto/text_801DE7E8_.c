@@ -74,9 +74,9 @@ struct SoundObject {
 
 #pragma scheduling invalid_target
 void fn_801DE7E8(int arg0) {
+#pragma opt_common_subs off
     extern char lbl_804872B0[];
-    extern char lbl_803394B0[];
-    extern char lbl_803394BC[];
+    extern char lbl_803394B0[], lbl_803394BC[];
     extern int fn_80145E70(const char *);
     extern int fn_802CAC28(const char *, int);
     int index;
