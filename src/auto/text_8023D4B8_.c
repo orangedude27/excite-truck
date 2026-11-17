@@ -132,7 +132,10 @@ void fn_8023D4B8(int arg0) {
 }
 #pragma dont_inline on
 void* fn_8023D6FC(void) {
-    return lbl_8055F18C;
+#define controlScheme lbl_8055F18C
+    /* RealName: GetControlScheme - return the currently selected control scheme (0..3). */
+    return controlScheme;
+#undef controlScheme
 }
 #pragma dont_inline reset
 
