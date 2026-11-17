@@ -3,7 +3,7 @@
 
 #pragma push
 #pragma small_data off
-extern int lbl_80335DCC;
+__declspec(section ".data") extern int lbl_80335DCC;
 #pragma pop
 extern char lbl_8055E6D0;
 extern int memset(void *, int, unsigned int);
