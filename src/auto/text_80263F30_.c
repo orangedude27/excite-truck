@@ -1000,7 +1000,8 @@ int fn_802655C8(int arg0, int arg1) {
 }
 
 typedef float f32;
-void fn_80265610(void *arg0, f32 farg0) { *(f32 *)((char *)arg0 + 0x1C) = farg0; }
+/* Set the countdown timer's starting value (offset 0x1C), copied into the countdown on reset. */
+void fn_80265610(void *timer, f32 startValue) { *(f32 *)((char *)timer + 0x1C) = startValue; }
 
 /* Reset a countdown timer: clear the completion flag at +0x20 and copy the
  * starting value at +0x1C into the countdown at +0x18. */
