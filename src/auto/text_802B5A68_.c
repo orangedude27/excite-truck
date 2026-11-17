@@ -528,39 +528,49 @@ extern char lbl_8034A70C[];
 extern int strcmp(const char *, const char *);
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_802B62A4(const char **arg) {
-    register s32 *entry;
-    register u32 i;
+/* Run the action of the track-editor debug view's dropdown control named *name.
+ *
+ * sDropdownTable is 4 ControlEntry records covering the two dropdowns:
+ *   "layer_dropdown" (fn_802B61E0) and a nameless entry whose test fn_802B5DD0
+ *   accepts any "layer:<n>" text, then "brush_dropdown" (fn_802B6228) and its
+ *   nameless "brush:<n>" test fn_802B5E8C.  An entry matches when its own name
+ *   equals *name, or when it has no name and its test function accepts *name;
+ *   the entry found is called with the name and a pointer to itself, which
+ *   restarts that dropdown's reference timer.  fn_802B6358 walks the
+ *   11-entry table of named controls the same way. */
+void fn_802B62A4(const char **name) {
+    struct ControlEntry {
+        const char *name;
+        s32 (*test)(const char *);
+        void (*action)(const char *, void *entry);
+    };
+#define sDropdownTable lbl_8034A670
+    register struct ControlEntry *entry = (struct ControlEntry *)sDropdownTable;
+    register u32 i = 0;
 
-    entry = (s32 *)lbl_8034A670;
-    i = 0;
 loop:
-    if (entry[0] != 0) {
-        if (strcmp((const char *)entry[0], *arg) == 0) {
-            goto action;
-        }
+    if (entry->name != 0 && strcmp(entry->name, *name) == 0) {
+        goto action;
     }
-    if (entry[1] != 0) {
-        if (((s32 (*)(const char *))entry[1])(*arg) != 0) {
-            goto action;
-        }
+    if (entry->test != 0 && entry->test(*name) != 0) {
+        goto action;
     }
     goto next;
 action:
     {
-        s32 *actionEntry = (s32 *)(lbl_8034A670 + i * 12);
-        ((void (*)(const char *, void *))actionEntry[2])(*arg, (void *)actionEntry);
+        struct ControlEntry *actionEntry =
+            (struct ControlEntry *)(sDropdownTable + i * sizeof(struct ControlEntry));
+        actionEntry->action(*name, (void *)actionEntry);
         return;
     }
 next:
     i++;
-    entry += 3;
+    entry += 1;
     if (i < 4) {
         goto loop;
     }
+#undef sDropdownTable
 }
-
-#pragma scheduling invalid_target
 /* Run the action of the editor-menu control whose name is *name.
  *
  * sControlTable is 11 ControlEntry records for the named controls of the
