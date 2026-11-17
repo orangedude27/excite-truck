@@ -1174,10 +1174,10 @@ void fn_801AC0A0(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
  extern float lbl_805624E8;
  extern int lbl_803357F0[];
  extern void fn_8017D2C8(void *, void *, void *, int, int);
- struct { void *v; Vec a; Vec b; int c,d; } event;
+ struct { void *v; float a[3], b[3]; int c,d; } event;
  float value, scale, squared;
  float z2,y2,x2,z,y,x;
- if(arg3>=100 && *(unsigned char *)((char *)arg0+0x220)==0) {
+ if(arg3>=100 && *((unsigned char *)arg0+0x220)==0) {
  value=*(float *)((char *)arg0+0xD4);
  scale=lbl_805624E8 * value;
  squared=scale*scale;
@@ -1185,8 +1185,8 @@ void fn_801AC0A0(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
  x=arg1[0]; y=arg1[1]; z=arg1[2];
  x2=arg2[0]; y2=arg2[1]; z2=arg2[2];
  event.v=lbl_803357F0;
- event.a.x=x; event.a.y=y; event.a.z=z;
- event.b.x=x2; event.b.y=y2; event.b.z=z2;
+ event.a[0]=x; event.a[1]=y; event.a[2]=z;
+ event.b[0]=x2; event.b[1]=y2; event.b[2]=z2;
  event.c=arg3; event.d=arg4;
  ((void (*)(void *, void *))fn_801ABFF8)(arg0,&event);
  }
@@ -1989,6 +1989,28 @@ void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
 done:
     return;
 }
+
+void fn_801AD7C4(void *arg0, float *arg1, float *arg2, int arg3, void *arg4) {
+    void *obj = arg4;
+    fn_801AC0A0(arg0, arg1, arg2, arg3, (int)obj);
+    if (obj != 0) {
+        s32 isCar;
+        s32 tag = *(s32 *)((char *)obj + 0x10);
+        isCar = 0;
+        if ((u32)(tag + 0xBCBF0000) == 0x5220U ||
+            (u32)(tag + 0xAFBD0000) == 0x4152U ||
+            (u32)(tag + 0xBEBD0000) == 0x4152U ||
+            (u32)(tag + 0xB1BD0000) == 0x4152U) {
+            isCar = 1;
+        }
+        if (isCar != 0) {
+            s32 extra = *(s32 *)((char *)obj + 0x1EC);
+            if (arg0 != 0) arg0 = (char *)arg0 + 0x23C;
+            fn_801D09A8(arg0, extra);
+        }
+    }
+}
+
 #pragma peephole on
 unsigned char fn_801AD860(void *arg0) {
     return ((unsigned char *)arg0)[0x220];
@@ -2073,8 +2095,9 @@ void fn_801AD8C8(void *arg0, unsigned int *arg1, float *arg2, float *arg3) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_801AD99C(void *r0, float *r1, float *r2) {
-    class Obj3 {
+#pragma scheduling invalid_target
+extern "C" void fn_801AD99C(void *arg0, float *arg1, float *arg2) {
+    class Obj {
     public:
         virtual void v0();
         virtual void v1();
@@ -2094,17 +2117,17 @@ extern "C" void fn_801AD99C(void *r0, float *r1, float *r2) {
         virtual void v15();
         virtual void v16(float *, float *, int, int);
     };
-    float s;
-    float x[3];
-    float y[3];
-    s = *(float *)((char *)r0 + 0xD4) / lbl_805624D0;
-    x[0] = r1[0] * s;
-    x[1] = r1[1] * s;
-    x[2] = r1[2] * s;
-    y[0] = *(float *)((char *)r0 + 0x60) + r2[0];
-    y[1] = *(float *)((char *)r0 + 0x64) + r2[1];
-    y[2] = *(float *)((char *)r0 + 0x68) + r2[2];
-    ((Obj3 *)r0)->v16(x, y, 0x64, 0);
+    float scale;
+    float sp14[3];
+    float sp8[3];
+    scale = *(float *)((char *)arg0 + 0xD4) / lbl_805624D0;
+    sp14[0] = arg1[0] * scale;
+    sp14[1] = arg1[1] * scale;
+    sp14[2] = arg1[2] * scale;
+    sp8[0] = *(float *)((char *)arg0 + 0x60) + arg2[0];
+    sp8[1] = *(float *)((char *)arg0 + 0x64) + arg2[1];
+    sp8[2] = *(float *)((char *)arg0 + 0x68) + arg2[2];
+    ((Obj *)arg0)->v16(sp14, sp8, 100, 0);
 }
 #pragma pop
 void fn_801ADA38(void *object, int enable) {
@@ -2126,7 +2149,8 @@ short fn_801ADA84(void *arg0) {
     return *(short *)((char *)arg0 + 0x6C);
 }
 
-long fn_801ADA8C(long arg0) { return arg0 + 0x118; }
+/* Return the address of the embedded field at offset 0x118 of base. */
+long fn_801ADA8C(long base) { return base + 0x118; }
 
 long fn_801ADA94(long arg0) {
     return arg0 + 0x60;
