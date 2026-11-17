@@ -441,8 +441,10 @@ extern "C" s32 fn_8012AC28(s32 parser, s32 outSize) {
 }
 #pragma pop
 
-extern "C" void fn_8012AC98(s32 arg0) {
-    fn_8012AC28(arg0, 0);
+extern "C" void fn_8012AC98(s32 parser) {
+    /* Tail-call fn_8012AC28 with no output-size pointer: look up and return a
+     * stream's start sector from its name without also fetching the byte size. */
+    fn_8012AC28(parser, 0);
 }
 
 #pragma push
@@ -1759,6 +1761,7 @@ extern "C" void fn_8012D024_old(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 
+#pragma pop
 extern "C" void fn_8012D1A8(s32 arg0) {
     u8 *self = (u8 *)arg0;
     s32 off;
@@ -1770,11 +1773,12 @@ extern "C" void fn_8012D1A8(s32 arg0) {
             *(s32 *)(self + 0xB4) = -1;
         }
         for (i = 0, off = 0; i < *(s32 *)(self + 0x8C); i++, off += 0x44) {
-            if (((Fn8012AFE0Ent *)(*(s32 *)(self + 0x64) + off))->flags & 4) {
+            u32 *r = (u32 *)(*(s32 *)(self + 0x64) + off);
+            if (r[0x34 / 4] & 4) {
                 fn_802E317C(lbl_8032AE20);
             }
-            Fn8012AFE0Ent *e = (Fn8012AFE0Ent *)(*(s32 *)(self + 0x64) + off);
-            e->flags &= ~0xF;
+            r = (u32 *)(*(s32 *)(self + 0x64) + off);
+            r[0x34 / 4] &= ~0xF;
         }
         if (*(s32 *)(self + 0x68) != 0) {
             fn_8012C4D8((void *)*(s32 *)(self + 0x68));
@@ -1788,11 +1792,12 @@ extern "C" void fn_8012D1A8(s32 arg0) {
         fn_8012BA1C(self + 4);
         fn_8012BC24((void **)&lbl_8055E000, self + 4);
         for (i = 0, off = 0; i < *(s32 *)(self + 0x8C); i++, off += 0x44) {
-            if (((Fn8012AFE0Ent *)(*(s32 *)(self + 0x64) + off))->flags & 4) {
+            u32 *r = (u32 *)(*(s32 *)(self + 0x64) + off);
+            if (r[0x34 / 4] & 4) {
                 fn_802E317C(lbl_8032AE20);
             }
-            Fn8012AFE0Ent *e = (Fn8012AFE0Ent *)(*(s32 *)(self + 0x64) + off);
-            e->flags &= ~0xF;
+            r = (u32 *)(*(s32 *)(self + 0x64) + off);
+            r[0x34 / 4] &= ~0xF;
         }
         if (*(s32 *)(self + 0x68) != 0) {
             fn_8012C4D8((void *)*(s32 *)(self + 0x68));
@@ -1805,8 +1810,8 @@ extern "C" void fn_8012D1A8(s32 arg0) {
         break;
     }
 }
-
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 
 extern "C" void fn_8012D33C(u32 *arg0, u32 *arg1) {
     u32 v4 = arg1[4];
