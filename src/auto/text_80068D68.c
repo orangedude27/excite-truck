@@ -5426,7 +5426,8 @@ s32 bdcmp(u8 *arg0, u8 *arg1) {
 
 void fn_80071078(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x80) = arg0; }
 
-void fn_80071088(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x88) = arg0; }
+/* Register the BTA DM compression callback in slot +0x88 of the system control block. */
+void fn_80071088(s32 callback) { *(s32 *)(lbl_803C0AD8 + 0x88) = callback; }
 
 /* Register the BTA system callback stored at offset 0x84 of the system control block. */
 void fn_80071098(s32 callback) {
