@@ -1099,7 +1099,7 @@ void fn_802CFFAC(int arg0, int arg1, int arg2) {
     volatile unsigned char spA;
     volatile unsigned char sp9;
     volatile unsigned char sp8;
-    unsigned long packed;
+    register unsigned long packed;
 
     packed = fn_802CE9FC(arg0, arg1, arg2, 0);
     spB = (unsigned char)packed;
@@ -1557,6 +1557,7 @@ void fn_802D08CC(int cullMode) {
 void fn_802D0910(int, int, int, int, int, int) {
 }
 
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802D0914(int arg0, short arg1, short arg2) {
     extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
