@@ -31,6 +31,7 @@ typedef struct OSContext {
     f64 psfs[32];  // at 0x1C8
 } OSContext;
 
+/* Save the current FPU state into ctx (tail-branches to __OSSaveFPUContext); hand-written assembly. */
 void OSSaveFPUContext(OSContext* ctx);
 void OSSetCurrentContext(OSContext* ctx);
 OSContext* OSGetCurrentContext(void);
