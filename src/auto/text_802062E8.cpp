@@ -159,8 +159,9 @@ extern "C" void fn_80206454(void) {
     ((struct SoundManagerFlags *)lbl_8055ED80)->paused = 0;
 }
 
-extern "C" void fn_80206464(void* hi) {
-    lbl_8055ED88 = hi;
+extern "C" void fn_80206464(void *soundGroupCount) {
+    /* Set the number of scene sound-group table entries searched by fn_80206750 (carried as a pointer value). */
+    lbl_8055ED88 = soundGroupCount;
 }
 
 extern "C" void fn_8020646C(long, long);
