@@ -571,8 +571,11 @@ int fn_8020B2D4(int object, int deleteFlag) {
     return object;
 }
 
+/* Return the "Voice Mixer" name string. */
 void *fn_8020B314(void) {
-    return lbl_8033C520;
+#define sVoiceMixerName lbl_8033C520
+    return sVoiceMixerName;
+#undef sVoiceMixerName
 }
 
 void fn_8020B320(void) {
