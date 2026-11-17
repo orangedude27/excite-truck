@@ -2987,24 +2987,23 @@ extern s32 __DVDGetNextWaitingQueue(void);
 extern __declspec(section ".data") u8 lbl_8037B5B0;
 s32 DVDGetCommandBlockStatus(void *arg0) {
     s32 status;
-    s32 enabled;
-    s32 next;
-    enabled = OSDisableInterrupts();
-    status = *(s32 *)((u8 *)arg0 + 12);
-    if (status == 3) {
+    s32 enabled = OSDisableInterrupts();
+    if (*(volatile s32 *)((u8 *)arg0 + 0xC) == 3) {
         status = 1;
-    } else if (status == 5) {
+    } else if (*(volatile s32 *)((u8 *)arg0 + 0xC) == 5) {
         status = 4;
     } else if ((u32)executing_8055D8C8 == (u32)&lbl_8037B5B0) {
-        next = __DVDGetNextWaitingQueue();
+        s32 next = __DVDGetNextWaitingQueue();
         if (next != 0) {
             if ((u32)arg0 == (u32)next) status = 1;
-            else status = *(s32 *)((u8 *)arg0 + 12);
+            else status = *(volatile s32 *)((u8 *)arg0 + 0xC);
         } else if ((u32)arg0 == (u32)&lbl_8037B5B0) {
             status = 0;
         } else {
-            status = *(s32 *)((u8 *)arg0 + 12);
+            status = *(volatile s32 *)((u8 *)arg0 + 0xC);
         }
+    } else {
+        status = *(volatile s32 *)((u8 *)arg0 + 0xC);
     }
     OSRestoreInterrupts(enabled);
     return status;
