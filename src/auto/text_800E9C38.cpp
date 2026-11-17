@@ -200,7 +200,7 @@ extern "C" int __dt__Q46nw4hbm3snd6detail7ChannelFv(void *channel, int deleteFla
 
 extern float lbl_80560FC0;
 extern float lbl_80560FC4;
-extern void fn_800EB3E4(void *, void *, unsigned long, float);
+extern "C" void fn_800EB3E4(void *);
 extern void fn_800EC890(void *);
 extern "C" void InitParam__Q46nw4hbm3snd6detail7ChannelFPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(void *arg0, void (*arg1)(void *, int, unsigned long), unsigned long arg2) {
     int zero = 0, one = 1, sixty = 0x3C;
