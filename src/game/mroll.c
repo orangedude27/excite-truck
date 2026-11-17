@@ -867,7 +867,7 @@ done:
     return active;
 }
 
-extern float lbl_80563780, lbl_80563784, lbl_80563788, lbl_8056378C, lbl_80563790, lbl_80563794;
+extern __declspec(section ".sdata") float lbl_80563780, lbl_80563784, lbl_80563788, lbl_8056378C, lbl_80563790, lbl_80563794;
 extern float fn_8023659C();
 extern void fn_802354A0(int, int, unsigned, float, float, float, float, float);
 extern void fn_80235758(int, int, unsigned, float, float, float, float, float, float, float, float);
