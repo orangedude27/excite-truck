@@ -565,6 +565,8 @@ extern "C" int fn_801D5014(void *list, int arg1, int arg2, int arg3) {
 #pragma cplusplus reset
 #pragma pop
 
+/* ActionSequence virtual at vtable slot +0x30 (lbl_80338D80): a base-class stub
+ * that always reports 0, like its neighbour fn_801D544C at slot +0x2C. */
 int fn_801D50A0(void) {
     return 0;
 }
