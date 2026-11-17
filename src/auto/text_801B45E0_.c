@@ -589,7 +589,13 @@ void fn_801B531C(void) {
 }
 
 void fn_801B5354(void) {
-    fn_801B49C8(lbl_8055E6D8);
+    /* Mark the replay state-machine singleton as active: set the byte-0 step flag
+     * of gReplayQueue to 1 (the flag the replay reset fn_801B5274 clears). */
+    #define gReplayQueue  lbl_8055E6D8
+    #define SetStepFlag   fn_801B49C8
+    SetStepFlag(gReplayQueue);
+    #undef SetStepFlag
+    #undef gReplayQueue
 }
 
 void fn_801B535C(void) {
