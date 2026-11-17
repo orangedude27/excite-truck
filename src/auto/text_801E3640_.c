@@ -289,17 +289,17 @@ void fn_801E3FC8(void *arg0, float farg0) {
 #pragma processor 750
 #pragma scheduling invalid_target
 int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
-#pragma opt_common_subs off
-    float *a = (float *)arg0;
+    float *a;
     float *b = (float *)arg1;
     float delta[3];
     float matrix[4][3];
     float mag;
     float scale;
     float tx, ty, tz;
-    delta[0] = b[0] - a[0];
-    delta[1] = b[0x1] - a[1];
-    delta[2] = b[2] - a[2];
+    int a2, a3;
+    delta[0] = b[0] - ((float *)arg0)[0];
+    delta[1] = b[0x1] - ((float *)arg0)[1];
+    delta[2] = b[2] - ((float *)arg0)[2];
     fn_801E3640(delta, &matrix[0][0]);
     matrix[2][0] = delta[0] * lbl_80562D08;
     matrix[2][1] = delta[1] * lbl_80562D08;
@@ -318,13 +318,16 @@ int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
         matrix[1][1] *= scale;
         matrix[1][2] *= scale;
     }
+    a = (float *)arg0;
+    a2 = arg2;
+    a3 = arg3;
     tx = a[0] + matrix[2][0];
     ty = a[1] + matrix[2][1];
     tz = a[2] + matrix[2][2];
     matrix[3][0] = tx;
     matrix[3][1] = ty;
     matrix[3][2] = tz;
-    fn_801E370C(&matrix[0][0], arg2, arg3);
+    fn_801E370C(&matrix[0][0], a2, a3);
 }
 extern float lbl_8055EA68, lbl_80562CF4;
 extern int fn_802C744C(int, float *);
@@ -332,8 +335,11 @@ extern int fn_801E4040(void *, void *, int, int, float);
 #pragma dont_inline fn_801E41D8
 void fn_801E41D8(void *arg0, void *arg1, int arg2, float farg0);
 #pragma dont_inline fn_801E41D8
-void fn_801E41D8(void *arg0, void *arg1, int arg2, float farg0) {
-    fn_801E4040(arg0, arg1, arg2, arg2, farg0);
+/* Draw a solid-colour 3D beam between the two points: the fn_801E4040 convenience
+   form that passes the same RGBA colour for both ends of the beam's colour
+   gradient. `width` is the beam's cross-section size, applied half-and-half. */
+void fn_801E41D8(void *from, void *to, int color, float width) {
+    fn_801E4040(from, to, color, color, width);
 }
 
 void fn_801E41E0(void *arg0, int arg1, float farg0) {
