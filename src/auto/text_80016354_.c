@@ -6,6 +6,8 @@ extern void *lbl_8055D554;
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern unsigned char lbl_803577F0[];
+#define sBaseDrivers  lbl_803577F0 /* fixed DriverInfo table */
+#define DRIVER_SIZE   0x5C
 extern unsigned char lbl_80357960[];
 extern void *fn_80016474();
 extern unsigned char *lbl_8055D540;
