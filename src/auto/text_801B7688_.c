@@ -302,8 +302,9 @@ void fn_801B8048(int arg0, int arg1, float farg0, float farg1) {
 }
 
 #pragma dont_inline fn_801B78EC
-void fn_801B8054(int arg0, int arg1, float farg0, float farg1) {
-    fn_801B78EC(arg0, arg1, 1, farg0, farg1, lbl_80562708);
+void fn_801B8054(int obj, int source, float offset, float interp) {
+    /* Position `obj` from `source` via the second (mode-1) interpolation path; the final angle is 0.0f. */
+    fn_801B78EC(obj, source, 1, offset, interp, lbl_80562708);
 }
 
 #pragma optimize_for_size on
