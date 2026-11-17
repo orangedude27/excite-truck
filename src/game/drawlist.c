@@ -179,9 +179,9 @@ void* fn_802C83C4(void) {
 
 #pragma scheduling invalid_target
 void fn_802C83CC(void) {
-    int ten = 10;
-    float temp_f1 = (float)ten;
+    register int ten = 10;
     float *dst = (float *)lbl_804C1410;
+    float temp_f1 = (float)ten;
     *dst++ = lbl_80564EF8;
     *dst++ = lbl_80564F00;
     *dst++ = lbl_80564F00;
@@ -808,8 +808,10 @@ int fn_802C94A0(float *arg0, unsigned char *arg1, float *arg2, float tolerance) 
     return 1;
 }
 #pragma scheduling on
-int fn_802C9638(void *arg0, unsigned char *arg1, float tolerance) {
-    return fn_802C94A0(arg0, arg1, 0, tolerance);
+/* View-volume containment test for a position: calls the full checker without
+ * a distance output, still updating the caller's status byte. */
+int fn_802C9638(void *position, unsigned char *status, float tolerance) {
+    return fn_802C94A0(position, status, 0, tolerance);
 }
 
 #pragma dont_inline on
