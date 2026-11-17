@@ -1,6 +1,5 @@
 #include <types.h>
 #include <string.h>
-typedef struct { char pad[0x18]; void *(*fn)(void); } VTab_1C56AC;
 extern char lbl_8055E7E1;
 extern char lbl_8055E7E2;
 extern char lbl_8055E7E3;
@@ -913,9 +912,9 @@ void fn_801C56AC(void) {
     float cAC;
     float cB4;
     float c70;
-    float cBC;
-    float c78;
     float var_f23;
+    register float c78;
+    float cBC;
     if ((u8)lbl_8055E7E2 == 0) return;
     cfg = lbl_80437E30;
     c74 = lbl_80562974;
@@ -925,12 +924,11 @@ void fn_801C56AC(void) {
     cAC = lbl_805629AC;
     cB4 = lbl_805629B4;
     c70 = lbl_80562970;
-    cBC = lbl_805629BC;
+    var_f23 = 0;
     c78 = lbl_80562978;
+    cBC = lbl_805629BC;
     i = 0;
     for (;;) {
-        void **vtab;
-        s32 cfg4;
         obj = fn_8017960C(i);
         if (obj == 0) return;
         var_f23 = *(float *)(cfg + 8);
@@ -938,8 +936,7 @@ void fn_801C56AC(void) {
         fn_8018ADC4(obj, lbl_8056296C);
         fn_8018ADEC(obj);
         fn_8018ADAC(obj, lbl_80562970);
-        vtab = *(void ***)fn_801B2ED0(i);
-        vobj = ((void *(*)())vtab[6])();
+        vobj = ((void *(*)())(*(void ***)fn_801B2ED0(i))[6])();
         buf[6] = *(float *)((u8 *)obj + 0x60);
         buf[7] = *(float *)((u8 *)obj + 0x68);
         fn_801353C4(vobj, &buf[6]);
@@ -947,6 +944,7 @@ void fn_801C56AC(void) {
         if (*(s32 *)(cfg + 0) == 0) goto L2ac8;
         {
             s32 idx;
+            s32 cfg4;
             cfg4 = *(s32 *)(cfg + 4);
             idx = 1;
             buf[4] = c70;
@@ -968,13 +966,16 @@ void fn_801C56AC(void) {
                 buf[4] = buf[4] + buf[2] * k;
                 buf[5] = buf[5] + buf[3] * k;
             } else {
-                float o60 = *(float *)((u8 *)obj2 + 0x60);
-                float o68 = *(float *)((u8 *)obj2 + 0x68);
-                float o44 = *(float *)((u8 *)obj + 0x44);
-                float o3c = *(float *)((u8 *)obj + 0x3C);
-                float k = *(float *)(cfg + 0xC);
-                buf[4] = o60;
-                buf[5] = o68;
+                float o60;
+                float o68;
+                float o44;
+                float o3c;
+                float k;
+                o60 = *(float *)((u8 *)obj2 + 0x60);
+                o68 = *(float *)((u8 *)obj2 + 0x68);
+                o44 = *(float *)((u8 *)obj + 0x44);
+                o3c = *(float *)((u8 *)obj + 0x3C);
+                k = *(float *)(cfg + 0xC);
                 buf[1] = o44;
                 buf[0] = o3c;
                 buf[4] = o60 + o3c * k;
