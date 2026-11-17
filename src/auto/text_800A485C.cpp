@@ -21319,27 +21319,19 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     }
 }
 
-static inline void fn_800D3634_initVideo(u16 width, u16 height) {
-    (*(u16 *)((u8 *)lbl_80407BD8 + 8)) = width;
-    lbl_80407BD8[0] = 0;
-    (*(u16 *)((u8 *)lbl_80407BD8 + 10)) = height;
-    (*(u16 *)((u8 *)lbl_80407BD8 + 12)) = width;
-    lbl_80407BD8[1] = width * height * 2;
-}
+static const u16 fn_800D3634_defaultDims[2] = {0x280, 0x1E0};
 extern "C" s32 fn_800D3634(s32 arg0) {
     u8 *mode = (u8 *)arg0;
-    s32 irq;
     u8 *fb;
     u32 frame;
-    u32 w;
-    u32 h;
+    u32 irq;
     static const u16 defaultDims[2] = {0x280, 0x1E0};
 #define DST16(o) (*(u16 *)((u8 *)lbl_80407BD8 + (o)))
 #define COL8(o) (*(u8 *)((u8 *)lbl_80407BE8 + (o)))
 #define COL16(o) (*(u16 *)((u8 *)lbl_80407BE8 + (o)))
     if (lbl_8055DDC8 == 0) {
-        w = defaultDims[0];
-        h = defaultDims[1];
+        u32 w = defaultDims[0];
+        u32 h = defaultDims[1];
         DST16(8) = w;
         lbl_80407BD8[0] = 0;
         DST16(10) = h;
@@ -21374,20 +21366,23 @@ extern "C" s32 fn_800D3634(s32 arg0) {
     }
     VISetBlack(0);
     VIFlush();
-    irq = OSEnableInterrupts();
+    irq = (u32)OSEnableInterrupts();
     frame = fn_8005AC08();
     while (frame == fn_8005AC08()) {
     }
     OSRestoreInterrupts(irq);
     if (mode != 0) {
-        u16 lw = *(u16 *)(mode + 4);
-        u16 lh = *(u16 *)(mode + 8);
-        u16 stride = (lw + 0xF) & 0xFFF0;
+        u16 stride;
+        u16 w;
+        u16 h;
+        w = *(u16 *)(mode + 4);
+        h = *(u16 *)(mode + 8);
+        stride = (w + 0xF) & 0xFFF0;
         lbl_80407BD8[0] = (u32)fb;
-        DST16(8) = lw;
-        DST16(10) = lh;
+        DST16(8) = w;
+        DST16(10) = h;
         DST16(12) = stride;
-        lbl_80407BD8[1] = stride * lh * 2;
+        lbl_80407BD8[1] = stride * h * 2;
     } else {
         lbl_80407BD8[0] = (u32)fb;
     }
