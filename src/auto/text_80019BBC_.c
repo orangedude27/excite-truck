@@ -77,7 +77,69 @@ void fn_80019BBC(void) {
     ((float *)lbl_803582C0)[61] = lbl_80560418;
     ((float *)lbl_803582C0)[62] = lbl_80560418;
 }
-#pragma pop
+
+#pragma scheduling on
+void* fn_80019C68(int arg0) {
+ int index=arg0;
+ char *alloc;
+ char *base=lbl_802FD618;
+ char *p;
+ void *resource,*node;
+ union { unsigned long long bits; float f[2]; } xy;
+ float v[2];
+ fn_80019BBC();
+ if(lbl_8055D5B8==0) {
+ alloc=fn_801284F8(0x18,base);
+ if(alloc) {
+ *(int*)alloc=(int)fn_8023512C(lbl_802FD6CC);
+ fn_802A1120(alloc+8,v);
+ { float x=v[0]; v[0]=v[1]; v[1]=-x; }
+ *(int*)(alloc+4)=0;
+ *(float*)(alloc+16)=0.0f;
+ *(float*)(alloc+20)=(float)fn_8002EFB0(v[1],v[0]);
+ }
+ lbl_8055D5B4=alloc;
+ ++lbl_8055D5B8;
+ } else ++lbl_8055D5B8;
+ alloc=base+12;
+ if(fn_8012C33C(alloc)) {
+ p=lbl_80358508+index*0x48;
+ *(int*)p=-2; *(int*)(p+4)=-2; *(int*)(p+8)=-2; *(int*)(p+12)=-2; *(int*)(p+20)=-2; *(int*)(p+24)=-2;
+ resource=fn_80131808(alloc);
+ node=(*(VTable**)resource)->get(resource,base+28);
+ if(node) {
+ *(float*)(p+40)=(*(VTable**)node)->f(node,lbl_80558C70);
+ *(float*)(p+28)=(*(VTable**)node)->f(node,base+40);
+ xy.bits=(*(VTable**)node)->vec(node,lbl_80558C78);
+ *(float*)(p+32)=xy.f[0];
+ *(float*)(p+32)=xy.f[0]-*(float*)(p+28)*lbl_80560420;
+ *(float*)(p+36)=xy.f[1]-*(float*)(p+28)*lbl_80560420;
+ *(float*)(p+44)=(*(VTable**)node)->def(node,base+52,lbl_80560428);
+ *(float*)(p+48)=(*(VTable**)node)->def(node,base+64,lbl_8056042C);
+ *(float*)(p+52)=(*(VTable**)node)->def(node,lbl_80558C80,*(float*)(p+40)/lbl_80560430);
+ *(float*)(p+56)=(*(VTable**)node)->def(node,lbl_80558C88,*(float*)(p+40)/lbl_80560434);
+ *(float*)(p+60)=(*(VTable**)node)->def(node,base+76,lbl_80560438);
+ *(float*)(p+64)=(*(VTable**)node)->def(node,base+88,lbl_80560424);
+ }
+ fn_80131818(resource);
+ *(int*)(p+4)=fn_802CB128((int)*(float*)(p+28),(int)*(float*)(p+28),0,0x21);
+ *(int*)(p+12)=(int)fn_802CAC28(base+100,0);
+ *(int*)(p+8)=(int)fn_802CAC28(base+112,0);
+ fn_802C8530(); fn_8001B7BC(p); fn_802C855C();
+ alloc=fn_801284F8(0x4c,base+128);
+ if(alloc) {
+ *(int*)alloc=(int)fn_8023512C(lbl_802FD6C0);
+ memset(alloc+4,0,0x40);
+ *(int*)(alloc+68)=0; *(int*)(alloc+72)=-1;
+ }
+ *(char**)(p+16)=alloc;
+ *(int*)(p+20)=(int)fn_802CAC28(base+140,0);
+ *(int*)(p+24)=(int)fn_802CAC28(base+152,0);
+ *(int*)(p+68)=index;
+ return p;
+ }
+ return 0;
+}
 
 #pragma cplusplus on
 extern "C" float fn_80019FD4(void *arg0, int arg1, float farg0) {
@@ -668,6 +730,7 @@ extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma push
+#pragma opt_propagation off
 void fn_8001B478(int arg0, float farg0) {
     unsigned char sp20[0x38];
     int n, result, i;
