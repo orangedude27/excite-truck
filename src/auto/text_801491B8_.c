@@ -2321,6 +2321,13 @@ static inline void DestroyItem8014E9C4(char *item) {
     }
     if (item+0x20) fn_802CAC54(*(s32 *)(item+0x20));
 }
+/* delete of an item: destructor body, then free */
+static inline void DeleteItem8014E9C4(char *item) {
+    if (item) {
+        DestroyItem8014E9C4(item);
+        fn_80128668(item);
+    }
+}
 extern "C" void fn_802CAC54(s32);
 extern "C" void fn_802C6CF8(s32);
 extern "C" void fn_80167838(void), fn_8016A68C(void), fn_80167EEC(void);
