@@ -1299,9 +1299,8 @@ fail:
     return 0;
 }
 
-long fn_802EC370(void *arg0) {
-    return ((long *)arg0)[3];
-}
+/* Memory-backed MP3 stream "size" virtual (vtable slot 0x10 of lbl_8034E9C8): return the buffer's total length. */
+long fn_802EC370(Mp3Stream *stream) { return stream->length; }
 
 /* Reads count bytes from the stream's buffer at its current position (+8) into
    dst and advances the position, if the read fits within the buffer limit (+C). */
