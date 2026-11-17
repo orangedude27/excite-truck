@@ -1226,9 +1226,8 @@ int fn_802AFF54(void *arg0) {
     return ((int *)arg0)[1];
 }
 
-int fn_802AFF5C(int *arg0, int arg1) {
-    return *arg0 + arg1 * 0x24;
-}
+/* Address of 0x24-byte element index in the table whose base pointer is stored at *basePtr. */
+int fn_802AFF5C(int *basePtr, int index) { return *basePtr + index * 0x24; }
 
 /* Finalize the u16 list builder: write the stored entry count into its reserved first slot. */
 void fn_802AFF6C(void *list) {
