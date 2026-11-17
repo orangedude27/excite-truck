@@ -357,8 +357,11 @@ int fn_80264538(int arg0, int arg1) {
 #undef sCurrentObject
 }
 
+/* Returns the current credits/timer object published by the constructor (lbl_8055F444). */
 void* fn_80264580(void) {
-    return lbl_8055F444;
+#define sCurrentObject lbl_8055F444
+    return sCurrentObject;
+#undef sCurrentObject
 }
 
 #pragma dont_inline on
