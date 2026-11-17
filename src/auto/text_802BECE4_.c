@@ -16,6 +16,7 @@ extern void fn_80144DAC(void *, void *), fn_80144DC8(void *);
 extern void fn_802C10C8(void), fn_802C7040(int), fn_802C8638(void *), fn_802C86F0(void *, int, int, int, int), fn_802C8750(void *, int), fn_802C88BC(int), fn_802C8B08(void *), fn_802C8B98(int, float *), fn_802C8D74(void), fn_802C8DB8(void *, int, unsigned short *, int), fn_802C9294(int, int), fn_802C9694(void *, float, float, float), fn_802C96DC(void *, int), fn_802CB274(int);
 extern float lbl_80564DAC, lbl_80564DB0, lbl_80564DB4, lbl_80564DB8, lbl_80564DBC, lbl_80564DC0, lbl_80564DC4, lbl_80564DC8;
 extern void fn_80128668(void *);
+#pragma dont_inline fn_802BF6AC
 extern int fn_802BF6AC(void);
 extern int fn_802CAC28(void *, int);
 extern char lbl_8034AE08[];
