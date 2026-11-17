@@ -11171,7 +11171,7 @@ void btm_pm_proc_cmd_status(UINT8 status) {
 }
 
 /* Continue a role switch / encryption change that waited for the mode change. */
-static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 status) {
+static inline void btm_pm_cont_rswitch_inl(u8 *link, int offset, u16 handle, u8 status) {
     u8 *addr;
     u8 *dev;
     if (link[0x14f] == 1) {
@@ -11183,7 +11183,7 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 st
                 return;
             }
         } else {
-            if (btsnd_hcic_switch_role(addr, conn[0x14e] == 0)) {
+            if (btsnd_hcic_switch_role(addr, *(u8 *)((u32)lbl_803C0F78 + offset + 0x14e) == 0)) {
                 link[0x14f] = 0;
                 return;
             }
@@ -11197,12 +11197,13 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 st
     }
 }
 
-#pragma push
-#pragma dont_inline off
+#pragma opt_propagation off
 void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
     extern char lbl_80316530[];
     extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
-    u8 *acl, *pm, *reg, *dev, *addr, *link;
+    typedef struct { u8 b[0x150]; } tLinkRec;
+    u8 *acl, *pm, *reg, *dev, *addr;
+    tLinkRec *link;
     int offset, index, i;
     index = (u8)btm_handle_to_acl_index(handle);
     if (index >= 4) return;
@@ -11230,22 +11231,22 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
         if (reg[0x558] & 2)
             (*(void (**)(u8 *, u8, u16, u8))(reg + 0x554))(acl + 0x3c, mode, interval, status);
     }
-    link = (u8 *)((u32)lbl_803C0F78 + offset);
-    if (link[0x14f] == 1) {
-        addr = link + 0x3c;
+    link = (tLinkRec *)((u32)lbl_803C0F78 + offset);
+    if (link->b[0x14f] == 1) {
+        addr = (u8 *)link + 0x3c;
         dev = (u8 *)btm_find_dev(addr);
         if (dev != 0 && (dev[0x76] & 4)) {
             if (btsnd_hcic_set_conn_encrypt(handle, 0)) {
-                link[0x14f] = 2;
+                link->b[0x14f] = 2;
                 return;
             }
         } else {
             if (btsnd_hcic_switch_role(addr, (lbl_803C0F78 + offset)[0x14e] == 0)) {
-                link[0x14f] = 0;
+                link->b[0x14f] = 0;
                 return;
             }
         }
-        link[0x14f] = 0;
+        link->b[0x14f] = 0;
         if (*(void (**)(void *))(lbl_803C0F78 + 0x62c) != 0) {
             lbl_803C0F78[0x624] = status;
             (*(void (**)(void *))(lbl_803C0F78 + 0x62c))(lbl_803C0F78 + 0x624);
@@ -11253,7 +11254,7 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
         }
     }
 }
-#pragma pop
+#pragma opt_propagation reset
 void fn_8007D4C4(void) {
     extern u32 lbl_802EEBF8[];
     extern u8 lbl_803C0F78[];
@@ -14390,6 +14391,7 @@ extern BOOLEAN l2c_link_hci_disc_comp(UINT16, UINT8);
 
 #pragma cplusplus on
 extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
+#pragma opt_propagation off
     UINT8 *p = (UINT8 *)(p_msg + 1) + p_msg->offset;
     UINT8 hci_evt_code, hci_evt_len;
 
@@ -14591,6 +14593,7 @@ extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
         ((void (*)(UINT8 *))btm_vendor_specific_evt)(p + 2);
         break;
     }
+#pragma opt_propagation reset
 }
 #pragma cplusplus reset
 int btu_hcif_send_cmd(arg0)
@@ -29449,7 +29452,7 @@ void fn_8006BAD8(u32 event, u8 *data)
 }
 
 void fn_8006C00C(s32 event, void *arg) {
-    char *strings = (char *)lbl_803130C8;
+    register char *strings = (char *)lbl_803130C8;
     u8 *p = (u8 *)arg;
     u16 timeout;
     BOOL interrupts;
@@ -29470,7 +29473,7 @@ void fn_8006C00C(s32 event, void *arg) {
             goto low_timeout;
         if (state == 0) {
             interrupts = OSDisableInterrupts();
-            count = lbl_80392960[0x665];
+            count = *((u8 *)lbl_80392960 + 0x665);
             OSRestoreInterrupts(interrupts);
             if (count < 3) {
                 low_timeout:
