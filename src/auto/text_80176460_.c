@@ -922,6 +922,9 @@ extern "C" void fn_80177628(void* obj) {
         virtual void f1();
         virtual void f2();
     };
+    /* Physics-listener fan-out invoker: call the listener's 3rd virtual method
+       (vtable +0x10). fn_801777A8 passes this to fn_80177658 to run that slot
+       on every registered listener. */
     ((Dummy*)obj)->f2();
 }
 #pragma cplusplus on
