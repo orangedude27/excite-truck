@@ -3991,6 +3991,7 @@ extern "C" void fn_801442DC(void *obj) {
 // Trivial stub in this vtable's callback group; always returns 0 (false).
 extern "C" s32 fn_801442EC(void) { return 0; }
 
+// Trivial stub in this vtable's callback group; always returns 0 (false).
 extern "C" s32 fn_801442F4(void) { return 0; }
 
 extern "C" void fn_801442FC(void) {
