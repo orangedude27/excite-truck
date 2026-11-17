@@ -2813,6 +2813,7 @@ void *WUDiGetNewDevInfo(void) {
 
 #pragma use_lmw_stmw off
 void WUDiMoveTopSmpDevInfoPtr(u8 *arg0, void *arg1) {
+    /* Move the SMP device-info list entry matching arg0's device address to the top of the list, if it is not already there. */
     typedef struct WUDDevInfoView {
         u8 pad[0x40];
         u8 devAddr[6];
