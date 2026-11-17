@@ -12,6 +12,7 @@ s32 fn_801AE5A4(void) {
 
 }
 
+/* No-op stub: empty default handler with nothing to do. */
 void fn_801AE5AC(void) {
 
 }
