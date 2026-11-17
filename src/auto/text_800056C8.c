@@ -305,6 +305,7 @@ s32 fn_80005930(void) {
 #pragma dont_inline reset
 #pragma pop
 void fn_80005B54(void) {
+    /* Empty no-op stub: one of a run of default callback slots that do nothing. */
     return;
 }
 
