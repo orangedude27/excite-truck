@@ -657,19 +657,28 @@ void fn_80298FBC(void *arg0, void *arg1) {
     float out[3];
 
     if (out == v) {
-        float y = v[1];
-        float x = v[0];
-        float z = v[2];
-        float a = x * m[0] + y * m[3];
-        float b = x * m[1] + y * m[4];
-        float c = x * m[2] + y * m[5];
-        out[0] = z * m[6] + a;
-        out[1] = z * m[7] + b;
-        out[2] = z * m[8] + c;
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3];
+        y = v[1];
+        m11 = m[4]; m12 = m[5];
+        m00 = m[0];
+        x = v[0];
+        m01 = m[1]; m02 = m[2];
+        m20 = m[6];
+        z = v[2];
+        m21 = m[7]; m22 = m[8];
+        out[0] = z * m20 + (x * m00 + y * m10);
+        out[1] = z * m21 + (x * m01 + y * m11);
+        out[2] = z * m22 + (x * m02 + y * m12);
     } else {
-        out[0] = m[3] * v[1] + m[0] * v[0] + m[6] * v[2];
-        out[1] = m[4] * v[1] + m[1] * v[0] + m[7] * v[2];
-        out[2] = m[5] * v[1] + m[2] * v[0] + m[8] * v[2];
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m00 = m[0]; m20 = m[6];
+        out[0] = v[2] * m20 + (v[0] * m00 + v[1] * m10);
+        m11 = m[4]; m01 = m[1]; m21 = m[7];
+        out[1] = v[2] * m21 + (v[0] * m01 + v[1] * m11);
+        m12 = m[5]; m02 = m[2]; m22 = m[8];
+        out[2] = v[2] * m22 + (v[0] * m02 + v[1] * m12);
     }
     out[0] += m[9];
     out[1] += m[10];
@@ -2121,24 +2130,41 @@ extern "C" void fn_8029B43C(void*, void*, unsigned char, float, float, float, fl
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 extern "C" void fn_8029B824(void *arg0) {
-    int i = 0;
-    char *entry = (char *)arg0;
-    char *item = (char *)arg0;
+    int value;
+    char *item;
+    int i;
+    char *entry;
+    void *info;
+    int count;
+    int j;
+    void *object;
+    float scale;
+    float az;
+    float x, y, z;
+    volatile float scratch[12];
+    entry = (char *)arg0;
+    item = (char *)arg0;
+    i = 0;
     while (i < fn_80287B14()) {
         if (*(unsigned char *)(entry + 0x35) != 0) {
-            void *info = fn_80288208(i);
-            int count = *(int *)((char *)info + 0x24);
-            int j = 0;
+            info = fn_80288208(i);
+            count = *(int *)((char *)info + 0x24);
+            j = 0;
             while (j < count) {
-                void *object = fn_80288060(info, j);
-                int value = fn_80287B24(i);
+                object = fn_80288060(info, j);
+                value = fn_80287B24(i);
                 fn_801BFD34(item + 0x24, (char *)object + 0x24, value);
                 fn_80015B20(item, object, value);
-                float scale = *(float *)(entry + 0x30);
-                float x = *(float *)(item + 0x24) + *(float *)(item + 0x0C) * scale;
-                float y = *(float *)(item + 0x28) + *(float *)(item + 0x10) * scale;
-                float z = *(float *)(item + 0x2C) + *(float *)(item + 0x14) * scale;
-                fn_8029B43C(arg0, entry, *(unsigned char *)(entry + 0x34), scale, *(float *)(item + 0x14) * scale, y, x, *(float *)(item + 0x0C) * scale);
+                scale = *(volatile float *)(entry + 0x30);
+                az = *(float *)(item + 0x14) * scale;
+                x = *(float *)(item + 0x24) + *(float *)(item + 0x0C) * scale;
+                y = *(float *)(item + 0x28) + *(float *)(item + 0x10) * scale;
+                z = *(float *)(item + 0x2C) + *(float *)(item + 0x14) * scale;
+                scratch[6] = x;
+                scratch[1] = y;
+                scratch[5] = z;
+                fn_8029B43C(arg0, entry, *(unsigned char *)(entry + 0x34), scale,
+                            az, y, x, *(float *)(item + 0x0C) * scale);
                 ++j;
             }
         }
@@ -2212,7 +2238,7 @@ extern "C" void *fn_80288060(void *, int);
 extern "C" int lbl_802FA9F0[];
 extern float lbl_805645C4;
 #pragma scheduling invalid_target
-extern "C" void fn_8029BA94(void *arg0, void *arg1) {
+extern "C" void fn_8029BA94(void *__restrict arg0, void *__restrict arg1) {
     struct Args {
         int index;
         float rate;
@@ -2225,6 +2251,7 @@ extern "C" void fn_8029BA94(void *arg0, void *arg1) {
     int size;
     void *info;
     int value;
+    u32 flag;
 
     if (((const Args *)arg1)->index < 0)
         return;
@@ -2233,7 +2260,8 @@ extern "C" void fn_8029BA94(void *arg0, void *arg1) {
     if (index >= count)
         return;
     record = (char *)arg0 + index * 0x14;
-    switch (((*(unsigned int *)(record + 4)) & 0xF)) {
+    flag = *(u32 *)(record + 4) & 0xF;
+    switch (flag) {
     case 1:
         info = fn_80288208(index);
         index = ((const Args *)arg1)->index;
@@ -2252,8 +2280,8 @@ extern "C" void fn_8029BA94(void *arg0, void *arg1) {
             *(int *)(record + 4) = 0x12;
             *(float *)(record + 8) = ((const Args *)arg1)->rate;
             float result = fn_80287BC8(lbl_805645C4, lbl_805645C0);
-            int remainderSource = ((const Args *)arg1)->value;
             int zero = 0;
+            int remainderSource = ((const Args *)arg1)->value;
             *(float *)(record + 0xC) = result;
             value = remainderSource % size;
             *(int *)(record + 0x10) = zero;
