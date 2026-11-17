@@ -24,7 +24,6 @@ extern u32 lbl_8055AC20;
 extern f32 lbl_80562A90;
 extern f32 lbl_80562A94;
 extern u8 lbl_803382A8[];
-typedef struct { u8 first; } Head0;
 __declspec(section ".sdata") extern u8 lbl_8055ABE8[];
 __declspec(section ".sdata") extern u8 lbl_8055ABF8[];
 __declspec(section ".sdata") extern u8 lbl_8055AC00[];
