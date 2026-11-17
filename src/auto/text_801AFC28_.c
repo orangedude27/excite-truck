@@ -523,7 +523,8 @@ fallback:
 }
 #pragma pop
 void __AXDSPInitCallback_801AFC38(void) {
-    lbl_8055E650 = 0;
+    /* AX DSP init callback: reset the count of registered sound/effect objects. */
+    sEffectCount = 0;
 }
 
 extern void *lbl_80435BA8[];
