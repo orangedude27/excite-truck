@@ -387,8 +387,12 @@ extern void fn_801B878C(void);
 extern float fn_801AF9EC(int, float *);
 extern int fn_801AEA64(float, float);
 extern void *fn_801AF8D0(int);
+/* Set the global arena-event flag (lbl_8055E634) to 1/true, then notify the
+ * arena-event master via fn_801B8778 (its f46 virtual call). */
 void fn_801AED5C(void) {
-    lbl_8055E634 = 1;
+#define sArenaEventFlag lbl_8055E634
+    sArenaEventFlag = 1;
+#undef sArenaEventFlag
     fn_801B8778();
 }
 
