@@ -238,6 +238,7 @@ int fn_80246DA8(int object, int deleteFlag) {
 }
 
 void fn_80246DE8(void) {
+    /* Show the Nintendo logo splash layout ("LogoNint.lyt"). */
     fn_80246CB8(lbl_803432EC);
 }
 
