@@ -1186,15 +1186,19 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *self, u32 group, void *arg2, s32 arg3) {
+    #pragma opt_common_subs off
+    #pragma scheduling on
     struct GroupInfo { u32 unk0; const char *path; u32 unk8, unkC, unk10, unk14; } info;
     struct Archive { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual s32 f4(void *, s32, s32, s32); virtual s32 f5(void *, s32, const char *, s32, s32); };
-    Archive *archive = (Archive *)self;
+    s32 meta10;
+    s32 meta14;
+    const char *path;
     if (!ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(*(void **)((u8 *)self + 4), group, &info))
         return 0;
-    s32 meta10 = info.unk8;
-    s32 meta14 = info.unkC;
-    const char *path = info.path;
+    path = info.path;
     if (path != 0) {
+        meta14 = info.unkC;
+        meta10 = info.unk8;
         if (*path == '/')
             goto open_stream;
         unsigned long pathLen = strlen(path);
@@ -1208,9 +1212,9 @@ extern "C" s32 detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *
         fn_80028E2C(buf, path, pathLen + 1);
         path = buf;
     open_stream:
-        return archive->f5(arg2, arg3, path, meta10, meta14);
+        return ((Archive *)self)->f5(arg2, arg3, path, meta10, meta14);
     }
-    return archive->f4(arg2, arg3, meta10, meta14);
+    return ((Archive *)self)->f4(arg2, arg3, info.unk8, info.unkC);
 }
 #pragma pop
 
@@ -4296,8 +4300,9 @@ extern "C" s32 fn_800F81EC(s32 object, s32 deleteFlag) {
     return object;
 }
 
-extern "C" void fn_800F822C(s32 arg0) {
-    detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(arg0 - 0xC);
+/* This-adjusting thunk for nw4r::snd::SoundArchivePlayer: subtract the 0xC subobject offset to recover `this`, then forward to detail_ConvertLabelStringToSoundId. */
+extern "C" void fn_800F822C(s32 thisAtOffsetC) {
+    detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(thisAtOffsetC - 0xC);
 }
 
 extern "C" s32 fn_800F65F0(void *, void **, u32, s32, s32, s32, void *, s32);
@@ -6795,21 +6800,15 @@ loop_check:
 
 extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     f32 slots[11];
-    register u32 temp_r31;
-    register s32 var_r28;
-    register s32 var_r30;
-    register f32 *var_r29;
-    register f32 *var_r29_2;
-    register f32 *var_r30_2;
     f32 temp_f0;
     f32 temp_f1;
     f32 temp_f2;
+    f32 temp_f8;
     f32 temp_f3;
     f32 temp_f4;
     f32 temp_f5;
     f32 temp_f6;
     f32 temp_f7;
-    f32 temp_f8;
     f32 temp_f9;
     f32 temp_f10;
     f32 temp_f25;
@@ -6819,6 +6818,13 @@ extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     f32 temp_f29;
     f32 temp_f30;
     f32 temp_f31;
+    register u32 temp_r31;
+    register s32 var_r28;
+    register s32 var_r30;
+    register f32 *var_r29;
+    register f32 *var_r29_2;
+    register f32 *var_r30_2;
+
     if ((s32)M2C_FIELD(arg0, u8 *, 0x49) != 0) {
         if ((s32)M2C_FIELD(arg0, s32 *, 0x438) == 0) {
             ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(arg0);
@@ -6855,8 +6861,9 @@ extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
         temp_f26 += temp_f9;
         temp_f27 = temp_f8;
         temp_f27 += M2C_FIELD(arg0, volatile f32 *, 0x44C);
-        temp_f25 = temp_f8;
+        temp_f25 = lbl_805610C4;
         temp_f25 += M2C_FIELD(arg0, volatile f32 *, 0x460);
+
         slots[8] = temp_f7;
         slots[9] = temp_f6;
         slots[10] = temp_f5;
@@ -6868,6 +6875,7 @@ extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
         slots[2] = temp_f2;
         slots[7] = temp_f0;
         slots[3] = temp_f0;
+
         fn_800E5338(M2C_FIELD(arg0, s32 *, 0x438), temp_f1);
         fn_800E5444(M2C_FIELD(arg0, s32 *, 0x438), temp_f31);
         fn_800E5464(M2C_FIELD(arg0, s32 *, 0x438), temp_f30);
