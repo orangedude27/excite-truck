@@ -21,13 +21,11 @@ static inline int has_sound_entry(int *key) {
 static inline int find_sound_entry_first(int *key) {
     void *table = lbl_8055F28C;
     int i;
+    int byteOffset;
     int count = *(int *)((char *)table + 4);
-    for (i = 0; i < count; i++) {
-        int value;
-        int id;
-        int byteOffset = i * 0x18;
-        value = *(int *)(*(char **)table + byteOffset);
-        id = *key;
+    for (i = 0, byteOffset = 0; i < count; i++, byteOffset += 0x18) {
+        int value = *(int *)(*(char **)table + byteOffset);
+        int id = *key;
         if (value == id) return i;
     }
     return -1;
