@@ -1,5 +1,6 @@
 #include <revolution/DSP.h>
 
+// Return TRUE while a mail written to the DSP mail box is still pending (box not empty).
 BOOL DSPCheckMailToDSP(void) {
     return (DSP_HW_REGS[DSP_DSPMBOX_H] & DSP_DSPMBOX_H_STATUS) != 0;
 }
