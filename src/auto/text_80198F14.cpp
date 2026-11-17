@@ -1328,8 +1328,10 @@ extern "C" s32 fn_8019CCCC(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
 #pragma scheduling on
 extern void fn_8019CCCC(void*, f32, s32);
 extern void fn_8019CCCC(void*, void*, s32, f32);
-void fn_8019CE3C(void* arg0, s32 arg1) {
-    fn_8019CCCC(arg0, (u8*)arg0 + 0x34, arg1, *(f32*)((u8*)arg0 + 0x24));
+void fn_8019CE3C(void *shapeNode, s32 object) {
+    /* Collision test: forward the shape node's transform block (+0x34) and
+       radius (+0x24) to fn_8019CCCC along with the object. */
+    fn_8019CCCC(shapeNode, (u8*)shapeNode + 0x34, object, *(f32*)((u8*)shapeNode + 0x24));
 }
 
 /* Collision objects the influence/collision handlers in this file work on.
