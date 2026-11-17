@@ -2552,8 +2552,9 @@ extern "C" void fn_8015B15C(Unk801577F0* arg0) {
     *(s32*)((u8*)arg0 + 0x274) = 0;
     *(s32*)((u8*)arg0 + 0x278) = 0;
 }
-extern "C" void fn_8015B228(void* arg0, s32 arg1, s32 arg2) {
-    if (arg2 == 6) *(u8*)((char*)arg0 + 0x26C) = 1;
+extern "C" void fn_8015B228(void *self, s32 arg1, s32 event) {
+    /* On event 6, set the flag byte at +0x26C. */
+    if (event == 6) *(u8 *)((char *)self + 0x26C) = 1;
 }
 
 extern "C" void fn_8015B23C(Unk8015A368C* object) {
