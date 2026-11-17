@@ -2018,6 +2018,7 @@ unsigned char fn_801AD860(void *object) {
     return ((unsigned char *)object)[0x220];
 }
 
+/* Default callback stub: reports a zero result (nothing to return). */
 long fn_801AD868(void) {
     return 0;
 }
