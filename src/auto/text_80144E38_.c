@@ -6,9 +6,10 @@
 extern char lbl_8055E1E8;
 extern char *lbl_8055E1EC;
 s32 fn_80144E38(s32 arg0, s32 arg1, s8 *arg2) {
-    char *base = (char *)lbl_8055E1EC;
+    char *base = lbl_8055E1EC;
     char *e1;
     char *e2;
+    char *e1b;
     if (arg2 != 0) {
         *arg2 = 1;
     }
@@ -24,23 +25,23 @@ s32 fn_80144E38(s32 arg0, s32 arg1, s8 *arg2) {
     if (*(s32 *)(e1 + 0x1518) > *(s32 *)(e2 + 0x1514)) {
         *arg2 = 0;
     }
-    e1 += 8;
-    if (*(s32 *)(e1 + 0x1514) > *(s32 *)(e2 + 0x1514)) {
+    e1b = e1 + 8;
+    if (*(s32 *)(e1b + 0x1514) > *(s32 *)(e2 + 0x1514)) {
         *arg2 = 0;
     }
-    if (*(s32 *)(e1 + 0x1518) > *(s32 *)(e2 + 0x1514)) {
+    if (*(s32 *)(e1b + 0x1518) > *(s32 *)(e2 + 0x1514)) {
         *arg2 = 0;
     }
-    if (*(s32 *)(e1 + 0x151C) > *(s32 *)(e2 + 0x1514)) {
+    if (*(s32 *)(e1b + 0x151C) > *(s32 *)(e2 + 0x1514)) {
         *arg2 = 0;
     }
-    if (*(s32 *)(e1 + 0x1520) > *(s32 *)(e2 + 0x1514)) {
+    if (*(s32 *)(e1b + 0x1520) > *(s32 *)(e2 + 0x1514)) {
         *arg2 = 0;
     }
-    if (*(s32 *)(e1 + 0x1524) > *(s32 *)(e2 + 0x1514)) {
+    if (*(s32 *)(e1b + 0x1524) > *(s32 *)(e2 + 0x1514)) {
         *arg2 = 0;
     }
-    if (*(s32 *)(e1 + 0x1528) > *(s32 *)(e2 + 0x1514)) {
+    if (*(s32 *)(e1b + 0x1528) > *(s32 *)(e2 + 0x1514)) {
         *arg2 = 0;
     }
 ret:
@@ -48,6 +49,7 @@ ret:
 }
 
 char fn_80144F2C(void) {
+    /* Return the flag byte that gates drawing of the HUD's counts element. */
     return lbl_8055E1E8;
 }
 
