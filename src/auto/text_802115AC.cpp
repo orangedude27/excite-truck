@@ -2388,8 +2388,10 @@ extern "C" void fn_80215474(void) {
 
 }
 
-extern "C" void fn_80215478(void* arg0) {
-    *(u8*)((char*)arg0 + 0x18) = 1;
+extern "C" void fn_80215478(void* widget) {
+    /* Enable this VfWidget by setting its flag byte at +0x18 (paired with
+     * fn_80215484, which clears the same flag to disable it). */
+    *(u8*)((char*)widget + 0x18) = 1;
 }
 
 /* Disable the widget: clear its enable flag at +0x18 (the clear twin of fn_80215478). */
