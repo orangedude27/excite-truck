@@ -1048,10 +1048,17 @@ extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *arg0, s32 arg
 }
 
 extern "C" void fn_8014647C(void *);
-extern "C" void fn_8014647C(void *arg0) {
-    ((s32 *)arg0)[0] = 0;
-    ((s32 *)arg0)[1] = 0;
-    ((s32 *)arg0)[2] = 0;
+extern "C" void fn_8014647C(void *entry) {
+    /* Zero one 0xC-byte "gart_set" table entry (name, resource_name, resource) before it is filled. */
+    struct GArtSetEntry {
+        void *name;
+        void *resourceName;
+        void *resource;
+    };
+    GArtSetEntry *e = (GArtSetEntry *)entry;
+    e->name = 0;
+    e->resourceName = 0;
+    e->resource = 0;
 }
 
 extern "C" void fn_80128668(void *);
