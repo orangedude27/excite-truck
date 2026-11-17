@@ -3677,11 +3677,12 @@ void fn_801D8C18(void) {
 
 extern float lbl_80562AE4;
 extern void fn_801E1F78(void);
+#pragma scheduling invalid_target
 void fn_801D8C1C(void *arg0, float farg0) {
     float tmp = farg0 / *(float *)((char *)arg0 + 0x14);
     float v;
     int t;
-    if (farg0 / *(float *)((char *)arg0 + 0x14) < lbl_80562ADC) {
+    if (tmp < lbl_80562ADC) {
         v = tmp - lbl_80562AE4;
     } else {
         v = lbl_80562AE4 + tmp;
@@ -3692,7 +3693,7 @@ void fn_801D8C1C(void *arg0, float farg0) {
         *(int *)((char *)arg0 + 0x18) = t;
     }
 }
-
+#pragma scheduling on
 void fn_801D8C94(void) {
 }
 
@@ -3876,21 +3877,24 @@ int fn_801D8F04(void *cue) {
 extern char lbl_803390C0[];
 extern void fn_802E30C8();
 extern void fn_801D488C(int, int, int, float *);
-void fn_801D8F30(void *arg0) {
-    struct Obj { char pad[8]; char field; };
-    float vec[3];
-    int result;
-    if (*(int *)((char *)arg0 + 4) == 2 && lbl_8055E3C8 - *(float *)((char *)arg0 + 0x20) >= *(float *)((char *)arg0 + 0x1C)) {
-        result = ((int (*)(void *))fn_801D4888)((char *)arg0 + 8);
-        if (result == 0) {
-            ((void (*)(const char *, ...))fn_802E30C8)(lbl_803390C0, &((struct Obj *)arg0)->field);
+/* TriggerActionSequenceEvent update: when a pending event (state 2) passes its
+   wait timer (now - +0x20 >= +0x1C), start the named action sequence with state 1
+   (or log an error if that name is unknown), then advance the event to state 3. */
+void fn_801D8F30(void *event) {
+    struct Obj { char pad[8]; char name; };
+    float position[3];
+    int sequence;
+    if (*(int *)((char *)event + 4) == 2 && lbl_8055E3C8 - *(float *)((char *)event + 0x20) >= *(float *)((char *)event + 0x1C)) {
+        sequence = ((int (*)(void *))fn_801D4888)((char *)event + 8);
+        if (sequence == 0) {
+            ((void (*)(const char *, ...))fn_802E30C8)(lbl_803390C0, &((struct Obj *)event)->name);
         } else {
-            vec[0] = lbl_80562ADC;
-            vec[1] = lbl_80562ADC;
-            vec[2] = lbl_80562ADC;
-            ((void (*)(int, int, int, float *))fn_801D488C)(result, 1, 0, vec);
+            position[0] = lbl_80562ADC;
+            position[1] = lbl_80562ADC;
+            position[2] = lbl_80562ADC;
+            ((void (*)(int, int, int, float *))fn_801D488C)(sequence, 1, 0, position);
         }
-        *(int *)((char *)arg0 + 4) = 3;
+        *(int *)((char *)event + 4) = 3;
     }
 }
 
