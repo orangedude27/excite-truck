@@ -644,7 +644,6 @@ void fn_80135F4C(void *follower) {
 }
 
 #pragma dont_inline on
-#pragma scheduling invalid_target
 void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
  s32 offset, i;
  fn_801353C8((void *)arg0,arg1,arg2,arg4);
@@ -659,11 +658,9 @@ void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
  {
   Unk_80135278 *obj=(Unk_80135278 *)arg0;
   volatile float *v=(volatile float *)obj;
-  Unk_80135278 *p;
+  Unk_80135278 *p=(Unk_80135278 *)obj->unk_4;
   float a,z,c,e,d,f,g,h,b;
-  float t = v[4];
-  a = -t; z=lbl_80561320;
-  p=(Unk_80135278 *)obj->unk_4;
+  a=-v[4]; z=lbl_80561320;
   obj->unk_44=z;
   b=v[6];
   obj->unk_4c=z;
