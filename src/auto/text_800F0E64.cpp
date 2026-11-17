@@ -3407,7 +3407,7 @@ extern "C" s32 PrepareSeqImpl__Q36nw4hbm3snd18SoundArchivePlayerFPQ46nw4hbm3snd6
         virtual void slot11() = 0;
         virtual void slot12() = 0;
         virtual void slot13() = 0;
-        virtual unsigned long getSize() = 0;
+        virtual u32 getSize() = 0;
     };
     struct SeqSoundProxy {
         virtual void slot0() = 0;
@@ -3421,30 +3421,37 @@ extern "C" s32 PrepareSeqImpl__Q36nw4hbm3snd18SoundArchivePlayerFPQ46nw4hbm3snd6
         virtual void slot8() = 0;
         virtual void slot9() = 0;
         virtual void slot10() = 0;
-        virtual void setRate(float) = 0;
+        virtual void setRate(f32) = 0;
     };
-    union { unsigned long words[2]; double value; } conversion;
-    unsigned char streamBuffer[0x200];
-    unsigned char reader[8];
+    union {
+        u32 words[2];
+        f64 value;
+    } conversion;
+    u8 streamBuffer[0x200];
+    u8 reader[8];
     void *fileData;
     void *stream;
     void *memory;
-    unsigned long fileSize;
+    u32 fileSize;
     s32 status;
-    unsigned long volume;
-    float rate;
+    u32 volume;
+    f32 rate;
     void *base;
+
     if (seqSoundInfo == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x469, lbl_80325334);
-    fileData = (void *)detail_GetFileAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl(player, *(unsigned long *)soundInfo);
+
+    fileData = (void *)detail_GetFileAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl(player, *(u32 *)soundInfo);
     if (fileData == 0) {
-        memory = *(void **)((unsigned char *)seqSound + 4);
+        memory = *(void **)((u8 *)seqSound + 4);
         if (memory == 0)
             return 4;
-        stream = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((unsigned char *)player + 0x10), *(unsigned long *)soundInfo, streamBuffer, 0x200);
-        OSLockMutex((unsigned char *)memory + 4);
-        fileSize = fn_800EC56C((void **)((unsigned char *)memory + 0x1C));
-        OSUnlockMutex((unsigned char *)memory + 4);
+
+        stream = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((u8 *)player + 0x10), *(u32 *)soundInfo, streamBuffer, 0x200);
+        OSLockMutex((u8 *)memory + 4);
+        fileSize = fn_800EC56C((void **)((u8 *)memory + 0x1C));
+        OSUnlockMutex((u8 *)memory + 4);
+
         if (fileSize < ((StreamProxy *)stream)->getSize()) {
             if (stream != 0)
                 ((StreamProxy *)stream)->close();
@@ -3453,25 +3460,29 @@ extern "C" s32 PrepareSeqImpl__Q36nw4hbm3snd18SoundArchivePlayerFPQ46nw4hbm3snd6
         if (stream != 0)
             ((StreamProxy *)stream)->close();
     }
-    status = Setup__Q46nw4hbm3snd6detail8SeqSoundFPQ46nw4hbm3snd6detail17SeqTrackAllocatorUliPQ46nw4hbm3snd6detail14NoteOnCallback(seqSound, *(void **)((unsigned char *)player + 0x68), *(unsigned long *)((unsigned char *)seqSoundInfo + 8), offset, (unsigned char *)player + 0x38);
+
+    status = Setup__Q46nw4hbm3snd6detail8SeqSoundFPQ46nw4hbm3snd6detail17SeqTrackAllocatorUliPQ46nw4hbm3snd6detail14NoteOnCallback(
+        seqSound, *(void **)((u8 *)player + 0x68), *(u32 *)((u8 *)seqSoundInfo + 8), offset, (u8 *)player + 0x38);
     if (status != 0) {
         if (status == 1)
             return 8;
         return 0xFF;
     }
-    volume = *(unsigned long *)((unsigned char *)soundInfo + 0xC);
+
+    volume = *(u32 *)((u8 *)soundInfo + 0xC);
     conversion.words[0] = 0x43300000;
     conversion.words[1] = volume ^ 0x80000000;
-    rate = (float)(conversion.value - lbl_805610B0);
+    rate = (f32)(conversion.value - lbl_805610B0);
     rate /= lbl_805610A8;
     ((SeqSoundProxy *)seqSound)->setRate(rate);
-    SetChannelPriority__Q46nw4hbm3snd6detail8SeqSoundFi(seqSound, *(int *)((unsigned char *)seqSoundInfo + 0xC));
+    SetChannelPriority__Q46nw4hbm3snd6detail8SeqSoundFi(seqSound, *(int *)((u8 *)seqSoundInfo + 0xC));
+
     if (fileData != 0) {
         __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(reader, fileData);
         base = GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(reader);
         Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCvl(seqSound, base, *(s32 *)seqSoundInfo);
     } else {
-        Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCQ56nw4hbm3snd6detail8SeqSound15SeqLoadCallbackUl(seqSound, (const void *)((unsigned char *)player + 0x18), (unsigned long)seqSound);
+        Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCQ56nw4hbm3snd6detail8SeqSound15SeqLoadCallbackUl(seqSound, (const void *)((u8 *)player + 0x18), (unsigned long)seqSound);
     }
     return 0;
 }
@@ -3750,11 +3761,11 @@ s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(nw4hbm::snd::
     return ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(&reader, *(s32 *)noteInfo, waveData, (const void *)waveAddress);
 }
 
-extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+extern "C" s32 fn_800F73E4(void *__restrict self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     register const char *base = lbl_80324E88;
     void *reader = *(void **)((u8 *)self + 4);
     void *fileInfo = *(void **)((u8 *)reader + 0x10);
-    void *task = 0;
+    void *task;
     if (fileInfo == 0)
         return 0;
     if (fn_800F273C(fileInfo) == 0)
@@ -3763,7 +3774,7 @@ extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     if (task == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(base, 0x64C, base + 0x590);
     reader = *(void **)((u8 *)self + 4);
-    if (*(void **)((u8 *)reader + 0x10) == 0)
+    if (*(volatile void **)((u8 *)reader + 0x10) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(base, 0x2AC, base + 0x288);
     fileInfo = *(void **)((u8 *)reader + 0x10);
     if (fn_800FE0DC(fn_800FDE60()) < 0x28)
@@ -4260,8 +4271,9 @@ extern "C" void fn_800F822C(s32 arg0) {
 }
 
 extern "C" s32 fn_800F65F0(void *, void **, u32, s32, s32, s32, void *, s32);
-extern "C" void fn_800F8234(s32 arg0) {
-    ((s32 (*)(s32))fn_800F65F0)(arg0 - 0xC);
+extern "C" void fn_800F8234(s32 thisAtOffsetC) {
+    /* This-adjusting thunk for nw4r::snd::SoundArchivePlayer: subtract the 0xC subobject offset to recover `this`, then forward to the sound prepare/play routine (fn_800F65F0). */
+    ((s32 (*)(s32))fn_800F65F0)(thisAtOffsetC - 0xC);
 }
 
 extern "C" void *__dt__Q36nw4hbm3snd18SoundArchivePlayerFv(void *, s32);
@@ -5683,17 +5695,18 @@ extern "C" void fn_800FA350(void) {
 #pragma scheduling on
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
     if ((s8)lbl_8055DE68 == 0) {
-        volatile unsigned long *base = (volatile unsigned long *)lbl_80412CC8;
-        void *object = (void *)((u8 *)base + 0x2388);
+        volatile u32 *base = (volatile u32 *)lbl_80412CC8;
         base[0x2388 / 4] = 0;
+        void *object = (void *)((u8 *)base + 0x2388);
         base[0x238c / 4] = 0;
         base[0x2378 / 4] = 0;
         base[0x237c / 4] = 0;
         base[0x2384 / 4] = 0;
-        base[0x2388 / 4] = (unsigned long)object;
-        base[0x238c / 4] = (unsigned long)object;
+        base[0x2388 / 4] = (u32)object;
+        base[0x238c / 4] = (u32)object;
         ((volatile u8 *)base)[0x2394] = 0;
-        __register_global_object((void *)base, (void *)&__dt__10TitleSceneFv, (void *)&lbl_80412CB8, object);
+        __register_global_object((void *)base, (void *)&__dt__10TitleSceneFv,
+                                 (void *)(u32)&lbl_80412CB8, object);
         lbl_8055DE68 = 1;
     }
     return (void *)lbl_80412CC8;
@@ -6276,6 +6289,7 @@ extern "C" void * __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     u8 *p = (u8 *)arg0;
     volatile u32 *vp = (volatile u32 *)p;
     u32 zero = 0;
+    void *it;
     void *head0 = p + 0x98;
     void *tail = p + 0xa4;
     vp[0x98 / 4] = zero;
@@ -6295,14 +6309,15 @@ extern "C" void * __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     *(void **)(p + 0xa8) = tail;
     fn_8002F53C(p + 0xac, (void *)fn_800FB358, (void *)fn_800FB374, 0x1c, 0x20);
     vp[0x438 / 4] = zero;
-    u32 offset = 0;
-    u32 i = 0;
+    u32 offset, i;
+    i = 0;
+    offset = 0;
     do {
         u8 *node = p + 0xac + offset;
         *(void **)(node + 4) = arg0;
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C7C, 0x233, lbl_80326C58);
-        void *it = p + 0x98;
+        it = p + 0x98;
         Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(p + 0x94, (void **)&it, node + 0x14);
         ++i;
         offset += 0x1c;
