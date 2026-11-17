@@ -814,8 +814,10 @@ void __AXDSPInitCallback_800216B8(void) {
     #undef audioDspRequest
 }
 
+/* Empty counterpart of __AXDSPInitCallback_800216B8 (which queues tips-overlay
+ * audio-DSP request 2): fn_80244738 calls it once that request has been drawn
+ * and finalized, and the request needs no clean-up, so it does nothing. */
 void fn_800216C4(void) {
-
 }
 
 #pragma push
