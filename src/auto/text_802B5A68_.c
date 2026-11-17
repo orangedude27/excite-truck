@@ -1722,16 +1722,16 @@ s32 fn_802B8110(u32 arg0, s32 arg1) {
     } work;
     void *temp_r3;
     s32 var_r30;
-    s32 *temp_r6;
-    s32 temp_r29;
+    register s32 *temp_r6;
+    register s32 temp_r29;
     s32 temp_r3_2;
     s32 temp_r3_3;
     s32 temp_r4;
     s32 temp_r5;
     s32 var_r0;
     s32 var_r0_2;
-    temp_r29 = fn_802B5D94(arg1);
     var_r30 = 0;
+    temp_r29 = fn_802B5D94(arg1);
     temp_r3 = ((void *(*)(void))fn_802B5B6C)();
     work.items = work.entries;
     work.capacity = 0x10;
@@ -1746,7 +1746,7 @@ s32 fn_802B8110(u32 arg0, s32 arg1) {
     if (temp_r3_2 < 0x80)
         var_r0 = temp_r3_2;
     if (temp_r4 != var_r0) {
-        temp_r3_3 = temp_r5 & (s32)((~(temp_r5 - 1) & ~temp_r5) >> 31);
+        temp_r3_3 = temp_r5 & (s32)((-temp_r5 & ~temp_r5) >> 31);
         var_r0_2 = 0x80;
         if (temp_r3_3 < 0x80)
             var_r0_2 = temp_r3_3;
@@ -1760,6 +1760,7 @@ s32 fn_802B8110(u32 arg0, s32 arg1) {
     work.capacity = 0;
     return var_r30;
 }
+#pragma opt_common_subs reset
 #pragma scheduling on
 f32 fn_802B822C(s32 frames) {
     // Convert a frame count into a float step, advancing FRAME_STEP (0.05) per frame.
