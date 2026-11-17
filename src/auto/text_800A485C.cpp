@@ -2798,11 +2798,13 @@ extern "C" s32 fn_800A8AD4(void *arg0, void *arg1) {
 }
 
 #pragma dont_inline reset
-extern "C" void fn_800A8B94(void *arg0, s32 arg1, s32 arg2, s16 arg3, s16 arg4) {
-    *(s32 *)((u8 *)arg0 + 0x162C) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x1638) = arg2;
-    *(s16 *)((u8 *)arg0 + 0x1628) = arg3;
-    *(s16 *)((u8 *)arg0 + 0x162A) = arg4;
+/* Stores the page-cache settings on a VFiPFVolume: cacheObject (+0x162C),
+   cacheBuffer (+0x1638), cachePages (+0x1628) and cacheExtra (+0x162A). */
+extern "C" void fn_800A8B94(void *volume, s32 cacheObject, s32 cacheBuffer, s16 cachePages, s16 cacheExtra) {
+    *(s32 *)((u8 *)volume + 0x162C) = cacheObject;
+    *(s32 *)((u8 *)volume + 0x1638) = cacheBuffer;
+    *(s16 *)((u8 *)volume + 0x1628) = cachePages;
+    *(s16 *)((u8 *)volume + 0x162A) = cacheExtra;
 }
 
 extern "C" void fn_800A8BA8(void *arg0, s32 arg1) {
@@ -25178,23 +25180,23 @@ extern "C" void fn_800CEF60(void *object, void *archive, s32 enable) {
  unsigned long size, streamSize;
  p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0xd8);
  if (p) { if (p) { p=__ct__Q36nw4hbm3snd18SoundArchivePlayerFv(p); } *(void **)(self+0x5c0)=p; }
- if(!*(void * volatile *)(self+0x5c0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe62,file+0xe14);
+ if(!*(void * volatile *)(self+0x5c0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe62,file+0xe14);
  size=GetRequiredMemSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(*(void **)(self+0x5c0),archive);
  streamSize=GetRequiredStrmBufferSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(*(void **)(self+0x5c0),archive);
  stream=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,streamSize);
  buffer=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,size);
- if(!Setup__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUlPvUl(*(void **)(self+0x5c0),archive,buffer,size,stream,streamSize)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe74,file+0xd2c);
+ if(!Setup__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUlPvUl(*(void **)(self+0x5c0),archive,buffer,size,stream,streamSize)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe74,file+0xd2c);
  p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,4);
  if (p) { if (p) { *(u32 *)p=0; } *(void **)(self+0x5d4)=p; }
- if(!*(void * volatile *)(self+0x5d4)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe7b,file+0xe44);
+ if(!*(void * volatile *)(self+0x5d4)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe7b,file+0xe44);
  if(enable) {
   p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0x2c);
   if (p) { if (p) { p=fn_800F8310(p); } *(void **)(self+0x5d0)=p; }
-  if(!*(void * volatile *)(self+0x5d0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe84,file+0xe6c);
+  if(!*(void * volatile *)(self+0x5d0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe84,file+0xe6c);
   p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0x60000);
   fn_800F83C8(*(void **)(self+0x5d0),p,0x60000);
-  if(!*(u32 *)(*(u8 **)(self+0x5d0)+0x1c)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe8b,file+0xe90);
-  if(!fn_800F6C7C(*(void **)(self+0x5c0),0,*(void **)(self+0x5d0),0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)(lbl_8031D840+0),0xe8e,file+0xd2c);
+  if(!*(u32 *)(*(u8 **)(self+0x5d0)+0x1c)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe8b,file+0xe90);
+  if(!fn_800F6C7C(*(void **)(self+0x5c0),0,*(void **)(self+0x5d0),0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe8e,file+0xd2c);
  } else *(void **)(self+0x5d0)=0;
 }
 #pragma pop
