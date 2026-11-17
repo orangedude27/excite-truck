@@ -130,12 +130,12 @@ extern "C" void fn_80018CCC(void) {
     extern void *lbl_802FD2A0 __attribute__((section(".rodata")));
     extern const char lbl_80558C48[] __attribute__((section(".sdata")));
     extern s32 stricmp(const char *, const char *);
-    char *name;
-    char *strings = (char *)&lbl_802FD2A0;
-    int row;
-    int offset;
-    Item *object;
-    int outer = 0;
+    register char *name;
+    register char *strings = (char *)&lbl_802FD2A0;
+    register int row;
+    register int offset;
+    register Item *object;
+    register int outer = 0;
 
     goto get_next;
 check_object:
@@ -258,8 +258,9 @@ extern void *lbl_802FD2DC;
 extern const char lbl_80558C54[] __attribute__((section(".sdata")));
 extern void *lbl_803580A4;
 extern u8 lbl_80357E0C[12];
+/* Clear the pending quit/reset request flag (the mirror of fn_800196FC). */
 void fn_80019708(void) {
-    lbl_8055D588 = 0;
+    sResetRequested = 0;
 }
 
 char fn_80019714(void) {
