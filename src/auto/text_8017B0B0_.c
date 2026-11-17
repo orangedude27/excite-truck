@@ -1256,7 +1256,10 @@ int fn_8017D35C(void) {
     return 0x20;
 }
 
-unsigned int fn_8017D364(void) { return 1; }
+/* Vtable query stub: always answers 1 (true/enabled) in this build. */
+unsigned int fn_8017D364(void) {
+    return 1;
+}
 
 void fn_8017D36C(void) {
 
