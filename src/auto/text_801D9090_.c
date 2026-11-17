@@ -116,8 +116,9 @@ void *fn_801D9090(void *object, s32 shouldFree) {
     return object;
 }
 
-void fn_801D90E8(s32 arg0) {
-    fn_801D611C(arg0 - 4);
+/* Callback wrapper: forward to fn_801D611C with the pointer backed up to its enclosing structure (userData - 4). */
+void fn_801D90E8(s32 userData) {
+    fn_801D611C(userData - 4);
 }
 
 void fn_801D90F0(s32 arg0) {
@@ -160,19 +161,26 @@ void fn_801D9120(float *out, float *values, int count, float weight) {
 void fn_801D91D8(void) {
     extern void *lbl_8055E96C;
     extern void *lbl_8055E964;
-    void *node;
-    void *item;
     int count;
     int i;
-    void **entries;
+    int off;
+    void *node;
+    void *item;
+
     for (node = lbl_8055E96C; node != 0; node = *(void **)((char *)node + 0x54)) {
         for (item = lbl_8055E964; item != 0; item = *(void **)((char *)item + 0x34)) {
-            entries = *(void ***)item;
             count = *(int *)((char *)item + 4);
             i = 0;
+            off = 0;
             for (; i < count; i++) {
-                if (entries[i] == node)
+                if (*(void **)((char *)*(void **)item + off) == node) {
                     goto have_it;
+                } else {
+                    off += 4;
+                    goto bumped;
+                }
+            bumped:
+                ;
             }
             i = -1;
         have_it:
@@ -180,7 +188,7 @@ void fn_801D91D8(void) {
                 int used = *(int *)((char *)node + 0x2C);
                 int base = *(int *)((char *)node + 0x28);
                 *(int *)((char *)node + 0x2C) = used + 1;
-                *(void **)((char *)base + (used << 2)) = item;
+                *(void **)((char *)base + used * 4) = item;
             }
         }
     }
