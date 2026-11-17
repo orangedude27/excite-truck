@@ -1332,7 +1332,8 @@ long fn_802EC42C(void *stream) {
     return ((long (*)(long, long, long))fn_800B7C64)(((long *)stream)[1], unused, 0) == 0;
 }
 
-long fn_802EC45C(void *arg0) { return ((long *)arg0)[2]; }
+/* Virtual size() of the file-backed MP3 stream: return its file size (offset +8). */
+long fn_802EC45C(Mp3Stream *stream) { return stream->size; }
 
 typedef signed long s32;
 extern long fn_800B7C64(long, long);
