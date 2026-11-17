@@ -570,8 +570,13 @@ extern "C" void fn_80193CE0(void *self) {
 }
 #pragma cplusplus reset
 
-void fn_80193D20(void) {
-    fn_80129DC4(3, lbl_8055E584, lbl_8055E588);
+/* Returns a random float in the configured [min, max) range using RNG slot 3. */
+float fn_80193D20(void) {
+#define s_randMin lbl_8055E584
+#define s_randMax lbl_8055E588
+    return fn_80129DC4(3, s_randMin, s_randMax);
+#undef s_randMin
+#undef s_randMax
 }
 
 extern void *memset(void *, int, unsigned int);
@@ -3002,63 +3007,83 @@ extern float lbl_80562184, lbl_80562290, lbl_80562294;
 extern float lbl_8055A48C;
 extern void fn_8019813C(void *, void *, float, float);
 #pragma scheduling invalid_target
-int fn_80197FE4(void *arg0, void *arg1) {
-    int special;
-    int mode;
-    int between;
-    int x_ok;
-    int in_range;
-    int angle_ok;
-    int allowed;
-    int result = 0;
-    float z_limit;
-    float upper;
-    float speed;
-    float projected_x;
-    float projected_z;
-    float lower;
-    void *entry;
-    extern float lbl_8055A48C, lbl_8055A488;
-    extern float lbl_80562184, lbl_8056215C, lbl_80562140;
-    extern float lbl_80562290, lbl_80562294;
-    extern void *lbl_804349C0[];
-    if (!(*(int *)((char *)arg0 + 0x2D0) & 4)) {
-        special = 1;
-        z_limit = lbl_80562290 * lbl_8055A488;
-        upper = lbl_8055A48C + lbl_80562184 * lbl_8055A48C;
-        mode = *(int *)((char *)arg0 + 0x268);
-        if (mode != 0 && mode != 3)
-            special = 0;
-        if (special)
-            speed = lbl_8056215C;
-        else
-            speed = lbl_80562140;
-        *(float *)((char *)arg0 + 0x134) = speed;
-        projected_x = speed * *(float *)((char *)arg1 + 0x10);
-        projected_x += *(float *)((char *)arg1 + 8);
-        projected_z = speed * *(float *)((char *)arg1 + 0x0C);
-        projected_z += *(float *)((char *)arg1 + 4);
-        x_ok = *(float *)((char *)arg1 + 8) > lbl_8056215C * lbl_8055A48C;
-        in_range = 0;
-        between = 0;
-        if (projected_x < upper) {
-            lower = lbl_80562294 * lbl_8055A48C;
-            if (projected_x > lower)
-                between = 1;
-        }
-        if (between && x_ok)
-            in_range = 1;
-        angle_ok = (float)__fabs((double)projected_z) < z_limit;
-        entry = lbl_804349C0[*(int *)((char *)arg1 + 0x18)];
-        allowed = 1;
-        if (entry && *((unsigned char *)entry + 0x2A5))
-            allowed = 0;
-        if (allowed && in_range && angle_ok) {
-            fn_8019813C(arg0, arg1, *(float *)((char *)arg1 + 8), projected_x);
-            result = 1;
-        }
+int fn_80197FE4(void *arg0, void *arg1)
+{
+  int special;
+  int mode;
+  int between;
+  int x_ok;
+  int in_range;
+  int allowed;
+  void *entry;
+  int result = 0;
+  int angle_ok;
+  float z_limit;
+  float upper;
+  float speed;
+  float projected_x;
+  float projected_z;
+  float lower;
+  extern float lbl_8055A48C;
+  extern float lbl_8055A488;
+  extern float lbl_80562184;
+  extern float lbl_8056215C;
+  extern float lbl_80562140;
+  extern float lbl_80562290;
+  extern float lbl_80562294;
+  extern void *lbl_804349C0[];
+  if (!((*((int *) (((char *) arg0) + 0x2D0))) & 4))
+  {
+    special = 1;
+    z_limit = lbl_80562290 * lbl_8055A488;
+    upper = lbl_8055A48C + (lbl_80562184 * lbl_8055A48C);
+    mode = *((int *) (((char *) arg0) + 0x268));
+    if ((mode != 0) && (mode != 3))
+    {
+      special = 0;
     }
-    return result;
+    if (special)
+    {
+      speed = lbl_8056215C;
+    }
+    else
+    {
+      speed = lbl_80562140;
+    }
+    *((float *) (((char *) arg0) + 0x134)) = speed;
+    projected_x = speed * (*((float *) (((char *) arg1) + 0x10)));
+    projected_x += *((float *) (((char *) arg1) + 8));
+    projected_z = speed * (*((float *) (((char *) arg1) + 0x0C)));
+    projected_z = projected_z + (*((float *) (((char *) arg1) + 4)));
+    x_ok = (*((float *) (((char *) arg1) + 8))) > (lbl_8056215C * lbl_8055A48C);
+    in_range = 0;
+    between = 0;
+    if (projected_x < upper)
+    {
+      lower = lbl_80562294 * lbl_8055A48C;
+      if (projected_x > lower)
+      {
+        between = 1;
+      }
+    }
+    if (between && x_ok)
+    {
+      in_range = 1;
+    }
+    angle_ok = ((float) __fabs((double) projected_z)) < z_limit;
+    entry = lbl_804349C0[*((int *) (((char *) arg1) + 0x18))];
+    allowed = 1;
+    if (entry && (*(((unsigned char *) entry) + 0x2A5)))
+    {
+      allowed = 0;
+    }
+    if ((allowed && in_range) && angle_ok)
+    {
+      fn_8019813C(arg0, arg1, *((float *) (((char *) arg1) + 8)), projected_x);
+      result = 1;
+    }
+  }
+  return result;
 }
 #pragma scheduling on
 void fn_8019813C(void *arg0, void *arg1, float arg2, float arg3) {
