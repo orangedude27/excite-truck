@@ -946,8 +946,9 @@ void *fn_8016CEC0(void *entry, s32 index) {
     return entry;
 }
 
-void fn_8016CEFC(void *arg0) {
-    ((s32 *)arg0)[1] = 0;
+/* Clear a PtrVec: reset its element count to 0, keeping the backing storage. */
+void fn_8016CEFC(void *vec) {
+    ((PtrVec *)vec)->count = 0;
 }
 
 void *fn_8016CF08(void *obj) {
