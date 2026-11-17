@@ -584,14 +584,13 @@ extern "C" void InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(void* arg0
     OSRestoreInterrupts(outerIrq);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" char lbl_80327C7C[], lbl_80327C58[];
 extern "C" int ParseNextTick__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(void *, int, int, int);
 extern "C" void UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(void *);
 extern "C" void fn_80101130(void) {
-    char *list = lbl_8041D4C4;
-    char *node = *(char **)(list + 4);
-    char *end = list + 4;
+    char *node = *(char **)(lbl_8041D4C4 + 4);
+    char *end = lbl_8041D4C4 + 4;
     while (node != end) {
         unsigned char *entry = (unsigned char *)node;
         node = *(char **)node;
