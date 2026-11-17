@@ -3203,6 +3203,7 @@ extern "C" int fn_801D8424(void *arg0, void *arg1) {
 }
 #pragma pop
 
+/* Name accessor: returns the "EmbeddedTrackEffect_ASE" identifier string for this effect system. */
 void *fn_801D8504(void) {
     return lbl_80339038;
 }
