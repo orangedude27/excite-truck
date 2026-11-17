@@ -1928,8 +1928,9 @@ extern "C" void fn_8018A120(void *truck) {
     }
 }
 #pragma cplusplus off
-void fn_8018A174(void *arg0) {
-    *(float *)((unsigned char *)arg0 + 0x2650) = lbl_80561D2C;
+/* Reset the truck's countdown/timer field at offset 0x2650 to 4.0. */
+void fn_8018A174(void *truck) {
+    *(float *)((unsigned char *)truck + 0x2650) = lbl_80561D2C;
 }
 
 #pragma cplusplus on
