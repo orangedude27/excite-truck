@@ -1,8 +1,4 @@
   #include <types.h>
-static __inline s32 fn_800B6004_tail(u16 flags) {
-    if (!(flags & 8)) return 9;
-    return -((flags >> 1) & 1) & 0xB;
-}
 extern "C" u8 lbl_805591F8[];
 /* 12.20 fixed-point multiply. */
 static inline s32 fn_800C0E7C_fxmul(s32 a, s32 b) {
