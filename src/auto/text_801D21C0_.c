@@ -284,7 +284,7 @@ void fn_801D2210(void) {
 extern s32 fn_801B2F24(void);
 extern void *lbl_804348E8[];
 #pragma push
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
 #pragma processor 750
 void fn_801D2214(void) {
     struct Record { u8 active; u8 pad[3]; s32 id; f32 time; f32 position[3]; };
@@ -512,16 +512,18 @@ void fn_801D25BC(void *arg0, void *arg1) {
         virtual void f20();
         virtual void *fn5C(u32);
     };
+    struct Info { char pad[8]; s32 first; char pad2[0x1c]; s32 count; };
+    struct Info *info = (struct Info *)arg0;
     char name[0x20];
     Dummy *item;
     s32 index;
     f32 value;
     s32 i;
     if (((s32 (*)(void))fn_801D2550)() != 0) {
-        *(s32 *)((char *)arg0 + 8) = -1;
+        info->first = -1;
         i = 0;
-        *(s32 *)((char *)arg0 + 0x28) = i + 1;
-        while (*(s32 *)((char *)arg0 + 0x28) < 4) {
+        info->count = i + 1;
+        while (info->count < 4) {
             fn_801345D8(name, 0x20, lbl_8033830C);
             item = (Dummy *)((Dummy *)arg1)->fn5C((u32)name);
             if (item == 0) {
@@ -529,10 +531,10 @@ void fn_801D25BC(void *arg0, void *arg1) {
             }
             index = item->fn1C((u32)&lbl_8055ABE0);
             value = lbl_80562A90;
-            *(s32 *)((char *)arg0 + *(s32 *)((char *)arg0 + 0x28) * 8 + 8) = index;
+            *(s32 *)((char *)arg0 + info->count * 8 + 8) = index;
             value = item->fn28((void *)&lbl_8055ABE4, value);
-            *(f32 *)((char *)arg0 + *(s32 *)((char *)arg0 + 0x28) * 8 + 0xC) = value;
-            *(s32 *)((char *)arg0 + 0x28) = *(s32 *)((char *)arg0 + 0x28) + 1;
+            *(f32 *)((char *)arg0 + info->count * 8 + 0xC) = value;
+            info->count = info->count + 1;
         }
     }
 }
