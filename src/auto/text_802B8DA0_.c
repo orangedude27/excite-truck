@@ -316,6 +316,7 @@ extern "C" void *fn_802B8FE0(int road) {
 #pragma cplusplus reset
 
 #pragma pop
+/* Stub filter callback: callers pass a record via a cast and expect zero to mean "accept"; always accepts. */
 int fn_802B9100(void) {
     return 0;
 }
@@ -1509,6 +1510,7 @@ extern void fn_801286A0(void *, int);
 extern void fn_80265DCC(void *, void *, int, int (**)(int **, int **));
 extern void fn_802E30C8(void *, ...);
 void fn_802BAE50(void) {
+    #pragma scheduling invalid_target
     int total;
     volatile int start;
     int n;
@@ -1544,7 +1546,7 @@ void fn_802BAE50(void) {
     }
     fn_80265DCC(*(void **)lbl_804BFFF4, *((void **)lbl_804BFFF4 + 1), 4,
                 (int (**)(int **, int **))fn_802B9B50);
-    if (((int (*)(void))fn_802E2C20)() - start > 0x1F4)
+    if (0x1F4 < ((int (*)(void))fn_802E2C20)() - start)
         fn_802E30C8(&lbl_8034A064, name);
 }
 
