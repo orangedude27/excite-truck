@@ -19,6 +19,8 @@
 #include <revolution/WPAD/WPADHIDParser.h>
 
 #include <string.h>
+#include "revolution/WPAD/WPAD.h"
+#include "revolution/WPAD/WPADInternal.h"
 
 extern void DBPrintf_80068D68(const char* pFmt, ...);
 extern volatile u16 lbl_80560CC8, lbl_80560CCA, lbl_80560CCC, lbl_80560CCE;
@@ -3233,7 +3235,8 @@ void fn_8005EE78(void) { fn_8006A7D0(); }
 // fn_8005EE7C: tail call wrapper
 void fn_8005EE7C(void) { fn_8006A940(); }
 
-// fn_80062458: reads a global flag
+/* Return the cached DPD (pointer) sensitivity (1-5), loaded from System Config.
+   Callers add this to 1.0 to scale the maximum cursor error distance. */
 u8 fn_80062458(void) {
     return lbl_8055DC19;
 }
@@ -6293,22 +6296,9 @@ void fn_80066634(s32 chan, u8* data)
             fs = (WPADFSStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
             fs->fsStickX = data[6];
             fs->fsStickY = data[7];
-            v = data[8] << 2;
-            v &= ~3;
-            bits = data[11];
-            bits >>= 2;
-            v |= bits & 3;
-            fs->fsAccX = v - *(s16*)(cb + 0x7ce);
-            v = data[9] << 2;
-            v &= ~3;
-            bits = data[11];
-            bits >>= 4;
-            v |= bits & 3;
-            fs->fsAccY = v - *(s16*)(cb + 0x7d0);
-            v = data[10] << 2;
-            v &= ~3;
-            v |= data[11] >> 6;
-            fs->fsAccZ = v - *(s16*)(cb + 0x7d2);
+            fs->fsAccX = (s16)((s16)((s16)((s16)(data[8] << 2) & ~3) | ((data[11] >> 2) & 3)) - *(s16*)(cb + 0x7ce));
+            fs->fsAccY = (s16)((s16)((s16)((s16)(data[9] << 2) & ~3) | ((data[11] >> 4) & 3)) - *(s16*)(cb + 0x7d0));
+            fs->fsAccZ = (s16)((s16)((s16)((s16)(data[10] << 2) & ~3) | (data[11] >> 6)) - *(s16*)(cb + 0x7d2));
             fs->button |= ((~data[11]) & 3) << 13;
             if (cb[0x851] == 0) {
                 cb[0x851] = 1;
@@ -6416,7 +6406,7 @@ void fn_80066634(s32 chan, u8* data)
         }
     }
     enabled = OSDisableInterrupts();
-    cb[0x806] = __cntlzw(cb[0x806]) >> 24;
+    cb[0x806] = __cntlzw(cb[0x806]) >> 5;
     OSRestoreInterrupts(enabled);
 }
 
