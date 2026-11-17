@@ -574,6 +574,7 @@ void fn_802093F8(void) {
 
 }
 
+/* Trivial mixer helper: always reports 0 (boolean false / no-op result). */
 int fn_802093FC(void) {
     return 0;
 }
