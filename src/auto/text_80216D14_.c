@@ -932,7 +932,9 @@ loop_test:
 #pragma pop
 void fn_802180B0(void *arg0) { fn_80217EC0(arg0, 1, 0); }
 
-void fn_802180BC(void *arg0) { fn_80217EC0(arg0, 1, 1); }
+/* Move the menu selection to the neighbouring item on the right (MoveSelectionRight):
+ * ask fn_80217EC0 to pick the next X-axis candidate in that direction. */
+void fn_802180BC(void *screen) { fn_80217EC0(screen, 1, 1); }
 
 extern int fn_80217EC0(void *, int, int);
 void fn_802180C8(void *arg0) { fn_80217EC0(arg0, 0, 0); }
