@@ -46,8 +46,11 @@ static inline void M33Cat(f32 *a, f32 *b, f32 *ab) {
 }
 
 extern void lbl_80336890(void);
-void fn_80144504(void **arg0) {
-    *arg0 = (void *)&lbl_80336890;
+void fn_80144504(void **object) {
+    /* Install the base-class vtable at the head of an object during construction. */
+    #define sBaseVtable lbl_80336890
+    *object = (void *)&sBaseVtable;
+    #undef sBaseVtable
 }
 
 /* Dot product of two 3D vectors: (ax,ay,az) . (bx,by,bz). */
