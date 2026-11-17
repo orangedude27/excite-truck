@@ -411,7 +411,8 @@ s32 fn_801DE5C4(s32 arg0) {
 #pragma scheduling on
 
 typedef void (*ThunkFn)(s32, s32, s32);
-void fn_801DE788(s32 arg_unused, s32 arg_a, s32 arg_b, s32 arg_c) {
-    (*(void(*)(s32, f32*, s32))fn_801DDED0)(arg_a, (f32*)arg_b, arg_c);
+/* Drop the unused first argument and forward (name, value, unit) to fn_801DDED0. */
+void fn_801DE788(s32 unused, s32 name, s32 value, s32 unit) {
+    (*(void(*)(s32, f32*, s32))fn_801DDED0)(name, (f32*)value, unit);
 }
 
