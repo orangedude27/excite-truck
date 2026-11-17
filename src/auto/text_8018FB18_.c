@@ -513,8 +513,9 @@ extern "C" int fn_801901F0(void *self) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_801902A0(void *arg0) {
-    class VTable {
+extern "C" void fn_801902A0(void *self) {
+    /* Notify the driver sub-object held at offset 4 of self through its virtual slot 0x78. */
+    class DriverVTable {
     public:
         virtual void f0();
         virtual void f1();
@@ -546,8 +547,8 @@ extern "C" void fn_801902A0(void *arg0) {
         virtual void f27();
         virtual void f28();
     };
-    VTable *obj = *(VTable **)((char *)arg0 + 4);
-    obj->f28();
+    DriverVTable *driver = *(DriverVTable **)((char *)self + 4);
+    driver->f28();
 }
 #pragma pop
 
