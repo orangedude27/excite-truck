@@ -122,6 +122,8 @@ char fn_802E9A24(void) {
     return sConfigWpadMotor;
 }
 
-/** @brief WPAD speaker volume, scaled to 0.0 .. 1.0. */
-f32 fn_802E9A2C(void) { return sConfigWpadSpeakerVolume; }
+/** @brief Get the cached WPAD speaker volume, scaled to 0.0 .. 1.0. */
+f32 fn_802E9A2C(void) {
+    return sConfigWpadSpeakerVolume;
+}
 
