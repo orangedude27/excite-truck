@@ -533,8 +533,9 @@ extern "C" void fn_80100F60(void* object, float value) {
     OSRestoreInterrupts(level);
 }
 
-extern "C" float fn_80100FA0(void* arg0) {
-    return *(float*)((char*)arg0 + 0x48);
+/* Return the float field at offset 0x48 of this WsdPlayer (set by fn_80100F60). */
+extern "C" float fn_80100FA0(void* player) {
+    return *(float*)((char*)player + 0x48);
 }
 
 /* Set the channel priority on this sequence player (0..127). */
