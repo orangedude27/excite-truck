@@ -1575,8 +1575,10 @@ int fn_801815CC(void *object) {
     return *(int *)((char *)object + 0x50);
 }
 
-void fn_801815D4(void *arg0, int arg1) {
-    *(int *)((char *)arg0 + 0x50) = arg1;
+/* Set the running-minimum field at +0x50 (paired with the fn_801815CC getter and fn_80181480 updater). */
+void fn_801815D4(void *arg0, int minValue) {
+    typedef struct { char pad[0x50]; int minValue; } MinTracker;
+    ((MinTracker *)arg0)->minValue = minValue;
 }
 
 /* Clamp a level to [0,1] and store it in the object's field at +0x20. */
