@@ -10032,82 +10032,85 @@ extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559228[]; }
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559234[]; }
 extern "C" const u8 lbl_80560D98;
 extern "C" const u8 lbl_80560D99;
-#pragma push
-#pragma scheduling on
+#pragma opt_common_subs off
 extern "C" s16 fn_800B4D5C(void *arg0, u32 arg1, u32 arg2) {
 u8 prefix[2];
-s16 result;
-u32 found;
-s32 index;
-s32 offset;
-s32 special;
-s32 special2;
+u32 special2;
 s16 value;
+struct { u32 v; } w_p1; u32 &p1 = w_p1.v;
+struct { void *v; } w_p0; void *&p0 = w_p0.v;
+struct { u32 v; } w_sp; u32 &sp = w_sp.v;
+struct { s32 v; } w_off; s32 &off = w_off.v;
+struct { s16 v; } w_res; s16 &res = w_res.v;
+struct { s16 v; } w_idx; s16 &idx = w_idx.v;
+struct { u32 v; } w_fnd; u32 &fnd = w_fnd.v;
+struct { u32 v; } w_p2; u32 &p2 = w_p2.v;
+w_p1.v = arg1;
+w_p0.v = arg0;
+w_p2.v = arg2;
 prefix[0] = lbl_80560D98;
 prefix[1] = lbl_80560D99;
-result = 0;
-found = 0;
-if (VFiPFSTR_StrNCmp((s32)arg0, (const void *)prefix, (s32)arg1, 0, 2) == 0)
+res = 0;
+fnd = 0;
+if (VFiPFSTR_StrNCmp((s32)p0, (const void *)prefix, (s32)p1, 0, 2) == 0)
 goto begin;
-if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, (s32)arg1, 0, 1) == 0) {
-if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, (s32)arg1, 1, 1) == 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559228, (s32)p1, 0, 1) == 0) {
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559228, (s32)p1, 1, 1) == 0)
 goto begin;
-if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, 0, 1) == 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)p1, 0, 1) == 0)
 goto begin;
 }
-if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, 0, 1) != 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)p1, 0, 1) != 0)
 goto return_result;
 begin:
-index = 2;
-offset = 4;
+idx = 2;
+off = 4;
 parse:
-if (fn_800A4D44(arg0) == 1U)
-value = (s16)((s8)((u8 *)(u32)fn_800A4D74(arg0, arg1))[(s16)index] - 0x30);
+if (fn_800A4D44(p0) == 1U)
+value = (s16)((s8)((u8 *)(u32)fn_800A4D74(p0, p1))[idx] - 0x30);
 else
-value = (s16)(((u16 *)(u32)fn_800A4D74(arg0, arg1))[offset / 2] - 0x30);
+value = (s16)(*((u16 *)((u8 *)(u32)fn_800A4D74(p0, p1) + off)) - 0x30);
 if (value < 0 || value > 9) {
-if ((s32)arg2 == 0)
+if ((s32)p2 == 0)
 goto after_loop;
-if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, (s16)index, 1) != 0 &&
-VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, (s32)arg1, (s16)index, 1) != 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)p1, idx, 1) != 0 &&
+VFiPFSTR_StrNCmp((s32)p0, lbl_80559228, (s32)p1, idx, 1) != 0)
 goto after_loop;
-if ((u32)arg2 == 1U &&
-VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, (s16)index, 1) == 0)
-found = 1;
+if ((u32)p2 == 1U &&
+VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)p1, idx, 1) == 0)
+fnd = 1;
 }
-offset += 2;
-index = (s16)(index + 1);
-if (index >= 8)
+off += 2;
+idx = idx + 1;
+if (idx >= 8)
 goto after_loop;
-special = 0;
-if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, (s32)arg1, (s16)index, 1) == 0 ||
-VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, (s32)arg1, (s16)index, 1) == 0)
-special = 1;
-if (special != 0)
+sp = 0;
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_8055921C, (s32)p1, idx, 1) == 0 ||
+VFiPFSTR_StrNCmp((s32)p0, lbl_80559220, (s32)p1, idx, 1) == 0)
+sp = 1;
+if (sp != 0)
 goto after_loop;
-if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559234, (s32)arg1, (s16)index, 1) == 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559234, (s32)p1, idx, 1) == 0)
 goto after_loop;
-if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, (s32)arg1, (s16)index, 1) == 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_8055920C, (s32)p1, idx, 1) == 0)
 goto after_loop;
 goto parse;
 after_loop:
-if (index == 8 || found == 1) {
-if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559234, (s32)arg1, (s16)index, 1) != 0) {
+if (idx == 8 || fnd == 1) {
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559234, (s32)p1, idx, 1) != 0) {
 special2 = 0;
-if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, (s32)arg1, (s16)index, 1) == 0 ||
-VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, (s32)arg1, (s16)index, 1) == 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_8055921C, (s32)p1, idx, 1) == 0 ||
+VFiPFSTR_StrNCmp((s32)p0, lbl_80559220, (s32)p1, idx, 1) == 0)
 special2 = 1;
-if (special2 == 0 ||
-VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, (s32)arg1, (s16)index, 1) == 0)
-result = index;
-} else {
-result = index;
+if (special2 != 0 && VFiPFSTR_StrNCmp((s32)p0, lbl_8055920C, (s32)p1, idx, 1) != 0)
+goto return_result;
 }
+res = idx;
 }
 return_result:
-return result;
+return res;
 }
-
+#pragma opt_common_subs reset
 extern "C" const u8 lbl_80560D9C;
 extern "C" const u8 lbl_80560D9D;
 #pragma push
@@ -10420,16 +10423,16 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4)
 }
 
 extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u32 *arg5, u32 arg6) {
+    u16 limit;
     void *page;
     u32 count;
     s32 result;
-    u16 limit;
     *arg5 = 0;
     if (!(M2C_FIELD(arg0, u16 *, 0x1F8C) & 1) || fn_800A53B4((void *)arg0) == 0 || (M2C_FIELD(arg0, u16 *, 0x1F8C) & 2)) return 9;
-    if ((u32)arg2 >= M2C_FIELD(arg0, u32 *, 8) || arg3 >= (limit = M2C_FIELD(arg0, u16 *, 0)) || (s32)(arg3 + arg4) > (s32)limit) {
+    if ((u32)arg2 >= M2C_FIELD(arg0, u32 *, 8) || arg3 >= (limit = M2C_FIELD(arg0, u16 *, 0)) || (arg3 + arg4) > limit) {
         if (arg3 != 0) return 10;
     }
-    if (arg3 != 0 || arg4 >= limit) {
+    if (arg3 != 0 || arg4 >= M2C_FIELD(arg0, u16 *, 0)) {
         result = fn_800A8F28((void *)arg0, arg2, (s32)&page, arg6, 0);
         if (result != 0) return result;
         VFipf_memcpy(M2C_FIELD(page, u8 **, 8) + arg3, arg1, arg4);
@@ -12379,12 +12382,14 @@ extern "C" s32 fn_800B8FE4(s32 buffer, s32 path, s32 length, s32 offset, s32 *ou
     return 0;
 }
 
+#pragma opt_common_subs off
 extern "C" s32 fn_800B90A8(s32 arg0) {
-    s32 result;
     s32 tmp;
     u32 length;
     u16 i;
+    u32 off;
     u8 *entry;
+    struct { s32 v; } w_res; s32 &result = w_res.v;
     entry = 0;
     fn_800B8004(lbl_8055DD30);
     if (arg0 == 0) {
@@ -12392,15 +12397,17 @@ extern "C" s32 fn_800B90A8(s32 arg0) {
         return -20;
     }
     for (i = 0; i < 0x17; i++) {
-        if (((NandFileSlot *)lbl_80405D58)[i].id == (u32)arg0) {
-            ((NandFileSlot *)lbl_80405D58)[i].err = 0;
+        off = i * 0xf0;
+        if (*(u32 *)((u8 *)lbl_80405D58 + off) == (u32)arg0) {
+            *(u32 *)((u8 *)lbl_80405D58 + off + 0xec) = 0;
             break;
         }
     }
     result = (i == 0x17) ? -0x16 : 0;
     if (result == 0) {
         for (i = 0; i < 0x17; i++) {
-            if (((NandFileSlot *)lbl_80405D58)[i].id == (u32)arg0) { entry = (u8 *)&((NandFileSlot *)lbl_80405D58)[i]; break; }
+            off = i * 0xf0;
+            if (*(u32 *)((u8 *)lbl_80405D58 + off) == (u32)arg0) { entry = (u8 *)lbl_80405D58 + off; break; }
         }
         if ((i == 0x17) ? -0x16 : 0) { fn_800B8048(lbl_8055DD30); return -20; }
         *(u32 *)(entry + 0xE4) &= ~2;
@@ -12415,14 +12422,15 @@ extern "C" s32 fn_800B90A8(s32 arg0) {
         if (result < 0) {
         fail:
             for (i = 0; i < 0x17; i++) {
-                if (((NandFileSlot *)lbl_80405D58)[i].id == (u32)arg0) { ((NandFileSlot *)lbl_80405D58)[i].err = result; break; }
+                off = i * 0xf0;
+                if (*(u32 *)((u8 *)lbl_80405D58 + off) == (u32)arg0) { *(u32 *)((u8 *)lbl_80405D58 + off + 0xec) = result; break; }
             }
         }
     }
     fn_800B8048(lbl_8055DD30);
     return result;
 }
-
+#pragma opt_common_subs reset
 extern "C" s32 NANDClose(void *);
 /* Close a NAND file slot by handle ID, clearing its slot state on success. */
 extern "C" s32 fn_800B92A8(s32 fileId) {
@@ -12507,12 +12515,15 @@ extern "C" s32 fn_800B94D4(void *object, s32 value) {
 }
 
 extern "C" s32 fn_800B94EC(s32 arg0, s32 arg1) {
-    /* Fix note: keep the slot counter full-width between scans and truncate only its table index. */
-    u8 *base = (u8 *)lbl_80405D18;
+    register s32 a0 = arg0;
+    register s32 a1 = arg1;
+    register u8 *base = (u8 *)lbl_80405D18;
+    register u32 i;
+    register u32 offset;
+    register u8 *entry;
     u32 initCount;
-    u32 i;
 
-    if ((u32)fn_800A4A8C(arg0) >= 0x4C)
+    if ((u32)fn_800A4A8C(a0) >= 0x4C)
         return -0x14;
     if (lbl_8055DD28 == 0) {
         fn_800A499C((const char *)(base + 0x40), 0, 0x1590);
@@ -12532,12 +12543,13 @@ extern "C" s32 fn_800B94EC(s32 arg0, s32 arg1) {
     base += 0x40;
     i = 0;
 loop_6:
-    u8 *entry = base + (u32)(u16)i * 0xF0;
-    if (fn_800A4AD0(entry + 4, (u8 *)arg0) == 0)
+    offset = (u32)(u16)i * 0xF0;
+    entry = base + offset;
+    if (fn_800A4AD0(entry + 4, (u8 *)a0) == 0)
         return 0;
     if (*(s32 *)entry == 0) {
-        fn_800A4AAC((char *)(entry + 4), (char *)arg0);
-        *(s32 *)(entry + 0x54) = arg1;
+        fn_800A4AAC((char *)(entry + 4), (char *)a0);
+        *(s32 *)(entry + 0x54) = a1;
         goto block_11;
     }
     ++i;
@@ -20605,8 +20617,9 @@ extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
     }
 }
 
-extern "C" void fn_800D1AE4(OSAlarm *arg0) {
-    OSCancelAlarm((OSAlarm *)((u8 *)arg0 + 0x1A0));
+extern "C" void fn_800D1AE4(OSAlarm *spk) {
+    /* Stop the remote speaker: cancel the periodic alarm embedded at +0x1A0 of the RemoteSpk object. */
+    OSCancelAlarm((OSAlarm *)((u8 *)spk + 0x1A0));
 }
 
 /* ---------------------------------------------------------------------
@@ -23397,15 +23410,19 @@ extern "C" void fn_800CA064(void) {
     s32 index = (s32)(userData >> 16);
     u32 low = userData & 0xFFFF;
     void *entry;
-    u8 *alarm;
+    OSAlarm *alarm;
     if (fn_80060C7C((void *)index) == 0) goto setup;
     entry = *(void **)(base + index * 4 + 0x254);
     if (((s32 (*)(void *))fn_800D1548)(entry) != 0) goto do_call;
 setup:
-    alarm = base + index * 0x30 + 0x4D0;
-    OSSetAlarmUserData((OSAlarm *)alarm, (void *)((index << 16) | (index + 2)));
-    OSCancelAlarm((OSAlarm *)alarm);
-    ((void (*)(OSAlarm *, u32, u32, u32, void (*)(void)))OSSetAlarm)((OSAlarm *)alarm, 0x10624DD3, 0, (((*(volatile u32 *)0x800000F8) >> 2) / 1000U) * 50, fn_800CA064);
+    alarm = (OSAlarm *)(base + 0x4D0) + index;
+    OSSetAlarmUserData(alarm, (void *)((index << 16) | (index + 2)));
+    OSCancelAlarm(alarm);
+    {
+        u32 ticks = *(volatile u32 *)0x800000F8;
+        u32 period = ((ticks >> 2) / 1000U) * 50;
+        ((void (*)(OSAlarm *, u32, u32, u32, void (*)(void)))OSSetAlarm)(alarm, 0x10624DD3, 0, period, fn_800CA064);
+    }
     return;
 do_call:
     fn_800D120C(*(void **)(base + index * 4 + 0x254), *(void **)(base + 0x5C0), low);
