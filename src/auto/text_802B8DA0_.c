@@ -596,9 +596,11 @@ int fn_802B9914(void *roadObject) {
 extern short lbl_802FAB60[];
 #pragma push
 #pragma scheduling invalid_target
-int fn_802B9920(int arg0) {
+/* Look up a power-of-two cell size for a signed grid coordinate: bias by 0x200 so it is
+   nonnegative, wrap to 0..31, then read the lowest-set-bit table lbl_802FAB60. */
+int fn_802B9920(int coord) {
     short idx;
-    idx = arg0 + 0x200;
+    idx = coord + 0x200;
     idx %= 32;
     return lbl_802FAB60[idx];
 }
