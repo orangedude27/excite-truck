@@ -636,8 +636,9 @@ s32 fn_8023AEB4(void *selector) {
     return ((s32 *)*(char **)((char *)selector + 0x10))[*(s32 *)(*(char **)((char *)selector + 0x1C))];
 }
 
-void fn_8023AECC(void *arg0, s32 arg1) {
-    (*(s32 *)((char *)arg0 + 0x14)) = arg1;
+/* Set the selector's item count (offset 0x14). */
+void fn_8023AECC(void *selector, s32 count) {
+    (*(s32 *)((char *)selector + 0x14)) = count;
 }
 
 /* Set the selector's current index (held through its +0x1C pointer) to index. */
