@@ -4019,7 +4019,10 @@ extern "C" void fn_80144310(void) {
 // Trivial stub in this vtable's callback group; always returns 0 (false).
 extern "C" s32 fn_80144314(void) { return 0; }
 
-extern "C" s32 fn_8014431C(void) { return 0; }
+extern "C" s32 fn_8014431C(void) {
+    /* Trivial stub in this vtable's callback group; always returns 0 (false). */
+    return 0;
+}
 
 extern "C" s32 fn_80144324(void) { return 0; }
 
