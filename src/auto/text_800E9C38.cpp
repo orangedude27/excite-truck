@@ -642,6 +642,12 @@ extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7ChannelFPQ46nw4hbm3snd6detai
     }
 }
 
+extern "C" char lbl_80322A30[];
+extern "C" char lbl_80322A0C[];
+extern "C" char lbl_80322A00[];
+extern "C" char lbl_803229DC[];
+extern "C" char lbl_803229AC[];
+extern "C" char lbl_803229D0[];
 extern "C" void *AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(int arg0, int arg1, int arg2, void (*arg3)(void *, int, unsigned long), unsigned long arg4) {
     int irq;
     void *chan;
