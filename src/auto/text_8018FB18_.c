@@ -2782,6 +2782,7 @@ void fn_80192F80(void *source) {
     *(f32 *)((u8 *)__AXGetStudio_80178C90() + 0x10) = value;
 }
 #pragma pop
+/* Returns the fixed size (0x20 bytes) of this object type. */
 int fn_80193010(void) { return 0x20; }
 
 void fn_80193018(float * __restrict dst, float * __restrict src) {
