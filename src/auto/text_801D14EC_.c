@@ -46,7 +46,7 @@ extern unsigned char *lbl_8055E908;
 extern float lbl_80562A50, lbl_80562A54, lbl_80562A5C, lbl_80562A60, lbl_80562A64, lbl_80562A68;
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801D1540(Obj801D *p, int idx) {
     unsigned char *cfg = lbl_804348E8[idx];
     float *curve = (float *)(lbl_8055E908 + idx * 0x34);
@@ -58,10 +58,7 @@ void fn_801D1540(Obj801D *p, int idx) {
     top = *(float *)(cfg + 0x2544);
     base = *(float *)(cfg + 0x23e8);
     scale = *(float *)(cfg + 0x358);
-    {
-        float denom = base + scale * (top - base);
-        p->div = lbl_80562A50 * denom / v;
-    }
+    p->div = lbl_80562A50 * (base + scale * (top - base)) / v;
     limit = curve[12];
     memset(p->rec, 0, 0x70);
     p->max = *(int *)(ratios + 0x34);
