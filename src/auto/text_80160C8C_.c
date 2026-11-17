@@ -572,7 +572,6 @@ extern void fn_801473F8(void *, const char *, ...);
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
-#pragma opt_propagation off
     struct Service {
         virtual void f0();
         virtual void *find(const char *);
@@ -585,7 +584,7 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
     f32 sp8;
     void *temp_r3;
     void *temp_r3_2;
-    void *temp_r3_3;
+    register void *temp_r3_3;
 
     if (lbl_8055E2E0 != 0) {
         temp_r3 = ((Service *)lbl_8055E2E0)->lookup((const char *)text + 0xC8);
@@ -598,7 +597,8 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
             fn_80148070(temp_r3_2, -1,
                 (s32)((Service *)lbl_8055E2E0)->create((const char *)text + 0xD4));
         }
-        f32 value4 = *(f32 *)((u8 *)(temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0)) + 4);
+        temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
+        f32 value4 = *(f32 *)((u8 *)temp_r3_3 + 4);
         f32 value8 = *(f32 *)((u8 *)temp_r3_3 + 8);
         s32 valueC = *(s32 *)((u8 *)temp_r3_3 + 0xC);
         fn_80148134(&spC, &sp8, valueC, value4, value8);
@@ -613,7 +613,6 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
         ((Service *)lbl_8055E2E0)->find((const char *)text + 0x110);
         fn_801476C4();
     }
-#pragma opt_propagation reset
 }
 #pragma cplusplus off
 #pragma scheduling on
@@ -1900,14 +1899,12 @@ extern "C" s32 fn_80162FE8(void *arg0) {
         virtual void v5(); virtual void v6(); virtual void v7();
         virtual s32 check();
     };
-    struct Data { char pad0[8]; s32 v8; char padC[0x5B4-0xC]; f32 f5B4; f32 f5B8; };
-    Obj *obj = (Obj *)arg0;
-    struct Data *d = (struct Data *)arg0;
-    f32 tmp = d->f5B8;
-    if (obj->check() != 0) {
-        return d->f5B4 > tmp;
+    f32 tmp = *(f32 *)((char *)arg0 + 0x5B8);
+    s32 checked = ((Obj *)arg0)->check();
+    if (checked != 0) {
+        return *(f32 *)((char *)arg0 + 0x5B4) > tmp;
     }
-    return d->v8 != 0;
+    return *(s32 *)((char *)arg0 + 8) != 0;
 }
 #pragma cplusplus off
 #pragma pop
@@ -3121,7 +3118,7 @@ void fn_80164D64(void *menu, s32 unused) {
 #undef FLOAT_ONE
 #undef FLOAT_ZERO
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80164F50(void *arg0) {
     extern void fn_801796BC(unsigned char);
     extern s32 fn_80131234(void *);
