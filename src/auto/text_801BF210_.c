@@ -590,16 +590,18 @@ void fn_801BFF64(float *m, const float *in) {
 
 extern void fn_8019EECC(void *, void *);
 void fn_801C00B8(void *arg0, float *arg1) {
+    struct Self { char pad[0x28]; float x, y, z; };
+    struct Self *self = (struct Self *)arg0;
     void *callback = *(void **)((char *)arg0 + 4);
-    void *self = arg0;
-    float z = arg1[2];
-    float y = arg1[1];
-    float x = arg1[0];
-    *(float *)((char *)arg0 + 0x28) = x;
-    *(float *)((char *)arg0 + 0x2C) = y;
-    *(float *)((char *)arg0 + 0x30) = z;
+    float z, y, x;
+    x = arg1[0];
+    y = arg1[1];
+    z = arg1[2];
+    self->x = x;
+    self->y = y;
+    self->z = z;
     if (callback == 0) return;
-    fn_8019EECC(callback, (char *)self + 0x28);
+    fn_8019EECC(callback, &self->x);
 }
 
 long fn_801C00F0(void *arg0) { return *(long *)((char *)arg0 + 0x18); }
