@@ -2546,7 +2546,10 @@ extern "C" void fn_80192C24(void *arg0) {
 #pragma cplusplus off
 
 #pragma cplusplus on
-extern "C" void fn_80192C38(void *arg0) {
+/* Thunk: dispatch virtual method f18 on the child object whose pointer is
+ * stored at +4 of holder. CodeWarrior vtables carry two leading slots, so the
+ * 19th virtual (f18) is reached at byte offset 0x50. */
+extern "C" void fn_80192C38(void *holder) {
     class VTable {
     public:
         virtual void f0();
@@ -2569,8 +2572,8 @@ extern "C" void fn_80192C38(void *arg0) {
         virtual void f17();
         virtual void f18();
     };
-    VTable *obj = *(VTable **)((char *)arg0 + 4);
-    obj->f18();
+    VTable *child = *(VTable **)((char *)holder + 4);
+    child->f18();
 }
 #pragma cplusplus reset
 
