@@ -3713,6 +3713,7 @@ extern s32 fn_8014AFD4(void *, void *, s32);
 extern s32 fn_801CB7BC(s32);
 extern s32 lbl_8055E238;
 extern s32 lbl_8055E23C;
+/* Constant predicate (returns 0 / false); likely a virtual getter reached through a dispatch table. */
 s32 fn_80153A30(void) { return 0; }
 
 s32 fn_80153A38(void *base) {
