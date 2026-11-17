@@ -55,8 +55,9 @@ extern "C" void fn_8013A660(void *arg0, char *arg1, char *arg2) {
 }
 #pragma cplusplus reset
 #pragma scheduling on
-int fn_8013A6C4(void *arg0, void *arg1) {
-    return *(int *)((char *)arg0 + 8) - *(int *)((char *)arg1 + 8);
+int fn_8013A6C4(void *entryA, void *entryB) {
+    /* qsort comparator for 12-byte rank entries: order by the int score at +8. */
+    return *(int *)((char *)entryA + 8) - *(int *)((char *)entryB + 8);
 }
 
 int fn_8013A6D4(int difficultyIndex) {
