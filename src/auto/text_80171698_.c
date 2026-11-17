@@ -19,15 +19,7 @@ void *fn_80171698(void) {
     extern void fn_801777CC(void *);
     extern char lbl_80330EC8[];
     extern char lbl_80330ED8[];
-    struct Object {
-        void *vtable;
-        void *vtable2;
-        void *base;
-        s32 zero;
-        s32 count;
-    };
-    volatile struct Object *obj;
-    char *vt;
+    void *obj;
     u32 start;
     u32 end;
     s32 valid;
@@ -38,19 +30,18 @@ void *fn_80171698(void) {
     s32 check;
     s32 hi;
 
-    obj = (volatile struct Object *)fn_801284F8(0xA1C, lbl_80330EC8);
+    obj = fn_801284F8(0xA1C, lbl_80330EC8);
     if (obj != 0) {
-        vt = lbl_80330ED8;
-        obj->vtable = vt;
-        obj->vtable2 = vt + 0x10;
-        obj->base = (char *)obj + 0x14;
+        *(void **)obj = lbl_80330ED8;
+        *(void **)((char *)obj + 4) = lbl_80330ED8 + 0x10;
+        *(void **)((char *)obj + 8) = (char *)obj + 0x14;
 
         start = (u32)obj + 0x3C;
         end = (u32)obj + 0xA14;
         valid = start < end;
 
-        obj->count = 0x40;
-        obj->zero = 0;
+        *(int *)((char *)obj + 0x10) = 0x40;
+        *(int *)((char *)obj + 0xC) = 0;
         if (valid) {
             diff = (s32)(end - start);
             n = (diff + 0x27) / 40;
@@ -77,7 +68,7 @@ void *fn_80171698(void) {
     }
     if (obj != 0)
         fn_801777CC((char *)obj + 4);
-    return (void *)obj;
+    return obj;
 }
 
 #pragma push
@@ -132,7 +123,10 @@ void *fn_801717B4(void *self, int shouldDelete) {
     return obj;
 }
 #pragma pop
-  void fn_8017188C(void *arg0) {
+#pragma push
+#pragma use_lmw_stmw off
+#pragma opt_common_subs off
+void fn_8017188C(void *arg0) {
     int i = 0;
     int offset = 0;
     while (i < *(int *)((char *)arg0 + 0xC)) {
