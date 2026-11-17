@@ -1396,6 +1396,7 @@ s32 fn_80016214(void) {
     return 0;
 }
 #pragma pop
+/* No-argument predicate (companion to the speed-based trigger check fn_80016214) that always reports false in this build. */
 s32 fn_80016288(void) { return 0; }
 
 extern f32 fn_8002EFB4(void *, f32, f64);
