@@ -1071,18 +1071,18 @@ extern "C" const char lbl_805599A4[1];
 extern "C" s32 strstr(const char *, const char *);
 #pragma push
 #pragma scheduling invalid_target
+static inline s32 res_entry_use_count(s32 a, s32 b, struct ResEntry *entry) { return entry->useCount; }
+static inline u32 res_entry_flags(s32 a, s32 b, struct ResEntry *entry) { return entry->flags; }
+
 extern "C" void fn_8012BA1C(void *arg0) {
     const char *strings = lbl_8032A630;
     s32 offset, i;
     s32 j, offset2;
-    u8 *entry;
-    s32 value;
-    u32 flags;
     i = 0;
     offset = 0;
     while (i < *(s32 *)((char *)arg0 + 0x88)) {
-        entry = *(u8 **)((char *)arg0 + 0x60) + offset;
-        value = *(s32 *)(entry + 0x38);
+        u8 *entry = *(u8 **)((char *)arg0 + 0x60) + offset;
+        s32 value = *(s32 *)(entry + 0x38);
         if (value > 0) fn_802E30C8(strings + 0x470, arg0);
         offset += 0x44;
         i++;
@@ -1091,8 +1091,8 @@ extern "C" void fn_8012BA1C(void *arg0) {
         j = 0;
         offset2 = 0;
         while (j < *(s32 *)((char *)arg0 + 0x88)) {
-            entry = *(u8 **)((char *)arg0 + 0x60) + offset2;
-            flags = *(u32 *)(entry + 0x34);
+            u8 *entry = *(u8 **)((char *)arg0 + 0x60) + offset2;
+            u32 flags = *(u32 *)(entry + 0x34);
             if ((flags & 0xA) == 8) fn_802E30C8(strings + 0x4AC, arg0);
             offset2 += 0x44;
             j++;
