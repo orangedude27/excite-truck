@@ -993,9 +993,8 @@ void fn_8020BC78(void *arg0, f32 farg0) {
     *(f32 *)((signed char *)arg0 + 0x2C) = farg0;
 }
 
-void fn_8020BC80(void *arg0, float arg1) {
-    *(float *)((char *)arg0 + 0x30) = arg1;
-}
+/* Store the unused effect float at +0x30 of a VoiceSnd (its voice setter does nothing in this build). */
+void fn_8020BC80(VoiceSnd *snd, float value) { snd->unused30 = value; }
 
 /* Store the unused effect float at +0x34 of a VoiceSnd (its voice setter does nothing in this build). */
 void fn_8020BC88(VoiceSnd *snd, float value) { snd->unused34 = value; }
