@@ -35,8 +35,9 @@ s32 *fn_801E592C(void) {
 void fn_801E598C(void) {
 }
 
-s32 fn_801E5990(void *arg0) {
-    return ((s32 *)arg0)[2];
+/* Return the record count stored in the MRBN table header. */
+s32 fn_801E5990(void *header) {
+    return ((struct SrcHdr *)header)->count;
 }
 
 #pragma scheduling on
@@ -180,7 +181,7 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     register s32 *base;
     register s32 *dst;
     register s32 *tail;
-    s32 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11;
+    s32 a10, a9, a8, a7, a6, a5, a4, a1, a0, a2, a3, a11;
     s32 b0, b1, b2, b3, b4, b5, b6, b7, b8;
 
     count = arg2;
@@ -234,8 +235,6 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     }
     fn_802C7A38(0, sp68, temp);
 }
-
-#pragma fp_contract off
 /* Mtx3MultVec: transform the vector in by the 3x3 matrix m (three rows of three
    floats, out = in * m) and store the result in out.  When out and in are the
    same vector the source is read into registers first, so it is safe to
