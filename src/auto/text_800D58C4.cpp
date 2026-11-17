@@ -1764,8 +1764,10 @@ extern "C" void GXInitLightColor_800D8714(u32 *dst, u32 *src) {
     *dst = *src;
 }
 
-extern "C" s32 fn_800D8720(s32 *arg0) {
-    return *arg0 & 0xF;
+/* Extract the 4-bit texture number (texNum, bits 0..3) from a nw4r lyt material
+ * flag word at res+0x3C; callers use it to size and offset the texture array. */
+extern "C" s32 fn_800D8720(s32 *flags) {
+    return *flags & 0xF;
 }
 
 extern "C" s32 fn_800D872C(u32 *flags) {
