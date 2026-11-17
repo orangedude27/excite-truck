@@ -101,8 +101,11 @@ struct StreamObjectHeader {
     void *block;     /* 0x0C: the data block itself */
 };
 
-void fn_80179D8C(void *arg0, s32 arg1) {
-    ((s32 *)arg0)[2] = arg1;
+/* Remember on a freshly created stream object (+0x08) how large the data block
+ * it was made from is; fn_801783A8 calls this between creating the object and
+ * handing it to its read-from-block virtual method. */
+void fn_80179D8C(void *object, s32 blockSize) {
+    ((struct StreamObjectHeader *)object)->blockSize = blockSize;
 }
 
 /* Initializes an object state block from a source descriptor: stores source pointer/id, clears counters/flags, sets float fields to defaults (0 or 1), and initializes a subobject at +0x6C. */
