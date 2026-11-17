@@ -1455,9 +1455,8 @@ s32 fn_8016DD98(void *arg0) {
     }
 }
 
-s32 fn_8016DE08(void *arg0) {
-    return ((s32 *)arg0)[1];
-}
+/* Return a PtrVec's record count: `count`, the s32 at +0x4. Pairs with fn_8016DE10, which indexes the vec's data. */
+s32 fn_8016DE08(void *vec) { return ((s32 *)vec)[1]; }
 
 /* Compute the address of the index-th 16-byte record in the array whose base pointer is stored at *arg0 (record layout: +0 flag byte, +4 int, +8/+0xC floats). */
 s32 fn_8016DE10(s32 *header, s32 index) {
