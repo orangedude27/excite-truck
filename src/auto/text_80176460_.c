@@ -480,6 +480,8 @@ void fn_80177138(void) {
     fn_801769EC();
 }
 
+#pragma push
+#pragma opt_common_subs off
 void fn_801771A8(void) {
     f32 f;
     s32 d, t, v, q, cur;
@@ -553,7 +555,7 @@ void fn_801771A8(void) {
         }
     }
 }
-
+#pragma pop
 s32 fn_801773E4(void) {
     f32 f;
     s32 d, t, v, q, cur;
@@ -893,11 +895,14 @@ void fn_801775EC(void) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80177608(void* obj) {
+/* Physics-listener fan-out invoker: call `listener`'s first virtual method
+ * (vtable slot 0). fn_80177790 passes this to fn_80177658 to run that slot on
+ * every registered listener. */
+extern "C" void fn_80177608(void* listener) {
     struct Dummy {
         virtual void f0();
     };
-    ((Dummy*)obj)->f0();
+    ((Dummy*)listener)->f0();
 }
 
 extern "C" void fn_80177618(int* obj) {
