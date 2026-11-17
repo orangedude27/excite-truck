@@ -113,13 +113,13 @@ void fn_8020C140(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_8020C2AC(void) {
-    register s32 *base;
-    register s32 *sel;
-    register s32 idx;
-    register u8 *flag;
-    register int one;
+    s32 *__restrict sel;
+    s32 *__restrict base;
+    s32 idx;
+    u8 *__restrict flag;
+    s32 one;
     f32 f31val;
-    u8 tmp;
+    s32 tmp;
     void *o1;
     void *o2;
 
@@ -129,6 +129,7 @@ void fn_8020C2AC(void) {
     f31val = lbl_805632DC;
     lbl_8055EE4C = lbl_805632F0;
     idx = 0;
+    one = 1;
     lbl_8055EE50 = lbl_805632F0;
     lbl_8055EE54 = lbl_805632F0;
     do {
@@ -150,8 +151,8 @@ void fn_8020C2AC(void) {
         }
         if (*flag == 0 && fn_8012E938(sel) != 0) {
             fn_8012E81C(sel);
-            tmp = (u8)fn_80128690();
-            if (tmp == 0) {
+            tmp = fn_80128690();
+            if ((u8)tmp == 0) {
                 fn_80128684();
             }
             fn_802064D0((s32 *)&lbl_80489C50);
@@ -161,17 +162,17 @@ void fn_8020C2AC(void) {
             o1 = *(void **)((char *)base + 0x20);
             if (o1 != 0) {
                 if (f31val != *(f32 *)((char *)o1 + 0x64)) {
-                    *(s8 *)((char *)o1 + 0x6C) = 1;
+                    *(s8 *)((char *)o1 + 0x6C) = one;
                     *(f32 *)((char *)o1 + 0x64) = f31val;
                 }
                 o2 = *(void **)((char *)base + 0x20);
                 if (f31val != *(f32 *)((char *)o2 + 0x68)) {
-                    *(s8 *)((char *)o2 + 0x6D) = 1;
+                    *(s8 *)((char *)o2 + 0x6D) = one;
                     *(f32 *)((char *)o2 + 0x68) = f31val;
                 }
             }
-            *flag = 1;
-            if (tmp == 0) {
+            *flag = one;
+            if ((u8)tmp == 0) {
                 fn_80128678();
             }
         }
@@ -423,8 +424,9 @@ void fn_8020C900(s8 arg0) {
     lbl_8055EE40 = arg0;
 }
 
-void fn_8020C908(f32 arg0) {
-    lbl_8055EE48 = arg0;
+void fn_8020C908(f32 musicVolume) {
+    /* Set the music mixer's master volume (lbl_8055EE48) and reapply it to the sound objects. */
+    lbl_8055EE48 = musicVolume;
     fn_8020C140();
 }
 
