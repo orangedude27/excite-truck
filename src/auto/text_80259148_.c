@@ -373,6 +373,7 @@ int fn_8025978C(void **arg0) {
     (void)arg0; (void)stack;
     return 0;
 }
+#pragma pop
 
 extern double lbl_80563B00;
 extern float lbl_80563AF4;
