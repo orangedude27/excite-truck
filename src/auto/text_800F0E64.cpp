@@ -7097,8 +7097,9 @@ extern "C" void fn_800FC76C(void *player, s32 value) {
     OSRestoreInterrupts(irqState);
 }
 
-extern "C" s32 fn_800FC7AC(void *arg0) {
-    return *(s32 *)((u8 *)arg0 + 0x458);
+extern "C" s32 fn_800FC7AC(void *player) {
+    /* Return this sound player's integer field at offset 0x458 (paired with fn_800FC76C, which sets it). */
+    return *(s32 *)((u8 *)player + 0x458);
 }
 
 extern "C" const char lbl_803268E4[];
