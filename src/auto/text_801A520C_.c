@@ -389,7 +389,7 @@ extern "C" void fn_801A56A0(void *arg0, void *arg1, float *arg2) {
             direction[1] = *(float *)(b + 0x58);
             direction[2] = *(float *)(b + 0x5c);
             direction[1] = lbl_805623C8;
-            if ((float)__fabs(scale) > *(float *)(void *)&lbl_80558DC4 && PSVECDotProduct(direction, (float *)arg0) < lbl_805623C8 && (float)__fabs(*(float *)(b + 0x128)) < lbl_805623E8) {
+            if ((float)__fabs(scale) > lbl_80558DC4 && PSVECDotProduct(direction, (float *)arg0) < lbl_805623C8 && (float)__fabs(*(float *)(b + 0x128)) < lbl_805623E8) {
                 ratio = lbl_805623EC / scale;
                 ratio = lbl_805623CC < ratio ? lbl_805623CC : ratio;
                 ratio *= lbl_805623F0;
