@@ -352,6 +352,9 @@ extern "C" s32 fn_800F0E48(s32 object) {
 }
 
 extern "C" u32* fn_800F0E50(void) {
-    return &lbl_8055DE48;
+#define gpSndPointer lbl_8055DE48
+    /* Return the address of the global nw4r sound-library pointer (gpSndPointer). */
+    return &gpSndPointer;
+#undef gpSndPointer
 }
 
