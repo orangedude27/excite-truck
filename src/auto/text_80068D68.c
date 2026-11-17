@@ -7297,73 +7297,52 @@ state_done:
 }
 
 void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
-    u32 event = 0x1710;
+    u16 sm_event = 0x1710;
     void *p504;
     u8 *base504 = lbl_803151D8;
-    if (lbl_8055DC80 > 5) {
-        if (arg1 <= 8) {
-            switch (arg1) {
-            case 0: p504 = base504 + 0x3AC; break;
-            case 1: p504 = base504 + 0x3C0; break;
-            case 2: p504 = base504 + 0x3D4; break;
-            case 3: p504 = base504 + 0x3EC; break;
-            case 4: p504 = base504 + 0x404; break;
-            case 5: p504 = base504 + 0x41C; break;
-            case 6: p504 = base504 + 0x434; break;
-            case 7: p504 = base504 + 0x44C; break;
-            case 8: p504 = base504 + 0x464; break;
-            default: p504 = base504 + 0x47C; break;
-            }
-        } else {
-            p504 = base504 + 0x47C;
+    BT_HDR *pdata = arg3;
+    u8 xx;
+    if (lbl_8055DC80 >= 5) {
+        switch (arg1) {
+        case 0: p504 = base504 + 0x3AC; break;
+        case 1: p504 = base504 + 0x3C0; break;
+        case 2: p504 = base504 + 0x3D4; break;
+        case 3: p504 = base504 + 0x3EC; break;
+        case 4: p504 = base504 + 0x404; break;
+        case 5: p504 = base504 + 0x41C; break;
+        case 6: p504 = base504 + 0x434; break;
+        case 7: p504 = base504 + 0x44C; break;
+        case 8: p504 = base504 + 0x464; break;
+        default: p504 = base504 + 0x47C; break;
         }
-        fn_80070954(0x504, p504, (u16)arg3);
-        if (arg1 <= 8) {
-            switch (arg1) {
-            case 0: event = 0x1702; break;
-            case 1: event = 0x1703; break;
-            case 2: event = 0x1704; break;
-            case 3: event = 0x1706; break;
-            case 4: event = 0x1705; break;
-            case 5: event = 0x1710; fn_800716F0((void *)((u8 *)arg3 + 4)); break;
-            case 6: {
-                u8 *base = lbl_803C0D48;
-                s32 i;
-                for (i = 0; i < 9; i++) {
-                    u8 *e = base + i * 0x28;
-                    if (e[0x26] == arg0) { e[0x27] = 1; break; }
-                }
-                break;
-            }
-            case 7: {
-                u8 *base = lbl_803C0D48;
-                s32 i;
-                for (i = 0; i < 9; i++) {
-                    u8 *e = base + i * 0x28;
-                    if (e[0x26] == arg0) { e[0x27] = 1; break; }
-                }
-                break;
-            }
-            case 8: {
-                u8 *base = lbl_803C0D48;
-                s32 i;
-                for (i = 0; i < 9; i++) {
-                    u8 *e = base + i * 0x28;
-                    if (e[0x26] == arg0) { e[0x27] = 1; break; }
-                }
-                break;
-            }
-            default: break;
-            }
-        }
+        ((void (*)(u32, void *, void *))fn_80070954)(0x504, base504 + 0x490, p504);
     }
-    if (event != 0x1710) {
+    switch (arg1) {
+    case 0: sm_event = 0x1702; break;
+    case 1: sm_event = 0x1703; break;
+    case 2: sm_event = 0x1704; break;
+    case 3: sm_event = 0x1706; break;
+    case 4: sm_event = 0x1705; break;
+    case 5: fn_800716F0((void *)&pdata); break;
+    case 6:
+    case 7:
+    case 8:
+        xx = 0;
+        while (xx < 9) {
+            u8 *e = lbl_803C0D48 + (xx << 5);
+            if (arg0 == e[0x26]) { e[0x27] = 1; break; }
+            xx++;
+        }
+        break;
+    default: break;
+    }
+    if (sm_event != 0x1710) {
         void *buf = GKI_getbuf(0x18);
         if (buf != 0) {
-            *(u16*)buf = (u16)event;
-            *(u16*)((u8*)buf + 6) = arg0;
-            *(u32*)((u8*)buf + 8) = arg2;
-            *(u32*)((u8*)buf + 12) = (u32)arg3;
+            *(u16 *)buf = sm_event;
+            *(u16 *)((u8 *)buf + 6) = arg0;
+            *(u32 *)((u8 *)buf + 8) = arg2;
+            *(u32 *)((u8 *)buf + 12) = (u32)pdata;
             fn_80071450(buf);
         }
     }
@@ -9083,7 +9062,7 @@ u8 fn_80079514(void) {
 u8 BTM_SetAfhChannels(u8 first, u8 last) {
     if (lbl_803C0F78[0x27C0] >= 3) {
         ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(
-            0xD0002, lbl_803160C0, first, lbl_803C0F78[0x27BD],
+            0xD0002, "BTM_SetAfhChannels first: %d (%d) last: %d (%d)", first, lbl_803C0F78[0x27BD],
             last, lbl_803C0F78[0x27BE]);
     }
     if (!(lbl_803C0F78[0x645] & 8) &&
