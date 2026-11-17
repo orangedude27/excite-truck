@@ -714,7 +714,9 @@ static inline s32 findEntry8024B070(s32 **arg1, s32 *arg0) {
     s32 offset = 0;
     s32 n = *(s32 *)((u8 *)arg1 + 4);
     for (; i < n; i++, offset += 0x18) {
-        if (*arg0 == *(s32 *)((u8 *)*arg1 + offset)) return i;
+        s32 item = *(s32 *)((u8 *)*arg1 + offset);
+        s32 key = *arg0;
+        if (item == key) return i;
     }
     return -1;
 }
@@ -731,12 +733,10 @@ u8 fn_8024B070(s32 *arg0, s32 **arg1) {
     if (fn_80215228() != 0) {
         lbl_8055F298 = 0;
     }
-    for (;;) {
+    while (lbl_8055F298 != 0 || fn_8024A6EC(&sp8, arg1) != 0) {
+        lbl_8055F298 = 0;
         if (fn_8024ACB4(arg0, sp8, arg1) != 0) {
             lbl_8055F298 = 1;
-            break;
-        }
-        if (lbl_8055F298 == 0 && fn_8024A6EC(&sp8, arg1) == 0) {
             break;
         }
     }
