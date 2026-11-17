@@ -2748,6 +2748,7 @@ extern "C" void fn_80215B58(void *wrapper, s32 left, s32 top) {
 #undef Widget_move
 }
 
+/* Widget-wrapper vtable method at slot 0x18: default implementation returns -1 as an invalid/empty sentinel. */
 extern "C" s32 fn_80215BAC(void) {
     return -1;
 }
