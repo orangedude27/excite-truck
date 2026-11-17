@@ -245,6 +245,13 @@ public:
     virtual void *next(char *);
     virtual s32 get(char *, s32);
 };
+class Layout_8014CA48 {
+public:
+    virtual void d0();
+    virtual void *text(void *);
+    virtual void *rect(void *);
+    virtual void load(void *);
+};
 #pragma cplusplus off
 extern u8 lbl_8032D358[];
 extern void *fn_80131808(void *);
@@ -1283,6 +1290,8 @@ extern void fn_8001DF08(s32 p1, s32 p2);
 extern void fn_8014784C(s32 p1, void *p2, void *p3, s32 p4);
 extern void fn_801479A8(void *p1, s32 p2, void *p3, ...);
 extern int sprintf(void *p1, void *p2, s32 p3);
+#pragma push
+#pragma dont_inline on
 s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
     u8 *o = (u8 *)a0;
     void **mgr = (void **)a1;
@@ -1465,7 +1474,7 @@ s32 fn_8014CA48(s32 a0, s32 a1, s32 a2) {
         fn_8001DF08(*(s32 *)o, *(s32 *)(o + 0x90));
     return result;
 }
-
+#pragma pop
 // If the racer's out-of-time flag is set, display the "out of time" HUD overlay.
 void fn_8014D6EC(void *racer) {
     if (((u8 *)racer)[0xA0] == 0) {
