@@ -2037,6 +2037,7 @@ extern "C" s32 fn_801E7698(void);
 extern "C" void fn_80203FF8(void);
 #pragma push
 #pragma opt_propagation off
+#pragma processor 750
 extern "C" void fn_801FA2C4(void) {
     extern unsigned char lbl_8055EC40;
     u8 *ec40;
@@ -2226,8 +2227,8 @@ extern "C" void fn_801F973C(void *, void *, u32);
 #pragma use_lmw_stmw on
 extern "C" void fn_801FA7F4(void *arg0, u32 *arg1, s32 arg2) {
     volatile u32 *src = (volatile u32 *)arg1;
-    u32 zero = 0;
-    u32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    s32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    s32 zero = 0;
     f32 data[14];
     t0 = src[0];
     ((u32 *)data)[13] = zero;
@@ -2242,7 +2243,6 @@ extern "C" void fn_801FA7F4(void *arg0, u32 *arg1, s32 arg2) {
     t9 = src[9];
     t10 = src[10];
     t11 = src[11];
-    ((u32 *)data)[12] = zero;
     *(u32 *)&data[0] = t0;
     *(u32 *)&data[1] = t1;
     *(u32 *)&data[2] = t2;
@@ -2262,6 +2262,7 @@ extern "C" void fn_801FA7F4(void *arg0, u32 *arg1, s32 arg2) {
         data[9] += data[3] * scale;
         data[10] += data[4] * scale;
         data[11] += data[5] * scale;
+        ((u32 *)data)[12] = zero;
         fn_801F973C(obj, data, 2);
     }
 }
@@ -2835,52 +2836,43 @@ extern "C" void *fn_801FBE1C(void **head, s32 arg1, s32 arg2, s32 arg3, s32 arg4
     *head = object;
     return (u8 *)object + 4;
 }
-#pragma scheduling invalid_target
+#pragma scheduling reset
 extern "C" void fn_801FBEA8(void *arg0) {
     void *obj = fn_801284F8(0x2C, lbl_8033B51C);
     if (obj != 0) {
-        f32 zero, one, x, y;
-        one = lbl_80563010;
-        zero = lbl_80562FFC;
-        *(volatile void **)obj = lbl_80333B98;
-        x = *(f32 *)((char *)arg0 + 0x58);
-        *(volatile s32 *)((char *)obj + 0xC) = 0;
-        y = *(f32 *)((char *)arg0 + 0x5C);
-        *(volatile s32 *)((char *)obj + 4) = 0;
-        *(volatile s32 *)((char *)obj + 8) = 0;
-        *(volatile s32 *)((char *)obj + 0x18) = 0x54554245;
-        *(volatile f32 *)((char *)obj + 0x10) = one;
-        *(volatile f32 *)((char *)obj + 0x14) = zero;
-        *(volatile s32 *)((char *)obj + 0x20) = 100;
-        *(volatile s32 *)((char *)obj + 0x1C) = 0;
-        *(volatile f32 *)((char *)obj + 0x24) = x;
-        *(volatile f32 *)((char *)obj + 0x28) = y;
-        *(volatile void **)obj = lbl_80333918;
+        f32 x = *(f32 *)((char *)arg0 + 0x58);
+        f32 y = *(f32 *)((char *)arg0 + 0x5C);
+        *(void **)obj = lbl_80333B98;
+        *(s32 *)((char *)obj + 0xC) = 0;
+        *(s32 *)((char *)obj + 4) = 0;
+        *(s32 *)((char *)obj + 8) = 0;
+        *(s32 *)((char *)obj + 0x18) = 0x54554245;
+        *(f32 *)((char *)obj + 0x10) = 50000.0f;
+        *(f32 *)((char *)obj + 0x14) = 1.0f;
+        *(s32 *)((char *)obj + 0x20) = 100;
+        *(s32 *)((char *)obj + 0x1C) = 0;
+        *(f32 *)((char *)obj + 0x24) = x;
+        *(f32 *)((char *)obj + 0x28) = y;
+        *(void **)obj = lbl_80333918;
     }
 }
-#pragma scheduling on
 extern "C" void fn_801FBF48(void *arg0) {
     void *obj = fn_801284F8(0x2C, lbl_8033B52C);
     if (obj != 0) {
-        f32 zero, one, x, y;
-        void *vt1 = lbl_80333B98;
-        void *vt2 = lbl_803337C8;
-        one = lbl_80563010;
-        zero = lbl_80562FFC;
-        *(volatile void **)obj = vt1;
-        x = *(f32 *)((char *)arg0 + 0x58);
-        *(volatile s32 *)((char *)obj + 0xC) = 0;
-        y = *(f32 *)((char *)arg0 + 0x5C);
-        *(volatile s32 *)((char *)obj + 4) = 0;
-        *(volatile s32 *)((char *)obj + 8) = 0;
-        *(volatile s32 *)((char *)obj + 0x18) = 0x52494E47;
-        *(volatile f32 *)((char *)obj + 0x10) = one;
-        *(volatile f32 *)((char *)obj + 0x14) = zero;
-        *(volatile s32 *)((char *)obj + 0x20) = 100;
-        *(volatile s32 *)((char *)obj + 0x1C) = 0;
-        *(volatile void **)obj = vt2;
-        *(volatile f32 *)((char *)obj + 0x24) = x;
-        *(volatile f32 *)((char *)obj + 0x28) = y;
+        f32 x = *(volatile f32 *)((char *)arg0 + 0x58);
+        f32 y = *(volatile f32 *)((char *)arg0 + 0x5C);
+        *(void **)obj = lbl_80333B98;
+        *(s32 *)((char *)obj + 0xC) = 0;
+        *(s32 *)((char *)obj + 4) = 0;
+        *(s32 *)((char *)obj + 8) = 0;
+        *(s32 *)((char *)obj + 0x18) = 0x52494E47;
+        *(f32 *)((char *)obj + 0x10) = 50000.0f;
+        *(f32 *)((char *)obj + 0x14) = 1.0f;
+        *(s32 *)((char *)obj + 0x20) = 100;
+        *(s32 *)((char *)obj + 0x1C) = 0;
+        *(void **)obj = lbl_803337C8;
+        *(f32 *)((char *)obj + 0x24) = x;
+        *(f32 *)((char *)obj + 0x28) = y;
     }
 }
 #pragma push
@@ -2957,25 +2949,25 @@ extern "C" void *fn_801FC12C(void *arg0) {
         f32 val14 = lbl_80563014;
         f32 x, y, z;
         f32 sum;
-        *(volatile void **)obj = lbl_80333B98;
-        *(volatile u32 *)(obj + 0xC) = 0;
-        *(volatile u32 *)(obj + 0x4) = 0;
+        *(void **)obj = lbl_80333B98;
+        *(u32 *)(obj + 0xC) = 0;
+        *(u32 *)(obj + 0x4) = 0;
         x = *(f32 *)((u8 *)arg0 + 0x58) * half;
-        *(volatile u32 *)(obj + 0x8) = 0;
+        *(u32 *)(obj + 0x8) = 0;
         y = *(f32 *)((u8 *)arg0 + 0x5C) * half;
-        *(volatile u32 *)(obj + 0x18) = 0x424F5820;
+        *(u32 *)(obj + 0x18) = 0x424F5820;
         z = *(f32 *)((u8 *)arg0 + 0x60) * half;
-        *(volatile f32 *)(obj + 0x10) = save;
-        *(volatile f32 *)(obj + 0x14) = val14;
-        *(volatile u32 *)(obj + 0x20) = 100;
-        *(volatile u32 *)(obj + 0x1C) = 0;
-        *(volatile void **)obj = lbl_803338C0;
-        *(volatile f32 *)(obj + 0x24) = x;
-        *(volatile f32 *)(obj + 0x28) = y;
-        *(volatile f32 *)(obj + 0x2C) = z;
-        *(volatile u32 *)(obj + 0x34) = 0;
+        *(f32 *)(obj + 0x10) = save;
+        *(f32 *)(obj + 0x14) = val14;
+        *(u32 *)(obj + 0x20) = 100;
+        *(u32 *)(obj + 0x1C) = 0;
+        *(void **)obj = lbl_803338C0;
+        *(f32 *)(obj + 0x24) = x;
+        *(f32 *)(obj + 0x28) = y;
+        *(f32 *)(obj + 0x2C) = z;
+        *(u32 *)(obj + 0x34) = 0;
         sum = (z * z) + ((x * x) + (y * y));
-        *(volatile f32 *)(obj + 0x30) = lbl_80563014 + (f32)((f64 (*)(f32))fn_8002F234)(sum);
+        *(f32 *)(obj + 0x30) = lbl_80563014 + (f32)((f64 (*)(f32))fn_8002F234)(sum);
     }
     return obj;
 }
