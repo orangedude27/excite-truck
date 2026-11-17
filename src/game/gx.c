@@ -2865,9 +2865,12 @@ void fn_802D3050(int enable) {
     lbl_8055FD1C = (void *)value;
 }
 
-void fn_802D306C(unsigned char arg0) {
-    lbl_8055FD60 = arg0;
-    GXSetDstAlpha(1, arg0);
+/* Enable destination alpha and cache the value for later GXSetDstAlpha calls. */
+void fn_802D306C(unsigned char alpha) {
+#define gDstAlpha lbl_8055FD60
+    gDstAlpha = alpha;
+    GXSetDstAlpha(1, alpha);
+#undef gDstAlpha
 }
 
 extern void GXSetIndTexMtx(int, void *, int);
