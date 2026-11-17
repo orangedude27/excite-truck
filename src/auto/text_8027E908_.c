@@ -3518,8 +3518,9 @@ extern "C" int fn_802868D4(void *object) {
     return value13 <= o->v8();
 }
 #pragma cplusplus reset
-extern "C" void fn_8028693C(void* arg0) {
-    ((ebi::title::TPlaneObj*)arg0)->m_sub->v15();
+extern "C" void fn_8028693C(void* plane) {
+    /* Forward the v15() virtual call to the TPlaneSub (m_sub) of the TPlaneObj. */
+    ((ebi::title::TPlaneObj*)plane)->m_sub->v15();
 }
 #pragma cplusplus on
 /* TPlaneSub predicate: reads the class's two int-returning virtuals on the same
