@@ -3597,6 +3597,7 @@ extern "C" void fn_8015D318(Unk801577F0* object, f32 value, s32 unused, s32 mode
     }
 }
 
+// Trivial callback stub in this player's vtable group; always returns 1 (true).
 extern "C" u32 fn_8015D364(void) { return 1; }
 
 /* Getter: return the m264 progress counter at +0x264 of the frame-driven player. */
