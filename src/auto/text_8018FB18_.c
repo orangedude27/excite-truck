@@ -2714,8 +2714,11 @@ unsigned char fn_80192F6C(void *arg0) {
     return *((unsigned char *)arg0 + 0x12);
 }
 
-void fn_80192F74(void *arg0) {
-    *(int *)((char *)arg0 + 0xC) = lbl_8055E3C4;
+void fn_80192F74(void *object) {
+    /* Stamp the current frame counter into the object's timestamp field at +0xC. */
+    #define sFrameCount lbl_8055E3C4
+    *(int *)((char *)object + 0xC) = sFrameCount;
+    #undef sFrameCount
 }
 
 extern void *__AXGetStudio_80178C90(void);
