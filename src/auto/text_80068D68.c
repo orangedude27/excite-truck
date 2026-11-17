@@ -87,7 +87,7 @@ extern u8 fn_8006EB80(void);
   extern char lbl_80314128[];
   extern char lbl_803187B0[];
   void rfc_send_buf_uih();
-void rfc_process_mx_message();
+void rfc_process_mx_message(void *, BT_HDR *);
 
 /* logical struct used for decoding RFCOMM MX frames (see rfc_int.h) */
 typedef struct {
@@ -3721,33 +3721,33 @@ void GKI_delete_pool(UINT8 pool_id) {
     if (pool_id >= 9) {
         goto bad_pool;
     }
-    switch ((u32)p_cb->pool_start[pool_id]) {
-    case 0:
-        goto bad_pool;
-    default:
-        fn_8006EBAC();
-        Q = &p_cb->freeq[pool_id];
-        if (!Q->cur_cnt) {
-            Q->size = 0;
-            Q->total = 0;
-            Q->cur_cnt = 0;
-            Q->max_cnt = 0;
-            Q->p_first = NULL;
-            Q->p_last = NULL;
-            fn_8006EC20(p_cb->pool_start[pool_id]);
-            p_cb->pool_start[pool_id] = NULL;
-            p_cb->pool_end[pool_id] = NULL;
-            p_cb->pool_size[pool_id] = 0;
-            gki_remove_pool_from_list_local(pool_id);
-            p_cb->curr_total_no_of_pools--;
-        } else {
-            goto bad_pool;
-        }
-        fn_8006EB88();
-        return;
+    if (p_cb->pool_start[pool_id] != NULL) {
+        goto body;
     }
+    goto error;
+body:
+    fn_8006EBAC();
+    Q = &p_cb->freeq[pool_id];
+    if (Q->cur_cnt != 0) {
+        goto bad_pool;
+    }
+    Q->size = 0;
+    Q->total = 0;
+    Q->cur_cnt = 0;
+    Q->max_cnt = 0;
+    Q->p_first = NULL;
+    Q->p_last = NULL;
+    fn_8006EC20(p_cb->pool_start[pool_id]);
+    p_cb->pool_start[pool_id] = NULL;
+    p_cb->pool_end[pool_id] = NULL;
+    p_cb->pool_size[pool_id] = 0;
+    gki_remove_pool_from_list_del(pool_id);
+    p_cb->curr_total_no_of_pools--;
+    goto unlock;
+error:
 bad_pool:
-    fn_8006EBF0((UINT16)0xFFF8, lbl_80314240);
+    ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_DELETE_POOL_BAD_QID, lbl_80314240);
+unlock:
     fn_8006EB88();
 }
 #pragma pop
@@ -13109,7 +13109,10 @@ tBTM_STATUS BTM_SecBond(BD_ADDR bd_addr, UINT8 pin_len, UINT8 *p_pin, UINT32 tru
     return BTM_NO_RESOURCES;
 }
 
-tBTM_STATUS btm_sec_l2cap_access_req(BD_ADDR bd_addr, UINT16 psm, UINT16 handle, CONNECTION_TYPE conn_type, tBTM_SEC_CALLBACK *p_callback, void *p_ref_data) {
+tBTM_STATUS btm_sec_l2cap_access_req(BD_ADDR bd_addr, UINT16 psm, UINT16 handle,
+                                       CONNECTION_TYPE conn_type,
+                                       tBTM_SEC_CALLBACK *p_callback,
+                                       void *p_ref_data) {
     tBTM_SEC_DEV_REC *p_dev_rec;
     u8 *p_serv;
     u8 *p_next;
@@ -13120,6 +13123,7 @@ tBTM_STATUS btm_sec_l2cap_access_req(BD_ADDR bd_addr, UINT16 psm, UINT16 handle,
     UINT8 sec_flags;
     UINT8 found_current;
     UINT8 rc;
+
     p_dev_rec = btm_find_dev(bd_addr);
     if (p_dev_rec == NULL) {
         p_dev_rec = btm_sec_alloc_dev(bd_addr);
@@ -13133,6 +13137,7 @@ tBTM_STATUS btm_sec_l2cap_access_req(BD_ADDR bd_addr, UINT16 psm, UINT16 handle,
     }
     dev = (u8 *)p_dev_rec;
     *(UINT16 *)(dev + 0x18) = handle;
+
     p_serv = lbl_803C0F78 + 0x1990;
     for (i = 0; i < 20; i += 5) {
         if ((p_serv[0xE] & 0x80) && *(UINT16 *)(p_serv + 0xC) == psm) {
@@ -13180,8 +13185,10 @@ tBTM_STATUS btm_sec_l2cap_access_req(BD_ADDR bd_addr, UINT16 psm, UINT16 handle,
             (*p_callback)(bd_addr, NULL, 4);
         return 4;
     }
+
     if (conn_type == 0 || p_dev_rec->p_cur_service == NULL)
         p_dev_rec->p_cur_service = (tBTM_SEC_SERV_REC *)p_serv;
+
     sec_flags = p_serv[0xE];
     p_next = lbl_803C0F78 + 0x1990;
     found_current = 0;
@@ -13247,6 +13254,7 @@ scan_early:
             (*p_callback)(bd_addr, NULL, 0);
         return 0;
     }
+
     p_dev_rec->p_callback = p_callback;
     p_dev_rec->p_ref_data = NULL;
     dev[0x81] = sec_flags;
@@ -24736,13 +24744,13 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
 
 void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
 {
+    BOOLEAN is_command;
     MX_FRAME *p_rx_frame = (MX_FRAME *)lbl_803C4828;
     UINT8 *p_data;
     s32 len;
     UINT8 length;
     UINT8 ll;
     UINT8 b;
-    BOOLEAN is_command;
     char *msgs = lbl_80319DD8;
     len = p_buf->len;
     p_data = (UINT8 *)(p_buf + 1) + p_buf->offset;
@@ -24822,12 +24830,16 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
         break;
     case 0xE0:
         b = p_data[0];
-        p_rx_frame->dlci = b >> 2;
-        if (!(b & 1) || !((b & 2) >> 1) || !p_rx_frame->dlci ||
-            p_rx_frame->dlci < 2 || p_rx_frame->dlci > 0x3D) {
-            if (lbl_803C4828[0x414] >= 1)
-                fn_8007093C(0x90000, msgs + 0xB8);
-            break;
+        {
+            UINT8 ea = b & 1;
+            UINT8 cr = (b & 2) >> 1;
+            UINT8 d = b >> 2;
+            p_rx_frame->dlci = d;
+            if (!ea || !cr || !d || d < 2 || d > 0x3D) {
+                if (lbl_803C4828[0x414] >= 1)
+                    fn_8007093C(0x90000, msgs + 0xB8);
+                break;
+            }
         }
         p_rx_frame->u.msc.signals = p_data[1];
         if (length == 3) {
@@ -24853,12 +24865,16 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     case 0x90:
         if ((UINT16)len == 1 || (UINT16)len == 8) {
             b = p_data[0];
-            p_rx_frame->dlci = b >> 2;
-            if (!(b & 1) || !((b & 2) >> 1) || !p_rx_frame->dlci ||
-                p_rx_frame->dlci < 2 || p_rx_frame->dlci > 0x3D) {
-                if (lbl_803C4828[0x414] >= 1)
-                    fn_8007093C(0x90000, msgs + 0xC8);
-                break;
+            {
+                UINT8 ea = b & 1;
+                UINT8 cr = (b & 2) >> 1;
+                UINT8 d = b >> 2;
+                p_rx_frame->dlci = d;
+                if (!ea || !cr || !d || d < 2 || d > 0x3D) {
+                    if (lbl_803C4828[0x414] >= 1)
+                        fn_8007093C(0x90000, msgs + 0xC8);
+                    break;
+                }
             }
             p_rx_frame->u.rpn.is_request = ((UINT16)len == 1);
             if (!p_rx_frame->u.rpn.is_request) {
@@ -24880,13 +24896,17 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     case 0x50:
         if ((UINT16)len == 2) {
             b = p_data[0];
-            p_rx_frame->dlci = b >> 2;
-            p_rx_frame->u.rls.line_status = p_data[1] & 0xFE;
-            if (!(b & 1) || !((b & 2) >> 1) || !p_rx_frame->dlci ||
-                p_rx_frame->dlci < 2 || p_rx_frame->dlci > 0x3D) {
-                if (lbl_803C4828[0x414] >= 1)
-                    fn_8007093C(0x90000, msgs + 0xC8);
-                break;
+            {
+                UINT8 ea = b & 1;
+                UINT8 cr = (b & 2) >> 1;
+                UINT8 d = b >> 2;
+                p_rx_frame->dlci = d;
+                p_rx_frame->u.rls.line_status = p_data[1] & 0xFE;
+                if (!ea || !cr || !d || d < 2 || d > 0x3D) {
+                    if (lbl_803C4828[0x414] >= 1)
+                        fn_8007093C(0x90000, msgs + 0xC8);
+                    break;
+                }
             }
             GKI_freebuf(p_buf);
             rfc_process_rls(p_rfc_mcb, is_command, p_rx_frame);
