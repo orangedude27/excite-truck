@@ -1500,6 +1500,7 @@ void fn_802C7888(void *src, s32 count)
 extern int lbl_804C13B4[];
 extern void fn_802C7A00(void);
 void fn_802C7A00(void) {
+    /* Reset the used-count at +0 of the model entry pool lbl_804C13B4, emptying it. */
     lbl_804C13B4[0] = 0;
 }
 
