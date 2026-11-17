@@ -615,8 +615,9 @@ s32 fn_8023AEE0(void *selector) {
     return *(s32 *)(*(char **)((char *)selector + 0x1C));
 }
 
-void fn_8023AEEC(void *arg0) {
-    *(s32 *)((char *)arg0 + 0x18) = -1;
+/* Clear the selector's +0x18 table/index pointer to the invalid -1 sentinel (no selection). */
+void fn_8023AEEC(void *selector) {
+    *(s32 *)((char *)selector + 0x18) = -1;
 }
 
 s32 fn_80230E90(s32);
