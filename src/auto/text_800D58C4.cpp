@@ -1916,8 +1916,9 @@ extern "C" void __as__Q34nw4r3lyt8TevStageFRCQ34nw4r3lyt8TevStage(void *arg0, co
     dst[15] = b15;
 }
 #pragma pop
-extern "C" s32 fn_800D893C(void *arg0) {
-    return ((u32)*(u32*)((u8*)arg0 + 0x4C) >> 6U) & 1;
+/* Return 1 when bit 6 of the material flags at +0x4C is set (channel B present). */
+extern "C" s32 fn_800D893C(void *material) {
+    return ((u32)*(u32*)((u8*)material + 0x4C) >> 6U) & 1;
 }
 
 // Copies the material's B-channel RGBA color from src into dst (nw4r lyt setup).
