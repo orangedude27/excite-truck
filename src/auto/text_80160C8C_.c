@@ -426,7 +426,6 @@ static inline void fn_80160CF4_clear(void *p) {
     (void)p;
 }
 extern "C" int stricmp(const char *, const char *);
-#pragma dont_inline off
 extern "C" char lbl_8055A0D4;
 extern "C" f32 lbl_8056183C;
 extern "C" char lbl_8055A0C4;
