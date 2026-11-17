@@ -2522,8 +2522,8 @@ extern float lbl_80561980;
 #pragma use_lmw_stmw off
 struct Frame_8016FFEC {
     float f8, fC, f10, f14, f18, f1C;
-    double ret;
-    double d28;
+    float ret[2];
+    float d28[2];
     float f30, f34, f38, f3C;
     char sp40[16];
     char stk50[16];
@@ -2548,17 +2548,7 @@ extern float lbl_80561980;
 extern float lbl_80561984;
 extern float lbl_80561988;
 extern float lbl_80561A10;
-float f8, fC;
-float f10, f14;
-float f18, f1C;
-float f30, f34;
-float f38, f3C;
-char sp40[16];
-char stk50[16];
-char sp60[16];
-float pts[6];
-char query[72];
-double d28;
+struct Frame_8016FFEC s;
 void *manager;
 void *obj;
 int i;
@@ -2570,19 +2560,20 @@ float inv;
 float nx;
 manager = *(void **)((char *)fn_8000AC38() + 0x20);
 if (manager == 0) return 0;
-fn_801345D8(sp60, 0x10, lbl_80330DF4, arg2);
-obj = ((void *(*)(void *, void *))*(void **)((char *)*(void **)manager + 0x5C))(manager, sp60);
+fn_801345D8(s.sp60, 0x10, lbl_80330DF4, arg2);
+obj = ((void *(*)(void *, void *))*(void **)((char *)*(void **)manager + 0x5C))(manager, s.sp60);
 if (obj == 0) return 0;
-p = pts;
+p = s.pts;
 i = 0;
-f38 = lbl_80561980;
-f3C = lbl_80561980;
-f30 = lbl_80561980;
-f34 = lbl_80561980;
+s.f38 = lbl_80561980;
+s.f3C = lbl_80561980;
+s.f30 = lbl_80561980;
+s.f34 = lbl_80561980;
 do {
-fn_801345D8(sp40, 0x10, lbl_8055A270, i);
+fn_801345D8(s.sp40, 0x10, lbl_8055A270, i);
 {
-unsigned long long ret = ((unsigned long long (*)(void *, void *))*(void **)((char *)*(void **)obj + 0x3C))(obj, sp40);
+unsigned long long ret = ((unsigned long long (*)(void *, void *))*(void **)((char *)*(void **)obj + 0x3C))(obj, s.sp40);
+*(unsigned long long *)&s.ret = ret;
 p[0] = *(float *)&ret;
 p[1] = *((float *)&ret + 1);
 }
@@ -2590,24 +2581,24 @@ p += 2;
 i += 1;
 } while (i < 3);
 idx = 2;
-f18 = pts[4] - pts[0];
-f1C = pts[5] - pts[1];
+s.f18 = s.pts[4] - s.pts[0];
+s.f1C = s.pts[5] - s.pts[1];
 {
-float len1 = f18 * f18 + f1C * f1C;
-float d0 = pts[0] - pts[2];
-float c0 = pts[1] - pts[3];
+float len1 = s.f18 * s.f18 + s.f1C * s.f1C;
+float d0 = s.pts[0] - s.pts[2];
+float c0 = s.pts[1] - s.pts[3];
 float len2 = d0 * d0 + c0 * c0;
-f10 = d0;
-f14 = c0;
+s.f10 = d0;
+s.f14 = c0;
 if (len2 > len1) {
 len1 = len2;
 idx = 0;
 }
 {
-float g = pts[3] - pts[5];
-float h = pts[2] - pts[4];
-f14 = g;
-f10 = h;
+float g = s.pts[3] - s.pts[5];
+float h = s.pts[2] - s.pts[4];
+s.f14 = g;
+s.f10 = h;
 if (h * h + g * g > len1) {
 idx = 1;
 }
@@ -2615,65 +2606,65 @@ idx = 1;
 }
 o1 = ((idx + 1) % 3) * 2;
 o2 = idx * 2;
-fC = pts[o2 + 1] + lbl_80561988 * (pts[o1 + 1] - pts[o2 + 1]);
-f8 = pts[o2] + lbl_80561988 * (pts[o1] - pts[o2]);
+s.fC = s.pts[o2 + 1] + lbl_80561988 * (s.pts[o1 + 1] - s.pts[o2 + 1]);
+s.f8 = s.pts[o2] + lbl_80561988 * (s.pts[o1] - s.pts[o2]);
 o1 = ((idx + 2) % 3) * 2;
 {
-double dd = *(double *)&f8;
-*(double *)&d28 = dd;
+double dd = *(double *)&s.f8;
+*(double *)&s.d28 = dd;
 {
-float dx = pts[o1] - (float)dd;
-float dy = pts[o1 + 1] - *((float *)&d28 + 1);
-f38 = (float)dd;
-f3C = *((float *)&d28 + 1);
-f30 = dx;
-f34 = dy;
+float dx = s.pts[o1] - (float)dd;
+float dy = s.pts[o1 + 1] - *((float *)&s.d28 + 1);
+s.f38 = (float)dd;
+s.f3C = *((float *)&s.d28 + 1);
+s.f30 = dx;
+s.f34 = dy;
 sqf = (float)((double (*)(float))fn_8002F234)(dx * dx + dy * dy);
 }
 }
 inv = lbl_80561984 / sqf;
-nx = f30 * inv;
-f30 = nx;
-f34 = f34 * inv;
+nx = s.f30 * inv;
+s.f30 = nx;
+s.f34 = s.f34 * inv;
 if (((int (*)(void *, void *, int, float, float, float))*(void **)((char *)*(void **)obj + 0x30))(obj, lbl_80330E04, 1, nx, inv, sqf) != 0) {
-fn_801352B8(query);
-fn_80135D60(query, ((int (*)(int))*(void **)((char *)*(void **)fn_80156A40() + 0xC))(0));
+fn_801352B8(s.query);
+fn_80135D60(s.query, ((int (*)(int))*(void **)((char *)*(void **)fn_80156A40() + 0xC))(0));
 {
 float tt = lbl_80561980;
-*(void **)stk50 = 0;
-*(int *)(stk50 + 8) = 0x2710;
-*(float *)(stk50 + 4) = lbl_80561980;
-fn_801355C0(query, &f38, 0, stk50, 0);
+*(void **)s.stk50 = 0;
+*(int *)(s.stk50 + 8) = 0x2710;
+*(float *)(s.stk50 + 4) = lbl_80561980;
+fn_801355C0(s.query, &s.f38, 0, s.stk50, 0);
 {
-void *nd = *(void **)stk50;
+void *nd = *(void **)s.stk50;
 float v0 = *(float *)nd;
 float w0 = *(float *)(*(void **)((char *)nd + 0x14));
-f38 = v0 + tt * (w0 - v0);
+s.f38 = v0 + tt * (w0 - v0);
 v0 = *((float *)nd + 1);
 w0 = *((float *)(*(void **)((char *)nd + 0x14)) + 1);
-f3C = v0 + tt * (w0 - v0);
+s.f3C = v0 + tt * (w0 - v0);
 v0 = *((float *)nd + 2);
-f30 = v0 + tt * (*((float *)(*(void **)((char *)nd + 0x14)) + 2) - v0);
+s.f30 = v0 + tt * (*((float *)(*(void **)((char *)nd + 0x14)) + 2) - v0);
 w0 = *((float *)nd + 3);
-f34 = w0 + tt * (*((float *)(*(void **)((char *)nd + 0x14)) + 3) - w0);
-sqf = (float)((double (*)(float))fn_8002F234)(f30 * f30 + f34 * f34);
+s.f34 = w0 + tt * (*((float *)(*(void **)((char *)nd + 0x14)) + 3) - w0);
+sqf = (float)((double (*)(float))fn_8002F234)(s.f30 * s.f30 + s.f34 * s.f34);
 }
 inv = lbl_80561984 / sqf;
-nx = f30 * inv;
-f30 = nx;
-f34 = f34 * inv;
-fn_8013530C(query, -1, nx, inv, sqf);
+nx = s.f30 * inv;
+s.f30 = nx;
+s.f34 = s.f34 * inv;
+fn_8013530C(s.query, -1, nx, inv, sqf);
 }
 }
-fn_801B7C8C(arg1, &f38, &f30);
+fn_801B7C8C(arg1, &s.f38, &s.f30);
 {
 float sc = lbl_80561A10 * ((float (*)(void *, void *, float))*(void **)((char *)*(void **)obj + 0x28))(obj, lbl_8055A278, lbl_80561980);
 *(float *)((char *)arg1 + 0x30) = *(float *)((char *)arg1 + 0x18) * sc;
 *(float *)((char *)arg1 + 0x34) = *(float *)((char *)arg1 + 0x1C) * sc;
 *(float *)((char *)arg1 + 0x38) = *(float *)((char *)arg1 + 0x20) * sc;
 }
- return 1;
- }
+return 1;
+}
 #pragma pop
 
  #pragma cplusplus on
