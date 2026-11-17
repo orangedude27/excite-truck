@@ -129,6 +129,7 @@ void fn_801EF53C(void *p0, Matrix801EF *arg1, void *p2) {
     fn_801E353C(arg0[1], *(float *)((char *)arg0 + 0x20) * r - *(float *)((char *)arg0 + 0x20) * t);
     fn_801E34E4(arg0[1], arg1);
 }
+#pragma pop
 
 extern float lbl_80562EE4, lbl_80562F04, lbl_80562F08, lbl_80562F0C;
 extern float fn_801F159C(void **);
