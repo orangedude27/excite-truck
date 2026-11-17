@@ -290,6 +290,9 @@ loop_check:
  * registered save records and writes it to the card (fn_802E6FBC). */
 void fn_802E7128(void) { fn_802E6FBC(); }
 
+/* Hook run before every read of the save image from the memory card (with
+ * fn_802E6CA8) and once during bootstrap: there is nothing to flush or cancel
+ * before a read in this build, so it does nothing. */
 void fn_802E712C(void) {}
 
 #pragma scheduling reset
