@@ -3285,22 +3285,23 @@ void fn_801D8620(void) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_801D8624(void *arg0) {
+extern "C" void fn_801D8624(void *obj) {
     struct Dummy {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
     };
-    ((Dummy *)arg0)->v11();
+    /* Virtual-dispatch thunk: invoke the 12th virtual method (vtable +0x34). */
+    ((Dummy *)obj)->f11();
 }
 
 extern "C" int fn_801D8634(void *out, void *obj) {
