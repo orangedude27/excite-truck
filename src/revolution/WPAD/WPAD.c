@@ -3337,9 +3337,10 @@ s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
             status = -2;
         } else {
             u32* src = (u32*)pInfo;
-            u32 w0 = src[0], w1 = src[1], w2 = src[2], w3 = src[3];
-            u32 w4 = src[4], w5 = src[5], w6 = src[6], w7 = src[7];
-            u32 w8 = src[8], w9 = src[9], w10 = src[10], w11 = src[11];
+            u32 w11, w10, w9, w8, w7, w6, w5, w4, w3, w2, w1, w0;
+            w0 = src[0]; w1 = src[1]; w2 = src[2]; w3 = src[3];
+            w4 = src[4]; w5 = src[5]; w6 = src[6]; w7 = src[7];
+            w8 = src[8]; w9 = src[9]; w10 = src[10]; w11 = src[11];
             info[0] = w0;
             info[1] = w1;
             info[2] = w2;
@@ -5407,6 +5408,9 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
     s32 offset, i;
     u32 sum;
     u8* src;
+    s16 lo;
+    u16 hi;
+
     *(u16*)&status->obj[0].x = valueCC8;
     *(u16*)&status->obj[0].y = valueCD0;
     status->obj[0].size = *(u16*)(p + 0x804);
@@ -5436,36 +5440,52 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
             for (attempt = 0; attempt < 2; attempt++) {
                 offset = (u8)attempt * 11;
                 sum = 0;
-                for (i = offset; i < offset + 10; i++) sum += config[i];
+                for (i = offset; i < offset + 10; i++) {
+                    sum += config[i];
+                }
                 if ((u8)(sum + 0x55) == config[offset + 10]) {
                     DBPrintf_80068D68(messages + 0x98);
                     src = data + offset;
-                    status->obj[0].x = (s16)src[0] | ((src[2] & 48) << 4);
-                    status->obj[0].y = 0x2FF - (s16)((s16)src[1] | ((src[2] & 192) << 2));
+                    lo = (s16)src[0]; hi = (src[2] & 48) << 4;
+                    status->obj[0].x = lo | hi;
+                    lo = (s16)src[1]; hi = (src[2] & 192) << 2;
+                    status->obj[0].y = 0x2FF - (s16)(lo | hi);
                     status->obj[0].size = *(u16*)(p + 0x804);
                     status->obj[0].traceId = 0;
-                    status->obj[1].x = (s16)src[3] | ((src[2] & 3) << 8);
-                    status->obj[1].y = 0x2FF - (s16)((s16)src[4] | ((src[2] & 12) << 6));
+                    lo = (s16)src[3]; hi = (src[2] & 3) << 8;
+                    status->obj[1].x = lo | hi;
+                    lo = (s16)src[4]; hi = (src[2] & 12) << 6;
+                    status->obj[1].y = 0x2FF - (s16)(lo | hi);
                     status->obj[1].size = *(u16*)(p + 0x804);
                     status->obj[1].traceId = 1;
-                    status->obj[2].x = (s16)src[5] | ((src[7] & 48) << 4);
-                    status->obj[2].y = 0x2FF - (s16)((s16)src[6] | ((src[7] & 192) << 2));
+                    lo = (s16)src[5]; hi = (src[7] & 48) << 4;
+                    status->obj[2].x = lo | hi;
+                    lo = (s16)src[6]; hi = (src[7] & 192) << 2;
+                    status->obj[2].y = 0x2FF - (s16)(lo | hi);
                     status->obj[2].size = *(u16*)(p + 0x804);
                     status->obj[2].traceId = 2;
-                    status->obj[3].x = (s16)src[8] | ((src[7] & 12) << 8);
-                    status->obj[3].y = 0x2FF - (s16)((s16)src[9] | ((src[7] & 12) << 6));
+                    lo = (s16)src[8]; hi = (src[7] & 12) << 8;
+                    status->obj[3].x = lo | hi;
+                    lo = (s16)src[9]; hi = (src[7] & 12) << 6;
+                    status->obj[3].y = 0x2FF - (s16)(lo | hi);
                     status->obj[3].size = *(u16*)(p + 0x804);
                     status->obj[3].traceId = 3;
                     break;
                 }
                 DBPrintf_80068D68(messages + 0xB0);
             }
-        } else DBPrintf_80068D68(messages + 0xC8);
+        } else {
+            DBPrintf_80068D68(messages + 0xC8);
+        }
         for (attempt = 0; attempt < 2; attempt++) {
             offset = (u8)attempt * 10;
             sum = 0;
-            if (*(s32*)(p + 0x820) == 0) offset += 22;
-            for (i = offset; i < offset + 9; i++) sum += config[i];
+            if (*(s32*)(p + 0x820) == 0) {
+                offset += 22;
+            }
+            for (i = offset; i < offset + 9; i++) {
+                sum += config[i];
+            }
             src = config + offset;
             if ((u8)(sum + 0x55) == src[9]) {
                 DBPrintf_80068D68(messages + 0x10C);
@@ -5674,7 +5694,10 @@ s32 WPADiHIDParser(u8 port, u8* p_rpt) {
     return result;
 }
 
+#pragma push
+#pragma dont_inline off
 static inline void wpad_store_status(u8 *dst, u32 value) { *dst = (u8)value; }
+#pragma pop
 #pragma opt_propagation off
 void fn_80064A80(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
