@@ -2380,7 +2380,7 @@ void *fn_8011A168(void *table) {
     return &fn_80119DD0;
 }
 
-#pragma unroll on
+#pragma unroll 8
 void fn_8011A1A0(u32 *data, u32 size) {
     u32 count = (size + 3) >> 2;
     if (count != 0) {
