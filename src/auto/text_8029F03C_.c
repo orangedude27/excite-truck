@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-struct Fn8029Pair { float x, y; } __attribute__((aligned(8)));
+struct Fn8029Pair { union { double d; struct { float x, y; }; }; } __attribute__((aligned(8)));
 struct Fn8029Vec { float x, y, z; };
 extern float lbl_805646B8;
 extern float lbl_805646BC;
