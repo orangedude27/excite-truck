@@ -937,7 +937,8 @@ extern "C" void fn_80190CA8(void *container) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_80190CBC(void *arg0) {
+/* Invoke virtual method f27 (vtable slot 0x74) on the object stored at container+4. */
+extern "C" void fn_80190CBC(void *container) {
     class VTable {
     public:
         virtual void f0();
@@ -969,8 +970,8 @@ extern "C" void fn_80190CBC(void *arg0) {
         virtual void f26();
         virtual void f27();
     };
-    VTable *obj = *(VTable **)((char *)arg0 + 4);
-    obj->f27();
+    VTable *child = *(VTable **)((char *)container + 4);
+    child->f27();
 }
 #pragma pop
 
