@@ -1466,16 +1466,12 @@ int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
         pool = *(char **)(*(char **)((char *)arg0 + 0x38) + 4);
         link = (char **)(pool + 0xC);
         node = (char *)(*(int *)(table + 0x44) - (*(int *)(pool + 4) + 1));
-        other = *link;
-        if (other != 0) {
-            do {
-                if (other == node) {
-                    *link = *(char **)(node + 8);
-                    break;
-                }
-                link = (char **)(other + 8);
-                other = *link;
-            } while (other != 0);
+        for (other = *link; other != 0; other = *link) {
+            if (other == node) {
+                *link = *(char **)(node + 8);
+                break;
+            }
+            link = (char **)(other + 8);
         }
 
         mergeLink = (char **)(pool + 8);
