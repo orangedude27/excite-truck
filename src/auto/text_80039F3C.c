@@ -791,6 +791,7 @@ int fn_8003B218(void *arg0) {
 }
 #pragma scheduling on
 int fn_8003B380(int value) {
+    /* Store the parameter copied into the next low-level ioctl request, then report success. */
     lbl_8055D8F0 = value;
     return 1;
 }
