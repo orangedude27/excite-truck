@@ -94,6 +94,7 @@ void fn_80216D28(void) {
 
 #pragma noinline
 void fn_80216D34(void) {
+    /* Clear the UI key-sound suppression flag (lbl_8055EFAC) so key sounds play again. */
     lbl_8055EFAC = 0;
 }
 
