@@ -102,6 +102,10 @@ extern char lbl_80338BD0[];
 extern int fn_80128668(void);
 extern void fn_80128658(int);
 typedef struct { char *name; int state; } UnkStruct_801D701C;
+/* The header every *_ASE action-sequence element shares: the type/vtable table its
+ * constructor installs at +0 and the state its state()/start()/update() methods step
+ * through (0 unset, 1 ready, 2 running, 3 finished - see enum TimedEffectState). */
+typedef struct { char *typeInfo; int state; } AseElementHeader;
 extern char lbl_80339038[];
 extern char lbl_8033905C[];
 extern char lbl_8033907C[];
