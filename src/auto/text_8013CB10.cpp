@@ -1939,11 +1939,11 @@ extern "C" int fn_8013FC6C(void* self) {
     return 0;
 }
 #pragma scheduling on
+#pragma processor 750
 extern "C" s32 fn_8013FD20(void *arg0, s32 arg1) {
+    u8 *entry = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
     u8 *self = (u8 *)arg0;
-    u8 *entry = *(u8 **)(self + 0xB8) + arg1 * 0x12C;
-    s32 result;
-    result = 1;
+    s32 result = 1;
     if (*(s32 *)(entry + 0x11C) != 0) {
         f32 diff = fn_8001DAE8(self + 0x74) - *(f32 *)(self + 0x78);
         s32 valid = 0;
