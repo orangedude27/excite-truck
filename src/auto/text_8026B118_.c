@@ -248,12 +248,11 @@ void fn_8026B3D4(int arg0) {
 #pragma pop
 
 void fn_8026B644(void) {
-    #pragma scheduling invalid_target
-    unsigned char *base = lbl_80346988;
+    T8026B644 *base = (T8026B644 *)lbl_80346988;
     fn_8026B260();
-    fn_801331C4(4, base + 0xA0, &lbl_8055C4F8);
-    fn_8026B11C((void **)&lbl_8055F4D0, base + 0xB0);
-    fn_8026B11C((void **)&lbl_8055F4CC, base + 0xBC);
+    fn_801331C4(4, base->b, &lbl_8055C4F8);
+    fn_8026B11C((void **)&lbl_8055F4D0, base->c);
+    fn_8026B11C((void **)&lbl_8055F4CC, base->d);
 }
 void fn_8026B69C(void) {
     /* Tear down the thread lists: reset the active slot count and delete both thread groups. */
