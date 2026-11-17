@@ -2430,8 +2430,9 @@ s32 WUDSetDisableChannel(s8 arg0) {
     extern char lbl_80313550[];
     extern char lbl_80313568[];
     extern u8 lbl_80392960[];
+    struct Base { char pad[0x688]; s8 state; };
     s32 result = 0;
-    volatile u8 *base = lbl_80392960;
+    struct Base *base = (struct Base *)lbl_80392960;
     s32 min;
     s32 max;
     s32 channel;
@@ -2440,7 +2441,7 @@ s32 WUDSetDisableChannel(s8 arg0) {
     DBPrintf_8006CFA8(lbl_80313550);
     if (arg0 < 0 || arg0 > 0xD) return 0;
     state = OSDisableInterrupts();
-    channel = (s8)base[0x688];
+    channel = base->state;
     OSRestoreInterrupts(state);
     if ((u32)channel == 3) {
         if (arg0 == 0) {
@@ -4256,6 +4257,7 @@ void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
     u16 max_len, len;
     u8 *data, *base;
     u8 channel;
+    struct Tail { u8 b0, b1; };
     base = msg + *(u16 *)(msg + 4);
     data = base + 8;
     if (event == 0x2100) {
@@ -4279,15 +4281,17 @@ void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
         *(u16 *)(msg + 2) = len - *(u16 *)(lbl_803C0A50 + 0x7C);
         base[8] = header;
         base[9] = header_hi;
-        data = base + 0xA;
-        if (*(u16 *)(msg + 2) > *(u16 *)(lbl_803C0A50 + 0x7E)) {
-            data[0] = *(u16 *)(lbl_803C0A50 + 0x7C);
-            data[1] = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
-        } else {
-            data[0] = *(u16 *)(msg + 2) - 4;
-            data[1] = (*(u16 *)(msg + 2) - 4) >> 8;
+        {
+            struct Tail *tail = (struct Tail *)(base + 0xA);
+            if (*(u16 *)(msg + 2) > *(u16 *)(lbl_803C0A50 + 0x7E)) {
+                tail->b0 = *(u16 *)(lbl_803C0A50 + 0x7C);
+                tail->b1 = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
+            } else {
+                tail->b0 = *(u16 *)(msg + 2) - 4;
+                tail->b1 = (*(u16 *)(msg + 2) - 4) >> 8;
+            }
+            data = (u8 *)tail + 2;
         }
-        data += 2;
         if (*(u16 *)(msg + 6) != 0 && --*(u16 *)(msg + 6) == 0) {
             *(u16 *)msg = (short)0x1900;
             GKI_send_msg(((u8 *)&lbl_803BD1A0)[0x1F], 0, (BT_HDR *)msg);
@@ -10537,17 +10541,20 @@ void btm_event_filter_complete(UINT8 *p_param) {
 
 void btm_process_inq_results(UINT8 *p, UINT8 mode)
 {
-    UINT8 n, i;
-    UINT8 bda[6];
-    UINT8 *entry;
-    UINT8 *info;
-    UINT8 *base = lbl_803C0F78;
-    UINT32 is_new = 1;
-    void (*cb)(void *) = *(void (**)(void *))(base + 0x16b4);
-    UINT8 rssi = 0, scan = 0, per = 0, rep = 0;
-    UINT8 dc[3];
     UINT16 clock;
+    UINT8 rssi = 0, scan = 0;
+    void (*cb)(void *);
+    UINT32 is_new = 1;
     UINT32 j;
+    UINT8 *entry;
+    UINT8 i;
+    UINT8 *base = lbl_803C0F78;
+    UINT8 n;
+    UINT8 rep, per;
+    UINT8 *info;
+    UINT8 bda[6];
+    UINT8 dc[3];
+    cb = *(void (**)(void *))(base + 0x16b4);
     if (!base[0x1848]) return;
     n = *p++;
     for (i = 0; i < n; i++) {
