@@ -84,6 +84,9 @@ void fn_80204038(void) {
 }
 
 int fn_8020403C(void) {
+    /* A stub from the same run of virtual-method defaults as fn_80204024/2C, but
+     * this one always answers 1/true.  Callers use it as an enable flag (aliased
+     * as isDebugDrawEnabled in text_802BC334_), so that path is always taken. */
     return 1;
 }
 
