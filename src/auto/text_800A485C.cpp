@@ -6348,22 +6348,23 @@ extern "C" s32 fn_800AE3A8(void *fileInfo, s32 startCluster, s32 clusterIndex, u
 
 extern "C" s32 VFiPFFAT_GetClusterSpecified(void *, u32, u32, u32 *);
 
-extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) {
-    s32 sp8;
+extern "C" s32 fn_800AE4C0(void *fileInfo, u32 fileOffset, u32 mode, u32 byteCount, s32 *outAddress) {
+    /* Resolve a byte offset within a FAT file to a physical storage address, written through *outAddress. */
+    s32 cluster;
     s32 status;
     void *fatInfo;
     u32 *fileState;
-    u32 fileCount;
-    fatInfo = *(void **)((u8 *)arg0 + 0x34);
-    fileState = *(u32 **)((u8 *)arg0 + 8);
-    fileCount = *(u32 *)((u8 *)fatInfo + 0x1C);
-    if (*fileState == 1 && fileCount <= 1) {
+    u32 fatClusterCount;
+    fatInfo = *(void **)((u8 *)fileInfo + 0x34);
+    fileState = *(u32 **)((u8 *)fileInfo + 8);
+    fatClusterCount = *(u32 *)((u8 *)fatInfo + 0x1C);
+    if (*fileState == 1 && fatClusterCount <= 1) {
         s32 result;
-        if (arg1 >= *(u16 *)((u8 *)fatInfo + 0x24)) {
-            *arg4 = -1;
+        if (fileOffset >= *(u16 *)((u8 *)fatInfo + 0x24)) {
+            *outAddress = -1;
             result = 0;
         } else {
-            *arg4 = *(s32 *)((u8 *)fatInfo + 0x2C) + arg1;
+            *outAddress = *(s32 *)((u8 *)fatInfo + 0x2C) + fileOffset;
             result = 0;
         }
         if (result != 0)
@@ -6372,38 +6373,38 @@ extern "C" s32 fn_800AE4C0(void *arg0, u32 arg1, u32 arg2, u32 arg3, s32 *arg4) 
             return 0;
     }
     u8 shiftAmount = *(u8 *)((u8 *)fatInfo + 0x21);
-    u32 shiftedOffset = arg1 >> shiftAmount;
-    if (arg2 == 2) {
+    u32 shiftedOffset = fileOffset >> shiftAmount;
+    if (mode == 2) {
         u16 unitSize = *(u16 *)fatInfo;
         u8 unitCount = *(u8 *)((u8 *)fatInfo + 6);
-        u32 units = arg3 / unitSize;
-        s32 remA = arg3 - units * unitSize;
+        u32 units = byteCount / unitSize;
+        s32 remA = byteCount - units * unitSize;
         u32 roundedUnits = units + (remA != 0);
         u32 clustersNeeded = roundedUnits / unitCount;
         s32 remB = roundedUnits - clustersNeeded * unitCount;
         u32 sectorCount = clustersNeeded + (remB != 0);
-        status = fn_800AE3A8(arg0, (s32)shiftedOffset, (s32)sectorCount, (u32 *)&sp8);
+        status = fn_800AE3A8(fileInfo, (s32)shiftedOffset, (s32)sectorCount, (u32 *)&cluster);
         if (status == 0)
             goto cluster_result;
         return status;
     } else {
-        status = VFiPFFAT_GetClusterSpecified(arg0, shiftedOffset, arg2, (u32 *)&sp8);
+        status = VFiPFFAT_GetClusterSpecified(fileInfo, shiftedOffset, mode, (u32 *)&cluster);
         if (status == 0)
             goto cluster_result;
         return status;
     }
 cluster_result:
-    if ((u32)(sp8 + 0x10000) == 0xFFFFU) {
-        *arg4 = -1;
+    if ((u32)(cluster + 0x10000) == 0xFFFFU) {
+        *outAddress = -1;
         return 0;
     }
     u32 clusterCount = *(u8 *)((u8 *)fatInfo + 6);
-    u32 clusterIndex = sp8 - 2;
+    u32 clusterIndex = cluster - 2;
     shiftAmount = *(u8 *)((u8 *)fatInfo + 0x21);
     u32 base = *(u32 *)((u8 *)fatInfo + 0x30);
     u32 shiftedCluster = clusterIndex << shiftAmount;
     u32 combined = base + shiftedCluster;
-    *arg4 = combined + (arg1 & (clusterCount - 1));
+    *outAddress = combined + (fileOffset & (clusterCount - 1));
     return 0;
 }
 
