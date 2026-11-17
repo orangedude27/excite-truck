@@ -967,8 +967,9 @@ int fn_80218120(void *arg0) {
     return 0;
 }
 
-void fn_8021818C(void *arg0) {
-    *(int *)((char *)arg0 + 0x498) = -1;
+/* Clear the menu group's current selection index (field at 0x498) to -1 (none). */
+void fn_8021818C(void *group) {
+    *(int *)((char *)group + 0x498) = -1;
 }
 
 #pragma cplusplus on
