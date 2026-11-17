@@ -86,8 +86,9 @@ extern "C" void fn_801561C0(s32 arg0) {
 }
 
 extern "C" s32 fn_801556FC(s32);
-extern "C" void fn_801561C8(s32 arg0) {
-    fn_801556FC(arg0 - 0xC);
+extern "C" void fn_801561C8(s32 thisAtOffsetC) {
+    /* This-adjusting thunk: subtract the 0xC multiple-inheritance offset to recover the base subobject's `this`, then forward to the no-op virtual method fn_801556FC. */
+    fn_801556FC(thisAtOffsetC - 0xC);
 }
 
 extern "C" s32 fn_80155700(s32);
