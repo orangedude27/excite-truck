@@ -2250,86 +2250,84 @@ void fn_8016386C(void *obj, s32 eventType, s32 carIndex, s32 progressValue) {
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
-// Per-frame update for the gate challenge: in its scoring phase (f7()==0) it tests each
-// player truck ("PCAR") against every active gate, scoring a pass when the truck's velocity
-// aligns with the gate direction or it comes within range, and finishes once the met count
-// reaches its target. The alternate phase resets the trucks and advances the challenge step.
-extern "C" void fn_801638A0(void *challengeMgr) {
-    s32 carIndex,gateIndex;
-    int *carTable;
-    u8 *mgr=(u8 *)challengeMgr;
-    u8 *gate;
-    int *carTable2;
-    s32 gateOffset;
-    u8 *car,*gateFlags,*uiState;
+// Gate-challenge update: scores player trucks against active gates in its first phase,
+// then resets trucks and advances the challenge step in its second phase.
+extern "C" void fn_801638A0(void *arg0) {
+    s32 i,j;
+    int *cars;
+    u8 *self=(u8 *)arg0;
+    u8 *entry;
+    int *cars2;
+    s32 offset;
+    u8 *car,*flags,*ui;
     f32 velocity[2],length,scale;
-    f32 minAlignment,one,minSpeedSq;
+    f32 threshold,one,epsilon;
     f32 dirX,dirY;
-    if (((*(f32 *)(mgr+0x98)>*(f32 *)(mgr+0x84))&1)!=0) mgr[0x56D]=1;
+    if (((*(f32 *)(self+0x98)>*(f32 *)(self+0x84))&1)!=0) self[0x56D]=1;
     if (fn_801C5B60()==0) fn_801DF074(8,0);
-    if (((Dummy_801638A0 *)mgr)->f7()==0) {
-        one=lbl_80561840; minAlignment=lbl_80561854; minSpeedSq=lbl_80561850;
-        for (carIndex=0,carTable=lbl_804348E8;carIndex<fn_801B2F24();carTable++,carIndex++) {
-            car=(u8 *)*carTable;
-            if (*(u32 *)(car+0x10)!=CAR_TAG_PLAYER_CAR) continue;
-            for (gateIndex=0,gateOffset=0;gateIndex<*(s32 *)(mgr+0xE4);gateOffset+=0x48,gateIndex++) {
-                gate=(u8 *)*(s32 *)(mgr+0xE0)+gateOffset;
-                if (!gate[0x3C]) continue;
-                if (*(s32 *)(gate+0x34)) {
-                    if (fn_80139B5C(car,*(s32 *)(gate+0x34))) {
-                        gateFlags=gate+carIndex;
-                        if (!gateFlags[0x3D]) {
+    if (((Dummy_801638A0 *)self)->f7()==0) {
+        one=lbl_80561840; threshold=lbl_80561854; epsilon=lbl_80561850;
+        for (i=0,cars=lbl_804348E8;i<fn_801B2F24();cars++,i++) {
+            car=(u8 *)*cars;
+            if (*(u32 *)(car+0x10)!=0x50434152) continue;
+            for (j=0,offset=0;j<*(s32 *)(self+0xE4);offset+=0x48,j++) {
+                entry=(u8 *)*(s32 *)(self+0xE0)+offset;
+                if (!entry[0x3C]) continue;
+                if (*(s32 *)(entry+0x34)) {
+                    if (fn_80139B5C(car,*(s32 *)(entry+0x34))) {
+                        flags=entry+i;
+                        if (!flags[0x3D]) {
                             velocity[0]=*(f32 *)(car+0x118);
                             velocity[1]=*(f32 *)(car+0x120);
                             length=velocity[0]*velocity[0]+velocity[1]*velocity[1];
-                            if (length>minSpeedSq) {
+                            if (length>epsilon) {
                                 length=(f32)fn_8002F234(length);
-                                dirY=*(f32 *)(gate+0x30);
+                                dirY=*(f32 *)(entry+0x30);
                                 scale=one/length;
-                                dirX=*(f32 *)(gate+0x2C);
+                                dirX=*(f32 *)(entry+0x2C);
                                 velocity[0]*=scale;
                                 velocity[1]*=scale;
-                                if (velocity[0]*dirX+velocity[1]*dirY>minAlignment) {
-                                    ++*(s32 *)(mgr+0x94);
-                                    gate[0x3C]=0;
-                                    uiState=*(u8 **)(mgr+0xDC);
-                                    uiState[0x49]=1; uiState[0x4B]=0; uiState[0x4A]=0;
+                                if (velocity[0]*dirX+velocity[1]*dirY>threshold) {
+                                    ++*(s32 *)(self+0x94);
+                                    entry[0x3C]=0;
+                                    ui=*(u8 **)(self+0xDC);
+                                    ui[0x49]=1; ui[0x4B]=0; ui[0x4A]=0;
                                 }
                             }
                         }
-                        gateFlags[0x3D]=1;
+                        flags[0x3D]=1;
                         break;
-                    } else if (gate[0x3C]) (gate+carIndex)[0x3D]=0;
-                } else if (PSVECSquareDistance(gate,car+0x60)<*(f32 *)(mgr+0xCC)**(f32 *)(mgr+0xCC)) {
-                    ++*(s32 *)(mgr+0x94);
-                    gate[0x3C]=0;
-                    uiState=*(u8 **)(mgr+0xDC);
-                    uiState[0x49]=1; uiState[0x4B]=0; uiState[0x4A]=0;
+                    } else if (entry[0x3C]) (entry+i)[0x3D]=0;
+                } else if (PSVECSquareDistance(entry,car+0x60)<*(f32 *)(self+0xCC)**(f32 *)(self+0xCC)) {
+                    ++*(s32 *)(self+0x94);
+                    entry[0x3C]=0;
+                    ui=*(u8 **)(self+0xDC);
+                    ui[0x49]=1; ui[0x4B]=0; ui[0x4A]=0;
                     break;
                 }
             }
         }
-        *(f32 *)(mgr+0x98)+=lbl_80561858;
-        if (*(f32 *)(mgr+0x98)>=*(f32 *)(mgr+0x84)) ((Dummy_801638A0 *)mgr)->f22(3);
-        if (*(s32 *)(mgr+0x94)>=*(s32 *)(mgr+0x80)&&mgr[0x9C]) {
-            ((Dummy_801638A0 *)mgr)->f22(1);
-            mgr[0x88]=1;
+        *(f32 *)(self+0x98)+=lbl_80561858;
+        if (*(f32 *)(self+0x98)>=*(f32 *)(self+0x84)) ((Dummy_801638A0 *)self)->f22(3);
+        if (*(s32 *)(self+0x94)>=*(s32 *)(self+0x80)&&self[0x9C]) {
+            ((Dummy_801638A0 *)self)->f22(1);
+            self[0x88]=1;
         }
     } else {
-        if ((f32)__fabs(*(f32 *)(mgr+0x8C))<=lbl_80558DC4[0]) {
+        if ((f32)__fabs(*(f32 *)(self+0x8C))<=lbl_80558DC4[0]) {
             fn_80276DC8(0);
-            for (carIndex=0,carTable2=lbl_804348E8;carIndex<fn_801B2F24();carTable2++,carIndex++) {
+            for (i=0,cars2=lbl_804348E8;i<fn_801B2F24();cars2++,i++) {
                 Dummy_801638A0 *manager=(Dummy_801638A0 *)fn_801B83A0();
-                manager->f35((void *)*carTable2,carIndex);
+                manager->f35((void *)*cars2,i);
             }
         }
-        *(f32 *)(mgr+0x8C)+=lbl_80561858;
-        if (mgr[0x90]) {
-            if (((Dummy_801638A0 *)mgr)->f8()&&lbl_8055E304==fn_80160CE4()) {
-                s32 prevStep=lbl_8055A0B8;
+        *(f32 *)(self+0x8C)+=lbl_80561858;
+        if (self[0x90]) {
+            if (((Dummy_801638A0 *)self)->f8()&&lbl_8055E304==fn_80160CE4()) {
+                s32 old=lbl_8055A0B8;
                 lbl_8055E2DC=1;
-                lbl_8055A0B4=prevStep;
-                lbl_8055A0B8=prevStep+1;
+                lbl_8055A0B4=old;
+                lbl_8055A0B8=old+1;
             } else lbl_8055E2DC=0;
             lbl_8055E304=0;
             if (*(s32 *)(lbl_8042FDEC+4)>0) fn_80176734();
