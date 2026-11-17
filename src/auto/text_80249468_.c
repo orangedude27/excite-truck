@@ -18,9 +18,9 @@ extern unsigned char lbl_803438C0[];
 extern int lbl_8055F250;
 extern int lbl_8055F258;
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80249468(void) {
-    register unsigned char *base asm("r31") = lbl_804988F0;
+    unsigned char *base = lbl_804988F0;
     unsigned char *obj;
     fn_8000D838(&lbl_8055F250);
     obj = base + 0x68;
