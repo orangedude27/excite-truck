@@ -1654,9 +1654,10 @@ extern "C" void fn_80191688(void *holder) {
 }
 #pragma cplusplus off
 
-void fn_8019169C(void *arg0, void *arg1) {
-    *(void **)((char *)arg0 + 0x34) = arg1;
-    *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg1 + 0x1EC);
+void fn_8019169C(void *self, void *source) {
+    /* Bind a source object: store its pointer at +0x34 and copy its element index (+0x1EC) into +0x3C. */
+    *(void **)((char *)self + 0x34) = source;
+    *(int *)((char *)self + 0x3C) = *(int *)((char *)source + 0x1EC);
 }
 
 void *fn_801916AC(void *obj, int doDestroy) {
