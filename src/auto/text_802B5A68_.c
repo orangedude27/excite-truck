@@ -563,6 +563,7 @@ next:
     }
 }
 
+#pragma scheduling invalid_target
 void fn_802B6358(const char **arg) {
     register s32 *entry = (s32 *)lbl_8034A70C;
     register u32 i = 0;
@@ -583,13 +584,11 @@ action:
     }
 next:
     i++;
+    entry += 3;
     if (i < 11) {
-        entry += 3;
         goto loop;
     }
-    entry += 3;
 }
-
 extern f32 fn_800108C8(f32, s32);
 extern f32 fn_8001090C(f32);
 extern float lbl_80564C74;
@@ -1970,20 +1969,15 @@ extern "C" void fn_802B869C(void) {
 }
 #pragma cplusplus off
 
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma cplusplus off
+#pragma small_data off
 void fn_802B86F8(void) {
-    volatile u8 *base = (volatile u8 *)&lbl_804BFF80;
-    s8 value = (s8)base[0x14];
-    base[0x34] = 0;
-    if (value == 0)
-        return;
-    if (*(volatile s32 *)(base + 0xC) & 1)
-        return;
-    base[0x14] = 0;
+    s8 value = (s8)((u8 *)&lbl_804BFF80)[0x14];
+    ((u8 *)&lbl_804BFF80)[0x34] = 0;
+    if (value == 0) return;
+    if (*(s32 *)((u8 *)&lbl_804BFF80 + 0xC) & 1) return;
+    ((u8 *)&lbl_804BFF80)[0x14] = 0;
 }
-#pragma pop
 s32 fn_802B8728(void) {
     /* Registered update-check callback: true while the state byte at lbl_804BFF80+0x34 is zero. */
     return (s8)*((u8 *)&lbl_804BFF80 + 0x34) == 0;
