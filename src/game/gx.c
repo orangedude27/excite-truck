@@ -2838,8 +2838,10 @@ void fn_802D2ED8(int light, int index) {
 }
 #pragma dont_inline off
 
-void fn_802D2F70(int arg0) {
-    fn_802D2ED8(arg0, 0);
+/* Load the primary (slot 0) point light: forwards the light record to
+ * fn_802D2ED8 with index 0, which also marks the XF state dirty. */
+void fn_802D2F70(int light) {
+    fn_802D2ED8(light, 0);
 }
 
 int fn_802D2F78(int *outWidth, int *outHeight) {
