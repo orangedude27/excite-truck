@@ -302,11 +302,11 @@ extern void fn_802E30C8(const char *, ...);
 #pragma push
 #pragma processor 750
 void fn_801B0BB0(void *arg0, void *arg1) {
+    f32 threshold = 100.0f;
     void *temp_r5;
     void *var_r3;
     void *var_r0;
     s32 var_r4;
-    f32 threshold = lbl_805625F4;
     f32 value;
     f32 temp_f31;
     temp_r5 = *(void **)((u8 *)arg1 + 4);
@@ -318,16 +318,16 @@ void fn_801B0BB0(void *arg0, void *arg1) {
     if (*(f32 *)((u8 *)temp_r5 + 0x1C) > temp_f31) {
         fn_802E30C8(lbl_80335A58);
         var_r3 = *(void **)((u8 *)*(void **)((u8 *)arg1 + 0x2C) + 0x1C);
-        var_r4 = 0;
         var_r0 = 0;
-        do {
+        var_r4 = 0;
+        while (*(f32 *)((u8 *)var_r3 + 0x1C) < temp_f31) {
+            var_r0 = var_r3;
             if (var_r4++ > 0xBB8) {
                 var_r0 = 0;
                 break;
             }
-            var_r0 = var_r3;
             var_r3 = *(void **)((u8 *)var_r3 + 0x14);
-        } while (*(f32 *)((u8 *)var_r3 + 0x1C) < temp_f31);
+        }
         if (var_r0 != 0) *(void **)arg0 = var_r0;
     }
 }
