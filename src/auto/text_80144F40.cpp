@@ -295,7 +295,12 @@ extern "C" f32 fn_801452C8(f32 arg0) {
     return lbl_805615E0 + arg0;
 }
 
-extern "C" f32 fn_801452D4(f32 arg0) { return lbl_805615F0 - arg0; }
+extern "C" f32 fn_801452D4(f32 y) {
+    /* Mirrors a layout Y coordinate about the 240-unit screen height, paired with fn_801452C8 (X + 320), for legacy-version text entries. */
+#define SCREEN_HEIGHT lbl_805615F0
+    return SCREEN_HEIGHT - y;
+#undef SCREEN_HEIGHT
+}
 
 #pragma push
 #pragma processor 750
