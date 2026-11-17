@@ -12,6 +12,9 @@ struct StaticDtorRecord {
 extern struct StaticDtorRecord lbl_8055E070[1];
 extern void fn_8000D838(struct StaticDtorRecord *record);
 
+/* Compiler-generated .ctors entry: hand this file's static-destructor record
+ * (lbl_8055E070) to fn_8000D838, which tags it and links it onto the global
+ * chain of objects to destroy at exit. */
 void fn_80134204(void) {
     fn_8000D838(lbl_8055E070);
 }
