@@ -1963,7 +1963,8 @@ extern "C" s32 fn_80214D04(void) {
 #pragma dont_inline reset
 #define DELTA_TIME lbl_8055EF10  /* .sbss: clamped per-frame delta time, updated by fn_80211F64 */
 extern "C" f32 fn_80214D48(void) {
-    return lbl_8055EF10;
+    /* Return the current frame's clamped delta time in seconds. */
+    return DELTA_TIME;
 }
 
 #pragma use_lmw_stmw off
