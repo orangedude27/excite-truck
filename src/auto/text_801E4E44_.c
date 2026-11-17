@@ -124,7 +124,6 @@ extern f32 lbl_80562D44, lbl_80562D48;
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma opt_propagation off
 void fn_801E5174(f32 arg0, f32 arg1, f32 arg2) {
     Unk801E4E44Vertex *vertices = lbl_80487578;
     f32 *center = (f32 *)((u8 *)lbl_80487578 + 0x700);
