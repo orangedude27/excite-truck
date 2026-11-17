@@ -3,17 +3,9 @@
 
 extern unsigned char lbl_802FE850[];
 #pragma scheduling invalid_target
-/* mbtowc: tail-call the current locale's mbtowc hook (ctype_cmpts +0x20). */
+/* mbtowc: tail-call the current locale's mbtowc hook at ctype_cmpts+0x20. */
 int fn_80024BD4(short *pwc, const char *s, int n) {
-    struct CtypeCmpts {
-        char pad[0x20];
-        int (*mbtowc)(short *, const char *, int);
-    };
-    struct Locale {
-        char pad[0x38];
-        struct CtypeCmpts *ctypeCmpts;
-    };
-    return ((struct Locale *)lbl_802FE850)->ctypeCmpts->mbtowc(pwc, s, n);
+    return (*(int (**)(short *, const char *, int))(*(unsigned int *)(lbl_802FE850 + 0x38) + 0x20))(pwc, s, n);
 }
 #pragma scheduling on
 /* RealName: mbtowc_noconv (single-byte to wide char, no charset conversion) */
