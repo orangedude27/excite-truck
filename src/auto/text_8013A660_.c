@@ -262,25 +262,19 @@ extern int fn_80016508(void *);
 extern int fn_80129D90(int, int, int);
 extern void qsort(void *, int, int, int (*)(void *, void *));
 extern int fn_8013A6C4(void *, void *);
-extern "C" int *fn_801E87A8(void);
-extern "C" int fn_80135108(void);
-extern "C" void fn_801E879C(void);
-extern "C" void *fn_80016464(int);
-extern "C" int fn_80016508(void *);
-extern "C" int fn_80129D90(int, int, int);
-extern "C" void qsort(void *, int, int, int (*)(void *, void *));
+#pragma cplusplus off
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void fn_8013AC78(int arg0, int *arg1) {
+void fn_8013AC78(int arg0, int *arg1) {
     char *base = lbl_8032C1A0;
     struct Entry { int idx; int key; int score; } es[8];
     int pr[100];
     float sp8[2];
-    float f31, t;
+    float f31;
     int *a;
     int count, n, i, j, k, pairs;
-    int *q;
+    int *q, *q1;
     a = fn_801E87A8();
     count = fn_80135108();
     fn_801E879C();
@@ -294,12 +288,12 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
     *(float *)(lbl_8042F858 + 0x48) = ((float (*)(int *))fn_8013AC2C)(a);
     *(float *)lbl_8042F858 = sp8[1];
     n = fn_80016508(lbl_8042F858);
-    q = pr;
+    q1 = pr;
     for (i = 0; i < n; i++) {
         int *p = (int *)fn_80016464(i);
-        q[0] = p[1];
-        q[1] = p[0x12];
-        q += 2;
+        q1[0] = p[1];
+        q1[1] = p[0x12];
+        q1 += 2;
     }
     pairs = i;
     q = (int *)es;
@@ -319,18 +313,21 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
     }
     qsort(es, count, 12, fn_8013A6C4);
     f31 = lbl_80561440;
-    t = (float)(count - 1);
-    if (t > f31) f31 = t;
-    for (k = 0; k < count; k++)
-        *(float *)(lbl_8042F858 + es[k].idx * 8 + 8) = *(float *)lbl_8042F858 - ((float)k / f31) * sp8[0];
+    if ((float)(count - 1) > f31) f31 = (float)(count - 1);
+    for (k = 0; k < count; k++) {
+        float d = (float)k / f31;
+        *(float *)(lbl_8042F858 + es[k].idx * 8 + 8) = *(float *)lbl_8042F858 - d * sp8[0];
+    }
     q = (int *)es;
     for (k = 0; k < count; k++) {
         q[2] += fn_80129D90(3, -2, 2);
         q += 3;
     }
     qsort(es, count, 12, fn_8013A6C4);
-    for (k = 0; k < count; k++)
-        *(float *)(lbl_8042F858 + es[k].idx * 8 + 0xC) = *(float *)lbl_8042F858 - ((float)k / f31) * sp8[0];
+    for (k = 0; k < count; k++) {
+        float d = (float)k / f31;
+        *(float *)(lbl_8042F858 + es[k].idx * 8 + 0xC) = *(float *)lbl_8042F858 - d * sp8[0];
+    }
     q = (int *)es;
     for (k = 0; k < count; k++) {
         void *vobj, *obj;
