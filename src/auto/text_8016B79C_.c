@@ -644,6 +644,7 @@ get:
 #pragma cplusplus reset
 
 #pragma ppc_psq_save on
+#pragma scheduling invalid_target
 void fn_8016C55C(void *arg0, void *arg1) {
     int index;
     void *dst;
@@ -766,16 +767,15 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
         virtual Item *at(s32);
     };
     char *str = lbl_803306D0;
-    List8016C768 *list1;
-    List8016C768 *list2;
+    List8016C768 *list;
     Item *obj;
     s32 count1, i1, count2, i2, idx;
     s32 ok;
     List8016C768 **out = (List8016C768 **)arg0;
     Doc *doc = (Doc *)arg1;
     Doc **coll = (Doc **)arg2;
-    list1 = (List8016C768 *)fn_801284F8(0x10, str + 0x114);
-    if (list1 != 0) {
+    list = (List8016C768 *)fn_801284F8(0x10, str + 0x114);
+    if (list != 0) {
         count1 = 0;
         i1 = 0;
         while ((obj = doc->at(i1)) != 0) {
@@ -787,15 +787,15 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
         {
             s32 mem = ((s32 (*)(s32, char *))fn_8012850C)(count1 * 0x44 + 0x10, str + 0x12C);
             s32 r = ((s32 (*)(s32, void *, void *, s32, s32))fn_8002F37C)(mem, (void *)fn_8016CD28, (void *)fn_8016C29C, 0x44, count1);
-            list1->data = r;
-            list1->count = count1;
-            list1->index = 0;
-            list1->data2 = r;
+            list->data = r;
+            list->count = count1;
+            list->index = 0;
+            list->data2 = r;
         }
     }
-    out[0] = list1;
-    list2 = (List8016C768 *)fn_801284F8(0x10, str + 0x13C);
-    if (list2 != 0) {
+    out[0] = list;
+    list = (List8016C768 *)fn_801284F8(0x10, str + 0x13C);
+    if (list != 0) {
         count2 = 0;
         i2 = 0;
         while ((obj = doc->at(i2)) != 0) {
@@ -807,13 +807,13 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
         {
             s32 mem = ((s32 (*)(s32, char *))fn_8012850C)(count2 * 0x38 + 0x10, str + 0x14C);
             s32 r = ((s32 (*)(s32, void *, void *, s32, s32))fn_8002F37C)(mem, (void *)fn_8016CD10, (void *)fn_8016C25C, 0x38, count2);
-            list2->data = r;
-            list2->count = count2;
-            list2->index = 0;
-            list2->data2 = r;
+            list->data = r;
+            list->count = count2;
+            list->index = 0;
+            list->data2 = r;
         }
     }
-    out[1] = list2;
+    out[1] = list;
     ok = 1;
     idx = 0;
     while ((obj = doc->at(idx)) != 0) {
