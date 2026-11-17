@@ -3079,8 +3079,9 @@ wait_done:
 }
 
 extern s32 lbl_8055D864;
+/* DVD cancel callback: mark the requested cancel as done and wake the thread waiting on the DVD queue. */
 void cbForCancel(void) {
-    lbl_8055D864 = 1;
+    isCancelDone = 1;
     OSWakeupThread(&__DVDThreadQueue);
 }
 
