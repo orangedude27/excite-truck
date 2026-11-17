@@ -1793,7 +1793,6 @@ extern "C" void fn_80191860(void *arg0, void *arg1) {
     ((ObjA *)*(void **)((char *)arg0 + 0x38))->f7(v);
     ((ObjB *)arg1)->f0(buf);
 }
-#pragma scheduling invalid_target
 #pragma cplusplus off
 
 #pragma push
