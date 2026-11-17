@@ -767,6 +767,8 @@ done:
 #pragma cplusplus reset
 #pragma pop
 
+/* ActionSequence base-class virtual at vtable slot +0x2C (lbl_80338D80):
+ * a stub that always reports 0, like its neighbour fn_801D50A0 at +0x30. */
 int fn_801D544C(void) {
     return 0;
 }
