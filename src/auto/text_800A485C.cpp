@@ -19846,8 +19846,9 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
     }
 }
 #pragma pop
-extern "C" void fn_800D0560(void *arg0, s32 arg1) {
-    *(s32 *)((u8 *)arg0 + 0x2C) = arg1;
+extern "C" void fn_800D0560(void *object, s32 value) {
+    /* Store value into the 32-bit field at offset 0x2C of object. */
+    *(s32 *)((u8 *)object + 0x2C) = value;
 }
 
 #pragma push
