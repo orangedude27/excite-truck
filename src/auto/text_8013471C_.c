@@ -726,8 +726,9 @@ extern "C" void fn_801351B4(void* obj) {
 }
 #pragma cplusplus reset
 #pragma pop
-void fn_801351C4(void *arg0, s32 arg1) {
-    ((s32 *)arg0)[2] = arg1;
+/* Stores the truck/car handle at offset +8 of the AI driver object. */
+void fn_801351C4(void *driver, s32 truck) {
+    ((s32 *)driver)[2] = truck;
 }
 
 extern void fn_8018ADBC(void *, f32);
