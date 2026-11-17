@@ -27,9 +27,10 @@ extern void fn_80131818(SurfObj *);
 extern int sprintf(char *, const char *, ...);
 extern char lbl_8055AB58, lbl_8055AB60, lbl_8055AB68, lbl_8055AB70, lbl_8055AB78;
 typedef struct { float f[3]; signed char b0; unsigned char b1; short pad; int i; } SurfRec;
-  void fn_801D049C(void) {
-      lbl_8055E8C0 = 0;
-  }
+/* Clear the surface-record initialization flag at lbl_8055E8C0 (set by fn_801D02B0). */
+void fn_801D049C(void) {
+    lbl_8055E8C0 = 0;
+}
   
 /* Return surface record `index` from the 8-entry table, clamping out-of-range indices to 0. */
 SurfRec *fn_801D04A8(int index) {
