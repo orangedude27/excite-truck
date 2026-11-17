@@ -594,8 +594,10 @@ void fn_801DCEC8(int index, float weight) {
 }
 
 extern float lbl_804425DC[];
-void fn_801DCEDC(int arg0, float arg1) {
-    lbl_804425DC[arg0] = arg1;
+/* Store the height-layer weight for an index; fn_801DDC8C uses it to scale
+ * each ground overlay layer's contribution to the sampled terrain height. */
+void fn_801DCEDC(int weightIndex, float weight) {
+    lbl_804425DC[weightIndex] = weight;
 }
 
 void fn_801DCEF0(void) {
