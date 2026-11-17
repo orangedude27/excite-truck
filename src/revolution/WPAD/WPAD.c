@@ -5696,6 +5696,10 @@ s32 WPADiHIDParser(u8 port, u8* p_rpt) {
     return result;
 }
 
+#pragma push
+#pragma inline auto
+static inline void wpad_store_status(u8 *dst, u32 value) { *dst = (u8)value; }
+#pragma pop
 #pragma opt_propagation off
 void fn_80064A80(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
