@@ -65,6 +65,7 @@ void fn_801FFB6C(void) {
 
 }
 
+/* No-op stub: called during scene setup but does nothing (a single `blr`). */
 void fn_801FFB70(void) {
 
 }
