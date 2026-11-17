@@ -494,7 +494,11 @@ void fn_802E5478(void) {
 struct SpuChannel {
     int index;                  /* +0x00: channel number */
     void *voice;                /* +0x04: voice object from the pool allocator */
-    unsigned char pad08[0x14];  /* +0x08 */
+    float volume;               /* +0x08: volume, SND_SetVolume writes it */
+    float pan;                  /* +0x0C: left/right pan, SND_SetPan */
+    float rate;                 /* +0x10: playback rate, SND_SetRate */
+    float surroundPan;          /* +0x14: surround pan, SND_SetSurroundPan */
+    int auxFlags;               /* +0x18: auxiliary send flags, SND_SetAuxFlags */
     struct SpuSample *sample;   /* +0x1C: sample this channel plays, 0 when free */
     unsigned char active;       /* +0x20: channel is handed out */
     unsigned char playing;      /* +0x21: asked to play */
