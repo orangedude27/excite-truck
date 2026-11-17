@@ -126,15 +126,12 @@ struct CarObject {
  struct Res_Vtable_80279004 {
      virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3();
      virtual void s4(); virtual void s5(); virtual void s6(); virtual void s7();
-     virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11();
-     virtual void s12();
+     virtual void s8(); virtual void s9(); virtual void s10();
      virtual Vec3_80279004 getVec(const char*);
  };
  struct File_Vtable_80279004 {
-     virtual void slot0();
-     virtual void slot1();
      virtual Res_Vtable_80279004* getRes(const char*);
-     virtual void slot3();
+     virtual void slot1();
      virtual int hasRes(const char*);
  };
  #pragma cplusplus reset
@@ -282,7 +279,7 @@ extern "C" void* fn_80279004(s32 name, s32 arg1) {
     char* object;
     void* file2;
     void* file;
-    void* resource;
+    Res_Vtable_80279004* resource;
     s32 i;
     char* arg0 = (char*)name;
     Vec3_80279004 v;
@@ -304,17 +301,17 @@ extern "C" void* fn_80279004(s32 name, s32 arg1) {
     }
     fn_80278A64((CarObject*)object, (File_80279004*)file, (File_80279004*)file2, (s32)arg0);
     memset(object + 0x2138, 0, 0x300);
-    if (((s32 (**)(void*, const char*))(*(void**)file))[4](file, lbl_8055C6D0) != 0) {
-        resource = ((void* (**)(void*, const char*))(*(void**)file))[2](file, lbl_8055C6D0);
+    if (((File_Vtable_80279004*)file)->hasRes(lbl_8055C6D0) != 0) {
+        resource = ((File_Vtable_80279004*)file)->getRes(lbl_8055C6D0);
         p = object;
         for (i = 0; i < 0x20; i++) {
             sprintf(key, lbl_8055C6D8, i);
-            v = ((Vec3_80279004 (**)(void*, char*))(*(void**)resource))[13](resource, key);
+            v = resource->getVec(key);
             *(f32*)(p + 0x2138) = v.x;
             *(f32*)(p + 0x213C) = v.y;
             *(f32*)(p + 0x2140) = v.z;
             sprintf(key, lbl_8055C6E0, i);
-            w = ((Vec3_80279004 (**)(void*, char*))(*(void**)resource))[13](resource, key);
+            w = resource->getVec(key);
             *(f32*)(p + 0x2144) = w.x;
             *(f32*)(p + 0x2148) = w.y;
             *(f32*)(p + 0x214C) = w.z;
