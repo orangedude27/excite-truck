@@ -33,6 +33,7 @@ void* IPCGetBufferHi(void) {
     return IPCCurrentBufferHi;
 }
 
+/* Return the current lower bound of the IPC buffer region. */
 void* IPCGetBufferLo(void) {
     return IPCCurrentBufferLo;
 }
