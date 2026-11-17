@@ -7755,7 +7755,8 @@ extern "C" float fn_800FD848(void *player) { return *(float *)((char *)player + 
 /* Return this sound player's float field at +0x44C (paired with setter fn_800FD888). */
 extern "C" float fn_800FD850(void *player) { return *(float *)((char *)player + 0x44C); }
 
-extern "C" float fn_800FD858(void *arg0) { return *(float *)((char *)arg0 + 0x448); }
+/* Return this sound player's float field at +0x448 (paired with setter fn_800FD890). */
+extern "C" float fn_800FD858(void *player) { return *(float *)((char *)player + 0x448); }
 
 extern "C" float fn_800FD860(void *arg0) { return *(float *)((char *)arg0 + 0x444); }
 
