@@ -2969,8 +2969,7 @@ extern "C" void Pause__Q46nw4hbm3snd6detail9SeqPlayerFb(void* self, bool pause) 
 }
 
 void nw4hbm::snd::detail::SeqPlayer::SetVolume(float volume) {
-    float limit = lbl_8056106C;
-    if (!(volume >= limit)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x15d, (const char*)lbl_80323BEC);
+    if (!(volume >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x15d, (const char*)lbl_80323BEC);
     u32 level = OSDisableInterrupts();
     *(float*)((unsigned char*)this + 0x1c) = volume;
     OSRestoreInterrupts(level);
