@@ -858,8 +858,9 @@ extern "C" void fn_80157198(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_b->v2();
 }
 
-extern "C" void fn_801571AC(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v2();
+extern "C" void fn_801571AC(void* plane) {
+    // Forwards the virtual v2() call to the TPlaneSub member (m_a) of the given TBlackPlane.
+    ((ebi::title::TBlackPlane*)plane)->m_a->v2();
 }
 
 void ebi::title::TBlackPlane::updateAfterCamera() {
