@@ -511,8 +511,6 @@ void GXInitLightAttnA_801BFEBC(void *lightObj, float aa, float ab, float ac) {
     ((float *)lightObj)[2] = ac;
 }
 
-#pragma opt_propagation off
-struct BfFeccSrc { int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11; };
 void fn_801BFECC(void *arg0, void *arg1) {
     int a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0;
     a3 = *(volatile int *)((char *)arg1 + 0x0C);
@@ -541,7 +539,6 @@ void fn_801BFECC(void *arg0, void *arg1) {
     *(int *)((char *)arg0 + 0x68) = a11;
     ((void (*)(void *, void *, int, int, int, int, int, int))fn_8017A580)(arg0, arg1, a10, a9, a8, a7, a6, a5);
 }
-#pragma opt_propagation reset
 static inline void inline_transform_vec(float *out, const float *in, const float *m) {
     if (out == in) {
         float y0 = m[3] * in[1];
