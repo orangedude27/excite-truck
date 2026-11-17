@@ -3015,8 +3015,10 @@ extern "C" s32 VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098(void *volum
     return result & ((-result | result) >> 31);
 }
 
-extern "C" void fn_800A90F8(void *arg0, s32 arg1) {
-    VFiPFCACHE_SearchForPage((s32)arg0, *(s32 *)((u8 *)arg0 + 0x1634), arg1);
+/* Look up a sector in a volume's file-data page cache (list head at +0x1634) without
+   reading it in; see VFiPFCACHE_SearchForPage. */
+extern "C" void fn_800A90F8(void *volume, s32 sector) {
+    VFiPFCACHE_SearchForPage((s32)volume, *(s32 *)((u8 *)volume + 0x1634), sector);
 }
 
 extern "C" s32 fn_800A9104(void *volume) {
@@ -3654,12 +3656,11 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     u32 raw = src[0];
-    u32 count = raw & 0xFFFFFFBF;
     u32 tag = src[0xD];
     u32 index;
     u8 *entry;
     s32 first;
-    if (count > 0x14) {
+    if ((raw & 0xFFFFFFBF) > 0x14) {
         dst[0x20B] = 0;
         dst[0x20C] = 0;
         dst[0x20A] = 0;
@@ -3668,7 +3669,7 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     if (raw & 0x40) {
         dst[0x20A] = 0;
         first = 1;
-        index = (u8)count;
+        index = (u8)(raw & 0xFFFFFFBF);
     } else {
         first = 0;
         if (dst[0x20A] == 0) return 0x21;
