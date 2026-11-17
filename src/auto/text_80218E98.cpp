@@ -27,7 +27,10 @@ enum {
     MENU_KEY_DOWN = 0x128
 };
 
+#pragma push
+#pragma small_data on
 extern "C" f64 lbl_805634B8;
+#pragma pop
 extern "C" char lbl_8033DAD8[];
 extern "C" s32 fn_80129D90(s32, s32, s32);
 extern "C" s32 fn_80131234(void *);
