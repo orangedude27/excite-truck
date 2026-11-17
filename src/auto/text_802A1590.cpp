@@ -476,7 +476,7 @@ extern "C" f32 lbl_80564738, lbl_8056473C;
 extern "C" void fn_802A1CC4(void) {
     u8 config[0x90];
     register void *name = lbl_803499E8;
-    register int enabled = 0;
+    int enabled = 0;
     if ((lbl_8055D430 & 1) != 0) {
         if ((lbl_8055D430 & 8) != 0)
             enabled = 1;
@@ -1819,8 +1819,9 @@ extern "C" void fn_802A49A0(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v2();
 }
 
-extern "C" void fn_802A49B4(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v3();
+// Forwards the virtual v3() call to the TPlaneSub member (m_a) of the given TBlackPlane.
+extern "C" void fn_802A49B4(void* plane) {
+    ((ebi::title::TBlackPlane*)plane)->m_a->v3();
 }
 
 extern "C" void fn_802A49C8(void* arg0) {
