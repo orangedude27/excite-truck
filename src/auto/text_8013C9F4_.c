@@ -73,6 +73,11 @@ void fn_8013CAA4(void) {
 
 }
 
+/* Base-class default for slot +0x24 of the sub-task manager interface, shared by
+ * the "csubtasktmgr" vtable (lbl_8032C500) and the "chalsubtaskmgr" vtable
+ * (lbl_8032F760).  fn_801B2910 calls it on the current manager (lbl_8055E68C)
+ * after it has cleared the timed-entry state and rebuilt the entry order -- a
+ * "round reset" notice both managers shipped in this game ignore. */
 void fn_8013CAA8(void) {
 
 }
