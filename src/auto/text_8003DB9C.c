@@ -46,6 +46,9 @@ extern unsigned int lbl_8055D954;
 extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
 extern unsigned int * const __GXData;
+static inline void GXStoreWord_8003DB9C(unsigned int value, unsigned int *base) {
+    base[0x238 / 4] = value;
+}
 #define GX_CP_DISP 0x23C
 #define GX_CP_TEX  0x24C
 extern u8 FifoObj_8037BA40[];
