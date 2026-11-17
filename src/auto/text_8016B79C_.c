@@ -629,13 +629,16 @@ get:
         obj = fn_8016C598(obj, *(s32 *)((u8 *)arg0 + 0x38), (int)(base + 0xE8));
     }
     *(void **)((u8 *)arg0 + 0x1C) = obj;
-    for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x38); i++) {
-        Entry e;
-        e.b = 0;
-        e.w = -1;
-        e.a = lbl_80561998;
-        e.c = lbl_80561998;
-        fn_8016C55C(*(void **)((u8 *)arg0 + 0x1C), &e);
+    {
+        f32 zero = lbl_80561998;
+        for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x38); i++) {
+            Entry e;
+            e.b = 0;
+            e.w = -1;
+            e.a = zero;
+            e.c = zero;
+            fn_8016C55C(*(void **)((u8 *)arg0 + 0x1C), &e);
+        }
     }
 }
 #pragma cplusplus reset
@@ -677,6 +680,8 @@ extern "C" char lbl_803307D8[];
 extern "C" __declspec(section ".sdata") char lbl_8055A218[];
 extern "C" __declspec(section ".sdata") char lbl_8055A220[];
 extern "C" s32 fn_8016C5F0(void) {
+    #pragma use_lmw_stmw off
+    #pragma scheduling invalid_target
     struct Manager {
         virtual void m0();
         virtual void *probe(void *);
@@ -698,20 +703,21 @@ extern "C" s32 fn_8016C5F0(void) {
     s32 count = 0;
     char buffer[0x1E];
     if (manager->probe(resource) != 0) {
+        s32 found;
+        SourceList *list;
         manager->release(resource);
-        SourceList *list = (SourceList *)fn_80131810();
+        list = (SourceList *)fn_80131810();
         if (list != 0) {
             for (;;) {
-                s32 found = 0;
                 s32 i;
+                found = 0;
                 fn_801345D8(buffer, 0x1E, lbl_8055A218, count);
                 for (i = 0; list->at(i) != 0; i++) {
-                    if (strcmp(((Entry *)list->at(i))->name(), lbl_803307D8) == 0) {
-                        if (strstr(((Entry *)list->at(i))->search(lbl_8055A220), buffer) != 0) {
-                            found = 1;
-                            count++;
-                            break;
-                        }
+                    if (strcmp(((Entry *)list->at(i))->name(), lbl_803307D8) == 0 &&
+                        strstr(((Entry *)list->at(i))->search(lbl_8055A220), buffer) != 0) {
+                        found = 1;
+                        count++;
+                        break;
                     }
                 }
                 if (found == 0) {
@@ -1357,6 +1363,7 @@ extern char lbl_80330AA4[];
 #pragma scheduling invalid_target
 extern void fn_8016E15C();
 #pragma use_lmw_stmw off
+#pragma ppc_psq_save off
 void fn_8016DA0C(void *arg0) {
     s32 i, j, n;
     f32 f, zero;
@@ -1441,7 +1448,7 @@ void fn_8016DA0C(void *arg0) {
     if (p) { M2C_FIELD(p, s8 *, 0x4A) = 1; M2C_FIELD(p, s8 *, 0x4C) = 0; }
     M2C_FIELD(arg0, s8 *, 0xA8) = 0;
 }
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw reset
 /* Returns the point value for a ring challenge spec (0->5, 1->10, 2->15); panics on unknown. */
 s32 fn_8016DD98(void *arg0) {
     s32 value = *(s32 *)((u8 *)arg0 + 0x44);
