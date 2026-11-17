@@ -1164,6 +1164,7 @@ extern int fn_8023695C(void *);
 extern void fn_80216CA8(void);
 extern void fn_802168BC(int);
 extern char lbl_803464EC[];
+#define sFadeOutTrailName lbl_803464EC /* "fade_out" trail/achievement name */
 extern void *lbl_8055F44C;
 extern unsigned char lbl_8055F450;
 int fn_80128668(void);
