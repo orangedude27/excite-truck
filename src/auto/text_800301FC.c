@@ -782,9 +782,11 @@ void AXGetAuxBCallback(void **arg0, void **arg1) {
     *arg1 = lbl_8055D718;
 }
 
-void AXGetAuxCCallback(void **arg0, void **arg1) {
-    *arg0 = lbl_8055D720;
-    *arg1 = lbl_8055D714;
+/* Retrieve the AX auxiliary-C bus callbacks registered via AXRegisterAuxCCallback:
+   lbl_8055D720 is the callback and lbl_8055D714 the argument passed to it. */
+void AXGetAuxCCallback(void **outCallback, void **outArg) {
+    *outCallback = lbl_8055D720;
+    *outArg = lbl_8055D714;
 }
 
 void* fn_80031248(void) {
