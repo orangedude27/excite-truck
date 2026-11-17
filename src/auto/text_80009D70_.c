@@ -311,8 +311,11 @@ void *__AXGetStudio_8000AC2C(void) {
 #undef sAxStudio
 }
 
+/* Return the global root object pointer; callers read the manager pointer at +0x20 of it. */
 u32 fn_8000AC38(void) {
-    return lbl_8055D3B8;
+#define sGlobalRoot lbl_8055D3B8
+    return sGlobalRoot;
+#undef sGlobalRoot
 }
 
 // Enters a track: queues the track effect sets whose names fn_8000A8C4 built in
