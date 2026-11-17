@@ -3319,73 +3319,76 @@ done:
 #pragma pop
 s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
 {
-    WPADCB** table = lbl_8038F4F0;
-    WPADCB* pCB;
-    s32 index;
+    WPADCB* p = lbl_8038F4F0[chan];
     s32 status;
-    s32 result;
     BOOL enabled;
-    s8 devHandle;
-    s64 currentTime;
-    s32 elapsed;
-    s32 status2;
+    u8 busy;
+    u32 info[12];
 
-    index = chan * 4;
-    pCB = table[chan];
-    result = -2;
     enabled = OSDisableInterrupts();
-    status = ((s32*)pCB)[0x7FC / 4];
+    status = *(s32*)((u8*)p + 0x7FC);
     OSRestoreInterrupts(enabled);
 
     if (status == 0) {
         enabled = OSDisableInterrupts();
-        devHandle = ((s8*)pCB)[0x800];
+        busy = *(u8*)((u8*)p + 0x800);
         OSRestoreInterrupts(enabled);
-        if (devHandle == 0) {
-            WPADGameInfo info;
-            info = *pInfo;
-            fn_80063324(chan, &info);
-            result = 0;
+        if (busy != 0) {
+            status = -2;
+        } else {
+            u32* src = (u32*)pInfo;
+            u32 w0 = src[0], w1 = src[1], w2 = src[2], w3 = src[3];
+            u32 w4 = src[4], w5 = src[5], w6 = src[6], w7 = src[7];
+            u32 w8 = src[8], w9 = src[9], w10 = src[10], w11 = src[11];
+            info[0] = w0;
+            info[1] = w1;
+            info[2] = w2;
+            info[3] = w3;
+            info[4] = w4;
+            info[5] = w5;
+            info[6] = w6;
+            info[7] = w7;
+            info[8] = w8;
+            info[9] = w9;
+            info[10] = w10;
+            info[11] = w11;
+            fn_80063324(chan, (WPADGameInfo*)info);
         }
-    } else if (status == -2) {
-        currentTime = __OSGetSystemTime();
-        elapsed = __div2i((s32)(currentTime >> 2),
-                         (s32)(((s32*)pCB)[0x84C / 4] >> 2),
-                         (s32)currentTime, ((s32*)pCB)[0x84C / 4]);
-        if (elapsed > 1 && lbl_8055DC1A != 0) {
-            if (((u8*)pCB)[0x850] == 0) {
-                currentTime = __OSGetSystemTime();
-                ((s32*)pCB)[0x84C / 4] = (s32)currentTime;
-                ((s32*)pCB)[0x848 / 4] = (s32)(currentTime >> 32);
-                pCB = table[chan];
+    } else if (status != -2) {
+        if (status == -3) {
+            enabled = OSDisableInterrupts();
+            *(s32*)((u8*)p + 0x7FC) = 0;
+            OSRestoreInterrupts(enabled);
+        }
+    } else {
+        if ((s32)((__OSGetSystemTime() - *(s64*)((u8*)p + 0x848)) / (*(u32*)0x800000F8 / 4)) > 1
+            && lbl_8055DC1A != 0) {
+            if (*(u8*)((u8*)p + 0x850) == 0) {
+                WPADCB* cb;
+                s32 cbStatus;
+                *(s64*)((u8*)p + 0x848) = __OSGetSystemTime();
+                cb = lbl_8038F4F0[chan];
                 enabled = OSDisableInterrupts();
-                status2 = ((s32*)pCB)[0x7FC / 4];
+                cbStatus = *(s32*)((u8*)cb + 0x7FC);
                 OSRestoreInterrupts(enabled);
-                if (status2 == -1) {
+                if (cbStatus != -1) {
                     enabled = OSDisableInterrupts();
-                    if (((u8*)pCB)[0x8C6] == 0) {
-                        ((u8*)pCB)[0x8C6] = 1;
+                    if (((u8*)cb)[0x8C6]) {
                         OSRestoreInterrupts(enabled);
-                        BTA_HhClose(((u8*)pCB)[0x803]);
                     } else {
+                        ((u8*)cb)[0x8C6] = TRUE;
                         OSRestoreInterrupts(enabled);
+                        BTA_HhClose(((u8*)cb)[0x803]);
                     }
                 }
             } else {
                 enabled = OSDisableInterrupts();
-                ((s32*)pCB)[0x7FC / 4] = -3;
+                *(s32*)((u8*)p + 0x7FC) = -3;
                 OSRestoreInterrupts(enabled);
             }
         }
-    } else if (status == -3) {
-        enabled = OSDisableInterrupts();
-        ((s32*)pCB)[0x7FC / 4] = 0;
-        OSRestoreInterrupts(enabled);
-        result = -3;
-    } else {
-        result = status;
     }
-    return result;
+    return status;
 }
 
 /*
@@ -5671,25 +5674,27 @@ s32 WPADiHIDParser(u8 port, u8* p_rpt) {
     return result;
 }
 
+static inline void wpad_store_status(u8 *dst, u32 value) { *dst = (u8)value; }
+#pragma opt_propagation off
 void fn_80064A80(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
+    u32 value;
     if (param_2 != 0) {
-        s32 value;
         WPADiClearQueue_80063BD4(&cb->extCmdQueue);
         if (param_2 == -1) {
             value = 0xfd;
         } else {
             s32 val = *(s32*)((u8*)cb + 0x780);
             s32 sign = (-val | val) >> 31;
-            value = sign & 0xfc;
+            value = (u32)sign & 0xfc;
         }
-        ((u8*)cb)[0x801] = (u8)value;
+        *(u8*)((u8*)cb + 0x801) = (u8)value;
         if (*(s32*)((u8*)cb + 0x7e0) != 0) {
             ((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
         }
     }
 }
-
+#pragma opt_propagation reset
 // fn_80064B1C: WPAD data processing
 void fn_80064B1C(s32 chan, void* data) {
     register const char* strBase asm("r31") = (const char*)lbl_80312338;
@@ -6002,6 +6007,7 @@ void fn_800656E8(s32 chan, WPADStatusEx* pReport)
 void fn_80065934(s32 chan, u8* data)
 {
     u8* cb;
+    u8* dev;
     volatile s8* buf;
     WPADFSStatus* fs;
     WPADCLStatus* cl;
@@ -6013,7 +6019,8 @@ void fn_80065934(s32 chan, u8* data)
 
     enabled = OSDisableInterrupts();
     cb = (u8*)lbl_8038F4F0[(u8)chan];
-    buf = (volatile s8*)(cb + cb[0x806] * 0x60 + 0xA0);
+    dev = cb + cb[0x806] * 0x60;
+    buf = (volatile s8*)(dev + 0xA0);
     for (offset = 0; offset < 96; offset++) {
         buf[offset] = 0;
     }
