@@ -3410,8 +3410,9 @@ extern "C" void fn_800DB76C(f32 *out, void *self, f32 *arg2) {
     }
 }
 
-extern "C" void fn_800DB830(s32 *arg0) {
-    *arg0 = -1;
+extern "C" void fn_800DB830(s32 *outValue) {
+    /* Store the invalid / not-found sentinel (-1) through outValue. */
+    *outValue = -1;
 }
 
 extern "C" void fn_800DB83C(void) {
