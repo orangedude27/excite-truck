@@ -124,8 +124,9 @@ void fn_8024C2C4(Fn8024C2C4Queue *queue) {
     *queue->out = queue->buf[nextIndex];
 }
 
-int fn_8024C2F8(void *arg0) {
-    return (*(int **)((char *)arg0 + 0x18))[*(int *)((char *)arg0 + 0x10)];
+/* Looks up table[index]: +0x10 holds the index and +0x18 the int table pointer. */
+int fn_8024C2F8(void *entry) {
+    return (*(int **)((char *)entry + 0x18))[*(int *)((char *)entry + 0x10)];
 }
 
 int fn_8024C30C(void *arg0) {
