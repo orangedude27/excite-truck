@@ -9,7 +9,8 @@ typedef struct {
 } Unk801E4E44Vertex;
 
 typedef struct {
-    u8 unk_0x0[0x28];
+    f32 unk_0x0, unk_0x4, unk_0x8, unk_0xC, unk_0x10, unk_0x14;
+    f32 unk_0x18, unk_0x1C, unk_0x20, unk_0x24;
     s32 unk_0x28, unk_0x2C, unk_0x30;
     f32 unk_0x34;
 } Unk801E4E44State;
@@ -129,7 +130,7 @@ void fn_801E5174(f32 arg0, f32 arg1, f32 arg2) {
     f32 *center = (f32 *)((u8 *)lbl_80487578 + 0x700);
     s32 count;
     s32 index;
-    register s32 base;
+    s32 base;
 
     if (lbl_8055EAA8 + 4 > 60 || lbl_8055EAAC + 6 > 174) fn_801E4E44();
 
@@ -196,22 +197,14 @@ s32 fn_801E5370(s32 value, s32 lastIndex, f32 scale) {
 }
 
 void fn_801E53A8(void *arg0, void *arg1, void *arg2, s32 arg3, f32 arg4) {
-    f32 ax;
-    f32 ay;
-    f32 az;
-    f32 cx;
-    f32 cy;
-    f32 cz;
-    f32 dx;
-    f32 dy;
-    f32 dz;
-    f32 sx;
-    f32 sy;
-    f32 sz;
-    (void)arg1;
-    (void)arg4;
+    extern char lbl_803399F8[];
+    extern void fn_802E317C(void *);
+    f32 ax, ay, az, cx, cy, cz;
+    f32 dx, dy, dz, sx, sy, sz;
+    f32 t = arg4;
+
     if (lbl_80487C88.unk_0x28 >= lbl_80487C88.unk_0x30) {
-        fn_802E317C((void *)0);
+        fn_802E317C(lbl_803399F8);
     }
     ax = *(f32 *)((u8 *)arg0 + 0x0);
     cx = *(f32 *)((u8 *)arg2 + 0x0);
@@ -225,8 +218,8 @@ void fn_801E53A8(void *arg0, void *arg1, void *arg2, s32 arg3, f32 arg4) {
     cz = *(f32 *)((u8 *)arg2 + 0x8);
     dz = az - cz;
     sz = az + cz;
-    (void)dx; (void)dy; (void)dz; (void)sx; (void)sy; (void)sz;
-    (void)arg3;
+    *(volatile f32 *)&t = t;
+    (void)dx; (void)dy; (void)dz; (void)sx; (void)sy; (void)sz; (void)arg1; (void)arg3;
 }
 
 #pragma pop
