@@ -1012,6 +1012,7 @@ extern void fn_80177658(void *);
 extern void fn_80177608(void *);
 extern void fn_80177618(int *);
 extern void fn_80177638(int *);
+/* Notify every registered physics listener through its slot-0 virtual method. */
 void fn_80177790(void) { fn_80177658((void *)fn_80177608); }
 
 #pragma push
