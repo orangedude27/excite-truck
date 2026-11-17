@@ -272,11 +272,10 @@ void fn_80128684(void) {
     lbl_8055DF88 = 0;
 }
 
+/* Return nonzero while the save-state flag at lbl_8055DF88 is clear. */
 s32 fn_80128690(void) {
-    u8 val = lbl_8055DF88;
-    u32 shifted;
-    shifted = __cntlzw(val);
-    return shifted >> 5;
+    u8 flag = lbl_8055DF88;
+    return flag == 0;
 }
 
 void fn_80128710(void) {
