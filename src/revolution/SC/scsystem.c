@@ -1067,6 +1067,8 @@ BOOL SCReplaceU8Item(u8 data, SCItemID id) {
     return SCReplaceIntegerItem(&data, id, SC_ITEM_BYTE);
 }
 
+/* SC flush-completion callback: wake the thread blocked in SCFlushSync; the
+ * NAND status argument is ignored here. */
 void __SCFlushSyncCallback(SCStatus status) {
 #pragma unused(status)
 
