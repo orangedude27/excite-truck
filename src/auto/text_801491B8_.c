@@ -1195,8 +1195,9 @@ void fn_8014C920(void *dst, void *srcObj) {
     out->text = text;
 }
 
-int fn_8014C964(int *arg0, int arg1) {
-    return *arg0 == arg1;
+/* Returns nonzero when the id stored at entryId matches id. */
+int fn_8014C964(int *entryId, int id) {
+    return *entryId == id;
 }
 
 /* Copy a 0x28-byte 2D draw descriptor (the block fn_801476D8 draws a rectangle
