@@ -13504,8 +13504,10 @@ extern "C" s32 fn_800BB4BC(s32 a,s32 b,s32 c,s32 d) {
     return fn_800BB81C(a,b,c,d,0,0);
 }
 
-extern "C" s32 fn_800BB4C8(s32 a,s32 b,s32 c,s32 d) {
-    return fn_800BB4E0(a,b,c,d,0,0);
+/* Synchronous SD-card read: read `length` bytes into `buffer` from byte `offset`
+ * of the opened `device`, via fn_800BB4E0 with no callback (so it blocks). */
+extern "C" s32 fn_800BB4C8(s32 device, s32 offset, s32 buffer, s32 length) {
+    return fn_800BB4E0(device,offset,buffer,length,0,0);
 }
 
 extern "C" s32 fn_800BB4D4(s32 a,s32 b,s32 c,s32 d) {
