@@ -4963,12 +4963,8 @@ extern "C" void fn_801A3BE0(void *arg0, void *arg1)
 
 #pragma push
 #pragma small_data off
-extern s32 lbl_80333728;
+__declspec(section ".data") extern s32 lbl_80333728;
 extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-#pragma push
-#pragma small_data off
-    extern s32 lbl_80333728;
-#pragma pop
     struct Vec { f32 x, y, z; };
     void *object;
     Vec *vectors;
@@ -4976,6 +4972,12 @@ extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     register f32 init = lbl_805622E0;
     register s32 offset;
     register s32 i;
+    f32 var_f1;
+    f32 var_f3;
+    f32 var_f3_2;
+    f32 var_f4;
+    f32 var_f5;
+    f32 var_f6;
     *(volatile s32 *)((u8 *)arg0 + 0x0C) = arg1;
     *(volatile s32 *)((u8 *)arg0 + 0x04) = arg3;
     *(volatile s32 *)((u8 *)arg0 + 0x08) = 0;
@@ -5005,32 +5007,38 @@ extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         *(volatile f32 *)((u8 *)arg0 + 0x30) = z;
     }
     while (i < *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x24) + 0x0C)) {
-        void *loopObject = *(void **)((u8 *)arg0 + 0x24);
-        Vec *base = (Vec *)*(void **)((u8 *)loopObject + 0x08);
+        void *obj = *(void **)((u8 *)arg0 + 0x24);
+        Vec *base = (Vec *)*(void **)((u8 *)obj + 0x08);
         Vec *point = (Vec *)((u8 *)base + offset);
-        f32 maxZ = *(volatile f32 *)((u8 *)arg0 + 0x30);
-        maxZ = maxZ < point->z ? point->z : maxZ;
-        f32 maxY = *(volatile f32 *)((u8 *)arg0 + 0x2C);
-        maxY = maxY < point->y ? point->y : maxY;
-        f32 maxX = *(volatile f32 *)((u8 *)arg0 + 0x28);
-        maxX = maxX < point->x ? point->x : maxX;
-        f32 minZ = *(volatile f32 *)((u8 *)arg0 + 0x3C);
-        *(volatile f32 *)((u8 *)arg0 + 0x28) = maxX;
-        *(volatile f32 *)((u8 *)arg0 + 0x2C) = maxY;
-        *(volatile f32 *)((u8 *)arg0 + 0x30) = maxZ;
-        maxSpill.x = maxX; maxSpill.y = maxY; maxSpill.z = maxZ;
-        void *minLoopObject = *(void **)((u8 *)arg0 + 0x24);
-        Vec *minBase = (Vec *)*(void **)((u8 *)minLoopObject + 0x08);
-        Vec *minPoint = (Vec *)((u8 *)minBase + offset);
-        minZ = minZ > minPoint->z ? minPoint->z : minZ;
-        f32 minY = *(volatile f32 *)((u8 *)arg0 + 0x38);
-        minY = minY > minPoint->y ? minPoint->y : minY;
-        f32 minX = *(volatile f32 *)((u8 *)arg0 + 0x34);
-        minX = minX > minPoint->x ? minPoint->x : minX;
-        minSpill.x = minX; minSpill.y = minY; minSpill.z = minZ;
-        *(volatile f32 *)((u8 *)arg0 + 0x34) = minX;
-        *(volatile f32 *)((u8 *)arg0 + 0x38) = minY;
-        *(volatile f32 *)((u8 *)arg0 + 0x3C) = minZ;
+        f32 tz, ty, tx;
+        var_f3 = *(volatile f32 *)((u8 *)arg0 + 0x30);
+        tz = point->z;
+        var_f3 = var_f3 < tz ? var_f3 : tz;
+        ty = point->y;
+        var_f4 = *(volatile f32 *)((u8 *)arg0 + 0x2C);
+        var_f4 = var_f4 < ty ? var_f4 : ty;
+        tx = point->x;
+        var_f5 = *(volatile f32 *)((u8 *)arg0 + 0x28);
+        var_f5 = var_f5 < tx ? var_f5 : tx;
+        var_f6 = *(volatile f32 *)((u8 *)arg0 + 0x3C);
+        *(volatile f32 *)((u8 *)arg0 + 0x28) = (f32)(f64)var_f5;
+        *(volatile f32 *)((u8 *)arg0 + 0x2C) = (f32)(f64)var_f4;
+        *(volatile f32 *)((u8 *)arg0 + 0x30) = (f32)(f64)var_f3;
+        maxSpill.x = var_f5; maxSpill.y = var_f4; maxSpill.z = var_f3;
+        Vec *minPoint = (Vec *)((u8 *)*(void **)((u8 *)*(void **)((u8 *)arg0 + 0x24) + 0x08) + offset);
+        f32 tz2, ty2, tx2;
+        tz2 = minPoint->z;
+        var_f6 = var_f6 > tz2 ? var_f6 : tz2;
+        ty2 = minPoint->y;
+        var_f3_2 = *(volatile f32 *)((u8 *)arg0 + 0x38);
+        var_f3_2 = var_f3_2 > ty2 ? var_f3_2 : ty2;
+        tx2 = minPoint->x;
+        var_f1 = *(volatile f32 *)((u8 *)arg0 + 0x34);
+        var_f1 = var_f1 > tx2 ? var_f1 : tx2;
+        minSpill.x = var_f1; minSpill.y = var_f3_2; minSpill.z = var_f6;
+        *(volatile f32 *)((u8 *)arg0 + 0x34) = (f32)(f64)var_f1;
+        *(volatile f32 *)((u8 *)arg0 + 0x38) = (f32)(f64)var_f3_2;
+        *(volatile f32 *)((u8 *)arg0 + 0x3C) = (f32)(f64)var_f6;
         offset += 0x0C;
         ++i;
     }
