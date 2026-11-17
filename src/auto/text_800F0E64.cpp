@@ -7043,7 +7043,8 @@ extern "C" void fn_800FC600(void *object, f32 value) {
     OSRestoreInterrupts(token);
 }
 
-extern "C" f32 fn_800FC640(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x460); }
+/* Return the sound player's float field at offset 0x460 (the value set by fn_800FC600). */
+extern "C" f32 fn_800FC640(void *player) { return *(f32 *)((u8 *)player + 0x460); }
 
 /* snd_StrmPlayer.cpp's assertion strings.  Each player there keeps one FX send
  * level per aux bus (nw4hbm::snd::AuxBus); the setters update the array with
