@@ -65,8 +65,10 @@ static inline void xf(f32 *out, f32 *in, u8 *m) {
 }
 
 extern void fn_801AD888(void **);
-void fn_801ADAF4(void *arg0) {
-    fn_801AD888((void **)((u8 *)arg0 - 0x23C));
+/* Calls fn_801AD888 on the owning object, recovered from an embedded sub-object pointer by subtracting 0x23C;
+ * fn_801AD888 invokes the virtual d2() method and clears the owner's active flag (+0x220). */
+void fn_801ADAF4(void *subObject) {
+    fn_801AD888((void **)((u8 *)subObject - 0x23C));
 }
 
 extern void fn_801AD8C8(void **);
