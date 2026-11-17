@@ -61,5 +61,9 @@ void fn_80265D90(void) {}
 
 void fn_80265D94(void) {}
 
-int fn_80265D98(void) { return 0; }
+/* Camera move-follow blend-parameter query stub: returns null in this build,
+ * so callers fall back to fully blending the camera with 1.0 factors. */
+float *fn_80265D98(void) {
+    return 0;
+}
 
