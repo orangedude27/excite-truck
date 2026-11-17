@@ -625,7 +625,7 @@ extern "C" void* fn_801572A4(s32 configPtr, s32 courseIndex, s32 initValue) {
     return group;
 }
 
-/* Return the element count (the s32 word at +4) of an array-holder / ArrayTracker object. */
+/* Get the element count stored at +4 in an array holder. */
 extern "C" s32 fn_80157558(void* arrayHolder) {
     return *(s32*)((u8*)arrayHolder + 4);
 }
