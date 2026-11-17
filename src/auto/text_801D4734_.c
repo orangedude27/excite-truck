@@ -2675,8 +2675,11 @@ extern "C" int fn_801D7A0C(void *arg0, void *arg1) {
 
 #pragma pop
 
+/* Return the "WorldMorph_ASE" resource name string. */
 void *fn_801D7C6C(void) {
-    return lbl_8033890C;
+#define STR_WORLD_MORPH_ASE lbl_8033890C
+    return STR_WORLD_MORPH_ASE;
+#undef STR_WORLD_MORPH_ASE
 }
 
 int fn_801D7C78(int arg0) {
