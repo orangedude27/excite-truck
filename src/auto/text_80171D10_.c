@@ -25,16 +25,6 @@ typedef struct { int zero; short mark; } Fn8017431CMark;
 typedef struct { float a, b; } Fn8017431CV2;
 typedef struct { void *pad[8]; int (*m20)(void *, int); void *pad2[3]; void (*m30)(void *, int); } Fn80176040VT;
  typedef struct { Fn80176040VT *vt; } Fn80176040Obj;
- #pragma cplusplus on
- class Obj80176040V {
- public:
-     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-     virtual void d4(); virtual void d5();
-     virtual int m20(int);
-     virtual void d7(); virtual void d8(); virtual void d9();
-     virtual void m30(int);
- };
- #pragma cplusplus reset
  typedef struct { Fn8017431CM9 m; Fn8017431CV3 pos; Fn8017431CV3 v; int zero; short mark; } Fn8017431CFrame2;
 extern float PSQUATMultiply(void *, void *);
 
