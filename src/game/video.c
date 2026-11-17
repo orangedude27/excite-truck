@@ -946,30 +946,32 @@ void fn_802E1290(void *movie) {
 }
 
 #pragma opt_common_subs off
+/* Per-frame Bink movie update: close a movie that reports an error, open one if
+ * none is loaded, then pump its frame and resync the frame timer when it drifts. */
 void fn_802E12DC(void) {
-    s32 current;
-    void *object = fn_802E0BA4();
-    if (*(void **)((char *)object + 4) != 0 &&
-        *(s32 *)((char *)(*(void **)((char *)object + 4)) + 0x1C) != 0) {
+    s32 nowMs;
+    void *movie = fn_802E0BA4();
+    if (*(void **)((char *)movie + 4) != 0 &&
+        *(s32 *)((char *)(*(void **)((char *)movie + 4)) + 0x1C) != 0) {
         fn_802E30C8(lbl_8034CBE0);
-        fn_802E0E60(object);
+        fn_802E0E60(movie);
     }
-    if (*(void **)((char *)object + 4) == 0)
-        fn_802E0EAC(object);
-    if (*(void **)((char *)object + 4) != 0) {
-        fn_802E27B8((char *)object + 0x50);
-        fn_801186B8(*(void **)((char *)object + 4));
-        current = ((s32 (*)(void))fn_802E2C20)();
-        if (current - *(s32 *)((char *)object + 0x4C) > 0x96) {
+    if (*(void **)((char *)movie + 4) == 0)
+        fn_802E0EAC(movie);
+    if (*(void **)((char *)movie + 4) != 0) {
+        fn_802E27B8((char *)movie + 0x50);
+        fn_801186B8(*(void **)((char *)movie + 4));
+        nowMs = ((s32 (*)(void))fn_802E2C20)();
+        if (nowMs - *(s32 *)((char *)movie + 0x4C) > 0x96) {
             fn_802E30C8(lbl_8034CBF8);
-            *(s32 *)((char *)object + 0x4C) = current - 0x20;
+            *(s32 *)((char *)movie + 0x4C) = nowMs - 0x20;
         }
-        if (current - *(s32 *)((char *)object + 0x4C) > 0x1E) {
+        if (nowMs - *(s32 *)((char *)movie + 0x4C) > 0x1E) {
             if (((s32 (*)(void))fn_802ECC10)() == 0)
-                fn_80118C44(*(void **)((char *)object + 4));
-            *(s32 *)((char *)object + 0x4C) += 0x20;
+                fn_80118C44(*(void **)((char *)movie + 4));
+            *(s32 *)((char *)movie + 0x4C) += 0x20;
         }
-        fn_802E27A0((char *)object + 0x50);
+        fn_802E27A0((char *)movie + 0x50);
     }
 }
 extern void GXSetZMode(GXBool, GXCompare, GXBool);
