@@ -342,6 +342,7 @@ void fn_802787E4(void) {
 }
 
 extern char lbl_8055F5BA;
+/* Returns lbl_8055F5BA (sPlayingBack): nonzero while the captured scripted movie plays back. */
 char fn_802787F4(void) {
     return lbl_8055F5BA;
 }
@@ -392,6 +393,8 @@ void fn_8027889C(float arg0) {
 }
 
 extern float lbl_805640B8, lbl_805640BC;
+#pragma processor 750
+#pragma scheduling off
 void fn_802788E0(float farg0) {
     float q = farg0 / lbl_805640B8;
     float v;
@@ -401,7 +404,6 @@ void fn_802788E0(float farg0) {
         v = lbl_805640BC + q;
     lbl_8055F5BC = (int)v;
 }
-
 #pragma scheduling on
 int fn_80278924(float *arg0, float *arg1) {
     int result = 0;
