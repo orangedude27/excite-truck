@@ -1019,7 +1019,8 @@ extern "C" void* fn_80157F98(void* self, s32 initialValue, s32 owner) {
     *(f32*)((u8*)self + 0x27C) = zero;
     return self;
 }
-#pragma small_data off
+#pragma push
+#pragma opt_propagation off
 extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2, void *arg3) {
     u8 *ptr = (u8 *)arg0 + 0x14;
     u8 *end = (u8 *)arg0 + 0x244;
@@ -1045,7 +1046,7 @@ extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2, void *arg3) {
     *(s32 *)((u8 *)arg0 + 0x2CC) = zero;
     return arg0;
 }
-#pragma small_data on
+#pragma pop
 extern "C" f32 lbl_8056176C;
 #pragma small_data off
 extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, void* arg3) {
@@ -3355,6 +3356,7 @@ extern "C" void* fn_8015CBBC(void* self, s32 shouldDelete) {
     return self;
 }
 
+// Trivial callback stub in this player's vtable group; always returns 1 (true).
 extern "C" u32 fn_8015CC28(void) { return 1; }
 
 #pragma push
