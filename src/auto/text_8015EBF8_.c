@@ -796,7 +796,7 @@ s32 fn_8015FAB8(s32 *records, s32 startIndex, f32 threshold) {
 #pragma dont_inline reset
 #pragma scheduling reset
 extern f32 lbl_80561810;
-#pragma processor 750
+#pragma processor gekko
 #pragma use_lmw_stmw off
 void fn_8015FB28(void *arg0, void *arg1, void *arg2, int arg3) {
     volatile u32 *dst = (volatile u32 *)arg0;
