@@ -1362,6 +1362,7 @@ extern "C" void *fn_801F93FC(void *node) {
 }
 #pragma scheduling on
 #pragma pop
+/* Push `node` onto the front of the F92Node list headed by `*list`. */
 extern "C" void fn_801F9440(F92Node **list, F92Node *node) {
     node->next = *list;
     *list = node;
