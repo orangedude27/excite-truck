@@ -544,6 +544,7 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma opt_common_subs off
+#pragma opt_loop_invariants off
     f32 sp8;
     Vec spC;
     Vec sp18;
