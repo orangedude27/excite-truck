@@ -1206,19 +1206,18 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
 }
 #pragma pop
 
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void *fn_8028C824(void *arg0, s32 arg1) {
     s32 size = arg1 * 0x28;
-    s32 memory = fn_8012850C(size + 0x10, lbl_80348C34, size);
-    void *array = ((void *(*)(s32, void *, s32, s32, s32))fn_8002F37C)(memory, (void *)fn_8028C8BC, 0, 0x28, arg1);
+    s32 memory = fn_8012850C(size + 0x10, (void *)&lbl_80348C34, size);
+    void *array = ((void *(*)(s32, void *, s32, s32, s32))fn_8002F37C)(memory, (void *)&fn_8028C8BC, 0, 0x28, arg1);
     ((void **)arg0)[0] = array;
     ((s32 *)arg0)[1] = 0;
     ((s32 *)arg0)[2] = arg1;
-    ((s32 *)arg0)[3] = fn_802CAC28(lbl_80348C40, 0);
+    ((s32 *)arg0)[3] = fn_802CAC28((void *)&lbl_80348C40, 0);
     ((f32 *)arg0)[4] = (f32)fn_8002F208(lbl_805643C8);
     return arg0;
 }
-#pragma scheduling on
 void fn_8028C8BC(void) {}
 
 extern void fn_802CAC54(s32);
@@ -1243,8 +1242,10 @@ void *fn_8028C8C0(void *arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_8028C92C(void *arg0) {
-    ((s32 *)arg0)[1] = 0;
+/* Empty the rotating 3-D trail emitter: reset its live entry count to zero. */
+void fn_8028C92C(void *emitter) {
+    struct TrailList { void *data; s32 count; } *list = emitter;
+    list->count = 0;
 }
 
 #pragma push
