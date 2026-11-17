@@ -1633,73 +1633,75 @@ void fn_80118F1C(void *object, s32 endTick) {
     }
 }
 
-s32 fn_80118F78(void *arg0, s32 arg1) {
+s32 fn_80118F78(void *bink, s32 paused) {
+    /* BinkChangePause: set a movie's paused state, recording elapsed play time
+       on pause/resume and forwarding the flag to every frame's SetPaused. */
     struct S {
         char pad0[0xDC];
-        s32 dc;
+        s32 paused;
         char pad1[0x268 - 0xE0];
-        s32 f268;
+        s32 timeBase;
         char pad2[0x2E8 - 0x26C];
-        s32 f2E8;
+        s32 frameCount;
         char pad3[0x2F0 - 0x2EC];
-        void *f2F0;
+        void *frames;
         char pad4[0x330 - 0x2F4];
-        s32 f330;
+        s32 savedElapsed;
         char pad5[0x340 - 0x334];
-        char f340[1];
-    } *s = (struct S *)arg0;
-    s32 result;
-    s32 elapsed;
-    s32 offset;
-    u32 index;
-    s32 reset;
+        char tickNode[1];
+    } *s = (struct S *)bink;
+    s32 tick;
+    s32 now;
+    s32 frameOff;
+    u32 frameIndex;
+    s32 resuming;
 
-    reset = 0;
-    if (arg0 == 0) {
+    resuming = 0;
+    if (bink == 0) {
         return 0;
     }
 
-    elapsed = fn_80116D30();
-    fn_80118C1C(arg0, elapsed);
-    fn_80118F1C(arg0, elapsed);
+    now = fn_80116D30();
+    fn_80118C1C(bink, now);
+    fn_80118F1C(bink, now);
 
-    if (arg1 == 0) {
-        if (s->dc != 0) {
-            reset = 1;
+    if (paused == 0) {
+        if (s->paused != 0) {
+            resuming = 1;
         }
-    } else if (s->dc == 0) {
-        result = s->f268;
-        if (result != 0) {
-            s->f330 = elapsed - result;
+    } else if (s->paused == 0) {
+        tick = s->timeBase;
+        if (tick != 0) {
+            s->savedElapsed = now - tick;
         } else {
-            s->f330 = 0;
+            s->savedElapsed = 0;
         }
     }
 
-    s->dc = arg1;
-    fn_8011C274(lbl_8055DED4, s->f340);
+    s->paused = paused;
+    fn_8011C274(lbl_8055DED4, s->tickNode);
 
-    index = 0;
-    offset = 0;
-    while (index < (u32)s->f2E8) {
-        void *object = (u8 *)s->f2F0 + offset;
-        (*(void (**)(void *, s32))((u8 *)object + 0x14))(object, arg1);
-        offset += 0x17C;
-        index++;
+    frameIndex = 0;
+    frameOff = 0;
+    while (frameIndex < (u32)s->frameCount) {
+        void *frame = (u8 *)s->frames + frameOff;
+        (*(void (**)(void *, s32))((u8 *)frame + 0x14))(frame, paused);
+        frameOff += 0x17C;
+        frameIndex++;
     }
 
-    fn_8011C2EC(lbl_8055DED4, s->f340);
-    if (*(s32 *)((u8 *)arg0 + 0x258) != 0 &&
-        s->f2E8 != 0) {
-        fn_80117074(arg0);
+    fn_8011C2EC(lbl_8055DED4, s->tickNode);
+    if (*(s32 *)((u8 *)bink + 0x258) != 0 &&
+        s->frameCount != 0) {
+        fn_80117074(bink);
     }
 
-    if (reset != 0) {
-        result = fn_80116D30();
-        s->f268 = result - s->f330;
+    if (resuming != 0) {
+        tick = fn_80116D30();
+        s->timeBase = tick - s->savedElapsed;
     }
 
-    return s->dc;
+    return s->paused;
 }
 
 #pragma push
