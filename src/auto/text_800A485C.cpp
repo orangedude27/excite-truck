@@ -25805,8 +25805,9 @@ extern "C" s32 fn_800A53B4(void *volume) {
     return (((u16)*(u16 *)((u8 *)volume + 0x1F8C)) >> 2) & 1;
 }
 
-extern "C" s32 fn_800A53C0(void *arg0) {
-    return (((u16)*(u16 *)((u8 *)arg0 + 0x1F8C)) >> 4) & 1;
+extern "C" s32 fn_800A53C0(void *volume) {
+    /* Test volume flag bit 4 (0x10) in the flags word at +0x1F8C. */
+    return (((u16)*(u16 *)((u8 *)volume + 0x1F8C)) >> 4) & 1;
 }
 
 /* Clear bit 4 (0x10) of this volume's flags word at +0x1F8C. */
