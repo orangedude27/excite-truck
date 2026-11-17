@@ -2635,7 +2635,7 @@ f32 fn_8018AE44(void) {
 
 extern f32 fn_8018AE4C(void);
 f32 fn_8018AE4C(void) {
-    return lbl_80561CAC;
+    return F_0;
 }
 
 extern f32 fn_8018AE54(void);
