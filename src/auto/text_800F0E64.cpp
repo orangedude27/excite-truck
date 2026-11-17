@@ -7749,7 +7749,8 @@ extern "C" int fn_800FD810(void* player, int channel) {
            *(int*)((char*)stream + 0x60) * *(int*)((char*)player + 0x10);
 }
 
-extern "C" float fn_800FD848(void *arg0) { return *(float *)((char *)arg0 + 0x454); }
+/* Return this sound player's float field at +0x454 (paired with setter fn_800FD880). */
+extern "C" float fn_800FD848(void *player) { return *(float *)((char *)player + 0x454); }
 
 extern "C" float fn_800FD850(void *arg0) { return *(float *)((char *)arg0 + 0x44C); }
 
