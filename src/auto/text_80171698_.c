@@ -190,7 +190,7 @@ extern "C" void *fn_801399FC(void);
 extern "C" s32 fn_801D4888(void);
 extern "C" void fn_801E9DC4(void *);
 extern "C" void fn_801E9E30(void *, void *);
-extern "C" void fn_802E30C8(void *, s32);
+extern "C" void fn_802E30C8(void *, ...);
 extern "C" int strcmp(const char *, const char *);
 extern char lbl_80330F18[];
 extern char lbl_80330F24[];
