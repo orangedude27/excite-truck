@@ -1682,6 +1682,7 @@ void fn_80011A2C(void *arg0) {
  * then reset the on-screen text draw queue. */
 #define s_quadCount lbl_8055D4A8
 void fn_80011A50(void) {
+    /* 0 = no quads buffered. */
     s_quadCount = 0;
     fn_80234AEC();
 }
