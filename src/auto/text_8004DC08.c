@@ -26,8 +26,6 @@ extern char* strcpy(char*, const char*);
 #pragma push
 #pragma use_lmw_stmw off
 int PackArgs(void* base, int count, char** args, int unused) {
-    void* heap = base;
-    char** argv = args;
     char** argp;
     char* str;
     char* strings;
@@ -36,27 +34,26 @@ int PackArgs(void* base, int count, char** args, int unused) {
     unsigned int copied;
     memset(base, 0, 0x2000);
     if (count == 0) {
-        *(int*)((char*)heap + 8) = 0;
+        *(int*)((char*)base + 8) = 0;
     } else {
         original = count;
-        strings = (char*)heap + 0x2000;
-        argp = argv + count;
-        for (; count >= 0; count--, argp--) {
+        strings = (char*)base + 0x2000;
+        argp = args + count;
+        while (count-- >= 0) {
             str = *argp;
             strings -= strlen(str) + 1;
             strcpy(strings, str);
-            *argp = (char*)((char*)strings - (char*)heap);
+            *argp = (char*)((char*)strings - (char*)base);
+            argp--;
         }
         copied = 0;
-        table = (char*)heap + ((strings - (char*)heap) & ~3);
+        table = (char*)base + ((strings - (char*)base) & ~3);
         table -= (unsigned int)(original + 1) * 4;
-        if ((unsigned int)(original + 1) != 0) {
-            for (; copied < (unsigned int)(original + 1); copied++) {
-                ((unsigned int*)table)[copied] = ((unsigned int*)argv)[copied];
-            }
+        for (; copied < (unsigned int)(original + 1); copied++) {
+            ((unsigned int*)table)[copied] = ((unsigned int*)args)[copied];
         }
         ((int*)table)[-1] = original;
-        *(int*)((char*)heap + 8) = (int)(table - 4 - (char*)heap);
+        *(int*)((char*)base + 8) = (int)(table - 4 - (char*)base);
     }
     return 1;
 }
@@ -69,8 +66,11 @@ void fn_8004DD88(void (*target)(void)) {
 }
 #pragma dont_inline reset
 
+/* AX DSP init callback: flag DSP initialization as complete so the boot code waiting on it can continue. */
 void __AXDSPInitCallback_8004DDC4(void) {
-    lbl_8055DA44 = 1;
+#define s_dspInitDone lbl_8055DA44 /* set to 1 once the DSP finishes initializing */
+    s_dspInitDone = 1;
+#undef s_dspInitDone
 }
 
 // Copies the exec parameters saved at the DOL exec-params address into out,
