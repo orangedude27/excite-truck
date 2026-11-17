@@ -234,6 +234,7 @@ void fn_801AE158(void *obj) {
     *(f32 *)((u8 *)obj + 0x24) = zeroVec.z;
 }
 
+static inline u32 ae_udiv(u32 a, u32 b) { return a / b; }
 #pragma scheduling invalid_target
 void *fn_801AE180(void) {
      s32 var_r8;
@@ -424,12 +425,11 @@ void *fn_801AE180(void) {
 #pragma scheduling on
 void fn_801AE4C4(void) {
     void *result = (void *)fn_801284F8(8, &lbl_8033596C);
-    if (result == NULL) {
-        return;
+    if (result != NULL) {
+        *(s32 *)result = 0;
+        *(void **)((u8 *)result + 4) = &lbl_8055A8B8;
+        lbl_8055E604 = result;
     }
-    *(s32 *)result = 0;
-    *(void **)((u8 *)result + 4) = &lbl_8055A8B8;
-    lbl_8055E604 = result;
 }
 
 #pragma scheduling off
