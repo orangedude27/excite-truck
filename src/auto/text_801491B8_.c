@@ -923,8 +923,9 @@ s32 fn_8014AEC0(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x10C); }
 
 f32 fn_8014AEC8(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x2690); }
 
-void fn_8014AED0(void *arg0, f32 farg0) {
-    ((f32 *)arg0)[0x41] = farg0;
+void fn_8014AED0(void *event, f32 value) {
+    /* Set the floating-point value at offset 0x104 of the event object (paired getter: fn_8014AED8). */
+    ((f32 *)event)[0x41] = value;
 }
 
 f32 fn_8014AED8(void *event) {
