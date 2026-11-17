@@ -792,6 +792,7 @@ int fn_801B8A8C(int object, int deleteFlag) {
     return object;
 }
 
+/* Default boolean method for the arena-event master: reports true (1). */
 int fn_801B8ACC(void) { return 1; }
 
 void fn_801B8AD4(void) {
