@@ -1019,6 +1019,8 @@ void fn_80177790(void) { fn_80177658((void *)fn_80177608); }
 /* Runs the slot-1 virtual method on every registered listener by handing the
    fan-out callback fn_80177618 to the per-listener iteration helper. */
 void fn_8017779C(void) { fn_80177658((void *)fn_80177618); }
+/* Runs the slot-2 virtual method on every registered listener by handing the
+   fan-out callback fn_80177628 to the per-listener iteration helper. */
 void fn_801777A8(void) { fn_80177658(&fn_80177628); }
 
 void fn_801777B4(void) { fn_80177658(&fn_80177638); }
