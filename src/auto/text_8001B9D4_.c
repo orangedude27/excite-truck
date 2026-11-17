@@ -174,7 +174,12 @@ void fn_8001BA6C(void) {
 
 extern s32 fn_8001C73C();
 void fn_8001BA70(void) {
-    fn_8001C73C();
+    /* Tail-call the handler that writes a config/stat option's localized value
+     * into the caller's buffer; fn_8001C73C takes the option id, its selected
+     * index, the destination and the length through the incoming r3-r6. */
+#define formatOptionValue fn_8001C73C
+    formatOptionValue();
+#undef formatOptionValue
 }
 
 void fn_8001BA74(void) {
