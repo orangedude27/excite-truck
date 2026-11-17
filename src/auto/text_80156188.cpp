@@ -73,8 +73,9 @@ void fn_801561A0(s32 arg0) { fn_80154D30(arg0 - 4); }
 
 void fn_801561A8(s32 arg0) { fn_80155368(arg0 - 4); }
 
-extern "C" void fn_801561B0(s32 arg0) {
-    fn_8015536C(arg0 - 8);
+/* This-adjusting thunk: subtract the 8-byte multiple-inheritance offset to recover the base subobject's `this`, then forward to fn_8015536C. */
+extern "C" void fn_801561B0(s32 subobjectThis) {
+    fn_8015536C(subobjectThis - 8);
 }
 
 extern "C" void fn_801561B8(s32 arg0) {
