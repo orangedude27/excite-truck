@@ -473,14 +473,13 @@ extern "C" int lbl_803499E8[];
 extern "C" int lbl_803499F4[];
 extern "C" s32 lbl_8055D430;
 extern "C" f32 lbl_80564738, lbl_8056473C;
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_802A1CC4(void) {
     u8 config[0x90];
-    register void *name = lbl_803499E8;
-    int enabled = 0;
-    if ((lbl_8055D430 & 1) != 0) {
-        if ((lbl_8055D430 & 8) != 0)
-            enabled = 1;
-    }
+    s32 zero = 0;
+    void *name = lbl_803499E8;
+    s32 enabled = ((lbl_8055D430 & 1) && (lbl_8055D430 & 8)) ? 1 : 0;
     if (enabled != 0) {
         fn_8028E61C(config);
         *(int *)(config + 0x04) = 0x80;
@@ -506,14 +505,14 @@ extern "C" void fn_802A1CC4(void) {
         *(f32 *)(config + 0x64) = lbl_80564730;
         *(f32 *)(config + 0x74) = lbl_80564744;
         lbl_8055F870 = ((int (*)(void *, void *, void *, int, f32, f32, f32, f32, f32, f32))fn_8028E2F8)(
-            config, lbl_803499F4, name, 0,
+            config, lbl_803499F4, name, zero,
             lbl_80564740, lbl_8056473C, lbl_80564738,
             lbl_80564734, lbl_80564730, lbl_8056472C);
     } else {
         lbl_8055F870 = 0;
     }
 }
-
+#pragma pop
 /* Destroy the effect emitter cached in lbl_8055F870 (created earlier by
  * fn_8028E2F8) if one is live, then clear the global so it is not freed twice. */
 extern "C" void fn_802A1DC0(void) {
