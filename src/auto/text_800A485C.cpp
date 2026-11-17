@@ -21835,7 +21835,7 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
                     Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x107, file + 0xB0);
                 f32 result = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
                 result += half;
-                s16 value = (s16)result;
+                s16 value = result;
                 value = (value < -0x400) ? -0x400 : value;
                 value = (value > 0x3FF) ? 0x3FF : value;
                 SetColorElement__Q36nw4hbm3lyt8MaterialFUls(arg2, item[1], value);
@@ -25628,8 +25628,9 @@ extern "C" void fn_800A4C14(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" void NANDSetUserData(void* arg0, s32 arg1) {
-    *(s32*)((u8*)arg0 + 0xC) = arg1;
+extern "C" void NANDSetUserData(void* block, s32 data) {
+    /* Store the user-data value at offset +0xC of the NAND command block. */
+    *(s32*)((u8*)block + 0xC) = data;
 }
 
 /* Returns the character-code mode of a VFiPF path context (VFiPFStrPos.code): 1 = one byte per character, 2 = Unicode. */
