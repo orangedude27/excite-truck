@@ -231,8 +231,9 @@ void fn_8000DC28(const char *source, int slotIndex) {
     }
 #undef playerNameBase
 }
-int fn_8000DC70(int arg0) {
-    return (int)((char *)lbl_8055D46C + arg0 * 0x12 + 0x64);
+int fn_8000DC70(int identIndex) {
+    // Address of the 0x12-byte name string for this identifier in the IdentInfo block.
+    return (int)((char *)lbl_8055D46C + identIndex * 0x12 + 0x64);
 }
 
 #pragma push
