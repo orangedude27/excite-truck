@@ -443,12 +443,14 @@ s32 *fn_80149580(void) {
     return &lbl_80559EA4;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_80149588(s32 arg0) {
-    s32 sp8;
-    fn_80130980(&sp8, 0x20, 3);
-    fn_801474EC(arg0, &lbl_80559EC4, &sp8);
+    u8 sp8[0x20];
+    fn_80130980(sp8, 0x20, 3);
+    ((void (*)(s32, s32 *, void *, ...))fn_801474EC)(arg0, &lbl_80559EC4, sp8);
 }
-
+#pragma pop
 extern s32 lbl_8055E3C4;
 extern f32 lbl_80561638, lbl_8056163C;
 extern f64 lbl_80561640;
