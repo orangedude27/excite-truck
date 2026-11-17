@@ -352,17 +352,12 @@ extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(void *
 
 extern "C" f32 lbl_80561078;
 extern "C" void fn_800EC890(void *, int, int, int, int, f32);
-#pragma push
-#pragma scheduling on
+#pragma opt_propagation off
 extern "C" void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     u8 *p = (u8 *)arg0;
     f32 zero = lbl_8056107C;
     f32 one = lbl_80561078;
-    u8 v2 = 2;
-    u8 vff = 0xFF;
-    u8 v7f = 0x7F;
-    u8 v40 = 0x40;
-    u8 v3c = 0x3C;
+    int n2 = 2, nff = 0xFF, n7f = 0x7F, n40 = 0x40;
     *(f32 *)(p + 0x08) = one;
     *(f32 *)(p + 0x0C) = one;
     *(f32 *)(p + 0x10) = zero;
@@ -385,33 +380,33 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     *(u32 *)(p + 0x54) = 0;
     *(u32 *)(p + 0x60) = 0;
     *(u32 *)(p + 0x64) = 0;
-    p[0x88] = v40;
+    p[0x88] = (u8)n40;
     *(u32 *)(p + 0x58) = 0;
     p[0x5C] = 0;
     p[0x5D] = 0;
     p[0x5E] = 0;
     p[0x5F] = 0;
-    p[0x80] = v7f;
-    p[0x81] = v7f;
+    p[0x80] = (u8)n7f;
+    p[0x81] = (u8)n7f;
     p[0x84] = 0;
     p[0x85] = 0;
     p[0x86] = 0;
     p[0x82] = 0;
-    p[0x8B] = vff;
-    p[0x8C] = vff;
-    p[0x8D] = vff;
-    p[0x8E] = vff;
-    p[0x8F] = v7f;
+    p[0x8B] = (u8)nff;
+    p[0x8C] = (u8)nff;
+    p[0x8D] = (u8)nff;
+    p[0x8E] = (u8)nff;
+    p[0x8F] = (u8)n7f;
     p[0x90] = 0;
     p[0x91] = 0;
     p[0x92] = 0;
-    p[0x93] = v40;
-    p[0x83] = v2;
-    p[0x89] = v3c;
+    p[0x93] = (u8)n40;
+    p[0x83] = (u8)n2;
+    p[0x89] = 0x3C;
     p[0x8A] = 0;
     *(f32 *)(p + 0x7C) = zero;
     p[0x87] = 0;
-    fn_800EC890(p + 0x68, v2, vff, v7f, v40, one);
+    fn_800EC890(p + 0x68, n2, nff, n7f, n40, one);
     p[0x78] = 0;
     *(u32 *)(p + 0xB8) = 0;
     *(u16 *)(p + 0x94) = 0xFFFF;
@@ -431,7 +426,7 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     *(u16 *)(p + 0xB0) = 0xFFFF;
     *(u16 *)(p + 0xB2) = 0xFFFF;
 }
-#pragma pop
+#pragma opt_propagation reset
 /* Set two adjacent 32-bit fields of the object: field 0x50 = base, field 0x54 = base + span. */
 extern "C" void fn_800F1080(void *self, int base, int span) {
     *(int *)((char *)self + 0x50) = base;
@@ -4629,6 +4624,8 @@ extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm
 }
 
 #pragma use_lmw_stmw off
+#pragma push
+#pragma opt_propagation off
 extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0) {
     extern void* fn_8002F53C(void*, void (*)(void*), void* (*)(void*, int), s32, s32);
     extern void* fn_8002F634(void*, void* (*)(void*, int), s32, s32);
@@ -4653,48 +4650,46 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
             if (elt == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
             }
-            it_14 = *(void**)(self + 0x10);
+            it_14 = *(void* volatile*)(self + 0x10);
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(self + 0xC, (void**)&it_14);
             s32 prio = *(u8*)(elt + 0x74) + *(s32*)(elt + 0x40);
-            prio = prio > 0x7F ? 0x7F : prio & ~(prio >> 31);
+            prio = prio > 0x7F ? 0x7F : (prio < 0 ? 0 : prio);
             u8* bucket = arr + prio * 0xC;
-            it_10 = (void*)(bucket + 4);
+            void* tmp10 = (void*)(bucket + 4);
             if (elt == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326288, 0x233, (const char*)lbl_80326264);
             }
+            it_10 = tmp10;
             Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(bucket, (void**)&it_10, elt + 0xC8);
         }
     }
     {
         u8* entry = arr;
-        u32 k = 0;
+        int k = 0;
         do {
             if (*(void**)entry != 0) {
-                void* temp;
-                do {
-                    temp = *(void**)entry;
-                    if (temp != 0) {
-                        if (temp == 0) {
-                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
-                        }
-                        void* next2 = *(void**)(entry + 4);
-                        if (next2 == 0) {
-                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
-                        }
-                        u8* elt2 = (u8*)next2 - 0xC8;
-                        if (elt2 == 0) {
-                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
-                        }
-                        it_C = *(void**)(entry + 4);
-                        Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(entry, (void**)&it_C);
-                        if (elt2 == 0) {
-                            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326288, 0x233, (const char*)lbl_80326264);
-                        }
-                        it_8 = (void*)(self + 0x10);
-                        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(self + 0xC, (void**)&it_8, elt2 + 0xC8);
+                void* end = (void*)(self + 0x10);
+                while (*(void**)entry != 0) {
+                    void* temp = *(void**)entry;
+                    if (temp == 0) {
+                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
                     }
-                    temp = *(void**)entry;
-                } while (temp != 0);
+                    void* next2 = *(void**)(entry + 4);
+                    if (next2 == 0) {
+                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
+                    }
+                    u8* elt2 = (u8*)next2 - 0xC8;
+                    if (elt2 == 0) {
+                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
+                    }
+                    it_C = *(void* volatile*)(entry + 4);
+                    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(entry, (void**)&it_C);
+                    if (elt2 == 0) {
+                        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326288, 0x233, (const char*)lbl_80326264);
+                    }
+                    it_8 = end;
+                    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(self + 0xC, (void**)&it_8, elt2 + 0xC8);
+                }
             }
             k += 1;
             entry += 0xC;
@@ -4702,8 +4697,21 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
     }
     fn_8002F634(arr, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
 }
-
+#pragma pop
 extern "C" void* fn_800F07EC(void*, void*);
+static inline s32 AmbientInfo_GetPriority(s32, s32);
+static inline s32 ClampS32(s32, s32, s32);
+static inline void SoundPlayer_InsertPriorityList(s32, void*);
+struct BasicSoundVirtualsEarly {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void Stop(s32 fadeFrames);
+};
+#pragma push
+#pragma dont_inline off
+#pragma auto_inline off
 extern "C" void* fn_800F8CA4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, void* arg6) {
     extern const char lbl_8032624C[];
     extern const char lbl_80326208[];
