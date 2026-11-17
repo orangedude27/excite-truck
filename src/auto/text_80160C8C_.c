@@ -3118,7 +3118,7 @@ void fn_80164D64(void *menu, s32 unused) {
 #undef FLOAT_ONE
 #undef FLOAT_ZERO
 }
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_80164F50(void *arg0) {
     extern void fn_801796BC(unsigned char);
     extern s32 fn_80131234(void *);
@@ -3138,7 +3138,6 @@ void fn_80164F50(void *arg0) {
     s32 first;
     s32 second;
     u8 *base = lbl_8032F588;
-    s32 zero;
     f32 f2;
     f32 f1;
     f32 f0;
@@ -3152,15 +3151,14 @@ void fn_80164F50(void *arg0) {
     if (*(s32 *)((u8 *)self + 8) >= *(s32 *)(lbl_8042FDEC + 4)) {
         *(s32 *)((u8 *)self + 8) = *(s32 *)(lbl_8042FDEC + 4);
     }
-    zero = 0;
-    f2 = lbl_80561888;
-    *(u8 *)((u8 *)self + 4) = zero;
+    f2 = *(volatile f32 *)&lbl_80561888;
+    *(volatile u8 *)((u8 *)self + 4) = 0;
     outPtr = out;
-    f1 = lbl_80561840;
+    f1 = *(volatile f32 *)&lbl_80561840;
     inPtr = in;
-    *(u8 *)((u8 *)self + 6) = zero;
-    f0 = lbl_80561848;
-    *(u8 *)((u8 *)self + 5) = zero;
+    *(volatile u8 *)((u8 *)self + 6) = 0;
+    f0 = *(volatile f32 *)&lbl_80561848;
+    *(volatile u8 *)((u8 *)self + 5) = 0;
     outPtr[0] = f2;
     outPtr[1] = f2;
     inPtr[0] = f1;
