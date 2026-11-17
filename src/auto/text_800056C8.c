@@ -324,6 +324,8 @@ void fn_80005B68(void) {
 #pragma push
 #pragma dont_inline on
 void fn_80005B6C(void) {
+    /* Empty no-op hook run near the end of the frame update dispatch
+     * (fn_80007238); one of a run of default callback slots that do nothing. */
     return;
 }
 #pragma pop
