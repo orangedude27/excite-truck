@@ -7,6 +7,7 @@ extern void *memset(void *, int, unsigned int);
 extern void deallocate_from_fixed_pools(void ***, unsigned char *, unsigned int);
 extern void Block_link(void *, void *);
 extern void __sys_free(void *);
+static inline int heap_uninitialized(void) { return lbl_8055D678 == 0; }
 void free(void *arg0) {
     void ***pool;
     unsigned int size;
