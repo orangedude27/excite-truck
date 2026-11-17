@@ -3168,25 +3168,30 @@ extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
     }
     return (s32)value;
 }
-extern "C" s32 fn_80142870(void *arg0, void *arg1) {
-    f32 time = fn_8013CB3C() - *(f32 *)((u8 *)arg1 + 0x84);
-    time -= *(f32 *)(lbl_8042FB3C + 0x24);
-    f32 one = lbl_805614A4;
-    f32 span = *(f32 *)(lbl_8042FB3C + 0x20);
-    f32 value = lbl_805614AC;
-    f32 position = *(f32 *)(lbl_8042FB3C + 0x1C);
-    time -= one;
-    f32 ratio = time / (span - one);
+extern "C" s32 fn_80142870(void *zone, void *entry) {
+    /* Item entry (the ZoneMaster+0xB8 record) time-bonus check: the "Time-Bonus X"
+     * multiplier keeps its value for bonusFreeze seconds after the entry's game-time
+     * stamp at +0x84, then fades linearly to 0 over bonusFadeout seconds.  While any
+     * of it is left the entry still scores the whole (rounded) multiplier; once the
+     * fade has run out it scores nothing.  arg0 is the ZoneMaster and is unused. */
+    f32 elapsed = fn_8013CB3C() - *(f32 *)((u8 *)entry + 0x84);
+    elapsed -= gTimeBonus.bonusFreeze;
+    f32 zero = lbl_805614A4;         /* 0.0f */
+    f32 fadeout = gTimeBonus.bonusFadeout;
+    f32 progress = lbl_805614AC;     /* 1.0f */
+    f32 bonusX = gTimeBonus.bonusX;
+    elapsed -= zero;
+    f32 fraction = elapsed / (fadeout - zero);
 
-    value = value < ratio ? value : ratio;
-    value = value > lbl_805614A4 ? value : lbl_805614A4;
+    progress = progress < fraction ? progress : fraction;
+    progress = progress > lbl_805614A4 ? progress : lbl_805614A4;
 
-    f32 result = position + value * (lbl_805614A4 - position);
-    if (result > lbl_805614A4) {
-        f32 current = *(f32 *)(lbl_8042FB3C + 0x1C);
+    f32 remaining = bonusX + progress * (lbl_805614A4 - bonusX);
+    if (remaining > lbl_805614A4) {
+        f32 current = gTimeBonus.bonusX;
         f32 rounded;
         if (!(current < lbl_805614A4)) {
-            rounded = lbl_80561498 + current;
+            rounded = lbl_80561498 + current;   /* 0.5f: round to nearest */
         } else {
             rounded = current - lbl_80561498;
         }
