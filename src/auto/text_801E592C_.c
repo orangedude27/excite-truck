@@ -163,6 +163,7 @@ s32 fn_801E5E24(s32 arg0, void *arg1, s32 arg2, void *arg3) {
     }
     return 0;
 }
+#pragma pop
 
 extern void fn_80015B20(void *, void *, void *);
 extern void fn_8001BA68(void *);
