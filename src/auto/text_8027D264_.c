@@ -360,8 +360,10 @@ void fn_8027D880(void *effect) {
 }
 
 extern void fn_8001DA48(void *);
-void fn_8027D888(void *arg0) {
-    fn_8001DA48((char *)arg0 + 0x14);
+/* Effect method: index the embedded int array at +0x14 via fn_8001DA48
+   (the index argument passes through unchanged in r4). */
+void fn_8027D888(void *effect) {
+    fn_8001DA48((char *)effect + 0x14);
 }
 
 int fn_8027D890(void *arg0) {
