@@ -863,8 +863,10 @@ void fn_801E87D4(long element) {
 }
 
 extern void *lbl_8055EB24;
-void fn_801E8818(void* hi) {
-    lbl_8055EB24 = hi;
+/* Register the per-frame shutdown/reset hook (a void(void) function pointer)
+   called by fn_801E8CE4; fn_801E8820 clears it. */
+void fn_801E8818(void* hook) {
+    lbl_8055EB24 = hook;
 }
 
 /* Unregister the per-frame shutdown/reset hook installed by fn_801E8818. */
