@@ -638,7 +638,8 @@ void fn_801C014C(void *object, float *position) {
 
 int fn_801C0168(void *arg0) { return *(int *)((char *)arg0 + 0x5A4); }
 
-int fn_801C0170(void *arg0) { return *(int *)((char *)arg0 + 0x59C); }
+// Return the 32-bit field stored at offset 0x59C of the given object.
+int fn_801C0170(void *object) { return *(int *)((char *)object + 0x59C); }
 
 float fn_801C0178(void) { extern float lbl_8055E3C8; return lbl_8055E3C8; }
 
