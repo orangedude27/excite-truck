@@ -28686,8 +28686,10 @@ void* __AXFXAllocFunction(u32 size) {
     return OSAllocFromHeap(__OSCurrHeap, size);
 }
 
-void __AXFXFreeFunction(void* ptr) {
-    OSFreeToHeap(__OSCurrHeap, ptr);
+/* AXFX deallocation hook: return an effect work buffer to the current OS heap.
+ * Paired with __AXFXAllocFunction and installed via AXFXSetHooks_8009CDB0. */
+void __AXFXFreeFunction(void* block) {
+    OSFreeToHeap(__OSCurrHeap, block);
 }
 
 extern void *lbl_805590B0;
