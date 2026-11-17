@@ -528,8 +528,11 @@ void fn_8020938C(void *timer) {
 #undef state
 }
 
-void fn_80209398(void *arg0) {
-    *(int *)((char *)arg0 + 8) = 1;
+void fn_80209398(void *timer) {
+    /* Set a sound timer's state field (+8) to 1 (running). */
+#define state ((int *)((char *)timer + 8))
+    *state = 1;
+#undef state
 }
 
 int fn_802093A4(void *arg0) {
