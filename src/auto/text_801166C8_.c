@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+
+static s32 get_sign(s32 x) { return x >> 31; }
 typedef struct { f32 x, y; } V2_80121848;
 extern void fn_8012440C(void *, void *);
 extern void fn_80124CE8(void *, void *);
@@ -726,15 +728,14 @@ u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag)
     return maxDiff;
 }
 
-#pragma push
-#pragma opt_common_subs off
+#pragma opt_propagation off
 s32 fn_80117598(s32 arg0, s32 arg1) {
     register s32 off;
     register s32 base;
     s32 value;
     s32 diff;
-    s32 sign;
-    s32 inv;
+    register s32 sign;
+    register s32 inv;
     off = arg0 + 0x340;
     off -= arg0;
     base = arg0 - off;
@@ -744,7 +745,7 @@ s32 fn_80117598(s32 arg0, s32 arg1) {
     inv = -1 - value;
     return sign & inv;
 }
-#pragma pop
+#pragma opt_propagation reset
 /* Tick-list "finish" callback for the audio stream manager, registered by
  * fn_8011BEC8 at the manager's node (mgr+0x340) alongside the check callback
  * fn_80117598. The periodic tick driver (fn_8011BD20) calls it once per alarm
