@@ -1438,8 +1438,9 @@ extern "C" f32 fn_800ED074(void *seqPlayer) {
     return ((f32 *)seqPlayer)[0x24 / 4];
 }
 
-extern "C" f32 fn_800ED07C(void *arg0) {
-    return ((f32 *)arg0)[0x20 / 4];
+/* Return the f32 field at offset 0x20 of a sequence player object. */
+extern "C" f32 fn_800ED07C(void *seqPlayer) {
+    return ((f32 *)seqPlayer)[0x20 / 4];
 }
 
 /* Returns the f32 field at offset 0x34 of a sequence player object. */
