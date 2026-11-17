@@ -2040,33 +2040,33 @@ extern void fn_802B773C(void), fn_802C7040(void), fn_80230B5C(void *), fn_802C86
 extern void fn_802C974C(float,float,float), fn_802B86F8(void), fn_802B676C(void), fn_802B6804(void);
 extern void fn_802B7D4C(void), fn_802B69FC(void), fn_802B7D1C(void), fn_802B7CF0(void);
 extern void fn_8001123C(s32), fn_80011A2C(void);
-void fn_802B8848(void) {
+#pragma cplusplus on
+extern "C" void fn_802B8848(void) {
+    class UiFrame {
+    public:
+        virtual void v0();
+        virtual void *v1(const char *);
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+    };
     s32 sp8[12], temp_r31;
-    s32 temp_r34;
-    u32 state;
-    u32 a;
-    u32 b;
-    u32 c;
     if (lbl_8055FA48 != 0) {
         if ((u32)(lbl_8055FA38 - 2) <= 1U) fn_802B773C();
-        if ((u8)lbl_8055FA32 != 0 && (temp_r34=lbl_8055FA34) != -1) fn_802C7040();
+        if ((u8)lbl_8055FA32 != 0 && lbl_8055FA34 != -1) ((void (*)(s32))fn_802C7040)(lbl_8055FA34);
         fn_80230B5C(sp8); fn_802C8638(sp8);
         fn_802C974C(lbl_80564CA0, lbl_80564C70, lbl_80564CA4);
         fn_802B86F8(); fn_802B676C();
         if (lbl_8055FA38 != 2 && lbl_8055FA38 != 3) fn_802B6804();
         switch (lbl_8055FA38) { case 0: fn_802B7D4C(); break; case 1: fn_802B69FC(); break; case 2: fn_802B7D1C(); break; case 3: fn_802B7CF0(); break; }
-        state = (u32)lbl_8055FA38;
-        a = state << 30;
-        b = state >> 31;
-        c = a - b;
-        c *= 4;
-        temp_r31=fn_802B5B18(c + b);
-        fn_802B6568(((void *(*)(void *, void *))(*(u32 **)*lbl_8055FA48)[3])(*lbl_8055FA48,lbl_8034A6C0), (const char *)temp_r31);
-        ((void (*)(void *))(*(u32 **)*lbl_8055FA48)[7])(*lbl_8055FA48);
+        temp_r31 = fn_802B5B18(lbl_8055FA38 % 4);
+        fn_802B6568(((UiFrame *)lbl_8055FA48)->v1(lbl_8034A6C0), (const char *)temp_r31);
+        ((UiFrame *)lbl_8055FA48)->v5();
         fn_8001123C(0); fn_80011A2C();
     }
 }
-
+#pragma cplusplus reset
 extern char lbl_8055FA59;
 #pragma push
 #pragma small_data off
