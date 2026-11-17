@@ -988,8 +988,9 @@ s32 fn_8020BC60(void) { return 0; }
 /* Set the pan field (offset 0x20) of a VoiceSnd: -1 = left, 1 = right. */
 void fn_8020BC68(void *snd, f32 pan) { *(f32 *)((char *)snd + 0x20) = pan; }
 
-void fn_8020BC70(void *arg0, f32 farg0) {
-    *(f32 *)((signed char *)arg0 + 0x28) = farg0;
+/* Set the surround-pan field (offset 0x28, the rear balance used in surround mode) of a VoiceSnd. */
+void fn_8020BC70(void *snd, f32 surroundPan) {
+    *(f32 *)((signed char *)snd + 0x28) = surroundPan;
 }
 
 void fn_8020BC78(void *arg0, f32 farg0) {
