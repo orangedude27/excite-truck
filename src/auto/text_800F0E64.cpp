@@ -7749,8 +7749,9 @@ extern "C" int fn_800FD8E0(void *player) {
     return *((unsigned char *)player + 0x4A) != 0;
 }
 
-extern "C" int fn_800FD8F4(void* arg0) {
-    return *((unsigned char*)arg0 + 0x48) != 0;
+/* Return nonzero when the StrmPlayer has an active/prepared stream set up (its flag at +0x48). */
+extern "C" int fn_800FD8F4(void* player) {
+    return *((unsigned char*)player + 0x48) != 0;
 }
 
 extern "C" void* fn_8002F634(void*, void*, int, int);
