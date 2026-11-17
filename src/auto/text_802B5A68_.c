@@ -232,8 +232,11 @@ s32 fn_802B5D2C(const char *name, s32 input) {
 
 #pragma push
 #pragma dont_inline on
-s32 fn_802B5D94(s32 arg0) {
-    return fn_802B5D2C(lbl_8055CE40, arg0);
+/* Parse the "object:"-tagged integer from a text line via fn_802B5D2C; returns -1 when absent. */
+s32 fn_802B5D94(s32 text) {
+#define TAG_OBJECT lbl_8055CE40
+    return fn_802B5D2C(TAG_OBJECT, text);
+#undef TAG_OBJECT
 }
 
 u32 fn_802B5DA0(void) {
@@ -1328,7 +1331,7 @@ s32 fn_802B7694(void) {
     return triggered;
 }
 
-#pragma opt_propagation off
+#pragma scheduling invalid_target
 void fn_802B773C(void) {
     f32 sp8[3];
     s32 *state = lbl_804BFF80;
@@ -1364,10 +1367,6 @@ void fn_802B773C(void) {
                     (void (*)(s16, s16, u8))fn_802B7420);
     }
 }
-#pragma opt_propagation reset
-
-#pragma pop
-
 extern s32 fn_802B6270(void);
 #pragma cplusplus on
 extern "C" void fn_802B7884(void *arg0) {
@@ -1721,9 +1720,9 @@ s32 fn_802B8110(u32 arg0, s32 arg1) {
         s32 entries[51];
     } work;
     void *temp_r3;
-    s32 var_r30;
-    register s32 *temp_r6;
-    register s32 temp_r29;
+    u32 var_r30;
+    s32 *temp_r6;
+    u32 temp_r29;
     s32 temp_r3_2;
     s32 temp_r3_3;
     s32 temp_r4;
