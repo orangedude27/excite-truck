@@ -137,8 +137,8 @@ void fn_802A9090(f32 *pos, f32 *dir) {
     }
 }
 extern u8 lbl_8055F8F8;
-extern f32 lbl_8055F900;
-extern f32 lbl_8055F908;
+extern volatile f32 lbl_8055F900[2];
+extern volatile f32 lbl_8055F908[2];
 extern char lbl_80349D88[];
 extern s32 fn_8012C33C(s32);
 extern void fn_802A1120(void *, void *);
@@ -158,22 +158,22 @@ void fn_802A92CC(void) {
     result = (u8)fn_802A9048();
     lbl_8055F8F0 = result;
     if (result != 0) {
-        fn_802A1120(&lbl_8055F8F8, &lbl_8055F908);
-        value0 = *(volatile f32 *)&lbl_8055F908;
-        value1 = *((volatile f32 *)&lbl_8055F908 + 1);
-        *(volatile f32 *)&lbl_8055F900 = value0;
+        fn_802A1120(&lbl_8055F8F8, (void *)lbl_8055F908);
+        value0 = lbl_8055F908[0];
+        value1 = lbl_8055F908[1];
+        lbl_8055F900[0] = value0;
         entry = (s32 *)lbl_804BD740;
-        *((volatile f32 *)&lbl_8055F900 + 1) = value1;
+        lbl_8055F900[1] = value1;
         i = 0;
-        *(volatile f32 *)&lbl_8055F900 = value1;
-        *((volatile f32 *)&lbl_8055F900 + 1) = -value0;
+        lbl_8055F900[0] = value1;
+        lbl_8055F900[1] = -value0;
         do {
             if (fn_8012C33C(entry[0]) != 0)
                 entry[1] = fn_802C6FC0(entry[0], 0, 0);
             i++;
             entry += 2;
         } while (i < 4U);
-        fn_802A9090(&lbl_8055F8F8, &lbl_8055F908);
+        fn_802A9090(&lbl_8055F8F8, (void *)lbl_8055F908);
         lbl_8055F8F1 = 0;
         lbl_8055CC58 = fn_802CAC28(lbl_80349D88, 0);
         fn_802A9574();
