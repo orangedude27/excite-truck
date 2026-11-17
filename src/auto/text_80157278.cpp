@@ -625,8 +625,9 @@ extern "C" void* fn_801572A4(s32 configPtr, s32 courseIndex, s32 initValue) {
     return group;
 }
 
-extern "C" s32 fn_80157558(void* arg0) {
-    return *(s32*)((u8*)arg0 + 4);
+/* Return the element count (the s32 word at +4) of an array-holder / ArrayTracker object. */
+extern "C" s32 fn_80157558(void* arrayHolder) {
+    return *(s32*)((u8*)arrayHolder + 4);
 }
 
 extern "C" void* fn_80131810(void*);
@@ -2061,20 +2062,19 @@ skip_reset:
 }
 #pragma pop
 
+#pragma opt_propagation off
 extern "C" void fn_8015A318(Unk8015A368C* arg0) {
-    register s32 count = arg0->m260;
-    if (count <= 0) {
-        return;
+    s32 r5 = arg0->m260;
+    if (r5 > 0) {
+        s32 r3 = arg0->m258;
+        if (r3 != 0) {
+            void fn_801CB6E4(void*, s32);
+            fn_801CB6E4((void*)r3, *(s32*)&arg0->m4);
+        }
+        arg0->m260 = 0;
     }
-    register s32 buffer = arg0->m258;
-    if (buffer) {
-        void fn_801CB6E4(void*, s32);
-        fn_801CB6E4((void*)buffer, *(s32*)&arg0->m4);
-    }
-    arg0->m260 = 0;
 }
-
-#pragma dont_inline on
+#pragma opt_propagation reset
 extern "C" f32 fn_8015A368(void* arg0) {
     /* Finalize and return the bonus accumulator: compute (m25c * v18(v21())),
      * apply it via v33/v31, clear the pending count, and reset m25c to 1.0f. */
@@ -2596,14 +2596,14 @@ extern "C" void fn_8015B23C(Unk8015A368C* object) {
     }
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" s32 fn_8015B2E0(void* arg0) {
-    if (*(unsigned char*)((unsigned char*)arg0 + 0x294)) return 0x7FFFFFFF;
-    float value = *(float*)((unsigned char*)arg0 + 0x290);
+    if (*(u8*)((char*)arg0 + 0x294)) return 0x7fffffff;
+    f32 value = *(f32*)((char*)arg0 + 0x290);
     if (value > lbl_80558DC4[0]) return (s32)value;
-    return (s32)*(float*)((unsigned char*)arg0 + 0x28C);
+    return (s32)*(f32*)((char*)arg0 + 0x28c);
 }
-#pragma scheduling reset
+#pragma scheduling on
 /* Return the fixed constant 12 (0xC) used by this subsystem. */
 extern "C" s32 fn_8015B338(void) { return 0xC; }
 
@@ -3457,9 +3457,9 @@ extern "C" void fn_8015CF00(Unk801577F0* arg0) {
     arg0->m26c = 0;
     *(s32*)((u8*)arg0 + 0x270) = 0;
     if (target != 0) {
+        int mode = 2;
         *(u8*)((u8*)target + 0x4A) = 1;
         *(u8*)((u8*)target + 0x4C) = 0;
-        s32 mode = 2;
         if (fn_80009C84() != 0)
             mode = 0;
         if (*(void**)((u8*)arg0 + 0x278) != 0)
