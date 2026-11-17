@@ -526,8 +526,9 @@ s32 fn_80156AB0(void *object) {
     return ((s32 *)object)[1];
 }
 
-s32 fn_80156AB8(void *arg0) {
-    return ((s32 *)arg0)[1];
+/* Return the offset-4 field of a PSSystem object. */
+s32 fn_80156AB8(void *object) {
+    return ((s32 *)object)[1];
 }
 
 extern u8 lbl_8032E448[];
