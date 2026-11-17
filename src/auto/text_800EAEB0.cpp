@@ -484,10 +484,11 @@ extern "C" void fn_800EB3E4(void* arg0) {
     #undef sAttackStepTable
 }
 
-extern "C" void fn_800EB41C(void* arg0) {
-    f32 value = lbl_80560FEC;
-    *(s32*)arg0 = 0;
-    *(f32*)((u8*)arg0 + 4) = value;
+extern "C" void fn_800EB41C(void* env) {
+    /* Reset a sequence note's EnvGenerator (+8) to the attack state with the default retrigger volume. */
+    f32 initialVolume = lbl_80560FEC;
+    *(s32*)env = 0;
+    *(f32*)((u8*)env + 4) = initialVolume;
 }
 
 extern "C" f32 fn_800EB430(void* env) {
