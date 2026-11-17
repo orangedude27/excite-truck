@@ -1449,6 +1449,19 @@ extern "C" void fn_801914F8(void *wrapper) {
     sub->f8();
 }
 
+extern "C" void fn_8019150C(void *arg0, int arg1) {
+    class VTable {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+    };
+    VTable *sub = *(VTable **)((char *)arg0 + 4);
+    sub->f7();
+    struct Bits { unsigned char a : 3; unsigned char b : 5; };
+    unsigned char *state = *(unsigned char **)((char *)arg0 + 8);
+    ((Bits *)&state[7])->a = (unsigned char)(arg1 + 1);
+}
+
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_80191568(void *wrapper) {
