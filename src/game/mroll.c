@@ -997,9 +997,9 @@ do_loop:
     return 1;
 }
 #pragma scheduling on
-s32 fn_80241EE8(s32 index) {
-    /* Offset helper: add the fixed 0x4C-byte entry/header size to the given index. */
-    return index + 0x4C;
+s32 fn_80241EE8(s32 base) {
+    /* Field accessor: add the fixed 0x4C offset to reach the record-name field of a UI entry. */
+    return base + 0x4C;
 }
 
 #pragma cplusplus on
