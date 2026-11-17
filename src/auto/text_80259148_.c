@@ -364,13 +364,47 @@ void fn_80259740(int mode, float value) {
 #pragma push
 #pragma use_lmw_stmw off
 int fn_8025978C(void **arg0) {
-    unsigned char stack[0x600];
+    struct S {
+        char b0[0x28];
+        void *a1[7];
+        void *a2[7];
+        int a3[7];
+        int a4[7];
+        char buf[0x20];
+        char h1[0x28];
+        char h2[0x28];
+        char c1[0xAC];
+        char c2[0xAC];
+        char rest[0x410];
+    } s;
     int i;
     lbl_8055F3A0 = 0;
-    for (i = 0; i < 0x600; i++) stack[i] = 0;
-    fn_802CAC28(lbl_80344DE0 + 0x42, 0, lbl_80563AE0);
-    fn_802CAC28(lbl_80344DE0 + 0x42, 0, lbl_80563AE0);
-    (void)arg0; (void)stack;
+    for (i = 0; i < (int)sizeof(s); i++) ((char *)&s)[i] = 0;
+    *(void **)((char *)&s + 0x1B4) = (void *)lbl_80345158;
+    *(int *)((char *)&s + 0x204) = -1;
+    *(float *)((char *)&s + 0x238) = lbl_80563AE0;
+    *(float *)((char *)&s + 0x23C) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x240) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x244) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x248) = lbl_80563AE0;
+    *(float *)((char *)&s + 0x24C) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x250) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x254) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x258) = lbl_80563AE0;
+    *(void **)((char *)&s + 0x108) = (void *)lbl_80345158;
+    *(int *)((char *)&s + 0x158) = -1;
+    *(float *)((char *)&s + 0x18C) = lbl_80563AE0;
+    *(float *)((char *)&s + 0x190) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x194) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x198) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x19C) = lbl_80563AE0;
+    *(float *)((char *)&s + 0x1A0) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x1A4) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x1A8) = lbl_80563AE4;
+    *(float *)((char *)&s + 0x1AC) = lbl_80563AE0;
+    fn_802CAC28((char *)lbl_80344DE0 + 0x108, 0, lbl_80563AE0);
+    fn_802CAC28((char *)lbl_80344DE0 + 0x108, 0, lbl_80563AE0);
+    (void)arg0;
     return 0;
 }
 #pragma pop
@@ -774,6 +808,7 @@ extern float lbl_80498EAC[3];
 #pragma dont_inline on
 #pragma opt_common_subs off
 #pragma opt_propagation off
+#pragma scheduling invalid_target
 void fn_8025AA90(void *arg0, float farg0) {
     unsigned char info[0x60];
     float rot[9];
@@ -786,9 +821,10 @@ void fn_8025AA90(void *arg0, float farg0) {
     float v8[3];
     unsigned int flags40, flags50;
     float color0, color1, sum, d1;
-    if (*(int *)((char *)arg0 + 0x50) == -1) return;
-    if (((unsigned char *)arg0)[0x4A] != 0) {
-    } else return;
+    if (*(int *)((char *)arg0 + 0x50) == -1) goto done;
+    if (((unsigned char *)arg0)[0x4A] != 0) goto body;
+    goto done;
+body: ;
     if (fn_801298E8(info, 0) != 0) {
         flags40 = *(int *)(info + 0x40);
         color0 = (flags40 & 2) ? lbl_80563AE0 : lbl_80563AE4;
@@ -834,6 +870,7 @@ void fn_8025AA90(void *arg0, float farg0) {
     fn_80015EB0(rot, lbl_8055F398);
     fn_80015B20((char *)arg0 + 0x84, rot, (char *)arg0 + 0x84);
     fn_80015B20((char *)arg0 + 0x84, (char *)arg0 + 0x84, fn_802C86DC());
+done: ;
 }
 #pragma pop
 void fn_8025AD3C(float *out, float *a, float *b, float t) {
