@@ -167,6 +167,7 @@ int fn_802E88D8(void) {
 #undef gNandSaveInvalid
 }
 #pragma scheduling on
+/* Request a kernel reset into the Wii home menu (reset mode 1); used on fatal NAND errors. */
 void fn_802E8918(void) {
     fn_802E2E38(1);
 }
