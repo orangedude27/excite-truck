@@ -2355,10 +2355,6 @@ extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigne
 struct CountField_800D9844 { u32 rest : 18; u32 cnt : 5; u32 pad : 9; };
 struct TevStageDefault {
     u8 b[16];
-    TevStageDefault(const TevStageDefault &other) {
-        b[4] = other.b[4]; b[5] = other.b[5]; b[6] = other.b[6]; b[7] = other.b[7];
-        b[8] = other.b[8]; b[9] = other.b[9]; b[10] = other.b[10]; b[11] = other.b[11];
-    }
     TevStageDefault() {
         b[0] = 0xFF; b[1] = 4; b[2] = 0xFF; b[3] = 0;
         b[4] = 0xFF; b[5] = 0xAF; b[6] = 0; b[7] = 0x61;
