@@ -358,6 +358,8 @@ extern int lbl_8055D7E4;
 extern unsigned int lbl_8055D7E8;
 extern void TRKReadBuffer(void);
 extern void DCFlushRange(void *, unsigned int);
+#pragma push
+#pragma use_lmw_stmw off
 void fn_800331A0(void) {
     unsigned int i;
     int j;
