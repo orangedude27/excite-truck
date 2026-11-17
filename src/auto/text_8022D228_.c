@@ -220,8 +220,9 @@ divide:
     goto store;
 }
 #pragma scheduling on
-int fn_8022D97C(int *arg0, int arg1) {
-    return *arg0 + arg1 * 0x28;
+/* Indexed accessor: returns the address of the index-th entry in a 40-byte-record array. */
+int fn_8022D97C(int *basePtr, int index) {
+    return *basePtr + index * 0x28;
 }
 
 #pragma push
