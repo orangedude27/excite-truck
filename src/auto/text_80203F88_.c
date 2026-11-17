@@ -63,6 +63,9 @@ void fn_80204020(void) {
 }
 
 int fn_80204024(void) {
+    /* One of this unit's run of trivial virtual-method stubs: it answers 0/false
+     * and callers use it as an "active/running" flag that never actually stops
+     * the loop (e.g. the main-loop checks in text_8023B764_/text_8000AC98_). */
     return 0;
 }
 
