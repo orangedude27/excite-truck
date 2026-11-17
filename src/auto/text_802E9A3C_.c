@@ -925,73 +925,74 @@ extern int lbl_805600C0;
 extern int lbl_8055D26C;
 extern void *memset(void *, int, int);
 #pragma use_lmw_stmw off
-#pragma push
-#pragma cplusplus on
-int fn_802EB7D4(void *arg0, int arg1, int arg2, int arg_sp0) {
+int fn_802EB7D4(void *arg0, int arg1, int arg2) {
     int idx = arg2 * 4;
     int elem = lbl_8055D26C;
-    if (*(int *)((char *)&lbl_805600B0 + idx) == lbl_805600B8) {
+    if (*(volatile int *)((char *)&lbl_805600B0 + idx) == lbl_805600B8) {
         memset(arg0, 0, arg1);
         *(int *)((char *)&lbl_805600C0 + idx) = *(int *)((char *)&lbl_805600C0 + idx) + 1;
-        return arg1;
+        goto done;
     }
-    if (*(int *)((char *)&lbl_805600B0 + idx) < lbl_805600B8) {
+    if (*(volatile int *)((char *)&lbl_805600B0 + idx) < lbl_805600B8) {
         int bytes = arg1 * elem;
-        int rem = lbl_805600B8 - *(int *)((char *)&lbl_805600B0 + idx);
+        int rem = lbl_805600B8 - *(volatile int *)((char *)&lbl_805600B0 + idx);
         int avail = bytes < rem ? bytes : rem;
         if (avail < bytes && *(int *)((char *)&lbl_805600C0 + idx) != 0) {
             memset(arg0, 0, arg1);
             *(int *)((char *)&lbl_805600C0 + idx) = *(int *)((char *)&lbl_805600C0 + idx) + 1;
-            return arg1;
+            goto done;
         }
         {
             int count = avail / (elem * 2);
             int i;
-            unsigned short *src = (unsigned short *)(lbl_805600A0 + *(int *)((char *)&lbl_805600B0 + idx));
             unsigned short *dst = (unsigned short *)arg0;
+            unsigned short *src;
             *(int *)((char *)&lbl_805600C0 + idx) = 0;
+            src = (unsigned short *)(lbl_805600A0 + *(volatile int *)((char *)&lbl_805600B0 + idx));
             if (elem == 2) {
                 for (i = 0; i < count; i++) dst[i] = src[i * 2 + arg2];
             } else {
                 for (i = 0; i < count; i++) dst[i] = src[i];
             }
-            *(int *)((char *)&lbl_805600B0 + idx) = *(int *)((char *)&lbl_805600B0 + idx) + avail;
-            if (*(int *)((char *)&lbl_805600B0 + idx) >= lbl_805600A4) *(int *)((char *)&lbl_805600B0 + idx) = 0;
-            return arg1;
+            *(volatile int *)((char *)&lbl_805600B0 + idx) = *(volatile int *)((char *)&lbl_805600B0 + idx) + avail;
+            if (*(volatile int *)((char *)&lbl_805600B0 + idx) >= lbl_805600A4) *(volatile int *)((char *)&lbl_805600B0 + idx) = 0;
+            goto done;
         }
     } else {
         int bytes = arg1 * elem;
-        int rem = lbl_805600A4 - *(int *)((char *)&lbl_805600B0 + idx);
+        int rem = lbl_805600A4 - *(volatile int *)((char *)&lbl_805600B0 + idx);
         int avail = bytes < rem ? bytes : rem;
         if (avail < bytes && *(int *)((char *)&lbl_805600C0 + idx) != 0) {
             memset(arg0, 0, arg1);
             *(int *)((char *)&lbl_805600C0 + idx) = *(int *)((char *)&lbl_805600C0 + idx) + 1;
-            return arg1;
+            goto done;
         }
         {
             int count = avail / (elem * 2);
             int countBytes = avail / elem;
             int i;
-            unsigned short *src = (unsigned short *)(lbl_805600A0 + *(int *)((char *)&lbl_805600B0 + idx));
             unsigned short *dst = (unsigned short *)arg0;
+            unsigned short *src;
             *(int *)((char *)&lbl_805600C0 + idx) = 0;
+            src = (unsigned short *)(lbl_805600A0 + *(volatile int *)((char *)&lbl_805600B0 + idx));
             if (elem == 2) {
                 for (i = 0; i < count; i++) dst[i] = src[i * 2 + arg2];
             } else {
                 for (i = 0; i < count; i++) dst[i] = src[i];
             }
-            *(int *)((char *)&lbl_805600B0 + idx) = *(int *)((char *)&lbl_805600B0 + idx) + avail;
-            if (*(int *)((char *)&lbl_805600B0 + idx) >= lbl_805600A4) {
-                *(int *)((char *)&lbl_805600B0 + idx) = 0;
+            *(volatile int *)((char *)&lbl_805600B0 + idx) = *(volatile int *)((char *)&lbl_805600B0 + idx) + avail;
+            if (*(volatile int *)((char *)&lbl_805600B0 + idx) >= lbl_805600A4) {
+                *(volatile int *)((char *)&lbl_805600B0 + idx) = 0;
                 if (arg1 > countBytes) {
-                    fn_802EB7D4((char *)arg0 + countBytes, arg1 - countBytes, arg2, arg_sp0);
+                    fn_802EB7D4((char *)arg0 + countBytes, arg1 - countBytes, arg2);
                 }
             }
-            return arg1;
+            goto done;
         }
     }
+done:
+    return arg1;
 }
-#pragma pop
 int fn_802EBD40(void) {
     extern void OSSleepTicks(unsigned long long);
     register char *base;
@@ -1150,8 +1151,12 @@ char *fn_802EC104(int index) {
     return lbl_8052E658 + index * 0x610 + 0x408;
 }
 
-void fn_802EC11C(void *arg0) {
-    lbl_80560078 = arg0;
+/* Request a track-music song: publish its index to the global the audio thread
+ * picks up (lbl_80560078, -1 = no pending request). */
+void fn_802EC11C(void *songIndex) {
+    #define gPendingSong lbl_80560078
+    gPendingSong = songIndex;
+    #undef gPendingSong
 }
 
 extern void *lbl_80560078;
