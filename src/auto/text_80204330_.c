@@ -146,9 +146,9 @@ extern "C" void fn_8020449C(void) {
 #undef sGuiObject
 }
 #pragma processor 750
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" int fn_802044E8(void) {
- #pragma use_lmw_stmw off
  char *base = lbl_8033BB18;
  unsigned char input[0x64];
  float matrix[12];
