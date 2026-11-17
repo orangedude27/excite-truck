@@ -185,19 +185,25 @@ void fn_800049C0(void) DECOMP_DONT_INLINE {
     struct NameTable { const char* names[10]; };
     struct { u32 date[6]; struct NameTable table; } local;
     int lang_result;
-    u16 aa, bb, cc, dd;
-    u32 e, f, g, h;
+    u32 a, b, c, d, e, f, g, h;
+
     local.table = *(const struct NameTable*)lbl_802ED680;
     fn_802E2CFC(&local);
-    aa = *(u16*)((u8*)&local.date[1]);
-    bb = *(u16*)((u8*)&local.date[2]);
-    cc = *(u16*)((u8*)&local.date[1] + 2);
-    dd = *(u16*)((u8*)&local.date[2] + 2);
-    e = aa * 43200;
-    f = cc * 3600;
-    g = bb * 60;
-    h = dd << 8;
-    fn_80129C80(6, h & (dd ^ f), (dd << 8) & (g ^ e));
+
+    a = *(u16*)((u8*)&local.date[1]);
+    b = *(u16*)((u8*)&local.date[2]);
+    c = *(u16*)((u8*)&local.date[1] + 2);
+    d = *(u16*)((u8*)&local.date[2] + 2);
+
+    e = a * 43200;
+    f = c * 3600;
+    g = b * 60;
+    h = d << 8;
+
+    fn_80129C80(6,
+        h & (d ^ f),
+        (d << 8) & (g ^ e));
+
     lang_result = fn_80129D18(6, 10);
     if (fn_80278A1C(lbl_802FAF24) != 0) {
         fn_80278A1C(local.table.names[lang_result]);
@@ -398,7 +404,7 @@ void fn_80004CB4(void) {
     fn_8020CA34();
     fn_802789B0();
     fn_80018F7C();
-    fn_80019884();
+    fn_80019884(); /* Game Reputation shutdown: nothing to release (see fn_80019864) */
     fn_801AED58();
     fn_80141458();
     fn_8000D7E4();
