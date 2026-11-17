@@ -5428,7 +5428,12 @@ void fn_80071078(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x80) = arg0; }
 
 void fn_80071088(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x88) = arg0; }
 
-void fn_80071098(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x84) = arg0; }
+/* Register the BTA system callback stored at offset 0x84 of the system control block. */
+void fn_80071098(s32 callback) {
+    #define sBtaSysCb lbl_803C0AD8
+    *(s32 *)(sBtaSysCb + 0x84) = callback;
+    #undef sBtaSysCb
+}
 
 typedef void (*tConnOpenCb)(u8, u8, u16);
 /* Notify registered BTA system connection-open callbacks (event 0) with the given id/app/peer. */
