@@ -57,8 +57,11 @@ public:
 
 extern "C" {
 extern "C" void fn_8015474C(s32);
-void fn_80156188(s32 arg0) {
-    fn_8015474C(arg0 - 4);
+void fn_80156188(s32 subobjectThis) {
+    /* This-adjusting thunk: subtract the 4-byte multiple-inheritance offset to
+     * recover the base subobject's `this`, then forward to the no-op method
+     * fn_8015474C. */
+    fn_8015474C(subobjectThis - 4);
 }
 
 extern "C" void fn_80154750(s32);
@@ -744,8 +747,8 @@ extern "C" void* fn_80135420(f32*, s32, s32);
 extern f32 lbl_80561748;
 extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
     f32 point[2];
-    volatile f32 vs0;
     volatile f32 vs1;
+    volatile f32 vs0;
     f32 minimum;
     s32 offset = 0;
     s32 best = -1;
