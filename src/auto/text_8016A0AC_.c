@@ -133,14 +133,20 @@ void fn_8016A0D4(void) {
     }
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 s32 fn_8016A15C(const char *arg0) {
-    register s32 i = 0;
-    register s32 offset = 0;
-    register s32 found = 0;
+    register s32 found;
     register f32 fval = lbl_80561958;
     s32 j;
     u8 *entry;
     u8 *record;
+    s32 offset;
+    s32 i;
+    found = 0;
+    i = 0;
+    offset = 0;
     while (i < lbl_80430340.unk_0x4) {
         if (stricmp(lbl_80430340.unk_0x0 + offset + 1, arg0) == 0) {
             entry = (u8 *)lbl_80430340.unk_0x0 + offset;
@@ -161,9 +167,7 @@ s32 fn_8016A15C(const char *arg0) {
     }
     return found;
 }
-
-#pragma scheduling on
-#pragma small_data on
+#pragma pop
 extern f32 lbl_8055E3C8;
 #pragma push
 #pragma small_data off
@@ -269,10 +273,10 @@ s32 fn_8016A30C(void)
 #pragma processor 750
 void fn_8016A438(void) {
     Blk8016A438 blk;
-    s32 i;
-    s32 j;
-    char *ent;
     char *rec;
+    char *ent;
+    s32 j;
+    s32 i;
     f32 now;
     f32 t;
     f32 scale;
@@ -292,7 +296,8 @@ void fn_8016A438(void) {
             t = ((now - *(f32 *)(rec + 0x44)) - c70) / c74;
             if (c60 < t)
                 t = c60;
-            t = (t <= c70) ? c70 : t;
+            if (t <= c70)
+                t = c70;
             scale = c70 + t * c60;
             if (*(u8 *)(rec + 0x3C) == 0)
                 scale = c60 - scale;
