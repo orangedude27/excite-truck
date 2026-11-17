@@ -582,7 +582,9 @@ void fn_802CF5D4(void) {
 #pragma dont_inline reset
 #pragma scheduling on
 
-void fn_802CF5F8(void) {}
+void fn_802CF5F8(void) {
+    /* No-op SetVideoParam hook called during menu video-mode setup; video parameters are not programmed on this platform. */
+}
 
 void fn_802CF5FC(void) {
 }
