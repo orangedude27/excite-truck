@@ -161,7 +161,15 @@ void fn_802876E8(void *arg0) {
 }
 
 s32 fn_8028774C(void *arg0) {
-    return *((u8 *)arg0 + 0x1C) == 0;
+#define expired field_1C
+    /* Returns nonzero while this timer's expired flag at +0x1C is clear (timer still running). */
+    typedef struct {
+        u8 _pad[0x18];
+        f32 field_18;
+        u8 field_1C;
+    } TimerObj;
+    return ((TimerObj *)arg0)->expired == 0;
+#undef expired
 }
 
 void fn_8028775C(int arg0) { fn_802869CC(arg0 - 4); }
