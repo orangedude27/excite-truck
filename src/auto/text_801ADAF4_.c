@@ -106,8 +106,9 @@ void fn_801ADB24(void *subObject) {
 }
 
 extern void fn_801ADA94(void **);
-void fn_801ADB2C(void *arg0) {
-    fn_801ADA94((void **)((u8 *)arg0 - 0x23C));
+/* Returns a pointer to the owning object's position/origin vector at +0x60; the owner is recovered from an embedded sub-object pointer by subtracting 0x23C. */
+void fn_801ADB2C(void *subObject) {
+    fn_801ADA94((void **)((u8 *)subObject - 0x23C));
 }
 
 extern void fn_801ADA9C(void **);
