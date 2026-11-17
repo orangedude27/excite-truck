@@ -939,7 +939,8 @@ extern "C" s32 fn_800A59FC(void *arg0) {
     while (((value = (value >> 1) & 0x7FFF) != 0)) {
         state->shift1++;
     }
-    s32 x = ((state->value0 + (state->value4 << 5)) - 1) >> state->shift0;
+    s32 n = state->value0 + (state->value4 << 5) - 1;
+    s32 x = n >> state->shift0;
     state->result24 = (s16)x;
     s32 scaled = state->value7 * state->valueC;
     s32 base = (u16)x + state->value2;
@@ -13462,15 +13463,17 @@ extern "C" s32 fn_800BA688(void *countp, s32 addr, s32 lba, s32 size, s32 *out) 
 struct IosDevice;
 extern "C" s32 fn_800BBEA4(IosDevice *, s32, s32 *, s32);
 extern "C" const char lbl_8031B7F8[];
+#pragma scheduling on
 extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     u32 info[4];
     u32 word0;
     u32 one;
     u32 word1;
     u16 scale;
-    u16 clamp;
+    u32 clamp;
     u16 factor;
     u16 exponent;
+    u16 shift;
     u16 multiplier;
     u32 mantissa;
     u32 size;
@@ -13498,12 +13501,13 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     clamp = 0xB;
     if (scale <= 0xB)
         clamp = scale;
-    multiplier = 1 << (u16)(clamp - 9);
+    shift = (u16)clamp - 9;
+    multiplier = 1 << shift;
     *outSize = size * multiplier;
     *outBlockSize = 0x200;
     return 0;
 }
-
+#pragma scheduling reset
 /* The IOS SD module's host-controller register ioctls: ioctl 1 writes a register
    and ioctl 2 reads one (the answer lands in the library's scratch buffer
    lbl_8055DD70).  Both take the 0x18 byte block the library allocated at
@@ -15415,15 +15419,17 @@ extern "C" s16 fn_800BDD7C(s32, s32, s32 *);
 extern "C" s16 fn_800BDE18(s32, s32, s32, s32 *);
 extern s16 lbl_802F3418[];
 extern s16 lbl_802F3478[];
+#pragma opt_propagation off
+#pragma use_lmw_stmw on
 extern "C" s32 fn_800BEE64(void *arg0, s32 arg1, s32 arg2) {
     VFiPFCard *card = (VFiPFCard *)arg0;
+    s32 one = 1;
     s32 sp8 = 0;
-    s32 mode, one;
+    s32 mode;
     s16 type, status;
     s32 value, q;
     u32 result;
     if (((s16 (*)(s32, s32, s32 *))fn_800BDD7C)(0x400, arg1, &sp8) == 0) return 8;
-    one = 1;
     mode = (s16)fn_800BDE18(card->unk278, arg1, one, &sp8);
     if (fn_800BDE18(card->unk278, arg1, 2, &sp8) != 1) return 0xD;
     if (mode == 0) card->unk4 = one;
@@ -15432,16 +15438,17 @@ extern "C" s32 fn_800BEE64(void *arg0, s32 arg1, s32 arg2) {
     fn_800BDE18(card->unk278, arg1, one, &sp8);
     result = ((u32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(card->unk278, arg1, 0x10, &sp8);
     type = (result >> 12) & 15;
-    if (type == 0 || type == 15) return 0xE;
+    if (type == 0) return 0xE;
+    if (type == 15) return 0xE;
     status = (result >> 10) & 3;
     card->unk1c = status;
     if (status == 3) return 0xF;
     if ((s16)((result >> 6) & 3) == 3) card->unk0 = one;
     else card->unk0 = 2;
     if (card->unk4 == 0)
-        value = lbl_802F3418[(card->unk1c << 4) + type] * 8;
+        value = ((s16 (*)[16])lbl_802F3418)[card->unk1c][type] * 8;
     else
-        value = lbl_802F3478[(card->unk1c << 4) + type] * 8;
+        value = ((s16 (*)[16])lbl_802F3478)[card->unk1c][type] * 8;
     value += 8;
     q = value / 8;
     card->unkED70 = q;
@@ -15452,7 +15459,7 @@ extern "C" s32 fn_800BEE64(void *arg0, s32 arg1, s32 arg2) {
         card->unkED74 = card->unk0 * 0x480;
     return 0;
 }
-
+#pragma opt_propagation reset
 extern "C" u8 lbl_802F34E8[];
 extern "C" u8 lbl_8031C098[];
 extern "C" { DECL_SECTION(".sdata") extern u8 lbl_80560DB0[]; }
@@ -17458,24 +17465,23 @@ extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, v
 extern "C" s32 lbl_8031D718[];
 extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
     s32 t;
-    s32 a6;
-    s32 a7;
-    s32 a8;
-    t = -a[0]; o1[0] = b[0]; o2[0] = -(t + b[17]);
-    t = -a[1]; o1[64] = -b[1]; o2[-64] = t + b[16];
-    t = -a[2]; o1[128] = b[2]; o2[-128] = -(t + b[15]);
-    t = -a[3]; o1[192] = -b[3]; o2[-192] = t + b[14];
-    t = -a[4]; o1[256] = b[4]; o2[-256] = -(t + b[13]);
-    t = -a[5]; o1[320] = -b[5]; o2[-320] = t + b[12];
+    s32 a6, a7, a8;
+    s32 *b44 = &b[17];
+    t = -a[0]; o1[0] = b[0]; o2[0] = -(t + b44[0]);
+    t = -a[1]; o1[64] = -b[1]; o2[-64] = t + b44[-1];
+    t = -a[2]; o1[128] = b[2]; o2[-128] = -(t + b44[-2]);
+    t = -a[3]; o1[192] = -b[3]; o2[-192] = t + b44[-3];
+    t = -a[4]; o1[256] = b[4]; o2[-256] = -(t + b44[-4]);
+    t = -a[5]; o1[320] = -b[5]; o2[-320] = t + b44[-5];
     a6 = a[6];
     o1[384] = (s32)(((s64)a6 * lbl_8031D718[0]) >> 20) + b[6];
-    o2[-384] = -((s32)(((s64)a6 * lbl_8031D718[1]) >> 20) + b[11]);
+    o2[-384] = -((s32)(((s64)a6 * lbl_8031D718[1]) >> 20) + b44[-6]);
     a7 = a[7];
     o1[448] = -((s32)(((s64)a7 * lbl_8031D718[2]) >> 20) + b[7]);
-    o2[-448] = (s32)(((s64)a7 * lbl_8031D718[3]) >> 20) + b[10];
+    o2[-448] = (s32)(((s64)a7 * lbl_8031D718[3]) >> 20) + b44[-7];
     a8 = a[8];
     o1[512] = (s32)(((s64)a8 * lbl_8031D718[4]) >> 20) + b[8];
-    o2[-512] = -((s32)(((s64)a8 * lbl_8031D718[5]) >> 20) + b[9]);
+    o2[-512] = -((s32)(((s64)a8 * lbl_8031D718[5]) >> 20) + b44[-8]);
 }
 
 extern u32 lbl_8031D730[];
@@ -17536,7 +17542,7 @@ extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
     negOut[-8] = negative;
 }
 
-extern "C" const s32 lbl_8031D790[];
+extern "C" const volatile s32 lbl_8031D790[];
 extern "C" void fn_800C3088(volatile s32 *out, const volatile s32 *a, const volatile s32 *b, const volatile s32 *c) {
     s32 term1;
     s32 term2;
@@ -20402,8 +20408,9 @@ extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext
 
 extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     u8 *base = lbl_80407600;
-    s32 off;
+    s32 temp_r30;
     s32 zero = 0;
+
     *(s32 *)((u8 *)arg0 + 0x20) = zero;
     *(s32 *)arg0 = arg1;
     *((u8 *)arg0 + 0x1C) = zero;
@@ -20414,10 +20421,10 @@ extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     *((u8 *)arg0 + 0x40) = zero;
     *((u8 *)arg0 + 0x41) = zero;
     if (arg1 < 4) {
-        off = arg1 * 0x30;
+        temp_r30 = arg1 * 0x30;
         lbl_8055DDA8[arg1] = zero;
-        OSCreateAlarm((OSAlarm *)(base + off));
-        OSCreateAlarm((OSAlarm *)(base + 0xC0 + off));
+        OSCreateAlarm((OSAlarm *)(base + temp_r30));
+        OSCreateAlarm((OSAlarm *)(base + 0xC0 + temp_r30));
         *(void **)(base + 0x180 + arg1 * 4) = arg0;
     }
     return arg0;
@@ -21366,9 +21373,10 @@ extern "C" u16 lbl_80407BE8[];
 extern "C" u32 lbl_8031EC40[];
 extern "C" u8  lbl_802F4858[];
 extern "C" u8  lbl_802F4958[];
+#pragma push
+#pragma scheduling reset
 extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     u16 *dest;
-    u16 *be;
     u32 *pal;
     s32 scaleX, scaleY;
     u16 width, height;
@@ -21380,8 +21388,8 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
     if (arg2 >= 100)
         v -= 100;
 
-    rem = v % 5;
     idx = v / 5;
+    rem = v % 5;
     off = rem * 6;
 
     pal = (u32 *)(lbl_802F4958 + (((idx << 3) - idx) << 2));
@@ -21395,56 +21403,58 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
 
     dest = (u16 *)(lbl_80407BD8[0] + scaleY * arg1 * (u16)*(u16 *)((u8 *)lbl_80407BD8 + 0xC) * 2 + arg0 * scaleX * 2);
 
-    if (arg1 < 0)
-        return;
-    if (arg0 < 0)
-        return;
-    if (width <= scaleX * (arg0 + 6))
-        return;
-    if (height <= scaleY * (arg1 + 7))
-        return;
+    if (arg1 >= 0) {
+        if (arg0 < 0)
+            return;
+        if ((s32)width > scaleX * (arg0 + 6)) {
+            if ((s32)height <= scaleY * (arg1 + 7))
+                return;
 
-    be = lbl_80407BE8;
-    n = scaleX * 6;
+            n = scaleX * 6;
+            for (i = 0; i < 7; i++) {
+                u32 pat = *pal++ << off;
+                u32 cnt;
+                if (scaleX == 1) {
+                    pat = (pat >> 1) & 0x7E000000;
+                } else {
+                    pat = ((lbl_8031EC40[(pat >> 26) & 0xC] << 4)
+                         | lbl_8031EC40[(pat >> 24) & 0xC]
+                         | (lbl_8031EC40[(pat >> 28) & 0xC] << 8)) << 19;
+                }
+                if (n > 0) {
+                    for (cnt = (u32)(n + 1) >> 1; cnt != 0; cnt--) {
+                        u32 m27 = pat & 0x40000000;
+                        u32 m26 = pat & 0x20000000;
+                        u16 p0, p1;
+                        u16 a, b, c, d;
+                        a = m27 ? ((u16 *)lbl_80407BE8)[4] : 0x40;
+                        b = (pat & 0x80000000) ? ((u16 *)lbl_80407BE8)[5] : 0x20;
+                        c = m26 ? ((u16 *)lbl_80407BE8)[5] : 0x20;
+                        d = m27 ? ((u16 *)lbl_80407BE8)[2] : 0;
+                        p0 = (u16)(d | (a + (c + b)));
+                        dest[0] = p0;
+                        if (scaleY > 1)
+                            dest[*(u16 *)((u8 *)lbl_80407BD8 + 0xC)] = p0;
 
-    for (i = 0; i < 7; i++) {
-        u32 pat = *pal++ << off;
-        s32 cnt;
-        if (scaleX == 1) {
-            pat = (pat >> 1) & 0x7E000000;
-        } else {
-            pat = ((lbl_8031EC40[(pat >> 26) & 0xC] << 4)
-                 | lbl_8031EC40[(pat >> 24) & 0xC]
-                 | (lbl_8031EC40[(pat >> 28) & 0xC] << 8)) << 19;
+                        a = m26 ? ((u16 *)lbl_80407BE8)[7] : 0x40;
+                        b = m27 ? ((u16 *)lbl_80407BE8)[8] : 0x20;
+                        c = (pat & 0x10000000) ? ((u16 *)lbl_80407BE8)[8] : 0x20;
+                        d = m26 ? ((u16 *)lbl_80407BE8)[2] : 0;
+                        p1 = (u16)(d | (a + (c + b)));
+                        dest[1] = p1;
+                        if (scaleY > 1)
+                            dest[*(u16 *)((u8 *)lbl_80407BD8 + 0xC) + 1] = p1;
+
+                        pat <<= 2;
+                        dest += 2;
+                    }
+                }
+                dest += *(u16 *)((u8 *)lbl_80407BD8 + 0xC) * scaleY - n;
+            }
         }
-        cnt = (n + 1) >> 1;
-        if (n > 0) {
-            do {
-                u32 b30 = pat & 0x40000000;
-                u32 b31 = pat & 0x80000000;
-                u32 b29 = pat & 0x20000000;
-                u32 b28 = pat & 0x10000000;
-                u16 p0 = (u16)((b30 ? be[2] : 0)
-                       | ((b30 ? be[4] : 0x40)
-                       + ((b29 ? be[5] : 0x20) + (b31 ? be[5] : 0x20))));
-                u16 p1;
-                dest[0] = p0;
-                if (scaleY > 1)
-                    dest[*(u16 *)((u8 *)lbl_80407BD8 + 0xC)] = p0;
-                p1 = (u16)((b29 ? be[2] : 0)
-                       | ((b29 ? be[7] : 0x40)
-                       + ((b28 ? be[8] : 0x20) + (b30 ? be[8] : 0x20))));
-                dest[1] = p1;
-                if (scaleY > 1)
-                    dest[*(u16 *)((u8 *)lbl_80407BD8 + 0xC) + 1] = p1;
-                pat <<= 2;
-                dest += 2;
-            } while (--cnt);
-        }
-        dest += *(u16 *)((u8 *)lbl_80407BD8 + 0xC) * scaleY - n;
     }
 }
-
+#pragma pop
 static const u16 fn_800D3634_defaultDims[2] = {0x280, 0x1E0};
 static const u16 fn_800D3634_defaultW = 0x280;
 static const u16 fn_800D3634_defaultH = 0x1E0;
@@ -23709,6 +23719,8 @@ extern "C" void fn_800CA264(void *arg0, void *arg1) {
 extern "C" void fn_800CF3EC(void *);
 extern "C" void fn_800D1204(void *, f32);
 extern "C" void fn_800D120C(void *, void *, s32);
+#pragma push
+#pragma dont_inline on
 extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
     class VirtualHandler {
     public:
@@ -23994,7 +24006,7 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
         }
     }
 }
-
+#pragma pop
 /* Switch the home button overlay's trigger panes to the view its state asks
  * for.
  *
