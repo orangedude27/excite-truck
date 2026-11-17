@@ -1780,8 +1780,9 @@ extern "C" s32 fn_8019DC04(void *arg0, void *arg1) {
 
 #pragma processor reset
 
-extern "C" f32 fn_8019DDEC(void *arg0) {
-    return *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28);
+extern "C" f32 fn_8019DDEC(void *obj) {
+    /* Return the sum of the two float fields at +0x24 and +0x28 of obj. */
+    return *(f32*)((u8*)obj + 0x24) + *(f32*)((u8*)obj + 0x28);
 }
 
 extern f32 lbl_805622E8;
