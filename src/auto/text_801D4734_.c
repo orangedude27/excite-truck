@@ -1931,48 +1931,55 @@ int fn_801D6D80(int object, int shouldFree) {
 #pragma cplusplus on
 #pragma push
 #pragma scheduling invalid_target
-extern "C" int fn_801D6DC8(void *arg0, void *arg1) {
-    struct Dummy {
+extern "C" int fn_801D6DC8(void *textElem, void *valueNode) {
+    /* Text_ASE parameter reader (vtable+0xC of the cue's class): pull this
+       subtitle cue's parameters out of the value-file node -- its "length" in
+       seconds (default 5.0) into +8, its "title" into the 64-byte field at
+       +0xC and its body "text" into the 64-byte field at +0x4C (both default
+       to the empty string and are truncated to 63 characters plus a NUL) --
+       then mark the cue ready to be triggered (state = 1). */
+    struct ValueNode {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual char *get(char *, char *);
+        virtual char *getString(char *, char *);   /* 0x10 */
         virtual void v5(); virtual void v6(); virtual void v7();
-        virtual float value(char *, float);
+        virtual float getFloat(char *, float);     /* 0x20 */
     };
-    extern char lbl_8055ACB0;
-    extern char lbl_8055ACE8;
-    extern char lbl_8055ACF0;
-    extern char lbl_8055ACF4;
-    Dummy *obj = (Dummy *)arg1;
+    extern char lbl_8055ACB0; /* "length" */
+    extern char lbl_8055ACE8; /* "title" */
+    extern char lbl_8055ACF0; /* "" - the default string */
+    extern char lbl_8055ACF4; /* "text" */
+    ValueNode *node = (ValueNode *)valueNode;
+    TextAseElement *cue = (TextAseElement *)textElem;
     char *src;
     int remaining1;
     char *dst1;
     int remaining2;
     char *dst2;
 
-    *(float *)((char *)arg0 + 8) = obj->value(&lbl_8055ACB0, 5.0f);
-    src = obj->get(&lbl_8055ACE8, &lbl_8055ACF0);
-    dst1 = (char *)arg0 + 0xC;
+    cue->length = node->getFloat(&lbl_8055ACB0, 5.0f);
+    src = node->getString(&lbl_8055ACE8, &lbl_8055ACF0);
+    dst1 = cue->title;
     remaining1 = 0x40;
-    goto copy_first;
-count_first:
-    if (--remaining1 > 0) goto copy_first;
+    goto copy_title;
+count_title:
+    if (--remaining1 > 0) goto copy_title;
     dst1[-1] = 0;
-    goto done_first;
-copy_first:
-    if ((signed char)(*dst1++ = *src++) != 0) goto count_first;
-done_first:
-    src = obj->get(&lbl_8055ACF4, &lbl_8055ACF0);
-    dst2 = (char *)arg0 + 0x4C;
+    goto done_title;
+copy_title:
+    if ((signed char)(*dst1++ = *src++) != 0) goto count_title;
+done_title:
+    src = node->getString(&lbl_8055ACF4, &lbl_8055ACF0);
+    dst2 = cue->text;
     remaining2 = 0x40;
-    goto copy_second;
-count_second:
-    if (--remaining2 > 0) goto copy_second;
+    goto copy_text;
+count_text:
+    if (--remaining2 > 0) goto copy_text;
     dst2[-1] = 0;
-    goto done_second;
-copy_second:
-    if ((signed char)(*dst2++ = *src++) != 0) goto count_second;
-done_second:
-    *(int *)((char *)arg0 + 4) = 1;
+    goto done_text;
+copy_text:
+    if ((signed char)(*dst2++ = *src++) != 0) goto count_text;
+done_text:
+    cue->state = 1;
     return 1;
 }
 #pragma pop
