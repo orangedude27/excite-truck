@@ -5724,23 +5724,21 @@ extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi(
 }
 
 extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(void *);
-static inline u8 *checkPlayableListFront(u8 *list) { return *(u8 **)(list + 0x10); }
-static inline u8 *checkPlayableListElement(u8 *node) { return node - 0xC8; }
 extern "C" const char lbl_803263A8[];
 extern "C" const char lbl_80326384[];
 extern "C" const char lbl_80326378[];
 extern "C" const char lbl_80326354[];
 #pragma opt_propagation off
 extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer(void *self, int priority, void *external) {
-    int limit;
     if (*(u16 *)((u8 *)self + 0x24) == 0)
         return 0;
     while (*(s32 *)self >= *(u16 *)((u8 *)self + 0x24)) {
-        register u8 *sound;
+        u8 *sound;
+        int limit;
         if (*(s32 *)((u8 *)self + 0xC) == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
         {
-            register u8 *first = *(u8 **)((u8 *)self + 0x10);
+            u8 *first = *(u8 **)((u8 *)self + 0x10);
             u8 *obj;
             if (first == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
@@ -5761,6 +5759,7 @@ extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3s
         if (*(u16 *)((u8 *)external + 0xC) == 0)
             return 0;
         while (*(s32 *)external >= *(u16 *)((u8 *)external + 0xC)) {
+            int limit;
             u8 *sound = (u8 *)GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(external);
             if (sound == 0)
                 return 0;
