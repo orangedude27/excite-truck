@@ -633,9 +633,11 @@ void fn_801DCF00(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 float fn_801DCF0C(void) {
-    float sp8 = -1000.0f;
-    ((int (*)(float *, int, int, int))fn_801DC258)(&sp8, 0, 0, 0);
-    return sp8;
+    /* Ground-height lookup at the incoming world (x, z): returns -1000.0f when
+       no ground is found. Surface type and normal outputs are not requested. */
+    float height = -1000.0f;
+    ((int (*)(float *, int, int, int))fn_801DC258)(&height, 0, 0, 0);
+    return height;
 }
 #pragma dont_inline reset
 #pragma scheduling on
