@@ -2946,6 +2946,7 @@ extern "C" void fn_80151654(void *entityPool, void *msgParam, int messageId) {
     ((Obj *)*(void **)((char *)obj + 0x10))->v7();
 }
 #pragma cplusplus reset
+/* No-op handler in this message-dispatch group (reached through the handler table): does nothing. */
 void fn_80151688(void) {
 
 }
