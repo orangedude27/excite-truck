@@ -56,6 +56,7 @@ extern f32 lbl_80562618;
 extern void fn_8018A08C(void);
 extern f32 lbl_805625DC;
 extern f32 lbl_805625E0;
+extern double lbl_805625E8;
 M2C_UNK memmove(void *, void *, s32);
 #pragma dont_inline fn_801B08E8
 
