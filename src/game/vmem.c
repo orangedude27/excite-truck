@@ -18,16 +18,19 @@ void fn_802E4C18(void) {
 }
 
 #pragma dont_inline on
-void *fn_802E4C1C(int arg0) {
+/* Construct a VirtualMemory object: allocate it, install the vtable lbl_8034D1D0,
+   create a "vmem_buf" backing buffer of size bytes (+4), record the size (+8),
+   and log the allocation size in KiB. */
+void *fn_802E4C1C(int size) {
     #pragma scheduling invalid_target
-    char *object = fn_801284F8(0xC, &lbl_8055D1C8);
-    if (object != 0) {
-        *(char **)object = lbl_8034D1D0;
-        *(int *)(object + 8) = arg0;
-        *(int *)(object + 4) = fn_8012850C(arg0, lbl_8034D204);
-        fn_802E30C8(lbl_8034D1F0, arg0 / 1024);
+    char *vmem = fn_801284F8(0xC, &lbl_8055D1C8);
+    if (vmem != 0) {
+        *(char **)vmem = lbl_8034D1D0;
+        *(int *)(vmem + 8) = size;
+        *(int *)(vmem + 4) = fn_8012850C(size, lbl_8034D204);
+        fn_802E30C8(lbl_8034D1F0, size / 1024);
     }
-    return object;
+    return vmem;
 }
 #pragma scheduling on
 #pragma dont_inline off
