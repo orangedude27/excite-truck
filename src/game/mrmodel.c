@@ -683,8 +683,9 @@ void fn_802C5F48(void) {
 }
 
 #pragma scheduling on
-void fn_802C6068(void *arg0) {
-    *(s16 *)((char *)arg0 + 4) = 0;
+/* Pool element init callback: clear the 16-bit active flag at +0x04 of an entry. */
+void fn_802C6068(void *entry) {
+    *(s16 *)((char *)entry + 4) = 0;
 }
 
 void fn_802C6074(s32 *arg0) {
