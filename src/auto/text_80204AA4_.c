@@ -424,15 +424,30 @@ extern "C" int fn_80205268(const char *propName, int typeIndex, int stageIndex) 
     #undef NOT_FOUND_PANIC
     #undef KEY_BUF_SIZE
 }
-extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
+class PropSet802054EC { public: virtual void f0(); virtual int has(const char *); virtual void f2(); virtual const char *get(const char *); };
+struct Lookup802054EC { int typeIndex; void *group; void *current; void *stage; void *contest; };
+static inline const char *FindProp802054EC(volatile Lookup802054EC *l, const char *name) {
+    void *set = l->stage;
+    if (set != 0 && ((PropSet802054EC *)set)->has(name) != 0) {
+        set = l->stage;
+        return ((PropSet802054EC *)set)->get(name);
+    }
+    set = l->current;
+    if (((PropSet802054EC *)set)->has(name) != 0) {
+        set = l->current;
+        return ((PropSet802054EC *)set)->get(name);
+    }
+    return 0;
+}
+extern "C" int fn_802054EC(char *arg0, int arg1, int arg2) {
     class Manager { public: virtual void *get(int); };
     class Stage { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void *get(int); };
-    class Resource { public: virtual void f0(); virtual int has(const char *); virtual void f2(); virtual const char *get(const char *); };
+    class Resource { public: virtual void f0(); virtual int has(const char *); virtual void f2(); virtual char *get(const char *); };
     volatile struct { int arg1; void *mgr; void *cur; void *val; void *sel; } s;
     char buf[0x64];
-    const char *result;
+    char *result;
     char *entry;
-    const char *t;
+    char *t;
     void *o;
     void *sel;
     void *mgr;
@@ -489,7 +504,7 @@ extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
     }
     if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
     arg2 = 1;
-    if (stricmp(result, lbl_8055B4B4) != 0 && stricmp((const char *)result, lbl_8055B4B8) != 0) arg2 = 0;
+    if (stricmp(result, lbl_8055B4B4) != 0 && stricmp(result, lbl_8055B4B8) != 0) arg2 = 0;
     mgr = s.mgr;
     s.sel = 0;
     s.cur = 0;
