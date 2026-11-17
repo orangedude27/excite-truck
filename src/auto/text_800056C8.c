@@ -1765,7 +1765,8 @@ extern "C" void fn_80007898(void *object) {
 #pragma cplusplus reset
 u32 fn_80007974(void) { return 1; }
 
-u8 fn_8000797C(void *arg0) { return *((u8 *)arg0 + 0x14); }
+/* Return this UI overlay's flag byte at offset 0x14. */
+u8 fn_8000797C(void *object) { return *((u8 *)object + 0x14); }
 
 extern u8 lbl_802FB6C0[];
 /* Return the "ClosureOverlay" name string that identifies this overlay type. */
