@@ -2928,15 +2928,18 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
 }
 #pragma scheduling on
 #pragma cplusplus reset
-void fn_8018BDEC(void *arg0) {
-    f32 sp[12];
-    f32 *matrix = sp;
-    int value;
-    sp[0]=1.0f; sp[1]=0.0f; sp[2]=0.0f; sp[3]=0.0f;
-    sp[4]=1.0f; sp[5]=0.0f; sp[6]=0.0f; sp[7]=0.0f;
-    sp[8]=1.0f; sp[9]=0.0f; sp[10]=0.0f; sp[11]=0.0f;
-    value=*(int *)((u8 *)arg0+0x26C4);
-    if(value) fn_801C2BF8(value,matrix);
+/* Build an identity 3x4 transform (identity rotation, zero translation) and,
+ * if the object has a debug-draw handle at +0x26C4, draw its wireframe through
+ * that transform with fn_801C2BF8. */
+void fn_8018BDEC(void *object) {
+    f32 matrixData[12];
+    f32 *matrix = matrixData;
+    int debugHandle;
+    matrixData[0]=1.0f; matrixData[1]=0.0f; matrixData[2]=0.0f; matrixData[3]=0.0f;
+    matrixData[4]=1.0f; matrixData[5]=0.0f; matrixData[6]=0.0f; matrixData[7]=0.0f;
+    matrixData[8]=1.0f; matrixData[9]=0.0f; matrixData[10]=0.0f; matrixData[11]=0.0f;
+    debugHandle=*(int *)((u8 *)object+0x26C4);
+    if(debugHandle) fn_801C2BF8(debugHandle,matrix);
 }
 
 extern float __fabsf(float);
