@@ -184,6 +184,10 @@ void fn_80137C7C(void) {
     fn_8001683C();
 }
 
+/* RealName: resetPlayerDriver. Tail-calls fn_80016A44 (-> fn_8001766C), passing `index`
+ * through in r3, to reset base-table driver slot `index` to a fresh default
+ * "Player-(index+1)" record: zeroed, id cleared to -1000, name/bounds set, and the
+ * two lookup bytes cleared. Callers reset each player slot before binding a real driver. */
 void fn_80137C80(int index) {
     fn_80016A44();
 }
