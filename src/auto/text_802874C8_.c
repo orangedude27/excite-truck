@@ -14,22 +14,6 @@ extern float lbl_80564200;
 extern unsigned char lbl_8033D618[];
 extern unsigned char lbl_803489C0[];
 extern int lbl_8055F670;
-typedef struct {
-    volatile unsigned int unk0;
-    volatile unsigned int unk4;
-    volatile unsigned int unk8;
-    volatile unsigned int unkC;
-    volatile unsigned int unk10;
-    volatile unsigned int unk14;
-    volatile float unk18;
-} Obj802874C8;
-typedef struct {
-    volatile unsigned int unk0;
-    volatile unsigned int unk4;
-    volatile unsigned int unk8;
-    volatile unsigned int unkC;
-    volatile unsigned int unk10;
-} Root802874C8;
 #pragma scheduling on
 void fn_802874C8(void) {
     register volatile unsigned char *base = (volatile unsigned char *)lbl_804B2FF8;
