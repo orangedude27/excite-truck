@@ -4108,8 +4108,9 @@ void fn_8006EBAC(void) {
     gki_cb.os.int_index++;
 }
 
+/* GKI_exception no-op stub: this build discards the error code and message the
+ * GKI buffer/task code passes when it detects corruption or a bad argument. */
 void fn_8006EBF0(void) {
-
 }
 
 extern s32 fn_80068DB8();
