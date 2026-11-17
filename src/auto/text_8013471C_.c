@@ -283,9 +283,9 @@ tail:
 #pragma dont_inline reset
 
   
-  void fn_80134A88(void) {
-  
-  }
+/* No-op AI hook: reserved stub immediately before the per-entry change flush. */
+void fn_80134A88(void) {
+}
 
 #pragma scheduling invalid_target
 /* Flushes per-entry pending changes: for each active entry in the table, applies
