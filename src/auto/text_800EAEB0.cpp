@@ -1282,10 +1282,11 @@ extern "C" s32 detail_GetWaveDataFileAddress__Q36nw4hbm3snd18MemorySoundArchiveC
 }
 
 extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this_, void *stream, u32 bufferSize, s32 offset, u32 length) {
+    void *ret = stream;
     u32 base = *(u32 *)((u8 *)this_ + 0x108);
     if (base == 0) return 0;
     if (bufferSize < 0x20) return 0;
-    if (!stream) return stream;
+    if (ret == 0) return ret;
     *(u8 *)((u8 *)stream + 4) = 0;
     *(u32 *)((u8 *)stream + 0xC) = 0;
     *(u32 *)((u8 *)stream + 0x10) = 0;
@@ -1293,7 +1294,7 @@ extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this
     *(u32 *)((u8 *)stream + 0x14) = offset + base;
     *(u32 *)((u8 *)stream + 0x18) = length;
     *(u32 *)((u8 *)stream + 0x1C) = 0;
-    return stream;
+    return ret;
 }
 
 extern u8 lbl_803230E8[];
@@ -1431,8 +1432,9 @@ extern "C" f32 fn_800ED06C(void *arg0) {
     return ((f32 *)arg0)[0x2C / 4];
 }
 
-extern "C" f32 fn_800ED074(void *arg0) {
-    return ((f32 *)arg0)[0x24 / 4];
+/* Return the f32 field at offset 0x24 of a sequence player object. */
+extern "C" f32 fn_800ED074(void *seqPlayer) {
+    return ((f32 *)seqPlayer)[0x24 / 4];
 }
 
 extern "C" f32 fn_800ED07C(void *arg0) {
