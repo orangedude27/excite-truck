@@ -22,9 +22,9 @@ void fn_802A8F34(void) {
     /* Initialize a global object (storage pointer, capacity 10, count 0) and register its destructor. */
     fn_8000D838(&lbl_8055F8C8);
     lbl_8055F8D0 = 0xFFFF0000;
-    *(void **)&lbl_804BD6C4 = (char *)&lbl_804BD6C4 + 12;
-    *(int *)((char *)&lbl_804BD6C4 + 8) = 10;
-    *(int *)((char *)&lbl_804BD6C4 + 4) = 0;
+    lbl_804BD6C4.p = (char *)&lbl_804BD6C4 + 12;
+    lbl_804BD6C4.b = 10;
+    lbl_804BD6C4.a = 0;
     ((void (*)(void *, void *, void *))__register_global_object)(&lbl_804BD6C4, fn_802A8F94, (char *)&lbl_804BD6B8);
 }
 #pragma scheduling on
