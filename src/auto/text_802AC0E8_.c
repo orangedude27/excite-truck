@@ -69,6 +69,7 @@ int fn_802AC1BC(const char *justify, int unused) {
     return alignFlags;
 }
 #pragma use_lmw_stmw on
+#pragma cplusplus on
 int fn_802AC2B4(void **arg0, int arg1, float *arg2) {
     if (arg0 != 0 && ((int (*)(void *))((void **)*arg0)[3])(arg0) != 0) {
         if (arg2 != 0) {
@@ -127,6 +128,7 @@ extern "C" float fn_802AC344(void *arg0, void *arg1, float *arg2) {
     return f31;
 }
 #pragma pop
+#pragma cplusplus off
 
 extern float fn_802AC344(void *, void *, float *);
 float fn_802AC454(void *arg0, void *arg1, float *arg2) { return fn_802AC344(arg0, arg1, arg2); }
@@ -666,8 +668,10 @@ void fn_802AD4C4(void *arg0, int arg1, float t) {
         int j;
         int jo = 0;
         for (j = 0; j < n; j++, jo += 0x38) {
-            char *a = *(char **)(seg + 8) + jo;
-            char *b = *(char **)(seg + 8) + (j + 1) * 0x38;
+            int k = j + 1;
+            char *base = *(char **)(seg + 8);
+            char *a = base + jo;
+            char *b = base + k * 0x38;
             float f23, u, f4, f6, a0 = *(float *)a;
             if (t >= a0 && t <= *(float *)b + eps) {
                 char *c;
@@ -751,12 +755,12 @@ void fn_802AD4C4(void *arg0, int arg1, float t) {
                     m[10] += sp8[1];
                     m[11] += sp8[2];
                     {
-                        float k = f6 * (f4 * (sp14[0] * *(float *)(c + 0x10)));
-                        m[0] *= k; m[1] *= k; m[2] *= k;
-                        k = f6 * (f4 * (sp14[1] * *(float *)(c + 0x10)));
-                        m[3] *= k; m[4] *= k; m[5] *= k;
-                        k = f6 * (f4 * (sp14[2] * *(float *)(c + 0x10)));
-                        m[6] *= k; m[7] *= k; m[8] *= k;
+                        float k2 = f6 * (f4 * (sp14[0] * *(float *)(c + 0x10)));
+                        m[0] *= k2; m[1] *= k2; m[2] *= k2;
+                        k2 = f6 * (f4 * (sp14[1] * *(float *)(c + 0x10)));
+                        m[3] *= k2; m[4] *= k2; m[5] *= k2;
+                        k2 = f6 * (f4 * (sp14[2] * *(float *)(c + 0x10)));
+                        m[6] *= k2; m[7] *= k2; m[8] *= k2;
                     }
                     fn_802C9900();
                     {
