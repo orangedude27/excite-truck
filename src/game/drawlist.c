@@ -641,7 +641,8 @@ int fn_802C8FF4(float *arg0, float arg1) {
 }
 #pragma scheduling on
 int fn_802C90E0(void) {
-    return lbl_8055FC70 == 0;
+    /* True when no draw-list render pass is active (the render-mode flag is 0); cf. DrawList_isOutsideScene. */
+    return sRenderMode == 0;
 }
 
 /* Save GX state through fn_802C8C04 and record that draw lists now run in
