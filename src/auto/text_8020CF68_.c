@@ -299,6 +299,7 @@ void fn_8020D29C(void) {
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
+#pragma use_lmw_stmw off
 extern "C" void fn_8020D2D4(void)
 {
     char buf130[0x30];
