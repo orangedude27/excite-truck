@@ -572,6 +572,7 @@ void fn_80014A98(void *obj) {
         *(f32 *)((u8 *)obj + 0x2C), value, lbl_80560360);
 }
 
+/* Reverse-direction condition check for the timer/progress display: this build never runs in reverse, so it always reports false (0). */
 s32 fn_80014ADC(void) { return 0; }
 
 s32 fn_80014AE4(void) {
