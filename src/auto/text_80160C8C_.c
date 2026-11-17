@@ -571,6 +571,8 @@ extern void fn_800103B8(s32, s32, s32 *, s32, f32, f32, f32, f32, ...);
 extern void fn_801473F8(void *, const char *, ...);
 #pragma scheduling invalid_target
 #pragma cplusplus on
+static inline f32 fn_80161438_readF32(f32 *p) { return *p; }
+
 extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
     struct Service {
         virtual void f0();
@@ -584,7 +586,7 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
     f32 sp8;
     void *temp_r3;
     void *temp_r3_2;
-    register void *temp_r3_3;
+    void *temp_r3_3;
 
     if (lbl_8055E2E0 != 0) {
         temp_r3 = ((Service *)lbl_8055E2E0)->lookup((const char *)text + 0xC8);
@@ -598,8 +600,9 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
                 (s32)((Service *)lbl_8055E2E0)->create((const char *)text + 0xD4));
         }
         temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
-        f32 value4 = *(f32 *)((u8 *)temp_r3_3 + 4);
-        f32 value8 = *(f32 *)((u8 *)temp_r3_3 + 8);
+        f32 *fields = (f32 *)((u8 *)temp_r3_3 + 4);
+        f32 value4 = fields[0];
+        f32 value8 = fields[1];
         s32 valueC = *(s32 *)((u8 *)temp_r3_3 + 0xC);
         fn_80148134(&spC, &sp8, valueC, value4, value8);
         f32 firstValue = *(f32 *)((u8 *)temp_r3 + 0x10);
@@ -1509,10 +1512,10 @@ extern "C" void fn_801625E0(void *arg0) {
     offset = 0;
     *(float *)((char *)arg0 + 0xC) = resetValue;
     while (i < *(s32 *)((char *)arg0 + 0x38)) {
-        void *obj2 = *(void **)((char *)arg0 + 4);
-        char *entries2 = *(char **)((char *)arg0 + 0x34);
-        s32 *entry = (s32 *)(entries2 + offset);
-        void *result = ((Dummy *)obj2)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
+        void *obj = *(void **)((char *)arg0 + 4);
+        char *entries = *(char **)((char *)arg0 + 0x34);
+        s32 *entry = (s32 *)(entries + offset);
+        void *result = ((Dummy *)obj)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
         fn_801DF380(result, entry[0], fn_80161438, entry[1]);
         offset += 8;
         i++;
@@ -1704,8 +1707,6 @@ void *fn_80162938(void *arg0, s32 arg1) {
 #pragma scheduling invalid_target
 extern "C" void fn_80162A14(void *arg0) {
     struct Dummy { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void *f4(s32 *, s32 *); };
-    extern float lbl_80561848;
-    extern float lbl_8056184C;
     extern void fn_801DF380(void *, s32, void (*)(void), s32);
     extern void fn_801EA140(void *);
     extern void fn_802A95A8(f32 *, f32 *, f32, f32);
@@ -1718,7 +1719,7 @@ extern "C" void fn_80162A14(void *arg0) {
     float resetValue;
     char *self;
 
-    resetValue = lbl_8056184C;
+    resetValue = -1000.0f;
     *(s32 *)((char *)arg0 + 8) = 0;
     self = (char *)arg0;
     i = 0;
@@ -1734,7 +1735,7 @@ extern "C" void fn_80162A14(void *arg0) {
         i++;
     }
 
-    resetValue = lbl_80561848;
+    resetValue = 0.0f;
     *(s32 *)(self + 0x94) = 0;
     i = 0;
     *(float *)(self + 0x98) = resetValue;
@@ -1770,7 +1771,7 @@ extern "C" void fn_80162A14(void *arg0) {
         *((u8 *)*(void **)(self + 0x570) + clearOffset + 8) = 0;
         clearOffset += 0xC;
     }
-    resetValue = lbl_80561848;
+    resetValue = 0.0f;
     *(s32 *)(self + 0x5AC) = 0;
     *(float *)(self + 0x5B4) = resetValue;
 }
@@ -2926,9 +2927,9 @@ s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
             if (e1.x * e1.x + e1.y * e1.y > bestLen) {
                 best = 1;
             }
-            mid.y = pts[best].y + lbl_8056185C * (pts[(best + 1) % 3].y - pts[best].y);
             mid.x = pts[best].x + lbl_8056185C * (pts[(best + 1) % 3].x - pts[best].x);
-            copy = mid;
+            mid.y = pts[best].y + lbl_8056185C * (pts[(best + 1) % 3].y - pts[best].y);
+            *(double *)&copy = *(double *)&mid;
             pos.x = copy.x;
             pos.y = copy.y;
             dir.x = pts[(best + 2) % 3].x - copy.x;
