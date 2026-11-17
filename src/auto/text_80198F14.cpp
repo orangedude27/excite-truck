@@ -96,16 +96,17 @@ extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
 // 3x3 matrix times vector; the original inlines it with a src == dst check, so both branches are emitted.
 #pragma always_inline on
 static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
-    f32 x, y, z;
+    f32 x = src[0], y = src[1], z = src[2];
+    f32 a0 = m[3] * y + m[0] * x;
+    f32 a1 = m[4] * y + m[1] * x;
+    f32 a2 = m[5] * y + m[2] * x;
+    f32 b0 = m[6] * z + a0;
+    f32 b1 = m[7] * z + a1;
+    f32 b2 = m[8] * z + a2;
     if (dst == src) {
-        x = m[6] * src[2] + (m[0] * src[0] + m[3] * src[1]);
-        y = m[7] * src[2] + (m[1] * src[0] + m[4] * src[1]);
-        z = m[8] * src[2] + (m[2] * src[0] + m[5] * src[1]);
-        dst[0] = x; dst[1] = y; dst[2] = z;
+        dst[0] = b0; dst[1] = b1; dst[2] = b2;
     } else {
-        dst[0] = m[6] * src[2] + (m[0] * src[0] + m[3] * src[1]);
-        dst[1] = m[7] * src[2] + (m[1] * src[0] + m[4] * src[1]);
-        dst[2] = m[8] * src[2] + (m[2] * src[0] + m[5] * src[1]);
+        dst[0] = b0; dst[1] = b1; dst[2] = b2;
     }
 }
 #pragma always_inline reset
