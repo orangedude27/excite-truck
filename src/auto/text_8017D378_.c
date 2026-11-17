@@ -276,6 +276,7 @@ extern "C" void fn_8017D6E0(void *arg0, void *arg1) {
     *(int *)(a + 0x21C) = fn_802077A4(lbl_80331D98, 8, a + 0x118, a + 0x60);
     *(int *)(a + 0x220) = fn_802077A4(lbl_80331D8C, 5, a + 0x118, a + 0x20C);
 }
+#pragma opt_propagation reset
 #pragma pop
 #pragma cplusplus reset
 #pragma scheduling on
