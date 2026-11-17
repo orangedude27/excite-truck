@@ -1919,8 +1919,11 @@ void *fn_80007BF8(void) {
 }
 
 extern u8 lbl_802FB604[];
+/* Returns the "InterludeOverlay" scene name string. */
 void *fn_80007C04(void) {
-    return lbl_802FB604;
+    #define s_interludeOverlayName lbl_802FB604
+    return s_interludeOverlayName;
+    #undef s_interludeOverlayName
 }
 
 extern int __cntlzw(unsigned int);
