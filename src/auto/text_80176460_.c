@@ -1015,12 +1015,14 @@ void fn_801776C4(u32 listener) {
 }
 
 void fn_80177720(u32 arg0) {
+    s32 i;
     u32 *entry = (u32 *)lbl_80430570;
-    s32 i = 0;
-    for (; i < lbl_8055E400; i++, entry++) {
+    u32 *dest;
+    for (i = 0; i < lbl_8055E400; entry++, i++) {
         if (arg0 == *entry) {
             lbl_8055E400--;
-            memmove(entry, entry + 1, (lbl_8055E400 - i) * sizeof(s32));
+            dest = (u32 *)lbl_80430570 + i;
+            memmove(dest, dest + 1, (lbl_8055E400 - i) * 4);
             return;
         }
     }
