@@ -209,14 +209,14 @@ extern float lbl_80565130;
 extern float lbl_80565134;
 #pragma dont_inline fn_802E5168
 unsigned short fn_802E5168(float arg0) {
-    float value = lbl_80565130 * arg0;
+    float value = 32768.0f * arg0;
     float adjusted;
     int converted;
     int result;
-    if (value < lbl_8056512C) {
-        adjusted = value - lbl_80565134;
+    if (value < 0.0f) {
+        adjusted = value - 0.5f;
     } else {
-        adjusted = lbl_80565134 + value;
+        adjusted = 0.5f + value;
     }
     converted = (int)adjusted;
     result = converted & ((-converted & ~converted) >> 31);
@@ -1023,8 +1023,9 @@ void fn_802E6248(int channel, float volume) {
     lbl_804FC680[channel] = volume;
 }
 
-void fn_802E625C(void* hi) {
-    lbl_8055FF8C = hi;
+/* Set the sound output mode (0 = mono, 2 = surround). */
+void fn_802E625C(void* mode) {
+    SoundOutputMode = mode;
 }
 
 #pragma push
