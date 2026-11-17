@@ -413,30 +413,27 @@ void fn_80274460(void *arg0) {
 #pragma scheduling invalid_target
 void fn_80274660(void *arg0, void *arg1) {
     extern void fn_80015A20(void *, float *, float, float);
-    extern float lbl_80563FF0, lbl_80563FF4, lbl_80563FF8;
+    extern float lbl_80563FF4, lbl_80563FF8;
     float matrix[9];
     float vec[3];
-    float one = lbl_80563FB0;
-    float zero = lbl_80563FAC;
-    float angle = lbl_80563FF0;
     float offset;
     char *p = (char *)arg1;
-    *(float *)(p + 0x5C) = one;
-    *(float *)(p + 0x58) = zero;
-    *(float *)(p + 0x60) = one;
-    *(float *)(p + 0x64) = one;
-    *(float *)(p + 0x68) = zero;
-    *(float *)(p + 0x6C) = one;
-    *(float *)(p + 0x70) = one;
-    *(float *)(p + 0x74) = one;
-    *(float *)(p + 0x78) = zero;
-    *(float *)(p + 0x7C) = one;
-    *(float *)(p + 0x80) = one;
-    *(float *)(p + 0x84) = one;
-    vec[0] = angle;
-    vec[1] = one;
-    vec[2] = one;
-    fn_80015A20(matrix, vec, one, zero);
+    *(float *)(p + 0x5C) = 0.0f;
+    *(float *)(p + 0x58) = 1.0f;
+    *(float *)(p + 0x60) = 0.0f;
+    *(float *)(p + 0x64) = 0.0f;
+    *(float *)(p + 0x68) = 1.0f;
+    *(float *)(p + 0x6C) = 0.0f;
+    *(float *)(p + 0x70) = 0.0f;
+    *(float *)(p + 0x74) = 0.0f;
+    *(float *)(p + 0x78) = 1.0f;
+    *(float *)(p + 0x7C) = 0.0f;
+    *(float *)(p + 0x80) = 0.0f;
+    *(float *)(p + 0x84) = 0.0f;
+    vec[0] = 1.5707964f;
+    vec[1] = 0.0f;
+    vec[2] = 0.0f;
+    fn_80015A20(matrix, vec, 0.0f, 1.0f);
     fn_80015B20(p + 0x58, matrix, p + 0x58);
     *(float *)(p + 0x7C) = *(float *)(p + 0xE4);
     *(float *)(p + 0x80) = *(float *)(p + 0xE8);
@@ -447,10 +444,8 @@ void fn_80274660(void *arg0, void *arg1) {
         offset = lbl_80563FF8;
     }
     {
-        float y = *(float *)(p + 0x80);
-        float c = lbl_80563FB0;
-        y += offset;
-        *(float *)(p + 0x124) = c;
+        float y = *(float *)(p + 0x80) + offset;
+        *(float *)(p + 0x124) = 0.0f;
         *(float *)(p + 0x80) = y;
     }
 }
