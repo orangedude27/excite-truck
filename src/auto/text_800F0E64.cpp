@@ -1730,6 +1730,7 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
     register void *fileInfo = out;
     u8 *files;
     u8 *detail;
+    u8 *player;
 
     if (*((u8 *)archive + 0x19) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559898, 0x6F, lbl_80324C84);
@@ -1745,15 +1746,15 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
     file = *(u32 *)((u8 *)reader + 0x28);
     if (*((u8 *)detail + 0x15) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559890, 0x6F, lbl_80324C58);
-    file = (u32)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)detail + 0x14), *(u32 *)((u8 *)detail + 0x18), (void *)file);
-    if (file == 0) return 0;
+    player = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)detail + 0x14), *(u32 *)((u8 *)detail + 0x18), (void *)file);
+    if (player == 0) return 0;
     archive = *(u8 **)((u8 *)reader + 0x28);
     *(u32 *)fileInfo = *(u32 *)detail;
     *(u32 *)((u8 *)fileInfo + 4) = *(u32 *)((u8 *)detail + 4);
     if (*((u8 *)detail + 0xD) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559810, 0x6F, lbl_80321F50);
     *(void **)((u8 *)fileInfo + 8) = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)detail + 0xC), *(u32 *)((u8 *)detail + 0x10), archive);
-    *(u32 *)((u8 *)fileInfo + 0xC) = *(u32 *)file;
+    *(u32 *)((u8 *)fileInfo + 0xC) = *(u32 *)player;
     return 1;
 }
 #pragma opt_common_subs reset
@@ -4482,7 +4483,8 @@ void Update__Q36nw4hbm3snd11SoundPlayerFv(void *player) {
     }
     detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(player);
 }
-#pragma opt_common_subs reset
+#pragma use_lmw_stmw off
+#pragma opt_common_subs off
 void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
     struct Dummy {
         virtual ~Dummy();
@@ -4491,11 +4493,13 @@ void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
         virtual void f2();
         virtual void stopAllSound(s32);
     };
-
-    void *end = (u8 *)self + 4;
-    void *head = *(void **)((u8 *)self + 4);
+    struct { void *head; } cursor;
+    cursor.head = *(void **)((u8 *)self + 4);
+    void *&head = cursor.head;
+    struct { void *end; } sentinel;
+    sentinel.end = (u8 *)self + 4;
+    void *&end = sentinel.end;
     void *node;
-
     while (head != end) {
         node = head;
         head = *(void **)node;
@@ -4505,7 +4509,7 @@ void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
         ((Dummy *)((u8 *)node - 0xC0))->stopAllSound(arg1);
     }
 }
-#pragma use_lmw_stmw reset
+#pragma opt_common_subs reset
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *sound, f32 volume) {
     /* Sets the sound's initial volume (offset 0x28), asserting it is non-negative. */
     if (!(volume >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x99, lbl_80325C64);
@@ -7551,16 +7555,29 @@ extern "C" const char lbl_80326BEC[];
 extern "C" const char lbl_80326BC8[];
 extern "C" const char lbl_80326838[];
 extern "C" u8 lbl_80415080[];
-#pragma scheduling on
+#pragma use_lmw_stmw reset
+#pragma opt_common_subs off
 extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void* self) {
     class Manager {
     public:
         virtual void m0(); virtual void m1(); virtual void m2();
         virtual void m3(void*, u32); virtual void m4(); virtual void m5();
     };
-    register u32 irq = OSDisableInterrupts();
-    s32 voice = *(s32*)((u8*)self + 0x438);
-    if (voice != 0) Stop__Q46nw4hbm3snd6detail7AxVoiceFv((void*)voice);
+    struct Player {
+        char pad[0x94];
+        u8 link94[4];
+        void *node98;
+        u32 tail9C;
+        u32 activeHead;
+        u32 iterator;
+        char pad2[0x438 - 0xA8];
+        u32 voice;
+    };
+    Player *p = (Player *)self;
+    struct { u32 irq; } irqHolder;
+    irqHolder.irq = OSDisableInterrupts();
+    u32 &irq = irqHolder.irq;
+    if (p->voice != 0) Stop__Q46nw4hbm3snd6detail7AxVoiceFv((void*)p->voice);
     if (*((u8*)self + 0x49) != 0) {
         if (self == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C4C, 0x233, lbl_80326C28);
         Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(lbl_8041506C, (u8*)self + 8);
@@ -7570,33 +7587,33 @@ extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void* self) {
     OSRestoreInterrupts(irq);
     ((Manager*)*(void**)((u8*)self + 0x430))->m3(self, *(u32*)((u8*)self + 0x434));
     irq = OSDisableInterrupts();
-    if (*(u32*)((u8*)self + 0xA0) == 0) goto done;
+    if (p->activeHead == 0) goto done;
     s32 iterator;
     s32 eraseValue;
-    void* node = (u8*)self + 0x98;
+    register void* node = &p->node98;
     goto check;
 loop:
-    if (*(u32*)((u8*)self + 0xA0) == 0)
+    if (p->activeHead == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C1C, 0x1F1, lbl_80326BF8);
-    iterator = *(s32*)((u8*)self + 0xA4);
+    iterator = p->iterator;
     if (iterator == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326BBC, 0x23D, lbl_80326B98);
     s32 count = iterator - 0x14;
     if (count == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326BEC, 0x193, lbl_80326BC8);
-    eraseValue = *(s32*)((u8*)self + 0xA4);
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8*)self + 0xA0, &eraseValue);
+    eraseValue = p->iterator;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&p->activeHead, &eraseValue);
     if (count == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C7C, 0x233, lbl_80326C58);
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8*)self + 0x94, (void**)&node, (void*)(count + 0x14));
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&p->link94, (void**)&node, (void*)(count + 0x14));
 check:
-    if (*(u32*)((u8*)self + 0xA0) != 0) goto loop;
+    if (p->activeHead != 0) goto loop;
 done:
     OSRestoreInterrupts(irq);
     FreeChannels__Q46nw4hbm3snd6detail10StrmPlayerFv(self);
     *((u8*)self + 0x48) = 0;
 }
-
+#pragma opt_common_subs reset
 extern "C" void NotifyStrmHeaderAsyncEndCallback__Q46nw4hbm3snd6detail10StrmPlayerFbPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeaderPv(bool success, const void* header, void* player) {
     /* Async callback after reading a stream header: set up the player on success,
        otherwise force it to stop. */
