@@ -3587,6 +3587,7 @@ extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
 #pragma pop
 
 extern f32 lbl_805615B0;
+/* Return the fixed constant 7.75f (lbl_805615B0) used by this subsystem. */
 extern "C" f32 fn_80143C44(void) {
     return lbl_805615B0;
 }
