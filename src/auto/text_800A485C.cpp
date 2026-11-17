@@ -6978,8 +6978,10 @@ extern "C" s32 fn_800AF530(void *iter, void *scratch, s32 volume, s32 dirState) 
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_800AF574(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 0x1C) = 0;
+/* Clears the 32-bit field at +0x1C of a VFi PF file-stream or directory object
+ * (used by VFiPFFILE/VFiPFDIR_FinalizeAll*) and returns success (0). */
+extern "C" s32 fn_800AF574(void *object) {
+    *(s32 *)((u8 *)object + 0x1C) = 0;
     return 0;
 }
 #pragma dont_inline reset
@@ -21323,13 +21325,13 @@ extern "C" s32 fn_800D3C44(register char *var_r24, void *arg1, register u32 var_
     char *temp_r23;
     char *temp_r3_4;
     char *temp_r3_5;
-    register u8 c;
+    u8 c;
 
     if (var_r26 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EC50, 0x25A, base + 0x1B4);
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_8031EC50[0], 0x25A, base + 0x1B4);
     }
     if (var_r27 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EC50, 0x25B, base + 0x1E0);
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_8031EC50[0], 0x25B, base + 0x1E0);
     }
     if (arg1 != 0) {
         var_r30 = *(void **)((u8 *)arg1 + 0x10);
@@ -21339,13 +21341,13 @@ extern "C" s32 fn_800D3C44(register char *var_r24, void *arg1, register u32 var_
 loop_6:
     var_r28 = 0;
     if (lbl_8055DDD8 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EC50, 0x18D, base + 0x134);
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_8031EC50[0], 0x18D, base + 0x134);
     }
 
 loop_8:
     var_r23 = 1;
     if (lbl_8055DDD8 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EC50, 0x169, base + 0x134);
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_8031EC50[0], 0x169, base + 0x134);
     }
     if (var_r24 == 0) {
         var_r24 = 0;
@@ -21373,7 +21375,7 @@ in1:
 
     var_r23 = 3;
     if (lbl_8055DDD8 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EC50, 0x169, base + 0x134);
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_8031EC50[0], 0x169, base + 0x134);
     }
     if (var_r24 == 0) {
         var_r24 = 0;
@@ -21400,7 +21402,7 @@ in2:
 loop_36:
         var_r23 = 1;
         if (lbl_8055DDD8 == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EC50, 0x169, base + 0x134);
+            Panic__Q26nw4hbm2dbFPCciPCce(&lbl_8031EC50[0], 0x169, base + 0x134);
         }
         if (var_r24 == 0) {
             var_r24 = 0;
