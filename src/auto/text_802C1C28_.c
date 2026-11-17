@@ -231,7 +231,10 @@ void fn_802C217C(void) {
 }
 #pragma dont_inline reset
 void* fn_802C21B8(void) {
-    return lbl_8055FB50;
+#define roadOpacityTexHandle lbl_8055FB50
+    /* RealName: GetRoadOpacityTexHandle - return the current road-opacity texture handle. */
+    return roadOpacityTexHandle;
+#undef roadOpacityTexHandle
 }
 
 void fn_802C21C0(void) {
