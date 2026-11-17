@@ -1384,7 +1384,10 @@ void fn_801F6EC0(void *list) {
     }
 }
 #pragma dont_inline reset
-void fn_801F73F8(void) { fn_801F6EC0(lbl_8055EC14); }
+/* Draw the manual cloth group: fn_801F6EC0 walks the 0x54-byte ClothEntry
+ * array in lbl_8055EC14 (entry count at +0x2A0) and draws each entry whose
+ * active flag (+0x38, set by the simulation pass fn_801F73F0) is set. */
+void fn_801F73F8(void) { fn_801F6EC0((ClothEntry *)lbl_8055EC14); }
 
 extern char lbl_8033AD7C[], lbl_8033AD88[];
 extern float lbl_80562FB8;
