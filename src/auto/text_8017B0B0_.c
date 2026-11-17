@@ -217,8 +217,10 @@ void fn_8017B4AC(float * __restrict state, float * __restrict delta) {
     state[0x144 / 4] = z;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_8017B4E0(void *arg0, float *arg1, float *arg2, float arg3) {
+#pragma scheduling on
     float *state = (float *)arg0;
     float delta[3];
     float output[3];
@@ -243,12 +245,12 @@ void fn_8017B4E0(void *arg0, float *arg1, float *arg2, float arg3) {
     delta[0] = arg2[0] - state[0x60 / 4];
     delta[1] = temp_f2 - state[0x64 / 4];
     delta[2] = temp_f1 - state[0x68 / 4];
-    PSVECCrossProduct(delta, arg1, output, temp_f1, temp_f2);
+    PSVECCrossProduct(delta, arg1, output);
     state[0x194 / 4] += output[0] * arg3;
     state[0x198 / 4] += output[1] * arg3;
     state[0x19C / 4] += output[2] * arg3;
 }
-#pragma scheduling on
+#pragma pop
 extern void fn_8017B4E0(void *, float *, float *, float);
 #pragma scheduling on
 void fn_8017B5D4(void *arg0, int arg1, int arg2, float *arg3, float *arg4, int arg5, float *arg6, int arg7, float arg8) {
@@ -823,6 +825,7 @@ void fn_8017C7C4(void) {
 }
 
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8017C7C8(void *arg0, void *arg1, void *arg2) {
