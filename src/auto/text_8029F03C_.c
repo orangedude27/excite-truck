@@ -387,10 +387,7 @@ extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
     if (((int (*)(unsigned char *, int))fn_8029F510)((unsigned char *)arg0, (int)arg1) != 0) {
         obj->set((const char *)&lbl_8034983C);
         *(int *)((char *)arg0 + 4) = fn_802929F8();
-        {
-            const char *s = (const char *)&lbl_8055CAE8;
-            *(float *)((char *)arg0 + 8) = obj->getFloat((float)lbl_805646B4, s);
-        }
+        *(float *)((char *)arg0 + 8) = obj->getFloat(0.0f, (const char *)&lbl_8055CAE8);
     } else {
         *(int *)((char *)arg0 + 4) = 0;
     }
