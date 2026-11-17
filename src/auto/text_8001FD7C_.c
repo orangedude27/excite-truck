@@ -927,7 +927,10 @@ void fn_800217E4(void) {
 }
 
 void fn_800218F4(void) {
-    fn_8001FD7C();
+    #define InitOverlayConfig fn_8001FD7C
+    /* Initialize the tips/results overlay config from the game's config block. */
+    InitOverlayConfig();
+    #undef InitOverlayConfig
 }
 
 void fn_800218F8(void) {
