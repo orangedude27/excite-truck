@@ -81,8 +81,10 @@ struct VObj2 {
    the game's screens set it when they take the key themselves; while it is set
    fn_80218E08 plays no UI key sound. */
 extern char lbl_8055EFAC;
-int fn_80216D14(int arg0) {
-    return arg0 < 0 ? 0 : 1 << arg0;
+/* Convert a sound-group id (bit index) into a single-bit mask: 1 << soundId,
+ * or 0 for a negative id. Used as SoundIdToMask by the sound-manager helpers. */
+int fn_80216D14(int soundId) {
+    return soundId < 0 ? 0 : 1 << soundId;
 }
 
 #pragma dont_inline fn_80216D28
