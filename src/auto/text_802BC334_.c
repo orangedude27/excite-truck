@@ -821,7 +821,8 @@ void fn_802BD69C(void *arg0, int arg1) {
 #pragma scheduling on
 #pragma pop
 
-int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
+// Relocation fixup helper: add a delta to a stored pointer/value and return the adjusted result.
+int fn_802BD80C(int base, int delta) { return base + delta; }
 
 __declspec(section ".data") extern int lbl_8034AC48;
 #pragma scheduling invalid_target
@@ -1191,8 +1192,8 @@ void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, f
     normZ = worldZ / scale;
     coordZ = (short)(int)normZ;
     coordX = (short)(int)normX;
-    baseX = (short)((coordX / 0x80) * 0x80 + 0x40);
     baseZ = (short)((coordZ / 0x80) * 0x80 + 0x40);
+    baseX = (short)((coordX / 0x80) * 0x80 + 0x40);
     for (xCell = baseX - 0x80; xOffset <= 0x80; xOffset += 0x80, xCell += 0x80) {
         for (zOffset = -0x80, zCell = baseZ - 0x80; zOffset <= 0x80; zOffset += 0x80, zCell += 0x80) {
             cell = fn_802BE844((short)xCell, (short)zCell, 0x40);
