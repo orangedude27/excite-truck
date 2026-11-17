@@ -4730,6 +4730,16 @@ static inline s32 ClampS32_E(s32 x, s32 low, s32 high) {
 #pragma dont_inline off
 #pragma auto_inline off
 extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s32 ambientInfo, s32 externalPlayer, s32 soundId, void *manager) {
+    /* detail::SoundInstanceManager::Alloc for streaming sounds (the _E helper
+     * variants).  Takes a free StrmSound out of the instance pool; when the pool
+     * is full it takes the sound with the lowest priority away from that list
+     * (stopping it first) if the new sound outranks it, and gives up otherwise.
+     * The new sound is then built up: the player's first free frame heap, a copy
+     * of the ambient arg with its update callback, its priority (+0x74) and
+     * ambient priority offset (+0x40), and links into the manager's priority
+     * list (+0x4, node +0xB8), the player's sound list (+0x00, node +0xC0), the
+     * player's priority list (+0x0C, node +0xC8) and the external player's sound
+     * list.  Returns the sound, or 0 when it could not be started. */
     extern const char lbl_8032624C[];
     extern const char lbl_80326208[];
     extern const char lbl_803261F0[];
@@ -4746,12 +4756,14 @@ extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s3
 #define LIST_INSERT Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode
 #define LIST_ERASE Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator
 #define POOL_ALLOC AllocImpl__Q44nw4r3snd6detail8PoolImplFv
-#define NEW_STRM_SOUND fn_800F07EC
+#define NEW_STRM_SOUND fn_800F07EC            /* StrmSound::StrmSound() */
 #define CHECK_PLAYABLE CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer
 #define EXTERNAL_INSERT_SOUND InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound
-#define FRAME_HEAP_CLEAR fn_800EC1A4
+#define FRAME_HEAP_CLEAR fn_800EC1A4          /* FrameHeap::Clear() */
 #define ATTACH_AMBIENT_ARG fn_800E9B74
-    union { s32 request; u32 end; } scratch;
+    union { s32 request; u32 end; } scratch; /* one register the original reused
+                                                for the requested priority and for
+                                                the list ends and node pointers */
     s32 ambientPriority;
     s32 listPriority;
     void *sound;
@@ -4760,12 +4772,15 @@ extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s3
         return 0;
     }
     scratch.request = requestedPriority;
+    /* The ambient arg's callback hands out this sound's ambient priority, which
+     * the sound itself carries as its priority offset. */
     ambientPriority = AmbientInfo_GetPriority_E(ambientInfo, soundId);
     listPriority = ClampS32_E(scratch.request - ambientPriority, 0, 127);
     if (CHECK_PLAYABLE((void *)player, listPriority, (void *)externalPlayer) == 0) {
         return 0;
     }
-    {
+    { /* SoundInstanceManager::Alloc(listPriority), inlined. */
+
     sound = 0;
     void *it;
     struct { u32 old; } lock;
@@ -4789,6 +4804,8 @@ extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s3
             sound = NEW_STRM_SOUND(freeSound, manager);
         }
     } else {
+        /* Pool empty: the priority list is sorted with the lowest priority in
+         * front, so that is the only sound this one may take over. */
         u8 *node;
         u8 *lowest;
         if (*(s32 *)((u8 *)manager + 4) == 0) {
@@ -4803,7 +4820,7 @@ extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s3
         if (node == 0) {
             PANIC(lbl_80324314, 0x23D, lbl_803242F0);
         }
-        lowest = node - 0xB8;
+        lowest = node - 0xB8; /* the sound its manager node (+0xB8) belongs to */
         if (lowest == 0) {
             PANIC(lbl_803259B4, 0x193, lbl_80325990);
         }
@@ -4813,6 +4830,7 @@ extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s3
             goto allocation_done;
         }
         {
+            /* BasicSound::CalcPriority_(): own priority (+0x74) plus offset (+0x40). */
             s32 lowestPrio = *(u8 *)(lowest + 0x74) + *(s32 *)(lowest + 0x40);
             s32 clamped = ClampS32_E(lowestPrio, 0, 0x7F);
             if (listPriority < clamped) {
@@ -4831,6 +4849,8 @@ extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s3
             sound = NEW_STRM_SOUND(sound, manager);
         }
     }
+    /* Insert into the manager's priority-sorted list, in front of the first
+     * sound that outranks this one. */
     pos = *(void **)((u8 *)manager + 8);
     scratch.end = (u32)manager + 8;
     while ((u32)pos != scratch.end) {
@@ -4854,7 +4874,8 @@ allocation_done:
     if (sound == 0) {
         return 0;
     }
-    {
+    { /* Give the sound the first frame heap still on the player's heap list. */
+
     if (*(s32 *)(player + 0x18) != 0) {
         u8 *frameHeap;
         s32 it;
@@ -4865,7 +4886,7 @@ allocation_done:
         if (scratch.end == 0) {
             PANIC(lbl_80325DE4, 0x23D, lbl_80325DC0);
         }
-        frameHeap = (u8 *)(scratch.end - 0x2C);
+        frameHeap = (u8 *)(scratch.end - 0x2C); /* node of the heap's list entry */
         if (frameHeap == 0) {
             PANIC(lbl_80325E14, 0x193, lbl_80325DF0);
         }
@@ -4873,7 +4894,7 @@ allocation_done:
         LIST_ERASE((u8 *)(player + 0x18), &it);
         *(void **)(frameHeap + 0x34) = sound;
         {
-            scratch.end = (u32)(frameHeap + 4);
+            scratch.end = (u32)(frameHeap + 4); /* the heap's mutex */
             *(void **)((u8 *)sound + 4) = (void *)frameHeap;
             OSLockMutex((void *)scratch.end);
             FRAME_HEAP_CLEAR((void *)(frameHeap + 0x1C));
@@ -4884,6 +4905,8 @@ allocation_done:
 }
     if (ambientInfo != 0) {
         if (ambientInfo != 0) {
+            /* Copy the ambient arg out of the caller's block and let the sound
+             * update it through the ambient callbacks. */
             void *arg = (*(AmbientArgAllocaterCallbackEarly **)(ambientInfo + 8))->detail_AllocAmbientArg(*(s32 *)(ambientInfo + 0x10));
             if (arg != 0) {
                 memcpy(arg, (const void *)*(s32 *)(ambientInfo + 0xC), (u32)*(s32 *)(ambientInfo + 0x10));
@@ -4893,7 +4916,7 @@ allocation_done:
     }
     *(u8 *)((u8 *)sound + 0x74) = (u8)priority;
     *(s32 *)((u8 *)sound + 0x40) = ambientPriority;
-    {
+    { /* Link the sound into the player's sound list (+0x00, node +0xC0). */
         void *it;
         scratch.end = player + 4;
         if (sound == 0) {
@@ -4906,29 +4929,30 @@ allocation_done:
     if (externalPlayer != 0) {
         EXTERNAL_INSERT_SOUND((void *)externalPlayer, sound);
     }
-    {
-        void *it2;
-        struct { void *node; } iter2;
-        void *&pos2 = iter2.node;
-        pos2 = *(void **)(player + 0x10);
-        while (pos2 != (void *)(player + 0x10)) {
-            if (pos2 == 0) {
+    { /* Link the sound into the player's priority-sorted list (+0x0C, node +0xC8),
+         * in front of the first sound that outranks this one. */
+        void *insertIt;
+        struct { void *node; } insertIter;
+        void *&insertPos = insertIter.node;
+        insertPos = *(void **)(player + 0x10);
+        while (insertPos != (void *)(player + 0x10)) {
+            if (insertPos == 0) {
                 PANIC(lbl_80326348, 0x23D, lbl_80326324);
             }
-            s32 c = *(u8 *)((u8 *)pos2 - 0x54) + *(s32 *)((u8 *)pos2 - 0x88);
-            s32 cc = ClampS32_E(c, 0, 0x7F);
-            s32 d = *(u8 *)((u8 *)sound + 0x74) + *(s32 *)((u8 *)sound + 0x40);
-            s32 dc = ClampS32_E(d, 0, 0x7F);
-            if (dc < cc) {
+            s32 entryPrio = *(u8 *)((u8 *)insertPos - 0x54) + *(s32 *)((u8 *)insertPos - 0x88);
+            s32 entryListPrio = ClampS32_E(entryPrio, 0, 0x7F);
+            s32 newPrio = *(u8 *)((u8 *)sound + 0x74) + *(s32 *)((u8 *)sound + 0x40);
+            s32 newListPrio = ClampS32_E(newPrio, 0, 0x7F);
+            if (newListPrio < entryListPrio) {
                 break;
             }
-            pos2 = *(void **)pos2;
+            insertPos = *(void **)insertPos;
         }
         if (sound == 0) {
             PANIC((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
         }
-        it2 = pos2;
-        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)(player + 0xC), &it2, (u8 *)sound + 0xC8);
+        insertIt = insertPos;
+        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)(player + 0xC), &insertIt, (u8 *)sound + 0xC8);
     }
 #undef PANIC
 #undef LIST_INSERT
