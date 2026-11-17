@@ -897,39 +897,34 @@ void fn_8028F2EC(int *arg0) {
 extern float fn_80129DC4(int, float, float);
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8028F444(float *arg0, float *arg1, float *arg2, float *arg3, float farg0, float farg1) {
     float t0 = arg2[0];
     float h0 = fn_80129DC4(0, -t0, t0);
     float a0 = arg1[0];
-    float h0s = farg1 * h0;
     float c0 = arg3[0];
     float n1 = arg2[1];
-    float x = a0 * c0 + h0s;
+    float x = a0 * c0 + farg1 * h0;
     float h1;
     float a1;
-    float h1s;
     float c1;
     float n2;
     float y;
     float h2;
     float a2;
-    float h2s;
     float c2;
     float z;
     arg0[0] = x;
     h1 = fn_80129DC4(0, -n1, n1);
     a1 = arg1[1];
-    h1s = farg1 * h1;
     c1 = arg3[1];
     n2 = arg2[2];
-    y = a1 * c1 + h1s;
+    y = a1 * c1 + farg1 * h1;
     arg0[1] = y;
     h2 = fn_80129DC4(0, -n2, n2);
     a2 = arg1[2];
-    h2s = farg1 * h2;
     c2 = arg3[2];
-    z = a2 * c2 + h2s;
+    z = a2 * c2 + farg1 * h2;
     arg0[1] += farg1 * farg0;
     arg0[2] = z;
 }
