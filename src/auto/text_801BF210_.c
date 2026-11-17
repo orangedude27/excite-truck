@@ -636,7 +636,8 @@ void fn_801C014C(void *object, float *position) {
     fn_8017A57C(y, x);
 }
 
-int fn_801C0168(void *arg0) { return *(int *)((char *)arg0 + 0x5A4); }
+// Return the 32-bit field stored at offset 0x5A4 of the given scene state object.
+int fn_801C0168(void *sceneState) { return *(int *)((char *)sceneState + 0x5A4); }
 
 // Return the 32-bit field stored at offset 0x59C of the given object.
 int fn_801C0170(void *object) { return *(int *)((char *)object + 0x59C); }
