@@ -31,6 +31,7 @@ void __OSInitAlarm(void) {
     }
 }
 
+/* Initialize an alarm as inactive: a NULL handler means it is not queued. */
 void OSCreateAlarm(OSAlarm* alarm) {
     alarm->handler = NULL;
     alarm->tag = 0;
