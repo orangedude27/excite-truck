@@ -324,6 +324,8 @@ void fn_80032EAC(int baseCycles) {
     DCFlushRange(__AXAuxBuffers, AX_AUX_BUFFER_SIZE * AX_NUM_VOICES);
 }
 #pragma use_lmw_stmw reset
+/* Return the base of lbl_80363C60, handed to the DSP as the LFO sine-table
+ * pointer in the command list; this AX build uses the same buffer as the AXPB array. */
 void *__AXFXGetLfoSinTable_8003313C(void) { return lbl_80363C60; }
 
 void fn_80033148(void *arg0) {
