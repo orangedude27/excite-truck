@@ -2353,6 +2353,11 @@ extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigne
 }
 
 struct CountField_800D9844 { u32 pad : 9; u32 cnt : 5; u32 rest : 18; };
+struct MatBits_800D9844 {
+    u32 K : 4; u32 B : 4; u32 L : 4; u32 A : 2; u32 Q : 3;
+    u32 F : 1; u32 pad1 : 5; u32 G : 1; u32 E : 1; u32 I : 1;
+    u32 P : 1; u32 pad0 : 5;
+};
 struct TevStageDefault {
     u8 b[16];
     TevStageDefault() {
@@ -2390,8 +2395,8 @@ extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
         if (count < arg1) {
             TevStageDefault def;
             TevStageDefault copy = def;
-            u32 n = arg1 - count;
             stage += count;
+            u32 n = arg1 - count;
             while (n--) {
                 *stage = copy;
                 stage++;
