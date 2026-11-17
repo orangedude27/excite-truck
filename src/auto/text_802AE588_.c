@@ -1236,16 +1236,17 @@ void fn_802AFF6C(void *list) {
 }
 
 #pragma opt_propagation off
-void fn_802AFF80(void *arg0, short arg1) {
-    unsigned int index = *(unsigned short *)((char *)arg0 + 4);
-    u32 limit = *(unsigned short *)((char *)arg0 + 6);
-    short *data;
-    if (index < limit) {
-        data = *(short **)arg0;
-        limit = index << 1;
-        data[limit >> 1] = arg1;
-        index = index + 1;
-        *(unsigned short *)((char *)arg0 + 4) = index;
+/* Append value to a bounded short list: struct { short* items; u16 count; u16 capacity; }, ignoring writes past capacity. */
+void fn_802AFF80(void *list, short value) {
+    unsigned int count = *(unsigned short *)((char *)list + 4);
+    u32 capacity = *(unsigned short *)((char *)list + 6);
+    short *items;
+    if (count < capacity) {
+        items = *(short **)list;
+        capacity = count << 1;
+        items[capacity >> 1] = value;
+        count = count + 1;
+        *(unsigned short *)((char *)list + 4) = count;
     }
 }
 #pragma opt_propagation reset
