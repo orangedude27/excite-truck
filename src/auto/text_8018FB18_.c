@@ -2576,8 +2576,9 @@ s32 fn_80192C4C(void *obj) {
     return (s32)((u32)(-bit | bit) >> 31);
 }
 
-int fn_80192C68(void *arg0) {
-    return (((unsigned char)*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 5) & 7) - 1;
+int fn_80192C68(void *obj) {
+    /* Return the 3-bit field at bits 5-7 of the packed flags byte at +7 of the child object referenced by obj+8, minus one. */
+    return (((unsigned char)*(unsigned char *)((char *)*(void **)((char *)obj + 8) + 7) >> 5) & 7) - 1;
 }
 
 #pragma scheduling invalid_target
