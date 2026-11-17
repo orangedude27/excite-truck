@@ -667,6 +667,8 @@ void *fn_801350C0(void) {
 }
 
 void* fn_80135108(void) {
+    /* Return the number of AI cars in the fn_8013477C table (global AI_CAR_COUNT
+     * / lbl_8055E0B0), kept in sync as cars are added. */
     return lbl_8055E0B0;
 }
 
