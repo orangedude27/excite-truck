@@ -68,6 +68,10 @@ extern void GXSetVtxDesc(int, int);
 extern void GXSetVtxAttrFmt(int, int, int, int, int);
 extern void GXBegin(int, int, int);
 extern void fn_802D1678();
+extern unsigned long VIGetNextField(void);
+extern void GXSetViewportJitter(unsigned short, float, float, float, float, float, float);
+extern void GXSetViewport(unsigned short, float, float, float, float, float, float);
+extern void GXSetScissor(unsigned int, unsigned int, unsigned int, unsigned int);
 extern void fn_802D14D8(void);
 extern unsigned char lbl_8055FD91;
 extern unsigned char lbl_8055D0FF;
@@ -1559,6 +1563,7 @@ void fn_802D0910(int, int, int, int, int, int) {
 
 #pragma scheduling invalid_target
 void fn_802D0914(int arg0, short arg1, short arg2) {
+#pragma use_lmw_stmw off
     extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
     unsigned char buffer[0x12];
     unsigned char b8, b9, b10, b11, b12, b13, b14, b15;
@@ -1567,11 +1572,6 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     *(unsigned short *)(buffer + 8) = 0;
     *(unsigned short *)(buffer + 10) = 0;
     *(unsigned short *)(buffer + 14) = arg2;
-    buffer[0] = 0;
-    buffer[1] = 0;
-    buffer[2] = 2;
-    buffer[16] = 24;
-    buffer[17] = 0;
     b12 = buffer[12];
     b13 = buffer[13];
     b8 = buffer[8];
@@ -1580,6 +1580,11 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     b11 = buffer[11];
     b14 = buffer[14];
     b15 = buffer[15];
+    buffer[0] = 0;
+    buffer[1] = 0;
+    buffer[2] = 2;
+    buffer[16] = 24;
+    buffer[17] = 0;
     buffer[8] = b9;
     buffer[9] = b8;
     buffer[10] = b11;
@@ -1595,62 +1600,54 @@ void fn_802D09E4(void) {
 }
 
 void fn_802D09E8(void) {
-    unsigned long frameCounter = lbl_8055D0B8;
-    signed char flag = lbl_8055FD90;
-    int temp_r0;
-
-    if (flag == 0) {
-        return;
-    }
-
-    if ((long) frameCounter < 0) {
+    char *base = lbl_8034BD18;
+    int temp_r0, div, rem, val;
+    union { double d; unsigned int w[2]; } cvt;
+    if ((unsigned char)lbl_8055FD90 == 0) return;
+    if ((long)lbl_8055D0B8 < 0) {
         lbl_8055FD90 = 0;
-        fn_802D09E4();
+        ((void (*)(void))fn_802D09E4)();
         return;
     }
-
     temp_r0 = lbl_8055FDC0 + 1;
     lbl_8055FDC0 = temp_r0;
-
     if (temp_r0 > 2) {
         lbl_8055FDC0 = 0;
-
-        if (temp_r0 == 2) {
-            int temp_r3 = fn_802E3D68(lbl_804C9830);
-            lbl_8055D10C = temp_r3;
-
-            if (temp_r3 == -1) {
-                fn_802E30C8(lbl_8034BD18 + 0x428, lbl_804C9830);
+        if (lbl_8055D0B8 == 0) {
+            int r = fn_802E3D68(lbl_804C9830);
+            lbl_8055D10C = r;
+            if (r == -1) {
+                fn_802E30C8(base + 0x428, lbl_804C9830);
                 lbl_8055FD90 = 0;
                 lbl_8055D0B8 = -1;
                 return;
             }
-
             lbl_8055FDC4 = fn_802E2C20();
-            fn_802E30C8(lbl_8034BD18 + 0x43C, lbl_804C9830);
-
+            fn_802E30C8(base + 0x43C, lbl_804C9830);
             if (lbl_8055FD18 == 0) {
-                fn_802D0914(lbl_8055D10C, (short) lbl_804C9760[2], (short) lbl_804C9760[3]);
+                ((void (*)(int, int, int))fn_802D0914)(lbl_8055D10C,
+                    lbl_804C9760[2] * lbl_8055D0BC, lbl_804C9760[3] * lbl_8055D0C0);
             }
         }
-
-        if ((long) frameCounter < (long) (lbl_8055D0BC * lbl_8055D0C0)) {
-            int div = frameCounter / lbl_8055D0BC;
-            int rem = frameCounter % lbl_8055D0BC;
-
-            fn_802E30C8(lbl_8034BD18 + 0x458, (char *) (frameCounter + 1));
-            fn_802D0910(lbl_8055D10C, lbl_804C9760[2] * rem, lbl_804C9760[3] * div,
-                        lbl_804C9760[2] * lbl_8055D0BC, lbl_804C9760[3] * lbl_8055D0C0, lbl_804C9760[2]);
+        if ((long)lbl_8055D0B8 < (long)(lbl_8055D0BC * lbl_8055D0C0)) {
+            rem = (long)lbl_8055D0B8 % lbl_8055D0BC;
+            div = (long)lbl_8055D0B8 / lbl_8055D0BC;
+            fn_802E30C8(base + 0x458, (char *)(lbl_8055D0B8 + 1));
+            ((void (*)(int,int,int,int,int,int))fn_802D0910)(lbl_8055D10C, lbl_804C9760[2] * rem, lbl_804C9760[3] * div,
+                        lbl_804C9760[2] * lbl_8055D0BC, lbl_804C9760[3] * lbl_8055D0C0,
+                        lbl_804C9760[2]);
+            lbl_8055D0B8++;
         }
-
-        if ((long) frameCounter >= (long) (lbl_8055D0BC * lbl_8055D0C0)) {
+        if ((long)lbl_8055D0B8 >= (long)(lbl_8055D0BC * lbl_8055D0C0)) {
             lbl_8055FD90 = 0;
             lbl_8055D0B8 = -1;
             fn_802E3734(&lbl_8055D10C);
             lbl_8055D10C = -1;
-            fn_802E2C20();
-            fn_802E30C8(lbl_8034BD18 + 0x468, lbl_804C9830, lbl_8055FDC4,
-                        lbl_80564F80 * (float) (0x43300000 - (unsigned long) lbl_8055FDC4));
+            val = fn_802E2C20();
+            cvt.w[0] = 0x43300000;
+            cvt.w[1] = (unsigned int)(val - lbl_8055FDC4) ^ 0x80000000U;
+            fn_802E30C8(base + 0x468, lbl_804C9830, lbl_8055FDC4,
+                        lbl_80564F80 * (float)(cvt.d - lbl_80564FB0));
         }
     }
 }
@@ -3236,7 +3233,7 @@ extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE
 #pragma scheduling invalid_target
 int fn_802D3A5C(void *arg0, float *arg1) {
     extern unsigned char lbl_804C9778[];
-    float scaledY = lbl_80564FB8 * arg1[1];
+    float scaledY = arg1[1] * lbl_80564FB8;
     float xValue = arg1[0];
     float yValue = scaledY / lbl_80564FBC;
     int x = (int)xValue;
