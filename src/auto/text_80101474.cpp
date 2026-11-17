@@ -142,8 +142,9 @@ extern "C" void fn_801014CC(s32 arg0) {
     fn_801013B0(arg0 - 8);
 }
 
-extern "C" void fn_801014D4(s32 arg0) {
-    InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(arg0 - 8);
+/* This-adjusting thunk: subtract the 8-byte multiple-inheritance offset to recover the base WsdPlayer subobject's `this`, then tail-call WsdPlayer::InvalidateData (the range arguments pass through unchanged in r4/r5). */
+extern "C" void fn_801014D4(s32 subobjectThis) {
+    InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(subobjectThis - 8);
 }
 
 extern "C" void fn_801014DC(s32 arg0) {
@@ -199,10 +200,9 @@ check:
 
 #pragma use_lmw_stmw off
 #pragma scheduling off
-int nw4hbm::snd::detail::WsdTrack::ParseNextTick(const nw4hbm::snd::detail::WsdTrack::WsdCallback *callback, unsigned long arg1, bool arg2) {
-    int valid = *(int *)((char *)this + 0x2C);
+int nw4hbm::snd::detail::WsdTrack::ParseNextTick(const WsdCallback *callback, unsigned long arg1, bool arg2) {
     void *channel;
-    if (valid == 0) {
+    if (*(int *)((char *)this + 0x2C) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0x6F, lbl_80327CCC);
     }
     channel = *(void **)((char *)this + 0x30);
@@ -424,7 +424,7 @@ void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Cha
     const char *base = lbl_80327CB8;
     void *track = (void *)arg2;
     void *channel;
-    void *next;
+    register void *next;
     if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1cf, base + 0x88);
     if (track == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1d0, base + 0xb8);
     if ((int)arg1 == 2) fn_800EAD00(arg0);
@@ -1171,11 +1171,12 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color) {
     unsigned int top = address & 0xFF000000U;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned char *self = (unsigned char *)this;
-    unsigned char *source3, *source1, *source2;
+    unsigned char *source1, *source2, *source3;
     unsigned int temp_r30;
     unsigned int temp_r3;
     unsigned int temp_r4;
     int var_r5_2;
+    unsigned char ca, cb, cg, cr;
     if (top != 0x80000000U && (address & 0xFF800000U) != 0x81000000U)
         r10 = 0;
     if (r10 == 0 && (address & 0xF8000000U) != 0x90000000U)
@@ -1190,10 +1191,14 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color) {
         r5 = 0;
     if (r5 == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x185, lbl_8032818C, this);
-    self[0x18] = color.r;
-    self[0x19] = color.g;
-    self[0x1A] = color.b;
-    self[0x1B] = color.a;
+    cr = color.r;
+    cg = color.g;
+    cb = color.b;
+    ca = color.a;
+    self[0x18] = cr;
+    self[0x19] = cg;
+    self[0x1A] = cb;
+    self[0x1B] = ca;
     temp_r30 = top;
     var_r5_2 = 0;
     if (temp_r30 == 0x80000000U ||
@@ -1227,31 +1232,19 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color) {
     self[0x11] = source2[1];
     self[0x12] = source2[2];
     self[0x13] = source2[3];
-    if (*(int *)(self + 0x20) == 0)
-        source3 = self + 0x18;
-    else
-        source3 = self + 0x1C;
-    {
-        unsigned char s0 = source3[0];
-        unsigned char b0 = self[0xB];
-        self[0x14] = s0;
-        int alpha = *(volatile unsigned char *)(self + 0x42);
-        unsigned char s1 = source3[1];
-        unsigned char f0 = self[0xF];
-        int product_b = b0 * alpha;
-        self[0x15] = s1;
-        unsigned char s2 = source3[2];
-        unsigned char v13 = self[0x13];
-        int product_f = f0 * alpha;
-        self[0x16] = s2;
-        unsigned char s3 = source3[3];
-        int product_13 = v13 * alpha;
-        int product_17 = s3 * alpha;
-        self[0xB] = product_b / 255;
-        self[0xF] = product_f / 255;
-        self[0x13] = product_13 / 255;
-        self[0x17] = product_17 / 255;
-    }
+    source3 = (*(int *)(self + 0x20) == 0) ? self + 0x18 : self + 0x1C;
+    self[0x14] = source3[0];
+    self[0x15] = source3[1];
+    self[0x16] = source3[2];
+    unsigned char bv = self[0xB];
+    unsigned char fv = self[0xF];
+    unsigned char v13 = self[0x13];
+    unsigned char v17 = source3[3];
+    int alpha = *(volatile unsigned char *)(self + 0x42);
+    self[0xB] = (bv * alpha) / 255;
+    self[0xF] = (fv * alpha) / 255;
+    self[0x13] = (v13 * alpha) / 255;
+    self[0x17] = (v17 * alpha) / 255;
 }
 
 /* Returns this CharWriter's horizontal scale, panicking if the pointer is not in a valid address range. */
