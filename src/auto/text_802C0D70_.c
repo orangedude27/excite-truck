@@ -180,8 +180,11 @@ void fn_802C1020(void) {
     fn_8029231C((char *)lbl_804C0800);
 }
 #pragma pop
+/* Invalidate the cached sun/light resource id, then reload the sky resource and reapply its sun direction. */
 void fn_802C10B8(void) {
-    *(s32 *)lbl_8055FB14 = -1;
+#define gSunResourceId lbl_8055FB14
+    *(s32 *)gSunResourceId = -1;
+#undef gSunResourceId
     fn_802C0F4C();
 }
 
