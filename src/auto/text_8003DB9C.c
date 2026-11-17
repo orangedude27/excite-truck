@@ -685,6 +685,7 @@ void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z);
 void GXSetGPMetric(unsigned int metric1, unsigned int metric2);
 void GXClearGPMetric(void);
 void GXSetCopyClear(unsigned char *color, unsigned int depth);
+void GXSetChanCtrl(int, unsigned char, int, int, int, int, int);
 void __GXInitGX(void) {
     GXColor clearColor;
     GXColor matColor;
