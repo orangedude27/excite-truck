@@ -934,13 +934,12 @@ extern "C" void fn_800D6EEC(void* arg0) {
 }
 #pragma scheduling on
 
-extern const char lbl_8031F920[];
-extern const char lbl_8031F8FC[];
-extern const char lbl_8031F8F0[];
-extern const char lbl_8031F8CC[];
 extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
-#pragma scheduling invalid_target
     extern char lbl_8031F868[];
+    extern const char lbl_8031F920[];
+    extern const char lbl_8031F8FC[];
+    extern const char lbl_8031F8F0[];
+    extern const char lbl_8031F8CC[];
     struct LayoutFields { u32 vtable; u32 link; };
     struct ResourceDispatch { virtual void Destroy(s32); };
     struct LayoutNodeDispatch { virtual void Destroy(s32); };
