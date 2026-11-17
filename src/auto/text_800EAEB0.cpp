@@ -504,32 +504,30 @@ extern const f32 lbl_80560FF8;
 extern const s16 lbl_802F4A90[];
 extern u8 lbl_80322B98[];
 extern "C" void Update__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *arg0, s32 arg1) {
-    s32 step=arg1, state=*(s32 *)arg0, valid, idx;
-    f32 value, target, reset=lbl_80560FF0, threshold=lbl_80560FF8;
+    s32 idx, step=arg1, state=*(s32 *)arg0, valid;
+    f32 value, target;
     switch(state) {
     case 0:
-        if(step>0) {
-            do {
-                value=*(f32 *)((u8 *)arg0+4)*(*(f32 *)((u8 *)arg0+0x10));
-                *(f32 *)((u8 *)arg0+4)=value;
-                if(value>threshold) { *(f32 *)((u8 *)arg0+4)=reset; *(s32 *)arg0=1; }
-            } while(--step != 0);
-            step=arg1-1;
+        while(step>0) {
+            step--;
+            value=*(f32 *)((u8 *)arg0+4)*(*(f32 *)((u8 *)arg0+0x10));
+            *(f32 *)((u8 *)arg0+4)=value;
+            if(value>-0.03125f) { *(f32 *)((u8 *)arg0+4)=0.0f; *(s32 *)arg0=1; }
         }
         if(*(s32 *)arg0!=1) return;
     case 1:
         idx=(s32)*((u8 *)arg0+0x14); valid=0;
         if(idx>=0 && idx<=0x7f) valid=1;
         if(valid==0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322B80,0x141,(const char *)lbl_80322B98,idx,0,0x7f);
-        value=*(f32 *)((u8 *)arg0+4)-(*(f32 *)((u8 *)arg0+8)*(f32)step);
         target=(f32)lbl_802F4A90[idx];
+        value=*(f32 *)((u8 *)arg0+4)-(*(f32 *)((u8 *)arg0+8)*(f32)step);
         *(f32 *)((u8 *)arg0+4)=value;
         if(!(value>target)) { *(f32 *)((u8 *)arg0+4)=target; *(s32 *)arg0=2; return; }
         break;
-    case 2: return;
     case 3:
         value=*(f32 *)((u8 *)arg0+4)-(*(f32 *)((u8 *)arg0+0xc)*(f32)arg1);
         *(f32 *)((u8 *)arg0+4)=value; break;
+    case 2: return;
     }
 }
 
