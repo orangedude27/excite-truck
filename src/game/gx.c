@@ -3364,6 +3364,8 @@ void fn_802D3E9C(unsigned char fadeMode) {
     state[0] = 0;
 }
 
+/* Returns 1 while the frame counter is non-negative (sign bit clear), 0 once
+   it has been invalidated to -1 (sign bit set). */
 int fn_802D3EBC(void) {
     return (lbl_8055D0B8 >> 0x1FU) ^ 1;
 }
