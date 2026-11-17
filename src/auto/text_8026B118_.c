@@ -8,6 +8,7 @@ extern void fn_8026B260(void);
 extern void fn_801331C4(int, void *, float *);
 extern void fn_8026B11C(void **, void *);
 extern unsigned char lbl_80346988[];
+typedef struct { unsigned char a[0xA0]; unsigned char b[0x10]; unsigned char c[0xC]; unsigned char d[1]; } T8026B644;
 extern int lbl_8055F4D0, lbl_8055F4CC, lbl_8055F4C8;
 extern float lbl_80563D68;
 extern float lbl_80563D6C, lbl_80563D70, lbl_80563D74, lbl_8055E3C8;
@@ -247,6 +248,7 @@ void fn_8026B3D4(int arg0) {
 #pragma pop
 
 void fn_8026B644(void) {
+    #pragma scheduling invalid_target
     unsigned char *base = lbl_80346988;
     fn_8026B260();
     fn_801331C4(4, base + 0xA0, &lbl_8055C4F8);
