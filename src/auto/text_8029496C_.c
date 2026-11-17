@@ -97,6 +97,7 @@ void fn_80294970(void) {
         }
     }
 }
+#pragma pop
 
 #pragma scheduling invalid_target
 /* Releases the two cached truck effect handles and resets them; iterates truck slots. */
