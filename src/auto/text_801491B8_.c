@@ -925,7 +925,8 @@ void fn_8014AE60(void *context) {
 
 s32 fn_8014AEB8(void *arg0) { return ((s32 *)arg0)[1]; }
 
-s32 fn_8014AEC0(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x10C); }
+/* Return the s32 type/id field at offset 0x10C of this event object. */
+s32 fn_8014AEC0(void *event) { return *(s32 *)((u8 *)event + 0x10C); }
 
 f32 fn_8014AEC8(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x2690); }
 
