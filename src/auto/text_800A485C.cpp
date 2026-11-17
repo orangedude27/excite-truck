@@ -21164,9 +21164,11 @@ extern "C" s32 fn_800D3634(s32 arg0) {
 }
 
 extern "C" s32 fn_800D3824(void) {
-    s32 val = lbl_8055DDD4;
-    u32 tmp = (u32)(-val) | (u32)val;
-    return (s32)(tmp >> 31);
+    /* Return 1 if the linked-list registry head lbl_8055DDD4 is set, else 0:
+       normalize the nonzero test to a 0/1 boolean via the sign bit of -head | head. */
+    s32 listHead = lbl_8055DDD4;
+    u32 signBits = (u32)(-listHead) | (u32)listHead;
+    return (s32)(signBits >> 31);
 }
 extern "C" u8 fn_800D3838(u8 *arg0) {
     return *arg0;
