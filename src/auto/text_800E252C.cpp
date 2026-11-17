@@ -552,98 +552,105 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *, int)
 extern "C" void fn_800E2C98(void *);
 #pragma push
 #pragma processor 750
-void *fn_800E279C(void *arg0) {
-    u8* p = (u8*)arg0;
-    LLTmp* l1 = (LLTmp*)(p + 8);
-    LLTmp* l2 = (LLTmp*)(p + 0x14);
-    LLTmp* l3 = (LLTmp*)(p + 0x20);
-    *(volatile int*)(p + 0xC) = 0;
-    *(volatile int*)(p + 0x10) = 0;
-    *(volatile int*)(p + 0x18) = 0;
-    *(volatile int*)(p + 0x1C) = 0;
-    *(volatile int*)(p + 0x24) = 0;
-    *(volatile int*)(p + 0x28) = 0;
-    *(int*)(p + 0) = 0;
-    *(int*)(p + 4) = 0;
-    *(int*)(p + 8) = 0;
-    l1->a = 0; l1->next = &l1->next; l1->prev = &l1->next;
-    l2->a = 0; l2->next = &l2->next; l2->prev = &l2->next;
-    l3->a = 0; l3->next = &l3->next; l3->prev = &l3->next;
-    fn_8002F53C(p + 0x2C, &__ct__Q46nw4hbm3snd6detail7AxVoiceFv, &__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1B0, 0x40);
-    p[0x6C30] = 0;
-    p[0x6C31] = 1;
-    p[0x6C32] = 0;
-    p[0x6C33] = 0;
-    *(float*)(p + 0x6C34) = 0.0f;
-    *(float*)(p + 0x6C38) = 0.0f;
-    *(int*)(p + 0x6C3C) = 0;
-    *(int*)(p + 0x6C40) = 0;
-    *(float*)(p + 0x6C44) = 0.0f;
-    *(float*)(p + 0x6C48) = 0.0f;
-    *(int*)(p + 0x6C4C) = 0;
-    *(int*)(p + 0x6C50) = 0;
-    *(float*)(p + 0x6C54) = 0.0f;
-    *(float*)(p + 0x6C58) = 0.0f;
-    *(int*)(p + 0x6C5C) = 0;
-    *(int*)(p + 0x6C60) = 0;
-    *(int*)(p + 0x6C64) = 0;
-    *(int*)(p + 0x6C68) = -1;
-    *(float*)(p + 0x6C6C) = 0.0f;
-    *(float*)(p + 0x6C70) = 0.0f;
-    *(int*)(p + 0x6C74) = 0;
-    *(int*)(p + 0x6C78) = 0;
-    FillTmp((ElemTmp*)(p + 0x6C9C), (ElemTmp*)(p + 0x6C7C), 0.0f);
-    *(float*)(p + 0x6C9C) = 0.0f;
-    *(float*)(p + 0x6CA0) = 0.0f;
-    *(int*)(p + 0x6CA4) = 0;
-    *(int*)(p + 0x6CA8) = 0;
-    FillTmp((ElemTmp*)(p + 0x6CCC), (ElemTmp*)(p + 0x6CAC), 0.0f);
-    fn_8002F53C(p + 0x6CCC, &fn_800E2C98, &__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8, 0xC, 3);
-    {
-        *(int*)(p + 0x6C3C) = 0;
-        *(float*)(p + 0x6C34) = 1.0f;
-        *(float*)(p + 0x6C38) = 1.0f;
-        *(int*)(p + 0x6C40) = 0;
-        *(float*)(p + 0x6C44) = 1.0f;
-        *(float*)(p + 0x6C48) = 1.0f;
-        *(int*)(p + 0x6C4C) = 0;
-        *(int*)(p + 0x6C50) = 0;
-        *(float*)(p + 0x6C54) = 1.0f;
-        *(float*)(p + 0x6C58) = 1.0f;
-        *(int*)(p + 0x6C5C) = 0;
-        *(int*)(p + 0x6C60) = 0;
-        *(float*)(p + 0x6C6C) = 1.0f;
-        *(float*)(p + 0x6C70) = 1.0f;
-        *(int*)(p + 0x6C74) = 0;
-        *(int*)(p + 0x6C78) = 0;
-        *(float*)(p + 0x6C9C) = 1.0f;
-        *(float*)(p + 0x6CA0) = 1.0f;
-        *(int*)(p + 0x6CA4) = 0;
-        *(int*)(p + 0x6CA8) = 0;
-        *(int*)(p + 0x6CF0) = 0;
-        *(int*)(p + 0x6CFC) = 0;
-        *(float*)(p + 0x6C7C) = 1.0f;
-        *(float*)(p + 0x6C80) = 1.0f;
-        *(int*)(p + 0x6C84) = 0;
-        *(int*)(p + 0x6C88) = 0;
-        *(float*)(p + 0x6CAC) = 1.0f;
-        *(float*)(p + 0x6CB0) = 1.0f;
-        *(int*)(p + 0x6CB4) = 0;
-        *(int*)(p + 0x6CB8) = 0;
-        *(int*)(p + 0x6CF4) = 0;
-        *(int*)(p + 0x6D00) = 0;
-        *(float*)(p + 0x6C8C) = 1.0f;
-        *(float*)(p + 0x6C90) = 1.0f;
-        *(int*)(p + 0x6C94) = 0;
-        *(int*)(p + 0x6C98) = 0;
-        *(float*)(p + 0x6CBC) = 1.0f;
-        *(float*)(p + 0x6CC0) = 1.0f;
-        *(int*)(p + 0x6CC4) = 0;
-        *(int*)(p + 0x6CC8) = 0;
-        *(int*)(p + 0x6CF8) = 0;
-        *(int*)(p + 0x6D04) = 0;
-    }
-    return arg0;
+void *fn_800E279C(void *arg0)
+{
+  u8 *p = (u8 *) arg0;
+  LLTmp *l1 = (LLTmp *) (p + 8);
+  LLTmp *l2 = (LLTmp *) (p + 0x14);
+  LLTmp *l3;
+  *((volatile int *) (p + 0xC)) = 0;
+  *((volatile int *) (p + 0x10)) = 0;
+  *((volatile int *) (p + 0x18)) = 0;
+  *((volatile int *) (p + 0x1C)) = 0;
+  *((volatile int *) (p + 0x24)) = 0;
+  *((volatile int *) (p + 0x28)) = 0;
+  *((int *) (p + 0)) = 0;
+  *((int *) (p + 4)) = 0;
+  *((int *) (p + 8)) = 0;
+  l1->a = 0;
+  l1->next = &l1->next;
+  l1->prev = &l1->next;
+  l2->a = 0;
+  l2->next = &l2->next;
+  l2->prev = &l2->next;
+  ((LLTmp *) (p + 0x20))->a = 0;
+  ((LLTmp *) (p + 0x20))->next = &((LLTmp *) (p + 0x20))->next;
+  ((LLTmp *) (p + 0x20))->prev = &((LLTmp *) (p + 0x20))->next;
+  fn_8002F53C(p + 0x2C, &__ct__Q46nw4hbm3snd6detail7AxVoiceFv, &__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1B0, 0x40);
+  p[0x6C30] = 0;
+  p[0x6C31] = 1;
+  p[0x6C32] = 0;
+  p[0x6C33] = 0;
+  *((float *) (p + 0x6C34)) = 0.0f;
+  *((float *) (p + 0x6C38)) = 0.0f;
+  *((int *) (p + 0x6C3C)) = 0;
+  *((int *) (p + 0x6C40)) = 0;
+  *((float *) (p + 0x6C44)) = 0.0f;
+  *((float *) (p + 0x6C48)) = 0.0f;
+  *((int *) (p + 0x6C4C)) = 0;
+  *((int *) (p + 0x6C50)) = 0;
+  *((float *) (p + 0x6C54)) = 0.0f;
+  *((float *) (p + 0x6C58)) = 0.0f;
+  *((int *) (p + 0x6C5C)) = 0;
+  *((int *) (p + 0x6C60)) = 0;
+  *((int *) (p + 0x6C64)) = 0;
+  *((int *) (p + 0x6C68)) = -1;
+  *((float *) (p + 0x6C6C)) = 0.0f;
+  *((float *) (p + 0x6C70)) = 0.0f;
+  *((int *) (p + 0x6C74)) = 0;
+  *((int *) (p + 0x6C78)) = 0;
+  FillTmp((ElemTmp *) (p + 0x6C9C), (ElemTmp *) (p + 0x6C7C), 0.0f);
+  *((float *) (p + 0x6C9C)) = 0.0f;
+  *((float *) (p + 0x6CA0)) = 0.0f;
+  *((int *) (p + 0x6CA4)) = 0;
+  *((int *) (p + 0x6CA8)) = 0;
+  FillTmp((ElemTmp *) (p + 0x6CCC), (ElemTmp *) (p + 0x6CAC), 0.0f);
+  fn_8002F53C(p + 0x6CCC, &fn_800E2C98, &__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8, 0xC, 3);
+  {
+    *((int *) (p + 0x6C3C)) = 0;
+    *((float *) (p + 0x6C34)) = 1.0f;
+    *((float *) (p + 0x6C38)) = 1.0f;
+    *((int *) (p + 0x6C40)) = 0;
+    *((float *) (p + 0x6C44)) = 1.0f;
+    *((float *) (p + 0x6C48)) = 1.0f;
+    *((int *) (p + 0x6C4C)) = 0;
+    *((int *) (p + 0x6C50)) = 0;
+    *((float *) (p + 0x6C54)) = 1.0f;
+    *((float *) (p + 0x6C58)) = 1.0f;
+    *((int *) (p + 0x6C5C)) = 0x1B0 * 0;
+    *((int *) (p + 0x6C60)) = 0;
+    *((float *) (p + 0x6C6C)) = 1.0f;
+    *((float *) (p + 0x6C70)) = 1.0f;
+    *((int *) (p + 0x6C74)) = 0;
+    *((int *) (p + 0x6C78)) = 0;
+    *((float *) (p + 0x6C9C)) = 1.0f;
+    *((float *) (p + 0x6CA0)) = 1.0f;
+    *((int *) (p + 0x6CA4)) = 0;
+    *((int *) (p + 0x6CA8)) = 0;
+    *((int *) (p + 0x6CF0)) = 0;
+    *((int *) (p + 0x6CFC)) = 0;
+    *((float *) (p + 0x6C7C)) = 1.0f;
+    *((float *) (p + 0x6C80)) = 1.0f;
+    *((int *) (p + 0x6C84)) = 0;
+    *((int *) (p + 0x6C88)) = 0;
+    *((float *) (p + 0x6CAC)) = 1.0f;
+    *((float *) (p + 0x6CB0)) = 1.0f;
+    *((int *) (p + 0x6CB4)) = 0;
+    *((int *) (p + 0x6CB8)) = 0;
+    *((int *) (p + 0x6CF4)) = 0;
+    *((int *) (p + 0x6D00)) = 0;
+    *((float *) (p + 0x6C8C)) = 1.0f;
+    *((float *) (p + 0x6C90)) = 1.0f;
+    *((int *) (p + 0x6C94)) = 0;
+    *((int *) (p + 0x6C98)) = 0;
+    *((float *) (p + 0x6CBC)) = 1.0f;
+    *((float *) (p + 0x6CC0)) = 1.0f;
+    *((int *) (p + 0x6CC4)) = 0;
+    *((int *) (p + 0x6CC8)) = 0;
+    *((int *) (p + 0x6CF8)) = 0;
+    *((int *) (p + 0x6D04)) = 0;
+  }
+  return arg0;
 }
 #pragma pop
 extern "C" void fn_800E2C98(void *list) {
@@ -1039,7 +1046,8 @@ extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10Out
     OSRestoreInterrupts(interrupts);
 }
 
-extern "C" int fn_800E394C(int *arg0) { return *arg0; }
+/* Indirect int read: returns the value at the given address (used to fetch the EmissionManager mode from its instance). */
+extern "C" int fn_800E394C(int *valuePtr) { return *valuePtr; }
 
 extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *, int, int, int, void (*)(void *, int, void *), void *);
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
