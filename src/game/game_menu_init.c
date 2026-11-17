@@ -204,8 +204,10 @@ void fn_800049C0(void) DECOMP_DONT_INLINE {
     }
 }
 
-void fn_80004AB8(u32 val) DECOMP_DONT_INLINE {
-    if (val == lbl_8055890C) {
+/* Handle one init-table entry: when it is the special "winky" id (lbl_8055890C),
+ * run the language-dependent init fn_80130390. */
+void fn_80004AB8(u32 entry) DECOMP_DONT_INLINE {
+    if (entry == lbl_8055890C) {
         fn_80130390();
     }
 }
