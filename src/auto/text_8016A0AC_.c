@@ -494,7 +494,8 @@ s32 fn_8016A8F8(void* alarm) {
 }
 
 #pragma use_lmw_stmw on
-void fn_8016AC18(u8* arg0) { *arg0 = 0; }
+/* Pool element init callback: clear the byte flag at +0 of a 0x28-byte entry. */
+void fn_8016AC18(u8* entry) { *entry = 0; }
 
 /* Destroy/cleanup helper: if the object is live, release its owned resource at +0x20 and mark it dead, then optionally free the object. */
 void* fn_8016AC24(void* self, s32 shouldDelete) {
