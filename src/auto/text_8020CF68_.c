@@ -603,6 +603,8 @@ void AXFXSetHooks_8020DE10(void *callback, void *drawCallback) {
 }
 
 extern char lbl_8055EE94;
+/* Returns lbl_8055EE94 (volMenuActive): nonzero while the volume-control menu
+ * panel is open. Callers use this to suppress input prompts/updates while it is. */
 char fn_8020DE1C(void) {
     return lbl_8055EE94;
 }
