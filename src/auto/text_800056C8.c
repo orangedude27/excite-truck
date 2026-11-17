@@ -1943,8 +1943,11 @@ s32 fn_80007CA8(void *ctx, void *value, s32 command, void *packedParam) {
     return 0;
 }
 
+/* Returns the "ArenaPreRaceOverlay" scene name string. */
 void *fn_80007CC4(void) {
-    return lbl_802FB5F0;
+    #define s_arenaPreRaceOverlayName lbl_802FB5F0
+    return s_arenaPreRaceOverlayName;
+    #undef s_arenaPreRaceOverlayName
 }
 
 /* Clear the boolean flag at byte 4 of an arena overlay object (inverse of fn_80007CF0). */
