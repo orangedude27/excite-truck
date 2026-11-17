@@ -726,6 +726,8 @@ void fn_802085E8(void) {
 	((void (*)(void))fn_80208408)();
 }
 
+/* Trampoline for the sound-play helper: tail-calls fn_80208858 (which plays a
+ * sound on the manager's device) with no adaptation. */
 void fn_80208994(void) {
 	((void (*)(void))fn_80208858)();
 }
