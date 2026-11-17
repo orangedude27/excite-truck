@@ -214,6 +214,7 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
 }
 #pragma cplusplus reset
 #pragma pop
+#pragma cplusplus reset
 
 void PSVECCrossProduct(float *, float *, float *);
 void PSVECNormalize(float *, float *);
