@@ -4176,6 +4176,9 @@ extern "C" void fn_800E9BA4(void *sound, int soundId) {
     ((SoundPlayerVt *)sound)->soundId = soundId;
 }
 extern int lbl_8055DE20;
+/* The nw4r sound library's shared dummy value, used as a default target by
+   several sound-library pointers. */
+#define s_sndDummy lbl_8055DE20
 extern void fn_80128668(void);
 extern "C" int fn_800E9BE4(int object, int deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
