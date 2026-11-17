@@ -182,6 +182,7 @@ extern "C" inline void *fn_802A1120_getSecond(void) {
 #pragma paired_single off
 #pragma push
 #pragma processor 750
+#pragma cplusplus on
 void fn_802A1120(float *arg0, float *arg1) {
     struct Search { s32 index; float value; s32 max; };
     char work[0x14];
