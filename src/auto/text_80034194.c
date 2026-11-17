@@ -3481,5 +3481,6 @@ s32 __DVDTestAlarm(void *alarm) {
 u32 fn_80039CD8(void) { return 1; }
 
 void fn_80039CE0(void) {
-
+    /* Empty no-op hook in the VI force-dim timing path: __OSSetVIForceDimming
+     * calls it when a timing counter reaches its limit, but it does nothing. */
 }
