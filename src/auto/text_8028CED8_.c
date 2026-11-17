@@ -60,10 +60,15 @@ void fn_8028CF18(void) {
 #undef sSkidSystemActive
 }
 
+/* Reset the skid system's per-entry items and global records, but only while it is active. */
 void fn_8028CF50(void) {
-    if (lbl_8055F714 != 0) {
-        fn_8028D4FC();
+#define sSkidSystemActive lbl_8055F714
+#define SkidSystem_Reset  fn_8028D4FC
+    if (sSkidSystemActive != 0) {
+        SkidSystem_Reset();
     }
+#undef SkidSystem_Reset
+#undef sSkidSystemActive
 }
 
 /* Tick this subsystem while active, but only when the frame delta is non-zero. */
