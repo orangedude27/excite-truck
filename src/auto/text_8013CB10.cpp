@@ -1268,6 +1268,9 @@ struct TimeBonusParams {
     f32 f38;          /* key +0x300, default 1.0 */
 };
 
+/* The one global instance of that block, filled by fn_8013E3A8. */
+#define gTimeBonus (*(TimeBonusParams *)lbl_8042FB3C)
+
 #pragma scheduling invalid_target
 // Fill the game's one TimeBonusParams block from the zone's attribute set
 // (the "zoneconf.val" document the caller opened): every field is looked up
