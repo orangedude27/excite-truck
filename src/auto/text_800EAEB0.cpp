@@ -1448,8 +1448,9 @@ extern "C" f32 fn_800ED084(void *seqPlayer) {
     return *(f32 *)((u8 *)seqPlayer + 0x34);
 }
 
-extern "C" f32 fn_800ED08C(void *arg0) {
-    return ((f32 *)arg0)[0x1C / 4];
+/* Return the f32 field at offset 0x1C of a sequence player object. */
+extern "C" f32 fn_800ED08C(void *seqPlayer) {
+    return ((f32 *)seqPlayer)[0x1C / 4];
 }
 
 /* Returns 1 when the boolean byte flag at offset 0x18 of the object is set, 0 otherwise. */
