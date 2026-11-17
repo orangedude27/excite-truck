@@ -627,7 +627,6 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
     return c;
 }
 
-struct CharWriterCtorColors { nw4hbm::ut::Color a, b, w; };
 extern "C" float lbl_80561154;
 extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2);
 nw4hbm::ut::CharWriter::CharWriter() {
