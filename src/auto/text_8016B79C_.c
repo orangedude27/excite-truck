@@ -3364,8 +3364,13 @@ extern "C" s32 fn_80171094(void *obj, s32 unused, s32 actionId) {
     return 0;
 }
 #pragma cplusplus reset
-s32 fn_801711F8(void *arg0) {
-    return *((u8 *)arg0 + 0x79) == 0;
+s32 fn_801711F8(void *obj) {
+    /* Returns nonzero while this object's countdown flag at +0x79 is clear (countdown still running). */
+    typedef struct {
+        u8 _pad[0x79];
+        u8 countdownDone;
+    } CountdownObj;
+    return ((CountdownObj *)obj)->countdownDone == 0;
 }
 
 void fn_80171208(void *arg0, s32 arg1) {
