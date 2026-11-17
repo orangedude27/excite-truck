@@ -1011,11 +1011,6 @@ extern void fn_801FA978(void);
 extern void fn_8020C41C(void);
 extern void fn_80267420(void);
 extern void fn_8026B644(void);
-static __inline void fn_80178DD4_setmix(void) {
-    fn_80129C80(4, lbl_8055E418, *(int *)((char *)&lbl_8055E418 + 4));
-    fn_80129C80(3, lbl_8055E420, *(int *)((char *)&lbl_8055E420 + 4));
-    fn_80129C80(5, lbl_8055E428, *(int *)((char *)&lbl_8055E428 + 4));
-}
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80178DD4(int arg0) {
