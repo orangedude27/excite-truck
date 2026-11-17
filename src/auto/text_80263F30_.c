@@ -204,23 +204,30 @@ void fn_802640A0(void *arg0)
 
 #pragma push
 #pragma processor 750
-#pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
+extern unsigned char lbl_80498F78[];
+/* Appends obj to the credits item list (lbl_80498F78: void **items; int count). */
+static inline void addCreditsItem(void *obj) {
+    void **items = *(void ***)lbl_80498F78;
+    int count = (*(int *)(lbl_80498F78 + 4))++;
+    items[count] = obj;
+}
+#pragma dont_inline on
 extern "C" void fn_802640C4(void *arg0, void *arg1) {
     extern char lbl_8055C45C[4], lbl_8055C464[4], lbl_8055C46C[4], lbl_8055C474[4], lbl_8055C47C[4], lbl_8055C484[4];
     extern unsigned char lbl_80498F78[];
     extern void *fn_801284F8(unsigned int, void *);
     extern void fn_8026523C(void *), fn_80265558(void *), fn_802655A4(void *);
     extern void fn_80265268(void *, int, char *, float), fn_8026557C(void *, float), fn_80265610(void *, float);
-    void *laterStorage;
-    const char *base=lbl_80346338;
-    const char *kind;
+    char *base=lbl_80346338;
+    char *kind;
     PropertyReader802640C4 *properties = (PropertyReader802640C4 *)arg1;
     void *obj;
-    void *&later = laterStorage;
     int count;
     void **items;
+    char *name;
+    int val;
     float value;
     kind = properties->getString(lbl_8055C45C);
     if (stricmp(kind,lbl_8055C464)==0) {
@@ -229,14 +236,12 @@ extern "C" void fn_802640C4(void *arg0, void *arg1) {
         *(char **)((char *)arg0+8)=properties->getString(lbl_8055C474);
         *(int *)((char *)arg0+12)=0;
     } else if (stricmp(kind,base+0xf0)==0) {
-        const char *name;
-        int val;
-        obj=fn_801284F8(0xbc,(void *)(base+0xfc));
+        obj=fn_801284F8(0xbc,base+0xfc);
         if (obj) obj=((void *(*)(void *))fn_8026523C)(obj);
         value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
         name=properties->getString(lbl_8055C474);
         val=properties->getInt(lbl_8055C47C);
-        fn_80265268(obj,val,(char *)name,value);
+        fn_80265268(obj,val,name,value);
         items=*(void ***)lbl_80498F78;
         count=(*(int *)(lbl_80498F78+4))++;
         items[count]=obj;
@@ -244,27 +249,27 @@ extern "C" void fn_802640C4(void *arg0, void *arg1) {
         fn_80264098(arg0,5);
         *(void **)((char *)arg0+8)=obj;
     } else if (stricmp(kind,base+0x108)==0) {
-        later=fn_801284F8(0x20,(void *)(base+0x114));
-        if(later) later=((void *(*)(void *))fn_80265558)(later);
+        kind=(char *)fn_801284F8(0x20,base+0x114);
+        if(kind) kind=((char *(*)(void *))fn_80265558)(kind);
         value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
-        fn_8026557C(later,value);
+        fn_8026557C(kind,value);
         items=*(void ***)lbl_80498F78;
         count=(*(int *)(lbl_80498F78+4))++;
-        items[count]=later;
+        items[count]=kind;
         *(int *)arg0=0;
         fn_80264098(arg0,5);
-        *(void **)((char *)arg0+8)=later;
+        *(void **)((char *)arg0+8)=kind;
     } else if (stricmp(kind,base+0x120)==0) {
-        later=fn_801284F8(0x24,(void *)(base+0x12c));
-        if(later) later=((void *(*)(void *))fn_802655A4)(later);
+        kind=(char *)fn_801284F8(0x24,base+0x12c);
+        if(kind) kind=((char *(*)(void *))fn_802655A4)(kind);
         value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
-        fn_80265610(later,value);
+        fn_80265610(kind,value);
         items=*(void ***)lbl_80498F78;
         count=(*(int *)(lbl_80498F78+4))++;
-        items[count]=later;
+        items[count]=kind;
         *(int *)arg0=0;
         fn_80264098(arg0,5);
-        *(void **)((char *)arg0+8)=later;
+        *(void **)((char *)arg0+8)=kind;
     } else {
         fn_802E317C(base+0x138,kind);
     }
@@ -459,22 +464,33 @@ void fn_80264618(void *obj) {
 #pragma push
 #pragma use_lmw_stmw off
 void *fn_802646D0(void *arg0) {
+#pragma opt_propagation off
     extern int lbl_802FA700[], lbl_80346364[], lbl_80346678[];
     extern char lbl_8055C490[4];
     extern float lbl_80563BFC, lbl_80563C04;
     extern void *fn_8023512C(const char *);
     extern void *fn_8012850C(int, void *);
     struct Desc { int a[15]; };
-    struct Desc desc = *(struct Desc *)lbl_802FA700;
+    const struct Desc *src = (const struct Desc *)lbl_802FA700;
     char *p = (char *)arg0;
     int n;
     void *data;
     float f;
+    int d14, d13, d12, d11, d10, d9, d8, d7, d6, d5, d4, d3, d2, d1, d0;
+    d0 = src->a[0]; d1 = src->a[1]; d2 = src->a[2];
+    d3 = src->a[3]; d4 = src->a[4]; d5 = src->a[5];
+    d6 = src->a[6]; d7 = src->a[7]; d8 = src->a[8];
+    d9 = src->a[9]; d10 = src->a[10]; d11 = src->a[11];
+    d12 = src->a[12]; d13 = src->a[13]; d14 = src->a[14];
     *(int *)(p+0x14) = 0;
     *(int **)(p+0) = lbl_80346678;
-    *(struct Desc *)(p+0x18) = desc;
-    *(void **)(p+0x54) = fn_8023512C((const char *)desc.a[0]);
-    n = lbl_802FA700[9];
+    *(int *)(p+0x18) = d0; *(int *)(p+0x1c) = d1; *(int *)(p+0x20) = d2;
+    *(int *)(p+0x24) = d3; *(int *)(p+0x28) = d4; *(int *)(p+0x2c) = d5;
+    *(int *)(p+0x30) = d6; *(int *)(p+0x34) = d7; *(int *)(p+0x38) = d8;
+    *(int *)(p+0x3c) = d9; *(int *)(p+0x40) = d10; *(int *)(p+0x44) = d11;
+    *(int *)(p+0x48) = d12; *(int *)(p+0x4c) = d13; *(int *)(p+0x50) = d14;
+    *(void **)(p+0x54) = fn_8023512C((const char *)d0);
+    n = src->a[9];
     data = fn_8012850C(n*32, lbl_8055C490);
     *(void **)(p+0x58)=data; *(int *)(p+0x60)=n; *(int *)(p+0x5c)=0; *(void **)(p+0x64)=data;
     f = *(float *)(p+0x44);
@@ -488,21 +504,14 @@ void *fn_802646D0(void *arg0) {
     *(int *)(p+0x5c)=0;
     *(float *)(p+0x74)=lbl_80563BF0;
     *(float *)(p+0x70)=lbl_80563C00/f;
-    *(int *)(p+0x78) = ((int *)lbl_80346364)[0];
-    *(int *)(p+0x7c) = ((int *)lbl_80346364)[1];
-    *(int *)(p+0x80) = ((int *)lbl_80346364)[2];
-    *(int *)(p+0x84) = ((int *)lbl_80346364)[3];
-    *(int *)(p+0x88) = ((int *)lbl_80346364)[4];
-    *(int *)(p+0x8c) = ((int *)lbl_80346364)[5];
-    *(int *)(p+0x90) = ((int *)lbl_80346364)[6];
-    *(int *)(p+0x94) = ((int *)lbl_80346364)[7];
-    *(int *)(p+0x98) = ((int *)lbl_80346364)[8];
-    *(int *)(p+0x9c) = ((int *)lbl_80346364)[9];
-    *(int *)(p+0xa0) = ((int *)lbl_80346364)[10];
-    *(int *)(p+0xa4) = ((int *)lbl_80346364)[11];
-    *(int *)(p+0xa8) = ((int *)lbl_80346364)[12];
-    *(int *)(p+0xac) = ((int *)lbl_80346364)[13];
-    *(int *)(p+0xb0) = ((int *)lbl_80346364)[14];
+    *(int *)(p+0x78) = lbl_80346364[0]; *(int *)(p+0x7c) = lbl_80346364[1];
+    *(int *)(p+0x80) = lbl_80346364[2]; *(int *)(p+0x84) = lbl_80346364[3];
+    *(int *)(p+0x88) = lbl_80346364[4]; *(int *)(p+0x8c) = lbl_80346364[5];
+    *(int *)(p+0x90) = lbl_80346364[6]; *(int *)(p+0x94) = lbl_80346364[7];
+    *(int *)(p+0x98) = lbl_80346364[8]; *(int *)(p+0x9c) = lbl_80346364[9];
+    *(int *)(p+0xa0) = lbl_80346364[10]; *(int *)(p+0xa4) = lbl_80346364[11];
+    *(int *)(p+0xa8) = lbl_80346364[12]; *(int *)(p+0xac) = lbl_80346364[13];
+    *(int *)(p+0xb0) = lbl_80346364[14];
     *(void **)(p+0xb4) = fn_8023512C((const char *)lbl_80346364[0]);
     n = lbl_80346364[9];
     data = fn_8012850C(n*32, lbl_8055C490);
@@ -701,9 +710,9 @@ void fn_80264D5C(void *arg0) {
         p->life -= dt;
         if (p->life < lbl_80558DC4[0]) {
             if (i >= 0 && i < l->count) {
-                last = &l->items[l->count - 1];
                 if (i != l->count - 1) {
-                    *(int *)&p->x = *(int *)&last->x;
+                    last = &l->items[l->count - 1];
+                    *(int *)((char *)l->items + off) = *(int *)((char *)l->items + (l->count - 1) * 0x20);
                     *(int *)&p->y = *(int *)&last->y;
                     *(int *)&p->vx = *(int *)&last->vx;
                     *(int *)&p->vy = *(int *)&last->vy;
@@ -715,13 +724,13 @@ void fn_80264D5C(void *arg0) {
                 l->count = l->count - 1;
             }
         } else {
-            float nvx, nvy;
+            double nvx, nvy;
             nvx = p->vx + l->gx * dt;
-            p->vx = nvx;
+            p->vx = (float)nvx;
             nvy = p->vy + l->gy * dt;
-            p->vy = nvy;
-            p->x += nvx * dt;
-            p->y += nvy * dt;
+            p->vy = (float)nvy;
+            p->x += (float)(nvx * dt);
+            p->y += (float)(nvy * dt);
             p->a10 += p->a14 * dt;
             off += 0x20;
             i++;
@@ -736,9 +745,9 @@ void fn_80264D5C(void *arg0) {
         p->life -= dt;
         if (p->life < lbl_80558DC4[0]) {
             if (i >= 0 && i < l->count) {
-                last = &l->items[l->count - 1];
                 if (i != l->count - 1) {
-                    *(int *)&p->x = *(int *)&last->x;
+                    last = &l->items[l->count - 1];
+                    *(int *)((char *)l->items + off) = *(int *)((char *)l->items + (l->count - 1) * 0x20);
                     *(int *)&p->y = *(int *)&last->y;
                     *(int *)&p->vx = *(int *)&last->vx;
                     *(int *)&p->vy = *(int *)&last->vy;
@@ -750,13 +759,13 @@ void fn_80264D5C(void *arg0) {
                 l->count = l->count - 1;
             }
         } else {
-            float nvx, nvy;
+            double nvx, nvy;
             nvx = p->vx + l->gx * dt;
-            p->vx = nvx;
+            p->vx = (float)nvx;
             nvy = p->vy + l->gy * dt;
-            p->vy = nvy;
-            p->x += nvx * dt;
-            p->y += nvy * dt;
+            p->vy = (float)nvy;
+            p->x += (float)(nvx * dt);
+            p->y += (float)(nvy * dt);
             p->a10 += p->a14 * dt;
             off += 0x20;
             i++;
@@ -1215,7 +1224,7 @@ void fn_80265A74(void) {
     int t0, t1, t2, t3, t4;
     int v0, v2, v3, v4;
     int f1, f2;
-    int c8 = 8;
+    register int c8 = 8;
     int c0 = 0;
     int c2 = 2;
     int b8;
