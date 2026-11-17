@@ -339,6 +339,9 @@ void fn_8023BE38(int unused, int runMultiplayerLoop) {
 #pragma scheduling off
 void fn_8023BEA8(void) {
     extern const char lbl_80341340[];
+    /* Launch head-to-head (two-player versus) mode: run the truck-selection
+     * flow with the multiplayer event loop, tagged with the "GameDoHeadToHead"
+     * mode name. */
     fn_8023BE38((int)lbl_80341340, 1);
 }
 #pragma scheduling reset
