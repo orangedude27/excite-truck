@@ -3320,8 +3320,9 @@ extern "C" void fn_80142D4C(void *arg0) {
 #pragma use_lmw_stmw reset
 extern "C" u8 *fn_801B2EC0(s32);
 
-extern "C" void fn_80143128(u8 *arg0) {
-    ((TObj4C *)arg0)->v4C();
+/* C-linkage adapter: call virtual slot v4C() on the TObj4C object. */
+extern "C" void fn_80143128(u8 *obj) {
+    ((TObj4C *)obj)->v4C();
 }
 
 #pragma use_lmw_stmw off
