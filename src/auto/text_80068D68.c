@@ -5500,8 +5500,10 @@ void fn_80071450(void *msg) {
     GKI_send_msg(lbl_803C0AD8[0x7D], lbl_80559038[2], msg);
 }
 
-void fn_8007148C(s32 arg0) {
-    fn_800716B0((void **)((u8 *)&lbl_803C0AD8 + 0x68), arg0, &lbl_803C0AD8);
+/* Stops a BTA system timer by removing the given timer-list entry from the
+ * system control block's ptim queue (fn_800716B0 stops the timer if it empties). */
+void fn_8007148C(s32 p_tle) {
+    fn_800716B0((void **)((u8 *)&lbl_803C0AD8 + 0x68), p_tle, &lbl_803C0AD8);
 }
 
 /* BTA system start timer: schedule p_tle with event 'type' after 'timeout' ms on the BTA system protocol timer. */
@@ -24964,8 +24966,15 @@ void fn_80095518(void *p_tle) {
 }
 
 void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
+    u8 state;
     if (*((u8 *)arg0 + 1) == 0) return;
-    if (*((u8 *)arg0 + 0x68) != 2 && *((u8 *)arg0 + 0x68) != 3) return;
+    state = *((u8 *)arg0 + 0x68);
+    if (state == 2) goto call;
+    switch (state) {
+    case 3u: goto call;
+    default: return;
+    }
+call:
     rfc_port_sm_execute(arg0, 15, &arg1);
 }
 
