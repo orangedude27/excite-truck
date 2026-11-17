@@ -671,13 +671,17 @@ done2:
 }
 
 __declspec(section ".sdata") extern char lbl_805599AC[];
-extern "C" s32 fn_8012B2C4(s32 arg0, s32 arg1, s32 arg2) {
+extern "C" s32 fn_8012B2C4(s32 buffer, s32 str, s32 flag) {
+#define kStringPrefix lbl_80559984
+#define kConcatFormat lbl_805599AC
     s32 result = 0;
-    if (arg2 == 0) {
-        sprintf((char *)arg0, lbl_805599AC, lbl_80559984, arg1);
-        result = arg0;
+    if (flag == 0) {
+        sprintf((char *)buffer, kConcatFormat, kStringPrefix, str);
+        result = buffer;
     }
     return result;
+#undef kConcatFormat
+#undef kStringPrefix
 }
 
 #pragma pop
