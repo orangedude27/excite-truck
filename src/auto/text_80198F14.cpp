@@ -120,7 +120,7 @@ extern char lbl_803339B8[];
 extern void fn_8019F03C();
 extern "C" s32 fn_8019DDFC(s32, s32, s32, s32, void*, void*, f32);
 extern "C" f64 fn_8002F234(f32);
-extern "C" void fn_8019ECC4(void);
+extern "C" void fn_8019ECC4(void*, s32, s32);
 extern char lbl_80333B48[];
 extern f32 lbl_80562314;
 extern f32 lbl_80562318;
