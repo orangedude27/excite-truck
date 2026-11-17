@@ -3362,6 +3362,7 @@ extern "C" int fn_801D8634(void *out, void *obj) {
 
 #pragma cplusplus reset
 
+extern void fn_801D05B4(int);
 /* Unregister a created listener object from the dispatch list: the list stores
  * object+4 (past the vtable), so advance a non-null object by 4 before asking
  * fn_801D05B4 to find and remove it; a null object is passed through unchanged. */
