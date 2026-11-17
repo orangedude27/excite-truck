@@ -321,8 +321,9 @@ void DSPInit(void) {
     }
 }
 
+/* Return whether the DSP subsystem has been initialized (the DSP init flag). */
 void* DSPReset(void) {
-    return lbl_8055D808;
+    return DSPInitFlag;
 }
 
 /* Insert a DSP task into the queue, clear its state and mark it active,
