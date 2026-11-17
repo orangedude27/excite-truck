@@ -957,15 +957,20 @@ void fn_80241820(void *arg0) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_80241DE8(void *arg0) {
-    s32 *entry = (s32 *)arg0;
-    s32 i;
+    void *item;
+    s32 index;
     s32 value;
+    char *entryCursor = (char *)arg0;
+    s32 isSelected;
 
-    for (i = 0; i < *(s32 *)((char *)arg0 + 0x2C); i++, entry++) {
-        value = *(s32 *)(*(s32 **)((char *)arg0 + 0x34));
-        *(u8 *)(*(s32 **)((char *)entry + 0x18)) =
-            (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30));
-        *(s32 *)((char *)(*(s32 **)((char *)entry + 0x18)) + 4) = value;
+    for (index = 0; index < *(s32 *)((char *)arg0 + 0x2C);) {
+        value = **(s32 **)((char *)arg0 + 0x34);
+        isSelected = *(u8 *)((char *)arg0 + 0x38) != 0 && index == *(s32 *)((char *)arg0 + 0x30);
+        item = *(void **)(entryCursor + 0x18);
+        entryCursor += 4;
+        index++;
+        *(u8 *)item = isSelected;
+        *(s32 *)((char *)item + 4) = value;
     }
 }
 #pragma pop
