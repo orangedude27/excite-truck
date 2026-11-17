@@ -68,24 +68,35 @@ extern "C" void Shutdown__Q46nw4hbm3snd6detail9StrmSoundFv(void *self) {
     extern char lbl_80325894[];
     extern char lbl_80325870[];
     extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void*, void*);
-    struct V { virtual void a(); virtual void b(int); };
-    void *pool4;
-    int save4;
+
+    struct SoundList { void *head; void *tail; };
+    struct StrmSoundPlayer { int unk0; struct SoundList activeList; };
+    struct LinkNode { char pad[1]; };
+    struct StrmSoundVTable {
+        virtual void m0();
+        virtual void DetachFromPlayer(int playerIndex);
+    };
+    struct StrmSoundObj { void *vtable; char pad[0xB8 - 4]; struct LinkNode link; };
+
+    struct StrmSoundObj *sound = (struct StrmSoundObj *)self;
+    int interrupts;
+    struct StrmSoundPlayer *player;
+
     Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(self);
-    pool4 = *(void **)((char *)self + 0x5F8);
+    player = *(struct StrmSoundPlayer **)((char *)self + 0x5F8);
     if (self == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326DF0, 0x86, lbl_80326DC8);
-    save4 = OSDisableInterrupts();
-    if (*(int *)((char *)pool4 + 4) == 0) {
-        OSRestoreInterrupts(save4);
+    interrupts = OSDisableInterrupts();
+    if (player->activeList.head == 0) {
+        OSRestoreInterrupts(interrupts);
         return;
     }
     if (self == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)pool4 + 4, (char *)self + 0xB8);
-    ((V *)self)->b(-1);
-    fn_800EC848(pool4, self);
-    OSRestoreInterrupts(save4);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&player->activeList, &sound->link);
+    ((struct StrmSoundVTable *)self)->DetachFromPlayer(-1);
+    fn_800EC848(player, self);
+    OSRestoreInterrupts(interrupts);
 }
 
 #pragma pop
