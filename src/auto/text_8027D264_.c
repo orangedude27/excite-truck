@@ -435,8 +435,9 @@ unsigned char fn_8027D93C(void *entry) {
     return ((unsigned char *)entry)[0x1F3];
 }
 
-int fn_8027D944(int arg0) {
-    return arg0 + 0x18C;
+/* Return the address of the embedded field at offset 0x18C of base. */
+int fn_8027D944(int base) {
+    return base + 0x18C;
 }
 
 int fn_8027D94C(void *arg0) {
