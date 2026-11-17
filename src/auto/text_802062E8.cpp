@@ -154,7 +154,9 @@ extern "C" void fn_80206444(void) {
 
 extern "C" void fn_80206454(void) {
     extern int lbl_8055ED80;
-    ((u8 *)lbl_8055ED80)[5] = 0;
+    /* Clear the SoundManager's "paused" flag (byte +5), resuming sound. */
+    struct SoundManagerFlags { char pad[5]; u8 paused; };
+    ((struct SoundManagerFlags *)lbl_8055ED80)->paused = 0;
 }
 
 extern "C" void fn_80206464(void* hi) {
