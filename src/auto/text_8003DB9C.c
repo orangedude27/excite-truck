@@ -1,6 +1,24 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+/* GX dirty-state bits: __GXData[0x5FC/4] says which transform/BP registers to resend. */
+#define GXD_SU_TEX         (1 << 0)
+#define GXD_BP_MASK        (1 << 1)
+#define GXD_GEN_MODE       (1 << 2)
+#define GXD_VCD            (1 << 3)
+#define GXD_VAT            (1 << 4)
+#define GXD_AMB_COLOR0     (1 << 8)
+#define GXD_AMB_COLOR1     (1 << 9)
+#define GXD_MAT_COLOR0     (1 << 10)
+#define GXD_MAT_COLOR1     (1 << 11)
+#define GXD_NUM_COLORS     (1 << 24)
+#define GXD_NUM_TEX        (1 << 25)
+#define GXD_MTX_IDX        (1 << 26)
+#define GXD_PROJECTION     (1 << 27)
+#define GXD_VIEWPORT       (1 << 28)
+#define GXD_AMB_MAT_MASK   (0xF00)
+#define GXD_LIGHT_CHAN_MASK (0x0100F000)
+#define GXD_TEX_GEN_MASK    (0x02FF0000)
 extern void __GXSetDirtyState(void);
 extern void __GXFlushTextureState(void);
 extern void __GXSetVAT(void);
