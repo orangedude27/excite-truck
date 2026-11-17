@@ -973,19 +973,6 @@ void *__dt__Q34nw4r2ef6EffectFv_8028F5A8(void *effect, int shouldDelete) {
 extern double fn_8002EFB4(double, double);
 extern float lbl_80564424, lbl_80564430, lbl_80564434, lbl_80564438;
 extern double lbl_80564428;
-static inline float fn_8028F608_approx(float angle) {
-    float d = (float)fn_8002EFB4(angle, lbl_80564428) - lbl_80564430;
-    union { float f; unsigned int u; } bits;
-    float r;
-    bits.f = d;
-    if (!(bits.u & 0x80000000)) {
-        r = lbl_80564424 - ((lbl_80564434 * d / lbl_80564430 - lbl_80564424) * (lbl_80564434 * d / lbl_80564430 - lbl_80564424));
-    } else {
-        d = -d;
-        r = -(lbl_80564424 - ((lbl_80564434 * d / lbl_80564430 - lbl_80564424) * (lbl_80564434 * d / lbl_80564430 - lbl_80564424)));
-    }
-    return r;
-}
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
