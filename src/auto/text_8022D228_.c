@@ -337,9 +337,10 @@ int fn_8022DBD4(IndexSelector *selector) {
 }
 #pragma dont_inline off
 
-int fn_8022DBE8(void *arg0) {
-    int *array = *(int **)((char *)arg0 + 4);
-    return array[*(int *)((char *)arg0 + 0xC)];
+/* Return the tag at an IndexSelector's current index (element of its +0x4 array at +0xC). */
+int fn_8022DBE8(void *selector) {
+    int *tags = *(int **)((char *)selector + 4);
+    return tags[*(int *)((char *)selector + 0xC)];
 }
 
 void fn_8022DBFC(void *selector) {
