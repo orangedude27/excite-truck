@@ -85,9 +85,12 @@ void fn_80137B0C(void* hi) {
     lbl_80559C00 = hi;
 }
 
+/* Clear the selected AI league: set the current-league index to -1 (none). */
+#define s_currentLeague lbl_80559C00
 void fn_80137B14(void) {
-    lbl_80559C00 = (void*)-1;
+    s_currentLeague = (void*)-1;
 }
+#undef s_currentLeague
 
 __declspec(section ".sdata") extern char lbl_80559C38[];
 extern void *fn_801284F8(int, const char *);
