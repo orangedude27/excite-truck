@@ -4006,30 +4006,30 @@ extern "C" void fn_8022B390(s32, s32, s32, s32*, s32*);
 extern "C" void fn_802C47B8(s32, s32, s32, s32, s32, s32);
 extern "C" void fn_802C3014(s32);
 extern "C" s32 lbl_8055FBF8;
-extern "C" void fn_8021EC1C(void* arg0, s32 arg1) {
-    s32 spC, sp8;
-    s32 t29, t28, t28_2, t29_2, t28_3, t29_3, t3, t6;
-    fn_802C3034(arg1);
-    t28 = *(s32*)((u8*)arg0+4);
-    t29 = *(s32*)((u8*)arg0+8);
-    fn_802C2FC8(arg1, t28, t29, t28 + ((Vf78*)arg0)->get(), *(s32*)((u8*)arg0+0x10));
-    ((void(*)(void*,s32))fn_802192A0)(arg0,arg1);
-    if (*(s32*)((u8*)arg0+0xA60)) {
-        t29_2 = *(s32*)((u8*)arg0+8);
-        t28_2 = *(s32*)((u8*)arg0+4);
-        fn_80228DC4(arg1, *(s32*)((u8*)arg0+0xA60), t28_2, t29_2, ((Vf78*)arg0)->get(), 0);
+extern "C" void fn_8021EC1C(void* entity, s32 canvas) {
+    s32 outX, outY;
+    s32 posY, posX, posX_2, posY_2, posX_3, posY_3, drawX, drawY;
+    fn_802C3034(canvas);
+    posX = *(s32*)((u8*)entity+4);
+    posY = *(s32*)((u8*)entity+8);
+    fn_802C2FC8(canvas, posX, posY, posX + ((Vf78*)entity)->get(), *(s32*)((u8*)entity+0x10));
+    ((void(*)(void*,s32))fn_802192A0)(entity,canvas);
+    if (*(s32*)((u8*)entity+0xA60)) {
+        posY_2 = *(s32*)((u8*)entity+8);
+        posX_2 = *(s32*)((u8*)entity+4);
+        fn_80228DC4(canvas, *(s32*)((u8*)entity+0xA60), posX_2, posY_2, ((Vf78*)entity)->get(), 0);
     }
-    t28_3 = *(s32*)((u8*)arg0+4);
-    t29_3 = *(s32*)((u8*)arg0+8);
-    fn_802C2FC8(arg1, t28_3, t29_3, t28_3 + ((Vf78*)arg0)->get(), *(s32*)((u8*)arg0+0x10));
-    fn_8022B91C(*(s32*)((u8*)arg0+0xA58),*(s32*)((u8*)arg0+4),*(s32*)((u8*)arg0+8),*(s32*)((u8*)arg0+0xA54),(*(u8*)((u8*)arg0+0x19)!=0));
-    if (*(u8*)((u8*)arg0+0x19)) {
-        fn_8022B390(*(s32*)((u8*)arg0+0xA58),*(s32*)((u8*)arg0+0xA54),*(s32*)((u8*)arg0+0x250),&spC,&sp8);
-        t6 = sp8 + *(s32*)((u8*)arg0+8);
-        t3 = spC + *(s32*)((u8*)arg0+4);
-        ((void(*)(s32,s32,s32,s32,s32))fn_802C47B8)(t3,t6+2,t3,t6+0xC,lbl_8055FBF8);
+    posX_3 = *(s32*)((u8*)entity+4);
+    posY_3 = *(s32*)((u8*)entity+8);
+    fn_802C2FC8(canvas, posX_3, posY_3, posX_3 + ((Vf78*)entity)->get(), *(s32*)((u8*)entity+0x10));
+    fn_8022B91C(*(s32*)((u8*)entity+0xA58),*(s32*)((u8*)entity+4),*(s32*)((u8*)entity+8),*(s32*)((u8*)entity+0xA54),(*(u8*)((u8*)entity+0x19)!=0));
+    if (*(u8*)((u8*)entity+0x19)) {
+        fn_8022B390(*(s32*)((u8*)entity+0xA58),*(s32*)((u8*)entity+0xA54),*(s32*)((u8*)entity+0x250),&outX,&outY);
+        drawY = outY + *(s32*)((u8*)entity+8);
+        drawX = outX + *(s32*)((u8*)entity+4);
+        ((void(*)(s32,s32,s32,s32,s32))fn_802C47B8)(drawX,drawY+2,drawX,drawY+0xC,lbl_8055FBF8);
     }
-    fn_802C3014(arg1);
+    fn_802C3014(canvas);
 }
 
 #pragma push
