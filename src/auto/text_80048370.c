@@ -238,15 +238,18 @@ found_outer:
 #pragma pop
 extern char lbl_8037D808[];
 extern char lbl_8037D818[];
+#pragma push
+#pragma scheduling on
 void MEMiFinalizeHeap(MEMiHeapHead *heap) {
-    MEMList *list;
-    MEMiHeapHead *outer;
     MEMiHeapHead *child;
+    MEMiHeapHead *outer;
     MEMiHeapHead *block;
+    MEMiHeapHead *res;
+    MEMList *list;
     OSLockMutex((OSMutex *)lbl_8037D818);
-    list = (MEMList *)lbl_8037D808;
     outer = 0;
-    while ((outer = (MEMiHeapHead *)MEMGetNextListObject(list, outer)) != 0) {
+    list = (MEMList *)lbl_8037D808;
+    while ((outer = (MEMiHeapHead *)MEMGetNextListObject((MEMList *)lbl_8037D808, outer)) != 0) {
         if ((u32)outer->start <= (u32)heap && (u32)heap < (u32)outer->end) {
             child = 0;
             while ((child = (MEMiHeapHead *)MEMGetNextListObject(&outer->list, child)) != 0) {
@@ -254,28 +257,32 @@ void MEMiFinalizeHeap(MEMiHeapHead *heap) {
                     block = 0;
                     while ((block = (MEMiHeapHead *)MEMGetNextListObject(&child->list, block)) != 0) {
                         if ((u32)block->start <= (u32)heap && (u32)heap < (u32)block->end) {
-                            block = (MEMiHeapHead *)FindContainHeap_(&block->list, (u32)heap);
-                            if (block == 0)
-                                block = (MEMiHeapHead *)((u8 *)child + 0);
-                            break;
+                            res = (MEMiHeapHead *)FindContainHeap_(&block->list, (u32)heap);
+                            switch ((u32)res) { case 0: res = block; break; default: break; }
+                            goto found_inner;
                         }
                     }
-                    if (block == 0)
-                        block = child;
-                    break;
+                    res = 0;
+                found_inner:
+                    switch ((u32)res) { case 0: res = child; break; default: break; }
+                    goto found_middle;
                 }
             }
-            if (block == 0)
-                block = outer;
-            break;
+            res = 0;
+        found_middle:
+            switch ((u32)res) { case 0: res = outer; break; default: break; }
+            goto found_outer;
         }
     }
-    if (block != 0)
-        list = &block->list;
+    res = 0;
+found_outer:
+    if (res != 0)
+        list = &res->list;
     MEMRemoveListObject(list, heap);
     OSUnlockMutex((OSMutex *)lbl_8037D818);
     heap->magic = 0;
 }
+#pragma pop
 
 #pragma pop
 
