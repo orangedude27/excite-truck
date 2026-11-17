@@ -229,9 +229,9 @@ static inline void transform_vec_scheduled_reload(float *out, const float *m, fl
         out[1] = z * m7 + (x * m1 + y * m4);
         out[2] = z * m8 + (x * m2 + y * m5);
     } else {
-        out[0] = in[1] * m[3] + in[0] * m[0] + in[2] * m[6];
-        out[1] = in[1] * m[4] + in[0] * m[1] + in[2] * m[7];
-        out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
+        out[0] = m[3] * in[1] + m[0] * in[0] + m[6] * in[2];
+        out[1] = m[4] * in[1] + m[1] * in[0] + m[7] * in[2];
+        out[2] = m[5] * in[1] + m[2] * in[0] + m[8] * in[2];
     }
 }
 /* Same source as the out-of-line fn_801E67B4 (out = in * 3x3 m, safe in place). */
@@ -630,58 +630,48 @@ extern "C" void fn_801B949C(struct TrlrCar *car) {
 extern "C" void fn_801B97D8(struct TrlrCar *car) {
     struct { s32 kind; s32 player; s32 count; f32 p[6]; u8 pad[0x30]; } event;
     struct CarPose pose;
-    f32 turn[3];
-    f32 angularDelta[3];
-    f32 localDelta[3];
-    f32 speedDelta[3];
-    f32 anchorWorld[3];
-    f32 carWorld[3];
-    f32 towedAnchor[3];
-    f32 anchor[3];
-    f32 offset[3];
+    Vec turn;
+    Vec angularDelta;
+    Vec localDelta;
+    Vec speedDelta;
+    Vec anchorWorld;
+    Vec carWorld;
+    Vec towedAnchor;
+    Vec anchor;
+    Vec offset;
     struct PlayerCar *player;
     f32 anchorZ;
     f32 value;
     f32 limit;
     f32 forwardSpeed;
-    f32 rotX;
-    f32 rotY;
-    f32 rotZ;
     s32 over;
 
     player = car->player;
-    angularDelta[0] = ((Vec *)((char *)car + 0x124))->x - ((Vec *)((char *)player + 0x124))->x;
-    angularDelta[1] = ((Vec *)((char *)car + 0x124))->y - ((Vec *)((char *)player + 0x124))->y;
-    angularDelta[2] = ((Vec *)((char *)car + 0x124))->z - ((Vec *)((char *)player + 0x124))->z;
-    turn[1] = angularDelta[1] * lbl_8056277C;
-    turn[2] = lbl_80562750;
-    turn[0] = lbl_80562750;
-    fn_8017B4AC(car, turn);
+    angularDelta.x = ((Vec *)((char *)car + 0x124))->x - ((Vec *)((char *)player + 0x124))->x;
+    angularDelta.y = ((Vec *)((char *)car + 0x124))->y - ((Vec *)((char *)player + 0x124))->y;
+    angularDelta.z = ((Vec *)((char *)car + 0x124))->z - ((Vec *)((char *)player + 0x124))->z;
+    turn.y = angularDelta.y * lbl_8056277C;
+    turn.z = lbl_80562750;
+    turn.x = lbl_80562750;
+    fn_8017B4AC(car, &turn);
 
     if (car->towed == 0) {
         fn_8018ADA4(car, car->flag275C != 0 ? lbl_80562780 : lbl_80562750);
     } else {
-        const f32 *m;
         player = car->player;
-        localDelta[0] = player->position.x - ((Vec *)((char *)car + 0x60))->x;
-        localDelta[1] = player->position.y - ((Vec *)((char *)car + 0x60))->y;
-        localDelta[2] = player->position.z - ((Vec *)((char *)car + 0x60))->z;
-        rotX = localDelta[0];
-        rotY = localDelta[1];
-        rotZ = localDelta[2];
-        m = (const f32 *)((char *)car + 0x3C);
-        localDelta[0] = rotX * m[0] + rotY * m[1] + rotZ * m[2];
-        localDelta[1] = rotX * m[3] + rotY * m[4] + rotZ * m[5];
-        localDelta[2] = rotX * m[6] + rotY * m[7] + rotZ * m[8];
-        speedDelta[0] = ((Vec *)((char *)car + 0x118))->x - player->velocity.x;
-        speedDelta[1] = ((Vec *)((char *)car + 0x118))->y - player->velocity.y;
-        speedDelta[2] = ((Vec *)((char *)car + 0x118))->z - player->velocity.z;
-        limit = PSVECDotProduct(speedDelta, &car->facing.x);
+        localDelta.x = player->position.x - ((Vec *)((char *)car + 0x60))->x;
+        localDelta.y = player->position.y - ((Vec *)((char *)car + 0x60))->y;
+        localDelta.z = player->position.z - ((Vec *)((char *)car + 0x60))->z;
+        rotate_vec_in_place(&localDelta, (const Vec *)((char *)car + 0x3C));
+        speedDelta.x = ((Vec *)((char *)car + 0x118))->x - player->velocity.x;
+        speedDelta.y = ((Vec *)((char *)car + 0x118))->y - player->velocity.y;
+        speedDelta.z = ((Vec *)((char *)car + 0x118))->z - player->velocity.z;
+        limit = PSVECDotProduct((float *)&speedDelta, &car->facing.x);
         value = lbl_80562784 * limit;
         limit = lbl_80562780;
         limit = limit < value ? limit : value;
         limit = limit > lbl_80562788 ? limit : lbl_80562788;
-        value = lbl_8056278C * localDelta[0] - lbl_80562790 * *(const f32 *)((const char *)car + 0x128) - limit;
+        value = lbl_8056278C * localDelta.x - lbl_80562790 * *(const f32 *)((const char *)car + 0x128) - limit;
         limit = lbl_80562794;
         limit = limit < value ? limit : value;
         limit = limit > lbl_80562798 ? limit : lbl_80562798;
@@ -699,19 +689,19 @@ extern "C" void fn_801B97D8(struct TrlrCar *car) {
             if (*(f32 *)((char *)player + 0x25D4) > lbl_805627A4) {
                 car->unk2758 = lbl_80562750;
                 fn_802E30C8(lbl_80336A30);
-                offset[0] = car->carPos.x - car->anchorPos.x;
-                offset[1] = car->carPos.y - car->anchorPos.y;
-                offset[2] = car->carPos.z - car->anchorPos.z;
-                offset[0] -= car->localPoint.x;
-                offset[1] -= car->localPoint.y;
-                offset[2] -= car->localPoint.z;
+                offset.x = car->carPos.x - car->anchorPos.x;
+                offset.y = car->carPos.y - car->anchorPos.y;
+                offset.z = car->carPos.z - car->anchorPos.z;
+                offset.x -= car->localPoint.x;
+                offset.y -= car->localPoint.y;
+                offset.z -= car->localPoint.z;
                 if (car->towed != 0) {
-                    offset[2] -= lbl_80562754;
+                    offset.z -= lbl_80562754;
                 }
                 pose.heading = -1;
                 {
                     struct PlayerCar *p = car->player;
-                    transform_vec_scheduled(pose.position, (const float *)p->trailerAxes, offset);
+                    transform_vec_scheduled(pose.position, (const float *)p->trailerAxes, (float *)&offset);
                     pose.position[0] += p->trailerPos.x;
                     pose.position[1] += p->trailerPos.y;
                     pose.position[2] += p->trailerPos.z;
@@ -734,17 +724,17 @@ extern "C" void fn_801B97D8(struct TrlrCar *car) {
                 }
                 car->spring.body = car;
                 if (car->towed == 0) {
-                    anchor[0] = car->anchorPos.x + car->localPoint.x;
-                    anchor[1] = car->anchorPos.y + car->localPoint.y;
+                    anchor.x = car->anchorPos.x + car->localPoint.x;
+                    anchor.y = car->anchorPos.y + car->localPoint.y;
                     anchorZ = car->anchorPos.z;
-                    anchor[2] = anchorZ + car->localPoint.z;
-                    fn_801AD148(&car->spring, anchor, car->player, lbl_80562758, lbl_8056275C, anchorZ);
+                    anchor.z = anchorZ + car->localPoint.z;
+                    fn_801AD148(&car->spring, (float *)&anchor, car->player, lbl_80562758, lbl_8056275C, anchorZ);
                 } else {
-                    towedAnchor[0] = car->anchorPos.x + car->localPoint.x;
-                    towedAnchor[1] = car->anchorPos.y + car->localPoint.y;
+                    towedAnchor.x = car->anchorPos.x + car->localPoint.x;
+                    towedAnchor.y = car->anchorPos.y + car->localPoint.y;
                     anchorZ = car->anchorPos.z;
-                    towedAnchor[2] = anchorZ + car->localPoint.z;
-                    fn_801AD28C(&car->spring, towedAnchor, car->player, &car->carPos, lbl_80562758,
+                    towedAnchor.z = anchorZ + car->localPoint.z;
+                    fn_801AD28C(&car->spring, (float *)&towedAnchor, car->player, &car->carPos, lbl_80562758,
                                 lbl_80562760, anchorZ);
                 }
             }
@@ -752,26 +742,26 @@ extern "C" void fn_801B97D8(struct TrlrCar *car) {
     }
 
     if (car->towed != 0) {
-        transform_vec_scheduled_reload(anchorWorld, (const float *)((char *)car + 0x70), (float *)&car->anchorPos);
-        anchorWorld[0] += ((Vec *)((char *)car + 0x94))->x;
-        anchorWorld[1] += ((Vec *)((char *)car + 0x94))->y;
-        anchorWorld[2] += ((Vec *)((char *)car + 0x94))->z;
+        transform_vec_scheduled_reload((float *)&anchorWorld, (const float *)((char *)car + 0x70), (float *)&car->anchorPos);
+        anchorWorld.x += ((Vec *)((char *)car + 0x94))->x;
+        anchorWorld.y += ((Vec *)((char *)car + 0x94))->y;
+        anchorWorld.z += ((Vec *)((char *)car + 0x94))->z;
         {
             struct PlayerCar *p = car->player;
-            transform_vec_scheduled_reload(carWorld, (const float *)p->trailerAxes, (float *)&car->carPos);
-            carWorld[0] += p->trailerPos.x;
-            carWorld[1] += p->trailerPos.y;
-            carWorld[2] += p->trailerPos.z;
+            transform_vec_scheduled_reload((float *)&carWorld, (const float *)p->trailerAxes, (float *)&car->carPos);
+            carWorld.x += p->trailerPos.x;
+            carWorld.y += p->trailerPos.y;
+            carWorld.z += p->trailerPos.z;
         }
         event.kind = 1;
         event.player = *(s32 *)((char *)car->player + 0x1EC);
         event.count = 2;
-        event.p[0] = anchorWorld[0];
-        event.p[1] = anchorWorld[1];
-        event.p[2] = anchorWorld[2];
-        event.p[3] = carWorld[0];
-        event.p[4] = carWorld[1];
-        event.p[5] = carWorld[2];
+        event.p[0] = anchorWorld.x;
+        event.p[1] = anchorWorld.y;
+        event.p[2] = anchorWorld.z;
+        event.p[3] = carWorld.x;
+        event.p[4] = carWorld.y;
+        event.p[5] = carWorld.z;
         fn_801796CC(6, (long)&event, 0x54);
         ((void (*)(void *))fn_80189C64)(car);
         ((void (*)(void *))fn_80189C64)(car->player);
