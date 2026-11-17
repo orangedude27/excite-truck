@@ -773,7 +773,6 @@ copy_loop_c_end: ;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, void *arg5) {
     typedef signed char s8;
     extern f32 lbl_80563960;
