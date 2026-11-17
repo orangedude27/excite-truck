@@ -273,20 +273,20 @@ void fn_80265E08(void* path) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_80265E2C(void) {
-    struct Record { float x; float y; int value; };
-    float scale = 0.017453292519943295f;
-    struct Record *record = (struct Record *)lbl_804999A0;
+    // Refill the camera noise-point ring with random positions (converted from degrees) and move durations.
+    float degreesToRadians = 0.017453292519943295f;
+    NoisePoint *point = sNoisePoints;
     int count = 0;
     do {
-        record->x = scale * fn_80129DC4(6, -lbl_8055C4E0, lbl_8055C4E0);
-        record->y = scale * fn_80129DC4(6, -lbl_8055C4E4, lbl_8055C4E4);
+        point->x = degreesToRadians * fn_80129DC4(6, -lbl_8055C4E0, lbl_8055C4E0);
+        point->y = degreesToRadians * fn_80129DC4(6, -lbl_8055C4E4, lbl_8055C4E4);
         {
-            int value = fn_80129D90(6, lbl_8055C4E8, lbl_8055C4EC);
+            int duration = fn_80129D90(6, lbl_8055C4E8, lbl_8055C4EC);
             count++;
-            record->value = value;
+            point->duration = duration;
         }
-        record++;
-    } while (count < 0x64);
+        point++;
+    } while (count < NOISE_POINT_COUNT);
 }
 #pragma pop
 
