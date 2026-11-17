@@ -2330,7 +2330,7 @@ extern "C" void fn_8019684C(void) {
     for (i = 0; i < active.count; i++) fn_801967A4(active.entry[i]);
     for (i = 0; i < active.count; i++) fn_801967FC(active.entry[i]);
     iter = (Controller **)lbl_804349E0;
-    controllers = (Controllers *)lbl_804349E0;
+    controllers = (Controllers *)iter;
     for (i = 0; i < controllers->count; i++) {
         (*iter)->update();
         iter++;
@@ -3293,7 +3293,8 @@ void fn_80198E7C(int slotIndex) {
   extern void fn_8018AE24(int, int);
   extern void fn_80136EA4(int, int);
   extern void fn_80136E8C(int, int, int);
-  int fn_80198EA4(void) { return 0; }
+/* Stub: always reports 0 (no value / unsupported) for its interface. */
+int fn_80198EA4(void) { return 0; }
 extern void fn_801958D8();
 extern void fn_80195F6C(void *, void *);
 extern void fn_80194624(void *);
