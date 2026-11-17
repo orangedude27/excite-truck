@@ -3972,6 +3972,10 @@ extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
 extern "C" void fn_8015E0FC(void) {
 }
 
+/* Trivial override: always reports 0.  It is emitted with the other no-op stubs
+ * of the bonus-tracker classes (fn_8015E0FC and fn_8015E108, which every tracker
+ * vtable in this file installs at slots 0x30 and 0x38); nothing in the decomp
+ * calls it directly, so it is reached through a vtable slot. */
 extern "C" s32 fn_8015E100(void) {
     return 0;
 }
