@@ -1401,6 +1401,7 @@ extern "C" s32 fn_800ECFF0(void) {
 
 extern "C" u32 fn_800ECFF8(void) { return 1; }
 
+// Trivial predicate stub in the nw4r::snd interface group; always reports false (0).
 extern "C" s32 fn_800ED000(void) { return 0; }
 
 extern "C" u32 fn_800ED008(void) { return 1; }
