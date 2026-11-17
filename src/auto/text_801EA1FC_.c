@@ -117,7 +117,7 @@ void fn_801EA404(s32 arg0, s32 arg1) {
     /* Save the current entity's progress, reset/update scene state, then
        restore progress and advance the scene with the given parameter. */
     f32 savedProgress = fn_801E8738(-1);
-    fn_801EA210(-1);
+    fn_801EA210(-1, savedProgress);
     fn_801FC904();
     fn_801EA28C(-1, savedProgress);
     fn_801EBF00();
@@ -135,7 +135,7 @@ char fn_801EA470(void) {
 
 void fn_801EA478(s32 playerIndex) {
     /* Reads this player's current progress value (left in f1) and updates the scene state with it. */
-    fn_801E8738(playerIndex);
-    fn_801EA210(playerIndex);
+    f32 progress = fn_801E8738(playerIndex);
+    fn_801EA210(playerIndex, progress);
 }
 
