@@ -826,65 +826,68 @@ extern "C" void fn_801FD5E8(void* arg0, float farg0) {
     float f64_val = *(float*)(obj + 0x64);
     *(float*)(obj + 0x6C) = f64_val + step * (*(float*)(obj + 0x68) - f64_val);
 }
-extern "C" void fn_801FDF18(void* arg0, float farg0) {
-    char* obj = (char*)arg0;
-    char** slot = *(char***)(obj + 4);
-    char* track = *slot;
-    int idx = *(int*)(obj + 0x3C);
-    char* node = GetTrackNodeLinear(track, idx);
+/* Advances a LinearPathTMH along its linear node track by deltaTime: rolls the
+ * segment parameter over into the next node (or hands the path back at the end),
+ * then refreshes the Hermite position, orientation matrix and scalar output. */
+extern "C" void fn_801FDF18(void* walker, float deltaTime) {
+    char* tmh = (char*)walker;
+    char** trackSlot = *(char***)(tmh + 4);
+    char* track = *trackSlot;
+    int nodeIndex = *(int*)(tmh + 0x3C);
+    char* node = GetTrackNodeLinear(track, nodeIndex);
 
     float one = lbl_80563030;
-    float t_step;
-    float old_pos = *(float*)(obj + 0x40);
-    t_step = old_pos + farg0;
-    float step = *(float*)(node + 0x20) * t_step;
+    float nextT;
+    float t = *(float*)(tmh + 0x40);
+    nextT = t + deltaTime;
+    float step = *(float*)(node + 0x20) * nextT;
 
     if (step < one) {
-        *(float*)(obj + 0x40) = t_step;
-    } else if (idx + 2 < *(int*)(track + 0x6D0)) {
-        float inv_speed = one / *(float*)(node + 0x20);
-        *(int*)(obj + 0x3C) += 1;
-        float delta = farg0 - inv_speed;
+        *(float*)(tmh + 0x40) = nextT;
+    } else if (nodeIndex + 2 < *(int*)(track + 0x6D0)) {
+        float invSpeed = one / *(float*)(node + 0x20);
+        *(int*)(tmh + 0x3C) += 1;
+        float tDelta = deltaTime - invSpeed;
         step -= one;
-        *(float*)(obj + 0x40) = old_pos + delta;
+        *(float*)(tmh + 0x40) = t + tDelta;
 
-        node = GetTrackNodeLinear(**(char***)(obj + 4), *(int*)(obj + 0x3C));
+        node = GetTrackNodeLinear(**(char***)(tmh + 4), *(int*)(tmh + 0x3C));
 
-        *(float*)(obj + 0x44) = *(float*)(obj + 0x54);
-        *(float*)(obj + 0x48) = *(float*)(obj + 0x58);
-        *(float*)(obj + 0x4C) = *(float*)(obj + 0x5C);
-        *(float*)(obj + 0x50) = *(float*)(obj + 0x60);
-        *(float*)(obj + 0x64) = *(float*)(obj + 0x68);
+        *(float*)(tmh + 0x44) = *(float*)(tmh + 0x54);
+        *(float*)(tmh + 0x48) = *(float*)(tmh + 0x58);
+        *(float*)(tmh + 0x4C) = *(float*)(tmh + 0x5C);
+        *(float*)(tmh + 0x50) = *(float*)(tmh + 0x60);
+        *(float*)(tmh + 0x64) = *(float*)(tmh + 0x68);
 
-        char* next_node = GetTrackNodeLinear(*(char**)(*(char* volatile*)(obj + 4)), *(int*)(obj + 0x3C) + 1);
-        *(float*)(obj + 0x54) = *(float*)(next_node + 0xC);
-        *(float*)(obj + 0x58) = *(float*)(next_node + 0x10);
-        *(float*)(obj + 0x5C) = *(float*)(next_node + 0x14);
-        *(float*)(obj + 0x60) = *(float*)(next_node + 0x18);
+        char* nextNode = GetTrackNodeLinear(*(char**)(*(char* volatile*)(tmh + 4)), *(int*)(tmh + 0x3C) + 1);
+        *(float*)(tmh + 0x54) = *(float*)(nextNode + 0xC);
+        *(float*)(tmh + 0x58) = *(float*)(nextNode + 0x10);
+        *(float*)(tmh + 0x5C) = *(float*)(nextNode + 0x14);
+        *(float*)(tmh + 0x60) = *(float*)(nextNode + 0x18);
 
-        char* next2_node = GetTrackNodeLinear(*(char**)(*(char* volatile*)(obj + 4)), *(int*)(obj + 0x3C) + 1);
-        *(float*)(obj + 0x68) = *(float*)(next2_node + 0x1C);
+        char* nextNode2 = GetTrackNodeLinear(*(char**)(*(char* volatile*)(tmh + 4)), *(int*)(tmh + 0x3C) + 1);
+        *(float*)(tmh + 0x68) = *(float*)(nextNode2 + 0x1C);
     } else {
-        fn_801FEC74(obj);
-        *(void**)(obj + 4) = 0;
-        *(int*)(obj + 0x3C) = -1;
+        fn_801FEC74(tmh);
+        *(void**)(tmh + 4) = 0;
+        *(int*)(tmh + 0x3C) = -1;
         return;
     }
 
-    int prev_idx;
-    char* call_track = **(char***)(obj + 4);
-    int cur_idx = *(int*)(obj + 0x3C);
-    prev_idx = cur_idx - 1;
-    char* prev = GetTrackNodeLinear(call_track, prev_idx);
-    char* next = GetTrackNodeLinear(call_track, cur_idx + 1);
-    char* next2 = GetTrackNodeLinear(call_track, cur_idx + 2);
+    int prevIndex;
+    char* activeTrack = **(char***)(tmh + 4);
+    int curIndex = *(int*)(tmh + 0x3C);
+    prevIndex = curIndex - 1;
+    char* prevNode = GetTrackNodeLinear(activeTrack, prevIndex);
+    char* nextNode = GetTrackNodeLinear(activeTrack, curIndex + 1);
+    char* nextNode2 = GetTrackNodeLinear(activeTrack, curIndex + 2);
 
-    fn_801FD144(obj, prev, node, next, next2, step);
-    fn_801FD320(obj, step);
+    fn_801FD144(tmh, prevNode, node, nextNode, nextNode2, step);
+    fn_801FD320(tmh, step);
 
-    float f68_val = *(float*)(obj + 0x68);
-    float f64_val = *(float*)(obj + 0x64);
-    *(float*)(obj + 0x6C) = f64_val + step * (f68_val - f64_val);
+    float endValue = *(float*)(tmh + 0x68);
+    float startValue = *(float*)(tmh + 0x64);
+    *(float*)(tmh + 0x6C) = startValue + step * (endValue - startValue);
 }
 #pragma pop
 extern "C" void fn_801FEDA4(void*);
