@@ -7973,7 +7973,7 @@ void fn_80123E98(void *arg0, void *arg1) {
     temp_f26_2 = temp_f26 - (f32) sp20;
     temp_f8_4 = (*(f32 *)((s8 *)arg0 + 0x78));
     sp40 = (f64) temp_f8_4;
-    temp_f28 = (f32) sp28 - temp_f8_3;
+    temp_f28 = (f32) sp28 - (f32) sp30;
     sp48 = (f64) (*(f32 *)((s8 *)arg0 + 0x3C));
     temp_f13_4 = temp_f13_3 + temp_f30;
     temp_f30_2 = temp_f25 - temp_f9_3;
