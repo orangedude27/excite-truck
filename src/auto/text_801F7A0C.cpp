@@ -1395,6 +1395,7 @@ extern void fn_80131818(void);
 extern "C" void fn_801F94CC(const char *format, ...) {
     char buffer[0x100];
     void *node;
+    void *parsed;
     va_list args;
     va_start(args, format);
     vsprintf(buffer, format, args);
@@ -1402,11 +1403,14 @@ extern "C" void fn_801F94CC(const char *format, ...) {
     if (node != 0) {
         *(void * volatile *)node = fn_80131810((void *)buffer);
     }
-    if (node != 0 && *(void * volatile *)node != 0) {
+    parsed = *(void * volatile *)node;
+    if (parsed != 0) {
         *(void **)((u8 *)node + 4) = lbl_8055EC44;
         lbl_8055EC44 = node;
     } else if (node != 0) {
-        fn_80131818(*(void * volatile *)node);
+        if (parsed != 0) {
+            fn_80131818(parsed);
+        }
         *(void * volatile *)node = 0;
         ((void (*)(void *))fn_80128668)(node);
     }
