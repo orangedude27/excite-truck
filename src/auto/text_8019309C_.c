@@ -2273,39 +2273,52 @@ static inline int fn_80196C90_signbit(float x) { /* MSL float.h __signbitf() */
 
 #pragma push
 #pragma dont_inline off
+/* One tick of the driver's shake value at +0x144, run before the rest of the
+   driver update (fn_80196DC4) clears the two side-record flags:
+
+     - decay it by the per-instance factor at +0x14C (drawn at random by
+       fn_801981A0);
+     - when a new best record was just set on either side this frame (+0x9C for
+       the positive side, +0x74 for the negative one, both raised by fn_80197...
+       together with the record's signed Y at +0xCC) and that Y has the same sign
+       as the shake value, damp the value further by lbl_80562260 (0.81f);
+     - when the value has lost magnitude since last frame (+0x148 holds it) and
+       the time the next random shake is due at +0x150 is not a usable number
+       (NaN or infinite - fn_801981A0 parks -1.0f there and fires on it), re-arm
+       it to now (+0x26C) plus a random offset in [lbl_8055E548, lbl_8055E54C);
+     - keep the value at +0x148 for next frame's comparison. */
 void fn_80196C90(void *arg0) {
-    extern float lbl_80562260;
-    extern float lbl_8055E548, lbl_8055E54C;
+    extern float lbl_80562260; /* 0.81f */
     extern int __fpclassifyf(float);
     char *obj = (char *)arg0;
-    int flag = 0;
-    double d148;
-    double d144;
-    int r31;
-    int nan;
-    int fin;
+    int recordUpdated = 0;
+    double prevMagnitude;
+    double curMagnitude;
+    int timeIsUsable;
+    int isNan;
+    int isFinite;
     *(float *)(obj + 0x144) = *(float *)(obj + 0x144) * *(float *)(obj + 0x14C);
     if (*(unsigned char *)(obj + 0x9C) != 0 || *(unsigned char *)(obj + 0x74) != 0) {
-        flag = 1;
+        recordUpdated = 1;
     }
-    if (flag != 0) {
+    if (recordUpdated != 0) {
         if (fn_80196C90_signbit(*(float *)(obj + 0xCC)) == fn_80196C90_signbit(*(float *)(obj + 0x144))) {
             *(float *)(obj + 0x144) = *(float *)(obj + 0x144) * lbl_80562260;
         }
     }
-    d148 = __fabs(*(float *)(obj + 0x148));
-    d144 = __fabs(*(float *)(obj + 0x144));
-    if ((float)d144 < (float)d148) {
-        float f31 = *(float *)(obj + 0x150);
-        r31 = 0;
-        nan = __fpclassifyf(f31) == 1;
-        if (!nan) {
-            fin = __fpclassifyf(f31) > 2;
-            if (fin) {
-                r31 = 1;
+    prevMagnitude = __fabs(*(float *)(obj + 0x148));
+    curMagnitude = __fabs(*(float *)(obj + 0x144));
+    if ((float)curMagnitude < (float)prevMagnitude) {
+        float nextShakeTime = *(float *)(obj + 0x150);
+        timeIsUsable = 0;
+        isNan = __fpclassifyf(nextShakeTime) == FP_QNAN; /* isnan() */
+        if (!isNan) {
+            isFinite = __fpclassifyf(nextShakeTime) > FP_INFINITE; /* isfinite() */
+            if (isFinite) {
+                timeIsUsable = 1;
             }
         }
-        if (r31 == 0) {
+        if (timeIsUsable == 0) {
             *(float *)(obj + 0x150) = *(float *)(obj + 0x26C) + fn_80129DC4(3, lbl_8055E548, lbl_8055E54C);
         }
     }
