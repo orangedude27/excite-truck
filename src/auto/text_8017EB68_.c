@@ -197,8 +197,11 @@ extern signed char lbl_8055E4BA;
 extern void fn_801808DC();
 extern void fn_802E8524(int, int);
 
-void fn_8017EB68(void *arg0) {
-    fn_8017E930((char *)arg0 - 0x1EC);
+/* Ball-body vtable method: `child` points 0x1EC into the owning object, so recover
+ * the BallBody base and forward to fn_8017E930 (out params pass through in r4/r5),
+ * which reports the placed ball's x/z position and velocity. */
+void fn_8017EB68(void *child) {
+    fn_8017E930((char *)child - 0x1EC);
 }
 
 extern void fn_8017E96C(void *);
