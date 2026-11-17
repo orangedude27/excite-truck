@@ -32,6 +32,7 @@ static inline void OSInitFastCast(void) {
     // clang-format on
 }
 
+#pragma inline on
 static inline void OSSetGQR6(register u32 type, register u32 scale) {
     register u32 val = ((scale << 8 | type) << 16) | ((scale << 8) | type);
 
