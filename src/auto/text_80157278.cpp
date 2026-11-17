@@ -2969,6 +2969,8 @@ extern "C" void fn_8015B9B0(Unk801577F0* arg0, f32* arg1) {
         (*(BonusDisplay**)((u8*)arg0+0x248))->printCount((s32)BONUS_TEXT_FMT,tracker->getCount());
 }
 #pragma pop
+/* Trivial constant accessor in the bonus scoring code: returns the fixed value 7
+ * (a bonus category/type identifier; it takes no arguments). */
 extern "C" s32 fn_8015BCEC(void) { return 7; }
 
 extern "C" s32 lbl_8055A05C[];
