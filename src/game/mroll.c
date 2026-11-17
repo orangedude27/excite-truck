@@ -5,6 +5,8 @@
 
 typedef signed int s32;
 typedef unsigned char u8;
+typedef int M2C_UNK;
+#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 extern int fn_80131234(void *);
 extern void *fn_8027DB40(s32);
 extern void *memset(void *, int, unsigned int);
@@ -1891,12 +1893,8 @@ off_child_check:
         lbl_8055F200 = 0;
     }
 }
-#pragma dont_inline reset
-#pragma scheduling on
-#pragma use_lmw_stmw reset
-#pragma use_lmw_stmw off
-#pragma optimize_for_size on
 #pragma cplusplus reset
+#pragma use_lmw_stmw off
 s32 fn_80242F68(void *arg0, s32 arg1) {
     u8 *base = (u8 *)arg0;
     s32 channel = fn_802E4A10();
@@ -1908,18 +1906,19 @@ s32 fn_80242F68(void *arg0, s32 arg1) {
     s32 pp;
     s32 eq;
     s32 cond;
-    s32 modeA, modeB, mode;
+    s32 modeB, mode;
     s32 cntSel;
     if (channel >= 2) return 0;
     slot = base + channel * 0x20;
     state0 = *(s32 *)(slot + 0x34);
     pp = **(s32 **)(*(u8 **)(slot + 0x18) + 0x34);
-    eq = ((pp - channel) == 0);
+    eq = (channel == pp);
     cond = 0;
     if (state0 > 1 && eq != 0) cond = 1;
     active = (cond != 0 ? channel : -1);
     selected = (*(s32 *)(slot + 0x34) == 1 ? channel : -1);
-    if (arg1 == 0x1B) {
+    switch (arg1) {
+    case 0x1B:
         if (active >= 0) {
             slot = base + active * 0x20;
             *(s32 *)(slot + 0x34) -= 1;
@@ -1956,9 +1955,7 @@ upd_check0:
             lbl_8055F200 = 0;
         }
         return 1;
-    }
-    if (arg1 < 0x1B) {
-        if (arg1 != 0xD) return 0;
+    case 0xD:
         {
             s32 v0;
             v0 = *(s32 *)((u8 *)arg0 + 0x34);
@@ -1991,7 +1988,11 @@ mode_done:;
             }
         }
         if (active >= 0) {
+            s32 cnt2 = 0;
             slot = base + active * 0x20;
+            if (*(s32 *)(slot + 0x34) > 1 && *(s32 *)(slot + 0x34) != 4) cnt2++;
+            if (*(s32 *)(slot + 0x34) > 1 && *(s32 *)(slot + 0x34) != 4) cnt2++;
+            if (cnt2 <= 0) return 0;
             if (*(s32 *)(slot + 0x34) > 1) {
                 u8 *obj = *(u8 **)(slot + 0x18);
                 if (*(u8 *)(obj + 0x38)) {
@@ -2088,8 +2089,9 @@ upd_check2:
             *(s32 *)((u8 *)arg0 + off + 0x34) = 2;
         }
         return 1;
-    } else {
-        if (arg1 == 0x6F) return 1;
+    case 0x6F:
+        return 1;
+    default:
         return 0;
     }
 }
