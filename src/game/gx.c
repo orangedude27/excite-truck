@@ -2926,14 +2926,15 @@ void* fn_802D3138(void) {
 
 #pragma dont_inline on
 void fn_802D3144(void) {
-    if (lbl_8055FD86 == lbl_8055FD08) {
+    register unsigned short ref = lbl_8055FD08;
+    if (lbl_8055FD86 == ref) {
         GXSetBlendMode(0, 0, 0, 5);
     } else {
         int lowMapped;
         int high;
         int low;
-        high = (int)lbl_8055FD86 >> 8;
-        low = (int)lbl_8055FD86 & 255;
+        high = lbl_8055FD86 >> 8;
+        low = lbl_8055FD86 & 0xFF;
         lowMapped = fn_802D0EC8(low);
         GXSetBlendMode(1, fn_802D0EC8(high), lowMapped, 5);
     }
@@ -3333,8 +3334,9 @@ extern unsigned char lbl_8055FD50;
 extern unsigned char lbl_804C5700[12];
 extern float lbl_80564F90;
 void fn_802D3E88(void) {
-    unsigned char *p = &lbl_804C5700[0xD];
-    *p = 0;
+    /* Disable the alpha-blend / indirect (bump) stage of the shared render request block. */
+    unsigned char *alphaBlendFlag = &lbl_804C5700[0xD];
+    *alphaBlendFlag = 0;
 }
 
 extern int lbl_804C5710_int;
