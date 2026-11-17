@@ -1683,7 +1683,8 @@ extern double lbl_80560618, lbl_80560620, lbl_80560628, lbl_80560630, lbl_805606
 extern double lbl_80560648, lbl_80560650, lbl_80560658, lbl_80560660, lbl_80560668;
 extern double lbl_80560678, lbl_80560680;
 extern double __ieee754_sqrt(double);
+/* MSL sqrt() wrapper: tail-call the fdlibm square-root kernel on x. */
 double fn_8002F234(double x) {
-    __ieee754_sqrt(x);
+    return __ieee754_sqrt(x);
 }
 
