@@ -325,10 +325,12 @@ extern "C" void fn_8027D810(void *arg0) {
 }
 #pragma cplusplus off
 #pragma scheduling on
-int fn_8027D850(void *arg0) {
-    return *(int *)((char *)arg0 + 0x34);
+/* Getter, vtable slot 8 of the effect vtable lbl_80347CF8: the int at +0x34, the
+ * value fn_8027D858 matches against the effect's five thresholds at +0x14 when
+ * the valid flag at +0x38 is set. */
+int fn_8027D850(void *effect) {
+    return *(int *)((char *)effect + 0x34);
 }
-
 typedef int (*Fn8027D858)(void *, int);
 #pragma cplusplus on
 /* If obj's id-valid flag (byte at 0x38) is set, call the vtable's slot-0x30 method
