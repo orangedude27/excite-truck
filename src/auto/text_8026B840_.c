@@ -1467,10 +1467,11 @@ void* fn_8026E20C(void) {
     return lbl_8055F4E4;
 }
 
-void* fn_8026E214(void* value) {
-    void* old = lbl_8055F4E8;
-    lbl_8055F4E8 = value;
-    return old;
+void* fn_8026E214(void* callback) {
+    /* Install a new camera-validity callback (an s32 (*)(s32, s32)) in lbl_8055F4E8 and return the one it replaced. */
+    void* oldCallback = lbl_8055F4E8;
+    lbl_8055F4E8 = callback;
+    return oldCallback;
 }
 
 extern void *lbl_8055F4E8;
