@@ -58,16 +58,19 @@ unsigned int fn_802E176C(unsigned int value) {
 }
 #pragma scheduling invalid_target
 void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
-    unsigned int count = arg1 >> 3;
-    int x = 0;
-    int y = 0;
+    #pragma opt_strength_reduction off
+    int offset;
+    int yMinusRow;
+    register unsigned int count = arg1 >> 3;
+    register int x = 0;
+    register int y = 0;
+    int i;
     register int row;
+
     for (row = 0; row < 4; row++) {
-        int rowOffset = row * arg2;
-        int i;
-        for (i = 0; i < (int)count; i++) {
-            int offset = (i + rowOffset) * 2;
-            int yMinusRow = y - row;
+        for (i = 0; i < count; i++) {
+            offset = (i + row * arg2) * 2;
+            yMinusRow = y - row;
             ((unsigned char *)arg0)[offset] = (unsigned char)(x - i + 0x80);
             y++;
             ((unsigned char *)arg0)[offset + 1] = (unsigned char)(yMinusRow + 0x80);
@@ -219,6 +222,7 @@ int fn_802E1BB4(void *arg0, int arg1) {
     char *slot;
     char *dest;
     unsigned char *p;
+    (void)arg1;
     ((Calc)fn_802E1A9C)((char *)arg0 + 0x100, &sp20, &sp1C, &sp18, &sp14, &sp10, &spC, &sp8);
     temp = fn_8011FFC4(sp10 + sp14 * *(int *)((char *)arg0 + 0x100) + 0x7F, sp14);
     if (temp == 0) goto fail;
@@ -691,7 +695,7 @@ void fn_802E2B34(void) {
 }
 extern void OSPanic(const char *, int, const char *, ...);
 extern char lbl_8034CD8C[];
-extern char lbl_8055D174[];
+__declspec(section ".sdata") extern char lbl_8055D174[];
 int main(void) {
     int local[0x41];
     int i;
