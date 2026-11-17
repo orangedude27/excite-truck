@@ -297,8 +297,9 @@ extern void *lbl_8055DFD4;
 void* fn_80129AF4(void) {
     return lbl_8055DFD4;
 }
-void fn_80129AEC(void *arg0) {
-    lbl_8055DFD4 = arg0;
+/* Set the active/focused controller index held in lbl_8055DFD4 (-1 means none). */
+void fn_80129AEC(void *controllerIndex) {
+    lbl_8055DFD4 = controllerIndex;
 }
 
 void fn_80129AFC(void) {
