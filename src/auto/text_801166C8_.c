@@ -5106,6 +5106,8 @@ extern void **lbl_80559948;
 extern u32 *lbl_8055994C;
 extern void *fn_8011FFC4(s32);
 void* fn_8011FF24(void) {
+    /* Return the current pending allocation base (global lbl_8055DEF0): the
+     * running byte offset into the next 32-byte-aligned sub-allocation block. */
     return lbl_8055DEF0;
 }
 
