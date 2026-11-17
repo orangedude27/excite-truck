@@ -868,8 +868,9 @@ int fn_802B1B28(int *basePtr, int index) {
     return *basePtr + (index * 0xC);
 }
 
-int fn_802B1B38(void *arg0) {
-    return ((int *)arg0)[1];
+/* Return the element count held in the second word (+4) of this object-record table header. */
+int fn_802B1B38(void *header) {
+    return ((int *)header)[1];
 }
 
 /* Address of the 16-byte object record at `index` in the table whose base pointer is stored at `basePtr`. */
