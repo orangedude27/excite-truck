@@ -9062,7 +9062,7 @@ u8 fn_80079514(void) {
 u8 BTM_SetAfhChannels(u8 first, u8 last) {
     if (lbl_803C0F78[0x27C0] >= 3) {
         ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(
-            0xD0002, "BTM_SetAfhChannels first: %d (%d) last: %d (%d)", first, lbl_803C0F78[0x27BD],
+            0xD0002, lbl_803160C0, first, lbl_803C0F78[0x27BD],
             last, lbl_803C0F78[0x27BE]);
     }
     if (!(lbl_803C0F78[0x645] & 8) &&
