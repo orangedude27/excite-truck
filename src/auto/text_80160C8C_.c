@@ -571,8 +571,6 @@ extern void fn_800103B8(s32, s32, s32 *, s32, f32, f32, f32, f32, ...);
 extern void fn_801473F8(void *, const char *, ...);
 #pragma scheduling invalid_target
 #pragma cplusplus on
-static inline f32 fn_80161438_readF32(f32 *p) { return *p; }
-
 extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
     struct Service {
         virtual void f0();
