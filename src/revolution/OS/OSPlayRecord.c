@@ -66,6 +66,7 @@ static void PlayRecordAlarmCallback(OSAlarm* alarm, OSContext* ctx) {
 #pragma unused(alarm)
 #pragma unused(ctx)
 
+    /* Retry the play-record NAND state machine after a busy (MAXFD) backoff alarm. */
     PlayRecordCallback(NAND_RESULT_OK, NULL);
 }
 
