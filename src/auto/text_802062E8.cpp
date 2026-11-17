@@ -147,7 +147,9 @@ extern "C" int fn_80206430(void) {
 
 extern "C" void fn_80206444(void) {
     extern int lbl_8055ED80;
-    ((u8 *)lbl_8055ED80)[5] = 1;
+    /* Set the SoundManager's byte-5 status flag to 1 (fn_80206454 clears it). */
+    struct SoundManagerFlags { u8 pad[5]; u8 statusFlag; };
+    ((struct SoundManagerFlags *)lbl_8055ED80)->statusFlag = 1;
 }
 
 extern "C" void fn_80206454(void) {
