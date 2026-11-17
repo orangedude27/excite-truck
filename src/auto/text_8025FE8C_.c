@@ -184,8 +184,9 @@ void fn_80260820(void *self) {
     }
 }
 
-void fn_8026083C(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x1C) = 0;
+void fn_8026083C(void *row) {
+    /* Clear this selector row's on-cursor flag at +0x1C (SelectorGroupRow.on_cursor). */
+    *(u8 *)((u8 *)row + 0x1C) = 0;
 }
 
 void fn_80260848(void *item) {
