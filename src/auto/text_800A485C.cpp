@@ -11367,8 +11367,10 @@ extern "C" s32 VFiPFAPI_ParseOpenModeString(char *modeString) {
 }
 
 #pragma dont_inline on
-extern "C" s32 fn_800B73BC(s32 arg0) {
-    return (-arg0 | arg0) >> 31;
+/* Branchless status mask: 0 when status is zero, -1 (all bits set) for any
+ * nonzero value.  Callers fold VF driver/status results into this 0/-1 mask. */
+extern "C" s32 fn_800B73BC(s32 status) {
+    return (-status | status) >> 31;
 }
 #pragma dont_inline reset
 
