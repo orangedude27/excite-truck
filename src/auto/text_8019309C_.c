@@ -2266,14 +2266,14 @@ static inline int fn_80196C90_signbit(float x) {
     return (int)(*(int *)&x & 0x80000000);
 }
 
+#pragma push
+#pragma dont_inline off
 void fn_80196C90(void *arg0) {
     extern float lbl_80562260;
     extern float lbl_8055E548, lbl_8055E54C;
     extern int __fpclassifyf(float);
     char *obj = (char *)arg0;
     int flag = 0;
-    float f0;
-    float f1;
     double d148;
     double d144;
     int r31;
@@ -2284,10 +2284,8 @@ void fn_80196C90(void *arg0) {
         flag = 1;
     }
     if (flag != 0) {
-        f1 = *(float *)(obj + 0x144);
-        f0 = *(float *)(obj + 0xCC);
-        if (((int)(*(int *)&f1 & 0x80000000) == (int)(*(int *)&f0 & 0x80000000)) != 0) {
-            *(float *)(obj + 0x144) = f1 * lbl_80562260;
+        if (fn_80196C90_signbit(*(float *)(obj + 0xCC)) == fn_80196C90_signbit(*(float *)(obj + 0x144))) {
+            *(float *)(obj + 0x144) = *(float *)(obj + 0x144) * lbl_80562260;
         }
     }
     d148 = __fabs(*(float *)(obj + 0x148));
@@ -2308,7 +2306,7 @@ void fn_80196C90(void *arg0) {
     }
     *(float *)(obj + 0x148) = *(float *)(obj + 0x144);
 }
-
+#pragma pop
 extern int fn_8019703C(void *, void *);
 extern int fn_8019799C(void *, void *);
 extern int fn_80197FE4(void *, void *);
