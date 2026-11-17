@@ -1042,11 +1042,12 @@ void fn_80160230(void *dst, void *src) {
 }
 
 #pragma dont_inline on
-s32 fn_8016024C(s32 arg0, s32 arg1) {
-    if (arg1 < arg0) {
-        return arg1;
+/* Return the smaller of the two values a and b. */
+s32 fn_8016024C(s32 a, s32 b) {
+    if (b < a) {
+        return b;
     }
-    return arg0;
+    return a;
 }
 
 void fn_8016025C(void *arg0, void *arg1, float farg0, float farg1, float farg2, float farg3) {
