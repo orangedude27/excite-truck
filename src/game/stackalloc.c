@@ -902,6 +902,7 @@ void fn_802DAC54(void) {
     ((struct StackAlloc *)lbl_8055FE5C)->initialized = 1;
 }
 
+/* Return the BoneHandleAlloc stack allocator's status byte (0 = not ready). */
 unsigned char fn_802DAC64(void) {
-    return *((unsigned char *)lbl_8055FE5C + 0x24);
+    return ((struct StackAlloc *)lbl_8055FE5C)->status;
 }
