@@ -226,7 +226,10 @@ extern "C" void fn_80206550(unsigned int size) {
 
 extern int lbl_8055ED80;
 extern "C" int fn_80207C50(int,int,int);
-extern "C" void fn_8020655C(int soundData, int soundIndex) { fn_80207C50(lbl_8055ED80, soundData, soundIndex); }
+extern "C" void fn_8020655C(int soundData, int soundIndex) {
+    // Store a 12-byte sound-data block into the sound manager's record for this slot.
+    fn_80207C50(lbl_8055ED80, soundData, soundIndex);
+}
 
 extern void* fn_80207C74(int, unsigned int);
 extern int lbl_802F9DA0[10];
