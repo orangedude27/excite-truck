@@ -468,15 +468,20 @@ test_char:
         return (float)atof(p);
     return (float)(unsigned int)fn_80133844(p);
 }
-#pragma dont_inline reset
-#pragma scheduling on
+#pragma opt_propagation off
 int fn_80133A08(char **arg0, int arg1, char *arg2, int arg3) {
-    char *p = *arg0;
-    char *start = arg2;
-    char *end = p + arg1;
-    char *limit = arg2 + arg3 - 1;
-    int table = *(int *)((char *)&lbl_802FE850 + 0x38);
-    while (p < end && (((signed char)*p < 0 || (signed char)*p >= 256) ? 0 : (*(unsigned short *)(*(int *)(table + 8) + (signed char)*p * 2) & 0x100)))
+    char *p;
+    int c, oor, test;
+    int table;
+    char *start;
+    char *end;
+    char *limit;
+    p = *arg0;
+    limit = arg2 + arg3 - 1;
+    table = *(int *)((char *)&lbl_802FE850 + 0x38);
+    start = arg2;
+    end = p + arg1;
+    while (p < end && ((c = (signed char)*p, oor = (c < 0 || c >= 256), test = oor ? 0 : (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100), test)))
         p++;
     while (p < end && arg2 < limit && (signed char)*p != 13 && (signed char)*p != 10)
         *arg2++ = *p++;
@@ -484,7 +489,7 @@ int fn_80133A08(char **arg0, int arg1, char *arg2, int arg3) {
     *arg0 = p;
     return arg2 != start;
 }
-#pragma pop
+#pragma opt_propagation reset
 extern void *memcpy(void *, const void *, unsigned long);
 #pragma push
 #pragma optimize_for_size on
