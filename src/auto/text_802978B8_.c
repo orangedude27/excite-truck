@@ -113,7 +113,10 @@ void fn_80297990(void* hi) {
 
     
 void fn_80297998(void) {
-    lbl_8055F7A4 = 0;
+    /* Clear the shadow-listener list by resetting the registered-listener count to zero. */
+#define gListenerCount lbl_8055F7A4
+    gListenerCount = 0;
+#undef gListenerCount
 }
 
 #pragma cplusplus on
