@@ -1298,7 +1298,10 @@ void* fn_80179300(void) {
 }
 
 void fn_80179308(void) {
-    lbl_8055E448 += 1;
+    #define gStepCount lbl_8055E448
+    /* Advance the audio subsystem's global step counter by one. */
+    gStepCount += 1;
+    #undef gStepCount
 }
 
 void* fn_80179318(void) {
