@@ -302,6 +302,14 @@ void fn_80253004(s32 index, void *out) {
 
 extern f32 lbl_805639FC;
 extern f32 fn_801DCF48(s32, u32, u32, u32, u32, u32, u32, u32, f32, f32);
+typedef struct {
+    u8 pad0[0x24];
+    u32 w24, w28, w2c;
+    u8 flag30;
+    u8 pad31[3];
+    f32 f34, f38, f3c;
+    u8 rest[0x3c];
+} CamEntry80253104;
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80253104(s32 arg0, void *arg1) {
