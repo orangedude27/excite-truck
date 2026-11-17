@@ -4089,14 +4089,11 @@ extern "C" void fn_8015E238(Unk801577F0V* arg0) {
     };
     s32 offset;
     s32 i;
-    f32 *array;
+    volatile u8* self = (volatile u8*)arg0;
     offset = 0;
     i = 0;
-    volatile u8* self = (volatile u8*)arg0;
-    array = lbl_8042FD08;
-    s32 valueIndex = *(s32*)(self + 0x58);
     *(u8*)(self + 0x54) = 1;
-    array[valueIndex] = 1.0f;
+    lbl_8042FD08[*(s32*)(self + 0x58)] = 1.0f;
     while (i < *(volatile s32*)(self + 8)) {
         void* item = *(void**)((u8*)*(void* volatile*)(self + 4) + offset);
         ((Dummy*)item)->Call();
