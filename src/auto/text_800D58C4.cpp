@@ -209,8 +209,6 @@ struct ResAccess_800D58C4 {
     virtual void *getRes(u32 type, void *ptr, u32 unk);
 };
 struct ResFlagView_800D58C4 { u8 pad[0x3C]; u32 flags; };
-union ResFlagsUnion_800D58C4 { u32 f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17; };
-struct ResFlagsView2_800D58C4 { u8 pad[0x3C]; ResFlagsUnion_800D58C4 u; };
 struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
 static inline bool HasState_800D6CA0(StateNode_800D6CA0 *t, StateNode_800D6CA0 *s) {
     while (t) {
@@ -1453,6 +1451,8 @@ extern "C" void fn_800D7F78(void *list) {
 }
 
 #pragma dont_inline on
+#pragma push
+#pragma opt_common_subs off
 extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(void* this_, const void* res, const void* blockSet) {
     extern void fn_800D7F78(void*);
     extern void* fn_8002F53C(void*, void (*)(s32*), s32 (*)(s32, s32), s32, s32);
@@ -1507,7 +1507,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     extern s32 fn_800D947C(void*);
     extern s32 fn_800D89B4(s32, s32);
     extern void fn_800D886C(void*, void*);
-    extern void fn_800D9844(void*);
+    extern s32 fn_800D9844(void*);
     extern s32 fn_800D9524(void*);
     extern s32 fn_800D89AC(s32, s32);
     extern void __as__Q34nw4r3lyt8TevStageFRCQ34nw4r3lyt8TevStage(void*, void*);
@@ -1613,7 +1613,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
             tableBase = fn_800D89DC(*(s32*)blockSet, 0xC);
             texObjAry = fn_800D9328(self);
             i = 0;
-            do {
+            while ((u8)i < (*(u32*)(self + 0x50) >> 28)) {
                 entry = (u8*)texBase + ((u8)i << 2);
                 if (*(u16*)entry >= *(u16*)((u8*)*(void**)blockSet + 8)) {
                     Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x1DB, strBase + 0x50);
@@ -1622,7 +1622,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 fn_800D9CBC(self, (u8)i, palette);
                 GXInitTexObjWrapMode((s32*)(texObjAry + ((u8)i << 5)), entry[2], entry[3]);
                 i += 1;
-            } while ((u8)i < (*(u32*)(self + 0x50) >> 28));
+            }
         }
         texCoordDst = (void*)fn_800D9330(self);
         if ((u8)texCoordNum > ((*(u32*)(self + 0x50) >> 24) & 0xF)) {
@@ -1630,7 +1630,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
         }
         texCoordCur = (u8*)texCoordSrc;
         i = 0;
-        do {
+        while (i < (u8)texCoordNum) {
             fn_800D7F58(texCoordDst, texCoordSrc);
             *(f32*)((u8*)texCoordDst + 8) = *(f32*)(texCoordCur + 8);
             fn_800D7F58((u8*)texCoordDst + 0xC, (u8*)texCoordSrc + 0xC);
@@ -1638,16 +1638,16 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
             texCoordDst = (u8*)texCoordDst + 0x14;
             texCoordCur += 0x14;
             i += 1;
-        } while (i < (u8)texCoordNum);
+        }
         genDst = (void*)fn_800D9344(self);
         SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(self, (u8)texCoordGenNum);
         i = 0;
-        do {
+        while (i < ((*(u32*)(self + 0x50) >> 20) & 0xF)) {
             fn_800D87A4(genDst, (void*)texCoordGenAry);
             texCoordGenAry += 4;
             genDst = (u8*)genDst + 4;
             i += 1;
-        } while (i < ((*(u32*)(self + 0x50) >> 8) & 0xF));
+        }
         if (hasA != 0) {
             if (fn_800D87C8(self) == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x1F8, strBase + 0xD8);
@@ -1673,10 +1673,10 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
             miscDst = fn_800D89BC((s32)res, off);
             colorDst = (void*)fn_800D93BC(self);
             i = 0;
-            do {
+            while (i < 4) {
                 fn_800D8834((u8*)colorDst + i, (u8*)miscDst + i);
                 i += 1;
-            } while (i < 4);
+            }
             off += 4;
         }
         if ((u8)indNum != 0) {
@@ -1686,27 +1686,25 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
             indDst = (void*)GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(self);
             indCur = (u8*)(void*)fn_800D89FC((s32)res, off);
             j = 0;
-            do {
+            while (j < (u8)indNum) {
                 fn_800D8840(indDst, indCur);
                 indCur += 0x14;
                 indDst = (u8*)indDst + 0x14;
                 j += 1;
-            } while (j < (u8)indNum);
+            }
         }
-        /* fn_800D8780 extracts the 2-bit indirect-texture count (indTexNum) from
-         * the material flags; each such entry is 0x14 bytes. */
         off += (u8)fn_800D8780((s32*)((const u8*)res + 0x3C)) * 0x14;
         if ((u8)indTexStageNum != 0) {
             fn_800D9ACC(self);
             texStageDst = (void*)fn_800D947C(self);
             texStageCur = (u8*)(void*)fn_800D89B4((s32)res, off);
             j = 0;
-            do {
+            while (j < (u8)indTexStageNum) {
                 fn_800D886C(texStageDst, texStageCur);
                 texStageCur += 4;
                 texStageDst = (u8*)texStageDst + 4;
                 j += 1;
-            } while (j < (u8)indTexStageNum);
+            }
         }
         off += (u8)fn_800D878C((s32*)((const u8*)res + 0x3C)) << 2;
         if ((u8)tevStageNum != 0) {
@@ -1714,14 +1712,14 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
             tevDst = (void*)fn_800D9524(self);
             tevCur = (u8*)(void*)fn_800D89AC((s32)res, off);
             j = 0;
-            do {
+            while (j < (u8)tevStageNum) {
                 __as__Q34nw4r3lyt8TevStageFRCQ34nw4r3lyt8TevStage(tevDst, tevCur);
                 tevCur += 0x10;
                 tevDst = (u8*)tevDst + 0x10;
                 j += 1;
-            } while (j < (u8)tevStageNum);
+            }
         }
-off += (u8)fn_800D8798((s32*)((const u8*)res + 0x3C)) << 4;  // count of TEV stages, each 0x10 bytes
+        off += (u8)fn_800D8798((s32*)((const u8*)res + 0x3C)) << 4;
         if (chanB != 0) {
             if (fn_800D893C(self) == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x238, strBase + 0x18C);
@@ -1742,6 +1740,7 @@ off += (u8)fn_800D8798((s32*)((const u8*)res + 0x3C)) << 4;  // count of TEV sta
     }
     return this_;
 }
+#pragma pop
 #pragma dont_inline reset
 
 extern "C" void fn_800D86F0(void *dst, void *srcData) {
