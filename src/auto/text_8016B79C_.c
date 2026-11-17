@@ -62,6 +62,7 @@ extern s32 lbl_8055E378;
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern s32 fn_80161C38(void);
+extern s32 fn_801B8514(void);
 extern u8 *fn_80131234(const char *);
 extern s32 fn_801609C4(s32);
 int fn_8012850C(int, int);
