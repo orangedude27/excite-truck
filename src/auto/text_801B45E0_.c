@@ -373,8 +373,9 @@ int fn_801B4BDC(int queue) {
     return *fn_801B479C(queue + 4, fn_801B47B4(state));
 }
 
-void fn_801B4C58(int arg0, int arg1) {
-    fn_801B479C(arg0 + 4, arg1);
+/* Return the replay frame at index from the FramePool at +4 of the queue; the tail-call passes the frame pointer back in r3 and callers use it. */
+void fn_801B4C58(int queue, int index) {
+    fn_801B479C(queue + 4, index);
 }
 
 void fn_801B4C60(int queue, int index) {
