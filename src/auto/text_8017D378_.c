@@ -203,12 +203,11 @@ extern "C" void fn_8017D6E0(void *arg0, void *arg1) {
     char *b = (char *)arg1;
     float v[3];
     float pos[3];
-    float f31, f30, f29, f5, sq, prod;
+    float f31, f30, f29, f5, sq;
     char *obj;
     void *sub;
     fn_8017B0F8();
-    prod = lbl_80561C08 * *(float *)(b + 0x24);
-    f5 = prod / lbl_80561C04;
+    f5 = lbl_80561C08 * *(float *)(b + 0x24) / lbl_80561C04;
     f31 = *(float *)(b + 0x2C);
     v[0] = lbl_80561BE0;
     v[1] = lbl_80561BE0;
@@ -670,6 +669,8 @@ void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
 #pragma dont_inline reset
 #pragma scheduling on
 #pragma pop
+/* Returns the constant 60.0f in lbl_80561C2C, the fixed height a body floats
+ * above its target (added to the target's height in fn_8017DCB4). */
 float fn_8017E380(void) { extern float lbl_80561C2C; return lbl_80561C2C; }
 
 /* Initialize a 3x4 transform matrix (12 floats) to the identity: 1.0f on the
