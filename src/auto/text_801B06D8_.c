@@ -2046,6 +2046,7 @@ s32 fn_801B3050(s32 slotIndex) {
 }
 
 extern f32 fn_801B3064(void);
+/* Getter for the global event deadline: the time at which the currently armed scheduled event fires (sDeadline). */
 f32 fn_801B3064(void) {
     return lbl_8055E6A4;
 }
