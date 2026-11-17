@@ -12,6 +12,7 @@ struct StaticDtorRecord {
 
 extern struct StaticDtorRecord lbl_8055DFD8[1];
 extern void fn_8000D838(struct StaticDtorRecord *record);
+/* Register this file-scope object's static destructor into the global chain. */
 void fn_80129C1C(void) {
     fn_8000D838(lbl_8055DFD8);
 }
