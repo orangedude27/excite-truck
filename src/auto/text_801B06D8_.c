@@ -1498,6 +1498,7 @@ void fn_801B234C(f32 deadline) {
 }
 
 void fn_801B235C(void) {
+    /* Set the global race/game phase to 3 (finishing). */
     fn_801E89F4(3);
 }
 
