@@ -2689,9 +2689,10 @@ extern "C" s32 fn_80215AA4(void *wrapper, s32 arg1) {
     return fn_802192A4(wrapper, arg1);
 }
 
-extern "C" void fn_80215B08(void *arg0) {
-    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf21();
+/* Forward to the wrapped widget at +0x244 and invoke its vtable slot 0x5C (vf21). */
+extern "C" void fn_80215B08(void *wrapper) {
+    VfObj *widget = *(VfObj **)((char *)wrapper + 0x244);
+    widget->vf21();
 }
 
 extern "C" void fn_80215B1C(void *arg0) {
