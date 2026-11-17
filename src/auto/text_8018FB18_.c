@@ -2802,7 +2802,8 @@ unsigned char fn_8019305C(void *object) {
     return *((unsigned char *)object + 0x11);
 }
 
-unsigned char fn_80193064(void *arg0) {
-    return *((unsigned char *)arg0 + 0x13);
+/* Returns the byte-sized flag at offset 0x13 of the object. */
+unsigned char fn_80193064(void *object) {
+    return *((unsigned char *)object + 0x13);
 }
 
