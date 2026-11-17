@@ -2168,8 +2168,9 @@ extern "C" void fn_801ADA9C(void *owner) {
     iface->v4(&lbl_8055A8A0, &lbl_8055A8B0);
 }
 #pragma cplusplus off
-long fn_801ADAB8(void *arg0) {
-    return *(long *)((char *)arg0 + 0x240);
+/* Return this object's interface pointer (Dummy_801ADA9C *) at offset 0x240, as an integer. */
+long fn_801ADAB8(void *owner) {
+    return *(long *)((char *)owner + 0x240);
 }
 
 void fn_801ADAC0(void *arg0, long arg1) {
