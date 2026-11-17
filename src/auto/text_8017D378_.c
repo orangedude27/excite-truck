@@ -824,4 +824,5 @@ long fn_8017EAF4(long base) { return base + 0x6C; }
  * (fn_8017EB04); fn_8017E9FC passes all three to fn_8017DEE0. */
 long fn_8017EAFC(long base) { return base + 0x118; }
 
-long fn_8017EB04(long arg0) { return arg0 + 0x70; }
+/* Return the address of the embedded field at offset 0x70 of base. */
+long fn_8017EB04(long base) { return base + 0x70; }
