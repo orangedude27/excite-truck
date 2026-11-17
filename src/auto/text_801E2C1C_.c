@@ -416,23 +416,27 @@ s32 fn_801E3534(s32 *p) {
 #pragma push
 #pragma processor 750
 #pragma opt_propagation off
-void fn_801E353C(s32 arg0, f32 angle) {
+void fn_801E353C(s32 transformObj, f32 angle) {
+    /* Give the transform object (3x3 matrix at +0x08, translation at +0x2C) a
+     * pure rotation by angle about the Z axis, [c s 0; -s c 0; 0 0 1], with
+     * zero translation; fn_801E35D4 installs the matrix and clears the
+     * translation. */
     f32 c;
     f32 s;
-    f32 sp[9];
-    f32 *p = sp;
+    Mat3x3 rot;
+    Mat3x3 *m = &rot;
     c = (f32)((double (*)(float))cos)(angle);
     s = (f32)((double (*)(float))sin)(angle);
-    p[0] = c;
-    p[1] = s;
-    p[2] = lbl_80562CEC;
-    p[3] = -s;
-    p[4] = c;
-    p[5] = lbl_80562CEC;
-    p[6] = lbl_80562CEC;
-    p[7] = lbl_80562CEC;
-    p[8] = lbl_80562CE8;
-    fn_801E35D4((void *)arg0, p);
+    m->x[0] = c;
+    m->x[1] = s;
+    m->x[2] = lbl_80562CEC; /* 0.0f */
+    m->x[3] = -s;
+    m->x[4] = c;
+    m->x[5] = lbl_80562CEC; /* 0.0f */
+    m->x[6] = lbl_80562CEC; /* 0.0f */
+    m->x[7] = lbl_80562CEC; /* 0.0f */
+    m->x[8] = lbl_80562CE8; /* 1.0f */
+    fn_801E35D4((void *)transformObj, m);
 }
 #pragma pop
 /* Copy 9 words from src to dst+0x8..0x28 and set dst+0x2C..0x34 to zero (lbl_80562CEC). */
