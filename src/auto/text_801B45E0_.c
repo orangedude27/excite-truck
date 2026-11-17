@@ -182,8 +182,10 @@ int *fn_801B479C(int pool, int index) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
-int fn_801B47AC(int arg0) {
-    return *(int *)(arg0 + 0x20);
+int fn_801B47AC(int ring) {
+    /* Return the replay ring's start/current index, stored at +0x20 of the
+     * queue state subobject (used as QueueStart when walking the frame pool). */
+    return *(int *)(ring + 0x20);
 }
 #pragma dont_inline off
 
