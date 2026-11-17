@@ -221,6 +221,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
     }
 }
 
+/* Returns the in-memory address of a file's data: the archive's base address plus the file's start offset. */
 void* ARCGetStartAddrInMem(ARCFileInfo* info) {
     return (void*)((s32)info->handle->archiveStartAddr + info->startOffset);
 }
