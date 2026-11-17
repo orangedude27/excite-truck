@@ -279,8 +279,11 @@ void fn_801D1BA4(void) {
     }
 }
 
-void fn_801D1C00(void *arg0, int arg1) {
-    ((void (*)(int))fn_801D153C)(lbl_8055E918 + arg1 * 0x9C);
+/* Iterator callback: call fn_801D153C (the per-car carelem initializer) on the
+ * 0x9C-byte "carelem" record for car index carIndex in the table at lbl_8055E918.
+ * unused is the callback's context argument. */
+void fn_801D1C00(void *unused, int carIndex) {
+    ((void (*)(int))fn_801D153C)(lbl_8055E918 + carIndex * 0x9C);
 }
 
 /* Allocates and initializes an array of 0x9C-byte car elements using global count (lbl_8055E8F8),
