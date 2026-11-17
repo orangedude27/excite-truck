@@ -3711,6 +3711,7 @@ void fn_801D8C1C(void *arg0, float farg0) {
 void fn_801D8C94(void) {
 }
 
+/* Name accessor: returns the "LightningASE" identifier string for this effect system. */
 void *fn_801D8C98(void) {
     return lbl_8033907C;
 }
