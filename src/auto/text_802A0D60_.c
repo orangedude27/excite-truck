@@ -180,6 +180,8 @@ extern "C" inline void *fn_802A1120_getSecond(void) {
 #pragma cplusplus reset
 #pragma paired off
 #pragma paired_single off
+#pragma push
+#pragma processor 750
 void fn_802A1120(float *arg0, float *arg1) {
     struct Search { s32 index; float value; s32 max; };
     char work[0x14];
@@ -242,7 +244,7 @@ void fn_802A1290(void) {
     float sp10[2];
     float sp8[2];
     s32 i, j, n;
-    float sz, k, a, b, d, lo, hi, scale;
+    float a, k, sz, scale, lo, d, b, hi;
     float x, y, t;
     fn_802A92CC();
     if (fn_802A0FBC() != 0) {
