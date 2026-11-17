@@ -2140,8 +2140,11 @@ extern "C" void fn_800D8B28(void *self, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, 
     }
 }
 
-extern "C" s32 fn_800D9328(void *arg0) {
-    return *(s32 *)((u8 *)arg0 + 0x58);
+extern "C" s32 fn_800D9328(void *material) {
+    /* Return the base address of the Material's GX memory block at +0x58
+       (texObj/texSRT/texGen/chanCtrl data), as an integer byte address like
+       the sibling accessors fn_800D9330/9344/9364. */
+    return *(s32 *)((u8 *)material + 0x58);
 }
 
 extern "C" s32 fn_800D9330(void *material) {
