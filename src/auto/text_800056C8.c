@@ -1768,8 +1768,11 @@ u32 fn_80007974(void) { return 1; }
 u8 fn_8000797C(void *arg0) { return *((u8 *)arg0 + 0x14); }
 
 extern u8 lbl_802FB6C0[];
+/* Return the "ClosureOverlay" name string that identifies this overlay type. */
 void *fn_80007984(void) {
-    return lbl_802FB6C0;
+    #define s_overlayName lbl_802FB6C0
+    return s_overlayName;
+    #undef s_overlayName
 }
 
 s32 fn_80007990(s32 ptr, s32 shouldDelete) {
