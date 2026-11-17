@@ -2929,10 +2929,12 @@ extern void fn_801A1474(void *, float);
 void fn_8018BE54(void *arg0, float farg0) {
     float temp_f10, temp_f11, temp_f1, temp_f2, temp_f3, temp_f4, temp_f5, temp_f6, temp_f7, temp_f8, temp_f9;
     char *p = (char *)arg0;
-    float diff = *(float *)(p + 0x5E4) - farg0;
-    if (!(__fabsf(diff) <= lbl_80558DC4)) {
+    double d = __fabsf(*(float *)(p + 0x5E4) - farg0);
+    float diff = (float)d;
+    if (!(diff <= lbl_80558DC4)) {
+        double df = farg0;
         *(float *)(p + 0x5E4) = farg0;
-        fn_801A1474((void *)*(int *)(p + 0x268), farg0);
+        fn_801A1474((void *)*(int *)(p + 0x268), (float)df);
         temp_f11 = *(float *)(p + 0x5E4);
         temp_f6 = temp_f11 * temp_f11;
         temp_f7 = *(float *)(p + 0x47C) * temp_f11;
@@ -2960,7 +2962,8 @@ void fn_8018BE54(void *arg0, float farg0) {
     }
 }
 #pragma pop
-void fn_8018BF44(int *arg0) { *arg0 = 0x0FF807FF; }
+/* Initializes the pointed-to flag word with the default bitmask 0x0FF807FF. */
+void fn_8018BF44(int *flags) { *flags = 0x0FF807FF; }
 
 int fn_8018BF54(void) { return 0; }
 
