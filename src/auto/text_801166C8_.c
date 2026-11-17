@@ -6065,9 +6065,8 @@ void fn_80121C68(s32 arg0, void *arg1, void *arg2) {
     temp_r8 = temp_r9 * 2;
     temp_r11 = arg0 & 0xFFFFFFF8;
     temp_r7 = temp_r9 - 2;
-    temp_r6 = temp_r9 * 4;
-    temp_r12 = temp_r6 + temp_r8;
-    temp_r25 = (temp_r6 + 1) * 4;
+    temp_r12 = temp_r9 * 6;
+    temp_r25 = ((temp_r9 * 4) + 1) * 4;
     temp_r12_2 = temp_r12 * 4;
     temp_r6 = (temp_r8 + 1) * 4;
     temp_f2 = M2C_FIELD(arg1, f32 *, 0);
