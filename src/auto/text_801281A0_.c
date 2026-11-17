@@ -320,7 +320,8 @@ s32 fn_80129170(void *region, u32 value) {
     return result;
 }
 
-s32 fn_8012919C(void *arg0) { return ((s32 *)arg0)[2]; }
+/* Return this memory descriptor's word-2 count field (offset 0x8), the "used" side of the capacity/used pair in fn_801291A4. */
+s32 fn_8012919C(void *descriptor) { return ((s32 *)descriptor)[2]; }
 
 /* Difference of this descriptor's two 32-bit count fields (word 3 minus word 2), e.g. capacity minus used. */
 s32 fn_801291A4(void *region) { return ((s32 *)region)[3] - ((s32 *)region)[2]; }
