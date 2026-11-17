@@ -77,8 +77,11 @@ extern void *lbl_8055EB24;
 extern float lbl_80562DBC;
 extern float lbl_8055EB18;
 extern float lbl_8055EB14;
-extern int fn_801284F8(int, void *, void *, float, float, float, float, float, float);
-extern void fn_801F19FC(void *);
+/* Object allocator: allocate `size` bytes of the pool named by `name`. */
+extern void *fn_801284F8(int size, void *name);
+/* Constructor of a wheel object ("wheel" pool, 0x84 bytes): base init, install
+ * the vtable, record its creation block (fn_80176948) and clear its fields. */
+extern void *fn_801F19FC(void *object, void *initRecord);
 extern float lbl_80562DA0, lbl_80562DF4, lbl_80562DF8, lbl_80562DFC;
 extern float lbl_80562DA8, lbl_80562DB0;
 extern char lbl_80339CB4[];
