@@ -834,7 +834,10 @@ extern void fn_801AFA64(int *);
 extern const char lbl_803359A0[];
 extern float lbl_80435740[];
 
-void fn_801AFA64(int *arg0) { *arg0 = 0; }
+void fn_801AFA64(int *recordMgr) {
+    /* RecordMgr constructor: clear the object's first field. */
+    *recordMgr = 0;
+}
 
 /* CodeWarrior deleting-destructor helper: free object via Mem_freeObject (fn_80128668)
    when deleteFlag > 0, then return object. */
