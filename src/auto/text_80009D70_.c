@@ -106,8 +106,7 @@ void fn_80009DC8(void *arg0) {
         char *a = fn_80016474(p->key);
         char *b = fn_80016544(p->key2);
         s32 n;
-        p->bits.hi = 0;
-        p->bits.lo = 0;
+        p->bits.raw = 0;
         p->f74 = *(s32 *)(b + 0xA4);
         p->f64 = zero;
         CopyStr_80009DC8(p->label, b + 0x2C, 0x20);
@@ -123,9 +122,7 @@ void fn_80009DC8(void *arg0) {
     if (*(u32 *)((u8 *)arg0 + 0x3E8) & 0x1000) {
         s32 k = *countp / 2;
         ListEntry_80009DC8 *q = list + k;
-        for (; k < *countp; k++, q++) {
-            q->kind = 0x54;
-        }
+        for (; k < *countp; k++, q++) q->kind = 0x54;
     }
     if (*(u32 *)((u8 *)arg0 + 0x3E8) & 0x400) {
         ListEntry_80009DC8 tmp;
@@ -135,18 +132,22 @@ void fn_80009DC8(void *arg0) {
         CopyStr_80009DC8(tmp.label, lbl_80558A10, 0x20);
         tmp.key = -0x1F;
         tmp.key2 = -0x1F;
-        tmp.bits.hi = 0;
-        tmp.bits.lo = 0;
+        tmp.bits.raw = 0;
         tmp.f74 = 0;
-        for (j = 0; j < count; j++) {
-            ListEntry_80009DC8 *e = list + (*countp)++;
-            s32 r = fn_8001675C(1, j)[1];
-            *e = tmp;
-            e->key = -0x1F;
-            e->bits.hi = 0;
-            e->f74 = 0;
-            e->key2 = r;
-            CopyStr_80009DC8(e->label, fn_80016544(r) + 0x2C, 0x20);
+        {
+            volatile int wide[93];
+            for (j = 0; j < 85; j++) wide[j] = ((u8 *)&tmp)[j + 0x10];
+            for (j = 0; j < count; j++) {
+                ListEntry_80009DC8 *e = list + (*countp)++;
+                s32 r = fn_8001675C(1, j)[1];
+                *e = tmp;
+                e->key = -0x1F;
+                e->bits.raw = 0;
+                e->f74 = 0;
+                e->key2 = r;
+                CopyStr_80009DC8(e->label, fn_80016544(r) + 0x2C, 0x20);
+                wide[0] = wide[0];
+            }
         }
     }
 }
@@ -255,6 +256,8 @@ void fn_8000AADC(void* arg0) {
 }
 
 void fn_8000AAE0(void* arg0) {
+    /* Tail-call thunk: leave the track, releasing the effect sets that fn_8000AADC's
+     * load pass queued (fn_8000A808 does the work; the object pointer is unused). */
     fn_8000A808();
 }
 
