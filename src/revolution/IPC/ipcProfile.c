@@ -32,6 +32,7 @@ void IPCiProfQueueReq(IPCRequestEx* req, s32 fd) {
     AddReqInfo(req, fd);
 }
 
+/* Acknowledge an issued IPC request by decrementing the unissued-request counter. */
 void IPCiProfAck(void) {
     IpcNumUnIssuedReqs--;
 }
