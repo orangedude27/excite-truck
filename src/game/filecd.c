@@ -336,6 +336,7 @@ extern "C" int fn_802E4408(int unused, void *arg0) {
 }
 #pragma cplusplus reset
 #pragma pop
+/* FileCd::report (vtable slot 0x20): OSReport the "%s" format with no argument. */
 void fn_802E442C(void) {
     OSReport((const char *)&lbl_8055D1BC);
 }
