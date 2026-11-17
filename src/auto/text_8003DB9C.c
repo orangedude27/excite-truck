@@ -4385,8 +4385,9 @@ int GXGetTexObjMipMap(void *arg0) {
     return *(int *)((char *)arg0 + 0x14);
 }
 
-int GXGetTexObjLODAll(int *arg0) {
-    return *arg0 & 3;
+int GXGetTexObjLODAll(int *texObj) {
+    /* Return the low 2-bit LOD/filter field of a GXTexObj's first word. */
+    return *texObj & 3;
 }
 
 int GXGetTexObjWrap_Internal(unsigned int *arg0) {
