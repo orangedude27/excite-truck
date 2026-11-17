@@ -490,10 +490,11 @@ void fn_801BFEB0(void) {
 
 long fn_801BFEB4(long arg0) { return arg0 + 0x6C; }
 
-void GXInitLightAttnA_801BFEBC(void *arg0, float farg0, float farg1, float farg2) {
-    ((float *)arg0)[0] = farg0;
-    ((float *)arg0)[1] = farg1;
-    ((float *)arg0)[2] = farg2;
+/* GXInitLightAttnA: store the three cosine-attenuation coefficients (aa, ab, ac) at the head of a GX light object. */
+void GXInitLightAttnA_801BFEBC(void *lightObj, float aa, float ab, float ac) {
+    ((float *)lightObj)[0] = aa;
+    ((float *)lightObj)[1] = ab;
+    ((float *)lightObj)[2] = ac;
 }
 
 #pragma scheduling on
