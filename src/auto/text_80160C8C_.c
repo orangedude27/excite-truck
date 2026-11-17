@@ -3178,8 +3178,9 @@ typedef struct Work_80164D64 {
     f32 vectorB[3];
     u32 data[12];
 } Work_80164D64;
-unsigned char fn_80165040(void *arg0) {
-    return *((unsigned char *)arg0 + 5);
+/* Level-select menu vtable getter (slot 0x24): reports the `done` flag set by fn_80164D64; siblings fn_80165048/0x50 are identical. */
+unsigned char fn_80165040(void *menu) {
+    return ((struct LevelSelectMenu *)menu)->done;
 }
 
 unsigned char fn_80165048(void *arg0) {
