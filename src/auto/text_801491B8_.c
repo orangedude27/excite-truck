@@ -798,6 +798,11 @@ s32 fn_8014ACBC(void) { return 0; }
 // Trivial callback stub; always returns 0 (false).
 s32 fn_8014ACC4(void) { return 0; }
 
+/* Does nothing: the third of the five trivial callbacks laid out back to back at
+ * fn_8014ACBC .. fn_8014ACD4 (two that answer 0, then three empty ones), just
+ * before fn_8014ACD8, an entry of this file's big interface table lbl_8032D970.
+ * Nothing in the game's code calls it by name, so it only ever runs through the
+ * pointer table its entry sits in. */
 void fn_8014ACCC(void) {
 
 }
