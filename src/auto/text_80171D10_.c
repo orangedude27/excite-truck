@@ -2320,7 +2320,10 @@ extern "C" void fn_80175D40(void *arg0) {
 
 int fn_80176030(void) { return 0; }
 
-int fn_80176038(void) { return 0; }
+int fn_80176038(void) {
+    /* Constant predicate (returns 0 / false); likely a virtual getter reached through a dispatch table. */
+    return 0;
+}
 
 void fn_80176040(char *self, int a, int b) {
     extern float fn_8001DAE8();
