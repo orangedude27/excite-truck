@@ -558,8 +558,9 @@ extern "C" void fn_80193AEC(void *arg0, void *arg1) {
 }
 #pragma scheduling reset
 #pragma cplusplus reset
-void fn_80193CD4(void *arg0) {
-    *(signed char *)((char *)arg0 + 0x2A5) = 1;
+void fn_80193CD4(void *driver) {
+    /* Raise the driver's pending-action flag at +0x2A5 (cleared by fn_80193CE0). */
+    *(signed char *)((char *)driver + 0x2A5) = 1;
 }
 
 #pragma cplusplus on
