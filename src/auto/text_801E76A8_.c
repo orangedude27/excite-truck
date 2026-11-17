@@ -16,16 +16,18 @@ extern void *fn_8012850C(int, void *);
 extern char lbl_80339B70[];
 extern char lbl_80339B80[];
 void *fn_801E76A8(void *arg0, int arg1) {
-    S76 *o = (S76 *)arg0;
+    #pragma scheduling invalid_target
     int rem;
-    o->a = fn_8012850C(arg1 * 0x18, lbl_80339B70);
+    int addr;
+    *(void **)arg0 = fn_8012850C(arg1 * 0x18, lbl_80339B70);
     rem = arg1 - 2;
-    o->c = arg1;
+    *(int *)((char *)arg0 + 8) = arg1;
     arg1 = (rem * 4) - rem;
-    o->b = 0;
-    o->d = fn_8012850C(arg1 * 2, lbl_80339B80);
-    o->e = 0;
-    o->f = arg1;
+    *(int *)((char *)arg0 + 4) = 0;
+    addr = (int)lbl_80339B80;
+    *(void **)((char *)arg0 + 0xC) = fn_8012850C(arg1 * 2, (void *)addr);
+    *(int *)((char *)arg0 + 0x10) = 0;
+    *(int *)((char *)arg0 + 0x14) = arg1;
     return arg0;
 }
 
@@ -41,29 +43,28 @@ void *__dt__12PhysicsWorldFv_801E7730(void *object, int shouldDelete) {
 }
 
 void fn_801E7790(void *buf, int id, int emit, float x, float y, float z, float u, float v) {
-    int *b = (int *)buf;
-    char *base = (char *)b[0];
-    float *dst = (float *)(base + b[1] * 24);
+    struct Buf { void *base; int count; int pad; void *arr; int ic; };
+    struct Buf *b = (struct Buf *)buf;
+    float *dst = (float *)((char *)b->base + b->count * 0x18);
+    int ic;
     dst[0] = x;
     dst[1] = y;
     dst[2] = z;
     ((int *)dst)[3] = id;
     dst[4] = u;
     dst[5] = v;
-    b[1]++;
+    b->count = b->count + 1;
     if (emit == 0) return;
-    if (b[1] <= 1) return;
-    {
-        int ic = b[4];
-        ((short *)b[3])[ic] = (short)(b[1] - 3);
-        b[4] = ic + 1;
-        ic++;
-        ((short *)b[3])[ic] = (short)(b[1] - 2);
-        b[4] = ic + 1;
-        ic++;
-        ((short *)b[3])[ic] = (short)(b[1] - 1);
-        b[4] = ic + 1;
-    }
+    if (b->count <= 1) return;
+    ic = b->ic;
+    ((short *)b->arr)[ic] = (short)(b->count - 3);
+    b->ic = ic + 1;
+    ic++;
+    ((short *)b->arr)[ic] = (short)(b->count - 2);
+    b->ic = ic + 1;
+    ic++;
+    ((short *)b->arr)[ic] = (short)(b->count - 1);
+    b->ic = ic + 1;
 }
 
 /* GenericDrawList draw: unpacks the descriptor (vertices, vertexCount, cap, indices, indexCount) and forwards it to the immediate-mode triangle renderer. */
@@ -95,8 +96,10 @@ void fn_801E7840(void *arg0) {
 #undef GenericDrawList_Init
 }
 
-void *fn_801E7888(void *arg0) {
-    return __dt__12PhysicsWorldFv_801E7730(arg0, 1);
+extern void *__dt__12PhysicsWorldFv_801E7730(void *object, int shouldDelete);
+void *fn_801E7888(void *world) {
+    /* Deleting-destructor thunk: destroy this PhysicsWorld and free it (shouldDelete = 1). */
+    return __dt__12PhysicsWorldFv_801E7730(world, 1);
 }
 
 void fn_801E7890(void *a, int b, int c, float d, float e, float f, float g, float h) {
