@@ -1388,8 +1388,9 @@ void fn_80255904(void *arg0) {
     fn_80253824(*(void **)((u8 *)arg0 + 8));
 }
 
-u8 fn_8025590C(void *arg0) {
-    return **(u8 **)((u8 *)arg0 + 8);
+u8 fn_8025590C(void *holder) {
+    /* Read the active flag (byte 0) of the object referenced by holder+8, the same byte fn_80255904 clears. */
+    return **(u8 **)((u8 *)holder + 8);
 }
 
 void fn_80255918(void *arg0, s32 arg1) {
