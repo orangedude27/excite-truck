@@ -5803,6 +5803,7 @@ extern u8 lbl_803150C8[];
 extern u8 fn_80077DD8(void);
 extern void bta_dm_discover_next_device(void);
 extern void fn_80073464(void);
+#pragma opt_propagation off
 void bta_dm_acl_change(u8 *arg0) {
     u8 *bd = arg0 + 0xB;
     u8 idx;
@@ -5825,10 +5826,9 @@ void bta_dm_acl_change(u8 *arg0) {
         ((void (*)(int, void *))(*(void **)(lbl_803C0C14 + 0x50)))(5, sp);
         return;
     }
-    for (idx = 0; idx < lbl_803C0C14[0x4D]; idx++) {
-        if (bdcmp(lbl_803C0C14 + idx * 0xB, bd) == 0)
-            break;
-    }
+    idx = 0;
+    while (idx < lbl_803C0C14[0x4D] && bdcmp(lbl_803C0C14 + idx * 0xB, bd) != 0)
+        idx++;
     if (idx < lbl_803C0C14[0x4D]) {
         u8 j = idx;
         for (; j < lbl_803C0C14[0x4D]; j++) {
@@ -5855,7 +5855,7 @@ void bta_dm_acl_change(u8 *arg0) {
     sp[6] = fn_80077DD8();
     ((void (*)(int, void *))(*(void **)(lbl_803C0C14 + 0x50)))(6, sp);
 }
-
+#pragma opt_propagation reset
 extern void fn_80070FA4(void *, const void *);
 extern void *GKI_getbuf(unsigned short);
 void fn_80073464(void) {
@@ -25880,6 +25880,7 @@ u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
     u8 c1A = 0x1A;
     u8 c19 = 0x19;
     u32 i = 0;
+    u32 cnt = count;
     s32 j;
     u16 len;
     u8 *start;
@@ -25889,7 +25890,7 @@ u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
     start = p;
     *out = 0x35;
     p++;
-    for (; i < count; i++) {
+    for (; i < cnt; i++) {
         len = *(u16 *)uuid;
         if (len == 2) {
             *p++ = c19;
@@ -29457,11 +29458,11 @@ void fn_8006BAD8(u32 event, u8 *data)
 
 void fn_8006C00C(s32 event, void *arg) {
     register char *strings = (char *)lbl_803130C8;
+    u8 count;
     u8 *p = (u8 *)arg;
     u16 timeout;
     BOOL interrupts;
     u8 state;
-    u8 count;
     u8 field;
     u32 value;
 
@@ -29477,7 +29478,7 @@ void fn_8006C00C(s32 event, void *arg) {
             goto low_timeout;
         if (state == 0) {
             interrupts = OSDisableInterrupts();
-            count = *((u8 *)lbl_80392960 + 0x665);
+            count = lbl_80392960[0x665];
             OSRestoreInterrupts(interrupts);
             if (count < 3) {
                 low_timeout:
