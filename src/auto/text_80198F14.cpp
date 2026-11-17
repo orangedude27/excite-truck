@@ -940,6 +940,7 @@ block_98:
 }
 #pragma dont_inline reset
 #pragma scheduling on
+/* Returns the 32-bit field at offset 8 of the given object. */
 extern "C" s32 fn_8019A780(void *arg0) {
     return *(s32*)((u8*)arg0 + 8);
 }
@@ -1025,17 +1026,19 @@ extern "C" void fn_8019AA18(void* source, s32 point, s32 type, s32 vehicle) {
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8019AA34(void *obj, void *pos, void *other, void *otherPos, s32 a, s32 b, f32 radius, f32 otherRadius) {
     Vec delta, normal, point;
-    f32 sum = radius + otherRadius;
     Vec *p = (Vec *)pos;
     Vec *q = (Vec *)otherPos;
     f32 dx = p->x - q->x;
-    f32 dz = p->z - q->z;
     f32 dy = p->y - q->y;
+    f32 dz = p->z - q->z;
+    f64 absdx = __fabs((f64)dx);
+    f32 adx = (f32)absdx;
+    f32 sum = radius + otherRadius;
     delta.x = dx;
     delta.z = dz;
     delta.y = dy;
     s32 result = 0;
-    if ((f32)__fabs((f64)dx) < sum && (f32)__fabs((f64)dz) < sum && (f32)__fabs((f64)dy) < sum) {
+    if (adx < sum && (f32)__fabs((f64)dz) < sum && (f32)__fabs((f64)dy) < sum) {
         f32 length = PSVECMag(&delta);
         if (!((f32)__fabs((f64)length) <= lbl_80558DC4)) {
             f32 depth = otherRadius + (-length + radius);
@@ -2113,7 +2116,6 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     f32 temp_f3;
     f32 temp_f4;
     volatile f32 sp[9];
-    register s32 res;
 
     temp_r3 = ((Fn8019EA7CDispatch*)arg1)->Get();
     temp_r5 = *(void**)((u8*)arg0 + 0xC);
@@ -2124,8 +2126,7 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     sp[6] = temp_f4;
     sp[1] = temp_f2;
     sp[5] = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
-    res = fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4);
-    return res != 0;
+    return (u32)fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
 }
 #pragma use_lmw_stmw on
 extern "C" void fn_8019EB14(s32 baseRaw, s32 index) {
@@ -2165,19 +2166,19 @@ extern "C" void fn_8019EBC0(void* owner) {
 #pragma scheduling invalid_target
 extern "C" void fn_8019EBE0(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) {
     s32 obj = *(s32 *)((u8 *)self + 4);
-    s32 v7 = f;
-    s32 v6 = e;
-    s32 v5 = d;
-    s32 v4 = c;
-    s32 v3 = b;
-    s32 v2 = a;
     s32 v1 = (s32)self;
+    s32 v2 = a;
+    s32 v3 = b;
+    s32 v4 = c;
+    s32 v5 = d;
+    s32 v6 = e;
+    s32 v7 = f;
     if (obj != 0) {
         fn_8017B5D4(obj, v1, v2, v3, v4, v5, v6);
-    } else {
-        obj = *(s32 *)((u8 *)self + 8);
-        if (obj != 0) fn_801A4A10(obj, v4, v7, v3);
+        return;
     }
+    obj = *(s32 *)((u8 *)self + 8);
+    if (obj != 0) fn_801A4A10(obj, v4, v7, v3);
 }
 #pragma scheduling on
 extern "C" void fn_8019EC84(void* owner) {
