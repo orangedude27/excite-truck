@@ -696,6 +696,7 @@ void fn_801E85A0(void) {
 }
 
 extern void *lbl_8055EB2C;
+/* Return the cached player (racer) count lbl_8055EB2C, captured from the active race object at +0x394. */
 void* fn_801E85A4(void) {
     return lbl_8055EB2C;
 }
