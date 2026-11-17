@@ -104,8 +104,8 @@ extern const char lbl_80322734[];
 extern "C" unsigned int GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(unsigned char, unsigned int, const void *);
 #pragma push
 #pragma small_data on
-extern const char lbl_80559820[];
-extern const char lbl_80559828[];
+extern char lbl_80559820[];
+extern char lbl_80559828[];
 #pragma pop
 extern float lbl_80560F38;
 extern float lbl_80560F3C;
