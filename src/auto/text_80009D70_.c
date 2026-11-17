@@ -303,8 +303,12 @@ void fn_8000ABE0(void *object) {
 }
 
 extern u8 lbl_8034F520[];
+/* Returns the game's AX studio state block: a 0x80-byte .bss buffer holding
+ * the mixer/studio state that the AX sound library updates each frame. */
 void *__AXGetStudio_8000AC2C(void) {
-    return lbl_8034F520;
+#define sAxStudio lbl_8034F520 /* 0x80-byte AX studio state block */
+    return sAxStudio;
+#undef sAxStudio
 }
 
 u32 fn_8000AC38(void) {
