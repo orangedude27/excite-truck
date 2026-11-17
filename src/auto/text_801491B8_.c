@@ -1274,7 +1274,7 @@ void fn_8014C9D4(void *dst, void *container, s32 useSecond) {
 extern f32 lbl_80561648, lbl_8056163C;
 extern s32 fn_801312EC(void *, void *);
 extern s32 fn_8026B0C0(s32);
-extern s32 lbl_8042FCB4, lbl_8042FCC0, lbl_8042FCCC, lbl_8042FCD8, lbl_8042FCE4, lbl_8042FCF0, lbl_8042FCFC;
+extern u8 lbl_8042FCB4[], lbl_8042FCC0[], lbl_8042FCCC[], lbl_8042FCD8[], lbl_8042FCE4[], lbl_8042FCF0[], lbl_8042FCFC[];
 extern u8 lbl_8055E25C, lbl_8055E25D, lbl_8055E25E, lbl_8055E25F, lbl_8055E260, lbl_8055E261, lbl_8055E262;
 extern f32 lbl_80561680, lbl_80561684, lbl_8056168C, lbl_80561690, lbl_80561694, lbl_80561698, lbl_8056169C;
 extern f64 lbl_805616B0;
