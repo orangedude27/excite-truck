@@ -1943,11 +1943,12 @@ extern "C" s32 fn_800D89DC(s32 arg0, s32 arg1) {
     return arg0 + arg1;
 }
 
-extern "C" u32 fn_800D89E4(u32 arg0, u32 arg1) {
-    if (arg0 > arg1) {
-        return arg1;
+extern "C" u32 fn_800D89E4(u32 value, u32 limit) {
+    /* Clamp a resource count to its maximum: return the smaller of value and limit. */
+    if (value > limit) {
+        return limit;
     }
-    return arg0;
+    return value;
 }
 
 extern "C" s32 fn_800D89F4(s32 arg0, s32 arg1) {
