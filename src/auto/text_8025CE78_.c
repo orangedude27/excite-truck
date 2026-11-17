@@ -17,8 +17,98 @@ extern void fn_80230C30(float *, float *, int, int);
 extern void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
 extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
 extern int fn_80012810(void);
+extern void fn_80012794(void);
+extern void fn_80012790(int);
+extern char lbl_803454C8[];
+extern void *fn_8025D9D0(void *);
+extern int lbl_8055F2E8;
+extern char lbl_8055C114, lbl_8055C10C, lbl_80344760;
+extern void *fn_801284F8(int, void *);
+extern void **fn_80131808(void *);
+extern void *fn_8012850C(int, void *);
+extern void *lbl_8055F2E4;
+extern char lbl_8055C108[], lbl_8055C100[];
+extern char lbl_8055C0FC, lbl_8055C0F8, lbl_8055C0F4, lbl_8055C0F0, lbl_8055C0EC;
+extern char lbl_80344750, lbl_80344740, lbl_80344730, lbl_80344720;
+extern void *fn_802CAC28(void *, int);
+extern void fn_80131818(void *);
+extern int strcmp(const char *, const char *);
 void fn_8025CE78(void) {
-    fn_80012810();
+    char *tbl;
+    int heapType;
+    void *list;
+    void **items;
+    void *item;
+    char *name;
+    int i, j, count, n;
+    char *entry, *src, *dst;
+    char c;
+    char buf0[1084], buf1[1084], buf2[1084], buf3[1084], buf4[1084], buf5[1084], buf6[1084];
+    tbl = lbl_803454C8;
+    heapType = fn_80012810();
+    if (heapType != 304) {
+        fn_80012794();
+        fn_80012790(304);
+    }
+    fn_8025D9D0(buf0);
+    fn_8025D9D0(buf1);
+    fn_8025D9D0(buf2);
+    fn_8025D9D0(buf3);
+    fn_8025D9D0(buf4);
+    fn_8025D9D0(buf5);
+    fn_8025D9D0(buf6);
+    if (lbl_8055F2E8 == 0) {
+        list = fn_801284F8(8, &lbl_8055C114);
+        if (list != 0) {
+            items = fn_80131808(&lbl_80344760);
+            *(int *)((char *)list + 4) = 0;
+            *(void **)list = fn_8012850C(0xaf0, &lbl_8055C10C);
+            for (i = 0; ; i++) {
+                item = ((void *(*)(void *, int))*(void **)((char *)*(void **)items + 0xC))(items, i);
+                if (item == 0) break;
+                name = ((char *(*)(void *))*(void **)((char *)*(void **)item + 0x8))(item);
+                if (strcmp(name, lbl_8055C108) == 0) {
+                    for (j = 0; j < 2; j++) {
+                        count = *(int *)((char *)list + 4);
+                        entry = (char *)*(void **)list + count * 0x38;
+                        *(int *)((char *)list + 4) = count + 1;
+                        src = ((char *(*)(void *, void *, int, void *))*(void **)((char *)*(void **)item + 0x14))(item, &lbl_8055C100, count, *(void **)list);
+                        dst = entry;
+                        n = 32;
+                        while (n-- > 1) {
+                            c = *src++;
+                            *dst++ = c;
+                            if (c == 0) break;
+                        }
+                        if (n <= 0) *dst = 0;
+                        if (j != 0) {
+                            dst = entry;
+                            n = 32;
+                            while (*dst != 0 && n > 0) { dst++; n--; }
+                            if (n > 0) {
+                                src = &lbl_8055C0FC;
+                                while (n-- > 1) {
+                                    c = *src++;
+                                    *dst++ = c;
+                                    if (c == 0) break;
+                                }
+                                if (n <= 0) *(dst - 1) = 0;
+                            }
+                        }
+                        *(void **)(entry + 0x20) = fn_802CAC28(j ? &lbl_80344750 : &lbl_80344740, 0);
+                        *(void **)(entry + 0x24) = fn_802CAC28(j ? &lbl_80344730 : &lbl_80344720, 0);
+                        *(float *)(entry + 0x28) = ((float (*)(void *, void *))*(void **)((char *)*(void **)item + 0x24))(item, &lbl_8055C0F8);
+                        *(float *)(entry + 0x2C) = ((float (*)(void *, void *))*(void **)((char *)*(void **)item + 0x24))(item, &lbl_8055C0F4);
+                        *(float *)(entry + 0x30) = ((float (*)(void *, void *))*(void **)((char *)*(void **)item + 0x24))(item, &lbl_8055C0F0);
+                        *(float *)(entry + 0x34) = ((float (*)(void *, void *))*(void **)((char *)*(void **)item + 0x24))(item, &lbl_8055C0EC);
+                    }
+                }
+            }
+            fn_80131818(items);
+        }
+        lbl_8055F2E4 = list;
+    }
+    (void)tbl;
 }
 
 /* Destructor-like cleanup: clears a global state, zeroes fields at +0x18..+0x20
