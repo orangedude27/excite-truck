@@ -538,9 +538,10 @@ int fn_8020B2A8(void *arg0) {
     return *(int *)((char *)arg0 + 0x10) != 0;
 }
 
-void fn_8020B2BC(void *arg0, int arg1, int arg2) {
-    int *ptr = *(int **)((unsigned char *)arg0 + 4);
-    ptr[arg2] = 0;
+/* Clear slot slotIndex in the active voice mixer's work-buffer slot array (voiceSound is passed but unused). */
+void fn_8020B2BC(void *mixer, int voiceSound, int slotIndex) {
+    int *slots = *(int **)((unsigned char *)mixer + 4);
+    slots[slotIndex] = 0;
 }
 
 void fn_8020B2D0(void) {
