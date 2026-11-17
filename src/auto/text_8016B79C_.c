@@ -609,7 +609,7 @@ extern "C" void fn_8016C328(void *arg0) {
             i = 0;
             goto get;
             do {
-                fn_8016C768((void *)fn_8016CD4C(*(void **)((u8 *)arg0 + 0x18)), item, (u8 *)((volatile u8 *)arg0 + 0x14));
+                fn_8016C768((void *)fn_8016CD4C(*(void **)((u8 *)arg0 + 0x18)), item, (u8 *)arg0 + 0x14);
                 i++;
 get:
                 item = list->get(i);
