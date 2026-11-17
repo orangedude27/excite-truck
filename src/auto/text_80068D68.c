@@ -20237,7 +20237,7 @@ void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
                 l2cu_reject_connection (p_lcb, rcid, id, 2);
                 break;
             }
-            if ((p_ccb = (u8 *)l2cu_allocate_ccb (p_lcb, 0)) == NULL)
+            if ((p_ccb = (u8 *)((void *(*)(void *))l2cu_allocate_ccb)(p_lcb)) == NULL)
             {
                 if (lbl_803C4040[0] >= 1)
                     fn_8007093C(0x80000, lbl_80318E58 + 0x1B4);
@@ -20424,7 +20424,7 @@ void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
                         fn_8007096C (0x80001, lbl_80318E58 + 0x230, p_ccb[0x35], id);
                     break;
                 }
-                if ((cfg_info.result == 0) || (cfg_info.result == 1))
+                if (cfg_info.result == 0)
                     fn_80089E40 (p_ccb, 15, &cfg_info);
                 else
                     fn_80089E40 (p_ccb, 16, &cfg_info);
@@ -20478,10 +20478,10 @@ void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
             break;
 
         case 9:
-            if (*(void **)((u8 *)p_lcb + 0x58))
+            if (*(void **)((u8 *)p_lcb + 0x54))
             {
-                void (*p_cb)(int) = *(void (**)(int))((u8 *)p_lcb + 0x58);
-                *(void **)((u8 *)p_lcb + 0x58) = NULL;
+                void (*p_cb)(int) = *(void (**)(int))((u8 *)p_lcb + 0x54);
+                *(void **)((u8 *)p_lcb + 0x54) = NULL;
                 (*p_cb) (0);
             }
             break;
@@ -20492,29 +20492,6 @@ void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
             break;
 
         case 11:
-            if (((u8 *)p_lcb)[0x67])
-            {
-                btu_stop_timer ((u8 *)p_lcb + 0x38);
-                ((u8 *)p_lcb)[0x67] = FALSE;
-            }
-
-            STREAM_TO_UINT16 (info_type, p);
-            STREAM_TO_UINT16 (result, p);
-
-            ((u8 *)p_lcb)[0x68] |= (1 << info_type);
-
-            if ( (info_type == 2)
-              && (result == 0) )
-            {
-                STREAM_TO_UINT32( *(u32 *)((u8 *)p_lcb + 0x6C), p );
-            }
-
-            con_info.status = 0;
-            memcpy (con_info.bd_addr, (u8 *)p_lcb + 0x50, 6);
-            for (p_ccb = *(u8 **)((u8 *)p_lcb + 0x2C); p_ccb; p_ccb = *(u8 **)(p_ccb + 0x4))
-            {
-                fn_80089E40 (p_ccb, 20, &con_info);
-            }
             break;
 
         default:
@@ -27975,6 +27952,9 @@ done:
     return result;
 }
 
+/* No-op status hook in the BTE HCI-USB transport shutdown path: always reports
+ * success (0). Called from uusb_CloseDeviceCB and the HCISU_H2 close cleanup;
+ * its return value is ignored by every caller. */
 u32 fn_8009B0E0(void) {
     return 0;
 }
