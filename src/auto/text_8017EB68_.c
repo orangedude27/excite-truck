@@ -1568,8 +1568,9 @@ float fn_80181588(void *arg0) {
     return clamped;
 }
 
-float fn_801815C4(void *arg0) {
-    return *(float *)((char *)arg0 + 0x28);
+/* Return the float stat at offset 0x28 of the object. */
+float fn_801815C4(void *obj) {
+    return *(float *)((char *)obj + 0x28);
 }
 
 /* Return the integer field at offset 0x50 of this object (set by fn_801815D4). */
