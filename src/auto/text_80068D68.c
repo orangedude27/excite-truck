@@ -14416,11 +14416,15 @@ extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
         btu_hcif_connection_request_evt(p + 2);
         break;
     case 0x05: {
+        UINT8 status;
         UINT16 handle;
         struct { UINT8 value; } reasonLocal;
         UINT8 &reason = reasonLocal.value;
-        handle = (p[3] + (p[4] << 8)) & 0xFFF;
-        reason = p[5];
+        UINT8 *d = p + 2;
+        STREAM_TO_UINT8(status, d);
+        STREAM_TO_UINT16(handle, d);
+        handle = HCID_GET_HANDLE(handle);
+        STREAM_TO_UINT8(reason, d);
         if (!l2c_link_hci_disc_comp(handle, reason))
             btm_sco_removed(handle, reason);
         btm_sec_disconnected(handle, reason);
@@ -14548,8 +14552,10 @@ extern "C" void btu_hcif_process_event(BT_HDR *p_msg) {
             struct { UINT16 value; } handleLocal;
             UINT16 &handle = handleLocal.value;
             UINT16 clock_offset;
-            handle = (p[3] + (p[4] << 8)) & 0xFFF;
-            clock_offset = p[5] + (p[6] << 8);
+            UINT8 *d = p + 3;
+            STREAM_TO_UINT16(handle, d);
+            handle = HCID_GET_HANDLE(handle);
+            STREAM_TO_UINT16(clock_offset, d);
             btm_process_clk_off_comp_evt(handle, clock_offset);
             btm_sec_update_clock_offset(handle, clock_offset);
         }
@@ -24747,7 +24753,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     BOOLEAN is_command;
     MX_FRAME *p_rx_frame = (MX_FRAME *)lbl_803C4828;
     UINT8 *p_data;
-    u32 len;
+    s32 len;
     UINT8 length;
     UINT8 ll;
     UINT8 b;
@@ -26488,7 +26494,7 @@ UINT8 *add_attr(UINT8 *p, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_REC *p_rec, UINT16 
             break;
         default:
             if (lbl_803C4C40[0x4630] >= 2)
-                ((void (*)(u32, void *))fn_80070954)(0xA0001, log + 0xF4);
+                ((void (*)(u32, void *, UINT32))fn_80070954)(0xA0001, log + 0xF4, attr_len);
             return p + attr_len;
         }
         break;
@@ -26522,7 +26528,7 @@ UINT8 *add_attr(UINT8 *p, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_REC *p_rec, UINT16 
             break;
         default:
             if (lbl_803C4C40[0x4630] >= 2)
-                ((void (*)(u32, void *))fn_80070954)(0xA0001, log + 0x114);
+                ((void (*)(u32, void *, UINT32))fn_80070954)(0xA0001, log + 0x114, attr_len);
             return p + attr_len;
         }
         break;
