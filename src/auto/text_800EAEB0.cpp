@@ -3016,8 +3016,9 @@ extern "C" void fn_800EF9B8(void* object, f32 value) {
     OSRestoreInterrupts(level);
 }
 
-extern "C" f32 fn_800EF9F8(void* arg0) {
-    return *(f32*)((u8*)arg0 + 0x40);
+/* Returns the f32 field at offset 0x40 of a sequence player (the value set by fn_800EF9B8). */
+extern "C" f32 fn_800EF9F8(void* seqPlayer) {
+    return *(f32*)((u8*)seqPlayer + 0x40);
 }
 
 extern "C" void fn_800EFA00(void* object, f32 value) {
