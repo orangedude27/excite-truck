@@ -1489,8 +1489,9 @@ void *__dt__Q34nw4r2ef6EffectFv_802942DC(void *arg0, int arg1) {
     return arg0;
 }
 
-void fn_8029433C(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 0x222C) = 0;
+/* Clear the nw4r effect's active-record count (field at offset 0x222C) to zero. */
+void fn_8029433C(void *effect) {
+    *(s32 *)((u8 *)effect + 0x222C) = 0;
 }
 
 extern void fn_80294780(void*);
