@@ -21556,18 +21556,22 @@ u8 l2cu_lcb_disconnecting(void) {
     for (; i < 4; i++) {
         if (entry[0] != 0) {
             u8 *link = *(u8 **)(entry + 8);
-            if (link == 0 || (s32)*(u32 *)(entry + 4) == 5) { result = 1; return result; }
+            if (link == 0 || (s32)*(u32 *)(entry + 4) == 5)
+                return 1;
             if (link == *(u8 **)(entry + 0xC) &&
                 link[0] != 0 &&
-                (u32)(*(u32 *)(link + 4) - 7) <= 1) { result = 1; return result; }
+                (u32)(*(u32 *)(link + 4) - 7) <= 1)
+                return 1;
         }
         i++;
         if (entry[0x5C] != 0) {
             u8 *link = *(u8 **)(entry + 0x64);
-            if (link == 0 || (s32)*(u32 *)(entry + 0x60) == 5) { result = 1; return result; }
+            if (link == 0 || (s32)*(u32 *)(entry + 0x60) == 5)
+                return 1;
             if (link == *(u8 **)(entry + 0x68) &&
                 link[0] != 0 &&
-                (u32)(*(u32 *)(link + 4) - 7) <= 1) { result = 1; return result; }
+                (u32)(*(u32 *)(link + 4) - 7) <= 1)
+                return 1;
         }
         entry += 0xB8;
     }
