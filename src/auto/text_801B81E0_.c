@@ -852,6 +852,8 @@ int fn_801B8B38(void) { return 1; }
  * slot +0x28): reports true (1) as its default boolean result. */
 int fn_801B8B40(void) { return 1; }
 
+/* Null arena-event master virtual method ("null_amaster" vtable lbl_8033678C,
+ * slot +0x2C): reports true (1) as its default boolean result. */
 int fn_801B8B48(void) { return 1; }
 
 /* Constant "return false" stub, alongside the always-true stubs fn_801B8B38,
