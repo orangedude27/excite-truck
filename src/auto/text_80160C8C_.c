@@ -3402,6 +3402,7 @@ extern "C" int fn_80165894(s32 unused0, s32 unused1, float *outValue, s32 index)
 #pragma cplusplus off
 int fn_80165900(void) { return 1; }
 
+/* Default stub handler: returns 0 (companion to fn_80165900, which returns 1). */
 int fn_80165908(void) { return 0; }
 typedef struct VtblA18 { void *pad[7]; void (*f)(void); } VtblA18;
 typedef struct ObjA18 { VtblA18 *vtable; } ObjA18;
