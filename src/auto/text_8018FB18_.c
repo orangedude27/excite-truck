@@ -1778,8 +1778,8 @@ extern "C" void fn_80191860(void *arg0, void *arg1) {
     int buf[9];
     int v;
     int *p = lbl_802F9550;
-    register int a0p4 = (int)((char *)arg0 + 4);
-    register int a0p5 = (int)((char *)arg0 + 5);
+    int a0p4 = (int)((char *)arg0 + 4);
+    int a0p5 = (int)((char *)arg0 + 5);
     buf[0] = *p++;
     buf[1] = *p++;
     buf[2] = *p++;
@@ -2797,8 +2797,9 @@ void fn_8019304C(void *object) {
 void fn_80193058(void) {
 }
 
-unsigned char fn_8019305C(void *arg0) {
-    return *((unsigned char *)arg0 + 0x11);
+/* Returns the byte-sized flag at offset 0x11 of the object. */
+unsigned char fn_8019305C(void *object) {
+    return *((unsigned char *)object + 0x11);
 }
 
 unsigned char fn_80193064(void *arg0) {
