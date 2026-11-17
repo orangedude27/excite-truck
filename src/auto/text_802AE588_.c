@@ -1547,6 +1547,8 @@ char fn_802B05E4(void) {
 }
 
 extern char lbl_8055F981;
+/* Returns lbl_8055F981, the "crystal_mode" flag read from the game config at
+ * startup: nonzero when crystal mode is enabled. */
 char fn_802B05EC(void) {
     return lbl_8055F981;
 }
