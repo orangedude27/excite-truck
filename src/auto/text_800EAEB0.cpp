@@ -2420,16 +2420,17 @@ extern "C" void fn_800EE910(void* alarm) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Interval alarm callback: cancel the RemoteSpeaker's repeating alarm and clear its active flags. */
 extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext(void* alarm, void* context) {
     u32 level = OSDisableInterrupts();
     alarm = OSGetAlarmUserData(alarm);
-    u8* data = (u8*)alarm;
-    if (data[8] != 0) {
-        OSCancelAlarm(data + 0x38);
-        data[6] = 0;
-        data[7] = 0;
+    u8* speaker = (u8*)alarm;
+    if (speaker[8] != 0) {
+        OSCancelAlarm(speaker + 0x38);
+        speaker[6] = 0;
+        speaker[7] = 0;
     }
-    data[8] = 0;
+    speaker[8] = 0;
     OSRestoreInterrupts(level);
 }
 #pragma pop
