@@ -1267,7 +1267,8 @@ int GXGetFifoCount(void *fifo) {
 #pragma dont_inline reset
 
 #pragma dont_inline on
-unsigned char GXGetFifoWrap(void *arg0) { return *(unsigned char *)((char *)arg0 + 0x20); }
+/* Return the graphics FIFO's wrap flag byte at offset 0x20. */
+unsigned char GXGetFifoWrap(void *fifo) { return *(unsigned char *)((char *)fifo + 0x20); }
 #pragma dont_inline reset
 
 /* Sets the GX breakpoint callback and returns the previous callback. */
@@ -4218,58 +4219,65 @@ void __GetImageTileCount(unsigned int format, int width, int height, int *tilesX
     *tileBlocks = ((int)format == 6 || (int)format == 0x16) ? 2 : 1;
 }
 
+extern void *jumptable_80303BF0[];
 void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short height, int format, int wrapS, int wrapT, int mipmap) {
-    u32 mode, image0, image3;
-    u32 level;
+#pragma opt_common_subs off
+    typedef struct {
+        u32 mode0, mode1, image0, image3;
+        void *userData;
+        u32 fmt, tlutName;
+        u16 loadCnt;
+        u8 loadFmt, flags;
+    } GXTexObjInt;
+    GXTexObjInt *t = (GXTexObjInt *)obj;
+    u32 mode, image0, image3, maxLOD;
     int rowShift, colShift;
-    u32 *p = (u32 *)obj;
-    u8 *b = (u8 *)obj;
-    u32 fmt = format;
-    memset(obj, 0, 0x20);
-    mode = p[0];
+    u8 flags;
+    memset(t, 0, 0x20);
+    mode = t->mode0;
     mode = __rlwimi(mode, wrapS, 0, 30, 31);
     mode = __rlwimi(mode, wrapT, 2, 28, 29);
     mode |= 0x10;
-    p[0] = mode;
-    if (mipmap) {
-        b[0x1f] |= 1;
-        if (fmt - 8 <= 2) {
-            mode = __rlwimi(mode, 5, 5, 24, 26); p[0] = mode;
-        } else {
-            mode = __rlwimi(mode, 6, 5, 24, 26); p[0] = mode;
-        }
-        if (width > height) level = 31 - __cntlzw(width);
-        else level = 31 - __cntlzw(height);
-        p[1] = __rlwimi(p[1], (u8)(16.0f * (f32)level), 8, 16, 23);
+    t->mode0 = mode;
+    if (mipmap != 0) {
+        t->flags |= 1;
+        if ((u32)(format - 8) <= 2)
+            t->mode0 = __rlwimi(mode, 5, 5, 24, 26);
+        else
+            t->mode0 = __rlwimi(mode, 6, 5, 24, 26);
+        if (width > height) maxLOD = 31 - __cntlzw(width);
+        else maxLOD = 31 - __cntlzw(height);
+        t->mode1 = __rlwimi(t->mode1, (u8)(16.0f * (f32)maxLOD), 8, 16, 23);
     } else {
-        mode = __rlwimi(mode, 4, 5, 24, 26);
-        p[0] = mode;
+        t->mode0 = __rlwimi(mode, 4, 5, 24, 26);
     }
-    image0 = p[2];
+    image0 = t->image0;
     image0 = __rlwimi(image0, width - 1, 0, 22, 31);
+    t->fmt = format;
     image0 = __rlwimi(image0, height - 1, 10, 12, 21);
-    p[5] = fmt;
-    image3 = p[3];
+    image3 = t->image3;
     image3 = __rlwimi(image3, (u32)image, 27, 8, 31);
-    image0 = __rlwimi(image0, fmt, 20, 8, 11);
-    p[3] = image3;
-    p[2] = image0;
-    switch (fmt & 15) {
+    image0 = __rlwimi(image0, format, 20, 8, 11);
+    t->image3 = image3;
+    t->image0 = image0;
+    switch (format & 15) {
     case 0: case 8:
-        b[0x1e] = 1; rowShift = 3; colShift = 3; break;
+        t->loadFmt = 1; rowShift = 3; colShift = 3; break;
     case 1: case 2: case 9:
-        b[0x1e] = 2; rowShift = 3; colShift = 2; break;
+        t->loadFmt = 2; rowShift = 3; colShift = 2; break;
     case 3: case 4: case 5: case 10:
-        b[0x1e] = 2; rowShift = 2; colShift = 2; break;
+        t->loadFmt = 2; rowShift = 2; colShift = 2; break;
     case 6:
-        b[0x1e] = 3; rowShift = 2; colShift = 2; break;
+        t->loadFmt = 3; rowShift = 2; colShift = 2; break;
     case 14:
-        b[0x1e] = 0; rowShift = 3; colShift = 3; break;
+        t->loadFmt = 0; rowShift = 3; colShift = 3; break;
     default:
-        b[0x1e] = 2; rowShift = 2; colShift = 2; break;
+        t->loadFmt = 2; rowShift = 2; colShift = 2; break;
     }
-    b[0x1f] |= 2;
-    *(u16 *)(b + 0x1c) = (((width + (1 << rowShift) - 1) >> rowShift) * ((height + (1 << colShift) - 1) >> colShift)) & 0x7fff;
+    flags = t->flags;
+    t->flags = flags | 2;
+    t->loadCnt = (((width + (1 << rowShift) - 1) >> rowShift) * ((height + (1 << colShift) - 1) >> colShift)) & 0x7fff;
+#pragma opt_common_subs reset
 }
 
 extern void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
