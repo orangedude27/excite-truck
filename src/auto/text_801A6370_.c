@@ -410,6 +410,7 @@ extern "C" void fn_801A69F4(void *arg0, float *arg1) {
 }
 #pragma ppc_psq_save reset
 #pragma cplusplus reset
+#pragma pop
 extern void fn_801E9DC4(void *);
 #pragma scheduling on
 #pragma cplusplus on
