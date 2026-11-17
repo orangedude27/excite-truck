@@ -825,6 +825,8 @@ long fn_801E8758(long playerIndex) {
     return result;
 }
 #pragma scheduling on
+// Returns a pointer to the global 0x3F8-byte state block cleared at startup by fn_801E952C
+// (holds the ghost name and related ranking data; see fn_801E87A8 for the +0x3E4 sub-object).
 void *fn_801E879C(void) {
     return lbl_80487DE0;
 }
