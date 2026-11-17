@@ -244,7 +244,7 @@ struct F92Obj {
     f32 f80;    // 0x80
     u8 pad4[0x104 - 0x84];
     void *w104; // 0x104
-    void *w108; // 0x108
+    void *w108; // 0x108: dispatch table; its slot 8 destroys the object
 };
 extern "C" void *fn_801F92AC(F92Obj *);
 extern "C" void fn_801F92A8(void);
