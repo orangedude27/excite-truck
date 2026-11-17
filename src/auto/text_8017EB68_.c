@@ -1545,13 +1545,9 @@ void fn_801808DC(void) {
 /* One of the sound-player slots a DriverInterface owns from 0x6C on;
  * fn_80181418 resets one (its id and its "in use" byte), fn_8017F718 gives
  * each of them a name and the sound it plays. */
-struct DriverInterfaceSlot {
-    void *handler;    /* 0x00 */
-    s32 value;        /* 0x04 */
-    u8 pad08[4];
-    u8 inUse;         /* 0x0C */
-    u8 pad0D[3];
-};
+/* The same binding as struct Di718Slot at the top of this file: the layout was
+ * written twice in this translation unit, so keep one and alias the tag. */
+#define DriverInterfaceSlot Di718Slot
 
 /* The "DriverInterface" object (the name it is heap-allocated under,
  * lbl_80331E68): one per driver index, created on demand by fn_8018108C and
