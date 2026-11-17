@@ -325,6 +325,8 @@ void fn_80129B60(void) {
     } while (index < 4);
 }
 
+/* Always-on feature flag: reports that control/widget key-to-value registration is enabled.
+ * Callers gate inserting an entry into the global name/value table on this returning nonzero. */
 s32 fn_80129BC4(void) {
     return 1;
 }
