@@ -655,6 +655,7 @@ void fn_801B8964(int index, float value) {
 #pragma cplusplus on
 #pragma cplusplus on
 extern "C" void fn_801B8978(void) {
+    /* Forward the f25() virtual call to the arena-event master object (lbl_8055E744). */
     ((Dummy_801B8318 *)lbl_8055E744)->f25();
 }
 #pragma cplusplus on
