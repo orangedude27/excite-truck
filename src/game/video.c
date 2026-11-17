@@ -945,8 +945,7 @@ void fn_802E1290(void *movie) {
     ((void (*)(void *))fn_802E0BE0)(movie);
 }
 
-#pragma push
-#pragma use_lmw_stmw off
+#pragma opt_common_subs off
 void fn_802E12DC(void) {
     s32 current;
     void *object = fn_802E0BA4();
@@ -970,10 +969,9 @@ void fn_802E12DC(void) {
                 fn_80118C44(*(void **)((char *)object + 4));
             *(s32 *)((char *)object + 0x4C) += 0x20;
         }
-        fn_802E27A0((char *)object + 80);
+        fn_802E27A0((char *)object + 0x50);
     }
 }
-#pragma pop
 extern void GXSetZMode(GXBool, GXCompare, GXBool);
 extern void fn_802C8C04(s32);
 extern void fn_802C8D74(void);
