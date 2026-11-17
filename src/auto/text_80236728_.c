@@ -1072,6 +1072,8 @@ void *fn_80238370(void *self, int deleteFlag) {
     return self;
 }
 
+/* Constant getter: returns 0.0f (lbl_805636E0), a zero value used by the
+ * TrailMgr code (e.g. fn_802383FC) as an initial/reset amount. */
 float fn_802383F4(void) { return lbl_805636E0; }
 
 #pragma push
