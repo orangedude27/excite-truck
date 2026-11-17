@@ -34,8 +34,11 @@ extern float lbl_80563918;
 extern float lbl_8056391C;
 extern void fn_8024BB98(void*);
 extern void fn_8024BBF4(void*);
-void fn_8024BDDC(void* arg0) {
-    fn_8024BB98((char*)arg0 - 0x34);
+/* C++ this-adjusting thunk: the pointer received is a base subobject at +0x34
+   inside the derived object, so adjust back to the object start and tail-call
+   the real method. */
+void fn_8024BDDC(void* subobject) {
+    fn_8024BB98((char*)subobject - 0x34);
 }
 
 extern void __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110(void*);
@@ -57,9 +60,13 @@ void fn_8024BDFC(void* arg0) {
     __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC((char*)arg0 - 0x18);
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8024BE04(void) {
     float m[12];
     Vtx v[4];
+    Vec3 p3, p2, p1, p0;
     unsigned short idx[6];
     float one, zero, z;
     int h, i;
@@ -78,10 +85,14 @@ void fn_8024BE04(void) {
         fn_802C88BC(3);
         fn_802C974C(lbl_80563914, lbl_80563918, lbl_8056391C);
         fn_802C8638(m);
-        v[0].x = zero; v[0].y = zero; v[0].z = zero; v[0].color = -1; v[0].u = zero; v[0].v = zero;
-        v[1].x = one; v[1].y = zero; v[1].z = zero; v[1].color = -1; v[1].u = one; v[1].v = zero;
-        v[2].x = zero; v[2].y = one; v[2].z = zero; v[2].color = -1; v[2].u = zero; v[2].v = one;
-        v[3].x = one; v[3].y = one; v[3].z = zero; v[3].color = -1; v[3].u = one; v[3].v = one;
+        p0.x = zero; p0.y = zero; p0.z = zero;
+        p1.x = one; p1.y = zero; p1.z = zero;
+        p2.x = zero; p2.y = one; p2.z = zero;
+        p3.x = one; p3.y = one; p3.z = zero;
+        v[0].x = p0.x; v[0].y = p0.y; v[0].z = p0.z; v[0].color = -1; v[0].u = zero; v[0].v = zero;
+        v[1].x = p1.x; v[1].y = p1.y; v[1].z = p1.z; v[1].color = -1; v[1].u = one; v[1].v = zero;
+        v[2].x = p2.x; v[2].y = p2.y; v[2].z = p2.z; v[2].color = -1; v[2].u = zero; v[2].v = one;
+        v[3].x = p3.x; v[3].y = p3.y; v[3].z = p3.z; v[3].color = -1; v[3].u = one; v[3].v = one;
         idx[0] = lbl_802FA510[0];
         idx[1] = lbl_802FA510[1];
         idx[2] = lbl_802FA510[2];
@@ -100,4 +111,4 @@ void fn_8024BE04(void) {
     fn_802CAC54(h);
     fn_802E30C8(lbl_80343E90 + 0x24);
 }
-
+#pragma pop
