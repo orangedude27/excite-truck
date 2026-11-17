@@ -192,10 +192,8 @@ void fn_801E1B30(void) {
 
     lbl_8055EA21 = zero;
     if (*(int *)state != 1) {
-        float target = *(float *)(state + 8);
-        float current = *(float *)(state + 4);
-        if ((float)__fabs((double)(target - current)) < lbl_80562CC4) {
-            if ((float)__fabs((double)target) <= lbl_80558DC4) {
+        if (WeatherAbs(*(float *)(state + 4) - *(float *)(state + 8)) < lbl_80562CC4) {
+            if (WeatherAbs(*(float *)(state + 8)) <= lbl_80558DC4) {
                 goto set_mode;
             }
             *(float *)(state + 8) = lbl_80562CAC;
