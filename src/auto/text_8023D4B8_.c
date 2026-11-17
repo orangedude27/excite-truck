@@ -804,8 +804,9 @@ char *fn_8023E52C(int gripIndex) {
   extern s32 lbl_80341C40[];
 extern s32 fn_801A902C(void);
         extern void fn_8023E33C(void *);
-s32 fn_8023E540(s32 arg0) {
-    return arg0 + 0x14;
+/* Address helper: returns a pointer to the field at offset +0x14 of `record`. */
+s32 fn_8023E540(s32 record) {
+    return record + 0x14;
 }
 
 void fn_8023E548(s32 arg0) {
