@@ -2190,6 +2190,12 @@ extern "C" void *fn_801481C8(void *arg0, s32 arg1) {
     return arg0;
 }
 
+/* Does nothing: one of the default (unimplemented) virtuals of this file's UI
+ * class group -- the run of stubs fn_80148218 / fn_8014821C / fn_80148224 /
+ * fn_80148228 that sits between the 2D-drawing helpers (fn_80148100 ..
+ * fn_801481C8) and the adapter sub-object's virtuals (fn_80148230 ..
+ * fn_80148280, vtable lbl_8032D214).  Nothing in the game's code names it, so
+ * it is reached only through the pointer table it sits in. */
 extern "C" void fn_80148218(void) {
 }
 
