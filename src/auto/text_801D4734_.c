@@ -3787,8 +3787,9 @@ void *fn_801D8C98(void) {
     return lbl_8033907C;
 }
 
-int fn_801D8CA4(void *arg0) {
-    return ((int *)arg0)[1];
+/* Return the current state field (+0x4) of the effect object. */
+int fn_801D8CA4(void *object) {
+    return ((UnkStruct_801D701C *)object)->state;
 }
 
 #pragma cplusplus on
