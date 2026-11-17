@@ -136,47 +136,39 @@ extern "C" char lbl_803258C4[];
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9StrmSoundFi_800FDCB8(void* arg0, int arg1) {
-    struct LinkListImpl {
-        void* unused;
-        void* head;
-    };
-    struct PriorityList {
-        void* unused;
-        LinkListImpl list;
-    };
-    void* soundNode;
+    #pragma opt_common_subs off
+    void* node;
+    void* list;
+    void* sentinel;
     int priority;
-    PriorityList* list;
-    void* end;
-    void* cursor;
-    int value;
+    void* soundNode;
+
     SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
-    value = *(u8*)((u8*)arg0 + 0x74) + *(s32*)((u8*)arg0 + 0x40);
-    priority = (value <= 0x7f) ? (value & ~(value >> 31)) : 0x7f;
-    list = *(PriorityList**)((u8*)arg0 + 0x5f8);
-    if (arg0 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
-    }
+    priority = *(u8*)((u8*)arg0 + 0x74) + *(s32*)((u8*)arg0 + 0x40);
+    if (priority > 0x7F)
+        priority = 0x7F;
+    else
+        priority &= ~(priority >> 31);
+    list = *(void**)((u8*)arg0 + 0x5f8);
+    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
     soundNode = (u8*)arg0 + 0xb8;
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&list->list, soundNode);
-    end = &list->list.head;
-    cursor = list->list.head;
-    while (cursor != end) {
-        if (cursor == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23d, lbl_803258A0);
-        }
-        value = *(u8*)((u8*)cursor - 0x44) + *(s32*)((u8*)cursor - 0x78);
-        value = (value <= 0x7f) ? (value & ~(value >> 31)) : 0x7f;
-        if (priority < value) {
-            break;
-        }
-        cursor = *(void**)cursor;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8*)list + 4, soundNode);
+    node = *(void**)((u8*)list + 8);
+    sentinel = (u8*)list + 8;
+    while (node != sentinel) {
+        int nodePriority;
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23d, lbl_803258A0);
+        nodePriority = *(u8*)((u8*)node - 0x44) + *(s32*)((u8*)node - 0x78);
+        if (nodePriority > 0x7F)
+            nodePriority = 0x7F;
+        else
+            nodePriority &= ~(nodePriority >> 31);
+        if (priority < nodePriority) break;
+        node = *(void**)node;
     }
-    if (arg0 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
-    }
-    void* node = cursor;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&list->list, &node, soundNode);
+    if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
+    void* iterator = node;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8*)list + 4, &iterator, soundNode);
 }
 #pragma pop
 extern "C" s32 fn_800FDDE8(void* sound) {
@@ -202,6 +194,7 @@ extern "C" s32 fn_800FDE0C(s8* sound) {
 }
 
 extern "C" u32* fn_800FDE14(void) {
+    /* Return the address of the sound-library pointer global initialized to the shared nw4r sound dummy value. */
     return &lbl_8055DE70;
 }
 extern "C" void Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(void *);
