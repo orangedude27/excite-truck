@@ -222,6 +222,18 @@ void fn_802DB03C(char *arg0) {
 
 __declspec(section ".sdata") extern char lbl_8055D140[];
 extern void fn_802CED50(int, int, int, int);
+typedef struct {
+    unsigned char kind;
+    unsigned char format;
+    unsigned char pad[2];
+    void *buffer;
+    int width;
+    int height;
+    int size;
+    int pad2[2];
+    int width2;
+    int height2;
+} CanvasConfig;
 void fn_802DB168(void) {
     #pragma scheduling invalid_target
     struct { unsigned char kind, format; unsigned char pad[2]; void *buffer; int width, height, size; int pad2[2]; int width2, height2; } config;
