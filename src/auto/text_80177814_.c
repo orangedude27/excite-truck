@@ -103,6 +103,8 @@ long fn_80177980(void) {
     return 0;
 }
 
+/* Constant "return true" predicate, paired with fn_80177980 (always false);
+ * serves as a default boolean callback. */
 long fn_80177988(void) {
     return 1;
 }
