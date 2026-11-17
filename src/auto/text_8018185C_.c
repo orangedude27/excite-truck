@@ -1919,6 +1919,7 @@ int fn_80189BDC(void *arg0) {
         return ((int (*)(void *, int))vt2->f[51])(tmp, *(int *)((char *)arg0 + 0x1EC));
     }
 }
+#pragma cplusplus reset
 
 #pragma pop
 typedef unsigned char u8;
