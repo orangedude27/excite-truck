@@ -402,8 +402,9 @@ int fn_8027D8F4(void *arg0) {
     return ((int *)arg0)[3];
 }
 
-int fn_8027D8FC(void *arg0) {
-    return ((int *)arg0)[4];
+/* Return the int field at offset 0x10 of the nw4r::ef effect object. */
+int fn_8027D8FC(void *effect) {
+    return ((int *)effect)[4];
 }
 
 int fn_8027D904(void *arg0) { return *(int *)((char *)arg0 + 0x14); }
