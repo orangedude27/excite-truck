@@ -2637,16 +2637,9 @@ extern "C" int fn_802840FC(int *a0, void *a1, int *a2, void *a3) {
     int var_r26_3;
     int var_r30;
     int var_r31;
-    unsigned char *stateBytes_;
     unsigned char *stateBytes;
-    int extra;
-    int extra2;
-    int extra3;
 
     lbl_8055F67C = 0;
-    extra = 0;
-    extra2 = 0;
-    extra3 = 0;
     c0 = a2[0];
     c1 = a2[1];
     c2 = a2[2];
