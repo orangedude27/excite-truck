@@ -166,8 +166,6 @@ typedef union {
 typedef struct {
     short indices[0x20];
     Fn802A0B54Vertex vertices[6];
-    Fn802A0B54FloatConv firstConv;
-    Fn802A0B54FloatConv secondConv;
 } Fn802A0B54Work;
 #pragma push
 #pragma processor 750
@@ -178,75 +176,55 @@ void fn_802A0B54(void) {
     Fn802A0B54Work work;
     int outer;
     int offset;
-    int minusOne;
-    int magic;
-    int count;
     int first;
+    int count;
     int j;
-    double bias;
     float scale;
     float add;
     float size;
     float base;
-    float firstFloat;
-    float extentFloat;
     float f3;
     float f0;
     float f4;
     u8 *record;
     fn_802C8BD0(lbl_8055CB68);
-    bias = lbl_805646E0;
     scale = lbl_805646D8;
     add = lbl_805646DC;
     size = lbl_805646D0;
     base = lbl_805646D4;
     outer = 0;
     offset = 0;
-    minusOne = -1;
-    magic = 0x43300000;
     do {
         record = lbl_8055F834 + offset;
         count = *(int *)(record + 8);
         if (count > 1) {
             first = *(int *)record;
-            work.firstConv.words.high = magic;
-            work.firstConv.words.low = (u32)first ^ 0x80000000;
-            firstFloat = (float)(work.firstConv.value - bias);
-            work.secondConv.words.high = magic;
-            work.secondConv.words.low = (u32)(first * 6) ^ 0x80000000;
-            extentFloat = (float)(work.secondConv.value - bias);
-            f3 = size * firstFloat;
+            f3 = size * (float)first;
             f0 = size + f3;
-            f4 = base + extentFloat;
+            f4 = base + (float)(first * 6);
             for (j = 0; j < count; j++) {
-                float jFloat;
-                float f;
-                work.secondConv.words.high = magic;
-                work.secondConv.words.low = (u32)j ^ 0x80000000;
-                jFloat = (float)(work.secondConv.value - bias);
-                f = (jFloat / scale) * f4;
+                float f = ((float)j / scale) * f4;
                 work.vertices[j].f0 = *(float *)(record + 0xC);
                 work.vertices[j].f4 = *(float *)(record + 0x10);
                 work.vertices[j].f8 = *(float *)(record + 0x14);
                 work.vertices[j].f10 = f;
                 work.vertices[j].f14 = f3;
-                work.vertices[j].unk0C = minusOne;
+                work.vertices[j].unk0C = -1;
                 work.vertices[j].f18 = work.vertices[j].f0;
                 work.vertices[j].f1C = work.vertices[j].f4 + add;
                 work.vertices[j].f20 = work.vertices[j].f8;
-                work.vertices[j].unk24 = minusOne;
+                work.vertices[j].unk24 = -1;
                 work.vertices[j].f28 = f;
                 work.vertices[j].f2C = f0;
                 if (j > 0) {
-                    int n = j - 1;
-                    int at = n * 6;
-                    int index = n * 2;
-                    work.indices[at + 0] = (short)index;
-                    work.indices[at + 1] = (short)(index + 2);
-                    work.indices[at + 2] = (short)(index + 1);
-                    work.indices[at + 3] = (short)(index + 1);
-                    work.indices[at + 4] = (short)(index + 2);
-                    work.indices[at + 5] = (short)(index + 3);
+                    short *idx = work.indices + (j - 1) * 6;
+                    int baseIdx = (j - 1) * 2;
+                    idx[0] = (short)baseIdx;
+                    idx[1] = (short)(baseIdx + 2);
+                    idx[2] = (short)(baseIdx + 1);
+                    idx[3] = (short)(baseIdx + 1);
+                    idx[4] = (short)(baseIdx + 2);
+                    idx[5] = (short)(baseIdx + 3);
                 }
                 record += 0xC;
             }
