@@ -830,7 +830,13 @@ void fn_801B8AFC(void) {
 
 }
 
-float fn_801B8B00(void) { return lbl_8056274C; }
+/* Returns the arena event's intro-end threshold (4.0), the fixed value the mode
+ * timer lbl_8055E750 is compared against to decide when its intro phase is over. */
+float fn_801B8B00(void) {
+    #define gIntroEndThreshold lbl_8056274C
+    return gIntroEndThreshold;
+    #undef gIntroEndThreshold
+}
 
 extern int fn_800167F4(void);
 /* Returns a status flag word: 0x160B when the stored record count exceeds one,
