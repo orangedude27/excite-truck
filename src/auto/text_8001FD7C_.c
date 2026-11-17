@@ -814,7 +814,12 @@ void fn_80021680(void) {
     fn_8001FF34(-1);
 }
 
-void __AXDSPInitCallback_800216B8(void) { lbl_8055D62C = 2; }
+/* Audio-DSP init callback: queue request kind 2, serviced by fn_8002173C. */
+void __AXDSPInitCallback_800216B8(void) {
+    #define audioDspRequest lbl_8055D62C
+    audioDspRequest = 2;
+    #undef audioDspRequest
+}
 
 void fn_800216C4(void) {
 
