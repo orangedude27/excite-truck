@@ -7,6 +7,8 @@ extern void *memset(void *, int, unsigned int);
 extern void deallocate_from_fixed_pools(void ***, unsigned char *, unsigned int);
 extern void Block_link(void *, void *);
 extern void __sys_free(void *);
+#pragma push
+#pragma processor 750
 void free(void *arg0) {
     void ***pool;
     unsigned int size;
@@ -14,7 +16,8 @@ void free(void *arg0) {
     unsigned int flags;
     unsigned char *sb;
     unsigned char *next;
-    if (lbl_8055D678 == 0) {
+    unsigned char initialized = lbl_8055D678;
+    if (initialized == 0) {
         memset(lbl_8035BB58, 0, 0x34);
         lbl_8055D678 = 1;
     }
