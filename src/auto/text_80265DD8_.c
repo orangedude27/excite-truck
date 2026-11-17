@@ -274,12 +274,9 @@ void fn_80265E08(void* path) {
 #pragma scheduling invalid_target
 void fn_80265E2C(void) {
     struct Record { float x; float y; int value; };
-    struct Record *record;
-    float scale;
-    int count;
-    scale = lbl_80563C24;
-    record = (struct Record *)lbl_804999A0;
-    count = 0;
+    float scale = 0.017453292519943295f;
+    struct Record *record = (struct Record *)lbl_804999A0;
+    int count = 0;
     do {
         record->x = scale * fn_80129DC4(6, -lbl_8055C4E0, lbl_8055C4E0);
         record->y = scale * fn_80129DC4(6, -lbl_8055C4E4, lbl_8055C4E4);
