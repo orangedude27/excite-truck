@@ -992,6 +992,7 @@ long fn_801E89C8(long playerIndex) {
 }
 
 extern void *lbl_8055AF08;
+/* Return the global race/game phase state lbl_8055AF08 (set via fn_801E89F4): 0 before start, 1 racing, 3 finishing. */
 void* fn_801E89EC(void) {
     return lbl_8055AF08;
 }
