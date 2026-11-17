@@ -874,6 +874,24 @@ static inline const char *entryName(s32 entry) {
 static inline u32 entryParent(s32 entry) {
     return *(u32 *)(FstStart_8055D840 + 4 + entry * 12);
 }
+static inline u32 entryToPath1(u32 entry, char *path, u32 maxlen) {
+    const char *name;
+    if (entry == 0) return 0;
+    name = entryName(entry);
+    return appendPathPart(path, DVDConvertEntrynumToPath(entryParent(entry), path, maxlen), maxlen, name);
+}
+static inline u32 entryToPath2(u32 entry, char *path, u32 maxlen) {
+    const char *name;
+    if (entry == 0) return 0;
+    name = entryName(entry);
+    return appendPathPart(path, entryToPath1(entryParent(entry), path, maxlen), maxlen, name);
+}
+static inline u32 entryToPath3(u32 entry, char *path, u32 maxlen) {
+    const char *name;
+    if (entry == 0) return 0;
+    name = entryName(entry);
+    return appendPathPart(path, entryToPath2(entryParent(entry), path, maxlen), maxlen, name);
+}
 #pragma push
 #pragma use_lmw_stmw off
 BOOL DVDGetCurrentDir(const char *path, void *info) {
