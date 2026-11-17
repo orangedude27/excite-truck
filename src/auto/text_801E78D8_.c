@@ -367,6 +367,8 @@ float fn_801E7E18(void) {
     return *lbl_8055EB04;
 }
 
+/* Returns the current frame's delta time in seconds (fw::Frame::getFrameTime / getDeltaTime),
+   held in lbl_8055EB14 and refreshed each frame by fn_801E7E48. */
 float fn_801E7E24(void) { extern float lbl_8055EB14; return lbl_8055EB14; }
 
 /* Constant getter in the frame/player code: always returns -1 (the "none" sentinel). */
@@ -1007,20 +1009,21 @@ void fn_801E89F4(void *phase) {
     lbl_8055AF08 = phase;
 }
 
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801E89FC(void) {
     extern float fn_80129DC4(long, float, float);
     extern float lbl_804881D8[];
     extern float lbl_80562DBC, lbl_80562DC0, lbl_80562DD4, lbl_80562DD8;
     extern float lbl_80562DDC, lbl_80562DE0;
     extern void PSVECNormalize(float *, float *);
-    lbl_804881D8[0] = fn_80129DC4(0, lbl_80562DC0, lbl_80562DD4);
+    long zero = 0;
+    lbl_804881D8[0] = fn_80129DC4(zero, lbl_80562DC0, lbl_80562DD4);
     lbl_804881D8[1] = fn_80129DC4(0, lbl_80562DD8, lbl_80562DDC);
     lbl_804881D8[2] = fn_80129DC4(0, lbl_80562DC0, lbl_80562DD4);
     PSVECNormalize(lbl_804881D8, lbl_804881D8);
     lbl_804881D8[3] = fn_80129DC4(0, lbl_80562DBC, lbl_80562DE0);
 }
-#pragma scheduling on
+#pragma opt_propagation reset
 void fn_801E8A84(void)
 {
   float new_var3;
