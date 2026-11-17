@@ -2172,9 +2172,13 @@ extern f32 lbl_805629B4;
 extern f32 lbl_8055E85C, lbl_8055E860;
 extern s32 lbl_8055E854;
 extern void fn_801C78D8(void);
+/* "Park" debug-menu callback (id 0x18): select interlude mode 0 (Park) and reopen
+ * the AI-think interlude's text field/menu. */
 void fn_801C80BC(void) {
-    lbl_8055E854 = 0;
-    fn_801C78D8();
+    #define enterDebugMenuMode fn_801C78D8
+    sInterludeMode = 0;
+    enterDebugMenuMode();
+    #undef enterDebugMenuMode
 }
 
 // Debug-menu item (id 0x17) of the AI-think interlude submenu: select mode 2, mark the text field in use, and reset the menu action to idle.
