@@ -2500,8 +2500,11 @@ char *fn_801D77AC(void) {
     return lbl_803388F0;
 }
 
-int fn_801D77B8(int arg0) {
-    return ((int *)arg0)[2];
+/* Getter for the word at +0x8 of an Obstacle_ASE effect object: the flag/count
+ * that fn_801D5AF0 tests (and clears) before freeing the child at +0x4 and that
+ * fn_801D77C0 clamps to 0/1. */
+int fn_801D77B8(int object) {
+    return ((int *)object)[2];
 }
 
 /* Clamps the object's word at +0x8 to 1 if it is nonzero (leaves 0 alone), then returns the object. */
