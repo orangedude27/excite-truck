@@ -1448,8 +1448,9 @@ extern "C" s32 fn_800ED0A8(s32 player) {
     s32 neg = -(s32)started;
     return (s32)((u32)(neg | (s32)started) >> 31);
 }
-extern "C" s32 fn_800ED0BC(void *arg0) {
-    return ((u8 *)arg0)[0x16] != 0;
+/* Returns 1 when the boolean byte flag at offset 0x16 of the object is set, 0 otherwise. */
+extern "C" s32 fn_800ED0BC(void *object) {
+    return ((u8 *)object)[0x16] != 0;
 }
 extern "C" s32 fn_800ED0D0(void *object) {
     /* Returns 1 when the boolean byte flag at offset 0x15 of the object is set, 0 otherwise. */
