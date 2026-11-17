@@ -35,6 +35,11 @@ void fn_80129C24(void) {
 #undef InitRngSlot
 }
 
+/* End-of-frame hook of the RNG module.  The main loop (fn_80004E20) calls it
+ * once per iteration through fn_80129BF8, right after the resource-subsystem
+ * clean-up fn_8012C4E8, as the counterpart of the start-of-frame hook
+ * fn_80129BD4 (which re-seeds the seven RNG states).  Nothing has to be done
+ * here in this build, so it is just a return. */
 void fn_80129C60(void) {
 
 }
