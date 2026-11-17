@@ -964,9 +964,12 @@ void fn_80265584(void *obj) {
 extern char lbl_80346558[];
 extern float lbl_80563BF0;
 extern float lbl_8055C454;
-void fn_80265598(void *arg0) {
+void fn_80265598(void *obj) {
     extern float lbl_8055C454;
-    lbl_8055C454 = *(float *)((char *)arg0 + 0x1C);
+    /* Publish this object's timer field (+0x1C) as the shared timer global. */
+#define s_sharedTimer lbl_8055C454
+    s_sharedTimer = *(float *)((char *)obj + 0x1C);
+#undef s_sharedTimer
 }
 
 /* Construct the current credits object: install its vtable (lbl_80346558),
