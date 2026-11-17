@@ -3241,8 +3241,10 @@ void *fn_801D8504(void) {
     return lbl_80339038;
 }
 
-int fn_801D8510(void *arg0) {
-    return *(int *)((char *)arg0 + 0x4);
+/* state() of an EmbeddedTrackEffect_ASE action-sequence element (vtable slot +0x18):
+ * report the element's state field (+0x04), which its start/update methods step through. */
+int fn_801D8510(void *element) {
+    return ((AseElementHeader *)element)->state;
 }
 
 int fn_801D8518(int effect) {
