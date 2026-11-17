@@ -11580,6 +11580,7 @@ extern "C" void fn_800B783C(void *lock) {
 }
 
 extern void *lbl_8055DD10;
+/* DSP-init callback: reset the global count of active file-write semaphores (decremented by fn_800B786C as writes complete) to zero. */
 extern "C" void __AXDSPInitCallback_800B7860(void) {
     lbl_8055DD10 = 0;
 }
