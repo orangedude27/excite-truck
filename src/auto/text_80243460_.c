@@ -95,21 +95,25 @@ s32 fn_80243528(s32 arg0, s32 arg1) {
 }
 
 #pragma unroll on
-s32 fn_8024360C(s32 value, s32 tableIndex) {
+/* MenuTable_EntryAtOffset: given a cumulative horizontal offset (the sum of
+ * entry widths before the cursor, from MenuTable_OffsetOfEntry) within a menu
+ * group, find the entry whose width range contains it, falling back to the
+ * last entry that has a nonzero width. */
+s32 fn_8024360C(s32 offset, s32 group) {
 #pragma scheduling invalid_target
-    s32 length;
-    s32 start = 0;
-    s32 best = 0;
-    s32 index = 0;
-    s32 end;
-    for (index = 0; index < 16; index++) {
-        length = lbl_803428B0[tableIndex][index][1];
-        end = start + length;
-        if (length > 0) best = index;
-        if (value >= start && value < end) return index;
-        start = end;
+    s32 width;
+    s32 startOffset = 0;
+    s32 lastEntry = 0;
+    s32 entry = 0;
+    s32 endOffset;
+    for (entry = 0; entry < 16; entry++) {
+        width = MENU_TABLE[group][entry].width;
+        endOffset = startOffset + width;
+        if (width > 0) lastEntry = entry;
+        if (offset >= startOffset && offset < endOffset) return entry;
+        startOffset = endOffset;
     }
-    return best;
+    return lastEntry;
 }
 #pragma unroll reset
 
