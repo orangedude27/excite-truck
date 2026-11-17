@@ -29,6 +29,7 @@ extern int lbl_80558A50, lbl_80558A58, lbl_80558A60, lbl_80558A68;
 void fn_8000AC98(void) {
 }
 
+/* No-argument stub predicate that always reports false (0) in this build. */
 int fn_8000AC9C(void) { return 0; }
 
 void fn_8000ACA4(void) {
