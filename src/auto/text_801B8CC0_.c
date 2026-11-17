@@ -199,9 +199,10 @@ static inline void transform_vec_scheduled(float *out, const float *m, float *in
 }
 /* Rotate a vector into the frame whose axes are m's rows, in place. */
 static inline void rotate_vec_in_place(f32 *v, const f32 *m) {
-    f32 x = v[0];
-    f32 y = v[1];
-    f32 z = v[2];
+    f32 z, y, x;
+    x = v[0];
+    y = v[1];
+    z = v[2];
     v[0] = x * m[0] + y * m[1] + z * m[2];
     v[1] = x * m[3] + y * m[4] + z * m[5];
     v[2] = x * m[6] + y * m[7] + z * m[8];
