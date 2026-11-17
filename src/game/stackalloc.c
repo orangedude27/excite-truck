@@ -356,9 +356,9 @@ void fn_802D9DE4(int arg0, void *arg1, int arg2) {
             }
         }
         ctr = arg2 - i;
-        src = (unsigned int *)arg1 + i * 12;
-        dest = (unsigned int *)((char *)lbl_804DAC48 + arg0 * 0x30) + i * 12;
-        if (i < arg2) do {
+        src = (unsigned int *)((char *)arg1 + i * 0x30);
+        dest = (unsigned int *)((char *)lbl_804DAC48 + i * 0x30 + arg0 * 0x30);
+        if (i < arg2) for (c = 0; c < ctr; c++) {
             t0 = src[0];
             t1 = src[1];
             dest[0] = t0;
