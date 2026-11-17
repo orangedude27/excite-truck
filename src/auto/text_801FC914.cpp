@@ -409,6 +409,7 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(void**)(dst + 4) = arg1;
     void* src = *(void**)arg1;
     *(int*)(dst + 0x3C) = 0;
+    register float one = lbl_80563030;
     *(float*)(dst + 0x40) = initial;
     *(float*)(dst + 0x44) = *(float*)((char*)src + 0x1C);
     *(float*)(dst + 0x48) = *(float*)((char*)src + 0x20);
@@ -426,22 +427,21 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(float*)(dst + 0x34) = *(float*)((char*)src + 0x14);
     *(float*)(dst + 0x38) = *(float*)((char*)src + 0x18);
     volatile float* quat = (volatile float*)((char*)src + 0x1C);
-    float z, y, x;
+    register float x, y, z, w;
     x = quat[0];
     y = quat[1];
     z = quat[2];
-    float z2, y2, x2;
+    register float z2, y2, x2;
     x2 = x + x;
     y2 = y + y;
-    float w = quat[3];
+    w = quat[3];
     z2 = z + z;
-    float zz, yy, xx;
+    register float zz, yy, xx;
     xx = x * x2;
     yy = y * y2;
     zz = z * z2;
     float xw = w * x2;
     float yz = y * z2;
-    float one = lbl_80563030;
     float sum0 = yy + zz;
     float sum1 = xx + zz;
     float sum2 = xx + yy;
@@ -688,11 +688,14 @@ extern "C" void fn_801FD3F0(void* arg0, float farg0) {
 }
 #pragma pop
 
-#pragma scheduling on
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void fn_801FD5E8(void* arg0, float farg0) {
     char* obj = (char*)arg0;
-    char* track = *(char**)(obj + 4);
+    void* inner = *(void**)(obj + 4);
     int idx = *(int*)(obj + 0x3C);
+    char* track = *(char**)inner;
     char* node = GetTrackNode(track, idx);
 
     float speed = *(float*)(node + 0x20);
@@ -703,37 +706,44 @@ extern "C" void fn_801FD5E8(void* arg0, float farg0) {
         *(float*)(obj + 0x40) = t_step;
     } else {
         step -= lbl_80563030;
+        int cur_idx = *(int*)(obj + 0x3C);
+        void* in = *(void**)(obj + 4);
+        int next_idx = cur_idx + 1;
         *(float*)(obj + 0x40) = *(float*)(obj + 0x40) + (farg0 - lbl_80563030 / speed);
 
-        int count = *(int*)(track + 0x6D0);
-        idx = (*(int*)(obj + 0x3C) + 1) % (count * 2);
+        int wrap = *(int*)(track + 0x6D0) * 2;
+        idx = next_idx % wrap;
         *(int*)(obj + 0x3C) = idx;
 
-        node = GetTrackNode(track, idx);
+        node = GetTrackNode(*(char**)in, idx);
 
         *(float*)(obj + 0x44) = *(float*)(obj + 0x54);
         *(float*)(obj + 0x48) = *(float*)(obj + 0x58);
+        int next_i = *(int*)(obj + 0x3C) + 1;
         *(float*)(obj + 0x4C) = *(float*)(obj + 0x5C);
         *(float*)(obj + 0x50) = *(float*)(obj + 0x60);
         *(float*)(obj + 0x64) = *(float*)(obj + 0x68);
 
-        char* next_node = GetTrackNode(track, idx + 1);
+        void* in2 = *(void**)(obj + 4);
+        char* next_node = GetTrackNode(*(char**)in2, next_i);
         *(float*)(obj + 0x54) = *(float*)(next_node + 0xC);
+        int next_i2 = *(int*)(obj + 0x3C) + 1;
         *(float*)(obj + 0x58) = *(float*)(next_node + 0x10);
         *(float*)(obj + 0x5C) = *(float*)(next_node + 0x14);
         *(float*)(obj + 0x60) = *(float*)(next_node + 0x18);
 
-        char* next2_node = GetTrackNode(track, idx + 2);
+        void* in3 = *(void**)(obj + 4);
+        char* next2_node = GetTrackNode(*(char**)in3, next_i2 + 1);
         *(float*)(obj + 0x68) = *(float*)(next2_node + 0x1C);
 
-        int next_idx = *(int*)(obj + 0x3C) + 1;
-        if (next_idx >= count && next_idx < count * 2) {
+        int turn_idx = *(int*)(obj + 0x3C) + 1;
+        int count = *(int*)(track + 0x6D0);
+        if (turn_idx >= count && turn_idx < count * 2) {
             float qx = *(float*)(obj + 0x54);
             float qy = *(float*)(obj + 0x58);
             float qz = *(float*)(obj + 0x5C);
-            float qw = *(float*)(obj + 0x60);
-
             float y2 = qy + qy;
+            float qw = *(float*)(obj + 0x60);
             float z2 = qz + qz;
             float x2 = qx + qx;
             float yy = qy * y2;
@@ -803,19 +813,16 @@ extern "C" void fn_801FD5E8(void* arg0, float farg0) {
     int count = *(int*)(track + 0x6D0);
     int cur_idx = *(int*)(obj + 0x3C);
     if (count - 1 != cur_idx % count) {
-        char* prev_node = GetTrackNode(track, cur_idx - 1);
-        char* next_node = GetTrackNode(track, cur_idx + 1);
-        char* next2_node = GetTrackNode(track, cur_idx + 2);
+        void* in = *(void**)(obj + 4);
+        char* prev_node = GetTrackNode(*(char**)in, cur_idx - 1);
+        char* next_node = GetTrackNode(*(char**)in, cur_idx + 1);
+        char* next2_node = GetTrackNode(*(char**)in, cur_idx + 2);
         fn_801FD144(obj, prev_node, node, next_node, next2_node, step);
     }
     fn_801FD320(obj, step);
     float f64_val = *(float*)(obj + 0x64);
     *(float*)(obj + 0x6C) = f64_val + step * (*(float*)(obj + 0x68) - f64_val);
 }
-
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
 extern "C" void fn_801FDF18(void* arg0, float farg0) {
     char* obj = (char*)arg0;
     char** slot = *(char***)(obj + 4);
@@ -1793,8 +1800,12 @@ extern "C" void fn_801FF0E4(void* holder) {
     if (manager != 0) manager->resetPools(0);
 }
 
-extern "C" void fn_801FF108(void* arg0) {
-    fn_801FF420((char*)arg0 + 0xE08);
+/* Draw pass of the DroneManager object (vtable lbl_8033B898, slot 0x14):
+ * tail-calls fn_801FF420 on the object pool held inline at +0xE08, which walks
+ * the pool's groups and draws every object pointer in each of them
+ * (fn_801FCFC8 draws one object: model handle at +8, transform at +0xC). */
+extern "C" void fn_801FF108(void* manager) {
+    fn_801FF420((char*)manager + 0xE08);
 }
 
 extern "C" void fn_801FF110(void) {
