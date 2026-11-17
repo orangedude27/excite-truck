@@ -701,8 +701,8 @@ s32 fn_80135150(s32 object, s32 deleteFlag) {
 void fn_80135190(void) {
 }
 
+/* No-op default implementation of an AI driver-interface virtual (vtable stub). */
 void fn_80135194(void) {
-
 }
 
 void fn_80135198(void) {
