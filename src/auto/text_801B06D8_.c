@@ -2147,6 +2147,7 @@ void fn_801B3208(s32 entryIndex, s32 id, f32 qualifyValue) {
     *(f32 *)((u8 *)lbl_8055E684 + (entryIndex << 7) + 0x24) = qualifyValue;
 }
 #pragma pop
+/* Constant predicate (returns 0 / false); likely a virtual getter reached through a dispatch table. */
 s32 fn_801B327C(void) { return 0; }
 
 void fn_801B3284(void) {
