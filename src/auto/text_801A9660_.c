@@ -2142,8 +2142,9 @@ void fn_801ADA38(void *object, int enable) {
     }
 }
 
-unsigned char fn_801ADA7C(void *arg0) {
-    return ((unsigned char *)arg0)[0x220];
+/* Return this object's active-flag byte at offset 0x220. */
+unsigned char fn_801ADA7C(void *object) {
+    return ((unsigned char *)object)[0x220];
 }
 
 short fn_801ADA84(void *arg0) {
