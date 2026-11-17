@@ -2600,12 +2600,16 @@ extern void fn_8003AC24(void *);
 extern void (*lbl_80558E08)(void *, void *);
 #pragma push
 #pragma use_lmw_stmw off
-void fn_80038368(void *arg0) {
- u8 *p = arg0;
+/* DVD low-level command completion handler: reads the command code from a DVD
+ * command block, logs selected commands to the debug error-info ring buffer,
+ * then dispatches each command to its DVDLow* routine (read, seek, inquiry,
+ * open partition, ...). Long reads are split into 0x80000-byte chunks. */
+void fn_80038368(void *block) {
+ u8 *p = block;
  int offset;
  int length;
  int command;
- u32 n;
+ u32 chunkSize;
  lbl_8055D8CC = (int)fn_80038368;
  command = *(int *)(p+8);
  switch (command) {
@@ -2641,9 +2645,9 @@ void fn_80038368(void *arg0) {
    {
      u32 remaining = *(u32 *)(p+0x14) - *(u32 *)(p+0x20);
      u32 offset2; int cmd;
-     n = 0x80000;
-     if (remaining <= n) n = remaining;
-     *(u32 *)(p+0x1c) = n;
+     chunkSize = 0x80000;
+     if (remaining <= chunkSize) chunkSize = remaining;
+     *(u32 *)(p+0x1c) = chunkSize;
      cmd = *(int *)(p+8);
      offset2 = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
      {
@@ -2651,7 +2655,7 @@ void fn_80038368(void *arg0) {
  if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = cmd;
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset2;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = n;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = chunkSize;
  tick = OSGetTick();
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
  *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
@@ -2678,9 +2682,9 @@ void fn_80038368(void *arg0) {
    {
      u32 remaining = *(u32 *)(p+0x14) - *(u32 *)(p+0x20);
      int cmd; u32 offset3;
-     n = 0x80000;
-     if (remaining <= n) n = remaining;
-     *(u32 *)(p+0x1c) = n;
+     chunkSize = 0x80000;
+     if (remaining <= chunkSize) chunkSize = remaining;
+     *(u32 *)(p+0x1c) = chunkSize;
      cmd = *(int *)(p+8);
      offset3 = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
      {
@@ -2688,7 +2692,7 @@ void fn_80038368(void *arg0) {
  if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = cmd;
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset3;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = n;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = chunkSize;
  tick = OSGetTick();
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
  *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
@@ -2701,7 +2705,7 @@ void fn_80038368(void *arg0) {
  case 32: fn_8003BB58(fn_80038870); break;
  case 33: fn_8003BB58(fn_80038870); break;
  case 38: fn_8003BCDC(0); fn_8003B69C(0x20000,fn_80038870); break;
- default: lbl_80558E08(arg0,fn_80038870); break;
+ default: lbl_80558E08(block,fn_80038870); break;
  }
 }
 
