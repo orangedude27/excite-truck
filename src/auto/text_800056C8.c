@@ -1980,6 +1980,9 @@ s32 fn_80007D2C(void *ctx, void *value, s32 command, void *packedParam) {
 }
 
 void *fn_80007D48(void) {
-    return lbl_802FB5D8;
+    /* Return the "ArenaPostRaceOverlay" name string. */
+    #define s_arenaPostRaceOverlayName lbl_802FB5D8
+    return s_arenaPostRaceOverlayName;
+    #undef s_arenaPostRaceOverlayName
 }
 
