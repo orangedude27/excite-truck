@@ -9,7 +9,8 @@ void fn_802DB2A0(void) {
 void fn_802DB2A4(void) {
 }
 
-s32 fn_802DB2A8(void) {
+s32 fn_802DB2A8(s32 slotCount) {
+    // Reserve a starting cursor for a run of slotCount list slots; 0 tells the caller to skip the run.
     return 0;
 }
 
