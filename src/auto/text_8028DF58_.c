@@ -128,9 +128,14 @@ void fn_8028E024(void) {
 #undef hasPendingItem
 }
 
-void fn_8028E070(float farg0) {
-    lbl_8055F738 = farg0;
-    lbl_8055F73C = 1;
+/* Set the particle system's frame time to `time` and allow particle adds. */
+void fn_8028E070(float time) {
+    #define gParticleTime     lbl_8055F738
+    #define gAllowParticleAdd lbl_8055F73C
+    gParticleTime = time;
+    gAllowParticleAdd = 1;
+    #undef gParticleTime
+    #undef gAllowParticleAdd
 }
 
 #pragma push
