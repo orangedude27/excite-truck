@@ -611,8 +611,10 @@ extern "C" void fn_801902B4(void *arg0) {
     obj->f10();
 }
 #pragma cplusplus off
-void fn_80190360(int arg0) {
-    fn_80191084(arg0, 0);
+/* Deactivate the Hybrid's active driver: swaps it to null through
+ * fn_80191084, which calls the outgoing driver's onDeactivate hook. */
+void fn_80190360(int hybrid) {
+    fn_80191084(hybrid, 0);
 }
 
 /* Return 1 when value is 0 or 1 (a valid boolean-flag value), else 0. */
