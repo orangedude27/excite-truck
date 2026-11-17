@@ -449,7 +449,8 @@ int fn_8027D954(void *container, int index) {
     return ((int *)container)[2] + index * 0x1F4;
 }
 
-unsigned char fn_8027D964(void *arg0) { return ((unsigned char *)arg0)[0xBCC]; }
+/* Getter: return the byte flag at offset 0xBCC of the object. */
+unsigned char fn_8027D964(void *object) { return ((unsigned char *)object)[0xBCC]; }
 
 void fn_8027D96C(int event) {
     /* Career-result save-block callback: on events 0 or 2, clear the whole 4-player score block. */
