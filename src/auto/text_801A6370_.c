@@ -247,6 +247,7 @@ void *fn_801A669C(void *object, int shouldFree) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 int fn_801A6724(void *arg0) {
     int ret;
     if (*(int *)((char *)arg0 + 0x2704) > 0) {
@@ -260,9 +261,6 @@ int fn_801A6724(void *arg0) {
     }
     return ret;
 }
-#pragma scheduling on
-#pragma dont_inline reset
-
 extern float lbl_80562438;
 void fn_801A67B0(void *camera) {
     /* When a move starts attached, mark the followed move as running (0x2704 = 1)
@@ -369,6 +367,8 @@ extern "C" void fn_801A67C4(void *self) {
 #pragma cplusplus reset
 extern int lbl_8055E3C4;
 extern double lbl_80562440;
+#pragma push
+#pragma processor 750
 #pragma ppc_psq_save off
 #pragma cplusplus on
 extern "C" void fn_8017A580(void *);
@@ -674,10 +674,7 @@ extern "C" void fn_801A6C14(void *arg0) {
 #pragma scheduling invalid_target
 float fn_801A70EC(int arg0, void *arg1, void *arg2, int arg3) {
     float ratio;
-    float denominator;
-    denominator = fn_801A63C4(((int *)arg2)[1], ((int *)arg1)[1]);
-    ratio = fn_801A63C4(arg3, ((int *)arg1)[1]);
-    ratio /= denominator;
+    ratio = fn_801A63C4(arg3, ((int *)arg1)[1]) / fn_801A63C4(((int *)arg2)[1], ((int *)arg1)[1]);
     fn_8012F57C(arg0, (char *)arg1 + 0x2A, (char *)arg2 + 0x2A, ratio);
     return ratio;
 }
@@ -698,17 +695,18 @@ void fn_801A7178(void *arg0, float *arg1) {
     float (*m)[3];
     char *p = arg0;
     char *data;
-    int time = lbl_8055E3C4;
+    struct { int v; } w_time;
     float trace, t, scale, blend, tick, step, thr;
     float m00, m11, m22, tmp;
     int k,j,i;
     float *mk,*mj,*mi;
     float x,y,z,w,xy,wz,xz,wy,yz,wx,zz,yy,xx,one,x2,y2,z2;
     float d0,d1,d2, a0,a1,a2,a3,a4,a5;
+    w_time.v = lbl_8055E3C4;
     data = *(char **)(p + 0x2700);
-    fn_801A70EC((int)a, data+0x4d, data, time);
+    fn_801A70EC((int)a, data+0x4d, data, w_time.v);
     data = *(char **)(p + 0x2700);
-    fn_801A70EC((int)b, data+0x9a, data+0x4d, time);
+    fn_801A70EC((int)b, data+0x9a, data+0x4d, w_time.v);
     fn_8012F57C((int)q,b,a,*(float *)(p+0x2738));
     m = (float (*)[3])(p+0x3c);
     thr = lbl_80562430;
