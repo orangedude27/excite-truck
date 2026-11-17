@@ -2296,6 +2296,7 @@ void fn_802B8C88(void) {
 }
 
 #pragma small_data on
+/* Disable this menu renderer by clearing its active flag (counterpart of fn_802B8C88). */
 void fn_802B8C98(void) {
     lbl_8055FA31 = 0;
 }
