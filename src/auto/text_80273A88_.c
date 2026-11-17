@@ -411,13 +411,14 @@ void fn_80274460(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_80274660(void *arg0, void *arg1) {
+/* Reset this object's 3x4 transform at +0x58 to identity, compose a +90-degree X rotation, set its translation from the position at +0xE4/E8/EC, add a mode-dependent height offset (10.1 for mode 10, else 50) to Y, and clear +0x124. */
+void fn_80274660(void *unused, void *object) {
     extern void fn_80015A20(void *, float *, float, float);
     extern float lbl_80563FF4, lbl_80563FF8;
     float matrix[9];
     float vec[3];
     float offset;
-    char *p = (char *)arg1;
+    char *p = (char *)object;
     *(float *)(p + 0x5C) = 0.0f;
     *(float *)(p + 0x58) = 1.0f;
     *(float *)(p + 0x60) = 0.0f;
