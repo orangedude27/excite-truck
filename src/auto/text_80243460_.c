@@ -211,8 +211,8 @@ void fn_80243938(char *arg0, char *arg1) {
 
     if (len != 0) {
         if (arg0[len - 1] == '_') goto done;
-        if (len + 1 >= (s32)arg1) goto done;
     }
+    if (len + 1 >= (s32)arg1) goto done;
 
     src = lbl_8055BE14;
     goto scan_test;
