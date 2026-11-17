@@ -737,9 +737,19 @@ void fn_802C942C(int color) {
 }
 #pragma dont_inline reset
 void fn_802C9474(void) {
-    if ((unsigned char)lbl_8055FC94 != 0) return;
-    lbl_8055FC94 = 1;
-    fn_802E30C8((const char *)lbl_8055D030, lbl_8034B4E0);
+#define sFullscreenWarned lbl_8055FC94
+#define sFormatString lbl_8055D030
+#define sUnsupportedMessage lbl_8034B4E0
+#define ReportOnce fn_802E30C8
+    /* Report once that mrFullscreenAdd is unavailable; the one-shot flag keeps
+       the message from being printed on every call. */
+    if ((unsigned char)sFullscreenWarned != 0) return;
+    sFullscreenWarned = 1;
+    ReportOnce((const char *)sFormatString, sUnsupportedMessage);
+#undef sFullscreenWarned
+#undef sFormatString
+#undef sUnsupportedMessage
+#undef ReportOnce
 }
 
 extern float PSVECDotProduct(const Vec *, const Vec *);
