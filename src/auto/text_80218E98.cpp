@@ -28,7 +28,7 @@ enum {
 };
 
 extern "C" f64 lbl_805634B8;
-#define CVT_I2F_80219FE0(i) (cvtI2F_80219FE0(i))
+#define CVT_I2F_80219FE0(i) ((f32)(*(f64 *)((u32[2]){0x43300000u, (u32)(i) ^ 0x80000000u}) - lbl_805634B8))
 extern "C" char lbl_8033DAD8[];
 extern "C" s32 fn_80129D90(s32, s32, s32);
 extern "C" s32 fn_80131234(void *);
