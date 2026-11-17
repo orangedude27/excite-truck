@@ -1759,6 +1759,8 @@ void fn_802CC73C(char arg0) {
     lbl_8055D07D = arg0;
 }
 
+/* Returns lbl_8055D07D, the texture-system flag set through fn_802CC73C.
+ * Zero disables per-entry texture processing/updates; shown on the debug overlay. */
 char fn_802CC744(void) {
     return lbl_8055D07D;
 }
