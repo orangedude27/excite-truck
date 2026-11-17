@@ -162,6 +162,31 @@ extern f32 lbl_80558DC4[];
 extern double fn_8002F234(float);
 extern void fn_8012F57C(float *, float *, float *, float);
 extern f32 lbl_8056296C, lbl_80562974;
+static inline void mtx_to_quat(float m[3][3], float *q) {
+    float sum = m[0][0] + m[1][1] + m[2][2];
+    float sn, inv;
+    int i, j, k;
+    if (sum > lbl_80562970) {
+        sn = (float)fn_8002F234(lbl_8056296C + sum);
+        inv = lbl_80562974 / sn;
+        q[3] = lbl_80562974 * sn;
+        q[0] = inv * (m[1][2] - m[2][1]);
+        q[1] = inv * (m[2][0] - m[0][2]);
+        q[2] = inv * (m[0][1] - m[1][0]);
+    } else {
+        i = 0;
+        if (m[1][1] > m[0][0]) i = 1;
+        if (m[2][2] > m[0][i]) i = 2;
+        j = (i + 1) % 3;
+        k = (j + 1) % 3;
+        sn = (float)fn_8002F234(lbl_8056296C + (m[i][i] - (m[j][j] + m[k][k])));
+        inv = lbl_80562974 / sn;
+        q[i] = lbl_80562974 * sn;
+        q[3] = inv * (m[j][k] - m[k][j]);
+        q[j] = inv * (m[i][j] + m[j][i]);
+        q[k] = inv * (m[i][k] + m[k][i]);
+    }
+}
 #pragma scheduling invalid_target
 f32 fn_801C2F58(s32 count, f32 factor) {
     // Return factor^count for non-negative count (accumulates from 1.0f).
@@ -1553,10 +1578,11 @@ s32 fn_801C6C28(Vec *arg0) {
     float threshold = lbl_805629CC;
     s32 result = -1;
     s32 i = 0;
+    Vec *target = arg0;
 
     goto check;
 body:
-    if (PSVECSquareDistance((Vec *)(fn_8017960C(i) + 0x60), arg0) < threshold) {
+    if (PSVECSquareDistance((Vec *)(fn_8017960C(i) + 0x60), target) < threshold) {
         result = i;
         goto done;
     }
@@ -1943,15 +1969,16 @@ void fn_801C7964(void) {
     dst->z = src->z;
 }
 void (*fn_801C7990(void))(void) {
-    register Unk_80437D88 *s = &lbl_80437D88;
-    register Vec *src = (Vec *)((char *)s + 0x4E0);
-    register Vec *dst1 = (Vec *)((char *)s + 0x6F8);
-    register Vec *dst2 = (Vec *)((char *)s + 0x4D4);
-    dst1->x = src->x;
+#pragma scheduling invalid_target
+    Unk_80437D88 *s = &lbl_80437D88;
+    Vec *src = &s->f_4E0;
+    Vec *dst1 = &s->f_6F8;
+    Vec *dst2 = &s->f_4D4;
+    dst1->x = s->f_4E0.x;
     dst1->y = src->y;
     dst1->z = src->z;
     lbl_8055E83B = 1;
-    dst2->x = src->x;
+    dst2->x = s->f_4E0.x;
     dst2->y = src->y;
     dst2->z = src->z;
     lbl_8055E868 = fn_801C7964;
@@ -3718,8 +3745,11 @@ extern double fabs(double);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_801C6E40(void) {
+#pragma opt_common_subs off
+#pragma scheduling invalid_target
     register char *base = (char *)&lbl_80437D88;
     register void *obj;
+    register f32 *mat;
     f32 quat[4];
     s32 swz[9];
     f32 rot[9];
@@ -3731,28 +3761,27 @@ void fn_801C6E40(void) {
     s32 k;
     f32 angle;
     f32 sv;
-    f32 scale;
     f32 inv;
     lbl_8055E830 = (f32) atof(base + 0x368);
     obj = fn_801C3C80();
+    mat = (f32 *)(base + 0x468);
     ((s32 *)obj)[2] = 1;
     ((f32 *)obj)[21] = lbl_8055E834;
-    ((f32 *)obj)[3] = *(f32 *)(base + 0x468 + 0x24);
-    ((f32 *)obj)[4] = *(f32 *)(base + 0x468 + 0x28);
-    ((f32 *)obj)[5] = *(f32 *)(base + 0x468 + 0x2c);
-    ((s32 *)obj)[6] = *(s32 *)(base + 0x468 + 0x0);
-    ((s32 *)obj)[7] = *(s32 *)(base + 0x468 + 0x4);
-    ((s32 *)obj)[8] = *(s32 *)(base + 0x468 + 0x8);
-    ((s32 *)obj)[9] = *(s32 *)(base + 0x468 + 0xc);
-    ((s32 *)obj)[10] = *(s32 *)(base + 0x468 + 0x10);
-    ((s32 *)obj)[11] = *(s32 *)(base + 0x468 + 0x14);
-    ((s32 *)obj)[12] = *(s32 *)(base + 0x468 + 0x18);
-    ((s32 *)obj)[13] = *(s32 *)(base + 0x468 + 0x1c);
-    ((s32 *)obj)[14] = *(s32 *)(base + 0x468 + 0x20);
+    ((f32 *)obj)[3] = mat[9];
+    ((f32 *)obj)[4] = mat[10];
+    ((f32 *)obj)[5] = mat[11];
+    ((s32 *)obj)[6] = ((s32 *)mat)[0];
+    ((s32 *)obj)[7] = ((s32 *)mat)[1];
+    ((s32 *)obj)[8] = ((s32 *)mat)[2];
+    ((s32 *)obj)[9] = ((s32 *)mat)[3];
+    ((s32 *)obj)[10] = ((s32 *)mat)[4];
+    ((s32 *)obj)[11] = ((s32 *)mat)[5];
+    ((s32 *)obj)[12] = ((s32 *)mat)[6];
+    ((s32 *)obj)[13] = ((s32 *)mat)[7];
+    ((s32 *)obj)[14] = ((s32 *)mat)[8];
     ((f32 *)obj)[22] = ((f32 *)obj)[0] + lbl_8055E830;
     ((u8 *)obj)[0x5C] = 1;
     if (lbl_8055E830 > lbl_805629D0) {
-        f32 *mat = (f32 *)(base + 0x468);
         swz[0] = ((s32 *)mat)[0];
         swz[1] = ((s32 *)mat)[1];
         swz[2] = ((s32 *)mat)[2];
@@ -3789,10 +3818,10 @@ void fn_801C6E40(void) {
         angle = (f32) fn_8002EFA8(quat[3]);
         sv = sin(angle);
         if ((f32) fabs(sv) > lbl_80558DC4[0]) {
-            scale = (lbl_805629BC * angle) / sv;
-            ((f32 *)obj)[18] = quat[0] * scale;
-            ((f32 *)obj)[19] = quat[1] * scale;
-            ((f32 *)obj)[20] = quat[2] * scale;
+            root = (lbl_805629BC * angle) / sv;
+            ((f32 *)obj)[18] = quat[0] * root;
+            ((f32 *)obj)[19] = quat[1] * root;
+            ((f32 *)obj)[20] = quat[2] * root;
         } else {
             ((f32 *)obj)[18] = lbl_80562970;
             ((f32 *)obj)[19] = lbl_80562970;
