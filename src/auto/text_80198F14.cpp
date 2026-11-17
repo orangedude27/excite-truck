@@ -2310,7 +2310,11 @@ extern "C" void fn_8019EECC(void* source, Vec* vec) {
     vec->z += *(f32*)((u8*)source + 0x38);
 }
 
-extern "C" void fn_8019EF00(void* arg0) {
+/* Transform the object's input Vec (+0x28) by its orientation matrix and translation
+ * (the float matrix at +0xC: m[0..8] are the 3x3 axes, m[9..11] the translation),
+ * writing the result to the output Vec (+0x34).  The two branches compute the same
+ * transform with different load/multiply scheduling for the in-place case. */
+extern "C" void fn_8019EF00(void* object) {
     struct Object {
         char pad0[0xC];
         f32* matrix;
@@ -2318,7 +2322,7 @@ extern "C" void fn_8019EF00(void* arg0) {
         Vec input;
         volatile Vec output;
     };
-    Object* self = (Object*)arg0;
+    Object* self = (Object*)object;
     f32* m = self->matrix;
     if (&self->output == (volatile Vec*)&self->input) {
         float x, y, z;
