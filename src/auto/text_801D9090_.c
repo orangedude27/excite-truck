@@ -143,7 +143,10 @@ void fn_801D9100(s32 arg0) {
  * one of the operations the game left empty (its body is a single blr). */
 void fn_801D9108(s32 userData) { fn_801D8938(userData - 4); }
 
-void fn_801D9110(int arg0) { fn_801D893C(arg0 - 4); }
+/* Callback wrapper of the action-group operations (like fn_801D90E8): back the
+ * handed +0x4 pointer up to the group's start before calling fn_801D893C,
+ * which removes the 12-byte entry with this id from the group's list. */
+void fn_801D9110(s32 userData) { fn_801D893C(userData - 4); }
 
 void fn_801D9118(int arg0) { fn_801D89C0(arg0 - 4); }
 
