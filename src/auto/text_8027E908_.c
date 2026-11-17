@@ -3437,8 +3437,9 @@ struct Fn87238B {
     virtual void v12(char *);
 };
 #pragma cplusplus on
-extern "C" void fn_8028679C(void *arg0) {
-    ((ebi::title::TPlaneObj*)arg0)->m_sub->v7();
+extern "C" void fn_8028679C(void *plane) {
+    /* Forward v7 (vtable slot 0x24) to the title plane's sub-object (m_sub at +0x1C). */
+    ((ebi::title::TPlaneObj*)plane)->m_sub->v7();
 }
 #pragma cplusplus off
 int fn_802867B0(void *arg0) {
