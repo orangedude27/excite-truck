@@ -6438,9 +6438,10 @@ s32 nw4hbm::snd::detail::StrmPlayer::Start() {
 }
 #pragma pop
 extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
-extern "C" void fn_800FB620(void *self) {
-    if (*(u8 *)((u8 *)self + 0x48) != 0) {
-        ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(self);
+// Force-stops the StrmPlayer when its active flag (+0x48) is still set.
+extern "C" void fn_800FB620(void *player) {
+    if (*(u8 *)((u8 *)player + 0x48) != 0) {
+        ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(player);
     }
 }
 
