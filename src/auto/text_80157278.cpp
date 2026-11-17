@@ -684,9 +684,10 @@ struct Rec157560 {
     s32 f;
     char name[32];
 };
-#pragma push
+#pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_common_subs off
 extern "C" void fn_80157560(VObj *arg0) {
     VObj *a = (VObj *)fn_80131810(lbl_8032EAD4);
     VObj *b0 = (VObj *)fn_80131808(lbl_8032EAE0);
@@ -734,8 +735,7 @@ extern "C" void fn_80157560(VObj *arg0) {
     }
     fn_80131818(b0);
 }
-#pragma pop
-
+#pragma opt_common_subs reset
 // Return the bonus-category name string for a tracker, indexed by its GetType() category.
 extern "C" s32 fn_801577F0(Unk801577F0* tracker) {
     return gBonusCategoryNames[tracker->GetType()];
@@ -1901,6 +1901,8 @@ extern "C" void fn_80159E2C(Unk8015A368C* object) {
     fn_80131234(lbl_8032E668[object->GetType()]);
 }
 
+/* Bonus-tracker type getter: returns category index 4 ("close_call"), the
+ * value a tracker's GetType() uses to index the bonus-category name tables. */
 extern "C" s32 fn_80159E6C(void) {
     return 4;
 }
@@ -3581,13 +3583,15 @@ extern "C" s32 fn_8015D374(void* arg0) {
 extern "C" u32 fn_8015D37C(void) { return 1; }
 
 extern "C" void fn_8015D384(Unk801577F0* arg0) {
-    int count = *(int*)((char*)arg0 + 0x260);
-    *(int*)((char*)arg0 + 0x264) = 0;
+    s32 count = arg0->m260;
+    arg0->m264 = 0;
     if (count > 0) {
-        if (*(int*)((char*)arg0 + 0x258) != 0) fn_801CB6E4(*(void**)((char*)arg0 + 0x258), *(int*)((char*)arg0 + 4));
-        *(int*)((char*)arg0 + 0x260) = 0;
-        *(float*)((char*)arg0 + 0x254) = lbl_80561754;
-        *(float*)((char*)arg0 + 0x25c) = lbl_80561750;
+        if (arg0->m258 != 0) {
+            fn_801CB6E4((void*)arg0->m258, arg0->m4);
+        }
+        arg0->m260 = 0;
+        arg0->m254 = lbl_80561754;
+        arg0->m25c = lbl_80561750;
         arg0->v31();
     }
 }
