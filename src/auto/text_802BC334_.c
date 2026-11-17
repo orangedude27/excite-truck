@@ -1,3 +1,6 @@
+#define CAT2(a, b) a##b
+#define CAT(a, b) CAT2(a, b)
+#define REGV(t, n, r) register t n CAT(as, m)(#r)
 void fn_802BD814(void);
 #include "revolution/MTX/mtxtypes.h"
 extern int lbl_8034AC48, lbl_8055FAA8, lbl_8055FAAC;
@@ -1077,11 +1080,14 @@ void fn_802BDD8C(float arg0) {
                                     float d = PSVECSquareDistance(p + 0x30, cam);
                                     if (d <= sq) {
                                         float f = (sq - d) / den;
-                                        float s = *(float *)(p + 0x1c);
-                                        float m0, m1, m2, m3, m4, m5, m6, m7, m8;
+                                        float m1, m0, m2, m3, m4, m5, m6, m7, m8, s;
                                         if (one < f) f = one;
+                                        s = *(float *)(p + 0x1c);
+                                        out[9] = *(float *)(p + 0x30);
                                         m0 = mtx[0] * s;
+                                        out[10] = *(float *)(p + 0x34);
                                         m1 = mtx[1] * s;
+                                        out[11] = *(float *)(p + 0x38);
                                         m2 = mtx[2] * s;
                                         m3 = mtx[3] * s;
                                         m4 = mtx[4] * s;
@@ -1098,9 +1104,6 @@ void fn_802BDD8C(float arg0) {
                                         out[6] = m6;
                                         out[7] = m7;
                                         out[8] = m8;
-                                        out[9] = *(float *)(p + 0x30);
-                                        out[10] = *(float *)(p + 0x34);
-                                        out[11] = *(float *)(p + 0x38);
                                         fn_802DCAE4(h, out, f);
                                     }
                                 }
