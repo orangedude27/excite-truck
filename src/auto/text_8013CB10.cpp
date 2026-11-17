@@ -4399,6 +4399,8 @@ extern "C" s32 fn_801443F8(void) { return 0; }
 // Trivial stub in this vtable's callback group; always returns 0 (false).
 extern "C" s32 fn_80144400(void) { return 0; }
 
+/* Empty destructor of this vtable's class -- nothing to release, so it is a
+ * bare 'blr'.  Its deleting-destructor helper follows as fn_8014440C. */
 extern "C" void fn_80144408(void) {
 
 }
