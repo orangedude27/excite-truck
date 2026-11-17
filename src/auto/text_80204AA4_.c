@@ -131,8 +131,11 @@ done:
 #pragma cplusplus reset
 
 extern int *lbl_8055ED5C;
+/* Return the current scene type (field +0 of the published difficulty info block). */
 int fn_80204CF0(void) {
-    return *lbl_8055ED5C;
+#define DIFFICULTY_INFO lbl_8055ED5C
+    return *DIFFICULTY_INFO;
+#undef DIFFICULTY_INFO
 }
 
 extern double atof(const char *);
