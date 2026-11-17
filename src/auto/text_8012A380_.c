@@ -3,6 +3,7 @@
 
 extern char lbl_8055DFE8[4];
 extern void fn_8000D838(void *queue);
+/* Register this file-scope object's static destructor into the global chain. */
 void fn_8012A380(void) {
     fn_8000D838(lbl_8055DFE8);
 }
