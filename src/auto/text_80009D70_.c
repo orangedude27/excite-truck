@@ -274,6 +274,8 @@ void fn_8000AAE4(void* arg0) {
 }
 #pragma pop
 void fn_8000AB44(void) {
+    /* Tail-call thunk: run the track's weather consistency check (fn_8000A6D8),
+     * which warns when the active weather differs from the one in weather.val. */
     fn_8000A6D8();
 }
 
