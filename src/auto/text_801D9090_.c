@@ -474,21 +474,21 @@ int fn_801D985C(int *arg0) {
     register s32 zero = 0;
     register void *node = *(void **)arg0;
     register void *next;
-    goto check;
-loop:
-    next = *(void **)((char *)node + 0x54);
-    fn_801D98F0((void **)((char *)node + 0x24));
-    if ((char *)node + 0x28 != 0) {
-        if ((char *)node + 0x28 != 0) {
-            ((s32 *)node)[10] = zero;
-            ((s32 *)node)[11] = zero;
-            ((s32 *)node)[12] = zero;
+    while (node != 0) {
+        next = *(void **)((char *)node + 0x54);
+        if (node != 0) {
+            fn_801D98F0((void **)((char *)node + 0x24));
+            if ((char *)node + 0x28 != 0) {
+                if ((char *)node + 0x28 != 0) {
+                    ((s32 *)node)[10] = zero;
+                    ((s32 *)node)[11] = zero;
+                    ((s32 *)node)[12] = zero;
+                }
+            }
+            fn_80128668(node);
         }
+        node = next;
     }
-    fn_80128668(node);
-    node = next;
-check:
-    if (node != 0) goto loop;
     *arg0 = 0;
 }
 
