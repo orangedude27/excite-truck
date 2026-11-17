@@ -1212,8 +1212,9 @@ extern "C" void fn_801584A8(void *object) {
 }
 
 extern void lbl_8032F350(void);
-extern "C" void fn_801584C4(void **arg0) {
-    *arg0 = (void *)&lbl_8032F350;
+/* Store a pointer to the default function-pointer table lbl_8032F350 through outTable. */
+extern "C" void fn_801584C4(void **outTable) {
+    *outTable = (void *)&lbl_8032F350;
 }
 
 #pragma use_lmw_stmw off
