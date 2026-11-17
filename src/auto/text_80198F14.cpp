@@ -4384,7 +4384,7 @@ extern "C" void* fn_801A2CC0(void* object, s32 arg1, s32 swapBytes) {
     u8 byte25;
     u8 byte29;
 
-    fn_8019ECC4();
+    ((void(*)(void*,s32,s32))fn_8019ECC4)(object, arg1, swapBytes);
     *(void**)object = &lbl_803337C8;
     if (swapBytes != 0) {
         byte24 = *(u8*)((u8*)object + 0x24);
