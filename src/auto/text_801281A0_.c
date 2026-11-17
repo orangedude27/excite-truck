@@ -207,8 +207,9 @@ void fn_801284F8(void *size, void *label) {
     fn_8012834C(label, size, 3);
 }
 
-void fn_8012850C(void *arg0, void *arg1) {
-    fn_8012834C(arg1, arg0, 0);
+/* Debug allocator wrapper: allocate a size-byte heap block through the "new[]" source (id 0), tagged with name. */
+void fn_8012850C(void *size, void *name) {
+    fn_8012834C(name, size, 0);
 }
 
 #pragma push
