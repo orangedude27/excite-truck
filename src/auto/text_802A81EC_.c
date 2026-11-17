@@ -2,7 +2,7 @@
 void fn_802A8A4C(s32, s32);
 static inline void transform_802A8A4C(f32 *m, f32 *src, f32 *dst) {
     if (src == dst) {
-        f32 y=dst[1], x=dst[0], z=dst[2];
+        f32 x=dst[0], y=dst[1], z=dst[2];
         dst[0]=z*m[6]+(x*m[0]+y*m[3]);
         dst[1]=z*m[7]+(x*m[1]+y*m[4]);
         dst[2]=z*m[8]+(x*m[2]+y*m[5]);
