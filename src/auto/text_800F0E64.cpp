@@ -7786,8 +7786,9 @@ extern "C" void fn_800FD888(void *player, f32 value) {
     *(f32 *)((u8 *)player + 0x44C) = value;
 }
 
-extern "C" void fn_800FD890(void *arg0, f32 arg1) {
-    *(f32 *)((u8 *)arg0 + 0x448) = arg1;
+/* Set this sound player's float field at +0x448 (paired with getter fn_800FD858). */
+extern "C" void fn_800FD890(void *player, f32 value) {
+    *(f32 *)((u8 *)player + 0x448) = value;
 }
 
 extern "C" void fn_800FD898(void *arg0, f32 arg1) {
