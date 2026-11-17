@@ -13,23 +13,24 @@ extern int lbl_8055B840, lbl_8055B848, lbl_8055B850, lbl_8055B858, lbl_8055EEF8;
 extern int lbl_8055EF00, lbl_8055EF04;
 DECL_SECTION(".sdata") extern char lbl_8055EF50[];
 extern float lbl_80563434, lbl_80563450, lbl_80563454;
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma cplusplus on
 extern "C" void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
 extern "C" void fn_80215CF4(void) {
-    register char *base asm("r30");
-    register unsigned int zero asm("r31");
-    char *p;
+    char *base;
+    unsigned int zero;
+    unsigned int *hp;
 
     base = lbl_80490510;
     fn_8000D838(&lbl_8055EEF8);
     zero = 0;
     lbl_8055EF00 = 0xFFFF0000;
-    *(int *)(base + 0) = zero;
-    *(int *)(base + 4) = 0x7B;
-    *(int *)(base + 8) = zero;
-    *(int *)(base + 0xC) = zero;
-    *(int *)(base + 0x10) = zero;
+    ((volatile unsigned int *)base)[0] = zero;
+    hp = (unsigned int *)base;
+    hp[1] = 0x7B;
+    hp[2] = zero;
+    hp[3] = zero;
+    hp[4] = zero;
     lbl_8055EF04 = 0x7F000000;
     fn_801312EC(base + 0x108, &lbl_8055B840);
     fn_801312EC(base + 0x114, lbl_8033D678);
@@ -39,21 +40,28 @@ extern "C" void fn_80215CF4(void) {
     fn_801312EC(base + 0x144, lbl_8033D684);
     fn_8022D98C(base + 0x160, lbl_8055EF50, lbl_80563434, lbl_80563454, lbl_80563450, lbl_80563434, lbl_80563450);
     __register_global_object(base + 0x160, &fn_80215F5C, base + 0x150);
-    p = base + 0x18C;
-    *p = zero;
-    p[8] = zero;
-    *(int *)(p + 0xC) = (int)lbl_8033D6F0;
-    *(int *)(p + 4) = -1;
-    *(int *)(p + 0x10) = zero;
-    __register_global_object(p, &fn_80215F1C, base + 0x180);
-    p = base + 0x1E0;
-    *(int *)(p + 4) = zero;
-    p[0xC] = zero;
+    base[0x18C] = (char)zero;
+    {
+        char *p = base + 0x18C;
+        p[8] = (char)zero;
+        *(int *)(p + 0xC) = (int)lbl_8033D6F0;
+        *(int *)(p + 4) = -1;
+        *(int *)(p + 0x10) = zero;
+        __register_global_object(p, &fn_80215F1C, base + 0x180);
+    }
+    {
+        char *p = base + 0x1E0;
+        *(int *)(p + 4) = zero;
+        p[0xC] = (char)zero;
+    }
     fn_8002F53C(base + 0x200, &fn_80215F04, &fn_80215EC4, 0x18, 0x10);
     __register_global_object(0, &fn_80215EA8, base + 0x1F0);
-    *(int *)(base + 0x380) = zero;
-    *(int *)(base + 0x384) = zero;
-    *(int *)(base + 0x388) = zero;
+    {
+        unsigned int *p = (unsigned int *)(base + 0x380);
+        ((unsigned int *)base)[0xE0] = zero;
+        p[1] = zero;
+        p[2] = zero;
+    }
 }
 #pragma cplusplus reset
 #pragma scheduling on
