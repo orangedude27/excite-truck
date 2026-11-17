@@ -905,6 +905,7 @@ u32 __OSGetDIConfig(void) {
 extern void OSReport(const char *, ...);
 extern const char lbl_80558F0C[];
 extern const char lbl_80558F0C[4];
+/* Log the registered version string with the shared "%s\n" format. */
 void OSRegisterVersion(const char *ver) {
     OSReport(lbl_80558F0C, ver);
 }
