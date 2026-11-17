@@ -42,19 +42,19 @@ void fn_801E4E44(void) {
             {
                 s32 lastIndex = count - 1;
                 s32 lastOffset = lastIndex * 0x18;
-                s32 last = base + lastOffset;
+                register s32 *last asm("r4") = (s32 *)(base + lastOffset);
                 s32 thirdWord = *(s32 *)(source + 8);
                 lbl_8055EAAC = 0;
                 *(s32 *)(base + 8) = thirdWord;
                 *(s32 *)(base + 0xC) = *(s32 *)(source + 0xC);
                 *(f32 *)(base + 0x10) = *(f32 *)(source + 0x10);
                 *(f32 *)(base + 0x14) = *(f32 *)(source + 0x14);
-                *(s32 *)(base + 0x18) = *(s32 *)last;
-                *(s32 *)(base + 0x1C) = *(s32 *)(last + 4);
-                *(s32 *)(base + 0x20) = *(s32 *)(last + 8);
-                *(s32 *)(base + 0x24) = *(s32 *)(last + 0xC);
-                *(f32 *)(base + 0x28) = *(f32 *)(last + 0x10);
-                *(f32 *)(base + 0x2C) = *(f32 *)(last + 0x14);
+                *(s32 *)(base + 0x18) = last[0];
+                *(s32 *)(base + 0x1C) = last[1];
+                *(s32 *)(base + 0x20) = last[2];
+                *(s32 *)(base + 0x24) = last[3];
+                *(f32 *)(base + 0x28) = *(f32 *)&last[4];
+                *(f32 *)(base + 0x2C) = *(f32 *)&last[5];
             }
         }
     }
@@ -68,14 +68,13 @@ s32 fn_801E4F20(void) {
     return 1;
 }
 
-#pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
 s32 fn_801E4F3C(s32 arg0, s32 arg1, f32 x, f32 y, f32 z, f32 u, f32 v) {
-    s32 baseIdx = lbl_8055EAA8;
-    Unk801E4E44Vertex *vertex = &lbl_80487578[baseIdx];
-    s32 count = baseIdx + 1;
-    vertex->x = x;
+    Unk801E4E44Vertex* vertex;
+    s32 count;
+    (vertex = &lbl_80487578[lbl_8055EAA8])->x = x;
+    count = lbl_8055EAA8 + 1;
     vertex->y = y;
     vertex->z = z;
     vertex->unk_0x10 = u;
@@ -83,19 +82,16 @@ s32 fn_801E4F3C(s32 arg0, s32 arg1, f32 x, f32 y, f32 z, f32 u, f32 v) {
     lbl_8055EAA8 = count;
     vertex->unk_0xC = arg0;
     if (arg1 && count > 2) {
-        s32 i = lbl_8055EAAC;
-        s32 j = i + 1;
-        s32 k = j + 1;
-        s32 t = k + 1;
-        lbl_80487B18[i] = count - 3;
-        lbl_80487B18[j] = count - 2;
-        lbl_8055EAAC = t;
-        lbl_80487B18[k] = count - 1;
+        s32 b = lbl_8055EAAC + 1;
+        s32 c = b + 1;
+        lbl_80487B18[lbl_8055EAAC] = count - 3;
+        lbl_8055EAAC = c + 1;
+        lbl_80487B18[b] = count - 2;
+        lbl_80487B18[c] = count - 1;
     }
     if (count == 60 || lbl_8055EAAC == 174) fn_801E4E44();
     return 0;
 }
-#pragma pop
 /* End the current mesh pass: flush/compact the vertex and index buffers
  * (fn_801E4E44) and reset the mesh mode (lbl_8055EAB0) to 0 (idle). */
 void fn_801E4FF4(void) {
@@ -105,11 +101,11 @@ void fn_801E4FF4(void) {
 
 extern f32 lbl_80562D40;
 extern f32 lbl_80487C78[];
-s32 fn_801E501C(s32 unused, f32 *xyz, u8 color, f32 scale) {
-    f32 x = xyz[0];
+s32 fn_801E501C(s32 unused, void *xyz, u8 color, f32 scale) {
+    f32 y = *(f32 *)((char *)xyz + 4);
+    f32 x = *(f32 *)((char *)xyz + 0);
+    f32 z = *(f32 *)((char *)xyz + 8);
     f32 w = lbl_80562D40 * scale;
-    f32 y = xyz[1];
-    f32 z = xyz[2];
     u32 packed = ((u32)color << 24) | 0x00FFFFFF;
     s32 i;
     for (i = 0; i < 60; i++) lbl_80487578[i].unk_0xC = packed;
@@ -126,6 +122,8 @@ s32 fn_801E501C(s32 unused, f32 *xyz, u8 color, f32 scale) {
 extern f32 lbl_80562D44, lbl_80562D48;
 #pragma push
 #pragma scheduling invalid_target
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801E5174(f32 arg0, f32 arg1, f32 arg2) {
     Unk801E4E44Vertex *vertices = lbl_80487578;
     f32 *center = (f32 *)((u8 *)lbl_80487578 + 0x700);
