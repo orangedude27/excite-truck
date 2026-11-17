@@ -261,6 +261,7 @@ extern void fn_80138434();
 #pragma push
 #pragma use_lmw_stmw off
 void fn_801381B4(void *arg0) {
+    #pragma opt_common_subs off
     volatile unsigned char *v = (volatile unsigned char *)arg0;
     unsigned char *base = (unsigned char *)arg0;
     unsigned char *p = base + 0x30;
@@ -480,8 +481,6 @@ float fn_801385F0(float arg0, float arg1, float arg2, float arg3) {
 extern float lbl_805613B0, lbl_805613B4;
 extern double fn_8002F234(double);
 #pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
 int fn_801386D0(void *arg0, float farg0, float farg1, float farg2) {
     char *ctx = (char *)arg0;
     char *a, *b, *n;
@@ -556,14 +555,18 @@ int fn_801388F4(void *arg0) {
     struct V { float x; float y; } v;
     void *p;
     float t;
+    float prod1, prod2, sum;
     int result;
     v = *(struct V *)((char *)arg0 + 8);
     p = *(void **)((char *)arg0 + 0x14);
     t = (float)(-(double)v.x);
     v.x = v.y;
     v.y = t;
+    prod2 = t * *(float *)((char *)p + 0xC);
+    prod1 = v.x * *(float *)((char *)p + 8);
+    sum = prod1 + prod2;
     result = 0;
-    if (v.x * *(float *)((char *)p + 8) + t * *(float *)((char *)p + 0xC) < lbl_805613A4) result = 1;
+    if (sum < lbl_805613A4) result = 1;
     return result;
 }
 
