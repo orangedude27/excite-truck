@@ -348,6 +348,8 @@ extern "C" void fn_801B84D8(void *obj) {
     ((Dummy_801B8318 *)lbl_8055E744)->f19(obj);
 }
 #pragma cplusplus off
+/* No-arg stub among the arena-event master wrappers: always reports 0 (false)
+ * when there is no master state to supply a value. */
 int fn_801B84F0(void) {
     return 0;
 }
