@@ -1131,12 +1131,21 @@ extern "C" void fn_801EECAC(long arg0, long arg1) {
     extern float lbl_80562ECC;
     extern float lbl_80562ED0;
     extern float lbl_80562ED4;
+    extern char lbl_8033A060[];
     struct Property {
         virtual int get(int);
     };
     int value;
     void *object;
     long next;
+    char *n1 = lbl_8033A060 + 0x1E4;
+    char *n2 = lbl_8033A060 + 0x1F0;
+    char *n3 = lbl_8033A060 + 0x1FC;
+    char *n4 = lbl_8033A060 + 0x20C;
+    char *n5 = lbl_8033A060 + 0x218;
+    char *n6 = lbl_8033A060 + 0x22C;
+    char *n7 = lbl_8033A060 + 0x23C;
+    char *n8 = lbl_8033A060 + 0x250;
 
     next = arg1 + *(long *)((char *)arg0 + 0x34);
     *(long *)((char *)arg0 + 0x3C) = next;
@@ -1146,29 +1155,29 @@ extern "C" void fn_801EECAC(long arg0, long arg1) {
     value = ((Property *)object)->get((int)&lbl_8055B090);
 
     fn_801EC214((void *)(arg0 + 0x384), (void *)value,
-                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x1E4,
+                *(int *)((char *)arg0 + 0x178), n1,
                 (int)&lbl_8055B088, lbl_80562E90, lbl_80562E88);
     fn_801EC214((void *)(arg0 + 0x18C), (void *)value,
-                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x1F0,
+                *(int *)((char *)arg0 + 0x178), n2,
                 *(int *)((char *)arg0 + 0x3C) + 0x4C, lbl_80562ECC, lbl_80562E88);
     fn_801EC59C((void *)(arg0 + 0x3D8), (void *)value,
-                (int)(lbl_8033A060 + 0x1FC),
+                (int)n3,
                 *(int *)((char *)arg0 + 0x3C) + 0x4C,
                 lbl_80562ECC, lbl_80562E88);
     fn_801EC214((void *)(arg0 + 0x1E0), (void *)value,
-                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x20C,
+                *(int *)((char *)arg0 + 0x178), n4,
                 *(int *)((char *)arg0 + 0x3C) + 0x34, lbl_80562E90, lbl_80562E88);
     fn_801EC214((void *)(arg0 + 0x234), (void *)value,
-                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x218,
+                *(int *)((char *)arg0 + 0x178), n5,
                 *(int *)((char *)arg0 + 0x3C) + 0x2B0, lbl_80562E90, lbl_80562E88);
     fn_801EC214((void *)(arg0 + 0x288), (void *)value,
-                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x22C,
+                *(int *)((char *)arg0 + 0x178), n6,
                 *(int *)((char *)arg0 + 0x3C) + 0x2AC, lbl_80562ED0, lbl_80562ED4);
     fn_801EC214((void *)(arg0 + 0x2DC), (void *)value,
-                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x23C,
+                *(int *)((char *)arg0 + 0x178), n7,
                 *(int *)((char *)arg0 + 0x3C) + 0x2A0, lbl_80562ED0, lbl_80562ED4);
     fn_801EC214((void *)(arg0 + 0x330), (void *)value,
-                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x250,
+                *(int *)((char *)arg0 + 0x178), n8,
                 *(int *)((char *)arg0 + 0x3C) + 0x2B8, lbl_80562E90, lbl_80562E88);
 }
 #pragma cplusplus reset
@@ -1180,7 +1189,7 @@ extern "C" void fn_801EECAC(long arg0, long arg1) {
 long fn_801EEE38(void) {
     long *entries;
     long context;
-    unsigned int i;
+    unsigned long i;
     long value;
 
     context = fn_80179CB0();
@@ -1192,7 +1201,7 @@ loop:
     fn_801EECAC(value, context);
     entries++;
     i++;
-    if (i < 8u) {
+    if (i < 8) {
         goto check;
     }
     return 0;
@@ -1204,7 +1213,6 @@ check:
     }
     return value;
 }
-#pragma scheduling on
 #pragma pop
 extern void *fn_801EC750();
 extern int lbl_8033A2D4[64];
@@ -1246,5 +1254,5 @@ void fn_801EEF44(void *renderState, void *vehicle) {
     fn_801EDD7C(renderState, (long)vehicle);
 }
 
-unsigned int fn_801EEF74(void) { return 1; }
+unsigned int fn_801EEF74(void) { /* Constant predicate: always reports true (1) to callers. */ unsigned int result = 1; return result; }
 
