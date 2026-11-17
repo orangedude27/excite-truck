@@ -2413,6 +2413,7 @@ extern "C" s32 fn_80215490(void) {
 }
 
 extern "C" s32 fn_80215498(void) {
+    // Default VfWidget hook reporting a zero result (subclasses may override it).
     return 0;
 }
 
