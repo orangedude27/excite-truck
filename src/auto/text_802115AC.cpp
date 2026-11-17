@@ -719,7 +719,7 @@ extern "C" s32 fn_8021995C(void *, s32, s32, s32, s32, s32);
 extern "C" s32 fn_80219A28(void *, void *, s32, s32);
 extern "C" s32 fn_80219870(void *, s32, s32, s32, s32, s32);
 extern "C" s32 fn_8021A77C(void *, s32, s32, s32, s32, s32);
-extern "C" char lbl_8055B788[];
+extern "C" char lbl_8055B788[8];
 extern "C" char lbl_8055B790[];
 extern "C" char lbl_8055B798[];
 extern "C" s32 lbl_8055EF48;
@@ -1467,6 +1467,7 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
 #pragma dont_inline on
 #pragma small_data on
 void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+#pragma small_data on
     void *head = *(void **)((u8 *)arg1 + 4);
     register u8 *base = lbl_8033CAE8;
     void *node;
