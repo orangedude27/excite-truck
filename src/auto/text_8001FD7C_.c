@@ -243,8 +243,9 @@ void fn_8001FEE8(void) {
 
 #pragma dont_inline on
 void fn_8001FF24(void) {
-    lbl_8055D644 = 0;
-    lbl_8055D645 = 0;
+    /* Reset the tips/results overlay: turn it off and clear any pending pause. */
+    OVERLAY_ON = 0;
+    OVERLAY_PAUSED = 0;
 }
 #pragma dont_inline off
 
