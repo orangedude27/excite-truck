@@ -142,6 +142,8 @@ s32 fn_802E774C(void) {
     return 0;
 }
 
+/* Vtable method (slot +0x28) of the "null" stream-bank manager. The do-nothing
+ * fallback has no value to report, so this query answers 0 (none/failure). */
 s32 fn_802E7754(void) {
     return 0;
 }
