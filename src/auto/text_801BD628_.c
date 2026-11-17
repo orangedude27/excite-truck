@@ -405,6 +405,7 @@ void fn_801BE400(int index, float *m, float scale) {
     fn_801E9DC4(p4);
     lbl_8055E7A8 = 1;
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
