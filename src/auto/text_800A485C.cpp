@@ -9103,6 +9103,7 @@ extern "C" s32 VFiPFPATH_cmpName(void *name, s32 pathEntry, s32 exactMatch) {
     pattern = (u8 *)(u32)fn_800A4D74((void *)(u32)pathEntry, 3);
     fn_800A4AAC((char *)scan, (char *)name);
     if ((((u32)lbl_803D2140[0x60 / 4] & 2U) == 2U) &&
+        /* Unicode path contexts (fn_800A4D44 == 2) take the case-insensitive token comparison below. */
         ((u32)fn_800A4D44((void *)(u32)pathEntry) == 2U) &&
         fn_800A4AD0(scan, &lbl_80559210) != 0 &&
         fn_800A4AD0(scan, &lbl_80559214) != 0 &&
@@ -10732,13 +10733,7 @@ block_25:
     }
     {
         u16 flags = *(u16 *)((u8 *)arg0 + 0x1F8C);
-        if (flags & 8) goto compute_tail;
-        result = 9;
-        goto done_tail;
-compute_tail:
-        result = -((flags >> 1) & 1) & 0xB;
-done_tail:
-        return result;
+        return (!(flags & 8)) ? 9 : -((flags >> 1) & 1) & 0xB;
     }
 }
 
