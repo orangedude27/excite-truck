@@ -699,45 +699,57 @@ extern void fn_801EDD68(void *);
 extern unsigned char lbl_8055EBC4;
 #pragma push
 #pragma dont_inline on
-void fn_801ED354(void *arg0) {
+/* Draw pass of the vehicle this object renders, for the player that was picked
+ * out of the four: the two player mode flags (fn_801E8954 / fn_801E897C, bits 0
+ * and 1 of the player entry's flag word) decide between submitting the
+ * vehicle's parts, or dropping them and rebuilding the four wheel instances.
+ * In both cases the wheels are pinned to a fixed level of detail here rather
+ * than having theirs chosen by distance. */
+void fn_801ED354(void *vehicleRender) {
     if (fn_801E8954(-1) != 0) {
-        fn_801ECF58(arg0);
-        fn_801ECFE0(arg0);
-        if (*(unsigned char *)((char *)*(void **)((char *)arg0 + 0x170) + *(int *)((char *)arg0 + 0x3F8) * 8 + 4) != 0) {
-            char *current;
-            long offset;
-            int i;
-            char *p;
-            current = (char *)arg0;
-            i = 0;
-            offset = 0;
+        /* The player's vehicle: hand its parts in, then submit them. */
+        fn_801ECF58(vehicleRender);
+        fn_801ECFE0(vehicleRender);
+        /* Byte 4 of the player's 8-byte entry (table +0x170, index +0x3F8): the
+         * wheels are to stay on the nearest level of detail. */
+        if (*(unsigned char *)((char *)*(void **)((char *)vehicleRender + 0x170) + *(int *)((char *)vehicleRender + 0x3F8) * 8 + 4) != 0) {
+            char *slotBase;
+            long recordOffset;
+            int wheel;
+            char *record;
+            slotBase = (char *)vehicleRender;
+            wheel = 0;
+            recordOffset = 0;
             do {
-                p = (char *)*(void **)((char *)arg0 + 0x3C) + offset;
-                fn_801F131C(*(void **)(current + 0x4D4), 1, p, *(float *)(p + 0xB0));
-                i++;
-                offset += 0x6C;
-                current += 4;
-            } while (i < 4);
+                record = (char *)*(void **)((char *)vehicleRender + 0x3C) + recordOffset;
+                fn_801F131C(*(void **)(slotBase + 0x4D4), 1, record, *(float *)(record + 0xB0));
+                wheel++;
+                recordOffset += 0x6C;
+                slotBase += 4;
+            } while (wheel < 4);
         }
     } else if (fn_801E897C(-1) != 0 || lbl_8055EBC4 != 0) {
-        fn_801ECC70(arg0);
+        /* The vehicle is only being shown, not driven: reset the level-of-detail
+         * scale, force every wheel to its first (nearest) model, and rebuild the
+         * wheel instances from the vehicle's own data. */
+        fn_801ECC70(vehicleRender);
         {
-            long i;
-            char *current;
-            long offset;
-            char *p;
-            current = (char *)arg0;
-            i = 0;
-            offset = 0;
+            long wheel;
+            char *slotBase;
+            long recordOffset;
+            char *record;
+            slotBase = (char *)vehicleRender;
+            wheel = 0;
+            recordOffset = 0;
             do {
-                p = (char *)*(void **)((char *)arg0 + 0x3C) + offset;
-                fn_801F1378(*(void **)(current + 0x4D4), p, *(float *)(p + 0xB0));
-                i++;
-                offset += 0x6C;
-                current += 4;
-            } while (i < 4);
+                record = (char *)*(void **)((char *)vehicleRender + 0x3C) + recordOffset;
+                fn_801F1378(*(void **)(slotBase + 0x4D4), record, *(float *)(record + 0xB0));
+                wheel++;
+                recordOffset += 0x6C;
+                slotBase += 4;
+            } while (wheel < 4);
         }
-        fn_801EDD68(arg0);
+        fn_801EDD68(vehicleRender);
     }
 }
 
