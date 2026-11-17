@@ -1979,6 +1979,16 @@ extern "C" s32 fn_8013FD20(void *arg0, s32 arg1) {
     return result;
 }
 
+extern "C" void fn_802C8BD0(s32);
+extern "C" s32 fn_802C8DBC(s32);
+extern "C" void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
+extern "C" void fn_802C8E48(void);
+extern "C" void fn_802C8D74(void);
+extern "C" f32 fn_8013EFB0(f32);
+extern "C" f32 fn_8013EFBC(f32);
+extern "C" u8 lbl_8055E1BC;
+extern "C" s32 lbl_8055E1C4;
+extern "C" f32 lbl_8056156C, lbl_80561570, lbl_80561574, lbl_80561578, lbl_8056157C, lbl_80561580;
 extern "C" void fn_8013FDB0(void *arg0, void *arg2) {
     u8 *a = (u8 *)arg0;
     u8 *b = (u8 *)arg2;
