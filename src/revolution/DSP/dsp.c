@@ -5,6 +5,7 @@ BOOL DSPCheckMailToDSP(void) {
     return (DSP_HW_REGS[DSP_DSPMBOX_H] & DSP_DSPMBOX_H_STATUS) != 0;
 }
 
+// Return non-zero when the DSP has placed mail in the CPU mail box (status flag set).
 BOOL DSPCheckMailFromDSP(void) {
     return (DSP_HW_REGS[DSP_CPUMBOX_H] & DSP_CPUMBOX_H_STATUS) != 0;
 }
