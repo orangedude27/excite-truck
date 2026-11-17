@@ -1310,8 +1310,9 @@ void fn_802D03F4(register float *arg0, float arg1) {
 extern void *lbl_8055FD54;
 extern void* fn_802D30F0(void);
 extern void fn_802D307C(void);
-void fn_802D050C(void* hi) {
-    lbl_8055FD54 = hi;
+/* Set the global GX state block pointer (holds a GXTexObj at +0x24, read by fn_802D30E4); 0 clears it. */
+void fn_802D050C(void* stateBlock) {
+    lbl_8055FD54 = stateBlock;
 }
 
 int fn_802D0514(void *source) {
