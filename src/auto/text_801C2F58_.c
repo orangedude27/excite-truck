@@ -1846,8 +1846,9 @@ void fn_801C7798(void) {
     *(s8*)&lbl_8055E840 = !lbl_8055E840;
 }
 
+/* Toggle sSampleRandom: append a random (-1) instead of a numbered sound sample. */
 void fn_801C77AC(void) {
-    *(s8*)&lbl_8055E841 = !lbl_8055E841;
+    *(s8*)&sSampleRandom = !sSampleRandom;
 }
 
 #pragma scheduling on
