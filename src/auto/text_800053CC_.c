@@ -41,7 +41,7 @@ void fn_800053CC(void) {
     }
 }
 #pragma pop
-/* Does nothing. */
+/* No-op placeholder. */
 void fn_8000545C(void) {
     return;
 }
