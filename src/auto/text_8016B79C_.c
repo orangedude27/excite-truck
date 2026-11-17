@@ -741,7 +741,6 @@ void fn_8016CD28(void *);
 #pragma cplusplus on
 extern "C" void fn_8016CD10(void *);
 extern "C" void fn_8016CD28(void *);
-#pragma cplusplus on
 extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
     struct Blk { s32 w[12]; };
     struct Item {
