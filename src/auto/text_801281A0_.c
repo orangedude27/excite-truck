@@ -341,6 +341,8 @@ s32 fn_801291A4(void *region) { return ((s32 *)region)[3] - ((s32 *)region)[2]; 
 /* Return this memory descriptor's word-3 count field (offset 0xC), the "capacity" side of the capacity/used pair in fn_801291A4. */
 s32 fn_801291B4(void *region) { return ((s32 *)region)[3]; }
 
+/* No-op placeholder hook; one of a run of adjacent empty stubs
+ * (fn_801291BC, fn_801291C0, fn_801291C4, ...) that intentionally do nothing. */
 void fn_801291BC(void) {
 
 }
