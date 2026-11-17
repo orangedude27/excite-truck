@@ -213,35 +213,38 @@ copied2:
     entry->item = item;
 }
 #pragma scheduling on
-void fn_8025861C(void *arg0, const char *arg1, void *arg2) {
-    char *base;
-    int n = 0x20;
+/* Append a named text entry to the UI object manager's text table: copy `name`
+ * into the next 0x24-byte slot, allocate and initialize a UITextObject (its
+ * font handle comes from fn_80232578(`fontName`)) and store it in that slot. */
+void fn_8025861C(void *mgr, const char *name, void *fontName) {
+    char *entry;
+    int count = 0x20;
     char *dst;
-    void *p;
-    base = *(char **)((char *)arg0 + 0x910) + (*(int *)((char *)arg0 + 0x914))++ * 0x24;
-    dst = base;
+    void *text;
+    entry = *(char **)((char *)mgr + 0x910) + (*(int *)((char *)mgr + 0x914))++ * 0x24;
+    dst = entry;
     goto copy;
 check:
-    if (--n > 0) {
+    if (--count > 0) {
         goto copy;
     }
     dst[-1] = 0;
     goto copied;
 copy:
-    if ((*dst++ = *arg1++) != 0) {
+    if ((*dst++ = *name++) != 0) {
         goto check;
     }
 copied:
-    p = fn_801284F8(0x14, lbl_8055C258);
-    if (p != 0) {
-        ((int *)p)[0] = 0;
-        ((int *)p)[1] = -1;
-        ((int *)p)[2] = 9;
-        ((float *)p)[3] = 1.0f;
-        ((float *)p)[4] = 1.0f;
-        ((int *)p)[0] = fn_80232578(arg2);
+    text = fn_801284F8(0x14, lbl_8055C258);
+    if (text != 0) {
+        ((int *)text)[0] = 0;
+        ((int *)text)[1] = -1;
+        ((int *)text)[2] = 9;
+        ((float *)text)[3] = 1.0f;
+        ((float *)text)[4] = 1.0f;
+        ((int *)text)[0] = fn_80232578(fontName);
     }
-    *(void **)(base + 0x20) = p;
+    *(void **)(entry + 0x20) = text;
 }
 #pragma scheduling on
 extern void *fn_80207848(int, int);
