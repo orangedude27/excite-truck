@@ -1021,6 +1021,7 @@ void fn_80182074(void *arg0, void *arg1) {
     }
     fn_801838C8(a);
 }
+#pragma pop
 
 extern void *fn_801284F8(int, const char *);
 extern void fn_802C7760(void *, float *, float *, float *, float *, float *, float *);
