@@ -1968,8 +1968,10 @@ int fn_801D6ED0(void) {
     return (int)lbl_80338878;
 }
 
-int fn_801D6EDC(int arg0) {
-    return ((int *)arg0)[1];
+/* Text_ASE_GetState: return the state word (+4) of a Text_ASE action-sequence
+ * element -- the value its trigger fn_801D6EE4 checks before showing the text. */
+int fn_801D6EDC(int textElem) {
+    return ((int *)textElem)[1];
 }
 
 #pragma scheduling invalid_target
