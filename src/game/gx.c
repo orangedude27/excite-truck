@@ -760,7 +760,7 @@ void fn_802CF850(void) {
     volatile signed char sp8;
     unsigned int clearWord;
     unsigned short width, height;
-    register float *m70, *m40, *mA0;
+    register volatile float *m70, *m40, *mA0;
 
     fn_802CF104();
     width = *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4);
