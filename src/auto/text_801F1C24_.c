@@ -1021,11 +1021,11 @@ void *fn_801F31A0(void *obj, int shouldFree) {
     return obj;
 }
 
-#pragma unroll off
+#pragma optimize_for_size on
 void fn_801F31E8(int arg0, unsigned char *arg1) {
     unsigned char *p = arg1 + 0x2C;
-    int count = 0x20;
-    do {
+    int i;
+    for (i = 0; i < 0x20; i++) {
         unsigned char t;
         t = p[0]; p[0] = p[3]; p[3] = t;
         t = p[1]; p[1] = p[2]; p[2] = t;
@@ -1036,9 +1036,9 @@ void fn_801F31E8(int arg0, unsigned char *arg1) {
         t = p[12]; p[12] = p[15]; p[15] = t;
         t = p[13]; p[13] = p[14]; p[14] = t;
         p += 0x10;
-    } while (--count != 0);
+    }
 }
-#pragma unroll reset
+#pragma optimize_for_size reset
 void fn_801F3280(void *obj, int value) {
     /* Set the object's field at +0x3C (the one fn_801F31A0 clears) to value. */
     *(int *)((char *)obj + 0x3C) = value;
