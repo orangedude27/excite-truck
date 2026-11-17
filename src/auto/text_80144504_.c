@@ -171,9 +171,10 @@ f32 fn_80144BD8(f32 x) {
 #undef SM_MINUS_TWO
 }
 
-void fn_80144C54(void *arg0) {
-    ((u8 *)arg0)[0x4A] = 1;
-    ((u8 *)arg0)[0x4C] = 0;
+void fn_80144C54(void *voice) {
+    // Set the sound voice's flag at +0x4A and clear the one at +0x4C.
+    ((u8 *)voice)[0x4A] = 1;
+    ((u8 *)voice)[0x4C] = 0;
 }
 
 unsigned int fn_80144C68(unsigned int red, unsigned int green, unsigned int blue, unsigned int alpha) {
