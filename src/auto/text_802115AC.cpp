@@ -2616,8 +2616,9 @@ extern "C" void fn_802159AC(void *arg0) {
     ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf13();
 }
 
-extern "C" void fn_802159C0(void *arg0) {
-    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf14();
+// Forward vf14() to the VfObj subobject stored at offset 0x244 of the given container.
+extern "C" void fn_802159C0(void *widget) {
+    ((VfObj *)*(void **)((char *)widget + 0x244))->vf14();
 }
 
 extern "C" void fn_802159D4(void *arg0) {
