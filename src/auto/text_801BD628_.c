@@ -418,8 +418,9 @@ void fn_801BEAEC(int slot, int entry, void *out) {
 #pragma opt_propagation on
 #pragma scheduling on
 #pragma pop
-void fn_801BEB1C(int arg0, int *arg1) {
-    *arg1 = lbl_8055E798 + arg0 * 0x1F0;
+void fn_801BEB1C(int slot, int *outRecord) {
+    /* Write the base address of the given slot's 0x1F0-byte orientation (cs) record. */
+    *outRecord = csList + slot * 0x1F0;
 }
 
 void fn_801BEB30(int arg0, int *arg1) {
