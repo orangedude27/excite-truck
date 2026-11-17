@@ -92,6 +92,7 @@ extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
 extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A7B34(void *, void *);
 extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
+ register u32 attr;
  register u8 *it=(u8 *)iterator;
  u8 flags=it[0x57];
  u8 name[16], buf[13];
@@ -99,7 +100,6 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  u16 i;
  u32 b,a;
  s32 len;
- u32 attr;
  u16 hiSwap, loSwap;
  if (((s32 (*)(u8 *,u8 *,s32,s32,u32,s32,s32 *))fn_800A9BB4)((u8 *)object,it+0x4c,arg2,flags,arg3,arg4,arg5)==1) {
   if ((flags&15)==15) {
@@ -119,6 +119,7 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  }
  attr=it[0x57];
  ((u8 *)object)[0x21c]=(u8)attr;
+ if (attr & 0x10) attr = 1; else attr = 0;
  ((u8 *)object)[0x21b]=it[0x58]; ((u8 *)object)[0x21d]=it[0x59];
  __sthbrx(*(u16 *)(it+0x5a),(u8 *)object+0x21e,0);
  __sthbrx(*(u16 *)(it+0x5c),(u8 *)object+0x220,0);
@@ -127,15 +128,13 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  __sthbrx(*(u16 *)(it+0x64),(u8 *)object+0x226,0);
  word=*(u32 *)(it+0x68);
  *(u32 *)((u8 *)object+0x228)=(word>>24)|((word>>8)&0xff00)|((word&0xff00)<<8)|(word<<24);
- a=*(u16 *)(it+0x60); b=*(u16 *)(it+0x66);
+ b=*(u16 *)(it+0x66); a=*(u16 *)(it+0x60);
  hiSwap = (u16)((a>>8)|((a&255)<<8));
  loSwap = (u16)((b>>8)|((b&255)<<8));
  *(u32 *)((u8 *)object+0x234)=((u32)hiSwap<<16)|loSwap;
  *(u32 *)((u8 *)object+0x238)=*(u32 *)(it+0x44);
  *(u16 *)((u8 *)object+0x23c)=*(u16 *)(it+0x48);
- if (attr & 0x10) {
-  if (!*(u32 *)((u8 *)object+0x234)) *(u32 *)((u8 *)object+0x234)=1;
- }
+ if (attr && !*(u32 *)((u8 *)object+0x234)) *(u32 *)((u8 *)object+0x234)=1;
  return 0;
 }
 #pragma pop
@@ -4864,7 +4863,7 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
     u8 *vol;
     u32 a, b, p44, c;
     u32 spC, sp8;
-    s32 cnt, r, rv;
+    s32 cnt, r, rv, sw;
     u32 prev, rem, clus, sec;
     cnt = *(s32 *)self;
     if (cnt == 0) return 0;
@@ -4876,7 +4875,7 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
         b = *(u8 *)(vol + 6);
         c = *(u32 *)(vol + 0x30);
         clus = ((p44 - c) >> *(u8 *)(vol + 0x21)) + 2;
-        rem = a - (a / b) * b;
+        rem = a % b;
         if (rem == 0 || b == 1) {
             if (*(s32 *)(vol + 0x1C) == 2 || (**(u32 **)(self + 0x10) > 1 && c <= p44)) {
                 r = ((s32 (*)(void *, u32, u32, u32 *))fn_800AEBA0)(vol, clus, clus, &spC);
@@ -4892,7 +4891,7 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
         *(s32 *)self = *(s32 *)self - 1;
         *(u32 *)(self + 0x40) = *(u32 *)(self + 0x40) - 1;
         if (*(s32 *)(vol + 0x1C) == 2 || (**(u32 **)(self + 0x10) > 1 && *(u32 *)(vol + 0x30) <= *(u32 *)(self + 0x44))) {
-            *(u32 *)(self + 0x44) = (*(u32 *)(self + 0x40) & (*(u8 *)(vol + 6) - 1)) + (*(u32 *)(vol + 0x30) + ((spC - 2) << *(u8 *)(vol + 0x21)));
+            *(u32 *)(self + 0x44) = (*(u32 *)(vol + 0x30) + ((spC - 2) << *(u8 *)(vol + 0x21))) + (*(u32 *)(self + 0x40) & (*(u8 *)(vol + 6) - 1));
         } else {
             *(u32 *)(self + 0x44) = *(u32 *)(self + 0x44) - 1;
         }
@@ -4916,6 +4915,11 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
                 if (sp8 == 0x20) r = rv;
             }
             rv = r & ((-r | r) >> 31);
+            sw = rv;
+            switch (sw) {
+            case 0: rv = 0; break;
+            default: break;
+            }
         }
     }
     return rv;
@@ -25212,8 +25216,9 @@ void homebutton::HomeButtonEventHandler::onEvent(unsigned long, unsigned long ev
     }
 }
 
-extern "C" s32 fn_800CEDE0(void *arg0) {
-    return *(s32 *)((u8 *)arg0 + 0x2C);
+// Return the 32-bit field stored at offset 0x2C of the given object.
+extern "C" s32 fn_800CEDE0(void *object) {
+    return *(s32 *)((u8 *)object + 0x2C);
 }
 
 extern "C" void PSMTXIdentity(f32 (*)[4]);
