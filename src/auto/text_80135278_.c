@@ -832,24 +832,15 @@ int fn_801363A0(void *arg0, void *arg1) {
 extern float lbl_80561358;
 extern double lbl_80561360;
 void fn_80136414(void *arg0, void *arg1, s32 arg2) {
-    unsigned long low;
-    unsigned long index;
-    union {
-        double value;
-        struct { unsigned long hi, lo; } words;
-    } converted;
-    float divisor;
-    float fraction;
+    float divisor = lbl_80561358;
     char *node;
+    float fraction;
     char *base;
+    unsigned long index;
 
-    low = (unsigned long)arg2 & 0xFFFF;
-    converted.words.hi = 0x43300000;
     node = *(char **)((char *)arg1 + 0x2C);
-    converted.words.lo = low;
+    fraction = (float)(unsigned short)arg2;
     index = ((unsigned long)arg2) >> 16;
-    fraction = converted.value - lbl_80561360;
-    divisor = lbl_80561358;
     base = *(char **)(node + 0x1C);
     *(char **)arg0 = base + index * 0x3C;
     *(s32 *)((char *)arg0 + 8) = 0;
@@ -1006,6 +997,8 @@ extern "C" float fn_8013672C(void) {
     return *(float *)((char *)entry + 8);
 }
 #pragma cplusplus reset
+/* Scene-init wrapper: forwards to fn_801564B0, which loads the PSSystem setup data and installs
+ * the global callback singleton (lbl_8055E27C). Called just before AI car setup (fn_8013477C). */
 void fn_80136764(void) {
     fn_801564B0();
 }
