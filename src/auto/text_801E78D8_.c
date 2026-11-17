@@ -340,8 +340,9 @@ void fn_801E7DEC(void *arg0) {
     fn_801E7C28(arg0);
 }
 
-long fn_801E7DF0(long arg0) {
-    return lbl_80487CF0[arg0];
+long fn_801E7DF0(long slot) {
+    /* Return the per-player-slot state stored at lbl_80487CF0[slot]. */
+    return lbl_80487CF0[slot];
 }
 
 /* Set the per-player-slot state at lbl_80487CF0[slot] (e.g. 0 or 3). */
