@@ -139,9 +139,11 @@ void *fn_8025D96C(void *self, int shouldDelete)
 }
 
 void *fn_8025D9D0(void *arg0) {
+#pragma scheduling invalid_target
     char *src;
     int count;
     char *dst;
+    char *endSrc;
     *(volatile int *)((char *)arg0 + 0x420) = 0;
     *(volatile void **)((char *)arg0 + 0x40C) = lbl_80345718;
     *(int *)((char *)arg0 + 0x424) = 0;
@@ -160,9 +162,10 @@ void *fn_8025D9D0(void *arg0) {
     copy:
         *dst++ = *src++;
     } while (dst[-1]);
+    endSrc = (char *)&lbl_8055C3E0;
     *(int *)((char *)arg0 + 0x408) = 0;
-    *(void **)((char *)arg0 + 0x1C) = (void *)&lbl_8055C3E0;
-    *(void **)((char *)arg0 + 0x18) = (void *)&lbl_8055C3E0;
+    *(void **)((char *)arg0 + 0x1C) = endSrc;
+    *(void **)((char *)arg0 + 0x18) = endSrc;
     *((char *)arg0 + 0x20) = 0;
     *((char *)arg0 + 0x42C) = 0;
     return arg0;
