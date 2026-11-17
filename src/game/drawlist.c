@@ -955,6 +955,7 @@ void fn_802C9900(float arg0) {
 #pragma dont_inline off
 extern float lbl_80564EF8;
 extern void fn_802D007C(float);
+/* Reset the TEV color to full strength: call fn_802D007C with lbl_80564EF8 (1.0f). */
 void fn_802C9904(void) {
     fn_802D007C(lbl_80564EF8);
 }
