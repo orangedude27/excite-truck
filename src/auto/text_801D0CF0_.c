@@ -60,7 +60,8 @@ void fn_801D0DDC(void *manager) {
 }
 
 void fn_801D0DFC(void) {
-    lbl_8055E8E8--;
+    /* Unregister one boot-time manager: decrement the global manager count. */
+    gManagerCount--;
 }
 
 #pragma cplusplus on
