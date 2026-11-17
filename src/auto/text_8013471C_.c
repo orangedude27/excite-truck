@@ -785,8 +785,9 @@ s32 fn_8013524C(void) {
     return 0;
 }
 
+/* Shared AIDriver virtual slot 9 (vtable offset 0x2C) default implementation: a no-op used by both
+ * NullDriver and ParkDriver. */
 void fn_80135254(void) {
-
 }
 
 void fn_80135258(void) {
