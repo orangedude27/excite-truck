@@ -743,55 +743,58 @@ void fn_801ED354(void *arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_801ED46C(void *arg0) {
-    float v[3];
-    float *m;
-    float *mat;
-    char *p;
-    if (*(int *)((char *)arg0 + 0x488) != -1 && *(int *)((char *)arg0 + 0x3F8) <= 2) {
-        mat = *(float **)((char *)arg0 + 0x3C);
-        m = fn_802C86DC();
-        if (v == m) {
+/* Rotate the source vector from the current draw matrix (fn_802C86DC) by this
+ * object's 3x3 matrix at +0x3C, write the result and its negation into two
+ * indexed vec3 slots, then dispatch a draw callback using fn_802C7A34's handle. */
+void fn_801ED46C(void *self) {
+    float outVec[3];
+    float *currentMatrix;
+    float *rot;
+    char *slot;
+    if (*(int *)((char *)self + 0x488) != -1 && *(int *)((char *)self + 0x3F8) <= 2) {
+        rot = *(float **)((char *)self + 0x3C);
+        currentMatrix = fn_802C86DC();
+        if (outVec == currentMatrix) {
             float x, y, z;
             float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-            m10 = mat[1];
-            y = m[1];
-            m11 = mat[4]; m12 = mat[7];
-            m00 = mat[0];
-            x = m[0];
-            m01 = mat[3]; m02 = mat[6];
-            m20 = mat[2];
-            z = m[2];
-            m21 = mat[5]; m22 = mat[8];
-            v[0] = z * m20 + (x * m00 + y * m10);
-            v[1] = z * m21 + (x * m01 + y * m11);
-            v[2] = z * m22 + (x * m02 + y * m12);
+            m10 = rot[1];
+            y = currentMatrix[1];
+            m11 = rot[4]; m12 = rot[7];
+            m00 = rot[0];
+            x = currentMatrix[0];
+            m01 = rot[3]; m02 = rot[6];
+            m20 = rot[2];
+            z = currentMatrix[2];
+            m21 = rot[5]; m22 = rot[8];
+            outVec[0] = z * m20 + (x * m00 + y * m10);
+            outVec[1] = z * m21 + (x * m01 + y * m11);
+            outVec[2] = z * m22 + (x * m02 + y * m12);
         } else {
             float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-            m10 = mat[1]; m00 = mat[0]; m20 = mat[2];
-            v[0] = m[2] * m20 + (m[0] * m00 + m[1] * m10);
-            m11 = mat[4]; m01 = mat[3]; m21 = mat[5];
-            v[1] = m[2] * m21 + (m[0] * m01 + m[1] * m11);
-            m12 = mat[7]; m02 = mat[6]; m22 = mat[8];
-            v[2] = m[2] * m22 + (m[0] * m02 + m[1] * m12);
+            m10 = rot[1]; m00 = rot[0]; m20 = rot[2];
+            outVec[0] = currentMatrix[2] * m20 + (currentMatrix[0] * m00 + currentMatrix[1] * m10);
+            m11 = rot[4]; m01 = rot[3]; m21 = rot[5];
+            outVec[1] = currentMatrix[2] * m21 + (currentMatrix[0] * m01 + currentMatrix[1] * m11);
+            m12 = rot[7]; m02 = rot[6]; m22 = rot[8];
+            outVec[2] = currentMatrix[2] * m22 + (currentMatrix[0] * m02 + currentMatrix[1] * m12);
         }
-        p = *(char **)((char *)arg0 + 0x3C) + *(int *)((char *)arg0 + 0x48C) * 0xC;
-        *(float *)(p + 0xE24) = v[0];
-        *(float *)(p + 0xE28) = v[1];
-        *(float *)(p + 0xE2C) = v[2];
-        p = *(char **)((char *)arg0 + 0x3C) + *(int *)((char *)arg0 + 0x490) * 0xC;
+        slot = *(char **)((char *)self + 0x3C) + *(int *)((char *)self + 0x48C) * 0xC;
+        *(float *)(slot + 0xE24) = outVec[0];
+        *(float *)(slot + 0xE28) = outVec[1];
+        *(float *)(slot + 0xE2C) = outVec[2];
+        slot = *(char **)((char *)self + 0x3C) + *(int *)((char *)self + 0x490) * 0xC;
         {
             float scale = -1.0f;
-            *(float *)(p + 0xE24) = v[0] * scale;
-            *(float *)(p + 0xE28) = v[1] * scale;
-            *(float *)(p + 0xE2C) = v[2] * scale;
+            *(float *)(slot + 0xE24) = outVec[0] * scale;
+            *(float *)(slot + 0xE28) = outVec[1] * scale;
+            *(float *)(slot + 0xE2C) = outVec[2] * scale;
             {
-                int r = fn_802C7A34(1, *(char **)((char *)arg0 + 0x3C) + 0xE30, *(int *)((char *)arg0 + 0x494), scale);
-                if (*(int *)((char *)arg0 + 0x3F8) <= 1 && !(*(unsigned short *)(*(char **)((char *)arg0 + 0x3C) + 0x6E) & 0x20)) {
-                    fn_802C70AC(*(int *)((char *)arg0 + 0x488), (char *)arg0 + 0x4A0, r, *(int *)((char *)arg0 + 0x498));
+                int handle = fn_802C7A34(1, *(char **)((char *)self + 0x3C) + 0xE30, *(int *)((char *)self + 0x494), scale);
+                if (*(int *)((char *)self + 0x3F8) <= 1 && !(*(unsigned short *)(*(char **)((char *)self + 0x3C) + 0x6E) & 0x20)) {
+                    fn_802C70AC(*(int *)((char *)self + 0x488), (char *)self + 0x4A0, handle, *(int *)((char *)self + 0x498));
                     return;
                 }
-                fn_802C70AC(*(int *)((char *)arg0 + 0x488), (char *)arg0 + 4, r, *(int *)((char *)arg0 + 0x49C));
+                fn_802C70AC(*(int *)((char *)self + 0x488), (char *)self + 4, handle, *(int *)((char *)self + 0x49C));
             }
         }
     }
