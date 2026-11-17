@@ -741,11 +741,6 @@ void fn_802E5A54(void) {
     lbl_8055FF78 = 0;
 }
 
-extern float lbl_80565138;
-static inline float Spu_toRateUnits(unsigned int n) {
-    return (float)n / lbl_80565138;
-}
-
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
