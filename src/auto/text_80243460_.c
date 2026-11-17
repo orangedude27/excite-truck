@@ -204,39 +204,42 @@ void fn_802438EC(char *str) {
 }
 
 __declspec(section ".sdata") extern char lbl_8055BE14[];
-void fn_80243938(char *arg0, char *arg1) {
-    register int len = strlen(arg0);
-    register char *dst = arg0;
-    register char *src;
+/* Appends the "_" placeholder suffix to a menu text buffer in place, unless it already ends in '_' or lacks room (capacity is a pointer-sized buffer size); truncates to fit. */
+void fn_80243938(char *text, char *capacity) {
+#define kPlaceholderSuffix lbl_8055BE14
+    register int length = strlen(text);
+    register char *cursor = text;
+    register char *suffix;
 
-    if (len != 0) {
-        if (arg0[len - 1] == '_') goto done;
+    if (length != 0) {
+        if (text[length - 1] == '_') goto done;
     }
-    if (len + 1 >= (s32)arg1) goto done;
+    if (length + 1 >= (s32)capacity) goto done;
 
-    src = lbl_8055BE14;
+    suffix = kPlaceholderSuffix;
     goto scan_test;
 
 scan_body:
-    arg1 = (char *)(arg1 - 1);
-    dst += 1;
+    capacity = (char *)(capacity - 1);
+    cursor += 1;
 
 scan_test:
-    if (*dst != 0) goto scan_body;
-    if ((s32)arg1 <= 0) goto done;
+    if (*cursor != 0) goto scan_body;
+    if ((s32)capacity <= 0) goto done;
     goto copy_body;
 
 copy_check:
-    arg1 = (char *)(arg1 - 1);
-    if ((s32)arg1 > 0) goto copy_body;
-    dst[-1] = 0;
+    capacity = (char *)(capacity - 1);
+    if ((s32)capacity > 0) goto copy_body;
+    cursor[-1] = 0;
     goto done;
 
 copy_body:
-    while ((*dst++ = *src++) != 0) goto copy_check;
+    while ((*cursor++ = *suffix++) != 0) goto copy_check;
 
 done:
     return;
+#undef kPlaceholderSuffix
 }
 
 #pragma scheduling invalid_target
