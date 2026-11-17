@@ -340,10 +340,10 @@ u32 fn_80116BD4(s32 arg0, s32 arg1, s32 arg2) {
     temp_r9_2 = temp_r9 << temp_r4_2;
     temp_r8 = temp_r3 + temp_r0;
     temp_r5 = temp_r10 >> 16;
-    temp_r6 = temp_r10 & 0xFFFF;
+    temp_r7 = (temp_r9_2 >> 16) & 0xFFFF;
     var_r4 = (u32)temp_r8 / temp_r5;
-    temp_r0_2 = var_r4 * temp_r5;
-    var_r7 = ((((u32)temp_r8 - temp_r0_2) & 0xFFFF) << 16) | ((temp_r9_2 >> 16) & 0xFFFF);
+    temp_r6 = temp_r10 & 0xFFFF;
+    var_r7 = temp_r7 | ((((u32)temp_r8 - var_r4 * temp_r5) & 0xFFFF) << 16);
     temp_r0 = var_r4 * temp_r6;
     if (var_r7 < temp_r0) {
         var_r7 += temp_r10;
@@ -1704,7 +1704,6 @@ s32 fn_80118F78(void *bink, s32 paused) {
 #pragma push
 #pragma opt_loop_invariants off
 s32 fn_801190B0(void *arg0, s32 arg1) {
-    s32 cond;
     s32 var_r31;
     s32 var_r30;
     s32 var_r29;
@@ -1713,8 +1712,6 @@ s32 fn_801190B0(void *arg0, s32 arg1) {
     u32 var_r28;
     s32 zero;
     s32 one;
-    u8 *frame;
-    s32 (*cb)(void *, s32);
 
     var_r30 = 0;
     if (arg0 != 0) {
@@ -1731,10 +1728,10 @@ s32 fn_801190B0(void *arg0, s32 arg1) {
                 fn_8011C274(lbl_8055DED4,
                     (void *)((s32)arg0 + 0x340));
             }
-            cond = arg1 != 0;
-            frame = *(u8 **)((u8 *)arg0 + 0x2F0) + var_r31;
-            cb = *(s32 (**)(void *, s32))(frame + 0x18);
-            temp_r3_2 = cb(frame, cond);
+            temp_r3_2 = (*(s32 (**)(void *, s32))(
+                *(u8 **)((u8 *)arg0 + 0x2F0) + var_r31 + 0x18))(
+                    *(u8 **)((u8 *)arg0 + 0x2F0) + var_r31,
+                    arg1 ? 1 : 0);
             if (temp_r3_2) {
                 var_r30 = 1;
             }
@@ -3641,23 +3638,30 @@ void fn_8011BEC8(void *tick, void *node, s32 checkFn, s32 tickFn) {
 }
 
 void fn_8011C364(s32);
+#pragma opt_propagation off
 s32 fn_8011BF4C(s32 arg0, s32 arg1, s32 arg2) {
     s32 ret = 0;
     s32 save;
-    if (arg0 != 0 && arg1 != 0 && *(s32 *)(arg1 + 0x18) != 0 && *(s32 *)(arg1 + 0x14) != 0) {
-        save = OSDisableInterrupts();
-        if (fn_8011BC4C((void *)arg0, (void *)arg1) != 0) {
-            *(s32 *)(arg0 + 0x38) -= 1;
-            if ((arg2 & 1) != 0 && *(s32 *)(arg0 + 0x30) == 0) {
-                fn_8011C364(arg0);
-                ret = 1;
+    if (arg0 != 0) {
+        if (arg1 != 0) {
+            if (*(s32 *)(arg1 + 0x18) != 0) {
+                if (*(s32 *)(arg1 + 0x14) != 0) {
+                    save = OSDisableInterrupts();
+                    if (fn_8011BC4C((void *)arg0, (void *)arg1) != 0) {
+                        *(s32 *)(arg0 + 0x38) -= 1;
+                        if ((arg2 & 1) != 0 && *(s32 *)(arg0 + 0x30) == 0) {
+                            fn_8011C364(arg0);
+                            ret = 1;
+                        }
+                    }
+                    OSRestoreInterrupts(save);
+                }
             }
         }
-        OSRestoreInterrupts(save);
     }
     return ret;
 }
-
+#pragma opt_propagation reset
 s32 fn_8011BFFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     /* Combines two fn_8011BF4C results into a 2-bit status: bit 0 from
        (arg0, arg1, arg4) and bit 1 from (arg2, arg3, arg4). */
