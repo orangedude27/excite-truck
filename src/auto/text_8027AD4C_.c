@@ -1769,6 +1769,9 @@ extern "C" void fn_8027D158(long arg0, char *arg1, long arg2) {
     }
 }
 long fn_8027D1F4(void) {
-    return *(long *)((char *)lbl_8055F654 + 0xB01C);
+#define oracle lbl_8055F654
+    /* Returns the current contest/event context value stored at +0xB01C of the shared EventPathOracle. */
+    return *(long *)((char *)oracle + 0xB01C);
+#undef oracle
 }
 
