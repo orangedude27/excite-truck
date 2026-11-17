@@ -70,6 +70,7 @@ void fn_801EC1D4(void) {
 }
 
 void *fn_801EC1F8(void) {
+    /* Return the base of the saved UI render-state block: [0]/[1] hold the packed diffuse/ambient light colours and [2] the draw scale. */
     return lbl_80488668;
 }
 
