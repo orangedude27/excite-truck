@@ -371,22 +371,27 @@ s32 fn_8017A804(void *arg0, void *arg1) {
 #pragma pop
 
 void fn_8017AB84(void *matrix, float *dst, const float *src) {
+    float *m = (float *)((char *)matrix + 0x3C);
     if (dst == src) {
-        float x = src[0], y = src[1], z = src[2];
-        float ox = (x * *(float *)((char *)matrix + 0x3C) + y * *(float *)((char *)matrix + 0x48)) + z * *(float *)((char *)matrix + 0x54);
-        float oy = (x * *(float *)((char *)matrix + 0x40) + y * *(float *)((char *)matrix + 0x4C)) + z * *(float *)((char *)matrix + 0x58);
-        float oz = (x * *(float *)((char *)matrix + 0x44) + y * *(float *)((char *)matrix + 0x50)) + z * *(float *)((char *)matrix + 0x5C);
-        dst[0] = ox;
-        dst[1] = oy;
-        dst[2] = oz;
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m11 = m[4]; m12 = m[5]; m00 = m[0]; m01 = m[1]; m02 = m[2]; m20 = m[6]; m21 = m[7]; m22 = m[8];
+        x = src[0]; y = src[1]; z = src[2];
+        dst[0] = z * m20 + (x * m00 + y * m10);
+        dst[1] = z * m21 + (x * m01 + y * m11);
+        dst[2] = z * m22 + (x * m02 + y * m12);
     } else {
-        dst[0] = (src[0] * *(float *)((char *)matrix + 0x3C) + src[1] * *(float *)((char *)matrix + 0x48)) + src[2] * *(float *)((char *)matrix + 0x54);
-        dst[1] = (src[0] * *(float *)((char *)matrix + 0x40) + src[1] * *(float *)((char *)matrix + 0x4C)) + src[2] * *(float *)((char *)matrix + 0x58);
-        dst[2] = (src[0] * *(float *)((char *)matrix + 0x44) + src[1] * *(float *)((char *)matrix + 0x50)) + src[2] * *(float *)((char *)matrix + 0x5C);
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m00 = m[0]; m20 = m[6];
+        dst[0] = src[2] * m20 + (src[0] * m00 + src[1] * m10);
+        m11 = m[4]; m01 = m[1]; m21 = m[7];
+        dst[1] = src[2] * m21 + (src[0] * m01 + src[1] * m11);
+        m12 = m[5]; m02 = m[2]; m22 = m[8];
+        dst[2] = src[2] * m22 + (src[0] * m02 + src[1] * m12);
     }
-    dst[0] += *(float *)((char *)matrix + 0x60);
-    dst[1] += *(float *)((char *)matrix + 0x64);
-    dst[2] += *(float *)((char *)matrix + 0x68);
+    dst[0] += m[9];
+    dst[1] += m[10];
+    dst[2] += m[11];
 }
 
 
