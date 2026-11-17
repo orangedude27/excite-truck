@@ -25789,7 +25789,8 @@ extern "C" void fn_800A53CC(void *volume) {
 
 extern "C" s32 fn_800A53DC(void *arg0) { return ((u16)*(u16 *)((u8 *)arg0 + 0x1F8C) >> 5U) & 1; }
 
-extern "C" void fn_800A53E8(void *arg0) { *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0xFFFFFFDF); }
+/* Clears VF_VOL_UNMOUNT_PENDING (bit 5) in the volume's flag word at +0x1F8C. */
+extern "C" void fn_800A53E8(void *volume) { *(u16 *)((u8 *)volume + 0x1F8C) = (u16)(*(u16 *)((u8 *)volume + 0x1F8C) & ~VF_VOL_UNMOUNT_PENDING); }
 
 #pragma push
 #pragma dont_inline on
