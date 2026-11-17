@@ -78,6 +78,7 @@ void fn_80214A9C(s32); /* extern */
 extern char lbl_80341430[16];
 extern char lbl_8034143C[16];
 s32 fn_8023C3CC(void) {
+    /* Default callback registered in the fn_8023C3D4 table: a no-op that always reports 0 (event not handled). */
     return 0;
 }
 
