@@ -524,6 +524,7 @@ extern u8 lbl_803C4040[];
    parameters to print, plus the trace code TRACE_CTRL_GENERAL |
    TRACE_LAYER_L2CAP | TRACE_ORG_STACK | TRACE_TYPE_*). */
 #define l2cb_trace_level lbl_803C4040[0]
+#define l2cb_link_role    lbl_803C4040[1] /* default ACL link role (master/slave) copied into new LCBs */
 #define l2cb_num_links_active (*(u16 *)(lbl_803C4040 + 0x7B8)) /* LCBs handed out and not released */
 #define l2cb_idle_timeout     (*(u16 *)(lbl_803C4040 + 0x7BA)) /* seconds a link may stay idle */
 
