@@ -135,7 +135,11 @@ int fn_80238A20(void) {
     #undef fontHeight
 }
 
-void fn_80238A74(int arg0, int arg1, int arg2, int arg3) { ((int (*)(int, int, int, int, int))fn_8023875C)(arg0, arg1 - 3, arg2, arg3, 9); }
+typedef int (*DrawCenteredTextFn)(int, int, int, int, int);
+void fn_80238A74(int x, int y, int text, int color) {
+    /* Draw text centered at (x, y) shifted up 3 pixels; fn_8023875C does the rendering. */
+    ((DrawCenteredTextFn)fn_8023875C)(x, y - 3, text, color, 9);
+}
 
 void fn_80238A80(int arg0, int arg1, int arg2, const char *fmt, ...) {
     /* Format a printf-style string into a local buffer and pass it to fn_80238A74. */
