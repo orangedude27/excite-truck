@@ -1534,6 +1534,7 @@ vel[5] = (c < d) ? c : d;
 #pragma cplusplus off
 #pragma pop
 
+// Default callback / stub: always reports failure (0).
 int fn_80188E24(void) { return 0; }
 
 void fn_80188E2C(void *arg0, void *arg1) {
