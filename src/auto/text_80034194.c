@@ -2702,8 +2702,8 @@ void fn_80038368(void *block) {
    } break;
  case 35: fn_8003BCDC(0); ((void (*)(u32, int, int, int, void *, void *))DVDLowOpenPartition)(*(u32 *)(p+0x10),0,0,0,*(void **)(p+0x18),fn_80038870); break;
  case 36: fn_8003BCDC(0); fn_8003AC24(fn_80038870); break;
- case 32: fn_8003BB58(fn_80038870); break;
- case 33: fn_8003BB58(fn_80038870); break;
+ case 32: fn_8003BB58((void (*)(void))fn_80038870); break;
+ case 33: fn_8003BB58((void (*)(void))fn_80038870); break;
  case 38: fn_8003BCDC(0); fn_8003B69C(0x20000,fn_80038870); break;
  default: lbl_80558E08(block,fn_80038870); break;
  }
