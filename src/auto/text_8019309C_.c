@@ -422,14 +422,14 @@ extern float lbl_80562144, lbl_80562180;
 extern const char lbl_80333348[];
 #pragma cplusplus on
 extern "C" void *fn_801938F4(void *arg0) {
-    register int minusOne = -1;
-    register int zero = 0;
-    register int limit = 0x2710;
-    float initial = lbl_80562144;
+#pragma scheduling invalid_target
+    int minusOne = -1;
+    int zero = 0;
+    float initial = 0.0f;
     char *obj = (char *)arg0 + 0x168;
     *(int *)((char *)arg0 + 0x68) = zero;
     *(const char **)arg0 = lbl_80333348;
-    *(int *)((char *)arg0 + 0x70) = limit;
+    *(int *)((char *)arg0 + 0x70) = 10000;
     *(float *)((char *)arg0 + 0x6C) = initial;
     *(int *)((char *)arg0 + 0x78) = zero;
     *(int *)((char *)arg0 + 0x90) = minusOne;
@@ -445,6 +445,7 @@ extern "C" void *fn_801938F4(void *arg0) {
     *(int *)((char *)arg0 + 0x294) = zero;
     *(int *)((char *)arg0 + 0x290) = -1000;
     return arg0;
+#pragma scheduling on
 }
 #pragma cplusplus reset
 extern void fn_801945F8(void *);
