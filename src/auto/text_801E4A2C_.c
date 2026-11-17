@@ -28,9 +28,9 @@ void fn_801E4A2C(s32 *fontObject) {
 
 #pragma scheduling invalid_target
 s32 fn_801E4A6C(s32 *arg0, const u8 *arg1) {
-    s32 sum = 0;
     s32 index;
     if (arg0) {
+        s32 sum = 0;
         for (; *arg1 != 0; arg1++) {
             index = *arg1;
             sum += *(s16 *)((u8 *)arg0 + (index << 1) + 0x204);
