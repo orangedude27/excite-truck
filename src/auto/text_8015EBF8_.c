@@ -1054,10 +1054,11 @@ void fn_8016025C(void *arg0, void *arg1, float farg0, float farg1, float farg2, 
     *(f32 *)((u8 *)arg0 + 4) = farg1;
 }
 
-int fn_80160268(int arg0) {
-    int temp_r4;
-    temp_r4 = arg0 >> 31;
-    return (temp_r4 ^ arg0) - temp_r4;
+/* Integer absolute value: (value ^ sign) - sign, with sign = value >> 31 (all ones if negative). */
+int fn_80160268(int value) {
+    int sign;
+    sign = value >> 31;
+    return (sign ^ value) - sign;
 }
 
 void fn_80160278(void) {
