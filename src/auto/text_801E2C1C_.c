@@ -408,8 +408,9 @@ void fn_801E34E4(s32 *arg0, s32 arg1) {
     }
 }
 #pragma pop
-s32 fn_801E3534(s32 *arg0) {
-    return *arg0;
+/* Read the s32 value pointed to by p (getter for handle-backed integer fields). */
+s32 fn_801E3534(s32 *p) {
+    return *p;
 }
 
 #pragma push
