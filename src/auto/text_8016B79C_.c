@@ -1279,6 +1279,7 @@ extern "C" void fn_802ADE60(s32, s32);
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
+#pragma opt_common_subs off
 extern "C" void fn_8016D658(void *arg0, s32 arg1) {
  class VObj { public: virtual void destroy(int); };
  struct List { void *vtable; VObj **items; s32 count; };
