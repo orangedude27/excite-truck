@@ -520,8 +520,12 @@ void fn_80209380(void *timer) {
 #undef state
 }
 
-void fn_8020938C(void *arg0) {
-    *(int *)((char *)arg0 + 8) = 2;
+void fn_8020938C(void *timer) {
+    /* Set the timed object's state field (+8) to 2 (the stopped/paused state,
+     * distinct from 1 = running and 3 = expired used by the neighbouring helpers). */
+#define state ((int *)((char *)timer + 8))
+    *state = 2;
+#undef state
 }
 
 void fn_80209398(void *arg0) {
