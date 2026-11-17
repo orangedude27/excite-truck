@@ -210,8 +210,11 @@ extern "C" int fn_800FFE54(void *sound) {
     return *(int *)((char *)sound + 0x1AC) != 0;
 }
 
-extern "C" void fn_800FFE68(void *arg0) {
-    fn_800FFE94(*(int *)((char *)arg0 + 0x1AC));
+/* Detach this wave sound from its SoundHandle: pass the handle stored at
+ * +0x1AC to SoundHandle::DetachSound (fn_800FFE94), which clears the handle
+ * and the sound's back-reference to it. */
+extern "C" void fn_800FFE68(void *sound) {
+    fn_800FFE94(*(int *)((char *)sound + 0x1AC));
 }
 
 extern "C" int fn_800FFE70(int arg0) {
