@@ -604,9 +604,8 @@ int fn_801784AC(void *start, void *end, void *outHit, int flags, void *outValue,
 }
 
 extern float lbl_80561B64;
-#pragma scheduling on
+#pragma scheduling invalid_target
 s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
-#pragma scheduling on
     Vec start;
     Vec hit;
     Vec normal;
@@ -628,7 +627,6 @@ s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
         return 1;
     }
     return 0;
-#pragma scheduling invalid_target
 }
 #pragma push
 #pragma cplusplus on
