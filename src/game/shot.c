@@ -32,7 +32,10 @@ void fn_802E46B0(void) {
     fn_802E46AC();
 }
 void fn_802E46E4(void) {
-    lbl_8055D1C0 = (void*)-1;
+    /* Invalidate the saved-state pointer (a negative value means "no state captured"). */
+#define gSavedStatePtr lbl_8055D1C0
+    gSavedStatePtr = (void*)-1;
+#undef gSavedStatePtr
 }
 
 extern int sprintf(char *, const char *, ...);
