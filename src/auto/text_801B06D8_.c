@@ -156,7 +156,7 @@ s32 fn_801B06D8(void *origin, void *direction, s32 unused) {
 
 extern s32 fn_801784DC(f32 *, f32 *, s32, s32, s32, f32);
 extern void fn_801B8040(void *, void *, f32);
-extern f32 lbl_805625BC, lbl_805625C8, lbl_805625CC, lbl_805625D0, lbl_805625D4, lbl_805625D8;
+extern f32 lbl_805625C8, lbl_805625CC, lbl_805625D0, lbl_805625D4, lbl_805625D8;
 #pragma scheduling invalid_target
 void fn_801B07B4(void *arg0, void *arg1) {
     register s32 first = *(s32 *)arg1;
