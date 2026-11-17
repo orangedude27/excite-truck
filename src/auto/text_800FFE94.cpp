@@ -365,14 +365,11 @@ extern "C" void Pause__Q46nw4hbm3snd6detail9WsdPlayerFb(void *player, unsigned c
     OSRestoreInterrupts(irqState);
 }
 
-extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_80100820(void *arg0, float value) {
-    float minimum = lbl_80561124;
-    if (!(value >= minimum)) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0xFA, lbl_80327944);
-    }
-    int enabled = OSDisableInterrupts();
-    *(float *)((char *)arg0 + 0x24) = value;
-    OSRestoreInterrupts(enabled);
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_80100820(void *self, float volume) {
+    if (!(volume >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327930, 0xFA, (const char *)lbl_80327944);
+    unsigned int interruptLevel = OSDisableInterrupts();
+    *(float *)((unsigned char *)self + 0x24) = volume;
+    OSRestoreInterrupts(interruptLevel);
 }
 
 extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_80100894(void *self, float volume) {
@@ -588,19 +585,22 @@ extern "C" void InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(void* arg0
 extern "C" char lbl_80327C7C[], lbl_80327C58[];
 extern "C" int ParseNextTick__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(void *, int, int, int);
 extern "C" void UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(void *);
+#pragma opt_common_subs off
 extern "C" void fn_80101130(void) {
+    char *strings = lbl_80327930;
     char *node = *(char **)(lbl_8041D4C4 + 4);
     char *end = lbl_8041D4C4 + 4;
+    unsigned char *entry, *track;
     while (node != end) {
-        unsigned char *entry = (unsigned char *)node;
+        entry = (unsigned char *)node;
         node = *(char **)node;
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327C7C, 0x23D, lbl_80327C58);
-        unsigned char *track = entry - 0x14;
+        track = entry - 0x14;
         if (entry[9] == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x216, lbl_80327930 + 0x148);
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x216, strings + 0x148);
         if (track[0x1F] == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x217, lbl_80327930 + 0x16C);
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x217, strings + 0x16C);
         if (track[0x1D] != 0 && track[0x1F] != 0) {
             if (track[0x20] != 0 || track[0x21] != 0 ||
                 (track[0x1C] == 0 && ((unsigned char *)Instance__15EmissionManagerFv())[0x6C32] != 0))
@@ -638,8 +638,6 @@ next:
         ;
     }
 }
-
-#pragma pop
 extern "C" char lbl_80327C58[];
 extern "C" char lbl_80327C7C[];
 extern "C" char lbl_80327AC4[];
