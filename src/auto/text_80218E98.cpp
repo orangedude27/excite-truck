@@ -6345,8 +6345,9 @@ extern "C" s32 fn_80223760(void *arg0, s32 arg1) {
     }
 }
 
-extern "C" void fn_802237D0(void *arg0) {
-    *(u8 *)((u8 *)arg0 + 0x41C) = 1;
+/* Set the sound-list's input-disabled flag (MenuSoundList.disabled at 0x41C). */
+extern "C" void fn_802237D0(void *list) {
+    *(u8 *)((u8 *)list + 0x41C) = 1;
 }
 
 extern "C" void fn_802237DC(void *arg0) {
