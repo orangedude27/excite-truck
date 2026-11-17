@@ -993,8 +993,9 @@ void fn_8020BC70(void *snd, f32 surroundPan) {
     *(f32 *)((signed char *)snd + 0x28) = surroundPan;
 }
 
-void fn_8020BC78(void *arg0, f32 farg0) {
-    *(f32 *)((signed char *)arg0 + 0x2C) = farg0;
+/* Store the unused effect float at +0x2C of a VoiceSnd (its voice setter does nothing in this build). */
+void fn_8020BC78(void *snd, f32 value) {
+    *(f32 *)((signed char *)snd + 0x2C) = value;
 }
 
 /* Store the unused effect float at +0x30 of a VoiceSnd (its voice setter does nothing in this build). */
