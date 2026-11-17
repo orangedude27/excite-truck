@@ -269,9 +269,11 @@ void fn_80207C4C(void) {
 }
 
 #pragma scheduling invalid_target
+#pragma push
+#pragma opt_propagation off
 void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
     signed long c, b, a;
-    register signed long offset = arg2 * 0xC;
+    signed long offset = arg2 * 0xC;
     volatile signed long *p = (volatile signed long *)arg1;
     a = p[0];
     b = p[1];
@@ -281,7 +283,7 @@ void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
     *(signed long*)((char*)arg0 + 0x60) = b;
     *(signed long*)((char*)arg0 + 0x64) = c;
 }
-#pragma opt_propagation on
+#pragma pop
 /* Set the flag at offset 0x8C of a sound object. */
 void fn_80207C74(void *object, signed long value) {
     struct SoundObject {
