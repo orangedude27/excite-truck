@@ -2518,6 +2518,7 @@ extern char lbl_80330DF4[];
 extern char lbl_8055A270[];
 extern float lbl_80561980;
 #pragma push
+#pragma ppc_psq_save off
 struct Frame_8016FFEC {
     float f8, fC, f10, f14, f18, f1C;
     float ret[2];
@@ -2557,10 +2558,10 @@ float sqf;
 float inv;
 float nx;
 manager = *(void **)((char *)fn_8000AC38() + 0x20);
-if (manager == 0) return 0;
+if (manager != 0) {
 fn_801345D8(s.sp60, 0x10, lbl_80330DF4, arg2);
 obj = ((void *(*)(void *, void *))*(void **)((char *)*(void **)manager + 0x5C))(manager, s.sp60);
-if (obj == 0) return 0;
+if (obj != 0) {
 p = s.pts;
 i = 0;
 s.f38 = lbl_80561980;
@@ -2659,6 +2660,9 @@ float sc = lbl_80561A10 * ((float (*)(void *, void *, float))*(void **)((char *)
 *(float *)((char *)arg1 + 0x38) = *(float *)((char *)arg1 + 0x20) * sc;
 }
 return 1;
+}
+}
+return 0;
 }
 #pragma pop
 
