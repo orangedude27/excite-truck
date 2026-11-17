@@ -72,6 +72,7 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
         }
     }
 }
+#pragma pop
 
 float fn_802A0F7C(void *arg0, void *arg1, void *arg2) {
     float t3;
