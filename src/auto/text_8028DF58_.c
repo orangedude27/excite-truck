@@ -391,8 +391,10 @@ void fn_8028E528(int emitter) {
 }
 
 #pragma pop
-void fn_8028E584(void *arg0, int arg1, float *arg2) {
-    fn_8028FB98(arg0, arg1, arg2, lbl_80564424);
+/* Emit particles from `emitter` at position `pos` around `basePos`, using the
+ * full spread of 1.0 (lbl_80564424). A fixed-argument wrapper for fn_8028FB98. */
+void fn_8028E584(void *emitter, int pos, float *basePos) {
+    fn_8028FB98(emitter, pos, basePos, lbl_80564424);
 }
 
 extern void fn_8028FAE4(void *, int, float *, float);
