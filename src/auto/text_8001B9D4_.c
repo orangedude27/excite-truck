@@ -301,8 +301,8 @@ s32 fn_8001BD28(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
-u8 fn_8001BD30(void *arg0) {
-    return *(u8 *)((u8 *)arg0 + 0x10);
+u8 fn_8001BD30(void *record) {
+    return *(u8 *)((u8 *)record + 0x10);
 }
 
 /* Forward an entry's command (+4) and value (+0x1C) to fn_8001C73C along with the destination pointer and extra parameter. */
@@ -584,7 +584,7 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
     descriptor = lbl_8055D5D0;
     *((u8 *)descriptor + 8) = 0;
     p = *(char **)descriptor;
-    for (;;) {
+    while (p - *(char **)descriptor < descriptor[1]) {
         if (stricmp(p, input) == 0) {
             break;
         }
@@ -593,18 +593,18 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
         }
         p++;
         if (*p == 0) {
-            out = p;
-            room = descriptor[1] - (p - *(char **)descriptor) - 1;
-            if (room <= 0) {
-                out[-1] = 0;
-            } else {
-                do {
-                    c = *input++;
-                    *out++ = c;
-                } while (c != 0);
-            }
             break;
         }
+    }
+    out = p;
+    room = descriptor[1] - (p - *(char **)descriptor) - 1;
+    if (room <= 0) {
+        out[-1] = 0;
+    } else {
+        do {
+            c = *input++;
+            *out++ = c;
+        } while (c != 0);
     }
     *(char **)(entry + 4) = p;
     *(u8 *)(entry + 0x10) = 0;
@@ -687,35 +687,35 @@ void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     descriptor = lbl_8055D5D0;
     *((u8 *)descriptor + 8) = 0;
     p = *(char **)descriptor;
-    for (;;) {
-        if (stricmp(p, name) == 0) {
-            break;
-        }
-        while (*(s8 *)p != 0) {
-            p++;
-        }
-        p++;
-        if (*(s8 *)p == 0) {
-            room = descriptor[1] - (p - *(char **)descriptor) - 1;
-            if (room <= 0) {
-                p[-1] = 0;
-            } else {
-                out = p;
-                do {
-                    c = *(s8 *)name++;
-                    *(s8 *)out++ = c;
-                } while (c != 0);
-            }
-            break;
-        }
+    goto loop_top;
+loop_top:
+    if (stricmp(p, name) == 0) {
+        goto loop_done;
     }
+    while (*(s8 *)p != 0) {
+        p++;
+    }
+    p++;
+    if (*(s8 *)p == 0) {
+        room = descriptor[1] - (p - *(char **)descriptor) - 1;
+        if (room <= 0) {
+            p[-1] = 0;
+        } else {
+            out = p;
+            do {
+                c = *(s8 *)name++;
+                *(s8 *)out++ = c;
+            } while (c != 0);
+        }
+        goto loop_done;
+    }
+    goto loop_top;
+loop_done:
     *(char **)freeEntry = p;
     *(s32 *)(freeEntry + 4) = arg2;
     *(u8 *)(freeEntry + 0x70) = 1;
     return freeEntry;
 }
-
-#pragma scheduling reset
 typedef s32 *(*StatTypeGetter)(void);
 /* Pass the message-pointer field (+8) of the stat-type entry returned by
  * fn_8001C4E0 to the message mapper fn_80131234. */
@@ -744,7 +744,8 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 a2 = arg2;
     s32 a1 = arg1;
     s32 sp8 = arg1;
-    switch (arg0 & 0x300) {
+    s32 outer = arg0 & 0x300;
+    switch (outer) {
     case 0x100: {
         f32 f = *(f32 *)&sp8;
         switch (arg0 & 0x1FC00) {
@@ -765,8 +766,7 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     case 0x200: {
         switch (arg0 & 0x1FC00) {
         case 0x1000: {
-            char *sfx = &lbl_80558CBC;
-            if (a1 == 1) sfx = &lbl_80558CB4;
+            char *sfx = (a1 == 1) ? &lbl_80558CB4 : &lbl_80558CBC;
             ((void (*)(void *, s32, void *, ...))fn_801345D8)((void *)a2, a3, &lbl_80558CAC, a1, sfx);
             break;
         }
