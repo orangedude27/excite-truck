@@ -3336,6 +3336,7 @@ void fn_801657DC(void) {
 void fn_80165820(void) {
 }
 
+/* No-op default callback returning 0, one of the placeholder handlers for the challenge-list UI (fn_80165820/0x2C/0x40). */
 int fn_80165824(void) { return 0; }
 
 int fn_8016582C(void) { return 0; }
