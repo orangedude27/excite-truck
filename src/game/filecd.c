@@ -94,9 +94,13 @@ extern void fn_802E317C(void *, ...);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034D198[];
 #define fileCdMsgWriteNotSupported lbl_8034D198 /* "filecd: write not supported (%s)" */
-// The FileCd object is this TU's one static block (lbl_8055FF38): the "allocator"
-// always hands out that block, the requested size and tag only say what was asked.
-unsigned int *fn_802E3EB0(void) { return &lbl_8055FF38; }
+// The "fds" allocator: always hand out this TU's one static FileCd block,
+// whatever size/tag the caller asks for; returning that block is its whole job.
+unsigned int *fn_802E3EB0(void) {
+#define fileCdBlock lbl_8055FF38
+    return &fileCdBlock;
+#undef fileCdBlock
+}
 
 // ... and giving it back is nothing at all.
 void fn_802E3EB8(void) {}
@@ -359,9 +363,11 @@ extern void* memcpy(void*, const void*, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
 int fn_802E4440(void *arg0, void *arg1, int arg2) {
+    struct DVDFile { char pad[4]; char info[1]; int cursor[0x21]; } *file;
     int pos, aligned, offset, size;
-    int result, count;
+    int result, count, st, n;
     if (arg2 == 0) return 0;
+    file = (struct DVDFile *)arg0;
     pos = *(int *)((char *)arg0 + 0x88);
     aligned = pos & ~3;
     offset = pos - aligned;
@@ -370,31 +376,37 @@ int fn_802E4440(void *arg0, void *arg1, int arg2) {
     count = 0;
     for (;;) {
         if (count != 0) {
-            result = DVDReadPrio((char *)arg0 + 4, lbl_804DBAA0, size, aligned, 2);
+            result = DVDReadPrio(file->info, lbl_804DBAA0, size, aligned, 2);
         } else {
-            result = DVDReadAsyncPrio((char *)arg0 + 4, lbl_804DBAA0, size, aligned, 0, 2);
+            result = DVDReadAsyncPrio(file->info, lbl_804DBAA0, size, aligned, 0, 2);
             if (result > 0) {
-                while (DVDGetCommandBlockStatus((char *)arg0 + 4) != 0)
+                for (;;) {
+                    st = DVDGetCommandBlockStatus(file->info);
+                    if (st == 0) break;
                     fn_80127464();
+                }
                 result = size;
             }
         }
         if (result >= 0) break;
-        count = DVDGetDriveStatus();
-        if (count == 0) break;
+        if ((count = DVDGetDriveStatus()) == 0) break;
         OSReport(lbl_8034D164, count);
         VIFlush();
         VIWaitForRetrace();
     }
-    count = result - offset;
-    if (count > arg2) count = arg2;
-    if (count > 0) {
-        memcpy(arg1, lbl_804DBAA0 + offset, count);
-        *(int *)((char *)arg0 + 0x88) += count;
-        return count;
+    n = result - offset;
+    if (n > arg2) n = arg2;
+    if (n > 0) {
+        memcpy(arg1, lbl_804DBAA0 + offset, n);
+        *(int *)((char *)arg0 + 0x88) += n;
+        return n;
     }
-    if (count != 0) return -1;
-    return 0;
+    switch (n) {
+    default:
+        return -1;
+    case 0:
+        return 0;
+    }
 }
 #pragma pop
 int fn_802E45AC(void *arg0, void *arg1, int arg2) {
