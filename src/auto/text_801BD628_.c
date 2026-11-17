@@ -423,8 +423,9 @@ void fn_801BEB1C(int slot, int *outRecord) {
     *outRecord = csList + slot * 0x1F0;
 }
 
-void fn_801BEB30(int arg0, int *arg1) {
-    *arg1 = lbl_8055E79C + (arg0 * 0x190);
+void fn_801BEB30(int slot, int *outRecord) {
+    /* Write the base address of the given slot's 0x190-byte wheel (cc) record. */
+    *outRecord = ccList + (slot * 0x190);
 }
 
 extern float lbl_80562838, lbl_8056283C, lbl_805628A8, lbl_805628AC, lbl_805628B0;
