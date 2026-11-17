@@ -183,6 +183,7 @@ void fn_80005740(s32 playerIdx) {
 }
 #pragma push
 #pragma dont_inline on
+/* Calls fn_80230DA0() only while the flag byte lbl_8055F024 is nonzero. */
 void fn_800057BC(void) {
     if (lbl_8055F024 == 0) {
         return;
