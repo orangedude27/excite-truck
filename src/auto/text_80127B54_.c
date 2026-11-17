@@ -3,6 +3,7 @@
 
 extern char lbl_8055DF48[4];
 extern void fn_8000D838(void *queue);
+/* Tail-call the static-destructor registrar to register the record at lbl_8055DF48. */
 void fn_80127B54(void) {
     fn_8000D838(lbl_8055DF48);
 }
