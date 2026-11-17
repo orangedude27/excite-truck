@@ -1269,8 +1269,10 @@ void fn_8024B970(void *arg0) {
     fn_8024B6AC(arg0);
 }
 
-s32 fn_8024B974(void *arg0) {
-    return *(s32 *)((char *)arg0 + *(s32 *)((char *)arg0 + 0x10) * 0xC + 0x28);
+s32 fn_8024B974(void *selector) {
+    /* Return the third s32 field (+0x28) of the selector's currently selected 0xC-byte entry. */
+    char *entry = (char *)selector + *(s32 *)((char *)selector + 0x10) * 0xC;
+    return *(s32 *)(entry + 0x28);
 }
 
 void fn_8024B988(void *selector) {
