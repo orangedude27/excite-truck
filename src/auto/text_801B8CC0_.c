@@ -197,6 +197,13 @@ static inline void transform_vec_scheduled(float *out, const float *m, float *in
     }
 
 }
+/* Clamp v into [lo, hi]. */
+static inline f32 clampf(f32 v, f32 lo, f32 hi) {
+    f32 r = hi;
+    r = r < v ? r : v;
+    r = r > lo ? r : lo;
+    return r;
+}
 /* Rotate a vector into the frame whose axes are m's rows, in place. */
 static inline void rotate_vec_in_place(f32 *v, const f32 *m) {
     f32 z, y, x;
@@ -743,17 +750,19 @@ extern "C" void fn_801B97D8(struct TrlrCar *car) {
     }
 
     if (car->towed != 0) {
-        player = car->player;
         transform_vec_scheduled_reload(anchorWorld, (const float *)((char *)car + 0x70), (float *)&car->anchorPos);
         anchorWorld[0] += ((Vec *)((char *)car + 0x94))->x;
         anchorWorld[1] += ((Vec *)((char *)car + 0x94))->y;
         anchorWorld[2] += ((Vec *)((char *)car + 0x94))->z;
-        transform_vec_scheduled_reload(carWorld, (const float *)player->trailerAxes, (float *)&car->carPos);
-        carWorld[0] += player->trailerPos.x;
-        carWorld[1] += player->trailerPos.y;
-        carWorld[2] += player->trailerPos.z;
+        {
+            struct PlayerCar *p = car->player;
+            transform_vec_scheduled_reload(carWorld, (const float *)p->trailerAxes, (float *)&car->carPos);
+            carWorld[0] += p->trailerPos.x;
+            carWorld[1] += p->trailerPos.y;
+            carWorld[2] += p->trailerPos.z;
+        }
         event.kind = 1;
-        event.player = *(s32 *)((char *)player + 0x1EC);
+        event.player = *(s32 *)((char *)car->player + 0x1EC);
         event.count = 2;
         event.p[0] = anchorWorld[0];
         event.p[1] = anchorWorld[1];
