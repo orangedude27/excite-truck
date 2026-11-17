@@ -1596,8 +1596,10 @@ void fn_8029EF44(void) {
     fn_8029EF2C();
 }
 #pragma dont_inline reset
-void fn_8029EF48(void *arg0) {
-    *((unsigned char *)arg0 + 0x68) = 1;
+/* nw4r::ef::Effect virtual setter: set this effect's flag at +0x68 to true
+   (paired with fn_8029EF54, which clears it, and fn_8029EF60, which reads it). */
+void fn_8029EF48(void *effect) {
+    *((unsigned char *)effect + 0x68) = 1;
 }
 
 void fn_8029EF54(void *object) {
