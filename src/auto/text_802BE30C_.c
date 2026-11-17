@@ -65,9 +65,11 @@ void fn_802BE364(void *cell) {
     entry->field = 0;
 }
 
-s32 fn_802BE378(s32 arg0) {
-    s32 temp = 0x400 / (arg0 * 2);
-    return temp * temp;
+/* Number of cells in one square FanInfo grid: each axis spans -0x200..0x200 (0x400)
+ * divided into (cellSize*2)-wide cells, so the count is cellsPerRow squared. */
+s32 fn_802BE378(s32 cellSize) {
+    s32 cellsPerRow = 0x400 / (cellSize * 2);
+    return cellsPerRow * cellsPerRow;
 }
 
 void fn_802BE38C(void) {
