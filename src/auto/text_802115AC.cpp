@@ -674,6 +674,7 @@ extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
         }
     }
 }
+// Default no-op callback used by the layout builder when a node has no handler: returns 0.
 extern "C" s32 fn_80212338(void) { return 0; }
 
 #pragma dont_inline on
