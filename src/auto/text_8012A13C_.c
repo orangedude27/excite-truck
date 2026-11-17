@@ -21,23 +21,25 @@ void *fn_8012A13C(void *arg0, int arg1, int arg2, int arg3) {
 extern s32 fn_801284E8(s32, s32);
 extern void fn_8012A218(void *);
 extern char lbl_8032A5D8[];
-s32 fn_8012A17C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+s32 fn_8012A17C(void *thisPool, s32 name, s32 count, s32 blockSize, s32 userBuffer) {
     #pragma scheduling invalid_target
-    u8 *base = (u8 *)arg0;
-    s32 temp_r0;
-    *(u8 *)(base + 5) = (u8)(arg4 != 0);
+    u8 *base = (u8 *)thisPool;
+    s32 buffer;
+    /* Initialize a fixed-size block pool: set its empty-panic/user-buffer flags, name, block size and count;
+     * allocate the backing storage (or use a caller-supplied one), seed the free list, and panic if none. */
+    *(u8 *)(base + 5) = (u8)(userBuffer != 0);
     *(u8 *)(base + 4) = 1;
-    *(s32 *)(base + 0x14) = arg3;
-    *(s32 *)(base + 0x18) = arg2;
-    *(s32 *)(base + 8) = arg1;
-    if (arg4 == 0) {
-        *(s32 *)(base + 0xC) = fn_801284E8(arg1, arg2 * arg3);
+    *(s32 *)(base + 0x14) = blockSize;
+    *(s32 *)(base + 0x18) = count;
+    *(s32 *)(base + 8) = name;
+    if (userBuffer == 0) {
+        *(s32 *)(base + 0xC) = fn_801284E8(name, count * blockSize);
     } else {
-        *(s32 *)(base + 0xC) = arg4;
+        *(s32 *)(base + 0xC) = userBuffer;
     }
-    temp_r0 = *(s32 *)(base + 0xC);
-    if (temp_r0 != 0) {
-        *(s32 *)(base + 0x10) = temp_r0;
+    buffer = *(s32 *)(base + 0xC);
+    if (buffer != 0) {
+        *(s32 *)(base + 0x10) = buffer;
         fn_8012A218(base);
         return;
     }
