@@ -1535,6 +1535,7 @@ s32 fn_802B04D4(void *arg0) {
 extern void fn_802C10C8(void);
 void fn_802B05D8(void) { fn_802C10C8(); }
 
+/* Get the "water_layer" handle from game config (lbl_8055CD78, -1 if none). */
 void* fn_802B05DC(void) {
     return lbl_8055CD78;
 }
