@@ -9415,6 +9415,8 @@ char fn_8012742C(void) {
 }
 
 void fn_80127434(void) {
+    /* Clear the global mode-exit request flag read by fn_8012742C; mode loops poll
+       it to break out and tear down, so this resets it before starting a new mode. */
     lbl_8055DF08 = 0;
 }
 
