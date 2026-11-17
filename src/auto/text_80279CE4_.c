@@ -72,15 +72,16 @@ extern int sprintf(char *, const char *, ...);
 extern const char lbl_80347A08[];
 extern const char lbl_80347A1C[];
 extern const float lbl_80564120;
+/* Clear the 32-entry race-event name/data table (lbl_804A1968, 0x44 bytes per entry). */
 void fn_80279CE4(void) {
     #pragma scheduling invalid_target
-    unsigned char *p = lbl_804A1968;
-    int i = 0;
+    unsigned char *entry = lbl_804A1968;
+    int index = 0;
     do {
-        memset(p, 0, 0x44);
-        i++;
-        p += 0x44;
-    } while (i < 0x20);
+        memset(entry, 0, 0x44);
+        index++;
+        entry += 0x44;
+    } while (index < 0x20);
 }
 
 void fn_80279D3C(void) {
