@@ -3795,9 +3795,26 @@ extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4,
         if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
         result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
         if (result == 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return 3; }
-        if ((iter[0x4C] & 0x40) != 0) {
-            result = fn_800AC1B4(iter, name);
-            if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
+        if ((iter[0x4C] & 0x40) == 0) goto fail_main;
+        result = fn_800AC1B4(iter, name);
+        if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
+        result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
+        if (result == 0) {
+            *(s32 *)((u8 *)arg1 + 0x22C) = *(s32 *)((u8 *)arg0 + 0x34);
+            *arg6 = outValue; *arg7 = *(s32 *)iter;
+            return 0;
+        }
+        goto fail_main;
+    }
+    result = fn_800AC1B4(iter, name);
+    while (VFiPFENT_ITER_IsAtLogicalEnd(iter) == 0) {
+        if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
+        state = iter[0x4C];
+        if (state == 0) break;
+        if (state == 0xE5) {
+            *(u8 *)((u8 *)arg1 + 0x20A) = 0;
+            *(s16 *)arg1 = 0;
+        } else {
             result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
             if (result == 0) {
                 *(s32 *)((u8 *)arg1 + 0x22C) = *(s32 *)((u8 *)arg0 + 0x34);
@@ -3805,26 +3822,8 @@ extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4,
                 return 0;
             }
         }
+        result = VFiPFENT_ITER_Advance(iter, 0);
     }
-    result = fn_800AC1B4(iter, name);
-loop:
-    if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
-    state = iter[0x4C];
-    if (state == 0) goto fail_main;
-    if (state == 0xE5) {
-        *(u8 *)((u8 *)arg1 + 0x20A) = 0;
-        *(s16 *)arg1 = 0;
-    } else {
-        result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
-        if (result == 0) {
-            *(s32 *)((u8 *)arg1 + 0x22C) = *(s32 *)((u8 *)arg0 + 0x34);
-            *arg6 = outValue; *arg7 = *(s32 *)iter;
-            return 0;
-        }
-    }
-    result = VFiPFENT_ITER_Advance(iter, 0);
-    if (VFiPFENT_ITER_IsAtLogicalEnd(iter) != 0) goto fail_main;
-    goto loop;
 fail_main:
     *arg6 = 0xF423F; *arg7 = 0xF423F;
     return 3;
@@ -15030,15 +15029,14 @@ extern "C" s32 fn_800BDEB4(const u8 *data, s32 bitCount, u32 *bitOffset) {
     register s32 byteIndex;
     register s32 bitsInByte;
     register u32 position;
-    register s32 startBit;
     register s32 piece;
+
     if (remaining == 0)
         return 0;
     position = *bitOffset;
-    startBit = position & 7;
     *bitOffset = position + remaining;
     byteIndex = (position >> 3) & 0x1FFF;
-    bitsInByte = 8 - startBit;
+    bitsInByte = 8 - (position & 7);
     while (remaining > 0) {
         if (bitsInByte == 0) {
             byteIndex += 1;
@@ -17730,18 +17728,22 @@ extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4
 }
 #pragma use_lmw_stmw on
 extern "C" void fn_800C3960(s32 *tbl, s32 *coef, u32 idx, s16 *out, u32 mask, s32 flag) {
-    s32 *tbl2 = tbl + 0x10;
-    s64 sumA = 0;
-    s64 sumB = 0;
+    register s32 *tbl2 = tbl + 0x10;
+    register s64 sumA = 0;
+    register s64 sumB = 0;
     s32 k;
     s32 a, b;
+    register u32 off = idx;
+    register s32 *cp = coef;
     for (k = 0; k < 8; k++) {
-        u32 o0 = (idx + k * 0x80) & mask;
-        u32 o1 = (idx + k * 0x80 + 0x60) & mask;
-        sumA += (s64)tbl[o0] * coef[k * 2];
-        sumB += (s64)tbl2[o0] * coef[k * 2 + 0x10];
-        sumA += (s64)tbl[o1] * coef[k * 2 + 1];
-        sumB += (s64)tbl2[o1] * coef[k * 2 + 0x11];
+        u32 o0 = off & mask;
+        u32 o1 = (off + 0x60) & mask;
+        sumA += (s64)tbl[o0] * cp[0];
+        sumA += (s64)tbl[o1] * cp[1];
+        sumB += (s64)tbl2[o0] * cp[0x10];
+        sumB += (s64)tbl2[o1] * cp[0x11];
+        cp += 2;
+        off += 0x80;
     }
     a = (s32)(sumA >> 25);
     b = (s32)(sumB >> 25);
@@ -19310,12 +19312,48 @@ extern "C" void* __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* self, s32 dele
 
 extern "C" void fn_800C7774(unsigned char *);
 extern "C" void fn_800C790C(void *);
+extern "C" void *__ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(void *);
+extern "C" s32 fn_800D53FC(void *, void *, const char *);
+extern "C" void *fn_800D6EEC(void *);
+extern "C" char lbl_805597B8[];
 void fn_800C6CE8(void *arg0) {
-    ((char *)arg0)[0x8b] = 0;
-    ((char *)arg0)[0x8c] = 0;
-    ((char *)arg0)[0x8d] = 0;
+    char *p = (char *)arg0;
+    void *acc;
+    int i;
+
+    p[0x8b] = 0;
+    p[0x8c] = 0;
+    p[0x8d] = 0;
     fn_800C7774((unsigned char *)arg0);
     fn_800C790C(arg0);
+    acc = MEMAllocFromAllocator(lbl_80559708, 0xb0);
+    if (acc != 0) {
+        acc = __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(acc);
+    }
+    *(void **)(p + 0x1f4) = acc;
+    if (acc == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8031D840, 0x24c, (const char *)(lbl_8031D840 + 0xb70));
+    }
+    fn_800D53FC(acc, *(void **)(p + 4), (const char *)lbl_805597B8);
+    if (*(int *)(*(char **)(p + 4) + 0x20) == 0) {
+        for (i = 0; i < 4; i++) {
+            void *pane = MEMAllocFromAllocator(lbl_80559708, 0x24);
+            if (pane != 0) {
+                pane = fn_800D6EEC(pane);
+            }
+            *(void **)(p + 0x1e4 + i * 4) = pane;
+            if (pane == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8031D840, 0x258, (const char *)(lbl_8031D840 + 0xb98));
+            }
+        }
+    }
+    {
+        void *container = MEMAllocFromAllocator(lbl_80559708, 0x24);
+        if (container != 0) {
+            container = fn_800D6EEC(container);
+        }
+        *(void **)(p + 0x1e0) = container;
+    }
 }
 
 extern "C" s32 fn_800C771C(s32 object, s32 deleteFlag) {
@@ -20575,12 +20613,12 @@ extern "C" void fn_800D1204(void* control, f32 value) { *(f32*)((u8*)control + 4
 extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *, long, int, signed char);
 extern "C" OSTime OSGetTime(void);
 extern "C" s32 fn_80060C7C(void *);
-void fn_800D120C(void *arg0) {
+extern "C" void fn_800D120C(void *arg0, void *arg1, s32 arg2) {
+    (void)arg1;
     if (((u8 *)arg0)[0x41] == 0) {
         f32 value = *(f32 *)((u8 *)arg0 + 4);
-        extern f32 lbl_80560E40;
-        f32 prod = lbl_80560E40 * value;
-        Play__Q210homebutton9RemoteSpkFliSc(*(void **)((u8 *)arg0 + 0x24), *(long *)arg0, (int)prod, (signed char)prod);
+        signed char c = (signed char)(lbl_80560E40 * value);
+        Play__Q210homebutton9RemoteSpkFliSc(*(void **)((u8 *)arg0 + 0x24), *(s32 *)arg0, arg2, c);
         if (fn_80060C7C(*(void **)arg0) != 0) {
             if (((u8 *)arg0)[0x42] == 0) {
                 OSTime time = OSGetTime();
@@ -20872,15 +20910,13 @@ extern "C" void *fn_800D19F8(void *self, s32 shouldDelete) {
 }
 
 extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
-    u8 *self = (u8 *)this_ptr;
+    register u8 *self = (u8 *)this_ptr;
     if (self[0x1EC] != 0) {
         OSCreateAlarm((OSAlarm *)(self + 0x1A0));
         OSTime time = OSGetTime();
-        u32 interval, period, q;
         u32 ticks = *(volatile u32 *)0x800000F8;
-        q = (ticks >> 2) / 125000U;
-        period = q * 0x0065B9ABU;
-        interval = period / 8000U;
+        u32 q = (ticks >> 2) / 125000;
+        u32 interval = (q * 0x0065B9AB) / 8000;
         ((void (*)(void *, u32, u32, u32, u32, u32, void *))OSSetPeriodicAlarm)(
             self + 0x1A0, q, (u32)(time >> 32), (u32)time, 0, interval, (void *)&fn_800D16C4);
     }
@@ -23726,7 +23762,17 @@ extern "C" void fn_800CA234(s32 event, s32 value) {
 }
 
 extern "C" void fn_800CA264(void *arg0, void *arg1) {
-    (void)arg0; (void)arg1;
+    char *self = (char *)arg0;
+    s32 mode = *(s32 *)(self + 0x404);
+    if (mode == 1) {
+        *(s32 *)(self + 0x3FC) = *(s32 *)(self + 0x3FC) + 1;
+    } else if (mode == 2) {
+        *(s32 *)(self + 0x3FC) = *(s32 *)(self + 0x3FC) - 1;
+        if (*(s32 *)(self + 0x3FC) < 0) *(s32 *)(self + 0x3FC) = 0;
+        if (*(s32 *)(self + 0x3FC) > *(s32 *)(self + 0x400))
+            *(s32 *)(self + 0x3FC) = *(s32 *)(self + 0x400);
+    }
+    (void)arg1;
 }
 
 extern "C" void fn_800CF3EC(void *);
@@ -24706,7 +24752,26 @@ found_entry_8:;
 
 void homebutton::HomeButton::startLeftEvent(const char *name) {
     int paneNo = getPaneNo(name);
-    (void)paneNo;
+    u8 *self = (u8 *)this;
+    s32 *entry = (s32 *)(self + paneNo * 4);
+    s32 count = *(s32 *)((u8 *)entry + 0x1c);
+    if (count <= 0) return;
+    s32 f8 = *(s32 *)(self + 8);
+    if (paneNo == f8 + 1) {
+        s32 *e = (s32 *)(self + (f8 + 9) * 4);
+        *(s32 *)((u8 *)e + 0x1c) -= 1;
+    } else if (paneNo == f8 + 9) {
+        s32 *e = (s32 *)(self + (f8 + 9) * 4);
+        *(s32 *)((u8 *)e + 0x1c) -= 1;
+        *(s32 *)((u8 *)e + 0x1c) -= 1;
+    } else {
+        *(s32 *)((u8 *)entry + 0x1c) -= 1;
+    }
+    if (*(s32 *)(self + 0x10) != 2) return;
+    if (paneNo == -1) return;
+    if (*(s32 *)((u8 *)entry + 0x1c) != 0) return;
+    if (*(s32 *)self == 2) return;
+    if (paneNo < f8) return;
 }
 
 extern "C" s32 getPaneNo__Q210homebutton10HomeButtonFPCc(void *, const char *);
