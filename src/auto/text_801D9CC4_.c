@@ -249,7 +249,8 @@ int fn_801DA1F8(void *arg0, void **arg1, void **arg2, float *arg3) {
     return 0;
 }
 
-extern float lbl_80562B40, lbl_80562B44, lbl_80562B48, lbl_80562B4C, lbl_80558DC4;
+extern float lbl_80562B40, lbl_80562B44, lbl_80562B48, lbl_80562B4C;
+__declspec(section ".data") extern float lbl_80558DC4;
 extern double fn_8002F234(float);
 extern double fn_8002EFA8(double);
 extern double sin(double);
@@ -265,17 +266,17 @@ int fn_801DA294(void *arg0, void *arg1, void *arg2, void *arg3) {
     float inv, sc, len, w, omt;
     float *m = (float *)arg1, *d = (float *)arg2, *r = (float *)arg3;
     if (fn_801DA1F8(arg0, (void **)&a, (void **)&b, &t) != 0) {
-        tr[2] = a[3] + t * (b[3] - a[3]);
-        tr[1] = a[2] + t * (b[2] - a[2]);
-        tr[0] = a[1] + t * (b[1] - a[1]);
+        tr[2] = t * (b[3] - a[3]) + a[3];
+        tr[1] = t * (b[2] - a[2]) + a[2];
+        tr[0] = t * (b[1] - a[1]) + a[1];
         m[0xB] = tr[2];
         m[0xA] = tr[1];
         m[9] = tr[0];
         omt = lbl_80562B40 - t;
-        q[3] = a[7] * omt + b[7] * t;
-        q[2] = a[6] * omt + b[6] * t;
-        q[0] = a[4] * omt + b[4] * t;
-        q[1] = a[5] * omt + b[5] * t;
+        q[3] = b[7] * t + a[7] * omt;
+        q[2] = b[6] * t + a[6] * omt;
+        q[0] = b[4] * t + a[4] * omt;
+        q[1] = b[5] * t + a[5] * omt;
         inv = lbl_80562B40 / (float)fn_8002F234(q[0]*q[0] + (q[1]*q[1] + (q[3]*q[3] + q[2]*q[2])));
         q[1] *= inv; q[2] *= inv; q[0] *= inv; q[3] *= inv;
         m[0] = lbl_80562B40 - (q[1]*(q[1]+q[1]) + q[2]*(q[2]+q[2]));
