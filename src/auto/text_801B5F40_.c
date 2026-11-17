@@ -37,9 +37,12 @@ void *fn_801B5F40(void) {
 #pragma scheduling on
 #pragma dont_inline reset
 
+/* Push a node onto the global free list: link its next field to the old head, then make it the new head. */
 void __AXPushCallbackStack(void *arg0) {
-    *((void **)arg0 + 1) = lbl_8055E710;
-    lbl_8055E710 = arg0;
+#define sFreeNodeHead lbl_8055E710
+    *((void **)arg0 + 1) = sFreeNodeHead;
+    sFreeNodeHead = arg0;
+#undef sFreeNodeHead
 }
 
 extern void *fn_8012850C(s32, void *);
