@@ -3141,8 +3141,13 @@ extern "C" void fn_800DB098(void* arg0, void* arg1) {
     };
     extern const char lbl_8031F1FC[];
     extern const char lbl_8031F1D8[];
-    void* node = *(void**)((u8*)arg0 + 0x1C);
-    void* end = (u8*)arg0 + 0x1C;
+    u8* base = (u8*)arg0;
+    struct { void *node; } cursor;
+    cursor.node = *(void**)(base + 0x1C);
+    void *&node = cursor.node;
+    struct { void *end; } sentinel;
+    sentinel.end = base + 0x1C;
+    void *&end = sentinel.end;
     while (node != end) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
         if (*(u8*)((u8*)node + 0xE) == 0) {
@@ -3529,8 +3534,6 @@ void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
     volatile const u8 *flagInfo = (volatile const u8 *)info;
     u32 scaleY;
     u32 scaleX;
-    f32 *sx = (f32 *)&scaleX;
-    f32 *sy = (f32 *)&scaleY;
     s32 flags = pane[0xCF];
     int scaleFlag;
     u32 bitsX;
@@ -3551,11 +3554,11 @@ void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
         scaleY = bitsY;
         if (scaleFlag) {
             if ((flags & 4) != 0) {
-                *sx *= *(const f32 *)(info + 0x44);
-                *sy *= *(const f32 *)(info + 0x48);
+                *(f32 *)&scaleX *= *(const f32 *)(info + 0x44);
+                *(f32 *)&scaleY *= *(const f32 *)(info + 0x48);
             }
         }
-        PSMTXScale(frame.mtx40, *sx, *sy, lbl_80560EAC);
+        PSMTXScale(frame.mtx40, *(f32 *)&scaleX, *(f32 *)&scaleY, lbl_80560EAC);
         PSMTXInverse(frame.mtx10, 0x78, lbl_80560EB0 * *(f32 *)(pane + 0x38));
         PSMTXConcat(frame.mtx10, frame.mtx40, frame.mtx70);
         PSMTXInverse(frame.mtx10, 0x79, lbl_80560EB0 * *(f32 *)(pane + 0x3C));
