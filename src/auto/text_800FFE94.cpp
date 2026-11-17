@@ -703,8 +703,9 @@ extern "C" float fn_801013D4(void* player) {
     return *(float*)((char*)player + 0x28);
 }
 
-extern "C" float fn_801013DC(void* arg0) {
-    return *(float*)((char*)arg0 + 0x3C);
+extern "C" float fn_801013DC(void* player) {
+    /* Return the sound player's volume (float at +0x3C, set by SeqPlayer::SetVolume). */
+    return *(float*)((char*)player + 0x3C);
 }
 
 extern "C" float fn_801013E4(void* arg0) {
