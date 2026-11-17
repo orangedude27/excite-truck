@@ -587,8 +587,9 @@ void fn_8028EE1C(void *arg0) {
     *(int *)((char *)arg0 + 0x600) = 0;
 }
 
-void fn_8028EE28(void *arg0) {
-    *(int *)((char *)arg0 + 0x600) = 0;
+// Reset the entry count (at +0x600) of this 0x18-byte-entry cache table to zero.
+void fn_8028EE28(void *table) {
+    *(int *)((char *)table + 0x600) = 0;
 }
 
 #pragma push
