@@ -403,7 +403,7 @@ after5:
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void *fn_8016BE60(void *arg0) {
     u8 *object = (u8 *)fn_801284F8(0x1B4, lbl_803306D0 + 0x20);
     char *strings = lbl_803306D0;
@@ -423,14 +423,13 @@ extern "C" void *fn_8016BE60(void *arg0) {
         }
         fn_8016A0B0();
         fn_8016C328(object + 0x30);
-        {
-            f32 initialValue = lbl_80561998;
-            *(s32 *)(object + 0x98) = 0;
-            *(u8 *)(object + 0x9C) = 1;
-            *(f32 *)(object + 0xA0) = initialValue;
-        }
+        s32 zero = 0;
+        f32 initialValue = lbl_80561998;
+        *(s32 *)(object + 0x98) = zero;
+        *(u8 *)(object + 0x9C) = 1;
+        *(f32 *)(object + 0xA0) = initialValue;
         *(s32 *)(object + 0xA4) = fn_80207848(strings + 0x3C, 1);
-        *(u8 *)(object + 0xA8) = 0;
+        *(u8 *)(object + 0xA8) = zero;
     }
     return object;
 }
@@ -993,28 +992,32 @@ extern void *fn_80131808(void *);
 extern void *fn_8023512C(void *);
 extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
-void *fn_8016D024(void *a0) {
-    char *b = lbl_803306D0;
+#pragma push
+#pragma opt_common_subs off
+void *fn_8016D024(void *__restrict a0) {
+    char *base = lbl_803306D0;
+    f32 v;
     void *last;
     void *nfirst;
     fn_802C2914(a0);
     *(void **)((u8 *)a0 + 4) = lbl_80330A90;
-    *(void **)((u8 *)a0 + 0x14) = fn_80131808(b + 0x1E0);
-    *(void **)((u8 *)a0 + 0x20) = fn_8023512C(b + 0x1F8);
-    *(void **)((u8 *)a0 + 0x4C) = fn_802076A0(b + 0x204, 1, 0, 0);
-    *(void **)((u8 *)a0 + 0x50) = fn_802076A0(b + 0x210, 1, 0, 0);
-    *(void **)((u8 *)a0 + 0x58) = fn_802076A0(b + 0x220, 1, 0, 0);
-    *(void **)((u8 *)a0 + 0x54) = fn_802076A0(b + 0x22C, 1, 0, 0);
-    *(void **)((u8 *)a0 + 0x5C) = fn_802076A0(b + 0x23C, 1, 0, 0);
-    *(void **)((u8 *)a0 + 0x60) = fn_802076A0(b + 0x24C, 1, 0, 0);
-    last = fn_802076A0(b + 0x258, 1, 0, 0);
+    *(void **)((u8 *)a0 + 0x14) = fn_80131808(base + 0x1E0);
+    *(void **)((u8 *)a0 + 0x20) = fn_8023512C(base + 0x1F8);
+    *(void **)((u8 *)a0 + 0x4C) = fn_802076A0(base + 0x204, 1, 0, 0);
+    *(void **)((u8 *)a0 + 0x50) = fn_802076A0(base + 0x210, 1, 0, 0);
+    *(void **)((u8 *)a0 + 0x58) = fn_802076A0(base + 0x220, 1, 0, 0);
+    *(void **)((u8 *)a0 + 0x54) = fn_802076A0(base + 0x22C, 1, 0, 0);
+    *(void **)((u8 *)a0 + 0x5C) = fn_802076A0(base + 0x23C, 1, 0, 0);
+    *(void **)((u8 *)a0 + 0x60) = fn_802076A0(base + 0x24C, 1, 0, 0);
+    last = fn_802076A0(base + 0x258, 1, 0, 0);
     nfirst = *(void **)((u8 *)a0 + 0x4C);
+    v = lbl_80561980;
     *(void **)((u8 *)a0 + 0x64) = last;
     *(s32 *)((u8 *)a0 + 0x24) = -1;
     *(u8 *)((u8 *)a0 + 0x48) = 0;
     *(u8 *)((u8 *)a0 + 0x49) = 0;
     *(u8 *)((u8 *)a0 + 0x4A) = 1;
-    *(f32 *)((u8 *)a0 + 0x28) = lbl_80561980;
+    *(f32 *)((u8 *)a0 + 0x28) = v;
     *(s32 *)((u8 *)a0 + 0x38) = 0;
     *(s32 *)((u8 *)a0 + 0x3C) = 0;
     SetNodeF8(nfirst);
@@ -1027,8 +1030,7 @@ void *fn_8016D024(void *a0) {
     *(s32 *)((u8 *)a0 + 0x40) = fn_80204CF0();
     return a0;
 }
-
-#pragma scheduling on
+#pragma pop
 void fn_8016D278(void *list) {
     /* Initialize a collection: point its items at the inline storage at +0xC,
      * set the element count (+0x4) to 0 and its capacity (+0x8) to 8. */
