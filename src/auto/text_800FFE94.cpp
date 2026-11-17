@@ -177,14 +177,16 @@ extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46n
     return 1;
 }
 
-#pragma scheduling on
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(void* arg0, unsigned int arg1, void* arg2, const void* arg3) {
+    struct Hdr { char pad[6]; unsigned short ver; };
+    const struct Hdr* h = (const struct Hdr*)*(void**)arg0;
     unsigned char sp8[8];
-    register void* header;
     char* base;
     void* entry;
-    header = *(void**)arg0;
-    if (*(unsigned short*)((char*)header + 6) == 0x100) {
+    if (h->ver == 0x100) {
         base = (char*)*(void**)((char*)arg0 + 8);
         unsigned int off = *(unsigned int*)(base + arg1 * 4 + 8);
         entry = (void*)((unsigned int)off + (unsigned int)base);
@@ -198,7 +200,7 @@ extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3s
     fn_800FEC1C(sp8, entry);
     return ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(sp8, arg2, arg3);
 }
-#pragma scheduling on
+#pragma pop
 extern "C" void* __ct__Q46nw4hbm3snd6detail9WsdPlayerFv(void* this_) {
     /* nw4hbm::snd::detail::WsdPlayer constructor: initializes player state,
        installs the primary and secondary vtables, and sets up the subobject at +0xA8. */
@@ -711,8 +713,9 @@ extern "C" int fn_801013EC(void* arg0) {
     return *((unsigned char*)arg0 + 0x20) != 0;
 }
 
-extern "C" int fn_80101400(void* arg0) {
-    return *((unsigned char*)arg0 + 0x1E) != 0;
+/* Return whether the WSD player is prepared (byte flag at +0x1E). */
+extern "C" int fn_80101400(void* player) {
+    return *((unsigned char*)player + 0x1E) != 0;
 }
 
 extern "C" int fn_80101414(void* arg0) {
