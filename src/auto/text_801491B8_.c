@@ -3627,8 +3627,8 @@ void *fn_801538E4(void *entry) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_80153900(void *arg0, long arg1) {
-    struct Obj {
+extern "C" void fn_80153900(void *owner, long playerIndex) {
+    struct FlagOwner {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
@@ -3637,38 +3637,42 @@ extern "C" void fn_80153900(void *arg0, long arg1) {
         virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
         virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
         virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
-        virtual void v32();
+        virtual void onFlagSet();
     };
-    struct V {
+    struct Manager {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5();
+        virtual void v4(); virtual void prepare();
     };
     extern long fn_801E85A4(void);
     extern long fn_801E866C(long);
     extern long fn_8014AFD4(void *, void *, long);
     extern long fn_801CB7BC(long);
-    void *v;
+    void *manager;
     long base;
-    long p;
+    long entry;
     unsigned char flag;
-    flag = *(unsigned char *)((char *)arg0 + 0x9E0);
+    /* If owner's flag at +0x9E0 is set, notify it (vtable slot 0x88) and stop;
+       otherwise pick one of the two shared managers by game mode, call its
+       prepare() hook, then draw the player's 0xC0-byte entry at +0x9E4 via
+       fn_8014AFD4 and run a fn_801CB7BC UI action. */
+    flag = *(unsigned char *)((char *)owner + 0x9E0);
     if (flag != 0) {
-        ((Obj *)arg0)->v32();
+        ((FlagOwner *)owner)->onFlagSet();
         return;
     }
     if (fn_801E85A4() == 2)
-        v = (void *)*(volatile long *)&lbl_8055E23C;
+        manager = (void *)*(volatile long *)&lbl_8055E23C;
     else
-        v = (void *)*(volatile long *)&lbl_8055E238;
-    ((V *)v)->v5();
-    base = (long)arg0 + fn_801E866C(arg1) * 0xC0;
-    p = base + 0x9E4;
-    if (p != 0) {
+        manager = (void *)*(volatile long *)&lbl_8055E238;
+    ((Manager *)manager)->prepare();
+    base = (long)owner + fn_801E866C(playerIndex) * 0xC0;
+    entry = base + 0x9E4;
+    if (entry != 0) {
         if (fn_801E85A4() == 2)
-            v = (void *)*(volatile long *)&lbl_8055E23C;
+            manager = (void *)*(volatile long *)&lbl_8055E23C;
         else
-            v = (void *)*(volatile long *)&lbl_8055E238;
-        fn_8014AFD4((void *)p, v, arg1);
+            manager = (void *)*(volatile long *)&lbl_8055E238;
+        fn_8014AFD4((void *)entry, manager, playerIndex);
         fn_801CB7BC(0);
     }
 }
