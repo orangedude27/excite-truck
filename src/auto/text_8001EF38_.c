@@ -139,8 +139,11 @@ s32 fn_8001EF9C(s32 coefIndex) {
 #undef GetAchCoefId
 }
 
-void fn_8001EFA0(void) {
-    fn_8001F9A4();
+s32 fn_8001EFA0(s32 counter, s32 value) {
+#define GetAchLevel fn_8001F9A4
+    /* Thunk: return the achievement level reached by value for the given counter. */
+    return GetAchLevel(counter, value);
+#undef GetAchLevel
 }
 
 void fn_8001EFA4(void) {
