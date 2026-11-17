@@ -749,7 +749,6 @@ void fn_80015B20(void *, void *, void *);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-#pragma opt_propagation off
 void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     int flags = *(int *)((char *)arg1 + 0x60);
     float matrix[9], matrix2[9];
