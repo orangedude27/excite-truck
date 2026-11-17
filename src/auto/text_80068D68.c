@@ -21252,9 +21252,11 @@ void *fn_8008EBE4(s16 psm) {
     return 0;
 }
 
+/* Release an L2CAP registration control block: clear its in-use flag and PSM. */
 void fn_8008EC30(void *arg0) {
-    *(u8 *)arg0 = 0;
-    *(u16 *)((u8 *)arg0 + 2) = 0;
+    tL2C_RCB_VIEW *p_rcb = (tL2C_RCB_VIEW *)arg0;
+    p_rcb->in_use = 0;
+    p_rcb->psm = 0;
 }
 
 /* Find the registration control block for a PSM in l2cb's RCB pool, or NULL if none. */
