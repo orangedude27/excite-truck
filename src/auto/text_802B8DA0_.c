@@ -324,6 +324,7 @@ int fn_802B9100(void) {
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
+#pragma use_lmw_stmw off
 void fn_802B9108(short arg0) {
     typedef struct Node {
         void *data;
@@ -615,6 +616,7 @@ short fn_802B9954(void *roadObject) {
 void fn_802B9960(void) {
 }
 
+#pragma scheduling 750
 void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     typedef struct Node {
         s32 *data;
@@ -628,28 +630,26 @@ void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         volatile s32 used;
         s32 capacity;
     } Pool;
-    s32 size;
-    s32 denom, y, rows, x, index, item, used;
-    Node **cell;
     Pool *pool;
+    s32 denom, y, rows, x, index, item, used;
+    s32 size;
+    Node **cell;
     Node *node, *new_node, *tail;
     s32 *data, *slot;
     size = *(s16 *)arg0;
+    pool = *(Pool **)((char *)arg0 + 0xC);
     denom = size * 2;
     y = (arg3 - size + 0x200) / denom;
-    rows = 1024 / denom;
+    rows = 0x400 / denom;
     x = (arg2 - size + 0x200) / denom;
     index = x + y * rows;
     cell = (Node **)((char *)*(void **)((char *)arg0 + 4) + index * 8);
-    pool = *(Pool **)((char *)arg0 + 0xC);
     node = cell[1];
     slot = 0;
     if (node == 0 || node->used + 1 > node->capacity) {
         node = 0;
         if (pool->used + 1 <= pool->capacity) {
-            used = pool->used;
-            new_node = &pool->nodes[used];
-            pool->used = used + 1;
+            new_node = &pool->nodes[pool->used++];
             node = new_node;
             node->used = 0;
             node->next = 0;
@@ -674,7 +674,6 @@ void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
     if (slot != 0) *slot = arg1;
 }
-
 extern double ceil(double);
 // Returns ceil(value): the smallest integer greater than or equal to value.
 float fn_802B9A80(float value) {
@@ -738,19 +737,19 @@ void fn_802B9B68(void) {
         int count;
         void *allocation;
     };
+    char *base = lbl_8034A990;
     struct Manager *manager;
     void *memory;
     void *pool;
     void *records;
-    void *entry;
     int i;
     int offset;
     int index;
 
-    fn_802B8AE0(lbl_8034A990 + 0xC, &lbl_8055FA6C);
-    fn_802B8AE0(lbl_8034A990 + 0x18, &lbl_8055FA70);
+    fn_802B8AE0(base + 0xC, &lbl_8055FA6C);
+    fn_802B8AE0(base + 0x18, &lbl_8055FA70);
     memset(lbl_804C0088, 0, 0x10);
-    manager = fn_801284F8(0x14, lbl_8034A990 + 0x24);
+    manager = fn_801284F8(0x14, base + 0x24);
     if (manager != 0) {
         memory = ((void *(*)(int, void *))fn_8012850C)(0x5010, &lbl_8055CEF0);
         manager->records = ((void *(*)(void *, void (*)(void *),
@@ -760,7 +759,7 @@ void fn_802B9B68(void) {
         manager->index = 0;
         manager->allocation = manager->records;
         manager->pool = ((void *(*)(int, void *))fn_8012850C)(
-            0x500 << 4, lbl_8034AA1C);
+            manager->count * 0x10, lbl_8034AA1C);
         i = 0;
         offset = 0;
         while (i < manager->count) {
@@ -769,11 +768,10 @@ void fn_802B9B68(void) {
             pool = manager->pool;
             records = manager->records;
             manager->index = index + 1;
-            entry = (char *)records + index * 0x10;
-            *(void **)entry = (char *)pool + offset;
+            *(void **)((char *)records + index * 0x10) = (char *)pool + offset;
             offset += 0x10;
-            *(int *)((char *)entry + 8) = 4;
-            *(int *)((char *)entry + 4) = 0;
+            *(int *)((char *)records + index * 0x10 + 8) = 4;
+            *(int *)((char *)records + index * 0x10 + 4) = 0;
         }
         manager->index = 0;
     }
@@ -996,12 +994,17 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
     struct Dummy { virtual void v0(); virtual void *v1(int); };
     volatile char scratch[0x40];
     char *sp = (char *)scratch;
-    int index, count;
+    void *record;
+    void *entry;
+    void *buffer;
+    void *current;
+    void *pool, *base;
+    int index;
+    void *next;
     int state = 2;
+    int count;
     short radius, item;
     void *object = arg0;
-    void *buffer, *current, *next, *entry, *record, *pool, *base;
-    void *interp, *end;
     float f30, f31, f29;
     float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
     *(void *volatile *)(sp + 0x10) = lbl_8034A9C0;
@@ -1035,32 +1038,31 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
                     *(int *)((char *)record + 0x14) = item;
                     *(int *)((char *)record + 0x18) = radius;
                     *(void **)((char *)record + 0x30) = buffer;
-                    interp = *(void **)(sp + 0x18);
-                    end = *(void **)((char *)interp + 0x14);
                     f1 = *(float *)(sp + 0x1C);
-                    f2 = *(float *)interp;
-                    f2 += f1 * (*(float *)end - f2);
-                    *(float *)((char *)record + 0x1C) = f2;
-                    f2 = *((float *)interp + 1);
-                    f2 += f1 * (*((float *)end + 1) - f2);
-                    *(float *)((char *)record + 0x20) = f2;
-                    f2 = *((float *)interp + 2);
-                    f2 += f1 * (*((float *)end + 2) - f2);
-                    *(float *)((char *)record + 0x24) = f2;
-                    f3 = *((float *)interp + 3);
-                    f2 = f3 + f1 * (*((float *)end + 3) - f3);
-                    *(float *)((char *)record + 0x28) = f2;
-                    f0 = *(float *)((char *)record + 0x24);
-                    f1 = *(float *)((char *)record + 0x28);
-                    f0 = (float)fn_8002F234(end, interp, radius, f0 * f0 + f1 * f1, f1, f3);
+                    f2 = *(float *)*(void **)(sp + 0x18);
+                    f0 = f2 + f1 * (*(float *)*(void **)((char *)*(void **)(sp + 0x18) + 0x14) - f2);
+                    *(float *)((char *)record + 0x1C) = f0;
+                    f2 = *((float *)*(void **)(sp + 0x18) + 1);
+                    f0 = f2 + f1 * (*((float *)*(void **)((char *)*(void **)(sp + 0x18) + 0x14) + 1) - f2);
+                    *(float *)((char *)record + 0x20) = f0;
+                    f2 = *(float *)(sp + 0x1C);
+                    f1 = *((float *)*(void **)(sp + 0x18) + 2);
+                    f0 = f1 + f2 * (*((float *)*(void **)((char *)*(void **)(sp + 0x18) + 0x14) + 2) - f1);
+                    *(float *)((char *)record + 0x24) = f0;
+                    f1 = f0 * f0;
+                    f3 = *((float *)*(void **)(sp + 0x18) + 3);
+                    f0 = f3 + f2 * (*((float *)*(void **)((char *)*(void **)(sp + 0x18) + 0x14) + 3) - f3);
+                    *(float *)((char *)record + 0x28) = f0;
+                    f1 = f1 + f0 * f0;
+                    f0 = (float)fn_8002F234(*(void **)((char *)*(void **)(sp + 0x18) + 0x14), *(void **)(sp + 0x18), radius, f1, *((float *)*(void **)(sp + 0x18) + 3), f3);
                     f0 = f31 / f0;
                     f1 = *(float *)((char *)record + 0x24) * f0;
                     *(float *)((char *)record + 0x24) = f1;
                     f1 = *(float *)((char *)record + 0x28) * f0;
                     *(float *)((char *)record + 0x28) = f1;
-                    f2 = *((float *)((char *)interp + 0x18)) * *(float *)(sp + 0x1C);
-                    f1 = *((float *)buffer + 1) * (*((float *)((char *)interp + 0x1C)) + f2);
-                    f0 = (float)fn_8002EFB4(interp, f1, lbl_80564CD0, f2);
+                    f2 = *(float *)((char *)*(void **)(sp + 0x18) + 0x18) * *(float *)(sp + 0x1C);
+                    f1 = *((float *)buffer + 1) * (*(float *)((char *)*(void **)(sp + 0x18) + 0x1C) + f2);
+                    f0 = (float)fn_8002EFB4(*(void **)(sp + 0x18), f1, lbl_80564CD0, f2);
                     index++;
                     entry = (char *)entry + 8;
                     *(float *)((char *)record + 0x2C) = f0;
@@ -1284,10 +1286,11 @@ found:
 extern f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
 extern "C" f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
 extern "C" void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
+#pragma opt_common_subs on
     f32 x0 = b[0], y1 = a[1], y0 = a[0], x1 = b[1], z0 = c[0];
     f32 d = y0 * x1 - x0 * y1;
-    f32 k1 = lbl_80564CEC;
     f32 hi = x0 + (z0 + y0);
+    f32 k1 = lbl_80564CEC;
     f32 z1 = c[1];
     f32 lo = z0 + x0;
     f32 u, v, w, q;
@@ -1393,6 +1396,7 @@ extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
     char *name;
     float angle;
     float k;
+    Object *obj = (Object *)arg0;
     result = *(char **)lbl_8055FA7C + (*(int *)((char *)lbl_8055FA7C+4))*0x44;
     ++*(int *)((char *)lbl_8055FA7C+4);
     fn_801602B0(a); fn_801602B0(b); fn_801602B0(c);
@@ -1401,20 +1405,20 @@ extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
     fn_8016029C(c, arg1);
     fn_80160B18(c);
     fn_8016029C(a, arg1 + 0x24);
-    value.bits = ((Object *)arg0)->value(&lbl_8055CF10);
+    value.bits = obj->value(&lbl_8055CF10);
     fn_80160288(e, &value);
     fn_80160BA0(b, b, e[1]);
     fn_80160BA0(c, c, e[1]);
     k = lbl_80564CEC;
-    angle = fn_802BAD90(k * ((Object *)arg0)->v8(&lbl_8055CF0C, lbl_80564CD8));
+    angle = fn_802BAD90(k * obj->v8(&lbl_8055CF0C, lbl_80564CD8));
     fn_802BAD0C(b, angle);
     fn_802BAD0C(c, angle);
     fn_801E0F78(a, a, c, lbl_80564CDC);
     fn_801E0F78(a, a, b, lbl_80564CDC);
     fn_802BA848((float *)result, c, b, a);
     *(int *)(result+8) = 0;
-    name = ((Object *)arg0)->name(&lbl_8055CEF8);
-    extra = ((Object *)arg0)->v6(&lbl_8055CEE4, 0x378);
+    name = obj->name(&lbl_8055CEF8);
+    extra = obj->v6(&lbl_8055CEE4, 0x378);
     RenderList *list = (RenderList *)lbl_804BFFF4;
     off = 0;
     for(index=0; index < list->count; index++) {
