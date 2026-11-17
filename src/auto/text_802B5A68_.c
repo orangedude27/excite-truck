@@ -190,8 +190,11 @@ void fn_802B5CAC(void) {
 
 #pragma push
 #pragma dont_inline on
-void fn_802B5CB4(s32 arg0) {
-    lbl_8055FA3C += arg0;
+/* Advance the "tedash.val" debug viewer's current material set by `delta`. */
+void fn_802B5CB4(s32 delta) {
+#define matSetIndex lbl_8055FA3C /* which UMatSet (material set) the viewer is on */
+    matSetIndex += delta;
+#undef matSetIndex
 }
 #pragma pop
 
