@@ -1424,8 +1424,7 @@ __declspec(section ".sdata") extern char lbl_8055B948[];
 __declspec(section ".sdata") extern char lbl_8055B950[];
 extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
 #pragma dont_inline(fn_8022CD0C)
-#pragma cplusplus on
-extern "C" void fn_8022CDE4(int *d, void *o) {
+void fn_8022CDE4(int *d, void *o) {
     register const char *base = lbl_8033FBE8;
     register char *s;
     register void *obj;
