@@ -1239,14 +1239,15 @@ int GXGetCPUFifo(void *fifo) {
 }
 #pragma dont_inline reset
 
-void GXGetFifoPtrs(const void *arg0, void **arg1, void **arg2) {
+/* Return the CPU FIFO's current read and write pointers through rdPtr/wrPtr. */
+void GXGetFifoPtrs(const void *fifo, void **rdPtr, void **wrPtr) {
     const struct {
         char pad[0x14];
         void *rdPtr;
         void *wrPtr;
-    } *realFifo = arg0;
-    *arg1 = realFifo->rdPtr;
-    *arg2 = realFifo->wrPtr;
+    } *realFifo = fifo;
+    *rdPtr = realFifo->rdPtr;
+    *wrPtr = realFifo->wrPtr;
 }
 
 int GXGetFifoBase(int *arg0) {
