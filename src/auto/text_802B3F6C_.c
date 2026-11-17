@@ -598,8 +598,10 @@ void fn_802B4E30(void) {
     lbl_8055F9C8 = (void*)-1;
 }
 
-void fn_802B4E3C(void* hi) {
-    lbl_8055F9C8 = hi;
+/* Set the skag-table selection filter (see fn_802B40B0): -1 accepts every
+   entry, otherwise only entries whose selector matches this value. */
+void fn_802B4E3C(void* selector) {
+    lbl_8055F9C8 = selector;
 }
 
 extern int fn_802B3DA4(int, unsigned short, int);
