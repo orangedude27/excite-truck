@@ -10,6 +10,7 @@ void* OSGetMEM1ArenaHi(void) {
 }
 
 void* OSGetMEM2ArenaHi(void) {
+    /* Return the high bound of the MEM2 arena. */
     return s_mem2ArenaHi;
 }
 
