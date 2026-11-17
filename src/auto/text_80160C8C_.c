@@ -421,6 +421,7 @@ s32 fn_80160CE4(void) {
 #pragma cplusplus on
 extern "C" char lbl_8032F790[];
 extern "C" void fn_80158558(void *);
+extern "C" s32 fn_80158618(s32);
 extern "C" int stricmp(const char *, const char *);
 extern "C" char lbl_8055A0D4;
 extern "C" f32 lbl_8056183C;
