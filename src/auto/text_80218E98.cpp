@@ -5860,8 +5860,9 @@ extern "C" s32 fn_80222B48(void *self, s32 unused1, s32 unused2, s32 x, s32 y) {
     return result;
 }
 
-extern "C" s32 fn_80222BD4(void *arg0) {
-    return fn_802C51AC(*(s32*)((u8*)arg0 + 4));
+extern "C" s32 fn_80222BD4(void *self) {
+    /* Query the image/resource-set handle stored at +4 of this object. */
+    return fn_802C51AC(*(s32*)((u8*)self + 4));
 }
 
 extern "C" char lbl_8033E560[];
