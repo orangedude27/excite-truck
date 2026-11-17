@@ -3852,10 +3852,12 @@ void GKI_stop_timer(UINT8 tnum) {
     }
 }
 
-void fn_8006E6E4(void *arg0) {
-    ((s32 *)arg0)[0] = 0;
-    ((s32 *)arg0)[1] = 0;
-    ((s32 *)arg0)[2] = 0;
+/* Clear a GKI timer list queue: p_first, p_last and last_ticks. */
+void fn_8006E6E4(void *p_queue) {
+    TIMER_LIST_Q *q = (TIMER_LIST_Q *)p_queue;
+    q->p_first = NULL;
+    q->p_last = NULL;
+    q->last_ticks = 0;
 }
 
 /* Advance a timer list by num_units_since_last_update ticks and return how many
@@ -18012,8 +18014,8 @@ static void hidh_l2cif_data_ind(UINT16 l2cap_cid, BT_HDR *p_msg) {
 }
 
 extern UINT8 L2CA_DataWrite(UINT16, BT_HDR *);
-UINT8 hidh_conn_snd_data(UINT8 dhandle, hidh_trans_t trans_type, UINT8 param, UINT16 data, UINT8 rpt_id, BT_HDR *buf) {
-    register u8 var_r17;
+UINT8 hidh_conn_snd_data(UINT8 dhandle, s32 trans_type, UINT8 param, UINT16 data, UINT8 rpt_id, BT_HDR *buf) {
+    register s32 var_r17;
     register s32 var_r20;
     s32 var_r4;
     register u16 temp_r24;
