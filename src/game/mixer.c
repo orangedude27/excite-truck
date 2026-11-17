@@ -436,6 +436,7 @@ int fn_802091D4(int object, int deleteFlag) {
 }
 
 int fn_80209214(void) {
+    // Trivial mixer helper stub; always reports 0 (false).
     return 0;
 }
 
