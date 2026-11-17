@@ -1444,8 +1444,11 @@ void fn_80181418(void *arg0, int arg1) {
 
 extern void lbl_80331EFC(void);
 #define s_baseDriverVTable lbl_80331EFC
-void fn_80181428(void **arg0) {
-    *arg0 = (void *)&lbl_80331EFC;
+/* Base DriverInterface constructor: store the address of the all-null base
+ * vtable in *vtableSlot; fn_8018108C then overrides it with the real vtable,
+ * lbl_80331E78. */
+void fn_80181428(void **vtableSlot) {
+    *vtableSlot = (void *)&s_baseDriverVTable;
 }
 #undef s_baseDriverVTable
 
