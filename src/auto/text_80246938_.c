@@ -1031,9 +1031,15 @@ void *fn_80248140(void *object, int shouldDelete) {
     return object;
 }
 
-extern s32 lbl_8055F274;
+/* "logo_mover" (fn_802483E0): the animation of the "thankyou.lyt" text.  While
+ * it runs it installs fn_802481A0 as the text drawer's position-warp hook. */
+extern s32 lbl_8055F274;                /* ms stamp of when the animation started */
 extern float lbl_805638AC, lbl_805638B0, lbl_805638B4, lbl_805638B8;
 extern double sin(double);
+/* The hook's curve: nine (screen x, vertical offset) control points, the x
+ * values ascending from -200 to 200. */
+typedef struct LogoCurvePoint { float x; float y; } LogoCurvePoint;
+typedef struct LogoCurve { LogoCurvePoint point[9]; } LogoCurve;
 extern float lbl_802FA430[18];
 extern void *memcpy(void *, const void *, unsigned long);
 extern float lbl_80563898, lbl_805638AC, lbl_805638B0, lbl_805638B4, lbl_805638B8;
