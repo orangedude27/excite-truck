@@ -2229,8 +2229,9 @@ extern "C" void fn_801636E0(void *arg0) {
 #pragma cplusplus reset
 #pragma scheduling on
 
-u8 fn_80163864(void *arg0) {
-    return *((u8 *)arg0 + 0x56C);
+/* Return this object's +0x56C progress-reached flag. */
+u8 fn_80163864(void *obj) {
+    return *((u8 *)obj + 0x56C);
 }
 
 /* On event type 5, while this object's stop flag (+0x56D) is still clear: set
