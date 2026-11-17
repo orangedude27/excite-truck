@@ -567,7 +567,9 @@ int fn_801388F4(void *arg0) {
     return result;
 }
 
-void fn_80138958(void *arg0, float *arg1) { fn_801386D0(arg0, arg1[0], arg1[1], arg1[2]); }
+/* Forwards an object and the three components of a vec3 (an IDEAL_EXT_POINT's
+ * data at +0x8) to fn_801386D0, which applies them to the object's line nodes. */
+void fn_80138958(void *object, float *vec) { fn_801386D0(object, vec[0], vec[1], vec[2]); }
 
 /* The two 32-bit words at the start of an IdealLineRes ('ILIN') resource.
  * They are byte-swapped in place when the resource came from a big-endian
