@@ -98,6 +98,7 @@ void fn_802E47E8(void) {
 }
 
 s32 fn_802E47F8(void) {
+    /* Screenshot/key-history subsystem stub: always reports 0. */
     return 0;
 }
 
