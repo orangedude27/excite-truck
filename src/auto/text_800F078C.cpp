@@ -296,6 +296,24 @@ extern "C" const char lbl_80324314[];
 extern "C" const char lbl_803242F0[];
 #pragma push
 #pragma use_lmw_stmw off
+struct SeqSoundPrio {
+    u8 pad0[0x40];
+    s32 basePriority;
+    u8 pad1[0x34];
+    u8 priorityOffset;
+    u8 pad2[0x43];
+    u8 soundNode[4];
+    u8 pad3[0x12C];
+    void *list;
+};
+struct SeqListLink {
+    void *next;
+    u8 pad[0x30];
+    s32 basePriority;
+    u8 pad2[0x34];
+    u8 priorityOffset;
+};
+
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, int arg1) {
     int priority;
     void *list;
