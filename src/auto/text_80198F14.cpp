@@ -4359,8 +4359,9 @@ extern "C" void* fn_801A2C9C(void* arg0) {
     return (u8*)arg0 + 0x44;
 }
 
-extern "C" f32 fn_801A2CA4(void* arg0) {
-    return *(f32*)((u8*)arg0 + 0x178);
+extern "C" f32 fn_801A2CA4(void* object) {
+    /* Return this collision shape's bounding radius (stored at +0x178). */
+    return *(f32*)((u8*)object + 0x178);
 }
 
 extern "C" void fn_801A2CAC(void *shape) {
@@ -5403,11 +5404,18 @@ extern "C" void* fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* ar
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void Call(void*, s32, s32);
     };
-    s32 t11; s32 t10; s32 t9; s32 t8; s32 t7; s32 t6;
-    s32 t5; s32 t4; s32 t3; s32 t2; s32 t1; s32 t0;
-    t0 = arg4[0]; t1 = arg4[1]; t2 = arg4[2]; t3 = arg4[3];
-    t4 = arg4[4]; t5 = arg4[5]; t6 = arg4[6]; t7 = arg4[7];
-    t8 = arg4[8]; t9 = arg4[9]; t10 = arg4[10]; t11 = arg4[11];
+    s32 t0 = *(volatile s32*)((char*)arg4 + 0x00);
+    s32 t1 = *(volatile s32*)((char*)arg4 + 0x04);
+    s32 t2 = *(volatile s32*)((char*)arg4 + 0x08);
+    s32 t3 = *(volatile s32*)((char*)arg4 + 0x0C);
+    s32 t4 = *(volatile s32*)((char*)arg4 + 0x10);
+    s32 t5 = *(volatile s32*)((char*)arg4 + 0x14);
+    s32 t6 = *(volatile s32*)((char*)arg4 + 0x18);
+    s32 t7 = *(volatile s32*)((char*)arg4 + 0x1C);
+    s32 t8 = *(volatile s32*)((char*)arg4 + 0x20);
+    s32 t9 = *(volatile s32*)((char*)arg4 + 0x24);
+    s32 t10 = *(volatile s32*)((char*)arg4 + 0x28);
+    s32 t11 = *(volatile s32*)((char*)arg4 + 0x2C);
     void* vtable = lbl_803336F8;
     *(s32*)((u8*)arg0 + 0x38) = arg1;
     *(void**)arg0 = vtable;
