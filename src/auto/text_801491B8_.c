@@ -4801,7 +4801,10 @@ void fn_80155E58(void *object) {
     ((u8 *)object)[4] = 0;
 }
 
-void fn_80155E64(void *arg0, signed char arg1) { *((signed char *)arg0 + 5) = arg1; }
+void fn_80155E64(void *object, signed char value) {
+    /* Set the signed-char flag at +5 of the object. */
+    *((signed char *)object + 5) = value;
+}
 
 void *fn_80155E6C(void *arg0)
 {
