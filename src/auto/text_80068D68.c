@@ -4349,7 +4349,24 @@ int fn_8006F284(s32 length) {
     return 0;
 }
 
-void uusb_CloseDeviceCB(s8 arg0) { register u8 *control = (u8 *)&lbl_803BD1E0; register u8 zero = 0; *(s32 *)&lbl_803BD1E0 = zero; control[0x10] = zero; control[0x11] = zero; control[0x12] = zero; control[0x13] = zero; lbl_8055DC50 = zero; fn_8009B0E0(); fn_8006EBAC(); control[0x28] = zero; control[0x29] = 5; lbl_8055DC51 = zero; fn_8006EB88(); if (*(void (**)(s32, s8))(control + 0x20) != 0) (*(void (**)(s32, s8))(control + 0x20))(4, arg0); }
+void uusb_CloseDeviceCB(s8 arg0) {
+    register uusb_cb_t *control = &lbl_803BD1E0;
+    register u8 zero = 0;
+    *(s32 *)&lbl_803BD1E0 = zero;
+    ((u8 *)control)[0x10] = zero;
+    ((u8 *)control)[0x11] = zero;
+    ((u8 *)control)[0x12] = zero;
+    ((u8 *)control)[0x13] = zero;
+    lbl_8055DC50 = zero;
+    fn_8009B0E0();
+    fn_8006EBAC();
+    ((u8 *)control)[0x28] = zero;
+    ((u8 *)control)[0x29] = 5;
+    lbl_8055DC51 = zero;
+    fn_8006EB88();
+    if (*(void (**)(s32, s8))((u8 *)control + 0x20) != 0)
+        (*(void (**)(s32, s8))((u8 *)control + 0x20))(4, arg0);
+}
 
 void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
     extern char lbl_803BD240[];
@@ -5493,8 +5510,9 @@ void fn_8007141C(void) {
     #undef timersDisabled
 }
 
-void fn_8007143C(u32 index, u32 value) {
-    ((u32 *)lbl_803C0AD8)[index & 0xFF] = value;
+void fn_8007143C(u32 subsystemId, u32 callback) {
+    // Register a subsystem's event callback in the BTA system control block's callback table.
+    ((u32 *)lbl_803C0AD8)[subsystemId & 0xFF] = callback;
 }
 
 void fn_80071450(void *msg) {
