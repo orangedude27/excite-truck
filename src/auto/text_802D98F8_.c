@@ -166,6 +166,7 @@ void fn_802D9A50(void) {
 #pragma scheduling on
 #pragma pop
 BOOL fn_802D9BF0(void) {
+    /* Return TRUE when the DVD drive state is non-zero (a disc is present / the drive is not idle). */
     return lbl_8055FE3C != 0;
 }
 
