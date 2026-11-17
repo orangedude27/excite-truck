@@ -4188,8 +4188,9 @@ extern "C" int fn_800E9BE4(int object, int deleteFlag) {
     return object;
 }
 
+/* Return the address of the nw4r sound library's shared dummy value. */
 extern "C" int *fn_800E9C24(void) {
-    return &lbl_8055DE20;
+    return &s_sndDummy;
 }
 extern const char lbl_803221A8[];
 extern const char lbl_80322438[];
