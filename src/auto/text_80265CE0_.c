@@ -32,6 +32,9 @@ void fn_80265D50(void) {}
 
 void fn_80265D54(void) {}
 
+/* Stub getter, always 0: the third memory figure of the debug "info" blocks,
+ * filled in next to the two heap "bytes used" counters read by fn_80128314
+ * (callers: the "msingle:do_event()" report and the track-editor screen). */
 int fn_80265D58(void) { return 0; }
 
 void fn_80265D60(void) {}
