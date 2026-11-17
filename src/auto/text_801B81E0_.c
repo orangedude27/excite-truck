@@ -777,6 +777,8 @@ void fn_801B8A7C(void *ctx, int buffer) {
     fn_801B2C70((void *)buffer);
 }
 
+/* Callback: create the default "csubtasktmgr" (challenge sub-task manager).
+ * The zero argument selects fn_8013C9F4's default-construction path. */
 void fn_801B8A84(void) {
     extern void fn_8013C9F4(int);
     fn_8013C9F4(0);
