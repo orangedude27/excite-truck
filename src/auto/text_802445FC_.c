@@ -103,17 +103,22 @@ void fn_802447C4(void *fadeState) {
 }
 
 #pragma scheduling invalid_target
-void fn_802447FC(void *arg0) {
-    float val;
-    int elapsed;
+void fn_802447FC(void *fadeState) {
+    /* Advance a race music fade-out: +0x20 is the fade start time (ms), +0x24
+     * its duration, +0x28 the starting volume. Scale that volume by a linear
+     * factor falling from 1 to 0 over the duration, set the player music volume,
+     * and mark the fade finished (result 0) once time is up, unless the Home menu
+     * is open. */
+    float factor;
+    int elapsedMs;
     float blend;
-    elapsed = fn_802E2C20() - *(int *)((char *)arg0 + 0x20);
+    elapsedMs = fn_802E2C20() - *(int *)((char *)fadeState + 0x20);
     blend = lbl_805637F4;
-    val = lbl_805637F0 - ((float)elapsed / (float)*(int *)((char *)arg0 + 0x24));
-    blend = blend > val ? blend : val;
-    fn_8020A5F8(*(float *)((char *)arg0 + 0x28) * blend);
-    if (elapsed > *(int *)((char *)arg0 + 0x24) && fn_802ECC10() == 0) {
-        fn_80221F94(arg0, 0);
+    factor = lbl_805637F0 - ((float)elapsedMs / (float)*(int *)((char *)fadeState + 0x24));
+    blend = blend > factor ? blend : factor;
+    fn_8020A5F8(*(float *)((char *)fadeState + 0x28) * blend);
+    if (elapsedMs > *(int *)((char *)fadeState + 0x24) && fn_802ECC10() == 0) {
+        fn_80221F94(fadeState, 0);
     }
 }
 void fn_802448BC(void *arg0) {
