@@ -865,7 +865,10 @@ void fn_801AFAB4(void) {
 
 }
 
-void fn_801AFABC(void) {
+/* Stubbed RecordMgr callback.  Once the race results are ranked, fn_801AE79C reports
+ * the finishing placing of the competitor the race keeps lap times for (id 0x50) as
+ * (gRecordMgr, rank); this build ignores both arguments. */
+void fn_801AFABC(int recordMgr, int rank) {
 
 }
 
