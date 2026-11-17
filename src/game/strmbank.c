@@ -80,8 +80,9 @@ extern char lbl_8034D828[];
 extern char lbl_8034D84C[];
 extern char lbl_8034D860[];
 #pragma cplusplus on
-extern "C" void fn_802E7684(s32 arg0) {
-    ((Dummy_8055FFF0*)lbl_8055FFF0)->f24(arg0);
+extern "C" void fn_802E7684(s32 level) {
+    /* Forward a mix level to the global stream-bank manager's virtual set-level method (vtable +0x20). */
+    ((Dummy_8055FFF0*)lbl_8055FFF0)->f24(level);
 }
 #pragma cplusplus reset
 /* Builds the 'null' stream-bank manager the game falls back on: a bare object --
