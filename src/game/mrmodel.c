@@ -894,8 +894,9 @@ int fn_802C6B44(int arg0) {
 }
 
 #pragma dont_inline on
-int fn_802C6C20(int arg0) {
-    return fn_8012C4E4((void *)arg0, (void *)fn_802C5E6C, arg0);
+/* Release a model resource, with fn_802C5E6C called when its reference count reaches zero. */
+int fn_802C6C20(int resource) {
+    return fn_8012C4E4((void *)resource, (void *)fn_802C5E6C, resource);
 }
 #pragma dont_inline reset
 
