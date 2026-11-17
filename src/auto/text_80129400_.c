@@ -173,10 +173,10 @@ void fn_80129690(void *arg0, s32 arg1, void *arg2) {
             value = dst[offset + 0x3C];
             if (value != 0) {
                 dst[8] = 1;
-                if (dst[i + 9] == 0) {
-                    fn_801294FC(type, arg1);
+                if (*(volatile u8 *)(dst + i + 9) == 0) {
+                    ((void (*)(s32, s32))fn_801294FC)(type, arg1);
                 }
-                dst[i + 9] = value;
+                *(volatile u8 *)(dst + i + 9) = value;
             }
         }
         i++;
@@ -287,8 +287,11 @@ void *fn_801298E8(void *dst, int index) {
     return (void *)found;
 }
 
-void *fn_80129AE8(void *arg0, int arg1) {
-    return fn_801298E8(arg0, arg1);
+// Thin wrapper: copies controllerIndex's 0x64-byte config record into dst (see fn_801298E8).
+void *fn_80129AE8(void *dst, int controllerIndex) {
+#define copyControllerConfig fn_801298E8
+    return copyControllerConfig(dst, controllerIndex);
+#undef copyControllerConfig
 }
 
 extern void *lbl_8055DFD4;
