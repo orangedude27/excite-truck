@@ -836,6 +836,9 @@ extern unsigned char lbl_8055AFC8;
 extern float lbl_8055EBBC, lbl_80562E8C, lbl_80562E9C, lbl_80562EA0;
 extern float lbl_80562EA4, lbl_80562EA8, lbl_80562EAC, lbl_80562EB0, lbl_80562EB4;
 extern float lbl_80562EB8, lbl_80562EBC, lbl_80562EC0, lbl_80562EC4;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801ED718(void *arg0) {
     char *o = (char *)arg0;
     float v[24];
@@ -904,19 +907,17 @@ extern float __fabsf(float);
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_801EDD7C(void *arg0, long arg1) {
-    register void *object = arg0;
-    register long data = arg1;
+    void *object = arg0;
     long offset, i;
     char *entry;
     float v3, v2, v1, v0;
     float scale;
     float v4, v5, v6, v7, v8, v10, v9, v11;
 
-    /* Fix note: use direct byte offsets for the copy path and keep loop state declared in target order. */
     fn_801EABA8(object, *(void **)((char *)object + 0x3C));
-    scale = *(float *)((char *)data + 0x2D0);
+    scale = *(float *)((char *)arg1 + 0x2D0);
     *(float *)((char *)object + 0x4D0) = scale;
-    if (__fabsf(scale - lbl_80562E90) <= *(float *)&lbl_80558DC4) {
+    if ((float)__fabs((double)(scale - lbl_80562E90)) <= lbl_80558DC4[0]) {
         *(unsigned int *)((char *)object + 0x4A0) = *(unsigned int *)((char *)object + 4);
         *(unsigned int *)((char *)object + 0x4A4) = *(unsigned int *)((char *)object + 8);
         *(unsigned int *)((char *)object + 0x4A8) = *(unsigned int *)((char *)object + 0xC);
@@ -960,7 +961,7 @@ void fn_801EDD7C(void *arg0, long arg1) {
     offset = 0;
     do {
         fn_801F0F78(*(long *)(entry + 0x4D4),
-                    *(long *)((char *)object + 0x3C) + offset + 0x7C,
+                    offset + *(long *)((char *)object + 0x3C) + 0x7C,
                     (char *)object + 4,
                     *(float *)((char *)object + 0x4D0));
         i++;
