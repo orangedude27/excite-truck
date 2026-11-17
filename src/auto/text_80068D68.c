@@ -24122,7 +24122,9 @@ void rfc_process_rls(void *p_mcb, s32 is_command, void *p_frame) {
 }
 
 void fn_800932D8(void) {
-
+    /* No-op handler for a received RFCOMM NSC (Non-Supported Command) frame.
+     * Called from rfc_process_mx_message with the MCB and parsed MX_FRAME;
+     * unsupported commands are simply ignored. */
 }
 
 void fn_800932DC(void *p_mcb, s32 p_buf) {
