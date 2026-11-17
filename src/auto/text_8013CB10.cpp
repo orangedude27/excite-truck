@@ -1616,8 +1616,10 @@ extern "C" f32 lbl_80561510;
 extern "C" f32 lbl_80561514;
 extern "C" void fn_802AE220(int);
 extern "C" int fn_8001DFCC(void);
-extern "C" f32 fn_8013EFB0(f32 arg0) {
-    return arg0 - lbl_80561510;
+extern "C" f32 fn_8013EFB0(f32 value) {
+    /* Shift a screen X coordinate relative to the 320.0f centre line (half of the
+     * 640-wide frame); counterpart of fn_8013EFBC's reflected 240.0f offset. */
+    return value - lbl_80561510;
 }
 
 extern f32 lbl_80561514;
