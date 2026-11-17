@@ -72,6 +72,7 @@ void fn_801FFB70(void) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void *fn_801FFB74(int arg0, int arg1, int arg2) {
     float *o;
     float *sp8;
