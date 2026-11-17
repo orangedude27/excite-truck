@@ -449,8 +449,9 @@ void fn_8015F320(void **nodeGroups, int groupCount, void *context) {
 }
 
 #pragma pop
-int fn_8015F3EC(unsigned short *arg0, unsigned short *arg1) {
-    return *arg0 - *arg1;
+/* Sort comparator: order records by their leading unsigned-short key (used by fn_80265DCC). */
+int fn_8015F3EC(unsigned short *lhsKey, unsigned short *rhsKey) {
+    return *lhsKey - *rhsKey;
 }
 
 extern void *fn_801284F8(int, const char *);
