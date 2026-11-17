@@ -22,8 +22,11 @@ void fn_801293C8(void* hi) {
     lbl_8055DFC0 = hi;
 }
 
+/* AX DSP init callback: clear the DSP init flag so the next init pass starts fresh. */
 void __AXDSPInitCallback_801293D0(void) {
-    lbl_8055DFC0 = 0;
+#define sAXDspInitFlag lbl_8055DFC0
+    sAXDspInitFlag = 0;
+#undef sAXDspInitFlag
 }
 
 void fn_801293DC(void *dst) {
