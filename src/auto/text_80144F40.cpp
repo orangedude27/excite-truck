@@ -2365,9 +2365,10 @@ extern "C" void fn_80148534(void *arg0) {
 }
 #pragma scheduling on
 #pragma dont_inline reset
-extern "C" void fn_80148610(void *arg0) {
-    bool *b = (bool *)((u8 *)arg0 + 4);
-    *b = !*b;
+extern "C" void fn_80148610(void *obj) {
+    /* Toggle the boolean "enabled" flag (byte at offset 4) of this object. */
+    bool *enabled = (bool *)((u8 *)obj + 4);
+    *enabled = !*enabled;
 }
 
 extern "C" u8 fn_80148624(void *arg0) { return ((u8 *)arg0)[4]; }
