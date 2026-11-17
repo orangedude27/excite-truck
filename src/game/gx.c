@@ -3492,3 +3492,29 @@ extern char lbl_8055D100;
       dst[11] = src[11];
       GXSetCurrentMtx(0);
   }
+void fn_802D1678() {
+    if (lbl_804C9778[1] != 0) {
+        lbl_804C9778[1] = 0;
+        if (*(unsigned char *)((unsigned char *)lbl_8055FD64 + 0x18) != 0) {
+            ((void (*)(unsigned int, float, float, float, float, float, float))GXSetViewportJitter)(
+                VIGetNextField(),
+                (float)*(int *)(lbl_804C9778 + 0x1C),
+                (float)*(int *)(lbl_804C9778 + 0x20),
+                (float)*(int *)(lbl_804C9778 + 0x24),
+                (float)*(int *)(lbl_804C9778 + 0x28),
+                lbl_80564F88, lbl_80564F8C);
+        } else {
+            ((void (*)(float, float, float, float, float, float))GXSetViewport)(
+                (float)*(int *)(lbl_804C9778 + 0x1C),
+                (float)*(int *)(lbl_804C9778 + 0x20),
+                (float)*(int *)(lbl_804C9778 + 0x24),
+                (float)*(int *)(lbl_804C9778 + 0x28),
+                lbl_80564F88, lbl_80564F8C);
+        }
+        GXSetScissor(*(unsigned int *)(lbl_804C9778 + 0x1C),
+                     *(unsigned int *)(lbl_804C9778 + 0x20),
+                     *(unsigned int *)(lbl_804C9778 + 0x24),
+                     *(unsigned int *)(lbl_804C9778 + 0x28));
+        fn_802D6C68();
+    }
+}
