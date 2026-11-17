@@ -191,10 +191,10 @@ int fn_801B81E0(void *__restrict arg0) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void fn_801B826C(void *arg0) {
-    int value;
+    volatile int *p = (volatile int *)((char *)arg0 + 0x3E8);
+    int value = *p;
     void *object;
     void *manager;
-    value = *(volatile int *)((char *)arg0 + 0x3E8);
     lbl_8055E74C = value;
     if (value & 0x200) {
         lbl_8055E744 = (void *)fn_801B81E0(arg0);
@@ -756,9 +756,11 @@ extern "C" int fn_801B8A44(void *obj) {
     return 0;
 }
 #pragma cplusplus off
-void fn_801B8A68(void *arg0, int arg1) {
+/* Callback adapter: ignores the owner/context pointer and forwards the slot index
+ * to fn_801B0C78, which builds and submits the request for that slot. */
+void fn_801B8A68(void *owner, int slotIndex) {
     extern void fn_801B0C78(void *);
-    fn_801B0C78((void *)arg1);
+    fn_801B0C78((void *)slotIndex);
 }
 
 /* Callback adapter: ignores the context pointer and forwards (item index, payload)
