@@ -4589,6 +4589,7 @@ void *GXSetTexRegionCallback(void *callback) {
     return old;
 }
 
+/* Installs the TLUT-region lookup callback in GXData (+0x51C) and returns the old one. */
 void *GXSetTlutRegionCallback(void *callback) {
     void *old = (void *)*((unsigned int *)((char *)__GXData + 0x51C));
     *((unsigned int *)((char *)__GXData + 0x51C)) = (unsigned int)callback;
