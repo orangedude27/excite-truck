@@ -6685,8 +6685,9 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
     OSRestoreInterrupts(enabled);
 }
 
-// fn_800678D8: WPAD data processing
-void fn_800678D8(void) { /* stub */ }
+// Empty placeholder: this WPAD function has no body in the original.
+void fn_800678D8(void) {
+}
 
 // fn_800678DC: WPAD data processing
 __declspec(section ".sdata") extern f64 lbl_80560CE8;
