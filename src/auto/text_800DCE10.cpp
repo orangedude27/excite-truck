@@ -42,6 +42,9 @@ extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f3
 /* nw4hbm::db::Panic: the declaration above takes no varargs, so the calls go
  * through this cast (the file's pointer checks use it the same way). */
 #define PANIC ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)
+/* nw4hbm::db::Warning, spelled the same way (its declaration above already
+ * takes varargs, but the calls in this file all go through the cast). */
+#define WARNING ((void (*)(const char *, s32, const char *, ...))Warning__Q26nw4hbm2dbFPCciPCce)
 
 struct Vec2f { f32 x, y; };
 struct CWBuf { u8 b[0x60]; };
