@@ -3906,8 +3906,8 @@ extern "C" int fn_800E9070(BasicSoundVt *sound) {
     return player->IsPrepared();
 }
 
-extern "C" int fn_800E90AC(void *arg0) {
-    return *(unsigned char *)((char *)arg0 + 0x67) != 0;
+extern "C" int fn_800E90AC(PauseFields *sound) {
+    return sound->paused != 0;
 }
 
 #pragma dont_inline off
