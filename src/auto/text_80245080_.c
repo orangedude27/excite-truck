@@ -49,5 +49,6 @@ void fn_80245118(void) {
 }
 
 void fn_80245124(void) {
+    /* Uninstall the active NAND-save interface: fn_802E8D7C sets gNandSaveInterface, and NULL clears it. */
     fn_802E8D7C(0);
 }
