@@ -851,7 +851,8 @@ int fn_802B1B08(void *arg0) { return ((int *)arg0)[1]; }
 
 int fn_802B1B10(int *arg0) { return *arg0; }
 
-int fn_802B1B18(int *arg0) { return *arg0 == 0; }
+/* Return non-zero when the slot's stored handle is zero (the slot is empty). */
+int fn_802B1B18(int *slot) { return *slot == 0; }
 
 int fn_802B1B28(int *arg0, int arg1) {
     return *arg0 + (arg1 * 0xC);
