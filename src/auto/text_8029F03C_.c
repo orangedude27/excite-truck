@@ -95,16 +95,49 @@ extern int fn_801769F8(void);
 #pragma push
 #pragma scheduling invalid_target
 void fn_8029F03C(void) {
-    lbl_8055F81C = 0;
-    lbl_8055F818 = 0;
-    memset(lbl_804B7770, 0, 0x2400);
-    memset(lbl_804B6E70, 0, 0x900);
-    fn_8029FEF8();
-    fn_8029FE00();
-    fn_8029FD04();
-    fn_801EEFDC(&fn_802A0620, 10);
-    fn_801EEFDC(&fn_802A0720, 11);
-    lbl_8055F820 = fn_8012850C(fn_801E85AC() * 4, &lbl_80349810);
+    /* Initialize the particle / track-effect system: clear the record counts, name tables and
+     * effect records, build track effects from scene objects and emitters from the resource
+     * group, register the two effect event handlers (types 10 and 11), and allocate the
+     * per-view screen-rect table ("fsrecttab"). Counterpart of the shutdown fn_8029F0D0. */
+#define trackEffectCount lbl_8055F81C
+#define emitterNameCount lbl_8055F818
+#define emitterNameTable lbl_804B7770
+#define effectNameTable  lbl_804B6E70
+#define initTrackEffects fn_8029FEF8
+#define sortEffectRecords fn_8029FE00
+#define registerEmitters fn_8029FD04
+#define registerEventHandler fn_801EEFDC
+#define emitEffectBurst fn_802A0620
+#define triggerEmitters fn_802A0720
+#define screenRectTab lbl_8055F820
+#define getViewCount fn_801E85AC
+#define allocHeapBlock fn_8012850C
+#define fsRectTabName lbl_80349810
+
+    trackEffectCount = 0;
+    emitterNameCount = 0;
+    memset(emitterNameTable, 0, 0x2400);
+    memset(effectNameTable, 0, 0x900);
+    initTrackEffects();
+    sortEffectRecords();
+    registerEmitters();
+    registerEventHandler(&emitEffectBurst, 10);
+    registerEventHandler(&triggerEmitters, 11);
+    screenRectTab = allocHeapBlock(getViewCount() * 4, &fsRectTabName);
+#undef fsRectTabName
+#undef allocHeapBlock
+#undef getViewCount
+#undef screenRectTab
+#undef triggerEmitters
+#undef emitEffectBurst
+#undef registerEventHandler
+#undef registerEmitters
+#undef sortEffectRecords
+#undef initTrackEffects
+#undef effectNameTable
+#undef emitterNameTable
+#undef emitterNameCount
+#undef trackEffectCount
 }
 #pragma pop
 void fn_8029F0D0(void) {
