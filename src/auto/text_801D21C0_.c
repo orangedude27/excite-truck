@@ -104,7 +104,7 @@ s32 fn_801D2C20(s32 arg0) {
 extern u8 lbl_80438898[];
 extern f32 lbl_8055E3C8;
 extern void fn_801796CC(s32, f32 *, s32);
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     struct Temp {
         f32 position[3];
@@ -113,9 +113,9 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
         s16 pad;
         s32 id;
     } temp;
+    register u8 *entry = (u8 *)arg0;
     register f32 *vec = (f32 *)arg1;
     register u8 *object = (u8 *)arg2;
-    register u8 *entry = (u8 *)arg0;
     register s32 i = 0;
     register s32 active;
     register s32 index;
@@ -192,8 +192,8 @@ extern f32 fabs(f32);
 #pragma use_lmw_stmw off
 void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
     u8 *arg0 = a0;
-    f32 *arg2 = (f32 *)a2;
     f32 *arg1 = a1;
+    f32 *arg2 = (f32 *)a2;
     f32 *arg3 = a3;
     f32 sp8[3];
     f32 sp14[3];
@@ -209,16 +209,17 @@ void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
     s32 r24;
     u8 *obj;
     f32 g1, g2, g3;
+    s32 *src = (s32 *)arg1;
     c98 = lbl_80562A98;
     c9C = lbl_80562A9C;
-    sp38[0] = ((s32 *)arg1)[1];
-    sp38[1] = ((s32 *)arg1)[2];
+    sp38[0] = src[1];
+    sp38[1] = src[2];
     inv = scale / c98;
-    sp38[2] = ((s32 *)arg1)[3];
+    sp38[2] = src[3];
     sp2C[0] = arg3[0]; sp2C[1] = arg3[1]; sp2C[2] = arg3[2];
     sp2C[0] = arg3[0] * inv; sp2C[1] = arg3[1] * inv; sp2C[2] = arg3[2] * inv;
-    sp38[3] = ((s32 *)arg1)[4]; sp38[4] = ((s32 *)arg1)[5]; sp38[5] = ((s32 *)arg1)[6];
-    sp38[6] = ((s32 *)arg1)[7]; sp38[7] = ((s32 *)arg1)[8]; sp38[8] = ((s32 *)arg1)[9];
+    sp38[3] = src[4]; sp38[4] = src[5]; sp38[5] = src[6];
+    sp38[6] = src[7]; sp38[7] = src[8]; sp38[8] = src[9];
     i = 0;
     if (*(s32 *)(arg0 + 0x490) > 0) {
         e = arg0 + 0x40;
@@ -465,16 +466,15 @@ void fn_801D2414(SoeventInstance *instance, Vec *position, VehicleObject *object
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" s32 fn_801D2550(void *arg0, void *arg1) {
+extern "C" u8 fn_801D2550(void *arg0, void *arg1) {
     struct Dummy {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
         virtual f32 fn28(void *, f32);
     };
+    f32 value = lbl_80562A90;
     if (arg1 != NULL) {
-        u8 flag = 1;
-        f32 value = lbl_80562A90;
-        *(u8 *)arg0 = flag;
+        *(u8 *)arg0 = 1;
         *(f32 *)((u8 *)arg0 + 4) = ((Dummy *)arg1)->fn28(lbl_80338300, value);
     } else {
         *(u8 *)arg0 = 0;
