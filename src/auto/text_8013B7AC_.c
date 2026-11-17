@@ -3,6 +3,7 @@
 
 extern char lbl_8055E158[4];
 extern void fn_8000D838(void *queue);
+/* Register this unit's static-destructor record (lbl_8055E158) on the global destructor chain. */
 void fn_8013B7AC(void) {
     fn_8000D838(lbl_8055E158);
 }
