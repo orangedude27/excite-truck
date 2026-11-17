@@ -1570,8 +1570,9 @@ float fn_801815C4(void *arg0) {
     return *(float *)((char *)arg0 + 0x28);
 }
 
-int fn_801815CC(void *arg0) {
-    return *(int *)((char *)arg0 + 0x50);
+/* Return the integer field at offset 0x50 of this object (set by fn_801815D4). */
+int fn_801815CC(void *object) {
+    return *(int *)((char *)object + 0x50);
 }
 
 void fn_801815D4(void *arg0, int arg1) {
