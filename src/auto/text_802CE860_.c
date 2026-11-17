@@ -3,7 +3,8 @@
 
 extern int fn_801E4FF4();
 extern int fn_801E4F20(int);
-void fn_802CE860(int arg0) { fn_801E4F20(arg0 * 4); }
+/* Tail-call fn_801E4F20 with the index converted to a word byte offset (index * 4); the callee ignores the argument. */
+void fn_802CE860(int index) { fn_801E4F20(index * 4); }
 
 void fn_802CE868(void) { fn_801E4FF4(); }
 
