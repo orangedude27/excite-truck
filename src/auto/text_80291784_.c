@@ -107,36 +107,25 @@ float fn_80291784(float deltaX, float deltaY, float deltaZ, float deltaW) {
     return viewY - lbl_80564480;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 #pragma cplusplus on
+#pragma use_lmw_stmw off
 extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
-    typedef struct {
-        float x;
-        float y;
-        float z;
-        int id;
-        int unk10;
-        unsigned char flags;
-        unsigned char pad[3];
-        unsigned int color;
-        float value1;
-        float value2;
-    } Entry;
-    register Entry *entry;
+    typedef struct { float x, y, z; int id; int unk10; unsigned char flags; unsigned char pad[3]; unsigned int color; float value1, value2; } Entry;
     register void *base = arg0;
-    register Manager_802917C0 *manager = (Manager_802917C0 *)arg1;
     register QueryObject_802917C0 *query_object;
+    register Entry *entry;
+    register Manager_802917C0 *manager = (Manager_802917C0 *)arg1;
     register int zero = 0;
+    register float initial = lbl_80564484;
+    register float result2;
     register float best = lbl_80564484;
-    register float initial = best;
     register float scale = lbl_8056449C;
     register float result1;
-    register float result2;
     register float result3;
-
     *(int *)((char *)base + 0x120) = zero;
     goto check_count;
-
 loop:
     query_object = manager->getQuery();
     if (query_object == 0) goto finish;
@@ -145,18 +134,14 @@ loop:
     result3 = fn_80129DC4(0, lbl_80564498, lbl_80564494);
     result2 = query_object->getFloat((char *)&lbl_8055C924, result2);
     entry = (Entry *)((char *)base + *(int *)((char *)base + 0x120) * 0x24);
-    entry->x = initial;
-    entry->y = initial;
-    entry->z = initial;
+    entry->x = initial; entry->y = initial; entry->z = initial;
     entry->id = fn_802CAC28(query_object->getSetting((char *)&lbl_8055C930), 0);
-    entry->unk10 = 0;
-    entry->flags = 0;
+    entry->unk10 = 0; entry->flags = 0;
     entry->color = ((int)(scale * result2) << 24) | 0x00FFFFFF;
     entry->value1 = query_object->getFloat((char *)&lbl_8055C938, result1);
     entry->value2 = query_object->getFloat((char *)&lbl_8055C940, result3);
     if (best > entry->value1) best = entry->value1;
     *(int *)((char *)base + 0x120) = *(int *)((char *)base + 0x120) + 1;
-
 check_count:
     if (*(int *)((char *)base + 0x120) < 8) goto loop;
 finish:
@@ -164,7 +149,7 @@ finish:
     *(float *)((char *)base + 0x128) = manager->getFinal(lbl_8034914C);
     *(float *)((char *)base + 0x12C) = best;
 }
-#pragma cplusplus reset
+#pragma pop
 
 #pragma scheduling invalid_target
 /* Release texture references for each entry in the list and mark slots as invalid. */
@@ -236,9 +221,10 @@ void fn_80291B14(void *worldPos, float depth)
   if (lbl_804B4010)
   {
   }
-  *((unsigned char *) (lbl_804B4010 + 0x14)) = visible;
-}
-void fn_80291B9C(void *arg0, float *arg1, float arg2) {
+      *((unsigned char *) (lbl_804B4010 + 0x14)) = visible;
+  }
+#pragma opt_common_subs off
+  void fn_80291B9C(void *arg0, float *arg1, float arg2) {
     float c = arg1[2];
     float b = arg1[1];
     float a = arg1[0];
@@ -250,23 +236,23 @@ void fn_80291B9C(void *arg0, float *arg1, float arg2) {
     fn_802C8E70(arg1, (char *)arg0 + 0x13C);
     *((float *)((char *)arg0 + 0x144)) = arg2;
     if (fn_802C8FF4((char *)arg0 + 0x13C, *((float *)((char *)arg0 + 0x12C)))) {
-        *((unsigned char *)arg0 + 0x148) = *((unsigned int *)((char *)arg0 + 0x120)) != 0;
+        *((unsigned char *)arg0 + 0x148) = *((int *)((char *)arg0 + 0x120)) > 0;
         entry = (char *)arg0;
         i = 0;
-        do {
+        while (i < *((int *)((char *)arg0 + 0x120))) {
             *((unsigned char *)entry + 0x14) = 1;
             entry += 0x24;
             i++;
-        } while (i < *((int *)((char *)arg0 + 0x120)));
+        }
     } else {
         *((unsigned char *)arg0 + 0x148) = 0;
         entry = (char *)arg0;
         i = 0;
-        do {
+        while (i < *((int *)((char *)arg0 + 0x120))) {
             *((unsigned char *)entry + 0x14) = 0;
             entry += 0x24;
             i++;
-        } while (i < *((int *)((char *)arg0 + 0x120)));
+        }
     }
 }
 #pragma pop
