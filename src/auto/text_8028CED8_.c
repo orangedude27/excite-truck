@@ -448,6 +448,7 @@ void fn_8028D7C0(int arg0) {
 }
 
 #pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
 extern float lbl_80564400;
 extern float lbl_80564404;
