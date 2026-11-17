@@ -3810,8 +3810,9 @@ extern "C" int fn_80287364(void *list) {
     }
     return 1;
 }
-extern "C" void fn_802873F8(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v7();
+extern "C" void fn_802873F8(void* plane) {
+    /* Forward virtual v7() to the title plane's sub-object (m_a at +4). */
+    ((ebi::title::TBlackPlane*)plane)->m_a->v7();
 }
 #pragma cplusplus on
 /* Returns nonzero only if every item in the list reports itself valid. */
