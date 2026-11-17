@@ -684,8 +684,9 @@ extern "C" void fn_80217AC0(void *arg0) {
 #pragma scheduling reset
 #pragma dont_inline reset
 #pragma pop
-int fn_80217BC8(int *arg0, int *arg1) {
-    return *arg0 - *arg1;
+/* Ascending qsort comparator over (key, value) int pairs, ordering by key. */
+int fn_80217BC8(int *a, int *b) {
+    return *a - *b;
 }
 
 #pragma scheduling invalid_target
