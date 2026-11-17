@@ -269,6 +269,7 @@ void fn_80127958(void) {
 
 }
 
+/* No-op status callback in the sound system: always reports zero (success / nothing pending). */
 s32 fn_8012795C(void) {
     return 0;
 }
