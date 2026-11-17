@@ -1712,7 +1712,7 @@ extern "C" s32 fn_8019DAB0(void *arg0, void *arg1) {
         Vec plus;
     };
     s32 check = fn_8019D618(arg0, arg1, 0, 0);
-    u32 checkFlag = ((u32)check | (u32)-check) >> 31;
+    u32 checkFlag = ((u32)-check | (u32)check) >> 31;
     if (checkFlag) return 1;
     void *shape = *(void **)((u8 *)arg0 + 0xC);
     f32 radius = *(f32 *)((u8 *)arg0 + 0x28);
@@ -1885,9 +1885,7 @@ extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __rest
             ((f32 *)arg3)[1] = delta[1] + ((f32 *)arg1)[1] * scale;
             ((f32 *)arg3)[2] = delta[2] + ((f32 *)arg1)[2] * scale;
             mag = PSVECMag((const Vec *)arg3);
-            if (lbl_80562358 > mag)
-                mag = lbl_80562358;
-            norm = lbl_805622E0 / mag;
+            norm = lbl_805622E0 / (lbl_80562358 > mag ? lbl_80562358 : mag);
             register f32 o0 = ((f32 *)arg3)[0];
             register f32 o1 = ((f32 *)arg3)[1];
             register f32 o2 = ((f32 *)arg3)[2];
@@ -2039,7 +2037,7 @@ public:
     virtual Fn8019E874Xf* GetXf();
 };
 #pragma push
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
     u32 copied[12];
     f32 rows[3][4];
@@ -2570,39 +2568,38 @@ extern "C" s32 fn_8019F3D4(s32 ptr, s32 count) {
 }
 
 extern "C" void fn_8019F414(void *arg0) {
+#pragma opt_common_subs off
     extern f32 lbl_8056237C;
-    extern void fn_8019EECC(void*, Vec*);
+    extern void fn_8019EECC(void*, void*);
     extern void fn_8019EF00(void*);
     u32 sp[3];
     void *temp_r6;
-    void *temp_r4;
-    f32 ybase;
-    f32 x;
-    f32 y;
-    f32 z;
+    register void *temp_r4;
+    f32 x, y, z, ybase, xpartial, ypartial;
+
     temp_r6 = *(void **)((u8*)arg0 + 0x54);
     temp_r4 = *(void **)((u8*)arg0 + 4);
     sp[0] = *(u32*)((u8*)temp_r6 + 0x30);
     sp[1] = *(u32*)((u8*)temp_r6 + 0x34);
     sp[2] = *(u32*)((u8*)temp_r6 + 0x38);
-    x = ((f32*)sp)[0] - *(f32*)((u8*)temp_r4 + 0x30);
-    x += *(f32*)((u8*)arg0 + 0x58);
-    y = ((f32*)sp)[1] - *(f32*)((u8*)temp_r4 + 0x34);
+    z = ((f32*)sp)[2] - *(f32*)((u8*)temp_r4 + 0x38);
     ybase = lbl_8056237C + *(f32*)((u8*)arg0 + 0x24);
     ybase += *(f32*)((u8*)temp_r6 + 0xC);
-    y += ybase;
-    z = ((f32*)sp)[2] - *(f32*)((u8*)temp_r4 + 0x38);
+    xpartial = ((f32*)sp)[0] - *(f32*)((u8*)temp_r4 + 0x30);
+    ypartial = ((f32*)sp)[1] - *(f32*)((u8*)temp_r4 + 0x34);
+    x = xpartial + *(f32*)((u8*)arg0 + 0x58);
+    y = ypartial + ybase;
     ((f32*)sp)[0] = x;
     ((f32*)sp)[1] = y;
     ((f32*)sp)[2] = z;
     *(f32*)((u8*)arg0 + 0x28) = x;
     *(f32*)((u8*)arg0 + 0x2C) = y;
     *(f32*)((u8*)arg0 + 0x30) = z;
-    if (temp_r4 != 0) fn_8019EECC(temp_r4, (Vec*)((u8*)arg0 + 0x28));
+    if (temp_r4 != 0) fn_8019EECC(temp_r4, (u8*)arg0 + 0x28);
     fn_8019EF00(arg0);
 }
 
-#pragma scheduling on
+#pragma opt_lifetimes off
 extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
     fn_8019EC84(arg0);
     f32 scale = -PSVECDotProduct(
@@ -3654,6 +3651,7 @@ extern "C" void* fn_801A1520(void* self, void* unused, s32 doSwap) {
 }
 #pragma pop
 extern f32 lbl_805622D0, lbl_805622D4, lbl_805622E0;
+#pragma use_lmw_stmw on
 extern "C" s32 fn_801A15CC(void* arg0, Vec* arg1, Vec* arg2, f32* arg3, Vec* arg4) {
     f32 t0 = lbl_805622D0;
     f32 t1 = lbl_805622D0;
