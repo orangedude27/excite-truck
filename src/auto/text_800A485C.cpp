@@ -9985,13 +9985,13 @@ extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
 
 extern "C" u8 lbl_80559230;
 extern "C" u8 lbl_80559231;
-extern "C" s32 fn_800B4D00(void) {
+extern "C" s32 fn_800B4D00(s32 arg0) {
     u8 data[2];
     s32 result = 0;
 
     data[0] = lbl_80559230;
     data[1] = lbl_80559231;
-    if (VFiPFSTR_StrNCmp(0, data, 1, 0, 2) == 0) {
+    if (VFiPFSTR_StrNCmp(arg0, data, 1, 0, 2) == 0) {
         result = 1;
     }
     return result;
