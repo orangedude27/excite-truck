@@ -476,9 +476,10 @@ int fn_8022DEC4(void *arg0) {
     }
 }
 #pragma pop
-void fn_8022DF00(void *arg0, int *arg1, int *arg2) {
-    *arg1 = *(int *)((char *)arg0 + 4);
-    *arg2 = 4;
+/* Return an int gauge's value pointer (the word at +0x04) in *valuePtrOut and write the type code 4 to *typeOut. */
+void fn_8022DF00(void *gauge, int *valuePtrOut, int *typeOut) {
+    *valuePtrOut = *(int *)((char *)gauge + 4);
+    *typeOut = 4;
 }
 
 /* An int gauge: +0x04 int *value it owns, +0x08 min, +0x0C max, +0x10 a printf
