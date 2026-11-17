@@ -646,6 +646,7 @@ void fn_8015F79C(void) {
 
 
 extern f32 lbl_805617D4, lbl_805617E4, lbl_805617E8, lbl_805617EC, lbl_805617F0;
+extern f64 lbl_805617F8;
 extern f32 lbl_8056182C;
 extern f64 fn_8002F234(f32, f32, f32);
 f32 PSVECDotProduct(void *, void *);
@@ -1117,26 +1118,26 @@ void fn_801602D4(void *arg0_, int *arg1_, void *arg2_, unsigned char arg3_, floa
     void *arg1 = (void *)arg1_;
     void *arg2 = arg2_;
     float arg3 = arg4_;
-    float dist, pos, height, low, high, t;
+    char *desc4 = (char *)arg1 + 4;
+    float dist, low, high, height, pos, t;
     s16 type;
     int first, last, i;
-    dist = fn_80160588(arg2, (char *)arg1 + 4, (char *)arg2 + 0x10) - *(float *)((char *)arg1 + 0xC);
+    dist = fn_80160588(arg2, desc4, (char *)arg2 + 0x10) - *(float *)((char *)arg1 + 0xC);
     if (dist > lbl_805617D4 && dist < arg3) {
-        pos = fn_801605C8(arg2, (char *)arg1 + 4, (char *)arg2 + 0x10);
+        pos = fn_801605C8(arg2, desc4, (char *)arg2 + 0x10);
         height = *(float *)((char *)arg1 + 0xC);
         low = -lbl_80561800 * lbl_805617DC;
         if (pos + height > low) {
             high = lbl_80561800 * lbl_805617DC;
             if (pos - height < high) {
                 type = *(s16 *)((char *)arg1 + 2);
-                
                 switch (type) {
                 case 0:
                     t = (pos - height - low) / (high - low);
                     t = t > lbl_805617E8 ? t : lbl_805617E8;
                     t = t < lbl_805617D4 ? t : lbl_805617D4;
                     first = (int)(lbl_805617D4 + t * lbl_80561828);
-                    t = (lbl_8055E2A4 + pos + height - low) / (high - low);
+                    t = ((lbl_8055E2A4 + (pos + *(float *)((char *)arg1 + 0xC))) - (-lbl_80561800 * lbl_805617DC)) / ((lbl_80561800 * lbl_805617DC) - (-lbl_80561800 * lbl_805617DC));
                     t = t > lbl_805617E8 ? t : lbl_805617E8;
                     t = t < lbl_805617D4 ? t : lbl_805617D4;
                     last = (int)(lbl_805617D4 + t * lbl_80561828);
