@@ -396,7 +396,7 @@ void fn_802CED78(void) {
         OSReport(base + 0x200);
     }
 }
-#pragma pop
+#pragma scheduling invalid_target
 void fn_802CEF90(void) {
     extern void GXGetGPStatus(char *, char *, char *, char *, char *);
     extern void *GXGetCurrentGXThread(void);
@@ -405,7 +405,7 @@ void fn_802CEF90(void) {
     extern void fn_802CED78(void);
     extern char lbl_8034BF34[];
     extern char lbl_8034BF70[];
-    extern char lbl_8055D0F8[];
+    extern char lbl_8055D0F8[7];
     extern unsigned char lbl_8055FD34;
     extern int lbl_8055FD38;
     extern unsigned int lbl_8055FDB8;
@@ -431,7 +431,6 @@ void fn_802CEF90(void) {
         lbl_8055FDB8 = 0;
     }
 }
-
 void fn_802CF048(int arg0) {
     if (arg0 != 0) {
         GXSetGPMetric(0x23, 0x16);
