@@ -75,10 +75,10 @@ int fn_801F0DC0(int, int, int, int);
 float fn_801E88F0(int);
 float fn_802C88E8(int);
 extern int lbl_8055B0B8;
-void fn_801F0000(int wheel) {
+void fn_801F0000(int instance) {
 #define KEEP_ALLOCATED -1
     /* Destroy a WheelInstance's registration but keep the object allocated: the destructor only frees when doDelete > 0. */
-    fn_801F0F18(wheel, KEEP_ALLOCATED);
+    fn_801F0F18(instance, KEEP_ALLOCATED);
 }
 
 int fn_801F0008(void) {
