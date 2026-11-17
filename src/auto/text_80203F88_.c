@@ -25,6 +25,7 @@ void* fn_80203F88(void* object, int shouldDelete) {
  * (fn_801E95DC). */
 float fn_80203FE0(void) { return lbl_80563140; }
 
+/* No-op virtual-method stub in this unit's run of empty defaults: called during the world/object reset sequence but does nothing. */
 void fn_80203FE8(void) {
 
 }
