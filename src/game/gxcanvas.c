@@ -71,9 +71,9 @@ s32 fn_802C2CAC(s32 arg0) { unsigned int a = __rlwinm(arg0, 9, 8, 12); unsigned 
 #pragma pop
 #pragma push
 #pragma peephole off
-s32 fn_802C2CC4(s32 arg0) {
-    unsigned int low = (arg0 << 3) & 0xF8;
-    return (s32)(low | __rlwimi(__rlwinm(arg0, 8, 8, 12) | 0xFF000000, arg0, 5, 16, 21));
+s32 fn_802C2CC4(s32 pixel16) {
+    unsigned int lowBits = (pixel16 << 3) & 0xF8;
+    return (s32)(lowBits | __rlwimi(__rlwinm(pixel16, 8, 8, 12) | 0xFF000000, pixel16, 5, 16, 21));
 }
 #pragma pop
 void fn_802C2CDC(void *arg0, s32 arg1, s32 arg2) {
