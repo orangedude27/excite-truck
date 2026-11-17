@@ -92,8 +92,9 @@ extern "C" void fn_801561C8(s32 thisAtOffsetC) {
 }
 
 extern "C" s32 fn_80155700(s32);
-extern "C" void fn_801561D0(s32 arg0) {
-    fn_80155700(arg0 - 0xC);
+/* This-adjusting thunk: subtract the 0xC subobject offset to recover `this`, then forward to fn_80155700. */
+extern "C" void fn_801561D0(s32 subobjectThis) {
+    fn_80155700(subobjectThis - 0xC);
 }
 
 extern "C" s32 fn_80155AEC(s32);
