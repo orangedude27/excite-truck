@@ -1436,7 +1436,8 @@ extern "C" f32 fn_801589A8(Unk801577F0* self, s32 index) {
     return value;
 }
 #pragma pop
-extern "C" s32 fn_80158A5C(void *arg0, s32 *arg1) { return *(s32 *)((u8 *)arg1 + 0x2620) == 0; }
+/* Return nonzero when the car's +0x2620 state flag is 0 (car idle/stopped). */
+extern "C" s32 fn_80158A5C(void *unused, s32 *car) { return *(s32 *)((u8 *)car + 0x2620) == 0; }
 
 extern "C" s32 fn_80158A6C(void) { return 0; }
 
