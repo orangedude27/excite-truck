@@ -162,15 +162,19 @@ void fn_80127D58(unsigned int arg0) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-void fn_80127E28(unsigned int arg0) {
-    char *entry = (char *)lbl_8041E098;
+/* Remove the object-task entry whose object pointer (+0xC) matches arg0 and whose
+ * callback slot (+8) is 0. If the table is currently iterating (lbl_8041E098 byte 0
+ * set), mark the entry for deferred deletion (byte at +0x14). Otherwise swap-remove
+ * it with the last entry and decrement the count at +4. Entries are 16 bytes. */
+void fn_80127E28(unsigned int object) {
+    char *cursor = (char *)lbl_8041E098;
     int i = 0;
-    int count = *(int *)(entry + 4);
-    for (; i < count; entry += 16, i++) {
-        int found = 0;
-        if (*(int *)(entry + 8) == 0 && *(unsigned int *)(entry + 12) == arg0)
-            found = 1;
-        if (found != 0) {
+    int count = *(int *)(cursor + 4);
+    for (; i < count; cursor += 16, i++) {
+        int matched = 0;
+        if (*(int *)(cursor + 8) == 0 && *(unsigned int *)(cursor + 12) == object)
+            matched = 1;
+        if (matched != 0) {
             if (i < 0)
                 return;
             if (i >= count)
