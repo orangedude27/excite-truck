@@ -92,7 +92,10 @@ int fn_801AE600(int competitorId) {
 }
 #pragma dont_inline reset
 
-short fn_801AE610(int arg0, short arg1) {
+/* Stub: awards race points for a finishing placing, but always returns 0.
+   context is a race/result context passed in as an int; placing is the rank
+   (RaceResult.rank, 1 = first) whose points are written to RaceResult.points. */
+short fn_801AE610(int context, short placing) {
     return 0;
 }
 
