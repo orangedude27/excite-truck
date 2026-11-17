@@ -1911,9 +1911,6 @@ extern "C" void fn_801B2D28(void *arg0) {
     while (index < (s32)lbl_8055E678) {
         Item *obj = (Item *)((u8 *)lbl_8055E684 + offset);
         void *result = obj->get();
-        struct { u32 value; } first, second;
-        u32& tail30 = first.value;
-        u32& tail34 = second.value;
 
         *(u32 *)(dst + 0x3A0) = *(u32 *)((u8 *)result + 0x00);
         *(u32 *)(dst + 0x3A4) = *(u32 *)((u8 *)result + 0x04);
@@ -1927,10 +1924,7 @@ extern "C" void fn_801B2D28(void *arg0) {
         *(u32 *)(dst + 0x3C4) = *(u32 *)((u8 *)result + 0x24);
         *(u8 *)(dst + 0x3C8) = *(u8 *)((u8 *)result + 0x28);
         *(f32 *)(dst + 0x3CC) = *(f32 *)((u8 *)result + 0x2C);
-        tail30 = *(u32 *)((u8 *)result + 0x30);
-        tail34 = *(u32 *)((u8 *)result + 0x34);
-        *(u32 *)(dst + 0x3D0) = tail30;
-        *(u32 *)(dst + 0x3D4) = tail34;
+        *(WordPair_801B2D28 *)(dst + 0x3D0) = *(WordPair_801B2D28 *)((u8 *)result + 0x30);
         dst += 0x38;
         offset += 0x80;
         ++index;
