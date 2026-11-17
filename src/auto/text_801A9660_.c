@@ -1232,9 +1232,10 @@ void fn_801AC184(void *arg0) {
 }
 
 #pragma dont_inline on
-void fn_801AC240(void *arg0) {
-    *(unsigned char *)((char *)arg0 + 0x220) = 1;
-    *(float *)((char *)arg0 + 0x21C) = lbl_8055E3C8;
+void fn_801AC240(void *obj) {
+    /* Set the object's active flag and seed its +0x21C field from the global float. */
+    *(unsigned char *)((char *)obj + 0x220) = 1;
+    *(float *)((char *)obj + 0x21C) = lbl_8055E3C8;
 }
 #pragma dont_inline off
 
@@ -1974,8 +1975,7 @@ void fn_801AD750(void *arg0, void *arg1) {
     fn_801A9AB0(arg0, arg1);
     *(int *)((char *)arg0 + 0x240) = *(int *)((char *)arg1 + 0x80);
     if (arg0 != 0) {
-        arg0 = (char *)arg0 + 0x23C;
-        fn_801D08C0(arg0);
+        fn_801D08C0((char *)arg0 + 0x23C);
     }
 }
 #pragma peephole off
