@@ -91,7 +91,7 @@ struct Loc_8025AA90 {
 
 #pragma push
 #pragma dont_inline on
-int fn_8025921C(void) { return 0; }
+int fn_8025921C(void) { /* Achievement/menu predicate stub: always reports false (0), so callers take their default path. */ return 0; }
 #pragma pop
 
 extern void *fn_801284F8(int, const char *);
@@ -383,6 +383,7 @@ int fn_8025A1C4(int object, int deleteFlag) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_8025A204(void) {
+    #pragma scheduling on
     extern unsigned char *fn_8001EFAC(int, int);
     struct State {
         char pad0[0x0C]; volatile int state; volatile int object; volatile int selected; volatile int next;
@@ -391,7 +392,6 @@ void fn_8025A204(void) {
         char pad2[0x32]; volatile unsigned char dialog; unsigned char difference;
         char pad3[2]; int saved; float value;
     } state;
-    struct Vtbl { char pad[0x38]; void (*fn)(void *, void *); };
     float base;
     int *entry;
     int index, changed, current, result, firstResult, secondResult;
@@ -467,7 +467,7 @@ void fn_8025A204(void) {
         s = state.selected;
         state.dialog = 1;
         if (n != s) {
-            ((struct Vtbl *)*(struct Vtbl **)lbl_8055F394)->fn(lbl_8055F394, lbl_80344DE0);
+            ((void (*)(void *, void *))(*(void ***)lbl_8055F394)[14])(lbl_8055F394, lbl_80344DE0);
             fn_8025978C((void **)&text);
         }
         index++;
