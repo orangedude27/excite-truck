@@ -1290,18 +1290,18 @@ register s32 var_r30;
 register s32 var_r0;
 register s32 var_r0_2;
 register s32 var_ctr;
+register unsigned char *var_r5;
+u32 var_r6;
+register unsigned char *var_r4;
 register unsigned char *var_r3;
-s32 temp_r3_2, temp_r3_3, temp_r3_4, temp_r3_5, temp_r3_6;
 register unsigned char *temp_r30;
 void *temp_r3;
 register unsigned char *temp_r3_7;
 register unsigned char *temp_r0;
 register unsigned char *temp_r4;
 register unsigned char *temp_r7;
+s32 temp_r3_2, temp_r3_3, temp_r3_4, temp_r3_5, temp_r3_6;
 unsigned char *temp_r7_2, *temp_r7_3, *temp_r7_4, *temp_r7_5;
-register unsigned char *var_r5;
-register unsigned char *var_r4;
-s32 var_r6;
 register unsigned char *var_r7;
 
 if ((fn_801CE898() == 0) &&
@@ -1318,14 +1318,19 @@ var_r0_2 = 1;
 if (var_r0_2 == 0) {
 var_r29 = 0;
 var_r30 = 0;
-loop_13:
-if (fn_801CB900(*(int **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r29), arg0) == 0) {
-var_r29 += 1;
+while (var_r29 < *(s32 *)((unsigned char *)temp_r31 + 0x1C)) {
+switch (fn_801CB900(*(int **)((unsigned char *)(*(s32 **)((unsigned char *)temp_r31 + 0x18)) + var_r30), arg0)) {
+case 0:
 var_r30 += 4;
-if (var_r30 < *(s32 *)((unsigned char *)temp_r31 + 0x1C))
-goto loop_13;
-var_r30 = -1;
+var_r29 += 1;
+break;
+default:
+goto found_item;
 }
+}
+var_r29 = -1;
+found_item:
+var_r30 = var_r29;
 if (var_r30 < 0)
 ((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, arg0);
 temp_r30 = (unsigned char *)*(void **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r30);
@@ -1334,8 +1339,8 @@ if (((Dummy_801CCDAC *)temp_r30)->v2(farg0) != 0) {
 var_r3 = (unsigned char *)temp_r31;
 var_r7 = (unsigned char *)temp_r31 + 0x44;
 var_r5 = 0;
-var_r4 = 0;
 var_r6 = 0;
+var_r4 = 0;
 for (var_ctr = 0; var_ctr < 5; var_ctr++) {
 if (*(unsigned char *)(var_r3 + 0x44) == 0) {
 var_r4 = var_r7;
@@ -2082,7 +2087,7 @@ extern int fn_80128668(void *);
 extern void fn_801CBD04(void *);
 extern int fn_8001C0EC(int);
 extern int fn_8001C0E8(int, int);
-#pragma scheduling off
+#pragma scheduling on
 int fn_801CEA6C(void *arg0, int arg1) {
     int value;
     value = *(int *)arg0;
