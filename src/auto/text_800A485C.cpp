@@ -409,7 +409,7 @@ extern "C" u32 fn_80116BCC(void *);
 extern "C" s32 fn_800B5CB4(u32, void *);
 extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32, u16 *);
 extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32 *);
-extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(u8, s32);
+extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(s32, s32);
 extern "C" s16 fn_800B7200(s32);
 extern "C" s16 fn_800B72B0(s32);
 extern "C" s32 fn_800B72E4(void);
