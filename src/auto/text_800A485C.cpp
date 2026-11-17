@@ -9313,8 +9313,10 @@ done:
     return 0;
 }
 #pragma pop
-extern "C" void fn_800B36C4(s32 arg0, s32 arg1, s32 arg2) {
-fn_800B23F8(arg0, arg1, arg2, 0);
+/* Split a VFiPF path into its drive/directory outputs with wildcards disabled
+ * (the fn_800B36CC twin passes 1 to allow them). */
+extern "C" void fn_800B36C4(s32 path, s32 outDrive, s32 outDir) {
+    fn_800B23F8(path, outDrive, outDir, 0);
 }
 
 extern "C" void fn_800B36CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
