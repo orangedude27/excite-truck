@@ -349,8 +349,9 @@ void fn_802C87B4(int x, int y, int width, int height) {
 }
 #pragma pop
 
-void fn_802C88BC(int arg0) {
-    fn_802D02F8(lbl_8055D018, arg0 & 1);
+/* Apply the stored value (set by fn_802C86E8) via fn_802D02F8, passing flags' low bit as its byte argument. */
+void fn_802C88BC(int flags) {
+    fn_802D02F8(lbl_8055D018, flags & 1);
 }
 
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
