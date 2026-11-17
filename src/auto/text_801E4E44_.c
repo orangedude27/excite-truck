@@ -124,15 +124,15 @@ extern f32 lbl_80562D44, lbl_80562D48;
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_propagation off
 void fn_801E5174(f32 arg0, f32 arg1, f32 arg2) {
     Unk801E4E44Vertex *vertices = lbl_80487578;
     f32 *center = (f32 *)((u8 *)lbl_80487578 + 0x700);
     s32 count;
     s32 index;
-    s32 base;
+    register s32 base;
 
-    if (lbl_8055EAA8 + 4 > 60) fn_801E4E44();
-    if (lbl_8055EAAC + 6 > 174) fn_801E4E44();
+    if (lbl_8055EAA8 + 4 > 60 || lbl_8055EAAC + 6 > 174) fn_801E4E44();
 
     base = lbl_8055EAA8;
     count = base + 3;
@@ -159,17 +159,17 @@ void fn_801E5174(f32 arg0, f32 arg1, f32 arg2) {
 
     if (count > 2) {
         index = lbl_8055EAAC;
-        lbl_80487B18[index] = count - 3;
-        lbl_80487B18[index + 1] = count - 2;
-        lbl_80487B18[index + 2] = count - 1;
+        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + index * 2) = count - 3;
+        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + (index + 1) * 2) = count - 2;
+        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + (index + 2) * 2) = count - 1;
         lbl_8055EAAC = index + 3;
     }
     lbl_8055EAA8 = count + 1;
     if (count + 1 > 2) {
         index = lbl_8055EAAC;
-        lbl_80487B18[index] = count - 2;
-        lbl_80487B18[index + 1] = count - 1;
-        lbl_80487B18[index + 2] = count;
+        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + index * 2) = count - 2;
+        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + (index + 1) * 2) = count - 1;
+        *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + (index + 2) * 2) = count;
         lbl_8055EAAC = index + 3;
     }
 }
