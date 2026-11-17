@@ -80,13 +80,10 @@ extern int fn_802C8DBC(int);
 extern void fn_802C8E48(void);
 extern void fn_802C8D74(void);
 extern void fn_801390B0(void *, float *, float *, int, float, float);
-extern float fabsf(float);
+extern double __fabs(double);
 #pragma push
 #pragma processor 750
 void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
-#pragma paired off
-#pragma paired_single off
-#pragma dont_inline on
     float sp8, spC, sp10, sp14, sp18, sp1C, sp20, sp24, sp28, sp2C;
     float sp30, sp34, sp38, sp3C, sp40, sp44, sp48, sp4C, sp50, sp54;
     float sp58, sp5C, sp60, sp64, sp68, sp6C, sp70, sp74, sp78, sp7C;
@@ -106,8 +103,8 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
     sp28 = sp30 + sp8;
     sp2C = sp34 + spC;
     ip = fn_801E8718(fn_801392F8((void *)fn_8017960C(arg2)));
-    if (__builtin_fabsf(*(float *)(ip + 0x18)) != lbl_80558DC4 ||
-        __builtin_fabsf(*(float *)(ip + 0x20)) != lbl_80558DC4) {
+    if (fabsf(*(float *)(ip + 0x18)) != lbl_80558DC4 ||
+        fabsf(*(float *)(ip + 0x20)) != lbl_80558DC4) {
         ex = *(float *)(ip + 0x18);
         ey = *(float *)(ip + 0x20);
         sp20 = ex;
@@ -172,7 +169,7 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
                     f21 = f25 + cl1 * f31;
                     if (mag > farg0) {
                         t4 = PSVECMag(&sp38);
-                        if (__builtin_fabsf(t4) != lbl_80558DC4) {
+                        if (fabsf(t4) != lbl_80558DC4) {
                             k = farg0 / t4;
                             sp38 *= k;
                             sp3C *= k;
