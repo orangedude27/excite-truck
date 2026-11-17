@@ -4058,6 +4058,7 @@ void fn_80154728(void *object) {
     }
 }
 
+/* Default no-op status callback: always reports zero (success / nothing pending). */
 s32 fn_8015473C(void) {
     return 0;
 }
