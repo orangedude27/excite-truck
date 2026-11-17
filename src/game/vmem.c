@@ -87,8 +87,9 @@ extern "C" void fn_802E4D50(void *vmem) {
 }
 #pragma cplusplus reset
 #pragma pop
-int fn_802E4D60(void *arg0, int arg1) {
-    return *(int *)((char *)arg0 + 4) + arg1;
+/* VirtualMemory vmethod (vtable slot 1): return the backing-buffer base at +4 advanced by offset. */
+int fn_802E4D60(void *vmem, int offset) {
+    return *(int *)((char *)vmem + 4) + offset;
 }
 
 void fn_802E4D6C(void) {
