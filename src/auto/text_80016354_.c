@@ -64,8 +64,9 @@ void fn_800163F0(void) {
     }
 }
 
-void *fn_80016464(int arg0) {
-    return lbl_8055D540 + arg0 * 0x5C;
+/* Return the DriverInfo at `index` in the DAV-loaded driver table. */
+void *fn_80016464(int index) {
+    return lbl_8055D540 + index * DRIVER_SIZE;
 }
 
 #pragma scheduling invalid_target
