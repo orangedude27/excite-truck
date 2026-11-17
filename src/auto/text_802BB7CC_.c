@@ -560,6 +560,7 @@ int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
 }
 #pragma pop
 extern int lbl_804C0098[4];
+/* Return the stored file handle of material-map layer index from the sLayerHandles table (lbl_804C0098). */
 int __AXGetStackHead_802BC30C(int index) { return lbl_804C0098[index]; }
 extern int fn_802CAC54(int);
 extern int lbl_804C00B0[6];
