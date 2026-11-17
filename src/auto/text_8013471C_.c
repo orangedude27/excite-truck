@@ -744,9 +744,10 @@ s32 fn_80135234(void) {
     return 0;
 }
 
-void fn_8013523C(void *arg0, void *arg1, void *arg2, s32 *arg3, s32 *arg4) {
-    *arg4 = 0;
-    *arg3 = 0;
+/* Default/stub implementation: zero both output values (no results to report). */
+void fn_8013523C(void *arg0, void *arg1, void *arg2, s32 *outA, s32 *outB) {
+    *outB = 0;
+    *outA = 0;
 }
 
 s32 fn_8013524C(void) {
