@@ -282,6 +282,9 @@ s32 fn_8012795C(void) {
     return 0;
 }
 
+/* No-op entry hook run at the top of the debug-heap allocator (fn_8012834C) and
+ * deallocator (fn_80128584): a lock/profiling hook that does nothing in this
+ * build. */
 void fn_80127964(void) {
 
 }
