@@ -1023,12 +1023,11 @@ done:
 #pragma dont_inline on
 void fn_8028FAE4(void *arg0, int arg1, float *arg2, float farg0) {
     extern void fn_8028FEE4(void *, int, float *, float, float);
-    volatile float *threshold = &lbl_80564424;
     float sp8[3];
     int result = 0;
 
     if (*(float *)((char *)arg0 + 0x9C) >=
-            *threshold - lbl_80558DC4 &&
+            lbl_80564424 - lbl_80558DC4 &&
         *(int *)((char *)arg0 + 0x90) != *(int *)((char *)arg0 + 0x94))
         result = 1;
     if (result != 0) {
