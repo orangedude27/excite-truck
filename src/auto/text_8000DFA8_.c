@@ -2462,21 +2462,36 @@ void fn_8000E874(s32 arg0) {
     fn_80235F64(lbl_80351214, a);
 }
 
-f32 fn_8000EDC0(s32 arg0) {
-    if (fn_801E85A4() > 2)
-        return lbl_80560264;
-    switch (arg0) {
+/* get_center_item_scale: the draw scale of a DCIT center item of the given kind.
+ * With more than two racers every center item draws at 1.0; kinds 12 and 14 use
+ * 1.5, kind 13 uses 1.8 and kind 11 uses 1.0.  Any other kind is a fatal error. */
+f32 fn_8000EDC0(s32 itemKind) {
+    #define CENTER_SCALE_ONE   lbl_80560264 /* 1.0f */
+    #define CENTER_SCALE_LARGE lbl_805602B8 /* 1.5f */
+    #define CENTER_SCALE_TALL  lbl_805602BC /* 1.8f */
+    #define sScaleAssertMsg    lbl_802FC3A4 /* "get_center_item_scale(%d) - not a center (DCIT_)" */
+    #define sPanic             fn_802E317C
+    #define sGetPlayerCount    fn_801E85A4
+    if (sGetPlayerCount() > 2)
+        return CENTER_SCALE_ONE;
+    switch (itemKind) {
     case 12:
-        return lbl_805602B8;
+        return CENTER_SCALE_LARGE;
     case 13:
-        return lbl_805602BC;
+        return CENTER_SCALE_TALL;
     case 14:
-        return lbl_805602B8;
+        return CENTER_SCALE_LARGE;
     default:
-        fn_802E317C(&lbl_802FC3A4, arg0);
+        sPanic(&sScaleAssertMsg, itemKind);
     case 11:
-        return lbl_80560264;
+        return CENTER_SCALE_ONE;
     }
+    #undef CENTER_SCALE_ONE
+    #undef CENTER_SCALE_LARGE
+    #undef CENTER_SCALE_TALL
+    #undef sScaleAssertMsg
+    #undef sPanic
+    #undef sGetPlayerCount
 }
 
 /* Get the center-item color value for a DCIT menu item kind; invalid kinds log and return -1. */
