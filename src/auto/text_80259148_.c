@@ -10,7 +10,7 @@ extern float lbl_80498EAC[3];
 extern float lbl_8055F398;
 extern float lbl_80563AEC;
 extern float lbl_80563AF0;
-__declspec(section ".sdata") extern double lbl_80563B00;
+__declspec(section ".sdata2") extern double lbl_80563B00;
 __declspec(section ".rodata") extern float lbl_80558DC4;
 __declspec(section ".sdata") extern unsigned char lbl_8055C380[];
 extern unsigned char lbl_8055F67C;
@@ -391,6 +391,7 @@ void fn_8025A204(void) {
         char pad2[0x32]; volatile unsigned char dialog; unsigned char difference;
         char pad3[2]; int saved; float value;
     } state;
+    struct Vtbl { char pad[0x38]; void (*fn)(void *, void *); };
     float base;
     int *entry;
     int index, changed, current, result, firstResult, secondResult;
@@ -462,11 +463,11 @@ void fn_8025A204(void) {
                 if (count <= 0) { dst[-1] = 0; break; }
             }
         }
-        s = state.selected;
         n = state.next;
+        s = state.selected;
         state.dialog = 1;
         if (n != s) {
-            ((void (*)(void *, void *))(*(void ***)lbl_8055F394)[14])(lbl_8055F394, lbl_80344DE0);
+            ((struct Vtbl *)*(struct Vtbl **)lbl_8055F394)->fn(lbl_8055F394, lbl_80344DE0);
             fn_8025978C((void **)&text);
         }
         index++;
@@ -1615,6 +1616,7 @@ done:
         *((unsigned char *)obj + 0x36) = 0;
 }
 
+#pragma scheduling invalid_target
 void fn_8025BED0(void *arg0) {
     typedef void (*Fmt)(char *, int, const char *, ...);
     void *tmp = arg0;
@@ -1631,8 +1633,8 @@ void fn_8025BED0(void *arg0) {
     if (*(unsigned char *)((char *)data + 0x58) != 0)
         return;
     size = *(int *)((char *)data + 0xC8);
-    res = *(int *)((char *)data + 0x18);
     obj = *(void **)((char *)tmp + 0x18);
+    res = *(int *)((char *)data + 0x18);
     *(int *)((char *)arg0 + 0x24) = size;
     *(int *)((char *)arg0 + 0x20) = res;
     *(int *)((char *)obj + 0x4C) = size;
@@ -1664,7 +1666,7 @@ done:
     obj = *(void **)((char *)arg0 + 0x18);
     *(unsigned char *)((char *)obj + 0x4A) = 1;
 }
-
+#pragma scheduling on
 extern void *fn_80258354(void);
 extern int fn_802C6CF8(int);
 extern int fn_802CAC54(int);
