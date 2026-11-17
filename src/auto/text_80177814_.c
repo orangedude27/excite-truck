@@ -58,22 +58,42 @@ void fn_80177814(int *arg0) {
     lbl_8055E464 += 0x2F1CD;
 }
 
+#pragma cplusplus on
 #pragma scheduling invalid_target
-void fn_801778C0(void) {
+extern "C" void fn_801778C0(void) {
+    lbl_8055E468 = 0;
+    struct Obj {
+        virtual int v0();
+        virtual int v1();
+        virtual int v2();
+        virtual int v3();
+        virtual int v4();
+        virtual int v5();
+        virtual int v6();
+        virtual int v7();
+        virtual int v8();
+        virtual int v9();
+        virtual int v10();
+        virtual int v11();
+        virtual int v12();
+        virtual int v13();
+        virtual int v14();
+        virtual int v15();
+        virtual int v16();
+        virtual int v17();
+    };
     void **vbase = &lbl_804340C0[0];
     int voffset = 0;
     int vcount = 0;
-    void *velem;
-    lbl_8055E468 = 0;
-    for (; vcount < lbl_8055E438; vcount++, voffset += 4) {
-        velem = *(void **)((char *)lbl_8055E434 + voffset);
-        if (((int (*)(void *))((*(void ***)velem)[0x11]))(velem) != 0 &&
-            ((int (*)(void *))((*(void ***)velem)[0x10]))(velem) != 0) {
-            vbase[lbl_8055E468] = velem;
-            lbl_8055E468 += 1;
+    Obj *velem;
+    for (; vcount < lbl_8055E438; voffset += 4, vcount++) {
+        velem = (Obj *)*(void **)((char *)lbl_8055E434 + voffset);
+        if (velem->v15() != 0 && velem->v14() != 0) {
+            vbase[lbl_8055E468++] = (void *)velem;
         }
     }
 }
+#pragma cplusplus off
 /* Constant "return false" predicate, paired with fn_80177988 (always true);
  * serves as a default boolean callback. */
 long fn_80177980(void) {
