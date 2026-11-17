@@ -709,9 +709,12 @@ void fn_801E85BC(long arg0) {
 }
 
 extern long fn_8026A2B0(long);
-void fn_801E85CC(long arg0) {
-    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
-    fn_8026A2B0(arg0);
+/* Queue a forward (+1) track-selection delta for a player, using the current player when the index is negative. */
+void fn_801E85CC(long playerIndex) {
+#define CurrentPlayerIndex lbl_8055AF0C
+    if (playerIndex < 0) playerIndex = (long)CurrentPlayerIndex;
+    fn_8026A2B0(playerIndex);
+#undef CurrentPlayerIndex
 }
 
 void fn_801E85DC(long arg0) {
