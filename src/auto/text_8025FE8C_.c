@@ -929,8 +929,9 @@ void fn_802619E8(void *item, s32 name, s32 data) {
     *(s32 *)((u8 *)item + 0x10) = zero;
 }
 
-s32 fn_80261A08(s32 *arg0, s32 arg1) {
-    return *arg0 + arg1 * 4;
+/* Return the byte address of word `index` in the array whose base address is stored at *basePtr. */
+s32 fn_80261A08(s32 *basePtr, s32 index) {
+    return *basePtr + index * 4;
 }
 
 /* One line of a debug menu: label, kind (8 = callback), the value/callback it
