@@ -759,40 +759,42 @@ extern void fn_802E317C(char *, ...);
 extern int memcpy(void *, const void *, unsigned int);
 extern char lbl_80346798[];
 #pragma scheduling on
-void *fn_802DA918(float arg0, float arg1, float arg2) {
-    float vals[3];
-    unsigned char saved;
-    unsigned char *base;
-    int off;
-    void *result;
-    void *st;
-    vals[0] = arg0;
-    vals[1] = arg1;
-    vals[2] = 1.0f / (arg2 * arg2);
-    st = lbl_8055FE5C;
-    saved = *(volatile unsigned char *)((char *)st + 0x25);
-    *(volatile unsigned char *)((char *)st + 0x25) = 0;
-    if (*(volatile int *)((char *)st + 0x10) + 0x2c > *(volatile int *)((char *)st + 0x0C)) {
-        int limit = *(volatile int *)((char *)st + 0x0C);
-        fn_802E317C(lbl_80346798, *(volatile int *)((char *)st + 8), 0x24, limit / 1024);
-        result = 0;
+/* Queue a fixed three-float record (kind 7) in the BoneHandleAlloc arena: the
+ * payload is {x, y, 1/(z*z)} and the block always occupies 0x2c bytes. */
+void *fn_802DA918(float x, float y, float z) {
+    float payload[3];
+    unsigned char savedInitialized;
+    unsigned char *blockBase;
+    int blockOffset;
+    void *record;
+    void *state;
+    payload[0] = x;
+    payload[1] = y;
+    payload[2] = 1.0f / (z * z);
+    state = lbl_8055FE5C;
+    savedInitialized = *(volatile unsigned char *)((char *)state + 0x25);
+    *(volatile unsigned char *)((char *)state + 0x25) = 0;
+    if (*(volatile int *)((char *)state + 0x10) + 0x2c > *(volatile int *)((char *)state + 0x0C)) {
+        int capacity = *(volatile int *)((char *)state + 0x0C);
+        fn_802E317C(lbl_80346798, *(volatile int *)((char *)state + 8), 0x24, capacity / 1024);
+        record = 0;
     } else {
-        off = *(volatile int *)((char *)st + 4);
-        base = (unsigned char *)*(volatile int *)((char *)st + 0x10);
-        base += off;
-        *(int *)base = 1;
-        result = base + 4;
-        *(int *)((*(volatile int *)((char *)st + 4) + *(volatile int *)((char *)st + 0x10)) + 0x28) = 0x24;
-        *(volatile int *)((char *)st + 0x10) += 0x2c;
+        blockOffset = *(volatile int *)((char *)state + 4);
+        blockBase = (unsigned char *)*(volatile int *)((char *)state + 0x10);
+        blockBase += blockOffset;
+        *(int *)blockBase = 1;
+        record = blockBase + 4;
+        *(int *)((*(volatile int *)((char *)state + 4) + *(volatile int *)((char *)state + 0x10)) + 0x28) = 0x24;
+        *(volatile int *)((char *)state + 0x10) += 0x2c;
     }
-    *(int *)((char *)result + 0) = 7;
-    *(int *)((char *)result + 4) = 1;
-    *(int *)((char *)result + 8) = 1;
-    *(int *)((char *)result + 0x0C) = 0;
-    *(int *)((char *)result + 0x14) = 0;
-    *((unsigned char *)result + 0x10) = saved;
-    memcpy((char *)result + 0x18, vals, 0xc);
-    return result;
+    *(int *)((char *)record + 0) = 7;
+    *(int *)((char *)record + 4) = 1;
+    *(int *)((char *)record + 8) = 1;
+    *(int *)((char *)record + 0x0C) = 0;
+    *(int *)((char *)record + 0x14) = 0;
+    *((unsigned char *)record + 0x10) = savedInitialized;
+    memcpy((char *)record + 0x18, payload, 0xc);
+    return record;
 }
 extern void *memset(void *, int, unsigned int);
 #pragma opt_propagation off
