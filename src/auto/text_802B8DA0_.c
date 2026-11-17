@@ -703,10 +703,12 @@ void *fn_802B9AD4(void *object, s32 shouldFree) {
     return object;
 }
 
-void fn_802B9B2C(void *arg0) {
-    ((int *)arg0)[0] = 0;
-    ((int *)arg0)[2] = 0;
-    ((int *)arg0)[1] = 0;
+/* Zeroes the three 32-bit fields of a record; used as the clear callback when
+ * allocating the game manager's 0x10-byte records. */
+void fn_802B9B2C(void *record) {
+    ((int *)record)[0] = 0;
+    ((int *)record)[2] = 0;
+    ((int *)record)[1] = 0;
 }
 
 void fn_802B9B40(void *arg0) {
