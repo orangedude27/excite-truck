@@ -20312,8 +20312,10 @@ extern "C" void updateSound__Q210homebutton10ControllerFv(void *arg0) {
     }
 }
 
-extern "C" void fn_800D1548(void *arg0) {
-    fn_800D1EA8(*(void **)((char *)arg0 + 0x24), *(s32 *)arg0);
+extern "C" void fn_800D1548(void *controller) {
+    /* Tail-call the remote-speaker channel-active check for this controller slot
+     * (speaker base at +0x24, channel index at +0); the result is returned to the caller. */
+    fn_800D1EA8(*(void **)((char *)controller + 0x24), *(s32 *)controller);
 }
 
 extern "C" void fn_800D1558(void) {
