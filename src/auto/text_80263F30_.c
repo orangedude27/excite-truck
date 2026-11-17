@@ -208,11 +208,12 @@ void fn_802640A0(void *arg0)
 #pragma cplusplus on
 extern unsigned char lbl_80498F78[];
 /* Appends obj to the credits item list (lbl_80498F78: void **items; int count). */
-static inline void addCreditsItem(void *obj) {
-    void **items = *(void ***)lbl_80498F78;
-    int count = (*(int *)(lbl_80498F78 + 4))++;
-    items[count] = obj;
-}
+#define ADD_CREDITS_ITEM(obj) \
+    do { \
+        void **items_ = *(void ***)lbl_80498F78; \
+        int count_ = (*(int *)(lbl_80498F78 + 4))++; \
+        items_[count_] = (obj); \
+    } while (0)
 #pragma dont_inline on
 extern "C" void fn_802640C4(void *arg0, void *arg1) {
     extern char lbl_8055C45C[4], lbl_8055C464[4], lbl_8055C46C[4], lbl_8055C474[4], lbl_8055C47C[4], lbl_8055C484[4];
