@@ -4287,6 +4287,7 @@ extern "C" s32 fn_800AB528(void *arg0, void *arg1, s32 arg2, u8 arg3, s32 arg4, 
     s32 result3 = 0;
     s32 res = 0;
 
+    *arg5 = 0;
     if ((VFiPFSTR_StrCmp((void *)arg2, (s32)lbl_805591F0) == 0) && (((u8 *)arg1)[0x21C] & 0x10) && (*(u32 *)((u8 *)arg1 + 0x234) == 1)) {
         return 2;
     }
