@@ -1571,6 +1571,9 @@ void fn_802C7A94(int groupId) {
 }
 
 #pragma dont_inline on
+/* End a run of model draws: reset sort group 9, the extra group that is not
+ * part of fn_802C7A50's nine, which also empties the display entry pool
+ * (fn_802C543C).  Callers pair it with fn_802C7A44, which starts a batch. */
 void fn_802C7AD4(void) {
     fn_802C7A94(9);
 }
