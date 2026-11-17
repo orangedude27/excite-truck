@@ -95,18 +95,34 @@ void nw4hbm::ut::Font::InitReaderFunc(nw4hbm::ut::FontEncoding encoding) {
     }
     Row *dst = (Row *)((char *)this + 4);
     switch (encoding) {
-    case 0:
-        *dst = *(Row *)(format + 0x00);
+    case 0: {
+        Row *row = (Row *)(format + 0x00);
+        dst->a = *(u32 *)(format + 0x00);
+        dst->b = row->b;
+        dst->c = row->c;
         break;
-    case 1:
-        *dst = *(Row *)(format + 0x0C);
+    }
+    case 1: {
+        Row *row = (Row *)(format + 0x0C);
+        dst->a = *(u32 *)(format + 0x0C);
+        dst->b = row->b;
+        dst->c = row->c;
         break;
-    case 2:
-        *dst = *(Row *)(format + 0x18);
+    }
+    case 2: {
+        Row *row = (Row *)(format + 0x18);
+        dst->a = *(u32 *)(format + 0x18);
+        dst->b = row->b;
+        dst->c = row->c;
         break;
-    default:
-        *dst = *(Row *)(format + 0x24);
+    }
+    default: {
+        Row *row = (Row *)(format + 0x24);
+        dst->a = *(u32 *)(format + 0x24);
+        dst->b = row->b;
+        dst->c = row->c;
         break;
+    }
     }
 }
 
@@ -182,7 +198,14 @@ extern "C" u32 Read__Q36nw4hbm2ut8IOStreamFPvUl_80107668(nw4hbm::ut::IOStream* s
     return 0;
 }
 
-extern "C" u32* fn_801076BC(void) {
-    return (u32*)&lbl_8055DEA8;
+/* Address of the leaf (end) of the registered-object pointer chain
+ * (lbl_8055DE98 -> lbl_8055DEA0 -> this global): the unit's static initializer
+ * fn_801072C4 points the chain node lbl_8055DEA0 at it and fn_801076C4 clears
+ * it back to null, so callers take its address to link or unlink the last
+ * entry. */
+extern "C" u32 *fn_801076BC(void) {
+#define sChainLeaf lbl_8055DEA8
+    return (u32 *)&sChainLeaf;
+#undef sChainLeaf
 }
 
