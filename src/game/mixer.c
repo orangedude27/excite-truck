@@ -455,6 +455,7 @@ int fn_8020921C(void) {
 /* Trivial mixer helper: returns the supplied value advanced by 4. */
 int fn_80209260(int value) { return value + 4; }
 
+/* Trivial mixer helper: always reports 1 (boolean true / success). Identical to fn_80209270. */
 int fn_80209268(void) { return 1; }
 
 /* Null-backend virtual stub: always reports true (1). */
