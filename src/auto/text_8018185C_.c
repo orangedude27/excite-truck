@@ -2593,8 +2593,9 @@ void fn_8018B09C(void *object) {
     *(float *)((unsigned char *)object + 0x26dc) = lbl_8055E3C8;
 }
 
-void fn_8018B0D0(void *arg0, int arg1) {
-    *(int *)((unsigned char *)arg0 + 0x2610) = arg1;
+/* Set this object's integer field at offset 0x2610 to value. */
+void fn_8018B0D0(void *object, int value) {
+    *(int *)((unsigned char *)object + 0x2610) = value;
 }
 
 void fn_8018B0D8(void *arg0, void *arg1, void *arg2, int *arg3, int *arg4, float farg0) {
