@@ -1412,6 +1412,12 @@ extern "C" s32 fn_800ECFF0(void) {
     return 0;
 }
 
+/* MemoryFileStream::IsOpen -- slot 0x2C of the
+ * nw4r::snd::MemorySoundArchive::MemoryFileStream vtable (lbl_803231D8,
+ * installed by OpenStream). The archive loaders poll IsOpen (here) together
+ * with IsReady (slot 0x50, fn_800ED010) before reading a stream; a stream
+ * backed by memory is open as soon as OpenStream has filled it in, so this
+ * always reports true. */
 extern "C" u32 fn_800ECFF8(void) { return 1; }
 
 // Trivial predicate stub in the nw4r::snd interface group; always reports false (0).
