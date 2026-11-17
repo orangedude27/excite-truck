@@ -573,10 +573,13 @@ extern "C" void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
     int cond24;
     int flag;
     cond = fn_80178CA4() > 1;
-    if (arg0 == 8) {
+    switch (arg0) {
+    case 8:
         f1 = cond ? lbl_80563EB8 : lbl_80563EBC;
-    } else {
+        break;
+    default:
         f1 = cond ? lbl_80563EC0 : lbl_80563E78;
+        break;
     }
     is_seven = (arg0 == 7);
     sp8 = f1 + *(f32 *)(*(char **)((char *)arg2 + 0x140) + 0x5B4);
