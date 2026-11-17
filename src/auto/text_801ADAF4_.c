@@ -117,8 +117,9 @@ void fn_801ADB34(void *subObject) {
 }
 
 extern void fn_801ADAB8(void **);
-void fn_801ADB3C(void *arg0) {
-    fn_801ADAB8((void **)((u8 *)arg0 - 0x23C));
+/* Forwards to fn_801ADAB8, which reads the owning object's interface pointer at +0x240; the owner is recovered from a sub-object pointer by subtracting 0x23C. */
+void fn_801ADB3C(void *subObject) {
+    fn_801ADAB8((void **)((u8 *)subObject - 0x23C));
 }
 
 #pragma push
