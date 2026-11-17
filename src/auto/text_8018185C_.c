@@ -789,9 +789,7 @@ extern int fn_801BF1B8(int, int), fn_801CF064(void);
 extern void fn_8018F6F8(void *), fn_801B8100(void *, int, int), fn_8013605C(void *);
 extern void *fn_801B2ED0(int);
 extern void *memset(void *, int, unsigned long);
-void fn_801838C8(void *arg0) {
-#pragma scheduling invalid_target
- char *p = (char *)arg0, *r, *q; float zero, one; int i; void *obj, *v, *path;
+void fn_801838C8(void *arg0) { char *p = (char *)arg0, *r, *q; float zero, one; int i; void *obj, *v, *path;
  *(float *)(p+0x5e4)=0.0f;
  fn_8018BE54(p,1.0f);
  one=1.0f; zero=0.0f;
@@ -3196,6 +3194,7 @@ void fn_8018BE54(void *arg0, float farg0) {
 /* Initializes the pointed-to flag word with the default bitmask 0x0FF807FF. */
 void fn_8018BF44(int *flags) { *flags = 0x0FF807FF; }
 
+/* Virtual accessor returning the fixed constant 0 (false). */
 int fn_8018BF54(void) { return 0; }
 
 void fn_8018BF5C(void) {
