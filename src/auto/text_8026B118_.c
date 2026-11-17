@@ -272,8 +272,9 @@ extern void fn_8026B3D4(int);
 extern void deleteThreads__6SystemFv_8026B178(void *);
 #pragma scheduling invalid_target
 void fn_8026B6D0(void) {
-    void *p = lbl_8049A0E8;
-    memset(p, 0, 0x80);
+    /* Clear the per-player state table (lbl_8049A0E8): eight 16-byte entries. */
+    void *stateTable = lbl_8049A0E8;
+    memset(stateTable, 0, 0x80);
 }
 #pragma scheduling on
 /* For each player/slot, refresh its per-frame state when this subsystem is active.
