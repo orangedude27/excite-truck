@@ -7602,23 +7602,24 @@ void fn_801237C4(s32 arg0, void *arg1, void *arg2) {
 
 #pragma scheduling reset
 void fn_80123CEC(s32 count, void *dst, s32 srcIndex, void *src) {
-    void *srcBase = src;
-    void *coeffPtr1;
-    void *coeffPtr2;
+    /* Forward FFT core: run the four quarter-size butterfly kernels over dst (count 0x40 or 0x80), taking twiddle factors from src at indices derived from srcIndex. */
+    void *twiddleTable = src;
+    void *twiddlesA;
+    void *twiddlesB;
     if (count == 0x80) {
-        coeffPtr1 = (u8 *)srcBase + ((srcIndex - 8) * 4);
-        fn_80123E98(dst, coeffPtr1);
-        coeffPtr2 = (u8 *)srcBase + ((srcIndex - 0x20) * 4);
-        fn_8012440C((u8 *)dst + 0x80, coeffPtr2);
-        fn_80123E98((u8 *)dst + 0x100, coeffPtr1);
-        fn_80123E98((u8 *)dst + 0x180, coeffPtr1);
+        twiddlesA = (u8 *)twiddleTable + ((srcIndex - 8) * 4);
+        fn_80123E98(dst, twiddlesA);
+        twiddlesB = (u8 *)twiddleTable + ((srcIndex - 0x20) * 4);
+        fn_8012440C((u8 *)dst + 0x80, twiddlesB);
+        fn_80123E98((u8 *)dst + 0x100, twiddlesA);
+        fn_80123E98((u8 *)dst + 0x180, twiddlesA);
         return;
     } else {
-        void *coeffPtr = (u8 *)srcBase + ((srcIndex - 0x10) * 4);
-        fn_80124AD8(dst, coeffPtr);
-        fn_80124CE8((u8 *)dst + 0x40, coeffPtr);
-        fn_80124AD8((u8 *)dst + 0x80, coeffPtr);
-        fn_80124AD8((u8 *)dst + 0xC0, coeffPtr);
+        void *twiddles = (u8 *)twiddleTable + ((srcIndex - 0x10) * 4);
+        fn_80124AD8(dst, twiddles);
+        fn_80124CE8((u8 *)dst + 0x40, twiddles);
+        fn_80124AD8((u8 *)dst + 0x80, twiddles);
+        fn_80124AD8((u8 *)dst + 0xC0, twiddles);
     }
 }
 extern void fn_8012440C(void *, void *);
