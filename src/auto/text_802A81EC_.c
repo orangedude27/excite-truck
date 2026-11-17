@@ -306,8 +306,9 @@ s32 fn_802A8A34(void* ptr) {
     return ((s32*)ptr)[1];
 }
 
-s32 fn_802A8A3C(s32 *arg0, s32 arg1) {
-    return *arg0 + arg1 * 0x28;
+/* Return the address of element index in the 0x28-byte record array whose base address is held in *basePtr. */
+s32 fn_802A8A3C(s32 *basePtr, s32 index) {
+    return *basePtr + index * 0x28;
 }
 
 extern f64 fn_8002F234(f32), cos(f64), sin(f64);
