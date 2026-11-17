@@ -2408,13 +2408,14 @@ scanDone:
     }
 }
 #pragma pop
+/* Play-time alarm handler: warn that a remote speaker passed 8 minutes, then flag the limit reached and clear the queued alarm. */
 extern "C" void fn_800EE910(void* alarm) {
     u32 level = OSDisableInterrupts();
     alarm = OSGetAlarmUserData(alarm);
-    u8* data = (u8*)alarm;
-    Warning__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323840, 0x224, (const char*)lbl_803238C0, *(s32*)(data + 0x2C));
-    data[6] = 1;
-    data[7] = 0;
+    RemoteSpeaker* speaker = (RemoteSpeaker*)alarm;
+    Warning__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323840, 0x224, (const char*)lbl_803238C0, speaker->wpadChannel);
+    speaker->timeLimitReached = 1;
+    speaker->startAlarmQueued = 0;
     OSRestoreInterrupts(level);
 }
 
