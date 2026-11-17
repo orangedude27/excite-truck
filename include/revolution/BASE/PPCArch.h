@@ -13,6 +13,7 @@ void PPCMtmsr(u32 val);
 u32 PPCMfhid0(void);
 void PPCMthid0(u32 val);
 
+/* Read/write the L2 cache control register (L2CR). */
 u32 PPCMfl2cr(void);
 void PPCMtl2cr(u32 val);
 
