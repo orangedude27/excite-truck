@@ -368,46 +368,19 @@ u32 fn_80116BD4(s32 arg0, s32 arg1, s32 arg2) {
     return (var_r4 << 16) | var_r3;
 }
 
-void fn_80116CC4(s32* arg0, u16 arg1, u32 arg2) {
-    s32* ptr;
-    s32 fill;
-    u32 blocks;
-    u32 count;
+void fn_80116CC4(s32 *arg0, u16 arg1, u32 arg2) {
     u32 words;
-    ptr = arg0;
+    u32 fill;
     words = arg2 >> 1;
-    fill = (arg1 & ~0xFFFF0000) | (arg1 << 16);
-    if (words != 0) {
-        blocks = words >> 3;
-        count = blocks;
-        if (blocks != 0) {
-            do {
-                ptr[0] = fill;
-                ptr[1] = fill;
-                ptr[2] = fill;
-                ptr[3] = fill;
-                ptr[4] = fill;
-                ptr[5] = fill;
-                ptr[6] = fill;
-                ptr[7] = fill;
-                ptr += 8;
-                count -= 1;
-            } while (count != 0);
-            words &= 7;
-            if (words != 0)
-                goto tail;
-        } else {
-tail:
-            count = words;
-            do {
-                *ptr = fill;
-                ptr += 1;
-                count -= 1;
-            } while (count != 0);
-        }
+    fill = (arg1 << 16) | arg1;
+    while (words != 0) {
+        *arg0 = fill;
+        arg0++;
+        words--;
     }
-    if (arg2 & 1)
-        *(s16*)ptr = arg1;
+    if (arg2 & 1) {
+        *(u16 *)arg0 = arg1;
+    }
 }
 
 extern s64 OSGetTime(void);
@@ -421,7 +394,9 @@ s32 fn_80116D30(void) {
     u64 delta;
     u32 quotient;
     u64 remainder;
-    if ((lbl_8055DEC4 | (lbl_8055DEC0 ^ (0 >> 31))) == 0) {
+    s32 zero = 0;
+
+    if ((lbl_8055DEC4 | (lbl_8055DEC0 ^ (zero >> 31))) == 0) {
         lbl_8055DEC4 = (u32)time;
         lbl_8055DEC0 = (s32)(time >> 32);
     }
