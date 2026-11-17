@@ -32,6 +32,7 @@ typedef struct {
 } Mp3Stream;
 #define mp3StreamFile_vtable lbl_8034E9B0 /* the file-backed stream's vtable */
 #define mp3StreamOpen        lbl_80560060 /* 1 while a stream is set up */
+#define gMp3AbortRequested   lbl_805600C8 /* 1 until the current track has aborted */
 #define VFCloseFile          fn_800B7BDC  /* VF close; 0 on success */
 extern char lbl_8055D278;
 extern char lbl_8055D280;
