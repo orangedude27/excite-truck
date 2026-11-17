@@ -232,8 +232,8 @@ struct FNodeVT {
 
 struct F92Obj {
     u8 pad0[0x20];
-    void *f20;  // 0x20
-    void *f24;  // 0x24
+    void *f20;  // 0x20: next object on the placed-object list
+    void *f24;  // 0x24: next object of this object's own child chain
     f32 f28;    // 0x28
     u8 pad2[0x60 - 0x2c];
     s8 b60;     // 0x60
