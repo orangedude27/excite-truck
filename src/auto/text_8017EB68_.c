@@ -1477,7 +1477,8 @@ void fn_80181440(void) {
 /* Return the driver's sound id (soundId at +0x34C), derived from its AX stack head. */
 int fn_80181444(void *driver) { return DRIVER(driver)->soundId; }
 
-int fn_8018144C(void *arg0) { return *(int *)((char *)arg0 + 0x348); }
+/* Return the driver's mode (mode348 at +0x348): 0x10, or the driver index + 0xC. */
+int fn_8018144C(void *driver) { return DRIVER(driver)->mode348; }
 
 void GXInitLightAttnA_80181454(void *light, float a, float b, float c) {
     /* Set the three diffuse-attenuation coefficients a/b/c of the light object. */
