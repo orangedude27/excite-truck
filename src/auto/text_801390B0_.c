@@ -20,7 +20,7 @@ void fn_801390B0(void *arg0, float *arg1, float *arg2, int arg3, float farg0, fl
     float pos[2];
     char *obj;
     int color;
-    float f1, f2, f3, f4;
+    float f3, f4;
     char *tbl = lbl_8032BFAC;
     if (arg3 != 0) tbl = lbl_8032BFA0;
     obj = ((Obj390 *)arg0)->vt->fn(arg0, tbl);
@@ -72,7 +72,7 @@ extern void fn_801476D8(void *, int, int);
 extern int fn_8017960C(int);
 extern int fn_801392F8(void *);
 extern void *fn_801E8718(long);
-extern double fn_8002F234(double x);
+extern double fn_8002F234(float x);
 extern float PSVECMag(void *);
 extern int fn_801B8570(int);
 extern void fn_802C8BD0(int);
