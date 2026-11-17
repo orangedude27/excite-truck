@@ -931,8 +931,10 @@ extern "C" s32 fn_8016CDF8(void *unused, void *namedObject) {
     return nameCount;
 }
 #pragma cplusplus reset
-void fn_8016CE94(void *arg0, f32 arg1) {
-    *(f32 *)((u8 *)arg0 + 4) = arg1;
+/* Store a float field at +4 of the given object; callers use it to record the
+ * "time_limit" read from the results config (see fn_8016C328). */
+void fn_8016CE94(void *object, f32 value) {
+    *(f32 *)((u8 *)object + 4) = value;
 }
 
 extern f32 lbl_80561980;
