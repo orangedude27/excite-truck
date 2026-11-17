@@ -1385,6 +1385,7 @@ extern float lbl_805624AC, lbl_805624F0, lbl_805624F4, lbl_805624F8;
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_801AC544(void *arg0) {
+    #pragma opt_loop_invariants off
     struct Point { float x,y,z,a,b; };
     struct Link { int a,b; float distance, value; };
     struct Anchor { int index; void *matrix; int unused; };
@@ -1395,7 +1396,7 @@ void fn_801AC544(void *arg0) {
     int npoints, nlinks, nanchors, i, j;
     fn_801AC184(arg0);
     if (*(int *)((char *)arg0 + 0x250) == lbl_8055E5EC - 1 && lbl_8055E5F0 != 0) {
-        float divisor = lbl_805624F4, one = lbl_805624AC, zero = lbl_8056247C, val = lbl_805624F8, factor = lbl_805624F0, base = lbl_80562478;
+        float divisor = lbl_805624F4, one = lbl_805624AC, base = lbl_80562478, factor = lbl_805624F0, val = lbl_805624F8, zero = lbl_8056247C;
         npoints = nlinks = nanchors = 0;
         { void **iter = lbl_80435628;
         for (i = 0; i < lbl_8055E5EC; i++, iter++) {
@@ -1429,11 +1430,11 @@ void fn_801AC544(void *arg0) {
                 if (&b == (Vec *)v) {
                     float x = v[0], y = v[1], z = v[2];
                     float p0 = x*m[0], p1 = y*m[3], p2 = z*m[6];
-                float xx = p2 + (p0 + p1);
+                    float xx = p2 + (p0 + p1);
                     float q0 = x*m[1], q1 = y*m[4], q2 = z*m[7];
-                float yy = q2 + (q0 + q1);
+                    float yy = q2 + (q0 + q1);
                     float r0 = x*m[2], r1 = y*m[5], r2 = z*m[8];
-                float zz = r2 + (r0 + r1);
+                    float zz = r2 + (r0 + r1);
                     b.x = xx; b.y = yy; b.z = zz;
                 } else {
                     b.x = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
@@ -1862,6 +1863,7 @@ void fn_801AD394(Spring *spring) {
     }
 }
 #pragma scheduling on
+/* Thin forwarding thunk: game init calls this to build the fence rope via fn_801AC508. */
 void fn_801AD5EC(void) {
     fn_801AC508();
 }
@@ -1908,22 +1910,16 @@ extern "C" void fn_801AD5F4(void *arg0, void *arg1) {
     register float temp_f2;
     register float temp_f1;
     register float temp_f0;
-    float targetZ;
-    float targetY;
-    float targetX;
 
     sp14[0] = *(float *)((char *)object + 4) * scale;
     sp14[1] = *(float *)((char *)object + 8) * scale;
     sp14[2] = *(float *)((char *)object + 0xC) * scale;
-    targetZ = *(float *)((char *)other + 0x68);
     temp_f6 = *(float *)((char *)object + 0x18);
-    temp_f2 = targetZ - temp_f6;
-    targetY = *(float *)((char *)other + 0x64);
+    temp_f2 = *(float *)((char *)other + 0x68) - temp_f6;
     temp_f5 = *(float *)((char *)object + 0x14);
-    temp_f1 = targetY - temp_f5;
-    targetX = *(float *)((char *)other + 0x60);
+    temp_f1 = *(float *)((char *)other + 0x64) - temp_f5;
     temp_f4 = *(float *)((char *)object + 0x10);
-    temp_f0 = targetX - temp_f4;
+    temp_f0 = *(float *)((char *)other + 0x60) - temp_f4;
     temp_f2 = factor * temp_f2;
     temp_f1 = factor * temp_f1;
     temp_f0 = factor * temp_f0;
