@@ -457,6 +457,7 @@ int fn_80209260(int value) { return value + 4; }
 
 int fn_80209268(void) { return 1; }
 
+/* Null-backend virtual stub: always reports true (1). */
 int fn_80209270(void) { return 1; }
 
 void fn_80209278(void) {
