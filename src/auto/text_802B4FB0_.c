@@ -113,9 +113,11 @@ void *fn_802B5240(void *path) {
     return image;
 }
 #pragma scheduling on
-void fn_802B52B4(void *arg0) {
-    *(int *)((char *)arg0 + 8) = 0;
-    fn_80128658(arg0);
+void fn_802B52B4(void *image) {
+    /* Destroy a 2D image buffer: clear its pixel-data pointer field at +8,
+       then release the buffer itself via fn_80128658. */
+    *(int *)((char *)image + 8) = 0;
+    fn_80128658(image);
 }
 
 extern void *memset(void *, int, unsigned int);
