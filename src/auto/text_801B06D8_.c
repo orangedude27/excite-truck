@@ -215,10 +215,12 @@ u32 fn_801B08E8(u32 basePos, u32 targetPos, s32 wrapSpan) {
 extern "C" void fn_801B08FC(void *arg0, void *arg1) {
     typedef struct { s32 id; f32 key; } Ent;
     Dummy_801B08FC *self = (Dummy_801B08FC *)arg0;
-    u8 *b;
-    u8 *a;
     s32 cur;
-    s32 t1, t0, v1, v0;
+    s32 t1;
+    s32 t0;
+    u8 *a;
+    u8 *b;
+    s32 v1, v0;
     u8 *stop;
     u8 *n;
     a = *(u8 **)((u8 *)self->get18() + 4);
@@ -234,7 +236,7 @@ extern "C" void fn_801B08FC(void *arg0, void *arg1) {
     if (((u32)(v1 << __cntlzw(v1 ^ v0)) >> 31) != 0) {
         n = *(u8 **)(b + 0x14);
         stop = *(u8 **)(a + 0x14);
-        for (; stop != n; n = *(u8 **)(n + 0x14)) {
+        for (; n != stop; n = *(u8 **)(n + 0x14)) {
             if (*(s32 *)(n + 0x10) == 0) {
                 s32 c = *(s32 *)((u8 *)self + 0x14) - 1;
                 *(s32 *)((u8 *)self + 0x14) = c > 0 ? c : 0;
@@ -244,7 +246,7 @@ extern "C" void fn_801B08FC(void *arg0, void *arg1) {
     } else {
         n = *(u8 **)(a + 0x14);
         stop = *(u8 **)(b + 0x14);
-        for (; n != stop; n = *(u8 **)(n + 0x14)) {
+        for (; stop != n; n = *(u8 **)(n + 0x14)) {
             if (*(s32 *)(n + 0x10) == 0) {
                 Ent *tbl = (Ent *)lbl_80435BE8;
                 u32 cnt = (u32)lbl_80435BE8[0x10];
@@ -388,7 +390,8 @@ s32 fn_801B0DE0(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x3C);
 }
 
-s32 fn_801B0DE8(s32 arg0) { return arg0 + 4; }
+/* Address helper: returns the pointer advanced by 4 bytes (the field at +0x4). */
+s32 fn_801B0DE8(s32 ptr) { return ptr + 4; }
 
 #pragma cplusplus on
 extern "C" s32 fn_801B0DF0(s32 arg0) {
