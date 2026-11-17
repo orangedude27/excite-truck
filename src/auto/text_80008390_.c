@@ -151,38 +151,35 @@ extern void fn_80010188(int, int, const char *, ...);
 extern int sprintf(char *, const char *, ...);
 #define ID_LIST (&lbl_8034F3D0)
 static inline void IdList_Add(s32 *src) {
+    s32 value = *src;
     s32 *data = lbl_8034F3D0.data;
     s32 n = lbl_8034F3D0.count;
     lbl_8034F3D0.count = n + 1;
-    data[n] = *src;
+    data[n] = value;
 }
 #define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
+#pragma scheduling invalid_target
 void fn_80008390(void) {
     s32 *base = lbl_802ED6D8;
     s32 *p;
-    s32 *scan;
-    s32 i, n;
+    s32 i;
     ID_LIST->count = 0;
     if (fn_800167F4() > 1) IdList_Add(&lbl_805601B0);
     if (lbl_8055D370 == 0) {
         p = base;
-        IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
+        IdList_Add(p++); IdList_Add(p++); IdList_Add(p++); IdList_Add(p);
     } else {
         p = base + 4;
-        IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3); IdList_Add(p + 4);
+        IdList_Add(p++); IdList_Add(p++); IdList_Add(p++); IdList_Add(p++); IdList_Add(p);
     }
-    scan = ID_LIST->data;
-    n = ID_LIST->count;
-    for (i = 0; i < n; i++) {
-        if (*scan == 1) {
+    for (i = 0; i < ID_LIST->count; i++) {
+        if (ID_LIST->data[i] == 1) {
             p = base + 10;
-            IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
+            IdList_Add(p++); IdList_Add(p++); IdList_Add(p++); IdList_Add(p);
             break;
         }
-        scan++;
     }
 }
-
 /* IdList_Contains: true if an ID is in the enabled-command list fn_80008390 builds. */
 #define IdList_Contains fn_800085D8
 #pragma dont_inline on
