@@ -493,6 +493,9 @@ void fn_802D4988(void *arg0) {
 #pragma pop
 
 #pragma push
+#pragma ppc_psq_save off
+#pragma paired off
+#pragma paired_single off
 #pragma processor 750
 void fn_802D4C44(void *arg0) {
     extern s32 fn_802CFF64(s32);
