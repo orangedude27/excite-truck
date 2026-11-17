@@ -2267,7 +2267,8 @@ extern "C" s32 fn_80215228(void) {
 extern void *lbl_8055EF38;
 #define gCurrentItemIndex lbl_8055EF38 // scratch item index handed to widget constructors
 extern "C" void* fn_8021525C(void) {
-    return lbl_8055EF38;
+    /* Return the current item index that widget constructors copy into field +0x23C. */
+    return gCurrentItemIndex;
 }
 
 extern u8 lbl_8033CAE8[];
