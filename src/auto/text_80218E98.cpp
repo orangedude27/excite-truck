@@ -3286,7 +3286,9 @@ extern "C" void *fn_8021D7C8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     return arg0;
 }
 
-extern "C" void fn_8021D864(void *arg0) {
+extern "C" void fn_8021D864(void *widget) {
+    /* Forward the sixth virtual method (vtable slot at +0x1C) to the polymorphic
+       helper object bound at +0x254 of this UI widget. */
     struct BaseA {
         int a, b, c;
     };
@@ -3298,8 +3300,8 @@ extern "C" void fn_8021D864(void *arg0) {
         virtual void v4();
         virtual void v5();
     };
-    ClassB *obj = *(ClassB **)((u8 *)arg0 + 0x254);
-    obj->v5();
+    ClassB *helper = *(ClassB **)((u8 *)widget + 0x254);
+    helper->v5();
 }
 
 extern "C" void fn_8021D878(void *widget) {
