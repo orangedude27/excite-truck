@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-struct Fn8029Pair { union { double d; struct { float x, y; }; }; } __attribute__((aligned(8)));
+struct Fn8029Pair { float x, y; } __attribute__((aligned(8)));
 struct Fn8029Vec { float x, y, z; };
 extern float lbl_805646B8;
 extern float lbl_805646BC;
@@ -438,7 +438,7 @@ extern "C" void fn_8029F658(void *arg0) {
     Fn8029Vec v2;
     Fn8029Vec v2copy;
     Fn8029Vec v3;
-    Fn8029Pair pairDefault;
+    double pairDefaultBits;
     Fn8029Pair out1;
     Fn8029Pair out2;
     Fn8029Pair out3;
@@ -451,13 +451,13 @@ extern "C" void fn_8029F658(void *arg0) {
     int bPart;
 
     table = lbl_80349810;
+    record = lbl_804B5070 + lbl_8055F81C * 0x78;
+    obj = (Obj *)arg0;
     defaultVec.x = lbl_805646B4;
     defaultVec.y = lbl_805646B4;
     defaultVec.z = lbl_805646B4;
-    pairDefault.x = lbl_805646B4;
-    pairDefault.y = lbl_805646B4;
-    record = lbl_804B5070 + lbl_8055F81C * 0x78;
-    obj = (Obj *)arg0;
+    *(float *)&pairDefaultBits = lbl_805646B4;
+    *((float *)&pairDefaultBits + 1) = lbl_805646B4;
     *(int *)record = obj->getId(lbl_8055CAF0);
     str = obj->name();
     src = (char *)str + strlen(&table[0x44]);
@@ -481,23 +481,23 @@ done:
     *(float *)(record + 4) = obj->getFloat(lbl_805646B4, &table[0x50]);
     *(float *)(record + 8) = obj->getFloat(lbl_805646B4, lbl_8055CAF4);
     *(float *)(record + 0xC) = obj->getFloat(lbl_805646B4, lbl_8055CAFC);
-    out1 = obj->getPair(lbl_8055CB04, pairDefault);
+    out1 = obj->getPair(lbl_8055CB04, *(Fn8029Pair *)&pairDefaultBits);
     *(float *)(record + 0x10) = out1.x;
     *(float *)(record + 0x14) = out1.y;
-    out2 = obj->getPair(lbl_8055CB0C, pairDefault);
+    out2 = obj->getPair(lbl_8055CB0C, *(Fn8029Pair *)&pairDefaultBits);
     *(float *)(record + 0x18) = out2.x;
     *(float *)(record + 0x1C) = out2.y;
-    out3 = obj->getPair(lbl_8055CB14, pairDefault);
+    out3 = obj->getPair(lbl_8055CB14, *(Fn8029Pair *)&pairDefaultBits);
     *(float *)(record + 0x20) = out3.x;
     *(float *)(record + 0x24) = out3.y;
-    out4 = obj->getPair(lbl_8055CB18, pairDefault);
+    out4 = obj->getPair(lbl_8055CB18, *(Fn8029Pair *)&pairDefaultBits);
     *(float *)(record + 0x28) = out4.x;
     *(float *)(record + 0x2C) = out4.y;
     v1 = obj->getVec(lbl_8055CB1C, defaultVec);
     *(float *)(record + 0x30) = v1.x;
     *(float *)(record + 0x34) = v1.y;
     *(float *)(record + 0x38) = v1.z;
-    out5 = obj->getPair(lbl_8055CB28, pairDefault);
+    out5 = obj->getPair(lbl_8055CB28, *(Fn8029Pair *)&pairDefaultBits);
     *(float *)(record + 0x3C) = out5.x;
     *(float *)(record + 0x40) = out5.y;
     *(float *)(record + 0x44) = obj->getFloat(lbl_805646B8, lbl_8055CB30);
