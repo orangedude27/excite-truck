@@ -1099,29 +1099,33 @@ loop_27:
 #pragma push
 #pragma scheduling invalid_target
 void fn_80255200(void *arg0, s32 arg1) {
-    extern float lbl_80563A04, lbl_80563A14, lbl_80563A58, lbl_80563A5C;
     extern char lbl_803447C0[];
     extern void *lbl_80498E08[];
     extern long lbl_8055C190;
     extern s32 lbl_8055F33C;
-    extern void fn_8025539C(void *, s32);
+    extern void fn_8025539C(void);
     extern void *fn_802CAC28(void *, s32);
     extern void *fn_801284F8(s32, void *);
     extern void *fn_8012CAA0(s32, void *);
     extern void fn_80255A84(void *);
     float three, one, two, zero;
+    s32 zeroInt, minusOne;
     u8 *p = (u8 *)arg0;
-    char *strings;
+    char *strings = lbl_803447C0;
     void *obj;
     s32 n;
 
-    zero = lbl_80563A04; one = lbl_80563A14; two = lbl_80563A58; three = lbl_80563A5C;
-    strings = lbl_803447C0;
-    *(u8 *)(p + 0x118) = 0;
+    zero = 0.0f;
+    one = 1.0f;
+    two = 1.5f;
+    three = 6.0f;
+    zeroInt = 0;
+    minusOne = -1;
+    *(u8 *)(p + 0x118) = zeroInt;
     *(float *)(p + 0x11C) = zero;
-    *(u8 *)(p + 0xDD) = 0;
-    *(u8 *)(p + 0xDC) = 0;
-    *(u8 *)(p + 0x30) = 0;
+    *(u8 *)(p + 0xDD) = zeroInt;
+    *(u8 *)(p + 0xDC) = zeroInt;
+    *(u8 *)(p + 0x30) = zeroInt;
     *(float *)(p + 0x98) = two;
     *(float *)(p + 0xA8) = one;
     *(float *)(p + 0xAC) = zero;
@@ -1135,26 +1139,33 @@ void fn_80255200(void *arg0, s32 arg1) {
     *(float *)(p + 0xCC) = zero;
     *(float *)(p + 0xD0) = zero;
     *(float *)(p + 0xD4) = zero;
-    *(s32 *)(p + 0xD8) = -1;
+    *(s32 *)(p + 0xD8) = minusOne;
     *(float *)(p + 0xEC) = three;
     *(float *)(p + 0xF0) = zero;
     *(float *)(p + 0xF4) = zero;
     *(float *)(p + 0xF8) = zero;
-    *(u8 *)(p + 0x10) = 0;
-    *(u8 *)(p + 0x38) = 0;
-    *(u8 *)(p + 0x58) = 0;
-    *(u8 *)(p + 0x78) = 0;
+    *(u8 *)(p + 0x10) = zeroInt;
+    *(u8 *)(p + 0x38) = zeroInt;
+    *(u8 *)(p + 0x58) = zeroInt;
+    *(u8 *)(p + 0x78) = zeroInt;
     *(unsigned int *)(p + 0xC) = 0xFF000000;
-    if (arg1 != 0) fn_8025539C(arg0, arg1);
+    if (arg1) fn_8025539C();
     *(void **)(p + 0xE8) = fn_802CAC28(strings + 0x100, 0);
     obj = fn_801284F8(0x28, strings + 0x110);
     if (obj) *(void **)((u8 *)obj + 0x20) = fn_8012CAA0(0x16E360, strings + 0x11C);
-    n = lbl_8055F33C; lbl_80498E08[n] = obj; lbl_8055F33C = n + 1;
+    n = lbl_8055F33C;
+    lbl_80498E08[n] = obj;
+    lbl_8055F33C = n + 1;
     obj = fn_801284F8(0x28, strings + 0x110);
     if (obj) *(void **)((u8 *)obj + 0x20) = fn_8012CAA0(0x16E360, strings + 0x11C);
-    n = lbl_8055F33C; lbl_80498E08[n] = obj; lbl_8055F33C = n + 1;
+    n = lbl_8055F33C;
+    lbl_80498E08[n] = obj;
+    lbl_8055F33C = n + 1;
     obj = fn_801284F8(0x698, &lbl_8055C190);
-    if (obj) *(void **)(p + 8) = ((void *(*)(void))fn_8025343C)();
+    if (obj != 0) {
+        void *(*make)(void) = (void *(*)(void))fn_8025343C;
+        *(void **)(p + 8) = make();
+    }
     fn_80255A84(arg0);
 }
 
@@ -1397,8 +1408,10 @@ u8 fn_8025590C(void *holder) {
     return **(u8 **)((u8 *)holder + 8);
 }
 
-void fn_80255918(void *arg0, s32 arg1) {
-    *(s32 *)((u8 *)arg0 + 0xC) = arg1;
+/* Write `value` into the 32-bit field at offset 0xC of `object` — a shared
+   setter reused across the scene/UI objects for that field. */
+void fn_80255918(void *object, s32 value) {
+    *(s32 *)((u8 *)object + 0xC) = value;
 }
 
 /* Set whether the UI car model is drawn tinted and scaled to the level's colour. */
