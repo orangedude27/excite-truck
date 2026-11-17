@@ -1576,7 +1576,10 @@ void fn_801C6CB0(void) {
 }
 
 void fn_801C6CB4(void) {
-    fn_801C957C(1);
+#define setEnabled fn_801C957C
+    /* Callback that switches on the feature controlled by fn_801C957C (enabled = 1). */
+    setEnabled(1);
+#undef setEnabled
 }
 
 #pragma inline off
