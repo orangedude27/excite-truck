@@ -1629,16 +1629,21 @@ s32 fn_800074C4(void) {
 }
 
 extern s32 fn_800213DC(void);
-s32 fn_800074EC(s32 arg0) {
+s32 fn_800074EC(s32 eventCode) {
     s32 result;
+    /* Dispatch an input/event code: report it handled (1) when the global key
+     * handler (fn_800213DC) or the UI popup handler (fn_801DF238) consumes it;
+     * otherwise find its index in the table at lbl_8042F798 (fn_80137C98) and
+     * send message 0x3E8 with that index to the current player's HUD overlay
+     * handler (fn_80007554). */
     if (fn_800213DC() != 0) {
         result = 1;
-    } else if (fn_801DF238(arg0) != 0) {
+    } else if (fn_801DF238(eventCode) != 0) {
         result = 1;
     } else {
         fn_802E4A10();
         result = fn_80137C98();
-        return fn_80007554(result, 0x3e8, arg0);
+        return fn_80007554(result, 0x3e8, eventCode);
     }
     return result;
 }
