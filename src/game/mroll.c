@@ -221,8 +221,9 @@ void *fn_80240928(void *label, s32 deleteFlag) {
     return label;
 }
 
-void fn_802409A4(void *arg0, signed char arg1) {
-    *(signed char *)((char *)arg0 + 0x2E8) = arg1;
+void fn_802409A4(void *object, signed char value) {
+    /* Set the signed 8-bit field at offset 0x2E8 of a menu/UI object. */
+    *(signed char *)((char *)object + 0x2E8) = value;
 }
 
 /* Append a menu entry id and refresh each item's selected flag and displayed value from the shared payload. */
