@@ -248,16 +248,20 @@ void fn_8028E240(void) {
     fn_802C8BD0(current);
     entries = &lbl_804B34B0;
     base = entries;
-    for (i = 0; i < base[64]; i++) {
-        value = *(int *)((char *)*entries + 0xa4);
-        if (value != current) {
-            fn_802C8D74();
-            fn_802C8BD0(value);
-            current = value;
-        }
-        fn_8028FA1C(*entries);
-        entries++;
+    i = (int)(base - base);
+    goto test;
+loop:
+    value = *(int *)((char *)*entries + 0xa4);
+    if (value != current) {
+        fn_802C8D74();
+        fn_802C8BD0(value);
+        current = value;
     }
+    fn_8028FA1C(*entries);
+    entries++;
+    i++;
+test:
+    if (i < base[64]) goto loop;
     fn_802C8D74();
     fn_802C9A4C(temp_f31);
 }
@@ -1013,6 +1017,10 @@ done:
 }
 #pragma pop
 #pragma cplusplus reset
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_8028FAE4(void *arg0, int arg1, float *arg2, float farg0) {
     extern void fn_8028FEE4(void *, int, float *, float, float);
     volatile float *threshold = &lbl_80564424;
