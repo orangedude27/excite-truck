@@ -21,6 +21,15 @@ extern void *memcpy(void *, const void *, u32);
 extern char lbl_80332E70[];
 extern s32 lbl_8055D430;
 typedef struct VObj318 { void **vtbl; } VObj318;
+/* "Hybrid" object (0x3C bytes, name lbl_8055A470, built by fn_8018FD88): owns two
+ * driver objects and keeps one of them active at +0x10 (see fn_80191084). */
+typedef struct Hybrid {
+    /* 0x00 */ void *vtable;
+    /* 0x04 */ void *field4;
+    /* 0x08 */ void *gameDriver;  /* AI / park driver made by fn_80134E90 & co. */
+    /* 0x0C */ void *inputDriver; /* player input driver (fn_801912B4) */
+    /* 0x10 */ void *activeDriver;
+} Hybrid;
 #define VCALL0(o, off, ret) ((ret (*)(void *))((VObj318 *)(o))->vtbl[(off) / 4])(o)
 extern void fn_801B6650(int);
 extern void fn_802793B0(int);
@@ -981,21 +990,10 @@ extern "C" void fn_80190CBC(void *container) {
 
 #pragma scheduling invalid_target
 int fn_80190CD0(float a, float b, float c) {
-    float y;
-    float x;
-    y = lbl_80562090;
-    x = (a - b) / (c - b);
-    if (y < x) {
-        y = x;
-    } else {
-        y = y;
-    }
-    if (y > lbl_8056208C) {
-        y = lbl_8056208C;
-    } else {
-        y = y;
-    }
-    return (((int)(lbl_80562080 + (lbl_8056208C + (y * lbl_805620AC)))) >> 4) & 0xF;
+    float t = (a - b) / (c - b);
+    t = (lbl_80562090 < t) ? lbl_80562090 : t;
+    t = (t > lbl_8056208C) ? lbl_8056208C : t;
+    return (((int)(lbl_80562080 + (lbl_8056208C + (t * lbl_805620AC)))) >> 4) & 0xF;
 }
 #pragma scheduling on
 int fn_80190D38(float a, float b, float c) { float lower; float value; lower = lbl_80562090; value = (a - b) / (c - b); if (lower < value) { lower = value; } else { lower = lower; } if (lower > lbl_8056208C) { lower = lbl_8056208C; } else { lower = lower; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC))); }
