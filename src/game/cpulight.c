@@ -1038,6 +1038,8 @@ void fn_802DCFCC(int arg0, int arg1, int arg2, float farg0, float farg1) {
     float diff;
     float c;
     float factor;
+    float base;
+    float result;
     int r0;
     int r3;
     int exp;
@@ -1052,8 +1054,8 @@ void fn_802DCFCC(int arg0, int arg1, int arg2, float farg0, float farg1) {
     fn_802DB778(2);
     if (arg1 != -2) {
         lbl_8055FEC0 = 1;
-        farg0 = lbl_80565050 * farg0;
-        diff = (float)fn_8002F208(lbl_80565058) - (float)fn_8002F208(farg0);
+        base = lbl_80565050 * farg0;
+        diff = (float)fn_8002F208(lbl_80565058) - (float)fn_8002F208(base);
         c = (float)ceil(lbl_80565060 + (float)__fabs(diff));
         if (diff > lbl_80565048) {
             factor = lbl_80565064;
@@ -1070,9 +1072,8 @@ void fn_802DCFCC(int arg0, int arg1, int arg2, float farg0, float farg1) {
             exp = r0;
         }
         p = (float)fn_8002EFBC(lbl_80565070, (float)exp);
-        farg0 *= lbl_80565078;
-        farg0 /= p;
-        fn_802D3DF8(fn_802CA294(arg1), exp, farg0, farg0);
+        result = base * lbl_80565078 / p;
+        fn_802D3DF8(fn_802CA294(arg1), exp, result, result);
         GXSetNumIndStages(1);
         GXSetTevIndirect(0, 0, 0, 3, 1, 0, 0, 0, 0, 0);
         GXSetIndTexOrder(0, lbl_8055FEA4, 2);
