@@ -19278,7 +19278,10 @@ extern "C" void fn_800CF934(void *holder) {
 
 extern "C" s32 fn_800CF954(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x20); }
 
-extern "C" void fn_800CF95C(s32 arg0, s32 arg1, s8 arg2) { *(s8 *)(arg0 + arg1 + 4) = arg2; }
+extern "C" void fn_800CF95C(s32 base, s32 index, s8 value) {
+    /* Set the signed byte at offset 4 of the byte array at base, selected by index. */
+    *(s8 *)(base + index + 4) = value;
+}
 
 extern "C" void fn_800CF968(void) {
 
