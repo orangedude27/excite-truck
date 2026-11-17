@@ -74,6 +74,7 @@ s32 fn_801274C8(void) {
     }
     return 0;
 }
+#pragma scheduling invalid_target
 s32 fn_80127538(void) {
     memset(lbl_8041D790, 0, 0x480);
     memset(lbl_8041DC10, 0, 0x10);
