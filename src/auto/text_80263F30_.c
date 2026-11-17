@@ -217,7 +217,6 @@ extern unsigned char lbl_80498F78[];
 #pragma dont_inline on
 extern "C" void fn_802640C4(void *arg0, void *arg1) {
     extern char lbl_8055C45C[4], lbl_8055C464[4], lbl_8055C46C[4], lbl_8055C474[4], lbl_8055C47C[4], lbl_8055C484[4];
-    extern unsigned char lbl_80498F78[];
     extern void *fn_801284F8(unsigned int, void *);
     extern void fn_8026523C(void *), fn_80265558(void *), fn_802655A4(void *);
     extern void fn_80265268(void *, int, char *, float), fn_8026557C(void *, float), fn_80265610(void *, float);
@@ -225,11 +224,11 @@ extern "C" void fn_802640C4(void *arg0, void *arg1) {
     char *kind;
     PropertyReader802640C4 *properties = (PropertyReader802640C4 *)arg1;
     void *obj;
-    int count;
-    void **items;
     char *name;
     int val;
     float value;
+    void *delay;
+    void *keys;
     kind = properties->getString(lbl_8055C45C);
     if (stricmp(kind,lbl_8055C464)==0) {
         *(char **)arg0=properties->getString(lbl_8055C46C);
@@ -243,34 +242,28 @@ extern "C" void fn_802640C4(void *arg0, void *arg1) {
         name=properties->getString(lbl_8055C474);
         val=properties->getInt(lbl_8055C47C);
         fn_80265268(obj,val,name,value);
-        items=*(void ***)lbl_80498F78;
-        count=(*(int *)(lbl_80498F78+4))++;
-        items[count]=obj;
+        ADD_CREDITS_ITEM(obj);
         *(char **)arg0=properties->getString(lbl_8055C46C);
         fn_80264098(arg0,5);
         *(void **)((char *)arg0+8)=obj;
     } else if (stricmp(kind,base+0x108)==0) {
-        kind=(char *)fn_801284F8(0x20,base+0x114);
-        if(kind) kind=((char *(*)(void *))fn_80265558)(kind);
+        delay=fn_801284F8(0x20,base+0x114);
+        if(delay) delay=((void *(*)(void *))fn_80265558)(delay);
         value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
-        fn_8026557C(kind,value);
-        items=*(void ***)lbl_80498F78;
-        count=(*(int *)(lbl_80498F78+4))++;
-        items[count]=kind;
+        fn_8026557C(delay,value);
+        ADD_CREDITS_ITEM(delay);
         *(int *)arg0=0;
         fn_80264098(arg0,5);
-        *(void **)((char *)arg0+8)=kind;
+        *(void **)((char *)arg0+8)=delay;
     } else if (stricmp(kind,base+0x120)==0) {
-        kind=(char *)fn_801284F8(0x24,base+0x12c);
-        if(kind) kind=((char *(*)(void *))fn_802655A4)(kind);
+        keys=fn_801284F8(0x24,base+0x12c);
+        if(keys) keys=((void *(*)(void *))fn_802655A4)(keys);
         value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
-        fn_80265610(kind,value);
-        items=*(void ***)lbl_80498F78;
-        count=(*(int *)(lbl_80498F78+4))++;
-        items[count]=kind;
+        fn_80265610(keys,value);
+        ADD_CREDITS_ITEM(keys);
         *(int *)arg0=0;
         fn_80264098(arg0,5);
-        *(void **)((char *)arg0+8)=kind;
+        *(void **)((char *)arg0+8)=keys;
     } else {
         fn_802E317C(base+0x138,kind);
     }
