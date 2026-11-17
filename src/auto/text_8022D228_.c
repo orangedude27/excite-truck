@@ -330,9 +330,10 @@ typedef struct IndexSelector {
 } IndexSelector;
 
 #pragma dont_inline on
-int fn_8022DBD4(void *arg0) {
-    int *array = *(int **)arg0;
-    return array[*(int *)((char *)arg0 + 0xC)];
+/* Return the element of the selector's values array at its current index. */
+int fn_8022DBD4(IndexSelector *selector) {
+    int *values = selector->values;
+    return values[selector->index];
 }
 #pragma dont_inline off
 
