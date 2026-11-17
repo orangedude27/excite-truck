@@ -5,6 +5,7 @@
 #include <revolution/GX/GXTypes.h>
 typedef int M2C_UNK;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
+extern void GXLoadTexObj(void *, int);
 
 #pragma dont_inline fn_802D1678
 #pragma dont_inline fn_802CFF50
