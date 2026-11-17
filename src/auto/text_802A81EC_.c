@@ -294,6 +294,7 @@ void fn_802A8978(void) {
         fn_802A8A4C((s32)entry, (s32)(entry + 0x60));
         j = 0;
         while (j < fn_802A8A34((void*)(entry + 0x6c))) {
+            /* Apply fn_802A8A4C's transform to each of this group's extra sub-records in place. */
             fn_802A8A4C(fn_802A8A3C((s32 *)(entry + 0x6c), j), (s32)entry);
             j++;
         }
