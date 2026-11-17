@@ -3234,6 +3234,7 @@ extern "C" void fn_8015C5E4(void* arg0) {
 }
 /* Bonus-tracker category getter: returns index 4. */
 extern "C" s32 fn_8015C684(void) {
+    /* Bonus-tracker category getter: returns index 4 (cf. fn_80159E6C). */
     return 4;
 }
 
