@@ -1358,6 +1358,7 @@ loop_outer_528:
 #pragma scheduling reset
 extern s32 fn_8001D464(s32);
 extern void fn_8001D528(void *);
+/* Relocate the statistics record pointers after the "Stat" section is read from the memory card: add the string archive's base address to every saved offset (fn_8001D528 applies fn_8001D464). */
 void fn_8001D5D8(void) {
     fn_8001D528(fn_8001D464);
 }
