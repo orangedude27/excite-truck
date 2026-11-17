@@ -882,8 +882,9 @@ next_iter:
         if (i + 1 >= cnt) break;
     }
 }
-void fn_8025F9B8(void* arg0, int arg1) {
-    *(int*)((char*)arg0 + 0x18) = arg1;
+void fn_8025F9B8(void* seqObj, int heap) {
+    // Store the sound sequence heap handle in the object's field at +0x18.
+    *(int*)((char*)seqObj + 0x18) = heap;
 }
 
 void* fn_8025F9C0(void* self) {
