@@ -153,14 +153,16 @@ extern int sprintf(char *, const char *, ...);
 static inline void IdList_Add(s32 *src) {
     s32 *data = lbl_8034F3D0.data;
     s32 n = lbl_8034F3D0.count;
+    s32 value = *src;
     lbl_8034F3D0.count = n + 1;
-    data[n] = *src;
+    data[n] = value;
 }
 #define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
 void fn_80008390(void) {
     s32 *base = lbl_802ED6D8;
     s32 *p;
-    s32 i;
+    s32 *scan;
+    s32 i, n;
     ID_LIST->count = 0;
     if (fn_800167F4() > 1) IdList_Add(&lbl_805601B0);
     if (lbl_8055D370 == 0) {
@@ -170,12 +172,15 @@ void fn_80008390(void) {
         p = base + 4;
         IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3); IdList_Add(p + 4);
     }
-    for (i = 0; i < ID_LIST->count; i++) {
-        if (ID_LIST->data[i] == 1) {
+    scan = ID_LIST->data;
+    n = ID_LIST->count;
+    for (i = 0; i < n; i++) {
+        if (*scan == 1) {
             p = base + 10;
             IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
             break;
         }
+        scan++;
     }
 }
 
@@ -646,23 +651,26 @@ void fn_80008F98(void) {
 }
 #pragma pop
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_80009534(void) {
-    s32 var16;
-    char *p24;
-    void *p14;
-    s32 var15;
-    s32 var23;
-    s32 var22;
-    s32 var21;
-    s32 var20;
-    s32 var19;
-    s32 var17;
-    s32 var18;
-    s32 var25;
-    s32 var26;
-    s32 *p27;
-    char *p28;
-    s32 flag31;
+    register s32 var16;
+    register char *p24;
+    register void *p14;
+    register s32 var15;
+    register s32 var23;
+    register s32 var22;
+    register s32 var21;
+    register s32 var20;
+    register s32 var19;
+    register s32 var17;
+    register s32 var18;
+    register s32 var25;
+    register s32 var26;
+    register s32 *p27;
+    register char *p28;
+    register s32 flag31;
     char sp8[8];
     s32 vv;
     var16 = 0;
@@ -941,7 +949,6 @@ skip16:
     ((u8 *)&lbl_8055D378)[0] = var16 == 1;
     ((u8 *)&lbl_8055D378)[1] = var16 == 2;
 }
-
 void fn_80009C80(void) {
     fn_80009534();
 }
