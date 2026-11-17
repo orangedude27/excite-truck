@@ -1103,8 +1103,10 @@ void fn_80275FC0(void *camera) {
     *(float *)((char *)camera + 0xBC) = *(float *)((char *)camera + 0x1D4);
 }
 
-void fn_80276044(int arg0) {
-    fn_80276BE4(arg0 + 0x58, arg0 + 0xBC);
+void fn_80276044(CamState *camera) {
+    /* Camera mode 25: copy the shared default-camera record's view matrix, translation
+     * vector and trailing FOV float into this camera at +0x58 and +0xBC. */
+    fn_80276BE4((int)&camera->viewMatrix, (int)camera + 0xBC);
 }
 
 int fn_802704D4(int, int);
