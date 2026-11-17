@@ -134,7 +134,7 @@ extern "C" void fn_8028D084(void *arg0, void *arg1) {
     char *base = lbl_80348C50;
     int value;
     *(int *)arg0 = fn_802CAC28(((Obj8028D084 *)arg1)->f5(lbl_8055C8C8), 0);
-    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9(base);
+    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9(&lbl_80348C50[0]);
     *(float *)((char *)arg0 + 8) = ((Obj8028D084 *)arg1)->f9(base + 0xC);
     *(float *)((char *)arg0 + 0xC) = ((Obj8028D084 *)arg1)->f9(base + 0x18);
     value = ((Obj8028D084 *)arg1)->f7(base + 0x24);
@@ -448,7 +448,6 @@ void fn_8028D7C0(int arg0) {
 }
 
 #pragma push
-#pragma processor 750
 #pragma use_lmw_stmw off
 extern float lbl_80564400;
 extern float lbl_80564404;
@@ -457,106 +456,142 @@ extern float lbl_8056440C;
 extern float lbl_80564410;
 extern void PSVECCrossProduct(void *, void *, void *);
 void fn_8028D89C(void *arg0, int arg1, float arg2) {
+#pragma fp_contract off
     void *base;
     unsigned char *entry;
-    int idx, kind, key;
+    int idx, kind, key, flag;
     int *state;
     unsigned char *group;
-    void *p;
-    void *g;
+    unsigned char *g;
     unsigned char *item;
-    float cross[3];
-    float t;
-    int i;
+    unsigned char *next;
+    float crossA[3], crossB[3], crossC[3];
+    float t, gt, scale;
+    int i, v, cl;
+
     base = *(void **)arg0;
     entry = (unsigned char *)base + arg1 * 0x3c;
-    idx = arg1 + *(int *)((unsigned char *)arg0 + 4) * 4;
-    state = (int *)((unsigned char *)&lbl_8055F720 + idx * 8);
     kind = *(int *)(entry + 0xa8);
+    idx = arg1 + *(int *)((unsigned char *)arg0 + 4) * 4;
+    state = (int *)((unsigned char *)(unsigned long)*(volatile int *)&lbl_8055F720 + idx * 8);
     if (kind >= 8) goto clear;
     key = ((int *)&lbl_804B3470)[kind];
     if (key < 0) goto clear;
     group = (unsigned char *)&lbl_804B3400 + key * 0x1c;
-    if (!(*(unsigned char *)(entry + 0xa0))) goto clear;
-    if (!(*(float *)(entry + 0x98) > *(float *)(group + 0xc))) goto clear;
-    if (state[0] == key && arg2 > lbl_80564400 + *(float *)(state + 1)) {
-        p = *(void **)(group + 0x14);
-        g = (unsigned char *)p + idx * 0xc;
-        item = (unsigned char *)*(void **)g + *(int *)((unsigned char *)g + 4) * 0x28;
+    flag = 0;
+    if (*(unsigned char *)(entry + 0xa0) != 0 &&
+        *(float *)(entry + 0x98) > *(float *)(group + 0xc))
+        flag = 1;
+    if (flag == 0) goto clear;
+    if (state[0] == key) {
+        if (arg2 > lbl_80564400 + *(float *)(state + 1)) {
+            scale = lbl_80564404;
+            g = *(unsigned char **)(group + 0x14) + idx * 0xc;
+            item = *(unsigned char **)g + *(int *)(g + 4) * 0x28;
+            *(float *)(item + 0) = *(float *)(entry + 0x7c);
+            *(float *)(item + 4) = *(float *)(entry + 0x80);
+            *(float *)(item + 8) = *(float *)(entry + 0x84);
+            *(float *)(item + 0xc) = *(float *)((unsigned char *)base + 0x34) * scale;
+            *(float *)(item + 0x10) = *(float *)((unsigned char *)base + 0x38) * scale;
+            *(float *)(item + 0x14) = *(float *)((unsigned char *)base + 0x3c) * scale;
+            PSVECCrossProduct((unsigned char *)base + 0x40, entry + 0x88, crossA);
+            if (((*(int *)(entry + 0x9c)) & 8) == 0) {
+                float s = lbl_80564408;
+                *(float *)(item + 0x18) = crossA[0] * s;
+                *(float *)(item + 0x1c) = crossA[1] * s;
+                *(float *)(item + 0x20) = crossA[2] * s;
+            } else {
+                float s = lbl_8056440C;
+                *(float *)(item + 0x18) = crossA[0] * s;
+                *(float *)(item + 0x1c) = crossA[1] * s;
+                *(float *)(item + 0x20) = crossA[2] * s;
+            }
+            gt = *(float *)(group + 0xc);
+            t = *(float *)(entry + 0x98) - ((lbl_805643F0 > gt) ? lbl_805643F0 : gt);
+            i = (int)(lbl_80564410 * (*(float *)(group + 4) + *(float *)(group + 8) * t));
+            cl = i & (((-i) & ~i) >> 31);
+            v = 0xFFFF;
+            if (cl < v) { v = cl; *(unsigned short *)(item + 0x24) = v; }
+            *(unsigned char *)(item + 0x26) = 1;
+            *(int *)(g + 4) = *(int *)(g + 4) + 1;
+            *(int *)(group + 0x18) = *(int *)(group + 0x18) + 1;
+            *(float *)(state + 1) = arg2;
+        } else {
+            scale = lbl_80564404;
+            g = *(unsigned char **)(group + 0x14) + idx * 0xc;
+            item = *(unsigned char **)g + (*(int *)(g + 4) - 1) * 0x28;
+            *(float *)(item + 0) = *(float *)(entry + 0x7c);
+            *(float *)(item + 4) = *(float *)(entry + 0x80);
+            *(float *)(item + 8) = *(float *)(entry + 0x84);
+            *(float *)(item + 0xc) = *(float *)((unsigned char *)base + 0x34) * scale;
+            *(float *)(item + 0x10) = *(float *)((unsigned char *)base + 0x38) * scale;
+            *(float *)(item + 0x14) = *(float *)((unsigned char *)base + 0x3c) * scale;
+            PSVECCrossProduct((unsigned char *)base + 0x40, entry + 0x88, crossB);
+            if (((*(int *)(entry + 0x9c)) & 8) == 0) {
+                float s = lbl_80564408;
+                *(float *)(item + 0x18) = crossB[0] * s;
+                *(float *)(item + 0x1c) = crossB[1] * s;
+                *(float *)(item + 0x20) = crossB[2] * s;
+            } else {
+                float s = lbl_8056440C;
+                *(float *)(item + 0x18) = crossB[0] * s;
+                *(float *)(item + 0x1c) = crossB[1] * s;
+                *(float *)(item + 0x20) = crossB[2] * s;
+            }
+            gt = *(float *)(group + 0xc);
+            t = *(float *)(entry + 0x98) - ((lbl_805643F0 > gt) ? lbl_805643F0 : gt);
+            i = (int)(lbl_80564410 * (*(float *)(group + 4) + *(float *)(group + 8) * t));
+            cl = i & (((-i) & ~i) >> 31);
+            v = 0xFFFF;
+            if (cl < v) { v = cl; *(unsigned short *)(item + 0x24) = v; }
+        }
+    } else {
+        int z = 0, o = 1;
+        scale = lbl_80564404;
+        g = *(unsigned char **)(group + 0x14) + idx * 0xc;
+        item = *(unsigned char **)g + *(int *)(g + 4) * 0x28;
+        next = *(unsigned char **)g + (*(int *)(g + 4) + 1) * 0x28;
         *(float *)(item + 0) = *(float *)(entry + 0x7c);
         *(float *)(item + 4) = *(float *)(entry + 0x80);
         *(float *)(item + 8) = *(float *)(entry + 0x84);
-        *(float *)(item + 0xc) = *(float *)((unsigned char *)base + 0x34) * lbl_80564404;
-        *(float *)(item + 0x10) = *(float *)((unsigned char *)base + 0x38) * lbl_80564404;
-        *(float *)(item + 0x14) = *(float *)((unsigned char *)base + 0x3c) * lbl_80564404;
-        PSVECCrossProduct((unsigned char *)base + 0x40, entry + 0x88, cross);
-        t = (*(int *)(entry + 0x9c) & 8) ? lbl_8056440C : lbl_80564408;
-        *(float *)(item + 0x18) = cross[0] * t;
-        *(float *)(item + 0x1c) = cross[1] * t;
-        *(float *)(item + 0x20) = cross[2] * t;
-        t = *(float *)(entry + 0x98);
-        if (lbl_805643F0 > *(float *)(group + 0xc)) t -= lbl_805643F0;
-        else t -= *(float *)(group + 0xc);
-        i = (int)(lbl_80564410 * (*(float *)(group + 4) + *(float *)(group + 8) * t));
-        if (i < 0) i = 0;
-        *(unsigned short *)(item + 0x24) = i;
-        *(unsigned char *)(item + 0x26) = 1;
-        *(int *)((unsigned char *)*(void **)g + 4) = *(int *)((unsigned char *)*(void **)g + 4) + 1;
-        *(int *)(group + 0x18) = *(int *)(group + 0x18) + 1;
-        *(float *)(state + 1) = arg2;
-        state[0] = key;
-        return;
-    } else {
-        p = *(void **)(group + 0x14);
-        g = (unsigned char *)p + idx * 0xc;
-        if (state[0] == key) {
-            item = (unsigned char *)*(void **)g + (*(int *)((unsigned char *)g + 4) - 1) * 0x28;
-            *(float *)(item + 0) = *(float *)(entry + 0x7c);
+        *(float *)(item + 0xc) = *(float *)((unsigned char *)base + 0x34) * scale;
+        *(float *)(item + 0x10) = *(float *)((unsigned char *)base + 0x38) * scale;
+        *(float *)(item + 0x14) = *(float *)((unsigned char *)base + 0x3c) * scale;
+        PSVECCrossProduct((unsigned char *)base + 0x40, entry + 0x88, crossC);
+        if (((*(int *)(entry + 0x9c)) & 8) == 0) {
+            float s = lbl_80564408;
+            *(float *)(item + 0x18) = crossC[0] * s;
+            *(float *)(item + 0x1c) = crossC[1] * s;
+            *(float *)(item + 0x20) = crossC[2] * s;
         } else {
-            item = (unsigned char *)*(void **)g + *(int *)((unsigned char *)g + 4) * 0x28;
-            *(float *)(item + 0) = *(float *)(entry + 0x7c);
+            float s = lbl_8056440C;
+            *(float *)(item + 0x18) = crossC[0] * s;
+            *(float *)(item + 0x1c) = crossC[1] * s;
+            *(float *)(item + 0x20) = crossC[2] * s;
         }
-        *(float *)(item + 4) = *(float *)(entry + 0x80);
-        *(float *)(item + 8) = *(float *)(entry + 0x84);
-        *(float *)(item + 0xc) = *(float *)((unsigned char *)base + 0x34) * lbl_80564404;
-        *(float *)(item + 0x10) = *(float *)((unsigned char *)base + 0x38) * lbl_80564404;
-        *(float *)(item + 0x14) = *(float *)((unsigned char *)base + 0x3c) * lbl_80564404;
-        PSVECCrossProduct((unsigned char *)base + 0x40, entry + 0x88, cross);
-        t = (*(int *)(entry + 0x9c) & 8) ? lbl_8056440C : lbl_80564408;
-        *(float *)(item + 0x18) = cross[0] * t;
-        *(float *)(item + 0x1c) = cross[1] * t;
-        *(float *)(item + 0x20) = cross[2] * t;
-        t = *(float *)(entry + 0x98);
-        if (lbl_805643F0 > *(float *)(group + 0xc)) t -= lbl_805643F0;
-        else t -= *(float *)(group + 0xc);
+        gt = *(float *)(group + 0xc);
+        t = *(float *)(entry + 0x98) - ((lbl_805643F0 > gt) ? lbl_805643F0 : gt);
         i = (int)(lbl_80564410 * (*(float *)(group + 4) + *(float *)(group + 8) * t));
-        if (i < 0) i = 0;
-        *(unsigned short *)(item + 0x24) = i;
-        if (state[0] != key) {
-            *(unsigned char *)(item + 0x26) = 0;
-            {
-                unsigned char *next = item + 0x28;
-                *(float *)(next + 0) = *(float *)(item + 0);
-                *(float *)(next + 4) = *(float *)(item + 4);
-                *(float *)(next + 8) = *(float *)(item + 8);
-                *(float *)(next + 0xc) = *(float *)(item + 0xc);
-                *(float *)(next + 0x10) = *(float *)(item + 0x10);
-                *(float *)(next + 0x14) = *(float *)(item + 0x14);
-                *(float *)(next + 0x18) = *(float *)(item + 0x18);
-                *(float *)(next + 0x1c) = *(float *)(item + 0x1c);
-                *(float *)(next + 0x20) = *(float *)(item + 0x20);
-                *(unsigned short *)(next + 0x24) = *(unsigned short *)(item + 0x24);
-                *(unsigned char *)(next + 0x26) = 1;
-                *(int *)((unsigned char *)*(void **)g + 4) = *(int *)((unsigned char *)*(void **)g + 4) + 2;
-                *(int *)(group + 0x18) = *(int *)(group + 0x18) + 2;
-            }
-        } else {
-            *(int *)((unsigned char *)*(void **)g + 4) = *(int *)((unsigned char *)*(void **)g + 4) + 1;
-            *(int *)(group + 0x18) = *(int *)(group + 0x18) + 1;
-        }
-        state[0] = key;
-        return;
+        cl = i & (((-i) & ~i) >> 31);
+        v = 0xFFFF;
+        if (cl < v) { v = cl; *(unsigned short *)(item + 0x24) = v; }
+        *(unsigned char *)(item + 0x26) = z;
+        *(float *)(next + 0) = *(float *)(item + 0);
+        *(float *)(next + 4) = *(float *)(item + 4);
+        *(float *)(next + 8) = *(float *)(item + 8);
+        *(float *)(next + 0x18) = *(float *)(item + 0x18);
+        *(float *)(next + 0x1c) = *(float *)(item + 0x1c);
+        *(float *)(next + 0x20) = *(float *)(item + 0x20);
+        *(float *)(next + 0xc) = *(float *)(item + 0xc);
+        *(float *)(next + 0x10) = *(float *)(item + 0x10);
+        *(float *)(next + 0x14) = *(float *)(item + 0x14);
+        *(unsigned short *)(next + 0x24) = *(unsigned short *)(item + 0x24);
+        *(unsigned char *)(next + 0x26) = o;
+        *(int *)(g + 4) = *(int *)(g + 4) + 2;
+        *(int *)(group + 0x18) = *(int *)(group + 0x18) + 2;
     }
+    state[0] = key;
+    return;
 clear:
     state[0] = -1;
 }
