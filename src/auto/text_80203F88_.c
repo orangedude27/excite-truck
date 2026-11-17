@@ -246,6 +246,9 @@ void fn_80203FEC(void) {
 
 }
 
+/* Virtual-method getter: returns the constant 0.0f (held in lbl_80563144).
+ * Callers add it as a zero base to a computed value, e.g.
+ * lbl_8055F98C = fn_80203FF0() + var_f17 (text_802AE588_). */
 float fn_80203FF0(void) { return lbl_80563144; }
 
 extern float lbl_80563140;
