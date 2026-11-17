@@ -80,8 +80,8 @@ done:
 #pragma scheduling on
 #pragma dont_inline off
 
-void fn_8013C800(void) {
-    fn_8013C7D0();
+void *fn_8013C800(int classType) {
+    return fn_8013C7D0(classType);
 }
 
 extern int fn_80131808(int);
