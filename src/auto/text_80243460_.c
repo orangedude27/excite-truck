@@ -62,8 +62,11 @@ void fn_80243468(void* child) {
 }
 
 extern void fn_802408B0(void*);
-void fn_80243470(void* arg0) {
-    fn_802408B0((u8*)arg0 - 0x10);
+/* Destructor thunk for MRollCarIcon: `child` points 0x10 into the object (a secondary
+ * base); recover the MRollCarIcon base and tail-call its destructor fn_802408B0.
+ * The delete flag passes through to it in r4 from our caller. */
+void fn_80243470(void* child) {
+    fn_802408B0((u8*)child - 0x10);
 }
 
 #pragma dont_inline on
