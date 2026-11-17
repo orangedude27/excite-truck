@@ -145,8 +145,10 @@ extern "C" void fn_8020449C(void) {
 #undef sGuiObjectCount
 #undef sGuiObject
 }
+#pragma processor 750
 #pragma cplusplus on
 extern "C" int fn_802044E8(void) {
+ #pragma use_lmw_stmw off
  char *base = lbl_8033BB18;
  unsigned char input[0x64];
  float matrix[12];
@@ -269,10 +271,8 @@ edit_record: {
         }
         goto update;
     case 0: {
-        unsigned int bits;
         unsigned char *value = (unsigned char *)(unsigned int)*(int *)(rec + 8);
-        bits = (unsigned int)__cntlzw(*value);
-        *value = bits >> 5;
+        *value = (unsigned int)__cntlzw(*value) / 32;
         goto update;
     }
     default:
