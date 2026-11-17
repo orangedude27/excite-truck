@@ -1045,6 +1045,7 @@ extern "C" s32 fn_800F27CC(void *arg0) {
 }
 #pragma dont_inline off
 
+/* Convert a sound label string to its sound ID through the archive's file-reader label tree. */
 extern "C" s32 fn_800F27D4(void *archive, s32 labelString) {
     SoundArchiveFileReaderLayout *reader = (SoundArchiveFileReaderLayout *)*(void **)((u8 *)archive + 4);
     return ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(reader, reader->stringTree, labelString);
