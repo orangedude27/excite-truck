@@ -1831,8 +1831,9 @@ extern "C" void fn_800D87A4(GXColor *dst, const GXColor *src) {
     *dst = *src;
 }
 
-extern "C" int fn_800D87C8(void *arg0) {
-    return (*(unsigned int*)((char*)arg0 + 0x4c) >> 8) & 1;
+/* Read flag bit 8 of the nw4r::lyt Material's packed flags word at offset 0x4C. */
+extern "C" int fn_800D87C8(void *material) {
+    return (*(unsigned int*)((char*)material + 0x4c) >> 8) & 1;
 }
 
 // Copies one RGBA color (used by nw4r lyt material setup) from src into dst.
