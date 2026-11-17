@@ -1294,6 +1294,7 @@ extern void OSRestoreInterrupts(signed long);
 extern void* memcpy(void*, const void*, unsigned long);
 extern void memset(void*, int, unsigned int);
 extern signed long lbl_8055DED4;
+#pragma use_lmw_stmw on
 signed long fn_801186B8(void* arg0) {
     unsigned char* m = (unsigned char*)arg0;
     signed long tmp;
@@ -1410,7 +1411,6 @@ signed long fn_801186B8(void* arg0) {
     }
     return 0;
 }
-
 #undef lbl_8041D608
 
 /* Accumulate an elapsed-time interval for an object: when a start tick at +0x264
@@ -3454,8 +3454,11 @@ void fn_8011B94C(void *arg0, s32 *arg1, s32 *arg2, s32 arg3, s32 *arg4, s32 arg5
     if (arg4) *arg4 = arg3 + result;
 }
 
-void fn_8011BC48(void) {
-    fn_80120084();
+/* Free one memory block: forwards to the shared deallocator fn_80120084, which
+ * calls the registered free hook for mode-3 blocks and free() otherwise.
+ * BinkClose uses it to release each frame's texture. */
+void fn_8011BC48(void *block) {
+    fn_80120084(block);
 }
 
 s32 fn_8011BC4C(void *list, void *node) {
