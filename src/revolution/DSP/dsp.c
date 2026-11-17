@@ -14,7 +14,7 @@ DSPMail DSPReadMailFromDSP(void) {
                      DSP_HW_REGS[DSP_CPUMBOX_L]);
 }
 
-/* Send a DSPMail pointer to the DSP, split across the high and low mailbox registers. */
+// Send a 32-bit mail to the DSP by splitting it into the DSP mail box's high and low 16-bit halves.
 void DSPSendMailToDSP(DSPMail mail) {
     DSP_HW_REGS[DSP_DSPMBOX_H] = ((uintptr_t)mail) >> 16 & 0xFFFF;
     DSP_HW_REGS[DSP_DSPMBOX_L] = ((uintptr_t)mail) & 0xFFFF;
