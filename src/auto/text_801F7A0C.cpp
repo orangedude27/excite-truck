@@ -2949,7 +2949,7 @@ extern "C" f64 fn_8002F234(void);
 extern u8 lbl_803338C0[], lbl_3B55C[], lbl_8033B55C[];
 #pragma scheduling invalid_target
 extern "C" void *fn_801FC12C(void *arg0) {
-    f32 save = lbl_80563010;
+    register f32 save = lbl_80563010;
     u8 *obj = (u8 *)fn_801284F8(0x38, lbl_8033B55C);
     if (obj != 0) {
         f32 half = lbl_80563018;
@@ -3267,7 +3267,7 @@ extern "C" void fn_801FC774(void *arg0)
 extern "C" {
 extern u8 lbl_8033B418[], lbl_8033B53C[], lbl_8033B52C[], lbl_8033B51C[];
 extern u8 lbl_80333B98[], lbl_803337C8[], lbl_80333918[];
-extern f32 lbl_80563010, lbl_80562FFC;
+extern f32 lbl_80562FFC;
 void fn_801A324C(void*, s32, void*, f32, f32);
 }
 struct FC048Obj {
