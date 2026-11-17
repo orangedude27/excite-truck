@@ -657,6 +657,9 @@ check_a:
 }
 #pragma pop
 char fn_80247624(void) {
+    /* Returns lbl_8055F260, the flag raised by the attract/demo (kiosk)
+     * selection flow fn_80247210 while it runs; callers test it to take
+     * demo-specific paths. */
     return lbl_8055F260;
 }
 
