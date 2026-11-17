@@ -3325,13 +3325,13 @@ done:
 #pragma opt_propagation off
 s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
 {
-    WPADCB* p = lbl_8038F4F0[chan];
+    WPADCB* p;
     s32 status;
     BOOL enabled;
     u8 busy;
     u32 info[12];
-    u32 w11, w10, w9, w8, w7, w6, w5, w4, w3, w2, w1, w0;
 
+    p = lbl_8038F4F0[chan];
     enabled = OSDisableInterrupts();
     status = *(s32*)((u8*)p + 0x7FC);
     OSRestoreInterrupts(enabled);
@@ -3343,9 +3343,11 @@ s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
         if (busy != 0) {
             status = -2;
         } else {
-            w0 = ((u32*)pInfo)[0]; w1 = ((u32*)pInfo)[1]; w2 = ((u32*)pInfo)[2]; w3 = ((u32*)pInfo)[3];
-            w4 = ((u32*)pInfo)[4]; w5 = ((u32*)pInfo)[5]; w6 = ((u32*)pInfo)[6]; w7 = ((u32*)pInfo)[7];
-            w8 = ((u32*)pInfo)[8]; w9 = ((u32*)pInfo)[9]; w10 = ((u32*)pInfo)[10]; w11 = ((u32*)pInfo)[11];
+            u32* src = (u32*)pInfo;
+            u32 w11, w10, w9, w8, w7, w6, w5, w4, w3, w0, w1, w2;
+            w0 = src[0]; w1 = src[1]; w2 = src[2]; w3 = src[3];
+            w4 = src[4]; w5 = src[5]; w6 = src[6]; w7 = src[7];
+            w8 = src[8]; w9 = src[9]; w10 = src[10]; w11 = src[11];
             info[0] = w0;
             info[1] = w1;
             info[2] = w2;
@@ -6680,6 +6682,11 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
 void fn_800678D8(void) { /* stub */ }
 
 // fn_800678DC: WPAD data processing
+extern f64 lbl_80560CE8;
+extern f32 lbl_80560CD8;
+extern unsigned char lbl_8055DC20[];
+extern unsigned char lbl_8055DC24[];
+
 BOOL fn_800678DC(void) { return FALSE; }
 
 // fn_80067ECC: WPAD data processing
