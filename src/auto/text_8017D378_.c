@@ -193,6 +193,7 @@ void *fn_8017D688(void) {
 
 #pragma scheduling invalid_target
 #pragma cplusplus on
+#pragma ppc_psq_save off
 extern "C" void fn_8017D6E0(void *arg0, void *arg1) {
     char *a = (char *)arg0;
     char *b = (char *)arg1;
