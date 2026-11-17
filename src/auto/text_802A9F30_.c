@@ -598,6 +598,7 @@ extern int lbl_8055CC64;
 extern float lbl_805649F0, lbl_805649F4, lbl_805649F8, lbl_805649FC;
 extern float lbl_80564A20, lbl_80564A34, lbl_80564A4C, lbl_80564A54;
 extern float lbl_80564A58, lbl_80564A5C, lbl_80564A60, lbl_80564A64;
+extern __declspec(section ".sdata2") const double lbl_80564A40;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
