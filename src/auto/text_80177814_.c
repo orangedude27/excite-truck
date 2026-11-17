@@ -1505,6 +1505,7 @@ extern char *fn_80178374(long);
 extern long fn_802E317C(const char *, long, ...);
 extern const char lbl_80331B40[];
 extern unsigned char *fn_801781F4(long);
+/* Return the cached snapshot of the registered-record count (captured from fn_80137C74 at init), used as the race's record/player count. */
 void* fn_80179650(void) {
     return lbl_8055E430;
 }
