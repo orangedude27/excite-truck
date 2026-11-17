@@ -61,6 +61,9 @@ void fn_80177814(int *arg0) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801778C0(void) {
+    /* Rebuild the compact array of active objects: scan the global object list,
+       keeping an entry only when both of its virtual enable checks pass, and
+       store survivors in lbl_804340C0 with their count in lbl_8055E468. */
     lbl_8055E468 = 0;
     struct Obj {
         virtual int v0();
@@ -82,14 +85,14 @@ extern "C" void fn_801778C0(void) {
         virtual int v16();
         virtual int v17();
     };
-    void **vbase = &lbl_804340C0[0];
-    int voffset = 0;
-    int vcount = 0;
-    Obj *velem;
-    for (; vcount < lbl_8055E438; voffset += 4, vcount++) {
-        velem = (Obj *)*(void **)((char *)lbl_8055E434 + voffset);
-        if (velem->v15() != 0 && velem->v14() != 0) {
-            vbase[lbl_8055E468++] = (void *)velem;
+    void **activeList = &lbl_804340C0[0];
+    int slotOffset = 0;
+    int listIndex = 0;
+    Obj *obj;
+    for (; listIndex < lbl_8055E438; slotOffset += 4, listIndex++) {
+        obj = (Obj *)*(void **)((char *)lbl_8055E434 + slotOffset);
+        if (obj->v15() != 0 && obj->v14() != 0) {
+            activeList[lbl_8055E468++] = (void *)obj;
         }
     }
 }
