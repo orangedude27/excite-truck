@@ -212,8 +212,9 @@ s32 fn_801EA9B0(s32 slot) {
     return lbl_8055EB78 + (*(s32 *)((u8 *)lbl_8055EB78 + (slot << 2) + 0x5E8) * 0xBC);
 }
 
-s32 fn_801EA9CC(s32 arg0) {
-    return lbl_8055EB78 + (arg0 * 0xBC);
+/* Return the address of the CarMgr car record with the given index (records are 0xBC-byte CarMgrEntry structs in the lbl_8055EB78 table). */
+s32 fn_801EA9CC(s32 index) {
+    return lbl_8055EB78 + (index * sizeof(struct CarMgrEntry));
 }
 
 #pragma scheduling invalid_target
