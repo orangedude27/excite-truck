@@ -1910,9 +1910,11 @@ void fn_801195D8(void *arg0) {
         if (*(s32 *)(base + 0x78) != 1) {
             u32 p = *(volatile u32 *)(base + 0xb8);
             u16 *left = (u16 *)(*(u8 **)(base + 0x84) + (p >> 1));
-            u16 *right = (u16 *)(*(u8 **)(base + 0x88) + (p >> 1));
-            u16 *l = left, *r = right;
+            u16 *r, *right;
+            u16 *l = left;
             u32 i;
+            right = (u16 *)(*(u8 **)(base + 0x88) + (p >> 1));
+            r = right;
             for (i = count >> 2; i != 0; --i) {
                 *l++ = *(u16 *)src; src += 2;
                 *r++ = *(u16 *)src; src += 2;
