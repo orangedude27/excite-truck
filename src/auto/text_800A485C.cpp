@@ -12687,17 +12687,17 @@ block_11:
     return -0x16 & ((s32)~(((s32)(u16)i - 0x17) | (0x17 - (s32)(u16)i)) >> 31);
 }
 
+static inline void fn800B960CSetSlotError(u32 key, s32 err) {
+    u16 j;
+    for (j = 0; j < 0x17; j++) {
+        u32 offset = j * 0xF0;
+        if (*(u32 *)(lbl_80405D58 + offset) == key) {
+            *(s32 *)(lbl_80405D58 + offset + 0xEC) = err;
+            break;
+        }
+    }
+}
 extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
-#define SET_SLOT_ERROR(err_val) do { \
-    for (i = 0; i < 0x17; i++) { \
-        offset = i * 0xF0; \
-        if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) { \
-            *(s32 *)(lbl_80405D58 + offset + 0xEC) = (err_val); \
-            break; \
-        } \
-    } \
-} while (0)
-
     s32 status;
     u16 i;
     u32 filelen;
@@ -12707,13 +12707,12 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     s32 r;
     u32 remain;
     u32 done;
-    u32 offset;
     unsigned char *entry;
     unsigned char buf[0x200] __attribute__((aligned(32)));
 
     entry = 0;
     for (i = 0; i < 0x17; i++) {
-        offset = i * 0xF0;
+        u32 offset = i * 0xF0;
         if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
             entry = lbl_80405D58 + offset;
             break;
@@ -12761,7 +12760,13 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     while (length >= 0x200) {
         r = NANDRead(entry + 0x58, buf, 0x200);
         if (r < 0) {
-            SET_SLOT_ERROR(r);
+            for (i = 0; i < 0x17; i++) {
+                u32 offset = i * 0xF0;
+                if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
+                    break;
+                }
+            }
             return r;
         }
         VFipf_memcpy((void *)(arg1 + done), buf, r);
@@ -12771,7 +12776,13 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     if (length != 0) {
         r = NANDRead(entry + 0x58, buf, length);
         if (r < 0) {
-            SET_SLOT_ERROR(r);
+            for (i = 0; i < 0x17; i++) {
+                u32 offset = i * 0xF0;
+                if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+                    *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
+                    break;
+                }
+            }
             return r;
         }
         VFipf_memcpy((void *)(arg1 + done), buf, r);
@@ -12780,9 +12791,14 @@ extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     return 0;
 
 fail:
-    SET_SLOT_ERROR(r);
+    for (i = 0; i < 0x17; i++) {
+        u32 offset = i * 0xF0;
+        if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+            *(s32 *)(lbl_80405D58 + offset + 0xEC) = r;
+            break;
+        }
+    }
     return r;
-#undef SET_SLOT_ERROR
 }
 
 extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
@@ -22104,32 +22120,23 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     }
 }
 
-void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Pane *pane, bool bind) {
+void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
     register u8 *self = (u8 *)this;
-    register u8 *paneCopy = (u8 *)pane;
     register u8 *offsets = (u8 *)*(void **)(self + 0xC);
-    register u16 i = 0;
     offsets += *(s32 *)(offsets + 0x10);
-    while (i < *(u16 *)(*(u8 **)(self + 0xC) + 0xE)) {
-        u8 *entry = (u8 *)*(void **)(self + 0xC) + *(s32 *)(offsets + i * 4);
-        void *bound;
-        if (entry[0x15] == 0) {
-            bound = ((PaneAnimTransformDispatch *)paneCopy)->bindPane(entry, bind);
-            if (bound != 0) {
-                u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
-                *(void **)(link + 8) = self;
-                *(u16 *)(link + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(
-                    bound, (u8 *)*(void **)(self + 0x18) + i * 0x10);
-            }
-        } else {
-            bound = ((PaneAnimTransformDispatch *)paneCopy)->bindMaterial(entry, bind);
-            if (bound != 0) {
-                u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
+    register u16 i = 0;
+    register u8 *materialPtr = (u8 *)material;
+    u32 off = 0;
+    while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
+        u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
+        if (entry[0x15] == 1) {
+            if (((s32 (*)(void *, void *))fn_800D58F0)(materialPtr + 4, entry) != 0) {
+                off = i * 0x10;
+                u8 *link = (u8 *)*(void **)(self + 0x18) + off;
                 *(void **)(link + 8) = self;
                 *(u16 *)(link + 0xC) = i;
                 AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
-                    bound, (u8 *)*(void **)(self + 0x18) + i * 0x10);
+                    materialPtr, (u8 *)*(void **)(self + 0x18) + off);
             }
         }
         i++;
