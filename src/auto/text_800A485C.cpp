@@ -18803,8 +18803,11 @@ extern "C" void fn_800C657C(void) {
 #undef s_hbmAllocator
 }
 
+/* Runs Home Button manager initialization on the singleton home-button instance. */
 extern "C" void fn_800C65C4(void) {
-    fn_800C7998(lbl_8055DD98);
+#define s_homeButtonInstance lbl_8055DD98
+    fn_800C7998(s_homeButtonInstance);
+#undef s_homeButtonInstance
 }
 
 extern "C" void fn_800C81F0(void*, s32);
