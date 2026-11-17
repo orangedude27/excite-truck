@@ -1730,8 +1730,10 @@ void fn_802CC60C(void) {
 }
 #pragma scheduling on
 
-void fn_802CC73C(char arg0) {
-    lbl_8055D07D = arg0;
+/* Set the texture-system flag (lbl_8055D07D): zero disables per-entry texture
+ * processing/updates; nonzero enables it. Read back by fn_802CC744. */
+void fn_802CC73C(char enabled) {
+    lbl_8055D07D = enabled;
 }
 
 /* Returns lbl_8055D07D, the texture-system flag set through fn_802CC73C.
