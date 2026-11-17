@@ -150,13 +150,17 @@ s32 fn_80244C58(void *arg0, s32 arg1) {
     return 1;
 }
 
+#pragma scheduling invalid_target
 void fn_80244D0C(void *arg0) {
     int t = fn_802E2C20();
     int *a = (int *)((char *)arg0 + 0xA0);
-    a[0] = t <= (int)a[2] + 0xFA;
-    a[1] = t <= (int)a[3] + 0xFA;
+    int v;
+    v = a[2] + 0xFA;
+    a[0] = t <= v;
+    v = a[3] + 0xFA;
+    a[1] = t <= v;
 }
-
+#pragma scheduling reset
 extern void fn_80230C30(float *, float *, int, int);
 extern int fn_802C51C0(int);
 extern int fn_80232B70(int);
