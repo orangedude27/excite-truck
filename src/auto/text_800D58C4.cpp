@@ -1854,8 +1854,11 @@ extern "C" void fn_800D8804(GXColor *dst, const GXColor *src) {
     *dst = *src;
 }
 
-extern "C" s32 fn_800D8828(void *arg0) {
-    return (*(u32 *)((u8 *)arg0 + 0x4C) >> 14) & 1;
+/* Return flag bit 14 of an nw4r::lyt Material's packed flags word at +0x4C.
+   Material setup checks this when the resource declares channel A, before
+   copying that channel's trailing color block. */
+extern "C" s32 fn_800D8828(void *material) {
+    return (*(u32 *)((u8 *)material + 0x4C) >> 14) & 1;
 }
 
 /* Copies one byte of an RGBA color (used by nw4r lyt material setup) from src into dst. */
