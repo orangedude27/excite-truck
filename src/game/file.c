@@ -114,6 +114,7 @@ extern "C" void fn_802E339C(void) {
     fileSystem->a7();
 }
 #pragma cplusplus off
+/* FileCd vtable slot 0x24 (flush): a disc is read-only, so there is nothing to flush; report success. */
 s32 fn_802E33D0(void) { return 0; }
 
 #pragma scheduling invalid_target
