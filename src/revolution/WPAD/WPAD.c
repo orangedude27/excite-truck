@@ -2427,7 +2427,9 @@ void WPADSetSpeakerVolume(u8 volume) {
 #pragma opt_propagation off
 static BOOL IsBusyStream(s32 chan) {
     BOOL enabled;
-    WPADCB* p = lbl_8038F4F0[chan];
+    WPADCB** table = lbl_8038F4F0;
+    s32 index = chan;
+    WPADCB* p = table[index];
     u8 radioQuality;
     u32 devType;
     u8 bufferStatus;
@@ -2450,7 +2452,7 @@ static BOOL IsBusyStream(s32 chan) {
         OSRestoreInterrupts(enabled);
     }
     {
-        WPADCB* p = lbl_8038F4F0[chan];
+        WPADCB* p = table[index];
         BOOL enabled;
         s32 status;
         s8 handle;
@@ -2465,7 +2467,7 @@ static BOOL IsBusyStream(s32 chan) {
         }
     }
     {
-        WPADCB* p = lbl_8038F4F0[chan];
+        WPADCB* p = table[index];
         BOOL enabled;
         s32 status;
         s8 handle;
@@ -3392,6 +3394,7 @@ s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
     }
     return status;
 }
+#pragma opt_propagation reset
 
 /*
  * WPAD library state that the game's symbol table leaves unnamed (.sbss
@@ -5698,17 +5701,17 @@ s32 WPADiHIDParser(u8 port, u8* p_rpt) {
 #pragma opt_propagation off
 void fn_80064A80(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
-    u32 value;
     if (param_2 != 0) {
+        u8 value;
         WPADiClearQueue_80063BD4(&cb->extCmdQueue);
         if (param_2 == -1) {
             value = 0xfd;
         } else {
             s32 val = *(s32*)((u8*)cb + 0x780);
             s32 sign = (-val | val) >> 31;
-            value = (u32)sign & 0xfc;
+            value = (u8)sign & 0xfc;
         }
-        wpad_store_status((u8*)cb + 0x801, value);
+        ((u8*)cb)[0x801] = value;
         if (*(s32*)((u8*)cb + 0x7e0) != 0) {
             ((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
         }
