@@ -204,20 +204,18 @@ extern "C" void fn_802A4ADC(void) {
         virtual void f3();
         virtual s32 f4(void *, void *);
     };
-    u8 *base = lbl_80349BF0;
+    s32 base = (s32)lbl_80349BF0;
+    s32 result = (s32)fn_801E1F44();
+    if (fn_800167F4() == 1) fn_802A5384(result);
+    fn_80287B38((void *)fn_802A53B0);
+    fn_802A5878();
+    lbl_8055F89C = fn_802CAC28((void *)(base + 0x28), 0);
+    result = base + 0x38;
     {
-        s32 result = (s32)fn_801E1F44();
-        if (fn_800167F4() == 1) fn_802A5384(result);
-        fn_80287B38((void *)fn_802A53B0);
-        fn_802A5878();
-        lbl_8055F89C = fn_802CAC28((char *)base + 0x28, 0);
-        result = (s32)((char *)base + 0x38);
-        {
-            struct Dummy *p = (struct Dummy *)fn_802AE414(&lbl_8055CBC8);
-            if (p != 0) result = p->f4((void *)((char *)base + 0x48), (void *)result);
-        }
-        lbl_8055F898 = fn_802C6FC0((void *)result, 0, 0);
+        struct Dummy *p = (struct Dummy *)fn_802AE414(&lbl_8055CBC8);
+        if (p != 0) result = p->f4((void *)(base + 0x48), (void *)result);
     }
+    lbl_8055F898 = fn_802C6FC0((void *)result, 0, 0);
 }
 #pragma cplusplus reset
 void fn_802A4B90(void) {
@@ -261,6 +259,7 @@ void fn_802A4CA8(void) {
     }
 }
 
+/* Disable fog: fn_802C2C00 enables fog when passed 1, so 0 clears the enable flag and restores the default fog z-value. */
 void fn_802A4D00(void) { fn_802C2C00(0); }
 
 #pragma scheduling invalid_target
@@ -1220,19 +1219,18 @@ void fn_802A6838(void *arg0) {
     }
 }
 
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
     s32 *object = (s32 *)arg0;
-    void *base = (void *)lbl_80349CAC;
-    s32 size = arg1 * 0xC + 0x10;
-    object[0] = fn_8002F37C(fn_8012850C(size, base), (void *)fn_8001BA68, 0, 0xC, arg1);
+    object[0] = fn_8002F37C(fn_8012850C(arg1 * 0xC + 0x10, lbl_80349CAC), (void *)fn_8001BA68, 0, 0xC, arg1);
     object[2] = arg1;
     object[3] = fn_802CAC28((void *)lbl_8055CBC0, 0);
     object[4] = arg2;
     fn_802A6A44(object);
     return arg0;
 }
-#pragma scheduling on
+#pragma pop
 void *fn_802A69D8(void *object, s32 deleteFlag) {
     /* Destroying destructor: release the texture handle at +0xC, free the owned
      * buffer at +0 (allocated with a 0x10-byte header), and optionally delete the object. */
