@@ -380,24 +380,16 @@ extern double atof(const char *);
 extern int fn_8002B1D8(void *, void *, int);
 extern int atoi(const char *);
 extern int stricmp(const char *, const char *);
-#pragma peephole off
-#pragma dont_inline on
+#pragma peephole on
 char *fn_801337E4(char *arg0) {
     char *p = arg0;
     unsigned char byte;
     int c;
     int table = *(int *)((char *)&lbl_802FE850 + 0x38);
-    do {
-        p = (char *)((unsigned int)p + 1);
-        byte = *(volatile unsigned char *)p;
-        c = (signed char)byte;
-        if (c == 0) return p;
-        if ((c < 0 || c >= 0x100) ? 0 : (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100)) continue;
-        return p;
-    } while (1);
+    while ((byte = *p, c = (signed char)byte) && ((c < 0 || c >= 0x100) ? 0 : (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100)))
+        p++;
+    return p;
 }
-#pragma dont_inline off
-#pragma dont_inline on
 int fn_80133844(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
     int invalid = 0;
