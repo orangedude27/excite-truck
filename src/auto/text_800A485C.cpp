@@ -634,7 +634,7 @@ public:
     u32 m_playStartLo;      // 0x34
     u32 m_stopStartHi;      // 0x38 OSGetTime() when it was first seen stopped
     u32 m_stopStartLo;      // 0x3C
-    u8 pad40;               // 0x40
+    u8 pad40;               // 0x40 remote-connected flag (1 while a remote is attached)
     u8 m_alarmPending;      // 0x41 soundOn callback alarm is scheduled
     u8 m_soundActive;       // 0x42 a tone is active
     u8 m_stopTiming;        // 0x43 timing the "stopped playing" grace period
