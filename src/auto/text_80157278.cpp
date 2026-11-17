@@ -741,8 +741,10 @@ extern "C" s32 fn_801577F0(Unk801577F0* tracker) {
     return gBonusCategoryNames[tracker->GetType()];
 }
 
-extern "C" s32 fn_8015782C(s32* arg0, s32 arg1) {
-    return *arg0 + arg1 * 4;
+extern "C" s32 fn_8015782C(s32* arrayBase, s32 index) {
+    /* Byte address of element `index` (4-byte stride) in the array whose base
+     * pointer is stored at `arrayBase`. */
+    return *arrayBase + index * 4;
 }
 
 #pragma auto_inline off
@@ -3627,8 +3629,7 @@ extern "C" f32 fn_8015D4A0(Unk801577F0* arg0, s32 index) {
     return lbl_80561754;
 }
 
-#pragma push
-#pragma peephole off
+#pragma peephole on
 extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     s32 count = arg0->mCount;
     s32 i;
@@ -3638,17 +3639,15 @@ extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     for (; i < count; i++) {
         s32 value = *(s32*)((u8*)arg0->mData + offset + 0x14);
         if (arg1 < value) goto out;
-        if (value >= 0) {
-            offset += 0x38;
-            continue;
-        }
-        goto out;
+        if (value >= 0) goto cont;
+        else goto out;
+    cont:
+        offset += 0x38;
     }
     i = 0;
 out:
     return i;
 }
-#pragma pop
 extern "C" void fn_8015D554(void *arg0) {
     /* Query a value from slot v20, then apply it via slot v19 on the same object. */
     class Object {
