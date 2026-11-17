@@ -2732,6 +2732,9 @@ extern "C" s32 fn_8021C730(MenuValueItem *item, s32 keyCode) {
     return 0;
 }
 #pragma pop
+/* Default no-op handler for this menu object: returns 0 (nothing handled /
+   no value).  Neighbouring menu-item handlers return 1 when they consume a
+   key; this stub is the zero-returning default. */
 extern "C" s32 fn_8021C974(void) { return 0; }
 
 extern "C" void *fn_8021C97C(void *obj, s32 arg1, s32 arg2, s32 arg3, s32 value258, s32 value254)
