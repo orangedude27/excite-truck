@@ -1364,8 +1364,14 @@ void fn_8001D5D8(void) {
 }
 
 extern s32 fn_8001D474(s32);
+/* Before writing the Stat section to the memory card, subtract the string
+   archive base from every stored record pointer, turning pointers into offsets. */
 void fn_8001D5E4(void) {
-    fn_8001D528(fn_8001D474);
+#define sApplyFixupToSlots fn_8001D528
+#define sPointerToArchiveOffset fn_8001D474
+    sApplyFixupToSlots(sPointerToArchiveOffset);
+#undef sPointerToArchiveOffset
+#undef sApplyFixupToSlots
 }
 
 extern void fn_8001D5D8(void);
