@@ -790,18 +790,21 @@ void fn_802C6080(void) {
 }
 
 extern void fn_802C6A84(s32 *value, s32 delta);
+extern void fn_802C6A9C(s32 *value, s32 delta);
+extern void fn_802C6AFC(s32 *value, s32 delta);
+extern void fn_802D6B80(unsigned char *arg0, s32 arg1, s32 arg2);
 void fn_802C61BC(void *arg0, int arg1) {
     unsigned char *p = (unsigned char *)arg0;
+    unsigned char t;
+    int i;
     (void)arg1;
-    if (p == 0) return;
-    if (*(unsigned short *)p >= 0x3E80) return;
-    if (*(unsigned short *)(p + 0x10) < 0x3E80) return;
-    {
-        unsigned char a = p[0xE];
-        unsigned char b = p[0xD];
-        p[0xD] = a;
-        p[0xE] = b;
+    if (*(unsigned int *)p >= 0x3E80) return;
+    if (*(unsigned int *)(p + 0x10) < 0x3E80) return;
+    for (i = 0; i < 0x48; i += 4) {
+        t = p[i]; p[i] = p[i+3]; p[i+3] = t;
+        t = p[i+1]; p[i+1] = p[i+2]; p[i+2] = t;
     }
+    ((void (*)(void *))fn_802C6A84)(p + 4);
 }
 
 void fn_802C6A84(s32 *value, s32 delta) {
