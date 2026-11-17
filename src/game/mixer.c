@@ -211,45 +211,43 @@ extern "C" void fn_801336E0(int, void (*)(void));
 #pragma cplusplus reset
 #pragma scheduling default
 #pragma cplusplus on
-extern "C" void fn_80208D80(int arg0) {
-    void **items;
-    void *object;
-    char *entry = lbl_80489258;
-    int enabled;
-    int index = 0;
-    int index2;
+extern "C" void fn_80208D80(int closeDevices) {
+    /* Mixer shutdown: report any volume handles still held, optionally close every
+     * registered sound device, then save the selected device, effects volume and
+     * sound quality to config and install the settings-reload callback. */
+    void **deviceIt;
+    void *device;
+    char *handlePtr = lbl_80489258;
+    int name;
+    int i = 0;
+    int j;
 
-    while (index < MIXER_VOLUME_HANDLE_COUNT) {
-        enabled = *(int *)(entry + 4);
-        if (enabled != 0) {
-            fn_802E317C(lbl_8033BF28, enabled);
+    while (i < MIXER_VOLUME_HANDLE_COUNT) {
+        name = *(int *)(handlePtr + 4);
+        if (name != 0) {
+            fn_802E317C(lbl_8033BF28, name);
         }
-        entry += 8;
-        index++;
+        handlePtr += 8;
+        i++;
     }
 
-    if (arg0 != 0) {
-        items = (void **)lbl_80489238;
-        index2 = 0;
-        while (index2 < MIXER_DEVICE_COUNT) {
-            object = *items;
-            if (object != 0) {
+    if (closeDevices != 0) {
+        deviceIt = (void **)lbl_80489238;
+        j = 0;
+        while (j < MIXER_DEVICE_COUNT) {
+            device = *deviceIt;
+            if (device != 0) {
                 struct Dummy {
-                    virtual void call(int);
+                    virtual void close(int);
                 };
-                ((struct Dummy *)object)->call(1);
+                ((struct Dummy *)device)->close(1);
             }
-            items++;
-            index2++;
+            deviceIt++;
+            j++;
         }
     }
 
-    struct Table {
-        void *entries[6];
-        int count;
-        int value;
-    };
-    fn_80133348(4, &lbl_8055B4E8, ((struct Table *)lbl_80489238)->value);
+    fn_80133348(4, &lbl_8055B4E8, MIXER_SELECTED_DEVICE);
     fn_8013323C(4, lbl_8033BEF8, lbl_8055B4D0);
     fn_80133348(4, &lbl_8055B4E0, (int)lbl_8055EDA8);
     fn_801336E0(lbl_8055B4DC, fn_80208A78);
@@ -442,14 +440,14 @@ extern float lbl_8055B4D0;
 extern void fn_801332D0(int, void *, void *);
 #pragma scheduling on
 int fn_8020921C(void) {
-    extern unsigned int lbl_8048929C[];
+    struct Config { int pad; int value; unsigned int version; };
+    extern struct Config lbl_8048929C;
     extern unsigned int lbl_8055E044;
     extern void fn_80131318(void);
-    if (*(lbl_8048929C + 2) != lbl_8055E044)
+    if (lbl_8055E044 != lbl_8048929C.version)
         fn_80131318();
-    return (int)*(lbl_8048929C + 1);
+    return lbl_8048929C.value;
 }
-#pragma scheduling default
 /* Trivial mixer helper: returns the supplied value advanced by 4. */
 int fn_80209260(int value) { return value + 4; }
 
