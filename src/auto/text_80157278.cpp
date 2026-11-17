@@ -4127,43 +4127,55 @@ extern "C" s32 fn_80161C4C(void);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-extern "C" f32 fn_8015E338(void* arg0, void* arg1) {
-    f32 sum = lbl_80561754;
-    s32 off = 0;
-    s32 i = 0;
-    void* p;
-    void* q;
-    if (*(u8*)((u8*)arg0 + 0x54) != 0 && fn_801B2F2C(*(s32*)((u8*)arg1 + 0x1EC)) == 0 && fn_801B8570(*(s32*)((u8*)arg1 + 0x1EC)) != 0 && fn_80161BB8() == 0 && fn_80161C4C() != 0) {
-        for (i = 0, off = 0; i < *(s32*)((u8*)arg0 + 8); off += 4, i++) {
-            if ((f32)__fabs((f64)*(f32*)((u8*)arg1 + 0x2690)) <= lbl_80558DC4[0] ||
-                (*(Item8015E338**)(*(s32*)((u8*)arg0 + 4) + off))->v34() != 0) {
-                Item8015E338* it2 = *(Item8015E338**)(*(s32*)((u8*)arg0 + 4) + off);
-                sum += it2->v3(arg1);
+extern "C" f32 fn_8015E338(void* manager, void* racer) {
+    /* Sum the items' score contributions for a racer while its truck slot is eligible and the
+     * challenge is active, then advance the manager's indicator subobject (+0x50) one state. */
+    #define TRUCK_SLOT_DONE   fn_801B2F2C
+    #define TRUCK_SLOT_OK     fn_801B8570
+    #define CHALLENGE_OVER    fn_80161BB8
+    #define CHALLENGE_RUNNING fn_80161C4C
+    #define SPEED_EPSILON     lbl_80558DC4[0]
+    f32 total = lbl_80561754;
+    s32 itemOffset = 0;
+    s32 index = 0;
+    void* state;
+    void* current;
+    if (*(u8*)((u8*)manager + 0x54) != 0 && TRUCK_SLOT_DONE(*(s32*)((u8*)racer + 0x1EC)) == 0 && TRUCK_SLOT_OK(*(s32*)((u8*)racer + 0x1EC)) != 0 && CHALLENGE_OVER() == 0 && CHALLENGE_RUNNING() != 0) {
+        for (index = 0, itemOffset = 0; index < *(s32*)((u8*)manager + 8); itemOffset += 4, index++) {
+            if ((f32)__fabs((f64)*(f32*)((u8*)racer + 0x2690)) <= SPEED_EPSILON ||
+                (*(Item8015E338**)(*(s32*)((u8*)manager + 4) + itemOffset))->v34() != 0) {
+                Item8015E338* item = *(Item8015E338**)(*(s32*)((u8*)manager + 4) + itemOffset);
+                total += item->v3(racer);
             }
         }
     }
-    p = *(void**)((u8*)arg0 + 0x50);
-    q = *(void**)p;
-    if (q != 0) {
-        if (*(s32*)((u8*)p + 8) == 0) {
-            *(u8*)((u8*)q + 0x4A) = 0;
-            *(u8*)((u8*)q + 0x4B) = 1;
-            *(u8*)((u8*)q + 0x49) = 1;
+    state = *(void**)((u8*)manager + 0x50);
+    current = *(void**)state;
+    if (current != 0) {
+        if (*(s32*)((u8*)state + 8) == 0) {
+            *(u8*)((u8*)current + 0x4A) = 0;
+            *(u8*)((u8*)current + 0x4B) = 1;
+            *(u8*)((u8*)current + 0x49) = 1;
         } else {
-            void* r = *(void**)((u8*)p + 4);
-            if (r != 0 && *(s32*)((u8*)p + 0xC) == 0) {
-                *(u8*)((u8*)r + 0x49) = 1;
-                *(u8*)((u8*)r + 0x4B) = 0;
-                *(u8*)((u8*)r + 0x4A) = 0;
+            void* previous = *(void**)((u8*)state + 4);
+            if (previous != 0 && *(s32*)((u8*)state + 0xC) == 0) {
+                *(u8*)((u8*)previous + 0x49) = 1;
+                *(u8*)((u8*)previous + 0x4B) = 0;
+                *(u8*)((u8*)previous + 0x4A) = 0;
             }
-            void *q2 = *(void**)p;
-            *(u8*)((u8*)q2 + 0x4A) = 1;
-            *(u8*)((u8*)q2 + 0x4C) = 0;
+            void *currentAgain = *(void**)state;
+            *(u8*)((u8*)currentAgain + 0x4A) = 1;
+            *(u8*)((u8*)currentAgain + 0x4C) = 0;
         }
     }
-    *(s32*)((u8*)p + 0xC) = *(s32*)((u8*)p + 8);
-    *(s32*)((u8*)p + 8) = 1;
-    return sum;
+    *(s32*)((u8*)state + 0xC) = *(s32*)((u8*)state + 8);
+    *(s32*)((u8*)state + 8) = 1;
+    return total;
+    #undef TRUCK_SLOT_DONE
+    #undef TRUCK_SLOT_OK
+    #undef CHALLENGE_OVER
+    #undef CHALLENGE_RUNNING
+    #undef SPEED_EPSILON
 }
 #pragma pop
 extern "C" void fn_8015E4C4(Unk801577F0V* container, s8 active) {
