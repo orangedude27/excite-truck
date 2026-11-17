@@ -88,6 +88,7 @@ void fn_80137B0C(void* hi) {
 /* Clear the selected AI league: set the current-league index to -1 (none). */
 #define s_currentLeague lbl_80559C00
 void fn_80137B14(void) {
+    /* -1 marks that no AI league is currently selected. */
     s_currentLeague = (void*)-1;
 }
 #undef s_currentLeague
