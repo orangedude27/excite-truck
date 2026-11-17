@@ -2748,10 +2748,6 @@ extern "C" int fn_802840FC(int *a0, void *a1, int *a2, void *a3) {
         var_r0 = 0;
     } while (fn_8027F958(&spC, a1) != 0);
 exit_loop:
-    (void)stateBytes_;
-    (void)extra;
-    (void)extra2;
-    (void)extra3;
     return var_r31;
 }
 
@@ -2949,9 +2945,204 @@ extern "C" float lbl_80564218;
 extern "C" float lbl_80564228;
 extern "C" float lbl_8056422C;
 extern unsigned char lbl_804B3068[];
-void fn_802849E8(void *arg0) {
-    if (*(unsigned char *)((char *)arg0 + 0x64) != 0) return;
-    *(int *)((char *)arg0 + 0x24) = *(int *)((char *)arg0 + 0x20);
+extern "C" void fn_802849E8(void *arg0) {
+    typedef void (*BE4)(int, int, int, int, int);
+    class Item { public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual int active();
+    };
+    class Widget { public:
+        virtual void v0(); virtual void v1(); virtual int getId(); virtual void v3();
+        virtual int count(); virtual Item *get(int); virtual void v6();
+        virtual int ready(int); virtual int isActive();
+    };
+    class Lookup { public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual const char *getName(int); virtual int getValue(int); virtual const char *v10();
+    };
+    unsigned char *p = (unsigned char *)arg0;
+    Widget *w;
+    int t, idx, n, active, sel, v;
+    float a, shape, f4, f2, f5, f3;
+    const char *name;
+    unsigned char ch;
+    int room;
+    char *dst;
+    if (p[0x64] == 0) {
+        if (*(int *)(p + 0x20) != *(int *)(p + 0x24)) {
+            if (*(int *)(p + 0x20) == 0)
+                fn_80214AF0(*(int *)(p + 0x1c));
+            else
+                fn_80214A9C(*(int *)(p + 0x1c));
+            *(int *)(p + 0x24) = *(int *)(p + 0x20);
+        }
+        if (p[0x50] != 0) {
+            int x48 = *(int *)(p + 0x48);
+            int x4c = *(int *)(p + 0x4c);
+            *(int *)(p + 0x30) = x48;
+            *(int *)(p + 0x28) = x48;
+            *(int *)(p + 0x34) = x4c;
+            *(int *)(p + 0x2c) = x4c;
+            ((BE4)fn_80214BE4)(*(int *)(p + 0x1c), x48 - *(int *)(p + 4), x4c - *(int *)(p + 8), x4c, x48);
+            p[0x50] = 0;
+            *(float *)(p + 0x3c) = lbl_8056420C;
+        }
+        if (p[0x5c] != 0) {
+            *(int *)(p + 0x28) = *(int *)(p + 4);
+            *(int *)(p + 0x2c) = *(int *)(p + 8);
+            *(int *)(p + 0x30) = *(int *)(p + 0x54);
+            *(int *)(p + 0x34) = *(int *)(p + 0x58);
+            *(float *)(p + 0x3c) = lbl_80564200;
+            p[0x5c] = 0;
+        }
+        t = *(int *)(p + 0x40);
+        a = *(float *)(p + 0x3c) + *(float *)(p + 0x38) * fn_80214D48();
+        *(float *)(p + 0x3c) = a;
+        switch (t) {
+        case 1:
+            a = (a < lbl_805641FC) ? a : lbl_805641FC;
+            shape = a * a;
+            break;
+        case 2:
+            a = (a < lbl_805641FC) ? a : lbl_805641FC;
+            shape = (a < lbl_80564210) ? lbl_80564210
+                  : (a > lbl_805641FC) ? lbl_805641FC
+                  : (a > lbl_80564200)
+                        ? a * (lbl_80564214 * a * a) + lbl_80564218 * a * a
+                        : a * (lbl_80564214 * a * a) - lbl_80564218 * a * a;
+            break;
+        default:
+            shape = (*(float *)(p + 0x3c) < lbl_805641FC) ? *(float *)(p + 0x3c) : lbl_805641FC;
+            break;
+        }
+        f4 = (float)*(int *)(p + 0x30);
+        f2 = (float)*(int *)(p + 0x28);
+        f5 = (float)*(int *)(p + 0x34);
+        f3 = (float)*(int *)(p + 0x2c);
+        ((BE4)fn_80214BE4)(*(int *)(p + 0x1c), (int)(f2 + shape * (f4 - f2)) - *(int *)(p + 4),
+                    (int)(f3 + shape * (f5 - f3)) - *(int *)(p + 8),
+                    (int)f2, (int)f3);
+        if (p[0x44] != 0) {
+            if (*(float *)(p + 0x3c) >= lbl_805641FC) {
+                p[0x44] = 0;
+                *(int *)(p + 0x20) = 1;
+            }
+        }
+    }
+    w = *(Widget **)(p + 0x60);
+    if (w != 0) {
+        if (w->isActive() != 0 && p[0xcc] == 0) {
+            fn_80236954(lbl_80348940);
+            fn_8027F204(lbl_80348940);
+        }
+        sel = -((unsigned int)arg0 == lbl_8055F688);
+        *(int *)(p + 0x70) = sel + 7;
+        if (w->ready(sel) != 0 && (w->isActive() == 0 || fn_8023695C(lbl_80348940) != 0))
+            p[0xcd] = 1;
+        else
+            p[0xcd] = 0;
+        if (p[0xcd] != 0) {
+            n = w->count();
+            active = 0;
+            for (idx = 0; idx < n; idx++)
+                if (w->get(idx)->active() != 0) active++;
+            fn_801345D8((char *)(p + 0x74), 10, lbl_8055C864, active, n);
+        } else {
+            p[0x74] = 0;
+        }
+        v = w->getId();
+        name = ((Lookup *)((void *(*)(void))fn_8027ED70)())->getName(v);
+        if (name != 0) {
+            room = 0x32;
+            dst = (char *)(p + 0x7e);
+            for (;;) {
+                ch = (unsigned char)*name++;
+                *dst++ = (char)ch;
+                if ((char)ch == 0) break;
+                if (--room <= 0) { dst[-1] = 0; break; }
+            }
+        }
+        v = w->getId();
+        *(int *)(p + 0xb0) = ((Lookup *)((void *(*)(void))fn_8027ED70)())->getValue(v);
+        if (w->ready(0) != 0) fn_80214AF0(0xb);
+        else fn_80214A9C(0xb);
+        if (p[0xcc] != 0) fn_80214AF0(0x15);
+        else fn_80214A9C(0x15);
+        p[0xcc] = (unsigned char)w->isActive();
+        {
+            float *f = (float *)(p + 0xb4);
+            float half = fn_80214D48() / lbl_80564228;
+            float mn = lbl_805641FC, mx = lbl_80564200;
+            for (idx = 0; idx < w->count(); idx++) {
+                float delta = w->get(idx)->active() != 0 ? half : -half;
+                float val = *f + delta;
+                if (val < mn) val = mn;
+                if (val > mx) val = mx; else val = mx;
+                *f++ = val;
+            }
+        }
+        {
+            float dt = fn_80214D48() / lbl_8056422C;
+            if ((unsigned int)arg0 == lbl_8055F688) {
+                float val = *(float *)(p + 0x68) + dt;
+                val = (lbl_805641FC < val) ? lbl_805641FC : val;
+                *(float *)(p + 0x68) = val;
+            } else {
+                float val = *(float *)(p + 0x68) - dt;
+                val = (lbl_80564200 > val) ? lbl_80564200 : val;
+                *(float *)(p + 0x68) = val;
+            }
+        }
+        if (arg0 == lbl_8055F694) {
+            char buf[0x1e];
+            fn_801345D8(buf, 0x1e, lbl_8034849C, 1);
+            if (fn_8023695C(buf) == 2) {
+                fn_80236958(buf);
+                lbl_8055F694 = 0;
+                lbl_804B3068[0] = 0;
+                idx = -1;
+                for (n = 0; n < lbl_804B3048.count; n++)
+                    if ((unsigned int)lbl_804B3048.items[n] == (unsigned int)arg0) { idx = n; break; }
+                if (idx >= 0 && idx < lbl_804B3048.count) {
+                    void *next = lbl_804B3048.items[idx];
+                    lbl_8055F688 = (unsigned int)next;
+                    if (next != 0 && *(void **)((char *)next + 0x60) != 0) {
+                        const char *s = ((Lookup *)((void *(*)(void))fn_8027ED70)())->v10();
+                        room = 0x64;
+                        dst = (char *)lbl_804B3068;
+                        for (;;) {
+                            ch = (unsigned char)*s++;
+                            *dst++ = (char)ch;
+                            if (ch == 0) break;
+                            if (--room <= 0) { dst[-1] = 0; break; }
+                        }
+                    }
+                } else {
+                    lbl_8055F688 = 0;
+                }
+            }
+        }
+    } else {
+        fn_80214A9C(0xb);
+        fn_80214A9C(0x15);
+        fn_80214A9C(1);
+    }
+    idx = -1;
+    for (n = 0; n < lbl_804B3048.count; n++)
+        if ((unsigned int)lbl_804B3048.items[n] == (unsigned int)arg0) { idx = n; break; }
+    if (idx == 0) {
+        if (lbl_8055F688 != 0) {
+            sel = 0;
+            if (*(void **)((char *)(void *)lbl_8055F688 + 0x60) != 0 &&
+                (fn_80019714() != 0 || ((Widget **)((char *)(void *)lbl_8055F688 + 0x60))[0]->ready(0) != 0))
+                sel = 1;
+            if (sel != 0) { fn_80214AF0(0x1f); return; }
+        }
+        fn_80214A9C(0x1f);
+    }
 }
 
 #pragma scheduling reset
