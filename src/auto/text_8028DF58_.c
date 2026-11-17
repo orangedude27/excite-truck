@@ -857,10 +857,11 @@ void fn_8028F114(register int *arg0, register int arg1, register int arg2) {
     }
     memcpy(arg0, tmp, *(int *)((char *)arg0 + 0x100) * 4);
 }
+#pragma push
+#pragma unroll 8
 void fn_8028F2EC(int *arg0) {
     int records[9][65];
     char *p;
-    char *end;
     int last;
     int index;
     int i;
@@ -869,11 +870,8 @@ void fn_8028F2EC(int *arg0) {
     int *block;
 
     records[0][64] = 0;
-    p = (char *)&records[1][0];
-    end = (char *)&records[9][0];
-    while (p < end) {
-        *(volatile int *)(p + 0x100) = 0;
-        p += 0x104;
+    for (p = (char *)&records[1][0]; p < (char *)&records[9][0]; p += 0x104) {
+        *(int *)(p + 0x100) = 0;
     }
 
     fn_8028EFC4((int)records, arg0);
@@ -892,7 +890,6 @@ void fn_8028F2EC(int *arg0) {
         block = (int *)((char *)block + 0x104);
     } while (i < 9);
 }
-#pragma scheduling on
 #pragma pop
 extern float fn_80129DC4(int, float, float);
 #pragma push
@@ -1709,6 +1706,10 @@ void fn_802908CC(void *arg0, void *arg1, int arg2) {
 #pragma pop
 extern float lbl_80564460, lbl_80564464, lbl_80564468, lbl_8056446C, lbl_80564470;
 extern double lbl_80564478;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling on
 void fn_80290FC4(void *arg0, void *arg1, int arg2) {
     struct { EfVtx v[32]; short idx[48]; } buf;
     volatile int count;
