@@ -2443,6 +2443,7 @@ extern "C" void fn_80215544(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     fn_8022AC1C(*(s32 *)((char *)arg0 + 8), *(s32 *)((char *)arg0 + 4), arg1, arg2, arg3, arg4, arg5, arg6);
 }
 
+/* Fixed value 4 returned by this class's no-argument virtual getter. */
 extern "C" s32 fn_802155AC(void) {
     return 4;
 }
