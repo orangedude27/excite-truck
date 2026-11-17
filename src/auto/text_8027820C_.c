@@ -414,8 +414,11 @@ int fn_80278924(float *arg0, float *arg1) {
     return result;
 }
 
-void fn_8027888C(char arg0) {
-    lbl_8055F5C8 = arg0;
+void fn_8027888C(char playFlag) {
+    /* Set the global scripted-movie playback flag. */
+#define sPlayFlag lbl_8055F5C8
+    sPlayFlag = playFlag;
+#undef sPlayFlag
 }
 
 void fn_80278894(char demoActive) {
