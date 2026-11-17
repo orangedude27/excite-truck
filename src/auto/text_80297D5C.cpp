@@ -570,6 +570,29 @@ static inline void XformRot3(const float *m, const float *src, float *dst) {
         dst[2] = src[2] * m22 + (src[0] * m02 + src[1] * m12);
     }
 }
+typedef struct XformVec { float x, y, z; } XformVec;
+static inline void XformPoint(const float *m, XformVec *dst, const XformVec *src) {
+    if (dst == src) {
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m11 = m[4]; m12 = m[5]; m00 = m[0]; m01 = m[1]; m02 = m[2]; m20 = m[6]; m21 = m[7]; m22 = m[8];
+        x = src->x; y = src->y; z = src->z;
+        dst->x = z * m20 + (x * m00 + y * m10);
+        dst->y = z * m21 + (x * m01 + y * m11);
+        dst->z = z * m22 + (x * m02 + y * m12);
+    } else {
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m00 = m[0]; m20 = m[6];
+        dst->x = src->z * m20 + (src->x * m00 + src->y * m10);
+        m11 = m[4]; m01 = m[1]; m21 = m[7];
+        dst->y = src->z * m21 + (src->x * m01 + src->y * m11);
+        m12 = m[5]; m02 = m[2]; m22 = m[8];
+        dst->z = src->z * m22 + (src->x * m02 + src->y * m12);
+    }
+    dst->x += m[9];
+    dst->y += m[10];
+    dst->z += m[11];
+}
 #pragma push
 #pragma processor 750
 extern "C" void fn_80298BBC(void *arg0) {
