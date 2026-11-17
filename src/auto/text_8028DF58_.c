@@ -564,7 +564,10 @@ void fn_8028ED74(void *list) {
     ((EfList *)list)->count = 0;
 }
 
-void fn_8028ED80(void *arg0) { *(int *)((char *)arg0 + 0x100) = 0; }
+void fn_8028ED80(void *list) {
+    /* Empty an effect-emitter list by resetting its item count at +0x100 to zero (see EfList.count). */
+    ((EfList *)list)->count = 0;
+}
 
 void fn_8028ED8C(void *list, int emitter) {
     /* Append an emitter to this effect-emitter list: store it at item[count], then advance the count at +0x100. */
