@@ -8,7 +8,7 @@ extern int lbl_802FA320[];
 extern char lbl_80342DC8[];
 extern int lbl_80498860[];
 #pragma push
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
@@ -45,7 +45,7 @@ void fn_802445FC(int arg0, int arg1, int arg2) {
     work[9] = 0;
     work[10] = 0;
     work[1] = (int)&work[6];
-    fn_802146BC(work, -999, -999, 1, v4, v3, v2, v1 - v1 + v0);
+    fn_802146BC(work, -999, -999, 1, v4, v3, v2, v0);
 }
 #pragma pop
 #pragma scheduling on
