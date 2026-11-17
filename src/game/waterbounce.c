@@ -310,7 +310,10 @@ extern float fn_802BF590(float, float);
 extern float PSVECMag(void *);
 extern float PSVECDotProduct(void *, void *);
 extern double fabs(double);
+#pragma push
+#pragma small_data off
 extern "C" float lbl_80558DC4;
+#pragma pop
 extern "C" float lbl_8055E3C8;
 extern "C" float lbl_80563368;
 extern "C" float lbl_80563370;
@@ -358,6 +361,7 @@ extern "C" float fn_802BF590(float, float);
 extern "C" float PSVECMag(void *);
 extern "C" float PSVECDotProduct(void *, void *);
 extern "C" double fabs(double);
+#pragma processor 750
 extern "C" void fn_8020E598(void *arg0) {
     void *truck;
     void *s54;
@@ -401,7 +405,8 @@ extern "C" void fn_8020E598(void *arg0) {
                 *(unsigned char *)((char *)arg0 + 0x72) = 0;
             }
         } else {
-            if (*(float *)((char *)truck + 0x25BC) != lbl_80558DC4) {
+            int eq0 = (*(float *)((char *)truck + 0x25BC) == lbl_80558DC4);
+            if (eq0 == 0) {
                 s54 = *(void **)((char *)arg0 + 0x54);
                 *(unsigned char *)((char *)arg0 + 0x58) = 0;
                 *(unsigned char *)((char *)s54 + 0x4A) = 1;
@@ -717,7 +722,6 @@ extern "C" void fn_8020E598(void *arg0) {
         }
     }
 }
-
 extern "C" s32 fn_80009C84();
 extern "C" void fn_80206750(s32, s32, s32);
 extern "C" void fn_8020F15C(void *arg0) {
