@@ -2,7 +2,7 @@
 void fn_802A8A4C(s32, s32);
 static inline void transform_802A8A4C(f32 *m, f32 *src, f32 *dst) {
     if (src == dst) {
-        f32 x=dst[0], y=dst[1], z=dst[2];
+        f32 y=dst[1], x=dst[0], z=dst[2];
         dst[0]=z*m[6]+(x*m[0]+y*m[3]);
         dst[1]=z*m[7]+(x*m[1]+y*m[4]);
         dst[2]=z*m[8]+(x*m[2]+y*m[5]);
@@ -75,10 +75,10 @@ extern "C" void fn_802A81F0(void) {
     int found;
     int j, k;
     float base, ofs;
-    char name[0x40];
-    char tmp[8];
     union { long long ll; double d; } ra;
     union { double d; float f[2]; } rb;
+    char name[0x40];
+    char tmp[8];
     lbl_804BD6C4[1] = 0;
     mgr = (Mgr *)fn_80131810(cfg);
     if (!mgr) return;
@@ -209,12 +209,12 @@ void fn_802A86A4(void) {
     s32 j;
     f32 *v;
     s32 offset, suboffset, i;
-    f64 z, y, x;
-    f32 speed;
-    f32 half = lbl_80564950;
-    f32 scale;
-    f32 one = lbl_8056494C;
-    f32 zero = lbl_80564928;
+    f64 a1, z, y, x;
+    f32 speed, z0;
+    f32 half, scale, one, zero;
+    zero = lbl_80564928;
+    one = lbl_8056494C;
+    half = lbl_80564950;
     i = 0; offset = 0;
     while (i < lbl_804BD6C4[1]) {
         entry = *(u8 **)((u32)lbl_804BD6C4[0] + offset);
@@ -222,19 +222,22 @@ void fn_802A86A4(void) {
         x = *(f32 *)(entry + 0x60);
         y = *(f32 *)(entry + 0x64);
         z = *(f32 *)(entry + 0x68);
-        sp.p[0] = x; sp.p[1] = y; sp.p[2] = z;
-        sp.a[1] = *(f32 *)(entry + 0x58);
+        a1 = *(f32 *)(entry + 0x58);
+        sp.p[0] = x;
+        sp.a[1] = a1;
         sp.a[0] = *(f32 *)(entry + 0x44);
+        sp.p[1] = y;
         sp.a[3] = *(f32 *)(entry + 0x4c);
+        sp.p[2] = z;
         sp.a[2] = *(f32 *)(entry + 0x4c);
         memcpy(entry + 0x18, &sp, 0x10);
         ((f32 *)entry)[0] = sp.p[0];
         ((f32 *)entry)[1] = sp.p[1];
         ((f32 *)entry)[2] = sp.p[2];
-        z = fn_80287BC8(lbl_80564944, lbl_80564948);
+        z0 = fn_80287BC8(lbl_80564944, lbl_80564948);
         ((f32 *)entry)[3] = fn_80287BC8(lbl_80564944, lbl_80564948);
         ((f32 *)entry)[4] = zero;
-        ((f32 *)entry)[5] = z;
+        ((f32 *)entry)[5] = z0;
         if ((f32)__fabs(PSVECDotProduct(entry + 0xc, entry + 0xc)) <= lbl_80558DC4) ((f32 *)entry)[3] = one;
         PSVECNormalize(entry + 0xc, entry + 0xc);
         speed = ((f32 *)entry)[8];
@@ -317,6 +320,9 @@ extern f64 fn_8002F234(f32), cos(f64), sin(f64);
 extern f32 lbl_80564958, lbl_80564968, lbl_8056496C;
 extern f64 lbl_80564960;
 #pragma processor 750
+#pragma scheduling invalid_target
+#pragma opt_common_subs off
+#pragma opt_propagation off
 void fn_802A8A4C(s32 arg0, s32 arg1) {
     f32 m[9], v[2], d[2], p[2], q[2];
     f32 *a = (f32 *)arg0, *b = (f32 *)arg1;
@@ -332,7 +338,7 @@ void fn_802A8A4C(s32 arg0, s32 arg1) {
         scale=lbl_8056494C/(f32)fn_8002F234(length);
         d[0]*=scale; d[1]*=scale;
     }
-    dot=v[0]*d[0]+v[1]*d[1];
+    dot=v[1]*d[1]+v[0]*d[0];
     angle=fn_80287BC8(lbl_80564928,lbl_8056494C);
     t=a[6]*lbl_80564958;
     if (length>t*t && dot>(f32)cos(lbl_80564960)) angle=lbl_80564928;
