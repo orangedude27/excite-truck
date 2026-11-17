@@ -709,6 +709,7 @@ void* fn_801E85AC(void) {
 }
 
 extern void *lbl_8055AF0C;
+/* Return CurrentPlayerIndex (lbl_8055AF0C), the index of the active player (-1 as the "use current" sentinel). */
 void* fn_801E85B4(void) {
     return lbl_8055AF0C;
 }
