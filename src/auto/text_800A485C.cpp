@@ -12386,31 +12386,50 @@ got:
     #undef SLOT_BUSY
 }
 #pragma dont_inline on
-extern "C" s32 fn_800B8E28(s32 arg0) {
-    u16 i;
+extern "C" s32 fn_800B8E28(s32 fileId) {
+    /* NAND prfile2: retry-initialize the slot for fileId. Lock the slot table,
+     * find the matching slot, temporarily set its opening flag while calling
+     * fn_800B808C in retry mode, then clear the flag and unlock.
+     * Errors: -20 bad handle / slot not found, -22 no matching slot.
+     * (lbl_/fn_ names kept: rename_symbol unavailable for game symbols.) */
+    #define NandSlots     lbl_80405D58
+    #define NandSemaphore lbl_8055DD30
+    #define SLOT_STRIDE   0xF0
+    #define SLOT_COUNT    0x17
+    #define SLOT_FLAGS    0xE4
+    #define SLOT_OPENING  4
+
+    u16 slotIndex;
     u8 *slot;
     u8 *entry = 0;
     s32 result;
-    s32 err;
-    fn_800B8004(lbl_8055DD30);
-    if (arg0 == 0) {
-        fn_800B8048(lbl_8055DD30);
+    s32 lookupResult;
+    fn_800B8004(NandSemaphore);
+    if (fileId == 0) {
+        fn_800B8048(NandSemaphore);
         return -0x14;
     }
-    for (i = 0; i < 0x17; i++) {
-        slot = (u8 *)lbl_80405D58 + i * 0xF0;
-        if (*(u32 *)slot == (u32)arg0) { entry = slot; break; }
+    for (slotIndex = 0; slotIndex < SLOT_COUNT; slotIndex++) {
+        slot = (u8 *)NandSlots + slotIndex * SLOT_STRIDE;
+        if (*(u32 *)slot == (u32)fileId) { entry = slot; break; }
     }
-    err = i == 0x17 ? -0x16 : 0;
-    if (err != 0) {
-        fn_800B8048(lbl_8055DD30);
+    lookupResult = slotIndex == SLOT_COUNT ? -0x16 : 0;
+    if (lookupResult != 0) {
+        fn_800B8048(NandSemaphore);
         return -0x14;
     }
-    *(s32 *)(entry + 0xE4) |= 4;
-    result = fn_800B808C(arg0, entry, 1);
-    *(s32 *)(entry + 0xE4) &= 0xFFFFFFFB;
-    fn_800B8048(lbl_8055DD30);
+    *(s32 *)(entry + SLOT_FLAGS) |= SLOT_OPENING;
+    result = fn_800B808C(fileId, entry, 1);
+    *(s32 *)(entry + SLOT_FLAGS) &= 0xFFFFFFFB;
+    fn_800B8048(NandSemaphore);
     return result;
+
+    #undef NandSlots
+    #undef NandSemaphore
+    #undef SLOT_STRIDE
+    #undef SLOT_COUNT
+    #undef SLOT_FLAGS
+    #undef SLOT_OPENING
 }
 #pragma dont_inline reset
 extern "C" s32 fn_800B8F20(s32 buffer, s32 path, s32 length, s32 offset, s32 *outBytes, s32 unused) {
