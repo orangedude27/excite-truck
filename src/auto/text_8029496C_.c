@@ -124,7 +124,11 @@ void fn_80294CC0(void) {
 
 }
 
-void fn_80294CC4(void) {}
+/* No-op subsystem-init hook called from the secondary startup sequence
+ * (fn_8028797C). */
+void fn_80294CC4(void) {
+
+}
 
 void fn_80294ED4(void);
 /* Per-mode update thunk: always runs the truck-effects update pass in
