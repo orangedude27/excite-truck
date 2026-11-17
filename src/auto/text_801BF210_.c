@@ -606,7 +606,8 @@ void fn_801C00B8(void *sphere, float *position) {
     fn_8019EECC(offsetSource, &obj->posX);
 }
 
-long fn_801C00F0(void *arg0) { return *(long *)((char *)arg0 + 0x18); }
+/* Returns the 4-byte type tag (four-character code) at offset +0x18 of `obj`, which callers compare against tags such as 'SPHR'. */
+long fn_801C00F0(void *obj) { return *(long *)((char *)obj + 0x18); }
 
 long fn_801C00F8(void *obj, long index) {
     // Bounds-checked lookup of an entry in the pointer array embedded at +0x14 of obj (its length is at +0x24);
