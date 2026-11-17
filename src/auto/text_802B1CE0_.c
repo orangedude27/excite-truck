@@ -595,9 +595,10 @@ void fn_802B28BC(int *entries, int count) {
 #pragma optimization_level 3
 void *fn_802B2934(void *arg0, void **arg1) {
     int count = ((int *)arg0)[1];
+    int next = count + 1;
     void *val = *arg1;
     void **entry = *(void ***)arg0 + count;
-    ((int *)arg0)[1] = count + 1;
+    ((int *)arg0)[1] = next;
     *entry = val;
     return entry;
 }
@@ -903,30 +904,31 @@ int *fn_802B320C(int *basePtr, int index) {
 
 extern char lbl_8034A3BC[];
 extern void fn_802E30C8(const char *, ...);
+#pragma scheduling invalid_target
 void fn_802B321C(int *param_1, int *param_2, int *param_3, int param_4)
 {
     int item;
+    int *entry;
+    int i;
+    int offset;
 
     if (param_4 >= 0 && param_4 < param_3[1]) {
         item = *(int *)(*param_3 + param_4 * 4);
         if (param_1 != 0) {
-            int i = 0;
-            int offset = 0;
-            do {
-                int count;
-                int *entry;
+            i = 0;
+            offset = 0;
+            while (i < *(int *)(item + 0x40C) &&
+                   param_1[1] + 1 <= param_1[2]) {
                 i++;
-                count = param_1[1];
                 entry = *(int **)(*(int *)(item + 0x408) + offset);
                 offset += 4;
-                param_1[1] = count + 1;
-                *(int *)((char *)param_1[0] + count * 0xC) =
-                    *(int *)((char *)entry + 0x2A4);
-                *(int *)((char *)param_1[0] + count * 0xC + 4) = (int)entry;
-                *(int *)((char *)param_1[0] + count * 0xC + 8) =
-                    (int)((char *)entry + 0x298);
-            } while (i < *(int *)(item + 0x40C) &&
-                     param_1[1] + 1 <= param_1[2]);
+                {
+                    int *dst = (int *)((char *)param_1[0] + param_1[1]++ * 0xC);
+                    dst[0] = *(int *)((char *)entry + 0x2A4);
+                    dst[1] = (int)entry;
+                    dst[2] = (int)((char *)entry + 0x298);
+                }
+            }
         }
         if (param_2 != 0)
             *param_2 = item + 4;
@@ -934,8 +936,6 @@ void fn_802B321C(int *param_1, int *param_2, int *param_3, int param_4)
     }
     fn_802E30C8(lbl_8034A3BC, param_4, 0, param_3[1]);
 }
-
-#pragma dont_inline on
 int fn_802B2E00(void *);
 int *fn_802B320C(int *, int);
 #pragma dont_inline reset
