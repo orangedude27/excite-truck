@@ -494,9 +494,9 @@ extern "C" void fn_8029CBA0(void) {
         virtual float get2(void *, float);
     };
     union ScratchValue { float f; int i; };
-    volatile ScratchValue scratch[40];
-    int *var_r31 = (int *)&lbl_8034968C;
+    ScratchValue scratch[40];
     register float var_f31 = *(volatile float *)&lbl_80564654;
+    int *var_r31 = (int *)&lbl_8034968C;
     Dummy *obj;
     obj = (Dummy *)fn_802AE414(&lbl_8055CAC8);
     if (obj != 0) {
@@ -509,9 +509,9 @@ extern "C" void fn_8029CBA0(void) {
         register unsigned short size;
         fn_8028E61C((int *)&scratch[6]);
         zero = *(volatile float *)&lbl_80564658;
+        size = 0x200;
         two = 2;
         high = *(volatile float *)&lbl_80564654;
-        size = 0x200;
         scale = *(volatile float *)&lbl_8056465C;
         low = *(volatile float *)&lbl_8056464C;
         five = 5;
@@ -1118,10 +1118,12 @@ void fn_8029DDB8(void *arg0) {
     int indexPlus;
     int indexMinus;
     int neighbors;
-    int value;
+    int lowClamp;
+    int clamped;
     float scale;
-    float wave;
+    float coeff;
     float waveSquared;
+    float wave;
     float center;
     float result;
 
@@ -1129,7 +1131,8 @@ void fn_8029DDB8(void *arg0) {
     center = lbl_8056462C + scale;
     wave = ((float (*)(float, float))fn_801E7E24)(scale, lbl_80564634);
     y = 1;
-    wave = lbl_80564694 * (lbl_80564658 - *(float *)(base + 0x1C)) * wave;
+    coeff = lbl_80564694 * (lbl_80564658 - *(float *)(base + 0x1C));
+    wave = coeff * wave;
     waveSquared = wave * wave;
     wave = lbl_80564640 - lbl_80564698 * waveSquared;
 
@@ -1150,13 +1153,13 @@ void fn_8029DDB8(void *arg0) {
             result = result + waveSquared * (float)neighbors;
             result = result - (float)dst[index];
             result = center * result;
-            value = -32768;
-            if ((int)result > -32768) {
-                value = 32767;
-                if ((int)result < 32767)
-                    value = (int)result;
-            }
-            dst[index] = (short)value;
+            lowClamp = -32768;
+            if ((int)result > -32768)
+                lowClamp = (int)result;
+            clamped = 32767;
+            if (lowClamp < 32767)
+                clamped = lowClamp;
+            dst[index] = (short)clamped;
             ++x;
         }
         ++y;
@@ -1580,8 +1583,10 @@ void fn_8029EF28(void) {
 void fn_8029EF2C(void) {
 }
 
-int fn_8029EF30(void *arg0) {
-    return ((int *)arg0)[4];
+/* nw4r::ef::Effect virtual getter (vtable slot lbl_80349780+0xC): returns this
+   effect's 32-bit field at offset 0x10. */
+int fn_8029EF30(void *effect) {
+    return ((int *)effect)[4];
 }
 
 int fn_8029EF38(void *arg0) {
