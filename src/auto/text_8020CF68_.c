@@ -592,9 +592,14 @@ int fn_8020DB0C(int arg0) {
 #pragma pop
 extern void *lbl_8055EE7C;
 extern void *lbl_8055EE80;
-void AXFXSetHooks_8020DE10(void *arg0, void *arg1) {
-    lbl_8055EE7C = arg0;
-    lbl_8055EE80 = arg1;
+void AXFXSetHooks_8020DE10(void *callback, void *drawCallback) {
+#define s_volMenuCallback lbl_8055EE7C
+#define s_volMenuDrawCallback lbl_8055EE80
+    /* Install the volume-menu update and draw callbacks (state set up by fn_8020D178). */
+    s_volMenuCallback = callback;
+    s_volMenuDrawCallback = drawCallback;
+#undef s_volMenuCallback
+#undef s_volMenuDrawCallback
 }
 
 extern char lbl_8055EE94;
