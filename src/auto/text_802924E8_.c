@@ -112,8 +112,11 @@ void fn_802924F4(void) {
 void fn_80292618(void) {
 }
 
+/* Empty the global chunk cache. */
 void fn_8029261C(void) {
-    fn_80292EB4(lbl_804B4168);
+#define gChunkCache lbl_804B4168
+    fn_80292EB4(gChunkCache);
+#undef gChunkCache
 }
 
 #pragma cplusplus on
