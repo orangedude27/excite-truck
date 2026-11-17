@@ -6278,58 +6278,59 @@ extern u8 lbl_80315188[];
 extern u8 lbl_803C0D18[];
 extern tBTM_STATUS fn_8007A2C8(u16 *);
 extern void bta_dm_pm_set_mode(u8 *, u8);
+typedef struct { u8 f0, f1, f2; } PmCfgEntry;
 void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     u8 version[10];
     u16 policy;
-    u8 *cfg = (u8 *)0;
-    u8 *entry = (u8 *)0;
+    u8 *cfg = 0;
+    u8 *entry = 0;
     u8 i;
     u8 j;
     u8 k;
     u8 spec_idx;
-    if ((((((fn_8007A2C8((u16 *)version) == 0) && (*(u16 *)(version + 6) == 15)) && ((version[0] < 3)))))) {
-        if ((status) == 4) {
-            policy = (u16)(*(u16 *)(lbl_802EE8F0 + 4) & 11);
+    if (fn_8007A2C8((u16 *)version) == 0 && *(u16 *)(version + 6) == 15 && version[0] < 3) {
+        if (status == 4) {
+            policy = *(u16 *)(lbl_802EE8F0 + 4) & 11;
             BTM_SetLinkPolicy(peer_addr, &policy);
-        } else if ((status) == 5) {
+        } else if (status == 5) {
             policy = *(u16 *)(lbl_802EE8F0 + 4);
             BTM_SetLinkPolicy(peer_addr, &policy);
         }
     }
     cfg = lbl_80559018;
     for (i = 1; i <= cfg[1]; i++) {
-        if ((id == cfg[i * 3]) && ((cfg[i * 3 + 1] == 255) || (app_id == cfg[i * 3 + 1])))
+        if (id == cfg[i * 3] && (cfg[i * 3 + 1] == 255 || app_id == cfg[i * 3 + 1]))
             break;
     }
-    if ((i > cfg[1]))
+    if (i > cfg[1])
         return;
-    for (k = (u8)0; k < (u8)3; k++) {
-        entry = (lbl_803C0C14 + (k << 5));
-        if (((entry[182] != (u8)0)) && ((bdcmp(entry + 176, peer_addr) == 0))) {
-            fn_8007148C((s32)(entry + 152));
-            entry[182] = (u8)0;
+    for (k = 0; k < 3; k++) {
+        entry = lbl_803C0C14 + (k << 5);
+        if (entry[182] != 0 && bdcmp(entry + 176, peer_addr) == 0) {
+            fn_8007148C((s32)entry + 152);
+            entry[182] = 0;
             break;
         }
     }
     spec_idx = lbl_80559018[i * 3 + 2];
-    if ((lbl_8055901C[spec_idx * 74 + status * 8 + 2]) == (u8)0)
+    if (lbl_8055901C[spec_idx * 74 + status * 8 + 2] == 0)
         return;
-    for (j = (u8)0; j < lbl_803C0D18[0]; j++) {
+    for (j = 0; j < lbl_803C0D18[0]; j++) {
         entry = lbl_803C0D18 + j * 9;
-        if (((id == entry[7]) && (app_id == entry[8])) && (bdcmp(entry + 1, peer_addr) == 0))
+        if (id == entry[7] && app_id == entry[8] && bdcmp(entry + 1, peer_addr) == 0)
             break;
     }
     spec_idx = lbl_80559018[i * 3 + 2];
-    if (lbl_8055901C[spec_idx * 74 + status * 8 + 2] == (u8)16) {
+    if (lbl_8055901C[spec_idx * 74 + status * 8 + 2] == 16) {
         if (j != lbl_803C0D18[0]) {
             for (; j < lbl_803C0D18[0]; j++)
                 memcpy(lbl_803C0D18 + j * 9 + 1, lbl_803C0D18 + (j + 1) * 9 + 1, 9);
             lbl_803C0D18[0]--;
         }
     } else if (j == lbl_803C0D18[0]) {
-        if (lbl_803C0D18[0] == (u8)5) {
-            if (lbl_8055DC80 >= (u8)2)
-                fn_8007093C((u16)1281, lbl_80315188);
+        if (lbl_803C0D18[0] == 5) {
+            if (lbl_8055DC80 >= 2)
+                fn_8007093C(1281, lbl_80315188);
             return;
         }
         entry = lbl_803C0D18 + j * 9;
@@ -6338,17 +6339,17 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
         fn_80070FA4(entry + 1, peer_addr);
         lbl_803C0D18[0]++;
     }
-    for (i = (u8)0; i < lbl_803C0C14[77]; i++) {
+    for (i = 0; i < lbl_803C0C14[77]; i++) {
         entry = lbl_803C0C14 + i * 11;
         if (bdcmp(entry, peer_addr) == 0) {
-            entry[9] = (u8)0;
-            entry[10] = (u8)0;
+            entry[9] = 0;
+            entry[10] = 0;
             break;
         }
     }
     entry = lbl_803C0D18 + j * 9;
     entry[9] = status;
-    bta_dm_pm_set_mode(peer_addr, (u8)0);
+    bta_dm_pm_set_mode(peer_addr, 0);
 }
 
 extern tBTM_PM_PWR_MD *lbl_80559020;
@@ -10250,15 +10251,15 @@ tBTM_STATUS BTM_ClearInqDb(BD_ADDR p_bda) {
 }
 
 void btm_inq_db_reset(void) {
-    u8 *base = lbl_803C0F78;
     u8 *loopBase;
-    u32 zero;
+    u8 *base = lbl_803C0F78;
+    u32 zero = 0;
     tBTM_REMOTE_DEV_NAME rem_name;
     u8 num_responses;
     u8 value;
     u8 temp_inq_active;
     u32 i;
-    u8 *entry = 0;
+    u8 *entry;
     fn_80070F90(base + 0x16C4);
     if (base[0x1848] != 0) {
         temp_inq_active = base[0x1848];
@@ -10273,7 +10274,7 @@ void btm_inq_db_reset(void) {
     }
     if (base[0x16AE] & 1) {
         fn_80070F90(base + 0x1680);
-        base[0x16AE] = 0;
+        base[0x16AE] = (u8)zero;
         memset(base + 0x16A8, 0, 6);
         if (*(void (**)(void *))(base + 0x167C) != 0) {
             rem_name.status = 0x000C;
@@ -10282,18 +10283,18 @@ void btm_inq_db_reset(void) {
         }
     }
     if (base[0x1844] != 0) {
-        base[0x1844] = 0;
+        base[0x1844] = (u8)zero;
         if (*(void (**)(void *))(base + 0x16B8) != 0) {
             value = 0x0C;
             (*(void (**)(void *))(base + 0x16B8))(&value);
         }
     }
-    zero = 0;
-    loopBase = lbl_803C0F78;
     base[0x1847] = (u8)zero;
     base[0x1845] = (u8)zero;
     *(u32 *)(base + 0x16B4) = zero;
-    for (i = 0, entry = loopBase + 0x16E4; i < 12; i++, entry += 0x1C) {
+    loopBase = lbl_803C0F78;
+    entry = loopBase + 0x16E4;
+    for (i = 0; i < 12; i++, entry += 0x1C) {
         if (entry[0x1A] != 0) {
             entry[0x1A] = (u8)zero;
             if (*(void (**)(void *, u32))(loopBase + 0x16BC) != 0)
