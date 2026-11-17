@@ -184,6 +184,7 @@ loop_1:
 }
 #pragma pop
 
+/* Advance the debug viewer's selected-object index to the next object (delta +1). */
 void fn_802B5CAC(void) {
     fn_802B5C24(1);
 }
