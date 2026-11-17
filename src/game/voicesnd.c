@@ -982,7 +982,8 @@ void fn_8020BC58(VoiceSnd *snd, f32 volume) { snd->volume = volume; }
 
 s32 fn_8020BC60(void) { return 0; }
 
-void fn_8020BC68(void *arg0, f32 farg0) { *(f32 *)((char *)arg0 + 0x20) = farg0; }
+/* Set the pan field (offset 0x20) of a VoiceSnd: -1 = left, 1 = right. */
+void fn_8020BC68(void *snd, f32 pan) { *(f32 *)((char *)snd + 0x20) = pan; }
 
 void fn_8020BC70(void *arg0, f32 farg0) {
     *(f32 *)((signed char *)arg0 + 0x28) = farg0;
