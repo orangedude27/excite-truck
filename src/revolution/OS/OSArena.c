@@ -20,6 +20,7 @@ void* OSGetArenaHi(void) {
     return OSGetMEM1ArenaHi();
 }
 
+/* Return the lower bound of the MEM1 arena. */
 void* OSGetMEM1ArenaLo(void) {
     return __OSArenaLo;
 }
