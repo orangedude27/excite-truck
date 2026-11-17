@@ -26,8 +26,9 @@ void* fn_8020A69C(void) {
 #include "types.h"
 
 extern f32 lbl_8055EDD8;
-void fn_8020A5F8(f32 arg0) {
-    lbl_8055EDD8 = arg0;
+/* Set the global music playback volume (the "Music" setting), read back by fn_8020A5F0. */
+void fn_8020A5F8(f32 volume) {
+    lbl_8055EDD8 = volume;
 }
 
 #pragma scheduling invalid_target
