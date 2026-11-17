@@ -1549,47 +1549,9 @@ void fn_801808DC(void) {
  * written twice in this translation unit, so keep one and alias the tag. */
 #define DriverInterfaceSlot Di718Slot
 
-/* The "DriverInterface" object (the name it is heap-allocated under,
- * lbl_80331E68): one per driver index, created on demand by fn_8018108C and
- * kept in lbl_804348D8[].  Its vtable is lbl_80331E78 (fn_80181428 is the
- * base constructor, which sets the one at lbl_80331EFC first).  Only the
- * fields this file's code touches are named. */
-struct DriverInterface {
-    void *vtable;                     /* 0x000 */
-    s32 index;                        /* 0x004 driver index */
-    s32 axStackHead;                  /* 0x008 __AXGetStackHead_80137CFC(index) */
-    f32 pad0C[8];                     /* 0x00C */
-    f32 level2C[9];                   /* 0x02C levels fn_8017F718 registers */
-    s32 pad50[2];                     /* 0x050 */
-    u8 flag58;                        /* 0x058 */
-    u8 flag59;                        /* 0x059 */
-    u8 flag5A;                        /* 0x05A */
-    u8 flag5B;                        /* 0x05B */
-    u8 flag5C;                        /* 0x05C */
-    u8 flag5D;                        /* 0x05D */
-    u8 flag5E;                        /* 0x05E */
-    u8 pad5F;
-    f32 pad60;                        /* 0x060 */
-    u8 pad64[4];
-    u8 flag68;                        /* 0x068 */
-    u8 pad69[3];
-    struct DriverInterfaceSlot slot[42]; /* 0x06C */
-    f32 pad30C[9];                    /* 0x30C */
-    u8 pad330[8];
-    u8 flag338;                       /* 0x338 */
-    u8 pad339[3];
-    f32 pad33C;                       /* 0x33C */
-    u8 flag340;                       /* 0x340 */
-    u8 flag341;                       /* 0x341 */
-    u8 flag342;                       /* 0x342 */
-    u8 flag343;                       /* 0x343 */
-    u8 flag344;                       /* 0x344 */
-    u8 pad345[3];
-    s32 mode348;                      /* 0x348 0x10, or the index + 0xC */
-    s32 soundId;                      /* 0x34C axStackHead + 8 */
-    u8 flag350;                       /* 0x350 */
-    u8 pad351[3];
-};
+/* The same object as struct Di718 at the top of this file, where it is now
+ * documented; alias the tag this half of the file was written with. */
+#define DriverInterface Di718
 
 /* The object is handled as a void * here; cast it to name its fields. */
 #define DRIVER(p) ((struct DriverInterface *)(p))
