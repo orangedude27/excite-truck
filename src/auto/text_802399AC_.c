@@ -928,6 +928,8 @@ void fn_8023B374(void *arg0) {
 
 void fn_8023B400(void) {}
 
+/* Constant predicate (returns 0 / false); a default virtual getter reached
+ * through a dispatch table. */
 s32 fn_8023B404(void) { return 0; }
 
 #pragma scheduling off
