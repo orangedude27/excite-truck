@@ -298,17 +298,20 @@ extern "C" void *fn_8020999C(void *obj, s32 shouldFree) {
 
 extern "C" s32 fn_80178CA4(void);
 extern "C" s32 fn_8026A344(s32);
-extern f32 lbl_8056325C, lbl_80563260, lbl_80563264, lbl_80563268, lbl_8056326C, lbl_80563270;
+extern const f32 lbl_8056325C, lbl_80563260, lbl_80563264, lbl_80563268, lbl_8056326C, lbl_80563270;
 extern "C" s32 fn_80178CA4(void);
 extern "C" s32 fn_8026A344(s32);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_80209A64(void *obj, s32 muted) {
+#pragma scheduling invalid_target
+#pragma opt_loop_invariants off
     void *cfg = M2C_FIELD(obj, void **, 0x140);
     f32 old = M2C_FIELD(obj, f32 *, 0x154);
+    f32 spdFactor = M2C_FIELD(cfg, f32 *, 0x25d0);
     f32 rpm;
-    f32 speed = M2C_FIELD(obj, f32 *, 0x14c) * M2C_FIELD(cfg, f32 *, 0x25d0);
+    f32 speed = M2C_FIELD(obj, f32 *, 0x14c) * spdFactor;
     f32 value, factor, weight;
     s32 i, found = 0, count;
     u8 *entry;
@@ -326,9 +329,9 @@ extern "C" void fn_80209A64(void *obj, s32 muted) {
     if (muted) factor = lbl_80563238;
     entry = (u8 *)obj + 4;
     {
-    f32 one = lbl_8056323C, smooth = lbl_80563260, two = lbl_80563264, hi = lbl_80563268, lo = lbl_8056326C, gain = lbl_80563270;
+    f32 one = lbl_8056323C, two = lbl_80563264, smooth = lbl_80563260, hi = lbl_80563268, lo = lbl_8056326C, gain = lbl_80563270;
     for (i = 0; i < M2C_FIELD(obj, s32 *, 0x13c); i++, entry += 0x34) {
-        f32 a = lbl_8056323C, b = lbl_8056323C, temp, x, out;
+        f32 a = lbl_8056323C, temp, x, out;
         void *sound;
         if (speed < M2C_FIELD(entry, f32 *, 8)) {
             temp = M2C_FIELD(entry, f32 *, 0x10) * (M2C_FIELD(entry, f32 *, 8) - speed);
@@ -336,17 +339,18 @@ extern "C" void fn_80209A64(void *obj, s32 muted) {
             a = one - a;
         } else if (speed > M2C_FIELD(entry, f32 *, 0xc)) {
             temp = M2C_FIELD(entry, f32 *, 0x14) * (speed - M2C_FIELD(entry, f32 *, 0xc));
-            if (a >= temp) a = temp;
+            a = a < temp ? a : temp;
             a = one - a;
         }
         x = (smooth - two * a) * (a * a) * M2C_FIELD(entry, f32 *, 0x18);
+        f32 b = lbl_8056323C;
         if (rpm < M2C_FIELD(entry, f32 *, 0x1c)) {
             temp = M2C_FIELD(entry, f32 *, 0x24) * (M2C_FIELD(entry, f32 *, 0x1c) - rpm);
             b = b < temp ? b : temp;
             b = one - b;
         } else if (rpm > M2C_FIELD(entry, f32 *, 0x20)) {
             temp = M2C_FIELD(entry, f32 *, 0x28) * (rpm - M2C_FIELD(entry, f32 *, 0x20));
-            if (b >= temp) b = temp;
+            b = b < temp ? b : temp;
             b = one - b;
         }
         weight = (smooth - two * b) * (b * b) * M2C_FIELD(entry, f32 *, 0x2c);
@@ -361,13 +365,14 @@ extern "C" void fn_80209A64(void *obj, s32 muted) {
         }
         temp = lbl_8055EDB8 * x * weight - M2C_FIELD(entry, f32 *, 0x30);
         if (hi < temp) temp = hi;
-        if (temp <= lo) temp = lo;
+        temp = temp > lo ? temp : lo;
         out = M2C_FIELD(entry, f32 *, 0x30) + temp;
         M2C_FIELD(entry, f32 *, 0x30) = out;
         value = (gain + gain * M2C_FIELD(obj, f32 *, 0x154)) * (out * factor);
-        if (value != M2C_FIELD(sound, f32 *, 8)) {
-            M2C_FIELD(sound, u8 *, 0x4d) = 1;
-            M2C_FIELD(sound, f32 *, 8) = value;
+        void *sound2 = M2C_FIELD(entry, void **, 0);
+        if (value != M2C_FIELD(sound2, f32 *, 8)) {
+            M2C_FIELD(sound2, u8 *, 0x4d) = 1;
+            M2C_FIELD(sound2, f32 *, 8) = value;
         }
     }
     }
