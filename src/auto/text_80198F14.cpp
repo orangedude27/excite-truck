@@ -5694,7 +5694,8 @@ extern "C" s32 fn_801A517C(s32 object) {
     return object + 0x28;
 }
 
-extern "C" u8 fn_801A5184(void *arg0) { return *((u8*)arg0 + 0x40); }
+/* Getter: return the byte flag at offset 0x40 of the given object. */
+extern "C" u8 fn_801A5184(void *object) { return *((u8*)object + 0x40); }
 
 extern "C" void fn_801A4868(void*, u8);
 
