@@ -81,8 +81,10 @@ extern "C" void fn_80137A18(void) {
 }
 #pragma cplusplus reset
 #pragma scheduling on
-void fn_80137B0C(void* hi) {
-    lbl_80559C00 = hi;
+/* Set the currently selected AI driver league index (0 Dirt, 1 Modified,
+   2 Truck, 3 Cup; -1 for none). */
+void fn_80137B0C(void* league) {
+    lbl_80559C00 = league;
 }
 
 /* Clear the selected AI league: set the current-league index to -1 (none). */
