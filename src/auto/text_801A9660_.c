@@ -1868,6 +1868,8 @@ void fn_801AD5EC(void) {
     fn_801AC508();
 }
 
+/* Per-frame forwarding thunk: the effect-list update calls this, which (via fn_801ACF94)
+   transforms a mesh from the root object and emits each object's vertex slice as an EFX event. */
 void fn_801AD5F0(void) {
     fn_801ACF94();
 }
@@ -1899,7 +1901,6 @@ extern "C" void fn_801AD5F4(void *arg0, void *arg1) {
         virtual void v16(float *, float *, int, int, float, float, float, float, float, float);
     };
     register void *object = arg0;
-    register void *other = arg1;
     register float scale = lbl_805624F4;
     register float factor = lbl_8056249C;
     float sp14[3];
@@ -1915,11 +1916,11 @@ extern "C" void fn_801AD5F4(void *arg0, void *arg1) {
     sp14[1] = *(float *)((char *)object + 8) * scale;
     sp14[2] = *(float *)((char *)object + 0xC) * scale;
     temp_f6 = *(float *)((char *)object + 0x18);
-    temp_f2 = *(float *)((char *)other + 0x68) - temp_f6;
+    temp_f2 = *(float *)((char *)arg1 + 0x68) - temp_f6;
     temp_f5 = *(float *)((char *)object + 0x14);
-    temp_f1 = *(float *)((char *)other + 0x64) - temp_f5;
+    temp_f1 = *(float *)((char *)arg1 + 0x64) - temp_f5;
     temp_f4 = *(float *)((char *)object + 0x10);
-    temp_f0 = *(float *)((char *)other + 0x60) - temp_f4;
+    temp_f0 = *(float *)((char *)arg1 + 0x60) - temp_f4;
     temp_f2 = factor * temp_f2;
     temp_f1 = factor * temp_f1;
     temp_f0 = factor * temp_f0;
@@ -1929,7 +1930,7 @@ extern "C" void fn_801AD5F4(void *arg0, void *arg1) {
     sp8[2] = temp_f2;
     sp8[0] = temp_f0;
     sp8[1] = temp_f1;
-    ((Obj *)other)->v16(sp14, sp8,
+    ((Obj *)arg1)->v16(sp14, sp8,
                        *(int *)((char *)object + 0x1C),
                        *(int *)((char *)object + 0x20),
                        temp_f1, temp_f2, factor,
