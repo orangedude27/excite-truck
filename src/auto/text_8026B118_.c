@@ -1,3 +1,4 @@
+#include "types.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -166,6 +167,7 @@ extern "C" void fn_8026B260(void) {
 
 #pragma cplusplus reset
 #pragma processor 750
+#pragma opt_common_subs off
 void fn_8026B3D4(int arg0) {
     struct Ent { unsigned char on; unsigned char pad[3]; float t; float v; int idx; };
     float t = lbl_8055E3C8;
@@ -199,10 +201,8 @@ void fn_8026B3D4(int arg0) {
         } else {
             float sp10[2];
             float sp8[2];
-            double xd = *(float *)(p + 0x60);
-            double zd = *(float *)(p + 0x68);
-            float x = xd;
-            float z = zd;
+            float x = *(float *)(p + 0x60);
+            float z = *(float *)(p + 0x68);
             float *tab = (float *)lbl_8049A028;
             int found = 0;
             int j = 0;
