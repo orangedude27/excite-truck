@@ -619,6 +619,8 @@ void fn_802C8E70(float *arg0, float *arg1) {
     arg1[0] = (float)(int)lbl_8055FC5C + (lbl_80564F18 * (float)(int)lbl_8055FC64) * v1;
     arg1[1] = (float)(int)lbl_8055FC60 + (lbl_80564F18 * (float)(int)lbl_8055FC68) * v2;
 }
+/* Returns the current viewport aspect ratio (width / height), cached in lbl_8055FC6C
+   by viewport setup and used to scale projected vertical coordinates. */
 float fn_802C8FEC(void) { return lbl_8055FC6C; }
 
 extern char lbl_80558DC4[];
