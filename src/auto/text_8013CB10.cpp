@@ -4095,6 +4095,7 @@ extern "C" s32 fn_8014440C(s32 object, s32 deleteFlag) {
 // Trivial stub in this vtable's callback group; always returns 0 (false).
 extern "C" s32 fn_8014444C(void) { return 0; }
 
+// Trivial stub in this vtable's callback group; always returns 0 (false).
 extern "C" s32 fn_80144454(void) { return 0; }
 
 extern "C" s32 fn_8013D1F0(s32);
