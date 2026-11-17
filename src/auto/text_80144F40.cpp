@@ -2634,6 +2634,12 @@ extern "C" void fn_80148FA4(void *object, void *unused) {
 }
 #pragma pop
 
+/* No-op default implementation: the last of the five unimplemented virtual
+ * stubs fn_80148218 / fn_8014821C / fn_80148224 / fn_80148228 / fn_8014822C
+ * that sit between this file's 2D-drawing helpers (fn_80148100 .. fn_801481C8)
+ * and the adapter sub-object's virtuals (fn_80148230 .. fn_80148280, vtable
+ * lbl_8032D214).  Nothing calls it by name, so it runs only when reached
+ * through the pointer table its entry sits in. */
 extern "C" void fn_8014822C(void) {
 
 }
