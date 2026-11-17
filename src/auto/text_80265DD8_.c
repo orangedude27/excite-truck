@@ -1614,6 +1614,7 @@ extern double cos(float);
 extern double sin(float);
 #pragma push
 #pragma processor 750
+#pragma scheduling on
 void fn_80268BD4(void *out, int arg1, float t, float angle) {
 #pragma scheduling on
     float *inp = (float *)arg1;
