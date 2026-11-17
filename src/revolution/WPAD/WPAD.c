@@ -22,6 +22,10 @@
 #include "revolution/WPAD/WPAD.h"
 #include "revolution/WPAD/WPADInternal.h"
 
+static inline s32 WPADiGetBackIndex(const WPADCommandQueue* pQueue) {
+    return pQueue->back;
+}
+
 extern void DBPrintf_80068D68(const char* pFmt, ...);
 extern volatile u16 lbl_80560CC8, lbl_80560CCA, lbl_80560CCC, lbl_80560CCE;
 extern volatile u16 lbl_80560CD0, lbl_80560CD2, lbl_80560CD4, lbl_80560CD6;
@@ -560,25 +564,32 @@ void fn_8005E09C(s32 port) {
     u16 filterDiff;
     u16 filterSame;
     s32 devHandle;
-    u16 counter;
     s32 timeDiff;
     s32 timeout;
-    _savegpr_25();
+
     p = lbl_8038F4F0[port];
+
     if (*(s32*)((u8*)p + 0x7FC) == -1) {
         goto _end;
     }
+
     enabled = OSDisableInterrupts();
+
     devMode = *(u8*)((u8*)p + 0x806);
     offset = devMode * 0x60;
+
     if (IsControllerDataChanged(p, (void*)((u8*)p + 0x40 + offset + 0x60), (void*)((u8*)p + 0x40))) {
         memcpy((void*)((u8*)p + 0x40), (void*)((u8*)p + 0x40 + offset + 0x60), 0x60);
-        if (*(u8*)((u8*)p + 0x69) != 0) {
+
+        if (*(s8*)((u8*)p + 0x69) != 0) {
             memset((void*)((u8*)p + 0x40), 0, 0x60);
         }
     }
+
     OSRestoreInterrupts(enabled);
+
     enabled = OSDisableInterrupts();
+
     filterDiff = *(u16*)((u8*)p + 0x852);
     if (*(u16*)((u8*)p + 0xA0 + offset) == 0x1C10) {
         filterSame = 1;
@@ -587,6 +598,7 @@ void fn_8005E09C(s32 port) {
     } else {
         filterSame = 0;
     }
+
     if (filterSame != 0) {
         filterDiff++;
     } else {
@@ -594,23 +606,29 @@ void fn_8005E09C(s32 port) {
     }
     *(u16*)((u8*)p + 0x852) = filterDiff;
     OSRestoreInterrupts(enabled);
+
     if (filterDiff > 600) {
         enabled = OSDisableInterrupts();
         *(u8*)((u8*)p + 0x851) = 0;
         OSRestoreInterrupts(enabled);
     }
+
     if (*(s32*)((u8*)p + 0x7FC) == -1) {
         goto _end;
     }
+
     enabled = OSDisableInterrupts();
     if (lbl_8055DC1A != 0) {
         s64 currentTime = __OSGetSystemTime();
         s64 lastTime = *(s64*)((u8*)p + 0x830);
+
         timeDiff = (s32)(currentTime - lastTime);
         timeout = lbl_8055DC1A * 60;
+
         if (timeDiff > timeout) {
             devHandle = *(s32*)((u8*)p + 0x7FC);
             OSRestoreInterrupts(enabled);
+
             if (devHandle != -1) {
                 enabled = OSDisableInterrupts();
                 if (*(u8*)((u8*)p + 0x8C6) == 0) {
@@ -627,8 +645,9 @@ void fn_8005E09C(s32 port) {
     } else {
         OSRestoreInterrupts(enabled);
     }
+
 _end:
-    _restgpr_25();
+    ;
 }
 
 void fn_8005E298(void) {
@@ -3632,63 +3651,52 @@ void fn_8005EEC4(s32 chan, s32 result) {
 }
 
 void fn_8005F0A8(s32 chan, s32 param_2) {
-    register WPADCB* cb asm("r31") = lbl_8038F4F0[chan];
-    register s32 enabled asm("r30");
-    register s32 index asm("r29");
-    register s8 front;
-    register s8 back;
-    register u32 capacity;
-    register s32 diff;
-    u8 buf[0x70];
-    f64 d4, d3, d2, d1, d0, d5;
-    if (param_2 != -3) {
+    u8 buf[0x70] ALIGN(8);
+    s32 enabled;
+    s8 diff;
+    WPADCB *cb;
+    cb = lbl_8038F4F0[chan];
+    if (param_2 != WPAD_ERR_TRANSFER) {
         return;
     }
-    *(u32*)(buf + 0x0C) = 0x2A;
-    *(u16*)(buf + 0x08) = 0x38;
-    *(u32*)(buf + 0x10) = 0x17;
-    *(u16*)(buf + 0x2A) = 0x6;
-    *(void**)(buf + 0x3C) = fn_8005F0A8;
-    memcpy(buf + 0x14, buf + 0x0C, 4);
-    memcpy(buf + 0x18, buf + 0x08, 2);
-    *(u16*)(buf + 0x30) = *(u16*)(buf + 0x08);
-    *(u32*)(buf + 0x34) = *(u32*)(buf + 0x0C);
-    *(u32*)(buf + 0x2C) = (u32)((u8*)cb + 0x874);
-    d4 = *(f64*)(buf + 0x10);
-    d3 = *(f64*)(buf + 0x18);
-    d2 = *(f64*)(buf + 0x20);
-    d1 = *(f64*)(buf + 0x28);
-    d5 = *(f64*)(buf + 0x38);
-    d0 = *(f64*)(buf + 0x30);
-    *(f64*)(buf + 0x40) = d4;
-    *(f64*)(buf + 0x48) = d3;
-    *(f64*)(buf + 0x50) = d2;
-    *(f64*)(buf + 0x58) = d1;
-    *(f64*)(buf + 0x60) = d0;
-    *(f64*)(buf + 0x68) = d5;
+    *(u32*)&buf[0x0C] = 0x2A;
+    *(u16*)&buf[0x08] = 0x38;
+    *(u32*)&buf[0x10] = 0x17;
+    *(u16*)&buf[0x2A] = 0x6;
+    *(void**)&buf[0x3C] = fn_8005F0A8;
+    memcpy(&buf[0x14], &buf[0x0C], 4);
+    memcpy(&buf[0x18], &buf[0x08], 2);
+    *(u16*)&buf[0x30] = *(u16*)&buf[0x08];
+    *(u32*)&buf[0x34] = *(u32*)&buf[0x0C];
+    *(u32*)&buf[0x2C] = (u32)((u8*)cb + 0x874);
+    *(double*)&buf[0x40] = *(double*)&buf[0x10];
+    *(double*)&buf[0x48] = *(double*)&buf[0x18];
+    *(double*)&buf[0x50] = *(double*)&buf[0x20];
+    *(double*)&buf[0x58] = *(double*)&buf[0x28];
+    *(double*)&buf[0x60] = *(double*)&buf[0x30];
+    *(double*)&buf[0x68] = *(double*)&buf[0x38];
     enabled = OSDisableInterrupts();
     OSDisableInterrupts();
-    back = cb->stdCmdQueue.back;
-    front = cb->stdCmdQueue.front;
-    diff = front - back;
-    if (diff >= 0) {
-        OSRestoreInterrupts(enabled);
-        return;
-    }
-    capacity = cb->stdCmdQueue.capacity;
-    index = diff + capacity;
+    diff = (s8)(*((u8*)cb + 0x161) - *((u8*)cb + 0x160));
+    if (diff < 0)
+        diff = (s8)(diff + *(u32*)((u8*)cb + 0x168));
     OSRestoreInterrupts(enabled);
-    if (capacity - 1 == (u32)index) {
+    if (*(u32*)((u8*)cb + 0x168) - 1 == (u32)diff) {
         OSRestoreInterrupts(enabled);
         return;
     }
-    memset(cb->stdCmdQueue.buffer + (s8)front * 0x30, 0, 0x30);
-    memcpy(cb->stdCmdQueue.buffer + (s8)front * 0x30, buf + 0x40, 0x30);
-    diff = (s8)cb->stdCmdQueue.front;
-    capacity--;
-    diff++;
-    if (diff > (s32)capacity) diff = 0;
-    cb->stdCmdQueue.front = (s8)diff;
+    {
+        s8 front = (s8)*((u8*)cb + 0x161);
+        s8 index;
+        s32 lastIndex;
+        s32 wrapMask;
+        memset(*(u8**)((u8*)cb + 0x164) + front * 0x30, 0, 0x30);
+        memcpy(*(u8**)((u8*)cb + 0x164) + front * 0x30, &buf[0x40], 0x30);
+        index = (s8)*((u8*)cb + 0x161);
+        lastIndex = *(u32*)((u8*)cb + 0x168) - 1;
+        wrapMask = ~(((s32)index - lastIndex) | (lastIndex - (s32)index)) >> 31;
+        *((u8*)cb + 0x161) = (index + 1) & ~wrapMask;
+    }
     OSRestoreInterrupts(enabled);
 }
 
@@ -3755,8 +3763,15 @@ void fn_8005F248(s32 chan, s32 result) {
 }
 
 void fn_8005F3E8(s32 chan, s32 arg1) {
+    WPADCB *cb;
+    BOOL intr;
+
     if (arg1 == -1) return;
-    (void)chan;
+    cb = _wpdcb[chan];
+    intr = OSDisableInterrupts();
+    cb->UNK_0x820 = (arg1 >= 0) ? 1 : 0;
+    cb->readStatus = 0;
+    OSRestoreInterrupts(intr);
 }
 
 s32 fn_8005FBCC(u8 devHandle) {
@@ -6801,20 +6816,107 @@ void fn_800678DC(s32 chan, u8 *data) {
 }
 
 // fn_80067ECC: WPAD data processing
-void fn_80067ECC(s32 chan, void* data) {
-    extern unsigned char lbl_8055DC20[];
-    extern unsigned char lbl_8055DC24[];
-    void *cb;
-    unsigned char *dst;
-    unsigned char mode;
-    cb = lbl_8038F4F0[chan];
-    if (lbl_8055DC20[chan] != 0) return;
-    if (lbl_8055DC24[chan] != 0) return;
-    mode = *(unsigned char *)((unsigned char *)cb + 0x806);
-    dst = (unsigned char *)cb + (unsigned int)mode * 0x60 + 0xA0;
-    memset(dst, 0, 0x60);
-    *(unsigned short *)dst = (unsigned short)((((unsigned char *)data)[1] << 8) | ((unsigned char *)data)[2]);
-    (void)dst;
+void fn_80067ECC(s32 chan, u8 *data) {
+    WPADCB *cb = lbl_8038F4F0[(u8)chan];
+    u8 *buf = (u8*)cb + ((u8*)cb)[0x806] * 0x60 + 0xA0;
+    s32 i;
+    s16 v;
+    u16 u;
+    BOOL enabled;
+
+    if (lbl_8055DC20[chan] == 0 && lbl_8055DC24[chan] == 0) {
+        for (i = 0; i < 0x60; i++) buf[i] = 0;
+    }
+
+    *(u16*)buf = ((u16)data[1] | ((u16)data[2] << 8)) & 0x9F1F;
+
+    if (cb->readFormat == 0 || cb->readFormat == 1 || cb->readFormat == 9) {
+        buf[0x29] = cb->readStatus;
+    } else if (cb->readStatus == 0) {
+        buf[0x29] = -4;
+    }
+    buf[0x28] = *(u8*)((u8*)cb + 0x801);
+    *(u32*)((u8*)cb + 0x788) = 0;
+
+    v = (s16)(((s16)(data[3] << 2) & ~3) | ((data[1] >> 6) & 3));
+    *(s16*)(buf + 4) = v - *(s16*)((u8*)cb + 0x7B6);
+
+    v = (s16)(((s16)(data[2] << 3) & ~0xFF) | ((data[1] << 1) & 0x300));
+    *(s16*)(buf + 6) |= v;
+
+    v = (s16)data[4];
+    *(s16*)(buf + 0x18) = v | (s16)((data[6] << 4) & 0x300);
+    v = (s16)data[5];
+    *(s16*)(buf + 0x1A) = 0x2FF - (s16)(v | (s16)((data[6] << 2) & 0x300));
+
+    v = (s16)data[0xB];
+    *(s16*)(buf + 0x4A) = v | (s16)((data[0xC] << 6) & 0xC00);
+    buf[0x4C] = data[6] & 0xF;
+
+    v = (s16)(s8)buf[0x4C];
+    *(s16*)(buf + 0x42) = (u16)buf[0x4C] & (v == -1 ? 0 : 0xFFFF);
+    v = (s16)(s8)data[8];
+    *(s16*)(buf + 0x44) = (u16)data[8] & (v == -1 ? 0 : 0xFFFF);
+    v = (s16)(s8)data[9];
+    *(s16*)(buf + 0x46) = (u16)data[9] & (v == -1 ? 0 : 0xFFFF);
+    *(s16*)(buf + 0x42) = *(s16*)(buf + 0x42) * 8;
+    *(s16*)(buf + 0x44) = 0x2FF - (*(s16*)(buf + 0x44) * 8);
+    *(s16*)(buf + 0x46) = 0x2FF - (*(s16*)(buf + 0x46) * 8);
+    *(s16*)(buf + 0x48) = (s16)(s8)data[0xA] * 8;
+
+    u = data[6] & 0xF;
+    *(u16*)(buf + 0x1C) = (u8)(lbl_80560CD8 * (f32)(s16)(s8)(u8)u * (f32)(s16)(s8)(u8)u);
+    if (*(u16*)(buf + 0x1C) == 0 || *(s16*)(buf + 0x18) == 0x3FF || *(s16*)(buf + 0x1A) == 0x2FF) {
+        if (*(u8*)(buf + 0x4C) == 0xF) {
+            *(s16*)(buf + 0x18) = 0;
+            *(s16*)(buf + 0x1A) = 0x2FF;
+            *(u16*)(buf + 0x1C) = 0;
+            *(s16*)(buf + 0x4A) = 0;
+            *(u8*)(buf + 0x4C) = 0;
+            buf[0x1E] = 2;
+        }
+    }
+
+    v = (s16)data[0xD];
+    *(s16*)(buf + 0x20) = v | (s16)((data[0xF] << 4) & 0x300);
+    v = (s16)data[0xE];
+    *(s16*)(buf + 0x22) = 0x2FF - (s16)(v | (s16)((data[0xF] << 2) & 0x300));
+    u = data[0xF] & 0xF;
+    *(u16*)(buf + 0x24) = (u8)(lbl_80560CD8 * (f32)(s16)(s8)(u8)u * (f32)(s16)(s8)(u8)u);
+    v = (s16)data[0x14];
+    *(s16*)(buf + 0x56) = v | (s16)((data[0x15] << 6) & 0xC00);
+    buf[0x58] = data[0xF] & 0xF;
+    if (*(u16*)(buf + 0x24) == 0 || *(s16*)(buf + 0x20) == 0x3FF || *(s16*)(buf + 0x22) == 0x2FF) {
+        if (*(u8*)(buf + 0x58) == 0xF) {
+            *(s16*)(buf + 0x20) = 0;
+            *(s16*)(buf + 0x22) = 0x2FF;
+            *(u16*)(buf + 0x24) = 0;
+            *(s16*)(buf + 0x56) = 0;
+            *(u8*)(buf + 0x58) = 0;
+            buf[0x26] = 3;
+        }
+    }
+
+    v = (s16)(s8)data[0x10];
+    *(s16*)(buf + 0x4E) = (u16)data[0x10] & (v == -1 ? 0 : 0xFFFF);
+    v = (s16)(s8)data[0x11];
+    *(s16*)(buf + 0x50) = (u16)data[0x11] & (v == -1 ? 0 : 0xFFFF);
+    v = (s16)(s8)data[0x12];
+    *(s16*)(buf + 0x52) = (u16)data[0x12] & (v == -1 ? 0 : 0xFFFF);
+    *(s16*)(buf + 0x4E) = *(s16*)(buf + 0x4E) * 8;
+    *(s16*)(buf + 0x50) = 0x2FF - (*(s16*)(buf + 0x50) * 8);
+    *(s16*)(buf + 0x52) = 0x2FF - (*(s16*)(buf + 0x52) * 8);
+    *(s16*)(buf + 0x54) = (s16)(s8)data[0x13] * 8;
+
+    enabled = OSDisableInterrupts();
+    lbl_8055DC20[chan] = 1;
+    if (lbl_8055DC20[chan] != 0 && lbl_8055DC24[chan] != 0) {
+        *(s16*)(buf + 6) = *(s16*)(buf + 6) - *(s16*)((u8*)cb + 0x7B8);
+        ((u8*)cb)[0x806] = __cntlzw(((u8*)cb)[0x806]) >> 5;
+        lbl_8055DC24[chan] = 0;
+        lbl_8055DC20[chan] = 0;
+    }
+    OSRestoreInterrupts(enabled);
 }
 
 // Empty placeholder: this WPAD function has no body in the original.
@@ -6822,79 +6924,138 @@ void fn_800684CC(void) {
 }
 
 void fn_800684D0(s32 chan) {
-    WPADCB *cb;
-    u8 seed[10];
+    const u8 *cb = (const u8 *)lbl_8038F4F0[chan];
+    u8 s[10];
+    u8 o[8];
+    u8 q[8];
     u8 tmp;
     u32 a, b;
     int i;
-    u32 v0, v1, v2;
-    u32 s0, s1, s2, s3;
     u8 *dst;
-    int en;
-    u8 *p;
-    cb = lbl_8038F4F0[chan];
+    u32 en;
+    int off;
+    u32 t15, t6v, t12, t11, t10, t11_2, t11_3;
+    u32 t18_2, t15_2, t15_3, t14_3, t14_4, t15_4, t18_3, t25_2, t18_4;
+    u8 t8_7, t9_2, t6_2, t16, t27, t19, t23, t29, t28, t25, t3_2, t14_2, t15_5, t11_4;
+    u8 t9_3, t8_8, t14_5, t27_2, t0, t25_4, t17_2, t16_4, t14_6, t12_2, t26, t18_5, t25_5, t10_2, t25_6, t29_2;
+    u32 sh23, sh25;
+
     lbl_8055DC2B = (u8)(OSGetTick() >> 8);
     lbl_8055DC2A = (u8)((OSGetTick() >> 16) & 0x3F);
     tmp = (u8)((OSGetTick() >> 24) & 0x4C);
     a = (u32)lbl_8055DC2B * (u32)lbl_8055DC2A;
     lbl_8055DC28 = 0xFF;
     lbl_8055DC29 = tmp;
+    i = 0;
     b = (tmp + a) % 255;
-    a = (tmp + a) % 255 % 7;
-    v0 = a * 6;
-    for (i = 0; i < 2; i++) {
-        if (i == 0) dst = &seed[0]; else dst = &seed[5];
-        s0 = (tmp + b * lbl_8055DC2A) % 255;
-        dst[0] = lbl_803127C8[s0];
-        s1 = (tmp + s0 * lbl_8055DC2A) % 255;
-        dst[1] = lbl_803127C8[s1];
-        s2 = (tmp + s1 * lbl_8055DC2A) % 255;
-        dst[2] = lbl_803127C8[s2];
-        s3 = (tmp + s2 * lbl_8055DC2A) % 255;
-        dst[3] = lbl_803127C8[s3];
-        b = (tmp + s3 * lbl_8055DC2A) % 255;
-        dst[4] = lbl_803127C8[b];
+    off = ((tmp + a) % 255) % 7;
+    off = off * 6;
+    {
+        int ctr = 2;
+        do {
+            int base = i;
+            i += 5;
+            dst = &s[base];
+            b = (tmp + b * lbl_8055DC2A) % 255;
+            dst[0] = lbl_803127C8[b];
+            b = (tmp + b * lbl_8055DC2A) % 255;
+            dst[1] = lbl_803127C8[b];
+            b = (tmp + b * lbl_8055DC2A) % 255;
+            dst[2] = lbl_803127C8[b];
+            b = (tmp + b * lbl_8055DC2A) % 255;
+            dst[3] = lbl_803127C8[b];
+            b = (tmp + b * lbl_8055DC2A) % 255;
+            dst[4] = lbl_803127C8[b];
+        } while (--ctr != 0);
     }
     lbl_8055DC2B = (u8)b;
     en = OSDisableInterrupts();
-    p = (u8 *)cb;
-    p[0x854] = seed[9];
-    p[0x855] = seed[8];
-    p[0x856] = seed[7];
-    p[0x857] = seed[6];
-    p[0x858] = seed[5];
-    p[0x859] = seed[4];
-    p[0x85A] = seed[3];
-    p[0x85B] = seed[2];
-    p[0x85C] = seed[1];
-    p[0x85D] = seed[0];
-    {
-        u8 b0 = lbl_803127C8[seed[2]];
-        u8 b1 = lbl_803127C8[seed[0]];
-        u8 b2 = lbl_803127C8[seed[5]];
-        u8 b3 = lbl_803127C8[seed[4]];
-        u8 b4 = lbl_803127C8[seed[7]];
-        u8 b5 = lbl_803127C8[seed[3]];
-        u8 b6 = lbl_803127C8[seed[1]];
-        u8 b7 = lbl_803127C8[seed[6]];
-        u8 t0, t1, t2, t3, t4, t5;
-        (void)b0; (void)b1; (void)b2; (void)b3; (void)b4; (void)b5; (void)b6; (void)b7;
-        (void)v0; (void)v1; (void)v2; (void)s0; (void)s1; (void)s2; (void)s3; (void)tmp; (void)a; (void)b;
-        t0 = b0 ^ b1;
-        t1 = b2 ^ b3;
-        t2 = b4 ^ b5;
-        t3 = b6 ^ b7;
-        t4 = t0 ^ t1;
-        t5 = t2 ^ t3;
-        p[0x85E] = t4;
-        p[0x85F] = t5;
-        p[0x860] = t0;
-        p[0x861] = t1;
-        p[0x862] = t2;
-        p[0x863] = t3;
-    }
-    memcpy(p + 0x864, seed, 8);
-    memcpy(p + 0x86C, seed, 8);
+    t8_7 = lbl_803127C8[s[2]];
+    t9_2 = lbl_803127C8[s[0]];
+    t15 = (u32)t8_7 >> 31;
+    t6v = ((u32)t8_7 << 29) - t15;
+    t6_2 = lbl_803127C8[s[5]];
+    t12 = ((t6v << 3) | (t6v >> 29)) + t15;
+    t11 = (u32)t9_2 >> 31;
+    t10 = ((u32)t9_2 << 29) - t11;
+    t16 = lbl_80312798[off + 0] ^ t6_2;
+    t27 = lbl_803127C8[s[1]];
+    t11_2 = ((t10 << 3) | (t10 >> 29)) + t11;
+    t19 = lbl_80312798[off + 1] ^ t27;
+    t23 = lbl_803127C8[s[9]];
+    t11_3 = lbl_803127C8[s[4]];
+    t29 = lbl_803127C8[s[7]];
+    t28 = s[8];
+    t16 = (u8)((t16 >> t12) | (t16 << (8 - t12))) - t23;
+    t25 = lbl_803127C8[s[6]];
+    t14_2 = (u8)((t19 >> t11_2) | (t19 << (8 - t11_2))) - t6_2;
+    t3_2 = lbl_80312798[off + 2] ^ t25;
+    t18_2 = (u32)t29 >> 31;
+    t15_2 = ((u32)t29 << 29) - t18_2;
+    t15_5 = lbl_803127C8[s[8]];
+    t15_3 = ((t15_2 << 3) | (t15_2 >> 29)) + t18_2;
+    t15_4 = (u8)((t15_3 << 3) | (t15_3 >> 29));
+    t14_3 = (u32)t15_5 >> 31;
+    t14_4 = (((((u32)t15_5 << 29) - t14_3) << 3) | ((((u32)t15_5 << 29) - t14_3) >> 29)) + t14_3;
+    t17_2 = lbl_80312798[off + 3] ^ t11_3;
+    t18_3 = (u32)t25 >> 31;
+    t25_2 = ((u32)t25 << 29) - t18_3;
+    t18_4 = ((t25_2 << 3) | (t25_2 >> 29)) + t18_3;
+    t14_5 = lbl_80312798[off + 4] ^ t27;
+    t27_2 = lbl_80312798[off + 5] ^ t29;
+    t15_5 = lbl_803127C8[s[3]];
+    t9_3 = t9_2 ^ ((u8)(((u32)t3_2 >> t14_4) | (t3_2 << (8 - t14_4))) - t8_7);
+    t8_8 = t8_7 ^ ((u8)(((u32)t17_2 >> t15_3) | (t17_2 << (8 - t15_3))) - t15_5);
+    t9_3 = t11_3 ^ ((u8)(((u32)t14_5 >> t18_4) | (t14_5 << (8 - t18_4))) - t15_5);
+    t11_4 = t23 ^ ((u8)(((u32)t27_2 >> t14_4) | (t27_2 << (8 - t14_4))) - t6_2);
+    sh23 = (u32)(off + 2) << 8;
+    sh25 = (u32)(off + 1) << 8;
+    t0 = lbl_803127C8[t9_3 + sh25];
+    t25_4 = lbl_803127C8[t28 + sh23];
+    t17_2 = lbl_803127C8[s[7] + sh23];
+    t16_4 = lbl_803127C8[t11_4 + sh25];
+    t14_6 = lbl_803127C8[s[4] + sh23];
+    t12_2 = lbl_803127C8[t14_2 + sh25];
+    t26 = lbl_803127C8[s[5] + sh23];
+    t18_5 = lbl_803127C8[t9_3 + sh25];
+    t25_5 = lbl_803127C8[t8_8 + sh25];
+    t10_2 = lbl_803127C8[s[9] + sh23];
+    t25_6 = lbl_803127C8[t16 + sh25];
+    t29_2 = lbl_803127C8[s[6] + sh25];
+    o[0] = t0 ^ lbl_803127C8[s[3] + sh23];
+    o[1] = t18_5 ^ t26;
+    o[2] = t16_4 ^ t17_2;
+    o[3] = t25_6 ^ lbl_803127C8[s[8] + sh23];
+    o[4] = t12_2 ^ t14_6;
+    o[5] = t25_5 ^ t10_2;
+    o[6] = lbl_803127C8[s[0] + sh25] ^ t29_2;
+    o[7] = lbl_803127C8[s[1] + sh25] ^ t25_4;
+    q[0] = t25_6 ^ lbl_803127C8[s[1] + sh23];
+    q[1] = t16_4 ^ t14_6;
+    q[2] = t25_5 ^ lbl_803127C8[s[0] + sh23];
+    q[3] = t18_5 ^ t10_2;
+    q[4] = t0 ^ t17_2;
+    q[5] = t12_2 ^ t25_4;
+    q[6] = lbl_803127C8[s[3] + sh25] ^ t26;
+    q[7] = lbl_803127C8[s[0] + sh25] ^ t29_2;
+    ((u8 *)cb)[0x854] = s[9];
+    ((u8 *)cb)[0x855] = s[8];
+    ((u8 *)cb)[0x856] = s[7];
+    ((u8 *)cb)[0x857] = s[6];
+    ((u8 *)cb)[0x858] = s[5];
+    ((u8 *)cb)[0x859] = s[4];
+    ((u8 *)cb)[0x85A] = s[3];
+    ((u8 *)cb)[0x85B] = s[2];
+    ((u8 *)cb)[0x85C] = s[1];
+    ((u8 *)cb)[0x85D] = s[0];
+    ((u8 *)cb)[0x85E] = t11_4;
+    ((u8 *)cb)[0x85F] = t9_3;
+    ((u8 *)cb)[0x860] = t8_8;
+    ((u8 *)cb)[0x861] = t15_4;
+    ((u8 *)cb)[0x862] = t14_2;
+    ((u8 *)cb)[0x863] = t16;
+    memcpy((u8 *)cb + 0x864, o, 8);
+    memcpy((u8 *)cb + 0x86C, q, 8);
     OSRestoreInterrupts(en);
 }
 
