@@ -858,6 +858,9 @@ int fn_801AFA70(int object, int deleteFlag) {
     return object;
 }
 
+/* No-op RecordMgr callback.  The end-of-race pass (fn_801AF6FC) fires it as
+ * (gRecordMgr, records = gRaceResultTable[0], count = gRaceResultTable[1]) once
+ * the RaceResult records are ready, but this build ignores all three arguments. */
 void fn_801AFAB4(void) {
 
 }
