@@ -639,24 +639,27 @@ extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPalet
                     (f32)lodTex[0x21], (f32)lodTex[0x22], *(f32 *)(lodTex + 0x1C),
                     0, lodTex[0x20], 0);
 }
-extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
+extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* drawInfo) {
+    /* nw4r::lyt::DrawInfo constructor: install the vtable, set the embedded 4x3 transform
+       matrix (+0x4) to identity, zero the four offset/scale floats (+0x34..+0x40), set the
+       three tint floats (+0x44..+0x4C) to 1.0, and clear the flag byte at +0x50. */
     extern char lbl_8031F618[];
     extern void memset(void*, int, unsigned int);
     extern void PSMTXIdentity(void*);
-    u8* p = (u8*)arg0;
-    f32 b = 1.0f;
-    f32 a = 0.0f;
+    u8* p = (u8*)drawInfo;
+    f32 one = 1.0f;
+    f32 zero = 0.0f;
     *(void**)p = lbl_8031F618;
-    *(f32*)(p + 0x34) = a;
-    *(f32*)(p + 0x38) = a;
-    *(f32*)(p + 0x3C) = a;
-    *(f32*)(p + 0x40) = a;
-    *(f32*)(p + 0x44) = b;
-    *(f32*)(p + 0x48) = b;
-    *(f32*)(p + 0x4C) = b;
+    *(f32*)(p + 0x34) = zero;
+    *(f32*)(p + 0x38) = zero;
+    *(f32*)(p + 0x3C) = zero;
+    *(f32*)(p + 0x40) = zero;
+    *(f32*)(p + 0x44) = one;
+    *(f32*)(p + 0x48) = one;
+    *(f32*)(p + 0x4C) = one;
     memset(p + 0x50, 0, 1);
     PSMTXIdentity(p + 4);
-    return arg0;
+    return drawInfo;
 }
 
 extern "C" s32 fn_800D67B8(s32 object, s32 deleteFlag) {
