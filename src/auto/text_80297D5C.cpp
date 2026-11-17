@@ -2308,8 +2308,9 @@ extern "C" void* fn_80288208(int);
 extern "C" int fn_80287B14(void);
 extern "C" int fn_8029AEE8(void*);
 extern "C" int fn_8029AF24(int);
-extern "C" void fn_8029BDB8(void *arg0) {
-    *(int *)((char *)arg0 + 0xA4) = 0;
+extern "C" void fn_8029BDB8(void *torchFireMan) {
+    /* Clear the TorchFireMan's active fire-effect count (+0xA4) at the start of a frame. */
+    *(int *)((char *)torchFireMan + 0xA4) = 0;
 }
 
 extern "C" void fn_80288A58(void*, float*);
@@ -2564,19 +2565,15 @@ extern "C" void* fn_802988A4(void* arg0) {
     f30v = lbl_8056459C;
     f31v = lbl_805645B8;
     srcPtr = (int*)(void*)&frame.sp14;
-    i = 0;
-    off = 0;
-    goto test;
-loop:
-    {
+    for (i = 0, off = 0; i < count; i++, off += 0x20) {
         int tSp10;
         int tSpC;
         int tSp8;
-        float t2C;
-        float t30;
-        float t34;
         info = fn_80288208(i);
         if (fn_80287E20(info, (const char*)&lbl_8055CA90) != 0) {
+            float t2C;
+            float t30;
+            float t34;
             ((void(*)(void*, void*, int, int))fn_80287ED0)((void*)&frame.sp2C, info, (int)&lbl_8055CA90, (int)&lbl_8055CA98);
             {
                 char* dest = (char*)*(void**)arg0 + off;
@@ -2610,10 +2607,6 @@ loop:
         *(char*)((char*)*(void**)arg0 + off + 0x19) = 0;
         *(float*)((char*)*(void**)arg0 + off + 0x1C) = f31v;
     }
-    i++;
-    off += 0x20;
-test:
-    if (i < count) goto loop;
     fn_802991BC(arg0);
     *(void**)((char*)arg0 + 8) = fn_802974CC((char*)&lbl_803494B8);
     return arg0;
