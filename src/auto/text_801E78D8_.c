@@ -353,6 +353,7 @@ void fn_801E7E04(long slot, long value) {
 
 float fn_801E7E18(void) {
     extern float *lbl_8055EB04;
+    /* Return the current game time in seconds, stored as the first float of the frame data. */
     return *lbl_8055EB04;
 }
 
