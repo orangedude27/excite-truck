@@ -49,16 +49,16 @@ extern "C" void fn_8016071C(void *sourceObj) {
 /* Restore the fallback five-entry rank-bound table lbl_8042FD60 to its default
  * thresholds from the constant table lbl_802F9490 (used when no handler is bound). */
 void fn_801607BC(void) {
-    int bound0 = lbl_802F9490[0];
-    int bound1 = lbl_802F9490[1];
-    int bound2 = lbl_802F9490[2];
-    int bound3 = lbl_802F9490[3];
-    int bound4 = lbl_802F9490[4];
-    lbl_8042FD60[0] = bound0;
-    lbl_8042FD60[1] = bound1;
-    lbl_8042FD60[2] = bound2;
-    lbl_8042FD60[3] = bound3;
-    lbl_8042FD60[4] = bound4;
+    int default0 = lbl_802F9490[0];
+    int default1 = lbl_802F9490[1];
+    int default2 = lbl_802F9490[2];
+    int default3 = lbl_802F9490[3];
+    int default4 = lbl_802F9490[4];
+    lbl_8042FD60[0] = default0;
+    lbl_8042FD60[1] = default1;
+    lbl_8042FD60[2] = default2;
+    lbl_8042FD60[3] = default3;
+    lbl_8042FD60[4] = default4;
 }
 
 #pragma dont_inline on
