@@ -75,6 +75,7 @@ OSInterruptHandler
     return old;
 }
 
+// Return the interrupt handler currently installed for `type`.
 OSInterruptHandler __OSGetInterruptHandler(OSInterruptType type) {
     return InterruptHandlerTable[type];
 }
