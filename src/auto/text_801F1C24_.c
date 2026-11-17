@@ -81,8 +81,9 @@ int fn_801F1C24(void *arg0) {
     PSVECCrossProduct((float *)&basis->forward, (float *)&basis->right, (float *)&basis->up);
 }
 
-int *fn_801F1CE8(int arg0) {
-    return (int *)(arg0 + 0x2C);
+int *fn_801F1CE8(int params) {
+    /* Return the address of the raw 16-byte value field (+0x2C) of a TMH render parameter block. */
+    return (int *)(params + 0x2C);
 }
 
 int fn_801F1CF0(int arg0) {
