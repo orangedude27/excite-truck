@@ -251,7 +251,10 @@ void fn_8013BFE0(void) {
 
 }
 
-void fn_8013BFE4(void) {
+/* Hook run on a freshly built CacheResource by the cache lookup fn_8013BFE8, just
+ * after fn_8013BFE0 and before the resource is filed in the cache table
+ * (lbl_8042F8C8); the shipped game leaves it empty. */
+void fn_8013BFE4(CacheResource *resource) {
 
 }
 
@@ -326,8 +329,8 @@ copied:
             unsigned char *s = (unsigned char *)&tmp;
             unsigned char *t = lbl_8042F8C8;
             int idx;
-            tmp.a = key.a; tmp.b = key.b; tmp.c = key.c; tmp.d = key.d;
-            tmp.e = key.e; tmp.f = key.f; tmp.g = key.g; tmp.h = key.h;
+            tmp.b = key.b; tmp.a = key.a; tmp.d = key.d; tmp.c = key.c;
+            tmp.f = key.f; tmp.e = key.e; tmp.h = key.h; tmp.g = key.g;
             idx = *(int *)(t + 0x240);
             *(int *)(t + 0x240) = idx + 1;
             e = t + idx * 0x48;
