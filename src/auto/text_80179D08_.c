@@ -407,6 +407,7 @@ void fn_8017B090(void) {
 }
 
 int fn_8017B094(void) {
+    /* Virtual query on the MemorySoundArchive vtable: returns the fixed value 0x14. */
     return 0x14;
 }
 
