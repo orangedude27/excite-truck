@@ -6307,7 +6307,7 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     for (k = 0; k < 3; k++) {
         entry = lbl_803C0C14 + (k << 5);
         if (entry[182] != 0 && bdcmp(entry + 176, peer_addr) == 0) {
-            fn_8007148C((s32)entry + 152);
+            fn_8007148C((s32)(entry + 152));
             entry[182] = 0;
             break;
         }
@@ -10253,7 +10253,7 @@ tBTM_STATUS BTM_ClearInqDb(BD_ADDR p_bda) {
 void btm_inq_db_reset(void) {
     u8 *loopBase;
     u8 *base = lbl_803C0F78;
-    u32 zero = 0;
+    register u32 zero = 0;
     tBTM_REMOTE_DEV_NAME rem_name;
     u8 num_responses;
     u8 value;
@@ -28677,9 +28677,10 @@ void __AXFXFreeFunction(void* ptr) {
 
 extern void *lbl_805590B0;
 extern void *lbl_805590B4;
-void AXFXSetHooks_8009CDB0(void *arg0, void *arg1) {
-    lbl_805590B0 = arg0;
-    lbl_805590B4 = arg1;
+/* Register the AXFX delay-line allocation/deallocation hooks used by the reverb effects. */
+void AXFXSetHooks_8009CDB0(void *allocHook, void *freeHook) {
+    lbl_805590B0 = allocHook;
+    lbl_805590B4 = freeHook;
 }
 
 /* Retrieve the currently registered AXFX alloc/free hooks into *outAlloc / *outFree. */
