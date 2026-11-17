@@ -94,57 +94,94 @@ extern char *lbl_8055E050;
 extern int fn_8012BF24(void *);
 extern int stricmp(const char *, const char *);
 void fn_8012FAB8(void *arg0) {
-    char *srcBase = lbl_80423040 + 0x10000;
-    char *dstBase = lbl_8032B028;
-    CacheEntry *e;
-    e = (CacheEntry *)(srcBase - 0x3C18);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0xA0) = e->value;
-    e = (CacheEntry *)(srcBase - 0x3C0C);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0xB0) = e->value;
-    e = (CacheEntry *)(srcBase - 0x3C00);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0xC0) = e->value;
-    e = (CacheEntry *)(srcBase - 0x3BF4);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0xD0) = e->value;
-    e = (CacheEntry *)(srcBase - 0x3BE8);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0xE0) = e->value;
-    e = (CacheEntry *)(srcBase - 0x3BDC);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0xF0) = e->value;
-    e = (CacheEntry *)(srcBase - 0x3BD0);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0x124) = e->value;
-    e = (CacheEntry *)(srcBase - 0x3BC4);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0x134) = e->value;
-    e = (CacheEntry *)(srcBase - 0x3BB8);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0x144) = e->value;
-    e = (CacheEntry *)(srcBase - 0x3BAC);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0x154) = e->value;
-    e = (CacheEntry *)(srcBase - 0x3BA0);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0x164) = e->value;
-    e = (CacheEntry *)(srcBase - 0x3B94);
-    if ((unsigned int)e->tick != (unsigned int)lbl_8055E044)
-        fn_80131318((int *)e);
-    *(char **)(dstBase + 0x174) = e->value;
+    char *srcBase;
+    char *dstBase;
+    srcBase = lbl_80423040 + 0x10000;
+    dstBase = lbl_8032B028;
+    {
+        int *e = (int *)(srcBase - 0x3C18);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0xA0) = (char *)e[1];
+    }
+    {
+        int *e = (int *)(srcBase - 0x3C0C);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0xB0) = (char *)e[1];
+    }
+    {
+        int *e = (int *)(srcBase - 0x3C00);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0xC0) = (char *)e[1];
+    }
+    {
+        int *e = (int *)(srcBase - 0x3BF4);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0xD0) = (char *)e[1];
+    }
+    {
+        int *e = (int *)(srcBase - 0x3BE8);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0xE0) = (char *)e[1];
+    }
+    {
+        int *e = (int *)(srcBase - 0x3BDC);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0xF0) = (char *)e[1];
+    }
+    {
+        int *e = (int *)(srcBase - 0x3BD0);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0x124) = (char *)e[1];
+    }
+    {
+        int *e = (int *)(srcBase - 0x3BC4);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0x134) = (char *)e[1];
+    }
+    {
+        int *e = (int *)(srcBase - 0x3BB8);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0x144) = (char *)e[1];
+    }
+    {
+        int *e = (int *)(srcBase - 0x3BAC);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0x154) = (char *)e[1];
+    }
+    {
+        int *e = (int *)(srcBase - 0x3BA0);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0x164) = (char *)e[1];
+    }
+    {
+        int *e = (int *)(srcBase - 0x3B94);
+        if ((unsigned int)e[2] != (unsigned int)lbl_8055E044) {
+            fn_80131318(e);
+        }
+        *(char **)(dstBase + 0x174) = (char *)e[1];
+    }
     if (arg0 != 0) {
         Obj *parent;
         int index;
@@ -261,33 +298,18 @@ void fn_8013028C(void) {
 }
 
 int fn_801302E0(void *arg0) {
-    int offset;
-    int index;
-    char *tbl;
-    char *ena;
-    if (*(void **)((char *)&lbl_804230D0 + 4) != 0) {
-        goto have_table;
+    LocaleData *base = &*(LocaleData *)&lbl_804230D0;
+    int offset, index;
+    if (base->msgTable != 0) {
+        index = 0;
+        offset = 0;
+        while (index < *(int *)((char *)base->msgTable + 0x40)) {
+            if (stricmp((const char *)arg0, *(const char **)((char *)base->msgTable + offset + 0x44)) == 0)
+                return *(int *)(*(char **)((char *)&lbl_804230D0 + 4) + index * 8 + 0x48);
+            offset += 8;
+            index++;
+        }
     }
-    goto done;
-have_table:
-    index = 0;
-    offset = 0;
-    goto check;
-loop:
-    tbl = *(char **)((char *)&lbl_804230D0 + 4);
-    ena = *(char **)(tbl + offset + 0x44);
-    if (stricmp((const char *)arg0, (const char *)ena) != 0) {
-        goto increment;
-    }
-    return *(int *)(*(char **)((char *)&lbl_804230D0 + 4) + index * 8 + 0x48);
-increment:
-    offset += 8;
-    index++;
-check:
-    if (index < *(int *)(*(char **)((char *)&lbl_804230D0 + 4) + 0x40)) {
-        goto loop;
-    }
-done:
     return 0;
 }
 
@@ -306,23 +328,26 @@ extern void fn_8013111C();
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_801303A8(void) {
-    register unsigned int *s;
-    register unsigned int *d;
-    register unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
-    register unsigned int v12, v13, v14, v15, v16, v17, v18, v19, v20, v21;
-    register unsigned int v22, v23, v24, v25, v26, v27;
+    register int *s;
+    register int *d;
+    register int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
+    register int v12, v13, v14, v15, v16, v17, v18, v19, v20, v21;
+    register int v22, v23, v24, v25, v26, v27;
     register unsigned char c;
+
     lbl_8055E048 = 1;
     lbl_804230D0 = -1;
     fn_8013111C(lbl_8055E04C);
-    s = (unsigned int *)lbl_8042F4B8;
-    d = (unsigned int *)lbl_80423054;
+    s = (int *)lbl_8042F4B8;
+    d = (int *)lbl_80423054;
+
     v22 = s[22]; d[24] = v22;
     v24 = s[24]; d[26] = v24;
     v25 = s[25]; d[27] = v25;
     v26 = s[26]; d[28] = v26;
     v27 = s[27]; d[29] = v27;
     c = *((unsigned char *)s + 0x70);
+
     v0 = s[0]; v1 = s[1]; v2 = s[2]; v3 = s[3];
     v4 = s[4]; v5 = s[5]; v6 = s[6]; v7 = s[7];
     v8 = s[8]; v9 = s[9]; v10 = s[10]; v11 = s[11];
@@ -335,6 +360,7 @@ void fn_801303A8(void) {
     d[14] = v12; d[15] = v13; d[16] = v14; d[17] = v15;
     d[18] = v16; d[19] = v17; d[20] = v18; d[21] = v19;
     d[22] = v20; d[23] = v21; d[25] = v23;
+
     lbl_80423054[0] = c ? 0x2E : 0x2C;
     *((char *)d + 0x78) = c;
 }
@@ -612,7 +638,9 @@ static inline void time_append2(char *dstp, int sizep, char *str) {
 }
 
 void fn_80130980(char *out, int size, int level, float t);
-void fn_80130978(char *arg0, int arg1, float t) { fn_80130980(arg0, arg1, 3, t); }
+/* Format `seconds` into `out` (capacity `size`) down to tenths of a second:
+ * convenience wrapper that calls the general time formatter at level 3. */
+void fn_80130978(char *out, int size, float seconds) { fn_80130980(out, size, 3, seconds); }
 
 void fn_80130980(char *out, int size, int level, float seconds) {
     char buf[100];
@@ -862,12 +890,13 @@ extern int strlen(const char *);
 extern int fn_8002B1D8(const char *, const char *, int);
 #pragma scheduling invalid_target
 void fn_80131368(char *arg0) {
+    int flag = 0;
     int c;
     int signedC;
-    int flag = 0;
     int isNumber;
     int *p;
     unsigned int i;
+
     c = *(unsigned char *)arg0;
     signedC = (signed char)c;
     if (signedC < 0 || signedC >= 0x100)
@@ -876,10 +905,12 @@ void fn_80131368(char *arg0) {
         isNumber = 0;
     else
         isNumber = *(unsigned short *)(*(int *)(*(int *)((char *)&lbl_802FE850 + 0x38) + 8) + signedC * 2) & 8;
+
     if (isNumber) {
         lbl_8055E04C = atoi(arg0);
         return;
     }
+
     p = lbl_802F8E60;
     i = 0;
     do {
