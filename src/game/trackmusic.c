@@ -126,6 +126,7 @@ void fn_8020F444(void) {
  
 #pragma dont_inline on
 void fn_8020F5C8(void) {
+    /* Mark all three track-music load slots as loaded (the inverse of fn_8020F5DC). */
     lbl_8055EEF6 = 1;
     lbl_8055EEF5 = 1;
     lbl_8055EEF4 = 1;
@@ -219,7 +220,7 @@ long fn_8020F6FC(void) {
 }
 #pragma dont_inline reset
 
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_8020F730(void) {
     long count = lbl_804900AC.m_count;
     long i;
@@ -240,7 +241,7 @@ void fn_8020F730(void) {
     }
     lbl_8055EEC4 = 0;
 }
-#pragma use_lmw_stmw reset
+#pragma scheduling on
 void fn_8020F950(void) {
     /* Rebuild the track-music list from the dash's scanned music table - one
        path per scanned song, as many as the list's buffer holds - and rebuild
