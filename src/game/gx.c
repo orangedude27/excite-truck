@@ -129,7 +129,7 @@ extern char lbl_804C97D6;
 extern char lbl_804C97D7;
 extern char lbl_804C97D8;
 #pragma small_data on
-extern void GXSetTevColor(int, void *);
+extern void GXSetTevColor(int, ...);
 extern unsigned long fn_802CE9FC(int, int, int, int);
 typedef struct { float x, y, z; } Vec_802D1C04;
 // 3x3 matrix times vector (MTXMultVecSR shape); src/dst may alias.
