@@ -344,8 +344,9 @@ long fn_801E7DF0(long arg0) {
     return lbl_80487CF0[arg0];
 }
 
-void fn_801E7E04(long arg0, long arg1) {
-    lbl_80487CF0[arg0] = arg1;
+/* Set the per-player-slot state at lbl_80487CF0[slot] (e.g. 0 or 3). */
+void fn_801E7E04(long slot, long value) {
+    lbl_80487CF0[slot] = value;
 }
 
 float fn_801E7E18(void) {
