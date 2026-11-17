@@ -437,6 +437,7 @@ s32 fn_801B3DC0(void* owner, u32 object, u32 key) {
 
 extern void* fn_801B4570(void*, u32);
 extern f32 lbl_8056264C;
+#pragma ppc_psq_save off
 #pragma cplusplus on
 extern "C" void fn_801B3E24(void *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, f32 farg0) {
     class Item {
@@ -452,11 +453,11 @@ extern "C" void fn_801B3E24(void *arg0, void *arg1, void *arg2, s32 arg3, s32 ar
     };
     s32 first = *(s32 *)((u8 *)arg2 + 0x20);
     u32 packed;
+    Item *object;
+    s32 selectedKey;
+    void *selected;
     void *row;
     void *item;
-    Item *object;
-    void *selected;
-    s32 selectedKey;
     f32 z;
     f32 y;
     f32 x;
@@ -485,8 +486,7 @@ extern "C" void fn_801B3E24(void *arg0, void *arg1, void *arg2, s32 arg3, s32 ar
         maximum = lbl_8056264C;
         *(volatile s32 *)((u8 *)row + 0x320) = arg3;
         *(volatile f32 *)((u8 *)row + 0x324) = lbl_8055E3C8;
-        if (farg0 * *(f32 *)((u8 *)selected + 4) < maximum)
-            maximum = farg0 * *(f32 *)((u8 *)selected + 4);
+        maximum = (maximum > farg0 * *(f32 *)((u8 *)selected + 4)) ? farg0 * *(f32 *)((u8 *)selected + 4) : maximum;
         zero = lbl_80562624;
         x = *(f32 *)arg1;
         *(volatile f32 *)((u8 *)row + 0x30C) = zero;
