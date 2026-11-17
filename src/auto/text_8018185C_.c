@@ -2385,8 +2385,9 @@ void fn_8018ADC4(void *car, f32 value) {
     *(f32 *)((u8 *)car + 0x25E8) = value;
 }
 
-void fn_8018ADCC(void *arg0, float arg1) {
-    *(float *)((unsigned char *)arg0 + 0x25EC) = arg1;
+void fn_8018ADCC(void *car, float value) {
+    /* Set the car's float tuning parameter at offset 0x25EC (one of a run of interpolated fields). */
+    *(float *)((unsigned char *)car + 0x25EC) = value;
 }
 
 /* Set field +8 of this car's 0x9C-byte record in lbl_8055E918 to value,
