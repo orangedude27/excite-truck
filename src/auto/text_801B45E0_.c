@@ -357,14 +357,12 @@ int fn_801B4B9C(int queue) {
 
 int fn_801B4BDC(int arg0);
 
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 int fn_801B4C1C(int arg0, int arg1) {
     int result = (int)fn_801B4BDC(arg0);
     int copy = arg1;
     return copy >= result;
 }
-#pragma pop
 int fn_801B4BDC(int queue) {
     /* Return the tick of the replay frame at the queue's adjusted current index (its previous/current frame): the first field of that frame in the FramePool. */
     void *state = (void *)(queue + 4);
