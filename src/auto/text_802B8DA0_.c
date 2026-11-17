@@ -789,10 +789,11 @@ void *fn_802B9C9C(void *object, s32 shouldFree) {
     return object;
 }
 
-void fn_802B9CF4(void *arg0) {
-    ((int *)arg0)[0] = 0;
-    ((int *)arg0)[2] = 0;
-    ((int *)arg0)[1] = 0;
+/* Pool element constructor: zero the three 32-bit fields of a 0x10-byte container. */
+void fn_802B9CF4(void *container) {
+    ((int *)container)[0] = 0;
+    ((int *)container)[2] = 0;
+    ((int *)container)[1] = 0;
 }
 
 #pragma push
