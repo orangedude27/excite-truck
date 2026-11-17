@@ -4140,11 +4140,12 @@ extern "C" void fn_800E9B28(void *arg0, float arg1) {
     target->vf15(arg1);
 }
 
-extern "C" void fn_800E9B74(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    *(int *)((char *)arg0 + 0x18) = arg1;
-    *(int *)((char *)arg0 + 0x1C) = arg2;
-    *(int *)((char *)arg0 + 0x20) = arg3;
-    *(int *)((char *)arg0 + 0x24) = arg4;
+extern "C" void fn_800E9B74(void *sound, int argInfo, int argValue, int argCallback, int argSize) {
+    /* Copy the four words of a sound's ambient argument (info, value, callback, byte size) into the BasicSound at +0x18. */
+    *(int *)((char *)sound + 0x18) = argInfo;
+    *(int *)((char *)sound + 0x1C) = argValue;
+    *(int *)((char *)sound + 0x20) = argCallback;
+    *(int *)((char *)sound + 0x24) = argSize;
 }
 
 /* Return nonzero if a general SoundHandle is attached to this BasicSound (its +0x08 mGeneralHandle). */
