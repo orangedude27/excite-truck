@@ -1688,35 +1688,39 @@ void fn_801FF770(void* container) {
 
 extern "C" int stricmp(const char *, const char *);
 #pragma use_lmw_stmw off
-void fn_801FF7D4(void *arg0, void *arg1) {
-    const char *name = *(const char **)arg1;
+/* Files a drone path segment under its pool name in a DroneManager's pool table:
+ * looks for the pool of that name (count at +0x4C0), opening a new one when the
+ * name is new, and appends the segment to that pool's object list.  Past 8 pools,
+ * or 16 objects in one pool, the game logs the overflow and stores it anyway. */
+void fn_801FF7D4(void *poolTable, void *segment) {
+    const char *name = *(const char **)segment;
     int i = 0;
-    char *scan = (char *)arg0;
-    char *entry;
-    while (i < *(int *)((char *)arg0 + 0x4C0)) {
-        if (stricmp(name, scan) == 0) {
-            entry = (char *)arg0 + i * 0x98;
+    DronePool *scan = (DronePool *)poolTable;
+    DronePool *pool;
+    while (i < DMGR_POOL_TABLE_COUNT(poolTable)) {
+        if (stricmp(name, (char *)scan) == 0) {
+            pool = (DronePool *)poolTable + i;
             goto found;
         }
-        scan += 0x98;
+        scan++;
         i++;
     }
-    entry = 0;
+    pool = 0;
 found:
-    if (entry == 0) {
-        if (*(int *)((char *)arg0 + 0x4C0) >= 8) {
-            fn_802E317C(lbl_8033B8EC, 8);
+    if (pool == 0) {
+        if (DMGR_POOL_TABLE_COUNT(poolTable) >= DMGR_POOL_MAX) {
+            fn_802E317C(STR_PATH_POOL_LIMIT, DMGR_POOL_MAX);
         }
-        entry = (char *)arg0 + *(int *)((char *)arg0 + 0x4C0) * 0x98;
-        fn_801FF8DC(arg0, entry, *(int *)arg1);
-        *(int *)((char *)arg0 + 0x4C0) += 1;
+        pool = (DronePool *)poolTable + DMGR_POOL_TABLE_COUNT(poolTable);
+        fn_801FF8DC(poolTable, pool, *(int *)segment);
+        DMGR_POOL_TABLE_COUNT(poolTable) += 1;
     }
-    if (*(int *)(entry + 0x90) + 1 > 0x10) {
-        fn_802E317C(lbl_8033B90C, 0x10);
+    if (pool->unusedCount + 1 > DMGR_POOL_OBJECT_MAX) {
+        fn_802E317C(STR_PATH_POOL_OBJECT_LIMIT, DMGR_POOL_OBJECT_MAX);
     }
-    int count = *(int *)(entry + 0x90);
-    *(void **)(entry + 0x10 + count * 4) = arg1;
-    *(int *)(entry + 0x90) = count + 1;
+    int count = pool->unusedCount;
+    pool->unused[count] = segment;
+    pool->unusedCount = count + 1;
 }
 extern "C" void fn_801FF8DC(void *arg0, void *dest, int src) {
     /* Initialize a named container slot: copy up to 16 chars of the name, terminate it,
