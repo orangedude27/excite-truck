@@ -915,9 +915,11 @@ extern "C" void fn_801EBF00(void) {
 #pragma pop
 extern f32 lbl_8055EBA4;
 extern f32 fn_801EC114(void);
+#define gEBDefaultValue lbl_8055EBA4
 f32 fn_801EC114(void) {
     return lbl_8055EBA4;
 }
+#undef gEBDefaultValue
 
 void fn_801EC11C(void) {
     // If the EB resource context was never loaded, run its fallback path.
