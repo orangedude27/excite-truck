@@ -1846,6 +1846,11 @@ extern "C" void fn_8012D33C(u32 *arg0, u32 *arg1) {
     arg0[12] = v12;
 }
 
+/* Readiness hook for a resource-set load request.  fn_8012CC24 tests it once the
+   request is in state 2 (LOAD_REQ_STATUS) and its stream handle (LOAD_REQ_HANDLE)
+   reports data, before closing the stream and consuming the 13-word block header
+   and entry table.  It ignores the request and always reports ready, so the
+   shipped game never blocks at that gate. */
 extern "C" u32 fn_8012D3D0(void) { return 1; }
 
 extern "C" void fn_8012D40C(s32);
