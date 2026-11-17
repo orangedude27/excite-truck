@@ -26,10 +26,20 @@ extern int fn_802E8D8C(void *, void *, int);
 extern unsigned int lbl_8034D7B0[];
 void fn_802E6B50(void) {
     #pragma scheduling invalid_target
-    memset(lbl_804FC8B0, 0, 0xC8);
-    lbl_8055FFC0 = 0;
-    lbl_8055FFC4 = 1;
-    lbl_8055FFC5 = 0;
+    #define gChunkTable   lbl_804FC8B0
+    #define gChunkCount   lbl_8055FFC0
+    #define gMemcardReady lbl_8055FFC4
+    #define gMemcardError lbl_8055FFC5
+    /* Reset memory-card save state: clear the chunk-record table and its
+       count, mark the card ready and clear the error flag. */
+    memset(gChunkTable, 0, 0xC8);
+    gChunkCount = 0;
+    gMemcardReady = 1;
+    gMemcardError = 0;
+    #undef gMemcardError
+    #undef gMemcardReady
+    #undef gChunkCount
+    #undef gChunkTable
 }
 #pragma scheduling on
 void fn_802E6B94(void) {}
