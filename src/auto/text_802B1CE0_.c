@@ -733,8 +733,9 @@ check:
 #pragma scheduling on
 #pragma push
 #pragma dont_inline on
-int fn_802B2E00(void *arg0) {
-    return ((int *)arg0)[1];
+/* Return the element count at +4 of a container (whose base pointer is at +0). */
+int fn_802B2E00(void *container) {
+    return ((int *)container)[1];
 }
 #pragma pop
 
