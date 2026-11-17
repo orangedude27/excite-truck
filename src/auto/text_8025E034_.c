@@ -1005,7 +1005,7 @@ void fn_8025FC8C(void* p, int arg1) {
     float spC, sp8, outC, out8, f29, f28, f27, f26, f25, f24;
     float tmpA, tmpB;
     unsigned int color, packed;
-    int red, green, blue;
+    int blue, green, red;
     char* item;
     if (*(unsigned char*)((char*)p + 0x25) == 0)
         return;
@@ -1039,3 +1039,4 @@ void fn_8025FC8C(void* p, int arg1) {
     fn_80231220(*(int*)(item + 0x24), packed,
         outC, out8, f25, f24, f26, f27, f28, f29);
 }
+#pragma scheduling on
