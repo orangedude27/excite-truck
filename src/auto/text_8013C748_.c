@@ -80,6 +80,9 @@ done:
 #pragma scheduling on
 #pragma dont_inline off
 
+/* Wrapper around the car-class registry lookup by class type (fn_8013C7D0):
+ * the class type arrives in r3 and the matching 12-byte entry pointer leaves
+ * in r3, so this is a plain tail call. */
 void *fn_8013C800(int classType) {
     return fn_8013C7D0(classType);
 }
