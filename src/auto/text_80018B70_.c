@@ -268,7 +268,8 @@ char fn_80019714(void) {
 }
 
 void fn_800196FC(void) {
-    lbl_8055D588 = 1;
+    /* Request a quit/reset by setting the pending-reset flag. */
+    sResetRequested = 1;
 }
 
 void fn_800196F0(void) {
