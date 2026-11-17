@@ -1505,6 +1505,7 @@ s32 fn_80179658(long arg0) {
 
 extern char lbl_8055E45D;
 char fn_801796B4(void) {
+    /* Return the cached global mode flag byte (a per-frame snapshot of lbl_8055E45C) used to switch controller update mode. */
     return lbl_8055E45D;
 }
 
