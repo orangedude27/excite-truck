@@ -613,8 +613,11 @@ void fn_801DCEF4(void) {
 }
 
 extern void *lbl_8055E9A8;
+/* Reset the active-entry count, emptying the pending value-accumulation queue. */
 void fn_801DCF00(void) {
-    lbl_8055E9A8 = 0;
+    #define sActiveEntryCount lbl_8055E9A8
+    sActiveEntryCount = 0;
+    #undef sActiveEntryCount
 }
 
 #pragma scheduling invalid_target
