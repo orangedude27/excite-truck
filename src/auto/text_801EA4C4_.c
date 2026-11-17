@@ -78,7 +78,7 @@ void fn_801EA56C(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801EA59C(s32 arg0, s32 arg1, void *arg2) {
     u8 *entry;
     s32 version;
