@@ -7,6 +7,8 @@ extern char lbl_8055E0F8[4];
 void fn_8000D838(void *arg0);
 
 void fn_8013903C(void) {
+    /* Static initializer: register the destructor record at lbl_8055E0F8 with the
+       global static-destructor chain. */
     fn_8000D838(lbl_8055E0F8);
 }
 
