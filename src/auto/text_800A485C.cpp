@@ -5066,8 +5066,10 @@ check_end:
 extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5);
 extern "C" void fn_800B78F4(void *arg0, void *arg1);
 extern "C" s32 fn_800ABC60(s32, s32, s32, s32, s32, s32);
-extern "C" void fn_800ACA44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    ((s32 (*)(s32, s32, s32, s32, s32, s32))fn_800ABC60)(arg0, arg1, arg2, arg3, 0, arg4);
+/* Resolve a VFS path into the caller's parser/state blocks via fn_800ABC60,
+   forcing the short-path flag to 0 and forwarding the caller's last flag. */
+extern "C" void fn_800ACA44(s32 parserOut, s32 stateOut, s32 volume, s32 path, s32 shortPathFlag) {
+    ((s32 (*)(s32, s32, s32, s32, s32, s32))fn_800ABC60)(parserOut, stateOut, volume, path, 0, shortPathFlag);
 }
 
 typedef s32 (*PathResolveCall)(s32, s32, s32, s32, s32, s32);
@@ -10728,7 +10730,10 @@ block_25:
         return result;
     }
     flags = *(u16 *)((u8 *)arg0 + 0x1F8C);
-    return (flags & 8) ? -((flags >> 1) & 1) & 0xB : 9;
+    if (flags & 8) goto use_flags;
+    return 9;
+use_flags:
+    return -((flags >> 1) & 1) & 0xB;
 }
 
 struct CacheKey { u32 flag; s32 key; };
