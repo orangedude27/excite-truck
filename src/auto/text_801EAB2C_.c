@@ -139,8 +139,9 @@ void* __dt__Q28PSSystem7SeqHeapFv_801EACF8(void* this_, s32 flag) {
     return this_;
 }
 
-void fn_801EAD5C(void* arg0) {
-    fn_802C744C(*(s32*)((u8*)arg0 + 0x3C), (u8*)arg0 + 4);
+/* Draw the model handle stored at +0x3C of the object using the transform matrix embedded at +4. */
+void fn_801EAD5C(void* obj) {
+    fn_802C744C(*(s32*)((u8*)obj + 0x3C), (u8*)obj + 4);
 }
 
 #pragma dont_inline on
