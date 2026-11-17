@@ -185,6 +185,7 @@ BOOL __OSUnlockSramEx(BOOL save) {
     return UnlockSram(save, sizeof(OSSram));
 }
 
+/* Return whether the cached SRAM copy is fully written back to SRAM (in sync). */
 BOOL __OSSyncSram(void) {
     return Scb.sync;
 }
