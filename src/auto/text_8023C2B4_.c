@@ -274,6 +274,7 @@ void *fn_8023C800(register void *obj, register s32 value, register s32 firstItem
 }
 #pragma pop
 
+/* Initialise the sound-sequence heap from the "audio.lyt" layout resource. */
 void fn_8023C94C(void) {
     fn_8023C55C(lbl_80341430);
 }
