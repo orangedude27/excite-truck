@@ -455,9 +455,7 @@ long fn_801ECB60(void *vehicleRender) {
 #pragma pop
 float fn_802C88D4(void *);
 float fn_801E88F0(long);
-#pragma push
-#pragma processor 750
-#pragma scheduling 7400
+#pragma scheduling on
 void fn_801ECB80(void *arg0) {
     float value;
     long *count;
@@ -484,8 +482,6 @@ void fn_801ECB80(void *arg0) {
         *(long *)((char *)arg0 + 0x3F8) = n > 1 ? 1 : n;
     }
 }
-
-#pragma dont_inline on
 /* Apply the vehicle owner's draw scale, scaled by the saved global draw scale,
  * through fn_802C99E8; vehicleRender+0x3C points to that owner. */
 void fn_801ECC70(void *vehicleRender) {
