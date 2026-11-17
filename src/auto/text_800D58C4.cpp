@@ -410,6 +410,7 @@ extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const 
     }
 }
 #pragma unroll reset
+#pragma use_lmw_stmw reset
 #pragma optimize_for_size reset
 
 /* Return nonzero if vertex colors need modulation: alpha is not fully opaque, or
