@@ -114,6 +114,7 @@ void fn_801E78D8(long scene) {
 }
 
 #pragma dont_inline on
+/* Reset the global sound-group count to zero during scene init, clearing all registered sound groups. */
 void fn_801E797C(void) { fn_80206464(0); }
 
 #pragma scheduling invalid_target
