@@ -1402,8 +1402,9 @@ void fn_802D6C4C(f32 arg0) {
 }
 
 extern float lbl_804CA308[];
-void fn_802D6C54(int arg0, float arg1) {
-    lbl_804CA308[arg0] = arg1;
+/* Sets element @p index of the surf value table at lbl_804CA308 to @p value. */
+void fn_802D6C54(int index, float value) {
+    lbl_804CA308[index] = value;
 }
 
 void fn_802D6C68(void) {
