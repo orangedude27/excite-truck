@@ -699,8 +699,10 @@ void *fn_80138B4C(void *res, void *prev) {
     return result;
 }
 
-void fn_80138BA0(void *arg0, void *arg1) {
-    if (arg0 != arg1) {
+void fn_80138BA0(void *resource, void *token) {
+    /* Recompute the line node layout (fn_801384A0) only when the two values differ;
+       both are forwarded unchanged in registers to that tail call. */
+    if (resource != token) {
         fn_801384A0();
     }
 }
