@@ -7,6 +7,7 @@ extern char lbl_8055E0D8[4];
 void fn_8000D838(void *arg0);
 
 void fn_80137D50(void) {
+    // Static constructor listed in .ctors$00: register the destructor record lbl_8055E0D8.
     fn_8000D838(lbl_8055E0D8);
 }
 
