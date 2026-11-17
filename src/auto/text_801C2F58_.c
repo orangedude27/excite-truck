@@ -365,9 +365,11 @@ void *fn_8001285C(s32);
 #define getContestEntry       fn_8001285C
 extern f32 lbl_80562990;
 extern f32 lbl_8055E7E4;
+/* Return the current event/contest elapsed time: the stored time base (lbl_8055E7E4)
+ * plus the current game time (lbl_8055E3C8). */
 f32 fn_801C3B6C(void) {
-    register f32 r_a = lbl_8055E3C8;
-    return lbl_8055E7E4 + r_a;
+    register f32 gameTime = lbl_8055E3C8;
+    return lbl_8055E7E4 + gameTime;
 }
 
 #pragma dont_inline fn_801C34CC
