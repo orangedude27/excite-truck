@@ -907,23 +907,25 @@ struct BinkMovieInfo {
     char name[0x40];    /* 0x08, "video/<name>.bik" */
     u8 flags;           /* 0x48 */
 };
-s32 fn_802E11A4(const char *arg0, u8 arg1) {
-    struct Movie { char pad[4]; s32 field4; char buf[0x40]; u8 field48; };
+/* Open a Bink movie: build "video/<name>.bik" in the movie object, reset its
+ * handle, set its mode byte, and pass it to fn_802E0EAC to actually open it.
+ * Returns the movie system state saved on entry. */
+s32 fn_802E11A4(const char *name, u8 mode) {
     s32 saved;
-    struct Movie *object;
+    struct BinkMovieInfo *object;
     char *dot;
     const char *suffix;
     int remaining;
     char *dest;
     saved = ((s32 (*)(void))fn_802E0BA8)();
-    object = (struct Movie *)fn_802E0BA4();
-    object->field4 = 0;
-    object->field48 = arg1;
-    fn_801345D8(object->buf, 0x40, lbl_8034CBC4, arg0);
-    dot = fn_80029004(object->buf, 0x2e);
+    object = (struct BinkMovieInfo *)fn_802E0BA4();
+    object->binkHandle = 0;
+    object->flags = mode;
+    fn_801345D8(object->name, 0x40, lbl_8034CBC4, name);
+    dot = fn_80029004(object->name, 0x2e);
     if (dot != 0)
         *dot = 0;
-    dest = object->buf;
+    dest = object->name;
     remaining = 0x40;
     suffix = lbl_8055D168;
     while ((s8)*dest) {
