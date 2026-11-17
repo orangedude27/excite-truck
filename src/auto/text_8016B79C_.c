@@ -3213,7 +3213,9 @@ void fn_80170DA8(void *arg0, void *arg1) {
     }
 }
 #pragma use_lmw_stmw on
-s32 fn_80170E78(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x1ec); }
+/* Read the car index/id at +0x1EC of the given vehicle object (sibling getter
+ * of the TObj4C accessor family fn_80170E80/88/90). */
+s32 fn_80170E78(void *vehicle) { return *(s32 *)((u8 *)vehicle + 0x1ec); }
 
 f32 fn_80170E80(f32 *ptr) {
     /* Return the float value pointed to by ptr (identity accessor kept as a separate function). */
