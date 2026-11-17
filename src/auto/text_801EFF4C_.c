@@ -749,14 +749,14 @@ void fn_80015B20(void *, void *, void *);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     int flags = *(int *)((char *)arg1 + 0x60);
     float matrix[9], matrix2[9];
     union { Vec v; unsigned int w[3]; } point;
     Vec angles, angles2;
     float *m = (float *)arg2;
-    float x,y,z, a,b,c,d,e,f,g,h,i;
+    float z,x,y, a,b,c,d,e,f,g,h,i;
     unsigned int w0,w1,w2,w3,w4,w5,w6,w7,w8;
     int mode;
     if (flags & 8) {
@@ -768,9 +768,7 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     else *(int *)((char *)arg0 + 4) = 0;
     if (*(float *)((char *)arg1 + 0x30) > lbl_80562F30)
         *(int *)((char *)arg0 + 4) |= 0x10;
-    point.w[0] = *(unsigned int *)arg1;
-    point.w[1] = *(unsigned int *)((char *)arg1 + 4);
-    point.w[2] = *(unsigned int *)((char *)arg1 + 8);
+    point.v = *(Vec *)arg1;
     x = fn_801F159C((void **)arg0);
     y = point.v.y;
     z = *(float *)((char *)arg1 + 0x34);
