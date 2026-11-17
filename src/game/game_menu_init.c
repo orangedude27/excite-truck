@@ -241,6 +241,7 @@ void fn_80004B14(void) DECOMP_DONT_INLINE {
 }
 
 void fn_800052F8(void) DECOMP_DONT_INLINE {
+    /* Start the "Direct To Track" menu flow by looking up its name (lbl_802FB0A8) in the menu table. */
     fn_80005158(lbl_802FB0A8);
 }
 
