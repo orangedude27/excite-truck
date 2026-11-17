@@ -1028,6 +1028,7 @@ extern "C" s32 fn_8013DE7C(TObj60 *container, const char *name) {
 
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
     f32 *from = (f32 *)arg1;
     f32 *to = (f32 *)arg2;
@@ -2039,7 +2040,7 @@ extern f32 fn_8013CB3C(void);
 extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
     struct VString { virtual void d0(); virtual void d1(); virtual u8 *get(const char *); };
     u8 *base = lbl_8032C530;
-    f32 temp_f1 = fn_8001DAE8((void *)((s32 *)arg2 + 0x36)) - *(f32 *)((u8 *)arg2 + 0xDC);
+    f32 temp_f1 = fn_8001DAE8((u8 *)arg2 + 0xD8) - *(f32 *)((u8 *)arg2 + 0xDC);
     s32 var_r0 = 0;
     void *temp_r28;
     void *temp_r29;
@@ -2112,10 +2113,10 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
                 f32 v = (lbl_805614AC < ratio) ? ratio : lbl_805614AC;
                 v = (v > lbl_805614A4) ? v : lbl_805614A4;
                 fn_80147BD0((s32)sp30, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)arg0 + 0xAC), v);
-                          }
-          }
-      }
-  }
+            }
+        }
+    }
+}
   #pragma opt_propagation reset
   #pragma pop
   extern "C" void fn_80140A6C(void *arg0, int arg1) {
