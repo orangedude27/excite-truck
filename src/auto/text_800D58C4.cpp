@@ -910,13 +910,12 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_800D6EEC(void* arg0) {
-    extern float lbl_80560E80;
     extern char lbl_8031F868[];
     volatile u8* p = (volatile u8*)arg0;
+    register void* vtable = lbl_8031F868;
     register u32 zero = 0;
+    f32 f = 0.0f;
     register void* list = (void*)(p + 8);
-    f32 f = lbl_80560E80;
-    void* vtable = lbl_8031F868;
     *(volatile u32*)(p + 8) = zero;
     *(volatile u32*)(p + 0xC) = zero;
     *(void* volatile*)p = vtable;
@@ -2364,10 +2363,10 @@ struct TevStageDefault {
     // nw4r::lyt::TevStage copy assignment: copy all 16 byte-sized TEV
     // register fields from other into this stage.
     TevStageDefault &operator=(const TevStageDefault &other) {
-        b[0] = other.b[0]; b[1] = other.b[1]; b[2] = other.b[2]; b[3] = other.b[3];
+        b[0] = 0xFF; b[1] = 4; b[2] = 0xFF; b[3] = 0;
         b[4] = other.b[4]; b[5] = other.b[5]; b[6] = other.b[6]; b[7] = other.b[7];
         b[8] = other.b[8]; b[9] = other.b[9]; b[10] = other.b[10]; b[11] = other.b[11];
-        b[12] = other.b[12]; b[13] = other.b[13]; b[14] = other.b[14]; b[15] = other.b[15];
+        b[12] = 0; b[13] = 0; b[14] = 0; b[15] = 0;
         return *this;
     }
 };
@@ -2514,16 +2513,19 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1
         return;
     }
     if (arg1 >= 0x20) return;
-    s32 value = arg2 & ~(arg2 >> 31);
-    s32 byte = 0xFF;
-    if (value <= 0xFF) byte = value;
-    index = (u32)(arg1 - 0x10) >> 2;
-    component = (arg1 - 0x10) & 3;
-    switch (component) {
-    case 0: *((u8 *)arg0 + index * 4 + 0x3C) = byte; return;
-    case 1: *((u8 *)arg0 + index * 4 + 0x3D) = byte; return;
-    case 2: *((u8 *)arg0 + index * 4 + 0x3E) = byte; return;
-    case 3: *((u8 *)arg0 + index * 4 + 0x3F) = byte; return;
+    {
+        s32 adjusted = arg1 - 0x10;
+        s32 value = arg2 & ~(arg2 >> 31);
+        s32 byte = 0xFF;
+        if (value <= 0xFF) byte = value;
+        index = (u32)adjusted >> 2;
+        component = adjusted & 3;
+        switch (component) {
+        case 0: *((u8 *)arg0 + index * 4 + 0x3C) = byte; return;
+        case 1: *((u8 *)arg0 + index * 4 + 0x3D) = byte; return;
+        case 2: *((u8 *)arg0 + index * 4 + 0x3E) = byte; return;
+        case 3: *((u8 *)arg0 + index * 4 + 0x3F) = byte; return;
+        }
     }
 }
 
