@@ -609,8 +609,21 @@ extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
 
 #pragma scheduling on
 extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
-    register f32 v = value > lbl_805610D4 ? lbl_805610D4 : (value < lbl_805610D8 ? lbl_805610D8 : value);
-    return *(f32 *)(lbl_802F5210 + ((s32)(lbl_805610DC * v) + 0x388) * 4);
+    f32 v;
+    s32 index;
+    u8 *table;
+
+    if (value > 6.0f) {
+        v = 6.0f;
+    } else if (value < lbl_805610D8) {
+        v = lbl_805610D8;
+    } else {
+        v = value;
+    }
+
+    index = (s32)(lbl_805610DC * v);
+    table = lbl_802F5210;
+    return *(f32 *)(table + (index + 0x388) * 4);
 }
 #pragma scheduling off
 extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
