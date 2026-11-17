@@ -587,8 +587,12 @@ int fn_8024CEF0(void) {
     return ((int (*)())fn_80215214)(lbl_80343FF0, lbl_80343FC4, 0);
 }
 #pragma scheduling invalid_target
-int fn_8024CF38(int *arg0) {
-    fn_8024CC54(arg0, fn_8024CEF0, 1);
+int fn_8024CF38(int *selectedSlot) {
+    /* "New profile" action of the player-select menu: run the slot-select
+     * dialog with the overwrite-confirmation prompt (fn_8024CEF0, "Do you
+     * really want overwrite this profile?") and store the chosen slot in
+     * *selectedSlot (0 = cancelled). */
+    fn_8024CC54(selectedSlot, fn_8024CEF0, 1);
 }
 #pragma pop
 int fn_8024CF48(int *arg0) {
