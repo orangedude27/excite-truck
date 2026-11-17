@@ -11,6 +11,9 @@
 
 extern f32 lbl_80560C48;
 extern f32 lbl_80560C4C;
+#pragma push
+#pragma paired on
+#pragma paired_single on
 extern int lbl_8055D9B8;
 extern char lbl_8037D808[];
 extern char lbl_8037D818[];
