@@ -66,8 +66,9 @@ void fn_80129458(void) {
 #pragma pop
 void fn_801294FC(s32 arg0, s32 arg1);
 #pragma dont_inline fn_801294FC
-void fn_801294FC(s32 arg0, s32 arg1) {
-    fn_802E4800(arg0 | ((arg1 << 12) & 0xF000));
+/* Enqueue an input shot: the low 12 bits are the action/trigger id, the upper 4 bits the controller index. */
+void fn_801294FC(s32 action, s32 controllerIndex) {
+    fn_802E4800(action | ((controllerIndex << 12) & 0xF000));
 }
 
 void fn_80129508(void *arg0, s32 arg1, void *arg2) {
