@@ -1789,6 +1789,7 @@ extern "C" void fn_801D6BD0(void *owner) {
 
 int fn_801D6C28(void) {
     extern char lbl_80338868[];
+    /* Return the address of the "SoundEffect_ASE" name string, used to register and identify that action-sequence element class. */
     return (int)lbl_80338868;
 }
 
