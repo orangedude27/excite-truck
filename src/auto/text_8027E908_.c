@@ -3541,8 +3541,9 @@ extern "C" int fn_80286950(ebi::title::TPlaneSub* plane) {
     int value17 = plane->v17();
     return value17 <= plane->v8();
 }
-extern "C" void fn_802869B8(void* arg0) {
-    ((ebi::title::TPlaneObj*)arg0)->m_sub->v17();
+extern "C" void fn_802869B8(void* plane) {
+    /* Forward virtual v17() to this title plane's sub-object (m_sub at +0x1C). */
+    ((ebi::title::TPlaneObj*)plane)->m_sub->v17();
 }
 #pragma cplusplus off
 extern float lbl_80558DC4[];
