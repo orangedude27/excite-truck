@@ -2,7 +2,6 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int lbl_802ED860[];
-#pragma scheduling invalid_target
 void fn_80022064(void *arg0, void *arg1, void **arg2, int index, void *arg4, unsigned int size) {
     unsigned char *node = (unsigned char *)arg0;
     unsigned int entry = lbl_802ED860[index];
