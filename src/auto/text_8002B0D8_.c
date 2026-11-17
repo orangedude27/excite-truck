@@ -1674,8 +1674,8 @@ double fn_8002F208(void) {
     return lbl_80560AE0 * fn_8002EFB8();
 }
 
-void fn_8002F230(void) {
-
+/* MSL nan(): a stub that ignores the tag and just returns (the caller leaves a quiet NaN in f1). */
+double fn_8002F230(const char *tagp) {
 }
 
 extern double lbl_80560600, lbl_80560608, lbl_80560610, lbl_80560670;
