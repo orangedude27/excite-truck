@@ -698,36 +698,38 @@ extern "C" s32 fn_8016C5F0(void) {
         virtual void m2();
         virtual const char *search(const char *);
     };
+    /* Count consecutive ring sets (set_0_, set_1_, ...) whose "name" field appears in a parsed ring_set source.
+     * Walk set indices from zero, stopping at the first one with no matching entry. */
     Manager *manager = *(Manager **)((char *)fn_8000AC38() + 0x20);
-    void *resource = fn_80204EA0(lbl_803307C8);
-    s32 count = 0;
-    char buffer[0x1E];
-    if (manager->probe(resource) != 0) {
-        s32 found;
-        SourceList *list;
-        manager->release(resource);
-        list = (SourceList *)fn_80131810();
-        if (list != 0) {
+    void *keyResource = fn_80204EA0(lbl_803307C8);
+    s32 setCount = 0;
+    char setPrefix[0x1E];
+    if (manager->probe(keyResource) != 0) {
+        s32 foundSet;
+        SourceList *sourceList;
+        manager->release(keyResource);
+        sourceList = (SourceList *)fn_80131810();
+        if (sourceList != 0) {
             for (;;) {
-                s32 i;
-                found = 0;
-                fn_801345D8(buffer, 0x1E, lbl_8055A218, count);
-                for (i = 0; list->at(i) != 0; i++) {
-                    if (strcmp(((Entry *)list->at(i))->name(), lbl_803307D8) == 0 &&
-                        strstr(((Entry *)list->at(i))->search(lbl_8055A220), buffer) != 0) {
-                        found = 1;
-                        count++;
+                s32 entryIndex;
+                foundSet = 0;
+                fn_801345D8(setPrefix, 0x1E, lbl_8055A218, setCount);
+                for (entryIndex = 0; sourceList->at(entryIndex) != 0; entryIndex++) {
+                    if (strcmp(((Entry *)sourceList->at(entryIndex))->name(), lbl_803307D8) == 0 &&
+                        strstr(((Entry *)sourceList->at(entryIndex))->search(lbl_8055A220), setPrefix) != 0) {
+                        foundSet = 1;
+                        setCount++;
                         break;
                     }
                 }
-                if (found == 0) {
+                if (foundSet == 0) {
                     break;
                 }
             }
-            fn_80131818((s32)list);
+            fn_80131818((s32)sourceList);
         }
     }
-    return count;
+    return setCount;
 }
 #pragma cplusplus reset
 
