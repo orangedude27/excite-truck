@@ -469,8 +469,8 @@ void fn_802CF104(void) {
 }
 
 void fn_802CF10C(void) {
-    unsigned char* st = lbl_804C5710;
-    int* fb = lbl_804C9760;
+    int* fb;
+    unsigned char* st;
     int i;
     int j;
     fn_802CEF90();
@@ -482,12 +482,14 @@ void fn_802CF10C(void) {
     if (lbl_8055FD4C < 5) {
         return;
     }
+    st = lbl_804C5710;
     if (lbl_8055FD50 == 0 && st[1] == 0) {
         return;
     }
     if (st[0] != 0) {
         int* sti = (int*)st;
         int fb1;
+        fb = lbl_804C9760;
         st[0] = 0;
         DCInvalidateRange((void*)fb[1], fb[2] * fb[3] * 2);
         fb1 = fb[1];
@@ -502,6 +504,7 @@ void fn_802CF10C(void) {
     } else if (lbl_8055FD4C != 0) {
         return;
     }
+    fb = lbl_804C9760;
     DCInvalidateRange((void*)fb[1], fb[2] * fb[3] * 2);
     if (lbl_8055FD50 != 0) {
         int r5 = ((unsigned)lbl_8055FD4C >> 2) & 1;
@@ -1375,13 +1378,10 @@ int fn_802D0514(void *source) {
     return next;
 }
 
+#pragma use_lmw_stmw off
 void fn_802D0610(int arg0) {
-    int *dst32 = (int *)lbl_804C5690;
     int *rec32;
-    unsigned char *dst8;
     unsigned char *rec8;
-    unsigned char *aux = (unsigned char *)&lbl_804C97D0;
-    int i;
     float tmp[12];
 
     if (arg0 == lbl_8055FD8C) {
@@ -1389,63 +1389,47 @@ void fn_802D0610(int arg0) {
     }
     if (arg0 != 0) {
         rec32 = (int *)((char *)lbl_8055FDB0 + (arg0 - 1) * 0x4C);
-        dst8 = (unsigned char *)lbl_804C5690;
         rec8 = (unsigned char *)rec32;
-        dst32[0] = rec32[0];
-        dst32[1] = rec32[1];
-        dst32[2] = rec32[2];
-        dst32[3] = rec32[3];
-        dst32[4] = rec32[4];
-        dst32[5] = rec32[5];
-        dst32[6] = rec32[6];
-        dst32[7] = rec32[7];
-        dst32[8] = rec32[8];
-        dst32[9] = rec32[9];
-        dst32[10] = rec32[10];
-        dst32[11] = rec32[11];
+        ((int *)lbl_804C5690)[0] = rec32[0]; ((int *)lbl_804C5690)[1] = rec32[1];
+        ((int *)lbl_804C5690)[2] = rec32[2]; ((int *)lbl_804C5690)[3] = rec32[3];
+        ((int *)lbl_804C5690)[4] = rec32[4]; ((int *)lbl_804C5690)[5] = rec32[5];
+        ((int *)lbl_804C5690)[6] = rec32[6]; ((int *)lbl_804C5690)[7] = rec32[7];
+        ((int *)lbl_804C5690)[8] = rec32[8]; ((int *)lbl_804C5690)[9] = rec32[9];
+        ((int *)lbl_804C5690)[10] = rec32[10]; ((int *)lbl_804C5690)[11] = rec32[11];
         lbl_8055FD70 = 1;
-        aux[0] = rec8[0x30];
-        aux[1] = rec8[0x31];
-        aux[2] = rec8[0x32];
-        aux[3] = rec8[0x33];
-        aux[4] = rec8[0x34];
-        aux[5] = rec8[0x35];
-        aux[6] = rec8[0x36];
-        aux[7] = rec8[0x37];
-        aux[8] = rec8[0x38];
-        aux[9] = dst8[0x30];
-        aux[10] = dst8[0x31];
-        aux[11] = dst8[0x32];
-        aux[12] = rec8[0x0C];
-        aux[13] = rec8[0x0D];
-        aux[14] = rec8[0x0E];
-        aux[15] = rec8[0x0F];
-        aux[16] = rec8[0x10];
-        aux[17] = rec8[0x11];
-        aux[18] = rec8[0x12];
-        aux[19] = rec8[0x13];
-        aux[20] = rec8[0x14];
-        *(int *)(aux + 12) = *(int *)(rec8 + 12);
-        *(int *)(aux + 16) = *(int *)(rec8 + 16);
-        *(int *)(aux + 20) = *(int *)(rec8 + 20);
-        *(float *)(aux + 24) = *(float *)(rec8 + 24);
-        aux[92] = 1;
+        ((unsigned char *)&lbl_804C97D0)[0] = rec8[0x30];
+        ((unsigned char *)&lbl_804C97D0)[1] = rec8[0x31];
+        ((unsigned char *)&lbl_804C97D0)[2] = rec8[0x32];
+        ((unsigned char *)&lbl_804C97D0)[3] = rec8[0x33];
+        ((unsigned char *)&lbl_804C97D0)[4] = rec8[0x34];
+        ((unsigned char *)&lbl_804C97D0)[5] = rec8[0x35];
+        ((unsigned char *)&lbl_804C97D0)[6] = rec8[0x36];
+        ((unsigned char *)&lbl_804C97D0)[7] = rec8[0x37];
+        ((unsigned char *)&lbl_804C97D0)[8] = rec8[0x38];
+        *(int *)((char *)&lbl_804C97D0 + 0x0c) = *(int *)(rec8 + 0x3c);
+        *(int *)((char *)&lbl_804C97D0 + 0x10) = *(int *)(rec8 + 0x40);
+        *(int *)((char *)&lbl_804C97D0 + 0x14) = *(int *)(rec8 + 0x44);
+        *(float *)((char *)&lbl_804C97D0 + 0x18) = *(float *)(rec8 + 0x48);
+        ((unsigned char *)&lbl_804C97D0)[0x5c] = 1;
     } else {
-        tmp[0] = lbl_80564F8C;
-        tmp[1] = lbl_80564F88;
-        tmp[2] = lbl_80564F88;
-        tmp[3] = lbl_80564F88;
-        tmp[4] = lbl_80564F8C;
-        tmp[5] = lbl_80564F88;
-        tmp[6] = lbl_80564F88;
-        tmp[7] = lbl_80564F88;
-        tmp[8] = lbl_80564F8C;
-        tmp[9] = lbl_80564F88;
-        tmp[10] = lbl_80564F88;
-        tmp[11] = lbl_80564F88;
-        for (i = 0; i < 12; i++) {
-            dst32[i] = ((int *)tmp)[i];
-        }
+        tmp[0] = lbl_80564F8C; tmp[1] = lbl_80564F88;
+        tmp[2] = lbl_80564F88; tmp[3] = lbl_80564F88;
+        tmp[4] = lbl_80564F8C; tmp[5] = lbl_80564F88;
+        tmp[6] = lbl_80564F88; tmp[7] = lbl_80564F88;
+        tmp[8] = lbl_80564F8C; tmp[9] = lbl_80564F88;
+        tmp[10] = lbl_80564F88; tmp[11] = lbl_80564F88;
+        ((int *)lbl_804C5690)[0] = ((int *)tmp)[0];
+        ((int *)lbl_804C5690)[1] = ((int *)tmp)[1];
+        ((int *)lbl_804C5690)[2] = ((int *)tmp)[2];
+        ((int *)lbl_804C5690)[3] = ((int *)tmp)[3];
+        ((int *)lbl_804C5690)[4] = ((int *)tmp)[4];
+        ((int *)lbl_804C5690)[5] = ((int *)tmp)[5];
+        ((int *)lbl_804C5690)[6] = ((int *)tmp)[6];
+        ((int *)lbl_804C5690)[7] = ((int *)tmp)[7];
+        ((int *)lbl_804C5690)[8] = ((int *)tmp)[8];
+        ((int *)lbl_804C5690)[9] = ((int *)tmp)[9];
+        ((int *)lbl_804C5690)[10] = ((int *)tmp)[10];
+        ((int *)lbl_804C5690)[11] = ((int *)tmp)[11];
         lbl_8055FD70 = 1;
     }
     lbl_8055FD8C = arg0;
