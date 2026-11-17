@@ -13483,8 +13483,10 @@ extern "C" void fn_800A68DC(s32);
 extern "C" s32 lbl_80559248;
 extern "C" u32 lbl_8055DD68;
 extern "C" u8 lbl_80407300[];
-extern "C" s32 fn_800BB4B0(s32 a,s32 b,s32 c,s32 d) {
-    return fn_800BB4E0(a,b,c,d,0,0);
+/* Synchronous SD-card read: read "length" bytes at byte "offset" from the
+ * opened "device" into "buffer", with no callback so the transfer is waited on. */
+extern "C" s32 fn_800BB4B0(s32 device, s32 offset, s32 buffer, s32 length) {
+    return fn_800BB4E0(device, offset, buffer, length, 0, 0);
 }
 
 extern "C" s32 lbl_8055DD6C;
