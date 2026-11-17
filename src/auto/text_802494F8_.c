@@ -150,10 +150,30 @@ void fn_80249744(void) {
 #pragma push
 #pragma dont_inline on
 s32 fn_8024974C(s32 arg0, s32 arg1, s32 arg2, int arg3) {
+    extern void *fn_801284F8(int, void *);
+    extern char lbl_8055BF38[];
+    extern s32 lbl_8055BF10, lbl_8055BF14;
+    extern void fn_801332D0(s32, s32, s32 *);
+    extern void fn_8027BCD0(void *);
+    void *block;
+
     if (arg3 != 0 && fn_802411D4() == 0) {
         return 0;
     }
     lbl_8055F290 = (unsigned char)arg3;
+    block = fn_801284F8(0xC0C, lbl_8055BF38);
+    if (block != 0) {
+        *(void **)block = (char *)block + 0xC;
+        *(int *)((char *)block + 8) = 0x80;
+        *(int *)((char *)block + 4) = 0;
+        lbl_8055F28C = block;
+        fn_8027BCD0(block);
+    }
+    *(int *)arg0 = -1;
+    *(int *)arg1 = 5;
+    *(int *)arg2 = 0;
+    fn_801332D0(0, lbl_8055BF10, (s32 *)arg1);
+    fn_801332D0(0, lbl_8055BF14, (s32 *)arg0);
     return 0;
 }
 #pragma pop
@@ -722,11 +742,10 @@ static inline s32 findEntry8024B070(s32 **arg1, s32 *arg0, s32 n) {
     return -1;
 }
 
-#pragma scheduling reset
+#pragma scheduling on
 u8 fn_8024B070(s32 *arg0, s32 **arg1) {
     s32 sp8;
-    s32 n = *(s32 *)((u8 *)arg1 + 4);
-    s32 i = findEntry8024B070(arg1, arg0, n);
+    s32 i = findEntry8024B070(arg1, arg0, *(s32 *)((u8 *)arg1 + 4));
     if (i >= 0) {
         sp8 = *(s32 *)((u8 *)*arg1 + i * 0x18 + 0xC);
     } else {
@@ -1206,30 +1225,33 @@ s32 fn_8024B9EC(void *selector) {
     return *(s32 *)(*(char **)((char *)selector + 0x10) + *(s32 *)((char *)selector + 0x11C) * 8);
 }
 
-void fn_8024BA00(void *arg0) {
-    s32 count;
-    s32 index;
-    s32 sum;
-    s32 value;
-    s32 next;
-    void *obj;
-    s32 item;
-    s32 *items;
-    count = *(s32 *)((char *)arg0 + 0x14);
-    index = *(s32 *)((char *)arg0 + 0x11C);
-    sum = count + index;
-    value = *(s32 *)((char *)arg0 + 0x120);
-    next = (sum - 1) % count;
-    *(s32 volatile *)((char *)arg0 + 0x11C) = next;
-    obj = *(void * volatile *)((char *)arg0 + 0x124);
-    item = *(*(s32 **)((char *)arg0 + 0x10) + next * 2 + 1);
-    ((void (*)(void *, s32, s32))*(void **)((char *)*(void **)((char *)obj + 0xC) + 0x30))(obj, value, item);
-    index = *(s32 *)((char *)arg0 + 0x11C);
-    items = *(s32 **)((char *)arg0 + 0x10);
-    fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70, items[index * 2 + 1], (const char *)&lbl_8055BFF8);
+#pragma cplusplus on
+extern "C" void fn_8024BA00(void *arg0) {
+    class Base {
+    public:
+        char pad[0xC];
+    };
+    class Dummy : public Base {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void select(s32, s32);
+    };
+    s32 count = *(s32 *)((char *)arg0 + 0x14);
+    s32 next = (count + *(s32 *)((char *)arg0 + 0x11C) - 1) % count;
+    *(s32 *)((char *)arg0 + 0x11C) = next;
+    (*(Dummy **)((char *)arg0 + 0x124))->select(*(s32 *)((char *)arg0 + 0x120), (*(s32 **)((char *)arg0 + 0x10))[next * 2 + 1]);
+    fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70, (*(s32 **)((char *)arg0 + 0x10))[*(s32 *)((char *)arg0 + 0x11C) * 2 + 1], (const char *)&lbl_8055BFF8);
 }
-
-#pragma scheduling invalid_target
+#pragma cplusplus off
 void fn_8024BAA0(void *arg0) {
     int plus1 = *(int *)((char *)arg0 + 0x11C) + 1;
     *(int *)((char *)arg0 + 0x11C) = plus1 % *(int *)((char *)arg0 + 0x14);
