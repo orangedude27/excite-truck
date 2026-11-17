@@ -164,6 +164,7 @@ s32 fn_802E499C(u16 *sequence) {
 #undef inputHistoryBuffer
 }
 #pragma pop
+/* Return the high nibble (bits 12-15) of the cached current-input word. */
 s32 fn_802E4A10(void) { return (lbl_8055FF5A >> 12) & 0xF; }
 
 extern u8 lbl_804FC458[];
