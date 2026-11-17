@@ -7,6 +7,7 @@ extern void fn_8000D838(void *);
 extern void *lbl_8055E130;
 
 void fn_8013A1E0(void) {
+    /* Constructor: register this unit's 0x31-tagged static-destructor record on the global chain. */
     fn_8000D838(&lbl_8055E130);
 }
 
