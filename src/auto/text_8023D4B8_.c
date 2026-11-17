@@ -809,8 +809,9 @@ s32 fn_8023E540(s32 record) {
     return record + 0x14;
 }
 
-void fn_8023E548(s32 arg0) {
-    fn_8023E3D8(arg0, 1);
+/* Wrapper: step the record's +0x10 counter up by one (with wraparound) via fn_8023E3D8. */
+void fn_8023E548(s32 record) {
+    fn_8023E3D8(record, 1);
 }
 
 int fn_8023E3D8(int, int);
