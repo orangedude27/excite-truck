@@ -47,6 +47,7 @@ void fn_801CF01C(void) {
 }
 
 #pragma scheduling on
+/* Return nonzero while replay mode is active (lbl_8055AB50 flag set). */
 int fn_801CF050(void) {
     return *(unsigned char *)&lbl_8055AB50 != 0;
 }
