@@ -643,6 +643,7 @@ void fn_801769EC(void) {
 }
 
 extern char lbl_8055E3BD;
+/* Returns the global physics flag (set when physics is set up) that gates fader/restart handling. */
 char fn_801769F8(void) {
     return lbl_8055E3BD;
 }
