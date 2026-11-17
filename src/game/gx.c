@@ -1276,8 +1276,7 @@ extern void PSVECCrossProduct(float *, float *, float *);
 extern float PSVECMag();
 #pragma use_lmw_stmw off
 void fn_802D03F4(register float *arg0, float arg1) {
-    volatile unsigned long *src = (volatile unsigned long *)arg0;
-    unsigned long *dst = lbl_804C56C0;
+    unsigned long *src = (unsigned long *)arg0;
     unsigned long t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     float sp[3];
     float mag;
@@ -1286,13 +1285,13 @@ void fn_802D03F4(register float *arg0, float arg1) {
     fn_802D6C78();
     t0 = src[0];
     t1 = src[1];
-    dst[0] = t0;
+    lbl_804C56C0[0] = t0;
     t2 = src[2]; t3 = src[3]; t4 = src[4]; t5 = src[5];
     t6 = src[6]; t7 = src[7]; t8 = src[8]; t9 = src[9];
     t10 = src[10]; t11 = src[11];
-    dst[1] = t1; dst[2] = t2; dst[3] = t3;
-    dst[4] = t4; dst[5] = t5; dst[6] = t6; dst[7] = t7;
-    dst[8] = t8; dst[9] = t9; dst[10] = t10; dst[11] = t11;
+    lbl_804C56C0[1] = t1; lbl_804C56C0[2] = t2; lbl_804C56C0[3] = t3;
+    lbl_804C56C0[4] = t4; lbl_804C56C0[5] = t5; lbl_804C56C0[6] = t6; lbl_804C56C0[7] = t7;
+    lbl_804C56C0[8] = t8; lbl_804C56C0[9] = t9; lbl_804C56C0[10] = t10; lbl_804C56C0[11] = t11;
     sp[0] = lbl_80564F88; sp[1] = lbl_80564F8C; sp[2] = lbl_80564F88;
     PSVECCrossProduct(sp, arg0 + 6, lbl_804C56F0);
     mag = PSVECMag(lbl_804C56F0);
@@ -2382,6 +2381,12 @@ extern float lbl_80564FDC;
 #pragma processor 750
 #pragma opt_propagation off
 void fn_802D2218(void) {
+    typedef struct GxState {
+        char pad0[0x24];
+        int width;
+        int height;
+        unsigned char b2c, b2d, b2e, b2f, b30, b31;
+    } GxState;
     float sp90[12];
     float sp60[12];
     float sp20[16];
@@ -2411,15 +2416,14 @@ void fn_802D2218(void) {
     unsigned char temp_r6_2;
     unsigned char temp_r7_2;
     register unsigned char *base;
-    register unsigned char *temp_r30;
-    unsigned char *temp_r3;
+    register GxState *state;
     unsigned char *temp_r3_2;
     unsigned char *temp_r3_3;
     unsigned char *temp_r4_2;
     unsigned char *temp_r7;
     base = (unsigned char *)lbl_804C5650;
-    temp_r3 = base + 0x4128;
-    if ((temp_r3[0x2D] != 0) || (temp_r3[0x2C] != 0)) {
+    state = (GxState *)(base + 0x4128);
+    if ((state->b2d != 0) || (state->b2c != 0)) {
         fn_802D1678();
         sp90[0] = lbl_80564F8C;
         sp90[1] = lbl_80564F88;
@@ -2435,18 +2439,17 @@ void fn_802D2218(void) {
         sp90[11] = lbl_80564F88;
         fn_802D0DD4(sp60, sp90);
         GXLoadPosMtxImm(sp60, 0);
-        temp_r30 = base + 0x4128;
-        screenWidth = *(int *)(temp_r30 + 0x24);
-        screenHeight = *(int *)(temp_r30 + 0x28);
+        screenWidth = state->width;
+        screenHeight = state->height;
         temp_f31 = lbl_80564F94 * (float)screenWidth;
         temp_f30 = lbl_80564F94 * (float)screenHeight;
         C_MTXOrtho(sp20, temp_f30, -temp_f30, -temp_f31, temp_f31, lbl_80564F8C, lbl_80564FCC);
         GXSetProjection(sp20, 1);
         GXSetDstAlpha(0, 0);
         GXSetBlendMode(0, 1, 0, 5);
-        GXSetColorUpdate(temp_r30[0x2D]);
-        GXSetAlphaUpdate(temp_r30[0x2D]);
-        GXSetZMode(1, 7, temp_r30[0x2C]);
+        GXSetColorUpdate(state->b2d);
+        GXSetAlphaUpdate(state->b2d);
+        GXSetZMode(1, 7, state->b2c);
         temp_r7 = base + 0x4160;
         temp_r6 = temp_r7[2];
         temp_r5 = temp_r7[3];
@@ -2457,13 +2460,13 @@ void fn_802D2218(void) {
         GXSetFog(0, fogColor, temp_r5, temp_r6, temp_r7, lbl_80564F88, lbl_80564F88, lbl_80564F88, lbl_80564F88);
         GXSetNumTevStages(1);
         GXSetNumTexGens(0);
-        temp_r7_2 = temp_r30[0x2E];
-        temp_r6_2 = temp_r30[0x2F];
-        temp_r5_2 = temp_r30[0x30];
+        temp_r7_2 = state->b2e;
+        temp_r6_2 = state->b2f;
+        temp_r5_2 = state->b30;
         tevColor[0] = temp_r7_2;
         tevColor[1] = temp_r6_2;
         tevColor[2] = temp_r5_2;
-        tevColor[3] = temp_r30[0x31];
+        tevColor[3] = state->b31;
         ((void (*)(int, unsigned char *, unsigned char, unsigned char, unsigned char))GXSetTevColor)(1, tevColor, temp_r5_2, temp_r6_2, temp_r7_2);
         GXSetTevOrder(0, 0xFF, 0xFF, 0xFF);
         GXSetTevColorIn(0, 0xF, 0xF, 0xF, 2);
@@ -2784,7 +2787,10 @@ void *fn_802D2D04(void) {
 #pragma small_data on
 extern void *lbl_8055FD64;
 void* fn_802D2D14(void) {
-    return lbl_8055FD64;
+#define renderMode lbl_8055FD64
+    /* Get the current video render mode (the active VI/render config block). */
+    return renderMode;
+#undef renderMode
 }
 
 /* Lighting transform state used by fn_802D2ED8 (driven by the CPU-light pass in
