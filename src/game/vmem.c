@@ -75,13 +75,15 @@ void *fn_802E4CE0(void *arg0, int arg1) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_802E4D50(void* obj) {
-    struct Dummy {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
+extern "C" void fn_802E4D50(void *vmem) {
+    /* Virtual dispatch on a VirtualMemory object: jump to the vtable entry at
+       offset 0x10 (fn_802E4D60). This is slot 1 of vtable lbl_8034D1D0. */
+    struct VirtualMemoryVtbl {
+        virtual void destroy();
+        virtual void forward();
+        virtual void getBufferOffset();
     };
-    ((Dummy*)obj)->f2();
+    ((VirtualMemoryVtbl *)vmem)->getBufferOffset();
 }
 #pragma cplusplus reset
 #pragma pop
