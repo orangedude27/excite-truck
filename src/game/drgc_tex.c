@@ -228,12 +228,12 @@ int fn_802D76DC(int format) {
 #pragma dont_inline reset
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802D7780(void *arg0, void *arg1) {
     u32 filter = *(u32 *)((u8 *)arg1 + 0x10);
     u32 opts = *(u32 *)((u8 *)arg1 + 0x18);
     int wrapS = filter & 1;
-    int wrapT = ((filter >> 1) & 1) != 0;
+    int wrapT = (filter & 2) != 0;
     u32 firstMode;
     u32 transfer;
     u32 id;
