@@ -30,21 +30,23 @@ void *fn_801E3004();
 #pragma push
 #pragma small_data off
 #pragma pop
-int fn_801E2C1C(void *arg0, int arg1, void **arg2, void **arg3) {
+int fn_801E2C1C(void *archiveCtx, int index, void **outName, void **outValue) {
 #pragma scheduling invalid_target
-    int table = fn_802C6C34();
-    int count = *(int *)(table + 0x10);
-    int offset = 0;
-    while (count > 0) {
-        int entry = *(int *)(*(int *)(table + 0x14) + offset);
-        if (*(unsigned int *)entry == 0x4D524A54 && arg1 >= 0 && arg1 < *(int *)(entry + 8)) {
-            int item = entry + arg1 * 0x50;
-            *arg2 = (void *)(item + 0xC);
-            *arg3 = (void *)(item + 0x2C);
+    /* Get the name and value pointers of the MRJT item at index in the sound
+     * archive; returns 1 on success, 0 if no matching group or item exists. */
+    int archive = fn_802C6C34();
+    int groupCount = *(int *)(archive + 0x10);
+    int groupOffset = 0;
+    while (groupCount > 0) {
+        int group = *(int *)(*(int *)(archive + 0x14) + groupOffset);
+        if (*(unsigned int *)group == 0x4D524A54 && index >= 0 && index < *(int *)(group + 8)) {
+            int item = group + index * 0x50;
+            *outName = (void *)(item + 0xC);
+            *outValue = (void *)(item + 0x2C);
             return 1;
         }
-        offset += 4;
-        count--;
+        groupOffset += 4;
+        groupCount--;
     }
     return 0;
 }
