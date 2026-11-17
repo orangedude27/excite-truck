@@ -40,6 +40,8 @@ void fn_80204000(void) {
 
 }
 
+/* No-op virtual-method default in this unit's run of empty stubs: reached only
+ * through its owner's method table, where it intentionally does nothing. */
 void fn_80204008(void) {
 
 }
