@@ -880,7 +880,7 @@ extern void fn_80011E90(void);
 extern void fn_800109E4(s32, f32, f32, f32, f32);
 extern void fn_8014784C(void *, void *, s32);
 extern f32 sin(f32);
-extern f64 lbl_80560128;
+const f64 lbl_80560128 = 4503601774854144.0;
 extern f32 lbl_8056011C, lbl_80560130, lbl_8056013C;
 extern f32 lbl_80560140, lbl_80560144, lbl_80560148, lbl_8056014C;
 extern f32 lbl_80560150, lbl_80560154, lbl_80560158, lbl_8056015C;
@@ -1023,6 +1023,7 @@ void fn_80006B18(void *arg0) {
     s32 whole;
     s32 remainder;
     void *entry;
+    f64 convMagic = lbl_80560128;
     start = fn_80011E34();
     now = fn_80011E54() - lbl_80560170;
     i = 0;
@@ -1708,12 +1709,10 @@ extern void *fn_801E87A8(void);
 extern s32 fn_801CB8FC(void);
 #pragma scheduling invalid_target
 void fn_800077E4(void *arg0) {
-    void *base;
-    void *p;
-    base = lbl_8055D350;
-    p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
+    void *base = lbl_8055D350;
+    void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
     *(f32 *)((u8 *)p + 4) = ((f32 *)base)[4];
-    if (fn_8000561C(p, base) != 0) {
+    if (fn_8000561C(p, base)) {
         *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
         fn_80276DC8(((s32 *)lbl_8055D350)[7]);
     }
