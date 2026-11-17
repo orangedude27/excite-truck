@@ -67,6 +67,12 @@ extern "C" int fn_800FFA6C(int ptr, int count) {
 }
 
 extern "C" const char lbl_80327500[];
+struct PanicStrings {
+    char fileName[0x18];
+    char msg1[0x30];
+    char msg2[0x2C];
+    char msg3[0x30];
+};
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" void Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void *, const void *, long, int, const nw4hbm::snd::detail::WsdTrack::WsdCallback *, unsigned long);
 #pragma use_lmw_stmw off
