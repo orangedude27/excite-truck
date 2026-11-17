@@ -1017,6 +1017,7 @@ extern "C" void fn_801ABC28(void *arg0) {
                 float f, e, d, c, b, a;
                 float check, r5, r4, r3, r2, r1, r0;
                 float s;
+                int needCall;
                 a = *(volatile float *)(p + 0x118);
                 s = *(volatile float *)&lbl_805624E4;
                 b = *(volatile float *)(p + 0x11c);
@@ -1031,13 +1032,14 @@ extern "C" void fn_801ABC28(void *arg0) {
                 r4 = e * s;
                 r5 = f * s;
                 check = *(volatile float *)(p + 0x238);
+                needCall = check > lbl_8056247C;
                 *(float *)(p + 0x118) = r0;
                 *(float *)(p + 0x11c) = r1;
                 *(float *)(p + 0x120) = r2;
                 *(float *)(p + 0x124) = r3;
                 *(float *)(p + 0x128) = r4;
                 *(float *)(p + 0x12c) = r5;
-                if (check > lbl_8056247C)
+                if (needCall)
                     fn_801ABB54(arg0);
             }
             flag = 0;
@@ -1086,7 +1088,6 @@ extern "C" void fn_801ABC28(void *arg0) {
         }
     }
     if (*(unsigned char *)(p + 0x235) != 0) {
-        #pragma scheduling off
         if ((char *)&work.output == p + 0x228) {
             register float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12;
             f0 = *(volatile float *)(p + 0x7c);
@@ -2147,8 +2148,9 @@ unsigned char fn_801ADA7C(void *object) {
     return ((unsigned char *)object)[0x220];
 }
 
-short fn_801ADA84(void *arg0) {
-    return *(short *)((char *)arg0 + 0x6C);
+/* Return the signed 16-bit field at offset 0x6C of this object. */
+short fn_801ADA84(void *object) {
+    return *(short *)((char *)object + 0x6C);
 }
 
 /* Return the address of the embedded field at offset 0x118 of base. */
