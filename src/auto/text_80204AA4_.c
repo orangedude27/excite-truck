@@ -35,8 +35,10 @@ int *fn_80204AA4(void) {
     }
 }
 
-void *fn_80204B18(int arg0) {
-    return lbl_802F9D68 + arg0 * 0xC;
+/* Return the 0xC-byte type descriptor {name, display name, property key}
+ * for the given scene/type index. */
+void *fn_80204B18(int typeIndex) {
+    return sTypeEntries + typeIndex * TYPE_ENTRY_SIZE;
 }
 
 int fn_80204BB4(const char *arg0) {
