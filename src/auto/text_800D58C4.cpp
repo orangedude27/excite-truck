@@ -1990,8 +1990,9 @@ extern "C" u32 fn_800D89E4(u32 value, u32 limit) {
     return value;
 }
 
-extern "C" s32 fn_800D89F4(s32 arg0, s32 arg1) {
-    return arg0 + arg1;
+extern "C" s32 fn_800D89F4(s32 base, s32 offset) {
+    // Returns a pointer into the Material resource at base+offset (used for the tex-coord gen array).
+    return base + offset;
 }
 
 extern "C" s32 fn_800D89FC(s32 arg0, s32 arg1) {
