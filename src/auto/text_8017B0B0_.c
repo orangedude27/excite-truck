@@ -175,7 +175,6 @@ void fn_8017B2D0(void *arg0, float a, float b, float c, float d) {
 }
 
 #pragma opt_propagation off
-#pragma scheduling invalid_target
 void fn_8017B3A8(void *arg0, float *arg1, float *arg2) {
     float delta[3];
     float output[3];
