@@ -3090,10 +3090,11 @@ void gki_buffer_init(void)
     p_cb->curr_total_no_of_pools = GKI_NUM_FIXED_BUF_POOLS;
 }
 
-void fn_8006D4C4(void *arg) {
-    ((s32 *)arg)[1] = 0;
-    ((s32 *)arg)[0] = 0;
-    ((u16 *)arg)[4] = 0;
+/* Initialize a GKI buffer queue (GKI_init_q): clear the first/last buffer pointers at +0/+4 and the buffer count at +8. */
+void fn_8006D4C4(void *queue) {
+    ((s32 *)queue)[1] = 0;
+    ((s32 *)queue)[0] = 0;
+    ((u16 *)queue)[4] = 0;
 }
 
 /* Allocate a buffer from the first suitable GKI pool for the requested size, or report an allocation error. */
