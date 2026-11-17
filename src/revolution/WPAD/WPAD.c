@@ -3548,7 +3548,9 @@ void fn_8005EE20(void) {
    (which casts this to an s32-returning function). */
 void fn_8005EE6C(void) { WUDStartFastSyncSimple(); }
 
-// fn_8005EE70: tail call to fn_8006AC4C
+/* WPAD-internal fast-simple-sync stopper: tail-calls fn_8006AC4C, which stops
+   the simple-sync loop when the WUD library is running and reports whether it
+   was active (the home-button sync-check alarm callback reads that result). */
 void fn_8005EE70(void) { fn_8006AC4C(); }
 
 // fn_8005EE74: tail call to WUDSetSyncSimpleCallback
