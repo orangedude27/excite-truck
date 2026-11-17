@@ -1100,8 +1100,9 @@ void *fn_802C0CB0(void *object, int shouldDelete) {
 void fn_802C0D20(void) {
 }
 
-int fn_802C0D24(void *arg0) {
-    return *(int *)((char *)arg0 + 4);
+/* Getter: returns the owned handle stored at offset +4 of the given object. */
+int fn_802C0D24(void *object) {
+    return *(int *)((char *)object + 4);
 }
 
 float fn_802C0D2C(void) {
