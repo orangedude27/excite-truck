@@ -223,6 +223,7 @@ extern "C" void fn_8001A04C(int *arg0) {
 
 #pragma cplusplus reset
 void fn_8001A1F0(void) {
+    /* No-op: reserved per-frame hook, empty in this build (called from the step update). */
 }
 
 typedef unsigned char u8;
@@ -733,9 +734,9 @@ extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
 void fn_8001B478(int arg0, float farg0) {
     unsigned char sp20[0x38];
     int n, result, i;
-    float a[4];
-    float p[2];
     float y, x, t, step, texscale2, angle, ratio, inv, ratio2;
+    float p[2];
+    float a[4];
     void *shape;
     void *node;
     void *head;
