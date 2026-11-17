@@ -32,8 +32,10 @@ void fn_802C519C(void* arg0) {
     fn_80235380();
 }
 
-int fn_802C51AC(void* arg0) {
-    if (arg0 != 0) return fn_80235FD8();
+/* Returns the number of frames in the image resource set behind @p image
+ * (the linked-entry count from fn_80235FD8), or 1 for a null handle. */
+int fn_802C51AC(void* image) {
+    if (image != 0) return fn_80235FD8();
     return 1;
 }
 
