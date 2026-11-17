@@ -1090,8 +1090,9 @@ f32 fn_8016029C(f32 *out, f32 *vec) {
 void fn_801602B0(void) {
 }
 
-s32 fn_801602B4(s32 arg0) {
-    return arg0 + 0x3C;
+s32 fn_801602B4(s32 object) {
+    /* Field-offset helper: return a pointer to the field at +0x3C of the given object. */
+    return object + 0x3C;
 }
 
 /* Compute the address of the index-th 16-byte record in the array whose base pointer is stored at *arg0 (a ring-buffer header: +0 base pointer, +4 record count). */
