@@ -1015,7 +1015,7 @@ process:
 }
 #pragma pop
 
-/* Return the handle stored at +0x48 of the given object. */
+/* Return the model/effect handle (long) stored at +0x48 of the given per-car object. */
 long fn_801EE0C8(void *object) {
     return *(long *)((char *)object + 0x48);
 }
