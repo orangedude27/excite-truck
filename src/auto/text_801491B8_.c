@@ -802,6 +802,11 @@ void fn_8014ACCC(void) {
 
 }
 
+/* Does nothing: one of the trivial callbacks in the run fn_8014ACBC ..
+ * fn_8014ACD4 (two that answer 0 and three empty ones) that sits just before
+ * fn_8014ACD8, an entry of this file's big interface table lbl_8032D970.
+ * Nothing in the game's code names it, so it runs only through the pointer
+ * table its entry sits in. */
 void fn_8014ACD0(void) {
 
 }
@@ -1646,11 +1651,11 @@ extern "C" void fn_8014D840(void *__restrict arg0, void *arg1) {
     u8 *manager;
     s32 i;
     s32 best;
-    u8 *entry = 0;
+    s32 *entry;
     s32 count;
     manager = *(u8 **)((u8 *)arg0 + 0x68);
     best = -1;
-    entry = manager + 0x9E4;
+    entry = (s32 *)(manager + 0x9E4);
     count = *(s32 *)(manager + 0xFE4);
     i = 0;
     while (count > 0) {
@@ -1659,18 +1664,18 @@ extern "C" void fn_8014D840(void *__restrict arg0, void *arg1) {
         } else {
             u8 *current = manager + best * 0xC0;
             s32 value = *(s32 *)(current + 0xA74);
-            s32 threshold = *(s32 *)(entry + 0x90);
+            s32 threshold = entry[0x90 / 4];
             if (value < threshold) {
                 best = i;
             } else if (value == threshold) {
                 s32 tieValue = *(s32 *)(current + 0xA54);
-                s32 tieThreshold = *(s32 *)(entry + 0x70);
+                s32 tieThreshold = entry[0x70 / 4];
                 if (tieValue > tieThreshold) {
                     best = i;
                 }
             }
         }
-        entry += 0xC0;
+        entry += 0xC0 / 4;
         i++;
         count--;
     }
@@ -2350,7 +2355,6 @@ static inline void DeleteAll8014E9C4(PtrArray8014E9C4 *a) {
 extern "C" void *fn_8014E9C4(char *p, s32 arg1) {
     char *entry;
     int j;
-    int i;
     Cleanup8014E9C4 *obj;
     char *sub;
     if (p) {
@@ -2392,19 +2396,16 @@ extern "C" void *fn_8014E9C4(char *p, s32 arg1) {
             if (obj) obj->destroy(1);
             *(void **)(entry+0x9ec) = 0;
         }
-        for (i=0; i<*(s32 *)(p+0x18); i++)
-            DeleteItem8014E9C4((*(char ***)(p+0x14))[i]);
-        for (i=0; i<*(s32 *)(p+0x224); i++) {
-            void **arr = *(void ***)(p+0x220);
-            fn_80128668(arr[i]);
-        }
-        for (i=0; i<*(s32 *)(p+0x330); i++) {
-            void **arr = *(void ***)(p+0x32c);
-            fn_80128668(arr[i]);
-        }
-        for (i=0; i<*(s32 *)(p+0x3bc); i++) {
-            void **arr = *(void ***)(p+0x3b8);
-            fn_80128668(arr[i]);
+        {
+            int i;
+            for (i=0; i<*(s32 *)(p+0x18); i++)
+                DeleteItem8014E9C4((*(char ***)(p+0x14))[i]);
+            for (i=0; i<*(s32 *)(p+0x224); i++)
+                fn_80128668((*(void ***)(p+0x220))[i]);
+            for (i=0; i<*(s32 *)(p+0x330); i++)
+                fn_80128668((*(void ***)(p+0x32c))[i]);
+            for (i=0; i<*(s32 *)(p+0x3bc); i++)
+                fn_80128668((*(void ***)(p+0x3b8))[i]);
         }
         obj = *(Cleanup8014E9C4 **)(p+0x44c);
         if (obj) { if (obj) obj->destroy(1); }
