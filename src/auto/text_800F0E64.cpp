@@ -1045,9 +1045,9 @@ extern "C" s32 fn_800F27CC(void *arg0) {
 }
 #pragma dont_inline off
 
-extern "C" s32 fn_800F27D4(void *arg0, s32 arg1) {
-    void *r3 = *(void **)((u8 *)arg0 + 4);
-    return ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(r3, *(void **)((u8 *)r3 + 0x34), arg1);
+extern "C" s32 fn_800F27D4(void *archive, s32 labelString) {
+    SoundArchiveFileReaderLayout *reader = (SoundArchiveFileReaderLayout *)*(void **)((u8 *)archive + 4);
+    return ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(reader, reader->stringTree, labelString);
 }
 
 M2C_UNK GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(s32);
