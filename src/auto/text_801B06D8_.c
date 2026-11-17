@@ -1635,7 +1635,7 @@ check_second:
 
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
     struct First {
@@ -1648,8 +1648,8 @@ extern "C" s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
         virtual void v1();
         virtual void *get();
     };
-    register s32 i0 = *arg0;
     register s32 i1 = *arg1;
+    register s32 i0 = *arg0;
     void *base = lbl_8055E684;
     First *obj0 = (First *)((u8 *)base + (i0 << 7));
     Second *obj1 = (Second *)((u8 *)base + (i1 << 7));
