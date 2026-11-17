@@ -121,16 +121,19 @@ void fn_802447FC(void *fadeState) {
         fn_80221F94(fadeState, 0);
     }
 }
-void fn_802448BC(void *arg0) {
-    int elapsed;
-    int numerator;
-    int value;
+void fn_802448BC(void *fadeState) {
+    /* Redraw the tips overlay, then draw a black full-screen quad whose alpha
+     * ramps from opaque down to clear over (duration - 50) ms, revealing the
+     * scene. +0x20 is the fade start time and +0x24 the duration, both in ms. */
+    int elapsedMs;
+    int scaled;
+    int alpha;
     unsigned char result;
     fn_80021680();
-    elapsed = fn_802E2C20() - *(int *)((char *)arg0 + 0x20);
-    numerator = (elapsed << 8) - elapsed;
-    value = 0xFF - numerator / (*(int *)((char *)arg0 + 0x24) - 0x32);
-    result = value & ((-value & ~value) >> 31);
+    elapsedMs = fn_802E2C20() - *(int *)((char *)fadeState + 0x20);
+    scaled = (elapsedMs << 8) - elapsedMs;
+    alpha = 0xFF - scaled / (*(int *)((char *)fadeState + 0x24) - 0x32);
+    result = alpha & ((-alpha & ~alpha) >> 31);
     if (result != 0) fn_802C942C(result << 24);
 }
 
