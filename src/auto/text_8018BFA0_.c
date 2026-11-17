@@ -111,18 +111,18 @@ extern float lbl_8056203C;
 extern float lbl_80562040;
 extern char lbl_80332758[];
  static inline void matVecAliasV_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
-     float y0 = src->y * m[3];
-     float y1 = src->y * m[4];
-     float y2 = src->y * m[5];
-     float x0 = src->x * m[0];
-     float x1 = src->x * m[1];
-     float x2 = src->x * m[2];
-     float z0 = src->z * m[6];
-     float z1 = src->z * m[7];
-     float z2 = src->z * m[8];
-     dest->x = z0 + (x0 + y0);
-     dest->y = z1 + (x1 + y1);
-     dest->z = z2 + (x2 + y2);
+     if (dest == src) {
+         float tx = src->y * m[3] + src->x * m[0] + src->z * m[6];
+         float ty = src->y * m[4] + src->x * m[1] + src->z * m[7];
+         float tz = src->y * m[5] + src->x * m[2] + src->z * m[8];
+         dest->x = tx;
+         dest->y = ty;
+         dest->z = tz;
+     } else {
+         dest->x = src->y * m[3] + src->x * m[0] + src->z * m[6];
+         dest->y = src->y * m[4] + src->x * m[1] + src->z * m[7];
+         dest->z = src->y * m[5] + src->x * m[2] + src->z * m[8];
+     }
  }
 typedef struct { char b[0x290]; } Blob290_8018;
 typedef struct { float a, b; int c, d; unsigned char e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17; } Blob22_8018;
