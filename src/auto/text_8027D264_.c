@@ -250,23 +250,36 @@ int fn_8027D6BC(int object, int deleteFlag) {
 
 #pragma cplusplus on
 extern "C" void fn_8027D6FC(void *__restrict arg0) {
-    class Obj {
+#define getEntry fn_8001285C
+#define getRecord fn_80012820
+#define localize fn_80008188
+#define kTrackFlagKey lbl_8055C77C
+#define kTrackValueKey lbl_8055C774
+    /* Choose the localized track/record name for a selection entry: ask the entry's
+       property object (at +0x20) whether the "track" key exists; if so localize that
+       key's value, otherwise localize the +8 field of the record named by entry+4. */
+    class PropertyBag {
     public:
-        virtual void v0();
-        virtual int v1(int);
-        virtual void v2();
-        virtual int v3(int);
+        virtual void unused0();
+        virtual int hasKey(int key);
+        virtual void unused2();
+        virtual int getKey(int key);
     };
-    struct InArgs { unsigned char pad[0xC]; int id; };
-    int id = ((struct InArgs *)arg0)->id;
-    void *res = fn_8001285C(id);
-    void *obj = *(void **)((char *)res + 0x20);
-    if (((Obj *)obj)->v1((int)&lbl_8055C77C) != 0) {
-        obj = *(void **)((char *)res + 0x20);
-        fn_80008188(((Obj *)obj)->v3((int)&lbl_8055C774));
+    struct SelectArgs { unsigned char pad[0xC]; int id; };
+    int id = ((struct SelectArgs *)arg0)->id;
+    void *entry = getEntry(id);
+    void *props = *(void **)((char *)entry + 0x20);
+    if (((PropertyBag *)props)->hasKey((int)&kTrackFlagKey) != 0) {
+        props = *(void **)((char *)entry + 0x20);
+        localize(((PropertyBag *)props)->getKey((int)&kTrackValueKey));
     } else {
-        fn_80008188(fn_80012820(*(int *)((char *)res + 4)) + 8);
+        localize(getRecord(*(int *)((char *)entry + 4)) + 8);
     }
+#undef kTrackValueKey
+#undef kTrackFlagKey
+#undef localize
+#undef getRecord
+#undef getEntry
 }
 
 #pragma cplusplus on
