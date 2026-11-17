@@ -5,6 +5,9 @@
 
 extern s32 lbl_8055DDF8;
 
+/* Clear the shared storage word (lbl_8055DDF8) that several pointer globals alias. */
 void fn_800DC6E4(void) {
-    lbl_8055DDF8 = 0;
+#define gSharedStorageWord lbl_8055DDF8
+    gSharedStorageWord = 0;
+#undef gSharedStorageWord
 }
