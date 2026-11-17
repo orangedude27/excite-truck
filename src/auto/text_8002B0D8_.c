@@ -1520,6 +1520,7 @@ double fn_8002EFB0(double y, double x) {
 
 extern double __ieee754_fmod(double, double);
 
+/* MSL fmod() wrapper: tail-call the fdlibm floating-point remainder kernel on x and y. */
 double fn_8002EFB4(double x, double y) {
     return __ieee754_fmod(x, y);
 }
