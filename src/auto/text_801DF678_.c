@@ -164,6 +164,7 @@ extern "C" void fn_801DFEB8(void *arg0, int arg1, int arg2, int arg3) {
     ((void (*)(void *, int, int))fn_801476D8)(target, arg2, arg3);
 }
 #pragma cplusplus reset
+/* Return the vehicle stored in the car table (lbl_804348E8) at the given slot index. */
 int fn_801DFF08(int index) { return lbl_804348E8[index]; }
 
 void fn_801DFF1C(int arg0) {
