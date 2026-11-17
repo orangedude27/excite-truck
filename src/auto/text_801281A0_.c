@@ -392,6 +392,8 @@ void fn_80129214(void) {
 
 }
 
+/* No-op placeholder hook; one of a run of adjacent empty stubs
+ * (fn_80129214, fn_80129218, ...) that intentionally do nothing. */
 void fn_80129218(void) {
 
 }
