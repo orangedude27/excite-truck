@@ -7,6 +7,7 @@ extern "C" {
 
 /* Read the Machine State Register (MSR); see the MSR_* bits below. */
 u32 PPCMfmsr(void);
+/* Writes val to the Machine State Register (MSR); hand-written assembly. */
 void PPCMtmsr(u32 val);
 
 u32 PPCMfhid0(void);
