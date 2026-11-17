@@ -914,31 +914,33 @@ extern "C" void* fn_80157B00(void* arg0, s32 arg1, s32 arg2) {
     *(f32*)((u8*)arg0+0x24C)=lbl_80561754;
     return arg0;
 }
-#pragma small_data off
+extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2);
+#pragma push
 #pragma scheduling invalid_target
 extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2) {
+    Fn80157CF0Obj* obj = (Fn80157CF0Obj*)arg0;
     u8* ptr = (u8*)arg0 + 0x14;
-    *(void**)((u8*)arg0 + 8) = ptr;
-    *(void**)arg0 = lbl_8032F2BC;
-    *(s32*)((u8*)arg0 + 0x10) = 10;
-    *(s32*)((u8*)arg0 + 0xC) = 0;
+    obj->entries = ptr;
+    obj->vtable = lbl_8032F2BC;
+    obj->count = 10;
+    obj->unkC = 0;
     do {
         memset(ptr, 0, 4);
         ptr += 0x38;
     } while (ptr < (u8*)arg0 + 0x244);
     f32 value = lbl_8056175C;
-    *(s32*)((u8*)arg0 + 4) = arg2;
-    *(s32*)((u8*)arg0 + 0xC) = 0;
-    ((Fn80157CF0Obj*)arg0)->unk244 = arg1;
-    *(s32*)((u8*)arg0 + 0x258) = 0;
-    *(f32*)((u8*)arg0 + 0x250) = value;
-    *(s32*)((u8*)arg0 + 0x268) = 0;
-    *(s32*)((u8*)arg0 + 0x248) = 0;
-    *(void**)arg0 = lbl_8032EE68;
+    obj->unk4 = arg2;
+    obj->unkC = 0;
+    obj->unk244 = arg1;
+    obj->unk258 = 0;
+    obj->value250 = value;
+    obj->unk268 = 0;
+    obj->unk248 = 0;
+    obj->vtable = lbl_8032EE68;
     return arg0;
 }
 #pragma scheduling on
-#pragma small_data reset
+#pragma pop
 extern "C" void *fn_80157DA0(void *self, s32 arg1, s32 arg2) {
     extern void *lbl_8032EF08;
     extern float lbl_80561760;
@@ -1871,7 +1873,7 @@ extern "C" f32 fn_80159C34(Fn80159C34Obj* arg0, void* arg1) {
  arg0->m254 = value;
  if (tmp2620 == 0 && ((Unk801577F0*)arg0)->v35() == 0) {
   f32 v2 = arg0->m254;
-  v2 = (v2 > lbl_8056179C) ? lbl_8056179C : v2;
+  v2 = (lbl_8056179C > v2) ? v2 : lbl_8056179C;
   arg0->m254 = v2;
   value = v2;
  }
@@ -2490,14 +2492,15 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
 #pragma pop
 extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
     f32 f;
-    s32 count = arg0->m260;
-    arg0->m264 = 0;
+    s32 zero = 0;
+    s32 count = *(s32*)((u8*)arg0 + 0x260);
+    *(s32*)((u8*)arg0 + 0x264) = 0;
     if (count > 0) {
-        void* ptr = (void*)(u32)arg0->m258;
-        if (ptr != 0) {
-            fn_801CB6E4(ptr, arg0->m4);
+        void* r3 = *(void**)((u8*)arg0 + 0x258);
+        if (r3 != 0) {
+            fn_801CB6E4(r3, *(s32*)((u8*)arg0 + 4));
         }
-        arg0->m260 = 0;
+        *(s32*)((u8*)arg0 + 0x260) = 0;
         f32 a = lbl_80561754;
         Unk801577F0* self = arg0;
         f = lbl_80561750;
@@ -2505,14 +2508,13 @@ extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
         self->m25c = f;
         self->v31();
     }
-    s32 zero = 0;
     count = *(s32*)((u8*)arg0 + 0x278);
     f = lbl_80561754;
     *(u8*)((u8*)arg0 + 0x26C) = zero;
     *(f32*)((u8*)arg0 + 0x270) = f;
     *(s32*)((u8*)arg0 + 0x274) = zero;
     if (count > 0) {
-        fn_801CB6E4((void*)0x50204, arg0->m4);
+        fn_801CB6E4((void*)0x50204, *(s32*)((u8*)arg0 + 4));
         *(s32*)((u8*)arg0 + 0x278) = zero;
     }
 }
@@ -2580,7 +2582,7 @@ extern "C" s32 fn_8015B2E0(void* arg0) {
 extern "C" s32 fn_8015B338(void) { return 0xC; }
 
 extern "C" void fn_8015B340(Unk801577F0* self) {
-    f32 entryZero = lbl_80561754;
+    f32 entryZero = 0.0f;
     s32 i = 0;
     s32 offset = 0;
     s32 value = 0;
@@ -2592,7 +2594,7 @@ extern "C" void fn_8015B340(Unk801577F0* self) {
         offset += 0x38;
     }
     self->v31();
-    f32 tailZero = lbl_80561754;
+    f32 tailZero = 0.0f;
     *(u8*)((u8*)self + 0x294) = 0;
     *(f32*)((u8*)self + 0x290) = tailZero;
     *(f32*)((u8*)self + 0x28C) = tailZero;
@@ -3050,7 +3052,6 @@ extern "C" void fn_8015C0E8(Unk801577F0* arg0) {
     arg0->m27c = tail;
 }
 extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
-    // Note: v31 selects slot 0x84; direct field stores retain the target's float literals.
     s32 active = arg0->m260;
     s32 zero = 0;
     arg0->m264 = zero;
@@ -3060,8 +3061,11 @@ extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
             fn_801CB6E4(resource, *(s32*)((u8*)arg0 + 4));
         }
         arg0->m260 = 0;
-        arg0->m254 = lbl_80561754;
-        arg0->m25c = lbl_80561750;
+        f32 z5c, z54;
+        z54 = lbl_80561754;
+        z5c = lbl_80561750;
+        arg0->m254 = z54;
+        arg0->m25c = z5c;
         arg0->v31();
     }
     s32 pending = *(s32*)((u8*)arg0 + 0x26c);
