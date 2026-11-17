@@ -2427,10 +2427,10 @@ extern "C" void* fn_8015ADAC(void* arg0, s32 arg1) {
 }
 
 extern f32 lbl_805617A8;
+struct Fn8015AE18Truck { unsigned char pad[0x2620]; s32 reward; };
 #pragma push
 #pragma processor 750
 extern "C" f32 fn_8015AE18(void *a, void *arg1) {
-    s32 reward = *(s32 *)((u8 *)arg1 + 0x2620);
     u8 *p = (u8 *)a;
     Fn8015889C *self = (Fn8015889C *)a;
     f32 result;
@@ -2440,7 +2440,8 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
     s32 cur;
     s32 zero = 0;
     s32 i;
-    f32 t0;
+    f32 t;
+    s32 reward = *(s32 *)((u8 *)arg1 + 0x2620);
     if (reward > 0) {
         *(f32 *)(p + 0x270) = *(f32 *)(p + 0x270) + lbl_8056177C;
     } else {
@@ -2468,16 +2469,16 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
         *(s32 *)(p + 0x274) = 1;
     }
     if (*(f32 *)(p + 0x270) > lbl_805617A8) {
-        *(s32 *)(p + 0x274) = zero;
         s32 n = *(s32 *)(p + 0x278);
+        *(s32 *)(p + 0x274) = zero;
         if (n > 0) {
             fn_801CB6E4((void *)0x50204, *(s32 *)(p + 4));
             *(s32 *)(p + 0x278) = zero;
         }
     }
     *(u8 *)(p + 0x26c) = 0;
-    t0 = *(f32 *)(p + 0x254);
-    *(f32 *)(p + 0x254) = fn_801429D0(lbl_80561754, t0 - lbl_8056177C);
+    t = *(f32 *)(p + 0x254) - lbl_8056177C;
+    *(f32 *)(p + 0x254) = fn_801429D0(lbl_80561754, t);
     if (fn_8015A404(arg1) == 0 && self->v37() == 0) {
         *(f32 *)(p + 0x254) = fn_801429D0(*(f32 *)(p + 0x254), lbl_8056179C);
     }
