@@ -642,6 +642,7 @@ extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7ChannelFPQ46nw4hbm3snd6detai
     }
 }
 
+extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void *, void **);
 extern "C" char lbl_80322A30[];
 extern "C" char lbl_80322A0C[];
 extern "C" char lbl_80322A00[];
