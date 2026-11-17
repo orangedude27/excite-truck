@@ -1028,18 +1028,19 @@ extern "C" s32 fn_8013DE7C(TObj60 *container, const char *name) {
 
 #pragma push
 #pragma processor 750
+#pragma ppc_psq_save off
 extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
     f32 *from = (f32 *)arg1;
     f32 *to = (f32 *)arg2;
     f32 *out = (f32 *)arg0;
     f32 s[2], e[2], d[2], c[2], o[2];
     u32 i = 0;
-    f32 unit = lbl_805614A4;
-    f32 one = lbl_805614AC;
+    register f32 unit = lbl_805614A4;
+    register f32 one = lbl_805614AC;
     do {
         s[0] = from[0];
-        e[0] = to[0];
         s[1] = from[2];
+        e[0] = to[0];
         e[1] = to[2];
         d[0] = e[0] - s[0];
         d[1] = e[1] - s[1];
