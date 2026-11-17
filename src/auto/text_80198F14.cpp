@@ -4115,14 +4115,13 @@ extern "C" void fn_801A22A4(void* obj) {
     ((Fn801E44F4)fn_801E44F4)(words, 0x50000000, value9, tailX, tailY, tailZ);
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     extern f32 lbl_80562300;
     extern char lbl_80333868[];
     f32 diffX = farg3 - lbl_80562300;
     f32 diffY = farg2 - lbl_80562300;
     f32 diffZ = farg4 - lbl_80562300;
-    f32 dist = diffX * diffX + diffY * diffY + diffZ * diffZ;
     *(f32*)((u8*)arg0 + 0x10) = farg0;
     *(s32*)((u8*)arg0 + 0xC) = arg1;
     *(s32*)((u8*)arg0 + 4) = arg3;
@@ -4136,11 +4135,11 @@ extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 far
     *(f32*)((u8*)arg0 + 0x28) = diffX;
     *(f32*)((u8*)arg0 + 0x2C) = diffZ;
     *(s32*)((u8*)arg0 + 0x34) = 0;
-    f64 distance = fn_8002F234(dist);
+    f32 dist = diffX * diffX + diffY * diffY + diffZ * diffZ;
+    f32 radius = lbl_80562300 + (f32)fn_8002F234(dist);
     volatile f32* input = (volatile f32*)arg2;
     f32 x = input[0];
     f32 y = input[1];
-    f32 radius = lbl_80562300 + (f32)distance;
     f32 z = input[2];
     *(f32*)((u8*)arg0 + 0x38) = x;
     *(f32*)((u8*)arg0 + 0x30) = radius;
