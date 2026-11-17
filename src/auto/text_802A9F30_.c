@@ -1194,6 +1194,7 @@ void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) 
     fn_8028E590(*(int *)*(void *volatile *)&lbl_8055F924,&callpos,&dir,lbl_805649FC);
 }
 
+/* Draw the primary particle-emitter list (mode 0) via the particle draw routine. */
 void fn_802ABE50(void) { fn_8028E240(0); }
 
 #pragma scheduling invalid_target
