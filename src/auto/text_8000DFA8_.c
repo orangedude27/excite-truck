@@ -1678,10 +1678,14 @@ void fn_80011A2C(void *arg0) {
     fn_802346C8();
 }
 
+/* Discard everything queued for drawing this frame: empty the quad queue and
+ * then reset the on-screen text draw queue. */
+#define s_quadCount lbl_8055D4A8
 void fn_80011A50(void) {
-    lbl_8055D4A8 = 0;
+    s_quadCount = 0;
     fn_80234AEC();
 }
+#undef s_quadCount
 
 extern void fn_80231094(s32 *, s32 *, s32 *, s32 *);
 extern s32 lbl_8055D4A0;
