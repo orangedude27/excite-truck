@@ -232,12 +232,13 @@ s32 fn_8022EDC4(void) {
 #pragma processor 750
 #pragma scheduling on
 void *fn_8022EDE4(float *arg0, float farg0) {
+    int t0 = 0;
     int *dst = (int *)((void *(*)(int, void *))fn_8022EAB8)(0x3C, (void *)&lbl_80340344);
     int *src = (int *)arg0;
-    int t0, t1;
+    int t1;
     float k;
-    t0 = src[1];
     t1 = src[0];
+    t0 = src[1];
     dst[0] = t1;
     t1 = src[2];
     dst[1] = t0;
