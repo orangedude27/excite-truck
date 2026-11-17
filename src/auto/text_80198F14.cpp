@@ -103,9 +103,8 @@ static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
         f32 x = p6 + (p2 + p0), y = p7 + (p3 + p1), z = p8 + (p4 + p5);
         dst[0] = x; dst[1] = y; dst[2] = z;
     } else {
-        f32 q0 = m[3] * src[1], q1 = m[4] * src[1];
+        f32 q0 = m[3] * src[1], q1 = m[4] * src[1], q5 = m[5] * src[1];
         f32 q2 = m[0] * src[0], q3 = m[1] * src[0], q4 = m[2] * src[0];
-        f32 q5 = m[5] * src[1];
         f32 q6 = m[6] * src[2], q7 = m[7] * src[2], q8 = m[8] * src[2];
         f32 x0 = q6 + (q2 + q0), y0 = q7 + (q3 + q1), z0 = q8 + (q4 + q5);
         dst[0] = x0; dst[1] = y0; dst[2] = z0;
