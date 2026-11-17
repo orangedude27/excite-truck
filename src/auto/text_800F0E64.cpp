@@ -7743,8 +7743,9 @@ extern "C" int fn_800FD8CC(void *arg0) {
     return *(unsigned char *)((char *)arg0 + 0x49) != 0;
 }
 
-extern "C" int fn_800FD8E0(void* arg0) {
-    return *((unsigned char*)arg0 + 0x4A) != 0;
+extern "C" int fn_800FD8E0(void *player) {
+    // Return nonzero when the sound stream player is prepared/ready (its flag at +0x4A).
+    return *((unsigned char *)player + 0x4A) != 0;
 }
 
 extern "C" int fn_800FD8F4(void* arg0) {
