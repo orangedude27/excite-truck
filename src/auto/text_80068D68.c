@@ -11804,7 +11804,9 @@ void bta_dm_disable_timer_cback(void) {
     }
 }
 
-void fn_800719B0(void *arg0) { BTM_SetLocalDeviceName((char *)arg0 + 8); }
+/* BTA DM set-name action (SDK bta_dm_set_dev_name): apply the new local Bluetooth
+ * device name carried in the message (BT_HDR header, name field at offset 8). */
+void fn_800719B0(void *p_data) { BTM_SetLocalDeviceName((char *)p_data + 8); }
 
 void fn_800719B8(void *state) {
     /* Apply the discoverability and connectability modes stored in the state object. */
@@ -25872,19 +25874,20 @@ BOOLEAN SDP_DeleteAttribute(UINT32 handle, UINT16 attr_id) {
     return FALSE;
 }
 
+#pragma opt_propagation off
 u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
-    u8 *start;
-    u8 *p;
+    u8 c1C = 0x1C;
+    u8 c1A = 0x1A;
+    u8 c19 = 0x19;
     u32 i = 0;
     s32 j;
     u16 len;
-    u8 c19 = 0x19;
-    u8 c1A = 0x1A;
-    u8 c1C = 0x1C;
-    u8 *q = out;
-    p = q + 1;
+    u8 *start;
+    u8 *p;
+
+    p = out + 1;
     start = p;
-    *q = 0x35;
+    *out = 0x35;
     p++;
     for (; i < count; i++) {
         len = *(u16 *)uuid;
@@ -25912,7 +25915,7 @@ u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
     *start = (u8)(p - start - 1);
     return p;
 }
-
+#pragma opt_propagation reset
 void sdp_snd_service_search_req(tCONN_CB *p_ccb, u8 num_uuid, u8 *p_uuid_list) {
     u8 *p_param_len;
     u8 *p_start;
