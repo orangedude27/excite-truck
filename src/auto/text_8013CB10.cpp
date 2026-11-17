@@ -1938,7 +1938,7 @@ extern "C" int fn_8013FC6C(void* self) {
     }
     return 0;
 }
-#pragma scheduling reset
+#pragma scheduling on
 extern "C" s32 fn_8013FD20(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     s32 result = 1;
