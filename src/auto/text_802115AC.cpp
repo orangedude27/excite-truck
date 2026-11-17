@@ -2570,9 +2570,10 @@ extern "C" s32 fn_8021583C(void *self, s32 unused1, s32 unused2, s32 x, s32 y) {
     return result;
 }
 
-extern "C" void fn_802158C8(void *arg0) {
-    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf1();
+extern "C" void fn_802158C8(void *wrapper) {
+    /* Forward vf1() (vtable slot 0x0C) to the widget held at +0x244 of the wrapper. */
+    VfObj *widget = *(VfObj **)((char *)wrapper + 0x244);
+    widget->vf1();
 }
 
 class Vf4Obj {
