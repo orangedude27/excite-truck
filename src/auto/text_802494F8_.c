@@ -1251,14 +1251,32 @@ extern "C" void fn_8024BA00(void *arg0) {
     (*(Dummy **)((char *)arg0 + 0x124))->select(*(s32 *)((char *)arg0 + 0x120), (*(s32 **)((char *)arg0 + 0x10))[next * 2 + 1]);
     fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70, (*(s32 **)((char *)arg0 + 0x10))[*(s32 *)((char *)arg0 + 0x11C) * 2 + 1], (const char *)&lbl_8055BFF8);
 }
-#pragma cplusplus off
-void fn_8024BAA0(void *arg0) {
-    int plus1 = *(int *)((char *)arg0 + 0x11C) + 1;
-    *(int *)((char *)arg0 + 0x11C) = plus1 % *(int *)((char *)arg0 + 0x14);
-    ((void (*)(void *, int, int, int, int))(*(void ***)((char *)*(void * volatile *)((char *)arg0 + 0x124) + 0xC))[12])(*(void * volatile *)((char *)arg0 + 0x124), *(int *)((char *)arg0 + 0x120), *(*(int **)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0x11C) * 2 + 1), *(int *)((char *)arg0 + 0x14), plus1);
-    fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70, *(*(int **)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0x11C) * 2 + 1), (const char *)&lbl_8055BFF8);
+#pragma cplusplus on
+extern "C" void fn_8024BAA0(void *arg0) {
+    class Base {
+    public:
+        char pad[0xC];
+    };
+    class Dummy : public Base {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void select(s32, s32);
+    };
+    s32 next = (*(s32 *)((char *)arg0 + 0x11C) + 1) % *(s32 *)((char *)arg0 + 0x14);
+    *(s32 *)((char *)arg0 + 0x11C) = next;
+    (*(Dummy **)((char *)arg0 + 0x124))->select(*(s32 *)((char *)arg0 + 0x120), (*(s32 **)((char *)arg0 + 0x10))[next * 2 + 1]);
+    fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70, (*(s32 **)((char *)arg0 + 0x10))[*(s32 *)((char *)arg0 + 0x11C) * 2 + 1], (const char *)&lbl_8055BFF8);
 }
-#pragma scheduling on
+#pragma cplusplus off
 void fn_8024BB3C(void *sound) {
     /* Decrement the counter at +0x10 in place, saturating at zero (max(value - 1, 0)). */
     s32 decremented = *(s32 *)((char *)sound + 0x10) - 1;
