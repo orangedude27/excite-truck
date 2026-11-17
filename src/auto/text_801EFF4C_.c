@@ -561,9 +561,11 @@ int fn_801F09FC(const char *name) {
 extern int fn_8012850C(int, void *);
 extern char lbl_8033A4D4[];
 extern float lbl_80562F2C;
+#pragma scheduling invalid_target
 int fn_801F0AA0(void) {
     int *p;
-    int offset;
+    int off1;
+    int off2;
     int count;
     int i;
     float value;
@@ -571,13 +573,13 @@ int fn_801F0AA0(void) {
     lbl_8055EBEC = fn_8012850C(0x9C0, lbl_8033A4D4);
     lbl_8055EBF0 = 0;
     value = lbl_80562F2C;
-    offset = 0;
+    off1 = 0;
     count = 0;
 
     for (i = 0; i < 4; i++) {
-        p = (int *)(lbl_8055EBEC + offset);
+        p = (int *)(lbl_8055EBEC + off1);
         *(char *)p = 0;
-        offset += 0x138;
+        off2 = off1 + 0x138;
         p[4] = count;
         p[5] = count + 1;
         count += 2;
@@ -600,9 +602,9 @@ int fn_801F0AA0(void) {
         p[58] = 0;
         p[75] = 0;
 
-        p = (int *)(lbl_8055EBEC + offset);
+        p = (int *)(lbl_8055EBEC + off2);
         *(char *)p = 0;
-        offset += 0x138;
+        off1 = off2 + 0x138;
         p[4] = count;
         p[5] = count + 1;
         count += 2;
@@ -627,7 +629,7 @@ int fn_801F0AA0(void) {
     }
     return (int)p;
 }
-
+#pragma scheduling on
 int fn_80128670(int);
 void fn_802C6CF8(int);
 #pragma push
@@ -746,12 +748,13 @@ void fn_80015B20(void *, void *, void *);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_common_subs off
 void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     int flags = *(int *)((char *)arg1 + 0x60);
     float matrix[9], matrix2[9];
-    Vec point, angles, angles2;
+    union { Vec v; unsigned int w[3]; } point;
+    Vec angles, angles2;
     float *m = (float *)arg2;
-    Vec *out = (Vec *)((char *)arg0 + 0x3c);
     float x,y,z, a,b,c,d,e,f,g,h,i;
     unsigned int w0,w1,w2,w3,w4,w5,w6,w7,w8;
     int mode;
@@ -764,35 +767,39 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     else *(int *)((char *)arg0 + 4) = 0;
     if (*(float *)((char *)arg1 + 0x30) > lbl_80562F30)
         *(int *)((char *)arg0 + 4) |= 0x10;
-    point.x = ((Vec *)arg1)->x; point.y = ((Vec *)arg1)->y; point.z = ((Vec *)arg1)->z;
+    point.w[0] = *(unsigned int *)arg1;
+    point.w[1] = *(unsigned int *)((char *)arg1 + 4);
+    point.w[2] = *(unsigned int *)((char *)arg1 + 8);
     x = fn_801F159C((void **)arg0);
-    y = point.y;
+    y = point.v.y;
     z = *(float *)((char *)arg1 + 0x34);
-    point.y = y + x;
+    point.v.y = y + x;
     *(float *)((char *)arg0 + 0x48) = z;
     mode = *(int *)((char *)arg0 + 0xc);
     mode = mode == 0 || mode == 2;
-    if (out == &point) {
-        y = point.y; x = point.x; z = point.z;
+    if ((char *)arg0 + 0x3c == (char *)&point) {
+        y = point.v.y; x = point.v.x; z = point.v.z;
         d=y*m[3]; e=y*m[4];
         a=x*m[0]; b=x*m[1]; c=x*m[2]; f=y*m[5];
         g=z*m[6]; h=z*m[7]; i=z*m[8];
-        out->x=g+(a+d); out->y=h+(b+e); out->z=i+(c+f);
+        ((Vec *)((char *)arg0 + 0x3c))->x=g+(a+d);
+        ((Vec *)((char *)arg0 + 0x3c))->y=h+(b+e);
+        ((Vec *)((char *)arg0 + 0x3c))->z=i+(c+f);
     } else {
-        out->x=point.z*m[6]+(point.y*m[3]+point.x*m[0]);
-        out->y=point.z*m[7]+(point.y*m[4]+point.x*m[1]);
-        out->z=point.z*m[8]+(point.y*m[5]+point.x*m[2]);
+        ((Vec *)((char *)arg0 + 0x3c))->x=point.v.z*m[6]+(point.v.y*m[3]+point.v.x*m[0]);
+        ((Vec *)((char *)arg0 + 0x3c))->y=point.v.z*m[7]+(point.v.y*m[4]+point.v.x*m[1]);
+        ((Vec *)((char *)arg0 + 0x3c))->z=point.v.z*m[8]+(point.v.y*m[5]+point.v.x*m[2]);
     }
-    x = out->x + m[9];
-    y = out->y + m[10];
+    x = ((Vec *)((char *)arg0 + 0x3c))->x + m[9];
+    y = ((Vec *)((char *)arg0 + 0x3c))->y + m[10];
     w0=((unsigned int *)m)[0]; w1=((unsigned int *)m)[1]; w2=((unsigned int *)m)[2];
     w3=((unsigned int *)m)[3]; w4=((unsigned int *)m)[4]; w5=((unsigned int *)m)[5];
     w6=((unsigned int *)m)[6]; w7=((unsigned int *)m)[7]; w8=((unsigned int *)m)[8];
-    out->x = x;
-    z = out->z + m[11];
-    out->y = y;
+    ((Vec *)((char *)arg0 + 0x3c))->x = x;
+    z = ((Vec *)((char *)arg0 + 0x3c))->z + m[11];
+    ((Vec *)((char *)arg0 + 0x3c))->y = y;
     ((unsigned int *)((char *)arg0 + 0x18))[0]=w0;
-    out->z = z;
+    ((Vec *)((char *)arg0 + 0x3c))->z = z;
     ((unsigned int *)((char *)arg0 + 0x18))[1]=w1; ((unsigned int *)((char *)arg0 + 0x18))[2]=w2;
     ((unsigned int *)((char *)arg0 + 0x18))[3]=w3; ((unsigned int *)((char *)arg0 + 0x18))[4]=w4;
     ((unsigned int *)((char *)arg0 + 0x18))[5]=w5; ((unsigned int *)((char *)arg0 + 0x18))[6]=w6;
