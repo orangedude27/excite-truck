@@ -1865,7 +1865,10 @@ void fn_80174918(void *arg0, int arg1) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" __declspec(section ".sdata") const char lbl_8055A2EC[4];
-extern "C" void fn_80175080(void **arg0, int arg1, int arg2, char *fmt, double farg0, ...) {
+/* Build a formatted message/value object: look up two entries by key in a table,
+ * convert the numeric value through the first entry (or copy the second verbatim
+ * when it is absent), then attach a printf-formatted string (or clear it). */
+extern "C" void fn_80175080(void **table, int valueKey, int fallbackKey, char *format, double number, ...) {
     struct Dummy {
         virtual void *unused();
         virtual void *get(int);
@@ -1880,31 +1883,31 @@ extern "C" void fn_80175080(void **arg0, int arg1, int arg2, char *fmt, double f
     extern const char lbl_803314F8[];
     char result[0x20];
     char text[0x80];
-    void *v;
-    void *p;
+    void *value;
+    void *params;
     va_list args;
-    v = ((Dummy *)arg0)->get(arg1);
-    p = ((Dummy *)arg0)->get(arg2);
-    if (v != 0) {
-        fn_80147CEC(result, v, p, farg0);
+    value = ((Dummy *)table)->get(valueKey);
+    params = ((Dummy *)table)->get(fallbackKey);
+    if (value != 0) {
+        fn_80147CEC(result, value, params, number);
     } else {
         int *dst = (int *)result;
-        int *src = (int *)p;
+        int *src = (int *)params;
         dst[0] = src[0];
 #pragma cplusplus reset
         *(struct Pair *)(dst + 1) = *(struct Pair *)(src + 1);
 #pragma cplusplus on
         dst[3] = src[3];
-        *(float *)(result + 0x10) = *(float *)((char *)p + 0x10);
+        *(float *)(result + 0x10) = *(float *)((char *)params + 0x10);
         dst[5] = src[5];
         dst[6] = src[6];
         dst[7] = src[7];
     }
-    if (fmt != 0) {
-        va_start(args, farg0);
-        vsprintf(text, fmt, args);
+    if (format != 0) {
+        va_start(args, number);
+        vsprintf(text, format, args);
         if (strlen(text) >= 0x80) {
-            fn_802E317C(lbl_803314F8, strlen(text), fmt);
+            fn_802E317C(lbl_803314F8, strlen(text), format);
         }
         fn_80147230(result, lbl_8055A2EC, text);
     } else {
