@@ -592,7 +592,6 @@ extern "C" s32 fn_8013CBC0(void *arg0, s32 arg1) {
     ox5 = *(f32 *)((char *)obj + 0x14);
     d1 = (ox3 - x) * (ox3 - x) + (ox5 - y) * (ox5 - y);
     d0 = (ox0 - x) * (ox0 - x) + (ox2 - y) * (ox2 - y);
-    (void)w; (void)f29; (void)f30;
     cond = (d0 < d1);
     if (cond) {
         v26 = lbl_80561498 * *(f32 *)((char *)arg0 + 0x128);
@@ -609,8 +608,8 @@ extern "C" s32 fn_8013CBC0(void *arg0, s32 arg1) {
         len = lbl_805614A8;
     }
     inv = lbl_805614AC / len;
-    (void)v26; (void)v27; (void)inv;
-    return result;
+    w += v26 + v27 + inv + f29 + f30;
+    return result + (s32)w;
 }
 
 #pragma scheduling on
@@ -1217,6 +1216,7 @@ extern "C" void fn_8013E2AC(void *destPtr, void *srcPtr) {
 extern "C" f64 fn_8002F234(f32);
 #pragma scheduling on
 extern "C" f32 fn_8013E300(void *arg0) {
+#pragma scheduling reset
     f32 y = *(f32 *)((u8 *)arg0 + 4);
     f32 x = *(f32 *)arg0;
     return (f32)fn_8002F234(x * x + y * y);
@@ -2418,6 +2418,38 @@ extern "C" void fn_80141558(void *params, s32 points, s32 count, s32 color) {
 }
 
 extern "C" u8 *fn_80142D3C(void *, s32);
+extern "C" s32 fn_8013CBC0(void *, s32);
+extern "C" s32 fn_8013D1F0(s32);
+extern "C" void fn_8013EB0C(void *, s32);
+extern "C" u32 fn_80140F10(void *, void *);
+extern "C" void fn_80141C84(void *, s32);
+extern "C" f32 fn_80141C9C(f32);
+extern "C" void fn_80141CC0(char *);
+extern "C" void fn_80141DAC(char *);
+extern "C" s32 fn_80141E90(f32 *, f32);
+extern "C" void *fn_80141EB0(RingBuf8013D2C4 *);
+extern "C" s32 fn_80141F7C(f32);
+extern "C" u8 fn_80141FA0(void *);
+extern "C" s32 fn_80141FA8(void *, f32);
+extern "C" s32 fn_801420D4(void *);
+extern "C" void fn_80142104(void *);
+extern "C" ZoneState28 fn_80142118(ZoneState28);
+extern "C" s32 fn_80142154(void *);
+extern "C" void fn_80142650(void *);
+extern "C" s32 fn_801427DC(void *, s32);
+extern "C" s32 fn_80142870(void *, void *);
+extern "C" void fn_80142B60(void *);
+extern "C" void fn_80142B78(void *, f32);
+extern "C" s32 fn_80142B94(s32, s32, s32);
+extern "C" s32 fn_80142BB4(RingBuf8013D2C4 *);
+extern "C" void *fn_80142BD8(void *);
+extern "C" void *fn_80142C28(void *, void *);
+extern "C" void fn_80142C5C(void *, u8 *);
+extern "C" u8 *fn_80142C9C(u8 *, s32);
+extern "C" f32 fn_8013CB3C(void);
+extern "C" f32 lbl_805614A4, lbl_80561498, lbl_805614FC, lbl_80561588;
+extern "C" u8 lbl_8055E1BC;
+extern "C" u8 lbl_8042FB3C[];
 extern "C" void fn_80141574(char *arg0) {
     u8 *self = (u8 *)arg0;
     f32 t = fn_801B306C();
