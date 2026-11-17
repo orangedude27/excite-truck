@@ -1443,10 +1443,11 @@ extern "C" s32 fn_800ED094(s32 arg0) {
 #pragma push
 #pragma small_data off
 #pragma pop
-extern "C" s32 fn_800ED0A8(s32 arg0) {
-    u8 val = ((u8 *)arg0)[0x17];
-    s32 t = -(s32)val;
-    return (s32)((u32)(t | (s32)val) >> 31);
+extern "C" s32 fn_800ED0A8(s32 player) {
+    /* Return 1 if this sound seq player's started flag (byte +0x17) is set, else 0. */
+    u8 started = ((u8 *)player)[0x17];
+    s32 neg = -(s32)started;
+    return (s32)((u32)(neg | (s32)started) >> 31);
 }
 extern "C" s32 fn_800ED0BC(void *arg0) {
     return ((u8 *)arg0)[0x16] != 0;
