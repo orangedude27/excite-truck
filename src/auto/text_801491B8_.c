@@ -3647,8 +3647,6 @@ extern "C" void fn_80153900(void *arg0, long arg1) {
     extern long fn_801E866C(long);
     extern long fn_8014AFD4(void *, void *, long);
     extern long fn_801CB7BC(long);
-    extern long lbl_8055E23C;
-    extern long lbl_8055E238;
     void *v;
     long base;
     long p;
@@ -3658,18 +3656,18 @@ extern "C" void fn_80153900(void *arg0, long arg1) {
         ((Obj *)arg0)->v32();
         return;
     }
-    switch (fn_801E85A4()) {
-    default: v = (void *)lbl_8055E238; break;
-    case 2: v = (void *)lbl_8055E23C; break;
-    }
+    if (fn_801E85A4() == 2)
+        v = (void *)*(volatile long *)&lbl_8055E23C;
+    else
+        v = (void *)*(volatile long *)&lbl_8055E238;
     ((V *)v)->v5();
     base = (long)arg0 + fn_801E866C(arg1) * 0xC0;
     p = base + 0x9E4;
     if (p != 0) {
-        switch (fn_801E85A4()) {
-        default: v = (void *)lbl_8055E238; break;
-        case 2: v = (void *)lbl_8055E23C; break;
-        }
+        if (fn_801E85A4() == 2)
+            v = (void *)*(volatile long *)&lbl_8055E23C;
+        else
+            v = (void *)*(volatile long *)&lbl_8055E238;
         fn_8014AFD4((void *)p, v, arg1);
         fn_801CB7BC(0);
     }
