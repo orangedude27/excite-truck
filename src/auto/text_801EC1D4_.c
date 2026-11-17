@@ -73,6 +73,7 @@ void *fn_801EC1F8(void) {
     return lbl_80488668;
 }
 
+/* Pointer to the saved ambient-light colour slot (lbl_80488668[1]) of the UI render state. */
 void *fn_801EC204(void) {
     return &lbl_80488668[1];
 }
