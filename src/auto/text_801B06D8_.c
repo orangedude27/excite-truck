@@ -2059,8 +2059,9 @@ extern void fn_802E317C(const char *, s32, s32);
 extern char lbl_80335BD8[];
 extern void fn_801B196C(s32, s32);
 #pragma dont_inline on
-void fn_801B30C0(s32 arg0, s32 arg1, s32 arg2) {
-    fn_801B18B8((void *)((u8 *)lbl_8055E684 + (arg0 << 7)), arg1, arg2);
+/* Update the deity (AI truck) in the 0x80-byte slot at slotIndex, forwarding arg1/arg2 to its position renderer. */
+void fn_801B30C0(s32 slotIndex, s32 arg1, s32 arg2) {
+    fn_801B18B8((void *)((u8 *)lbl_8055E684 + (slotIndex << 7)), arg1, arg2);
 }
 #pragma dont_inline reset
 /* Run one processing pass over the 0x80-byte AI-truck (deity) slot at
