@@ -919,6 +919,7 @@ extern "C" void fn_80014D04(RaceOverlay *overlay) {
 }
 #pragma pop
 
+/* No-argument predicate used by the HUD/race UI that always reports true (enabled) in this build. */
 s32 fn_800151D4(void) { return 1; }
 
 #pragma push
