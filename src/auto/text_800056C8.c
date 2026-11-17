@@ -652,6 +652,7 @@ s32 fn_80006244(void) {
 }
 
 s32 fn_8000624C(void) {
+    /* No-op stub that always reports success (zero), like fn_80006244 above. */
     return 0;
 }
 
