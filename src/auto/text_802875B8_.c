@@ -197,6 +197,42 @@ void fn_802877D0(void) {
     fn_802AE394();
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_80287800(s32 arg0) {
+    s32 a;
+    s32 b;
+    s32 c;
+    s32 d;
+    ((void (*)(void))fn_8028777C)();
+    fn_80288218(arg0);
+    fn_802880F4();
+    fn_802A81F0();
+    fn_802888D8();
+    fn_802A1590();
+    fn_8028A664();
+    fn_8028CED8();
+    fn_80294970();
+    fn_80297ED8();
+    fn_8029C1C4();
+    fn_8029EF70();
+    fn_802924F4();
+    fn_802A09B0();
+    fn_802A1290();
+    fn_802A4ADC();
+    fn_80292114();
+    fn_802A7BE8();
+    fn_8029F03C();
+    fn_802AB21C();
+    fn_8028DFB0();
+    a = fn_801E7DF0(0);
+    b = a ^ 1;
+    d = b & a;
+    c = b >> 1;
+    lbl_8055F6BC = (signed char)((c - d) < 0);
+    ((void (*)(s32, s32))fn_80288868)(0, b);
+}
+#pragma pop
 void fn_802878A8(void) {
     /* Shut down all game subsystems in order during teardown (counterpart to the init sequences
        in fn_80287914/fn_8028797C). */
@@ -364,8 +400,9 @@ s32 fn_80287B14(void) {
 }
 
 #pragma dont_inline on
-s32 fn_80287B24(s32 arg0) {
-    return ((s32*)lbl_804B3150)[0] + arg0 * 0x160;
+s32 fn_80287B24(s32 objectIndex) {
+    // Address of the object at objectIndex in the global pool of 0x160-byte records (base at lbl_804B3150).
+    return ((s32*)lbl_804B3150)[0] + objectIndex * 0x160;
 }
 #pragma dont_inline reset
 
