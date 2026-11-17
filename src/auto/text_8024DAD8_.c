@@ -773,6 +773,7 @@ copy_loop_c_end: ;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, void *arg5) {
     typedef signed char s8;
     extern f32 lbl_80563960;
@@ -2199,7 +2200,10 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
     }
     flag = -1;
     if (disabled) flag = (s32)0xFF808080;
-    fn_802354A0(*(s32 *)(self + 0x24), selected && active, flag, x, y, lbl_80563960, w, h);
+    {
+        f32 drawX = x, drawY = y, drawZ = lbl_80563960, drawW = w, drawH = h;
+        fn_802354A0(*(s32 *)(self + 0x24), selected && active, flag, drawX, drawY, drawZ, drawW, drawH);
+    }
     time = fn_80216CB4();
     if (active) {
         f32 zero = lbl_80563960, half = lbl_80563980, one = lbl_80563964;
