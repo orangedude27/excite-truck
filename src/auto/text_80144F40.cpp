@@ -2613,6 +2613,8 @@ extern "C" void fn_8014822C(void) {
 }
 
 extern "C" s32 fn_80148230(void) {
+    /* Returns -1 as the invalid/no-value sentinel used by the menu-item code
+       (pairing with the default-item colour helper fn_80148238). */
     return -1;
 }
 
