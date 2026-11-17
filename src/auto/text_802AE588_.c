@@ -1283,6 +1283,7 @@ extern int fn_802B127C(int, int);
 extern float fn_801DCF48(int, float, float);
 extern float lbl_80564AF0;
 extern double lbl_80564B70;
+typedef union { double d; u32 u[2]; } Cvt802B;
 unsigned short fn_802B0070(int point) {
     /* Append the 3-float point at `point` to the global object lbl_8055F974's
      * point array (fn_802B127C) and return the new entry's 16-bit index. */
