@@ -1816,6 +1816,8 @@ extern "C" void fn_8012D1A8(s32 arg0) {
     }
 }
 #pragma push
+#pragma scheduling invalid_target
+
 extern "C" void fn_8012D33C(u32 *arg0, u32 *arg1) {
     u32 v4 = arg1[4];
     u32 v3 = arg1[3];
