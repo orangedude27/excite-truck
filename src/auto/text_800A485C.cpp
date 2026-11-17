@@ -11791,10 +11791,9 @@ extern "C" s32 fn_800B7C08(void) {
     return (-value | value) >> 31;
 }
 
-extern "C" s32 VFipf2_fopen(void);
 /* Forwards VFipf2_fopen()'s result to callers, keeping the zero case explicit. */
 extern "C" s32 fn_800B7C34(void) {
-    s32 result = VFipf2_fopen();
+    s32 result = ((s32 (*)(void))VFipf2_fopen)();
     if (result == 0) {
         result = 0;
     }
@@ -21319,20 +21318,21 @@ static inline void fn_800D3634_initVideo(u16 width, u16 height) {
 }
 extern "C" s32 fn_800D3634(s32 arg0) {
     u8 *mode = (u8 *)arg0;
-    u8 *fb;
     s32 irq;
+    u8 *fb;
     u32 frame;
-    volatile s32 w = 0x280;
-    volatile s32 h = 0x1E0;
+    static const u32 defaultDims[2] = {0x280, 0x1E0};
 #define DST16(o) (*(u16 *)((u8 *)lbl_80407BD8 + (o)))
 #define COL8(o) (*(u8 *)((u8 *)lbl_80407BE8 + (o)))
 #define COL16(o) (*(u16 *)((u8 *)lbl_80407BE8 + (o)))
     if (lbl_8055DDC8 == 0) {
-        DST16(8) = 0x280;
+        u32 w = defaultDims[0];
+        u32 h = defaultDims[1];
+        DST16(8) = w;
         lbl_80407BD8[0] = 0;
-        DST16(10) = 0x1E0;
-        DST16(12) = 0x280;
-        lbl_80407BD8[1] = 0x280 * 0x1E0 * 2;
+        DST16(10) = h;
+        DST16(12) = w;
+        lbl_80407BD8[1] = w * h * 2;
         COL8(0) = 0xFF;
         COL8(1) = 0xFF;
         COL8(2) = 0xFF;
@@ -21370,7 +21370,7 @@ extern "C" s32 fn_800D3634(s32 arg0) {
     if (mode != 0) {
         u16 w = *(u16 *)(mode + 4);
         u16 h = *(u16 *)(mode + 8);
-        s16 stride = (w + 0xF) & 0xFFF0;
+        u16 stride = (w + 0xF) & 0xFFF0;
         lbl_80407BD8[0] = (u32)fb;
         DST16(8) = w;
         DST16(10) = h;
