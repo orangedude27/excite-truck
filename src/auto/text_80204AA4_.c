@@ -439,77 +439,100 @@ static inline const char *FindProp802054EC(volatile Lookup802054EC *l, const cha
     }
     return 0;
 }
-extern "C" int fn_802054EC(char *arg0, int arg1, int arg2) {
+class DiffLookup802054EC {
+public:
+    int typeIndex;
+    void *group;
+    void *current;
+    void *stage;
+    void *contest;
+    DiffLookup802054EC(int type, int stageIndex);
+    ~DiffLookup802054EC() {
+        void *g = group;
+        contest = 0;
+        current = 0;
+        stage = 0;
+        fn_80131818((int)g);
+        group = 0;
+    }
+    const char *Find(const char *name) {
+        void *set = stage;
+        if (set != 0 && ((PropSet802054EC *)set)->has(name) != 0) {
+            set = stage;
+            return ((PropSet802054EC *)set)->get(name);
+        }
+        set = current;
+        if (((PropSet802054EC *)set)->has(name) != 0) {
+            set = current;
+            return ((PropSet802054EC *)set)->get(name);
+        }
+        return 0;
+    }
+};
+inline DiffLookup802054EC::DiffLookup802054EC(int type, int stageIndex) {
+    class ValueGroup { public: virtual void *get(int); };
+    class StageProps { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void *get(int); };
+    char *entry;
+    typeIndex = type;
+    group = 0;
+    current = 0;
+    stage = 0;
+    contest = 0;
+    group = fn_80131808(lbl_8033BBE4);
+    entry = (char *)((void *(*)(int))fn_80204B18)(type);
+    current = ((ValueGroup *)group)->get(*(int *)(entry + 8));
+    if (stageIndex >= 0 && stageIndex < fn_80012854()) {
+        void *props = *(void **)((char *)((void *(*)(int))fn_8001285C)(stageIndex) + 0x20);
+        int ok = ((StageProps *)props)->get(*(int *)(entry + 8)) != 0;
+        if (ok) {
+            stage = ((StageProps *)props)->get(*(int *)(entry + 8));
+        }
+        contest = ((void *(*)(int))fn_80204AA4)(stageIndex);
+    }
+}
+#pragma dont_inline off
+extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
     class Manager { public: virtual void *get(int); };
     class Stage { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void *get(int); };
-    class Resource { public: virtual void f0(); virtual int has(const char *); virtual void f2(); virtual char *get(const char *); };
-    volatile struct { int arg1; void *mgr; void *cur; void *val; void *sel; } s;
+    volatile Lookup802054EC s;
     char buf[0x64];
-    char *result;
     char *entry;
-    char *t;
-    void *o;
+    const char *result;
     void *sel;
     void *mgr;
-    s.arg1 = arg1;
-    s.mgr = 0;
-    s.cur = 0;
-    s.val = 0;
-    s.sel = 0;
-    s.mgr = fn_80131808(lbl_8033BBE4);
-    entry = (char *)fn_80204B18(arg1);
-    s.cur = ((Manager *)s.mgr)->get(*(int *)(entry + 8));
+    s.typeIndex = arg1;
+    s.group = 0;
+    s.current = 0;
+    s.stage = 0;
+    s.contest = 0;
+    s.group = fn_80131808(lbl_8033BBE4);
+    entry = (char *)((void *(*)(int))fn_80204B18)(arg1);
+    s.current = ((Manager *)s.group)->get(*(int *)(entry + 8));
     if (arg2 >= 0 && arg2 < fn_80012854()) {
         void *stage = *(void **)((char *)((void *(*)(int))fn_8001285C)(arg2) + 0x20);
         int ok = ((Stage *)stage)->get(*(int *)(entry + 8)) != 0;
         if (ok) {
-            s.val = ((Stage *)stage)->get(*(int *)(entry + 8));
+            s.stage = ((Stage *)stage)->get(*(int *)(entry + 8));
         }
-        s.sel = ((void *(*)(int))fn_80204AA4)(arg2);
+        s.contest = ((void *(*)(int))fn_80204AA4)(arg2);
     }
-    sel = s.sel;
     result = 0;
+    sel = s.contest;
     if (sel != 0) {
         ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, sel, arg0);
-        o = s.val;
-        if (o != 0 && ((Resource *)o)->has(buf) != 0) {
-            o = s.val;
-            t = ((Resource *)o)->get(buf);
-        } else {
-            o = s.cur;
-            if (((Resource *)o)->has(buf) != 0) {
-                o = s.cur;
-                t = ((Resource *)o)->get(buf);
-            } else {
-                t = 0;
-            }
-        }
-        result = t;
+        result = FindProp802054EC(&s, buf);
     }
     if (result == 0) {
-        o = s.val;
-        if (o != 0 && ((Resource *)o)->has(arg0) != 0) {
-            o = s.val;
-            t = ((Resource *)o)->get(arg0);
-        } else {
-            o = s.cur;
-            if (((Resource *)o)->has(arg0) != 0) {
-                o = s.cur;
-                t = ((Resource *)o)->get(arg0);
-            } else {
-                t = 0;
-            }
-        }
-        result = t;
+        result = FindProp802054EC(&s, arg0);
     }
     if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
     arg2 = 1;
     if (stricmp(result, lbl_8055B4B4) != 0 && stricmp(result, lbl_8055B4B8) != 0) arg2 = 0;
-    mgr = s.mgr;
-    s.sel = 0;
-    s.cur = 0;
-    s.val = 0;
+    mgr = s.group;
+    s.contest = 0;
+    s.current = 0;
+    s.stage = 0;
     fn_80131818((int)mgr);
-    s.mgr = 0;
+    s.group = 0;
     return arg2;
 }
