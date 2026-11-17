@@ -891,6 +891,7 @@ void fn_801ED718(void *arg0) {
         fn_801E34E4(*(void **)(o + 0x17C), (long)(o + 4));
     }
 }
+#pragma pop
 
 /* Build a vehicle effect's left/right offset transforms from its owner matrix:
    pass its effect-data list, the owner transform, and its four transform slots. */
