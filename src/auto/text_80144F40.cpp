@@ -364,6 +364,7 @@ extern "C" s32 lbl_80559DF4;
 extern "C" __declspec(section ".sdata") char lbl_80559DFC[];
 extern "C" __declspec(section ".sdata") char lbl_80559E04[];
 extern "C" __declspec(section ".sdata") char lbl_80559E0C[];
+extern "C" char lbl_8032CEC8[];
 /* Initializes a textured/text entry from property keys: base fields via fn_80145368, width/height via virtual getter (slot 0x24), and UV bounds via fn_801452E0. */
 extern "C" void fn_80145438(void *outEntry, void *propertySource) {
     class V { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual f32 f7(const char *); };
