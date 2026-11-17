@@ -650,7 +650,12 @@ int fn_801C0168(void *sceneState) { return *(int *)((char *)sceneState + 0x5A4);
 // Return the 32-bit field stored at offset 0x59C of the given object.
 int fn_801C0170(void *object) { return *(int *)((char *)object + 0x59C); }
 
-float fn_801C0178(void) { extern float lbl_8055E3C8; return lbl_8055E3C8; }
+/* Returns the shared game clock (seconds since start), used to timestamp
+   scene-state records such as the one stamped at +0x218 by the caller. */
+float fn_801C0178(void) {
+    extern float lbl_8055E3C8; /* current game time */
+    return lbl_8055E3C8;
+}
 
 extern void fn_801C1C7C(void *, int);
 extern void fn_80179EE8(void *, int);
