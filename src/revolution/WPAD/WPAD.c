@@ -3238,7 +3238,9 @@ extern u8 lbl_8055DC12;
    initialization (the caller's argument registers flow through the tail call). */
 void fn_8005EE78(void) { fn_8006A7D0(); }
 
-// fn_8005EE7C: tail call wrapper
+/* WPAD-internal WUD library-status getter: tail-calls fn_8006A940 so its
+   status byte reaches the caller in r3; input initialization polls this until
+   the library reports ready (status 3). */
 void fn_8005EE7C(void) { fn_8006A940(); }
 
 /* Return the cached DPD (pointer) sensitivity (1-5), loaded from System Config.
