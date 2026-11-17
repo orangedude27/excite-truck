@@ -488,6 +488,7 @@ loop_test:
 
 #pragma scheduling invalid_target
 void fn_80231ADC(void) {
+    /* Clear the pending-record queue by resetting its entry count to zero. */
     lbl_8049846C[1] = 0;
 }
 
