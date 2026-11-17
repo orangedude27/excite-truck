@@ -20,8 +20,8 @@ struct Fn801A6C14Dispatch {
     virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
     virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
     virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
-    virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
-    virtual void d20(); virtual void d21(float *);
+    virtual void d16(); virtual void d17(); virtual void d18();
+    virtual void d21(float *);
 };
 #pragma cplusplus reset
 
@@ -379,17 +379,31 @@ extern "C" void fn_801A69F4(void *arg0, float *arg1) {
     float out0[3], outA[3], outB[3];
     float a0;
     double a, b, c, d, x, y, z;
+    double ab, ak, dk, da, xden, xnum, ka, kb, ynum, znum, yden;
+
     a0 = fn_801A63C4(k, *(int *)(*(char **)(p + 0x2700) + 4));
     t[0] = fn_801A6370(*(float *)(*(char **)(p + 0x2700) + 0x1e), *(float *)(p + 0x2708), *(float *)(p + 0x272c), a0);
     t[1] = fn_801A6370(*(float *)(*(char **)(p + 0x2700) + 0x22), *(float *)(p + 0x270c), *(float *)(p + 0x2730), a0);
     t[2] = fn_801A6370(*(float *)(*(char **)(p + 0x2700) + 0x26), *(float *)(p + 0x2710), *(float *)(p + 0x2734), a0);
+
     a = fn_801A63C4(*(int *)(*(char **)(p + 0x2700) + 0x51), *(int *)(*(char **)(p + 0x2700) + 0x9e));
     b = fn_801A63C4(*(int *)(*(char **)(p + 0x2700) + 4), *(int *)(*(char **)(p + 0x2700) + 0x9e));
     c = fn_801A63C4(k, *(int *)(*(char **)(p + 0x2700) + 0x9e));
     d = c + c;
-    x = (d - lbl_80562440 - b) / ((a - lbl_80562440) * (a - b));
-    y = ((d - a) - b) / ((lbl_80562440 - a) * (lbl_80562440 - b));
-    z = (d - lbl_80562440 - a) / ((b - lbl_80562440) * (b - a));
+    ab = a - b;
+    ak = a - lbl_80562440;
+    dk = d - lbl_80562440;
+    da = d - a;
+    xden = ak * ab;
+    xnum = dk - b;
+    ka = lbl_80562440 - a;
+    kb = lbl_80562440 - b;
+    ynum = da - b;
+    znum = dk - a;
+    yden = ka * kb;
+    x = xnum / xden;
+    y = ynum / yden;
+    z = znum / ((b - lbl_80562440) * (b - a));
     {
         char *data = *(char **)(p + 0x2700);
         out0[0] = *(float *)(data + 0x6b) * x + *(float *)(data + 0xb8) * y + *(float *)(data + 0x1e) * z;
