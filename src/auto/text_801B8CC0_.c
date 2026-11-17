@@ -199,13 +199,12 @@ static inline void transform_vec_scheduled(float *out, const float *m, float *in
 }
 /* Rotate a vector into the frame whose axes are m's rows, in place. */
 static inline void rotate_vec_in_place(Vec *v, const Vec *axes) {
-    const f32 *m = (const f32 *)axes;
     f32 x = v->x;
     f32 y = v->y;
     f32 z = v->z;
-    v->x = x * m[0] + y * m[1] + z * m[2];
-    v->y = x * m[3] + y * m[4] + z * m[5];
-    v->z = x * m[6] + y * m[7] + z * m[8];
+    v->x = axes[0].x * x + axes[0].y * y + axes[0].z * z;
+    v->y = axes[1].x * x + axes[1].y * y + axes[1].z * z;
+    v->z = axes[2].x * x + axes[2].y * y + axes[2].z * z;
 }
 /* The same scheduled transform as transform_vec_scheduled, but with the
    non-alias path written so each row re-reads the source vector
@@ -650,8 +649,7 @@ extern "C" void fn_801B949C(struct TrlrCar *car) {
                     lbl_80562760, anchorZ);
     }
 }
-#pragma cplusplus reset
-#pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_801B97D8(struct TrlrCar *car) {
     struct { s32 kind; s32 player; s32 count; f32 p[6]; u8 pad[0x30]; } event;
     struct CarPose pose;
@@ -792,3 +790,4 @@ extern "C" void fn_801B97D8(struct TrlrCar *car) {
         ((void (*)(void *))fn_80189C64)(car->player);
     }
 }
+#pragma scheduling on
