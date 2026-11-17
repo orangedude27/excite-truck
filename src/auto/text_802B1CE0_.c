@@ -905,36 +905,39 @@ int *fn_802B320C(int *basePtr, int index) {
 extern char lbl_8034A3BC[];
 extern void fn_802E30C8(const char *, ...);
 #pragma scheduling invalid_target
-void fn_802B321C(int *param_1, int *param_2, int *param_3, int param_4)
+void fn_802B321C(int *outList, int *outLayer, int *layers, int layerIndex)
 {
-    int item;
-    int *entry;
+    /* GetTweakers: fill the output work list with the tweaker records of the
+     * requested layer and hand back that layer's payload pointer; report the
+     * request and bail out if the layer index is out of range. */
+    int layer;
+    int *tweaker;
     int i;
     int offset;
 
-    if (param_4 >= 0 && param_4 < param_3[1]) {
-        item = *(int *)(*param_3 + param_4 * 4);
-        if (param_1 != 0) {
+    if (layerIndex >= 0 && layerIndex < layers[1]) {
+        layer = *(int *)(*layers + layerIndex * 4);
+        if (outList != 0) {
             i = 0;
             offset = 0;
-            while (i < *(int *)(item + 0x40C) &&
-                   param_1[1] + 1 <= param_1[2]) {
+            while (i < *(int *)(layer + 0x40C) &&
+                   outList[1] + 1 <= outList[2]) {
                 i++;
-                entry = *(int **)(*(int *)(item + 0x408) + offset);
+                tweaker = *(int **)(*(int *)(layer + 0x408) + offset);
                 offset += 4;
                 {
-                    int *dst = (int *)((char *)param_1[0] + param_1[1]++ * 0xC);
-                    dst[0] = *(int *)((char *)entry + 0x2A4);
-                    dst[1] = (int)entry;
-                    dst[2] = (int)((char *)entry + 0x298);
+                    int *dst = (int *)((char *)outList[0] + outList[1]++ * 0xC);
+                    dst[0] = *(int *)((char *)tweaker + 0x2A4);
+                    dst[1] = (int)tweaker;
+                    dst[2] = (int)((char *)tweaker + 0x298);
                 }
             }
         }
-        if (param_2 != 0)
-            *param_2 = item + 4;
+        if (outLayer != 0)
+            *outLayer = layer + 4;
         return;
     }
-    fn_802E30C8(lbl_8034A3BC, param_4, 0, param_3[1]);
+    fn_802E30C8(lbl_8034A3BC, layerIndex, 0, layers[1]);
 }
 int fn_802B2E00(void *);
 int *fn_802B320C(int *, int);
