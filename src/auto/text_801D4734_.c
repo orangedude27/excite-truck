@@ -3752,8 +3752,10 @@ extern "C" void fn_801D8D00(void *arg0) {
 #pragma cplusplus reset
 
 #pragma cplusplus on
-extern "C" void fn_801D8DA0(void *arg0) {
-    struct Dummy {
+extern "C" void fn_801D8DA0(void *effect) {
+    /* Virtual dispatch on an action-sequence TimedEffect cue: jump to the
+       vtable entry at offset 0x34 (vtable slot 13) on effect. */
+    struct TimedEffectVtbl {
         virtual void v0();
         virtual void v1();
         virtual void v2();
@@ -3767,7 +3769,7 @@ extern "C" void fn_801D8DA0(void *arg0) {
         virtual void v10();
         virtual void v11();
     };
-    ((Dummy *)arg0)->v11();
+    ((TimedEffectVtbl *)effect)->v11();
 }
 #pragma cplusplus reset
 
