@@ -70,20 +70,25 @@ int fn_802AC1BC(const char *justify, int unused) {
 }
 #pragma use_lmw_stmw on
 #pragma cplusplus on
-extern "C" int fn_802AC2B4(void **obj, int arg1, float *arg2) {
-    struct Interface {
+/* Read the float attribute `key` of the attribute set `attrs`: when the set exists and
+ * holds that key, store its value through outValue and return 1; otherwise leave
+ * *outValue alone and return 0.  fn_802AC4A8 uses this to let an animation override its
+ * length with its "__anim_end__" attribute. */
+extern "C" int fn_802AC2B4(void **attrs, int key, float *outValue) {
+    /* attribute set: vtable+0xC = hasEntry(key), vtable+0x24 = getFloat(key) */
+    struct AttributeSet {
         virtual void v0();
-        virtual int check();
-        virtual void v1();
+        virtual int hasEntry(const char *key);
         virtual void v2();
         virtual void v3();
         virtual void v4();
         virtual void v5();
-        virtual float getValue(int);
+        virtual void v6();
+        virtual float getFloat(const char *key);
     };
-    if (obj != 0 && ((Interface *)obj)->check() != 0) {
-        if (arg2 != 0) {
-            *arg2 = ((Interface *)obj)->getValue(arg1);
+    if (attrs != 0 && ((AttributeSet *)attrs)->hasEntry((const char *)key) != 0) {
+        if (outValue != 0) {
+            *outValue = ((AttributeSet *)attrs)->getFloat((const char *)key);
         }
         return 1;
     }
