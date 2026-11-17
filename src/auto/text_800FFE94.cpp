@@ -431,7 +431,8 @@ extern "C" void fn_80100A48(void* player, float value) {
     OSRestoreInterrupts(interrupts);
 }
 
-extern "C" float fn_80100A88(void* arg0) { return *(float*)((char*)arg0 + 0x4C); }
+/* Return the float field at offset 0x4C of this WsdPlayer (set by fn_80100A48). */
+extern "C" float fn_80100A88(void* player) { return *(float*)((char*)player + 0x4C); }
 
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9WsdPlayerFQ36nw4hbm3snd6AuxBusf(void *arg0, int arg1, float arg2) {
     /* Set FX send for the given aux bus (0..2) or panic if out of range. */
