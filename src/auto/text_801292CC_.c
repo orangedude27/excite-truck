@@ -33,7 +33,9 @@ void fn_80129324(void) {
     gLoadedBankId = 0;
 }
 
-void fn_80129360(int a, int b) { fn_802E765C(lbl_8055DFA8,a,b); }
+/* Unload the currently loaded stream bank: hand its handle to the stream-bank
+   manager's unload routine, forwarding the bank id and flags. */
+void fn_80129360(int bankId, int flags) { fn_802E765C(gLoadedBankId, bankId, flags); }
 
 /* These level constants are fed to the stream manager's per-channel level setter (f24). */
 #define FULL_LEVEL lbl_80561238 /* 1.0f */
