@@ -179,6 +179,7 @@ void fn_802E8920(int arg0) {
     int result = NANDCheck((arg0 + 0x3FFF) / 0x4000 + 4, 2, &flags);
     if (result == 0) {
         for (;;) {
+        loop:
             if (flags & 1) {
                 fn_802E30C8(messages + 0x328);
             }
@@ -194,16 +195,14 @@ void fn_802E8920(int arg0) {
                     fn_802E8918();
                     break;
                 }
-                if (fn_802E88D8() != 0) {
-                    break;
-                }
+                if (fn_802E88D8() == 0) goto loop;
+                break;
             } else {
                 if (fn_802E888C(7) != 0) {
                     break;
                 }
-                if (fn_802E88D8() != 0) {
-                    break;
-                }
+                if (fn_802E88D8() == 0) goto loop;
+                break;
             }
         }
     } else {
@@ -620,7 +619,7 @@ extern char lbl_8034E108[];
 #pragma scheduling invalid_target
 void fn_802E91D8(void *arg0, const char *arg1, int arg2, int arg3) {
     const char *original = arg1;
-    const char *src = arg1;
+    const char *src = original;
     char *dst = (char *)arg0 + 0xC;
     int count = 0x100;
     *(int *)((char *)arg0 + 8) = arg2;
@@ -881,9 +880,15 @@ int fn_802E967C(char *fileName, void *src, int size) {
 }
 
 __declspec(section ".data") extern int lbl_80507288;
+#pragma opt_propagation off
 void fn_802E97B4(void) {
     if (lbl_80560035 == 0) {
-        if (fn_802ECC10() != 0) return;
+        switch (fn_802ECC10()) {
+        case 0:
+            break;
+        default:
+            return;
+        }
         lbl_80560035 = 1;
         if (lbl_80507288 == 1) {
             switch (*(int *)((char *)&lbl_80507288 + 0x25C)) {
@@ -904,7 +909,7 @@ void fn_802E97B4(void) {
         *(int *)((char *)&lbl_80507288 + 0x25C) = 0;
     }
 }
-
+#pragma opt_propagation reset
 void fn_802E986C(void) {}
 
 void fn_802E9870(void) {}
