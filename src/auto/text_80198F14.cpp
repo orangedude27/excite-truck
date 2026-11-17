@@ -2200,8 +2200,7 @@ extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
     *(s32*)((u8*)arg0 + 0xC) = arg1;
 }
 
-#pragma scheduling invalid_target
-extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
+extern "C" void* fn_8019EDB8(void* __restrict arg0, void* arg1, s32 arg2) {
     u32 self = (u32)arg0;
     u32 copyFlag = (u32)arg2;
     u8 second, first, opposite, other;
