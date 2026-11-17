@@ -381,12 +381,15 @@ extern int fn_8002B1D8(void *, void *, int);
 extern int atoi(const char *);
 extern int stricmp(const char *, const char *);
 #pragma peephole on
-char *fn_801337E4(char *arg0) {
-    char *p = arg0;
+char *fn_801337E4(char *str) {
+    /* Skip leading whitespace: advance past each character that the active
+     * locale's ctype map flags as space (mask 0x100), stopping at NUL or the
+     * first non-space character, and return that position. */
+    char *p = str;
     unsigned char byte;
     int c;
-    int table = *(int *)((char *)&lbl_802FE850 + 0x38);
-    while ((byte = *p, c = (signed char)byte) && ((c < 0 || c >= 0x100) ? 0 : (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100)))
+    int ctypeTable = *(int *)((char *)&lbl_802FE850 + 0x38);
+    while ((byte = *p, c = (signed char)byte) && ((c < 0 || c >= 0x100) ? 0 : (*(unsigned short *)(*(int *)(ctypeTable + 8) + c * 2) & 0x100)))
         p++;
     return p;
 }
