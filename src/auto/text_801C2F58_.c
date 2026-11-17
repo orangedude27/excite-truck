@@ -177,15 +177,16 @@ static inline void mtx_to_quat(float m[3][3], float *q) {
     } else {
         i = 0;
         if (m[1][1] > m[0][0]) i = 1;
-        if (m[2][2] > m[0][i]) i = 2;
+        if (m[2][2] > m[i][i]) i = 2;
         j = (i + 1) % 3;
         k = (j + 1) % 3;
         sn = (float)fn_8002F234(lbl_8056296C + (m[i][i] - (m[j][j] + m[k][k])));
         inv = lbl_80562974 / sn;
-        q[i] = lbl_80562974 * sn;
-        q[3] = inv * (m[j][k] - m[k][j]);
-        q[j] = inv * (m[i][j] + m[j][i]);
-        q[k] = inv * (m[i][k] + m[k][i]);
+        q3 = lbl_80562974 * sn;
+        q0 = inv * (m[j][k] - m[k][j]);
+        q1 = inv * (m[i][j] + m[j][i]);
+        q2 = inv * (m[i][k] + m[k][i]);
+        q[i] = q3; q[3] = q0; q[j] = q1; q[k] = q2;
     }
 }
 #pragma scheduling invalid_target
