@@ -7,6 +7,7 @@ u32 fn_800300F4(void) {
 }
 
 u32 fn_800300FC(void) {
+    /* No-op MetroTRK console-write handler stub; its caller __write_console ignores the result. */
     return 1;
 }
 
