@@ -1361,15 +1361,14 @@ extern "C" int fn_801EE0C8(int);
 extern "C" void fn_802C77F0(int, float *);
 extern "C" int lbl_80488648[];
 extern "C" float lbl_80564608;
-#pragma dont_inline on
+#pragma dont_inline off
+#pragma auto_inline off
 extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     register void *dest = arg0;
     register int index = arg1;
     register void *data;
     float a[3], b[3], c[3], home[3], screen[6];
     int selector, handle;
-    unsigned int *src, *dst;
-    register unsigned int t, v1, v0;
     float h2, h0;
 
     data = (void *)fn_80287B24(index);
@@ -1380,15 +1379,8 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     handle = fn_801EE0C8(selector);
     fn_802C77F0(handle, screen);
 
-    src = (unsigned int *)data;
-    dst = (unsigned int *)dest;
-    t = src[0]; v1 = src[1]; dst[0] = t; dst[1] = v1;
-    v0=src[2]; v1=src[3]; dst[2]=v0; dst[3]=v1;
-    v0=src[4]; v1=src[5]; dst[4]=v0; dst[5]=v1;
-    v0=src[6]; v1=src[7]; dst[6]=v0; dst[7]=v1;
-    v0=src[8]; dst[8]=v0;
-    v1=src[9]; v0=src[10]; dst[9]=v1; dst[10]=v0;
-    v0=src[11]; dst[11]=v0;
+    *(Fn80299A88Matrix *)dest = *(Fn80299A88Matrix *)data;
+    *(Fn8029A4B4Vec *)((char *)dest + 0x24) = *(Fn8029A4B4Vec *)((char *)data + 0x24);
 
     h2 = screen[4];
     home[1] = screen[2];
@@ -1406,9 +1398,9 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     ((void (*)(void *, float *, float *, float *, float, float, float))fn_8029A318)
         (dest, a, b, c, home[0], home[1], home[2]);
     *(int *)((char *)dest + 0x40) =
-        fn_8029833C(lbl_8055F7C0, a, b, c, *(short *)((char *)data + 0x30), lbl_80564608);
+        ((int (*)(void *, void *, void *, void *, short, float))fn_8029833C)
+        (lbl_8055F7C0, a, b, c, *(short *)((char *)data + 0x30), lbl_80564608);
 }
-
 extern "C" void fn_8029A318(float*, float*, float*, float*, float, float, float);
 #pragma dont_inline on
 extern "C" void fn_8029A60C(void *xform, void *__restrict source) {
