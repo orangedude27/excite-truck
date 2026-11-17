@@ -5572,8 +5572,9 @@ extern "C" s32 fn_801A5174(void* object) {
     return *(s32*)((u8*)object + 0x48);
 }
 
-extern "C" s32 fn_801A517C(s32 arg0) {
-    return arg0 + 0x28;
+/* Return the address of the sub-object embedded at +0x28 of the given object. */
+extern "C" s32 fn_801A517C(s32 object) {
+    return object + 0x28;
 }
 
 extern "C" u8 fn_801A5184(void *arg0) { return *((u8*)arg0 + 0x40); }
