@@ -995,23 +995,28 @@ extern "C" void *GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(void *se
 #undef zeroBufferNotCreated
 }
 
+/* nw4hbm::snd::detail::AxManager::RegisterCallback(CallbackListNode*, void (*)()):
+ * put a caller-supplied function on the mixer manager's callback list so it runs
+ * once per mixer frame (the sound thread uses it to refill streaming buffers).
+ * The list is walked from the mixer callback, so the node's function pointer and
+ * the append both happen with the interrupts disabled. */
 extern "C" void RegisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNodePFv_v(void *self, void *node, void (*callback)(void)) {
-    void *pThis = self;
-    void *pNode = node;
-    void (*pCallback)(void) = callback;
-    unsigned int level;
-    void *callbackListNode;
+    void *manager = self;
+    void *callbackNode = node;
+    void (*callbackFunc)(void) = callback;
+    unsigned int interruptLevel;
+    void *listEnd;
     void *iterator;
 
-    level = OSDisableInterrupts();
-    *(void (**)(void))((char *)pNode + 8) = pCallback;
-    callbackListNode = (char *)pThis + 12;
-    if (pNode == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322094, 0x233, lbl_80322070);
+    interruptLevel = OSDisableInterrupts();
+    *(void (**)(void))((char *)callbackNode + 8) = callbackFunc;
+    listEnd = (char *)manager + 12;    /* the callback list at +8 hands out its own node as end() */
+    if (callbackNode == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322094, 0x233, lbl_80322070);    /* "LinkList.h": "NW4HBM:Pointer must not be NULL (p)" */
     }
-    iterator = callbackListNode;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)pThis + 8, &iterator, pNode);
-    OSRestoreInterrupts(level);
+    iterator = listEnd;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)manager + 8, &iterator, callbackNode);
+    OSRestoreInterrupts(interruptLevel);
 }
 
 /* nw4hbm::snd::detail::AxManager::UnregisterCallback: remove a callback node from mCallbackList (+0x8) with interrupts disabled. */
