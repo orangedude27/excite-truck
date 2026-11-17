@@ -1162,6 +1162,7 @@ void fn_80031C6C(void* hi) {
 }
 
 u16 fn_80031C74(void) {
+    /* Return ccMask1 (lbl_8055D734), the first MetroTRK CC AUX channel mask (0x8000 by default). */
     return lbl_8055D734;
 }
 
