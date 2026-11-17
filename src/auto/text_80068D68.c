@@ -705,7 +705,7 @@ extern char lbl_80313238[];
 extern u8 lbl_803C0D48[];
 extern u8 lbl_803C3C38[];
 extern u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param, u16 data, u8 report_id, BT_HDR *pbuf);
-typedef u8 hidh_trans_t;
+typedef s32 hidh_trans_t;
 extern u8 hidh_conn_snd_data(u8 dev_handle, hidh_trans_t trans_type, u8 param, u16 data, u8 report_id, BT_HDR *buf);
 extern u8 lbl_8031787C[];
 extern char lbl_80317838[];
