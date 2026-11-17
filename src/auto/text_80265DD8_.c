@@ -1604,10 +1604,17 @@ void fn_80268358(void *arg0) {
     fn_8026E850(frame.v30, frame.v24, arg0, frame.v18);
 }
 
-void fn_80268B94(int arg0) {
-    lbl_8055F4A0 = arg0;
-    lbl_8055F4A4 = arg0;
-    fn_801E9DC4(&lbl_8055F4A8);
+void fn_80268B94(int frameIndex) {
+    /* Snap both camera-path keyframe indices to frameIndex and clear the search hint. */
+#define sFromKey lbl_8055F4A0
+#define sToKey lbl_8055F4A4
+#define sSearchHint lbl_8055F4A8
+    sFromKey = frameIndex;
+    sToKey = frameIndex;
+    fn_801E9DC4(&sSearchHint);
+#undef sFromKey
+#undef sToKey
+#undef sSearchHint
 }
 
 extern char lbl_80499920[];
@@ -1943,22 +1950,22 @@ void fn_802693F4(char *p, unsigned char *flag, int arg) {
         case 13: fn_80273604(p, 2); break;
         case 14: fn_80273604(p, 3); break;
         case 15: fn_80273604(p, 4); break;
-        case 19: { int *s = (int *)lbl_80499920; int *q = (int *)(p + 0x58); int a, b;
-            a=s[0]; b=s[1]; q[0]=a; q[1]=b;
-            a=s[2]; b=s[3]; q[2]=a; q[3]=b;
-            a=s[4]; b=s[5]; q[4]=a; q[5]=b;
-            a=s[6]; b=s[7]; q[6]=a; q[7]=b;
-            a=s[8]; q[8]=a;
-            a=s[9]; b=s[10]; q[9]=a; q[10]=b;
-            a=s[11]; q[11]=a; } break;
-        case 20: { int *s = (int *)lbl_80499950; int *q = (int *)(p + 0x58); int a, b;
-            a=s[0]; b=s[1]; q[0]=a; q[1]=b;
-            a=s[2]; b=s[3]; q[2]=a; q[3]=b;
-            a=s[4]; b=s[5]; q[4]=a; q[5]=b;
-            a=s[6]; b=s[7]; q[6]=a; q[7]=b;
-            a=s[8]; q[8]=a;
-            a=s[9]; b=s[10]; q[9]=a; q[10]=b;
-            a=s[11]; q[11]=a; } break;
+        case 19: { int *s = (int *)lbl_80499920; int *q = (int *)(p + 0x58); int b, a;
+            b=s[0]; a=s[1]; q[0]=b; q[1]=a;
+            b=s[2]; a=s[3]; q[2]=b; q[3]=a;
+            b=s[4]; a=s[5]; q[4]=b; q[5]=a;
+            b=s[6]; a=s[7]; q[6]=b; q[7]=a;
+            b=s[8]; q[8]=b;
+            b=s[9]; a=s[10]; q[9]=b; q[10]=a;
+            b=s[11]; q[11]=b; } break;
+        case 20: { int *s = (int *)lbl_80499950; int *q = (int *)(p + 0x58); int b, a;
+            b=s[0]; a=s[1]; q[0]=b; q[1]=a;
+            b=s[2]; a=s[3]; q[2]=b; q[3]=a;
+            b=s[4]; a=s[5]; q[4]=b; q[5]=a;
+            b=s[6]; a=s[7]; q[6]=b; q[7]=a;
+            b=s[8]; q[8]=b;
+            b=s[9]; a=s[10]; q[9]=b; q[10]=a;
+            b=s[11]; q[11]=b; } break;
         case 27: fn_80275B9C(p, lbl_80563CC0, lbl_80563CC4, lbl_80563CC8); break;
         case 28:
             m = lbl_80563C20;
