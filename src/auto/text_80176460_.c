@@ -402,8 +402,11 @@ void* fn_801769C4(void) {
 }
 
 extern u8 lbl_804303E0[];
+/* Get the shared AXFX LFO sine-table object. */
 void *__AXFXGetLfoSinTable_801769CC(void) {
-    return lbl_804303E0;
+    #define s_lfoSinTable lbl_804303E0
+    return s_lfoSinTable;
+    #undef s_lfoSinTable
 }
 
 u32 *fn_801769D8(void) { return &lbl_8055E3F8; }
