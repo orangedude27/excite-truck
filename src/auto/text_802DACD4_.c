@@ -223,6 +223,7 @@ void fn_802DB03C(char *arg0) {
 __declspec(section ".sdata") extern char lbl_8055D140[];
 extern void fn_802CED50(int, int, int, int);
 void fn_802DB168(void) {
+    #pragma scheduling invalid_target
     struct { unsigned char kind, format; unsigned char pad[2]; void *buffer; int width, height, size; int pad2[2]; int width2, height2; } config;
     int width = 0, height = 0;
     unsigned char *base = fn_802D2F78(&width, &height);
@@ -245,7 +246,7 @@ void fn_802DB168(void) {
     config.size = width * 2;
     config.width2 = width;
     config.height2 = height;
-    fn_802C3034(&config, 0x80, width, height);
+    ((void (*)(void *))fn_802C3034)(&config);
     fn_802DAE64(-0x1C2, 0x17C, lbl_8055D140);
     fn_802D2FD8();
     fn_802CED50(0x1C2, 0x17C, 0x78, 0x1E);
