@@ -1170,8 +1170,9 @@ extern unsigned char lbl_8055F450;
 int fn_80128668(void);
 #pragma push
 #pragma small_data off
+/* Registers the "fade_out" trail with the trail manager (marks it as reached). */
 void fn_80265A28(void) {
-    fn_80236954(lbl_803464EC);
+    fn_80236954(sFadeOutTrailName);
 }
 #pragma pop
 void fn_80265A34(void) {
