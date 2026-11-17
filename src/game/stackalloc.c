@@ -452,7 +452,7 @@ void fn_802DA1F4(int arg0, void *arg1, int arg2) {
     }
     lbl_8055FE58 = 1;
 }
-#pragma unroll reset
+#pragma unroll_loops reset
 
 void fn_802DA2F4(void) {
     void *object;
