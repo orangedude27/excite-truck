@@ -416,8 +416,9 @@ int fn_8027D914(void *container, int index) {
     return ((int *)container)[6] + index * 0x3C;
 }
 
-unsigned char fn_8027D924(void *arg0) {
-    return ((unsigned char *)arg0)[0x1F0];
+/* Return the first byte of the 4-byte field at offset 0x1F0 of the entry. */
+unsigned char fn_8027D924(void *entry) {
+    return ((unsigned char *)entry)[0x1F0];
 }
 
 unsigned char fn_8027D92C(void *arg0) { return ((unsigned char *)arg0)[0x1F1]; }
