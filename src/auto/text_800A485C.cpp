@@ -6431,7 +6431,10 @@ extern "C" s32 fn_800B0258(void *, s32, s32 *);
 extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     u32 sign = ((u32)(-(arg2) | (arg2))) >> 31;
     s32 result = fn_800AE4C0((void *)arg0, (u32)arg1, sign, 0, (s32 *)arg3);
-    return result == 0 ? 0 : result;
+    switch (result) {
+    case 0: return 0;
+    default: return result;
+    }
 }
 
 extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *clusterOffset, s32 *bytesRemaining) {
