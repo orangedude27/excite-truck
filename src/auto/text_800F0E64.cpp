@@ -1084,9 +1084,10 @@ extern "C" s32 fn_800F2804(void *archive) {
 }
 
 extern "C" s32 ReadPlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive10PlayerInfo(void *, u32, void *);
-extern "C" s32 fn_800F280C(void *arg0) {
+extern "C" s32 fn_800F280C(void *archive) {
     typedef s32 (*ReadPlayerInfoThunk)(s32);
-    return ((ReadPlayerInfoThunk)ReadPlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive10PlayerInfo)(*(s32*)((u8*)arg0 + 4));
+    /* Read player info through this archive's file reader. */
+    return ((ReadPlayerInfoThunk)ReadPlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive10PlayerInfo)(*(s32*)((u8*)archive + 4));
 }
 
 M2C_UNK ReadSoundArchivePlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPQ46nw4hbm3snd12SoundArchive22SoundArchivePlayerInfo(s32);
