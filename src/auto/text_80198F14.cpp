@@ -97,14 +97,18 @@ extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
 #pragma always_inline on
 static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
     if (dst == src) {
-        f32 x = m[6] * src[2] + (m[3] * src[1] + m[0] * src[0]);
-        f32 y = m[7] * src[2] + (m[4] * src[1] + m[1] * src[0]);
-        f32 z = m[8] * src[2] + (m[5] * src[1] + m[2] * src[0]);
+        f32 p0 = m[3] * src[1], p1 = m[4] * src[1];
+        f32 p2 = m[0] * src[0], p3 = m[1] * src[0], p4 = m[2] * src[0];
+        f32 p5 = m[5] * src[1];
+        f32 p6 = m[6] * src[2], p7 = m[7] * src[2], p8 = m[8] * src[2];
+        f32 x = p6 + (p2 + p0), y = p7 + (p3 + p1), z = p8 + (p4 + p5);
         dst[0] = x; dst[1] = y; dst[2] = z;
     } else {
-        f32 x0 = m[6] * src[2] + (m[3] * src[1] + m[0] * src[0]);
-        f32 y0 = m[7] * src[2] + (m[4] * src[1] + m[1] * src[0]);
-        f32 z0 = m[8] * src[2] + (m[5] * src[1] + m[2] * src[0]);
+        f32 q0 = m[3] * src[1], q1 = m[4] * src[1];
+        f32 q2 = m[0] * src[0], q3 = m[1] * src[0], q4 = m[2] * src[0];
+        f32 q5 = m[5] * src[1];
+        f32 q6 = m[6] * src[2], q7 = m[7] * src[2], q8 = m[8] * src[2];
+        f32 x0 = q6 + (q2 + q0), y0 = q7 + (q3 + q1), z0 = q8 + (q4 + q5);
         dst[0] = x0; dst[1] = y0; dst[2] = z0;
     }
 }
@@ -1907,6 +1911,7 @@ extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __rest
 #pragma scheduling invalid_target
 extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *arg4, f32 farg0, f32 farg1) {
     Vec velocity, delta, normalCopy, normal, cross, rotated, result;
+    f32 *m = (f32 *)arg2;
     f32 *p = (f32 *)arg0;
     u32 ny = ((u32 *)arg4)[1];
     f32 dx = arg3[0] - p[0];
@@ -1923,13 +1928,12 @@ extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *ar
         ((u32 *)&normal)[2] = ((u32 *)&normalCopy)[2];
         PSVECNormalize(&normal, &normal);
         PSVECCrossProduct(&delta, &normal, &cross);
-        Fn8019DF88MultVec((f32 *)arg2, (f32 *)&cross, (f32 *)&rotated);
+        Fn8019DF88MultVec(m, (f32 *)&cross, (f32 *)&rotated);
         PSVECCrossProduct(&rotated, &delta, &result);
         f32 denominator = lbl_805622E0 / farg0 + PSVECDotProduct(&normal, &result);
         if ((f32)__fabs((f64)denominator) > lbl_8056235C) {
             f32 impulse = (-(lbl_805622E0 + farg1) * PSVECDotProduct(&velocity, &normal)) / denominator;
-            f32 ret = lbl_80562360;
-            if (lbl_80562360 >= impulse) ret = impulse;
+            f32 ret = lbl_80562360 < impulse ? lbl_80562360 : impulse;
             return ret;
         }
     }
