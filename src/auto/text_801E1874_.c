@@ -226,7 +226,8 @@ void fn_801E1B30(void) {
 #pragma pop
 #pragma scheduling on
 void fn_801E1D20(void) {
-    lbl_8055EA20 = 0;
+    /* Mark the weather parameters as stale so they get reloaded next time. */
+    gWeatherLoaded = 0;
 }
 
 void fn_801E1D2C(void) {
