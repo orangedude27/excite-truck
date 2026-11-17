@@ -75,8 +75,9 @@ extern "C" void *fn_800DCE10(void *object, s32 deleteFlag) {
     return object;
 }
 
-extern "C" void fn_800DCE50(void **arg0) {
-    *arg0 = (void *)&lbl_80320548;
+extern "C" void fn_800DCE50(void **this_) {
+    /* Base-class construction helper for nw4hbm::lyt::ArcResourceAccessor: install the ResourceAccessor vtable pointer (lbl_80320548) at the start of the object. */
+    *this_ = (void *)&lbl_80320548;
 }
 
 extern "C" s32 fn_800DCE60(void) {
