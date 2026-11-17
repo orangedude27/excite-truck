@@ -99,8 +99,9 @@ void fn_801B5410(void *arg0, void *arg1, void *arg2) {
     *(f32 *)((u8 *)arg1 + 4) = one;
 }
 
-s32 fn_801B54A8(void *arg0) {
-    return *(s32 *)((u8 *)arg0 + 0x3C);
+/* Return the BPX object pointer held in this ObjectLink (at +0x3C), as an s32. */
+s32 fn_801B54A8(void *link) {
+    return (s32)((struct ObjectLink *)link)->object;
 }
 
 extern float lbl_80562694;
