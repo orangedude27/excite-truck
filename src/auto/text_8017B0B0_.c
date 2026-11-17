@@ -63,7 +63,7 @@ void fn_8017B198(void *arg0) {
     int old;
     void *node;
 
-    zero = lbl_80561BA8;
+    zero = 0.0f;
     *(int *)((char *)arg0 + 0x1E4) = 0;
     *(float *)((char *)arg0 + 0x118) = zero;
     *(float *)((char *)arg0 + 0x11C) = zero;
