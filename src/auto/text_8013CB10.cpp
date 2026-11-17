@@ -1052,9 +1052,9 @@ extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
         o[1] = c[1] - s[1];
         d[0] = d[0] * scale;
         d[1] = d[1] * scale;
+        f32 p = d[0] * o[0] + d[1] * o[1];
         from += 3;
         to += 3;
-        f32 p = d[0] * o[0] + d[1] * o[1];
         c[0] = s[0] + d[0] * p;
         c[1] = s[1] + d[1] * p;
         out[0] = c[0];
@@ -3602,6 +3602,8 @@ extern "C" f32 fn_80143C44(void) {
     return lbl_805615B0;
 }
 
+/* Constant getter: this subsystem's flag is always true (1), likely a virtual
+ * IsEnabled-style query returning a fixed value. */
 extern "C" u32 fn_80143C4C(void) { return 1; }
 
 extern "C" s32 fn_802ADDD8(s32);
