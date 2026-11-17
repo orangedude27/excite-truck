@@ -3742,8 +3742,9 @@ extern float lbl_805641FC;
 extern void* fn_8027ED70(void);
 extern int fn_80214A9C(int);
 #pragma cplusplus on
-extern "C" void fn_802872DC(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v1();
+extern "C" void fn_802872DC(void* plane) {
+    /* Forward to virtual method v1 of the title black plane's sub-object. */
+    ((ebi::title::TBlackPlane*)plane)->m_a->v1();
 }
 #pragma cplusplus on
 extern "C" void fn_802872F0(void* arg0) {
