@@ -2469,6 +2469,7 @@ void *fn_801D774C(void *object, int shouldDelete) {
     return object;
 }
 
+/* Name accessor: returns the "Obstacle_ASE" identifier string for this effect system. */
 char *fn_801D77AC(void) {
     return lbl_803388F0;
 }
