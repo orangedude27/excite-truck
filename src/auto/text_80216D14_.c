@@ -930,7 +930,9 @@ loop_test:
 #pragma pop
 
 #pragma pop
-void fn_802180B0(void *arg0) { fn_80217EC0(arg0, 1, 0); }
+/* Move the menu selection to the neighbouring item on the left (MoveSelectionLeft):
+ * ask fn_80217EC0 to pick the next X-axis candidate in that direction. */
+void fn_802180B0(void *screen) { fn_80217EC0(screen, 1, 0); }
 
 /* Move the menu selection to the neighbouring item on the right (MoveSelectionRight):
  * ask fn_80217EC0 to pick the next X-axis candidate in that direction. */
