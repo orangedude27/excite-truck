@@ -719,8 +719,9 @@ extern "C" int fn_80101400(void* player) {
     return *((unsigned char*)player + 0x1E) != 0;
 }
 
-extern "C" int fn_80101414(void* arg0) {
-    return *((unsigned char*)arg0 + 0x1F) != 0;
+extern "C" int fn_80101414(void* player) {
+    /* Return the boolean flag stored at offset 0x1F of the sound player. */
+    return *((unsigned char*)player + 0x1F) != 0;
 }
 
 extern "C" int fn_80101428(void* player) {
