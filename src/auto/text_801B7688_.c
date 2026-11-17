@@ -86,9 +86,10 @@ void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
         temp = *(double *)&value[0];
         z = value[0];
         {
-            float normZ = ((float *)&temp)[0];
-            float normW = ((float *)&temp)[1];
-            float negZ = -normZ;
+            float normW, normZ, negZ;
+            normZ = ((float *)&temp)[0];
+            normW = ((float *)&temp)[1];
+            negZ = -normZ;
             ((float *)&temp)[0] = normW;
             ((float *)&temp)[1] = negZ;
             value[2] += ((float *)&temp)[0] * offset;
@@ -348,8 +349,10 @@ void fn_801B7F4C(void *arg0, int deltaY, int arg2) {
     }
 }
 #pragma pop
-void fn_801B8040(int arg0, int arg1, float farg0) {
-    fn_801B7760(arg0, arg1, farg0, lbl_80562708);
+void fn_801B8040(int obj, int source, float offset) {
+    /* Position `obj` from `source` (a value/t descriptor) via the core
+     * interpolation/normalization path, with no final rotation (angle 0.0f). */
+    fn_801B7760(obj, source, offset, lbl_80562708);
 }
 
 #pragma dont_inline fn_801B78EC
@@ -364,18 +367,11 @@ void fn_801B8054(int obj, int source, float offset, float interp) {
     fn_801B78EC(obj, source, 1, offset, interp, lbl_80562708);
 }
 
-#pragma optimize_for_size on
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_801B8060(int arg0, void *arg1) {
     float position[2];
     float direction[2];
-    float x;
-    float y;
-    float sum;
-    float xPos;
-    float yPos;
-    float length;
-    float scale;
+    float x, y, sum, xPos, yPos, length, scale;
 
     x = *(float *)((char *)arg1 + 0x18);
     y = *(float *)((char *)arg1 + 0x20);
@@ -394,8 +390,6 @@ void fn_801B8060(int arg0, void *arg1) {
     direction[1] *= scale;
     fn_801B7C8C(arg0, position, direction);
 }
-#pragma scheduling on
-#pragma optimize_for_size off
 extern char lbl_80336718[];
 extern int fn_802E317C(char *, ...);
 #pragma dont_inline on
