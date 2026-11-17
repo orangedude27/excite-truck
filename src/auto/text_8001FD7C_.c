@@ -934,7 +934,10 @@ void fn_800218F4(void) {
 }
 
 void fn_800218F8(void) {
-    fn_8001FE20();
+    #define ShutdownOverlay fn_8001FE20
+    /* Tear down the tips/results overlay: clear its state and free its texture and UI handles. */
+    ShutdownOverlay();
+    #undef ShutdownOverlay
 }
 void fn_8001FF34(int arg0) {
     /* Lazily initialize the "Tips:LOADING" text object, re-resolve it if the font set changed, then draw it. */
