@@ -584,7 +584,7 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
     f32 sp8;
     void *temp_r3;
     void *temp_r3_2;
-    register void *temp_r3_3;
+    register u8 *temp_r3_3;
 
     if (lbl_8055E2E0 != 0) {
         temp_r3 = ((Service *)lbl_8055E2E0)->lookup((const char *)text + 0xC8);
@@ -597,16 +597,16 @@ extern "C" void fn_80161438(s32 arg0, s32 arg1, s32 arg_sp0) {
             fn_80148070(temp_r3_2, -1,
                 (s32)((Service *)lbl_8055E2E0)->create((const char *)text + 0xD4));
         }
-        temp_r3_3 = ((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
-        f32 value4 = *(f32 *)((u8 *)temp_r3_3 + 4);
-        f32 value8 = *(f32 *)((u8 *)temp_r3_3 + 8);
-        s32 valueC = *(s32 *)((u8 *)temp_r3_3 + 0xC);
+        temp_r3_3 = (u8 *)((Service *)lbl_8055E2E0)->find((const char *)text + 0xF0);
+        f32 value4 = *(f32 *)(temp_r3_3 + 4);
+        f32 value8 = *(f32 *)(temp_r3_3 + 8);
+        s32 valueC = *(s32 *)(temp_r3_3 + 0xC);
         fn_80148134(&spC, &sp8, valueC, value4, value8);
         f32 firstValue = *(f32 *)((u8 *)temp_r3 + 0x10);
-        f32 settingValue = *(f32 *)((u8 *)temp_r3_3 + 0x10);
+        f32 settingValue = *(f32 *)(temp_r3_3 + 0x10);
         f32 delta = firstValue - lbl_80561844;
-        fn_800103B8(*(s32 *)((u8 *)temp_r3_3 + 0x18),
-            *(s32 *)((u8 *)temp_r3_3 + 0x14), (s32 *)&lbl_8055A0DC, arg1,
+        fn_800103B8(*(s32 *)(temp_r3_3 + 0x18),
+            *(s32 *)(temp_r3_3 + 0x14), (s32 *)&lbl_8055A0DC, arg1,
             settingValue, spC, sp8, delta);
         fn_801473F8(lbl_8055E2E0, (const char *)text + 0xFC,
             &lbl_8055A0DC, arg0);
@@ -2434,8 +2434,9 @@ extern "C" s32 fn_80163D34(void *arg0) {
     return 1;
 }
 #pragma cplusplus off
-unsigned char fn_80163F6C(void *arg0) {
-    return *((unsigned char *)arg0 + 0x56D);
+/* Return the timed-run/HUD object's +0x56D flag: whether its countdown timer has been stopped. */
+unsigned char fn_80163F6C(void *hud) {
+    return *((unsigned char *)hud + 0x56D);
 }
 
 /* Return the timed-run/HUD object's +0x56D flag: whether its countdown timer has
