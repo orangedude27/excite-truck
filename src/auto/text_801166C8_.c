@@ -536,6 +536,7 @@ tail:
     }
     return var_r3;
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
