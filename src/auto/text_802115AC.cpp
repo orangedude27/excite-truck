@@ -560,53 +560,55 @@ extern "C" s32 fn_802C2DD4(s32);
 extern "C" void *fn_802228B0(void *, s32, s32, s32);
 extern "C" void *fn_802226D4(s32);
 #pragma use_lmw_stmw off
-extern "C" void *fn_8021203C(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+extern "C" void *fn_8021203C(char *path, s32 countDivisor, s32 imgArgA, s32 imgArgB, s32 unused) {
     extern int lbl_8033D528[];
     extern char lbl_8033D504[];
     extern const char lbl_8033CDA4[];
-    struct ObjA { void *vtable; void *value; };
-    struct ObjB { void *vtable; void *value; s32 count; s32 divisor; };
-    char *name = (char *)fn_80029004(arg0, 0x2e);
-    ObjA *a;
-    ObjB *b;
-    void *c;
-    if (stricmp(name + 1, lbl_8055B724) == 0) {
-        a = (ObjA *)fn_801284F8(8, lbl_8055B728);
-        if (a) {
-            a->vtable = lbl_8033D528;
-            a->value = (void *)fn_802C49E8((s32)arg0);
+    struct StampImage { void *vtable; void *value; };
+    struct CanvasImage { void *vtable; void *value; s32 count; s32 divisor; };
+    /* make_image: allocate and initialize an image object from a resource path by its
+     * extension (the char after the last '.'): stp=stamp, cvs=canvas, img, art; else panic. */
+    char *dot = (char *)fn_80029004(path, 0x2e);
+    StampImage *stamp;
+    CanvasImage *canvas;
+    void *obj;
+    if (stricmp(dot + 1, lbl_8055B724) == 0) {
+        stamp = (StampImage *)fn_801284F8(8, lbl_8055B728);
+        if (stamp) {
+            stamp->vtable = lbl_8033D528;
+            stamp->value = (void *)fn_802C49E8((s32)path);
         }
-        return a;
+        return stamp;
     }
-    if (stricmp(name + 1, lbl_8055B720) == 0) {
-        b = (ObjB *)fn_801284F8(16, lbl_8055B730);
-        if (b) {
-            b->vtable = lbl_8033D504;
-            if (fn_8012C33C((s32)arg0)) {
-                c = (void *)fn_802C2DD4((s32)arg0);
-                b->value = c;
-                b->count = *(s32 *)((char *)c + 12) / arg1;
+    if (stricmp(dot + 1, lbl_8055B720) == 0) {
+        canvas = (CanvasImage *)fn_801284F8(16, lbl_8055B730);
+        if (canvas) {
+            canvas->vtable = lbl_8033D504;
+            if (fn_8012C33C((s32)path)) {
+                obj = (void *)fn_802C2DD4((s32)path);
+                canvas->value = obj;
+                canvas->count = *(s32 *)((char *)obj + 12) / countDivisor;
             } else {
-                b->value = 0;
-                b->count = 0;
+                canvas->value = 0;
+                canvas->count = 0;
             }
-            b->divisor = arg1;
+            canvas->divisor = countDivisor;
         }
-        return b;
+        return canvas;
     }
-    if (stricmp(name + 1, lbl_8055B738) == 0) {
-        c = fn_801284F8(16, lbl_8055B73C);
-        if (c)
-            return fn_802228B0(c, (s32)arg0, arg2, arg3);
-        return c;
+    if (stricmp(dot + 1, lbl_8055B738) == 0) {
+        obj = fn_801284F8(16, lbl_8055B73C);
+        if (obj)
+            return fn_802228B0(obj, (s32)path, imgArgA, imgArgB);
+        return obj;
     }
-    if (stricmp(name + 1, lbl_8055B744) == 0) {
-        c = fn_801284F8(8, lbl_8055B748);
-        if (c)
-            return ((void *(*)(void *, s32))fn_802226D4)(c, (s32)arg0);
-        return c;
+    if (stricmp(dot + 1, lbl_8055B744) == 0) {
+        obj = fn_801284F8(8, lbl_8055B748);
+        if (obj)
+            return ((void *(*)(void *, s32))fn_802226D4)(obj, (s32)path);
+        return obj;
     }
-    ((s32 (*)(const char *, const char *, ...))fn_802E317C)(lbl_8033CDA4, name + 1);
+    ((s32 (*)(const char *, const char *, ...))fn_802E317C)(lbl_8033CDA4, dot + 1);
     return 0;
 }
 
