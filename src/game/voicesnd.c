@@ -994,7 +994,10 @@ void fn_8020BC90(void *arg0, int arg1) {
 
 #pragma scheduling invalid_target
 void fn_8020BC98(void) {
-    fn_802E317C(lbl_8033C510);
+#define kSndVoiceSet3DMsg lbl_8033C510
+    /* Unimplemented SndVoice::Set3D; panic with the method name. */
+    fn_802E317C(kSndVoiceSet3DMsg);
+#undef kSndVoiceSet3DMsg
 }
 
 float fn_8020BCA8(void *arg0) {
