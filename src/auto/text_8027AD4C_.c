@@ -159,8 +159,10 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
 }
 #pragma cplusplus reset
 #pragma pop
-unsigned char fn_8027AF84(void *arg0) {
-    return *((unsigned char *)arg0 + 0x11);
+/* Return the "event_goal" entry's +0x11 flag, which fn_8027AD4C filled from the
+ * contest name via fn_8027CE4C (the event-path query result). */
+unsigned char fn_8027AF84(void *entry) {
+    return *((unsigned char *)entry + 0x11);
 }
 
 #pragma dont_inline on
