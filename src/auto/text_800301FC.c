@@ -553,6 +553,7 @@ void TRKGetInput(void) {
     } while (i != 0);
 }
 
+/* Disable serial input by clearing the three AX aux input callbacks (A/B/C). */
 void usr_puts_serial(void) {
     lbl_8055D728 = 0;
     lbl_8055D724 = 0;
