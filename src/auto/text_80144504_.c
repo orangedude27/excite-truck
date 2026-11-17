@@ -16,7 +16,7 @@ extern double sin(double);
 extern float fn_80144514(float, float, float, float, float, float);
 #define D6(a, b, c, d, e, f) fn_80144514(a, b, c, d, e, f)
 #define M33CAT(a, b, ab)                                                   \
-    { f32 *volatile _alias_probe = (ab);                                   \
+    { register f32 *volatile _alias_probe = (ab);                          \
     if (_alias_probe == (b) || _alias_probe == (a)) {                      \
         f32 t0 = D6((a)[0], (b)[0], (a)[3], (b)[1], (a)[6], (b)[2]);       \
         f32 t3 = D6((a)[0], (b)[3], (a)[3], (b)[4], (a)[6], (b)[5]);       \
@@ -64,7 +64,6 @@ float fn_80144514(float ax, float bx, float ay, float by, float az, float bz) {
 void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     f32 b[9];
     f32 c, s;
-    f32 *volatile mp = m;
     c = cos(ax);
     s = sin(ax);
     m[0] = c;
@@ -87,7 +86,7 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     b[6] = lbl_805615BC;
     b[7] = -s;
     b[8] = c;
-    M33Cat(m, b, mp);
+    M33Cat(m, b, m);
     c = cos(az);
     s = sin(az);
     b[0] = c;
@@ -99,7 +98,7 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     b[6] = lbl_805615BC;
     b[7] = lbl_805615BC;
     b[8] = lbl_805615B8;
-    M33Cat(m, b, mp);
+    M33Cat(m, b, m);
 }
 #pragma pop
 
