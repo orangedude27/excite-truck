@@ -608,22 +608,29 @@ extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
 }
 
 #pragma scheduling on
-extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
-    f32 v;
-    s32 index;
-    u8 *table;
+extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 volumeDb) {
+#define kMinVolumeDb lbl_805610D8
+#define kDbScale lbl_805610DC
+#define gVolumeDbTable lbl_802F5210
+    f32 clampedDb;
+    s32 tableIndex;
+    u8 *ratioTable;
 
-    if (value > 6.0f) {
-        v = 6.0f;
-    } else if (value < lbl_805610D8) {
-        v = lbl_805610D8;
+    /* Map a decibel volume to a linear amplitude ratio: clamp to [-90.4, 6.0] dB, then look it up in the table. */
+    if (volumeDb > 6.0f) {
+        clampedDb = 6.0f;
+    } else if (volumeDb < kMinVolumeDb) {
+        clampedDb = kMinVolumeDb;
     } else {
-        v = value;
+        clampedDb = volumeDb;
     }
 
-    index = (s32)(lbl_805610DC * v);
-    table = lbl_802F5210;
-    return *(f32 *)(table + (index + 0x388) * 4);
+    tableIndex = (s32)(kDbScale * clampedDb);
+    ratioTable = gVolumeDbTable;
+    return *(f32 *)(ratioTable + (tableIndex + 0x388) * 4);
+#undef kMinVolumeDb
+#undef kDbScale
+#undef gVolumeDbTable
 }
 #pragma scheduling off
 extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
