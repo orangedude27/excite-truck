@@ -897,6 +897,7 @@ mismatch:
     return comparison;
 }
 #pragma cplusplus off
+#pragma dont_inline off
 /* RealName: CompareArchiveEntryByName (qsort comparator: flagged entries first, then case-insensitive name) */
 int fn_8024B214(char *arg0, char *arg1) {
 #define CompareArchiveEntryByName fn_8024B214
