@@ -1286,6 +1286,13 @@ extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
     OSRestoreInterrupts(level);
 }
 #pragma use_lmw_stmw reset
+static inline void EmitLazyInit(void) {
+    if ((s8)lbl_8055DE18 == 0) {
+        fn_800E279C(&lbl_80407F6C);
+        __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
+        lbl_8055DE18 = 1;
+    }
+}
 extern "C" void fn_800E41EC(void) {
     int one = 1;
     if ((s8)lbl_8055DE18 == 0) {
