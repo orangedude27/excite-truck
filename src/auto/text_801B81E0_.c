@@ -798,6 +798,8 @@ void fn_801B8AD8(void) {
 
 int fn_801B8ADC(void) { return 1; }
 
+/* Null arena-event master virtual method (vtable lbl_8033678C slot +0x24).
+ * The "null_amaster" has no event data, so it reports a zero/false status. */
 int fn_801B8AE4(void) { return 0; }
 
 void fn_801B8AEC(void) {
