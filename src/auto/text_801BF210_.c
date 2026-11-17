@@ -320,68 +320,78 @@ int fn_801BF754(int object) {
 extern float fn_80144514(float, float, float, float, float, float);
 #pragma push
 #pragma processor 750
-void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
-    union { unsigned int bits[9]; float values[9]; } local;
-    register float *localPtr = local.values;
-    float t3, t5, t4;
-    float temp_f1;
-    float temp_f24, temp_f25, temp_f26, temp_f27;
-    float temp_f28, temp_f29, temp_f30, temp_f31;
-    float dx, dy, dz, a0, a1, a2, b0, b1, b2, c0, c1, c2;
-    ((FV3 *)local.values)[0] = ((const FV3 *)arg2)[0];
-    ((FV3 *)local.values)[1] = ((const FV3 *)arg2)[1];
-    ((FV3 *)local.values)[2] = ((const FV3 *)arg2)[2];
-    t3 = localPtr[1];
-    t5 = localPtr[2];
-    t4 = localPtr[5];
-    localPtr[1] = localPtr[3];
-    localPtr[3] = t3;
-    localPtr[2] = localPtr[6];
-    localPtr[6] = t5;
-    localPtr[5] = localPtr[7];
-    localPtr[7] = t4;
-    if (arg0 == arg1 || arg0 == local.values) {
-        temp_f24 = fn_80144514(localPtr[0], arg1[0], localPtr[3], arg1[1], localPtr[6], arg1[2]);
-        temp_f25 = fn_80144514(localPtr[0], arg1[3], localPtr[3], arg1[4], localPtr[6], arg1[5]);
-        temp_f26 = fn_80144514(localPtr[0], arg1[6], localPtr[3], arg1[7], localPtr[6], arg1[8]);
-        temp_f27 = fn_80144514(localPtr[1], arg1[0], localPtr[4], arg1[1], localPtr[7], arg1[2]);
-        temp_f28 = fn_80144514(localPtr[1], arg1[3], localPtr[4], arg1[4], localPtr[7], arg1[5]);
-        temp_f29 = fn_80144514(localPtr[1], arg1[6], localPtr[4], arg1[7], localPtr[7], arg1[8]);
-        temp_f30 = fn_80144514(localPtr[2], arg1[0], localPtr[5], arg1[1], localPtr[8], arg1[2]);
-        temp_f31 = fn_80144514(localPtr[2], arg1[3], localPtr[5], arg1[4], localPtr[8], arg1[5]);
-        temp_f1 = fn_80144514(localPtr[2], arg1[6], localPtr[5], arg1[7], localPtr[8], arg1[8]);
-        arg0[0] = temp_f24;
-        arg0[3] = temp_f25;
-        arg0[6] = temp_f26;
-        arg0[1] = temp_f27;
-        arg0[4] = temp_f28;
-        arg0[7] = temp_f29;
-        arg0[2] = temp_f30;
-        arg0[5] = temp_f31;
-        arg0[8] = temp_f1;
+/* out = a^-1 composed with b, for two 4x3 column-major rigid transforms: the 3x3
+ * rotation in elements 0..8 (stored as its three basis vectors x, y and z) and the
+ * translation in 9..11.  The rotation of the result is a^T * b - each element is the
+ * dot product of one of a's basis vectors with one of b's - and its translation is
+ * a^T * (b.t - a.t), so the result is b seen from a's frame.  a's rotation is copied
+ * and transposed in place first, which turns a's columns (the basis vectors) into the
+ * rows the nine dot products walk; when the caller passes out == b the products are
+ * collected in temporaries before being stored, so writing out cannot disturb the
+ * reads of b. */
+void fn_801BF75C(float *out, const float *b, const float *a, int unused) {
+    /* a's rotation, transposed; the raw bits member keeps the copy a plain 9-float block. */
+    union { unsigned int bits[9]; float values[9]; } rotT;
+    register float *t = rotT.values;
+    float e1, e2, e5;                     /* off-diagonal elements being swapped */
+    float m22;                            /* result element (row 2, column 2) */
+    float m00, m01, m02, m10, m11, m12, m20, m21; /* the other result elements */
+    float dx, dy, dz;                     /* b.t - a.t */
+    float az, ay, ax, bx, by, bz, cx, cy, cz; /* a's rotation, by basis vector */
+    ((FV3 *)rotT.values)[0] = ((const FV3 *)a)[0];
+    ((FV3 *)rotT.values)[1] = ((const FV3 *)a)[1];
+    ((FV3 *)rotT.values)[2] = ((const FV3 *)a)[2];
+    e1 = t[1];
+    e2 = t[2];
+    e5 = t[5];
+    t[1] = t[3];
+    t[3] = e1;
+    t[2] = t[6];
+    t[6] = e2;
+    t[5] = t[7];
+    t[7] = e5;
+    if (out == b || out == rotT.values) {
+        m00 = fn_80144514(t[0], b[0], t[3], b[1], t[6], b[2]);
+        m01 = fn_80144514(t[0], b[3], t[3], b[4], t[6], b[5]);
+        m02 = fn_80144514(t[0], b[6], t[3], b[7], t[6], b[8]);
+        m10 = fn_80144514(t[1], b[0], t[4], b[1], t[7], b[2]);
+        m11 = fn_80144514(t[1], b[3], t[4], b[4], t[7], b[5]);
+        m12 = fn_80144514(t[1], b[6], t[4], b[7], t[7], b[8]);
+        m20 = fn_80144514(t[2], b[0], t[5], b[1], t[8], b[2]);
+        m21 = fn_80144514(t[2], b[3], t[5], b[4], t[8], b[5]);
+        m22 = fn_80144514(t[2], b[6], t[5], b[7], t[8], b[8]);
+        out[0] = m00;
+        out[3] = m01;
+        out[6] = m02;
+        out[1] = m10;
+        out[4] = m11;
+        out[7] = m12;
+        out[2] = m20;
+        out[5] = m21;
+        out[8] = m22;
     } else {
-        arg0[0] = fn_80144514(localPtr[0], arg1[0], localPtr[3], arg1[1], localPtr[6], arg1[2]);
-        arg0[3] = fn_80144514(localPtr[0], arg1[3], localPtr[3], arg1[4], localPtr[6], arg1[5]);
-        arg0[6] = fn_80144514(localPtr[0], arg1[6], localPtr[3], arg1[7], localPtr[6], arg1[8]);
-        arg0[1] = fn_80144514(localPtr[1], arg1[0], localPtr[4], arg1[1], localPtr[7], arg1[2]);
-        arg0[4] = fn_80144514(localPtr[1], arg1[3], localPtr[4], arg1[4], localPtr[7], arg1[5]);
-        arg0[7] = fn_80144514(localPtr[1], arg1[6], localPtr[4], arg1[7], localPtr[7], arg1[8]);
-        arg0[2] = fn_80144514(localPtr[2], arg1[0], localPtr[5], arg1[1], localPtr[8], arg1[2]);
-        arg0[5] = fn_80144514(localPtr[2], arg1[3], localPtr[5], arg1[4], localPtr[8], arg1[5]);
-        arg0[8] = fn_80144514(localPtr[2], arg1[6], localPtr[5], arg1[7], localPtr[8], arg1[8]);
+        out[0] = fn_80144514(t[0], b[0], t[3], b[1], t[6], b[2]);
+        out[3] = fn_80144514(t[0], b[3], t[3], b[4], t[6], b[5]);
+        out[6] = fn_80144514(t[0], b[6], t[3], b[7], t[6], b[8]);
+        out[1] = fn_80144514(t[1], b[0], t[4], b[1], t[7], b[2]);
+        out[4] = fn_80144514(t[1], b[3], t[4], b[4], t[7], b[5]);
+        out[7] = fn_80144514(t[1], b[6], t[4], b[7], t[7], b[8]);
+        out[2] = fn_80144514(t[2], b[0], t[5], b[1], t[8], b[2]);
+        out[5] = fn_80144514(t[2], b[3], t[5], b[4], t[8], b[5]);
+        out[8] = fn_80144514(t[2], b[6], t[5], b[7], t[8], b[8]);
     }
-    dx = arg1[9] - arg2[9];
-    arg0[9] = dx;
-    dy = arg1[10] - arg2[10];
-    arg0[10] = dy;
-    dz = arg1[11] - arg2[11];
-    a2 = arg2[0]; b0 = arg2[3]; c0 = arg2[6];
-    a1 = arg2[1]; b1 = arg2[4]; c1 = arg2[7];
-    a0 = arg2[2]; b2 = arg2[5]; c2 = arg2[8];
-    a0 = dz * a0 + (dx * a2 + dy * a1);
-    b2 = dz * b2 + (dx * b0 + dy * b1);
-    c2 = dz * c2 + (dx * c0 + dy * c1);
-    arg0[9] = a0; arg0[10] = b2; arg0[11] = c2;
+    dx = b[9] - a[9];
+    out[9] = dx;
+    dy = b[10] - a[10];
+    out[10] = dy;
+    dz = b[11] - a[11];
+    ax = a[0]; bx = a[3]; cx = a[6];
+    ay = a[1]; by = a[4]; cy = a[7];
+    az = a[2]; bz = a[5]; cz = a[8];
+    az = dz * az + (dx * ax + dy * ay);
+    bz = dz * bz + (dx * bx + dy * by);
+    cz = dz * cz + (dx * cx + dy * cy);
+    out[9] = az; out[10] = bz; out[11] = cz;
 }
 #pragma pop
 void fn_801BFD34(float *, float *, const float *);
