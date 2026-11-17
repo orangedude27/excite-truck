@@ -1166,8 +1166,9 @@ void fn_80031C68(void) {
 }
 
 extern void *lbl_8055D740;
-void fn_80031C6C(void* hi) {
-    lbl_8055D740 = hi;
+void fn_80031C6C(void* mode) {
+    /* Set the MetroTRK communication-channel mode global (ccMode). */
+    lbl_8055D740 = mode;
 }
 
 u16 fn_80031C74(void) {
