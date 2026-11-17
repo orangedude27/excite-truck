@@ -20225,8 +20225,10 @@ extern "C" void fn_800D11E0(void* controller) {
 extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *, s32);
 extern "C" s32 fn_800D51F4(long, long, long, long, long, long);
 #pragma opt_tail_call on
-extern "C" void fn_800D11F0(void *arg0) {
-    Connect__Q210homebutton9RemoteSpkFl(*(void **)((char *)arg0 + 0x24), *(s32 *)arg0);
+extern "C" void fn_800D11F0(void *spkChannel) {
+    /* Connect the Wii Remote speaker channel described by spkChannel: forward
+       its RemoteSpk object (+0x24) and channel id (+0) to RemoteSpk::Connect. */
+    Connect__Q210homebutton9RemoteSpkFl(*(void **)((char *)spkChannel + 0x24), *(s32 *)spkChannel);
 }
 extern "C" void fn_800D1200(void) {
 
@@ -22302,7 +22304,8 @@ extern "C" void fn_800C7998(void *arg0) {
     child = home;
     childCount = 0;
     var_r30 = 0;
-    for (; childCount < 4; childCount++, child += 4) {
+    while (1) {
+        if (childCount >= 4) break;
         *(s32 *)(child + 0x54) = var_r30;
         fn_800D11E0(*(void **)(child + 0x254));
         fn_800D11CC(*(void **)(child + 0x254));
@@ -22312,6 +22315,8 @@ extern "C" void fn_800C7998(void *arg0) {
         fn_800D1300(*(void **)(child + 0x254));
         *(f32 *)(child + 0x1BC) = temp_f31;
         *(f32 *)(child + 0x1CC) = temp_f31;
+        childCount++;
+        child += 4;
     }
 
     layout = *(void **)(home + 0x1E0);
