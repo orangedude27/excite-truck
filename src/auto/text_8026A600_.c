@@ -17,18 +17,12 @@ void *fn_8026A600(void *camera) {
 #undef InitCameraSplineCursor
 }
 
-#pragma scheduling invalid_target
 float fn_8026A63C(const float * __restrict arg0, const float * __restrict arg1, const float * __restrict arg2) {
     float sp8[3];
-    float x;
-    float y;
-    float z;
-    x = arg0[0] - arg1[0];
-    y = arg0[1] - arg1[1];
-    z = arg0[2] - arg1[2];
-    sp8[0] = x;
-    sp8[1] = y;
-    sp8[2] = z;
+    float f4 = arg0[0];
+    sp8[0] = f4 - arg1[0];
+    sp8[1] = arg0[1] - arg1[1];
+    sp8[2] = arg0[2] - arg1[2];
     return PSVECDotProduct(sp8, arg2);
 }
 
@@ -275,9 +269,9 @@ int fn_8026A698(void *arg0, int arg1) {
     *(int *)(p + 0x10) = 5;
     *(float *)(p + 0xBC) = *(float *)(e + 0x34) + f29 * (lbl_80563D5C - *(float *)(e + 0x34));
     *(int *)(e + 0x68) = lbl_8055E3C4;
- common:
-     return 1;
- }
+common:
+    return 1;
+}
  #pragma pop
  #pragma scheduling on
 /* Returns the in-use flag of the given player's arena-event entry in the
