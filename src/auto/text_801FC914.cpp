@@ -18,6 +18,10 @@ struct PathPoolTable {
     int poolCount;    // +0x2C0
 };
 
+#define PATH_POOL_TABLE_COUNT(o) (((PathPoolTable *)(o))->poolCount)
+#define PATH_POOL_MAX            8  /* pools per table */
+#define PATH_POOL_OBJECT_MAX     8  /* objects per pool */
+
 // One entry of a path spawner's list (the spawner object keeps 4 of them at +4,
 // count at +0x94; fn_801FE88C fills one from the archive). fn_801FEDA4 spawns a
 // prop from the pool named here, fn_801FEC74 hands it back.
