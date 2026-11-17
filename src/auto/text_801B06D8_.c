@@ -2008,8 +2008,9 @@ f32 fn_801B2F90(s32 arg0, s32 arg1) {
     }
 }
 #pragma scheduling on
-s32 fn_801B3050(s32 arg0) {
-    return *(s32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x6C);
+/* Return the qualifying rank/placement (slot +0x6C) of deity/AI-truck slot slotIndex. */
+s32 fn_801B3050(s32 slotIndex) {
+    return *(s32 *)((u8 *)sDeitySlotBase + (slotIndex << 7) + DEITY_SLOT_RANK);
 }
 
 extern f32 fn_801B3064(void);
