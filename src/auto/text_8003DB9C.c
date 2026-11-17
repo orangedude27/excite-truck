@@ -4584,9 +4584,10 @@ void GXInvalidateTexAll(void) {
 }
 
 void *GXSetTexRegionCallback(void *callback) {
-    void *old = (void *)*((unsigned int *)((char *)__GXData + 0x518));
+    // Replace the GX texture-region allocation callback (GXData+0x518) and return the previous one.
+    void *oldCallback = (void *)*((unsigned int *)((char *)__GXData + 0x518));
     *((unsigned int *)((char *)__GXData + 0x518)) = (unsigned int)callback;
-    return old;
+    return oldCallback;
 }
 
 /* Installs the TLUT-region lookup callback in GXData (+0x51C) and returns the old one. */
