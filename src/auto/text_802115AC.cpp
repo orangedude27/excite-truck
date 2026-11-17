@@ -438,6 +438,7 @@ extern "C" void fn_80211690(s32 arg0) {
 
 #pragma use_lmw_stmw off
 extern "C" void fn_80211D24(int arg0) {
+#pragma scheduling invalid_target
     struct Obj { virtual ~Obj(); };
     int v;
     s32 *pp, *p;
@@ -2406,6 +2407,7 @@ extern "C" void fn_80215484(void* widget) {
     *(u8*)((char*)widget + 0x18) = 0;
 }
 
+/* Default widget hook: reports a zero result (subclasses may override it). */
 extern "C" s32 fn_80215490(void) {
     return 0;
 }
