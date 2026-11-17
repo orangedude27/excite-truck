@@ -208,17 +208,16 @@ extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *self) {
 extern "C" void* Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void* arg0, void** arg1, void* arg2) {
     extern const char lbl_80328680[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
-    struct FileName { char name[16]; };
-    const char* file = lbl_80328680;
+    register const char* file = lbl_80328680;
     void* node;
     void* prev;
-    if (arg2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(((struct FileName*)file)->name, 0x4A, file + 0x34);
+    if (arg2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4A, file + 0x34);
     node = *arg1;
-    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(((struct FileName*)file)->name, 0x4C, file + 0xFC);
+    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4C, file + 0xFC);
     prev = *(void**)((char*)node + 4);
-    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(((struct FileName*)file)->name, 0x4F, file + 0x124);
-    if (*(void**)arg2 != 0) Panic__Q26nw4hbm2dbFPCciPCce(((struct FileName*)file)->name, 0x51, file + 0x150);
-    if (*(void**)((char*)arg2 + 4) != 0) Panic__Q26nw4hbm2dbFPCciPCce(((struct FileName*)file)->name, 0x52, file + 0x17C);
+    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4F, file + 0x124);
+    if (*(void**)arg2 != 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x51, file + 0x150);
+    if (*(void**)((char*)arg2 + 4) != 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x52, file + 0x17C);
     *(void**)arg2 = node;
     *(void**)((char*)arg2 + 4) = prev;
     *(void**)((char*)node + 4) = arg2;
@@ -230,17 +229,17 @@ extern "C" void* Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12
 extern "C" void* Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(int* arg0, void* arg1) {
     extern const char lbl_80328680[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
-    const char* file = (const char*)&lbl_80328680[0];
+    const char* file = lbl_80328680;
     void* next;
     void* prev;
-    if (*arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x60, file + 0x10);
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x61, file + 0x34);
-    if (arg1 == (char*)arg0 + 4) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x62, file + 0x58);
+    if (*arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x60, file + 0x10);
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x61, file + 0x34);
+    if (arg1 == (char*)arg0 + 4) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x62, file + 0x58);
     next = *(void**)arg1;
     prev = *(void**)((char*)arg1 + 4);
-    if (next == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x65, file + 0x80);
+    if (next == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x65, file + 0x80);
     *(void**)((char*)next + 4) = prev;
-    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x67, file + 0xA8);
+    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x67, file + 0xA8);
     *(void**)prev = next;
     --*arg0;
     *(void**)arg1 = 0;
@@ -323,8 +322,10 @@ void* nw4hbm::ut::List_GetNth(const nw4hbm::ut::List* list, unsigned short index
     int i = 0;
     void* node = 0;
     if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328828, 0x129, lbl_80328834);
+    goto loop;
+loop:
     do {
-        if (i == index) return node;
+        if (index == i) return node;
         i++;
         if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328828, 0xf5, lbl_80328834);
         void* next;
@@ -737,6 +738,9 @@ extern "C" u8 GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv_8010A130(void* 
     return *(u8*)(*(u32*)(*(u32*)((char*)self+0x14)+8)+3);
 }
 
+// Trivial virtual getter in the nw4hbm font code: installed at slot +0x2C of
+// the nw4hbm::ut::ResFont vtable (lbl_803290E8), between the GetCellHeight and
+// GetTextureFormat entries; always returns the constant 2.
 extern "C" u8 fn_8010A33C(void) {
     return 2;
 }
@@ -1534,6 +1538,7 @@ extern "C" s32 fn_8010D0F0(s32 object, s32 deleteFlag) {
     return object;
 }
 
+#pragma opt_propagation off
 extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
     extern const char lbl_80329458[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
@@ -1551,7 +1556,7 @@ extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
     s32 hi;
     s32 r4, r5, r6, r7, r8, r9;
     (void)arg0;
-    if (arg1 >= 32) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x55, file + 0x18);
+    if (arg1 >= 32) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x55, &file[0x18]);
     p = (s32)arg2;
     hi = p & 0xFF000000;
     r4 = 1; r5 = 1; r6 = 1; r7 = 1; r8 = 1; r9 = 1;
@@ -1561,32 +1566,32 @@ extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
     if (r7 == 0 && ((u32)p & 0xFF800000U) != 0xC1000000U) r6 = 0;
     if (r6 == 0 && ((u32)p & 0xF8000000U) != 0xD0000000U) r5 = 0;
     if (r5 == 0 && ((u32)p & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
-    if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x56, file + 0x40, arg2);
+    if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x56, &file[0x40], arg2);
     switch (arg1) {
     case 10: {
         s32 v5 = 0;
         if ((u32)hi == 0x80000000U || ((u32)p & 0xFF800000U) == 0x81000000U || ((u32)p & 0xF8000000U) == 0x90000000U || (u32)hi == 0xC0000000U || ((u32)p & 0xFF800000U) == 0xC1000000U || ((u32)p & 0xF8000000U) == 0xD0000000U || ((u32)p & 0xFFFFC000U) == 0xE0000000U) v5 = 1;
-        if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xC3, file + 0x40, arg2);
+        if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0xC3, &file[0x40], arg2);
         {
             s32 obj = *(s32 *)p;
             f32 y = *(f32 *)(p + 8);
             f32 w = fn_80111C10(obj);
-            SetCursor__Q36nw4hbm2ut10CharWriterFff(obj, y, w + GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj));
+            SetCursor__Q36nw4hbm2ut10CharWriterFff(obj, y, GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj) + w);
         }
         return 3;
     }
     case 9: {
         s32 v5 = 0;
         if ((u32)hi == 0x80000000U || ((u32)p & 0xFF800000U) == 0x81000000U || ((u32)p & 0xF8000000U) == 0x90000000U || (u32)hi == 0xC0000000U || ((u32)p & 0xFF800000U) == 0xC1000000U || ((u32)p & 0xF8000000U) == 0xD0000000U || ((u32)p & 0xFFFFC000U) == 0xE0000000U) v5 = 1;
-        if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xD3, file + 0x40, arg2);
+        if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0xD3, &file[0x40], arg2);
         {
             s32 obj = *(s32 *)p;
             s32 font = GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(obj);
             if (font > 0) {
                 f32 fw = IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(obj) ? GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(obj) : GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(obj);
                 f32 y = *(f32 *)(p + 8);
-                f32 step = (f32)font * fw;
                 f32 width = GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(obj) - y;
+                f32 step = (f32)font * fw;
                 s32 n = (s32)(width / step);
                 SetCursorX__Q36nw4hbm2ut10CharWriterFf(obj, y + step * (f32)(n + 1));
             }
@@ -1597,7 +1602,7 @@ extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
         return 0;
     }
 }
-
+#pragma opt_propagation reset
 extern "C" s32 fn_8010D4B0(void *self, void *arg0, s32 arg1, void *arg2) {
  extern const char lbl_80329458[];
  extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*,int,const char*,...);
