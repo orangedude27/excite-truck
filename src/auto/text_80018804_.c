@@ -15,6 +15,10 @@ void fn_80018804(void);
 
 DECL_SECTION(".ctors") funcptr_t D_802ED0A8 = fn_80018804;
 
+/* Static constructor (its .ctors entry is D_802ED0A8): chain this module's
+   static-destructor record onto the global list headed by lbl_8055D450, so the
+   object it stands for is torn down when the game exits.  Registering it is all
+   this module has to do at startup, so the call is a tail call. */
 void fn_80018804(void) {
     fn_8000D838(&lbl_8055D558);
 }
