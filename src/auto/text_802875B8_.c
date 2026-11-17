@@ -450,8 +450,12 @@ s32 fn_80287B94(s32 min, s32 max) {
 #pragma processor 750
 f32 fn_80287BC8(f32 farg0, f32 farg1) {
     unsigned int random;
+    f32 diff;
+    f32 ratio;
     random = ((unsigned int (*)(void))fn_80288870)() & 0x1FFFF;
-    return farg0 + (farg1 - farg0) * ((f32)random / lbl_80564250);
+    diff = farg1 - farg0;
+    ratio = (f32)random / lbl_80564250;
+    return farg0 + diff * ratio;
 }
 #pragma pop
 void *fn_80287C30(void *arg0) {
@@ -540,7 +544,7 @@ extern "C" void fn_80287E80(void **objectPtr, s32 nameSource) {
 #pragma pop
 
 #pragma cplusplus on
-extern "C" void fn_80287ED0(void *b0, void **b1, s32 b2, s32 b3) {
+extern "C" void fn_80287ED0(void *arg0, void **arg1, s32 arg2, s32 arg3) {
     struct Ifc {
         virtual void *f0(s32);
         virtual void f1();
@@ -555,13 +559,13 @@ extern "C" void fn_80287ED0(void *b0, void **b1, s32 b2, s32 b3) {
         virtual void f10();
         virtual void f11(void *, s32);
     };
-    Ifc *obj = *(Ifc **)b1;
-    if (obj == 0 || obj->f0(b2) == 0) {
-        fn_802E317C(lbl_80348A4C, b2);
+    Ifc *check = *(Ifc **)arg1;
+    if (check == 0 || check->f0(arg2) == 0) {
+        fn_802E317C(lbl_80348A4C, arg2);
     }
-    obj = *(Ifc **)b1;
-    obj = (Ifc *)obj->f0(b2);
-    ((Ifc *)b0)->f11(obj, b3);
+    Ifc *obj = *(Ifc **)arg1;
+    obj = (Ifc *)obj->f0(arg2);
+    ((Ifc *)arg0)->f11(obj, arg3);
 }
 #pragma use_lmw_stmw off
 #pragma cplusplus on
@@ -902,9 +906,9 @@ void fn_802887EC(void) {
     }
 }
 #pragma scheduling on
-/* Seeds the module's random generator (see fn_80288870). */
-void fn_80288868(void* hi) {
-    lbl_8055F6C8 = hi;
+/* Set the seed of the module's 31-bit LCG random generator (state lbl_8055F6C8, advanced by fn_80288870). */
+void fn_80288868(void* seed) {
+    lbl_8055F6C8 = seed;
 }
 
 /* Constants of the module's random generator: a 31-bit linear congruential
