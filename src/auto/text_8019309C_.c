@@ -1075,7 +1075,7 @@ void fn_80194844(void *obj) {
 extern float fn_801673A4(int, float *);
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma dont_inline on
 float fn_801948B0(void *arg0, int arg1, float arg2) {
     float *f = (float *)arg0;
