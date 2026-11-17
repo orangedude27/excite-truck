@@ -206,29 +206,32 @@ void fn_8012FAB8(void *arg0) {
 }
 
 void fn_801301E0(unsigned char *arg0) {
-    unsigned char *base;
+    #pragma scheduling invalid_target
+    unsigned char d, b, a;
     unsigned char *p;
     unsigned char *q;
-    int a, b, c, d;
+    unsigned char *base;
+    unsigned char c;
     int i;
+
     a = arg0[0x40];
     base = arg0;
-    b = arg0[0x43];
+    b = arg0[0x42];
     p = arg0 + 0x44;
     c = arg0[0x41];
-    d = arg0[0x42];
+    d = arg0[0x43];
     q = arg0 + 0x48;
-    arg0[0x40] = (unsigned char)b;
+    arg0[0x40] = arg0[0x43];
     i = 0;
-    arg0[0x43] = (unsigned char)a;
-    arg0[0x41] = (unsigned char)d;
-    arg0[0x42] = (unsigned char)c;
+    arg0[0x43] = a;
+    arg0[0x41] = arg0[0x42];
+    arg0[0x42] = c;
     for (; i < *(int *)(arg0 + 0x40); i++) {
-        a = p[0]; b = p[3]; p[0] = (unsigned char)b; p[3] = (unsigned char)a;
-        a = p[1]; b = p[2]; p[1] = (unsigned char)b; p[2] = (unsigned char)a;
+        b = p[0]; d = p[3]; p[0] = d; p[3] = b;
+        d = p[1]; b = p[2]; p[1] = b; p[2] = d;
         p += 8;
-        a = q[0]; b = q[3]; q[0] = (unsigned char)b; q[3] = (unsigned char)a;
-        a = q[1]; b = q[2]; q[1] = (unsigned char)b; q[2] = (unsigned char)a;
+        d = q[0]; b = q[3]; q[0] = b; q[3] = d;
+        d = q[1]; b = q[2]; q[1] = b; q[2] = d;
         q += 8;
         *(unsigned int *)(base + 0x44) += (unsigned int)arg0;
         *(unsigned int *)(base + 0x48) += (unsigned int)arg0;
