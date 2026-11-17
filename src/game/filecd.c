@@ -341,8 +341,9 @@ extern "C" int fn_802E4408(int unused, void *arg0) {
 void fn_802E442C(void) {
     OSReport((const char *)&lbl_8055D1BC);
 }
-int fn_802E4438(void *arg0) {
-    return *(int *)((char *)arg0 + 0x8C);
+/* FileDisk::getOwner (vtable slot 0x2C): return the owner pointer (FileDisk.owner at +0x8C) stored on the node when it was opened. */
+int fn_802E4438(void *file) {
+    return *(int *)((char *)file + 0x8C);
 }
 
 extern unsigned char lbl_804DBAA0[];
