@@ -3163,6 +3163,7 @@ extern "C" void fn_801FC654(void *unused, s32 value, void *object) {
     #undef gResourceManager
 }
 
+/* Return the zero float constant (lbl_80562FF0) used as a default throughout this subsystem. */
 extern "C" f32 fn_801FC664(void) {
     return lbl_80562FF0;
 }
