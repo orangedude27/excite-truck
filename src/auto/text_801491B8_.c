@@ -5102,8 +5102,8 @@ extern "C" void fn_8014FC8C(s32 arg0) {
             } else check = r;
             if (check == r) {
                 void *alloc = (void *)fn_801284F8(0xD4, &lbl_80559F80);
-                if (alloc != 0) alloc = fn_8015011C(e);
-                spC = (s32)alloc;
+                if (alloc != 0) alloc = fn_8015011C(alloc, e);
+                    spC = (s32)alloc;
                 fn_801500F8((void *)(arg0 + 0x14), &spC);
             }
             idx++;
