@@ -28,12 +28,14 @@ int fn_802E72B8(int size) {
 
 #pragma push
 #pragma scheduling invalid_target
-int fn_802E72C8(int arg0) {
+/* Find the stream entry whose sector range [startSector, endSector) contains
+ * `sector`; return its index in the entry table, or -1 if none matches. */
+int fn_802E72C8(int sector) {
     unsigned char *entry = lbl_804FC978;
     int index = 0;
     int remaining;
     for (remaining = lbl_8055FFD8; remaining > 0; remaining--) {
-        if (arg0 >= *(int *)entry && arg0 < *(int *)(entry + 4))
+        if (sector >= *(int *)entry && sector < *(int *)(entry + 4))
             return index;
         entry += 0x90;
         index++;
