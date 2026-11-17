@@ -3701,17 +3701,30 @@ UINT8 GKI_create_pool(UINT16 size, UINT16 count, UINT8 permission, void *p_mem_p
 extern void fn_8006EBF0();
 extern void fn_8006EC20();
 extern char lbl_80314240[];
+static void gki_remove_pool_from_list_del(UINT8 pool_id) {
+    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((u8 *)lbl_803946C0 + 0x54);
+    UINT8 i;
+    for (i = 0; i < p_cb->curr_total_no_of_pools; i++) {
+        if (pool_id == p_cb->pool_list[i])
+            break;
+    }
+    while (i < (p_cb->curr_total_no_of_pools - 1)) {
+        p_cb->pool_list[i] = p_cb->pool_list[i + 1];
+        i++;
+    }
+}
 #pragma push
 #pragma use_lmw_stmw off
 void GKI_delete_pool(UINT8 pool_id) {
     FREE_QUEUE_T *Q;
     tGKI_COM_CB *p_cb = &((tGKI_CB *)lbl_803946C0)->com;
-    tGKI_COM_CB *list_base;
-    UINT8 i;
     if (pool_id >= 9) {
         goto bad_pool;
     }
-    if (p_cb->pool_start[pool_id] != NULL) {
+    switch ((u32)p_cb->pool_start[pool_id]) {
+    case 0:
+        goto bad_pool;
+    default:
         fn_8006EBAC();
         Q = &p_cb->freeq[pool_id];
         if (!Q->cur_cnt) {
@@ -3725,17 +3738,8 @@ void GKI_delete_pool(UINT8 pool_id) {
             p_cb->pool_start[pool_id] = NULL;
             p_cb->pool_end[pool_id] = NULL;
             p_cb->pool_size[pool_id] = 0;
-            list_base = p_cb;
-            for (i = 0; i < list_base->curr_total_no_of_pools; i++) {
-                if (pool_id == list_base->pool_list[i]) {
-                    break;
-                }
-            }
-            while (i < (list_base->curr_total_no_of_pools - 1)) {
-                list_base->pool_list[i] = list_base->pool_list[i + 1];
-                i++;
-            }
-            list_base->curr_total_no_of_pools--;
+            gki_remove_pool_from_list_local(pool_id);
+            p_cb->curr_total_no_of_pools--;
         } else {
             goto bad_pool;
         }
@@ -3743,7 +3747,7 @@ void GKI_delete_pool(UINT8 pool_id) {
         return;
     }
 bad_pool:
-    fn_8006EBF0(0xFFF8, lbl_80314240);
+    fn_8006EBF0((UINT16)0xFFF8, lbl_80314240);
     fn_8006EB88();
 }
 #pragma pop
