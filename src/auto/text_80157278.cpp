@@ -3582,8 +3582,9 @@ extern "C" void fn_8015D318(Unk801577F0* object, f32 value, s32 unused, s32 mode
 
 extern "C" u32 fn_8015D364(void) { return 1; }
 
-extern "C" s32 fn_8015D36C(void* arg0) {
-    return *(s32*)((u8*)arg0 + 0x264);
+/* Getter: return the m264 progress counter at +0x264 of the frame-driven player. */
+extern "C" s32 fn_8015D36C(void* object) {
+    return *(s32*)((u8*)object + 0x264);
 }
 
 extern "C" s32 fn_8015D374(void* arg0) {
