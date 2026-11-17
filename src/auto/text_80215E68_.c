@@ -153,7 +153,10 @@ u32 fn_80215FDC(void) {
     return 1;
 }
 
-u32 fn_80215FE4(void) { return 1; }
+/* Query stub in the option UI: always answers 1 (true) in this build. */
+u32 fn_80215FE4(void) {
+    return 1;
+}
 
 u8 fn_80215FEC(void *option) {
     /* Return the byte field at offset 0x08 of the option object. */
