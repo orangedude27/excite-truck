@@ -61,6 +61,7 @@ extern "C" __declspec(section ".data") int lbl_8032C108;
 extern "C" const char lbl_8032C064[];
 extern "C" const char lbl_8032C090[];
 extern "C" __declspec(section ".sdata") const char lbl_80559C48[];
+#pragma use_lmw_stmw off
 extern "C" void *fn_801399FC(void *arg0) {
     class Object {
     public:
@@ -71,9 +72,9 @@ extern "C" void *fn_801399FC(void *arg0) {
         virtual char *check(char *, int);
     };
     char buffer[12];
+    void *table;
     int *cursor;
     int count;
-    void *table;
     char *entry;
     Object *obj = (Object *)arg0;
     count = fn_8013990C(arg0);
@@ -91,6 +92,7 @@ extern "C" void *fn_801399FC(void *arg0) {
                 count++;
             } else {
                 fn_802E30C8(lbl_8032C064, obj->getName(), entry);
+                break;
             }
         }
     } while (entry != 0);
@@ -98,7 +100,11 @@ extern "C" void *fn_801399FC(void *arg0) {
         fn_802E30C8(lbl_8032C090, obj->getName(), *(int *)table);
         count = 0;
     }
-    fn_801286A0(table, (*(int *)table * 8 + 8) - (count * 8 + 8));
+    {
+        int oldSize = *(int *)table * 8 + 8;
+        int newSize = count * 8 + 8;
+        fn_801286A0(table, oldSize - newSize);
+    }
     *(int *)((char *)table + 4) = count;
     *(int *)table = count;
     return table;
