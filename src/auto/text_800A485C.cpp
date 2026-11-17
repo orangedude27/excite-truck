@@ -9377,8 +9377,12 @@ extern "C" void fn_800B36C4(s32 path, s32 outDrive, s32 outDir) {
     fn_800B23F8(path, outDrive, outDir, 0);
 }
 
-extern "C" void fn_800B36CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-fn_800B23F8(arg0, arg1, arg2, 1);
+/* Split a VFiPF path into its drive and directory outputs, this time allowing
+ * the '*' / '?' wildcards (the fn_800B36C4 twin passes 0 to forbid them).
+ * Callers use it as a three-argument function; the fourth parameter is ignored
+ * and the wildcard flag is hardcoded to 1. */
+extern "C" void fn_800B36CC(s32 path, s32 outDrive, s32 outDir, s32 reserved) {
+    fn_800B23F8(path, outDrive, outDir, 1);
 }
 
 /* If a string has a ':' separator at index 1, uppercase that char and apply it; otherwise reset. */
@@ -16556,7 +16560,7 @@ extern "C" void fn_800C08A8(void *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4,
     register s32 temp_r26_2, temp_r27, shift;
     s32 tmp_r3;
     register u32 temp_r26, temp_r28, temp_r0, var_ctr, var_ctr_2, var_r3_2;
-    register u32 temp_r27_2;
+    register s32 temp_r27_2;
     register s32 var_r7;
     register s16 *var_r12, *var_r5;
 
@@ -16573,14 +16577,15 @@ extern "C" void fn_800C08A8(void *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4,
             temp_r26 = ((const u8 *)arg2)[temp_r26_2];
             temp_r26_2 = (temp_r26_2 + 1) & 0x1FFF;
             temp_r27_2 = ((const u8 *)arg2)[temp_r26_2];
-            temp_r26 = ((temp_r26 << 8) | temp_r27_2) & lbl_802F3F54[temp_r27];
+            temp_r26 = (temp_r26 << 8) | temp_r27_2;
+            temp_r26 = temp_r26 & lbl_802F3F54[temp_r27];
             temp_r0 = (temp_r26 >> (temp_r27 - 6)) & 0xFFFF;
             temp_r27_2 = lbl_8031C2E0[temp_r0];
-            var_r0 = (temp_r27_2 >> 3U) & 1;
-            var_r31 = (temp_r27_2 >> 2U) & 1;
-            var_r30 = (temp_r27_2 >> 1U) & 1;
-            var_r29 = temp_r27_2 & 1;
+            var_r0 = (s16)((temp_r27_2 >> 3U) & 1);
             temp_r26 = temp_r28 - (temp_r27_2 >> 4);
+            var_r29 = (s16)((temp_r27_2 >> 2U) & 1);
+            var_r30 = (s16)((temp_r27_2 >> 1U) & 1);
+            var_r31 = (s16)(temp_r27_2 & 1);
             M2C_FIELD(arg0, u32 *, 0xC) = temp_r26;
             if (var_r0 != 0) {
                 temp_r28 = temp_r26 + 1;
