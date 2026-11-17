@@ -1134,7 +1134,9 @@ unsigned char fn_8014C820(unsigned int arg0) { return (unsigned char)(arg0 >> 16
 
 s32 fn_8014C828(s32 arg0) { return arg0 + 0x64; }
 
-s32 fn_8014C830(s32 arg0) { return arg0 + 0x14; }
+/* Address helper: returns a pointer to the field at offset +0x14 of `obj`
+ * (e.g. the label string used by the HUD), sibling of fn_8014C828 (+0x64). */
+s32 fn_8014C830(s32 obj) { return obj + 0x14; }
 
 f32 fn_8014C838(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x10); }
 
