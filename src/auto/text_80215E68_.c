@@ -428,9 +428,14 @@ void fn_8021683C(u32 windowPtr) {
     fn_802E317C((const char *)(void *)&lbl_8033D7EC);
 }
 #pragma small_data on
-void fn_802168BC(s32 arg0) {
-    lbl_8055EF74 = arg0;
-    lbl_8055EF70 = 1;
+/* Request a fade/transition: store the requested result and signal the fade loop to proceed. */
+void fn_802168BC(s32 result) {
+    #define s_fadeActive lbl_8055EF70
+    #define s_fadeResult lbl_8055EF74
+    s_fadeResult = result;
+    s_fadeActive = 1;
+    #undef s_fadeActive
+    #undef s_fadeResult
 }
 
 void fn_802168CC(void) {
