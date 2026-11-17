@@ -2730,10 +2730,11 @@ s32 fn_80252468(void *arg0) { return *(s32 *)((char *)arg0 + 8); }
 
 s32 fn_80252470(void *arg0, s32 arg1) { return *(s32 *)((char *)arg0 + 4) + arg1 * 0x48; }
 
-u8 fn_80252480(void *arg0, s32 arg1) {
-    s32 offset = arg1 * 0x48;
-    s32 *base = *(s32 **)((char *)arg0 + 4);
-    return *(u8 *)((char *)base + offset + 0x20);
+u8 fn_80252480(void *list, s32 chassisIndex) {
+    // Read the u8 field at +0x20 of the indexed 0x48-byte chassis record.
+    s32 offset = chassisIndex * 0x48;
+    s32 *records = *(s32 **)((char *)list + 4);
+    return *(u8 *)((char *)records + offset + 0x20);
 }
 
 char *fn_80252494(void *table, s32 recordIndex) {
