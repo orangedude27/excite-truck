@@ -1693,6 +1693,8 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             } while (j < (u8)indNum);
         }
+        /* fn_800D8780 extracts the 2-bit indirect-texture count (indTexNum) from
+         * the material flags; each such entry is 0x14 bytes. */
         off += (u8)fn_800D8780((s32*)((const u8*)res + 0x3C)) * 0x14;
         if ((u8)indTexStageNum != 0) {
             fn_800D9ACC(self);
