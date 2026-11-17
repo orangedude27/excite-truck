@@ -1382,5 +1382,11 @@ extern "C" void fn_800E2508(void* self) {
     ((VTable23*)self)->dispatch();
 }
 
-extern "C" unsigned int* fn_800E2518(void) { extern unsigned int lbl_8055DE10; return &lbl_8055DE10; }
+extern "C" unsigned int* fn_800E2518(void) {
+    /* Return the address of the layout subsystem's shared singleton object. */
+#define sLytSharedObject lbl_8055DE10
+    extern unsigned int sLytSharedObject;
+    return &sLytSharedObject;
+#undef sLytSharedObject
+}
 struct DrawContentMaterial { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(void*, int, u8); };
