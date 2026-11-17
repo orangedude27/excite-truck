@@ -800,8 +800,9 @@ void *__OSSetExceptionHandler(u8 type, void *handler) {
 
 extern void **OSExceptionTable_8055D9D0;
 #pragma small_data on
-void *__OSGetExceptionHandler(s32 arg0) {
-    return OSExceptionTable_8055D9D0[(u8)arg0];
+/* Return the exception handler installed for exception 'type'. */
+void *__OSGetExceptionHandler(u8 type) {
+    return OSExceptionTable_8055D9D0[type];
 }
 
 void OSDefaultExceptionHandler(u8 exception, void *context);
