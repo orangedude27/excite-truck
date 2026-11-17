@@ -3118,7 +3118,7 @@ void fn_80164D64(void *menu, s32 unused) {
 #undef FLOAT_ONE
 #undef FLOAT_ZERO
 }
-#pragma scheduling off
+#pragma scheduling on
 void fn_80164F50(void *arg0) {
     extern void fn_801796BC(unsigned char);
     extern s32 fn_80131234(void *);
