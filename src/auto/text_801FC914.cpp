@@ -1576,35 +1576,39 @@ extern "C" void fn_801FF420(void* arg0) {
 
 extern "C" void fn_801FF58C(void*, char*, const char*);
 #pragma use_lmw_stmw off
-extern "C" void fn_801FF484(void *arg0, void *arg1) {
-    const char *name = *(const char **)arg1;
+/* Files a path prop under its pool name in a spawner's pool table: looks for the
+ * PathPool of that name (count at +0x2C0), opening a new one when the name is new,
+ * and appends the prop to that pool's unused list.  Past 8 pools, or 8 objects in
+ * one pool, the game logs the overflow and stores it anyway. */
+extern "C" void fn_801FF484(void *poolTable, void *object) {
+    const char *name = *(const char **)object;
     int i = 0;
-    char *scan = (char *)arg0;
-    char *entry;
-    while (i < *(int *)((char *)arg0 + 0x2C0)) {
-        if (stricmp(name, scan) == 0) {
-            entry = (char *)arg0 + i * 0x58;
+    PathPool *scan = (PathPool *)poolTable;
+    PathPool *pool;
+    while (i < PATH_POOL_TABLE_COUNT(poolTable)) {
+        if (stricmp(name, (char *)scan) == 0) {
+            pool = (PathPool *)poolTable + i;
             goto found;
         }
-        scan += 0x58;
+        scan++;
         i++;
     }
-    entry = 0;
+    pool = 0;
 found:
-    if (entry == 0) {
-        if (*(int *)((char *)arg0 + 0x2C0) >= 8) {
-            fn_802E317C(lbl_8033B8EC, 8);
+    if (pool == 0) {
+        if (PATH_POOL_TABLE_COUNT(poolTable) >= PATH_POOL_MAX) {
+            fn_802E317C(STR_PATH_POOL_LIMIT, PATH_POOL_MAX);
         }
-        entry = (char *)arg0 + *(int *)((char *)arg0 + 0x2C0) * 0x58;
-        fn_801FF58C(arg0, entry, *(const char **)arg1);
-        *(int *)((char *)arg0 + 0x2C0) += 1;
+        pool = (PathPool *)poolTable + PATH_POOL_TABLE_COUNT(poolTable);
+        fn_801FF58C(poolTable, (char *)pool, *(const char **)object);
+        PATH_POOL_TABLE_COUNT(poolTable) += 1;
     }
-    if (*(int *)(entry + 0x50) + 1 > 8) {
-        fn_802E317C(lbl_8033B90C, 8);
+    if (pool->unusedCount + 1 > PATH_POOL_OBJECT_MAX) {
+        fn_802E317C(STR_PATH_POOL_OBJECT_LIMIT, PATH_POOL_OBJECT_MAX);
     }
-    int count = *(int *)(entry + 0x50);
-    *(void **)(entry + 0x10 + count * 4) = arg1;
-    *(int *)(entry + 0x50) = count + 1;
+    int count = pool->unusedCount;
+    pool->unused[count] = object;
+    pool->unusedCount = count + 1;
 }
 /* Initialize a named pool slot: copy up to 16 bytes of the name, terminate it, and clear its item/in-use counts. */
 extern "C" void fn_801FF58C(void* unused, char* slot, const char* name) {
