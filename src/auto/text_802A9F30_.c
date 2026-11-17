@@ -100,12 +100,12 @@ s32 fn_802A9F90(s32 *args) {
 }
 
 #pragma scheduling invalid_target
-s32 fn_802A9FB0(void *arg0) {
+s32 fn_802A9FB0(void *__restrict arg0) {
     int index = *(int *)arg0;
     extern int lbl_8055F928;
     int offset = index * 0x108;
     unsigned char value = *((unsigned char *)arg0 + 4);
-    register unsigned one = 1;
+    unsigned char one = 1;
     *(unsigned char *)(lbl_8055F928 + offset + (s32)0xEC) = one;
     *(unsigned char *)(lbl_8055F928 + offset + (unsigned)0xF4) = value;
     return 8;
@@ -140,11 +140,13 @@ void fn_802AA0C8(void *entry) {
     *(int *)((char *)entry + 0xE8) = -1;
 }
 #pragma scheduling on
-void fn_802AA0EC(void *arg0) {
+void fn_802AA0EC(void *entry) {
     extern float lbl_805649F0;
     float value = lbl_805649F0;
-    *(unsigned char *)((char *)arg0 + 0xEC) = 0;
-    *(float *)((char *)arg0 + 0xF0) = value;
+    /* Reset the stun-part entry: clear the flag at +0xEC and zero its
+     * accumulated value at +0xF0 (lbl_805649F0 is 0.0f). */
+    *(unsigned char *)((char *)entry + 0xEC) = 0;
+    *(float *)((char *)entry + 0xF0) = value;
 }
 
 extern float PSVECDotProduct(const void *, const void *);
@@ -1189,21 +1191,16 @@ void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) 
     pos.z+=((float*)((char*)arg0+0xC))[2]*scale;
     dir=*(Vec*)arg1;
     callpos=pos;
-    fn_8028E590(*(int*)lbl_8055F924,&callpos,&dir,lbl_805649FC);
+    fn_8028E590(*(int *)*(void *volatile *)&lbl_8055F924,&callpos,&dir,lbl_805649FC);
 }
 
 void fn_802ABE50(void) { fn_8028E240(0); }
 
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float delta) {
     unsigned char green;
     unsigned char red;
     unsigned char blue;
-    unsigned int color;
-    unsigned low;
     float angle;
     float current;
     float magnitude;
@@ -1218,13 +1215,10 @@ void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float de
     red = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0x8C, 0xFF);
     green = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xFA, 0xFF);
     blue = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xF0, 0xFF);
-    color = ((unsigned int)blue & 0xFF) << 16;
     angle = lbl_80564A98;
-    low = (((unsigned int)green & 0xFF) << 8) | ((unsigned int)red & 0xFF);
-    color |= 0xFF000000;
-    *arg2 = color | low;
+    *arg2 = (int)(0xFF000000u | ((unsigned int)blue << 16) | ((unsigned int)green << 8) | (unsigned int)red);
 
-    (void)*(volatile unsigned char *)&lbl_8055F92C;
+    if (*(volatile unsigned char *)&lbl_8055F92C == 0) { }
     current = *arg0;
     if (current > lbl_805649F4)
         *arg0 = fn_80287BC8(lbl_80564A8C, lbl_80564A68);
@@ -1251,7 +1245,6 @@ void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float de
         result = lbl_80564AA8 * *arg0 - wave;
     *arg1 = result;
 }
-
 /* Begin a tinted draw of the vehicle: stash the state fn_802AC070 has to put
  * back, then tint the model with `tint` (0xRRGGBB) and switch the global scale
  * on, ramping it from `scale` up to `scale` + 1000.0 at rate 1.0.
