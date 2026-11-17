@@ -1193,47 +1193,55 @@ extern f32 fn_8023293C(s32, char *, f32);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling off
-void fn_80233010(char *arg0, s32 font, s32 color, s32 flags, s32 mode, f32 x, f32 y, f32 width, f32 scale, f32 spacing, f32 extra) {
+void fn_80233010(char *string, s32 font, s32 color, s32 flags, s32 mode, f32 x, f32 y, f32 width, f32 scale, f32 spacing, f32 extra) {
 #pragma scheduling invalid_target
-    char buffer[512];
-    char *text = arg0;
+    /* Word-wrapped text draw: takes the whole UTF-8 characters of `string` that still
+     * measure under `width` into lineBuffer, breaking the line back at the last space
+     * so words are not cut ('\n' and '|' are hard breaks, '^' draws as a space), and
+     * draws it at (x, y) one line height lower each time -- straight away (mode 0) or
+     * queued for the next frame. */
+    char lineBuffer[512];
+    char *text = string;
     s32 line = 0;
-    s32 count;
+    s32 charLen;
     strlen(text);
     while ((s8)*text) {
-        char *start = text;
+        char *lineStart = text;
         s32 length;
-        char *saved;
+        char *savedText;
         s32 savedLength;
         s32 i;
-        memset(buffer, 0, sizeof(buffer));
+        memset(lineBuffer, 0, sizeof(lineBuffer));
         length = 0;
-        while (scale * fn_8023293C(font, buffer, extra) < width && *text && (s8)*text != '\n' && (s8)*text != '|') {
-            char *next;
+        /* add characters while the line, measured with the text so far, still fits */
+        while (scale * gTextMeasureWidth(font, lineBuffer, extra) < width && *text && (s8)*text != '\n' && (s8)*text != '|') {
+            char *charEnd;
             u8 ch = *(u8 *)text;
-            if ((ch & 0xF0) == 0xE0) next = text + 3;
-            else if ((ch & 0xE0) == 0xC0) next = text + 2;
-            else next = text + 1;
-            count = next - text;
-            for (i = 0; i < count; i++) buffer[length++] = *text++;
+            if ((ch & 0xF0) == 0xE0) charEnd = text + 3;
+            else if ((ch & 0xE0) == 0xC0) charEnd = text + 2;
+            else charEnd = text + 1;
+            charLen = charEnd - text;
+            for (i = 0; i < charLen; i++) lineBuffer[length++] = *text++;
         }
-        saved = text;
+        savedText = text;
         savedLength = length;
+        /* back up to the last space so the line ends on a whole word */
         if ((s8)*text) {
-            while ((s8)*text != ' ' && text != start && (s8)*text != '\n' && (s8)*text != '|') {
+            while ((s8)*text != ' ' && text != lineStart && (s8)*text != '\n' && (s8)*text != '|') {
                 text--;
                 length--;
             }
         }
-        if (text == start) { text = saved; length = savedLength; }
-        buffer[length] = 0;
+        /* nothing to break at: the word is wider than the line, so cut it here */
+        if (text == lineStart) { text = savedText; length = savedLength; }
+        lineBuffer[length] = 0;
         if ((s8)*text == ' ' || (s8)*text == '\n' || (s8)*text == '|') text++;
-        for (i = 0; i < length; i++) if (buffer[i] == '^') buffer[i] = ' ';
+        for (i = 0; i < length; i++) if (lineBuffer[i] == '^') lineBuffer[i] = ' ';
         {
-            f32 ypos = y - (f32)line * (scale * (f32)((s32 (*)(void *))fn_80232B70)((void *)font));
+            f32 ypos = y - (f32)line * (scale * (f32)((s32 (*)(void *))gTextFontHeight)((void *)font));
             line++;
-            if (mode == 0) fn_80232BA4(buffer, font, color, flags, x, ypos, scale, spacing, extra);
-            else fn_802344CC((s32)buffer, color, flags, 0, x, ypos, scale);
+            if (mode == 0) gTextDrawLine(lineBuffer, font, color, flags, x, ypos, scale, spacing, extra);
+            else gTextQueueDraw((s32)lineBuffer, color, flags, 0, x, ypos, scale);
         }
     }
 }
