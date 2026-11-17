@@ -2587,9 +2587,10 @@ extern "C" void fn_802158DC(void *arg0) {
     obj->vf2();
 }
 
-extern "C" void fn_802158F0(void *arg0) {
-    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf3();
+extern "C" void fn_802158F0(void *wrapper) {
+    /* Forward vf3() to the widget (VfObj) held at +0x244 of the wrapper. */
+    VfObj *widget = *(VfObj **)((char *)wrapper + 0x244);
+    widget->vf3();
 }
 
 extern "C" void fn_80215904(void *wrapper) {
