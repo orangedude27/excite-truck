@@ -146,32 +146,28 @@ void fn_801B46BC(void *framePool, int frameCount, int bufferSize) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_801B4720(int arg0) {
+#pragma scheduling invalid_target
     int offset;
     unsigned int i;
     int minusOne;
-    int value;
-    int zero;
 
     i = 0;
     offset = 0;
     minusOne = -1;
-    zero = 0;
     while (i < *(unsigned int *)(arg0 + 0x1C)) {
         int *entries = *(int **)(arg0 + 0x18);
         i++;
         *(int *)((char *)entries + offset) = minusOne;
-        *(int *)((char *)*(int **)(arg0 + 0x18) + offset + 4) = zero;
-        *(int *)((char *)*(int **)(arg0 + 0x18) + offset + 8) = zero;
+        *(int *)((char *)*(int **)(arg0 + 0x18) + offset + 4) = 0;
+        *(int *)((char *)*(int **)(arg0 + 0x18) + offset + 8) = 0;
         offset += 12;
     }
-    zero = 0;
-    value = *(int *)(arg0 + 4);
-    *(int *)(arg0 + 8) = zero;
-    *(int *)(arg0 + 0xC) = value;
-    *(int *)(arg0 + 0x10) = value;
-    *(int *)(arg0 + 0x14) = zero;
-    *(int *)(arg0 + 0x20) = zero;
-    *(int *)(arg0 + 0x24) = zero;
+#pragma scheduling on
+    *(int *)(arg0 + 0x10) = *(int *)(arg0 + 0xC) = *(int *)(arg0 + 4);
+    *(int *)(arg0 + 8) = 0;
+    *(int *)(arg0 + 0x14) = 0;
+    *(int *)(arg0 + 0x20) = 0;
+    *(int *)(arg0 + 0x24) = 0;
     ((F801B4720 *)*(void **)arg0)->f4();
 }
 #pragma cplusplus off
@@ -192,8 +188,9 @@ int fn_801B47AC(int arg0) {
 #pragma dont_inline off
 
 #pragma dont_inline on
-int fn_801B47B4(void *arg0) {
-    return fn_801B47D4(arg0, *(int *)((char *)arg0 + 0x24));
+// Return the index preceding this replay ring's current index (+0x24), wrapping to count-1 at 0.
+int fn_801B47B4(void *ring) {
+    return fn_801B47D4(ring, *(int *)((char *)ring + 0x24));
 }
 
 /* Advance an index by one within the ring of count entries at +0x1C, wrapping to 0. */
