@@ -113,8 +113,12 @@ fail:
 }
 
 #pragma scheduling on
-unsigned char fn_8026B0C0(int arg0) {
+/* Returns the in-use flag of the given player's arena-event entry in the
+   4-slot pool at lbl_80499E60; each entry is 0x6C bytes, flag at offset 0. */
+unsigned char fn_8026B0C0(int playerIndex) {
+#define ARENA_EVENT_SLOT_SIZE 0x6C
     extern unsigned char lbl_80499E60[];
-    return lbl_80499E60[arg0 * 0x6C];
+    return lbl_80499E60[playerIndex * ARENA_EVENT_SLOT_SIZE];
+#undef ARENA_EVENT_SLOT_SIZE
 }
 
