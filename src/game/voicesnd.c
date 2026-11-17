@@ -340,7 +340,9 @@ void fn_8020AC0C(int self, int dirName, int fileName) {
     fn_802E5950(dirName, fileName);
 }
 
-extern void fn_802E59BC(void *); void fn_8020AC18(void *arg0, int arg1) { fn_802E59BC((void *)arg1); }
+/* Voice-sound thunk: drop the unused object pointer and forward the SFX0
+ * sound-directory name to fn_802E59BC to queue it for playback. */
+void fn_8020AC18(void *self, int dirName) { fn_802E59BC((void *)dirName); }
 
 extern void fn_802E5A54(void);
 /* Voice-sound shutdown: clear the registered voice-entry count, then tear down
