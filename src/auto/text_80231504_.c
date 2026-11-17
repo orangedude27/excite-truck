@@ -1111,10 +1111,17 @@ void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 sca
 }
 #pragma push
 #pragma opt_common_subs off
-void fn_80232DF4(u8 *__restrict text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
+void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
     s32 sp10;
     f32 spC;
     f32 sp8;
+    s32 firstValue;
+    s32 curColor;
+    u8 *start;
+    s32 textOffset;
+    s32 passes;
+    s32 curFont;
+    u8 *end;
     sp8 = x;
     spC = y;
     sp10 = color;
@@ -1127,28 +1134,27 @@ void fn_80232DF4(u8 *__restrict text, s32 font, s32 color, s32 flags, f32 x, f32
         fn_80233BF0(text, (u8 *)font, &sp8, &spC, flags, scale, extra);
         {
             f32 startX = sp8;
-            s32 passes;
 
             strlen((const char *)text);
             passes = (*(void **)(font + 8) != NULL) + 1;
             while (passes > 0) {
-                s32 curColor = sp10;
-                s32 curFont = font;
-                s32 textOffset = 0;
-
+                curColor = sp10;
                 sp8 = startX;
+                curFont = font;
+                textOffset = 0;
                 if (passes == 2) {
                     curFont = *(s32 *)(font + 8);
                     curColor = fn_80231718(curColor);
                 }
                 fn_80233E80((s32 *)curFont, curColor);
                 while ((s8)text[textOffset] != 0) {
-                    u8 first = text[textOffset];
-                    u8 *start = text + textOffset;
-                    u8 *end;
+                    u8 first;
                     u32 code;
                     s32 offset;
 
+                    firstValue = text[textOffset];
+                    first = (u8)firstValue;
+                    start = text + textOffset;
                     if ((first & 0xF0) == 0xE0) {
                         code = ((first & 0x0F) << 12) | ((start[1] & 0x3F) << 6) | (start[2] & 0x3F);
                         end = start + 3;
@@ -1388,16 +1394,15 @@ extern u16 lbl_802F9FF0[];
 #pragma scheduling invalid_target
 void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     register void *object = arg0;
-    register s32 offset;
     register s32 font;
+    register s32 offset;
     u8 out3[0x18], out2[0x18], out1[0x18], out0[0x18];
     u16 values[6];
     u8 *entry;
-    u16 t0, t1, t2, t3, t4, t5;
     if (arg1 != 0x20) {
+        font = lbl_8055F050;
         offset = arg1 * 0x1C;
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
-        font = lbl_8055F050;
         fn_80231380(out0, font, farg0, farg1, farg4,
                     *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x10));
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
@@ -1409,19 +1414,14 @@ void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
         fn_80231380(out3, font, farg2, farg3, farg4,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
-        t0 = lbl_802F9FF0[0];
-        t1 = lbl_802F9FF0[1];
-        t2 = lbl_802F9FF0[2];
-        t3 = lbl_802F9FF0[3];
-        t4 = lbl_802F9FF0[4];
-        t5 = lbl_802F9FF0[5];
-        values[0] = t0;
-        values[1] = t1;
-        values[2] = t2;
-        values[3] = t3;
-        values[4] = t4;
-        values[5] = t5;
-        fn_802C8DB8(out0, 4, values, 6, t4, t3, t2, t1);
+        values[0] = lbl_802F9FF0[0];
+        values[1] = lbl_802F9FF0[1];
+        values[2] = lbl_802F9FF0[2];
+        values[3] = lbl_802F9FF0[3];
+        values[4] = lbl_802F9FF0[4];
+        values[5] = lbl_802F9FF0[5];
+        fn_802C8DB8(out0, 4, values, 6,
+                    lbl_802F9FF0[4], lbl_802F9FF0[3], lbl_802F9FF0[2], lbl_802F9FF0[1]);
     }
 }
 #pragma pop
@@ -1506,11 +1506,12 @@ extern IndexList_80233EC0 lbl_802F9FFC;
 #pragma scheduling invalid_target
 void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
     register void *object = arg0;
-    register s32 font;
     register s32 offset;
+    register s32 font;
     u8 out3[0x18], out2[0x18], out1[0x18], out0[0x18];
     u16 values[6];
     u8 *entry;
+    u16 *idxp;
     if (arg1 != 0x20) {
         offset = arg1 * 0x1C;
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
@@ -1526,14 +1527,15 @@ void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
         fn_80231380(out3, font, farg3, farg4, farg5,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
-        values[0] = lbl_802F9FFC.idx[0];
-        values[1] = lbl_802F9FFC.idx[1];
-        values[2] = lbl_802F9FFC.idx[2];
-        values[3] = lbl_802F9FFC.idx[3];
-        values[4] = lbl_802F9FFC.idx[4];
-        values[5] = lbl_802F9FFC.idx[5];
+        idxp = lbl_802F9FFC.idx;
+        values[0] = idxp[0];
+        values[1] = idxp[1];
+        values[2] = idxp[2];
+        values[3] = idxp[3];
+        values[4] = idxp[4];
+        values[5] = idxp[5];
         fn_802C8DB8(out0, 4, values, 6,
-                    lbl_802F9FFC.idx[4], lbl_802F9FFC.idx[3], lbl_802F9FFC.idx[2], lbl_802F9FFC.idx[1]);
+                    idxp[4], idxp[3], idxp[2], idxp[1]);
     }
 }
 
@@ -1745,8 +1747,9 @@ s32 fn_802344B0(void) {
     return (s32)(nonzero >> 31);
 }
 
-void fn_802344C4(u8 arg0) {
-    lbl_8055F064 = arg0;
+void fn_802344C4(u8 value) {
+    /* Set a byte of the text/font system's global state (gActiveFont + 0xC). */
+    lbl_8055F064 = value;
 }
 
 extern s32 fn_80231718(s32);
