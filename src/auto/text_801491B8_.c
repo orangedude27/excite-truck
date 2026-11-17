@@ -2305,6 +2305,24 @@ extern s32 lbl_8055E258, lbl_80559ED0, lbl_80559ED4, lbl_80559ED8, lbl_80559EDC,
 extern "C" void fn_802328D4(s32);
 extern "C" void fn_802CAC54(s32);
 extern "C" void fn_802C6CF8(s32);
+/* destructor body of an item in the 0x14 array; last one releases shared resources */
+static inline void DestroyItem8014E9C4(char *item) {
+    if (--lbl_8055E258 == 0) {
+        fn_802CAC54(lbl_80559EDC);
+        lbl_80559EDC = -1;
+        fn_802C6CF8(lbl_80559ED4);
+        fn_802C6CF8(lbl_80559ED8);
+        fn_802C6CF8(lbl_80559ECC);
+        fn_802C6CF8(lbl_80559ED0);
+        fn_802C6CF8(lbl_8055E254);
+        lbl_80559ED0 = -1;
+        lbl_80559ECC = -1;
+        lbl_8055E254 = -1;
+    }
+    if (item+0x20) fn_802CAC54(*(s32 *)(item+0x20));
+}
+extern "C" void fn_802CAC54(s32);
+extern "C" void fn_802C6CF8(s32);
 extern "C" void fn_80167838(void), fn_8016A68C(void), fn_80167EEC(void);
 extern "C" void fn_801777D0(void *), fn_801D05B4(void *), fn_801D0824(void *);
 /* pointer array member (data, count, capacity) */
@@ -2382,12 +2400,9 @@ extern "C" void *fn_8014E9C4(char *p, s32 arg1) {
                 fn_80128668(item);
             }
         }
-        for (i=0,off=0; i<*(s32 *)(p+0x224); off+=4,i++)
-            fn_80128668(*(void **)(*(char **)(p+0x220)+off));
-        for (i=0,off=0; i<*(s32 *)(p+0x330); off+=4,i++)
-            fn_80128668(*(void **)(*(char **)(p+0x32c)+off));
-        for (i=0,off=0; i<*(s32 *)(p+0x3bc); off+=4,i++)
-            fn_80128668(*(void **)(*(char **)(p+0x3b8)+off));
+        FreeAll8014E9C4((PtrArray8014E9C4 *)(p+0x220));
+        FreeAll8014E9C4((PtrArray8014E9C4 *)(p+0x32c));
+        FreeAll8014E9C4((PtrArray8014E9C4 *)(p+0x3b8));
         obj = *(Cleanup8014E9C4 **)(p+0x44c);
         if (obj) { if (obj) obj->destroy(1); }
         obj = *(Cleanup8014E9C4 **)(p+0x444);
