@@ -2239,8 +2239,9 @@ float fn_8026A520(int cameraIndex) {
     return lbl_80563C20;
 }
 
-void fn_8026A54C(float arg0) {
-    lbl_8055F484 = arg0;
+/* Set the global camera scale multiplier (lbl_8055F484) used in camera value calculations. */
+void fn_8026A54C(float scale) {
+    lbl_8055F484 = scale;
 }
 
 /* Camera callback: set the crash-volume slot for the camera named by *indexPtr to HALF_SECOND (0.5f) when the index is in range. */
