@@ -301,8 +301,9 @@ void *fn_802C86DC(void) {
 }
 
 extern void *lbl_8055D018;
-void fn_802C86E8(void* hi) {
-    lbl_8055D018 = hi;
+/* Store the packed ARGB color (default 0xFF7F7F7F gray) later applied to GX state by fn_802C88BC. */
+void fn_802C86E8(void* color) {
+    lbl_8055D018 = color;
 }
 
 void *fn_802C86F0(void *savedViewport, int x, int y, int width, int height) {
