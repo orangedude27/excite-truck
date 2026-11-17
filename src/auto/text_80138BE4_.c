@@ -164,6 +164,7 @@ float fn_80138DF4(void *arg0) {
     return var_f31;
 }
 #pragma pop
+#pragma pop
 void fn_80138F38(void *arg0) {
     extern float lbl_805613B8;
     extern float lbl_805613C0;
