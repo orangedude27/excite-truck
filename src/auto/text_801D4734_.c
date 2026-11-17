@@ -1617,8 +1617,9 @@ void *fn_801D67D4(void) {
 #undef STR_TRACK_EFFECT_ASE
 }
 
-int fn_801D67E0(int arg0) {
-    return ((int *)arg0)[1];
+/* Return the current state field (+0x4) of the effect object. */
+int fn_801D67E0(int object) {
+    return ((UnkStruct_801D701C *)object)->state;
 }
 
 int fn_801D67E8(int effect) {
