@@ -391,7 +391,10 @@ s32 fn_801769A8(void) {
     return ((PhysicsCommand*)lbl_804303C8)->flags;
 }
 
-void *fn_801769B8(void) { return *(void **)&lbl_804303C8; }
+void *fn_801769B8(void) {
+    /* Return the mode word of the active physics command (callers read it as an s32 mode). */
+    return (void *)((PhysicsCommand *)lbl_804303C8)->mode;
+}
 
 extern void *lbl_8055E3E8;
 void* fn_801769C4(void) {
