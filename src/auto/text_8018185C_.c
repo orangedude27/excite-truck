@@ -131,21 +131,6 @@ extern double fn_8002EFB4(float, double);
 extern double lbl_80561F20, lbl_80561F30, lbl_80561F40;
 extern float lbl_80561F38, lbl_80561F3C, lbl_80561F48, lbl_80561F4C, lbl_80561F50;
 typedef struct Mtx3x4Words { int value[12]; } Mtx3x4Words;
-#pragma pack(push, 1)
-typedef struct PhysParamBytes {
-    unsigned char b0, b1, b2, b3, b4, b5, b6, b7;
-    unsigned char b8, b9, b10, b11, b12, b13, b14, b15;
-    unsigned char b16, b17, b18, b19, b20, b21, b22, b23;
-    unsigned char b24, b25, b26, b27, b28, b29, b30, b31;
-    unsigned char b32, b33, b34, b35, b36, b37, b38, b39;
-    unsigned char b40, b41, b42, b43, b44, b45, b46, b47;
-    unsigned char b48, b49, b50, b51, b52, b53, b54, b55;
-    unsigned char b56, b57, b58, b59, b60, b61, b62, b63;
-    unsigned char b64, b65, b66, b67, b68, b69, b70, b71;
-    unsigned char b72, b73, b74, b75, b76, b77, b78, b79;
-    unsigned char b80, b81, b82, b83, b84, b85, b86, b87;
-    unsigned char b88, b89, b90, b91, b92, b93, b94, b95;
-} PhysParamBytes;
 typedef struct PhysParamB {
     int w0, w1, w2, w3, w4, w5, w6, w7;
     int w8, w9, w10, w11, w12, w13, w14, w15;
@@ -156,7 +141,18 @@ typedef struct PhysParamB {
 #pragma pack(pop)
 typedef struct PhysParamA {
     int unk00;
-    PhysParamBytes bytes;
+    unsigned char b0, b1, b2, b3, b4, b5, b6, b7;
+    unsigned char b8, b9, b10, b11, b12, b13, b14, b15;
+    unsigned char b16, b17, b18, b19, b20, b21, b22, b23;
+    unsigned char b24, b25, b26, b27, b28, b29, b30, b31;
+    unsigned char b32, b33, b34, b35, b36, b37, b38, b39;
+    unsigned char b40, b41, b42, b43, b44, b45, b46, b47;
+    unsigned char b48, b49, b50, b51, b52, b53, b54, b55;
+    unsigned char b56, b57, b58, b59, b60, b61, b62, b63;
+    unsigned char n0, n1, n2, n3, n4, n5, n6, n7;
+    unsigned char n8, n9, n10, n11, n12, n13, n14, n15;
+    unsigned char n16, n17, n18, n19, n20, n21, n22, n23;
+    unsigned char n24, n25, n26, n27, n28, n29, n30, n31;
     int unk64, unk68, unk6C;
     unsigned char unk70;
     int unk74;
