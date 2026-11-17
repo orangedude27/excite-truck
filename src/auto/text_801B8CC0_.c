@@ -446,9 +446,9 @@ extern float lbl_80562770;
 extern float lbl_80562774;
 extern float lbl_80562778;
 extern int lbl_8055A918;
-extern void fn_80182074(void *, int);
-extern void fn_801B8CC0(float *, int, int *, float *, float, float);
-extern void fn_802C77F0(int, float *);
+extern "C" void fn_80182074(void *, int);
+extern "C" void fn_801B8CC0(float *, int, int *, float *, float, float);
+extern "C" void fn_802C77F0(int, float *);
 #pragma scheduling invalid_target
 void fn_801B92F0(void *arg0, int arg1) {
     struct Work {
