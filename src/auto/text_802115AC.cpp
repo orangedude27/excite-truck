@@ -506,6 +506,10 @@ extern "C" double lbl_80563448;
 /* Bootstraps the UI subsystem (fn_80211690) in mode 1 during game-menu init. */
 extern "C" void fn_80211F44(void) { fn_80211690(1); }
 
+/* Shuts the UI subsystem down for good: the counterpart of the fn_80211F44
+ * bootstrap. The non-zero argument takes fn_80211D24's full-release path,
+ * which also frees the two menu-arrow art sets and the 3x4 table of loaded
+ * fonts (a zero argument there only drops two entries of that table). */
 extern "C" void fn_80211F4C(void) { fn_80211D24(1); }
 
 extern "C" int fn_80211F54(void) {
