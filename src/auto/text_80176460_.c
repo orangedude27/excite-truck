@@ -1029,6 +1029,8 @@ void fn_801777A8(void) { fn_80177658(&fn_80177628); }
 void fn_801777B4(void) { fn_80177658(&fn_80177638); }
 
 extern void fn_80177648(int *);
+/* Runs the 5th (vtable +0x18) virtual method on every registered listener by
+   handing the fan-out callback fn_80177648 to the per-listener iteration helper. */
 void fn_801777C0(void) {
     fn_80177658(fn_80177648);
 }
