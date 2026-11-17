@@ -107,15 +107,15 @@ extern f32 lbl_80560C1C;
 extern f32 lbl_80560C20;
 
 void select_1obj_continue_head(void *arg0, void *arg1) {
-    register u8 *input = (u8 *)arg1 + 0x20;
-    register u8 *output = (u8 *)arg0 + 0xEC;
-    register u8 *end = (u8 *)arg0 + 0xC8;
+    u8 *input = (u8 *)arg1 + 0x20;
+    u8 *output = (u8 *)arg0 + 0xEC;
+    u8 *end = (u8 *)arg0 + 0xC8;
     double scale = lbl_80560C10;
     f32 mul = lbl_80560C18;
     f32 sub0 = lbl_80560C1C;
     f32 sub1 = lbl_80560C20;
-    s32 invalid = -1;
     s32 zero = 0;
+    s32 invalid = -1;
     do {
         if (*(u16 *)(input + 4) != 0) {
             *(f32 *)(output + 0) = mul * ((f32)*(s16 *)(input + 0)) - sub0;
@@ -389,7 +389,7 @@ outer_loop:
     if ((signed char)candidate[8] != 0) goto next_outer;
     if ((signed char)candidate[9] != 0) goto next_outer;
     other = (unsigned char *)obj + 0xC8;
-    innerEnd = outerEnd - 0x18;
+    innerEnd = (unsigned char *)obj + 0xF8;
 inner_loop:
     if ((signed char)other[8] == 0) {
         dx = *(float *)(candidate + 0) - *(float *)(other + 0);
@@ -410,7 +410,7 @@ next_outer:
     if (limit == lbl_80558ED0 * lbl_80558ED0) return 0;
     copyFrom = (volatile u32 *)bestOther;
     firstWord = copyFrom[0];
-    firstCandidate = (unsigned char *)obj + 0xF8;
+    firstCandidate = &((unsigned char *)obj)[0xF8];
     secondWord = copyFrom[1];
     *(u32 *)(bestCandidate + 0) = firstWord;
     *(u32 *)(bestCandidate + 4) = secondWord;
@@ -479,8 +479,8 @@ void calc_dpd_variable(void *arg0, s8 arg1) {
         f32 bx = FIELD(p,0xB4), by = FIELD(p,0xB8);
         f32 rx = c * bx + sn * by;
         f32 ry = -sn * bx + c * by;
-        f32 mx = (FIELD(p,0xF8) + FIELD(p,0x104)) * lbl_80560BDC;
-        f32 my = (FIELD(p,0xFC) + FIELD(p,0x108)) * lbl_80560BDC;
+        f32 mx = lbl_80560BDC * (FIELD(p,0xF8) + FIELD(p,0x104));
+        f32 my = lbl_80560BDC * (FIELD(p,0xFC) + FIELD(p,0x108));
         f32 xx = rx * mx - ry * my;
         f32 yy = ry * mx + rx * my;
         delta.x = FIELD(p,0xC4) * (FIELD(p,0xBC) - xx);
@@ -494,10 +494,10 @@ void calc_dpd_variable(void *arg0, s8 arg1) {
 
 void read_kpad_dpd(void *arg0, void *arg1, s32 mode) {
     u8 *p = (u8 *)arg0;
-    register u8 *last, *first, *a, *b;
+    register u8 *a, *first, *last, *b;
     s32 probe, type;
     s8 selected;
-    register f32 dy, dx; f32 scale, x, y, c, d; f64 mag;
+    register f32 dy, dx; f32 mag, scale, x, c, d, hori;
     if (*(s16 *)(p + 0x114) < 0) return;
     probe = WPADProbe(*(s16 *)(p + 0x114), &type);
     if ((u32)mode == 1) {
@@ -529,35 +529,56 @@ void read_kpad_dpd(void *arg0, void *arg1, s32 mode) {
         a += 12;
     } while (a < last);
     *(s16 *)(p+0x110) = 0;
-    a = p + 0xec; first = p + 0xc8;
+    b = p + 0xec;
     do {
-        if (*(s8 *)(a+8) == 0) ++*(s16 *)(p+0x110);
-        a -= 12;
-    } while (a >= first);
-    selected = 0;
+        if (*(s8 *)(b+8) == 0) ++*(s16 *)(p+0x110);
+        b -= 12;
+    } while (b >= p + 0xc8);
     if (!(*(f32 *)(p+0x54) <= lbl_80558ECC)) {
         if (*(s8 *)(p+0x84) == 2 || *(s8 *)(p+0x84) == -2) {
-            if (*(s16 *)(p+0x110) >= 2) selected = select_2obj_continue(arg0);
-            if (!selected && *(s16 *)(p+0x110) >= 1) selected = select_1obj_continue(arg0);
+            if (*(s16 *)(p+0x110) >= 2) {
+                selected = ((s8 (*)(void *))select_2obj_continue)(arg0);
+                if (selected) goto select_ok;
+            }
+            if (*(s16 *)(p+0x110) >= 1) {
+                selected = ((s8 (*)(void *))select_1obj_continue)(arg0);
+                if (!selected) goto select_done; else goto select_ok;
+            }
         } else if (*(s8 *)(p+0x84) == 1 || *(s8 *)(p+0x84) == -1) {
-            if (*(s16 *)(p+0x110) >= 2) selected = select_2obj_first(arg0);
-            if (!selected && *(s16 *)(p+0x110) >= 1) selected = select_1obj_continue(arg0);
+            if (*(s16 *)(p+0x110) >= 2) {
+                selected = ((s8 (*)(void *))select_2obj_first)(arg0);
+                if (selected) goto select_ok;
+            }
+            if (*(s16 *)(p+0x110) >= 1) {
+                selected = ((s8 (*)(void *))select_1obj_continue)(arg0);
+                if (!selected) goto select_done; else goto select_ok;
+            }
         } else {
-            if (*(s16 *)(p+0x110) >= 2) selected = select_2obj_first(arg0);
-            if (!selected && *(s16 *)(p+0x110) == 1) selected = select_1obj_first(arg0);
+            if (*(s16 *)(p+0x110) >= 2) {
+                selected = ((s8 (*)(void *))select_2obj_first)(arg0);
+                if (selected) goto select_ok;
+            }
+            if (*(s16 *)(p+0x110) == 1) {
+                selected = ((s8 (*)(void *))select_1obj_first)(arg0);
+                if (selected) goto select_ok;
+            }
         }
     }
+select_done:
+    selected = 0;
+select_ok:
     if (selected) {
         dx = *(f32 *)(p+0x104) - *(f32 *)(p+0xf8);
         dy = *(f32 *)(p+0x108) - *(f32 *)(p+0xfc);
         mag = (f32)fn_8002F234(dx*dx+dy*dy);
         scale = lbl_80560BE4 / mag;
         *(f32 *)(p+0x3a0) = mag;
-        x = *(f32 *)(p+0xb4); y = *(f32 *)(p+0xb8);
+        hori = lbl_8055D990 * scale;
+        x = *(f32 *)(p+0xb4);
         dx *= scale; dy *= scale;
         *(f32 *)(p+0x3a4) = dx;
-        *(f32 *)(p+0x3ac) = lbl_8055D990 * scale;
-        c = x*dx+y*dy; d = y*dx-x*dy;
+        *(f32 *)(p+0x3ac) = hori;
+        c = x*dx+*(f32 *)(p+0xb8)*dy; d = *(f32 *)(p+0xb8)*dx-x*dy;
         *(f32 *)(p+0x3a8) = dy;
         *(f32 *)(p+0x3c0) = c; *(f32 *)(p+0x3c4) = d;
         if (*(u16 *)(p+0x3d8) == 0 && c * *(f32 *)(p+0x3c8) + d * *(f32 *)(p+0x3cc) <= lbl_80558EC8) {
