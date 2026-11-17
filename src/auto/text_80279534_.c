@@ -4,5 +4,8 @@
 extern char lbl_8055F600[4];
 extern void fn_8000D838(void *queue);
 void fn_80279534(void) {
-    fn_8000D838(lbl_8055F600);
+#define gStaticObject lbl_8055F600
+    /* Static initializer: register this unit's tagged global object with the runtime's static-destructor list. */
+    fn_8000D838(gStaticObject);
+#undef gStaticObject
 }
