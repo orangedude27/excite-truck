@@ -1455,8 +1455,12 @@ int fn_80128670(int);
 double cos(double);
 double sin(double);
 extern float lbl_80564CF0;
-float fn_802BAD90(float farg0) {
-    return lbl_80564CF0 * farg0;
+/* Convert an angle in degrees into radians (pi/180); callers feed the result to
+ * the sin/cos rotation in fn_802BAD0C. */
+float fn_802BAD90(float degrees) {
+    #define DEG_TO_RAD lbl_80564CF0
+    return DEG_TO_RAD * degrees;
+    #undef DEG_TO_RAD
 }
 
 #pragma cplusplus on
