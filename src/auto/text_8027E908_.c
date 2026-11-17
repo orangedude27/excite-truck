@@ -281,6 +281,7 @@ extern "C" void fn_8027E908(void) {
     object = lbl_8055F680;
     ((InitObj *)object)->v3(base+0x228, base+0x238, 0);
 }
+#pragma scheduling reset
 #pragma cplusplus reset
 #pragma pop
 
@@ -1489,6 +1490,7 @@ int fn_80280DC8(void) {
     char *src;
     char *dst;
     int n;
+    int next;
 
     if (*(volatile unsigned int *)&lbl_8055F688 == 0)
         goto reset;
@@ -1498,10 +1500,8 @@ int fn_80280DC8(void) {
     index = 0;
     p = items;
     while (index < count) {
-        if (*p != (void *)key)
-            goto search_next;
-        goto first_found;
-search_next:
+        if (*p == (void *)key)
+            goto first_found;
         p++;
         index++;
     }
@@ -1511,8 +1511,9 @@ first_found:
     if (*(void * volatile *)((char *)item + 0x60) == 0)
         goto finish;
     obj = *(void **)((char *)item + 0x60);
+    next = index + 1;
     key = ((GetKeyFn)(*(void ***)obj)[11])(obj);
-    index++;
+    index = next;
     while (index < lbl_804B3048.count) {
         item = lbl_804B3048.items[index];
         obj = *(void **)((char *)item + 0x60);
@@ -1524,7 +1525,7 @@ first_found:
     if (index >= count)
         goto finish;
     lbl_804B3068[0] = 0;
-    if (index < 0) {
+    if (index < 0 || index >= count) {
         *(volatile unsigned int *)&lbl_8055F688 = 0;
         goto finish;
     }
@@ -1532,9 +1533,9 @@ first_found:
     lbl_8055F688 = (unsigned int)item;
     if (item == 0)
         goto finish;
-    obj = *(void **)((char *)item + 0x60);
-    if (obj == 0)
+    if (*(void * volatile *)((char *)item + 0x60) == 0)
         goto finish;
+    obj = *(void **)((char *)item + 0x60);
     src = ((GetTextFn)(*(void ***)obj)[12])(obj);
     dst = (char *)lbl_804B3068;
     n = 100;
