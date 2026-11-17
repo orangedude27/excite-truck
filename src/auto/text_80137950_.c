@@ -179,6 +179,7 @@ void fn_80137C78(void) {
     fn_800167FC();
 }
 
+/* RealName: setupPlayerDriver. Forwards to fn_8001683C with the driver id and player-slot index (passed through in this tail call), which installs that driver's record into the given base-table slot. */
 void fn_80137C7C(void) {
     fn_8001683C();
 }
