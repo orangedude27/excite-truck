@@ -1822,8 +1822,9 @@ extern "C" void fn_80175080(void **arg0, int arg1, int arg2, char *fmt, double f
 #pragma cplusplus reset
 typedef void (*Fn_80175228)(void *);
 #pragma cplusplus on
-extern "C" void fn_80175228(void *arg0) {
-    ((TObj4C *)arg0)->v4C();
+extern "C" void fn_80175228(void *obj) {
+    /* C-linkage adapter: dispatch virtual slot v4C() at vtable offset 0x4C on a TObj4C object. */
+    ((TObj4C *)obj)->v4C();
 }
 
 #pragma cplusplus reset
@@ -2238,11 +2239,8 @@ void fn_80176040(char *self, int a, int b) {
     int k;
     int i;
     int cnt;
-    Fn80176040Obj *ob;
-    ob = *(Fn80176040Obj **)(self + 0x128);
-    if (ob->vt->m20(ob, a) == 0) return;
-    ob = *(Fn80176040Obj **)(self + 0x128);
-    if (ob->vt->m20(ob, b) == 0) return;
+    if ((*(Fn80176040Obj **)(self + 0x128))->vt->m20(*(void **)(self + 0x128), a) == 0) return;
+    if ((*(Fn80176040Obj **)(self + 0x128))->vt->m20(*(void **)(self + 0x128), b) == 0) return;
     c = -1;
     if (fn_80171EC0(a) != 0) c = b;
     else if (fn_80171EC0(b) != 0) c = a;
