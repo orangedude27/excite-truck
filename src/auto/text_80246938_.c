@@ -425,6 +425,7 @@ void fn_80247174(void) {
     fn_8020A634();
     fn_80246CAC(lbl_80563898);
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
