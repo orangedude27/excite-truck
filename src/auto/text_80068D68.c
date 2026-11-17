@@ -16381,6 +16381,23 @@ BOOLEAN btsnd_hcic_write_pin_type(UINT8 type) {
     return TRUE;
 }
 
+int btsnd_hcic_read_stored_key(void *p_buf, u8 *bd_addr, u8 read_all_flag) {
+    u8 *buf = p_buf;
+    *(u16 *)(buf + 2) = 0xA;
+    *(u16 *)(buf + 4) = 0;
+    buf[8] = 0xD;
+    buf[9] = 0xC;
+    buf[0xA] = 7;
+    buf[0xB] = bd_addr[5];
+    buf[0xC] = bd_addr[4];
+    buf[0xD] = bd_addr[3];
+    buf[0xE] = bd_addr[2];
+    buf[0xF] = bd_addr[1];
+    buf[0x10] = bd_addr[0];
+    buf[0x11] = read_all_flag;
+    return btu_hcif_send_cmd(buf);
+}
+
 BOOLEAN btsnd_hcic_read_stored_key_public(BD_ADDR bd_addr, BOOLEAN read_all_flag) {
     u8 *p = GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
