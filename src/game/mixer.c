@@ -212,20 +212,14 @@ extern "C" void fn_801336E0(int, void (*)(void));
 #pragma scheduling default
 #pragma cplusplus on
 extern "C" void fn_80208D80(int arg0) {
+    void **items;
+    void *object;
     char *entry = lbl_80489258;
     int enabled;
     int index = 0;
     int index2;
-    struct Table {
-        void *entries[6];
-        int count;
-        int value;
-    };
-    struct Table *base;
-    void **items;
-    void *object;
 
-    while (index < *(int *)(lbl_80489258 + 0x40)) {
+    while (index < MIXER_VOLUME_HANDLE_COUNT) {
         enabled = *(int *)(entry + 4);
         if (enabled != 0) {
             fn_802E317C(lbl_8033BF28, enabled);
@@ -236,9 +230,8 @@ extern "C" void fn_80208D80(int arg0) {
 
     if (arg0 != 0) {
         items = (void **)lbl_80489238;
-        base = (struct Table *)items;
         index2 = 0;
-        while (index2 < base->count) {
+        while (index2 < MIXER_DEVICE_COUNT) {
             object = *items;
             if (object != 0) {
                 struct Dummy {
@@ -251,6 +244,11 @@ extern "C" void fn_80208D80(int arg0) {
         }
     }
 
+    struct Table {
+        void *entries[6];
+        int count;
+        int value;
+    };
     fn_80133348(4, &lbl_8055B4E8, ((struct Table *)lbl_80489238)->value);
     fn_8013323C(4, lbl_8033BEF8, lbl_8055B4D0);
     fn_80133348(4, &lbl_8055B4E0, (int)lbl_8055EDA8);
