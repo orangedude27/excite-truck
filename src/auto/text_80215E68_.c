@@ -177,7 +177,10 @@ s32 fn_80215FFC(void *arg0) {
     return result;
 }
 #pragma pop
-u32 fn_80216054(void) { return 1; }
+/* Query stub in the option UI: always answers 1 (true) in this build. */
+u32 fn_80216054(void) {
+    return 1;
+}
 
 /* Draws the given rectangle on the current canvas using the global draw color. */
 void fn_8021605C(void *rect, s32 canvasState) {
