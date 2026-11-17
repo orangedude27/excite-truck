@@ -19311,7 +19311,8 @@ extern "C" void fn_800CF934(void *holder) {
     if (callback) ((Callback *)callback)->invoke();
 }
 
-extern "C" s32 fn_800CF954(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x20); }
+// Return the 32-bit field stored at offset 0x20 of the given object.
+extern "C" s32 fn_800CF954(void *object) { return *(s32 *)((u8 *)object + 0x20); }
 
 extern "C" void fn_800CF95C(s32 base, s32 index, s8 value) {
     /* Set the signed byte at offset 4 of the byte array at base, selected by index. */
