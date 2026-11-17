@@ -139,6 +139,8 @@ void fn_80278318(void) {
 #undef sMsgEndRecord
 }
 #pragma scheduling on
+/* Returns lbl_8055F5B8 (sRecording): nonzero while replay keyframes are being
+ * captured. */
 char fn_80278358(void) {
     return lbl_8055F5B8;
 }
