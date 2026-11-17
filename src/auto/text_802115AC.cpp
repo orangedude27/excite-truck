@@ -2608,8 +2608,10 @@ extern "C" void fn_80215984(void *arg0) {
     ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf10();
 }
 
-extern "C" void fn_80215998(void *arg0) {
-    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf11();
+/* Forwards vf11 to the widget (VfObj) stored at +0x244 of the wrapper. */
+extern "C" void fn_80215998(void *wrapper) {
+    VfObj *widget = *(VfObj **)((char *)wrapper + 0x244);
+    widget->vf11();
 }
 
 /* Forward vf13 (vtable slot 0x3C) to the widget held at +0x244 of the wrapper. */
