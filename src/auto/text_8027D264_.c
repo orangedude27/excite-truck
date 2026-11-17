@@ -443,8 +443,9 @@ int fn_8027D944(int base) {
     return base + 0x18C;
 }
 
-int fn_8027D94C(void *arg0) {
-    return ((int *)arg0)[3];
+/* Return the int field at offset 0xC of the nw4r::ef effect object. */
+int fn_8027D94C(void *effect) {
+    return ((int *)effect)[3];
 }
 
 /* Address of the index-th 0x1F4-byte element in the container's table (base pointer at +0x8). */
