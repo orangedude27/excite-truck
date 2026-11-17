@@ -423,19 +423,21 @@ extern "C" s32 fn_8012ABB0(const char *name, void *headerBuffer) {
 
 #pragma push
 #pragma scheduling invalid_target
-extern "C" s32 fn_8012AC28(s32 arg0, s32 arg1) {
-    u8 buffer[0x104];
-    s32 spC;
-    s32 sp8;
-    s32 result;
-    spC = -1;
-    fn_802E4CA8(&buffer[0], arg0, 0x104);
-    result = fn_802E7354(&buffer[0]);
-    if (result != -1) {
-        fn_802E746C(result, &spC, &sp8);
-        if (arg1 != 0) *(s32 *)arg1 = sp8;
+extern "C" s32 fn_8012AC28(s32 parser, s32 outSize) {
+    /* Copy the stream name out of the parser, then return the stream's start sector
+     * (2048-byte units) or -1; optionally write its byte size to outSize. */
+    u8 name[0x104];
+    s32 startSector;
+    s32 size;
+    s32 streamIndex;
+    startSector = -1;
+    fn_802E4CA8(&name[0], parser, 0x104);
+    streamIndex = fn_802E7354(&name[0]);
+    if (streamIndex != -1) {
+        fn_802E746C(streamIndex, &startSector, &size);
+        if (outSize != 0) *(s32 *)outSize = size;
     }
-    return spC;
+    return startSector;
 }
 #pragma pop
 
