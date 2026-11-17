@@ -136,34 +136,36 @@ void fn_8016A0D4(void) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-s32 fn_8016A15C(const char *arg0) {
+/* Enable the named object class: mark its table entry active and enable/reset
+   every record it owns. Returns 1 if the name was found, 0 otherwise. */
+s32 fn_8016A15C(const char *name) {
     register s32 found;
-    register f32 fval = lbl_80561958;
-    s32 j;
+    register f32 resetTime = lbl_80561958;
+    s32 recordIdx;
     u8 *entry;
     u8 *record;
-    s32 offset;
-    s32 i;
+    s32 entryOffset;
+    s32 entryIdx;
     found = 0;
-    i = 0;
-    offset = 0;
-    while (i < lbl_80430340.unk_0x4) {
-        if (stricmp(lbl_80430340.unk_0x0 + offset + 1, arg0) == 0) {
-            entry = (u8 *)lbl_80430340.unk_0x0 + offset;
+    entryIdx = 0;
+    entryOffset = 0;
+    while (entryIdx < lbl_80430340.unk_0x4) {
+        if (stricmp(lbl_80430340.unk_0x0 + entryOffset + 1, name) == 0) {
+            entry = (u8 *)lbl_80430340.unk_0x0 + entryOffset;
             entry[0x28] = 1;
-            j = 0;
-            while (j < *(s32 *)(entry + 0x24)) {
-                record = (u8 *)*(s32 *)lbl_80430318 + ((*(s32 *)(entry + 0x20) + j) * 0x48);
+            recordIdx = 0;
+            while (recordIdx < *(s32 *)(entry + 0x24)) {
+                record = (u8 *)*(s32 *)lbl_80430318 + ((*(s32 *)(entry + 0x20) + recordIdx) * 0x48);
                 record[0x3d] = 0;
-                *(f32 *)(record + 0x40) = fval;
+                *(f32 *)(record + 0x40) = resetTime;
                 record[0x3c] = 1;
                 *(f32 *)(record + 0x44) = lbl_8055E3C8;
-                j++;
+                recordIdx++;
             }
             found = 1;
         }
-        offset += 0x2c;
-        i++;
+        entryOffset += 0x2c;
+        entryIdx++;
     }
     return found;
 }
