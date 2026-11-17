@@ -197,13 +197,6 @@ static inline void transform_vec_scheduled(float *out, const float *m, float *in
     }
 
 }
-/* Clamp v into [lo, hi]. */
-static inline f32 clampf(f32 v, f32 lo, f32 hi) {
-    f32 r = hi;
-    r = r < v ? r : v;
-    r = r > lo ? r : lo;
-    return r;
-}
 /* Rotate a vector into the frame whose axes are m's rows, in place. */
 static inline void rotate_vec_in_place(f32 *v, const f32 *m) {
     f32 z, y, x;
@@ -652,6 +645,9 @@ extern "C" void fn_801B97D8(struct TrlrCar *car) {
     f32 value;
     f32 limit;
     f32 forwardSpeed;
+    f32 rotX;
+    f32 rotY;
+    f32 rotZ;
     s32 over;
 
     player = car->player;
@@ -666,11 +662,18 @@ extern "C" void fn_801B97D8(struct TrlrCar *car) {
     if (car->towed == 0) {
         fn_8018ADA4(car, car->flag275C != 0 ? lbl_80562780 : lbl_80562750);
     } else {
+        const f32 *m;
         player = car->player;
         localDelta[0] = player->position.x - ((Vec *)((char *)car + 0x60))->x;
         localDelta[1] = player->position.y - ((Vec *)((char *)car + 0x60))->y;
         localDelta[2] = player->position.z - ((Vec *)((char *)car + 0x60))->z;
-        rotate_vec_in_place(localDelta, (const f32 *)((char *)car + 0x3C));
+        rotX = localDelta[0];
+        rotY = localDelta[1];
+        rotZ = localDelta[2];
+        m = (const f32 *)((char *)car + 0x3C);
+        localDelta[0] = rotX * m[0] + rotY * m[1] + rotZ * m[2];
+        localDelta[1] = rotX * m[3] + rotY * m[4] + rotZ * m[5];
+        localDelta[2] = rotX * m[6] + rotY * m[7] + rotZ * m[8];
         speedDelta[0] = ((Vec *)((char *)car + 0x118))->x - player->velocity.x;
         speedDelta[1] = ((Vec *)((char *)car + 0x118))->y - player->velocity.y;
         speedDelta[2] = ((Vec *)((char *)car + 0x118))->z - player->velocity.z;
