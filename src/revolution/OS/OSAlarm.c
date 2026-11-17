@@ -261,6 +261,7 @@ static asm void DecrementerExceptionHandler(register u8 type,
     // clang-format on
 }
 
+/* Store a user-defined tag in the alarm (reported to its handler when it fires). */
 void OSSetAlarmTag(OSAlarm* alarm, u32 tag) {
     alarm->tag = tag;
 }
