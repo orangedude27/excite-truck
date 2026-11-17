@@ -2214,7 +2214,8 @@ extern "C" s32 fn_80148248(void) {
     return 0;
 }
 
-extern "C" void fn_80148250(void *arg0) {
+extern "C" void fn_80148250(void *params) {
+    /* Calls virtual slot 8 (offset 0x28) of the interface vtable stored at +4 of this params object. */
     struct VTable {
         virtual void f0();
         virtual void f1();
@@ -2226,8 +2227,8 @@ extern "C" void fn_80148250(void *arg0) {
         virtual void f7();
         virtual void f8();
     };
-    VTable *obj = *(VTable **)((u8 *)arg0 + 4);
-    obj->f8();
+    VTable *vtable = *(VTable **)((u8 *)params + 4);
+    vtable->f8();
 }
 
 extern "C" u32 lbl_80559E68;
