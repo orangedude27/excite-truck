@@ -779,7 +779,7 @@ void fn_802CF850(void) {
     GXSetDither(1);
     VIWaitForRetrace();
     VISetNextFrameBuffer(*(void **)(base + 0x4110));
-    *(void **)((void **)(base + 0x4110) + 1) = *(void **)(base + 0x4110);
+    *(void **)((char *)(base + 0x4110) + 4) = *(void **)(base + 0x4110);
     VIFlush();
 
     if ((*(unsigned int *)lbl_8055FD64 & 1) != 0) {
