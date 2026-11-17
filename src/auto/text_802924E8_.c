@@ -1094,7 +1094,10 @@ void *__dt__Q34nw4r2ef6EffectFv_80293A88(void *this, int shouldDelete) {
     return this;
 }
 
-void fn_80293AE8(void* arg0) { *(int*)((u8*)arg0 + 0x4c2c) = 0; }
+void fn_80293AE8(void *effect) {
+    /* Empty a "ter" chunk effect's records by zeroing its count at +0x4C2C (see ChunkSys). */
+    *(s32 *)((u8 *)effect + 0x4c2c) = 0;
+}
 
 extern void fn_80293F20(void*);
 /* ChunkSys_ter_calc: the "ter" chunk effect's calc virtual, slot +0x10 of its
