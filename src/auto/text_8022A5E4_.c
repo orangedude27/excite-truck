@@ -1261,8 +1261,9 @@ void fn_8022C9D0(void) {
     } while (i < 0x100);
 }
 
-void *fn_8022CA2C(int arg0) {
-    return lbl_80490968 + arg0 * 0x74;
+/* Return a pointer to the 0x74-byte UI text style record at the given index in lbl_80490968. */
+void *fn_8022CA2C(int styleIndex) {
+    return lbl_80490968 + styleIndex * 0x74;
 }
 
 /* Returns 1.0 if the stored value is below 1.0, otherwise scales it by the byte count from the related object. */
