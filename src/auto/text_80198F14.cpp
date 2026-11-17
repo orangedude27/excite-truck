@@ -1914,8 +1914,7 @@ ret1:
     return !(*maxT < lbl_805622D0);
 }
 
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32 f1, f32 f2) {
     Vec origin, direction;
     f32 minimum, maximum;
@@ -1926,26 +1925,26 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     f32 m3 = matrix[3];
     f32 m6 = matrix[6];
     f32 m7 = matrix[7];
-    f32 m8 = matrix[8];
     f32 m2 = matrix[2];
     f32 m5 = matrix[5];
+    f32 m8 = matrix[8];
     f32 *p = (f32 *)arg0;
     f32 *v = (f32 *)arg1;
-    f32 x = p[0] - matrix[9];
-    f32 y = p[1] - matrix[10];
-    f32 z = p[2] - matrix[11];
-    origin.y = z * m5 + (x * m3 + y * m4);
+    register f32 y = p[1] - matrix[10];
+    register f32 x = p[0] - matrix[9];
+    register f32 z = p[2] - matrix[11];
     origin.x = z * m2 + (x * matrix[0] + y * m1);
+    origin.y = z * m5 + (x * m3 + y * m4);
     origin.z = z * m8 + (x * m6 + y * m7);
     if ((f32 *)&direction == v) {
         f32 vx = v[0], vy = v[1], vz = v[2];
-        direction.x = vz * m2 + (vx * matrix[0] + vy * m1);
-        direction.y = vz * m5 + (vx * m3 + vy * m4);
-        direction.z = vz * m8 + (vx * m6 + vy * m7);
+        direction.x = vz * m2 + (vy * m1 + vx * matrix[0]);
+        direction.y = vz * m5 + (vy * m4 + vx * m3);
+        direction.z = vz * m8 + (vy * m7 + vx * m6);
     } else {
-        direction.x = v[2] * m2 + (v[0] * matrix[0] + v[1] * m1);
-        direction.y = v[2] * m5 + (v[0] * m3 + v[1] * m4);
-        direction.z = v[2] * m8 + (v[0] * m6 + v[1] * m7);
+        direction.x = v[2] * m2 + (v[1] * m1 + v[0] * matrix[0]);
+        direction.y = v[2] * m5 + (v[1] * m4 + v[0] * m3);
+        direction.z = v[2] * m8 + (v[1] * m7 + v[0] * m6);
     }
     minimum = lbl_80562364;
     maximum = lbl_80562368;
@@ -1958,7 +1957,7 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     }
     return 0;
 }
-#pragma pop
+#pragma scheduling reset
 
 extern "C" u8 lbl_80435020[];
 extern f32 lbl_8056236C;
@@ -2069,7 +2068,7 @@ extern "C" s32 fn_8019E834(s32 object, s32 shouldDestroy) {
 }
 
 #pragma push
-#pragma use_lmw_stmw off
+#pragma scheduling on
 extern "C" s32 fn_8019E874(void* arg0, void** arg1, void* arg2, f32 f1, f32 f2, f32 f3, f32 f4) {
     s32 kind = *(s32*)((u8*)arg0 + 0x20);
     Vec p;
@@ -5567,8 +5566,10 @@ extern "C" s32 fn_801A5134(s32 object, s32 deleteFlag) {
     return object;
 }
 
-extern "C" s32 fn_801A5174(void* arg0) {
-    return *(s32*)((u8*)arg0 + 0x48);
+/* Getter: return the notify/listener pointer at offset 0x48 of the solid or
+ * instance (nonzero means it has a listener interface to dispatch to). */
+extern "C" s32 fn_801A5174(void* object) {
+    return *(s32*)((u8*)object + 0x48);
 }
 
 extern "C" s32 fn_801A517C(s32 arg0) {
