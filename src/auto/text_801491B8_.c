@@ -4580,6 +4580,8 @@ void fn_80155318(void *arg0) {
     *((u8 *)arg0 + 0x64) = (u8)zero;
     *((u8 *)arg0 + 0xB4) = (u8)zero;
 }
+/* Empty default handler: does nothing.  It follows the node constructor fn_80155318 and is
+ * taken only by function pointer (no source calls it), like the stubs at 0x80154744-0x80154750. */
 void fn_80155368(void) {
 
 }
