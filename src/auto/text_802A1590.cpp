@@ -505,7 +505,7 @@ extern "C" void fn_802A1CC4(void) {
         *(f32 *)(config + 0x64) = lbl_80564730;
         *(f32 *)(config + 0x74) = lbl_80564744;
         lbl_8055F870 = ((int (*)(void *, void *, void *, int, f32, f32, f32, f32, f32, f32))fn_8028E2F8)(
-            config, lbl_803499F4, name, zero,
+            config, lbl_803499F4, name, 0,
             lbl_80564740, lbl_8056473C, lbl_80564738,
             lbl_80564734, lbl_80564730, lbl_8056472C);
     } else {
