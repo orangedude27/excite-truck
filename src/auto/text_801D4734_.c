@@ -1082,8 +1082,10 @@ int fn_801D59C8(int arg0, int arg1) {
 #pragma dont_inline off
 
 #pragma scheduling reset
-void fn_801D5A14(int arg0) {
-    (void)fn_801D59C8(arg0, 2);
+/* Test (result discarded) whether the registered action sequence's state field
+ * (+0x4) is ACTION_SEQ_PLAYING (2); fn_801D59C8 performs the list lookup. */
+void fn_801D5A14(int sequence) {
+    (void)fn_801D59C8(sequence, ACTION_SEQ_PLAYING);
 }
 
 /* Return nonzero when the registered action sequence's state field (+0x4) is
