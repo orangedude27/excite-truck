@@ -1067,9 +1067,10 @@ void fn_8016027C(void *arg0, f32 farg0, f32 farg1) {
     *(f32 *)((u8 *)arg0 + 4) = farg1;
 }
 
-void fn_80160288(void *arg0, void *arg1) {
+void fn_80160288(void *dst, void *src) {
+    /* Copy one 8-byte pair of words from src to dst. */
     struct Pair { u32 first; u32 second; };
-    *(struct Pair *)arg0 = *(struct Pair *)arg1;
+    *(struct Pair *)dst = *(struct Pair *)src;
 }
 
 f32 fn_8016029C(f32 *arg0, f32 *arg1) {
