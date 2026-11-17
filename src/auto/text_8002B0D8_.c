@@ -1508,8 +1508,9 @@ double fn_8002EFA8(double x) {
     return __ieee754_acos(x);
 }
 
-void fn_8002EFAC(void) {
-    __ieee754_asin();
+/* MSL asin() wrapper: tail-call the fdlibm arcsine kernel on x. */
+double fn_8002EFAC(double x) {
+    return __ieee754_asin(x);
 }
 
 void fn_8002EFB0(void) {
