@@ -169,6 +169,7 @@ typedef struct PhysRecord {
 typedef struct {
     unsigned char b[0x90];
 } PhysBlob;
+#pragma pack(push, 1)
 typedef struct PhysStateScalars {
     float m0, m1, m2, m3, m4, m5, m6, m7;
     float m8, m9, m10, m11, m12, m13, m14, m15;
@@ -178,6 +179,7 @@ typedef struct PhysStateScalars {
     float g0, g1, g2, g3, g4, g5, g6;
     int t0, t1, t2;
 } PhysStateScalars;
+#pragma pack(pop)
 typedef struct PhysState {
     float m[32];
     PhysRecord rec[4];
