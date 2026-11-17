@@ -38,6 +38,7 @@ int fn_802AC174(const char *hexString) {
 #pragma scheduling on
 extern char *strstr(const char *, const char *);
 extern int lbl_802FAA50[];
+struct AcTable { int w[24]; };
 #pragma use_lmw_stmw off
 int fn_802AC1BC(const char *arg0, int arg1) {
     int entries[24];
