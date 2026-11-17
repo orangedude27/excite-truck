@@ -4512,8 +4512,9 @@ void GXInitTlutObj(void *tlutObj, unsigned int lut, int fmt, short nEntries) {
     *(unsigned int *)((char *)tlutObj + 4) = attrReg.reg;
 }
 
-unsigned short GXGetTexObjTlut(void *arg0) {
-    return *(unsigned short *)((char *)arg0 + 8);
+/* Return the CLUT entry count stored at +8 of a GX TLUT object (written by GXInitTlutObj). */
+unsigned short GXGetTexObjTlut(void *tlutObj) {
+    return *(unsigned short *)((char *)tlutObj + 8);
 }
 
 void GXLoadTlut(void *arg0, int arg1) {
