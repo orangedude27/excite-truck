@@ -1183,6 +1183,12 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
 extern u8 fn_80232B70(void *);
 extern void fn_802344CC(s32, s32, s32, s32, f32, f32, f32);
 extern f32 fn_8023293C(s32, char *, f32);
+/* Readable aliases for the pieces fn_80233010 wraps text with; the game's own
+ * symbols keep their placeholder names. */
+#define gTextFontHeight fn_80232B70   /* the font's line height, one byte into the font */
+#define gTextMeasureWidth fn_8023293C /* pixel width of a string in a font, plus extra spacing */
+#define gTextDrawLine fn_80232BA4     /* draw one line of text now */
+#define gTextQueueDraw fn_802344CC    /* queue one line of text to be drawn */
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
