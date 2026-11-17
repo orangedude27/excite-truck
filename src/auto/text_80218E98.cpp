@@ -2558,53 +2558,56 @@ extern "C" void fn_8021C478(void *self) {
     }
 }
 
-extern "C" void fn_8021C4D4(void *arg0) {
-    register u8 *self = (u8 *)arg0;
+/* Update a scrollable text/list widget: notify the base, register a selection
+ * rectangle for the current line based on its mode, then draw start/end
+ * markers through the callback when the two line positions differ. */
+extern "C" void fn_8021C4D4(void *widget) {
+    register u8 *self = (u8 *)widget;
     s32 *statusPtr;
-    s32 state;
-    s32 valid;
-    s32 temp;
-    s32 first;
-    s32 second;
-    f32 sp14;
-    f32 sp10;
+    s32 mode;
+    s32 isActive;
+    s32 markerActive;
+    s32 handleA;
+    s32 handleB;
+    f32 posX;
+    f32 posY;
     fn_80219660((void *)self);
     statusPtr = *(s32 **)(self + 0x2A8);
-    valid = 0;
+    isActive = 0;
     if (statusPtr != 0) {
         if (*statusPtr == *(s32 *)(self + 0x2AC))
-            valid = 1;
+            isActive = 1;
     }
-    state = *(s32 *)(self + 0x2CC);
-    valid = (s32)(((u32)((-valid) | valid)) >> 31);
-    if (state == 0 && *(s32 *)(self + 0x2C8) != 0) {
+    mode = *(s32 *)(self + 0x2CC);
+    isActive = (s32)(((u32)((-isActive) | isActive)) >> 31);
+    if (mode == 0 && *(s32 *)(self + 0x2C8) != 0) {
         ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
             *(s32 *)(self + 0x2C4), *(s32 *)(self + 0x2BC),
             *(s32 *)(self + 0x2B8) - 3, 0, 0, 0,
-            *(s32 *)(self + 0x2C8), valid, 0.0f, 1);
-    } else if (state == 1 && *(s32 *)(self + 0x2C8) != 0) {
+            *(s32 *)(self + 0x2C8), isActive, 0.0f, 1);
+    } else if (mode == 1 && *(s32 *)(self + 0x2C8) != 0) {
         ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
             *(s32 *)(self + 0x2C4), *(s32 *)(self + 0x2C0),
             *(s32 *)(self + 0x2B8) - 3, 0, 0, 0,
-            *(s32 *)(self + 0x2C8), valid, 0.0f, 1);
+            *(s32 *)(self + 0x2C8), isActive, 0.0f, 1);
     }
     if (*(s32 *)(self + 0x2B0) != *(s32 *)(self + 0x2B4) &&
         *(u8 *)(self + 0x2D0) != 0) {
-        temp = 0;
+        markerActive = 0;
         statusPtr = *(s32 **)(self + 0x2A8);
         if (statusPtr != 0 &&
             *(s32 *)(self + 0x2AC) == *statusPtr)
-            temp = 1;
-        first = fn_8021165C(0, 2);
-        second = fn_8021165C(1, 2);
-        sp14 = lbl_805634A8;
-        sp10 = lbl_805634A8;
-        fn_80230C30(&sp14, &sp10, *(s32 *)(self + 0x2B0), *(s32 *)(self + 0x2B8));
+            markerActive = 1;
+        handleA = fn_8021165C(0, 2);
+        handleB = fn_8021165C(1, 2);
+        posX = lbl_805634A8;
+        posY = lbl_805634A8;
+        fn_80230C30(&posX, &posY, *(s32 *)(self + 0x2B0), *(s32 *)(self + 0x2B8));
         if (((Fn8021C4D4VTable *)*(void **)(self + 0x2A4))->At20() != 0)
-            fn_802C5310(first, temp, sp14, sp10, lbl_805634A8);
-        fn_80230C30(&sp14, &sp10, *(s32 *)(self + 0x2B4), *(s32 *)(self + 0x2B8));
+            fn_802C5310(handleA, markerActive, posX, posY, lbl_805634A8);
+        fn_80230C30(&posX, &posY, *(s32 *)(self + 0x2B4), *(s32 *)(self + 0x2B8));
         if (((Fn8021C4D4VTable *)*(void **)(self + 0x2A4))->At1C() != 0)
-            fn_802C5310(second, temp, sp14, sp10, lbl_805634A8);
+            fn_802C5310(handleB, markerActive, posX, posY, lbl_805634A8);
     }
 }
 
