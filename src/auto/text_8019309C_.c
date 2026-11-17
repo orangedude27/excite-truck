@@ -1560,9 +1560,16 @@ struct Shape_80195D80 {
     unsigned char pad1[0x10];
     int f28;
 };
-struct Snap_80195D80 {
+struct SnapHead_80195D80 {
     void *w0;
-    unsigned int w[8];
+    unsigned int w[2];
+};
+struct SnapBody_80195D80 {
+    unsigned int w[6];
+};
+struct Snap_80195D80 {
+    struct SnapHead_80195D80 h;
+    struct SnapBody_80195D80 body;
     unsigned char b;
     struct Shape_80195D80 *shape;
     unsigned int w2;
@@ -1571,33 +1578,12 @@ struct Obj_80195D80 {
     unsigned int pad;
     struct Snap_80195D80 snap;
 };
-struct SnapHead_80195D80 {
-    void *w0;
-    unsigned int w[2];
-};
-struct SnapBody_80195D80 {
-    unsigned int w[6];
-};
-static inline void CopySnap_80195D80(struct Snap_80195D80 *dst, struct Snap_80195D80 *src) {
-    *dst = *src;
-}
 #pragma cplusplus on
 class Vt_80195D80 {
 public:
     virtual void v0(); virtual void v1(); virtual void v2();
     virtual void v3(); virtual void v4();
     virtual Obj_80195D80 *v5();
-};
-static inline Obj_80195D80 *GetObj_80195D80(void *p) {
-    return ((Vt_80195D80 *)p)->v5();
-}
-struct VtObj_80195D80;
-struct VtTbl_80195D80 {
-    void *slots0[7];
-    struct Obj_80195D80 *(*get)(struct VtObj_80195D80 *);
-};
-struct VtObj_80195D80 {
-    struct VtTbl_80195D80 *vt;
 };
 struct Other_80195D80 {
     unsigned char p0[0x54];
@@ -1634,28 +1620,32 @@ extern "C" void fn_80195D80(void *arg0, float arg1) {
     Other_80195D80 *o;
     self->f2cc = obj->snap.shape->f14;
     self->f2c8 = obj->snap.shape->f28;
-    self->f18 = fn_801388F4(obj->snap.w0);
+    self->f18 = fn_801388F4(obj->snap.h.w0);
     changed = 0;
     o = self->other;
     if (self->cur.shape != 0 && (unsigned int)self->cur.shape != (unsigned int)obj->snap.shape) {
         changed = 1;
     }
     if (changed) {
-        self->prev.w0 = self->cur.w0;
-        self->prev.w[0] = self->cur.w[0];
-        self->prev.w[1] = self->cur.w[1];
-        self->prev.w[2] = self->cur.w[2];
-        self->prev.w[3] = self->cur.w[3];
-        self->prev.w[4] = self->cur.w[4];
-        self->prev.w[5] = self->cur.w[5];
-        self->prev.w[6] = self->cur.w[6];
-        self->prev.w[7] = self->cur.w[7];
+        self->prev.h.w0 = self->cur.h.w0;
+        self->prev.h.w[0] = self->cur.h.w[0];
+        self->prev.h.w[1] = self->cur.h.w[1];
+        self->prev.body.w[0] = self->cur.body.w[0];
+        self->prev.body.w[1] = self->cur.body.w[1];
+        self->prev.body.w[2] = self->cur.body.w[2];
+        self->prev.body.w[3] = self->cur.body.w[3];
+        self->prev.body.w[4] = self->cur.body.w[4];
+        self->prev.body.w[5] = self->cur.body.w[5];
         self->prev.b = self->cur.b;
         self->prev.shape = self->cur.shape;
         self->prev.w2 = self->cur.w2;
         self->f1d0 = lbl_8055E3C8;
     }
-    CopySnap_80195D80(&self->cur, &obj->snap);
+    self->cur.h = obj->snap.h;
+    self->cur.body = obj->snap.body;
+    self->cur.b = obj->snap.b;
+    self->cur.shape = obj->snap.shape;
+    self->cur.w2 = obj->snap.w2;
     cond = arg1 - self->f1d0 < lbl_805621C0;
     if (cond) {
         float s = o->a5bc;
