@@ -4493,7 +4493,7 @@ extern "C" s32 fn_8021F848(void *arg0, s32 arg1) {
 #pragma pop
 extern "C" s32 fn_8021FBC4(void *, s32, s32);
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_8021FA98(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r3;
     s32 temp_r4;
@@ -4501,6 +4501,7 @@ extern "C" void fn_8021FA98(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r6;
     s32 span;
     s32 step;
+    f32 high;
     f32 low;
     f32 range;
     f32 dist;
@@ -4516,8 +4517,9 @@ extern "C" void fn_8021FA98(void *arg0, s32 arg1, s32 arg2) {
     temp_r4 = *(s32 *)((u8 *)arg0 + 0x26C);
     temp_r3 = *(s32 *)((u8 *)arg0 + 0x264);
     temp_r6 = temp_r5 - 1;
-    range = *(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248);
+    high = *(f32 *)((u8 *)arg0 + 0x24C);
     low = *(f32 *)((u8 *)arg0 + 0x248);
+    range = high - low;
     span = temp_r4 - temp_r4 / temp_r5;
     temp_r3 = arg1 - temp_r3;
     dist = ((f32)temp_r3 * range) / (f32)span;
