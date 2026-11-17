@@ -1797,8 +1797,9 @@ extern "C" s32 fn_800D8780(u32 *arg0) {
     return (*arg0 >> 13U) & 3;
 }
 
-extern "C" s32 fn_800D878C(u32 *arg0) {
-    return (*arg0 >> 15U) & 7;
+/* Returns the 3-bit indirect-texture-stage count from a nw4r lyt material flags word. */
+extern "C" s32 fn_800D878C(u32 *flags) {
+    return (*flags >> 15U) & 7;
 }
 
 /* Number of TEV stages: the 5-bit field at bits 18..22 of the material
