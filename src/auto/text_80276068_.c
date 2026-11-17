@@ -414,14 +414,156 @@ void fn_80276DC8(int arg0) {
     float trans[3][3];
     void *target;
     float mag;
+
     src = (struct TruckState *)fn_802678E4(arg0);
-    dst = (struct TruckState *)((char *)&lbl_8049FD58 + 0xF08) + arg0;
-    *dst = *src;
+    dst = (struct TruckState *)((char *)&lbl_8049FD58 + 0xF08 + arg0 * 0x228);
+    dst->unk_00 = src->unk_00;
+    dst->unk_04 = src->unk_04;
+    dst->unk_08 = src->unk_08;
+    dst->unk_0C = src->unk_0C;
+    dst->unk_10 = src->unk_10;
+    dst->unk_14 = src->unk_14;
+    dst->unk_18 = src->unk_18;
+    dst->unk_1C = src->unk_1C;
+    dst->unk_20 = src->unk_20;
+    dst->unk_24 = src->unk_24;
+    dst->unk_28[0] = src->unk_28[0];
+    dst->unk_28[1] = src->unk_28[1];
+    dst->unk_28[2] = src->unk_28[2];
+    dst->unk_28[3] = src->unk_28[3];
+    dst->unk_28[4] = src->unk_28[4];
+    dst->unk_28[5] = src->unk_28[5];
+    dst->unk_28[6] = src->unk_28[6];
+    dst->unk_28[7] = src->unk_28[7];
+    dst->unk_28[8] = src->unk_28[8];
+    dst->unk_28[9] = src->unk_28[9];
+    dst->unk_28[10] = src->unk_28[10];
+    dst->unk_28[11] = src->unk_28[11];
+    dst->unk_58[0] = src->unk_58[0];
+    dst->unk_58[1] = src->unk_58[1];
+    dst->unk_58[2] = src->unk_58[2];
+    dst->unk_58[3] = src->unk_58[3];
+    dst->unk_58[4] = src->unk_58[4];
+    dst->unk_58[5] = src->unk_58[5];
+    dst->unk_58[6] = src->unk_58[6];
+    dst->unk_58[7] = src->unk_58[7];
+    dst->unk_58[8] = src->unk_58[8];
+    dst->unk_58[9] = src->unk_58[9];
+    dst->unk_58[10] = src->unk_58[10];
+    dst->unk_58[11] = src->unk_58[11];
+    dst->unk_58[12] = src->unk_58[12];
+    dst->unk_58[13] = src->unk_58[13];
+    dst->unk_58[14] = src->unk_58[14];
+    dst->unk_58[15] = src->unk_58[15];
+    dst->unk_58[16] = src->unk_58[16];
+    dst->unk_58[17] = src->unk_58[17];
+    dst->unk_58[18] = src->unk_58[18];
+    dst->unk_58[19] = src->unk_58[19];
+    dst->unk_58[20] = src->unk_58[20];
+    dst->unk_58[21] = src->unk_58[21];
+    dst->unk_58[22] = src->unk_58[22];
+    dst->unk_58[23] = src->unk_58[23];
+    dst->unk_B8 = src->unk_B8;
+    dst->unk_BC = src->unk_BC;
+    dst->unk_C0[0] = src->unk_C0[0];
+    dst->unk_C0[1] = src->unk_C0[1];
+    dst->unk_C0[2] = src->unk_C0[2];
+    dst->unk_C0[3] = src->unk_C0[3];
+    dst->unk_C0[4] = src->unk_C0[4];
+    dst->unk_C0[5] = src->unk_C0[5];
+    dst->unk_C0[6] = src->unk_C0[6];
+    dst->unk_C0[7] = src->unk_C0[7];
+    dst->unk_C0[8] = src->unk_C0[8];
+    dst->unk_C0[9] = src->unk_C0[9];
+    dst->unk_C0[10] = src->unk_C0[10];
+    dst->unk_C0[11] = src->unk_C0[11];
+    dst->unk_C0[12] = src->unk_C0[12];
+    dst->unk_C0[13] = src->unk_C0[13];
+    dst->unk_C0[14] = src->unk_C0[14];
+    dst->unk_C0[15] = src->unk_C0[15];
+    dst->unk_C0[16] = src->unk_C0[16];
+    dst->unk_C0[17] = src->unk_C0[17];
+    dst->unk_C0[18] = src->unk_C0[18];
+    dst->unk_C0[19] = src->unk_C0[19];
+    dst->unk_C0[20] = src->unk_C0[20];
+    dst->unk_C0[21] = src->unk_C0[21];
+    dst->unk_C0[22] = src->unk_C0[22];
+    dst->unk_C0[23] = src->unk_C0[23];
+    dst->unk_C0[24] = src->unk_C0[24];
+    dst->unk_C0[25] = src->unk_C0[25];
+    dst->unk_C0[26] = src->unk_C0[26];
+    dst->unk_12C[0] = src->unk_12C[0];
+    dst->unk_12C[1] = src->unk_12C[1];
+    dst->unk_12C[2] = src->unk_12C[2];
+    dst->unk_138 = src->unk_138;
+    dst->unk_139 = src->unk_139;
+    dst->unk_13C = src->unk_13C;
+    dst->unk_140 = src->unk_140;
+    dst->unk_144 = src->unk_144;
+    dst->unk_148 = src->unk_148;
+    dst->unk_14C = src->unk_14C;
+    dst->unk_150 = src->unk_150;
+    dst->unk_154 = src->unk_154;
+    dst->unk_158 = src->unk_158;
+    dst->unk_15C = src->unk_15C;
+    dst->unk_160[0] = src->unk_160[0];
+    dst->unk_160[1] = src->unk_160[1];
+    dst->unk_160[2] = src->unk_160[2];
+    dst->unk_160[3] = src->unk_160[3];
+    dst->unk_160[4] = src->unk_160[4];
+    dst->unk_160[5] = src->unk_160[5];
+    dst->unk_160[6] = src->unk_160[6];
+    dst->unk_160[7] = src->unk_160[7];
+    dst->unk_160[8] = src->unk_160[8];
+    dst->unk_160[9] = src->unk_160[9];
+    dst->unk_188 = src->unk_188;
+    dst->unk_18C[0] = src->unk_18C[0];
+    dst->unk_18C[1] = src->unk_18C[1];
+    dst->unk_18C[2] = src->unk_18C[2];
+    dst->unk_18C[3] = src->unk_18C[3];
+    dst->unk_18C[4] = src->unk_18C[4];
+    dst->unk_18C[5] = src->unk_18C[5];
+    dst->unk_1A4[0] = src->unk_1A4[0];
+    dst->unk_1A4[1] = src->unk_1A4[1];
+    dst->unk_1A4[2] = src->unk_1A4[2];
+    dst->unk_1A4[3] = src->unk_1A4[3];
+    dst->unk_1A4[4] = src->unk_1A4[4];
+    dst->unk_1A4[5] = src->unk_1A4[5];
+    dst->unk_1A4[6] = src->unk_1A4[6];
+    dst->unk_1A4[7] = src->unk_1A4[7];
+    dst->unk_1A4[8] = src->unk_1A4[8];
+    dst->unk_1A4[9] = src->unk_1A4[9];
+    dst->unk_1A4[10] = src->unk_1A4[10];
+    dst->unk_1A4[11] = src->unk_1A4[11];
+    dst->unk_1D4 = src->unk_1D4;
+    dst->unk_1D8[0] = src->unk_1D8[0];
+    dst->unk_1D8[1] = src->unk_1D8[1];
+    dst->unk_1D8[2] = src->unk_1D8[2];
+    dst->unk_1D8[3] = src->unk_1D8[3];
+    dst->unk_1D8[4] = src->unk_1D8[4];
+    dst->unk_1EC = src->unk_1EC;
+    dst->unk_1F0[0] = src->unk_1F0[0];
+    dst->unk_1F0[1] = src->unk_1F0[1];
+    dst->unk_1F0[2] = src->unk_1F0[2];
+    dst->unk_1F0[3] = src->unk_1F0[3];
+    dst->unk_1F0[4] = src->unk_1F0[4];
+    dst->unk_1F0[5] = src->unk_1F0[5];
+    dst->unk_1F0[6] = src->unk_1F0[6];
+    dst->unk_1F0[7] = src->unk_1F0[7];
+    dst->unk_1F0[8] = src->unk_1F0[8];
+    dst->unk_1F0[9] = src->unk_1F0[9];
+    dst->unk_1F0[10] = src->unk_1F0[10];
+    dst->unk_1F0[11] = src->unk_1F0[11];
+    dst->unk_1F0[12] = src->unk_1F0[12];
+    dst->unk_1F0[13] = src->unk_1F0[13];
+
     ((float *)((char *)&lbl_8049FD58 + 0x1868))[arg0] = lbl_80564048;
+
     v[0] = *(Vec *)((char *)dst + 0x58);
     v[1] = *(Vec *)((char *)dst + 0x64);
     v[2] = *(Vec *)((char *)dst + 0x70);
     v[3] = *(Vec *)((char *)dst + 0x7C);
+
     if (fn_80276068(dst->unk_14) == 0 || *(int *)((char *)src->unk_140 + 0x24) == 0) {
         float t;
         float *dir, *pos;
@@ -441,12 +583,14 @@ void fn_80276DC8(int arg0) {
         PSVECCrossProduct(&v[2], &v[0], &v[1]);
         PSVECNormalize(&v[1], &v[1]);
     }
+
     v_right = *(Vec *)((char *)dst + 0xC0);
     v_up.x = lbl_80564048;
     v_up.y = lbl_8056404C;
     v_up.z = lbl_80564048;
     v_fwd = *(Vec *)((char *)dst + 0xD8);
     v_pos = *(Vec *)((char *)dst + 0xE4);
+
     if (lbl_8056404C - ((float *)((char *)dst + 0xD8))[1] < lbl_80564064) {
         v_fwd.x = lbl_80564048;
         v_fwd.y = lbl_80564048;
@@ -456,13 +600,17 @@ void fn_80276DC8(int arg0) {
     PSVECNormalize(&v_right, &v_right);
     PSVECCrossProduct(&v_right, &v_up, &v_fwd);
     PSVECNormalize(&v_fwd, &v_fwd);
+
     fn_801E9DC4((int *)((char *)dst + 0x1EC));
+
     input.x = lbl_80564068 * lbl_802FA818[3];
     input.y = lbl_80564068 * lbl_802FA818[4];
     input.z = lbl_80564068 * lbl_802FA818[5];
+
     axis.x = lbl_802FA818[0] * *(float *)((char *)src->unk_140 + 0x5E4);
     axis.y = lbl_802FA818[1] * *(float *)((char *)src->unk_140 + 0x5E4);
     axis.z = lbl_802FA818[2] * *(float *)((char *)src->unk_140 + 0x5E4);
+
     mag = PSVECMag(&input);
     if (mag > lbl_8056406C) {
         float inv = lbl_8056404C / mag;
@@ -486,15 +634,18 @@ void fn_80276DC8(int arg0) {
         rot[1][0] = lbl_80564048; rot[1][1] = lbl_8056404C; rot[1][2] = lbl_80564048;
         rot[2][0] = lbl_80564048; rot[2][1] = lbl_80564048; rot[2][2] = lbl_8056404C;
     }
+
     target = (char *)&lbl_8049FD58 + 0x17A8 + arg0 * 0x30;
     fn_801BFD34((char *)target + 0x24, &axis, &v_right);
     fn_80015B20(target, rot, &v_right);
+
     trans[0][0] = v[0].x; trans[0][1] = v[0].y; trans[0][2] = v[0].z;
     trans[1][0] = v[1].x; trans[1][1] = v[1].y; trans[1][2] = v[1].z;
     trans[2][0] = v[2].x; trans[2][1] = v[2].y; trans[2][2] = v[2].z;
     fn_801C7254(trans);
     fn_80015B20(target, target, trans);
     fn_80144CD0((char *)target + 0x24, (char *)target + 0x24, &v[0]);
+
     fn_80276098((char *)src + 0x58, rot, src->unk_BC, lbl_80564068 * lbl_802FA818[6], lbl_80564060, arg0, 0x22);
 }
 
