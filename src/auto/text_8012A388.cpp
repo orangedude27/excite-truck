@@ -3232,7 +3232,7 @@ extern "C" s32 fn_8012C4E4(void *arg0, void *arg1, s32 arg2) {
 extern "C" void fn_8012C4E8(void) {
     /* Resource subsystem shutdown: destroy the TOC/async managers, release the
      * TOC resource, then report any resource sets still loaded as fatal. */
-    void *set;
+    ResManager *set;
     s32 tocObject;
 
     fn_8012DD00();
@@ -3242,13 +3242,13 @@ extern "C" void fn_8012C4E8(void) {
         fn_8012BF24((void *)lbl_8032AEA8);
         fn_80128668((void *)tocObject);
     }
-    set = lbl_8055E000;
+    set = (ResManager *)lbl_8055E000;
     lbl_8055DFFC = 0;
     lbl_8055DFF8 = 0;
     if (set != NULL) {
         while (set != NULL) {
-            fn_802E30C8(lbl_8032AB9C, set, *(s32 *)((u8 *)set + 0x9C));
-            set = *(void **)((u8 *)set + 0xA8);
+            fn_802E30C8(lbl_8032AB9C, (void *)set, set->useCount);
+            set = set->next;
         }
         fn_802E317C(lbl_8032ABC8);
     }
