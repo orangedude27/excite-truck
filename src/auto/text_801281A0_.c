@@ -353,7 +353,7 @@ s32 fn_801291C8(void *buffer, u32 value) {
     return result;
 }
 
-s32 fn_801291F4(void *region) { /* Return this heap region's base field (offset 0x4), the lower bound used by fn_801291FC. */ return ((s32 *)region)[1]; }
+s32 fn_801291F4(void *region) { /* Return this heap region's base field (offset 0x4), the lower bound used by fn_801291FC. */ s32 base = ((s32 *)region)[1]; return base; }
 
 s32 fn_801291FC(void *region) {
     /* Bytes currently used in this heap region: high-water mark (+0x08) minus base (+0x04). */
