@@ -322,7 +322,6 @@ extern s32 table[];
 #pragma cplusplus on
 extern "C" s32 fn_80260DC4(s32, s32);
 #pragma push
-#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" void fn_80260954(s32 arg0) {
     struct Dummy { virtual void destroy(s32); };
@@ -369,7 +368,7 @@ extern "C" void fn_80260954(s32 arg0) {
           fn_80261C68(header);
       
       loop_6:
-          fn_8026003C();
+          ((void (*)(void))fn_8026003C)();
           if (lbl_8055F3E8 != 0) {
               fn_80261AF0(header, header[4] + 1);
               lbl_8055F3E8 = 0;
@@ -1004,7 +1003,8 @@ extern u8 lbl_8055C418;
 extern u8 lbl_8055C420;
 #pragma pop
 
-void fn_80261AE8(s32 *arg0, s32 arg1) { *arg0 = arg1; }
+/* Store `value` into the s32 pointed to by `dst`. */
+void fn_80261AE8(s32 *dst, s32 value) { *dst = value; }
 
 #pragma push
 #pragma use_lmw_stmw off
