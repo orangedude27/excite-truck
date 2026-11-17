@@ -845,8 +845,9 @@ void fn_802B1758(void *arg0) {
     *(int *)((char *)arg0 + 0x328) = 0;
 }
 #pragma pop
-int fn_802B1AF0(void *arg0) {
-    return ((int *)arg0)[1];
+/* Return the element count kept in the second word of this container header. */
+int fn_802B1AF0(void *container) {
+    return ((int *)container)[1];
 }
 
 /* Indexed accessor: returns the stored base value advanced by two per step (stride of a two-word record). */
