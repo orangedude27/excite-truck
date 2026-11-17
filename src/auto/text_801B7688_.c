@@ -212,7 +212,7 @@ extern "C" void fn_801B79D4(void *arg0, unsigned int arg1, int arg2) {
         *(float *)((char *)arg0 + 0x38) = lbl_80562708;
     }
 }
-#pragma cplusplus off
+#pragma cplusplus reset
 #pragma pop
 
 void PSVECCrossProduct(float *, float *, float *);
