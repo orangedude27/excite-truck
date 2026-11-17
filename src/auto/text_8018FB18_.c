@@ -1757,6 +1757,7 @@ int fn_80191758(void *car) {
 }
 
 #pragma cplusplus on
+#pragma scheduling on
 extern "C" void fn_80191860(void *arg0, void *arg1) {
     class ObjA {
     public:
@@ -1767,36 +1768,31 @@ extern "C" void fn_80191860(void *arg0, void *arg1) {
         virtual void f4();
         virtual void f5();
         virtual void f6();
-        virtual void f7();
-        virtual void f8();
-        virtual void f9(int);
+        virtual void f7(int);
     };
     class ObjB {
     public:
-        virtual void f0();
-        virtual void f1();
-        virtual void f2(int *);
+        virtual void f0(int *);
     };
     extern int lbl_802F9550[];
-    int buf[9];
-    int v;
-    int *p = lbl_802F9550;
     int a0p4 = (int)((char *)arg0 + 4);
     int a0p5 = (int)((char *)arg0 + 5);
-    buf[0] = p[0];
-    buf[3] = p[3];
-    buf[1] = p[1];
-    buf[2] = p[2];
-    buf[4] = p[4];
-    buf[5] = p[5];
-    buf[6] = p[6];
-    buf[7] = p[7];
-    buf[8] = p[8];
+    int buf[9];
+    int v;
+    buf[0] = lbl_802F9550[0];
+    buf[3] = lbl_802F9550[3];
+    buf[1] = lbl_802F9550[1];
+    buf[2] = lbl_802F9550[2];
+    buf[4] = lbl_802F9550[4];
+    buf[5] = lbl_802F9550[5];
+    buf[6] = lbl_802F9550[6];
+    buf[7] = lbl_802F9550[7];
+    buf[8] = lbl_802F9550[8];
     buf[0] = a0p4;
     buf[3] = a0p5;
-    v = ((int (*)(int, int, int, int, int, int, int, int))fn_8018B06C)(*(int *)((char *)arg0 + 0x34), p[8], a0p4, p[7], p[6], p[5], p[4], p[2]);
-    ((ObjA *)*(void **)((char *)arg0 + 0x38))->f9(v);
-    ((ObjB *)arg1)->f2(buf);
+    v = ((int (*)(int, int, int, int, int, int, int, int))fn_8018B06C)(*(int *)((char *)arg0 + 0x34), lbl_802F9550[8], a0p4, lbl_802F9550[7], lbl_802F9550[6], lbl_802F9550[5], lbl_802F9550[4], lbl_802F9550[2]);
+    ((ObjA *)*(void **)((char *)arg0 + 0x38))->f7(v);
+    ((ObjB *)arg1)->f0(buf);
 }
 #pragma cplusplus off
 
