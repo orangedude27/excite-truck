@@ -226,6 +226,7 @@ int fn_801B47F0(int pool) {
 }
 #pragma dont_inline off
 
+// Report the 1 MiB buffer size used by the replay/recording memory manager.
 int fn_801B4818(void) { return 0x100000; }
 
 #pragma push
