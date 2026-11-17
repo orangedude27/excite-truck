@@ -92,6 +92,7 @@ extern void fn_80139E18();
 extern void *memset(void *, int, unsigned int);
 extern unsigned char lbl_8055E32C;
 extern float lbl_805618F0;
+#define FRAME_TIME_STEP lbl_805618F0 /* ~0.0167s, one 60 Hz frame */
 extern float lbl_8055E318;
 extern float fn_80129DC4(int, float, float, float);
 
