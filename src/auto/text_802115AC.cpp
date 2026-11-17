@@ -128,8 +128,8 @@ extern "C" unsigned long strlen(const char *);
 extern "C" char lbl_8055B808[8];
 #define PATH_FORMAT_DIR_NAME lbl_8055B808  // "%s\\%.*s": a directory and a name cut at its '.'
 
-extern "C" const char lbl_8055B724[], lbl_8055B728[], lbl_8055B720[], lbl_8055B730[];
-extern "C" const char lbl_8055B738[], lbl_8055B73C[], lbl_8055B744[], lbl_8055B748[];
+extern "C" __declspec(section ".sdata") const char lbl_8055B724[], lbl_8055B728[], lbl_8055B720[], lbl_8055B730[];
+extern "C" __declspec(section ".sdata") const char lbl_8055B738[], lbl_8055B73C[], lbl_8055B744[], lbl_8055B748[];
 #pragma small_data off
 extern "C" s32 fn_802C4F14(s32);
 extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
