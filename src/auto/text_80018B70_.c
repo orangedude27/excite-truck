@@ -493,6 +493,7 @@ found:
  * a "CAR" entry exists whose requirement is met and not restricted. */
 s32 fn_80019438(void) {
     s32 index = 0;
+    /* Return 0 if a "CAR" unlockable entry exists, is met, and is unrestricted. */
     while (index < fn_80019088()) {
         void *unlockableEntry = fn_80019054(index);
         if (stricmp(*(const char **)unlockableEntry, lbl_80558C54) == 0) {
