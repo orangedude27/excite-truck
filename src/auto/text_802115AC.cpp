@@ -2897,6 +2897,7 @@ extern "C" void fn_80215CE0(void) {
 // Default no-op handler among the empty stubs: returns 0 (no result available).
 extern "C" s32 fn_80215CE4(void) { return 0; }
 
+/* Widget-wrapper vtable method returning 0 (default/false), grouped with the adjacent no-op stubs. */
 extern "C" s32 fn_80215CEC(void) {
     return 0;
 }
