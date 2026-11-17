@@ -1114,11 +1114,11 @@ static inline f32 PSQUATMultiply_f32(void *a, void *b) {
 }
 extern "C" f32 lbl_80561498, lbl_805614A4;
 #pragma push
-#pragma processor 750
 extern "C" void fn_8013E19C(void *arg0, float arg1) {
     float *p = (float *)arg0;
     float unit = lbl_805614A4;
     void *other = (char *)arg0 + 0xC;
+    float s[9];
     p[4] = unit;
     p[1] = unit;
     float t = arg1 / PSQUATMultiply(arg0, other);
@@ -1134,6 +1134,9 @@ extern "C" void fn_8013E19C(void *arg0, float arg1) {
     float bx = b - x;
     float by = d - y;
     float bz = g - z;
+    s[8] = x;
+    s[6] = z;
+    s[7] = y;
     float ax = a - x;
     float ay = c - y;
     float az = e - z;
@@ -1143,6 +1146,12 @@ extern "C" void fn_8013E19C(void *arg0, float arg1) {
     float rx = x + t * ax;
     float ry = y + t * ay;
     float rz = z + t * az;
+    s[5] = qx;
+    s[3] = qz;
+    s[4] = qy;
+    s[0] = rz;
+    s[1] = ry;
+    s[2] = rx;
     p[2] = qx;
     p[0] = qz;
     p[1] = qy;
@@ -2895,13 +2904,12 @@ extern "C" void fn_80142650(void *arg0) {
     }
 }
   extern "C" f32 lbl_8042FB3C_arr[8];
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
     u8 *table = *(u8 **)((u8 *)arg0 + 0x64);
-    u8 *base = lbl_8042FB3C;
+    f32 scale = lbl_8042FB3C_arr[7];
     u8 *items = *(u8 **)(table + 4);
     u8 *item = items + arg1 * 0x14;
-    f32 scale = *(f32 *)(base + 0x1C);
     f32 first = (f32)*(s32 *)(item + 0x10);
     f32 second = (f32)*(s32 *)(item + 0xC);
     f32 value = scale * first * second;
