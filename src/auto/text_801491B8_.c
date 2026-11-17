@@ -3683,10 +3683,8 @@ void fn_801539C0(s32 arg0, s32 arg1) {
     s32 temp_r31 = base + 0x9E4;
     s32 var_r4;
     if (temp_r31 != 0) {
-        switch (fn_801E85A4()) {
-        default: var_r4 = lbl_8055E238; break;
-        case 2: var_r4 = lbl_8055E23C; break;
-        }
+        if (fn_801E85A4() == 2) var_r4 = *(volatile long *)&lbl_8055E23C;
+        else var_r4 = *(volatile long *)&lbl_8055E238;
         fn_8014CA48(temp_r31, var_r4, arg1);
     }
 }
