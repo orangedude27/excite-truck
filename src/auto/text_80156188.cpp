@@ -103,8 +103,9 @@ extern "C" void fn_801561D8(s32 arg0) {
 }
 
 extern "C" s32 fn_80155AF0(s32);
-extern "C" void fn_801561E0(s32 arg0) {
-    fn_80155AF0(arg0 - 0xC);
+/* This-adjusting thunk: subtract the 0xC subobject offset to recover `this`, then forward to fn_80155AF0. */
+extern "C" void fn_801561E0(s32 subobjectThis) {
+    fn_80155AF0(subobjectThis - 0xC);
 }
 
 extern "C" u8 *fn_80029004(void *, s32);
