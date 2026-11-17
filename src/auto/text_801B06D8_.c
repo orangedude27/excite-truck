@@ -301,34 +301,38 @@ extern char lbl_80335A58[];
 extern void fn_802E30C8(const char *, ...);
 #pragma push
 #pragma processor 750
-void fn_801B0BB0(void *arg0, void *arg1) {
-    f32 threshold = 100.0f;
-    void *temp_r5;
-    void *var_r3;
-    void *var_r0;
-    s32 var_r4;
-    f32 value;
-    f32 temp_f31;
-    temp_r5 = *(void **)((u8 *)arg1 + 4);
-    *(void **)arg0 = temp_r5;
-    *(f32 *)((u8 *)arg0 + 4) = *(f32 *)((u8 *)arg1 + 8);
-    *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)arg1 + 0xC);
-    value = *(f32 *)((u8 *)*(void **)((u8 *)arg1 + 0x2C) + 8);
-    temp_f31 = value - threshold;
-    if (*(f32 *)((u8 *)temp_r5 + 0x1C) > temp_f31) {
+void fn_801B0BB0(void *result, void *payload) {
+    /* Fill result from a PCAR payload (node, weight, limit). If the payload's current
+       node lies within 100 units past the tracked course progress (too close to the
+       start/finish line), log a warning and rewind the result node to the last course
+       node behind progress-100, searching at most 3000 nodes. */
+    f32 rewindMargin = 100.0f;
+    void *currentNode;
+    void *node;
+    void *foundNode;
+    s32 iterations;
+    f32 trackPos;
+    f32 cutoff;
+    currentNode = *(void **)((u8 *)payload + 4);
+    *(void **)result = currentNode;
+    *(f32 *)((u8 *)result + 4) = *(f32 *)((u8 *)payload + 8);
+    *(s32 *)((u8 *)result + 8) = *(s32 *)((u8 *)payload + 0xC);
+    trackPos = *(f32 *)((u8 *)*(void **)((u8 *)payload + 0x2C) + 8);
+    cutoff = trackPos - rewindMargin;
+    if (*(f32 *)((u8 *)currentNode + 0x1C) > cutoff) {
         fn_802E30C8(lbl_80335A58);
-        var_r3 = *(void **)((u8 *)*(void **)((u8 *)arg1 + 0x2C) + 0x1C);
-        var_r0 = 0;
-        var_r4 = 0;
-        while (*(f32 *)((u8 *)var_r3 + 0x1C) < temp_f31) {
-            var_r0 = var_r3;
-            if (var_r4++ > 0xBB8) {
-                var_r0 = 0;
+        node = *(void **)((u8 *)*(void **)((u8 *)payload + 0x2C) + 0x1C);
+        foundNode = 0;
+        iterations = 0;
+        while (*(f32 *)((u8 *)node + 0x1C) < cutoff) {
+            foundNode = node;
+            if (iterations++ > 0xBB8) {
+                foundNode = 0;
                 break;
             }
-            var_r3 = *(void **)((u8 *)var_r3 + 0x14);
+            node = *(void **)((u8 *)node + 0x14);
         }
-        if (var_r0 != 0) *(void **)arg0 = var_r0;
+        if (foundNode != 0) *(void **)result = foundNode;
     }
 }
 
