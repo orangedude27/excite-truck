@@ -2154,9 +2154,8 @@ short fn_801ADA84(void *arg0) {
 /* Return the address of the embedded field at offset 0x118 of base. */
 long fn_801ADA8C(long base) { return base + 0x118; }
 
-long fn_801ADA94(long arg0) {
-    return arg0 + 0x60;
-}
+/* Return the address of the embedded field at offset 0x60 of base. */
+long fn_801ADA94(long base) { return base + 0x60; }
 
 extern float lbl_8055E3C8;
 typedef void (*Fn801ADA9C)(void *, void *, void *);
