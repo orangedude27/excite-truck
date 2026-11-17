@@ -2931,8 +2931,9 @@ void *fn_801D8148(void) {
     return lbl_80338928;
 }
 
-int fn_801D8154(void *arg0) {
-    return *(int *)((char *)arg0 + 0x40);
+int fn_801D8154(void *effect) {
+    /* Return the state machine value at +0x40 of a track/camera effect (0 unused, 1 ready, 2 running, 3 finished). */
+    return *(int *)((char *)effect + 0x40);
 }
 
 #pragma push
