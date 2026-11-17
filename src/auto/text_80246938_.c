@@ -631,8 +631,8 @@ void fn_802473A4(void) {
         case 9:
             old=lbl_8055D430; flag=old&1; lbl_8055D430=old|1;
             fn_8000DC70(0); fn_800169F8(0); fn_80137C78(1);
-            prior=fn_8000DA10(); fn_80137C84(fn_802E4A10(), prior); fn_802E4A10();
-            fn_80129AEC(0); fn_8023BCEC(); lbl_8055D430=(lbl_8055D430&~1)|flag; break;
+            prior=fn_8000DA10(); fn_80137C84(fn_802E4A10(), prior);
+            fn_80129AEC(fn_802E4A10()); fn_8023BCEC(); lbl_8055D430=(lbl_8055D430&~1)|flag; break;
         case 10: fn_8025812C(); break;
         case 11: fn_8025C054(); break;
         case 12: fn_800196FC(); break;
@@ -852,13 +852,14 @@ static void fn_80247A0C_init(s32 a, s32 b) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma opt_lifetimes off
 void fn_80247A0C(void) {
-    unsigned int var_r31;
+    s32 var_r31;
     s32 a;
     s32 b;
-    b = (int)lbl_8055BEA8;
     a = lbl_8055BEBC;
+    b = lbl_8055BEA8;
     if (a != b) {
         lbl_8055BEBC = b;
         switch (b) {
@@ -883,8 +884,8 @@ void fn_80247A0C(void) {
         if (fn_8027B9EC(var_r31) == 0) {
             fn_80214A9C(var_r31 + 0xB);
         }
-        ++var_r31;
-    } while (2 > var_r31);
+        var_r31 += 1;
+    } while (var_r31 < 2);
 }
 #pragma pop
 // Caches the active UI window's current-menu index into the global menu-index state.
@@ -929,11 +930,11 @@ extern char lbl_803435A0[], lbl_802FA418[], lbl_8055BEC4, lbl_8055BEA0, lbl_8055
 int fn_80247C18() {
  struct Entry { s32 id; unsigned char enabled; char pad[3]; };
  struct Frame { s32 args[5]; s32 title; s32 pad[4]; s32 zero; struct Entry *entries; s32 count; s32 capacity; struct Entry data[10]; s32 items[75]; } frame;
- s32 *table; char *base = lbl_80343270; s32 a, b, missing, v, result, flag; struct Entry *entry;
+ char *base = lbl_80343270; s32 a; s32 *table; s32 b, missing, v, result, flag; struct Entry *entry;
  lbl_8055F26C = 0;
  a = fn_80161D50();
  b = fn_80161D14();
- { s32 d = b ^ a; s32 half = d >> 1; if ((unsigned long)(half - (d & b)) >> 31) {
+ { s32 d = b ^ a; s32 half = d >> 1; s32 masked = d & b; s32 diff = half - masked; if ((unsigned long)diff >> 31) {
    lbl_8055F26C = 1;
    if (fn_8027DE68(0)) {
      lbl_8055F26C = 2;
@@ -948,108 +949,47 @@ int fn_80247C18() {
  frame.zero = 0; frame.count = 0; frame.title = (s32)lbl_803435A0;
  frame.entries = frame.data; frame.capacity = 10;
  b = fn_8027DE68(2); missing = (b == 0);
- flag = missing && lbl_8055F26C >= 2; entry = &frame.entries[frame.count++]; entry->id = 11; entry->enabled = flag;
- flag = missing && lbl_8055F26C >= 3; entry = &frame.entries[frame.count++]; entry->id = 12; entry->enabled = flag;
+ flag = 0; if (missing && lbl_8055F26C >= 2) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 11; entry->enabled = flag;
+ flag = 0; if (missing && lbl_8055F26C >= 3) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 12; entry->enabled = flag;
  entry = &frame.entries[frame.count++]; entry->id = 13; entry->enabled = (int)b;
  b = fn_8027B9EC(1);
- flag = b == 0 && lbl_8055BEA8 >= 5; entry = &frame.entries[frame.count++]; entry->id = 14; entry->enabled = flag;
+ flag = 0; if (b == 0 && lbl_8055BEA8 >= 5) flag = 1; entry = &frame.entries[frame.count++]; entry->id = 14; entry->enabled = flag;
  entry = &frame.entries[frame.count++]; entry->id = 15; entry->enabled = b;
  entry = &frame.entries[frame.count++]; entry->id = 16; entry->enabled = 0;
  v = fn_8000DA10();
  if (lbl_8055BEC0 < 0 || lbl_8055BEC0 != v) lbl_8055BEAC = (void *)table[0];
  lbl_8055BEC0 = v;
- frame.items[0] = 0;
- frame.items[1] = 5;
- frame.items[2] = (s32)&frame.title;
- frame.items[3] = 0;
- frame.items[4] = 0;
- frame.items[5] = (s32)&lbl_8055BAC0;
- frame.items[6] = 8;
- frame.items[7] = (s32)fn_8024768C;
- frame.items[9] = 0;
- frame.items[8] = 0;
- frame.items[10] = (s32)&lbl_8055BABC;
- frame.items[11] = 8;
- frame.items[12] = (s32)fn_80247768;
- frame.items[13] = 1;
- frame.items[14] = 0;
- frame.items[15] = (s32)&lbl_8055B860;
- frame.items[16] = 6;
- frame.items[17] = 0;
- frame.items[18] = -1;
- frame.items[19] = 0x1b;
- frame.items[20] = (s32)(base + 0x2ec);
- frame.items[21] = 0;
- frame.items[22] = 0;
- frame.items[23] = 1;
- frame.items[24] = 0;
- frame.items[25] = (s32)&lbl_8055BEC4;
- frame.items[26] = 0;
- frame.items[27] = 0;
- frame.items[28] = 2;
- frame.items[29] = 0;
- frame.items[30] = (s32)(base + 0x2a0);
- frame.items[31] = 0;
- frame.items[32] = 0;
- frame.items[33] = 3;
- frame.items[34] = 0;
- frame.items[36] = 0;
- frame.items[35] = (s32)(base + 0x2f8);
- frame.items[37] = 0;
- frame.items[38] = 6;
- frame.items[39] = 0;
- frame.items[40] = (s32)&lbl_8055BEA0;
- frame.items[41] = 0;
- frame.items[42] = 0;
- frame.items[43] = 8;
- frame.items[44] = 0;
- frame.items[45] = (s32)(base + 0x304);
- frame.items[46] = 0;
- frame.items[47] = 0;
- frame.items[48] = 12;
- frame.items[49] = 0;
- frame.items[50] = (s32)&lbl_8055BED0;
- frame.items[51] = 0;
- frame.items[52] = 0;
- frame.items[53] = 9;
- frame.items[54] = 0;
- frame.items[55] = (s32)&lbl_8055BED8;
- frame.items[56] = 0;
- frame.items[57] = 0;
- frame.items[58] = 10;
- frame.items[59] = 0;
- frame.items[60] = (s32)&lbl_8055BEE0;
- frame.items[61] = 0;
- frame.items[62] = 0;
- frame.items[63] = 11;
- frame.items[64] = 0;
- frame.items[66] = 0;
- frame.items[65] = (s32)&lbl_8055BEE8;
- frame.items[67] = 0;
- frame.items[68] = 16;
- frame.items[69] = 0;
- frame.items[70] = lbl_804988F0[0];
- frame.items[71] = lbl_804988F0[1];
- frame.items[72] = lbl_804988F0[2];
- frame.items[73] = lbl_804988F0[3];
- frame.items[74] = lbl_804988F0[4];
+ frame.items[0] = 0; frame.items[1] = 5; frame.items[2] = (s32)&frame.title; frame.items[3] = 0; frame.items[4] = 0;
+ frame.items[5] = (s32)&lbl_8055BAC0; frame.items[6] = 8; frame.items[7] = (s32)fn_8024768C; frame.items[9] = 0; frame.items[8] = 0;
+ frame.items[10] = (s32)&lbl_8055BABC; frame.items[11] = 8; frame.items[12] = (s32)fn_80247768; frame.items[13] = 1; frame.items[14] = 0;
+ frame.items[15] = (s32)&lbl_8055B860; frame.items[16] = 6; frame.items[17] = 0; frame.items[18] = -1; frame.items[19] = 0x1b;
+ frame.items[20] = (s32)(base + 0x2ec); frame.items[21] = 0; frame.items[22] = 0; frame.items[23] = 1; frame.items[24] = 0;
+ frame.items[25] = (s32)&lbl_8055BEC4; frame.items[26] = 0; frame.items[27] = 0; frame.items[28] = 2; frame.items[29] = 0;
+ frame.items[30] = (s32)(base + 0x2a0); frame.items[31] = 0; frame.items[32] = 0; frame.items[33] = 3; frame.items[34] = 0;
+ frame.items[36] = 0; frame.items[35] = (s32)(base + 0x2f8); frame.items[37] = 0; frame.items[38] = 6; frame.items[39] = 0;
+ frame.items[40] = (s32)&lbl_8055BEA0; frame.items[41] = 0; frame.items[42] = 0; frame.items[43] = 8; frame.items[44] = 0;
+ frame.items[45] = (s32)(base + 0x304); frame.items[46] = 0; frame.items[47] = 0; frame.items[48] = 12; frame.items[49] = 0;
+ frame.items[50] = (s32)&lbl_8055BED0; frame.items[51] = 0; frame.items[52] = 0; frame.items[53] = 9; frame.items[54] = 0;
+ frame.items[55] = (s32)&lbl_8055BED8; frame.items[56] = 0; frame.items[57] = 0; frame.items[58] = 10; frame.items[59] = 0;
+ frame.items[60] = (s32)&lbl_8055BEE0; frame.items[61] = 0; frame.items[62] = 0; frame.items[63] = 11; frame.items[64] = 0;
+ frame.items[66] = 0; frame.items[65] = (s32)&lbl_8055BEE8; frame.items[67] = 0; frame.items[68] = 16; frame.items[69] = 0;
+ frame.items[70] = lbl_804988F0[0]; frame.items[71] = lbl_804988F0[1]; frame.items[72] = lbl_804988F0[2]; frame.items[73] = lbl_804988F0[3]; frame.items[74] = lbl_804988F0[4];
  for (;;) {
+   s32 result;
    if (lbl_8055F270) result = 3;
    else if (lbl_8055F271) result = 6;
    else {
-     frame.args[0] = ((s32 *)lbl_802FA418)[0];
-     frame.args[1] = ((s32 *)lbl_802FA418)[1];
-     frame.args[2] = ((s32 *)lbl_802FA418)[2];
-     frame.args[3] = ((s32 *)lbl_802FA418)[3];
-     frame.args[4] = ((s32 *)lbl_802FA418)[4];
+     frame.args[0] = ((s32 *)lbl_802FA418)[0]; frame.args[1] = ((s32 *)lbl_802FA418)[1]; frame.args[2] = ((s32 *)lbl_802FA418)[2]; frame.args[3] = ((s32 *)lbl_802FA418)[3]; frame.args[4] = ((s32 *)lbl_802FA418)[4];
      frame.args[0] = table[1]; frame.args[1] = (s32)frame.items;
      result = ((s32 (*)(void *, s32, s32, s32))fn_802146BC)(frame.args, -999, -999, 1);
    }
    if ((int)result == 3) {
-      if (((s32 (*)(void))fn_802478A4)() != -1) { lbl_8055F270 = 1; frame.entries = 0; frame.count = 0; frame.capacity = 0; return result; }
+      result = ((s32 (*)(void))fn_802478A4)();
+      if (result != -1) { lbl_8055F270 = 1; frame.entries = 0; frame.count = 0; frame.capacity = 0; return result; }
       lbl_8055F270 = 0;
    } else if (result == 6) {
-      if (((s32 (*)(void))fn_80247AD0)() != -1) { lbl_8055F271 = 1; frame.entries = 0; frame.count = 0; frame.capacity = 0; return result; }
+      result = ((s32 (*)(void))fn_80247AD0)();
+      if (result != -1) { lbl_8055F271 = 1; frame.entries = 0; frame.count = 0; frame.capacity = 0; return result; }
       lbl_8055F271 = 0;
    } else break;
  }
@@ -1393,6 +1333,7 @@ void fn_802487B4(void *arg0) {
  }
 }
 #pragma pop
+// Reset this element's local X scroll offset (+0x1C) to lbl_805638B0 (0.0f).
 void fn_80248A68(void *arg0) {
     *(float*)((char*)arg0 + 0x1C) = lbl_805638B0;
 }
