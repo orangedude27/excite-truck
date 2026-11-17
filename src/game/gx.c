@@ -1557,30 +1557,24 @@ void fn_802D08CC(int cullMode) {
 void fn_802D0910(int, int, int, int, int, int) {
 }
 
+#pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802D0914(int arg0, short arg1, short arg2) {
     extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
     unsigned char buffer[0x12];
-    unsigned char b8;
-    unsigned char b9;
-    unsigned char b10;
-    unsigned char b11;
-    unsigned char b12;
-    unsigned char b13;
-    unsigned char b14;
-    unsigned char b15;
+    unsigned char b8, b9, b10, b11, b12, b13, b14, b15;
     memset(buffer, 0, 0x12);
     *(unsigned short *)(buffer + 8) = 0;
     *(unsigned short *)(buffer + 10) = 0;
     *(unsigned short *)(buffer + 12) = arg1;
     *(unsigned short *)(buffer + 14) = arg2;
+    b12 = buffer[12];
+    b13 = buffer[13];
     b8 = buffer[8];
     b9 = buffer[9];
     b10 = buffer[10];
     b11 = buffer[11];
-    b12 = buffer[12];
-    b13 = buffer[13];
     b14 = buffer[14];
     b15 = buffer[15];
     buffer[0] = 0;
