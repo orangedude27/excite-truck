@@ -2344,39 +2344,43 @@ extern "C" void *fn_8012E460(void *);
 extern "C" s32 fn_8012E490(s32 *);
 extern "C" const char lbl_8032ACE0[];
 #pragma use_lmw_stmw off
-extern "C" void fn_8012DDA8(s32 arg0) {
+extern "C" void fn_8012DDA8(s32 resName) {
+    /* Queue the named resource set's external TOC ("<set>.toc") for loading:
+     * reuse an existing mount and bump its use count, or allocate a fresh node
+     * from the manager's pool and enqueue it. On failure fall back to the
+     * ordinary resource lookup, which reports the set as not found. */
     s32 found;
-    ResTocManager *obj;
-    ResTocMount *node;
-    if (fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0) goto bd98;
-    obj = (ResTocManager *)lbl_8055E014;
-    if (obj == 0) goto bd98;
+    ResTocManager *manager;
+    ResTocMount *mount;
+    if (fn_8012BD3C(lbl_8055E000, (const char *)resName) != 0) goto not_found;
+    manager = (ResTocManager *)lbl_8055E014;
+    if (manager == 0) goto not_found;
     found = 0;
-    node = (ResTocMount *)fn_8012E490((s32 *)&obj->mounts);
-    while (node != 0) {
-        if (stricmp(node->name, (const char *)arg0) == 0) {
+    mount = (ResTocMount *)fn_8012E490((s32 *)&manager->mounts);
+    while (mount != 0) {
+        if (stricmp(mount->name, (const char *)resName) == 0) {
             found = 1;
-            node->uses += 1;
+            mount->uses += 1;
             break;
         }
-        node = node->next;
+        mount = mount->next;
     }
     if (found != 0) goto check;
-    fn_802E30C8(lbl_8032ACE0, (const char *)arg0);
-    node = (ResTocMount *)fn_8012E460((ResTocNodePool *)&obj->pool);
-    if (node == 0) {
-        fn_8012E2CC(obj);
-        node = (ResTocMount *)fn_8012E460((ResTocNodePool *)&obj->pool);
+    fn_802E30C8(lbl_8032ACE0, (const char *)resName);
+    mount = (ResTocMount *)fn_8012E460((ResTocNodePool *)&manager->pool);
+    if (mount == 0) {
+        fn_8012E2CC(manager);
+        mount = (ResTocMount *)fn_8012E460((ResTocNodePool *)&manager->pool);
     }
-    if (node == 0) goto check;
-    fn_8012DFE8(node, (const char *)arg0, (s32)fn_8012E060(&obj->unk_0x4, (const char *)arg0));
-    fn_8012DFCC((Unk8012DFCCList *)&obj->mounts, (Unk8012DFCCNode *)node);
-    fn_8012DEE4(obj);
+    if (mount == 0) goto check;
+    fn_8012DFE8(mount, (const char *)resName, (s32)fn_8012E060(&manager->unk_0x4, (const char *)resName));
+    fn_8012DFCC((Unk8012DFCCList *)&manager->mounts, (Unk8012DFCCNode *)mount);
+    fn_8012DEE4(manager);
     found = 1;
 check:
     if (found == 0) {
-bd98:
-        ((void *(*)(const char *, void **))fn_8012BD98)((const char *)arg0, &lbl_8055E000);
+not_found:
+        ((void *(*)(const char *, void **))fn_8012BD98)((const char *)resName, &lbl_8055E000);
     }
 }
 
