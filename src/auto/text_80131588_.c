@@ -56,8 +56,8 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
     u8 flag;
     Unk131588 *r;
     u8 *b;
-    s32 i, j;
-    s32 off1, off2;
+    int i, j;
+    int off1, off2;
     u8 t;
 
     r = fn_8012C370(arg0, 0x56414C54, &type, 0, 0, &flag);
@@ -72,18 +72,19 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
                 t = b[8]; b[8] = b[0xB]; b[0xB] = t;
                 t = b[9]; b[9] = b[0xA]; b[0xA] = t;
                 off1 = 0;
-                for (i = 0; i < r->count; i++, off1 += 0x1C) {
+                for (i = 0; i < r->count; i++) {
                     Unk131588Elem *e = (Unk131588Elem *)((char *)r->elems + off1);
                     if (e != NULL) fn_80131960(e, r);
                     ((Unk131588Elem *)((char *)r->elems + off1))->parent = r;
+                    off1 += 0x1C;
                 }
                 off1 = 0;
-                for (i = 0; i < r->count; i++, off1 += 0x1C) {
+                for (i = 0; i < r->count; i++) {
                     char *s = ((Unk131588Elem *)((char *)r->elems + off1))->str;
                     if (s != NULL && *s != 0) {
-                        s32 found = 0;
+                        int found = 0;
                         off2 = 0;
-                        for (j = 0; j < r->count; j++, off2 += 0x1C) {
+                        for (j = 0; j < r->count; j++) {
                             char *nm = ((Unk131588Elem *)((char *)r->elems + off2))->name;
                             if (stricmp(s, nm) == 0) {
                                 if (i == j) fn_802E317C(lbl_8032B714, s);
@@ -93,11 +94,13 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
                                 found = 1;
                                 ((Unk131588Elem *)((char *)r->elems + off1))->link = (Unk131588Elem *)((char *)r->elems + off2);
                             }
+                            off2 += 0x1C;
                         }
                         if (!found) {
                             fn_802E317C(lbl_8032B6B8, ((char *(*)(void *))((Unk131588Elem *)((char *)r->elems + off1))->vtable[2])((Unk131588Elem *)((char *)r->elems + off1)), s);
                         }
                     }
+                    off1 += 0x1C;
                 }
             }
         } else {
@@ -117,7 +120,12 @@ unsigned char* fn_801317F0(void* valueNode) {
     return text;
 }
 
-void fn_80131808(int arg0) { fn_80131588((void *)arg0, 0); }
+/* Open the named value file ("*.val") and return its parsed VALT table
+ * (Unk131588), or 0 if it cannot be fetched.  fn_80131588's second argument is
+ * the quiet flag, so this variant reports "Can't get value file %s" when the
+ * file is missing; fn_80131810 is the silent one.  The caller releases the
+ * table with fn_80131818. */
+Unk131588 *fn_80131808(const char *fileName) { return fn_80131588((void *)fileName, 0); }
 
 void fn_80131810(s32 data) {
     /* Parse this data block through fn_80131588 with the silent flag (1), suppressing the failure report. */
