@@ -2872,7 +2872,7 @@ extern "C" void fn_80215CA8(void) {
 }
 
 extern "C" void fn_80215CAC(void) {
-
+    /* Empty no-op: a default widget-wrapper vtable method with no behaviour. */
 }
 
 extern "C" void fn_80215CB0(void) {
