@@ -58,26 +58,22 @@ void fn_80177814(int *arg0) {
     lbl_8055E464 += 0x2F1CD;
 }
 
-#pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_801778C0(void) {
-    struct Obj { void *vtbl; };
-    struct V { void *f[18]; };
     void **vbase = &lbl_804340C0[0];
     int voffset = 0;
     int vcount = 0;
-    struct Obj *velem;
+    void *velem;
     lbl_8055E468 = 0;
     for (; vcount < lbl_8055E438; vcount++, voffset += 4) {
-        velem = *(struct Obj **)(lbl_8055E434 + voffset);
-        if (((int (*)(struct Obj *))((struct V *)velem->vtbl)->f[0x11])(velem) != 0 &&
-            ((int (*)(struct Obj *))((struct V *)velem->vtbl)->f[0x10])(velem) != 0) {
+        velem = *(void **)((char *)lbl_8055E434 + voffset);
+        if (((int (*)(void *))((*(void ***)velem)[0x11]))(velem) != 0 &&
+            ((int (*)(void *))((*(void ***)velem)[0x10]))(velem) != 0) {
             vbase[lbl_8055E468] = velem;
             lbl_8055E468 += 1;
         }
     }
 }
-
-#pragma dont_inline off
 /* Constant "return false" predicate, paired with fn_80177988 (always true);
  * serves as a default boolean callback. */
 long fn_80177980(void) {
@@ -145,21 +141,25 @@ void fn_80177A54(void) {
     lbl_8055E3C0 = 0;
 }
 
-void fn_80177AE4(int arg0, int arg1) {
+void fn_80177AE4(int forceShift, int arg1) {
+    /* Expire the oldest record of the 8-slot timed history buffer (256-byte
+     * payload, timestamp, value): shift records down when the oldest is more
+     * than 5 s old, timestamped in the future, or forceShift is set while the
+     * last slot is still in use. */
     typedef struct { unsigned char b[0x100]; } Bytes;
     typedef struct { Bytes data; float time; int value; } Entry;
     extern Entry lbl_80433880[8];
     extern float lbl_80561B4C;
     extern float lbl_8055E3C8;
-    int k;
+    int slot;
 
     if ((signed char)lbl_80433880[0].data.b[0] == 0) return;
     if (lbl_8055E3C8 > lbl_80561B4C + lbl_80433880[0].time || lbl_8055E3C8 < lbl_80433880[0].time
-        || (arg0 != 0 && (signed char)lbl_80433880[7].data.b[0] != 0)) {
-        for (k = 0; k < 7; k++) {
-            lbl_80433880[k].data = lbl_80433880[k + 1].data;
-            lbl_80433880[k].time = lbl_80433880[k + 1].time;
-            lbl_80433880[k].value = lbl_80433880[k + 1].value;
+        || (forceShift != 0 && (signed char)lbl_80433880[7].data.b[0] != 0)) {
+        for (slot = 0; slot < 7; slot++) {
+            lbl_80433880[slot].data = lbl_80433880[slot + 1].data;
+            lbl_80433880[slot].time = lbl_80433880[slot + 1].time;
+            lbl_80433880[slot].value = lbl_80433880[slot + 1].value;
         }
         memset(&lbl_80433880[7], 0, sizeof(Entry));
     }
