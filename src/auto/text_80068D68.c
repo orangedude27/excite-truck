@@ -8645,43 +8645,43 @@ extern char lbl_80315FEC[];
 #define btm_cb_acl_db           (lbl_803C0F78 + 0x34)
 #define BTM_LNK_QUALITY_TRACE_FMT lbl_80315FEC /* "BTM Link Quality Complete: Link Quality %d, hci status 0x%02x" */
 
-void btm_read_link_quality_complete(u8 *arg0) {
-    typedef void (*Callback)(s8 *);
-    struct Result {
-        s8 result;
-        u8 status;
-        u8 quality;
-        u8 address[6];
-    } result;
-    Callback callback;
-    u16 handle;
-    u8 *connection;
-    u8 i;
+/* HCI "Read Link Quality" command complete (btm_acl.c): stop the command timer,
+ * then hand the callback BTM_ReadLinkQuality registered the link quality from
+ * the event, with the peer's BD_ADDR looked up in btm_cb.acl_db by HCI handle.
+ * arg0 is the parameter part of the HCI event. */
+void btm_read_link_quality_complete(u8 *hciEvent) {
+    tBTM_CMPL_CB *completionCb;
+    tBTM_LINK_QUALITY_RESULTS results;
+    u16 connHandle;
+    u8 *aclRec;
+    u16 aclIndex;
 
-    callback = *(Callback *)(lbl_803C0F78 + 0x5FC);
-    connection = lbl_803C0F78 + 0x34;
-    fn_80070F90(lbl_803C0F78 + 0x5C8);
-    *(Callback *)(lbl_803C0F78 + 0x5FC) = 0;
+    completionCb = btm_cb_lnk_qual_cmpl_cb;
+    aclRec = btm_cb_acl_db;
+    fn_80070F90(btm_cb_rssi_timer); /* btu_stop_timer: the link-quality path reuses the RSSI timer */
+    btm_cb_lnk_qual_cmpl_cb = 0;
 
-    if (callback != 0) {
-        result.status = arg0[0];
-        if (result.status == 0) {
-            result.result = 0;
-            handle = (u16)(arg0[1] + (arg0[2] << 8));
-            result.quality = arg0[3];
-            if (lbl_803C0F78[0x27C0] >= 4) {
-                ((void (*)(u32, void *, u32, u32))fn_8007096C)(0xD0003, lbl_80315FEC, result.quality, result.status);
+    if (completionCb != 0) {
+        results.hci_status = hciEvent[0];
+        if (results.hci_status == 0) {
+            results.status = 0; /* BTM_SUCCESS */
+            connHandle = (u16)(hciEvent[1] + (hciEvent[2] << 8));
+            results.link_quality = hciEvent[3];
+            if (btm_cb_trace_level >= 4) {
+                ((void (*)(u32, void *, u32, u32))fn_8007096C)(
+                    0xD0003, BTM_LNK_QUALITY_TRACE_FMT, results.link_quality, results.hci_status);
             }
-            for (i = 0; i < 4; i++, connection += 0x11C) {
-                if (connection[0x119] != 0 && handle == *(u16 *)connection) {
-                    memcpy(result.address, connection + 8, 6);
+            /* Search through the list of active channels for the correct BD Addr */
+            for (aclIndex = 0; aclIndex < 4; aclIndex++, aclRec += 0x11C) {
+                if (aclRec[0x119] != 0 && connHandle == *(u16 *)aclRec) {
+                    memcpy(results.rem_bda, aclRec + 8, 6);
                     break;
                 }
             }
         } else {
-            result.result = 0xA;
+            results.status = 0xA; /* BTM_ERR_PROCESSING */
         }
-        callback(&result.result);
+        (*completionCb)(&results);
     }
 }
 
