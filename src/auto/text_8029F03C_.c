@@ -370,7 +370,9 @@ extern "C" void fn_8029F534(void *arg0, unsigned char *arg1) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma optimization_level 2
-extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
+extern "C" void fn_8029F5C8(void *out, unsigned char *config) {
+    /* Initialize output from config object: select "sys_name", cache the loaded
+       resource id at +4, and read the "upwards" float at +8 (default 0.0) if valid. */
     class Obj {
     public:
         virtual void v0() = 0;
@@ -383,13 +385,13 @@ extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
         virtual void v7() = 0;
         virtual float getFloat(float, const char *) = 0;
     };
-    Obj *obj = (Obj *)arg1;
-    if (((int (*)(unsigned char *, int))fn_8029F510)((unsigned char *)arg0, (int)arg1) != 0) {
-        obj->set((const char *)&lbl_8034983C);
-        *(int *)((char *)arg0 + 4) = fn_802929F8();
-        *(float *)((char *)arg0 + 8) = obj->getFloat(0.0f, (const char *)&lbl_8055CAE8);
+    Obj *configObj = (Obj *)config;
+    if (((int (*)(unsigned char *, int))fn_8029F510)((unsigned char *)out, (int)config) != 0) {
+        configObj->set((const char *)&lbl_8034983C);
+        *(int *)((char *)out + 4) = fn_802929F8();
+        *(float *)((char *)out + 8) = configObj->getFloat(0.0f, (const char *)&lbl_8055CAE8);
     } else {
-        *(int *)((char *)arg0 + 4) = 0;
+        *(int *)((char *)out + 4) = 0;
     }
 }
 
