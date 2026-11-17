@@ -77,7 +77,7 @@ float fn_802C88E8(int);
 extern int lbl_8055B0B8;
 void fn_801F0000(int wheel) {
 #define KEEP_ALLOCATED -1
-    /* Destroy a WheelInstance's registration but keep the object allocated: the destructor only frees when doDelete > 0. */
+    /* Unregister a WheelInstance via its destructor while keeping the object allocated (doDelete = -1 is not > 0). */
     fn_801F0F18(wheel, KEEP_ALLOCATED);
 }
 
