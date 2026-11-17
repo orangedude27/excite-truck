@@ -1395,8 +1395,9 @@ void fn_802D6C44(void) {
 void fn_802D6C48(void) {
 }
 
-void fn_802D6C4C(f32 arg0) {
-    lbl_8055FDE0 = arg0;
+void fn_802D6C4C(f32 extrudeScale) {
+    /* Set the global vertex-extrusion scale read by the surface drawers (e.g. fn_802D5838 offsets vertices along their normals by this amount). */
+    lbl_8055FDE0 = extrudeScale;
 }
 
 extern float lbl_804CA308[];
