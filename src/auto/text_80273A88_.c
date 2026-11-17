@@ -692,10 +692,10 @@ static inline void helper_80274F74(void *arg0, void *arg1) {
     float magnitude;
     float scale;
     float cosine;
+    float x;
     float y;
     float z;
     float sine;
-    float x;
 
     magnitude = PSVECMag(arg1);
     if (magnitude > lbl_80564020) {
@@ -749,14 +749,13 @@ static inline void helper_80274F74(void *arg0, void *arg1) {
     }
 }
 
+#pragma scheduling invalid_target
 void fn_80274F74(void *arg0, void *arg1, float angle) {
     float *p;
     p = (float *)((char *)arg0 + 0xBC);
     helper_80274F74(arg0, arg1);
     *p = angle;
 }
-
-#pragma pop
 
 extern float PSVECDotProduct(float *, float *);
 extern void fn_8026E850(float *, float *, void *, float *);
