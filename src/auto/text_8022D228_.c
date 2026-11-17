@@ -419,7 +419,8 @@ int fn_8022DD80(void *arg0) { return *(int *)((char *)arg0 + 0x40); }
 
 int fn_8022DD88(void *arg0) { return *(int *)((char *)arg0 + 0x44); }
 
-int fn_8022DD90(int arg0,int arg1) { return arg0 + arg1 * 16; }
+/* Return a pointer to the index-th 16-byte glyph record in the table. */
+int fn_8022DD90(int table, int index) { return table + index * 16; }
 
 /* Return a float gauge's value pointer (the word at +0x18) in *valuePtrOut and write the type code 4 to *typeOut. */
 void fn_8022DD9C(void *gauge, int *valuePtrOut, int *typeOut) {
