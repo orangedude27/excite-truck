@@ -233,8 +233,9 @@ check:
     return 1;
 }
 #pragma pop
-void fn_80018FA8(s32 arg0) {
-    fn_80018E44(lbl_80558C50, arg0);
+void fn_80018FA8(s32 itemName) {
+    /* Checks whether the named car unlockable is allowed; the result is returned through fn_80018E44. */
+    fn_80018E44(sCarCategoryName, itemName);
 }
 
 #pragma dont_inline on
