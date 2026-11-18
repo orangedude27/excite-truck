@@ -40,7 +40,7 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
     s32 i, c;
     u32 color;
     s32 n;
-    float zero;
+    register float zero;
     if (arg4 != 0 && !((float)__fabs(farg1) <= lbl_80558DC4[0])) {
         v = lbl_805646E8 * farg1;
         if (v < lbl_805646F0)
@@ -57,7 +57,7 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
             u32 lo, hi;
             lo = __rlwinm(n, 0, 24, 31);
             lo = __rlwimi(lo, n, 8, 16, 23);
-            hi = __rlwinm(n, 24, 24, 7);
+            hi = __rlwinm(n, 24, 8, 15);
             hi = __rlwimi(hi, c, 24, 0, 7);
             color = lo | hi;
         }
@@ -94,6 +94,7 @@ float fn_802A0F7C(void *arg0, void *arg1, void *arg2) {
 
 #pragma cplusplus on
 #pragma dont_inline on
+#pragma scheduling 750
 extern "C" s32 fn_802A0FBC(void) {
     struct V30 {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
