@@ -341,67 +341,79 @@ extern void *lbl_804348E8[];
 #pragma use_lmw_stmw off
 #pragma processor 750
 void fn_801D2214(void) {
-    struct Record { u8 active; u8 pad[3]; s32 id; f32 time; f32 position[3]; };
-    struct Temp { f32 position[3]; f32 velocity[3]; s16 type; s16 pad; s32 id; } temp;
-    f32 threshold;
-    s32 count;
-    struct Record *record;
-    void **objects;
+#define sSoeventRecords lbl_80438898 /* the 8 spawn records, one per car slot */
+#define sCarTable lbl_804348E8 /* this race's vehicles; fn_801B2F24() of them */
+#define sGameTime lbl_8055E3C8 /* current game time, in seconds */
+    SoeventSpawnInfo event;
+    f32 now;
+    s32 carCount;
+    SoeventRecord *record;
+    void **carSlot;
     s32 i;
     s32 zero;
-    count = fn_801B2F24();
-    threshold = lbl_8055E3C8;
-    record = (struct Record *)lbl_80438898;
-    objects = lbl_804348E8;
+    /* Once the clock passes a record's due time it is done; until then the
+     * spawn is reported again every frame, tracking the vehicle it follows. */
+    carCount = fn_801B2F24();
+    now = sGameTime;
+    record = (SoeventRecord *)sSoeventRecords;
+    carSlot = sCarTable;
     i = 0;
     zero = 0;
-    for (; i < count; record++, objects++, i++) {
+    for (; i < carCount; record++, carSlot++, i++) {
         if (record->active != 0) {
-            if (threshold > record->time) record->active = (u8)zero;
-            else {
-                u8 *object = (u8 *)*objects;
-                if (&temp.position[0] == &record->position[0]) {
-                    f32 *matrix = (f32 *)object;
-                    float x, y, z;
-                    float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-                    m10 = matrix[0x48 / 4]; m11 = matrix[0x4C / 4]; m12 = matrix[0x50 / 4];
-                    m00 = matrix[0x3C / 4]; m01 = matrix[0x40 / 4]; m02 = matrix[0x44 / 4];
-                    m20 = matrix[0x54 / 4]; m21 = matrix[0x58 / 4]; m22 = matrix[0x5C / 4];
-                    x = record->position[0]; y = record->position[1]; z = record->position[2];
-                    temp.position[0] = z * m20 + (x * m00 + y * m10);
-                    temp.position[1] = z * m21 + (x * m01 + y * m11);
-                    temp.position[2] = z * m22 + (x * m02 + y * m12);
+            if (now > record->dueTime) {
+                record->active = (u8)zero;
+            } else {
+                VehicleObject *vehicle = (VehicleObject *)*carSlot;
+                if (&event.position == &record->position) {
+                    /* In place: every product of a row has to be formed from
+                     * the saved vector before that row is written back. */
+                    const f32 *rotation = vehicle->rotation;
+                    f32 x, y, z;
+                    f32 m00, m10, m20, m01, m11, m21, m02, m12, m22;
+                    m10 = rotation[3]; m11 = rotation[4]; m12 = rotation[5];
+                    m00 = rotation[0]; m01 = rotation[1]; m02 = rotation[2];
+                    m20 = rotation[6]; m21 = rotation[7]; m22 = rotation[8];
+                    x = record->position.x; y = record->position.y; z = record->position.z;
+                    event.position.x = z * m20 + (x * m00 + y * m10);
+                    event.position.y = z * m21 + (x * m01 + y * m11);
+                    event.position.z = z * m22 + (x * m02 + y * m12);
                 } else {
-                    volatile f32 *matrix = (volatile f32 *)object;
-                    f32 m48, x, m3c, y, m54, z, m4c, m40, m58, m50, m44, m5c;
-                    m48 = matrix[0x48 / 4];
-                    y = *(volatile f32 *)&record->position[1];
-                    m3c = matrix[0x3C / 4];
-                    x = *(volatile f32 *)&record->position[0];
-                    m54 = matrix[0x54 / 4];
-                    z = *(volatile f32 *)&record->position[2];
-                    temp.position[0] = x * m3c + y * m48 + z * m54;
-                    m4c = matrix[0x4C / 4];
-                    m40 = matrix[0x40 / 4];
-                    m58 = matrix[0x58 / 4];
-                    temp.position[1] = x * m40 + y * m4c + z * m58;
-                    m50 = matrix[0x50 / 4];
-                    m44 = matrix[0x44 / 4];
-                    m5c = matrix[0x5C / 4];
-                    temp.position[2] = x * m44 + y * m50 + z * m5c;
+                    /* Vehicle space -> world: v * rotation, row by row.  The
+                     * volatile reads are what keeps the loads in this order. */
+                    const volatile f32 *rotation = (const volatile f32 *)vehicle->rotation;
+                    f32 m10, x, m00, y, m20, z, m11, m01, m21, m12, m02, m22;
+                    m10 = rotation[3];
+                    y = *(volatile f32 *)&record->position.y;
+                    m00 = rotation[0];
+                    x = *(volatile f32 *)&record->position.x;
+                    m20 = rotation[6];
+                    z = *(volatile f32 *)&record->position.z;
+                    event.position.x = x * m00 + y * m10 + z * m20;
+                    m11 = rotation[4];
+                    m01 = rotation[1];
+                    m21 = rotation[7];
+                    event.position.y = x * m01 + y * m11 + z * m21;
+                    m12 = rotation[5];
+                    m02 = rotation[2];
+                    m22 = rotation[8];
+                    event.position.z = x * m02 + y * m12 + z * m22;
                 }
-                temp.position[0] += *(f32 *)(object + 0x60);
-                temp.position[1] += *(f32 *)(object + 0x64);
-                temp.position[2] += *(f32 *)(object + 0x68);
-                temp.velocity[0] = *(f32 *)(object + 0x118);
-                temp.velocity[1] = *(f32 *)(object + 0x11C);
-                temp.velocity[2] = *(f32 *)(object + 0x120);
-                temp.type = *(s16 *)(object + 0x6C);
-                temp.id = record->id;
-                fn_801796CC(10, (f32 *)&temp, 0x20);
+                event.position.x += vehicle->position.x;
+                event.position.y += vehicle->position.y;
+                event.position.z += vehicle->position.z;
+                event.velocity.x = vehicle->velocity.x;
+                event.velocity.y = vehicle->velocity.y;
+                event.velocity.z = vehicle->velocity.z;
+                event.type = vehicle->type;
+                event.classId = record->classId;
+                fn_801796CC(10, (f32 *)&event, 0x20); /* EFX: spawn this soevent */
             }
         }
     }
+#undef sSoeventRecords
+#undef sCarTable
+#undef sGameTime
 }
 #pragma pop
 extern f32 PSVECMag(void*);
