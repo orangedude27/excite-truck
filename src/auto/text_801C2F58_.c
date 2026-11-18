@@ -1144,7 +1144,7 @@ extern void fn_8020655C(void *, s32);
 extern void fn_802E317C(void *, ...);
 extern struct Unk_80437D88 lbl_80437D88;
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_801C5B68(char *arg0, s32 arg1) {
     extern char lbl_8055E80C;
     register struct Unk_80437D88 *state = &lbl_80437D88;
@@ -1225,15 +1225,15 @@ s32 fn_801C5B68(char *arg0, s32 arg1) {
         {
             u32 *src = (u32 *)((char *)state + 0x14);
             u32 *dst = (u32 *)lbl_80499050;
-            u32 copy0 = src[0];
-            u32 copy1 = src[1];
-            u32 copy2 = src[2];
-            u32 copy3 = src[3];
-            u32 copy4 = src[4];
-            u32 copy5 = src[5];
-            u32 copy6 = src[6];
-            u32 copy7 = src[7];
             u32 copy8 = src[8];
+            u32 copy7 = src[7];
+            u32 copy6 = src[6];
+            u32 copy5 = src[5];
+            u32 copy4 = src[4];
+            u32 copy3 = src[3];
+            u32 copy2 = src[2];
+            u32 copy1 = src[1];
+            u32 copy0 = src[0];
             dst[0] = copy0;
             dst[1] = copy1;
             dst[2] = copy2;
