@@ -60,7 +60,6 @@ void* __dt__Q28PSSystem7SeqHeapFv_8025CC14(void* self, int shouldDelete) {
     return self;
 }
 
-#define DECL_ZERO register int zero asm("r23")
 extern void fn_80230C30(float*, float*, int, int);
 extern void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
 extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
