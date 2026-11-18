@@ -19499,9 +19499,6 @@ void homebutton::GroupAnmController::do_calc() {
     };
     struct Node { Node *next; u32 pad; void *object; };
     struct List { u8 pad[0x10]; Node *head; };
-    Node *node;
-    const char *file;
-    const char *message;
     s32 active;
     if (*(s32 *)((u8 *)this + 0x14) == 1) {
         calc();
@@ -19511,12 +19508,15 @@ void homebutton::GroupAnmController::do_calc() {
         active = 0;
     }
     List *list = *(List **)((u8 *)this + 0x20);
-    node = list->head;
-    while (node != (Node *)((u8 *)list + 0x10)) {
+    struct { Node *node; } cursor;
+    cursor.node = list->head;
+    Node *&node = cursor.node;
+    struct { Node *end; } sentinel;
+    sentinel.end = (Node *)((u8 *)list + 0x10);
+    Node *&end = sentinel.end;
+    while (node != end) {
         if (node == 0) {
-            file = lbl_8031E764;
-            message = lbl_8031E740;
-            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x23D, message);
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E764, 0x23D, lbl_8031E740);
         }
         ((ComponentDispatch *)node->object)->apply(*(void **)((u8 *)this + 0x24), active, 0);
         node = node->next;
