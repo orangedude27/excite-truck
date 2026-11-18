@@ -105,47 +105,50 @@ extern s32 lbl_8055D6D0, lbl_8055D6D4;
 #define sPendingEvent lbl_8055D6DC /* callback, or 1 to build the event queue */
 #define sEventCallback lbl_8055D6E0 /* what TRKGetNextEvent calls back */
 
-void TRKPostEvent(s32 arg0) {
-    extern u32 lbl_80558DD0;
-    extern s32 lbl_8055D6B0, lbl_8055D6B4, lbl_8055D6B8, lbl_8055D6BC;
-    extern s32 lbl_8055D6C0, lbl_8055D6C4, lbl_8055D6C8, lbl_8055D6CC;
-    extern s32 lbl_8055D6D0, lbl_8055D6D4, lbl_8055D6DC;
+void TRKPostEvent(s32 event) {
+    /* Bring the MetroTRK debug nub up, once: register the library's version
+     * banner, work out from the SoC clock the five time spans TRKInitializeNub
+     * measures its handshake against, reset and enable the debugger's EXI
+     * window, start the nub over it if the window was not already live, take
+     * note of the event to run when the host pokes us, and unmask the interrupt
+     * it rings.  TRKConstructEvent clears the started flag so this can run
+     * again. */
     extern void TRKInitializeNub(void);
     extern void __OSSetInterruptHandler(int, void (*)(void *, void *));
     extern void __OSUnmaskInterrupts(u32);
     extern void TRKGetNextEvent(void *, void *);
     s32 irq;
     u32 ticks;
-    if ((s32)lbl_8055D6A8 != 1) {
+    if ((s32)sStarted != 1) {
         u32 zero = 0;
-        OSRegisterVersion(lbl_80558DD0);
-        ticks = (*(volatile u32 *)0x800000F8 >> 2) / 125000;
-        lbl_8055D6D4 = (ticks * 0x7B24) / 8000;
-        lbl_8055D6D0 = zero;
-        lbl_8055D6C8 = zero;
-        lbl_8055D6C0 = zero;
-        lbl_8055D6B8 = zero;
-        lbl_8055D6B0 = zero;
-        lbl_8055D6CC = (ticks * 0xA428) / 8000;
-        lbl_8055D6C4 = (ticks * 0xA410) / 8000;
-        lbl_8055D6BC = (ticks * 0xF618) / 8000;
-        lbl_8055D6B4 = (ticks * 0xBB8) / 8000;
-        *(volatile u32 *)0xCD006C00 &= ~0x15;
-        *(volatile u32 *)0xCD006C04 = zero;
-        *(volatile u32 *)0xCD006C0C = zero;
-        *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & 0xFFFFFFDF) | 0x20;
-        if ((((*(volatile u32 *)0xCD006C00 >> 6) & 1) ^ 1) != 0) {
-            *(volatile u32 *)0xCD006C00 &= 0xFFFFFFBF;
+        OSRegisterVersion(sVersionBanner);
+        ticks = (SYS_SPEED >> 2) / 125000;
+        sSpan31524Lo = (ticks * 31524) / 8000;
+        sSpan31524Hi = zero;
+        sSpan42024Hi = zero;
+        sSpan42000Hi = zero;
+        sSpan63000Hi = zero;
+        sSpan3000Hi = zero;
+        sSpan42024Lo = (ticks * 42024) / 8000;
+        sSpan42000Lo = (ticks * 42000) / 8000;
+        sSpan63000Lo = (ticks * 63000) / 8000;
+        sSpan3000Lo = (ticks * 3000) / 8000;
+        DBGIF_CONTROL &= ~0x15;   /* clear the request, TC and enable bits */
+        DBGIF_ADDRESS = zero;
+        DBGIF_LENGTH = zero;
+        DBGIF_CONTROL = (DBGIF_CONTROL & 0xFFFFFFDF) | 0x20; /* enable it */
+        if ((((DBGIF_CONTROL >> 6) & 1) ^ 1) != 0) {         /* nub not live? */
+            DBGIF_CONTROL &= 0xFFFFFFBF;
             irq = OSDisableInterrupts();
             TRKInitializeNub();
-            *(volatile u32 *)0xCD006C00 |= 0x40;
+            DBGIF_CONTROL |= 0x40;
             OSRestoreInterrupts(irq);
         }
-        lbl_8055D6E0 = (void *)zero;
-        lbl_8055D6DC = arg0;
-        __OSSetInterruptHandler(5, TRKGetNextEvent);
-        __OSUnmaskInterrupts(0x04000000);
-        lbl_8055D6A8 = (void *)1;
+        sEventCallback = (void *)zero;
+        sPendingEvent = event;
+        __OSSetInterruptHandler(5, TRKGetNextEvent); /* the debug interface's */
+        __OSUnmaskInterrupts(0x04000000);            /* == OS_INTR_MASK(5) */
+        sStarted = (void *)1;
     }
 }
 
