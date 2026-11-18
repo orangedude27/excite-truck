@@ -196,7 +196,14 @@ typedef struct WPADCB {
               u32 autoSamplingSize;        // at 0x7F4 number of slots
               u32 readFormat;              // at 0x7F8 WPADSetDataFormat()
               s32 readStatus;              // at 0x7FC error WPADRead() reports
-              u8 UNK_0x800;                // at 0x800
+                              union {
+                    u8 UNK_0x800; // at 0x800
+                    /* Set when __SendData puts a STATUS_REQUEST report on the
+                     * wire (and by the 0xFF delay report path through +0x850),
+                     * cleared again once the next input report is decoded.
+                     * While it is set a send is refused with WPAD_ERR_BUSY. */
+                    u8 statusReqPending;
+                };
               u8 UNK_0x801; // extension kind: 1 = FS, 2 = CL, 0xfb/0xfc/0xfd = none
               u8 UNK_0x802;
               s8 extDevHandle;    // at 0x803 BTE handle of this connection
