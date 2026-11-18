@@ -483,7 +483,8 @@ mode_done:
             index = 0;
             while ((node = ((void *(*)(void *, int))(*(void * volatile **)parser)[3])(parser, index)) != 0) {
                 if (stricmp(((char *(*)(void *))(*(void * volatile **)node)[2])(node), lbl_8055BA70) == 0) {
-                    if (((void *(*)(void *, const char *))(*(void * volatile **)node)[0x5C / 4])(node, lbl_80340940) != 0) {
+                    checkResult = (int)((void *(*)(void *, const char *))(*(void * volatile **)node)[0x5C / 4])(node, lbl_80340940);
+                    if (((unsigned)((-checkResult) | checkResult) >> 31) != 0) {
                         detailList = ((void *(*)(void *, const char *))(*(void * volatile **)node)[0x5C / 4])(node, lbl_80340940);
                         entry = &manager->entries[manager->count];
                         entry->object = ((void *(*)(void *, const char *))(*(void * volatile **)node)[0x1C / 4])(node, lbl_80340A44);
