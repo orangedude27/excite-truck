@@ -1037,7 +1037,7 @@ void fn_802AB770(int arg0) {
     fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
     fn_802C2B78(result, lbl_80564AAC + result, lbl_805649FC);
 }
-#pragma opt_propagation reset
+#pragma pop
 // Restore the draw state saved by fn_802AB770: model colour,
 // global scale parameters, and the global-scale-on flag.
 void fn_802AB994(void) {
