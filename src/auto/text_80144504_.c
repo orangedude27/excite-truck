@@ -62,6 +62,7 @@ float fn_80144514(float ax, float bx, float ay, float by, float az, float bz) {
 
 #pragma push
 #pragma processor 750
+#pragma opt_propagation off
 void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     f32 b[9];
     f32 *bp = b;
