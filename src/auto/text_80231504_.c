@@ -1405,19 +1405,21 @@ void fn_802339A8(f32 x, s32 font, f32 y, s32 color, f32 spacing, f32 scale, s32 
 
 extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8DB8(void *, s32, u16 *, s32, s32, s32, s32, s32);
-extern u16 lbl_802F9FF0[6];
+typedef struct IndexList_802F9FF0 { u16 idx[6]; } IndexList_802F9FF0;
+extern IndexList_802F9FF0 lbl_802F9FF0;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     struct Frame {
-        u16 indices[6];
+        IndexList_802F9FF0 indices;
         u8 pad[4];
         f32 out0[6];
         f32 out1[6];
         f32 out2[6];
         f32 out3[6];
     } frame;
+    IndexList_802F9FF0 indexList;
     register void *object = arg0;
     register s32 font;
     register s32 offset;
@@ -1437,18 +1439,11 @@ void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
         fn_80231380(frame.out3, font, farg2, farg3, farg4,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
-        {
-            u16 *indexList = lbl_802F9FF0;
-            frame.indices[0] = *indexList++;
-            frame.indices[1] = *indexList++;
-            frame.indices[2] = *indexList++;
-            frame.indices[3] = *indexList++;
-            frame.indices[4] = *indexList++;
-            frame.indices[5] = *indexList++;
-        }
-        fn_802C8DB8(frame.out0, 4, frame.indices, 6,
-                    lbl_802F9FF0[4], lbl_802F9FF0[3],
-                    lbl_802F9FF0[2], lbl_802F9FF0[1]);
+        indexList = lbl_802F9FF0;
+        frame.indices = indexList;
+        fn_802C8DB8(frame.out0, 4, frame.indices.idx, 6,
+                    indexList.idx[4], indexList.idx[3],
+                    indexList.idx[2], indexList.idx[1]);
     }
 }
 #pragma pop
