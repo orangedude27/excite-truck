@@ -1246,11 +1246,9 @@ extern const char lbl_8032F738[];
 #pragma dont_inline on
 void fn_80161DE4(void) {
     s32 total;
-    s32 addition;
     total = fn_801615B4(fn_80161ECC() - 1);
     fn_80161E40(fn_80161ECC() - 1);
-    addition = fn_8016208C();
-    total = addition + total;
+    total = (s32)((char *)fn_8016208C() + total);
     fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, total + 1);
 }
 
@@ -3268,6 +3266,8 @@ void fn_80164F50(void *arg0) {
     f32 f0;
     f32 *outPtr;
     f32 *inPtr;
+    s32 zero = 0;
+
     fn_801796BC(1);
     value = fn_80160CE4();
     if (lbl_8055E2DC != 0 && value <= *(s32 *)(lbl_8042FDEC + 4)) {
@@ -3276,14 +3276,14 @@ void fn_80164F50(void *arg0) {
     if (*(s32 *)((u8 *)self + 8) >= *(s32 *)(lbl_8042FDEC + 4)) {
         *(s32 *)((u8 *)self + 8) = *(s32 *)(lbl_8042FDEC + 4);
     }
-    f2 = *(volatile f32 *)&lbl_80561888;
-    *(volatile u8 *)((u8 *)self + 4) = 0;
+    *(u8 *)((u8 *)self + 4) = zero;
+    f2 = lbl_80561888;
     outPtr = out;
-    f1 = *(volatile f32 *)&lbl_80561840;
+    f1 = lbl_80561840;
     inPtr = in;
-    *(volatile u8 *)((u8 *)self + 6) = 0;
-    f0 = *(volatile f32 *)&lbl_80561848;
-    *(volatile u8 *)((u8 *)self + 5) = 0;
+    *(u8 *)((u8 *)self + 6) = zero;
+    f0 = lbl_80561848;
+    *(u8 *)((u8 *)self + 5) = zero;
     outPtr[0] = f2;
     outPtr[1] = f2;
     inPtr[0] = f1;
