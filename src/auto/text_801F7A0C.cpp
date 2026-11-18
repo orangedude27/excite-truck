@@ -405,7 +405,7 @@ extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
     F7B10Obj *obj = (F7B10Obj *)arg1;
     volatile u8 *dst = (volatile u8 *)arg0;
     int i;
-    if (fn_801F7A88(arg1, arg2, arg0, 0x30) != 0) {
+    if (fn_801F7A88(obj, arg2, (void *)dst, 0x30) != 0) {
         volatile u8 *p = dst;
         for (i = 0; i < 2; i++) {
             u8 t;
@@ -418,7 +418,7 @@ extern "C" s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
             p += 0x18;
         }
     } else {
-        f32 *o = (f32 *)arg0;
+        f32 *o = (f32 *)dst;
         const F7B10Vec &a = obj->getVec(lbl_8055B280);
         o[0] = a.x; o[1] = a.y; o[2] = a.z;
         const F7B10Vec &b = obj->getVec(lbl_8055B288);
@@ -1506,6 +1506,16 @@ extern "C" void fn_80015B20(void *, void *, void *);
 extern "C" void fn_80204018(void *, void *);
 extern "C" u8 lbl_8055EC7C;
 extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2) {
+    class DispatchPad {
+    public:
+        char pad[0x108];
+    };
+    class Dispatchable : public DispatchPad {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void call(void *);
+    };
     u8 scratch[0x38];
     u32 temp;
     u32 flags;
@@ -1520,21 +1530,17 @@ extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2) {
             flags |= 2;
         node = arg0;
         zero = 0;
-        goto next_node;
-    loop_body:
-        *(s32 *)(scratch + 0x34) = zero;
-        *(s32 *)(scratch + 0x30) = zero;
-        fn_801BFD34(scratch + 0x24, (u8 *)node + 0x54, arg1);
-        fn_80015B20(scratch, (u8 *)node + 0x30, arg1);
-        s32 value = *(s32 *)((u8 *)arg1 + 0x34);
-        *(s32 *)(scratch + 0x30) = flags;
-        *(s32 *)(scratch + 0x34) = value;
-        void (**vt)(void *, void *) = (void (**)(void *, void *))*(u32 *)((u8 *)node + 0x108);
-        void (*fn)(void *, void *) = vt[4];
-        fn(node, scratch);
-    next_node:
-        node = *(void **)((u8 *)node + 0x24);
-        if (node != 0) goto loop_body;
+        while (node != 0) {
+            *(s32 *)(scratch + 0x34) = zero;
+            *(s32 *)(scratch + 0x30) = zero;
+            fn_801BFD34(scratch + 0x24, (u8 *)node + 0x54, arg1);
+            fn_80015B20(scratch, (u8 *)node + 0x30, arg1);
+            s32 value = *(s32 *)((u8 *)arg1 + 0x34);
+            *(s32 *)(scratch + 0x30) = flags;
+            *(s32 *)(scratch + 0x34) = value;
+            ((Dispatchable *)node)->call(scratch);
+            node = *(void **)((u8 *)node + 0x24);
+        }
     }
     if ((arg2 & 1) != 0) fn_80204018(arg0, arg1);
 }
