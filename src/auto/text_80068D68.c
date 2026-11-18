@@ -6750,17 +6750,17 @@ void bta_hh_api_disable(void) {
     }
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling 750
 void bta_hh_disc_cmpl(void) {
+    UINT8 status = 0;
     UINT8 i;
-    UINT8 status;
     void (*cb)(int, void *);
 
-    status = 0;
     if (HID_HostDeregister() == HID_SUCCESS)
         return;
     status = 6;
-    for (i = 0; i < 0x10; i++)
+    i = 0;
+    for (; i < 0x10; i++)
         fn_800716F0(lbl_803C0D48 + i * 0x20 + 0x14);
     fn_800716F0(lbl_803C0D48 + 0x228);
     cb = *(void (**)(int, void *))(lbl_803C0D48 + 0x224);
@@ -15313,6 +15313,8 @@ void gap_connect_cfm(u32 cid, s32 result) {
         if (conn[0] != 0) {
             if (*(u16 *)(conn + 6) == cid)
                 goto found;
+            else
+                continue;
         }
     }
     conn = 0;
