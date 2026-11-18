@@ -80,8 +80,6 @@ extern float lbl_80564904;
 extern float lbl_80564908;
 extern float lbl_8056490C;
 #pragma use_lmw_stmw off
-#pragma paired off
-#pragma paired_single off
 #pragma scheduling invalid_target
 void fn_802A7CA8(void *unused, float farg0, int arg1)
 {
