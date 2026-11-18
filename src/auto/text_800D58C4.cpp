@@ -474,32 +474,36 @@ extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(bool hasColor, unsigned 
 
 #pragma scheduling 750
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const nw4r::math::VEC2 *pos, const nw4r::lyt::Size *size, unsigned char texCoordCount, const nw4r::math::VEC2 (*texCoords)[4], const nw4r::ut::Color *colors) {
-    /* nw4r::lyt::detail::DrawQuad: send an axis-aligned quad (near corner pos,
-       extent size) to the GX FIFO as GX_QUADS in vertex format 0 (see
-       SetVertexFormat).  Each corner gets its position, the corner's color when
-       colors is not NULL, and texCoordCount texture coordinate sets read from
-       texCoords[set][corner].  The corners go out lower-left, lower-right,
-       upper-right, upper-left, and colors[] is read 0, 1, 3, 2 so that it lines
-       up with the texcoord corners. */
+    /* nw4r::lyt::detail::DrawQuad: send the axis-aligned quad whose first corner is
+       pos and whose extent is size to the GX FIFO as GX_QUADS in vertex format 0
+       (the format SetVertexFormat sets up).  A corner is written as its position,
+       the corner's color when colors is not NULL, and texCoordCount texture
+       coordinate sets read from texCoords[set][corner].  The four corners go out as
+       pos, pos+size.x, pos+size.x+size.y, pos+size.y, and colors[] is read 0, 1, 3,
+       2 so that the colors line up with the texcoord corners of TexCoordAry. */
     int i;
     f32 x0, y0;
     GXBegin(GX_QUADS, GX_VTXFMT0, (u16)4);
+    // first corner, at pos
     x0 = pos->x;
     y0 = pos->y;
     GXPosition2f32(x0, y0);
     if (colors != 0) GXColor1u32(((const u32 *)colors)[0]);
     for (i = 0; i < texCoordCount; i++)
         GXTexCoord2f32(texCoords[i][0].x, texCoords[i][0].y);
+    // second corner, one size.x to the right
     x0 = pos->x + size->x;
     y0 = pos->y;
     GXPosition2f32(x0, y0);
     if (colors != 0) GXColor1u32(((const u32 *)colors)[1]);
     for (i = 0; i < texCoordCount; i++)
         GXTexCoord2f32(texCoords[i][1].x, texCoords[i][1].y);
+    // third corner, diagonally opposite the first
     GXPosition2f32(pos->x + size->x, pos->y + size->y);
     if (colors != 0) GXColor1u32(((const u32 *)colors)[3]);
     for (i = 0; i < texCoordCount; i++)
         GXTexCoord2f32(texCoords[i][3].x, texCoords[i][3].y);
+    // fourth corner, one size.y up from the first
     x0 = pos->x;
     y0 = pos->y + size->y;
     GXPosition2f32(x0, y0);
