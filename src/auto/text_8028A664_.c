@@ -147,7 +147,7 @@ extern void fn_8028BD5C(s32);
 extern void fn_8028BFEC(s32);
 extern void fn_8028C938(s32);
 
-extern void fn_80288A70();
+extern void fn_80288A70(void *, f32 *, f32);
 extern void fn_8028AA6C(void *, s32, f32);
 extern s32 lbl_8055F700;
 extern f32 lbl_8056434C;
