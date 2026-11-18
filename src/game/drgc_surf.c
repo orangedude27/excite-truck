@@ -90,6 +90,26 @@ struct SurfDraw {
     /* 0x2C */ u32 listSize;      // display list size in bytes
     /* 0x30 */ void *displayList; // prebuilt display list
 };
+
+/* One deferred vertex transform: `count` source vertices at `src`, rebuilt into the
+   position array at `dst`.  The last word is left 0; the pass that walks the queue
+   (fn_802D6C78) never reads it. */
+struct SurfXform {
+    s32 count;
+    void *src;
+    void *dst;
+    s32 flag;
+};
+
+/* A drawer's deferred-transform queue: 0x400 entries, with the number queued in the
+   word after them (+0x4000).  While there is room a draw only queues its transform,
+   which fn_802D6C78 then runs in chunks out of the L2 cache at the start of the next
+   frame; once the queue is full the drawer transforms its vertices itself.
+   lbl_804CEC3C is the queue of the format-16 drawer fn_802D45C0. */
+struct SurfXformQueue {
+    struct SurfXform entry[0x400];
+    s32 queued;
+};
 extern f32 lbl_804C5690[];
 extern f32 lbl_804C56C0[];
 extern f32 lbl_804DB068[];
