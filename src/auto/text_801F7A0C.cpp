@@ -1999,7 +1999,7 @@ extern void* lbl_8055EC50;
 extern void* lbl_8055EC5C;
 extern s32 fn_80129D90(s32, s32);
 extern s32 fn_801E6CD0(s32, s32, f32);
-s32 fn_80129D90(s32, s32, s32);
+extern "C" s32 fn_80129D90(s32, s32, s32);
 /* Marks flag/list nodes as active and starts playback for each active animation
  * group node in the third list (random choice when multiple clips, or clip 0). */
 extern "C" void fn_801FA1D4(void) {
