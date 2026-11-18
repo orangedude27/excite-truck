@@ -178,9 +178,39 @@ void fn_801B54B0(s32 listHead) {
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32 x1, f32 y1, f32 u1, f32 u2) {
-    typedef void (*Rec)(void *, s32, void *, s32, f32, f32, f32, f32);
-    typedef struct { s32 a; s32 b; s32 next; } Node;
+/* sol: hang one object on the quad tree.  `square` is the node covering
+ * x0,y0 - x1,y1 (fn_801B5B04 starts every object at the whole world box) and
+ * `object`/`index` are the ObjectLink being added and its place in the array
+ * that function walks.  The square is cut into four at its middle and the
+ * quadrants overlapping the object's box (ObjectBox) are kept.  If none is
+ * left the object lies outside the tree and is only reported.  If exactly one
+ * is, the object goes straight down into it.  Otherwise, once the square is
+ * too small to cut again (its longer side under MIN_SQUARE) the object is hung
+ * on the square's object list and counted; else it goes into every kept
+ * quadrant, so an object sitting on a border ends up in each square touching
+ * it.  The last two floats are handed over by fn_801B5B04 but never read, and
+ * the recursion drops them. */
+void fn_801B561C(void *object, s32 index, void *node, s32 depth, f32 x0, f32 y0, f32 x1, f32 y1, f32 unused1, f32 unused2) {
+    #define QUARTER        lbl_80562698 /* 0.5f: where a square is cut into four */
+    #define MIN_SQUARE     lbl_8056269C /* 50.0f: a square this small is not cut again */
+    #define ObjectBox      lbl_80435EB8 /* the object's box: minX, minY, maxX, maxY */
+    #define NOT_IN_ANY     lbl_80335E88 /* "sol:add_object(): Object not in any square" */
+    #define CHILDREN_TAG   lbl_80335EB4 /* "QuadTree::children": what a child array is called */
+    #define LeafPool       lbl_8055E6F4 /* the records hung on squares come from here */
+    #define LeafUsed       lbl_8055E6F0 /* how many of them have been handed out */
+    #define LeafTotal      lbl_8055E6EC /* how many objects the tree holds */
+    #define NewArray       fn_8002F37C  /* an array of items with init/destroy callbacks */
+    #define AllocBlock     fn_8012850C  /* the block an array is carved from */
+    #define Square_Init    fn_801B5984  /* a fresh square: no objects, no children */
+    #define Square_Destroy fn_801B591C  /* a square, its children and its objects */
+
+    typedef void (*AddObject)(void *, s32, void *, s32, f32, f32, f32, f32);
+    /* One object hung on a square: the ObjectLink it stands for, its place in
+     * the array being added, and the square's next object after it. */
+    typedef struct QuadObject { void *object; s32 index; struct QuadObject *next; } QuadObject;
+    /* One square of the tree: the objects it holds, how many there are, and its
+     * four child squares once it has been cut. */
+    typedef struct QuadSquare { QuadObject *objects; s32 count; struct QuadSquare *children; } QuadSquare;
     typedef struct { f32 x0, y0, x1, y1; } Rect;
     Rect r[4];
     u8 hit[4];
@@ -189,11 +219,11 @@ void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32
     s32 i;
     s32 j;
     f32 mx, my, w, h;
-    Node *node;
-    s32 *p2 = (s32 *)arg2;
+    QuadObject *leaf;
+    QuadSquare *square = (QuadSquare *)node;
 
-    mx = lbl_80562698 * (x0 + x1);
-    my = lbl_80562698 * (y0 + y1);
+    mx = QUARTER * (x0 + x1);
+    my = QUARTER * (y0 + y1);
     count = 0;
     r[0].x0 = x0; r[0].y0 = y0; r[0].x1 = mx; r[0].y1 = my;
     r[1].x0 = mx; r[1].y0 = y0; r[1].x1 = x1; r[1].y1 = my;
@@ -202,47 +232,59 @@ void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32
     last = -1;
     *(s32 *)hit = 0;
     for (i = 0; i < 4; i++) {
-        if (lbl_80435EB8[0] < r[i].x1 && lbl_80435EB8[2] > r[i].x0
-            && lbl_80435EB8[1] < r[i].y1 && lbl_80435EB8[3] > r[i].y0) {
+        if (ObjectBox[0] < r[i].x1 && ObjectBox[2] > r[i].x0
+            && ObjectBox[1] < r[i].y1 && ObjectBox[3] > r[i].y0) {
             hit[i] = 1;
             last = i;
             count++;
         }
     }
     if (count == 0) {
-        fn_802E317C(lbl_80335E88);
+        fn_802E317C(NOT_IN_ANY);
         return;
     }
     if (count == 1) {
-        if (p2[2] == 0) {
-            p2[2] = (s32)fn_8002F37C(fn_8012850C(0x40, lbl_80335EB4), fn_801B5984, fn_801B591C, 0xC, 4);
+        if (square->children == 0) {
+            square->children = (QuadSquare *)NewArray(AllocBlock(0x40, CHILDREN_TAG), Square_Init, Square_Destroy, 0xC, 4);
         }
-        ((Rec)fn_801B561C)(arg0, arg1, (char *)p2[2] + last * 0xC, arg3 + 1,
+        ((AddObject)fn_801B561C)(object, index, (char *)square->children + last * 0xC, depth + 1,
                            r[last].x0, r[last].y0, r[last].x1, r[last].y1);
         return;
     }
     w = x1 - x0;
     h = y1 - y0;
     w = w > h ? w : h;
-    if (w < lbl_8056269C) {
-        node = &((Node *)lbl_8055E6F4)[lbl_8055E6F0++];
-        node->a = (s32)arg0;
-        node->b = arg1;
-        node->next = p2[0];
-        p2[0] = (s32)node;
-        p2[1]++;
-        lbl_8055E6EC++;
+    if (w < MIN_SQUARE) {
+        leaf = &((QuadObject *)LeafPool)[LeafUsed++];
+        leaf->object = object;
+        leaf->index = index;
+        leaf->next = square->objects;
+        square->objects = leaf;
+        square->count++;
+        LeafTotal++;
         return;
     }
-    if (p2[2] == 0) {
-        p2[2] = (s32)fn_8002F37C(fn_8012850C(0x40, lbl_80335EB4), fn_801B5984, fn_801B591C, 0xC, 4);
+    if (square->children == 0) {
+        square->children = (QuadSquare *)NewArray(AllocBlock(0x40, CHILDREN_TAG), Square_Init, Square_Destroy, 0xC, 4);
     }
     for (j = 0; j < 4; j++) {
         if (hit[j] != 0) {
-            ((Rec)fn_801B561C)(arg0, arg1, (char *)p2[2] + j * 0xC, arg3 + 1,
+            ((AddObject)fn_801B561C)(object, index, (char *)square->children + j * 0xC, depth + 1,
                                r[j].x0, r[j].y0, r[j].x1, r[j].y1);
         }
     }
+    #undef QUARTER
+    #undef MIN_SQUARE
+    #undef ObjectBox
+    #undef NOT_IN_ANY
+    #undef CHILDREN_TAG
+    #undef LeafPool
+    #undef LeafUsed
+    #undef LeafTotal
+    #undef NewArray
+    #undef AllocBlock
+    #undef Square_Init
+    #undef Square_Destroy
 }
 #pragma scheduling on
 void *fn_801B591C(void *self, s32 deleteFlag) {
