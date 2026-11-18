@@ -8257,22 +8257,28 @@ void fn_80077C94(s16 linkPolicy) {
 
 BOOLEAN BTM_IsAclConnectionUp(BD_ADDR remote_bda) {
     extern char lbl_80315E80[];
-    u16 xx;
-    u8 *p;
+    u32 i;
+    u8 *entry;
 
     if (lbl_803C0F78[0x27C0] >= 3) {
         fn_800709CC(0xD0002, lbl_80315E80,
                     remote_bda[0], remote_bda[1], remote_bda[2],
                     remote_bda[3], remote_bda[4], remote_bda[5]);
     }
-    p = lbl_803C0F78 + 0x34;
-    for (xx = 0; xx < 4; xx++, p += 0x11C) {
-        if (p[0x119] != 0 && !memcmp(p + 8, remote_bda, 6))
+    i = 0;
+    entry = lbl_803C0F78 + 0x34;
+loop:
+    if (entry[0x119] != 0) {
+        if (memcmp(entry + 8, remote_bda, 6) == 0)
             goto found;
     }
-    p = NULL;
+    i++;
+    entry += 0x11C;
+    if (i < 4)
+        goto loop;
+    entry = NULL;
 found:
-    if (p != NULL)
+    if (entry != NULL)
         return TRUE;
     return FALSE;
 }
@@ -10876,6 +10882,19 @@ tBTM_STATUS BTM_PmRegister(UINT8 mask, UINT8 *p_pm_id, tBTM_PM_STATUS_CBACK *p_c
 extern u8 lbl_80560D38;
 extern u8 lbl_80560D3C;
 extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
+/* Index of the ACL link to remote_bda in btm_cb.acl_db, or 4 if there is none. */
+static int btm_pm_find_acl_ind(BD_ADDR remote_bda)
+{
+    u8 *p = lbl_803C0F78 + 0x34;
+    UINT8 xx;
+
+    for (xx = 0; xx < 4; xx++, p += 0x11C) {
+        if (p[0x119] && memcmp(p + 8, remote_bda, 6) == 0)
+            break;
+    }
+    return xx;
+}
+
 tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_mode)
 {
     int ind;
