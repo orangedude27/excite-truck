@@ -79,6 +79,7 @@ extern float lbl_8056336C;
 #pragma cplusplus reset
 #pragma use_lmw_stmw off
 #pragma optimize_for_size on
+#pragma scheduling on
 void *fn_8020DE74(void *arg0) {
     char name[0x20];
     register const char *labels __asm("r31") = lbl_8033C7A0;
@@ -90,6 +91,7 @@ void *fn_8020DE74(void *arg0) {
     register u32 one __asm("r24") = 1;
     register u32 i __asm("r23");
     register u32 offset __asm("r22");
+    register void **slot __asm("r21");
     void *child;
     register float initial asm("f31");
     u32 bit;
@@ -104,7 +106,7 @@ void *fn_8020DE74(void *arg0) {
     is_race = *(u32 *)((u8 *)arg0 + 0x10) == 0x50434152;
 
     if (is_race != 0) {
-        obj->waterBounce = fn_802077A4(labels, 5, left, right);
+        obj->waterBounce = fn_802077A4(&lbl_8033C7A0[0], 5, left, right);
         obj->airtime = fn_802077A4(labels + 0x10, 8, left, right);
     } else {
         obj->waterBounce = 0;
@@ -115,34 +117,35 @@ void *fn_8020DE74(void *arg0) {
     memset(obj->boosts, 0, 8);
     obj->lastBoost = 0;
 
-    initial = lbl_80563368;
     i = 0;
+    initial = lbl_80563368;
     offset = 0;
     do {
         fn_801345D8(name, 0x20, labels + 0x2c, i + 1);
+        slot = (void **)((u8 *)obj + offset);
         child = fn_802077A4(name, 5, left, right);
-        ((void **)((u8 *)obj + offset))[4] = child;
+        slot[4] = child;
         if (child == 0) break;
         *(void **)((u8 *)child + 0x10) = group;
-        child = ((void **)((u8 *)obj + offset))[4];
+        child = slot[4];
         if (initial != *(float *)((u8 *)child + 4)) {
             *(u8 *)((u8 *)child + 0x4e) = one;
             *(float *)((u8 *)child + 4) = initial;
         }
         i++;
-        obj->lastBoost = ((void **)((u8 *)obj + offset))[4];
+        obj->lastBoost = slot[4];
         offset += 4;
         obj->boostCount += 1;
     } while (i < 2);
 
     if (is_race != 0) obj->boostManual = fn_802077A4(labels + 0x38, 5, left, right);
     else obj->boostManual = 0;
-    child = *(void * volatile *)((u8 *)obj + 8);
+    child = obj->backfire;
     if (child != 0) {
         *(void **)((u8 *)child + 0x10) = group;
         {
             float desired = lbl_8056336C;
-            child = *(void * volatile *)((u8 *)obj + 8);
+            child = obj->backfire;
             if (desired != *(float *)((u8 *)child + 4)) {
             *(u8 *)((u8 *)child + 0x4e) = 1;
             *(float *)((u8 *)child + 4) = desired;
