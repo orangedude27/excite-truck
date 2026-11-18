@@ -256,24 +256,21 @@ void fn_80136E8C(void *proxer, s32 carIndex, signed char active) {
 void fn_80136EA4(void *arg0, s32 arg1) {
     s32 values[3];
     s32 *source;
-    s32 stride;
-    s32 index;
-    s32 *base;
-    s32 destination;
     s32 tmp;
+    s32 index;
+    s32 base;
+    s32 d;
 
     source = lbl_8032BEB4;
     values[0] = *source++;
     values[1] = *source++;
     values[2] = *source++;
-    stride = *(s32 *)((char *)arg0 + 0xC);
+    tmp = arg1 * *(s32 *)((char *)arg0 + 0xC);
     index = *(s32 *)arg0;
-    tmp = arg1 * stride;
-    base = *(s32 **)((char *)arg0 + 0x10);
-    destination = (s32)base + tmp;
-    destination += index * 8;
-    destination += 0x18;
-    fn_801376A8((s32)arg0, (s32 *)destination, (s32)values, arg1, base);
+    base = *(s32 *)((char *)arg0 + 0x10);
+    d = base + tmp;
+    d += index * 8 + 0x18;
+    fn_801376A8((s32)arg0, (s32 *)d, (s32)values, arg1, (s32 *)base);
 }
 
 extern void *fn_801B2ED0(int);
@@ -350,6 +347,7 @@ s32 fn_8013705C(f32 valueA, f32 valueB) {
 }
 
 extern float PSVECDotProduct(const void *, const void *);
+#pragma scheduling invalid_target
 s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
     f32 sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
     f32 temp_f10, temp_f11, temp_f1, temp_f2, temp_f3, temp_f4, temp_f5;
@@ -375,10 +373,8 @@ s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
     spC = temp_f1;
     sp10 = temp_f5 - temp_f3;
     PSVECDotProduct(&sp8, (char *)arg1 + 0x18);
-    return PSVECDotProduct(&sp8, (char *)arg1 + 0x18) < lbl_80561368;
+    return PSVECDotProduct(&sp8, (char *)arg1 + 0x18) > lbl_80561368;
 }
-
-#pragma dont_inline on
 s32 fn_80137140(s32 indexA, s32 indexB) {
     s32 objA;
     s32 objB;
@@ -400,7 +396,7 @@ extern float lbl_80561378, lbl_8056137C, lbl_80561380, lbl_80561384, lbl_8056138
 #pragma use_lmw_stmw off
 void fn_801371E0(void *arg0) {
     register float c90, c8c, c68, c88, c84, threshold, c78, radius, limit;
-    float dy, sign, velocity, distance, t, ya, yb;
+    float sign, velocity, distance, dy, t, ya, yb;
     register void *a, *b;
     register int offset, i, count;
     int flag;
@@ -665,7 +661,6 @@ void fn_801377EC(void *arg0, s32 arg1, void *arg2) {
     unsigned char flag;
     f32 x;
     f32 y;
-    f32 scale;
 
     state = lbl_8055E0D0;
     stride = *(s32 *)((char *)state + 0xC);
@@ -676,19 +671,23 @@ void fn_801377EC(void *arg0, s32 arg1, void *arg2) {
     flag = *(unsigned char *)((char *)entry + 0x14);
     equal = difference == 0;
     if ((equal ^ flag) != 0) {
+        f32 flip;
         x = *(f32 *)((char *)arg0 + 0x24);
-        scale = lbl_8056136C;
-        y = *(f32 *)((char *)arg0 + 0x28);
-        x = x * scale;
-        y = y * scale;
+        flip = lbl_8056136C;
+        x = x * flip;
+        y = *(f32 *)((char *)arg0 + 0x28) * flip;
         *(f32 *)arg2 = x;
         *(f32 *)((char *)arg2 + 4) = y;
         return;
     }
-    y = *(f32 *)((char *)arg0 + 0x28);
-    x = *(f32 *)((char *)arg0 + 0x24);
-    *(f32 *)((char *)arg2 + 4) = y;
-    *(f32 *)arg2 = x;
+    {
+        f32 copyY;
+        f32 copyX;
+        copyX = *(f32 *)((char *)arg0 + 0x24);
+        copyY = *(f32 *)((char *)arg0 + 0x28);
+        *(f32 *)arg2 = copyX;
+        *(f32 *)((char *)arg2 + 4) = copyY;
+    }
 }
 
 float fn_80137850(void *candidate)
