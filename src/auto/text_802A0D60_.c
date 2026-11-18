@@ -114,6 +114,7 @@ extern "C" s32 fn_802A0FBC(void) {
 done:
     return result;
 }
+#pragma scheduling on
 #pragma cplusplus reset
 extern float lbl_805646F0;
 extern float fn_802A0F7C(void *, void *, void *);
