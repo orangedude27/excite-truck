@@ -2204,6 +2204,7 @@ void fn_801C7FE4(void) {
     extern char lbl_80336FB0[];
     Unk_80437D88 *base = &lbl_80437D88;
     void *obj;
+    Vec *v;
     lbl_8055E83A = 0;
     obj = fn_801C3C80();
     *(s32 *)((char *)obj + 8) = 6;
@@ -2212,13 +2213,10 @@ void fn_801C7FE4(void) {
     strcpy((char *)obj + 0x114, (char *)base + 0x5F8);
     *(s32 *)((char *)obj + 0x10) = fn_801C3954((s32)obj + 0x14);
     *(s32 *)((char *)obj + 0x10) &= ~fn_801C3954((s32)obj + 0x114);
+    v = (Vec *)((char *)base + 0x4E0);
     *(f32 *)((char *)obj + 0x214) = *(f32 *)((char *)base + 0x4E0);
-    {
-        s32 off = 0x4E0;
-        Vec *v = (Vec *)((char *)base + off);
-        *(f32 *)((char *)obj + 0x218) = v->y;
-        *(f32 *)((char *)obj + 0x21C) = v->z;
-    }
+    *(f32 *)((char *)obj + 0x218) = v->y;
+    *(f32 *)((char *)obj + 0x21C) = v->z;
     sprintf((char *)base + 0x238, lbl_80336FB0, *(f32 *)obj);
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
