@@ -134,6 +134,7 @@ static inline float Chan_8018F2C0(unsigned char v) {
 }
 #pragma dont_inline on
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 int fn_8018C514(void *arg0, void *arg1) {
     float min = lbl_80561F70;
     int best = 0;
@@ -283,7 +284,7 @@ void fn_8018CB3C(char *arg0) {
     float localAxis[3];
     float worldAxis[3];
     float rotated[3];
-    float matrix[16];
+    float matrix[12];
     register char *var_r19;
     float var_f1_2;
     float var_f1;
@@ -602,11 +603,7 @@ void fn_8018CB3C(char *arg0) {
             if ((temp_f0_3 < temp_f27) || (M2C_FIELD(var_r20, float *, 0xC) > M2C_FIELD(var_r20, float *, 0x14))) {
                 var_f1_2 = M2C_FIELD(var_r20, float *, 0x14);
                 temp_f0_4 = M2C_FIELD(var_r20, float *, 0xC);
-                if (var_f1_2 < temp_f0_4) {
-
-                } else {
-                    var_f1_2 = temp_f0_4;
-                }
+                var_f1_2 = (var_f1_2 < temp_f0_4) ? var_f1_2 : temp_f0_4;
                 var_f1_2 = (var_f1_2 > temp_f27) ? var_f1_2 : temp_f27;
                 M2C_FIELD(var_r20, float *, 0xC) = (float) ((temp_f31 * var_f1_2) - M2C_FIELD(var_r20, float *, 0xC));
                 M2C_FIELD(var_r20, float *, 0x10) = (float) -M2C_FIELD(var_r20, float *, 0x10);
