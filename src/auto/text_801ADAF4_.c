@@ -434,18 +434,17 @@ void fn_801AE4C4(void) {
 }
 
 #pragma scheduling off
-void fn_801AE50C(void *arg0) {
+void fn_801AE50C(void) {
     struct { void *head; void *next; void *cur; } locals;
     locals.head = lbl_8055E604;
-    if (locals.head == 0) return;
-    locals.cur = arg0;
-    while (locals.cur != 0) {
-        locals.next = *(void **)locals.cur;
-        fn_80128668(locals.cur);
-        *(void *volatile *)locals.head = locals.next;
-        locals.cur = *(void *volatile *)locals.head;
+    if (locals.head != 0) {
+        while ((locals.cur = *(void *volatile *)locals.head) != 0) {
+            locals.next = *(void **)locals.cur;
+            fn_80128668(locals.cur);
+            *(void *volatile *)locals.head = locals.next;
+        }
+        fn_80128668(locals.head);
     }
-    fn_80128668(locals.head);
     lbl_8055E604 = 0;
 }
 #pragma scheduling on
