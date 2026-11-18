@@ -981,19 +981,33 @@ void fn_8023B400(void) {}
  * through a dispatch table. */
 s32 fn_8023B404(void) { return 0; }
 
-#pragma scheduling off
-void fn_8023B40C(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_8023B40C(void *arg0) {
+    class Base { public: char pad[0xC]; };
+    class Obj : public Base {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void setA(s32);
+        virtual void setB(s32);
+    };
     s32 s;
     void *o;
     s32 r;
-    s32 (**m)(void *, s32);
     s = fn_802104D0();
     if ((unsigned int)s == 1) {
         fn_80214B94(3);
     } else {
         o = *(void **)((char *)arg0 + 0x1C);
-        m = (s32 (**)(void *, s32))*(void **)((char *)o + 0xC);
-        m[13](o, 0);
+        ((Obj *)o)->setB(0);
         if (fn_80214D04() == 2) fn_80214CB4((void *)1);
         fn_80214B44(3);
     }
@@ -1012,11 +1026,11 @@ void fn_8023B40C(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 0x20) != (unsigned int)s && s != 0) {
         r = fn_80210570();
         o = *(void **)((char *)arg0 + 0x1C);
-        m = (s32 (**)(void *, s32))*(void **)((char *)o + 0xC);
-        m[13](o, r);
-        *(unsigned char *)((char *)arg0 + 0x20) = s;
+        ((Obj *)o)->setB(r);
     }
+    *(unsigned char *)((char *)arg0 + 0x20) = s;
 }
+#pragma cplusplus reset
 extern s32 lbl_80341228[];
 #pragma pop
 #pragma push
