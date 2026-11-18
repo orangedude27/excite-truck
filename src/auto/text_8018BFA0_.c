@@ -137,12 +137,13 @@ static inline float Chan_8018F2C0(unsigned char v) {
 #pragma use_lmw_stmw off
 int fn_8018C514(void *arg0, void *arg1) {
     float min = lbl_80561F70;
-    int best = 0;
-    int i = 1;
-    int offset = 0x34;
-    int *count = (int *)((char *)arg0 + 0x26C);
-    while (i < *count) {
-        float value = PSQUATMultiply(arg1, (char *)arg0 + offset + 0x20);
+    int offset, best, i;
+    int **countPtr = (int **)((char *)arg0 + 0x26C);
+    best = 0;
+    i = 1;
+    offset = 0x34;
+    while (i < **countPtr) {
+        float value = PSQUATMultiply(arg1, (char *)*countPtr + offset + 0x20);
         if (value < min) {
             min = value;
             best = i;
