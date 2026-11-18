@@ -4502,7 +4502,6 @@ void uusb_ReadBulkDataCB(s32 length, BT_HDR *buf) {
     s32 size, i;
     u8 *p;
     BT_HDR *copy;
-    register u32 zero = 0;
     char *report=lbl_803142C8;
     uusb_cb_t *control=&lbl_803BD1E0;
     if(control->state!=2) {
@@ -4530,7 +4529,7 @@ void uusb_ReadBulkDataCB(s32 length, BT_HDR *buf) {
             }
             if(lbl_803BD1E0.at_0x28) OSReport(lbl_80559000);
             copy=l2cap_link_chk_pkt_start(copy);
-            if((u32)copy != zero && (u8)l2cap_link_chk_pkt_end() != 0) {
+            if((u32)copy != 0 && (u8)l2cap_link_chk_pkt_end() != 0) {
                 OSSwitchFiberEx((u32)copy,0,0,0,fn_80070844,lbl_803BE240+0x1000);
             }
             GKI_freebuf(buf);
@@ -7560,8 +7559,8 @@ void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
                     fn_80070954(0x500, strings, *(u16 *)((u8 *)p_data + 6));
                 break;
             }
-            if (callback_event != 0)
-                ((void (*)(UINT16, void *, void *))*(u32 *)(lbl_803C0D48 + 0x224))(callback_event, callback_data, lbl_803C0D48);
+            if ((UINT16)callback_event != 0)
+                ((void (*)(UINT16, void *, void *))*(u32 *)(lbl_803C0D48 + 0x224))((UINT16)callback_event, callback_data, lbl_803C0D48);
         }
     } else {
         state = *((u8 *)p_cb + 0x1C);
@@ -24935,8 +24934,8 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
 {
     BOOLEAN is_command;
     MX_FRAME *p_rx_frame = (MX_FRAME *)lbl_803C4828;
-    UINT8 *p_data;
-    s32 len;
+    register UINT8 *p_data;
+    register s32 len;
     UINT8 length;
     UINT8 ll;
     UINT8 b;
@@ -24949,7 +24948,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     p_rx_frame->type = p_data[0] & 0xFC;
     if (!p_rx_frame->ea || !(UINT16)len) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_8007096C)(0x90000, msgs + 0x78, lbl_803C4828[3]);
+            ((void (*)(u32, void *, u32))fn_8007096C)(0x90000, msgs + 0x78, ((volatile MX_FRAME *)p_rx_frame)->ea);
         GKI_freebuf(p_buf);
         return;
     }
@@ -24978,7 +24977,8 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
             p_rx_frame->u.pn.mtu = p_data[4] + (p_data[5] << 8);
             p_rx_frame->u.pn.n2 = p_data[6];
             p_rx_frame->u.pn.k = p_data[7] & 7;
-            if (!p_rx_frame->dlci || p_rx_frame->dlci < 2 || p_rx_frame->dlci > 0x3D ||
+            if (!p_rx_frame->dlci ||
+                (p_rx_frame->dlci && (p_rx_frame->dlci < 2 || p_rx_frame->dlci > 0x3D)) ||
                 p_rx_frame->u.pn.mtu < 0x17 || p_rx_frame->u.pn.mtu > 0x7FFF) {
                 if (lbl_803C4828[0x414] >= 1)
                     fn_8007093C(0x90000, msgs + 0xA8);
@@ -25024,7 +25024,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
             UINT8 cr = (b & 2) >> 1;
             UINT8 d = b >> 2;
             p_rx_frame->dlci = d;
-            if (!ea || !cr || !d || !d || d < 2 || d > 0x3D) {
+            if (!ea || !cr || !d || (d && (d < 2 || d > 0x3D))) {
                 if (lbl_803C4828[0x414] >= 1)
                     fn_8007093C(0x90000, msgs + 0xB8);
                 break;
@@ -25059,7 +25059,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
                 UINT8 cr = (b & 2) >> 1;
                 UINT8 d = b >> 2;
                 p_rx_frame->dlci = d;
-                if (!ea || !cr || !d || !d || d < 2 || d > 0x3D) {
+                if (!ea || !cr || !d || (d && (d < 2 || d > 0x3D))) {
                     if (lbl_803C4828[0x414] >= 1)
                         fn_8007093C(0x90000, msgs + 0xC8);
                     break;
@@ -25091,7 +25091,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
                 UINT8 d = b >> 2;
                 p_rx_frame->dlci = d;
                 p_rx_frame->u.rls.line_status = p_data[1] & 0xFE;
-                if (!ea || !cr || !d || !d || d < 2 || d > 0x3D) {
+                if (!ea || !cr || !d || (d && (d < 2 || d > 0x3D))) {
                     if (lbl_803C4828[0x414] >= 1)
                         fn_8007093C(0x90000, msgs + 0xC8);
                     break;
@@ -25112,7 +25112,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
             p = (UINT8 *)(newbuf + 1) + 12;
             *p++ = 0x11;
             *p++ = 3;
-            *p = p_rx_frame->type | (p_rx_frame->ea | (p_rx_frame->cr << 1));
+            *p = ((MX_FRAME *)lbl_803C4828)->type | (((MX_FRAME *)lbl_803C4828)->ea | (((MX_FRAME *)lbl_803C4828)->cr << 1));
             newbuf->len = 3;
             rfc_send_buf_uih(p_rfc_mcb, 0, newbuf);
         }
@@ -27991,15 +27991,13 @@ BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) 
 }
 
 void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
-    int last;
     UINT16 i;
     UINT16 x;
 
     if (num_attr <= 1) {
         return;
     }
-    last = num_attr - 1;
-    for (i = 0; i < last;) {
+    for (i = 0; i < num_attr - 1;) {
         if (p_db->attr_filters[i] > p_db->attr_filters[i + 1]) {
             x = p_db->attr_filters[i];
             p_db->attr_filters[i] = p_db->attr_filters[i + 1];
