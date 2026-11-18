@@ -723,83 +723,104 @@ void fn_802882EC(void) {
     extern f32 fn_801EE0D0(void *, s32);
     extern f32 lbl_80564264, lbl_80564260;
     extern f32 lbl_80558DC4[];
-    typedef struct { s32 v[9]; } Block9;
-    typedef struct { s32 v[3]; } Block3;
-    u8 **table;
-    u8 *src;
-    u8 *dst;
-    u8 *out;
-    s32 i;
-    u8 *state;
-    u8 *entry;
-    s32 all, j;
+    /* Rebuilds the global pool of per-car snapshot records (gCarSnapshotPool:
+     * record base at +0, record count at +4, update flag at +8, 0x160-byte
+     * records).  For every CarMgr car it takes the car's live physics state
+     * (CarMgrEntry+8) and its render object (gCarRenderObjects, by slot) and
+     * copies into the record: the render object's 9-word identity block (+4)
+     * and its world position (+0x28), the velocity vector (+0x70) and that
+     * vector normalized (zero when its squared length is under the float
+     * epsilon), a set of physics scalars, the four wheel records and a word of
+     * the render object (+0x3EC).  The record's flag word at +0x68 gets bit 0
+     * from the car's active byte, bit 1 when all four wheels report contact and
+     * bits 2 and 3 from the physics state's flag word at +0x6E. */
+    #define ZERO_F        lbl_80564264 /* 0.0f */
+    #define ONE_F         lbl_80564260 /* 1.0f */
+    #define FLOAT_EPSILON lbl_80558DC4[0] /* "too small to divide by" */
+    #define gCarSnapshotPool  lbl_804B3150
+    #define gCarRenderObjects lbl_80488648
+    typedef struct { s32 words[9]; } IdentityBlock; /* render object +0x04 */
+    typedef struct { s32 words[3]; } PositionBlock; /* render object +0x28 */
+    u8 **renderObjectSlot;
+    u8 *wheelSrc;
+    u8 *wheelDst;
+    u8 *snapshot;
+    s32 carIndex;
+    u8 *physics;
+    u8 *renderObject;
+    s32 allWheelsGrounded, wheel;
     f32 one;
     f32 zero;
-    zero = lbl_80564264;
-    out = *(u8 **)lbl_804B3150;
-    one = lbl_80564260;
-    lbl_804B3150[8] = 0;
-    table = (u8 **)lbl_80488648;
-    i = 0;
-    while (i < *(s32 *)(lbl_804B3150 + 4)) {
-        u8 *obj = fn_801EA9CC(i);
+    zero = ZERO_F;
+    snapshot = *(u8 **)gCarSnapshotPool;
+    one = ONE_F;
+    gCarSnapshotPool[8] = 0;
+    renderObjectSlot = (u8 **)gCarRenderObjects;
+    carIndex = 0;
+    while (carIndex < *(s32 *)(gCarSnapshotPool + 4)) {
+        u8 *carRecord = fn_801EA9CC(carIndex);
         s32 flags;
-        state = *(u8 **)(obj + 8);
-        if ((unsigned)i < 8) entry = *table;
-        else entry = 0;
-        *(Block9 *)out = *(Block9 *)(entry + 4);
-        *(Block3 *)(out + 0x24) = *(Block3 *)(entry + 0x28);
-        *(short *)(out + 0x30) = *(short *)(state + 0x30);
-        *(f32 *)(out + 52) = *(f32 *)(state + 112);
-        *(f32 *)(out + 56) = *(f32 *)(state + 116);
-        *(f32 *)(out + 60) = *(f32 *)(state + 120);
-        if (!((f32)__fabs(PSVECDotProduct(state + 0x70, state + 0x70)) <= lbl_80558DC4[0])) {
-            f32 scale = one / (f32)fn_8002F234(PSVECDotProduct(state + 0x70, state + 0x70));
-            *(f32 *)(out + 64) = *(f32 *)(state + 112) * scale;
-            *(f32 *)(out + 68) = *(f32 *)(state + 116) * scale;
-            *(f32 *)(out + 72) = *(f32 *)(state + 120) * scale;
+        physics = *(u8 **)(carRecord + 8);
+        if ((unsigned)carIndex < 8) renderObject = *renderObjectSlot;
+        else renderObject = 0;
+        *(IdentityBlock *)snapshot = *(IdentityBlock *)(renderObject + 4);
+        *(PositionBlock *)(snapshot + 0x24) = *(PositionBlock *)(renderObject + 0x28);
+        *(short *)(snapshot + 0x30) = *(short *)(physics + 0x30);
+        *(f32 *)(snapshot + 0x34) = *(f32 *)(physics + 0x70);
+        *(f32 *)(snapshot + 0x38) = *(f32 *)(physics + 0x74);
+        *(f32 *)(snapshot + 0x3C) = *(f32 *)(physics + 0x78);
+        if (!((f32)__fabs(PSVECDotProduct(physics + 0x70, physics + 0x70)) <= FLOAT_EPSILON)) {
+            f32 invLength = one / (f32)fn_8002F234(PSVECDotProduct(physics + 0x70, physics + 0x70));
+            *(f32 *)(snapshot + 0x40) = *(f32 *)(physics + 0x70) * invLength;
+            *(f32 *)(snapshot + 0x44) = *(f32 *)(physics + 0x74) * invLength;
+            *(f32 *)(snapshot + 0x48) = *(f32 *)(physics + 0x78) * invLength;
         } else {
-            *(f32 *)(out + 64) = zero;
-            *(f32 *)(out + 68) = zero;
-            *(f32 *)(out + 72) = zero;
+            *(f32 *)(snapshot + 0x40) = zero;
+            *(f32 *)(snapshot + 0x44) = zero;
+            *(f32 *)(snapshot + 0x48) = zero;
         }
-        *(f32 *)(out + 76) = *(f32 *)(state + 724);
-        *(f32 *)(out + 80) = *(f32 *)(state + 100);
-        *(f32 *)(out + 84) = *(f32 *)(state + 56);
-        *(f32 *)(out + 88) = *(f32 *)(state + 652);
-        *(s32 *)(out + 92) = *(s32 *)(state + 664);
-        *(s32 *)(out + 96) = *(s32 *)(state + 668);
-        *(s32 *)(out + 100) = *(s32 *)(state + 728);
-        *(s32 *)(out + 0x6c) = *(s32 *)(entry + 0x3ec);
-        flags = obj[0] != 0;
-        src = state; dst = out; all = 1; j = 0;
+        *(f32 *)(snapshot + 0x4C) = *(f32 *)(physics + 0x2D4);
+        *(f32 *)(snapshot + 0x50) = *(f32 *)(physics + 0x64);
+        *(f32 *)(snapshot + 0x54) = *(f32 *)(physics + 0x38);
+        *(f32 *)(snapshot + 0x58) = *(f32 *)(physics + 0x28C);
+        *(s32 *)(snapshot + 0x5C) = *(s32 *)(physics + 0x298);
+        *(s32 *)(snapshot + 0x60) = *(s32 *)(physics + 0x29C);
+        *(s32 *)(snapshot + 0x64) = *(s32 *)(physics + 0x2D8);
+        *(s32 *)(snapshot + 0x6C) = *(s32 *)(renderObject + 0x3EC);
+        flags = carRecord[0] != 0;
+        wheelSrc = physics; wheelDst = snapshot; allWheelsGrounded = 1; wheel = 0;
         do {
-            *(f32 *)(dst + 112) = *(f32 *)(src + 124);
-            *(f32 *)(dst + 116) = *(f32 *)(src + 128);
-            *(f32 *)(dst + 120) = *(f32 *)(src + 132);
-            *(f32 *)(dst + 124) = *(f32 *)(src + 136);
-            *(f32 *)(dst + 128) = *(f32 *)(src + 140);
-            *(f32 *)(dst + 132) = *(f32 *)(src + 144);
-            *(f32 *)(dst + 136) = *(f32 *)(src + 148);
-            *(f32 *)(dst + 140) = *(f32 *)(src + 152);
-            *(f32 *)(dst + 144) = *(f32 *)(src + 156);
-            *(f32 *)(dst + 148) = *(f32 *)(src + 172);
-            *(f32 *)(dst + 152) = *(f32 *)(src + 180);
-            *(s32 *)(dst + 156) = *(s32 *)(src + 220);
-            *(u8 *)(dst + 160) = *(u8 *)(src + 224);
-            *(s32 *)(dst + 168) = *(s32 *)(src + 228);
-            *(f32 *)(dst + 0xa4) = fn_801EE0D0(entry, j);
-            all = all && src[0xe0];
-            j++; src += 0x6c; dst += 0x3c;
-        } while (j < 4);
-        if (all) flags |= 2;
-        { unsigned short bits = *(unsigned short *)(state + 0x6e);
-          if (bits & 0x40) flags |= 4;
-          if (bits & 0x20) flags |= 8;
+            *(f32 *)(wheelDst + 0x70) = *(f32 *)(wheelSrc + 0x7C);
+            *(f32 *)(wheelDst + 0x74) = *(f32 *)(wheelSrc + 0x80);
+            *(f32 *)(wheelDst + 0x78) = *(f32 *)(wheelSrc + 0x84);
+            *(f32 *)(wheelDst + 0x7C) = *(f32 *)(wheelSrc + 0x88);
+            *(f32 *)(wheelDst + 0x80) = *(f32 *)(wheelSrc + 0x8C);
+            *(f32 *)(wheelDst + 0x84) = *(f32 *)(wheelSrc + 0x90);
+            *(f32 *)(wheelDst + 0x88) = *(f32 *)(wheelSrc + 0x94);
+            *(f32 *)(wheelDst + 0x8C) = *(f32 *)(wheelSrc + 0x98);
+            *(f32 *)(wheelDst + 0x90) = *(f32 *)(wheelSrc + 0x9C);
+            *(f32 *)(wheelDst + 0x94) = *(f32 *)(wheelSrc + 0xAC);
+            *(f32 *)(wheelDst + 0x98) = *(f32 *)(wheelSrc + 0xB4);
+            *(s32 *)(wheelDst + 0x9C) = *(s32 *)(wheelSrc + 0xDC);
+            *(u8 *)(wheelDst + 0xA0) = *(u8 *)(wheelSrc + 0xE0);
+            *(s32 *)(wheelDst + 0xA8) = *(s32 *)(wheelSrc + 0xE4);
+            *(f32 *)(wheelDst + 0xA4) = fn_801EE0D0(renderObject, wheel);
+            allWheelsGrounded = allWheelsGrounded && wheelSrc[0xE0];
+            wheel++; wheelSrc += 0x6c; wheelDst += 0x3c;
+        } while (wheel < 4);
+        if (allWheelsGrounded) flags |= 2;
+        { unsigned short stateBits = *(unsigned short *)(physics + 0x6e);
+          if (stateBits & 0x40) flags |= 4;
+          if (stateBits & 0x20) flags |= 8;
         }
-        *(s32 *)(out + 0x68) = flags;
-        out += 0x160; table++; i++;
+        *(s32 *)(snapshot + 0x68) = flags;
+        snapshot += 0x160; renderObjectSlot++; carIndex++;
     }
+    #undef gCarRenderObjects
+    #undef gCarSnapshotPool
+    #undef FLOAT_EPSILON
+    #undef ONE_F
+    #undef ZERO_F
 }
 #pragma pop
 
