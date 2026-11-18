@@ -2096,10 +2096,6 @@ extern "C" void *fn_8014E3CC(void *object, s32 shouldFree) {
 }
 #pragma cplusplus off
 extern void *memset(void *, s32, s32);
-static inline void fn_8014E4BC_init(void *p) {
-    memset(p, 0x7A, 3);
-    ((u8 *)p)[3] = 0;
-}
 #pragma cplusplus on
 extern "C" void *memset(void *, s32, s32);
 extern "C" void *fn_8014E4BC(void *arg0) {
