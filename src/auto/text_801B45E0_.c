@@ -482,9 +482,7 @@ extern "C" void fn_801B50B4(void **arg0, int arg1) {
     float rate;
     int i;
 
-    if (state == 0)
-        return;
-    if (fn_801B4B44((char *)state) == 0)
+    if (state == 0 || !fn_801B4B44((char *)state))
         return;
 
     if (fn_801B49D4(lbl_8055E6D8, (void **)&buffer, (void **)&offset, &rate, lbl_8055E3C4) != 0) {
