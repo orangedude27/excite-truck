@@ -160,7 +160,7 @@ __declspec(section ".sdata") extern char lbl_8055A160[];
 __declspec(section ".sdata") extern char lbl_8055A168[];
 #pragma pop
 #pragma push
-#pragma scheduling 750
+#pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
