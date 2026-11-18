@@ -13390,7 +13390,6 @@ scan_early:
     }
          return rc;
  }
-#pragma scheduling reset
 
  extern u8 lbl_80316DC8[];
 
