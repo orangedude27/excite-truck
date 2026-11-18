@@ -7231,7 +7231,6 @@ void bta_hh_write_dev_act(void *p_dev, void *p_msg) {
     u16 status = 0;
     u8 saved_event = msg[8];
     u8 result;
-    s32 state;
 
     ((u8 *)&status)[1] = dev[0x16];
     result = HID_HostWriteDev(dev[0x16], msg[8], msg[9], *(u16 *)(msg + 0xC), msg[0xA], *(BT_HDR **)(msg + 0x10));
@@ -7248,30 +7247,27 @@ void bta_hh_write_dev_act(void *p_dev, void *p_msg) {
         return;
     }
 
-    state = msg[8];
-    if (state == 0xA)
-        goto state_special;
-    if (state >= 0xA)
-        goto state_log;
-    if (state == 1)
-        goto state_special;
-    if (state < 1)
-        goto state_log;
-    if (state < 4)
-        goto state_log;
-    goto state_store;
+    switch (msg[8]) {
+    case 7:
+    case 4:
+    case 5:
+    case 6:
+    case 8:
+    case 9:
+        *(u16 *)(dev + 0x10) = saved_event;
+        break;
+    case 10:
+    case 1:
+        if (msg[9] == 5)
+            dev[0x17] = 1;
+        break;
+    case 11:
+    default:
+        if (lbl_8055DC80 >= 5)
+            fn_80070954(0x504, lbl_8031555C, msg[8]);
+        break;
+    }
 
-state_store:
-    *(u16 *)(dev + 0x10) = saved_event;
-    goto state_done;
-state_special:
-    if (msg[9] == 5)
-        dev[0x17] = 1;
-    goto state_done;
-state_log:
-    if (lbl_8055DC80 >= 5)
-        ((void (*)(u32, void *))fn_80070954)(0x504, lbl_8031555C);
-state_done:
     if (msg[8] != 1) {
         fn_80071298((void *)0x17, (void *)(u32)dev[0x15], dev + 8);
         fn_80071264((void *)0x17, (void *)(u32)dev[0x15], dev + 8);
@@ -24779,9 +24775,9 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     s32 temp_r10;
     s32 temp_r11;
     s32 temp_r8_3;
-    u8 *temp_r6;
-    unsigned int frame;
+    u8 *frame;
     u8 *temp_r7;
+    u8 *temp_r6;
     u16 temp_r8;
     u8 temp_r3;
     u8 temp_r3_2;
@@ -24802,7 +24798,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     offset = (*(u16 *)((u8 *)(arg2) + 4));
     temp_r6 = arg2 + offset;
     temp_r7 = temp_r6 + 8;
-    frame = (unsigned int)temp_r7;
+    frame = temp_r7;
     temp_r8 = (*(u16 *)((u8 *)(arg2) + 2));
     if (temp_r8 < 3U) {
         if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
@@ -24849,7 +24845,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     switch ((s32) temp_r9_2) {
     case 0x2F:
         temp_r6_3 = (*(u8 *)((u8 *)(arg0) + 0x6D));
-        if ((((s32) temp_r6_3 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || (((s32) temp_r6_3 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3 == 0) == 0)) && ((temp_r3 < 2U) || (temp_r3 > 0x3DU))) || (fn_80095084(3, (u8 *)frame, fcs) == 0)) {
+        if ((((s32) temp_r6_3 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || (((s32) temp_r6_3 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3 == 0) == 0)) && ((temp_r3 < 2U) || (temp_r3 > 0x3DU))) || (fn_80095084(3, frame, fcs) == 0)) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, messages + 0x24);
             }
@@ -24858,7 +24854,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
         return 0;
     case 0x63:
         temp_r6_4 = (*(u8 *)((u8 *)(arg0) + 0x6D));
-        if ((((s32) temp_r6_4 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || (((s32) temp_r6_4 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3_2 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_2 == 0) == 0)) && ((temp_r3_2 < 2U) || (temp_r3_2 > 0x3DU))) || (fn_80095084(3, (u8 *)frame, fcs) == 0)) {
+        if ((((s32) temp_r6_4 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || (((s32) temp_r6_4 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3_2 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_2 == 0) == 0)) && ((temp_r3_2 < 2U) || (temp_r3_2 > 0x3DU))) || (fn_80095084(3, frame, fcs) == 0)) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, lbl_80559090);
             }
@@ -24867,7 +24863,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
         return 1;
     case 0xF:
         temp_r6_5 = (*(u8 *)((u8 *)(arg0) + 0x6D));
-        if ((((s32) temp_r6_5 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || (((s32) temp_r6_5 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || ((u16) var_r8 != 0) || ((temp_r3_3 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_3 == 0) == 0)) && ((temp_r3_3 < 2U) || (temp_r3_3 > 0x3DU))) || (fn_80095084(3, (u8 *)frame, fcs) == 0)) {
+        if ((((s32) temp_r6_5 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || (((s32) temp_r6_5 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || ((u16) var_r8 != 0) || ((temp_r3_3 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_3 == 0) == 0)) && ((temp_r3_3 < 2U) || (temp_r3_3 > 0x3DU))) || (fn_80095084(3, frame, fcs) == 0)) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, lbl_80559098);
             }
@@ -24876,7 +24872,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
         return 2;
     case 0x43:
         temp_r6_6 = (*(u8 *)((u8 *)(arg0) + 0x6D));
-        if ((((s32) temp_r6_6 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || (((s32) temp_r6_6 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3_4 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_4 == 0) == 0)) && ((temp_r3_4 < 2U) || (temp_r3_4 > 0x3DU))) || (fn_80095084(3, (u8 *)frame, fcs) == 0)) {
+        if ((((s32) temp_r6_6 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || (((s32) temp_r6_6 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || ((s32) (*(u8 *)((u8 *)(arg1) + 4)) == 0) || ((u16) var_r8 != 0) || ((temp_r3_4 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_4 == 0) == 0)) && ((temp_r3_4 < 2U) || (temp_r3_4 > 0x3DU))) || (fn_80095084(3, frame, fcs) == 0)) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, messages + 0x30);
             }
@@ -24891,7 +24887,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
             }
             return 0x32;
         }
-        if (fn_80095084(2, (u8 *)frame, fcs) == 0) {
+        if (fn_80095084(2, frame, fcs) == 0) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, messages + 0x54);
             }
