@@ -2358,6 +2358,19 @@ extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage
     return 0;
 }
 
+/* VFiPFCACHE_DoReadPage: bring the cache page covering `sector` into one of the
+ * volume's page lists (`listAddr` is the address of the list head: volume+0x1630
+ * for the FAT pages, volume+0x1634 for the file data pages) and hand it out
+ * through `outPageAddr`.  fn_800A7C20 finds or reserves the page and reports in
+ * `cached` whether it was already in memory; only a page that had to be brought
+ * in is read here, as one run of sectors with fn_800A586C.  A read that fails,
+ * or one that comes back short without stopping at the end of the volume, drops
+ * the page again -- IN_USE and CHANGED cleared, changed range cleared, empty run
+ * (first = -1), no owner, and off the list: either the head moves to its
+ * successor, or the page is unlinked and re-linked in front of the head -- and
+ * the read answers with its own error or VF_ERR_SHORT_TRANSFER.  A page that was
+ * read whole is no longer changed, and is claimed for the file the volume is
+ * working for (VF_VOL_PAGE_OWNER) when `claim` asks for an owner. */
 extern "C" s32 VFiPFCACHE_DoReadPage(void *volume, s32 listAddr, s32 sector, s32 outPageAddr, s32 claim) {
     u32 sectorsRead;
     s32 cached;
@@ -2369,63 +2382,63 @@ extern "C" s32 VFiPFCACHE_DoReadPage(void *volume, s32 listAddr, s32 sector, s32
         result = fn_800A586C(volume, (s32)VF_PAGE_BUFFER(*(void **)outPageAddr), (s32)VF_PAGE_FIRST(*(void **)outPageAddr), (s32)VF_PAGE_SECTORS(*(void **)outPageAddr), (s32)&sectorsRead);
         if (result != 0) {
             void *page = *(void **)outPageAddr;
-            void *h1;
-            void *h2;
+            void *head;
+            void *oldHead;
             VF_PAGE_FLAGS(page) = (u16)(VF_PAGE_FLAGS(page) & ~(VF_PAGE_IN_USE | VF_PAGE_CHANGED));
             VF_PAGE_CHANGED_FROM(page) = 0;
             VF_PAGE_CHANGED_TO(page) = 0;
             VF_PAGE_FIRST(page) = -1;
             VF_PAGE_OWNER(page) = 0;
-            h1 = *list;
-            if (page == h1) {
+            head = *list;
+            if (page == head) {
                 *list = VF_PAGE_NEXT(page);
             } else {
-                h2 = *list;
-                if (page != VF_PAGE_PREV(h2)) {
+                oldHead = *list;
+                if (page != VF_PAGE_PREV(oldHead)) {
                     VF_PAGE_NEXT(VF_PAGE_PREV(page)) = VF_PAGE_NEXT(page);
                     VF_PAGE_PREV(VF_PAGE_NEXT(page)) = VF_PAGE_PREV(page);
-                    h1 = *list;
-                    VF_PAGE_NEXT(page) = h1;
-                    h2 = *list;
-                    VF_PAGE_PREV(page) = VF_PAGE_PREV(h2);
-                    VF_PAGE_PREV(h1) = page;
+                    head = *list;
+                    VF_PAGE_NEXT(page) = head;
+                    oldHead = *list;
+                    VF_PAGE_PREV(page) = VF_PAGE_PREV(oldHead);
+                    VF_PAGE_PREV(head) = page;
                     VF_PAGE_NEXT(VF_PAGE_PREV(page)) = page;
                 }
             }
             return result;
         }
         {
-            void *pg = *(void **)outPageAddr;
-            if (sectorsRead != VF_PAGE_SECTORS(pg) && VF_VOL_TOTAL_SECTORS(volume) != (u32)(VF_PAGE_FIRST(pg) + (s32)sectorsRead)) {
-                void *h1;
-                void *h2;
-                VF_PAGE_FLAGS(pg) = (u16)(VF_PAGE_FLAGS(pg) & ~(VF_PAGE_IN_USE | VF_PAGE_CHANGED));
-                VF_PAGE_CHANGED_FROM(pg) = 0;
-                VF_PAGE_CHANGED_TO(pg) = 0;
-                VF_PAGE_FIRST(pg) = -1;
-                VF_PAGE_OWNER(pg) = 0;
-                h1 = *list;
-                if (pg == h1) {
-                    *list = VF_PAGE_NEXT(pg);
+            void *page = *(void **)outPageAddr;
+            if (sectorsRead != VF_PAGE_SECTORS(page) && VF_VOL_TOTAL_SECTORS(volume) != (u32)(VF_PAGE_FIRST(page) + (s32)sectorsRead)) {
+                void *head;
+                void *oldHead;
+                VF_PAGE_FLAGS(page) = (u16)(VF_PAGE_FLAGS(page) & ~(VF_PAGE_IN_USE | VF_PAGE_CHANGED));
+                VF_PAGE_CHANGED_FROM(page) = 0;
+                VF_PAGE_CHANGED_TO(page) = 0;
+                VF_PAGE_FIRST(page) = -1;
+                VF_PAGE_OWNER(page) = 0;
+                head = *list;
+                if (page == head) {
+                    *list = VF_PAGE_NEXT(page);
                 } else {
-                    h2 = *list;
-                    if (pg != VF_PAGE_PREV(h2)) {
-                        VF_PAGE_NEXT(VF_PAGE_PREV(pg)) = VF_PAGE_NEXT(pg);
-                        VF_PAGE_PREV(VF_PAGE_NEXT(pg)) = VF_PAGE_PREV(pg);
-                        h1 = *list;
-                        VF_PAGE_NEXT(pg) = h1;
-                        h2 = *list;
-                        VF_PAGE_PREV(pg) = VF_PAGE_PREV(h2);
-                        VF_PAGE_PREV(h1) = pg;
-                        VF_PAGE_NEXT(VF_PAGE_PREV(pg)) = pg;
+                    oldHead = *list;
+                    if (page != VF_PAGE_PREV(oldHead)) {
+                        VF_PAGE_NEXT(VF_PAGE_PREV(page)) = VF_PAGE_NEXT(page);
+                        VF_PAGE_PREV(VF_PAGE_NEXT(page)) = VF_PAGE_PREV(page);
+                        head = *list;
+                        VF_PAGE_NEXT(page) = head;
+                        oldHead = *list;
+                        VF_PAGE_PREV(page) = VF_PAGE_PREV(oldHead);
+                        VF_PAGE_PREV(head) = page;
+                        VF_PAGE_NEXT(VF_PAGE_PREV(page)) = page;
                     }
                 }
                 return VF_ERR_SHORT_TRANSFER;
             }
         }
         {
-            void *pg = *(void **)outPageAddr;
-            VF_PAGE_FLAGS(pg) = (u16)(VF_PAGE_FLAGS(pg) & ~VF_PAGE_CHANGED);
+            void *page = *(void **)outPageAddr;
+            VF_PAGE_FLAGS(page) = (u16)(VF_PAGE_FLAGS(page) & ~VF_PAGE_CHANGED);
             VF_PAGE_CHANGED_FROM(*(void **)outPageAddr) = 0;
             VF_PAGE_CHANGED_TO(*(void **)outPageAddr) = 0;
             if (claim != 0) {
