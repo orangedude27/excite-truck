@@ -7,5 +7,5 @@ extern float lbl_80564E4C;
 int fn_8000D838(int *);
 void fn_802C10E0(void) {
     fn_8000D838(&lbl_8055FB08);
-    setResult(lbl_80564E4C);
+    lbl_8055FB10 = lbl_80564E4C;
 }
