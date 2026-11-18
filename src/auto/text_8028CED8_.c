@@ -132,10 +132,10 @@ struct Obj8028D084 {
 #pragma cplusplus on
 extern "C" void fn_8028D084(void *arg0, void *arg1) {
     extern char lbl_8055C8C8[8];
-    char *base = lbl_80348C50;
+    char *base = (char *)&lbl_80348C50;
     int value;
     *(int *)arg0 = fn_802CAC28(((Obj8028D084 *)arg1)->f5(lbl_8055C8C8), 0);
-    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9((char *)&lbl_80348C50);
+    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9(((struct Tbl8028D084 *)base)->f);
     *(float *)((char *)arg0 + 8) = ((Obj8028D084 *)arg1)->f9(base + 0xC);
     *(float *)((char *)arg0 + 0xC) = ((Obj8028D084 *)arg1)->f9(base + 0x18);
     value = ((Obj8028D084 *)arg1)->f7(base + 0x24);
