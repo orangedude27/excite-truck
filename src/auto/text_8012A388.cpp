@@ -1853,6 +1853,8 @@ extern "C" void fn_8012D024_old(void *arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma pop
+#pragma push
+#pragma scheduling 750
 extern "C" void fn_8012D1A8(s32 arg0) {
     u8 *self = (u8 *)arg0;
     s32 off;
@@ -2899,7 +2901,7 @@ extern "C" const char lbl_8032AD88[];
 #pragma scheduling invalid_target
 extern "C" void fn_8012E81C(s32 arg0) {
     #pragma opt_common_subs off
-    #pragma opt_propagation off
+    #pragma opt_dead_assignments off
     nw4r::ef::Effect *effect = lbl_8055E014;
     s32 limit;
     void *entry;
