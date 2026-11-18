@@ -57,6 +57,30 @@ struct F801B50B4 {
     virtual void f13() = 0;
     virtual int f14() = 0;
 };
+/* One of the sound objects of the global registered-object list (lbl_8055E434,
+ * count lbl_8055E438; fn_801785A4 appends to it).  While a replay is playing,
+ * fn_801B50B4 drives every entry through its last two slots each frame: 0x40,
+ * the isValid() that fn_801785A4 calls too, says whether the object has
+ * something to write, and 0x30 writes its audio for the frame from the current
+ * and the next replay frame's recorded data, reporting through its two int*
+ * arguments how many bytes of each stream it used. */
+struct ReplaySoundObject {
+    virtual void f0() = 0;
+    virtual void f1() = 0;
+    virtual void f2() = 0;
+    virtual void f3() = 0;
+    virtual void f4() = 0;
+    virtual void f5() = 0;
+    virtual void f6() = 0;
+    virtual void f7() = 0;
+    virtual void f8() = 0;
+    virtual void f9() = 0;
+    virtual void writeAudio(unsigned char *, int, int *, int *, float) = 0; /* 0x30 */
+    virtual void f11() = 0;
+    virtual void f12() = 0;
+    virtual void f13() = 0;
+    virtual int isValid() = 0; /* 0x40 */
+};
 }
 #pragma cplusplus off
 #pragma push
