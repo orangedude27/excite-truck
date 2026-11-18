@@ -3139,8 +3139,8 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
     Vec boxDelta;
     Vec local;
     Vec corner;
-    Vec out;
     Vec q;
+    Vec out;
     Vec diff;
     Vec center;
     Vec polyPoint;
