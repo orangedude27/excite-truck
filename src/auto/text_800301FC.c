@@ -213,7 +213,6 @@ extern s32 lbl_8055D6D0, lbl_8055D6D4;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma opt_common_subs off
 void TRKInitializeNub(void) {
     s64 now = 0;
     s32 state = 0;
