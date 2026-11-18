@@ -1120,6 +1120,7 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
 extern "C" void fn_802BA560(void *);
 extern "C" char lbl_8034A9D0[];
 extern "C" char lbl_8034A9E4[];
+#pragma scheduling on
 extern "C" void fn_802BA348(void) {
     struct Dummy { virtual void v0(); virtual void *v1(int); };
     struct {
@@ -1130,8 +1131,8 @@ extern "C" void fn_802BA348(void) {
         int cap;
         void *buf[4];
     } s;
-    void *first, *cur, *p, *obj, *entry, *buffer, *items;
-    int i, k, total, off, j, n;
+    void *first, *cur, *p, *off, *entry, *buffer, *items;
+    int i, k, total, obj, j, n;
     s.name = lbl_8034A9D0;
     s.start = fn_802E2C20(lbl_8034A9D0);
     s.data = s.buf;
@@ -1149,13 +1150,13 @@ extern "C" void fn_802BA348(void) {
         if (cur == first || cur == 0) break;
     }
     total = 0;
-    for (k = 0, off = 0; k < s.count; off += 4, k++) {
-        obj = *(void **)((char *)s.data + off);
-        p = fn_80138B4C(obj, 0);
+    for (k = 0, off = 0; k < s.count; off = (void *)((int)off + 4), k++) {
+        obj = *(int *)((char *)s.data + (int)off);
+        p = fn_80138B4C((void *)obj, 0);
         if (p != 0) {
             do {
                 total += *(int *)((char *)p + 8);
-                p = fn_80138B4C(obj, p);
+                p = fn_80138B4C((void *)obj, p);
             } while (p != 0);
         }
     }
@@ -1169,8 +1170,8 @@ extern "C" void fn_802BA348(void) {
         *(void **)((char *)entry + 0xC) = items;
     }
     lbl_8055FA78 = entry;
-    for (j = 0, off = 0; j < s.count; off += 4, j++)
-        fn_802BA010(*(void **)((char *)s.data + off), j);
+    for (j = 0, off = 0; j < s.count; off = (void *)((int)off + 4), j++)
+        fn_802BA010(*(void **)((char *)s.data + (int)off), j);
     s.data = 0;
     s.count = 0;
     s.cap = 0;
