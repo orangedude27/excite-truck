@@ -3162,9 +3162,13 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
         u8 *otherOwner = *(u8 **)(other + 4);
         if (otherOwner != 0) {
             u8 *selfOwner = *(u8 **)(self + 4);
-            if (selfOwner != 0 && *(f32 *)(otherOwner + 0xD4) > *(f32 *)(selfOwner + 0xD4)) {
-                ((Fn801A401CDispatch *)other)->Call(self);
-                return;
+            if (selfOwner != 0) {
+                f32 otherDist = *(f32 *)(otherOwner + 0xD4);
+                f32 selfDist = *(f32 *)(selfOwner + 0xD4);
+                if (selfDist < otherDist) {
+                    ((Fn801A401CDispatch *)other)->Call(self);
+                    return;
+                }
             }
         }
         f32 *a = *(f32 **)(self + 0xC);
