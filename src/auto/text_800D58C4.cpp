@@ -2552,6 +2552,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           s32 *var_r21_3;
                           s32 *var_r22_2;
                                 register s32 var_r26;
+                 register s32 var_r21;
                             register const char *data = lbl_8031F990;
              register s32 var_r21_2;
                             s32 temp_cr0_eq;
@@ -2630,7 +2631,6 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                             register u8 *var_r22;
                   register u32 var_r27;
              Fn800DA094TexObj *var_r28;
-                 register s32 var_r21;
 
                           var_r26 = 1;
                           var_r21 = 0;
