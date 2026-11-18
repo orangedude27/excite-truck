@@ -4480,6 +4480,7 @@ extern "C" s32 fn_8014444C(void) { return 0; }
 extern "C" s32 fn_80144454(void) { return 0; }
 
 extern "C" s32 fn_8013D1F0(s32);
+static inline s32 fn_8014445C_sub(s32 mask, s32 half) { return half - mask; }
 #pragma scheduling invalid_target
 extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
     s32 v = fn_8013D1F0(arg1) ^ 0xA;
