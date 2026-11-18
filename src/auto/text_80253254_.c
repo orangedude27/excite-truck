@@ -38,8 +38,8 @@ extern char lbl_803449D4[];
 
 #pragma always_inline on
 static inline void removeDeadEntry(void) {
-    s32 index;
     void **cursor;
+    s32 index;
     cursor = lbl_80498E08;
     index = 0;
     while (index < lbl_8055F33C) {
