@@ -689,7 +689,7 @@ found_scan:
     return arg0;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_8027F958(int *selection, void *collection) {
     struct Fn8027F958State {
         char pad[0x50];
