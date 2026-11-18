@@ -5138,6 +5138,7 @@ finish:
     if (callback != NULL) ((void (*)(s32, s32))callback)(channel, status);
     return status;
 }
+#pragma scheduling reset
 
 extern const char lbl_803122F4[];
 void fn_80063324(s32 chan, WPADGameInfo *pCommand) {
