@@ -75,6 +75,7 @@ extern f32 lbl_80562BC0;
 extern f32 lbl_80562BC4;
 extern u8 lbl_803394A4[];
 extern void *lbl_8055E9C8;
+#pragma scheduling 750
 void fn_801DDF0C(void) {
     void *sp8;
     u32 value;
