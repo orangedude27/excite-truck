@@ -2253,7 +2253,6 @@ extern "C" s32 fn_8022D850(void *, s32, s32, s32 *);
 extern f32 lbl_805634FC;
   #pragma push
  #pragma scheduling invalid_target
- #pragma opt_propagation off
  extern "C" void fn_8021BC20(void *arg0, void *arg1) {
     s32 sp18;
     f32 sp14;
