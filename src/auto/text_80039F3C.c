@@ -218,31 +218,30 @@ int doTransactionCallback(int arg0, void *arg1) {
     return 0;
 }
 
+#pragma scheduling 750
 int doPrepareCoverRegisterCallback(int arg0, void *arg1) {
     int result = arg0;
-    int (*callback)(int);
 
     lbl_8055D8E0 = 0;
     ((unsigned int *)lbl_8037B8A0)[1] = *(unsigned int *)&lbl_8037B8C0;
-    if (((unsigned int)*(unsigned int *)((char *)arg1 + 0xC) + 0x01150000) != 0xFEEBDAED) {
+    if (*(unsigned int *)((char *)arg1 + 0xC) != 0xFEEBDAED) {
         OSReport(lbl_80302848);
         *(unsigned int *)((char *)arg1 + 0xC) = 0xFEEBDAED;
     } else {
-        callback = *(int (**)(int))arg1;
-        if (callback != 0) {
+        if (*(unsigned int *)arg1 != 0) {
             lbl_8055D8E1 = 1;
             if (lbl_8055D900 == 1) {
                 lbl_8055D900 = 0;
                 result |= 8;
             }
-            callback(result);
+            ((int (*)(int))*(unsigned int *)arg1)(result);
             lbl_8055D8E1 = 0;
         }
     }
     *(unsigned char *)((char *)arg1 + 8) = 0;
     return 0;
 }
-
+#pragma scheduling reset
 typedef struct DVDLowContext {
     void *callback;
     unsigned int WORD_0x4;
@@ -363,6 +362,9 @@ static inline void initDvdContexts(void) {
 }
 #pragma scheduling 750
 
+#pragma push
+#pragma scheduling 750
+#pragma opt_common_subs off
 int DVDLowInit(void) {
     const char *msg = lbl_80302848;
     int result;
@@ -382,15 +384,15 @@ int DVDLowInit(void) {
 
         if (!lbl_8055D8EC) {
             DVDLowContext *base = (DVDLowContext *)lbl_8037B820;
-            int i;
-            unsigned int magic = 0xFEEBDAEDu;
-            for (i = 0; i < 4; i++) {
+            int i = 0;
+            do {
                 base[i].callback = (void *)0;
                 base[i].WORD_0x4 = 0u;
                 base[i].inUse = 0;
-                base[i].magic = magic;
+                base[i].magic = 0xFEEBDAEDu;
                 base[i].id = i;
-            }
+                i++;
+            } while (i < 4);
             lbl_8055D8E8 = 0;
             lbl_8055D8EC = 1;
         }
@@ -419,11 +421,10 @@ int DVDLowInit(void) {
         return 0;
     }
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 int fn_8003A834(void *arg0, void *arg1) {
-    unsigned int one = 1;
     unsigned char *base = lbl_8037B820;
+    unsigned int one = 1;
     const char *msg = lbl_80302848;
     void *request = arg0;
     int slot = lbl_8055D8E8;
@@ -610,9 +611,7 @@ int fn_8003AD88(void *arg0, int arg1, int arg2, unsigned int arg3) {
     unsigned int one = 1;
     const char *msg = lbl_80302848;
     int slot = lbl_8055D8E8;
-    int offset = slot * 0x20;
-    unsigned char *base = lbl_8037B820;
-    unsigned char *entry = base + offset;
+    unsigned char *entry = (unsigned char *)&((DVDLowContext *)lbl_8037B820)[slot];
     unsigned int flag = entry[8];
     int index;
     unsigned char *context;
@@ -629,7 +628,7 @@ int fn_8003AD88(void *arg0, int arg1, int arg2, unsigned int arg3) {
         for (;;) {}
     }
 
-    ((unsigned int *)base)[slot * 8] = arg3;
+    ((unsigned int *)lbl_8037B820)[slot * 8] = arg3;
     index = slot + 1;
     *(unsigned int *)(entry + 4) = one;
     entry[8] = one;
@@ -639,7 +638,7 @@ int fn_8003AD88(void *arg0, int arg1, int arg2, unsigned int arg3) {
     index = lbl_8055D8E4 + 1;
     lbl_8055D8F4 = arg1;
     lbl_8055D8E4 = index;
-    context = base + slot * 0x20;
+    context = lbl_8037B820 + slot * 0x20;
     if (index >= 4) { index = 0; lbl_8055D8E4 = 0; }
 
     *(unsigned char *)(lbl_8055D8FC + index * 0x20) = 0x8D;
@@ -707,10 +706,12 @@ int fn_8003AF1C(int arg0, int arg1, int arg2) {
 }
 #pragma opt_propagation off
 int fn_8003B0B0(void *arg0, void *arg1) {
+    #pragma scheduling 750
     const char *msg = lbl_80302848;
-    unsigned char *base = lbl_8037B820;
     int slot = lbl_8055D8E8;
-    unsigned char *entry = base + slot * sizeof(DVDLowContext);
+    unsigned char *base = lbl_8037B820;
+    int offset = slot * sizeof(DVDLowContext);
+    unsigned char *entry = base + offset;
     unsigned char *callbackEntry;
     unsigned int one = 1;
     unsigned int flag = entry[8];
@@ -734,7 +735,7 @@ int fn_8003B0B0(void *arg0, void *arg1) {
     next = slot + 1;
     lbl_8055D8E8 = next;
     if (next >= 4) lbl_8055D8E8 = 0;
-    callbackEntry = (unsigned char *)lbl_8037B820 + slot * sizeof(DVDLowContext);
+    callbackEntry = (unsigned char *)lbl_8037B820 + offset;
     index = lbl_8055D8E4 + 1;
     lbl_8055D8E4 = index;
     if (index >= 4) {
@@ -753,20 +754,15 @@ int fn_8003B0B0(void *arg0, void *arg1) {
 #pragma opt_propagation reset
 int fn_8003B218(void *arg0) {
     unsigned char *p;
-    unsigned char *base;
-    const char *msg;
+    unsigned char *base = lbl_8037B820;
+    const char *msg = lbl_80302848;
     int offset;
     unsigned int flag;
-    int slot;
-    unsigned int one;
+    int slot = lbl_8055D8E8;
+    unsigned int one = 1;
     unsigned char *entry;
     int index;
     int result;
-
-    base = lbl_8037B820;
-    msg = lbl_80302848;
-    one = 1;
-    slot = lbl_8055D8E8;
     offset = slot << 5;
     lbl_8055D8E0 = one;
     p = base + offset;
@@ -865,105 +861,131 @@ int fn_8003B38C(void *arg0) {
 }
 #pragma scheduling reset
 #pragma opt_propagation off
-int fn_8003B508(int arg0, int arg1, int arg2) {
-    const char *msg = lbl_80302848;
-    unsigned char *base = lbl_8037B820;
-    int slot = lbl_8055D8E8;
-    int offset = slot * 0x20;
-    unsigned char *entry = base + offset;
-    unsigned char *callbackEntry;
-    unsigned int one = 1;
-    unsigned int flag = entry[8];
-    int index;
-    int result;
+int fn_8003B508(int arg0, int arg1, int arg2)
+{
+  const char *msg = lbl_80302848;
+  unsigned char *base = lbl_8037B820;
+  int slot = lbl_8055D8E8;
+  int offset = slot * 0x20;
+  unsigned char *entry;
+  unsigned char *callbackEntry;
+  unsigned int one = 1;
+  unsigned int flag = (base + offset)[8];
+  int index;
+  int result;
+  lbl_8055D8E0 = one;
+  if ((((-flag) | flag) >> 31) == 1U)
+  {
+    OSReport(msg + 0x218, slot);
+    OSReport(msg + 0x250);
+    for (;;)
+    {
+    }
 
-    lbl_8055D8E0 = one;
-    if (((-flag | flag) >> 31) == 1U) {
-        OSReport(msg + 0x218, slot);
-        OSReport(msg + 0x250);
-        for (;;) {}
+  }
+  if (((*((unsigned int *) ((base + offset) + 0xC))) + 0x01150000U) != 0xDAEDU)
+  {
+    OSReport(msg + 0x280);
+    for (;;)
+    {
     }
-    if ((*(unsigned int *)(entry + 0xC) + 0x01150000U) != 0xDAEDU) {
-        OSReport(msg + 0x280);
-        for (;;) {}
-    }
-    ((unsigned int *)base)[slot * 8] = arg2;
-    index = slot + 1;
-    *(unsigned int *)(entry + 4) = one;
-    entry[8] = one;
-    lbl_8055D8E8 = index;
-    if (index >= 4) lbl_8055D8E8 = 0;
-    callbackEntry = (unsigned char *)lbl_8037B820 + slot * 0x20;
-    index = lbl_8055D8E4 + 1;
-    lbl_8055D8E4 = index;
-    if (index >= 4) {
-        index = 0;
-        lbl_8055D8E4 = 0;
-    }
-    lbl_8055D8FC[index * 0x20] = 0xE4;
-    *(int *)(lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20 + 4) = arg0;
-    *(int *)(lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20 + 8) = arg1;
-    result = IOS_IoctlAsync(lbl_80558E18, 0xE4,
-                            lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20, 0x20,
-                            lbl_8037B8A0, 0x20,
-                            (void (*)(int, void *))doTransactionCallback, callbackEntry);
-    if (result != 0) {
-        OSReport(msg + 0x618, result);
-        callbackEntry[8] = 0;
-        return 0;
-    }
-    return 1;
-}
-int fn_8003B69C(int arg0, void *arg1) {
-    const char *msg = lbl_80302848;
-    unsigned char *base = lbl_8037B820;
-    int slot = lbl_8055D8E8;
-    unsigned char *entry;
-    unsigned char *callbackEntry;
-    unsigned int busy;
-    int next;
-    int index;
-    int result;
-    lbl_8055D8E0 = 1;
-    entry = base + slot * 0x20;
-    busy = entry[8];
-    if (((busy | (0U - busy)) >> 31) == 1) {
-        OSReport(msg + 0x218, slot);
-        OSReport(msg + 0x250);
-        for (;;) {}
-    }
-    if ((*(unsigned int *)(entry + 0xC) + 0x01150000U) != 0xDAEDU) {
-        OSReport(msg + 0x280);
-        for (;;) {}
-    }
-    ((unsigned int *)base)[slot * 8] = (unsigned int)arg1;
-    *(unsigned int *)(entry + 4) = 1;
-    entry[8] = 1;
-    next = slot + 1;
-    lbl_8055D8E8 = next;
-    if (next >= 4) {
-        next = 0;
-        lbl_8055D8E8 = 0;
-    }
-    index = lbl_8055D8E4 + 1;
-    lbl_8055D8E4 = index;
-    callbackEntry = base + slot * 0x20;
-    if (index >= 4) {
-        index = 0;
-        lbl_8055D8E4 = 0;
-    }
-    lbl_8055D8FC[index * 0x20] = 0xDD;
-    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = (unsigned int)((arg0 >> 16) & 3);
-    result = IOS_IoctlAsync(lbl_80558E18, 0xDD, lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20, 0, 0, (void (*)(int, void *))doTransactionCallback, callbackEntry);
-    if (result != 0) {
-        OSReport(msg + 0x9CC, result);
-        callbackEntry[8] = 0;
-        return 0;
-    }
-    return 1;
-}
 
-#pragma scheduling invalid_target
+  }
+  ((unsigned int *) base)[slot * 8] = arg2;
+  index = slot + 1;
+  *((unsigned int *) ((base + offset) + 4)) = one;
+  (base + offset)[8] = one;
+  lbl_8055D8E8 = index;
+  if (index >= 4)
+  {
+    lbl_8055D8E8 = 0;
+  }
+  callbackEntry = ((unsigned char *) lbl_8037B820) + (slot * 0x20);
+  index = lbl_8055D8E4 + 1;
+  lbl_8055D8E4 = index;
+  if (index >= 4)
+  {
+    index = 0;
+    lbl_8055D8E4 = 0;
+  }
+  lbl_8055D8FC[index * 0x20] = 0xE4;
+  *((int *) ((lbl_8055D8FC + ((*((volatile unsigned int *) (&lbl_8055D8E4))) * 0x20)) + 4)) = arg0;
+  *((int *) ((lbl_8055D8FC + ((*((volatile unsigned int *) (&lbl_8055D8E4))) * 0x20)) + 8)) = arg1;
+  result = IOS_IoctlAsync(lbl_80558E18, 0xE4, lbl_8055D8FC + ((*((volatile unsigned int *) (&lbl_8055D8E4))) * 0x20), 0x20, lbl_8037B8A0, 0x20, (void (*)(int, void *)) doTransactionCallback, callbackEntry);
+  if (result != 0)
+  {
+    OSReport(msg + 0x618, result);
+    callbackEntry[8] = 0;
+    return 0;
+  }
+  return 1;
+}
+#pragma opt_propagation off
+int fn_8003B69C(int arg0, void *arg1)
+{
+  const char *new_var;
+  unsigned char **new_var2;
+  const char *msg = lbl_80302848;
+  unsigned char *base = lbl_8037B820;
+  unsigned int slot = lbl_8055D8E8;
+  int offset = slot * 0x20;
+  unsigned char *entry = base + offset;
+  unsigned char *callbackEntry;
+  unsigned int one = 1;
+  unsigned int flag = entry[8];
+  int next;
+  int index;
+  int result;
+  lbl_8055D8E0 = one;
+  if ((((-flag) | flag) >> 31) == 1U)
+  {
+    OSReport(msg + 0x218, slot);
+    OSReport(msg + 0x250);
+    for (;;)
+    {
+    }
+
+  }
+  if (((*((unsigned int *) (entry + 0xC))) + 0x01150000U) != 0xDAEDU)
+  {
+    OSReport(msg + 0x280);
+    for (;;)
+    {
+      if (1)
+      {
+      }
+    }
+
+  }
+  ((unsigned int *) base)[slot * 8] = (unsigned int) arg1;
+  new_var2 = &entry;
+  *((unsigned int *) ((*new_var2) + 4)) = one;
+  entry[8] = one;
+  next = slot + 1;
+  lbl_8055D8E8 = next;
+  if (next >= 4)
+  {
+    lbl_8055D8E8 = 0;
+  }
+  callbackEntry = ((unsigned char *) lbl_8037B820) + (slot * 0x20);
+  index = lbl_8055D8E4 + 1;
+  lbl_8055D8E4 = index;
+  if (index >= 4)
+  {
+    index = 0;
+    lbl_8055D8E4 = 0;
+  }
+  lbl_8055D8FC[index * 0x20] = 0xDD;
+  *((unsigned int *) ((lbl_8055D8FC + (lbl_8055D8E4 * 0x20)) + 4)) = (unsigned int) ((arg0 >> 16) & 3);
+  result = IOS_IoctlAsync(lbl_80558E18, 0xDD, lbl_8055D8FC + (lbl_8055D8E4 * 0x20), 0x20, 0, slot * 0, (void (*)(int, void *)) doTransactionCallback, callbackEntry);
+  if (result != 0)
+  {
+    OSReport(new_var = msg + 0x9CC, result);
+    callbackEntry[8] = 0;
+    return 0;
+  }
+  return 1;
+}
 int fn_8003B81C(void *arg0, int arg1, int arg2, void (*arg3)(int, void *)) {
     DVDLowContext *base;
     int slot;
