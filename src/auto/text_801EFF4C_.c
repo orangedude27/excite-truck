@@ -1080,7 +1080,7 @@ int fn_801F196C(int index, int base) {
 
 extern char lbl_8033A5B0[];
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 int fn_801F1978(int arg) {
     int result = -1;
     switch (arg & ~0x10) {
