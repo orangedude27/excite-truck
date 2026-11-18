@@ -720,9 +720,10 @@ int fn_8027F958(int *selection, void *collection) {
     register float defaultScale;
     register void *widgetVtable;
     register char *src, *dst;
-    register int i, j, index, remaining, result, mode, count, reported;
-    register float *value;
-    object = ((GetItem)(*(void ***)collection)[4])(collection, 0);
+         register int i, j, index, remaining, result, mode, count, reported;
+     register float *value;
+#define lbl_804B3048 (((struct Fn8027F958State *)state)->list)
+     object = ((GetItem)(*(void ***)collection)[4])(collection, 0);
     mode = ((GetInt)(*(void ***)object)[5])(object);
     defaultScale = lbl_805641F8;
     defaultValue = lbl_805641FC;
