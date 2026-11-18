@@ -606,6 +606,7 @@ void fn_801ECF58(void *arg0) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801ECFE0(void *arg0) {
     extern void *fn_801E87A8(void);
     extern void fn_801ED46C(void *);
