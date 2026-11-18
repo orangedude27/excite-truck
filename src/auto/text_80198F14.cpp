@@ -3196,10 +3196,10 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
         boxDelta.z = a[11] - boxCenter.z;
         f32 dist = (f32)__fabs((f64)PSVECDotProduct(&boxDelta, *(Vec **)(other + 0xC)));
         f32 ox = *(f32 *)(other + 0x24);
-        if (dist < ox + *(f32 *)(self + 0x178)) {
+        if (dist < *(f32 *)(self + 0x178) + ox) {
             dist = (f32)__fabs((f64)PSVECDotProduct(&boxDelta, (Vec *)(*(u8 **)(other + 0xC) + 0x18)));
             f32 ox2 = *(f32 *)(other + 0x2C);
-            if (dist < ox2 + *(f32 *)(self + 0x178)) {
+            if (dist < *(f32 *)(self + 0x178) + ox2) {
             u8 *owner = *(u8 **)(self + 4);
             f32 *m = *(f32 **)(other + 0xC);
             f32 x, y, z, nx, ny, nz;
