@@ -8,7 +8,7 @@ int fn_80128658(int);
 unsigned short OSGetFontEncode(void);
 int OSInitFont(void);
 int fn_801282EC(int);
-int fn_801284E8(void *, int);
+int fn_801284E8(const void *, int);
 int fn_802D8E9C(void *, void *);
 void *OSGetFontTexture(void *, int *, int *, int *, int *);
 int fn_802E30C8(const char *, ...);
@@ -36,7 +36,7 @@ void fn_802DACD4(void) {
  } else {
   font=0x120F00;
  }
- lbl_8055FE78=((int (*)(const char *, int))fn_801284E8)(message,font);
+ lbl_8055FE78=((int (*)(const char *, int))fn_801284E8)((void *)(message + 0),font);
  font=OSInitFont();
  if (OSGetFontEncode()==0x120F00) fn_802E30C8(message+0xC);
  if (font==0) {
