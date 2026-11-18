@@ -7824,6 +7824,7 @@ s32 btsnd_hcic_auth_request_80084570(u16);
 s32 btsnd_hcic_write_policy_set_80085668(u16, u16);
 #pragma push
 #pragma optimization_level 3
+#pragma dont_inline off
 void btm_acl_created(BD_ADDR bda, DEV_CLASS dev_class, BD_NAME dev_name,
                      UINT16 hci_handle, UINT8 link_role, UINT8 is_le_link) {
     u8 *temp_r3;
@@ -22663,7 +22664,7 @@ void RFCOMM_ConnectInd(BD_ADDR bd_addr, UINT16 lcid, UINT16 psm, UINT8 id) {
 #pragma opt_propagation off
 void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
     s32 index = (s32)arg0 - 0x40;
-    char (*trace_msg)[0x1C] = (char (*)[0x1C])lbl_803196B8;
+    char *trace_msg = lbl_803196B8;
     u16 lcid = arg0;
     void *port;
     u16 port_lcid;
@@ -22671,7 +22672,7 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
 
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, trace_msg[0], lcid);
+            fn_80070954(0x90000, trace_msg + 0, lcid);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -22679,14 +22680,14 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
             port_lcid = *(u16 *)((u8 *)port + 0x68);
             if (port_lcid != lcid) {
                 if (lbl_803C4828[0x414] >= 2)
-                    fn_8007096C(0x90001, trace_msg[1], lcid, port_lcid);
+                    fn_8007096C(0x90001, trace_msg + 0x1C, lcid, port_lcid);
                 port = NULL;
             }
         }
     }
     if (port == NULL) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, (char *)trace_msg + 0x54, lcid);
+            fn_80070954(0x90000, trace_msg + 0x54, lcid);
     } else {
         *(u16 *)((u8 *)port + 0x68) = lcid;
         fn_800916F4(port, 9, &status);
