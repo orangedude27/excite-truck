@@ -680,6 +680,41 @@ extern "C" char lbl_8055A054;
 #define lbl_8055A048 (&lbl_8055A048)
 #define lbl_8055A050 (&lbl_8055A050)
 #define lbl_8055A054 (&lbl_8055A054)
+/* The two stunt value files fn_80157560 reads a tracker's table from:
+   "stunts.val" holds the per-course values, "stuntdef.val" the defaults. */
+#define STUNTS_VAL   lbl_8032EAD4 /* "stunts.val" */
+#define STUNTDEF_VAL lbl_8032EAE0 /* "stuntdef.val" */
+/* The .sdata key strings the stunt entries are read by; the group an unknown
+   category falls back to is the one named "default". */
+#define STUNT_GROUP_DEFAULT (&lbl_8055A030) /* "default" */
+#define STUNT_KEY_RANK      (&lbl_8055A038) /* "rank": the record the entry fills */
+#define STUNT_KEY_ADJ       (&lbl_8055A040) /* "adj": the entry's adjustment name */
+#define STUNT_ADJ_NONE      (&lbl_8055A044) /* "": what an entry without one reads */
+#define STUNT_KEY_THRESH    (&lbl_8055A048) /* "thresh": progress the record needs */
+#define STUNT_KEY_PTS       (&lbl_8055A050) /* "pts": the points the record is worth */
+#define STUNT_FMT_ADJ       (&lbl_8055A054) /* "%s ": the adjustment name in the record */
+
+/* One object of a parsed "*.val" value file: fn_80131810 / fn_80131808 open one
+   by name and fn_80131818 closes it again.  Its values are looked up by the key
+   string they are stored under, and a group hands out its entries by index
+   until one comes back null. */
+struct ValueObject {
+    virtual ValueObject *getGroup(const char *key);                   /* 0x08 */
+    virtual void m0C();
+    virtual s32 hasKey(const char *key);                              /* 0x10 */
+    virtual void m14();
+    virtual const char *getString(const char *key, const char *def);  /* 0x18 */
+    virtual s32 getInt(const char *key);                              /* 0x1C */
+    virtual s32 getIntDefault(const char *key, s32 def);              /* 0x20 */
+    virtual f32 getFloat(const char *key);                            /* 0x24 */
+    virtual f32 getFloatDefault(const char *key, f32 def);            /* 0x28 */
+    virtual void m2C(); virtual void m30(); virtual void m34(); virtual void m38();
+    virtual void m3C(); virtual void m40(); virtual void m44(); virtual void m48();
+    virtual void m4C(); virtual void m50(); virtual void m54(); virtual void m58();
+    virtual void m5C();
+    virtual ValueObject *getEntry(s32 index);                         /* 0x60 */
+};
+
 struct Rec157560 {
     s32 a;
     s32 b;
