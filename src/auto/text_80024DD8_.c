@@ -41,7 +41,7 @@ int memcmp(const unsigned char *arg0, const unsigned char *arg1, unsigned int ar
 
 void __copy_longs_aligned(unsigned char *dst, const unsigned char *src, unsigned int n) {
     unsigned int align = (-(unsigned int)dst) & 3;
-    unsigned int blocks, words, tail;
+    unsigned int blocks, words;
     src--;
     dst--;
     if (align) {
@@ -63,8 +63,8 @@ void __copy_longs_aligned(unsigned char *dst, const unsigned char *src, unsigned
     if (words) {
         do { *(unsigned int *)(dst+4)=*(const unsigned int *)(src+4); src+=4; dst+=4; } while (--words);
     }
-    tail=n&3; src+=3; dst+=3;
-    if(tail) do { *++dst=*++src; } while(--tail);
+    n &= 3; src+=3; dst+=3;
+    if(n) do { *++dst=*++src; } while(--n);
 }
 
 /* Copies n bytes backward from aligned end pointers, using byte alignment, 32-byte blocks, 4-byte words, then tail bytes. */
@@ -91,38 +91,42 @@ void __copy_longs_rev_aligned(unsigned char *dst, const unsigned char *src, unsi
 
 void __copy_longs_unaligned(unsigned char *dst, const unsigned char *src, unsigned int n) {
     unsigned int align = (-(unsigned int)dst) & 3;
-    unsigned int offset, shift, right, words;
+    unsigned char *worddst;
+    unsigned int words;
     const unsigned char *s = src - 1;
+    unsigned int offset, shift, right;
     unsigned int prev, cur;
+    unsigned char *taildst;
+    const unsigned char *tailsrc;
     dst--;
     if (align) {
         n -= align;
         do { *++dst = *++s; } while (--align);
     }
     offset = (unsigned int)(s + 1) & 3;
-    shift = offset << 3;
-    right = 32 - shift;
+    worddst = dst - 3;
     words = n >> 3;
     s -= offset;
+    shift = offset << 3;
+    right = 32 - shift;
     prev = *(const unsigned int *)(s += 1);
-    dst -= 3;
     do {
         cur = *(const unsigned int *)(s + 4);
         --words;
-        *(unsigned int *)(dst + 4) = (prev << shift) | (cur >> right);
+        *(unsigned int *)(worddst + 4) = (prev << shift) | (cur >> right);
         prev = *(const unsigned int *)(s += 8);
-        *(unsigned int *)(dst += 8) = (cur << shift) | (prev >> right);
+        *(unsigned int *)(worddst += 8) = (cur << shift) | (prev >> right);
     } while (words);
     if (n & 4) {
         cur = *(const unsigned int *)(s += 4);
-        *(unsigned int *)(dst += 4) = (prev << shift) | (cur >> right);
+        *(unsigned int *)(worddst += 4) = (prev << shift) | (cur >> right);
     }
     n &= 3;
-    s += 3;
-    dst += 3;
+    tailsrc = s + 3;
+    taildst = worddst + 3;
     if (n) {
-        s -= 4 - offset;
-        do { *++dst = *++s; } while (--n);
+        tailsrc -= 4 - offset;
+        do { *++taildst = *++tailsrc; } while (--n);
     }
 }
 
