@@ -3859,11 +3859,11 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
 #pragma scheduling on
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     extern s32 fn_800A4C14(u16 *, s32);
-    u32 raw = ((u8 *)arg1)[0];
-    u32 count = raw & 0xFFFFFFBF;
-    u32 tag = ((u8 *)arg1)[0xD];
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
+    u32 raw = src[0];
+    u32 count = raw & 0xFFFFFFBF;
+    u32 tag = src[0xD];
     u32 index;
     u8 *entry;
     s32 first;
@@ -5571,6 +5571,8 @@ extern s32 fn_800A8D08(void *, s32, void **, s32 *);
 extern s32 fn_800B5324(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800A499C(s32, s32);
+#pragma push
+#pragma opt_strength_reduction off
 extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
     void *sp10;
     s32 spC;
@@ -5599,9 +5601,7 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
     VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
     return 0;
 }
-
-#pragma push
-#pragma use_lmw_stmw off
+#pragma pop
 extern "C" s32 fn_800ACF20(void *fileInfo, u32 clusterIndex, u32 *outCluster, u32 *outFromCache)
 {
     volatile s32 end = -1;
@@ -7833,16 +7833,14 @@ fetch:
     }
 
     {
-        u32 mask = *(u16 *)object - 1;
-        u32 value = ((u32 *)*(u8 **)((u8 *)context + 8))[0 * mask + 0] ;
-        value = *(u32 *)(*(u8 **)((u8 *)context + 8) + (scaled & mask));
-        {
-            u32 upper = __rlwinm(value, 8, 8, 15);
-            u32 lower = __rlwinm(value, 24, 16, 23);
-            upper = __rlwimi(upper, value, 24, 0, 7);
-            lower = __rlwimi(lower, value, 8, 24, 31);
-            *output = (upper | lower) & 0x0FFFFFFF;
-        }
+        u8 *buf = *(u8 **)((u8 *)context + 8);
+        u32 blockSize = *(volatile u16 *)object;
+        u32 value = *(u32 *)(buf + (scaled & (blockSize - 1)));
+        u32 upper = __rlwinm(value, 8, 8, 15);
+        u32 lower = __rlwinm(value, 24, 16, 23);
+        upper = __rlwimi(upper, value, 24, 0, 7);
+        lower = __rlwimi(lower, value, 8, 24, 31);
+        *output = (upper | lower) & 0x0FFFFFFF;
     }
     return 0;
 }
@@ -9143,7 +9141,7 @@ u16 fn_800B25CC(void *arg0, s32 arg1) {
     u32 var_r3;
     u32 var_r3_2;
     u32 var_r3_3;
-    u16 var_r3_4;
+    u32 var_r3_4;
     u8 *temp_r3;
     u8 *temp_r5;
     u8 temp_r4;
@@ -10776,17 +10774,17 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4)
 }
 
 extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u32 *arg5, u32 arg6) {
-    u16 limit;
     void *page;
     u32 count;
     s32 result;
+    u16 limit;
     *arg5 = 0;
     if (!(M2C_FIELD(arg0, u16 *, 0x1F8C) & 1) || fn_800A53B4((void *)arg0) == 0 || (M2C_FIELD(arg0, u16 *, 0x1F8C) & 2)) return 9;
     if ((u32)arg2 >= M2C_FIELD(arg0, u32 *, 8) || arg3 >= (limit = M2C_FIELD(arg0, u16 *, 0)) || (arg3 + arg4) > limit) {
         if (arg3 != 0) return 10;
     }
-    if (arg3 != 0 || arg4 >= M2C_FIELD(arg0, u16 *, 0)) {
-        result = fn_800A8F28((void *)arg0, arg2, (s32)&page, arg6, 0);
+    if (arg3 != 0 || arg4 < M2C_FIELD(arg0, u16 *, 0)) {
+        result = ((s32 (*)(void *, s32, s32, s32))fn_800A8F28)((void *)arg0, arg2, (s32)&page, arg6);
         if (result != 0) return result;
         VFipf_memcpy(M2C_FIELD(page, u8 **, 8) + arg3, arg1, arg4);
         result = fn_800A900C((void *)arg0, (s32)page, arg6);
@@ -10813,7 +10811,7 @@ extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u
             toWrite -= partial;
         }
         if (toWrite != 0) {
-            result = fn_800A8F28((void *)arg0, arg2, (s32)&page, arg6, 0);
+            result = ((s32 (*)(void *, s32, s32, s32))fn_800A8F28)((void *)arg0, arg2, (s32)&page, arg6);
             if (result != 0) return result;
             VFipf_memcpy(M2C_FIELD(page, u8 **, 8), (u8 *)arg1 + *arg5, toWrite << M2C_FIELD(arg0, u8 *, 0x20));
             result = fn_800A900C((void *)arg0, (s32)page, arg6);
@@ -14388,6 +14386,7 @@ extern "C" s32 fn_800BBCF4(void) {
 
 #pragma push
 #pragma processor 750
+#pragma opt_strength_reduction off
 extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
     const char *str = lbl_8031B838;
     s32 r30 = 3;
@@ -24054,15 +24053,9 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
 void homebutton::HomeButton::calc_battery(int n) {
     u8 *self = (u8 *)this;
     void *obj;
-    s32 *ids;
-    u8 *rec;
-    register s32 offRec;
-    s32 offIds;
+    s32 *ids = (s32 *)((u8 *)lbl_8031E370 + n * 16);
+    u8 *rec = self + n * 0x18;
     s32 i, index;
-    offRec = n * 0x18;
-    offIds = n << 4;
-    ids = (s32 *)((u8 *)lbl_8031E370 + offIds);
-    rec = self + offRec;
     for (i = 0; i < 4; i++) {
         u8 *pane;
         if (i < rec[0x16C]) {
