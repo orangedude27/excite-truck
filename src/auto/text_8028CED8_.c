@@ -225,7 +225,7 @@ void fn_8028D2B4(void) {
         int subRecords; /* 0x14 */
         int unk18;
     } SkidDef;
-    register char *labelStrings = lbl_80348C50;
+    register char *labelStrings = (char *)&lbl_80348C50;
     register int totalElems = 0;
     int i = 0;
     int slots;
