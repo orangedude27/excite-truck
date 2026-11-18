@@ -818,73 +818,68 @@ int fn_8024B214(char *arg0, char *arg1) {
 extern void *fn_80131234(void *);
 extern char lbl_80343B54[];
 #pragma push
-#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8024B260(arg0)
 void *arg0;
 {
     s32 selected;
-    s32 one;
     s32 i;
     s32 offset;
     char *search;
     void *list;
-    s32 zero;
-    u8 *entry;
-    u8 *record;
+    unsigned int entry;
+    unsigned int record;
     u8 **strings;
     selected = fn_80214D04();
     *(s32 *)((u8 *)arg0 + 0x280) = selected;
     strings = *(u8 ***)((u8 *)arg0 + 0x18);
     search = (char *)strings[selected * 2];
     memset((u8 *)arg0 + 0x78, 0, 0x208);
-    one = 1;
     i = 0;
-    *(s32 *)((u8 *)arg0 + 0xDC) = one;
+    *(s32 *)((u8 *)arg0 + 0xDC) = 1;
     offset = 0;
-    *(s32 *)((u8 *)arg0 + 0x144) = one;
-    zero = 0;
-    *(s32 *)((u8 *)arg0 + 0x1AC) = one;
-    *(s32 *)((u8 *)arg0 + 0x214) = one;
-    *(s32 *)((u8 *)arg0 + 0x27C) = one;
+    *(s32 *)((u8 *)arg0 + 0x144) = 1;
+    *(s32 *)((u8 *)arg0 + 0x1AC) = 1;
+    *(s32 *)((u8 *)arg0 + 0x214) = 1;
+    *(s32 *)((u8 *)arg0 + 0x27C) = 1;
     goto check_loop;
 loop_body:
-    entry = *(u8 **)list + offset;
+    entry = *(unsigned int *)list + offset;
     if (stricmp(search, *(char **)(entry + 0xC)) == 0) {
-        record = (u8 *)arg0 + *(s32 *)(entry + 8) * 0x68 + 0x78;
+        record = (unsigned int)arg0 + *(s32 *)(entry + 8) * 0x68 + 0x78;
         {
             char *src = *(char **)(entry + 4);
             s32 remaining = 0x32;
             char *dst = (char *)record;
             while ((s8)(*dst++ = *src++) != 0) {
                 if (--remaining <= 0) {
-                    dst[-1] = zero;
+                    dst[-1] = 0;
                     break;
                 }
             }
         }
-        if (entry[0x14] != 0) {
+        if (*(u8 *)(entry + 0x14) != 0) {
             char *src = *(char **)(entry + 0x10);
             s32 remaining = 0x32;
             char *dst = (char *)(record + 0x32);
             while ((s8)(*dst++ = *src++) != 0) {
                 if (--remaining <= 0) {
-                    dst[-1] = zero;
+                    dst[-1] = 0;
                     break;
                 }
             }
-            *(s32 *)(record + 0x64) = one;
+            *(s32 *)(record + 0x64) = 1;
         } else {
             char *src = (char *)fn_80131234(lbl_80343B54);
             s32 remaining = 0x32;
             char *dst = (char *)(record + 0x32);
             while ((s8)(*dst++ = *src++) != 0) {
                 if (--remaining <= 0) {
-                    dst[-1] = zero;
+                    dst[-1] = 0;
                     break;
                 }
             }
-            *(s32 *)(record + 0x64) = zero;
+            *(s32 *)(record + 0x64) = 0;
         }
     }
     offset += 0x18;
