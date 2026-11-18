@@ -3561,6 +3561,8 @@ extern "C" void fn_801D8624(void *obj) {
     ((Dummy *)obj)->f11();
 }
 
+#pragma push
+#pragma scheduling 750
 extern "C" int fn_801D8634(void *out, void *obj) {
     extern float lbl_80562ADC;
     extern char lbl_8055ACB8;
@@ -3582,7 +3584,7 @@ extern "C" int fn_801D8634(void *out, void *obj) {
     };
     Dummy *thing = (Dummy *)obj;
     int result;
-    *(float *)((char *)out + 0xC) = thing->v8(&lbl_8055ACB8, lbl_80562ADC);
+    *(float *)((char *)out + 0xC) = thing->v8(&lbl_8055ACB8, 0.0f);
     *(float *)((char *)out + 0x14) = thing->v7(&lbl_8055ACB0);
     *(int *)((char *)out + 8) = thing->v5(lbl_803385D0);
     thing->v3(lbl_80339050);
@@ -3593,9 +3595,9 @@ extern "C" int fn_801D8634(void *out, void *obj) {
         {
             float finalRate = lbl_80562ADC;
             *(int *)((char *)out + 0x18) = 1;
+            result = 1;
             *(float *)((char *)out + 0x10) = finalRate;
         }
-        result = 1;
     }
     return result;
 }
