@@ -59,8 +59,10 @@ unsigned int fn_802E176C(unsigned int value) {
 #pragma scheduling invalid_target
 void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
     #pragma opt_strength_reduction off
-    int offset;
-    int yMinusRow;
+    int xi;
+    int ydiff;
+    int rowoff;
+    unsigned char *p;
     register unsigned int count = arg1 >> 3;
     register int x = 0;
     register int y = 0;
@@ -68,12 +70,14 @@ void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
     register int row;
 
     for (row = 0; row < 4; row++) {
+        rowoff = row * arg2;
         for (i = 0; i < count; i++) {
-            offset = (i + row * arg2) * 2;
-            yMinusRow = y - row;
-            ((unsigned char *)arg0)[offset] = (unsigned char)(x - i + 0x80);
+            xi = x - i;
+            p = (unsigned char *)arg0 + (i + rowoff) * 2;
+            ydiff = y - row;
+            p[0] = (unsigned char)(xi + 0x80);
             y++;
-            ((unsigned char *)arg0)[offset + 1] = (unsigned char)(yMinusRow + 0x80);
+            p[1] = (unsigned char)(ydiff + 0x80);
             if (y == 4) {
                 y = 0;
                 x++;
@@ -215,6 +219,9 @@ void fn_802E1A9C(void *desc, int *outCombinedWidth, int *outCombinedPlusHeight, 
 #pragma optimization_level reset
 #pragma push
 #pragma scheduling invalid_target
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma opt_common_subs off
 int fn_802E1BB4(void *arg0, int arg1) {
     typedef void (*Calc)(void *, int *, int *, int *, int *, int *, int *, int *);
     int sp20, sp1C, sp18, sp14, sp10, spC, sp8;
