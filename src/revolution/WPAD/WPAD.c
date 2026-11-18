@@ -649,12 +649,16 @@ _end:
 
 void fn_8005E298(void) {
     WPADManageFrame frame;
-    WPADCB *temp_r30;
-    WPADCB *temp_r29_2;
-    WPADCB **var_r28;
-    u8 *var_r27;
-    s32 var_r25;
-    s32 var_r26;
+    register WPADCB **var_r28 asm("r28");
+    register u8 *var_r27 asm("r27");
+    register s32 var_r26 asm("r26");
+    register s32 var_r25 asm("r25");
+    register s8 var_r29 asm("r29");
+    register s8 var_r22 asm("r22");
+    register WPADCB *temp_r30 asm("r30");
+    register s32 zero asm("r31") = 0;
+    register s32 sixteen asm("r23") = 0x10;
+    register s32 one asm("r24") = 1;
     s32 temp_r25;
     s32 temp_r25_2;
     s32 temp_r30_2;
@@ -670,10 +674,8 @@ void fn_8005E298(void) {
     s32 var_r0_2;
     s32 var_r0_3;
     s32 var_r0_4;
-    s8 var_r22;
     s8 var_r22_2;
     s8 var_r22_3;
-    s8 var_r29;
     s8 var_r29_2;
     u8 temp_r0;
     u8 temp_r0_2;
@@ -682,6 +684,7 @@ void fn_8005E298(void) {
     u8 var_r0_5;
     u8 var_r3;
     WPADCB *temp_r29;
+    WPADCB *temp_r29_2;
     WPADCB *temp_r5_3;
 
     if (fn_8006A940() == 3) {
@@ -811,17 +814,17 @@ block_33:
                     }
                     OSRestoreInterrupts(temp_state2);
                     if (var_r22_3 > 0) {
-                        *(s32*)((u8*)*var_r28 + 0x810) = 0;
+                        *(s32*)((u8*)*var_r28 + 0x810) = zero;
                         goto block_done;
                     }
                 }
                 if (*var_r27 == 5) {
-                    *(u16*)((u8*)&frame.rmb + 0x1A) = 1;
+                    *(u16*)((u8*)&frame.rmb + 0x1A) = one;
                     temp_r5_3 = *var_r28;
-                    *(void**)((u8*)&frame.rmb + 0x2C) = NULL;
-                    *(s32*)((u8*)temp_r5_3 + 0x810) = 0;
-                    *(u32*)&frame.rmb = 0x10;
-                    *(u8*)((u8*)&frame.rmb + 4) = 0;
+                    *(void**)((u8*)&frame.rmb + 0x2C) = (void *)zero;
+                    *(s32*)((u8*)temp_r5_3 + 0x810) = zero;
+                    *(u32*)&frame.rmb = sixteen;
+                    *(u8*)((u8*)&frame.rmb + 4) = zero;
                     frame.rmbCopy.d[0] = frame.rmb.d[0];
                     frame.rmbCopy.d[1] = frame.rmb.d[1];
                     frame.rmbCopy.d[2] = frame.rmb.d[2];
@@ -4623,12 +4626,12 @@ extern u8 lbl_802EE8C8[];
 s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
     u8 frame[0x420] ALIGN(8);
     register s32 channel asm("r31") = chan;
+    register u32 value778 asm("r26");
+    register u32 value81C asm("r30");
+    register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
     register s32 arg asm("r27") = arg1;
     register WPADCallback callback asm("r28") = arg2;
-    register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
-    register u32 value778 asm("r26");
     register s32 status asm("r25");
-    register u32 value81C asm("r30");
     BOOL outerEnabled;
     BOOL enabled;
     BOOL nestedEnabled;
