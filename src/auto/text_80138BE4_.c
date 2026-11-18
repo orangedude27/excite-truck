@@ -117,7 +117,7 @@ int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
 }
 #pragma pop
 #pragma push
-#pragma paired_single off
+#pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 float fn_80138DF4(void *arg0) {
