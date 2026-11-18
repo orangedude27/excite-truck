@@ -223,14 +223,16 @@ long fn_8020F6FC(void) {
 
 #pragma scheduling invalid_target
 void fn_8020F730(void) {
-    long count = lbl_804900AC.m_count;
-    long i;
+    register long count = lbl_804900AC.m_count;
+    register long i;
     lbl_804902C4.m_count = 0;
     if (count != 0) {
-        for (i = 0; i < count; i++) {
+        i = 0;
+        while (i < count) {
             long index = lbl_804902C4.m_count;
             lbl_804902C4.m_count = index + 1;
             lbl_804902C4.m_entries[index] = i;
+            i++;
         }
         for (i = 0; i < lbl_804902C4.m_count; i++) {
             long index = fn_80129D18(6);
@@ -512,16 +514,15 @@ long fn_8020FEF0(long arg0) {
     long count;
     long pos;
     long max;
-    long delta = arg0;
 
     if (state == -2 && lbl_8055EEBC > 0) {
-        if (delta == 1) {
+        if (arg0 == 1) {
             lbl_8055EEE0 = -1;
             fn_8020FE90();
         }
         return;
     } else if (state == -1) {
-        if (delta == -1) {
+        if (arg0 == -1) {
             lbl_8055EEE0 = -2;
             fn_8020FE90();
         }
@@ -529,10 +530,10 @@ long fn_8020FEF0(long arg0) {
     } else {
         pos = lbl_8055EEE4;
         max = lbl_8055EEE8 - 1;
-        delta = pos + delta;
-        delta &= ((-delta & ~delta) >> 31);
-        if (delta < max) {
-            max = delta;
+        arg0 = pos + arg0;
+        arg0 &= ((-arg0 & ~arg0) >> 31);
+        if (arg0 < max) {
+            max = arg0;
         }
         lbl_8055EEE4 = max;
         count = lbl_8055EEBC;
@@ -715,9 +716,8 @@ void fn_802103B8(void) {
 #pragma cplusplus on
 #pragma dont_inline on
 extern "C" void fn_802103BC(void) {
-    class Obj { public: virtual void f(int); };
-    float f = lbl_80563400;
-    fn_802EC1C0(f);
+    class Obj { public: virtual void f(long); };
+    ((void (*)(float))fn_802EC1C0)(0.0f);
     fn_802EC12C();
     fn_802EC1E4();
     if (lbl_8055EED4 != 0) {
@@ -796,6 +796,8 @@ void fn_80210514(int mode) {
     }
 }
 
+#pragma push
+#pragma opt_strength_reduction off
 long fn_80210570(void) {
     register long val = 3;
     char *ptr = (char *)fn_8020F5F0(fn_8000DA10());
@@ -837,7 +839,7 @@ long fn_80210570(void) {
         return 0;
     }
 }
-
+#pragma pop
 /* Per-frame track-music update, run with the "music is muted" flag.
  *
  * It loads any song bank that is not loaded yet, rebuilds the song list when
