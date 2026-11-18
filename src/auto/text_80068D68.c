@@ -14262,7 +14262,7 @@ void btm_sec_update_clock_offset(UINT16 handle, UINT16 clock_offset) {
 u8 btm_sec_execute_procedure(void *p_dev_rec) {
     extern char lbl_80316870[];
     char *messages = lbl_80316870;
-    u8 *dev = (u8 *)p_dev_rec;
+    tBTM_SEC_DEV_REC_FULL_VIEW *dev = (tBTM_SEC_DEV_REC_FULL_VIEW *)p_dev_rec;
     void *p_lcb;
     u8 saved_state;
     u8 sec_flags;
@@ -14271,16 +14271,16 @@ u8 btm_sec_execute_procedure(void *p_dev_rec) {
     if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
         ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(
             TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x8AC, /* "btm_sec_execute_procedure: Required:0x%x Flags:0x%x State:%d" */
-            dev[0x81], dev[0x76], dev[0x7F]);
+            dev->sec_req, dev->sec_flags, dev->sec_state);
 
     /* There is a chance that we are getting the name.  Wait until done. */
-    if (dev[0x7F] != BTM_SEC_STATE_IDLE)
+    if (dev->sec_state != BTM_SEC_STATE_IDLE)
         return BTM_CMD_STARTED;
 
     /* No connection yet (btm_sec_start_connection): page the device and run the
        security check again when the link comes up. */
-    if (*(u16 *)(dev + 0x18) == BTM_SEC_INVALID_HANDLE) {
-        p_lcb = l2cu_allocate_lcb(dev + 0x1C);
+    if (dev->hci_handle == BTM_SEC_INVALID_HANDLE) {
+        p_lcb = l2cu_allocate_lcb(dev->bd_addr);
         if (p_lcb == NULL) {
             if (l2cb_trace_level >= BT_TRACE_LEVEL_WARNING)
                 fn_8007093C(TRACE_LAYER_L2CAP | TRACE_TYPE_WARNING, messages + 0x8EC); /* "L2CAP - no LCB for L2CA_conn_req" */
@@ -14288,19 +14288,19 @@ u8 btm_sec_execute_procedure(void *p_dev_rec) {
         }
         if (!l2cu_create_conn(p_lcb))
             return BTM_NO_RESOURCES;
-        dev[0x80] = TRUE;
+        dev->is_originator = TRUE;
         return BTM_CMD_STARTED;
     }
 
     /* If any security is required, get the remote name first. */
-    if (!(dev[0x76] & BTM_SEC_NAME_KNOWN) && *(u16 *)(dev + 0x18) != BTM_SEC_INVALID_HANDLE) {
+    if (!(dev->sec_flags & BTM_SEC_NAME_KNOWN) && dev->hci_handle != BTM_SEC_INVALID_HANDLE) {
         u8 started;
         if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
             fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x910); /* "Security Manager: Start get name" */
-        saved_state = dev[0x7F];
-        dev[0x7F] = BTM_SEC_STATE_GETTING_NAME;
-        if (btm_initiate_rem_name(dev + 0x1C, 0, 2, 0x1E, 0) != BTM_CMD_STARTED) {
-            dev[0x7F] = saved_state;
+        saved_state = dev->sec_state;
+        dev->sec_state = BTM_SEC_STATE_GETTING_NAME;
+        if (btm_initiate_rem_name(dev->bd_addr, 0, 2, 0x1E, 0) != BTM_CMD_STARTED) {
+            dev->sec_state = saved_state;
             started = FALSE;
         } else {
             started = TRUE;
@@ -14308,21 +14308,21 @@ u8 btm_sec_execute_procedure(void *p_dev_rec) {
         if (started)
             return BTM_CMD_STARTED;
         /* The name cannot be had; go on as though it were known. */
-        dev[0x76] |= BTM_SEC_NAME_KNOWN;
+        dev->sec_flags |= BTM_SEC_NAME_KNOWN;
     }
 
-    sec_flags = dev[0x76];
+    sec_flags = dev->sec_flags;
 
     /* If the connection is not authenticated and authentication is required,
        start it and return pending to the caller. */
     if (!(sec_flags & BTM_SEC_AUTHENTICATED)
-        && ((dev[0x80] && (dev[0x81] & BTM_SEC_OUT_AUTHENTICATE))
-            || (!dev[0x80] && (dev[0x81] & BTM_SEC_IN_AUTHENTICATE)))
-        && *(u16 *)(dev + 0x18) != BTM_SEC_INVALID_HANDLE) {
+        && ((dev->is_originator && (dev->sec_req & BTM_SEC_OUT_AUTHENTICATE))
+            || (!dev->is_originator && (dev->sec_req & BTM_SEC_IN_AUTHENTICATE)))
+        && dev->hci_handle != BTM_SEC_INVALID_HANDLE) {
         if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
             fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x934); /* "Security Manager: Start authentication" */
-        dev[0x7F] = BTM_SEC_STATE_AUTHENTICATING;
-        if (!btsnd_hcic_auth_request(*(u16 *)(dev + 0x18)))
+        dev->sec_state = BTM_SEC_STATE_AUTHENTICATING;
+        if (!btsnd_hcic_auth_request(dev->hci_handle))
             return BTM_NO_RESOURCES;
         return BTM_CMD_STARTED;
     }
@@ -14330,16 +14330,16 @@ u8 btm_sec_execute_procedure(void *p_dev_rec) {
     /* If the connection is not encrypted and encryption is required, start it
        and return pending to the caller. */
     if (!(sec_flags & BTM_SEC_ENCRYPTED)
-        && ((dev[0x80] && (dev[0x81] & BTM_SEC_OUT_ENCRYPT))
-            || (!dev[0x80] && (dev[0x81] & BTM_SEC_IN_ENCRYPT)))
-        && *(u16 *)(dev + 0x18) != BTM_SEC_INVALID_HANDLE) {
+        && ((dev->is_originator && (dev->sec_req & BTM_SEC_OUT_ENCRYPT))
+            || (!dev->is_originator && (dev->sec_req & BTM_SEC_IN_ENCRYPT)))
+        && dev->hci_handle != BTM_SEC_INVALID_HANDLE) {
         u8 started;
         if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
             fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x95C); /* "Security Manager: Start encryption" */
-        if (!btsnd_hcic_set_conn_encrypt(*(u16 *)(dev + 0x18), TRUE)) {
+        if (!btsnd_hcic_set_conn_encrypt(dev->hci_handle, TRUE)) {
             started = FALSE;
         } else {
-            dev[0x7F] = BTM_SEC_STATE_ENCRYPTING;
+            dev->sec_state = BTM_SEC_STATE_ENCRYPTING;
             started = TRUE;
         }
         if (!started)
@@ -14350,13 +14350,13 @@ u8 btm_sec_execute_procedure(void *p_dev_rec) {
     /* If the connection is not authorized and authorization is required, ask
        the application about the service unless every service is trusted. */
     if (!(sec_flags & BTM_SEC_AUTHORIZED)
-        && ((dev[0x80] && (dev[0x81] & BTM_SEC_OUT_AUTHORIZE))
-            || (!dev[0x80] && (dev[0x81] & BTM_SEC_IN_AUTHORIZE)))) {
+        && ((dev->is_originator && (dev->sec_req & BTM_SEC_OUT_AUTHORIZE))
+            || (!dev->is_originator && (dev->sec_req & BTM_SEC_IN_AUTHORIZE)))) {
         int all_trusted;
         int word;
         /* btm_sec_are_all_trusted(p_dev_rec->trusted_mask) */
         for (word = 0; word < 2; word++) {
-            if (*(u32 *)(dev + 0x10 + word * 4) != 0xFFFFFFFF) {
+            if (dev->trusted_mask[word] != 0xFFFFFFFF) {
                 all_trusted = FALSE;
                 goto check_all_trusted;
             }
@@ -14364,24 +14364,25 @@ u8 btm_sec_execute_procedure(void *p_dev_rec) {
         all_trusted = TRUE;
     check_all_trusted:
         if (all_trusted == FALSE) {
-            service_id = (*(u8 **)dev)[0xF]; /* p_dev_rec->p_cur_service->service_id */
+            service_id = ((tBTM_SEC_SERV_REC_HERE *)dev->p_cur_service)->service_id;
             /* BTM_SEC_IS_SERVICE_TRUSTED(p_dev_rec->trusted_mask, service_id);
                this build's BTM_SEC_MAX_SERVICES is 46, two mask words. */
-            if (service_id < 0x2E && !((1 << (service_id & 0x1F)) & *(u32 *)(dev + ((service_id >> 3) & 0x1C) + 0x10))) {
+            if (service_id < 0x2E && !((1 << (service_id & 0x1F)) & dev->trusted_mask[service_id >> 5])) {
                 if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
                     fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x980); /* "Security Manager: Start authorization" */
-                return btm_sec_start_authorization(dev);
+                return btm_sec_start_authorization((u8 *)dev);
             }
         }
     }
 
     /* All the required security procedures are established; keep only the role
        switch requirements of the service. */
-    dev[0x81] &= 0xC0;
+    dev->sec_req &= ~(BTM_SEC_IN_AUTHORIZE | BTM_SEC_IN_AUTHENTICATE | BTM_SEC_IN_ENCRYPT |
+                      BTM_SEC_OUT_AUTHORIZE | BTM_SEC_OUT_AUTHENTICATE | BTM_SEC_OUT_ENCRYPT);
     if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
         ((void (*)(u32, void *, u32, u32))fn_8007096C)(
             TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x9A8, /* "Security Manager: trusted:0x%04x%04x" */
-            *(u32 *)(dev + 0x14), *(u32 *)(dev + 0x10));
+            dev->trusted_mask[1], dev->trusted_mask[0]);
     if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
         fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x9D0); /* "Security Manager: access granted" */
     return BTM_SUCCESS;
