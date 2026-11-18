@@ -2521,7 +2521,7 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1
     }
 }
 
-#pragma inline_max_size 10000
+#pragma opt_lifetimes off
 #pragma inline_max_total_size 10000
 extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           register const char *data = lbl_8031F990;
@@ -2549,8 +2549,8 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           f32 temp_f2;
                           f32 temp_f30;
                           f32 temp_f31;
-                                                     s32 *var_r21_3;
-                           s32 *var_r22_2;
+                          s32 *var_r21_3;
+                          s32 *var_r22_2;
                register s32 var_r26;
                register s32 var_r21;
            register s32 var_r21_2;
@@ -2566,9 +2566,9 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           s32 temp_r6;
                           s32 temp_r8_2;
                           register s32 var_r23_3;
-                                                     s32 var_r23_5;
-                           s32 var_r24;
-                           register s32 var_r25;
+                          s32 var_r23_5;
+                          s32 var_r24;
+                          register s32 var_r25;
                           s32 var_r27_2;
                           s32 var_r3;
                           s32 var_r3_2;
