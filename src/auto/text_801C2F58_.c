@@ -88,7 +88,6 @@ extern void fn_801C84E0(void);
 extern void fn_801C8500(void);
 #include <internal/printf.h>
 #include <revolution/MTX/vec.h>
-static Vec *ptrAtVec(char *b, s32 off) { return (Vec *)(b + off); }
 extern Vec lbl_80438498;
 static inline void fn_801C7C04_load2(f32 *out, Vec *v) {
     out[0] = v->x;
