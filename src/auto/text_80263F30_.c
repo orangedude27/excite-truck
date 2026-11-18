@@ -188,7 +188,7 @@ void fn_80264098(void *item, int type) {
 
 #pragma dont_inline on
 #pragma dont_inline off
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
         void *name;
@@ -598,7 +598,7 @@ void* fn_80264A54(void) {
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
-void fn_80264A5C(float farg0, float farg1) {
+extern "C" void fn_80264A5C(float farg0, float farg1) {
     extern float lbl_80558DC4[];
     extern float lbl_80563BF0;
     extern float lbl_80563C08;
@@ -635,8 +635,8 @@ void fn_80264A5C(float farg0, float farg1) {
     int temp_r6_2;
     void *temp_r31;
     void *temp_r31_2;
-    void *temp_r30;
-    void *temp_r30_2;
+    SparkParticle *temp_r30;
+    SparkParticle *temp_r30_2;
     if (!((float)__fabs((double)fn_80214D48()) <= lbl_80558DC4[0])) {
         fn_80230C30(&spC, &sp8, (int)farg0, (int)farg1);
         temp_f4 = spC + (farg0 - (float)(int)farg0);
@@ -656,17 +656,17 @@ void fn_80264A5C(float farg0, float farg1) {
             temp_r4 = temp_r5 + 1;
             *(int *)((char *)temp_r31 + 0x5C) = temp_r4;
             temp_r0 = temp_r5 << 5;
-            temp_r30 = (void *)((char *)temp_r6 + temp_r0);
+            temp_r30 = (SparkParticle *)((char *)temp_r6 + temp_r0);
             *(float *)((char *)temp_r6 + temp_r0) = temp_f4;
-            *(float *)((char *)temp_r30 + 4) = temp_f3;
+            temp_r30->y = temp_f3;
             temp_f30 = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x1C), *(float *)((char *)temp_r31 + 0x20));
             temp_f31 = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x24), *(float *)((char *)temp_r31 + 0x28));
-            *(float *)((char *)temp_r30 + 8) = temp_f31 * (float)cos((double)temp_f30);
-            *(float *)((char *)temp_r30 + 0xC) = temp_f31 * (float)sin((double)temp_f30);
-            *(float *)((char *)temp_r30 + 0x10) = fn_80129DC4(6, 0.0f, 6.283185f);
-            *(float *)((char *)temp_r30 + 0x14) = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x34), *(float *)((char *)temp_r31 + 0x38));
-            *(float *)((char *)temp_r30 + 0x18) = *(float *)((char *)temp_r31 + 0x44);
-            *(int *)((char *)temp_r30 + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31 + 0x54)));
+            temp_r30->vx = temp_f31 * (float)cos((double)temp_f30);
+            temp_r30->vy = temp_f31 * (float)sin((double)temp_f30);
+            temp_r30->a10 = fn_80129DC4(6, 0.0f, 6.283185f);
+            temp_r30->a14 = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x34), *(float *)((char *)temp_r31 + 0x38));
+            temp_r30->life = *(float *)((char *)temp_r31 + 0x44);
+            temp_r30->id = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31 + 0x54)));
         }
         temp_r31_2 = lbl_8055F448;
         temp_f4 = spC;
@@ -682,17 +682,17 @@ void fn_80264A5C(float farg0, float farg1) {
             temp_r4_2 = temp_r5_2 + 1;
             *(int *)((char *)temp_r31_2 + 0xBC) = temp_r4_2;
             temp_r0_2 = temp_r5_2 << 5;
-            temp_r30_2 = (void *)((char *)temp_r6_2 + temp_r0_2);
+            temp_r30_2 = (SparkParticle *)((char *)temp_r6_2 + temp_r0_2);
             *(float *)((char *)temp_r6_2 + temp_r0_2) = temp_f4;
-            *(float *)((char *)temp_r30_2 + 4) = temp_f2;
+            temp_r30_2->y = temp_f2;
             temp_f30_2 = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x7C), *(float *)((char *)temp_r31_2 + 0x80));
             temp_f31_2 = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x84), *(float *)((char *)temp_r31_2 + 0x88));
-            *(float *)((char *)temp_r30_2 + 8) = temp_f31_2 * (float)cos((double)temp_f30_2);
-            *(float *)((char *)temp_r30_2 + 0xC) = temp_f31_2 * (float)sin((double)temp_f30_2);
-            *(float *)((char *)temp_r30_2 + 0x10) = fn_80129DC4(6, 0.0f, 6.283185f);
-            *(float *)((char *)temp_r30_2 + 0x14) = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x94), *(float *)((char *)temp_r31_2 + 0x98));
-            *(float *)((char *)temp_r30_2 + 0x18) = *(float *)((char *)temp_r31_2 + 0xA4);
-            *(int *)((char *)temp_r30_2 + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31_2 + 0xB4)));
+            temp_r30_2->vx = temp_f31_2 * (float)cos((double)temp_f30_2);
+            temp_r30_2->vy = temp_f31_2 * (float)sin((double)temp_f30_2);
+            temp_r30_2->a10 = fn_80129DC4(6, 0.0f, 6.283185f);
+            temp_r30_2->a14 = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x94), *(float *)((char *)temp_r31_2 + 0x98));
+            temp_r30_2->life = *(float *)((char *)temp_r31_2 + 0xA4);
+            temp_r30_2->id = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31_2 + 0xB4)));
         }
     }
 }
