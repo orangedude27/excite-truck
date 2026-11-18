@@ -405,6 +405,7 @@ extern "C" void fn_802B5F24(s32 arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
+__declspec(section ".sdata") extern double lbl_80564C68;
 void fn_802B5F98(void) {
     register char *base = lbl_8034A598;
     s32 index, i, j;
@@ -782,7 +783,7 @@ extern "C" void fn_802B6804(void) {
         void *current;
     } Item;
 
-    register char *base = lbl_8034A598;
+    const char *strs = lbl_8034A598;
     void *recordB;
     void *recordA;
     f32 step;
@@ -799,17 +800,16 @@ extern "C" void fn_802B6804(void) {
         Dummy *obj = (Dummy *)lbl_8055FA48;
         void *timing;
 
-        fn_802B67C8((s32)(base + 0x208));
+        fn_802B67C8((s32)(strs + 0x208));
         obj = (Dummy *)lbl_8055FA48;
-        recordA = obj->call(base + 0x218);
+        recordA = obj->call(strs + 0x218);
         obj = (Dummy *)lbl_8055FA48;
-        recordB = obj->call(base + 0x228);
+        recordB = obj->call(strs + 0x228);
         obj = (Dummy *)lbl_8055FA48;
-        timing = obj->get(base + 0x238);
+        timing = obj->get(strs + 0x238);
         step = *(f32 *)((u8 *)timing + 0x14);
     }
 
-    base = (char *)&lbl_804BFA70;
     i = 0;
     offset = 0;
     goto loop_test;
@@ -825,14 +825,13 @@ loop_body:
     s32 bitsA = *(volatile const s32 *)(source + 8);
     first.value = valueA;
     first.timeBits = bitsA;
-    f32 timeA = *(f32 *)((u8 *)&first + 8);
     first.unkC = *(volatile const s32 *)(source + 0xC);
     f32 time10A = *(volatile const f32 *)(source + 0x10);
     first.time10 = time10A;
     first.unk14 = *(volatile const s32 *)(source + 0x14);
     first.unk18 = *(volatile const s32 *)(source + 0x18);
     first.unk1C = *(volatile const s32 *)(source + 0x1C);
-    *(f32 *)((u8 *)&first + 8) = timeA + step * (f32)i;
+    *(f32 *)((u8 *)&first + 8) += step * (f32)i;
 
     if (lbl_8055FA30)
         selected = item->current;
@@ -846,20 +845,19 @@ loop_body:
     s32 bitsB = *(volatile const s32 *)(source + 8);
     second.value = valueB;
     second.timeBits = bitsB;
-    f32 timeB = *(f32 *)((u8 *)&second + 8);
     second.unkC = *(volatile const s32 *)(source + 0xC);
     f32 time10B = *(volatile const f32 *)(source + 0x10);
     second.time10 = time10B;
     second.unk14 = *(volatile const s32 *)(source + 0x14);
     second.unk18 = *(volatile const s32 *)(source + 0x18);
     second.unk1C = *(volatile const s32 *)(source + 0x1C);
-    *(f32 *)((u8 *)&second + 8) = timeB + step * (f32)i;
+    *(f32 *)((u8 *)&second + 8) += step * (f32)i;
     fn_80147230(&second, lbl_8055CE70, item);
 
     offset += 0x28;
     i++;
 loop_test:
-    if (i < ((s32 *)base)[1])
+    if (i < ((s32 *)&lbl_804BFA70)[1])
         goto loop_body;
 }
 #pragma use_lmw_stmw reset
