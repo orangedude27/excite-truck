@@ -304,6 +304,7 @@ static void matVecSM_8018(Vec_8018 *dest, const float *m, const Vec_8018 *v) {
         dest->z = m[2] * v->x + m[5] * v->y + m[8] * v->z;
     }
 }
+#pragma scheduling invalid_target
 void fn_8018CB3C(char *arg0) {
     float force[3];
     float rotation[12];
@@ -423,20 +424,15 @@ void fn_8018CB3C(char *arg0) {
     do {
         temp_r5 = M2C_FIELD(var_r20, char **, 0);
         if ((temp_r5 != 0) && ((int) M2C_FIELD(var_r20, int *, 0x7C) == 2)) {
-            temp_r6_2 = M2C_FIELD(temp_r5, int *, 0);
-            temp_r6_3 = M2C_FIELD(temp_r5, int *, 4);
-            *(int *)&matrix[0] = temp_r6_2;
-            *(int *)&matrix[1] = temp_r6_3;
-            *(int *)&matrix[2] = M2C_FIELD(temp_r5, int *, 8);
-            *(int *)&matrix[3] = M2C_FIELD(temp_r5, int *, 0xC);
-            *(int *)&matrix[4] = M2C_FIELD(temp_r5, int *, 0x10);
-            *(int *)&matrix[5] = M2C_FIELD(temp_r5, int *, 0x14);
-            *(int *)&matrix[6] = M2C_FIELD(temp_r5, int *, 0x18);
-            *(int *)&matrix[7] = M2C_FIELD(temp_r5, int *, 0x1C);
-            *(int *)&matrix[8] = M2C_FIELD(temp_r5, int *, 0x20);
-            *(int *)&matrix[9] = M2C_FIELD(temp_r5, int *, 0x24);
-            *(int *)&matrix[10] = M2C_FIELD(temp_r5, int *, 0x28);
-            *(int *)&matrix[11] = M2C_FIELD(temp_r5, int *, 0x2C);
+            {
+                int *mi = (int *)temp_r5;
+                *(Pair8018 *)&matrix[0] = *(Pair8018 *)&mi[0];
+                *(Pair8018 *)&matrix[2] = *(Pair8018 *)&mi[2];
+                *(Pair8018 *)&matrix[4] = *(Pair8018 *)&mi[4];
+                *(Pair8018 *)&matrix[6] = *(Pair8018 *)&mi[6];
+                *(Pair8018 *)&matrix[8] = *(Pair8018 *)&mi[8];
+                *(Pair8018 *)&matrix[10] = *(Pair8018 *)&mi[10];
+            }
             temp_f3 = M2C_FIELD(var_r20, float *, 0xC);
             temp_f2 = M2C_FIELD(var_r19, float *, 0xC) * temp_f3;
             temp_f1 = M2C_FIELD(var_r19, float *, 0x10) * temp_f3;
@@ -536,9 +532,9 @@ void fn_8018CB3C(char *arg0) {
             temp_r3_6 = M2C_FIELD(var_r20, char **, 0);
             matVecS_8018((Vec_8018 *)&rotated[0], (float *)temp_r3_6, (Vec_8018 *)&force[0]);
             fn_8014452C((int *)rotation, rotated[1], rotated[0], rotated[2]);
-            M2C_FIELD(var_r20, float *, 0x48) = (float) M2C_FIELD(var_r20, float *, 0x18);
-            M2C_FIELD(var_r20, float *, 0x4C) = (float) M2C_FIELD(var_r20, float *, 0x1C);
-            M2C_FIELD(var_r20, float *, 0x50) = (float) M2C_FIELD(var_r20, float *, 0x20);
+            M2C_FIELD(var_r20, int *, 0x48) = M2C_FIELD(var_r20, int *, 0x18);
+            M2C_FIELD(var_r20, int *, 0x4C) = M2C_FIELD(var_r20, int *, 0x1C);
+            M2C_FIELD(var_r20, int *, 0x50) = M2C_FIELD(var_r20, int *, 0x20);
             M2C_FIELD(var_r20, int *, 0x54) = (int) M2C_FIELD(var_r20, int *, 0x24);
             M2C_FIELD(var_r20, int *, 0x58) = (int) M2C_FIELD(var_r20, int *, 0x28);
             M2C_FIELD(var_r20, int *, 0x5C) = (int) M2C_FIELD(var_r20, int *, 0x2C);
@@ -552,9 +548,9 @@ void fn_8018CB3C(char *arg0) {
             fn_8018BFA0(var_r20 + 0x18, (float *)(arg0 + 0x70), (int *)rotation, temp_r6_2, 0, 0);
             if ((int) M2C_FIELD(var_r20, unsigned char *, 0x78) == 0) {
                 M2C_FIELD(var_r20, unsigned char *, 0x78) = 1U;
-                M2C_FIELD(var_r20, float *, 0x48) = (float) M2C_FIELD(var_r20, float *, 0x18);
-                M2C_FIELD(var_r20, float *, 0x4C) = (float) M2C_FIELD(var_r20, float *, 0x1C);
-                M2C_FIELD(var_r20, float *, 0x50) = (float) M2C_FIELD(var_r20, float *, 0x20);
+                M2C_FIELD(var_r20, int *, 0x48) = M2C_FIELD(var_r20, int *, 0x18);
+                M2C_FIELD(var_r20, int *, 0x4C) = M2C_FIELD(var_r20, int *, 0x1C);
+                M2C_FIELD(var_r20, int *, 0x50) = M2C_FIELD(var_r20, int *, 0x20);
                 M2C_FIELD(var_r20, int *, 0x54) = (int) M2C_FIELD(var_r20, int *, 0x24);
                 M2C_FIELD(var_r20, int *, 0x58) = (int) M2C_FIELD(var_r20, int *, 0x28);
                 M2C_FIELD(var_r20, int *, 0x5C) = (int) M2C_FIELD(var_r20, int *, 0x2C);
@@ -598,9 +594,9 @@ void fn_8018CB3C(char *arg0) {
             temp_r3_9 = M2C_FIELD(var_r20, char **, 0);
             matVecS_8018((Vec_8018 *)&rotated[0], (float *)temp_r3_9, (Vec_8018 *)&force[0]);
             fn_8014452C((int *)rotation, rotated[1], rotated[0], rotated[2]);
-            M2C_FIELD(var_r20, float *, 0x48) = (float) M2C_FIELD(var_r20, float *, 0x18);
-            M2C_FIELD(var_r20, float *, 0x4C) = (float) M2C_FIELD(var_r20, float *, 0x1C);
-            M2C_FIELD(var_r20, float *, 0x50) = (float) M2C_FIELD(var_r20, float *, 0x20);
+            M2C_FIELD(var_r20, int *, 0x48) = M2C_FIELD(var_r20, int *, 0x18);
+            M2C_FIELD(var_r20, int *, 0x4C) = M2C_FIELD(var_r20, int *, 0x1C);
+            M2C_FIELD(var_r20, int *, 0x50) = M2C_FIELD(var_r20, int *, 0x20);
             M2C_FIELD(var_r20, int *, 0x54) = (int) M2C_FIELD(var_r20, int *, 0x24);
             M2C_FIELD(var_r20, int *, 0x58) = (int) M2C_FIELD(var_r20, int *, 0x28);
             M2C_FIELD(var_r20, int *, 0x5C) = (int) M2C_FIELD(var_r20, int *, 0x2C);
@@ -639,9 +635,9 @@ void fn_8018CB3C(char *arg0) {
             }
             if ((int) M2C_FIELD(var_r20, unsigned char *, 0x78) == 0) {
                 M2C_FIELD(var_r20, unsigned char *, 0x78) = 1U;
-                M2C_FIELD(var_r20, float *, 0x48) = (float) M2C_FIELD(var_r20, float *, 0x18);
-                M2C_FIELD(var_r20, float *, 0x4C) = (float) M2C_FIELD(var_r20, float *, 0x1C);
-                M2C_FIELD(var_r20, float *, 0x50) = (float) M2C_FIELD(var_r20, float *, 0x20);
+                M2C_FIELD(var_r20, int *, 0x48) = M2C_FIELD(var_r20, int *, 0x18);
+                M2C_FIELD(var_r20, int *, 0x4C) = M2C_FIELD(var_r20, int *, 0x1C);
+                M2C_FIELD(var_r20, int *, 0x50) = M2C_FIELD(var_r20, int *, 0x20);
                 M2C_FIELD(var_r20, int *, 0x54) = (int) M2C_FIELD(var_r20, int *, 0x24);
                 M2C_FIELD(var_r20, int *, 0x58) = (int) M2C_FIELD(var_r20, int *, 0x28);
                 M2C_FIELD(var_r20, int *, 0x5C) = (int) M2C_FIELD(var_r20, int *, 0x2C);
