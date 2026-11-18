@@ -54,8 +54,7 @@ double cos(double);
 double sin(double);
  #pragma scheduling invalid_target
  #pragma push
- #pragma processor 750
- #pragma opt_propagation off
+  #pragma processor 750
  void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
     struct Vector {
         float x, y, z, w;
