@@ -123,37 +123,33 @@ void fn_80013CFC(f32 *valuePtr) {
 f32 fn_80013D60(f32 x) {
     f32 c4, cc;
     f32 y;
-    if (lbl_80560360 == x)
+    if (lbl_80560360 == x || lbl_80560368 == x)
         return x;
-    if (lbl_80560368 == x) {
-        return x;
-    } else {
+    y = lbl_8056036C;
+    if (x < y)
         y = lbl_8056036C;
-        if (x < y)
-            y = lbl_8056036C;
-        else if (x > lbl_80560368) {
-            y = lbl_80560368;
-        } else if (x > lbl_80560360) {
-            c4 = lbl_80560374;
-            cc = lbl_80560370;
-            cc *= x;
-            c4 *= x;
-            cc *= x;
-            c4 *= x;
-            x *= cc;
-            y = x + c4;
-        } else {
-            c4 = lbl_80560374;
-            cc = lbl_80560370;
-            cc *= x;
-            c4 *= x;
-            cc *= x;
-            c4 *= x;
-            x *= cc;
-            y = x - c4;
-        }
-        return y;
+    else if (x > lbl_80560368) {
+        y = lbl_80560368;
+    } else if (x > lbl_80560360) {
+        c4 = lbl_80560374;
+        cc = lbl_80560370;
+        cc *= x;
+        c4 *= x;
+        cc *= x;
+        c4 *= x;
+        x *= cc;
+        y = x + c4;
+    } else {
+        c4 = lbl_80560374;
+        cc = lbl_80560370;
+        cc *= x;
+        c4 *= x;
+        cc *= x;
+        c4 *= x;
+        x *= cc;
+        y = x - c4;
     }
+    return y;
 }
 
 #pragma scheduling invalid_target
