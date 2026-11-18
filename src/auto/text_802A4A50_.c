@@ -1143,6 +1143,7 @@ void fn_802A6758(void *arg0, f32 *arg1) {
     base[2] = z;
     *(s32 *)((u8 *)arg0 + 4) += 1;
 }
+#pragma scheduling on
 #pragma push
 #pragma processor 750
 void fn_802A6790(void *arg0) {
