@@ -1145,7 +1145,6 @@ extern void fn_802E317C(void *, ...);
 extern struct Unk_80437D88 lbl_80437D88;
 #pragma push
 #pragma scheduling invalid_target
-#pragma use_lmw_stmw off
 s32 fn_801C5B68(char *arg0, s32 arg1) {
     extern char lbl_8055E80C;
     register struct Unk_80437D88 *state = &lbl_80437D88;
