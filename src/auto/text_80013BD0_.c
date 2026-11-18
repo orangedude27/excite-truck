@@ -77,6 +77,7 @@ void fn_80148134(f32 *, f32 *, s32, f32, f32);
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 #pragma scheduling invalid_target
+#pragma pool_strings off
 extern "C" void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     class Obj {
     public:
@@ -203,13 +204,15 @@ void fn_80013EAC(s32 screen, s32 count, s32 arg2) {
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f32 farg0, f32 farg1, f32 farg2) {
+    register s32 m = mode;
+    register void *s = arg0;
     Rec7 L;
     Rec8 R1, R2, R3, R4, R5, R6, R7;
     char b1[20], b2[20], b3[20];
     f32 t;
     u8 *base = lbl_802FCB98;
     s32 n = 0;
-    void *obj = *(void **)((u8 *)arg0 + 0x50);
+    void *obj = *(void **)((u8 *)s + 0x50);
     Rec7 *p = (Rec7 *)VC(5, 0x70);
     if (p) {
         L.a = p->a;
@@ -232,9 +235,9 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
     L.x = L.x + t * ((lbl_80560388 + (L.x + L.e) + fn_80011EB0(*(s32 *)((u8 *)lbl_8055D350 + 0x1C))) - L.x);
     n = 0;
     if (*(u8 *)((u8 *)lbl_8055D350 + 1) != 0) {
-        if (mode != 0) {
+        if (m != 0) {
             Rec8 *q;
-            obj = *(void **)((u8 *)arg0 + 0x50);
+            obj = *(void **)((u8 *)s + 0x50);
             q = (Rec8 *)VC(3, 0xC0);
             if (q) {
                 CP8(R1, q);
@@ -242,7 +245,7 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
                 R1.y = L.y + L.f * (f32)n;
                 ((void (*)(void *))fn_801476C4)(&R1);
             }
-            obj = *(void **)((u8 *)arg0 + 0x50);
+            obj = *(void **)((u8 *)s + 0x50);
             q = (Rec8 *)VC(3, 0xD4);
             if (q) {
                 CP8(R2, q);
@@ -253,7 +256,7 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
             }
         } else {
             Rec8 *q;
-            obj = *(void **)((u8 *)arg0 + 0x50);
+            obj = *(void **)((u8 *)s + 0x50);
             q = (Rec8 *)VC(3, 0xE0);
             if (q) {
                 CP8(R3, q);
@@ -266,7 +269,7 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
     }
     if (first != 0 && *first != 0) {
         Rec8 *q;
-        obj = *(void **)((u8 *)arg0 + 0x50);
+        obj = *(void **)((u8 *)s + 0x50);
         q = (Rec8 *)VC(3, 0xF4);
         if (q) {
             CP8(R4, q);
@@ -274,7 +277,7 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
             R4.y = L.y + L.f * (f32)n;
             ((void (*)(void *))fn_801476C4)(&R4);
         }
-        obj = *(void **)((u8 *)arg0 + 0x50);
+        obj = *(void **)((u8 *)s + 0x50);
         q = (Rec8 *)VC(3, 0x104);
         if (q) {
             CP8(R5, q);
@@ -287,7 +290,7 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
     }
     if (second != 0 && *second != 0) {
         Rec8 *q;
-        obj = *(void **)((u8 *)arg0 + 0x50);
+        obj = *(void **)((u8 *)s + 0x50);
         q = (Rec8 *)VC(3, 0x110);
         if (q) {
             CP8(R6, q);
@@ -295,7 +298,7 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
             R6.y = L.y + L.f * (f32)n;
             ((void (*)(void *))fn_801476C4)(&R6);
         }
-        obj = *(void **)((u8 *)arg0 + 0x50);
+        obj = *(void **)((u8 *)s + 0x50);
         q = (Rec8 *)VC(3, 0x124);
         if (q) {
             CP8(R7, q);
@@ -1130,7 +1133,7 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
     f32 *p;
     f32 *q;
     s32 i;
-    f64 z;
+    f32 z;
     f32 ox, oy, oz;
     f32 k1, k2;
     vec[0] = lbl_80560360;
