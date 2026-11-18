@@ -701,6 +701,7 @@ void fn_8018CB3C(char *arg0) {
         var_r19 += 0x40;
     } while (var_r18 < 0x11);
 }
+#pragma pop
 
 extern float lbl_80561FC8, lbl_80561FCC, lbl_80561FD8, lbl_80561FDC, lbl_80561FE0, lbl_80561FE4, lbl_80561FE8, lbl_8055E460;
 extern float lbl_80561FD0, lbl_80561FD4, lbl_80558DC4;
