@@ -6676,7 +6676,7 @@ class Processor { public: virtual void d0(); virtual void d1(); virtual s32 rect
     if (var_r5_8 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320A04, 0x3D, lbl_803209CC, arg2);
     }
-    if (fn_8002F72C(&reader.next, base) != 0) {
+    if (fn_8002F72C(&reader.next, lbl_80329530) != 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803209B8, 0x3E, lbl_80320980);
     }
     reader.cursor = arg2;
