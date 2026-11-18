@@ -2547,8 +2547,8 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           s32 temp_r6;
                           s32 temp_r8_2;
                           register s32 var_r23_3;
-                          s32 var_r23_5;
-                          s32 var_r24;
+                          register s32 var_r23_5;
+                          register s32 var_r24;
                           register s32 var_r25;
                           s32 var_r27_2;
                           s32 var_r3;
@@ -3028,8 +3028,8 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           } else {
                               ((void (*)(u32, u32, u32, u32))GXSetBlendMode)(1U, 4U, 5U, 0xFU);
                           }
-                  return (var_r25 != 0) && (var_r26 != 0);
-                          }
+        return (var_r25 != 0) && (var_r26 != 0);
+                        }
  extern "C" void fn_800DAFA8(void *arg, void *obj) {
     /* C-callable thunk: invoke the virtual method at vtable slot 3 on obj, passing arg. */
     struct Dispatch {
