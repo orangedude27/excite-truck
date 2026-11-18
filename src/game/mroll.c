@@ -1078,46 +1078,12 @@ extern "C" void *fn_80016BC8(void *, s32);
 extern "C" void *fn_80018A8C(void *, s32, s32 *, s32);
 extern "C" s32 fn_80255918(void *, void *);
 extern "C" char lbl_8034287C[];
-static inline void saveOldIdx_80241EF0(CtxObj_80241EF0 *ctx) {
+static inline void updateCtx_80241EF0(CtxObj_80241EF0 *ctx, void *record) {
     if (ctx->record != 0) {
         s32 savedIdx = ctx->idx;
         void *sub = fn_80016BC8(ctx->record, ctx->field3C);
         *(s32 *)((u8 *)sub + 4) = savedIdx;
     }
-}
-static inline void *loadRecord_80241EF0(Collection_80241EF0 *col, s32 index, s32 *field14, s32 *field10, char *name2C, char *name4C) {
-    void *item = col->getItem(index);
-    void *record = fn_8001668C(item, 0);
-    *field14 = *(s32 *)((u8 *)record + 4);
-    *field10 = *(s32 *)((u8 *)record + 0x9C);
-
-    {
-        s32 n = 0x20;
-        char *dst = name2C;
-        char *src = (char *)item;
-        while ((*dst++ = *src++) != 0) {
-            if (--n <= 0) {
-                dst[-1] = 0;
-                break;
-            }
-        }
-    }
-
-    {
-        char *src = (char *)record + 0xC;
-        s32 n = 0x20;
-        char *dst = name4C;
-        while ((*dst++ = *src++) != 0) {
-            if (--n <= 0) {
-                dst[-1] = 0;
-                break;
-            }
-        }
-    }
-    return record;
-}
-static inline void updateCtx_80241EF0(CtxObj_80241EF0 *ctx, void *record) {
-    saveOldIdx_80241EF0(ctx);
     ctx->record = record;
     s32 curIdx = ctx->idx;
     if (*(s32 *)((u8 *)record + 0x98) - 1 < curIdx) {
