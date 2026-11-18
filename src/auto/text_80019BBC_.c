@@ -194,6 +194,13 @@ extern "C" float fn_80019FD4(void *arg0, int arg1, float farg0) {
 }
 
 #pragma opt_unroll_loops off
+/* Tear down one truck-draw record, one of the 0x48-byte entries fn_80019C68
+ * builds.  First the shared TrackMarker: every record holds a reference to the
+ * one global marker, so dropping the last one frees it.  Then every ring-challenge
+ * map-marker record goes back to its free state, and finally the record's own
+ * textures are released - the render target at +0x04 and the five named textures -
+ * each id left at -2 so a second call cannot release it again, and the TruckDraw
+ * at +0x10 is deleted. */
 extern "C" void fn_8001A04C(int *record) {
 #define gTrackMarker      lbl_8055D5B4 /* the TrackMarker every truck-draw record shares */
 #define gTrackMarkerRefs  lbl_8055D5B8 /* how many records are alive and using it */
