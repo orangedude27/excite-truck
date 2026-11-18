@@ -58,6 +58,7 @@ typedef struct {              /* one competitor of the race, 0x78 bytes */
 typedef struct {              /* what lbl_80435780 points at */
     Ent78 entry[8];
     s32 count;                /* 0x3C0 competitors in the table */
+    s32 pad;                  /* 0x3C4 */
     s32 order[8];             /* 0x3C8 entry indices, qsort'ed by placing */
 } CompetitorTable;
 typedef struct {              /* one RaceResultTable record, 0x1C bytes */
@@ -433,7 +434,6 @@ void fn_801AED74(void)
   register int byteOffset;
   register float value;
   register int zero;
-  register int progress;
   if ((*((unsigned char *) (&lbl_8055E634))) == 0)
   {
     base = lbl_8055E624;
@@ -462,7 +462,6 @@ void fn_801AED74(void)
 
     table = (int **) lbl_8055E620;
     zero = 0;
-    progress = 0;
     for (j = 0; j < 8; j += 4)
     {
       entry = table[j + 0];
@@ -511,13 +510,12 @@ void fn_801AED74(void)
         byteOffset = 0;
         while (count < entry[1])
         {
-          *((short *) ((((char *) entry[0]) + byteOffset) + 6)) = zero;
+          *((short *) ((((char *) entry[byteOffset * 0]) + byteOffset) + 6)) = zero;
           count++;
           byteOffset += 8;
         }
 
       }
-      progress += 4;
     }
 
   }
@@ -525,6 +523,7 @@ void fn_801AED74(void)
 }
 #pragma pop
 void fn_801AEF28(Src *arg0) {
+#pragma paired_single off
     int *p;
     int *q;
     int i, off;
