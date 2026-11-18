@@ -1648,10 +1648,11 @@ finish:
 }
 #pragma scheduling reset
 #pragma pop
-static inline int fn_80281138_find(int index, void **items, void *key, int count) {
-    for (; index < count; ++items, ++index) {
+static inline int fn_80281138_find(void **items, int count, void *key) {
+    int i;
+    for (i = 0; i < count; ++i, ++items) {
         if (*items == key)
-            return index;
+            return i;
     }
     return -1;
 }
@@ -1669,14 +1670,14 @@ extern "C" int fn_80281138(void) {
     char buffer1[0x1E];
     char buffer2[0x1E];
 
-    index = fn_80281138_find(0, lbl_804B3048.items, (void *)lbl_8055F688,
-                             lbl_804B3048.count);
+    index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count,
+                             (void *)lbl_8055F688);
     if (index >= 0 && fn_802368EC() != 0) {
         if (*(unsigned char *)((char *)lbl_8055F688 + 0x64) != 0) {
             index = 5;
         } else {
             key = (void *)lbl_8055F688;
-            index = fn_80281138_find(0, lbl_804B3048.items, key, lbl_804B3048.count);
+            index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, key);
         }
         ((void (*)(char *, int, const char *, ...))fn_801345D8)(
             buffer1, 0x1E, lbl_8034848C, index + 1);
@@ -1688,7 +1689,7 @@ extern "C" int fn_80281138(void) {
         if (*(unsigned char *)((char *)selected + 0x64) != 0) {
             index = 5;
         } else {
-            index = fn_80281138_find(0, lbl_804B3048.items, selected, lbl_804B3048.count);
+            index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, selected);
         }
         ((void (*)(char *, int, const char *, ...))fn_801345D8)(
             buffer2, 0x1E, lbl_8034849C, index + 1);
