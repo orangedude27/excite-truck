@@ -12495,16 +12495,6 @@ done:
     return result;
 }
 #pragma pop
-static inline s32 fn_800B8520_classify(u32 n) {
-    if (n < 0xFF5) {
-        return 0;
-    }
-    if (n < 0xFFF5) {
-        return 1;
-    }
-    return 2;
-}
-
 s32 fn_800B8520(void *arg0, u32 *arg1) {
     u8 *p = (u8 *)arg0;
     u8 countA = 0;
