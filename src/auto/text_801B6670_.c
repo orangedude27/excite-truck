@@ -11,9 +11,9 @@ typedef struct {
 } UnkEntry;
 
 static inline void InitEntry(UnkEntry *entry, int id, const char *name, const char *description, float value, float scale) {
+    entry->id = id;
     entry->name = name;
     entry->description = description;
-    entry->id = id;
     entry->unk_0x10 = 0;
     entry->unk_0x14 = 0;
     entry->value = value;
