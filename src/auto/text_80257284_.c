@@ -50,6 +50,7 @@ public:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80257284(void) {
+    /* build probe */
     typedef struct { int v[5]; } Header;
     typedef struct { int label; int type; int value; int flags; int id; } Entry;
     typedef struct { Header header; Entry entries[9]; int object[0x74]; } Frame;
@@ -211,56 +212,66 @@ int fn_802574E0(int self, int deletingFlag) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_80257558(void *arg0, void *arg1) {
-    int outer;
-    int inner;
+    typedef struct {
+        char pad0[0x18];
+        int field_18;
+        char table_1c[8];
+        int count_24;
+        char pad28[0x24];
+        int field_4c;
+        char field_50;
+    } Selector;
+    typedef struct {
+        char pad[8];
+        char name[8];
+    } Entry;
+    Selector *self = (Selector *)arg0;
+    register int outer, inner;
     int found;
     int index;
-    int name;
-    int count;
-    void *entry;
+    Entry *entry;
     char *candidate;
-    *(int *)((char *)arg0 + 0x18) = 0;
+
+    self->field_18 = 0;
     outer = 0;
     while (outer < fn_80012818()) {
-        entry = fn_80012820(outer);
+        entry = (Entry *)fn_80012820(outer);
         found = 0;
         inner = 0;
-        do {
+        while (found == 0 && inner < *(int *)((char *)entry + 0x70)) {
             if (((MatchDispatch *)*(void **)((char *)fn_80012870(outer, inner) + 0x20))->matches(lbl_8055C1F8) != 0) {
                 found = 1;
             }
             inner++;
-        } while (found == 0 && inner < *(int *)((char *)entry + 0x70));
+        }
         if (found != 0) {
-            name = (int)fn_800081BC((char *)entry + 8);
+            inner = (int)fn_800081BC(&entry->name);
             found = 0;
             index = 0;
-            do {
-                candidate = (char *)fn_8022D850((char *)arg0 + 0x1C, index, 1, 0);
-                if (stricmp((char *)name, candidate) == 0) {
+            while (found == 0 && index < self->count_24) {
+                candidate = (char *)fn_8022D850(&self->table_1c, index, 1, 0);
+                if (stricmp((char *)inner, candidate) == 0) {
                     found = 1;
                 }
                 index++;
-            } while (found == 0 && index < *(int *)((char *)arg0 + 0x24));
+            }
             if (found == 0) {
-                count = *(int *)((char *)arg0 + 0x24);
-                fn_8022D894((char *)arg0 + 0x1C, count, 1, (void *)name, 0);
-                fn_8022D894((char *)arg0 + 0x1C, count, 0, fn_80008188((char *)entry + 8), 0);
+                found = self->count_24;
+                fn_8022D894(&self->table_1c, found, 1, (void *)inner, 0);
+                fn_8022D894(&self->table_1c, found, 0, fn_80008188(&entry->name), 0);
             }
         }
         outer++;
     }
-    *(int *)((char *)arg0 + 0x4C) = 0;
-    fn_8022D894((char *)arg0 + 0x1C, *(int *)((char *)arg0 + 0x4C), 0,
-                fn_8022D850((char *)arg0 + 0x1C, 0, 0, 0), 1);
-    *(char *)((char *)arg0 + 0x50) = 1;
+    self->field_4c = 0;
+    fn_8022D894(&self->table_1c, self->field_4c, 0,
+                fn_8022D850(&self->table_1c, 0, 0, 0), 1);
+    self->field_50 = 1;
 }
 
-#pragma use_lmw_stmw off
-#pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_802576EC(void *arg0) {
     char *self = (char *)arg0;
-    int mode;
     char *entry;
     int pos;
     char *key;
@@ -298,14 +309,16 @@ extern "C" void fn_802576EC(void *arg0) {
         }
         *(unsigned char *)(self + 0x88) = 0;
     }
-    mode = *(int *)(self + 0x18) == 0 ? 1 : 2;
-    fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0, fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0), mode);
+    fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0,
+                fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0),
+                *(int *)(self + 0x18) == 0 ? 1 : 2);
     if (*(int *)(self + 0x5C) > 0) {
-        mode = *(int *)(self + 0x18) == 1 ? 1 : 2;
-        fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0, fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0), mode);
+        fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0,
+                    fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0),
+                    *(int *)(self + 0x18) == 1 ? 1 : 2);
     }
 }
-#pragma cplusplus reset
+#pragma scheduling on
 
 #pragma cplusplus reset
 
