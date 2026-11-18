@@ -502,73 +502,82 @@ void fn_80177138(void) {
 
 #pragma push
 #pragma opt_common_subs off
+/* Step the phys-fader ramp once, every frame (fn_80176A6C).  While a fade
+ * runs (mode FADE_MODE_IN/OUT) `alpha` climbs towards 0xFF: by frame at
+ * lbl_80561B40/timeScale units per frame while the physics module is down
+ * (at most 2 frames per step), or by real time at 255 units per 750 ms once
+ * it is up (at most 33 ms per step).  With the Wii Home menu open an
+ * outgoing fade is instead frozen just short of the end (alpha clamped to
+ * 0xFA, hold re-armed) so its callback cannot fire.  Once alpha has sat at
+ * 0xFF for `hold` steps, the mode becomes FADE_MODE_IDLE (faded in) or
+ * FADE_MODE_DONE (faded out) and the armed onDone callback runs once. */
 void fn_801771A8(void) {
-    f32 f;
-    s32 d, t, v;
-    if (*(u32 *)(lbl_80430558 + 0xC) - 1 <= 1U) {
+    f32 speed;
+    s32 elapsed, ramp, value;
+    if ((u32)fader.mode - 1 <= 1U) {
         if (fn_802ECC10() != 0) {
-            if (*(s32 *)(lbl_80430558 + 0xC) == 2) {
-                s32 c = lbl_80430558[0x14];
-                *(s32 *)(lbl_80430558 + 8) = 7;
-                c = c < 0xFA ? c : 0xFA;
-                lbl_80430558[0x14] = c;
+            if (fader.mode == FADE_MODE_OUT) {
+                s32 alpha = fader.alpha;
+                fader.hold = 7;
+                alpha = alpha < 0xFA ? alpha : 0xFA;
+                fader.alpha = alpha;
             }
-        } else if ((u8)lbl_8055E3BD == 0) {
-            s32 n, cur, q, tick, last;
+        } else if ((u8)sPhysicsFlag == 0) {
+            s32 n, cur, step, frame, last;
             if ((s32)fn_80176A1C() == 2) {
-                f = fn_80176A2C();
+                speed = fn_80176A2C();
             } else {
-                f = lbl_80561B1C;
+                speed = lbl_80561B1C; /* 1.0: no time scaling outside gameplay */
             }
-            f = (f > lbl_80561B30) ? f : lbl_80561B30;
-            q = (s32)(lbl_80561B40 / f);
-            last = *(s32 *)lbl_80430558;
-            tick = lbl_8055E3C4;
-            cur = lbl_80430558[0x14];
-            d = tick - last;
-            n = (d > 2) ? 2 : d;
-            t = cur + ((n << 8) - n) / q;
-            t = t & ((-t & ~t) >> 31);
-            v = 0xFF;
-            if (t < 0xFF) {
-                v = t;
+            speed = (speed > lbl_80561B30) ? speed : lbl_80561B30; /* >= 0.001 */
+            step = (s32)(lbl_80561B40 / speed); /* 45.0: ramp units per frame */
+            last = fader.lastTime;
+            frame = sFrameCount;
+            cur = fader.alpha;
+            elapsed = frame - last;
+            n = (elapsed > 2) ? 2 : elapsed;
+            ramp = cur + ((n << 8) - n) / step; /* + n * 255 / step */
+            ramp = ramp & ((-ramp & ~ramp) >> 31);
+            value = 0xFF;
+            if (ramp < 0xFF) {
+                value = ramp;
             }
-            *(s32 *)lbl_80430558 = tick;
-            lbl_80430558[0x14] = v;
+            fader.lastTime = frame;
+            fader.alpha = value;
         } else {
-            s32 now = fn_802E2C20();
+            s32 now = fn_802E2C20(); /* milliseconds */
             s32 n = 0x21;
             s32 cur;
-            d = now - *(s32 *)(lbl_80430558 + 4);
-            cur = lbl_80430558[0x14];
-            if (d <= 0x21) {
-                n = d;
+            elapsed = now - fader.lastTick;
+            cur = fader.alpha;
+            if (elapsed <= 0x21) {
+                n = elapsed;
             }
-            t = cur + ((n << 8) - n) / 750;
-            t = t & ((-t & ~t) >> 31);
-            v = 0xFF;
-            if (t < 0xFF) {
-                v = t;
+            ramp = cur + ((n << 8) - n) / 750; /* 750 ms for the full ramp */
+            ramp = ramp & ((-ramp & ~ramp) >> 31);
+            value = 0xFF;
+            if (ramp < 0xFF) {
+                value = ramp;
             }
-            lbl_80430558[0x14] = v;
-            *(s32 *)(lbl_80430558 + 4) = now;
+            fader.alpha = value;
+            fader.lastTick = now;
         }
     }
-    if (lbl_80430558[0x14] == 0xFF && *(s32 *)(lbl_80430558 + 8) > 0) {
-        *(s32 *)(lbl_80430558 + 8) = *(s32 *)(lbl_80430558 + 8) - 1;
+    if (fader.alpha == 0xFF && fader.hold > 0) {
+        fader.hold = fader.hold - 1;
     }
-    if (lbl_80430558[0x14] == 0xFF && *(s32 *)(lbl_80430558 + 8) <= 0 &&
-        *(u32 *)(lbl_80430558 + 0xC) - 1 <= 1U) {
-        s32 st = 3;
+    if (fader.alpha == 0xFF && fader.hold <= 0 &&
+        (u32)fader.mode - 1 <= 1U) {
+        s32 st = FADE_MODE_DONE;
         void (*cb)(void);
-        if (*(s32 *)(lbl_80430558 + 0xC) == 1) {
-            st = 0;
+        if (fader.mode == FADE_MODE_IN) {
+            st = FADE_MODE_IDLE;
         }
-        *(s32 *)(lbl_80430558 + 0xC) = st;
-        cb = *(void (**)(void))(lbl_80430558 + 0x10);
+        fader.mode = st;
+        cb = fader.onDone;
         if (cb != 0) {
             cb();
-            *(void **)(lbl_80430558 + 0x10) = 0;
+            fader.onDone = 0;
         }
     }
 }
