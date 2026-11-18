@@ -54,8 +54,8 @@ void fn_801B6670(void) {
     table[1].description = (const char *) (base + 0x34);
     table[0].unk_0x10 = 0;
     table[0].unk_0x14 = 0;
-    table[0].value = (float) lbl_805626D8;
     table[0].scale = (float) lbl_805626DC;
+    table[0].value = (float) lbl_805626D8;
     table[1].unk_0x10 = 0;
     table[1].unk_0x14 = 0;
     table[1].value = (float) lbl_805626D8;
