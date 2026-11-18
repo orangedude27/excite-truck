@@ -211,35 +211,51 @@ public:
 };
 #pragma push
 #pragma scheduling invalid_target
-extern "C" int fn_80204EA0(const char *arg0) {
-    char buf[0x64];
-    int result = 0;
-    int r;
-    int *temp;
-    temp = lbl_8055ED5C;
-    if (temp[4] != 0) {
-        fn_801345D8(buf, 0x64, lbl_8055B4AC, temp[4], arg0);
-        if (temp[3] != 0 && ((Res80204EA0 *)temp[3])->has(buf)) {
-            r = ((Res80204EA0 *)temp[3])->get(buf);
-        } else if (((Res80204EA0 *)temp[2])->has(buf)) {
-            r = ((Res80204EA0 *)temp[2])->get(buf);
+extern "C" int fn_80204EA0(const char *name) {
+    /* A difficulty setting set: has() at +0xC, the value string get() at +0x14. */
+    class DifficultySet {
+    public:
+        virtual void unused0();
+        virtual int has(void *);
+        virtual void unused2();
+        virtual int get(void *);
+    };
+    /* The 0x14-byte block fn_80204BB8 publishes in lbl_8055ED5C. */
+    struct DifficultyInfo {
+        int sceneType;           /* +0x00 */
+        void *propertyGroup;     /* +0x04 the "difficulty.val" group */
+        DifficultySet *sceneSet; /* +0x08 the scene's difficulty set */
+        DifficultySet *stageSet; /* +0x0C the stage's, 0 while none applies */
+        const char *contestName; /* +0x10 "excite"/"zone"/"fs", 0 if unknown */
+    };
+    char key[0x64];
+    DifficultyInfo *info;
+    int setting = 0;
+    int found;
+    info = (DifficultyInfo *)lbl_8055ED5C;
+    if (info->contestName != 0) {
+        fn_801345D8(key, 0x64, lbl_8055B4AC, info->contestName, name);
+        if (info->stageSet != 0 && info->stageSet->has(key)) {
+            found = info->stageSet->get(key);
+        } else if (info->sceneSet->has(key)) {
+            found = info->sceneSet->get(key);
         } else {
-            r = 0;
+            found = 0;
         }
-        result = r;
+        setting = found;
     }
-    if (result == 0) {
-        if (temp[3] != 0 && ((Res80204EA0 *)temp[3])->has((void *)arg0)) {
-            r = ((Res80204EA0 *)temp[3])->get((void *)arg0);
-        } else if (((Res80204EA0 *)temp[2])->has((void *)arg0)) {
-            r = ((Res80204EA0 *)temp[2])->get((void *)arg0);
+    if (setting == 0) {
+        if (info->stageSet != 0 && info->stageSet->has((void *)name)) {
+            found = info->stageSet->get((void *)name);
+        } else if (info->sceneSet->has((void *)name)) {
+            found = info->sceneSet->get((void *)name);
         } else {
-            r = 0;
+            found = 0;
         }
-        result = r;
+        setting = found;
     }
-    if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
-    return result;
+    if (setting == 0) fn_802E317C(lbl_8033BBF4, name);
+    return setting;
 }
 #pragma cplusplus reset
 
