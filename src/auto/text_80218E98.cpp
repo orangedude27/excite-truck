@@ -384,7 +384,7 @@ extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
 extern "C" u8 lbl_8033F0FC[];
 extern "C" void fn_8021BE48(void *);
-#define RET_802223C4 void
+#define RET_802223C4 void*
 extern "C" RET_802223C4 fn_802223C4(void *arg0, s32 arg1);
 extern f32 lbl_805634C4;
 #pragma push
