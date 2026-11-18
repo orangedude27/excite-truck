@@ -1078,12 +1078,15 @@ extern "C" void *fn_80016BC8(void *, s32);
 extern "C" void *fn_80018A8C(void *, s32, s32 *, s32);
 extern "C" s32 fn_80255918(void *, void *);
 extern "C" char lbl_8034287C[];
-static inline void updateCtx_80241EF0(CtxObj_80241EF0 *ctx, void *record) {
+static inline void saveOldIdx_80241EF0(CtxObj_80241EF0 *ctx) {
     if (ctx->record != 0) {
         s32 savedIdx = ctx->idx;
         void *sub = fn_80016BC8(ctx->record, ctx->field3C);
         *(s32 *)((u8 *)sub + 4) = savedIdx;
     }
+}
+static inline void updateCtx_80241EF0(CtxObj_80241EF0 *ctx, void *record) {
+    saveOldIdx_80241EF0(ctx);
     ctx->record = record;
     s32 curIdx = ctx->idx;
     if (*(s32 *)((u8 *)record + 0x98) - 1 < curIdx) {
@@ -1148,57 +1151,6 @@ static inline void updateInfoDst_80241EF0(InfoDstObj_80241EF0 *infoDst, char *na
         infoDst->texts[3][0] = 0;
         infoDst->texts[4][0] = 0;
     }
-}
-struct SelfObj_80241EF0 {
-    u8 pad00[0x10];
-    s32 *field10;
-    s32 *field14;
-    CtxObj_80241EF0 *ctx;
-    InfoDstObj_80241EF0 *infoDst;
-    u8 *field20;
-    Collection_80241EF0 *col;
-    s32 index;
-    char name2C[0x20];
-    char name4C[0x20];
-    s32 result;
-};
-static inline void updateMain_80241EF0(SelfObj_80241EF0 *self) {
-    if (self->index < 0) return;
-    if (self->index >= self->col->getCount()) return;
-    void *item = self->col->getItem(self->index);
-    void *record = fn_8001668C(item, 0);
-    *self->field14 = *(s32 *)((u8 *)record + 4);
-    *self->field10 = *(s32 *)((u8 *)record + 0x9C);
-
-    {
-        s32 n = 0x20;
-        char *dst = self->name2C;
-        char *src = (char *)item;
-        while ((*dst++ = *src++) != 0) {
-            if (--n <= 0) {
-                dst[-1] = 0;
-                break;
-            }
-        }
-    }
-
-    {
-        char *src = (char *)record + 0xC;
-        s32 n = 0x20;
-        char *dst = self->name4C;
-        while ((*dst++ = *src++) != 0) {
-            if (--n <= 0) {
-                dst[-1] = 0;
-                break;
-            }
-        }
-    }
-
-    self->result = self->col->getResult(self->index);
-    *(bool *)(self->field20 + 0xDD) = (self->result == 0);
-
-    updateCtx_80241EF0(self->ctx, record);
-    updateInfoDst_80241EF0(self->infoDst, self->name2C);
 }
 extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
     struct SelfObj {
