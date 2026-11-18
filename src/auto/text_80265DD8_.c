@@ -1733,7 +1733,7 @@ extern float lbl_80563C40, lbl_80563CA0, lbl_80563CA4, lbl_80563CA8, lbl_80563CA
  #pragma inline_depth(3)
  #pragma always_inline on
  #pragma inline_max_size(2000)
- static inline void fn_80268E94_multiply(float *out, const float *a, const float *b) {
+ static __inline void fn_80268E94_multiply(float *out, const float *a, const float *b) {
  float t0,t1,t2,t3,t4,t5,t6,t7,t8;
  if (out == a || out == b) {
  t0 = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
