@@ -37,7 +37,7 @@ extern int fn_802C7760(void *, float *, float *, float *, float *, float *, floa
 #pragma scheduling invalid_target
 extern float lbl_80562CF0;
 extern void PSVECCrossProduct(const float *, const float *, float *);
-#pragma scheduling on
+#pragma opt_propagation off
 void fn_801E3640(void *arg0, float *arg1) {
     float basis[3];
     float x = *(float *)arg0;
@@ -58,20 +58,22 @@ void fn_801E3640(void *arg0, float *arg1) {
     PSVECCrossProduct(basis, arg1 + 6, arg1);
     PSVECCrossProduct(arg1 + 6, arg1, arg1 + 3);
 }
-
-#pragma dont_inline on
 /* Halve the red, green and blue bytes of a packed 0xAARRGGBB colour, passing the alpha byte through. */
+#pragma push
+#pragma dont_inline on
 int fn_801E36F0(int color) {
     return (((unsigned int)color >> 1) & 0x7F7F7F) | ((unsigned int)color & 0xFF000000);
 }
+#pragma pop
 #pragma dont_inline off
 
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_801E370C(float *arg0, int arg1, int arg2) {
-    float out[3];
-    float in[3];
+    float outbuf[3], inbuf[3];
+    float *out = outbuf;
+    float *in = inbuf;
     float c, half;
     int i;
     fn_802C8BD0(lbl_8055EA6C);
@@ -86,7 +88,7 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
             in[0] = ((i + (i >> 1)) & 1) ? lbl_80562CF8 : lbl_80562CFC;
             in[1] = (i & 2) ? lbl_80562CF8 : lbl_80562CFC;
             in[2] = c;
-            if (&out[0] == &in[0]) {
+            if (out == in) {
                 out[0] = (in[0] * arg0[0] + in[1] * arg0[3]) + in[2] * arg0[6];
                 out[1] = (in[0] * arg0[1] + in[1] * arg0[4]) + in[2] * arg0[7];
                 out[2] = (in[0] * arg0[2] + in[1] * arg0[5]) + in[2] * arg0[8];
@@ -253,16 +255,17 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     fn_802C8D74();
     fn_802C9904();
 }
+#pragma scheduling reset
 void fn_801E3FC8(void *arg0, float farg0) {
     f32 sp[12];
-    float zero;
     float tx;
     float tz;
+    float zero;
     float s;
     float ty;
     int handle;
 
-    zero = lbl_80562CF4;
+    zero = 0.0f;
     sp[9] = zero;
     tx = ((f32 *)arg0)[0];
     tz = ((f32 *)arg0)[2];
@@ -284,10 +287,6 @@ void fn_801E3FC8(void *arg0, float farg0) {
     sp[11] = tz;
     fn_802C744C(handle, sp);
 }
-
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
 int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
     float *a;
     float *b = (float *)arg1;
@@ -470,10 +469,8 @@ void fn_801E43BC(void *arg0, float scale, float alpha) {
 #pragma scheduling on
 #pragma pop
 extern void fn_801E370C();
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
 void fn_801E44F4(void *arg0, void *arg1, float farg0, float farg1, float farg2) {
+    #pragma scheduling on
     float sp[12];
     float temp_f11, temp_f10, temp_f9, temp_f8, temp_f7;
     float temp_f6, temp_f2, temp_f1, temp_f0, temp_f5, temp_f4, temp_f3;
@@ -505,5 +502,4 @@ void fn_801E44F4(void *arg0, void *arg1, float farg0, float farg1, float farg2) 
     sp[8] = temp_f0;
     fn_801E370C(sp, (int)arg1, (int)arg1);
 }
-#pragma scheduling on
-#pragma pop
+#pragma scheduling invalid_target
