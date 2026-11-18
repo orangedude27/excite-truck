@@ -2019,9 +2019,10 @@ void fn_80069FE8(void)
             DBPrintf_8006CFA8((const char *)(strings + 0x338), *(u16 *)(version + 2) & 0xFFF);
 
             if ((*(u16 *)(version + 2) & 0xFFF) == 0xA7) {
-                volatile u8 *addr = lbl_803135C0;
                 u32 first, second, byte;
+                volatile u8 *addr;
                 DBPrintf_8006CFA8((const char *)(strings + 0x360));
+                addr = lbl_803135C0;
                 first = addr[3];
                 second = addr[7];
                 byte = addr[2];
@@ -2743,15 +2744,15 @@ void fn_8006B330(void) {
 extern u8 BTA_DmAddDevice(u8 *, u8 *, u32, u8);
 extern void BTA_HhAddDev(const u8 *, u16, u8, u8, const void *);
 void fn_8006B488(void) {
-    register u8 *base = lbl_803130C8;
-    register u8 *control = lbl_80392960;
+    u8 *base = lbl_803130C8;
+    u8 *control = lbl_80392960;
     u8 *info = (u8 *)((void *(*)(void))WUDiGetDevInfo)();
     u8 status;
     BOOL interrupt;
     u8 state;
+    f64 argData;
     u16 sp10;
     u32 sp14;
-    f64 argData;
     status = BTA_DmAddDevice(info + 0x40, info + 0x46, 0, 0);
     DBPrintf_8006CFA8((const char *)(base + 0x5D8), status);
     if (memcmp(info, base + 0x1A0, 0x10) == 0) {
@@ -6237,9 +6238,10 @@ u8 BTA_DmAddDevice(u8 *bd_addr, u8 *link_key, u32 trusted_mask, u8 is_trusted) {
     u32 bit_index;
     u8 index = 0;
     u8 result;
+
     memset(service_mask, 0, sizeof(service_mask));
     if (is_trusted != 0) {
-        do {
+        while (trusted_mask != 0 && index < 0x17) {
             bit = 1u << index;
             if ((trusted_mask & bit) != 0u) {
                 trusted_mask &= ~bit;
@@ -6248,8 +6250,8 @@ u8 BTA_DmAddDevice(u8 *bd_addr, u8 *link_key, u32 trusted_mask, u8 is_trusted) {
                 bit_index = mapped - (mapped & 0x1FE0u);
                 *(u32 *)((u8 *)service_mask + offset) |= 1u << bit_index;
             }
-            ++index;
-        } while (trusted_mask != 0u && index < 0x17u);
+            index++;
+        }
     }
     fn_8006EAD0();
     result = ((BOOLEAN (*)(BD_ADDR, DEV_CLASS, BD_NAME, BD_FEATURES,
@@ -8427,17 +8429,19 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
 
     entry = lbl_803C0F78 + 0x34;
     i = 0;
-    for (;;) {
-        if (entry[0x119] != 0 && memcmp(entry + 8, addr, 6) == 0)
-            break;
-        i++;
-        entry += 0x11C;
-        if (i >= 4) {
-            entry = NULL;
-            break;
-        }
+loop1:
+    if (entry[0x119] != 0) {
+        if (memcmp(entry + 8, addr, 6) == 0)
+            goto found1;
+        goto next1;
     }
-
+next1:
+    i++;
+    entry += 0x11C;
+    if (i < 4)
+        goto loop1;
+    entry = NULL;
+found1:
     buffer = lbl_803C0F78 + 0x624;
     if (entry == NULL)
         return;
@@ -8453,16 +8457,19 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
         supervision_timeout = *(u16 *)(entry + 0x10E);
         other = lbl_803C0F78 + 0x34;
         j = 0;
-        for (;;) {
-            if (other[0x119] != 0 && memcmp(other + 8, entry + 8, 6) == 0)
-                break;
-            j++;
-            other += 0x11C;
-            if (j >= 4) {
-                other = NULL;
-                break;
-            }
+loop2:
+        if (other[0x119] != 0) {
+            if (memcmp(other + 8, entry + 8, 6) == 0)
+                goto found2;
+            goto next2;
         }
+next2:
+        j++;
+        other += 0x11C;
+        if (j < 4)
+            goto loop2;
+        other = NULL;
+found2:
         if (other != NULL) {
             *(u16 *)(other + 0x10E) = supervision_timeout;
             if (other[0x11A] == 0)
@@ -8582,15 +8589,12 @@ s32 fn_80078310(s32 callback)
 }
 
 extern char lbl_80315F24[];
+#pragma opt_lifetimes off
 void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
-    tBTM_CMPL_CB *p_cb;
+    tBTM_CMPL_CB *p_cb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x618);
     volatile tBTM_QOS_SETUP_CMPL qossu;
-    {
-        u8 *base = lbl_803C0F78;
-        p_cb = *(tBTM_CMPL_CB **)(base + 0x618);
-        fn_80070F90(base + 0x600);
-        *(tBTM_CMPL_CB **)(base + 0x618) = NULL;
-    }
+    fn_80070F90(lbl_803C0F78 + 0x600);
+    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x618) = NULL;
     if (p_cb) {
         qossu.status = status;
         qossu.handle = handle;
@@ -8608,9 +8612,7 @@ void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
         (*p_cb)((void *)&qossu);
     }
 }
-
-#pragma inline_max_size 10000
-#pragma inline_max_total_size 10000
+#pragma opt_lifetimes reset
 static __inline u8 *btm_find_dev_by_addr_rssi_80068D68(BD_ADDR bd_addr) {
     u8 *p_dev_rec = lbl_803C0F78 + 0x34;
     u32 i;
@@ -22351,24 +22353,25 @@ u32 port_rfc_send_tx_data(void *port) {
     u32 events = 0;
     void *packet;
 
-    if (*(s32 *)(p + 0x28) != 0) {
-        for (;;) {
-            packet = GKI_dequeue((BUFFER_Q *)(p + 0x18));
-            if (packet != 0) {
-                if (lbl_803C4828[0x414] >= 4)
-                    fn_8007093C(0x90003, lbl_803194FC);
+    if (*(s32 *)(p + 0x28) == 0)
+        goto flow;
 
-                *(s32 *)(p + 0x28) -= *(u16 *)((u8 *)packet + 2);
-                fn_800939CC(*(void **)(p + 0x6c), p[0xd], packet);
-                events |= 0x4000;
-                if (*(s32 *)(p + 0x28) != 0)
-                    continue;
-                events |= 4;
-                goto flow;
-            }
+    for (;;) {
+        packet = GKI_dequeue((BUFFER_Q *)(p + 0x18));
+        if (packet != 0) {
+            if (lbl_803C4828[0x414] >= 4)
+                fn_8007093C(0x90003, lbl_803194FC);
+
+            *(s32 *)(p + 0x28) -= *(u16 *)((u8 *)packet + 2);
+            fn_800939CC(*(void **)(p + 0x6c), p[0xd], packet);
+            events |= 0x4000;
+            if (*(s32 *)(p + 0x28) != 0)
+                continue;
             events |= 4;
             goto flow;
         }
+        events |= 4;
+        goto flow;
     }
 
 flow:
@@ -29790,9 +29793,9 @@ extern s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks);
 void WUDVendorSpecificCallback(u8 len, u8 *pData) {
     typedef void (*WUDSyncCallback)(s32, s32);
     typedef void (*WUDClearCallback)(s32);
+    u8 event = pData[0];
     u8 *state = lbl_80392960;
     u8 *strings = lbl_803130C8;
-    u8 event = pData[0];
     u32 enabled, busyEnabled;
     s32 busy, result, started, libStatus;
     WUDSyncCallback syncCallback;
@@ -29850,11 +29853,13 @@ void WUDVendorSpecificCallback(u8 len, u8 *pData) {
             clearCallback(result);
             break;
         }
+
         DBPrintf_8006CFA8((const char *)strings + 0x470);
         enabled = OSDisableInterrupts();
         libStatus = (s8)state[0x688];
         OSRestoreInterrupts(enabled);
         if ((u32)libStatus != 3U) break;
+
         busyEnabled = OSDisableInterrupts();
         if (state[0xC] == 0 && state[0xD] == 0 &&
             state[0xF] == 4 && state[0x10] == 4) {
@@ -29865,6 +29870,7 @@ void WUDVendorSpecificCallback(u8 len, u8 *pData) {
             busy = 1;
         }
         if (busy != 0) break;
+
         enabled = OSDisableInterrupts();
         state[0xD] = 1;
         OSCreateAlarm((OSAlarm *)(state + 0x690));
@@ -29872,13 +29878,16 @@ void WUDVendorSpecificCallback(u8 len, u8 *pData) {
                            OS_MSEC_TO_TICKS(20), (OSAlarmHandler)fn_80069EB4);
         OSRestoreInterrupts(enabled);
         break;
+
     case 10:
         DBPrintf_8006CFA8((const char *)strings + 0xA88, pData[1]);
         state[0x689] = pData[1];
         break;
+
     case 16:
         DBPrintf_8006CFA8((const char *)strings + 0xAAC, pData[1]);
-        OSPanic(&lbl_80558FE8, 0xD9C, (const char *)strings + 0xAD4);
+        OSPanic(&lbl_80558FE8, 0xD9C,
+                (const char *)strings + 0xAD4);
         break;
     }
 }
