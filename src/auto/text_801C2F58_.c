@@ -1832,28 +1832,28 @@ done:
 void fn_801C7698(void) {
     s32 offset;
     s32 index;
-    register f32 value;
+    f32 value;
+    f32 score;
+    f32 result;
     if (lbl_8055E7F0 > 0) {
         value = (f32)atof(lbl_804380F0);
         index = lbl_8055E828;
         offset = index * 0x30C;
-        if (value + *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) < lbl_80562970) {
+        score = *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset);
+        if (value + score < lbl_80562970) {
             sprintf(lbl_80437FC0, lbl_80336F0C);
-            goto skip;
         } else {
-            goto loop;
+            while (index < lbl_8055E7F0) {
+                score = *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset);
+                result = fn_801C3450(value + score);
+                *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) = result;
+                index++;
+                offset += 0x30C;
+            }
+            qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
+                  (int (*)(const void *, const void *))fn_801C3B7C);
         }
-    loop:
-        do {
-            *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) =
-                fn_801C3450(value + *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset));
-            index++;
-            offset += 0x30C;
-        } while (index < lbl_8055E7F0);
-        qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
-              (int (*)(const void *, const void *))fn_801C3B7C);
     }
-skip:
     fn_801C957C(0);
 }
 #pragma pop
@@ -3135,7 +3135,7 @@ void fn_801C95EC(f32 arg0) {
     strcpy(lbl_80437FC0, lbl_8055AA44);
     entry = &(*(struct Entry **)((char *)lbl_8055E86C + lbl_8055E81C * 0x10))[lbl_8055E820];
     entry->callback(entry);
-    id = *(s32 *)(((u32 (*)[4])lbl_8055E86C)[lbl_8055E81C][0] + (lbl_8055E820 << 4) + 8);
+    id = *(s32 *)(*(u32 *)((u32)lbl_8055E86C + (lbl_8055E81C << 4)) + (lbl_8055E820 << 4) + 8);
     if (id == 0x22) {
         lbl_8055E81C = lbl_8055E870;
     } else {
