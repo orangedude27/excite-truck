@@ -1942,6 +1942,8 @@ extern void fn_801D09A8(void *, int);
 extern void fn_801A9AB0(void *, void *);
 extern void fn_801D08C0(void *);
 extern void fn_801D0934(void *);
+#pragma push
+#pragma opt_propagation off
 void *fn_801AD6B0(void *arg0, int arg1) {
     void *initArg;
     if (arg0 != 0) {
@@ -1967,8 +1969,7 @@ void *fn_801AD6B0(void *arg0, int arg1) {
     }
     return arg0;
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 void fn_801AD750(void *arg0, void *arg1) {
     fn_801A9AB0(arg0, arg1);
     *(int *)((char *)arg0 + 0x240) = *(int *)((char *)arg1 + 0x80);
