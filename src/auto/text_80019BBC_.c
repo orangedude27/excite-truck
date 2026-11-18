@@ -735,6 +735,7 @@ void fn_8001B478(int arg0, float farg0) {
     unsigned char sp20[0x38];
     int n, result, i;
     float y, x, t, step, texscale2, angle, ratio, inv, ratio2;
+    float d2, d3;
     float p[2];
     float a[4];
     void *shape;
