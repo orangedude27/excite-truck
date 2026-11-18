@@ -776,6 +776,7 @@ void **fn_801CC784(void *vec) {
 }
 
 extern void *memset(void *, int, unsigned long);
+#pragma scheduling invalid_target
 void *fn_801CC7A0(void *arg0) {
     unsigned char *end;
     unsigned char *p;
