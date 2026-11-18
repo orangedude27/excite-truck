@@ -8583,11 +8583,14 @@ tBTM_STATUS BTM_ReadRSSI(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
     entry = lbl_803C0F78 + 0x34;
     i = 0;
     do {
-        if (entry[0x119] != 0 && memcmp(entry + 8, remote_bda, 6) == 0) {
-            goto found;
-        } else {
+        if (entry[0x119] == 0)
+            goto next_entry;
+        if (memcmp(entry + 8, remote_bda, 6) != 0) {
+next_entry:
             i++;
             entry += 0x11C;
+        } else {
+            goto found;
         }
     } while (i < 4);
     entry = NULL;
@@ -8605,7 +8608,7 @@ found:
     return 7;
 }
 
-static inline u8 *btm_find_dev_by_addr_80068D68(BD_ADDR bd_addr) {
+static __inline u8 *btm_find_dev_by_addr_80068D68(BD_ADDR bd_addr) {
     u8 *p_dev_rec = lbl_803C0F78 + 0x34;
     u32 i;
     for (i = 0; i < 4; i++, p_dev_rec += 0x11C) {
