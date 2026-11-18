@@ -661,11 +661,11 @@ extern void fn_802E317C(char *, ...);
 extern char lbl_8034BB28[];
 #pragma push
 #pragma optimization_level 3
-#pragma scheduling on
+#pragma scheduling invalid_target
 void *fn_802E0C04(u32 size) {
     int align;
-    void **link;
     volatile int *head;
+    void **link;
     int best;
     int needed;
     void *freeNode;
