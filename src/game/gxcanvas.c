@@ -1155,8 +1155,13 @@ extern const char lbl_8034B144[]; /* "Wrong stamp version in \"%s\": %x (expecti
    its row table holds offsets into the block, so the first time a stamp is
    loaded fn_802C49E8 swaps every 32-bit field the game reads and turns
    those offsets into pointers. */
-typedef struct {
-    s32 width;                    /* 0x000 pixels per row */
+  /* A stamp's two 256-entry palettes, in the order the drawer picks them:
+     [0] on a mode 3 canvas, [1] on any other.  A caller may hand the drawer a
+     pair of its own in place of the stamp's. */
+  typedef u16 StampPalette[2][256];
+
+  typedef struct {
+      s32 width;                    /* 0x000 pixels per row */
     s32 height;                   /* 0x004 rows per frame */
     s32 x_off;                    /* 0x008 offset a frame is drawn at */
     s32 y_off;                    /* 0x00C */
