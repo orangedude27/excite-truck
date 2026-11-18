@@ -212,6 +212,7 @@ void fn_802877D0(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_80287800(s32 arg0) {
+#pragma scheduling invalid_target
     s32 a;
     s32 b;
     s32 c;
@@ -241,7 +242,7 @@ void fn_80287800(s32 arg0) {
     b = a ^ 1;
     d = b & a;
     c = b >> 1;
-    lbl_8055F6BC = (signed char)((c - d) < 0);
+    lbl_8055F6BC = (signed char)(((unsigned long)(c - d) >> 31));
     ((void (*)(s32, s32))fn_80288868)(0, b);
 }
 #pragma pop
@@ -725,8 +726,13 @@ void fn_802882EC(void) {
     typedef struct { s32 v[9]; } Block9;
     typedef struct { s32 v[3]; } Block3;
     u8 **table;
-    s32 i;
+    u8 *src;
+    u8 *dst;
     u8 *out;
+    s32 i;
+    u8 *state;
+    u8 *entry;
+    s32 all, j;
     f32 one;
     f32 zero;
     zero = lbl_80564264;
@@ -737,10 +743,8 @@ void fn_802882EC(void) {
     i = 0;
     while (i < *(s32 *)(lbl_804B3150 + 4)) {
         u8 *obj = fn_801EA9CC(i);
-        u8 *state = *(u8 **)(obj + 8);
-        u8 *entry;
-        u8 *dst, *src;
-        s32 all, j, flags;
+        s32 flags;
+        state = *(u8 **)(obj + 8);
         if ((unsigned)i < 8) entry = *table;
         else entry = 0;
         *(Block9 *)out = *(Block9 *)(entry + 4);
