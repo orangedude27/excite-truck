@@ -575,10 +575,10 @@ void fn_801C4B74(void) {
 
 #pragma opt_common_subs off
 void fn_801C4BAC(void) {
+    struct Tail { char pad[8]; f32 x; };
     register Unk_80437D88 *state;
     register s32 zero;
     u8 *lo;
-    u8 *hi;
     s32 flag;
     state = &lbl_80437D88;
     zero = 0;
@@ -588,34 +588,32 @@ void fn_801C4BAC(void) {
     lbl_8055E7F4 = zero;
     lbl_8055E7E3 = zero;
     lbl_8055E7E4 = lbl_80562970;
-    lo = (u8 *)state;
-    hi = (u8 *)state + 0x9C;
-    memset(lo, zero, 0x9C);
-    *(f32 *)(lo + 0x14) = lbl_8056296C;
-    *(f32 *)(lo + 0x18) = lbl_80562970;
-    *(f32 *)(lo + 0x1C) = lbl_80562970;
-    *(f32 *)(lo + 0x20) = lbl_80562970;
-    *(f32 *)(lo + 0x24) = lbl_8056296C;
-    *(f32 *)(lo + 0x28) = lbl_80562970;
-    *(f32 *)(lo + 0x2C) = lbl_80562970;
-    *(f32 *)(lo + 0x30) = lbl_80562970;
-    *(f32 *)(lo + 0x34) = lbl_8056296C;
-    *(f32 *)(lo + 0x50) = lbl_805629A8;
-    *(f32 *)(lo + 0x68) = lbl_8056296C;
-    *(f32 *)(lo + 0x6C) = lbl_80562970;
-    *(f32 *)(lo + 0x70) = lbl_80562970;
-    *(f32 *)(lo + 0x74) = lbl_80562970;
-    *(f32 *)(lo + 0x78) = lbl_8056296C;
-    *(f32 *)(lo + 0x7C) = lbl_80562970;
-    *(f32 *)(lo + 0x80) = lbl_80562970;
-    *(f32 *)(lo + 0x84) = lbl_80562970;
-    *(f32 *)(lo + 0x88) = lbl_8056296C;
-    *(f32 *)(lo + 0x8C) = lbl_80562970;
-    *(f32 *)(lo + 0x90) = lbl_80562970;
-    *(f32 *)(lo + 0x94) = lbl_80562970;
-    *(f32 *)(lo + 0x98) = lbl_805629A8;
-    *(f32 *)(hi + 0x8) = lbl_80562994;
-    *(s32 *)(lo + 0x9C) = zero;
+    memset(state, zero, 0x9C);
+    *(f32 *)((u8 *)state + 0x14) = lbl_8056296C;
+    *(f32 *)((u8 *)state + 0x18) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x1C) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x20) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x24) = lbl_8056296C;
+    *(f32 *)((u8 *)state + 0x28) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x2C) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x30) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x34) = lbl_8056296C;
+    *(f32 *)((u8 *)state + 0x50) = lbl_805629A8;
+    *(f32 *)((u8 *)state + 0x68) = lbl_8056296C;
+    *(f32 *)((u8 *)state + 0x6C) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x70) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x74) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x78) = lbl_8056296C;
+    *(f32 *)((u8 *)state + 0x7C) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x80) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x84) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x88) = lbl_8056296C;
+    *(f32 *)((u8 *)state + 0x8C) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x90) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x94) = lbl_80562970;
+    *(f32 *)((u8 *)state + 0x98) = lbl_805629A8;
+    ((struct Tail *)((u8 *)state + 0x9C))->x = lbl_80562994;
+    *(s32 *)((u8 *)state + 0x9C) = zero;
     if (lbl_8055E7F0 == 0) {
         lbl_8055E7E2 = zero;
         return;
@@ -628,7 +626,8 @@ void fn_801C4BAC(void) {
     flag = (fn_801769A8() >> 14) & 1;
     lbl_8055E7E2 = flag;
     if (flag != 0) {
-        memset(lo + 0xA8, zero, 0xA0);
+        lo = (u8 *)state + 0xA8;
+        memset(lo, zero, 0xA0);
         fn_8017960C(fn_80179630(0));
     }
 }
@@ -1143,8 +1142,9 @@ extern void fn_801BFD34(void *, void *, void *);
 extern void fn_8020655C(void *, s32);
 extern void fn_802E317C(void *, ...);
 extern struct Unk_80437D88 lbl_80437D88;
+#pragma scheduling invalid_target
 #pragma push
-#pragma scheduling on
+#pragma use_lmw_stmw off
 s32 fn_801C5B68(char *arg0, s32 arg1) {
     extern char lbl_8055E80C;
     register struct Unk_80437D88 *state = &lbl_80437D88;
@@ -1587,9 +1587,6 @@ s32 fn_801C5B68(char *arg0, s32 arg1) {
     fn_8020655C(&sp20, 0);
     return 1;
 }
-#pragma scheduling off
-#pragma paired off
-#pragma paired_single off
 s32 fn_801C6C28(Vec *arg0) {
     float threshold = lbl_805629CC;
     s32 result = -1;
