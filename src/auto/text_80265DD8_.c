@@ -985,9 +985,7 @@ void fn_80267680(void) {
         fn_80265E08(p + 0x160);
         fn_80266150(p + 0x178);
         *(float *)(p + 0x158) = start;
-        stack.conv.word[0] = 0x43300000;
-        stack.conv.word[1] = (unsigned int)i ^ 0x80000000U;
-        *(float *)(p + 0x15C) = (float)(stack.conv.value - bias);
+        *(float *)(p + 0x15C) = (float)i;
         *(float *)(p + 0x198) = zero;
         *(float *)(p + 0x19C) = zero;
         *(int *)(p + 0x14C) = -1;
@@ -1732,8 +1730,8 @@ void fn_80268E00(void) {
 extern int fn_8026B0C0(int);
 extern float lbl_80563C40, lbl_80563CA0, lbl_80563CA4, lbl_80563CA8, lbl_80563CAC, lbl_80563CB0, lbl_80563CB4, lbl_80563CB8;
  extern float fn_80144514(float,float,float,float,float,float);
- #pragma inline auto
- #pragma inline_max_size(1000)
+ #pragma inline on
+ #pragma inline_max_size(2000)
  static inline void fn_80268E94_multiply(float *out, const float *a, const float *b) {
  float t0,t1,t2,t3,t4,t5,t6,t7,t8;
  if (out == a || out == b) {
@@ -2115,7 +2113,8 @@ char fn_8026A38C(void) {
 }
 
 extern float lbl_80563CBC, lbl_80563C2C, lbl_80563C20, lbl_8055E3C8;
-#pragma scheduling invalid_target
+#pragma push
+#pragma scheduling on
 void fn_8026A394(void *arg0) {
  int i = 0;
  while (i < 4) {
@@ -2143,14 +2142,14 @@ void fn_8026A394(void *arg0) {
    unsigned int value9;
    unsigned int value11;
    one = 1;
-   factor = *(volatile float *)&lbl_80563CBC;
    *(volatile unsigned char *)(p + 0x139) = one;
+   factor = lbl_80563CBC;
    threshold = lbl_80563C2C;
    *(volatile unsigned char *)(p + 0x138) = one;
    q = *(char * volatile *)(p + 0x140);
    scale = *(float *)(q + 0x25d4);
    factor = factor * scale;
-   threshold = threshold < factor ? factor : threshold;
+   threshold = threshold < factor ? threshold : factor;
    *(float *)(p + 0x13c) = threshold;
    zero = lbl_80563C20;
    *(float *)(p + 0x154) = zero;
@@ -2202,7 +2201,7 @@ void fn_8026A394(void *arg0) {
   i++;
  }
 }
-#pragma scheduling on
+#pragma pop
     extern void fn_80269BB0(int, unsigned int, int *, float *);
     void fn_8026A49C(int a, unsigned int b, int *c, float *d) {
       fn_80269BB0(a, b, c, d);
