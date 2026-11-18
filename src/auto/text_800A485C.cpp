@@ -19922,53 +19922,45 @@ extern "C" s32 fn_800CFBC0(void *manager, s32 index) {
     return *(s32 *)((char *)entry + 4);
 }
 
-s32 homebutton::gui::Manager::update(int arg1, f32 farg0, f32 farg1, unsigned long arg2, unsigned long arg3, unsigned long arg4, void *arg5) {
-    class ObjDispatch {
-    public:
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5();
-        virtual s32 d6(); virtual void d7(unsigned long, u32 *); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12();
-        virtual void prepare(unsigned long, u32 *);
-        virtual void d14(); virtual void d15();
-        virtual s32 handle(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *);
-        virtual s32 check();
-    };
-    class MgrDispatch {
-    public:
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5();
-        virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9();
-        virtual void apply(s32, s32, void *);
-    };
-    u32 sp14[3];
-    u32 sp8[3];
+/* Run an updated pointer/touch past every managed GUI component.  Each
+ * component is asked to handle it; any that does makes the update report 1,
+ * and the last one that also passes its check() then has the values of the two
+ * property masks handed to the manager (this very object, through the notify
+ * interface its components call back on). */
+s32 homebutton::gui::Manager::update(int pointIndex, f32 x, f32 y, unsigned long mask4, unsigned long param5, unsigned long mask6, void *userData) {
+    u32 values4[3]; /* filled by prepare(mask4)/prepare(mask6) */
+    u32 values6[3];
     u8 *manager = (u8 *)this;
-    s32 result = 0;
-    ObjDispatch *last = 0;
+    s32 handled = 0;
+    ComponentUpdateDispatch *last = 0;
     u32 index = 0;
     goto check;
 loop:
     {
-        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(manager + 8, (u16)index);
-        if ((*(ObjDispatch **)((u8 *)item + 4))->handle(arg1, farg0, farg1, arg2, arg3, arg4, arg5)) {
-            if ((*(ObjDispatch **)((u8 *)item + 4))->check()) last = *(ObjDispatch **)((u8 *)item + 4);
-            result = 1;
+        /* The component list node holds its component at +4 (addComponent). */
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(manager + 8, (u16)index);
+        if ((*(ComponentUpdateDispatch **)((u8 *)entry + 4))->update(pointIndex, x, y, mask4, param5, mask6, userData)) {
+            if ((*(ComponentUpdateDispatch **)((u8 *)entry + 4))->check()) last = *(ComponentUpdateDispatch **)((u8 *)entry + 4);
+            handled = 1;
         }
         index++;
     }
 check:
+    /* nw4hbm/ut/list.h line 0xcf: "Pointer must not be NULL (list)" */
     if (manager + 8 == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
     if (index < *(u16 *)(manager + 0x10)) goto loop;
     if (last != 0) {
-        if (arg2 != 0) {
-            last->prepare(arg2, sp14);
-            ((MgrDispatch *)this)->apply(last->d6(), 0, arg5);
+        if (mask4 != 0) {
+            last->prepare(mask4, values4);
+            ((ComponentUpdateManager *)this)->notify(last->id(), 0, userData);
         }
-        if (arg4 != 0) {
-            last->prepare(arg4, sp8);
-            ((MgrDispatch *)this)->apply(last->d6(), 5, arg5);
+        if (mask6 != 0) {
+            last->prepare(mask6, values6);
+            ((ComponentUpdateManager *)this)->notify(last->id(), 5, userData);
         }
     }
-    return result;
+    return handled;
 }
 
 #pragma push
