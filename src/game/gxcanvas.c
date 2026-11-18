@@ -1166,8 +1166,8 @@ extern const char lbl_8034B144[]; /* "Wrong stamp version in \"%s\": %x (expecti
     s32 x_off;                    /* 0x008 offset a frame is drawn at */
     s32 y_off;                    /* 0x00C */
     s32 frames;                   /* 0x010 frames in the stamp */
-    u16 palette[2][256];          /* 0x014 colours: [0] on a mode 3 canvas,
-                                     [1] on any other (fn_802C4C90) */
+          StampPalette palette;         /* 0x014 colours: [0] on a mode 3 canvas,
+                                       [1] on any other (fn_802C4C90) */
     u32 unknown_414[256];         /* 0x414 swapped with the header; no
                                      matched code reads it */
     u32 *rows;                    /* 0x814 -> the row table below */
