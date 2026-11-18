@@ -365,6 +365,7 @@ extern double sin(double);
 extern double cos(double);
 extern void fn_801ADB44(void *, void *);
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 void fn_8017B81C(void *arg0) {
     union { float rotation[9]; float product[9]; } matrixScratch;
     float transpose[9], gravity[3], angle[3], midpoint[3];
