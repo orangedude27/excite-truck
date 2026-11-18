@@ -84,7 +84,7 @@ extern "C" void *fn_80128668(void *);
  * global ChannelManager singleton (queueing its destruction) on first use,
  * then insert this channel into the manager's idle list. */
 extern "C" void *__ct__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
-    register void *channel asm("r30") = arg0;
+    register void *channel asm("r29") = arg0;
     int zero = 0;
     ((int*)channel)[0] = zero;
     ((int*)channel)[1] = zero;
