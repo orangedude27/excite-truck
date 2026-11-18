@@ -725,7 +725,7 @@ int fn_8027F958(int *selection, void *collection) {
     defaultValue = lbl_805641FC;
     widgetVtable = lbl_80348798;
     index = list->count;
-    storage = *(void ***)(state + 0x50);
+    storage = list->items;
     stack.widgets[0].unk14 = 0;
     stack.widgets[0].unk38 = defaultScale;
     stack.widgets[0].unk40 = 2;
