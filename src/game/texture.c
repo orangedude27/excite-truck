@@ -250,7 +250,8 @@ static inline void swap32_802CA57C(unsigned char *p) {
     p[1] = p[2];
     p[2] = t;
 }
-#pragma dont_inline fn_802CA57C
+#pragma push
+#pragma dont_inline on
 void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
     unsigned char *base = (unsigned char *)arg0;
     unsigned char t;
@@ -267,6 +268,7 @@ void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
         base[5] |= 0x80;
     }
 }
+#pragma pop
 extern int fn_8012C370(const char *, int *, int *, signed char *, unsigned char *);
 extern char lbl_8034B634[];
 extern char lbl_8034B658[];
