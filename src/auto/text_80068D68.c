@@ -10882,21 +10882,6 @@ tBTM_STATUS BTM_PmRegister(UINT8 mask, UINT8 *p_pm_id, tBTM_PM_STATUS_CBACK *p_c
 extern u8 lbl_80560D38;
 extern u8 lbl_80560D3C;
 extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
-#pragma inline_max_size 10000
-#pragma inline_max_total_size 10000
-/* Index of the ACL link to remote_bda in btm_cb.acl_db, or 4 if there is none. */
-static __inline UINT8 btm_pm_find_acl_ind(BD_ADDR remote_bda)
-{
-    u8 *p = lbl_803C0F78 + 0x34;
-    UINT8 xx;
-
-    for (xx = 0; xx < 4; xx++, p += 0x11C) {
-        if (p[0x119] && memcmp(p + 8, remote_bda, 6) == 0)
-            break;
-    }
-    return xx;
-}
-
 tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_mode)
 {
     tBTM_PM_MODE mode;
