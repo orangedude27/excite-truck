@@ -711,7 +711,6 @@ int fn_8027F958(int *selection, void *collection) {
     void **items, **storage;
     char *constants = (char *)&lbl_802FA848;
     char *state = (char *)&lbl_804B2FF8;
-    struct Fn8027F834List *list = (struct Fn8027F834List *)((char *)&lbl_804B2FF8 + 0x50);
     char *strings = lbl_80347E50;
     float defaultValue, defaultScale;
     void *widgetVtable;
