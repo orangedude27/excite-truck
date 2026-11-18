@@ -1275,7 +1275,7 @@ extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this
     *(u32 *)((u8 *)stream + 0x1C) = 0;
     return ret;
 }
-
+#pragma scheduling reset
 extern u8 lbl_803230E8[];
 extern u8 lbl_8032318C[];
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char* file, int line, const char* fmt, ...);
