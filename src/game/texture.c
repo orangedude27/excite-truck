@@ -251,7 +251,7 @@ static inline void swap32_802CA57C(unsigned char *p) {
     p[2] = t;
 }
 #pragma push
-#pragma dont_inline on
+#pragma auto_inline off
 void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
     unsigned char *base = (unsigned char *)arg0;
     unsigned char t;
