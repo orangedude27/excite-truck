@@ -262,53 +262,89 @@ extern "C" void fn_800057D0(void) {
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 #pragma cplusplus on
+/* Draws one frame of every player's HUD.
+ *
+ * First pass, per player: bind the session to that player (fn_80005740), and if the
+ * overlay fn_800057D0 picked for it this frame is not the one its HUD showed last frame,
+ * have the old one give the screen back (slot 0x18) and the new one take it (slot 0x14).
+ * The overlay is then run inside its own rectangle -- the whole screen while it owns the
+ * screen (its state byte, slot 0x28), the player's own split-screen viewport otherwise --
+ * clearing the three HUD display lists, running the overlay's update (slot 0x20, plus
+ * slot 0x24 unless the race is finishing, and for a full-screen overlay only for the
+ * first player), drawing the lists and putting the viewport back.
+ *
+ * Second pass, per player: the same on the full screen, but with the update that is
+ * given the player index (slot 0x2C). */
 extern "C" s32 fn_80005930(void) {
-    extern s32 fn_801E85A4(void);
-    extern void fn_801E88B4(s32 *, s32 *, s32 *, s32 *, s32);
-    extern s32 fn_801E89EC(void);
-    extern s32 fn_802C86F0(void *, s32, s32, s32, s32);
-    extern s32 fn_802C8750(void *, s32);
-    extern s32 fn_8000D75C(void);
-    extern s32 fn_80010EC8(void);
-    extern s32 fn_8001123C(s32);
-    extern s32 lbl_8055CFF0, lbl_8055CFF4;
+    extern s32 fn_801E85A4(void);                            /* viewports on screen */
+    extern void fn_801E88B4(s32 *, s32 *, s32 *, s32 *, s32); /* one player's viewport rect */
+    extern s32 fn_801E89EC(void);          /* race phase: 0 before start, 1 racing, 3 finishing */
+    extern s32 fn_802C86F0(void *, s32, s32, s32, s32);  /* save the viewport, set a new one */
+    extern s32 fn_802C8750(void *, s32);                 /* put a saved viewport back */
+    extern s32 fn_8000D75C(void);          /* audio-active flag; result unused here */
+    extern s32 fn_80010EC8(void);          /* clear the three HUD display lists */
+    extern s32 fn_8001123C(s32);           /* draw them for one player */
+    extern s32 lbl_8055CFF0, lbl_8055CFF4; /* screen width (640) and height (480) */
     struct Overlay {
-        virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0;
-        virtual void v3() = 0; virtual void v4() = 0; virtual void v5() = 0;
-        virtual void v6() = 0; virtual void v7() = 0;
-        virtual s32 v8() = 0; virtual void v9(s32) = 0;
+        virtual void v0() = 0;                 /* 0x08 */
+        virtual void v1() = 0;                 /* 0x0C */
+        virtual void v2() = 0;                 /* 0x10 */
+        virtual void takeScreen() = 0;         /* 0x14: this overlay now owns the screen */
+        virtual void releaseScreen() = 0;      /* 0x18: give the screen back again */
+        virtual void v5() = 0;                 /* 0x1C: init */
+        virtual void update() = 0;             /* 0x20: per-frame update */
+        virtual void updateOnce() = 0;         /* 0x24: per-frame update, once per screen */
+        virtual s32 ownsScreen() = 0;          /* 0x28: state byte, set while it is full-screen */
+        virtual void updateForPlayer(s32) = 0; /* 0x2C: per-frame update of one player */
     };
-    s32 sp8[4], sp18[4], sp28[4], count = fn_801E85A4();
+    s32 savedViewport[4], savedFullScreen[4], rect[4], playerCount = fn_801E85A4();
+    /* The overlay manager; its per-player entry starts at entry[4], so entry[4] is the
+       overlay that player's HUD shows and entry[5] the one it showed last frame. */
     s32 *entry = lbl_8034EEB8;
-    for (s32 i = 0; i < count; entry += 4, i++) {
-        Overlay *obj, *other;
-        fn_80005740(i); obj = *(Overlay **)(entry + 4); other = *(Overlay **)(entry + 5);
-        if (other != obj) {
-            if (other) other->v4();
-            obj->v3();
-            *(Overlay **)(entry + 5) = obj;
+    for (s32 i = 0; i < playerCount; entry += 4, i++) {
+        Overlay *overlay, *lastOverlay;
+
+        fn_80005740(i);
+        overlay = *(Overlay **)(entry + 4);
+        lastOverlay = *(Overlay **)(entry + 5);
+        if (lastOverlay != overlay) {
+            if (lastOverlay) lastOverlay->releaseScreen();
+            overlay->takeScreen();
+            *(Overlay **)(entry + 5) = overlay;
         }
         fn_80010EC8();
-        if (obj->v8()) {
-            sp28[3] = 0; sp28[2] = 0; sp28[1] = lbl_8055CFF0; sp28[0] = lbl_8055CFF4;
-        } else fn_801E88B4(&sp28[3], &sp28[2], &sp28[1], &sp28[0], i);
-        fn_802C86F0(sp8, sp28[3], sp28[2], sp28[1], sp28[0]);
-        obj->v6();
+        if (overlay->ownsScreen()) {
+            rect[3] = 0; rect[2] = 0; rect[1] = lbl_8055CFF0; rect[0] = lbl_8055CFF4;
+        } else {
+            fn_801E88B4(&rect[3], &rect[2], &rect[1], &rect[0], i);
+        }
+        fn_802C86F0(savedViewport, rect[3], rect[2], rect[1], rect[0]);
+        overlay->update();
         if (fn_801E89EC() != 3) {
             fn_8000D75C();
-            if (obj->v8() == 0 || i == 0)
-                obj->v7();
+            if (overlay->ownsScreen() == 0 || i == 0)
+                overlay->updateOnce();
         }
-        fn_8001123C(*(s32 *)((u8 *)lbl_8055D350 + 0x1C)); fn_80011A2C(); fn_802C8750(sp8, -1);
+        fn_8001123C(SESSION->currentPlayer);
+        fn_80011A2C();
+        fn_802C8750(savedViewport, -1);
     }
     entry = lbl_8034EEB8;
-    for (s32 i = 0; i < count; entry += 4, i++) {
-        Overlay *obj;
-        fn_80005740(i); obj = *(Overlay **)(entry + 4); fn_80010EC8();
-        fn_802C86F0(sp18, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
-        obj->v6();
-        if (fn_801E89EC() != 3) { fn_8000D75C(); obj->v9(i); }
-        fn_8001123C(*(s32 *)((u8 *)lbl_8055D350 + 0x1C)); fn_80011A2C(); fn_802C8750(sp18, -1);
+    for (s32 i = 0; i < playerCount; entry += 4, i++) {
+        Overlay *overlay;
+
+        fn_80005740(i);
+        overlay = *(Overlay **)(entry + 4);
+        fn_80010EC8();
+        fn_802C86F0(savedFullScreen, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
+        overlay->update();
+        if (fn_801E89EC() != 3) {
+            fn_8000D75C();
+            overlay->updateForPlayer(i);
+        }
+        fn_8001123C(SESSION->currentPlayer);
+        fn_80011A2C();
+        fn_802C8750(savedFullScreen, -1);
     }
 }
 #pragma cplusplus off
