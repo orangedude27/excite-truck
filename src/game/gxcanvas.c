@@ -1255,68 +1255,77 @@ void fn_802C4C80(Stamp *stamp) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802C4C90(void *obj, s32 arg1, s32 arg2, s32 arg3, void *tab) {
-    u8 *g = (u8 *)lbl_8055FC00;
-    if (!(g[1] & 4) && obj != 0 && arg3 < *(s32 *)((u8 *)obj + 0x10)) {
-        s32 x, startX, col, y, startY;
-        u16 *pal;
+void fn_802C4C90(Stamp *stamp, s32 x, s32 y, s32 frame, StampPalette *override) {
+    /* Draw one frame of a STMP stamp onto the canvas being drawn on, the
+       stamp's (x_off, y_off) taken off (x, y).  Its rows are run-length
+       encoded 8-bit colour indices: a count byte with the top bit clear is
+       that many transparent pixels to leave alone, one with the top bit set
+       starts a literal run of the low seven bits' length whose bytes index
+       the palette -- the stamp's own, or the pair the caller passed.  Rows
+       and columns the canvas's clip rectangle cuts off are stepped over
+       instead of drawn, and a NO_DRAW canvas, a null stamp or a frame the
+       stamp does not have leave the canvas untouched. */
+    GxCanvas *canvas = (GxCanvas *)sCurrentCanvas;
+    if (!(canvas->flags & CANVAS_FLAG_NO_DRAW) && stamp != 0 && frame < stamp->frames) {
+        s32 endRow, endCol, left, top, firstCol;
+        u16 *palette;
         s32 row;
         u8 *src;
-        s32 w, t, h;
-        u16 *d;
-        y = arg2 - *(s32 *)((u8 *)obj + 0xC);
-        t = *(s32 *)(g + 0x18) - y;
-        x = *(s32 *)(g + 0x20) - y;
-        h = *(s32 *)((u8 *)obj + 4);
-        col = arg1 - *(s32 *)((u8 *)obj + 8);
-        row = t & ~(t >> 31);
-        if (h < x) x = h;
-        w = *(s32 *)((u8 *)obj + 0);
-        t = *(s32 *)(g + 0x14) - col;
-        startY = t & ~(t >> 31);
-        startX = *(s32 *)(g + 0x1C) - col;
-        if (w < startX) startX = w;
-        if (tab != 0) {
-            if ((s8)*g == 3) pal = (u16 *)tab;
-            else pal = (u16 *)((u8 *)tab + 0x200);
-        } else if ((s8)*g == 3) {
-            pal = (u16 *)((u8 *)obj + 0x14);
+        s32 width, delta, height;
+        u16 *dst;
+        top = y - stamp->y_off;
+        delta = canvas->minY - top;
+        endRow = canvas->maxY - top;
+        height = stamp->height;
+        left = x - stamp->x_off;
+        row = delta & ~(delta >> 31);
+        if (height < endRow) endRow = height;
+        width = stamp->width;
+        delta = canvas->minX - left;
+        firstCol = delta & ~(delta >> 31);
+        endCol = canvas->maxX - left;
+        if (width < endCol) endCol = width;
+        if (override != 0) {
+            if ((s8)canvas->format == CANVAS_FORMAT_RGB1555) palette = (*override)[0];
+            else palette = (*override)[1];
+        } else if ((s8)canvas->format == CANVAS_FORMAT_RGB1555) {
+            palette = stamp->palette[0];
         } else {
-            pal = (u16 *)((u8 *)obj + 0x214);
+            palette = stamp->palette[1];
         }
-        for (; row < x; row++) {
-            s32 skip, len, flag, pos;
-            src = *(u8 **)(*(s32 *)((u8 *)obj + 0x814) + (row + *(s32 *)((u8 *)obj + 4) * arg3) * 4);
-            d = (u16 *)fn_802C3044((void *)lbl_8055FC00, col, row + y);
-            for (pos = 0; pos < startX;) {
-                len = *src++;
-                if (len & 0x80) {
-                    len &= ~0x80;
-                    flag = 1;
+        for (; row < endRow; row++) {
+            s32 skip, run, literal, pos;
+            src = (u8 *)stamp->rows[row + stamp->height * frame];
+            dst = (u16 *)fn_802C3044((void *)sCurrentCanvas, left, row + top);
+            for (pos = 0; pos < endCol;) {
+                run = *src++;
+                if (run & 0x80) {
+                    run &= ~0x80;
+                    literal = 1;
                 } else {
-                    flag = 0;
+                    literal = 0;
                 }
-                if (startX - pos < len) len = startX - pos;
-                if (flag != 0 && pos < startY) {
-                    skip = startY - pos;
-                    if (len < skip) skip = len;
-                    len -= skip;
+                if (endCol - pos < run) run = endCol - pos;
+                if (literal != 0 && pos < firstCol) {
+                    skip = firstCol - pos;
+                    if (run < skip) skip = run;
+                    run -= skip;
                     src += skip;
-                    d += skip;
+                    dst += skip;
                     pos += skip;
                 }
-                if (flag != 0) {
-                    u8 n = len;
+                if (literal != 0) {
+                    u8 n = run;
                     while (n != 0) {
-                        *d = pal[*src];
+                        *dst = palette[*src];
                         pos++;
                         src++;
-                        d++;
+                        dst++;
                         n--;
                     }
                 } else {
-                    pos += len;
-                    d += len;
+                    pos += run;
+                    dst += run;
                 }
             }
         }
