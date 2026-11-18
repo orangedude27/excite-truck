@@ -423,6 +423,39 @@ extern "C" float fn_801A5A7C(void * __restrict contact, float * __restrict point
     return PSVECDotProduct((float *)contact, diff);
 }
 
+/* One of the eight spring-wall contacts a car carries from +0x2724, 0x24 apart.
+ * fn_801A5C4C() picks the slot a wall may use, fn_801A5AD0() fills it in and
+ * fn_801A56A0() turns it into an impulse every frame until it is released. */
+typedef struct WallContact {
+    float normal[3];           /* 0x00 wall normal; the impulse pushes along it */
+    float startSpeed;          /* 0x0C speed closing on the normal when claimed */
+    float targetSpeed;         /* 0x10 speed the impulse eases up to */
+    float planeDistance;       /* 0x14 last frame's contact point, from the plane */
+    float elapsed;             /* 0x18 time the contact has been held */
+    float duration;            /* 0x1C how long it is eased in (0.2) */
+    volatile unsigned int wall;/* 0x20 wall holding the slot; 0 when it is free */
+} WallContact;
+
+/* A wall the car can hit; only the plane record behind +0x0C is read here. */
+typedef struct WallRecord {
+    char pad0[0xC];
+    struct WallPlane *plane;   /* 0x0C the wall's plane */
+} WallRecord;
+
+typedef struct WallPlane {
+    float normal[3];           /* 0x00 outward normal */
+    char pad0C[0x18];
+    float origin[3];           /* 0x24 one point on the wall */
+} WallPlane;
+
+/* The part of the car (or any 'PCAR'/'ACAR' vehicle) a contact looks at. */
+typedef struct VehicleState {
+    char pad0[0x60];
+    float position[3];         /* 0x60 world position */
+    char pad6C[0x118 - 0x6C];
+    float velocity[3];         /* 0x118 world velocity */
+} VehicleState;
+
 #pragma push
 #pragma dont_inline on
 extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg3) {
