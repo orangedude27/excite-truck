@@ -602,36 +602,6 @@ struct SeqChannelObj_800F0E64 {
     }
 };
 extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) {
-    struct SeqChannelObj {
-        u8 pad00[0x20];
-        f32 f20;
-        f32 f24;
-        s32 s28;
-        u8 b2C;
-        u8 b2D;
-        u8 b2E;
-        u8 b2F;
-        u8 pad30[8];
-        u8 b38;
-        u8 pad39[7];
-        f32 f40;
-        f32 f44;
-        f32 f48;
-        f32 f4C;
-        f32 f50;
-        f32 f54;
-        f32 f58;
-        s32 s5C;
-        f32 f60;
-        f32 f64;
-        f32 sa[3];
-        f32 s74[4];
-        f32 sb[4];
-        f32 sc[4];
-        f32 fA4;
-        u8 padA8[0x3C];
-        SeqChannelObj *next;
-    };
     struct SeqTrackObj {
         u8 pad00[8];
         f32 f08;
@@ -665,9 +635,9 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
         u8 b93;
         u8 pad94[0x20];
         DummySeqPlayerV *player;
-        SeqChannelObj *channels;
+        SeqChannelObj_800F0E64 *channels;
     };
-    SeqChannelObj *ch;
+    SeqChannelObj_800F0E64 *ch;
     f32 sa[3];
     f32 sb[4];
     f32 sc[4];
@@ -719,25 +689,20 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
     f20 += (f32)t->b8F / 127.0f - 1.0f;
     f20 += t->f20;
     f20 += t->player->g31();
-    {
-        int i = 0;
-        do {
-            sa[i] = 0.0f;
-            sa[i] += (f32)t->b90[i] / 127.0f;
-            sa[i] += t->saBase[i];
-            sa[i] += t->player->g32(i);
-            ++i;
-        } while (i < 3);
+    for (int i = 0; i < 3; ++i) {
+        sa[i] = 0.0f;
+        sa[i] += (f32)t->b90[i] / 127.0f;
+        sa[i] += t->saBase[i];
+        sa[i] += t->player->g32(i);
     }
     {
-        int i = 0;
-        do {
-            sb[i] = 0.0f;
+        f32 zero2 = 0.0f;
+        for (int i = 0; i < 4; ++i) {
+            sb[i] = zero2;
             sb[i] += t->player->g34(i);
-            sc[i] = 0.0f;
+            sc[i] = zero2;
             sc[i] += t->player->g35(i);
-            ++i;
-        } while (i < 4);
+        }
     }
     u32 irq = OSDisableInterrupts();
     for (ch = t->channels; ch != 0; ch = ch->next) {
@@ -756,21 +721,9 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
         ch->sa[1] = sa[1];
         ch->sa[2] = sa[2];
         for (int j = 0; j < 4; ++j) {
-            f32 v = t->player->g33(j);
-            int ok = 0;
-            if (j >= 0 && j < 4) ok = 1;
-            if (!ok) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324728, 0xA5, lbl_803246E0, j, 0, 4);
-            ch->s74[j] = v;
-            v = sb[j];
-            ok = 0;
-            if (j >= 0 && j < 4) ok = 1;
-            if (!ok) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8032477C, 0xAA, lbl_80324734, j, 0, 4);
-            ch->sb[j] = v;
-            v = sc[j];
-            ok = 0;
-            if (j >= 0 && j < 4) ok = 1;
-            if (!ok) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803247D0, 0xAF, lbl_80324788, j, 0, 4);
-            ch->sc[j] = v;
+            ch->set74(j, t->player->g33(j));
+            ch->set84(j, sb[j]);
+            ch->set94(j, sc[j]);
         }
         ch->f20 = t->f68;
         ch->f24 = t->f6C;
@@ -1246,9 +1199,12 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
     Archive *archive = (Archive *)self;
     if (!ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8FileInfo(*(void **)((u8 *)self + 4), file, &info)) return 0;
     const char *path = info.path;
+    const char *openPath;
     if (path != 0) {
         char buf[0x100];
-        if (*path != '/') {
+        if (*path == '/') {
+            openPath = path;
+        } else {
             unsigned long pathLen = strlen(path);
             unsigned long prefixLen = strlen((const char *)self + 8);
             if (pathLen + prefixLen >= 0x100) {
@@ -1257,11 +1213,9 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
             }
             strncpy(buf, (const char *)self + 8, prefixLen + 1);
             fn_80028E2C(buf, path, pathLen + 1);
-            path = buf;
-            goto open_file;
+            openPath = buf;
         }
-    open_file:
-        return archive->f5(buffer, size, path, 0, 0);
+        return archive->f5(buffer, size, openPath, 0, 0);
     }
     if (!ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive7FilePos(*(void **)((u8 *)self + 4), file, 0, &pos)) return 0;
     if (!ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(*(void **)((u8 *)self + 4), pos.group, &group)) return 0;
@@ -1271,7 +1225,9 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
     u32 length = item.size;
     if (path != 0) {
         char buf[0x100];
-        if (*path != '/') {
+        if (*path == '/') {
+            openPath = path;
+        } else {
             unsigned long pathLen = strlen(path);
             unsigned long prefixLen = strlen((const char *)self + 8);
             if (pathLen + prefixLen >= 0x100) {
@@ -1280,11 +1236,9 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
             }
             strncpy(buf, (const char *)self + 8, prefixLen + 1);
             fn_80028E2C(buf, path, pathLen + 1);
-            path = buf;
-            goto open_group;
+            openPath = buf;
         }
-    open_group:
-        return archive->f5(buffer, size, path, offset, length);
+        return archive->f5(buffer, size, openPath, offset, length);
     }
     return archive->f4(buffer, size, offset, length);
 }
@@ -1294,7 +1248,6 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
 #pragma use_lmw_stmw off
 extern "C" s32 detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *self, u32 group, void *arg2, s32 arg3) {
     #pragma opt_common_subs off
-    #pragma scheduling on
     struct GroupInfo { u32 unk0; const char *path; u32 unk8, unkC, unk10, unk14; } info;
     struct Archive { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual s32 f4(void *, s32, s32, s32); virtual s32 f5(void *, s32, const char *, s32, s32); };
     s32 meta10;
@@ -1306,18 +1259,22 @@ extern "C" s32 detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *
     if (path != 0) {
         meta14 = info.unkC;
         meta10 = info.unk8;
-        if (*path == '/')
-            goto open_stream;
-        unsigned long pathLen = strlen(path);
-        unsigned long prefixLen = strlen((const char *)self + 8);
-        if (pathLen + prefixLen >= 0x100) {
-            Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
-            return 0;
+        if (*path != 0x2f)
+            goto strlen_path;
+        goto open_stream;
+    strlen_path:
+        {
+            unsigned long pathLen = strlen(path);
+            unsigned long prefixLen = strlen((const char *)self + 8);
+            if (pathLen + prefixLen >= 0x100) {
+                Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
+                return 0;
+            }
+            char buf[0x100];
+            strncpy(buf, (const char *)self + 8, prefixLen + 1);
+            fn_80028E2C(buf, path, pathLen + 1);
+            path = buf;
         }
-        char buf[0x100];
-        strncpy(buf, (const char *)self + 8, prefixLen + 1);
-        fn_80028E2C(buf, path, pathLen + 1);
-        path = buf;
     open_stream:
         return ((Archive *)self)->f5(arg2, arg3, path, meta10, meta14);
     }
@@ -1344,12 +1301,9 @@ extern "C" s32 detail_OpenGroupWaveDataStream__Q36nw4hbm3snd12SoundArchiveCFUlPv
     if (path != 0) {
         meta14 = info.unk14;
         meta10 = info.unk10;
-        switch (*path) {
-        default:
+        if (*path != 0x2f)
             goto strlen_path;
-        case 0x2f:
-            goto open_stream;
-        }
+        goto open_stream;
     strlen_path:
         {
             unsigned long pathLen = strlen(path);
@@ -7348,17 +7302,20 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490(void
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) {
-    void* pHead = *(void**)&lbl_8041506C[0x04];
-    void* pList = &lbl_8041506C[0x04];
-    void* p;
-    while (pHead != pList) {
-        p = pHead;
-        pHead = *(void**)pHead;
-        if (p == 0) {
+    LinkListIter end;
+    LinkListIter begin;
+    begin.node = *(void**)&lbl_8041506C[0x04];
+    LinkListIter it = begin;
+    end.node = (void*)&lbl_8041506C[0x04];
+
+    while (it.node != end.node) {
+        void* node = it.node;
+        it.node = *(void**)it.node;
+        if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
                                          (const char*)lbl_80326B68);
         }
-        ((DummyStrmUpdate*)(&((u8*)p)[-0x08]))->f2();
+        ((DummyStrmUpdate*)(&((u8*)node)[-0x08]))->f2();
     }
     if (*(u32*)lbl_8041506C != 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326768, 0x2EE,
