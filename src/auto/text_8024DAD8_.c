@@ -2947,15 +2947,6 @@ static inline void fn_80252320_copy(char *src, s32 count, char *dst) {
     }
 }
 
-static inline void fn_80252320_copy2(s32 count, char *src, char *dst) {
-    while ((signed char)(*dst++ = *src++) != 0) {
-        if (--count <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-    }
-}
-
 void fn_80252320(void *arg0, u8 *arg1, signed char arg2, int arg3) {
     struct Entry {
         char name[0x20];
