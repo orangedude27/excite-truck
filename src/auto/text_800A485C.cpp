@@ -4815,31 +4815,33 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     u32 old;
     s32 result;
     s32 status;
-    VFiPFEntIter *iter = (VFiPFEntIter *)arg0;
-    u32 *pos = (u32 *)iter;
-    if (iter->sector == 0xFFFFFFFFu || iter->entry[0] == 0 || iter->position < 0xF423Fu)
+    VFiPFEntIter *p = (VFiPFEntIter *)arg0;
+    if (p->sector == 0xFFFFFFFFu || p->entry[0] == 0 || p->position < 0xF423Fu)
         goto return_zero;
-    index = iter->index;
-    old = iter->position;
-    *pos = (index + 1) << iter->shift;
-    if (fn_800AB378(iter, 0) != 0) {
-        iter->position = old;
-        iter->index = index;
-        return 1;
-    }
-    if (iter->sector == 0xFFFFFFFFu)
-        goto short_one;
-    if (iter->sector != 0xFFFFFFFFu)
-        goto read_entry;
-    status = 0x10;
-    goto finish_status;
+    index = p->index;
+    old = p->position;
+    p->position = (index + 1) << p->shift;
+    {
+        VFiPFEntIter *iter = (VFiPFEntIter *)arg0;
+        if (fn_800AB378(iter, 0) != 0) {
+            iter->position = old;
+            iter->index = index;
+            return 1;
+        }
+        if (iter->sector == 0xFFFFFFFFu)
+            goto short_one;
+        if (iter->sector != 0xFFFFFFFFu)
+            goto read_entry;
+        status = 0x10;
+        goto finish_status;
 read_entry:
-    result = fn_800B5324(iter->volume, iter->entry, iter->sector, iter->sectorOff, 0x20, &sp8, 0);
-    status = 0x11;
-    if (sp8 == 0x20)
-        status = result;
+        result = fn_800B5324(iter->volume, iter->entry, iter->sector, iter->sectorOff, 0x20, &sp8, 0);
+        status = 0x11;
+        if (sp8 == 0x20)
+            status = result;
 finish_status:
-    return status != 0;
+        return status != 0;
+    }
 short_one:
     return 1;
 return_zero:
@@ -7803,21 +7805,19 @@ extern "C" s32 fn_800B0A60(void *file, s32 dst, u32 length, u32 *bytesReadOut) {
     return 0;
 }
 
-extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
+extern "C" s32 fn_800B0C10(VFiPFCursor *cur, s32 arg1, u32 arg2, u32 *arg3) {
     extern s32 fn_800AE620(void *, u32, s32, void *);
     extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32);
     extern s32 VFiPFFILE_Cursor_AdvanceToRead(void *, s32, s32);
-    VFiPFCursor *cur = (VFiPFCursor *)arg0;
     s32 sp8, result, sector;
-    u32 length = arg2;
     VFiPFVol *fat;
     *arg3 = 0;
     if (cur == 0) sector = 0;
     else sector = (s32)cur->file->vol;
-    if (length == 0) return 0;
-    if (cur->pos + length > cur->file->size) {
-        length = cur->file->size - cur->pos;
-        if (length == 0) return 0;
+    if (arg2 == 0) return 0;
+    if (cur->pos + arg2 > cur->file->size) {
+        arg2 = cur->file->size - cur->pos;
+        if (arg2 == 0) return 0;
     }
     if (cur->cluster == 0xFFFFFFFF) {
         result = fn_800AE620(cur->file->fat, cur->sector, 0, &cur->cluster);
@@ -7829,7 +7829,7 @@ extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
             cur->off = cur->pos & (fat->sectorSize - 1);
             return 0x1c;
         }
-        if (cur->pos + length > cur->file->size) {
+        if (cur->pos + arg2 > cur->file->size) {
             cur->pos = cur->file->size;
             fat = cur == 0 ? 0 : cur->file->vol;
             cur->sector = cur->pos >> fat->shift;
@@ -7837,11 +7837,11 @@ extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
             return 0x1b;
         }
     }
-    result = fn_800B5324(sector, arg1, cur->off, length, &sp8, 1);
+    result = ((s32 (*)(void *, s32, u32, u16, u32, s32 *, s32))fn_800B5324)((void *)sector, arg1, cur->cluster, cur->off, arg2, &sp8, 1);
     if (result != 0 && sp8 == 0) return result;
     *arg3 = sp8;
     VFiPFFILE_Cursor_AdvanceToRead(cur, sp8, cur->cluster);
-    if ((u32)sp8 != length) return result;
+    if ((u32)sp8 != arg2) return result;
     return 0;
 }
 
