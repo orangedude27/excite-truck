@@ -510,58 +510,67 @@ void fn_801B5060(int fromFrame, int toFrame, float fraction) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_801B50B4(void **arg0, int arg1) {
-    void *state = lbl_8055E6D8;
-    unsigned char *buffer;
-    unsigned char *initialBuffer;
-    int offset;
-    float rate;
+/* Per-frame audio update while a replay is playing (fn_80177E14 calls this in
+ * place of the empty fn_801B535C): blend the sound parameters of the replay
+ * frame covering the current tick with the next one, let every registered
+ * sound object write its audio out of the two frames' recorded data, and -
+ * once per replay frame - run the command handlers the recorded stream holds.
+ * Finishes by telling the replay queue its data was used, and kicks the DSP
+ * init callback once the tick has reached the current frame's base tick. */
+extern "C" void fn_801B50B4(void **objects, int objectCount) {
+    void *queue = gReplayPacketQueue;
+    unsigned char *data;
+    unsigned char *frameData;
+    int nextData;
+    float fraction;
     int i;
 
-    if (state == 0 || !fn_801B4B44((char *)state))
+    if (queue == 0 || !fn_801B4B44((char *)queue))
         return;
 
-    if (fn_801B49D4(lbl_8055E6D8, (void **)&buffer, (void **)&offset, &rate, lbl_8055E3C4) != 0) {
-        int length;
-        int extra;
+    if (fn_801B49D4(gReplayPacketQueue, (void **)&data, (void **)&nextData, &fraction, gCurrentTick) != 0) {
+        int used;
+        int nextUsed;
 
-        initialBuffer = buffer;
-        fn_801B5060((int)buffer, offset, rate);
-        buffer += 0xC;
-        offset += 0xC;
+        frameData = data;
+        fn_801B5060((int)data, nextData, fraction); /* the 12-byte parameter record */
+        data += 0xC;
+        nextData += 0xC;
 
-        for (i = 0; i < arg1; i++) {
-            F801B50B4 *object = *(F801B50B4 **)arg0;
-            if (object != 0 && object->f14() != 0) {
-                length = -1;
-                extra = -1;
-                object->f10(buffer, offset, &length, &extra, rate);
-                buffer += length;
-                offset += extra;
+        for (i = 0; i < objectCount; i++) {
+            ReplaySoundObject *object = *(ReplaySoundObject **)objects;
+            if (object != 0 && object->isValid() != 0) {
+                used = -1;
+                nextUsed = -1;
+                object->writeAudio(data, nextData, &used, &nextUsed, fraction);
+                data += used;
+                nextData += nextUsed;
             }
-            arg0++;
+            objects++;
         }
 
-        if (lbl_8055E6DC != (char *)initialBuffer) {
+        if (gReplayParsedData != (char *)frameData) {
+            /* Commands of a replay frame not parsed yet: opcode byte, then the
+               handler registered for it, which eats the bytes it needs. */
             for (;;) {
-                unsigned int code = *buffer;
-                int (*callback)(unsigned char *, int);
-                void *tableEntry;
+                unsigned int opcode = *data;
+                int (*handler)(unsigned char *, int);
+                void *handlerSlot;
 
-                if (code >= 0x10)
+                if (opcode >= 0x10)
                     break;
-                tableEntry = (char *)lbl_80435C70 + ((code * 4) & 0x3FC);
-                callback = *(int (**)(unsigned char *, int))((char *)tableEntry + 0x208);
-                if (callback == 0)
+                handlerSlot = (char *)lbl_80435C70 + ((opcode * 4) & 0x3FC);
+                handler = *(int (**)(unsigned char *, int))((char *)handlerSlot + REPLAY_CMD_HANDLERS);
+                if (handler == 0)
                     break;
-                buffer += callback(buffer + 1, lbl_8055E6D4) + 1;
+                data += handler(data + 1, gReplayRate) + 1;
             }
         }
-        lbl_8055E6DC = (char *)initialBuffer;
-        fn_801B4AC4((int)lbl_8055E6D8, lbl_8055E3C4);
+        gReplayParsedData = (char *)frameData;
+        fn_801B4AC4((int)gReplayPacketQueue, gCurrentTick);
     }
 
-    if (fn_801B4C1C((int)lbl_8055E6D8, lbl_8055E3C4) != 0)
+    if (fn_801B4C1C((int)gReplayPacketQueue, gCurrentTick) != 0)
         __AXDSPInitCallback_801769E0();
 }
 #pragma cplusplus off
