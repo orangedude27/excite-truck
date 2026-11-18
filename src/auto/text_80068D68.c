@@ -20923,12 +20923,15 @@ void l2cu_send_peer_cmd_reject(void *arg0, u16 arg1, u8 arg2, u16 arg3, u16 arg4
     u16 size;
     void *packet;
     u8 *p;
-    if (arg1 == 1) goto isOne;
-    size = ((s32)~((arg1 - 2) | (2 - arg1)) >> 31) & 4;
-    goto done;
-isOne:
-    size = 2;
-done:
+
+    if (arg1 == 1) {
+        size = 2;
+    } else if (arg1 == 2) {
+        size = 4;
+    } else {
+        size = 0;
+    }
+
     packet = ((void *(*)(u16, u16, u8, s32))l2cu_build_header)(
         *(u16 *)((u8 *)arg0 + 0x28), size + 2, 1, arg2);
     if (packet == 0) {
