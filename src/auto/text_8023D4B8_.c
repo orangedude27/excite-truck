@@ -91,10 +91,10 @@ extern void fn_8023DBCC(void);
 extern void fn_8022D894(void *, int, int, long, int);
 #pragma use_lmw_stmw off
 void fn_8023D4B8(int arg0) {
+#pragma scheduling invalid_target
     int ctx[14];
     Rec_8023D4B8 recs[10];
     int tbl[5];
-    int i;
     int r7;
     lbl_8055F19C = (void *)arg0;
     fn_8023DB68();
@@ -665,9 +665,9 @@ extern "C" void fn_8023E1FC(void *arg0) {
     };
     struct Frame {
         int result;
-        volatile int state;
+        int state;
         char pad0[4];
-        volatile char zero;
+        char zero;
         char pad1[3];
         char string[0x14];
     } frame;
