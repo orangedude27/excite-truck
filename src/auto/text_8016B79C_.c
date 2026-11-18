@@ -445,50 +445,83 @@ extern "C" void *fn_8016BE60(void *arg0) {
 #pragma scheduling on
 #pragma cplusplus on
 extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
-    class VObj { public: virtual void destroy(int); };
-    VObj *p;
-    void *data;
+    /* The seven sounds the controller owns all answer to this: destroy(flag),
+     * their vtable's first slot (+8), frees the sound when flag > 0. */
+    class Sound { public: virtual void destroy(int); };
+    /* The ring-challenge controller fn_8016D024 builds at +0x30 of the
+     * RingChallengeMaster (lbl_8055E378); only the fields used here. */
+    struct Controller {
+        /* 0x00 */ void *unk_00;
+        /* 0x04 */ void *vtable;         /* lbl_80330A90 */
+        /* 0x08 */ u8 pad_08[0x0C];
+        /* 0x14 */ void *obstacleTable;  /* "race.res/obstacle.val" */
+        /* 0x18 */ void *ringSetList;    /* { entries, count, flag, objects } */
+        /* 0x1C */ void *gemList;        /* the same shape */
+        /* 0x20 */ void *gemArtSet;      /* "mapgems.art" */
+        /* 0x24 */ u8 pad_24[0x28];
+        /* 0x4C */ Sound *sfxRingHit;    /* "ringhit.sfx" */
+        /* 0x50 */ Sound *sfxCheerHit;   /* "cheerhit.sfx" */
+        /* 0x54 */ Sound *sfxLongCheer;  /* "longcheer.sfx" */
+        /* 0x58 */ Sound *sfxRingTally;  /* "rctally.sfx" */
+        /* 0x5C */ Sound *sfxMissFlag;   /* "missflag.sfx" */
+        /* 0x60 */ Sound *sfxLevelUp;    /* "levelup.sfx" */
+        /* 0x64 */ Sound *sfxFail;       /* "rcfail.sfx" */
+    };
+    Sound *sound;
+    void *list;
     register void *object = arg0;
     register s32 freeFlag = arg1;
+    Controller *self = (Controller *)object;
+
+    /* Destructor of the ring-challenge controller (vtable lbl_80330A90, third
+     * slot): gives back the "mapgems.art" set, destroys the seven sound effects,
+     * frees the ring-set and gem lists -- the ring-set list's per-set objects
+     * first running their destructor fn_8016C168 -- releases the obstacle table,
+     * unlinks the object from the dispatch list and, with freeFlag > 0, frees
+     * the object itself. */
     if (object != 0) {
-        *(char **)((u8 *)object + 4) = lbl_80330A90;
-        fn_80235380(*(void **)((u8 *)object + 0x20), lbl_80330A90);
-        p = *(VObj **)((u8 *)object + 0x4C);
-        if (p != 0) { if (p != 0) p->destroy(1); }
-        p = *(VObj **)((u8 *)object + 0x54);
-        if (p != 0) { if (p != 0) p->destroy(1); }
-        p = *(VObj **)((u8 *)object + 0x58);
-        if (p != 0) { if (p != 0) p->destroy(1); }
-        p = *(VObj **)((u8 *)object + 0x50);
-        if (p != 0) { if (p != 0) p->destroy(1); }
-        p = *(VObj **)((u8 *)object + 0x5C);
-        if (p != 0) { if (p != 0) p->destroy(1); }
-        p = *(VObj **)((u8 *)object + 0x60);
-        if (p != 0) { if (p != 0) p->destroy(1); }
-        p = *(VObj **)((u8 *)object + 0x64);
-        if (p != 0) { if (p != 0) p->destroy(1); }
-        data = *(void **)((u8 *)object + 0x18);
-        if (data != 0) {
-            ((s32 (*)(s32, void *))fn_8002F6AC)(*(s32 *)((u8 *)data + 0xC), fn_8016C168);
-            if (data != 0) {
-                *(s32 *)data = 0;
-                *((s32 *)data + 1) = 0;
-                *((s32 *)data + 2) = 0;
+        self->vtable = lbl_80330A90; /* back to this class's own vtable */
+        /* fn_80235380 only reads the set; the vtable rides along in r4. */
+        fn_80235380(self->gemArtSet, lbl_80330A90);
+        sound = self->sfxRingHit;
+        if (sound != 0) { if (sound != 0) sound->destroy(1); }
+        sound = self->sfxLongCheer;
+        if (sound != 0) { if (sound != 0) sound->destroy(1); }
+        sound = self->sfxRingTally;
+        if (sound != 0) { if (sound != 0) sound->destroy(1); }
+        sound = self->sfxCheerHit;
+        if (sound != 0) { if (sound != 0) sound->destroy(1); }
+        sound = self->sfxMissFlag;
+        if (sound != 0) { if (sound != 0) sound->destroy(1); }
+        sound = self->sfxLevelUp;
+        if (sound != 0) { if (sound != 0) sound->destroy(1); }
+        sound = self->sfxFail;
+        if (sound != 0) { if (sound != 0) sound->destroy(1); }
+        /* the ring-set list: destroy its per-set objects, then the record */
+        list = self->ringSetList;
+        if (list != 0) {
+            ((s32 (*)(s32, void *))fn_8002F6AC)(*(s32 *)((u8 *)list + 0xC), fn_8016C168);
+            if (list != 0) { /* entries, count and flag of the record */
+                *(s32 *)list = 0;
+                *((s32 *)list + 1) = 0;
+                *((s32 *)list + 2) = 0;
             }
-            fn_80128668(data);
+            fn_80128668(list);
         }
-        data = *(void **)((u8 *)object + 0x1C);
-        if (data != 0) {
-            fn_80128670(*(s32 *)((u8 *)data + 0xC));
-            if (data != 0) {
-                *(s32 *)data = 0;
-                *((s32 *)data + 1) = 0;
-                *((s32 *)data + 2) = 0;
+        /* the gem list, whose array is freed without element destructors */
+        list = self->gemList;
+        if (list != 0) {
+            fn_80128670(*(s32 *)((u8 *)list + 0xC));
+            if (list != 0) {
+                *(s32 *)list = 0;
+                *((s32 *)list + 1) = 0;
+                *((s32 *)list + 2) = 0;
             }
-            fn_80128668(data);
+            fn_80128668(list);
         }
-        if ((u32)object + 0x14 != 0) fn_80131818(*(s32 *)((u8 *)object + 0x14));
-        fn_802C2930(object, 0);
+        /* the original tests the field's address, which is never null */
+        if ((u32)object + 0x14 != 0) fn_80131818((s32)self->obstacleTable);
+        fn_802C2930(object, 0); /* unlink from the dispatch list, keep the memory */
         if (freeFlag > 0) fn_80128668(object);
     }
     return object;
