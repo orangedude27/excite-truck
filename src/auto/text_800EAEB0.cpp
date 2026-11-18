@@ -659,7 +659,6 @@ extern const char lbl_80322D54[];
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 #pragma push
 #pragma use_lmw_stmw off
-#pragma optimization_level 2
 extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(void *self) {
     register unsigned char *node = *(unsigned char **)((unsigned char *)self + 4);
     register unsigned char *end = (unsigned char *)self + 4;
