@@ -90,6 +90,18 @@ extern char lbl_80435C70[];
 extern char lbl_80335E48[];
 extern int lbl_8055E3C4;
 extern char *lbl_8055E6DC;
+/* Replay playback, the globals the per-frame driver fn_801B50B4 works on: the
+ * packet queue being played (created by fn_801B52CC, dropped by fn_801B5274),
+ * the rate index its command handlers are given (3 by default), the recorded
+ * data of the replay frame whose commands were parsed last, and the tick the
+ * audio is currently built for. */
+#define gReplayPacketQueue lbl_8055E6D8
+#define gReplayRate        lbl_8055E6D4
+#define gReplayParsedData  lbl_8055E6DC
+#define gCurrentTick       lbl_8055E3C4
+/* The replay command block at lbl_80435C70: two header words at +0x200/+0x204
+ * and, from +0x208, the 16 command handlers indexed by the opcode byte. */
+#define REPLAY_CMD_HANDLERS 0x208
 extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_802E317C(const char *, ...);
 extern int __dt__15shdStateMachineFv_801B496C();
