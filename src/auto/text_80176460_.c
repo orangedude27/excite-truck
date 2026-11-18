@@ -688,7 +688,6 @@ f32 fn_80176A2C(void) {
     #undef sTimeScale
 }
 
-#define sFrameCount   lbl_8055E3C4 /* global frame/tick counter */
 #define sFrameTime    lbl_8055E3C8 /* that count expressed in seconds */
 #define FRAME_SECONDS lbl_80561B20 /* ~1/59.94 s: one NTSC frame in seconds */
 /* Set the global frame counter and update its equivalent elapsed time in seconds. */
