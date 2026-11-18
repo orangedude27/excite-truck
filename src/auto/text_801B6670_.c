@@ -35,13 +35,14 @@ extern float lbl_805626C8, lbl_805626CC, lbl_805626D0, lbl_805626D4, lbl_805626D
 extern float lbl_805626E0, lbl_805626E4, lbl_805626E8, lbl_805626EC, lbl_805626F0, lbl_805626F4, lbl_805626F8, lbl_805626FC;
 extern void *memset(void *, int, unsigned long);
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801B6670(void) {
-    unsigned char *base = (unsigned char*)&lbl_80335F70;
     UnkEntry *table;
+    unsigned char *base = (unsigned char*)&lbl_80335F70;
     void *temp_r10;
     void *temp_r22;
     void *temp_r9;
-
     fn_8000D838(&lbl_8055E728);
     table = (UnkEntry*)lbl_80435EE8;
     table[0].name = (const char *) (base + 0x1C);
@@ -525,7 +526,7 @@ void fn_801B6670(void) {
     table[67].scale = (float) lbl_805626DC;
     table[68].id = 0x42;
     table[68].name = temp_r9;
-    table[68].description = temp_r10;
+    table[68].description = (const char*)temp_r10;
     table[68].unk_0x10 = 0;
     table[68].unk_0x14 = 0;
     table[68].value = (float) lbl_805626C8;
@@ -671,3 +672,5 @@ void fn_801B6670(void) {
     memset((unsigned char*)table + 0xE00, 0, 0x1C);
     table[128].id = 0;
 }
+#pragma scheduling on
+#pragma pop
