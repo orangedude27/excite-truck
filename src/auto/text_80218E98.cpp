@@ -5030,21 +5030,20 @@ extern "C" void fn_80220B3C(void *widget) {
 }
 
 extern "C" void fn_80220B5C(void *arg0, s32 arg1) {
-    s32 v0;
     s32 *entries;
-    s32 *p;
     u32 cur;
+    s32 *p;
     s32 f8b;
     s32 f4b;
     s32 div;
     s32 v1;
     fn_802C3034(arg1);
-    v0 = ((VfObj *)arg0)->vf28();
+    s32 v0 = ((VfObj *)arg0)->vf28() - 11;
     entries = *(s32 **)((u8 *)arg0 + 0x244);
     p = *(s32 **)((u8 *)arg0 + 0x25C);
     s32 flag = 0;
     cur = *(u32 *)((u8 *)arg0 + 0x250);
-    div = ((*entries - (s32)cur) * (v0 - 11)) / ((s32)*(s32 *)((u8 *)arg0 + 0x254) - (s32)cur - 1);
+    div = ((*entries - (s32)cur) * v0) / ((s32)*(s32 *)((u8 *)arg0 + 0x254) - (s32)cur - 1);
     if (p != 0 && *p == *(s32 *)((u8 *)arg0 + 0x260)) {
         flag = 1;
     }
