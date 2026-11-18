@@ -661,4 +661,5 @@ void fn_801B6670(void) {
     memset((unsigned char*)table + 0xE00, 0, 0x1C);
     table[128].id = 0;
 }
-
+#pragma scheduling on
+#pragma pop
