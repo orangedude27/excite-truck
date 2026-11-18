@@ -916,12 +916,12 @@ extern "C" void fn_800D6EEC(void* arg0) {
     extern char lbl_8031F868[];
     volatile u8* p = (volatile u8*)arg0;
     register u32 zero = 0;
-    void* vtable = lbl_8031F868;
     f32 f = 0.0f;
     register void* list = (void*)(p + 8);
+    u32 vtable = (u32)lbl_8031F868;
     *(volatile u32*)(p + 8) = zero;
     *(volatile u32*)(p + 0xC) = zero;
-    *(void* volatile*)p = vtable;
+    *(volatile u32*)p = vtable;
     *(volatile u32*)(p + 4) = zero;
     *(void* volatile*)(p + 8) = list;
     *(void* volatile*)(p + 0xC) = list;
@@ -1261,6 +1261,7 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 extern "C" void fn_800D6CA0(s32, s32);
 #pragma push
 #pragma opt_common_subs off
+#pragma opt_lifetimes off
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
@@ -1287,14 +1288,14 @@ extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
         if (!n1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
         p1 = (u8 *)n1 - 4;
         if (!p1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-        { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+        { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1(), (StateNode_800D6CA0 *)(u32)&lbl_8055DE08) ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
         cur2.node = *(StateNode_800D6CA0 **)(p1 + 0x14);
         end2s.end = (StateNode_800D6CA0 *)(p1 + 0x14);
         while (n2 != end2) {
             if (!n2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
             p2 = (u8 *)n2 - 4;
             if (!p2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-            { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+            { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1(), (StateNode_800D6CA0 *)(void *)&lbl_8055DE08) ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
             cur3.node = *(StateNode_800D6CA0 **)(p2 + 0x14);
             while (n3 != (StateNode_800D6CA0 *)(p2 + 0x14)) {
                 if (!n3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
