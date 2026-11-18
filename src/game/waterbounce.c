@@ -75,12 +75,11 @@ extern const char lbl_8033C7A0[];
 extern const char lbl_8055B648;
 extern float lbl_8056336C;
 #pragma push
-#pragma processor 750
-#pragma cplusplus reset
+#pragma use_lmw_stmw off
 void *fn_8020DE74(void *arg0) {
     char name[0x20];
     register const char *labels __asm("r31") = lbl_8033C7A0;
-    register void *obj __asm("r30");
+    register CarSound *obj __asm("r30");
     register void *right __asm("r29");
     register s32 is_race __asm("r28");
     register void *left __asm("r27");
@@ -93,26 +92,26 @@ void *fn_8020DE74(void *arg0) {
     register float initial asm("f31");
     u32 bit;
 
-    obj = fn_801284F8(0x74, (const char *)&lbl_8055B648);
+    obj = (CarSound *)fn_801284F8(0x74, (const char *)&lbl_8055B648);
     if (obj != 0) {
-    ((void**)obj)[0] = lbl_8033C8C4;
-    ((void**)obj)[1] = arg0;
+    obj->vtable = lbl_8033C8C4;
+    obj->owner = arg0;
     left = (u8 *)arg0 + 0x118;
     right = (u8 *)arg0 + 0x60;
     group = *(void **)((u8 *)arg0 + 0x1ec);
     is_race = *(u32 *)((u8 *)arg0 + 0x10) == 0x50434152;
 
     if (is_race != 0) {
-        ((void**)obj)[10] = fn_802077A4(labels, 5, left, right);
-        ((void**)obj)[12] = fn_802077A4(labels + 0x10, 8, left, right);
+        obj->waterBounce = fn_802077A4(labels + 0, 5, left, right);
+        obj->airtime = fn_802077A4(labels + 0x10, 8, left, right);
     } else {
-        ((void**)obj)[10] = 0;
-        ((void**)obj)[12] = 0;
+        obj->waterBounce = 0;
+        obj->airtime = 0;
     }
-    ((void**)obj)[2] = fn_802077A4(labels + 0x1c, 5, left, right);
-    ((u32*)obj)[23] = 0;
-    memset((u8*)obj + 0x10, 0, 8);
-    ((void**)obj)[3] = 0;
+    obj->backfire = fn_802077A4(labels + 0x1c, 5, left, right);
+    obj->boostCount = 0;
+    memset(obj->boosts, 0, 8);
+    obj->lastBoost = 0;
 
     initial = lbl_80563368;
     i = 0;
@@ -130,86 +129,85 @@ void *fn_8020DE74(void *arg0) {
             *(float *)((u8 *)child + 4) = initial;
         }
         i++;
-        ((void**)obj)[3] = slot[4];
+        obj->lastBoost = slot[4];
         offset += 4;
-        ((u32*)obj)[23] += 1;
+        obj->boostCount += 1;
     } while (i < 2);
 
-    if (is_race != 0) ((void**)obj)[6] = fn_802077A4(labels + 0x38, 5, left, right);
-    else ((void**)obj)[6] = 0;
-    child = ((void**)obj)[2];
+    if (is_race != 0) obj->boostManual = fn_802077A4(labels + 0x38, 5, left, right);
+    else obj->boostManual = 0;
+    child = *(void * volatile *)((u8 *)obj + 8);
     if (child != 0) {
         *(void **)((u8 *)child + 0x10) = group;
         {
             float desired = lbl_8056336C;
-            child = ((void**)obj)[2];
+            child = *(void * volatile *)((u8 *)obj + 8);
             if (desired != *(float *)((u8 *)child + 4)) {
             *(u8 *)((u8 *)child + 0x4e) = 1;
             *(float *)((u8 *)child + 4) = desired;
             }
         }
     }
-    child = ((void**)obj)[10];
+    child = obj->waterBounce;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
-    child = ((void**)obj)[12];
+    child = obj->airtime;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
 
-    if (is_race != 0) ((void**)obj)[7] = fn_802077A4(labels + 0x4c, 5, left, right);
-    else ((void**)obj)[7] = 0;
-    ((void**)obj)[8] = fn_802077A4(labels + 0x5c, 5, left, right);
-    ((void**)obj)[13] = fn_802077A4(labels + 0x68, 5, left, right);
+    if (is_race != 0) obj->carGnd1 = fn_802077A4(labels + 0x4c, 5, left, right);
+    else obj->carGnd1 = 0;
+    obj->badland = fn_802077A4(labels + 0x5c, 5, left, right);
+    obj->waterDrive = fn_802077A4(labels + 0x68, 5, left, right);
     if (is_race != 0) {
-        ((void**)obj)[14] = fn_802077A4(labels + 0x78, 5, left, right);
-        ((void**)obj)[15] = fn_802077A4(labels + 0x88, 5, left, right);
+        obj->waterIn = fn_802077A4(labels + 0x78, 5, left, right);
+        obj->waterOut = fn_802077A4(labels + 0x88, 5, left, right);
     } else {
-        ((void**)obj)[14] = 0;
-        ((void**)obj)[15] = 0;
+        obj->waterIn = 0;
+        obj->waterOut = 0;
     }
-    child = ((void**)obj)[13];
+    child = obj->waterDrive;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
-    child = ((void**)obj)[14];
+    child = obj->waterIn;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
-    child = ((void**)obj)[15];
+    child = obj->waterOut;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
     child = fn_802077A4(labels + 0x98, 5, left, right);
-    ((void**)obj)[16] = child;
+    obj->dirtSkid = child;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
 
     if (is_race != 0) {
-        ((void**)obj)[9] = fn_802077A4(labels + 0xa8, 5, left, right);
-        ((void**)obj)[11] = fn_802077A4(labels + 0xb8, 5, left, right);
-        ((void**)obj)[18] = fn_802076A0(labels + 0xcc, 1, group, 2);
-        ((void**)obj)[19] = fn_802076A0(labels + 0xdc, 1, group, 2);
-        ((void**)obj)[20] = fn_802076A0(labels + 0xec, 1, group, 2);
-        ((void**)obj)[17] = fn_802076A0(labels + 0x100, 1, group, 0);
-        ((void**)obj)[21] = fn_802076A0(labels + 0x110, 1, group, 0);
+        obj->niceLand = fn_802077A4(labels + 0xa8, 5, left, right);
+        obj->boostTurboTap = fn_802077A4(labels + 0xb8, 5, left, right);
+        obj->heatBeep = fn_802076A0(labels + 0xcc, 1, group, 2);
+        obj->overheat = fn_802076A0(labels + 0xdc, 1, group, 2);
+        obj->overheatStart = fn_802076A0(labels + 0xec, 1, group, 2);
+        obj->waterSink = fn_802076A0(labels + 0x100, 1, group, 0);
+        obj->invulnerable = fn_802076A0(labels + 0x110, 1, group, 0);
     } else {
-        ((void**)obj)[9] = 0;
-        ((void**)obj)[11] = 0;
-        ((void**)obj)[18] = 0;
-        ((void**)obj)[19] = 0;
-        ((void**)obj)[20] = 0;
-        ((void**)obj)[17] = 0;
-        ((void**)obj)[21] = 0;
+        obj->niceLand = 0;
+        obj->boostTurboTap = 0;
+        obj->heatBeep = 0;
+        obj->overheat = 0;
+        obj->overheatStart = 0;
+        obj->waterSink = 0;
+        obj->invulnerable = 0;
     }
     {
         float reset = lbl_80563370;
-        ((float*)obj)[24] = reset;
-        ((u8*)obj)[0x70] = 0;
-        ((float*)obj)[25] = reset;
-        ((float*)obj)[26] = reset;
-        ((float*)obj)[27] = reset;
+        obj->value60 = reset;
+        obj->flag70 = 0;
+        obj->value64 = reset;
+        obj->value68 = reset;
+        obj->value6c = reset;
     }
-    ((u8*)obj)[0x58] = 0;
-    ((u8*)obj)[0x72] = 0;
+    obj->flags58 = 0;
+    obj->flag72 = 0;
     child = fn_80016544(*(s32 *)((u8 *)arg0 + 0x25c));
     bit = (*(u32 *)((u8 *)child + 0xa0) >> 2) & 1;
-    ((u8*)obj)[0x71] = bit;
+    obj->flag71 = bit;
     }
     return obj;
 }
-#pragma cplusplus on
-#pragma pop
+#pragma use_lmw_stmw on
 // The "carsnd" object's deleting destructor: releases every sound
 // fn_8020DE74() created for the truck and, when deleteMemory is positive,
 // frees the object itself. The vtable goes back first, so a sound torn down
