@@ -4726,10 +4726,10 @@ void UUSB_Register(tUUSB *uusb) {
     extern s32 lbl_8055DC64;
     extern s32 lbl_80558FF0;
     register char *report = lbl_803142C8;
-    register u8 *c = (u8 *)&lbl_803BD1E0;
-    register u8 pool1;
+    u8 *c = (u8 *)&lbl_803BD1E0;
+    u8 pool1;
 
-    memset(&lbl_803BD1E0, 0, 0x4C);
+    memset(c, 0, 0x4C);
     fn_8006EBAC();
     c[0x29] = 5;
     fn_8006EB88();
@@ -4775,7 +4775,7 @@ void UUSB_Register(tUUSB *uusb) {
     c[0x1C] = GKI_create_pool(0x294, 0x2D, 1, 0);
     pool1 = GKI_create_pool(0x708, 0x1E, 1, 0);
     c[0x1D] = pool1;
-    if ((u8)c[0x1C] == 0xFF || pool1 == 0xFF) {
+    if (c[0x1C] == 0xFF || pool1 == 0xFF) {
         if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x768);
         return;
     }
@@ -14989,18 +14989,18 @@ void btu_hcif_hdl_command_status(s32 opcode, UINT8 status, UINT8 *p_cmd) {
 }
 
 void btu_hcif_command_status_evt(UINT8 *p, UINT16 len) {
-    register void *buf;
-    register UINT8 status;
-    UINT16 opcode;
+    UINT8 status;
     UINT8 *cmd;
+    register void *buf;
+    UINT16 opcode;
     UINT8 *cmd_base;
     UINT16 queued_opcode;
 
     status = p[0];
     *(UINT16 *)(lbl_803C0A50 + 0x80) = p[1];
     buf = 0;
-    cmd = 0;
     opcode = (UINT16)(p[2] + (p[3] << 8));
+    cmd = 0;
     if (opcode != 0xC03 && opcode != 0xC35 && opcode != 0) {
         buf = GKI_dequeue((BUFFER_Q *)(lbl_803C0A50 + 0x70));
         if (buf != 0) {
@@ -15880,25 +15880,36 @@ BOOLEAN btsnd_hcic_link_key_neg_reply(BD_ADDR bd_addr) {
     return TRUE;
 }
 
+/* Build and send an HCI PIN_Code_Request_Reply command for bd_addr: answer the
+   controller's PIN_Code_Request event with the first pin_code_len bytes of
+   pin_code, zero-padding the rest of the fixed 16-byte PIN code field.
+   Returns FALSE when the HCI command pool has no buffer left. */
 BOOLEAN btsnd_hcic_pin_code_req_reply(BD_ADDR bd_addr, UINT8 pin_code_len, PIN_CODE pin_code) {
-    BT_HDR *p_buf;
+    BT_HDR *p;
     UINT8 *pp;
-    s32 i;
+    int i;
 
-    p_buf = (BT_HDR *)GKI_getpoolbuf(2);
-    if (p_buf == NULL) return FALSE;
-    pp = (UINT8 *)(p_buf + 1);
-    p_buf->len = 0x1A;
-    p_buf->offset = 0;
-    UINT16_TO_STREAM(pp, 0x040D);
-    UINT8_TO_STREAM(pp, 0x17);
-    BDADDR_TO_STREAM(pp, bd_addr);
-    UINT8_TO_STREAM(pp, pin_code_len);
+    if ((p = HCI_GET_CMD_BUF(HCIC_PARAM_SIZE_PIN_CODE_REQ_REPLY)) == NULL)
+        return FALSE;
+
+    pp = (UINT8 *)(p + 1);
+
+    p->len    = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_PIN_CODE_REQ_REPLY;
+    p->offset = 0;
+
+    UINT16_TO_STREAM (pp, HCI_PIN_CODE_REQUEST_REPLY);
+    UINT8_TO_STREAM  (pp, HCIC_PARAM_SIZE_PIN_CODE_REQ_REPLY);
+
+    BDADDR_TO_STREAM (pp, bd_addr);
+    UINT8_TO_STREAM  (pp, pin_code_len);
+
     for (i = 0; i < pin_code_len; i++)
         *pp++ = *pin_code++;
-    for (; i < 16; i++)
+
+    for (; i < PIN_CODE_LEN; i++)
         *pp++ = 0;
-    btu_hcif_send_cmd(p_buf);
+
+    btu_hcif_send_cmd(p);
     return TRUE;
 }
 
