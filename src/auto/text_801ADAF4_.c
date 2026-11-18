@@ -236,7 +236,7 @@ void fn_801AE158(void *obj) {
 }
 
  #pragma scheduling invalid_target
- #pragma unroll off
+ #pragma opt_unroll_loops off
  void *fn_801AE180(void) {
      s32 var_r8;
      s32 var_r5_2;
