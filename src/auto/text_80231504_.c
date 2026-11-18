@@ -166,7 +166,7 @@ extern f32 lbl_80563680;
 extern f32 lbl_80563684;
 extern f32 lbl_80563688;
 extern f32 lbl_8056368C;
-const f64 lbl_80563698 = 4503599627370496.0;
+extern const f64 lbl_80563698;
 extern f32 fn_8023400C(s32);
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern s32 fn_802C8DBC(s32);
