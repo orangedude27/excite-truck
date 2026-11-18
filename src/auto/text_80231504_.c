@@ -283,46 +283,6 @@ static inline s32 fn_80231D84_addEscape(f32 *adv, char *text, f32 x, f32 y, f32 
     }
     return 0;
 }
-static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32 half, f32 *adv) {
-    s32 i;
-    s32 eo;
-    s32 flag;
-    *adv = w;
-    flag = lbl_8055F050;
-    if (*text == '\\') {
-        eo = 0;
-        i = 0;
-        while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
-            Fn80231AF0_Entry *e = (Fn80231AF0_Entry *)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
-            if (fn_8002B1D8(text + 1, e->name, strlen(*(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo))) == 0) {
-                Fn80231D84_Rec *r;
-                f32 extra = lbl_8056368C;
-                r = &((Fn80231D84_Table *)lbl_8049846C)->recs[((Fn80231D84_Table *)lbl_8049846C)->count++];
-                r->idx = i;
-                if (e->unkC != 0) {
-                    f32 q = w / fn_80235F64(e->unkC, e->unk10);
-                    r->w = w * e->scale;
-                    r->w2 = q * e->scale * fn_80235EF0(e->unkC, e->unk10);
-                    extra = e->scale * (e->unk18 * q);
-                } else {
-                    r->w2 = w * e->scale;
-                    r->w = w * e->scale;
-                }
-                r->x = x;
-                r->y = y + w + half * (r->w - w);
-                r->z = z;
-                r->flag = flag;
-                if (adv != 0) {
-                    *adv = r->w2 + extra;
-                }
-                return strlen(e->name) + 1;
-            }
-            ++i;
-            eo += 0x1C;
-        }
-    }
-    return 0;
-}
 /* State save/restore hook used by the game-mode dispatcher (fn_8000B210):
  * called with 0 to snapshot state, then with that value to restore it. This
  * build has no state to preserve, so it always reports 0. */
@@ -628,7 +588,7 @@ void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
         int off;
         u8 *g;
 
-        skip = fn_80231D84_addEscape(&adv, text, x, y, z, w, half);
+        skip = fn_80231D84_escape(text, x, y, z, w, half, &adv);
         if (skip > 0) {
             text += skip;
             x += adv;
