@@ -36,21 +36,25 @@ int fn_8012850C(int, void *);
 void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
 void GXInitTexObjFilter(void *, int, int);
 void fn_802DD4FC(void) {
+#pragma scheduling invalid_target
+#pragma opt_common_subs off
     void *info = fn_802D2D14();
     lbl_8055FED0 = *(unsigned short *)((char *)info + 4);
     lbl_8055FED4 = *(unsigned short *)((char *)info + 6);
     {
         void *obj = fn_801284F8(0x50, lbl_8034CB50);
         if (obj != 0) {
+            int h, w;
+            h = lbl_8055FED4;
+            w = lbl_8055FED0;
             *(unsigned char *)((char *)obj + 0x4C) = 1;
-            do {
-                *(int *)((char *)obj + 0x44) = lbl_8055FED0 / 2;
-                *(int *)((char *)obj + 0x48) = lbl_8055FED4 / 2;
-                break;
-                *(int *)((char *)obj + 0x44) = lbl_8055FED0;
-                *(int *)((char *)obj + 0x48) = lbl_8055FED4;
-            } while (0);
-            *(int *)((char *)obj + 0x40) = fn_8012850C(*(int *)((char *)obj + 0x48) * (*(int *)((char *)obj + 0x44) * 2), lbl_8034CB5C);
+            *(volatile int *)((char *)obj + 0x44) = w / 2;
+            *(volatile int *)((char *)obj + 0x48) = h / 2;
+            goto skip;
+            *(volatile int *)((char *)obj + 0x44) = w;
+            *(volatile int *)((char *)obj + 0x48) = h;
+        skip:
+            *(int *)((char *)obj + 0x40) = fn_8012850C(*(volatile int *)((char *)obj + 0x48) * (*(volatile int *)((char *)obj + 0x44) * 2), lbl_8034CB5C);
             GXInitTexObj(obj, *(void **)((char *)obj + 0x40), *(int *)((char *)obj + 0x44), *(int *)((char *)obj + 0x48), 4, 0, 0, 0);
             GXInitTexObjFilter(obj, 1, 1);
             *(unsigned char *)((char *)obj + 0x4D) = 0;
@@ -82,25 +86,26 @@ void fn_802DD63C(int count) {
     float f0;
     float f3;
     int i;
-    int * __restrict countPtr = (int *)&lbl_804DB6A0[36];
-    float * __restrict entry = lbl_804DB6A0;
+    float *entry;
+    int c;
 
     f0 = lbl_80565090;
     f1 = lbl_8056508C;
     f2 = lbl_80565094;
     f3 = lbl_80565088;
-    *countPtr = count;
-    for (i = 0; i < *countPtr; entry += 9, i++) {
-        if (*countPtr < 3) {
+    *(int *)((char *)lbl_804DB6A0 + 0x90) = count;
+    entry = lbl_804DB6A0;
+    for (i = 0; i < (c = *(int *)((char *)lbl_804DB6A0 + 0x90)); entry += 9, i++) {
+        if (c < 3) {
             entry[0] = f3; entry[1] = f1; entry[4] = f0; entry[5] = f1;
         } else if (i % 2 == 0) {
             entry[0] = f3; entry[1] = f0; entry[4] = f0; entry[5] = f2;
         } else {
             entry[0] = f0; entry[1] = f1; entry[4] = f2; entry[5] = f1;
         }
-        if (*countPtr == 1) {
+        if (c == 1) {
             entry[2] = f1; entry[3] = f3; entry[6] = f0; entry[7] = f1;
-        } else if (i < (*countPtr + 1) / 2) {
+        } else if (i < (c + 1) / 2) {
             entry[2] = f1; entry[3] = f0; entry[6] = f0; entry[7] = f2;
         } else {
             entry[2] = f0; entry[3] = f3; entry[6] = f2; entry[7] = f1;
@@ -435,37 +440,33 @@ void fn_802DE788(void) {
     GXDescCopy desc;
     GXMatrix4Copy fmt, proj;
     GXMatrix3Copy mtx;
-    u32 *b0 = (u32 *)lbl_802FAD58;
-    u32 *b0b = (u32 *)lbl_802FAD58;
-    u32 *b1 = (u32 *)(lbl_802FAD58+8);
-    u32 *b1b = (u32 *)(lbl_802FAD58+8);
-    u32 *b2 = (u32 *)(lbl_802FAD58+24);
-    u32 *b2b = (u32 *)(lbl_802FAD58+24);
-    u32 *b3 = (u32 *)(lbl_802FAD58+40);
-    u32 *b3b = (u32 *)(lbl_802FAD58+40);
-    desc.words[0] = b0[0];
-    desc.words[1] = b0b[1]; desc.words[2] = b0b[2]; desc.words[3] = b0b[3];
-    desc.words[4] = b0b[4]; desc.words[5] = b0b[5]; desc.words[6] = b0b[6]; desc.words[7] = b0b[7];
+    GXDescCopy *pd = (GXDescCopy *)lbl_802FAD58;
+    GXMatrix4Copy *pf = (GXMatrix4Copy *)((char *)lbl_802FAD58 + 0x20);
+    GXMatrix4Copy *pp = (GXMatrix4Copy *)((char *)lbl_802FAD58 + 0x60);
+    GXMatrix3Copy *pm = (GXMatrix3Copy *)((char *)lbl_802FAD58 + 0xA0);
+    desc.words[0] = pd->words[0];
+    desc.words[1] = pd->words[1]; desc.words[2] = pd->words[2]; desc.words[3] = pd->words[3];
+    desc.words[4] = pd->words[4]; desc.words[5] = pd->words[5]; desc.words[6] = pd->words[6]; desc.words[7] = pd->words[7];
     GXClearVtxDesc();
     GXSetVtxDescv(&desc);
-    fmt.words[0] = b1[0];
-    fmt.words[1] = b1b[1]; fmt.words[2] = b1b[2]; fmt.words[3] = b1b[3];
-    fmt.words[4] = b1b[4]; fmt.words[5] = b1b[5]; fmt.words[6] = b1b[6]; fmt.words[7] = b1b[7];
-    fmt.words[8] = b1b[8]; fmt.words[9] = b1b[9]; fmt.words[10] = b1b[10]; fmt.words[11] = b1b[11];
-    fmt.words[12] = b1b[12]; fmt.words[13] = b1b[13]; fmt.words[14] = b1b[14]; fmt.words[15] = b1b[15];
+    fmt.words[0] = ((GXMatrix4Copy *)lbl_802FAD58)->words[0];
+    fmt.words[1] = pf->words[1]; fmt.words[2] = pf->words[2]; fmt.words[3] = pf->words[3];
+    fmt.words[4] = pf->words[4]; fmt.words[5] = pf->words[5]; fmt.words[6] = pf->words[6]; fmt.words[7] = pf->words[7];
+    fmt.words[8] = pf->words[8]; fmt.words[9] = pf->words[9]; fmt.words[10] = pf->words[10]; fmt.words[11] = pf->words[11];
+    fmt.words[12] = pf->words[12]; fmt.words[13] = pf->words[13]; fmt.words[14] = pf->words[14]; fmt.words[15] = pf->words[15];
     GXSetVtxAttrFmtv(0,&fmt);
     GXSetViewport(lbl_80565090,lbl_80565090,
         (float)lbl_8055FED0,(float)lbl_8055FED4,lbl_80565090,lbl_8056508C);
-    proj.words[0] = b2[0];
-    proj.words[1] = b2b[1]; proj.words[2] = b2b[2]; proj.words[3] = b2b[3];
-    proj.words[4] = b2b[4]; proj.words[5] = b2b[5]; proj.words[6] = b2b[6]; proj.words[7] = b2b[7];
-    proj.words[8] = b2b[8]; proj.words[9] = b2b[9]; proj.words[10] = b2b[10]; proj.words[11] = b2b[11];
-    proj.words[12] = b2b[12]; proj.words[13] = b2b[13]; proj.words[14] = b2b[14]; proj.words[15] = b2b[15];
+    proj.words[0] = ((GXMatrix4Copy *)((char *)lbl_802FAD58 + 0x60))->words[0];
+    proj.words[1] = pp->words[1]; proj.words[2] = pp->words[2]; proj.words[3] = pp->words[3];
+    proj.words[4] = pp->words[4]; proj.words[5] = pp->words[5]; proj.words[6] = pp->words[6]; proj.words[7] = pp->words[7];
+    proj.words[8] = pp->words[8]; proj.words[9] = pp->words[9]; proj.words[10] = pp->words[10]; proj.words[11] = pp->words[11];
+    proj.words[12] = pp->words[12]; proj.words[13] = pp->words[13]; proj.words[14] = pp->words[14]; proj.words[15] = pp->words[15];
     GXSetProjection(&proj,1);
-    mtx.words[0] = b3[0];
-    mtx.words[1] = b3b[1]; mtx.words[2] = b3b[2]; mtx.words[3] = b3b[3];
-    mtx.words[4] = b3b[4]; mtx.words[5] = b3b[5]; mtx.words[6] = b3b[6]; mtx.words[7] = b3b[7];
-    mtx.words[8] = b3b[8]; mtx.words[9] = b3b[9]; mtx.words[10] = b3b[10]; mtx.words[11] = b3b[11];
+    mtx.words[0] = ((GXMatrix3Copy *)((char *)lbl_802FAD58 + 0xA0))->words[0];
+    mtx.words[1] = pm->words[1]; mtx.words[2] = pm->words[2]; mtx.words[3] = pm->words[3];
+    mtx.words[4] = pm->words[4]; mtx.words[5] = pm->words[5]; mtx.words[6] = pm->words[6]; mtx.words[7] = pm->words[7];
+    mtx.words[8] = pm->words[8]; mtx.words[9] = pm->words[9]; mtx.words[10] = pm->words[10]; mtx.words[11] = pm->words[11];
     GXLoadPosMtxImm(&mtx,0);
     GXSetCurrentMtx(0); GXSetNumChans(1);
     GXSetChanCtrl(4,0,1,1,0,0,2); GXSetChanCtrl(5,0,1,1,0,0,2);
