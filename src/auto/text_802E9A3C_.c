@@ -209,13 +209,12 @@ extern long fn_800B7968(long, long, long, void *);
 extern void fn_802E317C(const char *, ...);
 #pragma push
 #pragma scheduling invalid_target
-#pragma opt_propagation off
 void fn_802E9CF0(void) {
     char *strings = (char *)&lbl_8034E260;
     char *base = (char *)lbl_80507600;
     char *config = base + 0xC4;
     char *state;
-    *(void *volatile *)config = base + 0xD8;
+    *(void *volatile *)(base + 0xC4) = base + 0xD8;
     *(void *volatile *)(config + 4) = base + 0x218;
     state = base + 0xB8;
     *(volatile short *)(config + 8) = 4;
