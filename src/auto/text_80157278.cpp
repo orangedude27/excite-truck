@@ -1761,7 +1761,6 @@ extern "C" void fn_801590A8(void* self) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling reset
 extern "C" u8 fn_80159124(void* arg0, void* arg1) {
     if (*(s32*)((u8*)arg1 + 0x2620) == 0) {
         *(f32*)((u8*)arg0 + 0x270) = *(f32*)((u8*)arg0 + 0x270) + lbl_8056177C;
@@ -1787,11 +1786,10 @@ extern "C" u8 fn_80159124(void* arg0, void* arg1) {
     }
     *(u8*)(self + 0x274) = flag;
     if ((u8)flag != 0) {
-        f32 k;
         limit = *(f32*)(other + 0x25D4);
         f64 dtmp = __fabs((f64)PSVECDotProduct(other + 0x118, other + 0x3C));
         f32 d = (f32)dtmp;
-        k = prev != 0 ? lbl_8056178C : lbl_80561790;
+        f32 k = prev != 0 ? lbl_8056178C : lbl_80561790;
         f32 a = lbl_80561750 - lbl_80561794 * *(f32*)(self + 0x270);
         a = (a > lbl_80561754) ? a : lbl_80561754;
         f32 b = lbl_80561750;
