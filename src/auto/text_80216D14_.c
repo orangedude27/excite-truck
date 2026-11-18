@@ -663,8 +663,8 @@ extern "C" void fn_80217AC0(void *arg0) {
         void *obj;
         int eligible;
         scan--;
-        entry = base + (((short)scan + *(int *)(base + 0x450)) %
-                        *(int *)(base + 0x450)) * 4;
+        entry = base + (((scan + *(int *)(base + 0x430)) %
+                        *(int *)(base + 0x430)) * 4);
         obj = *(void **)(entry + 0x30);
         eligible = 0;
         if (*(unsigned char *)((char *)obj + 0x1A) != 0) goto eligible_yes;
@@ -1424,6 +1424,7 @@ void fn_80218C14(void *arg0, int arg1, void *arg2) {
     float z;
     float y;
     float x;
+    float *fsrc = (float *)arg2;
 
     a = src[0];
     b = src[1];
@@ -1447,11 +1448,11 @@ void fn_80218C14(void *arg0, int arg1, void *arg2) {
     dst[8] = c;
     c = src[11];
     dst[9] = a;
-    x = ((const float *)src)[12];
+    x = fsrc[12];
     dst[10] = b;
-    y = ((const float *)src)[13];
+    y = fsrc[13];
     dst[11] = c;
-    z = ((const float *)src)[14];
+    z = fsrc[14];
     ((float *)dst)[12] = x;
     ((float *)dst)[13] = y;
     ((float *)dst)[14] = z;
