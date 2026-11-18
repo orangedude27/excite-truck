@@ -1962,37 +1962,48 @@ static inline void CombineMtx_801F4684(float *dst, const float *left, const floa
 }
 extern void fn_802CDAB4(int, int, float *);
 #pragma scheduling invalid_target
-void fn_801F4684(register void *r25, register int r26) {
-    register float *matrix;
-    register int r29;
-    register int r28 = 0;
-    if (*(int *)((char *)r25 + 8) > 0) {
-        register float f23;
-        register float f22;
-        f22 = lbl_80562F40;
-        f23 = lbl_80562F44;
-        r29 = 0;
-        while (r28 < *(int *)((char *)r25 + 8)) {
-            register char *entry;
+void fn_801F4684(register void *spinList, register int drawContext) {
+    struct SpinEntry {
+        int objectIndex;      /* object the finished transform is submitted for */
+        float x, y, z;        /* position */
+        float *baseMtx;       /* the entry's own 3x3 matrix */
+        float spinRate;       /* spin speed about Y, radians per second */
+    };
+    struct SpinList {
+        void *vtable;
+        struct SpinEntry *entries;
+        int count;
+    };
+    register float *baseMtx;
+    register int byteOffset;
+    register int index = 0;
+    if (((struct SpinList *)spinList)->count > 0) {
+        register float one;
+        register float zero;
+        zero = lbl_80562F40;
+        one = lbl_80562F44;
+        byteOffset = 0;
+        while (index < ((struct SpinList *)spinList)->count) {
+            register struct SpinEntry *entry;
             register float c;
             register float angle;
             register float s;
             float transform[12];
-            entry = *(char **)((char *)r25 + 4) + r29;
-            angle = *(float *)(entry + 0x14) * fn_801E7E18();
+            entry = (struct SpinEntry *)((char *)((struct SpinList *)spinList)->entries + byteOffset);
+            angle = entry->spinRate * fn_801E7E18();
             c = (float)cos(angle);
             s = (float)sin(angle);
-            transform[0] = c; transform[1] = f22; transform[2] = -s;
-            transform[3] = f22; transform[4] = f23; transform[5] = f22;
-            transform[6] = s; transform[7] = f22; transform[8] = c;
-            matrix = *(float **)(entry + 0x10);
-            CombineMtx_801F4684(transform, transform, matrix);
-            transform[9] = *(float *)(entry + 4);
-            transform[10] = *(float *)(entry + 8);
-            transform[11] = *(float *)(entry + 0xC);
-            fn_802CDAB4(r26, *(int *)entry, transform);
-            r29 += 0x18;
-            r28 += 1;
+            transform[0] = c; transform[1] = zero; transform[2] = -s;
+            transform[3] = zero; transform[4] = one; transform[5] = zero;
+            transform[6] = s; transform[7] = zero; transform[8] = c;
+            baseMtx = entry->baseMtx;
+            CombineMtx_801F4684(transform, transform, baseMtx);
+            transform[9] = entry->x;
+            transform[10] = entry->y;
+            transform[11] = entry->z;
+            fn_802CDAB4(drawContext, entry->objectIndex, transform);
+            byteOffset += sizeof(struct SpinEntry);
+            index += 1;
         }
     }
 }
