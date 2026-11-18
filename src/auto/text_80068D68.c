@@ -5961,8 +5961,9 @@ void bta_dm_compress_cback(s32 event, u8 service, u8 id, s32 addr) {
         for (i = 1; i <= table[1]; i++) {
             entry = table + i * 3;
             if ((id == entry[1] || entry[1] == 0xff) && service == entry[0] && entry[2] == 1) {
-                u8 count = *(volatile u8 *)(table + 1);
+                u8 count;
                 found = 0;
+                count = *(volatile u8 *)(table + 1);
                 for (j = 1; j <= count; j++) {
                     if (table[j * 3 + 2] == 2) {
                         for (k = 0; k < lbl_803C0D18[0]; k++) {
@@ -7959,7 +7960,10 @@ tBTM_STATUS BTM_SwitchRole(BD_ADDR remote_bd_addr, UINT8 new_role, tBTM_CMPL_CB 
     if ((lbl_803C0F78[0x640] & 0x20) == 0) return 4;
     entry = lbl_803C0F78 + 0x34; i = 0;
 loop:
-    if (entry[0x119] != 0 && memcmp(entry + 8, remote_bd_addr, 6) == 0) goto found;
+    if (entry[0x119] == 0) goto next;
+    if (memcmp(entry + 8, remote_bd_addr, 6) != 0) goto next;
+    goto found;
+next:
     i++; entry += 0x11C;
     if (i < 4) goto loop;
     entry = 0;
@@ -8056,46 +8060,68 @@ tBTM_STATUS BTM_SetLinkPolicy(BD_ADDR remote_bda, UINT16 *settings)
     u32 i;
     u8 *entry;
     u16 policy;
+
     features = (u8 *)fn_8007A3A4();
     policy = *settings;
     if (policy != 0) {
         if ((policy & 1) && !(features[0] & 0x20)) {
             value = (u32)policy & 0xFFFE;
             *settings = value;
-            if (lbl_803C0F78[0x27C0] >= 3) fn_80070954(0xD0002, strings + 0xBC, value);
+            if (lbl_803C0F78[0x27C0] >= 3) {
+                fn_80070954(0xD0002, strings + 0xBC, value);
+            }
         }
+
         policy = *settings;
         if ((policy & 2) && !(features[0] & 0x40)) {
             value = (u32)policy & 0xFFFFFFFD;
             *settings = value;
-            if (lbl_803C0F78[0x27C0] >= 3) fn_80070954(0xD0002, strings + 0xF8, value);
+            if (lbl_803C0F78[0x27C0] >= 3) {
+                fn_80070954(0xD0002, strings + 0xF8, value);
+            }
         }
+
         policy = *settings;
         if ((policy & 4) && !(features[0] & 0x80)) {
             value = (u32)policy & 0xFFFFFFFB;
             *settings = value;
-            if (lbl_803C0F78[0x27C0] >= 3) fn_80070954(0xD0002, strings + 0x130, value);
+            if (lbl_803C0F78[0x27C0] >= 3) {
+                fn_80070954(0xD0002, strings + 0x130, value);
+            }
         }
+
         policy = *settings;
         if ((policy & 8) && !(features[1] & 1)) {
             value = (u32)policy & 0xFFFFFFF7;
             *settings = value;
-            if (lbl_803C0F78[0x27C0] >= 3) fn_80070954(0xD0002, strings + 0x170, value);
+            if (lbl_803C0F78[0x27C0] >= 3) {
+                fn_80070954(0xD0002, strings + 0x170, value);
+            }
         }
     }
+
+    i = 0;
     entry = lbl_803C0F78 + 0x34;
-    for (i = 0; i < 4; i++, entry += 0x11C) {
-        if (entry[0x119] == 0)
-            continue;
-        if (memcmp(entry + 8, remote_bda, 6) != 0)
-            continue;
-        goto found;
+loop:
+    if (entry[0x119] == 0) {
+        goto next;
+    }
+    if (memcmp(entry + 8, remote_bda, 6) != 0) {
+        goto next;
+    }
+    goto found;
+next:
+    i++;
+    entry += 0x11C;
+    if (i < 4) {
+        goto loop;
     }
     entry = NULL;
 found:
     if (entry != NULL) {
-        if (btsnd_hcic_write_policy_set(*(u16 *)entry, *settings) != 0)
+        if (btsnd_hcic_write_policy_set(*(u16 *)entry, *settings) != 0) {
             return 1;
+        }
         return 3;
     }
     return 7;
@@ -15834,35 +15860,22 @@ BOOLEAN btsnd_hcic_link_key_neg_reply(BD_ADDR bd_addr) {
 
 BOOLEAN btsnd_hcic_pin_code_req_reply(BD_ADDR bd_addr, UINT8 pin_code_len, PIN_CODE pin_code) {
     BT_HDR *p_buf;
-    UINT8 *p;
-    UINT8 *src;
-    UINT8 *dst;
+    UINT8 *pp;
     s32 i;
 
     p_buf = (BT_HDR *)GKI_getpoolbuf(2);
     if (p_buf == NULL) return FALSE;
-    p = (UINT8 *)p_buf;
-    i = 0;
-    *(UINT16 *)(p + 2) = 0x1A;
-    *(UINT16 *)(p + 4) = 0;
-    p[8] = 0x0D;
-    p[9] = 4;
-    p[10] = 0x17;
-    p[11] = bd_addr[5];
-    p[12] = bd_addr[4];
-    p[13] = bd_addr[3];
-    p[14] = bd_addr[2];
-    p[15] = bd_addr[1];
-    p[16] = bd_addr[0];
-    p[17] = pin_code_len;
-    src = pin_code;
-    dst = p + 0x12;
-    for (; i < pin_code_len; i++)
-        *dst++ = *src++;
-    while (i < 16) {
-        *dst++ = 0;
-        i++;
-    }
+    pp = (UINT8 *)(p_buf + 1);
+    p_buf->len = 0x1A;
+    p_buf->offset = 0;
+    UINT16_TO_STREAM(pp, 0x040D);
+    UINT8_TO_STREAM(pp, 0x17);
+    BDADDR_TO_STREAM(pp, bd_addr);
+    UINT8_TO_STREAM(pp, pin_code_len);
+    for (i = 0; i < pin_code_len; i++)
+        *pp++ = *pin_code++;
+    for (; i < 16; i++)
+        *pp++ = 0;
     btu_hcif_send_cmd(p_buf);
     return TRUE;
 }
