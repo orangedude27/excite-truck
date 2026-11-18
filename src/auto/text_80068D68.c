@@ -510,7 +510,9 @@ extern char lbl_80317700[];
 extern void fn_80086468(void *);
 u8 btm_sec_start_authorization(u8 *p);
 /* Checks that every word of the trusted-service bitmap is fully set. */
-static BOOLEAN btm_sec_are_all_trusted_inl(u32 *p_mask) {
+#pragma inline_max_size 10000
+#pragma inline_max_total_size 10000
+static __inline BOOLEAN btm_sec_are_all_trusted_inl(u32 *p_mask) {
     int i;
     for (i = 0; i < 2; i++) {
         if (p_mask[i] != 0xFFFFFFFF)
