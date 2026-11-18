@@ -90,6 +90,8 @@ extern s32 fn_8000DB34(void);
 extern s32 fn_8021521C(s32, s32, s32);
 extern s32 fn_8027B9EC(s32);
 extern s32 fn_802104D0(void);
+extern s32 fn_80214B44(s32);
+extern s32 fn_80214B94(s32);
 extern void *lbl_8055BAC8;
 #pragma push
 #pragma small_data off
