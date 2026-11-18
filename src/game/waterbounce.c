@@ -208,6 +208,7 @@ void *fn_8020DE74(void *arg0) {
     }
     return obj;
 }
+#pragma cplusplus on
 #pragma pop
 // The "carsnd" object's deleting destructor: releases every sound
 // fn_8020DE74() created for the truck and, when deleteMemory is positive,
