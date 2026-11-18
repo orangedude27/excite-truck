@@ -274,6 +274,7 @@ void fn_8018C5A0(char *arg0, char *arg1) {
     }
 }
 #pragma pop
+#pragma use_lmw_stmw off
 void fn_8018CB3C(char *arg0) {
     float force[3];
     float rotation[12];
