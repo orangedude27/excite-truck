@@ -5266,10 +5266,10 @@ BOOL fn_80063744(WPADCommandQueue *p, u8 idx, u32 val1, WPADCallback callback) {
     BOOL enabled;
     BOOL innerEnabled;
     s8 diff;
-    s32 backIndex;
     s32 index;
     s32 lastIndex;
     s32 wrapMask;
+    s8 rawBack;
 
     *(u8 *)((u8 *)&idx + 1) = 1;
     *(u32 *)&buffer[0] = 0x16;
@@ -5298,8 +5298,8 @@ BOOL fn_80063744(WPADCommandQueue *p, u8 idx, u32 val1, WPADCallback callback) {
     }
     memset(p->buffer + (s8)p->back, 0, sizeof(WPADCommand));
     memcpy(p->buffer + (s8)p->back, (u8 *)buffer + 0x30, sizeof(WPADCommand));
-    backIndex = p->back;
-    index = backIndex;
+    rawBack = p->back;
+    index = rawBack;
     lastIndex = p->capacity - 1;
     wrapMask = ~((index - lastIndex) | (lastIndex - index)) >> 31;
     p->back = (index + 1) & ~wrapMask;
@@ -7112,8 +7112,8 @@ void __a1_22_ack(u8 chan, u8* pReport)
         WPADCallback callback = pCB->readCB;
         if (callback) {
             callback(chan, status);
-            pCB->readCB = 0;
-            *(volatile u32*)((u8*)pCB + 0x7FC) = 0;
+            *(volatile WPADCallback*)((u8*)pCB + 0x7DC) = 0;
+            *(volatile s32*)((u8*)pCB + 0x7FC) = 0;
         }
     } else {
         DBPrintf_80068D68(strBase + 0x44C);
