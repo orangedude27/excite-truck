@@ -306,8 +306,7 @@ copied:
             rec->w[3].f = v3.z;
             def2.x = zero;
             def2.y = zero;
-            t = ((Vec2DefFn)(*(void ***)e)[16])(e, lbl_8055CCF8, def2);
-            p = t;
+            p = ((Vec2DefFn)(*(void ***)e)[16])(e, lbl_8055CCF8, def2);
             rec->w[1].f += p.x;
             rec->w[2].f -= p.y;
             rec->w[4].i = ((IntDefFn)(*(void ***)e)[8])(e, lbl_8055CCFC, -1);
