@@ -3,11 +3,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80141558(void *, int, const char *);
-/* dtk symbolises the colour 0x8000FF00 passed to fn_80141558 as fn_8000FDF0+0x110 */
-extern struct {
-    char pad[0x110];
-    char colour[1];
-} fn_8000FDF0;
+extern char fn_8000FDF0[];
 extern void fn_80128658(void *);
 extern void fn_80128668(void *);
 extern void fn_801777D0(void *);
