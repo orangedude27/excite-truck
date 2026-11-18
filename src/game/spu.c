@@ -744,9 +744,14 @@ void fn_802E5A54(void) {
     lbl_8055FF78 = 0;
 }
 
+static inline float spu_u32_to_f32(unsigned int x) {
+    return (float)x;
+}
+
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_common_subs off
 void *fn_802E5AE8(char *arg0) {
     extern char lbl_8034D210[];
     extern float lbl_80565138, lbl_8056513C;
@@ -821,7 +826,6 @@ void *fn_802E5AE8(char *arg0) {
     *(void **)(slot + 0xAC) = res;
     return slot;
 }
-
 #pragma pop
 /* SpuSample_release: decrement a sample's reference count, panicking if the last reference is dropped while channels still use it, and free its loaded SFX0 resource when the count reaches zero. */
 void fn_802E5D5C(void *sample) {
