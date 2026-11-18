@@ -492,7 +492,6 @@ copied:
         float sc, sa;
         if (((HasFn)(*(void ***)g)[3])(g, lbl_8055CCF8)) {
             LVec2 v;
-            LVec2 t2;
             v = ((Vec2Fn)(*(void ***)g)[15])(g, lbl_8055CCF8);
             off.z = lbl_80564AB0;
             off.x = v.x;
