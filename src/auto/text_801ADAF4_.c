@@ -333,8 +333,9 @@ void fn_801AE158(void *obj) {
     *(s32 *)((u8 *)temp_r5 + 4) = temp_r3 + 1;
     return (u8 *)temp_r5 + temp_r3 * 0x28 + 8;
 }
-#pragma scheduling on
-void fn_801AE4C4(void) {
+ #pragma unroll reset
+ #pragma scheduling on
+ void fn_801AE4C4(void) {
     void *result = (void *)fn_801284F8(8, &lbl_8033596C);
     if (result != NULL) {
         *(s32 *)result = 0;
