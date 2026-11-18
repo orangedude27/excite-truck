@@ -1264,17 +1264,13 @@ int fn_8028A1A4(int out) {
         virtual void v21() = 0;
         virtual Item *item(int) = 0;
     };
-    int i;
-    int count;
     char *obj;
+    int i;
     char *entry;
     Object *castObj;
     int j;
     Item *item;
-    count = fn_80287B14();
-    *(void **)out = fn_8002F37C(
-        (int)fn_8012850C(count * 0x68 + 0x10, lbl_80348B7C, count * 0x68),
-        fn_8028A32C, 0, 0x68, count);
+    *(void **)out = fn_8028A1A4_newArray(fn_80287B14());
     for (i = 0; i < fn_80287B14(); i++) {
         obj = (char *)fn_80288208(i);
         entry = (char *)*(void **)out + i * 0x68;
