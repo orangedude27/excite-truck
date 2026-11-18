@@ -909,8 +909,7 @@ extern float lbl_805618A0, lbl_805618F4, lbl_805618F8, lbl_805618FC;
 #pragma optimization_level 2
 #pragma scheduling on
 float fn_80166F90(float * __restrict arg0) {
-    float a = lbl_805618A0;
-    float prod = a * arg0[2];
+    float prod = 2.0f * arg0[2];
     float diff = lbl_8055E318 - arg0[3];
     float x;
     float value;
@@ -918,9 +917,9 @@ float fn_80166F90(float * __restrict arg0) {
     float end;
     float term1;
     float term2;
-    x = (float)fn_8002EFB4(diff, prod, lbl_805618A0);
+    x = (float)fn_8002EFB4(diff, prod, 2.0f);
     if (x > arg0[2]) {
-        x = lbl_805618A0 * arg0[2] - x;
+        x = 2.0f * arg0[2] - x;
     }
     x /= arg0[2];
     if (x < lbl_805618F4) {
