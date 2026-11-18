@@ -2947,6 +2947,15 @@ static inline void fn_80252320_copy(char *src, s32 count, char *dst) {
     }
 }
 
+static inline void fn_80252320_copy2(s32 count, char *src, char *dst) {
+    while ((signed char)(*dst++ = *src++) != 0) {
+        if (--count <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+    }
+}
+
 void fn_80252320(void *arg0, u8 *arg1, signed char arg2, int arg3) {
     struct Entry {
         char name[0x20];
@@ -2977,27 +2986,10 @@ copied1:
     record->flag41 = arg3;
     if (arg3 != 0) {
         src = (char *)fn_80019098(arg1);
-        dst = record->name2;
-        count = 0x20;
-        while ((signed char)(*dst++ = *src++) != 0) {
-            if (--count <= 0) {
-                dst[-1] = 0;
-                break;
-            }
-        }
+        fn_80252320_copy(src, 0x20, record->name2);
     } else {
-        dst = record->name2;
-        src = (char *)&lbl_8055C0E8;
         count = 0x20;
-        goto copy3;
-    check3:
-        if (--count > 0) goto copy3;
-        dst[-1] = 0;
-        goto copied3;
-    copy3:
-        if ((*dst++ = *src++) != 0) goto check3;
-    copied3:
-        ;
+        fn_80252320_copy((char *)&lbl_8055C0E8, count, record->name2);
     }
     if (*(u32 *)((char *)arg0 + 0x1C) != lbl_8055E044)
         fn_80131318((char *)arg0 + 0x14);
