@@ -2158,7 +2158,8 @@ extern "C" s32 fn_802B8998(s32 inputId) {
 }
 #pragma cplusplus reset
 #pragma pop
-void fn_802B8AE0(const char *arg0, s32 arg1)
+#pragma cplusplus on
+extern "C" void fn_802B8AE0(const char *arg0, s32 arg1)
 {
   struct Local
   {
