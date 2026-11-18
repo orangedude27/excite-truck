@@ -1187,11 +1187,12 @@ int fn_8027F958(int *selection, void *collection) {
     widget->unk50 = 0;
     widget->unk5C = 0;
     widget->unk24 = 1;
-    widget->unk20 = 0;
-    widget->unk44 = 0;
-    return result;
-}
-#pragma scheduling invalid_target
+         widget->unk20 = 0;
+     widget->unk44 = 0;
+     return result;
+#undef lbl_804B3048
+ }
+ #pragma scheduling invalid_target
 
 extern int fn_80216D28(void);
 /* Menu action: report 1 while a UI object is selected; with no selection, signal back and report 0. */
