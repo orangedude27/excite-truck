@@ -57,36 +57,46 @@ void fn_802AE394(void) {
     lbl_8055F959 = 0;
 }
 #pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" u8 lbl_8055F958;
+extern "C" int lbl_804BD8CC[3];
+extern "C" void fn_802AE328(void);
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
 #pragma dont_inline on
-int fn_802AE414(void *arg0) {
-    extern u8 lbl_8055F958;
-    extern int lbl_804BD8CC[3];
-    extern void fn_802AE328(void);
-    typedef int (*Method)(void *, void *);
-    typedef struct { Method *vtable; } Object;
-    int offset;
+extern "C" int fn_802AE414(void *arg0) {
+    class Object {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual int m2(void *);
+        virtual void m3();
+        virtual int m4(void *);
+    };
+    register int offset;
     int *global;
-    int i;
+    register int i;
     Object *object;
 
     if (lbl_8055F958 == 0)
         fn_802AE328();
     offset = 0;
     i = 0;
-    global = (int *)&lbl_804BD8CC;
+    global = lbl_804BD8CC;
     while (i < global[1]) {
-        object = (Object *)(*(int * volatile *)&lbl_804BD8CC)[offset / 4];
-        if (object->vtable[4](object, arg0)) {
-            object = (Object *)(*(int * volatile *)&lbl_804BD8CC)[i];
-            return object->vtable[2](object, arg0);
+        object = (Object *)((char *)lbl_804BD8CC[0] + offset);
+        if (object->m4(arg0)) {
+            object = ((Object **)lbl_804BD8CC[0])[i];
+            return object->m2(arg0);
         }
         offset += 4;
         i++;
     }
     return 0;
 }
+#pragma use_lmw_stmw on
+#pragma cplusplus reset
 #pragma pop
 extern u8 lbl_8055F958;
 extern u8 lbl_8055F959;
