@@ -1587,6 +1587,7 @@ struct Other_80195D80 {
     unsigned char p2[0x5BC - 0xA0];
     float a5bc;
 };
+#pragma always_inline on
 static inline void MakeVec_80195D80(Other_80195D80 *o, float *vec) {
     float s = o->a5bc;
     float dx = o->a54;
