@@ -111,7 +111,7 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
 
     *(void **)(a0 + 8) = arg1;
     *(unsigned char *)(a0 + 4) = 1;
-    if (stricmp(((First *)arg1)->m0(), lbl_80347A50) == 0) {
+    if (stricmp(((First *)arg1)->m0(), (char *)((unsigned long)base + 0)) == 0) {
         name = ((First *)arg1)->m3(base + 0xC);
         *(long *)(a0 + 0x30) = fn_8027D1F4();
         found = 0;
@@ -794,6 +794,7 @@ void fn_8027BCC8(long root, long outSum, long outTotal) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_8027BCD0(void *arg0, long arg1) {
     class Obj {
     public:
@@ -849,11 +850,17 @@ extern "C" void fn_8027BCD0(void *arg0, long arg1) {
                 long off;
                 char *rec;
                 long flag;
-                for (idx = 0, off = 0; idx < *(long *)((int)a0 + 4); off += 0x18, idx++) {
+                idx = 0;
+                off = 0;
+                while (idx < *(long *)((int)a0 + 4)) {
                     long elem = *(long *)(*(char **)a0 + off);
-                    if (elem != key)
+                    if (elem == key) {
+                        goto found;
+                    } else {
+                        off += 0x18;
+                        idx++;
                         continue;
-                    goto found;
+                    }
                 }
                 idx = -1;
             found:
