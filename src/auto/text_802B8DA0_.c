@@ -1178,6 +1178,7 @@ extern "C" void fn_802BA348(void) {
     if (((int (*)(void))fn_802E2C20)() - s.start > 0x1F4)
         fn_802E30C8(lbl_8034A064, s.name);
 }
+#pragma scheduling 750
 
 #pragma cplusplus reset
 
