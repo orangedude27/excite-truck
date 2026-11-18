@@ -5145,6 +5145,7 @@ finish:
 }
 
 extern const char lbl_803122F4[];
+#pragma scheduling on
 void fn_80063324(s32 chan, WPADGameInfo *pCommand) {
     /* Send one Wiimote output report on channel: set up the controller block,
      * handle rumble/ack timing, build a HID report buffer and send it over HID. */
