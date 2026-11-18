@@ -1258,23 +1258,19 @@ extern double lbl_80564440;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_8028FD00(void *arg0, void *arg1, int arg2) {
-    struct Data {
-        int f0; int f4; float f8; float fc;
-        int f10; int f14; int f18; int f1c; int f20; int f24;
-        float f28; float f2c; float f30; float f34;
-        unsigned char f38; unsigned char pad39[3];
-        float f3c; float f40; int f44; float f48; float f4c;
-        float f50; float f54; float f58; float f5c; float f60; float f64;
-        float f68; float f6c; float f70; float f74; float f78; float f7c; float f80;
-        int f84; unsigned char f88; unsigned char f89; unsigned char pad8a[0x16];
-        float a0; int pad_a4; int a8; float ac;
-    };
-    volatile struct Data *src = (volatile struct Data *)arg1;
-    struct Data *dst = (struct Data *)arg0;
+/* Start an effect up from its create-args block: copy the 0x8C bytes of
+ * parameters the effect creators filled in (fn_8028E61C cleared them) into the
+ * fresh effect object field by field, cache 1.0f / period at +0xA0, clamp the
+ * blend float at +0x34 to [0.0f, 1.0f], and for effect type 1 turn the
+ * power-of-4 count at +0x84 into its square root at +0xA8 with 1.0f/it at
+ * +0xAC.  The timed playback cursor is reset last (fn_8028F8C4).  Called by
+ * fn_8028F7AC, which allocates the particle array right afterwards. */
+void fn_8028FD00(void *effectArg, void *argsArg, int arg2) {
+    volatile EfEffect *args = (volatile EfEffect *)argsArg;
+    EfEffect *effect = (EfEffect *)effectArg;
     unsigned char f89;
-    unsigned char f88;
-    int f84;
+    unsigned char en88;
+    int powerOf4;
     float f80;
     float f7c;
     float f78;
@@ -1293,8 +1289,8 @@ void fn_8028FD00(void *arg0, void *arg1, int arg2) {
     int f44;
     float f40;
     float f3c;
-    int f38;
-    float f34;
+    int en38;
+    float blend;
     float f30;
     float f2c;
     float f28;
@@ -1305,104 +1301,104 @@ void fn_8028FD00(void *arg0, void *arg1, int arg2) {
     int f14;
     int f10;
     float fc;
-    float f8;
-    int f4;
-    int f0;
-    float a0;
-    int result;
+    float period;
+    int emitterCount;
+    int mode;
+    float invPeriod;
+    int sqrtCount;
 
-    f8 = src->f8;
-    dst = (struct Data *)arg0;
-    a0 = lbl_80564424;
-    f0 = src->f0;
-    a0 = a0 / f8;
-    f4 = src->f4;
-    fc = src->fc;
-    f10 = src->f10;
-    f14 = src->f14;
-    f18 = src->f18;
-    f1c = src->f1c;
-    f20 = src->f20;
-    f24 = src->f24;
-    f28 = src->f28;
-    f2c = src->f2c;
-    f30 = src->f30;
-    f34 = src->f34;
-    f38 = src->f38;
-    f3c = src->f3c;
-    f40 = src->f40;
-    f44 = src->f44;
-    f48 = src->f48;
-    f4c = src->f4c;
-    f50 = src->f50;
-    f54 = src->f54;
-    f58 = src->f58;
-    f5c = src->f5c;
-    f60 = src->f60;
-    f64 = src->f64;
-    f68 = src->f68;
-    f6c = src->f6c;
-    f70 = src->f70;
-    f74 = src->f74;
-    f78 = src->f78;
-    f7c = src->f7c;
-    f80 = src->f80;
-    f84 = src->f84;
-    f88 = src->f88;
-    f89 = src->f89;
-    dst->f0 = f0;
-    dst->f4 = f4;
-    dst->f8 = f8;
-    dst->fc = fc;
-    dst->f10 = f10;
-    dst->f14 = f14;
-    dst->f18 = f18;
-    dst->f1c = f1c;
-    dst->f20 = f20;
-    dst->f24 = f24;
-    dst->f28 = f28;
-    dst->f2c = f2c;
-    dst->f30 = f30;
-    dst->f34 = f34;
-    dst->f38 = f38;
-    dst->f3c = f3c;
-    dst->f40 = f40;
-    dst->f44 = f44;
-    dst->f48 = f48;
-    dst->f4c = f4c;
-    dst->f50 = f50;
-    dst->f54 = f54;
-    dst->f58 = f58;
-    dst->f5c = f5c;
-    dst->f60 = f60;
-    dst->f64 = f64;
-    dst->f68 = f68;
-    dst->f6c = f6c;
-    dst->f70 = f70;
-    dst->f74 = f74;
-    dst->f78 = f78;
-    dst->f7c = f7c;
-    dst->f80 = f80;
-    dst->f84 = f84;
-    dst->f88 = f88;
-    dst->f89 = f89;
-    dst->a0 = a0;
-    switch (f0) {
+    period = args->period;
+    effect = (EfEffect *)effectArg;
+    invPeriod = lbl_80564424;
+    mode = args->mode;
+    invPeriod = invPeriod / period;
+    emitterCount = args->emitterCount;
+    fc = args->fc;
+    f10 = args->f10;
+    f14 = args->f14;
+    f18 = args->f18;
+    f1c = args->f1c;
+    f20 = args->f20;
+    f24 = args->f24;
+    f28 = args->f28;
+    f2c = args->f2c;
+    f30 = args->f30;
+    blend = args->blend;
+    en38 = args->en38;
+    f3c = args->f3c;
+    f40 = args->f40;
+    f44 = args->f44;
+    f48 = args->f48;
+    f4c = args->f4c;
+    f50 = args->f50;
+    f54 = args->f54;
+    f58 = args->f58;
+    f5c = args->f5c;
+    f60 = args->f60;
+    f64 = args->f64;
+    f68 = args->f68;
+    f6c = args->f6c;
+    f70 = args->f70;
+    f74 = args->f74;
+    f78 = args->f78;
+    f7c = args->f7c;
+    f80 = args->f80;
+    powerOf4 = args->powerOf4;
+    en88 = args->en88;
+    f89 = args->f89;
+    effect->mode = mode;
+    effect->emitterCount = emitterCount;
+    effect->period = period;
+    effect->fc = fc;
+    effect->f10 = f10;
+    effect->f14 = f14;
+    effect->f18 = f18;
+    effect->f1c = f1c;
+    effect->f20 = f20;
+    effect->f24 = f24;
+    effect->f28 = f28;
+    effect->f2c = f2c;
+    effect->f30 = f30;
+    effect->blend = blend;
+    effect->en38 = en38;
+    effect->f3c = f3c;
+    effect->f40 = f40;
+    effect->f44 = f44;
+    effect->f48 = f48;
+    effect->f4c = f4c;
+    effect->f50 = f50;
+    effect->f54 = f54;
+    effect->f58 = f58;
+    effect->f5c = f5c;
+    effect->f60 = f60;
+    effect->f64 = f64;
+    effect->f68 = f68;
+    effect->f6c = f6c;
+    effect->f70 = f70;
+    effect->f74 = f74;
+    effect->f78 = f78;
+    effect->f7c = f7c;
+    effect->f80 = f80;
+    effect->powerOf4 = powerOf4;
+    effect->en88 = en88;
+    effect->f89 = f89;
+    effect->invPeriod = invPeriod;
+    switch (mode) {
     case 1:
-        result = fn_8028F534(f84);
-        dst->ac = 1.0f / (float)result;
-        dst->a8 = result;
+        sqrtCount = fn_8028F534(powerOf4);
+        effect->invSqrtCount = 1.0f / (float)sqrtCount;
+        effect->sqrtCount = sqrtCount;
         break;
     default:
         break;
     }
     {
-        float temp = dst->f34;
-        float x = (lbl_80564424 < temp) ? lbl_80564424 : temp;
-        x = (x > lbl_80564420) ? x : lbl_80564420;
-        dst->f34 = x;
+        float temp = effect->blend;
+        float clamped = (lbl_80564424 < temp) ? lbl_80564424 : temp;
+        clamped = (clamped > lbl_80564420) ? clamped : lbl_80564420;
+        effect->blend = clamped;
     }
-    fn_8028F8C4((int)arg0);
+    fn_8028F8C4((int)effectArg);
 }
 
 extern int fn_80287B5C(int);
