@@ -176,6 +176,9 @@ u8 fn_802E4A1C(s32 keyCode) {
 #undef gKeyStateTable
 }
 
+#pragma push
+#pragma ctrloop on
+#pragma unroll off
 void fn_802E4A2C(void) {
     volatile u32 stack[65];
     volatile u32 *p;
