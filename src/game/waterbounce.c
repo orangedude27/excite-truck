@@ -79,7 +79,6 @@ extern float lbl_8056336C;
 #pragma cplusplus reset
 #pragma use_lmw_stmw off
 #pragma optimize_for_size on
-#pragma scheduling on
 void *fn_8020DE74(void *arg0) {
     char name[0x20];
     register const char *labels __asm("r31") = lbl_8033C7A0;
@@ -106,7 +105,7 @@ void *fn_8020DE74(void *arg0) {
     is_race = *(u32 *)((u8 *)arg0 + 0x10) == 0x50434152;
 
     if (is_race != 0) {
-        obj->waterBounce = fn_802077A4(&lbl_8033C7A0[0], 5, left, right);
+        obj->waterBounce = fn_802077A4(labels, 5, left, right);
         obj->airtime = fn_802077A4(labels + 0x10, 8, left, right);
     } else {
         obj->waterBounce = 0;
