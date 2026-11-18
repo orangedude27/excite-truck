@@ -2546,7 +2546,6 @@ extern float lbl_80561AA4, lbl_80561AA8, lbl_80561AAC, lbl_80561AB0;
 #pragma use_lmw_stmw off
 #pragma processor 750
 #pragma cplusplus on
-#pragma scheduling on
 extern "C" void fn_80173058(unsigned char *self) {
     struct { const char *p; } labelsBox;
     labelsBox.p = lbl_80330F48;
@@ -2577,10 +2576,8 @@ extern "C" void fn_80173058(unsigned char *self) {
     root = *(Config73058 **)((unsigned char *)fn_8000AC38() + 0x20);
     config = root->section( name);
     *(float *)(self + 0x1A4) = config->number( lbl_8055A2B0, lbl_80561A94);
-    float a = config->number( labels + 0x218, lbl_80561A9C);
-    lbl_8043038C[0] = lbl_80561A98 * a;
-    float b = config->number( labels + 0x224, lbl_80561AA0);
-    lbl_8043038C[1] = lbl_80561A98 * b;
+    lbl_8043038C[0] = lbl_80561A98 * config->number( labels + 0x218, lbl_80561A9C);
+    lbl_8043038C[1] = lbl_80561A98 * config->number( labels + 0x224, lbl_80561AA0);
     lbl_8043038C[2] = config->number( labels + 0x230, lbl_80561AA4);
     lbl_8043038C[3] = config->number( labels + 0x240, lbl_80561AA8);
     ((unsigned char *)lbl_8043038C)[0x10] = config->boolean( labels + 0x250, 0);
