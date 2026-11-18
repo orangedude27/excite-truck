@@ -3388,11 +3388,13 @@ extern "C" s32 fn_800A95B4(void *arg0) {
         u8 input[0x38];
         u8 parsed[0x240];
     } local;
+
     u8 *object = (u8 *)arg0;
-    s32 offset;
+    u8 *volume;
     s32 result;
     s32 index;
-    u8 *volume;
+    s32 offset;
+
     local.valueC = 0;
     local.value8 = 0;
     index = 0;
@@ -3406,10 +3408,12 @@ extern "C" s32 fn_800A95B4(void *arg0) {
     }
     fn_800A4D4C(local.path, object + 0x1C);
     goto process;
+
 retry:
     if (M2C_FIELD(arg0, u32 *, 0x10) >= 0xF423F) {
         return 10;
     }
+
 process:
     *(s32 *)(local.parsed + 0x234) = M2C_FIELD(arg0, s32 *, 0xC);
     fn_800AF530(local.input, local.temp,
@@ -3423,17 +3427,18 @@ process:
         return result;
     }
     M2C_FIELD(arg0, u32 *, 0x10) = local.value8 + 1;
-    if ((local.value8 - 0xF0000) == 0x423F) {
+    if (local.value8 == 0xF423F) {
         return 3;
-    }
-    if (local.value8 < 0xF423F) {
+    } else if (local.value8 < 0xF423F) {
         goto retry;
     }
+
     fn_800A4AAC((char *)(object + 0x22D), (char *)(local.parsed + 0x20E));
     if ((M2C_FIELD(arg0, u32 *, 0x14) & 2) == 2) {
         ((s32 (*)(s16 *, s32))VFiPFPATH_transformInUnicode)(
             (s16 *)(object + 0x64C), (s32)(object + 0x22D));
     }
+
     if (*(u16 *)local.parsed != 0) {
         if ((((u32)lbl_803D2140[0x60 / 4] & 2U) == 2U)) {
             lbl_803D2140[0x60 / 4] = (lbl_803D2140[0x60 / 4] & ~3) | 1;
@@ -3453,6 +3458,7 @@ process:
             *(u16 *)(object + 0x666) = 0;
         }
     }
+
     volume = (u8 *)M2C_FIELD(arg0, void **, 8);
     if (*(s32 *)(volume + 0x161C) != 0) {
         u32 key0;
@@ -3483,6 +3489,7 @@ process:
             index++;
         }
     }
+
     if (*(s32 *)((u8 *)M2C_FIELD(arg0, void **, 8) + 0x161C) == 0 || index == 5) {
         *(u32 *)(object + 0x228) = *(u32 *)(local.parsed + 0x228);
         *(u16 *)(object + 0x224) = *(u16 *)(local.parsed + 0x224);
@@ -7665,6 +7672,16 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
     }
     if (result) saved = result;
     return saved;
+}
+
+/* Read a little-endian 32-bit word from a sector buffer. */
+static inline u32 fn_800B05C8_LoadLE32(u16 blockSize, u32 byteIndex, u8 *buffer) {
+    u32 value = *(u32 *)(buffer + (byteIndex & (blockSize - 1)));
+    u32 upper = __rlwinm(value, 8, 8, 15);
+    u32 lower = __rlwinm(value, 24, 16, 23);
+    upper = __rlwimi(upper, value, 24, 0, 7);
+    lower = __rlwimi(lower, value, 8, 24, 31);
+    return upper | lower;
 }
 
 extern "C" s32 fn_800B05C8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
@@ -22447,13 +22464,15 @@ extern "C" const char lbl_8031F1D8[];
 extern "C" const char lbl_8031F1CC[];
 extern "C" const char lbl_8031F1A8[];
 extern "C" void *fn_800D4F98(void *arg0, u32 arg1, u32 arg2) {
+    struct Pool { char bytes[0x400]; };
     u32 node;
     u32 sentinel;
-    const char *file = lbl_8031EE58;
+    char *file = ((Pool *)lbl_8031EE58)->bytes;
+
     if (arg0 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x22F, file + 0x2B0);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x22F, file + 0x2B0);
     if (arg1 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x230, file + 0x2DC);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x230, file + 0x2DC);
     for (node = *(u32 *)((u8 *)arg0 + 4), sentinel = (u32)arg0 + 4; node != sentinel; node = *(u32 *)node) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
