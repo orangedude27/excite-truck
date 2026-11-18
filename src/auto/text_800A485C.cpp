@@ -1745,13 +1745,16 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
     return arg1 + result;
 }
 
-#pragma use_lmw_stmw off
+#pragma push
+#pragma opt_propagation off
 extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2) {
     u8 *base;
     u16 index;
     u32 pair;
     u32 offset;
     u8 *record;
+    u16 count;
+    s32 *out;
     s32 result;
 
     *arg2 = 0;
@@ -1781,15 +1784,17 @@ found:
     if (result != 0)
         return result;
 
+    count = *(u16 *)&lbl_803D1640;
     record = (u8 *)((u32)&lbl_803D1640 + offset);
-    *(u16 *)&lbl_803D1640 = *(u16 *)&lbl_803D1640 + 1;
+    out = (s32 *)(record + 0x61C);
+    *(u16 *)&lbl_803D1640 = count + 1;
     *(u32 *)(record + 0x61C) |= 1;
     *(s32 *)(record + 0x620) = (s32)arg0;
     *(s32 *)(record + 0x624) = arg1;
-    *arg2 = (s32)(record + 0x61C);
+    *arg2 = (s32)out;
     return 0;
 }
-#pragma use_lmw_stmw reset
+#pragma pop
 
 /* Release a cache handle: clear its in-use flag and decrement the global in-use count. */
 extern "C" s32 fn_800A71A0(s32 *handle) {
@@ -4760,14 +4765,16 @@ block_65:
 extern "C" s32 fn_800AB378(void *, s32);
 extern s32 fn_800B5324(void *, void *, u32, u32, u32 *, u32);
 extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
+#pragma push
+#pragma processor 750
 extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     u32 sp8;
     s32 var_r31;
     s32 temp_r30;
     s32 temp_r3;
     s32 temp_r4;
-    void *temp_r5;
     int temp_r7;
+    void *temp_r5;
 
     temp_r5 = *(void **)((u8 *)arg0 + 0x3C);
     temp_r30 = *(s32 *)arg0;
@@ -4801,7 +4808,7 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     }
     return var_r31;
 }
-
+#pragma pop
 extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     u32 sp8;
     s32 index;
@@ -10926,7 +10933,6 @@ extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
 
 #pragma opt_propagation off
 extern "C" s32 fn_800B63FC(void) {
-    struct Tail63FC { u8 pad[0x80]; u32 flagA; s32 keyA; u32 flagB; s32 keyB; };
     s32 result, found;
     u32 i;
     s32 *p;
@@ -10944,12 +10950,12 @@ extern "C" s32 fn_800B63FC(void) {
         e[0x22] &= 1;
         if (e[0x22] && k == e[0x23]) found = 1;
         else {
-            Tail63FC *t = (Tail63FC *)((u8 *)lbl_803D2140 + 0x10);
-            t->flagA &= 1;
-            if (t->flagA && k == t->keyA) found = 1;
+            e += 4;
+            e[0x20] &= 1;
+            if (e[0x20] && k == e[0x21]) found = 1;
             else {
-                t->flagB &= 1;
-                if (t->flagB && k == t->keyB) found = 1;
+                e[0x22] &= 1;
+                if (e[0x22] && k == e[0x23]) found = 1;
                 else found = 0;
             }
         }
