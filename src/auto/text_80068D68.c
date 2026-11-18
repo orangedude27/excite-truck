@@ -971,6 +971,10 @@ typedef struct {
     tBTA_HH_DEV_DESCR descriptor;
 } tBTA_HH_DEV_DSCP_INFO;
 
+/* The device control block as this build lays it out -- its dscp_info is only 8
+ * bytes, where the SDK header's tBTA_HH_DEV_DSCP_INFO is much larger, so the
+ * fields sit at: addr +0x08, attr_mask +0x0E, w4_evt +0x10, index +0x12,
+ * app_id +0x15, hid_handle +0x16, vp +0x17 (see bta_hh_write_dev_act). */
 typedef struct {
     tBTA_HH_DEV_DSCP_INFO dscp_info;
     UINT8 addr[6];
