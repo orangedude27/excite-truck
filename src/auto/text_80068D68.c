@@ -24952,8 +24952,8 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
 {
     BOOLEAN is_command;
     MX_FRAME *p_rx_frame = (MX_FRAME *)lbl_803C4828;
-    register UINT8 *p_data;
-    register s32 len;
+    UINT8 *p_data;
+    UINT16 len;
     UINT8 length;
     UINT8 ll;
     UINT8 b;
@@ -24964,7 +24964,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     is_command = (p_data[0] >> 1) & 1;
     p_rx_frame->cr = is_command;
     p_rx_frame->type = p_data[0] & 0xFC;
-    if (!p_rx_frame->ea || !(UINT16)len) {
+    if (!p_rx_frame->ea || !len) {
         if (lbl_803C4828[0x414] >= 1)
             ((void (*)(u32, void *, u32))fn_8007096C)(0x90000, msgs + 0x78, ((volatile MX_FRAME *)p_rx_frame)->ea);
         GKI_freebuf(p_buf);
@@ -24973,12 +24973,13 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     ll = p_data[1];
     p_data += 2;
     length = ll >> 1;
-    len = (UINT16)len + 0xFFFE;
+    len--;
+    len--;
     if (!(ll & 1)) {
         len--;
         length = length + (*p_data++ << 7);
     }
-    if (length != (UINT16)len) {
+    if (length != len) {
         if (lbl_803C4828[0x414] >= 1)
             fn_8007093C(0x90000, msgs + 0x98);
         GKI_freebuf(p_buf);
@@ -24986,7 +24987,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     }
     switch (p_rx_frame->type) {
     case 0x80:
-        if ((UINT16)len == 8) {
+        if (len == 8) {
             p_rx_frame->dlci = p_data[0] & 0x3F;
             p_rx_frame->u.pn.frame_type = p_data[1] & 0xF;
             p_rx_frame->u.pn.conv_layer = p_data[1] & 0xF0;
@@ -25008,7 +25009,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
         }
         break;
     case 0x20:
-        if ((UINT16)len) {
+        if (len) {
             p_rx_frame->u.test.p_data = p_data;
             p_rx_frame->u.test.data_len = len;
             p_buf->offset += 2;
@@ -25022,14 +25023,14 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
         }
         break;
     case 0xA0:
-        if (!(UINT16)len) {
+        if (!len) {
             GKI_freebuf(p_buf);
             rfc_process_fcon(p_rfc_mcb, is_command);
             return;
         }
         break;
     case 0x60:
-        if (!(UINT16)len) {
+        if (!len) {
             GKI_freebuf(p_buf);
             rfc_process_fcoff(p_rfc_mcb, is_command);
             return;
@@ -25060,7 +25061,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
         rfc_process_msc(p_rfc_mcb, is_command, p_rx_frame);
         return;
     case 0x10:
-        if ((UINT16)len == 1 && is_command) {
+        if (len == 1 && is_command) {
             p_rx_frame->u.nsc.ea = p_data[0] & 1;
             p_rx_frame->u.nsc.cr = (p_data[0] & 2) >> 1;
             p_rx_frame->u.nsc.type = p_data[0] >> 2;
@@ -25070,7 +25071,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
         }
         break;
     case 0x90:
-        if ((UINT16)len == 1 || (UINT16)len == 8) {
+        if (len == 1 || len == 8) {
             b = p_data[0];
             {
                 UINT8 ea = b & 1;
@@ -25083,7 +25084,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
                     break;
                 }
             }
-            p_rx_frame->u.rpn.is_request = ((UINT16)len == 1);
+            p_rx_frame->u.rpn.is_request = (len == 1);
             if (!p_rx_frame->u.rpn.is_request) {
                 p_rx_frame->u.rpn.baud_rate = p_data[1];
                 p_rx_frame->u.rpn.byte_size = p_data[2] & 3;
@@ -25101,7 +25102,7 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
         }
         break;
     case 0x50:
-        if ((UINT16)len == 2) {
+        if (len == 2) {
             b = p_data[0];
             {
                 UINT8 ea = b & 1;
