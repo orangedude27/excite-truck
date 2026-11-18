@@ -137,7 +137,7 @@ extern "C" void* fn_80019C68(int arg0) {
  union { unsigned long long bits; float f[2]; } xy;
  fn_80019BBC();
  if(lbl_8055D5B8==0) {
- lbl_8055D5B4=new(base) TrackMarker;
+ lbl_8055D5B4=new(*(HeapName*)base) TrackMarker;
  ++lbl_8055D5B8;
  } else ++lbl_8055D5B8;
  alloc=base+12;
@@ -254,6 +254,7 @@ extern "C" void fn_8001A04C(int *arg0) {
     }
 }
 
+#pragma unroll reset
 #pragma cplusplus reset
 void fn_8001A1F0(void) {
     /* No-op: reserved per-frame hook, empty in this build (called from the step update). */
