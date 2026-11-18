@@ -3073,8 +3073,6 @@ extern "C" int fn_801D7F9C(void *arg0, void *arg1) {
     extern char lbl_8055AD28;
     extern char lbl_8055AD30;
     extern char lbl_8055ACB8;
-    extern float lbl_80562ADC;
-    extern float lbl_80562B0C;
     char *base = &lbl_80338460;
     Dummy *obj = (Dummy *)arg1;
     char *out = (char *)arg0;
@@ -3122,8 +3120,8 @@ copy_body2:
 copy_done2:
     tmp = obj->getInt(base + 0xB64);
     *(int *)(out + 0x3C) = tmp == 0 ? 0 : fn_801399FC();
-    v = obj->getFloat(lbl_80562ADC, &lbl_8055ACB8);
-    scale = lbl_80562B0C;
+    v = obj->getFloat(0.0f, &lbl_8055ACB8);
+    scale = 59.94f;
     *(int *)(out + 0x38) = 0;
     prod = scale * v;
     *(int *)(out + 0x2C) = 0;
