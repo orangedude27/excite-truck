@@ -1,6 +1,23 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct Block Block;
+typedef struct SubBlock SubBlock;
+
+struct Block {
+    Block *prev;
+    Block *next;
+    unsigned int max_size;
+    unsigned int size;
+};
+
+struct SubBlock {
+    unsigned int size;
+    Block *block;
+    SubBlock *prev;
+    SubBlock *next;
+};
+
 /* No-op default constructor registered by fn_800218FC for the 8-element array of 0x70-byte records at lbl_8035B758; leaves each element untouched. */
 void fn_80021948(void) {
     /* Empty default callback registered as the handler in the 8-slot, 0x70-byte
@@ -8,10 +25,10 @@ void fn_80021948(void) {
 }
 
 void *fn_8002194C(void *arg0, unsigned int size, unsigned int *outMax) {
+    register unsigned int *head;
     unsigned int *heap = (unsigned int *)arg0;
     unsigned int *blk;
     unsigned int *newb;
-    unsigned int *head;
     unsigned int cur, maxSize;
     unsigned int w0, t, rem;
     int hasNext, nextBit;
