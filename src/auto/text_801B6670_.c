@@ -441,8 +441,6 @@ void fn_801B6670(void) {
     table[58].id = 0x3C;
     table[58].name = (const char *) (base + 0x61C);
     table[58].description = (const char *) (base + 0x60C);
-    table[58].unk_0x10 = 0;
-    table[58].unk_0x14 = 0;
     table[59].name = (const char *) (base + 0x638);
     temp_r22 = base + 0x684;
     table[59].description = (const char *) (base + 0x628);
