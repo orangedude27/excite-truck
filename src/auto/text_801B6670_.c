@@ -54,8 +54,8 @@ void fn_801B6670(void) {
     table[1].description = (const char *) (base + 0x34);
     table[0].unk_0x10 = 0;
     table[0].unk_0x14 = 0;
-    table[0].scale = (float) lbl_805626DC;
     table[0].value = (float) lbl_805626D8;
+    table[0].scale = (float) lbl_805626DC;
     table[1].unk_0x10 = 0;
     table[1].unk_0x14 = 0;
     table[1].value = (float) lbl_805626D8;
@@ -666,7 +666,7 @@ void fn_801B6670(void) {
     table[124].id = 0;
     memset((unsigned char*)table + 0xDAC, 0, 0x1C);
     table[125].id = 0;
-    memset((unsigned char*)table + 0xDC8, 0, 0x1C);
+    memset(( unsigned char*)table + 0xDC8, 0, 0x1C);
     table[126].id = 0;
     memset((unsigned char*)table + 0xDE4, 0, 0x1C);
     table[127].id = 0;
