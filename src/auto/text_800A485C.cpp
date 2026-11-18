@@ -3855,16 +3855,19 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
     *(u32 *)(p_ent + 0x234) = (h1A >> 8) | ((h1A & 255) << 8) | ((h14 >> 8) << 16) | ((h14 & 255) << 24);
 }
 
+#pragma push
+#pragma scheduling on
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     extern s32 fn_800A4C14(u16 *, s32);
+    u32 raw = ((u8 *)arg1)[0];
+    u32 count = raw & 0xFFFFFFBF;
+    u32 tag = ((u8 *)arg1)[0xD];
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
-    u32 raw = src[0];
-    u32 tag = src[0xD];
     u32 index;
     u8 *entry;
     s32 first;
-    if ((raw & 0xFFFFFFBF) > 0x14) {
+    if (count > 0x14) {
         dst[0x20B] = 0;
         dst[0x20C] = 0;
         dst[0x20A] = 0;
@@ -3873,7 +3876,7 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     if (raw & 0x40) {
         dst[0x20A] = 0;
         first = 1;
-        index = (u8)(raw & 0xFFFFFFBF);
+        index = (u8)count;
     } else {
         first = 0;
         if (dst[0x20A] == 0) return 0x21;
@@ -3916,7 +3919,7 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     dst[0x20A]++;
     return 0;
 }
-
+#pragma pop
 extern "C" void fn_800A4C14(void *, s32);
 extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *dirEntry, u8 *nameChunks, s32 ordinal, s32 checksum, s32 isLast) {
     // Build a 32-byte FAT long-directory entry from one 26-byte compact UTF-16 name chunk: set the
@@ -12946,12 +12949,12 @@ extern "C" s32 fn_800B92A8(s32 fileId) {
 
 extern "C" u8 lbl_80405D58[];
 extern "C" s32 fn_800B9394(s32 arg0, void *arg1) {
+    u8 *out = (u8 *)arg1;
     u16 index;
     u8 *entry;
     u8 *found = 0;
     u32 sectors;
     u32 groups;
-    u8 *out = (u8 *)arg1;
 
     fn_800B8004(lbl_8055DD30);
     if (arg0 == 0 || arg1 == 0) {
@@ -18921,14 +18924,15 @@ extern "C" void fn_800C55D8(void *arg0, void *arg1, s32 *arg2) {
     s32 *dst = (s32 *)arg0;
     s32 *src = (s32 *)arg1;
     for (s32 i = 0; i < 4; i++) {
-        s32 b0 = src[0]; s32 a0 = dst[0];
-        dst[0] = a0 + b0; src[0] = (s32)(((s64)(a0 - b0) * scale) >> 24);
-        s32 b1 = src[2]; s32 a1 = dst[2];
-        dst[2] = a1 + b1; src[2] = (s32)(((s64)(a1 - b1) * scale) >> 24);
-        s32 b2 = src[4]; s32 a2 = dst[4];
-        dst[4] = a2 + b2; src[4] = (s32)(((s64)(a2 - b2) * scale) >> 24);
-        s32 b3 = src[6]; s32 a3 = dst[6];
-        dst[6] = a3 + b3; src[6] = (s32)(((s64)(a3 - b3) * scale) >> 24);
+        s32 b, a, d;
+        b = src[0]; a = dst[0]; d = a - b;
+        dst[0] = a + b; src[0] = (s32)(((s64)d * scale) >> 24);
+        b = src[2]; a = dst[2]; d = a - b;
+        dst[2] = a + b; src[2] = (s32)(((s64)d * scale) >> 24);
+        b = src[4]; a = dst[4]; d = a - b;
+        a += b; dst[4] = a; src[4] = (s32)(((s64)d * scale) >> 24);
+        b = src[6]; a = dst[6]; d = a - b;
+        dst[6] = a + b; src[6] = (s32)(((s64)d * scale) >> 24);
         dst += 8;
         src += 8;
     }
