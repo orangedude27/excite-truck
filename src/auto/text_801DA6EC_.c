@@ -340,14 +340,12 @@ void *fn_801DAE28(void *arg0, int arg1) {
         void *base = lbl_80339258;
         *(void **)arg0 = base;
         *(void **)((char *)arg0 + 4) = (char *)base + 0x1C;
-        entry = (unsigned char *)arg0 + 8;
-        i = 0;
         lbl_8055E984 = (void *)0;
-        while (i < *(int *)((char *)arg0 + 0x5808)) {
+        entry = (unsigned char *)arg0 + 8;
+        for (i = 0; i < *(int *)((char *)arg0 + 0x5808); i++) {
             fn_801D9F44(*(void **)(entry + 0x28), 1);
             fn_801D9F24(*(void **)(entry + 0x24));
             entry += 0x2C;
-            i++;
         }
         if (arg0 != 0) {
             *(void **)arg0 = lbl_803381C0;
@@ -462,11 +460,9 @@ int fn_801DB13C(void *arg0, const char *arg1) {
         char *entry;
         matchAll = strcmp(key, lbl_8055ADB0) == 0;
         value = lbl_80562B50;
-        entry = (char *)arg0 + 8;
         found = 0;
-        i = 0;
         one = 1;
-        while (i < *(int *)((char *)arg0 + 0x5808)) {
+        for (i = 0, entry = (char *)arg0 + 8; i < *(int *)((char *)arg0 + 0x5808); entry += 0x2C, i++) {
             if ((matchAll != 0 || strcmp(entry, key) == 0) &&
                 ((int (*)(int, void *))fn_801DA064)(*(int *)(entry + 0x28), text) != 0) {
                 fn_801DA198(*(int *)(entry + 0x28), lbl_80562B54);
@@ -474,8 +470,6 @@ int fn_801DB13C(void *arg0, const char *arg1) {
                 found = 1;
                 *(float *)(entry + 0x1C) = value;
             }
-            entry += 0x2C;
-            i++;
         }
         if (found != 0)
             DBPrintf_8013B490(messageBase + 0x110, key, text);
