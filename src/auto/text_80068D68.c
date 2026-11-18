@@ -7659,31 +7659,28 @@ extern "C" u8 bta_hh_find_cb(u8 *bd_addr) {
     extern u8 lbl_803159E0[];
     extern u8 lbl_80565228;
     struct { u8 *base; } devices;
-    struct { BtaHhFindMessages *base; } table;
-    table.base = (BtaHhFindMessages *)lbl_803159E0;
-    BtaHhFindMessages *&messages = table.base;
-    u8 i;
-
-    {
+    struct { u8 *base; } table;
     devices.base = lbl_803C0D48;
     u8 *&controls = devices.base;
+    table.base = lbl_803159E0;
+    u8 *&messages = table.base;
+    u8 i;
+
     for (i = 0; i < 0x10; i++) {
         if (bdcmp(bd_addr, controls + ((i & 0xFF) << 5) + 0x18) == 0 &&
             bdcmp(bd_addr, &lbl_80565228) != 0) {
             if (lbl_8055DC80 >= 5)
-                fn_8007096C(0x504, messages->found, i,
+                fn_8007096C(0x504, messages + 0, i,
                             controls[((i & 0xFF) << 5) + 0x26]);
             return i;
         }
         if (5 <= lbl_8055DC80)
             ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)
-                (0x504, messages->inUse,
+                (0x504, messages + 0x24,
                  controls[((i & 0xFF) << 5) + 0x28],
                  i, controls[((i & 0xFF) << 5) + 0x26],
                  controls[((i & 0xFF) << 5) + 0x2C]);
     }
-    }
-
 
     for (i = 0; i < 0x10; i++) {
         if (lbl_803C0D48[(i << 5) + 0x28] == 0) {
@@ -7692,7 +7689,7 @@ extern "C" u8 bta_hh_find_cb(u8 *bd_addr) {
         }
     }
     if (lbl_8055DC80 >= 5)
-        fn_8007096C(0x504, messages->limit, i, 0x10);
+        fn_8007096C(0x504, messages + 0x58, i, 0x10);
     return i;
 }
 #pragma pop
@@ -8567,37 +8564,44 @@ void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
     }
 }
 
+#pragma inline_max_size 10000
+#pragma inline_max_total_size 10000
+static __inline u8 *btm_find_dev_by_addr_rssi_80068D68(BD_ADDR bd_addr) {
+    u8 *p_dev_rec = lbl_803C0F78 + 0x34;
+    u32 i;
+    for (i = 0; i < 4; i++, p_dev_rec += 0x11C) {
+        if (p_dev_rec[0x119] == 0) continue;
+        if (memcmp(p_dev_rec + 8, bd_addr, 6) == 0)
+            return p_dev_rec;
+    }
+    return 0;
+}
+#pragma push
+#pragma dont_inline off
 tBTM_STATUS BTM_ReadRSSI(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
     extern char lbl_80315F4C[];
     u8 *entry;
-    u32 i;
 
     if (lbl_803C0F78[0x27C0] >= 3) {
         fn_800709CC(0xD0002, lbl_80315F4C,
                     remote_bda[0], remote_bda[1], remote_bda[2],
                     remote_bda[3], remote_bda[4], remote_bda[5]);
     }
-
     if (*(void **)(lbl_803C0F78 + 0x5E0) != NULL) return 2;
-
-    for (i = 0, entry = lbl_803C0F78 + 0x34; i < 4; i++, entry += 0x11C) {
-        if (entry[0x119] != 0 && memcmp(entry + 8, remote_bda, 6) == 0)
-            goto found;
+    entry = btm_find_dev_by_addr_rssi_80068D68(remote_bda);
+    if (entry == NULL) goto not_found;
+    btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x5C8), 9, 3);
+    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = p_cb;
+    if (btsnd_hcic_read_rssi(*(u16 *)entry) == 0) {
+        *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = NULL;
+        fn_80070F90(lbl_803C0F78 + 0x5C8);
+        return 3;
     }
-    entry = NULL;
-found:
-    if (entry != NULL) {
-        btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x5C8), 9, 3);
-        *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = p_cb;
-        if (btsnd_hcic_read_rssi(*(u16 *)entry) == 0) {
-            *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = NULL;
-            fn_80070F90(lbl_803C0F78 + 0x5C8);
-            return 3;
-        }
-        return 1;
-    }
+    return 1;
+not_found:
     return 7;
 }
+#pragma pop
 
 #pragma inline_max_size 10000
 #pragma inline_max_total_size 10000
