@@ -290,9 +290,14 @@ typedef struct CrushRoundState8016B964 {
 } CrushRoundState8016B964;
 #pragma scheduling invalid_target
 extern "C" void fn_8016B964(CrushRoundState8016B964 *round, s32 totalScore, s32 bonusScore, s32 timeBonus) {
+    /* Refills the results overlay's text cells (bonus, the time bonus counting up,
+       its caption, total, score without the time bonus, time left and the grade)
+       and steps the round's animation and sound state machine.  Same shape as the
+       crush-mode twin fn_8017272C, for the round state carried at +0xAC here. */
     f32 startTime, gameTime, sinceStart, elapsed, progress;
     s32 left, counted, state;
     u8 byte;
+    /* the five text copies below each walk their own cursor */
     u8 *emptySrc;
     int timeRoom;
     u8 *timeDst;
@@ -311,6 +316,8 @@ extern "C" void fn_8016B964(CrushRoundState8016B964 *round, s32 totalScore, s32 
 
     if (round->animPlayer == 0) return;
     ((void (*)(void *, s32))fn_801308F4)(round->bonusText, 0x14);
+    /* Count the time bonus up from zero over the second after the round began;
+       what is still to be added shows as a clock beside it. */
     left = timeBonus;
     counted = 0;
     if (timeBonus != 0) {
@@ -333,6 +340,7 @@ extern "C" void fn_8016B964(CrushRoundState8016B964 *round, s32 totalScore, s32 
         lbl_8055E374 = 1;
     }
     if (round->flag10 != 0) {
+        /* time bonus hidden: blank the clock and the caption */
         timeDst = (u8 *)round->timeText; emptySrc = &lbl_8055A20C; timeRoom = 0x14;
         goto clearTime;
         for (;;) {
@@ -353,6 +361,8 @@ extern "C" void fn_8016B964(CrushRoundState8016B964 *round, s32 totalScore, s32 
         }
     } else {
         fn_80130980(round->timeText, 0x14, 2, (f32)left);
+        /* the caption is the text a message key resolved to, re-resolved when the
+           message table changed under the cache */
         if (((CachedMessage8016B964 *)lbl_8043036C)->tag != lbl_8055E044) ((void (*)(void *))fn_80131318)(lbl_8043036C);
         captionMsg = (u8 *)((CachedMessage8016B964 *)lbl_8043036C)->text;
         captionDst2 = (u8 *)round->captionText; captionRoom2 = 0x14;
@@ -368,6 +378,7 @@ extern "C" void fn_8016B964(CrushRoundState8016B964 *round, s32 totalScore, s32 
     fn_801308F4(round->totalText, 0x14, totalScore);
     fn_801308F4(round->scoreText, 0x14, totalScore - timeBonus);
     if (fn_801609C4(totalScore) != -1) {
+        /* the grade for this score, as the ranking helper left it */
         rankText = __AXGetStackHead();
         rankDst = (u8 *)round->rankText; rankRoom = 0xA;
         goto copyRank;
@@ -395,6 +406,8 @@ extern "C" void fn_8016B964(CrushRoundState8016B964 *round, s32 totalScore, s32 
     case 4:
         break;
     case 0:
+        /* start the round's cue, ask for the jingle that fits the result, and
+           for the time-bonus jingle only when there was one to count up */
         fn_802ADFF4((s32)round->animPlayer, round->animIndex);
         if (strlen(round->textDA) != 0) {
             Sound8016B964 *sound = round->sound2C;
