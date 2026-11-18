@@ -2186,7 +2186,8 @@ dispatch:
     return fn_8019E500(arg0, arg1);
 main:
     Fn8019E874Xf b = *((Fn8019E874Obj*)arg1)->GetXf();
-    Fn8019E874Xf a = **(Fn8019E874Xf**)((u8*)arg0 + 0xC);
+    Fn8019E874Xf *src = *(Fn8019E874Xf**)((u8*)arg0 + 0xC);
+    Fn8019E874Xf a = *src;
     f32 dx = a.pos.x - b.pos.x;
     f32 dy = a.pos.y - b.pos.y;
     f32 dz = a.pos.z - b.pos.z;
@@ -2212,6 +2213,7 @@ extern "C" s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
 extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
 extern void fn_8019A820(void*, s32, s32, s32, f32);
 #pragma use_lmw_stmw off
+#pragma scheduling 750
 extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     void* temp_r3;
     void* temp_r5;
@@ -2230,8 +2232,9 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     sp[6] = temp_f4;
     sp[1] = temp_f2;
     sp[5] = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
-    return (u32)fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
+    return (s32)(void*)fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
 }
+#pragma scheduling reset
 #pragma use_lmw_stmw on
 extern "C" void fn_8019EB14(s32 baseRaw, s32 index) {
     u8 *base = (u8 *)baseRaw;
