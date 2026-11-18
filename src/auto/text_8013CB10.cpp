@@ -1555,6 +1555,9 @@ extern "C" void fn_8013ED74(void *arg0) {
     f32 *pos;
     s32 a, b;
     u8 *item;
+    u32 w;
+    s32 k;
+    u8 *it;
 
     list.data = storage;
     list.cap = 8;
@@ -1601,22 +1604,17 @@ extern "C" void fn_8013ED74(void *arg0) {
                     u8 *group = *(u8 **)(*(u8 **)(self + 0x64) + 4) + *(s32 *)(self + 0x68) * 0x14;
                     u8 *array = *(u8 **)(group + 4);
                     u8 *last = array + *(s32 *)group * 0x24 - 0x24;
-                    if (item != last) {
-                        array = item + 0x24;
-                    }
-                    item = array;
+                    u8 *next = (item == last) ? array : item + 0x24;
+                    i++;
+                    item = next;
                 }
-                i++;
             } while (i < 10);
         }
     }
     if (list.count > 0) {
         f32 v = fn_801E7E24();
         if (!((f32)__fabs((f64)v) <= *(f32 *)&lbl_80558DC4)) {
-            u8 *it;
             s32 off;
-            u32 w;
-            s32 k;
             k = 0;
             off = 0;
             for (; k < list.count; off += 8, k++) {
@@ -2107,6 +2105,12 @@ extern void fn_80147BD0(s32, s32, s32, s32, s32, f32);
 extern f32 lbl_805614C4;
 extern f32 fn_8001DAF0(f32 *);
 extern f32 fn_8013CB3C(void);
+static inline f32 Clamp80140728(f32 value, f32 low, f32 high) {
+    f32 r = high;
+    r = (value < r) ? value : r;
+    r = (r > low) ? r : low;
+    return r;
+}
 #pragma processor 750
 #pragma processor 750
 #pragma push
@@ -2117,14 +2121,14 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
     struct VString { virtual void d0(); virtual void d1(); virtual u8 *get(const char *); };
     u8 *base = lbl_8032C530;
     f32 temp_f1 = fn_8001DAE8((u8 *)arg2 + 0xD8) - *(f32 *)((u8 *)arg2 + 0xDC);
-    s32 var_r0 = 0;
-    void *temp_r28;
+    unsigned var_r0 = 0;
     void *temp_r29;
+    register void *temp_r28;
     void *temp_r3;
     if ((temp_f1 >= lbl_805614A4) && (temp_f1 < *(f32 *)((u8 *)arg2 + 0xD8))) {
         var_r0 = 1;
     }
-    if (var_r0 != 0) {
+    if (var_r0) {
         fn_8001DAF0((f32 *)((u8 *)arg2 + 0xD8));
         temp_r28 = ((VString *)*(void **)((u8 *)arg0 + 0x54))->get((const char *)(base + 0x3B0));
         temp_r29 = ((VString *)*(void **)((u8 *)arg0 + 0x54))->get((const char *)(base + 0x448));
@@ -2133,11 +2137,11 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
             u8 sp58[0x28];
             u8 sp30[0x28];
             u8 sp8[0x28];
-            s32 tmp;
+            unsigned int tmp;
             *(s32 *)sp58 = *(s32 *)temp_r28;
             tmp = *(s32 *)((u8 *)temp_r28 + 4);
-            *(s32 *)(sp58 + 4) = tmp;
             *(s32 *)(sp58 + 8) = *(s32 *)((u8 *)temp_r28 + 8);
+            *(s32 *)(sp58 + 4) = tmp;
             *(s32 *)(sp58 + 0xC) = *(s32 *)((u8 *)temp_r28 + 0xC);
             *(f32 *)(sp58 + 0x10) = *(f32 *)((u8 *)temp_r28 + 0x10);
             *(f32 *)(sp58 + 0x14) = *(f32 *)((u8 *)temp_r28 + 0x14);
@@ -2147,8 +2151,8 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
             *(f32 *)(sp58 + 0x24) = *(f32 *)((u8 *)temp_r28 + 0x24);
             *(s32 *)sp30 = *(s32 *)temp_r29;
             tmp = *(s32 *)((u8 *)temp_r29 + 4);
-            *(s32 *)(sp30 + 4) = tmp;
             *(s32 *)(sp30 + 8) = *(s32 *)((u8 *)temp_r29 + 8);
+            *(s32 *)(sp30 + 4) = tmp;
             *(s32 *)(sp30 + 0xC) = *(s32 *)((u8 *)temp_r29 + 0xC);
             *(f32 *)(sp30 + 0x10) = *(f32 *)((u8 *)temp_r29 + 0x10);
             *(f32 *)(sp30 + 0x14) = *(f32 *)((u8 *)temp_r29 + 0x14);
@@ -2158,8 +2162,8 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
             *(f32 *)(sp30 + 0x24) = *(f32 *)((u8 *)temp_r29 + 0x24);
             *(s32 *)sp8 = *(s32 *)temp_r3;
             tmp = *(s32 *)((u8 *)temp_r3 + 4);
-            *(s32 *)(sp8 + 4) = tmp;
             *(s32 *)(sp8 + 8) = *(s32 *)((u8 *)temp_r3 + 8);
+            *(s32 *)(sp8 + 4) = tmp;
             *(s32 *)(sp8 + 0xC) = *(s32 *)((u8 *)temp_r3 + 0xC);
             *(f32 *)(sp8 + 0x10) = *(f32 *)((u8 *)temp_r3 + 0x10);
             *(f32 *)(sp8 + 0x14) = *(f32 *)((u8 *)temp_r3 + 0x14);
@@ -2174,19 +2178,22 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
                 f32 x = *(f32 *)((u8 *)arg2 + 0xD8);
                 f32 scaled = x * lbl_80561498;
                 f32 ratio = ((delta - lbl_805614A4)) / (scaled - lbl_805614A4);
-                f32 v = (lbl_805614AC < ratio) ? ratio : lbl_805614AC;
+                f32 v = lbl_805614AC;
+                v = (ratio < v) ? ratio : v;
                 v = (v > lbl_805614A4) ? v : lbl_805614A4;
                 fn_80147BD0((s32)sp58, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)arg0 + 0xAC), lbl_805614A4 + (v * lbl_805614AC));
                 delta = fn_8013CB3C() - *(f32 *)((u8 *)arg2 + 0xDC);
                 x = *(f32 *)((u8 *)arg2 + 0xD8);
                 scaled = x * lbl_80561498;
                 ratio = (delta - scaled) / (x - scaled);
-                v = (lbl_805614AC < ratio) ? ratio : lbl_805614AC;
+                v = lbl_805614AC;
+                v = (ratio < v) ? ratio : v;
                 v = (v > lbl_805614A4) ? v : lbl_805614A4;
                 fn_80147BD0((s32)sp30, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)arg0 + 0xAC), lbl_805614A4 + (v * lbl_805614AC));
             } else {
                 f32 ratio = lbl_805614C4 * fn_8001DAF0((f32 *)((u8 *)arg2 + 0xD8));
-                f32 v = (lbl_805614AC < ratio) ? ratio : lbl_805614AC;
+                f32 v = lbl_805614AC;
+                v = (ratio < v) ? ratio : v;
                 v = (v > lbl_805614A4) ? v : lbl_805614A4;
                 fn_80147BD0((s32)sp30, (s32)sp8, -1, 0xFFFFFF, *(s32 *)((u8 *)arg0 + 0xAC), v);
             }
@@ -3261,12 +3268,11 @@ extern "C" void fn_801429F0(void *arg0) {
     var_f2 = var_f2 < (old + lbl_8056149C / lbl_8056149C) ? (old + lbl_8056149C / lbl_8056149C) : var_f2;
     var_f2 = var_f2 > lbl_805614A4 ? lbl_805614A4 : var_f2;
     *(f32 *)(p + 0x94) = var_f2;
-    f32 rounded = (f32)(f64)var_f2;
-    if (old < rounded) {
-        *(f32 *)(p + 0xEC) = rounded - old;
+    if (old < (f32)(f64)var_f2) {
+        *(f32 *)(p + 0xEC) = (f32)(f64)var_f2 - old;
         goto done;
     }
-    var_f2 = (f32)__fabs((f64)rounded);
+    var_f2 = (f32)__fabs((f64)(f32)(f64)var_f2);
     s32 close = var_f2 <= lbl_80558DC4[0];
     if (close == 0) goto done;
     old = (f32)__fabs((f64)old);
