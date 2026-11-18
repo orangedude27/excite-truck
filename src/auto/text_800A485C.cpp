@@ -5940,7 +5940,6 @@ extern s32 fn_800A8D08(void *, s32, void **, s32 *);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800ACDF8(void *, s32);
-extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
 extern "C" s32 fn_800ACBB0(void *, s32, s32, s32, u32 *, u32 *);
 extern "C" s32 VFiPFFAT_WriteClusterPage(void *, u32, u32, u32, s32, void *);
 extern "C" s32 fn_800AF144(void *);
