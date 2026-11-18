@@ -3511,7 +3511,7 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma opt_lifetimes off
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
     class PlayerVTable {
     public:
