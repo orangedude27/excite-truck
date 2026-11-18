@@ -51,6 +51,8 @@ typedef struct GxCanvas {
 
 #define CANVAS_FLAG_NO_DRAW 0x04 /* GxCanvas.flags: drawing is turned off */
 #define CANVAS_FORMAT_RGBA4444 1 /* GxCanvas.format: 4-bit components; the fillers keep the destination's alpha nibble (fn_802C365C) */
+#define CANVAS_FORMAT_RGB1555 3  /* GxCanvas.format: X1R5G5B5, blue in the low 5 bits */
+#define CANVAS_FORMAT_RGB565  4  /* GxCanvas.format: R5G6B5, blue in the low 5 bits */
 #define CANVAS_FORMAT_RGBA  5    /* GxCanvas.format: 4-byte pixels */
 #define CANVAS_FORMAT_NONE  6    /* GxCanvas.format: 4-byte sized, undrawn */
 
