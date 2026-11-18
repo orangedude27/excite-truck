@@ -4628,15 +4628,14 @@ u32 fn_80062460(s32 chan) {
 // fn_800624A4: WPAD callback handler (large - stub)
 extern u8 lbl_802EE898[];
 extern u8 lbl_802EE8C8[];
-s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
+s32 fn_800624A4(s32 chan, u32 arg1, WPADCallback arg2) {
     u8 frame[0x420] ALIGN(8);
     register s32 channel asm("r31") = chan;
-    register u32 value81C asm("r30");
-    register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
     register WPADCallback callback asm("r28") = arg2;
-    register s32 arg asm("r27") = arg1;
+    register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
     register u32 value778 asm("r26");
     register s32 status asm("r25");
+    register u32 value81C asm("r30");
     BOOL outerEnabled;
     BOOL enabled;
     BOOL nestedEnabled;
@@ -4656,7 +4655,7 @@ s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
         status = -2;
         goto finish;
     }
-    if (arg != 0) goto extended;
+    if (arg1 != 0) goto extended;
     if (value778 == 0) {
         status = 0;
         goto finish;
@@ -5044,7 +5043,7 @@ queue_eight:
     {
         u32 addr = 0x04B00033;
         u8 firstByte = 1;
-        u8 secondByte = (u8)arg;
+        u8 secondByte = (u8)arg1;
         WPADCommand* cmd = (WPADCommand*)(frame + 0x90);
         WPADCommand* copy = (WPADCommand*)(frame + 0x60);
         *(u32*)cmd = 0x16;
