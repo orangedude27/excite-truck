@@ -74,6 +74,19 @@ struct SoundArchiveFileReaderLayout {
     SoundArchiveLabelTableLayout *labelTable;
     StringTreeLayout *stringTree;
 };
+// One nw4hbm::snd::detail::SoundArchiveFile block reference: a reference type, a data
+// type that must be 0 (the readers panic at Util.h:111 otherwise) and the offset of
+// the referenced block in the archive.  The archive header is an array of these
+// 8-byte blocks (the file table hangs off +0x18, the group table off +0x20); a table
+// is a u32 count followed by one reference per row, so row i's reference sits at
+// table + 4 + i * 8 -- read a row as (ArchiveBlockRefLayout *)((u8 *)table + i * 8).
+struct ArchiveBlockRefLayout {
+    u8 pad[4];
+    u8 refType;  /* +4: nw4hbm::snd::detail::Util::RefType of the reference */
+    u8 dataType; /* +5: must be 0 */
+    u8 pad2[2];
+    u32 offset;  /* +8: offset of the referenced block in the archive */
+};
 namespace nw4hbm { namespace snd { namespace detail { struct WaveSoundInfo; struct WaveSoundNoteInfo; struct WaveData; struct SeqPlayer; struct NoteOnInfo; } class SoundArchivePlayer { public: u32 detail_ConvertLabelStringToSoundId(const char *); class SeqNoteOnCallback { public: void *NoteOn(detail::SeqPlayer *, int, const detail::NoteOnInfo &); }; class WsdCallback { public: s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, s32, s32, u32) const; s32 GetWaveSoundData(detail::WaveSoundInfo *, detail::WaveSoundNoteInfo *, detail::WaveData *, const void *, int, int, u32) const; }; }; namespace detail { class StrmPlayer { public: struct StrmHeader; s32 Start(); void Pause(bool); void Setup(const StrmHeader *); }; class SoundThread { public: s32 Shutdown(); }; } } }
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
 extern "C" void fn_800EAD00(void *);
