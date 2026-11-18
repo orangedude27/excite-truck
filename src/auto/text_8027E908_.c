@@ -715,6 +715,7 @@ int fn_8027F958(int *selection, void *collection) {
     register char *constants = (char *)&lbl_802FA848;
     register char *state = (char *)&lbl_804B2FF8;
     register char *strings = lbl_80347E50;
+    struct Fn8027F834List *list = (struct Fn8027F834List *)((char *)state + 0x50);
     register float defaultValue;
     register float defaultScale;
     register void *widgetVtable;
