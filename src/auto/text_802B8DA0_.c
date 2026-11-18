@@ -1522,6 +1522,7 @@ void fn_802BAE50(void) {
     char *allocationName;
     short listSize;
     short passSize;
+    int elapsed;
     name = (char *)&lbl_8034AA00;
     start = fn_802E2C20((char *)&lbl_8034AA00);
     total = 0;
@@ -1548,8 +1549,9 @@ void fn_802BAE50(void) {
     }
     fn_80265DCC(*(void **)lbl_804BFFF4, *((void **)lbl_804BFFF4 + 1), 4,
                 (int (**)(int **, int **))fn_802B9B50);
-    if (0x1F4 < ((int (*)(void))fn_802E2C20)() - start)
-        fn_802E30C8(&lbl_8034A064, name);
+    elapsed = ((int (*)(void))fn_802E2C20)() - start;
+    if (elapsed > 0x1F4)
+        fn_802E30C8(&lbl_8034A064, name, elapsed);
 }
 
 typedef signed char s8;
@@ -1582,18 +1584,24 @@ void fn_802BAFA0(void) {
 #pragma scheduling on
 #pragma pop
 void fn_802BAFF8(void ***arg0, int *arg1) {
+    struct Pool {
+        int unk0;
+        void *blocks;
+        volatile int used;
+        int capacity;
+    };
     int zero = 0;
     arg0 = (void ***)*arg0;
     while (*(void **)arg0 != 0) {
         void *entry = *(void **)arg0;
         void *queue = *(void **)((char *)entry + 4);
         int *slot = 0;
-        void *pool = *(void * volatile *)&lbl_8055FA74;
+        struct Pool *pool = (struct Pool *)lbl_8055FA74;
         int count;
         if (queue == 0 || *(volatile int *)((char *)queue + 4) + 1 > *(volatile int *)((char *)queue + 8)) {
             void *node = 0;
-            if (*(volatile int *)((char *)pool + 8) + 1 <= *(volatile int *)((char *)pool + 0xC)) {
-                node = (char *)*(void **)((char *)pool + 4) + (*(volatile int *)((char *)pool + 8))++ * 0x10;
+            if (pool->used + 1 <= pool->capacity) {
+                node = (char *)pool->blocks + pool->used++ * 0x10;
                 *(int *)((char *)node + 4) = zero;
                 *(int *)((char *)node + 0xC) = zero;
             }
@@ -1627,11 +1635,12 @@ void fn_802BAFF8(void ***arg0, int *arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802BB0FC(int a, int b) {
-    int i, off;
     RenderNode *node;
     RenderBatch *batch;
+    int j;
+    int i, off;
     RenderEntry *entry;
-    int j, v;
+    int v;
     u16 **items;
     RenderMatrix matrix;
     for (i = 0, off = 0; i < *(s32 *)(lbl_804BFFF4 + 4); i++, off += 4) {
@@ -1698,9 +1707,8 @@ clear_nodes:
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_802BB3B8(int a, int b) {
-    int i;
+    register int i, off;
     RenderEntry *entry;
-    int off;
     RenderNode *node;
     RenderBatch *batch;
     int j, v;
@@ -1710,7 +1718,7 @@ void fn_802BB3B8(int a, int b) {
         entry = *(RenderEntry **)(*(char **)lbl_804BFFF4 + off);
         if (entry->kind == 999) continue;
         node = entry->nodes;
-        if (node == 0) continue;
+        if (!node) continue;
         if (entry->state == -2) goto clear_nodes;
         switch (node->type) { case 0: case 1: {
             fn_802C8BD0(); fn_802DC130();
