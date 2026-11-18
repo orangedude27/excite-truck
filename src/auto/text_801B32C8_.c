@@ -195,13 +195,16 @@ s32 fn_801B3398(void* src) {
     return 0x38;
 }
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling 604
 void fn_801B3448(void) {
-    void *p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
+    void *p;
+    void *cb;
+    p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
     if (p == NULL) return;
     p = fn_801B3B70(p);
+    cb = (void *)fn_801B3390;
     *(volatile s32 *)&lbl_8055E6C0 = (s32)p;
-    fn_801B5364(1, fn_801B3390);
+    fn_801B5364(1, cb);
     fn_801B5364(0xF, fn_801B3398);
 }
 #pragma pop
