@@ -13,4 +13,5 @@ void fn_801F1BF8(void) {
     fn_8000D838(&lbl_8055EBE0);
     lbl_8055EBE8 = lbl_80562F38;
 }
+#pragma opt_propagation reset
 #pragma scheduling on
