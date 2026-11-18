@@ -15639,40 +15639,47 @@ extern s16 lbl_802F3418[];
 extern s16 lbl_802F3478[];
 #pragma opt_propagation off
 #pragma use_lmw_stmw on
-extern "C" s32 fn_800BEE64(void *arg0, s32 arg1, s32 arg2) {
+/* Set up an audio stream from the header stored in `header`: find the 0xFFF
+ * sync word in the bit stream, take the rate bit, check that the 2-bit version
+ * field reads 1, then decode the 16-bit field holding the bitrate index, the
+ * sampling frequency and the channel count.  The bitrate index and frequency
+ * pick a size out of the two tables and the rate bit and channel count a
+ * second one; both go on the card.  Returns 0, or an error: 8 no sync word,
+ * 0xD bad version, 0xE unusable bitrate, 0xF unusable frequency. */
+extern "C" s32 fn_800BEE64(void *arg0, s32 header, s32 unused) {
     VFiPFCard *card = (VFiPFCard *)arg0;
     s32 one;
     s32 zero = 0;
-    s32 sp8 = zero;
-    s32 mode;
-    s16 type;
-    s32 status;
-    s32 value, q;
-    u32 result;
-    if (((s16 (*)(s32, s32, s32 *))fn_800BDD7C)(0x400, arg1, &sp8) == 0) return 8;
+    s32 bitPos = zero; /* where the reads pick up in header, in bits */
+    s32 rateBit;
+    s16 bitrateIndex;
+    s32 freqMode;
+    s32 size, words;
+    u32 fields;
+    if (((s16 (*)(s32, s32, s32 *))fn_800BDD7C)(0x400, header, &bitPos) == 0) return 8;
     one = 1;
-    mode = (s16)fn_800BDE18(card->unk278, arg1, one, &sp8);
-    if (fn_800BDE18(card->unk278, arg1, 2, &sp8) != 1) return 0xD;
-    if (mode == 0) card->unk4 = one;
+    rateBit = (s16)fn_800BDE18(card->unk278, header, one, &bitPos);
+    if (fn_800BDE18(card->unk278, header, 2, &bitPos) != 1) return 0xD;
+    if (rateBit == 0) card->unk4 = one; /* the stream runs at half rate */
     else card->unk4 = zero;
     one = 1;
-    fn_800BDE18(card->unk278, arg1, one, &sp8);
-    result = ((u32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(card->unk278, arg1, 0x10, &sp8);
-    type = (result >> 12) & 15;
-    if (type == 0) return 0xE;
-    if (type == 15) return 0xE;
-    status = (result >> 10) & 3;
-    card->unk1c = status;
-    if ((s16)status == 3) return 0xF;
-    if ((s16)((result >> 6) & 3) == 3) card->unk0 = one;
-    else card->unk0 = 2;
+    fn_800BDE18(card->unk278, header, one, &bitPos); /* not used */
+    fields = ((u32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(card->unk278, header, 0x10, &bitPos);
+    bitrateIndex = (fields >> 12) & 15;
+    if (bitrateIndex == 0) return 0xE;
+    if (bitrateIndex == 15) return 0xE;
+    freqMode = (fields >> 10) & 3;
+    card->unk1c = freqMode;
+    if ((s16)freqMode == 3) return 0xF;
+    if ((s16)((fields >> 6) & 3) == 3) card->unk0 = one; /* mono */
+    else card->unk0 = 2; /* stereo */
     if (card->unk4 == 0)
-        value = ((s16 (*)[16])lbl_802F3418)[card->unk1c][type] * 8;
+        size = ((s16 (*)[16])lbl_802F3418)[card->unk1c][bitrateIndex] * 8;
     else
-        value = ((s16 (*)[16])lbl_802F3478)[card->unk1c][type] * 8;
-    q = (value + 8) / 8;
-    card->unkED70 = q;
-    if ((value + 8) & 7) card->unkED70 = q + 1;
+        size = ((s16 (*)[16])lbl_802F3478)[card->unk1c][bitrateIndex] * 8;
+    words = (size + 8) / 8; /* the size, rounded up, in 8-unit words */
+    card->unkED70 = words;
+    if ((size + 8) & 7) card->unkED70 = words + 1;
     if (card->unk4 == 0)
         card->unkED74 = card->unk0 * 0x900;
     else
