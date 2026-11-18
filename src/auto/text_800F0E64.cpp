@@ -1830,40 +1830,57 @@ extern "C" char lbl_805598B8;
 extern "C" char lbl_805598C0;
 extern "C" char lbl_80559848, lbl_805598B8, lbl_805598C0;
 #pragma use_lmw_stmw off
-extern "C" s32 ReadGroupItemInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive13GroupItemInfo(void *arg0, u32 arg1, u32 arg2, void *arg3) {
-    register void *groupInfo = arg3;
-    register const void *reader = arg0;
-    register u32 group = arg1;
-    register u32 item = arg2;
-    register u8 *ref = *(u8 **)((u8 *)reader + 0x28);
-    struct { u8 *value; } tableSlot;
-    u8 *&p = tableSlot.value;
-    u32 *result;
+/* nw4hbm::snd::detail::SoundArchiveFileReader::ReadGroupItemInfo(u32 group,
+   u32 item, SoundArchive::GroupItemInfo* out) const: look up item `item` of
+   group `group` of the archive's packed data and copy its record - where the
+   sound starts inside the group and how long it is - to out.
 
-    if (ref[0x21] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598A0, 0x6F, lbl_80324CB0);
-    p = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0x20], *(u32 *)(ref + 0x24), ref);
-    if (p == 0) { p = 0; }
-    else if (group >= *(u32 *)p) { p = 0; }
+   The archive's file header (the reader's +0x28) holds a reference to the group
+   table; that group's entry references the group record, whose own reference
+   leads to the table of its items, whose entry for the item references the
+   record copied out.  Each of those tables is a count followed by eight-byte
+   data references (a reference type byte, a byte that must be zero with it, and
+   the offset), and every reference has to be of type 0 - a plain offset into
+   the file - or Util.h's assertion fires.  A group or item past the end of its
+   table, or a reference resolving to nothing, gives 0; success gives 1. */
+extern "C" s32 ReadGroupItemInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive13GroupItemInfo(void *self, u32 groupIndex, u32 itemIndex, void *out) {
+    register void *groupInfo = out;
+    register const void *reader = self;
+    register u32 group = groupIndex;
+    register u32 item = itemIndex;
+    register u8 *file = *(u8 **)((u8 *)reader + 0x28); /* the archive's file header */
+    struct { u8 *value; } tableSlot;
+    u8 *&table = tableSlot.value; /* the table, then the record it points at */
+    u32 *itemRecord;
+
+    /* The group table the file header references (Util.h:111 "ref.dataType == 0"). */
+    if (file[0x21] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598A0, 0x6F, lbl_80324CB0);
+    table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(file[0x20], *(u32 *)(file + 0x24), file);
+    if (table == 0) { table = 0; }
+    else if (group >= *(u32 *)table) { table = 0; } /* no such group */
     else {
-        u32 off = group * 8;
-        ref = *(u8 **)((u8 *)reader + 0x28);
-        if ((p + off)[5] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559848, 0x6F, lbl_80324ACC);
-        p = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv((p + off)[4], *(u32 *)(p + off + 8), ref);
+        u32 entryOff = group * 8;   /* the group's reference, at the table's +4 */
+        file = *(u8 **)((u8 *)reader + 0x28);
+        if ((table + entryOff)[5] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559848, 0x6F, lbl_80324ACC);
+        table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv((table + entryOff)[4], *(u32 *)(table + entryOff + 8), file);
     }
-    if (p == 0) return 0;
-    ref = *(u8 **)((u8 *)reader + 0x28);
-    if (p[0x21] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C0, 0x6F, lbl_80324D60);
-    p = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(p[0x20], *(u32 *)(p + 0x24), ref);
-    if (p == 0) return 0;
-    if (item >= *(u32 *)p) return 0;
+    if (table == 0) return 0;
+
+    /* The record of that group, and the table of its items it references. */
+    file = *(u8 **)((u8 *)reader + 0x28);
+    if (table[0x21] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C0, 0x6F, lbl_80324D60);
+    table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(table[0x20], *(u32 *)(table + 0x24), file);
+    if (table == 0) return 0;
+    if (item >= *(u32 *)table) return 0;   /* no such item */
     {
-        u32 off = item * 8;
+        u32 entryOff = item * 8;           /* the item's reference, at the table's +4 */
         group = *(u32 *)((u8 *)reader + 0x28);
-        if ((p + off)[5] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598B8, 0x6F, lbl_80324D34);
-        result = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv((p + off)[4], *(u32 *)(p + off + 8), (void *)group);
+        if ((table + entryOff)[5] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598B8, 0x6F, lbl_80324D34);
+        itemRecord = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv((table + entryOff)[4], *(u32 *)(table + entryOff + 8), (void *)group);
     }
-    if (result == 0) return 0;
-    ((u32 *)groupInfo)[0] = result[0]; ((u32 *)groupInfo)[1] = result[1]; ((u32 *)groupInfo)[2] = result[2]; ((u32 *)groupInfo)[3] = result[3]; ((u32 *)groupInfo)[4] = result[4];
+    if (itemRecord == 0) return 0;
+    /* The item's record: offset inside the group at +4 and size at +8. */
+    ((u32 *)groupInfo)[0] = itemRecord[0]; ((u32 *)groupInfo)[1] = itemRecord[1]; ((u32 *)groupInfo)[2] = itemRecord[2]; ((u32 *)groupInfo)[3] = itemRecord[3]; ((u32 *)groupInfo)[4] = itemRecord[4];
     return 1;
 }
 #pragma scheduling on
