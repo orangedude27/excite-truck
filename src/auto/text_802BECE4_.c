@@ -519,137 +519,147 @@ struct WaterEnvMap {
 
 #pragma push
 #pragma use_lmw_stmw off
-void *fn_802BF780(void *arg0) {
-    char *strings = lbl_8034ACA0;
+/* WaterEnvMap constructor (fn_802BF6AC allocates the 0x18 bytes): make this
+ * water surface's own 256x256 render target, load the "worldmodel.mod" and
+ * "wenv_mod.mod" instances it draws, and, for the first water object only,
+ * build the shared EnvFaces table (lbl_8055FB00, reference count
+ * lbl_8055FAFC) -- six 256x256 cube-face render targets with identity model
+ * matrices except the rotations each face needs, the "env_sun.tex" sun
+ * billboard texture, a unit quad with colour and texture corners, and its
+ * index list -- then hand the table to the object. */
+void *fn_802BF780(void *self) {
+    char *strings = lbl_8034ACA0; /* the file names this object loads */
     register float one, neg, zero;
-    float temp_f31;
-    float temp_f30;
-    char *temp_r3;
-    register void *temp_r30;
-    register int var_r30;
-    register int *var_r28;
-    register char *var_r27;
-    register char *var_r26;
-    void *temp_r26;
-    void *temp_r26_2;
+    float zeroConst;
+    float oneConst;
+    char *table;
+    register void *sunPath;
+    register int i;
+    register int *targetPtr;
+    register char *mtxPtr;
+    register char *tailPtr;
+    void *worldPath;
+    void *envPath;
 
-    (*(char **)((char *)(arg0) + (0))) = lbl_8034AE40;
-    (*(int *)((char *)(arg0) + (8))) = fn_802CB128(0x100, 0x100, 0, 0);
-    temp_r26 = strings + 0xFC;
-    if (fn_8012C33C(temp_r26) != 0) {
-        (*(int *)((char *)(arg0) + (0xC))) = fn_802C6FC0((int)temp_r26, 0, 0);
+    ((struct WaterEnvMap *)self)->vtable = lbl_8034AE40;
+    ((struct WaterEnvMap *)self)->target = fn_802CB128(0x100, 0x100, 0, 0);
+    worldPath = strings + 0xFC; /* "worldmodel.mod" */
+    if (fn_8012C33C(worldPath) != 0) {
+        ((struct WaterEnvMap *)self)->worldModel = fn_802C6FC0((int)worldPath, 0, 0);
     } else {
-        (*(int *)((char *)(arg0) + (0xC))) = -1;
+        ((struct WaterEnvMap *)self)->worldModel = -1;
     }
-    temp_r26_2 = strings + 0x10C;
-    if (fn_8012C33C(temp_r26_2) != 0) {
-        (*(int *)((char *)(arg0) + (0x10))) = fn_802C6FC0((int)temp_r26_2, 0, 0);
+    envPath = strings + 0x10C; /* "wenv_mod.mod" */
+    if (fn_8012C33C(envPath) != 0) {
+        ((struct WaterEnvMap *)self)->envModel = fn_802C6FC0((int)envPath, 0, 0);
     } else {
-        (*(int *)((char *)(arg0) + (0x10))) = -1;
+        ((struct WaterEnvMap *)self)->envModel = -1;
     }
-    if ((int) lbl_8055FAFC == 0) {
-        temp_r3 = (char *)fn_801284F8(0x1B8, lbl_8055CF84);
-        if (temp_r3 != 0) {
-            temp_r30 = strings + 0x11C;
-            if (fn_8012C33C(temp_r30) != 0) {
-                (*(int *)((char *)(temp_r3) + (0x18))) = fn_802CAC28(temp_r30, 0);
+    if (sEnvFacesRef == 0) {
+        table = (char *)fn_801284F8(0x1B8, lbl_8055CF84); /* "skybox" heap */
+        if (table != 0) {
+            sunPath = strings + 0x11C; /* "env_sun.tex" */
+            if (fn_8012C33C(sunPath) != 0) {
+                ((struct EnvFaces *)table)->sunTexture = fn_802CAC28(sunPath, 0);
             } else {
-                (*(int *)((char *)(temp_r3) + (0x18))) = -2;
+                ((struct EnvFaces *)table)->sunTexture = -2;
             }
-            temp_f30 = lbl_80564D80;
-            var_r28 = (int *)temp_r3;
-            temp_f31 = lbl_80564D90;
-            var_r26 = temp_r3;
-            var_r27 = temp_r3 + 0x1C;
-            var_r30 = 0;
-            do {
-                *var_r28 = fn_802CB128(0x100, 0x100, 0, 0x60);
-                var_r30 += 1;
-                (*(float *)((char *)(var_r27) + (0))) = temp_f30;
-                var_r28 += 1;
-                (*(float *)((char *)(var_r27) + (4))) = temp_f31;
-                (*(float *)((char *)(var_r27) + (8))) = temp_f31;
-                (*(float *)((char *)(var_r27) + (0xC))) = temp_f31;
-                (*(float *)((char *)(var_r27) + (0x10))) = temp_f30;
-                (*(float *)((char *)(var_r27) + (0x14))) = temp_f31;
-                (*(float *)((char *)(var_r27) + (0x18))) = temp_f31;
-                (*(float *)((char *)(var_r27) + (0x1C))) = temp_f31;
-                (*(float *)((char *)(var_r27) + (0x20))) = temp_f30;
-                var_r27 += 0x30;
-                (*(float *)((char *)(var_r26) + (0x40))) = temp_f31;
-                (*(float *)((char *)(var_r26) + (0x44))) = temp_f31;
-                (*(float *)((char *)(var_r26) + (0x48))) = temp_f31;
-                var_r26 += 0x30;
-            } while (var_r30 < 6);
+            oneConst = lbl_80564D80;  /* 1.0f */
+            targetPtr = (int *)table;
+            zeroConst = lbl_80564D90; /* 0.0f */
+            tailPtr = table;
+            mtxPtr = table + 0x1C;
+            i = 0;
+            do { /* one render target and identity model matrix per cube face */
+                *targetPtr = fn_802CB128(0x100, 0x100, 0, 0x60);
+                i += 1;
+                (*(float *)((char *)(mtxPtr) + (0))) = oneConst;
+                targetPtr += 1;
+                (*(float *)((char *)(mtxPtr) + (4))) = zeroConst;
+                (*(float *)((char *)(mtxPtr) + (8))) = zeroConst;
+                (*(float *)((char *)(mtxPtr) + (0xC))) = zeroConst;
+                (*(float *)((char *)(mtxPtr) + (0x10))) = oneConst;
+                (*(float *)((char *)(mtxPtr) + (0x14))) = zeroConst;
+                (*(float *)((char *)(mtxPtr) + (0x18))) = zeroConst;
+                (*(float *)((char *)(mtxPtr) + (0x1C))) = zeroConst;
+                (*(float *)((char *)(mtxPtr) + (0x20))) = oneConst;
+                mtxPtr += 0x30;
+                (*(float *)((char *)(tailPtr) + (0x40))) = zeroConst;
+                (*(float *)((char *)(tailPtr) + (0x44))) = zeroConst;
+                (*(float *)((char *)(tailPtr) + (0x48))) = zeroConst;
+                tailPtr += 0x30;
+            } while (i < 6);
             zero = 0.0f; neg = -1.0f; one = 1.0f;
-            (*(float *)((char *)(temp_r3) + (0x64))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x68))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x6C))) = neg;
-            (*(float *)((char *)(temp_r3) + (0x4C))) = neg;
-            (*(float *)((char *)(temp_r3) + (0x50))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x54))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x7C))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x80))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x84))) = neg;
-            (*(float *)((char *)(temp_r3) + (0x94))) = one;
-            (*(float *)((char *)(temp_r3) + (0x98))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x9C))) = zero;
-            (*(float *)((char *)(temp_r3) + (0xAC))) = zero;
-            (*(float *)((char *)(temp_r3) + (0xB0))) = zero;
-            (*(float *)((char *)(temp_r3) + (0xB4))) = one;
-            (*(float *)((char *)(temp_r3) + (0xC4))) = neg;
-            (*(float *)((char *)(temp_r3) + (0xC8))) = zero;
-            (*(float *)((char *)(temp_r3) + (0xCC))) = zero;
-            (*(float *)((char *)(temp_r3) + (0xE8))) = zero;
-            (*(float *)((char *)(temp_r3) + (0xEC))) = zero;
-            (*(float *)((char *)(temp_r3) + (0xF0))) = neg;
-            (*(float *)((char *)(temp_r3) + (0xF4))) = zero;
-            (*(float *)((char *)(temp_r3) + (0xF8))) = one;
-            (*(float *)((char *)(temp_r3) + (0xFC))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x118))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x11C))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x120))) = one;
-            (*(float *)((char *)(temp_r3) + (0x124))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x128))) = neg;
-            (*(float *)((char *)(temp_r3) + (0x12C))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x13C))) = neg;
-            (*(float *)((char *)(temp_r3) + (0x140))) = one;
-            (*(float *)((char *)(temp_r3) + (0x144))) = one;
-            (*(int *)((char *)(temp_r3) + (0x148))) = -1;
-            (*(float *)((char *)(temp_r3) + (0x14C))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x150))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x154))) = one;
-            (*(float *)((char *)(temp_r3) + (0x158))) = one;
-            (*(float *)((char *)(temp_r3) + (0x15C))) = one;
-            (*(int *)((char *)(temp_r3) + (0x160))) = -1;
-            (*(float *)((char *)(temp_r3) + (0x164))) = one;
-            (*(float *)((char *)(temp_r3) + (0x168))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x16C))) = neg;
-            (*(float *)((char *)(temp_r3) + (0x170))) = neg;
-            (*(float *)((char *)(temp_r3) + (0x174))) = one;
-            (*(int *)((char *)(temp_r3) + (0x178))) = -1;
-            (*(float *)((char *)(temp_r3) + (0x17C))) = zero;
-            (*(float *)((char *)(temp_r3) + (0x180))) = one;
-            (*(float *)((char *)(temp_r3) + (0x184))) = one;
-            (*(float *)((char *)(temp_r3) + (0x188))) = neg;
-            (*(float *)((char *)(temp_r3) + (0x18C))) = one;
-            (*(int *)((char *)(temp_r3) + (0x190))) = -1;
-            (*(float *)((char *)(temp_r3) + (0x194))) = one;
-            (*(float *)((char *)(temp_r3) + (0x198))) = one;
-            (*(short *)((char *)(temp_r3) + (0x19C))) = 0;
-            (*(short *)((char *)(temp_r3) + (0x19E))) = 1;
-            (*(short *)((char *)(temp_r3) + (0x1A0))) = 2;
-            (*(short *)((char *)(temp_r3) + (0x1A2))) = 1;
-            (*(short *)((char *)(temp_r3) + (0x1A4))) = 2;
-            (*(short *)((char *)(temp_r3) + (0x1A6))) = 3;
-            (*(signed char *)((char *)(temp_r3) + (0x1A8))) = 0;
+            /* the rotations that turn the camera towards each cube face */
+            ((struct EnvFaces *)table)->faces[1].mtx[6] = zero;
+            ((struct EnvFaces *)table)->faces[1].mtx[7] = zero;
+            ((struct EnvFaces *)table)->faces[1].mtx[8] = neg;
+            ((struct EnvFaces *)table)->faces[1].mtx[0] = neg;
+            ((struct EnvFaces *)table)->faces[1].mtx[1] = zero;
+            ((struct EnvFaces *)table)->faces[1].mtx[2] = zero;
+            ((struct EnvFaces *)table)->faces[2].mtx[0] = zero;
+            ((struct EnvFaces *)table)->faces[2].mtx[1] = zero;
+            ((struct EnvFaces *)table)->faces[2].mtx[2] = neg;
+            ((struct EnvFaces *)table)->faces[2].mtx[6] = one;
+            ((struct EnvFaces *)table)->faces[2].mtx[7] = zero;
+            ((struct EnvFaces *)table)->faces[2].mtx[8] = zero;
+            ((struct EnvFaces *)table)->faces[3].mtx[0] = zero;
+            ((struct EnvFaces *)table)->faces[3].mtx[1] = zero;
+            ((struct EnvFaces *)table)->faces[3].mtx[2] = one;
+            ((struct EnvFaces *)table)->faces[3].mtx[6] = neg;
+            ((struct EnvFaces *)table)->faces[3].mtx[7] = zero;
+            ((struct EnvFaces *)table)->faces[3].mtx[8] = zero;
+            ((struct EnvFaces *)table)->faces[4].mtx[3] = zero;
+            ((struct EnvFaces *)table)->faces[4].mtx[4] = zero;
+            ((struct EnvFaces *)table)->faces[4].mtx[5] = neg;
+            ((struct EnvFaces *)table)->faces[4].mtx[6] = zero;
+            ((struct EnvFaces *)table)->faces[4].mtx[7] = one;
+            ((struct EnvFaces *)table)->faces[4].mtx[8] = zero;
+            ((struct EnvFaces *)table)->faces[5].mtx[3] = zero;
+            ((struct EnvFaces *)table)->faces[5].mtx[4] = zero;
+            ((struct EnvFaces *)table)->faces[5].mtx[5] = one;
+            ((struct EnvFaces *)table)->faces[5].mtx[6] = zero;
+            ((struct EnvFaces *)table)->faces[5].mtx[7] = neg;
+            ((struct EnvFaces *)table)->faces[5].mtx[8] = zero;
+            /* the unit quad (with texture corners) drawn into each face */
+            ((struct EnvFaces *)table)->quad[0].position[0] = neg;
+            ((struct EnvFaces *)table)->quad[0].position[1] = one;
+            ((struct EnvFaces *)table)->quad[0].position[2] = one;
+            ((struct EnvFaces *)table)->quad[0].color = -1;
+            ((struct EnvFaces *)table)->quad[0].uv[0] = zero;
+            ((struct EnvFaces *)table)->quad[0].uv[1] = zero;
+            ((struct EnvFaces *)table)->quad[1].position[0] = one;
+            ((struct EnvFaces *)table)->quad[1].position[1] = one;
+            ((struct EnvFaces *)table)->quad[1].position[2] = one;
+            ((struct EnvFaces *)table)->quad[1].color = -1;
+            ((struct EnvFaces *)table)->quad[1].uv[0] = one;
+            ((struct EnvFaces *)table)->quad[1].uv[1] = zero;
+            ((struct EnvFaces *)table)->quad[2].position[0] = neg;
+            ((struct EnvFaces *)table)->quad[2].position[1] = neg;
+            ((struct EnvFaces *)table)->quad[2].position[2] = one;
+            ((struct EnvFaces *)table)->quad[2].color = -1;
+            ((struct EnvFaces *)table)->quad[2].uv[0] = zero;
+            ((struct EnvFaces *)table)->quad[2].uv[1] = one;
+            ((struct EnvFaces *)table)->quad[3].position[0] = one;
+            ((struct EnvFaces *)table)->quad[3].position[1] = neg;
+            ((struct EnvFaces *)table)->quad[3].position[2] = one;
+            ((struct EnvFaces *)table)->quad[3].color = -1;
+            ((struct EnvFaces *)table)->quad[3].uv[0] = one;
+            ((struct EnvFaces *)table)->quad[3].uv[1] = one;
+            ((struct EnvFaces *)table)->indices[0] = 0;
+            ((struct EnvFaces *)table)->indices[1] = 1;
+            ((struct EnvFaces *)table)->indices[2] = 2;
+            ((struct EnvFaces *)table)->indices[3] = 1;
+            ((struct EnvFaces *)table)->indices[4] = 2;
+            ((struct EnvFaces *)table)->indices[5] = 3;
+            ((struct EnvFaces *)table)->facesCleared = 0;
         }
-        lbl_8055FB00 = temp_r3;
+        sEnvFaces = table;
     }
-    lbl_8055FAFC += 1;
-    (*(int **)((char *)(arg0) + (4))) = lbl_8055FB00;
-    (*(float *)((char *)(arg0) + (0x14))) = 1.0f;
-    return arg0;
+    sEnvFacesRef += 1;
+    ((struct WaterEnvMap *)self)->faces = (struct EnvFaces *)sEnvFaces;
+    ((struct WaterEnvMap *)self)->fovFactor = 1.0f;
+    return self;
 }
 #pragma pop
 
