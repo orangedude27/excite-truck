@@ -11,9 +11,9 @@ typedef struct {
 } UnkEntry;
 
 static inline void InitEntry(UnkEntry *entry, int id, const char *name, const char *description, float value, float scale) {
-    entry->id = id;
     entry->name = name;
     entry->description = description;
+    entry->id = id;
     entry->unk_0x10 = 0;
     entry->unk_0x14 = 0;
     entry->value = value;
@@ -362,7 +362,6 @@ void fn_801B6670(void) {
     table[46].unk_0x10 = 0;
     table[46].unk_0x14 = 0;
     table[46].value = (float) lbl_805626F8;
-    table[46].scale = (float) lbl_805626DC;
     table[47].id = 0x30;
     table[47].name = (const char *) (base + 0x56C);
     table[47].description = (const char *) (base + 0x558);
@@ -443,8 +442,6 @@ void fn_801B6670(void) {
     table[58].id = 0x3C;
     table[58].name = (const char *) (base + 0x61C);
     table[58].description = (const char *) (base + 0x60C);
-    table[58].unk_0x10 = 0;
-    table[58].unk_0x14 = 0;
     table[59].name = (const char *) (base + 0x638);
     temp_r22 = base + 0x684;
     table[59].description = (const char *) (base + 0x628);
