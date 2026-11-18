@@ -96,11 +96,6 @@ extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
 extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A7B34(void *, void *);
-static inline s32 fn_800A9138_flushOwned(void *volume, void *page, u32 owner) {
-    if (*(u32 *)((u8 *)page + 0x1C) != 0 && *(u32 *)((u8 *)page + 0x1C) == owner)
-        return fn_800A7B34(volume, page);
-    return 0;
-}
 extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
  register u32 attr;
  register u8 *it=(u8 *)iterator;
