@@ -800,7 +800,10 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 
         if (elementNum == 0) {
             return 0;
         }
-        heapEnd = (void *)((s32)(elementNum * unitSize) + (s32)mblk);
+        {
+            u32 total = elementNum * unitSize;
+            heapEnd = (void *)(total + (u32)mblk);
+        }
         MEMiInitHeapHead((MEMiHeapHead *)startAddr, 0x554E5448, mblk, heapEnd, opt);
         untHead[0] = (u32)mblk;
         untHead[1] = unitSize;
