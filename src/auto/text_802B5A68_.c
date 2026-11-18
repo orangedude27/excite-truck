@@ -2295,7 +2295,6 @@ void fn_802B8AE0(const char *arg0, s32 arg1)
   local.zero = 0;
   *((s32 *) ((base + (count * 0x28)) + 0x24)) = 0;
 }
-#pragma cplusplus reset
 #pragma small_data on
 extern s32 lbl_8055CEA0;
 void fn_802B8C88(void) {
