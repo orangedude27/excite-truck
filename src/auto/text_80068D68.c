@@ -14253,109 +14253,138 @@ void btm_sec_update_clock_offset(UINT16 handle, UINT16 clock_offset) {
     }
 }
 
-u8 btm_sec_execute_procedure(void *arg0) {
-    extern void fn_8007093C(u32, void *);
+/* Run the security procedures the service this device is connecting for still
+   requires - open the ACL connection, get the remote name, authenticate,
+   encrypt and finally let the application authorize the service - stopping at
+   the first one that has to wait for the controller.  Returns BTM_SUCCESS when
+   access is granted, BTM_CMD_STARTED while one of them is running and
+   BTM_NO_RESOURCES when one of them could not be started. */
+u8 btm_sec_execute_procedure(void *p_dev_rec) {
     extern char lbl_80316870[];
-    char *p_str = lbl_80316870;
-    u8 *dev = (u8 *)arg0;
-    void *lcb;
-    u8 tempstate;
-    u8 flags;
-    u8 sid;
+    char *messages = lbl_80316870;
+    u8 *dev = (u8 *)p_dev_rec;
+    void *p_lcb;
+    u8 saved_state;
+    u8 sec_flags;
+    u8 service_id;
 
-    if (lbl_803C0F78[0x27C0] >= 4)
-        ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(0xD0003, p_str + 0x8AC, dev[0x81], dev[0x76], dev[0x7F]);
+    if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
+        ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(
+            TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x8AC, /* "btm_sec_execute_procedure: Required:0x%x Flags:0x%x State:%d" */
+            dev[0x81], dev[0x76], dev[0x7F]);
 
-    if (dev[0x7F] != 0)
-        return 1;
+    /* There is a chance that we are getting the name.  Wait until done. */
+    if (dev[0x7F] != BTM_SEC_STATE_IDLE)
+        return BTM_CMD_STARTED;
 
-    if (*(u16 *)(dev + 0x18) == 0xFFFF) {
-        lcb = l2cu_allocate_lcb(dev + 0x1C);
-        if (lcb == 0) {
-            if (lbl_803C4040[0] >= 2)
-                fn_8007093C(0x80001, p_str + 0x8EC);
-            return 3;
+    /* No connection yet (btm_sec_start_connection): page the device and run the
+       security check again when the link comes up. */
+    if (*(u16 *)(dev + 0x18) == BTM_SEC_INVALID_HANDLE) {
+        p_lcb = l2cu_allocate_lcb(dev + 0x1C);
+        if (p_lcb == NULL) {
+            if (l2cb_trace_level >= BT_TRACE_LEVEL_WARNING)
+                fn_8007093C(TRACE_LAYER_L2CAP | TRACE_TYPE_WARNING, messages + 0x8EC); /* "L2CAP - no LCB for L2CA_conn_req" */
+            return BTM_NO_RESOURCES;
         }
-        if (!l2cu_create_conn(lcb))
-            return 3;
-        dev[0x80] = 1;
-        return 1;
+        if (!l2cu_create_conn(p_lcb))
+            return BTM_NO_RESOURCES;
+        dev[0x80] = TRUE;
+        return BTM_CMD_STARTED;
     }
 
-    if (!(dev[0x76] & 8) && *(u16 *)(dev + 0x18) != 0xFFFF) {
+    /* If any security is required, get the remote name first. */
+    if (!(dev[0x76] & BTM_SEC_NAME_KNOWN) && *(u16 *)(dev + 0x18) != BTM_SEC_INVALID_HANDLE) {
         u8 started;
-        if (lbl_803C0F78[0x27C0] >= 4)
-            fn_8007093C(0xD0003, p_str + 0x910);
-        tempstate = dev[0x7F];
-        dev[0x7F] = 3;
-        if (btm_initiate_rem_name(dev + 0x1C, 0, 2, 0x1E, 0) != 1) {
-            dev[0x7F] = tempstate;
-            started = 0;
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
+            fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x910); /* "Security Manager: Start get name" */
+        saved_state = dev[0x7F];
+        dev[0x7F] = BTM_SEC_STATE_GETTING_NAME;
+        if (btm_initiate_rem_name(dev + 0x1C, 0, 2, 0x1E, 0) != BTM_CMD_STARTED) {
+            dev[0x7F] = saved_state;
+            started = FALSE;
         } else {
-            started = 1;
+            started = TRUE;
         }
         if (started)
-            return 1;
-        dev[0x76] |= 8;
+            return BTM_CMD_STARTED;
+        /* The name cannot be had; go on as though it were known. */
+        dev[0x76] |= BTM_SEC_NAME_KNOWN;
     }
 
-    flags = dev[0x76];
-    if (!(flags & 2)
-        && ((dev[0x80] && (dev[0x81] & 0x10)) || (!dev[0x80] && (dev[0x81] & 2)))
-        && *(u16 *)(dev + 0x18) != 0xFFFF) {
-        if (lbl_803C0F78[0x27C0] >= 4)
-            fn_8007093C(0xD0003, p_str + 0x934);
-        dev[0x7F] = 1;
+    sec_flags = dev[0x76];
+
+    /* If the connection is not authenticated and authentication is required,
+       start it and return pending to the caller. */
+    if (!(sec_flags & BTM_SEC_AUTHENTICATED)
+        && ((dev[0x80] && (dev[0x81] & BTM_SEC_OUT_AUTHENTICATE))
+            || (!dev[0x80] && (dev[0x81] & BTM_SEC_IN_AUTHENTICATE)))
+        && *(u16 *)(dev + 0x18) != BTM_SEC_INVALID_HANDLE) {
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
+            fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x934); /* "Security Manager: Start authentication" */
+        dev[0x7F] = BTM_SEC_STATE_AUTHENTICATING;
         if (!btsnd_hcic_auth_request(*(u16 *)(dev + 0x18)))
-            return 3;
-        return 1;
+            return BTM_NO_RESOURCES;
+        return BTM_CMD_STARTED;
     }
 
-    if (!(flags & 4)
-        && ((dev[0x80] && (dev[0x81] & 0x20)) || (!dev[0x80] && (dev[0x81] & 4)))
-        && *(u16 *)(dev + 0x18) != 0xFFFF) {
-        u8 ok;
-        if (lbl_803C0F78[0x27C0] >= 4)
-            fn_8007093C(0xD0003, p_str + 0x95C);
-        if (!btsnd_hcic_set_conn_encrypt(*(u16 *)(dev + 0x18), 1)) {
-            ok = 0;
+    /* If the connection is not encrypted and encryption is required, start it
+       and return pending to the caller. */
+    if (!(sec_flags & BTM_SEC_ENCRYPTED)
+        && ((dev[0x80] && (dev[0x81] & BTM_SEC_OUT_ENCRYPT))
+            || (!dev[0x80] && (dev[0x81] & BTM_SEC_IN_ENCRYPT)))
+        && *(u16 *)(dev + 0x18) != BTM_SEC_INVALID_HANDLE) {
+        u8 started;
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
+            fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x95C); /* "Security Manager: Start encryption" */
+        if (!btsnd_hcic_set_conn_encrypt(*(u16 *)(dev + 0x18), TRUE)) {
+            started = FALSE;
         } else {
-            dev[0x7F] = 2;
-            ok = 1;
+            dev[0x7F] = BTM_SEC_STATE_ENCRYPTING;
+            started = TRUE;
         }
-        if (!ok)
-            return 3;
-        return 1;
+        if (!started)
+            return BTM_NO_RESOURCES;
+        return BTM_CMD_STARTED;
     }
 
-    if (!(flags & 1)
-        && ((dev[0x80] && (dev[0x81] & 8)) || (!dev[0x80] && (dev[0x81] & 1)))) {
-        int all;
-        int i;
-        for (i = 0; i < 2; i++) {
-            if (*(u32 *)(dev + 0x10 + i * 4) != 0xFFFFFFFF) {
-                all = 0;
-                goto have_all;
+    /* If the connection is not authorized and authorization is required, ask
+       the application about the service unless every service is trusted. */
+    if (!(sec_flags & BTM_SEC_AUTHORIZED)
+        && ((dev[0x80] && (dev[0x81] & BTM_SEC_OUT_AUTHORIZE))
+            || (!dev[0x80] && (dev[0x81] & BTM_SEC_IN_AUTHORIZE)))) {
+        int all_trusted;
+        int word;
+        /* btm_sec_are_all_trusted(p_dev_rec->trusted_mask) */
+        for (word = 0; word < 2; word++) {
+            if (*(u32 *)(dev + 0x10 + word * 4) != 0xFFFFFFFF) {
+                all_trusted = FALSE;
+                goto check_all_trusted;
             }
         }
-        all = 1;
-    have_all:
-        if (all == 0) {
-            sid = (*(u8 **)dev)[0xF];
-            if (sid < 0x2E && !((1 << (sid & 0x1F)) & *(u32 *)(dev + ((sid >> 3) & 0x1C) + 0x10))) {
-                if (lbl_803C0F78[0x27C0] >= 4)
-                    fn_8007093C(0xD0003, p_str + 0x980);
+        all_trusted = TRUE;
+    check_all_trusted:
+        if (all_trusted == FALSE) {
+            service_id = (*(u8 **)dev)[0xF]; /* p_dev_rec->p_cur_service->service_id */
+            /* BTM_SEC_IS_SERVICE_TRUSTED(p_dev_rec->trusted_mask, service_id);
+               this build's BTM_SEC_MAX_SERVICES is 46, two mask words. */
+            if (service_id < 0x2E && !((1 << (service_id & 0x1F)) & *(u32 *)(dev + ((service_id >> 3) & 0x1C) + 0x10))) {
+                if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
+                    fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x980); /* "Security Manager: Start authorization" */
                 return btm_sec_start_authorization(dev);
             }
         }
     }
 
+    /* All the required security procedures are established; keep only the role
+       switch requirements of the service. */
     dev[0x81] &= 0xC0;
-    if (lbl_803C0F78[0x27C0] >= 4)
-        ((void (*)(u32, void *, u32, u32))fn_8007096C)(0xD0003, p_str + 0x9A8, *(u32 *)(dev + 0x14), *(u32 *)(dev + 0x10));
-    if (lbl_803C0F78[0x27C0] >= 4)
-        fn_8007093C(0xD0003, p_str + 0x9D0);
-    return 0;
+    if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
+        ((void (*)(u32, void *, u32, u32))fn_8007096C)(
+            TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x9A8, /* "Security Manager: trusted:0x%04x%04x" */
+            *(u32 *)(dev + 0x14), *(u32 *)(dev + 0x10));
+    if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
+        fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, messages + 0x9D0); /* "Security Manager: access granted" */
+    return BTM_SUCCESS;
 }
 
 u8 btm_sec_start_authorization(u8 *devRec) {
@@ -19412,7 +19441,8 @@ void l2c_csm_w4_l2cap_disconnect_rsp(void *p_ccb, u16 event, void *p_data) {
             disc_cfm(local_cid, 0xEEEE);
         }
         break;
-    case 20: case 30:
+    case 20:
+    case 30:
     default:
         GKI_freebuf(p_data);
         break;
