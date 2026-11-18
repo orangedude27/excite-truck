@@ -24,6 +24,13 @@ enum IdealResExtType {
 
 #define IDEAL_RES_EXT_LIST 0x24  /* IdealLineRes: first extension record */
 
+/* Reverses the four bytes of one 32-bit word in place. */
+static inline void SwapWordBytes(unsigned char *p) {
+    unsigned char t;
+    t = p[0]; p[0] = p[3]; p[3] = t;
+    t = p[1]; p[1] = p[2]; p[2] = t;
+}
+
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
@@ -487,79 +494,102 @@ extern double fn_8002F234(double);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-int fn_801386D0(void *arg0, float farg0, float farg1, float farg2) {
-    struct Vec2 { float x, y; } q, p;
-    volatile struct Vec2 r;
-    char *ctx = (char *)arg0;
-    char *n;
-    int hit = 0;
-    char *a, *b, *nx;
-    float step, f25, f24b, f24, d, len, inv;
-    f25 = 0.0f;
-    do {
-        step = farg0 - f25;
-        step = (step < 0.02f) ? step : 0.02f;
-        a = *(char **)(ctx + 0x1C);
-        f24 = *(float *)(ctx + 8);
-        n = *(char **)(a + 0x14);
-        do {
-            float v = fn_801385F0(*(float *)(n + 0x1C), f24, farg1, farg2);
-            if (v > 0.0f) {
-                float ay = *(float *)(a + 0xC);
-                float ax = *(float *)(a + 8);
-                float k = v * step;
-                p.y = ay + 0.5f * (*(float *)(n + 0xC) - ay);
-                p.x = ax + 0.5f * (*(float *)(n + 8) - ax);
-                *(float *)(n + 0x2C) += k;
-                {
-                    double dd = *(double *)&p;
-                    *(double *)&q = dd;
-                }
-                {
-                    float oldx = q.x;
-                    q.x = q.y;
-                    q.y = -oldx;
-                    *(float *)n += q.x * k;
-                    *(float *)(n + 4) += q.y * k;
-                }
-            }
-            b = *(char **)(ctx + 0x1C);
-            a = n;
-            n = *(char **)(n + 0x14);
-        } while (a != b);
-        f24b = 0.0f;
-        do {
-            nx = *(char **)(b + 0x14);
-            *(float *)(b + 8) = *(float *)nx - *(float *)b;
-            d = *(float *)(nx + 4) - *(float *)(b + 4);
-            *(float *)(b + 0xC) = d;
-            len = (float)fn_8002F234((double)(*(float *)(b + 8) * *(float *)(b + 8) + d * d));
-            if (0.01f > len) {
-                len = 0.01f;
-            }
-            inv = 1.0f / len;
-            *(float *)(b + 8) *= inv;
-            *(float *)(b + 0xC) *= inv;
-            *(float *)(b + 0x1C) = f24b;
-            nx = *(char **)(b + 0x14);
-            {
-                float px, py;
-                py = *(float *)(b + 4) - *(float *)(nx + 4);
-                px = *(float *)b - *(float *)nx;
-                r.y = py;
-                r.x = px;
-                *(float *)(b + 0x18) = (float)fn_8002F234((double)(px * px + py * py));
-            }
-            if (*(float *)(b + 0x18) < 0.5f) {
-                hit = 1;
-            }
-            len = *(float *)(b + 0x18);
-            b = *(char **)(b + 0x14);
-            f24b += len;
-        } while (b != *(char **)(ctx + 0x1C) && hit == 0);
-        f25 += step;
-    } while (f25 < farg0 && hit == 0);
-    return hit == 0;
+int fn_801386D0(void *arg0, float farg0, float farg1, float farg2)
+{
+  struct Vec2
+  {
+    float x;
+    float y;
+  } new_var[2];
+  struct Vec2 p;
+  char *ctx = (char *) arg0;
+  char *n;
+  int hit = 0;
+  char *a;
+  char *b;
+  char *nx;
+  float step;
+  float f25;
+  float f24b;
+  float f24;
+  float d;
+  float len;
+  float inv;
+  f25 = 0.0f;
+  do
+  {
+    step = farg0 - f25;
+    step = (step < 0.02f) ? (step) : (0.02f);
+    a = *((char **) (ctx + 0x1C));
+    f24 = *((float *) (ctx + 8));
+    n = *((char **) (a + 0x14));
+    do
+    {
+      float v = fn_801385F0(*((float *) (n + 0x1C)), f24, farg1, farg2);
+      if (v > 0.0f)
+      {
+        float ay = *((float *) (a + 0xC));
+        float ax = *((float *) (a + 8));
+        float k = v * step;
+        p.y = ay + (0.5f * ((*((float *) (n + 0xC))) - ay));
+        p.x = ax + (0.5f * ((*((float *) (n + 8))) - ax));
+        *((float *) (n + 0x2C)) += k;
+        {
+          double dd = *((double *) (&p));
+          *((double *) (&new_var[1])) = dd;
+        }
+        {
+          float oldx = new_var[1].x;
+          new_var[1].x = new_var[1].y;
+          new_var[1].y = -oldx;
+          *((float *) n) += new_var[1].x * k;
+          *((float *) (n + 4)) += new_var[1].y * k;
+        }
+      }
+      b = *((char **) (ctx + 0x1C));
+      a = n;
+      n = *((char **) (n + 0x14));
+    }
+    while (a != b);
+    f24b = 0.0f;
+    do
+    {
+      nx = *((char **) (b + 0x14));
+      *((float *) (b + 8)) = (*((float *) nx)) - (*((float *) b));
+      d = (*((float *) (nx + 4))) - (*((float *) (b + 4)));
+      *((float *) (b + 0xC)) = d;
+      len = (float) fn_8002F234((double) (((*((float *) (b + 8))) * (*((float *) (b + 8)))) + (d * d)));
+      if (0.01f > len)
+      {
+        len = 0.01f;
+      }
+      inv = 1.0f / len;
+      *((float *) (b + 8)) *= inv;
+      *((float *) (b + 0xC)) *= inv;
+      *((float *) (b + 0x1C)) = f24b;
+      nx = *((char **) (b + 0x14));
+      {
+        float px;
+        float py;
+        py = (*((float *) (b + 4))) - (*((float *) (nx + 4)));
+        px = (*((float *) b)) - (*((float *) nx));
+        new_var[0].y = py;
+        new_var[0].x = px;
+        *((float *) (b + 0x18)) = (float) fn_8002F234((double) ((px * px) + (py * py)));
+      }
+      if ((*((float *) (b + 0x18))) < 0.5f)
+      {
+        hit = 1;
+      }
+      len = *((float *) (b + 0x18));
+      b = *((char **) (b + 0x14));
+      f24b += len;
+    }
+    while ((b != (*((char **) (ctx + 0x1C)))) && (hit == 0));
+    f25 += step;
+  }
+  while ((f25 < farg0) && (hit == 0));
+  return hit == 0;
 }
 #pragma pop
 
