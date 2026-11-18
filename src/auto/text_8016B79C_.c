@@ -445,6 +445,7 @@ extern "C" void fn_8016B964(void *arg0, s32 totalScore, s32 bonusScore, s32 time
     }
     fn_802AE168(*(s32 *)((u8 *)arg0 + 0xC));
 }
+#pragma scheduling on
 
 #pragma push
 #pragma processor 750
