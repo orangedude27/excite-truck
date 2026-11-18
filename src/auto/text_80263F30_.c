@@ -188,7 +188,7 @@ void fn_80264098(void *item, int type) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
         void *name;
