@@ -663,11 +663,12 @@ mode_done:
         }
     }
     lbl_8055F0B8 = (int)trailMgr;
-    fn_80131818(parser);
-    lbl_80498664[0] = 0;
-}
-
-extern void fn_80128670(int);
+         fn_80131818(parser);
+     lbl_80498664[0] = 0;
+ }
+ #pragma scheduling invalid_target
+ 
+ extern void fn_80128670(int);
 /* Destroys an object with an owned buffer at +0x24 and optionally frees the object. */
 void *fn_80237968(void *arg0, int freeFlag) {
     struct Object { unsigned char pad[0x20]; int field20; int field24; int field28; };
