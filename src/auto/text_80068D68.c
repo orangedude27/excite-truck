@@ -13217,9 +13217,9 @@ tBTM_STATUS BTM_SecBond(BD_ADDR bd_addr, UINT8 pin_len, UINT8 *p_pin, UINT32 tru
         }
         btsnd_hcic_write_auth_enable((UINT8)((btm_cb_security_mode - 3) == 0));
     }
-    return BTM_NO_RESOURCES;
-}
-
+         return BTM_NO_RESOURCES;
+ }
+#pragma scheduling invalid_target
 tBTM_STATUS btm_sec_l2cap_access_req(BD_ADDR bd_addr, UINT16 psm, UINT16 handle,
                                        CONNECTION_TYPE conn_type,
                                        tBTM_SEC_CALLBACK *p_callback,
