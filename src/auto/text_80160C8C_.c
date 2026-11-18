@@ -1321,7 +1321,7 @@ extern s32 lbl_8055A0BC;
 extern s32 lbl_8055A0C0;
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
