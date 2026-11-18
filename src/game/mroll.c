@@ -1020,11 +1020,140 @@ s32 fn_80241EE8(s32 base) {
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+struct Pair8_80241EF0 {
+    s32 a, b;
+};
+struct Info2C_80241EF0 {
+    s32 header;
+    Pair8_80241EF0 pairs[5];
+};
+struct Collection_80241EF0 {
+    virtual s32 f0() = 0;
+    virtual s32 f1() = 0;
+    virtual s32 f2() = 0;
+    virtual s32 getCount() = 0;
+    virtual void *getItem(s32) = 0;
+    virtual s32 getResult(s32) = 0;
+    virtual void f8() = 0;
+    virtual void f9() = 0;
+    virtual void f10() = 0;
+    virtual void f11() = 0;
+    virtual void f12() = 0;
+    virtual void f13() = 0;
+    virtual void f14() = 0;
+    virtual void f15() = 0;
+    virtual void f16() = 0;
+    virtual void f17() = 0;
+    virtual void f18() = 0;
+    virtual void f19() = 0;
+    virtual void f20() = 0;
+    virtual void f21() = 0;
+    virtual void f22() = 0;
+    virtual void f23() = 0;
+    virtual void draw(s32, void *, void *) = 0;
+};
+struct CtxObj_80241EF0 {
+    u8 pad00[0x28];
+    void *record;
+    s32 idx;
+    s32 *field30;
+    void **field34;
+    void *field38;
+    s32 field3C;
+    u8 pad40[8];
+    s32 field48;
+    float field4C;
+    float field50;
+    u8 pad54[8];
+    char name5C[0x40];
+};
+struct InfoDstObj_80241EF0 {
+    Info2C_80241EF0 info;
+    u8 widgets[5][0x28];
+    char texts[5][0x64];
+    u8 tail2E8[4];
+};
+extern "C" void *fn_8001668C(void *, s32);
+extern "C" void *fn_80016BC8(void *, s32);
+extern "C" void *fn_80018A8C(void *, s32, s32 *, s32);
+extern "C" s32 fn_80255918(void *, void *);
+extern "C" char lbl_8034287C[];
+static inline void updateCtx_80241EF0(CtxObj_80241EF0 *ctx, void *record) {
+    if (ctx->record != 0) {
+        s32 savedIdx = ctx->idx;
+        void *sub = fn_80016BC8(ctx->record, ctx->field3C);
+        *(s32 *)((u8 *)sub + 4) = savedIdx;
+    }
+    ctx->record = record;
+    s32 maxIdx = *(s32 *)((u8 *)record + 0x98) - 1;
+    ctx->idx = maxIdx < ctx->idx ? maxIdx : ctx->idx;
+
+    s32 idx = *(s32 *)((u8 *)fn_80016BC8(ctx->record, ctx->field3C) + 4);
+    ctx->idx = idx;
+    ctx->name5C[0] = 0;
+    if (idx >= 0 && idx < *(s32 *)((u8 *)ctx->record + 0x98)) {
+        void *val = *(void **)((u8 *)ctx->record + 0x64 + idx * 4);
+        *ctx->field34 = val;
+        fn_80255918(ctx->field38, val);
+        ((int (*)(void *, int, void *, ...))fn_801345D8)(
+            ctx->name5C, 0x40, lbl_8034287C,
+            ctx->idx + 1);
+        {
+            char *src = (char *)fn_80131234((s32 *)ctx->name5C);
+            char *dst = ctx->name5C;
+            s32 n = 0x40;
+            while ((*dst++ = *src++) != 0) {
+                if (--n <= 0) {
+                    dst[-1] = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+    *ctx->field30 = ctx->idx;
+    ctx->field48 = -0xFA;
+    ctx->field4C = (float)ctx->idx;
+    ctx->field50 = (float)ctx->idx;
+}
+static inline void updateInfoDst_80241EF0(InfoDstObj_80241EF0 *infoDst, char *name2C) {
+    void *info = ((void *(*)(void *))fn_80018A8C)(name2C);
+    if (info != 0) {
+        infoDst->info = *(Info2C_80241EF0 *)info;
+
+        for (s32 i = 0; i < 5; i++) {
+            char *src = (char *)infoDst->info.pairs[i].a;
+            if (src != 0) {
+                char *dst = infoDst->texts[i];
+                s32 n = 0x64;
+                while ((*dst++ = *src++) != 0) {
+                    if (--n <= 0) {
+                        dst[-1] = 0;
+                        break;
+                    }
+                }
+            } else {
+                infoDst->texts[i][0] = 0;
+            }
+            ((Collection_80241EF0 *)infoDst->widgets[i])->draw(i, &infoDst->info.pairs[i].b, infoDst->tail2E8);
+        }
+    } else {
+        memset(infoDst, 0, 0x2C);
+        infoDst->texts[0][0] = 0;
+        infoDst->texts[1][0] = 0;
+        infoDst->texts[2][0] = 0;
+        infoDst->texts[3][0] = 0;
+        infoDst->texts[4][0] = 0;
+    }
+}
 extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
-    s32 index, result, i, n, wordA, wordB;
-    void *item, *record, *ctx, *info, *vtable, *infoDst;
-    char *src, *dst, *entries, *output, *zeroBase, *textItem, *object;
-    char c;
+    struct Pair8 {
+        s32 a, b;
+    };
+    struct Info2C {
+        s32 header;
+        Pair8 pairs[5];
+    };
     struct Collection {
         virtual s32 f0() = 0;
         virtual s32 f1() = 0;
@@ -1050,155 +1179,150 @@ extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
         virtual void f23() = 0;
         virtual void draw(s32, void *, void *) = 0;
     };
+    struct SelfObj {
+        u8 pad00[0x10];
+        s32 *field10;
+        s32 *field14;
+        struct CtxObj *ctx;
+        struct InfoDstObj *infoDst;
+        u8 *field20;
+        Collection *col;
+        s32 index;
+        char name2C[0x20];
+        char name4C[0x20];
+        s32 result;
+    };
+    struct CtxObj {
+        u8 pad00[0x28];
+        void *record;
+        s32 idx;
+        s32 *field30;
+        void **field34;
+        void *field38;
+        s32 field3C;
+        u8 pad40[8];
+        s32 field48;
+        float field4C;
+        float field50;
+        u8 pad54[8];
+        char name5C[0x40];
+    };
+    struct InfoDstObj {
+        Info2C info;
+        u8 widgets[5][0x28];
+        char texts[5][0x64];
+        u8 tail2E8[4];
+    };
+    SelfObj *self = (SelfObj *)arg0;
 
-    index = *(s32 *)((u8 *)arg0 + 0x28);
-    *(s32 *)((u8 *)arg0 + 0x28) = index + 1;
-    if (*(s32 *)((u8 *)arg0 + 0x28) >=
-        ((Collection *)*(void **)((u8 *)arg0 + 0x24))->getCount()) {
-        *(s32 *)((u8 *)arg0 + 0x28) = 0;
+    self->index++;
+    if (self->index >= self->col->getCount()) {
+        self->index = 0;
     }
-    index = *(s32 *)((u8 *)arg0 + 0x28);
-    if (index < 0) return;
-    if (index >= ((Collection *)*(void **)((u8 *)arg0 + 0x24))->getCount()) return;
-    item = ((Collection *)*(void **)((u8 *)arg0 + 0x24))->getItem(index);
-    record = fn_8001668C(item, 0);
-    *(s32 *)(*(void **)((u8 *)arg0 + 0x14)) = *(s32 *)((u8 *)record + 4);
-    *(s32 *)(*(void **)((u8 *)arg0 + 0x10)) = *(s32 *)((u8 *)record + 0x9C);
+    if (self->index < 0) return;
+    if (self->index >= self->col->getCount()) return;
+    void *item = self->col->getItem(self->index);
+    void *record = fn_8001668C(item, 0);
+    *self->field14 = *(s32 *)((u8 *)record + 4);
+    *self->field10 = *(s32 *)((u8 *)record + 0x9C);
 
-    dst = (char *)arg0 + 0x2C;
-    src = (char *)item;
-    n = 0x20;
-    do {
-        if (--n <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-        c = *src++;
-        *dst++ = c;
-    } while (c != 0);
-
-    src = (char *)record + 0xC;
-    dst = (char *)arg0 + 0x4C;
-    n = 0x20;
-    do {
-        if (--n <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-        c = *src++;
-        *dst++ = c;
-    } while (c != 0);
-
-    result = ((Collection *)*(void **)((u8 *)arg0 + 0x24))->getResult(*(s32 *)((u8 *)arg0 + 0x28));
-    *(s32 *)((u8 *)arg0 + 0x6C) = result;
-    *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x20) + 0xDD) = (result ? 0 : 1);
-
-    ctx = *(void **)((u8 *)arg0 + 0x18);
-    if (*(void **)((u8 *)ctx + 0x28) != 0) {
-        index = *(s32 *)((u8 *)ctx + 0x2C);
-        item = fn_80016BC8(*(void **)((u8 *)ctx + 0x28), *(s32 *)((u8 *)ctx + 0x3C));
-        *(s32 *)((u8 *)item + 4) = index;
-    }
-    *(void **)((u8 *)ctx + 0x28) = record;
-    index = *(s32 *)((u8 *)ctx + 0x2C);
-    if (*(s32 *)((u8 *)record + 0x98) - 1 < index) {
-        index = *(s32 *)((u8 *)record + 0x98) - 1;
-    }
-    *(s32 *)((u8 *)ctx + 0x2C) = index;
-
-    item = fn_80016BC8(*(void **)((u8 *)ctx + 0x28), *(s32 *)((u8 *)ctx + 0x3C));
-    index = *(s32 *)((u8 *)item + 4);
-    *(s32 *)((u8 *)ctx + 0x2C) = index;
-    *(u8 *)((u8 *)ctx + 0x5C) = 0;
-    if (index >= 0 && index < *(s32 *)((u8 *)*(void **)((u8 *)ctx + 0x28) + 0x98)) {
-        item = *(void **)((u8 *)record + 0x64 + index * 4);
-        *(void **)(*(void **)((u8 *)ctx + 0x34)) = item;
-        fn_80255918(*(void **)((u8 *)ctx + 0x38), item);
-        ((int (*)(void *, int, void *, ...))fn_801345D8)(
-            (u8 *)ctx + 0x5C, 0x40, lbl_8034287C,
-            *(s32 *)((u8 *)ctx + 0x2C) + 1);
-        src = (char *)fn_80131234((u8 *)ctx + 0x5C);
-        dst = (char *)ctx + 0x5C;
-        n = 0x40;
-        do {
+    {
+        char *dst = self->name2C;
+        char *src = (char *)item;
+        s32 n = 0x20;
+        while ((*dst++ = *src++) != 0) {
             if (--n <= 0) {
                 dst[-1] = 0;
                 break;
             }
-            c = *src++;
-            *dst++ = c;
-        } while (c != 0);
+        }
     }
 
-    *(s32 *)(*(void **)((u8 *)ctx + 0x30)) = *(s32 *)((u8 *)ctx + 0x2C);
-    *(s32 *)((u8 *)ctx + 0x48) = -0xFA;
-    *(float *)((u8 *)ctx + 0x4C) = (float)*(s32 *)((u8 *)ctx + 0x2C);
-    *(float *)((u8 *)ctx + 0x50) = (float)*(s32 *)((u8 *)ctx + 0x2C);
+    {
+        char *src = (char *)record + 0xC;
+        char *dst = self->name4C;
+        s32 n = 0x20;
+        while ((*dst++ = *src++) != 0) {
+            if (--n <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        }
+    }
 
-    infoDst = *(void **)((u8 *)arg0 + 0x1C);
-    info = fn_80018A8C((u8 *)arg0 + 0x2C, *(s32 *)((u8 *)ctx + 0x2C),
-                       (s32 *)*(void **)((u8 *)ctx + 0x30),
-                       *(s32 *)((u8 *)ctx + 0x2C));
-    if (info != 0) {
-        ((s32 *)infoDst)[0] = ((s32 *)info)[0];
-        wordA = ((s32 *)info)[2];
-        wordB = ((s32 *)info)[1];
-        ((s32 *)infoDst)[1] = wordB;
-        ((s32 *)infoDst)[2] = wordA;
-        wordA = ((s32 *)info)[4];
-        wordB = ((s32 *)info)[3];
-        ((s32 *)infoDst)[3] = wordB;
-        ((s32 *)infoDst)[4] = wordA;
-        wordA = ((s32 *)info)[6];
-        wordB = ((s32 *)info)[5];
-        ((s32 *)infoDst)[5] = wordB;
-        ((s32 *)infoDst)[6] = wordA;
-        wordA = ((s32 *)info)[8];
-        wordB = ((s32 *)info)[7];
-        ((s32 *)infoDst)[7] = wordB;
-        ((s32 *)infoDst)[8] = wordA;
-        wordA = ((s32 *)info)[10];
-        wordB = ((s32 *)info)[9];
-        ((s32 *)infoDst)[9] = wordB;
-        ((s32 *)infoDst)[10] = wordA;
+    self->result = self->col->getResult(self->index);
+    *(bool *)(self->field20 + 0xDD) = (self->result == 0);
 
-        entries = (char *)infoDst;
-        zeroBase = (char *)infoDst;
-        output = (char *)infoDst + 0xF4;
-        textItem = (char *)infoDst + 8;
-        object = (char *)infoDst + 0x2C;
-        i = 0;
-        do {
-            src = *(char **)(entries + 4);
-            if (src != 0) {
-                dst = output;
-                n = 0x64;
-                do {
+    {
+        void *subObj = self->ctx;
+        CtxObj *ctx = (CtxObj *)subObj;
+        if (ctx->record != 0) {
+            s32 savedIdx = ctx->idx;
+            void *sub = fn_80016BC8(ctx->record, ctx->field3C);
+            *(s32 *)((u8 *)sub + 4) = savedIdx;
+        }
+        ctx->record = record;
+        s32 maxIdx = *(s32 *)((u8 *)record + 0x98) - 1;
+        ctx->idx = maxIdx < ctx->idx ? maxIdx : ctx->idx;
+
+        s32 idx = *(s32 *)((u8 *)fn_80016BC8(ctx->record, ctx->field3C) + 4);
+        ctx->idx = idx;
+        ctx->name5C[0] = 0;
+        if (idx >= 0 && idx < *(s32 *)((u8 *)ctx->record + 0x98)) {
+            void *val = *(void **)((u8 *)ctx->record + 0x64 + idx * 4);
+            *ctx->field34 = val;
+            fn_80255918(ctx->field38, val);
+            ((int (*)(void *, int, void *, ...))fn_801345D8)(
+                ctx->name5C, 0x40, lbl_8034287C,
+                ctx->idx + 1);
+            {
+                char *src = (char *)fn_80131234(ctx->name5C);
+                char *dst = ctx->name5C;
+                s32 n = 0x40;
+                while ((*dst++ = *src++) != 0) {
                     if (--n <= 0) {
                         dst[-1] = 0;
                         break;
                     }
-                    c = *src++;
-                    *dst++ = c;
-                } while (c != 0);
-            } else {
-                *(u8 *)(zeroBase + 0xF4) = 0;
+                }
             }
-            ((Collection *)object)->draw(i, textItem, (u8 *)infoDst + 0x2E8);
-            entries += 8;
-            zeroBase += 0x64;
-            output += 0x64;
-            textItem += 8;
-            object += 0x28;
-            i++;
-        } while (i < 5);
-    } else {
-        memset(infoDst, 0, 0x2C);
-        *(u8 *)((u8 *)infoDst + 0xF4) = 0;
-        *(u8 *)((u8 *)infoDst + 0x158) = 0;
-        *(u8 *)((u8 *)infoDst + 0x1BC) = 0;
-        *(u8 *)((u8 *)infoDst + 0x220) = 0;
-        *(u8 *)((u8 *)infoDst + 0x284) = 0;
+        }
+
+        *ctx->field30 = ctx->idx;
+        ctx->field48 = -0xFA;
+        ctx->field4C = (float)ctx->idx;
+        ctx->field50 = (float)ctx->idx;
+
+        subObj = self->infoDst;
+        InfoDstObj *infoDst = (InfoDstObj *)subObj;
+        void *info = ((void *(*)(void *))fn_80018A8C)(self->name2C);
+        if (info != 0) {
+            infoDst->info = *(Info2C *)info;
+
+            for (s32 i = 0; i < 5; i++) {
+                char *src = (char *)infoDst->info.pairs[i].a;
+                if (src != 0) {
+                    char *dst = infoDst->texts[i];
+                    s32 n = 0x64;
+                    while ((*dst++ = *src++) != 0) {
+                        if (--n <= 0) {
+                            dst[-1] = 0;
+                            break;
+                        }
+                    }
+                } else {
+                    infoDst->texts[i][0] = 0;
+                }
+                ((Collection *)infoDst->widgets[i])->draw(i, &infoDst->info.pairs[i].b, infoDst->tail2E8);
+            }
+        } else {
+            memset(infoDst, 0, 0x2C);
+            infoDst->texts[0][0] = 0;
+            infoDst->texts[1][0] = 0;
+            infoDst->texts[2][0] = 0;
+            infoDst->texts[3][0] = 0;
+            infoDst->texts[4][0] = 0;
+        }
     }
 }
 #pragma scheduling on
