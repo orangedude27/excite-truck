@@ -10441,6 +10441,10 @@ struct VFiPFVolume {
 #define VF_VOL_GIVE_VALUE      0x0040 /* mount: hand the value at 0x1FC4 to the device */
 #define VF_VOL_KEEP_FAT        0x0080 /* mount: leave the FAT as it is */
 
+/* The VF instance (lbl_803D2140) counts the volumes it holds mounted; every
+ * mount and every unmount of fn_800B5E14/fn_800B6004 moves it. */
+#define VF_MOUNT_COUNT         lbl_803D2140[13]
+
 /* One drive slot, and the drive letters 'A'..'Z' they are named by. */
 #define VF_VOLUME_SIZE 0x1FC8
 #define VF_MAX_VOLUMES 26
