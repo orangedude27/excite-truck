@@ -228,7 +228,7 @@ void *fn_8016B8CC(void *obj, s32 shouldDelete) {
 
 #pragma cplusplus on
 extern "C" s32 strlen(const char *);
-extern "C" void fn_801308F4(void *, ...);
+extern "C" void fn_801308F4(void *, s32, s32);
 extern "C" void fn_80130980(void *, s32, s32, f32);
 extern "C" void fn_801312EC(void *, void *);
 extern "C" void fn_80131318();
@@ -289,11 +289,11 @@ typedef struct CrushRoundState8016B964 {
     int counters[4];
 } CrushRoundState8016B964;
 
-extern "C" void fn_8016B964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    f32 f0, f1, f2, f4;
-    s32 count, var_r28, var_r6, state;
+extern "C" void fn_8016B964(void *arg0, s32 totalScore, s32 bonusScore, s32 timeBonus) {
+    f32 f2, f4;
+    f32 startTime, gameTime, sinceStart, elapsed, progress;
+    s32 var_r28, var_r6, state;
     u8 c;
-    void *obj;
     u8 *emptySrc;
     int timeRoom;
     u8 *timeDst;
@@ -312,21 +312,20 @@ extern "C" void fn_8016B964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 
     if (*(s32 *)((u8 *)arg0 + 0xC) == 0) return;
     ((void (*)(void *, s32))fn_801308F4)((u8 *)arg0 + 0x30, 0x14);
-    var_r28 = arg3;
+    var_r28 = timeBonus;
     var_r6 = 0;
-    if (arg3 != 0) {
-        f1 = *(f32 *)((u8 *)arg0 + 4);
-        f0 = lbl_80561980;
-        if (f1 > f0) {
-            f2 = lbl_8055E3C8;
-            f4 = lbl_80561984;
-            f1 = f2 - f1;
-            f0 = f1 - f0;
-            f0 = f0 / f4;
-            f4 = (f4 < f0) ? f4 : f0;
-            f4 = (f4 > lbl_80561980) ? f4 : lbl_80561980;
-            var_r6 = (s32)(lbl_80561980 + (f4 * ((lbl_80561988 + (f32)arg3) - lbl_80561980)));
-            var_r28 = arg3 - var_r6;
+    if (timeBonus != 0) {
+        startTime = *(f32 *)((u8 *)arg0 + 4);
+        if (startTime > lbl_80561980) {
+            gameTime = lbl_8055E3C8;
+            progress = lbl_80561984;
+            sinceStart = gameTime - startTime;
+            elapsed = sinceStart - lbl_80561980;
+            elapsed = elapsed / progress;
+            progress = (progress < elapsed) ? progress : elapsed;
+            progress = (progress > lbl_80561980) ? progress : lbl_80561980;
+            var_r6 = (s32)(lbl_80561980 + (progress * ((lbl_80561988 + (f32)timeBonus) - lbl_80561980)));
+            var_r28 = timeBonus - var_r6;
         }
     }
     ((void (*)(void *, s32, const void *, ...))fn_801345D8)((u8 *)arg0 + 0x44, 0x14, &lbl_8055A208, var_r6);
@@ -355,7 +354,7 @@ extern "C" void fn_8016B964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         }
     } else {
         fn_80130980((u8 *)arg0 + 0x9E, 0x14, 2, (f32)var_r28);
-        if (*(u32 *)(lbl_8043036C + 8) != lbl_8055E044) fn_80131318();
+        if (*(u32 *)(lbl_8043036C + 8) != lbl_8055E044) ((void (*)(void *))fn_80131318)(lbl_8043036C);
         captionMsg = *(u8 **)(lbl_8043036C + 4);
         captionDst2 = (u8 *)arg0 + 0x58; captionRoom2 = 0x14;
         goto copyCaption;
@@ -367,9 +366,9 @@ extern "C" void fn_8016B964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
             if ((s8)c == 0) break;
         }
     }
-    fn_801308F4((u8 *)arg0 + 0x6C, 0x14, arg1);
-    fn_801308F4((u8 *)arg0 + 0x8A, 0x14, arg1 - arg3);
-    if (fn_801609C4(arg1) != -1) {
+    fn_801308F4((u8 *)arg0 + 0x6C, 0x14, totalScore);
+    fn_801308F4((u8 *)arg0 + 0x8A, 0x14, totalScore - timeBonus);
+    if (fn_801609C4(totalScore) != -1) {
         rankText = __AXGetStackHead();
         rankDst = (u8 *)arg0 + 0x80; rankRoom = 0xA;
         goto copyRank;
@@ -399,26 +398,23 @@ extern "C" void fn_8016B964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     case 0:
         fn_802ADFF4(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4));
         if (strlen((const char *)arg0 + 0xDA) != 0) {
-            obj = *(void **)((u8 *)arg0 + 0x2C);
-            if (obj != 0 && *((u8 *)obj + 0x19) == 0) {
-                *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0;
+            obj:;
+            void *p = *(void **)((u8 *)arg0 + 0x2C);
+            if (p != 0 && *((u8 *)p + 0x19) == 0) {
+                *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0;
             }
         } else {
-            obj = *(void **)((u8 *)arg0 + 0x28);
-            if (obj != 0 && *((u8 *)obj + 0x19) == 0) {
-                *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0;
+            void *p = *(void **)((u8 *)arg0 + 0x28);
+            if (p != 0 && *((u8 *)p + 0x19) == 0) {
+                *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0;
             }
         }
-        if (arg3 > 0) {
-            obj = *(void **)((u8 *)arg0 + 0x14);
-            if (obj != 0) {
-                *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0;
-            }
+        if (timeBonus > 0) {
+            void *p = *(void **)((u8 *)arg0 + 0x14);
+            if (p != 0) { *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0; }
         } else {
-            obj = *(void **)((u8 *)arg0 + 0x18);
-            if (obj != 0) {
-                *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0;
-            }
+            void *p = *(void **)((u8 *)arg0 + 0x18);
+            if (p != 0) { *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0; }
         }
         *(s32 *)arg0 = 1;
         break;
@@ -426,8 +422,8 @@ extern "C" void fn_8016B964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         if (*(s32 *)((u8 *)arg0 + 0xFC) != 0 && *(f32 *)((u8 *)arg0 + 4) < lbl_80561980)
             *(f32 *)((u8 *)arg0 + 4) = lbl_8055E3C8;
         if (*(s32 *)((u8 *)arg0 + 0xFC) == 2 && *(u8 *)((u8 *)arg0 + 0x20) == 0) {
-            obj = *(void **)((u8 *)arg0 + 0x1C); *(u8 *)((u8 *)arg0 + 0x20) = 1;
-            if (obj != 0) { *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0; }
+            void *p = *(void **)((u8 *)arg0 + 0x1C); *(u8 *)((u8 *)arg0 + 0x20) = 1;
+            if (p != 0) { *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0; }
         }
         if (*(s32 *)((u8 *)arg0 + 0x100) != 0) {
             fn_802AE02C(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4)); *(s32 *)arg0 = 2;
@@ -436,8 +432,8 @@ extern "C" void fn_8016B964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     case 2:
         if (*(u8 *)((u8 *)arg0 + 9) != 0) {
             fn_802AE0B8(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4));
-            obj = *(void **)((u8 *)arg0 + 0x24);
-            if (obj != 0) { *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0; }
+            void *p = *(void **)((u8 *)arg0 + 0x24);
+            if (p != 0) { *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0; }
             *(s32 *)arg0 = 3;
         }
         break;
