@@ -120,7 +120,6 @@ int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma scheduling on
 float fn_80138DF4(void *arg0) {
     float spC;
     float sp8;
