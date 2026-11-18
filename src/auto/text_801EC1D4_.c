@@ -613,8 +613,22 @@ void fn_801ECF58(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_801ECFE0(void *arg0) {
-    extern void *fn_801E87A8(void);
+void fn_801ECFE0(void *vehicleRender) {
+    /* Draw the parts of one vehicle.  Nothing is drawn while the model this
+     * object renders (vehicleRender+0x3C) is scaled below ModelDrawMin.  The
+     * object keeps a list of part entries at +0x154, *(+0x150) of them, three
+     * words each: the first and the last of the 12-byte names the part is built
+     * from in the model's name table, and the part bits the entry covers.  For
+     * each entry a part key is made from that name plus the two words of
+     * keyParams, and every group of the model whose bits still meet what is to
+     * be drawn is submitted with the group's own pose - mirrored, that is with
+     * its first axis negated, when the render state says this vehicle is drawn
+     * the other way round.  The bits a group drew come off the list as it goes,
+     * and whatever is left once all the groups have had their say is submitted
+     * again with the vehicle's own pose (+0x4A0) unless SkipRestOfParts is set.
+     * fn_801ECC70 sets the model's draw scale for the pass and fn_801ED46C
+     * submits what it leaves over. */
+    extern void *fn_801E87A8(void);   /* the render state's flags block */
     extern void fn_801ED46C(void *);
     extern void fn_802DAC54(void);
     extern int fn_802C7A40(int, void *, int, int, void *, int);
@@ -622,61 +636,86 @@ void fn_801ECFE0(void *arg0) {
     extern float lbl_80562E94, lbl_80562E98;
     extern unsigned char lbl_8055E614;
     extern long lbl_8055EBC0;
-    struct PartElem { char e[12]; };
-    struct PartTable { char pad[0x2E0]; struct PartElem list[1]; };
-    Unk_801ECFE0 first, second;
-    long params[2];
-    float scale;
+
+    #define Model           (*(char **)(self + 0x3C)) /* the model being drawn */
+    #define ModelDrawMin    lbl_80562E94    /* 0.01f: a model below this is skipped */
+    #define MirrorScale     lbl_80562E98    /* -1.0f: what flips a mirrored pose */
+    #define ZeroEps         *(float *)&lbl_80558DC4 /* 1.19e-7: near enough to zero */
+    #define SkipRestOfParts lbl_8055E614    /* set: leave the bits no group drew */
+    #define PartKeyParam    lbl_8055EBC0    /* the second word of every part key */
+    #define SetDrawScale    fn_801ECC70     /* this model's scale for the pass */
+    #define ResetPartKeys   fn_802DAC54     /* start the part-key arena over */
+    #define NewPartKey      fn_802C7A40     /* a key: a part name and two words */
+    #define DrawPart        fn_802C70AC     /* a part, with its pose and its bits */
+    #define DrawLeftOver    fn_801ED46C     /* what the pass leaves over */
+
+    struct PartName { char name[12]; };
+    /* the model's part-name table, twelve-byte names from +0x2E0 on */
+    struct PartNames { char pad[0x2E0]; struct PartName name[1]; };
+    PartPose partPose, ownPose;
+    long keyParams[2];
+    float mirrorScale;
     long *entry;
-    long cached, offset, flag, i, mask, handle, j;
-    char *part;
-    char *data;
-    char *self = arg0;
-    if (!(*(float *)(*(char **)(self+0x3C)+0x22C) < lbl_80562E94)) {
-        fn_801ECC70(self);
-        flag = (*(unsigned long *)((char *)fn_801E87A8()+0x10) >> 1) & 1;
+    long keyParam, groupOffset, mirrored, i, mask, partKey, j;
+    char *group;
+    char *scan;
+    char *self = vehicleRender;
+    if (!(*(float *)(Model+0x22C) < ModelDrawMin)) {
+        SetDrawScale(self);
+        mirrored = (*(unsigned long *)((char *)fn_801E87A8()+0x10) >> 1) & 1;
         entry = (long *)(self+0x154);
-        cached = lbl_8055EBC0;
-        scale = lbl_80562E98;
+        keyParam = PartKeyParam;
+        mirrorScale = MirrorScale;
         for (i=0; i<*(long *)(self+0x150); entry+=3, i++) {
-            mask = *(long *)(*(char **)(self+0x3C)+0x29C) & entry[2];
-            params[0] = *(long *)(self+0x3EC);
-            params[1] = cached;
-            if ((float)__fabs((double)*(float *)(*(char **)(self+0x3C)+0x28C)) <= *(float *)&lbl_80558DC4)
-                fn_802DAC54();
-            handle = fn_802C7A40(1, (void *)&((struct PartTable *)*(char **)(self+0x3C))->list[entry[0] + 1], entry[1]-entry[0], 1, params, 2);
-            for (j=0, offset=0; j<*(long *)(*(char **)(self+0x3C)+0xA78); offset+=0x34, j++) {
-                data = *(char **)(self+0x3C)+offset;
-                part = data+0xA7C;
-                if (*(long *)(data+0xAAC) & mask) {
-                    if (flag) {
-                        *(Unk_801ECFE0Head *)&first = *(Unk_801ECFE0Head *)part;
-                        *(Unk_801ECFE0Tail *)((char *)&first+0x24) = *(Unk_801ECFE0Tail *)(part+0x24);
-                        first.values[0] *= scale;
-                        first.values[1] *= scale;
-                        first.values[2] *= scale;
-                        fn_802C70AC((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], &first, handle, *(long *)(part+0x30));
+            mask = *(long *)(Model+0x29C) & entry[2];
+            keyParams[0] = *(long *)(self+0x3EC);
+            keyParams[1] = keyParam;
+            if ((float)__fabs((double)*(float *)(Model+0x28C)) <= ZeroEps)
+                ResetPartKeys();
+            partKey = NewPartKey(1, (void *)&((struct PartNames *)Model)->name[entry[0] + 1], entry[1]-entry[0], 1, keyParams, 2);
+            for (j=0, groupOffset=0; j<*(long *)(Model+0xA78); groupOffset+=0x34, j++) {
+                scan = Model+groupOffset;
+                group = scan+0xA7C;
+                if (*(long *)(scan+0xAAC) & mask) {
+                    if (mirrored) {
+                        *(PartPoseRot *)&partPose = *(PartPoseRot *)group;
+                        *(PartPosePos *)((char *)&partPose+0x24) = *(PartPosePos *)(group+0x24);
+                        partPose.values[0] *= mirrorScale;
+                        partPose.values[1] *= mirrorScale;
+                        partPose.values[2] *= mirrorScale;
+                        DrawPart((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], &partPose, partKey, *(long *)(group+0x30));
                     } else {
-                        fn_802C70AC((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], part, handle, *(long *)(data+0xAAC));
+                        DrawPart((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], group, partKey, *(long *)(scan+0xAAC));
                     }
-                    mask &= ~*(long *)(part+0x30);
+                    mask &= ~*(long *)(group+0x30);
                 }
             }
-            if (!lbl_8055E614) {
-                if (flag) {
-                    *(Unk_801ECFE0Head *)&second = *(Unk_801ECFE0Head *)(self+0x4A0);
-                    *(Unk_801ECFE0Tail *)((char *)&second+0x24) = *(Unk_801ECFE0Tail *)(self+0x4A0+0x24);
-                    second.values[0] *= scale;
-                    second.values[1] *= scale;
-                    second.values[2] *= scale;
-                    fn_802C70AC((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], &second, handle, mask);
+            if (!SkipRestOfParts) {
+                if (mirrored) {
+                    *(PartPoseRot *)&ownPose = *(PartPoseRot *)(self+0x4A0);
+                    *(PartPosePos *)((char *)&ownPose+0x24) = *(PartPosePos *)(self+0x4A0+0x24);
+                    ownPose.values[0] *= mirrorScale;
+                    ownPose.values[1] *= mirrorScale;
+                    ownPose.values[2] *= mirrorScale;
+                    DrawPart((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], &ownPose, partKey, mask);
                 } else {
-                    fn_802C70AC((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], self+0x4A0, handle, mask);
+                    DrawPart((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], self+0x4A0, partKey, mask);
                 }
             }
         }
-        fn_801ED46C(self);
+        DrawLeftOver(self);
     }
+    #undef Model
+    #undef ModelDrawMin
+    #undef MirrorScale
+    #undef ZeroEps
+    #undef SkipRestOfParts
+    #undef PartKeyParam
+    #undef SetDrawScale
+    #undef ResetPartKeys
+    #undef NewPartKey
+    #undef DrawPart
+    #undef DrawLeftOver
 }
 #pragma pop
 
