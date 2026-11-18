@@ -7805,43 +7805,56 @@ extern "C" s32 fn_800B0A60(void *file, s32 dst, u32 length, u32 *bytesReadOut) {
     return 0;
 }
 
-extern "C" s32 fn_800B0C10(VFiPFCursor *cur, s32 arg1, u32 arg2, u32 *arg3) {
-    extern s32 fn_800AE620(void *, u32, s32, void *);
-    extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32);
+extern "C" s32 fn_800B0C10(VFiPFCursor *cur, s32 dest, u32 length, u32 *readOut) {
+    /* Read the tail of a file read - the run that is left over once whole
+     * sectors no longer fit (fn_800B0DEC calls fn_800B0868 for the partial
+     * sector the cursor starts inside, then fn_800B0A60 for the whole sectors
+     * in between, and this for what remains).  An empty run, or one with no
+     * byte of the file left to read, answers 0 without touching the disk.
+     * Where the FAT has not yet said which disk sector the cursor's file
+     * sector lives in, that lookup is done first; a file that ends there
+     * answers 0x1c, one that ends inside the run 0x1b, both with the cursor
+     * left on the file's end.  The bytes come out of the volume's page cache,
+     * the cursor is advanced over them and their number is written to readOut;
+     * 0 is returned when the whole run was read, the cache's status
+     * otherwise. */
+    extern s32 fn_800AE620(void *, u32, s32, void *);      /* FAT: disk sector of a file sector */
+    extern s32 fn_800B5324(s32, s32, u16, u32, s32 *, s32); /* volume data read through the page cache */
     extern s32 VFiPFFILE_Cursor_AdvanceToRead(void *, s32, s32);
-    s32 sp8, result, sector;
-    VFiPFVol *fat;
-    *arg3 = 0;
-    if (cur == 0) sector = 0;
-    else sector = (s32)cur->file->vol;
-    if (arg2 == 0) return 0;
-    if (cur->pos + arg2 > cur->file->size) {
-        arg2 = cur->file->size - cur->pos;
-        if (arg2 == 0) return 0;
+    VFiPFVol *vol, *volForPos;
+    s32 result;
+    s32 bytesRead;
+    *readOut = 0;
+    if (cur == 0) vol = 0;
+    else vol = cur->file->vol;
+    if (length == 0) return 0;
+    if (cur->pos + length > cur->file->size) {
+        length = cur->file->size - cur->pos;
+        if (length == 0) return 0;
     }
     if (cur->cluster == 0xFFFFFFFF) {
         result = fn_800AE620(cur->file->fat, cur->sector, 0, &cur->cluster);
         if (result != 0) return result;
         if (cur->cluster == 0xFFFFFFFF) {
             cur->pos = cur->file->size;
-            fat = cur == 0 ? 0 : cur->file->vol;
-            cur->sector = cur->pos >> fat->shift;
-            cur->off = cur->pos & (fat->sectorSize - 1);
+            volForPos = cur == 0 ? 0 : cur->file->vol;
+            cur->sector = cur->pos >> volForPos->shift;
+            cur->off = cur->pos & (volForPos->sectorSize - 1);
             return 0x1c;
         }
-        if (cur->pos + arg2 > cur->file->size) {
+        if (cur->pos + length > cur->file->size) {
             cur->pos = cur->file->size;
-            fat = cur == 0 ? 0 : cur->file->vol;
-            cur->sector = cur->pos >> fat->shift;
-            cur->off = cur->pos & (fat->sectorSize - 1);
+            volForPos = cur == 0 ? 0 : cur->file->vol;
+            cur->sector = cur->pos >> volForPos->shift;
+            cur->off = cur->pos & (volForPos->sectorSize - 1);
             return 0x1b;
         }
     }
-    result = ((s32 (*)(void *, s32, u32, u16, u32, s32 *, s32))fn_800B5324)((void *)sector, arg1, cur->cluster, cur->off, arg2, &sp8, 1);
-    if (result != 0 && sp8 == 0) return result;
-    *arg3 = sp8;
-    VFiPFFILE_Cursor_AdvanceToRead(cur, sp8, cur->cluster);
-    if ((u32)sp8 != arg2) return result;
+    result = ((s32 (*)(void *, s32, u32, u16, u32, s32 *, s32))fn_800B5324)(vol, dest, cur->cluster, cur->off, length, &bytesRead, 1);
+    if (result != 0 && bytesRead == 0) return result;
+    *readOut = bytesRead;
+    VFiPFFILE_Cursor_AdvanceToRead(cur, bytesRead, cur->cluster);
+    if ((u32)bytesRead != length) return result;
     return 0;
 }
 
@@ -10610,8 +10623,7 @@ extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u
 extern "C" s32 fn_800A5530(void *);
 extern "C" s32 fn_800AED1C(void *);
 extern "C" s32 fn_800A5800(void *, s32);
-#pragma push
-#pragma opt_propagation off
+#pragma opt_strength_reduction off
 extern "C" s32 fn_800B5988(void *arg0) {
     s32 sp8;
     s32 r;
@@ -10659,13 +10671,11 @@ extern "C" s32 fn_800B5988(void *arg0) {
                 *(s32 *)((u8 *)arg0 + 0x18A0) = sp8;
             }
             slot = (u8 *)arg0 + 0x165C;
-            i = 0;
-            do {
+            for (i = 0; i < 4; i++, slot += 0x248) {
                 r = fn_800AAEFC((s32)arg0, slot);
-                if (r != 0) goto done;
-                i++;
-                slot += 0x248;
-            } while (i < 4);
+                if (r == 0) continue;
+                goto done;
+            }
             r = 0;
         }
     }
@@ -10680,7 +10690,7 @@ done:
     if (r != 0) *(u16 *)((u8 *)arg0 + 0x1F8C) &= ~8;
     return r;
 }
-#pragma pop
+#pragma opt_strength_reduction reset
 
 extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
     s32 enabled = arg0 & 0x10000;
