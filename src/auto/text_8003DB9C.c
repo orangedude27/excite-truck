@@ -992,11 +992,11 @@ extern void OSReport(void *, ...);
 extern char lbl_803036E0[];
 extern char lbl_803036F8[];
 int CPGPLinkCheck(void) {
+    int error = 0;
     unsigned int first;
     unsigned int second;
     int diff1;
     int diff2;
-    unsigned int error = 0;
 
     if (lbl_8055D948 == 0 || (unsigned char)lbl_8055D949 == 0) {
         return 0;
@@ -1011,7 +1011,7 @@ int CPGPLinkCheck(void) {
     if (first == second) {
         error++;
     }
-    if (error == 2) {
+    if ((unsigned int)error == 2) {
         return 1;
     }
     diff1 = (int)*(unsigned int *)(lbl_8037C0E4 + 4) -
@@ -3363,7 +3363,6 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 
 #pragma scheduling on
 void GXSetDispCopyDst(s32 value) {
-    u32 reg;
     union {
         u32 reg;
         struct {
@@ -3372,11 +3371,12 @@ void GXSetDispCopyDst(s32 value) {
             u32 arg : 10;
         } fields;
     } data = {0};
+    register u32 reg;
 
     data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
     reg = data.reg;
-    __GXData[0x238 / 4] = reg;
+    *(u32 *)((char *)__GXData + 0x238) = reg;
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
@@ -3743,7 +3743,8 @@ typedef struct {
 
 void GXCopyDisp(unsigned int source, int clear) {
     volatile unsigned int *gx;
-    volatile unsigned int *reg;
+    volatile unsigned int *gx2;
+    register volatile unsigned int *reg;
     unsigned int value;
     unsigned int zmode;
     unsigned int sourceValue;
@@ -3762,11 +3763,13 @@ void GXCopyDisp(unsigned int source, int clear) {
 
     changed = 0;
     if (clear == 0) {
-        gx = (volatile unsigned int *)*(unsigned int * volatile *)(void *)&__GXData;
+        gx = (volatile unsigned int *)*(volatile unsigned int * volatile *)(void *)&__GXData;
+        gx2 = gx;
         value = gx[0x22C / 4];
         reg = (volatile unsigned int *)((volatile unsigned char *)gx + 0x22C);
         if ((value & 7) == 3) {
-            gx = (volatile unsigned int *)*(unsigned int * volatile *)(void *)&__GXData;
+            gx = (volatile unsigned int *)*(volatile unsigned int * volatile *)(void *)&__GXData;
+            gx2 = gx;
             value = gx[0x22C / 4];
             reg = (volatile unsigned int *)((volatile unsigned char *)gx + 0x22C);
             if (((value >> 6) & 1) == 1) {
@@ -3810,7 +3813,7 @@ void GXCopyDisp(unsigned int source, int clear) {
         GXCopyWGFifo.u8 = 0x61;
         GXCopyWGFifo.u32 = *reg;
     }
-    *(volatile unsigned short *)((volatile unsigned char *)__GXData + 2) = 0;
+    *(volatile unsigned short *)((volatile unsigned char *)gx2 + 2) = 0;
 }
 
 /* The GX data block (__GXData) holds every BP register GX has set so that it can
@@ -5266,11 +5269,8 @@ void GXSetTevAlphaIn(s32 stage, s32 aSel, s32 bSel, s32 cSel, s32 dSel) {
 }
 
 void GXSetTevColorOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    unsigned int *base = __GXData;
-    unsigned int *data;
     unsigned int v;
-    data = (unsigned int *)((unsigned char *)base + arg0 * 4);
-    v = data[0x180 / 4];
+    v = __GXData[arg0 + 0x180 / 4];
     v = __rlwimi(v, arg1, 18, 13, 13);
     if (arg1 <= 1) {
         v = __rlwimi(v, arg3, 20, 10, 11);
@@ -5283,8 +5283,8 @@ void GXSetTevColorOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5)
     v = __rlwimi(v, arg4, 19, 12, 12);
     v = __rlwimi(v, arg5, 22, 8, 9);
     *(volatile unsigned int *)0xCC008000 = v;
-    data[0x180 / 4] = v;
-    *(volatile unsigned short *)((unsigned char *)base + 2) = 0;
+    __GXData[arg0 + 0x180 / 4] = v;
+    *(volatile unsigned short *)((unsigned char *)__GXData + 2) = 0;
 }
 
 void GXSetTevAlphaOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
@@ -5435,29 +5435,36 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
             unsigned int rasSel : 2;
         } fields;
     } word;
-    int offset0;
-    int index2;
-    int offset1;
+    volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
+    u32 cmd = 0x61;
+    u32 offset0;
+    u32 index2;
+    u32 offset1;
     unsigned int *table;
     unsigned int *data;
-    offset0 = index << 3;
-    index2 = index << 1;
+
+    offset0 = (u32)index << 3;
+    index2 = (u32)index << 1;
     offset1 = index2 + 1;
     data = __GXData;
     table = (unsigned int *)((char *)data + 0x200);
+
     word.value = *(u32 *)((char *)table + offset0);
     word.fields.rasSel = rasSel;
     word.fields.texSel = texSel;
     *(u32 *)((char *)table + offset0) = word.value;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset0);
+
+    *(volatile unsigned char *)fifo = cmd;
+    *(volatile unsigned int *)fifo = *(u32 *)((char *)table + offset0);
+
     offset1 <<= 2;
     word.value = *(u32 *)((char *)table + offset1);
     word.fields.rasSel = rasSel2;
     word.fields.texSel = texSel2;
     *(u32 *)((char *)table + offset1) = word.value;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset1);
+
+    *(volatile unsigned char *)fifo = cmd;
+    *(volatile unsigned int *)fifo = *(u32 *)((char *)table + offset1);
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
