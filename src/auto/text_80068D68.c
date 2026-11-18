@@ -4427,14 +4427,13 @@ void uusb_CloseDeviceCB(s8 arg0) {
 
 void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
     extern char lbl_803BD240[];
-    register char *report = lbl_803142C8;
+    char *report = lbl_803142C8;
     BT_HDR *copy;
-    u32 size;
-    s32 i;
+    s32 size, i;
     u32 zero;
     uusb_cb_t *control;
     u8 *p;
-    if (lbl_803BD1E0.at_0x28) OSReport(report + 0);
+    if (lbl_803BD1E0.at_0x28) OSReport(report);
     zero = ((u8 *)&lbl_803BD1E0)[0x2B] = 0;
     if (lbl_803BD1E0.state != 2) {
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x28);
@@ -8165,6 +8164,8 @@ void btm_read_remote_version_complete(u8 *p) {
     }
 }
 
+#pragma push
+#pragma dont_inline off
 void btm_read_remote_features_complete(UINT8 *p) {
     extern u8 lbl_80315CE0[];
     u8 *acl = lbl_803C0F78 + 0x34;
@@ -8172,9 +8173,9 @@ void btm_read_remote_features_complete(UINT8 *p) {
     u16 temp;
     s32 i;
     u8 *dev;
-    u32 j;
     u8 *q;
     u16 policy;
+
     if (p[0] == 0) {
         handle = p[1] + (p[2] << 8);
         for (i = 0; i < 4; i++, acl += 0x11C) {
@@ -8195,17 +8196,8 @@ void btm_read_remote_features_complete(UINT8 *p) {
                 if (lbl_803C0F78[0x27C0] >= 4) fn_80070954(0xD0003, lbl_80315CE0, temp);
                 if (btsnd_hcic_change_conn_type(*(u16 *)acl, temp)) *(u16 *)(acl + 2) = temp;
                 if (*(u16 *)(lbl_803C0F78 + 0x4C4)) BTM_SetLinkPolicy(acl + 8, (u16 *)(lbl_803C0F78 + 0x4C4));
-                j = 0;
                 policy = *(u16 *)(lbl_803C0F78 + 0x4C6);
-                q = lbl_803C0F78 + 0x34;
-                for (; j < 4; j++, q += 0x11C) {
-                    if (!q[0x119]) goto cont;
-                    if (memcmp(q + 8, acl + 8, 6) != 0) goto cont;
-                    goto found;
-                cont:;
-                }
-                q = 0;
-found:
+                q = btm_bda_to_acl_inl(acl + 8);
                 if (q) {
                     *(u16 *)(q + 0x10E) = policy;
                     if (!q[0x11A]) btsnd_hcic_write_policy_set_80085668(*(u16 *)q, policy);
@@ -8218,7 +8210,7 @@ found:
         }
     }
 }
-
+#pragma pop
 /* Set btm_cb's secondary default link-policy value at +0x4C6, applied to newly established ACL links. */
 void fn_80077C94(s16 linkPolicy) {
     *(s16 *)(lbl_803C0F78 + 0x4C6) = linkPolicy;
@@ -17404,37 +17396,38 @@ u8 HID_HostOpenDev(u32 arg0) {
     return hidh_conn_initiate(arg0);
 }
 
-u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param, u16 data, u8 report_id, BT_HDR *pbuf) {
-    struct Msgs { char m0; char _01[23]; char m1; char _19[23]; char m2; };
-    struct Msgs *messages = (struct Msgs *)lbl_80317720;
+#pragma push
+#pragma optimization_level 3
+u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param,
+                         u16 data, u8 report_id, BT_HDR *pbuf) {
+    char *messages = lbl_80317720;
     u8 status = 0;
+
     if (lbl_803C3C38[0x400] == 0) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, &messages->m0);
+            fn_8007093C(0x1E0000, messages + 0);
         status = 1;
     }
     if ((dev_handle > 0x10) ||
         (*((u8 *)lbl_803C3C38 + dev_handle * 0x34) == 0)) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, &messages->m1);
+            fn_8007093C(0x1E0000, messages + 0x18);
         status = 5;
     }
     if (*((u8 *)lbl_803C3C38 + dev_handle * 0x34 + 0xA) != 1) {
         if (lbl_803C3C38[0x401] >= 1)
-            fn_80070954(0x1E0000, &messages->m2, dev_handle);
+            fn_80070954(0x1E0000, messages + 0x30, dev_handle);
         status = 4;
     }
     if (status != 0) {
-        if (pbuf != 0)
+        if (pbuf != NULL)
             GKI_freebuf(pbuf);
     } else {
         status = hidh_conn_snd_data(dev_handle, t_type, param, data, report_id, pbuf);
     }
     return status;
 }
-
-#pragma push
-#pragma opt_lifetimes off
+#pragma pop
 u8 HID_HostCloseDev(u8 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
     tHID_HOST_DEV_VIEW *device;
@@ -18365,7 +18358,7 @@ UINT16 L2CA_Register(UINT16 psm, tL2CAP_APPL_INFO *info) {
     struct Callback10 { u32 f[10]; };
     u8 *messages = lbl_80317C20;
     void *entry;
-    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, messages + 0, psm);
+    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, lbl_80317C20 + 0, psm);
     if (*(u32 *)((u8 *)info + 0x10) == 0 ||
         *(u32 *)((u8 *)info + 0xC) == 0 ||
         *(u32 *)((u8 *)info + 0x20) == 0 ||
