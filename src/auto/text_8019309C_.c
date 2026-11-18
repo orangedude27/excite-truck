@@ -638,10 +638,6 @@ static inline int fn_801941A8_signbit(float x) { /* MSL __signbitf() */
 }
 #pragma scheduling invalid_target
 void fn_801941A8(void *arg0, float arg1) {
-    union FloatWord {
-        float f;
-        u32 u;
-    } otherBits, newBits;
     float *posField = (float *)((char *)arg0 + 0x23C);
     float *velField = (float *)((char *)arg0 + 0x248);
     float velocity;
@@ -659,9 +655,7 @@ void fn_801941A8(void *arg0, float arg1) {
     posField[0] = pos;
     if (velocity < 2.0f) {
         void *obj = *(void **)((char *)arg0 + 0x294);
-        newBits.f = pos;
-        otherBits.f = *(float *)((char *)obj + 0x25F0);
-        if (!((int)(newBits.u & 0x80000000) == (int)(otherBits.u & 0x80000000))) {
+        if (fn_801941A8_signbit(*(float *)((char *)obj + 0x25F0)) != fn_801941A8_signbit(pos)) {
             velField[0] += 0.1f;
         }
     }
