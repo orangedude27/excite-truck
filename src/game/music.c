@@ -154,7 +154,7 @@ void fn_80209FFC(void) {
 #pragma push
 #pragma processor 750
 #pragma opt_propagation off
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8020A100(void) {
     char buf[0x40];
     s32 *slot;
@@ -227,7 +227,6 @@ void fn_8020A100(void) {
         } while (i < 2);
     }
 }
-#pragma opt_propagation reset
 #pragma pop
 void fn_8020A368(void) {
     /* Initialize two music buffer slots, reset music volume state, register the music manager, and set the music update callback. */
@@ -318,8 +317,7 @@ extern const char lbl_8033C288[];
 /* Music event 3 exports the local volume, 1/2 import it, and 0 applies default. */
 #pragma cplusplus on
 extern "C" void fn_8020A03C(s32 object, s32 event) {
-    f32 volume;
-    volume = *(f32 *)&lbl_80563290;
+    f32 volume = 0.7f;
     switch (event) {
     case 3:
         fn_801331C4(object + 0xC, (void *)lbl_8033C288, &volume);
