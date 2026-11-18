@@ -493,81 +493,111 @@ extern f32 lbl_805603B0;
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_800148A0(void *arg0) {
-    struct Info {
+    /* Build the lap-info line of the race HUD (the HUD_LAPINFO block): which
+     * title to show, the two labels beside it and the two times to fill in.
+     *
+     * Outside qualifying the title names the lap readout and, once a best lap
+     * exists, the first slot becomes "Best:" with that time.  A last lap is
+     * shown whenever there is one -- in qualifying only once the race has more
+     * than one lap to run.  The kind-3 block (info->kind) instead reads
+     * "LAP  INFO" / "QUALIFY  TIME:" while qualifying, and a finished readout
+     * ("LAST  LAP", shown without its values) replaces the title once every
+     * racer is through.  fn_80013EDC() then redraws the line on this overlay. */
+    struct LapInfo {
         u8 pad0[0x10];
-        s32 unk10;
-        f32 unk14;
-        f32 unk18;
-        f32 unk1C;
+        s32 lap;      /* 0x10: lap the readout was last built for */
+        f32 current;  /* 0x14: time of the lap still running */
+        f32 best;     /* 0x18: best lap so far */
+        f32 last;     /* 0x1C: the lap just completed */
         u8 pad20[4];
-        s32 unk24;
+        s32 kind;     /* 0x24: 3 in the "LAP  INFO" sessions */
     };
-    struct Other {
-        s32 unk0;
+    struct LapRules {
+        s32 lapsDone; /* 0x00 */
         s32 unk4;
-        s32 unk8;
+        s32 lapCount; /* 0x08: laps to run */
     };
-    struct Root {
+    struct HudState {
         s32 unk0;
-        s32 mode;
+        s32 mode;         /* 1 while qualifying */
         s32 unk8;
-        struct Other *other;
+        struct LapRules *rules; /* 0x0C */
         u8 pad10[0x20];
-        struct Info *info;
+        struct LapInfo *info;   /* 0x30 */
     };
+#define kTitleNormal   ((char *)base + 0x194) /* title outside qualifying, kind != 3 */
+#define kTitleKind3    ((char *)base + 0x1A0) /* title outside qualifying, kind == 3 */
+#define kTitleLapInfo  ((char *)base + 0x1AC) /* "LAP  INFO" */
+#define kQualifyTime   ((char *)base + 0x1B8) /* "QUALIFY  TIME:" */
+#define kLastLap       ((char *)base + 0x1C8) /* "LAST  LAP" */
+#define kTimedLap      ((char *)base + 0x1D4) /* "TIMED  LAP:" */
+#define kBestLabel     ((char *)&lbl_80558B88) /* "Best:" */
+#define kLastLabel     ((char *)&lbl_80558B90) /* "LAST:" */
+#define kQualifyLabel  ((char *)&lbl_80558B98) /* "QUALIFY" */
+
     char name[0x40];
     char first[0x40];
     char second[0x40];
     f32 value1;
     f32 value2;
     u8 *base;
-    s32 mode;
-    u8 *ap = (u8 *)arg0;
+    s32 displayMode;
+    u8 *overlay = (u8 *)arg0;
     value1 = 0.0f;
     value2 = value1;
     base = lbl_802FCB98;
-    mode = 1;
+    displayMode = 1;
     first[0] = 0;
     second[0] = 0;
-    if (((struct Root *)lbl_8055D350)->mode != 1) {
-        strcpy(name, (char *)base + 0x194);
-        if (((struct Root *)lbl_8055D350)->info->unk18 > 0.1f) {
-            strcpy(first, (char *)&lbl_80558B88);
-            value1 = ((struct Root *)lbl_8055D350)->info->unk18;
+    if (((struct HudState *)lbl_8055D350)->mode != 1) {
+        strcpy(name, kTitleNormal);
+        if (((struct HudState *)lbl_8055D350)->info->best > 0.1f) {
+            strcpy(first, kBestLabel);
+            value1 = ((struct HudState *)lbl_8055D350)->info->best;
         }
     }
-    if (((struct Root *)lbl_8055D350)->info->unk1C > 0.1f &&
-        (((struct Root *)lbl_8055D350)->mode != 1 ||
-         ((struct Root *)lbl_8055D350)->other->unk8 > 1)) {
-        strcpy(second, (char *)&lbl_80558B90);
-        value2 = ((struct Root *)lbl_8055D350)->info->unk1C;
+    if (((struct HudState *)lbl_8055D350)->info->last > 0.1f &&
+        (((struct HudState *)lbl_8055D350)->mode != 1 ||
+         ((struct HudState *)lbl_8055D350)->rules->lapCount > 1)) {
+        strcpy(second, kLastLabel);
+        value2 = ((struct HudState *)lbl_8055D350)->info->last;
     }
-    if (((struct Root *)lbl_8055D350)->info->unk24 == 3) {
-        if (((struct Root *)lbl_8055D350)->mode != 1) {
-            strcpy(name, (char *)base + 0x1A0);
+    if (((struct HudState *)lbl_8055D350)->info->kind == 3) {
+        if (((struct HudState *)lbl_8055D350)->mode != 1) {
+            strcpy(name, kTitleKind3);
         } else {
-            strcpy(name, (char *)base + 0x1AC);
-            strcpy(first, (char *)base + 0x1B8);
-            value1 = ((struct Root *)lbl_8055D350)->info->unk18;
+            strcpy(name, kTitleLapInfo);
+            strcpy(first, kQualifyTime);
+            value1 = ((struct HudState *)lbl_8055D350)->info->best;
         }
-    } else if (((struct Root *)lbl_8055D350)->mode == 1) {
-        strcpy(name, (char *)&lbl_80558B98);
+    } else if (((struct HudState *)lbl_8055D350)->mode == 1) {
+        strcpy(name, kQualifyLabel);
     } else {
-        if (((struct Root *)lbl_8055D350)->info->unk10 == ((struct Root *)lbl_8055D350)->other->unk8 ||
-            ((struct Root *)lbl_8055D350)->other->unk0 >= ((struct Root *)lbl_8055D350)->other->unk8) {
-            strcpy(name, (char *)base + 0x1C8);
-            mode = 0;
+        if (((struct HudState *)lbl_8055D350)->info->lap == ((struct HudState *)lbl_8055D350)->rules->lapCount ||
+            ((struct HudState *)lbl_8055D350)->rules->lapsDone >= ((struct HudState *)lbl_8055D350)->rules->lapCount) {
+            strcpy(name, kLastLap);
+            displayMode = 0;
         }
     }
     if (((s32 (*)(void *))fn_80014ADC)(arg0) != 0) {
-        if (((struct Root *)lbl_8055D350)->info->unk24 == 3)
-            value1 = ((struct Root *)lbl_8055D350)->info->unk1C;
+        if (((struct HudState *)lbl_8055D350)->info->kind == 3)
+            value1 = ((struct HudState *)lbl_8055D350)->info->last;
         else
-            value1 = ((struct Root *)lbl_8055D350)->info->unk14;
-        strcpy(first, (char *)base + 0x1D4);
+            value1 = ((struct HudState *)lbl_8055D350)->info->current;
+        strcpy(first, kTimedLap);
     }
     ((void (*)(void *, void *, s32, void *, void *, f32, f32, f32))fn_80013EDC)(
-        arg0, name, mode, first, second, *(f32 *)(ap + 0x2C), value1, value2);
+        arg0, name, displayMode, first, second, *(f32 *)(overlay + 0x2C), value1, value2);
+
+#undef kTitleNormal
+#undef kTitleKind3
+#undef kTitleLapInfo
+#undef kQualifyTime
+#undef kLastLap
+#undef kTimedLap
+#undef kBestLabel
+#undef kLastLabel
+#undef kQualifyLabel
 }
 void fn_80014A98(void *obj) {
     /* Build a "TIMED LAP" display entry using the current lap/sector value. */
