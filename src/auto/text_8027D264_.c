@@ -302,13 +302,16 @@ extern "C" void fn_8027D77C(void *__restrict arg0) {
 }
 #pragma scheduling invalid_target
 extern "C" void fn_8027D7B8(void *arg0) {
-    fn_80007F90(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
+    int v = ((int *)arg0)[3];
+    void *r = fn_8001285C(v);
+    fn_80007F90(*(int *)((char *)r + 2 * sizeof(int)));
 }
 
 #pragma push
 #pragma processor 750
 extern "C" void fn_8027D7E4(int *arg0) {
-    fn_80007FF0(*(int *)((char *)fn_8001285C(arg0[3]) + 8));
+    register int *p = arg0;
+    fn_80007FF0(*(int *)((char *)fn_8001285C(p[3]) + 8));
 }
 #pragma pop
 extern "C" void fn_8027D810(void *__restrict arg0) {
