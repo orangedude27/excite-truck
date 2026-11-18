@@ -1118,9 +1118,10 @@ extern float lbl_805645E4, lbl_805645E8, lbl_805645EC, lbl_805645F0, lbl_805645F
 void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     Fn80299A88Frame frame;
     float *q;
-    float *m;
     float *init = (float *)((char *)&frame - 8);
     int count;
+    char *cursor;
+    int n;
     (void)arg0;
     fn_8028E61C(&init[0x68/4]);
     *(int *)&init[0x6c/4] = 0xA0; init[0x70/4] = lbl_80564590; init[0x74/4] = lbl_80564590;
@@ -1150,23 +1151,25 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     u32 *w = (u32 *)p;
     u32 w8,w7,w6,w5,w4,w3,w2,w1,w0;
     w0=w[0];w1=w[1];w2=w[2];w3=w[3];w4=w[4];w5=w[5];w6=w[6];w7=w[7];w8=w[8];
+    n = 0;
     q[0]=c; q[1]=s; q[2]=zero; q[3]=neg; q[4]=c;
     q[5]=zero; q[6]=zero; q[7]=zero; q[8]=one;
     u32 *d=(u32 *)frame.matrix.v; d[0]=w0;d[1]=w1;d[2]=w2;d[3]=w3;d[4]=w4;d[5]=w5;d[6]=w6;d[7]=w7;d[8]=w8;
-    m = frame.matrix.v;
     if (count > 0) {
-    char *cursor=(char*)out;
-    for (int n=0; n<count; cursor+=0xc, n++) {
-       float b=p[10], a=p[9], c=p[11];
-       float product=m[3]*scale;
-       a += product;
-       *(float *)(cursor+4)=a;
-       b += m[4]*scale;
-       *(float *)(cursor+8)=b;
-       c += m[5]*scale;
-       *(float *)(cursor+0xc)=c;
-       MatrixMul801FD5E8(m, m, q);
-    }
+        cursor=(char*)out;
+        for (; n<count; cursor+=0xc, n++) {
+            float product, b=p[10], a=p[9], c=p[11];
+            product = frame.matrix.v[3]*scale;
+            a += product;
+            *(float *)(cursor+4)=a;
+            a = frame.matrix.v[4]*scale;
+            b += a;
+            *(float *)(cursor+8)=b;
+            b = frame.matrix.v[5]*scale;
+            c += b;
+            *(float *)(cursor+0xc)=c;
+            MatrixMul801FD5E8(frame.matrix.v, frame.matrix.v, q);
+        }
     }
     float endzero=lbl_8056459C;
     *(int*)((char*)out+0x94)=count;
@@ -1184,7 +1187,7 @@ extern "C" void fn_80288A58(void *, float *);
 extern float lbl_80564600;
 #pragma scheduling on
 extern "C" void fn_80299FE0(void *unused, void *arg1, float unusedTime) {
-    float upper = lbl_80564590;
+    float upper = 1.0f;
     float time = *(float *)((char *)arg1 + 0x98);
     if (time > upper - lbl_80558DC4) {
         register void *obj = arg1;
@@ -1319,18 +1322,16 @@ done:
 #pragma pop
 extern float lbl_805645C8;
 extern float lbl_805645E8;
-extern "C" void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float z) {
+#pragma cplusplus off
+void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float z) {
     if ((unsigned char *)b == (unsigned char *)a + 0x30) {
         float ax, ay, az;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-        m10 = a[3];
-        ay = a[13];
+        m10 = a[3]; ay = a[13];
         m11 = a[4]; m12 = a[5];
-        m00 = a[0];
-        ax = a[12];
+        m00 = a[0]; ax = a[12];
         m01 = a[1]; m02 = a[2];
-        m20 = a[6];
-        az = a[14];
+        m20 = a[6]; az = a[14];
         m21 = a[7]; m22 = a[8];
         b[0] = az * m20 + (ax * m00 + ay * m10);
         b[1] = az * m21 + (ax * m01 + ay * m11);
@@ -1344,19 +1345,21 @@ extern "C" void fn_8029A318(float *a, float *b, float *c, float *d, float x, flo
         m12 = a[5]; m02 = a[2]; m22 = a[8];
         b[2] = a[14] * m22 + (a[12] * m02 + a[13] * m12);
     }
-    float dScale = lbl_805645E8;
-    float cScale = lbl_805645C8;
-    b[0] += a[9];
-    b[1] += a[10];
-    b[2] += a[11];
-    c[0] = a[0] * cScale;
-    c[1] = a[1] * cScale;
-    c[2] = a[2] * cScale;
-    d[0] = a[6] * dScale;
-    d[1] = a[7] * dScale;
-    d[2] = a[8] * dScale;
+    {
+        float cScale = 0.4f;
+        float dScale = 0.75f;
+        b[0] += a[9];
+        b[1] += a[10];
+        b[2] += a[11];
+        c[0] = a[0] * cScale;
+        c[1] = a[1] * cScale;
+        c[2] = a[2] * cScale;
+        d[0] = a[6] * dScale;
+        d[1] = a[7] * dScale;
+        d[2] = a[8] * dScale;
+    }
 }
-
+#pragma cplusplus reset
 extern "C" int fn_801EE0C8(int);
 extern "C" void fn_802C77F0(int, float *);
 extern "C" int lbl_80488648[];
@@ -2294,7 +2297,7 @@ extern "C" void fn_8029BA94(void *__restrict arg0, void *__restrict arg1) {
     record = (char *)arg0 + index * 0x14;
     flag = *(u32 *)(record + 4) & 0xF;
     switch (flag) {
-    case 1:
+    case 1U:
         info = fn_80288208(index);
         index = ((const Args *)arg1)->index;
         value = ((const Args *)arg1)->value;
@@ -2311,12 +2314,9 @@ extern "C" void fn_8029BA94(void *__restrict arg0, void *__restrict arg1) {
         } else {
             *(int *)(record + 4) = 0x12;
             *(float *)(record + 8) = ((const Args *)arg1)->rate;
-            float result = fn_80287BC8(lbl_805645C4, lbl_805645C0);
-            int zero = 0;
-            int remainderSource = ((const Args *)arg1)->value;
-            *(float *)(record + 0xC) = result;
-            value = remainderSource % size;
-            *(int *)(record + 0x10) = zero;
+            *(float *)(record + 0xC) = fn_80287BC8(lbl_805645C4, lbl_805645C0);
+            *(int *)(record + 0x10) = 0;
+            value = ((const Args *)arg1)->value % size;
             *(int *)(record + 0x14) = (int)fn_80288060(info, value);
         }
         break;
@@ -2340,7 +2340,7 @@ extern "C" void fn_8029BBD4(void *arg0, void *arg1, int arg2) {
         *(int *)(record + 4) = 1;
         goto done;
     }
-    if ((state & 0xFU) != 2) goto done;
+    if ((state & 0xF) != 2) goto done;
     float deltaTime = fn_801E7E24();
     float threshold = lbl_8056459C;
     float currentTime = *(float *)(record + 0xC);
@@ -2352,7 +2352,7 @@ extern "C" void fn_8029BBD4(void *arg0, void *arg1, int arg2) {
         *(int *)(record + 0x14) = 0;
         goto done;
     }
-    if ((*(unsigned int *)(record + 4) & 0x10U) != 0) goto done;
+    if ((*(unsigned int *)(record + 4) & 0x10) != 0) goto done;
     if (fn_80287B5C(0x28) != 0) goto done;
     void *info = fn_80288208(index);
     volatile int *table = (volatile int *)lbl_802FA9F0;
@@ -2435,12 +2435,13 @@ extern "C" int fn_8029C024(int*);
 extern "C" int fn_8029C054(int*);
 extern "C" void* fn_802974CC(char*);
 extern "C" void fn_8029BE54(void*, void*);
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_8029BE54(void* arg0, void* arg1) {
     register char* scan = (char*)arg0;
     register int count = *(int*)((char*)arg0 + 0xA4);
     register unsigned int key;
-    int i = 0;
+    register int i = 0;
     for (; i < count; ++i) {
         key = *(volatile unsigned int*)((char*)arg1 + 0xC);
         if (key == *(unsigned int*)(scan + 0x10)) {
@@ -2478,7 +2479,7 @@ void fn_8029BE54(void* arg0, void* arg1) {
     *(unsigned char*)(dst + 0x14) = d;
     *(int*)((char*)arg0 + 0xA4) = *(int*)((char*)arg0 + 0xA4) + 1;
 }
-#pragma scheduling invalid_target
+#pragma pop
 /* Build and create the "torch fire" effect (lbl_80349450), storing the result in out. */
 extern "C" void fn_8029BEF8(void *out) {
     unsigned char raw[0xA8];
