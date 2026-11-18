@@ -48,22 +48,23 @@ extern void fn_80128668(void *);
 #pragma scheduling invalid_target
 #pragma push
 #pragma cplusplus on
-void *fn_80209DE4(void *arg0, int arg1) {
-    char *q;
-    char *r;
+extern "C" void *fn_80209DE4(void *arg0, int arg1) {
+    struct V { virtual void c(int); };
+    void *q;
+    void *r;
     if (arg0 != 0) {
-        q = *(char **)((char *)arg0 + 8);
-        *(void **)arg0 = lbl_8033C258;
+        q = *(void **)((char *)arg0 + 8);
+        *(void **)arg0 = (void *)lbl_8033C258;
         if (q != 0) {
             if (q != 0) {
-                ((void (*)(void *, int))(*(void * volatile **)q)[2])(q, 1);
+                ((struct V *)q)->c(1);
             }
             *(void **)((char *)arg0 + 8) = 0;
         }
-        r = *(char **)((char *)arg0 + 0xC);
+        r = *(void **)((char *)arg0 + 0xC);
         if (r != 0) {
             if (r != 0) {
-                ((void (*)(void *, int))(*(void * volatile **)r)[2])(r, 1);
+                ((struct V *)r)->c(1);
             }
         }
         if (arg1 > 0) {
