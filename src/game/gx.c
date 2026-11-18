@@ -357,8 +357,7 @@ void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
     *(volatile int *)(state + 8) = arg1;
     *(volatile int *)(state + 0xC) = arg2;
     *(volatile int *)(state + 0x10) = arg3;
-    state[0] = 1;
-    state[1] = 1;
+    state[1] = state[0] = 1;
 }
 
 extern void KPADSetBtnRepeat(int *, int *, int *, int *);
@@ -591,7 +590,6 @@ void fn_802CF5FC(void) {
 }
 
 #pragma push
-#pragma opt_lifetimes off
 #pragma dont_inline on
 void fn_802CF600(void) {
     extern char lbl_8034BD18[], lbl_8055D104;
@@ -612,12 +610,11 @@ void fn_802CF600(void) {
     extern void GXGetLightDir(void (*)(unsigned int)), GXLoadLightObjIndx(void (*)(void));
     extern int VIConfigure(void *), VISetBlack(int), VIFlush(void);
     extern void fn_802E30C8(const char *, ...);
-    struct { char *p; } baseBox;
+    char *base = lbl_8034BD18;
     int zero = 0;
     int negative;
     void *buffer;
     int size;
-    baseBox.p = lbl_8034BD18;
     lbl_8055FD7C = 0;
     lbl_8055FD48 = 3;
     lbl_8055FD4C = 0;
@@ -635,24 +632,24 @@ void fn_802CF600(void) {
     fn_80127468();
     fn_801282EC(0x20);
     fn_801282F4();
-    lbl_8055FDA0 = (unsigned long)fn_8012850C((void *)0x177000, baseBox.p + 0x2A4);
+    lbl_8055FDA0 = (unsigned long)fn_8012850C((void *)0x177000, base + 0x2A4);
     lbl_8055FD94 = 0;
-    buffer = fn_8012850C((void *)0x26010, baseBox.p + 0x2B0);
+    buffer = fn_8012850C((void *)0x26010, base + 0x2B0);
     lbl_8055FDB0 = fn_8002F37C(buffer, fn_802CF830, 0, 0x4C, 0x800);
     lbl_8055FDAC = 0;
     fn_802D8D1C();
     fn_80127468();
-    lbl_8055FD68 = fn_8012850C((void *)0x300000, baseBox.p + 0x2BC);
+    lbl_8055FD68 = fn_8012850C((void *)0x300000, base + 0x2BC);
     lbl_8055FD6C = GXInit((int)lbl_8055FD68, 0x300000);
     fn_802D6810();
     fn_802CF850();
     fn_80127468();
-    fn_802E30C8(baseBox.p + 0x2C8);
+    fn_802E30C8(base + 0x2C8);
     fn_802D0BD8();
-    fn_802E30C8(baseBox.p + 0x2E0);
+    fn_802E30C8(base + 0x2E0);
     fn_80127468();
     fn_802CFF10();
-    fn_802E30C8(baseBox.p + 0x2FC);
+    fn_802E30C8(base + 0x2FC);
     fn_80127468();
     fn_802CF5A8();
     fn_802DACD4();
@@ -666,7 +663,7 @@ void fn_802CF600(void) {
     lbl_8055FD20 = (void *)negative;
     size = GXGetTexBufferSize(0x280, 0x1C0, 1, 0, 0);
     fn_801282EC(0x20);
-    buffer = fn_8012850C((void *)size, baseBox.p + 0x30C);
+    buffer = fn_8012850C((void *)size, base + 0x30C);
 #pragma small_data off
     lbl_804C9940 = (unsigned long)buffer;
     GXInitTexObj(&lbl_804C9940 + 1, buffer, 0x280, 0x1C0, 1, 0, 0, 0);
@@ -1429,6 +1426,7 @@ void fn_802D0610(int arg0) {
 
 #pragma push
 #pragma optimize_for_size on
+#pragma scheduling invalid_target
 void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
     extern int lbl_8055D0BC;
@@ -1675,6 +1673,7 @@ void fn_802D0C98(void) {
     extern int lbl_804C9760[];
     unsigned short temp_r31;
     int temp_r30 = 0;
+    float yScale;
 
     lbl_8055FD4C = temp_r30;
     GXSetZMode(1, 3, 1);
@@ -1684,13 +1683,11 @@ void fn_802D0C98(void) {
     lbl_8055FD74 |= 1;
     GXSetZMode(1, 7, 1);
     lbl_8055FD74 = (lbl_8055FD74 | 2) & ~4U;
-    temp_r31 = (unsigned short)GXSetDispCopyYScale(
-        GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6),
-                          *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8)));
-    {
-        unsigned short *disp = (unsigned short *)lbl_8055FD64;
-        GXSetDispCopySrc(0, 0, disp[2], disp[3]);
-    }
+    yScale = GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6),
+                               *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8));
+    temp_r31 = (unsigned short)GXSetDispCopyYScale(yScale);
+    GXSetDispCopySrc(0, 0, *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4),
+                     *(unsigned short *)((unsigned char *)lbl_8055FD64 + 6));
     GXSetDispCopyDst(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), temp_r31);
     GXSetCopyFilter(*((unsigned char *)lbl_8055FD64 + 0x19),
                     (unsigned char *)lbl_8055FD64 + 0x1A, 1,
@@ -3032,8 +3029,10 @@ extern float lbl_80564FE0, lbl_80564FE4;
 #pragma push
 #pragma processor 750
 void fn_802D3420(void) {
+    register float zero = lbl_80564F88;
+    register float one = lbl_80564F8C;
     float ident[3][4], mtx[3][4], proj[4][4];
-    float width, height, zero = lbl_80564F88, one = lbl_80564F8C;
+    float width, height;
     volatile float *fifo = (volatile float *)0xCC008000;
     ident[0][1] = zero;
     ident[0][0] = one;
