@@ -1241,12 +1241,14 @@ struct SndArchiveInterface {
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
 extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *self, u32 file, void *buffer, int size) {
-    struct FileInfo { u32 a, b; const char *path; u32 d; } info;
-    struct FilePos { u32 group, item; } pos;
-    struct GroupInfo { u32 a; const char *path; u32 offset, size, e, f; } group;
-    struct ItemInfo { u32 a, offset, size, d, e, f; } item;
-    struct Archive { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void *f4(void *, int, u32, u32); virtual void *f5(void *, int, const char *, u32, u32); };
-    Archive *archive = (Archive *)self;
+#define strncat fn_80028E2C
+#define kWarningSourceFile lbl_803247E0
+#define kMsgTooLongFilePath lbl_80324828
+    SndArchiveFileInfo info;
+    SndArchiveFilePos pos;
+    SndArchiveGroupInfo group;
+    SndArchiveGroupItemInfo item;
+    SndArchiveInterface *archive = (SndArchiveInterface *)self;
     if (!ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8FileInfo(*(void **)((u8 *)self + 4), file, &info)) return 0;
     const char *path = info.path;
     const char *openPath;
@@ -1256,16 +1258,16 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
             openPath = path;
         } else {
             unsigned long pathLen = strlen(path);
-            unsigned long prefixLen = strlen((const char *)self + 8);
-            if (pathLen + prefixLen >= 0x100) {
-                Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
+            unsigned long rootLen = strlen((const char *)self + 8);
+            if (pathLen + rootLen >= 0x100) {
+                Warning__Q26nw4hbm2dbFPCciPCce(kWarningSourceFile, 0x155, kMsgTooLongFilePath, (const char *)self + 8, path);
                 return 0;
             }
-            strncpy(buf, (const char *)self + 8, prefixLen + 1);
-            fn_80028E2C(buf, path, pathLen + 1);
+            strncpy(buf, (const char *)self + 8, rootLen + 1);
+            strncat(buf, path, pathLen + 1);
             openPath = buf;
         }
-        return archive->f5(buffer, size, openPath, 0, 0);
+        return archive->openStreamPath(buffer, size, openPath, 0, 0);
     }
     if (!ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive7FilePos(*(void **)((u8 *)self + 4), file, 0, &pos)) return 0;
     if (!ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(*(void **)((u8 *)self + 4), pos.group, &group)) return 0;
@@ -1279,18 +1281,21 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
             openPath = path;
         } else {
             unsigned long pathLen = strlen(path);
-            unsigned long prefixLen = strlen((const char *)self + 8);
-            if (pathLen + prefixLen >= 0x100) {
-                Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
+            unsigned long rootLen = strlen((const char *)self + 8);
+            if (pathLen + rootLen >= 0x100) {
+                Warning__Q26nw4hbm2dbFPCciPCce(kWarningSourceFile, 0x155, kMsgTooLongFilePath, (const char *)self + 8, path);
                 return 0;
             }
-            strncpy(buf, (const char *)self + 8, prefixLen + 1);
-            fn_80028E2C(buf, path, pathLen + 1);
+            strncpy(buf, (const char *)self + 8, rootLen + 1);
+            strncat(buf, path, pathLen + 1);
             openPath = buf;
         }
-        return archive->f5(buffer, size, openPath, offset, length);
+        return archive->openStreamPath(buffer, size, openPath, offset, length);
     }
-    return archive->f4(buffer, size, offset, length);
+    return archive->openStreamAt(buffer, size, offset, length);
+#undef strncat
+#undef kWarningSourceFile
+#undef kMsgTooLongFilePath
 }
 #pragma pop
 
