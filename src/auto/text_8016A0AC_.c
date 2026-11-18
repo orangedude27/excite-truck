@@ -107,7 +107,6 @@ void fn_8016A0D4(void) {
         ((u8 *)lbl_80430340.unk_0x0)[i * 0x2C + 0x28] = 0;
     }
     {
-        register s32 *recordCount;
         register u8 *entry;
         register s32 recordOffset;
         register s32 count;
@@ -115,7 +114,6 @@ void fn_8016A0D4(void) {
         register f32 value2;
         value2 = lbl_80561958;
         value1 = lbl_8056195C;
-        recordCount = (s32 *)(lbl_80430318 + 4);
         count = 0;
         recordOffset = 0;
         goto check_second;
@@ -128,7 +126,7 @@ void fn_8016A0D4(void) {
         *(f32 *)(entry + 0x40) = value2;
         *(f32 *)(entry + 0x44) = value1;
     check_second:
-        if (count < *recordCount)
+        if (count < *(s32 *)(lbl_80430318 + 4))
             goto second_loop;
     }
 }
@@ -437,10 +435,10 @@ s32 fn_8016A8F8(void* alarm) {
     volatile Ctr804302F0* vc;
     u8* d;
     u8* s;
-    s32 k;
     s32 sj;
     s32 cur;
     s32 i;
+    s32 n;
     s32 var24;
     obj = *(void**)((char*)fn_8000AC38() + 0x20);
     lbl_8055E364 = ((s32(*)(void*, void*, s32))((*(void***)obj)[0xC]))(obj, &lbl_80330460, 0);
@@ -459,35 +457,38 @@ s32 fn_8016A8F8(void* alarm) {
     lbl_804302F0.count = 0;
     var24 = 1;
     while (lbl_804302F0.count + 1 <= lbl_804302F0.limit && var24 < 0x64) {
-        cur = lbl_804302F0.count;
+        cur = ((volatile Ctr804302F0 *)&lbl_804302F0)->count;
         entry = &lbl_804302F0.data[cur];
         lbl_804302F0.count = cur + 1;
-        if (entry->name[0] != 0) {
+        if (entry->flag != 0) {
             fn_802C6CF8((void*)entry->handle);
-            entry->name[0] = 0;
+            entry->flag = 0;
         }
         if (lbl_8055E364 != 0) {
-            fn_801345D8(entry->name + 1, 0x1e, &lbl_803306B4, var24);
+            fn_801345D8(entry->name, 0x1e, &lbl_803306B4, var24);
         } else {
-            fn_801345D8(entry->name + 1, 0x1e, &lbl_803306A0, var24);
+            fn_801345D8(entry->name, 0x1e, &lbl_803306A0, var24);
         }
-        if (fn_8012C33C(entry->name + 1) != 0) {
-            entry->handle = fn_802C6FC0(entry->name + 1, 0, 0);
+        if (fn_8012C33C(entry->name) != 0) {
+            entry->handle = fn_802C6FC0(entry->name, 0, 0);
             entry->id = var24;
-            entry->name[0] = 1;
-            fn_802E30C8(&lbl_80330688, var24, entry->name + 1);
+            entry->flag = 1;
+            fn_802E30C8(&lbl_80330688, var24, entry->name);
         }
-        if (entry->name[0] == 0) {
+        if (entry->flag == 0) {
             vc = &lbl_804302F0;
             i = vc->count - 1;
             if (i >= 0) {
-                if (i < vc->count) {
-                    if (i != vc->count - 1) {
-                        sj = (vc->count - 1) * 0x28;
+                n = vc->count;
+                if (i < n) {
+                    if (i != n - 1) {
+                        sj = (n - 1) * 0x28;
                         d = (u8*)lbl_804302F0.data + i * 0x28;
                         s = (u8*)lbl_804302F0.data + sj;
-                        for (k = 0; k < 0x1f; k++) {
-                            d[k] = s[k];
+                        d[0] = s[0];
+                        {
+                            struct Name30 { char v[30]; };
+                            *(struct Name30 *)(d + 1) = *(struct Name30 *)(s + 1);
                         }
                         *(s32*)(d + 0x20) = *(s32*)(s + 0x20);
                         *(s32*)(d + 0x24) = *(s32*)(s + 0x24);
@@ -521,16 +522,16 @@ void* fn_8016AC24(void* self, s32 shouldDelete) {
 s32 fn_8016AC90(s32 unused) {
     typedef struct AEntry { u8 flag; u8 pad1[3]; void *ptr4; void *ptr8; float data[11]; u8 b3c; u8 b3d; u8 pad3e[2]; float f40; float f44; } AEntry;
     typedef struct BEntry { u8 flag; char name[31]; s32 first; s32 count; u8 last; } BEntry;
-    register Ctr804302F0 *aMgr;
-    register Ctr804302F0 *bMgr;
-    register void *obj;
-    register void *cfg;
-    register void *iter;
-    register void *item;
-    register void *sub;
-    register s32 i;
-    register s32 j;
-    register s32 k2;
+    Ctr804302F0 *aMgr;
+    Ctr804302F0 *bMgr;
+    void *obj;
+    void *cfg;
+    void *iter;
+    void *item;
+    void *sub;
+    s32 i;
+    s32 j;
+    s32 k2;
     AEntry *aEnt;
     BEntry *bEnt;
     float floats[12];
