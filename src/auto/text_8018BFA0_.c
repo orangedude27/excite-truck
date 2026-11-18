@@ -162,6 +162,7 @@ extern void *fn_8001285C(int);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling 750
 void fn_8018C5A0(char *arg0, char *arg1) {
     char *base = lbl_80332758;
     char *p19;
@@ -819,6 +820,7 @@ void fn_8018DE94(void *arg0, int arg1, float *arg2, int arg3, int arg4) {
     float next[3];
     float basis[3];
     float *velocity;
+    char *velBase;
     float dot;
     float clampLo;
     float clampHi;
@@ -843,7 +845,8 @@ void fn_8018DE94(void *arg0, int arg1, float *arg2, int arg3, int arg4) {
     scaled[2] = arg2[2] * factor;
     scaled[1] = scaled[1] < lbl_80561F74 ? lbl_80561F74 : scaled[1];
     damping = lbl_80561FC0;
-    velocity = (float *)(base + *(int *)(record + 4) * 0xC + 0x5FC);
+    velBase = base + *(int *)(record + 4) * 0xC;
+    velocity = (float *)(velBase + 0x5FC);
     velocity[0] = velocity[0] + scaled[0] * damping;
     velocity[1] = velocity[1] + scaled[1] * damping;
     velocity[2] = velocity[2] + scaled[2] * damping;
