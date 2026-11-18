@@ -3197,6 +3197,19 @@ extern "C" unsigned int GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hb
 }
 
 extern float lbl_80560F38, lbl_80560F3C, lbl_80560F54, lbl_80560F60, lbl_80560F64, lbl_80560F68, lbl_80560F6C, lbl_80560F70, lbl_80560F74, lbl_80560F78;
+
+/* The blends TransformDpl2Pan maps a voice's 2D pan point through, all f32s
+   this unit keeps in its small data section.  The generic ones next to them
+   are lbl_80560F38 = 1.0, the height of the field's centre, lbl_80560F3C =
+   0.0 and lbl_80560F54 = 2.0, the field's full depth. */
+#define DPL2_Y_BIAS  lbl_80560F60 /* -0.12: depth before the centre is added back */
+#define DPL2_Y_FRONT lbl_80560F64 /*  0.88: depth a step forward, or to the side, is worth */
+#define DPL2_X_BACK  lbl_80560F68 /*  0.5: pan a point straight behind centre keeps */
+#define DPL2_Y_BACK  lbl_80560F6C /*  1.12: depth a step behind centre, or to the side, is worth */
+#define DPL2_X_SIDE  lbl_80560F70 /*  0.85: pan of a point straight to the side */
+#define DPL2_X_FRONT lbl_80560F74 /*  0.15: pan a step forward adds to the side's */
+#define DPL2_X_REAR  lbl_80560F78 /*  0.35: pan a step behind adds to the side's */
+
 #pragma fp_contract_aggressive reset
 #pragma fp_contract off
 void nw4r::snd::detail::Voice::TransformDpl2Pan(float *out0, float *out1, float a, float b) {
