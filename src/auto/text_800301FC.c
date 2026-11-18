@@ -151,6 +151,25 @@ void TRKPostEvent(s32 event) {
         sStarted = (void *)1;
     }
 }
+#undef DBGIF_CONTROL
+#undef DBGIF_ADDRESS
+#undef DBGIF_DATA
+#undef DBGIF_LENGTH
+#undef SYS_SPEED
+#undef sSpan3000Hi
+#undef sSpan3000Lo
+#undef sSpan63000Hi
+#undef sSpan63000Lo
+#undef sSpan42000Hi
+#undef sSpan42000Lo
+#undef sSpan42024Hi
+#undef sSpan42024Lo
+#undef sSpan31524Hi
+#undef sSpan31524Lo
+#undef sStarted
+#undef sVersionBanner
+#undef sPendingEvent
+#undef sEventCallback
 
 void TRKConstructEvent(void) {
     /* Reset the TRK event flag so the next TRKPostEvent reinitializes the debug nub. */
