@@ -944,23 +944,31 @@ s32 fn_8023B36C(void) { return 0; }
 
 #pragma push
 #pragma cplusplus on
-void fn_8023B374(void *arg0) {
+extern "C" void fn_8023B374(void *arg0) {
+    class Base { public: char pad[0xC]; };
+    class Obj : public Base {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void setA(s32);
+        virtual void setB(s32);
+    };
     void **base = (void **)arg0;
     s32 mode = fn_80210570();
-    void *obj;
-    s32 (**tbl)(void *, s32);
     if (mode == 2) {
-        obj = base[7];
-        tbl = *(s32 (***)(void *, s32))((char *)obj + 0xC);
-        tbl[12](obj, 3);
+        ((Obj *)base[7])->setA(3);
     } else {
-        obj = base[7];
-        tbl = *(s32 (***)(void *, s32))((char *)obj + 0xC);
-        tbl[12](obj, 2);
+        ((Obj *)base[7])->setA(2);
     }
-    obj = base[7];
-    tbl = *(s32 (***)(void *, s32))((char *)obj + 0xC);
-    tbl[13](obj, mode);
+    ((Obj *)base[7])->setB(mode);
 }
 #pragma cplusplus reset
 #pragma pop
