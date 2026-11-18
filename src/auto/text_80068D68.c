@@ -12085,6 +12085,22 @@ void bta_dm_discover(void *data) {
  * look for in the SDP database, one per (1-based) service index. */
 #define bta_service_id_to_uuid_lkup_tbl         lbl_802EE990
 
+/* bta_dm_sdp_callback (SDK bta_dm_act.c): what the SDP search calls when it
+ * ends; it posts BTA_DM_SDP_RESULT_EVT with the SDP status. */
+#define bta_dm_sdp_callback                     fn_800729C0
+
+/* This BTE revision's service table holds 0x17 entries -- its
+ * BTA_MAX_SERVICE_ID, which the SDK headers raise to 30/31 -- and one search
+ * gets the 250 byte SDP discovery database bta_dm_int.h calls
+ * BTA_DM_SDP_DB_SIZE (bt_target.h, which this file includes, has the newer,
+ * larger size).  The peer name a discovery result carries is 0x20 bytes here,
+ * not the SDK's BD_NAME_LEN. */
+#ifndef DM_MAX_SERVICE_ID
+#define DM_MAX_SERVICE_ID                       0x17
+#define DM_SDP_DB_SIZE                          0xFA
+#define DM_PEER_NAME_LEN                        0x20
+#endif
+
 /* BTA_SERVICE_ID_TO_SERVICE_MASK (SDK bta_api.h): the bit a service index sets
  * in bta_dm_search_cb.services_found. */
 #ifndef BTA_SERVICE_ID_TO_SERVICE_MASK
@@ -15520,7 +15536,7 @@ void btm_cback(u32 index, void *param) {
         inq_res.status = ((u8 *)param)[0] == 0 ? 0 : 0x114;
         param = &inq_res;
         if (lbl_803C3740[0x28] >= 4) {
-            fn_8007096C(0xE0003, p_trace, inq_res.status, inq_res.results);
+            fn_8007096C(0xE0003, p_trace + 0, inq_res.status, inq_res.results);
         }
         break;
     case 3:
@@ -26747,12 +26763,12 @@ void sdp_init(void) {
     *(u16 *)(cb + 0x22) = 0xFFFF;
     *(u16 *)(cb + 0x462C) = 0xF0;
     *(u16 *)(cb + 0x462E) = 0x15;
-    if (!BTM_SetSecurityLevel(0, log + 0, 0, 0, 1, 0, 0)) {
+    if (!BTM_SetSecurityLevel(0, log + zero, 0, 0, 1, 0, 0)) {
         if (cb[0x4630] >= 1)
             fn_8007093C(0xA0000, log + 0x14);
         return;
     }
-    if (!BTM_SetSecurityLevel(1, log + 0, 0, 0, 1, 0, 0)) {
+    if (!BTM_SetSecurityLevel(1, log + zero, 0, 0, 1, 0, 0)) {
         if (cb[0x4630] >= 1)
             fn_8007093C(0xA0000, log + 0x38);
         return;
