@@ -1436,10 +1436,10 @@ void fn_80118C44(void* arg0) {
     if (arg0 != 0) {
         *flag = 1;
         temp_r5 = 0;
-        var_r9 = 0;
-        var_r6 = 0;
         *(s32*)((u8*)arg0 + 0x2F8) = temp_r5;
         *flag = temp_r5;
+        var_r9 = 0;
+        var_r6 = 0;
         while (var_r9 < *iterations) {
             temp_r4 = (u8*)*(void**)((u8*)arg0 + 0x2F0) + var_r6;
             if (*(s32*)((u8*)temp_r4 + 0x5C) != 0) {
@@ -1463,15 +1463,16 @@ void fn_80118C44(void* arg0) {
                 temp_r7 = *(u32*)((u8*)arg0 + 0x138);
                 temp_r5_2 = *(u32*)((u8*)arg0 + 0x13C);
                 temp_r7 = (temp_r7 * 0x1D) >> 5;
-                if (temp_r5_2 >= temp_r7) break;
-                temp_r5_2 = ((s32 (*)(void*))(*(void**)((u8*)arg0 + 0x100)))((u8*)arg0 + 0xF0);
-                if (temp_r5_2 == 0) {
-                    *(s32*)((u8*)arg0 + 0x268) = temp_r5_2;
-                    *(s32*)((u8*)arg0 + 0x328) = temp_r5_2;
-                    *(s32*)((u8*)arg0 + 0x330) = temp_r5_2;
-                    fn_801190B0(arg0, 1);
-                    fn_8011C2EC(lbl_8055DED4, (u8*)arg0 + 0x340);
+                if (temp_r5_2 < temp_r7) {
+                    temp_r5_2 = ((s32 (*)(void*))(*(void**)((u8*)arg0 + 0x100)))((u8*)arg0 + 0xF0);
+                    if (temp_r5_2 != 0) continue;
                 }
+                *(s32*)((u8*)arg0 + 0x268) = 0;
+                *(s32*)((u8*)arg0 + 0x328) = 0;
+                *(s32*)((u8*)arg0 + 0x330) = 0;
+                fn_801190B0(arg0, 1);
+                fn_8011C2EC(lbl_8055DED4, (u8*)arg0 + 0x340);
+                break;
             }
         }
         *flag = 1;
@@ -1479,10 +1480,7 @@ void fn_80118C44(void* arg0) {
             fn_80117074(arg0);
         fn_80118C1C(arg0, fn_80116D30());
         temp_r5_2 = *(u32*)((u8*)arg0 + 0x0C);
-        var_r4 = 1;
-        if (temp_r5_2 < *(u32*)((u8*)arg0 + 0x08))
-            var_r4 = temp_r5_2 + 1;
-        fn_80117380(arg0, var_r4);
+        fn_80117380(arg0, (temp_r5_2 < *(u32*)((u8*)arg0 + 0x08)) ? (s32)(temp_r5_2 + 1) : 1);
         *flag = 0;
     }
 }
@@ -4446,6 +4444,7 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
  u32 w2;
  u8 *dst, *table, *lut;
  u32 v, c;
+ register u32 *ent;
  if(M2C_FIELD(arg0,u32*,0)!=M2C_FIELD(arg0,u32*,4)) return;
  n=M2C_FIELD(arg1,u32*,8); width=M2C_FIELD(arg0,u32*,0x28); p=M2C_FIELD(arg1,u32**,4); bits=M2C_FIELD(arg1,u32*,0);
  if(n<width){u32 x=*p++; out=(bits|(x<<n))&(-1U>>(32-width)); bits=x>>(width-n); n=n+32-width;} else {out=bits&(-1U>>(32-width)); bits>>=width; n-=width;}
@@ -4458,7 +4457,7 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
   mask=-1U>>(32-w2);
   do {
    u32 w;
-   u32 *ent=(u32*)((u8*)arg2+tree*4);
+   ent=(u32*)((u8*)arg2+tree*4);
    w=ent[0x40];
    out--;
    if(n>=w){
@@ -5726,26 +5725,30 @@ void fn_80121400(s32 n, s32 *map, f32 *data) {
             for (j = 0; j < k; j++) {
                 j1 = 2 * j + ip[k];
                 k1 = 2 * k + ip[j];
-                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                xr = a[j1]; xi = -a[j1 + 1];
+                yr = a[k1]; yi = -a[k1 + 1];
                 a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
                 j1 += m2;
                 k1 += 2 * m2;
-                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                xr = a[j1]; xi = -a[j1 + 1];
+                yr = a[k1]; yi = -a[k1 + 1];
                 a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
                 j1 += m2;
                 k1 -= m2;
-                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                xr = a[j1]; xi = -a[j1 + 1];
+                yr = a[k1]; yi = -a[k1 + 1];
                 a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
                 j1 += m2;
                 k1 += 2 * m2;
-                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                xr = a[j1]; xi = -a[j1 + 1];
+                yr = a[k1]; yi = -a[k1 + 1];
                 a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
             }
             j1 = 2 * k + ip[k];
             a[j1 + 1] = -a[j1 + 1];
             j2 = j1 + m2;
-            xr = a[j2]; xi = -a[j2 + 1];
             j1 = j2 + m2;
+            xr = a[j2]; xi = -a[j2 + 1];
             yr = a[j1]; yi = -a[j1 + 1];
             a[j2] = yr; a[j2 + 1] = yi;
             a[j1] = xr; a[j1 + 1] = xi;
@@ -5759,11 +5762,13 @@ void fn_80121400(s32 n, s32 *map, f32 *data) {
             for (j = 0; j < k; j++) {
                 j1 = 2 * j + ip[k];
                 k1 = 2 * k + ip[j];
-                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                xr = a[j1]; xi = -a[j1 + 1];
+                yr = a[k1]; yi = -a[k1 + 1];
                 a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
                 j1 += m2;
                 k1 += m2;
-                xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+                xr = a[j1]; xi = -a[j1 + 1];
+                yr = a[k1]; yi = -a[k1 + 1];
                 a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
             }
             j1 = 2 * k + ip[k + 1];
