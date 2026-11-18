@@ -78,7 +78,27 @@ void *fn_80128668();                             /* free */
 int stricmp(const char *, const char *);
 void fn_802E30C8(const char *, ...);             /* log */
 extern f32 lbl_8032C118[]; /* "pushpass_factor", "moveout_factor", "push_sensitivity", "exception",
-                              "AIException", "lookahead_f", "landing_f", "ai: track has %d ai-exception%s" */
+                               "AIException", "lookahead_f", "landing_f", "ai: track has %d ai-exception%s" */
+/* Offsets of those keys in the string block above. */
+#define AI_KEY_PUSHPASS_FACTOR  0x00 /* "pushpass_factor" -- read into params.passout */
+#define AI_KEY_MOVEOUT_FACTOR   0x10 /* "moveout_factor" */
+#define AI_KEY_PUSH_SENSITIVITY 0x20 /* "push_sensitivity" */
+#define AI_KEY_EXCEPTION        0x34 /* "exception" -- the entry name the parser accepts */
+#define AI_EXCEPTION_TAG        0x40 /* "AIException" -- heap tag the nodes are allocated under */
+#define AI_KEY_LOOKAHEAD_F      0x4C /* "lookahead_f" */
+#define AI_KEY_LANDING_F        0x58 /* "landing_f" */
+#define AI_FMT_EXCEPTIONS       0x68 /* "ai: track has %d ai-exception%s" */
+
+/* The same kind of keys, held in small data instead of that block. */
+#define AI_KEY_CHECKS           (&lbl_80559C60) /* "checks" */
+#define AI_KEY_ON_LON           (&lbl_80559C68) /* "on_lon" */
+#define AI_KEY_OFF_LON          (&lbl_80559C70) /* "off_lon" */
+#define AI_KEY_ON_T             (&lbl_80559C78) /* "on_t" */
+#define AI_KEY_MOVEOUT          (&lbl_80559C80) /* "moveout" */
+#define AI_KEY_PASSOUT          (&lbl_80559C88) /* "passout" */
+#define AI_PLURAL_S             (&lbl_80559C90) /* "s" -- for the log message above */
+#define AI_PLURAL_NONE          (&lbl_80559C94) /* "" */
+
 extern f32 lbl_80559C60;    /* "checks" -- a key string */
 extern char lbl_80559C68;   /* "on_lon" */
 extern char lbl_80559C70;   /* "off_lon" */
@@ -88,7 +108,13 @@ extern char lbl_80559C88;   /* "passout" */
 extern char lbl_80559C90;   /* "s" -- plural for the log message above */
 extern char lbl_80559C94;   /* "" */
 extern f32 lbl_80561418, lbl_8056141C, lbl_80561420; /* default parameter values */
+#define AI_DEFAULT_ONE          lbl_80561418 /* 1.0 -- default of every factor */
+#define AI_DEFAULT_CHECKS       lbl_8056141C /* 10.0 */
+#define AI_DEFAULT_ON_T         lbl_80561420 /* 3.0 */
 extern f32 lbl_80561424, lbl_80561428, lbl_8056142C; /* track max, track min and blend time for a section wrapping the end */
+#define AI_LON_MAX              lbl_80561424 /* 10000.0 -- end of a wrapping entry's section */
+#define AI_LON_MIN              lbl_80561428 /* 0.0 -- start of that section */
+#define AI_WRAP_ON_T            lbl_8056142C /* 0.1 -- blend time given to it */
 f32 fn_80134B58(f32 *, f32);                     /* value set for this key, or the default */
 
 #pragma push
