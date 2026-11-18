@@ -15623,17 +15623,20 @@ extern s16 lbl_802F3478[];
 #pragma use_lmw_stmw on
 extern "C" s32 fn_800BEE64(void *arg0, s32 arg1, s32 arg2) {
     VFiPFCard *card = (VFiPFCard *)arg0;
-    s32 one = 1;
-    s32 sp8 = 0;
+    s32 one;
+    s32 zero = 0;
+    s32 sp8 = zero;
     s32 mode;
-    s16 type, status;
+    s16 type;
+    s32 status;
     s32 value, q;
     u32 result;
     if (((s16 (*)(s32, s32, s32 *))fn_800BDD7C)(0x400, arg1, &sp8) == 0) return 8;
+    one = 1;
     mode = (s16)fn_800BDE18(card->unk278, arg1, one, &sp8);
     if (fn_800BDE18(card->unk278, arg1, 2, &sp8) != 1) return 0xD;
     if (mode == 0) card->unk4 = one;
-    else card->unk4 = 0;
+    else card->unk4 = zero;
     one = 1;
     fn_800BDE18(card->unk278, arg1, one, &sp8);
     result = ((u32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(card->unk278, arg1, 0x10, &sp8);
@@ -15642,17 +15645,16 @@ extern "C" s32 fn_800BEE64(void *arg0, s32 arg1, s32 arg2) {
     if (type == 15) return 0xE;
     status = (result >> 10) & 3;
     card->unk1c = status;
-    if (status == 3) return 0xF;
+    if ((s16)status == 3) return 0xF;
     if ((s16)((result >> 6) & 3) == 3) card->unk0 = one;
     else card->unk0 = 2;
     if (card->unk4 == 0)
         value = ((s16 (*)[16])lbl_802F3418)[card->unk1c][type] * 8;
     else
         value = ((s16 (*)[16])lbl_802F3478)[card->unk1c][type] * 8;
-    value += 8;
-    q = value / 8;
+    q = (value + 8) / 8;
     card->unkED70 = q;
-    if (value & 7) card->unkED70 = q + 1;
+    if ((value + 8) & 7) card->unkED70 = q + 1;
     if (card->unk4 == 0)
         card->unkED74 = card->unk0 * 0x900;
     else
