@@ -220,7 +220,7 @@ void fn_8017B4AC(float * __restrict state, float * __restrict delta) {
 #pragma push
 #pragma processor 750
 void fn_8017B4E0(void *arg0, float *arg1, float *arg2, float arg3) {
-#pragma scheduling invalid_target
+#pragma scheduling 750
     float *state = (float *)arg0;
     float delta[3];
     float output[3];
