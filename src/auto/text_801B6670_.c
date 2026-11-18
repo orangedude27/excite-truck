@@ -22,7 +22,7 @@ static inline void InitEntry(UnkEntry *entry, int id, const char *name, const ch
 
 extern void fn_8000D838(void *);
 extern unsigned char lbl_80335F70[0x800];
-extern UnkEntry lbl_80435EE8[];
+ extern unsigned char lbl_80435EE8[0xE1C];
 extern unsigned char lbl_8055A8D8;
 extern unsigned char lbl_8055A8E0;
 extern unsigned char lbl_8055A8E8;
