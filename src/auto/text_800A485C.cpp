@@ -504,6 +504,8 @@ extern "C" s32 fn_800A53DC(void *);
 extern "C" void fn_800A53E8(void *);
 extern "C" void fn_800A53CC(void *);
 extern "C" s32 fn_800A5788(void *, s32);
+#pragma push
+#pragma dont_inline off
 static inline s32 VFiPFVOL_do_unmount(void *arg0, s32 arg1) {
     s32 res = fn_800A5788(arg0, arg1);
     if (res != 0) {
@@ -518,6 +520,7 @@ static inline s32 VFiPFVOL_do_unmount(void *arg0, s32 arg1) {
     *(u16 *)((u8 *)arg0 + 0x1F8C) &= ~8;
     return 0;
 }
+#pragma pop
 extern "C" s32 fn_800B5988(void *);
 extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *);
 extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *);
