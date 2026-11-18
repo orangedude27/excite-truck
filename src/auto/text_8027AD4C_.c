@@ -794,6 +794,7 @@ void fn_8027BCC8(long root, long outSum, long outTotal) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
+#pragma opt_propagation off
 extern "C" void fn_8027BCD0(void *arg0, long arg1) {
     class Obj {
     public:
