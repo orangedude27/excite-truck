@@ -118,26 +118,21 @@ check:
 }
 
 int stricmp(unsigned char *a, unsigned char *b) {
-    register int base = (int)(unsigned char *)lbl_802FE850;
     register int locale;
-    register signed char c1;
-    register signed char c2;
-    register int skip;
-    locale = *(int *)(base + 0x38);
+    register int c1;
+    register int c2;
+    register signed char sc1;
+    register unsigned char skip;
+    locale = *(int *)(lbl_802FE850 + 0x38);
     for (;;) {
-        skip = 0;
-        c1 = (signed char)*a;
-        a++;
-        if (c1 < 0 || c1 >= 256) skip = 1;
-        c1 = (skip != 0) ? c1 : (signed char)*(unsigned char *)(*(int *)(locale + 0x10) + c1);
-        skip = 0;
-        c2 = (signed char)*b;
-        b++;
-        if (c2 < 0 || c2 >= 256) skip = 1;
-        c2 = (skip != 0) ? c2 : (signed char)*(unsigned char *)(*(int *)(locale + 0x10) + c2);
-        if (c1 < c2) return -1;
-        if (c1 > c2) return 1;
-        if (c1 == 0) return 0;
+        skip = (c1 = (signed char)*a, a++, c1 < 0 || c1 >= 256);
+        c1 = (skip != 0) ? c1 : (unsigned char)*(unsigned char *)(*(int *)(locale + 0x10) + c1);
+        sc1 = (signed char)c1;
+        skip = (c2 = (signed char)*b, b++, c2 < 0 || c2 >= 256);
+        c2 = (skip != 0) ? c2 : (unsigned char)*(unsigned char *)(*(int *)(locale + 0x10) + c2);
+        if (sc1 < (signed char)c2) return -1;
+        if (sc1 > (signed char)c2) return 1;
+        if (sc1 == 0) return 0;
     }
 }
 
@@ -615,7 +610,7 @@ double x, y;
     double *pow_tbl = lbl_802EE4D8;
     double z, ax, z_h, z_l, p_h, p_l;
     double y1, t1, t2, r, s, t, u, v, w;
-    int k, i, j, yisint, n;
+    int i, j, k, yisint, n;
     int hx, hy, ix, iy;
     unsigned lx, ly;
 
@@ -1403,9 +1398,9 @@ double frexp(double x, int *eptr) {
             return x;
         if (absHigh < 0x00100000) {
             double scale = lbl_80560A98;
-            *(volatile int *)eptr = -54;
-            x = x * scale;
-            u.d = x;
+            int bias = -54;
+            *(volatile int *)eptr = bias;
+            u.d = x * scale;
             highWord = u.i[0];
             absHigh = highWord & 0x7fffffff;
         }
