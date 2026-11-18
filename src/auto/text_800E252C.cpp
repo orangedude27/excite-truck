@@ -808,11 +808,10 @@ extern "C" void fn_800E2F84(void *self)
 #pragma small_data off
 #pragma pop
 #pragma push
-#pragma opt_propagation off
 extern "C" f32 fn_800E310C(void *arg0) {
-    float x, y, z, result;
     int a = *(int *)((char *)arg0 + 0x6C50);
     int b = *(int *)((char *)arg0 + 0x6C4C);
+    float x;
     if (a >= b) x = *(float *)((char *)arg0 + 0x6C48);
     else x = *(float *)((char *)arg0 + 0x6C44) +
         (float)a * (*(float *)((char *)arg0 + 0x6C48) - *(float *)((char *)arg0 + 0x6C44)) / (float)b;
@@ -821,15 +820,17 @@ extern "C" f32 fn_800E310C(void *arg0) {
     int d;
     d = *(int *)((char *)arg0 + 0x6C5C);
     c = *(int *)((char *)arg0 + 0x6C60);
+    float y;
     if (c >= d) y = *(float *)((char *)arg0 + 0x6C58);
     else y = *(float *)((char *)arg0 + 0x6C54) +
         (float)c * (*(float *)((char *)arg0 + 0x6C58) - *(float *)((char *)arg0 + 0x6C54)) / (float)d;
-    result = x * y;
+    float result = x * y;
 
     int e;
     int f;
     f = *(int *)((char *)arg0 + 0x6C3C);
     e = *(int *)((char *)arg0 + 0x6C40);
+    float z;
     if (e >= f) z = *(float *)((char *)arg0 + 0x6C38);
     else z = *(float *)((char *)arg0 + 0x6C34) +
         (float)e * (*(float *)((char *)arg0 + 0x6C38) - *(float *)((char *)arg0 + 0x6C34)) / (float)f;
