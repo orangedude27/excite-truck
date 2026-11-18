@@ -10308,8 +10308,8 @@ extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
     #undef PATH_END_INDEX
 }
 #pragma pop
-static inline s32 fn_800B51FC_decimal(u32 addr, s32 arg1) {
-    u8 *p = (u8 *)(addr + 7);
+extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1) {
+    u8 *p = (u8 *)((s32)arg0 + 7);
     u32 digits = 7;
     u32 divisor = 10;
     u32 place = 1;
@@ -10326,9 +10326,6 @@ static inline s32 fn_800B51FC_decimal(u32 addr, s32 arg1) {
         place *= 10;
     }
     return 0;
-}
-extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1) {
-    return fn_800B51FC_decimal((u32)arg0, arg1);
 }
 
 extern "C" s32 fn_800A8EA0(void *, u32, void **);
