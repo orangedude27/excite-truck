@@ -5713,7 +5713,7 @@ extern "C" void *fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 #pragma pop
 
 #pragma dont_inline on
-extern "C" void fn_802223C4(void *arg0, s32 arg1) {
+extern "C" RET_802223C4 fn_802223C4(void *arg0, s32 arg1) {
     s32 value;
     if (!arg0)
         return;
