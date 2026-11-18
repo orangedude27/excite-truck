@@ -193,7 +193,7 @@ extern "C" float fn_80019FD4(void *arg0, int arg1, float farg0) {
     return farg0;
 }
 
-#pragma unroll 8
+#pragma unroll off
 extern "C" void fn_8001A04C(int *arg0) {
     char *base;
     char *p;
