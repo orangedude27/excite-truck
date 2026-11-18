@@ -2768,56 +2768,66 @@ enum {
 };
 
 #pragma dont_inline off
-extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
+extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(AxVoice *self, int channelIndex, const void *address, unsigned long length) {
+    /* Stop one channel's AX voices when they reach the end of the given
+       sample range.  Their loop start is moved to the AxManager's zero
+       buffer, so the voice runs into silence, their end address to the last
+       sample of the range, and their loop flag is cleared, so the mixer stops
+       them there instead of wrapping around.  The three fields are written
+       one at a time with interrupts off, each queueing its own AX_PBSYNC bit
+       for __AXSyncPBs -- unless the voice already has the whole address group
+       queued, which then covers the write.  Positions are counted in the unit
+       the PB address field uses for the wave's format: one sample per unit,
+       an ADPCM frame carrying two units of header every 14 samples. */
     nw4hbm::ut::AutoInterruptLock lock;
 #pragma dont_inline on
-    void *emission=Instance__15EmissionManagerFv();
-    register unsigned int address=(unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(emission);
-    unsigned int format=*(int *)((char *)arg0+0x118);
-    if(address) address+=0x80000000;
-    s32 start=0;
-    switch(format) {
-    case 0: start=address*2+2; break;
-    case 25: start=address; break;
-    case 10: start=address>>1; break;
-    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8,0x561,lbl_80322438); break;
+    void *axManager = Instance__15EmissionManagerFv();
+    register unsigned int zeroBuffer = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(axManager);
+    unsigned int format = self->format;
+    if (zeroBuffer) zeroBuffer += 0x80000000;
+    s32 silencePos = 0;
+    switch (format) {
+    case AX_FORMAT_ADPCM: silencePos = zeroBuffer * 2 + 2; break;
+    case AX_FORMAT_PCM8: silencePos = zeroBuffer; break;
+    case AX_FORMAT_PCM16: silencePos = zeroBuffer >> 1; break;
+    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); break;
     }
-    unsigned int offset=(unsigned int)arg2;
-    int format2=*(int *)((char *)arg0+0x118);
-    if(offset) offset+=0x80000000;
-    unsigned int end=0;
-    switch(format2) {
-    case 0: {
-        u32 x=arg3-1;
-        end=(x%14) + (offset*2) + ((x/14)*16) + 2;
+    unsigned int stopAddr = (unsigned int)address;
+    int stopFormat = self->format;
+    if (stopAddr) stopAddr += 0x80000000;
+    unsigned int stopPos = 0;
+    switch (stopFormat) {
+    case AX_FORMAT_ADPCM: {
+        u32 last = length - 1;
+        stopPos = (last % 14) + (stopAddr * 2) + ((last / 14) * 16) + 2;
         break;
     }
-    case 25: end=offset+arg3-1; break;
-    case 10: end=arg3+(offset>>1)-1; break;
-    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8,0x561,lbl_80322438); break;
+    case AX_FORMAT_PCM8: stopPos = stopAddr + length - 1; break;
+    case AX_FORMAT_PCM16: stopPos = length + (stopAddr >> 1) - 1; break;
+    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); break;
     }
-    unsigned int *voice = (unsigned int *)((char *)arg0 + arg1 * 0x10);
-    unsigned int sh = (unsigned int)start >> 16;
-    unsigned int sl = start & 0xFFFF;
-    unsigned int eh = end >> 16;
-    unsigned int el = end & 0xFFFF;
-    for (int i = 0; i < *(int *)((char *)arg0 + 0x108); voice++, i++) {
-        unsigned int ch = voice[3];
-        if (ch != 0) {
-            unsigned int inner = OSDisableInterrupts();
-            *(unsigned short *)(ch + 0x1B4) = sh;
-            *(unsigned short *)(ch + 0x1B6) = sl;
-            if (!(*(unsigned int *)(ch + 0x1C) & 0x800)) *(unsigned int *)(ch + 0x1C) |= 0x2000;
-            OSRestoreInterrupts(inner);
-            inner = OSDisableInterrupts();
-            *(unsigned short *)(ch + 0x1B8) = eh;
-            *(unsigned short *)(ch + 0x1BA) = el;
-            if (!(*(unsigned int *)(ch + 0x1C) & 0x800)) *(unsigned int *)(ch + 0x1C) |= 0x4000;
-            OSRestoreInterrupts(inner);
-            inner = OSDisableInterrupts();
-            *(unsigned short *)(ch + 0x1B0) = 0;
-            if (!(*(unsigned int *)(ch + 0x1C) & 0x800)) *(unsigned int *)(ch + 0x1C) |= 0x1000;
-            OSRestoreInterrupts(inner);
+    void **slot = (void **)((char *)self + channelIndex * 0x10);
+    unsigned int startHi = (unsigned int)silencePos >> 16;
+    unsigned int startLo = silencePos & 0xFFFF;
+    unsigned int endHi = stopPos >> 16;
+    unsigned int endLo = stopPos & 0xFFFF;
+    for (int i = 0; i < self->voiceOutCount; slot++, i++) {
+        AxVoicePB *vpb = (AxVoicePB *)slot[3]; /* a channel's voice slots start at +0xC of its row */
+        if (vpb != 0) {
+            unsigned int level = OSDisableInterrupts();
+            vpb->addr.loopAddressHi = startHi;
+            vpb->addr.loopAddressLo = startLo;
+            if (!(vpb->sync & AX_PBSYNC_ADDR)) vpb->sync |= AX_PBSYNC_LOOP_ADDR;
+            OSRestoreInterrupts(level);
+            level = OSDisableInterrupts();
+            vpb->addr.endAddressHi = endHi;
+            vpb->addr.endAddressLo = endLo;
+            if (!(vpb->sync & AX_PBSYNC_ADDR)) vpb->sync |= AX_PBSYNC_END_ADDR;
+            OSRestoreInterrupts(level);
+            level = OSDisableInterrupts();
+            vpb->addr.loopFlag = 0;
+            if (!(vpb->sync & AX_PBSYNC_ADDR)) vpb->sync |= AX_PBSYNC_LOOP_FLAG;
+            OSRestoreInterrupts(level);
         }
     }
 #pragma dont_inline off
