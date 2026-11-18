@@ -8851,25 +8851,17 @@ BOOLEAN BTM_SecAddDevice(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, 
     return TRUE;
 }
 #pragma pop
+#pragma push
+#pragma dont_inline off
 BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
-    int i = 0;
-    u8 *entry = lbl_803C0F78 + 0x1F30;
-    do {
-        if (entry[0x76] & 0x80) {
-            if (memcmp(entry + 0x1C, bd_addr, 6) == 0)
-                goto found;
-        }
-        i++;
-        entry += 0x88;
-    } while (i < 16);
-    entry = 0;
-found:
+    u8 *entry = btm_find_dev_entry(bd_addr);
     if (entry == 0)
         return FALSE;
     entry[0x76] = 0;
     BTM_DeleteStoredLinkKey(bd_addr, 0);
     return TRUE;
 }
+#pragma pop
 
 char *BTM_SecReadDevName(BD_ADDR bd_addr) {
     s32 i;
