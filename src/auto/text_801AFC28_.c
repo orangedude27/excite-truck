@@ -85,6 +85,7 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801AFD70(void *this_,
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_801AFDCC(void *arg0, void *arg1) {
+    #pragma scheduling on
     struct Object {
         void *vtable; void *owner; s32 field8; void *fieldC;
         f32 field10; f32 field14; s32 field18; s32 field1C; s32 field20;
@@ -195,7 +196,7 @@ void fn_801AFF64(void *arg0, int arg1) {
         float *b = (float *)(src + 0xA0);
         float *out = temp;
         int i;
-        for (i = 0; i < 2; ++i) {
+        for (i = 0; i < 2; i++) {
             float a0 = a[0], b0 = b[0];
             float a1 = a[1], b1 = b[1];
             float a2 = a[2], b2 = b[2];
@@ -246,7 +247,7 @@ void fn_801B0174(void *this_) {
         var0 = 1;
     }
     t64 = *(f32 *)((u8 *)this_ + 0x64);
-    k2590 = lbl_80562590;
+    k2590 = -499.5f;
     *(u8 *)((u8 *)this_ + 0x1F8) = var0;
     if (t64 <= k2590) {
         *(u8 *)((u8 *)this_ + 0x1F8) = 0;
