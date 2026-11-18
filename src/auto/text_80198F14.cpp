@@ -3195,9 +3195,12 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
         boxDelta.y = a[10] - boxCenter.y;
         boxDelta.z = a[11] - boxCenter.z;
         f32 dist = (f32)__fabs((f64)PSVECDotProduct(&boxDelta, *(Vec **)(other + 0xC)));
-        if (dist < *(f32 *)(other + 0x24) + *(f32 *)(self + 0x178)) {
+        f32 opRadius = *(f32 *)(other + 0x24);
+        f32 selfRadius = *(f32 *)(self + 0x178);
+        if (dist < opRadius + selfRadius) {
             dist = (f32)__fabs((f64)PSVECDotProduct(&boxDelta, (Vec *)(*(u8 **)(other + 0xC) + 0x18)));
-            if (dist < *(f32 *)(other + 0x2C) + *(f32 *)(self + 0x178)) {
+            f32 opRadius2 = *(f32 *)(other + 0x2C);
+            if (dist < opRadius2 + selfRadius) {
             f32 *m = *(f32 **)(other + 0xC);
             u8 *owner = *(u8 **)(self + 4);
             f32 x, y, z, nx, ny, nz;
