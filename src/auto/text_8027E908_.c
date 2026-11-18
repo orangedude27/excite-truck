@@ -1321,64 +1321,73 @@ found_item_2:
 #pragma scheduling invalid_target
 #pragma cplusplus on
 #pragma use_lmw_stmw off
+/* Menu action: step from an entry of a page (one whose key is not 0) to the
+   page-0 entry (the list) the menu keeps with it, remembering this entry so the
+   list can bring it back.  The list entry is looked up once - the first entry
+   whose key is 0 - and kept, as is this one; the entry then becomes the
+   selection and its text is copied to the buffer the menu shows.  Doing nothing
+   but returning 0 leaves the selection as it was; fn_80280C00 is the reverse. */
 extern "C" int fn_80280A38(void) {
+    /* What the menu keeps at +0x60 of an entry: the page the entry belongs to
+       (getKey, 0 for the list itself) and the text to show for it. */
     class Object {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual int getKey(); virtual char *getText();
     };
-    struct Helper {
-        static int find(void *sel) {
+    struct ItemFinder {
+        /* Where `entry` sits in the menu's list of entries, or -1. */
+        static int indexOf(void *entry) {
             void **items = lbl_804B3048.items;
             int count = lbl_804B3048.count;
-            int j;
-            for (j = 0; j < count; j++) {
-                if (items[j] == sel)
-                    return j;
+            int i;
+            for (i = 0; i < count; i++) {
+                if (items[i] == entry)
+                    return i;
             }
             return -1;
         }
     };
-    extern int lbl_8055F68C;
-    extern int lbl_8055F690;
-    extern unsigned char lbl_804B3068[];
+    extern int lbl_8055F68C;                  /* the entry of page 0, the list */
+    extern int lbl_8055F690;                  /* the page entry to come back to */
+    extern unsigned char lbl_804B3068[];      /* text shown for the selection */
     int i;
-    int j;
+    int index;
     void *item;
 
-    if (lbl_8055F688 == 0)
+    if (lbl_8055F688 == 0)                    /* nothing selected */
         goto done;
     if (*(Object * volatile *)((char *)lbl_8055F688 + 0x60) == 0)
         goto done;
     if ((*(Object **)((char *)lbl_8055F688 + 0x60))->getKey() == 0)
-        goto done;
+        goto done;                            /* the list entry itself: no further back */
 
-    lbl_8055F690 = lbl_8055F688;
-    if (lbl_8055F68C == 0) {
+    lbl_8055F690 = lbl_8055F688;              /* remember where to come back to */
+    if (lbl_8055F68C == 0) {                  /* find the list entry once */
         for (i = 0; i < lbl_804B3048.count; i++) {
-            void *c = lbl_804B3048.items[i];
-            Object *o = *(Object **)((char *)c + 0x60);
+            void *entry = lbl_804B3048.items[i];
+            Object *o = *(Object **)((char *)entry + 0x60);
             if (o != 0 && o->getKey() == 0) {
-                lbl_8055F68C = (int)c;
+                lbl_8055F68C = (int)entry;
                 break;
             }
         }
     }
-    if (*(volatile int *)&lbl_8055F68C == 0)
+    if (*(volatile int *)&lbl_8055F68C == 0)  /* the menu has no list entry */
         goto done;
 
     {
-        j = Helper::find((void *)lbl_8055F68C);
-        lbl_804B3068[0] = 0;
-        if (j < 0 || j >= *(volatile int *)&lbl_804B3048.count)
+        index = ItemFinder::indexOf((void *)lbl_8055F68C);
+        lbl_804B3068[0] = 0;                  /* the shown text goes with the selection */
+        if (index < 0 || index >= *(volatile int *)&lbl_804B3048.count)
             goto clear;
-        item = lbl_804B3048.items[j];
-        lbl_8055F688 = (unsigned int)item;
+        item = lbl_804B3048.items[index];
+        lbl_8055F688 = (unsigned int)item;    /* select the list entry */
         if (item != 0 && *(Object * volatile *)((char *)item + 0x60) != 0) {
             Object *o = *(Object **)((char *)item + 0x60);
             char *src = o->getText();
-            int n = 100;
+            int n = 100;                      /* at most this much of it fits */
             char *dst = (char *)lbl_804B3068;
             goto copy_test;
             for (;;) {
@@ -1394,11 +1403,10 @@ copy_test:
     }
     goto done;
 clear:
-    lbl_8055F688 = 0;
+    lbl_8055F688 = 0;                         /* gone: leave nothing selected */
 done:
     return 0;
 }
-#pragma scheduling on
 extern "C" int fn_80280C00(void) {
     class Obj { public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
