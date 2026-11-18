@@ -39,6 +39,18 @@ public:
 }
 }
 }
+// nw4r (Nintendo's library) value types its lyt drawing helpers are called with.
+namespace nw4r {
+namespace math {
+struct VEC2 { f32 x, y; };
+}
+namespace lyt {
+struct Size { f32 x, y; };
+}
+namespace ut {
+struct Color { u8 r, g, b, a; };
+}
+}
 struct Data_800D8840 { s32 a; s32 b; f32 c; s32 d; s32 e; };
 // nw4hbm::lyt::Material (lyt_material.cpp) keeps the layout of the GX memory block it
 // allocates in two words sharing this bit layout: 0x4C is the capacity the block at
