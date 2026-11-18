@@ -75,7 +75,6 @@ extern f32 lbl_80562BC0;
 extern f32 lbl_80562BC4;
 extern u8 lbl_803394A4[];
 extern void *lbl_8055E9C8;
-#pragma scheduling 750
 void fn_801DDF0C(void) {
     void *sp8;
     u32 value;
@@ -89,8 +88,8 @@ void fn_801DDF0C(void) {
     value = fn_801DDE78();
     if (value != (u32)lbl_8055E9C8) {
         lbl_8055E9C4 = 0;
-        sp8 = lbl_803394A4;
         lbl_8055E9C8 = (void *)value;
+        sp8 = lbl_803394A4;
         fn_8018A2C0(&sp8);
         thr = lbl_80562BC4;
         off = lbl_80562BC0;
