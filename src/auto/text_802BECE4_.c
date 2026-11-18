@@ -398,6 +398,7 @@ extern "C" void fn_802BF598(int param, float value) {
 
 extern float lbl_80564DA8;
 extern float lbl_80564DB0;
+#pragma scheduling invalid_target
 extern "C" void fn_802BF600(void *arg0, void *dst, void *src) {
     extern float lbl_80564DA8;
     extern float lbl_80564DB0;
@@ -406,10 +407,10 @@ extern "C" void fn_802BF600(void *arg0, void *dst, void *src) {
     int t10 = *(int *)((char *)src + 0x10);
     int t1c = *(int *)((char *)src + 0x1C);
     int t28 = *(int *)((char *)src + 0x28);
-    float scale = lbl_80564DA8;
-    float f4, f10, f1c, f28;
+    float f10, f4, scale, f1c, f28;
     float s4, s10, s1c, s28;
     int i0, i8, ic, i14, i18, i20, i24, i2c;
+    scale = lbl_80564DA8;
     *(int *)((char *)dst + 4) = t4;
     *(int *)((char *)dst + 0x10) = t10;
     *(int *)((char *)dst + 0x1C) = t1c;
@@ -444,7 +445,7 @@ extern "C" void fn_802BF600(void *arg0, void *dst, void *src) {
     *(float *)((char *)dst + 0x28) = s28;
     *(float *)((char *)dst + 0x28) += lbl_80564DB0 * lbl_8055FAE0;
 }
-
+#pragma scheduling reset
 extern "C" void *fn_802BF780(void *);
 #pragma dont_inline on
 extern "C" int fn_802BF6AC(void) {
@@ -485,21 +486,20 @@ int fn_802BF740(int object, int deleteFlag) {
 }
 
 #pragma push
-#pragma processor 750
 #pragma use_lmw_stmw off
 void *fn_802BF780(void *arg0) {
     char *strings = lbl_8034ACA0;
-    float zero, neg, one;
+    register float one, neg, zero;
     float temp_f31;
     float temp_f30;
     char *temp_r3;
-    register char *var_r26;
-    register char *var_r27;
-    register int *var_r28;
+    register void *temp_r30;
     register int var_r30;
+    register int *var_r28;
+    register char *var_r27;
+    register char *var_r26;
     void *temp_r26;
     void *temp_r26_2;
-    void *temp_r30;
 
     (*(char **)((char *)(arg0) + (0))) = lbl_8034AE40;
     (*(int *)((char *)(arg0) + (8))) = fn_802CB128(0x100, 0x100, 0, 0);
@@ -549,7 +549,7 @@ void *fn_802BF780(void *arg0) {
                 (*(float *)((char *)(var_r26) + (0x48))) = temp_f31;
                 var_r26 += 0x30;
             } while (var_r30 < 6);
-            one = lbl_80564D80; neg = lbl_80564DA8; zero = lbl_80564D90;
+            zero = 0.0f; neg = -1.0f; one = 1.0f;
             (*(float *)((char *)(temp_r3) + (0x64))) = zero;
             (*(float *)((char *)(temp_r3) + (0x68))) = zero;
             (*(float *)((char *)(temp_r3) + (0x6C))) = neg;
@@ -616,7 +616,7 @@ void *fn_802BF780(void *arg0) {
     }
     lbl_8055FAFC += 1;
     (*(int **)((char *)(arg0) + (4))) = lbl_8055FB00;
-    (*(float *)((char *)(arg0) + (0x14))) = one;
+    (*(float *)((char *)(arg0) + (0x14))) = 1.0f;
     return arg0;
 }
 #pragma pop
@@ -896,7 +896,7 @@ void *fn_802C0138(void *arg0) {
     register char *resourceA = lbl_8034ACA0 + 0x134;
     void *vtable = lbl_8034AE08;
     float initial = lbl_80564DF0;
-    char *out;
+    short *out;
     register int row;
     register int rowBase;
     int innerBase;
@@ -915,7 +915,7 @@ void *fn_802C0138(void *arg0) {
     if (fn_8012C33C(resourceB) != 0)
         *(int *)((char *)arg0 + 0x2C54) = fn_802CAC28(resourceB, 0);
 
-    out = (char *)arg0 + 4;
+    out = (short *)((char *)arg0 + 4);
     row = 0;
     rowBase = 0;
     do {
@@ -933,52 +933,54 @@ void *fn_802C0138(void *arg0) {
             int r29;
             int r11;
             int r30;
-            *(short *)(out + 0x00) = r4;
+            out[0] = r4;
             r3 = r3 + 1;
-            *(short *)(out + 0x02) = r3;
+            out[1] = r3;
             r9 = innerBase + r7;
             r8 = innerBase + r7;
-            *(short *)(out + 0x04) = r6;
-            *(short *)(out + 0x06) = r6;
+            out[2] = r6;
+            r11 = r9;
+            r30 = r9;
+            out[3] = r6;
             r8 = r8 + 1;
             r10 = r4 + 2;
-            *(short *)(out + 0x08) = r3;
+            out[4] = r3;
             r12 = r4 + 3;
             r29 = r4 + 4;
-            *(short *)(out + 0x0A) = r8;
-            r11 = r9 + 3;
-            r30 = r9 + 4;
-            *(short *)(out + 0x0C) = r3;
+            out[5] = r8;
+            r11 = r11 + 3;
+            r30 = r30 + 4;
+            out[6] = r3;
             r3 = r9;
             r9 = r9 + 2;
-            *(short *)(out + 0x0E) = r10;
+            out[7] = r10;
             r4 = r4 + 5;
             r3 = r3 + 5;
-            *(short *)(out + 0x10) = r8;
+            out[8] = r8;
             r6 = r6 + 5;
             innerBase = innerBase + 5;
-            *(short *)(out + 0x12) = r8;
-            *(short *)(out + 0x14) = r10;
-            *(short *)(out + 0x16) = r9;
-            *(short *)(out + 0x18) = r10;
-            *(short *)(out + 0x1A) = r12;
-            *(short *)(out + 0x1C) = r9;
-            *(short *)(out + 0x1E) = r9;
-            *(short *)(out + 0x20) = r12;
-            *(short *)(out + 0x22) = r11;
-            *(short *)(out + 0x24) = r12;
-            *(short *)(out + 0x26) = r29;
-            *(short *)(out + 0x28) = r11;
-            *(short *)(out + 0x2A) = r11;
-            *(short *)(out + 0x2C) = r29;
-            *(short *)(out + 0x2E) = r30;
-            *(short *)(out + 0x30) = r29;
-            *(short *)(out + 0x32) = r4;
-            *(short *)(out + 0x34) = r30;
-            *(short *)(out + 0x36) = r30;
-            *(short *)(out + 0x38) = r4;
-            *(short *)(out + 0x3A) = r3;
-            out += 0x3C;
+            out[9] = r8;
+            out[10] = r10;
+            out[11] = r9;
+            out[12] = r10;
+            out[13] = r12;
+            out[14] = r9;
+            out[15] = r9;
+            out[16] = r12;
+            out[17] = r11;
+            out[18] = r12;
+            out[19] = r29;
+            out[20] = r11;
+            out[21] = r11;
+            out[22] = r29;
+            out[23] = r30;
+            out[24] = r29;
+            out[25] = r4;
+            out[26] = r30;
+            out[27] = r30;
+            out[28] = r4;
+            out[29] = r3;
+            out += 30;
         }
         row++;
         rowBase += 16;
@@ -1049,20 +1051,18 @@ extern float fn_802C9C38(void);
 extern float fn_802C9C48(void);
 extern void fn_802BED90(float *);
 extern void fn_802C03F0(void *arg0) {
-char pad[640];
-float m[12];
-float a, b, c, d;
-float e, f, g, h;
-fn_802C8B08(m);
-fn_802C98DC(&a, &b, &c, &d, m[10]);
-(void)fn_8002F234(0, 0);
-(void)fn_802C9C50();
-(void)fn_802C9C40();
-(void)fn_802C9C38();
-(void)fn_802C9C48();
-(void)arg0;
-(void)pad;
-(void)e; (void)f; (void)g; (void)h;
+    float m[12];
+    float a, b, c, d;
+    float e, f, g, h;
+    fn_802C8B08(m);
+    fn_802C98DC(&a, &b, &c, &d, m[10]);
+    (void)fn_8002F234(0, 0);
+    (void)fn_802C9C50();
+    (void)fn_802C9C40();
+    (void)fn_802C9C38();
+    (void)fn_802C9C48();
+    (void)arg0;
+    (void)e; (void)f; (void)g; (void)h;
 }
 
 #pragma pop
