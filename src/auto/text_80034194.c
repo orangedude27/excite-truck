@@ -1202,8 +1202,6 @@ void fn_800357A8(void) {
 void DVDInit(void) {
     s32 bootMagic;
     s32 one = 1;
-    s32 ver;
-    u32 diskBase;
     u8 *disk;
     if (DVDInitialized_8055D888 == 0) {
         OSRegisterVersion(__DVDVersion);
@@ -1222,14 +1220,12 @@ void DVDInit(void) {
             FirstTimeInBootrom_8055D868 = one;
         }
         memset(__ErrorInfo, 0, 0x80);
-        memcpy(__ErrorInfo, (void *)0x80000000, 4);
-        diskBase = 0x80000000;
-        disk = (u8 *)diskBase;
+        disk = (u8 *)0x80000000;
+        memcpy(__ErrorInfo, disk, 4);
         __ErrorInfo[4] = disk[6];
-        ver = disk[7];
-        __ErrorInfo[5] = (u8)ver;
+        __ErrorInfo[5] = disk[7];
         __DVDLayoutFormat = 0;
-        DVDSetAutoFatalMessaging(one, (u8)ver, __ErrorInfo, (u8 *)diskBase);
+        ((BOOL (*)(BOOL))DVDSetAutoFatalMessaging)(1);
     }
 }
 
@@ -1495,46 +1491,39 @@ static inline BOOL CheckCancel(u32 resume) {
     return FALSE;
 }
 
-#pragma push
-#pragma dont_inline on
+#pragma dont_inline off
 void fn_80035E6C(u32 arg0) {
-    register s32 state;
-    s32 firstInterrupts;
     s32 taskType;
+    u32 kind;
+    s32 firstInterrupts;
     u32 status;
     s32 code;
-    s32 handled;
-    void *block;
-    void (*callback)(s32, void *);
-    register u32 kind = arg0;
-    u8 *info;
-    u32 value;
     u32 tick;
     u32 period;
 
     firstInterrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0)
-        *(u32 *)(__ErrorInfo + 0x78) = kind;
+        *(u32 *)(__ErrorInfo + 0x78) = arg0;
     else
-        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = kind;
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = arg0;
     OSRestoreInterrupts(firstInterrupts);
 
-    if (kind == 0x10) {
+    if (arg0 == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
         return;
     }
-    if (kind == 0x20) {
+    if (arg0 == 0x20) {
         fn_8003A1A0(0x1234569, fn_80035C78);
         return;
     }
-    if (kind & 2) {
+    if (arg0 & 2) {
         fn_8003A1A0(0x1234567, fn_80035C64);
         return;
     }
 
     taskType = ((s32 (*)(void))fn_8003BCC0)();
     kind = taskType & 0xFF000000;
-    status = fn_80035CB4(taskType);
+    status = ((u32 (*)(u32))fn_80035CB4)(taskType);
     if (status == 1) {
         fn_8003A1A0(taskType, fn_80035C64);
         return;
@@ -1556,23 +1545,7 @@ void fn_80035E6C(u32 arg0) {
         code = 5;
     }
 
-    if (lbl_8055D858 != 0) {
-        block = (void *)executing_8055D8C8;
-        lbl_8055D85C = code;
-        lbl_8055D858 = 0;
-        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-        *(s32 *)((char *)block + 0xC) = 0xA;
-        callback = *(void (**)(s32, void *))((u8 *)block + 0x28);
-        if (callback != 0)
-            callback(-3, block);
-        if (lbl_8055D8B8 != 0)
-            lbl_8055D8B8(0, block);
-        fn_80038040();
-        handled = 1;
-    } else {
-        handled = 0;
-    }
-    if (handled != 0)
+    if (CheckCancel(code))
         return;
 
     if (status == 2) {
@@ -1581,17 +1554,7 @@ void fn_80035E6C(u32 arg0) {
     }
     if (status == 3) {
         if ((u32)((taskType & 0x00FFFFFF) - 0x00030000) == 0x1100) {
-            value = *(u32 *)((char *)executing_8055D8C8 + 0x10);
-            state = OSDisableInterrupts();
-            if (*(volatile u32 *)&lbl_8055D848 >= 5)
-                *(volatile u32 *)&lbl_8055D848 = 0;
-            info = (u8 *)__ErrorInfo;
-            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 2;
-            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = value;
-            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
-            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-            *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
-            OSRestoreInterrupts(state);
+            fn_800356F4(2, *(u32 *)((char *)executing_8055D8C8 + 0x10), 0);
             fn_8003B9CC(*(u32 *)((char *)executing_8055D8C8 + 0x10),
                         (void *)fn_80036370);
             return;
@@ -1607,8 +1570,8 @@ void fn_80035E6C(u32 arg0) {
             OSCreateAlarm(&lbl_80376AD0);
             tick = OSGetTick();
             period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
-            ((void (*)(void *, u64, u64, void (*)(void)))OSSetPeriodicAlarm)(
-                &lbl_80376AD0, (u64)tick, (u64)period, fn_8003801C);
+            OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period,
+                               fn_8003801C);
         }
         return;
     }
@@ -1625,23 +1588,14 @@ void fn_80035E6C(u32 arg0) {
             OSCreateAlarm(&lbl_80376AD0);
             tick = OSGetTick();
             period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
-            ((void (*)(void *, u64, u64, void (*)(void)))OSSetPeriodicAlarm)(
-                &lbl_80376AD0, (u64)tick, (u64)period, fn_8003801C);
+            OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period,
+                               fn_8003801C);
         }
         return;
     }
     if (kind == 0) {
         if ((u32)(taskType - 0x00050000) == 0x3000) {
-            state = OSDisableInterrupts();
-            if (*(volatile u32 *)&lbl_8055D848 >= 5)
-                *(volatile u32 *)&lbl_8055D848 = 0;
-            info = (u8 *)__ErrorInfo;
-            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x10;
-            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
-            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
-            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-            *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
-            OSRestoreInterrupts(state);
+            fn_800356F4(0x10, 0, 0);
             fn_8003AF1C(0, 0, (void *)fn_800373E0);
             return;
         }
@@ -1650,7 +1604,6 @@ void fn_80035E6C(u32 arg0) {
     }
     fn_8003A1A0(0x1234567, fn_80035C64);
 }
-#pragma pop
 
 extern void fn_80036550(u32);
 void fn_80036370(u32 arg0) {
@@ -2231,10 +2184,6 @@ void fn_800375A8(u32 arg0) {
         fn_8003A1A0(0x1234569, fn_80035C78);
     } else if ((value & 1u) != 0u) {
         u32 layout;
-        u32 shiftedSize;
-        u32 formattedSize;
-        u32 rawSize;
-        u32 discOffset;
         lbl_8055D860 = 0;
         lbl_8055D8CC = (s32)fn_8003588C;
         if (*(u32 *)((u8 *)bootInfo_8055D8C0 + 0x3C) < *(u32 *)(lbl_80376A80 + 8)) {
@@ -2242,11 +2191,12 @@ void fn_800375A8(u32 arg0) {
         }
         fn_8003BCDC(0);
         layout = *(volatile u32 *)&__DVDLayoutFormat;
-        rawSize = *(u32 *)(lbl_80376A80 + 4);
-        discOffset = rawSize >> layout;
-        shiftedSize = *(u32 *)(lbl_80376A80 + 8) << (~*(volatile u32 *)&__DVDLayoutFormat & 2u);
-        formattedSize = (shiftedSize + 0x1Fu) & ~0x1Fu;
-        ((void (*)(s32, s32, s32, u32, u32))fn_800356F4)(1, discOffset, formattedSize, layout, rawSize);
+        ((void (*)(s32, u32, u32, u32, u32))fn_800356F4)(
+            1,
+            *(u32 *)(lbl_80376A80 + 4) >> layout,
+            ((*(u32 *)(lbl_80376A80 + 8) << (~*(volatile u32 *)&__DVDLayoutFormat & 2u)) + 0x1Fu) & ~0x1Fu,
+            layout,
+            *(u32 *)(lbl_80376A80 + 4));
         fn_8003B81C(*(void **)((u8 *)bootInfo_8055D8C0 + 0x38),
                     ((*(u32 *)(lbl_80376A80 + 8) << (~*(volatile u32 *)&__DVDLayoutFormat & 2u)) + 0x1Fu) & ~0x1Fu,
                     *(u32 *)(lbl_80376A80 + 4) >> *(volatile u32 *)&__DVDLayoutFormat,
