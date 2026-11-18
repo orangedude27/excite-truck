@@ -6,7 +6,6 @@ struct V9_8013FAC4 { virtual void d0(); virtual void d1(); virtual void m0(); vi
 struct V10_8013FAC4 { virtual void d0(); virtual void d1(); virtual void *v10(void *); };
 struct VC_8013FAC4 { virtual void d0(); virtual void vC(void *); };
 extern "C" void *memset(void *, s32, u32);
-static inline s32 cmp_half_mask(s32 m, s32 h) { return (h - m) < 0; }
 extern "C" f32 fn_801B306C(void);
 extern "C" s32 fn_80009C84(void);
 extern "C" s32 fn_80179630(s32);
