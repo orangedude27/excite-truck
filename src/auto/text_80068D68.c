@@ -2220,9 +2220,12 @@ s32 fn_8006A460(s32 arg0) {
     shorts1 = (u16 *)(base + 0x1D20);
     shorts2 = (u16 *)(base + 0x1D40);
     for (i = 0; i < 16; i++) {
-        words[i] = init_zero;
-        shorts1[i] = init_zero;
-        shorts2[i] = init_zero;
+        *words = init_zero;
+        *shorts1 = init_zero;
+        *shorts2 = init_zero;
+        words++;
+        shorts1++;
+        shorts2++;
     }
 
     *(u8 **)(setup + 0x18) = setup + 0x58;
@@ -13384,10 +13387,11 @@ scan_early:
         (*p_callback)(bd_addr, p_dev_rec->p_ref_data, rc);
         p_dev_rec->p_callback = NULL;
     }
-    return rc;
-}
+         return rc;
+ }
+#pragma scheduling reset
 
-extern u8 lbl_80316DC8[];
+ extern u8 lbl_80316DC8[];
 
 tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_originator,
                                UINT32 mx_proto_id, UINT32 mx_chan_id,
@@ -26148,7 +26152,6 @@ u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
     u8 c1A = 0x1A;
     u8 c19 = 0x19;
     u32 i = 0;
-    u32 cnt = count;
     s32 j;
     u16 len;
     u8 *start;
@@ -26158,7 +26161,7 @@ u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
     start = p;
     *out = 0x35;
     p++;
-    for (; i < cnt; i++) {
+    for (; i < count; i++) {
         len = *(u16 *)uuid;
         if (len == 2) {
             *p++ = c19;
