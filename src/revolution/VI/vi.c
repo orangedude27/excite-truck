@@ -906,6 +906,7 @@ void VIWaitForRetrace(void)
 static void calcFbbs(u32 bufAddr, u16 panPosX, u16 panPosY, u8 wordPerLine, VIXFBMode xfbMode, u16 dispPosY, u32 *tfbb, u32 *bfbb);
 void fn_80059AD8(SomeVIStruct* HorVer, u32* tfbb, u32* bfbb, u32* rtfbb, u32* rbfbb) {
     u32 shifted;
+    u16 *reg;
 
     calcFbbs(HorVer->bufAddr, HorVer->PanPosX, HorVer->AdjustedPanPosY, HorVer->wordPerLine, HorVer->FBMode, HorVer->AdjustedDispPosY, tfbb, bfbb);
     if (HorVer->threeD) {
@@ -924,22 +925,24 @@ void fn_80059AD8(SomeVIStruct* HorVer, u32* tfbb, u32* bfbb, u32* rtfbb, u32* rb
         *rbfbb >>= 5;
     }
 
-    shdwRegs[15] = (u16)*tfbb;
+    reg = shdwRegs;
+
+    reg[15] = (u16)*tfbb;
     MARK_CHANGED(15);
+    reg[14] = (shifted << 12) | ((*tfbb >> 16) | (HorVer->xof << 8));
     MARK_CHANGED(14);
-    shdwRegs[14] = (shifted << 12) | ((*tfbb >> 16) | (HorVer->xof << 8));
-    shdwRegs[19] = (u16)*bfbb;
+    reg[19] = (u16)*bfbb;
     MARK_CHANGED(19);
-    shdwRegs[18] = *bfbb >> 16;
+    reg[18] = *bfbb >> 16;
     MARK_CHANGED(18);
     if (HorVer->threeD) {
-        shdwRegs[17] = (u16)*rtfbb;
+        reg[17] = (u16)*rtfbb;
         MARK_CHANGED(17);
+        reg[16] = *rtfbb >> 16;
         MARK_CHANGED(16);
-        shdwRegs[16] = *rtfbb >> 16;
-        shdwRegs[21] = (u16)*rbfbb;
+        reg[21] = (u16)*rbfbb;
         MARK_CHANGED(21);
-        shdwRegs[20] = *rbfbb >> 16;
+        reg[20] = *rbfbb >> 16;
         MARK_CHANGED(20);
     }
 }
@@ -1150,6 +1153,7 @@ void VIConfigure(const GXRenderModeObj *rm)
     u32 newNonInter;
     s32 tvInBootrom;
     u32 tvInGame;
+    u16 dispSizeY;
     enabled = OSDisableInterrupts();
     newNonInter = rm->tvInfo & 3;
     if (HorVer.nonInter != newNonInter) {
@@ -1173,15 +1177,18 @@ void VIConfigure(const GXRenderModeObj *rm)
     case 2:
     case 6:
     case 7:
-        if (tvInGame == 0 || tvInGame == 2 || tvInGame == 6 || tvInGame == 7) {
-            break;
+        if (tvInGame != 0 && tvInGame != 2 && tvInGame != 6 && tvInGame != 7) {
+            goto panic;
         }
+        break;
     case 1:
     case 5:
-        if (tvInGame == 1 || tvInGame == 5) {
-            break;
+        if (tvInGame != 1 && tvInGame != 5) {
+            goto panic;
         }
+        break;
     default:
+    panic:
         OSPanic(lbl_80558FAC, 0x9A1, msgBase + 0x3f4, tvInBootrom, tvInGame);
         break;
     }
@@ -1200,26 +1207,27 @@ void VIConfigure(const GXRenderModeObj *rm)
     HorVer.PanSizeY = rm->xfbHeight;
     HorVer.PanPosX = 0;
     HorVer.PanPosY = 0;
-    HorVer.DispSizeY = HorVer.PanSizeY;
+    dispSizeY = HorVer.PanSizeY;
     if (HorVer.nonInter == 2 || HorVer.nonInter == 3) {
     } else if (HorVer.FBMode == VI_XFBMODE_SF) {
-        HorVer.DispSizeY = (u16)(HorVer.PanSizeY * 2);
+        dispSizeY = (u16)(HorVer.PanSizeY * 2);
     }
+    HorVer.DispSizeY = dispSizeY;
     HorVer.threeD = (HorVer.nonInter == 3);
     tm = (VITiming*)fn_80059234(HorVer.tv * 4 + HorVer.nonInter);
     HorVer.timing = tm;
     AdjustPosition(tm->acv);
     setInterruptRegs(tm);
     {
-        u32 var_r5_2;
-        u16 var_r10;
-        u16 var_r9;
+        u32 var_r5_2 = shdwRegs[1];
+        u32 var_r10 = shdwRegs[54];
+        u32 var_r9;
         if (HorVer.nonInter == 2 || HorVer.nonInter == 3) {
-            var_r5_2 = (shdwRegs[1] & ~4) | 4;
-            var_r10 = (shdwRegs[54] & ~1) | 1;
+            var_r5_2 = (var_r5_2 & ~4) | 4;
+            var_r10 = (var_r10 & ~1) | 1;
         } else {
-            var_r10 = shdwRegs[54] & ~1;
-            var_r5_2 = (shdwRegs[1] & ~4) | ((HorVer.nonInter << 2) & 4);
+            var_r10 = var_r10 & ~1;
+            var_r5_2 = (var_r5_2 & ~4) | ((HorVer.nonInter << 2) & 4);
         }
         var_r9 = ((var_r5_2 & ~8) | (HorVer.threeD * 8)) & ~0x300;
         if (HorVer.tv == 1 || HorVer.tv == 2 || HorVer.tv == 3) {
@@ -1256,9 +1264,9 @@ void VIConfigurePan(u16 xOrg, u16 yOrg, u16 width, u16 height)
     HorVer.PanPosY = yOrg;
     HorVer.PanSizeX = width;
     HorVer.PanSizeY = height;
-    if (HorVer.nonInter != 2 && HorVer.nonInter != 3 && HorVer.FBMode == 0) {
-        height <<= 1;
-    }
+    height = (HorVer.nonInter == 2) ? height :
+             (HorVer.nonInter == 3) ? height :
+             (HorVer.FBMode == 0) ? (u16)(height << 1) : height;
     HorVer.DispSizeY = height;
     tm = HorVer.timing;
     AdjustPosition(tm->acv);
