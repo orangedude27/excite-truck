@@ -1981,7 +1981,7 @@ done:
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma cplusplus on
 extern "C" s32 fn_80162FE8(void *arg0) {
     class Obj {
@@ -1990,8 +1990,8 @@ extern "C" s32 fn_80162FE8(void *arg0) {
         virtual void v5(); virtual void v6(); virtual void v7();
         virtual s32 check();
     };
-    f32 tmp = *(f32 *)((char *)arg0 + 0x5B8);
     Obj *obj = (Obj *)arg0;
+    f32 tmp = *(f32 *)((char *)obj + 0x5B8);
     if (obj->check() != 0) {
         return *(f32 *)((char *)obj + 0x5B4) > tmp;
     }
