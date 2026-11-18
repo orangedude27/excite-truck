@@ -44,6 +44,8 @@ void* fn_801B3B70(void*);
 extern void* memset(void*, s32, u32);
 extern u8 lbl_80435C50[0x20];
 
+typedef struct Row801B4570 { s32 key; f32 value; } Row801B4570;
+typedef struct Cursor801B4570 { Row801B4570 *rows; s32 count; s32 index; } Cursor801B4570;
 typedef struct V3_801B34DC { f32 x, y, z; } V3_801B34DC;
 typedef struct Ev38_801B34DC { V3_801B34DC a, b, c, d; s32 id; s32 kind; } Ev38_801B34DC;
 typedef struct Ev14_801B34DC { s32 id; V3_801B34DC p; f32 w; } Ev14_801B34DC;
@@ -526,8 +528,10 @@ extern u8 lbl_80335D74[];
 extern void fn_802E317C(const char*, ...);
 extern void* fn_8012850C(s32, void*);
 void fn_801B3FD8(void* arg0) {
+    struct OutRec { s32 a; f32 c; };
     Out801B3FD8* out = (Out801B3FD8*)arg0;
     Ent801B3FD8* tbl = (Ent801B3FD8*)lbl_802F9630;
+    Ent801B3FD8* base = (Ent801B3FD8*)lbl_802F9630;
     s32 g, start = 0;
     u32 pos = 0;
     for (g = 0; g < 6; g++, out++) {
@@ -536,12 +540,12 @@ void fn_801B3FD8(void* arg0) {
         while (pos < 13 && tbl[pos].group == g) pos++;
         n = pos - start;
         if (n < 1) fn_802E317C(lbl_80335D50, g);
-        out->p = fn_8012850C(n * 8, lbl_80335D74);
+        out->p = (Ent801B3FD8*)fn_8012850C(n * 8, lbl_80335D74);
         out->n = n;
         out->z = 0;
         for (i = 0; i < n; i++) {
-            ((s32*)out->p)[i * 2] = tbl[start + i].a;
-            ((f32*)out->p)[i * 2 + 1] = tbl[start + i].c;
+            ((struct OutRec*)out->p)[i].a = base[start + i].a;
+            ((struct OutRec*)out->p)[i].c = base[start + i].c;
         }
     }
 }
