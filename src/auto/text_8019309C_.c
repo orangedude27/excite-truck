@@ -260,8 +260,8 @@ void fn_8019321C(void *arg0, void *arg1, void *arg2) {
     oy = (float)neg * c + dy * d;
     ox += stack[6];
     oy += stack[7];
-    *(float *)arg0 = ox;
-    *(float *)((char *)arg0 + 4) = oy;
+    *(float *)arg0 = stack[0] = ox;
+    *(float *)((char *)arg0 + 4) = stack[1] = oy;
 }
 #pragma processor reset
 extern float lbl_80562140, lbl_80562148;
@@ -274,9 +274,7 @@ void fn_8019330C(void *out, void *in, int arg2) {
     float length;
     float denom;
     float scale;
-    float sx, sy, dx, dy;
-    work[2] = x;
-    work[3] = y;
+    float sx, sy, dx, dy, nsx;
     length = (float)fn_8002F234(sq);
     denom = lbl_80562148 > length ? lbl_80562148 : length;
     scale = lbl_80562140 / denom;
@@ -291,9 +289,10 @@ void fn_8019330C(void *out, void *in, int arg2) {
     work[2] = sx;
     work[3] = sy;
     work[4] = sy;
-    work[5] = -sx;
+    nsx = -sx;
+    work[5] = nsx;
     *(float *)((char *)out + 4) = dx * sx + dy * sy;
-    *(float *)out = dx * sy + dy * -sx;
+    *(float *)out = dx * sy + dy * (float)(double)nsx;
 }
 #pragma dont_inline reset
 
@@ -703,7 +702,8 @@ extern int fn_801B2F24(void);
 extern float lbl_80562198, lbl_805621B8, lbl_805621BC, lbl_805621C0, lbl_805621C4;
 static inline float Cross2D_80194324(float ax, float ay, float bx, float by) {
     float n = -ay;
-    return ax * bx + by * n;
+    float p = ax * bx;
+    return p + by * n;
 }
 #pragma cplusplus on
 extern "C" int fn_800216D0(void);
@@ -2855,14 +2855,14 @@ void fn_80197BD0(void *arg0, void *arg1) {
  if (*(u8*)((char*)arg0+0xfc)) {
   if (*(float*)((char*)arg0+0xec)<lbl_8056227C || *(int*)((char*)arg0+0x100)>1) {
    fn_8019315C(arg0,*(int*)((char*)arg0+0x114)); i=*(int*)((char*)arg0+0x114); p=lbl_804349C0[i];
-   f5=f31+__fabs(*(float*)((char*)arg0+0x104))*(f30-f31);
+   f5=f31+__fabsf(*(float*)((char*)arg0+0x104))*(f30-f31);
    special=p && *(int*)((char*)arg0+0x290)==*(int*)((char*)p+0x114);
    f4=*(float*)((char*)arg0+0xf8); f6=f4-*(float*)((char*)arg0+0x108);
-   if (__HI(f4)!=__HI(f6)&&!special) f6=f4>lbl_80562144?lbl_80562140:lbl_805621A4;
+   if ((*(unsigned int*)&f4 & 0x80000000U) != (*(unsigned int*)&f6 & 0x80000000U)&&!special) f6=f4>lbl_80562144?lbl_80562140:lbl_805621A4;
    if (*(int*)((char*)arg0+0x114)!=*(int*)((char*)arg0+0x118)||*(float*)((char*)arg0+0xec)>lbl_80562194) {
-    *(float*)((char*)arg0+0x10c)=f6; f3=__fabs(f6); f30=lbl_80562284+lbl_8056215C*(f5+f31);
+    *(float*)((char*)arg0+0x10c)=f6; f3=__fabsf(f6); f30=lbl_80562284+lbl_8056215C*(f5+f31);
     if (f3<f30) {
-     if ((*(u8*)((char*)arg0+0x9c)||*(u8*)((char*)arg0+0x74))&&__HI(f6)!=__HI(*(float*)((char*)arg0+0xcc))) fn_8019309C(arg0,*(int*)((char*)arg0+0xdc),0);
+     if ((*(u8*)((char*)arg0+0x9c)||*(u8*)((char*)arg0+0x74))&&(*(unsigned int*)&f6 & 0x80000000U) != (*(unsigned int*)((char*)arg0+0xcc) & 0x80000000U)) fn_8019309C(arg0,*(int*)((char*)arg0+0xdc),0);
      f1=*(float*)((char*)arg0+0x10c)>lbl_80562144?lbl_80562140:lbl_805621A4;
      f2=( *(float*)((char*)arg0+0x54)-lbl_80562144)/(*(float*)((char*)arg0+0xec)-lbl_80562144); if(f2>lbl_80562140) f2=lbl_80562140; if(f2<lbl_80562144) f2=lbl_80562144;
      f3=*(float*)((char*)arg0+0x278); f4=(*(float*)((char*)arg0+0xec)-lbl_8056227C)/lbl_80562288;
@@ -3093,9 +3093,18 @@ void fn_80198488(void *arg0) {
 }
 
 void fn_80198530(void *arg0) {
-    float a = lbl_80562140;
-    float b = lbl_80562144;
-    (void)a; (void)b;
+    char *o = (char *)arg0;
+    float sp10 = lbl_80562140;
+    float spC = lbl_80562144;
+    float v28 = *(float *)(o + 0x28);
+    float v24 = *(float *)(o + 0x24);
+    float r = sp10;
+    if (v28 < spC) {
+        if (v24 < lbl_805621A4) r = v24; else r = lbl_805621A4;
+    } else {
+        if (v24 > v28) { if (v24 < lbl_805621A4) r = v24; }
+    }
+    (void)sp10; (void)spC; (void)r;
     fn_801961FC(arg0);
 }
 
