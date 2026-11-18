@@ -114,6 +114,7 @@ void fn_8028CFB0(void) {
 extern int fn_802CAC28(int, int);
 extern int fn_802E317C(char *, ...);
 extern char lbl_80348C50[];
+struct Tbl8028D084 { char f[0x30]; };
 extern char lbl_8055C8C8[];
 #pragma cplusplus on
 struct Obj8028D084 {
@@ -134,7 +135,7 @@ extern "C" void fn_8028D084(void *arg0, void *arg1) {
     char *base = lbl_80348C50;
     int value;
     *(int *)arg0 = fn_802CAC28(((Obj8028D084 *)arg1)->f5(lbl_8055C8C8), 0);
-    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9(&lbl_80348C50[0]);
+    *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9((char *)&lbl_80348C50);
     *(float *)((char *)arg0 + 8) = ((Obj8028D084 *)arg1)->f9(base + 0xC);
     *(float *)((char *)arg0 + 0xC) = ((Obj8028D084 *)arg1)->f9(base + 0x18);
     value = ((Obj8028D084 *)arg1)->f7(base + 0x24);
@@ -142,7 +143,6 @@ extern "C" void fn_8028D084(void *arg0, void *arg1) {
     if (value < 8 || value > 0x24)
         fn_802E317C(base + 0x30, value);
 }
-#pragma cplusplus reset
 extern char lbl_804B3470[];
 extern char lbl_80348CA0[];
 extern int lbl_8055C8D0;
@@ -163,7 +163,7 @@ int fn_8028D17C(void) {
         virtual void v20();
         virtual void *get(void *);
     };
-    register int *base;
+    char *base;
     register int *slot;
     int i;
     register int invalid;
@@ -171,7 +171,7 @@ int fn_8028D17C(void) {
     void *obj;
     slot = (int *)lbl_804B3470;
     lbl_8055F728 = 0;
-    base = &lbl_804B3400;
+    base = (char *)&lbl_804B3400;
     i = 0;
     invalid = -1;
     for (; i < 8; i++) {
@@ -181,7 +181,7 @@ int fn_8028D17C(void) {
             obj = ((Obj *)obj)->get(&lbl_8055C8D0);
         }
         if (obj != 0) {
-            fn_8028D084((char *)base + lbl_8055F728 * 0x1C, obj);
+            fn_8028D084(base + lbl_8055F728 * 0x1C, obj);
             *slot = lbl_8055F728;
             lbl_8055F728++;
         } else {
@@ -309,12 +309,14 @@ void fn_8028D4FC(void) {
     {
         float f = lbl_805643F0;
         int k = 0;
+        int *p;
         int o = 0;
         int *b;
         while (k < *(volatile int *)&lbl_8055F724) {
             b = (int *)*(volatile int *)&lbl_8055F720;
             *(int *)((char *)b + o) = -1;
-            *(float *)((char *)b + o + 4) = f;
+            p = (int *)((char *)b + o);
+            *(float *)((char *)p + 4) = f;
             k++;
             o += 8;
         }
@@ -325,37 +327,31 @@ void fn_8028D58C(void *arg0)
 {
   unsigned int count;
   int startIndex;
-  unsigned char *new_var;
   unsigned char *end;
   unsigned char *start;
-  int new_var2;
   unsigned char *current;
   unsigned char *dst;
   int normalized;
   count = *((unsigned int *) (((char *) arg0) + 4));
-  current = start;
   startIndex = (((int) count) - (*((int *) (((char *) arg0) + 8)))) + 2;
-  startIndex = startIndex & (((-startIndex) & (~startIndex)) >> 31);
+  startIndex = startIndex > 0 ? startIndex : 0;
   dst = *((unsigned char **) arg0);
   end = dst + (count * 0x28);
   start = dst + (((unsigned int) startIndex) * 0x28);
   for (current = start; current < end; current += 0x28)
   {
-    unsigned int marker = 0;
-    new_var = current;
-    count = 0x100;
-    if (((current > start) && (current[0x26] != 0)) && (((((*((unsigned short *) (current + 0x24))) >= count) || (((*((unsigned short *) (current - 4))) + 1) > count)) || ((new_var + 0x28) >= end)) || ((new_var[0x4E] != 0) && ((*((unsigned short *) (new_var + 0x4C))) >= count))))
+    startIndex = 0;
+    if (((current > start) && (current[0x26] != 0)) && (((((*((unsigned short *) (current + 0x24))) >= 0x100) || ((*((unsigned short *) (current - 4))) >= 0x100)) || ((current + 0x28) >= end)) || ((current[0x4E] != 0) && ((*((unsigned short *) (current + 0x4C))) >= 0x100))))
     {
-      marker = 1;
+      startIndex = 1;
     }
-    current[0x26] = (unsigned char) marker;
+    current[0x26] = (unsigned char) startIndex;
   }
 
   dst = *((unsigned char * volatile *) arg0);
   for (current = start; current < end; current += 0x28)
   {
-    new_var2 = 0x26;
-    if ((current[new_var2] != 0) || (((current + 0x28) < end) && (current[0x4E] != 0)))
+    if ((current[0x26] != 0) || (((current + 0x28) < end) && (current[0x4E] != 0)))
     {
       *((float *) (dst + 0x00)) = *((float *) (current + 0x00));
       *((float *) (dst + 0x04)) = *((float *) (current + 0x04));
@@ -368,7 +364,7 @@ void fn_8028D58C(void *arg0)
       *((float *) (dst + 0x1C)) = *((float *) (current + 0x1C));
       *((float *) (0x20 + dst)) = *((float *) (current + 0x20));
       normalized = (*((unsigned short *) (current + 0x24))) - 0x80;
-      normalized &= ((-normalized) & (~normalized)) >> 31;
+      normalized = normalized > 0 ? normalized : 0;
       *((unsigned short *) (dst + 0x24)) = (unsigned short) normalized;
       dst[0x26] = current[0x26];
       dst += 0x28;
@@ -459,16 +455,18 @@ extern void PSVECCrossProduct(void *, void *, void *);
 void fn_8028D89C(void *arg0, int arg1, float arg2) {
 #pragma fp_contract off
     void *base;
+    int idx, kind, flag;
     unsigned char *entry;
-    int idx, kind, key, flag;
-    int *state;
-    unsigned char *group;
     unsigned char *g;
+    unsigned char *itemC;
     unsigned char *item;
     unsigned char *next;
+    int key;
+    int *state;
+    unsigned char *group;
     float crossA[3], crossB[3], crossC[3];
-    float t, gt, scale;
-    int i, v, cl;
+    float t, lim, gt, scale;
+    int i, clamped;
 
     base = *(void **)arg0;
     entry = (unsigned char *)base + arg1 * 0x3c;
@@ -508,11 +506,11 @@ void fn_8028D89C(void *arg0, int arg1, float arg2) {
                 *(float *)(item + 0x20) = crossA[2] * s;
             }
             gt = *(float *)(group + 0xc);
-            t = *(float *)(entry + 0x98) - ((lbl_805643F0 > gt) ? lbl_805643F0 : gt);
+            lim = (lbl_805643F0 > gt) ? lbl_805643F0 : gt;
+            t = *(float *)(entry + 0x98) - lim;
             i = (int)(lbl_80564410 * (*(float *)(group + 4) + *(float *)(group + 8) * t));
-            cl = i & (((-i) & ~i) >> 31);
-            v = 0xFFFF;
-            if (cl < v) { v = cl; *(unsigned short *)(item + 0x24) = v; }
+            clamped = i & (((-i) & ~i) >> 31);
+            if (clamped < 0xFFFF) *(unsigned short *)(item + 0x24) = clamped;
             *(unsigned char *)(item + 0x26) = 1;
             *(int *)(g + 4) = *(int *)(g + 4) + 1;
             *(int *)(group + 0x18) = *(int *)(group + 0x18) + 1;
@@ -540,53 +538,53 @@ void fn_8028D89C(void *arg0, int arg1, float arg2) {
                 *(float *)(item + 0x20) = crossB[2] * s;
             }
             gt = *(float *)(group + 0xc);
-            t = *(float *)(entry + 0x98) - ((lbl_805643F0 > gt) ? lbl_805643F0 : gt);
+            lim = (lbl_805643F0 > gt) ? lbl_805643F0 : gt;
+            t = *(float *)(entry + 0x98) - lim;
             i = (int)(lbl_80564410 * (*(float *)(group + 4) + *(float *)(group + 8) * t));
-            cl = i & (((-i) & ~i) >> 31);
-            v = 0xFFFF;
-            if (cl < v) { v = cl; *(unsigned short *)(item + 0x24) = v; }
+            clamped = i & (((-i) & ~i) >> 31);
+            if (clamped < 0xFFFF) *(unsigned short *)(item + 0x24) = clamped;
         }
     } else {
         int z = 0, o = 1;
         scale = lbl_80564404;
         g = *(unsigned char **)(group + 0x14) + idx * 0xc;
-        item = *(unsigned char **)g + *(int *)(g + 4) * 0x28;
+        itemC = *(unsigned char **)g + *(int *)(g + 4) * 0x28;
         next = *(unsigned char **)g + (*(int *)(g + 4) + 1) * 0x28;
-        *(float *)(item + 0) = *(float *)(entry + 0x7c);
-        *(float *)(item + 4) = *(float *)(entry + 0x80);
-        *(float *)(item + 8) = *(float *)(entry + 0x84);
-        *(float *)(item + 0xc) = *(float *)((unsigned char *)base + 0x34) * scale;
-        *(float *)(item + 0x10) = *(float *)((unsigned char *)base + 0x38) * scale;
-        *(float *)(item + 0x14) = *(float *)((unsigned char *)base + 0x3c) * scale;
+        *(float *)(itemC + 0) = *(float *)(entry + 0x7c);
+        *(float *)(itemC + 4) = *(float *)(entry + 0x80);
+        *(float *)(itemC + 8) = *(float *)(entry + 0x84);
+        *(float *)(itemC + 0xc) = *(float *)((unsigned char *)base + 0x34) * scale;
+        *(float *)(itemC + 0x10) = *(float *)((unsigned char *)base + 0x38) * scale;
+        *(float *)(itemC + 0x14) = *(float *)((unsigned char *)base + 0x3c) * scale;
         PSVECCrossProduct((unsigned char *)base + 0x40, entry + 0x88, crossC);
         if (((*(int *)(entry + 0x9c)) & 8) == 0) {
             float s = lbl_80564408;
-            *(float *)(item + 0x18) = crossC[0] * s;
-            *(float *)(item + 0x1c) = crossC[1] * s;
-            *(float *)(item + 0x20) = crossC[2] * s;
+            *(float *)(itemC + 0x18) = crossC[0] * s;
+            *(float *)(itemC + 0x1c) = crossC[1] * s;
+            *(float *)(itemC + 0x20) = crossC[2] * s;
         } else {
             float s = lbl_8056440C;
-            *(float *)(item + 0x18) = crossC[0] * s;
-            *(float *)(item + 0x1c) = crossC[1] * s;
-            *(float *)(item + 0x20) = crossC[2] * s;
+            *(float *)(itemC + 0x18) = crossC[0] * s;
+            *(float *)(itemC + 0x1c) = crossC[1] * s;
+            *(float *)(itemC + 0x20) = crossC[2] * s;
         }
         gt = *(float *)(group + 0xc);
-        t = *(float *)(entry + 0x98) - ((lbl_805643F0 > gt) ? lbl_805643F0 : gt);
+        lim = (lbl_805643F0 > gt) ? lbl_805643F0 : gt;
+        t = *(float *)(entry + 0x98) - lim;
         i = (int)(lbl_80564410 * (*(float *)(group + 4) + *(float *)(group + 8) * t));
-        cl = i & (((-i) & ~i) >> 31);
-        v = 0xFFFF;
-        if (cl < v) { v = cl; *(unsigned short *)(item + 0x24) = v; }
-        *(unsigned char *)(item + 0x26) = z;
-        *(float *)(next + 0) = *(float *)(item + 0);
-        *(float *)(next + 4) = *(float *)(item + 4);
-        *(float *)(next + 8) = *(float *)(item + 8);
-        *(float *)(next + 0x18) = *(float *)(item + 0x18);
-        *(float *)(next + 0x1c) = *(float *)(item + 0x1c);
-        *(float *)(next + 0x20) = *(float *)(item + 0x20);
-        *(float *)(next + 0xc) = *(float *)(item + 0xc);
-        *(float *)(next + 0x10) = *(float *)(item + 0x10);
-        *(float *)(next + 0x14) = *(float *)(item + 0x14);
-        *(unsigned short *)(next + 0x24) = *(unsigned short *)(item + 0x24);
+        clamped = i & (((-i) & ~i) >> 31);
+        if (clamped < 0xFFFF) *(unsigned short *)(itemC + 0x24) = clamped;
+        *(unsigned char *)(itemC + 0x26) = z;
+        *(float *)(next + 0) = *(float *)(itemC + 0);
+        *(float *)(next + 4) = *(float *)(itemC + 4);
+        *(float *)(next + 8) = *(float *)(itemC + 8);
+        *(float *)(next + 0x18) = *(float *)(itemC + 0x18);
+        *(float *)(next + 0x1c) = *(float *)(itemC + 0x1c);
+        *(float *)(next + 0x20) = *(float *)(itemC + 0x20);
+        *(float *)(next + 0xc) = *(float *)(itemC + 0xc);
+        *(float *)(next + 0x10) = *(float *)(itemC + 0x10);
+        *(float *)(next + 0x14) = *(float *)(itemC + 0x14);
+        *(unsigned short *)(next + 0x24) = *(unsigned short *)(itemC + 0x24);
         *(unsigned char *)(next + 0x26) = o;
         *(int *)(g + 4) = *(int *)(g + 4) + 2;
         *(int *)(group + 0x18) = *(int *)(group + 0x18) + 2;
@@ -602,22 +600,15 @@ extern int lbl_804B3490[];
 extern float lbl_80564414;
 extern float fn_801E7E18(void);
 extern void fn_8028D89C(void *, int, float);
-#pragma push
-#pragma processor 750
-#pragma optimization_level 3
-#pragma scheduling invalid_target
-void fn_8028DDF0(register void *arg0, register int arg1) {
+#pragma cplusplus on
+extern "C" void fn_8028DDF0(register void *arg0, register int arg1) {
     typedef struct {
         int *items;
         int index;
         float f8;
         unsigned char c;
     } Entry;
-    typedef struct {
-        int a, b, c, d, e, f, g, h;
-    } Output;
     Entry *entry = (Entry *)arg0;
-    register int invalid;
     register int *slot;
     register int i;
     register float threshold;
@@ -633,9 +624,7 @@ void fn_8028DDF0(register void *arg0, register int arg1) {
     threshold = lbl_80564414;
     result = fn_801E7E18();
     slot = lbl_804B3490;
-    i = 0;
-    invalid = -1;
-    while (i < arg1) {
+    for (i = 0; i < arg1; i++, entry++) {
         if (entry->f8 < threshold &&
             (void *)(unsigned long)entry->items[0x19] == (void *)slot[entry->index] &&
             entry->c != 0) {
@@ -644,14 +633,11 @@ void fn_8028DDF0(register void *arg0, register int arg1) {
                 fn_8028D89C(entry, j, result);
         } else {
             int offset = entry->index << 5;
-            *(int *)((char *)(unsigned long)lbl_8055F720 + offset) = invalid;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 8) = invalid;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x10) = invalid;
-            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x18) = invalid;
+            *(int *)((char *)(unsigned long)lbl_8055F720 + offset) = -1;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 8) = -1;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x10) = -1;
+            *(int *)((char *)(unsigned long)*(volatile int *)&lbl_8055F720 + offset + 0x18) = -1;
         }
         slot[entry->index] = entry->items[0x19];
-        entry++;
-        i++;
     }
 }
-#pragma pop
