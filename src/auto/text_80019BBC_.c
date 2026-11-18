@@ -25,7 +25,7 @@ extern void fn_80019BBC(void);
 extern void fn_8001B7BC(void*);
 extern double fn_8002EFB0(float, float);
 extern void *memset(void*, int, unsigned long);
-extern char lbl_802FD618[];
+char lbl_802FD618[0xA8] = "sfmarker\0\0\0\0trackmap.val\0\0\0\0TrackMap\0\0\0\0tex_size\0\0\0\0min_speed\0\0\0max_speed\0\0\0line_wid\0\0\0\0icon_scale\0\0mapline.tex\0mapline2.tex\0\0\0\0truckdraw\0\0\0mapback.tex\0mapfront.tex";
 extern char lbl_802FD6CC[];
 extern char lbl_802FD6C0[];
 extern char lbl_80358508[];
@@ -128,67 +128,46 @@ extern "C" void* fn_80019C68(int arg0) {
   virtual void v12();
   virtual unsigned long long vec(void*);
  };
- struct Strs {
-  char sfmarker[12]; char trackmap_val[16]; char TrackMap[12]; char tex_size[12];
-  char min_speed[12]; char max_speed[12]; char line_wid[12]; char icon_scale[12];
-  char mapline_tex[12]; char mapline2_tex[16]; char truckdraw[12]; char mapback_tex[12]; char mapfront_tex[16];
- };
  char *alloc;
- Strs *S=(Strs*)lbl_802FD618;
+ char *base=lbl_802FD618;
  char *p;
  void *resource,*node;
  union { unsigned long long bits; float f[2]; } xy;
- float v[2];
  fn_80019BBC();
  if(lbl_8055D5B8==0) {
- alloc=(char*)fn_801284F8(0x18,&S->sfmarker);
- if(alloc) {
- *(int*)alloc=(int)fn_8023512C(lbl_802FD6CC);
- fn_802A1120(alloc+8,v);
- { float x=v[0]; v[0]=v[1]; v[1]=-x; }
- *(int*)(alloc+4)=0;
- *(float*)(alloc+16)=0.0f;
- { float a=v[0]; *(float*)(alloc+20)=(float)fn_8002EFB0(v[1],a); }
- }
- lbl_8055D5B4=alloc;
+ lbl_8055D5B4=new(base) TrackMarker;
  ++lbl_8055D5B8;
  } else ++lbl_8055D5B8;
- alloc=S->trackmap_val;
+ alloc=base+12;
  if(fn_8012C33C(alloc)) {
  p=lbl_80358508+arg0*0x48;
  *(int*)p=-2; *(int*)(p+4)=-2; *(int*)(p+8)=-2; *(int*)(p+12)=-2; *(int*)(p+20)=-2; *(int*)(p+24)=-2;
  resource=fn_80131808(alloc);
- node=((Res*)resource)->get(S->TrackMap);
+ node=((Res*)resource)->get(base+28);
  if(node) {
  *(float*)(p+40)=((Res*)node)->f(lbl_80558C70);
- *(float*)(p+28)=((Res*)node)->f(S->tex_size);
+ *(float*)(p+28)=((Res*)node)->f(base+40);
  xy.bits=((Res*)node)->vec(lbl_80558C78);
  { float y=xy.f[1]; float x=xy.f[0];
  *(float*)(p+32)=x;
  *(float*)(p+32)=x-*(float*)(p+28)*lbl_80560420;
  *(float*)(p+36)=y-*(float*)(p+28)*lbl_80560420;
  }
- *(float*)(p+44)=((Res*)node)->def(S->min_speed,lbl_80560428);
- *(float*)(p+48)=((Res*)node)->def(S->max_speed,lbl_8056042C);
+ *(float*)(p+44)=((Res*)node)->def(base+52,lbl_80560428);
+ *(float*)(p+48)=((Res*)node)->def(base+64,lbl_8056042C);
  *(float*)(p+52)=((Res*)node)->def(lbl_80558C80,*(float*)(p+40)/lbl_80560430);
  *(float*)(p+56)=((Res*)node)->def(lbl_80558C88,*(float*)(p+40)/lbl_80560434);
- *(float*)(p+60)=((Res*)node)->def(S->line_wid,lbl_80560438);
- *(float*)(p+64)=((Res*)node)->def(S->icon_scale,lbl_80560424);
+ *(float*)(p+60)=((Res*)node)->def(base+76,lbl_80560438);
+ *(float*)(p+64)=((Res*)node)->def(base+88,lbl_80560424);
  }
  fn_80131818(resource);
  *(int*)(p+4)=fn_802CB128((int)*(float*)(p+28),(int)*(float*)(p+28),0,0x21);
- *(int*)(p+12)=(int)fn_802CAC28(S->mapline_tex,0);
- *(int*)(p+8)=(int)fn_802CAC28(S->mapline2_tex,0);
+ *(int*)(p+12)=(int)fn_802CAC28(base+100,0);
+ *(int*)(p+8)=(int)fn_802CAC28(base+112,0);
  fn_802C8530(); fn_8001B7BC(p); fn_802C855C();
- alloc=(char*)fn_801284F8(0x4c,S->truckdraw);
- if(alloc) {
- *(int*)alloc=(int)fn_8023512C(lbl_802FD6C0);
- memset(alloc+4,0,0x40);
- *(int*)(alloc+68)=0; *(int*)(alloc+72)=-1;
- }
- *(char**)(p+16)=alloc;
- *(int*)(p+20)=(int)fn_802CAC28(S->mapback_tex,0);
- *(int*)(p+24)=(int)fn_802CAC28(S->mapfront_tex,0);
+ *(TruckDraw**)(p+16)=new(base+128) TruckDraw;
+ *(int*)(p+20)=(int)fn_802CAC28(base+140,0);
+ *(int*)(p+24)=(int)fn_802CAC28(base+152,0);
  *(int*)(p+68)=arg0;
  return p;
  }
