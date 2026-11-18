@@ -6751,7 +6751,6 @@ void bta_hh_api_disable(void) {
 }
 
 #pragma scheduling invalid_target
-#pragma opt_lifetimes off
 void bta_hh_disc_cmpl(void) {
     UINT8 status = 0;
     UINT8 i;
@@ -6768,7 +6767,6 @@ void bta_hh_disc_cmpl(void) {
     (*cb)(1, (void *)&status);
     memset(lbl_803C0D48, 0, 0x230);
 }
-#pragma opt_lifetimes reset
 #pragma scheduling reset
 extern u8 bta_hh_tod_spt(void *, u8);
 /* SDP callback for HID host: on success, ensures device type is supported, adds the
