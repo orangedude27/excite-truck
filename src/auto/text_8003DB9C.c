@@ -5288,11 +5288,8 @@ void GXSetTevColorOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5)
 }
 
 void GXSetTevAlphaOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    unsigned int *base = __GXData;
-    int v;
-    unsigned int *data;
-    data = (unsigned int *)((unsigned char *)base + arg0 * 4);
-    v = data[0x1C0 / 4];
+    unsigned int v;
+    v = __GXData[arg0 + 0x1C0 / 4];
     v = __rlwimi(v, arg1, 18, 13, 13);
     if (arg1 <= 1) {
         v = __rlwimi(v, arg3, 20, 10, 11);
@@ -5305,8 +5302,8 @@ void GXSetTevAlphaOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5)
     v = __rlwimi(v, arg4, 19, 12, 12);
     v = __rlwimi(v, arg5, 22, 8, 9);
     *(volatile unsigned int *)0xCC008000 = v;
-    data[0x1C0 / 4] = v;
-    *(volatile unsigned short *)((unsigned char *)base + 2) = 0;
+    __GXData[arg0 + 0x1C0 / 4] = v;
+    *(volatile unsigned short *)((unsigned char *)__GXData + 2) = 0;
 }
 
 void GXSetTevColor(s32 arg0, unsigned int *arg1) {
