@@ -491,7 +491,6 @@ extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
     *(void **)arg0 = arg2;
     return arg0;
 }
-#pragma opt_unroll_loops reset
 #pragma cplusplus reset
 #pragma pop
 
