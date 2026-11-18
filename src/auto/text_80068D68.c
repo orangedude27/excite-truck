@@ -10882,8 +10882,10 @@ tBTM_STATUS BTM_PmRegister(UINT8 mask, UINT8 *p_pm_id, tBTM_PM_STATUS_CBACK *p_c
 extern u8 lbl_80560D38;
 extern u8 lbl_80560D3C;
 extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
+#pragma inline_max_size 10000
+#pragma inline_max_total_size 10000
 /* Index of the ACL link to remote_bda in btm_cb.acl_db, or 4 if there is none. */
-static inline int btm_pm_find_acl_ind(BD_ADDR remote_bda)
+static __inline UINT8 btm_pm_find_acl_ind(BD_ADDR remote_bda)
 {
     u8 *p = lbl_803C0F78 + 0x34;
     UINT8 xx;
@@ -10897,6 +10899,7 @@ static inline int btm_pm_find_acl_ind(BD_ADDR remote_bda)
 
 tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_mode)
 {
+    tBTM_PM_MODE mode;
     int ind;
     u32 acl_ind;
     UINT8 acl_index;
@@ -10904,7 +10907,6 @@ tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_
     UINT8 *p_cb;
     UINT8 *p_acl;
     UINT8 *p_features;
-    tBTM_PM_MODE mode;
 
     if (pm_id >= 2)
         pm_id = BTM_PM_SET_ONLY_ID;
@@ -10912,20 +10914,16 @@ tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_
         return BTM_ILLEGAL_VALUE;
 
     mode = p_mode->mode & ~BTM_PM_MD_FORCE;
+
     acl_ind = 0;
     p_acl = lbl_803C0F78 + 0x34;
-loop:
-    if (p_acl[0x119] == 0)
-        goto next;
-    if (memcmp(p_acl + 8, remote_bda, 6) != 0)
-        goto next;
-    goto found;
-next:
-    acl_ind++;
-    p_acl += 0x11C;
-    if (acl_ind < 4)
-        goto loop;
-found:
+    while (acl_ind < 4) {
+        if (p_acl[0x119] && memcmp(p_acl + 8, remote_bda, 6) == 0)
+            break;
+        acl_ind++;
+        p_acl += 0x11C;
+    }
+
     acl_index = (UINT8)acl_ind;
     if ((s32)acl_index == 4)
         return BTM_UNKNOWN_ADDR;
