@@ -371,7 +371,7 @@ extern void fn_801ADB44(void *, void *);
 #pragma ppc_psq_save off
 void fn_8017B81C(void *arg0) {
     union { float rotation[9]; float product[9]; } matrixScratch;
-    float transpose[9], gravity[3], angle[3], midpoint[3];
+    volatile float transpose[9]; float gravity[3], angle[3], midpoint[3];
     void **var_r29;
     float temp_f0; float temp_f0_2; float temp_f0_3; float temp_f0_4;
     float temp_f0_5; float temp_f0_6; float temp_f10; float temp_f11;
