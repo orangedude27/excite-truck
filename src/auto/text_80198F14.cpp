@@ -3198,8 +3198,8 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
         if (dist < *(f32 *)(other + 0x24) + *(f32 *)(self + 0x178)) {
             dist = (f32)__fabs((f64)PSVECDotProduct(&boxDelta, (Vec *)(*(u8 **)(other + 0xC) + 0x18)));
             if (dist < *(f32 *)(other + 0x2C) + *(f32 *)(self + 0x178)) {
-            f32 *m = *(f32 **)(other + 0xC);
             u8 *owner = *(u8 **)(self + 4);
+            f32 *m = *(f32 **)(other + 0xC);
             f32 x, y, z, nx, ny, nz;
             local.x = *(f32 *)(owner + 0x60) - m[9];
             local.y = *(f32 *)(owner + 0x64) - m[10];
