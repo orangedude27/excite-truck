@@ -1588,8 +1588,8 @@ void fn_801ACF94(void) {
     void **obj;
     int i, j, zero, first, last, count, off;
     void *root;
-    void *o;
-    void *a;
+    Obj_801ACF94 *o;
+    Mesh_801ACF94 *a;
     float *base, *dst, *src;
     float fill, special, tail, x, y, z;
     root = (void *)lbl_8055E5F0;
@@ -1612,12 +1612,12 @@ void fn_801ACF94(void) {
         j = 0;
         zero = 0;
         while (j < lbl_8055E5EC) {
-            o = *obj;
-            a = *(void **)((char *)o + 0x23C);
+            o = (Obj_801ACF94 *)*obj;
+            a = (Mesh_801ACF94 *)o->unk_0x23C;
             if (a != 0) {
-                first = *(int *)((char *)a + 0x254);
+                first = a->unk_0x254;
                 base = (float *)(sp90);
-                last = *(int *)((char *)o + 0x254);
+                last = o->unk_0x254;
                 dst = (float *)sp3c;
                 off = first * 12;
                 *(int *)dst = zero;
@@ -1981,14 +1981,11 @@ void fn_801AD750(void *arg0, void *arg1) {
 }
 #pragma peephole off
 #pragma scheduling on
+extern void fn_801D0A24(void *arg0, void *arg1);
 void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
-    char *p;
-    void *q;
     if (arg3 >= 8) return;
-    if (arg0 == 0) return;
-    p = (char *)arg0 + 0x23C;
-    q = arg2;
-    fn_801D0A24(p, q);
+    if (arg0 != 0) arg0 = (char *)arg0 + 0x23C;
+    fn_801D0A24(arg0, arg2);
 }
 void fn_801AD7C4(void *arg0, float *arg1, float *arg2, int arg3, void *arg4) {
     void *obj = arg4;
