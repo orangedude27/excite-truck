@@ -38,14 +38,12 @@ extern void *memset(void *, int, unsigned long);
 #pragma push
 #pragma scheduling invalid_target
 void fn_801B6670(void) {
-    UnkEntry *table;
     unsigned char *base = (unsigned char*)&lbl_80335F70;
-    unsigned char *temp_r10;
-    unsigned char *temp_r22;
-    unsigned char *temp_r9;
+    UnkEntry *table = (fn_8000D838(&lbl_8055E728), (UnkEntry*)lbl_80435EE8);
+    void *temp_r10;
+    void *temp_r22;
+    void *temp_r9;
 
-    fn_8000D838(&lbl_8055E728);
-    table = (UnkEntry*)lbl_80435EE8;
     InitEntry(&table[0], 1, (const char *) (base + 0x1C), (const char*)&lbl_8055A8D8, lbl_805626D8, lbl_805626DC);
     InitEntry(&table[1], 2, (const char *) (base + 0x40), (const char *) (base + 0x34), lbl_805626D8, lbl_805626DC);
     table[2].id = 3;
@@ -468,28 +466,28 @@ void fn_801B6670(void) {
     table[61].scale = (float) lbl_805626DC;
     table[62].id = 0x72;
     table[62].name = (const char *) (base + 0x690);
-    table[62].description = (const char *) temp_r22;
+    table[62].description = temp_r22;
     table[62].unk_0x10 = 0;
     table[62].unk_0x14 = 0;
     table[62].value = (float) lbl_805626C8;
     table[62].scale = (float) lbl_805626DC;
     table[63].id = 0x73;
     table[63].name = (const char *) (base + 0x69C);
-    table[63].description = (const char *) temp_r22;
+    table[63].description = temp_r22;
     table[63].unk_0x10 = 0;
     table[63].unk_0x14 = 0;
     table[63].value = (float) lbl_805626C8;
     table[63].scale = (float) lbl_805626DC;
     table[64].id = 0x74;
     table[64].name = (const char *) (base + 0x6A8);
-    table[64].description = (const char *) temp_r22;
+    table[64].description = temp_r22;
     table[64].unk_0x10 = 0;
     table[64].unk_0x14 = 0;
     table[64].value = (float) lbl_805626C8;
     table[64].scale = (float) lbl_805626DC;
     table[65].id = 0x75;
     table[65].name = (const char *) (base + 0x6B4);
-    table[65].description = (const char *) temp_r22;
+    table[65].description = temp_r22;
     table[65].unk_0x10 = 0;
     table[65].unk_0x14 = 0;
     table[65].value = (float) lbl_805626C8;
@@ -511,8 +509,8 @@ void fn_801B6670(void) {
     table[67].value = (float) lbl_805626C8;
     table[67].scale = (float) lbl_805626DC;
     table[68].id = 0x42;
-    table[68].name = (const char *) temp_r9;
-    table[68].description = (const char *) temp_r10;
+    table[68].name = temp_r9;
+    table[68].description = temp_r10;
     table[68].unk_0x10 = 0;
     table[68].unk_0x14 = 0;
     table[68].value = (float) lbl_805626C8;
