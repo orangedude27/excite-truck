@@ -118,12 +118,12 @@ s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
         int groupCount;
         int groups;
     } *archive;
-    struct Group *group;
+    int groupOffset;
     char *item;
     char name[32];
     int valueBuf[8];
     int groupIndex;
-    int groupOffset;
+    struct Group *group;
     int index;
     register int zero;
     register int off;
@@ -142,9 +142,9 @@ s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
                 valueBuf[0] = zero; valueBuf[1] = zero; valueBuf[2] = zero; valueBuf[3] = zero;
                 valueBuf[4] = zero; valueBuf[5] = zero; valueBuf[6] = zero; valueBuf[7] = zero;
                 if (sscanf(item, (const char *)&lbl_8055AEB4, name, (char *)(void *)valueBuf) >= 1 &&
-                    stricmp(name, (const char *)arg0) == 0) {
-                    if (arg1 != 0) {
-                        strcpy((char *)arg1, (char *)(void *)valueBuf);
+                    stricmp(name, (const char *)arg1) == 0) {
+                    if (arg2 != 0) {
+                        strcpy((char *)arg2, (char *)(void *)valueBuf);
                     }
                     return (s32)group + index * 0x50 + 0xC;
                 }
