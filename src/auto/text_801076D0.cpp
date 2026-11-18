@@ -995,7 +995,7 @@ DWRet nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
     if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
     if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x13A,file+0x128);
     u8* p=(u8*)*(u32*)((char*)this+0x14);
-    return (((u32)*(u16*)(p+4)<<8)|p[6])<<8;
+    return *(DWRet *)(p + 4);
 }
 
 /*
