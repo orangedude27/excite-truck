@@ -160,7 +160,7 @@ __declspec(section ".sdata") extern char lbl_8055A160[];
 __declspec(section ".sdata") extern char lbl_8055A168[];
 #pragma pop
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling 750
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
@@ -180,8 +180,8 @@ extern "C" void fn_80165A30(void *arg0, int arg1) {
         virtual void d4(); virtual void d5(); virtual void d6();
         virtual float getValue(const char *);
     };
-    float scaleY = lbl_805618A0, scaleX = lbl_80561898;
     float y, x, z;
+    float scaleY = lbl_805618A0, scaleX = lbl_80561898;
     void *entry = 0;
     Entry *item = 0;
     int j, count, minusOne;
