@@ -2683,13 +2683,11 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                               channelColor[2] = alphaColor[2];
                               channelColor[3] = alphaColor[3];
                               ((int (*)(int, u8 *))GXSetChanMatColor_Internal)(4, &channelColor[0]);
-                            if (var_r25 != 0) {
+                            {
+                                s32 wasSet = var_r25;
                                 var_r25 = 0;
-                                goto alpha_done;
+                                if (wasSet == 0 && (u32)((u32)sp30 + 0x10000) != 0xFFFFU) var_r25 = 1;
                             }
-                            if ((u32)((u32)sp30 + 0x10000) == 0xFFFFU) goto alpha_done;
-                            var_r25 = 1;
-                        alpha_done:;
                           }
                           var_r24 = 0;
                           texMatrices[0] = 0;
