@@ -3333,7 +3333,6 @@ extern "C" void *__dt__Q34Game10MemoryCard8ResourceFv(void *self, s32 shouldDele
     return self;
 }
 
-#pragma scheduling invalid_target
 extern "C" void *fn_8021D7C8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     f32 value;
     ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, arg3, arg4);
