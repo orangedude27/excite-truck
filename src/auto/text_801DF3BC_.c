@@ -36,6 +36,11 @@ struct Glob {
     struct Container container;
 };
 
+struct Root {
+    char pad[0x108];
+    struct Container c;
+};
+
 extern char lbl_804872B0[];
 extern unsigned char lbl_8055AE2C;
 extern unsigned char lbl_8055E9D0;
@@ -44,7 +49,7 @@ extern int lbl_8055E9D8;
 #pragma scheduling invalid_target
 void fn_801DF3BC(void) {
     register char *base asm("r31") = lbl_804872B0;
-    register struct Container *c asm("r9");
+    struct Container *__restrict c = (struct Container *)(base + 0x108);
     struct Elem *p;
     struct Elem *end;
 
@@ -52,7 +57,6 @@ void fn_801DF3BC(void) {
     lbl_8055E9D8 = 0x7F000000;
     fn_8002F53C(base, &fn_801DF6D0, 0, 0x1C, 9);
 
-    c = (struct Container *)(base + 0x108);
     c->elems = c->buf;
     c->count = 0;
     c->capacity = 8;
