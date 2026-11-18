@@ -170,16 +170,20 @@ int fn_8020A878(void *arg0) {
     #undef gActiveVoiceMixer
     #undef kVoiceWorkBufferSize
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8020A8E8(void *arg0) {
     int off;
     int i;
     fn_802E6B34();
-    for (i = 0, off = 0; i < 0x200; i++, off += 4) {
+    i = 0;
+    off = 0;
+    while (i < 0x200) {
         int *list = *(int **)((char *)arg0 + 4);
         if (*(int *)((char *)list + off) != 0) {
             fn_802E317C(lbl_8033C388);
         }
+        i++;
+        off += 4;
     }
     fn_80128670(*(void **)((char *)arg0 + 4));
     *(int *)((char *)arg0 + 4) = 0;
