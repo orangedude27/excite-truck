@@ -156,6 +156,7 @@ extern s32 fn_80128668(void);
 #pragma cplusplus on
 #pragma cplusplus off
 #pragma push
+#pragma pool_strings off
 #pragma optimize_for_size on
 #pragma scheduling invalid_target
 void fn_8028A664(void) {
@@ -180,17 +181,17 @@ void fn_8028A664(void) {
     struct Data { char a[16]; char b[12]; char c[16]; char d[4]; };
     struct Data *data = (struct Data *)lbl_80348B98;
     void *p;
-    p = fn_801284F8(0xDC, &data->a);
+    p = fn_801284F8(0xDC, &data->a[0]);
     if (p != 0) p = fn_8028BB68(p, 0x80, lbl_80564328);
     lbl_8055F6F0 = (s32)p;
-    p = fn_801284F8(0xDC, &data->b);
+    p = fn_801284F8(0xDC, &data->b[0]);
     if (p != 0) p = fn_8028BB68(p, 0x60, lbl_8056432C);
     lbl_8055F6F4 = (s32)p;
-    p = fn_801284F8(0x14, &data->c);
+    p = fn_801284F8(0x14, &data->c[0]);
     if (p != 0) p = fn_8028C824(p, 0x60);
     lbl_8055F6F8 = (s32)p;
     lbl_8055F6FC = fn_802929D8(1, &lbl_8055C8A0, 0, 0);
-    p = fn_802974CC(&data->d);
+    p = fn_802974CC(&data->d[0]);
     *(volatile s32 *)&lbl_8055F700 = (s32)p;
     *(volatile s32 *)&lbl_804B32B8[0x50] = 0;
     fn_8028ABE8(p);
@@ -880,17 +881,23 @@ __declspec(section ".sdata") extern char lbl_8055C8BC[];
 #pragma cplusplus on
 extern "C" void fn_8028BC18(void);
 void *fn_8028BB68(void *arg0, s32 arg1, f32 farg0) {
+#pragma scheduling invalid_target
     extern char lbl_80348C28[];
     extern f32 lbl_8056432C;
     extern f64 lbl_805643B0;
     s32 offset = arg1 * 0x1C;
+    s32 result;
+    f32 ratio;
 
-    fn_8012850C(offset + 0x10, lbl_8055C8BC, offset);
-    *(s32 *)arg0 = fn_8002F37C((void *)fn_8028BC18, 0, 0x1C, arg1);
+    result = ((s32 (*)(void *, void *, s32, s32, s32))fn_8002F37C)(
+        (void *)fn_8012850C(offset + 0x10, lbl_8055C8BC, offset),
+        (void *)fn_8028BC18, 0, 0x1C, arg1);
+    ratio = lbl_8056432C / farg0;
+    *(s32 *)arg0 = result;
     *(s32 *)((u8 *)arg0 + 4) = 0;
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(f32 *)((u8 *)arg0 + 0xC) = farg0;
-    *(f32 *)((u8 *)arg0 + 0x10) = lbl_8056432C / farg0;
+    *(f32 *)((u8 *)arg0 + 0x10) = ratio;
     *(s32 *)((u8 *)arg0 + 0x14) = fn_802CAC28(lbl_80348C28, 0);
     *(f32 *)((u8 *)arg0 + 0x18) = (f32)fn_8002F208(lbl_805643B0);
     return arg0;
@@ -1131,76 +1138,111 @@ void fn_8028BFEC(s32 arg0) {
     list->count = ((s32)out - (s32)list->data) / 28;
 }
 void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
-    f32 m[9];
-    f32 tmp[9];
-    f32 t;
-    f32 s;
-    f32 scale;
-    s32 i;
-    s32 off;
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+    struct Stack {
+        f32 a0, a1, a2;
+        f32 d0, d1, d2;
+        f32 v0, v1, v2;
+        f32 o[12];
+        f32 m[9];
+        f32 pad84;
+        f64 col;
+    } s;
     f32 *a1 = (f32 *)arg1;
     f32 *a2 = (f32 *)arg2;
+    f32 t, now, scale;
+    f32 r0, r1, r2, r3, r4, r5, r6, r7, r8;
+    f32 ageFactor, dot, factor;
+    f32 k0, k1, one, thresh;
+    s32 color;
+    s32 i, off;
+    f32 *ent;
+
     if (fn_802C8DBC(*(s32 *)((u8 *)arg0 + 4) * 4) == 0)
         return;
     t = fn_801E7E18();
-    s = fn_801E7E24();
+    now = fn_801E7E24();
     for (i = 0; i < 9; i++)
-        ((s32 *)m)[i] = ((s32 *)a2)[i];
+        ((s32 *)s.m)[i] = ((s32 *)a2)[i];
     {
-        f32 a = m[1];
-        m[1] = m[3];
-        m[3] = a;
-        a = m[2];
-        m[2] = m[6];
-        m[6] = a;
-        a = m[5];
-        m[5] = m[7];
-        m[7] = a;
+        f32 a = s.m[1]; s.m[1] = s.m[3]; s.m[3] = a;
+        a = s.m[2]; s.m[2] = s.m[6]; s.m[6] = a;
+        a = s.m[5]; s.m[5] = s.m[7]; s.m[7] = a;
     }
-    for (i = 0; i < 3; i++) {
-        tmp[i * 3] = fn_80144514(m[0], a1[i * 3], m[3], a1[i * 3 + 1], m[6], a1[i * 3 + 2]);
-        tmp[i * 3 + 1] = fn_80144514(m[1], a1[i * 3], m[4], a1[i * 3 + 1], m[7], a1[i * 3 + 2]);
-        tmp[i * 3 + 2] = fn_80144514(m[2], a1[i * 3], m[5], a1[i * 3 + 1], m[8], a1[i * 3 + 2]);
+    if (&s.m[0] == a1 || &s.m[0] == &s.m[0]) {
+        s.m[0] = fn_80144514(s.m[0], a1[0], s.m[3], a1[1], s.m[6], a1[2]);
+        s.m[3] = fn_80144514(s.m[0], a1[3], s.m[3], a1[4], s.m[6], a1[5]);
+        s.m[6] = fn_80144514(s.m[0], a1[6], s.m[3], a1[7], s.m[6], a1[8]);
+        s.m[1] = fn_80144514(s.m[1], a1[0], s.m[4], a1[1], s.m[7], a1[2]);
+        s.m[4] = fn_80144514(s.m[1], a1[3], s.m[4], a1[4], s.m[7], a1[5]);
+        s.m[7] = fn_80144514(s.m[1], a1[6], s.m[4], a1[7], s.m[7], a1[8]);
+        s.m[2] = fn_80144514(s.m[2], a1[0], s.m[5], a1[1], s.m[8], a1[2]);
+        s.m[5] = fn_80144514(s.m[2], a1[3], s.m[5], a1[4], s.m[8], a1[5]);
+        s.m[8] = fn_80144514(s.m[2], a1[6], s.m[5], a1[7], s.m[8], a1[8]);
+    } else {
+        r0 = fn_80144514(s.m[0], a1[0], s.m[3], a1[1], s.m[6], a1[2]);
+        r1 = fn_80144514(s.m[0], a1[3], s.m[3], a1[4], s.m[6], a1[5]);
+        r2 = fn_80144514(s.m[0], a1[6], s.m[3], a1[7], s.m[6], a1[8]);
+        r3 = fn_80144514(s.m[1], a1[0], s.m[4], a1[1], s.m[7], a1[2]);
+        r4 = fn_80144514(s.m[1], a1[3], s.m[4], a1[4], s.m[7], a1[5]);
+        r5 = fn_80144514(s.m[1], a1[6], s.m[4], a1[7], s.m[7], a1[8]);
+        r6 = fn_80144514(s.m[2], a1[0], s.m[5], a1[1], s.m[8], a1[2]);
+        r7 = fn_80144514(s.m[2], a1[3], s.m[5], a1[4], s.m[8], a1[5]);
+        r8 = fn_80144514(s.m[2], a1[6], s.m[5], a1[7], s.m[8], a1[8]);
+        s.m[0] = r0; s.m[3] = r1; s.m[6] = r2;
+        s.m[1] = r3; s.m[4] = r4; s.m[7] = r5;
+        s.m[2] = r6; s.m[5] = r7; s.m[8] = r8;
     }
-    for (i = 0; i < 9; i++)
-        m[i] = tmp[i];
-    scale = lbl_80564364 * -s;
-    (void)scale;
-    (void)t;
+    scale = lbl_80564364 * -now;
+    one = lbl_8056432C;
+    thresh = lbl_8056434C;
+    k0 = lbl_805643C0;
+    k1 = lbl_805643C4;
     if (*(s32 *)((u8 *)arg0 + 4) <= 0) {
         fn_802C8E48();
         return;
     }
     for (i = 0, off = 0; i < *(s32 *)((u8 *)arg0 + 4); i++, off += 0x1C) {
-        u8 *ent = (u8 *)(*(s32 *)arg0) + off;
-        f32 dx = *(f32 *)(ent + 0) + *(f32 *)(ent + 12) * scale;
-        f32 dy = *(f32 *)(ent + 4) + *(f32 *)(ent + 16) * scale;
-        f32 dz = *(f32 *)(ent + 8) + *(f32 *)(ent + 20) * scale;
-        dx -= a2[9];
-        dy -= a2[10];
-        dz -= a2[11];
-        {
-            f32 diff[3];
-            diff[0] = dx;
-            diff[1] = dy;
-            diff[2] = dz;
-            XfmVec(m, diff, diff);
-            diff[0] += a1[9];
-            diff[1] += a1[10];
-            diff[2] += a1[11];
-            {
-                f32 delta[3];
-                delta[0] = diff[0] - *(f32 *)(ent + 0);
-                delta[1] = diff[1] - *(f32 *)(ent + 4);
-                delta[2] = diff[2] - *(f32 *)(ent + 8);
-                if (PSVECDotProduct(a1 + 3, delta) > lbl_8056434C)
-                    scale = lbl_8056432C;
-                else
-                    scale = lbl_80564340;
-                (void)scale;
-            }
-        }
-        fn_802C8E00(0, 0, *(f32 *)(ent + 0), *(f32 *)(ent + 4), *(f32 *)(ent + 8), lbl_8056434C, lbl_8056432C);
+        ent = (f32 *)(*(u8 **)arg0 + off);
+        s.v0 = ent[0] + ent[3] * scale;
+        s.v1 = ent[1] + ent[4] * scale;
+        s.v2 = ent[2] + ent[5] * scale;
+        s.d0 = s.v0 - a2[9];
+        s.d1 = s.v1 - a2[10];
+        s.d2 = s.v2 - a2[11];
+        ageFactor = *(f32 *)((u8 *)arg0 + 0x10) * (t - ent[6]);
+        color = (s32)(lbl_805643BC * (one - ageFactor * ageFactor));
+        color = (color << 24) | 0xFFFFFF;
+        XfmVec(s.m, &s.d0, &s.d0);
+        s.d0 += a1[9];
+        s.d1 += a1[10];
+        s.d2 += a1[11];
+        s.a0 = s.d0 - ent[0];
+        s.a1 = s.d1 - ent[1];
+        s.a2 = s.d2 - ent[2];
+        dot = PSVECDotProduct(a1 + 3, &s.a0);
+        if (dot > thresh)
+            factor = lbl_8056432C;
+        else
+            factor = lbl_80564340;
+        s.o[0] = ent[0] + a1[3] * factor * k0 + a1[0] * k0;
+        s.o[1] = ent[1] + a1[4] * factor * k0 + a1[1] * k0;
+        s.o[2] = ent[2] + a1[5] * factor * k0 + a1[2] * k0;
+        s.o[3] = s.o[0] + a1[0] * k1;
+        s.o[4] = s.o[1] + a1[1] * k1;
+        s.o[5] = s.o[2] + a1[2] * k1;
+        s.o[6] = s.o[0] + s.a0 + a1[3] * factor * k1;
+        s.o[7] = s.o[1] + s.a1 + a1[4] * factor * k1;
+        s.o[8] = s.o[2] + s.a2 + a1[5] * factor * k1;
+        s.o[9] = s.o[6] + a1[0] * k1;
+        s.o[10] = s.o[7] + a1[1] * k1;
+        s.o[11] = s.o[8] + a1[2] * k1;
+        fn_802C8E00(color, 0, s.o[0], s.o[1], s.o[2], lbl_8056434C, lbl_8056432C,
+                    s.o[7], s.o[6], s.o[2] + s.a2, s.o[5], a1[2] * k1, s.o[4], a1[1] * k1, s.o[3]);
+        fn_802C8E00(color, 0, s.o[3], s.o[4], s.o[5], lbl_8056434C, lbl_8056434C);
+        fn_802C8E00(color, 1, s.o[6], s.o[7], s.o[8], lbl_8056434C, lbl_8056434C);
+        fn_802C8E00(color, 1, s.o[9], s.o[10], s.o[11], lbl_8056432C, lbl_8056434C);
     }
     fn_802C8E48();
 }
