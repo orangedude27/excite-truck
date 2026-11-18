@@ -105,51 +105,53 @@ extern char lbl_8055E5D4;
 #pragma push
 #pragma scheduling invalid_target
 void fn_801A7628(void) {
-    extern const char **lbl_8055E5CC;
-    extern int lbl_8055E5D0;
-    if ((signed char)lbl_8055E5D4 == 0) {
-        *(char *)(lbl_803342D0 + 0x6E8) = fn_802E47F8(0x1E);
-        *(char *)(lbl_803342D0 + 0x700) = fn_802E47F8(0x30);
-        *(char *)(lbl_803342D0 + 0x718) = fn_802E47F8(0x2E);
-        *(char *)(lbl_803342D0 + 0x730) = fn_802E47F8(0x20);
-        *(char *)(lbl_803342D0 + 0x748) = fn_802E47F8(0x12);
-        *(char *)(lbl_803342D0 + 0x760) = fn_802E47F8(0x21);
-        *(char *)(lbl_803342D0 + 0x778) = fn_802E47F8(0x22);
-        *(char *)(lbl_803342D0 + 0x790) = fn_802E47F8(0x23);
-        *(char *)(lbl_803342D0 + 0x7A8) = fn_802E47F8(0x17);
-        *(char *)(lbl_803342D0 + 0x7C0) = fn_802E47F8(0x24);
-        *(char *)(lbl_803342D0 + 0x7D8) = fn_802E47F8(0x25);
-        *(char *)(lbl_803342D0 + 0x7F0) = fn_802E47F8(0x26);
-        *(char *)(lbl_803342D0 + 0x808) = fn_802E47F8(0x32);
-        *(char *)(lbl_803342D0 + 0x820) = fn_802E47F8(0x31);
-        *(char *)(lbl_803342D0 + 0x838) = fn_802E47F8(0x18);
-        *(char *)(lbl_803342D0 + 0x850) = fn_802E47F8(0x10);
-        *(char *)(lbl_803342D0 + 0x868) = fn_802E47F8(0x13);
-        *(char *)(lbl_803342D0 + 0x880) = fn_802E47F8(0x1F);
-        *(char *)(lbl_803342D0 + 0x898) = fn_802E47F8(0x16);
-        *(char *)(lbl_803342D0 + 0x8B0) = fn_802E47F8(0x2F);
-        *(char *)(lbl_803342D0 + 0x8C8) = fn_802E47F8(0x11);
-        *(char *)(lbl_803342D0 + 0x8E0) = fn_802E47F8(0x2D);
-        *(char *)(lbl_803342D0 + 0x8F8) = fn_802E47F8(0x15);
-        *(char *)(lbl_803342D0 + 0x910) = fn_802E47F8(0x2C);
-        *(char *)(lbl_803342D0 + 0x928) = fn_802E47F8(7);
-        *(char *)(lbl_803342D0 + 0x940) = fn_802E47F8(8);
-        *(char *)(lbl_803342D0 + 0x958) = fn_802E47F8(9);
-        *(char *)(lbl_803342D0 + 0x970) = fn_802E47F8(0xA);
-        *(char *)(lbl_803342D0 + 0x988) = fn_802E47F8(0xB);
-        *(char *)(lbl_803342D0 + 0x9A0) = fn_802E47F8(0x1A);
-        *(char *)(lbl_803342D0 + 0x9B8) = fn_802E47F8(0x1B);
-        *(char *)(lbl_803342D0 + 0x9D0) = fn_802E47F8(0x27);
-        *(char *)(lbl_803342D0 + 0x9E8) = fn_802E47F8(0x28);
-        *(char *)(lbl_803342D0 + 0xA00) = fn_802E47F8(0x33);
-        *(char *)(lbl_803342D0 + 0xA18) = fn_802E47F8(0x34);
-        *(char *)(lbl_803342D0 + 0xA30) = fn_802E47F8(0x35);
-        *(char *)(lbl_803342D0 + 0xA48) = fn_802E47F8(0xC);
-        *(char *)(lbl_803342D0 + 0xA60) = fn_802E47F8(0xD);
-        lbl_8055E5D4 = 1;
+    extern const char **gInputBindingTable;
+    extern int gInputBindingCount;
+#define gBindings ((InputBinding *)lbl_803342D0)
+    if ((signed char)gInputBindingsReady == 0) {
+        gBindings[73].keyFlag = fn_802E47F8(HID_KEY_1);
+        gBindings[74].keyFlag = fn_802E47F8(HID_KEY_RBRACKET);
+        gBindings[75].keyFlag = fn_802E47F8(HID_KEY_EQUALS);
+        gBindings[76].keyFlag = fn_802E47F8(HID_KEY_3);
+        gBindings[77].keyFlag = fn_802E47F8(HID_KEY_O);
+        gBindings[78].keyFlag = fn_802E47F8(HID_KEY_4);
+        gBindings[79].keyFlag = fn_802E47F8(HID_KEY_5);
+        gBindings[80].keyFlag = fn_802E47F8(HID_KEY_6);
+        gBindings[81].keyFlag = fn_802E47F8(HID_KEY_T);
+        gBindings[82].keyFlag = fn_802E47F8(HID_KEY_7);
+        gBindings[83].keyFlag = fn_802E47F8(HID_KEY_8);
+        gBindings[84].keyFlag = fn_802E47F8(HID_KEY_9);
+        gBindings[85].keyFlag = fn_802E47F8(HID_KEY_HASH);
+        gBindings[86].keyFlag = fn_802E47F8(HID_KEY_BACKSLASH);
+        gBindings[87].keyFlag = fn_802E47F8(HID_KEY_U);
+        gBindings[88].keyFlag = fn_802E47F8(HID_KEY_M);
+        gBindings[89].keyFlag = fn_802E47F8(HID_KEY_P);
+        gBindings[90].keyFlag = fn_802E47F8(HID_KEY_2);
+        gBindings[91].keyFlag = fn_802E47F8(HID_KEY_S);
+        gBindings[92].keyFlag = fn_802E47F8(HID_KEY_LBRACKET);
+        gBindings[93].keyFlag = fn_802E47F8(HID_KEY_N);
+        gBindings[94].keyFlag = fn_802E47F8(HID_KEY_MINUS);
+        gBindings[95].keyFlag = fn_802E47F8(HID_KEY_R);
+        gBindings[96].keyFlag = fn_802E47F8(HID_KEY_SPACE);
+        gBindings[97].keyFlag = fn_802E47F8(HID_KEY_D);
+        gBindings[98].keyFlag = fn_802E47F8(HID_KEY_E);
+        gBindings[99].keyFlag = fn_802E47F8(HID_KEY_F);
+        gBindings[100].keyFlag = fn_802E47F8(HID_KEY_G);
+        gBindings[101].keyFlag = fn_802E47F8(HID_KEY_H);
+        gBindings[102].keyFlag = fn_802E47F8(HID_KEY_W);
+        gBindings[103].keyFlag = fn_802E47F8(HID_KEY_X);
+        gBindings[104].keyFlag = fn_802E47F8(HID_KEY_0);
+        gBindings[105].keyFlag = fn_802E47F8(HID_KEY_ENTER);
+        gBindings[106].keyFlag = fn_802E47F8(HID_KEY_SEMICOLON);
+        gBindings[107].keyFlag = fn_802E47F8(HID_KEY_QUOTE);
+        gBindings[108].keyFlag = fn_802E47F8(HID_KEY_BACKTICK);
+        gBindings[109].keyFlag = fn_802E47F8(HID_KEY_I);
+        gBindings[110].keyFlag = fn_802E47F8(HID_KEY_J);
+        gInputBindingsReady = 1;
     }
-    lbl_8055E5CC = (const char **)lbl_803342D0;
-    lbl_8055E5D0 = 0x7A;
+    gInputBindingTable = (const char **)lbl_803342D0;
+    gInputBindingCount = NUM_INPUT_BINDINGS;
+#undef gBindings
 }
 #pragma pop
 void fn_801A7844(int arg0) {
