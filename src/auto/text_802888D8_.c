@@ -658,6 +658,7 @@ int fn_80289558(int arg0, int arg1)
       float c3;
       float t;
       float c0;
+      float e3re;
       fn_802898CC((void *) arg0, *((int *) (arg0 + 0xA4)), arg1, ei[4]);
       e[0] = e[0] - lbl_8056428C;
       e = (float *) (arg0 + (arg1 * 0x14));
@@ -668,7 +669,8 @@ int fn_80289558(int arg0, int arg1)
       t = b * c3;
       c0 = lbl_805642C0;
       e[0] = e0 + t;
-      e[3] *= c0;
+      e3re = e[3];
+      e[3] = e3re * c0;
     }
     else
     {
@@ -1234,6 +1236,10 @@ extern void *fn_8002F37C(int, void (*)(void), int, int, int);
 extern void fn_8028A32C(void);
 extern char lbl_80348B7C[], lbl_80348B8C[];
 extern int lbl_8055C88C, lbl_8055C890, lbl_8055C898;
+static inline void *fn_8028A1A4_newArray(int count) {
+    return fn_8002F37C((int)fn_8012850C(count * 0x68 + 0x10, lbl_80348B7C, count * 0x68),
+                       fn_8028A32C, 0, 0x68, count);
+}
 #pragma cplusplus on
 #pragma push
 #pragma scheduling invalid_target
@@ -1258,10 +1264,9 @@ int fn_8028A1A4(int out) {
         virtual void v21() = 0;
         virtual Item *item(int) = 0;
     };
+    int i;
     int count;
     char *obj;
-    int offset;
-    unsigned int i;
     char *entry;
     Object *castObj;
     int j;
@@ -1270,9 +1275,9 @@ int fn_8028A1A4(int out) {
     *(void **)out = fn_8002F37C(
         (int)fn_8012850C(count * 0x68 + 0x10, lbl_80348B7C, count * 0x68),
         fn_8028A32C, 0, 0x68, count);
-    for (i = 0, offset = 0; (int)i < fn_80287B14(); offset += 0x68, i++) {
-        obj = (char *)fn_80288208((int)i);
-        entry = (char *)*(void **)out + offset;
+    for (i = 0; i < fn_80287B14(); i++) {
+        obj = (char *)fn_80288208(i);
+        entry = (char *)*(void **)out + i * 0x68;
         if (fn_80287E20((Object *)obj, lbl_80348B8C)) {
             castObj = (Object *)fn_80287E80((int)obj, lbl_80348B8C);
             *(int *)(entry + 0x60) = castObj->count(&lbl_8055C890);
@@ -1304,34 +1309,109 @@ extern void *fn_80287B24(int);
 #pragma push
 #pragma scheduling invalid_target
 int fn_8028A330(int *arg0, int arg1) {
- float sp14[3], sp8[3], *mat=(float*)fn_80287B24(arg1);
- float *vec=*(float**)(*(char**)arg0+arg1*0x68+0x64);
- if (sp14 == vec) {
- float x=mat[6]*vec[2]+(mat[0]*vec[0]+mat[3]*vec[1]);
- float y=mat[7]*vec[2]+(mat[1]*vec[0]+mat[4]*vec[1]);
- float z=mat[8]*vec[2]+(mat[2]*vec[0]+mat[5]*vec[1]);
- sp14[0]=x; sp14[1]=y; sp14[2]=z;
- } else {
- sp14[0]=mat[6]*vec[2]+(mat[0]*vec[0]+mat[3]*vec[1]);
- sp14[1]=mat[7]*vec[2]+(mat[1]*vec[0]+mat[4]*vec[1]);
- sp14[2]=mat[8]*vec[2]+(mat[2]*vec[0]+mat[5]*vec[1]);
- }
- sp14[0]+=mat[9]; sp14[1]+=mat[10]; sp14[2]+=mat[11];
- sp8[0]=vec[3]*lbl_805642B4; sp8[1]=vec[4]*lbl_805642B4; sp8[2]=vec[5]*lbl_805642B4;
- {
- volatile float *p = sp8;
- if (p == (volatile float *)sp8) {
- float x=sp8[2]*mat[6]+(sp8[0]*mat[0]+sp8[1]*mat[3]);
- float y=sp8[2]*mat[7]+(sp8[0]*mat[1]+sp8[1]*mat[4]);
- float z=sp8[2]*mat[8]+(sp8[0]*mat[2]+sp8[1]*mat[5]);
- sp8[0]=x; sp8[1]=y; sp8[2]=z;
- } else {
- sp8[0]=p[2]*mat[6]+(p[0]*mat[0]+p[1]*mat[3]);
- sp8[1]=p[2]*mat[7]+(p[0]*mat[1]+p[1]*mat[4]);
- sp8[2]=p[2]*mat[8]+(p[0]*mat[2]+p[1]*mat[5]);
- }
- }
- sp8[0]+=mat[13]; sp8[1]+=mat[14]; sp8[2]+=mat[15];
- fn_8028E584(arg0[1],(int)sp14,(int)sp8);
+    float sp14[3], sp8[3];
+    float *mat = (float *)fn_80287B24(arg1);
+    float *vec = *(float **)(*(char **)arg0 + arg1 * 0x68 + 0x64);
+
+    if (sp14 == vec) {
+        float m3 = mat[3];
+        float y = vec[1];
+        float m4 = mat[4];
+        float m5 = mat[5];
+        float m0 = mat[0];
+        float x = vec[0];
+        float m1 = mat[1];
+        float m2 = mat[2];
+        float m6 = mat[6];
+        float z = vec[2];
+        float m7 = mat[7];
+        float m8 = mat[8];
+        sp14[0] = (z * m6) + ((x * m0) + (y * m3));
+        sp14[1] = (z * m7) + ((x * m1) + (y * m4));
+        sp14[2] = (z * m8) + ((x * m2) + (y * m5));
+    } else {
+        {
+            float nv6 = mat[6];
+            float m6, m0, m3;
+            m3 = mat[3];
+            m0 = mat[0];
+            m6 = nv6;
+            sp14[0] = (vec[2] * m6) + ((vec[0] * m0) + (vec[1] * m3));
+        }
+        {
+            float nv7 = mat[7];
+            float m7, m1, m4;
+            m4 = mat[4];
+            m1 = mat[1];
+            m7 = nv7;
+            sp14[1] = (vec[2] * m7) + ((vec[0] * m1) + (vec[1] * m4));
+        }
+        {
+            float nv8 = mat[8];
+            float m8, m2, m5;
+            m5 = mat[5];
+            m2 = mat[2];
+            m8 = nv8;
+            sp14[2] = (vec[2] * m8) + ((vec[0] * m2) + (vec[1] * m5));
+        }
+    }
+    {
+        float s2, s1, s0, t2, t1, t0, o2, o1, o0;
+        o0 = sp14[0];
+        t0 = mat[9];
+        s0 = o0 + t0;
+        sp14[0] = s0;
+        o1 = sp14[1];
+        t1 = mat[10];
+        s1 = o1 + t1;
+        sp14[1] = s1;
+        o2 = sp14[2];
+        t2 = mat[11];
+        s2 = o2 + t2;
+        sp14[2] = s2;
+    }
+    sp8[0] = vec[3] * lbl_805642B4;
+    sp8[1] = vec[4] * lbl_805642B4;
+    sp8[2] = vec[5] * lbl_805642B4;
+    {
+        volatile float *p = sp8;
+        if (p == (volatile float *)sp8) {
+            float m3 = mat[3];
+            float y = sp8[1];
+            float m4 = mat[4];
+            float m5 = mat[5];
+            float m0 = mat[0];
+            float x = sp8[0];
+            float m1 = mat[1];
+            float m2 = mat[2];
+            float m6 = mat[6];
+            float z = sp8[2];
+            float m7 = mat[7];
+            float m8 = mat[8];
+            sp8[0] = (z * m6) + ((x * m0) + (y * m3));
+            sp8[1] = (z * m7) + ((x * m1) + (y * m4));
+            sp8[2] = (z * m8) + ((x * m2) + (y * m5));
+        } else {
+            sp8[0] = p[2] * mat[6] + (p[0] * mat[0] + p[1] * mat[3]);
+            sp8[1] = p[2] * mat[7] + (p[0] * mat[1] + p[1] * mat[4]);
+            sp8[2] = p[2] * mat[8] + (p[0] * mat[2] + p[1] * mat[5]);
+        }
+    }
+    {
+        float s2, s1, s0, t2, t1, t0, o2, o1, o0;
+        o0 = sp8[0];
+        t0 = mat[13];
+        s0 = o0 + t0;
+        sp8[0] = s0;
+        o1 = sp8[1];
+        t1 = mat[14];
+        s1 = o1 + t1;
+        sp8[1] = s1;
+        o2 = sp8[2];
+        t2 = mat[15];
+        s2 = o2 + t2;
+        sp8[2] = s2;
+    }
+    fn_8028E584(arg0[1], (int)sp14, (int)sp8);
 }
 #pragma pop
