@@ -1407,6 +1407,7 @@ clear:
 done:
     return 0;
 }
+#pragma scheduling on
 extern "C" int fn_80280C00(void) {
     class Obj { public:
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
