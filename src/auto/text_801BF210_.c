@@ -948,7 +948,6 @@ int fn_801C0454(void *arg0) {
 
 #pragma push
 #pragma processor 750
-#pragma optimization_level 3
 void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
     float *out = (float *)arg0;
     float *input = (float *)arg1;
@@ -956,60 +955,24 @@ void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
     float temp_f24, temp_f25, temp_f26, temp_f27;
     float temp_f28, temp_f29, temp_f30, temp_f31;
     float temp_f1;
-    if ((char *)out + 0x24 == (char *)input + 0x24) {
-        float y = input[10];
-        float y0 = y * matrix[3];
-        float y1 = y * matrix[4];
-        float y2 = y * matrix[5];
-        float x = input[9];
-        float x0 = x * matrix[0];
-        float x1 = x * matrix[1];
-        float x2 = x * matrix[2];
-        float z = input[11];
-        float z0 = z * matrix[6];
-        float z1 = z * matrix[7];
-        float z2 = z * matrix[8];
-        out[9] = z0 + (x0 + y0);
-        out[10] = z1 + (x1 + y1);
-        out[11] = z2 + (x2 + y2);
+    if (out + 9 == input + 9) {
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = matrix[3]; m11 = matrix[4]; m12 = matrix[5];
+        m00 = matrix[0]; m01 = matrix[1]; m02 = matrix[2];
+        m20 = matrix[6]; m21 = matrix[7]; m22 = matrix[8];
+        x = input[9]; y = input[10]; z = input[11];
+        out[9] = z * m20 + (x * m00 + y * m10);
+        out[10] = z * m21 + (x * m01 + y * m11);
+        out[11] = z * m22 + (x * m02 + y * m12);
     } else {
-        float f3, f0, f2, f1;
-        f3 = matrix[3];
-        f0 = input[10];
-        f2 = matrix[0];
-        f1 = input[9];
-        f0 = f0 * f3;
-        f3 = matrix[6];
-        f1 = f1 * f2;
-        f2 = input[11];
-        f2 = f2 * f3;
-        f0 = f1 + f0;
-        f0 = f2 + f0;
-        out[9] = f0;
-        f3 = matrix[4];
-        f0 = input[10];
-        f2 = matrix[1];
-        f1 = input[9];
-        f0 = f0 * f3;
-        f3 = matrix[7];
-        f1 = f1 * f2;
-        f2 = input[11];
-        f2 = f2 * f3;
-        f0 = f1 + f0;
-        f0 = f2 + f0;
-        out[10] = f0;
-        f3 = matrix[5];
-        f0 = input[10];
-        f2 = matrix[2];
-        f1 = input[9];
-        f0 = f0 * f3;
-        f3 = matrix[8];
-        f1 = f1 * f2;
-        f2 = input[11];
-        f2 = f2 * f3;
-        f0 = f1 + f0;
-        f0 = f2 + f0;
-        out[11] = f0;
+        float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+        m10 = matrix[3]; m00 = matrix[0]; m20 = matrix[6];
+        out[9] = input[11] * m20 + (input[9] * m00 + input[10] * m10);
+        m11 = matrix[4]; m01 = matrix[1]; m21 = matrix[7];
+        out[10] = input[11] * m21 + (input[9] * m01 + input[10] * m11);
+        m12 = matrix[5]; m02 = matrix[2]; m22 = matrix[8];
+        out[11] = input[11] * m22 + (input[9] * m02 + input[10] * m12);
     }
     out[9] += matrix[9];
     out[10] += matrix[10];
@@ -1045,7 +1008,6 @@ void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
         out[8] = fn_80144514(matrix[2], input[6], matrix[5], input[7], matrix[8], input[8]);
     }
 }
-
 /* Initialize the 3x3 matrix at out to the identity (1.0 on the diagonal, 0.0 elsewhere). */
 void fn_801C0D3C(void *out)
 {
