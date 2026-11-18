@@ -301,6 +301,33 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
     return &((DVDLowContext *)lbl_8037B820)[id];
 }
 
+static inline DVDLowContext *newContextBase(DVDLowContext *base, void *callback, unsigned int arg2, const char *msg) {
+    int id;
+    unsigned int flag;
+
+    flag = base[lbl_8055D8E8].inUse;
+    if (((-flag | flag) >> 31) == 1U) {
+        OSReport(msg + 0x218, (int)lbl_8055D8E8);
+        OSReport(msg + 0x250);
+        for (;;) {}
+    }
+    if (base[lbl_8055D8E8].magic != 0xFEEBDAED) {
+        OSReport(msg + 0x280);
+        for (;;) {}
+    }
+
+    base[lbl_8055D8E8].callback = callback;
+    base[lbl_8055D8E8].WORD_0x4 = arg2;
+    base[lbl_8055D8E8].inUse = 1;
+
+    id = lbl_8055D8E8;
+    if ((int)++lbl_8055D8E8 >= 4) {
+        lbl_8055D8E8 = 0;
+    }
+
+    return &base[id];
+}
+
 #pragma scheduling 750
 static inline void *ddrAllocAligned32(unsigned int size, const char *msg) {
     unsigned char *lo = (unsigned char *)IPCGetBufferLo();
