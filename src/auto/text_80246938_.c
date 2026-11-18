@@ -619,6 +619,16 @@ s32 fn_80246AE8(void) {
 }
 #pragma pop
 
+/* The attract/demo main loop, which fn_8023B640 runs when the game comes up in
+ * demo main mode: it turns the music on, puts the "uisingle" movie on screen and
+ * then keeps asking fn_80247C18 -- which shows the attract menu and waits for the
+ * demo's (or a waiting player's) choice -- what to do next.  Every code is one
+ * entry of that menu's table: the two profile dialogs, the career and challenge
+ * screens, head-to-head (with the missing-controller warning pop-up behind it), a
+ * memory-card save, handing the profile to player 1, the other menus, and the
+ * requests to reset or to drop back to the attract screen.  Only the profile
+ * dialog leaves this stretch, and it sends the loop back to the menu at the top;
+ * while it runs fn_80247624 reports the demo-mode flag this sets. */
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802473A4(void) {
