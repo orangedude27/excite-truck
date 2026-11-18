@@ -15,9 +15,15 @@ extern void fn_80131818(void *);
 extern void fn_801345D8(void *, int, void *, ...);
 extern int fn_802C6FC0(int, int, int);
 extern float fn_80129DC4(int, float, float);
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma cplusplus on
 extern "C" void fn_802C2298(void) {
+    struct Vec3 { float x, y, z; };
+    struct BoatModel {
+        int modelId;
+        float position[3];
+        float angle;
+    };
     struct Manager { virtual void **get(void *); };
     struct Iterator {
         virtual void *m0(); virtual void *m1(); virtual void *m2(); virtual void *m3();
@@ -30,13 +36,15 @@ extern "C" void fn_802C2298(void) {
     struct Entry {
         virtual void *m0(); virtual void *m1(); virtual void *m2();
         virtual void *create(void *, int, void *);
+        virtual void *m4(); virtual void *m5(); virtual void *m6(); virtual void *m7();
+        virtual void *m8(); virtual void *m9(); virtual void *m10();
+        virtual Vec3 getVector(void *);
     };
     char query[0x20];
-    float values[3];
-    float value0, arg1, arg2;
+    register float value0;
+    float arg1, arg2;
     int temp_r5;
-    int temp_r6;
-    void *record;
+    struct BoatModel *record;
     void **manager;
     void **iterator;
     int index;
@@ -46,27 +54,25 @@ extern "C" void fn_802C2298(void) {
     manager = (void **)fn_80131810(lbl_8034AFE8);
     if (manager != 0) {
         iterator = ((Manager *)manager)->get((void *)&lbl_8055CFD0);
-        index = 1;
-        fn_801345D8(query, 0x20, (void *)&lbl_8055CFD8, 0);
+        index = 0;
+        fn_801345D8(query, 0x20, (void *)&lbl_8055CFD8, index++);
         entry = ((Iterator *)iterator)->find(query);
         while (entry != 0) {
             temp_r5 = *(int *)((char *)lbl_804C109C + 4);
             *(int *)((char *)lbl_804C109C + 4) = temp_r5 + 1;
-            record = (void *)((char *)*(void **)lbl_804C109C + temp_r5 * 0x14);
-            *(int *)record = fn_802C6FC0(
+            record = (struct BoatModel *)((char *)*(void **)lbl_804C109C + temp_r5 * 0x14);
+            record->modelId = fn_802C6FC0(
                 (int)((Entry *)entry)->create((void *)&lbl_8055CFE0, temp_r5, *(void **)lbl_804C109C),
                 0, 0);
-            ((void (*)(float *, void *, void *))((void **)*(void **)entry)[13])(values, entry, (void *)&lbl_8055CFE8);
-            value0 = values[0];
+            const Vec3 &values = ((Entry *)entry)->getVector((void *)&lbl_8055CFE8);
+            value0 = values.x;
             arg1 = lbl_80564E90;
-            ((float *)record)[1] = value0;
+            record->position[0] = value0;
             arg2 = lbl_80564E94;
-            ((float *)record)[2] = values[1];
-            ((float *)record)[3] = values[2];
-            ((float *)record)[4] = fn_80129DC4(0, arg1, arg2);
-            temp_r6 = index;
-            index++;
-            fn_801345D8(query, 0x20, (void *)&lbl_8055CFD8, temp_r6);
+            record->position[1] = values.y;
+            record->position[2] = values.z;
+            record->angle = fn_80129DC4(0, arg1, arg2);
+            fn_801345D8(query, 0x20, (void *)&lbl_8055CFD8, index++);
             entry = ((Iterator *)iterator)->find(query);
         }
         fn_80131818(manager);
@@ -128,7 +134,7 @@ void fn_802C2488(void) {
     volatile struct Scratch scratch;
     register int offset;
     register int index = 0;
-    register unsigned char *record;
+    unsigned char *record;
     register float c31;
     register float c30;
     register float c29;
