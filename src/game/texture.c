@@ -1767,15 +1767,14 @@ char fn_802CC744(void) {
 
 #pragma push
 #pragma peephole off
+#pragma scheduling invalid_target
 int fn_802CC74C(void) {
-    char *p = *(char **)lbl_8055FCBC;
     int result = 0;
-
-    if (p != 0) {
-        if (*(int *)(p + 4) != 0) {
-            result = 1;
-        }
-    }
+    char *p = *(char **)lbl_8055FCBC;
+    if (p == 0) goto done;
+    if (*(int *)(p + 4) == 0) goto done;
+    result = 1;
+done:
     return result;
 }
 #pragma pop
