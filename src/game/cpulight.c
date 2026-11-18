@@ -534,7 +534,7 @@ void fn_802DC134(void) {
     fn_802DBDD8();
 }
 
-void fn_802DC138(int verts, int count, unsigned short *list, int size) {
+void fn_802DC138(int verts, int count, unsigned short *__restrict list, int size) {
     int n;
     int i;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
