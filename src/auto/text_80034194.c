@@ -1491,6 +1491,21 @@ static inline BOOL CheckCancel(u32 resume) {
     return FALSE;
 }
 
+/* Start the periodic motor-check alarm (every 100 ms) unless already armed. */
+static inline void StartMotorAlarm(void) {
+    u32 tick;
+    u32 period;
+
+    if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+        lbl_8055D870 = 1;
+        OSCreateAlarm(&lbl_80376AD0);
+        tick = OSGetTick();
+        period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
+        OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period,
+                           fn_8003801C);
+    }
+}
+
 /* Log a cover-closed error and re-read the disk ID through fn_800373E0. */
 static inline void StateCoverClosed(void) {
     s32 interrupts;
