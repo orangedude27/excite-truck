@@ -398,7 +398,7 @@ extern char lbl_80316464[];
 extern void fn_8007093C(u32, void *);
 extern s32 btsnd_hcic_link_key_neg_reply_800843D8(u8 *);
 extern BOOLEAN l2c_link_hci_conn_comp(UINT8 status, UINT16 handle, UINT8 *p_bda);
-static __inline u8 *btm_bda_to_acl_inl(u8 *bda) {
+static inline u8 *btm_bda_to_acl_inl(u8 *bda) {
     u8 *q = lbl_803C0F78 + 0x34;
     u32 j = 0;
     for (; j < 4; j++, q += 0x11C) {
