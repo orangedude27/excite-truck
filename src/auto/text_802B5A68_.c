@@ -1282,6 +1282,27 @@ void fn_802B7434(void) {
 }
 #pragma push
 #pragma scheduling invalid_target
+/* "tedash.val" debug viewer: the brush callback handed to fn_802B6F34(), which
+ * walks the terrain grid around the brush and reports each bilinearly sampled
+ * byte.  What becomes of the sample depends on the view mode:
+ *   2 Material-Map - paint the selected water layer at full strength, blended by
+ *     sample/255.  A cell that accepts the paint widens the dirty rectangle the
+ *     block rebuild of fn_802B7434() scans; a cell that refuses it gets a red
+ *     marker whose alpha is the sample instead.
+ *   3 Road-Opacity - plot the sample as one pixel of the road-opacity image.
+ *   5 (unnamed mode, grid step 1) - report the sample together with the cell's
+ *     world position to a debug-draw hook, an empty stub in this build.
+ * Every other mode ignores the sample. */
+#define viewMode       lbl_8055FA38 /* 0 "Objects", 1 "Advanced", 2 "Material-Map", 3 "Road-Opacity" */
+#define brushLayer     lbl_8055FA28 /* water layer the viewer paints, from its drop-down */
+#define dirtyBounds    lbl_8055FA50 /* s16[4]: minX, maxX, minY, maxY painted since the last rebuild */
+#define paintLayer     fn_802BC09C  /* blend a value into one cell of a water layer */
+#define drawMarker     fn_802B7300  /* draw a terrain marker at a grid cell */
+#define plotPixel      fn_802C21DC  /* write one pixel of the road-opacity image */
+#define drawWorldPoint fn_80204044  /* debug-draw hook: empty in this build */
+#define kSampleFull    lbl_80564C90 /* 255.0f: the sample of a fully applied brush stroke */
+#define kMarkerSize    lbl_80564C94 /* 3.0f: size of the marker for a refused cell */
+#define kGridStep      lbl_80564C58 /* 2.0f: world units per grid cell */
 void fn_802B7518(s16 arg0, s16 arg1, s32 arg2) {
     switch (lbl_8055FA38) {
     case 2:
@@ -1763,52 +1784,61 @@ extern "C" void fn_802B7D4C(void) {
 }
 #pragma cplusplus reset
 #pragma opt_common_subs off
-s32 fn_802B8110(u32 arg0, s32 arg1) {
-    struct Work {
-        s32 *items;
-        s32 count;
-        s32 capacity;
-        s32 entries[51];
-    } work;
-    void *temp_r3;
-    u32 var_r30;
-    s32 *temp_r6;
-    u32 temp_r29;
-    s32 temp_r3_2;
-    s32 temp_r3_3;
-    s32 temp_r4;
-    s32 temp_r5;
-    s32 var_r0;
-    s32 var_r0_2;
-    var_r30 = 0;
-    temp_r29 = fn_802B5D94(arg1);
-    temp_r3 = ((void *(*)(void))fn_802B5B6C)();
-    work.items = work.entries;
-    work.capacity = 0x10;
-    work.count = 0;
-    ((void (*)(void *, s32, s32, s32))fn_802B321C)(
-        &work.items, 0, *(s32 *)((u8 *)temp_r3 + 8), lbl_8055FA40);
-    temp_r6 = *(s32 **)((u8 *)work.items + temp_r29 * 0xC + 4);
-    temp_r4 = *temp_r6;
-    var_r0 = 0x80;
-    temp_r5 = temp_r4 + (((s32)((arg0 >> 31) + arg0)) >> 1);
-    temp_r3_2 = temp_r5 & (s32)((-temp_r5 & ~temp_r5) >> 31);
-    if (temp_r3_2 < 0x80)
-        var_r0 = temp_r3_2;
-    if (temp_r4 != var_r0) {
-        temp_r3_3 = temp_r5 & (s32)((-temp_r5 & ~temp_r5) >> 31);
-        var_r0_2 = 0x80;
-        if (temp_r3_3 < 0x80)
-            var_r0_2 = temp_r3_3;
-        *temp_r6 = var_r0_2;
-        fn_802B32E0(*(s32 *)((u8 *)temp_r3 + 8));
-        fn_802B4E44(*(s32 *)((u8 *)temp_r3 + 8));
-        var_r30 = 1;
+s32 fn_802B8110(u32 arg0, s32 arg1)
+{
+  s32 *new_var;
+  struct Work
+  {
+    s32 *items;
+    s32 count;
+    s32 capacity;
+    s32 entries[51];
+  } work;
+  void *temp_r3;
+  s32 temp_r29;
+  s32 var_r30;
+  s32 *temp_r6;
+  s32 temp_r3_2;
+  s32 temp_r3_3;
+  s32 temp_r4;
+  s32 temp_r5;
+  s32 var_r0;
+  s32 var_r0_2;
+  var_r30 = 0;
+  temp_r29 = fn_802B5D94(arg1);
+  temp_r3 = ((void *(*)(void)) fn_802B5B6C)();
+  work.items = work.entries;
+  work.capacity = 0x10;
+  work.count = 0;
+  new_var = (s32 *) (((u8 *) temp_r3) + 8);
+  ((void (*)(void *, s32, s32, s32)) fn_802B321C)(&work.items, 0, *new_var, lbl_8055FA40);
+  temp_r6 = *((s32 **) ((((u8 *) (&work)->items) + (temp_r29 * 0xC)) + 4));
+  temp_r4 = *temp_r6;
+  var_r0 = 0x80;
+  temp_r3_2 = arg0 >> 31;
+  temp_r5 = temp_r4 + (((s32) (temp_r3_2 + arg0)) >> 1);
+  temp_r3_2 = temp_r5 & ((s32) (((-temp_r5) & (~temp_r5)) >> 31));
+  if (temp_r3_2 < 0x80)
+  {
+    var_r0 = temp_r3_2;
+  }
+  if (temp_r4 != var_r0)
+  {
+    ;
+    var_r0_2 = 0x80;
+    if ((temp_r5 & ((s32) (((-temp_r5) & (~temp_r5)) >> 31))) < 0x80)
+    {
+      var_r0_2 = temp_r3_3;
     }
-    work.items = 0;
-    work.count = 0;
-    work.capacity = 0;
-    return var_r30;
+    *temp_r6 = var_r0_2;
+    fn_802B32E0(*new_var);
+    fn_802B4E44(*((s32 *) (((u8 *) temp_r3) + 8)));
+    var_r30 = 1;
+  }
+  work.items = 0;
+  work.count = 0;
+  work.capacity = 0;
+  return var_r30;
 }
 #pragma opt_common_subs reset
 #pragma scheduling on
