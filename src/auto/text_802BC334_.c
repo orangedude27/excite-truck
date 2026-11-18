@@ -1030,102 +1030,142 @@ void fn_802DBECC(void);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802BDD8C(float arg0) {
-    float out[12];
-    float mtx[12];
-    int *pts;
-    int *data;
-    int idx;
-    int h;
+void fn_802BDD8C(float radius) {
+#define BeginCpuLighting   fn_802DBE4C
+#define EndCpuLighting     fn_802DBECC
+#define isDebugDrawEnabled fn_8020403C
+#define GetSwlMapSlot      fn_802C28C0
+#define BeginDrawList      fn_802C8BD0
+#define EndDrawList        fn_802C8D74
+#define BeginLightBatch    fn_802DC71C
+#define FlushLightBatch    fn_802DC8B4
+#define QueueLightSprite   fn_802DCAE4
+#define BuildCameraBasis   fn_801F1C24
+#define GetPlayerEntry     fn_801E8718
+#define kZero              lbl_80564D14 /* 0.0f */
+#define kOne               lbl_80564D18 /* 1.0f */
+#define kFadeRange         lbl_80564D4C /* 50.0f */
+#define treeList           lbl_804C00D4 /* { char *entries; int count; } of 0x60-byte tree entries */
+#define lightCount         lbl_8055FAA8 /* debug counter "tree-count" */
+#define lightCost          lbl_8055FAAC /* debug counter "tree-tri-count" */
+    /* CPU-light pass over the tree list: for every tree entry that has a light
+     * object at +0x58 and a far-model level (entry+0x24) of 10 or less, open a
+     * light batch on the entry's model (entry+0x1c / +0x20) and queue one
+     * camera-facing light sprite for every frame-list point of the entry's
+     * near-list groups that lies within `radius` of the current player.  The
+     * sprite's alpha fades from full at radius-50 to none at `radius`. */
+    float sprite[12];
+    float basis[12];
+    int *points;
+    int *groups;
+    int pointIdx;
+    int model;
     int j;
-    char *cam;
-    char *e;
-    char *r;
-    int offset_i;
-    int offset_j;
-    int offset_idx;
+    char *camPos;
+    char *tree;
+    char *group;
+    int treeOff;
+    int groupOff;
+    int pointOff;
     int i;
     int *list;
-    char *p;
-    fn_802DBE4C();
-    if (fn_8020403C() != 0) {
-        float one = lbl_80564D18;
-        float lim = lbl_80564D14;
-        float den;
-        float half = lbl_80564D4C;
-        float sq;
-        lbl_8055FAAC = 0;
-        lbl_8055FAA8 = 0;
-        list = &lbl_804C00D4;
+    char *point;
+    BeginCpuLighting();
+    if (isDebugDrawEnabled() != 0) {
+        float one = kOne;
+        float minWeight = kZero;
+        float falloff;
+        float fadeRange = kFadeRange;
+        float outerSq;
+        lightCost = 0;
+        lightCount = 0;
+        list = &treeList;
         i = 0;
-        offset_i = 0;
+        treeOff = 0;
         while (i < list[1]) {
-            e = *(char **)&lbl_804C00D4 + offset_i;
+            tree = *(char **)&treeList + treeOff;
             {
-                int *obj = *(int **)(e + 0x58);
-                if (obj != 0) {
-                    data = (int *)obj[1];
-                    pts = (int *)obj[0];
-                    if (*(int *)(e + 0x24) <= 10) {
-                        fn_802C28C0();
-                        fn_802C8BD0();
-                        fn_802DC71C(*(int *)(e + 0x1c), *(int *)(e + 0x20));
-                        sq = arg0 * arg0;
-                        den = sq - (arg0 - half) * (arg0 - half);
-                        fn_801F1C24(mtx);
-                        cam = fn_801E8718(-1) + 0x24;
+                int *lightObject = *(int **)(tree + 0x58);
+                if (lightObject != 0) {
+                    groups = (int *)lightObject[1];
+                    points = (int *)lightObject[0];
+                    if (*(int *)(tree + 0x24) <= 10) {
+                        GetSwlMapSlot(); /* its result reaches BeginDrawList in r3 */
+                        BeginDrawList();
+                        BeginLightBatch(*(int *)(tree + 0x1c), *(int *)(tree + 0x20));
+                        outerSq = radius * radius;
+                        falloff = outerSq - (radius - fadeRange) * (radius - fadeRange);
+                        BuildCameraBasis(basis);
+                        camPos = GetPlayerEntry(-1) + 0x24;
                         j = 0;
-                        offset_j = 0;
-                        while (j < data[1]) {
-                            r = (char *)data[0] + offset_j;
+                        groupOff = 0;
+                        while (j < groups[1]) {
+                            group = (char *)groups[0] + groupOff;
                             {
-                                int cond = (*(float *)(r + 0xc) >= lim);
-                                if (cond) {
-                                    idx = *(short *)(r + 0xa);
-                                    h = *(int *)(e + 0x1c);
-                                    offset_idx = idx * 0x44;
-                                    while (idx < *(short *)(r + 0xa) + *(short *)(r + 8)) {
-                                        p = (char *)pts[0] + offset_idx;
+                                int enabled = (*(float *)(group + 0xc) >= minWeight);
+                                if (enabled) {
+                                    pointIdx = *(short *)(group + 0xa);
+                                    model = *(int *)(tree + 0x1c);
+                                    pointOff = pointIdx * 0x44;
+                                    while (pointIdx < *(short *)(group + 0xa) + *(short *)(group + 8)) {
+                                        point = (char *)points[0] + pointOff;
                                         {
-                                            float d = PSVECSquareDistance(p + 0x30, cam);
-                                            if (d <= sq) {
-                                                float f = (sq - d) / den;
-                                                float s;
-                                                if (one < f) f = one;
-                                                s = *(float *)(p + 0x1c);
-                                                out[9] = *(float *)(p + 0x30);
-                                                out[10] = *(float *)(p + 0x34);
-                                                out[11] = *(float *)(p + 0x38);
-                                                out[0] = mtx[0] * s;
-                                                out[1] = mtx[1] * s;
-                                                out[2] = mtx[2] * s;
-                                                out[3] = mtx[3] * s;
-                                                out[4] = mtx[4] * s;
-                                                out[5] = mtx[5] * s;
-                                                out[6] = mtx[6] * s;
-                                                out[7] = mtx[7] * s;
-                                                out[8] = mtx[8] * s;
-                                                fn_802DCAE4(h, out, f);
+                                            float distSq = PSVECSquareDistance(point + 0x30, camPos);
+                                            if (distSq <= outerSq) {
+                                                float alpha = (outerSq - distSq) / falloff;
+                                                float scale;
+                                                if (one < alpha) alpha = one;
+                                                scale = *(float *)(point + 0x1c);
+                                                sprite[9] = *(float *)(point + 0x30);
+                                                sprite[10] = *(float *)(point + 0x34);
+                                                sprite[11] = *(float *)(point + 0x38);
+                                                sprite[0] = basis[0] * scale;
+                                                sprite[1] = basis[1] * scale;
+                                                sprite[2] = basis[2] * scale;
+                                                sprite[3] = basis[3] * scale;
+                                                sprite[4] = basis[4] * scale;
+                                                sprite[5] = basis[5] * scale;
+                                                sprite[6] = basis[6] * scale;
+                                                sprite[7] = basis[7] * scale;
+                                                sprite[8] = basis[8] * scale;
+                                                QueueLightSprite(model, sprite, alpha);
                                             }
                                         }
-                                        offset_idx += 0x44;
-                                        idx++;
+                                        pointOff += 0x44;
+                                        pointIdx++;
                                     }
                                 }
                             }
-                            offset_j += 0x10;
+                            groupOff += 0x10;
                             j++;
                         }
-                        fn_802DC8B4();
-                        fn_802C8D74();
+                        FlushLightBatch();
+                        EndDrawList();
                     }
                 }
             }
-            offset_i += 0x60;
+            treeOff += 0x60;
             i++;
         }
     }
-    fn_802DBECC();
+    EndCpuLighting();
+#undef EndCpuLighting
+#undef BeginCpuLighting
+#undef isDebugDrawEnabled
+#undef GetSwlMapSlot
+#undef BeginDrawList
+#undef EndDrawList
+#undef BeginLightBatch
+#undef FlushLightBatch
+#undef QueueLightSprite
+#undef BuildCameraBasis
+#undef GetPlayerEntry
+#undef kZero
+#undef kOne
+#undef kFadeRange
+#undef treeList
+#undef lightCount
+#undef lightCost
 }
 #pragma pop
 /* Stamp a band-selected weight into the +0xC field of every node in a grid
