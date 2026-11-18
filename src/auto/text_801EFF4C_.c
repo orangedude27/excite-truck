@@ -453,6 +453,8 @@ extern "C" void fn_801F06DC(void *arg0, void *arg1) {
     char name[0x40];
     char valueName[0x20];
     float value;
+    float def;
+    const char *key;
 
     if (((Fn801F06DCResource *)arg1)->test(strings + 0x90)) {
         char *id = ((Fn801F06DCResource *)arg1)->find(strings + 0x90);
@@ -465,7 +467,8 @@ extern "C" void fn_801F06DC(void *arg0, void *arg1) {
             lod->entries[lod->count].distSq = value * value;
         }
         lod->value44 = ((Fn801F06DCResource *)arg1)->getValue(strings + 0x9C);
-        value = ((Fn801F06DCResource *)arg1)->getValueWithDefault(strings + 0xA8, lbl_80562F28);
+        def = lbl_80562F28;
+        value = ((Fn801F06DCResource *)arg1)->getValueWithDefault(strings + 0xA8, def);
         lod->value48 = value * value;
     } else {
         int handle;
@@ -477,7 +480,8 @@ extern "C" void fn_801F06DC(void *arg0, void *arg1) {
         lod->entries[0].handle = handle;
         lod->entries[0].distSq = distSq;
         lod->count = count;
-        lod->value44 = ((Fn801F06DCResource *)arg1)->getValue((const char *)&lbl_8055B0F8);
+        key = (const char *)&lbl_8055B0F8;
+        lod->value44 = ((Fn801F06DCResource *)arg1)->getValue(key);
     }
 }
 #pragma pop
@@ -677,10 +681,9 @@ int fn_801F0DC0(int arg0, int arg1, int arg2, int arg3) {
     *(int *)(arg0 + 8) = arg2;
     *(int *)(arg0 + 0xC) = arg3;
     if ((arg3 == 0) || (arg3 == 2)) {
-        float z = lbl_80562F1C;
+        register float z = lbl_80562F1C;
         float one = lbl_80562F18;
-        int norm = (unsigned int)__cntlzw(1) >> 5;
-        *(int *)(arg0 + 0x10) = norm;
+        *(int *)((short)arg0 + 0x10) = (unsigned int)__cntlzw(1) >> 5;
         *(unsigned char *)(arg0 + 0x14) = 0;
         *(float *)(arg0 + 0x18) = one;
         *(float *)(arg0 + 0x1C) = z;
@@ -755,7 +758,7 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     union { Vec v; unsigned int w[3]; } point;
     Vec angles, angles2;
     float *m = (float *)arg2;
-    float z,x,y, a,b,c,d,e,f,g,h,i;
+    float x,y,z, a,b,c,d,e,f,g,h,i;
     unsigned int w0,w1,w2,w3,w4,w5,w6,w7,w8;
     int mode;
     if (flags & 8) {
@@ -846,15 +849,14 @@ int fn_801F1394(int *object, int transform) {
 
     fn_802C70AC(*(int *)((char *)element + 0x28), transform, 0, frameFlags);
 }
-#pragma peephole off
+#pragma push
+#pragma opt_propagation off
 void fn_801F13F4(int *arg0, float arg1, float arg2) {
     char *base = (char *)*(int *)arg0 + 0xEC;
     char *entry;
     int count;
     if (arg1 > *(float *)(base + 0x48)) return;
-    if (*(unsigned int *)(arg0 + 1) != 3) goto cont;
-    return;
-cont:
+    if (*(unsigned int *)(arg0 + 1) == 3) return;
     count = *(int *)(base + 0x40) - 1;
     entry = base + count * 8;
     while (count >= 0 && arg1 < *(float *)(entry + 4)) {
@@ -864,7 +866,7 @@ cont:
     if (count < 0) return;
     fn_802C7AE0(*(int *)(base + count * 8), (char *)arg0 + 0x18, -1, *(float *)(base + 0x44) + arg2);
 }
-#pragma peephole on
+#pragma pop
 void fn_801F1474(int *objectHandle, void *param) {
     /* If the object has active entries (count at +0x12C > 0), apply its model transform:
        call fn_802C7AE0 with the model handle at +0xEC, the given param and a -1 mask. */
@@ -884,7 +886,7 @@ int fn_801F1494(int arg0, void *arg1, short arg2) {
     float value = ((float (*)(void *))fn_802C88E8)((char *)arg0 + 0x3C);
     char *cursor;
     int index;
-    int vx, vy, vz;
+    register int vx, vy, vz;
     Vec vec;
     value = value * squared;
     index = *(int *)(table + 0x40) - 1;
@@ -1078,7 +1080,7 @@ int fn_801F196C(int index, int base) {
 
 extern char lbl_8033A5B0[];
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_801F1978(int arg) {
     int result = -1;
     switch (arg & ~0x10) {
