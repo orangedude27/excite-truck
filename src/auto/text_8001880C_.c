@@ -10,7 +10,13 @@ extern void* fn_8012850C(s32, const char*);
 extern void* fn_80131808(const char*);
 extern int fn_801345D8(char*, int, const char*, ...);
 extern void* memset(void*, int, unsigned long);
-extern char lbl_802FD1B0[];
+static char lbl_802FD1B0[] = "car_stats.val";
+static char lbl_802FD1C0[] = "carstats";
+static char lbl_802FD1CC[] = "car_stats";
+static char lbl_802FD1D8[] = "stat_name_%d";
+static char lbl_802FD1E8[] = "stat_value_%d";
+static char lbl_802FD1F8[] = "stat table for %s has too many stats (limit: %d)";
+static char lbl_802FD22C[] = "stat table for %s has no stats! (maybe you didn't number from 1)";
 struct Tbl8001880C {
     char f0[0x10];
     char f10[0xC];
