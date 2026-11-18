@@ -147,6 +147,12 @@ extern "C" double atof(const char *);
 extern "C" void fn_802E317C(const char *, ...);
 #pragma push
 #pragma scheduling invalid_target
+/* Read one difficulty setting of the current scene as a number.  The setting is
+ * looked up in the difficulty info block fn_80204BB8 published in lbl_8055ED5C:
+ * first as "<contest>_<name>" in the stage's difficulty set, then in the
+ * scene's, and if neither has it as the plain "<name>" in both.  A setting none
+ * of them has is reported with the 'Difficulty: "%s" was not found' message and
+ * reads as 0.0; the value string the lookup returns is parsed with atof. */
 extern "C" float fn_80204CFC(const char *name) {
     /* A difficulty setting set: has() at +0xC, the value string get() at +0x14. */
     class DifficultySet {
