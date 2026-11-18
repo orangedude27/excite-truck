@@ -602,6 +602,36 @@ struct SeqChannelObj_800F0E64 {
     }
 };
 extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) {
+    struct SeqChannelObj {
+        u8 pad00[0x20];
+        f32 f20;
+        f32 f24;
+        s32 s28;
+        u8 b2C;
+        u8 b2D;
+        u8 b2E;
+        u8 b2F;
+        u8 pad30[8];
+        u8 b38;
+        u8 pad39[7];
+        f32 f40;
+        f32 f44;
+        f32 f48;
+        f32 f4C;
+        f32 f50;
+        f32 f54;
+        f32 f58;
+        s32 s5C;
+        f32 f60;
+        f32 f64;
+        f32 sa[3];
+        f32 s74[4];
+        f32 sb[4];
+        f32 sc[4];
+        f32 fA4;
+        u8 padA8[0x3C];
+        SeqChannelObj *next;
+    };
     struct SeqTrackObj {
         u8 pad00[8];
         f32 f08;
@@ -635,9 +665,9 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
         u8 b93;
         u8 pad94[0x20];
         DummySeqPlayerV *player;
-        SeqChannelObj_800F0E64 *channels;
+        SeqChannelObj *channels;
     };
-    SeqChannelObj_800F0E64 *ch;
+    SeqChannelObj *ch;
     f32 sa[3];
     f32 sb[4];
     f32 sc[4];
@@ -695,17 +725,19 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
         sa[i] += t->saBase[i];
         sa[i] += t->player->g32(i);
     }
-    {
-        f32 zero2 = 0.0f;
-        for (int i = 0; i < 4; ++i) {
-            sb[i] = zero2;
-            sb[i] += t->player->g34(i);
-            sc[i] = zero2;
-            sc[i] += t->player->g35(i);
-        }
+    for (int i = 0; i < 4; ++i) {
+        sb[i] = 0.0f;
+        sb[i] += t->player->g34(i);
+        sc[i] = 0.0f;
+        sc[i] += t->player->g35(i);
     }
+    f32 s0, s2, s1;
     u32 irq = OSDisableInterrupts();
-    for (ch = t->channels; ch != 0; ch = ch->next) {
+    ch = t->channels;
+    s0 = sa[0];
+    s1 = sa[1];
+    s2 = sa[2];
+    for (; ch != 0; ch = ch->next) {
         ch->f40 = vol;
         ch->fA4 = pan2;
         ch->f44 = pitch;
@@ -717,13 +749,25 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
         ch->s5C = t->player->g29();
         ch->f60 = t->player->g30();
         ch->f64 = f20;
-        ch->sa[0] = sa[0];
-        ch->sa[1] = sa[1];
-        ch->sa[2] = sa[2];
+        ch->sa[0] = s0;
+        ch->sa[1] = s1;
+        ch->sa[2] = s2;
         for (int j = 0; j < 4; ++j) {
-            ch->set74(j, t->player->g33(j));
-            ch->set84(j, sb[j]);
-            ch->set94(j, sc[j]);
+            f32 v = t->player->g33(j);
+            int ok = 0;
+            if (j >= 0 && j < 4) ok = 1;
+            if (!ok) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324728, 0xA5, lbl_803246E0, j, 0, 4);
+            ch->s74[j] = v;
+            v = sb[j];
+            ok = 0;
+            if (j >= 0 && j < 4) ok = 1;
+            if (!ok) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8032477C, 0xAA, lbl_80324734, j, 0, 4);
+            ch->sb[j] = v;
+            v = sc[j];
+            ok = 0;
+            if (j >= 0 && j < 4) ok = 1;
+            if (!ok) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803247D0, 0xAF, lbl_80324788, j, 0, 4);
+            ch->sc[j] = v;
         }
         ch->f20 = t->f68;
         ch->f24 = t->f6C;
