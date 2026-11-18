@@ -3363,6 +3363,7 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 
 #pragma scheduling on
 void GXSetDispCopyDst(s32 value) {
+    u32 reg;
     union {
         u32 reg;
         struct {
@@ -3374,7 +3375,8 @@ void GXSetDispCopyDst(s32 value) {
 
     data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
-    __GXData[0x238 / 4] = data.reg;
+    reg = data.reg;
+    __GXData[0x238 / 4] = reg;
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
@@ -4607,12 +4609,10 @@ void GXLoadTexObjPreLoaded(void *__restrict obj, void *__restrict region, int ma
         *(volatile unsigned char *)0xCC008000 = opcode;
         *(volatile unsigned int *)0xCC008000 = dst[1];
     }
-    data = __GXData;
-    dst = data + map;
-    dst[0x564 / 4] = a[2];
-    dst[0x584 / 4] = a[0];
-    data[0x5FC / 4] |= 1;
-    *(unsigned short *)((char *)data + 2) = 0;
+    ((unsigned int *)((char *)__GXData + 0x564))[map] = a[2];
+    ((unsigned int *)((char *)__GXData + 0x584))[map] = a[0];
+    __GXData[0x5FC / 4] |= 1;
+    *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXLoadTexObj(void *obj, unsigned int map) {
