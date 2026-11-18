@@ -35,16 +35,16 @@ static inline void matVecCopy_8018(Vec_8018 *dest, const float *m, Vec_8018 *src
 }
 static inline void matVecAlias_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
     if (dest == src) {
-        float tx = m[0] * src->x + m[3] * src->y + m[6] * src->z;
-        float ty = m[1] * src->x + m[4] * src->y + m[7] * src->z;
-        float tz = m[2] * src->x + m[5] * src->y + m[8] * src->z;
+        float tx = src->y * m[3] + src->x * m[0] + src->z * m[6];
+        float ty = src->y * m[4] + src->x * m[1] + src->z * m[7];
+        float tz = src->y * m[5] + src->x * m[2] + src->z * m[8];
         dest->x = tx;
         dest->y = ty;
         dest->z = tz;
     } else {
-        dest->x = m[0] * src->x + m[3] * src->y + m[6] * src->z;
-        dest->y = m[1] * src->x + m[4] * src->y + m[7] * src->z;
-        dest->z = m[2] * src->x + m[5] * src->y + m[8] * src->z;
+        dest->x = src->y * m[3] + src->x * m[0] + src->z * m[6];
+        dest->y = src->y * m[4] + src->x * m[1] + src->z * m[7];
+        dest->z = src->y * m[5] + src->x * m[2] + src->z * m[8];
     }
 }
 
@@ -162,7 +162,114 @@ extern void *fn_8001285C(int);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_8018C5A0(char *arg0, char *arg1) { char *base = lbl_80332758; char *p19; char *p20; int i; char *p30; int j; Vec_8018 v; Vec_8018 zero; void *sp8; float f31, f30; memset(arg0 + 0x152C, 0, 0x900); f31 = lbl_80561F74; p19 = base + 0xE8; f30 = lbl_80561F78; p20 = arg0 + 0x152C; for (i = 0; i < 0x11; i++, p19 += 0x40, p20 += 0x80) { if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p19, void **, 4), p20) != 0) { float *m = M2C_FIELD(p20, float **, 0); matVecAliasV_8018(&v, m, (Vec_8018 *)(p19 + 0x24)); v.x += m[9]; v.y += m[10]; v.z += m[11]; M2C_FIELD(p20, int *, 4) = fn_8018C514(arg0, &v); zero.x = f31; zero.y = f31; zero.z = f31; m = M2C_FIELD(p20, float **, 0); matVecAliasV_8018(&v, m, &zero); v.x += m[9]; v.y += m[10]; v.z += m[11]; M2C_FIELD(p20, int *, 8) = fn_8018C514(arg0, &v); M2C_FIELD(p20, float *, 0x14) = f30; } } M2C_FIELD(arg0, int *, 0x5F8) = *M2C_FIELD(arg0, int **, 0x26C); { float r = lbl_80561F7C / (lbl_80561F80 * M2C_FIELD(arg1, float *, 8)); float a = M2C_FIELD(arg0, float *, 0x314); M2C_FIELD(arg0, float *, 0x5F4) = r; if (a >= lbl_80561F84) { M2C_FIELD(arg0, float *, 0x5F4) = r * a; } else { M2C_FIELD(arg0, float *, 0x5F4) = fabs(a); } } if (M2C_FIELD(arg0, int *, 0x1F0) == 0x50) { void *o = M2C_FIELD(fn_8001285C(*(int *)__AXFXGetLfoSinTable_801769CC(0)), void **, 0x20); float t = (*(float (**)(void *, void *, float))(*(char **)o + 0x28))(o, base + 0x680, lbl_80561F88); M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * t; } M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * lbl_80561F8C; if (M2C_FIELD(arg0, int *, 0x328) != 0) { fn_80279B28(arg0 + 0x1E44); } else { fn_80279CD8(arg0 + 0x1E44); } *(Blob290_8018 *)(arg0 + 0x20F8) = *(Blob290_8018 *)(arg0 + 0x1E44); { Blob22_8018 *d = (Blob22_8018 *)(arg0 + 0x2388); Blob22_8018 *s = (Blob22_8018 *)(arg0 + 0x20D4); d->a = s->a; d->b = s->b; d->c = s->c; d->d = s->d; d->e0 = s->e0; d->e1 = s->e1; d->e2 = s->e2; d->e3 = s->e3; d->e4 = s->e4; d->e5 = s->e5; d->e6 = s->e6; d->e7 = s->e7; d->e8 = s->e8; d->e9 = s->e9; d->e10 = s->e10; d->e11 = s->e11; d->e12 = s->e12; d->e13 = s->e13; d->e14 = s->e14; d->e15 = s->e15; d->e16 = s->e16; d->e17 = s->e17; } M2C_FIELD(arg0, unsigned char *, 0x1E2C) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E2D) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E2E) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E2F) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E30) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E31) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E32) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E33) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E34) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E35) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E36) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E37) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E38) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E39) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E3A) = 0xFF; M2C_FIELD(arg0, unsigned char *, 0x1E3B) = 0xFF; p30 = base + 0x5B0; for (j = 0; j < 0xD; j++, p30 += 0x10) { char *s4; char *t26; sp8 = 0; s4 = M2C_FIELD(p30, char **, 0); t26 = arg0 + M2C_FIELD(p30, int *, 4); if (s4[0] == 0x24) { if (s4[1] == 0x57) { M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, arg0 + (s4[2] - 0x30) * 0x74 + 0x23DC); } else { fn_802E317C(base + 0x694); } } if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p30, void **, 0), &sp8) != 0) { M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, (char *)sp8 + 0x24); } } }
+void fn_8018C5A0(char *arg0, char *arg1) {
+    char *base = lbl_80332758;
+    char *p19;
+    char *p20;
+    int i;
+    char *p30;
+    int j;
+    Vec_8018 v;
+    Vec_8018 zero;
+    void *sp8;
+    float f31, f30;
+
+    memset(arg0 + 0x152C, 0, 0x900);
+    f31 = lbl_80561F74;
+    p19 = base + 0xE8;
+    f30 = lbl_80561F78;
+    p20 = arg0 + 0x152C;
+    for (i = 0; i < 0x11; i++, p19 += 0x40, p20 += 0x80) {
+        if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p19, void **, 4), p20) != 0) {
+            float *m = M2C_FIELD(p20, float **, 0);
+            matVecAliasV_8018(&v, m, (Vec_8018 *)(p19 + 0x24));
+            v.x += m[9];
+            v.y += m[10];
+            v.z += m[11];
+            M2C_FIELD(p20, int *, 4) = fn_8018C514(arg0, &v);
+            zero.x = f31;
+            zero.y = f31;
+            zero.z = f31;
+            m = M2C_FIELD(p20, float **, 0);
+            matVecAliasV_8018(&v, m, &zero);
+            v.x += m[9];
+            v.y += m[10];
+            v.z += m[11];
+            M2C_FIELD(p20, int *, 8) = fn_8018C514(arg0, &v);
+            M2C_FIELD(p20, float *, 0x14) = f30;
+        }
+    }
+    M2C_FIELD(arg0, int *, 0x5F8) = *M2C_FIELD(arg0, int **, 0x26C);
+    {
+        float r = lbl_80561F7C / (lbl_80561F80 * M2C_FIELD(arg1, float *, 8));
+        float a = M2C_FIELD(arg0, float *, 0x314);
+        M2C_FIELD(arg0, float *, 0x5F4) = r;
+        if (a >= lbl_80561F84) {
+            M2C_FIELD(arg0, float *, 0x5F4) = r * a;
+        } else {
+            M2C_FIELD(arg0, float *, 0x5F4) = fabs(a);
+        }
+    }
+    if (M2C_FIELD(arg0, int *, 0x1F0) == 0x50) {
+        void *o = M2C_FIELD(fn_8001285C(*(int *)__AXFXGetLfoSinTable_801769CC(0)), void **, 0x20);
+        float t = (*(float (**)(void *, void *, float))(*(char **)o + 0x28))(o, base + 0x680, lbl_80561F88);
+        M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * t;
+    }
+    M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * lbl_80561F8C;
+    if (M2C_FIELD(arg0, int *, 0x328) != 0) {
+        fn_80279B28(arg0 + 0x1E44);
+    } else {
+        fn_80279CD8(arg0 + 0x1E44);
+    }
+    *(Blob290_8018 *)(arg0 + 0x20F8) = *(Blob290_8018 *)(arg0 + 0x1E44);
+    {
+        Blob22_8018 *d = (Blob22_8018 *)(arg0 + 0x2388);
+        Blob22_8018 *s = (Blob22_8018 *)(arg0 + 0x20D4);
+        d->a = s->a;
+        d->b = s->b;
+        d->c = s->c;
+        d->d = s->d;
+        d->e0 = s->e0; d->e1 = s->e1; d->e2 = s->e2; d->e3 = s->e3;
+        d->e4 = s->e4; d->e5 = s->e5; d->e6 = s->e6; d->e7 = s->e7;
+        d->e8 = s->e8; d->e9 = s->e9; d->e10 = s->e10; d->e11 = s->e11;
+        d->e12 = s->e12; d->e13 = s->e13; d->e14 = s->e14; d->e15 = s->e15;
+        d->e16 = s->e16; d->e17 = s->e17;
+    }
+    M2C_FIELD(arg0, unsigned char *, 0x1E2C) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E2D) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E2E) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E2F) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E30) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E31) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E32) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E33) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E34) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E35) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E36) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E37) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E38) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E39) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E3A) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E3B) = 0xFF;
+    p30 = base + 0x5B0;
+    for (j = 0; j < 0xD; j++, p30 += 0x10) {
+        char *s4;
+        char *t26;
+        sp8 = 0;
+        s4 = M2C_FIELD(p30, char **, 0);
+        t26 = arg0 + M2C_FIELD(p30, int *, 4);
+        if (s4[0] == 0x24) {
+            if (s4[1] == 0x57) {
+                M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, arg0 + (s4[2] - 0x30) * 0x74 + 0x23DC);
+            } else {
+                fn_802E317C(base + 0x694);
+            }
+        }
+        if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p30, void **, 0), &sp8) != 0) {
+            M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, (char *)sp8 + 0x24);
+        }
+    }
+}
 #pragma pop
 void fn_8018CB3C(char *arg0) {
     float force[3];
@@ -618,7 +725,7 @@ extern float lbl_80561FC8, lbl_80561FCC, lbl_80561FD8, lbl_80561FDC, lbl_80561FE
 extern float lbl_80561FD0, lbl_80561FD4, lbl_80558DC4;
 void fn_8018DA5C(char *arg0, char *arg1) {
     int n; float *v = (float *)(arg0 + 0xd94); char *out = arg1; char *p = arg0;
-    float smooth=lbl_80561FC8, inv=lbl_80561FCC;
+    float smooth=0.8f, inv=0.2f;
     for (n=0; n < M2C_FIELD(arg0,int*,0x5f8); n++) {
         float x = M2C_FIELD(p,float*,0xd94) * smooth;
         float y = M2C_FIELD(p,float*,0xd98) * smooth;
@@ -631,27 +738,27 @@ void fn_8018DA5C(char *arg0, char *arg1) {
         v+=3; out+=12;
     }
     if (M2C_FIELD(arg0,unsigned char*,0x26e0)) {
-        float cached=lbl_80561F74;
+        float cached=0.0f;
         float f = M2C_FIELD(arg0,float*,0x26e8);
-        float bias = lbl_80561FD0 * M2C_FIELD(arg0,float*,0x26e4);
-        float scale = lbl_80561FD4 * M2C_FIELD(arg0,float*,0x26ec);
+        float bias = 0.2f * M2C_FIELD(arg0,float*,0x26e4);
+        float scale = 0.1f * M2C_FIELD(arg0,float*,0x26ec);
         float mult;
-        f = f > lbl_80561FD8 ? f : lbl_80561FD8;
-        mult=lbl_80561F8C*f;
+        f = f > -0.25f ? f : -0.25f;
+        mult=0.5f*f;
         out=arg1+12;
         for (n=1;n<M2C_FIELD(arg0,int*,0x5f8);n++,out+=12) {
             float x,y,z,dist,t;
             char *entry=M2C_FIELD(arg0,char**,0x26c)+n*0x34;
             float ex=M2C_FIELD(entry,float*,0x20), ey=M2C_FIELD(entry,float*,0x24), ez=M2C_FIELD(entry,float*,0x28);
             dist=(float)fabs(ez);
-            t=dist-lbl_80561FE0;
-            z=cached+lbl_80561FE4*ez*scale;
-            x=cached+scale*(lbl_80561FDC*(ex*t));
-            y=cached+scale*(lbl_80561FDC*(ey*t));
-            t=lbl_80561FE8-dist;
+            t=dist-0.7f;
+            z=cached+(-0.5f)*ez*scale;
+            x=cached+scale*((-0.3f)*(ex*t));
+            y=cached+scale*((-0.3f)*(ey*t));
+            t=3.0f-dist;
             t = t > cached ? t : cached;
             y += mult*(ey*t);
-            t=lbl_80561FE8-(float)fabs(ez);
+            t=3.0f-(float)fabs(ez);
             t = t > cached ? t : cached;
             x += bias*t;
             M2C_FIELD(out,float*,0x2e0)=x; M2C_FIELD(out,float*,0x2e4)=y; M2C_FIELD(out,float*,0x2e8)=z;
@@ -660,7 +767,7 @@ void fn_8018DA5C(char *arg0, char *arg1) {
     M2C_FIELD(arg1,int*,0x29c) |= M2C_FIELD(arg0,int*,0x1e40);
     M2C_FIELD(arg1,int*,0xa78)=0;
     {
-        float blend=lbl_8055E460, one=lbl_80561F88;
+        float blend=lbl_8055E460, one=1.0f;
         char *entry=arg0+0x152c;
         char *table=(char *)lbl_80332840;
         for (n=0;n<17;n++,entry+=0x80,table+=0x40) {
@@ -871,8 +978,10 @@ extern "C" void fn_8018E330(void *arg0) {
     fn_801DFF1C(*(int *)((char *)arg0 + 0x1EC));
     f0 = lbl_80561F74;
     f1 = lbl_80561F8C;
+#pragma scheduling off
     *(volatile float *)((char *)arg0 + 0x258C) = f0;
     object = *(void **)((char *)arg0 + 0x270);
+#pragma scheduling on
     *(float *)((char *)arg0 + 0x2690) = f1;
     *(float *)((char *)arg0 + 0x25BC) = f0;
     *(float *)((char *)arg0 + 0x26A0) = lbl_8055E3C8;
@@ -1658,7 +1767,7 @@ void fn_8018F538(unsigned char *arg0, unsigned char *arg1) {
     int i;
 
     lower = lbl_80561F88;
-    dst = arg1;
+    dst = arg1 + 0;
     first = *(float *)(src + 0x2690);
     upper = lbl_80561F74;
     i = 0;
