@@ -5221,7 +5221,6 @@ extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 
     extern s32 VFiPFENT_loadEntryNumericFieldsFromBuf(void *, void *);
     register u8 *iter;
     s32 status;
-    s32 masked;
     register s32 zero;
     u8 spC[13];
     u8 flags;
@@ -5304,8 +5303,9 @@ status_check:
     *arg3 = 1;
     return 0;
 advance:
-    masked = VFiPFENT_ITER_MoveNextAndRead(iter);
-    status = VFiPFENT_ITER_MaskNonZero(masked);
+    status = *(u32 *)iter;
+    *(u32 *)iter = status + 1;
+    status = VFiPFENT_ITER_MaskNonZero(VFiPFENT_ITER_MoveNextAndReadOld(iter, status));
 check_end:
     if (VFiPFENT_ITER_IsAtLogicalEnd((void *)iter) == 0) goto status_check;
     return 0;
@@ -10323,35 +10323,34 @@ extern "C" void fn_800B783C(void *);
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559224[]; }
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055922C[]; }
 #pragma opt_lifetimes off
-extern "C" void fn_800B4BD8(char *p0, u16 *p1, void *p2) {
-    void *a2 = p2;
-    u16 *a1 = p1;
-    char *a0 = p0;
+extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
+    struct Ctrl { u8 pad[0x60]; u32 flags; u8 data[4]; };
     u16 sp8[2];
-    if (fn_800A4D44((u16 **)a2) == 1U) {
-        if (fn_800A4AD0((u8 *)*(u16 **)a2, (u8 *)lbl_8055922C) == 0) {
-            fn_800A4AAC(a0, (char *)lbl_80559224);
+    if (fn_800A4D44((u16 **)arg2) == 1U) {
+        if (fn_800A4AD0((u8 *)*(u16 **)arg2, (u8 *)lbl_8055922C) == 0) {
+            fn_800A4AAC(arg0, (char *)lbl_80559224);
             return;
         }
-        fn_800A4AAC(a0, (char *)*(u16 **)a2);
+        fn_800A4AAC(arg0, (char *)*(u16 **)arg2);
         return;
     }
-    if (VFiPFSTR_StrCmp((u16 **)a2, (s32)lbl_8055922C) == 0) {
+    if (VFiPFSTR_StrCmp((u16 **)arg2, (s32)lbl_8055922C) == 0) {
         sp8[0] = 0x2A;
         sp8[1] = 0;
-        fn_800A4B78(a1, sp8);
+        fn_800A4B78(arg1, sp8);
     } else {
-        fn_800A4B78(a1, *(u16 **)a2);
+        fn_800A4B78(arg1, *(u16 **)arg2);
     }
-    if ((u32)(lbl_803D2140[0x60 / 4] & 2) == 2U) {
-        fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
-        lbl_803D2140[0x60 / 4] = (lbl_803D2140[0x60 / 4] & ~3) | 1;
-        VFiPFPATH_transformFromUnicodeToNormal((u16 *)a0, a1);
-        lbl_803D2140[0x60 / 4] = (lbl_803D2140[0x60 / 4] & ~3) | 2;
-        fn_800B783C((u8 *)lbl_803D2140 + 0x64);
+    Ctrl *ctrl = (Ctrl *)lbl_803D2140;
+    if ((u32)(ctrl->flags & 2) == 2U) {
+        fn_800B77C0(ctrl->data);
+        ctrl->flags = (ctrl->flags & ~3) | 1;
+        VFiPFPATH_transformFromUnicodeToNormal((u16 *)arg0, arg1);
+        ctrl->flags = (ctrl->flags & ~3) | 2;
+        fn_800B783C(ctrl->data);
         return;
     }
-    VFiPFPATH_transformFromUnicodeToNormal((u16 *)a0, a1);
+    VFiPFPATH_transformFromUnicodeToNormal((u16 *)arg0, arg1);
 }
 #pragma opt_lifetimes reset
 extern "C" u8 lbl_80559230;
@@ -13615,10 +13614,9 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
     u8 count;
     u8 *out;
     u8 *record;
-    u32 i;
-    u8 *groupBase;
     u32 j;
-    register u32 dead;
+    u8 *groupBase;
+    u32 i;
 
     if (arg1 != 0) {
         if (arg2 == 0)
@@ -13629,23 +13627,20 @@ extern "C" u8 fn_800BA974(s32 arg0, u8 *arg1, s32 arg2) {
     groupBase = (u8 *)lbl_803D2140;
     out = arg1;
     count = 0;
-    dead = 0;
-    for (i = 0; i < 0x1A; i++) {
+    for (j = 0; j < 0x1A; j++) {
         if (fn_800A71C4((u32 *)record) != 0 &&
             *(u32 *)(record + 4) == (u32)arg0) {
             u8 *group = groupBase + 0xA0;
-            for (j = 0; j < 13; j++, group += 0x3F90) {
+            for (i = 0; i < 13; i++, group += 0x3F90) {
                 if (*(u32 *)(group + 0x1FBC) == (u32)record) {
                     count++;
                     *out++ = *(u8 *)(group + 0x1F8E);
-                    dead++;
                     if ((u32)count == (u32)arg2)
                         break;
                 }
                 if (*(u32 *)(group + 0x3F84) == (u32)record) {
                     count++;
                     *out++ = *(u8 *)(group + 0x3F56);
-                    dead++;
                     if ((u32)count == (u32)arg2)
                         break;
                 }
@@ -13865,14 +13860,14 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     u32 info[4];
     u32 word0;
     u32 one;
-    u32 word1;
-    u16 scale;
+    s32 word1;
+    u16 shift;
     u32 clamp;
     u16 factor;
     u16 exponent;
-    u16 shift;
+    u16 scale;
     u16 multiplier;
-    u32 mantissa;
+    register u32 mantissa;
     u32 size;
     s32 result;
 
@@ -13889,14 +13884,14 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     factor = 1 << (((word0 >> 7) & 7) + 2);
     exponent = (word1 >> 8) & 0xF;
     mantissa = ((word1 & 3) << 10) | (word0 >> 22);
-    mantissa++;
+    mantissa += 1;
     size = mantissa * factor;
 
     scale = 9;
-    if (exponent >= 9)
+    if (9 <= exponent)
         scale = exponent;
     clamp = 0xB;
-    if (scale <= 0xB)
+    if (0xB >= scale)
         clamp = scale;
     shift = (u16)clamp - 9;
     multiplier = 1 << shift;
@@ -22095,9 +22090,9 @@ extern "C" u32 fn_800D3A30(const char *arg0) {
 extern "C" u32 fn_800D3B40(const char *str, char *buffer, s32 count, u32 delim) {
     s32 copied = 0;
     const char *base = lbl_8031EC50;
-    if (str == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x220, base + 0x18C);
-    if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x221, base + 0x164);
-    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)base + 0), 0x222, base + 0x134);
+    if (str == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x220, base + 0x18C);
+    if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x221, base + 0x164);
+    if (lbl_8055DDD8 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x222, base + 0x134);
     count--;
     for (;;) {
         const char *p = str;
