@@ -6,12 +6,15 @@ void fn_801312EC(void *, void *);
 extern unsigned char lbl_802FB6E0[];
 extern unsigned char lbl_8034EF20[];
 extern unsigned int lbl_8055D358;
-struct Hdr {
+struct Init {
     int f0;
     int f4;
     int f8;
     int fC;
     int f10;
+};
+struct Hdr {
+    struct Init init;
     char pad[0x1F0];
 };
 void fn_8000829C(void) {
