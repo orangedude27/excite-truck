@@ -174,7 +174,6 @@ void *fn_802B8EB8(s32 centerX, s32 centerY, u32 span, s32 cornerFlags) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void *fn_802B8EF0(int arg0, void *arg1) {
     struct Entry {
@@ -806,11 +805,11 @@ void fn_802B9CF4(void *container) {
 #pragma use_lmw_stmw off
 void fn_802B9D08(void) {
     register void **list;
-    register int zero;
+    register unsigned long zero;
     register char *base;
     register void *node;
     register int offset;
-    register int i;
+    register long i;
     base = lbl_804BFFE8;
     fn_802B9DD0(&lbl_8055FA7C);
     fn_802B9E4C(&lbl_8055FA78);
