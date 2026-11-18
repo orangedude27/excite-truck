@@ -973,21 +973,6 @@ void fn_802AB6D4(void) {
     }
 }
 
-extern int fn_802C2C00(int);
-extern int fn_802C990C(int);
-extern void fn_802C2BB8(int *, int *, int *);
-extern void fn_802C2B78(float, float, float);
-extern int lbl_804BD7B0[4];
-extern unsigned char lbl_8055F92D;
-
-/* Save the current draw state (restored by fn_802AB994) and set the new one. */
-static inline void SetDrawState(int color, float x, float y, float z) {
-    lbl_8055F92D = fn_802C2C00(1);
-    lbl_804BD7B0[0] = fn_802C990C(color);
-    fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
-    fn_802C2B78(x, y, z);
-}
-
 #pragma push
 #pragma processor 750
 void fn_802AB770(int arg0) {
@@ -1006,8 +991,7 @@ void fn_802AB770(int arg0) {
     extern int fn_802C990C(int);
     extern void fn_802C2BB8(int *, int *, int *);
     extern void fn_802C2B78(float, float, float);
-    register char *state;
-    register int obj;
+    char *state;
     unsigned char green;
     unsigned char red;
     unsigned char blue;
@@ -1020,7 +1004,7 @@ void fn_802AB770(int arg0) {
     int angleWithinLimit;
     int active;
     state = (char *)(lbl_8055F928 + arg0 * 0x108);
-    obj = fn_80287B24(arg0);
+    arg0 = fn_80287B24(arg0);
     delta = fn_801E7E24();
     if (!((float)__fabs(delta) <= *(float *)(void *)&lbl_80558DC4)) {
         red = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0x8C, 0xFF);
@@ -1028,7 +1012,7 @@ void fn_802AB770(int arg0) {
         blue = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xF0, 0xFF);
         *(int *)(state + 0xE8) = (int)(0xFF000000u | ((unsigned int)blue << 16) | ((unsigned int)green << 8) | (unsigned int)red);
     }
-    angle = *(float *)((char *)obj + 0x4C);
+    angle = *(float *)((char *)arg0 + 0x4C);
     if (lbl_8055F92C != 0) angle = lbl_80564A98;
     if (*(float *)(state + 0xE4) > lbl_805649F4)
         *(float *)(state + 0xE4) = fn_80287BC8(lbl_80564A8C, lbl_80564A68);
@@ -1047,15 +1031,13 @@ void fn_802AB770(int arg0) {
     }
     result = lbl_805649F0;
     if (active != 0) result = lbl_80564AA8 * *(float *)(state + 0xE4) - wave;
-    {
-        int old = *(int *)(state + 0xE8);
-        lbl_8055F92D = fn_802C2C00(1);
-        lbl_804BD7B0[0] = fn_802C990C(old);
-        fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
-        fn_802C2B78(result, lbl_80564AAC + result, lbl_805649FC);
-    }
+    arg0 = *(int *)(state + 0xE8);
+    lbl_8055F92D = fn_802C2C00(1);
+    lbl_804BD7B0[0] = fn_802C990C(arg0);
+    fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
+    fn_802C2B78(result, lbl_80564AAC + result, lbl_805649FC);
 }
-#pragma pop
+#pragma opt_propagation reset
 // Restore the draw state saved by fn_802AB770: model colour,
 // global scale parameters, and the global-scale-on flag.
 void fn_802AB994(void) {
