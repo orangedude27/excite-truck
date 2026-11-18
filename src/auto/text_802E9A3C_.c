@@ -209,12 +209,13 @@ extern long fn_800B7968(long, long, long, void *);
 extern void fn_802E317C(const char *, ...);
 #pragma push
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802E9CF0(void) {
     char *strings = (char *)&lbl_8034E260;
     char *base = (char *)lbl_80507600;
     char *config = base + 0xC4;
     char *state;
-    *(void *volatile *)(base + 0xC4) = base + 0xD8;
+    *(void *volatile *)config = base + 0xD8;
     *(void *volatile *)(config + 4) = base + 0x218;
     state = base + 0xB8;
     *(volatile short *)(config + 8) = 4;
@@ -227,10 +228,7 @@ void fn_802E9CF0(void) {
         fn_802E317C(strings + 0x15C);
     if (fn_800B7968(0, 0, 0, base + 0xB8) != 0)
         fn_802E317C(strings + 0x170);
-    {
-        char *last = base + 0xB8;
-        lbl_80560061 = ((volatile unsigned char *)last)[9] >> 4 & 1;
-    }
+    lbl_80560061 = ((volatile unsigned char *)(base + 0xB8))[9] >> 4 & 1;
 }
 
 #pragma dont_inline on
@@ -275,14 +273,11 @@ body:
         dst++;
         goto check;
     }
-    src++;
-    next = *(volatile unsigned char *)src;
-    count--;
+    next = *(volatile unsigned char *)++src;
     *dst++ = 0x3F;
-    switch ((signed char)next) {
-    case 0: goto check;
-    default: src++; break;
-    }
+    count--;
+    if ((signed char)next == 0) goto check;
+    src++;
 check:
     if (count <= 1) goto done;
     if ((signed char)*src != 0) goto body;
@@ -542,7 +537,9 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802EAA08(void) {
-    if (lbl_805600B8 >= lbl_805600A4) {
+    int offset = lbl_805600A4;
+    int end = lbl_805600B8;
+    if (end >= offset) {
         memcpy((void *)lbl_805600A0, (void *)(lbl_805600A0 + lbl_805600A4), (unsigned int)lbl_805600B8 - (unsigned int)lbl_805600A4);
         lbl_805600B8 -= lbl_805600A4;
     }
@@ -554,7 +551,7 @@ int fn_802EAA58(int *arg0, int arg1) {
     int channelOk;
     int channels;
     int valid;
-    int rateOk;
+    short rateOk;
     int result;
     int rate;
     int size;
@@ -1054,17 +1051,20 @@ void fn_802EBE2C(void) {
     extern void fn_802E9EB8(void);
     int i, off, h;
     float f;
+    int a4, ac;
 
     lbl_8055D260 = -1;
     lbl_8055D264 = 0xAC44;
     lbl_80560078 = (void *)-1;
     lbl_8055D25C = lbl_8055D264;
     lbl_8056009C = (int)fn_8012850C(0xED80, (char *)&lbl_8034E260 + 0x6BC);
-    lbl_805600A4 = 0x47FC0;
-    fn_802E30C8((char *)&lbl_8034E260 + 0x6C8, lbl_805600A4 / 1024);
+    a4 = 0x47FC0;
+    lbl_805600A4 = a4;
+    fn_802E30C8((char *)&lbl_8034E260 + 0x6C8, a4 / 1024);
     lbl_805600A0 = (int)fn_8012850C((lbl_805600A4 + 0x1200) * 2 - (lbl_805600A4 + 0x1200), &lbl_8055D2D8);
-    lbl_805600AC = 0x1E000;
-    lbl_805600A8 = (int)fn_8012850C(lbl_805600AC * 2 - lbl_805600AC, &lbl_8055D2E0);
+    ac = 0x1E000;
+    lbl_805600AC = ac;
+    lbl_805600A8 = (int)fn_8012850C(ac * 2 - ac, &lbl_8055D2E0);
     lbl_805600B8 = 0x2400;
     i = 0;
     off = 0;
