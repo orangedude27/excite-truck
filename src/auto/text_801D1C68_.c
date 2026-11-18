@@ -3,29 +3,26 @@
 
 #pragma scheduling invalid_target
 void fn_801D1C68(void *arg0, int arg1) {
-    unsigned int *fields = (unsigned int *)arg0;
     int offset;
     volatile unsigned char *record;
     int i;
-    register unsigned char *base asm("r0");
     unsigned char *relocRecord;
     unsigned char b;
     unsigned char a;
     unsigned int value;
 
-    if (fields[0] != 0) fields[0] = arg1 + fields[0]; else fields[0] = 0;
-    if (fields[1] != 0) fields[1] = arg1 + fields[1]; else fields[1] = 0;
-    if (fields[2] != 0) fields[2] = arg1 + fields[2]; else fields[2] = 0;
-    if (fields[3] != 0) fields[3] = arg1 + fields[3]; else fields[3] = 0;
+    if (((unsigned int *)arg0)[0] != 0) ((unsigned int *)arg0)[0] = ((unsigned int *)arg0)[0] + arg1; else ((unsigned int *)arg0)[0] = 0;
+    if (((unsigned int *)arg0)[1] != 0) ((unsigned int *)arg0)[1] = ((unsigned int *)arg0)[1] + arg1; else ((unsigned int *)arg0)[1] = 0;
+    if (((unsigned int *)arg0)[2] != 0) ((unsigned int *)arg0)[2] = ((unsigned int *)arg0)[2] + arg1; else ((unsigned int *)arg0)[2] = 0;
+    if (((unsigned int *)arg0)[3] != 0) ((unsigned int *)arg0)[3] = ((unsigned int *)arg0)[3] + arg1; else ((unsigned int *)arg0)[3] = 0;
 
     i = 0;
     offset = 0;
     goto check20;
 loop20:
-    base = (unsigned char *)fields[0];
     i++;
-    record = base + offset;
-    a = base[offset];
+    record = (unsigned char *)((unsigned int *)arg0)[0] + offset;
+    a = *((unsigned char *)((unsigned int *)arg0)[0] + offset);
     b = record[3];
     offset += 0x14;
     record[0] = b;
@@ -73,10 +70,9 @@ check20:
     offset = 0;
     goto check16;
 loop16:
-    base = (unsigned char *)fields[1];
     i++;
-    record = base + offset;
-    a = base[offset];
+    record = (unsigned char *)((unsigned int *)arg0)[1] + offset;
+    a = *((unsigned char *)((unsigned int *)arg0)[1] + offset);
     b = record[3];
     offset += 0x10;
     record[0] = b;
@@ -116,10 +112,9 @@ check16:
     offset = 0;
     goto check12;
 loop12:
-    base = (unsigned char *)fields[2];
     i++;
-    record = base + offset;
-    a = base[offset];
+    record = (unsigned char *)((unsigned int *)arg0)[2] + offset;
+    a = *((unsigned char *)((unsigned int *)arg0)[2] + offset);
     b = record[3];
     record[0] = b;
     record[3] = a;
@@ -143,10 +138,10 @@ loop12:
     b = record[10];
     record[9] = b;
     record[10] = a;
-    relocRecord = (unsigned char *)fields[2] + offset;
+    relocRecord = (unsigned char *)((unsigned int *)arg0)[2] + offset;
     value = *(unsigned int *)(relocRecord + 8);
     offset += 0xC;
-    *(unsigned int *)(relocRecord + 8) = fields[0] + value * 0x14;
+    *(unsigned int *)(relocRecord + 8) = ((unsigned int *)arg0)[0] + value * 0x14;
 check12:
     if (i < ((int *)arg0)[6]) goto loop12;
 
@@ -154,10 +149,9 @@ check12:
     offset = 0;
     goto check28;
 loop28:
-    base = (unsigned char *)fields[3];
     i++;
-    record = base + offset;
-    a = base[offset];
+    record = (unsigned char *)((unsigned int *)arg0)[3] + offset;
+    a = *((unsigned char *)((unsigned int *)arg0)[3] + offset);
     b = record[3];
     offset += 0x1c;
     record[0] = b;
@@ -218,6 +212,27 @@ check28:
     if (i < ((int *)arg0)[7]) goto loop28;
 }
 
+static inline void swapRecords_801D2008(int count, unsigned char *p) {
+    unsigned char t;
+    for (; count != 0; count--) {
+        t = p[0]; p[0] = p[3]; p[3] = t;
+        t = p[1]; p[1] = p[2]; p[2] = t;
+        t = p[4]; p[4] = p[7]; p[7] = t;
+        t = p[5]; p[5] = p[6]; p[6] = t;
+        t = p[8]; p[8] = p[11]; p[11] = t;
+        t = p[9]; p[9] = p[10]; p[10] = t;
+        t = p[12]; p[12] = p[15]; p[15] = t;
+        t = p[13]; p[13] = p[14]; p[14] = t;
+        t = p[16]; p[16] = p[19]; p[19] = t;
+        t = p[17]; p[17] = p[18]; p[18] = t;
+        t = p[20]; p[20] = p[23]; p[23] = t;
+        t = p[21]; p[21] = p[22]; p[22] = t;
+        t = p[24]; p[24] = p[27]; p[27] = t;
+        t = p[25]; p[25] = p[26]; p[26] = t;
+        p += 0x1c;
+    }
+}
+
 void *fn_8012C370(unsigned int, int *, int, int, unsigned char *);
 void fn_802E317C(const char *, ...);
 extern char lbl_80338268[];
@@ -226,8 +241,8 @@ void *fn_801D2008(void *arg0) {
     int error = 0;
     unsigned char swap = 1;
     unsigned char *result;
+    register unsigned char *p;
     unsigned char temp;
-    unsigned char *p;
     int i;
 
     result = (unsigned char *)((void *(*)(void *, unsigned int, int *, int, int, unsigned char *))fn_8012C370)(arg0, 0x434D7368, &error, 0, 0, &swap);
@@ -238,7 +253,6 @@ void *fn_801D2008(void *arg0) {
         fn_802E317C(lbl_80338284, error, 0);
     }
     if (swap != 0) {
-        temp = *result;
         p = result;
         for (i = 0; i < 8; i++) {
             temp = p[0]; p[0] = p[3]; p[3] = temp;
