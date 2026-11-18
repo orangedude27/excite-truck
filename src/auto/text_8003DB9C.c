@@ -686,6 +686,19 @@ void GXSetFieldMask(s32 even, s32 odd);
 void GXSetFieldMode(s32 mode, s32 field);
 void GXSetDispCopySrc(s32 left, s32 top, s32 width, s32 height);
 void GXSetDispCopyDst();
+static inline u32 GXBuildDispCopyDstReg(s32 value) {
+    union {
+        u32 reg;
+        struct {
+            u32 constant : 8;
+            u32 pad : 14;
+            u32 arg : 10;
+        } fields;
+    } data = {0};
+    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
+    data.fields.constant = 0x4D;
+    return data.reg;
+}
 unsigned int GXSetDispCopyYScale(f32 yScale);
 void GXSetCopyClamp(s32 value);
 void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg3);
@@ -4368,6 +4381,7 @@ void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short h
     u32 mode, image0, image3, maxLOD;
     int rowShift, colShift;
     u8 flags;
+    u16 count;
     memset(t, 0, 0x20);
     mode = t->mode0;
     mode = __rlwimi(mode, wrapS, 0, 30, 31);
@@ -4409,9 +4423,10 @@ void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short h
     default:
         t->loadFmt = 2; rowShift = 2; colShift = 2; break;
     }
+    count = (((width + (1 << rowShift) - 1) >> rowShift) * ((height + (1 << colShift) - 1) >> colShift)) & 0x7fff;
     flags = t->flags;
     t->flags = flags | 2;
-    t->loadCnt = (((width + (1 << rowShift) - 1) >> rowShift) * ((height + (1 << colShift) - 1) >> colShift)) & 0x7fff;
+    t->loadCnt = count;
 #pragma opt_common_subs reset
 }
 
@@ -4667,8 +4682,8 @@ void GXLoadTlut(void *arg0, int arg1) {
         struct { unsigned int hi : 22; unsigned int lo : 10; } f;
     };
     union Low10 v;
-    unsigned int * __restrict src = (unsigned int *)arg0;
-    unsigned int * __restrict dst = ((unsigned int *(*)(int))__GXData[0x51C / 4])(arg1);
+    unsigned int *dst = ((unsigned int *(*)(int))__GXData[0x51C / 4])(arg1);
+    unsigned int *src = (unsigned int *)arg0;
     __GXFlushTextureState();
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = src[1];
