@@ -777,14 +777,10 @@ void **fn_801CC784(void *vec) {
 
 extern void *memset(void *, int, unsigned long);
 void *fn_801CC7A0(void *arg0) {
-    unsigned char *end;
-    unsigned char *p;
-    long zero;
-    unsigned char *base;
-    base = (unsigned char *)arg0;
-    end = base + 0x14C;
-    p = base + 0x20;
-    zero = 0;
+    unsigned char *end = (unsigned char *)arg0 + 0x14C;
+    unsigned char *p = (unsigned char *)arg0 + 0x20;
+    unsigned char *base = (unsigned char *)arg0;
+    long zero = 0;
     *(long *)(base + 8) = zero;
     *(long *)(base + 0xC) = zero;
     *(long *)(base + 0x10) = zero;
@@ -817,7 +813,6 @@ void *fn_801CC7A0(void *arg0) {
     return arg0;
 }
 
-#pragma scheduling on
 void fn_801CC8EC(void *arg0) {
     /* Initialize the stat-node free-list head: empty head at +0 and tail pointing back at the head at +4. */
     typedef struct {
