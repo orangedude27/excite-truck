@@ -1260,22 +1260,12 @@ extern "C" s32 detail_GetWaveDataFileAddress__Q36nw4hbm3snd18MemorySoundArchiveC
     return (info.v[5] + *(u32 *)((u8 *)archive + 0x108)) + info.v[12];
 }
 
-static inline void *sndInitStream(void *stream, u32 base, s32 offset, u32 length) {
-    *(u8 *)((u8 *)stream + 4) = 0;
-    *(u32 *)((u8 *)stream + 0xC) = 0;
-    *(u32 *)((u8 *)stream + 0x10) = 0;
-    *(u8 **)stream = lbl_803231D8;
-    *(u32 *)((u8 *)stream + 0x14) = offset + base;
-    *(u32 *)((u8 *)stream + 0x18) = length;
-    *(u32 *)((u8 *)stream + 0x1C) = 0;
-    return stream;
-}
 extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this_, void *stream, u32 bufferSize, s32 offset, u32 length) {
     u32 base = *(u32 *)((u8 *)this_ + 0x108);
-    register void *ret = stream;
+    void *ret = stream;
     if (base == 0) return 0;
     if (bufferSize < 0x20) return 0;
-    if (ret == 0) return ret;
+    if (!stream) return ret;
     *(u8 *)((u8 *)stream + 4) = 0;
     *(u32 *)((u8 *)stream + 0xC) = 0;
     *(u32 *)((u8 *)stream + 0x10) = 0;
