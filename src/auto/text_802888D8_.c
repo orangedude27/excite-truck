@@ -1344,6 +1344,10 @@ int fn_8028A1A4(int smokeMan) {
 #pragma scheduling on
 #pragma pop
 #pragma cplusplus off
+#undef kNameRadiator
+#undef kAttrCount
+#undef kAttrArm
+#undef kAttrDir
 
 void fn_8028A32C(void) {}
 
