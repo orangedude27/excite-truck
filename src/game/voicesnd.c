@@ -431,7 +431,6 @@ void fn_8020AC2C(void *arg0) {
     }
     fn_802E6264();
 }
-#pragma cplusplus off
 
 #pragma push
 #pragma use_lmw_stmw off
