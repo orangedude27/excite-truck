@@ -3855,13 +3855,18 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
     *(u32 *)(p_ent + 0x234) = (h1A >> 8) | ((h1A & 255) << 8) | ((h14 >> 8) << 16) | ((h14 & 255) << 24);
 }
 
+struct LfnBufHdr {
+    u8 ord;
+    u8 pad0D[0xC];
+    u8 chk;
+};
 #pragma push
 #pragma scheduling on
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     extern s32 fn_800A4C14(u16 *, s32);
-    u32 raw = ((u8 *)arg1)[0];
+    u32 raw = *(volatile u8 *)&((u8 *)arg1)[0];
     u32 count = raw & 0xFFFFFFBF;
-    u32 tag = ((u8 *)arg1)[0xD];
+    u32 tag = *(volatile u8 *)&((u8 *)arg1)[0xD];
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     u32 index;
@@ -9135,12 +9140,15 @@ static inline u32 Fn800B25CCWide2(u16 *w) {
     }
     return r;
 }
+#pragma push
+#pragma opt_propagation off
 u16 fn_800B25CC(void *arg0, s32 arg1) {
     u8 work[0x14];
     s32 var_r0;
     u32 var_r3;
     u32 var_r3_2;
     u32 var_r3_3;
+    u32 var_r3_4;
     u8 *temp_r3;
     u8 *temp_r5;
     u8 temp_r4;
@@ -9218,18 +9226,17 @@ block_27:
         }
         if (var_r3_3 == 1U) {
             M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)work), &(*(u16 *)work));
-            var_r0 = 1U;
+            var_r3_4 = 1U;
         } else {
-            var_r0 = 0U;
+            var_r3_4 = 0U;
         }
-        if (var_r0 == 1U) {
+        if (var_r3_4 == 1U) {
             (*(u16 *)(work + 4)) = (*(u16 *)work);
         }
     }
     return (*(u16 *)(work + 4));
 }
-
-#pragma opt_propagation off
+#pragma pop
 extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16 arg0, s32 *arg1, u16 arg2, s32 *arg3, s32 arg4) {
     struct St { u8 *buf; u32 end; u32 wide; u16 idx; };
     u16 c0 = arg0;
