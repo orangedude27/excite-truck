@@ -24948,7 +24948,56 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     }
 }
 
-void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
+/* ---- RFCOMM MX (UIH multiplexer) frame names ------------------------------
+ * From include/revolution/BTE/stack/include/rfcdefs.h; like the RPN block
+ * above, this auto unit carries its own copies, so the names
+ * rfc_process_mx_message() parses are spelled out here (same names, same
+ * values).
+ */
+#define RFCOMM_EA                       1
+#define RFCOMM_EA_MASK                  0x01
+#define RFCOMM_CR_MASK                  0x02
+#define RFCOMM_SHIFT_CR                 1
+#define RFCOMM_SHIFT_DLCI               2
+#define RFCOMM_SHIFT_LENGTH1            1
+#define RFCOMM_SHIFT_LENGTH2            7
+#define RFCOMM_MAX_DLCI                 61
+#define RFCOMM_MIN_MTU                  23
+#define RFCOMM_MAX_MTU                  32767
+#define RFCOMM_CTRL_FRAME_LEN           3
+#define RFCOMM_MX_PN                    0x80
+#define RFCOMM_MX_PN_LEN                8
+#define RFCOMM_MX_TEST                  0x20
+#define RFCOMM_MX_FCON                  0xA0
+#define RFCOMM_MX_FCOFF                 0x60
+#define RFCOMM_MX_MSC                   0xE0
+#define RFCOMM_MX_MSC_LEN_WITH_BREAK    3
+#define RFCOMM_MX_NSC                   0x10
+#define RFCOMM_MX_NSC_LEN               1
+#define RFCOMM_MX_RPN                   0x90
+#define RFCOMM_MX_RPN_REQ_LEN           1
+#define RFCOMM_MX_RPN_LEN               8
+#define RFCOMM_MX_RLS                   0x50
+#define RFCOMM_MX_RLS_LEN               2
+#define RFCOMM_PN_DLCI_MASK             0x3F
+#define RFCOMM_PN_FRAME_TYPE_MASK       0x0F
+#define RFCOMM_PN_CONV_LAYER_MASK       0xF0
+#define RFCOMM_PN_PRIORITY_MASK         0x3F
+#define RFCOMM_PN_K_MASK                0x07
+#define RFCOMM_MSC_BREAK_PRESENT_MASK   0x02
+#define RFCOMM_MSC_BREAK_MASK           0xF0
+#define RFCOMM_MSC_SHIFT_BREAK          4
+#define RFCOMM_RPN_BITS_MASK            0x03
+#define RFCOMM_RPN_STOP_BITS_MASK       0x01
+#define RFCOMM_RPN_STOP_BITS_SHIFT      2
+#define RFCOMM_RPN_PARITY_MASK          0x01
+#define RFCOMM_RPN_PARITY_SHIFT         3
+#define RFCOMM_RPN_PARITY_TYPE_MASK     0x03
+#define RFCOMM_RPN_PARITY_TYPE_SHIFT    4
+#define RFCOMM_FC_MASK                  0x3F
+#define RFCOMM_RLS_ERROR                0x01
+
+void rfc_process_mx_message(struct tRFC_MCB *p_rfc_mcb, BT_HDR *p_buf)
 {
     BOOLEAN is_command;
     MX_FRAME *p_rx_frame = (MX_FRAME *)lbl_803C4828;
