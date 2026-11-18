@@ -6388,10 +6388,12 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     u16 policy;
     u8 *cfg = 0;
     u8 *entry = 0;
+    u8 *connEntry;
     u8 i;
     u8 j;
     u8 k;
     u8 spec_idx;
+    u8 *cfgEnt;
     if (fn_8007A2C8((u16 *)version) == 0 && *(u16 *)(version + 6) == 15 && version[0] < 3) {
         if (status == 4) {
             policy = *(u16 *)(lbl_802EE8F0 + 4) & 11;
@@ -6406,17 +6408,18 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
         if (id == cfg[i * 3] && (cfg[i * 3 + 1] == 255 || app_id == cfg[i * 3 + 1]))
             break;
     }
-    if (i > cfg[1])
+    if (i > *(volatile u8 *)(cfg + 1))
         return;
     for (k = 0; k < 3; k++) {
-        entry = lbl_803C0C14 + (k << 5);
-        if (entry[182] != 0 && bdcmp(entry + 176, peer_addr) == 0) {
-            fn_8007148C((s32)(entry + 152));
-            entry[182] = 0;
+        connEntry = lbl_803C0C14 + (k << 5);
+        if (connEntry[182] != 0 && bdcmp(connEntry + 176, peer_addr) == 0) {
+            fn_8007148C((s32)(connEntry + 152));
+            connEntry[182] = 0;
             break;
         }
     }
-    spec_idx = lbl_80559018[i * 3 + 2];
+    cfgEnt = &lbl_80559018[i * 3];
+    spec_idx = cfgEnt[2];
     if (lbl_8055901C[spec_idx * 74 + status * 8 + 2] == 0)
         return;
     for (j = 0; j < lbl_803C0D18[0]; j++) {
@@ -6424,7 +6427,8 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
         if (id == entry[7] && app_id == entry[8] && bdcmp(entry + 1, peer_addr) == 0)
             break;
     }
-    spec_idx = lbl_80559018[i * 3 + 2];
+    cfgEnt = &lbl_80559018[i * 3];
+    spec_idx = cfgEnt[2];
     if (lbl_8055901C[spec_idx * 74 + status * 8 + 2] == 16) {
         if (j != lbl_803C0D18[0]) {
             for (; j < lbl_803C0D18[0]; j++)
@@ -6444,10 +6448,9 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
         lbl_803C0D18[0]++;
     }
     for (i = 0; i < lbl_803C0C14[77]; i++) {
-        entry = lbl_803C0C14 + i * 11;
-        if (bdcmp(entry, peer_addr) == 0) {
-            entry[9] = 0;
-            entry[10] = 0;
+        if (bdcmp(lbl_803C0C14 + i * 11, peer_addr) == 0) {
+            (lbl_803C0C14 + i * 11)[9] = 0;
+            (lbl_803C0C14 + i * 11)[10] = 0;
             break;
         }
     }
@@ -15484,13 +15487,16 @@ psm_found:
 
 void gap_data_ind(u16 cid, void *p_buf) {
     u8 *conn = lbl_803C3740 + 0xAC;
-    u8 i;
+    u8 i = 0;
 
-    for (i = 0; i < 8; i++) {
-        if (conn[0] != 0) {
-            if (*(u16 *)(conn + 6) == cid)
-                goto found;
-        }
+    while (i < 8) {
+        if (conn[0] == 0)
+            goto next;
+        if (*(u16 *)(conn + 6) != cid)
+            goto next;
+        goto found;
+    next:
+        i++;
         conn += 0x60;
     }
     conn = NULL;
@@ -19482,7 +19488,6 @@ void l2c_csm_w4_l2cap_disconnect_rsp(void *p_ccb, u16 event, void *p_data) {
         break;
     case 20:
     case 30:
-    default:
         GKI_freebuf(p_data);
         break;
     }
@@ -19533,14 +19538,14 @@ void l2c_csm_w4_l2ca_disconnect_rsp(void *p_ccb, u16 event, void *p_data)
 void forward_peer_data(void *arg0, void *arg1) {
     extern u8 lbl_80318BC0[];
     extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
-    struct OutBytes { u8 b0, b1, b2, b3; };
     register u8 *ctx = (u8 *)arg0;
     register BT_HDR *data = (BT_HDR *)arg1;
     register u8 *frame;
-    register struct OutBytes *out;
+    register u8 *out;
     u16 count;
     u16 flags;
     void *lcb;
+
     if (data == 0)
         goto dequeue_initial;
     if (*(u16 *)(ctx + 0x78) == 0)
@@ -19548,44 +19553,48 @@ void forward_peer_data(void *arg0, void *arg1) {
     GKI_enqueue((BUFFER_Q *)(ctx + 0x70), data);
     data = (BT_HDR *)GKI_dequeue((BUFFER_Q *)(ctx + 0x70));
     goto initial_done;
+
 dequeue_initial:
     if (data != 0)
         goto initial_done;
     data = (BT_HDR *)GKI_dequeue((BUFFER_Q *)(ctx + 0x70));
+
 initial_done:
     while (data != 0) {
         if (data->offset < 9) {
-            if (lbl_803C4040[0] >= 1u)
-                fn_80070954(0x80000u, lbl_80318BC0, data->offset);
+            if (lbl_803C4040[0] >= 1)
+                fn_80070954(0x80000, lbl_80318BC0, data->offset);
             GKI_freebuf(data);
             data = (BT_HDR *)GKI_dequeue((BUFFER_Q *)(ctx + 0x70));
             continue;
         }
         data->offset -= 8;
         frame = (u8 *)data + data->offset;
-        out = (struct OutBytes *)(frame + 0xA);
+        out = frame + 0xA;
         data->len += 4;
+
         lcb = *(void **)(ctx + 0x10);
         flags = *(u16 *)((u8 *)lcb + 0x28) | 0x2000;
         frame[8] = flags;
         lcb = *(void **)(ctx + 0x10);
         flags = *(u16 *)((u8 *)lcb + 0x28) | 0x2000;
         frame[9] = flags >> 8;
+
         if (data->len > *(u16 *)(lbl_803C0A50 + 0x7C)) {
-            out->b0 = *(u16 *)(lbl_803C0A50 + 0x7C);
-            out->b1 = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
+            out[0] = *(u16 *)(lbl_803C0A50 + 0x7C);
+            out[1] = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
         } else {
-            out->b0 = data->len;
-            out->b1 = data->len >> 8;
+            out[0] = data->len;
+            out[1] = data->len >> 8;
         }
-        out++;
+        out += 2;
         count = data->len;
-        out->b0 = count - 4;
-        out->b1 = (count - 4) >> 8;
-        out->b2 = *(u16 *)(ctx + 0x16);
-        out->b3 = *(u16 *)(ctx + 0x16) >> 8;
+        out[0] = count - 4;
+        out[1] = (count - 4) >> 8;
+        out[2] = *(u16 *)(ctx + 0x16);
+        out[3] = *(u16 *)(ctx + 0x16) >> 8;
         data->len += 4;
-        ((void (*)(void *, u8, void *, u16))l2c_link_check_send_pkts)(*(void **)(ctx + 0x10), 0u, data, count);
+        ((void (*)(void *, u8, void *, u16))l2c_link_check_send_pkts)(*(void **)(ctx + 0x10), 0, data, count);
         data = (BT_HDR *)GKI_dequeue((BUFFER_Q *)(ctx + 0x70));
     }
 }
