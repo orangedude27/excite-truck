@@ -251,20 +251,21 @@ void fn_802799EC(void *arg0, float amount) {
     base[0x2B0] = 0;
     base[0x2B1] = 0;
 }
-#pragma scheduling on
-#pragma processor reset
-#pragma dont_inline reset
+#pragma push
+#pragma optimize_for_size on
 void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
     unsigned char *target = arg1 - 1;
     unsigned char *source = arg0 + 3;
-    int count = 0x148;
+    unsigned char first;
+    unsigned char second;
+    int i;
 
-    do {
-        unsigned char first = source[1];
-        unsigned char second = *(source += 2);
+    for (i = 0; i < 0x148; i++) {
+        first = source[1];
+        second = *(source += 2);
         target[1] = first;
         *(target += 2) = second;
-    } while (--count != 0);
+    }
 
     *(f32 *)(arg1 + 0x290) = *(f32 *)(arg0 + 0x294);
     *(f32 *)(arg1 + 0x294) = *(f32 *)(arg0 + 0x298);
@@ -329,67 +330,69 @@ void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
     arg1[0x2B0] = arg0[0x2B4];
     arg1[0x2B1] = arg0[0x2B5];
 }
-#pragma optimize_for_size reset
+#pragma opt_unroll_loops off
+typedef struct { unsigned char x, y; } PairBytes;
+
 void fn_80279C00(unsigned char *dst, unsigned char *src) {
-    #pragma scheduling invalid_target
-    unsigned char *source = src - 1;
+    unsigned char second, first;
     unsigned char *target = dst + 3;
-    int count = 0x148;
-    do {
-        unsigned char first;
-        unsigned char second;
+    unsigned char *source = src - 1;
+    int i;
+
+    for (i = 0; i < 0x148; i++) {
         first = source[1];
         second = *(source += 2);
         target[1] = first;
         *(target += 2) = second;
-    } while (--count != 0);
+    }
+
     *(f32 *)(dst + 0x294) = *(f32 *)(src + 0x290);
     *(f32 *)(dst + 0x298) = *(f32 *)(src + 0x294);
     *(s32 *)(dst + 0x29C) = *(s32 *)(src + 0x298);
     *(s32 *)(dst + 0x2A0) = *(s32 *)(src + 0x29C);
     {
-        unsigned char a, b;
+        unsigned char b, a;
         a = src[0x2A0]; b = src[0x2A1];
         dst[0x2A4] = a; dst[0x2A5] = b;
     }
     {
-        unsigned char a, b;
+        unsigned char b, a;
         a = src[0x2A2]; b = src[0x2A3];
         dst[0x2A6] = a; dst[0x2A7] = b;
     }
     {
-        unsigned char a, b;
+        unsigned char b, a;
         a = src[0x2A4]; b = src[0x2A5];
         dst[0x2A8] = a; dst[0x2A9] = b;
     }
     {
-        unsigned char a, b;
+        unsigned char b, a;
         a = src[0x2A6]; b = src[0x2A7];
         dst[0x2AA] = a; dst[0x2AB] = b;
     }
     {
-        unsigned char a, b;
+        unsigned char b, a;
         a = src[0x2A8]; b = src[0x2A9];
         dst[0x2AC] = a; dst[0x2AD] = b;
     }
     {
-        unsigned char a, b;
+        unsigned char b, a;
         a = src[0x2AA]; b = src[0x2AB];
         dst[0x2AE] = a; dst[0x2AF] = b;
     }
     {
-        unsigned char a, b;
+        unsigned char b, a;
         a = src[0x2AC]; b = src[0x2AD];
         dst[0x2B0] = a; dst[0x2B1] = b;
     }
     {
-        unsigned char a, b;
+        unsigned char b, a;
         a = src[0x2AE]; b = src[0x2AF];
         dst[0x2B2] = a; dst[0x2B3] = b;
     }
     dst[0x2B4] = src[0x2B0];
     dst[0x2B5] = src[0x2B1];
 }
-
+#pragma opt_unroll_loops reset
 void fn_80279CD8(void) { fn_802795E8(); }
 
