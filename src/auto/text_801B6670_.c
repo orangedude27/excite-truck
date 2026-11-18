@@ -46,10 +46,11 @@ void fn_801B6670(void) {
 
     fn_8000D838(&lbl_8055E728);
     table = (UnkEntry*)lbl_80435EE8;
+    temp_r9 = (void*)&lbl_8055A8D8;
     table[0].name = (const char *) (base + 0x1C);
     table[1].name = (const char *) (base + 0x40);
     table[0].id = 1;
-    table[0].description = (const char*)&lbl_8055A8D8;
+    table[0].description = (const char*)temp_r9;
     table[1].id = 2;
     table[1].description = (const char *) (base + 0x34);
     table[0].unk_0x10 = 0;
