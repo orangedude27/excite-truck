@@ -1572,6 +1572,7 @@ typedef struct MdemoEnding {
     s32 endingType;   /* +0x18: 1, 2 or 4; also the bit set in musicEndings */
     s32 startMs;      /* +0x1C: when the window opened */
     s32 durationMs;   /* +0x20: how long it stays open */
+    char pad24[4];    /* +0x24: another field, not read here */
     s32 musicEndings; /* +0x28: ending types that fade the music out first */
 } MdemoEnding;
 
