@@ -2523,7 +2523,7 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1
 
 #pragma inline_max_size 10000
 #pragma inline_max_total_size 10000
-extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
+extern "C" s32 fn_800DA094(void *arg0, s32 arg1, u8 arg2) {
                           float matrix[3][4];
                           struct Fn800DA094TexObj { s32 fields[8]; };
                         Fn800DA094TexObj texture;
@@ -2683,13 +2683,13 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                               channelColor[2] = alphaColor[2];
                               channelColor[3] = alphaColor[3];
                               ((int (*)(int, u8 *))GXSetChanMatColor_Internal)(4, &channelColor[0]);
-                                                          if (var_r25 != 0) {
-                                  var_r25 = 0;
-                                  goto alpha_done;
-                              }
-                              if ((u32)((u32)sp30 + 0x10000) == 0xFFFFU) goto alpha_done;
-                              var_r25 = 1;
-                          alpha_done:;
+                            if (var_r25 != 0) {
+                                var_r25 = 0;
+                                goto alpha_done;
+                            }
+                            if ((u32)((u32)sp30 + 0x10000) == 0xFFFFU) goto alpha_done;
+                            var_r25 = 1;
+                        alpha_done:;
                           }
                           var_r24 = 0;
                           texMatrices[0] = 0;
