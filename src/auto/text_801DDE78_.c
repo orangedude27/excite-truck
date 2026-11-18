@@ -67,7 +67,7 @@ extern u8 lbl_803394A4[];
 extern void *lbl_8055E9C8;
 void fn_801DDF0C(void) {
     void *sp8;
-    void *value;
+    u32 value;
     u8 *entry;
     s32 i;
     f32 x;
@@ -75,12 +75,12 @@ void fn_801DDF0C(void) {
     f32 *ptr;
     f32 off;
     f32 thr;
-    value = (void *)fn_801DDE78();
-    if (value != lbl_8055E9C8) {
-        lbl_8055E9C8 = value;
-        sp8 = lbl_803394A4;
+    value = fn_801DDE78();
+    if (value != (u32)lbl_8055E9C8) {
         lbl_8055E9C4 = 0;
-        fn_8018A2C0(value, &sp8);
+        sp8 = lbl_803394A4;
+        lbl_8055E9C8 = (void *)value;
+        fn_8018A2C0(&sp8);
         thr = lbl_80562BC4;
         off = lbl_80562BC0;
         entry = (u8 *)lbl_80486F30;
@@ -340,6 +340,7 @@ extern "C" void fn_801DE154(void) {
 }
 #pragma cplusplus reset
 #pragma pop
+#pragma scheduling invalid_target
 s32 fn_801DE5C4(s32 arg0) {
     f32 *value;
     u8 *entry;
