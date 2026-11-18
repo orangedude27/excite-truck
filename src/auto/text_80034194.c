@@ -1506,6 +1506,33 @@ static inline void StartMotorAlarm(void) {
     }
 }
 
+/* Handle a drive error by its category byte: motor stopped / cover opened /
+ * no disk (start the motor-check alarm), cover closed (re-read the disk ID),
+ * anything else is reported as an unrecoverable error. */
+static inline void HandleErrorCategory(u32 kind, u32 error) {
+    if (kind == 0x01000000) {
+        *(s32 *)((char *)executing_8055D8C8 + 0xC) = 5;
+        MotorState_8055D8A8 = 1;
+        StartMotorAlarm();
+    } else if (kind == 0x02000000) {
+        *(s32 *)((char *)executing_8055D8C8 + 0xC) = 3;
+        fn_8003773C();
+    } else if (kind == 0x03000000) {
+        *(s32 *)((char *)executing_8055D8C8 + 0xC) = 4;
+        MotorState_8055D8A8 = 1;
+        StartMotorAlarm();
+    } else if (kind == 0) {
+        if (error - 0x00050000 == 0x3000) {
+            fn_800356F4(0x10, 0, 0);
+            fn_8003AF1C(0, 0, (void *)fn_800373E0);
+        } else {
+            fn_8003A1A0(0x1234567, fn_80035C64);
+        }
+    } else {
+        fn_8003A1A0(0x1234567, fn_80035C64);
+    }
+}
+
 /* Log a cover-closed error and re-read the disk ID through fn_800373E0. */
 static inline void StateCoverClosed(void) {
     s32 interrupts;
@@ -1534,8 +1561,6 @@ void fn_80035E6C(u32 arg0) {
     s32 firstInterrupts;
     u32 status;
     s32 code;
-    u32 tick;
-    u32 period;
 
     firstInterrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0)
@@ -1593,51 +1618,30 @@ void fn_80035E6C(u32 arg0) {
             fn_800356F4(2, *(u32 *)((char *)executing_8055D8C8 + 0x10), 0);
             fn_8003B9CC(*(u32 *)((char *)executing_8055D8C8 + 0x10),
                         (void *)fn_80036370);
-            return;
+        } else {
+            ((void (*)(void *))lbl_8055D8CC)((void *)executing_8055D8C8);
         }
-        ((void (*)(void *))lbl_8055D8CC)((void *)executing_8055D8C8);
-        return;
-    }
-    if (kind == 0x01000000) {
+    } else if (kind == 0x01000000) {
         *(s32 *)((char *)executing_8055D8C8 + 0xC) = 5;
         MotorState_8055D8A8 = 1;
-        if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
-            lbl_8055D870 = 1;
-            OSCreateAlarm(&lbl_80376AD0);
-            tick = OSGetTick();
-            period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
-            OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period,
-                               fn_8003801C);
-        }
-        return;
-    }
-    if (kind == 0x02000000) {
+        StartMotorAlarm();
+    } else if (kind == 0x02000000) {
         *(s32 *)((char *)executing_8055D8C8 + 0xC) = 3;
         fn_8003773C();
-        return;
-    }
-    if (kind == 0x03000000) {
+    } else if (kind == 0x03000000) {
         *(s32 *)((char *)executing_8055D8C8 + 0xC) = 4;
         MotorState_8055D8A8 = 1;
-        if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
-            lbl_8055D870 = 1;
-            OSCreateAlarm(&lbl_80376AD0);
-            tick = OSGetTick();
-            period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
-            OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period,
-                               fn_8003801C);
-        }
-        return;
-    }
-    if (kind == 0) {
+        StartMotorAlarm();
+    } else if (kind == 0) {
         if ((u32)(taskType - 0x00050000) == 0x3000) {
-            StateCoverClosed();
-            return;
+            fn_800356F4(0x10, 0, 0);
+            fn_8003AF1C(0, 0, (void *)fn_800373E0);
+        } else {
+            fn_8003A1A0(0x1234567, fn_80035C64);
         }
+    } else {
         fn_8003A1A0(0x1234567, fn_80035C64);
-        return;
     }
-    fn_8003A1A0(0x1234567, fn_80035C64);
 }
 extern void fn_80036550(u32);
 void fn_80036370(u32 arg0) {
