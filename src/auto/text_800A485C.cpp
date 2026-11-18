@@ -152,17 +152,19 @@ extern "C" const char lbl_8031E7E8[];
 extern "C" const char lbl_8031E83C[];
 
 static inline s32 fn_800C2DBC_mul20(s32 a, s32 b) { return (s32)(((s64)a * b) >> 20); }
+/* The audio-stream context fn_800C3CDC allocates (0xED78 bytes); these are the
+ * fields the stream-header reader (fn_800BEE64) fills and fn_800BEDE0 reports. */
 struct VFiPFCard {
-    s8 unk0;
+    s8 unk0;      /* channels: 1 mono, 2 stereo */
     u8 pad1[3];
-    s32 unk4;
+    s32 unk4;     /* stream runs at half the table rate */
     u8 pad8[0x14];
-    s16 unk1c;
+    s16 unk1c;    /* sampling frequency: 0 = 44.1 kHz, 1 = 48 kHz, 2 = 32 kHz */
     u8 pad1e[0x278 - 0x1e];
-    s32 unk278;
+    s32 unk278;   /* handed to every bit read as its (unused) first argument */
     u8 pad27c[0xed70 - 0x27c];
-    s32 unkED70;
-    s32 unkED74;
+    s32 unkED70;  /* stream size, from the bitrate tables, in 8-unit words */
+    s32 unkED74;  /* channels * (unk4 ? 0x480 : 0x900) */
 };
 extern "C" s32 OSEnableInterrupts(void);
 extern "C" void *OSGetArenaHi(void);
