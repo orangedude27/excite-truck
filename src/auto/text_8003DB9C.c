@@ -685,7 +685,7 @@ void GXSetPixelFmt(s32 pixelFmt, s32 zFmt);
 void GXSetFieldMask(s32 even, s32 odd);
 void GXSetFieldMode(s32 mode, s32 field);
 void GXSetDispCopySrc(s32 left, s32 top, s32 width, s32 height);
-void GXSetDispCopyDst(s32 value);
+void GXSetDispCopyDst();
 unsigned int GXSetDispCopyYScale(f32 yScale);
 void GXSetCopyClamp(s32 value);
 void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg3);
@@ -736,6 +736,7 @@ void __GXInitGX(void) {
     register u32 i;
     f32 mtx[3][4];
     unsigned int texObj[8];
+    u32 zero = 0;
 
     base = lbl_803034A0;
     clearColor.r = lbl_80560B24; clearColor.g = lbl_80560B25;
@@ -792,12 +793,12 @@ void __GXInitGX(void) {
     GXSetScissorBoxOffset(0, 0);
     GXSetNumChans(0);
     GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
-    ambBlack4 = 0;
+    ambBlack4 = zero;
     GXSetChanAmbColor_Internal(4, &ambBlack4);
     matTmp4 = *(u32 *)&matColor;
     GXSetChanMatColor_Internal(4, &matTmp4);
     GXSetChanCtrl(5, 0, 0, 1, 0, 0, 2);
-    ambBlack5 = 0;
+    ambBlack5 = zero;
     GXSetChanAmbColor_Internal(5, &ambBlack5);
     matTmp5 = *(u32 *)&matColor;
     GXSetChanMatColor_Internal(5, &matTmp5);
@@ -844,7 +845,7 @@ void __GXInitGX(void) {
     GXSetIndTexCoordScale(1, 0, 0);
     GXSetIndTexCoordScale(2, 0, 0);
     GXSetIndTexCoordScale(3, 0, 0);
-    *(u32 *)&fogColor = 0;
+    *(u32 *)&fogColor = zero;
     GXSetFog(0, fogColor, 0.0f, lbl_80560B2C, lbl_80560B30, lbl_80560B2C);
     GXSetFogRangeAdj(0, 0, 0);
     GXSetBlendMode(0, 4, 5, 0);
