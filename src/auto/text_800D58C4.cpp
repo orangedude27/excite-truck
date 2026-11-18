@@ -7,6 +7,7 @@
 
 // Project uses u32 for GX function parameters to match original source
 #include "revolution/MTX/mtxtypes.h"
+#include "revolution/GX/GXVert.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
 struct GetVtxPosResult { f32 x; f32 y; };
 
@@ -459,6 +460,7 @@ extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(bool hasColor, unsigned 
     for (int i = 0; i < texCoordCount; i++) GXSetVtxAttrFmt((GXVtxFmt)0, (GXAttr)(i + 0xD), (GXCompCnt)1, (GXCompType)4, (u8)0);
 }
 
+#pragma scheduling 750
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const void *pos_, const void *size_, unsigned char count, const void *tex_, const void *col_) {
     const float *pos = (const float *)pos_;
     const float *size = (const float *)size_;
@@ -467,48 +469,28 @@ extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4Si
     GXBegin((GXPrimitive)0x80, (GXVtxFmt)0, (u16)4);
     x0 = pos[0];
     y0 = pos[1];
-    *(volatile float *)0xCC008000 = x0;
-    *(volatile float *)0xCC008000 = y0;
-    if (col_ != 0) *(volatile unsigned int *)0xCC008000 = ((const unsigned int *)col_)[0];
-    {
-        const float *p = (const float *)tex_;
-        for (i = 0; i < count; i++, p += 8) {
-            *(volatile float *)0xCC008000 = p[0];
-            *(volatile float *)0xCC008000 = p[1];
-        }
-    }
-    *(volatile float *)0xCC008000 = pos[0] + size[0];
-    *(volatile float *)0xCC008000 = pos[1];
-    if (col_ != 0) *(volatile unsigned int *)0xCC008000 = ((const unsigned int *)col_)[1];
-    {
-        const float *p = (const float *)((const char *)tex_ + 8);
-        for (i = 0; i < count; i++, p += 8) {
-            *(volatile float *)0xCC008000 = p[0];
-            *(volatile float *)0xCC008000 = p[1];
-        }
-    }
-    *(volatile float *)0xCC008000 = pos[0] + size[0];
-    *(volatile float *)0xCC008000 = pos[1] + size[1];
-    if (col_ != 0) *(volatile unsigned int *)0xCC008000 = ((const unsigned int *)col_)[3];
-    {
-        const float *p = (const float *)((const char *)tex_ + 0x18);
-        for (i = 0; i < count; i++, p += 8) {
-            *(volatile float *)0xCC008000 = p[0];
-            *(volatile float *)0xCC008000 = p[1];
-        }
-    }
-    *(volatile float *)0xCC008000 = pos[0];
-    *(volatile float *)0xCC008000 = pos[1] + size[1];
-    if (col_ != 0) *(volatile unsigned int *)0xCC008000 = ((const unsigned int *)col_)[2];
-    {
-        const float *p = (const float *)((const char *)tex_ + 0x10);
-        for (i = 0; i < count; i++, p += 8) {
-            *(volatile float *)0xCC008000 = p[0];
-            *(volatile float *)0xCC008000 = p[1];
-        }
-    }
+    GXPosition2f32(x0, y0);
+    if (col_ != 0) GXColor1u32(((const u32 *)col_)[0]);
+    for (i = 0; i < count; i++)
+        GXTexCoord2f32(((const nw4hbm::math::VEC2 (*)[4])tex_)[i][0].x, ((const nw4hbm::math::VEC2 (*)[4])tex_)[i][0].y);
+    x0 = pos[0] + size[0];
+    y0 = pos[1];
+    GXPosition2f32(x0, y0);
+    if (col_ != 0) GXColor1u32(((const u32 *)col_)[1]);
+    for (i = 0; i < count; i++)
+        GXTexCoord2f32(((const nw4hbm::math::VEC2 (*)[4])tex_)[i][1].x, ((const nw4hbm::math::VEC2 (*)[4])tex_)[i][1].y);
+    GXPosition2f32(pos[0] + size[0], pos[1] + size[1]);
+    if (col_ != 0) GXColor1u32(((const u32 *)col_)[3]);
+    for (i = 0; i < count; i++)
+        GXTexCoord2f32(((const nw4hbm::math::VEC2 (*)[4])tex_)[i][3].x, ((const nw4hbm::math::VEC2 (*)[4])tex_)[i][3].y);
+    x0 = pos[0];
+    y0 = pos[1] + size[1];
+    GXPosition2f32(x0, y0);
+    if (col_ != 0) GXColor1u32(((const u32 *)col_)[2]);
+    for (i = 0; i < count; i++)
+        GXTexCoord2f32(((const nw4hbm::math::VEC2 (*)[4])tex_)[i][2].x, ((const nw4hbm::math::VEC2 (*)[4])tex_)[i][2].y);
 }
-
+#pragma scheduling reset
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const void*, const void*, u8, const void*, const void*, u8);
 extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void*, void*, u8);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const void *, const void *, u8, const void *, const void *);
@@ -990,12 +972,12 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
 #pragma push
 #pragma dont_inline on
 s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *arg2) {
+    const char *msg = lbl_8031F728;
     ResBlockSetTmp blockSet;
     s32 count;
     s32 depth;
     s32 groupCreated;
     void *currentParent, *lastPane, *pane, *container, *rootPane, *groupResult;
-    const char *msg = lbl_8031F728;
     const u8 *block;
     u16 size;
     u32 tag;
@@ -1313,7 +1295,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
 extern "C" void* fn_800D57AC(void*, const void*, const void*);
 extern "C" const char lbl_8031F728[];
 extern "C" const char lbl_8031F854[];
-extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* __restrict pane, const ResBlockSetTmp* __restrict set) {
+extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* pane, const ResBlockSetTmp* set) {
     void* obj;
     switch (kind) {
     case 0x70616E31:
@@ -2392,13 +2374,12 @@ extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
 
 extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
     u8* p = (u8*)arg0;
-    struct MsgBlock { char text[0x400]; };
-    const struct MsgBlock *blk = (const struct MsgBlock*)lbl_8031F990;
+    const char *msg = lbl_8031F990;
     if (arg1 > ((*(u32*)(p + 0x4C) >> 15) & 7))
-        Panic__Q26nw4hbm2dbFPCciPCce(blk->text, 0x3BE, blk->text + 0x3F8);
+        Panic__Q26nw4hbm2dbFPCciPCce(msg + 0, 0x3BE, msg + 0x3F8);
     if (arg1 != 0) {
         if (*(void**)(p + 0x58) == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(blk->text, 0x3C1, blk->text + 0x360);
+            Panic__Q26nw4hbm2dbFPCciPCce(msg + 0, 0x3C1, msg + 0x360);
         u32 fmt = *(u32*)(p + 0x4C);
         u32 count = (*(u32*)(p + 0x50) >> 15) & 7;
         u32 width = (fmt >> 24) & 15;
@@ -2411,7 +2392,7 @@ extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
                 base[i * 4] = 0; base[i * 4 + 1] = 0; base[i * 4 + 2] = 0; base[i * 4 + 3] = 0;
             }
         }
-        struct CountWord { u32 before : 15; u32 count : 3; u32 after : 14; };
+        struct CountWord { u32 before:14; u32 count:3; u32 after:15; };
         ((CountWord*)(p + 0x50))->count = arg1;
     }
 }
@@ -3126,33 +3107,36 @@ extern "C" void fn_800DAFA8(void *arg, void *obj) {
     ((Dispatch *)obj)->dispatch(arg);
 }
 
-extern "C" void fn_800DAFC4(void* arg0, void* arg1) {
+#pragma push
+#pragma opt_lifetimes off
+extern "C" void fn_800DAFC4(void* arg0, u32 arg1) {
     extern const char lbl_8031F1FC[];
     extern const char lbl_8031F1D8[];
-    register void* pane = arg0;
-    register void* key = arg1;
     register void* current;
     void* end;
     void* node;
-    node = *(void**)((char*)pane + 0x1C);
-    end = (char*)pane + 0x1C;
+    node = *(void**)((char*)arg0 + 0x1C);
+    end = (char*)arg0 + 0x1C;
     while (node != end) {
         current = node;
         node = *(void**)node;
-        if (key != 0) {
-            if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            if (*(void**)((char*)current + 8) != key) continue;
+        if (arg1 != 0) {
+            if (current == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+            if (*(u32*)((char*)current + 8) != arg1)
+                continue;
         }
         {
             void* slot = current;
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((char*)pane + 0x18, &slot);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((char*)arg0 + 0x18, &slot);
         }
-        if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-        *(void**)((char*)current + 8) = 0;
+        if (current == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+        *(u32*)((char*)current + 8) = 0;
         *(u16*)((char*)current + 0xC) = 0;
     }
 }
-
+#pragma pop
 extern "C" const char lbl_8031F1FC[];
 extern "C" const char lbl_8031F1D8[];
 
@@ -3595,6 +3579,8 @@ void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
     volatile const u8 *flagInfo = (volatile const u8 *)info;
     u32 scaleY;
     u32 scaleX;
+    f32 *sx = (f32 *)&scaleX;
+    f32 *sy = (f32 *)&scaleY;
     s32 flags = pane[0xCF];
     int scaleFlag;
     u32 bitsX;
@@ -3615,11 +3601,11 @@ void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
         scaleY = bitsY;
         if (scaleFlag) {
             if ((flags & 4) != 0) {
-                *(f32 *)&scaleX *= *(const f32 *)(info + 0x44);
-                *(f32 *)&scaleY *= *(const f32 *)(info + 0x48);
+                *sx *= *(const f32 *)(info + 0x44);
+                *sy *= *(const f32 *)(info + 0x48);
             }
         }
-        PSMTXScale(frame.mtx40, *(f32 *)&scaleX, *(f32 *)&scaleY, lbl_80560EAC);
+        PSMTXScale(frame.mtx40, *sx, *sy, lbl_80560EAC);
         PSMTXInverse(frame.mtx10, 0x78, lbl_80560EB0 * *(f32 *)(pane + 0x38));
         PSMTXConcat(frame.mtx10, frame.mtx40, frame.mtx70);
         PSMTXInverse(frame.mtx10, 0x79, lbl_80560EB0 * *(f32 *)(pane + 0x3C));
@@ -3894,16 +3880,22 @@ extern "C" void fn_800DC204(void* pane, void* flag) {
 extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* pane, u32 anim) {
     extern const char lbl_8031F1FC[];
     extern const char lbl_8031F1D8[];
-    void* node;
-    void* end;
-    void* current;
-    void* animation = *(void**)((char*)pane + 0x28);
+    extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
+    struct AnimList { u32 count; void* first; void* last; };
+    struct PaneView {
+        char pad0[0x1c];
+        AnimList animList;
+        void* animation;
+    };
+    PaneView* p = (PaneView*)pane;
+    void* animation = p->animation;
     if (animation != 0) {
         struct V { virtual void a(); virtual void b(); virtual void c(); virtual void d(); };
         ((V*)animation)->d();
     }
-    node = *(void**)((char*)pane + 0x20);
-    end = (char*)pane + 0x20;
+    void* node = p->animList.first;
+    void* end = &p->animList.first;
+    void* current;
     while (node != end) {
         current = node;
         node = *(void**)node;
@@ -3913,7 +3905,7 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTran
         }
         {
           void* slot = current;
-          Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((char*)pane + 0x1c, &slot);
+          Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&p->animList, &slot);
         }
         if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23d, lbl_8031F1D8);
         *(u32*)((char*)current + 8) = 0;
@@ -4021,7 +4013,8 @@ extern "C" void PSMTXConcat(const f32*, const f32*, f32*);
 extern "C" void PSMTXCopy(const f32*, f32*);
 extern "C" void GXLoadPosMtxImm(const f32*, u32);
 extern "C" void GXSetCurrentMtx(u32);
-#pragma scheduling invalid_target
+#pragma push
+#pragma optimize_for_size on
 extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self_, void* info_) {
     extern float lbl_80560EA8;
     unsigned char* ip = (unsigned char*)info_;
@@ -4052,7 +4045,7 @@ extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self_, vo
     GXLoadPosMtxImm(result, 0);
     GXSetCurrentMtx(0);
 }
-#pragma scheduling on
+#pragma pop
 extern "C" f32 lbl_80560EC0;
 #pragma scheduling invalid_target
 extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self) {
