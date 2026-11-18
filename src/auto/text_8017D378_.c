@@ -288,11 +288,22 @@ extern "C" void *fn_8017D93C(void *arg0, int arg1) {
     extern void fn_801D0C84(void *);
     extern void fn_80179EE8(void *, int);
     extern void fn_80128668(void *);
+    class Base0 {
+    public:
+        virtual void v0() {}
+        char pad[0x1E8];
+    };
+    class Base1 {
+    public:
+        virtual void v1() {}
+    };
+    class Derived : public Base0, public Base1 {
+    };
     void *p;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_80331D18;
         *(void **)((char *)arg0 + 0x1EC) = lbl_80331D18 + 0x54;
-        if (arg0 != 0) fn_801D0C84((char *)arg0 + 0x1EC);
+        fn_801D0C84((Base1 *)(Derived *)arg0);
         p = *(void **)((char *)arg0 + 0x220);
         if (p != 0) {
             if (p != 0) ((VObj_8017D93C *)p)->d0(1);
