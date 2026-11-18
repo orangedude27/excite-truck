@@ -3738,19 +3738,23 @@ extern "C" void fn_801D89C0(void *arg0, void *arg1) {
         virtual void finish(int, int, int, int);
     };
     struct Record { void *object; int first; int second; };
+    struct Tmp { int pad; volatile int first; int second; };
     Request *request = (Request *)arg1;
     int *output = (int *)arg0;
     NameObject *object = (NameObject *)request->getObject();
     if (object == 0) return;
-    if (object->find(lbl_803385D0, -1) != output[2]) return;
-    volatile int first = request->getFirst();
-    int second = request->getSecond();
+    int found = object->find(lbl_803385D0, -1);
+    int expected = output[2];
+    if (found != expected) return;
+    Tmp tmp;
+    tmp.first = request->getFirst();
+    tmp.second = request->getSecond();
     int count = output[0x28 / 4];
     Record *records = (Record *)output[0x24 / 4];
     output[0x28 / 4] = count + 1;
     records[count].object = request;
-    records[count].first = first;
-    records[count].second = second;
+    records[count].first = tmp.first;
+    records[count].second = tmp.second;
     request->finish(-1, (int)&records[count], count + 1, (int)records);
 }
 #pragma cplusplus reset
