@@ -1127,6 +1127,7 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
 #pragma scheduling push
 #pragma scheduling on
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_802A6758(void *arg0, f32 *arg1) {
     s32 i = *(s32 *)((u8 *)arg0 + 4);
     f32 *base = *(f32 **)arg0;
@@ -1216,18 +1217,22 @@ void fn_802A6838(void *arg0) {
     }
 }
 
-#pragma push
 #pragma scheduling invalid_target
 s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
     s32 *object = (s32 *)arg0;
-    object[0] = fn_8002F37C(fn_8012850C(arg1 * 0xC + 0x10, lbl_80349CAC), (void *)fn_8001BA68, 0, 0xC, arg1);
+
+    object[0] = fn_8002F37C(
+        fn_8012850C(arg1 * 0xC + 0x10, lbl_80349CAC),
+        (void *)fn_8001BA68,
+        0,
+        0xC,
+        arg1);
     object[2] = arg1;
     object[3] = fn_802CAC28((void *)lbl_8055CBC0, 0);
     object[4] = arg2;
     fn_802A6A44(object);
     return arg0;
 }
-#pragma pop
 void *fn_802A69D8(void *object, s32 deleteFlag) {
     /* Destroying destructor: release the texture handle at +0xC, free the owned
      * buffer at +0 (allocated with a 0x10-byte header), and optionally delete the object. */
@@ -1897,7 +1902,6 @@ void fn_802A775C(void *arg0)
 s32 fn_802A79CC(s32 arg0) {
     u8 *object = (u8 *)arg0;
     f32 pointScaleFactor;
-    double intBias;
     f32 rate;
     f32 alphaScale;
     f32 distance;
@@ -1928,22 +1932,9 @@ s32 fn_802A79CC(s32 arg0) {
         fn_802C8BD0(*(s32 *)(object + 0x2C));
 
         if (fn_802CE860(*(s32 *)(object + 4)) != 0) {
-            u32 alphaWord = (u32)alpha ^ 0x80000000;
-            u32 highWord = 0x43300000;
-            volatile union {
-                double value;
-                struct {
-                    u32 high;
-                    u32 low;
-                } words;
-            } conversion;
-
-            intBias = lbl_80564848;
             radius = *(f32 *)(object + 0x18);
             radiusSquared = radius * radius;
-            conversion.words.low = alphaWord;
-            conversion.words.high = highWord;
-            alphaScale = (f32)(conversion.value - intBias) / radiusSquared;
+            alphaScale = (f32)alpha / radiusSquared;
             pointScaleFactor = lbl_80564850;
             i = 0;
             offset = 0;
@@ -1957,9 +1948,7 @@ s32 fn_802A79CC(s32 arg0) {
                 f32 pointX = *(f32 *)(point + 0);
                 f32 pointY = *(f32 *)(point + 4);
                 f32 pointZ = *(f32 *)(point + 8);
-                conversion.words.low = alphaWord;
-                conversion.words.high = highWord;
-                raw = (s32)((f32)(conversion.value - intBias) - alphaScale * distSq);
+                raw = (s32)((f32)alpha - alphaScale * distSq);
                 magnitude = raw & ((-raw & ~raw) >> 31);
                 if (magnitude < alpha)
                     raw = magnitude;
