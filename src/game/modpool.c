@@ -129,20 +129,21 @@ void *fn_802CE630(void *arg0, const char *arg1, int arg2) {
     int count = *(int *)((char *)arg0 + 8);
     int offset = 0;
     unsigned char *entry;
-    void *ret = 0;
     while (count > 0) {
         entry = (unsigned char *)*(char **)arg0 + offset;
         if (*entry == 0 && *(int *)(entry + 0x38) == 0) {
             entry[0] = 1;
             *(void **)(entry + 4) = arg0;
-            ret = strcpy((char *)entry + 8, arg1);
+            strcpy((char *)entry + 8, arg1);
             *(int *)(entry + 0x28) = arg2;
-            return ret;
+            goto done;
         }
         offset += 0x40;
         count--;
     }
-    return ret;
+    entry = 0;
+done:
+    return entry;
 }
 #pragma pop
 void fn_802CE6C0(void *slot) {
