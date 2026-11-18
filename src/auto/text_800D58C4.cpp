@@ -2504,7 +2504,7 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1
 
 #pragma inline_max_size 10000
 #pragma inline_max_total_size 10000
-extern "C" s32 fn_800DA094(void *arg0, s32 arg1, u8 arg2) {
+extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           register const char *data = lbl_8031F990;
                           float matrix[3][4];
                           struct Fn800DA094TexObj { s32 fields[8]; };
