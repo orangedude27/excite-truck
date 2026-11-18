@@ -1433,9 +1433,7 @@ void fn_80010FDC(char *name, s32 id) {
         entry->unk_0x3C = lbl_80560264;
     }
 }
-#pragma pop
-#pragma push
-#pragma use_lmw_stmw off
+#pragma ppc_psq_save off
 void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     s32 idx;
     Unk80350F88 *base;
@@ -1455,9 +1453,7 @@ void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     entry->unk_0x3C = f;
     entry->unk_0x34 = a3;
 }
-#pragma pop
-#pragma scheduling on
-#pragma use_lmw_stmw on
+#pragma ppc_psq_save reset
 /* RealName: HudList_DrawAll. Draws each of the three 0x40-byte-entry HUD lists
    (lbl_80350F88, lbl_80351214, lbl_803514A0) for the given player; a negative
    index selects the shared default layout (fn_80011E34/54/70). */
@@ -2055,7 +2051,7 @@ __declspec(section ".data") extern char lbl_802FC580[];
 #pragma optimize_for_size on
 #pragma scheduling invalid_target
 void fn_800121F0(void) {
-    f32 sp8 = lbl_80560264;
+    f32 sp8 = 1.0f;
     s32 *var_r3;
     s32 i;
     register f32 value;
