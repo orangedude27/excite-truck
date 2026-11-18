@@ -686,19 +686,6 @@ void GXSetFieldMask(s32 even, s32 odd);
 void GXSetFieldMode(s32 mode, s32 field);
 void GXSetDispCopySrc(s32 left, s32 top, s32 width, s32 height);
 void GXSetDispCopyDst();
-static inline u32 GXBuildDispCopyDstReg(s32 value) {
-    union {
-        u32 reg;
-        struct {
-            u32 constant : 8;
-            u32 pad : 14;
-            u32 arg : 10;
-        } fields;
-    } data = {0};
-    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
-    data.fields.constant = 0x4D;
-    return data.reg;
-}
 unsigned int GXSetDispCopyYScale(f32 yScale);
 void GXSetCopyClamp(s32 value);
 void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg3);
@@ -3375,20 +3362,7 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 
 #pragma scheduling on
 void GXSetDispCopyDst(s32 value) {
-    union {
-        u32 reg;
-        struct {
-            u32 constant : 8;
-            u32 pad : 14;
-            u32 arg : 10;
-        } fields;
-    } data = {0};
-    register u32 reg;
-
-    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
-    data.fields.constant = 0x4D;
-    reg = data.reg;
-    *(u32 *)((char *)__GXData + 0x238) = reg;
+    __GXData[0x238 / 4] = GXBuildDispCopyDstReg(value);
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
