@@ -642,6 +642,12 @@ test:;
     } while (i < fn_80287B14());
 }
 #pragma pop
+/* Switch one entry of the race effect container on or off.  entryIndex picks the
+ * 0x20-byte entry out of the container's array (the same index the object pool
+ * uses), and nothing happens at all while `enabled` matches the entry's active
+ * flag at +0x19.  Switching an entry off only clears that flag; switching it on
+ * stamps the current time at +0x1C and works out where the entry's local position
+ * sits in the world through its object's pose. */
 extern "C" void fn_80298DE0(void *container, void *entryIndex, int enabled) {
 #define kActiveFlag 0x19 /* entry is emitting while set */
 #define kStartTime  0x1C /* when the entry was switched on */
