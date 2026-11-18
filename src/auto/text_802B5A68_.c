@@ -1331,6 +1331,16 @@ void fn_802B7518(s16 arg0, s16 arg1, s32 arg2) {
         break;
     }
 }
+#undef viewMode
+#undef brushLayer
+#undef dirtyBounds
+#undef paintLayer
+#undef drawMarker
+#undef plotPixel
+#undef drawWorldPoint
+#undef kSampleFull
+#undef kMarkerSize
+#undef kGridStep
 #pragma pop
 extern float lbl_8055FA20[];
 #pragma small_data on
