@@ -160,58 +160,84 @@ s32 fn_80127964(void);
 void *fn_801288AC(void *, s32, char *, s32);
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_8012834C(void *arg0, void *arg1, s32 arg2) {
-    struct Ring {
+extern "C" void fn_8012834C(void *label, void *size, s32 allocSource) {
+    /* MemAlloc: allocate `size` bytes out of the debug heap ring, tagged with
+     * `label` and the allocation source id (0 "new[]", 1 "MemAlloc",
+     * 2 "MemAllocPhys", 3 "new" -- see fn_801281A0).  Called through the
+     * wrappers below, and with the "unknown" tag by fn_80128520.
+     *
+     * With the heap subsystem switched off nothing is allocated, the call is
+     * only logged when the verbose flag is set.  When fn_801282EC parked an
+     * alignment on the allocator, the ring is first padded with an anonymous
+     * "internal" block so that this allocation starts on one of its boundaries,
+     * and the request is consumed.  The block itself comes from the secondary
+     * ring when fn_801282F4 selected it and from the primary ring otherwise;
+     * that selection goes back to the primary ring afterwards. */
+    #define heapDisabled    lbl_8055DF80
+    #define heapVerbose     lbl_8055DF88
+    #define heapPendingSize lbl_8055DF8C
+    #define heapUseSecondary lbl_8055DF81
+    #define memAllocDisabledMsg lbl_8032A034 /* "MemAlloc(%s): Subsystem is disabled." */
+    #define internalAllocLabel  lbl_8032A05C /* "internal" */
+    /* The heap rings are C++ objects; their vtable's third slot allocates from
+     * them (label and source id go along with the size). */
+    struct HeapRing {
         virtual void d0();
         virtual void d1();
-        virtual void *alloc(s32, void *, s32);
+        virtual void *alloc(s32 size, void *label, s32 allocSource);
     };
-    void *queue;
-    void *result;
-    s32 sum;
+    void *ring;
+    void *padBlock;
+    s32 ringPos;
 
     fn_80127964();
-    if (lbl_8055DF80 == 0 && (u8)lbl_8055DF88 != 0) {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A034, arg0);
+    if (heapDisabled == 0 && (u8)heapVerbose != 0) {
+        ((s32 (*)(const char *, ...))fn_802E317C)(memAllocDisabledMsg, label);
     }
 
-    if (lbl_8055DF8C != 0) {
-        if ((u8)lbl_8055DF81 == 0) {
-            if (lbl_8055DF8C > 0x40) {
-                queue = lbl_8041E140;
-                sum = *(s32 *)((u8 *)queue + 0xC) +
-                      *(s32 *)((u8 *)queue + 4);
-                if (((sum + 0x40) & (lbl_8055DF8C - 1)) != 0) {
-                    result = ((Ring *)queue)->alloc(
-                        (lbl_8055DF8C - 1) &
-                            (lbl_8055DF8C - ((sum + 0x80) & (lbl_8055DF8C - 1))),
-                        lbl_8032A05C, 3);
-                    *(u8 *)((u8 *)result - 0x1C) = 0;
+    if (heapPendingSize != 0) {
+        if ((u8)heapUseSecondary == 0) {
+            if (heapPendingSize > 0x40) {
+                ring = heapRingPrimary;
+                ringPos = *(s32 *)((u8 *)ring + 0xC) +
+                          *(s32 *)((u8 *)ring + 4);
+                if (((ringPos + 0x40) & (heapPendingSize - 1)) != 0) {
+                    padBlock = ((HeapRing *)ring)->alloc(
+                        (heapPendingSize - 1) &
+                            (heapPendingSize - ((ringPos + 0x80) & (heapPendingSize - 1))),
+                        internalAllocLabel, 3);
+                    *(u8 *)((u8 *)padBlock - 0x1C) = 0;
                 }
             }
-        } else if (lbl_8055DF8C > 0x40) {
-            queue = lbl_8041E160;
-            sum = *(s32 *)((u8 *)queue + 0xC) +
-                  *(s32 *)((u8 *)queue + 4);
-            if (((sum + 0x40) & (lbl_8055DF8C - 1)) != 0) {
-                result = ((Ring *)queue)->alloc(
-                    (lbl_8055DF8C - 1) &
-                        (lbl_8055DF8C - ((sum + 0x80) & (lbl_8055DF8C - 1))),
-                    lbl_8032A05C, 3);
-                *(u8 *)((u8 *)result - 0x1C) = 0;
+        } else if (heapPendingSize > 0x40) {
+            ring = heapRingSecondary;
+            ringPos = *(s32 *)((u8 *)ring + 0xC) +
+                      *(s32 *)((u8 *)ring + 4);
+            if (((ringPos + 0x40) & (heapPendingSize - 1)) != 0) {
+                padBlock = ((HeapRing *)ring)->alloc(
+                    (heapPendingSize - 1) &
+                        (heapPendingSize - ((ringPos + 0x80) & (heapPendingSize - 1))),
+                    internalAllocLabel, 3);
+                *(u8 *)((u8 *)padBlock - 0x1C) = 0;
             }
         }
-        lbl_8055DF8C = 0;
+        heapPendingSize = 0;
     }
 
-    if ((u8)lbl_8055DF81 != 0) {
+    if ((u8)heapUseSecondary != 0) {
         ((void *(*)(void *, void *, void *, s32))fn_801288AC)(
-            lbl_8041E160, arg1, arg0, arg2);
+            heapRingSecondary, size, label, allocSource);
     } else {
         ((void *(*)(void *, void *, void *, s32))fn_801288AC)(
-            lbl_8041E140, arg1, arg0, arg2);
+            heapRingPrimary, size, label, allocSource);
     }
-    lbl_8055DF81 = 0;
+    heapUseSecondary = 0;
+    #undef heapDisabled
+    #undef heapVerbose
+    #undef heapPendingSize
+    #undef heapUseSecondary
+    #undef memAllocDisabledMsg
+    #undef internalAllocLabel
 }
 #pragma scheduling on
 #pragma cplusplus off
