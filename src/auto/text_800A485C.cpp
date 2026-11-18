@@ -5358,7 +5358,6 @@ extern s32 fn_800A8D08(void *, s32, void **, s32 *);
 extern s32 fn_800B5324(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800A499C(s32, s32);
-extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
 extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
     void *sp10;
     s32 spC;
