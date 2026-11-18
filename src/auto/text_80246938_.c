@@ -1390,7 +1390,7 @@ void fn_802487A8(void *group) {
 }
 
 #pragma push
-#pragma optimization_level 3
+#pragma opt_propagation off
 void fn_802487B4(void *arg0) {
  extern void fn_80214BE4(s32,s32,s32);
  extern float lbl_805638B8,lbl_805638BC,lbl_805638C0,lbl_805638C4;
@@ -1597,11 +1597,11 @@ void fn_80248E30(void *arg0) {
 
     if (now > *(s32 *)((char *)arg0 + 0x1C) +
               *(s32 *)((char *)arg0 + 0x20)) {
-        switch (duration = *(s32 *)((char *)arg0 + 0x18)) {
+        switch (*(s32 *)((char *)arg0 + 0x18)) {
         case 1: fn_80221F94(arg0, -0xEA); break;
         case 4: fn_80221F94(arg0, -1); break;
         case 2: fn_80221F94(arg0, -2); break;
-        default: fn_802E317C(lbl_803438A0); break;
+        default: fn_802E317C(lbl_803438A0, *(s32 *)((char *)arg0 + 0x18)); break;
         }
         if ((*(s32 *)((char *)arg0 + 0x28) &
              *(s32 *)((char *)arg0 + 0x18)) != 0 &&
