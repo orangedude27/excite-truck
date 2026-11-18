@@ -1254,8 +1254,9 @@ extern void fn_8019724C(void *, float *);
 extern unsigned char fn_80167544(int);
 /* Value at a path node, interpolated toward the next node (node+0x14) by t. */
 static inline float PathNodeLerp_80195654(void *node, float t) {
+    float target = *(float *)((char *)*(void **)((char *)node + 0x14) + 0x24);
     float base = *(float *)((char *)node + 0x24);
-    return base + t * (*(float *)((char *)*(void **)((char *)node + 0x14) + 0x24) - base);
+    return base + t * (target - base);
 }
 void fn_80195654(void *arg0, void *arg1) {
     struct IntPair { int word0, word1; };
