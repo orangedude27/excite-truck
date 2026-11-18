@@ -1767,7 +1767,7 @@ char fn_802CC744(void) {
 
 #pragma push
 #pragma peephole off
-#pragma optimization_level 2
+#pragma optimization_level 3
 int fn_802CC74C(void) {
     int result = 0;
     char *p = *(char **)lbl_8055FCBC;
