@@ -568,17 +568,18 @@ extern "C" void fn_80298B48(void* container) {
 static inline void XformRot3(const float *m, const float *src, float *dst) {
     if (dst == src) {
         float x, y, z;
-        float m10, m11, m12, m00, m01, m02, m20, m21, m22;
-        m10 = m[3]; m11 = m[4]; m12 = m[5]; m00 = m[0]; m01 = m[1]; m02 = m[2]; m20 = m[6]; m21 = m[7]; m22 = m[8];
         x = src[0]; y = src[1]; z = src[2];
-        dst[0] = z * m20 + (x * m00 + y * m10);
-        dst[1] = z * m21 + (x * m01 + y * m11);
-        dst[2] = z * m22 + (x * m02 + y * m12);
+        dst[0] = z * m[6] + (x * m[0] + y * m[3]);
+        dst[1] = z * m[7] + (x * m[1] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
     } else {
-        int row;
-        for (row = 0; row < 3; row++) {
-            dst[row] = src[2] * m[6 + row] + (src[1] * m[3 + row] + src[0] * m[row]);
-        }
+        float m10, m00, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m00 = m[0]; m20 = m[6];
+        dst[0] = src[2] * m20 + (src[0] * m00 + src[1] * m10);
+        m11 = m[4]; m01 = m[1]; m21 = m[7];
+        dst[1] = src[2] * m21 + (src[0] * m01 + src[1] * m11);
+        m12 = m[5]; m02 = m[2]; m22 = m[8];
+        dst[2] = src[2] * m22 + (src[0] * m02 + src[1] * m12);
     }
 }
 typedef struct XformVec { float x, y, z; } XformVec;
