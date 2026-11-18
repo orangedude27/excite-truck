@@ -25729,14 +25729,14 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
     }
 }
 
-static inline s32 findPaneIndex_800A485C(s32 *entry, s32 count, s32 a, s32 b) {
+static inline s32 findPaneIndex_800A485C(s32 count, s32 *entry, s32 a, s32 b) {
     for (s32 k = 0; k < count; k++, entry += 2)
         if (a == entry[0] && b == entry[1])
             return k;
     return -1;
 }
 
-static inline s32 findPaneIndexUnrolled_800A485C(s32 *entry, s32 count, s32 a, s32 b) {
+static inline s32 findPaneIndexUnrolled_800A485C(s32 count, s32 *entry, s32 a, s32 b) {
     s32 j = 0;
     for (s32 k = 0; k < count; k++, entry += 4, j++) {
         if (a == entry[0] && b == entry[1])
