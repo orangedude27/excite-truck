@@ -4628,6 +4628,7 @@ u32 fn_80062460(s32 chan) {
 // fn_800624A4: WPAD callback handler (large - stub)
 extern u8 lbl_802EE898[];
 extern u8 lbl_802EE8C8[];
+#pragma scheduling invalid_target
 s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
     u8 frame[0x420] ALIGN(8);
     register s32 channel asm("r31") = chan;
