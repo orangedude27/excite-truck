@@ -210,9 +210,6 @@ void TRKInitializeEventQueue(void) {
 extern s32 lbl_8055D6B0, lbl_8055D6B4, lbl_8055D6B8, lbl_8055D6BC;
 extern s32 lbl_8055D6C0, lbl_8055D6C4, lbl_8055D6C8, lbl_8055D6CC;
 extern s32 lbl_8055D6D0, lbl_8055D6D4;
-static inline u32 trkPollStatus(void) {
-    return *(volatile u32 *)0xCD006C08 & 0x7FFFFFFF;
-}
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
@@ -232,15 +229,15 @@ measure:
     *(volatile u32 *)0xCD006C00 = *(volatile u32 *)0xCD006C00 & ~2U;
     *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~1U) | 1U;
     do {
-        status = (*(volatile u32 *)0xCD006C08 << 1) >> 1;
-        ctl = (*(volatile u32 *)0xCD006C08 << 1) >> 1;
+        status = trkPollStatus();
+        ctl = trkPollStatus();
     } while (status == ctl);
     start = (s64)OSGetTime();
     *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~2U) | 2U;
     *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~1U) | 1U;
     do {
-        status = (*(volatile u32 *)0xCD006C08 << 1) >> 1;
-        ctl = (*(volatile u32 *)0xCD006C08 << 1) >> 1;
+        status = trkPollStatus();
+        ctl = trkPollStatus();
     } while (status == ctl);
     now = (s64)OSGetTime();
     elapsed = now - start;
