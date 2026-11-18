@@ -1405,14 +1405,13 @@ void fn_802339A8(f32 x, s32 font, f32 y, s32 color, f32 spacing, f32 scale, s32 
 
 extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8DB8(void *, s32, u16 *, s32, s32, s32, s32, s32);
-typedef struct IndexList_802F9FF0 { u16 idx[6]; } IndexList_802F9FF0;
-extern IndexList_802F9FF0 lbl_802F9FF0;
+extern u16 lbl_802F9FF0[6];
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     struct Frame {
-        IndexList_802F9FF0 indices;
+        u16 indices[6];
         u8 pad[4];
         f32 out0[6];
         f32 out1[6];
@@ -1438,10 +1437,18 @@ void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
         fn_80231380(frame.out3, font, farg2, farg3, farg4,
                     *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
-        frame.indices = lbl_802F9FF0;
-        fn_802C8DB8(frame.out0, 4, frame.indices.idx, 6,
-                    lbl_802F9FF0.idx[4], lbl_802F9FF0.idx[3],
-                    lbl_802F9FF0.idx[2], lbl_802F9FF0.idx[1]);
+        {
+            u16 *indexList = lbl_802F9FF0;
+            frame.indices[0] = *indexList++;
+            frame.indices[1] = *indexList++;
+            frame.indices[2] = *indexList++;
+            frame.indices[3] = *indexList++;
+            frame.indices[4] = *indexList++;
+            frame.indices[5] = *indexList++;
+        }
+        fn_802C8DB8(frame.out0, 4, frame.indices, 6,
+                    lbl_802F9FF0[4], lbl_802F9FF0[3],
+                    lbl_802F9FF0[2], lbl_802F9FF0[1]);
     }
 }
 #pragma pop
@@ -1527,14 +1534,14 @@ extern IndexList_80233EC0 lbl_802F9FFC;
 void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
     register void *object = arg0;
     register s32 offset;
-    register s32 font = 0;
+    register s32 font;
     u8 out3[0x18], out2[0x18], out1[0x18], out0[0x18];
     IndexList_80233EC0 values;
     u8 *entry;
     if (arg1 != 0x20) {
-        font = lbl_8055F050;
         offset = arg1 * 0x1C;
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
+        font = lbl_8055F050;
         fn_80231380(out0, font, farg0, farg1, farg2,
                     *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x18));
         entry = *(u8 **)((u8 *)object + 0x10) + offset;
