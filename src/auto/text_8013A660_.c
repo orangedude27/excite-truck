@@ -287,14 +287,25 @@ extern "C" void qsort(void *, int, int, int (*)(void *, void *));
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_8013AC78(int arg0, int *arg1) {
+    struct VObj {
+        virtual void v08();
+        virtual int hasProp(const char *);
+        virtual void v10();
+        virtual void v14();
+        virtual void v18();
+        virtual void v1c();
+        virtual void v20();
+        virtual float getProp(const char *);
+    };
     char *base = lbl_8032C1A0;
     struct Entry { int idx; int key; int score; } es[8];
     int pr[100];
     float sp8[2];
     float f31;
     int *a;
-    int count, n, i, j, k, pairs;
+    int count, n, i, pairs;
     int *q;
+    int *pp;
     a = fn_801E87A8();
     count = fn_80135108();
     fn_801E879C();
@@ -308,21 +319,21 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
     *(float *)(lbl_8042F858 + 0x48) = ((float (*)(int *))fn_8013AC2C)(a);
     *(float *)lbl_8042F858 = sp8[1];
     n = fn_80016508(lbl_8042F858);
-    q = pr;
+    pp = pr;
     for (i = 0; i < n; i++) {
         int *p = (int *)fn_80016464(i);
-        q[0] = p[1];
-        q[1] = p[0x12];
-        q += 2;
+        pp[0] = p[1];
+        pp[1] = p[0x12];
+        pp += 2;
     }
     pairs = i;
     q = (int *)es;
-    for (k = 0; k < count; k++) {
-        int *pp;
+    for (int k = 0; k < count; k++) {
+        int j;
         q[0] = k;
         q[1] = *arg1;
         q[2] = fn_80129D90(3, -2, 2);
-        for (j = 0, pp = pr; j < pairs; j++, pp += 2) {
+        for (pp = pr, j = 0; j < pairs; pp += 2, j++) {
             if (q[1] == *pp) {
                 q[2] += pr[j * 2 + 1];
                 break;
@@ -334,47 +345,50 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
     qsort(es, count, 12, fn_8013A6C4);
     f31 = lbl_80561440;
     if ((float)(count - 1) > f31) f31 = (float)(count - 1);
-    for (k = 0; k < count; k++) {
+    for (int k = 0; k < count; k++) {
         float d = (float)k / f31;
         *(float *)(lbl_8042F858 + es[k].idx * 8 + 8) = *(float *)lbl_8042F858 - d * sp8[0];
     }
     q = (int *)es;
-    for (k = 0; k < count; k++) {
+    for (int k = 0; k < count; k++) {
         q[2] += fn_80129D90(3, -2, 2);
         q += 3;
     }
     qsort(es, count, 12, fn_8013A6C4);
-    for (k = 0; k < count; k++) {
+    for (int k = 0; k < count; k++) {
         float d = (float)k / f31;
         *(float *)(lbl_8042F858 + es[k].idx * 8 + 0xC) = *(float *)lbl_8042F858 - d * sp8[0];
     }
-    q = (int *)es;
-    for (k = 0; k < count; k++) {
-        void *vobj, *obj;
-        int idx, has;
-        int *pp;
-        obj = 0;
-        for (j = 0, pp = pr; j < pairs; j++, pp += 2) {
-            if (*pp == q[1])
-                obj = fn_80016464(j);
-        }
-        vobj = *(void **)((char *)obj + 0x58);
-        idx = q[0];
-        has = ((int (*)(void *, char *))(*(void ***)vobj)[3])(vobj, base + 0xF4);
-        if (has != 0) {
-            vobj = *(void **)((char *)obj + 0x58);
-            *(float *)(lbl_8042F858 + idx * 8 + 8) = sp8[1] * ((float (*)(void *, char *))(*(void ***)vobj)[9])(vobj, base + 0xF4);
-        }
-        vobj = *(void **)((char *)obj + 0x58);
-        if (((int (*)(void *, char *))(*(void ***)vobj)[3])(vobj, base + 0x10C) != 0) {
+    {
+        void *obj;
+        q = (int *)es;
+        for (int k = 0; k < count; k++) {
+            VObj *vobj;
             char *r;
-            vobj = *(void **)((char *)obj + 0x58);
-            r = lbl_8042F858 + idx * 8;
-            *(float *)(r + 0xC) = sp8[1] * ((float (*)(void *, char *))(*(void ***)vobj)[9])(vobj, base + 0x10C);
-            if (has == 0)
-                *(float *)(r + 8) = *(float *)(r + 0xC);
+            int idx, has;
+            int j;
+            obj = 0;
+            for (pp = pr, j = 0; j < pairs; pp += 2, j++) {
+                if (*pp == q[1])
+                    obj = fn_80016464(j);
+            }
+            vobj = *(VObj **)((char *)obj + 0x58);
+            idx = q[0];
+            has = vobj->hasProp(base + 0xF4);
+            if (has != 0) {
+                vobj = *(VObj **)((char *)obj + 0x58);
+                *(float *)(lbl_8042F858 + idx * 8 + 8) = sp8[1] * vobj->getProp(base + 0xF4);
+            }
+            vobj = *(VObj **)((char *)obj + 0x58);
+            if (vobj->hasProp(base + 0x10C) != 0) {
+                vobj = *(VObj **)((char *)obj + 0x58);
+                r = lbl_8042F858 + idx * 8;
+                *(float *)(r + 0xC) = sp8[1] * vobj->getProp(base + 0x10C);
+                if (has == 0)
+                    *(float *)(r + 8) = *(float *)(r + 0xC);
+            }
+            q += 3;
         }
-        q += 3;
     }
 }
 
@@ -434,11 +448,21 @@ extern void *fn_80138B1C(int);
 extern float lbl_80561430;
 #pragma cplusplus on
 extern "C" float fn_8013B590(void) {
-    void *object = *fn_801B2ED0();
-    int value = ((int (*)(void *))((void **)object)[7])(object);
+    class Obj {
+    public:
+        virtual void v0() {}
+        virtual void v1() {}
+        virtual void v2() {}
+        virtual void v3() {}
+        virtual void v4() {}
+        virtual int getValue() { return 0; }
+    };
+    Obj *object = (Obj *)fn_801B2ED0();
+    int value = object->getValue();
     void *result = fn_80138B1C(*(int *)((char *)value + 0x2C));
-    if (result != 0)
+    if (result != 0) {
         return *(float *)((char *)result + 0xC);
+    }
     return lbl_80561430;
 }
 
