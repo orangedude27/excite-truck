@@ -598,7 +598,6 @@ void fn_802B28BC(int *entries, int count) {
 
 #pragma push
 #pragma optimization_level 3
-#pragma opt_pointer_aliasing on
 void *fn_802B2934(void *arg0, void **arg1) {
     void *val = *arg1;
     int count = ((int *)arg0)[1];
