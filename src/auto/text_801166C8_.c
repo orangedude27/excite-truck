@@ -5703,6 +5703,12 @@ void fn_80120F84(s32 n, s32 ip_arg, void *a_arg) {
     }
 }
 
+static inline void fn_80121400_swap(f32 *a, s32 j1, s32 k1) {
+    f32 xr, xi, yr, yi;
+    xi = -a[j1 + 1]; yi = -a[k1 + 1]; xr = a[j1]; yr = a[k1];
+    a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80121400(s32 n, s32 *map, f32 *data) {
