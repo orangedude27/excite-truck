@@ -635,35 +635,8 @@ extern "C" void* fn_80131810(void*);
 extern "C" void* fn_80131808(void*);
 extern "C" void fn_80131818(void*);
 extern "C" void fn_801345D8(void*, s32, void*, ...);
-struct VObj {
-    virtual VObj* vslot2(const void*);
-    virtual void vslot3();
-    virtual s32 vslot4(const void*);
-    virtual void vslot5();
-    virtual s32 vslot6(const char*, const char*);
-    virtual s32 vslot7(const char*);
-    virtual s32 vslot8(const char*, s32);
-    virtual f32 vslot9(const char*);
-    virtual f32 vslot10(const char*, f32);
-    virtual void vslot11();
-    virtual void vslot12();
-    virtual void vslot13();
-    virtual void vslot14();
-    virtual void vslot15();
-    virtual void vslot16();
-    virtual void vslot17();
-    virtual void vslot18();
-    virtual void vslot19();
-    virtual void vslot20();
-    virtual void vslot21();
-    virtual void vslot22();
-    virtual void vslot23();
-    virtual VObj* vslot24(s32);
-    virtual void vslot25();
-    virtual void vslot26();
-    virtual void vslot27();
-    virtual const void* vslot28();
-};
+/* fn_80157560 is handed one of the group's bonus trackers (an Unk801577F0) as
+   this opaque object pointer; it casts it where it reads the tracker's fields. */
 /* The two stunt value files fn_80157560 reads a tracker's table from, and the
    .sdata strings naming the values a stunt entry holds.  The keys are declared
    as scalars and used through &label, which keeps their addresses sda21
