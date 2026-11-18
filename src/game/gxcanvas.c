@@ -575,8 +575,8 @@ void fn_802C3918(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
         savedHeight = height;
         /* Bytes to step over the pixels a row does not hold, rounded to whole
          * 16-bit pixels. */
-        srcRowSkip = (*(s32 *)((u8 *)srcCanvas + 0x10) - savedWidth * 2) / 2 * 2;
-        dstRowSkip = (*(s32 *)((u8 *)dstCanvas + 0x10) - savedWidth * 2) / 2 * 2;
+        srcRowSkip = (((GxCanvas *)srcCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
+        dstRowSkip = (((GxCanvas *)dstCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
         do {
             n = width;
 copyPixel:
@@ -600,8 +600,8 @@ copyPixel:
                 dstPix_2 = (u16 *)fn_802C3044((void *)dstCanvas, clipX, clipY);
                 width = savedWidth;
                 height = savedHeight;
-                srcRowSkip = (*(s32 *)((u8 *)srcCanvas + 0x10) - savedWidth * 2) / 2 * 2;
-                dstRowSkip = (*(s32 *)((u8 *)dstCanvas + 0x10) - savedWidth * 2) / 2 * 2;
+                srcRowSkip = (((GxCanvas *)srcCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
+                dstRowSkip = (((GxCanvas *)dstCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
                 do {
                     n2 = width;
 conv565To555:
@@ -629,8 +629,8 @@ conv565To555:
                 dstPix_3 = (u16 *)fn_802C3044((void *)dstCanvas, clipX, clipY);
                 width = savedWidth;
                 height = savedHeight;
-                srcRowSkip = (*(s32 *)((u8 *)srcCanvas + 0x10) - savedWidth * 2) / 2 * 2;
-                dstRowSkip = (*(s32 *)((u8 *)dstCanvas + 0x10) - savedWidth * 2) / 2 * 2;
+                srcRowSkip = (((GxCanvas *)srcCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
+                dstRowSkip = (((GxCanvas *)dstCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
                 do {
                     n3 = width;
 conv555To565:
@@ -662,8 +662,8 @@ conv555To565:
                 dstPix_4 = (u16 *)fn_802C3044((void *)dstCanvas, clipX, clipY);
                 width = savedWidth;
                 height = savedHeight;
-                srcRowSkip = (*(s32 *)((u8 *)srcCanvas + 0x10) - savedWidth * 2) / 2 * 2;
-                dstRowSkip = (*(s32 *)((u8 *)dstCanvas + 0x10) - savedWidth * 2) / 2 * 2;
+                srcRowSkip = (((GxCanvas *)srcCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
+                dstRowSkip = (((GxCanvas *)dstCanvas)->rowBytes - savedWidth * 2) / 2 * 2;
                 do {
                     n = width;
 conv4444To565:
