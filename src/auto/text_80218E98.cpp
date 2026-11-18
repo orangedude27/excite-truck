@@ -6365,7 +6365,7 @@ extern "C" void fn_802235B4(void *arg0) {
     }
 }
 
-#pragma scheduling invalid_target
+#pragma opt_common_subs off
 extern "C" void fn_80223644(void *arg0) {
     s32 i = 1;
     s32 *pIndex = *(s32 **)((u8 *)arg0 + 0x2CC);
@@ -6387,7 +6387,7 @@ loop_cond:
     u8 *base = (u8 *)arg0 + cur;
     s32 diff = count - cur;
     for (s32 j = diff - 1; j > 0; j--) {
-        u8 *p = j + base;
+        u8 *p = (u8 *)((u32)j + (u32)base);
         if (p[0x2D0]) {
             *pIndex += j;
             ((void (*)(void *))fn_8022375C)(arg0);
@@ -6395,7 +6395,7 @@ loop_cond:
         }
     }
 }
-#pragma scheduling on
+#pragma opt_common_subs reset
 extern "C" void fn_8022375C(void);
 extern "C" void fn_802235B4(void *);
 extern "C" void fn_80223644(void *);
