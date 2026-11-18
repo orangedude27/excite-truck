@@ -383,28 +383,11 @@ static inline s32 fn_80019098_find_inl(const char *name) {
 #pragma small_data off
 #pragma scheduling invalid_target
 s32 fn_80019098(s32 arg0) {
-    register s32 index;
-    register s32 offset;
-    register const char *name;
+    s32 row;
     char *entry;
-    name = (const char *)arg0;
-    index = 0;
-    offset = 0;
-    goto check;
-loop:
-    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) != 0)
-        goto advance;
-    goto found;
-advance:
-    offset += 0x10;
-    index++;
-check:
-    if (index < *(volatile s32 *)((char *)&lbl_803580A4 + 4))
-        goto loop;
-    index = -1;
-found:
-    entry = (char *)lbl_803580A4 + index * 0x10 + 4;
-    if (index < 0) entry = 0;
+    row = fn_80019098_find_inl((const char *)arg0);
+    entry = (char *)lbl_803580A4 + row * 0x10 + 4;
+    if (row < 0) entry = 0;
     if (entry != 0) return *(s32 *)(entry + 8);
     return 0;
 }
