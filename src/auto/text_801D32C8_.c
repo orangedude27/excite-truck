@@ -399,7 +399,7 @@ void fn_801D3A1C(void *arg0) {
     register float zero;
     volatile float sp8, spC, sp10, sp14, sp18, sp1C;
 
-    zero = lbl_80562AB8;
+    zero = 0.0f;
     *(int *)(self + 0x1EC) = -1;
     *(int *)(self + 0x1F0) = -1;
     *(volatile float *)(self + 0x224) = zero;
@@ -409,7 +409,7 @@ void fn_801D3A1C(void *arg0) {
     *(int *)(self + 0x24) = *(int *)(self + 0x28);
     if (sound != 0) {
         *(void **)(sound + 0xC) = self + 0x3C;
-        one = lbl_80562AAC;
+        one = 1.0f;
         *(void **)(sound + 4) = arg0;
         *(int *)(sound + 8) = 0;
         *(int *)(sound + 0x18) = 0x53504852;
@@ -440,11 +440,11 @@ void fn_801D3A1C(void *arg0) {
         register float special;
         register float zero2;
         register float one2;
-        zero2 = lbl_80562AB8;
-        one2 = lbl_80562AAC;
+        zero2 = 0.0f;
+        one2 = 1.0f;
         *(volatile float *)(self + 0x220) = zero2;
         special = lbl_80562ABC;
-        *(int *)(self + 0x24) = 0;
+        *(volatile int *)(self + 0x24) = 0;
         *(volatile float *)(self + 0x1F4) = one2;
         *(volatile float *)(self + 0x1F8) = zero2;
         *(volatile float *)(self + 0x1FC) = zero2;
@@ -577,6 +577,7 @@ extern void fn_8017B2D0(void *, float, float, float, float);
 extern void fn_801D4294(void *, void *);
 extern void fn_8017D2C8();
 extern void fn_801796CC();
+#pragma scheduling invalid_target
 void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
     float tmp[8];
 
@@ -612,7 +613,7 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
         }
     }
 }
-
+#pragma scheduling on
 void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *arg5, int arg6) {
     float fa, fb, fc;
     int temp_r21, temp_r22, temp_r23, temp_r24, temp_r25, temp_r26, temp_r27;
@@ -924,6 +925,7 @@ extern void fn_801A4868(void *, int);
 extern float lbl_80562AAC, lbl_80562AB8, lbl_80562ABC, lbl_80562AC8, lbl_80562ACC, lbl_80562AD0, lbl_80562AD4;
 #pragma push
 #pragma processor 750
+#pragma opt_common_subs off
 void fn_801D4598(void *arg0, float farg0) {
     char *p = (char *)arg0;
     float sp8[3], dot, scale;
