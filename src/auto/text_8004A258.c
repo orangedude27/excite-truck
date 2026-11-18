@@ -224,32 +224,41 @@ static inline void ClearMEM2Range(void *mem, u32 size) {
 #pragma push
 #pragma scheduling invalid_target
 void ClearArena(void) {
-    void *base;
+#define regionStart __OSRebootParams[3] /* void*: start of the region to keep */
+#define regionEnd   __OSRebootParams[4] /* void*: end of the region to keep */
+    /* Zero the MEM1 arena the title is about to run in.  A reboot can hand a
+     * region over to the next title (the channel menu sets it in the exec
+     * parameters): the arena before regionStart and after regionEnd is cleared
+     * and that region is left alone.  On a cold reset, or when no region was
+     * handed over (or it is not in MEM1), the whole arena is cleared. */
+    void *keepEnd;
 
     if ((OSGetResetCode() >> 31) == 0) {
         ClearMEM2Range((void *)OSGetArenaLo(), OSGetArenaHi() - OSGetArenaLo());
         return;
     }
 
-    if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000) != 0) {
+    if (regionStart == 0 || !OSIsMEM1Region(regionStart)) {
         ClearMEM2Range((void *)OSGetArenaLo(), OSGetArenaHi() - OSGetArenaLo());
         return;
     }
 
-    if (OSGetArenaLo() >= __OSRebootParams[3])
+    if (OSGetArenaLo() >= regionStart)
         return;
 
-    if (OSGetArenaHi() <= __OSRebootParams[3]) {
+    if (OSGetArenaHi() <= regionStart) {
         ClearMEM2Range((void *)OSGetArenaLo(), OSGetArenaHi() - OSGetArenaLo());
         return;
     }
 
-    ClearMEM2Range((void *)OSGetArenaLo(), __OSRebootParams[3] - OSGetArenaLo());
+    ClearMEM2Range((void *)OSGetArenaLo(), regionStart - OSGetArenaLo());
 
-    base = (void *)__OSRebootParams[4];
-    if (OSGetArenaHi() > (u32)base) {
-        ClearMEM2Range(base, OSGetArenaHi() - (u32)base);
+    keepEnd = (void *)regionEnd;
+    if (OSGetArenaHi() > (u32)keepEnd) {
+        ClearMEM2Range(keepEnd, OSGetArenaHi() - (u32)keepEnd);
     }
+#undef regionStart
+#undef regionEnd
 }
 #pragma pop
 
@@ -666,14 +675,14 @@ static const u32 __OSExceptionLocations[15] = {
     0x0900, 0x0C00, 0x0D00, 0x0F00, 0x1300, 0x1400, 0x1700};
 #pragma use_lmw_stmw off
 void OSExceptionInit(void) {
-    u32 *dst;
-    u8 i;
-    u32 *pInst;
-    u32 inst;
     void *vectorCode;
+    u32 *dst;
     u32 vectorSize;
-    int j;
-    u32 *code;
+    long j;
+    u8 i;
+    register u32 *pInst;
+    u32 inst;
+    register u32 *code;
     char *base = lbl_80303E08;
     u32 *locations = (u32 *)(base + 0x318);
     pInst = (u32 *)__OSEVSetNumber;
@@ -699,7 +708,7 @@ void OSExceptionInit(void) {
             } else {
                 code = (u32 *)__DBVECTOR;
                 for (j = 0; j < (u32)__OSDBJUMPEND - (u32)__OSDBINTEND; j += 4, code++) {
-                    *code = 0x60000000;
+                    *code = (unsigned short)0x60000000;
                 }
             }
             dst = (u32 *)(0x80000000 + locations[i]);
