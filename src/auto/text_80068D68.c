@@ -17423,7 +17423,7 @@ u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param,
 u8 HID_HostCloseDev(u8 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
     tHID_HOST_DEV_VIEW *device;
-    tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
+    tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)&lbl_803C3C38[0];
     if (lbl_803C3C38[0x400] == 0)
         return 1;
     if (dev_handle > 0x10 || (device = &devices[dev_handle])->in_use == 0)
@@ -18023,35 +18023,41 @@ static void hidh_l2cif_disconnect_ind(UINT16 l2cap_cid, BOOLEAN ack_needed)
 
 extern char lbl_80317B28[];
 extern char lbl_80317B58[];
-void hidh_l2cif_disconnect_cfm(u32 handle) {
-    u8 dhandle;
-    u8 *found = 0;
+void hidh_l2cif_disconnect_cfm(u32 l2cap_cid) {
+    UINT8 dhandle;
+    tHID_CONN_VIEW *p_hcon = NULL;
 
-    for (dhandle = 0; dhandle < 0x10; dhandle++) {
-        u8 *entry = (u8 *)lbl_803C3C38 + dhandle * 0x34;
-        if (entry[0] != 0 && entry[0x10] != 0 &&
-            (handle == *(u16 *)(entry + 0x14) ||
-             handle == *(u16 *)(entry + 0x16)))
+    /* Which device owns the channel that just went down? */
+    for (dhandle = 0; dhandle < HIDH_MAX_DEVICES; dhandle++) {
+        tHID_HOST_DEV_CTB_VIEW *entry = hh_cb_dev(dhandle);
+        if (entry->in_use != 0 && entry->conn.conn_state != 0 &&
+            (l2cap_cid == entry->conn.ctrl_cid ||
+             l2cap_cid == entry->conn.intr_cid))
             break;
     }
-    if (dhandle != 0x10)
-        found = (u8 *)lbl_803C3C38 + dhandle * 0x34 + 0x10;
+    if (dhandle != HIDH_MAX_DEVICES)
+        p_hcon = &hh_cb_dev(dhandle)->conn;
 
-    if (found == 0) {
-        if (*((u8 *)lbl_803C3C38 + 0x401) >= 2)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x1E0001, lbl_80317B28, handle);
+    if (p_hcon == NULL) {
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_WARNING)
+            ((void (*)(u32, void *, u32))fn_80070954)(
+                TRACE_LAYER_HID | TRACE_TYPE_WARNING, lbl_80317B28,
+                l2cap_cid); /* "HID - Rcvd L2CAP disc cfm, unknown CID: 0x%x" */
     } else {
-        if (*((u8 *)lbl_803C3C38 + 0x401) >= 4)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x1E0003, lbl_80317B58, handle);
-        if (handle == *(u16 *)(found + 4))
-            *(u16 *)(found + 4) = 0;
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_EVENT)
+            ((void (*)(u32, void *, u32))fn_80070954)(
+                TRACE_LAYER_HID | TRACE_TYPE_EVENT, lbl_80317B58,
+                l2cap_cid); /* "HID - Rcvd L2CAP disc cfm, CID: 0x%x" */
+        if (l2cap_cid == p_hcon->ctrl_cid)
+            p_hcon->ctrl_cid = 0;
         else
-            *(u16 *)(found + 6) = 0;
-        if (*(u16 *)(found + 4) == 0 && *(u16 *)(found + 6) == 0) {
-            *((u8 *)lbl_803C3C38 + dhandle * 0x34 + 0xA) = 0;
-            found[0] = 0;
-            ((void (*)(u8, u32, u32, u32))
-                (*(void **)((u8 *)lbl_803C3C38 + 0x340)))(dhandle, 1, *(u16 *)(found + 0xA), 0);
+            p_hcon->intr_cid = 0;
+        /* Both channels gone: the device is closed. */
+        if (p_hcon->ctrl_cid == 0 && p_hcon->intr_cid == 0) {
+            hh_cb_dev(dhandle)->state = HID_DEV_NO_CONN;
+            p_hcon->conn_state = HID_CONN_STATE_UNUSED;
+            hh_cb_callback(dhandle, HID_HDEV_EVT_CLOSE, p_hcon->disc_reason,
+                           NULL);
         }
     }
 }
