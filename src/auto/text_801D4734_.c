@@ -3563,7 +3563,7 @@ extern "C" void fn_801D8624(void *obj) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling 603
+#pragma scheduling invalid_target
 extern "C" int fn_801D8634(void *out, void *obj) {
     extern char lbl_8055ACB8;
     extern char lbl_8055ACB0;
