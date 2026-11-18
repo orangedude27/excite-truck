@@ -3601,6 +3601,7 @@ extern "C" int fn_801D8634(void *out, void *obj) {
     }
     return result;
 }
+#pragma pop
 
 #pragma cplusplus reset
 
