@@ -507,16 +507,6 @@ void fn_8020FE90(void) {
     lbl_8055B658 = resolvedTrack;
 }
 
-#pragma push
-#pragma dont_inline off
-static inline long clamp_8020FEF0(long value, long limit) {
-    value &= ((-value & ~value) >> 31);
-    if (value < limit)
-        limit = value;
-    return limit;
-}
-#pragma pop
-
 long fn_8020FEF0(long arg0) {
     long state = lbl_8055EEE0;
     long count;
