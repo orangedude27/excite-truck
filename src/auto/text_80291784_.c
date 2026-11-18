@@ -167,6 +167,7 @@ void fn_802919AC(void *list) {
 }
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_80291A1C(void) {
     struct QueryObject_80291A1C *obj;
     int *settings;
