@@ -169,7 +169,7 @@ s32 fn_802B5B74(void *arg0) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802B5C24(s32 arg0) {
     s32 temp_r31;
