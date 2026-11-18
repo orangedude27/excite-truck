@@ -227,7 +227,6 @@ extern "C" int fn_80204EA0(const char *arg0) {
 }
 #pragma cplusplus reset
 
-extern int fn_801345D8();
 __declspec(section ".sdata") extern const char lbl_8055B4B4[];
 __declspec(section ".sdata") extern const char lbl_8055B4B8[];
 #pragma cplusplus on
