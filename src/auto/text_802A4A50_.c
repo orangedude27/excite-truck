@@ -1435,7 +1435,7 @@ extern f32 fn_802A4AD4(void);
 extern f32 fn_802C9A50(void);
 extern f32 lbl_805648B0;
 extern f32 lbl_805648C0;
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802A6F70(void *arg0, void *arg1) {
     volatile f32 sp1C;
     volatile f32 sp18;
