@@ -5,7 +5,7 @@
  * "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,." (lbl_8032AFE0, 64 characters).
  * fn_8012F7E0 builds the reverse table once and hands out the 6-bit value of
  * a character, 0xFF for one the alphabet does not hold. */
-extern volatile unsigned char lbl_805599E8; /* set until the table is built */
+extern unsigned char lbl_805599E8;          /* set until the table is built */
 extern unsigned char lbl_80422F40[];        /* character -> 6-bit value */
 extern signed char lbl_8032AFE0[];          /* the alphabet itself */
 extern int memset(void *, int, unsigned int);
@@ -15,7 +15,7 @@ extern int memset(void *, int, unsigned int);
 #pragma dont_inline on
 unsigned char fn_8012F7E0(signed char arg0) {
     int i;
-    if (*(volatile unsigned char *)&lbl_805599E8 != 0) {
+    if (lbl_805599E8 != 0) {
         lbl_805599E8 = 0;
         memset(lbl_80422F40, 0xFF, 0x100);
         for (i = 0; i < 64; i++) {
