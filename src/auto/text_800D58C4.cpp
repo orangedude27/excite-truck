@@ -377,8 +377,10 @@ extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(nw4hbm::lyt::detai
 }
 #pragma unroll reset
 #pragma optimize_for_size reset
+#pragma push
 #pragma optimize_for_size on
 #pragma unroll off
+#pragma use_lmw_stmw off
 extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const void* src, u8 count) {
     u8* p = (u8*)self;
     if (count > p[0])
@@ -406,8 +408,7 @@ extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const 
         } while (--n != 0);
     }
 }
-#pragma unroll reset
-#pragma optimize_for_size reset
+#pragma pop
 
 /* Return nonzero if vertex colors need modulation: alpha is not fully opaque, or
    any of the four vertex color words differs from the opaque-white sentinel. */
