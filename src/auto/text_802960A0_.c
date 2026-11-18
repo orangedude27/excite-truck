@@ -20,6 +20,9 @@ extern "C" void *fn_802C86DC(void);
 extern "C" void fn_802C8BD0(int, float, float, float, float, float, float, float, float, float, float, float, float, float);
 extern "C" void fn_802C8D74(void);
 extern "C" void fn_802C8DB8(void *, int, void *, int, unsigned short, unsigned short, unsigned short, unsigned short);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void fn_802960A0(float *pos, unsigned int color, int tex, float s, double u0, double u1, double v0, double v1) {
     float *m = (float *)fn_802C86DC();
     float v[3];
@@ -58,7 +61,7 @@ extern "C" void fn_802960A0(float *pos, unsigned int color, int tex, float s, do
     fn_802C8DB8(vtx, 4, idx, 6, lbl_802FA9C0[4], lbl_802FA9C0[3], lbl_802FA9C0[2], lbl_802FA9C0[1]);
     fn_802C8D74();
 }
-
+#pragma pop
 #define kFrameName lbl_8055C9B8  // .sdata: "frame", the name of an opening frame entry
 // True when a parsed list entry's virtual name is "frame" (case-insensitive).
 extern "C" int fn_802962CC(void *entry) {
@@ -216,7 +219,7 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
         virtual int getInt(const char *);
         virtual void v6();
         virtual float getFloat(const char *);
-        virtual float getFloatDefault(const char *, float);
+        virtual float getFloatDefault(float, const char *);
         virtual void v9();
         virtual void v10();
         virtual void v11();
@@ -227,11 +230,11 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
     float *dst = (float *)arg0;
     int *word = (int *)((char *)arg0 + 0x14);
 
-    dst[0] = ((Node *)node)->getFloatDefault(lbl_8055C9EC, src[0]);
-    dst[1] = ((Node *)node)->getFloatDefault(lbl_8055C9F0, src[1]);
-    dst[2] = ((Node *)node)->getFloatDefault(lbl_8055C9F4, src[2]);
-    dst[3] = ((Node *)node)->getFloatDefault(lbl_8055C9F8, src[3]);
-    dst[4] = ((Node *)node)->getFloatDefault(lbl_8055C9FC, src[4]);
+    dst[0] = ((Node *)node)->getFloatDefault(src[0], lbl_8055C9EC);
+    dst[1] = ((Node *)node)->getFloatDefault(src[1], lbl_8055C9F0);
+    dst[2] = ((Node *)node)->getFloatDefault(src[2], lbl_8055C9F4);
+    dst[3] = ((Node *)node)->getFloatDefault(src[3], lbl_8055C9F8);
+    dst[4] = ((Node *)node)->getFloatDefault(src[4], lbl_8055C9FC);
     *word = fn_80296344(node, lbl_8055C9D4, *(int *)((char *)arg2 + 0x14));
 
     if (((Node *)node)->has(lbl_8055CA00)) {
@@ -268,10 +271,11 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
     dst[9] = result.y;
     dst[10] = result.z;
     *(int *)((char *)arg0 + 0x2C) = fn_802963F0(node, *(int *)((char *)arg2 + 0x2C));
-    return 1;
-}
+         return 1;
+ }
+#pragma scheduling invalid_target
 
-#pragma cplusplus reset
+ #pragma cplusplus reset
 #pragma pop
 
 #pragma cplusplus reset
@@ -572,12 +576,12 @@ int fn_80296D2C(void *arg0, float *arg1, float farg0) {
 #pragma push
 #pragma cplusplus on
 extern "C" float fn_802970C8(void *arg0) {
-    int use_unrolled = 0;
     int count = *(int *)((char *)arg0 + 0x2C);
     int processed = 0;
     int rest;
     unsigned int groups;
     float sum = lbl_8056456C;
+    int use_unrolled = 0;
     if (count <= 0) {
         return sum;
     }
