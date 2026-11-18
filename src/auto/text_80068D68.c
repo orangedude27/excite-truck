@@ -10883,7 +10883,7 @@ extern u8 lbl_80560D38;
 extern u8 lbl_80560D3C;
 extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
 /* Index of the ACL link to remote_bda in btm_cb.acl_db, or 4 if there is none. */
-static int btm_pm_find_acl_ind(BD_ADDR remote_bda)
+static inline int btm_pm_find_acl_ind(BD_ADDR remote_bda)
 {
     u8 *p = lbl_803C0F78 + 0x34;
     UINT8 xx;
