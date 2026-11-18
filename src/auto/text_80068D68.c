@@ -509,11 +509,13 @@ extern u8 lbl_803C3AF0[];
 extern char lbl_80317700[];
 extern void fn_80086468(void *);
 u8 btm_sec_start_authorization(u8 *p);
-static __inline BOOLEAN btm_sec_are_all_trusted_inl(u32 *p_mask) {
-    if (p_mask[0] != 0xFFFFFFFF)
-        return 0;
-    if (p_mask[1] != 0xFFFFFFFF)
-        return 0;
+/* Checks that every word of the trusted-service bitmap is fully set. */
+static BOOLEAN btm_sec_are_all_trusted_inl(u32 *p_mask) {
+    int i;
+    for (i = 0; i < 2; i++) {
+        if (p_mask[i] != 0xFFFFFFFF)
+            return 0;
+    }
     return 1;
 }
 extern void *l2cu_allocate_lcb(u8 *);
@@ -14338,14 +14340,10 @@ u8 btm_sec_execute_procedure(void *arg0) {
     if (!(flags & 1)
         && ((dev[0x80] && (dev[0x81] & 8)) || (!dev[0x80] && (dev[0x81] & 1)))) {
         int all;
-        if (*(u32 *)(dev + 0x10) == 0xFFFFFFFF) {
-            if (*(u32 *)(dev + 0x14) == 0xFFFFFFFF)
-                all = 1;
-            else
-                all = 0;
-        } else {
+        if (*(u32 *)(dev + 0x10) != 0xFFFFFFFF || *(u32 *)(dev + 0x14) != 0xFFFFFFFF)
             all = 0;
-        }
+        else
+            all = 1;
         if (all == 0) {
             sid = (*(u8 **)dev)[0xF];
             if (sid < 0x2E && !((1 << (sid & 0x1F)) & *(u32 *)(dev + ((sid >> 3) & 0x1C) + 0x10))) {
