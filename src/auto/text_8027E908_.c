@@ -1191,6 +1191,7 @@ int fn_8027F958(int *selection, void *collection) {
     widget->unk44 = 0;
     return result;
 }
+#undef lbl_804B3048
  #pragma scheduling invalid_target
 
 extern int fn_80216D28(void);
@@ -3967,7 +3968,6 @@ struct Obj8732C {
 };
 #pragma cplusplus on
 extern "C" void *fn_8028732C(void *arg0, int arg1) {
-    #pragma scheduling invalid_target
     class Obj {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
