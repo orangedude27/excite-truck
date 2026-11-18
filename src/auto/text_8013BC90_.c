@@ -155,7 +155,7 @@ extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
     void *p;
 
     fn_8013BD30(arg0);
-    p = ((Selector *)arg1)->select((const char *)((char *)names + 0));
+    p = ((Selector *)arg1)->select(names);
     if (p != 0) {
         v[0] = ((Getter *)p)->get(lbl_80559CE0, v[0]);
         v[1] = ((Getter *)p)->get(lbl_80559CE8, v[1]);
