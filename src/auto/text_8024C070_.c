@@ -47,7 +47,6 @@ typedef struct {
 void fn_8024C070(void) {
     Fn8024C070Frame frame;
     int value;
-    const char *bab8 = &lbl_8055BAB8;
 
     /* Fix note: model the stack data as one frame and pass its argument table through config. */
     frame.flag = 0;
