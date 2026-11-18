@@ -28,7 +28,7 @@ extern long lbl_8055B658;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
   
-extern void *fn_8020FAF0(void);
+extern void *fn_8020FAF0();
 extern long fn_8000DA10(void);
 extern long fn_8020F9F4(void);
 extern int stricmp(const char *, const char *);
