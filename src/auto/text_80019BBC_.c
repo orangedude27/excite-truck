@@ -194,53 +194,65 @@ extern "C" float fn_80019FD4(void *arg0, int arg1, float farg0) {
 }
 
 #pragma opt_unroll_loops off
-extern "C" void fn_8001A04C(int *arg0) {
-    char *p;
-    char *base;
-    int i;
-    int v;
+extern "C" void fn_8001A04C(int *record) {
+#define gTrackMarker      lbl_8055D5B4 /* the TrackMarker every truck-draw record shares */
+#define gTrackMarkerRefs  lbl_8055D5B8 /* how many records are alive and using it */
+#define gMapMarkerRecords lbl_803583C8 /* the 16 ring-challenge map markers, 0x14 bytes each */
+#define releaseTexture    fn_802CAC54  /* drop one reference to a texture-table entry */
+#define releaseTarget     fn_802CB228  /* free a render-target texture slot */
+#define kNoTexture        -2           /* an id field of a record that holds no texture */
+    char *field;
+    char *marker;
+    int index;
+    int texId;
 
-    lbl_8055D5B8--;
-    if (lbl_8055D5B8 == 0) {
-        int *old = (int *)lbl_8055D5B4;
-        if (old != 0) {
-            fn_80235380(old[0]);
-            fn_80128668(old);
+    gTrackMarkerRefs--;
+    if (gTrackMarkerRefs == 0) {
+        int *lastMarker = (int *)gTrackMarker;
+        if (lastMarker != 0) {
+            fn_80235380(lastMarker[0]); /* the ArtSet the marker was built from */
+            fn_80128668(lastMarker);
         }
-        lbl_8055D5B4 = 0;
+        gTrackMarker = 0;
     }
-    base = (char *)&lbl_803583C8;
-    i = 0;
-    while (i < 16) {
-        *(char *)(base + 0x10) = 0;
-        *(int *)(base + 0) = 0;
-        *(int *)(base + 4) = -1;
-        base += 0x14;
-        i++;
+    marker = (char *)&gMapMarkerRecords;
+    index = 0;
+    while (index < 16) {
+        *(char *)(marker + 0x10) = 0;  /* marker in use */
+        *(int *)(marker + 0) = 0;
+        *(int *)(marker + 4) = -1;
+        marker += 0x14;
+        index++;
     }
-    if (arg0 != 0) {
-        p = (char *)arg0;
-        v = *(int *)(p + 0x18);
-        if (v != -2) { fn_802CAC54(v); *(int *)(p + 0x18) = -2; }
-        v = *(int *)(p + 0x14);
-        if (v != -2) { fn_802CAC54(v); *(int *)(p + 0x14) = -2; }
-        v = *(int *)(p + 0);
-        if (v != -2) { fn_802CAC54(v); *(int *)(p + 0) = -2; }
-        v = *(int *)(p + 8);
-        if (v != -2) { fn_802CAC54(v); *(int *)(p + 8) = -2; }
-        v = *(int *)(p + 12);
-        if (v != -2) { fn_802CAC54(v); *(int *)(p + 12) = -2; }
-        v = *(int *)(p + 4);
-        if (v != -2) { fn_802CB228(v); *(int *)(p + 4) = -2; }
-        p = *(char **)(p + 0x10);
-        if (p != 0) {
-            if (p != 0) {
-                fn_80235380(*(int *)p);
-                fn_80128668(p);
+    if (record != 0) {
+        field = (char *)record;
+        texId = *(int *)(field + 0x18);
+        if (texId != kNoTexture) { releaseTexture(texId); *(int *)(field + 0x18) = kNoTexture; }
+        texId = *(int *)(field + 0x14);
+        if (texId != kNoTexture) { releaseTexture(texId); *(int *)(field + 0x14) = kNoTexture; }
+        texId = *(int *)(field + 0);
+        if (texId != kNoTexture) { releaseTexture(texId); *(int *)(field + 0) = kNoTexture; }
+        texId = *(int *)(field + 8);
+        if (texId != kNoTexture) { releaseTexture(texId); *(int *)(field + 8) = kNoTexture; }
+        texId = *(int *)(field + 12);
+        if (texId != kNoTexture) { releaseTexture(texId); *(int *)(field + 12) = kNoTexture; }
+        texId = *(int *)(field + 4);
+        if (texId != kNoTexture) { releaseTarget(texId); *(int *)(field + 4) = kNoTexture; }
+        field = *(char **)(field + 0x10);
+        if (field != 0) {
+            if (field != 0) {
+                fn_80235380(*(int *)field); /* the TruckDraw's own ArtSet */
+                fn_80128668(field);
             }
-            *(char **)((char *)arg0 + 0x10) = 0;
+            *(char **)((char *)record + 0x10) = 0;
         }
     }
+#undef gTrackMarker
+#undef gTrackMarkerRefs
+#undef gMapMarkerRecords
+#undef releaseTexture
+#undef releaseTarget
+#undef kNoTexture
 }
 
 #pragma opt_unroll_loops reset
