@@ -8201,6 +8201,14 @@ void btm_read_remote_version_complete(u8 *p) {
     }
 }
 
+/* btm_cb.btm_def_link_policy: link policy to ask for on every new ACL link. */
+#define btm_cb_def_link_policy      (*(u16 *)(lbl_803C0F78 + 0x4C4))
+/* btm_cb.btm_link_policy_settings: policy settings kept for new ACL links; copied into
+   the acl_db entry and written to the controller when the link is set up. */
+#define btm_cb_link_policy_settings (*(u16 *)(lbl_803C0F78 + 0x4C6))
+/* btm_cb.p_acl_change_cback: the upper layer's (BTA's) ACL link up/down notification. */
+#define btm_cb_acl_change_cback     (*(void (**)(u8 *, u8 *, u8 *, u8 *, s32))(lbl_803C0F78 + 0x4C8))
+
 #pragma push
 #pragma dont_inline off
 void btm_read_remote_features_complete(UINT8 *p) {
