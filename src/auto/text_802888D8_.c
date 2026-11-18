@@ -1229,18 +1229,77 @@ int fn_8028A084(int slot) {
 #pragma scheduling on
 #pragma pop
 extern int fn_80288208(int);
-extern int fn_80287E20(void *, void *);
-extern void *fn_80287E80(int, void *);
+extern int fn_80287E20(void *slot, const char *name);
+extern void *fn_80287E80(int slot, const char *name);
 extern void *fn_8012850C(int, void *, int);
 extern void *fn_8002F37C(int, void (*)(void), int, int, int);
 extern void fn_8028A32C(void);
-extern char lbl_80348B7C[], lbl_80348B8C[];
-extern int lbl_8055C88C, lbl_8055C890, lbl_8055C898;
+extern char lbl_80348B7C[] /* "smoke car tab" */, lbl_80348B8C[] /* "radiator" */;
+extern int lbl_8055C88C /* "arm" */, lbl_8055C890 /* "count" */, lbl_8055C898 /* "dir" */;
+/* The table's rows are allocated as one block with a header (element size at +0
+ * and count at +4 of it) and an empty element constructor, that is as C++
+ * `new("smoke car tab") RadiatorSmokeTrack[count]`: fn_8012850C takes the raw
+ * bytes (0x10 header + count rows) and fn_8002F37C (runtime/array) runs the
+ * constructor over the rows and returns the first one. */
 static inline void *fn_8028A1A4_newArray(int count) {
     return fn_8002F37C((int)fn_8012850C(count * 0x68 + 0x10, lbl_80348B7C, count * 0x68),
                        fn_8028A32C, 0, 0x68, count);
 }
 #pragma cplusplus on
+typedef struct Vec3 { float x, y, z; } Vec3;
+
+/* One of the track's named scene objects.  fn_80287E20 asks the object in a
+ * car-effect slot whether it answers to a name (its second virtual) and
+ * fn_80287E80 fetches it through the first; the object also answers for its
+ * attributes by name.  The first virtual sits at vtable +0x08, so the two
+ * methods used here are the 6th declared (+0x1C) and the 23rd (+0x60). */
+struct SceneObject {
+    virtual void v0() = 0; /* +0x08: fn_80287E80's lookup by name */
+    virtual void v1() = 0;
+    virtual void v2() = 0; /* +0x10: fn_80287E20's name check */
+    virtual void v3() = 0;
+    virtual void v4() = 0;
+    virtual int intAttribute(const char *name) = 0; /* +0x1C */
+    virtual void v6() = 0; virtual void v7() = 0; virtual void v8() = 0;
+    virtual void v9() = 0; virtual void v10() = 0; virtual void v11() = 0;
+    virtual void v12() = 0; virtual void v13() = 0; virtual void v14() = 0;
+    virtual void v15() = 0; virtual void v16() = 0; virtual void v17() = 0;
+    virtual void v18() = 0; virtual void v19() = 0; virtual void v20() = 0;
+    virtual void v21() = 0;
+    virtual struct SceneItem *child(int index) = 0; /* +0x60 */
+};
+
+/* One of a scene object's children (here: one radiator smoke nozzle); value()
+ * reads one of its vectors by name.  First virtual at +0x08 again, so value()
+ * is the 12th declared (+0x34) and returns its Vec3 through a hidden pointer. */
+struct SceneItem {
+    virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0;
+    virtual void v3() = 0; virtual void v4() = 0; virtual void v5() = 0;
+    virtual void v6() = 0; virtual void v7() = 0; virtual void v8() = 0;
+    virtual void v9() = 0; virtual void v10() = 0;
+    virtual Vec3 vec3Attribute(const char *name) = 0; /* +0x34 */
+};
+
+/* One radiator smoke nozzle: where its arm sits and which way it points. */
+typedef struct RadiatorArm {
+    Vec3 arm; /* read from the child's "arm" attribute */
+    Vec3 dir; /* read from the child's "dir" attribute */
+} RadiatorArm;
+
+/* One row of the "smoke car tab" table, per car-effect slot: the truck's
+ * radiator nozzles, how many there are, and the nozzle currently emitting
+ * (fn_80289F54 clears that field, fn_80289FC4 hands out one of the arms). */
+typedef struct RadiatorSmokeTrack {
+    RadiatorArm arms[4];    /* +0x00 */
+    int armCount;           /* +0x60 */
+    RadiatorArm *activeArm; /* +0x64 */
+} RadiatorSmokeTrack;
+
+/* Object and attribute names the table is read with (strings in .data/.sdata). */
+#define kNameRadiator ((const char *)lbl_80348B8C)
+#define kAttrCount    ((const char *)&lbl_8055C890)
+#define kAttrArm      ((const char *)&lbl_8055C88C)
+#define kAttrDir      ((const char *)&lbl_8055C898)
 #pragma push
 #pragma scheduling invalid_target
 int fn_8028A1A4(int out) {
