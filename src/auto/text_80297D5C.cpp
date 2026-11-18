@@ -575,9 +575,13 @@ static inline void XformRot3(const float *m, const float *src, float *dst) {
         dst[1] = z * m21 + (x * m01 + y * m11);
         dst[2] = z * m22 + (x * m02 + y * m12);
     } else {
-        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
-        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+        float m10, m00, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m00 = m[0]; m20 = m[6];
+        dst[0] = src[2] * m20 + (src[0] * m00 + src[1] * m10);
+        m11 = m[4]; m01 = m[1]; m21 = m[7];
+        dst[1] = src[2] * m21 + (src[0] * m01 + src[1] * m11);
+        m12 = m[5]; m02 = m[2]; m22 = m[8];
+        dst[2] = src[2] * m22 + (src[0] * m02 + src[1] * m12);
     }
 }
 typedef struct XformVec { float x, y, z; } XformVec;
