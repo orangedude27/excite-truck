@@ -11283,6 +11283,7 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 st
 }
 
 #pragma opt_propagation off
+#pragma opt_lifetimes off
 void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
     extern char lbl_80316530[];
     extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
@@ -11337,6 +11338,7 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
         }
     }
 }
+#pragma opt_lifetimes reset
 #pragma opt_propagation reset
 void fn_8007D4C4(void) {
     struct S16 {
@@ -24666,16 +24668,15 @@ void rfc_send_pn(void *p_mcb, s32 dlci, s32 is_command, s32 mtu, s32 cl, s32 k) 
 }
 
 void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
-    u8 *buf = (u8 *)GKI_getpoolbuf(2);
-    if (buf != 0) {
-        s32 sign = (-arg1 | arg1) >> 31;
-        u16 len = 2;
-        *(u16 *)(buf + 4) = 12;
-        buf[20] = (u8)((sign & 2) | 161);
-        buf[21] = 1;
-        *(u16 *)(buf + 2) = len;
-        rfc_send_buf_uih(arg0, 0, buf, len);
-    }
+    BT_HDR *p_buf;
+    UINT8 *p_data;
+    if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == NULL) return;
+    p_buf->offset = 12;
+    p_data = (UINT8 *)(p_buf + 1) + p_buf->offset;
+    *p_data++ = (UINT8)(0xa1 | (arg1 ? 2 : 0));
+    *p_data = 1;
+    p_buf->len = 2;
+    rfc_send_buf_uih(arg0, 0, p_buf);
 }
 
 void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
