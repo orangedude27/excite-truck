@@ -3333,6 +3333,7 @@ extern "C" void *__dt__Q34Game10MemoryCard8ResourceFv(void *self, s32 shouldDele
     return self;
 }
 
+#pragma scheduling invalid_target
 extern "C" void *fn_8021D7C8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     f32 value;
     ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, arg3, arg4);
@@ -4722,7 +4723,8 @@ extern "C" void fn_802200AC(void *arg0) {
     s32 *mode = *(s32 **)((u8 *)arg0 + 0x258);
     if (mode != 0 && *mode == *(s32 *)((u8 *)arg0 + 0x25C))
         enabled = 1;
-    f32 adj = step - (f32)fn_802C51C0(*(s32 *)((u8 *)arg0 + 0x254));
+    s32 width = fn_802C51C0(*(s32 *)((u8 *)arg0 + 0x254));
+    f32 adj = step - (f32)width;
     f32 t = lbl_805634C4 * adj;
     s32 stateB;
     s32 a;
@@ -5489,10 +5491,9 @@ extern "C" void fn_80221EA0(void *panel, s32 fieldId, void *value, s32 size) {
 #pragma dont_inline reset
 extern "C" s32 fn_80221EA8(void *arg0) {
     extern char lbl_8033DA2C[];
-    void *tmp = *(void **)((u8 *)arg0 + 0x14);
-    u32 value = *(u32 *)((u8 *)tmp + 0x238);
+    u32 value = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x14) + 0x238);
     for (s32 i = 0; i < 32; i++) {
-        if (value == (1u << i)) {
+        if (value == (1 << i)) {
             return i;
         }
     }
