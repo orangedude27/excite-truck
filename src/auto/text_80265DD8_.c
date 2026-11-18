@@ -403,7 +403,7 @@ void *fn_80266120(void *cursor) {
     return cursor;
 }
 
-#pragma opt_propagation off
+#pragma scheduling invalid_target
 void fn_80266150(void *arg0) {
     int zero = 0;
     float f0 = lbl_80563C2C;
@@ -414,7 +414,6 @@ void fn_80266150(void *arg0) {
     *(float *)((char *)arg0 + 8) = f1;
     *(float *)((char *)arg0 + 0xC) = f0;
 }
-#pragma opt_propagation reset
 void fn_80266170(void *arg0, int arg1, int arg2, int arg3, float farg0) {
     float temp_f0;
     float temp_f0_2;
@@ -723,8 +722,8 @@ void fn_80267130(void *arg0) {
     float clamp;
     clamp = lbl_80563C2C;
     value = (*(float *)((char *)arg0 + 0x30) - 0.3926991f) / 0.78539812f;
-    clamp = clamp < value ? value : clamp;
-    clamp = lbl_80563C20 < clamp ? lbl_80563C20 : clamp;
+    clamp = clamp < value ? clamp : value;
+    clamp = clamp > lbl_80563C20 ? clamp : lbl_80563C20;
     *(float *)((char *)arg0 + 0x48) = lbl_80563C34 + clamp * lbl_80563C4C;
     if (fn_80178CA4() == 1) value = lbl_80563C2C;
     else value = lbl_80563C50;
@@ -1621,8 +1620,8 @@ struct InputVec {
 #pragma push
 #pragma processor 750
 void fn_80268BD4(void *out, int arg1, float t, float angle) {
-    float *inp = (float *)arg1;
-    float *b = *(float **)((char *)inp + 0x14);
+    struct InputVec *in = (struct InputVec *)arg1;
+    float *b = (float *)in->b;
     float vec[4];
     float rot[2];
     float x;
@@ -1637,11 +1636,11 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     float cosine;
     float sine;
 
-    x = inp[2] + t * (b[2] - inp[2]);
-    y = inp[3] + t * (b[3] - inp[3]);
+    x = in->a[2] + t * (b[2] - in->a[2]);
+    y = in->a[3] + t * (b[3] - in->a[3]);
     sumSq = x * x + y * y;
-    z = inp[0] + t * (b[0] - inp[0]);
-    w = inp[1] + t * (b[1] - inp[1]);
+    z = in->a[0] + t * (b[0] - in->a[0]);
+    w = in->a[1] + t * (b[1] - in->a[1]);
     vec[0] = x;
     vec[1] = y;
     vec[2] = z;
@@ -1649,14 +1648,14 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
 
     scale = lbl_80563C2C /
         (float)((double (*)(void *, float, float, float, float, float, float, float, float))fn_8002F234)(
-            out, sumSq, x * x, t * (b[1] - inp[1]), z, inp[0], inp[1], y, x);
+            out, sumSq, x * x, t * (b[1] - in->a[1]), z, in->a[0], in->a[1], y, x);
     xScaled = vec[0] * scale;
     yScaled = vec[1] * scale;
     vec[0] = yScaled;
     vec[1] = -xScaled;
 
     *(float *)((char *)out + 0x28) = lbl_80563C20;
-    rotation = lbl_80563C8C * inp[10] - lbl_80563C90;
+    rotation = lbl_80563C8C * in->rest[4] - lbl_80563C90;
     rot[0] = vec[2] + yScaled * rotation;
     rot[1] = vec[3] + vec[1] * rotation;
     *(float *)((char *)out + 0x24) = rot[0];
