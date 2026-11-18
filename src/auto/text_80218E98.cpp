@@ -4430,41 +4430,40 @@ enum {
 
 extern "C" char lbl_8033D9B0[];
 extern "C" char lbl_8033D9BC[];
+#pragma push
 #pragma scheduling on
 extern "C" void *fn_8021F678(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, f32 farg0, f32 farg1) {
+    s32 *words = (s32 *)arg0;
     s32 end;
     s32 count;
     s32 len;
     fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
-    *(s32 *)((u8 *)arg0 + 0x250) = arg5;
-    s32 sign = arg6 >> 31;
-    s32 size = (sign ^ arg6) - sign;
+    *(void **)arg0 = lbl_8033E878;
+    words[0x250 / 4] = arg5;
     *(f32 *)((u8 *)arg0 + 0x248) = farg0;
     *(f32 *)((u8 *)arg0 + 0x24C) = farg1;
-    u32 vt = (u32)lbl_8033E878;
-    *(void **)arg0 = (void *)vt;
     *(u8 *)((u8 *)arg0 + 0x244) = 0;
-    *(s32 *)((u8 *)arg0 + 0x254) = size;
+    words[0x254 / 4] = ((arg6 >> 31) ^ arg6) - (arg6 >> 31);
     *(u8 *)((u8 *)arg0 + 0x258) = (u32)arg6 >> 31;
-    *(s32 *)((u8 *)arg0 + 0x25C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9B0);
-    *(s32 *)((u8 *)arg0 + 0x260) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9BC);
-    *(s32 *)((u8 *)arg0 + 0x264) = *(s32 *)((u8 *)arg0 + 4);
-    *(s32 *)((u8 *)arg0 + 0x268) = *(s32 *)((u8 *)arg0 + 8);
-    *(s32 *)((u8 *)arg0 + 0x26C) = ((Vf78 *)arg0)->get();
-    len = *(s32 *)((u8 *)arg0 + 8);
-    end = *(s32 *)((u8 *)arg0 + 0x10);
-    *(s32 *)((u8 *)arg0 + 0x270) = end - len;
-    count = ((s32 (*)(s32))fn_802C5220)(*(s32 *)((u8 *)arg0 + 0x25C));
-    len = *(s32 *)((u8 *)arg0 + 8);
-    end = *(s32 *)((u8 *)arg0 + 0x10);
+    words[0x25C / 4] = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9B0);
+    words[0x260 / 4] = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9BC);
+    words[0x264 / 4] = words[1];
+    words[0x268 / 4] = words[2];
+    words[0x26C / 4] = ((Vf78 *)arg0)->get();
+    len = words[2];
+    end = words[4];
+    words[0x270 / 4] = end - len;
+    count = ((s32 (*)(s32))fn_802C5220)(words[0x25C / 4]);
+    len = words[2];
+    end = words[4];
     if (end - len > count) count = end - len;
     ((void (*)(void *, s32, s32))fn_80219284)(arg0, ((Vf78 *)arg0)->get() - 1, count);
     ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 0, (void *)arg5, 4);
-    *(s32 *)((u8 *)arg0 + 0x274) = 0;
-    *(s32 *)((u8 *)arg0 + 0x278) = fn_80228F40(arg1, arg2);
+    words[0x274 / 4] = 0;
+    words[0x278 / 4] = fn_80228F40(arg1, arg2);
     return arg0;
 }
-
+#pragma pop
 /* Initialize this object's cached handle (+0x274) from table entry +0x278
  * under key +0x2C when fn_80129BC4() allows, then register it via fn_80219440
  * with tag 1 and size 4. */
@@ -4803,49 +4802,68 @@ extern "C" void fn_802200AC(void *arg0) {
 }
 #pragma pop
 extern "C" s32 fn_802205AC(void *arg0, s32 arg1) {
-    s32 *p;
+    /* Key handler of the continuous-value slider built by fn_8021FF34 (vtable
+     * lbl_8033E7F4). While its cached selection entry (+0x258) still matches the
+     * id at +0x25C: LEFT/RIGHT step the value at *+0x244 by +0x250 within the
+     * bounds +0x248/+0x24C and stamp the decrease/increase time at +0x260/+0x264
+     * (the draw fn_802200AC fades the bar ends from it); UP/DOWN move the
+     * selection in the parent list at +0x2C when it has several entries.
+     * Returns 1 when the key was handled. */
+    struct ValueSlider {
+        u8 widget[0x244];   /* +0x000 base Widget state */
+        f32 *value;         /* +0x244 value the slider steps */
+        f32 minValue;       /* +0x248 lowest value */
+        f32 maxValue;       /* +0x24C highest value */
+        f32 step;           /* +0x250 range / steps */
+        u32 barImage;       /* +0x254 bar image */
+        s32 *entry;         /* +0x258 cached selection entry */
+        s32 entryId;        /* +0x25C id the cached entry must still match */
+        f32 decreaseTime;   /* +0x260 time LEFT last moved the value */
+        f32 increaseTime;   /* +0x264 time RIGHT last moved the value */
+    };
+    s32 *entry;
     f32 *value;
     f32 bound;
     f32 result;
-    s32 temp;
-    p = *(s32 **)((u8 *)arg0 + 0x258);
-    if (p == 0 || *p != *(s32 *)((u8 *)arg0 + 0x25C))
+    s32 handled;
+    entry = ((ValueSlider *)arg0)->entry;
+    if (entry == 0 || *entry != ((ValueSlider *)arg0)->entryId)
         return 0;
-    temp = 1;
+    handled = 1;
     switch (arg1) {
-    case 0x127:
-        value = *(f32 **)((u8 *)arg0 + 0x244);
-        if (value != 0 && *value != *(f32 *)((u8 *)arg0 + 0x24C)) {
-            *(f32 *)((u8 *)arg0 + 0x264) = fn_8023659C();
-            value = *(f32 **)((u8 *)arg0 + 0x244);
-            bound = *(f32 *)((u8 *)arg0 + 0x24C);
-            result = *value + *(f32 *)((u8 *)arg0 + 0x250);
+    case MENU_KEY_RIGHT:
+        value = ((ValueSlider *)arg0)->value;
+        if (value != 0 && *value != ((ValueSlider *)arg0)->maxValue) {
+            ((ValueSlider *)arg0)->increaseTime = fn_8023659C();
+            value = ((ValueSlider *)arg0)->value;
+            bound = ((ValueSlider *)arg0)->maxValue;
+            result = *value + ((ValueSlider *)arg0)->step;
             result = result < bound ? result : bound;
             *value = result;
         }
         break;
-    case 0x125:
-        value = *(f32 **)((u8 *)arg0 + 0x244);
-        if (value != 0 && *value != *(f32 *)((u8 *)arg0 + 0x248)) {
-            *(f32 *)((u8 *)arg0 + 0x260) = fn_8023659C();
-            value = *(f32 **)((u8 *)arg0 + 0x244);
-            bound = *(f32 *)((u8 *)arg0 + 0x248);
-            result = *value - *(f32 *)((u8 *)arg0 + 0x250);
+    case MENU_KEY_LEFT:
+        value = ((ValueSlider *)arg0)->value;
+        if (value != 0 && *value != ((ValueSlider *)arg0)->minValue) {
+            ((ValueSlider *)arg0)->decreaseTime = fn_8023659C();
+            value = ((ValueSlider *)arg0)->value;
+            bound = ((ValueSlider *)arg0)->minValue;
+            result = *value - ((ValueSlider *)arg0)->step;
             result = result > bound ? result : bound;
             *value = result;
         }
         break;
-    case 0x126:
+    case MENU_KEY_UP:
         if (*(s32 *)((u8 *)*(s32 **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
-            fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
+            fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C)); /* previous entry */
             fn_80230E90(0);
         } else {
             return 0;
         }
         break;
-    case 0x128:
+    case MENU_KEY_DOWN:
         if (*(s32 *)((u8 *)*(s32 **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
-            fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
+            fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C)); /* next entry */
             fn_80230E90(0);
         } else {
             return 0;
@@ -4854,7 +4872,7 @@ extern "C" s32 fn_802205AC(void *arg0, s32 arg1) {
     default:
         return 0;
     }
-    return temp;
+    return handled;
 }
 
 extern "C" void fn_8022071C(void *widget) {
