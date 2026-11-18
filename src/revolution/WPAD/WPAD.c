@@ -4647,9 +4647,9 @@ s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
     u32 capacity;
 
     enabled = OSDisableInterrupts();
-    value778 = *(u32*)((u8*)p + 0x778);
+    value778 = *(s32*)((u8*)p + 0x778);
     status = *(s32*)((u8*)p + 0x7FC);
-    value81C = *(u32*)((u8*)p + 0x81C);
+    value81C = *(s32*)((u8*)p + 0x81C);
     OSRestoreInterrupts(enabled);
     if (status == WPAD_ERR_NO_CONTROLLER) goto finish;
     if (value81C == 0) {
