@@ -2988,8 +2988,19 @@ copied1:
         src = (char *)fn_80019098(arg1);
         fn_80252320_copy(src, 0x20, record->name2);
     } else {
+        char *d;
+        d = record->name2;
+        src = (char *)&lbl_8055C0E8;
         count = 0x20;
-        fn_80252320_copy((char *)&lbl_8055C0E8, count, record->name2);
+        goto copy3;
+    check3:
+        if (--count > 0) goto copy3;
+        d[-1] = 0;
+        goto copied3;
+    copy3:
+        if ((*d++ = *src++) != 0) goto check3;
+    copied3:
+        ;
     }
     if (*(u32 *)((char *)arg0 + 0x1C) != lbl_8055E044)
         fn_80131318((char *)arg0 + 0x14);
