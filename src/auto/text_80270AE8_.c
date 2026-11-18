@@ -348,7 +348,8 @@ int fn_80270EC4(void *arg0, int arg1) {
     struct SortEntry entries[64];
     char *name = lbl_80346B00;
     int flags = arg1;
-    int category, groupOffset, one, zero, count, byteOffset, i;
+    int category, groupOffset, count, byteOffset, i;
+    register int one, zero;
     fn_80270C04(arg0, flags);
     if ((flags & 0x100) != 0) {
         category = 0;
@@ -1000,15 +1001,15 @@ extern "C" int fn_80272028(void *arg0, Parser72028 *arg1, int arg_sp0) {
     char *path;
     int hash;
     char buffer[0x10];
-    char *name;
-    Parser72028 *parser;
-    void *output;
     int index;
     int count;
     unsigned char bit;
-    name = lbl_80346B00;
-    parser = arg1;
+    void *output;
+    Parser72028 *parser;
+    const char *name;
     output = arg0;
+    parser = arg1;
+    name = lbl_80346B00;
     fn_80272354(arg0);
     if (parser->has(name + 0x424) == 0) {
         DBPrintf_80270B00(name + 0x430, name + 0x424);
@@ -1038,7 +1039,7 @@ extern "C" int fn_80272028(void *arg0, Parser72028 *arg1, int arg_sp0) {
         }
         if (strncmp(path, lbl_8055C5B4, 5) == 0 && path[5] != '_') {
             bit = fn_80008050(hash);
-            if (bit < 0x20) {
+            if ((int)bit < 0x20) {
                 *(int *)((char *)output + 0x10) |= 1 << bit;
             } else {
                 *(int *)((char *)output + 0x14) |= 1 << (bit - 0x20);
@@ -1088,11 +1089,12 @@ void fn_80272354(void *obj) {
 void fn_802723B4(void *arg0, void *arg1, float t) {
     struct Result { void *node; float fraction; s32 mode; } result;
     float *node;
+    float factor;
     fn_80136468((void **)&result, arg0, t);
     node = result.node;
-    t = result.fraction;
-    ((float *)arg1)[0] = node[0] + t * (((float *)*(void **)((char *)node + 0x14))[0] - node[0]);
-    ((float *)arg1)[1] = node[1] + t * (((float *)*(void **)((char *)node + 0x14))[1] - node[1]);
+    factor = result.fraction;
+    ((float *)arg1)[0] = factor * (((float *)*(void **)((char *)node + 0x14))[0] - node[0]) + node[0];
+    ((float *)arg1)[1] = factor * (((float *)*(void **)((char *)node + 0x14))[1] - node[1]) + node[1];
 }
 #pragma scheduling on
 extern float lbl_8055F560, lbl_80563F40, lbl_80563F48;
@@ -1251,56 +1253,35 @@ extern double fn_8002F234(void);
 extern void fn_801355C0(void *, void *, int, void **, int);
 extern void *memmove(void *, void *, int);
 void fn_80272738(void *arg0, void *arg1) {
-    int sp58;
-    float sp54;
-    void *sp50;
-    float sp4C;
-    float sp48;
-    float sp44;
-    float sp40;
-    float sp3C;
-    float sp38;
-    float sp34;
-    float sp30;
-    float sp2C;
-    float sp28;
-    float sp24;
-    float sp20;
-    float sp18;
-    float sp14;
-    float sp10;
-    float spC;
-    float sp8;
-    int var_r18;
-    int var_r19;
-    int var_r20;
-    int var_r21;
-    void *var_r22;
-    void *var_r23;
-    void *var_r24;
+#pragma opt_common_subs off
+    struct S {
+        float sp8, spC, sp10, sp14;
+        float sp18[2];
+        float sp20, sp24, sp28, sp2C, sp30, sp34, sp38, sp3C, sp40, sp44, sp48, sp4C;
+        void *sp50;
+        float sp54;
+        int sp58;
+    } s;
     float *var_r25;
+    void *var_r24;
+    void *var_r23;
+    void *var_r22;
+    int var_r21;
+    int var_r20;
+    int var_r19;
+    int var_r18;
+    int var_r29;
     void *r26;
     char *base;
-    float *dc4;
-    int var_r29;
-    float f23;
-    float f24;
-    float f25;
-    float f26;
-    float f27;
-    float f28;
-    float f29;
-    float f30;
-    float f31;
-    void *r5;
-    float t1;
+    float f31, f30, f29, f28, f27, f26, f25, f24, f23;
     void *r5_2;
+    float t1;
+    void *r5;
     base = lbl_80346B00;
-    dc4 = lbl_80558DC4;
     r5 = *(void **)arg0;
     t1 = *(float *)((char *)r5 + 8);
-    sp48 = *(float *)r5;
-    sp4C = t1;
+    s.sp48 = *(float *)r5;
+    s.sp4C = t1;
     r5_2 = *(void **)arg0;
     f27 = *(float *)((char *)r5_2 + 0xC);
     f28 = *(float *)((char *)*(void **)((char *)arg1 + 0x2C) + 8);
@@ -1317,20 +1298,7 @@ void fn_80272738(void *arg0, void *arg1) {
     var_r22 = r26;
     do {
         void *r3;
-        float f7;
-        float f3;
-        float f8;
-        float f5;
-        float f6;
-        float f7_2;
-        float f9;
-        float f4;
-        float f6_2;
-        float f8_2;
-        float f3_2;
-        float f5_2;
-        float fabs25;
-        float sqrtResult;
+        float f7, f3, f8, f5, f6, f7_2, f9, f4, f6_2, f8_2, f3_2, f5_2, fabs25, sqrtResult;
         r3 = *(void **)((char *)var_r22 + 0x14);
         var_r19 = 0;
         f7 = *(float *)var_r22;
@@ -1340,30 +1308,30 @@ void fn_80272738(void *arg0, void *arg1) {
         f6 = f7 + f29 * f3;
         f7_2 = f7 + f30 * f3;
         f9 = f8 + f29 * f5;
-        sp40 = f6;
-        f4 = f6 - sp48;
+        s.sp40 = f6;
+        f4 = f6 - s.sp48;
         f6_2 = f7_2 - f6;
         f8_2 = f8 + f30 * f5;
-        f3_2 = f9 - sp4C;
-        sp38 = f7_2;
+        f3_2 = f9 - s.sp4C;
+        s.sp38 = f7_2;
         f5_2 = f8_2 - f9;
-        sp44 = f9;
-        sp3C = f8_2;
+        s.sp44 = f9;
+        s.sp3C = f8_2;
         f25 = f6_2 * f6_2 + f5_2 * f5_2;
-        sp30 = f6_2;
-        fabs25 = (float)fabs(f25);
+        s.sp30 = f6_2;
+        fabs25 = (float)__fabs((double)f25);
         f24 = f23 * (f4 * f6_2 + f3_2 * f5_2);
-        sp34 = f5_2;
-        sp28 = f4;
-        sp2C = f3_2;
-        if (fabs25 != dc4[0] && f24 * f24 - f31 * f25 * (f4 * f4 + f3_2 * f3_2 - f26) > f29) {
+        s.sp34 = f5_2;
+        s.sp28 = f4;
+        s.sp2C = f3_2;
+        if (fabs25 != lbl_80558DC4[0] && f24 * f24 - f31 * f25 * (f4 * f4 + f3_2 * f3_2 - f26) > f29) {
             sqrtResult = (float)fn_8002F234();
             var_r19 = 2;
-            sp20 = (-f24 - sqrtResult) / (f23 * f25);
-            sp24 = (-f24 + sqrtResult) / (f23 * f25);
+            s.sp20 = (-f24 - sqrtResult) / (f23 * f25);
+            s.sp24 = (-f24 + sqrtResult) / (f23 * f25);
         }
         var_r24 = var_r23;
-        var_r25 = &sp20;
+        var_r25 = &s.sp20;
         var_r29 = var_r21 * 4;
         var_r18 = 0;
         while (var_r18 < var_r19) {
@@ -1395,22 +1363,20 @@ void fn_80272738(void *arg0, void *arg1) {
         }
     } while (var_r20 == 0);
     if (var_r21 == 0) {
-        float temp;
-        float f1;
-        float f24b;
+        float temp, f1, f24b;
         DBPrintf_80270B00(base + 0x5EC);
-        sp50 = 0;
-        sp58 = 0x2710;
-        sp54 = lbl_80563F48;
-        fn_801355C0(arg1, &sp48, 0, &sp50, 0);
-        temp = *(float *)((char *)sp50 + 0x1C) + *(float *)((char *)sp50 + 0x18) * sp54;
+        s.sp50 = 0;
+        s.sp58 = 0x2710;
+        s.sp54 = lbl_80563F48;
+        fn_801355C0(arg1, &s.sp48, 0, &s.sp50, 0);
+        temp = *(float *)((char *)s.sp50 + 0x1C) + *(float *)((char *)s.sp50 + 0x18) * s.sp54;
         f23 = temp;
         f1 = temp - f27;
         if (f27 > temp) f1 += f28;
         f24b = temp + f27;
         if (f27 > f28 - temp) f24b -= f28;
-        *(float *)((char *)arg0 + 4) = fn_80272428(arg1, &sp48, f1, temp, f26);
-        *(float *)((char *)arg0 + 8) = fn_80272428(arg1, &sp48, temp, f24b, f26);
+        *(float *)((char *)arg0 + 4) = fn_80272428(arg1, &s.sp48, f1, temp, f26);
+        *(float *)((char *)arg0 + 8) = fn_80272428(arg1, &s.sp48, temp, f24b, f26);
         var_r21 = 2;
     } else if (var_r21 == 1) {
         var_r21 += 1;
@@ -1428,17 +1394,17 @@ void fn_80272738(void *arg0, void *arg1) {
     {
         float a = *(float *)((char *)arg0 + 4);
         float d = *(float *)((char *)arg0 + 8);
-        ((void (*)(void *, void *, float))fn_802723B4)(arg1, &sp18, lbl_80563F40 * (a + d));
-        sp14 = *(float *)((char *)&sp18 + 4) - sp4C;
-        sp10 = sp18 - sp48;
-        if (sp10 * sp10 + sp14 * sp14 > f26) {
+        ((void (*)(void *, void *, float))fn_802723B4)(arg1, s.sp18, lbl_80563F40 * (a + d));
+        s.sp14 = s.sp18[1] - s.sp4C;
+        s.sp10 = s.sp18[0] - s.sp48;
+        if (s.sp10 * s.sp10 + s.sp14 * s.sp14 > f26) {
             if (*(unsigned char *)((char *)arg0 + 0x14) != 0) {
                 float b = *(float *)((char *)arg0 + 8);
                 float c = *(float *)((char *)arg0 + 0xC);
-                ((void (*)(void *, void *, float))fn_802723B4)(arg1, &sp18, lbl_80563F40 * (b + c));
-                spC = *(float *)((char *)&sp18 + 4) - sp4C;
-                sp8 = sp18 - sp48;
-                if (sp8 * sp8 + spC * spC > f26) {
+                ((void (*)(void *, void *, float))fn_802723B4)(arg1, s.sp18, lbl_80563F40 * (b + c));
+                s.spC = s.sp18[1] - s.sp4C;
+                s.sp8 = s.sp18[0] - s.sp48;
+                if (s.sp8 * s.sp8 + s.spC * s.spC > f26) {
                     *(unsigned char *)((char *)arg0 + 0x14) = 0;
                 } else {
                     float old = *(float *)((char *)arg0 + 4);
@@ -1453,7 +1419,7 @@ void fn_80272738(void *arg0, void *arg1) {
             }
         }
     }
-    DBPrintf_80270B00(base + 0x634, sp48, sp4C);
+    DBPrintf_80270B00(base + 0x634, s.sp48, s.sp4C);
     fn_8027264C((int)(base + 0x65C), arg1, *(float *)((char *)arg0 + 4));
     fn_8027264C((int)(base + 0x668), arg1, *(float *)((char *)arg0 + 8));
     if (*(unsigned char *)((char *)arg0 + 0x14) != 0) {
@@ -1485,7 +1451,7 @@ extern int fn_80272C24(float, float, float, float);
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling off
 extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     struct Manager {
         virtual void v0() = 0;
