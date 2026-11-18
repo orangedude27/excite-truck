@@ -24,13 +24,6 @@ enum IdealResExtType {
 
 #define IDEAL_RES_EXT_LIST 0x24  /* IdealLineRes: first extension record */
 
-/* Reverses the four bytes of one 32-bit word in place. */
-static inline void SwapWordBytes(unsigned char *p) {
-    unsigned char t;
-    t = p[0]; p[0] = p[3]; p[3] = t;
-    t = p[1]; p[1] = p[2]; p[2] = t;
-}
-
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
