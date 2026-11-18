@@ -514,7 +514,7 @@ extern "C" void fn_802AE168(s32);
 extern "C" unsigned int strlen(const char *);
 extern "C" char lbl_80559D6C, lbl_80559D84;
 extern "C" char lbl_80559D80[1];
-extern "C" u8 lbl_8055E1C8;
+extern "C" s8 lbl_8055E1C8;
 extern "C" u32 lbl_8055E044;
 extern "C" u8 lbl_8042FB78[], lbl_8032CA74[];
 extern "C" f32 lbl_8055E3C8;
@@ -2321,7 +2321,9 @@ extern "C" u32 fn_80140F10(void *arg0, void *arg1) {
     s32 _a=*(s32 *)(input+0x10);
     s32 _b=*(s32 *)(input+0x14);
     s32 _c=*(s32 *)(input+0x18);
-    fn_801345D8(p+0x30,0x14,&lbl_80559D6C,_a+_b+_c);
+    s32 sum=_a+_b;
+    sum+=_c;
+    fn_801345D8(p+0x30,0x14,&lbl_80559D6C,sum);
     if(count && *(f32 *)(p+4)>lbl_805614A4) {
         f32 fraction=((lbl_8055E3C8-*(f32 *)(p+4))-lbl_805614A4)/lbl_805614AC;
         fraction=lbl_805614AC<fraction ? lbl_805614AC : fraction;
@@ -2331,40 +2333,40 @@ extern "C" u32 fn_80140F10(void *arg0, void *arg1) {
     }
     fn_801345D8(p+0x44,0x14,&lbl_80559D6C,completed);
     if(p[0x10]) {
-        {const char *s=lbl_80559D80; char *d=(char*)p+0xb2; int c0=0x14; char c;
-       goto check0;
-check0: if (--c0>0) goto copy0; d[-1]=0; goto done0;
-copy0: c=*s++; *d++=c; if ((signed char)c != 0) goto check0;
+        {char c; char *src=lbl_80559D80; long len=0x14; char *dst=(char*)p+0xb2;
+       goto copy0;
+check0: if (--len>0) goto copy0; dst[-1]=0; goto done0;
+copy0: c=*src++; *dst++=c; if ((signed char)c==0) goto done0; goto check0;
 done0:;}
-        {const char *s=lbl_80559D80; char *d=(char*)p+0x58; int c1=0x14; char c;
-       goto check1;
-check1: if (--c1>0) goto copy1; d[-1]=0; goto done1;
-copy1: c=*s++; *d++=c; if ((signed char)c != 0) goto check1;
+        {char c; char *src=lbl_80559D80; long len=0x14; char *dst=(char*)p+0x58;
+       goto copy1;
+check1: if (--len>0) goto copy1; dst[-1]=0; goto done1;
+copy1: c=*src++; *dst++=c; if ((signed char)c==0) goto done1; goto check1;
 done1:;}
     } else {
-        if(!lbl_8055E1C8){fn_801312EC(lbl_8042FB78,lbl_8032CA74);lbl_8055E1C8=1;}
+        if(!(signed char)lbl_8055E1C8){fn_801312EC(lbl_8042FB78,lbl_8032CA74);lbl_8055E1C8=1;}
         fn_80130980(p+0xb2,0x14,2,(f32)remaining);
         if(*(u32 *)(lbl_8042FB78+8)!=lbl_8055E044)fn_80131318(lbl_8042FB78);
-        {const char *s=*(char **)(lbl_8042FB78+4); char *d=(char*)p+0x58; int c2=0x14; char c;
-       goto check2;
-check2: if (--c2>0) goto copy2; d[-1]=0; goto done2;
-copy2: c=*s++; *d++=c; if ((signed char)c != 0) goto check2;
+        {char c; char *src=*(char **)(lbl_8042FB78+4); long len=0x14; char *dst=(char*)p+0x58;
+       goto copy2;
+check2: if (--len>0) goto copy2; dst[-1]=0; goto done2;
+copy2: c=*src++; *dst++=c; if ((signed char)c==0) goto done2; goto check2;
 done2:;}
     }
     fn_801345D8(p+0x6c,0x14,&lbl_80559D6C,other);
     fn_801308F4(p+0x80,0x14,total);
     fn_801308F4(p+0x9e,0x14,total-count);
     if(fn_801609C4(total)!=-1) {
-        {const char *s=__AXGetStackHead(); char *d=(char*)p+0x94; int c3=10; char c;
-       goto check3;
-check3: if (--c3>0) goto copy3; d[-1]=0; goto done3;
-copy3: c=*s++; *d++=c; if ((signed char)c != 0) goto check3;
+        {char c; char *src=(char *)__AXGetStackHead(); long len=10; char *dst=(char*)p+0x94;
+       goto copy3;
+check3: if (--len>0) goto copy3; dst[-1]=0; goto done3;
+copy3: c=*src++; *dst++=c; if ((signed char)c==0) goto done3; goto check3;
 done3:;}
     } else {
-        {const char *s=&lbl_80559D84; char *d=(char*)p+0x94; int c4=10; char c;
-       goto check4;
-check4: if (--c4>0) goto copy4; d[-1]=0; goto done4;
-copy4: c=*s++; *d++=c; if ((signed char)c != 0) goto check4;
+        {char c; char *src=&lbl_80559D84; long len=10; char *dst=(char*)p+0x94;
+       goto copy4;
+check4: if (--len>0) goto copy4; dst[-1]=0; goto done4;
+copy4: c=*src++; *dst++=c; if ((signed char)c==0) goto done4; goto check4;
 done4:;}
     }
     if(*(s32 *)(p+0x10c))p[8]=0;
