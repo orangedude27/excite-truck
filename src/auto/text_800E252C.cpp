@@ -1257,6 +1257,7 @@ extern "C" void fn_800E4064(void *arg0, void *arg1) {
     void *sentinel;
     unsigned int level;
     void *node;
+    if (arg1 == arg1 && 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
     level = OSDisableInterrupts();
     node = owner->head;
     owner->active = 1;
@@ -1351,7 +1352,7 @@ extern "C" void AXRegisterAuxACallback(int, int);
 extern "C" void AXRegisterAuxBCallback(int, int);
 extern "C" void AXRegisterAuxCCallback(int, int);
 #pragma push
-#pragma use_lmw_stmw off
+#pragma optimization_level 3
 extern "C" void fn_800E4364(void *arg0, int arg1) {
     struct Dummy {
         virtual void first();
@@ -1364,10 +1365,11 @@ extern "C" void fn_800E4364(void *arg0, int arg1) {
     extern const char lbl_80322040[];
     unsigned int interrupt;
     int valid;
-    void *node;
     void *sentinel;
+    void *node;
     void *list;
     unsigned int base;
+
     interrupt = OSDisableInterrupts();
     valid = 0;
     if (arg1 >= 0 && arg1 < 3) valid = 1;
@@ -2873,11 +2875,11 @@ extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4
     void **entry;
     int i;
     if (arg1 >= 2)
-        Panic__Q26nw4hbm2dbFPCciPCce(message, 0x434, message + 0x258);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)message + 0), 0x434, message + 0x258);
     switch (arg2) {
     case 0:
         if (arg3 == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(message, 0x439, message + 0x2A0);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)((unsigned int)message + 0), 0x439, message + 0x2A0);
         memcpy(sp8, arg3, 0x20);
         *(u16 *)(sp8 + 0x20) = *(u16 *)((char *)arg3 + 0x20);
         *(u16 *)(sp8 + 0x22) = *(u16 *)((char *)arg3 + 0x22);
@@ -3163,37 +3165,39 @@ void nw4r::snd::detail::Voice::TransformDpl2Pan(float *out0, float *out1, float 
             *out0 = a;
             *out1 = o1;
         } else {
-            float p = lbl_80560F6C * d;
             float q = lbl_80560F68 * a;
-            float o1 = lbl_80560F60 + p;
+            float o1 = lbl_80560F60 + lbl_80560F6C * d;
             *out0 = q;
             *out1 = o1;
         }
     } else if (a >= lbl_80560F3C) {
         if (d <= lbl_80560F3C) {
             float r = -d / a;
-            float o0 = (lbl_80560F70 + lbl_80560F74 * r) * aa;
+            float s = lbl_80560F70 + lbl_80560F74 * r;
             float o1 = lbl_80560F60 + (lbl_80560F54 * d + lbl_80560F64 * a);
-            *out0 = o0;
+            s *= aa;
+            *out0 = s;
             *out1 = o1;
         } else {
             float r = -d / a;
-            float o0 = (lbl_80560F70 + lbl_80560F78 * r) * aa;
-            float o1 = lbl_80560F60 + lbl_80560F6C * a;
-            *out0 = o0;
+            float o1, s;
+            s = lbl_80560F70 + lbl_80560F78 * r;
+            o1 = lbl_80560F60 + lbl_80560F6C * a;
+            *out0 = s * aa;
             *out1 = o1;
         }
     } else if (d <= lbl_80560F3C) {
         float r = -d / a;
-        float o0 = (lbl_80560F74 * r - lbl_80560F70) * aa;
+        float s = lbl_80560F74 * r - lbl_80560F70;
         float o1 = lbl_80560F60 + (lbl_80560F54 * d - lbl_80560F6C * a);
-        *out0 = o0;
+        s *= aa;
+        *out0 = s;
         *out1 = o1;
     } else {
         float r = -d / a;
-        float o0 = (lbl_80560F78 * r - lbl_80560F70) * aa;
+        float s = lbl_80560F78 * r - lbl_80560F70;
         float o1 = lbl_80560F60 + lbl_80560F6C * -a;
-        *out0 = o0;
+        *out0 = s * aa;
         *out1 = o1;
     }
     *out1 += lbl_80560F38;
@@ -3354,10 +3358,10 @@ extern float lbl_80560F38, lbl_80560F3C, lbl_80560F80;
 #pragma push
 #pragma processor 750
 extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(void* self, int a, int b, void* out) {
-    float mainVol[4], auxVol[4];
     char* voice=(char*)self;
+    float mainVol[4], auxVol[4];
+    float f = lbl_80560F38;
     for (int i=0;i<4;i++) {
-        float f = lbl_80560F38;
         mainVol[i]=f;
         auxVol[i]=f;
         float volume;
@@ -3552,7 +3556,7 @@ extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3sn
     extern const char lbl_80322760[];
     extern const char lbl_80559830;
     extern float lbl_80560FA8;
-    register const char *base = lbl_803224F0;
+    const char *base = lbl_803224F0;
     char *ref;
     char *entry;
     unsigned int address;
