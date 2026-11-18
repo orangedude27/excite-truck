@@ -1069,7 +1069,10 @@ void fn_801E89FC(void) {
  * horizontal axes are pushed outward, along the way they already point, by
  * OVERSHOOT_PUSH times the overshoot, and the vertical is clamped back.  The
  * direction is then renormalized and the strength takes a random step of
- * +/-0.2 kept inside [0,3]. */
+ * +/-0.2 kept inside [0,3].
+ * The zComponent index assignment and the "push + 0" at the end produce no
+ * instructions; they are what the original build keeps live, and dropping them
+ * rotates the float registers the two correction paths use. */
 void fn_801E8A84(void)
 {
   #define gWind          lbl_804881D8 /* unit direction [0..2], strength [3] */
@@ -1142,7 +1145,7 @@ void fn_801E8A84(void)
   amount = (3.0f < amount) ? 3.0f : amount;
   amount = (amount > 0.0f) ? amount : 0.0f;
   gWind[3] = amount;
-  push = push + 0; /* keeps push in its register to the end, as the original does */
+  push = push + 0;
   #undef OVERSHOOT_PUSH
   #undef WIND_MAX_SLOPE
   #undef gWind
