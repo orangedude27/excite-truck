@@ -1003,6 +1003,7 @@ extern "C" void fn_80219510(void *widget, s32 offsetX, s32 offsetY) {
 
 #pragma push
 #pragma optimization_level 2
+#pragma scheduling invalid_target
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
     void* p = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
