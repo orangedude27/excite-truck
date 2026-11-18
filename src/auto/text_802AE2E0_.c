@@ -68,27 +68,23 @@ extern "C" void fn_802AE328(void);
 extern "C" int fn_802AE414(void *arg0) {
     class Object {
     public:
-        virtual void m0();
+        virtual int m0(void *);
         virtual void m1();
         virtual int m2(void *);
-        virtual void m3();
-        virtual int m4(void *);
     };
     register int offset;
-    int *global;
     register int i;
     Object *object;
 
     if (lbl_8055F958 == 0)
         fn_802AE328();
-    offset = 0;
     i = 0;
-    global = lbl_804BD8CC;
-    while (i < global[1]) {
-        object = (Object *)((char *)lbl_804BD8CC[0] + offset);
-        if (object->m4(arg0)) {
+    offset = 0;
+    while (i < lbl_804BD8CC[1]) {
+        object = *(Object * volatile *)((char *)lbl_804BD8CC[0] + offset);
+        if (object->m2(arg0)) {
             object = ((Object **)lbl_804BD8CC[0])[i];
-            return object->m2(arg0);
+            return object->m0(arg0);
         }
         offset += 4;
         i++;
