@@ -501,7 +501,6 @@ extern int fn_8012C33C();
 extern int fn_80012AB4();
 extern void fn_80012B50();
 #pragma cplusplus on
-#pragma optimize_for_size on
 extern "C" void fn_8001335C(int a0, int arg1) {
     struct Dummy {
         virtual char *name();
