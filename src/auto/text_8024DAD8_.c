@@ -2938,7 +2938,7 @@ void *fn_802522A8(void *arg0, s32 deleteFlags) {
     }
     return arg0;
 }
-static inline void fn_80252320_copy(char *dst, char *src, s32 count) {
+static inline void fn_80252320_copy(char *src, s32 count, char *dst) {
     while ((signed char)(*dst++ = *src++) != 0) {
         if (--count <= 0) {
             dst[-1] = 0;
