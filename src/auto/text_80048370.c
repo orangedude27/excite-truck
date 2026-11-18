@@ -14,6 +14,11 @@ extern f32 lbl_80560C4C;
 extern int lbl_8055D9B8;
 extern char lbl_8037D808[];
 extern char lbl_8037D818[];
+/* mem_heapCommon.c's file-static heap registry: the list of top-level heaps,
+ * the mutex that guards it, and the flag saying the list is initialised. */
+#define sRootList            ((MEMList *)lbl_8037D808)
+#define sRootMutex           ((OSMutex *)lbl_8037D818)
+#define sRootListInitialized lbl_8055D9B8
 
 static inline void KPADNotifySampling(s32 chan) {
     KPADInsideStatus *status = &inside_kpads[chan];
