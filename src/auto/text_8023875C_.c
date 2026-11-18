@@ -32,24 +32,29 @@ extern int lbl_80563708;
 extern int lbl_8056370C;
 extern int fn_80232BA4(int, int, int, int, int, float, float, float, float, float);
 extern int fn_802344CC(int, int, int, int, float, float, float);
-void fn_8023875C(int x, int y, const char *text, int arg3, int arg4) {
-    int halfWidth;
-    int halfHeight;
-    if (fn_802344B0() == 0)
-        goto long_text;
-    if ((unsigned int)(strlen(text) + 1) >= 0x40U)
-        goto long_text;
-    halfWidth = (int)lbl_8055CFF0 / 2;
-    halfHeight = (int)lbl_8055CFF4 / 2;
-    fn_802344CC((int)text, arg3, arg4, 0, (float)(x - halfWidth), (float)(halfHeight - y), lbl_805636F0);
-    return;
-long_text:
-    halfWidth = (int)lbl_8055CFF0 / 2;
-    halfHeight = (int)lbl_8055CFF4 / 2;
-    fn_80232BA4((int)text, lbl_8055F0D4, arg3, arg4, halfWidth, (float)(x - halfWidth), (float)(halfHeight - y), lbl_805636F0, lbl_805636F4, lbl_805636F8);
-}
-
 #pragma scheduling invalid_target
+void fn_8023875C(int x, int y, const char *text, int arg3, int arg4)
+{
+  int halfWidth;
+  int halfHeight;
+  if (fn_802344B0() == 0)
+  {
+    goto long_text;
+  }
+  if (((unsigned int) (strlen(text) + 1)) >= 0x40U)
+  {
+    goto long_text;
+  }
+  halfWidth = ((int) lbl_8055CFF0) / 2;
+  halfHeight = ((int) lbl_8055CFF4) / 2;
+  fn_802344CC((int) text, arg3 & 0xFFFFFFFF, arg4, 0, (float) (x - halfWidth), (float) (halfHeight - y), lbl_805636F0);
+  return;
+  long_text:
+  halfWidth = (int) (((unsigned int) lbl_8055CFF0 >> 31) + lbl_8055CFF0);
+  halfWidth >>= 1;
+  halfHeight = ((int) lbl_8055CFF4) / 2;
+  fn_80232BA4((int) text, lbl_8055F0D4, arg3, arg4, halfWidth, (float) (x - halfWidth), (float) (halfHeight - y), lbl_805636F0, lbl_805636F4, lbl_805636F8);
+}
 /* Tries candidate UI font texture names in order and loads the first one that exists. */
 void fn_8023889C(void) {
     int values[2];
