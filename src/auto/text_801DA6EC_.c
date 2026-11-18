@@ -78,7 +78,7 @@ void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
     register int category = arg2;
     register char *record;
     register unsigned char *src;
-    register char *dst;
+    register unsigned char *dst;
     char *space;
     unsigned int zero[3];
     int count;
@@ -87,26 +87,31 @@ void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
     char *text;
     unsigned char c;
     float result;
+
     space = (char *)lbl_8055E984;
     i = *(int *)(space + 0x5808);
     entryAddress = (int)space + i * 0x2C;
     *(int *)(space + 0x5808) = i + 1;
     record = (char *)(entryAddress + 8);
+
     count = 0x10;
     src = name;
-    dst = record;
-    for (; --count > 0;) {
+    dst = (unsigned char *)record;
+    while (--count > 0) {
+        dst = dst;
     }
     dst[-1] = 0;
     do {
         c = *src++;
         *dst++ = c;
     } while ((signed char)c != 0);
+
     *(int *)(record + 0x20) = value;
     if (fn_801284F8(0x10, &lbl_8055ADA0) != 0)
         *(int *)(record + 0x28) = (int)fn_801D9F28();
     *(int *)(record + 0x24) = fn_801D9CC4(category);
     fn_801D9F84(*(int *)(record + 0x28), *(int *)(record + 0x24));
+
     record[0x19] = 0;
     i = 0;
     for (;;) {
@@ -142,25 +147,26 @@ __declspec(section ".sdata") extern char lbl_8055ADB0[];
 extern char lbl_80339240[];
 extern char lbl_8033924C[];
 void *fn_801DA8C8(const char *arg0, const char *arg1) {
+#pragma scheduling invalid_target
     char *stack[512];
     void *space;
     const char *name;
     const char *text;
     char *entry;
     char *result;
-    int off;
     int count;
+    int off;
     int i;
     int matchAll;
 
     space = lbl_8055E984;
     name = arg0;
     text = arg1;
-    off = 0;
     count = 0;
+    off = 0;
     result = 0;
     matchAll = strcmp(name, lbl_8055ADB0) == 0;
-    entry = (char *)lbl_8055E984 + 8;
+    entry = (char *)space + 8;
     for (i = 0; i < *(int *)((char *)space + 0x5808); i++) {
         if (matchAll == 0) {
             if (strcmp(entry, name) != 0) goto next;
@@ -226,7 +232,7 @@ void *__dt__14CollisionSpaceFv_801DAB70(void *this_, int flag) {
 #pragma scheduling invalid_target
 float fn_801DABD4(void *arg0) {
     float value;
-    register float max = lbl_80562B54;
+    float max = lbl_80562B54;
     register int i = 0;
     register int offset = 0;
 
@@ -235,8 +241,8 @@ loop:
     value = fn_801DA6B8(*(int *)((char *)(*(void ***)((char *)arg0 + 4))[offset / 4] + 0x28));
     if (max <= value)
         max = value;
-    offset += 4;
     i++;
+    offset += 4;
 check:
     if (i < *(int *)((char *)arg0 + 8))
         goto loop;
@@ -310,17 +316,16 @@ int fn_801DAD7C(void *ctx) {
 }
 #pragma scheduling on
 void fn_801DADBC(void *arg0) {
-    int i = 0;
-    int offset = 0;
-    void **items;
+    register int *object = (int *)arg0;
+    register int byteOffset = 0;
+    register int index = 0;
     goto check;
 loop:
-    items = *(void ***)((char *)arg0 + 4);
-    fn_801DA198(*(int *)((char *)items[offset / 4] + 0x28), lbl_80562B54);
-    offset += 4;
-    i += 1;
+    fn_801DA198(*(int *)(*(int *)((unsigned char *)object[1] + byteOffset) + 0x28), lbl_80562B54);
+    byteOffset += 4;
+    index++;
 check:
-    if (i < *(int *)((char *)arg0 + 8)) goto loop;
+    if (index < object[2]) goto loop;
 }
 #pragma scheduling reset
 extern void fn_801D9F44(void *, int);
@@ -328,11 +333,13 @@ extern void fn_801D9F24(void *);
 extern void fn_801D0DFC(void *);
 #pragma scheduling off
 void *fn_801DAE28(void *arg0, int arg1) {
+    #pragma scheduling invalid_target
     unsigned char *entry;
     int i;
     if (arg0 != 0) {
-        *(void **)((char *)arg0 + 4) = (char *)lbl_80339258 + 0x1C;
-        *(void **)arg0 = lbl_80339258;
+        void *base = lbl_80339258;
+        *(void **)arg0 = base;
+        *(void **)((char *)arg0 + 4) = (char *)base + 0x1C;
         entry = (unsigned char *)arg0 + 8;
         i = 0;
         lbl_8055E984 = (void *)0;
@@ -443,22 +450,23 @@ extern char lbl_8055ADB8;
 int fn_801DB13C(void *arg0, const char *arg1) {
     char key[64];
     char text[64];
-    char *messageBase = lbl_80339240;
-    char *entry;
-    int matchAll;
-    int found;
-    int i;
-    int one;
-    float value;
+    char *messageBase;
 
+    messageBase = lbl_80339240;
     if (sscanf(arg1, &lbl_8055ADB8, key, text) == 2) {
-        matchAll = strcmp(key, (const char *)&lbl_8055ADB0) == 0;
+        int i;
+        int found;
+        int matchAll;
+        int one;
+        float value;
+        char *entry;
+        matchAll = strcmp(key, lbl_8055ADB0) == 0;
         value = lbl_80562B50;
         entry = (char *)arg0 + 8;
         found = 0;
         i = 0;
         one = 1;
-        do {
+        while (i < *(int *)((char *)arg0 + 0x5808)) {
             if ((matchAll != 0 || strcmp(entry, key) == 0) &&
                 ((int (*)(int, void *))fn_801DA064)(*(int *)(entry + 0x28), text) != 0) {
                 fn_801DA198(*(int *)(entry + 0x28), lbl_80562B54);
@@ -468,20 +476,28 @@ int fn_801DB13C(void *arg0, const char *arg1) {
             }
             entry += 0x2C;
             i++;
-        } while (i < *(int *)((char *)arg0 + 0x5808));
+        }
         if (found != 0)
             DBPrintf_8013B490(messageBase + 0x110, key, text);
         else
             DBPrintf_8013B490(messageBase + 0x12C, key, text);
     } else if (sscanf(arg1, &lbl_8055ADB4, text) == 1) {
-        matchAll = strcmp((const char *)&lbl_8055ADB0, (const char *)&lbl_8055ADB0) == 0;
+        int matchAll;
+        const char *empty;
+        int i;
+        int found;
+        int one;
+        float value;
+        char *entry;
+        empty = lbl_8055ADB0;
+        matchAll = strcmp(empty, empty) == 0;
         value = lbl_80562B50;
         entry = (char *)arg0 + 8;
         found = 0;
         i = 0;
         one = 1;
-        do {
-            if ((matchAll != 0 || strcmp(entry, (const char *)&lbl_8055ADB0) == 0) &&
+        while (i < *(int *)((char *)arg0 + 0x5808)) {
+            if ((matchAll != 0 || strcmp(entry, empty) == 0) &&
                 ((int (*)(int, void *))fn_801DA064)(*(int *)(entry + 0x28), text) != 0) {
                 fn_801DA198(*(int *)(entry + 0x28), lbl_80562B54);
                 *(unsigned char *)(entry + 0x18) = (unsigned char)one;
@@ -490,7 +506,7 @@ int fn_801DB13C(void *arg0, const char *arg1) {
             }
             entry += 0x2C;
             i++;
-        } while (i < *(int *)((char *)arg0 + 0x5808));
+        }
         if (found != 0)
             DBPrintf_8013B490(messageBase + 0x148, text);
         else
