@@ -370,6 +370,7 @@ copied:
         LGroup *grp;
         LVec2 def2;
         LVec2 origin;
+        LVec2 t;
         float base;
         int numSegs;
         int j;
