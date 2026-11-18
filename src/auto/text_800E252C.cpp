@@ -555,12 +555,10 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *, int)
 extern "C" void fn_800E2C98(void *);
 #pragma push
 #pragma processor 750
+#pragma opt_propagation off
 void *fn_800E279C(void *arg0)
 {
   u8 *p = (u8 *) arg0;
-  LLTmp *l1 = (LLTmp *) (p + 8);
-  LLTmp *l2 = (LLTmp *) (p + 0x14);
-  LLTmp *l3;
   *((volatile int *) (p + 0xC)) = 0;
   *((volatile int *) (p + 0x10)) = 0;
   *((volatile int *) (p + 0x18)) = 0;
@@ -570,12 +568,12 @@ void *fn_800E279C(void *arg0)
   *((int *) (p + 0)) = 0;
   *((int *) (p + 4)) = 0;
   *((int *) (p + 8)) = 0;
-  l1->a = 0;
-  l1->next = &l1->next;
-  l1->prev = &l1->next;
-  l2->a = 0;
-  l2->next = &l2->next;
-  l2->prev = &l2->next;
+  ((LLTmp *) (p + 8))->a = 0;
+  ((LLTmp *) (p + 8))->next = &((LLTmp *) (p + 8))->next;
+  ((LLTmp *) (p + 8))->prev = &((LLTmp *) (p + 8))->next;
+  ((LLTmp *) (p + 0x14))->a = 0;
+  ((LLTmp *) (p + 0x14))->next = &((LLTmp *) (p + 0x14))->next;
+  ((LLTmp *) (p + 0x14))->prev = &((LLTmp *) (p + 0x14))->next;
   ((LLTmp *) (p + 0x20))->a = 0;
   ((LLTmp *) (p + 0x20))->next = &((LLTmp *) (p + 0x20))->next;
   ((LLTmp *) (p + 0x20))->prev = &((LLTmp *) (p + 0x20))->next;
@@ -752,7 +750,7 @@ extern const char lbl_803220D0[];
 #pragma use_lmw_stmw off
 extern "C" void fn_800E2F84(void *self)
 {
-  char *base;
+  char *base = (char *) self;
   if ((*((unsigned char *) (base + 0x6C30))) != 0)
   {
     AIRegisterDMACallback(*((void **) (base + 0x6C2C)));
@@ -775,12 +773,12 @@ extern "C" void fn_800E2F84(void *self)
       {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322124, 0x1F1, lbl_80322100);
       }
-      void *node = *((void **) (base + 0x18));
+      register void *node = *((void **) (base + 0x18));
       if (node == 0)
       {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
       }
-      void *voice = ((char *) node) - 0x1A8;
+      register void *voice = ((char *) node) - 0x1A8;
       if (voice == 0)
       {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220F4, 0x193, lbl_803220D0);
@@ -810,10 +808,11 @@ extern "C" void fn_800E2F84(void *self)
 #pragma small_data off
 #pragma pop
 #pragma push
+#pragma opt_propagation off
 extern "C" f32 fn_800E310C(void *arg0) {
+    float x, y, z, result;
     int a = *(int *)((char *)arg0 + 0x6C50);
     int b = *(int *)((char *)arg0 + 0x6C4C);
-    float x;
     if (a >= b) x = *(float *)((char *)arg0 + 0x6C48);
     else x = *(float *)((char *)arg0 + 0x6C44) +
         (float)a * (*(float *)((char *)arg0 + 0x6C48) - *(float *)((char *)arg0 + 0x6C44)) / (float)b;
@@ -822,17 +821,15 @@ extern "C" f32 fn_800E310C(void *arg0) {
     int d;
     d = *(int *)((char *)arg0 + 0x6C5C);
     c = *(int *)((char *)arg0 + 0x6C60);
-    float y;
     if (c >= d) y = *(float *)((char *)arg0 + 0x6C58);
     else y = *(float *)((char *)arg0 + 0x6C54) +
         (float)c * (*(float *)((char *)arg0 + 0x6C58) - *(float *)((char *)arg0 + 0x6C54)) / (float)d;
-    float result = x * y;
+    result = x * y;
 
     int e;
     int f;
     f = *(int *)((char *)arg0 + 0x6C3C);
     e = *(int *)((char *)arg0 + 0x6C40);
-    float z;
     if (e >= f) z = *(float *)((char *)arg0 + 0x6C38);
     else z = *(float *)((char *)arg0 + 0x6C34) +
         (float)e * (*(float *)((char *)arg0 + 0x6C38) - *(float *)((char *)arg0 + 0x6C34)) / (float)f;
