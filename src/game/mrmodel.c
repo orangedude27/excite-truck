@@ -113,12 +113,14 @@ int instanceId;
 void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
     register int count = lbl_804C1338[0];
     register int limit = lbl_804C1338[1];
+    register int base;
+    register int offset;
     register unsigned char *entry;
     if (count < limit) {
-        register unsigned char *base = (unsigned char *)(unsigned long)lbl_804C1338[2];
-        register int offset = count * 0x14;
+        base = lbl_804C1338[2];
+        offset = count * 0x14;
         lbl_804C1338[0] = count + 1;
-        entry = base + offset;
+        entry = (unsigned char *)(base + offset);
     } else {
         entry = 0;
     }
@@ -933,7 +935,7 @@ void fn_802C6C38(int arg0) {
     u8 *outerInfo, *outerTable, *innerTable, *item;
     u8 *node;
 
-    if (--*(s32 *)manager > 0) {
+    if (--*(s32 *)manager <= 0) {
         i = 0;
         outerOff = 0;
         goto outer_check;
