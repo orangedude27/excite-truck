@@ -3422,15 +3422,17 @@ extern "C" void fn_801A0F10(void* arg0) {
     s32 count;
     Vec tmp;
     Vec buffer[0x40];
+    u8* obj;
+    s32 i;
     u8* ent;
     fn_801A0160(arg0);
     ent = (u8*)arg0;
-    for (s32 i = 0; i < *(s32*)((u8*)arg0 + 0x174); i++) {
+    for (i = 0; i < *(s32*)((u8*)arg0 + 0x174); i++) {
         ((Fn801A0F10Child*)*(void**)(ent + 0x24))->Update();
         ent += 4;
     }
     if (lbl_8055E5A0 != 0) {
-        u8* obj = *(u8**)((u8*)arg0 + 4);
+        obj = *(u8**)((u8*)arg0 + 4);
         s32 ok;
         if (obj == 0) goto set0;
         switch (*(s32*)(obj + 0x10)) {
