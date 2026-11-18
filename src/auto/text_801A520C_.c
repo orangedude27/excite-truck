@@ -458,10 +458,28 @@ typedef struct VehicleState {
 
 #pragma push
 #pragma dont_inline on
+/* Claim a spring-wall contact slot for the wall in `wallKey`, or restart the one
+ * that wall already holds.  fn_801A5C4C() picks the slot out of the car's eight
+ * at +0x2724 and hands it over with the wall a collision was reported for, the
+ * car itself and `heldContact`, a contact the car already has (0 when it has none).
+ *
+ * A free slot takes the wall's normal -- flipped when it points away from the
+ * normal of `heldContact`, so two contacts on one car cannot push against each
+ * other -- records how far the car's contact point stood outside the wall plane
+ * one frame ago, and turns the speed the car is closing on the normal into the
+ * impulse speed the contact eases up to over WallContact.duration.  A slot the
+ * same wall already owns only has its contact timer restarted; a slot held by
+ * another wall is left alone. */
 extern "C" void fn_801A5AD0(void *contactPtr, unsigned int wallKey, void *carPtr, void *heldPtr) {
-#define SLOT ((WallContact *)contactPtr)
-#define WALL ((WallRecord *)wallKey)
-#define HELD ((WallContact *)heldPtr)
+#define slot        ((WallContact *)contactPtr)
+#define wallRec     ((WallRecord *)wallKey)
+#define heldContact ((WallContact *)heldPtr)
+#define kZero       lbl_805623C8 /* 0.0f */
+#define kSpeedMax   lbl_805623EC /* 17.7778: most of a closing speed that counts */
+#define kSpeedMin   lbl_80562400 /* 0.888889: least of it that counts */
+#define kSpeedScale lbl_805623F4 /* 0.2: impulse speed per unit of closing speed, and the ease-in time */
+#define kFrameLag   lbl_805623F8 /* -0.0166834: one frame back, to where the car was */
+#define kFlip       lbl_805623FC /* -1.0f */
     float lagPoint[3];
     float *planeNormal;
     float speedScale;
@@ -471,50 +489,56 @@ extern "C" void fn_801A5AD0(void *contactPtr, unsigned int wallKey, void *carPtr
     float dot;
     VehicleState *car = (VehicleState *)carPtr;
 
-    if (SLOT->wall == 0) {
-        planeNormal = WALL->plane->normal;
-        frameLag = lbl_805623F8;
-        SLOT->normal[0] = planeNormal[0];
-        SLOT->normal[1] = planeNormal[1];
-        SLOT->normal[2] = planeNormal[2];
+    if (slot->wall == 0) {
+        planeNormal = wallRec->plane->normal;
+        frameLag = kFrameLag;
+        slot->normal[0] = planeNormal[0];
+        slot->normal[1] = planeNormal[1];
+        slot->normal[2] = planeNormal[2];
 
         lagPoint[0] = car->position[0] + car->velocity[0] * frameLag;
         lagPoint[1] = car->position[1] + car->velocity[1] * frameLag;
         lagPoint[2] = car->position[2] + car->velocity[2] * frameLag;
 
-        if (HELD) {
-            dot = PSVECDotProduct(HELD->normal, (float *)contactPtr);
-            if (dot < lbl_805623C8) {
-                float normalX = SLOT->normal[0];
-                float flip = lbl_805623FC;
-                SLOT->normal[0] = normalX * flip;
-                SLOT->normal[1] *= flip;
-                SLOT->normal[2] *= flip;
+        if (heldContact) {
+            dot = PSVECDotProduct(heldContact->normal, (float *)contactPtr);
+            if (dot < kZero) {
+                float normalX = slot->normal[0];
+                float flip = kFlip;
+                slot->normal[0] = normalX * flip;
+                slot->normal[1] *= flip;
+                slot->normal[2] *= flip;
             }
         }
 
-        SLOT->planeDistance = fn_801A5A7C(contactPtr, lagPoint, WALL->plane->origin);
+        slot->planeDistance = fn_801A5A7C(contactPtr, lagPoint, wallRec->plane->origin);
 
         dot = PSVECDotProduct(car->velocity, (float *)contactPtr);
-        speed = lbl_805623EC;
+        speed = kSpeedMax;
         closingSpeed = -(float)(double)dot;
-        SLOT->startSpeed = dot;
+        slot->startSpeed = dot;
         speed = (speed < closingSpeed) ? speed : closingSpeed;
-        speed = (speed > lbl_80562400) ? speed : lbl_80562400;
+        speed = (speed > kSpeedMin) ? speed : kSpeedMin;
 
-        speedScale = lbl_805623F4;
-        frameLag = lbl_805623C8;
+        speedScale = kSpeedScale;
+        frameLag = kZero;
         speed = speedScale * speed;
-        SLOT->duration = speedScale;
-        SLOT->elapsed = frameLag;
-        SLOT->targetSpeed = speed;
-        SLOT->wall = wallKey;
-    } else if (SLOT->wall == wallKey) {
-        SLOT->elapsed = lbl_805623C8;
+        slot->duration = speedScale;
+        slot->elapsed = frameLag;
+        slot->targetSpeed = speed;
+        slot->wall = wallKey;
+    } else if (slot->wall == wallKey) {
+        slot->elapsed = kZero;
     }
-#undef SLOT
-#undef WALL
-#undef HELD
+#undef slot
+#undef wallRec
+#undef heldContact
+#undef kZero
+#undef kSpeedMax
+#undef kSpeedMin
+#undef kSpeedScale
+#undef kFrameLag
+#undef kFlip
 }
 #pragma pop
 extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
