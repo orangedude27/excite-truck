@@ -5712,24 +5712,24 @@ extern "C" void *fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 }
 #pragma pop
 
-#pragma dont_inline on
+#pragma scheduling invalid_target
 extern "C" RET_802223C4 fn_802223C4(void *arg0, s32 arg1) {
     s32 value;
-    if (!arg0)
-        return;
-    value = *(s32 *)((u8 *)arg0 + 0x244);
-    *(void **)arg0 = lbl_8033F90C;
-    if (value != 0) {
-        struct Dispatch { virtual void call(s32); };
-        ((Dispatch *)value)->call(1);
+    if (arg0 != 0) {
+        value = *(s32 *)((u8 *)arg0 + 0x244);
+        *(void **)arg0 = lbl_8033F90C;
+        if (value != 0) {
+            struct Dispatch { virtual void call(s32); };
+            ((Dispatch *)value)->call(1);
+        }
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
-    fn_8021915C(arg0, 0);
-    if (arg1 > 0) {
-        fn_80128668(arg0);
-        return (RET_802223C4)arg0;
-    }
+    return (RET_802223C4)arg0;
 }
-
+#pragma scheduling on
 extern "C" void fn_80222450(void *widget) {
     /* Mark this VfWidget dirty (+0x234) when its layout option (+0x1A) is set. */
     if (*(u8 *)((char *)widget + 0x1A) != 0) {
