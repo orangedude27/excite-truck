@@ -3698,7 +3698,8 @@ extern "C" void *fn_800A9B0C(void *fileArg) {
 #pragma pop
 #pragma dont_inline reset
 extern "C" s32 fn_800B3A70(void *, void *, s32);
-extern "C" void fn_800B3BEC(u8 *, u8 *, u8);
+#define RET_fn_800B3BEC void
+extern "C" RET_fn_800B3BEC fn_800B3BEC(u8 *, u8 *, u8);
 extern "C" s32 fn_800B317C(s32, s32);
 extern "C" s32 VFiPFPATH_cmpName(void *, s32, s32);
 #pragma push
@@ -9838,7 +9839,7 @@ extern "C" void fn_800B3BEC(u8 *__restrict out, u8 *__restrict in, u8 flags) {
     s32 last = -1;
     s32 ext;
     s32 i;
-    u8 c;
+    s32 c;
     for (i = 0; i < 8; i++) {
         c = in[i];
         out[i] = c;
