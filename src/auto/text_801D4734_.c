@@ -3562,9 +3562,9 @@ extern "C" void fn_801D8624(void *obj) {
 }
 
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 extern "C" int fn_801D8634(void *out, void *obj) {
-    extern float lbl_80562ADC;
     extern char lbl_8055ACB8;
     extern char lbl_8055ACB0;
     extern char lbl_803385D0[];
@@ -3592,12 +3592,9 @@ extern "C" int fn_801D8634(void *out, void *obj) {
     result = (int)out;
     if (out != 0) {
         fn_801D0590((char *)out + 4);
-        {
-            float finalRate = lbl_80562ADC;
-            *(int *)((char *)out + 0x18) = 1;
-            result = 1;
-            *(float *)((char *)out + 0x10) = finalRate;
-        }
+        *(int *)((char *)out + 0x18) = 1;
+        result = 1;
+        *(float *)((char *)out + 0x10) = 0.0f;
     }
     return result;
 }
