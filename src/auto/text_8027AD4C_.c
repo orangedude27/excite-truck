@@ -517,12 +517,14 @@ void fn_8027B60C(void *container) {
 
 #pragma use_lmw_stmw off
 void fn_8027B690(void) {
-    register long state;
-    register long outer;
-    register unsigned long inner;
-    register char *base;
-    register char *row;
-    register long newState;
+    long state;
+    char *base;
+    char *row1;
+    char *row2;
+    long outer;
+    unsigned long inner1;
+    unsigned long inner2;
+    long newState;
 
     state = fn_80012810();
     if (state != 0x130) {
@@ -533,22 +535,22 @@ void fn_8027B690(void) {
     base = lbl_804A4380;
     outer = 0;
     do {
-        row = base;
-        inner = 0;
+        row1 = base;
+        inner1 = 0;
         do {
-            ((void (*)(long, long, long))fn_8027CCB4)((long)row, outer, inner);
-            row += 0xBD0;
-            inner++;
-        } while (inner < 3);
-        row = base + 0x2370;
-        inner = 0;
+            ((void (*)(long, long, long))fn_8027CCB4)((long)row1, outer, inner1);
+            row1 += 0xBD0;
+            inner1++;
+        } while (inner1 < 3);
+        row2 = base + 0x2370;
+        inner2 = 0;
         do {
-            ((void (*)(long, long, long))fn_8027CD80)((long)row, outer, inner);
-            inner += 1;
-            row += 0xBD0;
-        } while (2 > inner);
+            ((void (*)(long, long, long))fn_8027CD80)((long)row2, outer, inner2);
+            row2 += 0xBD0;
+            inner2++;
+        } while (inner2 < 2);
         base += 0x3B10;
-        outer += 1;
+        outer++;
     } while (outer < 4);
     lbl_8055F650 = 1;
     newState = fn_80012810();
