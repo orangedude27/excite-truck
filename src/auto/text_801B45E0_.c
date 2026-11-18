@@ -40,23 +40,6 @@ struct F801B49D4 {
     virtual void f0() = 0;      /* 0x8 */
     virtual int f1(int, int) = 0; /* 0xC: data offset -> pointer in the buffer */
 };
-struct F801B50B4 {
-    virtual void f0() = 0;
-    virtual void f1() = 0;
-    virtual void f2() = 0;
-    virtual void f3() = 0;
-    virtual void f4() = 0;
-    virtual void f5() = 0;
-    virtual void f6() = 0;
-    virtual void f7() = 0;
-    virtual void f8() = 0;
-    virtual void f9() = 0;
-    virtual void f10(unsigned char *, int, int *, int *, float) = 0;
-    virtual void f11() = 0;
-    virtual void f12() = 0;
-    virtual void f13() = 0;
-    virtual int f14() = 0;
-};
 /* One of the sound objects of the global registered-object list (lbl_8055E434,
  * count lbl_8055E438; fn_801785A4 appends to it).  While a replay is playing,
  * fn_801B50B4 drives every entry through its last two slots each frame: 0x40,
