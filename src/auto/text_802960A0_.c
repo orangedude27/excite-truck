@@ -273,7 +273,6 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
     *(int *)((char *)arg0 + 0x2C) = fn_802963F0(node, *(int *)((char *)arg2 + 0x2C));
          return 1;
  }
-#pragma scheduling invalid_target
 
  #pragma cplusplus reset
 #pragma pop
