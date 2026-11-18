@@ -509,11 +509,7 @@ void fn_8018CB3C(char *arg0) {
             if (temp_f20 < var_f1) {
                 var_f1 = temp_f20;
             }
-            if (var_f1 > temp_f21) {
-
-            } else {
-                var_f1 = temp_f21;
-            }
+            var_f1 = (var_f1 > temp_f21) ? var_f1 : temp_f21;
             temp_f1_4 = M2C_FIELD(var_r20, float *, 0x10) + var_f1;
             var_f0 = temp_f1_4 - (temp_f23 * (temp_f22 * temp_f1_4));
             M2C_FIELD(var_r20, float *, 0x10) = var_f0;
