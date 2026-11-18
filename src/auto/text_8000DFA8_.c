@@ -451,10 +451,11 @@ void fn_8000F884(void) {
     f32 c;
     u8 *p;
     s32 n;
+
     ((void (*)(s32))fn_8000F188)((s32)(base + 0x1D0));
     ((void (*)(s32, s32))fn_8000F2A8)((s32)(base + 0x1E0), (s32)(base + 0x1F0));
     ((void (*)(s32))fn_8000F1E0)((s32)(base + 0x200));
-    ((void (*)(s32, s32, s32))fn_8000F330)((s32)(base + 0x20C), (s32)(base + 0x21C), (s32)(base + 0x21c));
+    ((void (*)(s32, s32, s32))fn_8000F330)((s32)(base + 0x20C), (s32)(base + 0x21C), (s32)(base + 0x21C));
     ((void (*)(s32))fn_8000F440)((s32)(base + 0x228));
     ((void (*)(s32))fn_8000F3E8)((s32)(base + 0x238));
     ((void (*)(s32))fn_8000F498)((s32)(base + 0x244));
@@ -517,12 +518,15 @@ void fn_8000F884(void) {
     } else {
         lbl_8055D4D8 = lbl_805602F4;
     }
-    if (count == 1) {
-        tab[1] = 0;
-        tab[2] = 4;
-    } else {
-        tab[1] = 3;
-        tab[2] = 7;
+    {
+        s32 (*rec)[3] = (s32 (*)[3])tab;
+        if (count == 1) {
+            (*rec)[1] = 0;
+            (*rec)[2] = 4;
+        } else {
+            (*rec)[1] = 3;
+            (*rec)[2] = 7;
+        }
     }
     lbl_80558A98 = -1;
 }
@@ -1381,10 +1385,10 @@ void fn_80010FDC(char *name, s32 id) {
     temp_f30 = lbl_8055D4D8;
     temp_f29 = fn_8000EDC0(id);
     if (fn_800108C8(temp_f29, (s32)name) > temp_f30) {
-        root = (Unk80350F88 *)&lbl_803514A0;
         temp_f31 = lbl_80560264;
         bufp = buf;
         zero = 0;
+        root = (Unk80350F88 *)&lbl_803514A0;
         namep = name;
         while (*namep != 0) {
             memset(buf, zero, 0x200);
@@ -1933,13 +1937,12 @@ void fn_80011F64(void) {
     f32 value;
     s32 *temp_r3;
     s32 var_r29;
+    s32 j;
     s32 *var_r28;
     s32 *var_r28_2;
     s32 var_r29_2;
-    register u32 var_ctr;
     void *temp_r4;
-    void *temp_r4_2;
-    void *temp_r4_3;
+
     temp_r3 = fn_801284F8(0x1C, lbl_802FC550);
     if (temp_r3 != 0) {
         *temp_r3 = 0;
@@ -1961,35 +1964,20 @@ void fn_80011F64(void) {
         } while (var_r29_2 < 3);
         sp8 = lbl_80560264;
         fn_801331C4(4, (void *)lbl_802FC580, &sp8);
-        var_ctr = 2;
-        do {
-            temp_r4 = (void *)temp_r3[1];
-            if (temp_r4 != 0) {
-                value = sp8;
-                if (value != *(f32 *)((char *)temp_r4 + 8)) {
-                    *((u8 *)temp_r4 + 0x4D) = 1;
-                    *(f32 *)((char *)temp_r4 + 8) = value;
+        var_r28 = temp_r3;
+        for (var_r29 = 0; var_r29 < 2; var_r29++) {
+            for (j = 1; j < 4; j++) {
+                temp_r4 = (void *)var_r28[j];
+                if (temp_r4 != 0) {
+                    value = sp8;
+                    if (value != *(f32 *)((char *)temp_r4 + 8)) {
+                        *((u8 *)temp_r4 + 0x4D) = 1;
+                        *(f32 *)((char *)temp_r4 + 8) = value;
+                    }
                 }
             }
-            temp_r4_2 = (void *)temp_r3[2];
-            if (temp_r4_2 != 0) {
-                value = sp8;
-                if (value != *(f32 *)((char *)temp_r4_2 + 8)) {
-                    *((u8 *)temp_r4_2 + 0x4D) = 1;
-                    *(f32 *)((char *)temp_r4_2 + 8) = value;
-                }
-            }
-            temp_r4_3 = (void *)temp_r3[3];
-            if (temp_r4_3 != 0) {
-                value = sp8;
-                if (value != *(f32 *)((char *)temp_r4_3 + 8)) {
-                    *((u8 *)temp_r4_3 + 0x4D) = 1;
-                    *(f32 *)((char *)temp_r4_3 + 8) = value;
-                }
-            }
-            temp_r3 += 3;
-            var_ctr--;
-        } while (var_ctr != 0);
+            var_r28 += 3;
+        }
     }
     lbl_8055D4AC = temp_r3;
 }
@@ -2004,15 +1992,20 @@ extern "C" void fn_800120BC(void) {
         virtual void v1();
         virtual void v2();
     };
-    register s32 *base = lbl_8055D4AC;
+    u8 *base;
+    s32 i;
+    u8 *outer;
+    u8 *inner;
+    s32 j;
+    base = (u8 *)lbl_8055D4AC;
     if (base != 0) {
-        register s32 i = 0;
-        register s32 *outer = base;
-        for (; i < 2; ++i, outer += 3) {
-            register s32 *inner = outer;
-            register s32 j = 0;
-            for (; j < 3; ++j, ++inner) {
-                void *object = *(void **)(inner + 1);
+        i = 0;
+        outer = base;
+        for (; i < 2; ++i, outer += 0xC) {
+            inner = outer;
+            j = 0;
+            for (; j < 3; ++j, inner += 4) {
+                void *object = *(void **)(inner + 4);
                 if (object == 0)
                     goto next;
                 if (object == 0)
@@ -2536,7 +2529,8 @@ f32 fn_8000EEC8(s32 regionId, f32 listHeight) {
     return top + (lbl_8056025C * listHeight); /* 0.5f */
 }
 
-#pragma use_lmw_stmw off
+#pragma push
+#pragma opt_lifetimes off
 void fn_8000EF74(s32 arg0) {
     extern f32 fn_8000EDC0(s32);
     extern s32 fn_8000EE54(s32);
@@ -2546,9 +2540,9 @@ void fn_8000EF74(s32 arg0) {
     u8 *root;
     u8 *entry1;
     u8 *entry2;
-    s32 i1;
-    s32 i2;
     f32 temp_f28;
+    s32 i2;
+    s32 i1;
     f32 temp_f29;
     f32 temp_f30;
     f32 temp_f31;
@@ -2584,6 +2578,7 @@ void fn_8000EF74(s32 arg0) {
         }
     }
 }
+#pragma pop
 /* Initialize UI font/text handles and scaling: cache the default font handle and its scaled metric, store the computed scale factor, and load the big text texture. */
 void fn_8000F0E4(void) {
 #define defaultUiFontHandle   lbl_8055D490
