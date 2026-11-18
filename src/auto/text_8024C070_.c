@@ -94,12 +94,11 @@ void fn_8024C070(void) {
     frame.args[18] = lbl_804989D0[3];
     frame.args[19] = lbl_804989D0[4];
 
-    p520 = lbl_802FA520;
-    frame.config[0] = *p520++;
+    frame.config[0] = lbl_802FA520[0];
     frame.config[1] = (int)frame.args;
-    frame.config[2] = p520[1];
-    frame.config[3] = p520[2];
-    frame.config[4] = p520[3];
+    frame.config[2] = lbl_802FA520[2];
+    frame.config[3] = lbl_802FA520[3];
+    frame.config[4] = lbl_802FA520[4];
     ((int (*)(int *, int, int, int))fn_802146BC)(frame.config, -999, -999, 1);
     frame.flag = !(frame.value - 1);
     fn_80133460(5, &lbl_8055C010, frame.flag);
