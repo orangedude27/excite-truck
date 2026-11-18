@@ -577,7 +577,7 @@ static inline void XformRot3(const float *m, const float *src, float *dst) {
     } else {
         int row;
         for (row = 0; row < 3; row++) {
-            dst[row] = src[2] * m[6 + row] + (src[0] * m[row] + src[1] * m[3 + row]);
+            dst[row] = src[2] * m[6 + row] + (src[1] * m[3 + row] + src[0] * m[row]);
         }
     }
 }
