@@ -275,6 +275,34 @@ void fn_8018C5A0(char *arg0, char *arg1) {
 }
 #pragma pop
 #pragma use_lmw_stmw off
+static void matVecS_8018(Vec_8018 *dest, const float *m, const Vec_8018 *v) {
+    if (dest == v) {
+        float tx = m[0] * v->x + m[3] * v->y + m[6] * v->z;
+        float ty = m[1] * v->x + m[4] * v->y + m[7] * v->z;
+        float tz = m[2] * v->x + m[5] * v->y + m[8] * v->z;
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
+    } else {
+        dest->x = m[0] * v->x + m[3] * v->y + m[6] * v->z;
+        dest->y = m[1] * v->x + m[4] * v->y + m[7] * v->z;
+        dest->z = m[2] * v->x + m[5] * v->y + m[8] * v->z;
+    }
+}
+static void matVecSM_8018(Vec_8018 *dest, const float *m, const Vec_8018 *v) {
+    if ((void *)dest == (void *)m) {
+        float tx = m[0] * v->x + m[3] * v->y + m[6] * v->z;
+        float ty = m[1] * v->x + m[4] * v->y + m[7] * v->z;
+        float tz = m[2] * v->x + m[5] * v->y + m[8] * v->z;
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
+    } else {
+        dest->x = m[0] * v->x + m[3] * v->y + m[6] * v->z;
+        dest->y = m[1] * v->x + m[4] * v->y + m[7] * v->z;
+        dest->z = m[2] * v->x + m[5] * v->y + m[8] * v->z;
+    }
+}
 void fn_8018CB3C(char *arg0) {
     float force[3];
     float rotation[12];
