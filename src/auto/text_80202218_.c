@@ -446,7 +446,7 @@ void fn_802C7A44(void);
 int fn_802C7040(int);
 void fn_802C7A50(void);
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80202AD4(float *arg0) {
     float c, b, a;
     a = arg0[0];
