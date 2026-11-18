@@ -2213,7 +2213,6 @@ extern "C" s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
 extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
 extern void fn_8019A820(void*, s32, s32, s32, f32);
 #pragma use_lmw_stmw off
-#pragma scheduling 750
 extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     void* temp_r3;
     void* temp_r5;
