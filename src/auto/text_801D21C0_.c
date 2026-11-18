@@ -277,16 +277,21 @@ void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
 
 #pragma dont_inline on
 extern void fn_801D2AD4(void *);
+extern void fn_801D2C04(void);
+/* The three static buffers initialized here live back to back in one block. */
+typedef struct { u8 first[0x14]; u8 second[0x10]; u8 third[4]; } Blk801D21C0;
+#pragma push
+#pragma dont_inline on
 #pragma opt_propagation off
 void fn_801D21C0(void) {
-    register u8 *base = lbl_803382A8;
+    u8 *const base = lbl_803382A8;
     lbl_8055E930 = 0;
     fn_801D2AD4(base + 0);
     fn_801D2AD4(base + 0x14);
     fn_801D2AD4(base + 0x24);
     fn_801D2C04();
 }
-#pragma opt_propagation reset
+#pragma pop
 void fn_801D2210(void) {
     fn_801D2B94();
 }
