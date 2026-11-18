@@ -3855,19 +3855,13 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
     *(u32 *)(p_ent + 0x234) = (h1A >> 8) | ((h1A & 255) << 8) | ((h14 >> 8) << 16) | ((h14 & 255) << 24);
 }
 
-struct LfnBufHdr {
-    u8 ord;
-    u8 pad0D[0xC];
-    u8 chk;
-};
 #pragma push
 #pragma scheduling on
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     extern s32 fn_800A4C14(u16 *, s32);
-    struct LfnBufHdr *h = (struct LfnBufHdr *)arg1;
-    u32 raw = h->ord;
+    u32 raw = ((u8 *)arg1)[0];
     u32 count = raw & 0xFFFFFFBF;
-    u32 tag = h->chk;
+    u32 tag = ((u8 *)arg1)[0xD];
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     u32 index;
