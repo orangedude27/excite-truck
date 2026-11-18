@@ -2570,7 +2570,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           u32 temp_r9;
                           u32 temp_r9_3;
                           u32 temp_r9_4;
-                          u32 var_r23;
+               register u32 var_r23;
                           register u32 var_r23_6;
                           register u32 var_r23_7;
                           register u32 var_r24_2;
@@ -2609,7 +2609,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           register u8 *var_r21_4;
                           register u8 *var_r21_5;
                           register u8 *var_r22;
-                          u32 var_r27;
+               register u32 var_r27;
           Fn800DA094TexObj *var_r28;
 
                           var_r26 = 1;
@@ -2664,14 +2664,13 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                               channelColor[2] = alphaColor[2];
                               channelColor[3] = alphaColor[3];
                               ((int (*)(int, u8 *))GXSetChanMatColor_Internal)(4, &channelColor[0]);
-                            {
-                                s32 wasEnabled = var_r25;
+                            if (var_r25 != 0) {
                                 var_r25 = 0;
-                                if (wasEnabled != 0) goto alpha_done;
-                                if ((u32)((u32)sp30 + 0x10000) == 0xFFFFU) goto alpha_done;
-                                var_r25 = 1;
-                            alpha_done:;
+                                goto alpha_done;
                             }
+                            if ((u32)((u32)sp30 + 0x10000) == 0xFFFFU) goto alpha_done;
+                            var_r25 = 1;
+                        alpha_done:;
                           }
                           var_r24 = 0;
                           texMatrices[0] = 0;
