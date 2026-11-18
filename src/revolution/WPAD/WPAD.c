@@ -3343,80 +3343,117 @@ done:
 #pragma pop
 
 #pragma opt_propagation off
-s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
+s32 fn_8005D234(s32 chan, WPADGameInfo *pInfo)
 {
-    WPADCB* p;
-    s32 status;
-    BOOL enabled;
-    u8 busy;
-    u32 info[12];
-
-    p = lbl_8038F4F0[chan];
+  s32 status;
+  s32 idx = chan * 4;
+  WPADCB *p;
+  WPADCB **table = lbl_8038F4F0;
+  WPADCB *new_var;
+  BOOL enabled;
+  u8 busy;
+  u32 info[12];
+  p = *(WPADCB **)((u8 *)table + idx);
+  enabled = OSDisableInterrupts();
+  status = *((s32 *) (((u8 *) p) + 0x7FC));
+  OSRestoreInterrupts(enabled);
+  if (status == 0)
+  {
     enabled = OSDisableInterrupts();
-    status = *(s32*)((u8*)p + 0x7FC);
+    busy = *((u8 *) (((u8 *) p) + 0x800));
     OSRestoreInterrupts(enabled);
-
-    if (status == 0) {
-        enabled = OSDisableInterrupts();
-        busy = *(u8*)((u8*)p + 0x800);
-        OSRestoreInterrupts(enabled);
-        if (busy != 0) {
-            status = -2;
-        } else {
-            u32* src = (u32*)pInfo;
-            u32 w11, w10, w9, w8, w7, w6, w5, w4, w3, w0, w1, w2;
-            w0 = src[0]; w1 = src[1]; w2 = src[2]; w3 = src[3];
-            w4 = src[4]; w5 = src[5]; w6 = src[6]; w7 = src[7];
-            w8 = src[8]; w9 = src[9]; w10 = src[10]; w11 = src[11];
-            info[0] = w0;
-            info[1] = w1;
-            info[2] = w2;
-            info[3] = w3;
-            info[4] = w4;
-            info[5] = w5;
-            info[6] = w6;
-            info[7] = w7;
-            info[8] = w8;
-            info[9] = w9;
-            info[10] = w10;
-            info[11] = w11;
-            fn_80063324(chan, (WPADGameInfo*)info);
-        }
-    } else if (status != -2) {
-        if (status == -3) {
-            enabled = OSDisableInterrupts();
-            *(s32*)((u8*)p + 0x7FC) = 0;
-            OSRestoreInterrupts(enabled);
-        }
-    } else {
-        if ((s32)((__OSGetSystemTime() - *(s64*)((u8*)p + 0x848)) / (*(u32*)0x800000F8 / 4)) > 1
-            && lbl_8055DC1A != 0) {
-            if (*(u8*)((u8*)p + 0x850) == 0) {
-                WPADCB* cb;
-                s32 cbStatus;
-                *(s64*)((u8*)p + 0x848) = __OSGetSystemTime();
-                cb = lbl_8038F4F0[chan];
-                enabled = OSDisableInterrupts();
-                cbStatus = *(s32*)((u8*)cb + 0x7FC);
-                OSRestoreInterrupts(enabled);
-                if (cbStatus != -1) {
-                    enabled = OSDisableInterrupts();
-                    if (((u8*)cb)[0x8C6]) {
-                        OSRestoreInterrupts(enabled);
-                    } else {
-                        ((u8*)cb)[0x8C6] = TRUE;
-                        OSRestoreInterrupts(enabled);
-                        BTA_HhClose(((u8*)cb)[0x803]);
-                    }
-                }
-            } else {
-                enabled = OSDisableInterrupts();
-                *(s32*)((u8*)p + 0x7FC) = -3;
-                OSRestoreInterrupts(enabled);
-            }
-        }
+    if (busy != 0)
+    {
+      status = -2;
     }
-    return status;
+    else
+    {
+      u32 *src = (u32 *) pInfo;
+      u32 w11;
+      u32 w10;
+      u32 w9;
+      u32 w8;
+      u32 w7;
+      u32 w6;
+      u32 w5;
+      u32 w4;
+      u32 w3;
+      u32 w0;
+      u32 w1;
+      u32 w2;
+      w0 = src[0];
+      w1 = src[1];
+      w2 = src[2];
+      w3 = src[3];
+      w4 = src[4];
+      w5 = src[5];
+      w6 = src[6];
+      w7 = src[7];
+      w8 = src[8];
+      w9 = src[9];
+      w10 = src[10];
+      w11 = src[11];
+      info[0] = w0;
+      info[1] = w1;
+      info[2] = w2;
+      info[3] = w3;
+      info[4] = w4;
+      info[5] = w5;
+      info[6] = w6;
+      info[7] = w7;
+      info[8] = w8;
+      info[9] = w9;
+      info[10] = w10;
+      info[11] = w11;
+      fn_80063324(chan, (WPADGameInfo *) info);
+    }
+  }
+  else
+    if (status != (-2))
+  {
+    if (status == (-3))
+    {
+      enabled = OSDisableInterrupts();
+      *((s32 *) (((u8 *) p) + 0x7FC)) = 0;
+      OSRestoreInterrupts(enabled);
+    }
+  }
+  else
+    if ((((s32) ((__OSGetSystemTime() - (*((s64 *) (((u8 *) p) + 0x848)))) / ((*((u32 *) 0x800000F8)) / 4))) > 1) && (lbl_8055DC1A != 0))
+  {
+    if ((*((u8 *) (((u8 *) p) + 0x850))) == 0)
+    {
+      s32 cbStatus;
+      WPADCB *cb;
+      new_var = p;
+      *((s64 *) (((u8 *) new_var) + 0x848)) = __OSGetSystemTime();
+      cb = *(WPADCB **)((u8 *)table + idx);
+      enabled = OSDisableInterrupts();
+      cbStatus = *((s32 *) (((u8 *) cb) + 0x7FC));
+      OSRestoreInterrupts(enabled);
+      if (cbStatus != (-1))
+      {
+        enabled = OSDisableInterrupts();
+        if (((u8 *) cb)[0x8C6])
+        {
+          OSRestoreInterrupts(enabled);
+        }
+        else
+        {
+          ((u8 *) cb)[0x8C6] = TRUE;
+          OSRestoreInterrupts(enabled);
+          BTA_HhClose(((u8 *) cb)[0x803]);
+        }
+      }
+    }
+    else
+    {
+      enabled = OSDisableInterrupts();
+      *((s32 *) (((u8 *) p) + 0x7FC)) = -3;
+      OSRestoreInterrupts(enabled);
+    }
+  }
+  return status;
 }
 #pragma opt_propagation reset
 
