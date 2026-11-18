@@ -3444,6 +3444,7 @@ extern "C" s32 fn_8016524C(void *a){
  }
  return 1;
 }
+#pragma scheduling on
 #pragma cplusplus off
 
 int fn_801657D4(void) {
