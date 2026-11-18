@@ -2352,12 +2352,15 @@ extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
         if (*(void**)(p + 0x58) == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3B0, msg + 0x360);
         u32 fmt = *(u32*)(p + 0x4C);
-        TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58)
-            + (((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14
-            + ((fmt >> 5) & 4) + ((fmt >> 12) & 4)
-            + ((fmt >> 6) & 4) + ((fmt >> 4) & 4)
-            + ((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C)
-            + ((fmt >> 3) & 4) + ((fmt >> 13) & 0x1C));
+        u32 pitch = (((fmt >> 18) & 3) + ((fmt >> 24) & 0xF)) * 0x14;
+        u32 x = ((fmt >> 5) & 4) + ((fmt >> 12) & 4);
+        u32 y = pitch + ((fmt >> 6) & 4);
+        u32 z = ((fmt >> 23) & 0x1E0) + ((fmt >> 18) & 0x3C);
+        u32 w = ((fmt >> 4) & 4) + x;
+        u32 v = z + y;
+        u32 u = ((fmt >> 3) & 4) + w;
+        u32 t = ((fmt >> 13) & 0x1C) + u;
+        TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58) + v + t);
         u32 count = (*(u32*)(p + 0x50) >> 9) & 0x1F;
         if (count < arg1) {
             TevStageDefault def;
@@ -2521,68 +2524,6 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           u8 constant1[4];
                           u8 constant2[4];
                           u8 constant3[4];
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                             
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
                           s32 spC;
                           s32 sp8;
                           f32 temp_f1;
@@ -2670,7 +2611,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           register u8 *var_r22;
                           u32 var_r27;
           Fn800DA094TexObj *var_r28;
-                      
+
                           var_r26 = 1;
                           var_r21 = 0;
                           GXSetNumChans(1);
@@ -2771,8 +2712,6 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                                   GXSetTexCoordGen2((GXTexCoordID)var_r23, (GXTexGenType)M2C_FIELD(var_r27, u8 *, 0), (GXTexGenSrc)M2C_FIELD(var_r27, u8 *, 1), temp_r28, 0, 0x7D);
                                   var_r27 += 4;
                                   var_r23 += 1;
-  
-                              
                   loop_30_test:
                       if (var_r23 < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x14U) & 0xF)) goto loop_30_body;
                           }
@@ -2811,8 +2750,6 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                                   GXLoadTexObj(&texture.fields[0], var_r24_2);
                                   var_r28 += 1;
                                   var_r24_2 += 1;
-
-                              
                 loop_43_test:
                     if (var_r24_2 < (u32) ((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x1CU)) goto loop_43_body;
                           }
@@ -2989,7 +2926,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                                       var_r24_4 += 1;
                                   }
                                   goto block_83;
-                              
+                                  
 } else {
                                   var_r21_3 = (s32 *)(data + 0x490);
                                   var_r22_2 = (s32 *)(data + 0x4B0);
@@ -3016,7 +2953,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                               loop_69_test:
                                   if (var_r28_2 < (u32) ((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x1CU)) goto loop_69_body;
                                   goto block_70;
-                              
+                                  
 }
                               var_r22_3 = 0;
                       goto loop_87_test;
@@ -3050,7 +2987,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                                       indirectMatrix[5] = M2C_FIELD(var_r21_4, f32 *, 4);
                                       #pragma push
                      #pragma dont_inline on
-                                 fn_800D7D5C((void *)(var_r23_6 + 1), &indirectMatrix[0]);
+                                   fn_800D7D5C((void *)(var_r23_6 + 1), &indirectMatrix[0]);
                      #pragma pop
                                   }
                                   var_r28_3 += 1;
@@ -3094,8 +3031,9 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           } else {
                               ((void (*)(u32, u32, u32, u32))GXSetBlendMode)(1U, 4U, 5U, 0xFU);
                           }
-       return (var_r25 != 0) && (var_r26 != 0);
-                      }
+               return (var_r25 != 0) && (var_r26 != 0);
+                        }
+#pragma scheduling on
 extern "C" void fn_800DAFA8(void *arg, void *obj) {
     /* C-callable thunk: invoke the virtual method at vtable slot 3 on obj, passing arg. */
     struct Dispatch {
