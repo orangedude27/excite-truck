@@ -2845,19 +2845,28 @@ struct Entry_8016464C {
     s32 value;
 };
 #pragma cplusplus on
-extern "C" void fn_8016464C(void *arg0) {
-    State_8016464C *self = (State_8016464C *)arg0;
+extern "C" void fn_8016464C(void *state) {
+    /* Build this object's (description, value) table out of the scene's named
+     * parameter list.  "desc1", "desc2", ... in the list are the descriptions;
+     * their number is found by looking for the first "desc<N>" the list does
+     * not have.  An entry that also has a "lyt<N>" parameter gets a value as
+     * well: the name that "lyt<N>" holds is looked up in the "tutcmd.val"
+     * value table, and the collection it resolves to is turned into a value
+     * object owned by the current screen (lbl_8055E2E4) and stored next to the
+     * description.  The value table is released again on the way out. */
+    State_8016464C *self = (State_8016464C *)state;
     char name[0x10];
     Entry_8016464C *entry;
     s32 count;
-    void *iterator;
+    void *valueTable;
     s32 i;
 
     self->entryCount = 0;
-    iterator = fn_80131810(lbl_8032FB90);
+    valueTable = fn_80131810(lbl_8032FB90); /* "tutcmd.val" */
     count = 0;
     do {
         count++;
+        /* name = "desc<count>" */
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, count);
     } while (((NameList_8016464C *)self->list)->hasName(name) != 0);
 
@@ -2865,22 +2874,24 @@ extern "C" void fn_8016464C(void *arg0) {
     while (i < count - 1) {
         s32 index = i + 1;
         entry = &((Entry_8016464C *)self->entries)[self->entryCount++];
+        /* name = "desc<index>": the entry's description object */
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, index);
         entry->object = ((NameList_8016464C *)self->list)->getValue(name);
+        /* name = "lyt<index>": the name of the value table entry, if any */
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A118, index);
         entry->value = 0;
         if (((NameList_8016464C *)self->list)->hasName(name) != 0) {
             void *value = ((NameList_8016464C *)self->list)->getValue(name);
-            if (iterator != 0) {
-                s32 result = ((Iterator_8016464C *)iterator)->next(value);
-                if (result != 0)
-                    entry->value = fn_80146C2C(lbl_8055E2E4, result);
+            if (valueTable != 0) {
+                void *collection = ((ValueTable_8016464C *)valueTable)->getCollection(value);
+                if (collection != 0)
+                    entry->value = fn_80146C2C(lbl_8055E2E4, (s32)collection);
             }
         }
         i++;
     }
-    if (iterator != 0)
-        fn_80131818(iterator);
+    if (valueTable != 0)
+        fn_80131818(valueTable);
 }
 /* Destroy all owned objects in the list and reset its count. */
 extern "C" void fn_801647DC(void *list) {
