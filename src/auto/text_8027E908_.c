@@ -854,7 +854,7 @@ int fn_8027F958(int *selection, void *collection) {
     stack.menu.entries[0].flags = (int)(0);
     stack.menu.entries[0].id = (int)(0);
     stack.menu.entries[1].type = (int)(3);
-    stack.menu.entries[1].value = (void *)(state + 0x70);
+    stack.menu.entries[1].value = (void *)((char *)state + 0x70);
     stack.menu.entries[1].flags = (int)(0);
     stack.menu.entries[1].id = (int)(0);
     stack.menu.entries[2].type = (int)(5);
