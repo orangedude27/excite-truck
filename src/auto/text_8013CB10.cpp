@@ -1717,7 +1717,22 @@ extern "C" void fn_801479A8(void *, void *, const char *, f64, ...);
 extern "C" f32 lbl_8056154C;
 extern "C" void fn_801476C4(void *arg0);
 extern "C" void fn_8013CB90(void *arg0);
-struct RenderData { u32 f0; f32 f4; f32 f8; u32 fC; f32 f10; f32 f14; f32 f18; f32 f1C; f32 f20; f32 f24; };
+/* The 0x28-byte sprite record the HUD art carries: a screen position and a
+ * size, plus the four parameters fn_801476D8 draws the corners with.
+ * fn_8013CB90 rewinds its position by half its size and fn_80147EE0 scales the
+ * size (and the position with it). */
+struct RenderData {
+    /* 0x00 */ u32 kind;
+    /* 0x04 */ f32 x;   /* position */
+    /* 0x08 */ f32 y;
+    /* 0x0C */ u32 mode; /* how the corners are mapped when drawn */
+    /* 0x10 */ f32 dx;  /* size */
+    /* 0x14 */ f32 dy;
+    /* 0x18 */ f32 p18; /* the four corner parameters */
+    /* 0x1C */ f32 p1C;
+    /* 0x20 */ f32 p20;
+    /* 0x24 */ f32 p24;
+};
 #pragma scheduling invalid_target
 extern "C" void fn_8013F0A0(void *arg0, void *arg1, void *arg2) {
     #pragma scheduling invalid_target
