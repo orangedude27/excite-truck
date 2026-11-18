@@ -1434,7 +1434,7 @@ s32 fn_80069178(void) {
 }
 s32 fn_800692D0(void) {
     u8 *record;
-    u8 *offset;
+    s32 offset;
     u8 *base = lbl_80392960;
     s32 i;
     s32 interruptState;
@@ -1443,7 +1443,7 @@ s32 fn_800692D0(void) {
 
     if (base[0x667] != 0) {
         i = 0;
-        offset = (u8 *)0;
+        offset = 0;
         while (i < 0x10) {
             interruptState = OSDisableInterrupts();
             if (i < 0) goto high_record;
@@ -13456,7 +13456,6 @@ void btm_sec_abort_access_req(BD_ADDR arg0) {
     void (*cb)(BD_ADDR, void *, void *);
     u8 state;
     u32 *p;
-    u32 zero;
     dev = btm_find_dev(arg0);
     if (dev != 0) {
         cb = *(void (**)(BD_ADDR, void *, void *))((u8 *)lbl_803C0F78 + 0x1920);
@@ -13464,17 +13463,15 @@ void btm_sec_abort_access_req(BD_ADDR arg0) {
             cb(arg0, (u8 *)dev + 0x22, (u8 *)dev + 0x35);
         }
         state = *((u8 *)dev + 0x7f);
-        if (state == 4) {
-        } else if (state == 1) {
-            zero = 0;
-            *((u8 *)dev + 0x7f) = (u8)zero;
+        if (state == 4 || state == 1) {
+            *((u8 *)dev + 0x7f) = 0;
             if (*((u8 *)dev + 0x80) != 0) {
                 p = *(u32 **)dev;
                 if (p != 0 && *p == 3) {
-                    p[1] = zero;
-                    *(u32 *)((u8 *)dev + 4) = zero;
+                    p[1] = 0;
                 }
             }
+            *(u32 *)((u8 *)dev + 4) = 0;
         }
     }
 }
