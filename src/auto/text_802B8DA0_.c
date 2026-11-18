@@ -1455,14 +1455,12 @@ void fn_802BAD0C(void *arg0, float angle) {
     float c;
     register float x;
     float s;
-    float y;
     float *p = (float *)arg0;
     x = p[0];
     c = (float)cos(angle);
     s = (float)sin(angle);
-    y = p[1];
-    p[0] = p[0] * c - y * s;
-    p[1] = x * s + y * c;
+    p[0] = p[0] * c - p[1] * s;
+    p[1] = x * s + p[1] * c;
 }
 #pragma pop
 int fn_80128668(void *);
