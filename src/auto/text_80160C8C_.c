@@ -1326,8 +1326,8 @@ extern s32 lbl_8055A0C0;
 #pragma cplusplus on
 extern "C" void fn_80161F10(s32 arg0, s32 arg1) {
     s32 pad[0x2e];
-    register const char *label1;
-    register const char *label2;
+    const char *label1;
+    const char *label2;
     register void *obj;
     register s32 value;
     s32 *manager;
@@ -3380,11 +3380,12 @@ extern int fn_80230E90();
 extern char lbl_8055A130, lbl_8055A138, lbl_8055A140, lbl_8055A148;
 extern u8 lbl_8055E308;
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" s32 fn_8016524C(void *a){
  struct M{virtual void f0();virtual void*f1(const char*);virtual void*f2(const char*);virtual void*f3(const char*);};
  struct N{virtual void g0();virtual void g1();virtual void g2();virtual void g3();virtual const char*g4(const char*,s32);};
  struct H{s32 v; s32 p[7]; N*n;};
- struct E{virtual void h0();virtual void h1();virtual void h2();virtual void h3();virtual void h4();virtual void h5();virtual void h6();virtual void h7();virtual void h8();virtual void h9();virtual void ha();virtual void hb();virtual void hc();virtual void hd();virtual void he();virtual void hf();virtual void hg();virtual void hh();virtual void hi();virtual void hj();virtual void hk();virtual void hl();virtual void hm();virtual void hn();virtual void ho();virtual void hp();virtual s32 label();};
+ struct E{virtual void h0();virtual void h1();virtual void h2();virtual void h3();virtual void h4();virtual void h5();virtual void h6();virtual void h7();virtual void h8();virtual void h9();virtual void ha();virtual void hb();virtual void hc();virtual void hd();virtual void he();virtual void hf();virtual void hg();virtual void hh();virtual void hi();virtual void hj();virtual void hk();virtual s32 label();};
  struct R{s32 a; s32 x; s32 y; s32 d; f32 e; s32 f; u32 c; s32 h;};
  struct R7{s32 a; s32 x; s32 y; s32 d; f32 e; f32 f; u32 c;};
 #define FX(r)(*(f32*)&(r).x)
