@@ -205,18 +205,18 @@ extern "C" void fn_802A4ADC(void) {
         virtual void f3();
         virtual s32 f4(void *, void *);
     };
-    s32 base = (s32)lbl_80349BF0;
-    s32 result = (s32)fn_801E1F44();
-    if (fn_800167F4() == 1) fn_802A5384(result);
+    u8 *base = lbl_80349BF0;
+    s32 callResult = (s32)fn_801E1F44();
+    if (fn_800167F4() == 1) fn_802A5384(callResult);
     fn_80287B38((void *)fn_802A53B0);
     fn_802A5878();
-    lbl_8055F89C = fn_802CAC28((void *)(base + 0x28), 0);
-    result = base + 0x38;
+    lbl_8055F89C = fn_802CAC28((char *)base + 0x28, 0);
     {
+        s32 arg2 = (s32)((char *)base + 0x38);
         struct Dummy *p = (struct Dummy *)fn_802AE414(&lbl_8055CBC8);
-        if (p != 0) result = p->f4((void *)(base + 0x48), (void *)result);
+        if (p != 0) arg2 = p->f4((void *)((char *)base + 0x48), (void *)arg2);
+        lbl_8055F898 = fn_802C6FC0((void *)arg2, 0, 0);
     }
-    lbl_8055F898 = fn_802C6FC0((void *)result, 0, 0);
 }
 #pragma cplusplus reset
 void fn_802A4B90(void) {
@@ -473,14 +473,13 @@ extern "C" void fn_802A50F8(void) {
     void *section;
     void *track;
     f32 one, half, zero, scale;
-    int sz;
     base = lbl_80349BF0;
     fn_8028E61C(&init);
     zero = lbl_8056485C;
     half = lbl_8056486C;
     one = lbl_80564870;
     scale = lbl_80564868;
-    sz = 0x100;
+    register s32 sz = 0x100;
     init.a = 0;
     init.b = sz;
     init.c[0] = scale;
@@ -1075,12 +1074,11 @@ void fn_802A6408(void *self) {
     }
 }
 
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     typedef struct { f32 x, y, z; } V3;
-    f32 p[3];
     f32 v[3];
+    f32 p[3];
     f32 ratioY, ratioX, scale, d;
     V3 *out;
     int i;
@@ -1125,7 +1123,6 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     }
     *(s32 *)((u8 *)arg0 + 4) = out - *(V3 **)arg0;
 }
-#pragma pop
 
 #pragma scheduling push
 #pragma scheduling on
@@ -1705,8 +1702,7 @@ extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
         f32 denominator, numerator;
         numerator = *(volatile f32 *)&lbl_80564850;
         denominator = *(volatile f32 *)(arg0 + 8);
-        *(volatile s32 *)(arg0 + 0x2C) = h;
-        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208(numerator / denominator);
+        *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208((*(volatile s32 *)(arg0 + 0x2C) = h, numerator / denominator));
     }
     {
         const Vec3 &c = obj->get(&lbl_8055CC20);
@@ -1754,7 +1750,7 @@ extern f32 lbl_80564858, lbl_805648C8;
 #pragma scheduling invalid_target
 s32 fn_802A7680(s32 arg0) {
     u8 *object = (u8 *)arg0;
-    f32 amplitude = lbl_805648C8;
+    f32 amplitude = 0.7f;
     s32 offset = 0;
     s32 i = 0;
     while (i < *(s32 *)(object + 4)) {
@@ -1763,12 +1759,10 @@ s32 fn_802A7680(s32 arg0) {
         f32 z;
         f32 angle2;
         f32 x;
-        f32 t;
         u32 addr;
         angle = *(f32 *)(object + 0x18);
         z = *(f32 *)(object + 0x14) + fn_80287BC8(amplitude * -angle, amplitude * angle);
-        t = fn_80287BC8(lbl_80564858, *(f32 *)(object + 0x1C));
-        y = *(f32 *)(object + 0x10) + t;
+        y = *(f32 *)(object + 0x10) + fn_80287BC8(0.0f, *(f32 *)(object + 0x1C));
         angle2 = *(f32 *)(object + 0x18);
         x = *(f32 *)(object + 0xC) + fn_80287BC8(amplitude * -angle2, amplitude * angle2);
         addr = *(u32 *)object + offset;
@@ -1778,7 +1772,7 @@ s32 fn_802A7680(s32 arg0) {
         *(f32 *)(addr + 4) = y;
         *(f32 *)(addr + 8) = z;
     }
-    *(f32 *)(object + 0x3C) = lbl_80564858;
+    *(f32 *)(object + 0x3C) = 0.0f;
 }
 extern f32 PSVECSquareDistance(const void *, const void *);
 extern double fn_8002F234(double);
@@ -1790,104 +1784,114 @@ extern f32 lbl_805648D4;
 #pragma processor 750
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-void fn_802A775C(void *arg0) {
-    Obj802A775C *obj = (Obj802A775C *)arg0;
-    s32 offset;
-    s32 i;
-    Vec2_802A775C sp10;
-    Vec2_802A775C sp8;
-    f32 sp18[3];
-    f32 f29;
-    f32 distSq;
-    f32 one;
-    void *cam;
-
-    cam = (u8 *)fn_801E8718(0) + 0x24;
-    distSq = PSVECSquareDistance(cam, &obj->posX);
-
-    if (distSq > obj->radius * obj->radius) {
-        f32 t = fn_802A4AD4();
-        f32 x = obj->dirX;
-        f32 z = obj->dirZ;
-        f32 y = obj->dirY;
-        f32 xx = x * x;
-        f32 tx;
-        f32 ty;
-        f32 zz;
-        f32 tz;
-        f32 sum;
-        f32 len;
-        f32 inv;
-        f32 x_tmp;
-        f32 z_tmp;
-
-        sp10.x = x;
-        tx = x * t;
-        ty = y * t;
-        zz = z * z;
-        sp10.z = z;
-        tz = z * t;
-        sum = xx + zz;
-        sp18[0] = tx;
-        sp18[1] = ty;
-        sp18[2] = tz;
-
-        len = (f32)fn_8002F234(sum);
-        one = lbl_8056485C;
-        inv = -obj->radius * (one / len);
-        i = 0;
-        sp10.x *= inv;
-        offset = 0;
-        sp10.z *= inv;
-
-        sp8.d = sp10.d;
-        x_tmp = sp8.x;
-        z_tmp = sp8.z;
-        sp8.x = z_tmp;
-        sp8.z = -x_tmp;
-
-        while (i < obj->count) {
-            f32 *pt = (f32 *)((u8 *)obj->points + offset);
-            if (PSVECSquareDistance(pt, &obj->posX) < obj->radius * obj->radius) {
-                f32 px = pt[0];
-                f32 sx = sp18[0];
-                f32 sy = sp18[1];
-                f32 sz = sp18[2];
-                f32 py = pt[1];
-                f32 pz = pt[2];
-                pt[0] = px + sx;
-                pt[1] = py + sy;
-                pt[2] = pz + sz;
-            } else {
-                f32 r = fn_80287BC8(lbl_805648CC, lbl_805648D0);
-                f32 rr = r * r;
-                f32 sp8_z = sp8.z;
-                f32 ptz = obj->posZ + sp8_z * r;
-                f32 f28 = one - rr;
-                f32 ry;
-                f32 ptx;
-                f32 pty;
-                ptz += sp10.z * f28;
-                ry = fn_80287BC8(lbl_80564858, obj->unk1C);
-                ptx = obj->posX + sp8.x * r + sp10.x * f28;
-                pty = obj->posY + ry;
-                pt[0] = ptx;
-                pt[1] = pty;
-                pt[2] = ptz;
-            }
-            offset += 0xC;
-            i++;
+void fn_802A775C(void *arg0)
+{
+  Obj802A775C *obj = (Obj802A775C *) arg0;
+  s32 offset;
+  s32 i;
+  Vec2_802A775C sp10;
+  Vec2_802A775C sp8;
+  f32 sp18[3];
+  float new_var;
+  f32 f29;
+  f32 distSq;
+  f32 one;
+  Obj802A775C *new_var2;
+  void *cam;
+  cam = ((u8 *) fn_801E8718(0)) + 0x24;
+  distSq = PSVECSquareDistance(cam, &obj->posX);
+  if (distSq > (obj->radius * obj->radius))
+  {
+    f32 t = fn_802A4AD4();
+    f32 x = obj->dirX;
+    f32 z = obj->dirZ;
+    f32 y = obj->dirY;
+    f32 xx = x * x;
+    f32 tx;
+    f32 ty;
+    f32 zz;
+    f32 tz;
+    f32 sum;
+    f32 len;
+    f32 inv;
+    f32 x_tmp;
+    f32 z_tmp;
+    sp10.x = x;
+    tx = x * t;
+    ty = y * t;
+    zz = (new_var = z * z);
+    sp10.z = z;
+    tz = z * t;
+    sum = xx + zz;
+    sp18[0] = tx;
+    sp18[1] = ty;
+    sp18[2] = tz;
+    len = (f32) fn_8002F234(sum);
+    one = lbl_8056485C;
+    inv = (-obj->radius) * (one / len);
+    i = 0;
+    sp10.x *= inv;
+    offset = 0;
+    sp10.z *= inv;
+    sp8.d = sp10.d;
+    x_tmp = sp8.x;
+    z_tmp = sp8.z;
+    sp8.x = z_tmp;
+    sp8.z = -x_tmp;
+    while (i < obj->count)
+    {
+      f32 *pt = (f32 *) (((u8 *) obj->points) + offset);
+      if (PSVECSquareDistance(pt, &obj->posX) < (obj->radius * obj->radius))
+      {
+        f32 px = pt[0];
+        f32 sx = sp18[0];
+        f32 sz;
+        f32 sy = sp18[1];
+        f32 py = pt[1];
+        f32 pz = pt[2];
+        pt[0] = px + sx;
+        pt[1] = py + sy;
+        pt[2] = pz + sp18[2];
+      }
+      else
+      {
+        f32 r = fn_80287BC8(lbl_805648CC, lbl_805648D0);
+        f32 sp8_z = sp8.z;
+        f32 ptz = obj->posZ + (sp8_z * r);
+        f32 rr = r * r;
+        f32 f28 = (one * 1.0f) - rr;
+        f32 ry;
+        f32 ptx;
+        f32 pty;
+        ptz += sp10.z * f28;
+        if (1)
+        {
         }
-        f29 = lbl_80564858;
-    } else {
-        f29 = obj->unk38 * (lbl_8056485C - (f32)fn_8002F234(distSq) / obj->radius);
+        ry = fn_80287BC8(lbl_80564858, obj->unk1C);
+        rr = (y = obj->posX) + (sp8.x * r);
+        ;
+        pty = obj->posY + ry;
+        pt[0] = rr + (sp10.x * f28);
+        pt[1] = pty;
+        pt[2] = ptz;
+      }
+      offset += 0xC;
+      i++;
     }
 
-    if ((unsigned int)((f32)__fabs(f29) <= *(f32 *)(void *)&lbl_80558DC4) != (unsigned int)((f32)__fabs(obj->unk3C) <= *(f32 *)(void *)&lbl_80558DC4)) {
-        fn_802C990C(obj->unk34);
-    }
-    fn_802C2B78(lbl_80564850, lbl_805648D4, f29);
-    obj->unk3C = f29;
+    f29 = lbl_80564858;
+  }
+  else
+  {
+    f29 = obj->unk38 * (lbl_8056485C - (((f32) fn_8002F234(distSq)) / obj->radius));
+  }
+  if (((unsigned int) (((f32) __fabs(f29)) <= (*((f32 *) ((void *) (&lbl_80558DC4)))))) != ((unsigned int) (((f32) __fabs(obj->unk3C)) <= (*((f32 *) ((void *) (&lbl_80558DC4)))))))
+  {
+    new_var2 = obj;
+    fn_802C990C(new_var2->unk34);
+  }
+  fn_802C2B78(lbl_80564850, lbl_805648D4, f29);
+  obj->unk3C = f29;
 }
 #pragma pop
 s32 fn_802A79CC(s32 arg0) {
