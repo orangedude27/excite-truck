@@ -690,7 +690,7 @@ found_scan:
 }
 
 #pragma scheduling on
-#define lbl_804B3048 (((struct Fn8027F958State *)state)->list)
+#define lbl_804B3048 (state->list)
 int fn_8027F958(int *selection, void *collection) {
     struct Fn8027F958State {
         char pad[0x50];
