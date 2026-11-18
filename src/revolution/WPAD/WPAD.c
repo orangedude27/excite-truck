@@ -3342,6 +3342,21 @@ done:
 }
 #pragma pop
 
+/* WPADiSendData: hand one output report to the Wiimote on this channel.
+ * pInfo is really a WPADCommand* (the manager pops one off the channel's
+ * command queue and passes it here).
+ *
+ * Ready channel (readStatus WPAD_ERR_OK and no report request outstanding):
+ * copy the command word by word into a local and pass that to __SendData
+ * (fn_80063324), which builds the HID report and sends it - the copy keeps
+ * __SendData from touching the queue entry the caller still owns.
+ * A leftover WPAD_ERR_TRANSFER is cleared back to WPAD_ERR_OK so the next read
+ * can start.  While the channel is busy, a command whose deadline (+0x848,
+ * armed by __SendData from the WPAD timeout) passed more than a second ago is
+ * given up on: the deadline is restarted and, unless the link is already being
+ * torn down (+0x8C6), the HID connection is dropped with BTA_HhClose.  A
+ * deadline that belongs to a 0xFF delay request (+0x850) only reports
+ * WPAD_ERR_TRANSFER instead.  The status for the caller is returned. */
 #pragma opt_propagation off
 s32 fn_8005D234(s32 chan, WPADGameInfo *pInfo)
 {
