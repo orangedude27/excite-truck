@@ -351,15 +351,17 @@ void fn_802CECF4(unsigned int targetIndex) {
     } while ((unsigned short)lbl_8055D0F6 != targetIndex);
 }
 
+#pragma scheduling 750
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
     volatile unsigned char *state = lbl_804C5710;
     *(volatile int *)(state + 4) = arg0;
     *(volatile int *)(state + 8) = arg1;
     *(volatile int *)(state + 0xC) = arg2;
     *(volatile int *)(state + 0x10) = arg3;
-    state[1] = state[0] = 1;
+    state[0] = 1;
+    state[1] = 1;
 }
-
+#pragma scheduling reset
 extern void KPADSetBtnRepeat(int *, int *, int *, int *);
 #pragma push
 #pragma use_lmw_stmw off
@@ -1172,15 +1174,15 @@ void fn_802D007C(float arg0) {
     lbl_804C5700[0] = 1;
 }
 #pragma pop
-void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
-    extern char lbl_804C97D0;
-    unsigned char *p = (unsigned char *)&lbl_804C97D0;
-    p[4] = a;
-    p[5] = b;
-    p[6] = c;
-    p[7] = 0xFF;
-    p[0x5C] = 1;
-}
+ void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
+     extern char lbl_804C97D0;
+     volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
+     p[4] = a;
+     p[5] = b;
+     p[6] = c;
+     p[7] = 0xFF;
+     p[0x5C] = 1;
+ }
 #pragma push
 #pragma small_data off
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
@@ -1283,6 +1285,7 @@ extern void PSVECCrossProduct(float *, float *, float *);
 extern float PSVECMag();
 #pragma use_lmw_stmw off
 void fn_802D03F4(register float *arg0, float arg1) {
+    register float *b = arg0 + 6;
     unsigned long *src = (unsigned long *)arg0;
     unsigned long t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     float sp[3];
@@ -1300,7 +1303,7 @@ void fn_802D03F4(register float *arg0, float arg1) {
     lbl_804C56C0[4] = t4; lbl_804C56C0[5] = t5; lbl_804C56C0[6] = t6; lbl_804C56C0[7] = t7;
     lbl_804C56C0[8] = t8; lbl_804C56C0[9] = t9; lbl_804C56C0[10] = t10; lbl_804C56C0[11] = t11;
     sp[0] = lbl_80564F88; sp[1] = lbl_80564F8C; sp[2] = lbl_80564F88;
-    PSVECCrossProduct(sp, arg0 + 6, lbl_804C56F0);
+    PSVECCrossProduct(sp, b, lbl_804C56F0);
     mag = PSVECMag(lbl_804C56F0);
     mag = mag > lbl_80564FC0 ? mag : lbl_80564FC0;
     scale = lbl_80564F8C / mag;
@@ -2403,6 +2406,7 @@ void fn_802D2218(void) {
         sp90[11] = lbl_80564F88;
         fn_802D0DD4(sp60, sp90);
         GXLoadPosMtxImm(sp60, 0);
+        state = (GxState *)(base + 0x4128);
         screenWidth = state->width;
         screenHeight = state->height;
         temp_f31 = lbl_80564F94 * (float)screenWidth;
@@ -2660,9 +2664,11 @@ void fn_802D2B0C(void) {
     extern void fn_802DF684(void);
     extern void fn_802D1C04(void);
     int diff;
-    register int zero = 0;
+    int zero;
     int t4;
     unsigned char t8, t9, tA, tB, tC, tD;
+    unsigned char *src;
+    unsigned char *dst;
     if (*(unsigned char *)&lbl_8055FDB4 == 0) {
         diff = memcmp(lbl_804C9930, lbl_804C5700, 0x10);
         if (((unsigned int)(unsigned int)(0 - diff | diff) >> 31) != 0) {
@@ -2717,22 +2723,25 @@ void fn_802D2B0C(void) {
             default:
                 break;
             }
-            t4 = *(int *)(lbl_804C5700 + 4);
-            t8 = lbl_804C5700[8];
-            t9 = lbl_804C5700[9];
-            tA = lbl_804C5700[0xA];
-            tB = lbl_804C5700[0xB];
-            tC = lbl_804C5700[0xC];
-            tD = lbl_804C5700[0xD];
-            lbl_804C5700[0] = (unsigned char)zero;
+            zero = 0;
+            src = lbl_804C5700;
+            dst = lbl_804C9930;
+            t4 = *(int *)(src + 4);
+            t8 = src[8];
+            t9 = src[9];
+            tA = src[0xA];
+            tB = src[0xB];
+            tC = src[0xC];
+            tD = src[0xD];
+            src[0] = (unsigned char)zero;
             lbl_804C9930[0] = (unsigned char)zero;
-            *(int *)(lbl_804C9930 + 4) = t4;
-            lbl_804C9930[8] = t8;
-            lbl_804C9930[9] = t9;
-            lbl_804C9930[0xA] = tA;
-            lbl_804C9930[0xB] = tB;
-            lbl_804C9930[0xC] = tC;
-            lbl_804C9930[0xD] = tD;
+            *(int *)(dst + 4) = t4;
+            dst[8] = t8;
+            dst[9] = t9;
+            dst[0xA] = tA;
+            dst[0xB] = tB;
+            dst[0xC] = tC;
+            dst[0xD] = tD;
         }
     }
     fn_802D1C04();
@@ -2934,10 +2943,10 @@ void* fn_802D3138(void) {
     return &state->texObj;
 }
 
+#pragma scheduling on
 #pragma dont_inline on
 void fn_802D3144(void) {
-    register unsigned short ref = lbl_8055FD08;
-    if (lbl_8055FD86 == ref) {
+    if (lbl_8055FD86 == lbl_8055FD08) {
         GXSetBlendMode(0, 0, 0, 5);
     } else {
         int lowMapped;
@@ -2951,7 +2960,6 @@ void fn_802D3144(void) {
     lbl_8055FD88 = lbl_8055FD86;
     lbl_804C5700[0] = 1;
 }
-
 int fn_802D31D8(void)
 {
   unsigned long new_var;
