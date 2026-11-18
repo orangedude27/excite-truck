@@ -776,25 +776,27 @@ void **fn_801CC784(void *vec) {
 }
 
 extern void *memset(void *, int, unsigned long);
-#pragma scheduling invalid_target
+#pragma scheduling dynamic
 void *fn_801CC7A0(void *arg0) {
     unsigned char *end;
     unsigned char *p;
+    long zero;
     unsigned char *base;
-    end = (unsigned char *)arg0 + 0x14C;
+    zero = 0;
     base = (unsigned char *)arg0;
-    p = (unsigned char *)arg0 + 0x20;
-    *(long *)(base + 8) = 0;
-    *(long *)(base + 0xC) = 0;
-    *(long *)(base + 0x10) = 0;
-    *(long *)(base + 0x14) = 0;
+    end = base + 0x14C;
+    p = base + 0x20;
+    *(long *)(base + 8) = zero;
+    *(long *)(base + 0xC) = zero;
+    *(long *)(base + 0x10) = zero;
+    *(long *)(base + 0x14) = zero;
     do {
         memset(p, 0x7A, 3);
-        p[3] = 0;
+        p[3] = zero;
         memset(p + 0x14, 0x7A, 3);
-        p[0x17] = 0;
+        p[0x17] = zero;
         memset(p + 0x28, 0x7A, 3);
-        p[0x2B] = 0;
+        p[0x2B] = zero;
         p += 0x3C;
     } while (p < end);
     memset(end, 0x7A, 3);
