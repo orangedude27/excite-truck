@@ -1303,30 +1303,35 @@ void fn_802B7434(void) {
 #define kSampleFull    lbl_80564C90 /* 255.0f: the sample of a fully applied brush stroke */
 #define kMarkerSize    lbl_80564C94 /* 3.0f: size of the marker for a refused cell */
 #define kGridStep      lbl_80564C58 /* 2.0f: world units per grid cell */
-void fn_802B7518(s16 arg0, s16 arg1, s32 arg2) {
-    switch (lbl_8055FA38) {
+void fn_802B7518(s16 x, s16 y, s32 sample) {
+    switch (viewMode) {
     case 2:
-        if (arg2 != 0) {
-            if (((s32 (*)(s32, s32, s32, s32, f32))fn_802BC09C)(
-                    arg0, arg1, lbl_8055FA28, 0xFF,
-                    (f32)(u32)arg2 / lbl_80564C90)) {
-                lbl_8055FA50[0] = (lbl_8055FA50[0] < arg0) ? lbl_8055FA50[0] : arg0;
-                lbl_8055FA50[1] = (lbl_8055FA50[1] > arg0) ? lbl_8055FA50[1] : arg0;
-                lbl_8055FA50[2] = (lbl_8055FA50[2] < arg1) ? lbl_8055FA50[2] : arg1;
-                lbl_8055FA50[3] = (lbl_8055FA50[3] > arg1) ? lbl_8055FA50[3] : arg1;
+        if (sample != 0) {
+            /* Paint at full strength, blended by how strong the sample is.
+             * The cast keeps that blend a float: paintLayer is declared
+             * without a prototype above. */
+            if (((s32 (*)(s32, s32, s32, s32, f32))paintLayer)(
+                    x, y, brushLayer, 0xFF,
+                    (f32)(u32)sample / kSampleFull)) {
+                dirtyBounds[0] = (dirtyBounds[0] < x) ? dirtyBounds[0] : x;
+                dirtyBounds[1] = (dirtyBounds[1] > x) ? dirtyBounds[1] : x;
+                dirtyBounds[2] = (dirtyBounds[2] < y) ? dirtyBounds[2] : y;
+                dirtyBounds[3] = (dirtyBounds[3] > y) ? dirtyBounds[3] : y;
             } else {
-                fn_802B7300(arg0, arg1, arg2, (s32)0xFFFF0000, lbl_80564C94);
+                drawMarker(x, y, sample, (s32)0xFFFF0000, kMarkerSize);
             }
         }
         break;
     case 3:
-        fn_802C21DC();
+        /* Called through a prototype-less declaration, so the pixel writer
+         * reads x, y and the sample from the registers they arrived in. */
+        plotPixel();
         break;
     case 5:
     {
-        f32 fx = (f32)arg0 * lbl_80564C58;
-        f32 fy = (f32)arg1 * lbl_80564C58;
-        fn_80204044(arg2, fx, fy);
+        f32 worldX = (f32)x * kGridStep;
+        f32 worldY = (f32)y * kGridStep;
+        drawWorldPoint(sample, worldX, worldY);
     }
         break;
     }
