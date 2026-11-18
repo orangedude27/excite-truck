@@ -188,21 +188,6 @@ void fn_80264098(void *item, int type) {
 
 #pragma dont_inline on
 #pragma dont_inline off
-static inline void initMenuItem_inline(void *item, void *name, int type, void *data, int a, int b) {
-    struct CreditsMenuItem {
-        void *name;
-        int type;
-        void *data;
-        int a;
-        int b;
-    };
-    struct CreditsMenuItem *row = (struct CreditsMenuItem *)item;
-    row->data = data;
-    row->type = type;
-    row->name = name;
-    row->a = a;
-    row->b = b;
-}
 #pragma scheduling invalid_target
 void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
