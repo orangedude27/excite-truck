@@ -235,8 +235,9 @@ void fn_801AE158(void *obj) {
     *(f32 *)((u8 *)obj + 0x24) = zeroVec.z;
 }
 
-#pragma scheduling invalid_target
-void *fn_801AE180(void) {
+ #pragma scheduling invalid_target
+ #pragma unroll off
+ void *fn_801AE180(void) {
      s32 var_r8;
      s32 var_r5_2;
      s32 var_r5;
@@ -257,6 +258,7 @@ void *fn_801AE180(void) {
      u8 *temp_r5;
      u8 *temp_r3_3;
      u8 *temp_r3_2;
+     u32 step320 = 320;
   
       temp_r31 = lbl_8055E604;
       temp_r3_2 = (*(void **)((u8 *)(temp_r31) + (0)));
@@ -304,7 +306,7 @@ void *fn_801AE180(void) {
                           }
                       }
                       if (var_r4 != 0) {
-                          var_ctr = (u32) ((temp_r7 + 0x13F) - var_r6) / 320U;
+                          var_ctr = (u32) ((temp_r7 + 0x13F) - var_r6) / step320;
                           if (var_r6 < temp_r7) {
                               do {
                                   (*(f32 *)((u8 *)(var_r6) + (4))) = (f32) lbl_80562520;
@@ -394,7 +396,7 @@ void *fn_801AE180(void) {
                       }
                   }
                   temp_r5_3 = temp_r3_3 + 0xA08;
-                  var_ctr_2 = (u32) ((temp_r5_3 + 0x27) - var_r6) / 40U;
+                  var_ctr_2 = (u32) ((temp_r5_3 + 0x27) - var_r6) / step320;
                   if (var_r6 < temp_r5_3) {
                       do {
                           (*(f32 *)((u8 *)(var_r6) + (4))) = (f32) lbl_80562520;
