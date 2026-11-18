@@ -88,6 +88,7 @@ extern void fn_801C84E0(void);
 extern void fn_801C8500(void);
 #include <internal/printf.h>
 #include <revolution/MTX/vec.h>
+static Vec *ptrAtVec(char *b, s32 off) { return (Vec *)(b + off); }
 extern Vec lbl_80438498;
 static inline void fn_801C7C04_load2(f32 *out, Vec *v) {
     out[0] = v->x;
@@ -2198,9 +2199,7 @@ static inline void fn_801C7FE4_copyVec(Vec *dst, const Vec *src) {
     dst->z = src->z;
 }
 
-#pragma push
 #pragma opt_propagation off
-#pragma cplusplus on
 void fn_801C7FE4(void) {
     extern char lbl_80336FB0[];
     Unk_80437D88 *base = &lbl_80437D88;
@@ -2214,12 +2213,16 @@ void fn_801C7FE4(void) {
     *(s32 *)((char *)obj + 0x10) = fn_801C3954((s32)obj + 0x14);
     *(s32 *)((char *)obj + 0x10) &= ~fn_801C3954((s32)obj + 0x114);
     *(f32 *)((char *)obj + 0x214) = *(f32 *)((char *)base + 0x4E0);
-    *(f32 *)((char *)obj + 0x218) = *(f32 *)((char *)base + 0x4E4);
-    *(f32 *)((char *)obj + 0x21C) = *(f32 *)((char *)base + 0x4E8);
+    {
+        s32 off = 0x4E0;
+        Vec *v = (Vec *)((char *)base + off);
+        *(f32 *)((char *)obj + 0x218) = v->y;
+        *(f32 *)((char *)obj + 0x21C) = v->z;
+    }
     sprintf((char *)base + 0x238, lbl_80336FB0, *(f32 *)obj);
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
-#pragma pop
+#pragma opt_propagation reset
 extern f32 lbl_805629B4;
 extern f32 lbl_8055E85C, lbl_8055E860;
 extern s32 lbl_8055E854;
