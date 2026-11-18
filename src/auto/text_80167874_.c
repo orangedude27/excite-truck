@@ -1462,7 +1462,6 @@ s32 fn_80169D64(s32 unused, s32 name) {
     return (u32)__cntlzw(cmp) >> 5;
 }
 #pragma push
-#pragma scheduling on
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
@@ -1478,7 +1477,6 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     {
         DummyEntry *entry = &arg2->entries[arg2->entryCount++];
         entry->byte1C = 0;
-        i = 0;
         zero = lbl_80561924;
         entry->f8 = zero;
         entry->fC = zero;
@@ -1491,7 +1489,7 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         arg2->flag1E158 = 1;
     }
 
-    for (; (item = arg1->getItem(i)) != 0; i++) {
+    for (i = 0; (item = arg1->getItem(i)) != 0; i++) {
         f32 hit = item->getHit(lbl_8055A1C8);
         DummyVec2 loc = item->getLoc(lbl_8055A1CC);
         DummyRecord *rec = &arg2->records[arg2->recordCount++];
