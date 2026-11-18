@@ -761,7 +761,6 @@ extern "C" void fn_80206EE4(void *arg0, void *arg1, int arg2) {
     c2 = (c2 > lbl_8056321C) ? c2 : lbl_8056321C;
     (*(Hnd **)(obj + 0xC))->s40(c2);
 }
-#pragma scheduling invalid_target
 
 #pragma processor gekko
 #pragma use_lmw_stmw reset
