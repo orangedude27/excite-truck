@@ -27,21 +27,22 @@ extern void *fn_80016BC8(void *, int);
 extern void *lbl_8055D54C;
 extern void fn_80128670(void *);
 extern void fn_80131818(void);
+#pragma scheduling invalid_target
 void fn_80016354(void) {
-    int id = 0;
+    int i;
     lbl_8055D538 = (void *)fn_80131808(&lbl_802FCEA8[0xC]);
     lbl_8055D540 = (void *)fn_8012850C(0x11F8, &lbl_802FCEA8[0x18]);
     lbl_8055D544 = (void *)fn_8012850C(0x20D0, &lbl_802FCEA8[0x28]);
     fn_80016C1C();
     lbl_8055D554 = 0;
-    id = 0;
+    i = 0;
     do {
-        fn_8001766C(id);
-        id++;
-    } while (id < 4);
+        fn_8001766C(i);
+        i++;
+    } while (i < 4);
     fn_8000D884(0x44727672, 1, &lbl_8055D548, 0x960, fn_800177B8);
 }
-
+#pragma scheduling reset
 /* Resets/tears down the global object state used by this subsystem: clears
  * counters/handles, frees the primary buffers (lbl_8055D544, lbl_8055D540),
  * and destroys the two auxiliary objects (lbl_8055D538, lbl_8055D53C) if set. */
@@ -321,10 +322,11 @@ void fn_80016928(int carDefId, int value) {
 #pragma scheduling invalid_target
 void fn_80016970(int arg0, int arg1, int arg2, int arg3) {
     struct E { char pad[0x4]; int id; char pad2[0x44]; int f4C; int f50; char rest[0x8]; };
+    register int idx = arg0;
     struct E *b = (struct E *)lbl_803577F0;
-    b[arg0].id = arg1;
-    b[arg0].f4C = *(int *)fn_80016544(arg2);
-    b[arg0].f50 = arg3;
+    b[idx].id = arg1;
+    b[idx].f4C = *(int *)fn_80016544(arg2);
+    b[idx].f50 = arg3;
     *(int *)(lbl_80357960 + arg0 * 0xA8 + 4) = -1000;
 }
 #pragma pop
@@ -513,7 +515,7 @@ extern int sscanf(const char *, const char *, ...);
 #pragma processor gekko
 #pragma dont_inline fn_80016DD8
 int fn_80016DD8(const char *arg0) {
-    unsigned int hex, red, green, blue;
+    unsigned int hex, blue, green, red;
     int c;
     int first = *(const unsigned char *)arg0;
     int result = 0xFF008040;
@@ -528,7 +530,7 @@ int fn_80016DD8(const char *arg0) {
     }
     if ((signed char)first >= '0' && (signed char)first <= '9' &&
         sscanf(arg0, lbl_802FCF04, &red, &green, &blue) == 3) {
-        result = ((red << 16) & 0xFF0000) | ((green << 8) & 0xFF00) | (blue & 255) | 0xFF000000;
+        result = ((red & 255) << 16) | ((green & 255) << 8) | (blue & 255) | 0xFF000000;
     }
 done:
     return result;
@@ -623,16 +625,18 @@ extern "C" void fn_80017010(void *arg0) {
     char *entry;
     char *r26;
     int off, eidx;
-    int c;
     int flag;
+    int c;
+    int count;
+    count = (int)lbl_8055D550;
     base = lbl_802FCEA8;
-    entry = (char *)lbl_8055D544 + (int)lbl_8055D550 * 0xA8;
-    *(int *)entry = (int)lbl_8055D550;
+    entry = (char *)lbl_8055D544 + count * 0xA8;
+    *(int *)entry = count;
     *(int *)(entry + 4) = (int)lbl_8055D550 | 0x40000000;
     {
-        char *s = ((Interface *)arg0)->m3(lbl_80558C08, (int)lbl_8055D550);
-        char *dst = entry + 0x2C;
+        char *s = ((Interface *)arg0)->m3(lbl_80558C08, count);
         int n = 0x20;
+        char *dst = entry + 0x2C;
         while (*dst++ = *s++) {
             if (--n <= 0) { dst[-1] = 0; break; }
         }
@@ -642,11 +646,16 @@ extern "C" void fn_80017010(void *arg0) {
     if (c < 0 || c >= 0x100) {
         flag = 1;
     }
-    if (flag != 0) {
-    } else {
-        unsigned char *tbl = *(unsigned char **)((char *)lbl_802FE850.cmap + 0xC);
-        c = tbl[c];
-        *(unsigned char *)(entry + 0x2C) = c;
+    switch (flag) {
+    case 0:
+        {
+            unsigned char *tbl = *(unsigned char **)((char *)lbl_802FE850.cmap + 0xC);
+            c = tbl[c];
+            *(unsigned char *)(entry + 0x2C) = c;
+        }
+        break;
+    default:
+        break;
     }
     v29 = ((Interface *)arg0)->m10(base + 0x74, 0);
     v30 = ((Interface *)arg0)->m10(base + 0x84, 0);
@@ -657,8 +666,8 @@ extern "C" void fn_80017010(void *arg0) {
         {
             char sp88[64];
             char *s = entry + 0x2C;
-            char *dst = sp88;
             int n = 0x40;
+            char *dst = sp88;
             while (*dst++ = *s++) {
                 if (--n <= 0) { dst[-1] = 0; break; }
             }
@@ -689,16 +698,16 @@ extern "C" void fn_80017010(void *arg0) {
     }
     {
         char *s = ((Interface *)arg0)->m4(base + 0xFC, r26 ? r26 : entry + 0x2C);
-        char *dst = entry + 0xC;
         int n = 0x20;
+        char *dst = entry + 0xC;
         while (*dst++ = *s++) {
             if (--n <= 0) { dst[-1] = 0; break; }
         }
     }
     {
         char *s = base + 0x10C;
-        char *dst = entry + 0x4C;
         int n = 0x10;
+        char *dst = entry + 0x4C;
         while (*dst++ = *s++) {
             if (--n <= 0) { dst[-1] = 0; break; }
         }
@@ -709,8 +718,8 @@ extern "C" void fn_80017010(void *arg0) {
         fn_801345D8(sp48, 0x40, base + 0x118, (int)(entry + 0xC));
         s = fn_80131234(sp48);
         {
-            char *dst = entry + 0xC;
             int n = 0x20;
+            char *dst = entry + 0xC;
             while (*dst++ = *s++) {
                 if (--n <= 0) { dst[-1] = 0; break; }
             }
@@ -719,17 +728,18 @@ extern "C" void fn_80017010(void *arg0) {
     *(int *)(entry + 0x98) = 0;
     while (*(int *)(entry + 0x98) < 0xC) {
         char sp28[32];
+        char *s;
         fn_801345D8(sp28, 0x20, base + 0x124, *(int *)(entry + 0x98) + 1);
-        if (((Interface *)arg0)->m4(base + 0x124, sp28) != (char *)0) {
-            *(int *)(entry + 0x64 + *(int *)(entry + 0x98) * 4) = fn_80016DD8(sp28);
+        s = ((Interface *)arg0)->m4(sp28, 0);
+        if (s != (char *)0) {
+            *(int *)(entry + 0x64 + *(int *)(entry + 0x98) * 4) = fn_80016DD8(s);
+        } else {
+            if (*(int *)(entry + 0x98) != 0) break;
+            *(int *)(entry + 0x64 + *(int *)(entry + 0x98) * 4) = 0xFF008040;
             *(int *)(entry + 0x98) = *(int *)(entry + 0x98) + 1;
-            continue;
+            break;
         }
-        if (*(int *)(entry + 0x98) == 0) {
-            *(int *)(entry + 0x64) = 0xFF008040;
-            *(int *)(entry + 0x98) = *(int *)(entry + 0x98) + 1;
-        }
-        break;
+        *(int *)(entry + 0x98) = *(int *)(entry + 0x98) + 1;
     }
     *(int *)(entry + 0x94) = ((Interface *)arg0)->m6(base + 0x134, 0) - 1;
     *(int *)(entry + 0x9C) = fn_8013C8E8(entry + 0x2C);
@@ -742,12 +752,12 @@ extern "C" void fn_80017010(void *arg0) {
     eidx = 0;
     while (1) {
         char sp8[32];
-        int count;
+        int count2;
         fn_801345D8(sp8, 0x20, base + 0x158, eidx + 1);
-        count = ((Interface *)arg0)->m6(sp8, 0);
-        if (count == 0) break;
-        if (count >= 0) *(int *)(entry + 0xA4) |= (1 << count);
-        else *(int *)(entry + 0xA4) &= ~(1 << -count);
+        count2 = ((Interface *)arg0)->m6(sp8, 0);
+        if (count2 == 0) break;
+        if (count2 >= 0) *(int *)(entry + 0xA4) |= (1 << count2);
+        else *(int *)(entry + 0xA4) &= ~(1 << -count2);
         eidx++;
     }
     fn_801345D8(entry + 0x5C, 8, lbl_80558BD0, *(int *)(entry + 4) & 0xBFFFFFFF);
