@@ -115,11 +115,12 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     } temp;
     register u8 *entry = (u8 *)arg0;
     register f32 *vec = (f32 *)arg1;
-    register u8 *object = (u8 *)arg2;
     register s32 i = 0;
+    register u8 *object = (u8 *)arg2;
+    register s32 id = arg3;
     register s32 active;
     register s32 index;
-    register f32 x, y, z;
+    register f32 z, y, x;
     f32 p2, p1, p0;
     p0 = vec[0];
     p1 = vec[1];
@@ -134,7 +135,7 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     active = 1;
     for (; i < *(s32 *)((u8 *)arg0 + 0x28); entry += 8, i++) {
         if (*(s32 *)(entry + 8) < 0) {
-            temp.id = arg3;
+            temp.id = id;
             fn_801796CC(10, (f32 *)&temp, 0x20);
             {
                 s32 isType = 0;
@@ -154,25 +155,32 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
                     *record++ = (u8)active;
                     *(s32 *)(record + 3) = temp.id;
                     *(f32 *)(lbl_80438898 + index + 8) =
-                        *(f32 *)(entry + 0xC) + lbl_8055E3C8;
-                    x = vec[0] - *(f32 *)(object + 0x60);
-                    y = vec[1] - *(f32 *)(object + 0x64);
-                    z = vec[2] - *(f32 *)(object + 0x68);
-                    *(f32 *)(record + 0xB) = x;
-                    *(f32 *)(record + 0xF) = y;
-                    *(f32 *)(record + 0x13) = z;
-                    *(f32 *)(record + 0xB) =
-                        x * *(f32 *)(object + 0x3C) +
-                        y * *(f32 *)(object + 0x40) +
-                        z * *(f32 *)(object + 0x44);
-                    *(f32 *)(record + 0xF) =
-                        x * *(f32 *)(object + 0x48) +
-                        y * *(f32 *)(object + 0x4C) +
-                        z * *(f32 *)(object + 0x50);
-                    *(f32 *)(record + 0x13) =
-                        x * *(f32 *)(object + 0x54) +
-                        y * *(f32 *)(object + 0x58) +
-                        z * *(f32 *)(object + 0x5C);
+                        lbl_8055E3C8 + *(f32 *)(entry + 0xC);
+                    {
+                        f32 vx = vec[0];
+                        f32 vy = vec[1];
+                        f32 vz = vec[2];
+                        x = vx - *(f32 *)(object + 0x60);
+                        *(f32 *)(record + 0xB) = x;
+                        y = vy - *(f32 *)(object + 0x64);
+                        *(f32 *)(record + 0xF) = y;
+                        z = vz - *(f32 *)(object + 0x68);
+                        *(f32 *)(record + 0x13) = z;
+                    }
+                    {
+                        f32 m40 = *(volatile f32 *)(object + 0x40);
+                        f32 m3c = *(volatile f32 *)(object + 0x3C);
+                        f32 m48 = *(volatile f32 *)(object + 0x48);
+                        f32 m44 = *(volatile f32 *)(object + 0x44);
+                        f32 m4c = *(volatile f32 *)(object + 0x4C);
+                        f32 m50 = *(volatile f32 *)(object + 0x50);
+                        f32 m54 = *(volatile f32 *)(object + 0x54);
+                        f32 m58 = *(volatile f32 *)(object + 0x58);
+                        f32 m5c = *(volatile f32 *)(object + 0x5C);
+                        *(f32 *)(record + 0xB) = x * m3c + y * m40 + z * m44;
+                        *(f32 *)(record + 0xF) = x * m48 + y * m4c + z * m50;
+                        *(f32 *)(record + 0x13) = x * m54 + y * m58 + z * m5c;
+                    }
                 }
             }
         }
@@ -309,22 +317,16 @@ void fn_801D2214(void) {
             else {
                 u8 *object = (u8 *)*objects;
                 if (&temp.position[0] == &record->position[0]) {
-                    volatile f32 *matrix = (volatile f32 *)object;
-                    f32 m48 = matrix[0x48 / 4];
-                    f32 y = record->position[1];
-                    f32 m4c = matrix[0x4C / 4];
-                    f32 m3c = matrix[0x3C / 4];
-                    f32 x = record->position[0];
-                    f32 m40 = matrix[0x40 / 4];
-                    f32 z = record->position[2];
-                    f32 m44 = matrix[0x44 / 4];
-                    f32 m50 = matrix[0x50 / 4];
-                    f32 m54 = matrix[0x54 / 4];
-                    f32 m58 = matrix[0x58 / 4];
-                    f32 m5c = matrix[0x5C / 4];
-                    temp.position[0] = x * m3c + y * m48 + z * m54;
-                    temp.position[1] = x * m40 + y * m4c + z * m58;
-                    temp.position[2] = x * m44 + y * m50 + z * m5c;
+                    f32 *matrix = (f32 *)object;
+                    float x, y, z;
+                    float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+                    m10 = matrix[0x48 / 4]; m11 = matrix[0x4C / 4]; m12 = matrix[0x50 / 4];
+                    m00 = matrix[0x3C / 4]; m01 = matrix[0x40 / 4]; m02 = matrix[0x44 / 4];
+                    m20 = matrix[0x54 / 4]; m21 = matrix[0x58 / 4]; m22 = matrix[0x5C / 4];
+                    x = record->position[0]; y = record->position[1]; z = record->position[2];
+                    temp.position[0] = z * m20 + (x * m00 + y * m10);
+                    temp.position[1] = z * m21 + (x * m01 + y * m11);
+                    temp.position[2] = z * m22 + (x * m02 + y * m12);
                 } else {
                     volatile f32 *matrix = (volatile f32 *)object;
                     f32 m48, x, m3c, y, m54, z, m4c, m40, m58, m50, m44, m5c;
