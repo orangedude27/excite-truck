@@ -220,7 +220,7 @@ void fn_8017B4AC(float * __restrict state, float * __restrict delta) {
 #pragma push
 #pragma processor 750
 void fn_8017B4E0(void *arg0, float *arg1, float *arg2, float arg3) {
-#pragma scheduling on
+#pragma scheduling invalid_target
     float *state = (float *)arg0;
     float delta[3];
     float output[3];
@@ -371,7 +371,7 @@ extern void fn_801ADB44(void *, void *);
 #pragma ppc_psq_save off
 void fn_8017B81C(void *arg0) {
     union { float rotation[9]; float product[9]; } matrixScratch;
-    volatile float transpose[9]; float gravity[3], angle[3], midpoint[3];
+    float transpose[9], gravity[3], angle[3], midpoint[3];
     void **var_r29;
     float temp_f0; float temp_f0_2; float temp_f0_3; float temp_f0_4;
     float temp_f0_5; float temp_f0_6; float temp_f10; float temp_f11;
@@ -649,19 +649,19 @@ void fn_8017B81C(void *arg0) {
         (*(float *)((char *)(temp_r30) + 0x14)) = fn_80144514(matrixScratch.rotation[2], (*(float *)((char *)(temp_r30) + 0xC)), matrixScratch.rotation[5], (*(float *)((char *)(temp_r30) + 0x10)), matrixScratch.rotation[8], (*(float *)((char *)(temp_r30) + 0x14)));
         (*(float *)((char *)(temp_r30) + 0x20)) = fn_80144514(matrixScratch.rotation[2], (*(float *)((char *)(temp_r30) + 0x18)), matrixScratch.rotation[5], (*(float *)((char *)(temp_r30) + 0x1C)), matrixScratch.rotation[8], (*(float *)((char *)(temp_r30) + 0x20)));
     }
-    *(volatile int *)&transpose[1] = *(int *)((char *)(arg0) + 0x40);
+    transpose[1] = (*(float *)((char *)(arg0) + 0x40));
     temp_r30_2 = (char *)arg0 + 0xF4;
-    *(volatile int *)&transpose[0] = *(int *)((char *)(arg0) + 0x3C);
+    transpose[0] = (*(float *)((char *)(arg0) + 0x3C));
     temp_f1_8 = transpose[1];
-    *(volatile int *)&transpose[2] = *(int *)((char *)(arg0) + 0x44);
+    transpose[2] = (*(float *)((char *)(arg0) + 0x44));
     temp_f3_6 = transpose[2];
-    *(volatile int *)&transpose[3] = *(int *)((char *)(arg0) + 0x48);
-    *(volatile int *)&transpose[4] = *(int *)((char *)(arg0) + 0x4C);
-    *(volatile int *)&transpose[5] = *(int *)((char *)(arg0) + 0x50);
+    transpose[3] = (*(float *)((char *)(arg0) + 0x48));
+    transpose[4] = (*(float *)((char *)(arg0) + 0x4C));
+    transpose[5] = (*(float *)((char *)(arg0) + 0x50));
     temp_f2_4 = transpose[5];
-    *(volatile int *)&transpose[6] = *(int *)((char *)(arg0) + 0x54);
-    *(volatile int *)&transpose[7] = *(int *)((char *)(arg0) + 0x58);
-    *(volatile int *)&transpose[8] = *(int *)((char *)(arg0) + 0x5C);
+    transpose[6] = (*(float *)((char *)(arg0) + 0x54));
+    transpose[7] = (*(float *)((char *)(arg0) + 0x58));
+    transpose[8] = (*(float *)((char *)(arg0) + 0x5C));
     transpose[1] = transpose[3];
     transpose[3] = temp_f1_8;
     transpose[2] = transpose[6];
