@@ -351,18 +351,18 @@ void fn_802CECF4(unsigned int targetIndex) {
     } while ((unsigned short)lbl_8055D0F6 != targetIndex);
 }
 
+#pragma push
 #pragma scheduling 750
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
     volatile unsigned char *state = lbl_804C5710;
-    volatile unsigned char *second = state + 1;
     *(volatile int *)(state + 4) = arg0;
     *(volatile int *)(state + 8) = arg1;
     *(volatile int *)(state + 0xC) = arg2;
     *(volatile int *)(state + 0x10) = arg3;
-    state[0] = 1;
-    *second = 1;
+    *(volatile unsigned char *)lbl_804C5710 = 1;
+    state[1] = 1;
 }
-#pragma scheduling reset
+#pragma pop
 extern void KPADSetBtnRepeat(int *, int *, int *, int *);
 #pragma push
 #pragma use_lmw_stmw off
@@ -1174,35 +1174,37 @@ void fn_802D007C(float arg0) {
     GXSetTevColor(1, &color);
     lbl_804C5700[0] = 1;
 }
-#pragma pop
- void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
-     extern char lbl_804C97D0;
-     volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
-     p[4] = a;
-     p[5] = b;
-     p[6] = c;
-     p[7] = 0xFF;
-     p[0x5C] = 1;
- }
 #pragma push
-#pragma small_data off
-void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
+#pragma scheduling invalid_target
+void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
+    p[7] = 0xFF;
+    p[4] = a;
+    p[5] = b;
+    p[6] = c;
+    p[0x5C] = 1;
+}
+#pragma pop
+void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
+    extern char lbl_804C97D0;
+    volatile unsigned char *p;
     lbl_804C97D0 = a;
+    p = (volatile unsigned char *)&lbl_804C97D0;
     p[1] = b;
     p[2] = c;
     p[3] = 0;
     p[0x5C] = 1;
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 void fn_802D01B0(float *p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
     float *out;
     x = p[0];
     out = (float *)((unsigned char *)&lbl_804C97D0 + 0xC);
-    y = *(volatile float *)((float *)p + 1);
+    y = p[1];
     z = p[2];
     out[0] = x;
     out[1] = y;
@@ -1210,9 +1212,7 @@ void fn_802D01B0(float *p, float v) {
     out[3] = v;
     *((unsigned char *)&lbl_804C97D0 + 0x5C) = 1;
 }
-
-#pragma push
-#pragma scheduling invalid_target
+#pragma pop
 void fn_802D2218(void);
 #pragma push
 #pragma paired off
