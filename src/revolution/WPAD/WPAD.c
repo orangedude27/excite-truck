@@ -659,9 +659,11 @@ void fn_8005E298(void) {
     s32 temp_r4_4;
     s32 temp_r5;
     s32 temp_r5_2;
+    s32 temp_state2;
     s32 var_r0;
     s32 var_r0_2;
     s32 var_r0_3;
+    s32 var_r0_4;
     s32 var_r25;
     s32 var_r26;
     s8 var_r22;
@@ -674,7 +676,6 @@ void fn_8005E298(void) {
     u8 temp_r0_2;
     u8 temp_r3;
     u8 temp_r3_2;
-    u8 var_r0_4;
     u8 var_r0_5;
     u8 var_r3;
     WPADCB **var_r28;
@@ -693,12 +694,12 @@ void fn_8005E298(void) {
                 temp_r30 = *var_r28;
                 if ((*(s32*)((u8*)temp_r30 + 0x818) != 0) && (*(s32*)((u8*)temp_r30 + 0x780) != 0)) {
                     temp_r25 = OSDisableInterrupts();
-                    OSDisableInterrupts();
+                    temp_state2 = OSDisableInterrupts();
                     var_r29 = *(u8*)((u8*)temp_r30 + 0x5ED) - *(u8*)((u8*)temp_r30 + 0x5EC);
                     if (var_r29 < 0) {
                         var_r29 += *(s32*)((u8*)temp_r30 + 0x5F4);
                     }
-                    OSRestoreInterrupts(0);
+                    OSRestoreInterrupts(temp_state2);
                     if (var_r29 == 0) {
                         OSRestoreInterrupts(temp_r25);
                         var_r0 = 0;
@@ -716,12 +717,12 @@ void fn_8005E298(void) {
                         frame.extCopy.d[5] = frame.ext.d[5];
                         if (fn_8005D234(var_r26, (WPADGameInfo*)&frame.extCopy) == 0) {
                             temp_r25_2 = OSDisableInterrupts();
-                            OSDisableInterrupts();
+                            temp_state2 = OSDisableInterrupts();
                             var_r29_2 = *(u8*)((u8*)temp_r30 + 0x5ED) - *(u8*)((u8*)temp_r30 + 0x5EC);
                             if (var_r29_2 < 0) {
                                 var_r29_2 += *(s32*)((u8*)temp_r30 + 0x5F4);
                             }
-                            OSRestoreInterrupts(0);
+                            OSRestoreInterrupts(temp_state2);
                             if (var_r29_2 == 0) {
                                 OSRestoreInterrupts(temp_r25_2);
                             } else {
@@ -748,12 +749,12 @@ block_18:
             temp_r29 = *var_r28;
             if (*(s32*)((u8*)temp_r29 + 0x818) != 0) {
                 temp_r30_2 = OSDisableInterrupts();
-                OSDisableInterrupts();
+                temp_state2 = OSDisableInterrupts();
                 var_r22 = *(u8*)((u8*)temp_r29 + 0x161) - *(u8*)((u8*)temp_r29 + 0x160);
                 if (var_r22 < 0) {
                     var_r22 += *(s32*)((u8*)temp_r29 + 0x168);
                 }
-                OSRestoreInterrupts(0);
+                OSRestoreInterrupts(temp_state2);
                 if (var_r22 == 0) {
                     OSRestoreInterrupts(temp_r30_2);
                     var_r0_2 = 0;
@@ -771,12 +772,12 @@ block_18:
                     frame.stdCopy.d[5] = frame.std.d[5];
                     if (fn_8005D234(var_r26, (WPADGameInfo*)&frame.stdCopy) == 0) {
                         temp_r30_3 = OSDisableInterrupts();
-                        OSDisableInterrupts();
+                        temp_state2 = OSDisableInterrupts();
                         var_r22_2 = *(u8*)((u8*)temp_r29 + 0x161) - *(u8*)((u8*)temp_r29 + 0x160);
                         if (var_r22_2 < 0) {
                             var_r22_2 += *(s32*)((u8*)temp_r29 + 0x168);
                         }
-                        OSRestoreInterrupts(0);
+                        OSRestoreInterrupts(temp_state2);
                         if (var_r22_2 == 0) {
                             OSRestoreInterrupts(temp_r30_3);
                         } else {
@@ -803,33 +804,32 @@ block_33:
             temp_r29_2 = *var_r28;
             if (*(s32*)((u8*)temp_r29_2 + 0x7FC) != -1) {
                 if (var_r25 != 1) {
-                    OSDisableInterrupts();
+                    temp_state2 = OSDisableInterrupts();
                     var_r22_3 = *(u8*)((u8*)temp_r29_2 + 0x161) - *(u8*)((u8*)temp_r29_2 + 0x160);
                     if (var_r22_3 < 0) {
                         var_r22_3 += *(s32*)((u8*)temp_r29_2 + 0x168);
                     }
-                    OSRestoreInterrupts(0);
-                    if (var_r22_3 <= 0) {
+                    OSRestoreInterrupts(temp_state2);
+                    if (var_r22_3 > 0) {
                         *(s32*)((u8*)*var_r28 + 0x810) = 0;
-                        if (*var_r27 == 5) {
-                            *(u16*)((u8*)&frame.rmb + 0x1A) = 1;
-                            temp_r5_3 = *var_r28;
-                            *(void**)((u8*)&frame.rmb + 0x2C) = NULL;
-                            *(s32*)((u8*)temp_r5_3 + 0x810) = 0;
-                            *(u32*)&frame.rmb = 0x10;
-                            *(u8*)((u8*)&frame.rmb + 4) = 0;
-                            frame.rmbCopy.d[0] = frame.rmb.d[0];
-                            frame.rmbCopy.d[1] = frame.rmb.d[1];
-                            frame.rmbCopy.d[2] = frame.rmb.d[2];
-                            frame.rmbCopy.d[3] = frame.rmb.d[3];
-                            frame.rmbCopy.d[4] = frame.rmb.d[4];
-                            frame.rmbCopy.d[5] = frame.rmb.d[5];
-                            fn_80063324(var_r26, (WPADGameInfo*)&frame.rmbCopy);
-                        }
                         goto block_done;
                     }
                 }
-                *(s32*)((u8*)*var_r28 + 0x810) = 0;
+                if (*var_r27 == 5) {
+                    *(u16*)((u8*)&frame.rmb + 0x1A) = 1;
+                    temp_r5_3 = *var_r28;
+                    *(void**)((u8*)&frame.rmb + 0x2C) = NULL;
+                    *(s32*)((u8*)temp_r5_3 + 0x810) = 0;
+                    *(u32*)&frame.rmb = 0x10;
+                    *(u8*)((u8*)&frame.rmb + 4) = 0;
+                    frame.rmbCopy.d[0] = frame.rmb.d[0];
+                    frame.rmbCopy.d[1] = frame.rmb.d[1];
+                    frame.rmbCopy.d[2] = frame.rmb.d[2];
+                    frame.rmbCopy.d[3] = frame.rmb.d[3];
+                    frame.rmbCopy.d[4] = frame.rmb.d[4];
+                    frame.rmbCopy.d[5] = frame.rmb.d[5];
+                    fn_80063324(var_r26, (WPADGameInfo*)&frame.rmbCopy);
+                }
 block_done:
                 if (*(s32*)((u8*)*var_r28 + 0x810) != 0) {
                     var_r0_4 = *var_r27 + 1;
@@ -852,9 +852,9 @@ block_done:
             DCInvalidateRange((void *)0x800031A2, 1);
             DBPrintf_80068D68(lbl_80312140, *(u8 *)0x800031A2);
             if ((s8) lbl_8055DC04 != (s32) *(u8 *)0x800031A2) {
-                OSDisableInterrupts();
+                temp_state2 = OSDisableInterrupts();
                 lbl_8055DC04 = *(u8 *)0x800031A2;
-                OSRestoreInterrupts(0);
+                OSRestoreInterrupts(temp_state2);
                 WUDSetDisableChannel((s8) lbl_8055DC04);
             }
         }
@@ -4623,12 +4623,13 @@ extern u8 lbl_802EE8C8[];
 s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
     u8 frame[0x420] ALIGN(8);
     register s32 channel asm("r31") = chan;
-    register s32 arg asm("r26") = arg1;
+    register s32 arg asm("r27") = arg1;
     register WPADCallback callback asm("r28") = arg2;
     register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
-    register u32 value778 asm("r27");
+    register u32 value778 asm("r26");
     register s32 status asm("r25");
     register u32 value81C asm("r30");
+    BOOL outerEnabled;
     BOOL enabled;
     BOOL nestedEnabled;
     s8 used;
