@@ -195,9 +195,10 @@ extern "C" float fn_80019FD4(void *arg0, int arg1, float farg0) {
 
 #pragma opt_unroll_loops off
 extern "C" void fn_8001A04C(int *arg0) {
-    char *base;
     char *p;
-    int count;
+    char *base;
+    int i;
+    int v;
 
     lbl_8055D5B8--;
     if (lbl_8055D5B8 == 0) {
@@ -208,48 +209,35 @@ extern "C" void fn_8001A04C(int *arg0) {
         }
         lbl_8055D5B4 = 0;
     }
-    count = 2;
     base = (char *)&lbl_803583C8;
-    do {
+    i = 0;
+    while (i < 16) {
         *(char *)(base + 0x10) = 0;
         *(int *)(base + 0) = 0;
         *(int *)(base + 4) = -1;
-        *(char *)(base + 0x24) = 0;
-        *(int *)(base + 0x14) = 0;
-        *(int *)(base + 0x18) = -1;
-        *(char *)(base + 0x38) = 0;
-        *(int *)(base + 0x28) = 0;
-        *(int *)(base + 0x2C) = -1;
-        *(char *)(base + 0x4C) = 0;
-        *(int *)(base + 0x3C) = 0;
-        *(int *)(base + 0x40) = -1;
-        *(char *)(base + 0x60) = 0;
-        *(int *)(base + 0x50) = 0;
-        *(int *)(base + 0x54) = -1;
-        *(char *)(base + 0x74) = 0;
-        *(int *)(base + 0x64) = 0;
-        *(int *)(base + 0x68) = -1;
-        *(char *)(base + 0x88) = 0;
-        *(int *)(base + 0x78) = 0;
-        *(int *)(base + 0x7C) = -1;
-        *(char *)(base + 0x9C) = 0;
-        *(int *)(base + 0x8C) = 0;
-        *(int *)(base + 0x90) = -1;
-        base += 0xA0;
-        count--;
-    } while (count != 0);
+        base += 0x14;
+        i++;
+    }
     if (arg0 != 0) {
         p = (char *)arg0;
-        if (*(int *)(p + 0x18) != -2) { fn_802CAC54(*(int *)(p + 0x18)); *(int *)(p + 0x18) = -2; }
-        if (*(int *)(p + 0x14) != -2) { fn_802CAC54(*(int *)(p + 0x14)); *(int *)(p + 0x14) = -2; }
-        if (*(int *)(p + 0) != -2) { fn_802CAC54(*(int *)(p + 0)); *(int *)(p + 0) = -2; }
-        if (*(int *)(p + 8) != -2) { fn_802CAC54(*(int *)(p + 8)); *(int *)(p + 8) = -2; }
-        if (*(int *)(p + 12) != -2) { fn_802CAC54(*(int *)(p + 12)); *(int *)(p + 12) = -2; }
-        if (*(int *)(p + 4) != -2) { fn_802CB228(*(int *)(p + 4)); *(int *)(p + 4) = -2; }
+        v = *(int *)(p + 0x18);
+        if (v != -2) { fn_802CAC54(v); *(int *)(p + 0x18) = -2; }
+        v = *(int *)(p + 0x14);
+        if (v != -2) { fn_802CAC54(v); *(int *)(p + 0x14) = -2; }
+        v = *(int *)(p + 0);
+        if (v != -2) { fn_802CAC54(v); *(int *)(p + 0) = -2; }
+        v = *(int *)(p + 8);
+        if (v != -2) { fn_802CAC54(v); *(int *)(p + 8) = -2; }
+        v = *(int *)(p + 12);
+        if (v != -2) { fn_802CAC54(v); *(int *)(p + 12) = -2; }
+        v = *(int *)(p + 4);
+        if (v != -2) { fn_802CB228(v); *(int *)(p + 4) = -2; }
         p = *(char **)(p + 0x10);
         if (p != 0) {
-            fn_80235380(*(int *)p);
-            fn_80128668(p);
+            if (p != 0) {
+                fn_80235380(*(int *)p);
+                fn_80128668(p);
+            }
             *(char **)((char *)arg0 + 0x10) = 0;
         }
     }
