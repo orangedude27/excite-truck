@@ -632,47 +632,48 @@ extern "C" void fn_80206D3C(void *self, void *list, int count) {
     float vec[3];
     register int i;
     register unsigned char *it;
+
     p[0x64] = 0;
     *(float *)(p + 0x68) = lbl_805631FC;
-    if (p[0x18] != 0) {
+    if (p[0x18]) {
         register float threshold = lbl_805631F8;
         register float margin = lbl_80563208;
         it = (unsigned char *)list;
-        for (i = 0; i < count; i++, it += 12) {
-            register float *pos = *(float **)(p + 116);
+        for (i = 0; i < count; ++i, it += 0xC) {
+            register float *pos = *(float **)(p + 0x74);
             register unsigned char *item = *(unsigned char **)(it + 4);
-            float dx = pos[0] - *(float *)(item + 36);
+            float dx = pos[0] - *(float *)(item + 0x24);
             vec[0] = dx;
-            float dy = pos[1] - *(float *)(item + 40);
+            float dy = pos[1] - *(float *)(item + 0x28);
             vec[1] = dy;
-            float dz = pos[2] - *(float *)(item + 44);
+            float dz = pos[2] - *(float *)(item + 0x2C);
             vec[2] = dz;
             float outX = dx * *(float *)item +
                          dy * *(float *)(item + 4) +
                          dz * *(float *)(item + 8);
-            float outY = dx * *(float *)(item + 12) +
-                         dy * *(float *)(item + 16) +
-                         dz * *(float *)(item + 20);
-            float outZ = dx * *(float *)(item + 24) +
-                         dy * *(float *)(item + 28) +
-                         dz * *(float *)(item + 32);
+            float outY = dx * *(float *)(item + 0xC) +
+                         dy * *(float *)(item + 0x10) +
+                         dz * *(float *)(item + 0x14);
+            float outZ = dx * *(float *)(item + 0x18) +
+                         dy * *(float *)(item + 0x1C) +
+                         dz * *(float *)(item + 0x20);
             vec[0] = outX;
             vec[1] = outY;
             vec[2] = outZ;
             float dot = PSVECDotProduct(vec, vec);
-            float radius = margin + *(float *)(p + 108);
+            float radius = margin + *(float *)(p + 0x6C);
             if (dot < radius * radius) {
                 float value = *(float *)(p + 8);
                 p[0x64] = 1;
                 if (value >= threshold) value = threshold;
-                value *= fn_80206CD0(vec, *(float *)(p + 108));
-                if (*(float *)(p + 104) > value) {
+                value *= fn_80206CD0(vec, *(float *)(p + 0x6C));
+                if (*(float *)(p + 0x68) > value) {
                 } else {
-                    *(float *)(p + 104) = value;
+                    *(float *)(p + 0x68) = value;
                 }
             }
         }
-        if (!p[0x64]) p[24] = 0;
+        if (!p[0x64]) p[0x18] = 0;
     }
 }
 
@@ -809,23 +810,20 @@ extern "C" f32 fn_802072DC(void) {
     return SOUND_DEFAULT_VALUE;
 }
 
-#pragma scheduling on
+#pragma push
+#pragma processor 750
 extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
     void *vtable;
     float value;
-    float value2;
     void *obj;
-    int one = 1;
     fn_802065F8();
-    value = *(volatile float *)&lbl_805631FC;
     vtable = &lbl_8033BD90;
-    value2 = *(volatile float *)&lbl_805631F8;
-    *(void **)arg0 = vtable;
-    *(float *)((char *)arg0 + 0x64) = value;
-    *(char *)((char *)arg0 + 0x6C) = one;
-    *(float *)((char *)arg0 + 0x68) = value2;
-    *(char *)((char *)arg0 + 0x6D) = one;
-    obj = fn_80208994(lbl_8055ED80, arg1, arg2, value);
+    *(volatile void **)arg0 = vtable;
+    *(float *)((char *)arg0 + 0x64) = 0.0f;
+    *(char *)((char *)arg0 + 0x6C) = 1;
+    *(float *)((char *)arg0 + 0x68) = 1.0f;
+    *(char *)((char *)arg0 + 0x6D) = 1;
+    obj = fn_80208994(lbl_8055ED80, arg1, arg2, 0.0f);
     *(void **)((char *)arg0 + 0xC) = obj;
     if (obj != 0)
         fn_802085E8(lbl_8055ED80, arg0);
@@ -842,11 +840,12 @@ extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
         };
         value = ((Cb *)obj)->get();
     } else {
-        value = lbl_805631FC;
+        value = 0.0f;
     }
     *(float *)((char *)arg0 + 0x24) = value;
     return arg0;
 }
+#pragma pop
 /* Updates queued mix dispatch state, then flushes two pending float commands (flags at +0x6C/+0x6D, values at +0x64/+0x68) to the owned object at +0x0C via vtable slots +0x3C/+0x40. */
 extern "C" void fn_802073A4(void *self, int arg1, int arg2) {
     class Dispatch {
@@ -891,10 +890,14 @@ extern "C" void *fn_80207428(void *object, int arg1, int arg2, int soundIndex, i
 }
 
 extern "C" void fn_80207490(Obj80207490 *obj, Rec80207490 *arr, int n) {
-    obj->flag6e = 0;
-    for (int i = 0; i < n; i++) {
-        obj->flag6e = (obj->flag6e | (obj->key == arr[i].v)) != 0;
+    obj->flag6e = false;
+    bool f = obj->flag6e;
+    if (n > 0) {
+        for (int i = 0; i < n; i++) {
+            f = (f | (obj->key == arr[i].v)) != 0;
+        }
     }
+    obj->flag6e = f;
     obj->flag18 = (obj->flag18 & obj->flag6e) != 0;
 }
 
