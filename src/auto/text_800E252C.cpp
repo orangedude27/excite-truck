@@ -3212,53 +3212,68 @@ extern float lbl_80560F38, lbl_80560F3C, lbl_80560F54, lbl_80560F60, lbl_80560F6
 
 #pragma fp_contract_aggressive reset
 #pragma fp_contract off
-void nw4r::snd::detail::Voice::TransformDpl2Pan(float *out0, float *out1, float a, float b) {
-    float d = b - lbl_80560F38;
-    float aa = __fabsf(a);
-    float ad = __fabsf(d);
-    if (aa <= ad) {
-        if (d <= lbl_80560F3C) {
-            float p = lbl_80560F64 * d;
-            float o1 = lbl_80560F60 + p;
-            *out0 = a;
-            *out1 = o1;
+void nw4r::snd::detail::Voice::TransformDpl2Pan(float *outPan, float *outSurround, float x, float y) {
+    /* Fold a voice's 2D DPL2 pan point into the two numbers the mixer blends
+       its speaker levels from: *outPan is the left/right pan (what
+       CalcPanRatio is called with) and *outSurround the front-to-back
+       position on the 0 = front, 2 = back scale CalcSurroundPanRatio is called
+       with.  The point (x, y) has the field's centre at (0, 1); the plane is
+       cut by |x| against |y - 1| and by the two signs into four regions, each
+       an affine blend of x and y through the DPL2_* constants, so the centre,
+       the edges and the corners of the pan field land where the DPL2 decoder
+       wants them -- moving to the side pushes the sound back, and a point
+       straight behind centre keeps only half of its pan.  The depth comes
+       back with the centre added on, so a dead-centre voice is (0, 0.88). */
+    float back = y - lbl_80560F38;
+    float absX = __fabsf(x);
+    float absBack = __fabsf(back);
+    if (absX <= absBack) {
+        /* ahead of or behind the centre: the pan is the point's own */
+        if (back <= lbl_80560F3C) {
+            float p = DPL2_Y_FRONT * back;
+            float depth = DPL2_Y_BIAS + p;
+            *outPan = x;
+            *outSurround = depth;
         } else {
-            float q = lbl_80560F68 * a;
-            float o1 = lbl_80560F60 + lbl_80560F6C * d;
-            *out0 = q;
-            *out1 = o1;
+            float q = DPL2_X_BACK * x;
+            float depth = DPL2_Y_BIAS + DPL2_Y_BACK * back;
+            *outPan = q;
+            *outSurround = depth;
         }
-    } else if (a >= lbl_80560F3C) {
-        if (d <= lbl_80560F3C) {
-            float r = -d / a;
-            float s = lbl_80560F70 + lbl_80560F74 * r;
-            float o1 = lbl_80560F60 + (lbl_80560F54 * d + lbl_80560F64 * a);
-            s *= aa;
-            *out0 = s;
-            *out1 = o1;
+    } else if (x >= lbl_80560F3C) {
+        /* to the right of centre: the side's pan, nudged by how far forward
+           or behind the point is, and a depth that grows with the pan */
+        if (back <= lbl_80560F3C) {
+            float ratio = -back / x;
+            float scale = DPL2_X_SIDE + DPL2_X_FRONT * ratio;
+            float depth = DPL2_Y_BIAS + (lbl_80560F54 * back + DPL2_Y_FRONT * x);
+            scale *= absX;
+            *outPan = scale;
+            *outSurround = depth;
         } else {
-            float r = -d / a;
-            float o1, s;
-            s = lbl_80560F70 + lbl_80560F78 * r;
-            o1 = lbl_80560F60 + lbl_80560F6C * a;
-            *out0 = s * aa;
-            *out1 = o1;
+            float ratio = -back / x;
+            float depth, scale;
+            scale = DPL2_X_SIDE + DPL2_X_REAR * ratio;
+            depth = DPL2_Y_BIAS + DPL2_Y_BACK * x;
+            *outPan = scale * absX;
+            *outSurround = depth;
         }
-    } else if (d <= lbl_80560F3C) {
-        float r = -d / a;
-        float s = lbl_80560F74 * r - lbl_80560F70;
-        float o1 = lbl_80560F60 + (lbl_80560F54 * d - lbl_80560F6C * a);
-        s *= aa;
-        *out0 = s;
-        *out1 = o1;
+    } else if (back <= lbl_80560F3C) {
+        /* to the left of centre, the two above mirrored */
+        float ratio = -back / x;
+        float scale = DPL2_X_FRONT * ratio - DPL2_X_SIDE;
+        float depth = DPL2_Y_BIAS + (lbl_80560F54 * back - DPL2_Y_BACK * x);
+        scale *= absX;
+        *outPan = scale;
+        *outSurround = depth;
     } else {
-        float r = -d / a;
-        float s = lbl_80560F78 * r - lbl_80560F70;
-        float o1 = lbl_80560F60 + lbl_80560F6C * -a;
-        *out0 = s * aa;
-        *out1 = o1;
+        float ratio = -back / x;
+        float scale = DPL2_X_REAR * ratio - DPL2_X_SIDE;
+        float depth = DPL2_Y_BIAS + DPL2_Y_BACK * -x;
+        *outPan = scale * absX;
+        *outSurround = depth;
     }
-    *out1 += lbl_80560F38;
+    *outSurround += lbl_80560F38;
 }
 extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg0, int arg1, int arg2, void *arg3) {
     register char *self = (char *)arg0;
