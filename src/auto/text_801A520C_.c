@@ -459,6 +459,9 @@ typedef struct VehicleState {
 #pragma push
 #pragma dont_inline on
 extern "C" void fn_801A5AD0(void *contactPtr, unsigned int wallKey, void *carPtr, void *heldPtr) {
+#define SLOT ((WallContact *)contactPtr)
+#define WALL ((WallRecord *)wallKey)
+#define HELD ((WallContact *)heldPtr)
     float lagPoint[3];
     float *planeNormal;
     float speedScale;
@@ -466,49 +469,52 @@ extern "C" void fn_801A5AD0(void *contactPtr, unsigned int wallKey, void *carPtr
     float frameLag;
     float speed;
     float dot;
-    char *carBase = (char *)carPtr;
+    VehicleState *car = (VehicleState *)carPtr;
 
-    if (*(volatile unsigned int *)((char *)contactPtr + 0x20) == 0) {
-        planeNormal = *(float **)((char *)wallKey + 0xC);
+    if (SLOT->wall == 0) {
+        planeNormal = WALL->plane->normal;
         frameLag = lbl_805623F8;
-        *(float *)((char *)contactPtr + 0) = planeNormal[0];
-        *(float *)((char *)contactPtr + 4) = planeNormal[1];
-        *(float *)((char *)contactPtr + 8) = planeNormal[2];
+        SLOT->normal[0] = planeNormal[0];
+        SLOT->normal[1] = planeNormal[1];
+        SLOT->normal[2] = planeNormal[2];
 
-        lagPoint[0] = *(float *)(carBase + 0x60) + *(float *)(carBase + 0x118) * frameLag;
-        lagPoint[1] = *(float *)(carBase + 0x64) + *(float *)(carBase + 0x11C) * frameLag;
-        lagPoint[2] = *(float *)(carBase + 0x68) + *(float *)(carBase + 0x120) * frameLag;
+        lagPoint[0] = car->position[0] + car->velocity[0] * frameLag;
+        lagPoint[1] = car->position[1] + car->velocity[1] * frameLag;
+        lagPoint[2] = car->position[2] + car->velocity[2] * frameLag;
 
-        if (heldPtr) {
-            dot = PSVECDotProduct((float *)heldPtr, (float *)contactPtr);
+        if (HELD) {
+            dot = PSVECDotProduct(HELD->normal, (float *)contactPtr);
             if (dot < lbl_805623C8) {
-                float normalX = *(float *)((char *)contactPtr + 0);
+                float normalX = SLOT->normal[0];
                 float flip = lbl_805623FC;
-                *(float *)((char *)contactPtr + 0) = normalX * flip;
-                *(float *)((char *)contactPtr + 4) *= flip;
-                *(float *)((char *)contactPtr + 8) *= flip;
+                SLOT->normal[0] = normalX * flip;
+                SLOT->normal[1] *= flip;
+                SLOT->normal[2] *= flip;
             }
         }
 
-        *(float *)((char *)contactPtr + 0x14) = fn_801A5A7C(contactPtr, lagPoint, (float *)((char *)*(void **)((char *)wallKey + 0xC) + 0x24));
+        SLOT->planeDistance = fn_801A5A7C(contactPtr, lagPoint, WALL->plane->origin);
 
-        dot = PSVECDotProduct((float *)(carBase + 0x118), (float *)contactPtr);
+        dot = PSVECDotProduct(car->velocity, (float *)contactPtr);
         speed = lbl_805623EC;
         closingSpeed = -(float)(double)dot;
-        *(float *)((char *)contactPtr + 0xC) = dot;
+        SLOT->startSpeed = dot;
         speed = (speed < closingSpeed) ? speed : closingSpeed;
         speed = (speed > lbl_80562400) ? speed : lbl_80562400;
 
         speedScale = lbl_805623F4;
         frameLag = lbl_805623C8;
         speed = speedScale * speed;
-        *(float *)((char *)contactPtr + 0x1C) = speedScale;
-        *(float *)((char *)contactPtr + 0x18) = frameLag;
-        *(float *)((char *)contactPtr + 0x10) = speed;
-        *(unsigned int *)((char *)contactPtr + 0x20) = wallKey;
-    } else if (*(volatile unsigned int *)((char *)contactPtr + 0x20) == wallKey) {
-        *(float *)((char *)contactPtr + 0x18) = lbl_805623C8;
+        SLOT->duration = speedScale;
+        SLOT->elapsed = frameLag;
+        SLOT->targetSpeed = speed;
+        SLOT->wall = wallKey;
+    } else if (SLOT->wall == wallKey) {
+        SLOT->elapsed = lbl_805623C8;
     }
+#undef SLOT
+#undef WALL
+#undef HELD
 }
 #pragma pop
 extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
