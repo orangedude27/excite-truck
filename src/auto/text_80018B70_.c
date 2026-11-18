@@ -402,6 +402,15 @@ found:
 #pragma pop
 
 s32 fn_8001EFC0(s32, s32);
+static inline s32 fn_80019144_find_inl(const char *name) {
+    s32 offset;
+    s32 i;
+    for (i = 0, offset = 0; i < *(volatile s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, i++) {
+        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) == 0)
+            return i;
+    }
+    return -1;
+}
 #pragma push
 #pragma use_lmw_stmw off
 #pragma small_data off
@@ -419,14 +428,21 @@ s32 fn_80019144(s32 arg0) {
     name = (const char *)arg0;
     index = 0;
     offset = 0;
-    for (; index < *(volatile s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, index++) {
-        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) == 0)
-            goto found;
-    }
+    goto check;
+loop:
+    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) != 0)
+        goto advance;
+    goto found;
+advance:
+    offset += 0x10;
+    index++;
+check:
+    if (index < *(volatile s32 *)((char *)&lbl_803580A4 + 4))
+        goto loop;
     index = -1;
 found:
     entry = (char *)lbl_803580A4 + index * 0x10 + 4;
-    if (0 > index) entry = 0;
+    if (index < 0) entry = 0;
     if (entry) {
         if ((u8)lbl_8055D588 != 0) return 1;
         value0 = fn_8001EFC0(0, arg0);
