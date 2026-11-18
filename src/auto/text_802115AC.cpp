@@ -1530,7 +1530,7 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
     *arg0 = out;
     {
         u8 *p = *(u8 **)((u8 *)node + 0x64);
-        while (*(s32 *)p != 0)
+        while (*(volatile s32 *)p != 0)
             p = p + 0x134;
     }
     if ((s8)((u8 *)node)[0x24] != 0) {
@@ -1538,7 +1538,7 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         *(void **)((u8 *)arg1 + 0x10) = top;
         {
             u8 *p = *(u8 **)((u8 *)top + 0x64);
-            while (*(s32 *)p != 0)
+            while (*(volatile s32 *)p != 0)
                 p = p + 0x134;
         }
     }
@@ -1577,14 +1577,14 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         do {
             fn_802123B8(out, it, head);
             it = it + 0x134;
-        } while (*(s32 *)it != 0);
+        } while (*(volatile s32 *)it != 0);
     }
     {
         u8 *it2 = *(u8 **)((u8 *)node + 0x64);
         do {
             fn_802123B8(out, it2, head);
             it2 = it2 + 0x134;
-        } while (*(s32 *)it2 != 0);
+        } while (*(volatile s32 *)it2 != 0);
     }
     {
         u8 *q = (u8 *)head;
@@ -1991,6 +1991,7 @@ extern "C" f32 fn_80214D48(void) {
 
 #pragma use_lmw_stmw off
 extern "C" void fn_80214D50(s32 arg0) {
+    #pragma opt_common_subs off
     struct Entry {
         s32 unk0;
         f32 scale;
@@ -1998,6 +1999,7 @@ extern "C" void fn_80214D50(s32 arg0) {
     };
     s32 index;
     struct Entry *table;
+    s32 offset;
     void *obj;
     f32 value;
     if (fn_80206430() == 0)
@@ -2008,11 +2010,12 @@ extern "C" void fn_80214D50(s32 arg0) {
         index = 0;
         lbl_8055EF5C = 0;
     }
+    offset = arg0 * 0x18;
     table = (struct Entry *)lbl_80490558;
     obj = table[arg0].objects[index];
     if (obj == 0)
         return;
-    value = table[arg0].scale * fn_80209028();
+    value = *(f32 *)((u8 *)table + offset + 4) * fn_80209028();
     if (value != *(f32 *)((char *)obj + 8)) {
         *((u8 *)obj + 0x4D) = 1;
         *(f32 *)((char *)obj + 8) = value;
