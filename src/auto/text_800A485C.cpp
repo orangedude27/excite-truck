@@ -22445,16 +22445,16 @@ extern "C" void fn_800D54E0(s32 archive, s32 subDirFourCC, s32 fileName, s32 out
 }
 
 extern "C" s32 fn_800D5500(void *obj, const char *name) {
-    u32 entry = *(u32 *)((u8 *)obj + 0x28);
-    u32 end = (u32)obj + 0x28;
-    const char *file;
-    const char *message;
-    while (end != entry) {
-        if (entry == 0) {
-            file = lbl_8031F534;
-            message = lbl_8031F510;
-            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x23d, message);
-        }
+    u8 *base = (u8 *)obj;
+    struct { u32 node; } cursor;
+    cursor.node = *(u32 *)(base + 0x28);
+    u32 &entry = cursor.node;
+    struct { u32 end; } sentinel;
+    sentinel.end = (u32)base + 0x28;
+    u32 &end = sentinel.end;
+    while (entry != end) {
+        if (entry == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
         if (strcmp(name, (char *)(entry + 8)) == 0) {
             if (entry == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
