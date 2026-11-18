@@ -228,7 +228,7 @@ void *fn_8016B8CC(void *obj, s32 shouldDelete) {
 
 #pragma cplusplus on
 extern "C" s32 strlen(const char *);
-extern "C" void fn_801308F4(void *, ...);
+extern "C" void fn_801308F4(void *, s32, s32);
 extern "C" void fn_80130980(void *, s32, s32, f32);
 extern "C" void fn_801312EC(void *, void *);
 extern "C" void fn_80131318();
@@ -398,7 +398,6 @@ extern "C" void fn_8016B964(void *arg0, s32 totalScore, s32 bonusScore, s32 time
     case 0:
         fn_802ADFF4(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4));
         if (strlen((const char *)arg0 + 0xDA) != 0) {
-            obj:;
             void *p = *(void **)((u8 *)arg0 + 0x2C);
             if (p != 0 && *((u8 *)p + 0x19) == 0) {
                 *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0;
