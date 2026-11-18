@@ -113,22 +113,21 @@ int _ES_LaunchTitle(int *fd, int unused, int tidHigh, int tidLow, void *views)
     unsigned char work[0x100] __attribute__((aligned(32)));
     struct Vector *pVectors = vectors;
     unsigned int *pTid = (unsigned int *)work;
+    int eight;
 
     if (*fd < 0)
         return -0x3F9;
     if (((unsigned int)views & 31) != 0)
         return -0x3F9;
 
-    {
-        int eight = 8;
-        pTid[1] = tidLow;
-        pTid[0] = tidHigh;
-        pVectors[0].base = pTid;
-        pVectors[0].length = eight;
-        pVectors[1].base = views;
-        pVectors[1].length = 0xD8;
-        return IOS_IoctlvReboot(*fd, eight, 2, 0, pVectors, eight);
-    }
+    eight = 8;
+    pTid[1] = tidLow;
+    pTid[0] = tidHigh;
+    pVectors[0].base = pTid;
+    pVectors[0].length = eight;
+    pVectors[1].base = views;
+    pVectors[1].length = 0xD8;
+    return IOS_IoctlvReboot(*fd, eight, 2, 0, pVectors, eight);
 }
 
 extern void OSGetFontTexel(char *, unsigned char *, int, int, int *);
@@ -425,14 +424,16 @@ u32 GetFontCode(u16 encode, u16 code) {
 void Decode(unsigned char *src, unsigned char *dst) {
     unsigned int literalOffset = *(unsigned int *)(src + 0xC);
     unsigned char *commands = src + 0x10;
-    unsigned int outputSize = *(unsigned int *)(src + 4);
-    unsigned int output = 0;
+    int outputSize = *(int *)(src + 4);
+    int output = 0;
     unsigned char *literal = src + literalOffset;
     unsigned int input = *(unsigned int *)(src + 8);
     int bitCount = 0;
-    unsigned int bits = 0;
+    unsigned int bits;
+    unsigned int pair;
+    int length, distance, from, i;
 
-    while (output < outputSize) {
+    do {
         if (bitCount == 0) {
             bits = *(unsigned int *)commands;
             commands += 4;
@@ -441,28 +442,24 @@ void Decode(unsigned char *src, unsigned char *dst) {
         if (bits & 0x80000000) {
             dst[output++] = *literal++;
         } else {
-            unsigned int pair = ((unsigned int)src[input] << 8) | src[input + 1];
-            int length = (int)pair >> 12;
-            unsigned int distance = pair & 0xFFF;
-            unsigned int from;
-            int i;
+            pair = ((unsigned int)src[input] << 8) | src[input + 1];
+            length = (int)pair >> 12;
+            distance = pair & 0xFFF;
+            from = output - distance;
             input += 2;
             if (length == 0)
                 length = *literal++ + 0x12;
             else
                 length += 2;
-            if (length > 0) {
-                from = output - distance;
-                for (i = 0; i < length; ++i) {
-                    dst[output] = dst[from - 1];
-                    ++output;
-                    ++from;
-                }
+            for (i = 0; i < length; ++i) {
+                dst[output] = dst[from - 1];
+                ++output;
+                ++from;
             }
         }
         bits <<= 1;
         --bitCount;
-    }
+    } while (output < outputSize);
 }
 #pragma pop
 extern int IOS_IoctlvReboot(int,int,int,int,void*,int);
@@ -626,7 +623,7 @@ int ReadFont(int dst, int encode, int font) {
         u16 c2 = lbl_80560CBC;
         u16 c3 = lbl_80560CBE;
 
-        code = GetFontCode(encode, 'T');
+        code = ((u32 (*)(int, u16))GetFontCode)(encode, 'T');
         sheet = (s32)code / (f->sheetNumCol * f->sheetNumRow);
         numRestTex = code - (sheet * (f->sheetNumCol * f->sheetNumRow));
         row = numRestTex / f->sheetNumCol;
@@ -714,7 +711,6 @@ enum OSFontEncode {
 
 char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
     int *widths = outCode;
-    char *next = text;
     unsigned short first = 0;
     int valid;
     unsigned char second;
@@ -722,23 +718,23 @@ char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
     case 0:
         first = *(unsigned char *)text;
         widths = lbl_8055DA54;
-        if (first != 0) next = text + 1;
+        if (first != 0) text = text + 1;
         break;
     case 1:
         first = *(unsigned char *)text;
         widths = lbl_8055DA50;
         if (first != 0) {
-            next = text + 1;
+            text = text + 1;
             valid = 0;
             if ((first >= 0x81 && first <= 0x9F) || (first >= 0xE0 && first <= 0xFC))
                 valid = 1;
             if (valid != 0) {
-                second = *(unsigned char *)next;
+                second = *(unsigned char *)text;
                 valid = 0;
                 if (second >= 0x40 && second <= 0xFC && second != 0x7F) valid = 1;
                 if (valid != 0) {
-                    first = (first << 8) | *(volatile unsigned char *)next;
-                    next++;
+                    first = (first << 8) | *(volatile unsigned char *)text;
+                    text = text + 1;
                 }
             }
         }
@@ -746,7 +742,7 @@ char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
     }
     *outWidths = widths;
     *outCode = ((u32 (*)(int, unsigned short))GetFontCode)(format, first);
-    return next;
+    return text;
 }
 
 /* UTF-32 is the font code's currency: these convert to and from it. */
@@ -846,6 +842,9 @@ void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *ar
         if (console == 0) {
             mode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
             lbl_80558F58 = mode;
+        } else if (console < 0) {
+            mode = 0;
+            lbl_80558F58 = 0;
         } else {
             mode = 0;
             lbl_80558F58 = 0;
