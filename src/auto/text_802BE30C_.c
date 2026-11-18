@@ -84,14 +84,15 @@ void fn_802BE38C(void) {
     u8 *p;
     u32 i;
     s32 j;
+
     name = (u32)lbl_8034AC68;
     fn_8012E96C(name);
     lbl_8055FACC = 0;
-    buf = (void *)fn_8012C370(name, 0x46494E46, (s32)&size, (s32)&length, (s32)0, (s32)&flag);
-    if (buf != ((void *)0)) {
+    buf = (void *)fn_8012C370(name, 0x46494E46, (s32)&size, (s32)&length, 0, (s32)&flag);
+    if (buf != NULL) {
         if (size == 2) {
             data = (u32 *)buf;
-            if (flag != (u8)0) {
+            if (flag != 0) {
                 p = (u8 *)buf;
                 for (i = 0; i < (length >> 2); i++) {
                     u8 t = p[0];
@@ -131,14 +132,13 @@ extern char lbl_8034AC90[];
 #pragma use_lmw_stmw off
 void fn_802BE694(void) {
     s32 size;
-    s32 off;
     u32 i;
     s32 j;
     for (i = 4; i < 0x41U; i <<= 1) {
         size = fn_802BE378((s16)i);
         lbl_804C06E0[i] = fn_8012850C(size * 0xC, lbl_8034AC90);
-        for (j = 0, off = 0; j < size; off += 0xC, j++) {
-            fn_802BE364((char *)lbl_804C06E0[i] + off);
+        for (j = 0; j < size; j++) {
+            fn_802BE364((char *)lbl_804C06E0[i] + j * 0xC);
         }
     }
     fn_802BE38C();
@@ -189,13 +189,12 @@ void fn_802BE7F4(void) {}
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802BE7F8(void) {
-    s32 flags;
     fn_802BE694();
-    flags = 0x200;
-    flags |= 0x84;
-    lbl_804C07E4.ptr = lbl_8055FAC8;
-    lbl_804C07E4.flags = flags | 0x800000;
+    lbl_804C07E4.ptr = &lbl_8055FAC8;
+    lbl_804C07E4.flags = 0x200;
+    lbl_804C07E4.flags |= 0x84;
     lbl_804C07E4.value = 0;
+    lbl_804C07E4.flags |= 0x800000;
 }
 #pragma scheduling on
 void fn_802BE840(void) { fn_802BE72C(); }
