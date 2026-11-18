@@ -6782,7 +6782,7 @@ loop_275:
         if (var_r0_2 == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320A04, 0x3D, lbl_803209CC, context.str);
         }
-        if (fn_8002F72C(&reader.next, base) != 0) {
+        if (fn_8002F72C(&reader.next, lbl_80329530) != 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803209B8, 0x3E, lbl_80320980);
         }
         reader.cursor = context.str;
