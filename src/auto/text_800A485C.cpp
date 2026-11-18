@@ -10731,39 +10731,39 @@ extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
     return 0;
 }
 
-extern "C" s32 fn_800B5E14(void *arg0) {
+extern "C" s32 fn_800B5E14(void *vol) {
     s32 result;
-    if (fn_800A53B4(arg0) != 0) {
-        if (fn_800A53DC(arg0) != 0 && (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) == 0) {
-            VFiPFFILE_FinalizeAllFiles((u8 *)arg0);
-            VFiPFDIR_FinalizeAllDirs((u8 *)arg0);
-            if (fn_800A5788(arg0, 1) == 0) {
-                if (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) {
-                    *(s32 *)((u8 *)arg0 + 0x1654) = 0;
-                    *(s32 *)((u8 *)arg0 + 0x189C) = 0;
-                    *(s32 *)((u8 *)arg0 + 0x1AE4) = 0;
-                    *(s32 *)((u8 *)arg0 + 0x1D2C) = 0;
+    if (fn_800A53B4(vol) != 0) {
+        if (fn_800A53DC(vol) != 0 && (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) == 0) {
+            VFiPFFILE_FinalizeAllFiles((u8 *)vol);
+            VFiPFDIR_FinalizeAllDirs((u8 *)vol);
+            if (fn_800A5788(vol, 1) == 0) {
+                if (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) {
+                    VF_VOLUME(vol)->cache[0].flag = 0;
+                    VF_VOLUME(vol)->cache[1].flag = 0;
+                    VF_VOLUME(vol)->cache[2].flag = 0;
+                    VF_VOLUME(vol)->cache[3].flag = 0;
                 }
-                *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0xFFFFFFF7);
+                VF_VOLUME(vol)->flags = (u16)(VF_VOLUME(vol)->flags & ~VF_VOL_MOUNTED);
             }
-            fn_800A53E8(arg0);
-            lbl_803D2140[13] = lbl_803D2140[13] - 1;
+            fn_800A53E8(vol);
+            VF_MOUNT_COUNT = VF_MOUNT_COUNT - 1;
         }
-        if (fn_800A53C0(arg0) != 0) {
-            if (!(*(u16 *)((u8 *)arg0 + 0x1F8C) & 8)) {
-                result = fn_800B5988(arg0);
+        if (fn_800A53C0(vol) != 0) {
+            if (!(VF_VOLUME(vol)->flags & VF_VOL_MOUNTED)) {
+                result = fn_800B5988(vol);
                 switch (result) {
                 case 0:
-                    *(u16 *)((u8 *)arg0 + 0x1FAC) = (u16)(*(u16 *)((u8 *)arg0 + 0x1FAC) & 0xFFF8);
-                    fn_800A53E8(arg0);
-                    lbl_803D2140[13] = lbl_803D2140[13] + 1;
+                    VF_VOLUME(vol)->state = (u16)(VF_VOLUME(vol)->state & ~7);
+                    fn_800A53E8(vol);
+                    VF_MOUNT_COUNT = VF_MOUNT_COUNT + 1;
                     goto block_13;
                 default:
                     break;
                 }
             } else {
 block_13:
-                fn_800A53CC(arg0);
+                fn_800A53CC(vol);
                 result = 0;
             }
             if (result != 0) {
@@ -10774,23 +10774,23 @@ block_13:
             goto block_25;
         }
     } else {
-        if (fn_800A53DC(arg0) != 0 && (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) == 0) {
-            VFiPFFILE_FinalizeAllFiles((u8 *)arg0);
-            VFiPFDIR_FinalizeAllDirs((u8 *)arg0);
-            if (fn_800A5788(arg0, 1) == 0) {
-                if (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) {
-                    *(s32 *)((u8 *)arg0 + 0x1654) = 0;
-                    *(s32 *)((u8 *)arg0 + 0x189C) = 0;
-                    *(s32 *)((u8 *)arg0 + 0x1AE4) = 0;
-                    *(s32 *)((u8 *)arg0 + 0x1D2C) = 0;
+        if (fn_800A53DC(vol) != 0 && (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) == 0) {
+            VFiPFFILE_FinalizeAllFiles((u8 *)vol);
+            VFiPFDIR_FinalizeAllDirs((u8 *)vol);
+            if (fn_800A5788(vol, 1) == 0) {
+                if (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) {
+                    VF_VOLUME(vol)->cache[0].flag = 0;
+                    VF_VOLUME(vol)->cache[1].flag = 0;
+                    VF_VOLUME(vol)->cache[2].flag = 0;
+                    VF_VOLUME(vol)->cache[3].flag = 0;
                 }
-                *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0xFFFFFFF7);
+                VF_VOLUME(vol)->flags = (u16)(VF_VOLUME(vol)->flags & ~VF_VOL_MOUNTED);
             }
-            fn_800A53E8(arg0);
-            lbl_803D2140[13] = lbl_803D2140[13] - 1;
+            fn_800A53E8(vol);
+            VF_MOUNT_COUNT = VF_MOUNT_COUNT - 1;
         }
-        if (fn_800A53C0(arg0) != 0) {
-            fn_800A53CC(arg0);
+        if (fn_800A53C0(vol) != 0) {
+            fn_800A53CC(vol);
         }
 block_25:
         result = 0;
@@ -10798,7 +10798,7 @@ block_25:
     if (result != 0) {
         return result;
     }
-    return (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) ? 0 : 9;
+    return (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) ? 0 : VF_ERR_NOT_MOUNTED;
 }
 
 #pragma pop
