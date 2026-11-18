@@ -93,10 +93,11 @@ void fn_802C2CDC(void *canvas, s32 width, s32 height) {
 }
 
 void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {
-    u32 prod = (u32)arg1 * (u32)arg2;
+    u8 c82 = 0x82;
+    s32 prod = arg1 * arg2;
     *(s8 *)arg0 = arg3;
-    ((u8 *)arg0)[1] = 0x82;
-    *(void **)((u8 *)arg0 + 4) = fn_801284E8(&lbl_8055D000, (s32)(prod * (u32)((arg3 == 5) ? 4 : 2)));
+    ((u8 *)arg0)[1] = c82;
+    *(void **)((u8 *)arg0 + 4) = fn_801284E8(&lbl_8055D000, prod * ((arg3 == 5) ? 4 : 2));
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(s32 *)((u8 *)arg0 + 0xC) = arg2;
     *(s32 *)((u8 *)arg0 + 0x10) = arg1 * ((arg3 == 5) ? 4 : 2);
@@ -169,8 +170,8 @@ void fn_802C2FC4(void) {
     ((void (*)(void))fn_8012C4D8)();
 }
 
+#pragma push
 #pragma scheduling invalid_target
-#pragma peephole off
 void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4) {
     s32 var_r0;
     s32 var_r10;
@@ -187,8 +188,7 @@ void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4) {
     }
     *(s32 *)((u8 *)arg0 + 0x20) = var_r0;
 }
-#pragma peephole on
-#pragma scheduling on
+#pragma pop
 /* Resets a canvas's clip rectangle to the whole surface: {0, 0, width, height}. */
 void fn_802C3014(void *arg0) {
     GxCanvas *canvas = arg0;
@@ -440,8 +440,8 @@ void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     u32 packed;
     s32 low;
     s32 width, height, n;
-    u16 *p;
     u32 skip;
+    u16 *p;
     if (x1 == x0 || y1 == y0) return;
     if (!fn_802C307C((void *)lbl_8055FC00, &x0, &y0, &x1, &y1)) return;
     low = (s32)((color * 8) & 0xF8) >> 4;
@@ -735,8 +735,7 @@ void fn_802C3D74(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
     s32 sp1C, sp18, sp14, sp10, spC, sp8;
     u16 *src;
     s32 *dst;
-    s32 i, srcRemain, dstRemain, srcSkip, dstSkip;
-    u8 format;
+    s32 i, srcSkip, dstSkip, srcAdd, dstAdd;
     sp8 = arg1;
     spC = arg2;
     sp10 = arg6;
@@ -746,14 +745,11 @@ void fn_802C3D74(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
     if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
         src = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
         dst = (s32 *)fn_802C3060((void *)arg5, sp10, sp14);
-        srcRemain = *(s32 *)((u8 *)arg0 + 0x10) - sp1C * 2;
-        format = *(u8 *)arg0;
-        dstRemain = *(s32 *)((u8 *)arg5 + 0x10) - sp1C * 4;
-        srcSkip = (srcRemain + (s32)((u32)srcRemain >> 31)) >> 1;
-        dstSkip = dstRemain / 4;
-        if ((s8)format == 4) {
-            srcSkip *= 2;
-            dstSkip *= 4;
+        srcSkip = (*(s32 *)((u8 *)arg0 + 0x10) - sp1C * 2) / 2;
+        dstSkip = (*(s32 *)((u8 *)arg5 + 0x10) - sp1C * 4) / 4;
+        if (*(s8 *)arg0 == 4) {
+            srcAdd = srcSkip * 2;
+            dstAdd = dstSkip * 4;
             do {
                 i = sp1C;
                 do {
@@ -765,13 +761,13 @@ void fn_802C3D74(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
                     *dst = converted;
                     dst++;
                 } while (i > 0);
-                src = (u16 *)((u8 *)src + srcSkip);
-                dst = (s32 *)((u8 *)dst + dstSkip);
+                src = (u16 *)((u8 *)src + srcAdd);
+                dst = (s32 *)((u8 *)dst + dstAdd);
                 sp18--;
             } while (sp18 > 0);
-        } else if ((s8)format == 3) {
-            srcSkip *= 2;
-            dstSkip *= 4;
+        } else if (*(s8 *)arg0 == 3) {
+            srcAdd = srcSkip * 2;
+            dstAdd = dstSkip * 4;
             do {
                 i = sp1C;
                 do {
@@ -783,12 +779,12 @@ void fn_802C3D74(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
                     *dst = converted;
                     dst++;
                 } while (i > 0);
-                src = (u16 *)((u8 *)src + srcSkip);
-                dst = (s32 *)((u8 *)dst + dstSkip);
+                src = (u16 *)((u8 *)src + srcAdd);
+                dst = (s32 *)((u8 *)dst + dstAdd);
                 sp18--;
             } while (sp18 > 0);
         } else {
-            fn_802E317C(lbl_8034B0E4, (s32)(s8)format, *(s8 *)arg5);
+            fn_802E317C(lbl_8034B0E4, (s32)*(s8 *)arg0, *(s8 *)arg5);
         }
     }
 }
@@ -885,6 +881,7 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     s32 skipSrc, skipDst, i, a, ia;
     u16 *src, *dst;
     u32 s, d, b, g, r;
+    s32 st0, st1;
     sp8 = arg1;
     spC = arg2;
     sp10 = arg6;
@@ -895,9 +892,11 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
         u8 fmt;
         src = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
         dst = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
-        skipSrc = (*(s32 *)((u8 *)arg0 + 0x10) - sp1C * 2) / 2;
+        st0 = *(s32 *)((u8 *)arg0 + 0x10);
+        st1 = *(s32 *)((u8 *)arg5 + 0x10);
+        skipSrc = (st0 - sp1C * 2) / 2;
+        skipDst = (st1 - sp1C * 2) / 2;
         fmt = *(u8 *)arg5;
-        skipDst = (*(s32 *)((u8 *)arg5 + 0x10) - sp1C * 2) / 2;
         if ((s8)fmt == 3) {
             do {
                 i = sp1C;
@@ -947,52 +946,48 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
 }
 
 #pragma scheduling invalid_target
-void fn_802C4388(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
-    s32 sp1C, sp18, sp14, sp10, spC, sp8;
-    s32 skipSrc, skipDst, i;
-    u32 *src;
-    u16 *dst;
-    sp8 = arg1;
-    spC = arg2;
-    sp10 = arg6;
-    sp14 = arg7;
-    sp1C = arg3 - arg1;
-    sp18 = arg4 - arg2;
-    if (!fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18)) return;
-    src = (u32 *)fn_802C3060((void *)arg0, sp8, spC);
-    dst = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
-    skipSrc = (*(s32 *)((u8 *)arg0 + 0x10) - sp1C * 4) / 4;
-    skipDst = (*(s32 *)((u8 *)arg5 + 0x10) - sp1C * 2) / 2;
-    if (*(s8 *)arg5 == 3) {
+void fn_802C4388(s32 src, s32 x, s32 y, s32 x2, s32 y2, s32 dst, s32 dx, s32 dy) {
+    /* Blend source pixels into the two supported 16-bit destination formats. */
+    s32 w, h, ty, tx, sy, sx;
+    s32 srcskip, dstskip, n;
+    u32 *sp;
+    u16 *dp;
+    sx = x; sy = y; tx = dx; ty = dy; w = x2 - x; h = y2 - y;
+    if (!fn_802C3170((void *)dst, &tx, &ty, &sx, &sy, &w, &h)) return;
+    sp = (u32 *)fn_802C3060((void *)src, sx, sy);
+    dp = (u16 *)fn_802C3044((void *)dst, tx, ty);
+    srcskip = (*(s32 *)((u8 *)src + 0x10) - w * 4) / 4;
+    dstskip = (*(s32 *)((u8 *)dst + 0x10) - w * 2) / 2;
+    if (*(s8 *)dst == 3) {
         do {
-            i = sp1C;
+            n = w;
             do {
-                u32 pixel = *src++;
-                u16 old = *dst;
+                u32 pixel = *sp++;
+                u16 old = *dp;
                 u32 a = pixel >> 24, inv = 255 - a;
-                u8 b = (u8)((inv * ((old << 3) & 0xf8) + a * (u8)pixel) / 255);
-                u8 g = (u8)((inv * ((old >> 2) & 0xf8) + a * (u8)(pixel >> 8)) / 255);
-                u8 r = (u8)((inv * ((old >> 7) & 0xf8) + a * (u8)(pixel >> 16)) / 255);
-                *dst++ = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
-            } while (--i > 0);
-            src += skipSrc;
-            dst += skipDst;
-        } while (--sp18 > 0);
-    } else if (*(s8 *)arg5 == 4) {
+                s32 b = (u8)((inv * ((old << 3) & 0xf8) + a * (u8)pixel) / 255);
+                s32 g = (u8)((inv * ((old >> 2) & 0xf8) + a * (u8)(pixel >> 8)) / 255);
+                s32 r = (u8)((inv * ((old >> 7) & 0xf8) + a * (u8)(pixel >> 16)) / 255);
+                *dp++ = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+            } while (--n > 0);
+            sp += srcskip;
+            dp += dstskip;
+        } while (--h > 0);
+    } else if (*(s8 *)dst == 4) {
         do {
-            i = sp1C;
+            n = w;
             do {
-                u16 old = *dst;
-                u32 pixel = *src++;
+                u16 old = *dp;
+                u32 pixel = *sp++;
                 u32 a = pixel >> 24, inv = 255 - a;
                 u32 b = (inv * (u8)(((old << 3) & 0xf8) + 1) + a * (u8)pixel) * 0x10101;
                 u32 g = (inv * (u8)(((old >> 3) & 0xfc) + 1) + a * (u8)(pixel >> 8)) * 0x10101;
                 u32 r = (inv * (u8)(((old >> 8) & 0xf8) + 1) + a * (u8)(pixel >> 16)) * 0x10101;
-                *dst++ = (b >> 27) | ((g >> 21) & 0x7e0) | ((r >> 16) & 0xf800);
-            } while (--i > 0);
-            src += skipSrc;
-            dst += skipDst;
-        } while (--sp18 > 0);
+                *dp++ = (b >> 27) | ((g >> 21) & 0x7e0) | ((r >> 16) & 0xf800);
+            } while (--n > 0);
+            sp += srcskip;
+            dp += dstskip;
+        } while (--h > 0);
     } else fn_802E317C(lbl_8034B124);
 }
 #pragma scheduling on
