@@ -17,8 +17,10 @@ extern void fn_80238B44(int, int, int, int, int);
 extern void fn_802E6B38(int, char *);
 extern char lbl_8055B5C8;
 extern int sprintf(char *, const char *, ...);
+#pragma push
+#pragma cplusplus on
 #pragma scheduling invalid_target
-void fn_8020BF58(void) {
+extern "C" void fn_8020BF58(void) {
     struct { char sp8[64]; char sp48[64]; char padding[0xD0]; } scratch;
     register int var_r29 asm("r29");
     register int var_r28 asm("r28");
