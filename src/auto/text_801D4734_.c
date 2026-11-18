@@ -3563,7 +3563,7 @@ extern "C" void fn_801D8624(void *obj) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling 603
 extern "C" int fn_801D8634(void *out, void *obj) {
     extern char lbl_8055ACB8;
     extern char lbl_8055ACB0;
@@ -3582,12 +3582,11 @@ extern "C" int fn_801D8634(void *out, void *obj) {
         virtual float v7(void *);
         virtual float v8(void *, float);
     };
-    Dummy *thing = (Dummy *)obj;
     int result;
-    *(float *)((char *)out + 0xC) = thing->v8(&lbl_8055ACB8, 0.0f);
-    *(float *)((char *)out + 0x14) = thing->v7(&lbl_8055ACB0);
-    *(int *)((char *)out + 8) = thing->v5(lbl_803385D0);
-    thing->v3(lbl_80339050);
+    *(float *)((char *)out + 0xC) = ((Dummy *)obj)->v8(&lbl_8055ACB8, 0.0f);
+    *(float *)((char *)out + 0x14) = ((Dummy *)obj)->v7(&lbl_8055ACB0);
+    *(int *)((char *)out + 8) = ((Dummy *)obj)->v5(lbl_803385D0);
+    ((Dummy *)obj)->v3(lbl_80339050);
     *(int *)((char *)out + 0x1C) = fn_801D04D0();
     result = (int)out;
     if (out != 0) {
