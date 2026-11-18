@@ -18023,6 +18023,12 @@ static void hidh_l2cif_disconnect_ind(UINT16 l2cap_cid, BOOLEAN ack_needed)
 
 extern char lbl_80317B28[];
 extern char lbl_80317B58[];
+/* hidh_l2cif_disconnect_cfm (stack/hid/hidh_conn.c): L2CAP confirms that a
+   channel of ours is now disconnected.  The device owning that CID has it
+   cleared, and once neither its control nor its interrupt channel is left the
+   device record is marked free again and the application's callback gets
+   HID_HDEV_EVT_CLOSE with the reason the connection went down for.  A confirm
+   for a CID no device owns is only traced. */
 void hidh_l2cif_disconnect_cfm(u32 l2cap_cid) {
     UINT8 dhandle;
     tHID_CONN_VIEW *p_hcon = NULL;
