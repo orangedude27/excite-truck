@@ -94,7 +94,7 @@ float fn_802A0F7C(void *arg0, void *arg1, void *arg2) {
 
 #pragma cplusplus on
 #pragma dont_inline on
-#pragma scheduling 750
+#pragma scheduling invalid_target
 extern "C" s32 fn_802A0FBC(void) {
     struct V30 {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
@@ -103,7 +103,7 @@ extern "C" s32 fn_802A0FBC(void) {
     };
     char *self = (char *)fn_8000AC38();
     V30 *obj = *(V30 **)(self + 0x20);
-    s32 status = obj->v30((char *)&lbl_80349900, (s32)(0 * (u32)&lbl_80349900 + 1));
+    s32 status = obj->v30((char *)&lbl_80349900, 1);
     u32 type = *(u32 *)(self + 8);
     s32 result = 0;
     if (status == 0) goto done;
