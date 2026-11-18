@@ -113,6 +113,7 @@ extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hb
     }
     return 1;
 }
+#pragma scheduling reset
 #pragma use_lmw_stmw reset
 extern "C" char lbl_80327880[], lbl_803278AC[], lbl_803278D8[];
 extern "C" char lbl_80559908, lbl_80559910;
