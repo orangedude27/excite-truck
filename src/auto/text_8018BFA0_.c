@@ -535,11 +535,7 @@ void fn_8018CB3C(char *arg0) {
             }
             var_f0_3 = M2C_FIELD(var_r20, float *, 0xC) + (temp_f22 * M2C_FIELD(var_r20, float *, 0x10));
             M2C_FIELD(var_r20, float *, 0xC) = var_f0_3;
-            if (var_f0_3 > temp_f30) {
-
-            } else {
-                var_f0_3 = temp_f30;
-            }
+            var_f0_3 = (var_f0_3 > temp_f30) ? var_f0_3 : temp_f30;
             M2C_FIELD(var_r20, float *, 0xC) = var_f0_3;
             temp_r3_4 = M2C_FIELD(var_r20, char **, 0);
             temp_f6_2 = M2C_FIELD(temp_r3_4, float *, 0x24);
