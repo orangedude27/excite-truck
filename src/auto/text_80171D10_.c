@@ -1475,7 +1475,6 @@ extern void fn_802AE0E0(void);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_801740D4(void *arg0) {
-    /* best 170: i-late, non-volatile loads */
     unsigned char *self = (unsigned char *)arg0;
     float copied = *(float *)(self + 0x1A4);
     int zero = 0;
@@ -1500,8 +1499,6 @@ void fn_801740D4(void *arg0) {
         i++;
     }
     {
-        int handle = *(int *)(self + 0x1B8);
-        int reset = 0;
         float high;
         int enabled2;
         float low;
@@ -1512,16 +1509,16 @@ void fn_801740D4(void *arg0) {
         *(float *)(self + 0x188) = low;
         *(float *)(self + 0x190) = low;
         *(float *)(self + 0x178) = low;
-        *(int *)(self + 0x1AC) = reset;
+        *(int *)(self + 0x1AC) = 0;
         *(float *)(self + 0x1B0) = high;
         *(unsigned char *)(self + 0x1B4) = enabled2;
-        *(unsigned char *)(self + 0x1B5) = reset;
-        *(unsigned char *)(self + 0x1BC) = reset;
-        *(int *)(self + 0x2A4) = reset;
-        *(int *)(self + 0x2A8) = reset;
-        *(int *)(self + 0x2AC) = reset;
-        *(int *)(self + 0x2B0) = reset;
-        if (handle != 0)
+        *(unsigned char *)(self + 0x1B5) = 0;
+        *(unsigned char *)(self + 0x1BC) = 0;
+        *(int *)(self + 0x2A4) = 0;
+        *(int *)(self + 0x2A8) = 0;
+        *(int *)(self + 0x2AC) = 0;
+        *(int *)(self + 0x2B0) = 0;
+        if (*(int *)(self + 0x1B8) != 0)
             fn_802AE0E0();
     }
     {
@@ -1827,9 +1824,8 @@ void fn_80174918(void *arg0, int arg1) {
         flag = 0;
     if (*(void **)((unsigned char *)arg0 + 0x1A8) != 0) {
         if (flag != 0) {
-            void *tmp = *(void **)((unsigned char *)arg0 + 0x1A8);
             if (((int (*)(void *, int))(*(void ***)arg0)[8])(arg0, idx) != 0)
-                fn_80139318(tmp, *(int *)((unsigned char *)arg0 + 0x198), idx, lbl_80561AD8);
+                fn_80139318(*(void **)((unsigned char *)arg0 + 0x1A8), *(int *)((unsigned char *)arg0 + 0x198), idx, lbl_80561AD8);
         }
         obj = *(void **)((unsigned char *)arg0 + 0x1A8);
         v1 = ((void *(*)(void *, void *, void *))(*(void ***)obj)[5])(obj, lbl_80330F48 + 0x4C4, (unsigned char *)arg0 + idx * 0x1C);
@@ -1853,7 +1849,7 @@ void fn_80174918(void *arg0, int arg1) {
             sp10[6] = *(float *)((unsigned char *)v1 + 24);
             sp10[2] += (float)k * *(float *)((unsigned char *)v2 + 20);
             if (r26 == 0)
-                sp10[7] = 1071644671.0f;
+                *(int *)&sp10[6] = 0x66FFFFFF;
             fn_80147940(*(void **)((unsigned char *)arg0 + 0x1A8), sp10, lbl_80330F48 + 0x4F4, 0, 0);
             if (*(unsigned char *)(e + 0x10) != 0) {
                 fn_80147940(*(void **)((unsigned char *)arg0 + 0x1A8), sp10, lbl_80330F48 + 0x4F4, 0, sp10[4] + lbl_80561AC8);
@@ -2550,6 +2546,7 @@ extern float lbl_80561AA4, lbl_80561AA8, lbl_80561AAC, lbl_80561AB0;
 #pragma use_lmw_stmw off
 #pragma processor 750
 #pragma cplusplus on
+#pragma scheduling on
 extern "C" void fn_80173058(unsigned char *self) {
     struct { const char *p; } labelsBox;
     labelsBox.p = lbl_80330F48;
@@ -2557,11 +2554,11 @@ extern "C" void fn_80173058(unsigned char *self) {
     char key[0x20];
     register float initial = lbl_80561A50;
     ConfigPair73058 pair;
+    Config73058 *config, *root;
+    char *name;
     unsigned char *record;
     unsigned char *entry;
     int i;
-    Config73058 *config, *root;
-    char *name;
     void *object;
     *(int *)(self + 0x1A8) = fn_80145E70(labels + 0x1FC);
     *(int *)(self + 0x170) = fn_801EA994();
@@ -2580,8 +2577,10 @@ extern "C" void fn_80173058(unsigned char *self) {
     root = *(Config73058 **)((unsigned char *)fn_8000AC38() + 0x20);
     config = root->section( name);
     *(float *)(self + 0x1A4) = config->number( lbl_8055A2B0, lbl_80561A94);
-    lbl_8043038C[0] = lbl_80561A98 * config->number( labels + 0x218, lbl_80561A9C);
-    lbl_8043038C[1] = lbl_80561A98 * config->number( labels + 0x224, lbl_80561AA0);
+    float a = config->number( labels + 0x218, lbl_80561A9C);
+    lbl_8043038C[0] = lbl_80561A98 * a;
+    float b = config->number( labels + 0x224, lbl_80561AA0);
+    lbl_8043038C[1] = lbl_80561A98 * b;
     lbl_8043038C[2] = config->number( labels + 0x230, lbl_80561AA4);
     lbl_8043038C[3] = config->number( labels + 0x240, lbl_80561AA8);
     ((unsigned char *)lbl_8043038C)[0x10] = config->boolean( labels + 0x250, 0);
@@ -2594,20 +2593,22 @@ extern "C" void fn_80173058(unsigned char *self) {
     lbl_8043038C[10] = config->number( labels + 0x2C8, lbl_80561AB0);
     *(int *)(self + 8) = 0;
     root = *(Config73058 **)((unsigned char *)fn_8000AC38() + 0x20);
-    config = root->section( lbl_8055A2B8);
-    if (config) {
-        i = 0;
-        for (;;) {
-            ((void (*)(void *, int, const char *, ...))fn_801345D8)(key, 0x20, lbl_8055A2C0, i);
-            if (!config->contains( key) || *(int *)(self + 8) + 1 > *(int *)(self + 0xC)) break;
-            pair.bits = config->pair( key);
-            {
-                int index = *(int *)(self + 8);
-                float *data = *(float **)(self + 4);
-                ++i;
-                *(int *)(self + 8) = index + 1;
-                data[index * 2] = pair.value[0];
-                data[index * 2 + 1] = pair.value[1];
+    {
+        Config73058 *config2 = root->section( lbl_8055A2B8);
+        if (config2) {
+            int j = 0;
+            for (;;) {
+                ((void (*)(void *, int, const char *, ...))fn_801345D8)(key, 0x20, lbl_8055A2C0, j);
+                if (!config2->contains( key) || *(int *)(self + 8) + 1 > *(int *)(self + 0xC)) break;
+                pair.bits = config2->pair( key);
+                {
+                    int index = *(int *)(self + 8);
+                    float *data = *(float **)(self + 4);
+                    ++j;
+                    *(int *)(self + 8) = index + 1;
+                    data[index * 2] = pair.value[0];
+                    data[index * 2 + 1] = pair.value[1];
+                }
             }
         }
     }
