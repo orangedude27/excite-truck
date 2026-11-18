@@ -776,7 +776,7 @@ void fn_80217C4C(void *arg0) {
 #pragma pop
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80217D84(void *arg0) {
     char *base = (char *)arg0;
     char *entry;
