@@ -212,7 +212,7 @@ extern s32 lbl_8055D6C0, lbl_8055D6C4, lbl_8055D6C8, lbl_8055D6CC;
 extern s32 lbl_8055D6D0, lbl_8055D6D4;
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 void TRKInitializeNub(void) {
     s64 now = 0;
     s32 state = 0;
@@ -229,15 +229,15 @@ measure:
     *(volatile u32 *)0xCD006C00 = *(volatile u32 *)0xCD006C00 & ~2U;
     *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~1U) | 1U;
     do {
-        status = trkPollStatus();
-        ctl = trkPollStatus();
+        status = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
+        ctl = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
     } while (status == ctl);
     start = (s64)OSGetTime();
     *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~2U) | 2U;
     *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~1U) | 1U;
     do {
-        status = trkPollStatus();
-        ctl = trkPollStatus();
+        status = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
+        ctl = *(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU;
     } while (status == ctl);
     now = (s64)OSGetTime();
     elapsed = now - start;
