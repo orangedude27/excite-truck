@@ -1730,7 +1730,7 @@ void fn_80268E00(void) {
 extern int fn_8026B0C0(int);
 extern float lbl_80563C40, lbl_80563CA0, lbl_80563CA4, lbl_80563CA8, lbl_80563CAC, lbl_80563CB0, lbl_80563CB4, lbl_80563CB8;
  extern float fn_80144514(float,float,float,float,float,float);
- #pragma inline on
+ #pragma always_inline on
  #pragma inline_max_size(2000)
  static inline void fn_80268E94_multiply(float *out, const float *a, const float *b) {
  float t0,t1,t2,t3,t4,t5,t6,t7,t8;
