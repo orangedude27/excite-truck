@@ -17,8 +17,8 @@ extern float fn_80144514(float, float, float, float, float, float);
 #define D6(a, b, c, d, e, f) fn_80144514(a, b, c, d, e, f)
 static f32 *volatile g_alias_probe;
 #define M33CAT(a, b, ab)                                                   \
-    { g_alias_probe = (ab);                                                \
-    if (g_alias_probe == (b) || g_alias_probe == (a)) {                    \
+    {                                                                       \
+    if ((ab) == (b) || (ab) == (a)) {                                       \
         f32 t0 = D6((a)[0], (b)[0], (a)[3], (b)[1], (a)[6], (b)[2]);       \
         f32 t3 = D6((a)[0], (b)[3], (a)[3], (b)[4], (a)[6], (b)[5]);       \
         f32 t6 = D6((a)[0], (b)[6], (a)[3], (b)[7], (a)[6], (b)[8]);       \
