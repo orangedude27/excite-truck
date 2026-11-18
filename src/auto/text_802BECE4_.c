@@ -736,35 +736,6 @@ extern "C" void fn_802BFB70(void *arg0, float *worldMtx, float angle) {
 #define kViewFar lbl_80564DC0   /* 3000.0f */
 #define kSunNear lbl_80564DC4   /* 0.1f */
 #define kSplashRadius lbl_80564DC8 /* 300.0f */
-    /* One cube face of the environment map: its model matrix. */
-    struct EnvFace {
-        float mtx[12];
-    };
-    /* A corner of the quad drawn into a face. */
-    struct EnvVertex {
-        float position[3];
-        int color;
-        float uv[2];
-    };
-    /* The cube-face table every water object shares (0x1B8 bytes, lbl_8055FB00,
-       reference count lbl_8055FAFC). */
-    struct EnvFaces {
-        int targets[6];           /* 0x00 one 256x256 render target per face */
-        int sunTexture;           /* 0x18 "env_sun.tex" */
-        struct EnvFace faces[6];  /* 0x1C */
-        struct EnvVertex quad[4]; /* 0x13C */
-        unsigned short indices[6]; /* 0x19C */
-        unsigned char facesCleared; /* 0x1A8 */
-    };
-    /* The water environment-map object itself (0x18 bytes). */
-    struct WaterEnvMap {
-        void *vtable;           /* 0x00 lbl_8034AE40 */
-        struct EnvFaces *faces; /* 0x04 shared cube-face table */
-        int target;             /* 0x08 this surface's own 256x256 target */
-        int worldModel;         /* 0x0C "worldmodel.mod" instance */
-        int envModel;           /* 0x10 "wenv_mod.mod" instance */
-        float fovFactor;        /* 0x14 field-of-view widening factor */
-    };
     /* View-matrix builder, vtable slot 5 (fn_802BF600): mirrors the world matrix
        in the water plane. */
     class ViewBuilder {
