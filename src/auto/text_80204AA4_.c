@@ -147,44 +147,45 @@ extern "C" double atof(const char *);
 extern "C" void fn_802E317C(const char *, ...);
 #pragma push
 #pragma scheduling invalid_target
-extern "C" float fn_80204CFC(const char *arg0) {
-    class Res {
+extern "C" float fn_80204CFC(const char *name) {
+    /* A difficulty setting set: has() at +0xC, the value string get() at +0x14. */
+    class DifficultySet {
     public:
         virtual void unused0();
         virtual int has(void *);
         virtual void unused2();
         virtual int get(void *);
     };
-    char buf[0x64];
-    int result = 0;
-    int value;
-    int r;
-    int *temp;
-    temp = lbl_8055ED5C;
-    if (temp[4] != 0) {
-        fn_801345D8(buf, 0x64, lbl_8055B4AC, temp[4], arg0);
-        if (temp[3] != 0 && ((Res *)temp[3])->has(buf)) {
-            r = ((Res *)temp[3])->get(buf);
-        } else if (((Res *)temp[2])->has(buf)) {
-            r = ((Res *)temp[2])->get(buf);
+    char key[0x64];
+    int setting = 0;
+    int text;
+    int found;
+    int *info;
+    info = lbl_8055ED5C;
+    if (info[4] != 0) {
+        fn_801345D8(key, 0x64, lbl_8055B4AC, info[4], name);
+        if (info[3] != 0 && ((DifficultySet *)info[3])->has(key)) {
+            found = ((DifficultySet *)info[3])->get(key);
+        } else if (((DifficultySet *)info[2])->has(key)) {
+            found = ((DifficultySet *)info[2])->get(key);
         } else {
-            r = 0;
+            found = 0;
         }
-        result = r;
+        setting = found;
     }
-    if (result == 0) {
-        if (temp[3] != 0 && ((Res *)temp[3])->has((void *)arg0)) {
-            r = ((Res *)temp[3])->get((void *)arg0);
-        } else if (((Res *)temp[2])->has((void *)arg0)) {
-            r = ((Res *)temp[2])->get((void *)arg0);
+    if (setting == 0) {
+        if (info[3] != 0 && ((DifficultySet *)info[3])->has((void *)name)) {
+            found = ((DifficultySet *)info[3])->get((void *)name);
+        } else if (((DifficultySet *)info[2])->has((void *)name)) {
+            found = ((DifficultySet *)info[2])->get((void *)name);
         } else {
-            r = 0;
+            found = 0;
         }
-        result = r;
+        setting = found;
     }
-    if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
-    value = result;
-    return (float)atof((const char *)value);
+    if (setting == 0) fn_802E317C(lbl_8033BBF4, name);
+    text = setting;
+    return (float)atof((const char *)text);
 }
 #pragma pop
 class Res80204EA0 {
