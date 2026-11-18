@@ -904,6 +904,9 @@ void VIWaitForRetrace(void)
 }
 
 static void calcFbbs(u32 bufAddr, u16 panPosX, u16 panPosY, u8 wordPerLine, VIXFBMode xfbMode, u16 dispPosY, u32 *tfbb, u32 *bfbb);
+/* The SDK's setNextFrameBuffer: works out where the top and bottom blanking
+   intervals of the frame buffer (and, in 3D, of the right-eye buffer) start, and
+   writes the four base addresses into the shadow registers 14-21. */
 void fn_80059AD8(SomeVIStruct* HorVer, u32* tfbb, u32* bfbb, u32* rtfbb, u32* rbfbb) {
     u32 shifted;
     u16 *reg;
