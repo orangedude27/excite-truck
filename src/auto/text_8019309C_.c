@@ -1604,6 +1604,7 @@ static inline void MakeVec_80195D80(Other_80195D80 *o, float *vec) {
     vec[4] = z;
     vec[1] = z;
 }
+#pragma always_inline reset
 struct Self_80195D80 {
     unsigned char p0[0x18];
     int f18;
