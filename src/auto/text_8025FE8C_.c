@@ -723,6 +723,16 @@ struct SelectorWidget {
     virtual void clearCursor(); /* 0x6C */
     virtual void setExpanded(); /* 0x70 */
 };
+/* Close the group the selector's cursor is inside (input event 0x1B of the
+ * challenge screen, the pair of fn_80261178, which opens it).
+ *
+ * Only reachable from inside a group: with the cursor still on the group list the
+ * callback reports that it did nothing by returning 1, which is how the screen
+ * tells a "leave" pressed there.  Otherwise the cursor steps back out to the
+ * groups -- every group widget first loses its cursor -- and both widget lists are
+ * repainted the way fn_80261178 does it, now with the cursor outside: the whole
+ * item list dims and loses its cursor, the group the cursor stands on gets
+ * setCursor() and every other group comes out of the dim state. */
 extern "C" s32 fn_80260E30(void) {
     s32 offset;
     s32 i;
@@ -731,12 +741,15 @@ extern "C" s32 fn_80260E30(void) {
         /* the cursor leaves the item list and goes back to the groups */
         SELECTOR_IN_ITEMS = 0;
         {
-            s32 offset;
-            s32 i;
-            i = 0;
-            offset = 0;
-            for (; i < SELECTOR->group_count; offset += 4, i++) {
-                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearCursor();
+            /* This first loop keeps its own counter pair in its own block;
+             * reusing the outer i and offset here shifts the registers the
+             * loops below leave their widgets in. */
+            s32 groupOffset;
+            s32 groupIndex;
+            groupIndex = 0;
+            groupOffset = 0;
+            for (; groupIndex < SELECTOR->group_count; groupOffset += 4, groupIndex++) {
+                (*(SelectorWidget **)(SELECTOR->group_widgets + groupOffset))->clearCursor();
             }
         }
 
@@ -745,11 +758,15 @@ extern "C" s32 fn_80260E30(void) {
         offset = 0;
         for (; i < SELECTOR->item_count; offset += 4, i++) {
             if (SELECTOR_IN_ITEMS == 0) {
+                /* the cursor went back to the groups, so the whole list dims;
+                 * the branches below it are the ones the callbacks that run
+                 * with the cursor inside a group take */
                 (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->setDim();
                 (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
             } else if (i == SELECTOR->cursor) {
                 (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->setCursor();
             } else if (i == SELECTOR->group * 2 || i == SELECTOR->group * 2 + 1) {
+                /* the two items of the open group stay bright */
                 (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearDim();
                 (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
             } else {
@@ -763,12 +780,14 @@ extern "C" s32 fn_80260E30(void) {
         for (; i < SELECTOR->group_count; offset += 4, i++) {
             if (SELECTOR_IN_ITEMS == 0) {
                 if (i == SELECTOR->group) {
+                    /* the group the cursor came back to */
                     (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setCursor();
                 } else {
                     (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearDim();
                     (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearCursor();
                 }
             } else if (i == SELECTOR->group) {
+                /* the group the cursor is inside: open, and let it show its items */
                 (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setCursor();
                 (*(SelectorWidget **)(SELECTOR->group_widgets + SELECTOR->group * 4))->setExpanded();
             } else {
