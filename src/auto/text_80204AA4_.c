@@ -145,6 +145,8 @@ extern const char lbl_8033BBF4[];
 extern "C" int fn_801345D8(void *, int, const char *, ...);
 extern "C" double atof(const char *);
 extern "C" void fn_802E317C(const char *, ...);
+#pragma push
+#pragma scheduling invalid_target
 extern "C" float fn_80204CFC(const char *arg0) {
     class Res {
     public:
@@ -160,7 +162,7 @@ extern "C" float fn_80204CFC(const char *arg0) {
     int *temp;
     temp = lbl_8055ED5C;
     if (temp[4] != 0) {
-        ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, temp[4], arg0);
+        fn_801345D8(buf, 0x64, lbl_8055B4AC, temp[4], arg0);
         if (temp[3] != 0 && ((Res *)temp[3])->has(buf)) {
             r = ((Res *)temp[3])->get(buf);
         } else if (((Res *)temp[2])->has(buf)) {
@@ -184,8 +186,7 @@ extern "C" float fn_80204CFC(const char *arg0) {
     value = result;
     return (float)atof((const char *)value);
 }
-#pragma cplusplus reset
-#pragma cplusplus on
+#pragma pop
 class Res80204EA0 {
 public:
     virtual void unused0();
@@ -246,7 +247,7 @@ extern "C" int fn_8020503C(const char *arg0) {
     p = lbl_8055ED5C;
     result = 0;
     if (p[4] != 0) {
-        ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, p[4], arg0);
+        fn_801345D8(buf, 0x64, lbl_8055B4AC, p[4], arg0);
         if (p[3] != 0) {
             if (((Res *)p[3])->has(buf)) {
                 value = ((Res *)p[3])->get(buf);
