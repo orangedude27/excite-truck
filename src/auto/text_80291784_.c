@@ -167,10 +167,11 @@ void fn_802919AC(void *list) {
 }
 #pragma push
 #pragma processor 750
+#pragma scheduling on
 void fn_80291A1C(void) {
     struct QueryObject_80291A1C *obj;
-    float value = lbl_805644A0;
     int *settings;
+    float value = lbl_805644A0;
     obj = (struct QueryObject_80291A1C *)fn_802AE414(&lbl_8055C948);
     if (obj != 0) {
         value = obj->f8(&lbl_8055C938, lbl_805644A0);
@@ -447,21 +448,17 @@ void fn_802921F4(void) {
 void fn_8029222C(void) {
     register int *base;
     register char *p;
-    register char zero;
     register int count;
 
     if (lbl_8055F75C == 0) return;
     p = (char *)&lbl_804B3EC0;
-    zero = 0;
     base = (int *)p;
     count = 0;
-    goto check;
-loop:
-    p[0x14] = zero;
-    p += 0x24;
-    count++;
-check:
-    if (count < base[0x48]) goto loop;
+    while (count < base[0x48]) {
+        p[0x14] = 0;
+        p += 0x24;
+        count++;
+    }
     *((char *)&lbl_804B4010 + 0x14) = 0;
 }
 
