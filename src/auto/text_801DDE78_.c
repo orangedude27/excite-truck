@@ -341,6 +341,7 @@ extern "C" void fn_801DE154(void) {
 #pragma cplusplus reset
 #pragma pop
 #pragma scheduling invalid_target
+extern void fn_8018A180(s32);
 s32 fn_801DE5C4(s32 arg0) {
     f32 *value;
     u8 *entry;
@@ -360,11 +361,8 @@ s32 fn_801DE5C4(s32 arg0) {
         break;
     case 0x128:
         changed = 1;
-        index = (s32)lbl_8055E9BC;
-        index++;
-        i = lbl_8055E9C4 - 1;
-        if (index >= i) index = i;
-        lbl_8055E9BC = (void *)index;
+        index = (s32)lbl_8055E9BC + 1;
+        lbl_8055E9BC = (void *)((index < lbl_8055E9C4 - 1) ? index : lbl_8055E9C4 - 1);
         break;
     case 0x125:
     case 0x127:
@@ -393,13 +391,9 @@ s32 fn_801DE5C4(s32 arg0) {
             changed = 1;
             result = fn_801DDE78();
             entry = (u8 *)lbl_80486F30;
-            i = 0;
-            while (i < lbl_8055E9C4) {
-                x = *(f32 *)(entry + 0xC);
-                i++;
-                value = *(f32 **)(entry + 8);
+            for (i = 0; i < lbl_8055E9C4; i++) {
+                **(f32 **)(entry + 8) = *(f32 *)(entry + 0xC);
                 entry += 0x1C;
-                *value = x;
             }
             fn_8018A180(result);
             lbl_8055E9BC = (void *)0;
