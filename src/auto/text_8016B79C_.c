@@ -1354,7 +1354,7 @@ extern void fn_8016E06C(void *);
 extern void fn_8016DFB8(void *);
 extern void fn_8016DE20(void *);
 extern void fn_8016E118(void *);
-extern void fn_8016E15C(void *, void *);
+extern void fn_8016E15C(void *);
 extern s32 fn_8016E1A4(s32 *, s32);
 extern void fn_8016E1B4(void *, s32);
 extern void fn_8016E314(void *);
@@ -1703,9 +1703,9 @@ extern "C" int fn_8016E328(void *arg0, int arg1) {
  struct Rect { int a; float b; int c,d; float e; int f,g,h; };
  struct Manager { virtual void *unused(); virtual void *get(const char *); };
  struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
- struct Manager *mgr; void *one, *two, *panel, *detail;
+ const char *base = lbl_803306D0;
+ struct Manager *mgr; void *one, *two;
  float limit, a, time, b,c,d,e, t, blend, value;
- register char *base = lbl_803306D0;
  time = *(float *)((char *)fn_801E7E3C()+0x10);
  limit=lbl_805619A8; a=limit-lbl_805619AC; b=a-lbl_805619B0;
  c=b-lbl_805619B4; d=c-lbl_805619AC; e=d-lbl_805619B0;
@@ -1716,6 +1716,7 @@ extern "C" int fn_8016E328(void *arg0, int arg1) {
  if (time < e) fn_8000FBE4();
  if (!fn_80161C38()) {
    if (time < limit) {
+     void *panel, *detail;
      t=(time-a)/(b-a); blend=lbl_80561984;
      blend = blend < t ? blend : t;
      blend = blend > lbl_80561980 ? blend : lbl_80561980;
@@ -1743,6 +1744,7 @@ extern "C" int fn_8016E328(void *arg0, int arg1) {
      }
    }
    if (time < c) {
+     void *panel, *detail;
      fn_8014784C(*(void **)((char *)arg0+0x98),base+0x4ac,base+0x4bc,0);
      t=(time-d)/(e-d); blend=lbl_80561984;
      blend = blend < t ? blend : t;
@@ -3129,12 +3131,9 @@ void fn_80170DA8(void *arg0, void *arg1) {
     s32 index;
     s32 next;
     volatile f32 sp1C, sp18, sp14, sp10, spC, sp8;
-    f32 x;
-    f32 y;
-    f32 dx;
-    f32 dy;
-    f32 distance;
-    f32 threshold;
+    f32 x, y, dx, dy;
+    f32 distance = 0.0f;
+    f32 threshold = 0.0f;
     index = *(s32 *)((u8 *)arg0 + 0x10);
     next = index + 1;
     if (next < *(s32 *)(*(u8 **)((u8 *)arg0 + 4) + 4)) {
