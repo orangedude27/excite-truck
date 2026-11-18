@@ -212,17 +212,20 @@ void fn_802B5CC4(void) {
 }
 
 extern int __cntlzw(unsigned int);
+#pragma push
+#pragma peephole off
 void fn_802B5CCC(void) {
     u8 *sp8;
     u8 *object;
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B321C(0, (void **)&sp8, *(s32 *)(object + 8), lbl_8055FA40);
-    *sp8 = (*sp8 == 0) & 0xFF;
+    *sp8 = (*sp8 == 0);
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B32E0(*(s32 *)(object + 8));
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B4E44(*(s32 *)(object + 8));
 }
+#pragma pop
 
 #pragma push
 #pragma dont_inline on
