@@ -203,7 +203,7 @@ public:
     virtual s32 v23();
     virtual void v24();
     virtual void v25();
-    virtual void v26();
+    virtual const char *GetCategoryName();  /* 0x70: the bonus-category name, the key into stunts.val */
     virtual void v27();
     virtual void v28();
     virtual s32 GetType();
