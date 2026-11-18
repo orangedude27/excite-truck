@@ -142,7 +142,7 @@ void fn_802C543C(void) {
 }
 #pragma dont_inline off
 
-#pragma scheduling on
+#pragma scheduling 750
 int fn_802C544C(void **a, void **b) {
     void *right = *b;
     void *left = *a;
@@ -173,54 +173,48 @@ void fn_802C54D4(void) {
     int count;
     int oldCount;
     int itemOffset;
-    register void **items;
     void *table;
 
     if (*(volatile unsigned char *)&lbl_8055FC21 == 0)
         return;
-    {
-        int *listData = lbl_804C1390;
-        int *sourceData = lbl_804C13A8;
-        void **slot;
-        lbl_804C1390[0] = 0;
-        for (sourceIndex = 0, sourceOffset = 0;
-             sourceIndex < *(volatile int *)sourceData;
-             sourceOffset += 0x10, sourceIndex++) {
-            void *base = (void *)(unsigned long)*(volatile u32 *)((char *)sourceData + 8);
-            void *entry = (char *)base + sourceOffset;
-            if (*(unsigned short *)((char *)entry + 4) != 0) {
-                register oldCount = lbl_804C1390[0];
-                if (oldCount < lbl_804C1390[1]) {
-                    count = oldCount + 1;
-                    lbl_804C1390[0] = count;
-                    slot = (void **)((char *)(void *)lbl_804C1390[2] + (oldCount << 2));
-                } else {
-                    slot = 0;
-                }
-                if (slot)
-                    *slot = entry;
+    lbl_804C1390[0] = 0;
+    for (sourceIndex = 0, sourceOffset = 0;
+         sourceIndex < *(volatile int *)lbl_804C13A8;
+         sourceOffset += 0x10, sourceIndex++) {
+        void *base = (void *)(unsigned long)*(volatile int *)((char *)lbl_804C13A8 + 8);
+        void *entry = (char *)base + sourceOffset;
+        if (*(unsigned short *)((char *)entry + 4) != 0) {
+            void **slot;
+            oldCount = lbl_804C1390[0];
+            if (oldCount < lbl_804C1390[1]) {
+                count = oldCount + 1;
+                lbl_804C1390[0] = count;
+                slot = (void **)((char *)(void *)lbl_804C1390[2] + (oldCount << 2));
+            } else {
+                slot = 0;
             }
+            if (slot)
+                *slot = entry;
         }
     }
 
     count = lbl_804C1390[0];
-    items = (void **)*(void **)((char *)lbl_804C1390 + 8);
-    qsort(items, count, 4, (int (*)(void *, void *))fn_802C544C);
+    qsort((void *)(void *)lbl_804C1390[2], count, 4, (int (*)(void *, void *))fn_802C544C);
     level = 1;
     table = fn_802C54B4(level);
-    *(void **)table = *(void **)((char *)lbl_804C1390 + 8);
+    *(void **)table = (void *)lbl_804C1390[2];
     for (itemIndex = 0, itemOffset = 0;
          itemIndex < lbl_804C1390[0];
          itemIndex++, itemOffset += 4) {
-        void *entry = *(void **)((char *)*(void ***)((char *)lbl_804C1390 + 8) + itemOffset);
+        void *entry = *(void **)((char *)(void *)lbl_804C1390[2] + itemOffset);
         goto inner_check;
 inner_loop:
         level++;
-        count = (int)((char *)*(void ***)((char *)lbl_804C1390 + 8) + itemOffset -
+        count = (int)((char *)(void *)lbl_804C1390[2] + itemOffset -
                       (char *)*(void **)table) / 4;
         *(int *)((char *)table + 4) = count;
         table = fn_802C54B4(level);
-        *(void **)table = (char *)*(void ***)((char *)lbl_804C1390 + 8) + itemOffset;
+        *(void **)table = (char *)(void *)lbl_804C1390[2] + itemOffset;
 inner_check:
         if (level < ((int (*)(unsigned int))fn_802C54CC)(
                         *(short *)((char *)entry + 6))) {
@@ -228,7 +222,7 @@ inner_check:
                 goto inner_loop;
         }
     }
-    count = (int)((char *)*(void ***)((char *)lbl_804C1390 + 8) +
+    count = (int)((char *)(void *)lbl_804C1390[2] +
                   lbl_804C1390[0] * 4 - (char *)*(void **)table) / 4;
     *(int *)((char *)table + 4) = count;
     while (++level <= 9) {
@@ -438,6 +432,7 @@ u16 fn_802C5A50(int high, int low) {
     return (u16)((high << 8) | low);
 }
 
+#pragma scheduling invalid_target
 void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     struct Entry {
         s32 key0;
@@ -449,10 +444,12 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     struct Entry *entry;
     register s32 savedArg0 = arg0;
     s32 count = lbl_804C13A8[0];
-    struct Entry *freeEntry = 0;
     struct Entry *match = 0;
+    struct Entry *freeEntry = 0;
     int one = 1;
     int zero = 0;
+    struct Entry *base;
+    s32 next;
     s32 i;
 
     entry = (struct Entry *)(unsigned long)lbl_804C13A8[2];
@@ -470,10 +467,10 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     if (match == 0) {
         if (freeEntry == 0) {
             if (count < lbl_804C13A8[1]) {
-                int next = *(volatile int *)&lbl_804C13A8[0];
-                void *base = *(void * volatile *)&lbl_804C13A8[2];
+                next = *(volatile int *)&lbl_804C13A8[0];
+                base = *(struct Entry * volatile *)&lbl_804C13A8[2];
                 lbl_804C13A8[0] = next + 1;
-                freeEntry = (struct Entry *)((char *)base + next * 0x10);
+                freeEntry = (struct Entry *)((unsigned char *)base + (next << 4));
             } else {
                 freeEntry = 0;
             }
@@ -493,7 +490,7 @@ void *fn_802C5A60(int arg0, int arg1, u16 arg2) {
     match->refs++;
     return match;
 }
-
+#pragma scheduling on
 extern void fn_802CAC54(int);
 extern s8 lbl_8055FC21;
 /* Release a reference to a model texture entry: decrement its refcount and mark the model cache dirty when it reaches zero. */
@@ -1645,8 +1642,8 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     } local;
     void *manager;
     void *entry;
-    float *rot;
     float *input;
+    float *rot;
 
     manager = fn_802C5390(arg0);
     local.status = 1;
@@ -1673,9 +1670,9 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
         float mz1 = rot[2] * z1;
         float mz2 = rot[2] * z2;
 
-        local.vector[0] = mx0 + my0 + mz0;
-        local.vector[1] = mx1 + my1 + mz1;
-        local.vector[2] = mx2 + my2 + mz2;
+        local.vector[0] = mz0 + (mx0 + my0);
+        local.vector[1] = mz1 + (mx1 + my1);
+        local.vector[2] = mz2 + (mx2 + my2);
     } else {
         float y0 = input[3];
         float x0 = input[0];
