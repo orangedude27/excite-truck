@@ -700,7 +700,7 @@ void fn_801942F0(void *driver, int forceOn) {
 
 extern int fn_801B2F24(void);
 extern float lbl_80562198, lbl_805621B8, lbl_805621BC, lbl_805621C0, lbl_805621C4;
-static inline float Cross2D_80194324(float ax, float bx, float ay, float by) {
+static inline float Cross2D_80194324(float ax, float ay, float bx, float by) {
     float n = -ay;
     return ax * bx + by * n;
 }
@@ -726,11 +726,11 @@ extern "C" void fn_80194324(void *arg0) {
             int lt = t < lbl_805621C0;
             if (lt) {
                 float k = t / lbl_805621C0;
-                float a = Cross2D_80194324(*(float *)(p + 0x1AC), *(float *)(p + 0x1B0), *(float *)(p + 0x1B4), *(float *)(p + 0x1B8));
-                float b = Cross2D_80194324(*(float *)(p + 0x178), *(float *)(p + 0x17C), *(float *)(p + 0x180), *(float *)(p + 0x184));
+                float a = Cross2D_80194324(*(float *)(p + 0x1B0), *(float *)(p + 0x1B4), *(float *)(p + 0x1AC), *(float *)(p + 0x1B8));
+                float b = Cross2D_80194324(*(float *)(p + 0x17C), *(float *)(p + 0x180), *(float *)(p + 0x178), *(float *)(p + 0x184));
                 v = (a - b) * k + b;
             } else {
-                v = Cross2D_80194324(*(float *)(p + 0x1AC), *(float *)(p + 0x1B0), *(float *)(p + 0x1B4), *(float *)(p + 0x1B8));
+                v = Cross2D_80194324(*(float *)(p + 0x1B0), *(float *)(p + 0x1B4), *(float *)(p + 0x1AC), *(float *)(p + 0x1B8));
             }
             flag = (float)__fabs(v) < thresh;
         }
