@@ -578,14 +578,13 @@ int fn_8024CC54(void *out, void *arg1, int arg2) {
     }
     return 1;
 }
-extern char lbl_80343FF0[];
 extern char lbl_80343FC4[];
+extern char lbl_80343FF0[];
 #pragma scheduling reset
 int fn_8024CEF0(void) {
-    void *fc4;
     if (((int (*)(void))fn_8000DBAC)() != 0)
         return 1;
-    return ((int (*)(void *, void *, int))fn_80215214)((fc4 = lbl_80343FC4, lbl_80343FF0), lbl_80343FC4, 0);
+    return ((int (*)(void *, void *, int))fn_80215214)(lbl_80343FF0, lbl_80343FC4, 0);
 }
 #pragma scheduling invalid_target
 int fn_8024CF38(int *selectedSlot) {
