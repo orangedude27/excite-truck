@@ -82,7 +82,8 @@ typedef struct { FifoVec3 pos; u32 color; f32 u, v; } FifoVtx;
  * on the layout, and each array has its own stride.  +0x2C/+0x30 are the size
  * in bytes of the prebuilt display list that indexes them, and the list. */
 struct SurfDraw {
-    u8 pad00[0x20];
+    u8 pad00[0x1C];
+    /* 0x1C */ s32 vertexCount;   // vertices the rebuilding drawers transform into a fresh array
     /* 0x20 */ void *positions;   // GX_VA_POS array
     /* 0x24 */ void *normals;     // GX_VA_NRM (or GX_VA_CLR0) array
     /* 0x28 */ void *colors;      // GX_VA_CLR1 (or GX_VA_TEX0) array
@@ -227,7 +228,7 @@ void fn_802D42E4(void *arg0) {
     }
     {
         f32 (*directions)[3] = (f32 (*)[3])lbl_804DB068;
-        f32 factor = lbl_80564FF0;
+        register f32 factor = lbl_80564FF0;
         register volatile f32 *out = base;
         for (i = 0; i < count; i++) {
             u8 a, b, c, d;
