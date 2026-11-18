@@ -8431,6 +8431,8 @@ void btm_acl_timeout(TIMER_LIST_ENT *p_tle) {
     }
 }
 
+#pragma push
+#pragma optimization_level 3
 UINT16 btm_get_max_packet_size(BD_ADDR addr) {
     u32 i;
     u8 *p;
@@ -8492,7 +8494,7 @@ found:
         pkt_size = 0x3F9;
     return pkt_size;
 }
-
+#pragma pop
 /* Registers or clears the ACL-change callback in the BTM control block; returns 2 if a different callback is already set. */
 s32 fn_80078310(s32 callback)
 {
@@ -10706,33 +10708,33 @@ void btm_process_inq_complete(UINT8 status, UINT8 unused) {
     void *buffer;
     base = lbl_803C0F78;
     callback = *(void (**)(void *))(base + 0x16B0);
-    if (base[0x1848] != 0) {
-        result = 10;
-        *(u32 *)(base + 0x16C0) += 1;
-        if (status == 0)
-            result = 0;
-        base[0x183E] = result;
-        if ((base[0x1848] & 4) == 0) {
-            cleanup_base = lbl_803C0F78;
-            zero = 0;
-            buffer = *(void **)(cleanup_base + 0x16DC);
-            *(u32 *)(base + 0x16B4) = zero;
-            base[0x1848] = zero;
-            base[0x1847] = zero;
-            *(void (**)(void *))(base + 0x16B0) = NULL;
-            if (buffer != NULL) {
-                GKI_freebuf(buffer);
-                *(void **)(cleanup_base + 0x16DC) = (void *)zero;
-            }
-            *(u16 *)(cleanup_base + 0x16E0) = zero;
-            *(u16 *)(cleanup_base + 0x16E2) = zero;
-            if (lbl_803C0F78[0x27C0] >= 5)
-                fn_8007096C(0xD0004, lbl_803164F4,
-                            base[0x183E], base[0x183F]);
-            if (callback != NULL)
-                callback(base + 0x183E);
-        }
+    if (base[0x1848] == 0)
+        return;
+    result = 10;
+    *(u32 *)(base + 0x16C0) += 1;
+    if (status == 0)
+        result = 0;
+    base[0x183E] = result;
+    if ((base[0x1848] & 4) != 0)
+        return;
+    cleanup_base = lbl_803C0F78;
+    zero = 0;
+    buffer = *(void **)(cleanup_base + 0x16DC);
+    *(u32 *)(base + 0x16B4) = zero;
+    base[0x1848] = zero;
+    base[0x1847] = zero;
+    *(void (**)(void *))(base + 0x16B0) = NULL;
+    if (buffer != NULL) {
+        GKI_freebuf(buffer);
+        *(void **)(cleanup_base + 0x16DC) = (void *)zero;
     }
+    *(u16 *)(cleanup_base + 0x16E0) = zero;
+    *(u16 *)(cleanup_base + 0x16E2) = zero;
+    if (lbl_803C0F78[0x27C0] >= 5)
+        fn_8007096C(0xD0004, lbl_803164F4,
+                    base[0x183E], base[0x183F]);
+    if (callback != NULL)
+        callback(base + 0x183E);
 }
 
 #pragma push
@@ -14697,6 +14699,7 @@ void *arg0;
 
     if (msg != 0)
         GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
+    return;
 }
 
 /* Handle HCI Connection Complete event: dispatch ACL links to security/L2CAP and SCO links to SCO manager. */
@@ -18695,8 +18698,17 @@ success:
 extern u8 lbl_80560D48[];
 BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
     extern u8 lbl_80560D48[6];
+    typedef struct {
+        u8 in_use;
+        u8 pad0[3];
+        s32 link_state;
+        u8 pad1[0x50];
+        u16 idle_timeout;
+        u8 pad2[2];
+    } Lcb;
     void *p;
-    u8 *t;
+    Lcb *lcb;
+    s32 i;
 
     if (memcmp(lbl_80560D48, addr, 6) != 0) {
         p = l2cu_find_lcb_by_bd_addr(addr);
@@ -18707,13 +18719,8 @@ BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
         return FALSE;
     }
 
-    t = lbl_803C4040 + 0x64;
-    if (*(u8 *)(t - 0x5C) != 0 && *(s32 *)(t - 0x58) == 4) *(u16 *)(t - 4) = timeout;
-    if (*(u8 *)t != 0 && *(s32 *)(t + 4) == 4) *(u16 *)(t + 0x58) = timeout;
-    t += 0x5C;
-    if (*(u8 *)t != 0 && *(s32 *)(t + 4) == 4) *(u16 *)(t + 0x58) = timeout;
-    t += 0x5C;
-    if (*(u8 *)t != 0 && *(s32 *)(t + 4) == 4) *(u16 *)(t + 0x58) = timeout;
+    for (i = 0, lcb = (Lcb *)(lbl_803C4040 + 8); i < 4; i++, lcb++)
+        if (lcb->in_use != 0 && lcb->link_state == 4) lcb->idle_timeout = timeout;
 
 done:
     return TRUE;
@@ -20109,14 +20116,14 @@ void l2c_rcv_acl_data(register BT_HDR *arg0) {
     extern void process_l2cap_cmd(void *, UINT8 *, UINT16);
     u8 *data;
     register char *trace;
-    register s32 temp_r26;
     s32 temp_r3;
     s32 temp_r3_2;
-    register s32 var_r28;
+    s32 var_r28;
     register u32 temp_r0_3;
     u32 temp_r0_4;
     u32 temp_r24;
     register u16 temp_r25;
+    s32 temp_r26;
     s32 temp_r4;
     u32 temp_r0;
     register u32 temp_r28;
@@ -20233,16 +20240,29 @@ void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
         UINT16 l2cap_status;
         UINT16 remote_cid;
     } tL2C_CONN_INFO_LOCAL;
+    typedef struct {
+        UINT16 result;
+        BOOLEAN mtu_present;
+        UINT16 mtu;
+        BOOLEAN qos_present;
+        FLOW_SPEC qos;
+        BOOLEAN flush_to_present;
+        UINT16 flush_to;
+        BOOLEAN fcr_present;
+        tL2CAP_FCR_OPTS fcr;
+        UINT8 reserved[8];
+        UINT16 flags;
+    } tL2CAP_CFG_INFO_LOCAL;
+    char *trace;
     UINT8 *p_pkt_end, *p_next_cmd, *p_cfg_end, *p_cfg_start;
     UINT8 cmd_code, cfg_code, cfg_len, id;
     tL2C_CONN_INFO_LOCAL con_info;
-    tL2CAP_CFG_INFO cfg_info;
+    tL2CAP_CFG_INFO_LOCAL cfg_info;
     UINT16 rej_reason, rej_mtu, lcid, rcid, info_type;
     u8 *p_ccb;
     void *p_rcb;
     BOOLEAN cfg_rej;
     UINT16 cfg_rej_len, cmd_len;
-    char *trace;
 
     p_pkt_end = p + pkt_len;
     trace = lbl_80318E58;
@@ -20406,7 +20426,6 @@ void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
                     else
                     {
                         p = p_cfg_end;
-                        cfg_rej = TRUE;
                     }
                     break;
                 }
@@ -20436,8 +20455,10 @@ void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
             STREAM_TO_UINT16 (cfg_info.flags, p);
             STREAM_TO_UINT16 (cfg_info.result, p);
 
-            cfg_info.flush_to_present = cfg_info.mtu_present = cfg_info.qos_present =
-                cfg_info.fcr_present = FALSE;
+            cfg_info.qos_present = FALSE;
+            cfg_info.mtu_present = FALSE;
+            cfg_info.flush_to_present = FALSE;
+            cfg_info.fcr_present = FALSE;
 
             while (p < p_cfg_end)
             {
@@ -22674,12 +22695,12 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
 #pragma pop
 void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
     s32 index = (s32)arg0 - 0x40;
-    register char *trace_msg = lbl_803196B8;
+    char *trace_msg = lbl_803196B8;
     void *port;
     u16 port_lcid;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg + 0, arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, &trace_msg[index - index], arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -22707,7 +22728,7 @@ void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
     u16 port_lcid;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, &trace_msg[index - index], arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, &lbl_803196B8[0], arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -22735,19 +22756,20 @@ void fn_800911DC(void) {
 }
 
 void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
-    register volatile char *messages = (volatile char *)lbl_803196B8;
+    struct TraceMsgs { char m0[0x1C]; char m1[0x8C]; char m2[1]; };
+    struct TraceMsgs *messages = (struct TraceMsgs *)lbl_803196B8;
     s32 temp_r0 = arg0 - 0x40;
     void *var_r30;
 
     if (temp_r0 >= 0xA) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, (char *)messages, arg0);
+            fn_80070954(0x90000, messages->m0, arg0);
         var_r30 = 0;
     } else {
         var_r30 = *(void **)((u8 *)&lbl_803C4828 + temp_r0 * 4 + 0x3C);
         if (var_r30 && *(u16 *)((u8 *)var_r30 + 0x68) != arg0) {
             if (lbl_803C4828[0x414] >= 2)
-                fn_8007096C(0x90001, (char *)messages + 0x1C, arg0, *(u16 *)((u8 *)var_r30 + 0x68));
+                fn_8007096C(0x90001, messages->m1, arg0, *(u16 *)((u8 *)var_r30 + 0x68));
             var_r30 = 0;
         }
     }
@@ -22755,7 +22777,7 @@ void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
         L2CA_DisconnectRsp(arg0);
     if (!var_r30) {
         if (lbl_803C4828[0x414] >= 2)
-            fn_80070954(0x90001, (char *)messages + 0xA8, arg0);
+            fn_80070954(0x90001, messages->m2, arg0);
     } else {
         fn_800916F4(var_r30, 0xE, 0);
     }
