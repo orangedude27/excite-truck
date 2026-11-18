@@ -1425,9 +1425,6 @@ void fn_802D0610(int arg0) {
 }
 
 #pragma push
-#pragma optimize_for_size on
-#pragma peephole on
-#pragma scheduling on
 void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
     extern int lbl_8055D0BC;
@@ -1467,7 +1464,12 @@ copy:
     }
 done:
     if (arg1 != 0) {
-        fn_802E30C8(lbl_8034C108, lbl_8055D0BC * lbl_804C9760[2], lbl_8055D0C0 * lbl_804C9760[3], lbl_804C9760, lbl_8055D0BC);
+        const char *fmt = lbl_8034C108;
+        int w = lbl_8055D0BC;
+        int h = lbl_8055D0C0;
+        int pw = lbl_804C9760[2];
+        int ph = lbl_804C9760[3];
+        fn_802E30C8(fmt, w * pw, h * ph, lbl_804C9760, lbl_8055D0BC);
         lbl_8055D0B8 = 0;
     }
 }
