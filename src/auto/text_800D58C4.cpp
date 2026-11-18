@@ -1261,7 +1261,6 @@ extern "C" void fn_800D6CA0(s32, s32);
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
-    struct { u8 *ptr; } pp3;
     struct { StateNode_800D6CA0 *node; } cur1;
     struct { StateNode_800D6CA0 *node; } cur2;
     struct { StateNode_800D6CA0 *end; } end1s;
@@ -1269,6 +1268,7 @@ extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     struct { StateNode_800D6CA0 *node; } cur3;
     struct { u8 *ptr; } pp1;
     struct { u8 *ptr; } pp2;
+    struct { u8 *ptr; } pp3;
     StateNode_800D6CA0 *&n1 = cur1.node;
     StateNode_800D6CA0 *&n2 = cur2.node;
     StateNode_800D6CA0 *&end1 = end1s.end;
@@ -3407,14 +3407,14 @@ extern "C" const char lbl_8032022C[];
 extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void* arg0, void* arg1) {
     struct PaneMsgBlock { char file[0x10]; char msg1[0x2C]; char msg2[0x2C]; };
     register void* iterator = (u8*)arg0 + 0x14;
-    const PaneMsgBlock& messages = *(const PaneMsgBlock*)&lbl_8031FF90[0];
+    register const PaneMsgBlock* messages = (const PaneMsgBlock*)&lbl_8031FF90[0];
     register void* child = arg1;
     register void* parent = arg0;
     void* slot;
     if (child == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(messages.file, 0xFD, messages.msg1);
+        Panic__Q26nw4hbm2dbFPCciPCce(messages->file, 0xFD, messages->msg1);
     if (*(void**)((u8*)child + 0xC) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(messages.file, 0xFE, messages.msg2);
+        Panic__Q26nw4hbm2dbFPCciPCce(messages->file, 0xFE, messages->msg2);
     if (child == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320250, 0x233, lbl_8032022C);
     slot = iterator;
@@ -3488,16 +3488,19 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt4PaneFUlUc(void* self, u32 index, 
     extern const char lbl_8031FF90[];
     extern const char lbl_80320090[];
     if (index >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x14E, lbl_80320090);
-    if ((s32)index == 0x10) {
+    struct Obj {
+        virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
+        virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
+        virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11();
+        virtual void v12(u32, u8);
+    };
+    switch (index) {
+    case 0x10:
         *((u8*)self + 0xCD) = color;
-    } else {
-        struct Obj {
-            virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
-            virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
-            virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11();
-            virtual void v12(u32, u8);
-        };
+        break;
+    default:
         ((Obj*)self)->v12(index, color);
+        break;
     }
 }
 
