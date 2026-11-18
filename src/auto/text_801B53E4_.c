@@ -180,30 +180,30 @@ void fn_801B54B0(s32 listHead) {
 #pragma scheduling invalid_target
 void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32 x1, f32 y1, f32 u1, f32 u2) {
     typedef void (*Rec)(void *, s32, void *, s32, f32, f32, f32, f32);
-    f32 r[16];
+    typedef struct { s32 a; s32 b; s32 next; } Node;
+    typedef struct { f32 x0, y0, x1, y1; } Rect;
+    Rect r[4];
     u8 hit[4];
     s32 count;
     s32 last;
     s32 i;
-    f32 mx, my, size, h;
-    s32 *node;
-    s32 off;
-    char *pool;
+    s32 j;
+    f32 mx, my, w, h;
+    Node *node;
     s32 *p2 = (s32 *)arg2;
 
-    h = lbl_80562698;
-    mx = h * (x0 + x1);
-    my = h * (y0 + y1);
+    mx = lbl_80562698 * (x0 + x1);
+    my = lbl_80562698 * (y0 + y1);
     count = 0;
-    r[0] = x0; r[1] = y0; r[2] = mx; r[3] = my;
-    r[4] = mx; r[5] = y0; r[6] = x1; r[7] = my;
-    r[8] = x0; r[9] = my; r[10] = mx; r[11] = y1;
-    r[12] = mx; r[13] = my; r[14] = x1; r[15] = y1;
+    r[0].x0 = x0; r[0].y0 = y0; r[0].x1 = mx; r[0].y1 = my;
+    r[1].x0 = mx; r[1].y0 = y0; r[1].x1 = x1; r[1].y1 = my;
+    r[2].x0 = x0; r[2].y0 = my; r[2].x1 = mx; r[2].y1 = y1;
+    r[3].x0 = mx; r[3].y0 = my; r[3].x1 = x1; r[3].y1 = y1;
     last = -1;
     *(s32 *)hit = 0;
     for (i = 0; i < 4; i++) {
-        if (lbl_80435EB8[0] < r[i * 4 + 2] && lbl_80435EB8[2] > r[i * 4 + 0]
-            && lbl_80435EB8[1] < r[i * 4 + 3] && lbl_80435EB8[3] > r[i * 4 + 1]) {
+        if (lbl_80435EB8[0] < r[i].x1 && lbl_80435EB8[2] > r[i].x0
+            && lbl_80435EB8[1] < r[i].y1 && lbl_80435EB8[3] > r[i].y0) {
             hit[i] = 1;
             last = i;
             count++;
@@ -218,20 +218,17 @@ void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32
             p2[2] = (s32)fn_8002F37C(fn_8012850C(0x40, lbl_80335EB4), fn_801B5984, fn_801B591C, 0xC, 4);
         }
         ((Rec)fn_801B561C)(arg0, arg1, (char *)p2[2] + last * 0xC, arg3 + 1,
-                           r[last * 4], r[last * 4 + 1], r[last * 4 + 2], r[last * 4 + 3]);
+                           r[last].x0, r[last].y0, r[last].x1, r[last].y1);
         return;
     }
-    size = x1 - x0;
+    w = x1 - x0;
     h = y1 - y0;
-    size = size > h ? size : h;
-    if (size < lbl_8056269C) {
-        off = lbl_8055E6F0 * 0xC;
-        lbl_8055E6F0++;
-        pool = (char *)lbl_8055E6F4;
-        node = (s32 *)(pool + off);
-        *(s32 *)(pool + off) = (s32)arg0;
-        node[1] = arg1;
-        node[2] = p2[0];
+    w = w > h ? w : h;
+    if (w < lbl_8056269C) {
+        node = &((Node *)lbl_8055E6F4)[lbl_8055E6F0++];
+        node->a = (s32)arg0;
+        node->b = arg1;
+        node->next = p2[0];
         p2[0] = (s32)node;
         p2[1]++;
         lbl_8055E6EC++;
@@ -240,10 +237,10 @@ void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32
     if (p2[2] == 0) {
         p2[2] = (s32)fn_8002F37C(fn_8012850C(0x40, lbl_80335EB4), fn_801B5984, fn_801B591C, 0xC, 4);
     }
-    for (i = 0; i < 4; i++) {
-        if (hit[i] != 0) {
-            ((Rec)fn_801B561C)(arg0, arg1, (char *)p2[2] + i * 0xC, arg3 + 1,
-                               r[i * 4], r[i * 4 + 1], r[i * 4 + 2], r[i * 4 + 3]);
+    for (j = 0; j < 4; j++) {
+        if (hit[j] != 0) {
+            ((Rec)fn_801B561C)(arg0, arg1, (char *)p2[2] + j * 0xC, arg3 + 1,
+                               r[j].x0, r[j].y0, r[j].x1, r[j].y1);
         }
     }
 }
@@ -277,30 +274,36 @@ void *fn_801B5984(void *node) {
 }
 
 void fn_801B59A4(void *arg0, s32 arg1, s32 arg2) {
+    #pragma scheduling invalid_target
     extern u8 lbl_80435EC8[];
     struct Entry { struct Entry *nodes; s32 count; struct Entry *children; } *entry = (struct Entry *)arg0;
-    u16 *records; u16 *record; struct Entry *node; s32 childStart; s32 offset; s32 w;
+    u16 *records; u16 *record;
+    s32 offset; s32 childStart; s32 w;
+    struct Entry *node;
     s32 max = *(s32 *)(lbl_80435EC8 + 4);
     if (arg2 >= max) { *(s32 *)(lbl_80435EC8 + 4) = arg2 + 1; }
     records = *(u16 **)(lbl_80435EC8 + 0xC);
+    records[arg2 * 4] = *(s32 *)lbl_80435EC8;
     record = records + arg2 * 4;
-    record[0] = *(u16 *)lbl_80435EC8;
-    record[1] = *(u16 *)lbl_80435EC8 + (u16)entry->count;
+    record[1] = *(s32 *)lbl_80435EC8 + (u16)entry->count;
     record[3] = 0;
-    if (entry->children != NULL) { record[2] = *(u16 *)(lbl_80435EC8 + 4); } else { record[2] = 0; }
+    if (entry->children != NULL) { record[2] = *(s32 *)(lbl_80435EC8 + 4); } else { record[2] = 0; }
     node = entry->nodes;
     while (node != NULL) {
-        (*(u16 **)(lbl_80435EC8 + 0x18))[*(s32 *)(lbl_80435EC8 + 0x10)] = (u16)node->count;
-        (*(s32 *)(lbl_80435EC8 + 0x10))++;
+        s32 idx = *(s32 *)(lbl_80435EC8 + 0x10);
+        u16 value = (u16)node->count;
+        (*(u16 **)(lbl_80435EC8 + 0x18))[idx++] = value;
+        *(s32 *)(lbl_80435EC8 + 0x10) = idx;
         node = *(struct Entry **)((u8 *)node + 8);
     }
     *(s32 *)lbl_80435EC8 = *(s32 *)lbl_80435EC8 + entry->count;
     if (entry->children != NULL) {
+        childStart = record[2];
         *(s32 *)(lbl_80435EC8 + 4) += 4;
-        childStart = record[2]; offset = 0; w = 0;
+        w = 0; offset = 0;
         do {
-            fn_801B59A4((u8 *)entry->children + offset, arg1 + 1, childStart);
-            childStart++; w++; offset += 0xC;
+            fn_801B59A4((u8 *)entry->children + offset, arg1 + 1, childStart++);
+            w++; offset += 0xC;
         } while (w < 4);
     }
 }
@@ -423,66 +426,72 @@ extern u8 lbl_8055A8C8[1];
 extern void *fn_8012850C(s32, void *);
 extern void *fn_801284E8(void *, s32);
 extern void fn_80128670(void *);
-#pragma optimize_for_size on
-#pragma optimize_for_size on
-#pragma use_lmw_stmw off
-void *fn_801B5D30(s32 *arg0) {
-    s32 tmp1[3];
-    s32 tmp2[3];
-    register s32 count;
-    register s32 size;
-    void *buf;
-    s32 *obj;
-    void *p;
-    void *q;
-    fn_801B5AE4();
-    fn_801B54B0(*arg0);
-    count = fn_801B5D10((void *)*arg0);
-    size = count * 4;
-    buf = fn_8012850C(size, lbl_80335EC8);
-    fn_801B5BDC(buf, count, (void *)*arg0);
-    tmp1[1] = 0;
-    tmp1[2] = 0;
-    tmp1[0] = 0;
-    lbl_8055E6E8++;
-    lbl_8055E6F0 = 0;
-    lbl_8055E6F4 = fn_8012850C(0x60000, lbl_80335ED4);
-    fn_801B5B04(tmp1, buf, count);
-    fn_80128670(buf);
-    fn_80128670(lbl_8055E6F4);
-    lbl_8055E6F4 = NULL;
-    if (tmp1[2] != 0) {
-        ((void (*)(void *, void *(*)(void *, s32)))fn_8002F6AC)((void *)tmp1[2], fn_801B591C);
-    }
-    obj = (s32 *)fn_801284E8(lbl_8055A8C8, lbl_8055E6EC * 2 + lbl_8055E6E8 * 8 + size + 0x18);
-    obj[0] = count;
-    p = (u8 *)obj + 0x18;
-    q = (u8 *)p + count * 4;
-    obj[2] = lbl_8055E6EC;
-    obj[1] = (s32)p;
-    obj[3] = (s32)q;
-    obj[4] = (s32)((u8 *)q + lbl_8055E6EC * 2);
-    obj[5] = (s32)fn_801B5C58;
-    fn_801B5BDC(p, count, (void *)*arg0);
-    tmp2[1] = 0;
-    tmp2[2] = 0;
-    tmp2[0] = 0;
-    lbl_8055E6E8++;
-    lbl_8055E6F0 = 0;
-    lbl_8055E6F4 = fn_8012850C(0x60000, lbl_80335ED4);
-    fn_801B5B04(tmp2, (void **)obj[1], obj[0]);
-    memset(lbl_80435EC8, 0, 0x1C);
-    *(s32 *)lbl_80435EC8 = 0;
-    *(s32 *)(lbl_80435EC8 + 8) = lbl_8055E6E8;
-    *(s32 *)(lbl_80435EC8 + 0xC) = obj[4];
-    *(s32 *)(lbl_80435EC8 + 0x14) = obj[2];
-    *(s32 *)(lbl_80435EC8 + 0x18) = obj[3];
-    fn_801B59A4(tmp2, 0, 0);
-    fn_80128670(lbl_8055E6F4);
-    lbl_8055E6F4 = NULL;
-    *arg0 = 0;
-    if (tmp2[2] != 0) {
-        ((void (*)(void *, void *(*)(void *, s32)))fn_8002F6AC)((void *)tmp2[2], fn_801B591C);
-    }
-    return obj;
+#pragma dont_inline on
+void *fn_801B5D30(s32 *arg0)
+{
+  s32 tmp1[3];
+  s32 tmp2[3];
+  s32 size;
+  s32 ec;
+  void *buf;
+  QuadNode *obj;
+  void *p;
+  s32 count;
+  void *q;
+  s32 e6;
+  fn_801B5AE4();
+  fn_801B54B0(*arg0);
+  count = fn_801B5D10((void *) (*arg0));
+  size = count * 4;
+  buf = fn_8012850C(size, lbl_80335EC8);
+  fn_801B5BDC(buf, count, (void *) (*arg0));
+  tmp1[1] = 0;
+  tmp1[2] = 0;
+  tmp1[0] = 0;
+  lbl_8055E6E8++;
+  lbl_8055E6F0 = 0;
+  lbl_8055E6F4 = fn_8012850C(0x60000, lbl_80335ED4);
+  fn_801B5B04(tmp1, buf, count);
+  fn_80128670(buf);
+  fn_80128670(lbl_8055E6F4);
+  lbl_8055E6F4 = NULL;
+  if (tmp1[2] != 0)
+  {
+    ((void (*)(void *, void *(*)(void *, s32))) fn_8002F6AC)((void *) tmp1[2], fn_801B591C);
+  }
+  e6 = lbl_8055E6EC;
+  obj = (QuadNode *) fn_801284E8(lbl_8055A8C8, ((e6 * 2) + (lbl_8055E6E8 * 8) + size) + 0x18);
+  obj->count = count;
+  p = ((u8 *) obj) + 0x18;
+  q = ((u8 *) p) + (count * 4U);
+  ec = lbl_8055E6EC;
+  obj->e6ec = ec;
+  obj->p = (s32) p;
+  obj->q = (s32) q;
+  obj->tail = (s32) (((u8 *) q) + (ec * 2));
+  obj->callback = (s32) fn_801B5C58;
+  fn_801B5BDC(p, count, (void *) (*arg0));
+  tmp2[1] = 0;
+  tmp2[2] = 0;
+  tmp2[0] = 0;
+  lbl_8055E6E8++;
+  lbl_8055E6F0 = 0;
+  lbl_8055E6F4 = fn_8012850C(0x60000, lbl_80335ED4);
+  fn_801B5B04(tmp2, (void **) obj->p, obj->count);
+  memset(lbl_80435EC8, 0, 0x1C);
+  *((s32 *) lbl_80435EC8) = 0;
+  *((s32 *) (lbl_80435EC8 + 8)) = lbl_8055E6E8;
+  *((s32 *) (lbl_80435EC8 + 0xC)) = obj->tail;
+  *((s32 *) (lbl_80435EC8 + 0x14)) = obj->e6ec;
+  *((s32 *) (lbl_80435EC8 + 0x18)) = obj->q;
+  fn_801B59A4(tmp2, 0, 0);
+  fn_80128670(lbl_8055E6F4);
+  lbl_8055E6F4 = NULL;
+  *arg0 = 0;
+  if (tmp2[2] != 0)
+  {
+    ((void (*)(void *, void *(*)(void *, s32))) fn_8002F6AC)((void *) tmp2[2], fn_801B591C);
+  }
+  return obj;
 }
+#pragma dont_inline off
