@@ -3728,19 +3728,17 @@ static void gki_remove_pool_from_list_del(UINT8 pool_id) {
 void GKI_delete_pool(UINT8 pool_id) {
     FREE_QUEUE_T *Q;
     tGKI_COM_CB *p_cb = &((tGKI_CB *)lbl_803946C0)->com;
-    if (pool_id >= 9) {
-        goto bad_pool;
-    }
-    if (p_cb->pool_start[pool_id] != NULL) {
+
+    if (pool_id >= 9)
+        return;
+    if (p_cb->pool_start[pool_id] != NULL)
         goto body;
-    }
-    goto error;
+    return;
 body:
     fn_8006EBAC();
     Q = &p_cb->freeq[pool_id];
-    if (Q->cur_cnt != 0) {
+    if (Q->cur_cnt != 0)
         goto bad_pool;
-    }
     Q->size = 0;
     Q->total = 0;
     Q->cur_cnt = 0;
@@ -3754,7 +3752,6 @@ body:
     gki_remove_pool_from_list_del(pool_id);
     p_cb->curr_total_no_of_pools--;
     goto unlock;
-error:
 bad_pool:
     ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_DELETE_POOL_BAD_QID, lbl_80314240);
 unlock:
@@ -8585,17 +8582,15 @@ tBTM_STATUS BTM_ReadRSSI(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
 
     entry = lbl_803C0F78 + 0x34;
     i = 0;
-    while (1) {
+    do {
         if (entry[0x119] != 0 && memcmp(entry + 8, remote_bda, 6) == 0) {
             goto found;
+        } else {
+            i++;
+            entry += 0x11C;
         }
-        i++;
-        entry += 0x11C;
-        if (i >= 4) {
-            entry = NULL;
-            goto found;
-        }
-    }
+    } while (i < 4);
+    entry = NULL;
 found:
     if (entry != NULL) {
         btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x5C8), 9, 3);
@@ -8610,6 +8605,16 @@ found:
     return 7;
 }
 
+static inline u8 *btm_find_dev_by_addr_80068D68(BD_ADDR bd_addr) {
+    u8 *p_dev_rec = lbl_803C0F78 + 0x34;
+    u32 i;
+    for (i = 0; i < 4; i++, p_dev_rec += 0x11C) {
+        if (p_dev_rec[0x119] == 0) continue;
+        if (memcmp(p_dev_rec + 8, bd_addr, 6) == 0)
+            return p_dev_rec;
+    }
+    return 0;
+}
 #pragma push
 #pragma optimization_level 3
 tBTM_STATUS BTM_ReadLinkQuality(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
