@@ -4654,7 +4654,7 @@ s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
         status = -2;
         goto finish;
     }
-    if (arg != 0) goto extended;
+    if (arg1 != 0) goto extended;
     if (value778 == 0) {
         status = 0;
         goto finish;
