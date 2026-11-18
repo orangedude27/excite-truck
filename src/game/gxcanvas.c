@@ -547,129 +547,147 @@ extern const char lbl_8034B0B8[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma processor 750
-void fn_802C3918(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
-    u16 *var_r30, *var_r30_2, *var_r30_3, *var_r30_4;
-    u16 *var_r3, *var_r3_2, *var_r3_3, *var_r3_4;
-    s32 sp1C, sp18, sp14, sp10, spC, sp8;
-    s32 temp_r0, temp_r29, temp_r31;
-    s32 temp_r4, temp_r5, temp_r6, temp_r0_4, temp_r4_4;
-    s32 var_r4, var_r4_2, var_r7;
-    register u16 temp_r0_2;
-    u16 temp_r7, temp_r7_2, temp_r8;
-    s8 temp_r4_2, temp_r5_2;
-    sp8 = arg1;
-    spC = arg2;
-    sp10 = arg6;
-    sp14 = arg7;
-    sp1C = arg3 - arg1;
-    sp18 = arg4 - arg2;
-    if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
-        var_r30 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
-        var_r3 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
-        temp_r31 = sp1C;
-        temp_r29 = sp18;
-        temp_r5 = (*(s32 *)((u8 *)arg0 + 0x10) - temp_r31 * 2) / 2 * 2;
-        temp_r6 = (*(s32 *)((u8 *)arg5 + 0x10) - temp_r31 * 2) / 2 * 2;
+void fn_802C3918(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
+                 s32 srcBottom, s32 dstCanvas, s32 dstLeft, s32 dstTop) {
+    u16 *srcPix, *srcPix_2, *srcPix_3, *srcPix_4;
+    u16 *dstPix, *dstPix_2, *dstPix_3, *dstPix_4;
+    s32 width, height, clipY, clipX, srcY, srcX;
+    s32 rowsLeft, savedHeight, savedWidth;
+    s32 unused, srcRowSkip, dstRowSkip, rgb, green6;
+    s32 n, n2, n3;
+    register u16 out;
+    u16 pixel, pixel2, pixel3;
+    s8 srcFormat, dstFormat;
+
+    srcX = srcLeft;
+    srcY = srcTop;
+    clipX = dstLeft;
+    clipY = dstTop;
+    width = srcRight - srcLeft;
+    height = srcBottom - srcTop;
+    /* Clip the rectangle against the destination's clip rectangle; the source
+     * origin moves by however much of the rectangle was cut off. */
+    if (fn_802C3170((void *)dstCanvas, &clipX, &clipY, &srcX, &srcY, &width,
+                    &height) != 0) {
+        srcPix = (u16 *)fn_802C3044((void *)srcCanvas, srcX, srcY);
+        dstPix = (u16 *)fn_802C3044((void *)dstCanvas, clipX, clipY);
+        savedWidth = width;
+        savedHeight = height;
+        /* Bytes to step over the pixels a row does not hold, rounded to whole
+         * 16-bit pixels. */
+        srcRowSkip = (*(s32 *)((u8 *)srcCanvas + 0x10) - savedWidth * 2) / 2 * 2;
+        dstRowSkip = (*(s32 *)((u8 *)dstCanvas + 0x10) - savedWidth * 2) / 2 * 2;
         do {
-            var_r4 = sp1C;
-loop_copy:
-            *var_r3 = *var_r30;
-            var_r4--;
-            var_r30++;
-            var_r3++;
-            if (var_r4 > 0)
-                goto loop_copy;
-            var_r30 = (u16 *)((u8 *)var_r30 + temp_r5);
-            var_r3 = (u16 *)((u8 *)var_r3 + temp_r6);
-            temp_r0 = sp18 - 1;
-            sp18 = temp_r0;
-        } while (temp_r0 > 0);
-        temp_r5_2 = *(s8 *)arg5;
-        temp_r4_2 = *(s8 *)arg0;
-        if (temp_r4_2 != temp_r5_2) {
-            if (temp_r4_2 == 4 && temp_r5_2 == 3) {
-                var_r30_2 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
-                var_r3_2 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
-                sp1C = temp_r31;
-                sp18 = temp_r29;
-                temp_r5 = (*(s32 *)((u8 *)arg0 + 0x10) - temp_r31 * 2) / 2 * 2;
-                temp_r6 = (*(s32 *)((u8 *)arg5 + 0x10) - temp_r31 * 2) / 2 * 2;
+            n = width;
+copyPixel:
+            *dstPix = *srcPix;
+            n--;
+            srcPix++;
+            dstPix++;
+            if (n > 0)
+                goto copyPixel;
+            srcPix = (u16 *)((u8 *)srcPix + srcRowSkip);
+            dstPix = (u16 *)((u8 *)dstPix + dstRowSkip);
+            rowsLeft = height - 1;
+            height = rowsLeft;
+        } while (rowsLeft > 0);
+        dstFormat = *(s8 *)dstCanvas;
+        srcFormat = *(s8 *)srcCanvas;
+        if (srcFormat != dstFormat) {
+            if (srcFormat == CANVAS_FORMAT_RGB565 &&
+                dstFormat == CANVAS_FORMAT_RGB1555) {
+                srcPix_2 = (u16 *)fn_802C3044((void *)srcCanvas, srcX, srcY);
+                dstPix_2 = (u16 *)fn_802C3044((void *)dstCanvas, clipX, clipY);
+                width = savedWidth;
+                height = savedHeight;
+                srcRowSkip = (*(s32 *)((u8 *)srcCanvas + 0x10) - savedWidth * 2) / 2 * 2;
+                dstRowSkip = (*(s32 *)((u8 *)dstCanvas + 0x10) - savedWidth * 2) / 2 * 2;
                 do {
-                    var_r4_2 = sp1C;
-loop_10:
-                    temp_r7 = *var_r30_2;
-                    var_r4_2--;
-                    var_r30_2++;
-                    temp_r0_2 = (u16)__rlwinm(temp_r7, 31, 17, 26);
-                    temp_r0_2 = (u16)__rlwimi(temp_r0_2, temp_r7, 0, 27, 31);
-                    *var_r3_2 = temp_r0_2;
-                    var_r3_2++;
-                    if (var_r4_2 > 0)
-                        goto loop_10;
-                    var_r30_2 = (u16 *)((u8 *)var_r30_2 + temp_r5);
-                    var_r3_2 = (u16 *)((u8 *)var_r3_2 + temp_r6);
-                    temp_r0 = sp18 - 1;
-                    sp18 = temp_r0;
-                } while (temp_r0 > 0);
+                    n2 = width;
+conv565To555:
+                    pixel = *srcPix_2;
+                    n2--;
+                    srcPix_2++;
+                    /* ((p >> 1) & 0x7FE0) | (p & 0x1F): red and blue move down
+                     * one bit slot, green loses its 6th (low) bit. */
+                    out = (u16)__rlwinm(pixel, 31, 17, 26);
+                    out = (u16)__rlwimi(out, pixel, 0, 27, 31);
+                    *dstPix_2 = out;
+                    dstPix_2++;
+                    if (n2 > 0)
+                        goto conv565To555;
+                    srcPix_2 = (u16 *)((u8 *)srcPix_2 + srcRowSkip);
+                    dstPix_2 = (u16 *)((u8 *)dstPix_2 + dstRowSkip);
+                    rowsLeft = height - 1;
+                    height = rowsLeft;
+                } while (rowsLeft > 0);
                 return;
             }
-            if (temp_r4_2 == 3 && temp_r5_2 == 4) {
-                var_r30_3 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
-                var_r3_3 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
-                sp1C = temp_r31;
-                sp18 = temp_r29;
-                temp_r5 = (*(s32 *)((u8 *)arg0 + 0x10) - temp_r31 * 2) / 2 * 2;
-                temp_r6 = (*(s32 *)((u8 *)arg5 + 0x10) - temp_r31 * 2) / 2 * 2;
+            if (srcFormat == CANVAS_FORMAT_RGB1555 &&
+                dstFormat == CANVAS_FORMAT_RGB565) {
+                srcPix_3 = (u16 *)fn_802C3044((void *)srcCanvas, srcX, srcY);
+                dstPix_3 = (u16 *)fn_802C3044((void *)dstCanvas, clipX, clipY);
+                width = savedWidth;
+                height = savedHeight;
+                srcRowSkip = (*(s32 *)((u8 *)srcCanvas + 0x10) - savedWidth * 2) / 2 * 2;
+                dstRowSkip = (*(s32 *)((u8 *)dstCanvas + 0x10) - savedWidth * 2) / 2 * 2;
                 do {
-                    var_r7 = sp1C;
-loop_17:
-                    temp_r8 = *var_r30_3;
-                    var_r7--;
-                    var_r30_3++;
-                    temp_r4_4 = __rlwinm(temp_r8, 1, 21, 21);
-                    temp_r0_4 = __rlwinm(temp_r8, 1, 16, 25);
-                    temp_r0_4 = __rlwimi(temp_r0_4, temp_r8, 0, 27, 31);
-                    temp_r4_4 = temp_r4_4 >> 5;
-                    temp_r0_4 = temp_r4_4 | temp_r0_4;
-                    *var_r3_3 = (u16)temp_r0_4;
-                    var_r3_3++;
-                    if (var_r7 > 0)
-                        goto loop_17;
-                    var_r30_3 = (u16 *)((u8 *)var_r30_3 + temp_r5);
-                    var_r3_3 = (u16 *)((u8 *)var_r3_3 + temp_r6);
-                    temp_r0 = sp18 - 1;
-                    sp18 = temp_r0;
-                } while (temp_r0 > 0);
+                    n3 = width;
+conv555To565:
+                    pixel3 = *srcPix_3;
+                    n3--;
+                    srcPix_3++;
+                    /* ((p << 1) & 0xFFC0) | (((p << 1) & 0x400) >> 5) |
+                     * (p & 0x1F): green gains a low bit holding its own top
+                     * bit, red and blue shift up one. */
+                    green6 = __rlwinm(pixel3, 1, 21, 21);
+                    rgb = __rlwinm(pixel3, 1, 16, 25);
+                    rgb = __rlwimi(rgb, pixel3, 0, 27, 31);
+                    green6 = green6 >> 5;
+                    rgb = green6 | rgb;
+                    *dstPix_3 = (u16)rgb;
+                    dstPix_3++;
+                    if (n3 > 0)
+                        goto conv555To565;
+                    srcPix_3 = (u16 *)((u8 *)srcPix_3 + srcRowSkip);
+                    dstPix_3 = (u16 *)((u8 *)dstPix_3 + dstRowSkip);
+                    rowsLeft = height - 1;
+                    height = rowsLeft;
+                } while (rowsLeft > 0);
                 return;
             }
-            if (temp_r4_2 == 1 && temp_r5_2 == 4) {
-                var_r30_4 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
-                var_r3_4 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
-                sp1C = temp_r31;
-                sp18 = temp_r29;
-                temp_r5 = (*(s32 *)((u8 *)arg0 + 0x10) - temp_r31 * 2) / 2 * 2;
-                temp_r6 = (*(s32 *)((u8 *)arg5 + 0x10) - temp_r31 * 2) / 2 * 2;
+            if (srcFormat == CANVAS_FORMAT_RGBA4444 &&
+                dstFormat == CANVAS_FORMAT_RGB565) {
+                srcPix_4 = (u16 *)fn_802C3044((void *)srcCanvas, srcX, srcY);
+                dstPix_4 = (u16 *)fn_802C3044((void *)dstCanvas, clipX, clipY);
+                width = savedWidth;
+                height = savedHeight;
+                srcRowSkip = (*(s32 *)((u8 *)srcCanvas + 0x10) - savedWidth * 2) / 2 * 2;
+                dstRowSkip = (*(s32 *)((u8 *)dstCanvas + 0x10) - savedWidth * 2) / 2 * 2;
                 do {
-                    var_r4 = sp1C;
-loop_24:
-                    temp_r7_2 = *var_r30_4;
-                    var_r4--;
-                    var_r30_4++;
-                    temp_r0_2 = (u16)__rlwinm(temp_r7_2, 1, 27, 30);
-                    temp_r0_2 = (u16)__rlwimi(temp_r0_2, temp_r7_2, 3, 21, 24);
-                    temp_r0_2 = (u16)__rlwimi(temp_r0_2, temp_r7_2, 4, 16, 19);
-                    *var_r3_4 = temp_r0_2;
-                    var_r3_4++;
-                    if (var_r4 > 0)
-                        goto loop_24;
-                    var_r30_4 = (u16 *)((u8 *)var_r30_4 + temp_r5);
-                    var_r3_4 = (u16 *)((u8 *)var_r3_4 + temp_r6);
-                    temp_r0 = sp18 - 1;
-                    sp18 = temp_r0;
-                } while (temp_r0 > 0);
+                    n = width;
+conv4444To565:
+                    pixel2 = *srcPix_4;
+                    n--;
+                    srcPix_4++;
+                    /* (p << 1) & 0xF | (p << 3) & 0x780 | (p << 4) & 0xF000:
+                     * every 4-bit component moves up into its 565 field, the
+                     * alpha nibble is dropped. */
+                    out = (u16)__rlwinm(pixel2, 1, 27, 30);
+                    out = (u16)__rlwimi(out, pixel2, 3, 21, 24);
+                    out = (u16)__rlwimi(out, pixel2, 4, 16, 19);
+                    *dstPix_4 = out;
+                    dstPix_4++;
+                    if (n > 0)
+                        goto conv4444To565;
+                    srcPix_4 = (u16 *)((u8 *)srcPix_4 + srcRowSkip);
+                    dstPix_4 = (u16 *)((u8 *)dstPix_4 + dstRowSkip);
+                    rowsLeft = height - 1;
+                    height = rowsLeft;
+                } while (rowsLeft > 0);
                 return;
             }
-            fn_802E317C(lbl_8034B0B8, (s32)temp_r4_2, (s32)temp_r5_2);
+            fn_802E317C(lbl_8034B0B8, (s32)srcFormat, (s32)dstFormat);
         }
     }
 }
