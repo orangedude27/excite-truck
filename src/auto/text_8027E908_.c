@@ -715,7 +715,7 @@ int fn_8027F958(int *selection, void *collection) {
     register Fn8027F958Widget *widget;
     register void **items, **storage;
     register char *constants = (char *)&lbl_802FA848;
-    register char *state = (char *)&lbl_804B2FF8;
+    register struct Fn8027F958State *state = (struct Fn8027F958State *)&lbl_804B2FF8;
     register char *strings = lbl_80347E50;
     register float defaultValue;
     register float defaultScale;
