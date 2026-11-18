@@ -1257,19 +1257,19 @@ void fn_802C4C90(void *obj, s32 arg1, s32 arg2, s32 arg3, void *tab) {
         u16 *pal;
         s32 row;
         u8 *src;
-        s32 w, h, t;
+        s32 w, t, h;
         u16 *d;
         y = arg2 - *(s32 *)((u8 *)obj + 0xC);
+        t = *(s32 *)(g + 0x18) - y;
         x = *(s32 *)(g + 0x20) - y;
         h = *(s32 *)((u8 *)obj + 4);
-        t = *(s32 *)(g + 0x18) - y;
         col = arg1 - *(s32 *)((u8 *)obj + 8);
         row = t & ~(t >> 31);
         if (h < x) x = h;
         w = *(s32 *)((u8 *)obj + 0);
-        startX = *(s32 *)(g + 0x1C) - col;
         t = *(s32 *)(g + 0x14) - col;
         startY = t & ~(t >> 31);
+        startX = *(s32 *)(g + 0x1C) - col;
         if (w < startX) startX = w;
         if (tab != 0) {
             if ((s8)*g == 3) pal = (u16 *)tab;
