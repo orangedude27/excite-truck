@@ -36,7 +36,7 @@ void fn_802DACD4(void) {
  } else {
   font=0x120F00;
  }
- lbl_8055FE78=((int (*)(const char *, int))fn_801284E8)((void *)(message + 0),font);
+ lbl_8055FE78=fn_801284E8(message,font);
  font=OSInitFont();
  if (OSGetFontEncode()==0x120F00) fn_802E30C8(message+0xC);
  if (font==0) {
@@ -90,82 +90,105 @@ void fn_802C32B8(int, int, unsigned int);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma use_lmw_stmw off
-void fn_802DAE64(int arg0, int arg1, char *arg2) {
-    int sp18, sp14, sp10;
-    void *spC;
-    int sp8;
-    register int zero;
-    register int ydst;
-    register char *p;
-    register unsigned char *base;
-    register int row;
-    register int col;
-    register int y;
-    register int x;
-    int w;
-    char *q;
-    int tx, ty, typart, txpart, idx, ax, ay;
-    unsigned char b, nib;
-    unsigned int color, packed;
+void fn_802DAE64(int arg0, int arg1, char *arg2)
+{
+  int sp18;
+  int sp14;
+  int sp10;
+  void *spC;
+  int sp8;
+  register int zero;
+  register int ydst;
+  register char *p;
+  register unsigned char *base;
+  register int row;
+  register int col;
+  register int y;
+  register int x;
+  int w;
+  char *q;
+  int tx;
+  int ty;
+  int typart;
+  int txpart;
+  int idx;
+  unsigned char b;
+  unsigned char nib;
+  unsigned int color;
+  sp18 = 0;
+  y = arg1;
+  sp14 = 0;
+  sp10 = 0;
+  spC = 0;
+  if (arg0 >= 0)
+  {
+    x = 0x46;
+  }
+  else
+  {
+    x = (arg0 < 0) ? (-arg0) : (arg0);
+  }
+  zero = 0;
+  p = arg2;
+  while ((*p) != 0)
+  {
+    if ((*p) == 0x20)
+    {
+      w = x;
+      q = p + 1;
+      while (((*q) != 0) && ((*q) != 0x20))
+      {
+        sp8 = zero;
+        OSGetFontWidth(q, &sp8);
+        q++;
+        w += sp8;
+      }
 
-    sp18 = 0;
-    y = arg1;
-    sp14 = 0;
-    sp10 = 0;
-    spC = 0;
-    if (arg0 >= 0) {
+      if (w > 0x23A)
+      {
         x = 0x46;
-    } else {
-        x = arg0 < 0 ? -arg0 : arg0;
+        y += 0x20;
+        goto next_char;
+      }
     }
-    zero = 0;
-    p = arg2;
-    while (*p != 0) {
-        if (*p == 0x20) {
-            w = x;
-            q = p + 1;
-            while (*q != 0 && *q != 0x20) {
-                sp8 = zero;
-                OSGetFontWidth(q, &sp8);
-                q++;
-                w += sp8;
-            }
-            if (w > 0x23A) {
-                x = 0x46;
-                y += 0x20;
-                goto next_char;
-            }
+    OSGetFontTexture(p, (int *) (&spC), &sp18, &sp14, &sp10);
+    base = spC;
+    row = 0;
+    do
+    {
+      ydst = row + y;
+      col = 0;
+      while (col < sp10)
+      {
+        ty = row + sp14;
+        tx = col + sp18;
+        typart = (ty % 8) * 8;
+        txpart = tx % 8;
+        idx = ((((tx / 8) + (((ty / 8) << 9) / 8)) << 6) + txpart) + typart;
+        b = base[idx / 2];
+        nib = 0xF;
+        nib = b & nib;
+        if (!(col & 1))
+        {
+          nib = (b >> 4) & 0xF;
         }
-        OSGetFontTexture(p, (int *)&spC, &sp18, &sp14, &sp10);
-        base = spC;
-        row = 0;
-        do {
-            ydst = row + y;
-            col = 0;
-            while (col < sp10) {
-                ty = row + sp14;
-                tx = col + sp18;
-                typart = (ty % 8) * 8;
-                txpart = tx % 8;
-                idx = (((tx / 8) + (((ty / 8) << 9) / 8)) << 6) + txpart + typart;
-                b = base[idx / 2];
-                nib = b & 0xF;
-                if (!(col & 1)) nib = (b >> 4) & 0xF;
-                if (nib != 0) {
-                    ax = col + x;
-                    ay = ydst;
-                    color = (((nib * 12 + 16) << 8) & 0xFFFF00) | 0x80;
-                    packed = (color << 16) | (color & 0xFFFF);
-                    fn_802C32B8(ax, ay, packed);
-                }
-                col++;
-            }
-            row++;
-        } while (row < 0x18);
-        x += sp10;
-    next_char:
-        p++;
+        if (nib != 0)
+        {
+          color = ((((nib * 12) + 16) << 8) & 0xFFFF00) | 0x80;
+          fn_802C32B8(col + x, ydst, (color << 16) | (color & 0xFFFF));
+        }
+        col++;
+      }
+
+      row++;
     }
+    while (row < 0x18);
+    x += sp10;
+    next_char:
+    p++;
+
+  }
+
 }
 #pragma pop
 
