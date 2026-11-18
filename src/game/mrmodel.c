@@ -142,7 +142,7 @@ void fn_802C543C(void) {
 }
 #pragma dont_inline off
 
-#pragma scheduling 750
+#pragma scheduling on
 int fn_802C544C(void **a, void **b) {
     void *right = *b;
     void *left = *a;
