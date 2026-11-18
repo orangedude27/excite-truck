@@ -2594,7 +2594,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           u8 temp_r6_5;
                           u8 temp_r9_2;
                           u8 var_r22_3;
-                          u8 var_r23_2;
+                          u32 var_r23_2;
                           u8 var_r24_3;
                           u8 var_r24_4;
                           u32 var_r28_2;
