@@ -51,7 +51,7 @@ extern float lbl_80564B6C;
 extern float lbl_80564B84;
 extern float lbl_80564BB0;
 extern float fn_801EA0E8(float, float);
-extern unsigned int fn_802BBD38(short, short, ...);
+extern unsigned int fn_802BBD38(short, short);
 struct ETConfigPaths;
 static char lbl_8034A020[] = "swlmap.tex";
 static char lbl_8034A02C[] = "water_layer";
@@ -1514,30 +1514,29 @@ s32 fn_802B04D4(void *arg0) {
     f32 temp_f1;
     f32 temp_f2;
     s32 var_r0;
-    if ((u8)lbl_8055F981 != 0)
+
+    if ((u8)lbl_8055F981 != 0) {
         return fn_801EA0E8(*(f32 *)arg0, *(f32 *)((char *)arg0 + 8)) < lbl_80564BB0;
-    if ((s32)lbl_8055CD78 < 0)
-        return 0;
-    var_r0 = 0;
-    temp_f2 = lbl_80564B84;
-    temp_f0 = lbl_80564AF0;
-    temp_f1 = lbl_80564B6C;
-    temp_f2 = temp_f2 * temp_f0;
-    temp_f0 = *(f32 *)arg0;
-    temp_f2 = temp_f2 * temp_f1;
-    temp_f1 = -temp_f2;
-    if ((temp_f0 > temp_f1) && (temp_f0 < temp_f2)) {
-        temp_f0_2 = *(f32 *)((char *)arg0 + 8);
-        if ((temp_f0_2 > temp_f1) && (temp_f0_2 < temp_f2))
-            var_r0 = 1;
     }
-    if (var_r0 != 0) {
-        temp_f1 = *(f32 *)arg0;
-        temp_f2 = lbl_80564AF0;
-        temp_f0 = *(f32 *)((char *)arg0 + 8);
-        return (u8)lbl_8055F97C < fn_802BBD38((s16)(temp_f1 / temp_f2), (s16)(temp_f0 / temp_f2), lbl_80564AF0);
+    if ((s32)lbl_8055CD78 >= 0) {
+        var_r0 = 0;
+        temp_f0 = *(f32 *)arg0;
+        temp_f2 = lbl_80564B84 * lbl_80564AF0 * lbl_80564B6C;
+        temp_f1 = -temp_f2;
+        if ((temp_f0 > temp_f1) && (temp_f0 < temp_f2)) {
+            temp_f0_2 = *(f32 *)((char *)arg0 + 8);
+            if ((temp_f0_2 > temp_f1) && (temp_f0_2 < temp_f2)) {
+                var_r0 = 1;
+            }
+        }
+        if (var_r0 != 0) {
+            return (u8)lbl_8055F97C < fn_802BBD38(
+                (s16)(*(f32 *)arg0 / lbl_80564AF0),
+                (s16)(*(f32 *)((char *)arg0 + 8) / lbl_80564AF0));
+        }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 extern void fn_802C10C8(void);
