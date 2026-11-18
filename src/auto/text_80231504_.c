@@ -1526,31 +1526,32 @@ extern IndexList_80233EC0 lbl_802F9FFC;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
-    register void *object = arg0;
-    register s32 offset;
-    register s32 font;
-    u8 out3[0x18], out2[0x18], out1[0x18], out0[0x18];
-    IndexList_80233EC0 values;
-    u8 *entry;
-    if (arg1 != 0x20) {
-        offset = arg1 * 0x1C;
-        entry = *(u8 **)((u8 *)object + 0x10) + offset;
-        font = lbl_8055F050;
-        fn_80231380(out0, font, farg0, farg1, farg2,
-                    *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x18));
-        entry = *(u8 **)((u8 *)object + 0x10) + offset;
-        fn_80231380(out1, font, farg3, farg1, farg2,
-                    *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x10));
-        entry = *(u8 **)((u8 *)object + 0x10) + offset;
-        fn_80231380(out2, font, farg0, farg4, farg5,
-                    *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
-        entry = *(u8 **)((u8 *)object + 0x10) + offset;
-        fn_80231380(out3, font, farg3, farg4, farg5,
-                    *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
-        values = lbl_802F9FFC;
-        ((void (*)(void *, s32, u16 *, s32))fn_802C8DB8)(out0, 4, values.idx, 6);
-    }
+void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5)
+{
+  register void *object = arg0;
+  s32 new_var[2];
+  u8 out3[0x18];
+  u8 out2[0x18];
+  u8 out1[0x18];
+  u8 out0[0x18];
+  IndexList_80233EC0 values;
+  u8 *entry;
+  if (arg1 != 0x20)
+  {
+    new_var[0] = arg1 * 0x1C;
+    entry = (*((u8 **) (((u8 *) object) + 0x10))) + new_var[0];
+    new_var[1] = lbl_8055F050;
+    fn_80231380(out0, new_var[1], farg0, farg1, farg2, *((f32 *) (entry + 0xC)), *((f32 *) (entry + 0x18)));
+    entry = (*((u8 **) (((u8 *) object) + 0x10))) + new_var[0];
+    fn_80231380(out1, new_var[1], farg3, farg1, farg2, *((f32 *) (entry + 0xC)), *((f32 *) (entry + 0x10)));
+    entry = (*((u8 **) (((u8 *) object) + 0x10))) + new_var[0];
+ dummy_label_265160: ;
+    fn_80231380(out2, new_var[1], farg0, farg4, farg5, *((f32 *) (entry + 0x14)), *((f32 *) (entry + 0x18)));
+    entry = (*((u8 **) (((u8 *) object) + 0x10))) + new_var[0];
+    fn_80231380(out3, new_var[1], farg3, farg4, farg5, *((f32 *) (entry + 0x14)), *((f32 *) (entry + 0x10)));
+    values = lbl_802F9FFC;
+    ((void (*)(void *, s32, u16 *, s32)) fn_802C8DB8)(out0, 4, values.idx, 6);
+  }
 }
 
 f32 fn_8023400C(s32 arg0) {
