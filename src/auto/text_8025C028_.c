@@ -171,7 +171,6 @@ void fn_8025C054(void) {
         }
     }
 }
-#pragma scheduling on
 
 typedef int M2C_UNK;
 typedef int s32;
