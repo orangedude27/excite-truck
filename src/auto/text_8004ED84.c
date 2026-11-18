@@ -113,21 +113,19 @@ int _ES_LaunchTitle(int *fd, int unused, int tidHigh, int tidLow, void *views)
     unsigned char work[0x100] __attribute__((aligned(32)));
     struct Vector *pVectors = vectors;
     unsigned int *pTid = (unsigned int *)work;
-    int eight;
 
     if (*fd < 0)
         return -0x3F9;
     if (((unsigned int)views & 31) != 0)
         return -0x3F9;
 
-    eight = 8;
     pTid[1] = tidLow;
     pTid[0] = tidHigh;
     pVectors[0].base = pTid;
-    pVectors[0].length = eight;
+    pVectors[0].length = 8;
     pVectors[1].base = views;
     pVectors[1].length = 0xD8;
-    return IOS_IoctlvReboot(*fd, eight, 2, 0, pVectors, eight);
+    return IOS_IoctlvReboot(*fd, 8, 2, 0, pVectors);
 }
 
 extern void OSGetFontTexel(char *, unsigned char *, int, int, int *);
