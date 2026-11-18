@@ -376,7 +376,7 @@ extern float PSVECDotProduct(void *, void *);
 extern float lbl_805644D8, lbl_805644E8;
 extern double fabs(double);
 extern double __fabs(double);
-#pragma scheduling on
+#pragma scheduling invalid_target
 int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
     float delta[3];
     float y = arg2[1];
@@ -385,6 +385,7 @@ int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
     float z = arg2[2];
     float t1;
     float t2;
+    double absd;
     register float firstDot, secondDot;
     register float ay, az, nx, s1, k, abs2, s2;
     delta[0] = t0;
@@ -395,11 +396,12 @@ int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
     firstDot = PSVECDotProduct(delta, arg3);
     if (firstDot < lbl_805644D8) {
         secondDot = PSVECDotProduct(arg1, arg3);
+        absd = __fabs((double)secondDot);
         nx = arg3[0];
         s1 = -firstDot;
         ay = arg3[1];
         az = arg3[2];
-        abs2 = (float)__fabs((double)secondDot);
+        abs2 = (float)absd;
         k = lbl_805644E8;
         arg0[0] += nx * s1;
         arg0[1] += ay * s1;
