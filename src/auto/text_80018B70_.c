@@ -402,10 +402,10 @@ found:
 #pragma pop
 
 s32 fn_8001EFC0(s32, s32);
-static inline s32 fn_80019144_find_inl(const char *name) {
+static inline s32 fn_80019144_find_inl(const char *name, char *table) {
     s32 offset;
     s32 i;
-    for (i = 0, offset = 0; i < *(volatile s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, i++) {
+    for (i = 0, offset = 0; i < *(volatile s32 *)(table + 4); offset += 0x10, i++) {
         if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) == 0)
             return i;
     }
@@ -416,41 +416,28 @@ static inline s32 fn_80019144_find_inl(const char *name) {
 #pragma small_data off
 #pragma scheduling invalid_target
 s32 fn_80019144(s32 arg0) {
-    char *entry;
     register s32 index;
-    register s32 offset;
     register const char *name;
     int value0;
     s32 value1;
-    s32 found2;
+    s32 lower;
+    s32 upper;
     s32 result;
+    char *table;
 
     name = (const char *)arg0;
-    index = 0;
-    offset = 0;
-    goto check;
-loop:
-    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) != 0)
-        goto advance;
-    goto found;
-advance:
-    offset += 0x10;
-    index++;
-check:
-    if (index < *(volatile s32 *)((char *)&lbl_803580A4 + 4))
-        goto loop;
-    index = -1;
-found:
-    entry = (char *)lbl_803580A4 + index * 0x10 + 4;
-    if (index < 0) entry = 0;
-    if (entry) {
+    table = (char *)&lbl_803580A4;
+    index = fn_80019144_find_inl(name, table);
+    table = (char *)lbl_803580A4 + index * 0x10 + 4;
+    if (index < 0) table = 0;
+    if (table) {
         if ((u8)lbl_8055D588 != 0) return 1;
         value0 = fn_8001EFC0(0, arg0);
-        offset = *(s32 *)entry <= value0;
+        lower = *(s32 *)table <= value0;
         value1 = fn_8001EFC0(1, arg0);
-        found2 = *(s32 *)(entry + 4) <= value1;
+        upper = *(s32 *)(table + 4) <= value1;
         result = 0;
-        if (offset != 0 || found2 != 0)
+        if (lower != 0 || upper != 0)
             result = 1;
         return result;
     }
