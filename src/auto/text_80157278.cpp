@@ -2638,7 +2638,7 @@ extern "C" void fn_8015B23C(Unk8015A368C* object) {
     }
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" s32 fn_8015B2E0(void* arg0) {
     if (*(u8*)((char*)arg0 + 0x294)) return 0x7fffffff;
     f32 value = *(f32*)((char*)arg0 + 0x290);
