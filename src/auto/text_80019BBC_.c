@@ -255,7 +255,7 @@ extern "C" void fn_8001A04C(int *arg0) {
     }
 }
 
-#pragma unroll reset
+#pragma opt_unroll_loops reset
 #pragma cplusplus reset
 void fn_8001A1F0(void) {
     /* No-op: reserved per-frame hook, empty in this build (called from the step update). */
