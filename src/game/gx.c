@@ -354,12 +354,13 @@ void fn_802CECF4(unsigned int targetIndex) {
 #pragma scheduling 750
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
     volatile unsigned char *state = lbl_804C5710;
+    volatile unsigned char *second = state + 1;
     *(volatile int *)(state + 4) = arg0;
     *(volatile int *)(state + 8) = arg1;
     *(volatile int *)(state + 0xC) = arg2;
     *(volatile int *)(state + 0x10) = arg3;
     state[0] = 1;
-    state[1] = 1;
+    *second = 1;
 }
 #pragma scheduling reset
 extern void KPADSetBtnRepeat(int *, int *, int *, int *);
@@ -1053,6 +1054,8 @@ extern unsigned long lbl_8055FDAC;
 extern void fn_802D0C98(void);
 extern void fn_802D0BD8(void);
 #pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_802CFF10(void) {
     int zero = 0;
     lbl_8055FD44 = zero;
