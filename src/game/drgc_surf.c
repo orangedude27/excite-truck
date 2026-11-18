@@ -311,6 +311,7 @@ void fn_802D4458(void *arg0) {
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
 #pragma opt_propagation reset
+#pragma unroll off
 void fn_802D45C0(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern u8 lbl_804CEC3C[];
@@ -431,15 +432,15 @@ void fn_802D4988(void *arg0) {
     register void *object = arg0;
     register struct SourceVertex *src = *(struct SourceVertex **)((u8 *)object + 0x20);
     register s32 count;
-    f32 *base;
-    s32 index;
+    int index;
     s32 cached;
+    f32 *base;
 
     PSQUATMultiply(lbl_804C56C0 + 9, src);
     count = *(s32 *)((u8 *)object + 0x1C);
     lbl_8055FE00 += count;
     base = (f32 *)fn_802CFF64(count * 12);
-    if (base != 0) {
+    if (base) {
         register u8 *cache = lbl_804D2C40;
         index = *(s32 *)(cache + 0x4000);
         if (index < 0x400) {
@@ -452,12 +453,12 @@ void fn_802D4988(void *arg0) {
             entry->flag = 0;
             cached = 1;
         } else {
-            cached = 0;
+            register cached = 0;
         }
-        if (cached == 0) {
+        if (!cached) {
+            f32 factor = lbl_80564FF0;
             struct SourceVertex *vertex = src;
             f32 *out = base;
-            f32 factor = lbl_80564FF0;
             s32 i;
             for (i = count; i > 0; i--) {
                 s16 h0, h1;
@@ -824,39 +825,114 @@ extern f32 lbl_804C5690[9];
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802D5838(void *arg0) {
- f32 *dst; f32 *src; f32 *norm; s32 count; f32 *base; s32 i;
- f32 *m; f32 v[3]; f32 *L; f32 thresh; s32 cull;
- count=*(s32*)((u8*)arg0+0x1C);
- src=*(f32**)((u8*)arg0+0x20); norm=*(f32**)((u8*)arg0+0x24);
- base=(f32*)fn_802CFF64(count*12);
- if(base) {
-  m=fn_802D2D04();
-  L=lbl_804C5690;
-  if(v==m) {
-   f32 l1, l4, l0, l3, l6, l7;
-   f32 p1, p4, p0, p3, p6, p7;
-   f32 o0, o1, o2;
-   l1=L[1]; l4=L[4]; l0=L[0]; l3=L[3]; l6=L[6]; l7=L[7];
-   p1=m[1]*l1; p4=m[1]*l4; p0=m[0]*l0; p3=m[0]*l3; p6=m[0]*l6; p7=m[1]*l7;
-   o0=m[2]*L[2]+(p0+p1); o1=m[2]*L[5]+(p3+p4); o2=m[2]*L[8]+(p6+p7);
-   v[0]=o0; v[1]=o1; v[2]=o2;
-  } else {
-   f32 l0, l1, l2, l3, l4, l5, l6, l7, l8;
-   l1=L[1]; l0=L[0]; l2=L[2]; l4=L[4]; l3=L[3]; l5=L[5]; l7=L[7]; l6=L[6]; l8=L[8];
-   v[0]=m[2]*l2+(m[0]*l0+m[1]*l1);
-   v[1]=m[2]*l5+(m[0]*l3+m[1]*l4);
-   v[2]=m[2]*l8+(m[0]*l6+m[1]*l7);
+void fn_802D5838(void *arg0)
+{
+  f32 *dst;
+  f32 *src;
+  f32 *norm;
+  s32 count;
+  f32 new_var;
+  f32 *base;
+  s32 i;
+  f32 *m;
+  f32 v[3];
+  f32 *L;
+  f32 thresh;
+  s32 cull;
+  count = *((s32 *) (((u8 *) arg0) + 0x1C));
+  src = *((f32 **) (((u8 *) arg0) + 0x20));
+  norm = *((f32 **) (((u8 *) arg0) + 0x24));
+  base = (f32 *) fn_802CFF64(count * 12);
+  if (base)
+  {
+    m = fn_802D2D04();
+    L = lbl_804C5690;
+    if (v == m)
+    {
+      f32 l1 = L[1];
+      f32 l4 = L[4];
+      f32 l0 = L[0];
+      f32 l3 = L[3];
+      f32 l6 = L[6];
+      f32 l7 = L[7];
+      f32 p1;
+      f32 p4 = m[1] * l4;
+      f32 p0 = m[0] * l0;
+      f32 p3 = m[0] * l3;
+      f32 p6 = m[0] * l6;
+      f32 p7 = m[1] * l7;
+      f32 o0 = (m[2] * L[2]) + (p0 + (m[1] * l1));
+      f32 o1 = (m[2] * L[5]) + (p3 + p4);
+      f32 o2 = (m[2] * L[8]) + (p6 + p7);
+      v[0] = o0;
+      v[1] = o1;
+      v[2] = o2;
+    }
+    else
+    {
+      f32 l0;
+      f32 l1;
+      f32 l2;
+      f32 l3;
+      f32 l4;
+      f32 l5;
+      f32 l6;
+      f32 l7;
+      f32 l8;
+      l1 = L[1];
+      l0 = L[0];
+      l2 = L[2];
+      l4 = L[4];
+      l3 = L[3];
+      l5 = L[5];
+      l7 = L[7];
+      l6 = L[6];
+      l8 = L[8];
+      v[0] = (m[2] * l2) + ((m[0] * l0) + (m[1] * l1));
+      v[1] = (m[2] * l5) + ((m[0] * l3) + (m[1] * l4));
+      new_var = m[1];
+      v[2] = (m[2] * l8) + ((m[0] * l6) + (new_var * l7));
+    }
+    thresh = lbl_80565008;
+    dst = base;
+    for (i = 0; i < count; i++)
+    {
+      if (PSVECDotProduct(norm, v) < thresh)
+      {
+        f32 k = lbl_8055FDE0;
+        dst[0] = src[0] + (v[0] * k);
+        dst[1] = src[1] + (v[1] * k);
+        dst[2] = src[2] + (v[2] * k);
+      }
+      else
+      {
+        dst[0] = src[0];
+        dst[1] = src[1];
+        dst[2] = src[2];
+      }
+      norm += 3;
+      src += 3;
+      dst += 3;
+    }
+
+    GXSetArray(9, base, 12);
+    cull = 1;
+    if (lbl_8055FDE4)
+    {
+      cull = 2;
+    }
+    GXSetCullMode(cull);
+    GXSetBlendMode(1, 1, 1, 5);
+    GXCallDisplayList(*((void **) (((u8 *) arg0) + 0x30)), *((u32 *) (((u8 *) arg0) + 0x2C)));
+    cull = 2;
+    if (lbl_8055FDE4)
+    {
+      cull = 1;
+    }
+    GXSetCullMode(cull);
+    GXSetBlendMode(3, 1, 1, 5);
+    GXCallDisplayList(*((void **) (((u8 *) arg0) + 0x30)), *((u32 *) (((u8 *) arg0) + 0x2C)));
   }
-  thresh=lbl_80565008;
-  dst=base;
-  for(i=0;i<count;i++){ if(PSVECDotProduct(norm,v)<thresh){f32 k=lbl_8055FDE0;dst[0]=src[0]+v[0]*k;dst[1]=src[1]+v[1]*k;dst[2]=src[2]+v[2]*k;}else{dst[0]=src[0];dst[1]=src[1];dst[2]=src[2];}norm+=3;src+=3;dst+=3;}
-  GXSetArray(9,base,12);
-  cull=1; if(lbl_8055FDE4) cull=2;
-  GXSetCullMode(cull);GXSetBlendMode(1,1,1,5);GXCallDisplayList(*(void**)((u8*)arg0+0x30),*(u32*)((u8*)arg0+0x2C));
-  cull=2; if(lbl_8055FDE4) cull=1;
-  GXSetCullMode(cull);GXSetBlendMode(3,1,1,5);GXCallDisplayList(*(void**)((u8*)arg0+0x30),*(u32*)((u8*)arg0+0x2C));
- }
 }
 #pragma pop
 void fn_802D5ACC(void *arg0) {
@@ -1092,10 +1168,10 @@ void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
     extern void GXBeginDisplayList(void *, u32);
     extern u32 GXEndDisplayList(void);
     extern void fn_802D5DE8(u32);
+    s32 count = lbl_8055FDF0;
     register CacheEntry *scan = (CacheEntry *)lbl_804CA438;
     u8 key = *(u8 *)((u8 *)arg0 + 9);
     u32 id = *(u32 *)((u8 *)arg0 + 0xC);
-    s32 count = lbl_8055FDF0;
     s32 i;
     CacheEntry *write;
     s32 size;
@@ -1130,26 +1206,26 @@ void fn_802D63FC(void *arg0, s32 arg1) {
     u8 *p = (u8 *)arg0;
     register u8 *p20;
     s32 sp1C, sp18, sp14, sp10, spC;
-    u32 sp8;
+    unsigned sp8;
     u8 temp_r0, temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5;
     u8 b2B, b26, b27, b22, b23, b1E, b1F;
     u8 b1C, b20, b24, b28, b18, b0C, b10, b1D, b21, b25, b29, b19, b0D, b11, b1B;
     temp_r0 = p[0x1A];
     p20 = p + 0x20;
     b19 = p[0x19];
-    sp1C = (s32)temp_r0;
+    sp1C = temp_r0;
     temp_r0_2 = p[0x0F];
     b0C = p[0x0C];
-    spC = (s32)temp_r0_2;
+    spC = temp_r0_2;
     temp_r0_3 = p[0x0E];
     b0D = p[0x0D];
-    sp10 = (s32)temp_r0_3;
+    sp10 = temp_r0_3;
     temp_r0_4 = p[0x13];
     b10 = p[0x10];
-    sp14 = (s32)temp_r0_4;
+    sp14 = temp_r0_4;
     temp_r0_5 = p[0x12];
     b11 = p[0x11];
-    sp18 = (s32)temp_r0_5;
+    sp18 = temp_r0_5;
     b1C = p[0x1C];
     b1F = p[0x1F];
     b1D = p[0x1D];
@@ -1169,22 +1245,22 @@ void fn_802D63FC(void *arg0, s32 arg1) {
     b1B = p[0x1B];
     p[0x19] = (u8)sp1C;
     p[0x0C] = (u8)spC;
-    p[0x0D] = (u8)sp10;
     p[0x10] = (u8)sp14;
+    p[0x0D] = (u8)sp10;
     p[0x1C] = b1F;
-    p[0x1F] = b1C;
     p[0x1D] = b1E;
     p[0x1E] = b1D;
     p[0x20] = b23;
-    p[0x23] = b20;
+    p[0x1F] = b1C;
     p[0x21] = b22;
+    p[0x23] = b20;
     p[0x22] = b21;
     p[0x24] = b27;
     p[0x27] = b24;
-    p[0x25] = b26;
     p[0x26] = b25;
-    p[0x28] = b2B;
+    p[0x25] = b26;
     p[0x2B] = b28;
+    p[0x28] = b2B;
     p[0x29] = p[0x2A];
     p[0x2A] = b29;
     p[0x18] = b1B;
