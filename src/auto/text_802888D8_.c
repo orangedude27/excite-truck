@@ -389,16 +389,16 @@ int fn_80289154(int arg0) {
     register float f11;
     register float f12;
     register float f13;
-    register int two;
-    register int five;
+    register int size;
+    register int type;
 
     fn_8028E61C((int *)&frame.sp20);
     f9 = *(volatile float *)&lbl_8056428C;
+    size = 0x60;
     f10 = *(volatile float *)&lbl_80564288;
+    type = 2;
     f5 = *(volatile float *)&lbl_80564298;
     f4 = *(volatile float *)&lbl_8056429C;
-    five = 5;
-    two = 2;
     f13 = *(volatile float *)&lbl_8056427C;
     f12 = *(volatile float *)&lbl_80564280;
     f11 = *(volatile float *)&lbl_80564284;
@@ -410,12 +410,12 @@ int fn_80289154(int arg0) {
     f1 = *(volatile float *)&lbl_805642A8;
     f0 = *(volatile float *)&lbl_805642AC;
 
-    frame.sp24 = 0x60;
+    frame.sp24 = size;
     frame.sp28 = f13;
     frame.sp2C = f12;
-    frame.sp20 = two;
+    frame.sp20 = type;
     frame.sp68 = f11;
-    frame.sp64 = five;
+    frame.sp64 = 5;
     frame.sp14 = f10;
     frame.sp18 = f10;
     frame.sp1C = f10;
@@ -446,8 +446,8 @@ int fn_80289154(int arg0) {
     frame.sp9C = f9;
 
     return *(int *)((char *)arg0 + 0x60) =
-        fn_8028E2F8((int *)&frame.sp20, (int *)&lbl_80348AE8, lbl_8055C880, two,
-                    f1, f2, f3, f4, f5, f6, f7);
+        ((int (*)(int *, const char *, int))fn_8028E2F8)(
+            (int *)&frame.sp20, (const char *)&lbl_80348AE8, lbl_8055C880);
 }
 
 /* Initialize a parameter frame from global constants and create/store a sub-object
@@ -803,12 +803,12 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     if (sp14 == (float *)((char *)mat + 0x24)) {
         float m3 = vec[3];
         float x = mat[9];
-        float m0 = vec[0];
+        register float m0 = vec[0];
         float y = mat[10];
         float m4 = vec[4];
         float m1 = vec[1];
         float z = mat[11];
-        float m6 = vec[6];
+        register float m6 = vec[6];
         float m7 = vec[7];
         float m2, m5, m8;
         m5 = vec[5];
@@ -850,12 +850,12 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     if (sp8 == (float *)((char *)mat + 0xC)) {
         float m3 = vec[3];
         float x = mat[3];
-        float m0 = vec[0];
+        register float m0 = vec[0];
         float y = mat[4];
         float m4 = vec[4];
         float m1 = vec[1];
         float z = mat[5];
-        float m6 = vec[6];
+        register float m6 = vec[6];
         float m7 = vec[7];
         float m2, m5, m8;
         m5 = vec[5];
@@ -865,7 +865,7 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
         sp8[1] = (z * m7) + ((x * m1) + (y * m4));
         sp8[2] = (z * m8) + ((x * m2) + (y * m5));
     } else {
-        register nw6 = vec[6];
+        nw6 = vec[6];
         {
             float m6, m0, m3;
             m3 = vec[3];
