@@ -1094,6 +1094,7 @@ struct TreeGroup {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+/* RealName: DrawTreeVolumeCpuLights (see the comment in the body). */
 void fn_802BDD8C(float radius) {
 #define BeginCpuLighting   fn_802DBE4C
 #define EndCpuLighting     fn_802DBECC
