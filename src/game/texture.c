@@ -254,14 +254,12 @@ static inline void swap32_802CA57C(unsigned char *p) {
 #pragma auto_inline off
 void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
     unsigned char *base = (unsigned char *)arg0;
-    unsigned char t;
     char sp8[0x34];
     if ((base[5] & 0x80) == 0) {
-        t = base[0x14]; base[0x14] = base[0x17]; base[0x17] = t;
-        t = base[0x15]; base[0x15] = base[0x16]; base[0x16] = t;
-        t = base[0]; base[0] = base[1]; base[1] = t;
-        t = base[2]; base[2] = base[3]; base[3] = t;
-        t = base[0xC]; base[0xC] = base[0xD]; base[0xD] = t;
+        swap32_802CA57C(base + 0x14);
+        swap16_802CA57C(base + 0);
+        swap16_802CA57C(base + 2);
+        swap16_802CA57C(base + 0xC);
         *(int *)(base + 0x14) = (int)((unsigned char *)arg0 + *(int *)(base + 0x14));
         fn_802CA3F4(sp8, (int)arg0, 0, arg2, arg3);
         fn_802D8DCC(sp8, arg1);
