@@ -20,15 +20,7 @@ struct Tbl8001880C {
     char f48[0x34];
     char f7C[0x44];
 };
-static struct Tbl8001880C sCarStatsStrings = {
-    "car_stats.val",
-    "carstats",
-    "car_stats",
-    "stat_name_%d",
-    "stat_value_%d",
-    "stat table for %s has too many stats (limit: %d)",
-    "stat table for %s has no stats! (maybe you didn't number from 1)",
-};
+
 extern const char lbl_80558C28[4];
 typedef unsigned int u32;
 #pragma cplusplus on
