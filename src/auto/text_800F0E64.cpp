@@ -1997,45 +1997,61 @@ extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
     return 1;
 }
 #pragma opt_common_subs reset
-extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive7FilePos(void *arg0, u32 arg1, u32 arg2, void *arg3) {
-    extern const char lbl_80559898;
-    extern const char lbl_80559880;
-    extern const char lbl_80559888;
-    extern const char lbl_80559890;
-    extern const char lbl_80324C84[];
-    extern const char lbl_80324C2C[];
-    extern const char lbl_80324C58[];
-    extern const char lbl_80324C00[];
+extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive7FilePos(void *arg0, u32 fileIndex, u32 playerIndex, void *filePos) {
+    /* nw4hbm::snd::detail::SoundArchiveFileReader::ReadFilePos: locate file
+     * `fileIndex' in the archive the reader holds at +0x28 for player type
+     * `playerIndex', and store the nw4hbm::snd::SoundArchive::FilePos {group, item}
+     * naming its group row and group-item row into *filePos (the caller turns that
+     * pair into an offset and length via ReadGroupInfo/ReadGroupItemInfo).  The file
+     * table hangs off the archive header block at +0x18; each file entry points at a
+     * FileDetail block whose +0x14 reference selects the player table, and that
+     * entry points at the FilePos.  Every reference must have dataType 0 (Util.h:111
+     * panic); returns 0 when a block is missing or an index is out of range, 1 on
+     * success. */
+    extern const char lbl_80559898; /* "Util.h" */
+    extern const char lbl_80559880; /* "Util.h" */
+    extern const char lbl_80559888; /* "Util.h" */
+    extern const char lbl_80559890; /* "Util.h" */
+    extern const char lbl_80324C84[]; /* "NW4HBM:Failed assertion ref.dataType == 0" */
+    extern const char lbl_80324C2C[]; /* "NW4HBM:Failed assertion ref.dataType == 0" */
+    extern const char lbl_80324C58[]; /* "NW4HBM:Failed assertion ref.dataType == 0" */
+    extern const char lbl_80324C00[]; /* "NW4HBM:Failed assertion ref.dataType == 0" */
     register const void *reader = arg0;
-    register u8 *file = *(u8 **)((u8 *)reader + 0x28);
+    register u8 *archive = *(u8 **)((u8 *)reader + 0x28);
     u8 *table;
     u8 *entry;
-    u8 *group;
-    if (file[0x19] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559898, 0x6F, lbl_80324C84);
-    table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(file[0x18], *(u32 *)(file + 0x1C), file);
+    u8 *playerTable;
+    if (archive[0x19] != 0) /* header fileBlock.dataType */
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559898, 0x6F, lbl_80324C84);
+    table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(archive[0x18], *(u32 *)(archive + 0x1C), archive); /* file table */
     if (table == 0) return 0;
-    if (arg1 >= *(u32 *)table) return 0;
+    if (fileIndex >= *(u32 *)table) /* file count */
+        return 0;
     {
-        u32 off = arg1 * 8;
-        file = *(u8 **)((u8 *)reader + 0x28);
-        if ((table + off)[5] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559888, 0x6F, lbl_80324C2C);
-        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv((table + off)[4], *(u32 *)(table + off + 8), file);
+        u32 off = fileIndex * 8;
+        archive = *(u8 **)((u8 *)reader + 0x28);
+        if ((table + off)[5] != 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559888, 0x6F, lbl_80324C2C);
+        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv((table + off)[4], *(u32 *)(table + off + 8), archive); /* FileDetail block */
     }
     if (entry == 0) return 0;
-    file = *(u8 **)((u8 *)reader + 0x28);
-    if (entry[0x15] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559890, 0x6F, lbl_80324C58);
-    group = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[0x14], *(u32 *)(entry + 0x18), file);
-    if (group == 0) return 0;
-    if (arg2 >= *(u32 *)group) return 0;
+    archive = *(u8 **)((u8 *)reader + 0x28);
+    if (entry[0x15] != 0) /* FileDetail player reference dataType */
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559890, 0x6F, lbl_80324C58);
+    playerTable = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[0x14], *(u32 *)(entry + 0x18), archive); /* player table */
+    if (playerTable == 0) return 0;
+    if (playerIndex >= *(u32 *)playerTable) /* player count */
+        return 0;
     {
-        u32 off = arg2 * 8;
-        u8 *file2 = *(u8 **)((u8 *)reader + 0x28);
-        if ((group + off)[5] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559880, 0x6F, lbl_80324C00);
-        table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv((group + off)[4], *(u32 *)(group + off + 8), file2);
+        u32 off = playerIndex * 8;
+        u8 *archive2 = *(u8 **)((u8 *)reader + 0x28);
+        if ((playerTable + off)[5] != 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559880, 0x6F, lbl_80324C00);
+        table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv((playerTable + off)[4], *(u32 *)(playerTable + off + 8), archive2); /* FilePos block */
     }
     if (table == 0) return 0;
-    *(u32 *)arg3 = *(u32 *)table;
-    *(u32 *)((u8 *)arg3 + 4) = *(u32 *)(table + 4);
+    *(u32 *)filePos = *(u32 *)table;                  /* FilePos.group */
+    *(u32 *)((u8 *)filePos + 4) = *(u32 *)(table + 4); /* FilePos.item */
     return 1;
 }
 extern "C" int strcmp(const char *, const char *);
