@@ -4781,7 +4781,7 @@ queue_three_fail:
     goto finish;
 
 extended:
-    enabled = OSDisableInterrupts();
+    outerEnabled = OSDisableInterrupts();
     nestedEnabled = OSDisableInterrupts();
     used = p->stdCmdQueue.back - p->stdCmdQueue.front;
     if (used < 0) used += p->stdCmdQueue.capacity;
