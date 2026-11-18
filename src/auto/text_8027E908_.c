@@ -709,18 +709,18 @@ int fn_8027F958(int *selection, void *collection) {
     typedef unsigned char (*GetByte)(void *);
     typedef char *(*GetString)(void *);
     Fn8027F958Stack stack;
-    register void *object, *item;
-    register Fn8027F958Widget *widget;
-    register void **items, **storage;
-    register char *constants = (char *)&lbl_802FA848;
-    register char *state = (char *)&lbl_804B2FF8;
-    register char *strings = lbl_80347E50;
-    register float defaultValue;
-    register float defaultScale;
-    register void *widgetVtable;
-    register char *src, *dst;
-    register int i, j, index, remaining, result, mode, count, reported;
-    register float *value;
+    void *object, *item;
+    Fn8027F958Widget *widget;
+    void **items, **storage;
+    char *constants = (char *)&lbl_802FA848;
+    char *state = (char *)&lbl_804B2FF8;
+    char *strings = lbl_80347E50;
+    float defaultValue;
+    float defaultScale;
+    void *widgetVtable;
+    char *src, *dst;
+    int i, j, index, remaining, result, mode, count, reported;
+    float *value;
     object = ((GetItem)(*(void ***)collection)[4])(collection, 0);
     mode = ((GetInt)(*(void ***)object)[5])(object);
     defaultScale = lbl_805641F8;
@@ -1190,6 +1190,7 @@ int fn_8027F958(int *selection, void *collection) {
     widget->unk44 = 0;
     return result;
 }
+#undef lbl_804B3048
 #pragma scheduling invalid_target
 
 extern int fn_80216D28(void);
