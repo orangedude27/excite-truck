@@ -41,11 +41,11 @@ s32 fn_802EC4BC(void) {
 #pragma dont_inline on
 s32 fn_802EC4E8(s32 arg0) {
     char sp10[0x40];
-    const char *base = lbl_8034E9E0;
+    char *base = lbl_8034E9E0;
     s32 sp8;
     s32 temp_r30;
     s32 temp_r31;
-    ((void (*)(void *, s32, const char *, ...))fn_801345D8)(sp10, 0x40, &base[0], arg0);
+    ((void (*)(void *, s32, const char *, ...))fn_801345D8)(sp10, 0x40, base, arg0);
     sp8 = fn_802E36D8(sp10);
     if (sp8 == -1)
         ((void (*)(const char *, ...))fn_802E317C)(base + 0x10, sp10);
