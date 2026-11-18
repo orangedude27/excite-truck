@@ -1986,30 +1986,7 @@ void fn_801F4684(register void *r25, register int r26) {
             transform[3] = f22; transform[4] = f23; transform[5] = f22;
             transform[6] = s; transform[7] = f22; transform[8] = c;
             matrix = *(float **)(entry + 0x10);
-            if (&transform[0] == matrix || transform == matrix) {
-                float v0 = fn_80144514(matrix[0], transform[0], matrix[3], transform[1], matrix[6], transform[2]);
-                float v1 = fn_80144514(matrix[0], transform[3], matrix[3], transform[4], matrix[6], transform[5]);
-                float v2 = fn_80144514(matrix[0], transform[6], matrix[3], transform[7], matrix[6], transform[8]);
-                float v3 = fn_80144514(matrix[1], transform[0], matrix[4], transform[1], matrix[7], transform[2]);
-                float v4 = fn_80144514(matrix[1], transform[3], matrix[4], transform[4], matrix[7], transform[5]);
-                float v5 = fn_80144514(matrix[1], transform[6], matrix[4], transform[7], matrix[7], transform[8]);
-                float v6 = fn_80144514(matrix[2], transform[0], matrix[5], transform[1], matrix[8], transform[2]);
-                float v7 = fn_80144514(matrix[2], transform[3], matrix[5], transform[4], matrix[8], transform[5]);
-                float v8 = fn_80144514(matrix[2], transform[6], matrix[5], transform[7], matrix[8], transform[8]);
-                transform[0]=v0; transform[3]=v1; transform[6]=v2;
-                transform[1]=v3; transform[4]=v4; transform[7]=v5;
-                transform[2]=v6; transform[5]=v7; transform[8]=v8;
-            } else {
-                transform[0] = fn_80144514(matrix[0], transform[0], matrix[3], transform[1], matrix[6], transform[2]);
-                transform[3] = fn_80144514(matrix[0], transform[3], matrix[3], transform[4], matrix[6], transform[5]);
-                transform[6] = fn_80144514(matrix[0], transform[6], matrix[3], transform[7], matrix[6], transform[8]);
-                transform[1] = fn_80144514(matrix[1], transform[0], matrix[4], transform[1], matrix[7], transform[2]);
-                transform[4] = fn_80144514(matrix[1], transform[3], matrix[4], transform[4], matrix[7], transform[5]);
-                transform[7] = fn_80144514(matrix[1], transform[6], matrix[4], transform[7], matrix[7], transform[8]);
-                transform[2] = fn_80144514(matrix[2], transform[0], matrix[5], transform[1], matrix[8], transform[2]);
-                transform[5] = fn_80144514(matrix[2], transform[3], matrix[5], transform[4], matrix[8], transform[5]);
-                transform[8] = fn_80144514(matrix[2], transform[6], matrix[5], transform[7], matrix[8], transform[8]);
-            }
+            CombineMtx_801F4684(transform, transform, matrix);
             transform[9] = *(float *)(entry + 4);
             transform[10] = *(float *)(entry + 8);
             transform[11] = *(float *)(entry + 0xC);
