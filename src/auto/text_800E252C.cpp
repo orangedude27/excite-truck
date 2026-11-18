@@ -505,6 +505,7 @@ extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
     f32 fraction = index - whole;
     return entry[1] + fraction * entry[3];
 }
+#pragma pop
 
 #pragma push
 #pragma small_data off
