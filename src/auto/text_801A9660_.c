@@ -1969,16 +1969,18 @@ void *fn_801AD6B0(void *arg0, int arg1) {
     }
     return arg0;
 }
-#pragma pop
+#pragma push
+#pragma opt_propagation off
 void fn_801AD750(void *arg0, void *arg1) {
     fn_801A9AB0(arg0, arg1);
     *(int *)((char *)arg0 + 0x240) = *(int *)((char *)arg1 + 0x80);
     if (arg0 != 0) {
-        fn_801D08C0((char *)arg0 + 0x23C);
+        arg0 = (char *)arg0 + 0x23C;
+        fn_801D08C0(arg0);
+        return;
     }
 }
-#pragma peephole off
-#pragma scheduling on
+#pragma pop
 extern void fn_801D0A24(void *arg0, void *arg1);
 void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
     if (arg3 >= 8) return;
@@ -2118,7 +2120,7 @@ extern "C" void fn_801AD99C(void *arg0, float *arg1, float *arg2) {
     float scale;
     float sp14[3];
     float sp8[3];
-    scale = *(float *)((char *)arg0 + 0xD4) / lbl_805624D0;
+    scale = *(float *)((char *)arg0 + 0xD4) / 0.016683381f;
     sp14[0] = arg1[0] * scale;
     sp14[1] = arg1[1] * scale;
     sp14[2] = arg1[2] * scale;
