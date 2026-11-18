@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma ppc_psq_save off
+
 typedef signed int s32;
 typedef unsigned int u32;
 typedef float f32;
@@ -22,6 +24,7 @@ typedef struct {
     s32             vehicleId;      /* 0x000: vehicle number */
     unsigned char   state[0x2B4];   /* 0x004: the state block */
 } CarStateEntry;                    /* 0x2B8 */
+#pragma opt_propagation off
 void fn_802795E8(arg0)
 void *arg0;
 {
@@ -30,7 +33,7 @@ void *arg0;
     register int offset asm("r4");
     register int count asm("r0");
     f32 value;
-    int idx;
+
     memset(arg0, 0, 0x2B4);
     value = lbl_805640F0;
     *(s32 *)((char *)arg0 + 0x298) = 0;
@@ -90,8 +93,7 @@ void *arg0;
         offset += 0x10;
     }
     *(f32 *)((char *)arg0 + 0x294) = value;
-    idx = offset * 4;
-    p = (unsigned char *)arg0 + idx;
+    p = (unsigned char *)arg0 + (offset << 2);
     p[0] = 0x80;
     p[1] = 0x80;
     p[2] = 0x80;
@@ -105,8 +107,7 @@ void *arg0;
     p[13] = 0x80;
     p[14] = 0x80;
 }
-
-#pragma dont_inline on
+#pragma opt_propagation reset
 void fn_8027974C(void) {
     /* Call fn_802795E8 for each 0x2B8-byte entry in the array at lbl_8055F618
      * (count lbl_8055F61C), passing a pointer 4 bytes into each entry. */
@@ -123,21 +124,31 @@ check:
     if (index < lbl_8055F61C) goto loop;
 }
 
+#pragma push
 #pragma scheduling invalid_target
+#pragma inline_depth(0)
 void fn_802797A8(s32 *arg0, s32 arg1) {
     s32 offset;
     s32 i;
-    char *entry;
+    CarStateEntry *entry;
+
     lbl_8055F61C = arg1;
     lbl_8055F618 = fn_8012850C(arg1 * 0x2B8, lbl_80347818);
-    for (i = 0, offset = 0; i < lbl_8055F61C; i++, offset += 0x2B8, arg0++) {
-        entry = (char *)lbl_8055F618 + offset;
-        memset(entry, 0, 0x2B8);
-        *(s32 *)entry = *arg0;
-    }
+    i = 0;
+    offset = 0;
+    goto check;
+loop:
+    entry = (CarStateEntry *)((char *)lbl_8055F618 + offset);
+    memset(entry, 0, sizeof(CarStateEntry));
+    entry->vehicleId = *arg0;
+    arg0++;
+    i++;
+    offset += sizeof(CarStateEntry);
+check:
+    if (i < lbl_8055F61C) goto loop;
     fn_8027974C();
 }
-#pragma scheduling reset
+#pragma pop
 void fn_80279848(void) {
     // Free the carstate block ("cs_block") held in lbl_8055F618 back to the
     // ring-buffer heap via fn_80128670, then clear the global pointer.
