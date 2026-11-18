@@ -1249,6 +1249,11 @@ void VIConfigure(const GXRenderModeObj *rm)
     OSRestoreInterrupts(enabled);
 }
 
+/* Points the display at a sub-rectangle of the frame buffer (the pan-and-scan
+   window): (xOrg,yOrg) is its top-left corner in the buffer and width/height its
+   size.  That window is what the VI scales onto the TV, so its scaling, picture
+   and vertical-blanking registers are recomputed here, along with the frame
+   buffer base addresses once a buffer has been set. */
 void VIConfigurePan(u16 xOrg, u16 yOrg, u16 width, u16 height)
 {
     BOOL enabled;
@@ -1264,16 +1269,18 @@ void VIConfigurePan(u16 xOrg, u16 yOrg, u16 width, u16 height)
     HorVer.PanPosY = yOrg;
     HorVer.PanSizeX = width;
     HorVer.PanSizeY = height;
+    /* scan modes 2 and 3 put one field per frame on the screen, so the window is
+       as tall as the display; a single-field frame buffer in interlace takes two */
     height = (HorVer.nonInter == 2) ? height :
              (HorVer.nonInter == 3) ? height :
-             (HorVer.FBMode == 0) ? (u16)(height << 1) : height;
+             (HorVer.FBMode == VI_XFBMODE_SF) ? (u16)(height << 1) : height;
     HorVer.DispSizeY = height;
     tm = HorVer.timing;
     AdjustPosition(tm->acv);
     setScalingRegs(HorVer.PanSizeX, HorVer.DispSizeX, HorVer.threeD);
     setPicConfig(HorVer.FBSizeX, HorVer.FBMode, HorVer.PanPosX, HorVer.PanSizeX, &HorVer.wordPerLine, &HorVer.std, &HorVer.wpl, &HorVer.xof);
-    if (FBSet != 0) fn_80059AD8(&HorVer, &HorVer.tfbb, &HorVer.bfbb, &HorVer.rtfbb, &HorVer.rbfbb);
-    fn_80059D90(HorVer.AdjustedDispPosY, HorVer.DispSizeY, tm->equ, tm->acv, tm->prbOdd, tm->prbEven, tm->psbOdd, tm->psbEven, HorVer.black);
+    if (FBSet != 0) fn_80059AD8(&HorVer, &HorVer.tfbb, &HorVer.bfbb, &HorVer.rtfbb, &HorVer.rbfbb); /* the SDK's setNextFrameBuffer */
+    fn_80059D90(HorVer.AdjustedDispPosY, HorVer.DispSizeY, tm->equ, tm->acv, tm->prbOdd, tm->prbEven, tm->psbOdd, tm->psbEven, HorVer.black); /* the SDK's setVerticalBlank */
     OSRestoreInterrupts(enabled);
 }
 
