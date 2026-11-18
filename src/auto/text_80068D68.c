@@ -12835,27 +12835,10 @@ BOOLEAN btm_is_sco_active_by_bdaddr(BD_ADDR remoteBda) {
 }
 
 BOOLEAN BTM_SecRegister(tBTM_APPL_INFO *arg0) {
+    struct Copy24 { u32 w[6]; };
     u8 *p = lbl_803C0F78;
-    volatile u32 *src = (volatile u32 *)arg0;
-    u32 first = src[0];
-    u32 second = src[1];
-    u8 level = p[0x27C0];
-    u32 fourth;
-    u32 third;
-    u32 sixth;
-    register u32 fifth;
-
-    *(u32 *)(p + 0x190C) = first;
-    *(u32 *)(p + 0x1910) = second;
-    third = src[2];
-    fourth = src[3];
-    *(u32 *)(p + 0x1914) = third;
-    *(u32 *)(p + 0x1918) = fourth;
-    fifth = src[4];
-    sixth = src[5];
-    *(u32 *)(p + 0x191C) = fifth;
-    *(u32 *)(p + 0x1920) = sixth;
-    if (level >= 4)
+    *(struct Copy24 *)(p + 0x190C) = *(struct Copy24 *)arg0;
+    if (p[0x27C0] >= 4)
         fn_8007093C(0xD0003, lbl_80316870);
     return TRUE;
 }
