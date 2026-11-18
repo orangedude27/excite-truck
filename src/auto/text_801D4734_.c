@@ -3038,6 +3038,23 @@ int fn_801D7F5C(int object, int deleteFlag) {
     return object;
 }
 
+/* One "PhysPath_ASE" action-sequence element (its name table is lbl_80338928 and
+ * its vtable lbl_80338CB0): fn_801D7F9C reads its parameters out of the
+ * action-sequence value table, fn_801D825C resolves its two names to the object
+ * it drives, fn_801D815C starts it and fn_801D82A0 fires the target once its
+ * delay has run out. */
+struct PhysPathAse {
+    void *typeInfo;        /* 0x00 the class's type/vtable table lbl_80338CB0 */
+    char objectName[0x14]; /* 0x04 the value table's "object" ("*": none) */
+    char pathName[0x14];   /* 0x18 the value table's "path" */
+    void *target;          /* 0x2C the object fn_801D825C resolved the names to */
+    int delay;             /* 0x30 the "delay" in ticks: seconds * 59.94 */
+    int startTime;         /* 0x34 the tick fn_801D815C started the element at */
+    int direction;         /* 0x38 0: drive the target with +1.0, 1: with -1.0 */
+    void *killBound;       /* 0x3C the "kill_bound" value list, 0 when unset */
+    int state;             /* 0x40, enum TimedEffectState */
+};
+
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
