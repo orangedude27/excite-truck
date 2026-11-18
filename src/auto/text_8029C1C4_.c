@@ -1535,10 +1535,9 @@ void fn_8029EA34(void *area, void **__restrict targetRef) {
 }
 #pragma scheduling on
 int fn_8029EAE8(void *arg0) {
-    float *thresholdPtr = &lbl_805646A8;
-    register float temp_f31 = *thresholdPtr;
+    register float limit = 22500.0f;
     int result = 0;
-    if (fn_802C88E8((char *)arg0 + 0x30) < temp_f31) {
+    if (fn_802C88E8((char *)arg0 + 0x30) < limit) {
         void *second_obj = (char *)arg0 + 0x18;
         float value = *(float *)((char *)arg0 + 0x3C);
         second_obj = (char *)second_obj + 0x18;
