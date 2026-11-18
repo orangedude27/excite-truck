@@ -703,39 +703,44 @@ extern "C" void *fn_800E2D74(void *self, int deleteFlag) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_800E2E24(void *self) {
-    if (*(unsigned char *)((char *)self + 0x6C30) == 0) {
-        if (AIGetDMAStatus() == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x6E, lbl_80321F94);
-
-        unsigned long base = (unsigned long)self;
-        nw4hbm::ut::detail::LinkListImpl::Iterator iterator;
-        long offset = 0;
-        long i = 0;
-        do {
-            if (base + offset + 0x2C == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
-            iterator.node = (nw4hbm::ut::detail::LinkListNode *)(base + 0x24);
-            ((nw4hbm::ut::detail::LinkListImpl *)(base + 0x20))->Insert(
-                iterator, (nw4hbm::ut::detail::LinkListNode *)(base + offset + 0x1D4));
-            i++;
-            offset += 0x1B0;
-        } while (i < 0x40);
-
-        memset(lbl_80407E60, 0, 0x100);
-        DCFlushRange(lbl_80407E60, 0x100);
-        *(void **)((char *)self + 4) = lbl_80407E60;
-        unsigned long irq = OSDisableInterrupts();
-        AXGetAuxACallback((char *)self + 0x6CF0, (char *)self + 0x6CFC);
-        AXGetAuxBCallback((char *)self + 0x6CF4, (char *)self + 0x6D00);
-        AXGetAuxCCallback((char *)self + 0x6CF8, (char *)self + 0x6D04);
-        AXRegisterAuxACallback(0, 0);
-        AXRegisterAuxBCallback(0, 0);
-        AXRegisterAuxCCallback(0, 0);
-        *(void **)((char *)self + 0x6C2C) = AIRegisterDMACallback(fn_800E41EC);
-        *(unsigned char *)((char *)self + 0x6C30) = 1;
-        OSRestoreInterrupts(irq);
+extern "C" void fn_800E2E24(void *self)
+{
+  if ((*((unsigned char *) (((char *) self) + 0x6C30))) == 0)
+  {
+    if (AIGetDMAStatus() == 0)
+    {
+      Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x6E, lbl_80321F94);
     }
+    unsigned int base = (unsigned int) self;
+    nw4hbm::ut::detail::LinkListImpl::Iterator iterator;
+    int offset = 0;
+    int i = 0;
+    do
+    {
+      if (((base + (offset & 0xFFu)) + 0x2C) == 0)
+      {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
+      }
+      iterator.node = (nw4hbm::ut::detail::LinkListNode *) (base + 0x24);
+      ((nw4hbm::ut::detail::LinkListImpl *) (base + 0x20))->Insert(iterator, (nw4hbm::ut::detail::LinkListNode *) ((base + offset) + 0x1D4));
+      i++;
+      offset = offset + 0x1B0;
+    }
+    while (i < 0x40);
+    memset(lbl_80407E60, 0, 0x100);
+    DCFlushRange(lbl_80407E60, 0x100);
+    *((void **) (((char *) self) + 4)) = lbl_80407E60;
+    unsigned int irq = OSDisableInterrupts();
+    AXGetAuxACallback(((char *) self) + 0x6CF0, ((char *) self) + 0x6CFC);
+    AXGetAuxBCallback(((char *) self) + 0x6CF4, ((char *) self) + 0x6D00);
+    AXGetAuxCCallback(((char *) self) + 0x6CF8, ((char *) self) + 0x6D04);
+    AXRegisterAuxACallback(0, 0);
+    AXRegisterAuxBCallback(0, 0);
+    AXRegisterAuxCCallback(0, 0);
+    *((void **) (((char *) self) + 0x6C2C)) = AIRegisterDMACallback(fn_800E41EC);
+    *((unsigned char *) (((char *) self) + 0x6C30)) = 1;
+    OSRestoreInterrupts(irq);
+  }
 }
 #pragma pop
 
@@ -2447,9 +2452,14 @@ extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
 
 #pragma use_lmw_stmw off
 extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
-    unsigned int p = (unsigned int)self;
-    int level = OSDisableInterrupts();
-    int size = *(int *)(p + 0x2C);
+    int size;
+    int level;
+    int position;
+    int format;
+    unsigned int p;
+    p = (unsigned int)self;
+    level = OSDisableInterrupts();
+    size = *(int *)(p + 0x2C);
     if (size == 0) {
         OSRestoreInterrupts(level);
         return 0;
@@ -2457,7 +2467,6 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
     if (IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv((void *)p)) {
         int inner = OSDisableInterrupts();
         unsigned char *pos = *(unsigned char **)(p + 0xC) + 0x138;
-        int position;
         if (pos == 0) {
             OSRestoreInterrupts(inner);
             position = 0;
@@ -2465,7 +2474,7 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
             position = ((int)*(unsigned short *)(pos + 0x80) << 16) + *(unsigned short *)(pos + 0x82);
             OSRestoreInterrupts(inner);
         }
-        int format = *(int *)(p + 0x118);
+        format = *(int *)(p + 0x118);
         if (size != 0) size += (int)0x80000000;
         int result = 0;
         switch (format) {
@@ -2483,7 +2492,6 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
     } else {
         int inner = OSDisableInterrupts();
         unsigned char *pos = *(unsigned char **)(p + 0xC) + 0x138;
-        int position;
         if (pos == 0) {
             OSRestoreInterrupts(inner);
             position = 0;
@@ -2491,7 +2499,7 @@ extern "C" int GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(void *se
             position = ((int)*(unsigned short *)(pos + 0x84) << 16) + *(unsigned short *)(pos + 0x86);
             OSRestoreInterrupts(inner);
         }
-        int format = *(int *)(p + 0x118);
+        format = *(int *)(p + 0x118);
         if (size != 0) size += (int)0x80000000;
         int result = 0;
         switch (format) {
@@ -2662,55 +2670,41 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling reset
-void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int index, const void *address, unsigned long length) {
-    unsigned int irq;
-    unsigned int start;
-    unsigned int loopEnd;
-    unsigned int temp;
+#pragma dont_inline off
+void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int arg1, const void *arg2, unsigned long arg3) {
+    nw4hbm::ut::AutoInterruptLock lock;
+    int format = *(int *)((char *)this + 0x118);
+    unsigned int value = (unsigned int)arg2;
     unsigned int end;
-    int mode;
-    int offset;
-    int i;
-    unsigned int *voice;
-    irq = OSDisableInterrupts();
-    mode = *(int *)((char *)this + 0x118);
-    start = (unsigned int)address;
-    if (address != 0) start += 0x80000000;
-    loopEnd = 0;
-    switch (mode) {
+    if (arg2 != 0) value += 0x80000000;
+    end = 0;
+    switch (format) {
     case 0:
-        end = (unsigned int)length - 1;
-        temp = end / 14;
-        loopEnd = end % 14 + (start << 1) + (temp << 4) + 2;
+        end = (arg3 - 1) % 14 + value * 2 + ((arg3 - 1) / 14) * 16 + 2;
         break;
     case 25:
-        loopEnd = start + (unsigned int)length - 1;
+        end = value + arg3 - 1;
         break;
     case 10:
-        loopEnd = (unsigned int)length + (start >> 1) - 1;
+        end = (value >> 1) + arg3 - 1;
         break;
     default:
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438);
         break;
     }
-    offset = index * 0x10;
-    start = loopEnd >> 16;
-    end = loopEnd & 0xFFFF;
-    voice = (unsigned int *)((char *)this + offset);
-    for (i = 0; i < *(int *)((char *)this + 0x108); i++) {
-        unsigned int *obj = (unsigned int *)*(unsigned int **)((char *)voice + 0xC);
+    unsigned int *voice = (unsigned int *)((char *)this + arg1 * 0x10);
+    unsigned int ch;
+    unsigned int hi = end >> 16;
+    unsigned int lo = end & 0xFFFF;
+    for (int i = 0; i < *(int *)((char *)this + 0x108); voice++, i++) {
+        ch = voice[3];
         unsigned int inner = OSDisableInterrupts();
-        *(unsigned short *)((char *)obj + 0x1B8) = (unsigned short)start;
-        *(unsigned short *)((char *)obj + 0x1BA) = (unsigned short)end;
-        temp = *(unsigned int *)((char *)obj + 0x1C);
-        if ((temp & 0x800) == 0) *(unsigned int *)((char *)obj + 0x1C) = temp | 0x4000;
+        *(unsigned short *)(ch + 0x1B8) = hi;
+        *(unsigned short *)(ch + 0x1BA) = lo;
+        if (!(*(unsigned int *)(ch + 0x1C) & 0x800)) *(unsigned int *)(ch + 0x1C) |= 0x4000;
         OSRestoreInterrupts(inner);
-        voice = (unsigned int *)((char *)voice + 4);
     }
-    OSRestoreInterrupts(irq);
 }
-#pragma scheduling reset
 #pragma pop
 
 #pragma push
@@ -4033,13 +4027,16 @@ extern "C" int fn_800E90AC(PauseFields *sound) {
 
 #pragma dont_inline off
 extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
+    struct UpdSound {
+        char pad[0xA8];
+        float aux[4];
+    };
     UpdSelfVt *sv = (UpdSelfVt *)self;
     UpdPlayerVt *p = sv->s5C();
     int f30flag;
     float sends[4];
-    float f31, f30, f28, f27, f26, f25, f24, f29;
+    float f31, f30, f29, f28, f27, f26, f25, f24;
     int voice, i, valid;
-    float *aux;
     char *pl;
     char *pl2;
     if (UF(unsigned char, 0x66) != 0 && p->p18() != 0) {
@@ -4088,26 +4085,26 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     f28 = lbl_80560FB0;
     voice = 1;
     f27 = f28;
-    f30 = lbl_80560FB4 * *(float *)(pl + 0x34) * UF(float, 0xA4);
-    f28 = f28 + UF(float, 0x90);
+    f30 = lbl_80560FB4 * *(float *)(pl + 0x34);
+    f30 *= UF(float, 0xA4);
     f26 = f27;
     f25 = f26;
     f24 = lbl_80560FB4;
-    f26 = f26 + UF(float, 0x30);
-    f27 = f27 + UF(float, 0x94);
-    f25 = f25 + UF(float, 0x34);
-    f24 = f24 * UF(float, 0x98);
+    f28 += UF(float, 0x90);
+    f26 += UF(float, 0x30);
+    f27 += UF(float, 0x94);
+    f25 += UF(float, 0x34);
+    f24 *= UF(float, 0x98);
     if (fn_800F87F0() != 0) voice = fn_800F87E8(UF(void *, 0x10));
     if (UF(unsigned char, 0x9C) != 0) voice = UF(int, 0xA0);
     f29 = lbl_80560FB4;
-    aux = (float *)((char *)self + 0xA8);
     for (i = 0; i < 4; i++) {
         sends[i] = f29;
         sends[i] *= GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800F87F8(UF(void *, 0x10), i);
         valid = 0;
         if (i >= 0 && i < 4) valid = 1;
         if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x377, lbl_803227A4, i, 0, 4);
-        sends[i] *= aux[i];
+        sends[i] = ((UpdSound *)self)->aux[i] * sends[i];
     }
     p->p28(f31);
     p->p30(f28);
