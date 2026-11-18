@@ -118,11 +118,11 @@ void fn_80273B4C(void *arg0) {
 #pragma push
 #pragma processor 750
 void fn_80273BD0(void *arg0) {
+#pragma opt_common_subs off
     struct { int sp8; float spC[3]; float sp18[3]; float sp24[3]; float sp30[3]; float sp3C[3]; float sp48[3]; float sp54[3]; float sp60[3]; float sp6C[3]; float sp78[9]; float sp9C[9]; } local;
     unsigned int m11, m10, m9, m8, m7, m6, m5, m4, m3, m2, m1, m0;
     char *cam;
     float *r4;
-    void *temp_r3;
     float f, g, h, var_f5, var_f3, temp_f0_3;
     double d30, d31, d1;
     if (*(unsigned char *)((char *)arg0 + 0x138) != 0) {
@@ -283,15 +283,13 @@ void fn_80273BD0(void *arg0) {
     local.sp48[1] = lbl_80563FB0;
     local.sp48[2] = lbl_80563FB0;
     fn_80015A20(local.sp9C, local.sp48, local.sp48[0], lbl_80563FB0);
-    temp_r3 = (char *)arg0 + 0x58;
-    fn_80015B20(temp_r3, local.sp9C, temp_r3);
+    fn_80015B20((char *)arg0 + 0x58, local.sp9C, (char *)arg0 + 0x58);
     if (*(unsigned char *)(*(char **)((char *)arg0 + 0x140) + 0x260C) != 0) {
         local.sp3C[0] = lbl_80563FB0;
         local.sp3C[1] = lbl_80563FE0;
         local.sp3C[2] = lbl_80563FB0;
         fn_80015A20(local.sp78, local.sp3C, lbl_80563FB0, lbl_80563FB0);
-        temp_r3 = (char *)arg0 + 0x58;
-        fn_80015B20(temp_r3, local.sp78, temp_r3);
+        fn_80015B20((char *)arg0 + 0x58, local.sp78, (char *)arg0 + 0x58);
     }
 }
 #pragma pop
@@ -303,10 +301,9 @@ void fn_80274268(void *arg0) {
     extern void fn_80274460(void *);
     extern void fn_80273B4C(void *);
     extern float lbl_80563FB0, lbl_80563FE4, lbl_80563FE8, lbl_80563FEC;
+    Vec vector;
+    volatile Vec result;
     char *state = *(char **)((char *)arg0 + 0x140);
-    float sp1C, sp18, sp14, sp10, spC, sp8;
-    float *result = &sp8;
-    float *vector = &sp14;
     if (*(unsigned char *)(state + 0x260C) != 0) {
         fn_80274460(arg0);
         return;
@@ -323,21 +320,25 @@ void fn_80274268(void *arg0) {
     *(int *)((char *)arg0 + 0x7C) = *(int *)((char *)arg0 + 0xE4);
     *(int *)((char *)arg0 + 0x80) = *(int *)((char *)arg0 + 0xE8);
     *(int *)((char *)arg0 + 0x84) = *(int *)((char *)arg0 + 0xEC);
-    sp14 = lbl_80563FB0;
-    sp18 = lbl_80563FE8;
-    sp1C = lbl_80563FEC + (*(float *)(state + 0x2458) - lbl_80563FE4);
-    if (result == vector) {
-        sp8 = sp14 * *(float *)((char *)arg0 + 0x58) + sp18 * *(float *)((char *)arg0 + 0x64) + sp1C * *(float *)((char *)arg0 + 0x70);
-        spC = sp14 * *(float *)((char *)arg0 + 0x5C) + sp18 * *(float *)((char *)arg0 + 0x68) + sp1C * *(float *)((char *)arg0 + 0x74);
-        sp10 = sp14 * *(float *)((char *)arg0 + 0x60) + sp18 * *(float *)((char *)arg0 + 0x6C) + sp1C * *(float *)((char *)arg0 + 0x78);
+    vector.x = lbl_80563FB0;
+    vector.y = lbl_80563FE8;
+    vector.z = lbl_80563FEC + (*(float *)(state + 0x2458) - lbl_80563FE4);
+    if (&result == (volatile Vec *)&vector) {
+        float x = vector.x, y = vector.y, z = vector.z;
+        float m00 = *(float *)((char *)arg0 + 0x58), m10 = *(float *)((char *)arg0 + 0x64), m20 = *(float *)((char *)arg0 + 0x70);
+        float m01 = *(float *)((char *)arg0 + 0x5C), m11 = *(float *)((char *)arg0 + 0x68), m21 = *(float *)((char *)arg0 + 0x74);
+        float m02 = *(float *)((char *)arg0 + 0x60), m12 = *(float *)((char *)arg0 + 0x6C), m22 = *(float *)((char *)arg0 + 0x78);
+        result.x = z * m20 + (x * m00 + y * m10);
+        result.y = z * m21 + (x * m01 + y * m11);
+        result.z = z * m22 + (x * m02 + y * m12);
     } else {
-        result[0] = vector[0] * *(float *)((char *)arg0 + 0x58) + vector[1] * *(float *)((char *)arg0 + 0x64) + vector[2] * *(float *)((char *)arg0 + 0x70);
-        result[1] = vector[0] * *(float *)((char *)arg0 + 0x5C) + vector[1] * *(float *)((char *)arg0 + 0x68) + vector[2] * *(float *)((char *)arg0 + 0x74);
-        result[2] = vector[0] * *(float *)((char *)arg0 + 0x60) + vector[1] * *(float *)((char *)arg0 + 0x6C) + vector[2] * *(float *)((char *)arg0 + 0x78);
+        result.x = vector.x * *(float *)((char *)arg0 + 0x58) + vector.y * *(float *)((char *)arg0 + 0x64) + vector.z * *(float *)((char *)arg0 + 0x70);
+        result.y = vector.x * *(float *)((char *)arg0 + 0x5C) + vector.y * *(float *)((char *)arg0 + 0x68) + vector.z * *(float *)((char *)arg0 + 0x74);
+        result.z = vector.x * *(float *)((char *)arg0 + 0x60) + vector.y * *(float *)((char *)arg0 + 0x6C) + vector.z * *(float *)((char *)arg0 + 0x78);
     }
-    *(float *)((char *)arg0 + 0x7C) += sp8;
-    *(float *)((char *)arg0 + 0x80) += spC;
-    *(float *)((char *)arg0 + 0x84) += sp10;
+    *(float *)((char *)arg0 + 0x7C) += result.x;
+    *(float *)((char *)arg0 + 0x80) += result.y;
+    *(float *)((char *)arg0 + 0x84) += result.z;
     fn_80273B4C(arg0);
 }
 #pragma pop
@@ -351,11 +352,11 @@ void fn_8027445C(void) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
 void fn_80274460(void *arg0) {
+#pragma opt_common_subs off
+#pragma scheduling on
     extern void fn_80015A20(void *, float *, float, float);
     extern void fn_80015B20(void *, void *, void *);
-    extern float lbl_80563FB0, lbl_80563FE0, lbl_80563FE8;
     struct Words { unsigned int value[12]; };
     struct Object {
         unsigned char pad0[0x58];
@@ -364,8 +365,7 @@ void fn_80274460(void *arg0) {
         unsigned char pad2[0x18];
         struct Words src;
     };
-    float zero = lbl_80563FE0;
-    float one = lbl_80563FB0;
+    float x, y, z;
     struct {
         float sp8;
         float spC;
@@ -377,35 +377,60 @@ void fn_80274460(void *arg0) {
         float matrix[9];
     } work;
     ((struct Object *)arg0)->dst = ((struct Object *)arg0)->src;
-    work.callVec[0] = one;
-    work.callVec[1] = zero;
-    work.callVec[2] = one;
+    work.callVec[0] = 0.0f;
+    work.callVec[1] = 3.1415927f;
+    work.callVec[2] = 0.0f;
     ((void (*)(void *, float *))fn_80015A20)(work.matrix, work.callVec);
     fn_80015B20((char *)arg0 + 0x58, work.matrix, (char *)arg0 + 0x58);
-    work.sp14 = lbl_80563FB0;
-    work.sp18 = lbl_80563FE8;
-    work.sp1C = lbl_80563FB0;
+    x = 0.0f;
+    y = 0.8f;
+    z = 0.0f;
+    work.sp14 = x;
+    work.sp18 = y;
+    work.sp1C = z;
     {
-        float *result = &work.sp8;
-        float *vector = &work.sp14;
-        if (vector == result) {
-            float out0 = work.sp14 * *(float *)((char *)arg0 + 0x58) + work.sp18 * *(float *)((char *)arg0 + 0x64) + work.sp1C * *(float *)((char *)arg0 + 0x70);
-            float out1 = work.sp14 * *(float *)((char *)arg0 + 0x5C) + work.sp18 * *(float *)((char *)arg0 + 0x68) + work.sp1C * *(float *)((char *)arg0 + 0x74);
-            float out2 = work.sp14 * *(float *)((char *)arg0 + 0x60) + work.sp18 * *(float *)((char *)arg0 + 0x6C) + work.sp1C * *(float *)((char *)arg0 + 0x78);
-            result[0] = out0;
-            result[1] = out1;
-            result[2] = out2;
+        float *vector;
+        float *result;
+        result = &work.sp8;
+        vector = &work.sp14;
+        if (result == vector) {
+            float m00, m01, m02, m10, m11, m20, m21, m12, m22;
+            float o0, o1, o2;
+            m10 = *(float *)((char *)arg0 + 0x64);
+            m00 = *(float *)((char *)arg0 + 0x58);
+            m11 = *(float *)((char *)arg0 + 0x68);
+            m01 = *(float *)((char *)arg0 + 0x5C);
+            m12 = *(float *)((char *)arg0 + 0x6C);
+            m02 = *(float *)((char *)arg0 + 0x60);
+            m20 = *(float *)((char *)arg0 + 0x70);
+            m21 = *(float *)((char *)arg0 + 0x74);
+            m22 = *(float *)((char *)arg0 + 0x78);
+            o0 = z * m20 + (x * m00 + y * m10);
+            o1 = z * m21 + (x * m01 + y * m11);
+            o2 = z * m22 + (x * m02 + y * m12);
+            result[0] = o0;
+            result[1] = o1;
+            result[2] = o2;
         } else {
-            result[0] = vector[0] * *(float *)((char *)arg0 + 0x58) + vector[1] * *(float *)((char *)arg0 + 0x64) + vector[2] * *(float *)((char *)arg0 + 0x70);
-            result[1] = vector[0] * *(float *)((char *)arg0 + 0x5C) + vector[1] * *(float *)((char *)arg0 + 0x68) + vector[2] * *(float *)((char *)arg0 + 0x74);
-            result[2] = vector[0] * *(float *)((char *)arg0 + 0x60) + vector[1] * *(float *)((char *)arg0 + 0x6C) + vector[2] * *(float *)((char *)arg0 + 0x78);
+            float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+            m10 = *(float *)((char *)arg0 + 0x64);
+            m00 = *(float *)((char *)arg0 + 0x58);
+            m20 = *(float *)((char *)arg0 + 0x70);
+            result[0] = vector[2] * m20 + (vector[0] * m00 + vector[1] * m10);
+            m11 = *(float *)((char *)arg0 + 0x68);
+            m01 = *(float *)((char *)arg0 + 0x5C);
+            m21 = *(float *)((char *)arg0 + 0x74);
+            result[1] = vector[2] * m21 + (vector[0] * m01 + vector[1] * m11);
+            m12 = *(float *)((char *)arg0 + 0x6C);
+            m02 = *(float *)((char *)arg0 + 0x60);
+            m22 = *(float *)((char *)arg0 + 0x78);
+            result[2] = vector[2] * m22 + (vector[0] * m02 + vector[1] * m12);
         }
     }
     *(float *)((char *)arg0 + 0x7C) += work.sp8;
     *(float *)((char *)arg0 + 0x80) += work.spC;
     *(float *)((char *)arg0 + 0x84) += work.sp10;
 }
-#pragma scheduling on
 #pragma pop
 
 #pragma push
@@ -466,12 +491,13 @@ int fn_80274730(void *arg0, float arg1, float arg2, float arg3, float arg4) {
     float up[3], forward[3], side[3], right[3];
     char *p=arg0;
     float x,y,z,d,scale,dist,lower,angle,ratio,speed,v;
-    float th;
     x=(*(float *)(p+0x4c))-(*(float *)(p+0x7c)); y=(*(float *)(p+0x50))-(*(float *)(p+0x80)); z=(*(float *)(p+0x54))-(*(float *)(p+0x84));
     (*(float *)(p+0x70))=x; (*(float *)(p+0x74))=y; (*(float *)(p+0x78))=z;
-    th=lbl_80558DC4[0];
-    if ((float)__fabs(x)<=th && (float)__fabs(z)<=th) {
-        x=(*(float *)(p+0xd8)); z=(*(float *)(p+0xe0)); (*(float *)(p+0x70))=x; (*(float *)(p+0x78))=z;
+    {
+        float th=lbl_80558DC4[0];
+        if ((float)__fabs(x)<=th && (float)__fabs(z)<=th) {
+            (*(float *)(p+0x70))=(*(float *)(p+0xd8)); (*(float *)(p+0x78))=(*(float *)(p+0xe0));
+        }
     }
     up[0]=lbl_80563FB0; up[1]=lbl_80563FAC; up[2]=lbl_80563FB0;
     PSVECCrossProduct(up,p+0x70,p+0x58);
@@ -908,16 +934,18 @@ extern float lbl_802FA7DC[];
 #pragma use_lmw_stmw off
 void fn_80275938(void *arg0) {
     struct Matrix { int v[12]; };
-    struct Params { float a[7]; };
     char *self = (char *)arg0;
-    struct Params params = *(struct Params *)lbl_802FA7DC;
     float axis[3], input[3], matrix[9];
     float mag, scale, x, y, z, s, c, t;
+    float *p = (float *)lbl_802FA7DC;
+    float p3 = p[3], p4 = p[4], p5 = p[5];
+    float p0 = p[0], p1 = p[1], p2 = p[2];
+    float p6 = p[6];
     *(struct Matrix *)(self + 0x58) = *(struct Matrix *)(self + 0xC0);
-    axis[0] = params.a[0]; axis[1] = params.a[1]; axis[2] = params.a[2];
-    input[0] = lbl_80564024 * params.a[3];
-    input[1] = lbl_80564024 * params.a[4];
-    input[2] = lbl_80564024 * params.a[5];
+    input[0] = lbl_80564024 * p3;
+    input[1] = lbl_80564024 * p4;
+    input[2] = lbl_80564024 * p5;
+    axis[0] = p0; axis[1] = p1; axis[2] = p2;
     mag = PSVECMag(input);
     if (mag > lbl_80564020) {
         scale = lbl_80563FAC / mag;
@@ -939,7 +967,7 @@ void fn_80275938(void *arg0) {
     }
     fn_801BFD34(self+0x7C, axis, self+0xC0);
     fn_80015B20(self+0x58, matrix, self+0xC0);
-    *(float *)(self+0xBC) = lbl_80564024 * params.a[6];
+    *(float *)(self+0xBC) = lbl_80564024 * p6;
 }
 #pragma pop
 
@@ -948,9 +976,7 @@ extern float lbl_8055E3C8, lbl_8055F588, lbl_80563FC4, lbl_80563FD8, lbl_8056404
 extern double lbl_80564038;
 extern double fn_8002EFB4(float, double);
 extern int fn_801E9E30(void *, float *);
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
     struct Vec3 {
         float x, y, z;
@@ -999,9 +1025,7 @@ void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
     fn_8026E850((float *)&pos, (float *)(p + 0xE4), arg0, (float *)&up);
     *(float *)(p + 0xBC) = lbl_80564040;
 }
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_80275D0C(void *arg0, void *arg1) {
     struct Words12 { unsigned int value[12]; };
     struct Words7 { unsigned int value[7]; };
@@ -1015,33 +1039,44 @@ void fn_80275D0C(void *arg0, void *arg1) {
         float matrix[9];
         float sp84[3];
     } work;
+
     extern const struct Words7 lbl_802FA7F8;
+
     float x, s, z, y, mag;
     float scale, c, t;
     float m2, m1, m0;
     float zero, one;
+
     work.local_14 = lbl_802FA7F8;
     *(struct Words12 *)((char *)arg0 + 0x58) = *(struct Words12 *)((char *)arg0 + 0xC0);
+
     work.sp54[0] = *(float *)((char *)arg0 + 0xE4);
     work.sp54[1] = *(float *)((char *)arg0 + 0xE8);
     work.sp54[2] = *(float *)((char *)arg0 + 0xEC);
+
     work.sp48[0] = *(float *)((char *)arg0 + 0xD8);
     work.sp48[1] = *(float *)((char *)arg0 + 0xDC);
     work.sp48[2] = *(float *)((char *)arg0 + 0xE0);
+
     work.sp3C[0] = lbl_80563FB0;
     work.sp3C[1] = lbl_80563FAC;
     work.sp3C[2] = lbl_80563FB0;
+
     PSVECCrossProduct(work.sp3C, work.sp48, work.sp30);
     PSVECCrossProduct(work.sp48, work.sp30, work.sp3C);
+
     m2 = ((float *)&work.local_14)[5] * lbl_80564024;
     m1 = ((float *)&work.local_14)[4] * lbl_80564024;
     m0 = ((float *)&work.local_14)[3] * lbl_80564024;
+
     work.sp84[1] = ((float *)&work.local_14)[1];
     work.sp84[0] = ((float *)&work.local_14)[0];
     work.sp84[2] = ((float *)&work.local_14)[2];
+
     work.sp8[0] = m0;
     work.sp8[1] = m1;
     work.sp8[2] = m2;
+
     mag = PSVECMag(work.sp8);
     if (mag > lbl_80564020) {
         scale = lbl_80563FAC / mag;
@@ -1073,6 +1108,7 @@ void fn_80275D0C(void *arg0, void *arg1) {
         work.matrix[7] = zero;
         work.matrix[8] = one;
     }
+
     fn_801BFD34((char *)arg0 + 0x7C, work.sp84, work.sp30);
     fn_80015B20((char *)arg0 + 0x58, work.matrix, work.sp30);
     *(float *)((char *)arg0 + 0xBC) = ((float *)&work.local_14)[6] * lbl_80564024;
