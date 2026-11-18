@@ -1732,8 +1732,6 @@ extern float lbl_80562038;
 extern float lbl_8056203C;
 extern float lbl_80562040;
 #pragma scheduling invalid_target
-#pragma push
-#pragma processor 750
 void fn_8018F538(unsigned char *arg0, unsigned char *arg1) {
     float bias;
     float scale;
