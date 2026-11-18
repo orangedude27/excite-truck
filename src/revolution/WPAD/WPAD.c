@@ -4629,7 +4629,7 @@ extern u8 lbl_802EE8C8[];
 s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
     u8 frame[0x420] ALIGN(8);
     register s32 channel asm("r31") = chan;
-    register s32 arg asm("r27") = arg1;
+    register s8 arg asm("r27") = arg1;
     register WPADCallback callback asm("r28") = arg2;
     register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
     register u32 value778 asm("r26");
