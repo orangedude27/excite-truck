@@ -2066,79 +2066,90 @@ extern "C" void fn_80203FF8(void);
 #pragma processor 750
 extern "C" void fn_801FA2C4(void) {
     extern unsigned char lbl_8055EC40;
-    u8 *ec40;
-    u8 *p;
-    int zero;
-    int one;
+    u8 *passTag;
+    u8 *node;
+    int statePlaying;
+    int stateStopped;
     f32 dt;
     dt = fn_801E7E24();
-    p = (u8 *)lbl_8055EC5C;
-    one = 1;
-    ec40 = (u8 *)&lbl_8055EC40;
-    zero = 0;
-    for (; p != 0; p = *(u8 **)(p + 0x68)) {
-        s32 close = PSVECSquareDistance(fn_801E8718(0) + 0x24, p + 0x24) < *(f32 *)(p + 0x5c);
-        s32 flag;
+    node = (u8 *)lbl_8055EC5C;
+    stateStopped = 1;
+    passTag = (u8 *)&lbl_8055EC40;
+    statePlaying = 0;
+    /* Every distance-controlled animation of the stage, in turn. */
+    for (; node != 0; node = *(u8 **)(node + 0x68)) {
+        s32 close = PSVECSquareDistance(fn_801E8718(0) + 0x24, node + 0x24) < *(f32 *)(node + 0x5c);
+        s32 active;
         s32 near;
-        s32 state = *(s32 *)(p + 0x60);
+        s32 state = *(s32 *)(node + 0x60);
         if (state != 2) {
-            flag = 0;
+            active = 0;
             near = 0;
-            if (p[0x59] != 0 && close)
+            if (node[0x59] != 0 && close)
                 near = 1;
-            if (near != 0 && p[0x58] == ec40[1])
-                flag = 1;
+            if (near != 0 && node[0x58] == passTag[1])
+                active = 1;
             switch (state) {
             case 0:
-                if (flag == 0) {
+                /* playing, but out of range or left behind by the load pass:
+                 * stop it and give the tracked-object slot back */
+                if (active == 0) {
                     lbl_8055EC64 = lbl_8055EC64 - 1;
-                    *(s32 *)(p + 0x60) = one;
-                    if (one != 1) {
-                        s32 idx = ((s32 (*)(s32, s32, s32))fn_80129D90)(zero, zero, *(s32 *)(p + 0x54));
-                        fn_801E6CD0(*(void **)(p + 0x30), *(s32 *)(p + idx * 4 + 0x34), lbl_80562FF0);
+                    *(s32 *)(node + 0x60) = stateStopped;
+                    /* setAnim(node, stateStopped): the stopped state plays no
+                     * clip at all, any other state picks one at random */
+                    if (stateStopped != 1) {
+                        s32 clip = ((s32 (*)(s32, s32, s32))fn_80129D90)(statePlaying, statePlaying, *(s32 *)(node + 0x54));
+                        fn_801E6CD0(*(void **)(node + 0x30), *(s32 *)(node + clip * 4 + 0x34), lbl_80562FF0);
                     } else
-                        fn_801E6CD0(*(void **)(p + 0x30), zero, lbl_80562FF0);
+                        fn_801E6CD0(*(void **)(node + 0x30), statePlaying, lbl_80562FF0);
                 }
                 break;
             case 1:
-                if (flag != 0 && lbl_8055EC64 < fn_801E7698()) {
+                /* stopped and now in range: start it, while the tracked-object
+                 * cap (fn_801E7698) leaves room */
+                if (active != 0 && lbl_8055EC64 < fn_801E7698()) {
                     lbl_8055EC64 = lbl_8055EC64 + 1;
-                    *(s32 *)(p + 0x60) = zero;
-                    if (zero != 1) {
-                        s32 idx = ((s32 (*)(s32, s32, s32))fn_80129D90)(zero, zero, *(s32 *)(p + 0x54));
-                        fn_801E6CD0(*(void **)(p + 0x30), *(s32 *)(p + idx * 4 + 0x34), lbl_80562FF0);
+                    *(s32 *)(node + 0x60) = statePlaying;
+                    if (statePlaying != 1) {
+                        s32 clip = ((s32 (*)(s32, s32, s32))fn_80129D90)(statePlaying, statePlaying, *(s32 *)(node + 0x54));
+                        fn_801E6CD0(*(void **)(node + 0x30), *(s32 *)(node + clip * 4 + 0x34), lbl_80562FF0);
                     } else
-                        fn_801E6CD0(*(void **)(p + 0x30), zero, lbl_80562FF0);
+                        fn_801E6CD0(*(void **)(node + 0x30), statePlaying, lbl_80562FF0);
                 }
                 break;
             }
         }
-        fn_801E6E9C(*(void **)(p + 0x30), dt);
-        if (*(s32 *)(p + 0x54) > 1 && fn_801E7650(*(void **)(p + 0x30)) != 0) {
-            s32 mode = *(s32 *)(p + 0x60);
-            if (mode != 1) {
-                s32 idx = ((s32 (*)(s32, s32, s32))fn_80129D90)(zero, zero, *(s32 *)(p + 0x54));
-                fn_801E6CD0(*(void **)(p + 0x30), *(s32 *)(p + idx * 4 + 0x34), lbl_80562FF0);
+        fn_801E6E9C(*(void **)(node + 0x30), dt);
+        /* A node with several clips picks a fresh one once the running clip
+         * reaches its end; a stopped one is simply held at no clip. */
+        if (*(s32 *)(node + 0x54) > 1 && fn_801E7650(*(void **)(node + 0x30)) != 0) {
+            s32 state2 = *(s32 *)(node + 0x60);
+            if (state2 != 1) {
+                s32 clip = ((s32 (*)(s32, s32, s32))fn_80129D90)(statePlaying, statePlaying, *(s32 *)(node + 0x54));
+                fn_801E6CD0(*(void **)(node + 0x30), *(s32 *)(node + clip * 4 + 0x34), lbl_80562FF0);
             } else
-                fn_801E6CD0(*(void **)(p + 0x30), zero, lbl_80562FF0);
+                fn_801E6CD0(*(void **)(node + 0x30), statePlaying, lbl_80562FF0);
         }
     }
     {
-        u8 *ec = (u8 *)&lbl_8055EC40;
-        u8 kind;
-        u8 *q;
-        u8 *r;
-        for (r = *(u8 **)&lbl_8055EC6C; r != 0; r = *(u8 **)(r + 0x14)) {
-            q = *(u8 **)(r + 0x10);
-            if (q != 0) {
-                kind = r[0xc];
-                if (kind == ec[1]) {
-                    q[0x4a] = 0;
-                    q[0x4b] = 1;
-                    q[0x49] = 1;
+        /* The sound entries built with the stage: the ones of the load pass now
+         * in effect are switched on, everything an earlier pass left behind off. */
+        u8 *tag = (u8 *)&lbl_8055EC40;
+        u8 entryTag;
+        u8 *sound;
+        u8 *entry;
+        for (entry = *(u8 **)&lbl_8055EC6C; entry != 0; entry = *(u8 **)(entry + 0x14)) {
+            sound = *(u8 **)(entry + 0x10);
+            if (sound != 0) {
+                entryTag = entry[0xc];
+                if (entryTag == tag[1]) {
+                    sound[0x4a] = 0;
+                    sound[0x4b] = 1;
+                    sound[0x49] = 1;
                 } else {
-                    q[0x4a] = 1;
-                    q[0x4c] = 0;
+                    sound[0x4a] = 1;
+                    sound[0x4c] = 0;
                 }
             }
         }
