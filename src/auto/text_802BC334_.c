@@ -477,9 +477,9 @@ extern "C" void fn_802BCBDC(void) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void fn_802BCF04(void) {
-    int i;
-    int offset;
     char *entry;
+    int offset;
+    int i;
     i = 0;
     offset = 0;
     for (; i < *(int *)((char *)&lbl_804C00D4 + 4); i++) {
@@ -688,24 +688,20 @@ void fn_802BD414(int arg0, volatile int *arg1)
         result[1] = result[1] + arg1[0];
     }
 }
-#pragma scheduling reset
+#pragma scheduling on
 void fn_802BD478(int arg0, volatile int *arg1)
 {
-  volatile int *result = (volatile int *) fn_801284F8(0xC, arg0);
-  if (result != 0)
-  {
-    int second;
-    int first = arg1[0];
-    result[0] = arg1[1];
-    result[2] = first;
-    result[1] = 0;
-    result[1] = result[1] + arg1[0];
-  }
+    volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
+    if (result == 0)
+        return;
+    {
+        int first = arg1[0];
+        result[0] = arg1[1];
+        result[2] = first;
+        result[1] = 0;
+        result[1] = result[1] + arg1[0];
+    }
 }
-
-#pragma push
-#pragma inline_depth(0)
-#pragma use_lmw_stmw off
 void fn_802BD4DC(void *arg0, int arg1) {
     extern void fn_802BD69C(void *, int);
     extern void fn_802BD5B0(void *, int);
@@ -713,12 +709,11 @@ void fn_802BD4DC(void *arg0, int arg1) {
     char *entry;
     int offset;
     unsigned int i;
-    unsigned char b7, b6, b2, b3, b0, b1, b4, b5;
+    unsigned char b6, b2, b3, b0, b1, b4, b5;
     b4 = p[4];
-    b7 = p[7];
-    p[4] = b7;
     b5 = p[5];
     b6 = p[6];
+    p[4] = p[7];
     b0 = p[0];
     b3 = p[3];
     p[7] = b4;
@@ -1038,7 +1033,20 @@ void fn_802DBECC(void);
 void fn_802BDD8C(float arg0) {
     float out[12];
     float mtx[12];
-    int i, j;
+    int *pts;
+    int *data;
+    int idx;
+    int h;
+    int j;
+    char *cam;
+    char *e;
+    char *r;
+    int offset_i;
+    int offset_j;
+    int offset_idx;
+    int i;
+    int *list;
+    char *p;
     fn_802DBE4C();
     if (fn_8020403C() != 0) {
         float one = lbl_80564D18;
@@ -1048,70 +1056,76 @@ void fn_802BDD8C(float arg0) {
         float sq;
         lbl_8055FAAC = 0;
         lbl_8055FAA8 = 0;
-        for (i = 0; i < *(int *)((char *)&lbl_804C00D4 + 4); i++) {
-            char *e = *(char **)&lbl_804C00D4 + i * 0x60;
-            int *obj = *(int **)(e + 0x58);
-            if (obj != 0) {
-                int *data = (int *)obj[1];
-                int *pts = (int *)obj[0];
-                if (*(int *)(e + 0x24) <= 10) {
-                    char *cam;
-                    fn_802C28C0();
-                    fn_802C8BD0();
-                    fn_802DC71C(*(int *)(e + 0x1c), *(int *)(e + 0x20));
-                    sq = arg0 * arg0;
-                    den = sq - (arg0 - half) * (arg0 - half);
-                    fn_801F1C24(mtx);
-                    cam = fn_801E8718(-1) + 0x24;
-                    for (j = 0; j < data[1]; j++) {
-                        char *r = (char *)data[0] + j * 0x10;
-                        {
-                            int cond = (*(float *)(r + 0xc) >= lim);
-                            if (cond) {
-                                int idx = *(short *)(r + 0xa);
-                                int h = *(int *)(e + 0x1c);
-                                for (; idx < *(short *)(r + 0xa) + *(short *)(r + 8); idx++) {
-                                    char *p = (char *)pts[0] + idx * 0x44;
-                                    float d = PSVECSquareDistance(p + 0x30, cam);
-                                    if (d <= sq) {
-                                        float f = (sq - d) / den;
-                                        float m1, m0, m2, m3, m4, m5, m6, m7, m8, s;
-                                        if (one < f) f = one;
-                                        s = *(float *)(p + 0x1c);
-                                        out[9] = *(float *)(p + 0x30);
-                                        m0 = mtx[0] * s;
-                                        out[10] = *(float *)(p + 0x34);
-                                        m1 = mtx[1] * s;
-                                        out[11] = *(float *)(p + 0x38);
-                                        m2 = mtx[2] * s;
-                                        m3 = mtx[3] * s;
-                                        m4 = mtx[4] * s;
-                                        m5 = mtx[5] * s;
-                                        m6 = mtx[6] * s;
-                                        m7 = mtx[7] * s;
-                                        m8 = mtx[8] * s;
-                                        out[0] = m0;
-                                        out[1] = m1;
-                                        out[2] = m2;
-                                        out[3] = m3;
-                                        out[4] = m4;
-                                        out[5] = m5;
-                                        out[6] = m6;
-                                        out[7] = m7;
-                                        out[8] = m8;
-                                        fn_802DCAE4(h, out, f);
+        list = &lbl_804C00D4;
+        i = 0;
+        offset_i = 0;
+        while (i < list[1]) {
+            e = *(char **)&lbl_804C00D4 + offset_i;
+            {
+                int *obj = *(int **)(e + 0x58);
+                if (obj != 0) {
+                    data = (int *)obj[1];
+                    pts = (int *)obj[0];
+                    if (*(int *)(e + 0x24) <= 10) {
+                        fn_802C28C0();
+                        fn_802C8BD0();
+                        fn_802DC71C(*(int *)(e + 0x1c), *(int *)(e + 0x20));
+                        sq = arg0 * arg0;
+                        den = sq - (arg0 - half) * (arg0 - half);
+                        fn_801F1C24(mtx);
+                        cam = fn_801E8718(-1) + 0x24;
+                        j = 0;
+                        offset_j = 0;
+                        while (j < data[1]) {
+                            r = (char *)data[0] + offset_j;
+                            {
+                                int cond = (*(float *)(r + 0xc) >= lim);
+                                if (cond) {
+                                    idx = *(short *)(r + 0xa);
+                                    h = *(int *)(e + 0x1c);
+                                    offset_idx = idx * 0x44;
+                                    while (idx < *(short *)(r + 0xa) + *(short *)(r + 8)) {
+                                        p = (char *)pts[0] + offset_idx;
+                                        {
+                                            float d = PSVECSquareDistance(p + 0x30, cam);
+                                            if (d <= sq) {
+                                                float f = (sq - d) / den;
+                                                float s;
+                                                if (one < f) f = one;
+                                                s = *(float *)(p + 0x1c);
+                                                out[9] = *(float *)(p + 0x30);
+                                                out[10] = *(float *)(p + 0x34);
+                                                out[11] = *(float *)(p + 0x38);
+                                                out[0] = mtx[0] * s;
+                                                out[1] = mtx[1] * s;
+                                                out[2] = mtx[2] * s;
+                                                out[3] = mtx[3] * s;
+                                                out[4] = mtx[4] * s;
+                                                out[5] = mtx[5] * s;
+                                                out[6] = mtx[6] * s;
+                                                out[7] = mtx[7] * s;
+                                                out[8] = mtx[8] * s;
+                                                fn_802DCAE4(h, out, f);
+                                            }
+                                        }
+                                        offset_idx += 0x44;
+                                        idx++;
                                     }
                                 }
                             }
+                            offset_j += 0x10;
+                            j++;
                         }
+                        fn_802DC8B4();
+                        fn_802C8D74();
                     }
-                    fn_802DC8B4();
-                    fn_802C8D74();
                 }
             }
+            offset_i += 0x60;
+            i++;
         }
-        fn_802DBECC();
     }
+    fn_802DBECC();
 }
 #pragma pop
 /* Stamp a band-selected weight into the +0xC field of every node in a grid
@@ -1153,10 +1167,11 @@ void *fn_802BE008(void *arg0) {
     int found;
     char *entry = *(char **)&lbl_804C00D4;
     int i;
+    char *item;
     for (i = 0; i < count; i++, entry += 0x60) {
         char *list = *(char **)(entry + 0x58);
         if (list != 0) {
-            char *item = *(char **)(list + 8);
+            item = *(char **)(list + 8);
             found = 0;
             if ((unsigned)arg0 >= (unsigned)*(int *)item && (unsigned)arg0 < (unsigned)*(int *)item + (unsigned)*(int *)(item + 4) * 0x10) {
                 found = 1;
