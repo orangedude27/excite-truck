@@ -7,7 +7,7 @@ extern void *memset(void *, int, unsigned int);
 extern void deallocate_from_fixed_pools(void ***, unsigned char *, unsigned int);
 extern void Block_link(void *, void *);
 extern void __sys_free(void *);
-#pragma scheduling invalid_target
+#pragma scheduling 750
 void free(void *arg0) {
     void ***pool;
     unsigned int size;
