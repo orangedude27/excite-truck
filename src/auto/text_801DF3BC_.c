@@ -37,32 +37,32 @@ struct Glob {
 };
 
 struct Root {
-    char pad[0x108];
+    char pad[0xFC];
+    char mid[0xC];
     struct Container c;
 };
 
-extern char lbl_804872B0[];
+extern struct Root lbl_804872B0;
 extern unsigned char lbl_8055AE2C;
 extern unsigned char lbl_8055E9D0;
 extern int lbl_8055E9D8;
 
 #pragma scheduling invalid_target
 void fn_801DF3BC(void) {
-    register char *base asm("r31") = lbl_804872B0;
-    struct Container *__restrict c = (struct Container *)(base + 0x108);
+    register struct Root *root asm("r31") = &lbl_804872B0;
     struct Elem *p;
     struct Elem *end;
 
     fn_8000D838(&lbl_8055E9D0);
     lbl_8055E9D8 = 0x7F000000;
-    fn_8002F53C(base, &fn_801DF6D0, 0, 0x1C, 9);
+    fn_8002F53C(root, &fn_801DF6D0, 0, 0x1C, 9);
 
-    c->elems = c->buf;
-    c->count = 0;
-    c->capacity = 8;
-    end = c->buf + 8;
+    root->c.elems = root->c.buf;
+    root->c.count = 0;
+    root->c.capacity = 8;
+    end = root->c.buf + 8;
 
-    p = c->buf;
+    p = root->c.buf;
     do {
         p->f4 = &lbl_8055AE2C;
         p->f8 = &lbl_8055AE2C;
@@ -74,6 +74,6 @@ void fn_801DF3BC(void) {
         p++;
     } while (p < end);
 
-    __register_global_object(base + 0x108, (void *)&fn_801DF678, base + 0xFC);
+    __register_global_object(&root->c, (void *)&fn_801DF678, &root->pad[0xFC]);
 }
 #pragma scheduling reset
