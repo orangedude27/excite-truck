@@ -46,6 +46,8 @@ void *fn_80209D4C(void *arg0) {
 
 extern void fn_80128668(void *);
 #pragma scheduling invalid_target
+#pragma push
+#pragma cplusplus on
 void *fn_80209DE4(void *arg0, int arg1) {
     char *q;
     char *r;
