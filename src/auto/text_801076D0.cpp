@@ -973,31 +973,48 @@ s32 nw4hbm::ut::detail::ResFontBase::GetLineFeed() const {
     return ((const FontInformation *)*(u32 *)((char *)this + 0x14))->line_feed;
 }
 
-DWRet nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
-    const char* file=lbl_80329140;
-    u32 value=(u32)this;
-    int a=1,b=1,c=1,d=1,e=1,f=1;
-    u32 t=value&0xFF000000U;
-    if (t!=0x80000000U && (value&0xFF800000U)!=0x81000000U) f=0;
-    if (f==0 && (value&0xF8000000U)!=0x90000000U)e=0;
-    if (e==0 && t!=0xC0000000U)d=0;
-    if (d==0 && (value&0xFF800000U)!=0xC1000000U)c=0;
-    if (c==0 && (value&0xF8000000U)!=0xD0000000U)b=0;
-    if (b==0 && (value&0xFFFFC000U)!=0xE0000000U)a=0;
-    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x139,file+0xF0,this);
-    int g=1,h=1;
-    u32 v=*(u32*)((char*)this+0x14);
-    int i=1,j=1,k=1,l=1;
-    u32 t2=v&0xFF000000U;
-    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
-    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
-    if(k==0&&t2!=0xC0000000U)j=0;
-    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
-    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
-    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
-    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x13A,file+0x128);
-    u8* p=(u8*)*(u32*)((char*)this+0x14);
-    return *(DWRet *)(p + 4);
+/* nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() (ut_ResFontBase.cpp)
+ * -- the font's default character widths (left bearing, glyph width and
+ * character width), kept as the three bytes at mFontInfo + 4.  nw4hbm's debug
+ * build first checks that `this` and then mFontInfo point into memory the
+ * library accepts, so a ResFontBase whose resource was never installed panics
+ * here. */
+nw4hbm::ut::CharWidths nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
+    const char *file = lbl_80329140;
+    u32 selfAddr = (u32)this;
+    /* nw4hbm::db's valid-pointer check, unrolled by the compiler: a flag stays
+     * 1 while the address has not matched any range checked so far (MEM1
+     * 0x80000000 and the 8 MiB expanded at 0x81000000, MEM2 0x90000000, their
+     * uncached mirrors 0xC0000000, 0xC1000000 and 0xD0000000, and the 16 KiB
+     * block at 0xE0000000), and `valid` is the verdict.  The flags are declared
+     * innermost check last, which is what binds them to r5..r10 in that order. */
+    int valid = 1, matched_d0 = 1, matched_c1 = 1, matched_c0 = 1, matched_mem2 = 1, matched_mem1 = 1;
+    u32 selfTop = selfAddr & 0xFF000000U;
+    if (selfTop != 0x80000000U && (selfAddr & 0xFF800000U) != 0x81000000U) matched_mem1 = 0;
+    if (matched_mem1 == 0 && (selfAddr & 0xF8000000U) != 0x90000000U) matched_mem2 = 0;
+    if (matched_mem2 == 0 && selfTop != 0xC0000000U) matched_c0 = 0;
+    if (matched_c0 == 0 && (selfAddr & 0xFF800000U) != 0xC1000000U) matched_c1 = 0;
+    if (matched_c1 == 0 && (selfAddr & 0xF8000000U) != 0xD0000000U) matched_d0 = 0;
+    if (matched_d0 == 0 && (selfAddr & 0xFFFFC000U) != 0xE0000000U) valid = 0;
+    /* "this(=%p) is not valid pointer." */
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x139, file + 0xF0, this);
+    /* the same check over mFontInfo; it needs two flags fewer (r4 and r5) and
+     * its message names the field but not an address. */
+    int info_valid = 1, info_matched_d0 = 1;
+    u32 fontInfoPtr = *(u32 *)((char *)this + 0x14);
+    int info_matched_c1 = 1, info_matched_c0 = 1, info_matched_mem2 = 1, info_matched_mem1 = 1;
+    u32 fontInfoTop = fontInfoPtr & 0xFF000000U;
+    if (fontInfoTop != 0x80000000U && (fontInfoPtr & 0xFF800000U) != 0x81000000U) info_matched_mem1 = 0;
+    if (info_matched_mem1 == 0 && (fontInfoPtr & 0xF8000000U) != 0x90000000U) info_matched_mem2 = 0;
+    if (info_matched_mem2 == 0 && fontInfoTop != 0xC0000000U) info_matched_c0 = 0;
+    if (info_matched_c0 == 0 && (fontInfoPtr & 0xFF800000U) != 0xC1000000U) info_matched_c1 = 0;
+    if (info_matched_c1 == 0 && (fontInfoPtr & 0xF8000000U) != 0xD0000000U) info_matched_d0 = 0;
+    if (info_matched_d0 == 0 && (fontInfoPtr & 0xFFFFC000U) != 0xE0000000U) info_valid = 0;
+    if (info_valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x13A, file + 0x128);
+    /* mFontInfo is read out again for the load itself; the three bytes come back
+     * as a CharWidths left-aligned in r3. */
+    const FontInformation *info = (const FontInformation *)*(u32 *)((char *)this + 0x14);
+    return info->default_widths;
 }
 
 /*
