@@ -10610,6 +10610,8 @@ extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u
 extern "C" s32 fn_800A5530(void *);
 extern "C" s32 fn_800AED1C(void *);
 extern "C" s32 fn_800A5800(void *, s32);
+#pragma push
+#pragma opt_propagation off
 extern "C" s32 fn_800B5988(void *arg0) {
     s32 sp8;
     s32 r;
@@ -10678,6 +10680,7 @@ done:
     if (r != 0) *(u16 *)((u8 *)arg0 + 0x1F8C) &= ~8;
     return r;
 }
+#pragma pop
 
 extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
     s32 enabled = arg0 & 0x10000;
