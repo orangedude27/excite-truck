@@ -214,73 +214,41 @@ extern "C" void fn_8027E908(void) {
         virtual void v5();
     };
     const char *base = lbl_80347E50;
-    void *object;
     const char *idName;
-    object = fn_80258354();
-    lbl_8055F680 = object;
-    ((InitObj *)object)->v1(base, base+0x14, 4);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0x24, base+0x14, 3);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0x30, base+0x14, 1);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0x3c, base+0x14, 2);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0x48, base+0x14, 4);
+    lbl_8055F680 = fn_80258354();
+    ((InitObj *)lbl_8055F680)->v1(base, base+0x14, 4);
+    ((InitObj *)lbl_8055F680)->v1(base+0x24, base+0x14, 3);
+    ((InitObj *)lbl_8055F680)->v1(base+0x30, base+0x14, 1);
+    ((InitObj *)lbl_8055F680)->v1(base+0x3c, base+0x14, 2);
+    ((InitObj *)lbl_8055F680)->v1(base+0x48, base+0x14, 4);
     idName = fn_80007F90(0x180201);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(idName, base+0x58, 1);
+    ((InitObj *)lbl_8055F680)->v1(idName, base+0x58, 1);
     idName = fn_80007F90(0x180302);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(idName, base+0x58, 2);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0x68, base+0x58, 1);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(&lbl_8055C798, base+0x78, 0);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(&lbl_8055C7A0, base+0x78, 1);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(&lbl_8055C7A8, base+0x78, 2);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0x88, base+0x78, 3);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(&lbl_8055C7B0, base+0x78, 4);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0x94, base+0x78, 5);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0xA0, base+0xB4, 1);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0xC0, base+0xB4, 0);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0xD0, base+0xE0, 0);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0xF0, base+0xE0, 1);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0x100, base+0x110, 0);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0x120, base+0x110, 1);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v1(base+0x130, base+0x140, 6);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v2(&lbl_8055C7B8, base+0x14C);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v2(&lbl_8055C7C0, base+0x158);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v3(base+0x164, base+0x174, 1);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v3(base+0x180, base+0x190, 0);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v3(base+0x1A0, base+0x1AC, 0);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v3(base+0x1BC, base+0x1D0, 0);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v3(base+0x1E0, base+0x1D0, 0);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v3(base+0x1F8, base+0x204, 0);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v3(base+0x214, base+0x190, 0);
-    object = lbl_8055F680;
-    ((InitObj *)object)->v3(base+0x228, base+0x238, 0);
+    ((InitObj *)lbl_8055F680)->v1(idName, base+0x58, 2);
+    ((InitObj *)lbl_8055F680)->v1(base+0x68, base+0x58, 1);
+    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C798, base+0x78, 0);
+    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C7A0, base+0x78, 1);
+    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C7A8, base+0x78, 2);
+    ((InitObj *)lbl_8055F680)->v1(base+0x88, base+0x78, 3);
+    ((InitObj *)lbl_8055F680)->v1(&lbl_8055C7B0, base+0x78, 4);
+    ((InitObj *)lbl_8055F680)->v1(base+0x94, base+0x78, 5);
+    ((InitObj *)lbl_8055F680)->v1(base+0xA0, base+0xB4, 1);
+    ((InitObj *)lbl_8055F680)->v1(base+0xC0, base+0xB4, 0);
+    ((InitObj *)lbl_8055F680)->v1(base+0xD0, base+0xE0, 0);
+    ((InitObj *)lbl_8055F680)->v1(base+0xF0, base+0xE0, 1);
+    ((InitObj *)lbl_8055F680)->v1(base+0x100, base+0x110, 0);
+    ((InitObj *)lbl_8055F680)->v1(base+0x120, base+0x110, 1);
+    ((InitObj *)lbl_8055F680)->v1(base+0x130, base+0x140, 6);
+    ((InitObj *)lbl_8055F680)->v2(&lbl_8055C7B8, base+0x14C);
+    ((InitObj *)lbl_8055F680)->v2(&lbl_8055C7C0, base+0x158);
+    ((InitObj *)lbl_8055F680)->v3(base+0x164, base+0x174, 1);
+    ((InitObj *)lbl_8055F680)->v3(base+0x180, base+0x190, 0);
+    ((InitObj *)lbl_8055F680)->v3(base+0x1A0, base+0x1AC, 0);
+    ((InitObj *)lbl_8055F680)->v3(base+0x1BC, base+0x1D0, 0);
+    ((InitObj *)lbl_8055F680)->v3(base+0x1E0, base+0x1D0, 0);
+    ((InitObj *)lbl_8055F680)->v3(base+0x1F8, base+0x204, 0);
+    ((InitObj *)lbl_8055F680)->v3(base+0x214, base+0x190, 0);
+    ((InitObj *)lbl_8055F680)->v3(base+0x228, base+0x238, 0);
 }
 #pragma scheduling reset
 #pragma cplusplus reset
@@ -757,7 +725,7 @@ int fn_8027F958(int *selection, void *collection) {
     defaultValue = lbl_805641FC;
     widgetVtable = lbl_80348798;
     index = list->count;
-    storage = list->items;
+    storage = *(void ***)(state + 0x50);
     stack.widgets[0].unk14 = 0;
     stack.widgets[0].unk38 = defaultScale;
     stack.widgets[0].unk40 = 2;
@@ -979,15 +947,15 @@ int fn_8027F958(int *selection, void *collection) {
     stack.menu.entries[19].value = (void *)(&stack.widgets[4].unk70);
     stack.menu.entries[19].flags = (int)(0);
     stack.menu.entries[19].id = (int)(0);
-    stack.textIds[0][0] = *(int *)(constants + 0x2c);
-    stack.textIds[0][1] = *(int *)(constants + 0x30);
-    stack.textIds[0][2] = *(int *)(constants + 0x34);
+    stack.textIds[0][0] = *(int *)(constants + 0x44);
+    stack.textIds[0][1] = *(int *)(constants + 0x48);
+    stack.textIds[0][2] = *(int *)(constants + 0x4c);
     stack.textIds[1][0] = *(int *)(constants + 0x38);
     stack.textIds[1][1] = *(int *)(constants + 0x3c);
     stack.textIds[1][2] = *(int *)(constants + 0x40);
-    stack.textIds[2][0] = *(int *)(constants + 0x44);
-    stack.textIds[2][1] = *(int *)(constants + 0x48);
-    stack.textIds[2][2] = *(int *)(constants + 0x4c);
+    stack.textIds[2][0] = *(int *)(constants + 0x2c);
+    stack.textIds[2][1] = *(int *)(constants + 0x30);
+    stack.textIds[2][2] = *(int *)(constants + 0x34);
     stack.menu.entries[20].type = (int)(3);
     stack.menu.entries[20].label = (void *)(strings + 0x5E0);
     object = stack.widgets[4].object;
@@ -1252,59 +1220,40 @@ extern "C" int fn_802808D0(void) {
         virtual void f6();
         virtual int f7();
     };
+    struct Finder {
+        static int find(void **items, int count, void *key) {
+            int i;
+            for (i = 0; i < count; i++) {
+                if (items[i] == key)
+                    return i;
+            }
+            return -1;
+        }
+    };
     extern int fn_80019714(void);
     extern int fn_80214D50(int);
     extern void fn_801345D8();
     extern void fn_80236954(char *);
     extern char lbl_80348480[];
     char buffer[0x1E];
-    void **base;
     int index;
-    void *entry;
-    int count;
-    void **p;
-    int active;
 
-    count = lbl_804B3048.count;
-    index = 0;
-    base = lbl_804B3048.items;
-    p = base;
-    while (index < count) {
-        if (*p == (void *)lbl_8055F688)
-            goto found_item;
-        index++;
-        p++;
-    }
-    index = -1;
-found_item:
+    index = Finder::find(lbl_804B3048.items, lbl_804B3048.count, (void *)lbl_8055F688);
     if (index >= 0) {
-        entry = base[index];
-        active = 0;
-        if (*(void **)((char *)entry + 0x60) != 0) {
-            if (fn_80019714() == 0 &&
-                ((CheckObj *)*(void **)((char *)entry + 0x60))->f7()) {
-                active = 1;
-            }
+        void *entry = lbl_804B3048.items[index];
+        int active = 0;
+        if (*(void **)((char *)entry + 0x60) != 0 &&
+            fn_80019714() == 0 &&
+            ((CheckObj *)*(void **)((char *)entry + 0x60))->f7()) {
+            active = 1;
         }
-        if (active != 0) {
-            if (*(unsigned char *)((char *)lbl_8055F688 + 0x64) != 0) {
-                index = 5;
-            } else {
-                register count = lbl_804B3048.count;
-                index = 0;
-                p = lbl_804B3048.items;
-                while (index < count) {
-                    if (*p == (void *)lbl_8055F688)
-                        goto found_item_2;
-                    index++;
-                    p++;
-                }
-                index = -1;
-found_item_2:
-                ;
-            }
+        if (active) {
+            void *key = (void *)lbl_8055F688;
             ((void (*)(char *, int, const char *, ...))fn_801345D8)(
-                buffer, 0x1E, lbl_80348480, index + 1);
+                buffer, 0x1E, lbl_80348480,
+                ((*(unsigned char *)((char *)key + 0x64) != 0)
+                    ? 5
+                    : Finder::find(lbl_804B3048.items, lbl_804B3048.count, key)) + 1);
             fn_80236954(buffer);
             return 1;
         }
@@ -1589,18 +1538,20 @@ extern "C" int fn_80280F7C(void) {
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
         virtual void f8(); virtual void *f11(); virtual const char *f12();
     };
+    struct Finder {
+        static int find(void **items, int count, void *key) {
+            int i;
+            for (i = 0; i < count; ++items, ++i) {
+                if (*items == key)
+                    return i;
+            }
+            return -1;
+        }
+    };
     if (*(volatile unsigned int *)&lbl_8055F688 == 0)
         goto reset;
     unsigned int key = *(volatile unsigned int *)&lbl_8055F688;
-    int count = lbl_804B3048.count;
-    register int i;
-    for (i = 0; i < count; ++i) {
-        if (lbl_804B3048.items[i] != (void *)key)
-            continue;
-        goto found;
-    }
-    i = -1;
-found:
+    int i = Finder::find(lbl_804B3048.items, lbl_804B3048.count, (void *)key);
     void *firstItem = lbl_804B3048.items[i];
     if (*(Obj * volatile *)((char *)firstItem + 0x60) != 0) {
         Obj *obj = *(Obj **)((char *)firstItem + 0x60);
@@ -1640,8 +1591,11 @@ copy_test:
         }
     }
     goto finish;
+#pragma scheduling on
 reset:
     *(volatile unsigned int *)&lbl_8055F688 = 0;
+    goto finish;
+#pragma scheduling invalid_target
 finish:
     fn_80216D28();
     return 0;
@@ -1665,19 +1619,16 @@ extern "C" int fn_80281138(void) {
     extern char lbl_8034848C[];
     extern char lbl_8034849C[];
     int index;
-    void *key;
     void *selected;
-    char buffer1[0x1E];
-    char buffer2[0x1E];
 
     index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count,
                              (void *)lbl_8055F688);
     if (index >= 0 && fn_802368EC() != 0) {
+        char buffer1[0x1E];
         if (*(unsigned char *)((char *)lbl_8055F688 + 0x64) != 0) {
             index = 5;
         } else {
-            key = (void *)lbl_8055F688;
-            index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, key);
+            index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, (void *)lbl_8055F688);
         }
         ((void (*)(char *, int, const char *, ...))fn_801345D8)(
             buffer1, 0x1E, lbl_8034848C, index + 1);
@@ -1685,14 +1636,16 @@ extern "C" int fn_80281138(void) {
     }
     selected = lbl_8055F694;
     if (selected != 0) {
+        char buffer2[0x1E];
+        int idx;
         lbl_8055F688 = 0;
         if (*(unsigned char *)((char *)selected + 0x64) != 0) {
-            index = 5;
+            idx = 5;
         } else {
-            index = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, selected);
+            idx = fn_80281138_find(lbl_804B3048.items, lbl_804B3048.count, selected);
         }
         ((void (*)(char *, int, const char *, ...))fn_801345D8)(
-            buffer2, 0x1E, lbl_8034849C, index + 1);
+            buffer2, 0x1E, lbl_8034849C, idx + 1);
         fn_80236954(buffer2);
     }
 }
@@ -3197,28 +3150,31 @@ extern "C" void fn_802854E0(void *arg0) {
     int i;
     char *p = (char *)arg0;
     if (*(List **)(p + 0x60) != 0) {
-        if (*(unsigned char *)(p + 0xcd) == 0) return;
-        fn_80230C30(&x, &y, *(int *)(p+4), *(int *)(p+8));
-        cx = x + lbl_80564228 * (float)*(int *)(p+12);
-        cy = y - lbl_80564228 * (float)*(int *)(p+16);
-        radius = lbl_80564230 * (float)*(int *)(p+12);
-        if ((*(List **)(p+0x60))->count() == 4) step = lbl_80564234;
-        else step = lbl_80564238;
-        base=lbl_8056423C; one=lbl_80564240; zero=lbl_805641FC; half=lbl_80564228;
-        for (q=p, i=0; i<(*(List **)(p+0x60))->count(); q+=4, i++) {
-            angle = base + step * ((float)i - half * (float)((*(List **)(p+0x60))->count()-1));
-            x = cx + radius * (float)cos(angle);
-            y = cy + radius * (float)sin(angle);
-            if ((*(List **)(p+0x60))->get(i)->active()) {
-                if (!((float)__fabs(*(float *)(q+0xb4)-zero) <= lbl_80558DC4[0])) {
-                    ((Draw *)((void *(*)(void))fn_8027ED70)())->draw(lbl_80347EF0,20,-1,x,y);
-                    ((Draw *)((void *(*)(void))fn_8027ED70)())->blend(lbl_80347F10,20,-1,x,y,one-*(float *)(q+0xb4));
+        if (*(unsigned char *)(p + 0xcd) != 0) {
+            fn_80230C30(&x, &y, *(int *)(p+4), *(int *)(p+8));
+            cx = x + lbl_80564228 * (float)*(int *)(p+12);
+            cy = y - lbl_80564228 * (float)*(int *)(p+16);
+            radius = lbl_80564230 * (float)*(int *)(p+12);
+            if ((*(List **)(p+0x60))->count() == 4) step = lbl_80564234;
+            else step = lbl_80564238;
+            base=lbl_8056423C; one=lbl_80564240; zero=lbl_805641FC;
+            for (q=p, i=0; i<(*(List **)(p+0x60))->count(); q+=4, i++) {
+                angle = base + step * ((float)i - lbl_80564228 * (float)((*(List **)(p+0x60))->count()-1));
+                x = cx + radius * (float)cos(angle);
+                y = cy + radius * (float)sin(angle);
+                if ((*(List **)(p+0x60))->get(i)->active()) {
+                    if (!((float)__fabs(*(float *)(q+0xb4)-zero) <= lbl_80558DC4[0])) {
+                        ((Draw *)((void *(*)(void))fn_8027ED70)())->draw(lbl_80347EF0,20,-1,x,y);
+                        ((Draw *)((void *(*)(void))fn_8027ED70)())->blend(lbl_80347F10,20,-1,x,y,one-*(float *)(q+0xb4));
+                    } else {
+                        ((Draw *)((void *(*)(void))fn_8027ED70)())->draw(lbl_80347F10,20,-1,x,y);
+                    }
                 } else {
-                    ((Draw *)((void *(*)(void))fn_8027ED70)())->draw(lbl_80347F10,20,-1,x,y);
+                    ((Draw *)((void *(*)(void))fn_8027ED70)())->draw(lbl_80347EF0,20,-1,x,y);
                 }
-            } else {
-                ((Draw *)((void *(*)(void))fn_8027ED70)())->draw(lbl_80347EF0,20,-1,x,y);
             }
+        } else {
+            return;
         }
     }
 }
@@ -3452,8 +3408,8 @@ void fn_80285CB8(void *arg0) {
     extern void *lbl_8055F698;
     extern char lbl_8055C818[8];
     extern char lbl_80347E50[];
-    unsigned char *b = (unsigned char *)arg0;
     char *base = lbl_80347E50;
+    unsigned char *b = (unsigned char *)arg0;
     float alpha, shape;
     float f4, f2, f5, f3, dt;
     double lim;
