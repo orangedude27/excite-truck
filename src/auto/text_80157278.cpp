@@ -691,7 +691,6 @@ struct Rec157560 {
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma opt_common_subs off
 extern "C" void fn_80157560(VObj *arg0) {
     VObj *a = (VObj *)fn_80131810(lbl_8032EAD4);
     VObj *b0 = (VObj *)fn_80131808(lbl_8032EAE0);
@@ -719,11 +718,11 @@ extern "C" void fn_80157560(VObj *arg0) {
             if (f1v < best) {
                 f1v = b0->vslot2(lbl_8055A030)->vslot24(idx)->vslot9(lbl_8055A050);
             }
-            s32 n = *(s32 *)((char *)arg0 + 0xC);
+            s32 off = s28 * 0x38;
+            (*(s32 *)((char *)arg0 + 0xC))++;
             char *base = *(char **)((char *)arg0 + 8);
-            *(s32 *)((char *)arg0 + 0xC) = n + 1;
-            *(s32 *)(base + s28 * 0x38) = 0;
-            char *rec = base + s28 * 0x38;
+            *(s32 *)(base + off) = 0;
+            char *rec = base + off;
             *(s32 *)(rec + 4) = 0;
             *(s32 *)(rec + 8) = 0;
             *(f32 *)(rec + 12) = best;
@@ -739,7 +738,6 @@ extern "C" void fn_80157560(VObj *arg0) {
     }
     fn_80131818(b0);
 }
-#pragma opt_common_subs reset
 // Return the bonus-category name string for a tracker, indexed by its GetType() category.
 extern "C" s32 fn_801577F0(Unk801577F0* tracker) {
     return gBonusCategoryNames[tracker->GetType()];
@@ -936,13 +934,14 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2) {
     } while (ptr < (u8*)arg0 + 0x244);
     f32 value = lbl_8056175C;
     obj->unk4 = arg2;
+    void* vt = lbl_8032EE68;
     obj->unkC = 0;
     obj->unk244 = arg1;
     obj->unk258 = 0;
     obj->value250 = value;
     obj->unk268 = 0;
     obj->unk248 = 0;
-    obj->vtable = lbl_8032EE68;
+    obj->vtable = vt;
     return arg0;
 }
 #pragma scheduling on
@@ -1932,7 +1931,7 @@ extern "C" f32 fn_80159C34(Fn80159C34Obj* arg0, void* arg1) {
  s32 n; f32 value = arg0->m254 - lbl_8056177C, result = lbl_80561754; s32 done; s32 tmp2620;
  value = (result > value) ? result : value;
  tmp2620 = *(s32*)((u8*)arg1 + 0x2620);
- arg0->m254 = value;
+ *(f32*)((u8*)arg0 + 0x254) = value;
  if (tmp2620 == 0 && ((Unk801577F0*)arg0)->v35() == 0) {
   f32 v2 = arg0->m254;
   v2 = (lbl_8056179C > v2) ? v2 : lbl_8056179C;
@@ -2507,9 +2506,9 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
         *(f32 *)(p + 0x270) = lbl_80561754;
     }
     if (*(u8 *)(p + 0x26c) != 0) {
-        f32 f = lbl_80561750;
         *(s32 *)(p + 0x274) = *(s32 *)(p + 0x274) + 1;
         *(s32 *)(p + 0x278) = *(s32 *)(p + 0x278) + 1;
+        register f32 f = lbl_80561750;
         *(u8 *)(p + 0x26c) = zero;
         for (i = 0; i < *(s32 *)(p + 0x274); i++) {
             *(s32 *)(p + 0x264) = *(s32 *)(p + 0x264) + 1;
@@ -2528,7 +2527,7 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
         *(s32 *)(p + 0x274) = 1;
     }
     if (*(f32 *)(p + 0x270) > lbl_805617A8) {
-        s32 n = *(s32 *)(p + 0x278);
+        register s32 n = *(s32 *)(p + 0x278);
         *(s32 *)(p + 0x274) = zero;
         if (n > 0) {
             fn_801CB6E4((void *)0x50204, *(s32 *)(p + 4));
@@ -2559,7 +2558,6 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
 #pragma pop
 extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
     f32 f;
-    s32 zero = 0;
     s32 count = *(s32*)((u8*)arg0 + 0x260);
     *(s32*)((u8*)arg0 + 0x264) = 0;
     if (count > 0) {
@@ -2575,6 +2573,7 @@ extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
         self->m25c = f;
         self->v31();
     }
+    s32 zero = 0;
     count = *(s32*)((u8*)arg0 + 0x278);
     f = lbl_80561754;
     *(u8*)((u8*)arg0 + 0x26C) = zero;
@@ -2681,7 +2680,6 @@ extern "C" void fn_8015B340(Unk801577F0* self) {
 #pragma push
 #pragma processor 750
 extern "C" f32 fn_8015B404(void* arg0) {
-    s32 flag;
     Fn8015B404Obj* self = (Fn8015B404Obj*)arg0;
     u8* base = (u8*)arg0;
     f32 one = 0.016683314f;
@@ -2704,6 +2702,7 @@ extern "C" f32 fn_8015B404(void* arg0) {
                 *(f32*)(p + 0x24C) = t - one;
             }
             u8* o = (u8*)fn_8017960C(i);
+            s32 flag;
             s32 more;
             if (o != 0) {
                 flag = !((f32)__fabs(*(f32*)(o + 0x2690)) <= lbl_80558DC4[0]);
@@ -3122,6 +3121,8 @@ extern "C" void fn_8015C0E8(Unk801577F0* arg0) {
     arg0->m278 = tail;
     arg0->m27c = tail;
 }
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
     s32 active = arg0->m260;
     s32 zero = 0;
@@ -3149,9 +3150,7 @@ extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
     *(f32*)((u8*)arg0 + 0x278) = tail;
     *(f32*)((u8*)arg0 + 0x27c) = tail;
 }
-
-#pragma push
-#pragma scheduling invalid_target
+#pragma pop
 extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
     f32 var_f31 = lbl_80561754;
     s32 var_r28 = 0;
@@ -3658,14 +3657,19 @@ extern "C" u32 fn_8015D37C(void) { return 1; }
 
 extern "C" void fn_8015D384(Unk801577F0* arg0) {
     s32 count = arg0->m260;
-    arg0->m264 = 0;
+    s32 zero = 0;
+    arg0->m264 = zero;
     if (count > 0) {
-        if (arg0->m258 != 0) {
-            fn_801CB6E4((void*)arg0->m258, arg0->m4);
+        void* resource = *(void**)((u8*)arg0 + 0x258);
+        if (resource != 0) {
+            fn_801CB6E4(resource, *(s32*)((u8*)arg0 + 4));
         }
         arg0->m260 = 0;
-        arg0->m254 = lbl_80561754;
-        arg0->m25c = lbl_80561750;
+        f32 z5c, z54;
+        z54 = lbl_80561754;
+        z5c = lbl_80561750;
+        arg0->m254 = z54;
+        arg0->m25c = z5c;
         arg0->v31();
     }
 }
@@ -3713,7 +3717,8 @@ extern "C" f32 fn_8015D4A0(Unk801577F0* arg0, s32 index) {
     return lbl_80561754;
 }
 
-#pragma peephole on
+#pragma push
+#pragma peephole off
 extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     s32 count = arg0->mCount;
     s32 i;
@@ -3732,6 +3737,7 @@ extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
 out:
     return i;
 }
+#pragma pop
 extern "C" void fn_8015D554(void *arg0) {
     /* Query a value from slot v20, then apply it via slot v19 on the same object. */
     class Object {
