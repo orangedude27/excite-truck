@@ -55,6 +55,7 @@ void fn_80177814(int *arg0) {
     lbl_8055E464 = arg0[1] + 0x2F1CD;
 }
 
+#pragma dont_inline on
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801778C0(void) {
@@ -913,16 +914,16 @@ void* fn_80178CA4(void) {
 void fn_80178CAC(void *a, void *b)
 {
   int t31;
-  int i;
+  int t30;
+  int t29;
+  int t28;
   void *x;
+  void *new_var;
   void *y;
   int t25;
   int t24;
   int *p;
-  void *new_var;
-  int t30;
-  int t28;
-  int t29;
+  int i;
   p = lbl_80430590;
   for (i = 0; i < 4; i++, p++)
   {
