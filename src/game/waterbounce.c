@@ -207,7 +207,7 @@ void *fn_8020DE74(void *arg0) {
     }
     return obj;
 }
-#pragma use_lmw_stmw on
+#pragma pop
 // The "carsnd" object's deleting destructor: releases every sound
 // fn_8020DE74() created for the truck and, when deleteMemory is positive,
 // frees the object itself. The vtable goes back first, so a sound torn down
