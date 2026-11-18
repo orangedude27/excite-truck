@@ -2760,7 +2760,8 @@ extern "C" void fn_801D7874(void *arg0, void *arg1) {
     ObjA *b = (ObjA *)arg1;
     void *node = b->v0();
     int match;
-    if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && *(int *)((char *)arg0 + 0xc) == ((ObjB *)node)->v6(lbl_803385D0, -1)) {
+    int result;
+    if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && (result = ((ObjB *)node)->v6(lbl_803385D0, -1)) == *(int *)((char *)arg0 + 0xc)) {
         match = 1;
     } else {
         match = 0;
@@ -3978,7 +3979,7 @@ void fn_801D8C1C(void *arg0, float farg0) {
     float tmp = farg0 / *(float *)((char *)arg0 + 0x14);
     float v;
     int t;
-    if (tmp < lbl_80562ADC) {
+    if (tmp < 0.0f) {
         v = tmp - lbl_80562AE4;
     } else {
         v = lbl_80562AE4 + tmp;
