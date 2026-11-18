@@ -311,7 +311,7 @@ void fn_802D4458(void *arg0) {
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
 #pragma opt_propagation reset
-#pragma unroll off
+#pragma opt_unroll_loops off
 void fn_802D45C0(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern u8 lbl_804CEC3C[];
