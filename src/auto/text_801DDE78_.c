@@ -17,6 +17,16 @@ extern u32 lbl_80486F30[];
 #define sParamTable lbl_80486F30 /* 28-byte tunable-parameter records */
 #define activeVehicle fn_801DDE78 /* currently selected vehicle value */
 #define TUNE_BLOCK_OFFSET 0x32C   /* offset to a vehicle's tunable-parameter block */
+/* One tunable-parameter record of sParamTable, as fn_801DDED0 gathers them. */
+typedef struct TunableParam {
+    /* 0x00 */ const char *name;   // parameter name, the row's first column
+    /* 0x04 */ const char *unit;   // unit suffix, printed after the value
+    /* 0x08 */ f32 *value;         // the live value the vehicle reads
+    /* 0x0C */ f32 defaultVal;     // what the reset row restores it to
+    /* 0x10 */ f32 min;            // lowest the left key may take it
+    /* 0x14 */ f32 max;            // highest the right key may take it
+    /* 0x18 */ f32 step;           // how far one key press moves it
+} TunableParam;
 s32 fn_80145E70(void*);
 extern u32 lbl_804348E8[];
 s32 fn_80179630(s32);
