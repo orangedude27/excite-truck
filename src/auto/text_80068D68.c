@@ -8211,21 +8211,27 @@ void btm_read_remote_version_complete(u8 *p) {
 
 #pragma push
 #pragma dont_inline off
+/* HCI Read_Remote_Features command complete: the event carries the 8 LMP feature bytes the
+   peer of an ACL link reported. Copy them into that entry of btm_cb.acl_db and into its
+   security device record, then do for the link what btm_acl_created does when the features
+   are already known: re-derive its packet types, apply the default link policy, store the
+   policy settings in the entry, and report the new link to the upper layer. */
 void btm_read_remote_features_complete(UINT8 *p) {
-    extern u8 lbl_80315CE0[];
-    u8 *acl = lbl_803C0F78 + 0x34;
+    extern u8 lbl_80315CE0[]; /* "SetPacketType Mask -> 0x%04x" */
+    u8 *acl = lbl_803C0F78 + 0x34; /* btm_cb.acl_db, one tACL_CONN every 0x11C bytes */
     u16 handle;
-    u16 temp;
+    u16 pkt_types;
     s32 i;
     u8 *dev;
     u8 *q;
     u16 policy;
 
-    if (p[0] == 0) {
+    if (p[0] == 0) { /* status == HCI_SUCCESS */
         handle = p[1] + (p[2] << 8);
+        /* Look up the connection by handle and copy the features into it. */
         for (i = 0; i < 4; i++, acl += 0x11C) {
-            if (acl[0x119] && *(u16 *)acl == handle) {
-                acl[0x110] = p[3];
+            if (acl[0x119] && *(u16 *)acl == handle) { /* in_use && hci_handle */
+                acl[0x110] = p[3]; /* features[0] .. features[7] */
                 acl[0x111] = p[4];
                 acl[0x112] = p[5];
                 acl[0x113] = p[6];
@@ -8234,21 +8240,27 @@ void btm_read_remote_features_complete(UINT8 *p) {
                 acl[0x116] = p[9];
                 acl[0x117] = p[10];
                 dev = (u8 *)btm_find_dev_by_handle(handle);
-                if (dev) memcpy(dev + 0x77, acl + 0x110, 8);
-                temp = *(u16 *)(lbl_803C0F78 + 0x654) & 0xCC18;
-                if (lbl_803C0F78[0x636] >= 3) temp |= *(u16 *)(lbl_803C0F78 + 0x654) & 0x3306;
-                else temp &= ~0x3306;
-                if (lbl_803C0F78[0x27C0] >= 4) fn_80070954(0xD0003, lbl_80315CE0, temp);
-                if (btsnd_hcic_change_conn_type(*(u16 *)acl, temp)) *(u16 *)(acl + 2) = temp;
-                if (*(u16 *)(lbl_803C0F78 + 0x4C4)) BTM_SetLinkPolicy(acl + 8, (u16 *)(lbl_803C0F78 + 0x4C4));
-                policy = *(u16 *)(lbl_803C0F78 + 0x4C6);
+                if (dev) memcpy(dev + 0x77, acl + 0x110, 8); /* the record's LMP features */
+                /* Keep the packet types the stack always allows, and add the
+                   eSCO/EDR ones when the controller is Bluetooth 2.0 + EDR or
+                   newer (hci_version >= 3). */
+                pkt_types = *(u16 *)(lbl_803C0F78 + 0x654) & 0xCC18;
+                if (lbl_803C0F78[0x636] >= 3) pkt_types |= *(u16 *)(lbl_803C0F78 + 0x654) & 0x3306;
+                else pkt_types &= ~0x3306;
+                if (btm_cb_trace_level >= BT_TRACE_LEVEL_EVENT) {
+                    fn_80070954(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, lbl_80315CE0, pkt_types);
+                }
+                if (btsnd_hcic_change_conn_type(*(u16 *)acl, pkt_types)) *(u16 *)(acl + 2) = pkt_types; /* pkt_types_mask */
+                if (btm_cb_def_link_policy) BTM_SetLinkPolicy(acl + 8, &btm_cb_def_link_policy); /* remote_addr */
+                policy = btm_cb_link_policy_settings;
                 q = btm_bda_to_acl_inl(acl + 8);
                 if (q) {
-                    *(u16 *)(q + 0x10E) = policy;
-                    if (!q[0x11A]) btsnd_hcic_write_policy_set_80085668(*(u16 *)q, policy);
+                    *(u16 *)(q + 0x10E) = policy; /* link_policy_settings */
+                    if (q[0x11A] == BTM_ROLE_MASTER) btsnd_hcic_write_policy_set_80085668(*(u16 *)q, policy);
                 }
-                if (*(void **)(lbl_803C0F78 + 0x4C8)) {
-                    (*(void (**)(u8 *, u8 *, u8 *, u8 *, s32))(lbl_803C0F78 + 0x4C8))(acl + 8, acl + 0xE, acl + 0x11, acl + 0x110, 1);
+                /* Tell the upper layers about the new link. */
+                if (btm_cb_acl_change_cback) {
+                    btm_cb_acl_change_cback(acl + 8, acl + 0xE, acl + 0x11, acl + 0x110, 1);
                 }
                 break;
             }
