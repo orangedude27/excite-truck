@@ -303,6 +303,7 @@ s32 fn_80005930(void) {
         fn_8001123C(*(s32 *)((u8 *)lbl_8055D350 + 0x1C)); fn_80011A2C(); fn_802C8750(sp18, -1);
     }
 }
+#pragma cplusplus off
 #pragma dont_inline reset
 #pragma pop
 void fn_80005B54(void) {
