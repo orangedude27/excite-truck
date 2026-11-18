@@ -2313,6 +2313,7 @@ extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
 #pragma use_lmw_stmw off
 extern "C" u32 fn_80140F10(void *arg0, void *arg1) {
     u8 *p=(u8 *)arg0, *input=(u8 *)arg1;
+    f32 startTime, gameTime, sinceStart, elapsed, progress;
     if (*(s32 *)(p+0xc)==0) return 0;
     s32 other=*(s32 *)(input+0x110);
     s32 total=*(s32 *)(input+0x88);
@@ -2324,12 +2325,19 @@ extern "C" u32 fn_80140F10(void *arg0, void *arg1) {
     s32 sum=_a+_b;
     sum+=_c;
     fn_801345D8(p+0x30,0x14,&lbl_80559D6C,sum);
-    if(count && *(f32 *)(p+4)>lbl_805614A4) {
-        f32 fraction=((lbl_8055E3C8-*(f32 *)(p+4))-lbl_805614A4)/lbl_805614AC;
-        fraction=lbl_805614AC<fraction ? lbl_805614AC : fraction;
-        fraction=fraction>lbl_805614A4 ? fraction : lbl_805614A4;
-        completed=(s32)(lbl_805614A4+fraction*((lbl_80561498+(f32)count)-lbl_805614A4));
-        remaining=count-completed;
+    if(count!=0) {
+        startTime=*(f32 *)(p+4);
+        if(*(f32 *)(p+4)>lbl_805614A4) {
+            gameTime=lbl_8055E3C8;
+            progress=lbl_805614AC;
+            sinceStart=gameTime-startTime;
+            elapsed=sinceStart-lbl_805614A4;
+            elapsed=elapsed/progress;
+            progress=(progress<elapsed) ? progress : elapsed;
+            progress=(progress>lbl_805614A4) ? progress : lbl_805614A4;
+            completed=(s32)(lbl_805614A4+progress*((lbl_80561498+(f32)count)-lbl_805614A4));
+            remaining=count-completed;
+        }
     }
     fn_801345D8(p+0x44,0x14,&lbl_80559D6C,completed);
     if(p[0x10]) {
@@ -2344,7 +2352,7 @@ check1: if (--len>0) goto copy1; dst[-1]=0; goto done1;
 copy1: c=*src++; *dst++=c; if ((signed char)c==0) goto done1; goto check1;
 done1:;}
     } else {
-        if(!(signed char)lbl_8055E1C8){fn_801312EC(lbl_8042FB78,lbl_8032CA74);lbl_8055E1C8=1;}
+        if(!lbl_8055E1C8){fn_801312EC(lbl_8042FB78,lbl_8032CA74);lbl_8055E1C8=1;}
         fn_80130980(p+0xb2,0x14,2,(f32)remaining);
         if(*(u32 *)(lbl_8042FB78+8)!=lbl_8055E044)fn_80131318(lbl_8042FB78);
         {char c; char *src=*(char **)(lbl_8042FB78+4); long len=0x14; char *dst=(char*)p+0x58;
@@ -2414,6 +2422,8 @@ done4:;}
             fn_802AE02C(*(s32 *)(p+0xc),*(s32 *)(p+0x108));
             *(s32 *)p=4;
         }
+        break;
+    case 4:
         break;
     }
     fn_802AE168(*(s32 *)(p+0xc));
