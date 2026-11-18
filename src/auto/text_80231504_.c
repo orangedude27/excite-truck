@@ -1027,7 +1027,6 @@ char_test:
     height *= extra;
     return (width + height) * *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
 }
-#pragma pop
 /* Return a font's height byte (stored at offset 4), used as the glyph size for text layout and scaling. */
 u8 fn_80232B70(void *font) {
     return ((u8 *)font)[4];
