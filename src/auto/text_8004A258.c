@@ -224,42 +224,15 @@ static inline void ClearMEM2Range(void *mem, u32 size) {
 #pragma push
 #pragma scheduling invalid_target
 void ClearArena(void) {
-    unsigned int reset = OSGetResetCode();
-    unsigned int base;
-    unsigned int flush;
-    unsigned int size;
+    void *base;
 
-    if ((reset >> 31) == 0) {
-        size = OSGetArenaHi();
-        size -= OSGetArenaLo();
-        base = OSGetArenaLo();
-        if (size <= 0x40000)
-            goto clear0_small;
-        flush = size - 0x40000;
-        flush = flush - (0U - base);
-        goto clear0_join;
-    clear0_small:
-        flush = base;
-    clear0_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+    if ((OSGetResetCode() >> 31) == 0) {
+        ClearMEM2Range((void *)OSGetArenaLo(), OSGetArenaHi() - OSGetArenaLo());
         return;
     }
 
     if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000) != 0) {
-        size = OSGetArenaHi();
-        size -= OSGetArenaLo();
-        base = OSGetArenaLo();
-        if (size <= 0x40000)
-            goto clear1_small;
-        flush = size - 0x40000;
-        flush = flush - (0U - base);
-        goto clear1_join;
-    clear1_small:
-        flush = base;
-    clear1_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+        ClearMEM2Range((void *)OSGetArenaLo(), OSGetArenaHi() - OSGetArenaLo());
         return;
     }
 
@@ -267,49 +240,15 @@ void ClearArena(void) {
         return;
 
     if (OSGetArenaHi() <= __OSRebootParams[3]) {
-        size = OSGetArenaHi();
-        size -= OSGetArenaLo();
-        base = OSGetArenaLo();
-        if (size <= 0x40000)
-            goto clear2_small;
-        flush = size - 0x40000;
-        flush = flush - (0U - base);
-        goto clear2_join;
-    clear2_small:
-        flush = base;
-    clear2_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+        ClearMEM2Range((void *)OSGetArenaLo(), OSGetArenaHi() - OSGetArenaLo());
         return;
     }
 
-    size = __OSRebootParams[3] - OSGetArenaLo();
-    base = OSGetArenaLo();
-    if (size <= 0x40000)
-        goto clear3_small;
-    flush = size - 0x40000;
-    flush = flush - (0U - base);
-    goto clear3_join;
-clear3_small:
-    flush = base;
-clear3_join:
-    DCZeroRange((void *)base, size);
-    DCFlushRange(flush, 0x40000);
+    ClearMEM2Range((void *)OSGetArenaLo(), __OSRebootParams[3] - OSGetArenaLo());
 
-    base = __OSRebootParams[4];
-    if (OSGetArenaHi() > base) {
-        size = OSGetArenaHi();
-        size -= base;
-        if (size <= 0x40000)
-            goto clear4_small;
-        flush = size - 0x40000;
-        flush = flush - (0U - base);
-        goto clear4_join;
-    clear4_small:
-        flush = base;
-    clear4_join:
-        DCZeroRange((void *)base, size);
-        DCFlushRange(flush, 0x40000);
+    base = (void *)__OSRebootParams[4];
+    if (OSGetArenaHi() > (u32)base) {
+        ClearMEM2Range(base, OSGetArenaHi() - (u32)base);
     }
 }
 #pragma pop
@@ -735,7 +674,6 @@ void OSExceptionInit(void) {
     u32 vectorSize;
     int j;
     u32 *code;
-    u32 size2;
     char *base = lbl_80303E08;
     u32 *locations = (u32 *)(base + 0x318);
     pInst = (u32 *)__OSEVSetNumber;
@@ -745,11 +683,10 @@ void OSExceptionInit(void) {
     dst = (u32 *)0x80000060;
     if (*dst == 0) {
         DBPrintf(base + 0x354);
-        size2 = (u32)__OSDBINTEND - (u32)__OSDBINTSTART;
-        memcpy(dst, (void *)__OSDBINTSTART, size2);
-        DCFlushRangeNoSync(dst, size2);
+        memcpy(dst, (void *)__OSDBINTSTART, (u32)__OSDBINTEND - (u32)__OSDBINTSTART);
+        DCFlushRangeNoSync(dst, (u32)__OSDBINTEND - (u32)__OSDBINTSTART);
         __sync();
-        ICInvalidateRange(dst, size2);
+        ICInvalidateRange(dst, (u32)__OSDBINTEND - (u32)__OSDBINTSTART);
     }
     for (i = 0; i < 15; i++) {
         if (BI2DebugFlag_8055D9F4 != 0 && *BI2DebugFlag_8055D9F4 >= 2 && __DBIsExceptionMarked(i)) {
