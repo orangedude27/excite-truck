@@ -1151,8 +1151,8 @@ s32 fn_801C5B68(char *arg0, s32 arg1) {
     void *sp28;
     void *sp24;
     s32 sp20;
-    f32 saved[12];
     union { f32 rotation[9]; f32 basis[12]; } matrixTemp;
+    f32 saved[12];
     union { f32 velocity[3]; f32 axis[3]; } vectorTemp;
     union { f32 translated[3]; f32 offset[3]; } resultTemp;
     f32 temp_f0;
@@ -1225,15 +1225,15 @@ s32 fn_801C5B68(char *arg0, s32 arg1) {
         {
             u32 *src = (u32 *)((char *)state + 0x14);
             u32 *dst = (u32 *)lbl_80499050;
-            u32 copy8 = src[8];
-            u32 copy7 = src[7];
-            u32 copy6 = src[6];
-            u32 copy5 = src[5];
-            u32 copy4 = src[4];
-            u32 copy3 = src[3];
-            u32 copy2 = src[2];
-            u32 copy1 = src[1];
             u32 copy0 = src[0];
+            u32 copy1 = src[1];
+            u32 copy2 = src[2];
+            u32 copy3 = src[3];
+            u32 copy4 = src[4];
+            u32 copy5 = src[5];
+            u32 copy6 = src[6];
+            u32 copy7 = src[7];
+            u32 copy8 = src[8];
             dst[0] = copy0;
             dst[1] = copy1;
             dst[2] = copy2;
