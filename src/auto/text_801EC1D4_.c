@@ -1,9 +1,15 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-typedef struct { float values[12]; } Unk_801ECFE0;
-typedef struct { float v[9]; } Unk_801ECFE0Head;
-typedef struct { float v[3]; } Unk_801ECFE0Tail;
+/* A model part's pose as the part draw calls take it: a 3x3 rotation and scale
+ * followed by the translation, twelve floats in all.  Mirroring a part (the
+ * other side of a vehicle) negates its first axis, the first three floats. */
+typedef struct { float values[12]; } PartPose;
+typedef struct { float rot[9]; } PartPoseRot;
+typedef struct { float pos[3]; } PartPosePos;
+typedef PartPose Unk_801ECFE0;      /* the same three, under the names */
+typedef PartPoseRot Unk_801ECFE0Head;   /* this unit was first written with */
+typedef PartPosePos Unk_801ECFE0Tail;
 extern void fn_802C70AC(int, void *, int, int);
 extern int fn_802C7A34(int, void *, int, float);
 extern float *fn_802C86DC();
