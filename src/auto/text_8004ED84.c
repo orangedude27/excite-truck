@@ -420,44 +420,51 @@ u32 GetFontCode(u16 encode, u16 code) {
 #pragma push
 #pragma use_lmw_stmw off
 void Decode(unsigned char *src, unsigned char *dst) {
-    unsigned int literalOffset = *(unsigned int *)(src + 0xC);
-    unsigned char *commands = src + 0x10;
-    int outputSize = *(int *)(src + 4);
-    int output = 0;
-    unsigned char *literal = src + literalOffset;
-    unsigned int input = *(unsigned int *)(src + 8);
-    int bitCount = 0;
-    unsigned int bits;
-    unsigned int pair;
-    int length, distance, from, i;
+    int j;
+    int linkOfs;
+    int chunkPos;
+    int i;
+    int chunksOfs;
+    unsigned int maskTblPos;
+    int expandSize;
+    int linkTblOfs;
+    int count;
+    unsigned int maskBits;
+    unsigned int mask;
+
+    expandSize = *(int *)(src + 0x4);
+    linkTblOfs = *(int *)(src + 0x8);
+    chunksOfs = *(int *)(src + 0xC);
+
+    i = 0;
+    maskBits = 0;
+    maskTblPos = 16;
 
     do {
-        if (bitCount == 0) {
-            bits = *(unsigned int *)commands;
-            commands += 4;
-            bitCount = 32;
+        if (maskBits == 0) {
+            mask = *(unsigned int *)(src + maskTblPos);
+            maskTblPos += sizeof(unsigned int);
+            maskBits = sizeof(unsigned int) * 8;
         }
-        if (bits & 0x80000000) {
-            dst[output++] = *literal++;
+        if (mask & 0x80000000) {
+            dst[i++] = src[chunksOfs++];
         } else {
-            pair = ((unsigned int)src[input] << 8) | src[input + 1];
-            length = (int)pair >> 12;
-            distance = pair & 0xFFF;
-            from = output - distance;
-            input += 2;
-            if (length == 0)
-                length = *literal++ + 0x12;
-            else
-                length += 2;
-            for (i = 0; i < length; ++i) {
-                dst[output] = dst[from - 1];
-                ++output;
-                ++from;
+            linkOfs = src[linkTblOfs] << 8 | src[linkTblOfs + 1];
+            linkTblOfs += sizeof(unsigned short);
+            chunkPos = i - (linkOfs & 0x0FFF);
+            count = linkOfs >> 12;
+            if (count == 0) {
+                count = src[chunksOfs++] + 0x12;
+            } else {
+                count += 2;
+            }
+            for (j = 0; j < count; j++, i++, chunkPos++) {
+                dst[i] = dst[chunkPos - 1];
             }
         }
-        bits <<= 1;
-        --bitCount;
-    } while (output < outputSize);
+        mask <<= 1;
+        maskBits--;
+    } while (i < expandSize);
 }
 #pragma pop
 
