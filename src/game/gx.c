@@ -1054,8 +1054,6 @@ extern unsigned long lbl_8055FDAC;
 extern void fn_802D0C98(void);
 extern void fn_802D0BD8(void);
 #pragma scheduling invalid_target
-#pragma push
-#pragma processor 750
 void fn_802CFF10(void) {
     int zero = 0;
     lbl_8055FD44 = zero;
@@ -1065,7 +1063,6 @@ void fn_802CFF10(void) {
     lbl_8055FDAC = zero;
     lbl_8055FE39 = zero;
 }
-#pragma pop
 extern void *lbl_8055FD20;
 #pragma push
 #pragma dont_inline on
