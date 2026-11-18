@@ -12495,6 +12495,16 @@ done:
     return result;
 }
 #pragma pop
+static inline s32 fn_800B8520_classify(u32 n) {
+    if (n < 0xFF5) {
+        return 0;
+    }
+    if (n < 0xFFF5) {
+        return 1;
+    }
+    return 2;
+}
+
 s32 fn_800B8520(void *arg0, u32 *arg1) {
     u8 *p = (u8 *)arg0;
     u8 countA = 0;
@@ -12565,13 +12575,15 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     result = end - start;
     *arg1 = result;
     shifted = result >> countB;
+#pragma optimize_for_size on
     if (shifted < 0xFF5) {
-        return 0L;
-    } else if (shifted < 0xFFF5) {
-        return 1L;
-    } else {
-        return 2L;
+        return 0;
     }
+    if (shifted < 0xFFF5) {
+        return 1;
+    }
+    return 2;
+#pragma optimize_for_size off
 }
 
 extern "C" s32 fn_800B865C(u8 *buffer) {
@@ -20510,8 +20522,8 @@ check:
 #pragma push
 #pragma small_data on
 void homebutton::gui::PaneManager::setAllBoundingBoxComponentTriggerTarget(bool arg0) {
-    register u8 *self = (u8 *)this;
-    u8 *list = self + 8;
+    u8 *self = (u8 *)this;
+    void *list = self + 8;
     u32 index = 0;
     struct ParentDispatch { virtual void v0(); virtual void *parent(); };
     struct TriggerDispatch {
@@ -20527,10 +20539,11 @@ loop_body:
         void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(self + 0x18, (u16)index);
         void *component = *(void **)item;
         void *node = ((ParentDispatch *)component)->parent();
+        const void *typeId = &lbl_8055DDE0;
         u32 found;
         goto node_check;
 node_compare:
-        if (node != (void *)&lbl_8055DDE0) goto node_parent;
+        if (node != typeId) goto node_parent;
         found = 1;
         goto type_done;
 node_parent:
@@ -25762,7 +25775,8 @@ extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
             s32 *entry=lbl_802F4528;
             s32 count=*(s32*)(self+0xc);
             for(j=0;j<count;entry+=2,j++) {
-                if(i==entry[0] && entry[1]==2) goto found;
+                if(i != entry[0]) continue;
+                if(entry[1]==2) goto found;
             }
             j=-1;
 found:
@@ -25783,9 +25797,9 @@ found:
             if(*(s32*)(self+0x18)==0) {
                 s32 *entry=lbl_802F4588;
                 j=0; for(s32 k=0;k<37;k++,entry+=4,j++) {
-                    if(entry[0]==5 && entry[1]==20) goto found20;
-                    j++; if(entry[2]==5 && entry[3]==20) goto found20;
-                }
+ if(entry[0]==5 && entry[1]==20) goto found20;
+ j++; if(entry[2]==5 && entry[3]==20) goto found20;
+}
                 j=-1;
 found20:
                 pane=*(void**)(self+0x298+j*4);
@@ -25796,9 +25810,9 @@ found20:
         } else {
             s32 *entry=lbl_802F4588;
             j=0; for(s32 k=0;k<37;k++,entry+=4,j++) {
-                if(entry[0]==5 && entry[1]==3) goto found3;
-                j++; if(entry[2]==5 && entry[3]==3) goto found3;
-            }
+ if(entry[0]==5 && entry[1]==3) goto found3;
+ j++; if(entry[2]==5 && entry[3]==3) goto found3;
+}
             j=-1;
 found3:
             pane=*(void**)(self+0x298+j*4);
