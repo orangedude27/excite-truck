@@ -12575,15 +12575,13 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     result = end - start;
     *arg1 = result;
     shifted = result >> countB;
-#pragma optimize_for_size on
     if (shifted < 0xFF5) {
         return 0;
-    }
-    if (shifted < 0xFFF5) {
+    } else if (shifted < 0xFFF5) {
         return 1;
+    } else {
+        return 2;
     }
-    return 2;
-#pragma optimize_for_size off
 }
 
 extern "C" s32 fn_800B865C(u8 *buffer) {
