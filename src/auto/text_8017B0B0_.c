@@ -1078,6 +1078,7 @@ extern float lbl_80561BDC;
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_8017D160(void *arg0, unsigned char *arg1, unsigned char *arg2, int *arg3, int *arg4, float farg0) {
+#pragma scheduling 750
     float first[3];
     float second[3];
     float scale;
