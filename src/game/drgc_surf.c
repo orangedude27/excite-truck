@@ -323,6 +323,8 @@ void fn_802D45C0(void *arg0) {
     f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
     s32 index;
     s32 cached;
+    f32 *out;
+    s32 i;
 
     if (base == 0) return;
     {
@@ -341,34 +343,14 @@ void fn_802D45C0(void *arg0) {
             cached = 0;
         }
         if (cached == 0) {
-            f32 *out = base;
-            if (count > 0) {
-                u32 pairs = (u32)count >> 1;
-                if (pairs != 0) {
-                    do {
-                        f32 scale = *(f32 *)((u8 *)src + 0xC);
-                        out[0] = src[0] + lbl_804C56F0[0] * scale;
-                        out[1] = src[1] + lbl_804C56F0[1] * scale;
-                        out[2] = src[2] + lbl_804C56F0[2] * scale;
-                        scale = *(f32 *)((u8 *)src + 0x1C);
-                        out[3] = src[4] + lbl_804C56F0[0] * scale;
-                        out[4] = src[5] + lbl_804C56F0[1] * scale;
-                        out[5] = src[6] + lbl_804C56F0[2] * scale;
-                        src += 8;
-                        out += 6;
-                    } while (--pairs != 0);
-                }
-                count &= 1;
-                if (count != 0) {
-                    do {
-                        f32 scale = *(f32 *)((u8 *)src + 0xC);
-                        out[0] = src[0] + lbl_804C56F0[0] * scale;
-                        out[1] = src[1] + lbl_804C56F0[1] * scale;
-                        out[2] = src[2] + lbl_804C56F0[2] * scale;
-                        src += 4;
-                        out += 3;
-                    } while (--count != 0);
-                }
+            out = base;
+            for (i = count; i > 0; i--) {
+                f32 scale = src[3];
+                out[0] = src[0] + lbl_804C56F0[0] * scale;
+                out[1] = src[1] + lbl_804C56F0[1] * scale;
+                out[2] = src[2] + lbl_804C56F0[2] * scale;
+                src += 4;
+                out += 3;
             }
         }
     }
