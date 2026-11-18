@@ -1566,7 +1566,7 @@ extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl
     *(const void **)((char *)self + 0x28) = (const u8 *)data + 8;
 }
 
-namespace nw4hbm { namespace snd { namespace detail { class SoundArchiveFile { public: class StringTree; }; } class SoundArchive { public: class SoundInfo; struct BankInfo { u32 offset; }; typedef detail::SoundArchiveFile::StringTree StringTree; }; namespace detail { class SoundArchiveFileReader { public: s32 GetSoundType(u32) const; BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; BOOL ReadBankInfo(u32, SoundArchive::BankInfo *) const; s32 ConvertLabelStringToId(const SoundArchive::StringTree *, const char *) const; }; } } }
+namespace nw4hbm { namespace snd { namespace detail { class SoundArchiveFile { public: class StringTree; }; } class SoundArchive { public: class SoundInfo; struct BankInfo { u32 offset; }; typedef detail::SoundArchiveFile::StringTree StringTree; }; namespace detail { class SoundArchiveFileReader { public: s32 GetSoundType(u32) const; BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; BOOL ReadBankInfo(u32, SoundArchive::BankInfo *) const; s32 ConvertLabelStringToId(const SoundArchive::StringTree *, const char *) const; u64 impl_GetSoundInfoOffset(u32) const; }; } } }
 extern "C" const char lbl_80324DE4[];
 extern "C" const char lbl_80324E10[];
 extern "C" char lbl_805598C8;
@@ -2086,26 +2086,30 @@ extern "C" u64 lbl_8055DE54;
 #pragma push
 #pragma scheduling on
 extern "C" u64 impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(void *self, unsigned long idx) {
-    u8 *ref = *(u8 **)((u8 *)self + 0x28);
+    register u8 *ref = *(u8 **)((u8 *)self + 0x28);
+    register u32 index = (u32)idx;
+    register u8 *base;
+    u8 *entry;
+    u8 *data;
     if (ref[1] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
-    u8 *base = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(u32 *)(ref + 4), ref);
+    base = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(u32 *)(ref + 4), ref);
     if (base == 0)
         return lbl_8055DE50;
-    if (idx >= *(u32 *)base)
+    if (index >= *(u32 *)base)
         return lbl_8055DE50;
     if (*(u16 *)((u8 *)self + 6) >= 0x101) {
-        idx <<= 3;
+        index <<= 3;
         ref = *(u8 **)((u8 *)self + 0x28);
-        if (base[idx + 5] != 0)
+        if (base[index + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
-        u8 *entry = base + idx;
-        u8 *data = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[4], *(u32 *)(entry + 8), ref);
+        entry = base + index;
+        data = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[4], *(u32 *)(entry + 8), ref);
         if (data == 0)
             return lbl_8055DE50;
         return *(u64 *)(data + 0x18);
     }
-    u8 *entry = base + idx * 8;
+    entry = base + index * 8;
     struct Result { u8 type; u8 ext; u16 pad; u32 offset; } result;
     result.type = entry[4];
     result.ext = entry[5];
@@ -4041,39 +4045,56 @@ s32 nw4hbm::snd::SoundArchivePlayer::WsdCallback::GetWaveSoundData(nw4hbm::snd::
     return ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(&reader, *(s32 *)noteInfo, waveData, (const void *)waveAddress);
 }
 
-extern "C" s32 fn_800F73E4(void *__restrict self, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    register const char *base = lbl_80324E88;
-    void *reader = *(void **)((u8 *)self + 4);
-    void *fileInfo = *(void **)((u8 *)reader + 0x10);
-    void *task;
-    if (fileInfo == 0)
-        return 0;
-    if (fn_800F273C(fileInfo) == 0)
-        return 1;
-    task = Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(fn_800FDE60());
-    if (task == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x64C, base + 0x590);
-    reader = *(void **)((u8 *)self + 4);
-    if (*(volatile void **)((u8 *)reader + 0x10) == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x2AC, base + 0x288);
-    fileInfo = *(void **)((u8 *)reader + 0x10);
-    if (fn_800FE0DC(fn_800FDE60()) < 0x28)
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x650, base + 0x5B8);
-    if (task != 0) {
-        *(s32 *)((u8 *)task + 4) = 0;
-        *(s32 *)((u8 *)task + 8) = 0;
-        *(s32 *)((u8 *)task + 0xC) = arg3;
-        *(void **)((u8 *)task + 0) = lbl_80325684;
-        *(s32 *)((u8 *)task + 0x10) = 0;
-        *(void **)((u8 *)task + 0x14) = fileInfo;
-        *(s32 *)((u8 *)task + 0x18) = arg4;
-        *(s32 *)((u8 *)task + 0x1C) = arg1;
-        *(s32 *)((u8 *)task + 0x20) = arg2;
-        *(void **)((u8 *)task + 0x24) = (u8 *)self + 8;
+extern "C" s32 fn_800F73E4(void *self, s32 arg1, s32 arg2, s32 arg3, s32 arg4)
+{
+  register const char *base = lbl_80324E88;
+  const char **new_var;
+  void *reader = *((void **) (((u8 *) self) + 4));
+  void *fileInfo = *((void **) (((u8 *) reader) + 0x10));
+  void *task;
+  if (fileInfo == 0)
+  {
+    return 0;
+  }
+  if (fn_800F273C(fileInfo) == 0)
+  {
+    return 1;
+  }
+  task = Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(fn_800FDE60());
+  if (task == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(base, 0x64C, base + 0x590);
+  }
+  reader = *((void **) (((u8 *) self) + 4));
+  new_var = &base;
+  if ((*((volatile void **) (((u8 *) reader) + 0x10))) == 0)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(*new_var, 0x2AC, (*new_var) + 0x288);
+  }
+  fileInfo = *((void **) (((u8 *) reader) + 0x10));
+  if (fn_800FE0DC(fn_800FDE60()) < 0x28)
+  {
+    Panic__Q26nw4hbm2dbFPCciPCce(base, 0x650, base + 0x5B8);
+  }
+  if (task != 0)
+  {
+    *((s32 *) (((u8 *) task) + 4)) = 0;
+    *((s32 *) (((u8 *) task) + 8)) = 0;
+    *((s32 *) (((u8 *) task) + 0xC)) = arg3;
+    *((void **) (((u8 *) task) + 0)) = lbl_80325684;
+    *((s32 *) (((u8 *) task) + 0x10)) = 0;
+    *((void **) (((u8 *) task) + 0x14)) = fileInfo;
+    *((s32 *) (((u8 *) task) + 0x18)) = arg4;
+    *((s32 *) (((u8 *) task) + 0x1C)) = arg1;
+    *((s32 *) (((u8 *) task) + 0x20)) = arg2;
+    if ((!reader) && (!reader))
+    {
     }
-    AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(fn_800FDE60(), task, 1);
-    fn_800FE804(fn_800FE648());
-    return 3;
+    *((void **) (((u8 *) task) + 0x24)) = ((u8 *) self) + 8;
+  }
+  AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(fn_800FDE60(), task, 1);
+  fn_800FE804(fn_800FE648());
+  return 3;
 }
 
 extern "C" s32 fn_800F7528(void *self, void *arg1, unsigned long arg2, long arg3, int arg4, unsigned long arg5, long arg6, bool arg7, __StrmLoadCommandRef &arg8, unsigned long arg9, unsigned long arg10, unsigned long arg11) {
@@ -6100,7 +6121,7 @@ extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg
     fn_800E2E24();
     SCInit();
     do { status = SCCheckStatus(); } while (status == 1);
-    if (status != 0) Panic__Q26nw4hbm2dbFPCciPCce(labels, 0x4f, labels + 0x14);
+    if (status != 0) Panic__Q26nw4hbm2dbFPCciPCce(labels - 0, 0x4f, labels + 0x14);
     mode = SCGetSoundMode();
     switch (mode) {
     case 0: ((void (*)(void *, s32))SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode)(Instance__15EmissionManagerFv(), 3); break;
@@ -6111,9 +6132,9 @@ extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg
     GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv();
     Setup__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv();
     if (((s32 (*)(void *, s32))Create__Q46nw4hbm3snd6detail10TaskThreadFl)(fn_800FE648(), arg1) == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(labels, 0x7e, labels + 0x48);
+        Panic__Q26nw4hbm2dbFPCciPCce(labels - 0, 0x7e, labels + 0x48);
     if (fn_800FA4C4(GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(), arg0) == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(labels, 0x82, labels + 0x48);
+        Panic__Q26nw4hbm2dbFPCciPCce(labels - 0, 0x82, labels + 0x48);
 }
 
 extern "C" void fn_800FA350(void) {
