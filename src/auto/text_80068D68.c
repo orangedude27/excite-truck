@@ -4663,13 +4663,14 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
     register char *report = lbl_803142C8;
+    register s32 status = arg0;
     u16 offset;
 
     if (lbl_803BD1E0.at_0x28 != 0)
-        OSReport(report + 0x460, arg0);
+        OSReport(report + 0x460, status);
 
-    if (arg0 < 0 && lbl_803BD1E0.at_0x28 != 0)
-        OSReport(report + 0x498, arg0);
+    if (status < 0 && lbl_803BD1E0.at_0x28 != 0)
+        OSReport(report + 0x498, status);
 
     if (arg1 != 0) {
         GKI_freebuf(arg1);
@@ -13219,7 +13220,7 @@ tBTM_STATUS BTM_SecBond(BD_ADDR bd_addr, UINT8 pin_len, UINT8 *p_pin, UINT32 tru
     }
          return BTM_NO_RESOURCES;
  }
-#pragma scheduling invalid_target
+
 tBTM_STATUS btm_sec_l2cap_access_req(BD_ADDR bd_addr, UINT16 psm, UINT16 handle,
                                        CONNECTION_TYPE conn_type,
                                        tBTM_SEC_CALLBACK *p_callback,
