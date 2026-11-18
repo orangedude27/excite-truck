@@ -103,6 +103,7 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     bp[8] = lbl_805615B8;
     M33Cat(m, bp, m);
 }
+#pragma opt_propagation reset
 #pragma pop
 
 void GXInitLightAttnA_80144B44(void *attn, f32 aa, f32 ab, f32 ac) {
