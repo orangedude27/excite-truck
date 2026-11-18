@@ -127,15 +127,11 @@ void fn_8012960C(void *arg0) {
     s32 count;
     s32 old;
     s32 elapsed;
-    s32 limit;
     if (p[8] != 0) {
         count = *(s32 *)(p + 4);
-        limit = 250;
         old = *(s32 *)p;
         elapsed = now - old;
-        if (count != 0)
-            limit = 125;
-        if (elapsed > limit) {
+        if (elapsed > (count != 0 ? 125 : 250)) {
             *(s32 *)p = now;
             *(s32 *)(p + 0x18) = 0;
             *(s32 *)(p + 4) = *(s32 *)(p + 4) + 1;
