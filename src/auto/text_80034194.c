@@ -600,8 +600,7 @@ extern char lbl_80301E30[];
 void __DSP_boot_task(void *arg0) {
     volatile u32 mail;
     u32 *task = (u32 *)arg0;
-    const char *fmt = lbl_80301E30;
-    const char *fmt0 = fmt + (fmt - fmt);
+    char *fmt = lbl_80301E30;
     while (DSPCheckMailFromDSP() == 0) {}
     mail = DSPReadMailFromDSP();
     DSPSendMailToDSP(0x80F3A001);
@@ -624,7 +623,7 @@ void __DSP_boot_task(void *arg0) {
     while (DSPCheckMailToDSP() != 0) {}
     DSPSendMailToDSP(*(u16 *)((u8 *)arg0 + 0x24));
     while (DSPCheckMailToDSP() != 0) {}
-    DBPrintf_800343C8(fmt0, arg0);
+    DBPrintf_800343C8(fmt, arg0);
     DBPrintf_800343C8(fmt + 0x20, task[3]);
     DBPrintf_800343C8(fmt + 0x50, task[5]);
     DBPrintf_800343C8(fmt + 0x80, task[4]);
@@ -1473,6 +1472,29 @@ void fn_80035DA8(s32 arg0) {
     #pragma unused(arg0)
 }
 
+/* Cancel the executing command if a cancel is pending: report it as
+ * canceled to its callback and the cancel callback, then go idle. */
+static inline BOOL CheckCancel(u32 resume) {
+    void *finished;
+    void (*callback)(s32, void *);
+
+    if (lbl_8055D858 != 0) {
+        lbl_8055D85C = resume;
+        lbl_8055D858 = 0;
+        finished = (void *)executing_8055D8C8;
+        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+        *(s32 *)((char *)finished + 0xC) = 0xA;
+        callback = *(void (**)(s32, void *))((u8 *)finished + 0x28);
+        if (callback != 0)
+            callback(-3, finished);
+        if (lbl_8055D8B8 != 0)
+            lbl_8055D8B8(0, finished);
+        fn_80038040();
+        return TRUE;
+    }
+    return FALSE;
+}
+
 #pragma push
 #pragma dont_inline on
 void fn_80035E6C(u32 arg0) {
@@ -1799,8 +1821,9 @@ extern void fn_80036D24(u32);
 extern void fn_800373E0(u32);
 extern int memcmp(const void *, const void *, u32);
 void fn_8003684C(void) {
-    s32 enabled;
     u8 *idBase = lbl_80376A80;
+    u32 zero = 0;
+    s32 enabled;
 #define LOG_ENTRY(a, b, c)                                                                      \
     {                                                                                           \
         u32 tick;                                                                               \
@@ -1816,13 +1839,13 @@ void fn_8003684C(void) {
     }
     switch (lbl_8055D8BC) {
     case 3:
-        lbl_8055D87C = 0;
+        lbl_8055D87C = zero;
         if (DVDCompareDiskID(idBase + 0x80,
                 *(void **)(executing_8055D8C8 + 0x24)) != 0) {
             memcpy((void *)IDShouldBe_8055D8C4, idBase + 0x80, 0x20);
             *(s32 *)(executing_8055D8C8 + 0xC) = 1;
             DCInvalidateRange(idBase, 0x20);
-            lbl_8055D860 = 0;
+            lbl_8055D860 = zero;
             fn_8003BCDC(0);
             LOG_ENTRY(0x21, 0x10000, 0x20);
             fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)fn_80036B84);
@@ -1836,7 +1859,7 @@ void fn_8003684C(void) {
             LOG_ENTRY(0x10, 0, 0);
             fn_8003AF1C(0, 0, fn_800373E0);
         } else {
-            lbl_8055D860 = 0;
+            lbl_8055D860 = zero;
             fn_8003BCDC(0);
             LOG_ENTRY(0x21, 0x10000, 0x20);
             fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)fn_80036B84);
