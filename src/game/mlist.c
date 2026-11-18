@@ -126,9 +126,9 @@ void fn_802CCE24(void *arg0) {
     union SwapTemp { unsigned int word[3]; unsigned short half[6]; };
     union SwapTemp saved;
     {
-        int var_r27;
-        int var_r28;
         unsigned char *record;
+        int var_r28;
+        int var_r27;
         var_r28 = 0;
         var_r27 = 0;
         goto loop_2_test;
@@ -359,6 +359,7 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
             do { *(dst + 0x19) = v; dst++; ctr--; } while (ctr != 0);
         }
     }
+    matrix[0] = farg0; matrix[1] = farg1;
     fn_801293DC(lbl_804C1480);
     __AXDSPInitCallback_801293D0();
 }
@@ -438,6 +439,21 @@ extern void fn_802CC550(int, float, float);
 extern float lbl_80564F58;
 extern float lbl_80564F5C;
 extern float lbl_804C5480[];
+#pragma cplusplus on
+/* Dispatch slot 0x14 of an mlist object's vtable (a real C++ virtual call, so
+ * the vtable pointer goes through r12). */
+static inline void MlistCallV3(void *object, void *context) {
+    class MlistObj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3(void *context);
+    };
+    ((MlistObj *)object)->v3(context);
+}
+#pragma cplusplus off
+#pragma opt_propagation off
 void fn_802CDB5C(int arg0) {
     struct Item {
         unsigned short id;
@@ -459,26 +475,25 @@ void fn_802CDB5C(int arg0) {
         int config44;
         float matrix[12];
     } work;
-    char *context;
-    char *config;
     char *record;
-    struct Item *item;
     char *itemBase;
-    unsigned char *table;
-    signed long outerIndex;
-    signed long outerEnd;
-    signed long recordId;
-    signed long itemStart;
-    signed long itemCount;
-    signed long itemIndex;
-    signed long started;
-    signed long callbackCount;
-    signed long lastEntry;
-    signed long handle;
-    signed long i;
-    signed long cursor;
+    int outerEnd;
+    int itemCount2;
     void *object;
-    void **objects;
+    char *context;
+    unsigned char *table;
+    int outerIndex;
+    unsigned int lastEntry;
+    int recordId;
+    int started;
+    int itemCount;
+    struct Item *item;
+    int cursor;
+    int callbackCount;
+    int i;
+    float *fxTable;
+    char *config;
+    int handle;
     int a, b, c, d, e, f, g, h;
 
     fn_801293C8(&lbl_8034BBEC);
@@ -521,42 +536,45 @@ void fn_802CDB5C(int arg0) {
         lbl_80564F58);
     fn_802D0610(handle);
     outerIndex = work.config38;
-    itemBase = (char *)work.context2C;
-    outerEnd = work.config3C;
+    fxTable = lbl_804C5480;
     record = (char *)work.context34 + outerIndex * 0x1C;
     *(int *)(table + 0x64) = handle;
+    itemBase = (char *)work.context2C;
+    outerEnd = work.config3C;
     lastEntry = 0;
-    for (; outerIndex < outerEnd; outerIndex++, record += 0x1C) {
-        itemStart = *(int *)(record + 0x14);
+    for (; outerIndex < outerEnd; record += 0x1C, outerIndex++) {
+        int itemStart = *(int *)(record + 0x14);
         itemCount = *(int *)(record + 0x18) - itemStart;
         recordId = *(int *)(record + 0x10);
         item = (struct Item *)(itemBase + itemStart * 12);
+        itemCount2 = itemCount * 2;
         started = 0;
         cursor = 0;
         callbackCount = 0;
-        for (itemIndex = 0; itemIndex < itemCount; itemIndex++) {
+        for (i = 0; i < itemCount; i++) {
             work.cur = *item++;
             if (work.cur.type != (table[work.cur.id] & 0x7F))
                 continue;
             if (started == 0) {
                 started = 1;
                 fn_802C8B70(recordId);
-                cursor = fn_802DB2A8(itemCount * 2);
+                cursor = fn_802DB2A8(itemCount2);
                 if (cursor == 0) {
                     fn_802C8D74();
                     started = 0;
+                    continue;
                 }
             }
             handle = *(int *)(table + work.cur.state * 4 + 0x64);
-            if (lastEntry != handle) {
-                lastEntry = handle;
+            if (lastEntry != (unsigned int)handle) {
+                lastEntry = (unsigned int)handle;
                 fn_802D0610(handle);
                 cursor += 0x10;
                 callbackCount++;
             }
             object = work.cur.object;
             fn_802D6B08(object);
-            fn_802CC550(recordId, lbl_804C5480[work.cur.id],
+            fn_802CC550(recordId, fxTable[work.cur.id],
                         *(float *)((char *)object + 8));
             cursor += 0x10;
             callbackCount++;
@@ -568,16 +586,15 @@ void fn_802CDB5C(int arg0) {
     }
     fn_802DB2A0();
     __AXDSPInitCallback_801293D0();
-    objects = *(void ***)(context + 0x90);
-    for (i = work.config40; i < work.config44; i++) {
-        object = objects[i];
+#pragma opt_propagation reset
+    i = work.config44;
+    for (callbackCount = work.config40; callbackCount < i; callbackCount++) {
+        object = (*(void ***)(context + 0x90))[callbackCount];
         ((void (*)(void *, void *))(((void **)(*(void **)object))[5]))(object, context);
     }
+#pragma opt_propagation off
 }
-
-#pragma opt_propagation on
-#pragma scheduling on
-#pragma pop
+#pragma opt_propagation reset
 void fn_802CE260(int *, int);
 void fn_802CE278(int *, int);
 void fn_802CE290(int *, int);
