@@ -246,8 +246,8 @@ unsigned int fn_8024C768(void) {
     char *temp_r6;
     char *temp_r7;
     char *temp_r8;
-    char *base;
-    int *table;
+    register char *base;
+    register int *table;
 
     base = lbl_804989E8;
     table = (int *)base;
@@ -580,7 +580,7 @@ int fn_8024CC54(void *out, void *arg1, int arg2) {
 }
 extern char lbl_80343FC4[];
 extern char lbl_80343FF0[];
-#pragma scheduling reset
+#pragma scheduling on
 int fn_8024CEF0(void) {
     if (((int (*)(void))fn_8000DBAC)() != 0)
         return 1;
