@@ -5590,16 +5590,18 @@ extern "C" void* fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* ar
 #pragma push
 #pragma dont_inline off
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void* fn_801A4B5C(void* arg0, s32 arg1, void* arg2) {
     u8* p = (u8*)arg0;
     u32 q = (u32)p + 4;
     s32 magic;
+    s32 n = 2;
+    s32 i;
     *(void**)arg0 = lbl_803336F8;
     if (arg1) {
-        s32 i;
         Swap4(p + 0x34);
         Swap4(p + 0x38);
-        for (i = 0; i < 2; i++) {
+        for (i = 0; i < n; i++) {
             Swap4((u8*)q); Swap4((u8*)(q + 4)); Swap4((u8*)(q + 8));
             Swap4((u8*)(q + 0xC)); Swap4((u8*)(q + 0x10)); Swap4((u8*)(q + 0x14));
             q += 0x18;
