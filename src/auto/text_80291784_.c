@@ -224,12 +224,13 @@ void fn_80291B14(void *worldPos, float depth)
       *((unsigned char *) (lbl_804B4010 + 0x14)) = visible;
   }
 #pragma opt_common_subs off
-  void fn_80291B9C(void *arg0, float *arg1, float arg2) {
-    float c = arg1[2];
-    float b = arg1[1];
-    float a = arg1[0];
+void fn_80291B9C(void *arg0, float *arg1, float arg2) {
+    float c, b, a;
     char *entry;
     int i;
+    a = arg1[0];
+    c = arg1[2];
+    b = arg1[1];
     *((float *)((char *)arg0 + 0x130)) = a;
     *((float *)((char *)arg0 + 0x134)) = b;
     *((float *)((char *)arg0 + 0x138)) = c;
@@ -321,13 +322,13 @@ extern double lbl_805644C0;
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80291E64(void *arg0) {
-    float v[3];
-    float e[3];
-    float s[3];
-    float d[3];
-    float o[3];
-    float *p;
     char *ctx = (char *)arg0;
+    float o[3];
+    float d[3];
+    float s[3];
+    float e[3];
+    float v[3];
+    float *p;
     char *ent;
     int i;
     float t, w, negd, one, zero, step, scale, k;
@@ -528,7 +529,6 @@ extern float lbl_8056449C;
 extern double lbl_805644C8;
 __declspec(section ".data") extern int lbl_804B3EC0;
 void fn_802923EC(float arg0) {
-    register char *table;
     register int *settings;
     register int amount;
     register int *entry;
@@ -544,17 +544,10 @@ void fn_802923EC(float arg0) {
         amount = (int)(lbl_8056449C * value);
         settings[6] = (int)(((unsigned int)amount << 24) | packed);
         entry = (int *)&lbl_804B3EC0;
-        table = (char *)entry;
-        i = 0;
-        goto check;
-loop:
-        packed = (unsigned int)entry[6];
-        i++;
-        entry[6] = (int)(((unsigned int)(int)(value * (float)(packed >> 24)) << 24) | (packed & 0xFFFFFFu));
-        entry = (int *)((char *)entry + 0x24);
-check:
-        if (i < *(int *)(table + 0x120)) {
-            goto loop;
+        for (i = 0; i < (&lbl_804B3EC0)[0x48]; i++) {
+            packed = (unsigned int)entry[6];
+            entry[6] = (int)(((unsigned int)(int)(value * (float)(packed >> 24)) << 24) | (packed & 0xFFFFFFu));
+            entry = (int *)((char *)entry + 0x24);
         }
     }
 }
