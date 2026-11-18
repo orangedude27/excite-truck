@@ -74,21 +74,18 @@ s32 fn_801E4F20(void) {
 s32 fn_801E4F3C(s32 arg0, s32 arg1, f32 x, f32 y, f32 z, f32 u, f32 v) {
     Unk801E4E44Vertex* vertex;
     s32 count;
-    (vertex = &lbl_80487578[lbl_8055EAA8])->x = x;
-    count = lbl_8055EAA8 + 1;
+    vertex = &lbl_80487578[lbl_8055EAA8++];
+    vertex->x = x;
     vertex->y = y;
     vertex->z = z;
     vertex->unk_0x10 = u;
     vertex->unk_0x14 = v;
-    lbl_8055EAA8 = count;
     vertex->unk_0xC = arg0;
+    count = lbl_8055EAA8;
     if (arg1 && count > 2) {
-        s32 b = lbl_8055EAAC + 1;
-        s32 c = b + 1;
-        lbl_80487B18[lbl_8055EAAC] = count - 3;
-        lbl_8055EAAC = c + 1;
-        lbl_80487B18[b] = count - 2;
-        lbl_80487B18[c] = count - 1;
+        lbl_80487B18[lbl_8055EAAC++] = count - 3;
+        lbl_80487B18[lbl_8055EAAC++] = count - 2;
+        lbl_80487B18[lbl_8055EAAC++] = count - 1;
     }
     if (count == 60 || lbl_8055EAAC == 174) fn_801E4E44();
     return 0;
@@ -196,32 +193,161 @@ s32 fn_801E5370(s32 value, s32 lastIndex, f32 scale) {
     return 1;
 }
 
-void fn_801E53A8(void *arg0, void *arg1, void *arg2, s32 arg3, f32 arg4) {
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_801E53A8(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 arg4) {
     extern char lbl_803399F8[];
-    extern void fn_802E317C(void *);
-    f32 ax, ay, az, cx, cy, cz;
-    f32 dx, dy, dz, sx, sy, sz;
-    f32 t = arg4;
+    extern void fn_802E317C(const char *, ...);
+    extern f32 fn_802C88D4(void *);
+    extern f32 lbl_80562D44, lbl_80562D48, lbl_80562D4C, lbl_80562D50, lbl_80562D54, lbl_80562D58;
+    Unk801E4E44Vertex *verts = lbl_80487578;
+    Unk801E4E44Vertex *vtx;
+    Unk801E4E44State *state = (Unk801E4E44State *)((u8 *)lbl_80487578 + 0x710);
+    f32 delta[3];
+    f32 sum[3];
+    f32 mid[3];
+    f32 step, t, t2, t3, h10, h11;
+    f32 p0x, p0y, p0z, p1x, p1y, p1z, prev4, range, speed;
+    s32 n, i, a, c, alpha, count, index, color;
 
-    if (lbl_80487C88.unk_0x28 >= lbl_80487C88.unk_0x30) {
+    if (state->unk_0x28 >= state->unk_0x2C) {
         fn_802E317C(lbl_803399F8);
     }
-    ax = *(f32 *)((u8 *)arg0 + 0x0);
-    cx = *(f32 *)((u8 *)arg2 + 0x0);
-    dx = ax - cx;
-    sx = ax + cx;
-    ay = *(f32 *)((u8 *)arg0 + 0x4);
-    cy = *(f32 *)((u8 *)arg2 + 0x4);
-    dy = ay - cy;
-    sy = ay + cy;
-    az = *(f32 *)((u8 *)arg0 + 0x8);
-    cz = *(f32 *)((u8 *)arg2 + 0x8);
-    dz = az - cz;
-    sz = az + cz;
-    *(volatile f32 *)&t = t;
-    (void)dx; (void)dy; (void)dz; (void)sx; (void)sy; (void)sz; (void)arg1; (void)arg3;
-}
 
+    delta[0] = arg0[0] - arg2[0];
+    delta[1] = arg0[1] - arg2[1];
+    delta[2] = arg0[2] - arg2[2];
+    sum[0] = arg0[0] + arg2[0];
+    sum[1] = arg0[1] + arg2[1];
+    sum[2] = arg0[2] + arg2[2];
+
+    if (state->unk_0x28 > 0 && arg3 != 0) {
+        speed = fn_802C88D4(state);
+        n = state->unk_0x30;
+        a = (s32)((f32)n - speed * state->unk_0x34);
+        c = 1;
+        if (a > 1) {
+            c = a;
+            if (c < n) {
+                n = c;
+            }
+        }
+
+        step = lbl_80562D48 / (f32)n;
+        if (lbl_8055EAA8 + n * 2 + 2 > 60 || lbl_8055EAAC + n * 6 > 174) {
+            fn_801E4E44();
+        }
+
+        a = (s32)(lbl_80562D4C * state->unk_0x24);
+        a = a & (((-a) & ~a) >> 31);
+        alpha = 0xFF;
+        if (a < 0xFF) {
+            alpha = a;
+        }
+        color = (alpha << 24) | 0xFFFFFF;
+
+        p0x = state->unk_0x0;
+        p0y = state->unk_0x4;
+        p0z = state->unk_0x8;
+        p1x = state->unk_0xC;
+        p1y = state->unk_0x10;
+        p1z = state->unk_0x14;
+
+        count = lbl_8055EAA8;
+        vtx = &verts[count];
+        vtx->x = p0x;
+        vtx->y = p0y;
+        vtx->z = p0z;
+        vtx->unk_0x10 = lbl_80562D44;
+        vtx->unk_0x14 = lbl_80562D44;
+        vtx->unk_0xC = color;
+        count++;
+        vtx = &verts[count];
+        vtx->x = p1x;
+        vtx->y = p1y;
+        vtx->z = p1z;
+        vtx->unk_0x10 = lbl_80562D48;
+        vtx->unk_0x14 = lbl_80562D44;
+        vtx->unk_0xC = color;
+        count++;
+        lbl_8055EAA8 = count;
+
+        index = lbl_8055EAAC;
+        prev4 = state->unk_0x24;
+        range = arg4 - prev4;
+        for (i = 1; i <= n; i++) {
+            t = (f32)i * step;
+            t2 = t * t;
+            t3 = t2 * t;
+            h11 = t3 - t2;
+            h10 = t + (t3 - lbl_80562D50 * t2);
+
+            a = (s32)(lbl_80562D4C * (prev4 + t * range));
+            a = a & (((-a) & ~a) >> 31);
+            alpha = 0xFF;
+            if (a < 0xFF) {
+                alpha = a;
+            }
+            color = (alpha << 24) | 0xFFFFFF;
+
+            mid[0] = state->unk_0x18 * h10 + arg1[0] * h11;
+            mid[1] = state->unk_0x1C * h10 + arg1[1] * h11;
+            mid[2] = state->unk_0x20 * h10 + arg1[2] * h11;
+
+            vtx = &verts[count];
+            vtx->x = mid[0] + p0x * (lbl_80562D48 + (lbl_80562D50 * t3 - lbl_80562D54 * t2)) + delta[0] * (lbl_80562D58 * t3 + lbl_80562D54 * t2);
+            vtx->y = mid[1] + p0y * (lbl_80562D48 + (lbl_80562D50 * t3 - lbl_80562D54 * t2)) + delta[1] * (lbl_80562D58 * t3 + lbl_80562D54 * t2);
+            vtx->z = mid[2] + p0z * (lbl_80562D48 + (lbl_80562D50 * t3 - lbl_80562D54 * t2)) + delta[2] * (lbl_80562D58 * t3 + lbl_80562D54 * t2);
+            vtx->unk_0x10 = lbl_80562D44;
+            vtx->unk_0x14 = t;
+            vtx->unk_0xC = color;
+            count++;
+            if (count > 2) {
+                s32 i0 = index;
+                s32 i1 = i0 + 1;
+                s32 i2 = i1 + 1;
+                *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + i0 * 2) = count - 3;
+                *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + i1 * 2) = count - 2;
+                *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + i2 * 2) = count - 1;
+                index = i2 + 1;
+                lbl_8055EAAC = index;
+            }
+
+            vtx = &verts[count];
+            vtx->x = mid[0] + p1x * (lbl_80562D48 + (lbl_80562D50 * t3 - lbl_80562D54 * t2)) + sum[0] * (lbl_80562D58 * t3 + lbl_80562D54 * t2);
+            vtx->y = mid[1] + p1y * (lbl_80562D48 + (lbl_80562D50 * t3 - lbl_80562D54 * t2)) + sum[1] * (lbl_80562D58 * t3 + lbl_80562D54 * t2);
+            vtx->z = mid[2] + p1z * (lbl_80562D48 + (lbl_80562D50 * t3 - lbl_80562D54 * t2)) + sum[2] * (lbl_80562D58 * t3 + lbl_80562D54 * t2);
+            vtx->unk_0x10 = lbl_80562D48;
+            vtx->unk_0x14 = t;
+            vtx->unk_0xC = color;
+            count++;
+            if (count > 2) {
+                s32 i0 = index;
+                s32 i1 = i0 + 1;
+                s32 i2 = i1 + 1;
+                *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + i0 * 2) = count - 3;
+                *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + i1 * 2) = count - 2;
+                *(u16 *)((u8 *)lbl_80487578 + 0x5a0 + i2 * 2) = count - 1;
+                index = i2 + 1;
+                lbl_8055EAAC = index;
+            }
+        }
+        lbl_8055EAA8 = count;
+    }
+
+    state->unk_0x20 = arg1[2];
+    state->unk_0x0 = delta[0];
+    state->unk_0x4 = delta[1];
+    state->unk_0x8 = delta[2];
+    state->unk_0xC = sum[0];
+    state->unk_0x10 = sum[1];
+    state->unk_0x14 = sum[2];
+    state->unk_0x18 = arg1[0];
+    state->unk_0x1C = arg1[1];
+    state->unk_0x24 = arg4;
+    state->unk_0x28 = state->unk_0x28 + 1;
+}
 #pragma pop
 /* End the current mesh pass: flush/compact the vertex and index buffers
  * (fn_801E4E44) and reset the mesh mode (lbl_8055EAB0) to 0 (idle). */
