@@ -201,11 +201,9 @@ extern "C" int fn_80204EA0(const char *arg0) {
     int result = 0;
     int r;
     int *temp;
-    int check;
     temp = lbl_8055ED5C;
-    check = temp[4];
-    if (check != 0) {
-        ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, check, arg0);
+    if (temp[4] != 0) {
+        fn_801345D8(buf, 0x64, lbl_8055B4AC, temp[4], arg0);
         if (temp[3] != 0 && ((Res80204EA0 *)temp[3])->has(buf)) {
             r = ((Res80204EA0 *)temp[3])->get(buf);
         } else if (((Res80204EA0 *)temp[2])->has(buf)) {
