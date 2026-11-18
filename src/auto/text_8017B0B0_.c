@@ -439,6 +439,7 @@ void fn_8017B81C(void *arg0) {
     if (!((float) __fabs(temp_f1) <= ((float *)&lbl_80558DC4)[0])) {
         var_r4 = arg0;
         var_r6 = 0;
+        scale = lbl_80561BBC;
         temp_f6 = lbl_80561BB4 / temp_f1;
         temp_f25 = (*(float *)((char *)(arg0) + 0x188)) * temp_f6;
         temp_f24 = (*(float *)((char *)(arg0) + 0x18C)) * temp_f6;
