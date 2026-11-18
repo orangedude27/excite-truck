@@ -6213,21 +6213,28 @@ extern "C" void fn_800FA350(void) {
 #pragma push
 #pragma scheduling on
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
-    if ((s8)lbl_8055DE68 == 0) {
-        volatile u32 *base = (volatile u32 *)lbl_80412CC8;
-        base[0x2388 / 4] = 0;
-        void *object = (void *)((u8 *)base + 0x2388);
-        base[0x238c / 4] = 0;
-        base[0x2378 / 4] = 0;
-        base[0x237c / 4] = 0;
-        base[0x2384 / 4] = 0;
-        base[0x2388 / 4] = (u32)object;
-        base[0x238c / 4] = (u32)object;
-        ((volatile u8 *)base)[0x2394] = 0;
-        __register_global_object((void *)base, (void *)&__dt__10TitleSceneFv,
-                                 (void *)(u32)&lbl_80412CB8, object);
-        lbl_8055DE68 = 1;
+    void *object;
+    s8 isInitialized;
+
+    isInitialized = (s8)lbl_8055DE68;
+    if (isInitialized != 0) {
+        goto skip_init;
     }
+
+    object = (void *)&lbl_80412CC8[0x2388];
+    *(volatile u32 *)&lbl_80412CC8[0x2388] = 0;
+    *(volatile u32 *)&lbl_80412CC8[0x238c] = 0;
+    *(u32 *)&lbl_80412CC8[0x2378] = 0;
+    *(u32 *)&lbl_80412CC8[0x237c] = 0;
+    *(u32 *)&lbl_80412CC8[0x2384] = 0;
+    *(void **)&lbl_80412CC8[0x2388] = object;
+    *(void **)&lbl_80412CC8[0x238c] = object;
+    *(u8 *)&lbl_80412CC8[0x2394] = 0;
+    __register_global_object((void *)lbl_80412CC8, (void *)&__dt__10TitleSceneFv,
+                             (void *)&lbl_80412CB8, object);
+    lbl_8055DE68 = 1;
+
+skip_init:
     return (void *)lbl_80412CC8;
 }
 #pragma pop
@@ -6806,6 +6813,7 @@ extern "C" void fn_8002F53C(void *, void *, void *, int, int);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void * __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
+    struct StrmHead { u32 vtable; s32 unk4; u32 unk8; u32 unkc; };
     u8 *p = (u8 *)arg0;
     volatile u32 *vp = (volatile u32 *)p;
     u32 zero = 0;
@@ -6817,7 +6825,7 @@ extern "C" void * __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     vp[0xa4 / 4] = zero;
     vp[0xa8 / 4] = zero;
     vp[1] = -1;
-    vp[0] = (u32)lbl_80326A28;
+    ((struct StrmHead *)p)->vtable = (u32)lbl_80326A28;
     vp[2] = zero;
     vp[3] = zero;
     *(volatile u8 *)(p + 0x48) = 0;
