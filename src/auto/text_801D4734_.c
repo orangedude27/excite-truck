@@ -320,6 +320,8 @@ void fn_801D490C(void) {
 #pragma pop
 
 #pragma dont_inline on
+#pragma push
+#pragma scheduling invalid_target
 void* fn_801D4B34(void* arg0) {
     *(void**)arg0 = lbl_80338D80;
     *(int*)((char*)arg0 + 4) = 0;
@@ -328,6 +330,7 @@ void* fn_801D4B34(void* arg0) {
     *(int*)((char*)arg0 + 0x34) = 0;
     return arg0;
 }
+#pragma pop
 #pragma dont_inline reset
 
 #pragma push
