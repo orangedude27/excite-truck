@@ -5118,12 +5118,12 @@ queue_eight:
             OSRestoreInterrupts(enabled);
         }
 
-    status = 0;
-    goto finish;
+    OSRestoreInterrupts(outerEnabled);
+    return 0;
 
 queue_eight_fail:
-    status = 0;
-    OSRestoreInterrupts(enabled);
+    status = -2;
+    OSRestoreInterrupts(outerEnabled);
     goto finish;
 
 finish:
