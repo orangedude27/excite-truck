@@ -393,7 +393,6 @@ mode_done:
                     if (((void *(*)(void *, const char *))(*(void * volatile **)node)[0x5C / 4])(node, lbl_8055BA38) != 0) {
                         detailList = ((void *(*)(void *, const char *))(*(void * volatile **)node)[0x5C / 4])(node, lbl_8055BA38);
                         entry = &manager->entries[manager->count];
-                        /* FIRST_BLOCK_CLAMP_ANCHOR */
                         entry->object = ((void *(*)(void *, const char *))(*(void * volatile **)node)[0x1C / 4])(node, lbl_80340A44);
                         entry->keyCount = 0;
                         if (detailList != 0) {
