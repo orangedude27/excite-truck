@@ -2962,63 +2962,50 @@ extern "C" void fn_8021CBBC(void *widget) {
 
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_8021CD04(void *arg0, s32 arg1, s32 arg2) {
-    class CacheSource {
+extern "C" void fn_8021CD04(void *widget, s32 x, s32 y) {
+    #define FLOAT_ONE  lbl_805634A4 /* 1.0f: the slider's far end */
+    #define FLOAT_ZERO lbl_805634A8 /* 0.0f: its near end */
+    /* The value this slider drives (+0x248): get() at vtable +0x24, set() at
+     * +0x28.  V24x is the project's name for the class up to get(). */
+    class SliderValue : public V24x {
     public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual f32 Get();
+        virtual void set(f32);
     };
-    class BoundsSource {
-    public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
-        virtual s32 GetWidth();
-    };
-    class CacheTarget {
-    public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void Set(f32);
-    };
-    u8 *self = (u8 *)arg0;
+    u8 *self = (u8 *)widget;
     if (self[0x244] == 0) {
+        /* First pass: keep hold of the value the slider had before it was moved. */
         self[0x244] = 1;
-        CacheSource *source = *(CacheSource **)(self + 0x248);
-        *(f32 *)(self + 0x258) = source->Get();
+        SliderValue *value = *(SliderValue **)(self + 0x248);
+        *(f32 *)(self + 0x258) = value->get();
     }
     s32 left = *(s32 *)(self + 4);
-    if (arg1 < left - 0x20 ||
-        arg2 < *(s32 *)(self + 8) - 0x20 ||
-        arg1 > left + ((BoundsSource *)arg0)->GetWidth() + 0x20 ||
-        arg2 > *(s32 *)(self + 0x10) + 0x20) {
-        CacheTarget *target = *(CacheTarget **)(self + 0x248);
-        target->Set(*(f32 *)(self + 0x258));
+    if (x < left - 0x20 ||
+        y < *(s32 *)(self + 8) - 0x20 ||
+        x > left + ((VfObj *)widget)->vf28() + 0x20 ||
+        y > *(s32 *)(self + 0x10) + 0x20) {
+        /* The point is off the slider (its box grown by 32 pixels): put the
+         * value back the way it was. */
+        SliderValue *value = *(SliderValue **)(self + 0x248);
+        value->set(*(f32 *)(self + 0x258));
         return;
     }
+    /* On the slider: where the point sits along the track the tab can travel,
+     * measured from the tab's centre, becomes the new value in [0,1]. */
     left = *(s32 *)(self + 4);
-    s32 size = *(s32 *)(self + 0x254);
-    s32 width = ((BoundsSource *)arg0)->GetWidth();
-    f32 value = lbl_805634A4;
-    s32 denom = width - size;
-    s32 numer = arg1 - left - size / 2;
-    f32 fden = (f32)denom;
-    f32 fnum = (f32)numer;
-    f32 amount = fnum / fden;
-    value = (value < amount) ? value : amount;
-    value = (value > lbl_805634A8) ? value : lbl_805634A8;
-    CacheTarget *target = *(CacheTarget **)(self + 0x248);
-    target->Set(value);
+    s32 tabSize = *(s32 *)(self + 0x254);
+    s32 trackWidth = ((VfObj *)widget)->vf28();
+    f32 clamped = FLOAT_ONE;
+    s32 travel = trackWidth - tabSize;
+    s32 offset = x - left - tabSize / 2;
+    f32 fTravel = (f32)travel;
+    f32 fOffset = (f32)offset;
+    f32 fraction = fOffset / fTravel;
+    clamped = (clamped < fraction) ? clamped : fraction;    /* MIN(1.0f, fraction) */
+    clamped = (clamped > FLOAT_ZERO) ? clamped : FLOAT_ZERO; /* MAX(fraction, 0.0f) */
+    SliderValue *value = *(SliderValue **)(self + 0x248);
+    value->set(clamped);
+    #undef FLOAT_ONE
+    #undef FLOAT_ZERO
 }
 #pragma pop
 extern "C" void fn_8021CE8C(void *widget) {
@@ -4605,6 +4592,7 @@ extern "C" s32 fn_8021FBC4(void *widget, s32 x, s32 y) {
     return insideAll;
 }
 
+#pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
     s32 *temp_r5;
@@ -4620,22 +4608,20 @@ extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
         (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) /
         (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
 
-    var_r28 = 0;
     temp_r5 = *(s32 **)((u8 *)arg0 + 0x274);
-    if (temp_r5 != 0) {
-        if (*temp_r5 == *(s32 *)((u8 *)arg0 + 0x278)) {
-            var_r28 = 1;
-            temp_r31 = *(s32 *)((u8 *)arg0 + 8);
-            temp_r30 = *(s32 *)((u8 *)arg0 + 4);
-            fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x25C),
-                temp_r30, temp_r31, ((VfObj *)arg0)->vf28(), var_r28);
-        }
+    var_r28 = (temp_r5 != 0 && *temp_r5 == *(s32 *)((u8 *)arg0 + 0x278)) ? 1 : 0;
+    if (var_r28) {
+        temp_r31 = *(s32 *)((u8 *)arg0 + 8);
+        temp_r30 = *(s32 *)((u8 *)arg0 + 4);
+        fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x25C),
+            temp_r30, temp_r31, ((VfObj *)arg0)->vf28(), var_r28);
     }
 
     fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x260),
         *(s32 *)((u8 *)arg0 + 4) + 5, *(s32 *)((u8 *)arg0 + 8) + 5,
         temp_r29, var_r28);
 }
+#pragma pop
 extern "C" s32 fn_802C5334(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma cplusplus on
@@ -5961,6 +5947,8 @@ extern "C" char lbl_8033DA60[];
 extern "C" void fn_802E317C(const char *, ...);
 extern f32 lbl_8056351C;
 extern f64 lbl_80563520;
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void *fn_80222BDC(void *arg0, void *arg1, s32 arg2) {
     ((void *(*)(void *, void *))fn_80218F80)(arg0, arg1);
     *(s32 *)((u8 *)arg0 + 0x244) = arg2;
@@ -5976,7 +5964,7 @@ extern "C" void *fn_80222BDC(void *arg0, void *arg1, s32 arg2) {
     *(f32 *)((u8 *)arg0 + 0x250) = val;
     return arg0;
 }
-
+#pragma pop
 extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80222C8C(void *arg0, s32 arg1) {
     /* Deleting destructor for the object using vtable lbl_8033E560: reset the
        vtable, destroy the owned object at +0x248 (fn_802328D4), run the base
