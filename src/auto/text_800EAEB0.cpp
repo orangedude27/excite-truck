@@ -665,14 +665,15 @@ extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlay
     int candidate;
     int priority = 0x80;
     void *result = 0;
+    extern const char lbl_80322CD0[];
+    extern const char lbl_80322CF4[];
+    extern const char lbl_80322D30[];
+    extern const char lbl_80322D54[];
     while (node != end) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322D54, 0x23d, lbl_80322D30);
         int value = *(unsigned char *)(node - 0x5c) + *(int *)(node - 0x90);
-        if (value > 0x7f) {
-            candidate = 0x7f;
-        } else {
-            candidate = value & ~(value >> 31);
-        }
+        if (value <= 0x7f) candidate = value & ~(value >> 31);
+        else candidate = 0x7f;
         if (priority > candidate) {
             if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322D54, 0x23d, lbl_80322D30);
             result = node - 0xd0;
@@ -1259,12 +1260,22 @@ extern "C" s32 detail_GetWaveDataFileAddress__Q36nw4hbm3snd18MemorySoundArchiveC
     return (info.v[5] + *(u32 *)((u8 *)archive + 0x108)) + info.v[12];
 }
 
+static inline void *sndInitStream(void *stream, u32 base, s32 offset, u32 length) {
+    *(u8 *)((u8 *)stream + 4) = 0;
+    *(u32 *)((u8 *)stream + 0xC) = 0;
+    *(u32 *)((u8 *)stream + 0x10) = 0;
+    *(u8 **)stream = lbl_803231D8;
+    *(u32 *)((u8 *)stream + 0x14) = offset + base;
+    *(u32 *)((u8 *)stream + 0x18) = length;
+    *(u32 *)((u8 *)stream + 0x1C) = 0;
+    return stream;
+}
 extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this_, void *stream, u32 bufferSize, s32 offset, u32 length) {
     u32 base = *(u32 *)((u8 *)this_ + 0x108);
-    void *ret = stream;
+    register void *ret = stream;
     if (base == 0) return 0;
     if (bufferSize < 0x20) return 0;
-    if (!stream) return ret;
+    if (ret == 0) return ret;
     *(u8 *)((u8 *)stream + 4) = 0;
     *(u32 *)((u8 *)stream + 0xC) = 0;
     *(u32 *)((u8 *)stream + 0x10) = 0;
