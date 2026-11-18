@@ -213,38 +213,45 @@ extern s32 lbl_8055D6D0, lbl_8055D6D4;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma opt_common_subs off
 void TRKInitializeNub(void) {
     s64 now = 0;
     s32 state = 0;
     s64 duration = 0;
     s64 start = 0;
+    s64 elapsed;
     s64 deadline = 0;
     s64 limit;
+    u32 status;
+    u32 ctl;
     goto continuation;
 measure:
     *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~0x20U) | 0x20U;
     *(volatile u32 *)0xCD006C00 = *(volatile u32 *)0xCD006C00 & ~2U;
     *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~1U) | 1U;
-    while ((*(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU) ==
-           (*(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU)) {
-    }
+    do {
+        status = (*(volatile u32 *)0xCD006C08 << 1) >> 1;
+        ctl = (*(volatile u32 *)0xCD006C08 << 1) >> 1;
+    } while (status == ctl);
     start = (s64)OSGetTime();
     *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~2U) | 2U;
     *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~1U) | 1U;
-    while ((*(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU) ==
-           (*(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU)) {
-    }
+    do {
+        status = (*(volatile u32 *)0xCD006C08 << 1) >> 1;
+        ctl = (*(volatile u32 *)0xCD006C08 << 1) >> 1;
+    } while (status == ctl);
     now = (s64)OSGetTime();
+    elapsed = now - start;
     *(volatile u32 *)0xCD006C00 = *(volatile u32 *)0xCD006C00 & ~2U;
     *(volatile u32 *)0xCD006C00 = *(volatile u32 *)0xCD006C00 & ~1U;
     limit = (s64)(*(u64 *)&lbl_8055D6D0 - *(u64 *)&lbl_8055D6B0);
-    if (limit > now - start) {
+    if (limit > elapsed) {
         duration = (s64)(((u64)(u32)lbl_8055D6C0 << 32) | (u32)lbl_8055D6C4);
         state = 1;
         goto continuation;
     }
-    if ((s64)(*(u64 *)&lbl_8055D6D0 + *(u64 *)&lbl_8055D6B0) >= now - start &&
-        (s64)(*(u64 *)&lbl_8055D6C8 - *(u64 *)&lbl_8055D6B0) > now - start) {
+    if (elapsed >= (s64)(*(u64 *)&lbl_8055D6D0 + *(u64 *)&lbl_8055D6B0) &&
+        elapsed < (s64)(*(u64 *)&lbl_8055D6C8 - *(u64 *)&lbl_8055D6B0)) {
         duration = (s64)(((u64)(u32)lbl_8055D6B8 << 32) | (u32)lbl_8055D6BC);
         state = 1;
         goto continuation;
