@@ -201,12 +201,12 @@ void *fn_802B8EF0(int arg0, void *arg1) {
         if (entry) {
             entry->name = name;
             data = *(void * volatile *)((char *)arg1 + 8);
-            if ((signed char)*name != 0)
+            if (*(volatile signed char *)name != 0)
                 state = fn_802B110C((void *)fn_802B8E50, name);
             else
                 state = -2;
             entry->state = state;
-            if (state == -2 && (signed char)*name != 0)
+            if (state == -2 && *(volatile signed char *)name != 0)
                 fn_802E317C(lbl_8034AA2C, name);
             entry->reserved = 0;
             entry->data = data;
