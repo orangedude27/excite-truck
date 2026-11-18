@@ -64,7 +64,7 @@ extern unsigned short lbl_80304B70[];
 extern int ReadFont();
 extern char *ParseStringS(int, char *, int **, int *);
 extern void *ParseStringW(int, void *, int *, int *, int);
-extern int IOS_IoctlvReboot();
+extern int IOS_IoctlvReboot(int, int, int, int, void *);
 int IOS_Ioctlv(int, int, int, int, void *, int);
 int _ES_GetTicketViews(int *fd, int unused, int inputA, int inputB, void *views, int *outCount) {
     struct Frame {
