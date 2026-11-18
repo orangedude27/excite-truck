@@ -721,6 +721,7 @@ int fn_8027F958(int *selection, void *collection) {
     register char *src, *dst;
     register int i, j, index, remaining, result, mode, count, reported;
     register float *value;
+    struct Fn8027F834List *list = (struct Fn8027F834List *)(state + 0x50);
     object = ((GetItem)(*(void ***)collection)[4])(collection, 0);
     mode = ((GetInt)(*(void ***)object)[5])(object);
     defaultScale = lbl_805641F8;
