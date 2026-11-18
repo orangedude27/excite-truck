@@ -422,6 +422,7 @@ void fn_8001F578(void) {
 }
 #pragma scheduling on
 extern void *memcpy(void *, const void *, unsigned long);
+#pragma scheduling invalid_target
 void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
     s32 *a = (s32 *)arg0;
     s32 *b = (s32 *)arg1;
@@ -508,7 +509,7 @@ int fn_8001F7E4(s32 arg0, s32 arg1) {
             fn_802E30C8(lbl_802FE060, arg1, adjusted);
             arg1 = adjusted;
         }
-        *(s32 *)(lbl_8035AF38 + (arg0 << 2)) += arg1;
+        ((s32 *)lbl_8035AF38)[arg0] += arg1;
     }
 }
 #pragma scheduling on
@@ -614,17 +615,17 @@ extern void *fn_80016720(const char *);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 int fn_8001FAC8(int arg0, const char *arg1) {
-    register char *table = lbl_80358698;
-    register char *name;
-    register int total;
-    register int offset;
-    register char *region;
-    register char *nameTable;
-    register char *valueTable;
+    char (*blocks)[0x820] = (char (*)[0x820])lbl_80358698;
+    char *name;
+    int total;
+    int offset;
+    char *region;
+    char *nameTable;
+    char *valueTable;
 
     name = (char *)fn_80016720(arg1);
     total = 0;
-    region = table + fn_8000DA10() * 0x820;
+    region = blocks[fn_8000DA10()];
     offset = arg0 * 4;
     nameTable = region + 0x50;
     valueTable = region + offset;
@@ -636,7 +637,7 @@ int fn_8001FAC8(int arg0, const char *arg1) {
         valueTable += 0x28;
     }
 
-    region = table + 0x2080;
+    region = blocks[4];
     nameTable = region + 0x50;
     valueTable = region + offset;
     arg0 = 0;
@@ -647,7 +648,7 @@ int fn_8001FAC8(int arg0, const char *arg1) {
         valueTable += 0x28;
     }
 
-    region = table + 0x28A0;
+    region = blocks[5];
     nameTable = region + 0x50;
     valueTable = region + offset;
     arg0 = 0;
