@@ -88,12 +88,12 @@ void TRKPostEvent(s32 arg0) {
         u32 zero = 0;
         OSRegisterVersion(lbl_80558DD0);
         ticks = (*(volatile u32 *)0x800000F8 >> 2) / 125000;
+        lbl_8055D6D4 = (ticks * 0x7B24) / 8000;
         lbl_8055D6D0 = zero;
         lbl_8055D6C8 = zero;
         lbl_8055D6C0 = zero;
         lbl_8055D6B8 = zero;
         lbl_8055D6B0 = zero;
-        lbl_8055D6D4 = (ticks * 0x7B24) / 8000;
         lbl_8055D6CC = (ticks * 0xA428) / 8000;
         lbl_8055D6C4 = (ticks * 0xA410) / 8000;
         lbl_8055D6BC = (ticks * 0xF618) / 8000;
@@ -109,7 +109,7 @@ void TRKPostEvent(s32 arg0) {
             *(volatile u32 *)0xCD006C00 |= 0x40;
             OSRestoreInterrupts(irq);
         }
-        lbl_8055D6E0 = 0;
+        lbl_8055D6E0 = (void *)zero;
         lbl_8055D6DC = arg0;
         __OSSetInterruptHandler(5, TRKGetNextEvent);
         __OSUnmaskInterrupts(0x04000000);
