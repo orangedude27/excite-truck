@@ -24,6 +24,46 @@ typedef struct { EfVec a; EfVec b; } EfPair;
 typedef struct { int mode; char pad4[0x34]; unsigned char en38; char pad39[0x4B]; int v84; unsigned char en88; char pad89[3]; void *buf; int head; int tail; int cap; } EfObj;
 typedef struct { EfPair p; float v6; unsigned char c0, c1, c2; float f0; float f1; } EfEntry2;
 
+/* One effect object, seen as the 0x8C-byte create-args block the effect
+ * creators (fn_80289C80, fn_80289D94, ... in text_802888D8) fill in on the
+ * stack: fn_8028E61C clears it, fn_8028E2F8/fn_8028F7AC build the effect from
+ * it and fn_8028FD00 copies it field by field into the new object and fills in
+ * the derived fields at +0xA0, +0xA8 and +0xAC.  The game's own names for the
+ * parameters are not known; the fields are named for how the effect code uses
+ * them (the emitter half is the EfObj above). */
+typedef struct EfEffect {
+    int mode;                /* 0x00: effect type; fn_8028FD00 switches on it */
+    int emitterCount;        /* 0x04: emitters to allocate (fn_8028F7AC) */
+    float period;            /* 0x08: 1.0f/it is cached at +0xA0 */
+    float fc;                /* 0x0C */
+    int f10, f14, f18;       /* 0x10: one triple, copied as words */
+    int f1c, f20, f24;       /* 0x1C: the second triple */
+    float f28, f2c, f30;     /* 0x28 */
+    float blend;             /* 0x34: clamped to [0.0f, 1.0f] by fn_8028FD00 */
+    unsigned char en38;      /* 0x38: enables the mode 0 / 2 colour byte */
+    unsigned char pad39[3];
+    float f3c, f40;          /* 0x3C */
+    int f44;                 /* 0x44: 1, 5 or 6 */
+    float f48, f4c;          /* 0x48 */
+    float f50, f54, f58, f5c; /* 0x50: motion and colour parameters */
+    float f60, f64, f68, f6c;
+    float f70, f74, f78, f7c;
+    float f80;               /* 0x80 */
+    int powerOf4;            /* 0x84: a count as a power of 4 (EfObj's v84) */
+    unsigned char en88;      /* 0x88: enables the mode 1 colour byte */
+    unsigned char f89;       /* 0x89 */
+    unsigned char pad8a[2];
+    void *particles;         /* 0x8C: the 0x28-byte particle entries (EfObj's buf) */
+    int playIndex;           /* 0x90: timed playback cursor (-1 = stopped) */
+    int playCount;           /* 0x94 */
+    int poolCount;           /* 0x98 */
+    unsigned char pad9c[4];
+    float invPeriod;         /* 0xA0: 1.0f / period */
+    int texHandle;           /* 0xA4: texture slot, fn_802CAC28 / fn_802CAC54 */
+    int sqrtCount;           /* 0xA8: sqrt of powerOf4, for effect type 1 */
+    float invSqrtCount;      /* 0xAC: 1.0f / sqrtCount */
+} EfEffect;
+
 /* One of the nine emitter lists the effect sorter keeps at lbl_804B34B0
  * (0x104 bytes each): up to 64 emitter pointers with the number held at
  * +0x100.  fn_8028ED8C appends an emitter, fn_8028ED74 empties the list and
