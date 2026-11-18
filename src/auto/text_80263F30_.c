@@ -188,19 +188,25 @@ void fn_80264098(void *item, int type) {
 
 #pragma dont_inline on
 #pragma dont_inline off
+static inline void setCreditsType_inline(void *item, int type) {
+    struct ItemHeader { char vtable[4]; int type; };
+    ((struct ItemHeader *)item)->type = type;
+}
 #pragma scheduling invalid_target
-void fn_802640A0(void *arg0)
-{
-  volatile int *new_var2;
-  volatile unsigned char *p = (volatile unsigned char *) arg0;
-  unsigned short new_var;
-  *new_var2 = (int) (&lbl_8055C458);
-  new_var = 8;
-  *((volatile int *) (p + new_var)) = (*((volatile int *) (p + 0xc)) = 0);
-  new_var2 = (volatile int *) (p + 0);
-  new_var = 4;
-  *((volatile int *) (p + new_var)) = 0x7b;
-  *((volatile int *) (p + 0x10)) = 0;
+void fn_802640A0(void *arg0) {
+    struct CreditsMenuItem {
+        void *name;
+        int type;
+        void *data;
+        int a;
+        int b;
+    };
+    struct CreditsMenuItem *item = (struct CreditsMenuItem *)arg0;
+    item->name = &lbl_8055C458;
+    item->type = 0x7b;
+    item->data = 0;
+    item->a = 0;
+    item->b = 0;
 }
 #pragma scheduling on
 
