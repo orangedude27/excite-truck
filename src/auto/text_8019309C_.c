@@ -828,7 +828,7 @@ extern float *fn_8013A604(void *aiExceptionConfig, float lon); /* AI params cove
 /* Clamped linear interpolation of one component from prev to cur. */
 #pragma dont_inline off
 static inline float fn_80194624_lerp(const float *prev, const float *cur, int i, float delta) {
-    float q, c, b, a;
+    float b, a, q, c;
     q = delta / cur[0];
     c = lbl_80562140;
     b = cur[i];
