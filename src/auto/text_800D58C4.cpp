@@ -911,17 +911,17 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling 750
 extern "C" void fn_800D6EEC(void* arg0) {
     extern char lbl_8031F868[];
     volatile u8* p = (volatile u8*)arg0;
     register u32 zero = 0;
     f32 f = 0.0f;
     register void* list = (void*)(p + 8);
-    u32 vtable = (u32)lbl_8031F868;
+    void* vtable = lbl_8031F868;
     *(volatile u32*)(p + 8) = zero;
     *(volatile u32*)(p + 0xC) = zero;
-    *(volatile u32*)p = vtable;
+    *(void* volatile*)p = vtable;
     *(volatile u32*)(p + 4) = zero;
     *(void* volatile*)(p + 8) = list;
     *(void* volatile*)(p + 0xC) = list;
