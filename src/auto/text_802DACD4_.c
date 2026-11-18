@@ -17,6 +17,12 @@ extern char lbl_8034C918[];
 __declspec(section ".sdata") extern char lbl_8055D130[];
 __declspec(section ".sdata") extern char lbl_8055D138[];
 extern int lbl_8055FE78, lbl_8055FE7C, lbl_8055FE80;
+/* lbl_8034C918: the debug font's name string followed by its log messages. */
+typedef struct {
+    char name[0xC];
+    char sjisMessage[0x24];
+    char romMessage[0x40];
+} OSFontData;
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_propagation off
@@ -84,7 +90,7 @@ void fn_802C32B8(int, int, unsigned int);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma use_lmw_stmw off
-int fn_802DAE64(int arg0, int arg1, char *arg2) {
+void fn_802DAE64(int arg0, int arg1, char *arg2) {
     int sp18, sp14, sp10;
     void *spC;
     int sp8;
@@ -98,7 +104,7 @@ int fn_802DAE64(int arg0, int arg1, char *arg2) {
     register int x;
     int w;
     char *q;
-    int tx, ty, idx;
+    int tx, ty, typart, txpart, idx, ax, ay;
     unsigned char b, nib;
     unsigned int color, packed;
 
@@ -127,8 +133,7 @@ int fn_802DAE64(int arg0, int arg1, char *arg2) {
             if (w > 0x23A) {
                 x = 0x46;
                 y += 0x20;
-                p++;
-                continue;
+                goto next_char;
             }
         }
         OSGetFontTexture(p, (int *)&spC, &sp18, &sp14, &sp10);
@@ -140,23 +145,27 @@ int fn_802DAE64(int arg0, int arg1, char *arg2) {
             while (col < sp10) {
                 ty = row + sp14;
                 tx = col + sp18;
-                idx = (((tx / 8) + (((ty / 8) << 9) / 8)) << 6) + ((ty % 8) * 8 + (tx % 8));
+                typart = (ty % 8) * 8;
+                txpart = tx % 8;
+                idx = (((tx / 8) + (((ty / 8) << 9) / 8)) << 6) + txpart + typart;
                 b = base[idx / 2];
                 nib = b & 0xF;
                 if (!(col & 1)) nib = (b >> 4) & 0xF;
                 if (nib != 0) {
+                    ax = col + x;
+                    ay = ydst;
                     color = (((nib * 12 + 16) << 8) & 0xFFFF00) | 0x80;
                     packed = (color << 16) | (color & 0xFFFF);
-                    fn_802C32B8(col + x, ydst, packed);
+                    fn_802C32B8(ax, ay, packed);
                 }
                 col++;
             }
             row++;
         } while (row < 0x18);
         x += sp10;
+    next_char:
         p++;
     }
-    return 0;
 }
 #pragma pop
 
