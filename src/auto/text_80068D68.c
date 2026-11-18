@@ -7230,6 +7230,8 @@ finish:
     (*(void (**)(u16, void *, void *))(lbl_803C0D48 + 0x224))(*(u16 *)((u8 *)eventArg + 0x10), &resultCb, lbl_803C0D48);
 }
 
+#pragma push
+#pragma processor 750
 void bta_hh_get_acl_q_info(void) {
     u8 info[0x1E];
     register u8 count;
@@ -7264,7 +7266,7 @@ void bta_hh_get_acl_q_info(void) {
     ((void (*)(u32, void *, u16, u16))*(void **)(lbl_803C0D48 + 0x224))(
         0xF, info, *(u16 *)(lbl_803C4040 + 2), *(u16 *)(lbl_803C4040 + 4));
 }
-
+#pragma pop
 void bta_hh_write_dev_act(void *p_dev, void *p_msg) {
 #define btaHhCback (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))
     /* HID-host state machine's write-device action (bta_hh_act.c): hand the
@@ -12472,71 +12474,61 @@ extern u16 lbl_802EE990[];
 extern void fn_800729C0(s16);
 void bta_dm_find_services(u8 *bd_addr) {
     u16 attr_values[2];
-    volatile tSDP_UUID service_uuid;
-    u16 service;
-    register u16 num_attr = 1;
+    tSDP_UUID service_uuid;
+    u16 num_attr = 1;
     register u32 bit_base = 1;
     register u16 uuid_len = 2;
-    register u32 zero = 0;
-    register u8 last_index = 0x17;
-    u8 *state = lbl_803C0B98;
-    u16 *service_table = lbl_802EE990;
     u8 *name;
     void *msg;
 
     attr_values[0] = lbl_80560D10;
     attr_values[1] = lbl_80560D12;
-    goto service_check;
 
-service_loop:
-    if ((*(volatile u32 *)(state + 0xC) &
-         (bit_base << state[0x70])) != 0) {
-        *(tSDP_DISCOVERY_DB **)(state + 0x14) =
-            (tSDP_DISCOVERY_DB *)GKI_getbuf(0xFA);
-        if (*(tSDP_DISCOVERY_DB **)(state + 0x14) != 0) {
-            service = service_table[state[0x70]];
-            *(volatile u32 *)(state + 0xC) &=
-                ~(bit_base << state[0x70]);
-            service_uuid.len = uuid_len;
-            service_uuid.uu.uuid16 = service;
-            if (service == 0x1200)
-                num_attr = 2;
-            SDP_InitDiscoveryDb(*(tSDP_DISCOVERY_DB **)(state + 0x14),
-                                0xFA, 1, (tSDP_UUID *)&service_uuid,
-                                num_attr, attr_values);
-            if (SDP_ServiceSearchAttributeRequest(
-                    bd_addr, *(tSDP_DISCOVERY_DB **)(state + 0x14),
-                    (tSDP_DISC_CMPL_CB *)fn_800729C0) == FALSE) {
-                GKI_freebuf(*(void **)(state + 0x14));
-                *(void **)(state + 0x14) = (void *)zero;
-                state[0x70] = last_index;
-                goto increment_index;
+    while (DM_SCB_SERVICE_INDEX < 0x17) {
+        if ((DM_SCB_SERVICES_TO_SEARCH &
+             (bit_base << DM_SCB_SERVICE_INDEX)) != 0) {
+            DM_SCB_P_SDP_DB = (tSDP_DISCOVERY_DB *)GKI_getbuf(0xFA);
+            if (DM_SCB_P_SDP_DB != 0) {
+                DM_SCB_SERVICES_TO_SEARCH &=
+                    ~(bit_base << DM_SCB_SERVICE_INDEX);
+                service_uuid.len = uuid_len;
+                service_uuid.uu.uuid16 =
+                    bta_service_id_to_uuid_lkup_tbl[DM_SCB_SERVICE_INDEX];
+                if (service_uuid.uu.uuid16 == 0x1200)
+                    num_attr = 2;
+                SDP_InitDiscoveryDb(DM_SCB_P_SDP_DB, 0xFA, 1,
+                                    (tSDP_UUID *)&service_uuid,
+                                    num_attr, attr_values);
+                if (SDP_ServiceSearchAttributeRequest(
+                        bd_addr, DM_SCB_P_SDP_DB,
+                        (tSDP_DISC_CMPL_CB *)fn_800729C0) == FALSE) {
+                    GKI_freebuf(DM_SCB_P_SDP_DB);
+                    DM_SCB_P_SDP_DB = 0;
+                    DM_SCB_SERVICE_INDEX = 0x17;
+                } else {
+                    DM_SCB_SERVICE_INDEX++;
+                    return;
+                }
             }
-            state[0x70]++;
-            goto complete;
         }
+        DM_SCB_SERVICE_INDEX++;
     }
 
-increment_index:
-    state[0x70]++;
-service_check:
-    if (state[0x70] < last_index)
-        goto service_loop;
-
-complete:
-    msg = GKI_getbuf(0x110);
-    if (msg != 0) {
-        *(u16 *)msg = 0x208;
-        *(u32 *)((u8 *)msg + 0x108) = *(u32 *)(state + 0x10);
-        fn_80070FA4((u8 *)msg + 8, state + 0x1A);
-        name = state + 0x20;
-        if ((s8)state[0x20] == 0) {
-            u8 *read_name = (u8 *)BTM_SecReadDevName(state + 0x1A);
-            if (read_name != 0)
-                name = read_name;
+    if (DM_SCB_SERVICE_INDEX >= 0x17) {
+        msg = GKI_getbuf(0x110);
+        if (msg != 0) {
+            *(u16 *)msg = 0x208;
+            *(u32 *)((u8 *)msg + 0x108) = DM_SCB_SERVICES_FOUND;
+            fn_80070FA4((u8 *)msg + 8, DM_SCB_PEER_BDADDR);
+            name = DM_SCB_PEER_NAME;
+            if ((s8)DM_SCB_PEER_NAME[0] == 0) {
+                u8 *read_name = (u8 *)BTM_SecReadDevName(DM_SCB_PEER_BDADDR);
+                if (read_name != 0)
+                    name = read_name;
+            }
+            strncpy((char *)msg + 0xE, (char *)name, 0x20);
+            bta_sys_sendmsg(msg);
         }
-        strncpy((char *)msg + 0xE, (char *)name, 0x20);
-        fn_80071450(msg);
     }
 }
 
@@ -16925,19 +16917,26 @@ void hidd_proc_repage_timeout(void)
     callback(2, cb[9], 0);
 }
 
+#pragma opt_common_subs off
 BOOLEAN hidd_pm_set_now(void *arg0) {
     u8 mode = 0;
     tBTM_PM_PWR_MD spC = {0};
     u8 status = 0;
     u8 state_mode;
+
     if (lbl_803C3AF0[0x6E] == 0) {
         state_mode = lbl_803C3AF0[0x6A];
         mode = ((u8 *)arg0)[8];
-        if (mode == state_mode && mode != 0 && *(u16 *)(lbl_803C3AF0 + 0x6C) >= *(u16 *)((u8 *)arg0 + 2) && *(u16 *)(lbl_803C3AF0 + 0x6C) <= *(u16 *)arg0) {
-            lbl_803C3AF0[0x78] = 0xFF;
-            return TRUE;
+        if (mode == state_mode && mode != 0) {
+            u16 interval = *(u16 *)(lbl_803C3AF0 + 0x6C);
+            if (interval >= *(u16 *)((u8 *)arg0 + 2) && interval <= *(u16 *)arg0) {
+                u8 *cb = lbl_803C3AF0;
+                cb[0x78] = 0xFF;
+                return TRUE;
+            }
         }
     }
+
     switch (mode) {
     case 0:
         if (state_mode == 2) {
@@ -16972,7 +16971,7 @@ BOOLEAN hidd_pm_set_now(void *arg0) {
         ((void (*)(u8, u8, void *))*(void **)(lbl_803C3AF0 + 0xC4))(4, lbl_803C3AF0[0x6F], &status);
     return FALSE;
 }
-
+#pragma opt_common_subs reset
 typedef void (*hidd_pm_callback)(u32, u8, void *);
 void hidd_pm_proc_mode_change(s32 arg0, u8 arg1, s32 arg2) {
     /* HID device power-mode change callback: on error notifies the host callback (event 4);
