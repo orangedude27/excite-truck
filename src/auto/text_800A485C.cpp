@@ -5191,6 +5191,27 @@ static inline s32 VFiPFENT_ITER_MoveNextAndRead(u8 *iter) {
     }
     return result;
 }
+static inline s32 VFiPFENT_ITER_MoveNextAndReadOld(u8 *iter, u32 old) {
+    s32 result;
+    s32 code;
+    u32 sp8;
+    result = fn_800AB378((void *)iter, 0);
+    if (result != 0) {
+        *(u32 *)iter = old;
+        fn_800AB378((void *)iter, 0);
+    } else {
+        if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
+            code = 0x10;
+        } else {
+            result = fn_800B5324(*(void **)(iter + 4), iter + 0x4C, *(u32 *)(iter + 0x44),
+                                 *(u16 *)(iter + 0x48), 0x20, &sp8, 0);
+            if (sp8 != 0x20) code = 0x11;
+            else code = result;
+        }
+        result = code & (s32)(-(u32)code | (u32)code) >> 31;
+    }
+    return result;
+}
 static inline s32 VFiPFENT_ITER_MaskNonZero(s32 value) {
     return value & ((s32)(-(u32)value | (u32)value) >> 31);
 }
@@ -5199,24 +5220,23 @@ static inline s32 VFiPFENT_ITER_MaskNonZero(s32 value) {
 extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 arg2, register s32 *arg3) {
     extern s32 VFiPFENT_loadEntryNumericFieldsFromBuf(void *, void *);
     register u8 *iter;
-    s32 result;
-    s32 code;
     s32 status;
+    s32 masked;
     register s32 zero;
     u8 spC[13];
     u8 flags;
 
-    code = 0;
-    *arg3 = code;
-    arg1[0x20A] = (u8)code;
-    arg1[0x20B] = (u8)code;
-    arg1[0x20C] = (u8)code;
+    status = 0;
+    *arg3 = status;
+    arg1[0x20A] = (u8)status;
+    arg1[0x20B] = (u8)status;
+    arg1[0x20C] = (u8)status;
     if ((arg1[0x21C] & 0x10) && (*(u32 *)(arg1 + 0x234) == 1)) return 2;
     iter = (u8 *)arg0;
     zero = 0;
     goto check_end;
 status_check:
-    if (code != 0) return code;
+    if (status != 0) return status;
     if (iter[0x4C] == 0xE5) {
         arg1[0x20A] = (u8)zero;
         *(u16 *)arg1 = (u16)zero;
@@ -5284,16 +5304,8 @@ status_check:
     *arg3 = 1;
     return 0;
 advance:
-    status = *(u32 *)iter;
-    *(u32 *)iter = status + 1;
-    result = fn_800AB378((void *)iter, 0);
-    if (result != 0) {
-        *(u32 *)iter = status;
-        fn_800AB378((void *)iter, 0);
-    } else {
-        result = VFiPFENT_ITER_ReadEntry(iter);
-    }
-    code = result & (s32)(-(u32)result | (u32)result) >> 31;
+    masked = VFiPFENT_ITER_MoveNextAndRead(iter);
+    status = VFiPFENT_ITER_MaskNonZero(masked);
 check_end:
     if (VFiPFENT_ITER_IsAtLogicalEnd((void *)iter) == 0) goto status_check;
     return 0;
