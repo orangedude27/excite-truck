@@ -651,9 +651,27 @@ extern "C" void fn_80298DE0(void *arg0, void *arg1, int arg2) {
             char *e2 = *(char **)arg0 + off;
             *(float *)(e2 + 0x1C) = now;
             float *mat = (float *)((void *(*)(int, void *))fn_80287B24)((int)arg1, (void *)e2);
-            char *e3 = *(char **)arg0 + off;
+            float *in = (float *)(*(char **)arg0 + off);
             float tmp[3];
-            XformRot3((const float *)mat, (const float *)e3, tmp);
+            if (tmp == in) {
+                float x, y, z;
+                float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+                m10 = mat[3]; m11 = mat[4]; m12 = mat[5];
+                m00 = mat[0]; m01 = mat[1]; m02 = mat[2];
+                m20 = mat[6]; m21 = mat[7]; m22 = mat[8];
+                x = in[0]; y = in[1]; z = in[2];
+                tmp[0] = z * m20 + (x * m00 + y * m10);
+                tmp[1] = z * m21 + (x * m01 + y * m11);
+                tmp[2] = z * m22 + (x * m02 + y * m12);
+            } else {
+                float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+                m10 = mat[3]; m00 = mat[0]; m20 = mat[6];
+                tmp[0] = in[2] * m20 + (in[0] * m00 + in[1] * m10);
+                m11 = mat[4]; m01 = mat[1]; m21 = mat[7];
+                tmp[1] = in[2] * m21 + (in[0] * m01 + in[1] * m11);
+                m12 = mat[5]; m02 = mat[2]; m22 = mat[8];
+                tmp[2] = in[2] * m22 + (in[0] * m02 + in[1] * m12);
+            }
             tmp[0] += mat[9];
             tmp[1] += mat[10];
             tmp[2] += mat[11];
