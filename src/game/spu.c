@@ -744,14 +744,9 @@ void fn_802E5A54(void) {
     lbl_8055FF78 = 0;
 }
 
-static inline float spu_u32_to_f32(unsigned int x) {
-    return (float)x;
-}
-
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma opt_common_subs off
 void *fn_802E5AE8(char *arg0) {
     extern char lbl_8034D210[];
     extern float lbl_80565138, lbl_8056513C;
@@ -802,10 +797,10 @@ void *fn_802E5AE8(char *arg0) {
     if (res == 0) return 0;
     res->unkC = 0xCFFE;
     if (res->unkC != 0xCFFE) fn_802E317C(msg + 0x2C4, arg0);
-    f31 = (float)(res->size >> 1) / lbl_80565138;
+    f31 = spu_u32_to_f32(res->size >> 1) / lbl_80565138;
     aligned = (res->size + 0x3F) & ~0x3F;
     if (res->unk9 == 1) f31 = f31 * lbl_8056513C;
-    f30 = (float)res->unk10 / lbl_80565138;
+    f30 = spu_u32_to_f32(res->unk10) / lbl_80565138;
     slot = (char *)lbl_8055FF90 + freeIdx * 0xB0;
     memset(slot, 0, 0xB0);
     unk4 = res->unk4;
