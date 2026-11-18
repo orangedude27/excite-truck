@@ -661,12 +661,11 @@ extern "C" void fn_801A6C14(void *arg0) {
 #pragma scheduling reset
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 float fn_801A70EC(int arg0, void *arg1, void *arg2, int arg3) {
     float ratio;
     float denominator;
-    int a;
-    denominator = fn_801A63C4((a = *(int *)((char *)arg1 + 4), *(int *)((char *)arg2 + 4)), a);
+    denominator = fn_801A63C4(*(int *)((char *)arg2 + 4), *(int *)((char *)arg1 + 4));
     ratio = fn_801A63C4(arg3, *(int *)((char *)arg1 + 4));
     ratio /= denominator;
     fn_8012F57C(arg0, (char *)arg1 + 0x2A, (char *)arg2 + 0x2A, ratio);
