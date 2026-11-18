@@ -148,6 +148,20 @@ extern char lbl_80348798[];
 extern unsigned int lbl_8055F688;
 struct Fn8027F834List { void **items; int count; int pad[2]; };
 extern struct Fn8027F834List lbl_804B3048;
+static inline void fn_8027F958_append(struct Fn8027F834List *l, void *w) {
+    l->items[l->count] = w;
+    l->count = l->count + 1;
+}
+static inline void fn_8027F958_remove(struct Fn8027F834List *l, void *w) {
+    int i, n;
+    for (i = 0; i < l->count; ++i)
+        if (l->items[i] == w) break;
+    if (i < l->count) {
+        n = l->count - 1;
+        if (i != n) l->items[i] = l->items[n];
+        l->count = n;
+    }
+}
 
 /* One entry of the ebi UI's record list: it shows the record its +0x60 child points at
    and carries the flags the list walks to move the selection (lbl_8055F698) over it.
@@ -947,15 +961,15 @@ int fn_8027F958(int *selection, void *collection) {
     stack.menu.entries[19].value = (void *)(&stack.widgets[4].unk70);
     stack.menu.entries[19].flags = (int)(0);
     stack.menu.entries[19].id = (int)(0);
-    stack.textIds[0][0] = *(int *)(constants + 0x44);
-    stack.textIds[0][1] = *(int *)(constants + 0x48);
-    stack.textIds[0][2] = *(int *)(constants + 0x4c);
+    stack.textIds[0][0] = *(int *)(constants + 0x2c);
+    stack.textIds[0][1] = *(int *)(constants + 0x30);
+    stack.textIds[0][2] = *(int *)(constants + 0x34);
     stack.textIds[1][0] = *(int *)(constants + 0x38);
     stack.textIds[1][1] = *(int *)(constants + 0x3c);
     stack.textIds[1][2] = *(int *)(constants + 0x40);
-    stack.textIds[2][0] = *(int *)(constants + 0x2c);
-    stack.textIds[2][1] = *(int *)(constants + 0x30);
-    stack.textIds[2][2] = *(int *)(constants + 0x34);
+    stack.textIds[2][0] = *(int *)(constants + 0x44);
+    stack.textIds[2][1] = *(int *)(constants + 0x48);
+    stack.textIds[2][2] = *(int *)(constants + 0x4c);
     stack.menu.entries[20].type = (int)(3);
     stack.menu.entries[20].label = (void *)(strings + 0x5E0);
     object = stack.widgets[4].object;
