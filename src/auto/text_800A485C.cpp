@@ -22841,8 +22841,7 @@ extern "C" void fn_800C776C(void *obj, s32 value) {
 
 extern "C" void fn_800C7774(u8 *arg0)
 {
-    register char *start = *(char **)(*(u8 **)(arg0 + 4) + 0xC);
-    u8 *self = arg0;
+    char *start = *(char **)(*(u8 **)(arg0 + 4) + 0xC);
     const char *file = (const char *)lbl_8031D840;
     char *p;
     s32 len1 = 0;
@@ -22851,6 +22850,7 @@ extern "C" void fn_800C7774(u8 *arg0)
     s32 i;
     u8 *q;
     void *buf;
+    u8 *self;
 
     p = start;
     while (*p != 0) {
@@ -22858,6 +22858,7 @@ extern "C" void fn_800C7774(u8 *arg0)
         len1++;
         p++;
     }
+    self = arg0;
     buf = MEMAllocFromAllocator(lbl_80559708, len1 + 1);
     *(void **)(self + 0xA4) = buf;
     if (buf == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x318, file + 0xCE0);
@@ -25730,7 +25731,7 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
 
 static inline s32 findPaneIndex_800A485C(s32 *entry, s32 count, s32 a, s32 b) {
     for (s32 k = 0; k < count; k++, entry += 2)
-        if (entry[0] == a && entry[1] == b)
+        if (a == entry[0] && b == entry[1])
             return k;
     return -1;
 }
@@ -25738,10 +25739,10 @@ static inline s32 findPaneIndex_800A485C(s32 *entry, s32 count, s32 a, s32 b) {
 static inline s32 findPaneIndexUnrolled_800A485C(s32 *entry, s32 count, s32 a, s32 b) {
     s32 j = 0;
     for (s32 k = 0; k < count; k++, entry += 4, j++) {
-        if (entry[0] == a && entry[1] == b)
+        if (a == entry[0] && b == entry[1])
             return j;
         j++;
-        if (entry[2] == a && entry[3] == b)
+        if (a == entry[2] && b == entry[3])
             return j;
     }
     return -1;
