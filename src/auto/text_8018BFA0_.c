@@ -946,7 +946,7 @@ public:
 };
 #pragma cplusplus reset
 #pragma cplusplus on
-#pragma scheduling invalid_target
+#pragma scheduling 750
 extern "C" void fn_8018E330(void *arg0) {
     void *manager;
     void *object;
