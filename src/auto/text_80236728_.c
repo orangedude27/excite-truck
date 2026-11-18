@@ -302,7 +302,7 @@ void fn_80236A5C(void *arg0, int arg1) {
     extern void fn_802E30C8(const char *, ...);
     register void *parser;
     register int mode;
-    float defaultZero, defaultOne;
+    register float defaultZero, defaultOne;
     register void *list;
     register int index;
     register char *filename = (char *)arg1;
@@ -768,8 +768,7 @@ void fn_80237AA0(int arg0, float *arg1, float arg2)
 {
     float var_f31 = arg2;
     float var_f1, var_f2;
-    double tmp;
-    int var_r4;
+    unsigned char var_r4;
     void *p;
     if (arg0 == 0) {
         p = *(void **)(lbl_8055F0C0 + 0x28);
@@ -780,22 +779,22 @@ void fn_80237AA0(int arg0, float *arg1, float arg2)
         if (p) var_f2 = call_get_37AA0(p);
         else var_f2 = lbl_805636E0;
         arg1[1] = var_f2;
-        if (*(unsigned char *)((char *)lbl_8055F0C0 + 0x21) == 0) {
-            tmp = var_f2;
+        if ((unsigned char)lbl_8055F0C0[0x21] == 0) {
+            double tmp = var_f2;
             arg1[1] = arg1[0];
             arg1[0] = tmp;
         }
-        if (*(unsigned char *)((char *)lbl_8055F0C0 + 0x1F) != 0) arg1[0] = lbl_805636E0;
-        if (*(unsigned char *)((char *)lbl_8055F0C0 + 0x20) != 0) arg1[1] = lbl_805636E0;
+        if ((unsigned char)lbl_8055F0C0[0x1F] != 0) arg1[0] = lbl_805636E0;
+        if ((unsigned char)lbl_8055F0C0[0x20] != 0) arg1[1] = lbl_805636E0;
     } else {
         if (arg0 == 3) {
-            var_r4 = *(unsigned char *)((char *)lbl_8055F0C0 + 0x21);
+            var_r4 = (unsigned char)lbl_8055F0C0[0x21];
             if (var_r4 != 0) var_f31 = lbl_805636E4 - arg2;
         } else {
-            var_r4 = *(unsigned char *)((char *)lbl_8055F0C0 + 0x21);
+            var_r4 = (unsigned char)lbl_8055F0C0[0x21];
             if (var_r4 == 0) var_f31 = lbl_805636E4 - arg2;
         }
-        if ((unsigned int)(arg0 == 3) == (unsigned int)var_r4) {
+        if ((unsigned int)(arg0 == 3) == var_r4) {
             p = *(void **)(lbl_8055F0C0 + 0x2C);
             if (p) call_set_37AA0(p, var_f31);
         } else {
