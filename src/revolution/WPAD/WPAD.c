@@ -4654,7 +4654,7 @@ s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
         goto finish;
     }
 
-    enabled = OSDisableInterrupts();
+    outerEnabled = OSDisableInterrupts();
     nestedEnabled = OSDisableInterrupts();
     used = p->stdCmdQueue.back - p->stdCmdQueue.front;
     if (used < 0) used += p->stdCmdQueue.capacity;
