@@ -1587,6 +1587,22 @@ struct Other_80195D80 {
     unsigned char p2[0x5BC - 0xA0];
     float a5bc;
 };
+static inline void MakeVec_80195D80(Other_80195D80 *o, float *vec) {
+    float s = o->a5bc;
+    float dx = o->a54;
+    float dy = o->a58;
+    float dz = o->a5c;
+    float px = dx * s;
+    float py = dy * s;
+    float x = o->a94 + px;
+    float y = o->a98 + py;
+    vec[2] = x;
+    float z = o->a9c + dz * s;
+    vec[0] = x;
+    vec[3] = y;
+    vec[4] = z;
+    vec[1] = z;
+}
 struct Self_80195D80 {
     unsigned char p0[0x18];
     int f18;
