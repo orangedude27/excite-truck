@@ -20,6 +20,16 @@ static inline void InitEntry(UnkEntry *entry, int id, const char *name, const ch
     entry->scale = scale;
 }
 
+static inline void SetEntry(UnkEntry *entry, int id, const char *description, const char *name, float value, float scale) {
+    entry->id = id;
+    entry->name = name;
+    entry->description = description;
+    entry->unk_0x10 = 0;
+    entry->unk_0x14 = 0;
+    entry->value = value;
+    entry->scale = scale;
+}
+
 extern void fn_8000D838(void *);
 extern unsigned char lbl_80335F70[0x800];
  extern unsigned char lbl_80435EE8[0xE1C];
@@ -36,7 +46,7 @@ extern float lbl_805626E0, lbl_805626E4, lbl_805626E8, lbl_805626EC, lbl_805626F
 extern void *memset(void *, int, unsigned long);
 
 #pragma push
-    #pragma scheduling invalid_target
+#pragma scheduling invalid_target
 void fn_801B6670(void) {
     UnkEntry *table;
     unsigned char *base = (unsigned char*)&lbl_80335F70;
