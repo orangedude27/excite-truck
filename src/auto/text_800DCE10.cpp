@@ -525,8 +525,8 @@ extern f32 fn_80111C10(s32);
 extern f32 lbl_80560ED0;
 extern const char lbl_80320560[],lbl_80320980[],lbl_803209B8[],lbl_803209CC[],lbl_80320A04[],lbl_80320A18[],lbl_80320A64[],lbl_80320A78[],lbl_80320AB0[],lbl_80320AC4[],lbl_80320AFC[],lbl_80320B10[],lbl_80320B48[];
 class Reader { public: s32 cursor; u16 (Reader::*next)(); };
-Reader reader;
 struct Context { s32 writer,str; u32 x,y; s32 flags; } context;
+Reader reader;
 class Font { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual s32 ascent(); virtual void x0(); virtual void x1(); virtual void x2(); virtual void x3(); virtual s32 width(u16); };
 class Processor { public: virtual void d0(); virtual void d1(); virtual s32 rectCall(f32*,u16,Context*); };
 const char *base = lbl_80320560;
@@ -1194,7 +1194,7 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     register SoundEntry60 tmp;
     f32 savedY;
     u64 raw;
-    f32 fa, fb;
+    register f32 fa, fb;
     s32 sel;
     register f32 z = lbl_80560ED0;
 
