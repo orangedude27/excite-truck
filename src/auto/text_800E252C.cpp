@@ -804,6 +804,7 @@ extern "C" void fn_800E2F84(void *self)
     *((unsigned char *) (base + 0x6C30)) = 0;
   }
 }
+#pragma pop
 
 #pragma push
 #pragma small_data off
