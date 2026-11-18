@@ -355,44 +355,43 @@ void fn_8027445C(void) {
 void fn_80274460(void *arg0) {
 #pragma opt_common_subs off
 #pragma scheduling on
-    extern void fn_80015A20(void *, float *, float, float);
-    extern void fn_80015B20(void *, void *, void *);
-    struct Words { unsigned int value[12]; };
-    struct Object {
+    /* Mode-3 placement (fn_802693F4 case 3): copy the source 3x4 transform at +0xC0
+     * over the live one at +0x58, compose a half-turn about the Y axis on it
+     * (fn_80015A20 builds the Euler (0, pi, 0) rotation matrix, fn_80015B20 the
+     * 3x3 product), then add the (0, 0.8, 0) offset, rotated into the flipped
+     * basis, to the translation column at +0x7C. */
+    struct MtxWords { unsigned int word[12]; };
+    struct TransformObj {
         unsigned char pad0[0x58];
-        struct Words dst;
+        struct MtxWords mtx;    /* +0x58 live 3x4 transform; translation at +0x7C */
         unsigned char pad1[0x20];
         unsigned char pad2[0x18];
-        struct Words src;
+        struct MtxWords srcMtx; /* +0xC0 source transform copied from the linked object */
     };
     float x, y, z;
     struct {
-        float sp8;
-        float spC;
-        float sp10;
-        float sp14;
-        float sp18;
-        float sp1C;
-        float callVec[3];
-        float matrix[9];
+        Vec result;
+        Vec offset;
+        float angles[3];
+        float rotMtx[9];
     } work;
-    ((struct Object *)arg0)->dst = ((struct Object *)arg0)->src;
-    work.callVec[0] = 0.0f;
-    work.callVec[1] = 3.1415927f;
-    work.callVec[2] = 0.0f;
-    ((void (*)(void *, float *))fn_80015A20)(work.matrix, work.callVec);
-    fn_80015B20((char *)arg0 + 0x58, work.matrix, (char *)arg0 + 0x58);
+    ((struct TransformObj *)arg0)->mtx = ((struct TransformObj *)arg0)->srcMtx;
+    work.angles[0] = 0.0f;
+    work.angles[1] = 3.1415927f;
+    work.angles[2] = 0.0f;
+    ((void (*)(void *, float *))fn_80015A20)(work.rotMtx, work.angles);
+    fn_80015B20((char *)arg0 + 0x58, work.rotMtx, (char *)arg0 + 0x58);
     x = 0.0f;
     y = 0.8f;
     z = 0.0f;
-    work.sp14 = x;
-    work.sp18 = y;
-    work.sp1C = z;
+    work.offset.x = x;
+    work.offset.y = y;
+    work.offset.z = z;
     {
         float *vector;
         float *result;
-        result = &work.sp8;
-        vector = &work.sp14;
+        result = &work.result.x;
+        vector = &work.offset.x;
         if (result == vector) {
             float m00, m01, m02, m10, m11, m20, m21, m12, m22;
             float o0, o1, o2;
@@ -427,9 +426,9 @@ void fn_80274460(void *arg0) {
             result[2] = vector[2] * m22 + (vector[0] * m02 + vector[1] * m12);
         }
     }
-    *(float *)((char *)arg0 + 0x7C) += work.sp8;
-    *(float *)((char *)arg0 + 0x80) += work.spC;
-    *(float *)((char *)arg0 + 0x84) += work.sp10;
+    *(float *)((char *)arg0 + 0x7C) += work.result.x;
+    *(float *)((char *)arg0 + 0x80) += work.result.y;
+    *(float *)((char *)arg0 + 0x84) += work.result.z;
 }
 #pragma pop
 
