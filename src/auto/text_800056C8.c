@@ -120,6 +120,9 @@ typedef struct SessionState { /* lbl_8034EE84, what lbl_8055D350 points at */
                       * word at its +4 holds flags the HUD code tests (0x80000) */
     u8 pad0C[0x08];
     s32 playerCount; /* 0x14: how many of the four slots are in use */
+    u8 pad18[0x04];
+    s32 currentPlayer; /* 0x1C: the player fn_80005740 bound the session to; the HUD
+                        * display lists are drawn for this one */
 } SessionState;
 
 #define OVERLAY_MGR ((OverlayManager *)lbl_8034EEB8)
