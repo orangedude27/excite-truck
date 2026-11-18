@@ -931,11 +931,8 @@ void fn_802B6AC0(void) {
     struct Texture { u32 width; u32 height; u32 *pixels; };
     struct Entry { char name[0x20]; u32 width; u32 height; u8 pixels[1]; };
     struct Scratch { char path[0x20]; char formatBuffer[0x40]; char imageBuffer[0x40]; } scratch;
-    s32 val;
     float seconds;
     s32 below;
-    s32 zero;
-    s32 *state;
     s32 result;
     s32 mode;
     s32 index;
@@ -950,26 +947,22 @@ void fn_802B6AC0(void) {
     char *entryName;
     struct Entry *entry;
     struct Texture *texture;
-    val = fn_802E2C20();
-    seconds = (float)val / lbl_80564C70;
+    seconds = (float)fn_802E2C20() / lbl_80564C70;
     below = seconds - *(float *)((u8 *)&lbl_8055FA18 + 4) < lbl_8055FA18;
     if (below)
         return;
-    val = fn_802E2C20();
-    state = (s32 *)&lbl_804BE7D8;
-    zero = 0;
-    seconds = (float)val / lbl_80564C70;
-    state[1] = zero;
+    seconds = (float)fn_802E2C20() / lbl_80564C70;
+    ((s32 *)&lbl_804BE7D8)[1] = 0;
     *(float *)((u8 *)&lbl_8055FA18) = seconds;
     mode = fn_802B6A70(lbl_8055FA38);
     ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(scratch.imageBuffer, 0x40, lbl_8055CE88, mode);
     result = fn_802E3BB4(scratch.imageBuffer, scratch.path, 0x20);
     if ((u32)result + 0x10000U != 0xFFFFU) {
-        register char *suffix = (char *)lbl_8055CE98;
+        char *suffix = (char *)lbl_8055CE98;
         do {
-            index = state[1];
+            index = ((s32 *)&lbl_804BE7D8)[1];
             entry = (struct Entry *)(*(u32 *)&lbl_804BE7D8 + index * 0x128);
-            state[1] = index + 1;
+            ((s32 *)&lbl_804BE7D8)[1] = index + 1;
             {
                 s32 remaining = 0x20;
                 char *dst = entry->name;
@@ -990,8 +983,8 @@ void fn_802B6AC0(void) {
             }
             if (strchr(entry->name, '.') != 0)
                 *strchr(entry->name, '.') = 0;
-            entry->height = zero;
-            entry->width = zero;
+            entry->height = 0;
+            entry->width = 0;
             exists = fn_80128690();
             if ((u8)exists == 0) fn_80128684();
             ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(scratch.formatBuffer, 0x40, lbl_8055CE90, mode, scratch.path);
@@ -1050,7 +1043,7 @@ void fn_802B6AC0(void) {
                     done2:;
                 }
             }
-        } while ((state[1] + 1 <= state[2]) &&
+        } while ((((s32 *)&lbl_804BE7D8)[1] + 1 <= ((s32 *)&lbl_804BE7D8)[2]) &&
                  fn_802E3C24(result, scratch.path, 0x20) != 0);
         fn_802E3CA4(result);
     }
@@ -1290,37 +1283,18 @@ void fn_802B7434(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802B7518(s16 arg0, s16 arg1, s32 arg2) {
-    s16 x;
-    s16 y;
-    s16 value;
-
-    /* Match note: send the original x/y/global/limit/ratio argument sequence to the validator. */
-    x = arg0;
-    y = arg1;
     switch (lbl_8055FA38) {
     case 2:
         if (arg2 != 0) {
             if (((s32 (*)(s32, s32, s32, s32, f32))fn_802BC09C)(
                     arg0, arg1, lbl_8055FA28, 0xFF,
                     (f32)(u32)arg2 / lbl_80564C90)) {
-                value = lbl_8055FA50[0];
-                if (value < x)
-                    value = x;
-                lbl_8055FA50[0] = value;
-                value = lbl_8055FA50[1];
-                if (value > x)
-                    x = value;
-                lbl_8055FA50[1] = x;
-                value = lbl_8055FA50[2];
-                if (value < y)
-                    value = y;
-                lbl_8055FA50[2] = value;
-                value = lbl_8055FA50[3];
-                if (value > y)
-                    y = value;
-                lbl_8055FA50[3] = y;
+                lbl_8055FA50[0] = (lbl_8055FA50[0] < arg0) ? lbl_8055FA50[0] : arg0;
+                lbl_8055FA50[1] = (lbl_8055FA50[1] > arg0) ? lbl_8055FA50[1] : arg0;
+                lbl_8055FA50[2] = (lbl_8055FA50[2] < arg1) ? lbl_8055FA50[2] : arg1;
+                lbl_8055FA50[3] = (lbl_8055FA50[3] > arg1) ? lbl_8055FA50[3] : arg1;
             } else {
-                fn_802B7300(x, y, arg2, (s32)0xFFFF0000, lbl_80564C94);
+                fn_802B7300(arg0, arg1, arg2, (s32)0xFFFF0000, lbl_80564C94);
             }
         }
         break;
@@ -1328,7 +1302,11 @@ void fn_802B7518(s16 arg0, s16 arg1, s32 arg2) {
         fn_802C21DC();
         break;
     case 5:
-        fn_80204044(arg2, (f32)arg0 * lbl_80564C58, (f32)arg1 * lbl_80564C58);
+    {
+        f32 fx = (f32)arg0 * lbl_80564C58;
+        f32 fy = (f32)arg1 * lbl_80564C58;
+        fn_80204044(arg2, fx, fy);
+    }
         break;
     }
 }
