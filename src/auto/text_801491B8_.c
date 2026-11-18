@@ -2399,103 +2399,120 @@ static inline void DeleteAll8014E9C4(PtrArray8014E9C4 *a) {
 #pragma cplusplus on
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void *fn_8014E9C4(char *p, s32 arg1) {
-    char *entry;
-    int j;
-    Cleanup8014E9C4 *obj;
-    char *sub;
-    if (p) {
-        *(void **)(p+0) = lbl_8032D970;
-        *(void **)(p+4) = lbl_8032D970+0x100;
-        *(void **)(p+8) = lbl_8032D970+0x11c;
-        *(void **)(p+12) = lbl_8032D970+0x130;
+extern "C" void *fn_8014E9C4(char *master, s32 shouldFree) {
+    /* CodeWarrior's deleting destructor of the "betamaster" object: the 0xFE8-byte
+       manager fn_8014DE50 allocates, whose vtable lbl_8032D970 holds this function
+       in slot +8.  It points the object and its three sub-objects back at their
+       tables, releases the five save objects and the coin file, the per-car race
+       entries at +0x9E4 and the growcoin arrays at +0x454, the four pointer arrays
+       at +0x14, +0x220, +0x32C and +0x3B8 and the sounds at +0x444..+0x44C and
+       +0x8E8/+0x8EC, clears the singleton pointer lbl_8055E268 and finally frees
+       the object itself when shouldFree is positive. */
+    char *entry;          /* walks the object; the entry fields are absolute offsets */
+    int entryIndex;
+    Cleanup8014E9C4 *object;
+    char *subObject;
+    if (master) {
+        /* back to the destructor's tables for the object and its three sub-objects */
+        *(void **)(master+0) = lbl_8032D970;
+        *(void **)(master+4) = lbl_8032D970+0x100;
+        *(void **)(master+8) = lbl_8032D970+0x11c;
+        *(void **)(master+12) = lbl_8032D970+0x130;
+        /* the file of fn_80232578 and the five save objects of fn_80145E70 */
         fn_802328D4(lbl_8055E250);
         lbl_8055E250 = 0;
-        obj = (Cleanup8014E9C4 *)lbl_8055E238;
-        if (obj) obj->destroy(1);
+        object = (Cleanup8014E9C4 *)lbl_8055E238;
+        if (object) object->destroy(1);
         lbl_8055E238 = 0;
-        obj = (Cleanup8014E9C4 *)lbl_8055E23C;
-        if (obj) obj->destroy(1);
+        object = (Cleanup8014E9C4 *)lbl_8055E23C;
+        if (object) object->destroy(1);
         lbl_8055E23C = 0;
-        obj = (Cleanup8014E9C4 *)lbl_8055E240;
-        if (obj) obj->destroy(1);
+        object = (Cleanup8014E9C4 *)lbl_8055E240;
+        if (object) object->destroy(1);
         lbl_8055E240 = 0;
-        obj = (Cleanup8014E9C4 *)lbl_8055E244;
-        if (obj) obj->destroy(1);
+        object = (Cleanup8014E9C4 *)lbl_8055E244;
+        if (object) object->destroy(1);
         lbl_8055E244 = 0;
-        obj = (Cleanup8014E9C4 *)lbl_8055E248;
-        if (obj) obj->destroy(1);
+        object = (Cleanup8014E9C4 *)lbl_8055E248;
+        if (object) object->destroy(1);
         lbl_8055E248 = 0;
-        entry = p;
-        for (j=0; j<*(s32 *)(p+0xfe4); entry+=0xc0,j++) {
-            obj = *(Cleanup8014E9C4 **)(entry+0x9f4);
-            if (obj) obj->destroy(1);
-            obj = *(Cleanup8014E9C4 **)(entry+0xa90);
-            if (obj) { if (obj) obj->destroy(1); }
-            obj = *(Cleanup8014E9C4 **)(entry+0xa94);
-            if (obj) { if (obj) obj->destroy(1); }
+        /* the race entries built at +0x9E4, 0xC0 bytes each, *count at +0xFE4 */
+        entry = master;
+        for (entryIndex=0; entryIndex<*(s32 *)(master+0xfe4); entry+=0xc0,entryIndex++) {
+            object = *(Cleanup8014E9C4 **)(entry+0x9f4);
+            if (object) object->destroy(1);
+            object = *(Cleanup8014E9C4 **)(entry+0xa90);
+            if (object) { if (object) object->destroy(1); }
+            object = *(Cleanup8014E9C4 **)(entry+0xa94);
+            if (object) { if (object) object->destroy(1); }
             fn_802CAC54(*(s32 *)(entry+0xaa0));
             fn_802CAC54(*(s32 *)(entry+0xa9c));
             fn_802CAC54(*(s32 *)(entry+0xa98));
-            obj = *(Cleanup8014E9C4 **)(entry+0x9f0);
-            if (obj) obj->destroy(1);
-            obj = *(Cleanup8014E9C4 **)(entry+0x9ec);
-            if (obj) obj->destroy(1);
+            object = *(Cleanup8014E9C4 **)(entry+0x9f0);
+            if (object) object->destroy(1);
+            object = *(Cleanup8014E9C4 **)(entry+0x9ec);
+            if (object) object->destroy(1);
             *(void **)(entry+0x9ec) = 0;
         }
+        /* the items of the array at +0x14; the last one frees what they share */
         {
             int i;
-            for (i=0; i<*(s32 *)(p+0x18); i++)
-                DeleteItem8014E9C4((*(char ***)(p+0x14))[i]);
+            for (i=0; i<*(s32 *)(master+0x18); i++)
+                DeleteItem8014E9C4((*(char ***)(master+0x14))[i]);
+        }
+        /* the three arrays whose elements are plain allocations */
+        {
+            register int k;
+            for (k=0; k<*(s32 *)(master+0x224); k++)
+                fn_80128668((*(void ***)(master+0x220))[k]);
         }
         {
             register int k;
-            for (k=0; k<*(s32 *)(p+0x224); k++)
-                fn_80128668((*(void ***)(p+0x220))[k]);
+            for (k=0; k<*(s32 *)(master+0x330); k++)
+                fn_80128668((*(void ***)(master+0x32c))[k]);
         }
         {
             register int k;
-            for (k=0; k<*(s32 *)(p+0x330); k++)
-                fn_80128668((*(void ***)(p+0x32c))[k]);
+            for (k=0; k<*(s32 *)(master+0x3bc); k++)
+                fn_80128668((*(void ***)(master+0x3b8))[k]);
         }
-        {
-            register int k;
-            for (k=0; k<*(s32 *)(p+0x3bc); k++)
-                fn_80128668((*(void ***)(p+0x3b8))[k]);
-        }
-        obj = *(Cleanup8014E9C4 **)(p+0x44c);
-        if (obj) { if (obj) obj->destroy(1); }
-        obj = *(Cleanup8014E9C4 **)(p+0x444);
-        if (obj) { if (obj) obj->destroy(1); }
-        obj = *(Cleanup8014E9C4 **)(p+0x448);
-        if (obj) { if (obj) obj->destroy(1); }
-        sub = p; if (p) sub = p+12; fn_801D0824(sub);
-        sub = p; if (p) sub = p+8; fn_801D05B4(sub);
-        sub = p; if (p) sub = p+4; fn_801777D0(sub);
+        /* the three sounds fn_80207848 loaded for the manager */
+        object = *(Cleanup8014E9C4 **)(master+0x44c);
+        if (object) { if (object) object->destroy(1); }
+        object = *(Cleanup8014E9C4 **)(master+0x444);
+        if (object) { if (object) object->destroy(1); }
+        object = *(Cleanup8014E9C4 **)(master+0x448);
+        if (object) { if (object) object->destroy(1); }
+        /* the three sub-objects fn_801777CC / fn_801D0590 / fn_801D0800 built */
+        subObject = master; if (master) subObject = master+12; fn_801D0824(subObject);
+        subObject = master; if (master) subObject = master+8; fn_801D05B4(subObject);
+        subObject = master; if (master) subObject = master+4; fn_801777D0(subObject);
+        /* no manager any more, and the systems fn_80167834 / fn_8016A0B0 started */
         lbl_8055E268 = 0;
         fn_80167838();
         fn_8016A68C();
-        fn_8002F634(p+0x9e4,(void *)fn_8014E154,0xc0,8);
-        if (p+0x8f4 && *(u8 *)(p+0x8f4)) {
-            obj = *(Cleanup8014E9C4 **)(p+0x9d8);
-            if (obj) { if (obj) obj->destroy(1); }
+        fn_8002F634(master+0x9e4,(void *)fn_8014E154,0xc0,8);
+        if (master+0x8f4 && *(u8 *)(master+0x8f4)) {
+            object = *(Cleanup8014E9C4 **)(master+0x9d8);
+            if (object) { if (object) object->destroy(1); }
             fn_80167EEC();
-            *(u8 *)(p+0x8f4)=0;
+            *(u8 *)(master+0x8f4)=0;
         }
-        if (p+0x8d4) {
-            obj = *(Cleanup8014E9C4 **)(p+0x8e8);
-            if (obj) { if (obj) obj->destroy(1); }
-            obj = *(Cleanup8014E9C4 **)(p+0x8ec);
-            if (obj) { if (obj) obj->destroy(1); }
+        if (master+0x8d4) {
+            object = *(Cleanup8014E9C4 **)(master+0x8e8);
+            if (object) { if (object) object->destroy(1); }
+            object = *(Cleanup8014E9C4 **)(master+0x8ec);
+            if (object) { if (object) object->destroy(1); }
         }
-        fn_8002F634(p+0x454,(void *)fn_8014E3CC,0x240,2);
-        if (p+0x3b8) if (p+0x3b8) { *(s32 *)(p+0x3b8)=0; *(s32 *)(p+0x3bc)=0; *(s32 *)(p+0x3c0)=0; }
-        if (p+0x32c) if (p+0x32c) { *(s32 *)(p+0x32c)=0; *(s32 *)(p+0x330)=0; *(s32 *)(p+0x334)=0; }
-        if (p+0x220) if (p+0x220) { *(s32 *)(p+0x220)=0; *(s32 *)(p+0x224)=0; *(s32 *)(p+0x228)=0; }
-        if (p+0x14) if (p+0x14) { *(s32 *)(p+0x14)=0; *(s32 *)(p+0x18)=0; *(s32 *)(p+0x1c)=0; }
-        if (arg1>0) fn_80128668(p);
+        fn_8002F634(master+0x454,(void *)fn_8014E3CC,0x240,2);
+        /* the arrays live inside the object, so only their headers are reset */
+        if (master+0x3b8) if (master+0x3b8) { *(s32 *)(master+0x3b8)=0; *(s32 *)(master+0x3bc)=0; *(s32 *)(master+0x3c0)=0; }
+        if (master+0x32c) if (master+0x32c) { *(s32 *)(master+0x32c)=0; *(s32 *)(master+0x330)=0; *(s32 *)(master+0x334)=0; }
+        if (master+0x220) if (master+0x220) { *(s32 *)(master+0x220)=0; *(s32 *)(master+0x224)=0; *(s32 *)(master+0x228)=0; }
+        if (master+0x14) if (master+0x14) { *(s32 *)(master+0x14)=0; *(s32 *)(master+0x18)=0; *(s32 *)(master+0x1c)=0; }
+        if (shouldFree>0) fn_80128668(master);
     }
-    return p;
+    return master;
 }
 #pragma pop
 #pragma cplusplus on
