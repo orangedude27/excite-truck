@@ -2780,7 +2780,6 @@ extern "C" s32 fn_80161C38(void);
 extern "C" s32 fn_8016A30C(void);
 extern "C" s32 fn_8016A780(void *, s32);
 extern "C" s32 fn_8016A878(void *);
-extern "C" void fn_8016B964(void *, s32, s32, s32);
 extern "C" void fn_8016DE20(void *);
 extern "C" void fn_8016E1B4(void *, s32);
 extern "C" f32 fn_8016FD58(void);
