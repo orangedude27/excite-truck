@@ -128,6 +128,9 @@ typedef struct FadeState {
 #define FADE_MODE_OUT   2 /* fading out; the request is not applied yet */
 #define FADE_MODE_DONE  3 /* faded out, request applied */
 #define sFadeState      lbl_80430558 /* the module's one FadeState */
+#define fader           (*(FadeState *)sFadeState) /* ... reached by field name */
+#define sPhysicsFlag    lbl_8055E3BD /* physics module is up (fn_801769F8); picks the fader's time base */
+#define sFrameCount     lbl_8055E3C4 /* global frame/tick counter */
 extern void *fn_80176A1C(void);
 extern f32 fn_80176A2C(void);
 extern f32 lbl_80561B44;
@@ -583,8 +586,7 @@ s32 fn_801773E4(void) {
                 lbl_80430558[0x14] = c;
             }
         } else if ((u8)lbl_8055E3BD == 0) {
-            s32 n, q;
-            u8 cur;
+            s32 n, cur, q, tick, last;
             if ((s32)fn_80176A1C() == 2) {
                 f = fn_80176A2C();
             } else {
@@ -592,19 +594,18 @@ s32 fn_801773E4(void) {
             }
             f = (f > lbl_80561B30) ? f : lbl_80561B30;
             q = (s32)(lbl_80561B40 / f);
-            n = 2;
+            last = *(s32 *)lbl_80430558;
+            tick = lbl_8055E3C4;
             cur = lbl_80430558[0x14];
-            d = lbl_8055E3C4 - *(s32 *)lbl_80430558;
-            if (d <= 2) {
-                n = d;
-            }
-            t = cur + (n * 255) / q;
+            d = tick - last;
+            n = (d > 2) ? 2 : d;
+            t = cur + ((n << 8) - n) / q;
             t = t & ((-t & ~t) >> 31);
             v = 0xFF;
             if (t < 0xFF) {
                 v = t;
             }
-            *(s32 *)lbl_80430558 = lbl_8055E3C4;
+            *(s32 *)lbl_80430558 = tick;
             lbl_80430558[0x14] = v;
         } else {
             s32 now = fn_802E2C20();
