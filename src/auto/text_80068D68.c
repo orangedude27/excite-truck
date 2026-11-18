@@ -971,10 +971,13 @@ typedef struct {
     tBTA_HH_DEV_DESCR descriptor;
 } tBTA_HH_DEV_DSCP_INFO;
 
-/* The device control block as this build lays it out -- its dscp_info is only 8
- * bytes, where the SDK header's tBTA_HH_DEV_DSCP_INFO is much larger, so the
- * fields sit at: addr +0x08, attr_mask +0x0E, w4_evt +0x10, index +0x12,
- * app_id +0x15, hid_handle +0x16, vp +0x17 (see bta_hh_write_dev_act). */
+/* The device control block.  The field types below follow the newer SDK headers
+ * and do NOT reproduce this build's layout: the code reads addr at +0x08,
+ * attr_mask at +0x0E, w4_evt at +0x10, index at +0x12, app_id at +0x15,
+ * hid_handle at +0x16 and vp at +0x17, and walks the kdev[] array in steps of
+ * 0x20 -- so here dscp_info is only 8 bytes and mode/state are single bytes.
+ * Matched functions therefore address the block by offset (see
+ * bta_hh_write_dev_act). */
 typedef struct {
     tBTA_HH_DEV_DSCP_INFO dscp_info;
     UINT8 addr[6];
