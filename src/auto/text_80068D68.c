@@ -4214,11 +4214,11 @@ s32 hcisu_h2_receive_msg(u16 arg0, u8 *arg1) {
     register u8 *var_r22;
     register u8 var_r17;
     register u16 var_r18;
-    u8 *buf;
-    u16 offset;
-    u16 remaining;
-    u16 len;
-    u16 got;
+    register u8 *buf;
+    register u16 offset;
+    register u16 remaining;
+    register u16 len;
+    register u16 got;
 
     if (var_r15[0x1E] != 2) return 0;
     var_r16 = (u16)(arg0 + 1);
@@ -6750,7 +6750,7 @@ void bta_hh_api_disable(void) {
     }
 }
 
-#pragma scheduling 750
+#pragma scheduling invalid_target
 void bta_hh_disc_cmpl(void) {
     UINT8 status = 0;
     UINT8 i;
