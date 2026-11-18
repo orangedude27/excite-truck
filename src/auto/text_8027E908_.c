@@ -715,7 +715,8 @@ int fn_8027F958(int *selection, void *collection) {
     register void **items, **storage;
     register char *constants = (char *)&lbl_802FA848;
     register char *state = (char *)&lbl_804B2FF8;
-#define lbl_804B3048 (((struct Fn8027F958State *)state)->list)
+    register struct Fn8027F834List *list = (struct Fn8027F834List *)(state + 0x50);
+#define lbl_804B3048 (*list)
     register char *strings = lbl_80347E50;
     register float defaultValue;
     register float defaultScale;
