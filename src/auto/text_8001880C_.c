@@ -114,8 +114,8 @@ extern "C" void fn_8001880C(void)
 }
 #pragma pop
 
-#pragma push
-#pragma use_lmw_stmw off
+#pragma cplusplus reset
+#pragma scheduling invalid_target
 s32 fn_80018A8C(const char *arg0) {
     s32 offset = 0;
     s32 i = 0;
@@ -128,7 +128,6 @@ s32 fn_80018A8C(const char *arg0) {
     fn_802E317C(lbl_802FD270, arg0);
     return 0;
 }
-#pragma pop
 
 /* RealName: CarStats_Shutdown (see the comment in the body). */
 #pragma cplusplus reset
