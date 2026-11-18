@@ -97,4 +97,6 @@ extern "C" void fn_8020BF58(void) {
 
     fn_802389E4();
 }
+#pragma cplusplus reset
+#pragma pop
 #pragma scheduling on
