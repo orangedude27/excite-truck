@@ -162,9 +162,9 @@ void fn_8026003C(void) {
     char *sel = (char *)lbl_8055F420;
     char *strBase = (char *)&lbl_80345B40;
     void *src = lbl_8055F3E4;
-    s32 localC, local8, found, idx, i, j, gi, ii, n, max, objCount;
+    s32 firstVal, localC, local8, found, idx, i, j, gi, ii, objCount;
     void *obj, *item, *value;
-    localC = *(s32 *)((char *)fn_80016464(0) + 4);
+    firstVal = *(s32 *)((char *)fn_80016464(0) + 4);
     localC = *(s32 *)((char *)fn_80016510(*(s32 *)((char *)fn_80016464(0) + 0x4C)) + 4);
     local8 = *(s32 *)((char *)fn_80016464(0) + 0x50);
     {
@@ -173,10 +173,7 @@ void fn_8026003C(void) {
         found = VC0(mgr, 0x20);
     }
     obj = fn_8001285C();
-    {
-        s32 a = *(s32 *)((char *)obj + 4);
-        if (fn_8025FECC(localC, local8, found, a) == 0) return;
-    }
+    if (fn_8025FECC((s32)&localC, (s32)&local8, *(s32 *)((char *)obj + 4), *(s32 *)(sel + 0x10)) == 0) return;
     {
         void *d = fn_80016544((void *)localC);
         if ((*(u32 *)((char *)d + 0xA0) & 0x2) == 0) fn_80019144((char *)d + 0x2C);
@@ -199,7 +196,7 @@ void fn_8026003C(void) {
             }
         }
     }
-    fn_80016970(0, found, localC, local8);
+    fn_80016970(0, firstVal, localC, local8);
     fn_8000DA10();
     fn_8000DB34();
     fn_800169F8(0);
@@ -207,10 +204,10 @@ void fn_8026003C(void) {
     fn_80137C84(0);
     memset((void *)(sel + 0x20), 0, 0xB0);
     {
-        void *q = fn_80012820(found);
+        void *q = fn_80012820(firstVal);
         idx = *(s32 *)((char *)q + 0x70);
         while (idx >= 0) {
-            void *r = fn_80012870(found, idx);
+            void *r = fn_80012870(firstVal, idx);
             if (*(s32 *)((char *)r + 0) == found) break;
             idx--;
         }
@@ -706,13 +703,14 @@ extern "C" s32 fn_80260E30(void) {
     };
     s32 offset;
     s32 i;
-    s32 ret;
     if (lbl_8055F3EB) {
         lbl_8055F3EB = 0;
         offset = 0;
         i = 0;
-        for (; i < *(s32 *)(lbl_8055F420 + 0xC); offset += 4, i++) {
+        while (i < *(s32 *)(lbl_8055F420 + 0xC)) {
             (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
+            offset += 4;
+            i++;
         }
         i = 0;
         offset = 0;
@@ -747,11 +745,10 @@ extern "C" s32 fn_80260E30(void) {
                 (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
             }
         }
-        ret = 0;
     } else {
-        ret = 1;
+        return 1;
     }
-    return ret;
+    return 0;
 }
 #pragma push
 #pragma cplusplus on
@@ -784,6 +781,7 @@ extern "C" s32 fn_802610C8(void) {
     return 0;
 }
 #pragma pop
+#ifndef SELECTOR
 /* --- the two-level selector of the challenge-difficulty screen --------- */
 /* lbl_8055F420 points at the frame header the screen loop (fn_80260954)
    builds on its stack, which carries the state of its cursor: a list of
@@ -833,6 +831,7 @@ struct SelectorWidget {
     virtual void clearCursor(); /* 0x6C */
     virtual void setExpanded(); /* 0x70 */
 };
+#endif
 
 /* --- the data the selector shows ---------------------------------------- */
 /* lbl_8055F3E4, the handle fn_8027B878 returns for the screen's argument.  Its
