@@ -213,6 +213,7 @@ unsigned short fn_802E5168(float arg0) {
     float adjusted;
     int converted;
     int result;
+    int limit;
     if (value < 0.0f) {
         adjusted = value - 0.5f;
     } else {
@@ -220,10 +221,12 @@ unsigned short fn_802E5168(float arg0) {
     }
     converted = (int)adjusted;
     result = converted & ((-converted & ~converted) >> 31);
-    if (result >= 0x8000) {
-        result = 0x8000;
+    if (result < 0x8000) {
+        limit = result;
+    } else {
+        limit = 0x8000;
     }
-    return (unsigned short)result;
+    return (unsigned short)limit;
 }
 
 /* One Wii remote speaker stream per Wii remote channel, 0x2C bytes each in the
@@ -792,7 +795,8 @@ void *fn_802E5AE8(char *arg0) {
     if (freeIdx < 0) fn_802E317C(msg + 0x2A8, arg0);
     res = (struct Res *)fn_802E4DC8(arg0);
     if (res == 0) return 0;
-    if ((res->unkC = 0xCFFE) != 0xCFFE) fn_802E317C(msg + 0x2C4, arg0);
+    res->unkC = 0xCFFE;
+    if (res->unkC != 0xCFFE) fn_802E317C(msg + 0x2C4, arg0);
     f31 = (float)(res->size >> 1) / lbl_80565138;
     aligned = (res->size + 0x3F) & ~0x3F;
     if (res->unk9 == 1) f31 = f31 * lbl_8056513C;
