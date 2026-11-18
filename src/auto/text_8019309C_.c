@@ -1013,12 +1013,10 @@ void fn_80194C4C(void *arg0, float *arg1) {
     if (fn_801769A8() & 0x400) {
         float endValue = lbl_8055E3C8;
         float elapsed = fn_801B3064();
-        float ratio = (endValue - elapsed - lbl_80562144) / lbl_805621D8;
+        float ratio = ((endValue - elapsed) - lbl_80562144) / lbl_805621D8;
         float amount = lbl_80562140;
-        if (amount < ratio)
-            amount = ratio;
-        if (amount > lbl_80562144)
-            amount = lbl_80562144;
+        amount = (amount < ratio) ? amount : ratio;
+        amount = (amount > lbl_80562144) ? amount : lbl_80562144;
         value = lbl_80562144 + amount * (value - lbl_80562144);
     }
 
@@ -1053,20 +1051,20 @@ void fn_80194C4C(void *arg0, float *arg1) {
         if (dot > threshold) {
             float ratio = (dot - threshold) /
                           (lbl_80562174 * threshold - threshold);
-            float amount = ratio > lbl_80562140 ? ratio : lbl_80562140;
-            amount = amount > lbl_80562144 ? lbl_80562144 : amount;
+            float amount = lbl_80562140;
+            amount = (amount < ratio) ? amount : ratio;
+            amount = (amount > lbl_80562144) ? amount : lbl_80562144;
             arg1[2] = value + amount * ((lbl_80562160 + value) - value);
         } else {
             float base = value - lbl_80562160;
             float ratio;
-            float amount = lbl_80562140;
-            base = lbl_80562144 < base ? lbl_80562144 : base;
+            float amount;
+            base = (lbl_80562144 > base) ? lbl_80562144 : base;
             ratio = (dot - (lbl_805621DC + lbl_8055A48C)) /
                     (threshold - (lbl_805621DC + lbl_8055A48C));
-            if (amount < ratio)
-                amount = ratio;
-            if (amount > lbl_80562144)
-                amount = lbl_80562144;
+            amount = lbl_80562140;
+            amount = (amount < ratio) ? amount : ratio;
+            amount = (amount > lbl_80562144) ? amount : lbl_80562144;
             arg1[2] = base + amount * (value - base);
         }
     }
@@ -1386,15 +1384,14 @@ void fn_801958D8(void *arg0) {
         case 1:
             *(float *)((char *)arg0 + 0x1E8) = lbl_805621A0;
             break;
-        case 3:
-            *(float *)((char *)arg0 + 0x1DC) = *(float *)((char *)arg0 + 0x26C);
-            if (*(float *)((char *)arg0 + 0x278) > lbl_80562144) {
-                f = lbl_80562140;
-            } else {
-                f = lbl_805621A4;
-            }
+        case 3: {
+            float val = *(float *)((char *)arg0 + 0x26C);
+            float cmp = *(float *)((char *)arg0 + 0x278);
+            f = (cmp > lbl_80562144) ? lbl_80562140 : lbl_805621A4;
+            *(float *)((char *)arg0 + 0x1DC) = val;
             *(float *)((char *)arg0 + 0x2C0) = f;
             break;
+        }
         default:
             fn_802E317C(lbl_803332D8);
             break;
@@ -1853,10 +1850,9 @@ finish:
   extern void fn_80136E8C(int, int, int);
 #pragma scheduling invalid_target
 void fn_80196328(void *arg0) {
-    const f32 one = lbl_80562140;
-    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), one);
-    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), lbl_80562144);
-    fn_8018ADAC(*(void **)((char *)arg0 + 0x294), lbl_80562144);
+    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), 1.0f);
+    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), 0.0f);
+    fn_8018ADAC(*(void **)((char *)arg0 + 0x294), 0.0f);
     fn_8018AE24(*(int *)((char *)arg0 + 0x294), 0);
     fn_80136EA4(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290));
     fn_80136E8C(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 0);
@@ -2186,77 +2182,104 @@ extern float lbl_80562250[2];
 extern void fn_8017B3A8(void *, float *, void *, float);
 extern void fn_8018ADD4(void *, int);
 extern void fn_8018ADC4(int, float);
-void fn_80196AA0(void *arg0) {
-    float *limits = lbl_80562250;
-    volatile float slots[2];
-    int state = 0;
-    float difference;
-    float vecA[3];
-    float vecB[3];
-
-    difference = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x218);
-    if (!(difference < limits[0])) {
-        state = 1;
-        if (!(difference < limits[1])) state = 2;
-    }
+void fn_80196AA0(void *arg0)
+{
+  float *limits = lbl_80562250;
+  volatile float slots[2];
+  int state = 0;
+  float difference;
+  float vecA[3];
+  float vecB[3];
+  difference = (*((float *) (((char *) arg0) + 0x26C))) - (*((float *) (((char *) arg0) + 0x218)));
+  if (difference < limits[0]) goto out;
+  state = 1;
+  if (!(difference < limits[1])) state = 2;
+out:
+  {
+    void *flags = *((void **) (((char *) arg0) + 0x298));
+    if (((*((unsigned char *) (((char *) flags) + 0x17C))) != 0) && ((*((unsigned char *) (((char *) flags) + 0x108))) == 0))
     {
-        void *flags = *(void **)((char *)arg0 + 0x298);
-        if (*(unsigned char *)((char *)flags + 0x17C) != 0 &&
-            *(unsigned char *)((char *)flags + 0x108) == 0) state = -1;
+      state = -1;
     }
-    if (state == 0) goto case0;
-    if (state >= 0) goto nonnegative;
-    if (state < -1) goto transition;
-    goto done;
-nonnegative:
-    if (state < 2) goto case1;
+  }
+  if (state == 0)
+  {
+    goto case0;
+  }
+  if (state >= 0)
+  {
+    goto nonnegative;
+  }
+  if (state < (-1))
+  {
     goto transition;
-case0: {
-        void *object = *(void **)((char *)arg0 + 0x294);
-        void *outputBase;
-        void *inputBase;
-        float factor = lbl_80562258;
-        vecA[0] = *(float *)((char *)object + 0x88) * factor;
-        vecA[1] = *(float *)((char *)object + 0x8C) * factor;
-        vecA[2] = *(float *)((char *)object + 0x90) * factor;
-        outputBase = (void *)*(void * volatile *)((char *)arg0 + 0x294);
-        inputBase = (void *)*(void * volatile *)((char *)arg0 + 0x294);
-        fn_8017B3A8(inputBase, vecA, (char *)outputBase + 0x94, factor);
+  }
+  goto done;
+  nonnegative:
+  if (state < 2)
+  {
+    goto case1;
+  }
+
+  goto transition;
+  case0:
+  {
+    void *object = *((void **) (((char *) arg0) + 0x294));
+    void *outputBase;
+    void *inputBase;
+    float factor = lbl_80562258;
+    vecA[0] = (*((float *) (((char *) object) + 0x88))) * factor;
+    vecA[1] = (*((float *) (((char *) object) + 0x8C))) * factor;
+    vecA[2] = (*((float *) (((char *) object) + 0x90))) * factor;
+    outputBase = (void *) (*((void * volatile *) (((char *) arg0) + 0x294)));
+    inputBase = (void *) (*((void * volatile *) (((char *) arg0) + 0x294)));
+    fn_8017B3A8(inputBase, vecA, ((char *) outputBase) + 0x94, factor);
+  }
+
+  case1:
+  {
+    float high = lbl_80562144;
+    float low = lbl_80562140;
+    float value = low;
+    float result = -((low * (*((float *) (((char *) arg0) + 0x40)))) + ((-high) * (*((float *) (((char *) arg0) + 0x44)))));
+    slots[0] = high;
+    slots[1] = low;
+    value = (value < result) ? (result) : (value);
+    value = (value > lbl_805621A4) ? (lbl_805621A4) : (value);
+    fn_8018ADAC(*((void **) (((char *) arg0) + 0x294)), value);
+    fn_8018ADD4(*((void **) (((char *) arg0) + 0x294)), -1);
+    fn_8018ADBC(*((int *) (((char *) arg0) + 0x294)), lbl_80562144);
+    fn_8018ADC4(*((int *) (((char *) arg0) + 0x294)), lbl_80562140);
+    if (((float) __fabs(*((float *) (((char *) arg0) + 0x270)))) < lbl_80562160)
+    {
+      fn_8018ADB4(*((int *) (((char *) arg0) + 0x294)), lbl_80562140);
     }
-case1: {
-        float high = lbl_80562144;
-        float low = lbl_80562140;
-        float value = low;
-        float result = -((low * *(float *)((char *)arg0 + 0x40)) +
-                         (-high * *(float *)((char *)arg0 + 0x44)));
-        slots[0] = high;
-        slots[1] = low;
-        value = value < result ? result : value;
-        value = value > lbl_805621A4 ? lbl_805621A4 : value;
-        fn_8018ADAC(*(void **)((char *)arg0 + 0x294), value);
-        fn_8018ADD4(*(void **)((char *)arg0 + 0x294), -1);
-        fn_8018ADBC(*(int *)((char *)arg0 + 0x294), lbl_80562144);
-        fn_8018ADC4(*(int *)((char *)arg0 + 0x294), lbl_80562140);
-        if ((float)__fabs(*(float *)((char *)arg0 + 0x270)) < lbl_80562160)
-            fn_8018ADB4(*(int *)((char *)arg0 + 0x294), lbl_80562140);
-        if (*(float *)((char *)arg0 + 0x270) < lbl_80562160) {
-            fn_8018ADC4(*(int *)((char *)arg0 + 0x294), lbl_80562144);
-            {
-                void *object = *(void **)((char *)arg0 + 0x294);
-                float factor = lbl_8056225C;
-                vecB[0] = *(float *)((char *)object + 0x88) * factor;
-                vecB[1] = *(float *)((char *)object + 0x8C) * factor;
-                vecB[2] = *(float *)((char *)object + 0x90) * factor;
-                fn_8017B3A8(object, vecB, (char *)object + 0x94, factor);
-            }
-        }
-        goto done;
+    if ((*((float *) (((char *) arg0) + 0x270))) < lbl_80562160)
+    {
+      fn_8018ADC4(*((int *) (((char *) arg0) + 0x294)), lbl_80562144);
+      {
+        void *object = *((void **) (((char *) arg0) + 0x294));
+        float factor = lbl_8056225C;
+        void *out;
+        vecB[0] = (*((float *) (((char *) object) + 0x88))) * factor;
+        vecB[1] = (*((float *) (((char *) object) + 0x8C))) * factor;
+        vecB[2] = (*((float *) (((char *) object) + 0x90))) * factor;
+        out = *((void **) (((char *) arg0) + 0x294));
+        fn_8017B3A8(object, vecB, ((char *) out) + 0x94, factor);
+      }
     }
-transition:
-    *(int *)((char *)arg0 + 0x210) = *(int *)((char *)arg0 + 0x214);
-    *(int *)((char *)arg0 + 0x214) = 2;
-done:
-    ;
+    goto done;
+  }
+
+  transition:
+  *((int *) (((char *) arg0) + 0x210)) = *((int *) (((char *) arg0) + 0x214));
+
+  *((int *) (((char *) arg0) + 0x214)) = 2;
+  done:
+  ;
+
+  ;
+  ;
 }
 
 /* MSL float.h classification results (__fpclassifyf/__fpclassifyd).  The header
@@ -2332,24 +2355,23 @@ extern int fn_801377EC(void *, int, float *);
 extern int lbl_802F9578[3];
 #pragma scheduling invalid_target
 void fn_80196DC4(void *arg0) {
-    struct Cnt { int a, b, c; };
     struct Entry { u8 pad0[8]; u8 b8; u8 pad9[3]; int w0C; u8 b10; u8 pad11[3]; int w14; };
     struct Info { struct Entry *e; float f[4]; u8 b; int w; };
     struct Table { int count; int pad4[2]; int stride; char *base; };
-    struct Local { struct Cnt cnt; struct Info info; } L;
-    int c2, c1, c0, *src;
+    struct Local { int cnt[3]; struct Info info; } L;
+    int c0, c1, c2, *src;
     char *obj = (char *)arg0;
     float negx, x, u, v, w;
     int s, n, i;
     float zero;
     fn_80196C90(arg0);
     x = *(float *)(obj + 0x274);
+    *(u8 *)(obj + 0x9C) = 0;
     *(u8 *)(obj + 0x74) = 0;
     negx = -x;
-    u = lbl_805621A0;
-    v = lbl_805621AC;
-    w = lbl_80562144;
-    *(u8 *)(obj + 0x9C) = 0;
+    u = -1000.0f;
+    v = 1000.0f;
+    w = 0.0f;
     *(u8 *)(obj + 0xFC) = 0;
     *(int *)(obj + 0x100) = 0;
     *(int *)(obj + 0x98) = 0;
@@ -2367,11 +2389,11 @@ void fn_80196DC4(void *arg0) {
     ((void (*)(int, int, float, float, float, float))fn_80136EA4)(lbl_8055E0D0, *(int *)(obj + 0x290), v, u, x, negx);
     src = (int *)lbl_802F9578;
     c0 = src[0]; c1 = src[1]; c2 = src[2];
-    zero = lbl_80562144;
-    L.cnt.a = c0;
+    L.cnt[0] = c0;
+    zero = 0.0f;
     n = (*(struct Table **)&lbl_8055E0D0)->count - 1;
-    L.cnt.b = c1;
-    L.cnt.c = c2;
+    L.cnt[1] = c1;
+    L.cnt[2] = c2;
     for (i = 0; i < n; i++) {
         struct Table *t = *(struct Table **)&lbl_8055E0D0;
         struct Entry *e;
@@ -2390,14 +2412,13 @@ void fn_80196DC4(void *arg0) {
             L.info.b = 0; L.info.w = 0;
         }
         if (*(u8 *)L.info.e != 0) {
-            if (L.cnt.a > 0 && fn_8019703C(arg0, &L.info) != 0) L.cnt.a--;
+            if (L.cnt[0] > 0 && fn_8019703C(arg0, &L.info) != 0) L.cnt[0]--;
         } else {
-            if (L.cnt.c > 0 && fn_80197FE4(arg0, &L.info) != 0) L.cnt.c--;
-            if (L.cnt.b > 0 && fn_8019799C(arg0, &L.info) != 0) L.cnt.b--;
+            if (L.cnt[2] > 0 && fn_80197FE4(arg0, &L.info) != 0) L.cnt[2]--;
+            if (L.cnt[1] > 0 && fn_8019799C(arg0, &L.info) != 0) L.cnt[1]--;
         }
     }
 }
-#pragma scheduling reset
 /* Returns 1 when the racer registered at slotIndex is missing or inactive
  * (+0x2A4 clear) -- i.e. the slot has no live racer; 0 when one is active. */
 int fn_8019700C(int slotIndex) {
@@ -2797,9 +2818,9 @@ extern "C" void fn_80197AB8(void *arg0, int arg1, float farg0, float farg1, floa
     unsigned char *p = (unsigned char *)arg0;
     float vals[2];
     float rate;
-    float field38;
-    float field3C;
     float motion;
+    float field3C;
+    float field38;
     float term1;
     float term2;
     float height;
@@ -2820,18 +2841,22 @@ extern "C" void fn_80197AB8(void *arg0, int arg1, float farg0, float farg1, floa
         obj = fn_801B2ED0(arg1);
         result = ((VObj *)obj)->call();
         if (result) {
+            float v0, v1, k;
             p[0xFC] = 1;
             rate = *(float *)(p + 0x27C);
             motion = rate * farg0;
+            v1 = vals[1];
             field3C = *(float *)((char *)result + 0x3C);
             field38 = *(float *)((char *)result + 0x38);
-            term1 = field3C * vals[1];
-            term2 = field38 * vals[0];
+            v0 = vals[0];
+            term1 = field3C * v1;
+            term2 = field38 * v0;
             height = *(float *)(p + 0x278) + motion;
             sum = term2 + term1;
             *(float *)(p + 0xF8) = farg1;
             *(int *)(p + 0x114) = arg1;
-            output = lbl_80562194 * sum;
+            k = 1.1f;
+            output = k * sum;
             *(float *)(p + 0x108) = height;
             *(float *)(p + 0x110) = farg2;
             *(float *)(p + 0x104) = output;
@@ -2877,7 +2902,7 @@ void fn_80197BD0(void *arg0, void *arg1) {
 extern float lbl_80562184, lbl_80562290, lbl_80562294;
 extern float lbl_8055A48C;
 extern void fn_8019813C(void *, void *, float, float);
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_80197FE4(void *arg0, void *arg1)
 {
   int special;
@@ -2893,7 +2918,6 @@ int fn_80197FE4(void *arg0, void *arg1)
   float upper;
   float speed;
   float projected_x;
-  float projected_z;
   float lower;
   extern float lbl_8055A48C;
   extern float lbl_8055A488;
@@ -2924,8 +2948,8 @@ int fn_80197FE4(void *arg0, void *arg1)
     *((float *) (((char *) arg0) + 0x134)) = speed;
     projected_x = speed * (*((float *) (((char *) arg1) + 0x10)));
     projected_x += *((float *) (((char *) arg1) + 8));
-    projected_z = speed * (*((float *) (((char *) arg1) + 0x0C)));
-    projected_z = projected_z + (*((float *) (((char *) arg1) + 4)));
+    speed = speed * (*((float *) (((char *) arg1) + 0x0C)));
+    speed = speed + (*((float *) (((char *) arg1) + 4)));
     x_ok = (*((float *) (((char *) arg1) + 8))) > (lbl_8056215C * lbl_8055A48C);
     in_range = 0;
     between = 0;
@@ -2941,7 +2965,7 @@ int fn_80197FE4(void *arg0, void *arg1)
     {
       in_range = 1;
     }
-    angle_ok = ((float) __fabs((double) projected_z)) < z_limit;
+    angle_ok = ((float) __fabs((double) speed)) < z_limit;
     entry = lbl_804349C0[*((int *) (((char *) arg1) + 0x18))];
     allowed = 1;
     if (entry && (*(((unsigned char *) entry) + 0x2A5)))
@@ -2956,7 +2980,6 @@ int fn_80197FE4(void *arg0, void *arg1)
   }
   return result;
 }
-#pragma scheduling on
 void fn_8019813C(void *arg0, void *arg1, float arg2, float arg3) {
     int should_update = 1;
     float event_time;
@@ -2986,11 +3009,14 @@ void fn_8019813C(void *arg0, void *arg1, float arg2, float arg3) {
 }
 
 extern float lbl_80562298, lbl_8056229C, lbl_805622A0, lbl_805622A4, lbl_8056227C, lbl_8056221C;
+#pragma push
+#pragma opt_common_subs off
 void fn_801981A0(void *arg0, void *arg1) {
 #define o ((char *)arg0)
 #define p ((char *)arg1)
-    float c, temp_f3, var_f4, var_f5, temp_f6, temp_f7, temp_f2, temp_f0, temp_f0_2, temp_f0_3, temp_f1, temp_f4;
-    float var_f0, var_f1, var_f5_2, temp_f3b, temp_f3c;
+    float temp_f3, c;
+    float var_f4, var_f5, temp_f6, temp_f7, temp_f2, temp_f0, temp_f0_2, temp_f0_3, temp_f1;
+    float var_f0, var_f1, temp_f3b, temp_f3c, one;
     int temp_r5, var_r0, var_r4;
 
     temp_r5 = *(int *)(o + 0x140);
@@ -3004,7 +3030,7 @@ void fn_801981A0(void *arg0, void *arg1) {
         }
         var_r4 = 1;
         c = lbl_8055A48C;
-        temp_f6 = c + (lbl_80562298 * *(float *)(o + 0x2EC) * c);
+        temp_f6 = (lbl_80562298 * *(float *)(o + 0x2EC) * c) + c;
         if (*(u8 *)(o + 0xFC) != 0 && *(int *)(o + 0x114) == *(int *)(o + 0x138)) {
             var_r4 = 0;
         }
@@ -3030,23 +3056,25 @@ void fn_801981A0(void *arg0, void *arg1) {
                 *(int *)(o + 0x140) = 0x1E;
             }
             if (*(int *)(o + 0x140) == 0 && *(int *)(o + 0x268) != 3) {
-                var_f5_2 = lbl_8056217C - lbl_80562140;
-                temp_f0_3 = (var_f5_2 * ((temp_f7 - *(float *)(o + 0x130)) - lbl_8056229C)) / lbl_805622A0;
-                temp_f4 = lbl_8056227C * lbl_8055A488 * lbl_8055E564;
-                var_f5_2 = (var_f5_2 < temp_f0_3) ? var_f5_2 : temp_f0_3;
-                var_f5_2 = (var_f5_2 > lbl_80562144) ? var_f5_2 : lbl_80562144;
+                var_f4 = lbl_8056227C * lbl_8055A488 * lbl_8055E564;
+                var_f5 = lbl_8056217C - lbl_80562140;
+                temp_f0_3 = (var_f5 * ((temp_f7 - *(float *)(o + 0x130)) - lbl_8056229C)) / lbl_805622A0;
+                var_f5 = (var_f5 < temp_f0_3) ? var_f5 : temp_f0_3;
+                var_f5 = (var_f5 > lbl_80562144) ? var_f5 : lbl_80562144;
+                var_f5 = lbl_80562140 + var_f5;
                 temp_f1 = *(float *)(o + 0x150);
                 var_r0 = 0;
                 if (temp_f1 < lbl_80562144 || *(float *)(o + 0x26C) > temp_f1) {
                     var_r0 = 1;
                 }
                 if (var_r0 != 0) {
-                    *(float *)(o + 0x150) = lbl_805621A4;
-                    var_f1 = (*(int *)(o + 0x18) == 1) ? lbl_805621A4 : lbl_80562140;
+                    one = lbl_805621A4;
+                    *(float *)(o + 0x150) = one;
+                    var_f1 = (*(int *)(o + 0x18) == 1) ? one : lbl_80562140;
                     var_f0 = ((*(float *)(o + 0x12C) - (lbl_8056221C * (lbl_80562174 * var_f1))) > lbl_80562144) ? lbl_80562140 : lbl_805621A4;
-                    var_f1 = *(float *)(o + 0x144) + (lbl_805622A4 * (lbl_80562140 + var_f5_2) * -var_f0);
-                    var_f1 = (temp_f4 < var_f1) ? temp_f4 : var_f1;
-                    temp_f0_3 = -temp_f4;
+                    var_f1 = *(float *)(o + 0x144) + (lbl_805622A4 * var_f5 * -var_f0);
+                    var_f1 = (var_f4 < var_f1) ? var_f4 : var_f1;
+                    temp_f0_3 = -var_f4;
                     var_f1 = (var_f1 > temp_f0_3) ? var_f1 : temp_f0_3;
                     *(float *)(o + 0x144) = var_f1;
                 }
@@ -3057,8 +3085,7 @@ void fn_801981A0(void *arg0, void *arg1) {
 #undef o
 #undef p
 }
-
-#pragma scheduling on
+#pragma pop
 /* If the combined slot counts exceed the limit in +0x2F4, pick a fallback index
    from the primary (+0x74/+0x90) or secondary (+0x9C/+0xB8) side and apply it. */
 void fn_80198488(void *arg0) {
