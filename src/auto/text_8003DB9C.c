@@ -3365,6 +3365,15 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 }
 
 #pragma scheduling on
+static inline u32 GXDispCopyDstReg(s32 value) {
+    union {
+        u32 reg;
+        struct { u32 constant : 8; u32 pad : 14; u32 arg : 10; } fields;
+    } data = {0};
+    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
+    data.fields.constant = 0x4D;
+    return data.reg;
+}
 void GXSetDispCopyDst(s32 value) {
     union {
         u32 reg;
@@ -3374,10 +3383,14 @@ void GXSetDispCopyDst(s32 value) {
             u32 arg : 10;
         } fields;
     } data = {0};
+    u32 reg;
+    unsigned int *dst;
 
     data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
-    gx_disp_copy_dst_store(data.reg, __GXData);
+    reg = data.reg;
+    dst = __GXData;
+    dst[0x238 / 4] = reg;
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
