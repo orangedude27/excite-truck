@@ -6161,16 +6161,17 @@ extern "C" f32 fn_80112960(u8 *arg0, u8 *arg1) {
         u32 word58;
         u32 word5C;
     };
-    register u32 hi1;
-    register u32 hi0 = (u32)arg0 & 0xFF000000U;
-    register s32 arg2;
     register const char *file = lbl_80329530;
+    register s32 arg2;
+    register u32 hi0;
+    register u32 hi1;
     register s32 r5 = 1;
     register s32 r6 = 1;
     register s32 r7 = 1;
     register s32 r8 = 1;
     register s32 r9 = 1;
     register s32 r10 = 1;
+    hi0 = (u32)arg0 & 0xFF000000U;
     if ((hi0 != 0x80000000U) &&
         (((u32)arg0 & 0xFF800000U) != 0x81000000U)) {
         r10 = 0;
@@ -6224,19 +6225,19 @@ extern "C" f32 fn_80112960(u8 *arg0, u8 *arg1) {
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2DE, file + 0x130, arg1);
     }
     arg2 = fn_8002AEE8((s32)arg1);
-    int valid0 = (((u32)arg0 & 0xFF000000U) == 0x80000000U) ||
+    int valid0 = (hi0 == 0x80000000U) ||
         (((u32)arg0 & 0xFF800000U) == 0x81000000U) ||
         (((u32)arg0 & 0xF8000000U) == 0x90000000U) ||
-        (((u32)arg0 & 0xFF000000U) == 0xC0000000U) ||
+        (hi0 == 0xC0000000U) ||
         (((u32)arg0 & 0xFF800000U) == 0xC1000000U) ||
         (((u32)arg0 & 0xF8000000U) == 0xD0000000U) ||
         (((u32)arg0 & 0xFFFFC000U) == 0xE0000000U);
     if (!valid0)
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2c1, file + 0x48, arg0);
-    int valid1 = (((u32)arg1 & 0xFF000000U) == 0x80000000U) ||
+    int valid1 = (hi1 == 0x80000000U) ||
         (((u32)arg1 & 0xFF800000U) == 0x81000000U) ||
         (((u32)arg1 & 0xF8000000U) == 0x90000000U) ||
-        (((u32)arg1 & 0xFF000000U) == 0xC0000000U) ||
+        (hi1 == 0xC0000000U) ||
         (((u32)arg1 & 0xFF800000U) == 0xC1000000U) ||
         (((u32)arg1 & 0xF8000000U) == 0xD0000000U) ||
         (((u32)arg1 & 0xFFFFC000U) == 0xE0000000U);
