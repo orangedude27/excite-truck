@@ -1001,7 +1001,8 @@ extern "C" void fn_80219510(void *widget, s32 offsetX, s32 offsetY) {
     *(s32 *)((u8 *)widget + 0x248) = scrollY;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma optimization_level 2
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
     void* p = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
@@ -1013,6 +1014,7 @@ extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
         *(s32*)((u8*)p + 0x458) = old2 + dy;
     }
 }
+#pragma pop
 extern "C" void *fn_80219568(void *obj, s32 x, s32 y, s32 arg3, s32 arg4, s32 width, s32 height, s32 arg7) {
     /* Initialize a menu text widget: set up base bounds, vtable, and fields at 0x244-0x250. */
     fn_80218F34(obj, x, y, x + width, y + height, arg3);
@@ -5325,21 +5327,20 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
         u8 pad0[4]; s32 x; s32 y; u8 padC[4]; s32 end;
         u8 pad14[0x230]; Child *child; s32 texture; s32 overlay; s32 state; s32 flag;
     };
+    s32 a1 = arg1;
     Object *self = (Object *)arg0;
-    Child *child;
-    s32 childBase;
-    fn_802C3034(arg1);
+    fn_802C3034(a1);
     if (self->flag == 0) {
-        fn_80228E80(arg1, self->texture, self->x, self->y,
+        fn_80228E80(a1, self->texture, self->x, self->y,
                     self->end - self->y, 0);
     } else {
         s32 top = self->y;
         s32 result = ((Vf78 *)arg0)->get();
         s32 left = self->x;
-        fn_80228DC4(arg1, self->texture, left, top, result, 0);
+        fn_80228DC4(a1, self->texture, left, top, result, 0);
     }
-    child = self->child;
-    childBase = child->base;
+    Child *child = self->child;
+    s32 childBase = child->base;
     if (child->length < childBase) {
         if (self->flag == 0) {
             s32 left = self->x + 1;
@@ -5354,7 +5355,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
                 s32 overlay = self->overlay;
                 if (overlay != 0) {
                     s32 diff = fn_802C51C0(self->texture) - fn_802C51C0(overlay);
-                    fn_80228E80(arg1, overlay, left + ((diff + (diff < 0)) >> 1),
+                    fn_80228E80(a1, overlay, left + ((diff + (diff < 0)) >> 1),
                                 y0, y1 - y0, 0);
                 } else {
                     fn_802C3424(left, y0, right, y1, lbl_8055FBDC);
@@ -5378,7 +5379,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
                 s32 overlay = self->overlay;
                 if (overlay != 0) {
                     s32 diff = fn_802C5220(self->texture) - fn_802C5220(overlay);
-                    fn_80228DC4(arg1, overlay, left, top + ((diff + (diff < 0)) >> 1),
+                    fn_80228DC4(a1, overlay, left, top + ((diff + (diff < 0)) >> 1),
                                 right - left, 0);
                 } else {
                     fn_802C3424(left, top, right, bottom, lbl_8055FBDC);
@@ -7186,16 +7187,18 @@ extern "C" s32 fn_80224B0C(void *widget, s32 action) {
 #pragma push
 #pragma opt_propagation off
 extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
-    u8 *self = (u8 *)arg0;
     s32 first;
+    void *p1 = arg1;
+    void *p2 = arg2;
+    volatile u8 *self = (volatile u8 *)arg0;
     f32 sp10;
     f32 spC;
     f32 sp8;
-    ((void *(*)(void *, void *))fn_80218F80)((void *)self, arg2);
-    *(void **)self = lbl_8033E1C4;
+    ((void *(*)(void *, void *))fn_80218F80)((void *)self, p2);
+    *(void *volatile *)self = lbl_8033E1C4;
     strcpy((char *)(self + 0x259), &lbl_8055B88C);
     self[0x258] = 0;
-    switch (*(s32 *)((u8 *)arg2 + 0xA0)) {
+    switch (*(s32 *)((u8 *)p2 + 0xA0)) {
     case 0:
         self[0x258] = 1;
         strcpy((char *)(self + 0x259), &lbl_8055B88C);
@@ -7205,23 +7208,23 @@ extern "C" void *fn_80224B54(void *arg0, void *arg1, void *arg2) {
         sprintf((char *)(self + 0x259), lbl_8033DAD8, fn_80129D90(1, 0x42, 0x45), first);
         break;
     }
-    if (arg1 != 0) {
-        *(s32 *)(self + 0x244) = (s32)arg1;
+    if (p1 != 0) {
+        *(s32 *)(self + 0x244) = (s32)p1;
     } else {
-        *(s32 *)(self + 0x244) = fn_80131234((u8 *)arg2 + 0x20);
+        *(s32 *)(self + 0x244) = fn_80131234((u8 *)p2 + 0x20);
     }
-    *(s32 *)(self + 0x248) = fn_80232578((s32)((u8 *)arg2 + 0x40));
-    *(s32 *)(self + 0x24C) = *(s32 *)((u8 *)arg2 + 0x90);
-    *(s32 *)(self + 0x250) = *(s32 *)((u8 *)arg2 + 4);
+    *(s32 *)(self + 0x248) = fn_80232578((s32)((u8 *)p2 + 0x40));
+    *(s32 *)(self + 0x24C) = *(s32 *)((u8 *)p2 + 0x90);
+    *(s32 *)(self + 0x250) = *(s32 *)((u8 *)p2 + 4);
     {
         s32 ticks = ((s32 (*)(void))fn_80232B70)();
         *(u8 *)(self + 0x299) = 0;
         *(s32 *)(self + 0x29C) = 0;
-        *(f32 *)(self + 0x254) = *(f32 *)((u8 *)arg2 + 0x1C) / (f32)ticks;
+        *(f32 *)(self + 0x254) = *(f32 *)((u8 *)p2 + 0x1C) / (f32)ticks;
     }
-    memcpy(&sp10, (u8 *)arg2 + 0xA4, 4);
-    memcpy(&spC, (u8 *)arg2 + 0xA8, 4);
-    memcpy(&sp8, (u8 *)arg2 + 0xAC, 4);
+    memcpy(&sp10, (u8 *)p2 + 0xA4, 4);
+    memcpy(&spC, (u8 *)p2 + 0xA8, 4);
+    memcpy(&sp8, (u8 *)p2 + 0xAC, 4);
     if (!((f32)FN8021C18C_ABS((double)sp10) <= *(f32 *)&lbl_80558DC4) ||
         !((f32)FN8021C18C_ABS((double)spC) <= *(f32 *)&lbl_80558DC4) ||
         !((f32)FN8021C18C_ABS((double)sp8) <= *(f32 *)&lbl_80558DC4)) {
@@ -8281,14 +8284,16 @@ extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma processor 750
 extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
     if (arg0) {
+        f32 temp_f26;
+        f32 temp_f27;
         {
-            f32 temp_f26 = lbl_805634A4;
             f32 var_f25 = lbl_805634A8;
             s32 var_r31 = 8;
-            do {
+            temp_f26 = lbl_805634A4;
+            while (var_f25 < farg2) {
                 do {
                     f32 temp_f1 = fn_80235EF0(arg0, var_r31);
-                    f32 temp_f27 = temp_f1;
+                    temp_f27 = temp_f1;
                     if (temp_f1 - temp_f26 < farg2 - var_f25) {
                         fn_802353F4(arg0, var_r31, farg0 + var_f25, farg1, lbl_805634A8);
                     } else {
@@ -8299,21 +8304,20 @@ extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3
                     var_r31++;
                 } while (var_r31 < 10);
                 var_r31 = 8;
-            } while (var_f25 < farg2);
+            }
         }
         {
             f32 var_f25 = lbl_805634A8;
             s32 var_r31 = 10;
             f32 temp_f0;
-            f32 temp_f23;
             f32 temp_f24 = fn_80235F64(arg0, 10);
             temp_f0 = farg1 - farg3;
-            f32 temp_f26 = lbl_805634A4;
-            temp_f23 = temp_f24 + temp_f0;
-            do {
+            temp_f26 = lbl_805634A4;
+            f32 temp_f23 = temp_f24 + temp_f0;
+            while (var_f25 < farg2) {
                 do {
                     f32 temp_f1 = fn_80235EF0(arg0, var_r31);
-                    f32 temp_f27 = temp_f1;
+                    temp_f27 = temp_f1;
                     if (temp_f1 - temp_f26 < farg2 - var_f25) {
                         fn_802353F4(arg0, var_r31, farg0 + var_f25, temp_f23, lbl_805634A8);
                     } else {
@@ -8323,16 +8327,16 @@ extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3
                     var_r31++;
                 } while (var_r31 < 12);
                 var_r31 = 10;
-            } while (var_f25 < farg2);
+            }
         }
         {
             f32 var_f23 = lbl_805634A8;
             s32 var_r31 = 4;
-            f32 temp_f26 = lbl_805634A4;
-            do {
+            temp_f26 = lbl_805634A4;
+            while (var_f23 < farg3) {
                 do {
                     f32 temp_f1 = fn_80235F64(arg0, var_r31);
-                    f32 temp_f27 = temp_f1;
+                    temp_f27 = temp_f1;
                     if (temp_f1 - temp_f26 < farg3 - var_f23) {
                         fn_802353F4(arg0, var_r31, farg0, farg1 - var_f23, lbl_805634A8);
                     } else {
@@ -8343,7 +8347,7 @@ extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3
                     var_r31++;
                 } while (var_r31 < 6);
                 var_r31 = 4;
-            } while (var_f23 < farg3);
+            }
         }
         {
             f32 var_f23 = lbl_805634A8;
@@ -8352,13 +8356,12 @@ extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3
             f32 temp_f0;
             temp_f1 = fn_80235EF0(arg0, 4);
             temp_f0 = farg0 + farg2;
-            f32 temp_f27 = lbl_805634A4;
             f32 temp_f24 = temp_f0 - temp_f1;
-            do {
-                var_r31 = 4;
+            temp_f27 = lbl_805634A4;
+            while (var_f23 < farg3) {
                 do {
                     f32 temp_f1 = fn_80235F64(arg0, var_r31);
-                    f32 temp_f26 = temp_f1;
+                    temp_f26 = temp_f1;
                     if (temp_f1 - temp_f27 < farg3 - var_f23) {
                         fn_802353F4(arg0, var_r31, temp_f24, farg1 - var_f23, lbl_805634A8);
                     } else {
@@ -8369,7 +8372,7 @@ extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3
                     var_r31++;
                 } while (var_r31 < 8);
                 var_r31 = 6;
-            } while (var_f23 < farg3);
+            }
         }
         fn_802353F4(arg0, 0, farg0 - lbl_805634EC, lbl_805634EC + farg1, lbl_805634A8);
         {
