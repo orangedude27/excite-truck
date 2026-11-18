@@ -10731,6 +10731,25 @@ extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
     return 0;
 }
 
+/* Bring a volume up to date and say whether it can be used: the file calls
+ * (seek, read, ...) run this on the volume behind the handle first.
+ *
+ * With media in the drive, an unmount waiting on the volume is finished first:
+ * the media-change callback leaves VF_VOL_UNMOUNT_PENDING on a volume that is no
+ * longer mounted, and this closes every file and directory of it, polls the
+ * device (fn_800A5788) and - once the device is gone for good - drops the four
+ * page-cache slots, clears VF_VOL_MOUNTED and the pending flag, and takes one
+ * off the VF instance's mounted-volume count.  A mount waiting on the volume
+ * (VF_VOL_MOUNT_PENDING) is then done by fn_800B5988, which on success resets
+ * the volume's VF_VOL_STATE bits, clears the unmount flag and adds one to that
+ * count; if the volume turned out to be mounted already the pending flag is
+ * merely cleared.  With no media in the drive nothing can be mounted, so a
+ * waiting mount is only cleared.
+ *
+ * Returns the mount's own error when it fails, otherwise 0 while the file
+ * system is mounted and VF_ERR_NOT_MOUNTED when it is not.  fn_800B6004 is this
+ * same routine answering VF_ERR_WRITE_PROTECTED for write-protected media.
+ */
 extern "C" s32 fn_800B5E14(void *vol) {
     s32 result;
     if (fn_800A53B4(vol) != 0) {
