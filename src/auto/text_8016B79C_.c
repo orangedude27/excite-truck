@@ -237,56 +237,65 @@ extern "C" void fn_802AE02C(s32, s32);
 extern "C" void fn_802AE0B8(s32, s32);
 extern "C" void fn_802AE168(s32);
 extern "C" u8 *__AXGetStackHead(void);
-extern "C" u8 lbl_8055A208;
-extern "C" u8 lbl_8055A20C, lbl_8055A210;
-extern "C" u32 lbl_8055E044;
-extern "C" u8 lbl_8055E374;
-extern "C" f32 lbl_8055E3C8, lbl_80561984, lbl_80561988;
-extern "C" f64 lbl_80561990;
-extern "C" u8 lbl_8043036C[];
+extern "C" u8 lbl_8055A208;               /* "%d" */
+extern "C" u8 lbl_8055A20C, lbl_8055A210; /* "" and "-" */
+extern "C" u32 lbl_8055E044;              /* message table stamp */
+extern "C" u8 lbl_8055E374;               /* the time-bonus caption key has been cached */
+extern "C" f32 lbl_8055E3C8, lbl_80561984, lbl_80561988; /* game time, 1.0f (count-up length), 0.5f */
+extern "C" f64 lbl_80561990;              /* 4503599627370496.0: float->int conversion bias */
+extern "C" u8 lbl_8043036C[];             /* the CachedMessage8016B964 holding the caption */
 
+/* A Sound object (created by fn_80207848). Its update (fn_80206824) acts on the
+   request flags below and keeps +0x19 set while the sound is running, so callers
+   ask for a sound by testing +0x19 and then setting +0x49. */
 typedef struct Sound8016B964 {
     char pad19[0x19];
-    unsigned char active;
+    unsigned char active;     /* +0x19: kept set while the sound is running */
     char pad1A[0x49 - 0x1A];
-    unsigned char play;
-    unsigned char stop;
-    unsigned char loop;
-    unsigned char stopOnce;
+    unsigned char play;       /* +0x49: play request, cleared by the update */
+    unsigned char stop;       /* +0x4A: stop request */
+    unsigned char loop;       /* +0x4B: play mode: loop rather than play once */
+    unsigned char stopOnce;   /* +0x4C: stop when the current play ends */
 } Sound8016B964;
 
+/* A message key with the text it resolved to, cached until the message table
+   changes (lbl_8055E044): fn_801312EC stores the key, fn_80131318 resolves it
+   and stamps the current table, fn_80131234 looks a key up. */
 typedef struct CachedMessage8016B964 {
-    const char *key;
-    char *text;
-    unsigned int tag;
+    const char *key;          /* +0x00 */
+    char *text;               /* +0x04 */
+    unsigned int tag;         /* +0x08: the table stamp, ~it while unresolved */
 } CachedMessage8016B964;
 
+/* One round's results state, carried at +0xAC of the "ringchalmaster" object and
+   laid out exactly like the crush-mode CrushRoundState (fn_8017272C).  The ten
+   text cells are the results overlay's fields; fn_8016B964 refills them. */
 typedef struct CrushRoundState8016B964 {
-    int state;
-    float time;
-    unsigned char active;
-    unsigned char flag9;
+    int state;                    /* +0x00: 0 idle, 1 running, 2 ended, 4 scored */
+    float time;                   /* +0x04: game time the round began */
+    unsigned char active;         /* +0x08 */
+    unsigned char flag9;          /* +0x09: resume the results animation */
     char padA[2];
-    void **animPlayer;
-    unsigned char flag10;
+    void **animPlayer;            /* +0x0C: DSA player holding the round's cues */
+    unsigned char flag10;         /* +0x10: hide the time-bonus text */
     char pad11[3];
     Sound8016B964 *sound14; Sound8016B964 *sound18; Sound8016B964 *sound1C;
-    unsigned char flag20;
+    unsigned char flag20;         /* +0x20: the +0x1C sound has been asked for */
     char pad21[3];
     Sound8016B964 *sound24; Sound8016B964 *sound28; Sound8016B964 *sound2C;
-    char bonusText[0x14];
-    char countText[0x14];
-    char captionText[0x14];
-    char totalText[0x14];
-    char rankText[0xA];
-    char scoreText[0x14];
-    char timeText[0x14];
-    char textB2[0x14];
-    char textC6[0x14];
-    char textDA[0x14];
+    char bonusText[0x14];         /* +0x30: bonus score, comma grouped */
+    char countText[0x14];         /* +0x44: time bonus counting up, "%d" */
+    char captionText[0x14];       /* +0x58: ResultsOverlay:TIME_BONUS_CAPS */
+    char totalText[0x14];         /* +0x6C: total score, comma grouped */
+    char rankText[0xA];           /* +0x80: grade letter, "-" when unranked */
+    char scoreText[0x14];         /* +0x8A: score without the time bonus */
+    char timeText[0x14];          /* +0x9E: time bonus left, as a clock */
+    char textB2[0x14];            /* +0xB2 */
+    char textC6[0x14];            /* +0xC6 */
+    char textDA[0x14];            /* +0xDA: non-empty picks sound2C over sound28 */
     char padEE[6];
-    int animIndex;
-    int counters[4];
+    int animIndex;                /* +0xF4: the round's cue in the animation player */
+    int counters[4];              /* +0xF8: cue flags: abort, step, pause, finish */
 } CrushRoundState8016B964;
 #pragma scheduling invalid_target
 extern "C" void fn_8016B964(CrushRoundState8016B964 *round, s32 totalScore, s32 bonusScore, s32 timeBonus) {
