@@ -1450,7 +1450,7 @@ extern float PSQUATMultiply(void *, void *);
 extern int fn_80272C24(float, float, float, float);
 #pragma cplusplus on
 #pragma push
-#pragma processor gekko
+#pragma processor 750
 #pragma scheduling on
 extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     struct Manager {
