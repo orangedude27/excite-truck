@@ -244,6 +244,51 @@ extern "C" u8 lbl_8055E374;
 extern "C" f32 lbl_8055E3C8, lbl_80561984, lbl_80561988;
 extern "C" f64 lbl_80561990;
 extern "C" u8 lbl_8043036C[];
+
+typedef struct Sound8016B964 {
+    char pad19[0x19];
+    unsigned char active;
+    char pad1A[0x49 - 0x1A];
+    unsigned char play;
+    unsigned char stop;
+    unsigned char loop;
+    unsigned char stopOnce;
+} Sound8016B964;
+
+typedef struct CachedMessage8016B964 {
+    const char *key;
+    char *text;
+    unsigned int tag;
+} CachedMessage8016B964;
+
+typedef struct CrushRoundState8016B964 {
+    int state;
+    float time;
+    unsigned char active;
+    unsigned char flag9;
+    char padA[2];
+    void **animPlayer;
+    unsigned char flag10;
+    char pad11[3];
+    Sound8016B964 *sound14; Sound8016B964 *sound18; Sound8016B964 *sound1C;
+    unsigned char flag20;
+    char pad21[3];
+    Sound8016B964 *sound24; Sound8016B964 *sound28; Sound8016B964 *sound2C;
+    char bonusText[0x14];
+    char countText[0x14];
+    char captionText[0x14];
+    char totalText[0x14];
+    char rankText[0xA];
+    char scoreText[0x14];
+    char timeText[0x14];
+    char textB2[0x14];
+    char textC6[0x14];
+    char textDA[0x14];
+    char padEE[6];
+    int animIndex;
+    int counters[4];
+} CrushRoundState8016B964;
+
 extern "C" void fn_8016B964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     f32 f0, f1, f2, f4;
     s32 count, var_r28, var_r6, state;
@@ -428,14 +473,13 @@ extern "C" void *fn_8016BE60(void *arg0) {
         fn_8016A0B0();
         fn_8016C328(object + 0x30);
         {
-            register s32 zero = 0;
             f32 initialValue = lbl_80561998;
-            *(s32 *)(object + 0x98) = zero;
+            *(s32 *)(object + 0x98) = 0;
             *(u8 *)(object + 0x9C) = 1;
             *(f32 *)(object + 0xA0) = initialValue;
-            *(s32 *)(object + 0xA4) = fn_80207848(strings + 0x3C, 1);
-            *(u8 *)(object + 0xA8) = zero;
         }
+        *(s32 *)(object + 0xA4) = fn_80207848(strings + 0x3C, 1);
+        *(u8 *)(object + 0xA8) = 0;
     }
     return object;
 }
