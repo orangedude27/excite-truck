@@ -352,66 +352,89 @@ extern "C" void fn_801DE154(void) {
 #pragma pop
 #pragma scheduling invalid_target
 extern void fn_8018A180(s32);
-s32 fn_801DE5C4(s32 arg0) {
+/* The garage overlay's key handler.  The four arrow keys drive the list of
+ * tunable parameters fn_801DDF0C gathered for the vehicle being edited: up and
+ * down move the selected row (row -1 is the header above the list), left and
+ * right take the selected parameter one step down or up, clamped to its min and
+ * max, and re-apply the vehicle's tuning with the new value.  The reset key on
+ * the header row puts every parameter back on its default instead.  Whatever of
+ * them happened stamps the time, which is what fn_801DE154 fades the on-screen
+ * text from.  Always returns 0. */
+s32 fn_801DE5C4(s32 key) {
+    #define editRow     lbl_8055E9BC /* row the arrows select, -1 for the header */
+    #define lastEditMs  lbl_8055E9CC /* ms of the last edit, see fn_802E2C20 */
+    #define KEY_LEFT    0x125        /* one step down */
+    #define KEY_UP      0x126        /* previous row */
+    #define KEY_RIGHT   0x127        /* one step up */
+    #define KEY_DOWN    0x128        /* next row */
+    #define KEY_RESET   0x58         /* on the header row: restore every default */
     f32 *value;
-    u8 *entry;
-    s32 changed;
+    TunableParam *entry;
+    s32 edited;
     s32 index;
     s32 i;
-    s32 result;
+    s32 vehicle;
     f32 x;
     f32 limit;
 
     fn_801DDF0C();
-    changed = 0;
-    switch (arg0) {
-    case 0x126:
-        changed = 1;
-        lbl_8055E9BC = (void *)(((s32)lbl_8055E9BC - 1 > -1) ? ((s32)lbl_8055E9BC - 1) : -1);
+    edited = 0;
+    switch (key) {
+    case KEY_UP:
+        edited = 1;
+        editRow = (void *)(((s32)editRow - 1 > -1) ? ((s32)editRow - 1) : -1);
         break;
-    case 0x128:
-        changed = 1;
-        index = (s32)lbl_8055E9BC + 1;
-        lbl_8055E9BC = (void *)((index < lbl_8055E9C4 - 1) ? index : lbl_8055E9C4 - 1);
+    case KEY_DOWN:
+        edited = 1;
+        index = (s32)editRow + 1;
+        editRow = (void *)((index < sParamCount - 1) ? index : sParamCount - 1);
         break;
-    case 0x125:
-    case 0x127:
-        changed = 1;
-        index = (s32)lbl_8055E9BC;
-        if (index >= 0 && index < lbl_8055E9C4) {
-            result = fn_801DDE78();
-            entry = (u8 *)lbl_80486F30 + ((s32)lbl_8055E9BC * 0x1C);
-            if ((u32)arg0 == 0x127U) {
-                value = *(f32 **)(entry + 8);
-                x = *value + *(f32 *)(entry + 0x18);
-                limit = *(f32 *)(entry + 0x14);
+    case KEY_LEFT:
+    case KEY_RIGHT:
+        edited = 1;
+        index = (s32)editRow;
+        if (index >= 0 && index < sParamCount) {
+            vehicle = activeVehicle();
+            entry = (TunableParam *)sParamTable + (s32)editRow;
+            if ((u32)key == (u32)KEY_RIGHT) {
+                value = entry->value;
+                x = *value + entry->step;
+                limit = entry->max;
                 *value = (limit < x) ? limit : x;
             } else {
-                value = *(f32 **)(entry + 8);
-                x = *value - *(f32 *)(entry + 0x18);
-                limit = *(f32 *)(entry + 0x10);
+                value = entry->value;
+                x = *value - entry->step;
+                limit = entry->min;
                 *value = (limit > x) ? limit : x;
             }
             fn_801DDFE8((void *)fn_801DDEAC());
-            fn_8018A180(result);
+            fn_8018A180(vehicle);
         }
         break;
-    case 0x58:
-        if ((s32)lbl_8055E9BC == -1) {
-            changed = 1;
-            result = fn_801DDE78();
-            entry = (u8 *)lbl_80486F30;
-            for (i = 0; i < lbl_8055E9C4; i++) {
-                **(f32 **)(entry + 8) = *(f32 *)(entry + 0xC);
-                entry += 0x1C;
+    case KEY_RESET:
+        if ((s32)editRow == -1) {
+            edited = 1;
+            vehicle = activeVehicle();
+            entry = (TunableParam *)sParamTable;
+            for (i = 0; i < sParamCount; i++) {
+                *entry->value = entry->defaultVal;
+                entry++;
             }
-            fn_8018A180(result);
-            lbl_8055E9BC = (void *)0;
+            fn_8018A180(vehicle);
+            editRow = (void *)0;
         }
         break;
     }
-    if (changed) lbl_8055E9CC = (void *)fn_802E2C20();
+    if (edited) lastEditMs = (void *)fn_802E2C20();
     return 0;
+
+    #undef editRow
+    #undef lastEditMs
+    #undef KEY_LEFT
+    #undef KEY_UP
+    #undef KEY_RIGHT
+    #undef KEY_DOWN
+    #undef KEY_RESET
 }
 #pragma scheduling on
 
