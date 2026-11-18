@@ -242,7 +242,6 @@ void fn_8029C450(void *arg0, int arg1) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8029C570(void) {
-    extern float lbl_80564640, lbl_80564644;
     extern char lbl_80349560[];
     extern int lbl_8055CAAC;
     extern int fn_8012C33C(void *);
@@ -257,8 +256,8 @@ extern "C" void fn_8029C570(void) {
         virtual void p16();
         virtual float get(void *);
     };
-    float a = *(volatile float *)&lbl_80564640;
-    float b = *(volatile float *)&lbl_80564644;
+    register float a = 2.0f;
+    register float b = 0.025f;
     char *base = lbl_80349560;
     char *p = base + 0x70;
     char *q = base + 0x7C;
@@ -1454,7 +1453,7 @@ void fn_8029E8E0(float *arg0, int arg1) {
     struct ReverseVec3 center;
     struct Vec3 diff;
     struct Vec3 sp8;
-    float f31, f30, radius, norm;
+    float f31, f30, norm, radius;
     float cx, cy, cz;
     int i;
     int a, b;
