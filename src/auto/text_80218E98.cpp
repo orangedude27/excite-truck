@@ -3862,16 +3862,16 @@ extern "C" void fn_8021E7D4(void *);
 extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
     switch (arg1) {
     case 0x121: {
-        s32 v = *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C);
-        if (v > 0)
-            *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = v - 1;
+        if (**(s32 **)((u8 *)arg0 + 0x25C) > 0)
+            (**(s32 **)((u8 *)arg0 + 0x25C))--;
         fn_8021E7D4(arg0);
         return 1;
     }
     case 0x122: {
-        s32 v = *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) + 1;
+        s32 *p = *(s32 **)((u8 *)arg0 + 0x25C);
+        s32 v = *p + 1;
         if (v < *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x244) + 8))
-            *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = v;
+            *p = v;
         fn_8021E7D4(arg0);
         return 1;
     }
@@ -3882,14 +3882,15 @@ extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
         s32 lim = limitPtr[2] - 1;
         s32 rg1 = rangePtr[1];
         s32 st = *statePtr;
-        s32 sum = st + rg1;
-        if (lim < sum)
-            *statePtr = (s32)(s8)lim;
+        register s32 sum = st + rg1;
+        if (lim < sum) {
+            sum = lim;
+            *statePtr = sum;
+        }
         {
             s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
-            s32 nv = range[2] + range[1];
-            range[2] = nv;
-            if (nv > range[0] - range[1])
+            range[2] += range[1];
+            if (range[2] > range[0] - range[1])
                 range[2] = range[0] - range[1];
             if (range[2] < 0)
                 range[2] = 0;
@@ -3898,15 +3899,15 @@ extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
         return 1;
     }
     case 0x124: {
-        s32 st = *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C);
+        s32 *p = *(s32 **)((u8 *)arg0 + 0x25C);
+        s32 st = *p;
         s32 rg1 = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x248) + 4);
         s32 v = st - rg1;
-        *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = v & ~(v >> 31);
+        *p = v & ~(v >> 31);
         {
             s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
-            s32 nv = range[2] - range[1];
-            range[2] = nv;
-            if (nv > range[0] - range[1])
+            range[2] -= range[1];
+            if (range[2] > range[0] - range[1])
                 range[2] = range[0] - range[1];
             if (range[2] < 0)
                 range[2] = 0;
@@ -5144,6 +5145,35 @@ extern "C" void *fn_80220E48(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     return arg0;
 }
 
+/* Scroll bar drag: if pos is on the thumb, remember the grab offset; otherwise
+ * page the child's scroll position (+8, clamped to [0, total - visible]) toward pos.
+ * Returns 1 when it paged. */
+static inline BOOL ScrollBarDrag(s32 *child, f32 scale, s32 base, s32 pos, s32 *grab) {
+    s32 begin = base + (s32)(scale * (f32)child[2]) + 5;
+    s32 end = base + (s32)(scale * (f32)(child[2] + child[1])) - 5;
+    s32 size;
+    s32 limit;
+
+    if (pos >= begin && pos <= end) {
+        *grab = (s32)(scale * (f32)child[2]) - pos;
+        return FALSE;
+    }
+    if (pos < begin) {
+        size = (s32)((f32)child[2] - (lbl_805634A4 / scale) * (f32)((end - begin) + 5));
+    } else {
+        size = (s32)((lbl_805634A4 / scale) * (f32)((end - begin) + 5) + (f32)child[2]);
+    }
+    child[2] = size;
+    limit = child[0] - child[1];
+    if (size > limit) {
+        child[2] = limit;
+    }
+    if (child[2] < 0) {
+        child[2] = 0;
+    }
+    return TRUE;
+}
+
 #pragma scheduling invalid_target
 extern "C" void fn_80220F90(void *arg0, s32 arg1, s32 arg2) {
     class Vf78Arg {
@@ -5596,7 +5626,7 @@ done:
 }
 
 extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
-    s32 left, current, top, count, row, col;
+    s32 left, current, top, count;
     s32 *state = (s32 *)obj;
     s32 *items;
     s32 *entry;
@@ -5608,10 +5638,10 @@ extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
     top = state[2];
     if (y < top + 10) {
         left = state[1];
-        col = (x - left) / 50;
+        s32 col = (x - left) / 50;
         if (col < 0) return;
-        items = *(s32 **)((u8 *)obj + 0x244);
-        if (col >= items[0x120 / 4]) return;
+        s32 *items2 = *(s32 **)((u8 *)obj + 0x244);
+        if (col >= items2[0x120 / 4]) return;
         state[0x24C / 4] = col;
         state[0x250 / 4] = -1;
         return;
@@ -5621,13 +5651,14 @@ extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
     left = state[1];
     if (x < current * 50 + left) goto fail_x;
     if (x > (current + 1) * 50 + left) goto fail_x;
-    y -= top;
-    items = *(s32 **)((u8 *)obj + 0x244);
-    row = (y - 10) / 10;
-    entry = *(s32 **)((u8 *)items + current * 0x24);
-    if (row < 0) goto fail_row;
-    if (row >= entry[2]) goto fail_row;
-    state[0x250 / 4] = row;
+    {
+        s32 *list = *(s32 **)((u8 *)obj + 0x244);
+        s32 row = (y - top - 10) / 10;
+        entry = *(s32 **)((u8 *)list + current * 0x24);
+        if (row < 0) goto fail_row;
+        if (row >= entry[2]) goto fail_row;
+        state[0x250 / 4] = row;
+    }
     return;
 fail_x:
     state[0x250 / 4] = -1;
