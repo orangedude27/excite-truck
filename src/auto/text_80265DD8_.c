@@ -1186,6 +1186,7 @@ void fn_802678E8(void *arg0, int arg1) {
  }
  fn_80267130(arg0); ((void (*)(void *))fn_802671CC)(arg0);
 }
+#pragma opt_unroll_loops reset
 #pragma push
 #pragma processor 750
 void fn_80267E40(unsigned int targetId, float value) {
