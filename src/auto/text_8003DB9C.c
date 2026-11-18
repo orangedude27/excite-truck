@@ -3085,30 +3085,36 @@ void __GXSetDirtyState(void) {
     gxdt[0x5FC / 4] = 0;
 }
 
-void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts) {
-    unsigned int *data = __GXData;
-    unsigned int *dim;
-    unsigned int count;
-    unsigned int i;
-    unsigned short width;
-    unsigned short height;
-
-    if (data[0x5FC / 4] != 0)
-        __GXSetDirtyState();
-    if (data[0] == 0) {
-        dim = *(unsigned int * volatile *)&__GXData;
-        width = *(unsigned short *)((char *)dim + 4);
-        height = *(unsigned short *)((char *)dim + 6);
-        *(volatile unsigned char *)0xCC008000 = 0x98;
-        count = (unsigned int)width * height;
-        *(volatile unsigned short *)0xCC008000 = *(volatile unsigned short *)((char *)dim + 4);
-        for (i = 0; i < count; i += 4) {
-            *(volatile unsigned int *)0xCC008000 = 0;
-        }
-        *(unsigned short *)((char *)data + 2) = 1;
+void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts)
+{
+  unsigned int *data = __GXData;
+  unsigned int *dim;
+  unsigned int new_var2[2];
+  unsigned int i;
+  unsigned short width;
+  volatile unsigned short *new_var;
+  if (data[0x5FC / 4] != 0)
+  {
+    __GXSetDirtyState();
+  }
+  if (data[0] == 0)
+  {
+    dim = *((unsigned int * volatile *) (&__GXData));
+    width = *((unsigned short *) (((char *) dim) + 4));
+    new_var2[0] = *((unsigned short *) (((char *) dim) + 6));
+    *((volatile unsigned char *) 0xCC008000) = 0x98;
+    new_var = (volatile unsigned short *) 0xCC008000;
+    new_var2[1] = ((unsigned int) width) * new_var2[0];
+    *new_var = *((volatile unsigned short *) (((char *) dim) + 4));
+    for (i = 0; i < new_var2[1]; i += 4)
+    {
+      *((volatile unsigned int *) 0xCC008000) = 0;
     }
-    *(volatile unsigned char *)0xCC008000 = vtxfmt | prim;
-    *(volatile unsigned short *)0xCC008000 = nverts;
+
+    *((unsigned short *) (((char *) data) + 2)) = 1;
+  }
+  *((volatile unsigned char *) 0xCC008000) = vtxfmt | prim;
+  *((volatile unsigned short *) 0xCC008000) = nverts;
 }
 
 #pragma dont_inline on
@@ -3355,6 +3361,7 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 
 #pragma scheduling on
 void GXSetDispCopyDst(s32 value) {
+    s32 v = value;
     union {
         u32 reg;
         struct {
@@ -3363,10 +3370,12 @@ void GXSetDispCopyDst(s32 value) {
             u32 arg : 10;
         } fields;
     } data = {0};
+    unsigned int *dst;
 
-    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
+    data.fields.arg = ((v << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
-    GXStoreWord_8003DB9C(data.reg, __GXData);
+    dst = (unsigned int *)((char *)__GXData + 0x238);
+    *dst = data.reg;
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
@@ -6300,53 +6309,46 @@ void __GXSetMatrixIndex(s32 index) {
 
 void GXSetGPMetric(unsigned int metric1, unsigned int metric2) {
     unsigned int *data = __GXData;
-    int old1 = data[0x5EC / 4];
-    if (old1 == 0x22) goto doA;
-    if (old1 >= 0x22) goto end1;
-    if (old1 >= 0xB) goto checkB1;
-    if (old1 < 0) goto end1;
-    goto doA;
-checkB1:
-    if (old1 < 0x1B) goto doB1;
-    goto doB2;
-    goto end1;
-doA:
-    WGPIPE.c = 0x10;
-    WGPIPE.i = 0x1006;
-    WGPIPE.i = 0;
-    goto end1;
-doB1:
-    WGPIPE.c = 0x61;
-    WGPIPE.i = 0x23000000;
-    goto end1;
-doB2:
-    WGPIPE.c = 0x61;
-    WGPIPE.i = 0x24000000;
-end1:;
-    {
-        int old2 = data[0x5F0 / 4];
-        if (old2 == 0x15) goto doC;
-        if (old2 >= 0x15) goto end2;
-        if (old2 >= 9) goto checkD;
-        if (old2 < 0) goto end2;
-        goto doC;
-checkD:
-        if (old2 < 0x11) goto doD;
-        goto doCP;
-        goto end2;
-doC:
+    switch (data[0x5EC / 4]) {
+    case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case 10:
+    case 34:
+        WGPIPE.c = 0x10;
+        WGPIPE.i = 0x1006;
+        WGPIPE.i = 0;
+        break;
+    case 11: case 12: case 13: case 14: case 15: case 16: case 17: case 18: case 19: case 20:
+    case 21: case 22: case 23: case 24: case 25: case 26:
+        WGPIPE.c = 0x61;
+        WGPIPE.i = 0x23000000;
+        break;
+    case 27: case 28: case 29: case 30: case 31: case 32: case 33:
+        WGPIPE.c = 0x61;
+        WGPIPE.i = 0x24000000;
+        break;
+    case 35:
+        break;
+    default:
+        break;
+    }
+    switch (data[0x5F0 / 4]) {
+    case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8:
+    case 21:
         WGPIPE.c = 0x61;
         WGPIPE.i = 0x67000000;
-        goto end2;
-doD:
+        break;
+    case 9: case 10: case 11: case 12: case 13: case 14: case 15: case 16:
         data[0x5F4 / 4] &= 0xFFFFFF0F;
         WGPIPE.c = 8;
         WGPIPE.c = 0x20;
         WGPIPE.i = data[0x5F4 / 4];
-        goto end2;
-doCP:
+        break;
+    case 17: case 18: case 19: case 20:
         __cpReg[3] = 0;
-end2:;
+        break;
+    case 22:
+        break;
+    default:
+        break;
     }
     data[0x5EC / 4] = metric1;
     switch (metric1) {
