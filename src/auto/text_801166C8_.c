@@ -2204,9 +2204,9 @@ void fn_80119B38(void *arg0, s32 arg1) {
     if (value < 0) value = 0;
     if (value > 0x10000) value = 0x10000;
     temp_f31 = (f32)value / lbl_805611B0;
-    temp_f3 = (f32)fn_8002EFBC(lbl_805611B4 - temp_f31, lbl_805611B8);
+    temp_f3 = (f32)fn_8002EFBC(lbl_805611B4 - temp_f31, (double)0.3f);
     *(s32*)((u8*)arg0 + 0xa8) = (s32)(lbl_805611C0 * temp_f3);
-    temp_f1 = (f32)fn_8002EFBC(temp_f31, lbl_805611B8);
+    temp_f1 = (f32)fn_8002EFBC(temp_f31, (double)0.3f);
     *(s32*)((u8*)arg0 + 0xac) = (s32)(lbl_805611C0 * temp_f1);
     fn_80119288(arg0, temp_f1);
 }
@@ -5122,17 +5122,15 @@ extern s32* fn_8011E0B4(s32, s32, s32, s32, s32, s32*, s32, s32);
 u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     extern s32 *fn_8011E0B4();
     u32 result;
-    register s32 old;
-    register s32 cur;
-    s32 next;
+    s32 old = *(s32 *)((u8 *)arg0 + 0x14);
+    s32 cur;
+    s32 next = old ^ 1;
     s32 *ptr;
     s32 *ret;
     s32 curOffset;
     s32 oldOffset;
     s32 *curBase;
     s32 *oldBase;
-    old = *(s32 *)((u8 *)arg0 + 0x14);
-    next = old ^ 1;
     if (*(s32 *)((u8 *)arg0 + next * 0x30 + 0x1C) != 0) {
         *(s32 *)((u8 *)arg0 + 0x14) = next;
     }
