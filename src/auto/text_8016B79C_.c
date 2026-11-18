@@ -1624,6 +1624,8 @@ s32 fn_8016E1A4(s32 *basePtr, s32 index) {
     return *basePtr + (index * 0x14);
 }
 
+extern void fn_8016A240(void *);
+
 // Builds a formatted state label for this object, applies it via UI helper, resets the
 // selected list entry's runtime fields/child handles when index is valid, and stops its
 // active sound handle if one is set.
