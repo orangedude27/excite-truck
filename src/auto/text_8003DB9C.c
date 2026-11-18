@@ -1510,7 +1510,7 @@ void __GXCleanGPFifo(void) {
         piFifo[5] = rdPtr;
         piFifo[6] = wrPtr;
         piFifo[7] = count;
-        zero = (wrPtr & 0x1FFFFFE0u);
+        zero = __rlwimi(zero, wrPtr, 0, 3, 26);
         __piReg[5] = zero;
         tmp = (gd[2] | 4u) & 0xFFFFFFF7u;
         gd[2] = tmp;
@@ -1850,6 +1850,7 @@ void __GXCalculateVLim(void) {
     register unsigned int *gx = __GXData;
     register unsigned int flags;
     register int extra;
+    register unsigned char *table;
     register unsigned int vtx;
     register int sum;
     int tableValue;
@@ -1858,6 +1859,7 @@ void __GXCalculateVLim(void) {
 
     flags = gx[0x14 / 4];
     extra = gx[0x1C / 4];
+    table = &lbl_80558E40;
 
     sum = flags & 1;
     sum += (flags >> 1) & 1;
@@ -1869,22 +1871,24 @@ void __GXCalculateVLim(void) {
     sum += (flags >> 6) & 1;
     sum += (flags >> 7) & 1;
 
-    tableValue = ((unsigned char *)&lbl_80558E40)[(flags >> 11) & 3];
+    tableValue = table[(flags >> 11) & 3];
     sum += (flags >> 8) & 1;
-    sum += ((unsigned char *)&lbl_80558E40)[(flags >> 9) & 3];
+    sum += table[(flags >> 9) & 3];
     sum += tableValue * (((extra >> 9) & 1) == 1 ? 3 : 1);
 
-    sum += ((unsigned char *)&lbl_80558E38)[(flags >> 13) & 3];
-    sum += ((unsigned char *)&lbl_80558E38)[(flags >> 15) & 3];
+    table = &lbl_80558E38;
+    sum += table[(flags >> 13) & 3];
+    sum += table[(flags >> 15) & 3];
 
-    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 0) & 3];
-    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 2) & 3];
-    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 4) & 3];
-    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 6) & 3];
-    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 8) & 3];
-    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 10) & 3];
-    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 12) & 3];
-    sum += ((unsigned char *)&lbl_80558E3C)[(vtx >> 14) & 3];
+    table = &lbl_80558E3C;
+    sum += table[(vtx >> 0) & 3];
+    sum += table[(vtx >> 2) & 3];
+    sum += table[(vtx >> 4) & 3];
+    sum += table[(vtx >> 6) & 3];
+    sum += table[(vtx >> 8) & 3];
+    sum += table[(vtx >> 10) & 3];
+    sum += table[(vtx >> 12) & 3];
+    sum += table[(vtx >> 14) & 3];
 
     *(unsigned short *)((char *)gx + 6) = sum;
 }
@@ -3361,6 +3365,20 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 }
 
 #pragma scheduling on
+static inline u32 buildDispCopyWord(s32 value) {
+    union {
+        u32 reg;
+        struct {
+            u32 constant : 8;
+            u32 pad : 14;
+            u32 arg : 10;
+        } fields;
+    } data = {0};
+    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
+    data.fields.constant = 0x4D;
+    return data.reg;
+}
+
 void GXSetDispCopyDst(s32 value) {
     union {
         u32 reg;
@@ -3373,7 +3391,7 @@ void GXSetDispCopyDst(s32 value) {
 
     data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
-    GXStoreDispCopyDstReg(data.reg);
+    __GXData[0x238 / 4] = data.reg;
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
