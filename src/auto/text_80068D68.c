@@ -7258,59 +7258,70 @@ void bta_hh_get_acl_q_info(void) {
 }
 
 void bta_hh_write_dev_act(void *p_dev, void *p_msg) {
-    extern char lbl_80315540[];
-    extern char lbl_8031555C[];
-    u8 *dev = (u8 *)p_dev;
-    u8 *msg = (u8 *)p_msg;
-    u16 status = 0;
-    u8 saved_event = msg[8];
+#define btaHhCback (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))
+    /* HID-host state machine's write-device action (bta_hh_act.c): hand the
+     * queued HID transaction to the HID host.  Once it is accepted the device
+     * control block remembers what the transaction needs -- the handshake event
+     * to report when the device answers (w4_evt), the virtual-cable-unplug flag
+     * -- and the BTA system manager is told about the traffic or the power-mode
+     * change.  A rejected transaction is reported to the application callback
+     * straight away instead. */
+    extern char lbl_80315540[]; /* "HID_HostWriteDev Error %d" */
+    extern char lbl_8031555C[]; /* "bta_hh_write_dev_act:: cmd type = %d" */
+    u8 *p_cb = (u8 *)p_dev;     /* tBTA_HH_DEV_CB: addr +0x08, w4_evt +0x10, app_id +0x15, hid_handle +0x16, vp +0x17 */
+    u8 *p_cmd = (u8 *)p_msg;    /* tBTA_HH_DATA::api_sndcmd: t_type +0x08, param +0x09, rpt_id +0x0A, data +0x0C, p_data +0x10 */
+    tBTA_HH_CBDATA cbdata = {BTA_HH_OK, 0};
+    u8 event = p_cmd[8]; /* (t_type - BTA_HH_FST_BTE_TRANS_EVT) + BTA_HH_FST_TRANS_CB_EVT: the constants cancel */
     u8 result;
 
-    ((u8 *)&status)[1] = dev[0x16];
-    result = HID_HostWriteDev(dev[0x16], msg[8], msg[9], *(u16 *)(msg + 0xC), msg[0xA], *(BT_HDR **)(msg + 0x10));
-    if (result != 0) {
-        if (lbl_8055DC80 >= 1)
+    cbdata.handle = p_cb[0x16];
+    result = HID_HostWriteDev(p_cb[0x16], p_cmd[8], p_cmd[9], *(u16 *)(p_cmd + 0xC), p_cmd[0xA], *(BT_HDR **)(p_cmd + 0x10));
+    if (result != HID_SUCCESS) {
+        if (lbl_8055DC80 >= 1) /* APPL_TRACE_ERROR1 */
             fn_80070954(0x500, lbl_80315540, result);
-        ((u8 *)&status)[0] = 6;
-        if (msg[8] != 1 && msg[8] != 0xA) {
-            (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))(saved_event, &status, lbl_803C0D48);
+        cbdata.status = BTA_HH_ERR;
+        if (p_cmd[8] != HID_TRANS_CONTROL && p_cmd[8] != HID_TRANS_DATA) {
+            btaHhCback(event, &cbdata, lbl_803C0D48);
             return;
         }
-        if (msg[9] == 5)
-            (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))(0xD, &status, lbl_803C0D48);
+        if (p_cmd[9] == BTA_HH_CTRL_VIRTUAL_CABLE_UNPLUG)
+            btaHhCback(BTA_HH_VC_UNPLUG_EVT, &cbdata, lbl_803C0D48);
         return;
     }
 
-    switch (msg[8]) {
-    case 7:
-    case 4:
-    case 5:
-    case 6:
-    case 8:
-    case 9:
-        *(u16 *)(dev + 0x10) = saved_event;
+    switch (p_cmd[8]) {
+    case HID_TRANS_SET_PROTOCOL:
+    case HID_TRANS_GET_REPORT:
+    case HID_TRANS_SET_REPORT:
+    case HID_TRANS_GET_PROTOCOL:
+    case HID_TRANS_GET_IDLE:
+    case HID_TRANS_SET_IDLE: /* set the handshake event the callback reports */
+        *(u16 *)(p_cb + 0x10) = event;
         break;
-    case 10:
-    case 1:
-        if (msg[9] == 5)
-            dev[0x17] = 1;
+    case HID_TRANS_DATA:
+    case HID_TRANS_CONTROL:
+        /* no handshake event; remember an unplug request */
+        if (p_cmd[9] == BTA_HH_CTRL_VIRTUAL_CABLE_UNPLUG)
+            p_cb[0x17] = 1;
         break;
-    case 11:
-    default:
-        if (lbl_8055DC80 >= 5)
-            fn_80070954(0x504, lbl_8031555C, msg[8]);
+    case HID_TRANS_DATAC:
+    default: /* not expected */
+        if (lbl_8055DC80 >= 5) /* APPL_TRACE_DEBUG1 */
+            fn_80070954(0x504, lbl_8031555C, p_cmd[8]);
         break;
     }
 
-    if (msg[8] != 1) {
-        fn_80071298((void *)0x17, (void *)(u32)dev[0x15], dev + 8);
-        fn_80071264((void *)0x17, (void *)(u32)dev[0x15], dev + 8);
+    /* anything but a control transaction counts as traffic for power management */
+    if (p_cmd[8] != HID_TRANS_CONTROL) {
+        fn_80071298((void *)BTA_ID_HH, (void *)(u32)p_cb[0x15], p_cb + 8); /* bta_sys_busy */
+        fn_80071264((void *)BTA_ID_HH, (void *)(u32)p_cb[0x15], p_cb + 8); /* bta_sys_idle */
         return;
     }
-    if (msg[9] == 3)
-        fn_80071230((void *)0x17, (void *)(u32)dev[0x15], dev + 8);
-    else if (msg[9] == 4)
-        fn_80071298((void *)0x17, (void *)(u32)dev[0x15], dev + 8);
+    if (p_cmd[9] == BTA_HH_CTRL_SUSPEND)
+        fn_80071230((void *)BTA_ID_HH, (void *)(u32)p_cb[0x15], p_cb + 8); /* bta_sys_sco_close */
+    else if (p_cmd[9] == BTA_HH_CTRL_EXIT_SUSPEND)
+        fn_80071298((void *)BTA_ID_HH, (void *)(u32)p_cb[0x15], p_cb + 8); /* bta_sys_busy */
+#undef btaHhCback
 }
 
 void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
