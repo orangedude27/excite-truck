@@ -1356,7 +1356,6 @@ extern "C" void fn_800E41EC(void) {
         (*(void (**)(void *))(*(void **)((char *)&lbl_80407F6C + 0x6C2C)))(&lbl_80407F6C);
     }
 }
-#pragma scheduling reset
 #pragma pop
 
 #pragma use_lmw_stmw reset
