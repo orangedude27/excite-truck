@@ -286,7 +286,7 @@ void fn_8029C650(void) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling 750
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma inline_depth(0)
 void fn_8029C664(void) {
@@ -505,7 +505,7 @@ extern "C" void fn_8029CBA0(void) {
     };
     union ScratchValue { float f; int i; };
     ScratchValue scratch[40];
-    register float var_f31 = *(volatile float *)&lbl_80564654;
+    register float var_f31 = 0.75f;
     int *var_r31 = (int *)&lbl_8034968C;
     Dummy *obj;
     obj = (Dummy *)fn_802AE414(&lbl_8055CAC8);
@@ -515,17 +515,16 @@ extern "C" void fn_8029CBA0(void) {
     }
     if (fn_802BF4F0() != 0 || lbl_8055F7F0 > 0 || lbl_8055F7F4 > 0) {
         register float zero, high, scale, low, far;
-        register int two, five;
-        register unsigned short size;
+        register int two;
+        int size;
         fn_8028E61C((int *)&scratch[6]);
-        zero = *(volatile float *)&lbl_80564658;
-        size = 0x200;
+        zero = 1.0f;
         two = 2;
-        high = *(volatile float *)&lbl_80564654;
-        scale = *(volatile float *)&lbl_8056465C;
-        low = *(volatile float *)&lbl_8056464C;
-        five = 5;
-        far = *(volatile float *)&lbl_80564660;
+        high = 0.75f;
+        size = 0x200;
+        scale = 0.5f;
+        low = 0.25f;
+        far = -1.0f;
         scratch[6].i = two;
         scratch[7].i = size;
         scratch[8].f = high;
@@ -545,7 +544,7 @@ extern "C" void fn_8029CBA0(void) {
         scratch[16].f = scale;
         scratch[18].f = high;
         scratch[19].f = scale;
-        scratch[23].i = five;
+        scratch[23].i = 5;
         scratch[24].f = var_f31;
         scratch[27].f = high;
         scratch[26].f = low;
@@ -903,11 +902,11 @@ void fn_8029D644(void *arg0) {
     char *source;
     char *other;
     int offset;
+    int i;
     int count;
     char *buffers[2];
     char **bufferTable;
     int mode;
-    GridRecord_8029D644 *row;
 
     count = (*(int *)((char *)arg0 + 0x10) - 1) * (*(int *)((char *)arg0 + 0xC) * 2);
     {
@@ -919,11 +918,11 @@ void fn_8029D644(void *arg0) {
     }
     fn_802C8BD0(*(int *)((char *)arg0 + 0x74));
     if (fn_802C8DBC(count) != 0) {
-        int i;
-        buffers[0] = *(char **)((char *)arg0 + 0x70);
-        buffers[1] = buffers[0] + *(int *)((char *)arg0 + 0xC) * 0x18;
+        other = *(char **)((char *)arg0 + 0x70);
+        buffers[0] = other;
+        buffers[1] = other + *(int *)((char *)arg0 + 0xC) * 0x18;
         for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x18, i++)
-            fn_8029DB78(arg0, buffers[0] + offset, i, 0);
+            fn_8029DB78(arg0, other + offset, i, 0);
 
         bufferTable = buffers;
         for (mode = 1; mode < *(int *)((char *)arg0 + 0x10); mode++) {
@@ -931,8 +930,8 @@ void fn_8029D644(void *arg0) {
             other = bufferTable[1 - (mode & 1)];
             for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x18, i++) {
                 fn_8029DB78(arg0, (void *)((unsigned long)source + offset), i, mode);
-                row = (GridRecord_8029D644 *)(other + offset);
                 {
+                    GridRecord_8029D644 *row = (GridRecord_8029D644 *)(other + offset);
                     float f1 = *(float *)(other + offset);
                     unsigned int flag = (unsigned int)(i > 0);
                     float f5 = row->f14;
@@ -942,8 +941,8 @@ void fn_8029D644(void *arg0) {
                     int field = row->fieldC;
                     fn_802C8E00(field, flag, f1, f2, f3, f4, f5);
                 }
-                row = (GridRecord_8029D644 *)(source + offset);
                 {
+                    GridRecord_8029D644 *row = (GridRecord_8029D644 *)(source + offset);
                     float f1 = row->f0;
                     unsigned int flag = (unsigned int)(i > 0);
                     float f5 = row->f14;
@@ -1120,71 +1119,81 @@ extern float lbl_8056462C, lbl_80564634, lbl_80564640, lbl_80564658, lbl_8056469
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
-void fn_8029DDB8(void *arg0) {
-    unsigned char *base = (unsigned char *)arg0;
-    int rowPlus;
-    int rowMinus;
-    short *cell;
-    short *src;
-    short *dst;
-    int width;
-    int y;
-    int x;
-    int index;
-    int indexPlus;
-    int indexMinus;
-    int neighbors;
-    int lowClamp;
-    int clamped;
-    float scale;
-    float coeff;
-    float amp;
-    float waveSquared;
-    float wave;
-    float center;
-    float result;
-
-    scale = lbl_80564634 * *(float *)(base + 0x20);
-    center = lbl_8056462C + scale;
-    amp = ((float (*)(float, float))fn_801E7E24)(scale, lbl_80564634);
-    y = 1;
-    coeff = lbl_80564694 * (lbl_80564658 - *(float *)(base + 0x1C));
-    amp = coeff * amp;
-    waveSquared = amp * amp;
-    wave = lbl_80564640 - lbl_80564698 * waveSquared;
-
-    while (y < *(int *)(base + 0x10) - 1) {
-        rowPlus = y + 1;
-        rowMinus = y - 1;
-        x = 1;
-        while (x < (width = *(int *)(base + 0xC)) - 1) {
-            index = x + y * width;
-            indexPlus = x + rowPlus * width;
-            indexMinus = x + rowMinus * width;
-            src = *(short **)(base + 4);
-            dst = *(short **)(base + 8);
-            cell = src + index;
-            neighbors = cell[1] + cell[-1] +
-                        src[indexPlus] + src[indexMinus];
-            result = wave * (float)src[index];
-            result = result + waveSquared * (float)neighbors;
-            result = result - (float)dst[index];
-            result = center * result;
-            lowClamp = -32768;
-            if ((int)result > -32768)
-                lowClamp = (int)result;
-            clamped = 32767;
-            if (lowClamp < 32767)
-                clamped = lowClamp;
-            dst[index] = (short)clamped;
-            ++x;
-        }
-        ++y;
+void fn_8029DDB8(void *arg0)
+{
+  short *new_var2;
+  unsigned char *base = (unsigned char *) arg0;
+  register int rowPlus;
+  register int rowMinus;
+  short *cell;
+  short *src;
+  short *dst;
+  int width;
+  int y;
+  int x;
+  int index;
+  int indexPlus;
+  int indexMinus;
+  int neighbors;
+  int lowClamp;
+  int clamped;
+  float scale;
+  float coeff;
+  float amp;
+  float waveSquared;
+  float wave;
+  unsigned char *new_var;
+  float center;
+  float result;
+  scale = lbl_80564634 * (*((float *) (base + 0x20)));
+  center = lbl_8056462C + scale;
+  amp = ((float (*)(float, float)) fn_801E7E24)(scale, lbl_80564634);
+  y = 1;
+  coeff = lbl_80564694 * (lbl_80564658 - (*((float *) (base + 0x1C))));
+  amp = coeff * amp;
+  waveSquared = amp * amp;
+  new_var = base;
+  wave = lbl_80564640 - (lbl_80564698 * waveSquared);
+  while (y < ((*((int *) (new_var + 0x10))) - 1))
+  {
+    rowPlus = y + 1;
+    rowMinus = y - 1;
+    x = 1;
+    while (x < ((width = *((int *) (new_var + 0xC))) - 1))
+    {
+      index = x + (y * width);
+      indexPlus = x + (rowPlus * width);
+      indexMinus = x + (rowMinus * width);
+      new_var2 = *((short **) (new_var + 8));
+      src = *((short **) (new_var + 4));
+      dst = new_var2;
+      cell = src + index;
+      neighbors = ((cell[1] + cell[-1]) + src[indexPlus]) + src[indexMinus];
+      result = wave * ((float) src[index]);
+      result = result + (waveSquared * ((float) neighbors));
+      result = result - ((float) dst[index]);
+      result = center * result;
+      lowClamp = -32768;
+      if (((int) result) > (-32768))
+      {
+        lowClamp = (int) result;
+      }
+      clamped = 32767;
+      if (lowClamp < 32767)
+      {
+        clamped = lowClamp;
+      }
+      dst[index] = (short) clamped;
+      ++x;
     }
-    src = *(short **)(base + 4);
-    dst = *(short **)(base + 8);
-    *(short **)(base + 8) = src;
-    *(short **)(base + 4) = dst;
+
+    ++y;
+  }
+
+  src = *((short **) (new_var + 4));
+  dst = new_var2;
+  *((short **) (new_var + 8)) = src;
+  *((short **) (new_var + 4)) = dst;
 }
 #pragma pop
 
