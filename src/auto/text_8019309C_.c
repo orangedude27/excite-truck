@@ -1256,7 +1256,8 @@ extern unsigned char fn_80167544(int);
 static inline float PathNodeLerp_80195654(void *node, float t) {
     float target = *(float *)((char *)*(void **)((char *)node + 0x14) + 0x24);
     float base = *(float *)((char *)node + 0x24);
-    return base + t * (target - base);
+    float delta = target - base;
+    return base + t * delta;
 }
 void fn_80195654(void *arg0, void *arg1) {
     struct IntPair { int word0, word1; };
