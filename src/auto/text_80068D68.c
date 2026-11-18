@@ -10687,19 +10687,34 @@ void btm_event_filter_complete(UINT8 *p_param) {
     }
 }
 
+#pragma push
+#pragma dont_inline off
+static inline UINT8 *btm_inq_db_find_80068D68(UINT8 *base, UINT8 *bda)
+{
+    UINT32 j;
+    UINT8 *entry = base + 0x16e4;
+    for (j = 0; j < 12; j++, entry += 0x1c) {
+        if (entry[0x1a] && !memcmp(entry + 0xa, bda, 6)) {
+            return entry;
+        }
+    }
+    return 0;
+}
+#pragma pop
+
 void btm_process_inq_results(UINT8 *p, UINT8 mode)
 {
-    UINT16 clock;
-    UINT8 rssi = 0, scan = 0;
-    void (*cb)(void *);
-    UINT32 is_new = 1;
-    UINT32 j;
-    UINT8 *entry;
-    UINT8 i;
-    UINT8 *base = lbl_803C0F78;
+    UINT8 per, rep;
     UINT8 n;
-    UINT8 rep, per;
+    UINT8 *base = lbl_803C0F78;
+    UINT8 i;
+    UINT8 *entry;
     UINT8 *info;
+    UINT32 j;
+    UINT32 is_new = 1;
+    void (*cb)(void *);
+    UINT8 scan = 0, rssi = 0;
+    UINT16 clock;
     UINT8 bda[6];
     UINT8 dc[3];
     cb = *(void (**)(void *))(base + 0x16b4);
@@ -10719,11 +10734,10 @@ void btm_process_inq_results(UINT8 *p, UINT8 mode)
         entry = base + 0x16e4;
         j = 0;
         do {
-            if (!entry[0x1a] || memcmp(entry + 0xa, bda, 6) != 0) {
-                j++; entry += 0x1c;
-            } else {
+            if (entry[0x1a] && memcmp(entry + 0xa, bda, 6) == 0) {
                 goto found;
             }
+            j++; entry += 0x1c;
         } while (j < 12);
         entry = 0;
 found:
@@ -10744,7 +10758,7 @@ found:
             entry[0x18] = 0;
             if (cb) cb(info);
             if (*(void (**)(void *, UINT8))(base + 0x16bc))
-                (*(void (**)(void *, UINT8))(base + 0x16bc))(info, 1);
+                (*(void (**)(void *, UINT8))(base + 0x16bc))(entry + 8, 1);
         }
     }
 }
