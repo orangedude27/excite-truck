@@ -24910,7 +24910,6 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     }
 }
 
-#pragma scheduling reset
 void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
 {
     BOOLEAN is_command;
