@@ -4,9 +4,14 @@
 #pragma push
 #pragma cplusplus on
 #pragma exceptions on
-extern "C" void qsort(void *arg0, unsigned int arg1, int arg2, int (*arg3)(void *, void *)) {
+extern "C" void qsort(void *list, unsigned int number, int width, int (*comp)(void *, void *)) {
+    /* MSL qsort: an in-place heap sort.  First a max-heap is built by sifting every
+     * node from the middle of the array back to the root; then the root (largest
+     * element) is swapped with the last element of the heap, the heap shrinks by one
+     * and the root is sifted down again, leaving the array sorted ascending by
+     * `comp'.  Elements are `width' bytes wide and are swapped byte by byte. */
     register int half;
-    register int negsize;
+    register int negwidth;
     register unsigned int child;
     register int root;
     register int last;
@@ -15,77 +20,80 @@ extern "C" void qsort(void *arg0, unsigned int arg1, int arg2, int (*arg3)(void 
     register int second;
     register unsigned int i;
     register unsigned int n;
-    char *var_r3;
-    char *var_r3_2;
-    char *var_r4;
-    char *var_r4_2;
-    int var_r5;
-    int var_r5_2;
-    int tmp6;
-    int tmp6_2;
+    char *from;
+    char *from0;
+    char *to;
+    char *to0;
+    int cnt;
+    int cnt0;
+    int tmp;
+    int tmp0;
 
-    if (arg1 >= 2U) {
-        n = arg1;
-        i = (arg1 >> 1) + 1;
-        root = (int)arg0 + arg2 * (i - 1);
-        half = i * arg2;
-        last = (int)arg0 + arg2 * (arg1 - 1);
-        negsize = arg2 - arg2 * 2;
-    heap_test:
+    if (number >= 2U) {
+        n = number;
+        i = (number >> 1) + 1;
+        root = (int)list + width * (i - 1);
+        half = i * width;
+        last = (int)list + width * (number - 1);
+        negwidth = width - width * 2;
+    heapify:
+        /* one node further up, or the heap is built */
         if (i > 1U) {
-            half -= arg2;
-            root -= arg2;
+            half -= width;
+            root -= width;
             i -= 1;
-            goto block9;
+            goto sift_down;
         }
-    extract:
-        var_r3_2 = (char *)last - 1;
-        var_r4_2 = (char *)root - 1;
-        var_r5_2 = arg2 + 1;
-        while (--var_r5_2 != 0) {
-            tmp6_2 = var_r4_2[1];
-            var_r4_2[1] = var_r3_2[1];
-            var_r4_2++;
-            var_r3_2[1] = tmp6_2;
-            var_r3_2++;
+    extract_max:
+        /* swap the heap root and the last element, byte by byte */
+        from0 = (char *)last - 1;
+        to0 = (char *)root - 1;
+        cnt0 = width + 1;
+        while (--cnt0 != 0) {
+            tmp0 = to0[1];
+            to0[1] = from0[1];
+            to0++;
+            from0[1] = tmp0;
+            from0++;
         }
         n -= 1;
-        if (n == 1U) goto end;
-        last -= arg2;
-    block9:
+        if (n == 1U) goto done;
+        last -= width;
+    sift_down:
         child = i;
-        item = (int)((char *)arg0 + (half + negsize));
-        goto check;
-    sift:
+        item = (int)((char *)list + (half + negwidth));
+        goto has_child;
+    sift_body:
+        /* step down to the larger child */
         child *= 2;
         parent = item;
-        item = (int)arg0 + arg2 * (child - 1);
+        item = (int)list + width * (child - 1);
         if (child < n) {
-            second = item + arg2;
-            if (arg3((void *)item, (void *)second) < 0) {
+            second = item + width;
+            if (comp((void *)item, (void *)second) < 0) {
                 item = second;
                 child += 1;
             }
         }
-        if (arg3((void *)parent, (void *)item) >= 0) goto heap_test;
-        var_r3 = (char *)item - 1;
-        var_r4 = (char *)parent - 1;
-        var_r5 = arg2 + 1;
-        while (--var_r5 != 0) {
-            tmp6 = var_r4[1];
-            var_r4[1] = var_r3[1];
-            var_r3[1] = tmp6;
-            var_r4++;
-            var_r3++;
+        if (comp((void *)parent, (void *)item) >= 0) goto heapify;
+        from = (char *)item - 1;
+        to = (char *)parent - 1;
+        cnt = width + 1;
+        while (--cnt != 0) {
+            tmp = to[1];
+            to[1] = from[1];
+            to++;
+            from[1] = tmp;
+            from++;
         }
-        goto check;
-    check:
+        goto has_child;
+    has_child:
         if (child * 2 > n) {
-            goto heap_test;
+            goto heapify;
         } else {
-            goto sift;
+            goto sift_body;
         }
     }
-end:
+done:
     ;
 }
