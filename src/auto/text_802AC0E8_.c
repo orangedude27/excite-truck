@@ -287,7 +287,7 @@ copied:
         memset(rec, 0, 0x28);
         if (strcmp(type, lbl_8055CCE0) == 0) {
             LVec3 def3, v3;
-            LVec2 def2, p, t;
+            LVec2 def2, p;
             char *sub;
             int model;
             rec->type = 2;
