@@ -22841,10 +22841,9 @@ extern "C" void fn_800C776C(void *obj, s32 value) {
 
 extern "C" void fn_800C7774(u8 *arg0)
 {
-    struct SelfBox { u8 *v; } selfBox;
-    u8 *&self = selfBox.v;
+    register char *start = *(char **)(*(u8 **)(arg0 + 4) + 0xC);
+    u8 *self = arg0;
     const char *file = (const char *)lbl_8031D840;
-    char *start = *(char **)(*(u8 **)(arg0 + 4) + 0xC);
     char *p;
     s32 len1 = 0;
     s32 len2;
@@ -22853,7 +22852,6 @@ extern "C" void fn_800C7774(u8 *arg0)
     u8 *q;
     void *buf;
 
-    self = arg0;
     p = start;
     while (*p != 0) {
         if (*p == ',') break;
@@ -23198,7 +23196,6 @@ extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
     s32 i, j;
     u8 *self = (u8 *)arg0;
     void *pane;
-    s32 n;
     for (i = 0; i < 4; i++, state += 4, cursor += 4, info += 0x18) {
         if (*state) {
             if (*(s32 *)(*(u8 **)(self + 4) + 0x20) == 0) {
@@ -23223,13 +23220,15 @@ extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
             self[0x7C + i] = 0;
         }
     }
-    for (n = 0; n < 4; n++) {
-        s32 *ids = lbl_8031E370 + n * 4;
+    i = 0;
+    do {
+        s32 *ids = lbl_8031E370 + i * 4;
         for (j = 0; j < 4; j++, ids++) {
             pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->find(*ids, 1);
             ((u8 *)pane)[0xCF] = ((u8 *)pane)[0xCF] & 0xFE;
         }
-    }
+        i++;
+    } while (i < 4);
     *(s32 *)(self + 0x78) = 0;
 }
 #pragma pop
@@ -25729,6 +25728,25 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
     }
 }
 
+static inline s32 findPaneIndex_800A485C(s32 *entry, s32 count, s32 a, s32 b) {
+    for (s32 k = 0; k < count; k++, entry += 2)
+        if (entry[0] == a && entry[1] == b)
+            return k;
+    return -1;
+}
+
+static inline s32 findPaneIndexUnrolled_800A485C(s32 *entry, s32 count, s32 a, s32 b) {
+    s32 j = 0;
+    for (s32 k = 0; k < count; k++, entry += 4, j++) {
+        if (entry[0] == a && entry[1] == b)
+            return j;
+        j++;
+        if (entry[2] == a && entry[3] == b)
+            return j;
+    }
+    return -1;
+}
+
 extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
     u8 *self=(u8*)arg0;
     void *pane;
@@ -25739,8 +25757,7 @@ extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
             s32 *entry=lbl_802F4528;
             s32 count=*(s32*)(self+0xc);
             for(j=0;j<count;entry+=2,j++) {
-                if(i != entry[0]) continue;
-                if(entry[1]==2) goto found;
+                if(i==entry[0] && entry[1]==2) goto found;
             }
             j=-1;
 found:
