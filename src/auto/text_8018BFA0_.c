@@ -522,11 +522,7 @@ void fn_8018CB3C(char *arg0) {
             if (temp_f0 > temp_f26) {
                 M2C_FIELD(var_r20, float *, 0xC) = temp_f26;
                 var_f0_2 = M2C_FIELD(var_r20, float *, 0x10);
-                if (var_f0_2 < temp_f27) {
-
-                } else {
-                    var_f0_2 = temp_f27;
-                }
+                var_f0_2 = (var_f0_2 < temp_f27) ? var_f0_2 : temp_f27;
                 M2C_FIELD(var_r20, float *, 0x10) = var_f0_2;
             } else if (temp_f0 < temp_f28) {
                 if ((M2C_FIELD(__AXFXGetLfoSinTable_801769CC(0), int *, 4) & 0x4000) && (M2C_FIELD(var_r20, float *, 0x10) < temp_f27) && (fn_80129D18(4, 0xA) < 1)) {
