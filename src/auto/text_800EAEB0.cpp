@@ -553,7 +553,7 @@ extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *env, int a
 }
 
 #pragma push
-#pragma schedule off
+#pragma scheduling on
 void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay) {
     const char* file = (const char*)lbl_80322B80;
     s32 value = decay;
@@ -789,8 +789,6 @@ done:
 #pragma use_lmw_stmw off
 bool nw4hbm::snd::detail::FrameHeap::Create(void *buffer, unsigned long size) {
     FrameHeapDestroyView *state = (FrameHeapDestroyView *)this;
-    void *block;
-    int ok;
     struct { FrameHeapDestroyListView *p; } headBox;
     FrameHeapDestroyListView *&head = headBox.p;
     if (buffer == 0) {
@@ -844,26 +842,27 @@ bool nw4hbm::snd::detail::FrameHeap::Create(void *buffer, unsigned long size) {
         state->heap = MEMCreateFrmHeapEx((void *)start, end - start, 0);
         if (state->heap == 0) return false;
     }
-    block = MEMAllocFromFrmHeapEx(state->heap, 0x14, 4);
-    if (block == 0) {
+    int ok;
+    void *node = MEMAllocFromFrmHeapEx(state->heap, 0x14, 4);
+    if (node == 0) {
         ok = 0;
     } else {
-        if (block != 0) {
-            void *t = (u8 *)block + 0xC;
-            *(u32 *)block = 0;
-            *((u32 *)block + 1) = 0;
-            *((void **)block + 3) = 0;
-            *((void **)block + 4) = 0;
-            *((u32 *)block + 2) = 0;
-            *((void **)block + 3) = t;
-            *((void **)block + 4) = t;
+        if (node != 0) {
+            void *t = (u8 *)node + 0xC;
+            *(u32 *)node = 0;
+            *((u32 *)node + 1) = 0;
+            *((void **)node + 3) = 0;
+            *((void **)node + 4) = 0;
+            *((u32 *)node + 2) = 0;
+            *((void **)node + 3) = t;
+            *((void **)node + 4) = t;
         }
         head = &state->list;
-        if (block == 0) {
+        if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
         }
         void *sp8 = head;
-        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)state + 4, &sp8, block);
+        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)state + 4, &sp8, node);
         ok = 1;
     }
     if (ok == 0) return false;
@@ -3413,7 +3412,7 @@ extern "C" void fn_800F0360(void *self) {
     };
     register void *player = self;
     register const char *file = (const char *)lbl_80323B28;
-    s32 i;
+    register s32 i;
     if (*(u8 *)((u8 *)player + 0x15) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x398, file + 0x2F0);
     if (*(u8 *)((u8 *)player + 0x17) == 0)
@@ -3421,7 +3420,7 @@ extern "C" void fn_800F0360(void *self) {
     if (*(u8 *)((u8 *)player + 0x15) != 0 && *(u8 *)((u8 *)player + 0x17) != 0) {
         if (*(u8 *)((u8 *)player + 0x18) == 0 && *(u8 *)((u8 *)player + 0x19) == 0 &&
             (*(u8 *)((u8 *)player + 0x14) != 0 || *((u8 *)Instance__15EmissionManagerFv() + 0x6C32) == 0)) {
-            s32 ticks = 0;
+            register s32 ticks = 0;
             while (*(u16 *)((u8 *)player + 0x88) >= 0x1A0) {
                 ticks++;
                 *(u16 *)((u8 *)player + 0x88) -= 0x1A0;
@@ -3431,8 +3430,8 @@ extern "C" void fn_800F0360(void *self) {
             *(u16 *)((u8 *)player + 0x88) += (s32)tickDelta;
             while (ticks > 0) {
                 if (ParseNextTick__Q46nw4hbm3snd6detail9SeqPlayerFb(player, true)) {
-                    s32 state;
-                    u32 temp = OSDisableInterrupts();
+                    register s32 state;
+                    register u32 temp = OSDisableInterrupts();
                     if (*(u8 *)((u8 *)player + 0x17) != 0) {
                         if (player == 0)
                             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233, (const char *)lbl_80324030);
@@ -3445,7 +3444,7 @@ extern "C" void fn_800F0360(void *self) {
                         UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)state);
                     }
                     OSRestoreInterrupts(temp);
-                    u8 *entry = (u8 *)player;
+                    register u8 *entry = (u8 *)player;
                     state = 0;
                     temp = 0;
                     s32 valid;
@@ -3519,22 +3518,23 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
         virtual void Dummy1();
         virtual void Stop();
     };
-    struct Iter { void *p; };
-    unsigned pList = (unsigned)&lbl_80412A6C[4];
-    unsigned head;
-    void *pPlayer;
-    for (head = *(unsigned *)pList; head != pList;) {
-        pPlayer = (void *)head;
-        head = *(unsigned *)pPlayer;
-        if (pPlayer == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324024, 0x23D,
-                                         (const char *)lbl_80324000);
+    void* pList = (void*)&lbl_80412A6C[0x04];
+    void* pHead = *(void**)pList;
+    void* pPlayer;
+
+    while (pHead != pList) {
+        pPlayer = pHead;
+        pHead = *(void**)pPlayer;
+        if (pPlayer == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324024, 0x23D,
+                                         (const char*)lbl_80324000);
         }
-        ((PlayerVTable *)((u8 *)pPlayer - 0x100))->Stop();
+        ((PlayerVTable*)((u8*)pPlayer - 0x100))->Stop();
     }
-    if (*(s32 *)&lbl_80412A6C[0] != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0x3D7,
-                                     (const char *)lbl_80323E64);
+
+    if (*(s32*)&lbl_80412A6C[0] != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x3D7,
+                                     (const char*)lbl_80323E64);
     }
 }
 #pragma pop
