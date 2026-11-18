@@ -1520,7 +1520,7 @@ typedef struct IndexList_80233EC0 { u16 idx[6]; } IndexList_80233EC0;
 extern IndexList_80233EC0 lbl_802F9FFC;
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
     register void *object = arg0;
     register s32 offset;
@@ -1585,27 +1585,27 @@ f32 fn_8023400C(s32 arg0) {
     text = (char *)(*(volatile s32 *)&lbl_8055F06C) + offset;
     font = (u8 *)(*(volatile s32 *)&lbl_8055F058);
     strlen(text);
-    recordCount = (u8 *)lbl_80497F14 + 4;
+    recordCount = (u8 *)(&((s32 *)lbl_80497F14)[1]);
     goto char_test;
 
 char_body:
     escapeWidth = (f32)*(u8 *)(font + 4);
     escapeScale = (f32)*(u8 *)(font + 4);
 
-    if ((s8)text[index] == '\\') {
+    if ((s8)*(volatile u8 *)(text + index) == '\\') {
         character = (u8 *)text + index + 1;
         for (tokenIndex = 0, tokenOffset = 0; tokenIndex < *(s32 *)recordCount; tokenOffset += 0x1C, tokenIndex++) {
             token = *(const char **)(*(u8 **)lbl_80497F14 + tokenOffset);
             if (fn_8002B1D8((const char *)character, token, strlen(token)) == 0) {
-                entry = *(u8 **)lbl_80497F14 + tokenIndex * 0x1C;
+                entry = *(u8 **)lbl_80497F14 + (u32)tokenIndex * 0x1C;
                 if (*(s32 *)(entry + 0xC) != 0) {
                     escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10));
-                    escapeWidth = *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
-                                + *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
+                    escapeWidth = *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale)
+                                + *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)));
                 } else {
                     escapeWidth = escapeScale * *(f32 *)(entry + 4);
                 }
-                consumed = strlen(*(const char **)(*(u8 **)lbl_80497F14 + tokenOffset)) + 1;
+                consumed = strlen(*(const char **)(*(u8 **)lbl_80497F14 + tokenIndex * 0x1C)) + 1;
                 goto match;
             }
         }
@@ -1641,7 +1641,7 @@ match: ;
     height += *(f32 *)glyph + *(f32 *)(glyph + 8);
 
 char_test:
-    if ((s8)text[index] != 0) goto char_body;
+    if ((s8)*(volatile u8 *)(text + index) != 0) goto char_body;
 
     text = (char *)(*(volatile s32 *)&lbl_8055F06C) + offset;
     width *= *(f32 *)(text + 0x50);
