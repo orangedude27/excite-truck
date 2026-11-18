@@ -911,12 +911,12 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_800D6EEC(void* arg0) {
     extern char lbl_8031F868[];
     volatile u8* p = (volatile u8*)arg0;
-    register void* vtable = lbl_8031F868;
     register u32 zero = 0;
+    void* vtable = lbl_8031F868;
     f32 f = 0.0f;
     register void* list = (void*)(p + 8);
     *(volatile u32*)(p + 8) = zero;
@@ -2521,8 +2521,8 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1
     }
 }
 
-#pragma inline_max_size 10000
-#pragma inline_max_total_size 10000
+#pragma push
+#pragma opt_lifetimes off
 extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           float matrix[3][4];
                           struct Fn800DA094TexObj { s32 fields[8]; };
@@ -2542,19 +2542,17 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           u8 constant1[4];
                           u8 constant2[4];
                           u8 constant3[4];
-                          s32 spC;
-                          s32 sp8;
-                          f32 temp_f1;
-                          f32 temp_f2;
+                          s32 spC; s32 sp8;
+                          f32 temp_f1; f32 temp_f2;
                           f32 temp_f30;
                           f32 temp_f31;
                           s32 *var_r21_3;
                           s32 *var_r22_2;
-                                           s32 var_r26;
-                            s32 var_r21;
-                            const char *data = lbl_8031F990;
-                            s32 var_r21_2;
-                            s32 temp_cr0_eq;
+               register s32 var_r26;
+               register s32 var_r21;
+                          register const char *data = lbl_8031F990;
+           register s32 var_r21_2;
+                          s32 temp_cr0_eq;
                           s32 temp_r0;
                           s32 temp_r0_2;
                           s32 temp_r21;
@@ -2575,8 +2573,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           s32 var_r4;
                           s32 var_r5;
                           s32 var_r7;
-                          u16 temp_r5_2;
-                          u16 temp_r5_3;
+                          u16 temp_r5_2; u16 temp_r5_3;
                           u16 temp_r5_4;
                           u32 temp_r0_10;
                           u32 temp_r0_4;
@@ -2622,8 +2619,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           u32 temp_r22;
                           u32 temp_r3_5;
                           u32 temp_r6_2;
-                          u32 temp_r6_6;
-                          u32 temp_r6_7;
+                          u32 temp_r6_6; u32 temp_r6_7;
                           u32 temp_r7_2;
                           register u8 *var_r21_4;
                           register u8 *var_r21_5;
@@ -3050,7 +3046,8 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                               ((void (*)(u32, u32, u32, u32))GXSetBlendMode)(1U, 4U, 5U, 0xFU);
                           }
        return (var_r25 != 0) && (var_r26 != 0);
-                       }
+}
+#pragma pop
  extern "C" void fn_800DAFA8(void *arg, void *obj) {
     /* C-callable thunk: invoke the virtual method at vtable slot 3 on obj, passing arg. */
     struct Dispatch {
