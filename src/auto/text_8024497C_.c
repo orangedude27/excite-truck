@@ -40,12 +40,11 @@ s32 fn_8024497C(void *unused) {
 
 #pragma use_lmw_stmw off
 void fn_802449A0(void) {
+#pragma scheduling invalid_target
     Frame2449 f;
     int i;
     int zero = 0;
     char *base = lbl_80342E38;
-    int *tbl = (int *)lbl_802FA338;
-    int *ext = (int *)lbl_80498878;
     f.p98 = lbl_80342ED8;
     f.spAC = zero;
     f.sp148 = fn_80232578(base + 0xC);
@@ -86,16 +85,16 @@ void fn_802449A0(void) {
     f.e[4].value = (int)fn_80236914;
     f.e[4].flags = 2;
     f.e[4].id = zero;
-    f.e[5].label = ext[0];
-    f.e[5].type = ext[1];
-    f.e[5].value = ext[2];
-    f.e[5].flags = ext[3];
-    f.e[5].id = ext[4];
-    f.hdr[0] = tbl[0];
+    f.e[5].label = ((int *)lbl_80498878)[0];
+    f.e[5].type = ((int *)lbl_80498878)[1];
+    f.e[5].value = ((int *)lbl_80498878)[2];
+    f.e[5].flags = ((int *)lbl_80498878)[3];
+    f.e[5].id = ((int *)lbl_80498878)[4];
+    f.hdr[0] = ((int *)lbl_802FA338)[0];
     f.hdr[1] = (int)f.e;
-    f.hdr[2] = tbl[2];
-    f.hdr[3] = tbl[3];
-    f.hdr[4] = tbl[4];
+    f.hdr[2] = ((int *)lbl_802FA338)[2];
+    f.hdr[3] = ((int *)lbl_802FA338)[3];
+    f.hdr[4] = ((int *)lbl_802FA338)[4];
     fn_802146BC(f.hdr, -999, -999, 1);
     f.p98 = lbl_80342ED8;
     fn_802328D4(f.sp148, lbl_80342ED8);
@@ -126,6 +125,7 @@ void fn_80244C50(void) { fn_8013C804(); }
 void fn_80244C54(void) { fn_8013C8B8(); }
 
 s32 fn_80244C58(void *arg0, s32 arg1) {
+#pragma scheduling invalid_target
     s32 *f1c = (s32 *)((char *)arg0 + 0x1C);
     s32 v;
     s32 limit;
@@ -143,9 +143,9 @@ s32 fn_80244C58(void *arg0, s32 arg1) {
         return 0;
     }
     v = *f1c;
-    limit = *(s32 *)((char *)arg0 + 0x18);
+    limit = *(s32 *)((char *)arg0 + 0x18) - 3;
     r = v & ((-v & ~v) >> 31);
-    if (limit - 3 > r) limit = r;
+    if (r < limit) limit = r;
     *f1c = limit;
     return 1;
 }
