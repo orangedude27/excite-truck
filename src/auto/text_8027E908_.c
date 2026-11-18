@@ -764,7 +764,7 @@ int fn_8027F958(int *selection, void *collection) {
     lbl_804B3048.count = index + 1; storage[index] = &stack.widgets[4];
     stack.widgets[4].unk7E = 0; stack.widgets[4].unkB0 = 0;
     reported = ((GetInt)(*(void ***)collection)[3])(collection);
-    count = 5; if (reported < 5) count = reported;
+    count = (reported >= 5) ? 5 : reported;
     widget = stack.widgets;
     for (i = 0; i < count; ++widget, ++i) {
         widget->object = ((GetItem)(*(void ***)collection)[4])(collection, i);
