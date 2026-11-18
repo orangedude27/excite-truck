@@ -235,9 +235,15 @@ void fn_801AE158(void *obj) {
     *(f32 *)((u8 *)obj + 0x24) = zeroVec.z;
 }
 
+   static inline void ae_init_small(u8 *p) {
+     F(p,4)=lbl_80562520; F(p,8)=lbl_80562520; F(p,0xC)=lbl_80562520;
+     F(p,0x10)=lbl_8056254C; F(p,0x14)=lbl_80562550; F(p,0x18)=lbl_80562520;
+     F(p,0x1C)=lbl_80562520; F(p,0x20)=lbl_80562520; F(p,0x24)=lbl_80562520;
+     *(s32 *)(p+0)=0;
+ }
   #pragma scheduling invalid_target
- #pragma unroll off
- void *fn_801AE180(void) {
+  #pragma unroll off
+  void *fn_801AE180(void) {
     s32 temp_r12, temp_r3, temp_r8_2, temp_r9, var_r4, var_r5, var_r5_2, var_r8;
     u32 temp_r11;
     void **temp_r31;
@@ -312,14 +318,17 @@ void fn_801AE158(void *obj) {
                         }
                     }
                 }
-                if (var_r6 < temp_r5_2) {
+                {
+                    u32 n = ((u32)(temp_r5_2 - var_r6) + 0x27) / 0x28;
+#pragma ctrloop on
                     do {
                         F(var_r6,4)=lbl_80562520; F(var_r6,8)=lbl_80562520; F(var_r6,0xC)=lbl_80562520;
                         F(var_r6,0x10)=lbl_8056254C; F(var_r6,0x14)=lbl_80562550; F(var_r6,0x18)=lbl_80562520;
                         F(var_r6,0x1C)=lbl_80562520; F(var_r6,0x20)=lbl_80562520; F(var_r6,0x24)=lbl_80562520;
                         *(s32 *)(var_r6+0)=0;
                         var_r6 += 0x28;
-                    } while (var_r6 < temp_r5_2);
+                    } while (--n != 0);
+#pragma ctrloop reset
                 }
             }
             *(s32 *)(temp_r3_3+4) = 0;
