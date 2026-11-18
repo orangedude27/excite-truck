@@ -44,6 +44,7 @@ extern const float lbl_8056499C, lbl_805649A0, lbl_805649A4, lbl_805649A8, lbl_8
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling 750
 void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
     void *camB;
     void *camC;
@@ -70,8 +71,8 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
         float cB4;
         float cB8;
         float cC0;
-        float *walker;
-        u32 low;
+        struct { u32 v; } w_low;
+        struct { float *v; } w_walker;
         s32 i;
         float dist;
         s32 nn;
@@ -79,9 +80,9 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
         s32 m;
         s32 col;
         c98 = lbl_80564998;
-        low = (u32)colorArg & 0xFFFFFF;
-        walker = (float *)obj;
+        w_low.v = (u32)colorArg & 0xFFFFFF;
         cA4 = lbl_805649A4;
+        w_walker.v = (float *)obj;
         cA8 = lbl_805649A8;
         cB0 = lbl_805649B0;
         i = 0;
@@ -91,7 +92,7 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
         cC0 = lbl_805649C0;
         cA0 = lbl_805649A0;
         for (; i < count; i++) {
-            dist = PSQUATMultiply(walker, (float *)camA24);
+            dist = PSQUATMultiply(w_walker.v, (float *)camA24);
             if (dist < cA0) {
                 n = 0x10;
                 nn = (s32)(cA8 * (c98 - (cA4 * dist / cA0 - c98) * (cA4 * dist / cA0 - c98)));
@@ -103,10 +104,10 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
                 w = (cAC * (dist - cB0)) / cB4;
                 if (c98 > w)
                     w = c98;
-                col = (s32)(((u32)m << 24) | low);
-                p[0] = walker[0] + ((float *)camB)[0] * (cB8 * -w);
-                p[1] = walker[1] + ((float *)camB)[1] * (cB8 * -w);
-                p[2] = walker[2] + ((float *)camB)[2] * (cB8 * -w);
+                col = (s32)(((u32)m << 24) | w_low.v);
+                p[0] = w_walker.v[0] + ((float *)camB)[0] * (cB8 * -w);
+                p[1] = w_walker.v[1] + ((float *)camB)[1] * (cB8 * -w);
+                p[2] = w_walker.v[2] + ((float *)camB)[2] * (cB8 * -w);
                 fn_802C8E00(col, 0, p[0], p[1], p[2], lbl_805649BC, f31v);
                 p[0] += ((float *)camB)[0] * w;
                 p[1] += ((float *)camB)[1] * w;
@@ -115,13 +116,13 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
                 p[0] += ((float *)camB)[0] * -w;
                 p[1] = p[1] + cC0 + ((float *)camB)[1] * -w;
                 p[2] += ((float *)camB)[2] * -w;
-                fn_802C8E00((s32)low, 1, p[0], p[1], p[2], lbl_805649BC, f30v);
+                fn_802C8E00((s32)w_low.v, 1, p[0], p[1], p[2], lbl_805649BC, f30v);
                 p[0] += ((float *)camB)[0] * w;
                 p[1] += ((float *)camB)[1] * w;
                 p[2] += ((float *)camB)[2] * w;
-                fn_802C8E00((s32)low, 1, p[0], p[1], p[2], lbl_80564998, f30v);
+                fn_802C8E00((s32)w_low.v, 1, p[0], p[1], p[2], lbl_80564998, f30v);
             }
-            walker += 3;
+            w_walker.v += 3;
         }
         fn_802C8E48();
     }
@@ -151,8 +152,8 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
         fn_802C8DBC(count * 4);
         c98b = lbl_80564998;
         lowb = (u32)colorArg & 0xFFFFFF;
-        walker2 = (float *)obj;
         cA4b = lbl_805649A4;
+        walker2 = (float *)obj;
         j = 0;
         cA8b = lbl_805649A8;
         cB0b = lbl_805649B0;
@@ -201,9 +202,9 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
 }
 #pragma pop
 
-#pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_propagation off
 void fn_802A9BFC(void *arg0, void *arg1, int arg2, int arg3, int arg4, int arg5, int arg6, float farg0, int arg_sp0) {
     struct {
         float direction[3];
@@ -221,6 +222,7 @@ void fn_802A9BFC(void *arg0, void *arg1, int arg2, int arg3, int arg4, int arg5,
     int color;
     int deltaInt;
     float maxY;
+    float newY;
 
     work.vecA[1] = ((int *)arg0)[1];
     work.vecB[1] = ((int *)arg1)[1];
@@ -231,8 +233,9 @@ void fn_802A9BFC(void *arg0, void *arg1, int arg2, int arg3, int arg4, int arg5,
 
     maxY = ((float *)work.vecA)[1] > ((float *)work.vecB)[1]
          ? ((float *)work.vecA)[1] : ((float *)work.vecB)[1];
-    ((float *)work.vecA)[1] = lbl_805649CC + maxY;
-    ((float *)work.vecB)[1] = ((float *)work.vecA)[1];
+    newY = lbl_805649CC + maxY;
+    ((float *)work.vecB)[1] = newY;
+    ((float *)work.vecA)[1] = newY;
 
     radius = lbl_805649D0;
     if (PSVECSquareDistance((float *)work.vecA, (float *)work.vecB) < radius * radius) {
@@ -252,8 +255,8 @@ void fn_802A9BFC(void *arg0, void *arg1, int arg2, int arg3, int arg4, int arg5,
     }
 
     fraction = (farg0 - lbl_805649BC) / lbl_805649B8;
-    weight = fraction > lbl_80564998 ? fraction : lbl_80564998;
-    weight = weight > lbl_805649BC ? lbl_805649BC : weight;
+    weight = fraction < lbl_80564998 ? fraction : lbl_80564998;
+    weight = weight < lbl_805649BC ? lbl_805649BC : weight;
 
     scaleA = (float)arg3 * lbl_805649D4;
     scaleB = (float)arg5 * lbl_805649D4;
@@ -274,4 +277,6 @@ void fn_802A9BFC(void *arg0, void *arg1, int arg2, int arg3, int arg4, int arg5,
     fn_801E4FF4();
     fn_802C8D74();
 }
-#pragma pop
+#pragma opt_propagation reset
+#pragma use_lmw_stmw reset
+#pragma processor reset
