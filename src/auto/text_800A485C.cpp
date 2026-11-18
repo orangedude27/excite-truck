@@ -7215,53 +7215,57 @@ extern "C" s32 fn_800AF8EC(void *fatCtx, s32 cluster, u32 entryValue, void *page
     return savedError;
 }
 extern "C" s32 fn_800AFBA8(void *arg0, u16 arg1, u32 *result, void *page) {
-    u8 *ctx=(u8*)arg0;
-    u8 *pg=(u8*)page;
+    u8 *ctx = (u8 *)arg0;
+    u8 *pg = (u8 *)page;
     u32 sector;
     u32 copy;
-    u32 offset;
     s32 status;
-    offset=(u16)(arg1+((u32)arg1>>1));
-    sector=(u16)(*(u32*)(ctx+0x28)+(offset>>*(u8*)(ctx+0x20)));
-    copy=1;
-    if(*(u16*)(ctx+0x18)&0x80) copy=*(u16*)(ctx+0x18)&7;
-    status=0;
-retry:
-    if(status==0x1000 && *(s32 (**)(s32))(ctx+0x1fc0)) {
-        s32 action=(*(s32 (**)(s32))(ctx+0x1fc0))(*(s32*)(ctx+0x1f84));
-        if(action==0) { status=0; goto retry; }
-        if(action==1 && *(u8*)(ctx+0x22)>=2 && copy<*(u8*)(ctx+0x22)) {
-            status=0; copy++; sector+=*(u32*)(ctx+0xc); goto retry;
-        }
-    } else {
-        if(*(u32*)(pg+0x18)!=sector) {
-            if(*(u16*)(pg+2)==1) {
-                for(status=0;(u16)status<*(u8*)(ctx+0x22);status++)
-                    fn_800B5618(arg0,*(void**)(pg+8),*(u32*)(pg+0x18)+(u16)status**(u32*)(ctx+0xc),0,*(u16*)ctx);
+    u32 offset;
+    offset = (u16)(arg1 + ((u32)arg1 >> 1));
+    sector = (u16)(*(u32 *)(ctx + 0x28) + (offset >> *(u8 *)(ctx + 0x20)));
+    copy = 1;
+    if (*(u16 *)(ctx + 0x18) & 0x80) copy = *(u16 *)(ctx + 0x18) & 7;
+    status = 0;
+    while (1) {
+        if (status == 0x1000 && *(s32 (**)(s32))(ctx + 0x1fc0)) {
+            s32 action = (*(s32 (**)(s32))(ctx + 0x1fc0))(*(s32 *)(ctx + 0x1f84));
+            if (action == 0) { status = 0; continue; }
+            if (action == 1 && *(u8 *)(ctx + 0x22) >= 2 && copy < *(u8 *)(ctx + 0x22)) {
+                status = 0; copy++; sector += *(u32 *)(ctx + 0xc); continue;
             }
-            status=fn_800B5260(arg0,*(void**)(pg+8),sector,0,*(u16*)ctx);
-            if(status) goto retry;
-            *(u32*)(pg+0x18)=sector;
-        }
-        u32 mask=*(u16*)ctx-1;
-        offset &= mask;
-        if(offset==mask) {
-            *result=(*(u8**)(pg+8))[offset];
-            if(*(u16*)(pg+2)==1) {
-                for(status=0;(u16)status<*(u8*)(ctx+0x22);status++)
-                    fn_800B5618(arg0,*(void**)(pg+8),*(u32*)(pg+0x18)+(u16)status**(u32*)(ctx+0xc),0,*(u16*)ctx);
-            }
-            status=fn_800B5260(arg0,*(void**)(pg+8),sector+1,0,*(u16*)ctx);
-            if(status) goto retry;
-            *(u32*)(pg+0x18)=sector+1;
-            *result+=(*(u8**)(pg+8))[0]<<8;
+            break;
         } else {
-            u8 *buf=*(u8**)(pg+8);
-            *result=(buf[offset+1]<<8)+buf[offset];
+            if (*(u32 *)(pg + 0x18) != sector) {
+                if (*(u16 *)(pg + 2) == 1) {
+                    for (status = 0; (u16)status < *(u8 *)(ctx + 0x22); status++)
+                        fn_800B5618(arg0, *(void **)(pg + 8), *(u32 *)(pg + 0x18) + (u16)status * *(u32 *)(ctx + 0xc), 0, *(u16 *)ctx);
+                }
+                status = fn_800B5260(arg0, *(void **)(pg + 8), sector, 0, *(u16 *)ctx);
+                if (status) continue;
+                *(u32 *)(pg + 0x18) = sector;
+            }
+            u32 mask = *(u16 *)ctx - 1;
+            offset &= mask;
+            if (offset == mask) {
+                *result = (*(u8 **)(pg + 8))[offset];
+                if (*(u16 *)(pg + 2) == 1) {
+                    u16 i;
+                    for (i = 0; i < *(u8 *)(ctx + 0x22); i++)
+                        fn_800B5618(arg0, *(void **)(pg + 8), *(u32 *)(pg + 0x18) + i * *(u32 *)(ctx + 0xc), 0, *(u16 *)ctx);
+                }
+                status = fn_800B5260(arg0, *(void **)(pg + 8), sector + 1, 0, *(u16 *)ctx);
+                if (status) continue;
+                *(u32 *)(pg + 0x18) = sector + 1;
+                *result += (*(u8 **)(pg + 8))[0] << 8;
+            } else {
+                u8 *buf = *(u8 **)(pg + 8);
+                *result = (buf[offset + 1] << 8) + buf[offset];
+            }
+            break;
         }
     }
-    if(status) { *result=-1; return status; }
-    if(arg1&1) *result>>=4; else *result&=0xfff;
+    if (status) { *result = -1; return status; }
+    if (arg1 & 1) *result >>= 4; else *result &= 0xfff;
     return 0;
 }
 
@@ -7538,20 +7542,22 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
         if (result) return result;
         *(u32 *)(ctx + 0x18) = block;
     }
-    u8 *buffer = (u8 *)*(u32 *)(ctx + 8);
-    u32 data = *(u32 *)(buffer + offset);
-    u32 upper = __rlwinm(data, 8, 8, 15);
-    u32 lower = __rlwinm(data, 24, 16, 23);
-    upper = __rlwimi(upper, data, 24, 0, 7);
-    lower = __rlwimi(lower, data, 8, 24, 31);
-    u32 swapped = upper | lower;
-    swapped &= 0xF0000000;
-    swapped = __rlwimi(swapped, arg2, 0, 4, 31);
-    upper = __rlwinm(swapped, 8, 8, 15);
-    lower = __rlwinm(swapped, 24, 16, 23);
-    upper = __rlwimi(upper, swapped, 24, 0, 7);
-    lower = __rlwimi(lower, swapped, 8, 24, 31);
-    *(u32 *)(buffer + offset) = upper | lower;
+    {
+        u8 *buffer = *(u8 **)(ctx + 8);
+        u32 data = *(u32 *)(buffer + offset);
+        u32 upper = __rlwinm(data, 8, 8, 15);
+        u32 lower = __rlwinm(data, 24, 16, 23);
+        upper = __rlwimi(upper, data, 24, 0, 7);
+        lower = __rlwimi(lower, data, 8, 24, 31);
+        u32 swapped = upper | lower;
+        swapped &= 0xF0000000;
+        swapped = __rlwimi(swapped, arg2, 0, 4, 31);
+        upper = __rlwinm(swapped, 8, 8, 15);
+        lower = __rlwinm(swapped, 24, 16, 23);
+        upper = __rlwimi(upper, swapped, 24, 0, 7);
+        lower = __rlwimi(lower, swapped, 8, 24, 31);
+        *(u32 *)(buffer + offset) = upper | lower;
+    }
     if (result) saved = result;
     return saved;
 }
@@ -10735,12 +10741,14 @@ extern "C" s32 fn_800B5E14(void *arg0) {
         if (fn_800A53C0(arg0) != 0) {
             if (!(*(u16 *)((u8 *)arg0 + 0x1F8C) & 8)) {
                 result = fn_800B5988(arg0);
-                if (result != 0) {
-                } else {
+                switch (result) {
+                case 0:
                     *(u16 *)((u8 *)arg0 + 0x1FAC) = (u16)(*(u16 *)((u8 *)arg0 + 0x1FAC) & 0xFFF8);
                     fn_800A53E8(arg0);
                     lbl_803D2140[13] = lbl_803D2140[13] + 1;
                     goto block_13;
+                default:
+                    break;
                 }
             } else {
 block_13:
@@ -21171,6 +21179,7 @@ extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597DC[]; }
 extern "C" void fn_800D1EC4(const char *, ...);
 extern "C" s32 fn_800D3824(void);
 extern "C" s32 fn_800D40B4(s32, s32, s32, void *, void *);
+#pragma pool_strings off
 extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
     u8 scratch[0x104];
     const Fn800D1F7CStringTable *messages =
@@ -21178,7 +21187,7 @@ extern "C" void fn_800D1F7C(s32 *arg0, s32 arg1) {
     u32 temp_r28;
     u32 var_r27;
     s32 var_r0;
-    fn_800D1EC4(0 + messages->header);
+    fn_800D1EC4(messages->header + 0);
     fn_800D1EC4(messages->summary);
     var_r27 = 0;
 loop_1:
@@ -21212,7 +21221,7 @@ loop_1:
 done:
     return;
 }
-
+#pragma pool_strings reset
 extern "C" void fn_800591AC(s32);
 extern "C" void AIRegisterDMACallback_800591F0(void *);
 extern "C" s32 fn_800D3634(s32);
