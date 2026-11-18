@@ -766,20 +766,40 @@ extern "C" void fn_801D52A4(void *arg0) {
 #pragma cplusplus on
 void fn_801D5328(int arg0, int arg1) {
  struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual int state(); virtual void v6(); virtual int apply(int); };
- int state, mode, changed, count, offset;
- Dummy *item;
- state = *(int *)(arg0+4);
- if (state != 1) return;
+ int offset;
+ int mode;
+ int changed;
+ int i;
+ if(*(int *)(arg0+4)!=1) return;
  *(unsigned char *)(arg0+0x2c)=arg1;
- mode=((unsigned char)arg1==0); changed=0;
- for(count=0, offset=0; count<*(int *)(arg0+0x34); offset+=4, count++) {
-    item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
-    if(item->state()==0 && item->apply(mode)!=0) changed=1;
+ mode=((unsigned char)arg1==0);
+ changed=0;
+ i=0;
+ offset=0;
+ goto test1;
+loop1:
+ {
+   Dummy *item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
+   if(item->state()==0 && item->apply(mode)!=0) changed=1;
  }
+ offset+=4;
+ i++;
+test1:
+ if(i<*(int *)(arg0+0x34)) goto loop1;
  if(changed==0) goto done;
- for(count=0, offset=0; count<*(int *)(arg0+0x34); offset+=4, count++) {
-    item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
-    if(item->state()!=0) item->apply(mode);
+ {
+   int j=0;
+   offset=0;
+   goto test2;
+loop2:
+   {
+     Dummy *item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
+     if(item->state()!=0) item->apply(mode);
+   }
+   offset+=4;
+   j++;
+test2:
+   if(j<*(int *)(arg0+0x34)) goto loop2;
  }
 done:
  *(int *)(arg0+4)=2;
@@ -1315,65 +1335,114 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
     return result;
 }
 
-extern "C" s32 fn_801D5E94(void *arg0) {
+extern "C" s32 fn_801D5E94(void *object) {
+    /* ObstacleActionSequenceEvent's start step: hand every obstacle of the
+     * event's group a random throw.
+     *
+     * While the event is ready (state 1), each obstacle collected in its list
+     * (+0x70, count +0x74 -- fn_801D7874 appends the nodes whose "group_id"
+     * matches the event's own, read into +0x0C by fn_801D5BBC) gets a direction
+     * drawn at random between "dir1" (+0x3C) and "dir2" (+0x48) and a speed
+     * drawn between "speed1" (+0x60) and "speed2" (+0x64); both draws come from
+     * RNG slot 4 through fn_80129DC4().  A degenerate draw -- a direction of
+     * (almost) zero length, or a zero speed -- only tells the obstacle to stop
+     * (vtable +0x20); otherwise the direction is normalised, scaled to that
+     * speed and handed to the obstacle's throw method (vtable +0x24) together
+     * with the event's "throw_pt" (+0x54).
+     *
+     * The event then waits "reset_timeout" (+0x68, seconds already scaled to
+     * frames) in state 2 with its start tick in +0x6C -- fn_801D6080() releases
+     * the obstacles once that is up -- or, with no timeout, goes straight to
+     * state 3.  Returns 1 when it ran and 0 when the event was not ready. */
     struct Vec { f32 x, y, z; };
-    struct Obj {
+    struct Obstacle {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void d5();
-        virtual void v8(s32);
-        virtual void v9(void *, void *);
+        virtual void stop(s32);                /* vtable +0x20 */
+        virtual void setThrow(void *, void *); /* vtable +0x24 */
     };
-    char *self = (char *)arg0;
-    Vec pos, vec;
-    f32 b3c, b48, b40, b44, t50, t4c;
-    f32 d0, d1, d2;
-    f32 scale, amount;
-    s32 offset, i;
+#define kState          0x08  /* 1 ready, 2 waiting for the reset, 3 done */
+#define kDir1           0x3C  /* "dir1": one end of the random direction */
+#define kDir2           0x48  /* "dir2": the other end */
+#define kThrowPoint     0x54  /* "throw_pt", handed to the obstacle as-is */
+#define kSpeed1         0x60  /* "speed1": slowest throw */
+#define kSpeed2         0x64  /* "speed2": fastest throw */
+#define kResetTimeout   0x68  /* frames to wait before releasing, <=0: none */
+#define kStartTick      0x6C  /* frame tick the wait began */
+#define kObstacles      0x70  /* the group's obstacles; count at +0x74 */
+#define kObstacleCount  0x74
+#define kRandomSlot     4     /* the RNG slot fn_80129DC4() draws from */
+#define kNearZero       lbl_80558DC4 /* 2.35e-38: bound under which it is zero */
+#define kBlendMin       lbl_80562ADC /* 0.0f */
+#define kBlendMax       lbl_80562AE0 /* 1.0f */
+#define gFrameTick      lbl_8055E3C4 /* global frame-tick counter */
 
-    if (*(s32 *)(self + 8) == 1) {
-        f32 zero = lbl_80562ADC;
+    char *self = (char *)object;
+    Vec dir, velocity;
+    f32 d1x, d2x, d1y, d1z, d2z, d2y;
+    f32 dirX, dirY, dirZ;
+    f32 speed, blend;
+    s32 byteOffset, i;
+
+    if (*(s32 *)(self + kState) == 1) {
+        f32 zero = kBlendMin;
         i = 0;
-        offset = 0;
-        while (i < *(s32 *)(self + 0x74)) {
+        byteOffset = 0;
+        while (i < *(s32 *)(self + kObstacleCount)) {
             f32 mag;
-            scale = fn_80129DC4(4, lbl_80562ADC, lbl_80562AE0);
-            amount = fn_80129DC4(4, lbl_80562ADC, lbl_80562AE0);
-            t50 = *(f32 *)(self + 0x50);
-            b44 = *(f32 *)(self + 0x44);
-            t4c = *(f32 *)(self + 0x4C);
-            b40 = *(f32 *)(self + 0x40);
-            b48 = *(f32 *)(self + 0x48);
-            b3c = *(f32 *)(self + 0x3C);
-            d2 = b44 + amount * (t50 - b44);
-            d1 = b40 + amount * (t4c - b40);
-            d0 = b3c + amount * (b48 - b3c);
-            pos.x = d0; pos.y = d1; pos.z = d2;
-            scale = *(f32 *)(self + 0x60) + scale * (*(f32 *)(self + 0x64) - *(f32 *)(self + 0x60));
-            vec.x = zero; vec.y = zero; vec.z = zero;
-            mag = PSVECDotProduct(&pos, &pos);
+            speed = fn_80129DC4(kRandomSlot, kBlendMin, kBlendMax);
+            blend = fn_80129DC4(kRandomSlot, kBlendMin, kBlendMax);
+            d2z = *(f32 *)(self + kDir2 + 8);
+            d1z = *(f32 *)(self + kDir1 + 8);
+            d2y = *(f32 *)(self + kDir2 + 4);
+            d1y = *(f32 *)(self + kDir1 + 4);
+            d2x = *(f32 *)(self + kDir2);
+            d1x = *(f32 *)(self + kDir1);
+            dirZ = d1z + blend * (d2z - d1z);
+            dirY = d1y + blend * (d2y - d1y);
+            dirX = d1x + blend * (d2x - d1x);
+            dir.x = dirX; dir.y = dirY; dir.z = dirZ;
+            speed = *(f32 *)(self + kSpeed1) + speed * (*(f32 *)(self + kSpeed2) - *(f32 *)(self + kSpeed1));
+            velocity.x = zero; velocity.y = zero; velocity.z = zero;
+            mag = PSVECDotProduct(&dir, &dir);
             mag = (float)__fabs(mag);
-            if (mag <= lbl_80558DC4 || (mag = (float)__fabs(scale)) <= lbl_80558DC4) {
-                Obj *obj = *(Obj **)(*(char **)(self + 0x70) + offset);
-                obj->v8(1);
+            if (mag <= kNearZero || (mag = (float)__fabs(speed)) <= kNearZero) {
+                Obstacle *obstacle = *(Obstacle **)(*(char **)(self + kObstacles) + byteOffset);
+                obstacle->stop(1);
             } else {
-                Obj *obj;
-                PSVECNormalize(&pos, &pos);
-                vec.x = pos.x * scale; vec.y = pos.y * scale; vec.z = pos.z * scale;
-                obj = *(Obj **)(*(char **)(self + 0x70) + offset);
-                obj->v9(&vec, self + 0x54);
+                Obstacle *obstacle;
+                PSVECNormalize(&dir, &dir);
+                velocity.x = dir.x * speed; velocity.y = dir.y * speed; velocity.z = dir.z * speed;
+                obstacle = *(Obstacle **)(*(char **)(self + kObstacles) + byteOffset);
+                obstacle->setThrow(&velocity, self + kThrowPoint);
             }
-            offset += 4;
+            byteOffset += 4;
             i += 1;
         }
-        if (*(s32 *)(self + 0x68) > 0) {
-            *(s32 *)(self + 8) = 2;
-            *(s32 *)(self + 0x6C) = lbl_8055E3C4;
+        if (*(s32 *)(self + kResetTimeout) > 0) {
+            *(s32 *)(self + kState) = 2;
+            *(s32 *)(self + kStartTick) = gFrameTick;
         } else {
-            *(s32 *)(self + 8) = 3;
+            *(s32 *)(self + kState) = 3;
         }
         return 1;
     }
     return 0;
+#undef kState
+#undef kDir1
+#undef kDir2
+#undef kThrowPoint
+#undef kSpeed1
+#undef kSpeed2
+#undef kResetTimeout
+#undef kStartTick
+#undef kObstacles
+#undef kObstacleCount
+#undef kRandomSlot
+#undef kNearZero
+#undef kBlendMin
+#undef kBlendMax
+#undef gFrameTick
 }
 
 #pragma cplusplus reset
@@ -2748,13 +2817,12 @@ extern "C" int fn_801D7A0C(void *arg0, void *arg1) {
     struct Output { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void finish(); };
     Manager *obj = (Manager *)arg1;
     char *base = &lbl_80338460;
-    char *key = base + 0x994;
     const char *name;
-    int index, initial = 0;
-    float value, zero;
-    *(int *)((char *)arg0 + 4) = initial;
+    int index;
+    float value;
+    *(void **)((char *)arg0 + 4) = 0;
     *(int *)((char *)arg0 + 8) = -1;
-    if (obj->has(key)) {
+    if (obj->has(base + 0x994)) {
         name = obj->name(base + 0x994);
         *(void **)((char *)arg0 + 4) = fn_801D9A54(name);
         if (*(void **)((char *)arg0 + 4) == 0) {
@@ -2778,15 +2846,13 @@ extern "C" int fn_801D7A0C(void *arg0, void *arg1) {
         }
     }
     value = obj->value(&lbl_8055ACB0, lbl_80562AEC);
-    zero = lbl_80562ADC;
-    if (value < zero) return 0;
+    if (value < 0.0f) return 0;
     *(int *)((char *)arg0 + 0xC) = (int)(lbl_80562B0C * value);
-    value = obj->value(&lbl_8055ACB8, zero);
-    zero = lbl_80562ADC;
+    value = obj->value(&lbl_8055ACB8, 0.0f);
     *(int *)((char *)arg0 + 0x10) = (int)(lbl_80562B0C * value);
-    obj->value(base + 0xAD8, zero);
+    obj->value(base + 0xAD8, 0.0f);
     *(float *)((char *)arg0 + 0x14) = ((ManagerAlt *)arg1)->value(&lbl_8055AD10);
-    obj->value(base + 0xAE4, lbl_80562AE0);
+    obj->value(base + 0xAE4, 1.0f);
     *(float *)((char *)arg0 + 0x18) = ((ManagerAlt *)arg1)->value(&lbl_8055AD18);
     *(int *)((char *)arg0 + 0x28) = 1;
     ((Output *)arg0)->finish();
