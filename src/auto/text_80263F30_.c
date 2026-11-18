@@ -188,6 +188,7 @@ void fn_80264098(void *item, int type) {
 
 #pragma dont_inline on
 #pragma dont_inline off
+#pragma scheduling invalid_target
 void fn_802640A0(void *arg0)
 {
   volatile int *new_var2;
@@ -201,6 +202,7 @@ void fn_802640A0(void *arg0)
   *((volatile int *) (p + new_var)) = 0x7b;
   *((volatile int *) (p + 0x10)) = 0;
 }
+#pragma scheduling on
 
 #pragma push
 #pragma processor 750
@@ -331,9 +333,9 @@ void fn_80264484(void *arg0) {
         *(int *)((char *)result + 0x14) = 0;
         *(void **)result = lbl_803464F8;
     }
-    items = ((void ***)lbl_80498F78)[0];
-    count = ((int *)lbl_80498F78)[1];
-    ((int *)lbl_80498F78)[1] = count + 1;
+    items = *(void ***)(lbl_80498F78 + 0);
+    count = *(int *)(lbl_80498F78 + 4);
+    *(int *)(lbl_80498F78 + 4) = count + 1;
     items[count] = result;
     *(int *)arg0 = 0;
     fn_80264098(arg0, 5);
