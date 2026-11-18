@@ -795,19 +795,32 @@ public:
     virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
     virtual void d12(); virtual void *find(s32, s32);
 };
+/* homebutton::gui::Component, as the pointer-update dispatchers use it; the
+ * comments are the vtable slot offsets the calls go through. */
 class ComponentUpdateDispatch {
 public:
     virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5();
-    virtual s32 id(); virtual s32 active(int); virtual void setActive(int, int); virtual void enter(); virtual void leave();
-    virtual void p11(); virtual void motion(f32, f32); virtual void p13(); virtual void p14(); virtual void p15();
-    virtual void p16(); virtual void p17(); virtual void p18(); virtual void p19();
+    virtual s32 id();                                  /* +0x20: the component's id, what the manager is notified with */
+    virtual s32 active(int);                           /* +0x24: held by this pointer index */
+    virtual void setActive(int, int);                  /* +0x28 */
+    virtual void enter();                              /* +0x2c: the pointer moved onto it */
+    virtual void leave();                              /* +0x30: the pointer moved off it */
+    virtual void p11();                                /* +0x34 */
+    virtual void motion(f32, f32);                     /* +0x38 */
+    virtual void prepare(unsigned long, u32 *);        /* +0x3c: fills three values for the property mask it is given */
+    virtual void p14();                                /* +0x40 */
+    virtual void p15();                                /* +0x44 */
+    virtual s32 update(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *); /* +0x48: a pointer was updated; handled? */
+    virtual s32 check();                               /* +0x4c */
+    virtual void p18(); virtual void p19();
     virtual s32 enabled(); virtual s32 hit(f32, f32);
 };
+/* The interface a GUI component reports back on: the manager that owns it. */
 class ComponentUpdateManager {
 public:
     virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4();
     virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9();
-    virtual void notify(s32, s32, void *);
+    virtual void notify(s32, s32, void *);             /* +0x30: (component id, 1 enter / 2 leave / 3 motion, user data) */
 };
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
