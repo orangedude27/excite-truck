@@ -565,12 +565,9 @@ void fn_802C3918(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
         var_r30 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
         var_r3 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
         temp_r31 = sp1C;
-        temp_r5 = temp_r31 * 2;
         temp_r29 = sp18;
-        temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
-        temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
-        temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
-        temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
+        temp_r5 = (*(s32 *)((u8 *)arg0 + 0x10) - temp_r31 * 2) / 2 * 2;
+        temp_r6 = (*(s32 *)((u8 *)arg5 + 0x10) - temp_r31 * 2) / 2 * 2;
         do {
             var_r4 = sp1C;
 loop_copy:
@@ -592,12 +589,9 @@ loop_copy:
                 var_r30_2 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
                 var_r3_2 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
                 sp1C = temp_r31;
-                temp_r5 = temp_r31 * 2;
                 sp18 = temp_r29;
-                temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
-                temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
-                temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
-                temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
+                temp_r5 = (*(s32 *)((u8 *)arg0 + 0x10) - temp_r31 * 2) / 2 * 2;
+                temp_r6 = (*(s32 *)((u8 *)arg5 + 0x10) - temp_r31 * 2) / 2 * 2;
                 do {
                     var_r4_2 = sp1C;
 loop_10:
@@ -621,22 +615,19 @@ loop_10:
                 var_r30_3 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
                 var_r3_3 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
                 sp1C = temp_r31;
-                temp_r5 = temp_r31 * 2;
                 sp18 = temp_r29;
-                temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
-                temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
-                temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
-                temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
+                temp_r5 = (*(s32 *)((u8 *)arg0 + 0x10) - temp_r31 * 2) / 2 * 2;
+                temp_r6 = (*(s32 *)((u8 *)arg5 + 0x10) - temp_r31 * 2) / 2 * 2;
                 do {
                     var_r7 = sp1C;
 loop_17:
                     temp_r8 = *var_r30_3;
                     var_r7--;
                     var_r30_3++;
-                    temp_r0_4 = __rlwinm(temp_r8, 1, 21, 21);
-                    temp_r4_4 = __rlwinm(temp_r8, 1, 16, 25);
-                    temp_r4_4 = __rlwimi(temp_r4_4, temp_r8, 0, 27, 31);
-                    temp_r0_4 = temp_r0_4 >> 5;
+                    temp_r4_4 = __rlwinm(temp_r8, 1, 21, 21);
+                    temp_r0_4 = __rlwinm(temp_r8, 1, 16, 25);
+                    temp_r0_4 = __rlwimi(temp_r0_4, temp_r8, 0, 27, 31);
+                    temp_r4_4 = temp_r4_4 >> 5;
                     temp_r0_4 = temp_r4_4 | temp_r0_4;
                     *var_r3_3 = (u16)temp_r0_4;
                     var_r3_3++;
@@ -653,12 +644,9 @@ loop_17:
                 var_r30_4 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
                 var_r3_4 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
                 sp1C = temp_r31;
-                temp_r5 = temp_r31 * 2;
                 sp18 = temp_r29;
-                temp_r6 = *(s32 *)((u8 *)arg0 + 0x10) - temp_r5;
-                temp_r4 = *(s32 *)((u8 *)arg5 + 0x10) - temp_r5;
-                temp_r5 = (((u32)temp_r6 >> 31) + temp_r6) & ~1;
-                temp_r6 = (((u32)temp_r4 >> 31) + temp_r4) & ~1;
+                temp_r5 = (*(s32 *)((u8 *)arg0 + 0x10) - temp_r31 * 2) / 2 * 2;
+                temp_r6 = (*(s32 *)((u8 *)arg5 + 0x10) - temp_r31 * 2) / 2 * 2;
                 do {
                     var_r4 = sp1C;
 loop_24:
