@@ -3050,7 +3050,15 @@ extern "C" u8 *fn_801421C0(u8 *state) {
 
 extern "C" f32 fn_8013CB3C(void);
 extern "C" u8 lbl_8042FB3C[];
-#pragma scheduling invalid_target
+#pragma scheduling on
+extern "C" f64 lbl_805614D8;
+extern "C" u8 lbl_8055E1BC;
+static inline f32 conv_s32_f32(s32 v) {
+    union { u32 w[2]; f64 d; } c;
+    c.w[0] = 0x43300000u;
+    c.w[1] = (u32)v ^ 0x80000000u;
+    return (f32)(c.d - lbl_805614D8);
+}
 extern "C" void fn_801421D8(void *arg0, void *arg1) {
     u8 *a = (u8 *)arg0;
     u8 *b = (u8 *)arg1;
@@ -3066,8 +3074,8 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
     f32 position = *(f32 *)(lbl_8042FB3C + 0x1C);
     time -= one;
     f32 ratio = time / (span - one);
-    value = value < ratio ? ratio : value;
-    value = value > lbl_805614A4 ? lbl_805614A4 : value;
+    value = value < ratio ? value : ratio;
+    value = value > lbl_805614A4 ? value : lbl_805614A4;
     f32 result = position + value * (lbl_805614A4 - position);
     if (result > lbl_805614A4) {
         f32 current = *(f32 *)(lbl_8042FB3C + 0x1C);
@@ -3114,8 +3122,8 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
     position = *(f32 *)(lbl_8042FB3C + 0x1C);
     time -= one;
     ratio = time / (span - one);
-    value = value < ratio ? ratio : value;
-    value = value > lbl_805614A4 ? lbl_805614A4 : value;
+    value = value < ratio ? value : ratio;
+    value = value > lbl_805614A4 ? value : lbl_805614A4;
     result = position + value * (lbl_805614A4 - position);
     if (result > lbl_805614A4) {
         f32 current = *(f32 *)(lbl_8042FB3C + 0x1C);
@@ -3139,10 +3147,10 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
     row = fn_801421C0(a);
     if (lbl_8055E1BC) {
         f32 x = *(f32 *)(b + 0x94);
-        f32 f = x + *(f32 *)(row + 8) / lbl_8056149C;
-        f = f < lbl_805614AC ? lbl_805614AC : f;
+        f32 f = *(f32 *)(row + 8) / lbl_8056149C + x;
+        f = f < lbl_805614AC ? f : lbl_805614AC;
+        f = f > lbl_805614A4 ? f : lbl_805614A4;
         f64 r = f;
-        f = f > lbl_805614A4 ? lbl_805614A4 : f;
         *(f32 *)(b + 0x94) = f;
         if (x < (f32)r) {
             *(f32 *)(b + 0xEC) = (f32)r - x;
@@ -3167,7 +3175,6 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
     }
     ++*(s32 *)(b + *(s32 *)(b + 0x54) * 4 + 0xC);
 }
-#pragma scheduling on
   extern "C" f32 __fabsf(f32);
 #pragma dont_inline on
 extern "C" void fn_80142650(void *arg0) {
@@ -3182,12 +3189,14 @@ extern "C" void fn_80142650(void *arg0) {
     if (*(u8 *)(base + 0xF8) != 0) {
         *(u8 *)(base + 0xF8) = 0;
         if (lbl_8055E1BC != 0) {
+            f64 r;
             f32 x = *(f32 *)(base + 0x94);
             f32 f = x + lbl_8056149C / lbl_8056149C;
-            f = f < lbl_805614AC ? lbl_805614AC : f;
-            f = f > lbl_805614A4 ? lbl_805614A4 : f;
-            f64 r = f;
-            *(f32 *)(base + 0x94) = f;
+            f32 progress = lbl_805614AC;
+            progress = progress < f ? progress : f;
+            progress = progress > lbl_805614A4 ? progress : lbl_805614A4;
+            r = progress;
+            *(f32 *)(base + 0x94) = progress;
             if (x < (f32)r) {
                 *(f32 *)(base + 0xEC) = (f32)r - x;
             } else {
