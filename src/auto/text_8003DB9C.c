@@ -46,6 +46,7 @@ extern unsigned int lbl_8055D954;
 extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
 extern unsigned int * const __GXData;
+static inline void writeDispCopy(u32 reg) { __GXData[0x238 / 4] = reg; }
 #define GX_CP_DISP 0x23C
 #define GX_CP_TEX  0x24C
 extern u8 FifoObj_8037BA40[];
@@ -3366,7 +3367,18 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 
 #pragma scheduling on
 void GXSetDispCopyDst(s32 value) {
-    __GXData[0x238 / 4] = buildDispCopyWord(value);
+    union {
+        u32 reg;
+        struct {
+            u32 constant : 8;
+            u32 pad : 14;
+            u32 arg : 10;
+        } fields;
+    } data = {0};
+
+    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
+    data.fields.constant = 0x4D;
+    __GXData[0x238 / 4] = data.reg;
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
