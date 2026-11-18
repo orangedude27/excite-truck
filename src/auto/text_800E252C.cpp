@@ -2740,6 +2740,33 @@ extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *self, bool loo
     OSRestoreInterrupts(savedIrq);
 }
 
+/* The AX voice parameter block (AXVPB) an AxVoice slot holds: only as far as
+   the address setters reach.  Its +0x1C holds the sync bits __AXSyncPBs acts
+   on, and the DSP block starts at +0x138, whose address group is at +0x78.
+   revolution/AX/AXVPB.h has the whole layout; this TU has no SDK includes. */
+struct AxVoicePB {
+    char pad_00[0x1C];
+    /* 0x1C */ unsigned int sync;
+    char pad_20[0x1B0 - 0x20];
+    struct {
+        /* 0x1B0 */ unsigned short loopFlag;
+        /* 0x1B2 */ unsigned short format;
+        /* 0x1B4 */ unsigned short loopAddressHi;
+        /* 0x1B6 */ unsigned short loopAddressLo;
+        /* 0x1B8 */ unsigned short endAddressHi;
+        /* 0x1BA */ unsigned short endAddressLo;
+    } addr;
+};
+
+/* Bits of AxVoicePB::sync (the AX_PBSYNC_* enum of revolution/AX/AXVPB.h)
+   that queue one of the address fields for the next __AXSyncPBs. */
+enum {
+    AX_PBSYNC_ADDR      = 0x800,  /* the address group as a whole */
+    AX_PBSYNC_LOOP_FLAG = 0x1000,
+    AX_PBSYNC_LOOP_ADDR = 0x2000,
+    AX_PBSYNC_END_ADDR  = 0x4000
+};
+
 #pragma dont_inline off
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
     nw4hbm::ut::AutoInterruptLock lock;
