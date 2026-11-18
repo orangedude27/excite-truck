@@ -429,8 +429,7 @@ copied:
             if (((HasFn)(*(void ***)s)[3])(s, lbl_8055CCF8)) {
                 LVec2 v;
                 LVec2 t2;
-                t2 = ((Vec2Fn)(*(void ***)s)[15])(s, lbl_8055CCF8);
-                v = t2;
+                v = ((Vec2Fn)(*(void ***)s)[15])(s, lbl_8055CCF8);
                 v.x += ox;
                 v.y += oy;
                 seg->pos.x = v.x - cx;
