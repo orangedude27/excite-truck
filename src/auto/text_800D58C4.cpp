@@ -2197,7 +2197,7 @@ extern "C" s32 fn_800D938C(void* arg0) {
     u32 top = (bits >> 0x17) & 0x1E0;
     u32 low = (bits >> 0x06) & 4;
     s32 past = base + (mid + top);
-    return (scaled + low) + past;
+    return past + (scaled + low);
 }
 
 extern "C" s32 fn_800D93BC(void *arg0) {
@@ -2550,9 +2550,10 @@ extern "C" s32 fn_800DA094(void *arg0, s32 arg1, u8 arg2) {
                           f32 temp_f31;
                           s32 *var_r21_3;
                           s32 *var_r22_2;
-           register s32 var_r21_2;
-                          register s32 var_r23_3;
+               register s32 var_r26;
+               register s32 var_r21;
                           register const char *data = lbl_8031F990;
+           register s32 var_r21_2;
                           s32 temp_cr0_eq;
                           s32 temp_r0;
                           s32 temp_r0_2;
@@ -2564,8 +2565,7 @@ extern "C" s32 fn_800DA094(void *arg0, s32 arg1, u8 arg2) {
                           s32 temp_r4;
                           s32 temp_r6;
                           s32 temp_r8_2;
-               register s32 var_r26;
-               register s32 var_r21;
+                          register s32 var_r23_3;
                           s32 var_r23_5;
                           s32 var_r24;
                           register s32 var_r25;
