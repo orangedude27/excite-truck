@@ -951,6 +951,7 @@ extern "C" void fn_8018E330(void *arg0) {
     void *manager;
     void *object;
     int tmp;
+    int objInt;
     register float f0;
     register float f1;
     manager = (void *)fn_801B83A0();
@@ -960,7 +961,8 @@ extern "C" void fn_8018E330(void *arg0) {
     f0 = lbl_80561F74;
     f1 = lbl_80561F8C;
     *(volatile float *)((char *)arg0 + 0x258C) = f0;
-    object = (void *)*(volatile void **)((char *)arg0 + 0x270);
+    objInt = *(volatile int *)((char *)arg0 + 0x270);
+    object = (void *)objInt;
     *(float *)((char *)arg0 + 0x2690) = f1;
     *(float *)((char *)arg0 + 0x25BC) = f0;
     *(float *)((char *)arg0 + 0x26A0) = lbl_8055E3C8;
