@@ -3033,7 +3033,6 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           }
                return (var_r25 != 0) && (var_r26 != 0);
                         }
-#pragma scheduling on
  extern "C" void fn_800DAFA8(void *arg, void *obj) {
     /* C-callable thunk: invoke the virtual method at vtable slot 3 on obj, passing arg. */
     struct Dispatch {
