@@ -507,51 +507,53 @@ void fn_8020FE90(void) {
     lbl_8055B658 = resolvedTrack;
 }
 
+static inline long clamp_8020FEF0(long value, long limit) {
+    value &= ((-value & ~value) >> 31);
+    if (value < limit)
+        limit = value;
+    return limit;
+}
+
 long fn_8020FEF0(long arg0) {
     long state = lbl_8055EEE0;
     long count;
     long pos;
     long max;
-    long tmp;
+    long delta = arg0;
 
-    if (state == -2) {
+    if (state == -2 && lbl_8055EEBC > 0) {
+        if (delta == 1) {
+            lbl_8055EEE0 = -1;
+            fn_8020FE90();
+        }
+        return;
+    } else if (state == -1) {
+        if (delta == -1) {
+            lbl_8055EEE0 = -2;
+            fn_8020FE90();
+        }
+        return;
+    } else {
+        pos = lbl_8055EEE4;
+        max = lbl_8055EEE8 - 1;
+        delta = pos + delta;
+        delta &= ((-delta & ~delta) >> 31);
+        if (delta < max) {
+            max = delta;
+        }
+        lbl_8055EEE4 = max;
         count = lbl_8055EEBC;
-        if (count > 0) {
-            if (arg0 == 1) {
-                lbl_8055EEE0 = -1;
-                fn_8020FE90();
-            }
+        if (pos == max) {
             return;
         }
-    }
-    if (state == -1) {
-        if (arg0 != -1) {
-            return;
+        if (count == 0) {
+            lbl_8055EEE0 = -2;
+        } else if (state >= 0 && state + max * 10 >= count) {
+            lbl_8055EEE0 = (count - 1) % 10;
         }
-        lbl_8055EEE0 = -2;
-        fn_8020FE90();
-        return;
-    }
-
-    pos = lbl_8055EEE4;
-    max = lbl_8055EEE8 - 1;
-    tmp = pos + arg0;
-    tmp &= ((-tmp & ~tmp) >> 31);
-    if (tmp < max) {
-        max = tmp;
-    }
-    lbl_8055EEE4 = max;
-    count = lbl_8055EEBC;
-    if (pos == max) {
-        return;
-    }
-    if (count == 0) {
-        lbl_8055EEE0 = -2;
-    } else if (state >= 0 && state + max * 10 >= count) {
-        lbl_8055EEE0 = (count - 1) % 10;
-    }
-    if (lbl_8055EEE0 >= 0) {
-        fn_8020FE90();
+        if (lbl_8055EEE0 >= 0) {
+            fn_8020FE90();
+        }
     }
 }
 
