@@ -73,6 +73,38 @@ typedef void (*TRKCommFn)(void **, void *);
 
 extern void *lbl_8055D73C;
 extern void *lbl_8055D6A8;
+extern u32 lbl_80558DD0;
+extern s32 lbl_8055D6B0, lbl_8055D6B4, lbl_8055D6B8, lbl_8055D6BC;
+extern s32 lbl_8055D6C0, lbl_8055D6C4, lbl_8055D6C8, lbl_8055D6CC;
+extern s32 lbl_8055D6D0, lbl_8055D6D4;
+
+/* The debugger's EXI window - control, address, data and length - that the host
+ * and the nub handshakes over (TRKInitializeNub strobes control bits 0 and 1
+ * and waits for data to change). */
+#define DBGIF_CONTROL (*(volatile u32 *)0xCD006C00)
+#define DBGIF_ADDRESS (*(volatile u32 *)0xCD006C04)
+#define DBGIF_DATA    (*(volatile u32 *)0xCD006C08)
+#define DBGIF_LENGTH  (*(volatile u32 *)0xCD006C0C)
+#define SYS_SPEED     (*(volatile u32 *)0x800000F8) /* the SoC clock register */
+
+/* The five 64-bit time spans (high word, low word) TRKInitializeNub measures
+ * the handshake against; TRKPostEvent fills the low words with the SoC clock
+ * scaled by the multiplier in the name, and clears the high ones. */
+#define sSpan3000Hi   lbl_8055D6B0
+#define sSpan3000Lo   lbl_8055D6B4
+#define sSpan63000Hi  lbl_8055D6B8
+#define sSpan63000Lo  lbl_8055D6BC
+#define sSpan42000Hi  lbl_8055D6C0
+#define sSpan42000Lo  lbl_8055D6C4
+#define sSpan42024Hi  lbl_8055D6C8
+#define sSpan42024Lo  lbl_8055D6CC
+#define sSpan31524Hi  lbl_8055D6D0
+#define sSpan31524Lo  lbl_8055D6D4
+#define sStarted      lbl_8055D6A8 /* TRKConstructEvent clears it again */
+#define sVersionBanner lbl_80558DD0 /* "<< RVL_SDK - ... build: ..." string */
+#define sPendingEvent lbl_8055D6DC /* callback, or 1 to build the event queue */
+#define sEventCallback lbl_8055D6E0 /* what TRKGetNextEvent calls back */
+
 void TRKPostEvent(s32 arg0) {
     extern u32 lbl_80558DD0;
     extern s32 lbl_8055D6B0, lbl_8055D6B4, lbl_8055D6B8, lbl_8055D6BC;
@@ -128,19 +160,15 @@ void TRKGetNextEvent(void *arg0, void *restoreContext) {
     u8 context[0x2D0];
     s32 value;
     u32 addr;
-    void (*fn)(void);
     *(volatile u16 *)0xCC00500A = (*(volatile u16 *)0xCC00500A & ~0xA0) | 8;
     OSClearContext(context);
     OSSetCurrentContext(context);
-    addr = (u32)lbl_8055D6E0;
+    addr = *(volatile u32 *)&lbl_8055D6E0;
     if (addr != 0 && lbl_8055D6AC == 0) {
         value = lbl_8055D6DC;
         lbl_8055D6AC = 1;
         if (value != 0) TRKInitializeEventQueue();
-        else {
-            fn = (void (*)(void))addr;
-            fn();
-        }
+        else ((void (*)(void))addr)();
         lbl_8055D6AC = 0;
     }
     OSClearContext(context);
