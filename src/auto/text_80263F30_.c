@@ -597,6 +597,7 @@ void* fn_80264A54(void) {
 
 #pragma push
 #pragma processor 750
+#pragma cplusplus on
 void fn_80264A5C(float farg0, float farg1) {
     extern float lbl_80558DC4[];
     extern float lbl_80563BF0;
