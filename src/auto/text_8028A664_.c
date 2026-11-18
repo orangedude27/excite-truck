@@ -160,7 +160,6 @@ extern s32 fn_80128668(void);
 #pragma optimize_for_size on
 #pragma scheduling invalid_target
 void fn_8028A664(void) {
-    extern char lbl_80348B98[];
     extern char lbl_8055C8A0;
     extern s32 lbl_804B32B8[];
     extern s32 lbl_8055F6F0, lbl_8055F6F4, lbl_8055F6F8, lbl_8055F700;
@@ -178,20 +177,18 @@ void fn_8028A664(void) {
     extern s32 fn_8028BA44(void *);
     extern s32 fn_8028BA9C(void *);
     extern s32 fn_8028BB14(s32);
-    struct Data { char a[16]; char b[12]; char c[16]; char d[4]; };
-    struct Data *data = (struct Data *)lbl_80348B98;
     void *p;
-    p = fn_801284F8(0xDC, &data->a[0]);
+    p = fn_801284F8(0xDC, "short sparks\0\0\0");
     if (p != 0) p = fn_8028BB68(p, 0x80, lbl_80564328);
     lbl_8055F6F0 = (s32)p;
-    p = fn_801284F8(0xDC, &data->b[0]);
+    p = fn_801284F8(0xDC, "long sparks");
     if (p != 0) p = fn_8028BB68(p, 0x60, lbl_8056432C);
     lbl_8055F6F4 = (s32)p;
-    p = fn_801284F8(0x14, &data->c[0]);
+    p = fn_801284F8(0x14, "glass shards\0\0\0");
     if (p != 0) p = fn_8028C824(p, 0x60);
     lbl_8055F6F8 = (s32)p;
     lbl_8055F6FC = fn_802929D8(1, &lbl_8055C8A0, 0, 0);
-    p = fn_802974CC(&data->d[0]);
+    p = fn_802974CC("expseq.val");
     *(volatile s32 *)&lbl_8055F700 = (s32)p;
     *(volatile s32 *)&lbl_804B32B8[0x50] = 0;
     fn_8028ABE8(p);
