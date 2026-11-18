@@ -1027,6 +1027,69 @@ void fn_802DCAE4(int, float *, float);
 void fn_802DC8B4(void);
 void fn_802C8D74(void);
 void fn_802DBECC(void);
+
+/* One "tree-volume" entry of the list at lbl_804C00D4 (fn_802BCBDC fills one in
+ * per tree-volume item, fn_802BD210 hangs the treelist.trl wrapper on it at
+ * +0x58).  The CPU-light pass reads the far model's light handle (+0x1C) and
+ * texture set (+0x20), that model's level (+0x24) and the wrapper (+0x58). */
+#define TREE_VOLUME_SIZE 0x60
+struct TreeVolume {
+    /* 0x00 */ const char *name;
+             char pad04[0x18];
+    /* 0x1C */ int lightModel;   /* fn_802BC4D4(far model) */
+    /* 0x20 */ int lightTexture; /* fn_802BC4E0(far model) */
+    /* 0x24 */ int modelLevel;   /* fn_802B1DA0(lightModel); lights draw up to 10 */
+             char pad28[0x30];
+    /* 0x58 */ struct TreeLightObject *lightObject;
+             char pad5C[4];
+};
+
+/* The treelist.trl wrapper allocated by fn_802BD210: the tree's frame-list
+ * points and the two near-list groups built over them (fn_802BCFB0 releases
+ * all three lists). */
+struct TreeLightObject {
+    /* 0x00 */ struct TreePointList *frames;
+    /* 0x04 */ struct TreeGroupList *nearA;
+    /* 0x08 */ struct TreeGroupList *nearB;
+};
+
+/* { items, count, count-at-load } list headers (fn_802BD414 / fn_802BD478). */
+struct TreePointList {
+    /* 0x00 */ struct TreePoint *points;
+    /* 0x04 */ int count;
+    /* 0x08 */ int total;
+};
+struct TreeGroupList {
+    /* 0x00 */ struct TreeGroup *groups;
+    /* 0x04 */ int count;
+    /* 0x08 */ int total;
+};
+
+/* One frame-list point (0x44 bytes, byte-swapped by fn_802BD69C): the CPU-light
+ * pass uses its radius (+0x1C, refreshed by fn_802BD0F4) and its world
+ * position (+0x30). */
+#define TREE_POINT_SIZE 0x44
+struct TreePoint {
+    /* 0x00 */ int index;
+    /* 0x04 */ int value;
+             char pad08[0x14];
+    /* 0x1C */ float radius;
+             char pad20[0x10];
+    /* 0x30 */ float position[3];
+             char pad3C[8];
+};
+
+/* One near-list group (0x10 bytes, byte-swapped by fn_802BD5B0): the range of
+ * frame-list points it covers and a weight fn_802BD5B0 clears to -1.0f; a
+ * negative weight disables the group. */
+#define TREE_GROUP_SIZE 0x10
+struct TreeGroup {
+             char pad0[8];
+    /* 0x08 */ short pointCount;
+    /* 0x0A */ short pointStart;
+    /* 0x0C */ float weight;
+};
+
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
