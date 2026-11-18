@@ -731,91 +731,99 @@ void fn_801CC470(void) {
     lbl_8055E884 = (s32 *)object;
 }
 #pragma opt_propagation reset
-void fn_801CC594(void *arg0) {
-    u8 *base = (u8 *)arg0;
-    register s32 offset;
+/* Prepares a freshly created award stat handler for its first race: hands every
+ * entry of the current stat set back to its record, empties the node pool and
+ * the free list that hands its nodes out, and returns the handler's counters,
+ * its queued award and the ten float groups at the end of it to their starting
+ * values.  The record pool the award objects share is cleared and those three
+ * objects are told to start over.  fn_801CC470 (StatHandler::Create) calls it on
+ * the new handler before lbl_8055E884 points at it; fn_801CC918 is the same
+ * reset once the handler is installed.  Nothing happens while it is paused. */
+void fn_801CC594(void *handler) {
+    u8 *base = (u8 *)handler;
+    register s32 byteOffset;
     register s32 index;
-    s32 minusOne;
+    s32 none;
     void *entry;
-    void *object;
-    void *field;
-    f32 floatE4;
-    f32 floatFC;
-    f32 floatA08;
+    void *actor;
+    void *pool;
+    f32 one;
+    f32 zero;
+    f32 unset;
     if (base[0x10] != 0) return;
     index = 0;
-    offset = 0;
+    byteOffset = 0;
     while (index < *(s32 *)(base + 0x1C)) {
-        entry = *(void **)((u8 *)*(void **)(base + 0x18) + offset);
+        entry = *(void **)((u8 *)*(void **)(base + 0x18) + byteOffset);
         if (entry != 0) fn_8001BE70(*(void **)entry);
-        offset += 4;
+        byteOffset += 4;
         ++index;
     }
     *(void **)(base + 0x2A0) = base + 0x29C;
-    offset = 0;
-    *(s32 *)(base + 0x29C) = offset;
-    memset(base + 0x44, offset, 0x258);
-    floatFC = lbl_805629FC;
-    minusOne = -1;
-    floatE4 = lbl_805629E4;
-    floatA08 = lbl_80562A08;
-    *(volatile s32 *)(base + 0x2A8) = offset;
-    *(volatile s32 *)(base + 0x2AC) = offset;
-    *(volatile s32 *)(base + 0x2B0) = minusOne;
-    *(volatile s32 *)(base + 0x2B4) = minusOne;
-    *(volatile f32 *)(base + 0x2B8) = floatA08;
-    *(volatile u8 *)(base + 0x2BC) = offset;
-    *(volatile s32 *)(base + 0x2C0) = offset;
-    *(volatile f32 *)(base + 0x2C4) = floatFC;
-    *(volatile s32 *)(base + 0x2D8) = offset;
-    *(volatile f32 *)(base + 0x578) = floatE4;
-    *(volatile f32 *)(base + 0x57C) = floatFC;
-    *(volatile f32 *)(base + 0x580) = floatFC;
-    *(volatile f32 *)(base + 0x584) = floatFC;
-    *(volatile f32 *)(base + 0x588) = floatE4;
-    *(volatile f32 *)(base + 0x58C) = floatFC;
-    *(volatile f32 *)(base + 0x590) = floatFC;
-    *(volatile f32 *)(base + 0x594) = floatFC;
-    *(volatile f32 *)(base + 0x598) = floatE4;
-    *(volatile f32 *)(base + 0x59C) = floatFC;
-    *(volatile f32 *)(base + 0x5A0) = floatFC;
-    *(volatile f32 *)(base + 0x5A4) = floatFC;
-    *(volatile f32 *)(base + 0x5A8) = floatE4;
-    *(volatile f32 *)(base + 0x5AC) = floatFC;
-    *(volatile f32 *)(base + 0x5B0) = floatFC;
-    *(volatile f32 *)(base + 0x5B4) = floatFC;
-    *(volatile f32 *)(base + 0x5B8) = floatE4;
-    *(volatile f32 *)(base + 0x5BC) = floatFC;
-    *(volatile f32 *)(base + 0x5C0) = floatFC;
-    *(volatile f32 *)(base + 0x5C4) = floatFC;
-    *(volatile f32 *)(base + 0x5C8) = floatE4;
-    *(volatile f32 *)(base + 0x5CC) = floatFC;
-    *(volatile f32 *)(base + 0x5D0) = floatFC;
-    *(volatile f32 *)(base + 0x5D4) = floatFC;
-    *(volatile f32 *)(base + 0x5D8) = floatE4;
-    *(volatile f32 *)(base + 0x5DC) = floatFC;
-    *(volatile f32 *)(base + 0x5E0) = floatFC;
-    *(volatile f32 *)(base + 0x5E4) = floatFC;
-    *(volatile f32 *)(base + 0x5E8) = floatE4;
-    *(volatile f32 *)(base + 0x5EC) = floatFC;
-    *(volatile f32 *)(base + 0x5F0) = floatFC;
-    *(volatile f32 *)(base + 0x5F4) = floatFC;
-    *(volatile f32 *)(base + 0x5F8) = floatE4;
-    *(volatile f32 *)(base + 0x5FC) = floatFC;
-    *(volatile f32 *)(base + 0x600) = floatFC;
-    *(volatile f32 *)(base + 0x604) = floatFC;
-    field = *(void * volatile *)(base + 0x2C8);
-    *(volatile f32 *)(base + 0x608) = floatE4;
-    *(volatile f32 *)(base + 0x60C) = floatFC;
-    *(volatile f32 *)(base + 0x610) = floatFC;
-    *(volatile f32 *)(base + 0x614) = floatFC;
-    if (field != 0) ((void (*)(void *))fn_802AE0E0)(field);
-    object = *(void **)(base + 0x2CC);
-    if (object != 0) { *((u8 *)object + 0x4A) = 1; *((u8 *)object + 0x4C) = 0; }
-    object = *(void **)(base + 0x2D0);
-    if (object != 0) { *((u8 *)object + 0x4A) = 1; *((u8 *)object + 0x4C) = 0; }
-    object = *(void **)(base + 0x2D4);
-    if (object != 0) { *((u8 *)object + 0x4A) = 1; *((u8 *)object + 0x4C) = 0; }
+    index = 0;
+    *(s32 *)(base + 0x29C) = index;
+    memset(base + 0x44, index, 0x258);
+    zero = lbl_805629FC;
+    none = -1;
+    one = lbl_805629E4;
+    unset = lbl_80562A08;
+    *(volatile s32 *)(base + 0x2A8) = index;
+    *(volatile s32 *)(base + 0x2AC) = index;
+    *(volatile s32 *)(base + 0x2B0) = none;
+    *(volatile s32 *)(base + 0x2B4) = none;
+    *(volatile f32 *)(base + 0x2B8) = unset;
+    *(volatile u8 *)(base + 0x2BC) = index;
+    *(volatile s32 *)(base + 0x2C0) = index;
+    *(volatile f32 *)(base + 0x2C4) = zero;
+    *(volatile s32 *)(base + 0x2D8) = index;
+    *(volatile f32 *)(base + 0x578) = one;
+    *(volatile f32 *)(base + 0x57C) = zero;
+    *(volatile f32 *)(base + 0x580) = zero;
+    *(volatile f32 *)(base + 0x584) = zero;
+    *(volatile f32 *)(base + 0x588) = one;
+    *(volatile f32 *)(base + 0x58C) = zero;
+    *(volatile f32 *)(base + 0x590) = zero;
+    *(volatile f32 *)(base + 0x594) = zero;
+    *(volatile f32 *)(base + 0x598) = one;
+    *(volatile f32 *)(base + 0x59C) = zero;
+    *(volatile f32 *)(base + 0x5A0) = zero;
+    *(volatile f32 *)(base + 0x5A4) = zero;
+    *(volatile f32 *)(base + 0x5A8) = one;
+    *(volatile f32 *)(base + 0x5AC) = zero;
+    *(volatile f32 *)(base + 0x5B0) = zero;
+    *(volatile f32 *)(base + 0x5B4) = zero;
+    *(volatile f32 *)(base + 0x5B8) = one;
+    *(volatile f32 *)(base + 0x5BC) = zero;
+    *(volatile f32 *)(base + 0x5C0) = zero;
+    *(volatile f32 *)(base + 0x5C4) = zero;
+    *(volatile f32 *)(base + 0x5C8) = one;
+    *(volatile f32 *)(base + 0x5CC) = zero;
+    *(volatile f32 *)(base + 0x5D0) = zero;
+    *(volatile f32 *)(base + 0x5D4) = zero;
+    *(volatile f32 *)(base + 0x5D8) = one;
+    *(volatile f32 *)(base + 0x5DC) = zero;
+    *(volatile f32 *)(base + 0x5E0) = zero;
+    *(volatile f32 *)(base + 0x5E4) = zero;
+    *(volatile f32 *)(base + 0x5E8) = one;
+    *(volatile f32 *)(base + 0x5EC) = zero;
+    *(volatile f32 *)(base + 0x5F0) = zero;
+    *(volatile f32 *)(base + 0x5F4) = zero;
+    *(volatile f32 *)(base + 0x5F8) = one;
+    *(volatile f32 *)(base + 0x5FC) = zero;
+    *(volatile f32 *)(base + 0x600) = zero;
+    *(volatile f32 *)(base + 0x604) = zero;
+    pool = *(void * volatile *)(base + 0x2C8);
+    *(volatile f32 *)(base + 0x608) = one;
+    *(volatile f32 *)(base + 0x60C) = zero;
+    *(volatile f32 *)(base + 0x610) = zero;
+    *(volatile f32 *)(base + 0x614) = zero;
+    if (pool != 0) ((void (*)(void *))fn_802AE0E0)(pool);
+    actor = *(void **)(base + 0x2CC);
+    if (actor != 0) { *((u8 *)actor + 0x4A) = 1; *((u8 *)actor + 0x4C) = 0; }
+    actor = *(void **)(base + 0x2D0);
+    if (actor != 0) { *((u8 *)actor + 0x4A) = 1; *((u8 *)actor + 0x4C) = 0; }
+    actor = *(void **)(base + 0x2D4);
+    if (actor != 0) { *((u8 *)actor + 0x4A) = 1; *((u8 *)actor + 0x4C) = 0; }
 }
 #pragma scheduling on
 
