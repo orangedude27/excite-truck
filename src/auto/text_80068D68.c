@@ -19459,53 +19459,68 @@ void l2c_csm_open(tL2C_CCB_VIEW *p_ccb, u16 event, void *p_data)
     }
 }
 
-void l2c_csm_w4_l2cap_disconnect_rsp(void *p_ccb, u16 event, void *p_data) {
-    char *p_str = (char *)jumptable_803183B0;
-    void *p_lcb = *(void **)((u8 *)p_ccb + 0x30);
-    void (*disc_cfm)(u16, u16) = *(void (**)(u16, u16))((u8 *)p_lcb + 0x1C);
-    void (*disc_ind)(u16, u8) = *(void (**)(u16, u8))((u8 *)p_lcb + 0x18);
-    u16 local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
+void l2c_csm_w4_l2cap_disconnect_rsp(void *p_ccb, u16 event, void *p_data)
+{
+    /* L2CAP CSM handler for CST_W4_L2CAP_DISCONNECT_RSP (l2c_csm.c's
+     * l2c_csm_w4_l2cap_disconnect_rsp): we have sent the peer a disconnect request, so
+     * this waits for the signalling that ends the wait. The peer's disconnect response,
+     * and its own disconnect request (answered before we give up the channel), both free
+     * the channel and confirm the disconnect to the upper layer with L2CAP_DISC_OK; a
+     * peer data packet ends the channel with L2CAP_DISC_TIMEOUT; the link going away
+     * frees the channel and only gives the layer a disconnect indication, since there is
+     * no longer a link to confirm over; and the events that hand us a buffer we cannot
+     * use any more just have it freed. */
+    char *p_str = (char *)jumptable_803183B0;   /* l2c_csm.c's trace strings */
+    tL2C_RCB_VIEW *p_rcb = ((tL2C_CCB_VIEW *)p_ccb)->p_rcb;
+    void (*disconnect_cfm)(u16, u16) = p_rcb->pL2CA_DisconnectCfm_Cb;
+    void (*disconnect_ind)(u16, u16) = p_rcb->pL2CA_DisconnectInd_Cb;
+    u16 local_cid = ((tL2C_CCB_VIEW *)p_ccb)->local_cid;
 
-    if (lbl_803C4040[0] >= 4)
-        fn_80070954(0x80003, p_str + 0x6B0, event);
+    if (l2cb_trace_level >= BT_TRACE_LEVEL_EVENT)
+        fn_80070954(0x80003, p_str + 0x6B0, event); /* "L2CAP - st: W4_L2CAP_DISC_RSP evt: %d" */
 
     switch (event) {
-    case 3:
-        if (lbl_803C4040[0] >= 3)
-            fn_80070954(0x80002, p_str + 0x40, *(u16 *)((u8 *)p_ccb + 0x14));
+    case L2CEVT_LP_DISCONNECT_IND:                  /* Link was disconnected */
+        if (l2cb_trace_level >= BT_TRACE_LEVEL_API)
+            fn_80070954(0x80002, p_str + 0x40,      /* "L2CAP - Calling Disconnect_Ind_Cb(), CID: 0x%04x  No Conf Needed" */
+                        ((tL2C_CCB_VIEW *)p_ccb)->local_cid);
         l2cu_release_ccb(p_ccb);
-        disc_ind(local_cid, 0);
+        disconnect_ind(local_cid, FALSE);
         break;
-    case 18:
+
+    case L2CEVT_L2CAP_DISCONNECT_RSP:               /* Peer answered our disconnect request */
         l2cu_release_ccb(p_ccb);
-        if (disc_cfm != 0) {
-            if (lbl_803C4040[0] >= 3)
-                fn_80070954(0x80002, p_str + 0x6D8, local_cid);
-            disc_cfm(local_cid, 0);
+        if (disconnect_cfm != 0) {
+            if (l2cb_trace_level >= BT_TRACE_LEVEL_API)
+                fn_80070954(0x80002, p_str + 0x6D8, local_cid); /* "L2CAP - Calling DisconnectCfm_Cb(), CID: 0x%04x" */
+            disconnect_cfm(local_cid, L2CAP_DISC_OK);
         }
         break;
-    case 17:
-        l2cu_send_peer_disc_rsp(*(void **)((u8 *)p_ccb + 0x10),
-                                *((u8 *)p_ccb + 0x36),
-                                *(u16 *)((u8 *)p_ccb + 0x14),
-                                *(u16 *)((u8 *)p_ccb + 0x16));
+
+    case L2CEVT_L2CAP_DISCONNECT_REQ:               /* Peer wants the channel gone as well */
+        l2cu_send_peer_disc_rsp(((tL2C_CCB_VIEW *)p_ccb)->p_lcb,
+                                ((tL2C_CCB_VIEW *)p_ccb)->remote_id,
+                                ((tL2C_CCB_VIEW *)p_ccb)->local_cid,
+                                ((tL2C_CCB_VIEW *)p_ccb)->remote_cid);
         l2cu_release_ccb(p_ccb);
-        if (disc_cfm != 0) {
-            if (lbl_803C4040[0] >= 3)
-                fn_80070954(0x80002, p_str + 0x6D8, local_cid);
-            disc_cfm(local_cid, 0);
+        if (disconnect_cfm != 0) {
+            if (l2cb_trace_level >= BT_TRACE_LEVEL_API)
+                fn_80070954(0x80002, p_str + 0x6D8, local_cid); /* "L2CAP - Calling DisconnectCfm_Cb(), CID: 0x%04x" */
+            disconnect_cfm(local_cid, L2CAP_DISC_OK);
         }
         break;
-    case 19:
+
+    case L2CEVT_L2CAP_DATA:                         /* Peer data; the channel is going anyway */
         l2cu_release_ccb(p_ccb);
-        if (disc_cfm != 0) {
-            if (lbl_803C4040[0] >= 3)
-                fn_80070954(0x80002, p_str + 0x6D8, local_cid);
-            disc_cfm(local_cid, 0xEEEE);
+        if (disconnect_cfm != 0) {
+            if (l2cb_trace_level >= BT_TRACE_LEVEL_API)
+                fn_80070954(0x80002, p_str + 0x6D8, local_cid); /* "L2CAP - Calling DisconnectCfm_Cb(), CID: 0x%04x" */
+            disconnect_cfm(local_cid, L2CAP_DISC_TIMEOUT);
         }
         break;
-    case 20:
-    case 30:
+
+    case L2CEVT_L2CA_CONNECT_REQ:                   /* Upper layer wants a new channel */
+    case L2CEVT_TIMEOUT:                            /* Disconnect response timed out */
         GKI_freebuf(p_data);
         break;
     }
