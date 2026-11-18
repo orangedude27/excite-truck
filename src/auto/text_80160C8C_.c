@@ -2819,9 +2819,6 @@ struct NameList_8016464C {
     virtual void slot2();
     virtual void *getValue(const char *);
 };
-struct Iterator_8016464C {
-    virtual s32 next(void *);
-};
 /* The "tutcmd.val" table fn_80131810 parses.  Its first virtual turns one of
    the parameter list's value objects into the collection of items that value
    names; fn_80146C2C builds a value object out of such a collection for the
