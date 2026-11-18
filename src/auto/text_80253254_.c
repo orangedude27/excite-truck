@@ -1079,73 +1079,86 @@ loop_27:
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80255200(void *arg0, s32 arg1) {
-    extern char lbl_803447C0[];
-    extern void *lbl_80498E08[];
-    extern long lbl_8055C190;
-    extern s32 lbl_8055F33C;
+/* Second-stage setup of a UI car object (its constructor fn_802556BC calls it
+ * with reloadParams 0).  Clears the object's state and installs its defaults:
+ * opaque black at +0xC, the 1.5 wheel scale at +0x98, an identity rotation
+ * with a zero translation at +0xA8 and no linked part (+0xD8 = -1), the 6.0
+ * parameter at +0xEC with its +0xF0..+0xF8 vector zeroed, and the per-wheel
+ * and effect flags (+0x10, +0x30, +0x38, +0x58, +0x78, +0xDC, +0xDD, +0x118)
+ * cleared.  With reloadParams set it (re)reads the tuned values from the
+ * parameter file through fn_8025539C.  It then registers the car's texture
+ * name with the texture manager, creates the two 0x28-byte stream records this
+ * car uses - each owns a 1500000-byte stream buffer and is listed in
+ * gStreamRecords - allocates and constructs the 0x698-byte front/rear wheel
+ * buffer object ("CarUISM") at +8, and finally registers the car itself with
+ * fn_80255A84. */
+void fn_80255200(void *car, s32 reloadParams) {
+    extern char lbl_803447C0[]; /* this file's string pool, "fwheelbuf" ... */
+    extern void *lbl_80498E08[]; /* live stream records, by gStreamRecordCount */
+    extern long lbl_8055C190; /* "CarUISM", the wheel buffer object's heap name */
+    extern s32 lbl_8055F33C; /* number of live stream records */
     extern void fn_8025539C(void);
-    extern void *fn_802CAC28(void *, s32);
-    extern void *fn_801284F8(s32, void *);
-    extern void *fn_8012CAA0(s32, void *);
+    extern void *fn_802CAC28(void *, s32); /* register a named texture */
+    extern void *fn_801284F8(s32, void *); /* allocate, tagged with a name */
+    extern void *fn_8012CAA0(s32, void *); /* stream buffer of a size and name */
     extern void fn_80255A84(void *);
-    float three, one, two, zero;
+    float six, one, oneHalf, zero;
     s32 zeroInt, minusOne;
-    u8 *p = (u8 *)arg0;
+    u8 *base = (u8 *)car;
     char *strings = lbl_803447C0;
-    void *obj;
-    s32 n;
+    void *record;
+    s32 count;
 
     zero = 0.0f;
     one = 1.0f;
-    two = 1.5f;
-    three = 6.0f;
+    oneHalf = 1.5f;
+    six = 6.0f;
     zeroInt = 0;
     minusOne = -1;
-    *(u8 *)(p + 0x118) = zeroInt;
-    *(float *)(p + 0x11C) = zero;
-    *(u8 *)(p + 0xDD) = zeroInt;
-    *(u8 *)(p + 0xDC) = zeroInt;
-    *(u8 *)(p + 0x30) = zeroInt;
-    *(float *)(p + 0x98) = two;
-    *(float *)(p + 0xA8) = one;
-    *(float *)(p + 0xAC) = zero;
-    *(float *)(p + 0xB0) = zero;
-    *(float *)(p + 0xB4) = zero;
-    *(float *)(p + 0xB8) = one;
-    *(float *)(p + 0xBC) = zero;
-    *(float *)(p + 0xC0) = zero;
-    *(float *)(p + 0xC4) = zero;
-    *(float *)(p + 0xC8) = one;
-    *(float *)(p + 0xCC) = zero;
-    *(float *)(p + 0xD0) = zero;
-    *(float *)(p + 0xD4) = zero;
-    *(s32 *)(p + 0xD8) = minusOne;
-    *(float *)(p + 0xEC) = three;
-    *(float *)(p + 0xF0) = zero;
-    *(float *)(p + 0xF4) = zero;
-    *(float *)(p + 0xF8) = zero;
-    *(u8 *)(p + 0x10) = zeroInt;
-    *(u8 *)(p + 0x38) = zeroInt;
-    *(u8 *)(p + 0x58) = zeroInt;
-    *(u8 *)(p + 0x78) = zeroInt;
-    *(unsigned int *)(p + 0xC) = 0xFF000000;
-    if (arg1) fn_8025539C();
-    *(void **)(p + 0xE8) = fn_802CAC28(strings + 0x100, 0);
-    obj = fn_801284F8(0x28, strings + 0x110);
-    if (obj) *(void **)((u8 *)obj + 0x20) = fn_8012CAA0(0x16E360, strings + 0x11C);
-    n = lbl_8055F33C;
-    lbl_80498E08[n] = obj;
-    lbl_8055F33C = n + 1;
-    obj = fn_801284F8(0x28, strings + 0x110);
-    if (obj) *(void **)((u8 *)obj + 0x20) = fn_8012CAA0(0x16E360, strings + 0x11C);
-    n = lbl_8055F33C;
-    lbl_80498E08[n] = obj;
-    lbl_8055F33C = n + 1;
-    obj = fn_801284F8(0x698, &lbl_8055C190);
-    if (obj) obj = fn_8025343C(obj);
-    *(void **)(p + 8) = obj;
-    fn_80255A84(arg0);
+    *(u8 *)(base + 0x118) = zeroInt;
+    *(float *)(base + 0x11C) = zero;
+    *(u8 *)(base + 0xDD) = zeroInt;
+    *(u8 *)(base + 0xDC) = zeroInt;
+    *(u8 *)(base + 0x30) = zeroInt;
+    *(float *)(base + 0x98) = oneHalf; /* wheel scale */
+    *(float *)(base + 0xA8) = one; /* identity rotation */
+    *(float *)(base + 0xAC) = zero;
+    *(float *)(base + 0xB0) = zero;
+    *(float *)(base + 0xB4) = zero;
+    *(float *)(base + 0xB8) = one;
+    *(float *)(base + 0xBC) = zero;
+    *(float *)(base + 0xC0) = zero;
+    *(float *)(base + 0xC4) = zero;
+    *(float *)(base + 0xC8) = one;
+    *(float *)(base + 0xCC) = zero; /* translation */
+    *(float *)(base + 0xD0) = zero;
+    *(float *)(base + 0xD4) = zero;
+    *(s32 *)(base + 0xD8) = minusOne; /* no linked part */
+    *(float *)(base + 0xEC) = six; /* tuned parameter, replaced by fn_8025539C */
+    *(float *)(base + 0xF0) = zero;
+    *(float *)(base + 0xF4) = zero;
+    *(float *)(base + 0xF8) = zero;
+    *(u8 *)(base + 0x10) = zeroInt;
+    *(u8 *)(base + 0x38) = zeroInt;
+    *(u8 *)(base + 0x58) = zeroInt;
+    *(u8 *)(base + 0x78) = zeroInt;
+    *(unsigned int *)(base + 0xC) = 0xFF000000; /* opaque black */
+    if (reloadParams) fn_8025539C();
+    *(void **)(base + 0xE8) = fn_802CAC28(strings + 0x100, 0);
+    record = fn_801284F8(0x28, strings + 0x110);
+    if (record) *(void **)((u8 *)record + 0x20) = fn_8012CAA0(0x16E360, strings + 0x11C);
+    count = lbl_8055F33C;
+    lbl_80498E08[count] = record;
+    lbl_8055F33C = count + 1;
+    record = fn_801284F8(0x28, strings + 0x110);
+    if (record) *(void **)((u8 *)record + 0x20) = fn_8012CAA0(0x16E360, strings + 0x11C);
+    count = lbl_8055F33C;
+    lbl_80498E08[count] = record;
+    lbl_8055F33C = count + 1;
+    record = fn_801284F8(0x698, &lbl_8055C190);
+    if (record) record = fn_8025343C(record); /* the front/rear wheel buffers */
+    *(void **)(base + 8) = record;
+    fn_80255A84(car);
 }
 
 #pragma cplusplus on
@@ -1349,24 +1362,22 @@ void *fn_80255758(void *arg0, s32 arg1, s32 arg2) {
             void **cursor2;
             cursor2 = lbl_80498E08;
             index2 = 0;
-            goto loop2_check;
-        loop2:
-            if (((unsigned int)__cntlzw((unsigned int)fn_8012D838(*(s32 *)((u8 *)*cursor2 + 0x20))) >> 5)) {
-                void *obj2;
-                void **slot2 = &lbl_80498E08[index2];
-                obj2 = *slot2;
-                if (obj2) {
-                    fn_8012D8A8(*(s32 *)((u8 *)obj2 + 0x20));
-                    ((s32 (*)(void *))fn_80128668)(obj2);
+            while (index2 < lbl_8055F33C) {
+                if (((unsigned int)__cntlzw((unsigned int)fn_8012D838(*(s32 *)((u8 *)*cursor2 + 0x20))) >> 5)) {
+                    void *obj2;
+                    void **slot2 = &lbl_80498E08[index2];
+                    obj2 = *slot2;
+                    if (obj2) {
+                        fn_8012D8A8(*(s32 *)((u8 *)obj2 + 0x20));
+                        ((s32 (*)(void *))fn_80128668)(obj2);
+                    }
+                    lbl_8055F33C--;
+                    memmove(slot2, slot2 + 1, (lbl_8055F33C - index2) * 4);
+                    goto finish;
                 }
-                lbl_8055F33C--;
-                memmove(slot2, slot2 + 1, (lbl_8055F33C - index2) * 4);
-                goto finish;
+                cursor2++;
+                index2++;
             }
-            cursor2++;
-            index2++;
-        loop2_check:
-            if (index2 < lbl_8055F33C) goto loop2;
             fn_802E317C(lbl_803449D4);
         }
 
