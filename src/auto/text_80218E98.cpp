@@ -2251,15 +2251,16 @@ extern "C" void *fn_8021BBA0(void *object, s32 shouldDelete) {
 #pragma pop
 extern "C" s32 fn_8022D850(void *, s32, s32, s32 *);
 extern f32 lbl_805634FC;
- #pragma push
+  #pragma push
  #pragma scheduling invalid_target
+ #pragma opt_propagation off
  extern "C" void fn_8021BC20(void *arg0, void *arg1) {
     s32 sp18;
     f32 sp14;
     f32 sp10;
     s32 sp8;
     void *temp_r4_2;
-    register s32 temp_r4;
+    void *temp_r4;
     s32 temp_r5;
     s32 temp_r28;
     s32 var_r27;
@@ -2272,14 +2273,14 @@ extern f32 lbl_805634FC;
     temp_r28 = *(s32 *)((u8 *)arg0 + 4);
     temp_r5 = *(s32 *)((u8 *)temp_r4_2 + 0x10);
     temp_r30 = *(s32 *)((u8 *)temp_r4_2 + 0x20);
-    temp_r4 = *(s32 *)((u8 *)temp_r4_2 + 8);
+    temp_r4 = *(void **)((u8 *)temp_r4_2 + 8);
     var_r26 = temp_r30 * temp_r5;
     var_r27 = *(s32 *)((u8 *)arg0 + 8);
     var_r29 = var_r26 + temp_r5;
-    if (temp_r4 >= var_r29) {
+    if ((s32)temp_r4 >= var_r29) {
         return;
     }
-    var_r29 = temp_r4;
+    var_r29 = (s32)temp_r4;
     temp_r30 = 0;
 
     for (; var_r26 < var_r29;
