@@ -25590,19 +25590,17 @@ extern BOOLEAN find_uuid_in_seq(UINT8 *p, UINT32 seq_len, UINT8 *p_uuid, UINT16 
 tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
     UINT16 xx, yy;
     tSDP_ATTRIBUTE *p_attr;
-    UINT8 *p_end = lbl_803C4C40 + 0x1224 +
-        (*(UINT16 *)(lbl_803C4C40 + 0x1222) * 0x298);
-    UINT8 *base;
+    tSDP_RECORD_BUILD_VIEW *p_end = &sdp_cb_record_db[sdp_cb_num_records];
 
     if (p_rec == NULL)
-        base = lbl_803C4C40 + 0x1224;
+        p_rec = (tSDP_RECORD *)&sdp_cb_record_db[0];
     else
-        base = (UINT8 *)p_rec + 0x298;
+        p_rec = (tSDP_RECORD *)((tSDP_RECORD_BUILD_VIEW *)p_rec + 1);
 
-    for (; base < p_end; base += 0x298) {
+    for (; (tSDP_RECORD_BUILD_VIEW *)p_rec < p_end; p_rec = (tSDP_RECORD *)((tSDP_RECORD_BUILD_VIEW *)p_rec + 1)) {
         for (yy = 0; yy < p_seq->num_uids; yy++) {
-            p_attr = (tSDP_ATTRIBUTE *)(base + 0xC);
-            for (xx = 0; xx < *(UINT16 *)(base + 8); xx++, p_attr++) {
+            p_attr = &p_rec->attribute[0];
+            for (xx = 0; xx < p_rec->num_attributes; xx++, p_attr++) {
                 if (p_attr->type == UUID_DESC_TYPE) {
                     if (!sdpu_compare_uuid_arrays(p_attr->value_ptr, p_attr->len,
                             &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len))
@@ -25614,11 +25612,11 @@ tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
                         break;
                 }
             }
-            if (xx == *(UINT16 *)(base + 8))
+            if (xx == p_rec->num_attributes)
                 break;
         }
         if (yy == p_seq->num_uids)
-            return (tSDP_RECORD *)base;
+            return p_rec;
     }
     return NULL;
 }
