@@ -1134,7 +1134,7 @@ extern void fn_80206444(void);
 extern void fn_80209190(long, float);
 extern long __AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(long);
-extern void *fn_8020FAF0(void);
+extern void *fn_8020FAF0();
 extern char lbl_8033C970[];
 extern long lbl_8055B65C;
 extern long lbl_8055B674;
