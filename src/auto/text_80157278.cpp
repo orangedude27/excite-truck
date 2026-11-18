@@ -2638,7 +2638,7 @@ extern "C" void fn_8015B23C(Unk8015A368C* object) {
     }
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" s32 fn_8015B2E0(void* arg0) {
     if (*(u8*)((char*)arg0 + 0x294)) return 0x7fffffff;
     f32 value = *(f32*)((char*)arg0 + 0x290);
@@ -3506,11 +3506,11 @@ extern "C" void fn_8015CF00(Unk801577F0* arg0) {
     arg0->m26c = 0;
     *(s32*)((u8*)arg0 + 0x270) = 0;
     if (target != 0) {
-        int mode = 2;
         *(u8*)((u8*)target + 0x4A) = 1;
         *(u8*)((u8*)target + 0x4C) = 0;
-        if (fn_80009C84() != 0)
-            mode = 0;
+        s32 result = fn_80009C84();
+        s32 mode = 2;
+        if (result) mode = 0;
         if (*(void**)((u8*)arg0 + 0x278) != 0)
             fn_80206750(*(void**)((u8*)arg0 + 0x278), *(s32*)((u8*)arg0 + 0x274), mode);
     }
