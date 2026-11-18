@@ -10687,20 +10687,6 @@ void btm_event_filter_complete(UINT8 *p_param) {
     }
 }
 
-#pragma push
-#pragma dont_inline off
-static inline UINT8 *btm_inq_db_find_80068D68(UINT8 *base, UINT8 *bda)
-{
-    UINT32 j;
-    UINT8 *entry = base + 0x16e4;
-    for (j = 0; j < 12; j++, entry += 0x1c) {
-        if (entry[0x1a] && !memcmp(entry + 0xa, bda, 6)) {
-            return entry;
-        }
-    }
-    return 0;
-}
-
 void btm_process_inq_results(UINT8 *p, UINT8 mode)
 {
     UINT8 per, rep;
@@ -10761,7 +10747,6 @@ found:
         }
     }
 }
-#pragma pop
 
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
     u8 *cleanup_base;
