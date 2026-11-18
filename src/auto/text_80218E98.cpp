@@ -1191,70 +1191,95 @@ extern "C" void fn_80235380(void *);
 extern char lbl_8033D8B8[];
 #pragma push
 #pragma processor 750
-extern "C" void fn_80219AB4(void *arg0, s32 type, s32 name, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    const char *str = (const char *)name;
+extern "C" void fn_80219AB4(void *widget, s32 kind, s32 text, s32 idleValue, s32 watched, s32 style, s32 ownSize) {
+    /* Set up one dynamic text label (fn_80219A28 builds the object this runs on):
+     * remember what it draws -- the string `text`, the value or font name it
+     * follows, where to put it -- and work out the scale to draw the string at so
+     * it fits the widget.  Kinds 2, 4 and 5 draw text, so the gText font named by
+     * `watched` is loaded; kinds 3, 6, 8 and 9 draw a picture, so the ArtSet named
+     * by the string is loaded instead, and kinds 3 and 6 also start following the
+     * value at `watched`.  The scale is the smaller of two ratios, the widget's
+     * width over the font's own height and the box's height over the width of the
+     * string -- kinds 2 and 5 pair those two the other way round.  An unknown kind
+     * is only reported. */
+    #define GTexLoadFont   fn_80232578 /* gText: the font texture of an archive file name */
+    #define GTexFontHeight fn_80232B70 /* gText: a font's nominal glyph height */
+    #define GTexMeasure    fn_8023293C /* gText: how wide a string is in a font */
+    #define ArtSetLoad     fn_8023512C /* the ArtSet picture set of a resource name */
+    #define WatchValue     fn_80219440 /* start following the value at a pointer */
+    #define FLOAT_ONE      lbl_805634A4 /* 1.0f */
+    #define UNKNOWN_KIND   lbl_8033D8B8 /* "ArtWidget: unknown type %d" */
+
+    const char *str = (const char *)text;
     const char *src = str;
     s32 count = 32;
-    u8 *obj = (u8 *)arg0;
+    u8 *obj = (u8 *)widget;
     char *dst = (char *)obj + 0x25C;
-    *(s32 *)(obj + 0x24C) = arg4;
+    *(s32 *)(obj + 0x24C) = watched;
     *(s32 *)(obj + 0x258) = (s32)str;
-    *(s32 *)(obj + 0x254) = arg5;
-    *(s32 *)(obj + 0x250) = arg3;
-    *(s32 *)(obj + 0x244) = type;
+    *(s32 *)(obj + 0x254) = style;
+    *(s32 *)(obj + 0x250) = idleValue;
+    *(s32 *)(obj + 0x244) = kind;
     while ((*dst++ = *src++) != 0) {
         if (--count <= 0) { dst[-1] = 0; break; }
     }
-    f32 zero = lbl_805634A4;
-    *(u8 *)(obj + 0x280) = arg6;
+    f32 one = FLOAT_ONE;
+    *(u8 *)(obj + 0x280) = ownSize;
     *(s32 *)(obj + 0x248) = 0;
-    s32 resource = 0;
-    *(f32 *)(obj + 0x27C) = zero;
-    if (type != 6 && type != 3) resource = arg4;
-    switch (type) {
+    s32 fontName = 0;
+    *(f32 *)(obj + 0x27C) = one;
+    if (kind != 6 && kind != 3) fontName = watched;
+    switch (kind) {
     case 4:
-        if (resource) {
-            *(s32 *)(obj+0x248) = fn_80232578(resource);
-            s32 n = fn_80232B70(*(s32 *)(obj+0x248));
-            s32 m = n < 1 ? 1 : n;
-            f32 a = (f32)((VfObj *)obj)->vf28() / (f32)m;
-            f32 b = fn_8023293C(*(s32 *)(obj+0x248),(s32)str,lbl_805634A4);
-            b = b > lbl_805634A4 ? b : lbl_805634A4;
-            f32 c = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / b;
-            *(f32 *)(obj+0x27C) = a < c ? a : c;
+        if (fontName) {
+            *(s32 *)(obj+0x248) = GTexLoadFont(fontName);
+            s32 fontHeight = GTexFontHeight(*(s32 *)(obj+0x248));
+            s32 minFontHeight = fontHeight < 1 ? 1 : fontHeight;
+            f32 heightScale = (f32)((VfObj *)obj)->vf28() / (f32)minFontHeight;
+            f32 textWidth = GTexMeasure(*(s32 *)(obj+0x248),(s32)str,FLOAT_ONE);
+            textWidth = textWidth > FLOAT_ONE ? textWidth : FLOAT_ONE;
+            f32 widthScale = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / textWidth;
+            *(f32 *)(obj+0x27C) = heightScale < widthScale ? heightScale : widthScale;
         }
         break;
     case 2:
-        if (resource) {
-            *(s32 *)(obj+0x248) = fn_80232578(resource);
-            s32 n = fn_80232B70(*(s32 *)(obj+0x248));
-            f32 a = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / (f32)(n < 1 ? 1 : n);
-            f32 b = fn_8023293C(*(s32 *)(obj+0x248),(s32)str,lbl_805634A4);
-            b = b > lbl_805634A4 ? b : lbl_805634A4;
-            f32 c = (f32)((VfObj *)obj)->vf28() / b;
-            *(f32 *)(obj+0x27C) = a < c ? a : c;
+        if (fontName) {
+            *(s32 *)(obj+0x248) = GTexLoadFont(fontName);
+            s32 fontHeight = GTexFontHeight(*(s32 *)(obj+0x248));
+            f32 heightScale = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / (f32)(fontHeight < 1 ? 1 : fontHeight);
+            f32 textWidth = GTexMeasure(*(s32 *)(obj+0x248),(s32)str,FLOAT_ONE);
+            textWidth = textWidth > FLOAT_ONE ? textWidth : FLOAT_ONE;
+            f32 widthScale = (f32)((VfObj *)obj)->vf28() / textWidth;
+            *(f32 *)(obj+0x27C) = heightScale < widthScale ? heightScale : widthScale;
         }
         break;
     case 9:
-        *(s32 *)(obj+0x248) = fn_8023512C((s32)str);
+        *(s32 *)(obj+0x248) = ArtSetLoad((s32)str);
         break;
     case 3: case 6: case 8:
-        *(s32 *)(obj+0x248) = fn_8023512C((s32)str);
-        if(arg4) fn_80219440(obj,0,(void *)arg4,4);
+        *(s32 *)(obj+0x248) = ArtSetLoad((s32)str);
+        if(watched) WatchValue(obj,0,(void *)watched,4);
         break;
     case 5:
-        if (resource) {
-            *(s32 *)(obj+0x248) = fn_80232578(resource);
-            s32 n = fn_80232B70(*(s32 *)(obj+0x248));
-            f32 a = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / (f32)(n < 1 ? 1 : n);
-            f32 b = fn_8023293C(*(s32 *)(obj+0x248),(s32)str,lbl_805634A4);
-            b = b > lbl_805634A4 ? b : lbl_805634A4;
-            f32 c = (f32)((VfObj *)obj)->vf28() / b;
-            *(f32 *)(obj+0x27C) = a < c ? a : c;
+        if (fontName) {
+            *(s32 *)(obj+0x248) = GTexLoadFont(fontName);
+            s32 fontHeight = GTexFontHeight(*(s32 *)(obj+0x248));
+            f32 heightScale = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / (f32)(fontHeight < 1 ? 1 : fontHeight);
+            f32 textWidth = GTexMeasure(*(s32 *)(obj+0x248),(s32)str,FLOAT_ONE);
+            textWidth = textWidth > FLOAT_ONE ? textWidth : FLOAT_ONE;
+            f32 widthScale = (f32)((VfObj *)obj)->vf28() / textWidth;
+            *(f32 *)(obj+0x27C) = heightScale < widthScale ? heightScale : widthScale;
         }
         break;
-    default: fn_802E317C(lbl_8033D8B8); break;
+    default: fn_802E317C(UNKNOWN_KIND); break;
     }
+    #undef GTexLoadFont
+    #undef GTexFontHeight
+    #undef GTexMeasure
+    #undef ArtSetLoad
+    #undef WatchValue
+    #undef FLOAT_ONE
+    #undef UNKNOWN_KIND
 }
 
 extern "C" void *fn_80219E44(void *obj, s32 shouldDelete) {
