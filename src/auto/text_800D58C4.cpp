@@ -542,7 +542,7 @@ extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4Si
     }
     u32 mask = (u32)(-(u32)colors | (u32)colors);
     mask = (u32)((s32)mask >> 31);
-    const void* outColors = (const void*)((u32)adjustedColors & mask);
+    const nw4r::ut::Color* outColors = (const nw4r::ut::Color*)((u32)adjustedColors & mask);
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(pos, size, texCoordCount, texCoords, outColors);
 }
 
