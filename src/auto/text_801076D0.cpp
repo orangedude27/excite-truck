@@ -207,16 +207,18 @@ extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *self) {
 extern "C" void* Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void* arg0, void** arg1, void* arg2) {
     extern const char lbl_80328680[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
-    register const char* file = lbl_80328680;
+    const char* file = lbl_80328680;
     void* node;
     void* prev;
-    if (arg2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4A, file + 0x34);
+#define FNAME ((const char *)&((const char (*)[1])file)[0])
+    if (arg2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(FNAME, 0x4A, file + 0x34);
     node = *arg1;
-    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4C, file + 0xFC);
+    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(FNAME, 0x4C, file + 0xFC);
     prev = *(void**)((char*)node + 4);
-    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4F, file + 0x124);
-    if (*(void**)arg2 != 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x51, file + 0x150);
-    if (*(void**)((char*)arg2 + 4) != 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x52, file + 0x17C);
+    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(FNAME, 0x4F, file + 0x124);
+    if (*(void**)arg2 != 0) Panic__Q26nw4hbm2dbFPCciPCce(FNAME, 0x51, file + 0x150);
+    if (*(void**)((char*)arg2 + 4) != 0) Panic__Q26nw4hbm2dbFPCciPCce(FNAME, 0x52, file + 0x17C);
+#undef FNAME
     *(void**)arg2 = node;
     *(void**)((char*)arg2 + 4) = prev;
     *(void**)((char*)node + 4) = arg2;
@@ -1211,11 +1213,13 @@ extern "C" s8 fn_8010B2BC(void *arg0) {
     volatile u8 b;
     volatile u8 a;
     u8 t;
+    u8 ret;
     a = (u8)(value >> 24);
     b = (u8)(value >> 16);
     t = (u8)(value >> 8);
+    ret = t;
     c = t;
-    return (s8)t;
+    return (s8)ret;
 }
 #pragma pop
 extern "C" const char lbl_80329140[];
@@ -1728,13 +1732,13 @@ extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
     p = (s32)arg2;
     hi = p & 0xFF000000;
     r4 = 1; r5 = 1; r6 = 1; r7 = 1; r8 = 1; r9 = 1;
-    if ((u32)hi != 0x80000000U && ((u32)p & 0xFF800000U) != 0x81000000U) r9 = 0;
+    if (hi != 0x80000000U && ((u32)p & 0xFF800000U) != 0x81000000U) r9 = 0;
     if (r9 == 0 && ((u32)p & 0xF8000000U) != 0x90000000U) r8 = 0;
     if (r8 == 0 && (u32)hi != 0xC0000000U) r7 = 0;
     if (r7 == 0 && ((u32)p & 0xFF800000U) != 0xC1000000U) r6 = 0;
     if (r6 == 0 && ((u32)p & 0xF8000000U) != 0xD0000000U) r5 = 0;
     if (r5 == 0 && ((u32)p & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
-    if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x56, &file[0x40], arg2);
+    if ((short)r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x56, &file[0x40], arg2);
     switch (arg1) {
     case 10: {
         s32 v5 = 0;
@@ -1743,8 +1747,7 @@ extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
         {
             s32 obj = *(s32 *)p;
             f32 y = *(f32 *)(p + 8);
-            f32 w = fn_80111C10(obj);
-            SetCursor__Q36nw4hbm2ut10CharWriterFff(obj, y, GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj) + w);
+            SetCursor__Q36nw4hbm2ut10CharWriterFff(obj, y, fn_80111C10(obj) + GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj));
         }
         return 3;
     }
@@ -1756,10 +1759,12 @@ extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
             s32 obj = *(s32 *)p;
             s32 font = GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(obj);
             if (font > 0) {
+                f32 step;
                 f32 fw = IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(obj) ? GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(obj) : GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(obj);
+                f32 scaleH = GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(obj);
                 f32 y = *(f32 *)(p + 8);
-                f32 width = GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(obj) - y;
-                f32 step = (f32)font * fw;
+                f32 width = scaleH - y;
+                step = (f32)font * fw;
                 s32 n = (s32)(width / step);
                 SetCursorX__Q36nw4hbm2ut10CharWriterFf(obj, y + step * (f32)(n + 1));
             }
@@ -6671,7 +6676,7 @@ class Processor { public: virtual void d0(); virtual void d1(); virtual s32 rect
     if (var_r5_8 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320A04, 0x3D, lbl_803209CC, arg2);
     }
-    if (fn_8002F72C(&reader.next, lbl_80329530) != 0) {
+    if (fn_8002F72C(&reader.next, base) != 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803209B8, 0x3E, lbl_80320980);
     }
     reader.cursor = arg2;
