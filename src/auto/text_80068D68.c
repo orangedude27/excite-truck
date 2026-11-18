@@ -24997,6 +24997,12 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
 #define RFCOMM_FC_MASK                  0x3F
 #define RFCOMM_RLS_ERROR                0x01
 
+/* Parse a UIH frame received on the RFCOMM multiplexer control channel:
+ * decode the MX header into rfc_cb's rx_frame (lbl_803C4828 is the RFCOMM
+ * control block, its +0x414 byte the trace level, lbl_80319DD8 this file's
+ * trace strings) and dispatch on the message type to the rfc_process_*
+ * handlers.  A command of an unknown or malformed type is answered with an
+ * NSC. */
 void rfc_process_mx_message(struct tRFC_MCB *p_rfc_mcb, BT_HDR *p_buf)
 {
     BOOLEAN is_command;
@@ -25004,52 +25010,52 @@ void rfc_process_mx_message(struct tRFC_MCB *p_rfc_mcb, BT_HDR *p_buf)
     UINT8 *p_data;
     UINT16 len;
     UINT8 length;
-    UINT8 ll;
-    UINT8 b;
-    char *msgs = lbl_80319DD8;
+    UINT8 len_byte;
+    UINT8 ctrl;
+    char *messages = lbl_80319DD8;
     len = p_buf->len;
     p_data = (UINT8 *)(p_buf + 1) + p_buf->offset;
-    p_rx_frame->ea = p_data[0] & 1;
-    is_command = (p_data[0] >> 1) & 1;
+    p_rx_frame->ea = p_data[0] & RFCOMM_EA;
+    is_command = (p_data[0] >> RFCOMM_SHIFT_CR) & RFCOMM_EA;
     p_rx_frame->cr = is_command;
-    p_rx_frame->type = p_data[0] & 0xFC;
+    p_rx_frame->type = p_data[0] & ~(RFCOMM_CR_MASK | RFCOMM_EA_MASK);
     if (!p_rx_frame->ea || !len) {
-        if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_8007096C)(0x90000, msgs + 0x78, ((volatile MX_FRAME *)p_rx_frame)->ea);
+        if (rfc_cb_trace_level >= 1)
+            ((void (*)(u32, void *, u32))fn_8007096C)(0x90000, messages + 0x78, ((volatile MX_FRAME *)p_rx_frame)->ea);
         GKI_freebuf(p_buf);
         return;
     }
-    ll = p_data[1];
+    len_byte = p_data[1];
     p_data += 2;
-    length = ll >> 1;
+    length = len_byte >> RFCOMM_SHIFT_LENGTH1;
     len--;
     len--;
-    if (!(ll & 1)) {
+    if (!(len_byte & RFCOMM_EA)) {
         len--;
-        length = length + (*p_data++ << 7);
+        length = length + (*p_data++ << RFCOMM_SHIFT_LENGTH2);
     }
     if (length != len) {
-        if (lbl_803C4828[0x414] >= 1)
-            fn_8007093C(0x90000, msgs + 0x98);
+        if (rfc_cb_trace_level >= 1)
+            fn_8007093C(0x90000, messages + 0x98);
         GKI_freebuf(p_buf);
         return;
     }
     switch (p_rx_frame->type) {
-    case 0x80:
-        if (len == 8) {
-            p_rx_frame->dlci = p_data[0] & 0x3F;
-            p_rx_frame->u.pn.frame_type = p_data[1] & 0xF;
-            p_rx_frame->u.pn.conv_layer = p_data[1] & 0xF0;
-            p_rx_frame->u.pn.priority = p_data[2] & 0x3F;
+    case RFCOMM_MX_PN:
+        if (len == RFCOMM_MX_PN_LEN) {
+            p_rx_frame->dlci = p_data[0] & RFCOMM_PN_DLCI_MASK;
+            p_rx_frame->u.pn.frame_type = p_data[1] & RFCOMM_PN_FRAME_TYPE_MASK;
+            p_rx_frame->u.pn.conv_layer = p_data[1] & RFCOMM_PN_CONV_LAYER_MASK;
+            p_rx_frame->u.pn.priority = p_data[2] & RFCOMM_PN_PRIORITY_MASK;
             p_rx_frame->u.pn.t1 = p_data[3];
             p_rx_frame->u.pn.mtu = p_data[4] + (p_data[5] << 8);
             p_rx_frame->u.pn.n2 = p_data[6];
-            p_rx_frame->u.pn.k = p_data[7] & 7;
+            p_rx_frame->u.pn.k = p_data[7] & RFCOMM_PN_K_MASK;
             if (!p_rx_frame->dlci ||
-                (p_rx_frame->dlci && (p_rx_frame->dlci < 2 || p_rx_frame->dlci > 0x3D)) ||
-                p_rx_frame->u.pn.mtu < 0x17 || p_rx_frame->u.pn.mtu > 0x7FFF) {
-                if (lbl_803C4828[0x414] >= 1)
-                    fn_8007093C(0x90000, msgs + 0xA8);
+                (p_rx_frame->dlci && (p_rx_frame->dlci < 2 || p_rx_frame->dlci > RFCOMM_MAX_DLCI)) ||
+                p_rx_frame->u.pn.mtu < RFCOMM_MIN_MTU || p_rx_frame->u.pn.mtu > RFCOMM_MAX_MTU) {
+                if (rfc_cb_trace_level >= 1)
+                    fn_8007093C(0x90000, messages + 0xA8);
                 break;
             }
             GKI_freebuf(p_buf);
@@ -25057,7 +25063,7 @@ void rfc_process_mx_message(struct tRFC_MCB *p_rfc_mcb, BT_HDR *p_buf)
             return;
         }
         break;
-    case 0x20:
+    case RFCOMM_MX_TEST:
         if (len) {
             p_rx_frame->u.test.p_data = p_data;
             p_rx_frame->u.test.data_len = len;
@@ -25071,37 +25077,37 @@ void rfc_process_mx_message(struct tRFC_MCB *p_rfc_mcb, BT_HDR *p_buf)
             return;
         }
         break;
-    case 0xA0:
+    case RFCOMM_MX_FCON:
         if (!len) {
             GKI_freebuf(p_buf);
             rfc_process_fcon(p_rfc_mcb, is_command);
             return;
         }
         break;
-    case 0x60:
+    case RFCOMM_MX_FCOFF:
         if (!len) {
             GKI_freebuf(p_buf);
             rfc_process_fcoff(p_rfc_mcb, is_command);
             return;
         }
         break;
-    case 0xE0:
-        b = p_data[0];
+    case RFCOMM_MX_MSC:
+        ctrl = p_data[0];
         {
-            UINT8 ea = b & 1;
-            UINT8 cr = (b & 2) >> 1;
-            UINT8 d = b >> 2;
-            p_rx_frame->dlci = d;
-            if (!ea || !cr || !d || (d && (d < 2 || d > 0x3D))) {
-                if (lbl_803C4828[0x414] >= 1)
-                    fn_8007093C(0x90000, msgs + 0xB8);
+            UINT8 ea = ctrl & RFCOMM_EA;
+            UINT8 cr = (ctrl & RFCOMM_CR_MASK) >> RFCOMM_SHIFT_CR;
+            UINT8 dlci = ctrl >> RFCOMM_SHIFT_DLCI;
+            p_rx_frame->dlci = dlci;
+            if (!ea || !cr || !dlci || (dlci && (dlci < 2 || dlci > RFCOMM_MAX_DLCI))) {
+                if (rfc_cb_trace_level >= 1)
+                    fn_8007093C(0x90000, messages + 0xB8);
                 break;
             }
         }
         p_rx_frame->u.msc.signals = p_data[1];
-        if (length == 3) {
-            p_rx_frame->u.msc.break_present = p_data[2] & 2;
-            p_rx_frame->u.msc.break_duration = (p_data[2] >> 4) & 0xF;
+        if (length == RFCOMM_MX_MSC_LEN_WITH_BREAK) {
+            p_rx_frame->u.msc.break_present = p_data[2] & RFCOMM_MSC_BREAK_PRESENT_MASK;
+            p_rx_frame->u.msc.break_duration = (p_data[2] & RFCOMM_MSC_BREAK_MASK) >> RFCOMM_MSC_SHIFT_BREAK;
         } else {
             p_rx_frame->u.msc.break_present = 0;
             p_rx_frame->u.msc.break_duration = 0;
@@ -25109,59 +25115,59 @@ void rfc_process_mx_message(struct tRFC_MCB *p_rfc_mcb, BT_HDR *p_buf)
         GKI_freebuf(p_buf);
         rfc_process_msc(p_rfc_mcb, is_command, p_rx_frame);
         return;
-    case 0x10:
-        if (len == 1 && is_command) {
-            p_rx_frame->u.nsc.ea = p_data[0] & 1;
-            p_rx_frame->u.nsc.cr = (p_data[0] & 2) >> 1;
-            p_rx_frame->u.nsc.type = p_data[0] >> 2;
+    case RFCOMM_MX_NSC:
+        if (len == RFCOMM_MX_NSC_LEN && is_command) {
+            p_rx_frame->u.nsc.ea = p_data[0] & RFCOMM_EA;
+            p_rx_frame->u.nsc.cr = (p_data[0] & RFCOMM_CR_MASK) >> RFCOMM_SHIFT_CR;
+            p_rx_frame->u.nsc.type = p_data[0] >> RFCOMM_SHIFT_DLCI;
             GKI_freebuf(p_buf);
             ((void (*)(void *, MX_FRAME *))fn_800932D8)(p_rfc_mcb, p_rx_frame);
             return;
         }
         break;
-    case 0x90:
-        if (len == 1 || len == 8) {
-            b = p_data[0];
+    case RFCOMM_MX_RPN:
+        if (len == RFCOMM_MX_RPN_REQ_LEN || len == RFCOMM_MX_RPN_LEN) {
+            ctrl = p_data[0];
             {
-                UINT8 ea = b & 1;
-                UINT8 cr = (b & 2) >> 1;
-                UINT8 d = b >> 2;
-                p_rx_frame->dlci = d;
-                if (!ea || !cr || !d || (d && (d < 2 || d > 0x3D))) {
-                    if (lbl_803C4828[0x414] >= 1)
-                        fn_8007093C(0x90000, msgs + 0xC8);
+                UINT8 ea = ctrl & RFCOMM_EA;
+                UINT8 cr = (ctrl & RFCOMM_CR_MASK) >> RFCOMM_SHIFT_CR;
+                UINT8 dlci = ctrl >> RFCOMM_SHIFT_DLCI;
+                p_rx_frame->dlci = dlci;
+                if (!ea || !cr || !dlci || (dlci && (dlci < 2 || dlci > RFCOMM_MAX_DLCI))) {
+                    if (rfc_cb_trace_level >= 1)
+                        fn_8007093C(0x90000, messages + 0xC8);
                     break;
                 }
             }
-            p_rx_frame->u.rpn.is_request = (len == 1);
+            p_rx_frame->u.rpn.is_request = (len == RFCOMM_MX_RPN_REQ_LEN);
             if (!p_rx_frame->u.rpn.is_request) {
                 p_rx_frame->u.rpn.baud_rate = p_data[1];
-                p_rx_frame->u.rpn.byte_size = p_data[2] & 3;
-                p_rx_frame->u.rpn.stop_bits = (p_data[2] >> 2) & 1;
-                p_rx_frame->u.rpn.parity = (p_data[2] >> 3) & 1;
-                p_rx_frame->u.rpn.parity_type = (p_data[2] >> 4) & 3;
-                p_rx_frame->u.rpn.fc_type = p_data[3] & 0x3F;
+                p_rx_frame->u.rpn.byte_size = p_data[2] & RFCOMM_RPN_BITS_MASK;
+                p_rx_frame->u.rpn.stop_bits = (p_data[2] >> RFCOMM_RPN_STOP_BITS_SHIFT) & RFCOMM_RPN_STOP_BITS_MASK;
+                p_rx_frame->u.rpn.parity = (p_data[2] >> RFCOMM_RPN_PARITY_SHIFT) & RFCOMM_RPN_PARITY_MASK;
+                p_rx_frame->u.rpn.parity_type = (p_data[2] >> RFCOMM_RPN_PARITY_TYPE_SHIFT) & RFCOMM_RPN_PARITY_TYPE_MASK;
+                p_rx_frame->u.rpn.fc_type = p_data[3] & RFCOMM_FC_MASK;
                 p_rx_frame->u.rpn.xon_char = p_data[4];
                 p_rx_frame->u.rpn.xoff_char = p_data[5];
-                p_rx_frame->u.rpn.param_mask = (p_data[6] + (p_data[7] << 8)) & 0x3F7F;
+                p_rx_frame->u.rpn.param_mask = (p_data[6] + (p_data[7] << 8)) & RFCOMM_RPN_PM_MASK;
             }
             GKI_freebuf(p_buf);
             rfc_process_rpn(p_rfc_mcb, is_command, (void *)(u32)p_rx_frame->u.rpn.is_request, p_rx_frame);
             return;
         }
         break;
-    case 0x50:
-        if (len == 2) {
-            b = p_data[0];
+    case RFCOMM_MX_RLS:
+        if (len == RFCOMM_MX_RLS_LEN) {
+            ctrl = p_data[0];
             {
-                UINT8 ea = b & 1;
-                UINT8 cr = (b & 2) >> 1;
-                UINT8 d = b >> 2;
-                p_rx_frame->dlci = d;
-                p_rx_frame->u.rls.line_status = p_data[1] & 0xFE;
-                if (!ea || !cr || !d || (d && (d < 2 || d > 0x3D))) {
-                    if (lbl_803C4828[0x414] >= 1)
-                        fn_8007093C(0x90000, msgs + 0xC8);
+                UINT8 ea = ctrl & RFCOMM_EA;
+                UINT8 cr = (ctrl & RFCOMM_CR_MASK) >> RFCOMM_SHIFT_CR;
+                UINT8 dlci = ctrl >> RFCOMM_SHIFT_DLCI;
+                p_rx_frame->dlci = dlci;
+                p_rx_frame->u.rls.line_status = p_data[1] & ~RFCOMM_RLS_ERROR;
+                if (!ea || !cr || !dlci || (dlci && (dlci < 2 || dlci > RFCOMM_MAX_DLCI))) {
+                    if (rfc_cb_trace_level >= 1)
+                        fn_8007093C(0x90000, messages + 0xC8);
                     break;
                 }
             }
@@ -25178,10 +25184,10 @@ void rfc_process_mx_message(struct tRFC_MCB *p_rfc_mcb, BT_HDR *p_buf)
             UINT8 *p;
             newbuf->offset = 12;
             p = (UINT8 *)(newbuf + 1) + 12;
-            *p++ = 0x11;
-            *p++ = 3;
+            *p++ = RFCOMM_EA | RFCOMM_MX_NSC;
+            *p++ = RFCOMM_EA | (RFCOMM_MX_NSC_LEN << 1);
             *p = ((MX_FRAME *)lbl_803C4828)->type | (((MX_FRAME *)lbl_803C4828)->ea | (((MX_FRAME *)lbl_803C4828)->cr << 1));
-            newbuf->len = 3;
+            newbuf->len = RFCOMM_CTRL_FRAME_LEN;
             rfc_send_buf_uih(p_rfc_mcb, 0, newbuf);
         }
     }
