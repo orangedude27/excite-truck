@@ -1192,7 +1192,6 @@ int fn_8027F958(int *selection, void *collection) {
     widget->unk44 = 0;
     return result;
 }
-#undef lbl_804B3048
  #pragma scheduling invalid_target
 
 extern int fn_80216D28(void);
