@@ -20,6 +20,16 @@ static inline void InitEntry(UnkEntry *entry, int id, const char *name, const ch
     entry->scale = scale;
 }
 
+static inline void SetEntry(UnkEntry *entry, int id, const char *name, const char *description, float value, float scale) {
+    entry->id = id;
+    entry->name = name;
+    entry->description = description;
+    entry->value = value;
+    entry->unk_0x10 = 0;
+    entry->unk_0x14 = 0;
+    entry->scale = scale;
+}
+
 extern void fn_8000D838(void *);
 extern unsigned char lbl_80335F70[0x800];
  extern unsigned char lbl_80435EE8[0xE1C];
