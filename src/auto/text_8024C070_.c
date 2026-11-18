@@ -78,7 +78,7 @@ void fn_8024C070(void) {
     frame.args[2] = 0;
     frame.args[3] = (int)&frame.object;
     frame.args[4] = 0;
-    frame.args[5] = (int)bab8;
+    frame.args[5] = (int)&lbl_8055BAB8;
     frame.args[6] = 8;
     frame.args[7] = (int)&fn_80236914;
     frame.args[8] = 2;
