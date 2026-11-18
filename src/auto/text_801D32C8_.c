@@ -482,12 +482,9 @@ extern float lbl_80562AC0;
 #pragma cplusplus on
 extern "C" void fn_801D3BF0(void *arg0) {
     float temp_f31;
-    float b, c, d, e, f;
-    struct { float value; } aStorage;
-    float &a = aStorage.value;
-    float loadedA;
     float s;
-    volatile int reserve[2];
+    float x;
+    float *p;
     temp_f31 = lbl_8055E3C8;
     if (*(int *)((char *)arg0 + 0x230) == 2) {
         fn_8017B81C();
@@ -496,20 +493,15 @@ extern "C" void fn_801D3BF0(void *arg0) {
     }
     if (temp_f31 < *(float *)((char *)arg0 + 0x224) + *(float *)((char *)arg0 + 0x234)) {
         fn_8017B81C();
-        loadedA = *(float *)((char *)arg0 + 0x118);
+        p = (float *)((char *)arg0 + 0x118);
+        x = p[0];
         s = lbl_80562AC0;
-        a = loadedA * s;
-        b = *(float *)((char *)arg0 + 0x11C) * s;
-        c = *(float *)((char *)arg0 + 0x120) * s;
-        d = *(float *)((char *)arg0 + 0x124) * s;
-        e = *(float *)((char *)arg0 + 0x128) * s;
-        f = *(float *)((char *)arg0 + 0x12C) * s;
-        *(float *)((char *)arg0 + 0x118) = a;
-        *(float *)((char *)arg0 + 0x11C) = b;
-        *(float *)((char *)arg0 + 0x120) = c;
-        *(float *)((char *)arg0 + 0x124) = d;
-        *(float *)((char *)arg0 + 0x128) = e;
-        *(float *)((char *)arg0 + 0x12C) = f;
+        p[0] = x * s;
+        p[1] *= s;
+        p[2] *= s;
+        p[3] *= s;
+        p[4] *= s;
+        p[5] *= s;
         return;
     }
     fn_801D411C(arg0);
