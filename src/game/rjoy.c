@@ -46,9 +46,10 @@ void *fn_802E77C0(int statusCode) {
 }
 #pragma pop
 
-#pragma push
-#pragma scheduling invalid_target
-float fn_802E7824(float arg0, float arg1) {
+ #pragma push
+ #pragma scheduling invalid_target
+ #pragma processor 750
+ float fn_802E7824(float arg0, float arg1) {
     float c = lbl_80565164;
     float t = lbl_80565160 / (lbl_80565160 - arg1);
     if (arg0 >= c) {
@@ -60,7 +61,7 @@ float fn_802E7824(float arg0, float arg1) {
     } else {
         float v = t * (arg0 + arg1);
         if (c < v) { c = c; } else { c = v; }
-        if (c <= lbl_8056516C) { c = lbl_8056516C; } else { c = c; }
+        if (c <= lbl_8056516C) { c = lbl_8056516C; }
         return c;
     }
 }
@@ -97,34 +98,33 @@ void fn_802E7920(int arg0) {
     extern int fn_802E2C20(void);
     extern unsigned char lbl_80505978[];
     extern unsigned char lbl_80560008;
-    struct MotorState { unsigned char pad[0xB0]; unsigned short level; unsigned short padB2; int value, lastLow, lastHigh; };
-    struct MotorState *p;
+    unsigned char *p;
     int player = arg0;
     int time;
     int motor;
     int value;
     int cmd;
-    p = (struct MotorState *)(lbl_80505978 + player * 0x638);
+    p = lbl_80505978 + player * 0x638;
     time = fn_802E2C20();
     motor = fn_802D9BF0();
-    if (p->level < 0x5000) {
-        if (time - p->lastHigh > 0x3E8)
-            p->lastLow = time;
+    if (*(unsigned short *)(p + 0xB0) < 0x5000) {
+        if (time - *(int *)(p + 0xBC) > 0x3E8)
+            *(int *)(p + 0xB8) = time;
     } else {
-        p->lastHigh = time;
-        if (time - p->lastLow > 0x1388)
+        *(int *)(p + 0xBC) = time;
+        if (time - *(int *)(p + 0xB8) > 0x1388)
             motor = 1;
     }
     if (lbl_80560008 == 0)
         motor = 1;
     if (motor == 0) {
-        value = p->value + p->level;
-        p->value = value;
+        value = *(int *)(p + 0xB4) + *(unsigned short *)(p + 0xB0);
+        *(int *)(p + 0xB4) = value;
         cmd = (value >= 0x8000);
         if (cmd != 0)
-            p->value = p->value - 0x10000;
+            *(int *)(p + 0xB4) = *(int *)(p + 0xB4) - 0x10000;
     } else {
-        p->value = cmd = 0;
+        *(int *)(p + 0xB4) = cmd = 0;
     }
     WPADControlMotor(player, cmd);
 }
@@ -408,6 +408,7 @@ void fn_802E7FD0(void) {
     extern unsigned char lbl_80560009;
     extern int lbl_80560010;
     extern int lbl_80560014;
+
     int now;
     int previous;
     int elapsed;
@@ -418,16 +419,14 @@ void fn_802E7FD0(void) {
     unsigned char *lastState;
     unsigned char *base;
     int channel;
-    int readCount;
-    register int changed;
-    register int queueIndex;
-    int probe;
-    int filtered;
+    int i;
+    int changed;
     int current;
     int old;
     int active;
     int result;
     int timeNow;
+
     formatBase = (char *)&lbl_8034D898;
     now = fn_802E2C20();
     previous = lbl_80560010;
@@ -435,22 +434,23 @@ void fn_802E7FD0(void) {
         elapsed = now - previous;
         if (elapsed < 0xF)
             return;
-        count = lbl_80560014;
-        lbl_80560010 = now;
-        lbl_80560014 = count + 1;
-        changed = fn_802ECC10();
-        if ((unsigned int)changed != (unsigned int)lbl_80560009) {
-            lbl_80560009 = changed;
-            queueIndex = 0;
-            do {
-                if (changed != 0)
-                    WPADiClearQueue(queueIndex);
-                else
-                    WPADiDisableRecalibration(queueIndex);
-                queueIndex += 1;
-            } while (queueIndex < 4);
-        }
     }
+    count = lbl_80560014;
+    lbl_80560010 = now;
+    lbl_80560014 = count + 1;
+    changed = fn_802ECC10();
+    if ((unsigned int)changed != (unsigned int)lbl_80560009) {
+        lbl_80560009 = changed;
+        i = 0;
+        do {
+            if (changed != 0)
+                WPADiClearQueue(i);
+            else
+                WPADiDisableRecalibration(i);
+            i += 1;
+        } while (i < 4);
+    }
+
     record = lbl_80505978;
     devices = lbl_80507278;
     base = record;
@@ -477,15 +477,16 @@ void fn_802E7FD0(void) {
                     memset(record + 0x618, 0, 0x18);
             }
         }
-        probe = WPADProbe(channel, devices);
+
+        i = WPADProbe(channel, devices);
         result = KPADRead(channel, record + 0xC8, 1);
-        if (result >= 1 && probe == 0 && record[0xC4] != 0) {
+        if (result >= 1 && i == 0 && record[0xC4] != 0) {
             current = *(signed char *)(record + 0x14D);
             old = *(signed char *)lastState;
             if (current != old) {
-                result = (int)fn_802E77C0((signed char)current);
-                probe = (int)fn_802E77C0(*(signed char *)lastState);
-                ((void (*)(const char *, ...))fn_802E30C8)(formatBase + 0x94, channel, probe, result);
+                i = (int)fn_802E77C0((signed char)current);
+                ((void (*)(const char *, ...))fn_802E30C8)(
+                    formatBase + 0x94, channel, (int)fn_802E77C0(*(signed char *)lastState), i);
                 *lastState = (unsigned char)current;
             }
             if ((signed char)current == 0) {
@@ -493,7 +494,8 @@ void fn_802E7FD0(void) {
                     record[0] = 1;
                     *(int *)(record + 0xB4) = 0;
                     record[0xC5] = 1;
-                    ((void (*)(const char *, ...))fn_802E30C8)(formatBase + 0xA8, channel);
+                    ((void (*)(const char *, ...))fn_802E30C8)(
+                        formatBase + 0xA8, channel);
                 }
                 record[0x630] = fn_8005EE80(channel);
                 if (fn_802ECC10() == 0)
@@ -502,8 +504,10 @@ void fn_802E7FD0(void) {
             }
         } else if (record[0xC4] == 0 && record[0] != 0) {
             record[0] = 0;
-            ((void (*)(const char *, ...))fn_802E30C8)(formatBase + 0xC0, channel);
+            ((void (*)(const char *, ...))fn_802E30C8)(
+                formatBase + 0xC0, channel);
         }
+
         if (record[0x29] != 0) {
             if (record[0xC5] == 0) {
                 record[0xC5] = 1;
@@ -512,14 +516,18 @@ void fn_802E7FD0(void) {
         } else {
             record[0xC5] = 0;
         }
-        filtered = 0;
-        if (((int (*)(int))fn_802E77B8)(channel) != 0 && record[0x2B] != 0 && record[0x29] != 0 && record[0x27] != 0)
-            filtered = 1;
+
+        i = 0;
+        if (((int (*)(int))fn_802E77B8)(channel) != 0 &&
+            record[0x2B] != 0 && record[0x29] != 0 &&
+            record[0x27] != 0)
+            i = 1;
         timeNow = fn_802E2C20();
-        if (filtered == 0)
+        if (i == 0)
             *(int *)(record + 0xC0) = timeNow;
         else if (timeNow - *(int *)(record + 0xC0) > 0x3E8)
             fn_802E2E38(0);
+
         channel += 1;
         record += 0x638;
         devices += 1;
@@ -619,16 +627,21 @@ extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
 extern unsigned char lbl_80505978[];
 void fn_802E8524(void) {}
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_802E8528(int index, float value, float unused) {
     extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
     extern unsigned char lbl_80505978[];
+    float delta;
     float scaled;
     float rounded;
     int result;
     int converted;
     int magnitude;
 
-    scaled = (value - lbl_80565198) * lbl_8056519C;
+    delta = value - lbl_80565198;
+    scaled = lbl_8056519C * delta;
     if (scaled < lbl_80565164)
         rounded = scaled - lbl_80565170;
     else
@@ -640,6 +653,7 @@ void fn_802E8528(int index, float value, float unused) {
         result = magnitude;
     *(unsigned short *)(lbl_80505978 + index * 0x638 + 0xB0) = result;
 }
+#pragma pop
 void fn_802E85A8(void) {}
 
 void fn_802E85AC(void) {}
