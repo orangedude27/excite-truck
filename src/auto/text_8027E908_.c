@@ -112,7 +112,7 @@ typedef struct Fn8027F958Local {
 typedef struct Fn8027F958Stack {
     int textIds[3][3];
     Fn8027F958Menu menu;
-    int pad[5];
+    int pad;
     Fn8027F958Widget widgets[5];
 } Fn8027F958Stack;
 
