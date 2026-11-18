@@ -506,15 +506,19 @@ void fn_8001C0E8(void) {
 extern const char lbl_802FD718[];
 #pragma dont_inline on
 s32 fn_8001C0EC(void *arg0, s32 arg1) {
+    s32 mode;
     s32 value;
-    s32 mode2;
-    if (fn_8001BCF0(arg0) == 0 && ((s32 (*)(void *))fn_8001BD30)(arg0) == 0)
-        goto return_one;
-    if (fn_8001BCF0(arg0) != 0)
+    if (fn_8001BCF0(arg0) == 0) {
+        if (((s32 (*)(void *))fn_8001BD30)(arg0) == 0)
+            goto return_one;
+    }
+    if (fn_8001BCF0(arg0) != 0) {
         value = ((s32 (*)(void *))fn_8001C0C4)(arg0);
-    else
+    } else {
         value = ((s32 (*)(void *))fn_8001C0A0)(arg0);
-    switch (fn_8001BD28(arg0) & 0x60000) {
+    }
+    mode = fn_8001BD28(arg0) & 0x60000;
+    switch (mode) {
     case 0x40000:
         goto compare_a;
     case 0x20000:
@@ -522,15 +526,15 @@ s32 fn_8001C0EC(void *arg0, s32 arg1) {
     default:
         break;
     }
-    mode2 = fn_8001BD28(arg0) & 0x60000;
     {
+        s32 logBits = fn_8001BD28(arg0) & 0x60000;
         s32 logValue = fn_8001BD28(arg0);
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD718, logValue, mode2);
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD718, logValue, logBits);
     }
 compare_a:
-    return (mode2, value < arg1);
+    return value < arg1;
 compare_b:
-    return (mode2, arg1 < value);
+    return arg1 < value;
 return_one:
     return 1;
 }
@@ -614,16 +618,14 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
     descriptor = lbl_8055D5D0;
     *((u8 *)descriptor + 8) = 0;
     p = *(char **)descriptor;
-    while (p - *(char **)descriptor < descriptor[1]) {
+    while (*p != 0 && p - *(char **)descriptor < descriptor[1]) {
         if (stricmp(p, input) == 0) {
             break;
-        }
-        while (*p != 0) {
+        } else {
+            while (*p != 0) {
+                p++;
+            }
             p++;
-        }
-        p++;
-        if (*p == 0) {
-            break;
         }
     }
     out = p;
@@ -780,8 +782,7 @@ s32 fn_8001C73C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 a2 = arg2;
     s32 a1 = arg1;
     s32 sp8 = arg1;
-    s32 outer = arg0 & 0x300;
-    switch (outer) {
+    switch (arg0 & 0x300) {
     case 0x100: {
         f32 f = *(f32 *)&sp8;
         switch (arg0 & 0x1FC00) {
@@ -1330,30 +1331,21 @@ s32 fn_8001D474(s32 pointer) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_8001D484(void *arg0, s32 arg1, s32 (*arg2)(s32), s32 arg3) {
-    void *var_r31;
-    void *var_r30;
-    s32 var_r29;
-    s32 var_r28;
-    var_r31 = arg0;
-    var_r29 = 0;
-    goto outer;
-    do {
-outer:
-        if (*((u8 *)var_r31 + 0x70) != 0) {
-            *(s32 *)var_r31 = arg2(*(s32 *)var_r31);
-            var_r30 = var_r31;
-            var_r28 = 0;
-            goto inner;
-            do {
-inner:
-                *(s32 *)((u8 *)var_r30 + 8) = arg2(*(s32 *)((u8 *)var_r30 + 8));
-                var_r28 += 1;
-                var_r30 = (u8 *)var_r30 + 0x14;
-            } while (var_r28 < *(s32 *)((u8 *)var_r31 + 0x6C));
+    u8 *ptr = (u8 *)arg0;
+    u8 *p;
+    s32 i;
+    s32 j;
+    for (i = 0; i < arg1; i++) {
+        if (*(u8 *)(ptr + 0x70) != 0) {
+            *(s32 *)ptr = arg2(*(s32 *)ptr);
+            p = ptr;
+            for (j = 0; j < *(s32 *)(ptr + 0x6C); j++) {
+                *(s32 *)(p + 8) = arg2(*(s32 *)(p + 8));
+                p += 0x14;
+            }
         }
-        var_r29 += 1;
-        var_r31 = (u8 *)var_r31 + 0x74;
-    } while (var_r29 < arg1);
+        ptr += 0x74;
+    }
 }
 #pragma scheduling invalid_target
 #pragma scheduling on
