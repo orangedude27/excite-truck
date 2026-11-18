@@ -547,6 +547,17 @@ extern const char lbl_8034B0B8[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma processor 750
+/* copy_16_to_16 (its own error string): blit the rectangle
+ * (srcLeft,srcTop)-(srcRight,srcBottom) of one 2-byte-pixel canvas onto the
+ * destination at (dstLeft,dstTop).  The rectangle is clipped against the
+ * destination's clip rectangle first, which moves the source origin along with
+ * it; every row is then copied pixel by pixel, stepping over the pixels a row
+ * does not hold on both sides.  Canvases of the same format copy straight
+ * through; otherwise the pixels are converted on the way: RGB565 -> RGB1555
+ * drops green's low bit, RGB1555 -> RGB565 repeats green's top bit into the
+ * new low bit, and RGBA4444 -> RGB565 shifts each component up into its 565
+ * field and drops the alpha nibble.  Any other pair of formats only traces
+ * "copy_16_to_16: can't convert from %d to %d". */
 void fn_802C3918(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
                  s32 srcBottom, s32 dstCanvas, s32 dstLeft, s32 dstTop) {
     u16 *srcPix, *srcPix_2, *srcPix_3, *srcPix_4;
