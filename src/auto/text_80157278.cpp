@@ -686,13 +686,13 @@ extern "C" char lbl_8055A054;
 #define STUNTDEF_VAL lbl_8032EAE0 /* "stuntdef.val" */
 /* The .sdata key strings the stunt entries are read by; the group an unknown
    category falls back to is the one named "default". */
-#define STUNT_GROUP_DEFAULT (&lbl_8055A030) /* "default" */
-#define STUNT_KEY_RANK      (&lbl_8055A038) /* "rank": the record the entry fills */
-#define STUNT_KEY_ADJ       (&lbl_8055A040) /* "adj": the entry's adjustment name */
-#define STUNT_ADJ_NONE      (&lbl_8055A044) /* "": what an entry without one reads */
-#define STUNT_KEY_THRESH    (&lbl_8055A048) /* "thresh": progress the record needs */
-#define STUNT_KEY_PTS       (&lbl_8055A050) /* "pts": the points the record is worth */
-#define STUNT_FMT_ADJ       (&lbl_8055A054) /* "%s ": the adjustment name in the record */
+#define STUNT_GROUP_DEFAULT lbl_8055A030 /* "default" */
+#define STUNT_KEY_RANK      lbl_8055A038 /* "rank": the record the entry fills */
+#define STUNT_KEY_ADJ       lbl_8055A040 /* "adj": the entry's adjustment name */
+#define STUNT_ADJ_NONE      lbl_8055A044 /* "": what an entry without one reads */
+#define STUNT_KEY_THRESH    lbl_8055A048 /* "thresh": progress the record needs */
+#define STUNT_KEY_PTS       lbl_8055A050 /* "pts": the points the record is worth */
+#define STUNT_FMT_ADJ       lbl_8055A054 /* "%s ": the adjustment name in the record */
 
 /* One object of a parsed "*.val" value file: fn_80131810 / fn_80131808 open one
    by name and fn_80131818 closes it again.  Its values are looked up by the key
