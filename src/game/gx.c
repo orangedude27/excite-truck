@@ -1202,8 +1202,8 @@ void fn_802D01B0(float *p, float v) {
     float z, y, x;
     float *out;
     x = p[0];
-    y = p[1];
     out = (float *)((unsigned char *)&lbl_804C97D0 + 0xC);
+    y = p[1];
     z = p[2];
     out[0] = x;
     out[1] = y;
