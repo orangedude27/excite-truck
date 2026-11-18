@@ -1062,76 +1062,90 @@ void fn_801E89FC(void) {
     lbl_804881D8[3] = fn_80129DC4(0, lbl_80562DBC, lbl_80562DE0);
 }
 #pragma opt_propagation reset
+/* Advances the global wind one step of its random walk.  gWind holds the unit
+ * wind direction in [0..2] and its strength in [3] (fn_801E8C84 and fn_801E8CB8
+ * hand them to the cloth/wind users).  Every axis takes a random offset of
+ * +/-0.05; when the vertical component leaves +/-WIND_MAX_SLOPE the two
+ * horizontal axes are pushed outward, along the way they already point, by
+ * OVERSHOOT_PUSH times the overshoot, and the vertical is clamped back.  The
+ * direction is then renormalized and the strength takes a random step of
+ * +/-0.2 kept inside [0,3]. */
 void fn_801E8A84(void)
 {
-  float new_var3;
-  unsigned short new_var2;
-  float new_var;
-  float scale;
-  float new_var4;
-  float value;
-  lbl_804881D8[0] += fn_80129DC4(0, -0.05f, 0.05f);
-  lbl_804881D8[1] += fn_80129DC4(0, -0.05f, 0.05f);
-  lbl_804881D8[2] += fn_80129DC4(0, -0.05f, 0.05f);
-  if (lbl_804881D8[1] > 0.33f)
+  #define gWind          lbl_804881D8 /* unit direction [0..2], strength [3] */
+  #define WIND_MAX_SLOPE 0.33f        /* steepest vertical the wind may point */
+  #define OVERSHOOT_PUSH lbl_80562DB4 /* 0.5f: push per unit of overshoot */
+  float overshoot;
+  unsigned short zComponent;
+  float zAxis;
+  float push;
+  float xAxis;
+  float amount; /* the +/-1 push factor, then the new wind strength */
+  gWind[0] += fn_80129DC4(0, -0.05f, 0.05f);
+  gWind[1] += fn_80129DC4(0, -0.05f, 0.05f);
+  gWind[2] += fn_80129DC4(0, -0.05f, 0.05f);
+  if (gWind[1] > WIND_MAX_SLOPE)
   {
-    new_var3 = lbl_804881D8[1] - 0.33f;
-    scale = new_var3 * lbl_80562DB4;
-    new_var4 = lbl_804881D8[0];
-    if (new_var4 > 0.0f)
+    overshoot = gWind[1] - WIND_MAX_SLOPE;
+    push = overshoot * OVERSHOOT_PUSH;
+    xAxis = gWind[0];
+    if (xAxis > 0.0f)
     {
-      value = 1.0f;
+      amount = 1.0f;
     }
     else
     {
-      value = -1.0f;
+      amount = -1.0f;
     }
-    lbl_804881D8[0] = lbl_804881D8[0] + (scale * value);
-    new_var = lbl_804881D8[2];
-    lbl_804881D8[1] = 0.33f;
-    if (new_var > 0.0f)
+    gWind[0] = gWind[0] + (push * amount);
+    zAxis = gWind[2];
+    gWind[1] = WIND_MAX_SLOPE;
+    if (zAxis > 0.0f)
     {
-      value = 1.0f;
+      amount = 1.0f;
     }
     else
     {
-      value = -1.0f;
+      amount = -1.0f;
     }
-    lbl_804881D8[new_var2 = 2] = lbl_804881D8[2] + (scale * value);
+    gWind[zComponent = 2] = gWind[2] + (push * amount);
   }
   else
-    if (lbl_804881D8[1] < -0.33f)
+    if (gWind[1] < -WIND_MAX_SLOPE)
   {
-    new_var3 = -0.33f - lbl_804881D8[1];
-    scale = new_var3 * lbl_80562DB4;
-    new_var4 = lbl_804881D8[0];
-    if (new_var4 > 0.0f)
+    overshoot = -WIND_MAX_SLOPE - gWind[1];
+    push = overshoot * OVERSHOOT_PUSH;
+    xAxis = gWind[0];
+    if (xAxis > 0.0f)
     {
-      value = 1.0f;
+      amount = 1.0f;
     }
     else
     {
-      value = -1.0f;
+      amount = -1.0f;
     }
-    lbl_804881D8[0] = lbl_804881D8[0] + (scale * value);
-    new_var = lbl_804881D8[2];
-    lbl_804881D8[1] = -0.33f;
-    if (new_var > 0.0f)
+    gWind[0] = gWind[0] + (push * amount);
+    zAxis = gWind[2];
+    gWind[1] = -WIND_MAX_SLOPE;
+    if (zAxis > 0.0f)
     {
-      value = 1.0f;
+      amount = 1.0f;
     }
     else
     {
-      value = -1.0f;
+      amount = -1.0f;
     }
-    lbl_804881D8[2] = lbl_804881D8[2] + (scale * value);
+    gWind[2] = gWind[2] + (push * amount);
   }
-  PSVECNormalize(lbl_804881D8, lbl_804881D8);
-  value = lbl_804881D8[3] + fn_80129DC4(0, -0.2f, 0.2f);
-  value = (3.0f < value) ? 3.0f : value;
-  value = (value > 0.0f) ? value : 0.0f;
-  lbl_804881D8[3] = value;
-  scale = scale + 0;
+  PSVECNormalize(gWind, gWind);
+  amount = gWind[3] + fn_80129DC4(0, -0.2f, 0.2f);
+  amount = (3.0f < amount) ? 3.0f : amount;
+  amount = (amount > 0.0f) ? amount : 0.0f;
+  gWind[3] = amount;
+  push = push + 0; /* keeps push in its register to the end, as the original does */
+  #undef OVERSHOOT_PUSH
+  #undef WIND_MAX_SLOPE
+  #undef gWind
 }
 /* Scale the global unit direction (lbl_804881D8[0..2]) by its stored magnitude
  * (lbl_804881D8[3]) and write the resulting 3D vector to outVec. */
