@@ -2098,12 +2098,14 @@ extern "C" void *fn_8014E3CC(void *object, s32 shouldFree) {
 extern void *memset(void *, s32, s32);
 #pragma cplusplus on
 extern "C" void *memset(void *, s32, s32);
-extern "C" void *fn_8014E4BC(void *arg0) {
+#pragma cplusplus off
+void *fn_8014E4BC(void *arg0) {
     u8 *base = (u8*)arg0;
+    s32 zero = 0;
     u8 *p;
     u8 *end;
-    *(u32*)(base + 8) = 0; *(u32*)(base + 0x10) = 0;
-    *(u32*)(base + 0x14) = 0; *(u32*)(base + 0x18) = 0;
+    *(u32*)(base + 8) = zero; *(u32*)(base + 0x10) = zero;
+    *(u32*)(base + 0x14) = zero; *(u32*)(base + 0x18) = zero;
     memset(base + 0x2C, 0x7A, 3); base[0x2F] = 0;
     memset(base + 0x40, 0x7A, 3); base[0x43] = 0;
     memset(base + 0x45, 0x7A, 3); base[0x48] = 0;
@@ -2119,25 +2121,32 @@ extern "C" void *fn_8014E4BC(void *arg0) {
     memset(base + 0x225, 0x7A, 3); base[0x228] = 0;
     return arg0;
 }
-#pragma cplusplus off
 extern s32 fn_801DF074(s32, s32);
 #pragma cplusplus on
+#pragma processor 750
 extern "C" void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
     extern void *lbl_8055E268;
     extern s32 fn_801DF074(s32, s32);
+    struct Entry8014E61C {
+        u8 pad[0xC0];
+    };
+    struct Mgr8014E61C {
+        u8 pad[0x9E4];
+        Entry8014E61C entries[8];
+    };
     class V8014E61C {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8();
-        virtual void call(void *, s32, f64);
+        virtual void call(void *, s32, f32);
     };
     u8 *entry;
-    f64 value;
+    f32 value;
     void *other;
     V8014E61C *obj;
     if (lbl_8055E268 != 0) {
-        entry = (u8 *)lbl_8055E268 + arg0 * 0xC0 + 0x9E4;
+        entry = (u8 *)&((Mgr8014E61C *)lbl_8055E268)->entries[arg0];
         if (entry != 0) {
             value = arg2;
             switch (arg1) {
@@ -2162,6 +2171,7 @@ extern "C" void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
     }
 }
 #pragma cplusplus reset
+#pragma processor reset
 /* Empty stub callback in the bonus-entry group: does nothing. */
 void fn_8014E704(void) {
 
@@ -4692,27 +4702,53 @@ void fn_801556FC(void) {
 
 }
 
-#pragma push
-#pragma use_lmw_stmw off
-void fn_80155700(void *arg0, void *arg1, s32 index) {
+#pragma cplusplus on
+extern "C" void fn_80155700(void *arg0, void *arg1, s32 index) {
+    class VArg0 {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5();
+        virtual s32 v6(s32);
+    };
+    class VArg1 {
+    public:
+        virtual void v0(); virtual void v1();
+        virtual f32 *v2();
+    };
+    class VSub {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual f32 v8(void *, f32);
+    };
+    class VObj {
+    public:
+        virtual VSub *v0();
+        virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5();
+        virtual void v6(s32);
+        virtual void v7();
+        virtual void v8(f32 *, f32 *, f32 *);
+    };
     register f32 *first, *second;
     u8 *self = (u8 *)arg0;
-    u8 *player = fn_8017960C(index);
-    u8 *slot, *entry, *obj, *manager, *player2;
+    register u8 *player = (u8 *)fn_8017960C(index);
+    register u8 *slot;
+    u8 *entry, *manager, *player2;
+    VObj *obj;
     f32 mat1[12], mat2[12], rot1[3], pos1[3], rot2[3], pos2[3];
     Event80155700 event;
     f32 zero, height, duration, threshold, one, value;
-    s32 i, active, kind;
+    s32 i, active, kind, tmp;
     f32 *v;
     if (player && (f32)__fabs(*(f32 *)(player+0x2690)) <= lbl_80558DC4[0] &&
-        ((s32 (*)(void *,s32))(*(void ***)arg0)[8])(arg0,index) &&
+        ((VArg0 *)arg0)->v6(index) &&
         fn_80161BB8() == 0 && *(s32 *)(player+0x1F0) == 0x50) {
         one=lbl_8056164C; zero=lbl_80561648; height=lbl_8056172C; duration=lbl_80561730; threshold=lbl_8056163C;
         slot = self + index * 0xC0;
         first=mat1;
         for (i = 0; i < *(s32 *)(self+0x330); i++) {
             entry = (*(u8 ***)(self+0x32C))[i];
-            if (*(void **)entry == arg1 && entry[4]) {
+            if (arg1 == *(void **)entry && entry[4]) {
                 entry[4]=0;
                 first[0]=one; first[1]=zero; first[2]=zero;
                 first[3]=zero; first[4]=one; first[5]=zero;
@@ -4720,14 +4756,13 @@ void fn_80155700(void *arg0, void *arg1, s32 index) {
                 first[9]=zero; first[11]=zero; first[10]=height;
                 rot1[0]=zero; rot1[1]=zero; rot1[2]=zero;
                 pos1[0]=zero; pos1[1]=zero; pos1[2]=zero;
-                obj=*(u8 **)entry;
-                ((void (*)(void *,f32 *,f32 *,f32 *))(*(void ***)obj)[10])(obj,first,pos1,rot1);
-                obj=*(u8 **)entry;
-                ((void (*)(void *,s32))(*(void ***)obj)[8])(obj,0);
+                obj=*(VObj **)entry;
+                obj->v8(first,pos1,rot1);
+                obj=*(VObj **)entry;
+                obj->v6(0);
                 *(f32 *)(entry+0x14)=duration+lbl_8055E3C8;
-                obj=*(u8 **)entry;
-                obj=((u8 *(*)(void *))(*(void ***)obj)[2])(obj);
-                value=((f32 (*)(void *,void *,f32))(*(void ***)obj)[10])(obj,lbl_80559FB8,lbl_80561730);
+                obj=*(VObj **)entry;
+                value=obj->v0()->v8(lbl_80559FB8,lbl_80561730);
             } else value=lbl_80561648;
             if (value > threshold) {
                 manager=*(u8 **)(self+0x444);
@@ -4744,10 +4779,10 @@ void fn_80155700(void *arg0, void *arg1, s32 index) {
         second=mat2;
         for (i = 0; i < *(s32 *)(self+0x3BC); i++) {
             entry=(*(u8 ***)(self+0x3B8))[i];
-            if (*(void **)entry == arg1 && entry[4]) {
-                player2=fn_8017960C(index);
+            if (arg1 == *(void **)entry && entry[4]) {
+                player2=(u8 *)fn_8017960C(index);
                 if (player2) {
-                    v=((f32 *(*)(void *))(*(void ***)arg1)[4])(arg1);
+                    v=((VArg1 *)arg1)->v2();
                     event.pos[0]=v[0]; event.pos[1]=v[1]; event.pos[2]=v[2];
                     event.velocity[0]=*(f32 *)(player2+0x118);
                     event.velocity[1]=*(f32 *)(player2+0x11C);
@@ -4762,18 +4797,19 @@ void fn_80155700(void *arg0, void *arg1, s32 index) {
                 second[9]=zero2; second[11]=zero2; second[10]=height2;
                 rot2[0]=zero2; rot2[1]=zero2; rot2[2]=zero2;
                 pos2[0]=zero2; pos2[1]=zero2; pos2[2]=zero2;
-                obj=*(u8 **)entry;
-                ((void (*)(void *,f32 *,f32 *,f32 *))(*(void ***)obj)[10])(obj,second,pos2,rot2);
-                obj=*(u8 **)entry;
-                ((void (*)(void *,s32))(*(void ***)obj)[8])(obj,0);
+                obj=*(VObj **)entry;
+                obj->v8(second,pos2,rot2);
+                obj=*(VObj **)entry;
+                obj->v6(0);
                 *(f32 *)(entry+0x14)=duration2+lbl_8055E3C8;
                 active=1;
             } else active=0;
             if (active) {
                 manager=*(u8 **)(self+0x448);
                 if (manager) {
+                    tmp=fn_80009C84();
                     kind=2;
-                    if (fn_80009C84()) kind=0;
+                    if (tmp) kind=0;
                     fn_80206750(*(u8 **)(self+0x448),index,kind);
                     manager=*(u8 **)(self+0x448);
                     manager[0x49]=1; manager[0x4B]=0; manager[0x4A]=0;
@@ -4785,7 +4821,7 @@ void fn_80155700(void *arg0, void *arg1, s32 index) {
         }
     }
 }
-#pragma pop
+#pragma cplusplus off
 
 void fn_80155AEC(void) {
 
