@@ -156,28 +156,36 @@ extern "C" float fn_80204CFC(const char *name) {
         virtual void unused2();
         virtual int get(void *);
     };
+    /* The 0x14-byte block fn_80204BB8 publishes in lbl_8055ED5C. */
+    struct DifficultyInfo {
+        int sceneType;           /* +0x00 */
+        void *propertyGroup;     /* +0x04 the "difficulty.val" group */
+        DifficultySet *sceneSet; /* +0x08 the scene's difficulty set */
+        DifficultySet *stageSet; /* +0x0C the stage's, 0 while none applies */
+        const char *contestName; /* +0x10 "excite"/"zone"/"fs", 0 if unknown */
+    };
     char key[0x64];
+    DifficultyInfo *info;
     int setting = 0;
     int text;
     int found;
-    int *info;
-    info = lbl_8055ED5C;
-    if (info[4] != 0) {
-        fn_801345D8(key, 0x64, lbl_8055B4AC, info[4], name);
-        if (info[3] != 0 && ((DifficultySet *)info[3])->has(key)) {
-            found = ((DifficultySet *)info[3])->get(key);
-        } else if (((DifficultySet *)info[2])->has(key)) {
-            found = ((DifficultySet *)info[2])->get(key);
+    info = (DifficultyInfo *)lbl_8055ED5C;
+    if (info->contestName != 0) {
+        fn_801345D8(key, 0x64, lbl_8055B4AC, info->contestName, name);
+        if (info->stageSet != 0 && info->stageSet->has(key)) {
+            found = info->stageSet->get(key);
+        } else if (info->sceneSet->has(key)) {
+            found = info->sceneSet->get(key);
         } else {
             found = 0;
         }
         setting = found;
     }
     if (setting == 0) {
-        if (info[3] != 0 && ((DifficultySet *)info[3])->has((void *)name)) {
-            found = ((DifficultySet *)info[3])->get((void *)name);
-        } else if (((DifficultySet *)info[2])->has((void *)name)) {
-            found = ((DifficultySet *)info[2])->get((void *)name);
+        if (info->stageSet != 0 && info->stageSet->has((void *)name)) {
+            found = info->stageSet->get((void *)name);
+        } else if (info->sceneSet->has((void *)name)) {
+            found = info->sceneSet->get((void *)name);
         } else {
             found = 0;
         }
