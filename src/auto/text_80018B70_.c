@@ -369,6 +369,15 @@ extern "C" s32 fn_80019534(void) {
 }
 #pragma cplusplus off
 __declspec(section ".data") extern void *lbl_803580A4;
+static inline s32 fn_80019098_find_inl(const char *name) {
+    s32 offset;
+    s32 i;
+    for (i = 0, offset = 0; i < *(volatile s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, i++) {
+        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) == 0)
+            return i;
+    }
+    return -1;
+}
 #pragma push
 #pragma use_lmw_stmw off
 #pragma small_data off
@@ -487,18 +496,13 @@ void fn_8001931C(s32 name) {
     register s32 offset;
     char *p;
 
-    for (i = 0, offset = 0; i < *(s32 *)((char *)&lbl_803580A4 + 4); ) {
-        switch (stricmp(*(const char **)(*(char **)&lbl_803580A4 + offset), (const char *)name_r)) {
-        case 0: goto found;
-        default:
-            offset += 0x10;
-            i++;
-            break;
-        }
+    for (i = 0, offset = 0; i < *(s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, i++) {
+        if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), (const char *)name_r) == 0)
+            goto found;
     }
     i = -1;
 found:
-    p = *(char **)&lbl_803580A4 + i * 0x10 + 4;
+    p = (char *)lbl_803580A4 + i * 0x10 + 4;
     if (i < 0)
         p = 0;
     if (p != 0) {
