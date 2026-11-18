@@ -258,6 +258,7 @@ extern "C" void fn_800057D0(void) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
+#pragma cplusplus on
 s32 fn_80005930(void) {
     extern s32 fn_801E85A4(void);
     extern void fn_801E88B4(s32 *, s32 *, s32 *, s32 *, s32);
@@ -425,9 +426,9 @@ extern "C" void fn_80005C88(void) {
     u8 *strings = lbl_802FB0C8;
     u32 *config = (u32 *)manager[2];
     s32 flag = (config[1] >> 9) & 1;
-    register u8 *state;
-    register void *object;
-    register s32 zero = 0;
+    u8 *state;
+    s32 zero = 0;
+    void *object;
     u8 *entry;
     s32 count;
     s32 i;
