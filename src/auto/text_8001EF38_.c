@@ -422,8 +422,7 @@ void fn_8001F578(void) {
 }
 #pragma scheduling on
 extern void *memcpy(void *, const void *, unsigned long);
-#pragma scheduling 750
-void fn_8001F5BC(void *arg0, void *arg1) {
+void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
     s32 *a = (s32 *)arg0;
     s32 *b = (s32 *)arg1;
     char *input = (char *)arg1 + 0x50;
