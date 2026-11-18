@@ -911,7 +911,7 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
 }
 
 #pragma push
-#pragma scheduling 750
+#pragma scheduling off
 extern "C" void fn_800D6EEC(void* arg0) {
     extern char lbl_8031F868[];
     volatile u8* p = (volatile u8*)arg0;
