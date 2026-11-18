@@ -469,6 +469,42 @@ extern "C" void fn_802A1CBC(void) {}
 extern "C" void fn_802A1CC0(void) {
 }
 
+struct EfSettings {
+    s32 type;
+    s32 maxEntries;
+    f32 life;
+    f32 phaseStep;
+    f32 spawnRadiusX;
+    f32 spawnHeight;
+    f32 spawnRadiusZ;
+    f32 spreadX;
+    f32 spreadY;
+    f32 spreadZ;
+    f32 spawnScale;
+    f32 f2C;
+    f32 gravity;
+    f32 drag;
+    u8 randomColor;
+    u8 pad38[3];
+    f32 f3C;
+    f32 f40;
+    s32 priority;
+    f32 shading;
+    f32 sizeAccel;
+    f32 sizeSpeed;
+    f32 size;
+    f32 alphaFade;
+    f32 alpha;
+    f32 blueFade;
+    f32 blue;
+    f32 greenFade;
+    f32 green;
+    f32 redFade;
+    f32 red;
+    f32 f78;
+    f32 f7C;
+    u8 pad80[0x10];
+};
 extern "C" int lbl_803499E8[];
 extern "C" int lbl_803499F4[];
 extern "C" s32 lbl_8055D430;
@@ -477,7 +513,7 @@ extern "C" f32 lbl_80564738, lbl_8056473C;
 #pragma scheduling invalid_target
 extern "C" void fn_802A1CC4(void) {
     u8 config[0x90];
-    s32 zero = 0;
+    const s32 zero = 0;
     void *name = lbl_803499E8;
     s32 enabled = ((lbl_8055D430 & 1) && (lbl_8055D430 & 8)) ? 1 : 0;
     if (enabled != 0) {
@@ -485,7 +521,7 @@ extern "C" void fn_802A1CC4(void) {
         *(int *)(config + 0x04) = 0x80;
         *(f32 *)(config + 0x08) = lbl_8056472C;
         *(f32 *)(config + 0x0C) = lbl_80564730;
-        *(int *)(config + 0x00) = 0;
+        *(int *)(config + 0x00) = zero;
         *(f32 *)(config + 0x10) = lbl_80564730;
         *(f32 *)(config + 0x14) = lbl_80564730;
         *(f32 *)(config + 0x18) = lbl_80564730;
@@ -505,7 +541,7 @@ extern "C" void fn_802A1CC4(void) {
         *(f32 *)(config + 0x64) = lbl_80564730;
         *(f32 *)(config + 0x74) = lbl_80564744;
         lbl_8055F870 = ((int (*)(void *, void *, void *, int, f32, f32, f32, f32, f32, f32))fn_8028E2F8)(
-            config, lbl_803499F4, name, 0,
+            config, lbl_803499F4, name, zero,
             lbl_80564740, lbl_8056473C, lbl_80564738,
             lbl_80564734, lbl_80564730, lbl_8056472C);
     } else {
@@ -725,11 +761,17 @@ end: ;
 
 extern "C" float fn_801E7E18(void);
 extern "C" void fn_802A2434(void *arg0, void *arg1) {
-    (void)arg0; (void)arg1;
-    volatile float a = lbl_80564734;
-    volatile float b = lbl_80564744;
-    volatile float c = a + b;
-    (void)c;
+    extern float lbl_80564774, lbl_80564778;
+    double now = ((double (*)(void))fn_801E7E18)();
+    int count = (int)(lbl_80564774 * *(float *)((char *)arg1 + 0x24));
+    int idx;
+    float old;
+    if (count >= 4) count = 4;
+    idx = *(int *)((char *)arg1 + 0x28);
+    if (idx < 0 || count <= 0) return;
+    old = *(float *)((char *)arg0 + idx * 0x10 + 0x1C);
+    if (lbl_80564778 + old >= now) return;
+    ((void (*)(void))fn_80287B24)();
 }
 
 #pragma pop
