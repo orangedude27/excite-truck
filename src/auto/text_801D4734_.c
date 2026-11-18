@@ -165,7 +165,7 @@ extern "C" void fn_801D4734(void) {
     void *manager;
     Mgr *m;
     lbl_8055E954 = 1;
-    obj = fn_802077A4((void *)((unsigned)base + 0), 5, lbl_804422F0 + 8, lbl_804422F0 + 0x14);
+    obj = fn_802077A4(&lbl_80338460, 5, lbl_804422F0 + 8, lbl_804422F0 + 0x14);
     *(void **)lbl_804422F0 = obj;
     if (obj != 0) {
         *(float *)((char *)obj + 0x6C) = lbl_80562AD8;
@@ -1799,7 +1799,7 @@ extern "C" int fn_801D6948(void *out, void *object) {
         float y;
         float z;
         Vec3() {}
-        Vec3(const float &a, const float &b, const float &c) : x(a), y(b), z(c) {}
+        Vec3(float a, float b, float c) : x(a), y(b), z(c) {}
     };
     struct Dummy {
         virtual void v0();
@@ -3576,40 +3576,43 @@ extern "C" void fn_801D875C(void *arg0) {
         virtual void v4(); virtual void first(int); virtual void v6(); virtual void second_pad();
         virtual void second(int);
     };
-    int count, offset;
+    struct Entry {
+        Dummy *item;
+        int arg4;
+        int arg8;
+        void start(int p) { item->first(p); item->second(arg8); }
+        void stop() { item->first(arg4); item->second(-1); }
+    };
+    struct Self {
+        char pad[0xC];
+        float delay;
+        float start;
+        float duration;
+        int state;
+        int param;
+        int started;
+        Entry *entries;
+        int count;
+    };
+    Self *self = (Self *)arg0;
+    int i;
     float time;
-    Dummy *item;
-    char *entry;
-    if (*(int *)((char *)arg0 + 0x18) != 2) return;
+    if (self->state != 2) return;
     time = lbl_8055E3C8;
-    if (*(int *)((char *)arg0 + 0x20) == 0) {
-        if (!(time - *(float *)((char *)arg0 + 0x10) > *(float *)((char *)arg0 + 0xC))) return;
-        count = 0; offset = 0;
-        goto first_test;
-first_loop:
-        entry = (char *)*(int *)((char *)arg0 + 0x24) + offset;
-        item = *(Dummy **)entry;
-        item->first(*(int *)((char *)arg0 + 0x1C));
-        item = *(Dummy **)entry;
-        item->second(*(int *)(entry + 8));
-        offset += 0xC; count += 1;
-first_test:
-        if (count < *(int *)((char *)arg0 + 0x28)) goto first_loop;
-        *(int *)((char *)arg0 + 0x20) = 1;
+    if (self->started == 0) {
+        if (time - self->start > self->delay) {
+            for (i = 0; i < self->count; i++) {
+                self->entries[i].start(self->param);
+            }
+            self->started = 1;
+        }
     } else {
-        if (!(time - *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 0xC) > *(float *)((char *)arg0 + 0x14))) return;
-        count = 0; offset = 0;
-        goto second_test;
-second_loop:
-        entry = (char *)*(int *)((char *)arg0 + 0x24) + offset;
-        item = *(Dummy **)entry;
-        item->first(*(int *)(entry + 4));
-        item = *(Dummy **)entry;
-        item->second(-1);
-        offset += 0xC; count += 1;
-second_test:
-        if (count < *(int *)((char *)arg0 + 0x28)) goto second_loop;
-        *(int *)((char *)arg0 + 0x18) = 1;
+        if (time - self->start - self->delay > self->duration) {
+            for (i = 0; i < self->count; i++) {
+                self->entries[i].stop();
+            }
+            self->state = 1;
+        }
     }
 }
 #pragma pop
