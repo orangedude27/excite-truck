@@ -329,13 +329,15 @@ long fn_8020F9F4(void) {
 
 #pragma push
 #pragma dont_inline on
-void *fn_8020FAF0(void) {
+void *fn_8020FAF0(arg0)
+char *arg0;
+{
     char *entry;
     char *base = (char *)fn_8020F5F0(fn_8000DA10());
     long i = 0;
     entry = base;
     for (;;) {
-        if (stricmp(entry + 4, entry) == 0) {
+        if (stricmp(entry + 4, arg0) == 0) {
             return base + i * 0x64;
         }
         i++;
