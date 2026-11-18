@@ -114,6 +114,7 @@ typedef struct Fn8027F958Stack {
     Fn8027F958Menu menu;
     int pad;
     Fn8027F958Widget widgets[5];
+    int tail[4];
 } Fn8027F958Stack;
 
 #pragma cplusplus on
