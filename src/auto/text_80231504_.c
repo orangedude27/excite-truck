@@ -710,9 +710,9 @@ void fn_802321D8(void) {
 void fn_80232230(void) {
     int i;
     char *stringBase;
-    struct Fn80232230_Entry *entry;
-    struct Fn80232230_List *list;
     Fn80232230_Record *record;
+    struct Fn80232230_List *list;
+    struct Fn80232230_Entry *entry;
     s32 count;
     f32 temp_f31;
 
@@ -942,8 +942,6 @@ void fn_80232930(void) {
     lbl_8055F060 = (void *)lbl_8055F04C;
 }
 
-#pragma push
-#pragma scheduling invalid_target
 f32 fn_8023293C(s32 font, char *text, f32 extra) {
     register f32 height;
     register f32 width;
@@ -983,8 +981,7 @@ char_body:
         for (tokenIndex = 0, tokenOffset = 0; tokenIndex < *(s32 *)recordCount; tokenOffset += 0x1C, tokenIndex++) {
             token = *(const char **)(*(u8 **)lbl_80497F14 + tokenOffset);
             if (fn_8002B1D8((const char *)character, token, strlen(token)) == 0) {
-                tokenOffset = tokenIndex * 0x1C;
-                entry = *(u8 **)lbl_80497F14 + tokenOffset;
+                entry = *(u8 **)lbl_80497F14 + tokenIndex * 0x1C;
                 if (*(s32 *)(entry + 0xC) != 0) {
                     escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10));
                     escapeWidth = *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
@@ -996,12 +993,9 @@ char_body:
                 goto match;
             }
         }
-        consumed = 0;
-match: ;
-    } else {
-        consumed = 0;
     }
-
+    consumed = 0;
+match:
     if (consumed != 0) {
         index += consumed;
         width += (f32)escapeWidth;
