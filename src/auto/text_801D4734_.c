@@ -3055,6 +3055,14 @@ struct PhysPathAse {
     int state;             /* 0x40, enum TimedEffectState */
 };
 
+/* RealName: PhysPathActionSequenceEvent::Read
+ * The "PhysPath_ASE" element's read method (vtable+0xC): take this cue's
+ * parameters out of the action-sequence value table -- its "path" (the cue is
+ * refused, with a diagnostic, when the table has none) and its "object" (the
+ * name "*" when the table names none) into the two 20-byte name fields, the
+ * "kill_bound" flag as the parsed value list fn_801399FC builds, and its
+ * "delay" in seconds as a tick count at 59.94 ticks per second -- then mark the
+ * cue ready (state 1) and report what it was bound to. */
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
