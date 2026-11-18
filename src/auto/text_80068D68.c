@@ -6989,11 +6989,7 @@ void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
         case 1: case 2: case 3: case 4:
             status = (u8)result; break;
         case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15:
-            goto set5a;
-        default:
-        set5a:
-            status = 5;
-            break;
+        default: status = 5; break;
         }
         hs_data[0] = status;
         (*(cback_t *)(lbl_803C0D48 + 0x224))(*(u16 *)(p_cb + 0x10), hs_data);
@@ -7007,11 +7003,7 @@ void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
         case 1: case 2: case 3: case 4:
             status = (u8)result; break;
         case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15:
-            goto set5b;
-        default:
-        set5b:
-            status = 5;
-            break;
+        default: status = 5; break;
         }
         cback_data[0] = status;
         (*(cback_t *)(lbl_803C0D48 + 0x224))(*(u16 *)(p_cb + 0x10), cback_data);
@@ -8896,30 +8888,16 @@ BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
 }
 #pragma pop
 
+#pragma push
+#pragma dont_inline off
 char *BTM_SecReadDevName(BD_ADDR bd_addr) {
-    s32 i;
-    u8 *entry;
-    char *name;
-    i = 0;
-    entry = lbl_803C0F78 + 0x1F30;
-    name = 0;
-    do {
-        if (entry[0x76] & 0x80) {
-            if (memcmp(entry + 0x1C, bd_addr, 6) == 0) {
-                goto found;
-            }
-        }
-        i++;
-        entry += 0x88;
-    } while (i < 16);
-    entry = 0;
-found:
-    if (entry != 0) {
-        name = (char *)entry + 0x35;
-    }
-    return name;
+    char *p_name = NULL;
+    u8 *p_rec = btm_find_dev_entry(bd_addr);
+    if (p_rec != NULL)
+        p_name = (char *)p_rec + 0x35;
+    return p_name;
 }
-
+#pragma pop
 tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR bd_addr) {
     struct tBTM_SEC_DEV_SLOT_VIEW {
         u8 pad0[0x76];
