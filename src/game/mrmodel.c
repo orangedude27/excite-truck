@@ -142,12 +142,11 @@ void fn_802C543C(void) {
 }
 #pragma dont_inline off
 
-#pragma processor 750
 #pragma scheduling on
 int fn_802C544C(void **a, void **b) {
-    short x = *(short *)((char *)*b + 6);
     void *right = *b;
     void *left = *a;
+    short x = *(short *)((char *)right + 6);
     short y = *(short *)((char *)left + 6);
     if (y != x) return y - x;
     return stricmp(fn_802CAE34(*(char **)left), fn_802CAE34(*(char **)right));
