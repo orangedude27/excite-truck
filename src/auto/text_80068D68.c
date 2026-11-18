@@ -2173,6 +2173,14 @@ void fn_8006A440(u32 pAlarm, u32 pContext)
     OSSwitchFiberEx(pAlarm, pContext, 0, 0, fn_8006A3BC, (u8*)&lbl_80393680 + 0x1000);
 }
 
+typedef struct {
+    u8 pad0[0xCC8];
+    u32 words[16];
+    u8 pad1[0x1D20 - 0xCC8 - 0x40];
+    u16 shorts1[16];
+    u16 shorts2[16];
+} WUDCtrlClearView;
+
 s32 fn_8006A460(s32 arg0) {
     register u8 *var_r6;
     u32 temp_r10;
