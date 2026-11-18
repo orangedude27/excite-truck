@@ -48,7 +48,7 @@ void fn_801B6670(void) {
     table = (UnkEntry*)lbl_80435EE8;
     table[0].name = (const char *) (base + 0x1C);
     table[1].name = (const char *) (base + 0x40);
-    ((UnkEntry *)lbl_80435EE8)->id = 1;
+    table[0].id = 1;
     table[0].description = (const char*)&lbl_8055A8D8;
     table[1].id = 2;
     table[1].description = (const char *) (base + 0x34);
