@@ -1982,8 +1982,9 @@ void fn_801C7964(void) {
     dst->y = src->y;
     dst->z = src->z;
 }
-void (*fn_801C7990(void))(void) {
 #pragma scheduling invalid_target
+#pragma opt_strength_reduction off
+void (*fn_801C7990(void))(void) {
     Unk_80437D88 *s = &lbl_80437D88;
     Vec *src = &s->f_4E0;
     Vec *dst1 = &s->f_6F8;
@@ -1998,7 +1999,7 @@ void (*fn_801C7990(void))(void) {
     lbl_8055E868 = fn_801C7964;
     return fn_801C7964;
 }
-
+#pragma opt_strength_reduction reset
 void fn_801C79E0(void) {
     /* Copy the debug menu position from lbl_80438268 to lbl_8043848C, clear
      * lbl_8055E83B, set the menu action to the idle handler (fn_801C6CB0),
@@ -2415,6 +2416,17 @@ void fn_801C84E0(void) {
     sGlobalEventTimeFlag = 0;
     sprintf(sConsoleLine, kMsgGlobalEventTimeDisabled);
 }
+
+extern char lbl_8033707C[];
+extern void fn_801C7374(void);
+void fn_801C8500(void) {
+    f32 value = fn_801C3450((f32)atof(lbl_804380F0));
+    lbl_8055E810 = value;
+    lbl_8055E80D = 1;
+    sprintf(lbl_80437FC0, lbl_8033707C, (f32)(f64)value);
+    fn_801C7374();
+}
+
 #undef sGlobalEventTimeFlag
 #undef sConsoleLine
 #undef kMsgGlobalEventTimeDisabled
