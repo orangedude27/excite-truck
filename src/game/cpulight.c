@@ -421,14 +421,14 @@ void fn_802DBDE8(int arg0, void *arg1) {
 
 #pragma scheduling invalid_target
 void fn_802DBE4C(void) {
-    register int one;
+    struct Flag { unsigned char value; } flag;
     fn_802D0610(0);
     fn_802D68C4(0, 0, 0, 0);
-    one = 1;
+    flag.value = 1;
     GXSetZMode(1, 3, 1);
     GXSetNumChans(1);
     GXSetChanCtrl(4, 0, 1, 1, 0, 0, 2);
-    lbl_8055FEB8 = (unsigned char)one;
+    lbl_8055FEB8 = flag.value;
 }
 #pragma scheduling on
 
@@ -558,7 +558,7 @@ void fn_802DC27C(void) { fn_802DBDD8(); }
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802DC280(int verts, int count, unsigned short *list, int size) {
+void fn_802DC280(int verts, int count, unsigned short *__restrict list, int size) {
     int n;
     int i;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
@@ -731,8 +731,8 @@ extern int __cntlzw(unsigned int);
 extern "C" void fn_802DC71C(int arg0, int arg1) {
     extern void GXLoadTexObj(void *, int);
     int useAlt;
-    void **base;
-    void *tex1;
+    register void **base;
+    register void *tex1;
     int texFlag;
     void *info;
     int wrapS;
@@ -895,19 +895,14 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
              unsigned char *coords = (unsigned char *)fn_802CFF64(0x50);
              if (colors != 0 && coords != 0) {
                  void *data;
-                 int n;
-                 int i;
-                 int byteOffset;
-                 unsigned char *colorOut;
-                 unsigned char *coordOut;
+                 int n = *(int *)(g + 4);
+                 int i = 0;
+                 int byteOffset = 0;
+                 unsigned char *colorOut = colors;
+                 unsigned char *coordOut = coords;
                  float temp_f29;
                  float temp_f30;
                  float temp_f31;
-                 n = *(int *)(g + 4);
-                 i = 0;
-                 byteOffset = 0;
-                 colorOut = colors;
-                 coordOut = coords;
                  if (*(unsigned char *)(g + 0x218) != 0)
                      fn_802D6B54(*(void **)(g + 0x214));
                  data = ((void *(*)(void *))fn_802DC628)(*(void **)(g + 0x214));
