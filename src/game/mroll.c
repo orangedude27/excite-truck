@@ -1149,6 +1149,57 @@ static inline void updateInfoDst_80241EF0(InfoDstObj_80241EF0 *infoDst, char *na
         infoDst->texts[4][0] = 0;
     }
 }
+struct SelfObj_80241EF0 {
+    u8 pad00[0x10];
+    s32 *field10;
+    s32 *field14;
+    CtxObj_80241EF0 *ctx;
+    InfoDstObj_80241EF0 *infoDst;
+    u8 *field20;
+    Collection_80241EF0 *col;
+    s32 index;
+    char name2C[0x20];
+    char name4C[0x20];
+    s32 result;
+};
+static inline void updateMain_80241EF0(SelfObj_80241EF0 *self) {
+    if (self->index < 0) return;
+    if (self->index >= self->col->getCount()) return;
+    void *item = self->col->getItem(self->index);
+    void *record = fn_8001668C(item, 0);
+    *self->field14 = *(s32 *)((u8 *)record + 4);
+    *self->field10 = *(s32 *)((u8 *)record + 0x9C);
+
+    {
+        s32 n = 0x20;
+        char *dst = self->name2C;
+        char *src = (char *)item;
+        while ((*dst++ = *src++) != 0) {
+            if (--n <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        }
+    }
+
+    {
+        char *src = (char *)record + 0xC;
+        s32 n = 0x20;
+        char *dst = self->name4C;
+        while ((*dst++ = *src++) != 0) {
+            if (--n <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        }
+    }
+
+    self->result = self->col->getResult(self->index);
+    *(bool *)(self->field20 + 0xDD) = (self->result == 0);
+
+    updateCtx_80241EF0(self->ctx, record);
+    updateInfoDst_80241EF0(self->infoDst, self->name2C);
+}
 extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
     struct SelfObj {
         u8 pad00[0x10];
@@ -1171,15 +1222,14 @@ extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
     }
     if (self->index < 0) return;
     if (self->index >= self->col->getCount()) return;
-    void *item = self->col->getItem(self->index);
-    void *record = fn_8001668C(item, 0);
+    char *src = (char *)self->col->getItem(self->index);
+    void *record = fn_8001668C(src, 0);
     *self->field14 = *(s32 *)((u8 *)record + 4);
     *self->field10 = *(s32 *)((u8 *)record + 0x9C);
 
     {
-        char *dst = self->name2C;
-        char *src = (char *)item;
         s32 n = 0x20;
+        char *dst = self->name2C;
         while ((*dst++ = *src++) != 0) {
             if (--n <= 0) {
                 dst[-1] = 0;
@@ -1189,9 +1239,9 @@ extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
     }
 
     {
-        char *src = (char *)record + 0xC;
-        char *dst = self->name4C;
+        src = (char *)record + 0xC;
         s32 n = 0x20;
+        char *dst = self->name4C;
         while ((*dst++ = *src++) != 0) {
             if (--n <= 0) {
                 dst[-1] = 0;
