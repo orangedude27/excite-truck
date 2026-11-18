@@ -1087,7 +1087,7 @@ int fn_8027F958(int *selection, void *collection) {
     lbl_804B3048.count = 0;
     lbl_8055F68C = 0;
     lbl_8055F690 = 0;
-    *(char *)((char *)state + 0x70) = 0;
+    *(char *)(state + 0x70) = 0;
     lbl_8055F694 = 0;
     widget = &stack.widgets[4];
     widget->vtable = widgetVtable;
