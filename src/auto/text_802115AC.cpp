@@ -438,53 +438,72 @@ extern "C" void fn_80211690(s32 arg0) {
 }
 
 #pragma use_lmw_stmw off
-extern "C" void fn_80211D24(int arg0) {
+/* Shuts the UI subsystem down again; takes the same mode as the fn_80211690 bootstrap.
+ * Deletes the 8x4 table of UI sound objects and clears it, frees the five tables and
+ * pools that bootstrap built, and shuts the three subsystems it started back down.
+ * A non-zero mode is the full teardown: it also releases the two menu-arrow art sets,
+ * all twelve loaded art sets and the "uiaction.res" resource; mode 0 only drops the two
+ * blinker art sets that mode had loaded. Finally logs the heap still in use when that
+ * changed while the UI was up, and destroys the heap itself. */
+extern "C" void fn_80211D24(int mode) {
 #pragma scheduling invalid_target
     struct Obj { virtual ~Obj(); };
-    struct Row { char pad[8]; Obj *objs[4]; };
+    struct SoundSlot { char pad[8]; Obj *sounds[4]; }; /* the Ent18 fn_80211690 fills */
     int j;
-    bool flag;
+    bool minimalMode;
     int i;
-    int v;
-    fn_802ECC18(0);
-    flag = (arg0 == 0);
+    int heapBytes;
+
+#define s_soundSlots      lbl_80490558 /* 8 x {name, f32, 4 sound objects} = 0xC0 bytes */
+#define s_artSets         lbl_80490528 /* 3 x 4 art sets loaded by name, 0 when not loaded */
+#define s_heapBytesAtInit lbl_8055EF18 /* heap in use when fn_80211690 set the UI up */
+
+    fn_802ECC18(0); /* home-menu mode: the normal shutdown message */
+    minimalMode = (mode == 0);
     for (i = 0; i < 8; i++) {
         for (j = 0; j < 4; j++) {
-            Obj *o = ((Row *)lbl_80490558)[i].objs[j];
-            if (o != 0) delete o;
+            Obj *sound = ((SoundSlot *)s_soundSlots)[i].sounds[j];
+            if (sound != 0) delete sound;
         }
     }
-    memset(lbl_80490558, 0, 0xC0);
-    if (lbl_8055EF24 != 0) { fn_8022D2BC(lbl_8055EF24, 1); lbl_8055EF24 = 0; }
-    if (lbl_8055EF28 != 0) { fn_8022D2BC(lbl_8055EF28, 1); lbl_8055EF28 = 0; }
+    memset(s_soundSlots, 0, 0xC0);
+    /* The name/id tables and pools the bootstrap allocated. */
+    if (lbl_8055EF24 != 0) { fn_8022D2BC(lbl_8055EF24, 1); lbl_8055EF24 = 0; } /* 0x20 entries */
+    if (lbl_8055EF28 != 0) { fn_8022D2BC(lbl_8055EF28, 1); lbl_8055EF28 = 0; } /* 8 entries */
     if (lbl_8055EF2C != 0) { fn_8022D7C4(lbl_8055EF2C, 1); lbl_8055EF2C = 0; }
     if (lbl_8055EF30 != 0) { fn_8022DB94(lbl_8055EF30, 1); lbl_8055EF30 = 0; }
     if (lbl_8055EF34 != 0) { fn_8022DD38(lbl_8055EF34, 1); lbl_8055EF34 = 0; }
+    /* Back down the three subsystems fn_8020A47C, fn_8022A5E4 and fn_80216710 started. */
     fn_8021676C();
     fn_8022A7D0();
     fn_8020A550();
-    if (!flag) {
-        if (lbl_8055EF1C != 0) fn_80235380(lbl_8055EF1C);
+    if (!minimalMode) {
+        if (lbl_8055EF1C != 0) fn_80235380(lbl_8055EF1C); /* the two menu-arrow art sets */
         lbl_8055EF1C = 0;
         if (lbl_8055EF20 != 0) fn_80235380(lbl_8055EF20);
         lbl_8055EF20 = 0;
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 4; j++) {
-                fn_802C519C(((s32 (*)[4])lbl_80490528)[i][j]);
-                ((s32 (*)[4])lbl_80490528)[i][j] = 0;
+                fn_802C519C(((s32 (*)[4])s_artSets)[i][j]);
+                ((s32 (*)[4])s_artSets)[i][j] = 0;
             }
         }
         fn_80238920();
-        fn_8012BF24(lbl_8033CC10);
+        fn_8012BF24(lbl_8033CC10); /* "uiaction.res" */
     } else {
-        fn_802C519C(lbl_80490528[8]);
-        lbl_80490528[8] = 0;
-        fn_802C519C(lbl_80490528[9]);
-        lbl_80490528[9] = 0;
+        /* Mode 0 loaded nothing but the two blinker images. */
+        fn_802C519C(s_artSets[8]); /* "blinkerlt.img" */
+        s_artSets[8] = 0;
+        fn_802C519C(s_artSets[9]); /* "blinkerrt.img" */
+        s_artSets[9] = 0;
     }
-    v = fn_80128314(0);
-    if (v != lbl_8055EF18) fn_802E30C8(lbl_8033CD88, v, lbl_8055EF18);
-    fn_802E1058();
+    heapBytes = fn_80128314(0);
+    if (heapBytes != s_heapBytesAtInit) fn_802E30C8(lbl_8033CD88, heapBytes, s_heapBytesAtInit); /* "UI overlap: %d K vs %d K" */
+    fn_802E1058(); /* SimpleHeap_Destroy */
+
+#undef s_soundSlots
+#undef s_artSets
+#undef s_heapBytesAtInit
 }
 #pragma use_lmw_stmw reset
 extern "C" void fn_80211690(s32);
