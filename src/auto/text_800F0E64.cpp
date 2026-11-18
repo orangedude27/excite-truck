@@ -1187,6 +1187,56 @@ extern "C" s32 fn_800F283C(void *archive) {
 extern "C" s32 ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8FileInfo(void *, u32, void *);
 extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive7FilePos(void *, u32, u32, void *);
 extern "C" s32 ReadGroupItemInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive13GroupItemInfo(void *, u32, u32, void *);
+
+/* One file of a sound archive, as the archive's file reader describes it.  A
+ * file is either a loose file the archive names a path for, or one packed into
+ * the archive's own data block, which the group/item position says where. */
+struct SndArchiveFileInfo {
+    u32 unk0;
+    u32 unk4;
+    const char *path; /* +0x08 path to open it by, 0 when it is packed in the archive */
+    u32 unkC;
+};
+
+/* Which group of the archive a file is in, and which item of that group. */
+struct SndArchiveFilePos {
+    u32 group;
+    u32 item;
+};
+
+/* A group of sounds packed together: the block of the archive its data sits in
+ * (+0x08, +0x0C), or the path to open when the group is a loose file. */
+struct SndArchiveGroupInfo {
+    u32 unk0;
+    const char *path; /* +0x04 path to open the group by, 0 when it is packed */
+    u32 offset;       /* +0x08 where the group starts in the archive's data */
+    u32 size;         /* +0x0C how long the group is */
+    u32 unk10;
+    u32 unk14;
+};
+
+/* One sound of a group, at an offset inside the group's block. */
+struct SndArchiveGroupItemInfo {
+    u32 unk0;
+    u32 offset; /* +0x04 where the sound starts inside the group */
+    u32 size;   /* +0x08 how long the sound is */
+    u32 unkC;
+    u32 unk10;
+    u32 unk14;
+};
+
+/* What a concrete archive (file-backed, memory-backed, ...) adds to a
+ * SoundArchive: the two OpenStream overloads, one opening a stream at an offset
+ * of the archive's data and one opening the file a path names. */
+struct SndArchiveInterface {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void *openStreamAt(void *buffer, int size, u32 offset, u32 length);
+    virtual void *openStreamPath(void *buffer, int size, const char *path, u32 offset, u32 length);
+};
+
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
