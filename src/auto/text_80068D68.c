@@ -1004,7 +1004,43 @@ typedef struct {
 extern tBTA_HH_CB *bta_hh_cb_ptr;
 #define bta_hh_cb (*bta_hh_cb_ptr)
 
-enum { BTA_HH_OK = 0, BTA_HH_ERR = 1 };
+/* tBTA_HH_STATUS (bta_hh_api.h): BTA_HH_OK, then the handshake errors a device
+ * reports, then the BTA-side errors. */
+enum {
+    BTA_HH_OK,
+    BTA_HH_HS_HID_NOT_READY,    /* handshake error : device not ready */
+    BTA_HH_HS_INVALID_RPT_ID,   /* handshake error : invalid report ID */
+    BTA_HH_HS_TRANS_NOT_SPT,    /* handshake error : transaction not spt */
+    BTA_HH_HS_INVALID_PARAM,    /* handshake error : invalid parameter */
+    BTA_HH_HS_ERROR,            /* handshake error : unspecified HS error */
+    BTA_HH_ERR,                 /* general BTA HH error */
+    BTA_HH_ERR_SDP,             /* SDP error */
+    BTA_HH_ERR_PROTO,           /* SET_PROTOCOL error, OPEN_EVT only */
+    BTA_HH_ERR_DB_FULL,         /* device database full */
+    BTA_HH_ERR_TOD_UNSPT,       /* type of device not supported */
+    BTA_HH_ERR_NO_RES,          /* out of system resources */
+    BTA_HH_ERR_AUTH_FAILED,     /* authentication failed */
+    BTA_HH_ERR_HDL
+};
+
+/* The callback payload of the events that only carry a result (bta_hh_api.h). */
+typedef struct {
+    UINT8 status;               /* tBTA_HH_STATUS */
+    UINT8 handle;               /* HID device handle */
+} tBTA_HH_CBDATA;
+
+/* HID_CONTROL operation code used in BTA_HhSendCtrl() (bta_hh_api.h). */
+enum {
+    BTA_HH_CTRL_NOP = 0,
+    BTA_HH_CTRL_HARD_RESET,
+    BTA_HH_CTRL_SOFT_RESET,
+    BTA_HH_CTRL_SUSPEND,
+    BTA_HH_CTRL_EXIT_SUSPEND,
+    BTA_HH_CTRL_VIRTUAL_CABLE_UNPLUG
+};
+
+#define BTA_HH_VC_UNPLUG_EVT 13 /* callback event: virtually unplugged */
+#define BTA_ID_HH            23 /* this subsystem's id in the BTA system manager */
 #define HID_SUCCESS 0
 #define BTA_HH_MAX_KNOWN 0x10
 extern u8 HID_HostDeregister(void);
