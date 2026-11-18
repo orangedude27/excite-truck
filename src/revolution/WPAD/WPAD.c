@@ -4631,7 +4631,7 @@ extern u8 lbl_802EE8C8[];
 s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
     u8 frame[0x420] ALIGN(8);
     register s32 channel asm("r31") = chan;
-    register u32 value81C asm("r30");
+    register void* value81C asm("r30");
     register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
     register WPADCallback callback asm("r28") = arg2;
     register s32 arg asm("r27") = arg1;
@@ -4649,7 +4649,7 @@ s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
     enabled = OSDisableInterrupts();
     value778 = *(u32*)((u8*)p + 0x778);
     status = *(s32*)((u8*)p + 0x7FC);
-    value81C = *(u32*)((u8*)p + 0x81C);
+    value81C = *(void**)((u8*)p + 0x81C);
     OSRestoreInterrupts(enabled);
     if (status == WPAD_ERR_NO_CONTROLLER) goto finish;
     if (value81C == 0) {
