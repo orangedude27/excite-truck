@@ -662,6 +662,7 @@ void *fn_8016C29C(void *obj, int shouldDelete) {
 #pragma cplusplus on
 #pragma ppc_psq_save off
 #pragma paired_single off
+#pragma opt_common_subs off
 extern "C" void fn_8016C328(void *arg0) {
     class Cfg {
     public:
