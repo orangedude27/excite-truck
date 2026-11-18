@@ -13,6 +13,7 @@ extern int memset(void *, int, unsigned int);
  * the alphabet above on the first call. */
 #pragma scheduling invalid_target
 #pragma dont_inline on
+#pragma scheduling on
 unsigned char fn_8012F7E0(signed char arg0) {
     int i;
     if (lbl_805599E8 != 0) {
