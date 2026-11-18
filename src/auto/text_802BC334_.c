@@ -1109,31 +1109,32 @@ void fn_802BDD8C(float radius) {
 #define kZero              lbl_80564D14 /* 0.0f */
 #define kOne               lbl_80564D18 /* 1.0f */
 #define kFadeRange         lbl_80564D4C /* 50.0f */
-#define treeList           lbl_804C00D4 /* { char *entries; int count; } of 0x60-byte tree entries */
+#define treeList           lbl_804C00D4 /* { char *entries; int count; } of TreeVolume records */
 #define lightCount         lbl_8055FAA8 /* debug counter "tree-count" */
 #define lightCost          lbl_8055FAAC /* debug counter "tree-tri-count" */
-    /* CPU-light pass over the tree list: for every tree entry that has a light
-     * object at +0x58 and a far-model level (entry+0x24) of 10 or less, open a
-     * light batch on the entry's model (entry+0x1c / +0x20) and queue one
-     * camera-facing light sprite for every frame-list point of the entry's
-     * near-list groups that lies within `radius` of the current player.  The
-     * sprite's alpha fades from full at radius-50 to none at `radius`. */
+    /* CPU-light pass over the tree list: for every tree volume that has a
+     * treelist wrapper at +0x58 and a far model of level 10 or below, open a
+     * light batch on that model and queue one camera-facing light sprite for
+     * every frame-list point of the volume's near-list groups that lies within
+     * `radius` of the current player.  A sprite's alpha fades from full at
+     * radius-50 to none at `radius`; the sprite's 3x3 part is the camera basis
+     * scaled by the point's radius. */
     float sprite[12];
     float basis[12];
-    int *points;
-    int *groups;
+    struct TreePointList *points;
+    struct TreeGroupList *groups;
     int pointIdx;
     int model;
     int j;
     char *camPos;
-    char *tree;
-    char *group;
+    struct TreeVolume *tree;
+    struct TreeGroup *group;
     int treeOff;
     int groupOff;
     int pointOff;
     int i;
     int *list;
-    char *point;
+    struct TreePoint *point;
     BeginCpuLighting();
     if (isDebugDrawEnabled() != 0) {
         float one = kOne;
@@ -1147,42 +1148,42 @@ void fn_802BDD8C(float radius) {
         i = 0;
         treeOff = 0;
         while (i < list[1]) {
-            tree = *(char **)&treeList + treeOff;
+            tree = (struct TreeVolume *)(*(char **)&treeList + treeOff);
             {
-                int *lightObject = *(int **)(tree + 0x58);
+                struct TreeLightObject *lightObject = tree->lightObject;
                 if (lightObject != 0) {
-                    groups = (int *)lightObject[1];
-                    points = (int *)lightObject[0];
-                    if (*(int *)(tree + 0x24) <= 10) {
+                    groups = lightObject->nearA;
+                    points = lightObject->frames;
+                    if (tree->modelLevel <= 10) {
                         GetSwlMapSlot(); /* its result reaches BeginDrawList in r3 */
                         BeginDrawList();
-                        BeginLightBatch(*(int *)(tree + 0x1c), *(int *)(tree + 0x20));
+                        BeginLightBatch(tree->lightModel, tree->lightTexture);
                         outerSq = radius * radius;
                         falloff = outerSq - (radius - fadeRange) * (radius - fadeRange);
                         BuildCameraBasis(basis);
                         camPos = GetPlayerEntry(-1) + 0x24;
                         j = 0;
                         groupOff = 0;
-                        while (j < groups[1]) {
-                            group = (char *)groups[0] + groupOff;
+                        while (j < groups->count) {
+                            group = (struct TreeGroup *)((char *)groups->groups + groupOff);
                             {
-                                int enabled = (*(float *)(group + 0xc) >= minWeight);
+                                int enabled = (group->weight >= minWeight);
                                 if (enabled) {
-                                    pointIdx = *(short *)(group + 0xa);
-                                    model = *(int *)(tree + 0x1c);
-                                    pointOff = pointIdx * 0x44;
-                                    while (pointIdx < *(short *)(group + 0xa) + *(short *)(group + 8)) {
-                                        point = (char *)points[0] + pointOff;
+                                    pointIdx = group->pointStart;
+                                    model = tree->lightModel;
+                                    pointOff = pointIdx * TREE_POINT_SIZE;
+                                    while (pointIdx < group->pointStart + group->pointCount) {
+                                        point = (struct TreePoint *)((char *)points->points + pointOff);
                                         {
-                                            float distSq = PSVECSquareDistance(point + 0x30, camPos);
+                                            float distSq = PSVECSquareDistance(point->position, camPos);
                                             if (distSq <= outerSq) {
                                                 float alpha = (outerSq - distSq) / falloff;
                                                 float scale;
                                                 if (one < alpha) alpha = one;
-                                                scale = *(float *)(point + 0x1c);
-                                                sprite[9] = *(float *)(point + 0x30);
-                                                sprite[10] = *(float *)(point + 0x34);
-                                                sprite[11] = *(float *)(point + 0x38);
+                                                scale = point->radius;
+                                                sprite[9] = point->position[0];
+                                                sprite[10] = point->position[1];
+                                                sprite[11] = point->position[2];
                                                 sprite[0] = basis[0] * scale;
                                                 sprite[1] = basis[1] * scale;
                                                 sprite[2] = basis[2] * scale;
@@ -1195,12 +1196,12 @@ void fn_802BDD8C(float radius) {
                                                 QueueLightSprite(model, sprite, alpha);
                                             }
                                         }
-                                        pointOff += 0x44;
+                                        pointOff += TREE_POINT_SIZE;
                                         pointIdx++;
                                     }
                                 }
                             }
-                            groupOff += 0x10;
+                            groupOff += TREE_GROUP_SIZE;
                             j++;
                         }
                         FlushLightBatch();
@@ -1208,7 +1209,7 @@ void fn_802BDD8C(float radius) {
                     }
                 }
             }
-            treeOff += 0x60;
+            treeOff += TREE_VOLUME_SIZE;
             i++;
         }
     }
