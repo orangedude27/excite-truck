@@ -149,7 +149,8 @@ void *fn_8013A264(void *arg0) {
    the longitudinal range it applies over and the seven driving values it changes, each falling
    back to the config's default when the entry omits it, and is pushed on config->list. An entry
    whose on_lon is past its off_lon wraps the end of the track, so a twin node is pushed for the
-   other end, covering [0, off_lon] with a short blend time. Logs how many were found. */
+   other end, covering [0, off_lon] with a short blend time. Logs how many were found.
+   The third argument's incoming value is ignored: it becomes the entry counter. */
 extern "C" void fn_8013A2FC(AiExceptionConfig *config, struct Container *container, int count) {
     #pragma scheduling invalid_target
     const char *keys = (const char *)lbl_8032C118;
