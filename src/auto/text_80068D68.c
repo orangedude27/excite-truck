@@ -12488,39 +12488,52 @@ extern u16 lbl_80560D10;
 extern u16 lbl_80560D12;
 extern u16 lbl_802EE990[];
 extern void fn_800729C0(s16);
+/* bta_dm_find_services (SDK bta_dm_act.c): start the next service search of a
+ * device discovery.  service_index walks bta_service_id_to_uuid_lkup_tbl; for
+ * the first service still flagged in services_to_search, an SDP discovery
+ * database is allocated, the service's class UUID is looked up (the Device
+ * Identification service asks for both attributes) and
+ * SDP_ServiceSearchAttributeRequest is issued.  The search is asynchronous, so
+ * the function returns here and the callback drives the next service; when the
+ * index runs past the table, the discovery result -- services found, the peer's
+ * address and its name -- is posted to the BTA task. */
 void bta_dm_find_services(u8 *bd_addr) {
-    u16 attr_values[2];
-    tSDP_UUID service_uuid;
-    u16 num_attr = 1;
-    register u32 bit_base = 1;
-    register u16 uuid_len = 2;
+    u16 attr_list[2];
+    tSDP_UUID uuid;
+    u16 num_attrs = 1;
+    register u32 bit_base = 1;            /* BTA_SERVICE_ID_TO_SERVICE_MASK's 1 */
+    register u16 uuid_len = LEN_UUID_16;
     u8 *name;
     void *msg;
 
-    attr_values[0] = lbl_80560D10;
-    attr_values[1] = lbl_80560D12;
+    /* the compiler's pooled {ATTR_ID_SERVICE_CLASS_ID_LIST,
+     * ATTR_ID_EXT_BRCM_VERSION} initializer, copied from small data */
+    attr_list[0] = lbl_80560D10;
+    attr_list[1] = lbl_80560D12;
 
-    while (DM_SCB_SERVICE_INDEX < 0x17) {
+    while (DM_SCB_SERVICE_INDEX < DM_MAX_SERVICE_ID) {
         if ((DM_SCB_SERVICES_TO_SEARCH &
              (bit_base << DM_SCB_SERVICE_INDEX)) != 0) {
-            DM_SCB_P_SDP_DB = (tSDP_DISCOVERY_DB *)GKI_getbuf(0xFA);
+            DM_SCB_P_SDP_DB = (tSDP_DISCOVERY_DB *)GKI_getbuf(DM_SDP_DB_SIZE);
             if (DM_SCB_P_SDP_DB != 0) {
+                /* this service is being searched for now */
                 DM_SCB_SERVICES_TO_SEARCH &=
                     ~(bit_base << DM_SCB_SERVICE_INDEX);
-                service_uuid.len = uuid_len;
-                service_uuid.uu.uuid16 =
+                uuid.len = uuid_len;
+                uuid.uu.uuid16 =
                     bta_service_id_to_uuid_lkup_tbl[DM_SCB_SERVICE_INDEX];
-                if (service_uuid.uu.uuid16 == 0x1200)
-                    num_attr = 2;
-                SDP_InitDiscoveryDb(DM_SCB_P_SDP_DB, 0xFA, 1,
-                                    (tSDP_UUID *)&service_uuid,
-                                    num_attr, attr_values);
+                if (uuid.uu.uuid16 == UUID_SERVCLASS_PNP_INFORMATION)
+                    num_attrs = 2;
+                SDP_InitDiscoveryDb(DM_SCB_P_SDP_DB, DM_SDP_DB_SIZE, 1,
+                                    (tSDP_UUID *)&uuid,
+                                    num_attrs, attr_list);
                 if (SDP_ServiceSearchAttributeRequest(
                         bd_addr, DM_SCB_P_SDP_DB,
-                        (tSDP_DISC_CMPL_CB *)fn_800729C0) == FALSE) {
+                        (tSDP_DISC_CMPL_CB *)bta_dm_sdp_callback) == FALSE) {
+                    /* the search could not start: move on to the next device */
                     GKI_freebuf(DM_SCB_P_SDP_DB);
                     DM_SCB_P_SDP_DB = 0;
-                    DM_SCB_SERVICE_INDEX = 0x17;
+                    DM_SCB_SERVICE_INDEX = DM_MAX_SERVICE_ID;
                 } else {
                     DM_SCB_SERVICE_INDEX++;
                     return;
@@ -12530,19 +12543,21 @@ void bta_dm_find_services(u8 *bd_addr) {
         DM_SCB_SERVICE_INDEX++;
     }
 
-    if (DM_SCB_SERVICE_INDEX >= 0x17) {
-        msg = GKI_getbuf(0x110);
+    /* no more services to be discovered: report what was found */
+    if (DM_SCB_SERVICE_INDEX >= DM_MAX_SERVICE_ID) {
+        msg = GKI_getbuf(BTA_DM_MSG_SIZE);
         if (msg != 0) {
-            *(u16 *)msg = 0x208;
-            *(u32 *)((u8 *)msg + 0x108) = DM_SCB_SERVICES_FOUND;
-            fn_80070FA4((u8 *)msg + 8, DM_SCB_PEER_BDADDR);
+            DM_MSG_EVENT(msg) = BTA_DM_DISCOVERY_RESULT_EVT;
+            DM_MSG_SERVICES(msg) = DM_SCB_SERVICES_FOUND;
+            bdcpy(DM_MSG_BD_ADDR(msg), DM_SCB_PEER_BDADDR);
+            /* bta_dm_get_remname(): the security DB's name if we have one */
             name = DM_SCB_PEER_NAME;
             if ((s8)DM_SCB_PEER_NAME[0] == 0) {
                 u8 *read_name = (u8 *)BTM_SecReadDevName(DM_SCB_PEER_BDADDR);
                 if (read_name != 0)
                     name = read_name;
             }
-            strncpy((char *)msg + 0xE, (char *)name, 0x20);
+            strncpy((char *)DM_MSG_BD_NAME(msg), (char *)name, DM_PEER_NAME_LEN);
             bta_sys_sendmsg(msg);
         }
     }
