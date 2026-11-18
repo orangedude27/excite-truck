@@ -166,40 +166,38 @@ extern "C" void fn_8012834C(void *arg0, void *arg1, s32 arg2) {
         virtual void d1();
         virtual void *alloc(s32, void *, s32);
     };
-    s32 size;
-    s32 mask;
-    s32 sum;
-    s32 offset;
     void *queue;
     void *result;
+    s32 sum;
 
     fn_80127964();
     if (lbl_8055DF80 == 0 && (u8)lbl_8055DF88 != 0) {
         ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A034, arg0);
     }
 
-    size = lbl_8055DF8C;
-    if (size != 0) {
+    if (lbl_8055DF8C != 0) {
         if ((u8)lbl_8055DF81 == 0) {
-            if (size > 0x40) {
+            if (lbl_8055DF8C > 0x40) {
                 queue = lbl_8041E140;
-                mask = size - 1;
                 sum = *(s32 *)((u8 *)queue + 0xC) +
                       *(s32 *)((u8 *)queue + 4);
-                if (((sum + 0x40) & mask) != 0) {
-                    offset = mask & (size - ((sum + 0x80) & mask));
-                    result = ((Ring *)queue)->alloc(offset, lbl_8032A05C, 3);
+                if (((sum + 0x40) & (lbl_8055DF8C - 1)) != 0) {
+                    result = ((Ring *)queue)->alloc(
+                        (lbl_8055DF8C - 1) &
+                            (lbl_8055DF8C - ((sum + 0x80) & (lbl_8055DF8C - 1))),
+                        lbl_8032A05C, 3);
                     *(u8 *)((u8 *)result - 0x1C) = 0;
                 }
             }
-        } else if (size > 0x40) {
+        } else if (lbl_8055DF8C > 0x40) {
             queue = lbl_8041E160;
-            mask = size - 1;
             sum = *(s32 *)((u8 *)queue + 0xC) +
                   *(s32 *)((u8 *)queue + 4);
-            if (((sum + 0x40) & mask) != 0) {
-                offset = mask & (size - ((sum + 0x80) & mask));
-                result = ((Ring *)queue)->alloc(offset, lbl_8032A05C, 3);
+            if (((sum + 0x40) & (lbl_8055DF8C - 1)) != 0) {
+                result = ((Ring *)queue)->alloc(
+                    (lbl_8055DF8C - 1) &
+                        (lbl_8055DF8C - ((sum + 0x80) & (lbl_8055DF8C - 1))),
+                    lbl_8032A05C, 3);
                 *(u8 *)((u8 *)result - 0x1C) = 0;
             }
         }
@@ -241,9 +239,11 @@ void fn_8012850C(void *size, void *name) {
 
 #pragma opt_propagation off
 s32 fn_80128520(s32 arg0) {
+    register s32 ptrval;
     if (lbl_8055DF80 == 0)
         goto do_log;
-    switch ((s32)lbl_8055DF84) {
+    ptrval = (s32)lbl_8055DF84;
+    switch (ptrval) {
     case 0:
         return ((s32 (*)(void *, void *, s32))fn_8012834C)(lbl_8032A068, (void *)arg0, 3);
     default:
