@@ -927,7 +927,7 @@ s32 fn_8028BC1C(s32 arg0, s32 arg1) {
 
 extern f32 lbl_8056432C;
 #pragma push
-#pragma scheduling off
+#pragma scheduling on
 void fn_8028BC88(s32 arg0) {
     register f32 zero, one;
     one = lbl_8056432C;
@@ -1121,8 +1121,8 @@ void fn_8028BFEC(s32 arg0) {
             vz = in->vz * f8;
             temp[0] = vx;
             temp[2] = vz;
-            out->x = in->x + vx * time;
             temp[1] = vy;
+            out->x = in->x + vx * time;
             out->y = in->y + vy * time;
             out->z = in->z + vz * time;
             out->vx = vx;
@@ -1325,12 +1325,12 @@ void fn_8028C938(s32 arg0) {
         in = (struct Entry *)((u32)list->data + (u32)offset);
         if (in->age > elapsed) {
             vx = in->vx * factor;
+            temp_x = vx;
             vy = (in->vy * factor) - delta;
             vz = in->vz * factor;
             out->x = in->x + vx * step;
             out->y = in->y + vy * step;
             out->z = in->z + vz * step;
-            temp_x = vx;
             temp_z = vz;
             temp_y = vy;
             out->vx = vx;
