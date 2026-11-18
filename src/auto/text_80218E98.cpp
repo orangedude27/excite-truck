@@ -2962,6 +2962,12 @@ extern "C" void fn_8021CBBC(void *widget) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Drive a slider widget from a screen point.  The first time it is called the
+ * widget caches the value its target object (+0x248) holds; a point outside the
+ * widget's box (its left/top/width/bottom grown by 32 pixels) puts that cached
+ * value back, and a point on the box sets the target to where the point sits
+ * along the tab's travel -- (x - left - tabSize/2) / (width - tabSize), clamped
+ * to [0,1] -- so dragging across the slider scrubs the value. */
 extern "C" void fn_8021CD04(void *widget, s32 x, s32 y) {
     #define FLOAT_ONE  lbl_805634A4 /* 1.0f: the slider's far end */
     #define FLOAT_ZERO lbl_805634A8 /* 0.0f: its near end */
