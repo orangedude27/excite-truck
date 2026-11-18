@@ -680,18 +680,19 @@ void *fn_801B4528(void *tree, u32 *node, u32 key) {
 }
 #pragma scheduling invalid_target
 void* fn_801B4570(void* arg0, u32 arg1) {
+    Cursor801B4570 *cursor;
     void *found;
-    s32 *data;
-    s32 idx;
-    void *cur;
-    cur = arg0;
+    Row801B4570 *rows;
+    s32 index;
+    Row801B4570 *row;
+    cursor = (Cursor801B4570*)arg0;
     found = fn_801B4528(arg0, *(void**)((u8*)arg0 + 0x2F8), arg1);
     if (found != NULL) {
-        cur = *(void**)((u8*)found + 4);
+        cursor = *(Cursor801B4570**)((u8*)found + 4);
     }
-    idx = *(s32*)((u8*)cur + 8);
-    data = *(s32**)((u8*)cur + 0);
-    *(s32*)((u8*)cur + 8) = (idx + 1) % *(s32*)((u8*)cur + 4);
-    found = (void*)((u8*)data + idx * 8);
-    return found;
+    index = cursor->index;
+    rows = cursor->rows;
+    row = &rows[index];
+    cursor->index = (index + 1) % cursor->count;
+    return row;
 }
