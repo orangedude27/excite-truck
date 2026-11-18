@@ -651,7 +651,7 @@ void fn_801F602C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     float var_f1, var_f1_2, var_f1_3, var_f1_4;
     float var_f0, var_f0_2, var_f0_3, var_f0_4;
     int temp_r0, temp_r0_2, temp_r0_3, temp_r0_4;
-    float var_f29, var_f28, var_f27, var_f26, var_f1_5, temp_f0_5;
+    float var_f29, var_f28, var_f27, var_f26, temp_f0_5, var_f1_5;
     int var_r0, var_r0_2, var_r0_3, var_r0_4, var_r3, var_r3_2, var_r3_3, var_r3_4;
     var_f31 = PSQUATMultiply((void *)(arg1 + 0x30), (void *)(arg1 + 0x48));
     temp_f1 = PSQUATMultiply((void *)arg1, (void *)(arg1 + 0x18));
@@ -746,7 +746,7 @@ void fn_801F639C(void *arg0) {
 void fn_801F63F0(void *arg0, float *arg1, float arg2) {
     extern float lbl_80562FB0, lbl_80562FD4, lbl_80562FD8;
     float a,b,c,x,y,z,t,u,v;
-    int i,off,r0,r4;
+    int off,i,r0,r4;
     void *p,*q;
 
     off=0; i=0;
@@ -915,10 +915,9 @@ extern float lbl_80562FE4;
 #pragma push
 #pragma processor 750
 void fn_801F6778(float *out, int count, float *angles, float offset, float scale) {
-#pragma scheduling invalid_target
     float buf[4];
     float m, d0, d1, d2, a0, a1, a2;
-    float f6, f4, f31, f30, f29, f28, f27, f26;
+    float f4, f31, f30, f29, f28, f27, f26, f6;
     int i;
     buf[0] = lbl_80562FE4;
     fn_801E8CB8(&buf[1], &buf[0]);
@@ -930,6 +929,7 @@ void fn_801F6778(float *out, int count, float *angles, float offset, float scale
     a1 = angles[1];
     a2 = angles[2];
     i = 0;
+    d0 = d0;
     f6 = m * scale;
     f4 = d1 * f6;
     f31 = d0 * f6;
@@ -956,43 +956,43 @@ void fn_801F6880(void *arg0) {
     extern void fn_802C8E00(int, int, void *, float, float, float, float, float);
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
-    float tmp;
-    int a0, a1, b0, b1, c0;
-    int w0, w1, w2;
-    void *q0, *q1, *q2, *q3;
-    tmp = fn_802C9A4C(*(float *)((char *)arg0 + 0x28));
+    float temp_f31;
+    int temp_r0, temp_r0_2, temp_r3, temp_r4, temp_r5_2;
+    int var_r30, var_r31, var_r28;
+    void *temp_r3_2, *temp_r3_3, *temp_r5, *temp_r5_3;
+    temp_f31 = fn_802C9A4C(*(float *)((char *)arg0 + 0x28));
     fn_802C8BD0(*(void **)((char *)arg0 + 0x24));
     if (fn_802C8DBC((*(int *)((char *)arg0 + 0x30) - 1) * (*(int *)((char *)arg0 + 0x2C) * 2)) != 0) {
-        w1 = 1;
-        goto rs;
-    ib:
-        a0 = *(int *)((char *)arg0 + 0x2C);
-        b1 = (w0 + w2 * a0) * 0xC;
-        a1 = *(int *)((char *)arg0 + 0xC);
-        b0 = *(int *)((char *)arg0 + 4);
-        q0 = (void *)(b0 + b1);
-        q1 = (void *)(a1 + b1);
-        fn_802C8E00(*(int *)((char *)q1 + 8), w0 > 0, q1, *(float *)(b0 + b1), *(float *)((char *)q0 + 4), *(float *)((char *)q0 + 8), *(float *)(b1 + a1), *(float *)((char *)q1 + 4));
-        c0 = (w0 + w1 * *(int *)((char *)arg0 + 0x2C)) * 0xC;
-        q2 = (void *)(*(int *)((char *)arg0 + 0xC) + c0);
-        q3 = (void *)(*(int *)((char *)arg0 + 4) + c0);
-        fn_802C8E00(*(int *)((char *)q2 + 8), w0 > 0, q3, *(float *)q3, *(float *)((char *)q3 + 4), *(float *)((char *)q3 + 8), *(float *)q2, *(float *)((char *)q2 + 4));
-        w0 += 1;
-    ic:
-        if (w0 < *(int *)((char *)arg0 + 0x2C)) goto ib;
-        w1 += 1;
-    oc:
-        if (w1 < *(int *)((char *)arg0 + 0x30)) goto rs;
-        goto dn;
-    rs:
-        w2 = w1 - 1;
-        w0 = 0;
-        goto ic;
-    dn:
+        var_r31 = 1;
+        goto row_setup;
+    inner_body:
+        temp_r0 = *(int *)((char *)arg0 + 0x2C);
+        temp_r4 = (var_r30 + var_r28 * temp_r0) * 0xC;
+        temp_r0_2 = *(int *)((char *)arg0 + 0xC);
+        temp_r3 = *(int *)((char *)arg0 + 4);
+        temp_r3_2 = (void *)(temp_r3 + temp_r4);
+        temp_r5 = (void *)(temp_r0_2 + temp_r4);
+        fn_802C8E00(*(int *)((char *)temp_r5 + 8), var_r30 > 0, temp_r5, *(float *)(temp_r3 + temp_r4), *(float *)((char *)temp_r3_2 + 4), *(float *)((char *)temp_r3_2 + 8), *(float *)(temp_r4 + temp_r0_2), *(float *)((char *)temp_r5 + 4));
+        temp_r5_2 = (var_r30 + var_r31 * *(int *)((char *)arg0 + 0x2C)) * 0xC;
+        temp_r3_3 = (void *)(*(int *)((char *)arg0 + 0xC) + temp_r5_2);
+        temp_r5_3 = (void *)(*(int *)((char *)arg0 + 4) + temp_r5_2);
+        fn_802C8E00(*(int *)((char *)temp_r3_3 + 8), var_r30 > 0, temp_r5_3, *(float *)temp_r5_3, *(float *)((char *)temp_r5_3 + 4), *(float *)((char *)temp_r5_3 + 8), *(float *)temp_r3_3, *(float *)((char *)temp_r3_3 + 4));
+        var_r30 += 1;
+    inner_check:
+        if (var_r30 < *(int *)((char *)arg0 + 0x2C)) goto inner_body;
+        var_r31 += 1;
+    outer_check:
+        if (var_r31 < *(int *)((char *)arg0 + 0x30)) goto row_setup;
+        goto done;
+    row_setup:
+        var_r28 = var_r31 - 1;
+        var_r30 = 0;
+        goto inner_check;
+    done:
         fn_802C8E48();
     }
     fn_802C8D74();
-    fn_802C9A4C(tmp);
+    fn_802C9A4C(temp_f31);
 }
 #pragma pop
 
@@ -1451,7 +1451,7 @@ void fn_801F7400(void *out, void *base, void *obj) {
     int b10, b14, b18, b1C;
     int c10, c14, c18, c1C;
     float a20, a24, b20, b24, c20, c24;
-    float sumX, sumY, sum0, sum1, sum2;
+    float sumX, sumY, sum0, sum1, sum2, t5, t6, t7, t8;
     indexA = *(volatile int *)((char *)base + 0x60);
     indexB = *(volatile int *)((char *)base + 0x5C);
     indexC = *(volatile int *)((char *)base + 0x58);
@@ -1485,11 +1485,15 @@ void fn_801F7400(void *out, void *base, void *obj) {
     a1C = *(int *)(recordA + 0x1C);
     sumY = (b24 + a24) - c24;
     dstI[0] = c10;
-    sum0 = (*(volatile float *)((char *)out + 0x30) + *(volatile float *)((char *)out + 0x18)) - *(volatile float *)((char *)out + 0x00);
+    t8 = dstF[12] + dstF[6];
+    t6 = dstF[14];
+    t7 = dstF[13] + dstF[7];
     dstI[1] = c14;
-    sum1 = (*(volatile float *)((char *)out + 0x34) + *(volatile float *)((char *)out + 0x1C)) - *(volatile float *)((char *)out + 0x04);
+    t5 = t6 + dstF[8];
+    sum0 = t8 - dstF[0];
     dstI[2] = c18;
-    sum2 = (*(volatile float *)((char *)out + 0x38) + *(volatile float *)((char *)out + 0x20)) - *(volatile float *)((char *)out + 0x08);
+    sum1 = t7 - dstF[1];
+    sum2 = t5 - dstF[2];
     dstI[3] = c1C;
     dstI[9] = b1C;
     dstI[15] = a1C;
@@ -1505,7 +1509,11 @@ void fn_801F7400(void *out, void *base, void *obj) {
     dstF[22] = sumX;
     dstF[23] = sumY;
     dstI[21] = b1C;
-    if (((int (*)(void *, int, void *, int))fn_801F52BC)(obj, (int)lbl_8033AD7C, (char *)out + 0x60, 4) == 0)
+    if (((int (*)(void *, int, void *, int, int, int, void *, int,
+                  float, float, float, float, float, float, float, float))fn_801F52BC)(
+            obj, (int)lbl_8033AD7C, (char *)out + 0x60, 4,
+            c1C, a10, recordA, b1C,
+            sumX, sum2, sum1, sum0, t5, t6, t7, t8) == 0)
         dstF[24] = lbl_80562FB8;
     if (((int (*)(void *, int, void *, int))fn_801F52BC)(obj, (int)lbl_8033AD88, (char *)out + 0x64, 4) == 0)
         dstF[25] = lbl_80562FB8;
@@ -1519,11 +1527,11 @@ extern char lbl_8033AF08[];
 #pragma use_lmw_stmw off
 void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
     char *data = lbl_8033AC68;
-    register void * volatile copy4;
     void *sp8[0x1A];
     void *temp_r30;
     void *temp_r29;
     void **allocated;
+    register void * volatile copy4;
 
     temp_r30 = ((void *(*)(void *))fn_802AE414)(arg1);
     if (temp_r30 == 0) {
@@ -1562,8 +1570,8 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
 #pragma use_lmw_stmw off
 void fn_801F76F8(void *arg0, unsigned char *p) {
     unsigned char *q = p + 0x3c;
-    unsigned int a0, a1, a2, a3, a4, a5, a6, a7;
-    unsigned int b0, b1, b2, b3, b4, b5, b6, b7;
+    register unsigned int b7, b6, b5, b4, b3, b2, b1, b0;
+    unsigned int a7, a6, a5, a4, a3, a2, a1, a0;
     int i;
     unsigned char c0, d0, c1, d1, c2, d2;
     a0=p[0x2c]; b0=p[0x3b]; a1=p[0x2d]; b1=p[0x3a];
