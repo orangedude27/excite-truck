@@ -1587,6 +1587,7 @@ s32 fn_801C5B68(char *arg0, s32 arg1) {
     fn_8020655C(&sp20, 0);
     return 1;
 }
+#pragma pop
 s32 fn_801C6C28(Vec *arg0) {
     float threshold = lbl_805629CC;
     s32 result = -1;
