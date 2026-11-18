@@ -4623,10 +4623,10 @@ extern u8 lbl_802EE8C8[];
 s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
     u8 frame[0x420] ALIGN(8);
     register s32 channel asm("r31") = chan;
-    register s32 arg asm("r27") = arg1;
+    register s32 arg asm("r26") = arg1;
     register WPADCallback callback asm("r28") = arg2;
     register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
-    register u32 value778 asm("r26");
+    register u32 value778 asm("r27");
     register s32 status asm("r25");
     register u32 value81C asm("r30");
     BOOL enabled;
@@ -6379,7 +6379,32 @@ void fn_80066630(void) {
 // fn_80066634: WPAD data processing
 void fn_80066634(s32 chan, u8* data)
 {
-    u8* cb;
+    typedef struct {
+        u8 _head[0xA0];
+        u8 rxBufs[2][RX_BUFFER_SIZE]; /* 0xA0 */
+        u8 _gap160[0x780 - 0x160];
+        u32 UNK_0x780;                /* 0x780 */
+        u8 _gap784[0x788 - 0x784];
+        u32 extDisconnected;          /* 0x788 */
+        u8 _gap78C[0x7B4 - 0x78C];
+        s16 accX0g;                   /* 0x7B4 */
+        s16 accY0g;                   /* 0x7B6 */
+        s16 accZ0g;                   /* 0x7B8 */
+        u8 _gap7BA[0x7C2 - 0x7BA];
+        WPADExtConfig extCalib;       /* 0x7C2 */
+        u8 _gap7DC[0x7F8 - 0x7DC];
+        u32 dataFormat;               /* 0x7F8 */
+        s32 status;                   /* 0x7FC */
+        u8 _gap800;
+        u8 extType;                   /* 0x801 */
+        u8 UNK_0x802;                 /* 0x802 */
+        u8 _gap803[0x806 - 0x803];
+        u8 rxBufIndex;                /* 0x806 */
+        u8 _gap807[0x851 - 0x807];
+        u8 UNK_0x851;                 /* 0x851 */
+    } CBView;
+
+    CBView* cb;
     volatile s8* buf;
     WPADFSStatus* fs;
     WPADCLStatus* cl;
@@ -6388,87 +6413,84 @@ void fn_80066634(s32 chan, u8* data)
     s16 x, y, v;
     s32 bits;
     s32 enabled;
-    cb = (u8*)lbl_8038F4F0[(u8)chan];
-    buf = (volatile s8*)(cb + cb[0x806] * 0x60 + 0xA0);
+    cb = (CBView*)lbl_8038F4F0[(u8)chan];
+    buf = (volatile s8*)cb->rxBufs[cb->rxBufIndex];
     for (offset = 0; offset < 96; offset++) {
         buf[offset] = 0;
     }
     *(u16*)buf = ((u16)data[2] << 8 | data[1]) & 0x9F1F;
-    format = *(u32*)(cb + 0x7F8);
+    format = cb->dataFormat;
     if (format == 0 || format == 1 || format == 3 || format == 4 || format == 6 || format == 7) {
-        buf[0x29] = *(s32*)(cb + 0x7FC);
-    } else if (*(s32*)(cb + 0x7FC) != 0) {
+        buf[0x29] = cb->status;
+    } else if (cb->status != 0) {
         buf[0x29] = -4;
     }
-    buf[0x28] = cb[0x801];
-    *(u32*)(cb + 0x788) = (data[1] >> 7) & 1;
+    buf[0x28] = cb->extType;
+    cb->extDisconnected = (data[1] >> 7) & 1;
     {
         s16 a = data[3] << 2;
         a &= ~3;
-        *(s16*)(buf + 2) = (s16)(a | ((data[1] >> 5) & 3)) - *(s16*)(cb + 0x7B4);
+        *(s16*)(buf + 2) = (s16)(a | ((data[1] >> 5) & 3)) - cb->accX0g;
     }
     {
         s16 b = data[4] << 2;
         b &= ~3;
-        *(s16*)(buf + 4) = (s16)(b | (s16)((data[2] >> 4) & 2)) - *(s16*)(cb + 0x7B6);
+        *(s16*)(buf + 4) = (s16)(b | (s16)((data[2] >> 4) & 2)) - cb->accY0g;
     }
     {
         s16 c = data[5] << 2;
         c &= ~3;
-        *(s16*)(buf + 6) = (s16)(c | (s16)((data[2] >> 5) & 2)) - *(s16*)(cb + 0x7B8);
+        *(s16*)(buf + 6) = (s16)(c | (s16)((data[2] >> 5) & 2)) - cb->accZ0g;
     }
     memcpy(lbl_803928E8, data + 6, 0x10);
     WPADiDecode(chan, data + 6, 0x10, 0);
-    if (*(s32*)(cb + 0x780) != 0) {
-        if (cb[0x801] == 1) {
-            fs = (WPADFSStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
+    if (cb->UNK_0x780 != 0) {
+        if (cb->extType == 1) {
+            fs = (WPADFSStatus*)cb->rxBufs[cb->rxBufIndex];
             fs->fsStickX = data[6];
             fs->fsStickY = data[7];
-            fs->fsAccX = (s16)((s16)((s16)((s16)(data[8] << 2) & ~3) | ((data[11] >> 2) & 3)) - *(s16*)(cb + 0x7ce));
-            fs->fsAccY = (s16)((s16)((s16)((s16)(data[9] << 2) & ~3) | ((data[11] >> 4) & 3)) - *(s16*)(cb + 0x7d0));
-            fs->fsAccZ = (s16)((s16)((s16)((s16)(data[10] << 2) & ~3) | (data[11] >> 6)) - *(s16*)(cb + 0x7d2));
+            fs->fsAccX = (s16)((s16)((s16)((s16)(data[8] << 2) & ~3) | ((s16)(data[11] >> 2) & 3)) - cb->extCalib.fs.accX0g);
+            fs->fsAccY = (s16)((s16)((s16)((s16)(data[9] << 2) & ~3) | ((s16)(data[11] >> 4) & 3)) - cb->extCalib.fs.accY0g);
+            fs->fsAccZ = (s16)((s16)((s16)((s16)(data[10] << 2) & ~3) | (data[11] >> 6)) - cb->extCalib.fs.accZ0g);
             fs->button |= ((~data[11]) & 3) << 13;
-            if (cb[0x851] == 0) {
-                cb[0x851] = 1;
-                *(s16*)(cb + 0x7C2) = fs->fsStickX;
-                *(s16*)(cb + 0x7C8) = fs->fsStickY;
+            if (cb->UNK_0x851 == 0) {
+                cb->UNK_0x851 = 1;
+                cb->extCalib.fs.stickXCenter = fs->fsStickX;
+                cb->extCalib.fs.stickYCenter = fs->fsStickY;
             }
-            x = (u8)fs->fsStickX - (u8)*(s16*)(cb + 0x7C2);
-            y = (u8)fs->fsStickY - (u8)*(s16*)(cb + 0x7C8);
+            x = (u8)fs->fsStickX - (u8)cb->extCalib.fs.stickXCenter;
+            y = (u8)fs->fsStickY - (u8)cb->extCalib.fs.stickYCenter;
             if (x < -128) fs->fsStickX = -128;
             else if (x > 127) fs->fsStickX = 127;
             else fs->fsStickX = x;
             if (y < -128) fs->fsStickY = -128;
             else if (y > 127) fs->fsStickY = 127;
             else fs->fsStickY = y;
-        } else if (cb[0x801] == 2) {
-            switch (cb[0x802]) {
+        } else if (cb->extType == 2) {
+            switch (cb->UNK_0x802) {
             case 1:
-                cl = (WPADCLStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
-                cl->clLStickX = (data[6] & 63) << 4;
-                cl->clLStickY = (data[7] & 63) << 4;
-                v = (data[8] >> 7) | ((data[7] >> 5) & 6) | ((data[6] >> 3) & 24);
+                cl = (WPADCLStatus*)cb->rxBufs[cb->rxBufIndex];
+                cl->clLStickX = (s16)((data[6] & 63) << 4) - 512;
+                cl->clLStickY = (s16)((data[7] & 63) << 4) - 512;
+                v = (data[8] >> 7) | (((s16)(data[6] >> 3) & 24) | ((s16)(data[7] >> 5) & 6));
                 v <<= 5;
                 cl->clRStickX = v - 512;
                 v = (data[8] & 31) << 5;
                 cl->clRStickY = v - 512;
-                cl->clTriggerL = (((data[8] >> 2) & 24) | (data[9] >> 5)) << 3;
+                cl->clTriggerL = (((s16)(data[8] >> 2) & 24) | (data[9] >> 5)) << 3;
                 cl->clTriggerR = (data[9] & 31) << 3;
                 cl->clButton = ((data[10] << 8) | data[11]) ^ 0xFFFF;
                 break;
             case 2:
-                cl = (WPADCLStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
-                v = data[6] << 2;
-                v &= ~3;
-                v |= (data[10] >> 0) & 3;
-                cl->clLStickX = v - 512;
+                cl = (WPADCLStatus*)cb->rxBufs[cb->rxBufIndex];
+                cl->clLStickX = (s16)((s16)((s16)(data[6] << 2) & ~3) | ((data[10] >> 0) & 3)) - 512;
                 v = data[7] << 2;
                 v &= ~3;
-                v |= (data[10] >> 2) & 3;
+                v |= (s16)(data[10] >> 2) & 3;
                 cl->clRStickX = v - 512;
                 v = data[8] << 2;
                 v &= ~3;
-                v |= (data[10] >> 4) & 3;
+                v |= (s16)(data[10] >> 4) & 3;
                 cl->clLStickY = v - 512;
                 v = data[9] << 2;
                 v &= ~3;
@@ -6479,7 +6501,7 @@ void fn_80066634(s32 chan, u8* data)
                 cl->clButton = ((data[13] << 8) | data[14]) ^ 0xFFFF;
                 break;
             case 3:
-                cl = (WPADCLStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
+                cl = (WPADCLStatus*)cb->rxBufs[cb->rxBufIndex];
                 v = (s16)data[6];
                 v <<= 2;
                 cl->clLStickX = v - 512;
@@ -6497,33 +6519,33 @@ void fn_80066634(s32 chan, u8* data)
                 cl->clButton = ((data[12] << 8) | data[13]) ^ 0xFFFF;
                 break;
             }
-            if (cb[0x851] == 0) {
-                cb[0x851] = 1;
-                *(s16*)(cb + 0x7C2) = cl->clLStickX;
-                *(s16*)(cb + 0x7C8) = cl->clLStickY;
-                *(s16*)(cb + 0x7CE) = cl->clRStickX;
-                *(s16*)(cb + 0x7D4) = cl->clRStickY;
-                cb[0x7DA] = cl->clTriggerL;
-                cb[0x7DB] = cl->clTriggerR;
+            if (cb->UNK_0x851 == 0) {
+                cb->UNK_0x851 = 1;
+                cb->extCalib.cl.lStickXCenter = cl->clLStickX;
+                cb->extCalib.cl.lStickYCenter = cl->clLStickY;
+                cb->extCalib.cl.rStickXCenter = cl->clRStickX;
+                cb->extCalib.cl.rStickYCenter = cl->clRStickY;
+                cb->extCalib.cl.triggerLZero = cl->clTriggerL;
+                cb->extCalib.cl.triggerRZero = cl->clTriggerR;
             }
-            x = cl->clLStickX - *(s16*)(cb + 0x7c2);
-            y = cl->clLStickY - *(s16*)(cb + 0x7c8);
+            x = cl->clLStickX - cb->extCalib.cl.lStickXCenter;
+            y = cl->clLStickY - cb->extCalib.cl.lStickYCenter;
             if (x < -1024) cl->clLStickX = -1024;
             else if (x > 1023) cl->clLStickX = 1023;
             else cl->clLStickX = x;
             if (y < -1024) cl->clLStickY = -1024;
             else if (y > 1023) cl->clLStickY = 1023;
             else cl->clLStickY = y;
-            x = cl->clRStickX - *(s16*)(cb + 0x7ce);
-            y = cl->clRStickY - *(s16*)(cb + 0x7d4);
+            x = cl->clRStickX - cb->extCalib.cl.rStickXCenter;
+            y = cl->clRStickY - cb->extCalib.cl.rStickYCenter;
             if (x < -1024) cl->clRStickX = -1024;
             else if (x > 1023) cl->clRStickX = 1023;
             else cl->clRStickX = x;
             if (y < -1024) cl->clRStickY = -1024;
             else if (y > 1023) cl->clRStickY = 1023;
             else cl->clRStickY = y;
-            x = cl->clTriggerL - cb[0x7DA];
-            y = cl->clTriggerR - cb[0x7DB];
+            x = cl->clTriggerL - cb->extCalib.cl.triggerLZero;
+            y = cl->clTriggerR - cb->extCalib.cl.triggerRZero;
             if (x < 0) cl->clTriggerL = 0;
             else cl->clTriggerL = x;
             if (y < 0) cl->clTriggerR = 0;
@@ -6534,7 +6556,7 @@ void fn_80066634(s32 chan, u8* data)
         }
     }
     enabled = OSDisableInterrupts();
-    cb[0x806] = __cntlzw(cb[0x806]) >> 5;
+    cb->rxBufIndex = !cb->rxBufIndex;
     OSRestoreInterrupts(enabled);
 }
 
