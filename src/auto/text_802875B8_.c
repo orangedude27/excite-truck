@@ -719,7 +719,7 @@ void fn_802882A0(void) {
 void fn_802882EC(void) {
     extern u8 *fn_801EA9CC(s32);
     extern f32 PSVECDotProduct(void *, void *);
-    extern double fn_8002F234(double);
+    extern double fn_8002F234(double); /* sqrt */
     extern f32 fn_801EE0D0(void *, s32);
     extern f32 lbl_80564264, lbl_80564260;
     extern f32 lbl_80558DC4[];
@@ -727,13 +727,21 @@ void fn_802882EC(void) {
      * record base at +0, record count at +4, update flag at +8, 0x160-byte
      * records).  For every CarMgr car it takes the car's live physics state
      * (CarMgrEntry+8) and its render object (gCarRenderObjects, by slot) and
-     * copies into the record: the render object's 9-word identity block (+4)
-     * and its world position (+0x28), the velocity vector (+0x70) and that
-     * vector normalized (zero when its squared length is under the float
-     * epsilon), a set of physics scalars, the four wheel records and a word of
-     * the render object (+0x3EC).  The record's flag word at +0x68 gets bit 0
-     * from the car's active byte, bit 1 when all four wheels report contact and
-     * bits 2 and 3 from the physics state's flag word at +0x6E. */
+     * writes one record:
+     *   0x00  the render object's 9-word identity block (its +0x04)
+     *   0x24  the render object's world position (its +0x28), as three words
+     *   0x30  a flag short of the physics state (+0x30)
+     *   0x34  velocity (state +0x70), and its normalized copy at 0x40 - zero
+     *         when the squared length is under the float epsilon
+     *   0x4C  physics scalars: state +0x2D4, +0x64, +0x38, +0x28C, +0x298,
+     *         +0x29C and +0x2D8
+     *   0x68  flags: 1 car in play, 2 all four wheels in contact, 4 and 8 from
+     *         bits 6 and 5 of the state's flag word at +0x6E
+     *   0x6C  a word of the render object (+0x3EC)
+     *   0x70  four 0x3C-byte wheel records: the wheel's 3x3 orientation and
+     *         position, its contact byte and word, and the elevation of the
+     *         ground object the render object keeps for that wheel (+0x4D4)
+     * The pool's update flag is cleared while the records are rewritten. */
     #define ZERO_F        lbl_80564264 /* 0.0f */
     #define ONE_F         lbl_80564260 /* 1.0f */
     #define FLOAT_EPSILON lbl_80558DC4[0] /* "too small to divide by" */
