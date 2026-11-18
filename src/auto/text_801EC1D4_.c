@@ -7,9 +7,6 @@
 typedef struct { float values[12]; } PartPose;
 typedef struct { float rot[9]; } PartPoseRot;
 typedef struct { float pos[3]; } PartPosePos;
-typedef PartPose Unk_801ECFE0;      /* the same three, under the names */
-typedef PartPoseRot Unk_801ECFE0Head;   /* this unit was first written with */
-typedef PartPosePos Unk_801ECFE0Tail;
 extern void fn_802C70AC(int, void *, int, int);
 extern int fn_802C7A34(int, void *, int, float);
 extern float *fn_802C86DC();
