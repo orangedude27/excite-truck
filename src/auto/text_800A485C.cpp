@@ -10673,8 +10673,10 @@ extern "C" s32 fn_800B5988(void *arg0) {
             slot = (u8 *)arg0 + 0x165C;
             for (i = 0; i < 4; i++, slot += 0x248) {
                 r = fn_800AAEFC((s32)arg0, slot);
-                if (r == 0) continue;
-                goto done;
+                if (r == 0) {
+                } else {
+                    goto done;
+                }
             }
             r = 0;
         }
@@ -21501,7 +21503,7 @@ extern "C" const char *fn_800D3260(s32 arg0, s32 arg1, const char *arg2, s32 arg
     s32 count = 0;
     s32 ch;
     u32 base = (u32)lbl_8031EBA0;
-    if (!arg2) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x2E9, (const char *)(base + 0x54));
+    if (!arg2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x2E9, (const char *)(base + 0x54));
     if (arg3 <= 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x2EA, (const char *)(base + 0x7C));
     base = (u32)lbl_802F47D8;
     goto cond;
@@ -21983,10 +21985,10 @@ extern "C" s32 fn_800D3F94(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     register const char *base = lbl_8031EC50;
     s32 result;
     if (arg0 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(s32)base, 0x2D3, base + 0x6C);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x2D3, base + 0x6C);
     }
     if (arg2 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(s32)base, 0x2D4, base + 0x1B4);
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x2D4, base + 0x1B4);
     }
     if (*(s32 *)arg0 != 0) {
         lbl_8055DDD8 = (u8 (*)(const char *))fn_800D3838;
@@ -22499,22 +22501,23 @@ extern "C" void* fn_800D55B0(void *self, s32 shouldDelete) {
     return self;
 }
 #pragma pop
-extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    u32 end;
-    u32 node;
-    node = *(u32 *)((u8 *)arg0 + 8);
-    end = (u32)arg0 + 8;
-    while (node != end) {
-        if (node == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23D, lbl_8031F480);
-        }
-        u32 next = node + 8;
-        if (node == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23D, lbl_8031F480);
-        }
-        s32 result = ((s32 (*)(long, long, long, long, long))fn_800D51F4)((long)next, (long)(node + 0x24), arg1, arg2, arg3);
+extern "C" s32 fn_800D5640(void *obj, s32 arg1, s32 arg2, s32 arg3) {
+    u8 *base = (u8 *)obj;
+    struct { u32 node; } cursor;
+    cursor.node = *(u32 *)(base + 8);
+    u32 &entry = cursor.node;
+    struct { u32 end; } sentinel;
+    sentinel.end = (u32)base + 8;
+    u32 &end = sentinel.end;
+    while (entry != end) {
+        if (entry == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23d, lbl_8031F480);
+        u32 next = entry + 8;
+        if (entry == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23d, lbl_8031F480);
+        s32 result = ((s32 (*)(long, long, long, long, long))fn_800D51F4)(next, entry + 0x24, arg1, arg2, arg3);
         if (result != 0) return result;
-        node = *(u32 *)node;
+        entry = *(u32 *)entry;
     }
     return 0;
 }
