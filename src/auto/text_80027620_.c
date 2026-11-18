@@ -1,7 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-void qsort(void *arg0, unsigned int arg1, int arg2, int (*arg3)(void *, void *)) {
+#pragma push
+#pragma cplusplus on
+#pragma exceptions on
+extern "C" void qsort(void *arg0, unsigned int arg1, int arg2, int (*arg3)(void *, void *)) {
     register int half;
     register int negsize;
     register unsigned int child;
