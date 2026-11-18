@@ -596,6 +596,20 @@ void fn_802B28BC(int *entries, int count) {
 #undef RandomIntInRange
 }
 
+#pragma push
+#pragma optimization_level 3
+#pragma opt_pointer_aliasing on
+void *fn_802B2934(void *arg0, void **arg1) {
+    void *val = *arg1;
+    int count = ((int *)arg0)[1];
+    void **data = *(void ***)arg0;
+    int next = count + 1;
+    ((int *)arg0)[1] = next;
+    data[count] = val;
+    return &data[count];
+}
+#pragma pop
+
 extern void fn_802B2C34(void (*)(void *), void *);
 extern char lbl_8055CDE0[8], lbl_8055CDE8[4], lbl_8055CDEC[4];
 extern void fn_802C6B44(void *);
@@ -1052,7 +1066,6 @@ void *fn_802B3DA4(void *container, int slot, int index) {
     return result;
 }
 
-#pragma push
 #pragma scheduling invalid_target
 void fn_802B3E00(void *arg0, void *arg1, short arg2, float farg0) {
     extern int lbl_8055F9B8;
@@ -1096,7 +1109,7 @@ void fn_802B3E00(void *arg0, void *arg1, short arg2, float farg0) {
         out->value = arg2; out->weight = farg0;
     } else lbl_8055F9B8 += 1;
 }
-#pragma pop
+#pragma scheduling on
 /* Return the element count at +4 of a container (whose base pointer is at +0). */
 int fn_802B3F0C(void *container) {
     return ((int *)container)[1];
