@@ -1186,7 +1186,7 @@ extern void fn_80206454(void);
 extern void fn_801769EC(void);
 #pragma scheduling on
 void fn_802114C4(void) {
-    float value = lbl_80563404;
+    float value = 1.0f;
     fn_80209190(lbl_8055EEF0, value);
     fn_80206454();
     fn_801769EC();
