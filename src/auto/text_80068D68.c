@@ -14342,10 +14342,15 @@ u8 btm_sec_execute_procedure(void *arg0) {
     if (!(flags & 1)
         && ((dev[0x80] && (dev[0x81] & 8)) || (!dev[0x80] && (dev[0x81] & 1)))) {
         int all;
-        if (*(u32 *)(dev + 0x10) != 0xFFFFFFFF || *(u32 *)(dev + 0x14) != 0xFFFFFFFF)
-            all = 0;
-        else
-            all = 1;
+        int i;
+        for (i = 0; i < 2; i++) {
+            if (*(u32 *)(dev + 0x10 + i * 4) != 0xFFFFFFFF) {
+                all = 0;
+                goto have_all;
+            }
+        }
+        all = 1;
+    have_all:
         if (all == 0) {
             sid = (*(u8 **)dev)[0xF];
             if (sid < 0x2E && !((1 << (sid & 0x1F)) & *(u32 *)(dev + ((sid >> 3) & 0x1C) + 0x10))) {
