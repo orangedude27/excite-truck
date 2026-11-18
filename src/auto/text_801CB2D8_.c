@@ -776,16 +776,15 @@ void **fn_801CC784(void *vec) {
 }
 
 extern void *memset(void *, int, unsigned long);
-#pragma scheduling dynamic
 void *fn_801CC7A0(void *arg0) {
     unsigned char *end;
     unsigned char *p;
     long zero;
     unsigned char *base;
-    zero = 0;
     base = (unsigned char *)arg0;
     end = base + 0x14C;
     p = base + 0x20;
+    zero = 0;
     *(long *)(base + 8) = zero;
     *(long *)(base + 0xC) = zero;
     *(long *)(base + 0x10) = zero;
