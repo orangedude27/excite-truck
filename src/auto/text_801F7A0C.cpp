@@ -2078,10 +2078,12 @@ extern "C" void fn_801FA2C4(void) {
     zero = 0;
     for (; p != 0; p = *(u8 **)(p + 0x68)) {
         s32 close = PSVECSquareDistance(fn_801E8718(0) + 0x24, p + 0x24) < *(f32 *)(p + 0x5c);
+        s32 flag;
+        s32 near;
         s32 state = *(s32 *)(p + 0x60);
         if (state != 2) {
-            s32 flag = 0;
-            s32 near = 0;
+            flag = 0;
+            near = 0;
             if (p[0x59] != 0 && close)
                 near = 1;
             if (near != 0 && p[0x58] == ec40[1])
@@ -2121,17 +2123,23 @@ extern "C" void fn_801FA2C4(void) {
                 fn_801E6CD0(*(void **)(p + 0x30), zero, lbl_80562FF0);
         }
     }
-    u8 *r = *(u8 **)&lbl_8055EC6C;
-    for (; r != 0; r = *(u8 **)(r + 0x14)) {
-        u8 *q = *(u8 **)(r + 0x10);
-        if (q != 0) {
-            if (r[0xc] == ((u8 *)&lbl_8055EC40)[1]) {
-                q[0x4a] = 0;
-                q[0x4b] = 1;
-                q[0x49] = 1;
-            } else {
-                q[0x4a] = 1;
-                q[0x4c] = 0;
+    {
+        u8 *ec = (u8 *)&lbl_8055EC40;
+        u8 kind;
+        u8 *q;
+        u8 *r;
+        for (r = *(u8 **)&lbl_8055EC6C; r != 0; r = *(u8 **)(r + 0x14)) {
+            q = *(u8 **)(r + 0x10);
+            if (q != 0) {
+                kind = r[0xc];
+                if (kind == ec[1]) {
+                    q[0x4a] = 0;
+                    q[0x4b] = 1;
+                    q[0x49] = 1;
+                } else {
+                    q[0x4a] = 1;
+                    q[0x4c] = 0;
+                }
             }
         }
     }
