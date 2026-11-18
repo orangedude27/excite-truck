@@ -912,28 +912,17 @@ __declspec(section ".sdata") extern unsigned char *lbl_8055FF94;
 #pragma scheduling invalid_target
 void *fn_802E6058(void *arg0) {
     unsigned char *entry;
-    register int i;
-    unsigned int unsignedIndex;
-    unsigned int shifted;
-    float zeroValue;
-    float oneValue;
+    int i;
 
-    for (i = 0; i < 0x20; i++) {
-        unsignedIndex = (unsigned int)i;
-        shifted = unsignedIndex << 27;
-        entry = lbl_8055FF94 +
-                (((unsignedIndex >> 31) +
-                  (((shifted - (unsignedIndex >> 31)) << 5) |
-                   ((shifted - (unsignedIndex >> 31)) >> 27))) * 0x2C);
+    for (i = 0; i < 32; i++) {
+        entry = lbl_8055FF94 + (i % 32) * 0x2C;
         if (entry[0x20] == 0) {
             OSDisableInterrupts();
             entry[0x20] = 1;
-            oneValue = lbl_80565128;
-            zeroValue = lbl_8056512C;
             *(void **)(entry + 0x1C) = arg0;
-            *(float *)(entry + 8) = oneValue;
-            *(float *)(entry + 0xC) = zeroValue;
-            *(float *)(entry + 0x14) = oneValue;
+            *(float *)(entry + 8) = 1.0f;
+            *(float *)(entry + 0xC) = 0.0f;
+            *(float *)(entry + 0x14) = 1.0f;
             *(int *)(entry + 0x18) = 0;
             *(float *)(entry + 0x10) = *(float *)((char *)arg0 + 0xA8);
             entry[0x23] = 0;
