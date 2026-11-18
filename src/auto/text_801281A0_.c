@@ -845,7 +845,6 @@ void *fn_80128F94(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     u8 *result;
     u8 *tag;
     volatile u32 *vh;
-    s32 h2;
     s32 h4;
 
     size = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x10);
@@ -860,14 +859,14 @@ void *fn_80128F94(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     *(u32 *)base = 0xAAAA5555;
     *(s32 *)(base + 4) = arg3;
     vh = header;
-    tag = (u8 *)(vh[1] + vh[2]) + size;
+    tag = (u8 *)(vh[1] + vh[2]);
+    tag += size;
     *(u32 *)(tag + 0x10) = 0xFEEDFACE;
     *(s32 *)(tag + 0x14) = size;
     header[2] = header[2] + total;
     memset(result, 0xE3, size);
-    h2 = (s32)header[2];
-    h4 = (s32)header[4];
-    if (h2 > h4) header[4] = header[2];
+    h4 = (s32)vh[4];
+    header[4] = ((s32)header[2] > h4) ? header[2] : h4;
     return result;
 }
 
