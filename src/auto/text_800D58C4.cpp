@@ -1259,6 +1259,8 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 }
 
 extern "C" void fn_800D6CA0(s32, s32);
+#pragma push
+#pragma opt_common_subs off
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
@@ -1306,7 +1308,7 @@ extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
         n1 = n1->next;
     }
 }
-
+#pragma pop
 extern "C" void* __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void*, const void*);
 extern "C" void* __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4hbm3lyt11ResBlockSet(void*, const void*, const void*);
 extern "C" void* __ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4hbm3lyt11ResBlockSet(void*, const void*, const void*);
@@ -2679,13 +2681,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                               channelColor[2] = alphaColor[2];
                               channelColor[3] = alphaColor[3];
                               ((int (*)(int, u8 *))GXSetChanMatColor_Internal)(4, &channelColor[0]);
-                            if (var_r25 != 0) {
-                                var_r25 = 0;
-                                goto alpha_done;
-                            }
-                            if ((u32)((u32)sp30 + 0x10000) == 0xFFFFU) goto alpha_done;
-                            var_r25 = 1;
-                        alpha_done:;
+                                                          var_r25 = (var_r25 != 0) || (((u32)((u32)sp30 + 0x10000)) != 0xFFFFU);
                           }
                           var_r24 = 0;
                           texMatrices[0] = 0;
