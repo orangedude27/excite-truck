@@ -473,34 +473,41 @@ extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(bool hasColor, unsigned 
 }
 
 #pragma scheduling 750
-extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const void *pos_, const void *size_, unsigned char count, const void *tex_, const void *col_) {
-    const float *pos = (const float *)pos_;
-    const float *size = (const float *)size_;
+extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const void *posRaw, const void *sizeRaw, unsigned char texCoordCount, const void *texCoords, const void *colors) {
+    /* nw4r::lyt::detail::DrawQuad: send an axis-aligned quad (near corner pos,
+       extent size) to the GX FIFO as GX_QUADS in vertex format 0 (see
+       SetVertexFormat).  Each corner gets its position, the corner's color when
+       colors is not NULL, and texCoordCount texture coordinate sets read from
+       texCoords[set][corner].  The corners go out lower-left, lower-right,
+       upper-right, upper-left, and colors[] is read 0, 1, 3, 2 so that it lines
+       up with the texcoord corners. */
+    const nw4r::math::VEC2 *pos = (const nw4r::math::VEC2 *)posRaw;
+    const nw4r::lyt::Size *size = (const nw4r::lyt::Size *)sizeRaw;
     int i;
     f32 x0, y0;
-    GXBegin((GXPrimitive)0x80, (GXVtxFmt)0, (u16)4);
-    x0 = pos[0];
-    y0 = pos[1];
+    GXBegin(GX_QUADS, GX_VTXFMT0, (u16)4);
+    x0 = pos->x;
+    y0 = pos->y;
     GXPosition2f32(x0, y0);
-    if (col_ != 0) GXColor1u32(((const u32 *)col_)[0]);
-    for (i = 0; i < count; i++)
-        GXTexCoord2f32(((const nw4hbm::math::VEC2 (*)[4])tex_)[i][0].x, ((const nw4hbm::math::VEC2 (*)[4])tex_)[i][0].y);
-    x0 = pos[0] + size[0];
-    y0 = pos[1];
+    if (colors != 0) GXColor1u32(((const u32 *)colors)[0]);
+    for (i = 0; i < texCoordCount; i++)
+        GXTexCoord2f32(((const nw4r::math::VEC2 (*)[4])texCoords)[i][0].x, ((const nw4r::math::VEC2 (*)[4])texCoords)[i][0].y);
+    x0 = pos->x + size->x;
+    y0 = pos->y;
     GXPosition2f32(x0, y0);
-    if (col_ != 0) GXColor1u32(((const u32 *)col_)[1]);
-    for (i = 0; i < count; i++)
-        GXTexCoord2f32(((const nw4hbm::math::VEC2 (*)[4])tex_)[i][1].x, ((const nw4hbm::math::VEC2 (*)[4])tex_)[i][1].y);
-    GXPosition2f32(pos[0] + size[0], pos[1] + size[1]);
-    if (col_ != 0) GXColor1u32(((const u32 *)col_)[3]);
-    for (i = 0; i < count; i++)
-        GXTexCoord2f32(((const nw4hbm::math::VEC2 (*)[4])tex_)[i][3].x, ((const nw4hbm::math::VEC2 (*)[4])tex_)[i][3].y);
-    x0 = pos[0];
-    y0 = pos[1] + size[1];
+    if (colors != 0) GXColor1u32(((const u32 *)colors)[1]);
+    for (i = 0; i < texCoordCount; i++)
+        GXTexCoord2f32(((const nw4r::math::VEC2 (*)[4])texCoords)[i][1].x, ((const nw4r::math::VEC2 (*)[4])texCoords)[i][1].y);
+    GXPosition2f32(pos->x + size->x, pos->y + size->y);
+    if (colors != 0) GXColor1u32(((const u32 *)colors)[3]);
+    for (i = 0; i < texCoordCount; i++)
+        GXTexCoord2f32(((const nw4r::math::VEC2 (*)[4])texCoords)[i][3].x, ((const nw4r::math::VEC2 (*)[4])texCoords)[i][3].y);
+    x0 = pos->x;
+    y0 = pos->y + size->y;
     GXPosition2f32(x0, y0);
-    if (col_ != 0) GXColor1u32(((const u32 *)col_)[2]);
-    for (i = 0; i < count; i++)
-        GXTexCoord2f32(((const nw4hbm::math::VEC2 (*)[4])tex_)[i][2].x, ((const nw4hbm::math::VEC2 (*)[4])tex_)[i][2].y);
+    if (colors != 0) GXColor1u32(((const u32 *)colors)[2]);
+    for (i = 0; i < texCoordCount; i++)
+        GXTexCoord2f32(((const nw4r::math::VEC2 (*)[4])texCoords)[i][2].x, ((const nw4r::math::VEC2 (*)[4])texCoords)[i][2].y);
 }
 #pragma scheduling reset
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const void*, const void*, u8, const void*, const void*, u8);
@@ -2188,9 +2195,9 @@ extern "C" s32 fn_800D938C(void* arg0) {
     u32 mid = (bits >> 0x12) & 0x3C;
     u32 scaled = high * 0x14;
     u32 top = (bits >> 0x17) & 0x1E0;
-    u32 low = (bits >> 0x06) & 4;
     s32 past = base + (mid + top);
-    return (scaled + low) + past;
+    u32 low = (bits >> 0x06) & 4;
+    return past + (scaled + low);
 }
 
 extern "C" s32 fn_800D93BC(void *arg0) {
