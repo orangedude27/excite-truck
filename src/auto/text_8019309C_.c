@@ -824,17 +824,6 @@ void fn_801945F8(void *driver) {
 }
 
 extern float *fn_8013A604(void *aiExceptionConfig, float lon); /* AI params covering lon, or the defaults */
-
-/* Clamped linear interpolation of one component from prev to cur. */
-#pragma dont_inline off
-static inline float fn_80194624_lerp(const float *prev, const float *cur, int i, float now, float then) {
-    float q = (now - then) / cur[0];
-    float c = lbl_80562140;
-    c = (c < q) ? c : q;
-    c = (c > lbl_80562144) ? c : lbl_80562144;
-    return prev[i] + c * (cur[i] - prev[i]);
-}
-#pragma dont_inline on
 void fn_80194624(void *arg0) {
     char *p = (char *)arg0;
     void *r = fn_8013A604((void **)(*(char **)(p + 0x2C8) + 0x40), *(float *)(p + 0x280));
