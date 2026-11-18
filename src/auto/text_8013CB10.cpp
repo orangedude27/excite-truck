@@ -3051,14 +3051,6 @@ extern "C" u8 *fn_801421C0(u8 *state) {
 extern "C" f32 fn_8013CB3C(void);
 extern "C" u8 lbl_8042FB3C[];
 #pragma scheduling on
-extern "C" f64 lbl_805614D8;
-extern "C" u8 lbl_8055E1BC;
-static inline f32 conv_s32_f32(s32 v) {
-    union { u32 w[2]; f64 d; } c;
-    c.w[0] = 0x43300000u;
-    c.w[1] = (u32)v ^ 0x80000000u;
-    return (f32)(c.d - lbl_805614D8);
-}
 extern "C" void fn_801421D8(void *arg0, void *arg1) {
     u8 *a = (u8 *)arg0;
     u8 *b = (u8 *)arg1;
