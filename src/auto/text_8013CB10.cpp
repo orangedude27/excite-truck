@@ -4468,48 +4468,58 @@ extern "C" void fn_80147BD0(s32, s32, s32, s32, s32, f32);
 #pragma push
 #pragma optimize level=4
 #pragma scheduling invalid_target
-extern "C" void fn_8013FAC4(void *arg0, int arg1, void *arg2) {
-    extern char lbl_8032C978[];
-    extern char lbl_8032C988[];
+/* One stage of the zone HUD draw pass: draw the "gate_star_art" sprite of the
+ * gate record arg2.  Nothing is drawn while the record is switched off or the
+ * HUD's own test on arg1 still holds.  Inside the record's timing window
+ * (+0xC8 long, starting at +0xCC) the sprite grows in over the window's second
+ * half; outside it, it is drawn at full size.  Its position is rewound by half
+ * its size and scaled before the four corners are handed to the drawer. */
+extern "C" void fn_8013FAC4(void *hud, int arg1, void *arg2) {
+    extern char lbl_8032C978[]; /* "gate_star_art" */
+    extern char lbl_8032C988[]; /* "next_gate" */
     extern void fn_801476C4();
-    struct Pair { u32 a; u32 b; };
-    struct Copy { u32 i0; Pair pair; u32 i3; f32 f0; f32 f1; f32 f2; f32 f3; f32 f4; f32 f5; };
-    register u8 *dataObj;
-    f32 delta, scale, factor;
-    s32 active;
+    /* The sprite record the art carries: the screen point at +4/+8 (floats to
+     * fn_8013CB90, copied here as words), a mode word, the size at +0x10/+0x14
+     * and the four parameters the corners are drawn with from +0x18. */
+    struct Pair { u32 xBits; u32 yBits; };
+    struct Sprite { u32 kind; Pair position; u32 mode; f32 dx, dy; f32 p18, p1C, p20, p24; };
+    register u8 *gate;
+    f32 elapsed, scale, growth;
+    s32 inWindow;
     s32 enabled;
     void *result;
-    Copy data;
+    Sprite sprite;
     enabled = *(s32 *)((u8 *)arg2 + 0x104);
-    dataObj = (u8 *)arg2;
+    gate = (u8 *)arg2;
     if (enabled == 0) return;
-    result = ((V9_8013FAC4 *)arg0)->v9(arg1);
+    result = ((V9_8013FAC4 *)hud)->v9(arg1);
     if (result != 0) return;
-    delta = fn_8001DAE8(dataObj + 0xC8) - *(f32 *)(dataObj + 0xCC);
-    active = 0;
-    if (delta >= lbl_805614A4) {
-        if (delta < *(f32 *)(dataObj + 0xC8)) active = 1;
+    elapsed = fn_8001DAE8(gate + 0xC8) - *(f32 *)(gate + 0xCC);
+    inWindow = 0;
+    if (elapsed >= lbl_805614A4) { /* 0.0 */
+        if (elapsed < *(f32 *)(gate + 0xC8)) inWindow = 1;
     }
-    if (active != 0) {
-        delta = (fn_8001DAF0((f32 *)(dataObj + 0xC8)) - lbl_80561498) / lbl_80561498;
-        factor = lbl_805614AC;
-        factor = factor < delta ? factor : delta;
-        factor = factor > lbl_805614A4 ? factor : lbl_805614A4;
-        scale = lbl_805614A4 + factor * lbl_805614AC;
+    if (inWindow != 0) {
+        /* Progress past the window's half way point, kept in 0..1. */
+        elapsed = (fn_8001DAF0((f32 *)(gate + 0xC8)) - lbl_80561498) / lbl_80561498; /* 0.5 */
+        growth = lbl_805614AC; /* 1.0 */
+        growth = growth < elapsed ? growth : elapsed;
+        growth = growth > lbl_805614A4 ? growth : lbl_805614A4;
+        scale = lbl_805614A4 + growth * lbl_805614AC;
     } else scale = lbl_805614AC;
     {
-        void *obj = *(void **)((u8 *)arg0 + 0x54);
-        result = ((V10_8013FAC4 *)obj)->v10(lbl_8032C978);
+        void *scene = *(void **)((u8 *)hud + 0x54);
+        result = ((V10_8013FAC4 *)scene)->v10(lbl_8032C978);
     }
     if (result != 0) {
-        data = *(Copy *)result;
-        fn_8013CB90(&data);
-        fn_80147EE0(&data, scale);
-        fn_801476D8(&data, (void *)-1, *(s32 *)((u8 *)arg0 + 0xAC));
+        sprite = *(Sprite *)result;
+        fn_8013CB90(&sprite);
+        fn_80147EE0(&sprite, scale);
+        fn_801476D8(&sprite, (void *)-1, *(s32 *)((u8 *)hud + 0xAC));
     }
     {
-        void *obj = *(void **)((u8 *)arg0 + 0x54);
-        ((VC_8013FAC4 *)obj)->vC(lbl_8032C988);
+        void *scene = *(void **)((u8 *)hud + 0x54);
+        ((VC_8013FAC4 *)scene)->vC(lbl_8032C988);
     }
     fn_801476C4();
 }
