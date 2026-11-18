@@ -72,7 +72,13 @@ extern s32 fn_8002F6AC(s32, void *(*)(void *, s32));
 extern void *fn_80287C80(void *, s32);
 extern void fn_802E317C(const char *, ...);
 extern const char lbl_80348A4C[];
-typedef struct Vec3i_80287F90 { s32 x, y, z; } Vec3i_80287F90;
+#pragma cplusplus on
+struct Vec3i_80287F90 {
+    s32 x, y, z;
+    Vec3i_80287F90() {}
+    Vec3i_80287F90(const Vec3i_80287F90 &o) : x(o.x), y(o.y), z(o.z) {}
+};
+#pragma cplusplus reset
 extern s32 fn_801E7DF0(s32);
 extern void fn_8028777C(void);
 extern void fn_80288218(s32);
