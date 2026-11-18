@@ -90,100 +90,112 @@ void fn_802C32B8(int, int, unsigned int);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma use_lmw_stmw off
-void fn_802DAE64(int arg0, int arg1, char *arg2)
+/* Draw a string on the canvas the gx point plotter (fn_802C32B8) is set to,
+   using the font OSInitFont loaded: OSGetFontTexture hands out each character's
+   texels in the font sheet - a 512 texel wide I4 image, one nibble per texel -
+   and every non-empty texel is plotted as a gray pixel, the darker ones the
+   denser the glyph.  The line wraps to the left margin when the word ahead no
+   longer fits on the screen.  A negative x is the column to start at, taken as
+   its absolute value; any other x starts at the left margin instead. */
+void fn_802DAE64(int xStart, int yStart, char *str)
 {
-  int sp18;
-  int sp14;
-  int sp10;
-  void *spC;
-  int sp8;
-  register int zero;
-  register int ydst;
+  int texX;        /* where the glyph starts in the sheet, across */
+  int texY;        /* ... and down */
+  int charWidth;   /* how far this character advances the pen */
+  void *texels;    /* the glyph's texels in the font sheet */
+  int width;       /* width OSGetFontWidth reports for one character */
+  register int zeroWidth;   /* width a word's measurement starts from */
+  register int yDst;
   register char *p;
-  register unsigned char *base;
+  register unsigned char *sheet;
   register int row;
   register int col;
   register int y;
   register int x;
-  int w;
+  int wordWidth;
   char *q;
   int tx;
   int ty;
-  int typart;
-  int txpart;
-  int idx;
-  unsigned char b;
-  unsigned char nib;
-  unsigned int color;
-  sp18 = 0;
-  y = arg1;
-  sp14 = 0;
-  sp10 = 0;
-  spC = 0;
-  if (arg0 >= 0)
+  int tyPart;
+  int txPart;
+  int texelIndex;
+  unsigned char byte;
+  unsigned char nibble;
+  unsigned int gray;
+  texX = 0;
+  y = yStart;
+  texY = 0;
+  charWidth = 0;
+  texels = 0;
+  if (xStart >= 0)
   {
-    x = 0x46;
+    x = 0x46;      /* left margin of the text area */
   }
   else
   {
-    x = (arg0 < 0) ? (-arg0) : (arg0);
+    x = (xStart < 0) ? (-xStart) : (xStart);
   }
-  zero = 0;
-  p = arg2;
+  zeroWidth = 0;
+  p = str;
   while ((*p) != 0)
   {
+    /* At a space, measure the word that follows it; wrap if it runs off. */
     if ((*p) == 0x20)
     {
-      w = x;
+      wordWidth = x;
       q = p + 1;
       while (((*q) != 0) && ((*q) != 0x20))
       {
-        sp8 = zero;
-        OSGetFontWidth(q, &sp8);
+        width = zeroWidth;
+        OSGetFontWidth(q, &width);
         q++;
-        w += sp8;
+        wordWidth += width;
       }
 
-      if (w > 0x23A)
+      if (wordWidth > 0x23A)   /* right edge of the text area */
       {
         x = 0x46;
-        y += 0x20;
+        y += 0x20;             /* one line down */
         goto next_char;
       }
     }
-    OSGetFontTexture(p, (int *) (&spC), &sp18, &sp14, &sp10);
-    base = spC;
+    OSGetFontTexture(p, (int *) (&texels), &texX, &texY, &charWidth);
+    sheet = texels;
     row = 0;
     do
     {
-      ydst = row + y;
+      yDst = row + y;
       col = 0;
-      while (col < sp10)
+      while (col < charWidth)
       {
-        ty = row + sp14;
-        tx = col + sp18;
-        typart = (ty % 8) * 8;
-        txpart = tx % 8;
-        idx = ((((tx / 8) + (((ty / 8) << 9) / 8)) << 6) + txpart) + typart;
-        b = base[idx / 2];
-        nib = 0xF;
-        nib = b & nib;
+        ty = row + texY;
+        tx = col + texX;
+        /* the texel in the sheet's I4 blocks, which are 8x8 texels over a
+           sheet 512 texels wide: 64 texels (32 bytes) to the block */
+        tyPart = (ty % 8) * 8;
+        txPart = tx % 8;
+        texelIndex = ((((tx / 8) + (((ty / 8) << 9) / 8)) << 6) + txPart) + tyPart;
+        byte = sheet[texelIndex / 2];
+        nibble = 0xF;
+        nibble = byte & nibble;
         if (!(col & 1))
         {
-          nib = (b >> 4) & 0xF;
+          nibble = (byte >> 4) & 0xF;   /* the texel in the byte's high half */
         }
-        if (nib != 0)
+        if (nibble != 0)
         {
-          color = ((((nib * 12) + 16) << 8) & 0xFFFF00) | 0x80;
-          fn_802C32B8(col + x, ydst, (color << 16) | (color & 0xFFFF));
+          /* a gray that grows with the texel's density, with the 16-bit value
+             the plotter uses in both of its halves */
+          gray = ((((nibble * 12) + 16) << 8) & 0xFFFF00) | 0x80;
+          fn_802C32B8(col + x, yDst, (gray << 16) | (gray & 0xFFFF));
         }
         col++;
       }
 
       row++;
     }
-    while (row < 0x18);
-    x += sp10;
+    while (row < 0x18);        /* the font's cell is 24 texels high */
+    x += charWidth;
     next_char:
     p++;
 
