@@ -1175,9 +1175,9 @@ void cbForCancelSync(void) {
 #pragma use_lmw_stmw off
 #pragma dont_inline fn_800356F4
 void fn_800356F4(s32 error, s32 param1, s32 param2) {
+    u8 *info;
     s32 interrupts;
     u32 tick;
-    u8 *info;
 
     /* Record an error entry in the next __ErrorInfo slot and advance the ring index with interrupts disabled. */
     interrupts = OSDisableInterrupts();
