@@ -573,6 +573,7 @@ void fn_801C4B74(void) {
     }
 }
 
+#pragma opt_common_subs off
 void fn_801C4BAC(void) {
     register Unk_80437D88 *state;
     register s32 zero;
@@ -631,7 +632,7 @@ void fn_801C4BAC(void) {
         fn_8017960C(fn_80179630(0));
     }
 }
-
+#pragma opt_common_subs reset
 extern float lbl_8055A958;
 extern void fn_80176A00(s32);
 extern s32 fn_801E8838(void);
@@ -1144,6 +1145,7 @@ extern void fn_802E317C(void *, ...);
 extern struct Unk_80437D88 lbl_80437D88;
 #pragma push
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 s32 fn_801C5B68(char *arg0, s32 arg1) {
     extern char lbl_8055E80C;
     register struct Unk_80437D88 *state = &lbl_80437D88;
@@ -3188,8 +3190,9 @@ s32 fn_801C9708(s32 arg0) {
             arg0 == 0x20 || arg0 == 0x2D) {
             u32 length = strlen(lbl_804380F0);
             if (length < 0xFF) {
-                lbl_804380F0[length] = (char)arg0;
-                *(char*)(length + (u32)lbl_804380F0 + 1) = 0;
+                char *addr = lbl_804380F0;
+                addr[length] = (char)arg0;
+                *(char *)(length + (u32)addr + 1) = 0;
             }
         }
         break;
