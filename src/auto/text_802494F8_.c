@@ -19,9 +19,9 @@ static inline int has_sound_entry(int *key) {
     return find_sound_entry_inline(key) != -1;
 }
 static inline int find_sound_entry_first(int *key) {
-    void *table = lbl_8055F28C;
-    int i = 0;
     int byteOffset = 0;
+    int i = 0;
+    void *table = lbl_8055F28C;
     int count = *(int *)((char *)table + 4);
     for (; i < count; i++) {
         int value = *(int *)(*(char **)table + byteOffset);
