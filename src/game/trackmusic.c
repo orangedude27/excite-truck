@@ -469,6 +469,7 @@ extern "C" void fn_8020FCC4(void) {
 #pragma pop
 
 extern char *strncpy(char *, const char *, unsigned long);
+#pragma dont_inline on
 void fn_8020FDE4(long arg0, const char *arg1, register char *arg2) {
     char *block;
     long remaining;
@@ -481,23 +482,13 @@ void fn_8020FDE4(long arg0, const char *arg1, register char *arg2) {
     strncpy(block + 0x24, arg1, 0x3F);
     dst = block + 4;
     remaining = 0x20;
-    while (1) {
-        remaining--;
-        if (remaining <= 0) {
+    while ((signed char)(value = (unsigned char)*arg2++, *dst++ = value) != 0) {
+        if (--remaining <= 0) {
             dst[-1] = 0;
-            return;
-        }
-        value = (unsigned char)*arg2;
-        arg2++;
-        *dst = value;
-        dst++;
-        if ((signed char)value == 0) {
-            return;
+            break;
         }
     }
 }
-
-#pragma dont_inline on
 /* Resolve the selected track-music entry into the current track id (lbl_8055B658). */
 void fn_8020FE90(void) {
     long resolvedTrack;
@@ -659,35 +650,36 @@ extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct R
     long i;
 
     if (arg0 == 0) return;
-    if (arg3 != 0) {
-        temp_r31 = arg0->v4();
-        i = 0;
-        rec.f0 = arg3->f0;
-        {
-            long f4 = arg3->f4;
-            long f8 = arg3->f8;
-            rec.f4 = f4;
-            rec.f8 = f8;
-        }
-        rec.fC = arg3->fC;
-        rec.f10 = arg3->f10;
-        rec.f14 = arg3->f14;
-        rec.f18 = arg3->f18;
-        do {
-            long step = arg2 + i;
-            if (i == 1) {
-                float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
-                rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
-            } else {
-                rec.f10 = fn_80235EF0(temp_r31, step);
-            }
-            fn_80147940(arg0, &rec, arg1, step);
-            i++;
-            *(float *)&rec.f4 += rec.f10;
-        } while (i < 3);
-    } else {
-        return;
+    if (arg3 != 0) goto body;
+    goto done;
+body:
+    temp_r31 = arg0->v4();
+    i = 0;
+    rec.f0 = arg3->f0;
+    {
+        long f4 = arg3->f4;
+        long f8 = arg3->f8;
+        rec.f4 = f4;
+        rec.f8 = f8;
     }
+    rec.fC = arg3->fC;
+    rec.f10 = arg3->f10;
+    rec.f14 = arg3->f14;
+    rec.f18 = arg3->f18;
+    do {
+        long step = arg2 + i;
+        if (i == 1) {
+            float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
+            rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
+        } else {
+            rec.f10 = fn_80235EF0(temp_r31, step);
+        }
+        fn_80147940(arg0, &rec, arg1, step);
+        i++;
+        *(float *)&rec.f4 += rec.f10;
+    } while (i < 3);
+done:
+    return;
 }
 #pragma cplusplus reset
  
@@ -1000,9 +992,68 @@ void AXFXSetHooks_80210950(void *allocHook, void *freeHook) {
 #undef s_AXFXAlloc
 #undef s_AXFXFree
 
-void fn_8021095C(void) {
+#pragma cplusplus on
+extern void fn_80230B5C(void *);
+extern void fn_802C8638(void *);
+extern void fn_802C974C(float, float, float);
+extern void fn_800109E4(unsigned int, float, float, float, float);
+extern void fn_80011A2C(void);
+extern float fn_80230EF4(long);
+extern float fn_800108C8(char *, float);
+extern void fn_80147230(void *, void *, void *);
+extern void fn_801476C4(void *);
+extern void fn_801473F8(void *, void *, void *, long, long);
+extern void fn_8014784C(void *, void *, void *, long);
+extern void fn_802C9904(void);
+extern unsigned long strlen(const char *);
+extern char lbl_8033C940[];
+extern float lbl_80563400, lbl_80563404, lbl_80563408, lbl_8056340C;
+extern float lbl_80563410, lbl_80563414, lbl_80563418, lbl_8056341C;
+extern float lbl_80563420, lbl_80563424;
+extern double lbl_80563428;
+extern char *lbl_8055B680, *lbl_8055B688, *lbl_8055B690;
+extern char *lbl_8055B698, *lbl_8055B69C, *lbl_8055B6A0;
+extern "C" void fn_8021095C(void) {
+    struct Rec20 {
+        long f0; float f4; float f8; long fC; float f10; long f14; long f18; long f1C;
+    };
+    struct VObj {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual Rec20 *getC(void *); virtual void v10(); virtual Rec20 *get14(void *);
+    };
+    char sp130[0x100];
+    char sp100[0x30];
+    float sp18, sp1C, sp10, sp14, sp8, spC;
+    float f28 = lbl_80563424;
+    unsigned int color;
+    VObj *root;
+    Rec20 *a, *b, *c, *d;
+    if (lbl_8055EEDC != 0) ((void (*)(void))lbl_8055EEDC)();
+    fn_80230B5C(sp100);
+    fn_802C8638(sp100);
+    fn_802C974C(lbl_80563404, lbl_80563408, lbl_8056340C);
+    fn_800109E4(0x7F000000, lbl_80563410, lbl_80563414, lbl_80563418, lbl_8056341C);
+    fn_80011A2C();
+    if (lbl_8055EED4 == 0) { fn_80011A2C(); fn_802C9904(); return; }
+    root = (VObj *)lbl_8055EED4;
+    fn_802101F8((Dummy_802101F8 *)root, (long)(lbl_8033C940 + 0x94), 0,
+        (struct Record_802101F8 *)root->get14(lbl_8033C940 + 0xA0));
+    color = ((unsigned int)(long)(lbl_80563420 * fn_80230EF4(1)) << 24) | 0x00FF0000 | 0x0000FF00;
+    sp18 = lbl_80563400; sp1C = lbl_80563400; sp10 = lbl_80563400; sp14 = lbl_80563400;
+    sp8 = lbl_80563400; spC = lbl_80563400;
+    a = root->getC(lbl_8055B680);
+    b = root->getC(lbl_8055B688);
+    c = root->getC(lbl_8055B690);
+    if (a != 0 && b != 0 && c != 0) {
+        sp18 = b->f4 - a->f4; sp10 = c->f4 - a->f4;
+        sp1C = b->f8 - a->f8; sp14 = c->f8 - a->f8;
+    }
+    d = root->get14(lbl_8033C940 + 0xAC);
+    if (d != 0 && a != 0) { sp8 = d->f4 - a->f4; spC = d->f8 - a->f8; }
+    fn_80011A2C();
+    fn_802C9904();
 }
-
+#pragma cplusplus reset
 extern long fn_8020FEF0(long);
 extern long fn_802100AC(void);
 extern long fn_80012158(void);
