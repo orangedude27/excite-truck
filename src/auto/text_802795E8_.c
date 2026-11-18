@@ -331,8 +331,6 @@ void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
     arg1[0x2B1] = arg0[0x2B5];
 }
 #pragma opt_unroll_loops off
-typedef struct { unsigned char x, y; } PairBytes;
-
 void fn_80279C00(unsigned char *dst, unsigned char *src) {
     unsigned char second, first;
     unsigned char *target = dst + 3;
