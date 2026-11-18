@@ -84,7 +84,7 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
   extern float lbl_805628C8;
   extern float lbl_805628B8;
   extern char lbl_80558DC4[];
-  extern char lbl_802F98D0[];
+  extern long long lbl_802F98D0[];
   extern char lbl_80437D48[];
   extern int lbl_8055E7BC;
   struct 
@@ -111,203 +111,204 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
     {
       if (((float) fabs(arg3[2] - arg4[2])) <= (*((float *) lbl_80558DC4)))
       {
-        found = 0;
-        {
-          int cnt;
-          void **ptr;
-          int i;
-          cnt = lbl_8055E7BC;
-          ptr = (void **) lbl_80437D48;
-          for (i = 0; i < cnt; i++)
-          {
-            void *obj = *ptr;
-            if ((*((int *) (((char *) obj) + 0x1EC))) == 0)
-            {
-              found = ((void **) lbl_80437D48)[i];
-              break;
-            }
-            ptr++;
-          }
-
-        }
-        if (found == 0)
-        {
-          float f1val = *((float *) (((char *) ((void **) lbl_80437D48)[0]) + 0x218));
-          found = ((void **) lbl_80437D48)[0];
-          {
-            int cnt;
-            void **ptr;
-            int j;
-            cnt = lbl_8055E7BC;
-            ptr = (void **) lbl_80437D48;
-            for (j = 0; j < cnt; j++)
-            {
-              void *obj = *ptr;
-              float f0val = *((float *) (((char *) obj) + 0x218));
-              if (f0val <= f1val)
-              {
-                f1val = f0val;
-                found = obj;
-              }
-              ptr++;
-            }
-
-          }
-        }
-        if (found != 0)
-        {
-          *((float *) (((char *) found) + 0x218)) = fn_801C0178();
-          *((int *) (((char *) found) + 0x1EC)) = arg0;
-          *((int *) (((char *) found) + 0x1F0)) = fn_801C0170((void *) arg0);
-          *((int *) (((char *) found) + 0x1F4)) = arg1;
-          *((int *) (((char *) found) + 0x1F8)) = fn_801C0168((void *) ((long) (*((int *) (((char *) found) + 0x1EC)))));
-          fn_801C014C(found, arg2);
-          fn_8001BA68(frame.sp8);
-          fn_801C0124(frame.sp8, arg2, lbl_805628C0);
-          cb = fn_801C00F8(found, 0);
-          if (cb != 0)
-          {
-            if (((unsigned) (((int) fn_801C00F0((void *) cb)) - 0x53500000)) == 0x4852U)
-            {
-              fn_801C00B8((void *) cb, frame.sp8);
-            }
-          }
-          fn_80144B54(frame.sp50, fn_8017EB04(arg0));
-          fn_801BFF64(frame.sp50, frame.sp8);
-          fn_801BFECC(found, frame.sp50);
-          GXInitLightAttnA_801BFEBC(((char *) found) + 0x118, lbl_805628B8, lbl_805628B8, lbl_805628B8);
-          GXInitLightAttnA_801BFEBC(((char *) found) + 0x124, lbl_805628B8, lbl_805628B8, lbl_805628B8);
-          fn_801BFEB4((long) found);
-          fn_801E9DC4();
-          ((void (*)(void *)) fn_801BFEB0)(frame.spE0);
-          ((void (*)(void *)) fn_801BFEB0)(&frame.spE0[5]);
-          ((void (*)(void *)) fn_801BFEB0)(&frame.spE0[10]);
-          ((void (*)(void *)) fn_801BFEB0)(&frame.spE0[15]);
-          {
-            struct Big
-            {
-              long long v[12];
-            } *dst = (struct Big *) frame.sp130;
-            struct Big *src = (struct Big *) lbl_802F98D0;
-            *dst = *src;
-          }
-          fn_8001BA68(frame.sp14);
-          fn_8001BA68(frame.sp20);
-          fn_801BFE7C(frame.sp14, arg3, arg2);
-          fn_801BFE7C(frame.sp20, arg4, arg2);
-          *((int *) (((char *) found) + 0x21C)) = 0;
-          *((int *) (((char *) found) + 0x220)) = 0;
-          *((int *) (((char *) found) + 0x224)) = 1;
-          *((int *) (((char *) found) + 0x228)) = 0;
-          *((int *) (((char *) found) + 0x22C)) = 2;
-          new_var = (char *) found;
-          fn_8017E388(new_var + 0x230, 1, 0);
-          {
-            int a;
-            int b;
-            int c;
-            float cond2;
-            float cond1;
-            a = 1;
-            b = 4;
-            cond2 = frame.sp20[1] - frame.sp14[1];
-            cond1 = frame.sp20[0] - frame.sp14[0];
-            c = 2;
-            if (cond2 > cond1)
-            {
-              b = 1;
-              c = 2;
-              a = 4;
-            }
-            {
-              float f30v = lbl_805628C4;
-              float f31v = lbl_805628C8;
-              int idx = 0;
-              float *p = frame.spE0;
-              do
-              {
-                float var_f3;
-                float var_f2;
-                float var_f1;
-                if (idx & c)
-                {
-                  var_f3 = frame.sp14[2];
-                }
-                else
-                {
-                  var_f3 = frame.sp20[2];
-                }
-                if (idx & b)
-                {
-                  var_f2 = frame.sp14[1];
-                }
-                else
-                {
-                  var_f2 = frame.sp20[1];
-                }
-                if (idx & a)
-                {
-                  var_f1 = frame.sp14[0];
-                }
-                else
-                {
-                  var_f1 = frame.sp20[0];
-                }
-                GXInitLightAttnA_80144B44(frame.sp2C, var_f1, var_f2, var_f3);
-                fn_801BFD34(p, frame.sp2C, frame.sp50);
-                p[3] = f30v;
-                idx++;
-                p[4] = f31v;
-                p += 5;
-              }
-              while (idx < 4);
-            }
-          }
-          fn_8001BA68(frame.sp80);
-          fn_8001BA68(frame.sp8C);
-          fn_8001BA68(frame.sp98);
-          fn_8001BA68(frame.spA4);
-          {
-            float *srcp = frame.spE0;
-            float *dstp = frame.sp80;
-            int idx = 0;
-            do
-            {
-              fn_80144DAC(dstp, srcp);
-              idx++;
-              srcp += 5;
-              dstp += 3;
-            }
-            while (idx < 4);
-          }
-          fn_80144DC8(frame.spB0);
-          fn_801BFB2C(found, frame.spB0, (FV3 *) frame.sp80);
-          ((void (*)(float *, float *, float *)) fn_801BF75C)((float *) (((char *) found) + 0x230), frame.sp50, frame.spB0);
-          {
-            int idx = 0;
-            int *dstp = frame.sp38;
-            int *srcp = arg6;
-            while (idx < arg5)
-            {
-              dstp[0] = *srcp;
-              dstp[1] = fn_801602B4(arg0);
-              srcp++;
-              idx++;
-              dstp[2] = 0;
-              dstp += 3;
-            }
-
-          }
-          fn_801C1CBC(*((int *) (((char *) found) + 0x214)), 4, frame.spE0, 6, frame.sp130, arg5, frame.sp38);
-          {
-            int r26v = fn_801BF754(arg0);
-            int r25v = fn_801602B4(arg0);
-            fn_801C256C(*((int *) (((char *) found) + 0x214)), fn_8017EAFC(arg0), r25v + 0x24, r26v);
-          }
-          return 1;
-        }
+        return 0;
       }
     }
+  }
+  found = 0;
+  {
+    void **ptr;
+    int cnt;
+    int i;
+    cnt = lbl_8055E7BC;
+    ptr = (void **) lbl_80437D48;
+    for (i = 0; i < cnt; ptr++, i++)
+    {
+      void *obj = *ptr;
+      if ((*((int *) (((char *) obj) + 0x1EC))) == 0)
+      {
+        found = ((void **) lbl_80437D48)[i];
+        break;
+      }
+    }
+
+  }
+  if (found == 0)
+  {
+    float f1val;
+    float f0val;
+    found = ((void **) lbl_80437D48)[0];
+    f1val = *((float *) (((char *) found) + 0x218));
+    {
+      void **ptr;
+      int cnt;
+      int j;
+      cnt = lbl_8055E7BC;
+      ptr = (void **) lbl_80437D48;
+      for (j = 0; j < cnt; ptr++, j++)
+      {
+        void *obj = *ptr;
+        f0val = *((float *) (((char *) obj) + 0x218));
+        if (f0val <= f1val)
+        {
+          f1val = f0val;
+          found = obj;
+        }
+      }
+
+    }
+  }
+  if (found != 0)
+  {
+    *((float *) (((char *) found) + 0x218)) = fn_801C0178();
+    *((int *) (((char *) found) + 0x1EC)) = arg0;
+    *((int *) (((char *) found) + 0x1F0)) = fn_801C0170((void *) arg0);
+    *((int *) (((char *) found) + 0x1F4)) = arg1;
+    *((int *) (((char *) found) + 0x1F8)) = fn_801C0168((void *) ((long) (*((int *) (((char *) found) + 0x1EC)))));
+    fn_801C014C(found, arg2);
+    fn_8001BA68(frame.sp8);
+    fn_801C0124(frame.sp8, arg2, lbl_805628C0);
+    cb = fn_801C00F8(found, 0);
+    if (cb != 0)
+    {
+      if (((unsigned) (((int) fn_801C00F0((void *) cb)) - 0x53500000)) == 0x4852U)
+      {
+        fn_801C00B8((void *) cb, frame.sp8);
+      }
+    }
+    fn_80144B54(frame.sp50, fn_8017EB04(arg0));
+    fn_801BFF64(frame.sp50, frame.sp8);
+    fn_801BFECC(found, frame.sp50);
+    GXInitLightAttnA_801BFEBC(((char *) found) + 0x118, lbl_805628B8, lbl_805628B8, lbl_805628B8);
+    GXInitLightAttnA_801BFEBC(((char *) found) + 0x124, lbl_805628B8, lbl_805628B8, lbl_805628B8);
+    fn_801BFEB4((long) found);
+    fn_801E9DC4();
+    ((void (*)(void *)) fn_801BFEB0)(frame.spE0);
+    ((void (*)(void *)) fn_801BFEB0)(&frame.spE0[5]);
+    ((void (*)(void *)) fn_801BFEB0)(&frame.spE0[10]);
+    ((void (*)(void *)) fn_801BFEB0)(&frame.spE0[15]);
+    {
+      struct Big
+      {
+        long long v[12];
+      } *dst = (struct Big *) frame.sp130;
+      struct Big *src = (struct Big *) lbl_802F98D0;
+      *dst = *src;
+    }
+    fn_8001BA68(frame.sp14);
+    fn_8001BA68(frame.sp20);
+    fn_801BFE7C(frame.sp14, arg3, arg2);
+    fn_801BFE7C(frame.sp20, arg4, arg2);
+    *((int *) (((char *) found) + 0x21C)) = 0;
+    *((int *) (((char *) found) + 0x220)) = 0;
+    *((int *) (((char *) found) + 0x224)) = 1;
+    *((int *) (((char *) found) + 0x228)) = 0;
+    *((int *) (((char *) found) + 0x22C)) = 2;
+    new_var = (char *) found;
+    fn_8017E388(new_var + 0x230, 1, 0);
+    {
+      int a;
+      int b;
+      int c;
+      float cond2;
+      float cond1;
+      a = 1;
+      b = 4;
+      cond2 = frame.sp20[1] - frame.sp14[1];
+      cond1 = frame.sp20[0] - frame.sp14[0];
+      c = 2;
+      if (cond2 > cond1)
+      {
+        b = 1;
+        c = 2;
+        a = 4;
+      }
+      {
+        float f30v = lbl_805628C4;
+        float f31v = lbl_805628C8;
+        int idx = 0;
+        float *p = frame.spE0;
+        do
+        {
+          float var_f3;
+          float var_f2;
+          float var_f1;
+          if (idx & c)
+          {
+            var_f3 = frame.sp14[2];
+          }
+          else
+          {
+            var_f3 = frame.sp20[2];
+          }
+          if (idx & b)
+          {
+            var_f2 = frame.sp14[1];
+          }
+          else
+          {
+            var_f2 = frame.sp20[1];
+          }
+          if (idx & a)
+          {
+            var_f1 = frame.sp14[0];
+          }
+          else
+          {
+            var_f1 = frame.sp20[0];
+          }
+          GXInitLightAttnA_80144B44(frame.sp2C, var_f1, var_f2, var_f3);
+          fn_801BFD34(p, frame.sp2C, frame.sp50);
+          p[3] = f30v;
+          idx++;
+          p[4] = f31v;
+          p += 5;
+        }
+        while (idx < 4);
+      }
+    }
+    fn_8001BA68(frame.sp80);
+    fn_8001BA68(frame.sp8C);
+    fn_8001BA68(frame.sp98);
+    fn_8001BA68(frame.spA4);
+    {
+      float *srcp = frame.spE0;
+      float *dstp = frame.sp80;
+      int idx = 0;
+      do
+      {
+        fn_80144DAC(dstp, srcp);
+        idx++;
+        srcp += 5;
+        dstp += 3;
+      }
+      while (idx < 4);
+    }
+    fn_80144DC8(frame.spB0);
+    fn_801BFB2C(found, frame.spB0, (FV3 *) frame.sp80);
+    ((void (*)(float *, float *, float *)) fn_801BF75C)((float *) (((char *) found) + 0x230), frame.sp50, frame.spB0);
+    {
+      int idx = 0;
+      int *dstp = frame.sp38;
+      int *srcp = arg6;
+      while (idx < arg5)
+      {
+        dstp[0] = *srcp;
+        dstp[1] = fn_801602B4(arg0);
+        srcp++;
+        idx++;
+        dstp[2] = 0;
+        dstp += 3;
+      }
+
+    }
+    fn_801C1CBC(*((int *) (((char *) found) + 0x214)), 4, frame.spE0, 6, frame.sp130, arg5, frame.sp38);
+    {
+      int r26v = fn_801BF754(arg0);
+      int r25v = fn_801602B4(arg0);
+      fn_801C256C(*((int *) (((char *) found) + 0x214)), fn_8017EAFC(arg0), r25v + 0x24, r26v);
+    }
+    return 1;
   }
   return 0;
 }
@@ -591,10 +592,12 @@ static inline void inline_transform_vec(float *out, const float *in, const float
 void fn_801BFF64(float *m, const float *in) {
     float tmp[3];
     if (tmp == in) {
-        float m10 = m[3], m11 = m[4], m12 = m[5];
-        float x = in[0], y = in[1], z = in[2];
-        float m00 = m[0], m01 = m[1], m02 = m[2];
-        float m20 = m[6], m21 = m[7], m22 = m[8];
+        float x, y, z;
+        float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+        m10 = m[3]; m11 = m[4]; m12 = m[5];
+        m00 = m[0]; m01 = m[1]; m02 = m[2];
+        m20 = m[6]; m21 = m[7]; m22 = m[8];
+        x = in[0]; y = in[1]; z = in[2];
         tmp[0] = z * m20 + (x * m00 + y * m10);
         tmp[1] = z * m21 + (x * m01 + y * m11);
         tmp[2] = z * m22 + (x * m02 + y * m12);
@@ -789,21 +792,22 @@ void fn_801C02F4(void *arg0) {
     };
     extern float lbl_805628B8, lbl_805628BC, lbl_805628E8, lbl_805628EC;
     extern void fn_8017B164(void *);
+    register void *self = arg0;
     struct Mat43 mat;
     int flag;
 
-    *(int *)((char *)arg0 + 0x1EC) = 0;
     {
         float f = lbl_805628E8;
-        flag = 0;
+        *(int *)((char *)arg0 + 0x1EC) = 0;
         *(float *)((char *)arg0 + 0x218) = f;
+        flag = 0;
     }
     if (flag != 0) {
-        *(int *)((char *)arg0 + 0x1F0) = 0;
+        *(int *)((char *)self + 0x1F0) = 0;
     } else {
-        *(int *)((char *)arg0 + 0x1F0) = -1;
+        *(int *)((char *)self + 0x1F0) = -1;
     }
-    fn_8017B164(arg0);
+    fn_8017B164(self);
 
     mat.m[0][0] = lbl_805628BC;
     mat.m[0][1] = lbl_805628B8;
@@ -818,31 +822,30 @@ void fn_801C02F4(void *arg0) {
     mat.m[3][2] = lbl_805628B8;
     mat.m[3][1] = lbl_805628EC;
 
-    *(int *)((char *)arg0 + 0x1F4) = -1;
-    *(int *)((char *)arg0 + 0x1F8) = 0;
-    *(struct Mat43 *)((char *)arg0 + 0x3C) = mat;
-    ((void (*)(void *))fn_8017A580)(arg0);
+    *(int *)((char *)self + 0x1F4) = -1;
+    *(int *)((char *)self + 0x1F8) = 0;
+    *(struct Mat43 *)((char *)self + 0x3C) = mat;
+    ((void (*)(void *))fn_8017A580)(self);
 
     {
         float f0, f1, f2;
         f2 = lbl_805628B8;
         f1 = lbl_805628E8;
         f0 = lbl_805628BC;
-        *(float *)((char *)arg0 + 0x118) = f2;
-        *(float *)((char *)arg0 + 0x11C) = f2;
-        *(float *)((char *)arg0 + 0x120) = f2;
-        *(float *)((char *)arg0 + 0x124) = f2;
-        *(float *)((char *)arg0 + 0x128) = f2;
-        *(float *)((char *)arg0 + 0x12C) = f2;
-        *(float *)((char *)arg0 + 0x260) = f2;
-        *(float *)((char *)arg0 + 0x264) = f1;
-        *(float *)((char *)arg0 + 0x268) = f2;
-        *(float *)((char *)arg0 + 0x26C) = f2;
-        *(float *)((char *)arg0 + 0x270) = f0;
-        *(float *)((char *)arg0 + 0x274) = f2;
+        *(float *)((char *)self + 0x118) = f2;
+        *(float *)((char *)self + 0x11C) = f2;
+        *(float *)((char *)self + 0x120) = f2;
+        *(float *)((char *)self + 0x124) = f2;
+        *(float *)((char *)self + 0x128) = f2;
+        *(float *)((char *)self + 0x12C) = f2;
+        *(float *)((char *)self + 0x260) = f2;
+        *(float *)((char *)self + 0x264) = f1;
+        *(float *)((char *)self + 0x268) = f2;
+        *(float *)((char *)self + 0x26C) = f2;
+        *(float *)((char *)self + 0x270) = f0;
+        *(float *)((char *)self + 0x274) = f2;
     }
 }
-#pragma opt_propagation reset
 int fn_801C0440(void *sceneLight) {
     // Nonzero if this scene light is in use: +0x1EC holds its owner id (0 when free).
     return *(int *)((char *)sceneLight + 0x1EC) != 0;
@@ -873,7 +876,7 @@ int fn_801C0454(void *arg0) {
     struct {
         float sp8;
         int spC;
-        float tmp10[48];
+        struct Pt tmpPts[16];
         float spD0[3];
         float spDC[3];
         float spE8[3];
@@ -912,9 +915,8 @@ int fn_801C0454(void *arg0) {
                 fn_801C2694(*(int *)((char *)arg0 + 0x214), frame.pts, &frame.spC, frame.spDC, frame.spD0, frame.spF4, frame.spE8);
                 n = frame.spC;
                 for (i = 0; i < n; i++) {
-                    struct Pt v = frame.pts[i];
-                    v.y += lbl_805628F8;
-                    frame.pts[i] = v;
+                    frame.tmpPts[i] = frame.pts[i];
+                    frame.tmpPts[i].y += lbl_805628F8;
                 }
                 fn_80144DC8(&frame.sp100[0]);
                 fn_80144DAC(&frame.sp100[9], &frame.pts[*(int *)((char *)arg0 + 0x21C)].x);
