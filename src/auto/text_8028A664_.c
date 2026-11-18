@@ -878,7 +878,6 @@ __declspec(section ".sdata") extern char lbl_8055C8BC[];
 #pragma cplusplus on
 extern "C" void fn_8028BC18(void);
 void *fn_8028BB68(void *arg0, s32 arg1, f32 farg0) {
-#pragma scheduling invalid_target
     extern char lbl_80348C28[];
     extern f32 lbl_8056432C;
     extern f64 lbl_805643B0;
@@ -890,7 +889,7 @@ void *fn_8028BB68(void *arg0, s32 arg1, f32 farg0) {
         (void *)fn_8012850C(offset + 0x10, lbl_8055C8BC, offset),
         (void *)fn_8028BC18, 0, 0x1C, arg1);
     ratio = lbl_8056432C / farg0;
-    *(s32 *)arg0 = result;
+    *(volatile s32 *)arg0 = result;
     *(s32 *)((u8 *)arg0 + 4) = 0;
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(f32 *)((u8 *)arg0 + 0xC) = farg0;
@@ -1247,12 +1246,13 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
 
 #pragma opt_propagation off
 void *fn_8028C824(void *arg0, s32 arg1) {
+    s32 count = arg1;
     s32 size = arg1 * 0x28;
-    s32 memory = fn_8012850C(size + 0x10, (void *)&lbl_80348C34, size);
-    void *array = ((void *(*)(s32, void *, s32, s32, s32))fn_8002F37C)(memory, (void *)&fn_8028C8BC, 0, 0x28, arg1);
+    s32 memory = fn_8012850C(size + 0x10, lbl_80348C34, size);
+    void *array = ((void *(*)(s32, void *, s32, s32, s32))fn_8002F37C)(memory, (void *)&fn_8028C8BC, 0, 0x28, count);
     ((void **)arg0)[0] = array;
     ((s32 *)arg0)[1] = 0;
-    ((s32 *)arg0)[2] = arg1;
+    ((s32 *)arg0)[2] = count;
     ((s32 *)arg0)[3] = fn_802CAC28((void *)&lbl_80348C40, 0);
     ((f32 *)arg0)[4] = (f32)fn_8002F208(lbl_805643C8);
     return arg0;
