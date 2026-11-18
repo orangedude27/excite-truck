@@ -453,12 +453,12 @@ void fn_8017B81C(void *arg0) {
         (*(float *)((char *)(arg0) + 0x194)) = temp_f12;
         (*(float *)((char *)(arg0) + 0x198)) = temp_f11;
         (*(float *)((char *)(arg0) + 0x19C)) = temp_f10;
-        (*(float *)((char *)(arg0) + 0x130)) = (float) ((*(float *)((char *)(arg0) + 0x130)) + (temp_f25 * lbl_80561BBC));
-        (*(float *)((char *)(arg0) + 0x134)) = (float) ((*(float *)((char *)(arg0) + 0x134)) + (temp_f24 * lbl_80561BBC));
-        (*(float *)((char *)(arg0) + 0x138)) = (float) ((*(float *)((char *)(arg0) + 0x138)) + (temp_f13 * lbl_80561BBC));
-        (*(float *)((char *)(arg0) + 0x13C)) = (float) ((*(float *)((char *)(arg0) + 0x13C)) + (temp_f12 * lbl_80561BBC));
-        (*(float *)((char *)(arg0) + 0x140)) = (float) ((*(float *)((char *)(arg0) + 0x140)) + (temp_f11 * lbl_80561BBC));
-        (*(float *)((char *)(arg0) + 0x144)) = (float) ((*(float *)((char *)(arg0) + 0x144)) + (temp_f10 * lbl_80561BBC));
+        (*(float *)((char *)(arg0) + 0x130)) = (float) ((*(float *)((char *)(arg0) + 0x130)) + (temp_f25 * scale));
+        (*(float *)((char *)(arg0) + 0x134)) = (float) ((*(float *)((char *)(arg0) + 0x134)) + (temp_f24 * scale));
+        (*(float *)((char *)(arg0) + 0x138)) = (float) ((*(float *)((char *)(arg0) + 0x138)) + (temp_f13 * scale));
+        (*(float *)((char *)(arg0) + 0x13C)) = (float) ((*(float *)((char *)(arg0) + 0x13C)) + (temp_f12 * scale));
+        (*(float *)((char *)(arg0) + 0x140)) = (float) ((*(float *)((char *)(arg0) + 0x140)) + (temp_f11 * scale));
+        (*(float *)((char *)(arg0) + 0x144)) = (float) ((*(float *)((char *)(arg0) + 0x144)) + (temp_f10 * scale));
         while (var_r6 < (int) (*(int *)((char *)(arg0) + 0x1E4))) {
             temp_r7 = (*(void **)((char *)(var_r4) + 0x1A4));
             if ((int) (*(int *)((char *)(temp_r7) + 4)) != 0) {
