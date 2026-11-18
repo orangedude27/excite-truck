@@ -28,6 +28,19 @@ void __num2dec(const decform *form, double num, decimal *dec) {
     unsigned char *p;
     unsigned char len;
     short exponent;
+    /* Round the digits __num2dec_internal wrote into `dec` for `num` down to
+       the number of significant digits the format asked for, then make the
+       record ready to print.  The digit just past the last one kept decides:
+       over 5 rounds up, under 5 rounds down, and an exact 5 -- nothing
+       non-zero after it -- rounds the last kept digit up only when that
+       digit is odd, the round-half-to-even rule.  Rounding up carries through
+       the run of 9s before it, and a carry out of the first digit leaves a 1
+       there and bumps the exponent.  The digit count becomes the requested
+       one, so the number is padded out to it with zero digits; the exponent,
+       which counts from the last digit, is moved to count from the first,
+       and every digit is turned into its ASCII code.  A NaN or an infinity,
+       which the internal routine marks in the first digit instead of a
+       value, is left as it is. */
     __num2dec_internal(dec, num);
     if (dec->sig.text[0] > 9) return;
     if (precision > SIGDIGLEN) precision = SIGDIGLEN;
