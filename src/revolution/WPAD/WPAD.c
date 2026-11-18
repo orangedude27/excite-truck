@@ -5042,7 +5042,7 @@ queue_eight:
     {
         u32 addr = 0x04B00033;
         u8 firstByte = 1;
-        u8 secondByte = (u8)arg;
+        u8 secondByte = (u8)arg1;
         WPADCommand* cmd = (WPADCommand*)(frame + 0x90);
         WPADCommand* copy = (WPADCommand*)(frame + 0x60);
         *(u32*)cmd = 0x16;
