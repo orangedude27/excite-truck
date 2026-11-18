@@ -547,7 +547,7 @@ extern const char lbl_8034B0B8[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma processor 750
-/* The 16-bit canvas blit (named by its own error string): blit the rectangle
+/* copy_16_to_16 (its own error string names it this): blit the rectangle
  * (srcLeft,srcTop)-(srcRight,srcBottom) of one 2-byte-pixel canvas onto the
  * destination at (dstLeft,dstTop).  The rectangle is clipped against the
  * destination's clip rectangle first, which moves the source origin along with
