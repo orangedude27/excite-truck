@@ -4906,7 +4906,6 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
     u32 spC, sp8;
     s32 cnt, r, rv;
     u32 prev, rem, clus, sec;
-    u32 masked;
     cnt = *(s32 *)self;
     if (cnt == 0) return 0;
     prev = cnt - 1;
@@ -4957,8 +4956,7 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
         r = 0x11;
         if (sp8 == 0x20) r = rv;
     }
-    masked = (u32)r & (u32)((-r | r) >> 31);
-    rv = (s32)masked;
+    rv = r & ((-r | r) >> 31);
     switch (rv) {
     case 0: goto zero;
     default: goto done;
@@ -10310,8 +10308,8 @@ extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
     #undef PATH_END_INDEX
 }
 #pragma pop
-extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1) {
-    u8 *p = (u8 *)((s32)arg0 + 7);
+static inline s32 fn_800B51FC_decimal(u32 addr, s32 arg1) {
+    u8 *p = (u8 *)(addr + 7);
     u32 digits = 7;
     u32 divisor = 10;
     u32 place = 1;
@@ -10328,6 +10326,9 @@ extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1) {
         place *= 10;
     }
     return 0;
+}
+extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1) {
+    return fn_800B51FC_decimal((u32)arg0, arg1);
 }
 
 extern "C" s32 fn_800A8EA0(void *, u32, void **);
