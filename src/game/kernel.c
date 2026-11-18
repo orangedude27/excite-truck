@@ -226,10 +226,10 @@ int fn_802E1BB4(void *arg0, int arg1) {
     typedef void (*Calc)(void *, int *, int *, int *, int *, int *, int *, int *);
     int sp20, sp1C, sp18, sp14, sp10, spC, sp8;
     int temp;
-    int i;
     char *slot;
     char *dest;
     unsigned char *p;
+    int i;
     (void)arg1;
     ((Calc)fn_802E1A9C)((char *)arg0 + 0x100, &sp20, &sp1C, &sp18, &sp14, &sp10, &spC, &sp8);
     temp = fn_8011FFC4(sp10 + sp14 * *(int *)((char *)arg0 + 0x100) + 0x7F, sp14);
@@ -238,7 +238,7 @@ int fn_802E1BB4(void *arg0, int arg1) {
     p = (unsigned char *)(((unsigned int)temp + 0x7F) & ~0x7F);
     slot = (char *)arg0;
     dest = (char *)arg0;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x100); i++, slot += 0x30, dest += 0x80, p += sp14) {
+    for (i = 0; i < *(int *)((char *)arg0 + 0x100); i++, p += sp14, slot += 0x30, dest += 0x80) {
         if (*(int *)(slot + 0x118) != 0) {
             *(int *)(slot + 0x11C) = (int)p;
             *(int *)(slot + 0x120) = spC;
