@@ -1485,7 +1485,7 @@ void fn_801AC544(void *arg0) {
 #pragma dont_inline reset
 
 #pragma push
-#pragma scheduling 750
+#pragma scheduling invalid_target
 void fn_801ACA48(void *arg0) {
     extern void fn_801ABC28(void *);
     extern float lbl_8056247C, lbl_805624CC, lbl_80562508, lbl_8056250C;
@@ -1508,10 +1508,7 @@ void fn_801ACA48(void *arg0) {
         *(float *)(p + 0x124) = x;
         *(float *)(p + 0x128) = y;
         *(float *)(p + 0x12C) = z;
-        {
-            Vec *out = &cross;
-            PSVECCrossProduct((Vec *)(p + 0x48), (Vec *)(p + 0x1F8), out);
-        }
+        PSVECCrossProduct((Vec *)(p + 0x48), (Vec *)(p + 0x1F8), &cross);
         if (*(float *)(p + 0x4C) < lbl_80562508) {
             float cxx = cross.x;
             float factor = lbl_8056250C;
@@ -1527,7 +1524,7 @@ void fn_801ACA48(void *arg0) {
         *(float *)(p + 0x68) = copyZ;
     }
 }
-
+#pragma pop
 extern float lbl_80558DC4, lbl_8055E460, lbl_805624AC;
 struct Pair_801ACB30 { int a, b; };
 static inline void transform_801ACB30(const float *m, const float *src, float *dst) {
