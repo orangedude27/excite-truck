@@ -1037,11 +1037,13 @@ extern void *fn_80131808(void *);
 extern void *fn_8023512C(void *);
 extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
-#pragma optimization_level 3
+#pragma push
+#pragma optimization_level 4
 void *fn_8016D024(void *a0) {
     char *const base = lbl_803306D0;
     f32 v;
     void *last;
+    void *nfirst;
     fn_802C2914(a0);
     *(void **)((u8 *)a0 + 4) = lbl_80330A90;
     *(void **)((u8 *)a0 + 0x14) = fn_80131808(base + 0x1E0);
@@ -1053,16 +1055,17 @@ void *fn_8016D024(void *a0) {
     *(void **)((u8 *)a0 + 0x5C) = fn_802076A0(base + 0x23C, 1, 0, 0);
     *(void **)((u8 *)a0 + 0x60) = fn_802076A0(base + 0x24C, 1, 0, 0);
     last = fn_802076A0(base + 0x258, 1, 0, 0);
-    v = lbl_80561980;
+    nfirst = *(void **)((u8 *)a0 + 0x4C);
+    v = 0.0f;
     *(void **)((u8 *)a0 + 0x64) = last;
     *(s32 *)((u8 *)a0 + 0x24) = -1;
-    *(s8 *)((u8 *)a0 + 0x48) = 0;
-    *(s8 *)((u8 *)a0 + 0x49) = 0;
-    *(s8 *)((u8 *)a0 + 0x4A) = 1;
+    *(u8 *)((u8 *)a0 + 0x48) = 0;
+    *(u8 *)((u8 *)a0 + 0x49) = 0;
+    *(u8 *)((u8 *)a0 + 0x4A) = 1;
     *(f32 *)((u8 *)a0 + 0x28) = v;
     *(s32 *)((u8 *)a0 + 0x38) = 0;
     *(s32 *)((u8 *)a0 + 0x3C) = 0;
-    SetNodeF8(*(void **)((u8 *)a0 + 0x4C));
+    SetNodeF8(nfirst);
     SetNodeF8(*(void **)((u8 *)a0 + 0x50));
     SetNodeF8(*(void **)((u8 *)a0 + 0x58));
     SetNodeF8(*(void **)((u8 *)a0 + 0x54));
@@ -1072,6 +1075,7 @@ void *fn_8016D024(void *a0) {
     *(s32 *)((u8 *)a0 + 0x40) = fn_80204CF0();
     return a0;
 }
+#pragma pop
 void fn_8016D278(void *list) {
     /* Initialize a collection: point its items at the inline storage at +0xC,
      * set the element count (+0x4) to 0 and its capacity (+0x8) to 8. */
@@ -3304,7 +3308,7 @@ public:
 };
 extern "C" u32 fn_80170FDC(void *arg0) {
     s32 temp_r4;
-    if ((lbl_8055E3C8 - *(f32 *)((u8 *)arg0 + 0xA0)) < 2.25f) {
+    if ((lbl_8055E3C8 - *(volatile f32 *)((u8 *)arg0 + 0xA0)) < 2.25f) {
         ((Q70FDC *)arg0)->f17();
     } else {
         if (*(u8 *)((u8 *)arg0 + 0xB4) != 0)
@@ -3481,7 +3485,7 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
     u32 result;
     register s32 index;
     register s32 d;
-    register void *data;
+    void *data;
     register void *item;
     register s32 r25;
     register s32 r4v;
