@@ -3059,93 +3059,94 @@ struct PhysPathAse {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_801D7F9C(void *arg0, void *arg1) {
-    struct Dummy {
-        virtual void v0();
-        virtual char *get(char *);
-        virtual void v2();
-        virtual char *get2(char *);
-        virtual char *get3(char *, char *);
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual float getFloat(float, char *);
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual void v14();
-        virtual void v15();
-        virtual void v16();
-        virtual void v17();
-        virtual void v18();
-        virtual void v19();
-        virtual void v20();
-        virtual void v21();
-        virtual void v22();
-        virtual int getInt(char *);
+    /* The action-sequence value table (actseq.val) an element reads itself
+     * from; the two leading vtable entries are the destructor pair, so the
+     * first method declared here sits at +0x8. */
+    struct ValueTable {
+        virtual void v0();                         /* 0x08 */
+        virtual char *find(char *);                /* 0x0C: a key's entry, 0 if absent */
+        virtual void v2();                         /* 0x10 */
+        virtual char *getString(char *);           /* 0x14 */
+        virtual char *getStringOr(char *, char *); /* 0x18 */
+        virtual void v5();   virtual void v6();   virtual void v7();
+        virtual float getFloat(float, char *);     /* 0x28: default in f1, key in r4 */
+        virtual void v9();   virtual void v10();  virtual void v11();
+        virtual void v12();  virtual void v13();  virtual void v14();
+        virtual void v15();  virtual void v16();  virtual void v17();
+        virtual void v18();  virtual void v19();  virtual void v20();
+        virtual int getInt(char *);                /* 0x5C */
     };
     extern void fn_802E30C8(const char *, ...);
     extern int fn_801399FC(void);
     extern char lbl_80338460;
-    extern char lbl_8055AD20;
-    extern char lbl_8055AD28;
-    extern char lbl_8055AD30;
-    extern char lbl_8055ACB8;
+    extern char lbl_8055AD20; /* "path" */
+    extern char lbl_8055AD28; /* "object" */
+    extern char lbl_8055AD30; /* "*" - the object name when the table names none */
+    extern char lbl_8055ACB8; /* "delay" */
+#define MSG_NO_PATH (base + 0xB24) /* "PhysPathActionSequenceEvent: no \"path\" was found in the table!" */
+#define KEY_KILL_BOUND (base + 0xB64) /* "kill_bound" */
+#define MSG_INITIALIZED (base + 0xB70) /* "PhysPathActionSequenceEvent: initialized with object \"%s\", path \"%s\"" */
+#define TICKS_PER_SECOND 59.94f /* the value files' seconds-to-ticks scale */
     char *base = &lbl_80338460;
-    Dummy *obj = (Dummy *)arg1;
-    char *out = (char *)arg0;
+    ValueTable *table = (ValueTable *)arg1;
+    PhysPathAse *effect = (PhysPathAse *)arg0;
     char *path;
-    char *src;
-    int remaining;
-    char *dst;
-    char *src2;
-    int remaining2;
-    char *dst2;
-    int tmp;
-    float v;
-    float scale;
-    float prod;
-    path = obj->get(&lbl_8055AD20);
+    char *pathSrc;
+    int pathRemaining;
+    char *pathDst;
+    char *objectSrc;
+    int objectRemaining;
+    char *objectDst;
+    int killBound;
+    float delaySeconds;
+    float ticksPerSecond;
+    float ticks;
+    path = table->find(&lbl_8055AD20);
     if (path == 0) {
-        ((void (*)(const char *, ...))fn_802E30C8)(base + 0xB24);
+        ((void (*)(const char *, ...))fn_802E30C8)(MSG_NO_PATH);
         return 0;
     }
-    src = obj->get2(&lbl_8055AD20);
-    dst = out + 0x18;
-    remaining = 0x14;
-    goto copy_body1;
-copy_limit1:
-    if (--remaining > 0)
-        goto copy_body1;
-    dst[-1] = 0;
-    goto copy_done1;
-copy_body1:
-    if ((signed char)(*dst++ = *src++) != 0)
-        goto copy_limit1;
-copy_done1:
-    src2 = obj->get3(&lbl_8055AD28, &lbl_8055AD30);
-    dst2 = out + 4;
-    remaining2 = 0x14;
-    goto copy_body2;
-copy_limit2:
-    if (--remaining2 > 0)
-        goto copy_body2;
-    dst2[-1] = 0;
-    goto copy_done2;
-copy_body2:
-    if ((signed char)(*dst2++ = *src2++) != 0)
-        goto copy_limit2;
-copy_done2:
-    tmp = obj->getInt(base + 0xB64);
-    *(int *)(out + 0x3C) = tmp == 0 ? 0 : fn_801399FC();
-    v = obj->getFloat(0.0f, &lbl_8055ACB8);
-    scale = 59.94f;
-    *(int *)(out + 0x38) = 0;
-    prod = scale * v;
-    *(int *)(out + 0x2C) = 0;
-    *(int *)(out + 0x40) = 1;
-    *(int *)(out + 0x30) = (int)prod;
-    ((void (*)(const char *, ...))fn_802E30C8)(base + 0xB70, out + 4, out + 0x18);
+    pathSrc = table->getString(&lbl_8055AD20);
+    pathDst = effect->pathName;
+    pathRemaining = 0x14;
+    goto copy_path_body;
+copy_path_limit:
+    if (--pathRemaining > 0)
+        goto copy_path_body;
+    pathDst[-1] = 0;
+    goto copy_path_done;
+copy_path_body:
+    if ((signed char)(*pathDst++ = *pathSrc++) != 0)
+        goto copy_path_limit;
+copy_path_done:
+    objectSrc = table->getStringOr(&lbl_8055AD28, &lbl_8055AD30);
+    objectDst = effect->objectName;
+    objectRemaining = 0x14;
+    goto copy_object_body;
+copy_object_limit:
+    if (--objectRemaining > 0)
+        goto copy_object_body;
+    objectDst[-1] = 0;
+    goto copy_object_done;
+copy_object_body:
+    if ((signed char)(*objectDst++ = *objectSrc++) != 0)
+        goto copy_object_limit;
+copy_object_done:
+    killBound = table->getInt(KEY_KILL_BOUND);
+    effect->killBound = killBound == 0 ? 0 : (void *)fn_801399FC();
+    delaySeconds = table->getFloat(0.0f, &lbl_8055ACB8);
+    ticksPerSecond = TICKS_PER_SECOND;
+    effect->direction = 0;
+    ticks = ticksPerSecond * delaySeconds;
+    effect->target = 0;
+    effect->state = TIMED_EFFECT_READY;
+    effect->delay = (int)ticks;
+    ((void (*)(const char *, ...))fn_802E30C8)(MSG_INITIALIZED, effect->objectName, effect->pathName);
     return 1;
+#undef MSG_NO_PATH
+#undef KEY_KILL_BOUND
+#undef MSG_INITIALIZED
+#undef TICKS_PER_SECOND
 }
 #pragma cplusplus reset
 #pragma pop
