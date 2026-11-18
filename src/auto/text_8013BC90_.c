@@ -268,6 +268,7 @@ extern void *fn_8013184C(void);
 extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8032C42C[];
 extern const char lbl_8032C43C[];
+typedef struct CacheTableV { CacheEntry entry[8]; int count; } CacheTableV;
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void *fn_8013BFE8(char *arg0) {
