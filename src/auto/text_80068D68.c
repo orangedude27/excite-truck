@@ -1108,13 +1108,15 @@ extern u8 lbl_8055DC80;
 extern u8 *lbl_80559038;
 extern void bta_hh_trace_dev_db(void);
 
-static inline u8 hh_get_trans_status(u32 result) {
+static inline u8 hh_get_trans_status(s32 result) {
     switch (result) {
     case 0:
         return 0;
-    case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8:
-    case 9: case 10: case 11: case 12: case 13: case 14: case 15:
+    case 1: case 2: case 3: case 4:
         return (u8)result;
+    case 5: case 6: case 7: case 8: case 9: case 10:
+    case 11: case 12: case 13: case 14: case 15:
+        return 5;
     default:
         return 5;
     }
