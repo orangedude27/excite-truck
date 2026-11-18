@@ -24770,6 +24770,7 @@ void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 credit) {
 
 extern u8 fn_80095084();
 extern char lbl_80319DD8[];
+#pragma scheduling invalid_target
 __declspec(section ".sdata") extern char lbl_80559090[];
 __declspec(section ".sdata") extern char lbl_80559098[];
 s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
