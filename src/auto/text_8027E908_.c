@@ -710,12 +710,12 @@ int fn_8027F958(int *selection, void *collection) {
     typedef unsigned char (*GetByte)(void *);
     typedef char *(*GetString)(void *);
     Fn8027F958Stack stack;
-    register char *constants = (char *)&lbl_802FA848;
-    register char *state = (char *)&lbl_804B2FF8;
-    register char *strings = lbl_80347E50;
     register void *object, *item;
     register Fn8027F958Widget *widget;
     register void **items, **storage;
+    register char *strings = lbl_80347E50;
+    register char *state = (char *)&lbl_804B2FF8;
+    register char *constants = (char *)&lbl_802FA848;
     register float defaultValue;
     register float defaultScale;
     register void *widgetVtable;
