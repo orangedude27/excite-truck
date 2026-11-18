@@ -306,7 +306,7 @@ extern "C" void fn_8027D7B8(void *arg0) {
 }
 
 #pragma push
-#pragma optimization_level 1
+#pragma processor 750
 extern "C" void fn_8027D7E4(int *arg0) {
     fn_80007FF0(*(int *)((char *)fn_8001285C(arg0[3]) + 8));
 }
@@ -557,7 +557,6 @@ void fn_8027DAF4(void) {
 void *fn_8027DB40(int arg0) {
     int flagA, bit1, bit2;
     int i;
-    int j;
     int cnt;
     int limit;
     int filtered;
@@ -579,14 +578,12 @@ void *fn_8027DB40(int arg0) {
         filtered = 1;
     }
     cnt = 0;
-    i = 0;
-    while (i < fn_80019088()) {
-        Ent_8027DB40 *entry = fn_80019054(i);
-        if ((filtered == 0 || entry->val <= limit) && entry != 0 && stricmp(entry->name, lbl_8055C794) == 0
-            && fn_80016604(entry->id) > 0) {
+    for (i = 0; i < fn_80019088(); i++) {
+        e = fn_80019054(i);
+        if ((filtered == 0 || e->val <= limit) && e != 0 && stricmp(e->name, lbl_8055C794) == 0
+            && fn_80016604(e->id) > 0) {
             cnt++;
         }
-        i++;
     }
     if (fn_800194CC() != 0) {
         cnt++;
@@ -596,8 +593,8 @@ void *fn_8027DB40(int arg0) {
     }
     obj = (Obj_8027DB40 *)fn_8025007C(cnt);
     bit1Zero = (!bit1);
-    for (j = 0; j < fn_80019088(); j++) {
-        e = fn_80019054(j);
+    for (i = 0; i < fn_80019088(); i++) {
+        e = fn_80019054(i);
         if ((filtered == 0 || e->val <= limit) && e != 0 && stricmp(e->name, lbl_8055C794) == 0
             && fn_80016604(e->id) > 0) {
             info = fn_8001668C(e->id, 0);
@@ -692,32 +689,65 @@ extern void *fn_8025007C(int);
 extern int fn_8024DAE0(int, int, int, void *, int);
 extern char lbl_80347E30[];
 extern char lbl_80347E40[];
-#pragma push
-#pragma use_lmw_stmw off
-int fn_8027DEDC(int arg0, int arg1, int arg2, int arg3, int arg4) {
-    int result;
-    void *obj;
-    int found;
-    void *manager;
-    struct VT { void *m[0x20]; };
-    struct OB { struct VT *vt; };
+#pragma cplusplus on
+extern "C" int fn_8027DEDC(int arg0, int arg1, int arg2, int arg3, int arg4) {
+    extern void fn_800167FC(int);
+    extern int fn_80012820(int);
+
+    class Result {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual int vfunc_18(const char *key, int flag);
+    };
+    class Inner {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual Result *vfunc_5c(const char *key);
+    };
+    class Handle {
+    public:
+        virtual void release(int flag);
+        virtual void vfunc_0c(int found, int a, int b);
+    };
+    struct Obj {
+        unsigned char pad[0x80];
+        Inner *inner;
+    };
+
     fn_800167FC(1);
-    manager = (void *)fn_80012820(arg2);
-    found = 0;
+    void *manager = (void *)fn_80012820(arg2);
+    int found = 0;
     if (manager != 0) {
-        obj = *(void **)((char *)manager + 0x80);
-        if (obj != 0) {
-            struct OB *o = (struct OB *)obj;
-            const char *s = lbl_80347E30;
-            result = ((int (*)(void *, const char *))o->vt->m[0x5C / 4])(obj, s);
-            if (((unsigned int)(-result | result) >> 31) != 0) {
-                struct OB *o2;
-                struct OB *o3;
-                obj = *(void **)((char *)manager + 0x80);
-                o2 = (struct OB *)obj;
-                obj = (void *)((int (*)(void *, const char *))o2->vt->m[0x5C / 4])(obj, lbl_80347E30);
-                o3 = (struct OB *)obj;
-                found = ((int (*)(void *, const char *, int))o3->vt->m[0x18 / 4])(obj, lbl_80347E40, 0);
+        Inner *inner = ((Obj *)manager)->inner;
+        if (inner != 0) {
+            int check = (int)inner->vfunc_5c(lbl_80347E30);
+            if (((unsigned int)(-check | check) >> 31) != 0) {
+                inner = ((Obj *)manager)->inner;
+                Result *r = inner->vfunc_5c(lbl_80347E30);
+                found = r->vfunc_18(lbl_80347E40, 0);
             }
         }
     }
@@ -725,15 +755,15 @@ int fn_8027DEDC(int arg0, int arg1, int arg2, int arg3, int arg4) {
         manager = fn_8027DB40(0);
     } else {
         manager = fn_8025007C(1);
-        ((void (*)(void *, int, int, int))*(void **)((char *)*(void **)manager + 0xC))(manager, found, 1, 0);
+        ((Handle *)manager)->vfunc_0c(found, 1, 0);
     }
-    result = fn_8024DAE0(arg0, arg1, 0, manager, arg3);
+    int result = fn_8024DAE0(arg0, arg1, 0, manager, arg3);
     if (manager != 0) {
-        ((void (*)(void *, int))*(void **)((char *)*(void **)manager + 8))(manager, 1);
+        ((Handle *)manager)->release(1);
     }
     return result;
 }
-
+#pragma cplusplus off
 void *fn_80012870(int, int);
 void fn_8023BF4C(void *);
 void fn_8027E024(int arg0, int arg1, int arg2) {
@@ -792,15 +822,16 @@ extern void fn_80284580(int arg0, int arg1, void *arg2, int *arg3);
 extern void fn_8025A204(void);
 extern void fn_8001EFBC(void);
 extern void fn_802E7128(void);
+#pragma dont_inline on
 void fn_8027E0C8(void *arg0, int arg1) {
-    int v28b;
-    int v20b;
-    int v48;
-    int v40;
+    int chain28b;
+    int chain20;
+    int chain48;
+    int chain40;
     int info;
-    int a19604;
-    int bab1;
+    int idx16;
     int i17;
+    int bab1;
     void *list;
     int v22;
     int v21;
@@ -808,26 +839,35 @@ void fn_8027E0C8(void *arg0, int arg1) {
     int v19;
     int flag18;
     int a194CC;
-    int idx16;
+    void *item;
     int idx14;
     int spE8;
     unsigned char buf[0xB0];
     unsigned char frame[0x14];
-    int z20;
-    int z1C;
-    int z18;
+    int z[3];
     int key;
     int sp10;
     int spC;
     void *cb;
     int sel;
-    void *item;
-    int tmp27;
+    int a19604;
+    void *sub;
     int flag29;
     int cnt30;
     void *obj29;
     int diff;
     int a19604new;
+    void *t0;
+    void *t1;
+    int chain28_1;
+    int chain28_2;
+    int flagCheck;
+    int a19604old;
+    int tmpFlag;
+    int tmp20;
+    int flagSecond;
+    int j16;
+
     cb = arg0;
     key = -1;
     spE8 = *(int *)((char *)fn_80016464(0) + 4);
@@ -836,123 +876,136 @@ void fn_8027E0C8(void *arg0, int arg1) {
     list = ((void *(*)(int))cb)(arg1);
     fn_802840F4();
     memset(frame, 0, 0x14);
-retry:
-    memset(frame, 0, 0x14);
-    if (((int (*)(int *, int *, int, int))fn_8027DEDC)(&sp10, &spC, *(int *)((char *)fn_8001285C(key) + 4), arg1) == 0) {
-        goto retry;
-    }
-    idx14 = -1;
-    idx16 = -1;
-    v22 = 0;
-    v21 = 0;
-    v20 = 0;
-    v19 = 0;
-    flag18 = 1;
-    for (i17 = 0; i17 < ((int (*)(void *))*(void **)((char *)*(void **)list + 0xC))(list); i17++) {
-        item = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, i17);
-        bab1 = ((int (*)(void *))*(void **)((char *)*(void **)item + 0x20))(item);
-        flag18 = (flag18 != 0 && bab1 != 0) ? 1 : 0;
-        for (a19604 = 0; a19604 < ((int (*)(void *))*(void **)((char *)*(void **)item + 0x18))(item); a19604++) {
-            tmp27 = (int)((void *(*)(void *, int))*(void **)((char *)*(void **)item + 0x1C))(item, a19604);
-            if (key == ((int (*)(void *))*(void **)((char *)*(void **)(tmp27) + 0x20))((void *)tmp27)) {
-                idx14 = i17;
-                idx16 = a19604;
-                v22 = ((int (*)(void *))*(void **)((char *)*(void **)(tmp27) + 0x40))((void *)tmp27);
-                v21 = ((int (*)(void *))*(void **)((char *)*(void **)(tmp27) + 0x48))((void *)tmp27);
-                v20 = bab1;
-                v19 = ((int (*)(void *))*(void **)((char *)*(void **)item + 0x28))(item);
-            }
-        }
-    }
-    item = (void *)((int (*)(void *))*(void **)((char *)*(void **)(tmp27) + 0x28))((void *)tmp27);
-    bab1 = fn_8027BAB8(list);
-    info = (int)fn_80016544(sp10);
-    flag29 = 0;
-    tmp27 = !(*(int *)((char *)info + 0xA0) & 2);
-    if (tmp27 != 0 && fn_80019144(info + 0x2C) != 0) {
-        flag29 = 1;
-    }
-    a194CC = fn_800194CC();
-    a19604 = fn_80019604();
-    fn_802840F8();
-    fn_80016970(0, spE8, sp10, spC);
-    fn_8000DA10();
-    ((void (*)(int, int))fn_800169F8)(((int (*)(void))fn_8000DB34)(), 0);
-    ((void (*)(int, int))fn_80137C84)(((int (*)(void))fn_802E4A10)(), 0);
-    fn_8001FD4C(((int (*)(int))fn_8027DE68)(0) == 0);
-    if (((int (*)(void *))*(void **)((char *)*(void **)item + 0x20))(item) != 0) {
-        sel = 0;
-    } else {
-        sel = ((int (*)(void *))*(void **)((char *)*(void **)(tmp27) + 0x38))((void *)tmp27);
-    }
-    lbl_8055C790 = (void *)sel;
-    memset(buf, 0, 0xB0);
-    fn_8027E024((int)buf, key, arg1);
-    lbl_8055C790 = (void *)-1;
-    fn_80016A44(0);
-    fn_8001FD4C(0);
-    list = ((void *(*)(int))cb)(arg1);
-    fn_802840F4();
-    if (((int *)buf)[2] > 0) {
-        fn_8027DA08();
-        tmp27 = ((int (*)(void *))*(void **)((char *)*(void **)(tmp27) + 0x28))((void *)tmp27);
-        cnt30 = 0;
-        if (tmp27 != 0 && fn_80019144(info + 0x2C) != 0) {
-            cnt30 = 1;
-        }
-        z18 = 0;
-        z1C = 0;
-        z20 = 0;
-        fn_8001EFB0(&z18);
-        obj29 = fn_8025007C(2);
-        if (flag29 == 0 && cnt30 != 0) {
-            ((void (*)(void *, int, int, int))*(void **)((char *)*(void **)obj29 + 0xC))(obj29, fn_80019098((char *)info + 0x2C), 1, 0);
-            info = fn_8001931C((char *)info + 0x2C);
-            ((void (*)(void *, int, int))*(void **)((char *)*(void **)obj29 + 0x10))(obj29, ((int (*)(void *))*(void **)((char *)*(void **)obj29 + 0x14))(obj29) - 1, info);
-        }
-        if (a194CC == 0 && fn_800194C8() != 0) {
-            ((void (*)(void *, int, int, int))*(void **)((char *)*(void **)obj29 + 0xC))(obj29, fn_80019534(), 1, 0);
-            a194CC = fn_800195C0();
-            ((void (*)(void *, int, int))*(void **)((char *)*(void **)obj29 + 0x10))(obj29, ((int (*)(void *))*(void **)((char *)*(void **)obj29 + 0x14))(obj29) - 1, a194CC);
-        }
-        fn_80284580(z1C, z20, obj29, &spC);
-        if (obj29 != 0) {
-            ((void (*)(void *, int))*(void **)((char *)*(void **)obj29 + 8))(obj29, 1);
-        }
-        fn_8025A204();
-        fn_8001EFBC();
-        if (((int (*)(void *))*(void **)((char *)*(void **)list + 0x14))(list) != 0) {
-            v40 = ((int (*)(void *))*(void **)((char *)*(void **)(tmp27) + 0x40))((void *)tmp27);
-            v48 = ((int (*)(void *))*(void **)((char *)*(void **)(tmp27) + 0x48))((void *)tmp27);
-            v20b = ((int (*)(void *))*(void **)((char *)*(void **)item + 0x20))(item);
-            v28b = ((int (*)(void *))*(void **)((char *)*(void **)item + 0x28))(item);
-            idx14 = fn_8027BAB8(list);
-            a194CC = 1;
-            for (idx16 = 0; idx16 < ((int (*)(void *))*(void **)((char *)*(void **)list + 0xC))(list); idx16++) {
-                item = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, idx16);
+    while (fn_802840FC(&key, list, frame) != 0) {
+        memset(frame, 0, 0x14);
+        if (((int (*)(int *, int *, int, int))fn_8027DEDC)(&sp10, &spC, *(int *)((char *)fn_8001285C(key) + 4), arg1) != 0) {
+            idx14 = -1;
+            idx16 = -1;
+            v22 = 0;
+            v21 = 0;
+            v20 = 0;
+            v19 = 0;
+            flag18 = 1;
+            for (i17 = 0; i17 < ((int (*)(void *))*(void **)((char *)*(void **)list + 0xC))(list); i17++) {
+                item = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, i17);
                 bab1 = ((int (*)(void *))*(void **)((char *)*(void **)item + 0x20))(item);
-                a194CC = (a194CC != 0 && bab1 != 0) ? 1 : 0;
+                flag18 = (flag18 != 0 && bab1 != 0) ? 1 : 0;
+                for (a19604 = 0; a19604 < ((int (*)(void *))*(void **)((char *)*(void **)item + 0x18))(item); a19604++) {
+                    sub = ((void *(*)(void *, int))*(void **)((char *)*(void **)item + 0x1C))(item, a19604);
+                    if (key == ((int (*)(void *))*(void **)((char *)*(void **)sub + 0x20))(sub)) {
+                        idx14 = i17;
+                        idx16 = a19604;
+                        v22 = ((int (*)(void *))*(void **)((char *)*(void **)sub + 0x40))(sub);
+                        v21 = ((int (*)(void *))*(void **)((char *)*(void **)sub + 0x48))(sub);
+                        v20 = bab1;
+                        v19 = ((int (*)(void *))*(void **)((char *)*(void **)item + 0x28))(item);
+                    }
+                }
             }
-            a19604new = fn_80019604();
-            diff = (int)item - tmp27;
-            *(int *)(frame + 4) = diff;
-            *(int *)(frame + 8) = key;
-            frame[0] = (diff > 0) ? 1 : 0;
-            frame[0xC] = (v22 == 0 && v40 != 0) ? 1 : 0;
-            frame[0xD] = (v21 == 0 && v48 != 0) ? 1 : 0;
-            frame[0xE] = (v20 == 0 && v20b != 0) ? 1 : 0;
-            frame[0xF] = (v19 == 0 && v28b != 0) ? 1 : 0;
-            frame[0x10] = (flag18 == 0 && a194CC != 0) ? 1 : 0;
-            frame[0x11] = (bab1 == 0 && idx14 != 0) ? 1 : 0;
-            frame[0x12] = (a19604 == 0 && a19604new != 0) ? 1 : 0;
+            t0 = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, idx14);
+            t1 = ((void *(*)(void *, int))*(void **)((char *)*(void **)t0 + 0x1C))(t0, idx16);
+            chain28_1 = ((int (*)(void *))*(void **)((char *)*(void **)t1 + 0x28))(t1);
+            bab1 = fn_8027BAB8(list);
+            info = (int)fn_80016544(sp10);
+            flag29 = 0;
+            flagCheck = !(*(int *)((char *)info + 0xA0) & 2);
+            if (flagCheck != 0 && fn_80019144(info + 0x2C) != 0) {
+                flag29 = 1;
+            }
+            a194CC = fn_800194CC();
+            a19604old = fn_80019604();
+            fn_802840F8();
+            fn_80016970(0, spE8, sp10, spC);
+            fn_8000DA10();
+            ((void (*)(int, int))fn_800169F8)(((int (*)(void))fn_8000DB34)(), 0);
+            ((void (*)(int, int))fn_80137C84)(((int (*)(void))fn_802E4A10)(), 0);
+            fn_8001FD4C(((int (*)(int))fn_8027DE68)(0) == 0);
+            t0 = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, idx14);
+            if (((int (*)(void *))*(void **)((char *)*(void **)t0 + 0x20))(t0) != 0) {
+                sel = 0;
+            } else {
+                t0 = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, idx14);
+                t1 = ((void *(*)(void *, int))*(void **)((char *)*(void **)t0 + 0x1C))(t0, idx16);
+                sel = ((int (*)(void *))*(void **)((char *)*(void **)t1 + 0x38))(t1);
+            }
+            lbl_8055C790 = (void *)sel;
+            memset(buf, 0, 0xB0);
+            fn_8027E024((int)buf, key, arg1);
+            lbl_8055C790 = (void *)-1;
+            fn_80016A44(0);
+            fn_8001FD4C(0);
+            list = ((void *(*)(int))cb)(arg1);
+            fn_802840F4();
+            if (((int *)buf)[2] > 0) {
+                fn_8027DA08();
+                t0 = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, idx14);
+                t1 = ((void *(*)(void *, int))*(void **)((char *)*(void **)t0 + 0x1C))(t0, idx16);
+                chain28_2 = ((int (*)(void *))*(void **)((char *)*(void **)t1 + 0x28))(t1);
+                cnt30 = 0;
+                if (flagCheck != 0 && fn_80019144(info + 0x2C) != 0) {
+                    cnt30 = 1;
+                }
+                z[0] = 0;
+                z[1] = 0;
+                z[2] = 0;
+                fn_8001EFB0(z);
+                obj29 = fn_8025007C(2);
+                if (flag29 == 0 && cnt30 != 0) {
+                    ((void (*)(void *, int, int, int))*(void **)((char *)*(void **)obj29 + 0xC))(obj29, fn_80019098((char *)info + 0x2C), 1, 0);
+                    info = fn_8001931C((char *)info + 0x2C);
+                    ((void (*)(void *, int, int))*(void **)((char *)*(void **)obj29 + 0x10))(obj29, ((int (*)(void *))*(void **)((char *)*(void **)obj29 + 0x14))(obj29) - 1, info);
+                }
+                if (a194CC == 0 && fn_800194C8() != 0) {
+                    ((void (*)(void *, int, int, int))*(void **)((char *)*(void **)obj29 + 0xC))(obj29, fn_80019534(), 1, 0);
+                    a194CC = fn_800195C0();
+                    ((void (*)(void *, int, int))*(void **)((char *)*(void **)obj29 + 0x10))(obj29, ((int (*)(void *))*(void **)((char *)*(void **)obj29 + 0x14))(obj29) - 1, a194CC);
+                }
+                fn_80284580(z[1], z[2], obj29, &spC);
+                if (obj29 != 0) {
+                    ((void (*)(void *, int))*(void **)((char *)*(void **)obj29 + 8))(obj29, 1);
+                }
+                fn_8025A204();
+                fn_8001EFBC();
+                if (((int (*)(void *))*(void **)((char *)*(void **)list + 0x14))(list) != 0) {
+                    t0 = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, idx14);
+                    t1 = ((void *(*)(void *, int))*(void **)((char *)*(void **)t0 + 0x1C))(t0, idx16);
+                    chain40 = ((int (*)(void *))*(void **)((char *)*(void **)t1 + 0x40))(t1);
+                    t0 = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, idx14);
+                    t1 = ((void *(*)(void *, int))*(void **)((char *)*(void **)t0 + 0x1C))(t0, idx16);
+                    chain48 = ((int (*)(void *))*(void **)((char *)*(void **)t1 + 0x48))(t1);
+                    t0 = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, idx14);
+                    chain20 = ((int (*)(void *))*(void **)((char *)*(void **)t0 + 0x20))(t0);
+                    t0 = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, idx14);
+                    chain28b = ((int (*)(void *))*(void **)((char *)*(void **)t0 + 0x28))(t0);
+                    idx14 = fn_8027BAB8(list);
+                    flagSecond = 1;
+                    for (j16 = 0; j16 < ((int (*)(void *))*(void **)((char *)*(void **)list + 0xC))(list); j16++) {
+                        tmpFlag = flagSecond;
+                        flagSecond = 0;
+                        if (tmpFlag) {
+                            t0 = ((void *(*)(void *, int))*(void **)((char *)*(void **)list + 0x10))(list, j16);
+                            tmp20 = ((int (*)(void *))*(void **)((char *)*(void **)t0 + 0x20))(t0);
+                            if (tmp20 != 0) {
+                                flagSecond = 1;
+                            }
+                        }
+                    }
+                    a19604new = fn_80019604();
+                    diff = chain28_2 - chain28_1;
+                    *(int *)(frame + 4) = diff;
+                    *(int *)(frame + 8) = key;
+                    frame[0] = (diff > 0) ? 1 : 0;
+                    frame[0xC] = (v22 == 0 && chain40 != 0) ? 1 : 0;
+                    frame[0xD] = (v21 == 0 && chain48 != 0) ? 1 : 0;
+                    frame[0xE] = (v20 == 0 && chain20 != 0) ? 1 : 0;
+                    frame[0xF] = (v19 == 0 && chain28b != 0) ? 1 : 0;
+                    frame[0x10] = (flag18 == 0 && flagSecond != 0) ? 1 : 0;
+                    frame[0x11] = (bab1 == 0 && idx14 != 0) ? 1 : 0;
+                    frame[0x12] = (a19604old == 0 && a19604new != 0) ? 1 : 0;
+                }
+            }
+            fn_802E7128();
         }
-    }
-    fn_802E7128();
-    if (fn_802840FC(&key, list, frame) != 0) {
-        goto retry;
     }
     fn_802840F8();
 }
-
-#pragma pop
-
