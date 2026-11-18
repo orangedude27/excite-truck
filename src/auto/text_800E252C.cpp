@@ -495,7 +495,7 @@ extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
 }
 
 #pragma push
-#pragma scheduling 750
+#pragma scheduling on
 extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
     f32 index = __fabsf(angle);
     while (index >= lbl_80560F00) index -= lbl_80560F00;
