@@ -4482,9 +4482,8 @@ extern "C" s32 fn_80144454(void) { return 0; }
 extern "C" s32 fn_8013D1F0(s32);
 #pragma dont_inline off
 #pragma inline auto
-#pragma inline_max_size 10000
-static __inline s32 fn_8014445C_xor(s32 v) { return v ^ 0xA; }
-#pragma dont_inline on
+static inline s32 fn_8014445C_xor(s32 v) { return v ^ 0xA; }
+#pragma dont_inline fn_8014445C
 extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
     s32 v = fn_8014445C_xor(fn_8013D1F0(arg1));
     return ((v >> 1) - (v & 0xA)) < 0;
