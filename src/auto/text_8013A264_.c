@@ -94,14 +94,21 @@ f32 fn_80134B58(f32 *, f32);                     /* value set for this key, or t
 #pragma push
 #pragma scheduling invalid_target
 void *fn_8013A264(void *arg0) {
-    u8 *base = (u8 *)lbl_8032C118;
-    *(f32 *)((u8 *)arg0 + 0xC) = fn_80134B58((f32 *)(base + 0), lbl_80561418);
+    f32 first = lbl_80561418;
+    unsigned int base = (unsigned int)lbl_8032C118;
+    *(f32 *)((u8 *)arg0 + 0xC) = fn_80134B58((f32 *)(base + 0), first);
     *(f32 *)((u8 *)arg0 + 8) = fn_80134B58((f32 *)(base + 0x10), lbl_80561418);
     *(f32 *)((u8 *)arg0 + 0x10) = fn_80134B58((f32 *)(base + 0x20), lbl_80561418);
-    *(f32 *)((u8 *)arg0 + 0x18) = fn_80134B58(&lbl_80559C60, lbl_8056141C);
-    *(f32 *)((u8 *)arg0 + 0x14) = lbl_80561418;
-    *(f32 *)((u8 *)arg0 + 0x1C) = lbl_80561418;
-    *(f32 *)((u8 *)arg0 + 4) = lbl_80561420;
+    {
+        f32 r4, w, v;
+        r4 = fn_80134B58(&lbl_80559C60, lbl_8056141C);
+        v = lbl_80561418;
+        w = lbl_80561420;
+        *(f32 *)((u8 *)arg0 + 0x18) = r4;
+        *(f32 *)((u8 *)arg0 + 0x14) = v;
+        *(f32 *)((u8 *)arg0 + 0x1C) = v;
+        *(f32 *)((u8 *)arg0 + 4) = w;
+    }
     *(s32 *)arg0 = 0;
     return arg0;
 }
@@ -112,6 +119,7 @@ void *fn_8013A264(void *arg0) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_8013A2FC(AiExceptionConfig *config, struct Container *container, int i) {
+    #pragma scheduling invalid_target
     const char *base = (const char *)lbl_8032C118;
     if (container != 0) {
         f32 step;
@@ -140,8 +148,6 @@ extern "C" void fn_8013A2FC(AiExceptionConfig *config, struct Container *contain
                 config->list = &node;
 
                 if (node.onLon > node.offLon) {
-                    /* The section runs across the end of the track: this entry keeps
-                       [onLon, max] and a copy of it takes [min, offLon]. */
                     AiException *copy = (AiException *)fn_801284F8(0x28, base + 0x40);
                     if (copy != 0) {
                         *copy = node;
