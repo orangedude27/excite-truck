@@ -1585,48 +1585,44 @@ extern void fn_8020A634(void);
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80248E30(void *arg0) {
-    extern float lbl_805638DC;
-    extern char lbl_803438A0[];
-    extern void fn_8020A634(void);
-    extern s32 fn_8020A640(void);
-    extern void fn_80221F94(void *, s32);
+void fn_80248E30(MdemoEnding *demo) {
+    /* Run one frame of an mdemo end-of-demo timer.  Over the last 400 ms of the
+     * demo window the music is faded out - for the ending types flagged in
+     * musicEndings, and only while a tune is playing (fn_8020A640) - and once
+     * the window has run out the fade-out that ends the demo is requested, with
+     * a result code saying which ending it was; the music is then stopped and
+     * its volume put back.  A type-1 demo with no duration ends on its own, so
+     * this timer does nothing for it. */
     register s32 now;
     s32 duration;
     register s32 elapsed;
 
-    if (*(s32 *)((char *)arg0 + 0x20) == 0 &&
-        *(s32 *)((char *)arg0 + 0x18) == 1)
+    if (demo->durationMs == 0 && demo->endingType == 1)
         return;
 
     now = fn_802E2C20();
-    if ((*(s32 *)((char *)arg0 + 0x28) &
-         *(s32 *)((char *)arg0 + 0x18)) != 0 &&
-        fn_8020A640() != 0) {
-        elapsed = now - *(s32 *)((char *)arg0 + 0x1C);
-        duration = *(s32 *)((char *)arg0 + 0x20);
-        if (elapsed > duration - 0x190) {
-            float factor = lbl_80563898;
-            float value = (float)(duration - elapsed) / lbl_805638DC;
-            factor = factor < value ? factor : value;
-            factor = factor > lbl_805638B0 ? factor : lbl_805638B0;
-            fn_80246CAC(factor);
+    if ((demo->musicEndings & demo->endingType) != 0 && fn_8020A640() != 0) {
+        elapsed = now - demo->startMs;
+        duration = demo->durationMs;
+        if (elapsed > duration - MUSIC_FADE_MS) {
+            float volume = FADE_ONE;
+            float remaining = (float)(duration - elapsed) / MUSIC_FADE_F;
+            volume = volume < remaining ? volume : remaining;
+            volume = volume > FADE_ZERO ? volume : FADE_ZERO;
+            fn_80246CAC(volume);
         }
     }
 
-    if (now > *(s32 *)((char *)arg0 + 0x1C) +
-              *(s32 *)((char *)arg0 + 0x20)) {
-        switch (*(s32 *)((char *)arg0 + 0x18)) {
-        case 1: fn_80221F94(arg0, -0xEA); break;
-        case 4: fn_80221F94(arg0, -1); break;
-        case 2: fn_80221F94(arg0, -2); break;
-        default: fn_802E317C(lbl_803438A0, *(s32 *)((char *)arg0 + 0x18)); break;
+    if (now > demo->startMs + demo->durationMs) {
+        switch (demo->endingType) {
+        case 1: fn_80221F94(demo, -0xEA); break;
+        case 4: fn_80221F94(demo, -1); break;
+        case 2: fn_80221F94(demo, -2); break;
+        default: fn_802E317C(UNHANDLED_ENDING, demo->endingType); break;
         }
-        if ((*(s32 *)((char *)arg0 + 0x28) &
-             *(s32 *)((char *)arg0 + 0x18)) != 0 &&
-            fn_8020A640() != 0) {
+        if ((demo->musicEndings & demo->endingType) != 0 && fn_8020A640() != 0) {
             fn_8020A634();
-            fn_80246CAC(lbl_80563898);
+            fn_80246CAC(FADE_ONE);
         }
     }
 }
