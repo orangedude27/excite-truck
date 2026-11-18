@@ -2085,9 +2085,9 @@ extern "C" u64 lbl_8055DE50;
 extern "C" u64 lbl_8055DE54;
 #pragma push
 #pragma scheduling on
-extern "C" u64 impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(void *self, unsigned long idx) {
-    register u8 *ref = *(u8 **)((u8 *)self + 0x28);
-    register u32 index = (u32)idx;
+u64 nw4hbm::snd::detail::SoundArchiveFileReader::impl_GetSoundInfoOffset(u32 idx) const {
+    register u8 *ref = *(u8 **)((u8 *)this + 0x28);
+    register u32 index = idx;
     register u8 *base;
     u8 *entry;
     u8 *data;
@@ -2098,9 +2098,9 @@ extern "C" u64 impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileRe
         return lbl_8055DE50;
     if (index >= *(u32 *)base)
         return lbl_8055DE50;
-    if (*(u16 *)((u8 *)self + 6) >= 0x101) {
+    if (*(u16 *)((u8 *)this + 6) >= 0x101) {
         index <<= 3;
-        ref = *(u8 **)((u8 *)self + 0x28);
+        ref = *(u8 **)((u8 *)this + 0x28);
         if (base[index + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
         entry = base + index;
