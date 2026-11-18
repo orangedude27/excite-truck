@@ -213,14 +213,14 @@ s32 fn_8016A30C(void)
 {
   f32 a;
   f32 b;
-  f32 *new_var;
   s32 c;
   s32 d;
-  void *p;
+  u8 *p;
   s32 h;
   s32 g;
   s32 f;
   s32 e;
+  f32 *new_var;
 
   c = fn_8017960C();
   new_var = &a;
@@ -230,41 +230,36 @@ s32 fn_8016A30C(void)
     f = 0;
     e = 0;
     g = 0;
-    goto check;
-  loop:
-    d = 0;
-    h = 0;
-    p = (void *)((*((s32 *)(&lbl_80430318))) + g);
-    if ((*((u8 *)(((u8 *)p) + 0x3c))) && (!(*((u8 *)(((u8 *)p) + 0x3d)))))
+    while (e < *(s32 *)(lbl_80430318 + 4))
     {
-      h = 1;
-    }
-    if (h)
-    {
-      b = (f32)(*((s32 *)(((u8 *)p) + 4)));
-      if (lbl_8055E364)
+      d = 0;
+      h = 0;
+      p = (u8 *)(*(s32 *)lbl_80430318 + g);
+      if (p[0x3c] && !p[0x3d])
       {
-        b += *new_var;
+        h = 1;
       }
-      if (PSVECSquareDistance((void *)(c + 0x60), ((u8 *)p) + 0x30) < (b * b))
+      if (h)
       {
-        *((u8 *)(((u8 *)p) + 0x3d)) = 1;
-        d = 1;
-        *((f32 *)(((u8 *)p) + 0x40)) = lbl_8055E3C8;
+        b = (f32)(*(s32 *)(p + 4));
+        if (lbl_8055E364)
+        {
+          b += *new_var;
+        }
+        if (PSVECSquareDistance((void *)(c + 0x60), p + 0x30) < (b * b))
+        {
+          p[0x3d] = 1;
+          d = 1;
+          *(f32 *)(p + 0x40) = lbl_8055E3C8;
+        }
       }
+      if (d)
+      {
+        f++;
+      }
+      g += 0x48;
+      e++;
     }
-    if (d)
-    {
-      f++;
-    }
-    g += 0x48;
-    e++;
-  check:
-    if (e < (*((s32 *)(((u8 *)(&lbl_80430318)) + 4))))
-    {
-      goto loop;
-    }
-
     return f;
   }
   return 0;
