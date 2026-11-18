@@ -322,8 +322,8 @@ s32 fn_80246E4C(void) {
     if (p != 0) {
         p[0] = var_r25;
         p[1] = -1;
-        p[2] = 9;
         f = lbl_80563898;
+        p[2] = 9;
         ((float *)p)[3] = f;
         ((float *)p)[4] = f;
         p[0] = fn_80232578(lbl_80343938);
@@ -355,8 +355,8 @@ s32 fn_80246E4C(void) {
     item[13] = lbl_804988F0[3];
     item[14] = lbl_804988F0[4];
 
-    menu[1] = lbl_802FA3A0[1];
     menu[0] = lbl_802FA3A0[0];
+    menu[1] = lbl_802FA3A0[1];
     menu[2] = lbl_802FA3A0[2];
     menu[3] = lbl_802FA3A0[3];
     menu[4] = lbl_802FA3A0[4];
@@ -789,8 +789,8 @@ extern void *lbl_8055BEB0;
 extern s32 lbl_8055BEB8;
 extern s32 lbl_8055F26C;
 void fn_8024778C(void) {
-    s32 current;
     s32 i;
+    s32 current;
     if (lbl_8055BEB8 != (current = lbl_8055F26C)) {
         lbl_8055BEB8 = current;
         switch (current) {
@@ -819,12 +819,11 @@ void fn_8024778C(void) {
         }
         break;
     }
-    i = 0;
-    do {
+    for (i = 0; i < 3; i++) {
         if (fn_8027B94C(i) == 0) {
             fn_80214A9C(i + 0xB);
         }
-    } while (++i < 3);
+    }
 }
 extern void* lbl_8055BEB0;
 extern s32 lbl_8055BEB4;
@@ -994,7 +993,8 @@ extern s32 lbl_8055BEC0;
 extern unsigned char lbl_8055F270, lbl_8055F271;
 extern char lbl_803435A0[], lbl_802FA418[], lbl_8055BEC4, lbl_8055BEA0, lbl_8055BED0, lbl_8055BED8, lbl_8055BEE0, lbl_8055BEE8;
 #pragma push
-#pragma use_lmw_stmw off
+#pragma opt_propagation off
+#pragma scheduling invalid_target
 int fn_80247C18() {
  struct Entry { s32 id; unsigned char enabled; char pad[3]; };
  struct Frame { s32 args[5]; s32 title; s32 pad[4]; s32 zero; struct Entry *entries; s32 count; s32 capacity; struct Entry data[10]; s32 items[75]; } frame;
@@ -1563,6 +1563,24 @@ void fn_80248CD8(void *effect)
   alpha = (nonNegative < 0xFF) ? nonNegative : 0xFF;
   fn_802C942C((alpha << 24) | 0xFFFFFF);
 }
+
+/* An "mdemo" end-of-demo timer: the demo window opens at startMs (a
+ * fn_802E2C20() millisecond stamp) and stays open durationMs milliseconds;
+ * endingType says how the demo is ended once the window has run out. */
+typedef struct MdemoEnding {
+    char pad0[0x18];
+    s32 endingType;   /* +0x18: 1, 2 or 4; also the bit set in musicEndings */
+    s32 startMs;      /* +0x1C: when the window opened */
+    s32 durationMs;   /* +0x20: how long it stays open */
+    s32 musicEndings; /* +0x28: ending types that fade the music out first */
+} MdemoEnding;
+
+extern float lbl_805638DC;
+extern char lbl_803438A0[];
+extern void fn_8020A634(void);
+#define MUSIC_FADE_MS 0x190        /* 400: ms of music fade-out before the end */
+#define MUSIC_FADE_F  lbl_805638DC /* the same 400 ms as a float */
+#define UNHANDLED_ENDING lbl_803438A0 /* "mdemo: unhandled ending type %d" */
 
 #pragma push
 #pragma scheduling invalid_target
