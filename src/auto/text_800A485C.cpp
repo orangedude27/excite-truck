@@ -3165,67 +3165,50 @@ extern "C" s32 VFiPFCACHE_FlushAllCaches(void *volume) {
     return result & ((s32)(-result | result) >> 31);
 }
 
-extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0, void *unused1, void *unused2, void *unused3, void *unused4, void *node) {
-    void *head;
-    u16 flags;
-    s32 minusOne = -1;
-    u32 zero = 0;
+extern "C" void VFiPFCACHE_FreeAllCaches(void *volume) {
+    void *h1;
+    void *page1;
+    void *page2;
 
-    goto first_test;
-first_body:
-    if (node == 0) goto first_test;
-    flags = *(volatile u16 *)node;
-    *(volatile u16 *)node = flags & 0xFFFC;
-    *(volatile u32 *)((u8 *)node + 0xC) = zero;
-    *(volatile u32 *)((u8 *)node + 0x10) = zero;
-    *(volatile s32 *)((u8 *)node + 0x18) = minusOne;
-    *(volatile u32 *)((u8 *)node + 0x1C) = zero;
-    head = *(void * volatile *)((u8 *)arg0 + 0x1630);
-    if (node == head) {
-        *(void * volatile *)((u8 *)arg0 + 0x1630) = *(void * volatile *)((u8 *)node + 0x20);
-        goto first_test;
+    while (*(volatile u16 *)(page1 = *(void **)((u8 *)volume + 0x1630)) & VF_PAGE_IN_USE) {
+        if (page1 == 0) continue;
+        *(volatile u16 *)page1 = (u16)(*(volatile u16 *)page1 & ~(VF_PAGE_IN_USE | VF_PAGE_CHANGED));
+        VF_PAGE_CHANGED_FROM(page1) = 0;
+        VF_PAGE_CHANGED_TO(page1) = 0;
+        VF_PAGE_FIRST(page1) = -1;
+        VF_PAGE_OWNER(page1) = 0;
+        if (page1 == *(void **)((u8 *)volume + 0x1630)) {
+            *(void **)((u8 *)volume + 0x1630) = VF_PAGE_NEXT(page1);
+        } else if (page1 != VF_PAGE_PREV(*(void **)((u8 *)volume + 0x1630))) {
+            VF_PAGE_NEXT(VF_PAGE_PREV(page1)) = VF_PAGE_NEXT(page1);
+            VF_PAGE_PREV(VF_PAGE_NEXT(page1)) = VF_PAGE_PREV(page1);
+            h1 = *(void **)((u8 *)volume + 0x1630);
+            VF_PAGE_NEXT(page1) = h1;
+            VF_PAGE_PREV(page1) = VF_PAGE_PREV(*(void **)((u8 *)volume + 0x1630));
+            VF_PAGE_PREV(h1) = page1;
+            VF_PAGE_NEXT(VF_PAGE_PREV(page1)) = page1;
+        }
     }
-    if (node == *(void * volatile *)((u8 *)head + 0x24)) goto first_test;
-    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = *(void * volatile *)((u8 *)node + 0x20);
-    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x20) + 0x24) = *(void * volatile *)((u8 *)node + 0x24);
-    head = *(void * volatile *)((u8 *)arg0 + 0x1630);
-    *(void * volatile *)((u8 *)node + 0x20) = head;
-    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)arg0 + 0x1630) + 0x24);
-    *(void * volatile *)((u8 *)head + 0x24) = node;
-    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = node;
-first_test:
-    node = *(void * volatile *)((u8 *)arg0 + 0x1630);
-    flags = *(volatile u16 *)node;
-    if (flags & 1) goto first_body;
 
-    zero = 0;
-    minusOne = -1;
-    goto second_test;
-second_body:
-    if (node == 0) goto second_test;
-    flags = *(volatile u16 *)node;
-    *(volatile u16 *)node = flags & 0xFFFC;
-    *(volatile u32 *)((u8 *)node + 0xC) = zero;
-    *(volatile u32 *)((u8 *)node + 0x10) = zero;
-    *(volatile u32 *)((u8 *)node + 0x1C) = zero;
-    *(volatile s32 *)((u8 *)node + 0x18) = minusOne;
-    head = *(void * volatile *)((u8 *)arg0 + 0x1634);
-    if (node == head) {
-        *(void * volatile *)((u8 *)arg0 + 0x1634) = *(void * volatile *)((u8 *)node + 0x20);
-        goto second_test;
+    while (*(volatile u16 *)(page2 = *(void **)((u8 *)volume + 0x1634)) & VF_PAGE_IN_USE) {
+        if (page2 == 0) continue;
+        *(volatile u16 *)page2 = (u16)(*(volatile u16 *)page2 & ~(VF_PAGE_IN_USE | VF_PAGE_CHANGED));
+        VF_PAGE_CHANGED_FROM(page2) = 0;
+        VF_PAGE_CHANGED_TO(page2) = 0;
+        VF_PAGE_FIRST(page2) = -1;
+        VF_PAGE_OWNER(page2) = 0;
+        if (page2 == *(void **)((u8 *)volume + 0x1634)) {
+            *(void **)((u8 *)volume + 0x1634) = VF_PAGE_NEXT(page2);
+        } else if (page2 != VF_PAGE_PREV(*(void **)((u8 *)volume + 0x1634))) {
+            VF_PAGE_NEXT(VF_PAGE_PREV(page2)) = VF_PAGE_NEXT(page2);
+            VF_PAGE_PREV(VF_PAGE_NEXT(page2)) = VF_PAGE_PREV(page2);
+            h1 = *(void **)((u8 *)volume + 0x1634);
+            VF_PAGE_NEXT(page2) = h1;
+            VF_PAGE_PREV(page2) = VF_PAGE_PREV(*(void **)((u8 *)volume + 0x1634));
+            VF_PAGE_PREV(h1) = page2;
+            VF_PAGE_NEXT(VF_PAGE_PREV(page2)) = page2;
+        }
     }
-    if (node == *(void * volatile *)((u8 *)head + 0x24)) goto second_test;
-    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = *(void * volatile *)((u8 *)node + 0x20);
-    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x20) + 0x24) = *(void * volatile *)((u8 *)node + 0x24);
-    head = *(void * volatile *)((u8 *)arg0 + 0x1634);
-    *(void * volatile *)((u8 *)node + 0x20) = head;
-    *(void * volatile *)((u8 *)node + 0x24) = *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)arg0 + 0x1634) + 0x24);
-    *(void * volatile *)((u8 *)head + 0x24) = node;
-    *(void * volatile *)((u8 *)*(void * volatile *)((u8 *)node + 0x24) + 0x20) = node;
-second_test:
-    node = *(void * volatile *)((u8 *)arg0 + 0x1634);
-    flags = *(volatile u16 *)node;
-    if (flags & 1) goto second_body;
 }
 
 /* The file handle and the stream it reads through, the two objects that hold
@@ -6784,8 +6767,9 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
     void *page;
     void *pageForRead;
     s32 pageIndex;
+    u8 *typeTable;
     s32 tableType;
-    s32 tableOffset;
+    u8 *entry;
     void *object;
     u32 *output;
     u32 expected;
@@ -6793,13 +6777,13 @@ extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp
     u32 maxValue;
     u32 bound;
     s32 result;
-    typeTableDecl:;
+    typeTable = (u8 *)lbl_802EEF40;
     tableType = *(s32 *)((u8 *)arg0 + 0x1C);
-    tableOffset = tableType * 0x14;
+    entry = typeTable + tableType * 0x14;
     expected = arg2;
     *arg3 = -1;
     output = arg3;
-    maxValue = *(u32 *)((u8 *)lbl_802EEF40 + tableOffset + 4);
+    maxValue = *(u32 *)(entry + 4);
     object = arg0;
     result = ((Fn800A8D08C4 *)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(
         object, -1, &page, &pageIndex);
@@ -6837,11 +6821,11 @@ dispatch:
         bound = *(u32 *)((u8 *)object + 0x34) + 2;
         if (arg1 < bound)
             goto checkMax;
-        if (arg1 >= maxValue)
-            goto checkMax;
-        *output = expected;
-        return 0;
     }
+    if (arg1 >= maxValue)
+        goto checkMax;
+    *output = expected;
+    return 0;
 checkMax:
     if (arg1 < maxValue)
         goto dispatch;
@@ -7522,9 +7506,9 @@ check_result:
         goto fetch;
 read_value:
     {
-    u8 *buf = *(u8 **)((u8 *)descriptor + 8);
-    u16 sz = *(u16 *)object;
-    value = *(u16 *)(buf + (scaled & (sz - 1)));
+        u8 *buf = *(u8 **)((u8 *)descriptor + 8);
+        u16 sz = *(volatile u16 *)object;
+        value = *(u16 *)(buf + (scaled & (sz - 1)));
     }
     *output = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
     return 0;
@@ -7659,6 +7643,9 @@ extern "C" s32 fn_800B05C8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
     u32 &sector = sectorStorage.v;
     u32 retry;
     s32 status;
+    u32 value;
+    u32 upper;
+    u32 lower;
     void *object = arg0;
     u32 *output = arg2;
     void *context = arg3;
@@ -7695,34 +7682,31 @@ fetch:
                 s32 callbackResult =
                     callback(*(void **)((u8 *)object + 0x1F84));
                 if (callbackResult == 0)
-                    goto store_sector;
+                    goto check_result;
                 if (callbackResult == 1 &&
                     *(u8 *)((u8 *)object + 0x22) >= 2 &&
                     retry < *(u8 *)((u8 *)object + 0x22)) {
                     retry++;
                     sector += *(u32 *)((u8 *)object + 0xC);
-                    goto store_sector;
+                    goto check_result;
                 }
             }
         }
-        if (status == 0)
-            goto store_sector;
-        return status;
-    store_sector:
+        if (status != 0)
+            return status;
         *(u32 *)((u8 *)context + 0x18) = sector;
+    check_result:
         if (status != 0)
             goto fetch;
     }
 
-    {
-        u32 value = *(u32 *)(*(u8 **)((u8 *)context + 8) +
-                             (scaled & (*(u16 *)object - 1)));
-        u32 upper = __rlwinm(value, 8, 8, 15);
-        u32 lower = __rlwinm(value, 24, 16, 23);
-        upper = __rlwimi(upper, value, 24, 0, 7);
-        lower = __rlwimi(lower, value, 8, 24, 31);
-        *output = (upper | lower) & 0x0FFFFFFF;
-    }
+    value = *(u32 *)((u8 *)*(void **)((u8 *)context + 8) +
+                     (scaled & (*(u16 *)object - 1)));
+    upper = __rlwinm(value, 8, 8, 15);
+    lower = __rlwinm(value, 24, 16, 23);
+    upper = __rlwimi(upper, value, 24, 0, 7);
+    lower = __rlwimi(lower, value, 8, 24, 31);
+    *output = (upper | lower) & 0x0FFFFFFF;
     return 0;
 }
 
@@ -19926,19 +19910,24 @@ s32 homebutton::gui::Manager::update(int arg1, f32 farg0, f32 farg1, unsigned lo
     };
     u32 sp14[3];
     u32 sp8[3];
+    u8 *manager = (u8 *)this;
     s32 result = 0;
     ObjDispatch *last = 0;
     u32 index = 0;
-    while (index < *(u16 *)((u8 *)this + 0x10)) {
-        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)this + 8, (u16)index);
+    goto check;
+loop:
+    {
+        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(manager + 8, (u16)index);
         if ((*(ObjDispatch **)((u8 *)item + 4))->handle(arg1, farg0, farg1, arg2, arg3, arg4, arg5)) {
             if ((*(ObjDispatch **)((u8 *)item + 4))->check()) last = *(ObjDispatch **)((u8 *)item + 4);
             result = 1;
         }
-        ++index;
-        if ((u8 *)this + 8 == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+        index++;
     }
+check:
+    if (manager + 8 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    if (index < *(u16 *)(manager + 0x10)) goto loop;
     if (last != 0) {
         if (arg2 != 0) {
             last->prepare(arg2, sp14);
