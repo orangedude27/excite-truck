@@ -446,9 +446,8 @@ extern "C" void *fn_8016BE60(void *arg0) {
 #pragma cplusplus on
 extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
     class VObj { public: virtual void destroy(int); };
-    struct Rec { s32 a, b, c, d; };
     VObj *p;
-    Rec *data;
+    void *data;
     register void *object = arg0;
     register s32 freeFlag = arg1;
     if (object != 0) {
@@ -468,25 +467,25 @@ extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
         if (p != 0) { if (p != 0) p->destroy(1); }
         p = *(VObj **)((u8 *)object + 0x64);
         if (p != 0) { if (p != 0) p->destroy(1); }
-        data = *(Rec **)((u8 *)object + 0x18);
+        data = *(void **)((u8 *)object + 0x18);
         if (data != 0) {
-            ((s32 (*)(s32, void *))fn_8002F6AC)(data->d, fn_8016C168);
+            ((s32 (*)(s32, void *))fn_8002F6AC)(*(s32 *)((u8 *)data + 0xC), fn_8016C168);
             if (data != 0) {
-                data->a = 0;
-                data->b = 0;
-                data->c = 0;
-                fn_80128668((void *)data);
+                *(s32 *)data = 0;
+                *((s32 *)data + 1) = 0;
+                *((s32 *)data + 2) = 0;
             }
+            fn_80128668(data);
         }
-        data = *(Rec **)((u8 *)object + 0x1C);
+        data = *(void **)((u8 *)object + 0x1C);
         if (data != 0) {
-            fn_80128670(data->d);
+            fn_80128670(*(s32 *)((u8 *)data + 0xC));
             if (data != 0) {
-                data->a = 0;
-                data->b = 0;
-                data->c = 0;
-                fn_80128668((void *)data);
+                *(s32 *)data = 0;
+                *((s32 *)data + 1) = 0;
+                *((s32 *)data + 2) = 0;
             }
+            fn_80128668(data);
         }
         if ((u32)object + 0x14 != 0) fn_80131818(*(s32 *)((u8 *)object + 0x14));
         fn_802C2930(object, 0);
@@ -1006,9 +1005,9 @@ extern void *fn_8023512C(void *);
 extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
 #pragma push
-#pragma opt_common_subs off
-void *fn_8016D024(void *__restrict a0) {
-    char *base = lbl_803306D0;
+#pragma opt_common_subs on
+void *fn_8016D024(void *a0) {
+    char *const base = lbl_803306D0;
     f32 v;
     void *last;
     void *nfirst;
@@ -1299,7 +1298,8 @@ extern "C" void fn_802ADE60(s32, s32);
 extern "C" void *fn_8016D658(void *arg0, s32 arg1) {
  class VObj { public: virtual void destroy(int); };
  struct List { void *vtable; VObj **items; s32 count; };
- VObj *old; VObj *p; s32 offset, i;
+ struct Rec { s32 a, b, c, d; };
+ VObj *old; VObj *p; Rec *data; s32 offset, i;
  if (arg0 != 0) {
   old = *(VObj **)((u8 *)arg0 + 0xA4); *(char **)arg0 = lbl_80330990;
   if (old != 0) { if (old != 0) old->destroy(1); }
@@ -1330,10 +1330,26 @@ p = *(VObj **)((u8 *)arg0 + 0x80); if (p != 0) { if (p != 0) p->destroy(1); }
 p = *(VObj **)((u8 *)arg0 + 0x8C); if (p != 0) { if (p != 0) p->destroy(1); }
 p = *(VObj **)((u8 *)arg0 + 0x90); if (p != 0) { if (p != 0) p->destroy(1); }
 p = *(VObj **)((u8 *)arg0 + 0x94); if (p != 0) { if (p != 0) p->destroy(1); }
-   p = *(VObj **)((u8 *)arg0 + 0x48);
-   if (p != 0) { ((s32 (*)(s32, void *))fn_8002F6AC)(*(s32 *)((u8 *)p + 0xC), fn_8016C168); if (p != 0) { *(s32 *)p = 0; *(s32 *)((u8 *)p + 4) = 0; *(s32 *)((u8 *)p + 8) = 0; fn_80128668(p); } }
-   p = *(VObj **)((u8 *)arg0 + 0x4C);
-   if (p != 0) { fn_80128670(*(s32 *)((u8 *)p + 0xC)); if (p != 0) { *(s32 *)p = 0; *(s32 *)((u8 *)p + 4) = 0; *(s32 *)((u8 *)p + 8) = 0; fn_80128668(p); } }
+   data = *(Rec **)((u8 *)arg0 + 0x48);
+   if (data != 0) {
+    ((s32 (*)(s32, void *))fn_8002F6AC)(data->d, fn_8016C168);
+    if (data != 0) {
+     data->a = 0;
+     data->b = 0;
+     data->c = 0;
+     fn_80128668((void *)data);
+    }
+   }
+   data = *(Rec **)((u8 *)arg0 + 0x4C);
+   if (data != 0) {
+    fn_80128670(data->d);
+    if (data != 0) {
+     data->a = 0;
+     data->b = 0;
+     data->c = 0;
+     fn_80128668((void *)data);
+    }
+   }
    if ((u8 *)arg0 + 0x44 != 0) fn_80131818(*(s32 *)((u8 *)arg0 + 0x44));
    fn_802C2930((u8 *)arg0 + 0x30, 0);
   }
@@ -2422,19 +2438,26 @@ extern "C" void fn_8016FE2C(void *arg0, s32 arg1) {
     extern void fn_802C744C(s32, void *);
     extern void fn_802C9900(void);
     extern void fn_802C9904(void);
-    f32 v0 = lbl_80561980;
-    f32 v1 = lbl_80561984;
-    s32 i = 0;
-    f32 v2 = lbl_805619A4;
-    f32 v3 = lbl_80561A0C;
-    long offset = 0;
-    f32 v4 = lbl_805619D0;
+    f32 v3;
+    f32 v2;
+    f32 v0;
+    f32 v1;
+    f32 v4;
+    s32 i;
+    long offset;
     s32 suboff;
     s32 j;
     f32 v;
     f32 t;
     register u8 *item;
     u8 *entry;
+    v0 = lbl_80561980;
+    v1 = lbl_80561984;
+    i = 0;
+    v2 = lbl_805619A4;
+    v3 = lbl_80561A0C;
+    offset = 0;
+    v4 = lbl_805619D0;
     goto outer_check;
 outer_body:
     entry = *(u8 **)*(void **)((u8 *)arg0 + 0x48) + offset;
@@ -2464,8 +2487,9 @@ first_check:
         if (v1 < v) {
             v = v1;
         }
-        v = v > v0 ? v0 : v;
-        if (v1 + v * v2 > v3) {
+        v = v > v0 ? v : v0;
+        t = v1 + v * v2;
+        if (t > v3) {
             fn_802C9900();
             j = 0;
             suboff = 0;
