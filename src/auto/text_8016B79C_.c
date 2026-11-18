@@ -738,6 +738,7 @@ get:
         }
     }
 }
+#pragma opt_common_subs on
 #pragma cplusplus reset
 
 #pragma ppc_psq_save on
