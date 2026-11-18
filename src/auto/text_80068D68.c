@@ -629,6 +629,7 @@ typedef struct t_l2c_ccb_view {
 #define L2CEVT_L2CAP_CONFIG_RSP      15 /* peer configuration response */
 #define L2CEVT_L2CAP_CONFIG_RSP_NEG  16 /* peer configuration response (failed) */
 #define L2CEVT_L2CAP_DISCONNECT_REQ  17 /* peer disconnect request */
+#define L2CEVT_L2CAP_DISCONNECT_RSP  18 /* peer disconnect response */
 #define L2CEVT_L2CAP_DATA            19 /* peer data */
 #define L2CEVT_L2CA_CONNECT_REQ      20 /* upper layer connect request */
 #define L2CEVT_L2CA_CONNECT_RSP      21 /* upper layer connect response */
@@ -4659,12 +4660,15 @@ void uusb_issue_intr_read(void) {
     ((u8 *)&lbl_803BD1E0)[0x2B] = 1;
 }
 
+#pragma opt_lifetimes off
 void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
+    register u8 *control;
+    register int status = arg0;
     register char *report = lbl_803142C8;
-    register s32 status = arg0;
     u16 offset;
+    u32 controlHi;
 
     if (lbl_803BD1E0.at_0x28 != 0)
         OSReport(report + 0x460, status);
@@ -4680,7 +4684,8 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
     }
 
     {
-        register u8 *control = (u8 *)&lbl_803BD1E0;
+        controlHi = (u32)&lbl_803BD1E0;
+        control = (u8 *)controlHi;
         if (control[0x48] < 5 && *(u16 *)(control + 0x44) != 0) {
             arg1 = GKI_dequeue((BUFFER_Q *)(control + 0x3C));
             offset = *(u16 *)((u8 *)arg1 + 4);
@@ -4690,7 +4695,7 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
                                        (void *)uusb_WriteCtrlDataCB, arg1) < 0) {
                 if (control[0x28] != 0)
                     OSReport(report + 0x4D0);
-                GKI_enqueue_head((BUFFER_Q *)(control + 0x3C), arg1);
+                GKI_enqueue_head((BUFFER_Q *)((u8 *)&lbl_803BD1E0 + 0x3C), arg1);
                 return;
             }
             fn_8006EBAC();
@@ -4699,7 +4704,6 @@ void uusb_WriteCtrlDataCB(s32 arg0, void *arg1) {
         }
     }
 }
-
 void uusb_WriteBulkDataCB(s32 arg0, s32 arg1) {
     extern char lbl_803142C8[];
     extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
@@ -13388,8 +13392,8 @@ scan_early:
         (*p_callback)(bd_addr, p_dev_rec->p_ref_data, rc);
         p_dev_rec->p_callback = NULL;
     }
-         return rc;
- }
+    return rc;
+}
 
  extern u8 lbl_80316DC8[];
 
