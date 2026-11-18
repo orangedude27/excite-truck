@@ -80,8 +80,8 @@ void fn_80249588(void) {}
 int fn_8024958C(int *arg0) {
     #pragma scheduling invalid_target
     int result = arg0[2] == 0x180302;
-    if (result) result = find_sound_entry_first(arg0) != -1;
-    if (result) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(arg0) * 0x18 + 0x14);
+    if (result != 0) result = find_sound_entry_first(arg0) != -1;
+    if (result != 0) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(arg0) * 0x18 + 0x14);
     return result;
 }
 /* "Accept all" filter callback used as the sound-entry filter when no filtering is
@@ -403,13 +403,14 @@ s32 fn_8024A4CC(s32 *arg0, s32 *arg1, s32 *arg2) {
         if (count >= 0 && count < *(s32 *)((u8 *)record + 0x70)) {
             record = (void *)fn_80012870(*(volatile s32 *)arg0, count);
             count = buffer.count;
+            i = 0;
             targetKey = *(s32 *)record;
             entry = (s32 *)buffer.data;
-            for (i = 0; i < count; i++) {
-                if (*entry != targetKey) {
-                } else {
-                    goto found_entry;
-                }
+            for (; i < count; i++) {
+                if (*entry != targetKey)
+                    goto scan_increment;
+                goto found_entry;
+scan_increment:
                 entry = (s32 *)((u8 *)entry + 0x18);
             }
             i = -1;
@@ -817,7 +818,6 @@ int fn_8024B214(char *arg0, char *arg1) {
 extern void *fn_80131234(void *);
 extern char lbl_80343B54[];
 #pragma push
-#pragma processor 750
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8024B260(arg0)
