@@ -195,7 +195,7 @@ s32 fn_801B3398(void* src) {
     return 0x38;
 }
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling 750
 void fn_801B3448(void) {
     void *p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
     if (p == NULL) return;
@@ -455,16 +455,17 @@ extern "C" void fn_801B3E24(void *arg0, void *arg1, void *arg2, s32 arg3, s32 ar
     };
     s32 first = *(s32 *)((u8 *)arg2 + 0x20);
     u32 packed;
-    Item *object;
+    void *row;
     s32 selectedKey;
     void *selected;
-    void *row;
     void *item;
+    Item *object;
     f32 z;
     f32 y;
     f32 x;
     f32 zero;
     f32 maximum;
+    f32 product;
     s32 index;
     volatile f32 unused[3];
 
@@ -488,7 +489,8 @@ extern "C" void fn_801B3E24(void *arg0, void *arg1, void *arg2, s32 arg3, s32 ar
         maximum = lbl_8056264C;
         *(volatile s32 *)((u8 *)row + 0x320) = arg3;
         *(volatile f32 *)((u8 *)row + 0x324) = lbl_8055E3C8;
-        maximum = (maximum > farg0 * *(f32 *)((u8 *)selected + 4)) ? farg0 * *(f32 *)((u8 *)selected + 4) : maximum;
+        product = farg0 * *(f32 *)((u8 *)selected + 4);
+        maximum = (maximum > product) ? product : maximum;
         zero = lbl_80562624;
         x = *(f32 *)arg1;
         *(volatile f32 *)((u8 *)row + 0x30C) = zero;
@@ -655,10 +657,7 @@ void* fn_801B447C(void* arg0, void* arg1, s32 arg2) {
     half = ((s32)((u32)arg2 >> 31) + arg2) >> 1;
     if (half > 0) *(void**)((u8*)arg1 + half * 16 + 8) = fn_801B447C(arg0, arg1, half);
     right = arg2 - half - 1;
-    if (right > 0) {
-        s32 off = half * 16;
-        *(void**)((u8*)arg1 + off + 12) = fn_801B447C(arg0, (u8*)arg1 + half * 16 + 16, right);
-    }
+    if (right > 0) *(void**)((u8*)arg1 + half * 16 + 12) = fn_801B447C(arg0, (u8*)arg1 + half * 16 + 16, right);
     return (u8*)arg1 + half * 16;
 }
 void *fn_801B4528(void *tree, u32 *node, u32 key) {
