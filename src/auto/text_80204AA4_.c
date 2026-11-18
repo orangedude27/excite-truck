@@ -202,13 +202,13 @@ extern "C" float fn_80204CFC(const char *name) {
     return (float)atof((const char *)text);
 }
 #pragma pop
-class Res80204EA0 {
-public:
-    virtual void unused0();
-    virtual int has(void *);
-    virtual void unused2();
-    virtual int get(void *);
-};
+/* Read one difficulty setting of the current scene as its value string.  The
+ * setting is looked up in the difficulty info block fn_80204BB8 published in
+ * lbl_8055ED5C: first as "<contest>_<name>" in the stage's difficulty set, then
+ * in the scene's, and if neither has it as the plain "<name>" in both.  A
+ * setting none of them has is reported with the 'Difficulty: "%s" was not
+ * found' message and reads as 0.  fn_80204CFC is the same lookup with the
+ * string parsed as a number. */
 #pragma push
 #pragma scheduling invalid_target
 extern "C" int fn_80204EA0(const char *name) {
