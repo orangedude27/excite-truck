@@ -3380,7 +3380,6 @@ extern int fn_80230E90();
 extern char lbl_8055A130, lbl_8055A138, lbl_8055A140, lbl_8055A148;
 extern u8 lbl_8055E308;
 #pragma cplusplus on
-#pragma scheduling invalid_target
 extern "C" s32 fn_8016524C(void *a){
  struct M{virtual void f0();virtual void*f1(const char*);virtual void*f2(const char*);virtual void*f3(const char*);};
  struct N{virtual void g0();virtual void g1();virtual void g2();virtual void g3();virtual const char*g4(const char*,s32);};
