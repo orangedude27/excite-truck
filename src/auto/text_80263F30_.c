@@ -188,7 +188,7 @@ void fn_80264098(void *item, int type) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
         void *name;
@@ -199,7 +199,7 @@ void fn_802640A0(void *arg0) {
     };
     struct CreditsMenuItem *item = (struct CreditsMenuItem *)arg0;
     item->name = &lbl_8055C458;
-    item->type = 0x7b;
+    *(volatile int *)&item->type = 0x7b;
     item->data = 0;
     item->a = 0;
     item->b = 0;
