@@ -196,19 +196,23 @@ void fn_802E3550(void) {
 #pragma scheduling on
 extern char lbl_8034CF98[];
 s32 fn_802E35C0(const char *arg0, s32 arg1) {
+    char *base;
+    s32 off;
+    s32 index = 0;
+    s32 value = arg1;
     unsigned char *p = (unsigned char *)lbl_804DB810;
-    s32 j = 0;
     s32 count;
     for (count = 16; count != 0; count--) {
         if (p[0x20] == 0) {
-            char *entry = lbl_804DB810 + j * 0x28;
-            entry[0x20] = 1;
-            strncpy(entry, arg0, 0x20);
-            *(s32 *)(entry + 0x24) = arg1;
-            return j;
+            off = index * 0x28;
+            base = lbl_804DB810;
+            *(base + off + 0x20) = 1;
+            strncpy(base + off, arg0, 0x20);
+            *(s32 *)((u32)base + off + 0x24) = value;
+            return index;
         }
         p += 0x28;
-        j++;
+        index++;
     }
     fn_802E317C(lbl_8034CF98, arg0);
     return -1;
