@@ -124,6 +124,9 @@ extern int stricmp(const char *, const char *);
 extern int strcmp(const char *, const char *);
 extern char lbl_8055A228, lbl_8055A230, lbl_8055A238, lbl_8055A240;
 extern s32 fn_802C6FC0();
+/* Bring one of the controller's sound effects back to full scale: the 1.0f at
+ * +8 (one of the two scales fn_802065F8 initialises a sound object with) and
+ * the "changed" byte at +0x4D that makes the sound library pick it up. */
 static inline void SetNodeF8(void *node) {
     if (node != 0) {
         f32 value = lbl_80561984;
