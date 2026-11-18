@@ -152,6 +152,7 @@ int fn_8018C514(void *arg0, void *arg1) {
     }
     return best;
 }
+#pragma use_lmw_stmw reset
 #pragma dont_inline reset
 
 extern void *memset(void *, int, unsigned long);
