@@ -215,9 +215,10 @@ extern int __cntlzw(unsigned int);
 void fn_802B5CCC(void) {
     u8 *sp8;
     u8 *object;
+
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B321C(0, (void **)&sp8, *(s32 *)(object + 8), lbl_8055FA40);
-    *sp8 = (*sp8 == 0) & 0xFF;
+    *sp8 = !*sp8;
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B32E0(*(s32 *)(object + 8));
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
@@ -1430,9 +1431,10 @@ extern "C" void fn_802B7918(void) {
         s32 unk18;
         s32 unk1C;
     } Record;
-    s32 i;
+    s32 *state;
     char *base = lbl_8034A598;
     s32 offset;
+    s32 i;
     s32 count;
     Dummy *obj = (Dummy *)lbl_8055FA48;
     void *result;
@@ -1470,12 +1472,11 @@ extern "C" void fn_802B7918(void) {
     early = elapsed < lbl_8055FA10;
     if (early != 0) {
         fn_802B6AC0();
-        s32 *state = (s32 *)&lbl_804BE7D8;
-        count = state[1];
+        count = ((s32 *)&lbl_804BE7D8)[1];
         if (count > 0) {
             i = 0;
             offset = 0;
-            while (i < state[1]) {
+            while (i < ((s32 *)&lbl_804BE7D8)[1]) {
                 ((void (*)(char *, s32, const char *, ...))fn_801345D8)(
                     buf, 0x20, base + 0x2B8, i);
                 record.name = buf;
