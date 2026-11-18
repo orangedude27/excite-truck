@@ -350,17 +350,31 @@ extern unsigned int strlen(const char *);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
-    int *entry;
+    struct Entry {
+        int refCount;
+        char name[0x20];
+        int type;
+        int handle;
+        int resource;
+        unsigned char flag;
+        unsigned char pad[3];
+        int arg3;
+        int unk38;
+        int size;
+        int unk40;
+        int unk44;
+        int unk48;
+    };
+    struct Entry *entry;
     unsigned strings;
     unsigned char first;
     int best;
     int index;
-    int offset;
     int path_value;
     int size;
     char *src;
-    char *dst;
     int count;
+    char *dst;
     int c;
     int flag;
 
@@ -382,29 +396,24 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
         return -1;
 
     best = -1;
-    index = 0;
-    offset = 0;
-    do {
-        entry = (int *)(lbl_8055FCB0 + offset);
-        if (entry[0] > 0) {
-            if (stricmp((char *)entry + 4, (char *)fn_802CA824((int)(char *)path_value)) == 0 &&
-                entry[0x24 / 4] == arg1 &&
+    for (index = 0; index < 0x200; index++) {
+        entry = &((struct Entry *)lbl_8055FCB0)[index];
+        if (entry->refCount > 0) {
+            if (stricmp(entry->name, (char *)fn_802CA824((int)(char *)path_value)) == 0 &&
+                entry->type == arg1 &&
                 flag == 0) {
-                offset = index * 0x4C;
-                if (((int (*)(int, int, int))fn_802CA7D4)((int)(char *)path_value, arg3, *(int *)(lbl_8055FCB0 + offset + (unsigned)0x34)) == 0) {
+                if (((int (*)(int, int, int))fn_802CA7D4)((int)(char *)path_value, arg3, ((struct Entry *)lbl_8055FCB0)[index].arg3) == 0) {
                     fn_802E30C8((const char *)(strings + 0x318), (char *)path_value);
-                    *(int *)(lbl_8055FCB0 + offset + 0x3C) = 0;
-                    *(int *)(lbl_8055FCB0 + offset + 0x34) = 0xE;
+                    ((struct Entry *)lbl_8055FCB0)[index].size = 0;
+                    ((struct Entry *)lbl_8055FCB0)[index].arg3 = 0xE;
                 }
-                entry[0]++;
+                entry->refCount++;
                 return index;
             }
         } else if (best < 0) {
             best = index;
         }
-        index++;
-        offset += 0x4C;
-    } while (index < 0x200);
+    }
 
     if (best < 0)
         fn_802E317C((const char *)(strings + 0x33C), (char *)path_value);
@@ -421,15 +430,15 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
     if (arg2 == 0)
         return -1;
 
-    entry = (int *)(lbl_8055FCB0 + best * 0x4C);
-    *(signed char *)((char *)entry + 0x30) = flag;
-    entry[0] = 1;
-    entry[0x48 / 4] = 0;
-    entry[0x24 / 4] = arg1;
+    entry = &((struct Entry *)lbl_8055FCB0)[best];
+    entry->flag = flag;
+    entry->refCount = 1;
+    entry->unk48 = 0;
+    entry->type = arg1;
 
     if (((int (*)(const char *))fn_802CA7DC)((char *)path_value) == 0) {
         src = (char *)path_value;
-        dst = (char *)entry + 4;
+        dst = entry->name;
         count = 0x20;
         goto copy1_body;
 copy1_check:
@@ -448,13 +457,13 @@ copy1_done:
             size = 0;
         else
             size = fn_802CA380((int)(char *)path_value);
-        entry[0x3C / 4] = size;
+        entry->size = size;
         if (size < 0x3E80)
-            entry[0x3C / 4] = 0;
+            entry->size = 0;
     } else {
         fn_802E30C8((const char *)(strings + 0x380), (char *)path_value);
         src = (char *)fn_802CA824((int)(char *)path_value);
-        dst = (char *)entry + 4;
+        dst = entry->name;
         count = 0x20;
         goto copy2_body;
 copy2_check:
@@ -469,14 +478,14 @@ copy2_body:
         if ((signed char)c != 0)
             goto copy2_check;
 copy2_done:
-        entry[0x3C / 4] = 0;
+        entry->size = 0;
     }
 
-    entry[0x40 / 4] = 0;
-    entry[0x44 / 4] = 0;
-    entry[0x2C / 4] = arg2;
-    entry[0x34 / 4] = arg3;
-    entry[0x28 / 4] = fn_802CA4E0(arg2, (int)(char *)path_value, 0, 0, arg3);
+    entry->unk40 = 0;
+    entry->unk44 = 0;
+    entry->resource = arg2;
+    entry->arg3 = arg3;
+    entry->handle = fn_802CA4E0(arg2, (int)(char *)path_value, 0, 0, arg3);
     lbl_8055FCB8 = -2;
     return best;
 }
@@ -502,18 +511,20 @@ extern void fn_8012C4D8(void *);
 extern void fn_802CB82C(int);
 extern void fn_802CAD28(int);
 extern char lbl_8034B8E0[];
-#pragma scheduling invalid_target
+#pragma opt_strength_reduction off
 void fn_802CAC54(int arg0) {
     int *entry;
     int offset;
+    char *base;
+
     if (arg0 == -1)
         return;
     if (arg0 >= 0 && arg0 < 0x200) {
-        int off0 = arg0 * 0x4C;
-        char *base0 = (char *)lbl_8055FCB0;
-        long v0 = *(long *)(base0 + off0);
-        if (v0 <= 0)
-            fn_802E317C(lbl_8034B8E0, (char *)lbl_8055FCB0 + arg0 * 0x4C + 4);
+        offset = arg0 * 0x4C;
+        base = (char *)lbl_8055FCB0;
+        entry = (int *)(base + offset);
+        if (entry[0] <= 0)
+            fn_802E317C(lbl_8034B8E0, base + offset + 4);
     }
     offset = arg0 * 0x4C;
     entry = (int *)((char *)lbl_8055FCB0 + offset);
@@ -529,7 +540,7 @@ void fn_802CAC54(int arg0) {
         ((void (*)(int))fn_802D8FB4)(entry[0x28 / 4]);
     }
 }
-#pragma scheduling on
+#pragma opt_strength_reduction reset
 void fn_802CAD28(int slotIndex) {
     int *slot;
     int refCount;
@@ -917,6 +928,7 @@ void fn_802CB424(void) {
     if (m != 0) {
         int v;
         int *p;
+        int count;
         zero = 0;
         m->heap = 0;
         m->sub = 0;
@@ -962,13 +974,13 @@ void fn_802CB424(void) {
         memset(m->slots, 0, 0x2800);
         v = 0;
         p = (int *)m;
-        i = 0x40;
+        count = 0x40;
         do {
             int k;
             for (k = 0; k < 8; k++)
                 p[0xF + k * 5] = v++;
             p += 40;
-        } while (--i);
+        } while (--count != 0);
         m->f2848 = 0;
     }
     *(void **)lbl_8055FCBC = m;
@@ -1673,10 +1685,10 @@ void fn_802CC550(int arg0, float arg1, float arg2) {
     if (*(int *)(entry + 0x3C) == 0)
         return;
     limit = lbl_80564F40;
-    limit = (limit <= arg1) ? arg1 : limit;
+    limit = (limit > arg1) ? limit : arg1;
     value = *(float *)(entry + 0x38);
     result = arg2 * (lbl_8055FCC4 * limit);
-    value = (value < result) ? result : value;
+    value = (value < result) ? value : result;
     *(float *)(entry + 0x38) = value;
 }
 #pragma dont_inline off
