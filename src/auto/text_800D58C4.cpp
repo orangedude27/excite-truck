@@ -124,9 +124,9 @@ extern "C" void GXSetTevDirect(u32);
 extern "C" void GXSetTevIndirect(u32, u32, u32, u32, u32, u32, u32, u32, u32, u32);
 extern "C" void GXSetTevKAlphaSel(u32, u32);
 extern "C" void GXSetTevKColor(int, u8 *);
-extern "C" void GXSetTevKColorSel(u8, u32);
-extern "C" void GXSetTevOrder(u8, u8, u8, u8);
-extern "C" void GXSetTevSwapMode(u8, u32, u32);
+extern "C" void GXSetTevKColorSel(u32, u32);
+extern "C" void GXSetTevOrder(u32, u32, u32, u32);
+extern "C" void GXSetTevSwapMode(u32, u32, u32);
 extern "C" void GXSetTevSwapModeTable(u32, u32, u32, u32, u32);
 extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32);
 
