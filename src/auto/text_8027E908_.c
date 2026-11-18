@@ -1033,7 +1033,7 @@ int fn_8027F958(int *selection, void *collection) {
     stack.menu.header[1] = (int)stack.menu.entries;
     if (lbl_8055F6A0 != 0) {
         lbl_8055F6A0 = 0;
-    *(char *)((char *)state + 0x70) = 0;
+    *(char *)(state + 0x70) = 0;
     index = *selection;
     if (index >= 0 && index < lbl_804B3048.count) {
         object = lbl_804B3048.items[index];
@@ -1041,7 +1041,7 @@ int fn_8027F958(int *selection, void *collection) {
         if (object != 0 && ((Fn8027F958Widget *)object)->object != 0) {
             item = ((Fn8027F958Widget *)object)->object;
             src = ((GetString)(*(void ***)item)[12])(item);
-            dst = (char *)state + 0x70;
+            dst = state + 0x70;
             remaining = 100;
             do {
                 char c = *src++;
@@ -1058,7 +1058,7 @@ int fn_8027F958(int *selection, void *collection) {
         }
     }
   else {
-    *(char *)((char *)state + 0x70) = 0;
+    *(char *)(state + 0x70) = 0;
     index = *selection;
     if (index >= 0 && index < lbl_804B3048.count) {
         object = lbl_804B3048.items[index];
@@ -1066,7 +1066,7 @@ int fn_8027F958(int *selection, void *collection) {
         if (object != 0 && ((Fn8027F958Widget *)object)->object != 0) {
             item = ((Fn8027F958Widget *)object)->object;
             src = ((GetString)(*(void ***)item)[12])(item);
-            dst = (char *)state + 0x70;
+            dst = state + 0x70;
             remaining = 100;
             do {
                 char c = *src++;
