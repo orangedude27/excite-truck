@@ -302,7 +302,7 @@ void fn_80236A5C(void *arg0, int arg1) {
     extern void fn_802E30C8(const char *, ...);
     register void *parser;
     register int mode;
-    register float defaultZero, defaultOne;
+    register float defaultZero = 0.0f, defaultOne = 1.0f;
     register void *list;
     register int index;
     register char *filename = (char *)arg1;
