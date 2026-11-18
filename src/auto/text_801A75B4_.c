@@ -42,12 +42,35 @@ typedef struct InputBinding {
     const char *id;        /* +0x04 internal id, e.g. "JoyAXPlus" */
     int type;              /* +0x08 binding type (1..6) */
     int value;             /* +0x0C bound key code */
-    int unk10;             /* +0x10 */
+    unsigned char keyFlag; /* +0x10 per-key byte filled in by fn_801A7628; never read back */
+    char pad11[3];         /* +0x11 */
     unsigned char enabled; /* +0x14 enabled flag (0 = active) */
     char pad15[3];         /* +0x15 */
 } InputBinding;
+#define NUM_INPUT_BINDINGS 122        /* entries of the table at lbl_803342D0 */
 #define gInputBindingTable lbl_8055E5CC /* InputBinding*: table base */
 #define gInputBindingCount lbl_8055E5D0 /* int: number of entries (0x7A) */
+#define gInputBindingsReady lbl_8055E5D4 /* char: the table has been filled in */
+
+/* Keyboard key codes (InputBinding::value, and the argument of the key-state
+ * helper fn_802E47F8) are HID keyboard usage IDs. */
+enum HidKey {
+    HID_KEY_A = 0x04, HID_KEY_B = 0x05, HID_KEY_C = 0x06, HID_KEY_D = 0x07,
+    HID_KEY_E = 0x08, HID_KEY_F = 0x09, HID_KEY_G = 0x0A, HID_KEY_H = 0x0B,
+    HID_KEY_I = 0x0C, HID_KEY_J = 0x0D, HID_KEY_K = 0x0E, HID_KEY_L = 0x0F,
+    HID_KEY_M = 0x10, HID_KEY_N = 0x11, HID_KEY_O = 0x12, HID_KEY_P = 0x13,
+    HID_KEY_Q = 0x14, HID_KEY_R = 0x15, HID_KEY_S = 0x16, HID_KEY_T = 0x17,
+    HID_KEY_U = 0x18, HID_KEY_V = 0x19, HID_KEY_W = 0x1A, HID_KEY_X = 0x1B,
+    HID_KEY_Y = 0x1C, HID_KEY_Z = 0x1D,
+    HID_KEY_1 = 0x1E, HID_KEY_2 = 0x1F, HID_KEY_3 = 0x20, HID_KEY_4 = 0x21,
+    HID_KEY_5 = 0x22, HID_KEY_6 = 0x23, HID_KEY_7 = 0x24, HID_KEY_8 = 0x25,
+    HID_KEY_9 = 0x26, HID_KEY_0 = 0x27,
+    HID_KEY_ENTER = 0x28, HID_KEY_ESCAPE = 0x29, HID_KEY_BACKSPACE = 0x2A,
+    HID_KEY_TAB = 0x2B, HID_KEY_SPACE = 0x2C, HID_KEY_MINUS = 0x2D,
+    HID_KEY_EQUALS = 0x2E, HID_KEY_LBRACKET = 0x2F, HID_KEY_RBRACKET = 0x30,
+    HID_KEY_BACKSLASH = 0x31, HID_KEY_HASH = 0x32, HID_KEY_SEMICOLON = 0x33,
+    HID_KEY_QUOTE = 0x34, HID_KEY_BACKTICK = 0x35
+};
 
 /* A control's binding the way the options code keeps it: the kind of input and
  * the key/axis within it.  fn_801A9110 builds one from a binding's display
