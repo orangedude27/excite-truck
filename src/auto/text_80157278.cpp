@@ -728,51 +728,60 @@ struct Rec157560 {
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_80157560(VObj *arg0) {
-    VObj *a = (VObj *)fn_80131810(lbl_8032EAD4);
-    VObj *b0 = (VObj *)fn_80131808(lbl_8032EAE0);
-    VObj *b1;
-    if (a == 0) {
-        a = b0;
+    /* Fill one bonus tracker's stunt table from the game's stunt value files.
+       "stunts.val" (the per-course values) is opened first and "stuntdef.val"
+       (the defaults) next; the tracker's own category name picks the group of
+       entries to read, falling back to the default file and finally to its
+       "default" group.  Every entry of that group becomes one 0x38-byte record
+       at the rank it names: its "thresh" value, its "pts" value (the matching
+       "default" entry's when it comes out negative) and its "adj" text written
+       into the record's name.  Both files are closed again on the way out, the
+       per-course one only when it is not the default file as well. */
+    ValueObject *stunts = (ValueObject *)fn_80131810(STUNTS_VAL);
+    ValueObject *stuntDef = (ValueObject *)fn_80131808(STUNTDEF_VAL);
+    ValueObject *group;
+    if (stunts == 0) {
+        stunts = stuntDef;
     }
-    const void *p = arg0->vslot28();
-    if (a->vslot4(p) != 0) {
-        b1 = a->vslot2(p);
-    } else if (b0->vslot4(p) != 0) {
-        b1 = b0->vslot2(p);
+    const char *category = ((Unk801577F0 *)arg0)->GetCategoryName();
+    if (stunts->hasKey(category) != 0) {
+        group = stunts->getGroup(category);
+    } else if (stuntDef->hasKey(category) != 0) {
+        group = stuntDef->getGroup(category);
     } else {
-        b1 = b0->vslot2(lbl_8055A030);
+        group = stuntDef->getGroup(STUNT_GROUP_DEFAULT);
     }
-    if (b1 != 0) {
-        VObj *iter = b1->vslot24(0);
-        f32 best = lbl_80561754;
-        s32 idx = 0;
-        while (iter != 0) {
-            s32 s28 = iter->vslot7(lbl_8055A038);
-            s32 s22 = iter->vslot6(lbl_8055A040, lbl_8055A044);
-            s32 s29 = iter->vslot8(lbl_8055A048, 0);
-            f32 f1v = iter->vslot10(lbl_8055A050, lbl_80561754);
-            if (f1v < best) {
-                f1v = b0->vslot2(lbl_8055A030)->vslot24(idx)->vslot9(lbl_8055A050);
+    if (group != 0) {
+        ValueObject *entry = group->getEntry(0);
+        f32 zero = lbl_80561754; // 0.0f, the value every record starts at
+        s32 index = 0;
+        while (entry != 0) {
+            s32 rank = entry->getInt(STUNT_KEY_RANK);
+            const char *adj = entry->getString(STUNT_KEY_ADJ, STUNT_ADJ_NONE);
+            s32 thresh = entry->getIntDefault(STUNT_KEY_THRESH, 0);
+            f32 pts = entry->getFloatDefault(STUNT_KEY_PTS, lbl_80561754);
+            if (pts < zero) {
+                pts = stuntDef->getGroup(STUNT_GROUP_DEFAULT)->getEntry(index)->getFloat(STUNT_KEY_PTS);
             }
-            s32 off = s28 * 0x38;
-            (*(s32 *)((char *)arg0 + 0xC))++;
-            char *base = *(char **)((char *)arg0 + 8);
-            *(s32 *)(base + off) = 0;
-            char *rec = base + off;
+            s32 offset = rank * 0x38;
+            ((Unk801577F0 *)arg0)->mCount++;
+            char *records = (char *)((Unk801577F0 *)arg0)->mData;
+            *(s32 *)(records + offset) = 0;
+            char *rec = records + offset;
             *(s32 *)(rec + 4) = 0;
             *(s32 *)(rec + 8) = 0;
-            *(f32 *)(rec + 12) = best;
-            *(f32 *)(rec + 16) = f1v;
-            *(s32 *)(rec + 20) = s29;
-            fn_801345D8(rec + 24, 0x20, lbl_8055A054, s22);
-            idx++;
-            iter = b1->vslot24(idx);
+            *(f32 *)(rec + 12) = zero;
+            *(f32 *)(rec + 16) = pts;
+            *(s32 *)(rec + 20) = thresh;
+            fn_801345D8(rec + 24, 0x20, STUNT_FMT_ADJ, adj);
+            index++;
+            entry = group->getEntry(index);
         }
     }
-    if (a != b0) {
-        fn_80131818(a);
+    if (stunts != stuntDef) {
+        fn_80131818(stunts);
     }
-    fn_80131818(b0);
+    fn_80131818(stuntDef);
 }
 // Return the bonus-category name string for a tracker, indexed by its GetType() category.
 extern "C" s32 fn_801577F0(Unk801577F0* tracker) {
