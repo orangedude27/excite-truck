@@ -1434,7 +1434,7 @@ s32 fn_80069178(void) {
 }
 s32 fn_800692D0(void) {
     u8 *record;
-    s32 offset;
+    u8 *offset;
     u8 *base = lbl_80392960;
     s32 i;
     s32 interruptState;
@@ -1443,12 +1443,12 @@ s32 fn_800692D0(void) {
 
     if (base[0x667] != 0) {
         i = 0;
-        offset = 0;
+        offset = (u8 *)0;
         while (i < 0x10) {
             interruptState = OSDisableInterrupts();
             if (i < 0) goto high_record;
             if (i >= 0xA) goto high_record;
-            record = (u8 *)((u32)base + (u32)offset + 0x64);
+            record = (u8 *)((u32)base + ((u32)offset * 1u) + 0x64);
             goto selected_record;
         high_record:
             record = (u8 *)((u32)base + ((u32)(i - 0xA) * 0x60u) + 0x424);
@@ -2076,6 +2076,7 @@ u8 fn_8006A1DC(void) {
     s32 i;
     u8 *dev;
     char *fmt;
+    u8 b0, b1, b2, b3, b4, b5;
     u8 one = 1;
     u8 zero = 0;
     u8 two = 2;
@@ -2098,8 +2099,14 @@ u8 fn_8006A1DC(void) {
             dev[0x57] = two;
             *(u16 *)(dev + 0x5E) = value - 0x7F8C;
             dev[0x58] = three;
+            b0 = dev[0x40];
             fmt = strings + 0x1CC;
-            DBPrintf_8006CFA8(fmt, dev[0x40], dev[0x41], dev[0x42], dev[0x43], dev[0x44], dev[0x45]);
+            b1 = dev[0x41];
+            b2 = dev[0x42];
+            b3 = dev[0x43];
+            b4 = dev[0x44];
+            b5 = dev[0x45];
+            DBPrintf_8006CFA8(fmt, b0, b1, b2, b3, b4, b5);
             DBPrintf_8006CFA8(strings + 0x390, dev);
         }
         entry += 0x46;
@@ -7782,13 +7789,16 @@ void bta_hh_add_device_to_list(void *devCb, s8 handle, s16 attrMask, void *desc,
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 max_devt = lbl_80559030[0];
     UINT32 cod = (sub_class >> 2) & 0x3F;
-    UINT8 xx;
-    for (xx = 0; xx < max_devt; xx++) {
-        UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
+    UINT8 *cfg = lbl_80559030;
+    UINT8 xx = 0;
+    UINT8 *p_list;
+    while (xx < max_devt) {
+        p_list = *(UINT8 **)(cfg + 4);
         if (cod == p_list[xx * 2]) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
         }
+        xx++;
     }
     return FALSE;
 }
@@ -8353,17 +8363,15 @@ u8 fn_80077DD8(void) {
 u16 BTM_GetHCIConnHandle(u8 *arg0) {
     u32 var_r31;
     u8 *var_r30;
-    s32 r;
 
     var_r31 = 0;
     var_r30 = lbl_803C0F78 + 0x34;
 loop:
     if (var_r30[0x119] != 0) {
-        r = memcmp(var_r30 + 8, arg0, 6);
-        if (r != 0) {
-            goto next;
+        if (memcmp(var_r30 + 8, arg0, 6) == 0) {
+            goto found;
         }
-        goto found;
+        goto next;
     }
 next:
     var_r31++;
@@ -25263,17 +25271,16 @@ void fn_80095518(void *p_tle) {
     rfc_port_sm_execute(*(void **)((u8 *)p_tle + 0x10), 5, 0);
 }
 
-void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
-    u8 state;
-    if (*((u8 *)arg0 + 1) == 0) return;
-    state = *((u8 *)arg0 + 0x68);
-    if (state == 2) goto call;
-    switch (state) {
-    case 3u: goto call;
-    default: return;
-    }
-call:
-    rfc_port_sm_execute(arg0, 15, &arg1);
+void rfc_sec_check_complete(void *bd_addr, void *p_ref_data, s8 res) {
+    tPORT_VIEW *p_port = (tPORT_VIEW *)p_ref_data;
+
+    /* Verify that PORT is still waiting for Security to complete */
+    if (!p_port->in_use
+     || ((p_port->rfc_state != 2)
+      && (p_port->rfc_state != 3)))
+        return;
+
+    rfc_port_sm_execute(p_ref_data, 15, &res);
 }
 
 void rfc_port_closed(void *arg0) {
