@@ -140,7 +140,8 @@ void fn_801E7984(long arg0) {
     fn_80204460(); fn_80127464();
     lbl_8055EB0C = -1; lbl_8055EB04 = 0; lbl_8055EB1C = 0; lbl_8055EB20 = 0;
     memset(base, 0, 0x10);
-    p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0;
+    *(long *)(base + 0x10) = 0;
+    p[1] = 0; p[2] = 0; p[3] = 0;
     p = (long *)(base + 0x10);
     fn_801E89FC(); lbl_8055EB10 = 1;
     fn_80127464(); fn_801EA2E8();
@@ -409,41 +410,45 @@ extern void fn_801EA9DC(long, void *);
 extern void *fn_801E87A8(void);
 extern void fn_801E8CE4(void);
 extern void fn_801E8A84(void);
+#pragma processor 750
+#pragma paired_single off
+#pragma use_lmw_stmw off
 void fn_801E7E48(void) {
     extern float lbl_80562DB8;
     extern double lbl_80562DC8;
     extern float lbl_8055EB28;
     char *obj;
-    long long t0;
-    float f, g;
+    long t0, t1;
+    float f, g, h;
     long i, j;
     char *dst;
     char *src;
-    t0 = ((long long (*)())fn_802E2C9C)();
+    float scale;
+    t0 = (long)(((long long (*)())fn_802E2C9C)());
     obj = (char *)fn_80176A70();
     f = *(float *)obj - lbl_8055EB18;
     g = lbl_80562DB4;
-    if (g >= f) g = f;
-    f = g;
-    if (f <= lbl_80562DB8) f = lbl_80562DB8;
-    g = f;
-    if (g > lbl_80562DBC) g = lbl_80562DBC;
-    lbl_8055EB14 = g;
+    if (f > g) g = f;
+    if (g > lbl_80562DB8) g = lbl_80562DB8;
+    h = (float)g;
+    h = (h <= lbl_80562DBC) ? h : lbl_80562DBC;
+    lbl_8055EB14 = h;
     lbl_8055EB18 = *(float *)obj;
     lbl_8055EB04 = (float *)obj;
     if ((long)lbl_8055EB2C != *(long *)(obj + 0x394)) {
-        fn_802C2C60(0);
+        fn_802C2C60();
         lbl_8055EB2C = (void *)*(long *)(obj + 0x394);
     }
     lbl_8055EB20 = 1;
     dst = (char *)lbl_80487D00;
+    scale = lbl_80562DC0;
     i = 0; j = 0;
     while (i < (long)lbl_8055EB2C) {
         src = (char *)lbl_8055EB04 + j;
         if (*(long *)((char *)fn_801E87A8() + 0x10) & 2) {
-            *(float *)(src + 4) *= lbl_80562DC0;
-            *(float *)(src + 8) *= lbl_80562DC0;
-            *(float *)(src + 12) *= lbl_80562DC0;
+            *(float *)(src + 4) *= scale;
+            *(float *)(src + 8) *= scale;
+            *(float *)(src + 12) *= scale;
         }
         j += 0xE0; i++;
         *(long *)(dst + 0) = *(long *)(src + 4);
@@ -462,9 +467,39 @@ void fn_801E7E48(void) {
         *(long *)(dst + 48) = *(long *)(src + 108);
         dst += 0x38;
     }
-    (void)t0;
+    if (lbl_8055EB0C != *(long *)((char *)lbl_8055EB04 + 0x398)) {
+        lbl_8055EB0C = *(long *)((char *)lbl_8055EB04 + 0x398);
+        fn_801E8CE4();
+    }
+    for (i = 0, j = 0; i < lbl_8055EB38; i++, j += 4)
+        fn_801EAB90(*(long *)((char *)lbl_8055EB40 + j), (char *)obj + 0x2ee8);
+    for (i = 0, j = 0; i < (long)fn_801EA994(); i++, j += 0x38)
+        fn_801EA9DC(i, (char *)lbl_8055EB04 + j + 0x3a0);
+    fn_80176BA8();
+    fn_80287974();
+    fn_8028797C();
+    fn_801EA400();
+    fn_801EF0AC((char *)obj + 0xee0);
+    fn_801EF0AC((char *)obj + 0x1ee4);
+    fn_801E8A84();
+    fn_801FA2C4();
+    fn_801F4DC4();
+    for (i = 0, j = 0; i < lbl_8055EB34; i++, j += 4) {
+        void *v = *(void **)((char *)lbl_8055EB3C + j);
+        ((void (*)(void))*(void **)((char *)*(void **)v + 0xC))();
+    }
+    if ((long)lbl_8055EB2C == 1) {
+        long idx = fn_801E866C(0);
+        long val = 0;
+        if (idx < 8) val = (long)lbl_80488648[idx];
+        fn_80202AD4(val + 0x28);
+    }
+    fn_80202924();
+    fn_80134994();
+    fn_8000D7FC();
+    t1 = (long)(((long long (*)())fn_802E2C9C)());
+    lbl_8055EB28 = (double)(t1 - t0) / lbl_80562DA8;
 }
-
 void fn_801E8144(void) {
 
 }
@@ -1030,75 +1065,71 @@ void fn_801E89FC(void) {
 void fn_801E8A84(void)
 {
   float new_var3;
-  extern float lbl_80562DE4;
-  extern float lbl_80562DE8;
-  extern float lbl_80562DEC;
   unsigned short new_var2;
-  extern float lbl_80562DF0;
   float new_var;
   float scale;
   float new_var4;
   float value;
-  lbl_804881D8[0] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
-  lbl_804881D8[1] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
-  lbl_804881D8[2] += fn_80129DC4(0, lbl_80562DE4, lbl_80562DE8);
-  if (lbl_804881D8[1] > lbl_80562DDC)
+  lbl_804881D8[0] += fn_80129DC4(0, -0.05f, 0.05f);
+  lbl_804881D8[1] += fn_80129DC4(0, -0.05f, 0.05f);
+  lbl_804881D8[2] += fn_80129DC4(0, -0.05f, 0.05f);
+  if (lbl_804881D8[1] > 0.33f)
   {
-    new_var3 = lbl_804881D8[1] - lbl_80562DDC;
+    new_var3 = lbl_804881D8[1] - 0.33f;
     scale = new_var3 * lbl_80562DB4;
     new_var4 = lbl_804881D8[0];
-    if (new_var4 > lbl_80562DBC)
+    if (new_var4 > 0.0f)
     {
-      value = lbl_80562DD4;
+      value = 1.0f;
     }
     else
     {
-      value = lbl_80562DC0;
+      value = -1.0f;
     }
     lbl_804881D8[0] = lbl_804881D8[0] + (scale * value);
     new_var = lbl_804881D8[2];
-    lbl_804881D8[1] = lbl_80562DDC;
-    if (new_var > lbl_80562DBC)
+    lbl_804881D8[1] = 0.33f;
+    if (new_var > 0.0f)
     {
-      value = lbl_80562DD4;
+      value = 1.0f;
     }
     else
     {
-      value = lbl_80562DC0;
+      value = -1.0f;
     }
     lbl_804881D8[new_var2 = 2] = lbl_804881D8[2] + (scale * value);
   }
   else
-    if (lbl_804881D8[1] < lbl_80562DD8)
+    if (lbl_804881D8[1] < -0.33f)
   {
-    new_var3 = lbl_80562DD8 - lbl_804881D8[1];
+    new_var3 = -0.33f - lbl_804881D8[1];
     scale = new_var3 * lbl_80562DB4;
     new_var4 = lbl_804881D8[0];
-    if (new_var4 > lbl_80562DBC)
+    if (new_var4 > 0.0f)
     {
-      value = lbl_80562DD4;
+      value = 1.0f;
     }
     else
     {
-      value = lbl_80562DC0;
+      value = -1.0f;
     }
     lbl_804881D8[0] = lbl_804881D8[0] + (scale * value);
     new_var = lbl_804881D8[2];
-    lbl_804881D8[1] = lbl_80562DD8;
-    if (new_var > lbl_80562DBC)
+    lbl_804881D8[1] = -0.33f;
+    if (new_var > 0.0f)
     {
-      value = lbl_80562DD4;
+      value = 1.0f;
     }
     else
     {
-      value = lbl_80562DC0;
+      value = -1.0f;
     }
     lbl_804881D8[2] = lbl_804881D8[2] + (scale * value);
   }
   PSVECNormalize(lbl_804881D8, lbl_804881D8);
-  value = lbl_804881D8[3] + fn_80129DC4(0, lbl_80562DEC, lbl_80562DF0);
-  value = (lbl_80562DE0 < value) ? lbl_80562DE0 : value;
-  value = (value > lbl_80562DBC) ? value : lbl_80562DBC;
+  value = lbl_804881D8[3] + fn_80129DC4(0, -0.2f, 0.2f);
+  value = (3.0f < value) ? 3.0f : value;
+  value = (value > 0.0f) ? value : 0.0f;
   lbl_804881D8[3] = value;
   scale = scale + 0;
 }
@@ -1185,6 +1216,7 @@ void fn_801E8DD4(void) {
     if (panelObject != 0) fn_801EAD6C(panelObject, (long)initData);
     ((void (*)(void))fn_801E87D4)();
 }
+#pragma scheduling on
 void fn_801E8E38(void) {
     struct InitData { long tag; long size; float a; float b; float c; float d; } data;
     void *object;
@@ -1199,7 +1231,6 @@ void fn_801E8E38(void) {
     if (object != 0) fn_801EAD6C(object, (long)&data);
     ((void (*)(void))fn_801E87D4)();
 }
-#pragma scheduling invalid_target
 /* Find the mapping-table row whose CarType field matches carType; on a miss, log "world: Can't map CarType %d" and return the terminating (zero) row. */
 void *fn_801E8EA4(long carType) {
     unsigned char *entry;
@@ -1226,8 +1257,8 @@ extern void fn_801EEEB0(void *, void *);
 extern void fn_801EC750(void *, void *);
 void fn_801E8F10(long arg0) {
     long *e;
-    struct Ctx68 ctx;
-    struct Loc78 loc;
+    volatile struct Ctx68 ctx;
+    volatile struct Loc78 loc;
     struct Rec78 *p;
     long i;
     long cnt;
@@ -1245,12 +1276,12 @@ void fn_801E8F10(long arg0) {
         e = (long *)fn_801E8EA4(loc.r.tag);
         ctx.w0 = e[0];
         ctx.w1 = e[2];
-        memset(ctx.pad, 0, 0x50);
+        memset((void *)ctx.pad, 0, 0x50);
         fn_801E9DC4((char *)&ctx + 0x58);
         if (p->tag == 0x53) {
-            if (((int (*)(int, void *))fn_801284F8)(0x4E4, lbl_80339BA0 + 0x1C0)) fn_801EEEB0(&ctx, p);
+            if (((int (*)(int, void *))fn_801284F8)(0x4E4, lbl_80339BA0 + 0x1C0)) fn_801EEEB0((void *)&ctx, p);
         } else {
-            if (((int (*)(int, void *))fn_801284F8)(0x4E4, lbl_80339BA0 + 0x1D0)) fn_801EC750(&ctx, p);
+            if (((int (*)(int, void *))fn_801284F8)(0x4E4, lbl_80339BA0 + 0x1D0)) fn_801EC750((void *)&ctx, p);
         }
         ((void (*)(void))fn_801E87D4)();
     }
@@ -1285,7 +1316,7 @@ void fn_801E95DC(void) {
     extern double lbl_80562E10;
     extern float lbl_80562E18;
     float matrix[12];
-    float x, y;
+    double y, x;
     float time;
     long flags;
     unsigned long index;
@@ -1311,7 +1342,7 @@ void fn_801E95DC(void) {
         if (index < 8) entry = lbl_80488648[index];
         else entry = 0;
         matrix[10] = *(float *)(entry + 0x2c);
-        y = y - matrix[10] / fn_80203FE0();
+        y = (float)y - matrix[10] / fn_80203FE0();
         flags = *(long *)((char *)fn_801E87A8() + 0x10);
         mode = 2;
         if (flags & 2) mode = 1;
