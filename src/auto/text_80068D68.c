@@ -7953,7 +7953,7 @@ void btm_acl_device_down(void)
 }
 
 #pragma push
-#pragma optimization_level 3
+#pragma optimization_level 4
 tBTM_STATUS BTM_SwitchRole(BD_ADDR remote_bd_addr, UINT8 new_role, tBTM_CMPL_CB *p_cb) {
     u32 i; u8 *entry; u8 power_mode; u8 status; tBTM_PM_PWR_MD spC;
     if ((lbl_803C0F78[0x640] & 0x20) == 0) return 4;
