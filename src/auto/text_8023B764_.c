@@ -167,7 +167,7 @@ void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         s32 arg3;
         s32 zero;
         s32 flags;
-        u8 trailing[0x50];
+        u8 trailing[0x40];
     };
     struct Frame {
         const char *resource;
@@ -177,34 +177,31 @@ void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         struct Context context;
     } frame;
     const char *resource;
-    s32 zero;
     s32 active = fn_802ECEEC();
-    if (active != 0) {
+    if (active != 0)
         fn_802ECEC0();
-        resource = lbl_80341314;
-        zero = 0;
+    resource = lbl_80341314;
+    do {
         frame.resource = resource;
         frame.resource0 = fn_80128314(0);
         frame.resource1 = fn_80128314(1);
         frame.resource2 = fn_80265D58();
         if (fn_80204024() != 0)
             fn_8012BF28();
-        do {
-            fn_801E952C(&frame.context);
-            fn_8023B7EC(&frame.context, arg0, arg1, arg3);
-            frame.context.arg3 = arg3;
-            frame.context.zero = zero;
-            if (fn_8023B764(arg3, frame.context.value) != 0) {
-                fn_802E30C8(resource + 0x14);
-                frame.context.flags |= 2;
-            }
-            fn_8023B904(&frame.context, (void *)arg2, arg4);
-            fn_8023B8AC((s32)&frame.context);
-        } while (fn_80204024() != 0);
-        fn_80129AEC(0);
-        if (active != 0)
-            fn_802ECEC4();
-    }
+        fn_801E952C(&frame.context);
+        fn_8023B7EC(&frame.context, arg0, arg1, arg3);
+        frame.context.zero = 0;
+        frame.context.arg3 = arg3;
+        if (fn_8023B764(arg3, frame.context.value) != 0) {
+            fn_802E30C8(lbl_80341328);
+            frame.context.flags |= 2;
+        }
+        fn_8023B904(&frame.context, (void *)arg2, arg4);
+        fn_8023B8AC((s32)&frame.context);
+    } while (fn_80204024() != 0);
+    fn_80129AEC(0);
+    if (active != 0)
+        fn_802ECEC4();
 }
 #pragma dont_inline reset
 #pragma use_lmw_stmw reset
