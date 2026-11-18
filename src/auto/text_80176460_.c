@@ -154,7 +154,7 @@ typedef struct PhysicsCommand {
 #define sPendingCommand     lbl_804303D4 /* the PhysicsCommand waiting its turn */
 #define STR_PHYS_FADER_ACTIVE lbl_803316B4 /* "physics: hey, phys-fader was active! (new race mode)" */
 
-#pragma use_lmw_stmw off
+#pragma opt_common_subs off
 void fn_80176460(void *arg0, const char *arg1, s32 *arg2) {
     s32 v0 = arg2[0];
     s32 p0 = ((s32 *)arg0)[0];
@@ -214,7 +214,7 @@ void fn_80176460(void *arg0, const char *arg1, s32 *arg2) {
     fn_801D0BE4();
     fn_80177790();
 }
-#pragma use_lmw_stmw reset
+#pragma opt_common_subs reset
 /* Shuts down the physics module: unregisters its update callback, clears state, runs subsystem shutdown steps, frees the physics heap/work buffers, resets scene timing, and marks the module inactive. (renames unavailable: fn_801765B8->Physics_Shutdown, lbl_8055E3F4->sPhysicsState, lbl_8055E3E0->sPhysicsHeapBlock, lbl_8055E3DC->sPhysicsWorkBuffer, lbl_8055E3BC->sPhysicsModuleActive) */
 void fn_801765B8(void) {
 #define sPhysicsState lbl_8055E3F4
@@ -501,20 +501,17 @@ void fn_80177138(void) {
 #pragma opt_common_subs off
 void fn_801771A8(void) {
     f32 f;
-    s32 d, t, v, q, cur;
+    s32 d, t, v;
     if (*(u32 *)(lbl_80430558 + 0xC) - 1 <= 1U) {
         if (fn_802ECC10() != 0) {
             if (*(s32 *)(lbl_80430558 + 0xC) == 2) {
-                u8 c;
+                s32 c = lbl_80430558[0x14];
                 *(s32 *)(lbl_80430558 + 8) = 7;
-                c = 0xFA;
-                if ((s32)lbl_80430558[0x14] < 0xFA) {
-                    c = lbl_80430558[0x14];
-                }
+                c = c < 0xFA ? c : 0xFA;
                 lbl_80430558[0x14] = c;
             }
         } else if ((u8)lbl_8055E3BD == 0) {
-            s32 n;
+            s32 n, cur, q, tick, last;
             if ((s32)fn_80176A1C() == 2) {
                 f = fn_80176A2C();
             } else {
@@ -522,23 +519,23 @@ void fn_801771A8(void) {
             }
             f = (f > lbl_80561B30) ? f : lbl_80561B30;
             q = (s32)(lbl_80561B40 / f);
-            d = lbl_8055E3C4 - *(s32 *)lbl_80430558;
+            last = *(s32 *)lbl_80430558;
+            tick = lbl_8055E3C4;
             cur = lbl_80430558[0x14];
-            n = 2;
-            if (d <= 2) {
-                n = d;
-            }
+            d = tick - last;
+            n = (d > 2) ? 2 : d;
             t = cur + ((n << 8) - n) / q;
             t = t & ((-t & ~t) >> 31);
             v = 0xFF;
             if (t < 0xFF) {
                 v = t;
             }
-            *(s32 *)lbl_80430558 = lbl_8055E3C4;
+            *(s32 *)lbl_80430558 = tick;
             lbl_80430558[0x14] = v;
         } else {
             s32 now = fn_802E2C20();
             s32 n = 0x21;
+            s32 cur;
             d = now - *(s32 *)(lbl_80430558 + 4);
             cur = lbl_80430558[0x14];
             if (d <= 0x21) {
@@ -575,21 +572,19 @@ void fn_801771A8(void) {
 #pragma pop
 s32 fn_801773E4(void) {
     f32 f;
-    s32 d, t, v, q, cur;
+    s32 d, t, v;
     u8 r;
     if (*(u32 *)(lbl_80430558 + 0xC) - 1 <= 1U) {
         if (fn_802ECC10() != 0) {
             if (*(s32 *)(lbl_80430558 + 0xC) == 2) {
-                u8 c;
+                s32 c = lbl_80430558[0x14];
                 *(s32 *)(lbl_80430558 + 8) = 7;
-                c = 0xFA;
-                if ((s32)lbl_80430558[0x14] < 0xFA) {
-                    c = lbl_80430558[0x14];
-                }
+                c = c < 0xFA ? c : 0xFA;
                 lbl_80430558[0x14] = c;
             }
         } else if ((u8)lbl_8055E3BD == 0) {
-            s32 n;
+            s32 n, q;
+            u8 cur;
             if ((s32)fn_80176A1C() == 2) {
                 f = fn_80176A2C();
             } else {
@@ -597,32 +592,33 @@ s32 fn_801773E4(void) {
             }
             f = (f > lbl_80561B30) ? f : lbl_80561B30;
             q = (s32)(lbl_80561B40 / f);
+            n = 2;
             cur = lbl_80430558[0x14];
             d = lbl_8055E3C4 - *(s32 *)lbl_80430558;
-            n = 2;
-            if (2 >= d) {
+            if (d <= 2) {
                 n = d;
             }
-            t = cur + ((n << 8) - n) / q;
+            t = cur + (n * 255) / q;
             t = t & ((-t & ~t) >> 31);
             v = 0xFF;
-            if (0xFF > t) {
+            if (t < 0xFF) {
                 v = t;
             }
-            lbl_80430558[0x14] = v;
             *(s32 *)lbl_80430558 = lbl_8055E3C4;
+            lbl_80430558[0x14] = v;
         } else {
-            unsigned int now = fn_802E2C20();
+            s32 now = fn_802E2C20();
             s32 n = 0x21;
-            int cur2 = lbl_80430558[0x14];
+            s32 cur;
             d = now - *(s32 *)(lbl_80430558 + 4);
+            cur = lbl_80430558[0x14];
             if (d <= 0x21) {
                 n = d;
             }
-            t = cur2 + ((n << 8) - n) / 750;
+            t = cur + ((n << 8) - n) / 750;
             t = t & ((-t & ~t) >> 31);
             v = 0xFF;
-            if (0xFF > t) {
+            if (t < 0xFF) {
                 v = t;
             }
             lbl_80430558[0x14] = v;
@@ -763,13 +759,11 @@ void fn_80176BA8(void) {
 #pragma processor 750
 void fn_80176BAC(void) {
     f32 now = lbl_8055E3C8;
-    f32 prev = lbl_8055E3FC;
     f32 upper = lbl_80561B38;
+    f32 delta = now - lbl_8055E3FC;
     f32 lower;
-    f32 value;
+    f32 value = upper < delta ? delta : upper;
 
-    prev = now - prev;
-    value = upper < prev ? prev : upper;
     lower = lbl_80561B3C;
     value = value > lower ? value : lower;
     fn_8017ED00(value);
@@ -777,9 +771,9 @@ void fn_80176BAC(void) {
 }
 #pragma pop
 s32 *fn_80176C0C(register s32 *arg0, s32 *arg1) {
-    s32 length = *arg1;
+    s32 length = *arg1++;
     *arg0 = length;
-    memcpy(arg0 + 1, arg1 + 1, length);
+    memcpy(arg0 + 1, arg1, length);
     return arg0;
 }
 #pragma scheduling on
