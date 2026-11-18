@@ -231,58 +231,83 @@ extern "C" int fn_80204EA0(const char *arg0) {
 __declspec(section ".sdata") extern const char lbl_8055B4B4[];
 __declspec(section ".sdata") extern const char lbl_8055B4B8[];
 #pragma cplusplus on
-extern "C" int fn_8020503C(const char *arg0) {
-    class Res {
+/* Is the current scene's difficulty setting `name` switched on?  The setting is
+ * looked up in the difficulty info block fn_80204BB8 published in lbl_8055ED5C:
+ * first as "<contest>_<name>" in the stage's difficulty set, then in the scene's,
+ * and if neither has it as the plain "<name>" in both.  A setting none of them
+ * has is reported with the 'Difficulty: "%s" was not found' message and reads as
+ * off.  The string the lookup returns is the flag: only "yes" and "true" are on. */
+extern "C" int fn_8020503C(const char *name) {
+    #define DIFFICULTY_INFO lbl_8055ED5C  /* the published difficulty info block */
+    #define KEY_FORMAT      lbl_8055B4AC  /* "%s_%s" */
+    #define NOT_FOUND_MSG   lbl_8033BBF4  /* Difficulty: "%s" was not found */
+    #define YES_STRING      lbl_8055B4B4  /* "yes" */
+    #define TRUE_STRING     lbl_8055B4B8  /* "true" */
+    class DifficultySet {
     public:
         virtual void unused0();
-        virtual int has(void *);
+        virtual int has(const char *);
         virtual void unused2();
-        virtual int get(void *);
+        virtual int get(const char *);
     };
-    char buf[0x64];
-    int *p;
-    int result;
-    int value;
-    int answer;
-    p = lbl_8055ED5C;
-    result = 0;
-    if (p[4] != 0) {
-        fn_801345D8(buf, 0x64, lbl_8055B4AC, p[4], arg0);
-        if (p[3] != 0) {
-            if (((Res *)p[3])->has(buf)) {
-                value = ((Res *)p[3])->get(buf);
+    /* The 0x14-byte block fn_80204BB8 builds for the scene that is starting. */
+    struct DifficultyInfo {
+        int sceneType;             /* +0x00 */
+        void *propertyGroup;       /* +0x04 the "difficulty.val" group */
+        DifficultySet *sceneSet;   /* +0x08 the scene's difficulty set */
+        DifficultySet *stageSet;   /* +0x0C the stage's, 0 while none applies */
+        const char *contestName;   /* +0x10 "excite"/"zone"/"fs", 0 if unknown */
+    };
+    char key[0x64];
+    DifficultyInfo *info;
+    int setting;
+    int text;
+    int on;
+    info = (DifficultyInfo *)DIFFICULTY_INFO;
+    setting = 0;
+    if (info->contestName != 0) {
+        fn_801345D8(key, 0x64, KEY_FORMAT, info->contestName, name);
+        if (info->stageSet != 0) {
+            if (info->stageSet->has(key)) {
+                text = info->stageSet->get(key);
                 goto done1;
             }
         }
-        if (((Res *)p[2])->has(buf)) {
-            value = ((Res *)p[2])->get(buf);
+        if (info->sceneSet->has(key)) {
+            text = info->sceneSet->get(key);
         } else {
-            value = 0;
+            text = 0;
         }
     done1:
-        result = value;
+        setting = text;
     }
-    if (result == 0) {
-        if (p[3] != 0) {
-            if (((Res *)p[3])->has((void *)arg0)) {
-                value = ((Res *)p[3])->get((void *)arg0);
+    if (setting == 0) {
+        if (info->stageSet != 0) {
+            if (info->stageSet->has(name)) {
+                text = info->stageSet->get(name);
                 goto done2;
             }
         }
-        if (((Res *)p[2])->has((void *)arg0)) {
-            value = ((Res *)p[2])->get((void *)arg0);
+        if (info->sceneSet->has(name)) {
+            text = info->sceneSet->get(name);
         } else {
-            value = 0;
+            text = 0;
         }
     done2:
-        result = value;
+        setting = text;
     }
-    if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
-    value = result;
-    answer = 0;
-    if (stricmp((const char *)value, lbl_8055B4B4) == 0 ||
-        stricmp((const char *)value, lbl_8055B4B8) == 0) answer = 1;
-    return answer;
+    if (setting == 0) fn_802E317C(NOT_FOUND_MSG, name);
+    text = setting;
+    on = 0;
+    if (stricmp((const char *)text, YES_STRING) == 0 ||
+        stricmp((const char *)text, TRUE_STRING) == 0) on = 1;
+    return on;
+
+    #undef DIFFICULTY_INFO
+    #undef KEY_FORMAT
+    #undef NOT_FOUND_MSG
+    #undef YES_STRING
+    #undef TRUE_STRING
 }
 #pragma cplusplus reset
 /* Clear the active contest configuration and release its resources. */
