@@ -1042,7 +1042,7 @@ void fn_802C7AE0(long, void*, long, float);
 void fn_801F13F4(long, float, float);
 #pragma push
 #pragma processor 750
-#pragma optimization_level 3
+#pragma optimization_level 4
 #pragma scheduling invalid_target
 void fn_801EDF18(void* arg0) {
     struct Settings { long first; union { long bits; float value; } second; long third; } settings;
@@ -1059,8 +1059,11 @@ void fn_801EDF18(void* arg0) {
     while (index >= 0 && temp_f31 < (*(float*)((char*)arg0 + index * 8 + 0x404) * *(float*)((char*)arg0 + index * 8 + 0x404))) index--;
     if (index < 0) return;
     if (*(long*)((char*)arg0 + 0x40) != fn_801E866C(-1)) goto process;
-    if (fn_801E89A4(-1) != 0) goto process;
-    return;
+    if (fn_801E89A4(-1) != 0) {
+        goto process;
+    } else {
+        goto epilogue;
+    }
 process:
     firstValue = *(volatile long*)((char*)arg0 + 0x28);
     secondValue = *(volatile long*)((char*)arg0 + 0x2C);
@@ -1092,6 +1095,8 @@ process:
         i++;
         arg0 = (char*)arg0 + 4;
     } while (i < 4);
+epilogue:
+    ;
 }
 #pragma pop
 
