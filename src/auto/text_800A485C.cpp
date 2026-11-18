@@ -7868,7 +7868,7 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
         arg2 -= (short)sp8;
         if (arg2 < *var_r27) break;
     }
-    result = fn_800B0C10(arg0, arg1 + *arg3, arg2, &sp8);
+    result = fn_800B0C10((VFiPFCursor *)arg0, arg1 + *arg3, arg2, &sp8);
     *arg3 += sp8;
     if (result != 0) return result;
     return 0;
