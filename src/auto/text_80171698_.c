@@ -3,10 +3,11 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80141558(void *, int, const char *);
-extern char fn_8000FDF0[];
-
-extern void fn_80141558(void *, int, const char *);
-extern char fn_8000FDF0[];
+/* dtk symbolises the colour 0x8000FF00 passed to fn_80141558 as fn_8000FDF0+0x110 */
+extern struct {
+    char pad[0x110];
+    char colour[1];
+} fn_8000FDF0;
 extern void fn_80128658(void *);
 extern void fn_80128668(void *);
 extern void fn_801777D0(void *);
@@ -123,13 +124,13 @@ void *fn_801717B4(void *self, int shouldDelete) {
     return obj;
 }
 #pragma pop
-void fn_8017188C(void *arg0) {
-    int i = 0;
+void fn_8017188C(char *arg0) {
     int offset = 0;
-    while (i < *(int *)((char *)arg0 + 0xC)) {
-        unsigned char *entry = *(unsigned char **)((char *)arg0 + 8) + offset;
+    int i = 0;
+    while (i < *(int *)(arg0 + 0xC)) {
+        unsigned char *entry = *(unsigned char **)(arg0 + 8) + offset;
         if (entry[0x25] && !entry[0x24] && *(int *)*(void **)(entry + 0x18) > 1)
-            ((void (*)(void *, void *, int, const char *))fn_80141558)((char *)arg0 + 0xA14, entry, 2, fn_8000FDF0 + 0x110);
+            ((void (*)(void *, void *, int, unsigned int))fn_80141558)(arg0 + 0xA14, entry, 2, 0x8000FF00);
         offset += 0x28;
         i++;
     }
@@ -165,8 +166,9 @@ void fn_80171934(void *p) {
             if (item[0x24] == 0 && fn_801B2F54(outer) >= *(s32 *)(item + 0x20)) {
                 s32 selection = ((s32 (*)(s32))fn_8017960C)(outer);
                 if (((s32 (*)(s32, s32))fn_80139B5C)(selection, *(s32 *)(item + 0x18)) != 0) {
+                    f32 x;
+                    f32 y;
                     f32 vec[3];
-                    f32 x, y, z;
                     vec[0] = *(f32 *)(item + 0) + *(f32 *)(item + 0xC);
                     x = vec[0] * scale;
                     vec[1] = *(f32 *)(item + 4) + *(f32 *)(item + 0x10);
