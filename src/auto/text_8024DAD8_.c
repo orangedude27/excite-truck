@@ -2295,7 +2295,7 @@ extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
         u8 *source;
         s32 count;
         u8 *dest;
-        s32 newIndex, index, context;
+        s32 value, newIndex, index, context;
 
         if (*(s32 *)(arg0 + 0x2C) > 0) {
             newIndex = *(s32 *)(arg0 + 0x2C) - 1;
@@ -2308,10 +2308,13 @@ extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
                 ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1] = newIndex;
 
             newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
-            if (lbl_80498C48[4] != 0)
-                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[0] = *(s32 *)(arg0 + 0x2C);
-            else
-                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[1] = *(s32 *)(arg0 + 0x2C);
+            if (lbl_80498C48[4] != 0) {
+                value = *(s32 *)(arg0 + 0x2C);
+                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[0] = value;
+            } else {
+                value = *(s32 *)(arg0 + 0x2C);
+                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[1] = value;
+            }
 
             index = *(s32 *)(arg0 + 0x2C);
             *(*(s32 **)(arg0 + 0xDC)) =
@@ -2362,7 +2365,7 @@ extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
         u8 *source;
         s32 count;
         u8 *dest;
-        s32 newIndex, index, context;
+        s32 value, newIndex, index, context;
 
         if (*(s32 *)(arg0 + 0x2C) < *(s32 *)(arg0 + 0x1C) - 1) {
             newIndex = *(s32 *)(arg0 + 0x2C) + 1;
@@ -2375,10 +2378,13 @@ extern "C" s32 fn_8025157C(u8 *arg0, s32 arg1) {
                 ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1] = newIndex;
 
             newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
-            if (lbl_80498C48[4] != 0)
-                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[0] = *(s32 *)(arg0 + 0x2C);
-            else
-                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[1] = *(s32 *)(arg0 + 0x2C);
+            if (lbl_80498C48[4] != 0) {
+                value = *(s32 *)(arg0 + 0x2C);
+                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[0] = value;
+            } else {
+                value = *(s32 *)(arg0 + 0x2C);
+                ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[1] = value;
+            }
 
             index = *(s32 *)(arg0 + 0x2C);
             *(*(s32 **)(arg0 + 0xDC)) =
@@ -2532,33 +2538,33 @@ extern "C" u32 lbl_8055CFF4;
 extern "C" const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
 extern "C" double __fabs(double);
 extern "C" void fn_80251B04(void *arg0) {
-    extern int lbl_8055CFF0;
-    extern unsigned int lbl_8055CFF4;
-    extern const float lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
+    extern s32 lbl_8055CFF0;
+    extern u32 lbl_8055CFF4;
+    extern const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
     extern double __fabs(double);
-    float temp_f3, temp_f10, f27, f26, f23;
-    int i;
-    int off;
-    temp_f3 = (lbl_80563990 * (float)lbl_8055CFF0) / lbl_80563994;
-    temp_f10 = (float)((int)(((unsigned int)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1);
+    f32 temp_f3, temp_f10, f27, f26, f23;
+    s32 i;
+    s32 off;
+    temp_f3 = (lbl_80563990 * (f32)lbl_8055CFF0) / lbl_80563994;
+    temp_f10 = (f32)((s32)(((u32)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1);
     f27 = temp_f10 - lbl_8056398C;
-    fn_80231220(*(int *)((char *)arg0 + 0x20), -1, lbl_8055CFF4, lbl_80563998 * temp_f3, lbl_8056399C, temp_f3, lbl_805639A0, lbl_80563960, lbl_80563960, lbl_805639A4, lbl_80563964);
+    fn_80231220(*(s32 *)((char *)arg0 + 0x20), -1, lbl_8055CFF4, lbl_80563998 * temp_f3, lbl_8056399C, temp_f3, lbl_805639A0, lbl_80563960, lbl_80563960, lbl_805639A4, lbl_80563964);
     f26 = fn_80216CB4();
     f23 = lbl_80563960;
     i = 0;
     off = 0;
-    for (; i < *(int *)((char *)arg0 + 0x1C); i++, off += 0xC) {
+    for (; i < *(s32 *)((char *)arg0 + 0x1C); i++, off += 0xC) {
         char *p = *(char **)((char *)arg0 + 0x18) + off;
-        float a, b, c;
-        a = lbl_80563964 - (float)__fabs(*(float *)(p + 8));
-        if (!(a < f26)) a = f26;
-        c = *(float *)((char *)arg0 + 0x28);
-        b = (float)__fabs(c - (float)i);
+        f32 a, b, c;
+        a = lbl_80563964 - (f32)__fabs(*(f32 *)(p + 8));
+        if (a >= f26) a = f26;
+        c = *(f32 *)((char *)arg0 + 0x28);
+        b = (f32)__fabs(c - (f32)i);
         if (lbl_80563964 < b) b = lbl_80563964;
-        if (!(b > f23)) b = f23;
-        (*(void (**)(void *, int, int, float, float, float, float, float))(*(char **)arg0 + 0x60))(arg0, i, *(int *)p, lbl_805639AC * ((float)i - c) - lbl_805639B0, (f27 - lbl_80563980 * (lbl_805639A8 * (lbl_80563964 - a))) + lbl_805639B4 * a, lbl_805639AC, lbl_805639A8 * a + lbl_805639A4 * a, lbl_80563964 - b);
+        if (b <= f23) b = f23;
+        (*(void (**)(void *, s32, s32, f32, f32, f32, f32, f32))(*(char **)arg0 + 0x60))(arg0, i, *(s32 *)p, lbl_805639AC * ((f32)i - c) - lbl_805639B0, (f27 - lbl_80563980 * (lbl_805639A8 * (lbl_80563964 - a))) + lbl_805639B4 * a, lbl_805639AC, lbl_805639A8 * a + lbl_805639A4 * a, lbl_80563964 - b);
     }
-    fn_802354A0(*(int *)((char *)arg0 + 0x24), 2, -1, lbl_805639B8, lbl_805639B4 + f27, lbl_80563960, lbl_805639AC, lbl_805639BC);
+    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 2, -1, lbl_805639B8, lbl_805639B4 + f27, lbl_80563960, lbl_805639AC, lbl_805639BC);
 }
 
 #pragma scheduling on
@@ -2932,31 +2938,46 @@ void *fn_802522A8(void *arg0, s32 deleteFlags) {
     }
     return arg0;
 }
+static inline void fn_80252320_copy(char *dst, char *src, s32 count) {
+    while ((signed char)(*dst++ = *src++) != 0) {
+        if (--count <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+    }
+}
+
 void fn_80252320(void *arg0, u8 *arg1, signed char arg2, int arg3) {
-    register s32 index = *(s32 *)((u8 *)arg0 + 8);
-    u8 *record = *(u8 **)((u8 *)arg0 + 4) + index * 0x48;
-    register u8 *dst;
-    register u8 *src;
-    register s32 count;
-    u8 c;
-    *(s32 *)((u8 *)arg0 + 8) = index + 1;
-    dst = record;
-    src = arg1;
+    struct Entry {
+        char name[0x20];
+        signed char flag20;
+        char name2[0x20];
+        signed char flag41;
+        short pad;
+        s32 value;
+    };
+    struct Entry *record;
+    char *src;
+    s32 count;
+    char *dst;
+
+    record = &((struct Entry *)*(unsigned int *)((char *)arg0 + 4))[(*(s32 *)((char *)arg0 + 8))++];
+    src = (char *)arg1;
+    dst = record->name;
     count = 0x20;
-    goto copy_first;
-first_loop:
-    count--;
-    if (count <= 0) { dst[-1] = 0; goto first_done; }
-copy_first:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c != 0) goto first_loop;
-first_done:
-    record[0x20] = arg2;
-    record[0x41] = arg3;
+    goto copy1;
+check1:
+    if (--count > 0) goto copy1;
+    dst[-1] = 0;
+    goto copied1;
+copy1:
+    if ((*dst++ = *src++) != 0) goto check1;
+copied1:
+    record->flag20 = arg2;
+    record->flag41 = arg3;
     if (arg3 != 0) {
-        src = fn_80019098(arg1);
-        dst = record + 0x21;
+        src = (char *)fn_80019098(arg1);
+        dst = record->name2;
         count = 0x20;
         while ((signed char)(*dst++ = *src++) != 0) {
             if (--count <= 0) {
@@ -2965,23 +2986,22 @@ first_done:
             }
         }
     } else {
-        src = &lbl_8055C0E8;
-        dst = record + 0x21;
+        dst = record->name2;
+        src = (char *)&lbl_8055C0E8;
         count = 0x20;
-        goto copy_default;
-default_loop:
-        count--;
-        if (count <= 0) { dst[-1] = 0; goto default_done; }
-copy_default:
-        c = *src++;
-        *dst++ = c;
-        if ((signed char)c != 0) goto default_loop;
-default_done:
+        goto copy3;
+    check3:
+        if (--count > 0) goto copy3;
+        dst[-1] = 0;
+        goto copied3;
+    copy3:
+        if ((*dst++ = *src++) != 0) goto check3;
+    copied3:
         ;
     }
-    if (*(u32 *)((u8 *)arg0 + 0x1C) != lbl_8055E044)
-        fn_80131318((u8 *)arg0 + 0x14);
-    *(s32 *)(record + 0x44) = *(s32 *)((u8 *)arg0 + 0x18);
+    if (*(u32 *)((char *)arg0 + 0x1C) != lbl_8055E044)
+        fn_80131318((char *)arg0 + 0x14);
+    record->value = *(s32 *)((char *)arg0 + 0x18);
 }
 
 #pragma pop
