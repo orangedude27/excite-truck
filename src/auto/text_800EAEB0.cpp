@@ -312,7 +312,6 @@ extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallback
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(void* object, u32 size, void* user) {
     extern u8 lbl_80322B44[];
     extern u8 lbl_80322B20[];
@@ -379,44 +378,14 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
     void* start = object;
     void* end = (u8*)start + size;
     unsigned long outerLevel = OSDisableInterrupts();
-    unsigned long level = OSDisableInterrupts();
-    if ((s8)lbl_8055DE30 == 0) {
-        void* sentinel = lbl_8041279C + 4;
-        *(u32*)(lbl_8041279C + 4) = 0;
-        *(u32*)(lbl_8041279C + 8) = 0;
-        *(u32*)lbl_8041279C = 0;
-        *(void**)(lbl_8041279C + 4) = sentinel;
-        *(void**)(lbl_8041279C + 8) = sentinel;
-        __register_global_object(lbl_8041279C,
-            (void*)__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54,
-            lbl_80412790);
-        lbl_8055DE30 = 1;
-    }
-    OSRestoreInterrupts(level);
-    void* node = *(void**)(lbl_8041279C + 4);
-    void* head = lbl_8041279C + 4;
-    do {
+    void* node = *(void**)((u8*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv() + 4);
+    while (node != (u8*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv() + 4) {
         void* current = node;
         node = *(void**)node;
         if (!current)
             Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
         ((Callback*)current)->dispose(start, end);
-        level = OSDisableInterrupts();
-        if ((s8)lbl_8055DE30 == 0) {
-            void* sentinel = lbl_8041279C + 4;
-            *(u32*)(lbl_8041279C + 4) = 0;
-            void* value = lbl_8041279C;
-            *(u32*)(lbl_8041279C + 8) = 0;
-            *(u32*)lbl_8041279C = 0;
-            *(void**)((short)lbl_8041279C + 4) = sentinel;
-            *(void**)(lbl_8041279C + 8) = sentinel;
-            __register_global_object(value,
-                (void*)__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54,
-                lbl_80412790);
-            lbl_8055DE30 = 1;
-        }
-        OSRestoreInterrupts(level);
-    } while (node != head);
+    }
     OSRestoreInterrupts(outerLevel);
 }
 #pragma pop
