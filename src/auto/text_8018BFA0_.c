@@ -1801,7 +1801,6 @@ void fn_8018F538(unsigned char *arg0, unsigned char *arg1) {
     *(unsigned char *)(arg1 + 0x2B0) = *(int *)(arg0 + 0x1DA8);
     *(int *)(arg1 + 0x29C) = *(int *)(arg0 + 0x1E3C);
 }
-#pragma pop
 #pragma scheduling on
 void fn_8018F6F8(void *arg0) {
     int i;
