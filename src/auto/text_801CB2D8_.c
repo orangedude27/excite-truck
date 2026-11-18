@@ -773,9 +773,11 @@ void fn_801CC470(void) {
  * values.  The record pool the award objects share is cleared and those three
  * objects are told to start over.  fn_801CC470 (StatHandler::Create) calls it on
  * the new handler before lbl_8055E884 points at it; fn_801CC918 is the same
- * reset once the handler is installed.  Nothing happens while it is paused. */
-void fn_801CC594(void *handler) {
-    u8 *base = (u8 *)handler;
+ * reset once the handler is installed.  Nothing happens while it is paused.
+ * The reset values are written through volatile pointers, so the compiler keeps
+ * every one of them, in this order, in the handler. */
+void fn_801CC594(void *object) {
+    StatHandler *handler = (StatHandler *)object;
     register s32 byteOffset;
     register s32 index;
     s32 none;
@@ -785,80 +787,80 @@ void fn_801CC594(void *handler) {
     f32 one;
     f32 zero;
     f32 unset;
-    if (base[0x10] != 0) return;
+    if (handler->paused != 0) return;
     index = 0;
     byteOffset = 0;
-    while (index < *(s32 *)(base + 0x1C)) {
-        entry = *(void **)((u8 *)*(void **)(base + 0x18) + byteOffset);
+    while (index < handler->entryCount) {
+        entry = *(void **)((u8 *)handler->entries + byteOffset);
         if (entry != 0) fn_8001BE70(*(void **)entry);
         byteOffset += 4;
         ++index;
     }
-    *(void **)(base + 0x2A0) = base + 0x29C;
+    handler->freeListTail = &handler->freeList;
     index = 0;
-    *(s32 *)(base + 0x29C) = index;
-    memset(base + 0x44, index, 0x258);
+    handler->freeList = (void *)index;
+    memset(handler->nodes, index, sizeof(handler->nodes));
     zero = lbl_805629FC;
     none = -1;
     one = lbl_805629E4;
     unset = lbl_80562A08;
-    *(volatile s32 *)(base + 0x2A8) = index;
-    *(volatile s32 *)(base + 0x2AC) = index;
-    *(volatile s32 *)(base + 0x2B0) = none;
-    *(volatile s32 *)(base + 0x2B4) = none;
-    *(volatile f32 *)(base + 0x2B8) = unset;
-    *(volatile u8 *)(base + 0x2BC) = index;
-    *(volatile s32 *)(base + 0x2C0) = index;
-    *(volatile f32 *)(base + 0x2C4) = zero;
-    *(volatile s32 *)(base + 0x2D8) = index;
-    *(volatile f32 *)(base + 0x578) = one;
-    *(volatile f32 *)(base + 0x57C) = zero;
-    *(volatile f32 *)(base + 0x580) = zero;
-    *(volatile f32 *)(base + 0x584) = zero;
-    *(volatile f32 *)(base + 0x588) = one;
-    *(volatile f32 *)(base + 0x58C) = zero;
-    *(volatile f32 *)(base + 0x590) = zero;
-    *(volatile f32 *)(base + 0x594) = zero;
-    *(volatile f32 *)(base + 0x598) = one;
-    *(volatile f32 *)(base + 0x59C) = zero;
-    *(volatile f32 *)(base + 0x5A0) = zero;
-    *(volatile f32 *)(base + 0x5A4) = zero;
-    *(volatile f32 *)(base + 0x5A8) = one;
-    *(volatile f32 *)(base + 0x5AC) = zero;
-    *(volatile f32 *)(base + 0x5B0) = zero;
-    *(volatile f32 *)(base + 0x5B4) = zero;
-    *(volatile f32 *)(base + 0x5B8) = one;
-    *(volatile f32 *)(base + 0x5BC) = zero;
-    *(volatile f32 *)(base + 0x5C0) = zero;
-    *(volatile f32 *)(base + 0x5C4) = zero;
-    *(volatile f32 *)(base + 0x5C8) = one;
-    *(volatile f32 *)(base + 0x5CC) = zero;
-    *(volatile f32 *)(base + 0x5D0) = zero;
-    *(volatile f32 *)(base + 0x5D4) = zero;
-    *(volatile f32 *)(base + 0x5D8) = one;
-    *(volatile f32 *)(base + 0x5DC) = zero;
-    *(volatile f32 *)(base + 0x5E0) = zero;
-    *(volatile f32 *)(base + 0x5E4) = zero;
-    *(volatile f32 *)(base + 0x5E8) = one;
-    *(volatile f32 *)(base + 0x5EC) = zero;
-    *(volatile f32 *)(base + 0x5F0) = zero;
-    *(volatile f32 *)(base + 0x5F4) = zero;
-    *(volatile f32 *)(base + 0x5F8) = one;
-    *(volatile f32 *)(base + 0x5FC) = zero;
-    *(volatile f32 *)(base + 0x600) = zero;
-    *(volatile f32 *)(base + 0x604) = zero;
-    pool = *(void * volatile *)(base + 0x2C8);
-    *(volatile f32 *)(base + 0x608) = one;
-    *(volatile f32 *)(base + 0x60C) = zero;
-    *(volatile f32 *)(base + 0x610) = zero;
-    *(volatile f32 *)(base + 0x614) = zero;
+    *(volatile s32 *)&handler->pendingPlace = index;
+    *(volatile s32 *)&handler->newCount = index;
+    *(volatile s32 *)&handler->newEntry = none;
+    *(volatile s32 *)&handler->unknown2B4 = none;
+    *(volatile f32 *)&handler->value = unset;
+    *(volatile u8 *)&handler->hasValue = index;
+    *(volatile s32 *)&handler->state = index;
+    *(volatile f32 *)&handler->unknown2C4 = zero;
+    *(volatile s32 *)&handler->unknown2D8 = index;
+    *(volatile f32 *)&handler->floats[0][0] = one;
+    *(volatile f32 *)&handler->floats[0][1] = zero;
+    *(volatile f32 *)&handler->floats[0][2] = zero;
+    *(volatile f32 *)&handler->floats[0][3] = zero;
+    *(volatile f32 *)&handler->floats[1][0] = one;
+    *(volatile f32 *)&handler->floats[1][1] = zero;
+    *(volatile f32 *)&handler->floats[1][2] = zero;
+    *(volatile f32 *)&handler->floats[1][3] = zero;
+    *(volatile f32 *)&handler->floats[2][0] = one;
+    *(volatile f32 *)&handler->floats[2][1] = zero;
+    *(volatile f32 *)&handler->floats[2][2] = zero;
+    *(volatile f32 *)&handler->floats[2][3] = zero;
+    *(volatile f32 *)&handler->floats[3][0] = one;
+    *(volatile f32 *)&handler->floats[3][1] = zero;
+    *(volatile f32 *)&handler->floats[3][2] = zero;
+    *(volatile f32 *)&handler->floats[3][3] = zero;
+    *(volatile f32 *)&handler->floats[4][0] = one;
+    *(volatile f32 *)&handler->floats[4][1] = zero;
+    *(volatile f32 *)&handler->floats[4][2] = zero;
+    *(volatile f32 *)&handler->floats[4][3] = zero;
+    *(volatile f32 *)&handler->floats[5][0] = one;
+    *(volatile f32 *)&handler->floats[5][1] = zero;
+    *(volatile f32 *)&handler->floats[5][2] = zero;
+    *(volatile f32 *)&handler->floats[5][3] = zero;
+    *(volatile f32 *)&handler->floats[6][0] = one;
+    *(volatile f32 *)&handler->floats[6][1] = zero;
+    *(volatile f32 *)&handler->floats[6][2] = zero;
+    *(volatile f32 *)&handler->floats[6][3] = zero;
+    *(volatile f32 *)&handler->floats[7][0] = one;
+    *(volatile f32 *)&handler->floats[7][1] = zero;
+    *(volatile f32 *)&handler->floats[7][2] = zero;
+    *(volatile f32 *)&handler->floats[7][3] = zero;
+    *(volatile f32 *)&handler->floats[8][0] = one;
+    *(volatile f32 *)&handler->floats[8][1] = zero;
+    *(volatile f32 *)&handler->floats[8][2] = zero;
+    *(volatile f32 *)&handler->floats[8][3] = zero;
+    pool = *(void * volatile *)&handler->pool;
+    *(volatile f32 *)&handler->floats[9][0] = one;
+    *(volatile f32 *)&handler->floats[9][1] = zero;
+    *(volatile f32 *)&handler->floats[9][2] = zero;
+    *(volatile f32 *)&handler->floats[9][3] = zero;
     if (pool != 0) ((void (*)(void *))fn_802AE0E0)(pool);
-    actor = *(void **)(base + 0x2CC);
-    if (actor != 0) { *((u8 *)actor + 0x4A) = 1; *((u8 *)actor + 0x4C) = 0; }
-    actor = *(void **)(base + 0x2D0);
-    if (actor != 0) { *((u8 *)actor + 0x4A) = 1; *((u8 *)actor + 0x4C) = 0; }
-    actor = *(void **)(base + 0x2D4);
-    if (actor != 0) { *((u8 *)actor + 0x4A) = 1; *((u8 *)actor + 0x4C) = 0; }
+    actor = handler->actor[0];
+    if (actor != 0) { ((u8 *)actor)[0x4A] = 1; ((u8 *)actor)[0x4C] = 0; }
+    actor = handler->actor[1];
+    if (actor != 0) { ((u8 *)actor)[0x4A] = 1; ((u8 *)actor)[0x4C] = 0; }
+    actor = handler->actor[2];
+    if (actor != 0) { ((u8 *)actor)[0x4A] = 1; ((u8 *)actor)[0x4C] = 0; }
 }
 #pragma scheduling on
 
