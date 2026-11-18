@@ -45,13 +45,13 @@ s32 fn_802EC4E8(s32 arg0) {
     s32 sp8;
     s32 temp_r30;
     s32 temp_r31;
-    ((void (*)(void *, s32, const char *, ...))fn_801345D8)(sp10, 0x40, base, arg0);
+    ((void (*)(void *, s32, void *, ...))fn_801345D8)(sp10, 0x40, base, arg0);
     sp8 = fn_802E36D8(sp10);
     if (sp8 == -1)
-        ((void (*)(const char *, ...))fn_802E317C)(base + 0x10, sp10);
+        ((void (*)(void *, ...))fn_802E317C)(base + 0x10, sp10);
     temp_r30 = fn_802E37C4(sp8);
     fn_801282EC(0x20);
-    temp_r31 = fn_8012850C(temp_r30, (void *)(base + 0x28));
+    temp_r31 = fn_8012850C(temp_r30, base + 0x28);
     fn_802E3804(sp8, temp_r31, temp_r30);
     fn_802E3734(&sp8);
     return temp_r31;
@@ -102,7 +102,7 @@ void *fn_802EC598(void) {
 }
 #pragma dont_inline off
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802EC614(void) {
     char *base = lbl_8034E9E0;
     char *info = lbl_80558860;
