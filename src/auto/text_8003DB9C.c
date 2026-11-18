@@ -3365,9 +3365,6 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 }
 
 #pragma scheduling on
-static inline void GXSetDispCopyDstStore(u32 word) {
-    __GXData[0x238 / 4] = word;
-}
 void GXSetDispCopyDst(s32 value) {
     union {
         u32 reg;
@@ -3380,7 +3377,7 @@ void GXSetDispCopyDst(s32 value) {
 
     data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
-    *(u32 *)((u8 *)__GXData + 0x238) = data.reg;
+    GXSetDispCopyDstStore(data.reg);
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
