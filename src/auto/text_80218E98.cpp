@@ -5726,7 +5726,7 @@ extern "C" RET_802223C4 fn_802223C4(void *arg0, s32 arg1) {
     fn_8021915C(arg0, 0);
     if (arg1 > 0) {
         fn_80128668(arg0);
-        return;
+        return (RET_802223C4)arg0;
     }
 }
 
