@@ -2726,7 +2726,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                      }
                      var_r23_2 += 1;
                  loop_36_check:
-                     if (var_r23_2 < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x18U) & 0xF)) {
+                     if ((u8)var_r23_2 < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x18U) & 0xF)) {
                          goto loop_36_body;
                      }
                  }
