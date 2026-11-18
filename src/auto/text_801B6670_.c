@@ -35,9 +35,6 @@ extern float lbl_805626C8, lbl_805626CC, lbl_805626D0, lbl_805626D4, lbl_805626D
 extern float lbl_805626E0, lbl_805626E4, lbl_805626E8, lbl_805626EC, lbl_805626F0, lbl_805626F4, lbl_805626F8, lbl_805626FC;
 extern void *memset(void *, int, unsigned long);
 
-#define Z(i, o) table[i].id = 0; memset((unsigned char*)table + o, 0, 0x1C);
-#define F(i, v) table[i].unk_0x10 = 0; table[i].unk_0x14 = 0; table[i].value = (float) (v); table[i].scale = (float) lbl_805626DC;
-
 #pragma push
 #pragma scheduling invalid_target
 void fn_801B6670(void) {
