@@ -279,8 +279,7 @@ void fn_802369A8(char *dst, int size, int index) {
 #pragma scheduling invalid_target
 extern void *memset(void *, int, unsigned long);
 extern char *strcpy(char *, const char *);
- #pragma scheduling invalid_target
- #pragma scheduling on
+  #pragma scheduling invalid_target
  void fn_80236A5C(void *arg0, int arg1) {
     extern char lbl_80498664[];
     extern char lbl_8055BA18[], lbl_8055BA1C[], lbl_8055BA24[], lbl_8055BA2C[];
@@ -301,8 +300,8 @@ extern char *strcpy(char *, const char *);
     extern void *fn_80237968(void *, int);
     extern void fn_80131818(void *);
     extern void fn_802E30C8(const char *, ...);
-    register int mode;
     register void *parser;
+    register int mode;
     register float defaultZero, defaultOne;
     register void *list;
     register int index;
@@ -663,9 +662,9 @@ mode_done:
         }
     }
     lbl_8055F0B8 = (int)trailMgr;
-         fn_80131818(parser);
-     lbl_80498664[0] = 0;
- }
+    fn_80131818(parser);
+    lbl_80498664[0] = 0;
+}
  #pragma scheduling invalid_target
  
  extern void fn_80128670(int);
