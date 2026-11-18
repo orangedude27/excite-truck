@@ -2634,10 +2634,10 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
     case 0:
         start = arg3 % 14 + value * 2 + (arg3 / 14) * 16 + 2;
         break;
-    case 10:
+    case 25:
         start = value + arg3;
         break;
-    case 25:
+    case 10:
         start = (value >> 1) + arg3;
         break;
     default:
@@ -2645,10 +2645,11 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
         break;
     }
     unsigned int *voice = (unsigned int *)((char *)arg0 + arg1 * 0x10);
+    unsigned int ch;
     unsigned int hi = start >> 16;
     unsigned int lo = start & 0xFFFF;
     for (int i = 0; i < *(int *)((char *)arg0 + 0x108); voice++, i++) {
-        unsigned int ch = voice[3];
+        ch = voice[3];
         unsigned int inner = OSDisableInterrupts();
         *(unsigned short *)(ch + 0x1B4) = hi;
         *(unsigned short *)(ch + 0x1B6) = lo;
@@ -3149,6 +3150,7 @@ extern "C" unsigned int GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hb
 }
 
 extern float lbl_80560F38, lbl_80560F3C, lbl_80560F54, lbl_80560F60, lbl_80560F64, lbl_80560F68, lbl_80560F6C, lbl_80560F70, lbl_80560F74, lbl_80560F78;
+#pragma fp_contract_aggressive reset
 #pragma fp_contract off
 void nw4r::snd::detail::Voice::TransformDpl2Pan(float *out0, float *out1, float a, float b) {
     float d = b - lbl_80560F38;
@@ -3156,27 +3158,51 @@ void nw4r::snd::detail::Voice::TransformDpl2Pan(float *out0, float *out1, float 
     float ad = __fabsf(d);
     if (aa <= ad) {
         if (d <= lbl_80560F3C) {
-            *out0 = a; *out1 = lbl_80560F60 + lbl_80560F64 * d;
-        } else { *out0 = lbl_80560F68 * a; *out1 = lbl_80560F60 + lbl_80560F6C * d; }
+            float p = lbl_80560F64 * d;
+            float o1 = lbl_80560F60 + p;
+            *out0 = a;
+            *out1 = o1;
+        } else {
+            float p = lbl_80560F6C * d;
+            float q = lbl_80560F68 * a;
+            float o1 = lbl_80560F60 + p;
+            *out0 = q;
+            *out1 = o1;
+        }
     } else if (a >= lbl_80560F3C) {
         if (d <= lbl_80560F3C) {
-            *out0 = (lbl_80560F70 + lbl_80560F74 * (-d / a)) * aa;
-            *out1 = lbl_80560F60 + lbl_80560F54 * d + lbl_80560F64 * a;
+            float r = -d / a;
+            float o0 = (lbl_80560F70 + lbl_80560F74 * r) * aa;
+            float o1 = lbl_80560F60 + (lbl_80560F54 * d + lbl_80560F64 * a);
+            *out0 = o0;
+            *out1 = o1;
         } else {
-            *out0 = (lbl_80560F70 + lbl_80560F78 * (-d / a)) * aa;
-            *out1 = lbl_80560F60 + lbl_80560F6C * a;
+            float r = -d / a;
+            float o0 = (lbl_80560F70 + lbl_80560F78 * r) * aa;
+            float o1 = lbl_80560F60 + lbl_80560F6C * a;
+            *out0 = o0;
+            *out1 = o1;
         }
     } else if (d <= lbl_80560F3C) {
-        *out0 = (lbl_80560F74 * (-d / a) - lbl_80560F70) * aa;
-        *out1 = lbl_80560F60 + lbl_80560F54 * d - lbl_80560F6C * a;
+        float r = -d / a;
+        float o0 = (lbl_80560F74 * r - lbl_80560F70) * aa;
+        float o1 = lbl_80560F60 + (lbl_80560F54 * d - lbl_80560F6C * a);
+        *out0 = o0;
+        *out1 = o1;
     } else {
-        *out0 = (lbl_80560F78 * (-d / a) - lbl_80560F70) * aa;
-        *out1 = lbl_80560F60 + lbl_80560F6C * -a;
+        float r = -d / a;
+        float o0 = (lbl_80560F78 * r - lbl_80560F70) * aa;
+        float o1 = lbl_80560F60 + lbl_80560F6C * -a;
+        *out0 = o0;
+        *out1 = o1;
     }
     *out1 += lbl_80560F38;
 }
-
 extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg0, int arg1, int arg2, void *arg3) {
+    register char *self = (char *)arg0;
+    register int a1 = arg1;
+    register int a2 = arg2;
+    register unsigned short *out = (unsigned short *)arg3;
     float f22 = lbl_80560F38;
     float f21 = f22;
     float f23 = f22;
@@ -3190,8 +3216,6 @@ extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg
     float f28 = f22;
     float f27 = f22;
     float spC, sp8;
-    char *self = (char *)arg0;
-    unsigned short *out = (unsigned short *)arg3;
     int mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
     switch (mode) {
     case 3:
@@ -3224,13 +3248,13 @@ extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg
     }
     float f24b = lbl_80560F3C;
     if (*(int *)(self + 0x104) == 2) {
-        if (arg1 == 0) f24b = lbl_80560F50;
-        if (arg1 == 1) f24b = lbl_80560F38;
+        if (a1 == 0) f24b = lbl_80560F50;
+        if (a1 == 1) f24b = lbl_80560F38;
     }
     mode = fn_800E394C((int *)Instance__15EmissionManagerFv());
     switch (mode) {
     case 2: {
-        char *r6 = self + arg2 * 0x1c;
+        char *r6 = self + a2 * 0x1c;
         float a = f24b + (*(float *)(self + 0x128) + *(float *)(self + 0x130)) + *(float *)(r6 + 0x9c);
         float b = (*(float *)(self + 0x12c) + *(float *)(self + 0x134)) + *(float *)(r6 + 0xa0);
         ((nw4r::snd::detail::Voice *)self)->TransformDpl2Pan(&spC, &sp8, a, b);
@@ -3238,7 +3262,7 @@ extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg
     }
     case 3: spC = lbl_80560F3C; sp8 = lbl_80560F3C; break;
     default: {
-        char *r6 = self + arg2 * 0x1c;
+        char *r6 = self + a2 * 0x1c;
         spC = f24b + (*(float *)(self + 0x128) + *(float *)(self + 0x130)) + *(float *)(r6 + 0x9c);
         sp8 = (*(float *)(self + 0x12c) + *(float *)(self + 0x134)) + *(float *)(r6 + 0xa0);
         break;
@@ -3285,7 +3309,7 @@ extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *arg
     }
     float v24 = lbl_80560F38;
     float v25 = *(float *)(self + 0x144);
-    float tmp = *(float *)(self + 0x148) + *(float *)(self + arg2 * 0x1c + 0xa4);
+    float tmp = *(float *)(self + 0x148) + *(float *)(self + a2 * 0x1c + 0xa4);
     if (tmp > v24) {} else { v24 = lbl_80560F3C; if (tmp >= v24) v24 = tmp; }
     float v26 = *(float *)(self + 0x14c);
     float v16 = *(float *)(self + 0x150);
@@ -3587,7 +3611,7 @@ extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3sn
 }
 
 extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
-    int type = *((unsigned char *)arg1 + 1);
+    unsigned int type = *(unsigned char *)((char *)arg1 + 1);
     unsigned char *data;
     unsigned int base, address;
     int i;
@@ -3611,7 +3635,7 @@ extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
     body:
         if (arg2 <= data[i + 1]) {
             unsigned int off = (data[0] + 4) & ~3;
-            return (void *)(off + (unsigned int)(data + i * 8));
+            return (void *)((unsigned int)(data + i * 8) + off);
         }
         goto inc;
     case 3:
@@ -3788,7 +3812,7 @@ extern "C" void Stop__Q44nw4r3snd6detail10BasicSoundFi(void *self, int target) {
         virtual void stop();
         virtual void f(); virtual void g(); virtual void h(); virtual void i();
         virtual void j(); virtual void k(); virtual void l(); virtual void m();
-        virtual void n(); virtual void o(); virtual void p(); virtual void q();
+        virtual void clear(int); virtual void o(); virtual void p(); virtual void q();
         virtual SoundObj *get();
         virtual void m1(); virtual void m2(); virtual void m3();
         virtual void m4(); virtual void m5(); virtual void m6();
@@ -3799,7 +3823,7 @@ extern "C" void Stop__Q44nw4r3snd6detail10BasicSoundFi(void *self, int target) {
         virtual void m19(); virtual void m20(); virtual void m21();
         virtual void m22(); virtual void m23(); virtual void m24();
         virtual void m25(); virtual void m26(); virtual void m27();
-        virtual void m28(); virtual void m29(); virtual void clear(int);
+        virtual void m28(); virtual void m29();
     };
     struct VoiceObj {
         virtual ~VoiceObj();
