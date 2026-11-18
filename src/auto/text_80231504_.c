@@ -1520,7 +1520,7 @@ typedef struct IndexList_80233EC0 { u16 idx[6]; } IndexList_80233EC0;
 extern IndexList_80233EC0 lbl_802F9FFC;
 #pragma push
 #pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
     register void *object = arg0;
     register s32 offset;
