@@ -275,6 +275,7 @@ void fn_8018C5A0(char *arg0, char *arg1) {
 }
 #pragma pop
 #pragma use_lmw_stmw off
+typedef struct { int x, y; } Pair8018;
 static void matVecS_8018(Vec_8018 *dest, const float *m, const Vec_8018 *v) {
     if (dest == v) {
         float tx = m[0] * v->x + m[3] * v->y + m[6] * v->z;
@@ -444,50 +445,17 @@ void fn_8018CB3C(char *arg0) {
             force[2] = M2C_FIELD(var_r19, float *, 0x14) * temp_f3;
             fn_80015A20((int *)scaleMatrix, &force[0]);
             fn_80015B20(&matrix[0], (int *)scaleMatrix, &matrix[0]);
-            if (&force[0] == (void *) (var_r19 + 0x18)) {
-                temp_f7 = M2C_FIELD(var_r19, float *, 0x1C);
-                temp_f2_2 = M2C_FIELD(var_r19, float *, 0x18);
-                temp_f8 = M2C_FIELD(var_r19, float *, 0x20);
-                force[0] = (temp_f8 * matrix[6]) + ((temp_f2_2 * matrix[0]) + (temp_f7 * matrix[3]));
-                force[1] = (temp_f8 * matrix[7]) + ((temp_f2_2 * matrix[1]) + (temp_f7 * matrix[4]));
-                force[2] = (temp_f8 * matrix[8]) + ((temp_f2_2 * matrix[2]) + (temp_f7 * matrix[5]));
-            } else {
-                temp_f7_2 = M2C_FIELD(var_r19, float *, 0x1C);
-                temp_f2_3 = M2C_FIELD(var_r19, float *, 0x18);
-                temp_f8_2 = M2C_FIELD(var_r19, float *, 0x20);
-                force[0] = (temp_f8_2 * matrix[6]) + ((temp_f2_3 * matrix[0]) + (temp_f7_2 * matrix[3]));
-                force[1] = (temp_f8_2 * matrix[7]) + ((temp_f2_3 * matrix[1]) + (temp_f7_2 * matrix[4]));
-                force[2] = (temp_f8_2 * matrix[8]) + ((temp_f2_3 * matrix[2]) + (temp_f7_2 * matrix[5]));
-            }
+            matVecS_8018((Vec_8018 *)&force[0], matrix, (Vec_8018 *)(var_r19 + 0x18));
             force[0] += matrix[9];
             force[1] += matrix[10];
             force[2] += matrix[11];
             temp_r3 = M2C_FIELD(var_r20, char **, 0);
             temp_r3_2 = temp_r3 + 0x24;
-            if ((void *)&origin[0] == temp_r3_2) {
-                temp_f7_3 = M2C_FIELD(temp_r3_2, float *, 4);
-                temp_f2_4 = M2C_FIELD(temp_r3, float *, 0x24);
-                temp_f8_3 = M2C_FIELD(temp_r3_2, float *, 8);
-                origin[0] = (temp_f8_3 * M2C_FIELD(arg0, float *, 0x54)) + ((temp_f2_4 * M2C_FIELD(arg0, float *, 0x3C)) + (temp_f7_3 * M2C_FIELD(arg0, float *, 0x48)));
-                origin[1] = (temp_f8_3 * M2C_FIELD(arg0, float *, 0x58)) + ((temp_f2_4 * M2C_FIELD(arg0, float *, 0x40)) + (temp_f7_3 * M2C_FIELD(arg0, float *, 0x4C)));
-                origin[2] = (temp_f8_3 * M2C_FIELD(arg0, float *, 0x5C)) + ((temp_f2_4 * M2C_FIELD(arg0, float *, 0x44)) + (temp_f7_3 * M2C_FIELD(arg0, float *, 0x50)));
-            } else {
-                origin[0] = (M2C_FIELD(temp_r3_2, float *, 8) * M2C_FIELD(arg0, float *, 0x54)) + ((M2C_FIELD(temp_r3, float *, 0x24) * M2C_FIELD(arg0, float *, 0x3C)) + (M2C_FIELD(temp_r3_2, float *, 4) * M2C_FIELD(arg0, float *, 0x48)));
-                origin[1] = (M2C_FIELD(temp_r3_2, float *, 8) * M2C_FIELD(arg0, float *, 0x58)) + ((M2C_FIELD(temp_r3, float *, 0x24) * M2C_FIELD(arg0, float *, 0x40)) + (M2C_FIELD(temp_r3_2, float *, 4) * M2C_FIELD(arg0, float *, 0x4C)));
-                origin[2] = (M2C_FIELD(temp_r3_2, float *, 8) * M2C_FIELD(arg0, float *, 0x5C)) + ((M2C_FIELD(temp_r3, float *, 0x24) * M2C_FIELD(arg0, float *, 0x44)) + (M2C_FIELD(temp_r3_2, float *, 4) * M2C_FIELD(arg0, float *, 0x50)));
-            }
+            matVecSM_8018((Vec_8018 *)&origin[0], (float *)temp_r3_2, (Vec_8018 *)(arg0 + 0x3C));
             origin[0] += M2C_FIELD(arg0, float *, 0x60);
             origin[1] += M2C_FIELD(arg0, float *, 0x64);
             origin[2] += M2C_FIELD(arg0, float *, 0x68);
-            if (&world[0] == &force[0]) {
-                world[0] = (force[2] * M2C_FIELD(arg0, float *, 0x54)) + ((force[0] * M2C_FIELD(arg0, float *, 0x3C)) + (force[1] * M2C_FIELD(arg0, float *, 0x48)));
-                world[1] = (force[2] * M2C_FIELD(arg0, float *, 0x58)) + ((force[0] * M2C_FIELD(arg0, float *, 0x40)) + (force[1] * M2C_FIELD(arg0, float *, 0x4C)));
-                world[2] = (force[2] * M2C_FIELD(arg0, float *, 0x5C)) + ((force[0] * M2C_FIELD(arg0, float *, 0x44)) + (force[1] * M2C_FIELD(arg0, float *, 0x50)));
-            } else {
-                world[0] = (force[2] * M2C_FIELD(arg0, float *, 0x54)) + ((force[0] * M2C_FIELD(arg0, float *, 0x3C)) + (force[1] * M2C_FIELD(arg0, float *, 0x48)));
-                world[1] = (force[2] * M2C_FIELD(arg0, float *, 0x58)) + ((force[0] * M2C_FIELD(arg0, float *, 0x40)) + (force[1] * M2C_FIELD(arg0, float *, 0x4C)));
-                world[2] = (force[2] * M2C_FIELD(arg0, float *, 0x5C)) + ((force[0] * M2C_FIELD(arg0, float *, 0x44)) + (force[1] * M2C_FIELD(arg0, float *, 0x50)));
-            }
+            matVecS_8018((Vec_8018 *)&world[0], (float *)(arg0 + 0x3C), (Vec_8018 *)&force[0]);
             temp_f2_5 = world[1];
             temp_f1_2 = world[2];
             world[0] += M2C_FIELD(arg0, float *, 0x60);
@@ -513,30 +481,8 @@ void fn_8018CB3C(char *arg0) {
             }
             PSVECCrossProduct(&delta[0], &force[0], (int *)force);
             temp_r3_3 = M2C_FIELD(var_r20, char **, 0);
-            if (&localAxis[0] == (void *) (var_r19 + 0xC)) {
-                temp_f7_4 = M2C_FIELD(var_r19, float *, 0x10);
-                temp_f2_7 = M2C_FIELD(var_r19, float *, 0xC);
-                temp_f8_4 = M2C_FIELD(var_r19, float *, 0x14);
-                localAxis[0] = (temp_f8_4 * M2C_FIELD(temp_r3_3, float *, 0x18)) + ((temp_f2_7 * M2C_FIELD(temp_r3_3, float *, 0)) + (temp_f7_4 * M2C_FIELD(temp_r3_3, float *, 0xC)));
-                localAxis[1] = (temp_f8_4 * M2C_FIELD(temp_r3_3, float *, 0x1C)) + ((temp_f2_7 * M2C_FIELD(temp_r3_3, float *, 4)) + (temp_f7_4 * M2C_FIELD(temp_r3_3, float *, 0x10)));
-                localAxis[2] = (temp_f8_4 * M2C_FIELD(temp_r3_3, float *, 0x20)) + ((temp_f2_7 * M2C_FIELD(temp_r3_3, float *, 8)) + (temp_f7_4 * M2C_FIELD(temp_r3_3, float *, 0x14)));
-            } else {
-                temp_f4 = M2C_FIELD(var_r19, float *, 0x10);
-                temp_f3_3 = M2C_FIELD(var_r19, float *, 0xC);
-                temp_f5_2 = M2C_FIELD(var_r19, float *, 0x14);
-                localAxis[0] = (temp_f5_2 * M2C_FIELD(temp_r3_3, float *, 0x18)) + ((temp_f3_3 * M2C_FIELD(temp_r3_3, float *, 0)) + (temp_f4 * M2C_FIELD(temp_r3_3, float *, 0xC)));
-                localAxis[1] = (temp_f5_2 * M2C_FIELD(temp_r3_3, float *, 0x1C)) + ((temp_f3_3 * M2C_FIELD(temp_r3_3, float *, 4)) + (temp_f4 * M2C_FIELD(temp_r3_3, float *, 0x10)));
-                localAxis[2] = (temp_f5_2 * M2C_FIELD(temp_r3_3, float *, 0x20)) + ((temp_f3_3 * M2C_FIELD(temp_r3_3, float *, 8)) + (temp_f4 * M2C_FIELD(temp_r3_3, float *, 0x14)));
-            }
-            if (&worldAxis[0] == &localAxis[0]) {
-                worldAxis[0] = (localAxis[2] * M2C_FIELD(arg0, float *, 0x54)) + ((localAxis[0] * M2C_FIELD(arg0, float *, 0x3C)) + (localAxis[1] * M2C_FIELD(arg0, float *, 0x48)));
-                worldAxis[1] = (localAxis[2] * M2C_FIELD(arg0, float *, 0x58)) + ((localAxis[0] * M2C_FIELD(arg0, float *, 0x40)) + (localAxis[1] * M2C_FIELD(arg0, float *, 0x4C)));
-                worldAxis[2] = (localAxis[2] * M2C_FIELD(arg0, float *, 0x5C)) + ((localAxis[0] * M2C_FIELD(arg0, float *, 0x44)) + (localAxis[1] * M2C_FIELD(arg0, float *, 0x50)));
-            } else {
-                worldAxis[0] = (localAxis[2] * M2C_FIELD(arg0, float *, 0x54)) + ((localAxis[0] * M2C_FIELD(arg0, float *, 0x3C)) + (localAxis[1] * M2C_FIELD(arg0, float *, 0x48)));
-                worldAxis[1] = (localAxis[2] * M2C_FIELD(arg0, float *, 0x58)) + ((localAxis[0] * M2C_FIELD(arg0, float *, 0x40)) + (localAxis[1] * M2C_FIELD(arg0, float *, 0x4C)));
-                worldAxis[2] = (localAxis[2] * M2C_FIELD(arg0, float *, 0x5C)) + ((localAxis[0] * M2C_FIELD(arg0, float *, 0x44)) + (localAxis[1] * M2C_FIELD(arg0, float *, 0x50)));
-            }
+            matVecS_8018((Vec_8018 *)&localAxis[0], (float *)temp_r3_3, (Vec_8018 *)(var_r19 + 0xC));
+            matVecS_8018((Vec_8018 *)&worldAxis[0], (float *)(arg0 + 0x3C), (Vec_8018 *)&localAxis[0]);
             var_f1 = -PSVECDotProduct((int *)force, &worldAxis[0]);
             if (temp_f20 < var_f1) {
                 var_f1 = temp_f20;
@@ -588,15 +534,7 @@ void fn_8018CB3C(char *arg0) {
             force[1] = temp_f1_5;
             force[2] = temp_f0_2;
             temp_r3_6 = M2C_FIELD(var_r20, char **, 0);
-            if (&rotated[0] == &force[0]) {
-                rotated[0] = (temp_f0_2 * M2C_FIELD(temp_r3_6, float *, 0x18)) + ((temp_f2_8 * M2C_FIELD(temp_r3_6, float *, 0)) + (temp_f1_5 * M2C_FIELD(temp_r3_6, float *, 0xC)));
-                rotated[1] = (temp_f0_2 * M2C_FIELD(temp_r3_6, float *, 0x1C)) + ((temp_f2_8 * M2C_FIELD(temp_r3_6, float *, 4)) + (temp_f1_5 * M2C_FIELD(temp_r3_6, float *, 0x10)));
-                rotated[2] = (temp_f0_2 * M2C_FIELD(temp_r3_6, float *, 0x20)) + ((temp_f2_8 * M2C_FIELD(temp_r3_6, float *, 8)) + (temp_f1_5 * M2C_FIELD(temp_r3_6, float *, 0x14)));
-            } else {
-                rotated[0] = (temp_f0_2 * M2C_FIELD(temp_r3_6, float *, 0x18)) + ((temp_f2_8 * M2C_FIELD(temp_r3_6, float *, 0)) + (temp_f1_5 * M2C_FIELD(temp_r3_6, float *, 0xC)));
-                rotated[1] = (temp_f0_2 * M2C_FIELD(temp_r3_6, float *, 0x1C)) + ((temp_f2_8 * M2C_FIELD(temp_r3_6, float *, 4)) + (temp_f1_5 * M2C_FIELD(temp_r3_6, float *, 0x10)));
-                rotated[2] = (temp_f0_2 * M2C_FIELD(temp_r3_6, float *, 0x20)) + ((temp_f2_8 * M2C_FIELD(temp_r3_6, float *, 8)) + (temp_f1_5 * M2C_FIELD(temp_r3_6, float *, 0x14)));
-            }
+            matVecS_8018((Vec_8018 *)&rotated[0], (float *)temp_r3_6, (Vec_8018 *)&force[0]);
             fn_8014452C((int *)rotation, rotated[1], rotated[0], rotated[2]);
             M2C_FIELD(var_r20, float *, 0x48) = (float) M2C_FIELD(var_r20, float *, 0x18);
             M2C_FIELD(var_r20, float *, 0x4C) = (float) M2C_FIELD(var_r20, float *, 0x1C);
@@ -658,15 +596,7 @@ void fn_8018CB3C(char *arg0) {
             force[1] = temp_f1_6;
             force[2] = temp_f0_5;
             temp_r3_9 = M2C_FIELD(var_r20, char **, 0);
-            if (&rotated[0] == &force[0]) {
-                rotated[0] = (temp_f0_5 * M2C_FIELD(temp_r3_9, float *, 0x18)) + ((temp_f2_9 * M2C_FIELD(temp_r3_9, float *, 0)) + (temp_f1_6 * M2C_FIELD(temp_r3_9, float *, 0xC)));
-                rotated[1] = (temp_f0_5 * M2C_FIELD(temp_r3_9, float *, 0x1C)) + ((temp_f2_9 * M2C_FIELD(temp_r3_9, float *, 4)) + (temp_f1_6 * M2C_FIELD(temp_r3_9, float *, 0x10)));
-                rotated[2] = (temp_f0_5 * M2C_FIELD(temp_r3_9, float *, 0x20)) + ((temp_f2_9 * M2C_FIELD(temp_r3_9, float *, 8)) + (temp_f1_6 * M2C_FIELD(temp_r3_9, float *, 0x14)));
-            } else {
-                rotated[0] = (temp_f0_5 * M2C_FIELD(temp_r3_9, float *, 0x18)) + ((temp_f2_9 * M2C_FIELD(temp_r3_9, float *, 0)) + (temp_f1_6 * M2C_FIELD(temp_r3_9, float *, 0xC)));
-                rotated[1] = (temp_f0_5 * M2C_FIELD(temp_r3_9, float *, 0x1C)) + ((temp_f2_9 * M2C_FIELD(temp_r3_9, float *, 4)) + (temp_f1_6 * M2C_FIELD(temp_r3_9, float *, 0x10)));
-                rotated[2] = (temp_f0_5 * M2C_FIELD(temp_r3_9, float *, 0x20)) + ((temp_f2_9 * M2C_FIELD(temp_r3_9, float *, 8)) + (temp_f1_6 * M2C_FIELD(temp_r3_9, float *, 0x14)));
-            }
+            matVecS_8018((Vec_8018 *)&rotated[0], (float *)temp_r3_9, (Vec_8018 *)&force[0]);
             fn_8014452C((int *)rotation, rotated[1], rotated[0], rotated[2]);
             M2C_FIELD(var_r20, float *, 0x48) = (float) M2C_FIELD(var_r20, float *, 0x18);
             M2C_FIELD(var_r20, float *, 0x4C) = (float) M2C_FIELD(var_r20, float *, 0x1C);
