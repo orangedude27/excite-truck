@@ -379,7 +379,8 @@ copied:
         grp->id = ((IntFn)(*(void ***)e)[7])(e, str + 0xC4);
         def2.x = zero;
         def2.y = zero;
-        origin = ((Vec2DefFn)(*(void ***)e)[16])(e, lbl_8055CCF8, def2);
+        t = ((Vec2DefFn)(*(void ***)e)[16])(e, lbl_8055CCF8, def2);
+        origin = t;
         base = fn_802AC344(e, root, 0);
         numSegs = 0;
         {
