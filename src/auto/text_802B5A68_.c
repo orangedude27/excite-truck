@@ -624,16 +624,21 @@ extern float lbl_80564C78;
 #pragma processor 750
 #pragma scheduling invalid_target
 s32 fn_802B640C(void *arg0, s32 arg1) {
-    f32 scale = *(f32 *)((u8 *)arg0 + 0x10);
+    struct Entry {
+        f32 unk0;
+        f32 x;
+        f32 y;
+        f32 unkC;
+        f32 scale;
+        s32 flags;
+    } *e = (struct Entry *)arg0;
     f32 temp_f1, temp_f31, var_f4, temp_f5, temp_f6;
     s32 temp_r3, var_r3, var_r4, var_r5;
-    u8 *obj;
 
-    temp_f31 = fn_800108C8(scale, arg1);
-    obj = (u8 *)arg0;
-    temp_f1 = fn_8001090C(*(f32 *)(obj + 0x10));
-    temp_r3 = *(s32 *)(obj + 0x14);
-    temp_f5 = *(f32 *)(obj + 4);
+    temp_f31 = fn_800108C8(e->scale, arg1);
+    temp_f1 = fn_8001090C(e->scale);
+    temp_r3 = e->flags;
+    temp_f5 = e->x;
     temp_f6 = temp_f5 + temp_f31;
     if (temp_r3 & 1)
         var_f4 = lbl_80564C74;
@@ -647,13 +652,14 @@ s32 fn_802B640C(void *arg0, s32 arg1) {
     if ((f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) >= temp_f5 + var_f4 &&
         (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 4) < temp_f6 + var_f4)
         var_r4 = 1;
-    if (var_r4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) >= *(f32 *)(obj + 8))
+    if (var_r4 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) >= e->y)
         var_r5 = 1;
     if (var_r5 && (f32)*(s32 *)((u8 *)&lbl_804BFF80 + 8) <
-        *(f32 *)(obj + 8) + temp_f1)
+        e->y + temp_f1)
         var_r3 = 1;
     return var_r3;
 }
+#pragma pop
 __declspec(section ".sdata") extern const char lbl_8055CE70[];
 extern int vsprintf(char *, const char *, va_list);
 extern int stricmp(const char *, const char *);
@@ -805,55 +811,53 @@ extern "C" void fn_802B6804(void) {
         step = *(f32 *)((u8 *)timing + 0x14);
     }
 
-    i = 0;
-    offset = 0;
-    goto loop_test;
-loop_body:
-    item = (Item *)((u8 *)*(u32 *)&lbl_804BFA70 + offset);
-    best = *item->currentPtr;
-    if ((u32)item->current < (u32)best)
-        item->current = best;
+    for (i = 0, offset = 0; i < ((s32 *)&lbl_804BFA70)[1]; offset += 0x28, i++) {
+        f32 y;
+        item = (Item *)((u8 *)*(u32 *)&lbl_804BFA70 + offset);
+        best = *item->currentPtr;
+        if ((u32)item->current < (u32)best)
+            item->current = best;
 
-    source = (volatile const u8 *)recordA;
-    first.name = *(void * volatile *)(source + 0);
-    s32 valueA = *(volatile const s32 *)(source + 4);
-    s32 bitsA = *(volatile const s32 *)(source + 8);
-    first.value = valueA;
-    first.timeBits = bitsA;
-    first.unkC = *(volatile const s32 *)(source + 0xC);
-    f32 time10A = *(volatile const f32 *)(source + 0x10);
-    first.time10 = time10A;
-    first.unk14 = *(volatile const s32 *)(source + 0x14);
-    first.unk18 = *(volatile const s32 *)(source + 0x18);
-    first.unk1C = *(volatile const s32 *)(source + 0x1C);
-    *(f32 *)((u8 *)&first + 8) += step * (f32)i;
+        source = (volatile const u8 *)recordA;
+        first.name = *(void * volatile *)(source + 0);
+        s32 bitsA;
+        s32 valueA;
+        valueA = *(volatile const s32 *)(source + 4);
+        bitsA = *(volatile const s32 *)(source + 8);
+        first.value = bitsA;
+        first.timeBits = valueA;
+        first.unkC = *(volatile const s32 *)(source + 0xC);
+        f32 time10A = *(volatile const f32 *)(source + 0x10);
+        first.time10 = time10A;
+        first.unk14 = *(volatile const s32 *)(source + 0x14);
+        first.unk18 = *(volatile const s32 *)(source + 0x18);
+        first.unk1C = *(volatile const s32 *)(source + 0x1C);
+        y = (f32)i;
+        *(f32 *)((u8 *)&first + 8) += step * y;
 
-    if (lbl_8055FA30)
-        selected = item->current;
-    else
-        selected = *item->currentPtr;
-    fn_80147230(&first, lbl_8055CE74, selected);
+        if (lbl_8055FA30)
+            selected = item->current;
+        else
+            selected = *item->currentPtr;
+        fn_80147230(&first, lbl_8055CE74, selected);
 
-    source = (volatile const u8 *)recordB;
-    second.name = *(void * volatile *)(source + 0);
-    s32 valueB = *(volatile const s32 *)(source + 4);
-    s32 bitsB = *(volatile const s32 *)(source + 8);
-    second.value = valueB;
-    second.timeBits = bitsB;
-    second.unkC = *(volatile const s32 *)(source + 0xC);
-    f32 time10B = *(volatile const f32 *)(source + 0x10);
-    second.time10 = time10B;
-    second.unk14 = *(volatile const s32 *)(source + 0x14);
-    second.unk18 = *(volatile const s32 *)(source + 0x18);
-    second.unk1C = *(volatile const s32 *)(source + 0x1C);
-    *(f32 *)((u8 *)&second + 8) += step * (f32)i;
-    fn_80147230(&second, lbl_8055CE70, item);
-
-    offset += 0x28;
-    i++;
-loop_test:
-    if (i < ((s32 *)&lbl_804BFA70)[1])
-        goto loop_body;
+        source = (volatile const u8 *)recordB;
+        second.name = *(void * volatile *)(source + 0);
+        s32 bitsB;
+        s32 valueB;
+        valueB = *(volatile const s32 *)(source + 4);
+        bitsB = *(volatile const s32 *)(source + 8);
+        second.value = bitsB;
+        second.timeBits = valueB;
+        second.unkC = *(volatile const s32 *)(source + 0xC);
+        f32 time10B = *(volatile const f32 *)(source + 0x10);
+        second.time10 = time10B;
+        second.unk14 = *(volatile const s32 *)(source + 0x14);
+        second.unk18 = *(volatile const s32 *)(source + 0x18);
+        second.unk1C = *(volatile const s32 *)(source + 0x1C);
+        *(f32 *)((u8 *)&second + 8) += step * (f32)i;
+        fn_80147230(&second, lbl_8055CE70, item);
+    }
 }
 #pragma use_lmw_stmw reset
 #pragma cplusplus reset
@@ -2165,11 +2169,8 @@ void fn_802B8AE0(const char *arg0, s32 arg1)
   s32 count;
   char *base;
   char *dst;
-  char * volatile *basep;
-  volatile s32 *countp;
   volatile u8 *src;
   s32 n;
-  char c;
   u8 b0;
   u8 b1;
   u8 b2;
@@ -2206,38 +2207,29 @@ void fn_802B8AE0(const char *arg0, s32 arg1)
   {
     return;
   }
-  dst = local.name;
-  n = 0x20;
-  goto Lcopy;
-  Ltest:
-  if ((--n) > 0)
   {
-    goto Lcopy;
+    const char *sp = arg0;
+    char *dp = local.name;
+    n = 0x20;
+    while ((*dp++ = *sp++) != 0)
+    {
+      if ((--n) <= 0)
+      {
+        dp[-1] = 0;
+        break;
+      }
+    }
   }
-
-  dst[-1] = 0;
-  goto Ldone;
-  Lcopy:
-  c = *(arg0++);
-
-  *(dst++) = c;
-  if (((signed char) c) != 0)
-  {
-    goto Ltest;
-  }
-  Ldone:
   src = (volatile u8 *) local.name;
 
   b0 = src[0];
-  basep = (char * volatile *) ((void *) (&lbl_804BFA70));
-  countp = (volatile s32 *) (((u8 *) (&lbl_804BFA70)) + 4);
-  base = *basep;
-  count = *countp;
+  base = *(char * volatile *) (&lbl_804BFA70);
+  count = *(volatile s32 *) (((u8 *) (&lbl_804BFA70)) + 4);
   b1 = src[1];
   b2 = src[2];
   b3 = src[3];
   b4 = src[4];
-  *countp = count + 1;
+  *(volatile s32 *) (((u8 *) (&lbl_804BFA70)) + 4) = count + 1;
   b5 = src[5];
   dst = base + (count * 0x28);
   dst[0] = b0;
@@ -2303,6 +2295,7 @@ void fn_802B8AE0(const char *arg0, s32 arg1)
   local.zero = 0;
   *((s32 *) ((base + (count * 0x28)) + 0x24)) = 0;
 }
+#pragma cplusplus reset
 #pragma small_data on
 extern s32 lbl_8055CEA0;
 void fn_802B8C88(void) {
