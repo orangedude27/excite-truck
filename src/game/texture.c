@@ -1767,7 +1767,6 @@ char fn_802CC744(void) {
 
 #pragma push
 #pragma peephole off
-#pragma scheduling invalid_target
 int fn_802CC74C(void) {
     int result = 0;
     char *p = *(char **)lbl_8055FCBC;
