@@ -677,6 +677,7 @@ extern "C" void fn_80206D3C(void *self, void *list, int count) {
     }
 }
 
+#pragma scheduling 750
 extern "C" void fn_80206EE4(void *arg0, void *arg1, int arg2) {
     struct Hnd {
         virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3();
@@ -713,10 +714,10 @@ extern "C" void fn_80206EE4(void *arg0, void *arg1, int arg2) {
     float f29 = lbl_8056320C;
     int idx = 0;
     while (idx < count) {
-        float vec[3];
-        float btmp[3];
-        float vec2[3];
         int itmp[3];
+        float btmp[3];
+        float vec[3];
+        float vec2[3];
         float *p74 = *(float **)(obj + 0x74);
         itmp[0] = (*(int **)(p + 4))[9];
         itmp[1] = (*(int **)(p + 4))[10];
@@ -724,8 +725,8 @@ extern "C" void fn_80206EE4(void *arg0, void *arg1, int arg2) {
         ((int*)btmp)[0] = (*(int **)(p + 8))[0];
         ((int*)btmp)[1] = (*(int **)(p + 8))[1];
         ((int*)btmp)[2] = (*(int **)(p + 8))[2];
-        vec[0] = p74[0] - *(float*)&itmp[2 - 2];
-        vec[1] = p74[1] - *(float*)&itmp[2 - 1];
+        vec[0] = p74[0] - *(float*)&itmp[0];
+        vec[1] = p74[1] - *(float*)&itmp[1];
         vec[2] = p74[2] - *(float*)&itmp[2];
         float mag = PSVECMag(vec);
         if (mag > f29) {
@@ -737,7 +738,7 @@ extern "C" void fn_80206EE4(void *arg0, void *arg1, int arg2) {
             f27 += d1 * inv;
             float d2 = PSVECDotProduct(vec, (void *)((char *)*(int **)(p + 4) + 0x18));
             if (mag < f31) d2 = f30 + ((mag / f31) * (d2 - f30));
-            f26 += d2 * inv;
+            f26 += (d2 * inv);
             vec2[0] = (*(float **)(obj + 0x70))[0] - btmp[0];
             vec2[1] = (*(float **)(obj + 0x70))[1] - btmp[1];
             vec2[2] = (*(float **)(obj + 0x70))[2] - btmp[2];
@@ -747,18 +748,18 @@ extern "C" void fn_80206EE4(void *arg0, void *arg1, int arg2) {
         p += 12;
         idx++;
     }
-    if (f28 <= lbl_80563218) f28 = lbl_80563218;
+    f28 = (f28 > lbl_80563218) ? f28 : lbl_80563218;
     float inv2 = lbl_805631F8 / f28;
     (*(Hnd **)(obj + 0xC))->s30(*(float *)(obj + 4) * (f25 * inv2));
     float v27 = f27 * inv2;
     float c1 = lbl_805631F8;
-    if (c1 >= v27) c1 = v27;
-    if (c1 <= lbl_8056321C) c1 = lbl_8056321C;
+    c1 = (c1 < v27) ? c1 : v27;
+    c1 = (c1 > lbl_8056321C) ? c1 : lbl_8056321C;
     (*(Hnd **)(obj + 0xC))->s3c(c1);
     float v26 = f26 * inv2;
     float c2 = lbl_805631F8;
-    if (c2 >= v26) c2 = v26;
-    if (c2 <= lbl_8056321C) c2 = lbl_8056321C;
+    c2 = (c2 < v26) ? c2 : v26;
+    c2 = (c2 > lbl_8056321C) ? c2 : lbl_8056321C;
     (*(Hnd **)(obj + 0xC))->s40(c2);
 }
 
