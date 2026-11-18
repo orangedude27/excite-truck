@@ -34,17 +34,18 @@ extern unsigned char lbl_8055E728;
 extern float lbl_805626C8, lbl_805626CC, lbl_805626D0, lbl_805626D4, lbl_805626D8, lbl_805626DC;
 extern float lbl_805626E0, lbl_805626E4, lbl_805626E8, lbl_805626EC, lbl_805626F0, lbl_805626F4, lbl_805626F8, lbl_805626FC;
 extern void *memset(void *, int, unsigned long);
-#define table ((UnkEntry *)lbl_80435EE8)
 
 #pragma push
   #pragma scheduling invalid_target
 void fn_801B6670(void) {
+    UnkEntry *table;
     unsigned char *base = (unsigned char*)&lbl_80335F70;
     void *temp_r10;
     void *temp_r22;
     void *temp_r9;
 
     fn_8000D838(&lbl_8055E728);
+    table = (UnkEntry*)lbl_80435EE8;
     table[0].name = (const char *) (base + 0x1C);
     table[1].name = (const char *) (base + 0x40);
     table[0].id = 1;
