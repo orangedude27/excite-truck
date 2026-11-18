@@ -10,7 +10,7 @@ typedef struct Block {
     unsigned int sb_size;
     unsigned int sb_link;
 } Block;
-extern void Block_link(void*, void*, int, int);
+extern void Block_link(void*, void*);
 static inline Block* Pool_expand(Block** list, unsigned int size) {
     unsigned int total = (size + 0x1f) & ~7;
     Block* b;
@@ -32,7 +32,7 @@ static inline Block* Pool_expand(Block** list, unsigned int size) {
     b->max_size = remain;
     end = (char*)b + (b->size_flags & ~7);
     *(unsigned int*)(end - 4) = 0;
-    Block_link(b, sb, (int)end, 0);
+    Block_link(b, sb);
     if (*list) {
         Block* head = *list;
         Block* first = head->prev;
