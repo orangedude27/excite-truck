@@ -1085,6 +1085,37 @@ static inline void saveOldIdx_80241EF0(CtxObj_80241EF0 *ctx) {
         *(s32 *)((u8 *)sub + 4) = savedIdx;
     }
 }
+static inline void *loadRecord_80241EF0(Collection_80241EF0 *col, s32 index, s32 *field14, s32 *field10, char *name2C, char *name4C) {
+    void *item = col->getItem(index);
+    void *record = fn_8001668C(item, 0);
+    *field14 = *(s32 *)((u8 *)record + 4);
+    *field10 = *(s32 *)((u8 *)record + 0x9C);
+
+    {
+        s32 n = 0x20;
+        char *dst = name2C;
+        char *src = (char *)item;
+        while ((*dst++ = *src++) != 0) {
+            if (--n <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        }
+    }
+
+    {
+        char *src = (char *)record + 0xC;
+        s32 n = 0x20;
+        char *dst = name4C;
+        while ((*dst++ = *src++) != 0) {
+            if (--n <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        }
+    }
+    return record;
+}
 static inline void updateCtx_80241EF0(CtxObj_80241EF0 *ctx, void *record) {
     saveOldIdx_80241EF0(ctx);
     ctx->record = record;
@@ -1174,14 +1205,15 @@ extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
     }
     if (self->index < 0) return;
     if (self->index >= self->col->getCount()) return;
-    char *src = (char *)self->col->getItem(self->index);
-    void *record = fn_8001668C(src, 0);
+    void *item = self->col->getItem(self->index);
+    void *record = fn_8001668C(item, 0);
     *self->field14 = *(s32 *)((u8 *)record + 4);
     *self->field10 = *(s32 *)((u8 *)record + 0x9C);
 
     {
         s32 n = 0x20;
         char *dst = self->name2C;
+        char *src = (char *)item;
         while ((*dst++ = *src++) != 0) {
             if (--n <= 0) {
                 dst[-1] = 0;
@@ -1191,7 +1223,7 @@ extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
     }
 
     {
-        src = (char *)record + 0xC;
+        char *src = (char *)record + 0xC;
         s32 n = 0x20;
         char *dst = self->name4C;
         while ((*dst++ = *src++) != 0) {
