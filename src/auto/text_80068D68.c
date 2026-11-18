@@ -7825,6 +7825,19 @@ s32 btsnd_hcic_write_policy_set_80085668(u16, u16);
 #pragma push
 #pragma optimization_level 3
 #pragma dont_inline off
+/* btm_acl_created (stack/btm/btm_acl.c): an ACL link to bda came up with HCI
+   handle hci_handle.  If the device already has a link record, that record only
+   gets its handle and role refreshed ("Duplicate btm_acl_created").  Otherwise
+   the first free record of btm_cb.acl_db is filled in with the handle, role,
+   address, class of device and name, the power-management state machine gets an
+   entry for it, and the controller is asked for the peer's clock offset and
+   version.  When the security database already knows the device, its LMP
+   features are copied into the record instead: the packet types the link will
+   use are then picked from the supported types (plus the eSCO/EDR ones on a
+   Bluetooth 2.0 + EDR controller), sent with HCI Change_Connection_Packet_Type,
+   the default link policy is applied and stored, and the link-database callback
+   reports the device as newly up.  A device nothing knows about only gets the
+   HCI Read_Remote_Features request. */
 void btm_acl_created(BD_ADDR bda, DEV_CLASS dev_class, BD_NAME dev_name,
                      UINT16 hci_handle, UINT8 link_role, UINT8 is_le_link) {
     u8 *acl;
