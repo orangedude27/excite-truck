@@ -708,6 +708,9 @@ void fn_8029CD48(void *arg0) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
+#pragma opt_common_subs off
+#pragma use_lmw_stmw off
+#pragma cplusplus on
     extern double fn_8002F234(float);
     extern void *fn_8012850C(int, const char *);
     extern void *memset(void *, int, unsigned int);
@@ -1088,6 +1091,7 @@ void fn_8029DB78(void *arg0, void *arg1, int x, int z) {
     float h = lbl_8056468C * (*(float *)(p + 0x14) * (float)heights[x + z * *(int *)(p + 0xC)]);
     float len, scale, ysq;
     int lo, hi;
+
     out[2] = *(float *)(p + 0x40) + (float)x * *(float *)(p + 0x48) + (float)z * *(float *)(p + 0x50);
     out[1] = *(float *)(p + 0x3C) + h;
     out[0] = *(float *)(p + 0x38) + (float)x * *(float *)(p + 0x44) + (float)z * *(float *)(p + 0x4C);
@@ -1107,7 +1111,8 @@ void fn_8029DB78(void *arg0, void *arg1, int x, int z) {
     out[5] = lbl_8056465C + proj[2] * scale;
     lo = *(unsigned char *)(p + 0x30);
     hi = *(unsigned char *)(p + 0x31);
-    *(int *)(out + 3) = *(int *)(p + 0x2C) | ((lo + (int)((float)(hi - lo) * (lbl_80564658 - proj[1] * proj[1]))) << 24);
+    *(int *)(out + 3) = *(int *)(p + 0x2C) |
+        ((lo + (int)((float)(hi - lo) * (lbl_80564658 - proj[1] * proj[1]))) << 24);
 }
 #pragma pop
 extern float lbl_8056462C, lbl_80564634, lbl_80564640, lbl_80564658, lbl_80564694, lbl_80564698;
@@ -1197,15 +1202,12 @@ extern int lbl_8055F7FC;
 extern void fn_80287B38(void *);
 extern void fn_8029C450(void *, int);
 extern float lbl_8056469C;
-#pragma push
-#pragma processor 750
-#pragma scheduling 750
-#pragma optimization_level 4
+#pragma scheduling invalid_target
 void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
-    short *data;
-    register int low = -32768;
-    int index;
+    int low = -32768;
     int stride;
+    short *data;
+    int index;
     float val;
     int cvt;
     int out;
@@ -1219,10 +1221,6 @@ void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
     if (low < 32767) out = low;
     data[index] = out;
 }
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
-#pragma optimization_level 4
 int fn_8029DFE0(void *arg0, void *arg1) {
     extern float lbl_805646A0, lbl_8056465C, lbl_80564634;
     struct Delta { float x, z; };
@@ -1232,11 +1230,10 @@ int fn_8029DFE0(void *arg0, void *arg1) {
     float u = z * *(float *)((char *)arg0 + 0x48) + x * *(float *)((char *)arg0 + 0x44);
     float v = z * *(float *)((char *)arg0 + 0x50) + x * *(float *)((char *)arg0 + 0x4C);
     float upper = (float)*(int *)((char *)arg0 + 0xC) - lbl_805646A0;
-    int result = 0, inside = 0, test;
+    int result = 0, inside = 0, test = 0;
 
     delta.x = x;
     delta.z = z;
-    test = 0;
     if (u >= lbl_8056465C - lbl_80558DC4 &&
         u <= upper + lbl_80558DC4)
         test = 1;
@@ -1332,10 +1329,17 @@ void fn_8029E49C(int unused, void *arg1, int arg2) {
     temp_r5 = (unsigned char *)arg1 + arg2 * 0x3C;
     temp_r31 = temp_r5 + 0x70;
     if ((unsigned char *)&sp14 == temp_r31) {
-        temp_f6 = *(float *)(temp_r31 + 4); temp_f0 = *(float *)(temp_r31); temp_f7 = *(float *)(temp_r31 + 8);
-        sp14 = temp_f7 * *(float *)((unsigned char *)arg1 + 0x18) + (temp_f0 * *(float *)arg1 + temp_f6 * *(float *)((unsigned char *)arg1 + 0xC));
-        sp18 = temp_f7 * *(float *)((unsigned char *)arg1 + 0x1C) + (temp_f0 * *(float *)((unsigned char *)arg1 + 4) + temp_f6 * *(float *)((unsigned char *)arg1 + 0x10));
-        sp1C = temp_f7 * *(float *)((unsigned char *)arg1 + 0x20) + (temp_f0 * *(float *)((unsigned char *)arg1 + 8) + temp_f6 * *(float *)((unsigned char *)arg1 + 0x14));
+        float v0, v1, v2;
+        float m00, m10, m20;
+        v0 = *(float *)arg1;
+        v1 = *(float *)((unsigned char *)arg1 + 4);
+        v2 = *(float *)((unsigned char *)arg1 + 8);
+        m00 = *(float *)temp_r31;
+        m10 = *(float *)(temp_r31 + 4);
+        m20 = *(float *)(temp_r31 + 8);
+        sp14 = (m00 * v0 + m10 * *(float *)((unsigned char *)arg1 + 0xC)) + m20 * *(float *)((unsigned char *)arg1 + 0x18);
+        sp18 = (m00 * v1 + m10 * *(float *)((unsigned char *)arg1 + 0x10)) + m20 * *(float *)((unsigned char *)arg1 + 0x1C);
+        sp1C = (m00 * v2 + m10 * *(float *)((unsigned char *)arg1 + 0x14)) + m20 * *(float *)((unsigned char *)arg1 + 0x20);
     } else {
         sp14 = *(float *)(temp_r31 + 8) * *(float *)((unsigned char *)arg1 + 0x18) + (*(float *)temp_r31 * *(float *)arg1 + *(float *)(temp_r31 + 4) * *(float *)((unsigned char *)arg1 + 0xC));
         sp18 = *(float *)(temp_r31 + 8) * *(float *)((unsigned char *)arg1 + 0x1C) + (*(float *)temp_r31 * *(float *)((unsigned char *)arg1 + 4) + *(float *)(temp_r31 + 4) * *(float *)((unsigned char *)arg1 + 0x10));
@@ -1540,30 +1544,79 @@ int fn_8029EAE8(void *arg0) {
     }
     return result;
 }
-int fn_8029EB54(void *arg0, void *arg1) {
-    float *a=(float *)arg0, *b=(float *)arg1;
-    float point, maxX, minX, maxY, minY;
-    int x_ok, result=0, flag=0;
-    maxX = a[9];
-    if (a[0] > maxX) maxX = a[0]; else maxX = a[9];
-    minX = a[9];
-    if (a[0] < minX) minX = a[0]; else minX = a[9];
-    point=b[0];
-    x_ok = 0;
-    if (point>=minX-lbl_80558DC4 && point<=maxX+lbl_80558DC4) x_ok=1;
-    if (x_ok) {
-        int y_ok;
-        maxY = a[11];
-        if (a[2] > maxY) maxY = a[2]; else maxY = a[11];
-        minY = a[11];
-        if (a[2] < minY) minY = a[2]; else minY = a[11];
-        point=b[2];
-        y_ok = 0;
-        if (point>=minY-lbl_80558DC4 && point<=maxY+lbl_80558DC4) y_ok=1;
-        if (y_ok) flag=1;
+int fn_8029EB54(void *arg0, void *arg1)
+{
+  float *a = (float *) arg0;
+  float *b = (float *) arg1;
+  float point;
+  float maxX;
+  float minX;
+  float maxY;
+  float minY;
+  int x_ok;
+  int result = 0;
+  int flag = 0;
+  float t = a[9];
+  if (a[0] > t)
+  {
+    maxX = a[0];
+  }
+  else
+  {
+    maxX = t;
+  }
+  t = a[9];
+  if (a[0] < t)
+  {
+    minX = a[0];
+  }
+  else
+  {
+    minX = t;
+  }
+  point = b[0];
+  x_ok = 0;
+  if ((point >= (minX - lbl_80558DC4)) && (point <= (maxX + lbl_80558DC4)))
+  {
+    x_ok = 1;
+  }
+  if (x_ok)
+  {
+    int y_ok;
+    t = a[11];
+    if (a[2] > t)
+    {
+      maxY = a[2];
     }
-    if (flag && b[1]<a[1]-lbl_80564634) result=1;
-    return result;
+    else
+    {
+      maxY = t;
+    }
+    t = a[11];
+    if (a[2] < t)
+    {
+      minY = a[2];
+    }
+    else
+    {
+      minY = t;
+    }
+    point = b[2];
+    y_ok = 0;
+    if ((point >= (minY - lbl_80558DC4)) && (point <= (maxY + lbl_80558DC4)))
+    {
+      y_ok = 1;
+    }
+    if (y_ok)
+    {
+      flag = 1;
+    }
+  }
+  if (flag && (b[1] < (a[1] - lbl_80564634)))
+  {
+    result = 1;
+  }
+  return result;
 }
 
 void fn_8029EC64(void *area, void *arg1, int arg2) {
