@@ -19055,7 +19055,6 @@ extern void l2c_csm_closed(void *, u16, void *);
 extern void l2c_csm_orig_w4_sec_comp(void *, u16, void *);
 extern void l2c_csm_w4_l2ca_connect_rsp(void *, u16, void *);
 extern void l2c_csm_config(void *, L2C_CSM_EVT, void *);
-extern void l2c_csm_w4_l2cap_disconnect_rsp(void *, u16, void *);
 void l2c_csm_term_w4_sec_comp(void *p_ccb, s32 event, void *p_data)
 {
     /* L2CAP CSM handler for terminator waiting-for-security-complete: logs the event and handles abort, security complete, reject, data free, timeout, and peer disconnect. */
