@@ -522,6 +522,8 @@ found:
 #pragma pop
 /* Returns 1 when no "CAR" unlockable entry is currently blocking; returns 0 if
  * a "CAR" entry exists whose requirement is met and not restricted. */
+#pragma push
+#pragma dont_inline on
 s32 fn_80019438(void) {
     s32 index = 0;
     /* Return 0 if a "CAR" unlockable entry exists, is met, and is unrestricted. */
@@ -536,6 +538,7 @@ s32 fn_80019438(void) {
     }
     return 1;
 }
+#pragma pop
 
 s32 fn_800194CC(void) {
     /* Returns nonzero if the subsystem is busy or a pending operation/state requires attention. */
