@@ -512,12 +512,13 @@ extern "C" s32 lbl_8032E540[];
 // 15 bonus-category name strings ("air", "nice_landing", ...), indexed by
 // BonusTracker::GetType(); fn_80158618 looks names up in it.
 #define gBonusCategoryNames lbl_8032E540
+#pragma scheduling invalid_target
 extern "C" s32 fn_80157278(s32 arg0) {
     s32* item = (s32*)lbl_804348E8[arg0];
     s32 value = item[4];
     return value == 0x41434152;
 }
-
+#pragma scheduling on
 struct VObj;
 extern "C" void fn_80157560(VObj*);
 extern "C" s32 fn_80157558(void*);
@@ -2640,8 +2641,9 @@ extern "C" void fn_8015B23C(Unk8015A368C* object) {
 
 #pragma scheduling invalid_target
 extern "C" s32 fn_8015B2E0(void* arg0) {
+    f32 value;
     if (*(u8*)((char*)arg0 + 0x294)) return 0x7fffffff;
-    f32 value = *(f32*)((char*)arg0 + 0x290);
+    value = *(f32*)((char*)arg0 + 0x290);
     if (value > lbl_80558DC4[0]) return (s32)value;
     return (s32)*(f32*)((char*)arg0 + 0x28c);
 }
