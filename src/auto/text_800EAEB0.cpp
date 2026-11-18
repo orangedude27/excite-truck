@@ -323,44 +323,14 @@ extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(voi
     void* start = object;
     void* end = (u8*)start + size;
     unsigned long outerLevel = OSDisableInterrupts();
-    unsigned long level = OSDisableInterrupts();
-    if ((s8)lbl_8055DE30 == 0) {
-        void* sentinel = lbl_8041279C + 4;
-        *(u32*)(lbl_8041279C + 4) = 0;
-        *(u32*)(lbl_8041279C + 8) = 0;
-        *(u32*)lbl_8041279C = 0;
-        *(void**)(lbl_8041279C + 4) = sentinel;
-        *(void**)(lbl_8041279C + 8) = sentinel;
-        __register_global_object(lbl_8041279C,
-            (void*)__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54,
-            lbl_80412790);
-        lbl_8055DE30 = 1;
-    }
-    OSRestoreInterrupts(level);
-    void* node = *(void**)(lbl_8041279C + 4);
-    void* head = lbl_8041279C + 4;
-    do {
-        void* current = node;
+    register void* node = *(void**)((u8*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv() + 4);
+    while (node != (u8*)GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv() + 4) {
+        register void* current = node;
         node = *(void**)node;
         if (!current)
             Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
         ((Callback*)current)->dispose(start, end);
-        level = OSDisableInterrupts();
-        if ((s8)lbl_8055DE30 == 0) {
-            void* sentinel = lbl_8041279C + 4;
-            *(u32*)(lbl_8041279C + 4) = 0;
-            void* value = lbl_8041279C;
-            *(u32*)(lbl_8041279C + 8) = 0;
-            *(u32*)lbl_8041279C = 0;
-            *(void**)((short)lbl_8041279C + 4) = sentinel;
-            *(void**)(lbl_8041279C + 8) = sentinel;
-            __register_global_object(value,
-                (void*)__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54,
-                lbl_80412790);
-            lbl_8055DE30 = 1;
-        }
-        OSRestoreInterrupts(level);
-    } while (node != head);
+    }
     OSRestoreInterrupts(outerLevel);
 }
 #pragma pop
@@ -689,21 +659,21 @@ extern const char lbl_80322D54[];
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(void *self) {
     register unsigned char *node = *(unsigned char **)((unsigned char *)self + 4);
     register unsigned char *end = (unsigned char *)self + 4;
     int candidate;
     int priority = 0x80;
     void *result = 0;
-    extern const char lbl_80322CD0[];
-    extern const char lbl_80322CF4[];
-    extern const char lbl_80322D30[];
-    extern const char lbl_80322D54[];
     while (node != end) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322D54, 0x23d, lbl_80322D30);
         int value = *(unsigned char *)(node - 0x5c) + *(int *)(node - 0x90);
-        if (value <= 0x7f) candidate = value & ~(value >> 31);
-        else candidate = 0x7f;
+        if (value > 0x7f) {
+            candidate = 0x7f;
+        } else {
+            candidate = value & ~(value >> 31);
+        }
         if (priority > candidate) {
             if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322D54, 0x23d, lbl_80322D30);
             result = node - 0xd0;
@@ -1010,14 +980,14 @@ extern "C" u32 MEMGetAllocatableSizeForFrmHeapEx(void *, s32);
 #pragma push
 #pragma use_lmw_stmw off
 void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)(void *, unsigned long, void *), void *user) {
-    register void (*cb)(void *, unsigned long, void *) = callback;
     register void *block;
     register void *list;
     register void *link;
     register const char *file = (const char *)lbl_80322D60;
+    register void (*cb)(void *, unsigned long, void *) = callback;
     if (*(void **)this == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0xA2, file + 0x44);
-    block = MEMAllocFromFrmHeapEx(*(void **)this, ((size + 0x1f) & 0xFFFFFFE0) + 0x20, 0x20);
+    block = MEMAllocFromFrmHeapEx(*(void **)this, ((size + 0x1f) & ~31UL) + 0x20, 0x20);
     if (block == 0)
         return 0;
     *(u32 *)block = 0;
@@ -1036,7 +1006,7 @@ void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)
     if (block == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032304C, 0x233, (const char *)lbl_80323028);
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)list + 8, &link, block);
-    if (((u32)((u8 *)block + 0x20) & 0x1f) != 0)
+    if ((((u32)block + 0x20) & 0x1f) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0xae, file + 0x94);
     return (u8 *)block + 0x20;
 }
@@ -1172,7 +1142,8 @@ extern const char lbl_803230A0[], lbl_803230AC[];
 extern const f32 lbl_80561030, lbl_80561034, lbl_80561038;
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
 extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *__restrict arg0) {
-    const f32 *__restrict zp = &lbl_80561018;
+    f32 zero = 0.0f;
+    f32 current = *(f32 *)arg0;
     s32 index;
     s32 valid;
     s8 tableValue;
@@ -1180,22 +1151,26 @@ extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *__restrict arg0) {
     f32 value;
     f32 currentLevel;
     u8 level;
-    if (*zp == *(f32 *)arg0) return *zp;
-    if (*(u32 *)((u8 *)arg0 + 0x10) < *(u32 *)((u8 *)arg0 + 8)) return *zp;
+
+    if (zero == current) return zero;
+    if (*(u32 *)((u8 *)arg0 + 0x10) < *(u32 *)((u8 *)arg0 + 8)) return zero;
+
     valid = 0;
     angle = lbl_80561030 * (lbl_80561034 * *(f32 *)((u8 *)arg0 + 0x14));
     index = (s32)angle;
     if (index >= 0 && index < 0x80) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803230A0, 0x7b, lbl_803230AC, index, 0, 0x80);
+
     if (index < 0x20) tableValue = lbl_802F4D90[index];
     else if (index < 0x40) {
-        s32 off = index - 0x20;
+        register s32 off = index - 0x20;
         tableValue = lbl_802F4D90[0x20 - off];
     } else if (index < 0x60) tableValue = -lbl_802F4D90[index - 0x40];
     else {
-        s32 off = index - 0x60;
+        register s32 off = index - 0x60;
         tableValue = -lbl_802F4D90[0x20 - off];
     }
+
     value = (f32)tableValue / lbl_80561038;
     level = *(u8 *)((u8 *)arg0 + 0xC);
     currentLevel = *(f32 *)arg0;
@@ -1661,7 +1636,7 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
                 case 0xe0:
                     a = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
                     if (enabled) {
-                        CommandProc(track, ((s32)cmd << 8) + sub, a, 0);
+                        CommandProc(track, (cmd << 8) + sub, a, 0);
                     }
                     break;
                 case 0x80:
@@ -1669,7 +1644,7 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
                     a = *track->cur++;
                     b = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
                     if (enabled) {
-                        CommandProc(track, ((s32)cmd << 8) + sub, a, b);
+                        CommandProc(track, (cmd << 8) + sub, a, b);
                     }
                     break;
                 }
@@ -2361,18 +2336,22 @@ extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSCo
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void* fn_800EE5E8(void* arg0, void* arg1) {
+    register s32 startAlarm;
+    register u8* file = lbl_80323840;
+    register u32 outerLevel;
+    register u8* state = (u8*)arg0;
+    register const s16* pcm = (const s16*)arg1;
+    register s32 repeatAlarm;
+    register s32 active;
     u8 first = ((volatile u8*)arg0)[1];
-    const s16* pcm = (const s16*)arg1;
-    u8* state = (u8*)arg0;
-    u32 outerLevel;
-    s32 startAlarm, repeatAlarm, active, encoded;
+    s32 encoded;
     u32 mode;
     u32 i;
     u8 encodedBuffer[0x18];
-    u8* file = lbl_80323840;
+
     if (first == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)(file + 0), 0x101,
-                                     (const char*)(file + 0x38));
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x101,
+                                     (const char*)file + 0x38);
     if (state[1] != 0) {
         outerLevel = OSDisableInterrupts();
         if (WPADCanSendStreamData(*(s32*)(state + 0x2C)) == 0) {
@@ -2423,8 +2402,8 @@ scanDone:
                 if ((encoded = fn_80062278(
                          *(s32*)(state + 0x2C), encodedBuffer, 0x14)) != 0)
                     Warning__Q26nw4hbm2dbFPCciPCce(
-                        (const char*)(file + 0), 0x154,
-                        (const char*)(file + 0x60), encoded);
+                        (const char*)file, 0x154,
+                        (const char*)file + 0x60, encoded);
             }
             if (startAlarm != 0) {
                 u32 level = OSDisableInterrupts();
