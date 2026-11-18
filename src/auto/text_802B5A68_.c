@@ -407,6 +407,7 @@ extern "C" void fn_802B5F24(s32 arg0) {
 #pragma processor 750
 __declspec(section ".sdata") extern double lbl_80564C68;
 void fn_802B5F98(void) {
+#pragma scheduling invalid_target
     register char *base = lbl_8034A598;
     s32 index, i, j;
     s32 handle;
@@ -500,7 +501,7 @@ extern char lbl_804BFA70[];
 #pragma push
 #pragma processor 750
 #pragma scheduling 750
-__declspec(section ".sdata") extern double lbl_80564C68;
+extern double lbl_80564C68;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
