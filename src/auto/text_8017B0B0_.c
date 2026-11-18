@@ -179,7 +179,7 @@ void fn_8017B2D0(void *arg0, float a, float b, float c, float d) {
 }
 
 #pragma opt_propagation off
-void fn_8017B3A8(void *arg0, float *arg1, float *arg2) {
+void fn_8017B3A8(void *arg0, const float *arg1, const float *arg2) {
     float delta[3];
     float output[3];
 
@@ -197,7 +197,7 @@ void fn_8017B3A8(void *arg0, float *arg1, float *arg2) {
         PSVECCrossProduct(delta, arg1, output);
         x = *(float *)((char *)arg0 + 0x130) + arg1[0];
         y = *(float *)((char *)arg0 + 0x134) + arg1[1];
-        z = arg1[2] + *(float *)((char *)arg0 + 0x138);
+        z = *(float *)((char *)arg0 + 0x138) + arg1[2];
         *(float *)((char *)arg0 + 0x130) = x;
         *(float *)((char *)arg0 + 0x134) = y;
         *(float *)((char *)arg0 + 0x138) = z;
@@ -829,24 +829,24 @@ void fn_8017C7C4(void) {
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8017C7C8(void *arg0, void *arg1, void *arg2) {
-    float sp2C;
-    float sp30;
-    float sp34;
-    float sp38;
-    float sp3C;
-    float sp40;
-    float sp44;
-    float sp48;
-    float sp4C;
-    float sp8;
-    float spC;
-    float sp10;
-    float sp14;
-    float sp18;
-    float sp1C;
-    float sp20;
-    float sp24;
-    float sp28;
+    volatile float sp4C;
+    volatile float sp48;
+    volatile float sp44;
+    volatile float sp40;
+    volatile float sp3C;
+    volatile float sp38;
+    volatile float sp34;
+    volatile float sp30;
+    volatile float sp2C;
+    volatile float sp28;
+    volatile float sp24;
+    volatile float sp20;
+    volatile float sp1C;
+    volatile float sp18;
+    volatile float sp14;
+    volatile float sp10;
+    volatile float spC;
+    volatile float sp8;
     float temp_f10;
     float temp_f11;
     float temp_f12;
@@ -876,6 +876,7 @@ void fn_8017C7C8(void *arg0, void *arg1, void *arg2) {
     float temp_f30_2;
     float temp_f31_3;
     float temp_f1_5;
+    float scale;
     int temp_r6;
     int var_r30;
     void *temp_r29;
@@ -902,6 +903,7 @@ void fn_8017C7C8(void *arg0, void *arg1, void *arg2) {
     temp_f1 = *(float *)((char *)arg0 + 0x1A0);
     if (!((float) __fabs(temp_f1) <= ((float *)&lbl_80558DC4)[0])) {
         temp_f31 = lbl_80561BB4;
+        scale = lbl_80561BBC;
         var_r29 = arg0;
         var_r30 = 0;
         temp_f6 = temp_f31 / temp_f1;
@@ -917,12 +919,12 @@ void fn_8017C7C8(void *arg0, void *arg1, void *arg2) {
         *(float *)((char *)arg0 + 0x194) = temp_f12;
         *(float *)((char *)arg0 + 0x198) = temp_f11;
         *(float *)((char *)arg0 + 0x19C) = temp_f10;
-        *(float *)((char *)arg0 + 0x130) = *(float *)((char *)arg0 + 0x130) + temp_f25 * lbl_80561BBC;
-        *(float *)((char *)arg0 + 0x134) = *(float *)((char *)arg0 + 0x134) + temp_f24 * lbl_80561BBC;
-        *(float *)((char *)arg0 + 0x138) = *(float *)((char *)arg0 + 0x138) + temp_f13 * lbl_80561BBC;
-        *(float *)((char *)arg0 + 0x13C) = *(float *)((char *)arg0 + 0x13C) + temp_f12 * lbl_80561BBC;
-        *(float *)((char *)arg0 + 0x140) = *(float *)((char *)arg0 + 0x140) + temp_f11 * lbl_80561BBC;
-        *(float *)((char *)arg0 + 0x144) = *(float *)((char *)arg0 + 0x144) + temp_f10 * lbl_80561BBC;
+        *(float *)((char *)arg0 + 0x130) = *(float *)((char *)arg0 + 0x130) + temp_f25 * scale;
+        *(float *)((char *)arg0 + 0x134) = *(float *)((char *)arg0 + 0x134) + temp_f24 * scale;
+        *(float *)((char *)arg0 + 0x138) = *(float *)((char *)arg0 + 0x138) + temp_f13 * scale;
+        *(float *)((char *)arg0 + 0x13C) = *(float *)((char *)arg0 + 0x13C) + temp_f12 * scale;
+        *(float *)((char *)arg0 + 0x140) = *(float *)((char *)arg0 + 0x140) + temp_f11 * scale;
+        *(float *)((char *)arg0 + 0x144) = *(float *)((char *)arg0 + 0x144) + temp_f10 * scale;
         while (var_r30 < *(int *)((char *)arg0 + 0x1E4)) {
             temp_r8 = *(void **)((char *)var_r29 + 0x1A4);
             temp_f1 = temp_f31 / *(float *)((char *)arg0 + 0x1A0);
@@ -960,18 +962,18 @@ void fn_8017C7C8(void *arg0, void *arg1, void *arg2) {
     *(float *)((char *)arg0 + 0x13C) = lbl_80561BA8;
     *(float *)((char *)arg0 + 0x140) = lbl_80561BA8;
     *(float *)((char *)arg0 + 0x144) = lbl_80561BA8;
-    spC = *(float *)((char *)arg0 + 0x40);
-    sp8 = *(float *)((char *)arg0 + 0x3C);
+    *(volatile int *)&spC = *(int *)((char *)arg0 + 0x40);
+    *(volatile int *)&sp8 = *(int *)((char *)arg0 + 0x3C);
     temp_f1 = spC;
-    sp10 = *(float *)((char *)arg0 + 0x44);
+    *(volatile int *)&sp10 = *(int *)((char *)arg0 + 0x44);
     temp_f3 = sp10;
-    sp14 = *(float *)((char *)arg0 + 0x48);
-    sp18 = *(float *)((char *)arg0 + 0x4C);
-    sp1C = *(float *)((char *)arg0 + 0x50);
+    *(volatile int *)&sp14 = *(int *)((char *)arg0 + 0x48);
+    *(volatile int *)&sp18 = *(int *)((char *)arg0 + 0x4C);
+    *(volatile int *)&sp1C = *(int *)((char *)arg0 + 0x50);
     temp_f2 = sp1C;
-    sp20 = *(float *)((char *)arg0 + 0x54);
-    sp24 = *(float *)((char *)arg0 + 0x58);
-    sp28 = *(float *)((char *)arg0 + 0x5C);
+    *(volatile int *)&sp20 = *(int *)((char *)arg0 + 0x54);
+    *(volatile int *)&sp24 = *(int *)((char *)arg0 + 0x58);
+    *(volatile int *)&sp28 = *(int *)((char *)arg0 + 0x5C);
     spC = sp14;
     sp14 = temp_f1;
     sp10 = sp20;
@@ -1159,11 +1161,11 @@ void fn_8017D160(void *arg0, unsigned char *arg1, unsigned char *arg2, int *arg3
     float sx;
     float out1;
     float out0;
-    float dxs;
     float dx2;
-    float dys;
     float dy2;
     float dz2;
+    float dxs;
+    float dys;
     float sx2;
     float sx1;
     float sx0;
