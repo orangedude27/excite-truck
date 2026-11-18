@@ -79,6 +79,8 @@ const char **fn_801A75B4(const char *name) {
 extern signed char fn_802E47F8(int);
 extern char lbl_803342D0[];
 extern char lbl_8055E5D4;
+#pragma push
+#pragma scheduling invalid_target
 void fn_801A7628(void) {
     extern const char **lbl_8055E5CC;
     extern int lbl_8055E5D0;
@@ -123,11 +125,10 @@ void fn_801A7628(void) {
         *(char *)(lbl_803342D0 + 0xA60) = fn_802E47F8(0xD);
         lbl_8055E5D4 = 1;
     }
-    lbl_8055E5D0 = 0x7A;
     lbl_8055E5CC = (const char **)lbl_803342D0;
+    lbl_8055E5D0 = 0x7A;
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 void fn_801A7844(int arg0) {
     char *entry;
     int i;
@@ -135,10 +136,7 @@ void fn_801A7844(int arg0) {
     int spC;
     unsigned int sp8;
     int a;
-    unsigned char *dest;
     int b;
-    float x;
-    float y;
 
     if (arg0 != 0) {
         entry = (char *)lbl_80435050;
@@ -152,15 +150,12 @@ void fn_801A7844(int arg0) {
     }
     fn_80127A84(&sp10, &spC, &sp8);
     a = (int)lbl_8055CFF0 / 2;
-    dest = lbl_80435370;
     b = (int)lbl_8055CFF4 / 2;
-    x = (float)(sp10 - a) / (float)a;
-    y = (float)(spC - b) / (float)b;
-    dest[8] = sp8 & 1;
-    dest[9] = (sp8 >> 1) & 1;
-    dest[10] = (sp8 >> 2) & 1;
-    *(float *)&lbl_80435370[0] = x;
-    *(float *)&dest[4] = y;
+    lbl_80435370[8] = sp8 & 1;
+    lbl_80435370[9] = (sp8 >> 1) & 1;
+    lbl_80435370[10] = (sp8 >> 2) & 1;
+    *(float *)&lbl_80435370[0] = (float)(sp10 - a) / (float)a;
+    *(float *)&lbl_80435370[4] = (float)(spC - b) / (float)b;
 }
 extern void fn_801334F4(int, int, int *, int);
 #pragma push
@@ -483,7 +478,8 @@ int *input;
     }
     return lbl_80562458;
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 float fn_801A85E8(void *arg0) {
     struct Row {
         float floats[8];
@@ -511,10 +507,10 @@ float fn_801A85E8(void *arg0) {
     unsigned char copyB0, copyB1;
     unsigned int copyW0, copyW1;
 
+    base = (char *)lbl_80435050;
     if (*(int *)arg0 == 1)
         return lbl_80562458;
 
-    base = (char *)lbl_80435050;
     index = *(int *)((char *)arg0 + 4);
     row = (struct Row *)(base + index * 0x64);
     snapshot = *row;
@@ -630,7 +626,7 @@ float fn_801A85E8(void *arg0) {
     config->flags[1] = active->flags[1];
     config->flags[2] = active->flags[2];
 
-    result = fn_801A7F98();
+    result = fn_801A7F98(arg0);
     row->floats[0] = snapshot.floats[0];
     copyF0 = snapshot.floats[1];
     copyF1 = snapshot.floats[2];
@@ -737,7 +733,7 @@ float fn_801A85E8(void *arg0) {
     config->flags[2] = saved.bytes[10];
     return result;
 }
-#pragma push
+#pragma pop
 int fn_801A8A10(void *arg0) {
 struct Row {
 float floats[8];
@@ -766,7 +762,7 @@ if (*(int *)arg0 == 1)
 return 0;
 
 base = (volatile char *)lbl_80435050;
-index = ((int *)arg0)[1];
+index = *(int *)((char *)arg0 + 4);
 row = (struct Row *)(base + index * 0x64);
 snapshot = *row;
 output = (struct Row *)(base + index * 0x64);
@@ -1047,10 +1043,20 @@ int fn_801A902C(void) {
 }
 
 void fn_801A9050(void *arg0, int arg1) {
-    F801A9050Zero zero = {{0}};
-    const char **table = (const char **)lbl_802F9588;
-    const char *name = *(const char **)((char *)table + arg1 * 8);
-
+#pragma scheduling invalid_target
+    F801A9050Zero zero;
+    const char **table;
+    const char *name;
+    zero.words[0] = 0;
+    zero.words[1] = 0;
+    zero.words[2] = 0;
+    zero.words[3] = 0;
+    zero.words[4] = 0;
+    zero.words[5] = 0;
+    zero.words[6] = 0;
+    zero.words[7] = 0;
+    table = (const char **)lbl_802F9588;
+    name = *(const char **)((char *)table + arg1 * 8);
     ((void (*)(void *, const char *, const char **, int, F801A9050Zero))fn_801A9110)(
         arg0, name, table, 0, zero);
 }
