@@ -2321,11 +2321,13 @@ extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
  * falls into at +0x94 ("-" when it falls into none).  While the record still
  * reports a bonus the shown value counts up from 0 to it over one second, the
  * remaining bonus counting down beside it; the animation starts the first time
- * the row is drawn.  The row's stage field then walks 0..4: show the bonus and
- * label widgets and start the row's ArtAnim animation (0), pause that
- * animation once it has begun (1), resume it with the ready widget (2) and
- * pause it again when the record is done (3).  The animation manager is
- * advanced afterwards, and the row reports whether it is still running. */
+ * the row is drawn.  The row's stage field then walks 0..4, driving the row's
+ * ArtAnim animation (its manager at +0xc, index at +0x108) and its widgets:
+ * start the animation and show the bonus and label widgets (0), pause the
+ * animation once the row's own bonus field (+0x114) appeared (1), resume it
+ * with the ready widget (2) and pause it again once the row's done flag
+ * (+0x118) is set (3).  The animation manager is advanced afterwards, and the
+ * row reports whether it is still running. */
 extern "C" u32 fn_80140F10(void *panel, void *item) {
     u8 *row = (u8 *)panel, *record = (u8 *)item;
     f32 startTime, gameTime, sinceStart, elapsed, progress;
