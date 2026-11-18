@@ -366,7 +366,7 @@ extern int fn_802BC4E0(void *);
 void fn_802BCFB0(int *);
 void fn_802CAC54(int);
 int fn_802C6C20(int);
-void fn_80131818(void);
+void fn_80131818();
 extern int fn_802B1DA0(void *);
 extern int fn_801D04D0(void);
 extern int fn_802C143C(void *);
@@ -1402,111 +1402,153 @@ extern float lbl_80564D3C, lbl_80564D40, lbl_80564D44, lbl_80564D48;
 #pragma use_lmw_stmw off
 #pragma processor 750
 #pragma cplusplus on
-extern "C" void fn_802BD814(void) {
-    float constant40, constant3C, constant30, constant48, constant44, constant14, constant38, constant34, constant18;
-    float transform[12];
-    float matrix[12];
-    DrawEntriesBD814 *entries = (DrawEntriesBD814 *)&lbl_804C00D4;
-    int entryIndex;
-    constant18 = lbl_80564D18;
-    constant14 = lbl_80564D14;
-    constant40 = lbl_80564D40;
-    constant44 = lbl_80564D44;
-    constant48 = lbl_80564D48;
-    constant30 = lbl_80564D30;
-    constant3C = lbl_80564D3C;
-    constant34 = lbl_80564D34;
-    constant38 = lbl_80564D38;
-    lbl_8055FAAC = 0;
-    lbl_8055FAA8 = 0;
-    for (entryIndex = 0; entryIndex < entries->count; ++entryIndex) {
-        DrawEntryBD814 *entry = &entries->data[entryIndex];
-        DrawDataBD814 *data = entry->data;
-        DrawGroupsBD814 *groups;
-        DrawInstancesBD814 *instances;
-        int groupIndex;
-        if (!data) continue;
-        groups = data->firstPass;
-        instances = data->instances;
-        fn_802C28C0();
-        fn_802C8BD0();
-        fn_802DC71C(entry->firstHandle, entry->firstState);
-        for (groupIndex = 0; groupIndex < groups->count; ++groupIndex) {
-            DrawGroupBD814 *group = &groups->data[groupIndex];
-            float t = (group->time - constant34) / constant38;
-            float alpha;
-            int visible;
-            if (constant18 < t) t = constant18;
-            t = t > constant14 ? t : constant14;
-            alpha = constant14 + t * constant18;
-            visible = group->time >= constant14;
-            if (visible && alpha > constant3C) {
-                int index;
-                int handle = entry->firstHandle;
-                int cost = entry->firstCost;
-                for (index = group->first; index < group->first + group->count; ++index) {
-                    DrawInstanceBD814 *instance = &instances->data[index];
-                    if (instance->anchor && instance->position[1] > constant40)
-                        instance->position[1] = instance->anchor->height + instance->heightOffset;
-                    fn_802DCAE4(handle, instance->transform, alpha);
-                    ++lbl_8055FAA8;
-                    lbl_8055FAAC += cost;
-                }
-                group->time = constant30;
-            }
-        }
-        fn_802DC8B4();
-        fn_802C8D74();
-        groups = entry->data->secondPass;
-        instances = entry->data->instances;
-        if (entry->secondCost <= 10) {
-            fn_802C28C0();
-            fn_802C8BD0();
-            fn_802DC71C(entry->secondHandle, entry->secondState);
-            fn_801F1C24(matrix);
-            for (groupIndex = 0; groupIndex < groups->count; ++groupIndex) {
-                DrawGroupBD814 *group = &groups->data[groupIndex];
-                int visible = group->time >= constant14;
-                if (visible) {
-                    float t = (group->time - constant44) / constant48;
-                    float alpha;
-                    if (constant18 < t) t = constant18;
-                    t = t > constant14 ? t : constant14;
-                    alpha = constant18 + t * constant30;
-                    if (alpha > constant3C) {
-                        int index;
-                        int handle = entry->secondHandle;
-                        int cost = entry->secondCost;
-                        for (index = group->first; index < group->first + group->count; ++index) {
-                            DrawInstanceBD814 *instance = &instances->data[index];
-                            float scale;
-                            if (instance->anchor && instance->position[1] > constant40)
-                                instance->position[1] = instance->anchor->height + instance->heightOffset;
-                            scale = instance->transform[4];
-                            transform[9] = instance->position[0];
-                            transform[10] = instance->position[1];
-                            transform[11] = instance->position[2];
-                            transform[0] = matrix[0] * scale;
-                            transform[1] = matrix[1] * scale;
-                            transform[2] = matrix[2] * scale;
-                            transform[3] = matrix[3] * scale;
-                            transform[4] = matrix[4] * scale;
-                            transform[5] = matrix[5] * scale;
-                            transform[6] = matrix[6] * scale;
-                            transform[7] = matrix[7] * scale;
-                            transform[8] = matrix[8] * scale;
-                            fn_802DCAE4(handle, transform, alpha);
-                            ++lbl_8055FAA8;
-                            lbl_8055FAAC += cost;
-                        }
-                    }
-                    group->time = constant30;
-                }
-            }
-            fn_802DC8B4();
-            fn_802C8D74();
-        }
+extern "C" void fn_802BD814(void)
+{
+  float constant40;
+  float constant3C;
+  float constant30;
+  float constant48;
+  float new_var3;
+  float new_var2;
+  float constant44;
+  float constant14;
+  float constant38;
+  float constant34;
+  float constant18;
+  float transform[12];
+  float matrix[12];
+  DrawEntriesBD814 *entries = (DrawEntriesBD814 *) (&lbl_804C00D4);
+  int entryIndex;
+  float new_var;
+  new_var2 = lbl_80564D40;
+  new_var = lbl_80564D14;
+  constant18 = lbl_80564D18;
+  constant14 = new_var;
+  constant40 = new_var2;
+  constant44 = lbl_80564D44;
+  constant48 = lbl_80564D48;
+  constant30 = lbl_80564D30;
+  constant3C = lbl_80564D3C;
+  constant34 = lbl_80564D34;
+  constant38 = lbl_80564D38;
+  lbl_8055FAAC = 0;
+  lbl_8055FAA8 = 0;
+  for (entryIndex = 0; entryIndex < entries->count; ++entryIndex)
+  {
+    DrawEntryBD814 *entry = &entries->data[entryIndex];
+    DrawDataBD814 *data = entry->data;
+    DrawGroupsBD814 *groups;
+    DrawInstancesBD814 *instances;
+    int groupIndex;
+    if (!data)
+    {
+      continue;
     }
+    groups = data->firstPass;
+    instances = data->instances;
+    fn_802C28C0();
+    fn_802C8BD0();
+    fn_802DC71C(entry->firstHandle, entry->firstState);
+    for (groupIndex = 0; groupIndex < groups->count; ++groupIndex)
+    {
+      DrawGroupBD814 *group = &groups->data[groupIndex];
+      float t = (group->time - constant34) / constant38;
+      float alpha;
+      int visible;
+      if (constant18 < t)
+      {
+        t = constant18;
+      }
+      t = (t > constant14) ? (t) : (constant14);
+      alpha = constant14 + (t * constant18);
+      visible = group->time >= constant14;
+      new_var3 = constant40;
+      if (visible && (alpha > constant3C))
+      {
+        int index;
+        int handle = entry->firstHandle;
+        int cost = entry->firstCost;
+        for (index = group->first; index < (group->first + group->count); ++index)
+        {
+          DrawInstanceBD814 *instance = &instances->data[index];
+          if (instance->anchor && (instance->position[1] > new_var3))
+          {
+            instance->position[1] = instance->anchor->height + instance->heightOffset;
+          }
+          fn_802DCAE4(handle, instance->transform, alpha);
+          ++lbl_8055FAA8;
+          lbl_8055FAAC += cost;
+        }
+
+        group->time = constant30;
+      }
+    }
+
+    fn_802DC8B4();
+    fn_802C8D74();
+    groups = entry->data->secondPass;
+    instances = entry->data->instances;
+    if (entry->secondCost <= 10)
+    {
+      fn_802C28C0();
+      fn_802C8BD0();
+      fn_802DC71C(entry->secondHandle, entry->secondState);
+      fn_801F1C24(matrix);
+      for (groupIndex = 0; groupIndex < groups->count; ++groupIndex)
+      {
+        DrawGroupBD814 *group = &groups->data[groupIndex];
+        int visible = group->time >= constant14;
+        if (visible)
+        {
+          float t = (group->time - constant44) / constant48;
+          float alpha;
+          if (constant18 < t)
+          {
+            t = constant18;
+          }
+          t = (t > constant14) ? (t) : (constant14);
+          alpha = constant18 + (t * constant30);
+          if (alpha > constant3C)
+          {
+            int index;
+            int handle = entry->secondHandle;
+            int cost = entry->secondCost;
+            for (index = group->first; index < (group->first + group->count); ++index)
+            {
+              DrawInstanceBD814 *instance = &instances->data[index];
+              float scale;
+              if (instance->anchor && (instance->position[1] > new_var3))
+              {
+                instance->position[1] = instance->anchor->height + instance->heightOffset;
+              }
+              scale = instance->transform[4];
+              transform[9] = instance->position[0];
+              transform[10] = instance->position[1];
+              transform[11] = instance->position[2];
+              transform[0] = matrix[0] * scale;
+              transform[1] = matrix[1] * scale;
+              transform[2] = matrix[2] * scale;
+              transform[3] = matrix[3] * scale;
+              transform[4] = matrix[4] * scale;
+              transform[5] = matrix[5] * scale;
+              transform[6] = matrix[6] * scale;
+              transform[7] = matrix[7] * scale;
+              transform[8] = matrix[8] * scale;
+              fn_802DCAE4(handle, transform, alpha);
+              ++lbl_8055FAA8;
+              lbl_8055FAAC += cost;
+            }
+
+          }
+          group->time = constant30;
+        }
+      }
+
+      fn_802DC8B4();
+      fn_802C8D74();
+    }
+  }
+
 }
 #pragma pop
 
