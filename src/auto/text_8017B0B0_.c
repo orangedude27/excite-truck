@@ -812,6 +812,7 @@ void fn_8017B81C(void *arg0) {
     fn_8017A578(arg0);
     fn_8017D0C8(arg0);
 }
+#pragma use_lmw_stmw reset
 #pragma scheduling on
 void fn_8017C7BC(void) {
 
