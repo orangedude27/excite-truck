@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef signed long s32;
-extern float lbl_8055FB10;
+extern const float lbl_8055FB10;
 extern float lbl_80564E30;
 extern float lbl_80564E34;
 extern char lbl_8034AE98[];
@@ -21,16 +21,22 @@ extern void fn_802C0FD4(int *queue);
 #pragma push
 #pragma processor 750
 void fn_802C0D70(float *arg0) {
+#pragma scheduling invalid_target
+    struct Vec3 { float x, y, z; };
+    struct Vec3 *v = (struct Vec3 *)arg0;
     float length;
     float y;
-    length = (float)fn_8002F234((double)(arg0[2] * arg0[2] + arg0[0] * arg0[0]));
-    y = -arg0[1];
+    float z2, x2;
+    z2 = v->z * v->z;
+    x2 = v->x * v->x;
+    length = (float)fn_8002F234((double)(x2 + z2));
+    y = -v->y;
     if ((float)atan(y / length) < lbl_8055FB10) {
         fn_802E30C8(lbl_8034AE98, lbl_80564E30 * (float)atan(y / length) / lbl_80564E34,
                     lbl_80564E30 * lbl_8055FB10 / lbl_80564E34, lbl_80564E30);
-        arg0[0] *= (float)cos(lbl_8055FB10) / length;
-        arg0[1] = -(float)sin(lbl_8055FB10);
-        arg0[2] *= (float)cos(lbl_8055FB10) / length;
+        v->x *= (float)cos(lbl_8055FB10) / length;
+        v->y = -(float)sin(lbl_8055FB10);
+        v->z *= (float)cos(lbl_8055FB10) / length;
     }
 }
 #pragma pop
