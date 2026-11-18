@@ -2436,7 +2436,8 @@ extern "C" void *fn_8014E9C4(char *master, s32 shouldFree) {
         object = (Cleanup8014E9C4 *)lbl_8055E248;
         if (object) object->destroy(1);
         lbl_8055E248 = 0;
-        /* the race entries built at +0x9E4, 0xC0 bytes each, *count at +0xFE4 */
+        /* the race entries built at +0x9E4, 0xC0 bytes each, *count at +0xFE4:
+           their bonus objects, their three loaded resources and their item list */
         entry = master;
         for (entryIndex=0; entryIndex<*(s32 *)(master+0xfe4); entry+=0xc0,entryIndex++) {
             object = *(Cleanup8014E9C4 **)(entry+0x9f4);
@@ -2491,19 +2492,23 @@ extern "C" void *fn_8014E9C4(char *master, s32 shouldFree) {
         lbl_8055E268 = 0;
         fn_80167838();
         fn_8016A68C();
+        /* the 8 race entries themselves, through their cleanup fn_8014E154 */
         fn_8002F634(master+0x9e4,(void *)fn_8014E154,0xc0,8);
+        /* the coin file was there: release its object and stop the coin system */
         if (master+0x8f4 && *(u8 *)(master+0x8f4)) {
             object = *(Cleanup8014E9C4 **)(master+0x9d8);
             if (object) { if (object) object->destroy(1); }
             fn_80167EEC();
             *(u8 *)(master+0x8f4)=0;
         }
+        /* the two sounds loaded for the pre-race show */
         if (master+0x8d4) {
             object = *(Cleanup8014E9C4 **)(master+0x8e8);
             if (object) { if (object) object->destroy(1); }
             object = *(Cleanup8014E9C4 **)(master+0x8ec);
             if (object) { if (object) object->destroy(1); }
         }
+        /* the two growcoin arrays, through their cleanup fn_8014E3CC */
         fn_8002F634(master+0x454,(void *)fn_8014E3CC,0x240,2);
         /* the arrays live inside the object, so only their headers are reset */
         if (master+0x3b8) if (master+0x3b8) { *(s32 *)(master+0x3b8)=0; *(s32 *)(master+0x3bc)=0; *(s32 *)(master+0x3c0)=0; }
