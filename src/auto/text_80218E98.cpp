@@ -28,7 +28,6 @@ enum {
 };
 
 extern "C" f64 lbl_805634B8;
-#define F32_MAGIC(x) ((f32)((f64)(u32)((x) ^ 0x80000000) + 0x1p52 - lbl_805634B8))
 extern "C" char lbl_8033DAD8[];
 extern "C" s32 fn_80129D90(s32, s32, s32);
 extern "C" s32 fn_80131234(void *);
