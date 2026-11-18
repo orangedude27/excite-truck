@@ -1078,14 +1078,6 @@ extern "C" void *fn_80016BC8(void *, s32);
 extern "C" void *fn_80018A8C(void *, s32, s32 *, s32);
 extern "C" s32 fn_80255918(void *, void *);
 extern "C" char lbl_8034287C[];
-static inline void copyStr_80241EF0(char *dst, const char *src, s32 n) {
-    while ((*dst++ = *src++) != 0) {
-        if (--n <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-    }
-}
 static inline void updateCtx_80241EF0(CtxObj_80241EF0 *ctx, void *record) {
     if (ctx->record != 0) {
         s32 savedIdx = ctx->idx;
@@ -1109,7 +1101,17 @@ static inline void updateCtx_80241EF0(CtxObj_80241EF0 *ctx, void *record) {
         ((int (*)(void *, int, void *, ...))fn_801345D8)(
             ctx->name5C, 0x40, lbl_8034287C,
             ctx->idx + 1);
-        copyStr_80241EF0(ctx->name5C, (char *)fn_80131234((s32 *)ctx->name5C), 0x40);
+        {
+            char *src = (char *)fn_80131234((s32 *)ctx->name5C);
+            char *dst = ctx->name5C;
+            s32 n = 0x40;
+            while ((*dst++ = *src++) != 0) {
+                if (--n <= 0) {
+                    dst[-1] = 0;
+                    break;
+                }
+            }
+        }
     }
 
     *ctx->field30 = ctx->idx;
