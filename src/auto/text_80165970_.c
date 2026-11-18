@@ -234,6 +234,7 @@ extern float lbl_805618CC;
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80165B78(void **arg0) {
+#pragma opt_common_subs off
     char *strings = lbl_8032FCC0;
     char *s0 = strings;
     char *match, *text;
@@ -377,14 +378,18 @@ void fn_80166098(void) {
 #pragma dont_inline on
 #pragma cplusplus on
 float fn_801660C0(void) {
-    void **object;
-    int index;
-    float factor;
-    float value;
-    object = ((void **(*)(void))fn_80166098)();
-    index = *(int *)((char *)((void *(*)(void *))(*(void ***)object)[4])(object) + 0x10) - 1;
-    factor = fn_8013672C(index);
-    value = (float)index * factor + *(float *)((char *)((void *(*)(void *))(*(void ***)object)[6])(object) + 0x48);
+    class Object {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void *progress();
+        virtual void unused();
+        virtual void *other();
+    };
+    Object *object = (Object *)((void *(*)(void))fn_80166098)();
+    int index = *(int *)((char *)object->progress() + 0x10) - 1;
+    float factor = fn_8013672C(index);
+    float value = (float)index * factor + *(float *)((char *)object->other() + 0x48);
     if (lbl_8056189C > value) {
         return lbl_8056189C;
     }
@@ -492,9 +497,9 @@ void fn_801662FC(void) {
     int flag;
     int count;
     count = lbl_8055E330;
-    flag = ((unsigned char)count == 255);
-    lbl_8055E330 = count + 1;
+    flag = ((unsigned char)count == 0xFF);
     lbl_8055E329 = (unsigned char)flag;
+    lbl_8055E330 = count + 1;
     if (flag && lbl_8055E328) {
         if (!((float)__fabs(lbl_8055E31C - lbl_805618D0) <= lbl_80558DC4)) {
             fn_802E30C8(lbl_8032FEC0, lbl_8055E31C, lbl_8055E320, *(float *)((char *)&lbl_8042FE38 + 0x48), fn_80166274());
@@ -547,35 +552,33 @@ void fn_801663C8(int count, void *records, void *config) {
     *(int *)&lbl_8055E334 = 0;
 }
 #pragma processor 750
-void *fn_80166754(void *arg0) {
-    extern float lbl_80561898, lbl_8056189C, lbl_805618D8, lbl_805618DC, lbl_805618E0;
-    extern unsigned char lbl_8042FE38;
-    float zero = lbl_8056189C;
-    float value44 = lbl_805618D8;
-    char *base = (char *)&lbl_8042FE38;
-    float arg1 = lbl_805618DC;
-    float arg2;
-    float result;
-    float base3c;
-    float scale;
-    *(float *)((char *)arg0 + 0x18) = *(float *)(base + 0x14);
-    arg2 = lbl_805618E0;
-    *(float *)((char *)arg0 + 0x0C) = zero;
-    *(float *)((char *)arg0 + 0x08) = zero;
-    *(float *)((char *)arg0 + 0x14) = zero;
-    *(float *)((char *)arg0 + 0x10) = zero;
-    *(float *)((char *)arg0 + 0x44) = value44;
-    *(float *)((char *)arg0 + 0x38) = zero;
-    *(float *)((char *)arg0 + 0x34) = zero;
-    *(float *)((char *)arg0 + 0x40) = zero;
-    *(float *)((char *)arg0 + 0x3C) = zero;
-    result = ((float (*)(int, float, float))fn_80129DC4)(3, arg1, arg2);
-    base3c = *(float *)(base + 0x3C);
-    scale = lbl_80561898;
-    *(float *)((char *)arg0 + 0x4C) = base3c;
-    *(float *)((char *)arg0 + 0x48) = -base3c;
-    *(float *)((char *)arg0 + 0x50) = result * scale;
-    return arg0;
+void *fn_80166754(void *arg0)
+{
+  extern unsigned char lbl_8042FE38;
+  char *base = (char *) (&lbl_8042FE38);
+  float arg2;
+  float scale;
+  float result;
+  float base3c;
+  unsigned int pad;
+  *((float *) (((char *) arg0) + 0x18)) = *((float *) (base + 0x14));
+  arg2 = 15.0f;
+  *((float *) (((char *) arg0) + 0x0C)) = 0.0f;
+  *((float *) (((char *) arg0) + 0x08)) = 0.0f;
+  *((float *) (((char *) arg0) + 0x14)) = 0.0f;
+  *((float *) (((char *) arg0) + 0x10)) = 0.0f;
+  *((float *) (((char *) arg0) + 0x44)) = 0.4f;
+  *((float *) (((char *) arg0) + 0x38)) = 0.0f;
+  *((float *) (((char *) arg0) + 0x34)) = 0.0f;
+  *((float *) (((char *) arg0) + 0x40)) = 0.0f;
+  *((float *) (((char *) arg0) + 0x3C)) = 0.0f;
+  result = ((float (*)(int, float, float)) fn_80129DC4)(3, 8.0f, arg2);
+  base3c = *((float *) (base + 0x3C));
+  scale = 0.5f;
+  *((float *) (((char *) arg0) + 0x4C)) = base3c;
+  *((float *) (((char *) arg0) + 0x48)) = -base3c;
+  *((float *) (((char *) arg0) + 0x50)) = result * scale;
+  return arg0;
 }
 #pragma processor gekko
 /* IsSystemReady gate: returns 1 when the config-driven enable flag is set and
@@ -707,6 +710,7 @@ extern float lbl_8055E3C8, lbl_80561898, lbl_805618D0, lbl_805618E0, lbl_805618E
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" void fn_80166A24(void) {
+    unsigned char *object;
     int wasActive;
     unsigned char *var_r27;
     int var_r28;
@@ -739,11 +743,10 @@ extern "C" void fn_80166A24(void) {
         for (var_r28 = 0, var_r27 = 0;
              var_r28 < *(int *)((unsigned char *)(*(unsigned char * volatile *)&lbl_8055E32C) + 4);
              var_r27 += 0x88, var_r28++) {
-            unsigned char *temp_r25 = *(unsigned char * volatile *)(*(unsigned char * volatile *)&lbl_8055E32C) + (int)var_r27;
-            void *object = (void *)((int (*)(int))fn_801B2EC0)(*(int *)temp_r25);
-            time = fn_8016618C(object);
-            temp_r25[0x2C] = 1;
-            *(float *)(temp_r25 + 0x30) = time;
+            object = *(unsigned char * volatile *)(*(unsigned char * volatile *)&lbl_8055E32C) + (int)var_r27;
+            time = fn_8016618C((void *)((int (*)(int))fn_801B2EC0)(*(int *)object));
+            object[0x2C] = 1;
+            *(float *)(object + 0x30) = time;
         }
     }
 
@@ -753,10 +756,10 @@ extern "C" void fn_80166A24(void) {
     var_r28 = 0;
     var_r27 = (unsigned char *)&lbl_8042FE38;
     for (var_r29 = 0, var_r30 = 0;
-         var_r29 < *(int *)((unsigned char *)(*(unsigned char * volatile *)&lbl_8055E32C) + 4);
+         var_r29 < *(int *)((unsigned char *)(*(unsigned char *volatile *)&lbl_8055E32C) + 4);
          var_r30 += 0x88, var_r29++) {
         temp_r31 = *(unsigned char * volatile *)(*(unsigned char * volatile *)&lbl_8055E32C) + var_r30;
-        void *object = (void *)((int (*)(int))fn_801B2EC0)(*(int *)temp_r31);
+        object = (unsigned char *)((int (*)(int))fn_801B2EC0)(*(int *)temp_r31);
         fn_8016707C(temp_r31, (void **)object);
         if (*(void **)(temp_r31 + 0x58) != 0) {
             time = fn_8016618C(object);
@@ -969,9 +972,7 @@ extern "C" void fn_8016707C(void *arg0, register void **arg1) {
             *(int *)((char *)cur + 0x10) = -1;
         }
         entry->unk58 = (void *)0;
-        f1 = lbl_805618A0;
-        f2 = lbl_805618E4;
-        ret1 = ((float (*)(int, float, float))fn_80129DC4)(3, f1, f2);
+        ret1 = ((float (*)(int, float, float))fn_80129DC4)(3, 2.0f, 5.0f);
         f2 = lbl_805618E0;
         res = lbl_8055E318 + ret1;
         f1 = lbl_805618DC;
