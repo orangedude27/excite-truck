@@ -377,7 +377,7 @@ void fn_802D45C0(void *arg0) {
     GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
-#pragma unroll reset
+#pragma opt_unroll_loops reset
 
 #pragma push
 #pragma processor 750
