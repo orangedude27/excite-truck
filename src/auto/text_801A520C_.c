@@ -458,56 +458,56 @@ typedef struct VehicleState {
 
 #pragma push
 #pragma dont_inline on
-extern "C" void fn_801A5AD0(void *arg0, unsigned int arg1, void *arg2, void *arg3) {
-    float sp8[3];
-    float *p4;
-    float f1;
-    float f0;
-    float f2;
-    float f3;
+extern "C" void fn_801A5AD0(void *contactPtr, unsigned int wallKey, void *carPtr, void *heldPtr) {
+    float lagPoint[3];
+    float *planeNormal;
+    float speedScale;
+    float closingSpeed;
+    float frameLag;
+    float speed;
     float dot;
-    char *p2 = (char *)arg2;
+    char *carBase = (char *)carPtr;
 
-    if (*(volatile unsigned int *)((char *)arg0 + 0x20) == 0) {
-        p4 = *(float **)((char *)arg1 + 0xC);
-        f2 = lbl_805623F8;
-        *(float *)((char *)arg0 + 0) = p4[0];
-        *(float *)((char *)arg0 + 4) = p4[1];
-        *(float *)((char *)arg0 + 8) = p4[2];
+    if (*(volatile unsigned int *)((char *)contactPtr + 0x20) == 0) {
+        planeNormal = *(float **)((char *)wallKey + 0xC);
+        frameLag = lbl_805623F8;
+        *(float *)((char *)contactPtr + 0) = planeNormal[0];
+        *(float *)((char *)contactPtr + 4) = planeNormal[1];
+        *(float *)((char *)contactPtr + 8) = planeNormal[2];
 
-        sp8[0] = *(float *)(p2 + 0x60) + *(float *)(p2 + 0x118) * f2;
-        sp8[1] = *(float *)(p2 + 0x64) + *(float *)(p2 + 0x11C) * f2;
-        sp8[2] = *(float *)(p2 + 0x68) + *(float *)(p2 + 0x120) * f2;
+        lagPoint[0] = *(float *)(carBase + 0x60) + *(float *)(carBase + 0x118) * frameLag;
+        lagPoint[1] = *(float *)(carBase + 0x64) + *(float *)(carBase + 0x11C) * frameLag;
+        lagPoint[2] = *(float *)(carBase + 0x68) + *(float *)(carBase + 0x120) * frameLag;
 
-        if (arg3) {
-            dot = PSVECDotProduct((float *)arg3, (float *)arg0);
+        if (heldPtr) {
+            dot = PSVECDotProduct((float *)heldPtr, (float *)contactPtr);
             if (dot < lbl_805623C8) {
-                float x = *(float *)((char *)arg0 + 0);
-                float s = lbl_805623FC;
-                *(float *)((char *)arg0 + 0) = x * s;
-                *(float *)((char *)arg0 + 4) *= s;
-                *(float *)((char *)arg0 + 8) *= s;
+                float normalX = *(float *)((char *)contactPtr + 0);
+                float flip = lbl_805623FC;
+                *(float *)((char *)contactPtr + 0) = normalX * flip;
+                *(float *)((char *)contactPtr + 4) *= flip;
+                *(float *)((char *)contactPtr + 8) *= flip;
             }
         }
 
-        *(float *)((char *)arg0 + 0x14) = fn_801A5A7C(arg0, sp8, (float *)((char *)*(void **)((char *)arg1 + 0xC) + 0x24));
+        *(float *)((char *)contactPtr + 0x14) = fn_801A5A7C(contactPtr, lagPoint, (float *)((char *)*(void **)((char *)wallKey + 0xC) + 0x24));
 
-        dot = PSVECDotProduct((float *)(p2 + 0x118), (float *)arg0);
-        f3 = lbl_805623EC;
-        f0 = -(float)(double)dot;
-        *(float *)((char *)arg0 + 0xC) = dot;
-        f3 = (f3 < f0) ? f3 : f0;
-        f3 = (f3 > lbl_80562400) ? f3 : lbl_80562400;
+        dot = PSVECDotProduct((float *)(carBase + 0x118), (float *)contactPtr);
+        speed = lbl_805623EC;
+        closingSpeed = -(float)(double)dot;
+        *(float *)((char *)contactPtr + 0xC) = dot;
+        speed = (speed < closingSpeed) ? speed : closingSpeed;
+        speed = (speed > lbl_80562400) ? speed : lbl_80562400;
 
-        f1 = lbl_805623F4;
-        f2 = lbl_805623C8;
-        f3 = f1 * f3;
-        *(float *)((char *)arg0 + 0x1C) = f1;
-        *(float *)((char *)arg0 + 0x18) = f2;
-        *(float *)((char *)arg0 + 0x10) = f3;
-        *(unsigned int *)((char *)arg0 + 0x20) = arg1;
-    } else if (*(volatile unsigned int *)((char *)arg0 + 0x20) == arg1) {
-        *(float *)((char *)arg0 + 0x18) = lbl_805623C8;
+        speedScale = lbl_805623F4;
+        frameLag = lbl_805623C8;
+        speed = speedScale * speed;
+        *(float *)((char *)contactPtr + 0x1C) = speedScale;
+        *(float *)((char *)contactPtr + 0x18) = frameLag;
+        *(float *)((char *)contactPtr + 0x10) = speed;
+        *(unsigned int *)((char *)contactPtr + 0x20) = wallKey;
+    } else if (*(volatile unsigned int *)((char *)contactPtr + 0x20) == wallKey) {
+        *(float *)((char *)contactPtr + 0x18) = lbl_805623C8;
     }
 }
 #pragma pop
