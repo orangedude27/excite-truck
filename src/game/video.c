@@ -70,6 +70,12 @@ typedef struct SimpleHeap {
 } SimpleHeap;
 
 #pragma scheduling invalid_target
+/* TEV pipeline for the CPU light pass (installed by fn_802DBA1C): texcoords
+ * 0-3 are generated from the vertex position through 2x4 texture matrices and
+ * five stages read texmaps 0-4 with no vertex colour channel and the identity
+ * swap tables. Stages 0-1 clear TEVPREV and TEVREG0, stages 2-3 combine that
+ * with texmap3's alpha and texmap0's colour, and stage 4 passes the result on
+ * with alpha zero. */
 void fn_802DEAC4(void) {
     GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX1,
                       GX_FALSE, GX_PTIDENTITY);
