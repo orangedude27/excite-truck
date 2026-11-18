@@ -1188,13 +1188,12 @@ void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
 #pragma pop
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
-    volatile unsigned char *p;
-    lbl_804C97D0 = a;
-    p = (volatile unsigned char *)&lbl_804C97D0;
+    volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
     p[1] = b;
     p[2] = c;
     p[3] = 0;
     p[0x5C] = 1;
+    lbl_804C97D0 = a;
 }
 #pragma push
 #pragma scheduling invalid_target
