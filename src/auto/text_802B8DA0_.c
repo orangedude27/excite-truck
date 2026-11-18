@@ -1120,6 +1120,7 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
 extern "C" void fn_802BA560(void *);
 extern "C" char lbl_8034A9D0[];
 extern "C" char lbl_8034A9E4[];
+#pragma processor 750
 #pragma scheduling invalid_target
 extern "C" void fn_802BA348(void) {
     struct Dummy { virtual void v0(); virtual void *v1(int); };
@@ -1131,8 +1132,8 @@ extern "C" void fn_802BA348(void) {
         int cap;
         void *buf[4];
     } s;
-    void *first, *cur, *p, *off, *entry, *buffer, *items;
-    int i, k, total, obj, j, n;
+    void *first, *cur, *p, *off, *n, *entry, *buffer, *items;
+    int i, k, total, obj, j;
     s.name = lbl_8034A9D0;
     s.start = fn_802E2C20(lbl_8034A9D0);
     s.data = s.buf;
@@ -1142,8 +1143,9 @@ extern "C" void fn_802BA348(void) {
     cur = first;
     for (i = 0; s.count + 1 <= s.cap && i < 3;) {
         if (cur != 0) {
-            n = s.count++;
-            s.data[n] = cur;
+            void **dp = s.data;
+            n = (void *)(s.count++);
+            dp[(int)n] = cur;
         }
         i++;
         cur = ((Dummy *)fn_80156A40())->v1(i);
@@ -1162,7 +1164,9 @@ extern "C" void fn_802BA348(void) {
     }
     entry = fn_801284F8(0x10, lbl_8034A9E4);
     if (entry != 0) {
-        buffer = ((void *(*)(int, void *))fn_8012850C)(total * 0x54 + 0x10, lbl_8034A9E4);
+        int size = total * 0x54 + 0x10;
+        void *label = lbl_8034A9E4;
+        buffer = ((void *(*)(int, void *))fn_8012850C)(size, label);
         items = fn_8002F37C(buffer, (void *)fn_802BA560, 0, 0x54, total);
         *(void **)entry = items;
         *(int *)((char *)entry + 8) = total;
