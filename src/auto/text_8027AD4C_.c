@@ -561,23 +561,25 @@ void fn_8027B690(void) {
 }
 void fn_8027B77C(void) {
     char *base;
+    char *p;
     unsigned int outer;
+    unsigned int i;
     if (fn_80019B3C() == 0 || lbl_8055F650 != 0) {
         base = lbl_804A4380;
         outer = 0;
         do {
+            p = base;
+            i = 0;
+            do {
+                fn_8027B60C(p);
+                i++;
+                p += 0xBD0;
+            } while (i < 3);
             {
-                char *p = base;
-                unsigned int i = 0;
-                do {
-                    fn_8027B60C(p);
-                    i++;
-                    p += 0xBD0;
-                } while (i < 3);
-            }
-            {
-                char *p = base + 0x2370;
-                unsigned int i = 0;
+                unsigned int i;
+                char *p;
+                p = base + 0x2370;
+                i = 0;
                 do {
                     fn_8027B60C(p);
                     i++;
@@ -858,10 +860,10 @@ extern "C" void fn_8027BCD0(void *arg0, long arg1) {
                 idx = -1;
             found:
                 if (idx == -1) {
-                    long *pCnt = (long *)(a0 + 4);
-                    long cnt = *pCnt;
-                    rec = *(char **)a0 + cnt * 0x18;
-                    *pCnt = cnt + 1;
+                    long cnt = *(long *)(a0 + 4);
+                    long baseAddr = *(long *)a0;
+                    rec = (char *)(baseAddr + cnt * 0x18);
+                    *(long *)(a0 + 4) = cnt + 1;
                     *(long *)(rec + 0) = obj->m6();
                     *(long *)(rec + 4) = entry->m1();
                     *(long *)(rec + 8) = j;
@@ -1140,7 +1142,7 @@ struct Ctx8027C2B8 {
     int outerCount;
 };
 #pragma cplusplus on
-void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
+extern "C" void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
     extern char lbl_80347A50[];
     extern void *fn_80131808(void *);
     struct Ctx8027C2B8 *ctx = (struct Ctx8027C2B8 *)arg0;
