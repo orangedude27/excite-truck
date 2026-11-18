@@ -3217,7 +3217,7 @@ loop_80:
     if ((((TObj4C *)arg0)->d7() != 0) && !((lbl_8055E3C8 - M2C_FIELD(arg0, f32 *, 0xA0)) < lbl_80561A1C)) {
         temp_r5_2 = M2C_FIELD(arg0, s32 *, 0x60);
         temp_r6_2 = (s32) M2C_FIELD(arg0, f32 *, 0x38);
-        fn_8016B964((u8 *)arg0 + 0xAC, temp_r5_2 + temp_r6_2, temp_r5_2, temp_r6_2);
+        fn_8016B964((CrushRoundState8016B964 *)((u8 *)arg0 + 0xAC), temp_r5_2 + temp_r6_2, temp_r5_2, temp_r6_2);
     }
 }
 #pragma cplusplus off
