@@ -495,7 +495,7 @@ extern char lbl_804BFA70[];
 #pragma push
 #pragma processor 750
 #pragma scheduling 750
-extern double lbl_80564C68;
+__declspec(section ".sdata") extern double lbl_80564C68;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
