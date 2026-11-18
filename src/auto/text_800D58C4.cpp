@@ -2197,7 +2197,7 @@ extern "C" s32 fn_800D938C(void* arg0) {
     u32 top = (bits >> 0x17) & 0x1E0;
     u32 low = (bits >> 0x06) & 4;
     s32 past = base + (mid + top);
-    return past + (scaled + low);
+    return (scaled + low) + past;
 }
 
 extern "C" s32 fn_800D93BC(void *arg0) {
@@ -2629,7 +2629,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           register u8 *var_r21_5;
                           register u8 *var_r22;
                 register u32 var_r27;
-           Fn800DA094TexObj *var_r28;
+           register Fn800DA094TexObj *var_r28;
 
                           var_r26 = 1;
                           var_r21 = 0;
