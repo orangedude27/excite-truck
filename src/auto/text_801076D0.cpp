@@ -6135,6 +6135,14 @@ extern "C" f32 fn_80112528(void *writer, const char *str, s32 length) {
     fn_801033F0(&copy, 0);
     return width;
 }
+/* nw4hbm::ut::CharWriter::Write(const char16 *) of the ut_TextWriterBase.cpp copy of
+ * the text writer: the NUL-terminated form of fn_80112528 above.  It takes the
+ * string's length with the UTF-16 strlen fn_8002AEE8 and prints through a stack copy
+ * of the writer, so only the cursor the copy ends up with is committed back
+ * (SetCursor) and the writer's own font, spacing and tab state stay as they were.
+ * The asserts at lines 0x2DD/0x2DE are this wrapper's own NW4HBM_ASSERT_VALID_PTR
+ * checks; those at 0x2C1-0x2C3 belong to the Write(str, length) call the compiler
+ * inlined here.  Returns the width the print loop measured. */
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" f32 fn_80112960(void *writer, const u16 *str) {
