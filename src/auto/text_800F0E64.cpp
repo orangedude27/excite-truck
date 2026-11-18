@@ -304,7 +304,6 @@ extern "C" void OSInitMessageQueue(void*, void*, s32);
 extern "C" void RegisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNodePFv_v(void*, void*, void (*)(void));
 extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNode(void*, void*);
 extern "C" void memset(void*, s32, u32);
-extern "C" void *memcpy(void *, const void *, u32);
     extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
 extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void);
       extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void);
@@ -1455,6 +1454,16 @@ extern "C" void fn_800F2D28(void *object) {
 #pragma use_lmw_stmw off
 extern "C" void Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv(void *self, const void *arg) {
     typedef void (*PanicCall)(const char *, s32, const char *, ...);
+    struct FileHeader {
+        s64 field00;
+        s64 field08;
+        u32 field10;
+        u32 field14;
+        u32 field18;
+        u32 field1C;
+        u32 field20;
+        u32 field24;
+    };
     const u8 *src = (const u8 *)arg;
     u8 *dst = (u8 *)self;
     register const char *base = lbl_80324868;
@@ -1484,16 +1493,7 @@ valid_version_min:
     valid = (version <= 0x101);
 copy_if_valid:
     if (valid != 0) {
-        const u32 *in = (const u32 *)src;
-        u32 *out = (u32 *)dst;
-        ((u64 *)out)[0] = ((const u64 *)in)[0];
-        ((u64 *)out)[1] = ((const u64 *)in)[1];
-        out[4] = in[4];
-        out[5] = in[5];
-        out[6] = in[6];
-        out[7] = in[7];
-        out[8] = in[8];
-        out[9] = in[9];
+        *(FileHeader *)dst = *(const FileHeader *)src;
     }
 }
 #pragma pop
