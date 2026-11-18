@@ -820,7 +820,7 @@ s32 fn_8028BA44(void *arg0) {
     locals.sp8 = 0.0f;
     locals.spC = 0.0f;
     locals.sp10 = 0.0f;
-    fn_80288A70(arg0, &locals.sp8, *(f32 *)((u8 *)arg0 + 0xC));
+    fn_80288A70(arg0, &locals.sp8);
     val = *(f32 *)((u8 *)arg0 + 0xC);
     gval = lbl_8055F700;
     fn_8028AA6C(arg0, gval, val);
