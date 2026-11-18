@@ -4816,12 +4816,13 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     s32 result;
     s32 status;
     VFiPFEntIter *iter = (VFiPFEntIter *)arg0;
+    u32 *pos = (u32 *)iter;
     if (iter->sector == 0xFFFFFFFFu || iter->entry[0] == 0 || iter->position < 0xF423Fu)
         goto return_zero;
     index = iter->index;
     old = iter->position;
-    iter->position = (index + 1) << iter->shift;
-    if (fn_800AB378((void *)iter, 0) != 0) {
+    *pos = (index + 1) << iter->shift;
+    if (fn_800AB378(iter, 0) != 0) {
         iter->position = old;
         iter->index = index;
         return 1;
@@ -7845,7 +7846,6 @@ extern "C" s32 fn_800B0C10(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
 }
 
 extern "C" s32 fn_800B0A60(void *, s32, u32, u32 *);
-extern "C" s32 fn_800B0C10(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) {
     u32 sp8;
     u16 *var_r27;
