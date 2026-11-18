@@ -195,7 +195,7 @@ s32 fn_801B3398(void* src) {
     return 0x38;
 }
 #pragma push
-#pragma scheduling 750
+#pragma scheduling invalid_target
 void fn_801B3448(void) {
     void *p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
     if (p == NULL) return;
