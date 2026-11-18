@@ -947,7 +947,7 @@ void fn_8016CD10(void *record) {
 }
 #pragma scheduling on
 void fn_8016CD28(void *record) {
-    // Array-element constructor: init a 0x44-byte record header — id -1, two zero counters, a field of 3, and a cleared flag at +0x10.
+    // Array-element constructor: init a 0x44-byte record header -- id -1, two zero counters, a field of 3, and a cleared flag at +0x10.
     int zero = 0;
     int minusOne = -1;
     *((u8 *)record + 0x10) = zero;
