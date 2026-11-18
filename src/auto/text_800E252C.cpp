@@ -748,6 +748,8 @@ extern const char lbl_80322124[];
 extern const char lbl_80322100[];
 extern const char lbl_803220F4[];
 extern const char lbl_803220D0[];
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void fn_800E2F84(void *self)
 {
   char *base;
