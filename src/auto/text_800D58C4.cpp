@@ -2191,9 +2191,9 @@ extern "C" s32 fn_800D9364(void *self) {
 extern "C" s32 fn_800D938C(void* arg0) {
     u32 bits = *(u32*)((u8*)arg0 + 0x4C);
     s32 base = *(s32*)((u8*)arg0 + 0x58);
-    register u32 high = (bits >> 0x18) & 0xF;
-    register u32 mid = (bits >> 0x12) & 0x3C;
-    register u32 scaled = high * 0x14;
+    u32 high = (bits >> 0x18) & 0xF;
+    u32 mid = (bits >> 0x12) & 0x3C;
+    u32 scaled = high * 0x14;
     u32 top = (bits >> 0x17) & 0x1E0;
     u32 low = (bits >> 0x06) & 4;
     s32 past = base + (mid + top);
@@ -2523,7 +2523,7 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1
 
 #pragma inline_max_size 10000
 #pragma inline_max_total_size 10000
-extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2)  {
+extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           register const char *data = lbl_8031F990;
                           float matrix[3][4];
                           struct Fn800DA094TexObj { s32 fields[8]; };
@@ -3049,6 +3049,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2)  {
                           }
         return (var_r25 != 0) && (var_r26 != 0);
                         }
+#pragma scheduling on
  extern "C" void fn_800DAFA8(void *arg, void *obj) {
     /* C-callable thunk: invoke the virtual method at vtable slot 3 on obj, passing arg. */
     struct Dispatch {
