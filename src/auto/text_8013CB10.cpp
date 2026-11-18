@@ -2105,12 +2105,6 @@ extern void fn_80147BD0(s32, s32, s32, s32, s32, f32);
 extern f32 lbl_805614C4;
 extern f32 fn_8001DAF0(f32 *);
 extern f32 fn_8013CB3C(void);
-static inline f32 Clamp80140728(f32 value, f32 low, f32 high) {
-    f32 r = high;
-    r = (value < r) ? value : r;
-    r = (r > low) ? r : low;
-    return r;
-}
 #pragma processor 750
 #pragma processor 750
 #pragma push
