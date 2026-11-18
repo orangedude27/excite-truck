@@ -499,6 +499,8 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
     float rot[9];
     Res_80266388 r;
     Res_80266388 r2;
+    volatile float w[3];
+    float v[3];
     float p2[2];
     float q[2];
     float t9, t11, tq0, tq2;
@@ -548,7 +550,6 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
             s1 = lbl_8055C4D8 * (ka * kb);
             s2 = lbl_8055C4DC * (ka * kb);
             if (lbl_8055F498 != 0) {
-                volatile float w[3];
                 double c1 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
                 double c2 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
                 double c3 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
@@ -558,7 +559,6 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
                 matrix[11] = matrix[11] + (float)c1;
             }
             if (lbl_8055C4C8 != 0) {
-                float v[3];
                 float mag, x, y, z, sn, cs, one, scale;
                 double c1 = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
                 double c2 = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
@@ -1102,14 +1102,14 @@ extern float lbl_8055E460, lbl_80563C68, lbl_80563C70, lbl_80563C74, lbl_80563C7
 #pragma inline auto
 extern double fn_8002EF30(float), __fabs(double);
 #pragma push
-#pragma unroll_loops off
+#pragma opt_unroll_loops off
 void fn_802678E8(void *arg0, int arg1) {
  struct Frame { unsigned char flag; char gap0[3]; float height; char gap1[4]; float y; char gap2[12]; float z; int object; void *matrix; void *extra; float x; char gap3[8]; MP_80267EF8 transform; } frame;
  char *p, *entity; int flags, i; float height, t;
  fn_802670A0(arg0, arg1);
  if (fn_801C5B68(arg0,arg1)) { fn_80267130(arg0); return; }
  p = fn_80267EE4(arg1);
- *(float *)(p+0x1a0) = lbl_80563C28;
+ *(float *)(p+0x1a0) = -1.0f;
  fn_8026B768(*(int *)(p+0x20), arg1);
  if (lbl_8055E3C4 != *(int *)(p+0xb8)) {
    *(R9_80267EF8 *)(p+0x88) = *(R9_80267EF8 *)(p+0x58);
@@ -1121,7 +1121,7 @@ void fn_802678E8(void *arg0, int arg1) {
  lbl_8055F480 = 0;
  *(int *)(p+0x20) = *(int *)(p+0x24);
  *(int *)(p+0x10) = *(int *)(p+0x14);
- *(float *)(p+0xbc) = lbl_80563C68;
+ *(float *)(p+0xbc) = 1.7017f;
  *(void **)(p+0x140) = fn_8017960C(*(int *)(p+0x20));
  { float x = *(float *)(p+0x7c), y = *(float *)(p+0x80), z = *(float *)(p+0x84);
  frame.x = x; frame.flag = 0; entity = *(char **)(p+0x140); frame.y = y; frame.z = z; }
@@ -1149,7 +1149,7 @@ void fn_802678E8(void *arg0, int arg1) {
  } else { *(R9_80267EF8 *)arg0 = *(R9_80267EF8 *)(p+0x58);
    *(V3_80267EF8 *)((char *)arg0+0x24) = *(V3_80267EF8 *)(p+0x7c); }
  *(float *)((char *)arg0+0x30) = *(float *)(p+0xbc);
- *(float *)((char *)arg0+0x34) = fn_8002EF30(lbl_80563C6C * *(float *)(p+0xbc));
+ *(float *)((char *)arg0+0x34) = fn_8002EF30(0.5f * *(float *)(p+0xbc));
  if (fn_801769F8() == 0) {
    if (fn_8026B734(*(int *)(p+0x20), &frame.height)) height = frame.height;
    else {
@@ -1158,13 +1158,13 @@ void fn_802678E8(void *arg0, int arg1) {
      if ((mode >= 0 && mode < 10) || mode == 14) valid = 1;
      if (valid) {
        frame.height = fn_801B8950(*(int *)(p+0x20));
-       t = ((float)__fabs(PSVECDotProduct(p+0x70,p+0xd8))-lbl_80563C70)/lbl_80563C74;
-       if (lbl_80563C2C < t) t = lbl_80563C2C;
-       if (t < lbl_80563C20) t = lbl_80563C20;
-       height = frame.height * (lbl_80563C2C + t*lbl_80563C78);
-     } else height = lbl_80563C20;
+       t = ((float)__fabs(PSVECDotProduct(p+0x70,p+0xd8))-0.97f)/lbl_80563C74;
+       t = (1.0f < t) ? 1.0f : t;
+       t = (t > 0.0f) ? t : 0.0f;
+       height = frame.height * (1.0f + t * -0.5f);
+     } else height = 0.0f;
    }
- } else height = lbl_80563C20;
+ } else height = 0.0f;
  *(float *)((char *)arg0+0x50) = height;
  *(float *)((char *)arg0+0x54) = *(float *)(p+0x1a0);
  if (*(unsigned char *)(p+0x138)) flags |= 0x10;
@@ -1175,7 +1175,7 @@ void fn_802678E8(void *arg0, int arg1) {
  if (frame.flag) *(short *)((char *)arg0+0x64)=*(short *)(p+0x1ec);
  else *(short *)((char *)arg0+0x64)=*(short *)(*(char **)(p+0x140)+0x6c);
  if (!fn_801769F8()) {
-   float *q=lbl_80499980; float dec=lbl_80563C7C, zero=lbl_80563C20;
+   float *q=lbl_80499980; float dec=lbl_80563C7C, zero=0.0f;
    i=0; do {
      t=q[0]-dec; if (zero>t) t=zero; q[0]=t;
      t=q[1]-dec; if (zero>t) t=zero; q[1]=t;
@@ -1927,22 +1927,22 @@ void fn_802693F4(char *p, unsigned char *flag, int arg) {
         case 13: fn_80273604(p, 2); break;
         case 14: fn_80273604(p, 3); break;
         case 15: fn_80273604(p, 4); break;
-        case 19: { int *s = (int *)lbl_80499920; int *q = (int *)(p + 0x58); int b, a;
-            b=s[0]; a=s[1]; q[0]=b; q[1]=a;
-            b=s[2]; a=s[3]; q[2]=b; q[3]=a;
-            b=s[4]; a=s[5]; q[4]=b; q[5]=a;
-            b=s[6]; a=s[7]; q[6]=b; q[7]=a;
-            b=s[8]; q[8]=b;
-            b=s[9]; a=s[10]; q[9]=b; q[10]=a;
-            b=s[11]; q[11]=b; } break;
-        case 20: { int *s = (int *)lbl_80499950; int *q = (int *)(p + 0x58); int b, a;
-            b=s[0]; a=s[1]; q[0]=b; q[1]=a;
-            b=s[2]; a=s[3]; q[2]=b; q[3]=a;
-            b=s[4]; a=s[5]; q[4]=b; q[5]=a;
-            b=s[6]; a=s[7]; q[6]=b; q[7]=a;
-            b=s[8]; q[8]=b;
-            b=s[9]; a=s[10]; q[9]=b; q[10]=a;
-            b=s[11]; q[11]=b; } break;
+        case 19: { int *s = (int *)lbl_80499920; int *q = (int *)(p + 0x58); int a, b;
+            a=s[0]; b=s[1]; q[0]=a; q[1]=b;
+            a=s[2]; b=s[3]; q[2]=a; q[3]=b;
+            a=s[4]; b=s[5]; q[4]=a; q[5]=b;
+            a=s[6]; b=s[7]; q[6]=a; q[7]=b;
+            a=s[8]; q[8]=a;
+            a=s[9]; b=s[10]; q[9]=a; q[10]=b;
+            a=s[11]; q[11]=a; } break;
+        case 20: { int *s = (int *)lbl_80499950; int *q = (int *)(p + 0x58); int a, b;
+            a=s[0]; b=s[1]; q[0]=a; q[1]=b;
+            a=s[2]; b=s[3]; q[2]=a; q[3]=b;
+            a=s[4]; b=s[5]; q[4]=a; q[5]=b;
+            a=s[6]; b=s[7]; q[6]=a; q[7]=b;
+            a=s[8]; q[8]=a;
+            a=s[9]; b=s[10]; q[9]=a; q[10]=b;
+            a=s[11]; q[11]=a; } break;
         case 27: fn_80275B9C(p, lbl_80563CC0, lbl_80563CC4, lbl_80563CC8); break;
         case 28:
             m = lbl_80563C20;
