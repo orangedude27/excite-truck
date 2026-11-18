@@ -120,6 +120,7 @@ int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma scheduling on
 float fn_80138DF4(void *arg0) {
     float spC;
     float sp8;
@@ -189,15 +190,16 @@ void fn_80138F38(void *arg0) {
     if (*(float*)((char*)arg0 + 0x10) > lbl_805613B8) {
         if (*(float*)((char*)arg0 + 0x14) < lbl_805613B8) {
             if (fn_80138C28(arg0, &sp8, 0)) {
+                float scale = lbl_805613C0;
                 x = *(float*)((char*)arg0 + 0x10);
                 y = *(float*)((char*)arg0 + 0x14);
                 ratio = -x / y;
                 if (ratio <= sp8) {
-                    square = ratio * ratio;
                     product = ratio * x;
+                    square = ratio * ratio;
                     value = *(float*)((char*)arg0 + 0xC);
                     value += product;
-                    value += (lbl_805613C0 * y) * square;
+                    value += (scale * y) * square;
                     ((int*)&sp10)[0] = ((int*)arg0)[0];
                     ((int*)&sp10)[1] = ((int*)arg0)[1];
                     ((int*)&sp10)[2] = ((int*)arg0)[2];
