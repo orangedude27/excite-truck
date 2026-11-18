@@ -237,6 +237,19 @@ int fn_802CA4E0(int textureDesc, int textureName, int mode, int param3, int para
 #pragma use_lmw_stmw on
 
 extern void fn_802D8DCC(void *, int);
+static inline void swap16_802CA57C(unsigned char *p) {
+    unsigned char t = p[0];
+    p[0] = p[1];
+    p[1] = t;
+}
+static inline void swap32_802CA57C(unsigned char *p) {
+    unsigned char t = p[0];
+    p[0] = p[3];
+    p[3] = t;
+    t = p[1];
+    p[1] = p[2];
+    p[2] = t;
+}
 #pragma push
 #pragma opt_propagation off
 void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
