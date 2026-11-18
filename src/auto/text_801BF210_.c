@@ -948,23 +948,37 @@ int fn_801C0454(void *arg0) {
 
 #pragma push
 #pragma processor 750
-void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
-    float *out = (float *)arg0;
-    float *input = (float *)arg1;
-    float *matrix = (float *)arg2;
-    float temp_f24, temp_f25, temp_f26, temp_f27;
-    float temp_f28, temp_f29, temp_f30, temp_f31;
-    float temp_f1;
+void fn_801C092C(void *outMtx, void *inMtx, void *multMtx, int unused) {
+    /* Concatenate two 3x4 transforms: out = matrix * input.
+     *
+     * Every matrix here is twelve floats: the 3x3 part in column-major order
+     * (the element of row r, column c at c * 3 + r, so m<col><row> below) and
+     * the translation column at [9..11].  The 3x3 part is the plain product
+     * row(matrix) . col(input), each element through fn_80144514() (the
+     * three-term dot product ax*bx + ay*by + az*bz), and the translation is
+     * matrix applied to input's translation plus matrix's own translation.
+     *
+     * Both halves keep an alias-safe path: when the translation is read from
+     * where it is about to be written (out + 9 == input + 9) its three floats
+     * are latched first, and when the output is the input or the multiplier all
+     * nine products are taken before any of them is stored. */
+    float *out = (float *)outMtx;
+    float *input = (float *)inMtx;
+    float *matrix = (float *)multMtx;
+    float r0c0, r0c1, r0c2, r1c0;
+    float r1c1, r1c2, r2c0, r2c1;
+    float r2c2;
     if (out + 9 == input + 9) {
-        float x, y, z;
+        /* Same translation column: latch input's translation before writing. */
+        float tx, ty, tz;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
         m10 = matrix[3]; m11 = matrix[4]; m12 = matrix[5];
         m00 = matrix[0]; m01 = matrix[1]; m02 = matrix[2];
         m20 = matrix[6]; m21 = matrix[7]; m22 = matrix[8];
-        x = input[9]; y = input[10]; z = input[11];
-        out[9] = z * m20 + (x * m00 + y * m10);
-        out[10] = z * m21 + (x * m01 + y * m11);
-        out[11] = z * m22 + (x * m02 + y * m12);
+        tx = input[9]; ty = input[10]; tz = input[11];
+        out[9] = tz * m20 + (tx * m00 + ty * m10);
+        out[10] = tz * m21 + (tx * m01 + ty * m11);
+        out[11] = tz * m22 + (tx * m02 + ty * m12);
     } else {
         float m00, m01, m02, m10, m11, m12, m20, m21, m22;
         m10 = matrix[3]; m00 = matrix[0]; m20 = matrix[6];
@@ -978,24 +992,25 @@ void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
     out[10] += matrix[10];
     out[11] += matrix[11];
     if (out == input || out == matrix) {
-        temp_f24 = fn_80144514(matrix[0], input[0], matrix[3], input[1], matrix[6], input[2]);
-        temp_f25 = fn_80144514(matrix[0], input[3], matrix[3], input[4], matrix[6], input[5]);
-        temp_f26 = fn_80144514(matrix[0], input[6], matrix[3], input[7], matrix[6], input[8]);
-        temp_f27 = fn_80144514(matrix[1], input[0], matrix[4], input[1], matrix[7], input[2]);
-        temp_f28 = fn_80144514(matrix[1], input[3], matrix[4], input[4], matrix[7], input[5]);
-        temp_f29 = fn_80144514(matrix[1], input[6], matrix[4], input[7], matrix[7], input[8]);
-        temp_f30 = fn_80144514(matrix[2], input[0], matrix[5], input[1], matrix[8], input[2]);
-        temp_f31 = fn_80144514(matrix[2], input[3], matrix[5], input[4], matrix[8], input[5]);
-        temp_f1 = fn_80144514(matrix[2], input[6], matrix[5], input[7], matrix[8], input[8]);
-        out[0] = temp_f24;
-        out[3] = temp_f25;
-        out[6] = temp_f26;
-        out[1] = temp_f27;
-        out[4] = temp_f28;
-        out[7] = temp_f29;
-        out[2] = temp_f30;
-        out[5] = temp_f31;
-        out[8] = temp_f1;
+        /* Output aliases one of the operands: take every product first. */
+        r0c0 = fn_80144514(matrix[0], input[0], matrix[3], input[1], matrix[6], input[2]);
+        r0c1 = fn_80144514(matrix[0], input[3], matrix[3], input[4], matrix[6], input[5]);
+        r0c2 = fn_80144514(matrix[0], input[6], matrix[3], input[7], matrix[6], input[8]);
+        r1c0 = fn_80144514(matrix[1], input[0], matrix[4], input[1], matrix[7], input[2]);
+        r1c1 = fn_80144514(matrix[1], input[3], matrix[4], input[4], matrix[7], input[5]);
+        r1c2 = fn_80144514(matrix[1], input[6], matrix[4], input[7], matrix[7], input[8]);
+        r2c0 = fn_80144514(matrix[2], input[0], matrix[5], input[1], matrix[8], input[2]);
+        r2c1 = fn_80144514(matrix[2], input[3], matrix[5], input[4], matrix[8], input[5]);
+        r2c2 = fn_80144514(matrix[2], input[6], matrix[5], input[7], matrix[8], input[8]);
+        out[0] = r0c0;
+        out[3] = r0c1;
+        out[6] = r0c2;
+        out[1] = r1c0;
+        out[4] = r1c1;
+        out[7] = r1c2;
+        out[2] = r2c0;
+        out[5] = r2c1;
+        out[8] = r2c2;
     } else {
         out[0] = fn_80144514(matrix[0], input[0], matrix[3], input[1], matrix[6], input[2]);
         out[3] = fn_80144514(matrix[0], input[3], matrix[3], input[4], matrix[6], input[5]);
