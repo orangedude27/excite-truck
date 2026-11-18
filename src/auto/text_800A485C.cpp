@@ -26096,9 +26096,10 @@ extern "C" void VFiPFSTR_MoveStrPos(void *arg0, s16 arg1, s32 arg2) {
     struct Table { u8 pad[0x54]; s32 (*is_lead)(s8, s32); s32 (*length)(u8 *); };
     Data *data = (Data *)arg0;
     Table *table;
+    u8 *str;
     s16 count = 0;
     if (data->mode == 1) {
-        u8 *str = data->pos;
+        str = data->pos;
         table = (Table *)lbl_803D2140;
         while (arg1 != 0) {
             if (table->is_lead((s8)*str, 1) != 0)
@@ -26107,12 +26108,12 @@ extern "C" void VFiPFSTR_MoveStrPos(void *arg0, s16 arg1, s32 arg2) {
             arg1--;
         }
     } else {
-        u8 *str = data->pos;
-        table = (Table *)lbl_803D2140;
         s16 i = 0;
+        u8 *str2 = data->pos;
+        table = (Table *)lbl_803D2140;
         while (i < arg1) {
-            s32 len = table->length(str);
-            str += len * 2;
+            s32 len = table->length(str2);
+            str2 += len * 2;
             i++;
             count += (s16)len;
         }
