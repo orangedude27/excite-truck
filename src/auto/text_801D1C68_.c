@@ -212,8 +212,8 @@ check28:
     if (i < ((int *)arg0)[7]) goto loop28;
 }
 
-static inline void swapRecords_801D2008(int count, unsigned char *entry) {
-    unsigned char t;
+static inline unsigned char swapRecords_801D2008(int count, unsigned char *entry) {
+    unsigned char t = 0;
     unsigned char *p = entry;
     for (; count != 0; count--) {
         t = p[0]; p[0] = p[3]; p[3] = t;
@@ -232,6 +232,7 @@ static inline void swapRecords_801D2008(int count, unsigned char *entry) {
         t = p[25]; p[25] = p[26]; p[26] = t;
         p += 0x1c;
     }
+    return t;
 }
 
 void *fn_8012C370(unsigned int, int *, int, int, unsigned char *);
