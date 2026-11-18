@@ -3,6 +3,23 @@
 #include <types.h>
 #include <MSL/extras.h>
 
+#pragma cplusplus on
+class ObjVt {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual s32 f(void* a, s32 b);
+};
+#pragma cplusplus off
+
 extern void fn_80128668(void*);
 extern void fn_802C6CF8(void*);
 typedef struct {
@@ -431,7 +448,7 @@ s32 fn_8016A8F8(void* alarm) {
     u8* d;
     u8* s;
     s32 sj;
-    s32 cur;
+    register s32 cur;
     s32 i;
     s32 n;
     s32 var24;
