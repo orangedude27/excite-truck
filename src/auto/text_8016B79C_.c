@@ -1037,13 +1037,11 @@ extern void *fn_80131808(void *);
 extern void *fn_8023512C(void *);
 extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
-#pragma push
-#pragma opt_common_subs on
+#pragma optimization_level 3
 void *fn_8016D024(void *a0) {
     char *const base = lbl_803306D0;
     f32 v;
     void *last;
-    void *nfirst;
     fn_802C2914(a0);
     *(void **)((u8 *)a0 + 4) = lbl_80330A90;
     *(void **)((u8 *)a0 + 0x14) = fn_80131808(base + 0x1E0);
@@ -1055,17 +1053,16 @@ void *fn_8016D024(void *a0) {
     *(void **)((u8 *)a0 + 0x5C) = fn_802076A0(base + 0x23C, 1, 0, 0);
     *(void **)((u8 *)a0 + 0x60) = fn_802076A0(base + 0x24C, 1, 0, 0);
     last = fn_802076A0(base + 0x258, 1, 0, 0);
-    nfirst = *(void **)((u8 *)a0 + 0x4C);
     v = lbl_80561980;
     *(void **)((u8 *)a0 + 0x64) = last;
     *(s32 *)((u8 *)a0 + 0x24) = -1;
-    *(u8 *)((u8 *)a0 + 0x48) = 0;
-    *(u8 *)((u8 *)a0 + 0x49) = 0;
-    *(u8 *)((u8 *)a0 + 0x4A) = 1;
+    *(s8 *)((u8 *)a0 + 0x48) = 0;
+    *(s8 *)((u8 *)a0 + 0x49) = 0;
+    *(s8 *)((u8 *)a0 + 0x4A) = 1;
     *(f32 *)((u8 *)a0 + 0x28) = v;
     *(s32 *)((u8 *)a0 + 0x38) = 0;
     *(s32 *)((u8 *)a0 + 0x3C) = 0;
-    SetNodeF8(nfirst);
+    SetNodeF8(*(void **)((u8 *)a0 + 0x4C));
     SetNodeF8(*(void **)((u8 *)a0 + 0x50));
     SetNodeF8(*(void **)((u8 *)a0 + 0x58));
     SetNodeF8(*(void **)((u8 *)a0 + 0x54));
@@ -1075,7 +1072,6 @@ void *fn_8016D024(void *a0) {
     *(s32 *)((u8 *)a0 + 0x40) = fn_80204CF0();
     return a0;
 }
-#pragma pop
 void fn_8016D278(void *list) {
     /* Initialize a collection: point its items at the inline storage at +0xC,
      * set the element count (+0x4) to 0 and its capacity (+0x8) to 8. */
@@ -3411,23 +3407,22 @@ void fn_80171208(void *self, s32 slotIndex) {
 extern void fn_801B8060(void *, void *);
 extern f32 lbl_80561A20;
 extern f32 lbl_80561A24;
+#pragma push
+#pragma opt_common_subs off
 s32 fn_80171210(void *arg0, s32 arg1, void *arg2) {
     s32 count;
-    f32 reset = lbl_80561980;
     register void *item;
-    register void *list;
     register void *entry;
     register void *record;
     s32 index;
-    s32 nextIndex;
+    void *list;
     f32 x;
-    f32 z;
     f32 scaledX;
     f32 scale;
 
     item = ((void **)M2C_FIELD(arg0, void **, 4))[arg1];
     M2C_FIELD(item, u8 *, 8) = 0;
-    M2C_FIELD(item, f32 *, 0xC) = reset;
+    M2C_FIELD(item, f32 *, 0xC) = 0.0f;
     count = M2C_FIELD(arg0, s32 *, 0x5C);
     if (count < M2C_FIELD(arg0, s32 *, 0x6C)) {
         list = M2C_FIELD(arg0, void **, 0x48);
@@ -3436,30 +3431,27 @@ s32 fn_80171210(void *arg0, s32 arg1, void *arg2) {
         if (list != 0 && M2C_FIELD(list, s32 *, 4) > 0 &&
             *((u8 *)M2C_FIELD(list, void **, 0) +
               *(volatile s32 *)((u8 *)entry + 0x10) * 0x38 + 0x30) != 0) {
-            list = *(void * volatile *)((u8 *)entry + 4);
+            void *list2 = *(void * volatile *)((u8 *)entry + 4);
             index = *(volatile s32 *)((u8 *)entry + 0x10);
-            nextIndex = index + 1;
-            if (nextIndex < M2C_FIELD(list, s32 *, 4))
-                record = (u8 *)M2C_FIELD(list, void * volatile *, 0) + nextIndex * 0x38;
+            if (index + 1 < M2C_FIELD(list2, s32 *, 4))
+                record = (u8 *)M2C_FIELD(list2, void * volatile *, 0) + (index + 1) * 0x38;
             else
-                record = (u8 *)M2C_FIELD(list, void * volatile *, 0) + index * 0x38;
+                record = (u8 *)M2C_FIELD(list2, void * volatile *, 0) + index * 0x38;
             fn_801B8060(arg2, record);
             x = *(volatile f32 *)((u8 *)record + 0x18);
-            scale = lbl_80561A20;
-            z = *(volatile f32 *)((u8 *)arg2 + 0x28);
+            scale = 26.666666f;
             scaledX = x * scale;
-            z = z + *(volatile f32 *)&lbl_80561A24;
             *(f32 *)((u8 *)arg2 + 0x30) = scaledX;
             *(f32 *)((u8 *)arg2 + 0x34) = *(f32 *)((u8 *)record + 0x1C) * scale;
             *(f32 *)((u8 *)arg2 + 0x38) = *(f32 *)((u8 *)record + 0x20) * scale;
-            *(f32 *)((u8 *)arg2 + 0x28) = z;
+            *(f32 *)((u8 *)arg2 + 0x28) += 7.625f;
             return 1;
         }
         return 0;
     }
     return 0;
 }
-
+#pragma pop
 extern f32 lbl_80558DC4;
 extern f32 lbl_80561A28;
 extern f32 PSVECDotProduct(const void *, const void *, f32);
