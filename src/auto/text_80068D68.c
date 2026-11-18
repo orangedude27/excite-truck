@@ -18068,9 +18068,8 @@ void hidh_l2cif_disconnect_cfm(u32 handle) {
         if (*(u16 *)(found + 4) == 0 && *(u16 *)(found + 6) == 0) {
             *((u8 *)lbl_803C3C38 + dhandle * 0x34 + 0xA) = 0;
             found[0] = 0;
-            ((void (*)(u8, u32, u32, u32, u32, u32))
-                (*(void **)((u8 *)lbl_803C3C38 + 0x340)))(dhandle, 1, *(u16 *)(found + 0xA), 0,
-                                                    (u32)lbl_803C3C38, 0);
+            ((void (*)(u8, u32, u32, u32))
+                (*(void **)((u8 *)lbl_803C3C38 + 0x340)))(dhandle, 1, *(u16 *)(found + 0xA), 0);
         }
     }
 }
@@ -22928,10 +22927,11 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
     void *p_mcb;
     s32 index;
     u16 mcb_lcid;
+
     index = lcid - 0x40;
     if (index >= 0xA) {
         if (lbl_803C4828[0x414] >= 1)
-            fn_80070954(0x90000, &messages[index - index], lcid);
+            fn_80070954(0x90000, messages + 0, lcid);
         p_mcb = 0;
     } else {
         p_mcb = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -22944,6 +22944,7 @@ void RFCOMM_CongestionStatusInd(UINT16 lcid, BOOLEAN is_congested) {
             }
         }
     }
+
     if (p_mcb == 0) {
         if (lbl_803C4828[0x414] >= 1)
             fn_80070954(0x90000, messages + 0xE4, lcid);
