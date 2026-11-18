@@ -283,6 +283,46 @@ static inline s32 fn_80231D84_addEscape(f32 *adv, char *text, f32 x, f32 y, f32 
     }
     return 0;
 }
+static inline s32 fn_80231D84_escape(char *text, f32 x, f32 y, f32 z, f32 w, f32 half, f32 *adv) {
+    s32 i;
+    s32 eo;
+    s32 flag;
+    *adv = w;
+    flag = lbl_8055F050;
+    if (*text == '\\') {
+        eo = 0;
+        i = 0;
+        while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
+            Fn80231AF0_Entry *e = (Fn80231AF0_Entry *)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
+            if (fn_8002B1D8(text + 1, e->name, strlen(*(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo))) == 0) {
+                Fn80231D84_Rec *r;
+                f32 extra = lbl_8056368C;
+                r = &((Fn80231D84_Table *)lbl_8049846C)->recs[((Fn80231D84_Table *)lbl_8049846C)->count++];
+                r->idx = i;
+                if (e->unkC != 0) {
+                    f32 q = w / fn_80235F64(e->unkC, e->unk10);
+                    r->w = w * e->scale;
+                    r->w2 = q * e->scale * fn_80235EF0(e->unkC, e->unk10);
+                    extra = e->scale * (e->unk18 * q);
+                } else {
+                    r->w2 = w * e->scale;
+                    r->w = w * e->scale;
+                }
+                r->x = x;
+                r->y = y + w + half * (r->w - w);
+                r->z = z;
+                r->flag = flag;
+                if (adv != 0) {
+                    *adv = r->w2 + extra;
+                }
+                return strlen(e->name) + 1;
+            }
+            ++i;
+            eo += 0x1C;
+        }
+    }
+    return 0;
+}
 /* State save/restore hook used by the game-mode dispatcher (fn_8000B210):
  * called with 0 to snapshot state, then with that value to restore it. This
  * build has no state to preserve, so it always reports 0. */
@@ -335,14 +375,14 @@ void fn_8023158C(GTexBlock *block, const char *name) {
 s32 fn_802315FC(s32 arg0) {
     s32 offset = arg0 * 0xC;
     u8 *entry = lbl_8055F068 + offset;
+    u8 *base;
+    u8 *destination;
+    u8 *source;
+    s32 last;
+    s32 lastOffset;
 
     /* Decrement the entry reference count; replace its slot after releasing an expired entry. */
     if ((*(s32 *)(entry + 8) -= 1) < 1) {
-        u8 *base;
-        u8 *destination;
-        u8 *source;
-        s32 last;
-        s32 lastOffset;
         fn_802CAC54(*(void **)*(void **)entry);
         fn_8012C4D8(*(void **)entry);
         fn_80128670(*(void **)(entry + 4));
@@ -647,10 +687,10 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     s32 sp8;
     f32 temp_f31;
     f32 rate;
-    s32 var_r31;
-    s32 temp_r30;
-    u8 *var_r29;
-    s32 var_r5;
+    register s32 var_r31;
+    register s32 temp_r30;
+    register u8 *var_r29;
+    register s32 var_r5;
     f32 tmpRate;
     sp8 = (s32)arg0;
     spC = farg0;
