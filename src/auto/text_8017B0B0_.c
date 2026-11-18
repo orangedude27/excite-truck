@@ -364,6 +364,9 @@ extern void PSVECNormalize(const void *, void *);
 extern double sin(double);
 extern double cos(double);
 extern void fn_801ADB44(void *, void *);
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma ppc_psq_save off
 void fn_8017B81C(void *arg0) {
