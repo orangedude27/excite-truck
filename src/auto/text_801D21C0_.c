@@ -291,6 +291,50 @@ void fn_801D2210(void) {
     fn_801D2B94();
 }
 
+/* Scene object tags (object+0x10) of the vehicles that carry soevents. */
+#define FOURCC_CAR  0x43415220 /* 'CAR ' */
+#define FOURCC_PCAR 0x50434152 /* 'PCAR' player truck */
+#define FOURCC_ACAR 0x41434152 /* 'ACAR' AI truck */
+#define FOURCC_NCAR 0x4E434152 /* 'NCAR' */
+
+/* A scene object as the soevent code sees it. */
+typedef struct VehicleObject {
+    /* 0x00 */ void *vt;
+    /* 0x04 */ u8 pad04[0x0C];
+    /* 0x10 */ u32 fourcc;      /* FOURCC_* above */
+    /* 0x14 */ u8 pad14[0x28];
+    /* 0x3C */ f32 rotation[9]; /* object space -> world */
+    /* 0x60 */ Vec position;
+    /* 0x6C */ s16 type;
+    /* 0x6E */ u8 pad6E[0x66];
+    /* 0xD4 */ f32 scale;       /* size of the body, scales what the event emits */
+    /* 0xD8 */ u8 padD8[0x40];
+    /* 0x118 */ Vec velocity;
+    /* 0x124 */ u8 pad124[0xC8];
+    /* 0x1EC */ s32 recordIndex; /* its slot in the per-object table lbl_80438898 */
+} VehicleObject;
+
+/* One armed soevent spawn: slot N of the 8-record table lbl_80438898, which
+ * runs beside the car table lbl_804348E8 (the vehicle it follows).  fn_801D2C70
+ * arms a record when a class' spawn group fires; fn_801D2214 reports it every
+ * frame until the game clock passes its due time. */
+typedef struct SoeventRecord {
+    /* 0x00 */ u8 active;    /* record in use */
+    /* 0x01 */ u8 pad01[3];
+    /* 0x04 */ s32 classId;  /* SoeventClass this spawn is for */
+    /* 0x08 */ f32 dueTime;  /* game time the record stops reporting at */
+    /* 0x0C */ Vec position; /* spawn point, relative to the vehicle */
+} SoeventRecord; /* size 0x18 */
+
+/* Payload of event 10 (fn_801796CC): a soevent spawn in world space. */
+typedef struct SoeventSpawnInfo {
+    /* 0x00 */ Vec position; /* where to spawn */
+    /* 0x0C */ Vec velocity; /* the vehicle's velocity */
+    /* 0x18 */ s16 type;     /* vehicle type field (object+0x6C) */
+    /* 0x1A */ s16 pad1A;
+    /* 0x1C */ s32 classId;  /* SoeventClass being spawned */
+} SoeventSpawnInfo; /* size 0x20, which is what the event carries */
+
 extern s32 fn_801B2F24(void);
 extern void *lbl_804348E8[];
 #pragma push
@@ -366,29 +410,6 @@ extern void fn_801D2C70(void*, s32, void*, s32);
 extern void fn_801D2E38(void*, void*, s32, void*, f32);
 extern void fn_802E317C(const char*, ...);
 extern const char lbl_803382DC[];
-
-/* Scene object tags (object+0x10) of the vehicles that carry soevents. */
-#define FOURCC_CAR  0x43415220 /* 'CAR ' */
-#define FOURCC_PCAR 0x50434152 /* 'PCAR' player truck */
-#define FOURCC_ACAR 0x41434152 /* 'ACAR' AI truck */
-#define FOURCC_NCAR 0x4E434152 /* 'NCAR' */
-
-/* A scene object as the soevent code sees it. */
-typedef struct VehicleObject {
-    /* 0x00 */ void *vt;
-    /* 0x04 */ u8 pad04[0x0C];
-    /* 0x10 */ u32 fourcc;      /* FOURCC_* above */
-    /* 0x14 */ u8 pad14[0x28];
-    /* 0x3C */ f32 rotation[9]; /* object space -> world */
-    /* 0x60 */ Vec position;
-    /* 0x6C */ s16 type;
-    /* 0x6E */ u8 pad6E[0x66];
-    /* 0xD4 */ f32 scale;       /* size of the body, scales what the event emits */
-    /* 0xD8 */ u8 padD8[0x40];
-    /* 0x118 */ Vec velocity;
-    /* 0x124 */ u8 pad124[0xC8];
-    /* 0x1EC */ s32 recordIndex; /* its slot in the per-object table lbl_80438898 */
-} VehicleObject;
 
 /* A live soevent instance; fn_801A4A8C builds one from a class id and a matrix. */
 typedef struct SoeventInstance {
