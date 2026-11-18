@@ -39,12 +39,11 @@ int PackArgs(void* base, int count, char** args, int unused) {
         original = count;
         strings = (char*)base + 0x2000;
         argp = args + count;
-        while (count-- >= 0) {
+        while (argp--, --count >= 0) {
             str = *argp;
             strings -= strlen(str) + 1;
             strcpy(strings, str);
             *argp = (char*)((char*)strings - (char*)base);
-            argp--;
         }
         copied = 0;
         table = (char*)base + ((strings - (char*)base) & ~3);
@@ -52,7 +51,7 @@ int PackArgs(void* base, int count, char** args, int unused) {
         for (; copied < (unsigned int)(original + 1); copied++) {
             ((unsigned int*)table)[copied] = ((unsigned int*)args)[copied];
         }
-        ((int*)table)[-1] = original;
+        *(int*)(table - 4) = original;
         *(int*)((char*)base + 8) = (int)(table - 4 - (char*)base);
     }
     return 1;
@@ -108,11 +107,11 @@ extern void OSReport(const char *format, ...);
 extern void __OSLaunchMenu(void);
 #pragma use_lmw_stmw off
 void fn_8004DDFC(void) {
-    unsigned char *base;
-    unsigned char *mem;
+    register unsigned char *base;
+    register unsigned char *mem;
     register unsigned int *selected;
     register unsigned int *entry;
-    unsigned char *partition;
+    register unsigned char *partition;
     struct local_state {
         unsigned char b0;
         unsigned char b1;
@@ -324,8 +323,12 @@ void __OSLaunchMenu(void) {
         ((int *)&state.fd, title, 0, (unsigned int *)&state.count);
     if (state.count != 1)
         return;
-    if (result != 0)
+    switch (result) {
+    case 0:
+        break;
+    default:
         return;
+    }
 
     result = ((int (*)(int *, unsigned long long, void *, unsigned int *))_ES_GetTicketViews)
         ((int *)&state.fd, title, titlePtr, (unsigned int *)&state.count);
@@ -334,8 +337,12 @@ void __OSLaunchMenu(void) {
 
     result = ((int (*)(int *, unsigned long long, void *))_ES_LaunchTitle)
         ((int *)&state.fd, title, titlePtr);
-    if (result != 0)
+    switch (result) {
+    case 0:
+        break;
+    default:
         return;
+    }
 }
 
 typedef struct BootCmdBlock { u8 pad[0x30]; } BootCmdBlock;
