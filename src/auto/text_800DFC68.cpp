@@ -243,8 +243,8 @@ void* nw4hbm::lyt::Window::FindMaterialByName(const char* name, bool searchChild
     int i;
     if (*(void**)(pane + 0x28) != 0 && fn_800D58F0((char*)*(void**)(pane + 0x28) + 4, name) != 0)
         return *(void**)(pane + 0x28);
-    offset = 0;
     i = 0;
+    offset = 0;
     while (i < *(u8*)(pane + 0x100)) {
         void* candidate = *(void**)(*(u8**)(pane + 0xFC) + offset + 4);
         if (fn_800D58F0((char*)candidate + 4, name) != 0)
@@ -253,15 +253,19 @@ void* nw4hbm::lyt::Window::FindMaterialByName(const char* name, bool searchChild
         i++;
     }
     if (searchChildren) {
-        Link* child = *(Link**)(pane + 0x14);
-        Link* sentinel = (Link*)(pane + 0x14);
-        while (child != sentinel) {
-            if (child == 0)
+        struct { void *node; } cursor;
+        cursor.node = *(void**)(pane + 0x14);
+        void *&node = cursor.node;
+        struct { void *end; } sentinel;
+        sentinel.end = pane + 0x14;
+        void *&end = sentinel.end;
+        while (node != end) {
+            if (node == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            void* value = ((Pane*)((char*)child - 4))->FindMaterialByName(name, true);
+            void* value = ((Pane*)((u8*)node - 4))->FindMaterialByName(name, true);
             if (value != 0)
                 return value;
-            child = child->next;
+            node = *(void**)node;
         }
     }
     return 0;
@@ -525,30 +529,27 @@ extern "C" void DrawFrame__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2RCQ46nw4hbm
     s32 sp108[4];
     sp108[0] = -1; sp108[1] = -1; sp108[2] = -1; sp108[3] = -1;
     tex[0] = lbl_80560EE8; tex[1] = lbl_80560EE8;
+    SetVertexFormat__Q34nw4r3lyt6detailFbUc(m, 1);
     GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(tex, M2C_FIELD(arg2, void*, 4), 0);
     pos[0] = arg1[0]; pos[1] = arg1[1];
     size[0] = M2C_FIELD(arg0, f32, 0x4C) - M2C_FIELD(arg3, f32, 4);
     size[1] = M2C_FIELD(arg3, f32, 8);
     buf[0] = 0; buf[1] = 0; buf[2] = 0; buf[3] = 0; buf[4] = 0; buf[5] = 0; buf[6] = 0; buf[7] = 0;
-    SetVertexFormat__Q34nw4r3lyt6detailFbUc(m, 1);
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, 1, (f32(*)[])buf, (s32)sp108 & ((s32)(-m | m) >> 31), arg4);
     pos[0] = arg1[0] + M2C_FIELD(arg0, f32, 0x4C) - M2C_FIELD(arg3, f32, 4);
     pos[1] = arg1[1];
     size[0] = M2C_FIELD(arg3, f32, 4);
     size[1] = M2C_FIELD(arg0, f32, 0x50) - M2C_FIELD(arg3, f32, 12);
-    SetVertexFormat__Q34nw4r3lyt6detailFbUc(m, 1);
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, 1, (f32(*)[])buf, (s32)sp108 & ((s32)(-m | m) >> 31), arg4);
     pos[0] = arg1[0] + M2C_FIELD(arg3, f32, 0);
     pos[1] = arg1[1] + M2C_FIELD(arg0, f32, 0x50) - M2C_FIELD(arg3, f32, 12);
     size[0] = M2C_FIELD(arg0, f32, 0x4C) - M2C_FIELD(arg3, f32, 0);
     size[1] = M2C_FIELD(arg3, f32, 12);
-    SetVertexFormat__Q34nw4r3lyt6detailFbUc(m, 1);
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, 1, (f32(*)[])buf, (s32)sp108 & ((s32)(-m | m) >> 31), arg4);
     pos[0] = arg1[0];
     pos[1] = arg1[1] + M2C_FIELD(arg3, f32, 8);
     size[0] = M2C_FIELD(arg3, f32, 0);
     size[1] = M2C_FIELD(arg0, f32, 0x50) - M2C_FIELD(arg3, f32, 8);
-    SetVertexFormat__Q34nw4r3lyt6detailFbUc(m, 1);
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, 1, (f32(*)[])buf, (s32)sp108 & ((s32)(-m | m) >> 31), arg4);
 }
 
