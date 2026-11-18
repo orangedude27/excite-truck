@@ -2739,6 +2739,8 @@ void fn_801D77EC(void *list, unsigned int item) {
     *(int *)((char *)list + 0x74) = count - 1;
 }
 
+#pragma scheduling on
+#pragma peephole on
 #pragma cplusplus on
 extern "C" char lbl_803385D0[];
 #pragma cplusplus on
@@ -2756,7 +2758,8 @@ extern "C" void fn_801D7874(void *arg0, void *arg1) {
         virtual int v6(char *, int);
     };
 
-    void *node = ((ObjA *)arg1)->v0();
+    ObjA *b = (ObjA *)arg1;
+    void *node = b->v0();
     int match;
     if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && ((ObjB *)node)->v6(lbl_803385D0, -1) == *(int *)((char *)arg0 + 0xc)) {
         match = 1;
@@ -2767,7 +2770,7 @@ extern "C" void fn_801D7874(void *arg0, void *arg1) {
         int count = *(int *)((char *)arg0 + 0x74);
         void **items = *(void ***)((char *)arg0 + 0x70);
         *(int *)((char *)arg0 + 0x74) = count + 1;
-        items[count] = arg1;
+        items[count] = b;
     }
 }
 
