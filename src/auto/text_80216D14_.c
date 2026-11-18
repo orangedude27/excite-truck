@@ -780,13 +780,13 @@ void fn_80217C4C(void *arg0) {
 void fn_80217D84(void *arg0) {
     char *base = (char *)arg0;
     char *entry;
-    int count = *(int *)(base + 0x494);
-    float threshold;
-    int i;
-    int last;
-    int matches;
     int eligible;
     char *item;
+    int count = *(int *)(base + 0x494);
+    float threshold;
+    int last;
+    int matches;
+    int i;
     float value;
     if (1 > count) return;
     threshold = lbl_80563490;
