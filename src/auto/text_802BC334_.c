@@ -1070,11 +1070,12 @@ struct TreeGroupList {
  * position (+0x30). */
 #define TREE_POINT_SIZE 0x44
 struct TreePoint {
-    /* 0x00 */ int index;
+             char pad0[4];
     /* 0x04 */ int value;
              char pad08[0x14];
     /* 0x1C */ float radius;
-             char pad20[0x10];
+             char pad20[4];
+    /* 0x24 */ float direction[3];
     /* 0x30 */ float position[3];
              char pad3C[8];
 };
