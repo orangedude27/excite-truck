@@ -1228,7 +1228,7 @@ void fn_8028FD00(void *arg0, void *arg1, int arg2) {
         float f50; float f54; float f58; float f5c; float f60; float f64;
         float f68; float f6c; float f70; float f74; float f78; float f7c; float f80;
         int f84; unsigned char f88; unsigned char f89; unsigned char pad8a[0x16];
-        float a0; int pad_a4; volatile int a8; float ac;
+        float a0; int pad_a4; int a8; float ac;
     };
     volatile struct Data *src = (volatile struct Data *)arg1;
     struct Data *dst = (struct Data *)arg0;
@@ -1350,7 +1350,7 @@ void fn_8028FD00(void *arg0, void *arg1, int arg2) {
     switch (f0) {
     case 1:
         result = fn_8028F534(f84);
-        dst->ac = lbl_80564424 / (float)result;
+        dst->ac = 1.0f / (float)result;
         dst->a8 = result;
         break;
     default:
@@ -1508,6 +1508,7 @@ void fn_80290224(void *arg0, void *arg1, int arg2) {
     float one;
     float t, tm, k, alpha, h, nh;
     int r, g, b, a;
+
     {
         float *bb = (float *)fn_802C86DC();
         dsub.x = bb[3] - bb[0];
@@ -1533,7 +1534,8 @@ void fn_80290224(void *arg0, void *arg1, int arg2) {
         float fa, fb, fc, fd;
         unsigned int col;
         t = one - *(float *)(p + 0x18);
-        h = lbl_8056444C * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t + lbl_8056444C * *(float *)((char *)arg0 + 0x4c) * (t * t));
+        h = lbl_8056444C * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t
+              + lbl_8056444C * *(float *)((char *)arg0 + 0x4c) * (t * t));
         k = t * *(float *)((char *)arg0 + 0xa0);
         fn_80290160(arg0, &pos, p, t);
         bb = (float *)fn_802C86DC();
@@ -1721,7 +1723,7 @@ void fn_80290FC4(void *arg0, void *arg1, int arg2) {
     EfVtx q[4];
     char *p;
     float *cam;
-    float one, k0;
+    float one, k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12;
     float t, tm, k, alpha, h, nh, ang, inv, m, ts;
     int r, g, b, a;
 
@@ -1736,19 +1738,31 @@ void fn_80290FC4(void *arg0, void *arg1, int arg2) {
         buf.idx[i * 6 + 4] = i * 4 + 2;
         buf.idx[i * 6 + 5] = i * 4 + 3;
     }
+    k2 = lbl_80564424;
+    k4 = lbl_8056445C;
+    k1 = lbl_8056444C;
+    k5 = lbl_80564460;
+    k6 = lbl_80564464;
+    k7 = lbl_80564468;
+    k8 = lbl_8056446C;
+    k3 = lbl_80564420;
+    k10 = lbl_80564434;
+    k9 = lbl_80564470;
+    k11 = lbl_8056445C;
+    k12 = lbl_8055F738;
     count = 0;
     p = (char *)arg1;
     for (n = 0; n < arg2; n++, p += 0x28) {
         float *bb;
         t = one - *(float *)(p + 0x18);
         k = t * *(float *)((char *)arg0 + 0xa0);
-        h = lbl_8056444C * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t
-              + lbl_8056444C * *(float *)((char *)arg0 + 0x4c) * (t * t));
-        if (!(h > lbl_80564460)) h = lbl_80564460;
-        inv = lbl_80564424 / (lbl_80564464 * h);
+        h = k1 * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t
+              + k1 * *(float *)((char *)arg0 + 0x4c) * (t * t));
+        if (!(h > k5)) h = k5;
+        inv = k2 / (k6 * h);
         ts = *(float *)(p + 0x20) * t;
-        ang = lbl_80564468 + (float)fn_8002EFB4(
-            lbl_80564468 * (float)*(unsigned char *)(p + 0x1e) * lbl_8056446C
+        ang = k7 + (float)fn_8002EFB4(
+            k7 * (float)*(unsigned char *)(p + 0x1e) * k8
               + ts * (*(float *)((char *)arg0 + 0x7c) + *(float *)((char *)arg0 + 0x78) * k),
             lbl_80564428);
         fn_80290160(arg0, (float *)&pos, p, t);
@@ -1762,30 +1776,30 @@ void fn_80290FC4(void *arg0, void *arg1, int arg2) {
         {
             float c0 = *(float *)((char *)arg0 + 0x3c);
             float c1 = *(float *)((char *)arg0 + 0x40);
-            tm = c1 + (PSVECDotProduct((float *)&dir, (float *)&dir) / (lbl_80564424 + c0 * c0)) * (lbl_80564424 - c1);
+            tm = c1 + (PSVECDotProduct((float *)&dir, (float *)&dir) / (k2 + c0 * c0)) * (k2 - c1);
         }
-        if (lbl_80564424 < tm) tm = lbl_80564424;
-        if (!(tm > lbl_80564420)) tm = lbl_80564420;
+        if (k2 < tm) tm = k2;
+        if (!(tm > k3)) tm = k3;
         nh = -h;
         q[0].x = pos.x + axA.x * nh + axB.x * h;
         q[0].y = pos.y + axA.y * nh + axB.y * h;
         q[0].z = pos.z + axA.z * nh + axB.z * h;
-        q[1].x = q[0].x + axA.x * (lbl_80564434 * h);
-        q[1].y = q[0].y + axA.y * (lbl_80564434 * h);
-        q[1].z = q[0].z + axA.z * (lbl_80564434 * h);
-        q[2].x = q[1].x + axB.x * (lbl_80564470 * h);
-        q[2].y = q[1].y + axB.y * (lbl_80564470 * h);
-        q[2].z = q[1].z + axB.z * (lbl_80564470 * h);
-        q[3].x = q[0].x + axB.x * (lbl_80564470 * h);
-        q[3].y = q[0].y + axB.y * (lbl_80564470 * h);
-        q[3].z = q[0].z + axB.z * (lbl_80564470 * h);
-        q[0].u = lbl_80564420; q[0].v = lbl_80564420;
-        q[1].u = lbl_80564424; q[1].v = lbl_80564420;
-        q[2].u = lbl_80564424; q[2].v = lbl_80564424;
-        q[3].u = lbl_80564420; q[3].v = lbl_80564424;
+        q[1].x = q[0].x + axA.x * (k10 * h);
+        q[1].y = q[0].y + axA.y * (k10 * h);
+        q[1].z = q[0].z + axA.z * (k10 * h);
+        q[2].x = q[1].x + axB.x * (k9 * h);
+        q[2].y = q[1].y + axB.y * (k9 * h);
+        q[2].z = q[1].z + axB.z * (k9 * h);
+        q[3].x = q[0].x + axB.x * (k9 * h);
+        q[3].y = q[0].y + axB.y * (k9 * h);
+        q[3].z = q[0].z + axB.z * (k9 * h);
+        q[0].u = k3; q[0].v = k3;
+        q[1].u = k2; q[1].v = k3;
+        q[2].u = k2; q[2].v = k2;
+        q[3].u = k3; q[3].v = k2;
         for (j = 0; j < 4; j++) {
-            m = lbl_8056445C * (one - k0 * (one - inv * (q[j].y - pos.y)));
-            a = (int)(*(float *)(p + 0x24) * (tm * (lbl_8056445C * (*(float *)((char *)arg0 + 0x5c) + *(float *)((char *)arg0 + 0x58) * k))));
+            m = k4 * (one - k0 * (one - inv * (q[j].y - pos.y)));
+            a = (int)(*(float *)(p + 0x24) * (tm * (k11 * (*(float *)((char *)arg0 + 0x5c) + *(float *)((char *)arg0 + 0x58) * k))));
             a = a > 0 ? a : 0; if (a > 255) a = 255;
             b = (int)(m * (*(float *)((char *)arg0 + 0x64) + *(float *)((char *)arg0 + 0x60) * k));
             b = b > 0 ? b : 0; if (b > 255) b = 255;
