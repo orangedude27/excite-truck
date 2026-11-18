@@ -633,6 +633,9 @@ void fn_80194170(void *controller, float input) {
 #undef MIN_LEVEL
 #undef MAX_LEVEL
 }
+static inline int fn_801941A8_signbit(float x) { /* MSL __signbitf() */
+    return (int)(*(int *)&x & 0x80000000);
+}
 #pragma scheduling invalid_target
 void fn_801941A8(void *arg0, float arg1) {
     union FloatWord {
@@ -641,16 +644,15 @@ void fn_801941A8(void *arg0, float arg1) {
     } otherBits, newBits;
     float *posField = (float *)((char *)arg0 + 0x23C);
     float *velField = (float *)((char *)arg0 + 0x248);
+    float velocity;
+    float pos;
     float change = 0.2f;
     float delta = arg1 - posField[0];
-    float pos;
-    float velocity;
     float product;
-    double finalPos;
-    float callPos;
+    float one;
 
-    change = change < delta ? delta : change;
-    change = change > -0.2f ? -0.2f : change;
+    change = change < delta ? change : delta;
+    change = change > -0.2f ? change : -0.2f;
     pos = posField[0];
     velocity = velField[0];
     pos += change;
@@ -659,25 +661,23 @@ void fn_801941A8(void *arg0, float arg1) {
         void *obj = *(void **)((char *)arg0 + 0x294);
         newBits.f = pos;
         otherBits.f = *(float *)((char *)obj + 0x25F0);
-        if ((int)(otherBits.u & 0x80000000) != (int)(newBits.u & 0x80000000)) {
-            velocity += 0.1f;
-            velField[0] = velocity;
+        if (!((int)(newBits.u & 0x80000000) == (int)(otherBits.u & 0x80000000))) {
+            velField[0] += 0.1f;
         }
     }
     velocity = velField[0];
     {
         float minimum = 1.0f;
-        minimum = minimum < velocity ? velocity : minimum;
-        minimum = minimum > 0.0f ? 0.0f : minimum;
-        product = posField[0] * (1.0f - minimum);
+        minimum = minimum < velocity ? minimum : velocity;
+        minimum = minimum > 0.0f ? minimum : 0.0f;
+        one = 1.0f;
+        product = posField[0] * (one - minimum);
     }
     posField[0] = product;
-    product = product < 1.0f ? 1.0f : product;
-    product = product > -1.0f ? -1.0f : product;
-    finalPos = product;
-    callPos = (float)finalPos;
-    posField[0] = finalPos;
-    fn_8018ADAC(*(void **)((char *)arg0 + 0x294), callPos);
+    product = one < product ? one : product;
+    product = product > -1.0f ? product : -1.0f;
+    posField[0] = product;
+    fn_8018ADAC(*(void **)((char *)arg0 + 0x294), (float)(double)product);
 }
 #pragma scheduling on
 void fn_801942B8(void *obj, float input) {
@@ -1259,22 +1259,22 @@ extern void fn_80197BD0(void *, void *);
 extern void fn_8019724C(void *, float *);
 extern unsigned char fn_80167544(int);
 void fn_80195654(void *arg0, void *arg1) {
+    struct IntPair { int word0, word1; };
     struct Scratch { int word0, word1; float value0, value1; } scratch;
-    float threshold = *(volatile float *)&lbl_805621C0;
-    float previous = *(volatile float *)((char *)arg0 + 0x1D0);
-    float current = *(volatile float *)((char *)arg0 + 0x26C);
+    float threshold = 1.5f;
+    float previous;
+    float current;
     float difference;
     float interpolated;
-    float value;
     int doInterpolate;
     void *first;
     void *second;
     void *left;
     void *right;
-    int firstWord;
-    int secondWord;
     int flags;
 
+    current = *(volatile float *)((char *)arg0 + 0x26C);
+    previous = *(volatile float *)((char *)arg0 + 0x1D0);
     *(volatile int *)((char *)arg0 + 0x2D0) = 0;
     difference = current - previous;
     doInterpolate = difference < threshold;
@@ -1286,10 +1286,10 @@ void fn_80195654(void *arg0, void *arg1) {
         {
             float nextA = *(float *)((char *)left + 0x24);
             float baseA = *(float *)((char *)first + 0x24);
-            float nextB = *(float *)((char *)right + 0x24);
-            float baseB = *(float *)((char *)second + 0x24);
             float deltaA = nextA - baseA;
             float scaleA = *(float *)((char *)arg0 + 0x1A4);
+            float nextB = *(float *)((char *)right + 0x24);
+            float baseB = *(float *)((char *)second + 0x24);
             float deltaB = nextB - baseB;
             float scaleB = *(float *)((char *)arg0 + 0x170);
             float valueA = baseA + scaleA * deltaA;
@@ -1298,15 +1298,17 @@ void fn_80195654(void *arg0, void *arg1) {
             interpolated = valueB + fraction * (valueA - valueB);
         }
     } else {
+        float next;
+        float base;
+        float value;
+        float delta;
         first = *(void **)((char *)arg0 + 0x1A0);
-        value = *(float *)((char *)arg0 + 0x1A4);
         left = *(void **)((char *)first + 0x14);
-        {
-            float base = *(float *)((char *)first + 0x24);
-            float next = *(float *)((char *)left + 0x24);
-            float delta = next - base;
-            interpolated = base + delta * value;
-        }
+        next = *(float *)((char *)left + 0x24);
+        base = *(float *)((char *)first + 0x24);
+        value = *(float *)((char *)arg0 + 0x1A4);
+        delta = next - base;
+        interpolated = base + value * delta;
     }
     if (*(int *)((char *)arg0 + 0x268) == 1) {
         ((void (*)(void *, void *, float))fn_80194C4C)(arg0, arg1, interpolated);
@@ -1314,17 +1316,14 @@ void fn_80195654(void *arg0, void *arg1) {
         ((void (*)(void *, void *, float))fn_80194FD0)(arg0, arg1, interpolated);
         if (*(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1E4) <
             *(float *)((char *)arg0 + 0x2BC)) {
-            firstWord = ((int *)arg1)[0];
-            secondWord = ((int *)arg1)[1];
-            scratch.word0 = firstWord;
-            scratch.word1 = secondWord;
+            *(struct IntPair *)&scratch = *(struct IntPair *)arg1;
             scratch.value0 = ((float *)arg1)[2];
             scratch.value1 = ((float *)arg1)[3];
             ((void (*)(void *, float *, float))fn_801955F0)(arg0, (float *)&scratch, interpolated);
             {
-                float from = *(float *)((char *)arg0 + 0x26C) - *(float *)((char *)arg0 + 0x1E4);
-                float to = *(float *)((char *)arg0 + 0x2BC);
-                float t = from / to;
+                float t = (*(float *)((char *)arg0 + 0x26C) -
+                           *(float *)((char *)arg0 + 0x1E4)) /
+                          *(float *)((char *)arg0 + 0x2BC);
                 t = t * t;
                 fn_80194AF4(arg0, (float *)arg1, (float *)&scratch, (float *)arg1, t);
             }
@@ -1624,6 +1623,8 @@ extern "C" void fn_80195D80(void *arg0, float arg1) {
     float vec[5];
     Other_80195D80 *o;
     Shape_80195D80 *shape;
+    float dy, dz, dx, s, x, y, z;
+    float px, py;
     self->f2cc = obj->snap.shape->f14;
     self->f2c8 = obj->snap.shape->f28;
     self->f18 = fn_801388F4(obj->snap.h.w0);
@@ -1656,14 +1657,14 @@ extern "C" void fn_80195D80(void *arg0, float arg1) {
     self->cur.w2 = obj->snap.w2;
     cond = arg1 - self->f1d0 < 1.5f;
     if (cond) {
-        float dy, dz, dx, s;
-        float x, y, z;
         s = o->a5bc;
         dx = o->a54;
         dy = o->a58;
         dz = o->a5c;
-        x = o->a94 + dx * s;
-        y = o->a98 + dy * s;
+        px = dx * s;
+        py = dy * s;
+        x = o->a94 + px;
+        y = o->a98 + py;
         vec[2] = x;
         z = o->a9c + dz * s;
         vec[0] = x;
