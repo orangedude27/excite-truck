@@ -46,11 +46,11 @@ extern char lbl_8034A4E0[];
 #pragma scheduling invalid_target
 #pragma scheduling on
 int fn_802B5070(void *p, int arg1) {
-    Fn802B5070Arg *arg0 = p;
     int result = 0;
-    if (arg0->kind != 2) goto out;
-    if (fn_802B4FB0(arg0->idx) == 0) goto out;
-    if (arg1 != arg0->w * arg0->h) goto out;
+    int kind = *(unsigned char *)((char *)p + 2);
+    if (kind != 2) goto out;
+    if (fn_802B4FB0(*(unsigned char *)((char *)p + 0x10)) == 0) goto out;
+    if (arg1 != *(unsigned short *)((char *)p + 0xc) * *(unsigned short *)((char *)p + 0xe)) goto out;
     result = 1;
 out:
     return result;
@@ -127,25 +127,25 @@ extern void fn_802E30C8(char *, int);
 extern char lbl_8034A4EC[];
 #pragma push
 #pragma scheduling on
-int fn_802B52C0(int arg0, void *arg1) {
+int fn_802B52C0(int arg0, const void *arg1) {
     int result = 0;
     int value0;
     int value1;
     int sp8;
-    char spC[0x12];
+    unsigned char spC[0x12];
 
     memset(spC, 0, 0x12);
-    value0 = *(int *)arg1;
+    value0 = *(const int *)arg1;
     spC[2] = 2;
-    value1 = *(int *)((char *)arg1 + 4);
+    value1 = *(const int *)((const char *)arg1 + 4);
     *(short *)(spC + 0xC) = (short)value0;
     *(short *)(spC + 0xE) = (short)value1;
     spC[0x10] = 0x20;
     sp8 = fn_802E3D68(arg0, value1, value0);
     if (sp8 != -1) {
         fn_802E3A64(sp8, spC, 0x12);
-        fn_802E3A64(sp8, *(void **)((char *)arg1 + 8),
-                    *(int *)((char *)arg1 + 4) * (*(int *)arg1 * 4));
+        fn_802E3A64(sp8, *(void * const *)((const char *)arg1 + 8),
+                    *(const int *)((const char *)arg1 + 4) * (*(const int *)arg1 * 4));
         fn_802E3734(&sp8);
         result = 1;
     } else {
