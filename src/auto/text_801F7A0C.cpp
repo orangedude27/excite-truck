@@ -2061,6 +2061,26 @@ extern "C" void fn_801E6E9C(void *, f32);
 extern "C" s32 fn_801E7650(void *);
 extern "C" s32 fn_801E7698(void);
 extern "C" void fn_80203FF8(void);
+/* Once per frame the stage's distance-controlled animations -- the objects
+ * fn_801FC274 built from the "objects" resource and pushed on the list
+ * lbl_8055EC5C -- are started and stopped by how far the player is from them,
+ * and every animation player is advanced by the frame time.  A node of that
+ * list:
+ *   +0x24 its world position (the last column of the 3x4 matrix at +0x00)
+ *   +0x30 its animation player, +0x34 the animation data it may play
+ *   +0x54 how many of those there are
+ *   +0x58 the load pass it was built in, +0x59 whether distance rules it
+ *   +0x5c the squared radius it wakes inside, +0x60 its state, +0x68 the next
+ * The state is 0 while it plays, 1 while it is stopped and 2 for the objects
+ * that run whatever the distance is and are left alone here.  Playing and
+ * stopped swap as the object comes within its radius carrying the tag of the
+ * load pass now in effect -- the second byte of lbl_8055EC40, which
+ * fn_801FC274 stamps new objects with its first -- and each playing object
+ * holds one of the slots lbl_8055EC64 counts against the cap fn_801E7698
+ * returns (8).  A node with several clips picks a new one when the running
+ * clip ends.  The sound entries of the other list, lbl_8055EC6C, are then
+ * switched on or off by that same tag, and the end-of-pass hook fn_80203FF8
+ * runs. */
 #pragma push
 #pragma opt_propagation off
 #pragma processor 750
