@@ -1040,6 +1040,9 @@ extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3sn
 extern "C" void fn_80031C6C(int);
 #pragma use_lmw_stmw off
 extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(void *self, int mode) {
+    unsigned int interrupts;
+    void *node;
+    void *end;
     if (*(int *)self == mode) return;
     *(int *)self = mode;
     switch (mode) {
@@ -1048,12 +1051,11 @@ extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10Out
     case 2: fn_80031C6C(2); break;
     case 3: fn_80031C6C(0); break;
     }
-    unsigned int interrupts = OSDisableInterrupts();
-    void *end = (char *)self + 0x18;
-    void *node = *(void **)((char *)self + 0x18);
-    void *current;
+    interrupts = OSDisableInterrupts();
+    node = *(void **)((char *)self + 0x18);
+    end = (char *)self + 0x18;
     while (node != end) {
-        current = node;
+        void *current = node;
         node = *(void **)node;
         if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
         if (*((unsigned char *)current - 0x8c) != 0) {
@@ -3806,10 +3808,9 @@ extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
 }
 
 extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
-    extern float lbl_80560FB4;
     register int zero = 0;
-    float base = lbl_80560FB0;
-    float initialTarget = lbl_80560FB4;
+    float base = 0.0f;
+    float initialTarget = 1.0f;
     *((unsigned char *)self + 0x67) = zero;
     *((unsigned char *)self + 0x68) = zero;
     *((unsigned char *)self + 0x64) = zero;
@@ -3836,9 +3837,9 @@ extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
     float baseAgain;
     float finalTarget;
     int one;
-    finalTarget = lbl_80560FB4;
+    finalTarget = 1.0f;
     zero = 0;
-    baseAgain = lbl_80560FB0;
+    baseAgain = 0.0f;
     one = 1;
     *(float *)((char *)self + 0x44) = base;
     *(float *)((char *)self + 0x48) = finalTarget;
