@@ -484,15 +484,15 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
     u8 *list = (u8 *)listArg;
     u8 buf[0x32];
     u8 *tbl = lbl_8032D358;
-    s32 s30, s25, s26;
+    s32 id, s30, s26, s25;
     f32 f4, t;
     int i;
     u8 *p;
     u8 *dst1, *dst2, *srcp;
     if (*(s32 *)(self + 8) == 0) return 0;
-    s30 = *(s32 *)(a + 4);
-    fn_801345D8(self + 0x2C, 0x14, lbl_80559F04, s30);
-    StrCopyN80149658(self + 0x40, fn_80130FE0(s30), 5);
+    id = *(s32 *)(a + 4);
+    fn_801345D8(self + 0x2C, 0x14, lbl_80559F04, id);
+    StrCopyN80149658(self + 0x40, fn_80130FE0(id), 5);
     if (fn_80179650() == 1) {
         fn_801345D8(buf, 0x32, tbl + 0x30, *(s32 *)(a + 4));
         StrCopyN80149658(self + 0x1FD, fn_80131234(buf), 0x28);
@@ -513,11 +513,20 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
     s25 = s26 - s30;
     fn_801308F4(self + 0x59, 0x14, s25);
     fn_801308F8(self + 0x6D, 0x14, s26);
-    fn_801345D8(self + 0x225, 0x14, *(s32 *)(a + 0x1C) != 0 ? lbl_80559F04 : lbl_80559F08);
-    if (fn_801609C4(s25) != -1) StrCopyN80149658(self + 0x81, __AXGetStackHead(), 10);
-    else StrCopyN80149658(self + 0x81, lbl_80559F0C, 10);
-    if (*(s32 *)(a + 0x30) != -1) StrCopyN80149658(self + 0x8B, __AXGetStackHead(), 10);
-    else StrCopyN80149658(self + 0x8B, lbl_80559F0C, 10);
+    {
+        s32 x = *(s32 *)(a + 0x1C);
+        fn_801345D8(self + 0x225, 0x14, x != 0 ? lbl_80559F04 : lbl_80559F08, x);
+    }
+    {
+        s32 x = fn_801609C4(s25);
+        if (x != -1) StrCopyN80149658(self + 0x81, __AXGetStackHead(x), 10);
+        else StrCopyN80149658(self + 0x81, lbl_80559F0C, 10);
+    }
+    {
+        s32 x = *(s32 *)(a + 0x30);
+        if (x != -1) StrCopyN80149658(self + 0x8B, __AXGetStackHead(x), 10);
+        else StrCopyN80149658(self + 0x8B, lbl_80559F0C, 10);
+    }
     dst1 = self + 0x95;
     dst2 = self + 0x149;
     for (i = 0; i < *(s32 *)(list + 8); i++) {
@@ -526,7 +535,9 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
         StrCopyN80149658(dst2, srcp + 0xA4, 0x14);
         dst1 += 0x14; dst2 += 0x14;
     }
-    for (; i < 9; i++) {
+    dst1 = self + i * 0x14 + 0x95;
+    dst2 = self + i * 0x14 + 0x149;
+    for (; (u32)i < 9; i++) {
         StrCopyN80149658(dst1, lbl_80559F0C, 0x14);
         StrCopyN80149658(dst2, lbl_80559F0C, 0x14);
         dst1 += 0x14; dst2 += 0x14;
@@ -536,18 +547,22 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
     case 0:
         fn_802E30C8(tbl + 0x70, tbl + 0xA0, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
         fn_802ADFF4(*(s32 *)(self + 8), *(s32 *)(self + 0x1C));
-        if (s30 > 0) p = *(u8 **)(self + 0x10);
-        else p = *(u8 **)(self + 0x14);
-        if (p != 0) { p[0x49] = 1; p[0x4B] = 0; p[0x4A] = 0; }
+        if (s30 > 0) {
+            p = *(u8 **)(self + 0x10);
+            if (p != 0) { p[0x49] = 1; p[0x4B] = 0; p[0x4A] = 0; }
+        } else {
+            p = *(u8 **)(self + 0x14);
+            if (p != 0) { p[0x49] = 1; p[0x4B] = 0; p[0x4A] = 0; }
+        }
         *(s32 *)self = 1;
         break;
     case 1:
         if (*(s32 *)(self + 0x20) != 0 && *(f32 *)(self + 4) < lbl_80561648) {
-            fn_802E30C8(tbl + 0x70, tbl + 0xC4, lbl_8055E3C4, *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+            fn_802E30C8(tbl + 0x70, tbl + 0xC4, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
             *(f32 *)(self + 4) = lbl_8055E3C8;
         }
         if (*(s32 *)(self + 0x24) != 0) {
-            fn_802E30C8(tbl + 0x70, tbl + 0xE8, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x28));
+            fn_802E30C8(tbl + 0x70, tbl + 0xE8, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
             fn_802AE02C(*(s32 *)(self + 8), *(s32 *)(self + 0x1C));
             *(s32 *)self = 2;
         }
@@ -563,10 +578,12 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
         break;
     case 3:
         if (*(s32 *)(self + 0x28) != 0) {
-            fn_802E30C8(tbl + 0x70, tbl + 0x130, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24));
+            fn_802E30C8(tbl + 0x70, tbl + 0x130, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
             fn_802AE0E0((void *)*(s32 *)(self + 8));
             *(s32 *)self = 4;
         }
+        break;
+    case 4:
         break;
     }
     return *(s32 *)self != 4;
@@ -1626,7 +1643,7 @@ extern "C" void fn_8014D700(void *context, s32 param) {
 
 #pragma push
 #pragma opt_propagation off
-extern "C" bool fn_8014D794(void *arg0, void *arg1) {
+extern "C" void fn_8014D794(void *arg0, void *arg1) {
     fn_801E7E18();
     if (*(u8 *)((u8 *)arg0 + 0xA0) == 0) {
         if (fn_800167F4() == 2) {
@@ -1645,8 +1662,10 @@ extern "C" bool fn_8014D794(void *arg0, void *arg1) {
                 ((void (*)(void *, void *))fn_802AE220)(target, 0);
             }
         }
+        if (*(f32 *)((u8 *)arg0 + 0x64) >= lbl_80561648) {
+            return;
+        }
     }
-    return *(f32 *)((u8 *)arg0 + 0x64) >= lbl_80561648;
 }
 #pragma pop
 extern char *lbl_80559F30;
@@ -3124,8 +3143,6 @@ void fn_80151A40(void *arg0) {
     f32 y_offset;
     s32 i;
     if (check != 0 && check[1] != 0) {
-        if (check[1] == 1) goto body_label;
-    body_label:
         global_value = lbl_8055E230;
         i = 0;
     }
