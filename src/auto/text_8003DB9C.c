@@ -3365,7 +3365,7 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 }
 
 #pragma scheduling on
-static inline void gx_disp_copy_dst_store(u32 word, u32 *dst) {
+static inline void gx_disp_copy_dst_store(u32 word, unsigned int *dst) {
     dst[0x238 / 4] = word;
 }
 
