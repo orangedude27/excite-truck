@@ -112,6 +112,7 @@ extern char *strstr(char *, char *);
 __declspec(section ".sdata") extern char lbl_8055B868[];
 __declspec(section ".sdata") extern char lbl_8055B870[];
 void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5, int arg6) {
+#pragma scheduling invalid_target
     char *obj = (char *)arg0;
     *(int *)(obj + 0x454) = arg2;
     *(int *)(obj + 0x490) = arg6;
@@ -157,10 +158,10 @@ void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5
         struct Rec80216 *rec = (struct Rec80216 *)fn_8022EE9C(0);
         char *dest = obj;
         int slot = 0;
-        int iter = 5;
+        int iter;
         int *s = (int *)rec;
         float *sf = (float *)rec;
-        do {
+        for (iter = 0; iter < 5; iter++) {
             int *d;
             d = (int *)(dest + 0x6A0); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
             d = (int *)(dest + 0x6DC); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
@@ -169,8 +170,7 @@ void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5
             slot += 6;
             d = (int *)(dest + 0x790); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
             dest += 0x168;
-            iter--;
-        } while (iter != 0);
+        }
         {
             char *finalDest = obj + slot * 0x3C;
             int *d = (int *)(finalDest + 0x6A0);
@@ -731,7 +731,7 @@ void fn_80217C4C(void *arg0) {
     matches = 0;
     i = 0;
     for (; i < count; i++, entry += 8) {
-        register char *item;
+        char *item;
         float value;
         if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
         item = *(char **)(entry + 0x4A4);
@@ -776,7 +776,7 @@ void fn_80217C4C(void *arg0) {
 #pragma pop
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80217D84(void *arg0) {
     char *base = (char *)arg0;
     char *entry;
