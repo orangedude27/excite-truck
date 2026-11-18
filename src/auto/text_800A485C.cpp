@@ -4897,9 +4897,6 @@ done:
 
 s32 fn_800AEBA0(void *, u32, u32 *);
 s32 fn_800B5324(void *, void *, u16, s32, u32 *, s32);
-static inline s32 fn_800AC4AC_norm(s32 code) {
-    return code & (s32)(-(u32)code | (u32)code) >> 31;
-}
 #pragma push
 #pragma opt_propagation off
 extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
@@ -4909,6 +4906,7 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
     u32 spC, sp8;
     s32 cnt, r, rv;
     u32 prev, rem, clus, sec;
+    u32 masked;
     cnt = *(s32 *)self;
     if (cnt == 0) return 0;
     prev = cnt - 1;
@@ -4959,7 +4957,8 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
         r = 0x11;
         if (sp8 == 0x20) r = rv;
     }
-    rv = r & ((-r | r) >> 31);
+    masked = (u32)r & (u32)((-r | r) >> 31);
+    rv = (s32)masked;
     switch (rv) {
     case 0: goto zero;
     default: goto done;
