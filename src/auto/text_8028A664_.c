@@ -929,10 +929,10 @@ extern f32 lbl_8056432C;
 #pragma push
 #pragma scheduling on
 void fn_8028BC88(s32 arg0) {
-    register f32 zero, one;
-    one = lbl_8056432C;
+    f32 zero, one;
     *(s32 *)(arg0 + 4) = 0;
-    zero = lbl_8056434C;
+    one = 1.0f;
+    zero = 0.0f;
     *(f32 *)(arg0 + 0x1c) = one;
     *(f32 *)(arg0 + 0x20) = zero;
     *(f32 *)(arg0 + 0x24) = zero;
