@@ -1903,6 +1903,7 @@ extern "C" void fn_8012D1A8(s32 arg0) {
         break;
     }
 }
+#pragma pop
 #pragma push
 #pragma scheduling invalid_target
 
