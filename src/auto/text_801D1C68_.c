@@ -212,29 +212,6 @@ check28:
     if (i < ((int *)arg0)[7]) goto loop28;
 }
 
-static inline unsigned char swapRecords_801D2008(int count, unsigned char *entry) {
-    unsigned char t = 0;
-    unsigned char *p = entry;
-    for (; count != 0; count--) {
-        t = p[0]; p[0] = p[3]; p[3] = t;
-        t = p[1]; p[1] = p[2]; p[2] = t;
-        t = p[4]; p[4] = p[7]; p[7] = t;
-        t = p[5]; p[5] = p[6]; p[6] = t;
-        t = p[8]; p[8] = p[11]; p[11] = t;
-        t = p[9]; p[9] = p[10]; p[10] = t;
-        t = p[12]; p[12] = p[15]; p[15] = t;
-        t = p[13]; p[13] = p[14]; p[14] = t;
-        t = p[16]; p[16] = p[19]; p[19] = t;
-        t = p[17]; p[17] = p[18]; p[18] = t;
-        t = p[20]; p[20] = p[23]; p[23] = t;
-        t = p[21]; p[21] = p[22]; p[22] = t;
-        t = p[24]; p[24] = p[27]; p[27] = t;
-        t = p[25]; p[25] = p[26]; p[26] = t;
-        p += 0x1c;
-    }
-    return t;
-}
-
 void *fn_8012C370(unsigned int, int *, int, int, unsigned char *);
 void fn_802E317C(const char *, ...);
 extern char lbl_80338268[];
@@ -245,6 +222,10 @@ void *fn_801D2008(void *arg0) {
     int error = 0;
     unsigned char swap = 1;
     unsigned char *result;
+    volatile unsigned char *p;
+    unsigned char b;
+    unsigned char a;
+    int i;
 
     result = (unsigned char *)((void *(*)(void *, unsigned int, int *, int, int, unsigned char *))fn_8012C370)(arg0, 0x434D7368, &error, 0, 0, &swap);
     if (result == 0) {
@@ -254,7 +235,24 @@ void *fn_801D2008(void *arg0) {
         fn_802E317C(lbl_80338284, error, 0);
     }
     if (swap != 0) {
-        swapRecords_801D2008(8, result);
+        p = result;
+        for (i = 0; i < 8; i++) {
+            a = p[0]; b = p[3]; p[0] = b; p[3] = a;
+            a = p[1]; b = p[2]; p[1] = b; p[2] = a;
+            a = p[4]; b = p[7]; p[4] = b; p[7] = a;
+            a = p[5]; b = p[6]; p[5] = b; p[6] = a;
+            a = p[8]; b = p[11]; p[8] = b; p[11] = a;
+            a = p[9]; b = p[10]; p[9] = b; p[10] = a;
+            a = p[12]; b = p[15]; p[12] = b; p[15] = a;
+            a = p[13]; b = p[14]; p[13] = b; p[14] = a;
+            a = p[16]; b = p[19]; p[16] = b; p[19] = a;
+            a = p[17]; b = p[18]; p[17] = b; p[18] = a;
+            a = p[20]; b = p[23]; p[20] = b; p[23] = a;
+            a = p[21]; b = p[22]; p[21] = b; p[22] = a;
+            a = p[24]; b = p[27]; p[24] = b; p[27] = a;
+            a = p[25]; b = p[26]; p[25] = b; p[26] = a;
+            p += 0x1c;
+        }
         fn_801D1C68(result, (int)result);
     }
     return result;
