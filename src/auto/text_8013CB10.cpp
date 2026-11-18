@@ -1,4 +1,7 @@
 #include "types.h"
+/* The virtual calls fn_8013FAC4 makes: v9 is the zone HUD's own test (+0x24),
+ * v10/vC are the scene object it holds at +0x54 looking something up by name
+ * (+0x10 gives the object it finds, +0x0C the same kind of lookup, unused). */
 struct V9_8013FAC4 { virtual void d0(); virtual void d1(); virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3(); virtual void m4(); virtual void *v9(int); };
 struct V10_8013FAC4 { virtual void d0(); virtual void d1(); virtual void *v10(void *); };
 struct VC_8013FAC4 { virtual void d0(); virtual void vC(void *); };
@@ -3392,7 +3395,7 @@ extern "C" u8 *fn_80142C9C(u8 *arg0, s32 arg1) {
     s32 offset = *(s32 *)(base += index * 0x14);
     u8 *array = *(u8 **)(base + 4);
     u8 *end = array + offset * 0x24;
-    u8 *out = array;
+    register u8 *out = array;
     if (result != end - 0x24) {
         out = result + 0x24;
     }
