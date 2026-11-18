@@ -86,16 +86,15 @@ extern "C" void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     };
     char first[20];
     char second[20];
-    u8 *base = lbl_802FCB98;
-    ((Obj *)arg0)->v1(base + 0);
+    ((Obj *)arg0)->v1("lap_title");
     fn_801476C4();
-    ((Obj *)arg0)->v1(base + 0xC);
+    ((Obj *)arg0)->v1("lap_fwd_slash");
     fn_801476C4();
     fn_80130FCC(first, 20, arg1);
-    fn_801473F8(arg0, base + 0x1C, first);
+    fn_801473F8(arg0, "lap_numerator\0\0\0\0", first);
     if (arg3) {
         fn_80130FCC(second, 20, arg2);
-        fn_801473F8(arg0, base + 0x30, second);
+        fn_801473F8(arg0, "lap_denominator", second);
     }
 }
 #pragma pop
