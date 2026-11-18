@@ -752,61 +752,69 @@ loop_3:
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma processor 750
-void fn_802C3D74(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
-                  s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
-    s32 sp1C, sp18, sp14, sp10, spC, sp8;
+/* copy_16_to_32: blit the rectangle (srcLeft,srcTop)-(srcRight,srcBottom) of a
+ * 2-byte-pixel canvas onto the 4-byte-pixel canvas dstCanvas at
+ * (dstLeft,dstTop), converting every pixel to a 0x00RRGGBB word.  The
+ * rectangle is clipped against the destination's clip rectangle first, which
+ * moves the source origin along with it; each row then steps over the pixels
+ * a row does not hold on both sides.  Only RGB565 and RGB1555 sources
+ * convert; any other source format only traces "Can't copy from %d to %d". */
+void fn_802C3D74(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
+                  s32 srcBottom, s32 dstCanvas, s32 dstLeft, s32 dstTop) {
+    s32 width, height, clipY, clipX, srcY, srcX;
     u16 *src;
     s32 *dst;
     s32 i, srcSkip, dstSkip, srcAdd, dstAdd;
-    sp8 = arg1;
-    spC = arg2;
-    sp10 = arg6;
-    sp14 = arg7;
-    sp1C = arg3 - arg1;
-    sp18 = arg4 - arg2;
-    if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
-        src = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
-        dst = (s32 *)fn_802C3060((void *)arg5, sp10, sp14);
-        srcSkip = (*(s32 *)((u8 *)arg0 + 0x10) - sp1C * 2) / 2;
-        dstSkip = (*(s32 *)((u8 *)arg5 + 0x10) - sp1C * 4) / 4;
-        if (*(s8 *)arg0 == 4) {
+    srcX = srcLeft;
+    srcY = srcTop;
+    clipX = dstLeft;
+    clipY = dstTop;
+    width = srcRight - srcLeft;
+    height = srcBottom - srcTop;
+    if (fn_802C3170((void *)dstCanvas, &clipX, &clipY, &srcX, &srcY, &width, &height) != 0) {
+        src = (u16 *)fn_802C3044((void *)srcCanvas, srcX, srcY);
+        dst = (s32 *)fn_802C3060((void *)dstCanvas, clipX, clipY);
+        /* Pixels to step over the ones a row does not hold, per canvas. */
+        srcSkip = (((GxCanvas *)srcCanvas)->rowBytes - width * 2) / 2;
+        dstSkip = (((GxCanvas *)dstCanvas)->rowBytes - width * 4) / 4;
+        if (*(s8 *)srcCanvas == CANVAS_FORMAT_RGB565) {
             srcAdd = srcSkip * 2;
             dstAdd = dstSkip * 4;
             do {
-                i = sp1C;
+                i = width;
                 do {
                     u16 pixel = *src;
                     s32 converted;
                     src++;
-                    converted = fn_802C2CC4(pixel);
+                    converted = Convert565ToRGBA(pixel);
                     i--;
                     *dst = converted;
                     dst++;
                 } while (i > 0);
                 src = (u16 *)((u8 *)src + srcAdd);
                 dst = (s32 *)((u8 *)dst + dstAdd);
-                sp18--;
-            } while (sp18 > 0);
-        } else if (*(s8 *)arg0 == 3) {
+                height--;
+            } while (height > 0);
+        } else if (*(s8 *)srcCanvas == CANVAS_FORMAT_RGB1555) {
             srcAdd = srcSkip * 2;
             dstAdd = dstSkip * 4;
             do {
-                i = sp1C;
+                i = width;
                 do {
                     u16 pixel = *src;
                     s32 converted;
                     src++;
-                    converted = fn_802C2CAC(pixel);
+                    converted = Convert555ToRGBA(pixel);
                     i--;
                     *dst = converted;
                     dst++;
                 } while (i > 0);
                 src = (u16 *)((u8 *)src + srcAdd);
                 dst = (s32 *)((u8 *)dst + dstAdd);
-                sp18--;
-            } while (sp18 > 0);
+                height--;
+            } while (height > 0);
         } else {
-            fn_802E317C(lbl_8034B0E4, (s32)*(s8 *)arg0, *(s8 *)arg5);
+            fn_802E317C(lbl_8034B0E4, (s32)*(s8 *)srcCanvas, *(s8 *)dstCanvas);
         }
     }
 }
