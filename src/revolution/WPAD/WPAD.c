@@ -4647,9 +4647,9 @@ s32 fn_800624A4(s32 chan, u32 arg1, WPADCallback arg2) {
     u32 capacity;
 
     channel = chan;
+    p = lbl_8038F4F0[channel];
     arg = arg1;
     callback = arg2;
-    p = lbl_8038F4F0[channel];
 
     enabled = OSDisableInterrupts();
     value778 = *(u32*)((u8*)p + 0x778);
