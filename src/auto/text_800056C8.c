@@ -639,6 +639,8 @@ void fn_800060E0(u8 isMode2, u8 isMode1) {
 #undef gDspInitConfig
 }
 
+#pragma push
+#pragma processor 750
 #pragma cplusplus on
 extern "C" void fn_80006110(void *arg0) {
     class VTable {
@@ -656,27 +658,18 @@ extern "C" void fn_80006110(void *arg0) {
     extern void fn_8001071C(void *, s32);
     extern u8 lbl_802FB69C[];
     f32 threshold;
-    register bool flag;
+    s32 flag;
     s32 *settings;
     s32 index;
     f32 f2;
-    threshold = 0.0f;
-    flag = false;
+    threshold = lbl_8056011C;
     settings = (s32 *)lbl_8055D350;
     index = settings[7];
     f2 = *(f32 *)((s8 *)arg0 + index * 4 + 4);
-    if (f2 >= threshold) {
-        f32 f0 = *(f32 *)(settings + 4) - f2;
-        if (f0 > threshold)
-            flag = true;
-    }
+    flag = f2 >= threshold && (*(f32 *)(settings + 4) - f2) > threshold;
     if (!flag) {
         if (fn_80005564() == 0) {
-            s32 *settings2 = (s32 *)lbl_8055D350;
-            s32 *entries = (s32 *)lbl_8034EEB8;
-            s32 index2 = settings2[7];
-            s32 *p = entries + index2 * 4;
-            void *obj = *(void **)(p + 7);
+            void *obj = *(void **)((s32 *)lbl_8034EEB8 + ((s32 *)lbl_8055D350)[7] * 4 + 7);
             ((VTable *)obj)->v7();
         }
     } else {
@@ -702,7 +695,8 @@ extern "C" void fn_80006110(void *arg0) {
             fn_8001071C(p, index3);
     }
 }
-#pragma cplusplus off
+#pragma cplusplus reset
+#pragma pop
 /* No-op stub that always reports success (zero). */
 s32 ARCClose(void) {
     return 0;
@@ -852,7 +846,9 @@ extern "C" s32 fn_80006408(void *arg0, s32 arg1, u32 arg2, u32 arg3) {
     };
     void *obj;
     if ((((s32 *)lbl_8055D350)[8] & 4) != 0) {
-        obj = *(void **)((u8 *)lbl_8034EEB8 + (arg1 << 4) + 0x18);
+        u8 *base = (u8 *)lbl_8034EEB8;
+        base += (arg1 << 4);
+        obj = *(void **)(base + 0x18);
         if (((Obj *)obj)->v10() != 0) {
             return 1;
         }
