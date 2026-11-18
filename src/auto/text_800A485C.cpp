@@ -3806,7 +3806,7 @@ windowCheck:
 #pragma pop
 
 extern "C" s32 fn_800B3A70(void *buf, void *short_name, s32 flags);
-extern "C" void fn_800B3BEC(u8 *buf, u8 *src, u8 flags);
+extern "C" RET_fn_800B3BEC fn_800B3BEC(u8 *buf, u8 *src, u8 flags);
 extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
     /* Compute the checksum byte for a VF file entry from its short name at offset 0x20E. */
     #define VFiPFPATH_FormatShortName fn_800B3A70
