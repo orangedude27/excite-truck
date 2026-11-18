@@ -144,50 +144,56 @@ void *fn_8013A264(void *arg0) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_8013A2FC(AiExceptionConfig *config, struct Container *container, int i) {
+/* Builds the track's AI-exception list from a resource container (the "exceptions" section a
+   LineInfo is loaded with): every entry named "exception" becomes an AiException node holding
+   the longitudinal range it applies over and the seven driving values it changes, each falling
+   back to the config's default when the entry omits it, and is pushed on config->list. An entry
+   whose on_lon is past its off_lon wraps the end of the track, so a twin node is pushed for the
+   other end, covering [0, off_lon] with a short blend time. Logs how many were found. */
+extern "C" void fn_8013A2FC(AiExceptionConfig *config, struct Container *container, int count) {
     #pragma scheduling invalid_target
-    const char *base = (const char *)lbl_8032C118;
+    const char *keys = (const char *)lbl_8032C118;
     if (container != 0) {
-        f32 step;
-        f32 min;
-        f32 max;
+        f32 wrapOnT;
+        f32 minLon;
+        f32 maxLon;
         struct Entry *entry;
 
-        max = lbl_80561424;
-        i = 0;
-        min = lbl_80561428;
-        step = lbl_8056142C;
+        maxLon = AI_LON_MAX;
+        count = 0;
+        minLon = AI_LON_MIN;
+        wrapOnT = AI_WRAP_ON_T;
 
-        for (; (entry = container->GetEntry(i)) != 0; i++) {
-            if (stricmp(entry->GetName(), base + 0x34) == 0) {
-                AiException &node = *(AiException *)fn_801284F8(0x28, base + 0x40);
-                node.onLon = entry->GetFloat(&lbl_80559C68);
-                node.offLon = entry->GetFloat(&lbl_80559C70);
-                node.params.onT = entry->GetFloatDef(&lbl_80559C78, config->params.onT);
-                node.params.moveout = entry->GetFloatDef(&lbl_80559C80, config->params.moveout);
-                node.params.passout = entry->GetFloatDef(&lbl_80559C88, config->params.passout);
-                node.params.pushSensitivity = entry->GetFloatDef(base + 0x20, config->params.pushSensitivity);
-                node.params.lookahead = entry->GetFloatDef(base + 0x4C, config->params.lookahead);
-                node.params.checks = entry->GetFloatDef(&lbl_80559C60, config->params.checks);
-                node.params.landing = entry->GetFloatDef(base + 0x58, config->params.landing);
+        for (; (entry = container->GetEntry(count)) != 0; count++) {
+            if (stricmp(entry->GetName(), keys + AI_KEY_EXCEPTION) == 0) {
+                AiException &node = *(AiException *)fn_801284F8(sizeof(AiException), keys + AI_EXCEPTION_TAG);
+                node.onLon = entry->GetFloat(AI_KEY_ON_LON);
+                node.offLon = entry->GetFloat(AI_KEY_OFF_LON);
+                node.params.onT = entry->GetFloatDef(AI_KEY_ON_T, config->params.onT);
+                node.params.moveout = entry->GetFloatDef(AI_KEY_MOVEOUT, config->params.moveout);
+                node.params.passout = entry->GetFloatDef(AI_KEY_PASSOUT, config->params.passout);
+                node.params.pushSensitivity = entry->GetFloatDef(keys + AI_KEY_PUSH_SENSITIVITY, config->params.pushSensitivity);
+                node.params.lookahead = entry->GetFloatDef(keys + AI_KEY_LOOKAHEAD_F, config->params.lookahead);
+                node.params.checks = entry->GetFloatDef(AI_KEY_CHECKS, config->params.checks);
+                node.params.landing = entry->GetFloatDef(keys + AI_KEY_LANDING_F, config->params.landing);
                 node.next = config->list;
                 config->list = &node;
 
                 if (node.onLon > node.offLon) {
-                    AiException *copy = (AiException *)fn_801284F8(0x28, base + 0x40);
-                    if (copy != 0) {
-                        *copy = node;
+                    AiException *wrap = (AiException *)fn_801284F8(sizeof(AiException), keys + AI_EXCEPTION_TAG);
+                    if (wrap != 0) {
+                        *wrap = node;
                     }
-                    node.offLon = max;
-                    copy->onLon = min;
-                    copy->params.onT = step;
-                    copy->next = config->list;
-                    config->list = copy;
+                    node.offLon = maxLon;
+                    wrap->onLon = minLon;
+                    wrap->params.onT = wrapOnT;
+                    wrap->next = config->list;
+                    config->list = wrap;
                 }
             }
         }
 
-        fn_802E30C8(base + 0x68, i, (i != 1) ? &lbl_80559C90 : &lbl_80559C94);
+        fn_802E30C8(keys + AI_FMT_EXCEPTIONS, count, (count != 1) ? AI_PLURAL_S : AI_PLURAL_NONE);
     }
 }
 #pragma pop
