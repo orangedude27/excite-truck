@@ -188,7 +188,6 @@ void fn_80264098(void *item, int type) {
 
 #pragma dont_inline on
 #pragma dont_inline off
-#pragma scheduling invalid_target
 void fn_802640A0(void *arg0) {
     struct CreditsMenuItem {
         void *name;
@@ -198,8 +197,9 @@ void fn_802640A0(void *arg0) {
         int b;
     };
     struct CreditsMenuItem *item = (struct CreditsMenuItem *)arg0;
+    int type = 0x7b;
     item->name = &lbl_8055C458;
-    item->type = 0x7b;
+    item->type = type;
     item->data = 0;
     item->a = 0;
     item->b = 0;
