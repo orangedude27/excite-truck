@@ -1822,9 +1822,8 @@ extern "C" u8 fn_80159124(void* arg0, void* arg1) {
 extern "C" void fn_80159724(void) {
 }
 
-#pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling reset
 extern "C" f32 fn_80159728(void* arg0, void* arg1) {
  Fn8015889C* self = (Fn8015889C*)arg0;
  u8* p = (u8*)arg0;
@@ -1876,7 +1875,7 @@ extern "C" f32 fn_80159728(void* arg0, void* arg1) {
  }
  return result;
 }
-#pragma pop
+#pragma scheduling reset
 // One frame of the record-list player while it runs on its own: while the main
 // progress counter has passed the level, hand the current record's value to
 // v35 and let v33 emit it, notify v38 when that value is not zero, then clear
@@ -2005,9 +2004,7 @@ extern "C" void fn_8015A318(Unk8015A368C*);
 extern "C" f32 fn_8015A368(void*);
 extern "C" s32 fn_8015A404(void*);
 extern "C" f32 lbl_805617A0, lbl_805617A4, lbl_805617A8;
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" f32 fn_80159F2C(void* a, void* arg1, void* arg2) {
     u8* player = (u8*)arg1;
     u8* p = (u8*)a;
@@ -2106,7 +2103,7 @@ skip_reset:
     if (current == last-1) *(s32*)(p+0x2cc) = 0;
     return result;
 }
-#pragma pop
+#pragma scheduling on
 
 #pragma opt_propagation off
 extern "C" void fn_8015A318(Unk8015A368C* arg0) {
@@ -3156,16 +3153,17 @@ extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
 }
 
 #pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
 extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
-    f32 actual = *(f32*)((char*)arg0 + 0x278);
     f32 var_f31 = lbl_80561754;
     s32 var_r28 = 0;
     s32 temp_r0;
     s32 temp_r0_2;
+    f32 actual = *(f32*)((char*)arg0 + 0x278);
+    f32 absVal = (f32)__fabs(actual);
     struct V13 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(void*); };
 
-    if (!((f32)__fabs(actual) <= lbl_80558DC4[0])) {
+    if (!(absVal <= lbl_80558DC4[0])) {
         f32 lim = lbl_80561754;
         s32 v4 = *(s32*)((char*)arg0 + 0x26C);
         s32 v274 = *(s32*)((char*)arg0 + 0x274);
@@ -3181,12 +3179,11 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
                     f32 f0_2 = (t1 < lbl_80561754) ? t1 - lbl_80561760 : lbl_80561760 + t1;
                     var_r4 = (s32)f0_2;
                 }
-                temp_r0 = *(s32*)((char*)arg0 + 0x26C) + var_r4;
                 {
                     f32 f50;
-                    f32 f250;
+                    f32 f250 = *(f32*)((char*)arg0 + 0x250);
                     f50 = lbl_80561750;
-                    f250 = *(f32*)((char*)arg0 + 0x250);
+                    temp_r0 = *(s32*)((char*)arg0 + 0x26C) + var_r4;
                     *(s32*)((char*)arg0 + 0x264) = temp_r0;
                     *(s32*)((char*)arg0 + 0x260) = temp_r0;
                     *(f32*)((char*)arg0 + 0x254) = f250;
@@ -3212,8 +3209,11 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
     var_r28 = 0;
     if (((Fn8015889C*)arg0)->v39() != 0) {
         temp_r0 = fn_80158D04(arg0) - 1;
-        if (temp_r0 == ((Fn8015889C*)arg0)->v23()) {
-            var_r28 = 1;
+        {
+            s32 current = ((Fn8015889C*)arg0)->v23();
+            if (current == temp_r0) {
+                var_r28 = 1;
+            }
         }
     }
 
@@ -3236,8 +3236,9 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
         f32 newt = *(f32*)((char*)arg0 + 0x27C) + fn_801E7E24();
         *(f32*)((char*)arg0 + 0x27C) = newt;
         if ((*(s32*)((char*)arg0 + 0x274) > 0) || (newt > lbl_805617C4)) {
-            if (*(s32*)((char*)arg0 + 0x26C) > 0) {
-                fn_801CB6E4((void*)0x48203, *(s32*)((char*)arg0 + 4));
+            s32 count = *(s32*)((char*)arg0 + 0x26C);
+            if (count > 0) {
+                ((void (*)(void*, s32, s32))fn_801CB6E4)((void*)0x48203, *(s32*)((char*)arg0 + 4), count);
                 *(s32*)((char*)arg0 + 0x26C) = 0;
             }
             *(f32*)((char*)arg0 + 0x278) = lbl_80561754;
@@ -3452,8 +3453,8 @@ extern "C" f32 fn_8015CD10(Unk801577F0* arg0) {
         virtual void v28(); virtual void v29(); virtual void v30(); virtual s32 v31(); virtual void v32();
         virtual void v33(f32*);
     };
-    f32 value = lbl_80561754;
-    if (*(f32*)((u8*)arg0 + 0x250) > lbl_80561754) {
+    f32 value = 0.0f;
+    if (*(f32*)((u8*)arg0 + 0x250) > 0.0f) {
         ((LocalVtable*)arg0)->v30();
         ((LocalVtable*)arg0)->v32();
         s32 idx = ((LocalVtable*)arg0)->v21();
@@ -3989,7 +3990,8 @@ static inline s32 fn8015DD9CSumInt(Unk801577F0* arg0) {
  for(;i<arg0->mCount;i++) sum+=*(s32*)(arg0->mData+i*0x38+4);
  return sum;
 }
-#pragma processor 750
+#pragma push
+#pragma processor 7400
 extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
  struct Obj {
  virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3(); virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7(); virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11(); virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15(); virtual s32 v16(); virtual s32 v17(); virtual s32 v18(); virtual s32 v19(); virtual s32 v20(); virtual s32 v21(); virtual s32 v22(); virtual s32 v23(); virtual s32 v24(); virtual s32 v25(); virtual s32 v26(); virtual s32 v27(); virtual s32 v28(); virtual s32 v29();
@@ -4000,15 +4002,14 @@ extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
  virtual void v6(s32); virtual void v7(); virtual void v8(s32);
  };
  struct Provider { virtual void v0(); virtual Adaptor* v1(); };
- register Unk801577F0* rarg0 = arg0;
- s32 sum=fn8015DD9CSumInt(rarg0);
+ s32 sum=fn8015DD9CSumInt(arg0);
  Adaptor* a=((Provider*)arg1)->v1();
- Obj* obj=(Obj*)rarg0;
+ Obj* obj=(Obj*)arg0;
  if(a) {
  a->v1((s32)lbl_8055A058,obj->v25());
  a->v2((s32)lbl_8055A06C,sum);
  a->v6(obj->v29());
- s32 value=(s32)fn8015DD9CSumFloat(rarg0);
+ s32 value=(s32)fn8015DD9CSumFloat(arg0);
  char buf[16];
  a->v3((s32)lbl_8055A058,fn_8023139C(buf,16,value));
  a->v5(value);
@@ -4018,7 +4019,6 @@ extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
  if(obj->v21()>=limit) a->v8(1);
  }
 }
-
 #pragma pop
 extern "C" void fn_8015E0FC(void) {
 }
