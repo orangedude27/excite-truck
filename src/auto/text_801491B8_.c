@@ -1788,16 +1788,16 @@ extern "C" void fn_8014DC08(void *arg0) {
     extern float lbl_8055E3C8;
     float total;
     Lists *list;
-    Node *pending;
     Node *node;
     Node *next;
+    Node *pending;
     float diff;
     int a, b;
     void *obj;
     ((Callback *)*(void **)((char *)arg0 + 0x10))->call();
     list = *(Lists **)((char *)arg0 + 8);
-    total = lbl_80561648;
     pending = list->pending;
+    total = lbl_80561648;
     if (pending) {
         int duration = pending->duration;
         pending->next = 0;
@@ -2096,29 +2096,34 @@ extern "C" void *fn_8014E3CC(void *object, s32 shouldFree) {
 }
 #pragma cplusplus off
 extern void *memset(void *, s32, s32);
-#pragma cplusplus off
-void *fn_8014E4BC(void *arg0) {
+static inline void fn_8014E4BC_init(void *p) {
+    memset(p, 0x7A, 3);
+    ((u8 *)p)[3] = 0;
+}
+#pragma cplusplus on
+extern "C" void *memset(void *, s32, s32);
+extern "C" void *fn_8014E4BC(void *arg0) {
     u8 *base = (u8*)arg0;
-    u32 zero = 0;
+    u8 *p;
     u8 *end;
-    u32 p;
-    *(u32*)(base + 8) = zero; *(u32*)(base + 0x10) = zero;
-    *(u32*)(base + 0x14) = zero; *(u32*)(base + 0x18) = zero;
-    memset(base + 0x2C, 0x7A, 3); base[0x2F] = zero;
-    memset(base + 0x40, 0x7A, 3); base[0x43] = zero;
-    memset(base + 0x45, 0x7A, 3); base[0x48] = zero;
-    memset(base + 0x59, 0x7A, 3); base[0x5C] = zero;
-    memset(base + 0x6D, 0x7A, 3); base[0x70] = zero;
-    memset(base + 0x81, 0x7A, 3); base[0x84] = zero;
-    memset(base + 0x8B, 0x7A, 3); base[0x8E] = zero;
-    p = (u32)base + 0x95; end = base + 0x149;
-    do { memset((u8*)p, 0x7A, 3); *(u8*)(p+3) = zero; p += 0x14; } while ((u8*)p < end);
-    p = (u32)end; end = base + 0x1FD;
-    do { memset((u8*)p, 0x7A, 3); *(u8*)(p+3) = zero; p += 0x14; } while ((u8*)p < end);
-    memset(end, 0x7A, 3); base[0x200] = zero;
-    memset(base + 0x225, 0x7A, 3); base[0x228] = zero;
+    *(u32*)(base + 8) = 0; *(u32*)(base + 0x10) = 0;
+    *(u32*)(base + 0x14) = 0; *(u32*)(base + 0x18) = 0;
+    memset(base + 0x2C, 0x7A, 3); base[0x2F] = 0;
+    memset(base + 0x40, 0x7A, 3); base[0x43] = 0;
+    memset(base + 0x45, 0x7A, 3); base[0x48] = 0;
+    memset(base + 0x59, 0x7A, 3); base[0x5C] = 0;
+    memset(base + 0x6D, 0x7A, 3); base[0x70] = 0;
+    memset(base + 0x81, 0x7A, 3); base[0x84] = 0;
+    memset(base + 0x8B, 0x7A, 3); base[0x8E] = 0;
+    p = base + 0x95; end = base + 0x149;
+    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
+    p = end; end = base + 0x1FD;
+    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
+    memset(end, 0x7A, 3); base[0x200] = 0;
+    memset(base + 0x225, 0x7A, 3); base[0x228] = 0;
     return arg0;
 }
+#pragma cplusplus off
 extern s32 fn_801DF074(s32, s32);
 #pragma cplusplus on
 extern "C" void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
@@ -2963,7 +2968,6 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
     u8 *owner;
     u8 *cur;
     u8 *next;
-    u8 *link;
     u8 *obj;
     f32 factor;
     f32 delta;
@@ -2982,30 +2986,33 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
         owner = *(u8 **)(entry + 8);
         cur = *(u8 **)(owner + 0x124C);
         next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
-        while (cur != 0) {
-            if (*(u8 *)(cur + 4) != 0) {
-                link = *(u8 **)(cur + 0x120);
-                if (link != 0)
-                    *(u8 **)(link + 0x11C) = *(u8 **)(cur + 0x11C);
-                else
-                    *(u8 **)(owner + 0x124C) = *(u8 **)(cur + 0x11C);
-                link = *(u8 **)(cur + 0x11C);
-                if (link != 0)
-                    *(u8 **)(link + 0x120) = *(u8 **)(cur + 0x120);
-                else
-                    *(u8 **)(owner + 0x1250) = *(u8 **)(cur + 0x120);
-                *(u8 **)(cur + 0x120) = 0;
-                *(u8 **)(cur + 0x11C) = 0;
-                *(u8 **)(cur + 0x120) = *(u8 **)(owner + 0x1248);
-                link = *(u8 **)(owner + 0x1248);
-                if (link != 0)
-                    *(u8 **)(link + 0x11C) = cur;
-                *(u8 **)(owner + 0x1248) = cur;
-                if (*(u8 **)(owner + 0x1244) == 0)
-                    *(u8 **)(owner + 0x1244) = cur;
+        {
+            u8 *link;
+            while (cur != 0) {
+                if (*(u8 *)(cur + 4) != 0) {
+                    link = *(u8 **)(cur + 0x120);
+                    if (link != 0)
+                        *(u8 **)(link + 0x11C) = *(u8 **)(cur + 0x11C);
+                    else
+                        *(u8 **)(owner + 0x124C) = *(u8 **)(cur + 0x11C);
+                    link = *(u8 **)(cur + 0x11C);
+                    if (link != 0)
+                        *(u8 **)(link + 0x120) = *(u8 **)(cur + 0x120);
+                    else
+                        *(u8 **)(owner + 0x1250) = *(u8 **)(cur + 0x120);
+                    *(u8 **)(cur + 0x120) = 0;
+                    *(u8 **)(cur + 0x11C) = 0;
+                    *(u8 **)(cur + 0x120) = *(u8 **)(owner + 0x1248);
+                    link = *(u8 **)(owner + 0x1248);
+                    if (link != 0)
+                        *(u8 **)(link + 0x11C) = cur;
+                    *(u8 **)(owner + 0x1248) = cur;
+                    if (*(u8 **)(owner + 0x1244) == 0)
+                        *(u8 **)(owner + 0x1244) = cur;
+                }
+                cur = next;
+                next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
             }
-            cur = next;
-            next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
         }
         *(f32 *)(entry + 0x14) += delta;
         obj = *(u8 **)(entry + 0x10);
