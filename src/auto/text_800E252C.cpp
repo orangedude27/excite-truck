@@ -1168,21 +1168,21 @@ acquire_setup:
 extern const char lbl_80321FE8[];
 #pragma use_lmw_stmw off
 extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *manager, void *voice) {
-    if (voice == 0) {
+    register void *v = voice;
+    if (v == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x21D, lbl_80321FE8);
     }
     unsigned int firstState = OSDisableInterrupts();
     unsigned int secondState = OSDisableInterrupts();
-    void *v = voice;
     if (v == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     }
     void *link = (char *)v + 0x1A8;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)manager + 0x14, link);
+    void *iterator = (char *)manager + 0x24;
     if (v == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     }
-    void *iterator = (char *)manager + 0x24;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)manager + 0x20, &iterator, link);
     OSRestoreInterrupts(secondState);
     OSRestoreInterrupts(firstState);
@@ -1303,9 +1303,11 @@ extern "C" void fn_800E4064(void *arg0, void *arg1) {
 }
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
+    if (this_ == this_ && 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
+    unsigned int level = OSDisableInterrupts();
+    void *iterator = *(void **)((char *)this_ + 0x18);
     void *end = (char *)this_ + 0x18;
-    int level = OSDisableInterrupts();
-    void *iterator = *(void **)end;
     while (iterator != end) {
         void *node = iterator;
         iterator = *(void **)iterator;
@@ -1316,6 +1318,7 @@ extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
     OSRestoreInterrupts(level);
 }
 #pragma use_lmw_stmw reset
+#pragma scheduling 750
 extern "C" void fn_800E41EC(void) {
     if ((s8)lbl_8055DE18 == 0) {
         fn_800E279C(&lbl_80407F6C);
