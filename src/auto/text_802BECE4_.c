@@ -485,6 +485,38 @@ int fn_802BF740(int object, int deleteFlag) {
     return object;
 }
 
+/* One cube face of the environment map: its model matrix. */
+struct EnvFace {
+    float mtx[12];
+};
+/* A corner of the quad drawn into a face. */
+struct EnvVertex {
+    float position[3];
+    int color;
+    float uv[2];
+};
+/* The cube-face table every water object shares (0x1B8 bytes, lbl_8055FB00,
+   reference count lbl_8055FAFC). */
+struct EnvFaces {
+    int targets[6];           /* 0x00 one 256x256 render target per face */
+    int sunTexture;           /* 0x18 "env_sun.tex" */
+    struct EnvFace faces[6];  /* 0x1C */
+    struct EnvVertex quad[4]; /* 0x13C */
+    unsigned short indices[6]; /* 0x19C */
+    unsigned char facesCleared; /* 0x1A8 */
+};
+/* The water environment-map object itself (0x18 bytes). */
+struct WaterEnvMap {
+    void *vtable;           /* 0x00 lbl_8034AE40 */
+    struct EnvFaces *faces; /* 0x04 shared cube-face table */
+    int target;             /* 0x08 this surface's own 256x256 target */
+    int worldModel;         /* 0x0C "worldmodel.mod" instance */
+    int envModel;           /* 0x10 "wenv_mod.mod" instance */
+    float fovFactor;        /* 0x14 field-of-view widening factor */
+};
+#define sEnvFaces       lbl_8055FB00 /* the one shared EnvFaces, built on first use */
+#define sEnvFacesRef    lbl_8055FAFC /* its reference count */
+
 #pragma push
 #pragma use_lmw_stmw off
 void *fn_802BF780(void *arg0) {
