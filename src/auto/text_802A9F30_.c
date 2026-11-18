@@ -456,34 +456,41 @@ void fn_802AA9D4(UnkAA9D4 *arg0, void *arg1, float delta) {
     float depth = lbl_805649F4 * arg0->depth;
     float height = lbl_805649F4 * arg0->height;
     float v, angle, scale;
+
     if (arg0->active) {
-        float max = lbl_805649FC;
-        v = arg0->amount;
-        v += lbl_80564A08 * delta;
+        float max;
+        v = lbl_80564A08 * delta;
+        max = lbl_805649FC;
         arg0->active = 0;
-        arg0->amount = v < max ? v : max;
+        arg0->amount = (v += arg0->amount) < max ? v : max;
     } else {
         v = arg0->amount - lbl_80564A08 * delta;
         arg0->amount = v > lbl_805649F0 ? v : lbl_805649F0;
     }
+
     if ((float)fabs(delta) <= *(float *)lbl_80558DC4) return;
     if (!(fn_80287BC8(lbl_805649F0, lbl_805649FC) < arg0->amount)) return;
+
     angle = fn_80287BC8(lbl_80564A48, lbl_80564A4C);
     forward = *(Vec *)arg1;
     side = *(Vec *)((char *)arg1 + 0x18);
     pos = *(Vec *)((char *)arg1 + 0x24);
+
     scale = width * (float)cos(angle);
     pos.x += forward.x * scale;
     pos.y += forward.y * scale;
     pos.z += forward.z * scale;
+
     scale = depth * (float)sin(angle);
     pos.x += side.x * scale;
     pos.y += side.y * scale;
     pos.z += side.z * scale;
+
     scale = fn_80287BC8(lbl_805649F0, lbl_80564A04 * height);
     pos.x += *(float *)((char *)arg1 + 0xC) * scale;
     pos.y += *(float *)((char *)arg1 + 0x10) * scale;
     pos.z += *(float *)((char *)arg1 + 0x14) * scale;
+
     dir = *(Vec *)((char *)arg1 + 0x34);
     if (*(float *)((char *)arg1 + 0x4C) >= lbl_80564A50 - *(float *)lbl_80558DC4) {
         calldir = dir;
@@ -551,20 +558,26 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
     extern int lbl_8055CC60, lbl_8055CC70, lbl_8055CC74, lbl_8055CC78;
+    extern const double lbl_80564A40;
     extern float lbl_8055CC6C, lbl_805649F0, lbl_805649F4, lbl_805649FC, lbl_80564A24, lbl_80564A30, lbl_80564A54;
+    union { double value; unsigned int words[2]; } conv;
+    register float temp_f2;
     float *arg;
-    volatile float sp8, spC, sp10;
-    float temp_f2, temp_f0, temp_f4, temp_f31;
-    int i, n, color0, color1, color2, alpha;
-    union {
-        unsigned int word;
-        struct { unsigned char a, r, g, b; } bytes;
-    } color;
+    volatile float sp10, spC, sp8;
+    float temp_f0, temp_f4;
+    float temp_f31, temp_f30, temp_f29, temp_f28, temp_f27;
+    double temp_f26;
+    int i, n, alpha, color;
     fn_802C8BD0(lbl_8055CC60);
     fn_801E866C(-1);
     if (*(float *)((char *)arg1 + 0xCC) > lbl_80564A24) {
         fn_802C8DBC(0x10);
         temp_f31 = *(float *)((char *)arg1 + 0xC0);
+        temp_f26 = lbl_80564A40;
+        temp_f27 = lbl_80564A30;
+        temp_f28 = lbl_80564A54;
+        temp_f29 = lbl_805649F0;
+        temp_f30 = lbl_805649F4;
         arg = (float *)arg1;
         for (i = 0; i < 0x10; i++, arg += 3) {
             sp8 = arg[0];
@@ -572,20 +585,16 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
             sp10 = arg[2];
             n = 0;
             if (i > 1) n = (0x10 - (i + 1)) / 2;
-            temp_f2 = (float)n * lbl_80564A30;
-            temp_f0 = lbl_8055CC6C * (temp_f2 * (lbl_80564A54 * (*(float *)((char *)arg1 + 0xCC) * *(float *)((char *)arg1 + 0xD0))));
-            if (temp_f0 < lbl_805649F0) temp_f0 -= lbl_805649F4;
-            else temp_f0 += lbl_805649F4;
+            conv.words[0] = 0x43300000;
+            conv.words[1] = (unsigned int)n ^ 0x80000000;
+            temp_f2 = (float)(conv.value - temp_f26) * temp_f27;
+            temp_f0 = lbl_8055CC6C * (temp_f2 * (temp_f28 * (*(float *)((char *)arg1 + 0xCC) * *(float *)((char *)arg1 + 0xD0))));
+            if (temp_f0 < temp_f29) temp_f0 -= temp_f30;
+            else temp_f0 = temp_f30 + temp_f0;
             alpha = (int)temp_f0;
-            color0 = (unsigned char)lbl_8055CC70;
-            color1 = (unsigned char)lbl_8055CC78;
-            color2 = (unsigned char)lbl_8055CC74;
-            color.bytes.a = (unsigned char)alpha;
-            color.bytes.r = (unsigned char)color0;
-            color.bytes.g = (unsigned char)color1;
-            color.bytes.b = (unsigned char)color2;
-            temp_f4 = (i & 1) ? lbl_805649F0 : lbl_805649FC;
-            fn_802C8E00(color.word, 1, sp8, spC, sp10, temp_f4, temp_f31 - temp_f2);
+            color = ((unsigned char)lbl_8055CC74 << 24) | ((unsigned char)lbl_8055CC70 << 16) | ((unsigned char)lbl_8055CC78 << 8) | ((unsigned char)alpha);
+            temp_f4 = (i % 2) ? lbl_805649F0 : lbl_805649FC;
+            fn_802C8E00(color, 1, sp8, spC, sp10, temp_f4, temp_f31 - temp_f2);
         }
         fn_802C8E48();
     }
@@ -625,6 +634,7 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
     float temp_f29, temp_f2, temp_f30, temp_f31, temp_f4, temp_f6;
     float var_f0, var_f1, var_f1_2, var_f21, var_f4;
     int var_r28, var_r27, var_r26;
+
     frame.words[0] = *(unsigned int *)(data + 0);
     frame.words[1] = *(unsigned int *)(data + 4);
     frame.words[2] = *(unsigned int *)(data + 8);
@@ -963,6 +973,21 @@ void fn_802AB6D4(void) {
     }
 }
 
+extern int fn_802C2C00(int);
+extern int fn_802C990C(int);
+extern void fn_802C2BB8(int *, int *, int *);
+extern void fn_802C2B78(float, float, float);
+extern int lbl_804BD7B0[4];
+extern unsigned char lbl_8055F92D;
+
+/* Save the current draw state (restored by fn_802AB994) and set the new one. */
+static inline void SetDrawState(int color, float x, float y, float z) {
+    lbl_8055F92D = fn_802C2C00(1);
+    lbl_804BD7B0[0] = fn_802C990C(color);
+    fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
+    fn_802C2B78(x, y, z);
+}
+
 #pragma push
 #pragma processor 750
 void fn_802AB770(int arg0) {
@@ -983,26 +1008,25 @@ void fn_802AB770(int arg0) {
     extern void fn_802C2B78(float, float, float);
     register char *state;
     register int obj;
-    register unsigned char r;
-    register unsigned char g;
+    unsigned char green;
+    unsigned char red;
+    unsigned char blue;
     float delta;
     float angle;
-    float wave1;
-    float wave2;
-    int color;
-    int lt;
+    float wave;
+    float angleValue;
+    float result;
+    int angleBelowLimit;
+    int angleWithinLimit;
+    int active;
     state = (char *)(lbl_8055F928 + arg0 * 0x108);
     obj = fn_80287B24(arg0);
     delta = fn_801E7E24();
     if (!((float)__fabs(delta) <= *(float *)(void *)&lbl_80558DC4)) {
-        int hi;
-        int lo;
-        r = fn_80129D90(0, 0x8C, 0xFF) & 0xFF;
-        g = fn_80129D90(0, 0xFA, 0xFF) & 0xFF;
-        hi = (unsigned char)(fn_80129D90(0, 0xF0, 0xFF)) << 16;
-        lo = (g << 8) | r;
-        hi |= 0xFF000000;
-        *(int *)(state + 0xE8) = lo | hi;
+        red = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0x8C, 0xFF);
+        green = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xFA, 0xFF);
+        blue = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xF0, 0xFF);
+        *(int *)(state + 0xE8) = (int)(0xFF000000u | ((unsigned int)blue << 16) | ((unsigned int)green << 8) | (unsigned int)red);
     }
     angle = *(float *)((char *)obj + 0x4C);
     if (lbl_8055F92C != 0) angle = lbl_80564A98;
@@ -1010,20 +1034,25 @@ void fn_802AB770(int arg0) {
         *(float *)(state + 0xE4) = fn_80287BC8(lbl_80564A8C, lbl_80564A68);
     else
         *(float *)(state + 0xE4) += lbl_80564A34 * delta;
-    wave1 = lbl_805649F0;
+    wave = lbl_805649F0;
     if (!((float)__fabs(delta) <= *(float *)(void *)&lbl_80558DC4))
-        wave1 = lbl_80564A9C * (float)(int)fn_80287BC8(wave1, lbl_805649FC);
-    color = 1;
-    lt = angle < lbl_80564A00;
-    if (lt && !((float)fn_8002EFB4(angle, lbl_80564AA0) > lbl_80564A34)) color = 0;
-    wave2 = lbl_805649F0;
-    if (color != 0) wave2 = lbl_80564AA8 * *(float *)(state + 0xE4) - wave1;
+        wave = lbl_80564A9C * (float)(int)fn_80287BC8(wave, lbl_805649FC);
+    angleBelowLimit = angle < lbl_80564A00;
+    active = 1;
+    if (angleBelowLimit != 0) {
+        angleValue = (float)fn_8002EFB4(angle, lbl_80564AA0);
+        angleWithinLimit = angleValue > lbl_80564A34;
+        if (angleWithinLimit == 0)
+            active = 0;
+    }
+    result = lbl_805649F0;
+    if (active != 0) result = lbl_80564AA8 * *(float *)(state + 0xE4) - wave;
     {
         int old = *(int *)(state + 0xE8);
         lbl_8055F92D = fn_802C2C00(1);
         lbl_804BD7B0[0] = fn_802C990C(old);
         fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
-        fn_802C2B78(wave2, lbl_80564AAC + wave2, lbl_805649FC);
+        fn_802C2B78(result, lbl_80564AAC + result, lbl_805649FC);
     }
 }
 #pragma pop
@@ -1219,6 +1248,7 @@ void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float de
     int angleBelowLimit;
     int angleWithinLimit;
     int active;
+    int gate;
 
     red = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0x8C, 0xFF);
     green = (unsigned char)((int (*)(int, int, int))fn_80129D90)(0, 0xFA, 0xFF);
@@ -1226,7 +1256,7 @@ void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float de
     angle = lbl_80564A98;
     *arg2 = (int)(0xFF000000u | ((unsigned int)blue << 16) | ((unsigned int)green << 8) | (unsigned int)red);
 
-    if (*(volatile unsigned char *)&lbl_8055F92C == 0) { }
+    gate = *(volatile unsigned char *)&lbl_8055F92C;
     current = *arg0;
     if (current > lbl_805649F4)
         *arg0 = fn_80287BC8(lbl_80564A8C, lbl_80564A68);
@@ -1252,6 +1282,7 @@ void fn_802ABE58(volatile float *arg0, volatile float *arg1, int *arg2, float de
     if (active != 0)
         result = lbl_80564AA8 * *arg0 - wave;
     *arg1 = result;
+    (void)gate;
 }
 /* Begin a tinted draw of the vehicle: stash the state fn_802AC070 has to put
  * back, then tint the model with `tint` (0xRRGGBB) and switch the global scale
