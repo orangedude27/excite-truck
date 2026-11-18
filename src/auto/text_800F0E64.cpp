@@ -1240,6 +1240,21 @@ struct SndArchiveInterface {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
+/* Open a stream on one file of this sound archive, reading it through the
+ * caller's buffer -- nw4hbm::snd::SoundArchive::detail_OpenFileStream(u32 file,
+ * void* buffer, int size) const.
+ *
+ * The archive's file reader is asked for the file's record first.  A file the
+ * reader gives a path for is opened by that path over the whole file; the path
+ * is taken as it stands when it starts with '/' and hung under the archive's
+ * root directory (the string at +0x08) otherwise, which db::Warning complains
+ * about - and nothing is opened - once the two no longer fit the 0x100 buffer.
+ *
+ * A file packed in the archive has no path: its group and item are read
+ * instead, and the stream is the group's block of the archive's data moved on
+ * to the item's own offset and cut to the item's size.  A group that is itself
+ * a loose file is opened by path with that offset and length; anything else
+ * goes to the archive's OpenStream-by-offset. */
 extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *self, u32 file, void *buffer, int size) {
 #define strncat fn_80028E2C
 #define kWarningSourceFile lbl_803247E0
