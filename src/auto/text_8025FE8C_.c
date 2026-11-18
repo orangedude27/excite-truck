@@ -724,57 +724,56 @@ struct SelectorWidget {
     virtual void setExpanded(); /* 0x70 */
 };
 extern "C" s32 fn_80260E30(void) {
-    struct Obj {
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-        virtual void v20(); virtual void v21();
-        virtual void f60(); virtual void f64(); virtual void f68(); virtual void f6c(); virtual void f70();
-    };
     s32 offset;
     s32 i;
-    if (lbl_8055F3EB) {
-        lbl_8055F3EB = 0;
-        offset = 0;
-        i = 0;
-        while (i < *(s32 *)(lbl_8055F420 + 0xC)) {
-            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
-            offset += 4;
-            i++;
-        }
-        i = 0;
-        offset = 0;
-        for (; i < *(s32 *)(lbl_8055F420 + 8); offset += 4, i++) {
-            if (lbl_8055F3EB == 0) {
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f60();
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
-            } else if (i == *(s32 *)lbl_8055F420) {
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f68();
-            } else if (i == *(s32 *)(lbl_8055F420 + 4) * 2 || i == *(s32 *)(lbl_8055F420 + 4) * 2 + 1) {
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f64();
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
-            } else {
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
+
+    if (SELECTOR_IN_ITEMS != 0) {
+        /* the cursor leaves the item list and goes back to the groups */
+        SELECTOR_IN_ITEMS = 0;
+        {
+            s32 offset;
+            s32 i;
+            i = 0;
+            offset = 0;
+            for (; i < SELECTOR->group_count; offset += 4, i++) {
+                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearCursor();
             }
         }
+
+        /* repaint the item list */
         i = 0;
-        register offset = 0;
-        for (; i < *(s32 *)(lbl_8055F420 + 0xC); offset += 4, i++) {
-            if (!lbl_8055F3EB) {
-                if (i == *(s32 *)(lbl_8055F420 + 4)) {
-                    (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f68();
-                } else {
-                    (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f64();
-                    (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
-                }
-            } else if (i == *(s32 *)(lbl_8055F420 + 4)) {
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f68();
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + *(s32 *)(lbl_8055F420 + 4) * 4))->f70();
+        offset = 0;
+        for (; i < SELECTOR->item_count; offset += 4, i++) {
+            if (SELECTOR_IN_ITEMS == 0) {
+                (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->setDim();
+                (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
+            } else if (i == SELECTOR->cursor) {
+                (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->setCursor();
+            } else if (i == SELECTOR->group * 2 || i == SELECTOR->group * 2 + 1) {
+                (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearDim();
+                (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
             } else {
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f60();
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
+                (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
+            }
+        }
+
+        /* repaint the group list */
+        i = 0;
+        offset = 0;
+        for (; i < SELECTOR->group_count; offset += 4, i++) {
+            if (SELECTOR_IN_ITEMS == 0) {
+                if (i == SELECTOR->group) {
+                    (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setCursor();
+                } else {
+                    (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearDim();
+                    (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearCursor();
+                }
+            } else if (i == SELECTOR->group) {
+                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setCursor();
+                (*(SelectorWidget **)(SELECTOR->group_widgets + SELECTOR->group * 4))->setExpanded();
+            } else {
+                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setDim();
+                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearCursor();
             }
         }
     } else {
