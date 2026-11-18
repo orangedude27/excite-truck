@@ -8717,32 +8717,22 @@ void btm_read_link_quality_complete(u8 *hciEvent) {
     }
 }
 
+#pragma push
+#pragma dont_inline off
 tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
-    u32 i = 0;
-    u8 *entry = lbl_803C0F78 + 0x34;
+    u8 *entry = btm_bda_to_acl_inl(bd_addr);
     u16 handle;
-loop:
-    if (entry[0x119] == 0)
-        goto next;
-    if (memcmp(entry + 8, bd_addr, 6))
-        goto next;
-    goto found;
-next:
-    i++;
-    entry += 0x11C;
-    if (i < 4)
-        goto loop;
-    entry = 0;
-found:
+
     if (entry != 0)
         handle = *(u16 *)entry;
     else
         handle = 0xFFFF;
+
     if (btsnd_hcic_disconnect(handle, 0x13) == 0)
         return 3;
     return 0;
 }
-
+#pragma pop
 void btm_chg_all_acl_pkt_types(BOOLEAN start) {
     register u32 i;
     register u8 * const log = lbl_80315CA0;
@@ -10884,7 +10874,6 @@ extern u8 lbl_80560D3C;
 extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
 tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_mode)
 {
-    tBTM_PM_MODE mode;
     int ind;
     u32 acl_ind;
     UINT8 acl_index;
@@ -10892,6 +10881,7 @@ tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_
     UINT8 *p_cb;
     UINT8 *p_acl;
     UINT8 *p_features;
+    tBTM_PM_MODE mode;
 
     if (pm_id >= 2)
         pm_id = BTM_PM_SET_ONLY_ID;
@@ -10899,16 +10889,20 @@ tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_
         return BTM_ILLEGAL_VALUE;
 
     mode = p_mode->mode & ~BTM_PM_MD_FORCE;
-
     acl_ind = 0;
     p_acl = lbl_803C0F78 + 0x34;
-    while (acl_ind < 4) {
-        if (p_acl[0x119] && memcmp(p_acl + 8, remote_bda, 6) == 0)
-            break;
-        acl_ind++;
-        p_acl += 0x11C;
-    }
-
+loop:
+    if (p_acl[0x119] == 0)
+        goto next;
+    if (memcmp(p_acl + 8, remote_bda, 6) != 0)
+        goto next;
+    goto found;
+next:
+    acl_ind++;
+    p_acl += 0x11C;
+    if (acl_ind < 4)
+        goto loop;
+found:
     acl_index = (UINT8)acl_ind;
     if ((s32)acl_index == 4)
         return BTM_UNKNOWN_ADDR;
