@@ -3642,8 +3642,8 @@ u8 fn_8005EE80(s32 chan)
 
 void fn_8005EEC4(s32 chan, s32 result) {
     u16 val16;
-    s32 val32;
-    s32 word;
+    u32 val32;
+    u32 word;
     u32 w;
     u16 ch;
     u32 v;
@@ -3662,13 +3662,13 @@ void fn_8005EEC4(s32 chan, s32 result) {
         if (*(void **)((u8 *)cb + 0x7e4) != 0) (*(void (**)(void))((u8 *)cb + 0x7e4))();
         return;
     }
-    val32 = *(s32 *)((u8 *)cb + 0x820);
+    val32 = *(u32 *)((u8 *)cb + 0x820);
     val16 = 0x2a;
     if (val32 != 0) val16 = 0x14;
     word = val32;
-    word = (s32)(((-word | word) >> 31) & 0x176c);
+    word = (u32)(((s32)(-(s32)word | (s32)word) >> 31) & 0x176c);
     *(u16 *)&buf[0] = val16;
-    *(u32 *)&buf[4] = (u32)word;
+    *(u32 *)&buf[4] = word;
     *(u32 *)&buf[8] = 0x17;
     *(u16 *)&buf[0x22] = 6;
     *(u32 *)&buf[0x34] = (u32)fn_8005EEC4;
@@ -5315,8 +5315,15 @@ BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
 }
 
 #pragma opt_propagation off
-BOOL fn_80063744(WPADCommandQueue *p, u8 idx, u32 val1, WPADCallback callback) {
-    WPADCommand buffer[2] ALIGN(8);
+BOOL fn_80063744(WPADCommandQueue *pQueue, u8 value, u32 address, WPADCallback pCallback) {
+    /* WPADiSendWriteDataCmd with WPADiSendWriteData and WPADiPushCommand both
+     * inlined (the REXE01 build keeps this second copy): build a WriteData
+     * command writing the single byte `value` to the wiimote register
+     * `address`, and append it to the command queue, copying the command into
+     * the 8-byte aligned half of the frame on the way.  Returns FALSE, leaving
+     * the queue untouched, when it already holds capacity - 1 commands. */
+    WPADCommand frame[2] ALIGN(8); /* command in frame[0]; frame[1] is what gets pushed */
+    WPADCommand* command = frame;
     BOOL enabled;
     BOOL innerEnabled;
     s8 diff;
@@ -5325,38 +5332,41 @@ BOOL fn_80063744(WPADCommandQueue *p, u8 idx, u32 val1, WPADCallback callback) {
     s32 wrapMask;
     s8 rawBack;
 
-    *(u8 *)((u8 *)&idx + 1) = 1;
-    *(u32 *)&buffer[0] = 0x16;
-    *(u16 *)((u8 *)buffer + 0x1A) = 0x15;
-    buffer[0].cmdCB = callback;
-    memcpy((u8 *)buffer + 4, &val1, 4);
-    memcpy((u8 *)buffer + 8, (u8 *)&idx + 1, 1);
-    memcpy((u8 *)buffer + 9, &idx, 1);
-    *(double *)((u8 *)buffer + 0x30) = *(double *)buffer;
-    *(double *)((u8 *)buffer + 0x38) = *(double *)((u8 *)buffer + 8);
-    *(double *)((u8 *)buffer + 0x40) = *(double *)((u8 *)buffer + 0x10);
-    *(double *)((u8 *)buffer + 0x48) = *(double *)((u8 *)buffer + 0x18);
-    *(double *)((u8 *)buffer + 0x50) = *(double *)((u8 *)buffer + 0x20);
-    *(double *)((u8 *)buffer + 0x58) = *(double *)((u8 *)buffer + 0x28);
+    /* WPADiSendWriteData's "u8 packedLen = len & 31" for len 1 shares the word
+     * the byte argument came in, just above it */
+    *(u8 *)((u8 *)&value + 1) = 1;
+    command->reportID = RPTID_WRITE_DATA;
+    command->dataLength = RPT16_SIZE;
+    command->cmdCB = pCallback;
+    memcpy(&command->dataBuf[RPT16_DATA_DST_ADDRESS], &address, sizeof(u32));
+    memcpy(&command->dataBuf[RPT16_DATA_LENGTH], (u8 *)&value + 1, sizeof(u8));
+    memcpy(&command->dataBuf[RPT16_DATA], &value, sizeof(u8));
+    *(double *)((u8 *)frame + 0x30) = *(double *)frame;
+    *(double *)((u8 *)frame + 0x38) = *(double *)((u8 *)frame + 8);
+    *(double *)((u8 *)frame + 0x40) = *(double *)((u8 *)frame + 0x10);
+    *(double *)((u8 *)frame + 0x48) = *(double *)((u8 *)frame + 0x18);
+    *(double *)((u8 *)frame + 0x50) = *(double *)((u8 *)frame + 0x20);
+    *(double *)((u8 *)frame + 0x58) = *(double *)((u8 *)frame + 0x28);
 
     enabled = OSDisableInterrupts();
     innerEnabled = OSDisableInterrupts();
-    diff = (s8)(p->back - p->front);
+    diff = (s8)(pQueue->back - pQueue->front);
     if (diff < 0) {
-        diff = (s8)(diff + p->capacity);
+        diff = (s8)(diff + pQueue->capacity);
     }
     OSRestoreInterrupts(innerEnabled);
-    if (p->capacity - 1 == (u32)diff) {
+    if (pQueue->capacity - 1 == (u32)diff) {
         OSRestoreInterrupts(enabled);
         return FALSE;
     }
-    memset(p->buffer + (s8)p->back, 0, sizeof(WPADCommand));
-    memcpy(p->buffer + (s8)p->back, (u8 *)buffer + 0x30, sizeof(WPADCommand));
-    rawBack = p->back;
+    memset(pQueue->buffer + (s8)pQueue->back, 0, sizeof(WPADCommand));
+    memcpy(pQueue->buffer + (s8)pQueue->back, (u8 *)frame + 0x30, sizeof(WPADCommand));
+    /* the ring indices are bytes: back + 1, or 0 when that was the last slot */
+    rawBack = pQueue->back;
     index = rawBack;
-    lastIndex = p->capacity - 1;
+    lastIndex = pQueue->capacity - 1;
     wrapMask = ~((index - lastIndex) | (lastIndex - index)) >> 31;
-    p->back = (index + 1) & ~wrapMask;
+    pQueue->back = (index + 1) & ~wrapMask;
     OSRestoreInterrupts(enabled);
     return TRUE;
 }
