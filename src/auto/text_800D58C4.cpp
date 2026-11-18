@@ -2708,7 +2708,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                 var_r4 = 1;
             }
             if (var_r4 == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x50E, data + 0x518);
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x50E, data + 0x518);
             }
             if (temp_r28 != 0x3C) {
                 var_r24 = 1;
