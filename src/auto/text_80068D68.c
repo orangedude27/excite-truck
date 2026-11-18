@@ -7827,60 +7827,45 @@ s32 btsnd_hcic_write_policy_set_80085668(u16, u16);
 #pragma dont_inline off
 void btm_acl_created(BD_ADDR bda, DEV_CLASS dev_class, BD_NAME dev_name,
                      UINT16 hci_handle, UINT8 link_role, UINT8 is_le_link) {
-    u8 *temp_r3;
+    u8 *acl;
+    u8 *dev;
     u16 temp_r4;
-    s32 var_ctr;
-    unsigned long var_ctr_2;
-    u8 *var_r30_2;
     u16 var_r30;
     u8 var_r6;
-    u32 var_r31;
     u8 var_r4;
-    u32 var_r29_2;
-    u8 *var_r29;
+    u8 *p;
     u16 temp_r28;
-    u8 *var_r31_2;
+    u8 *q;
 
-    var_r29 = lbl_803C0F78 + 0x34;
-    for (var_r31 = 0; var_r31 < 4; ++var_r31, var_r29 += 0x11C) {
-        if (var_r29[0x119] && !memcmp(var_r29 + 8, bda, 6)) {
-            goto loop_1_done;
-        }
-    }
-    var_r29 = NULL;
-loop_1_done:
-    if (var_r29 != NULL) {
-        *(u16 *)var_r29 = hci_handle;
-        var_r29[0x11A] = link_role;
+    acl = btm_bda_to_acl_inl(bda);
+    if (acl != NULL) {
+        *(u16 *)acl = hci_handle;
+        acl[0x11A] = link_role;
         if (lbl_803C0F78[0x27C0] >= 4) {
-            fn_800709CC(0xD0003, lbl_80315CA0, bda[0], bda[1], bda[2],
-                        bda[3], bda[4], bda[5]);
+            fn_800709CC(0xD0003, lbl_80315CA0, bda[0], bda[1], bda[2], bda[3], bda[4], bda[5]);
         }
     } else {
-        for (var_r4 = 0, var_r31_2 = lbl_803C0F78 + 0x34; var_r4 < 4;
-             ++var_r4, var_r31_2 += 0x11C) {
-            if (var_r31_2[0x119] != 0) {
-                continue;
-            }
-            var_r31_2[0x119] = 1;
-            *(u16 *)var_r31_2 = hci_handle;
-            var_r31_2[0x11A] = link_role;
-            *(u16 *)(var_r31_2 + 4) = 0;
+        for (var_r4 = 0, p = lbl_803C0F78 + 0x34; var_r4 < 4; var_r4++, p += 0x11C) {
+            if (p[0x119] != 0) continue;
+            p[0x119] = 1;
+            *(u16 *)p = hci_handle;
+            p[0x11A] = link_role;
+            *(u16 *)(p + 4) = 0;
             btm_pm_sm_alloc(var_r4);
-            memcpy(var_r31_2 + 8, bda, 6);
+            memcpy(p + 8, bda, 6);
             if (dev_class != NULL) {
-                memcpy(var_r31_2 + 0xE, dev_class, 3);
+                memcpy(p + 0xE, dev_class, 3);
             }
             if (dev_name != NULL) {
-                memcpy(var_r31_2 + 0x11, dev_name, 0xF8);
+                memcpy(p + 0x11, dev_name, 0xF8);
             }
-            btsnd_hcic_auth_request_80084570(*(u16 *)var_r31_2);
-            btsnd_hcic_auth_request_800844F4(*(u16 *)var_r31_2);
-            temp_r3 = (u8 *)btm_find_dev_by_handle(hci_handle);
-            if (temp_r3 != NULL) {
-                for (var_r6 = 0; var_r6 < 8; ++var_r6) {
-                    if (temp_r3[0x77 + var_r6] != 0) {
-                        memcpy(var_r31_2 + 0x110, temp_r3 + 0x77, 8);
+            btsnd_hcic_auth_request_80084570(*(u16 *)p);
+            btsnd_hcic_auth_request_800844F4(*(u16 *)p);
+            dev = (u8 *)btm_find_dev_by_handle(hci_handle);
+            if (dev != NULL) {
+                for (var_r6 = 0; var_r6 < 8; var_r6++) {
+                    if (dev[0x77 + var_r6] != 0) {
+                        memcpy(p + 0x110, dev + 0x77, 8);
                         temp_r4 = *(u16 *)(lbl_803C0F78 + 0x654) & 0xCC18;
                         if (lbl_803C0F78[0x636] >= 3) {
                             var_r30 = temp_r4 | (*(u16 *)(lbl_803C0F78 + 0x654) & 0x3306);
@@ -7890,36 +7875,29 @@ loop_1_done:
                         if (lbl_803C0F78[0x27C0] >= 4) {
                             fn_80070954(0xD0003, lbl_80315CE0, var_r30);
                         }
-                        if (btsnd_hcic_change_conn_type(*(u16 *)var_r31_2, var_r30) != 0) {
-                            *(u16 *)(var_r31_2 + 2) = var_r30;
+                        if (btsnd_hcic_change_conn_type(*(u16 *)p, var_r30) != 0) {
+                            *(u16 *)(p + 2) = var_r30;
                         }
                         if (*(u16 *)(lbl_803C0F78 + 0x4C4) != 0) {
-                            BTM_SetLinkPolicy(var_r31_2 + 8, (u16 *)(lbl_803C0F78 + 0x4C4));
+                            BTM_SetLinkPolicy(p + 8, (u16 *)(lbl_803C0F78 + 0x4C4));
                         }
                         temp_r28 = *(u16 *)(lbl_803C0F78 + 0x4C6);
-                        var_r30_2 = lbl_803C0F78 + 0x34;
-                        for (var_r29_2 = 0; var_r29_2 < 4; ++var_r29_2, var_r30_2 += 0x11C) {
-                            if (var_r30_2[0x119] && !memcmp(var_r30_2 + 8, var_r31_2 + 8, 6)) {
-                                goto loop_27_done;
-                            }
-                        }
-                        var_r30_2 = NULL;
-loop_27_done:
-                        if (var_r30_2 != NULL) {
-                            *(u16 *)(var_r30_2 + 0x10E) = temp_r28;
-                            if (var_r30_2[0x11A] == 0) {
-                                btsnd_hcic_write_policy_set_80085668(*(u16 *)var_r30_2, temp_r28);
+                        q = btm_bda_to_acl_inl(p + 8);
+                        if (q != NULL) {
+                            *(u16 *)(q + 0x10E) = temp_r28;
+                            if (q[0x11A] == 0) {
+                                btsnd_hcic_write_policy_set_80085668(*(u16 *)q, temp_r28);
                             }
                         }
                         if (*(void (**)(void *, void *, void *, void *, u32))(lbl_803C0F78 + 0x4C8) != NULL) {
                             (*(void (**)(void *, void *, void *, void *, u32))(lbl_803C0F78 + 0x4C8))(
-                                var_r31_2 + 8, var_r31_2 + 0xE, var_r31_2 + 0x11, var_r31_2 + 0x110, 1);
+                                p + 8, p + 0xE, p + 0x11, p + 0x110, 1);
                         }
                         goto block_done;
                     }
                 }
             }
-            btsnd_hcic_auth_request_80084478(*(u16 *)var_r31_2);
+            btsnd_hcic_auth_request_80084478(*(u16 *)p);
 block_done:
             return;
         }
