@@ -1126,6 +1126,8 @@ void GXSetCPUFifo(void *fifoObj) {
 typedef struct GPFifoCopy {
     unsigned int w0, w1, w2, w3, w4, w5, w6, w7, w8;
 } GPFifoCopy;
+#pragma push
+#pragma opt_pointer_aliasing on
 void GXSetGPFifo(unsigned int *fifo) {
     unsigned int a, b;
     unsigned int tmp;
@@ -1221,7 +1223,7 @@ void GXSetGPFifo(unsigned int *fifo) {
     __cpReg[1] = tmp;
     ((void (*)(int))OSRestoreInterrupts)(intStatus);
 }
-
+#pragma pop
 void __GXSaveFifo(void) {
     register u8 hasCPUFifo;
     int level;
@@ -3361,7 +3363,6 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 
 #pragma scheduling on
 void GXSetDispCopyDst(s32 value) {
-    s32 v = value;
     union {
         u32 reg;
         struct {
@@ -3370,12 +3371,10 @@ void GXSetDispCopyDst(s32 value) {
             u32 arg : 10;
         } fields;
     } data = {0};
-    unsigned int *dst;
 
-    data.fields.arg = ((v << 1) & 0xFFFE) >> 5;
+    data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
-    dst = (unsigned int *)((char *)__GXData + 0x238);
-    *dst = data.reg;
+    __GXData[0x238 / 4] = data.reg;
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
@@ -5491,48 +5490,37 @@ void GXSetAlphaCompare(s32 comp0, s32 ref0, s32 op, s32 comp1, s32 ref1) {
 }
 
 void GXSetZTexture(s32 op, s32 format, s32 bias) {
-    union {
-        unsigned int value;
-        struct {
-            unsigned int top : 8;
-            unsigned int bias : 24;
-        } bits;
-    } first;
-    union {
-        unsigned int value;
-        struct {
-            unsigned int top : 8;
-            unsigned int reserved : 20;
-            unsigned int op : 2;
-            unsigned int mode : 2;
-        } bits;
-    } second;
-    unsigned int zmode;
-    first.value = 0;
-    first.bits.bias = bias;
-    first.bits.top = 0xF4;
+    u32 zenv0;
+    u32 zenv1;
+    u32 type;
+
+    zenv0 = 0;
+    zenv0 = GX_BITSET(zenv0, 8, 24, bias);
+    zenv0 = GX_BITSET(zenv0, 0, 8, 0xF4);
+
+    zenv1 = 0;
     switch (format) {
     case 0x11:
-        zmode = 0;
+        type = 0;
         break;
     case 0x13:
-        zmode = 1;
+        type = 1;
         break;
     case 0x16:
-        zmode = 2;
+        type = 2;
         break;
     default:
-        zmode = 2;
+        type = 2;
         break;
     }
-    second.value = 0;
-    second.bits.mode = zmode;
+    zenv1 = GX_BITSET(zenv1, 30, 2, type);
+    zenv1 = GX_BITSET(zenv1, 28, 2, op);
+    zenv1 = GX_BITSET(zenv1, 0, 8, 0xF5);
+
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    second.bits.op = op;
-    *(volatile unsigned int *)0xCC008000 = first.value;
+    *(volatile unsigned int *)0xCC008000 = zenv0;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    second.bits.top = 0xF5;
-    *(volatile unsigned int *)0xCC008000 = second.value;
+    *(volatile unsigned int *)0xCC008000 = zenv1;
     *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
