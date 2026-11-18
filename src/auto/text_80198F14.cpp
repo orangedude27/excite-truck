@@ -2280,12 +2280,12 @@ extern "C" void fn_8019EBE0(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f
     s32 v7 = f;
     if (obj != 0) {
         fn_8017B5D4(obj, v1, v2, v3, v4, v5, v6);
-        return;
+    } else {
+        obj = *(s32 *)((u8 *)self + 8);
+        if (obj != 0) fn_801A4A10(obj, v4, v7, v3);
     }
-    obj = *(s32 *)((u8 *)self + 8);
-    if (obj != 0) fn_801A4A10(obj, v4, v7, v3);
 }
-#pragma scheduling on
+#pragma scheduling reset
 extern "C" void fn_8019EC84(void* owner) {
     /* Invoke the slot-0x4C hook on the sub-object held at +4 of the owner, if present. */
     VTab19* part = *(VTab19**)((u8*)owner + 4);
@@ -3425,59 +3425,63 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-extern "C" void fn_801A0F10(void* arg0) {
+extern "C" void fn_801A0F10(void* group) {
+    /* Per-frame pass of a physics group: tick its children, run each child's own
+       update, and then -- when the group drives a car and the "track.msh" mesh is
+       loaded -- push the car's four physics corners out of the track mesh points
+       that lie around them. */
     s32 count;
-    Vec tmp;
-    Vec buffer[0x40];
-    u8* obj;
+    Vec corner;
+    Vec points[0x40];
+    u8* car;
     s32 i;
-    u8* ent;
-    fn_801A0160(arg0);
-    ent = (u8*)arg0;
-    for (i = 0; i < *(s32*)((u8*)arg0 + 0x174); i++) {
-        ((Fn801A0F10Child*)*(void**)(ent + 0x24))->Update();
-        ent += 4;
+    u8* entry;
+    fn_801A0160(group);                                  /* the children's once-per-frame tick */
+    entry = (u8*)group;
+    for (i = 0; i < *(s32*)((u8*)group + 0x174); i++) {  /* then each child's own update */
+        ((Fn801A0F10Child*)*(void**)(entry + 0x24))->Update();
+        entry += 4;
     }
-    if (lbl_8055E5A0 != 0) {
-        obj = *(u8**)((u8*)arg0 + 4);
-        s32 ok;
-        if (obj == 0) goto set0;
-        switch (*(s32*)(obj + 0x10)) {
+    if (lbl_8055E5A0 != 0) {                             /* the cached "track.msh" mesh */
+        car = *(u8**)((u8*)group + 4);                   /* the object this group drives */
+        s32 isCar;
+        if (car == 0) goto set0;
+        switch (*(s32*)(car + 0x10)) {                   /* its type tag: NCAR, CAR , ACAR, PCAR */
         case 0x4E434152:
         case 0x43415220:
         case 0x41434152:
         case 0x50434152:
-            ok = 1;
+            isCar = 1;
             goto done;
         }
     set0:
-        ok = 0;
+        isCar = 0;
     done:
-        if (ok != 0) {
-            s32 e = *(s32*)(obj + 0x1EC);
-            s32 k = 0;
-            f32 one = lbl_805622E0;
-            f32 zero = lbl_805622D4;
+        if (isCar != 0) {
+            s32 body = *(s32*)(car + 0x1EC);             /* the car's physics body */
+            s32 k = 0;                                   /* its four corners */
+            f32 one = lbl_805622E0;                      /* 1.0f */
+            f32 minDist = lbl_805622D4;                  /* 0.001f: what counts as a hit */
             do {
-                fn_801BEAEC(e, k, &tmp);
-                Vec v = tmp;
-                v.x += *(f32*)(obj + 0x48) * one;
-                v.y += *(f32*)(obj + 0x4C) * one;
-                v.z += *(f32*)(obj + 0x50) * one;
+                fn_801BEAEC(body, k, &corner);           /* where corner k is this frame */
+                Vec v = corner;
+                v.x += *(f32*)(car + 0x48) * one;        /* dragged along by the car's velocity */
+                v.y += *(f32*)(car + 0x4C) * one;
+                v.z += *(f32*)(car + 0x50) * one;
                 count = 0x40;
-                fn_801CF080(lbl_8055E5A0, &v, buffer, &count, 0, lbl_8056234C);
+                fn_801CF080(lbl_8055E5A0, &v, points, &count, 0, lbl_8056234C);  /* mesh points near it */
                 for (s32 j = 0; j < count; j++) {
-                    Vec d;
-                    d.x = v.x - buffer[j].x;
-                    d.y = v.y - buffer[j].y;
-                    d.z = v.z - buffer[j].z;
+                    Vec d;                               /* corner minus that point */
+                    d.x = v.x - points[j].x;
+                    d.y = v.y - points[j].y;
+                    d.z = v.z - points[j].z;
                     f32 mag = PSVECMag(&d);
-                    if (mag > zero) {
-                        f32 inv = one / mag;
+                    if (mag > minDist) {
+                        f32 inv = one / mag;             /* push straight out of it */
                         d.x *= inv;
                         d.y *= inv;
                         d.z *= inv;
-                        fn_801BEB44(e, k, (f32*)&buffer[j], (f32*)&d);
+                        fn_801BEB44(body, k, (f32*)&points[j], (f32*)&d);
                     }
                 }
                 k++;
@@ -5013,9 +5017,20 @@ extern "C" void fn_801A38E4(int arg0, void *arg1) {
             if (node != 0) {
                 f32 z = lbl_805622D0;
                 f32 c = lbl_805623C0;
+                f32 *m = (f32 *)(owner + 0x3c);
                 while (node != 0) {
                     f32 *v = (f32 *)(node + 4);
-                    MtxMulVecRevInl((f32 *)(owner + 0x3c), v, q);
+                    if (q == v) {
+                        f32 y = v[1], x = v[0], zz = v[2];
+                        f32 rx = zz * m[6] + (x * m[0] + y * m[3]);
+                        f32 ry = zz * m[7] + (x * m[1] + y * m[4]);
+                        f32 rz = zz * m[8] + (x * m[2] + y * m[5]);
+                        q[0] = rx; q[1] = ry; q[2] = rz;
+                    } else {
+                        q[0] = (v[1] * m[3] + v[0] * m[0]) + v[2] * m[6];
+                        q[1] = (v[1] * m[4] + v[0] * m[1]) + v[2] * m[7];
+                        q[2] = (v[1] * m[5] + v[0] * m[2]) + v[2] * m[8];
+                    }
                     q[0] = q[0] + *(f32 *)(owner + 0x60);
                     q[1] = q[1] + *(f32 *)(owner + 0x64);
                     q[2] = q[2] + *(f32 *)(owner + 0x68);
@@ -5117,7 +5132,7 @@ extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     void *object;
     Vec *vectors;
     volatile Vec maxSpill, minSpill;
-    register f32 init = lbl_805622E0;
+    f32 init = lbl_805622E0;
     register s32 offset;
     register s32 i;
     f32 var_f1;
