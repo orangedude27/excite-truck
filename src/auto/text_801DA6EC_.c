@@ -283,8 +283,7 @@ void fn_801DACA0(void *arg0, float arg1) {
     struct Ctx801DACA0 *ctx;
 
     value = lbl_80562B54;
-    if (arg1 < value)
-        value = ((struct Obj801DACA0 *)arg0)->get();
+    value = (arg1 >= value) ? value : ((struct Obj801DACA0 *)arg0)->get();
     ctx = (struct Ctx801DACA0 *)arg0;
 
     count = 0;
