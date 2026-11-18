@@ -649,6 +649,12 @@ _end:
 
 void fn_8005E298(void) {
     WPADManageFrame frame;
+    WPADCB *temp_r30;
+    WPADCB *temp_r29_2;
+    WPADCB **var_r28;
+    u8 *var_r27;
+    s32 var_r25;
+    s32 var_r26;
     s32 temp_r25;
     s32 temp_r25_2;
     s32 temp_r30_2;
@@ -664,24 +670,18 @@ void fn_8005E298(void) {
     s32 var_r0_2;
     s32 var_r0_3;
     s32 var_r0_4;
-    s32 var_r25;
-    s32 var_r26;
     s8 var_r22;
     s8 var_r22_2;
     s8 var_r22_3;
     s8 var_r29;
     s8 var_r29_2;
-    u8 *var_r27;
     u8 temp_r0;
     u8 temp_r0_2;
     u8 temp_r3;
     u8 temp_r3_2;
     u8 var_r0_5;
     u8 var_r3;
-    WPADCB **var_r28;
     WPADCB *temp_r29;
-    WPADCB *temp_r29_2;
-    WPADCB *temp_r30;
     WPADCB *temp_r5_3;
 
     if (fn_8006A940() == 3) {
