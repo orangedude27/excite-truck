@@ -510,11 +510,9 @@ extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4Si
         GXTexCoord2f32(((const nw4r::math::VEC2 (*)[4])texCoords)[i][2].x, ((const nw4r::math::VEC2 (*)[4])texCoords)[i][2].y);
 }
 #pragma scheduling reset
-extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const void*, const void*, u8, const void*, const void*, u8);
 extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void*, void*, u8);
-extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const void *, const void *, u8, const void *, const void *);
 #pragma use_lmw_stmw off
-extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const void* pos, const void* size, u8 texCoordCount, const void* texCoords, const void* colors, u8 alpha) {
+extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const nw4r::math::VEC2* pos, const nw4r::lyt::Size* size, u8 texCoordCount, const nw4r::math::VEC2 (*texCoords)[4], const nw4r::ut::Color* colors, u8 alpha) {
     /* Draw a quad, optionally multiplying each vertex color's alpha before forwarding. */
     u32 adjustedColors[4];
     adjustedColors[0] = 0xffffffff;
@@ -2191,12 +2189,12 @@ extern "C" s32 fn_800D9364(void *self) {
 extern "C" s32 fn_800D938C(void* arg0) {
     u32 bits = *(u32*)((u8*)arg0 + 0x4C);
     s32 base = *(s32*)((u8*)arg0 + 0x58);
-    u32 high = (bits >> 0x18) & 0xF;
-    u32 mid = (bits >> 0x12) & 0x3C;
-    u32 scaled = high * 0x14;
+    register u32 high = (bits >> 0x18) & 0xF;
+    register u32 mid = (bits >> 0x12) & 0x3C;
+    register u32 scaled = high * 0x14;
     u32 top = (bits >> 0x17) & 0x1E0;
-    s32 past = base + (mid + top);
     u32 low = (bits >> 0x06) & 4;
+    s32 past = base + (mid + top);
     return past + (scaled + low);
 }
 
