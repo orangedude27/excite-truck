@@ -445,6 +445,32 @@ void fn_801DAF68(void *space) {
 extern int sscanf(const char *, const char *, ...);
 extern void DBPrintf_8013B490(const char *, ...);
 extern char lbl_8055ADB8;
+static __inline int fn801DB13CHelper(void *arg0, const char *key, const char *text) {
+    int i;
+    int found;
+    int matchAll;
+    int one;
+    float value;
+    char *entry;
+    matchAll = strcmp(key, lbl_8055ADB0) == 0;
+    value = lbl_80562B50;
+    entry = (char *)arg0 + 8;
+    found = 0;
+    i = 0;
+    one = 1;
+    while (i < *(int *)((char *)arg0 + 0x5808)) {
+        if ((matchAll != 0 || strcmp(entry, key) == 0) &&
+            ((int (*)(int, void *))fn_801DA064)(*(int *)(entry + 0x28), (void *)text) != 0) {
+            fn_801DA198(*(int *)(entry + 0x28), lbl_80562B54);
+            *(unsigned char *)(entry + 0x18) = (unsigned char)one;
+            found = 1;
+            *(float *)(entry + 0x1C) = value;
+        }
+        entry += 0x2C;
+        i++;
+    }
+    return found;
+}
 #pragma push
 #pragma scheduling invalid_target
 int fn_801DB13C(void *arg0, const char *arg1) {
