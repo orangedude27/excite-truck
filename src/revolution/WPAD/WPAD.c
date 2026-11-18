@@ -4631,12 +4631,12 @@ extern u8 lbl_802EE8C8[];
 s32 fn_800624A4(s32 chan, u32 arg1, WPADCallback arg2) {
     u8 frame[0x420] ALIGN(8);
     register s32 channel asm("r31");
-    register u32 arg asm("r27");
-    register WPADCallback callback asm("r28");
+    register u32 arg asm("r26");
+    register WPADCallback callback asm("r25");
     register WPADCB* p asm("r29");
-    register u32 value778 asm("r26");
-    register s32 status asm("r25");
-    register u32 value81C asm("r30");
+    register u32 value778 asm("r27");
+    register s32 status asm("r30");
+    register u32 value81C asm("r28");
     BOOL outerEnabled;
     BOOL enabled;
     BOOL nestedEnabled;
