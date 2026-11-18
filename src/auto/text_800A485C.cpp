@@ -7684,15 +7684,21 @@ static inline u32 fn_800B05C8_LoadLE32(u16 blockSize, u32 byteIndex, u8 *buffer)
     return upper | lower;
 }
 
+static inline u32 fn_800B05C8_LoadLE32At(u8 *buffer, u32 offset) {
+    u32 value = *(u32 *)(buffer + offset);
+    u32 upper = __rlwinm(value, 8, 8, 15);
+    u32 lower = __rlwinm(value, 24, 16, 23);
+    upper = __rlwimi(upper, value, 24, 0, 7);
+    lower = __rlwimi(lower, value, 8, 24, 31);
+    return upper | lower;
+}
+
 extern "C" s32 fn_800B05C8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
     struct SSector { u32 v; } sectorStorage;
     struct SScaled { u32 v; } scaledStorage;
     u32 &sector = sectorStorage.v;
     u32 retry;
     s32 status;
-    u32 value;
-    u32 upper;
-    u32 lower;
     void *object = arg0;
     u32 *output = arg2;
     void *context = arg3;
@@ -7747,13 +7753,8 @@ fetch:
             goto fetch;
     }
 
-    value = *(u32 *)((u8 *)*(void **)((u8 *)context + 8) +
-                     (scaled & (*(u16 *)object - 1)));
-    upper = __rlwinm(value, 8, 8, 15);
-    lower = __rlwinm(value, 24, 16, 23);
-    upper = __rlwimi(upper, value, 24, 0, 7);
-    lower = __rlwimi(lower, value, 8, 24, 31);
-    *output = (upper | lower) & 0x0FFFFFFF;
+    *output = fn_800B05C8_LoadLE32(*(u16 *)object, scaled,
+                                   *(u8 **)((u8 *)context + 8)) & 0x0FFFFFFF;
     return 0;
 }
 
