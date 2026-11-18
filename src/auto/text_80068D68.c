@@ -7829,76 +7829,98 @@ void btm_acl_created(BD_ADDR bda, DEV_CLASS dev_class, BD_NAME dev_name,
                      UINT16 hci_handle, UINT8 link_role, UINT8 is_le_link) {
     u8 *acl;
     u8 *dev;
-    u16 temp_r4;
-    u16 var_r30;
-    u8 var_r6;
-    u8 var_r4;
-    u8 *p;
-    u16 temp_r28;
+    u16 base_types;
+    u16 pkt_types;
+    u8 j;
+    u8 i;
+    u8 *p_new;
+    u16 policy;
     u8 *q;
 
     acl = btm_bda_to_acl_inl(bda);
     if (acl != NULL) {
+        /* The link is in the database already: only its handle and role move. */
         *(u16 *)acl = hci_handle;
         acl[0x11A] = link_role;
-        if (lbl_803C0F78[0x27C0] >= 4) {
-            fn_800709CC(0xD0003, lbl_80315CA0, bda[0], bda[1], bda[2], bda[3], bda[4], bda[5]);
+        if (btm_cb_trace_level >= BT_TRACE_LEVEL_EVENT) {
+            fn_800709CC(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, lbl_80315CA0,
+                        bda[0], bda[1], bda[2], bda[3], bda[4],
+                        bda[5]); /* "Duplicate btm_acl_created: RemBdAddr: ..." */
         }
     } else {
-        for (var_r4 = 0, p = lbl_803C0F78 + 0x34; var_r4 < 4; var_r4++, p += 0x11C) {
-            if (p[0x119] != 0) continue;
-            p[0x119] = 1;
-            *(u16 *)p = hci_handle;
-            p[0x11A] = link_role;
-            *(u16 *)(p + 4) = 0;
-            btm_pm_sm_alloc(var_r4);
-            memcpy(p + 8, bda, 6);
+        /* Take the first free entry of btm_cb.acl_db (4 records of 0x11C at
+           btm_cb + 0x34) for the new link. */
+        for (i = 0, p_new = lbl_803C0F78 + 0x34; i < 4; i++, p_new += 0x11C) {
+            if (p_new[0x119] != 0) /* in_use */
+                continue;
+            p_new[0x119] = 1;
+            *(u16 *)p_new = hci_handle;
+            p_new[0x11A] = link_role;
+            *(u16 *)(p_new + 4) = 0; /* commands pending on this link */
+            btm_pm_sm_alloc(i);
+            memcpy(p_new + 8, bda, 6); /* remote_bd_addr */
             if (dev_class != NULL) {
-                memcpy(p + 0xE, dev_class, 3);
+                memcpy(p_new + 0xE, dev_class, 3); /* remote_class_of_dev */
             }
             if (dev_name != NULL) {
-                memcpy(p + 0x11, dev_name, 0xF8);
+                memcpy(p_new + 0x11, dev_name, 0xF8); /* remote_name */
             }
-            btsnd_hcic_auth_request_80084570(*(u16 *)p);
-            btsnd_hcic_auth_request_800844F4(*(u16 *)p);
+            /* Ask the controller what the peer says about itself. */
+            btsnd_hcic_auth_request_80084570(*(u16 *)p_new); /* Read_Clock_Offset */
+            btsnd_hcic_auth_request_800844F4(*(u16 *)p_new); /* Read_Remote_Version */
             dev = (u8 *)btm_find_dev_by_handle(hci_handle);
             if (dev != NULL) {
-                for (var_r6 = 0; var_r6 < 8; var_r6++) {
-                    if (dev[0x77 + var_r6] != 0) {
-                        memcpy(p + 0x110, dev + 0x77, 8);
-                        temp_r4 = *(u16 *)(lbl_803C0F78 + 0x654) & 0xCC18;
+                /* The security database knows the device: use the LMP features
+                   it already has instead of waiting for the read above. */
+                for (j = 0; j < 8; j++) {
+                    if (dev[0x77 + j] != 0) {
+                        memcpy(p_new + 0x110, dev + 0x77, 8); /* remote_features */
+                        /* Keep the packet types the stack always allows, and
+                           add the eSCO/EDR ones when the controller is
+                           Bluetooth 2.0 + EDR or newer (hci_version >= 3). */
+                        base_types = *(u16 *)(lbl_803C0F78 + 0x654) & 0xCC18;
                         if (lbl_803C0F78[0x636] >= 3) {
-                            var_r30 = temp_r4 | (*(u16 *)(lbl_803C0F78 + 0x654) & 0x3306);
+                            pkt_types = base_types |
+                                        (*(u16 *)(lbl_803C0F78 + 0x654) & 0x3306);
                         } else {
-                            var_r30 = temp_r4 & ~0x3306;
+                            pkt_types = base_types & ~0x3306;
                         }
-                        if (lbl_803C0F78[0x27C0] >= 4) {
-                            fn_80070954(0xD0003, lbl_80315CE0, var_r30);
+                        if (btm_cb_trace_level >= BT_TRACE_LEVEL_EVENT) {
+                            fn_80070954(TRACE_LAYER_BTM | TRACE_TYPE_EVENT,
+                                        lbl_80315CE0,
+                                        pkt_types); /* "SetPacketType Mask -> 0x%04x" */
                         }
-                        if (btsnd_hcic_change_conn_type(*(u16 *)p, var_r30) != 0) {
-                            *(u16 *)(p + 2) = var_r30;
+                        if (btsnd_hcic_change_conn_type(*(u16 *)p_new,
+                                                        pkt_types) != 0) {
+                            *(u16 *)(p_new + 2) = pkt_types;
                         }
                         if (*(u16 *)(lbl_803C0F78 + 0x4C4) != 0) {
-                            BTM_SetLinkPolicy(p + 8, (u16 *)(lbl_803C0F78 + 0x4C4));
+                            BTM_SetLinkPolicy(p_new + 8,
+                                              (u16 *)(lbl_803C0F78 + 0x4C4));
                         }
-                        temp_r28 = *(u16 *)(lbl_803C0F78 + 0x4C6);
-                        q = btm_bda_to_acl_inl(p + 8);
+                        policy = *(u16 *)(lbl_803C0F78 + 0x4C6);
+                        q = btm_bda_to_acl_inl(p_new + 8);
                         if (q != NULL) {
-                            *(u16 *)(q + 0x10E) = temp_r28;
+                            *(u16 *)(q + 0x10E) = policy;
                             if (q[0x11A] == 0) {
-                                btsnd_hcic_write_policy_set_80085668(*(u16 *)q, temp_r28);
+                                btsnd_hcic_write_policy_set_80085668(*(u16 *)q,
+                                                                     policy);
                             }
                         }
-                        if (*(void (**)(void *, void *, void *, void *, u32))(lbl_803C0F78 + 0x4C8) != NULL) {
-                            (*(void (**)(void *, void *, void *, void *, u32))(lbl_803C0F78 + 0x4C8))(
-                                p + 8, p + 0xE, p + 0x11, p + 0x110, 1);
+                        /* Tell the upper layers about the new link. */
+                        if (*(void (**)(void *, void *, void *, void *,
+                                        u32))(lbl_803C0F78 + 0x4C8) != NULL) {
+                            (*(void (**)(void *, void *, void *, void *,
+                                          u32))(lbl_803C0F78 + 0x4C8))(
+                                p_new + 8, p_new + 0xE, p_new + 0x11,
+                                p_new + 0x110, 1);
                         }
-                        goto block_done;
+                        goto done;
                     }
                 }
             }
-            btsnd_hcic_auth_request_80084478(*(u16 *)p);
-block_done:
+            btsnd_hcic_auth_request_80084478(*(u16 *)p_new); /* Read_Remote_Features */
+done:
             return;
         }
     }
