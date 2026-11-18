@@ -1354,8 +1354,8 @@ u8 fn_80068F94(void) {
     }
     if ((s8)base[0x668] > 0) base[0x668]--;
     if ((s8)base[0x668] == -1) {
-        register u8 timer_state;
-        register s32 interval;
+        u8 timer_state;
+        s32 interval;
         ((s8 *)base)[0x668] = -2;
         interrupts = OSDisableInterrupts();
         timer_state = lbl_80392960[0x665];
@@ -4346,7 +4346,6 @@ void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
     u16 max_len, len;
     u8 *data, *base;
     u8 channel;
-    struct Tail { u8 b0, b1; };
     base = msg + *(u16 *)(msg + 4);
     data = base + 8;
     if (event == 0x2100) {
@@ -4370,17 +4369,15 @@ void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
         *(u16 *)(msg + 2) = len - *(u16 *)(lbl_803C0A50 + 0x7C);
         base[8] = header;
         base[9] = header_hi;
-        {
-            struct Tail *tail = (struct Tail *)(base + 0xA);
-            if (*(u16 *)(msg + 2) > *(u16 *)(lbl_803C0A50 + 0x7E)) {
-                tail->b0 = *(u16 *)(lbl_803C0A50 + 0x7C);
-                tail->b1 = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
-            } else {
-                tail->b0 = *(u16 *)(msg + 2) - 4;
-                tail->b1 = (*(u16 *)(msg + 2) - 4) >> 8;
-            }
-            data = (u8 *)tail + 2;
+        data = base + 0xA;
+        if (*(u16 *)(msg + 2) > *(u16 *)(lbl_803C0A50 + 0x7E)) {
+            data[0] = *(u16 *)(lbl_803C0A50 + 0x7C);
+            data[1] = *(u16 *)(lbl_803C0A50 + 0x7C) >> 8;
+        } else {
+            data[0] = *(u16 *)(msg + 2) - 4;
+            data[1] = (*(u16 *)(msg + 2) - 4) >> 8;
         }
+        data += 2;
         if (*(u16 *)(msg + 6) != 0 && --*(u16 *)(msg + 6) == 0) {
             *(u16 *)msg = (short)0x1900;
             GKI_send_msg(((u8 *)&lbl_803BD1A0)[0x1F], 0, (BT_HDR *)msg);
@@ -4451,11 +4448,11 @@ int fn_8006F284(s32 length) {
 void uusb_CloseDeviceCB(s8 arg0) {
     register uusb_cb_t *control = &lbl_803BD1E0;
     register u8 zero = 0;
-    *(s32 *)&lbl_803BD1E0 = zero;
     ((u8 *)control)[0x10] = zero;
     ((u8 *)control)[0x11] = zero;
     ((u8 *)control)[0x12] = zero;
     ((u8 *)control)[0x13] = zero;
+    *(s32 *)&lbl_803BD1E0 = zero;
     lbl_8055DC50 = zero;
     fn_8009B0E0();
     fn_8006EBAC();
@@ -5500,10 +5497,16 @@ void fn_80070FA4(void *dst_addr, const void *src_addr) {
     dst[5] = src[5];
 }
 
-s32 bdcmp(u8 *arg0, u8 *arg1) {
+s32 bdcmp(u8 *a, u8 *b) {
+    union PU { u8 *p; u32 i; } ua, ub;
     int i;
-    for (i = 0; i < 6; i++) {
-        if (arg0[i] != arg1[i]) return -1;
+    ua.p = a; ub.p = b;
+    ua.i += 2; ub.i += 2;
+    if (a[0] != b[0]) return -1;
+    if (a[1] != b[1]) return -1;
+    a = ua.p; b = ub.p;
+    for (i = 0; i < 4; i++) {
+        if (a[i] != b[i]) return -1;
     }
     return 0;
 }
@@ -9159,21 +9162,13 @@ void btm_dev_timeout(struct _tle *arg0) {
             return;
         case 1: {
             void *buf;
+            lbl_803C0F78[0x64F] = 4;
             lbl_803C0F78[0x64E] = 2;
-            lbl_803C0F78[0x64F] = 4;
-            goto case1_timer;
-            lbl_803C0F78[0x64F] = 4;
-            lbl_803C0F78[0x64E] = 4;
-            btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 4);
-            ((void (*)(void))btsnd_hcic_reset)();
-            goto case1_after_buf;
-        case1_timer:
             btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 1);
             buf = GKI_getpoolbuf(2);
             if (buf != NULL) {
                 fn_80085828(buf);
             }
-        case1_after_buf:
             memcpy(lbl_803C0F78 + 0x648, lbl_803C0F78 + 0x648, 3);
             if (lbl_803C0F78[0x64E] != 0 && lbl_803C0F78[0x64E] != 1) {
                 buf = GKI_getpoolbuf(2);
@@ -9190,7 +9185,7 @@ void btm_dev_timeout(struct _tle *arg0) {
                         memset(lbl_803C0F78, 0, 0x20);
                         strncpy((char *)lbl_803C0F78, (char *)lbl_803C0F78, 0x1F);
                     }
-                    ((BOOLEAN (*)(void *, BD_NAME))btsnd_hcic_change_name)(buf2, lbl_803C0F78);
+                    ((BOOLEAN (*)(void *, BD_NAME))btsnd_hcic_change_name)(buf2, dst);
                 }
             }
             ((void (*)(u8, void *, u8))BTM_SetPinType)(lbl_803C0F78[0x20], lbl_803C0F78 + 0x22, lbl_803C0F78[0x21]);
@@ -9200,7 +9195,7 @@ void btm_dev_timeout(struct _tle *arg0) {
             u8 v;
             lbl_803C0F78[0x64F] -= 1;
             v = lbl_803C0F78[0x64F];
-            if (v == 0) {
+            if (!v) {
                 lbl_803C0F78[0x64E] = 0;
                 lbl_803C0F78[0x64F] = 5;
                 btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 4);
@@ -9220,7 +9215,7 @@ void btm_dev_timeout(struct _tle *arg0) {
             u8 v;
             lbl_803C0F78[0x64F] -= 1;
             v = lbl_803C0F78[0x64F];
-            if (v == 0) {
+            if (!v) {
                 lbl_803C0F78[0x64E] = 0;
                 lbl_803C0F78[0x64F] = 5;
                 btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 4);
@@ -10364,15 +10359,14 @@ tBTM_STATUS BTM_ClearInqDb(BD_ADDR p_bda) {
 }
 
 void btm_inq_db_reset(void) {
-    u8 *loopBase;
+    u32 zero = 0;
+    tBTM_INQUIRY_VAR_ST *pInqDb;
     u8 *base = lbl_803C0F78;
-    register u32 zero = 0;
+    tBTM_INQUIRY_VAR_ST *pInqFlt;
     tBTM_REMOTE_DEV_NAME rem_name;
     u8 num_responses;
     u8 value;
     u8 temp_inq_active;
-    u32 i;
-    u8 *entry;
     fn_80070F90(base + 0x16C4);
     if (base[0x1848] != 0) {
         temp_inq_active = base[0x1848];
@@ -10392,7 +10386,7 @@ void btm_inq_db_reset(void) {
         if (*(void (**)(void *))(base + 0x167C) != 0) {
             rem_name.status = 0x000C;
             (*(void (**)(void *))(base + 0x167C))(&rem_name);
-            *(void (**)(void *))(base + 0x167C) = 0;
+            *(void (**)(void *))(base + 0x167C) = (void *)zero;
         }
     }
     if (base[0x1844] != 0) {
@@ -10405,21 +10399,26 @@ void btm_inq_db_reset(void) {
     base[0x1847] = (u8)zero;
     base[0x1845] = (u8)zero;
     *(u32 *)(base + 0x16B4) = zero;
-    loopBase = lbl_803C0F78;
-    entry = loopBase + 0x16E4;
-    for (i = 0; i < 12; i++, entry += 0x1C) {
-        if (entry[0x1A] != 0) {
-            entry[0x1A] = (u8)zero;
-            if (*(void (**)(void *, u32))(loopBase + 0x16BC) != 0)
-                (*(void (**)(void *, u32))(loopBase + 0x16BC))(entry + 8, 0);
+    {
+        u32 i;
+        u8 *entry;
+        pInqDb = (tBTM_INQUIRY_VAR_ST *)lbl_803C0F78;
+        entry = (u8 *)pInqDb + 0x16E4;
+        for (i = 0; i < 12; i++, entry += 0x1C) {
+            if (entry[0x1A] != 0) {
+                entry[0x1A] = (u8)zero;
+                if (*(void (**)(void *, u32))((u8 *)pInqDb + 0x16BC) != 0)
+                    (*(void (**)(void *, u32))((u8 *)pInqDb + 0x16BC))(entry + 8, 0);
+            }
         }
     }
-    if (*(void **)(loopBase + 0x16DC) != 0) {
-        GKI_freebuf(*(void **)(loopBase + 0x16DC));
-        *(void **)(loopBase + 0x16DC) = 0;
+    pInqFlt = (tBTM_INQUIRY_VAR_ST *)lbl_803C0F78;
+    if (*(void **)((u8 *)pInqFlt + 0x16DC) != 0) {
+        GKI_freebuf(*(void **)((u8 *)pInqFlt + 0x16DC));
+        *(void **)((u8 *)pInqFlt + 0x16DC) = (void *)zero;
     }
-    *(u16 *)(loopBase + 0x16E0) = 0;
-    *(u16 *)(loopBase + 0x16E2) = 0;
+    *(u16 *)((u8 *)pInqFlt + 0x16E0) = 0;
+    *(u16 *)((u8 *)pInqFlt + 0x16E2) = 0;
     *(u16 *)(base + 0x1698) = 0;
     *(u16 *)(base + 0x169A) = 0;
     *(u16 *)(base + 0x16A6) = 0;
@@ -17377,8 +17376,8 @@ clear_entry:
 
 #pragma optimize_for_size on
 u8 HID_HostAddDev(u8 *addr, u16 attr_mask, u8 *handle) {
-    u32 offset;
     s32 index;
+    u32 offset;
     u8 *p;
     s32 ctr;
     u8 value;
@@ -18308,7 +18307,8 @@ static void hidh_l2cif_data_ind(UINT16 l2cap_cid, BT_HDR *p_msg) {
 }
 
 extern UINT8 L2CA_DataWrite(UINT16, BT_HDR *);
-UINT8 hidh_conn_snd_data(UINT8 dhandle, s32 trans_type, UINT8 param, UINT16 data, UINT8 rpt_id, BT_HDR *buf) {
+UINT8 hidh_conn_snd_data(UINT8 dhandle, s32 trans_type, UINT8 param,
+                         UINT16 data, UINT8 rpt_id, BT_HDR *buf) {
     register s32 var_r17;
     register s32 var_r20;
     s32 var_r4;
@@ -25211,18 +25211,17 @@ u8 fn_8009504C(u16 length, u8 *buffer) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 u8 fn_80095084(arg0, arg1, arg2)
 u16 arg0;
 u8 *arg1;
 u8 arg2;
 {
-    u8 *table = lbl_802EEC40;
     u32 crc = 0xFF;
     u8 *ptr = arg1;
     u16 len = arg0;
     while (len-- != 0) {
-        crc = table[crc ^ *ptr];
+        crc = lbl_802EEC40[crc ^ *ptr];
         ptr++;
     }
     crc = lbl_802EEC40[crc ^ arg2];
@@ -25752,7 +25751,6 @@ UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle)
     if (*p_handle == 0) *p_handle = *(UINT32 *)(lbl_803C4C40 + 0x121C);
     record = sdp_db_find_record(*p_handle);
     if (record != NULL) {
-        u8 *d1, *d2, *d3;
         memset(p_device_info, 0, 0xFA);
         result = 0;
         attr = fn_80096904(record, 0x200, 0x200);
@@ -25768,11 +25766,11 @@ UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle)
         attr = fn_80096904(record, 0x204, 0x204);
         if (attr != NULL) p_device_info->rec.primary_record = **(u8 **)((u8 *)attr + 4);
         attr = fn_80096904(record, 0xB, 0xB);
-        if (attr != NULL) { len = *(u32 *)attr; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); d1 = (u8 *)p_device_info->rec.client_executable_url; for (i = 0; i < (s32)len; i++) *d1++ = *s++; }
+        if (attr != NULL) { len = *(u32 *)attr; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); for (i = 0; i < (s32)len; i++) ((u8 *)p_device_info)[0xb + i] = *s++; }
         attr = fn_80096904(record, 0x101, 0x101);
-        if (attr != NULL) { len = *(u32 *)attr; len = (0x50 <= len) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); d2 = (u8 *)p_device_info->rec.service_description; for (i = 0; i < (s32)len; i++) *d2++ = *s++; }
+        if (attr != NULL) { len = *(u32 *)attr; len = (0x50 <= len) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); for (i = 0; i < (s32)len; i++) ((u8 *)p_device_info)[0x5b + i] = *s++; }
         attr = fn_80096904(record, 0xA, 0xA);
-        if (attr != NULL) { len = *(u32 *)attr; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); d3 = (u8 *)p_device_info->rec.documentation_url; for (i = 0; i < (s32)len; i++) *d3++ = *s++; }
+        if (attr != NULL) { len = *(u32 *)attr; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)attr + 4); for (i = 0; i < (s32)len; i++) ((u8 *)p_device_info)[0xab + i] = *s++; }
     } else *p_handle = 0;
     return result;
 }
