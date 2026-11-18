@@ -102,6 +102,14 @@ const char **fn_801A75B4(const char *name) {
 extern signed char fn_802E47F8(int);
 extern char lbl_803342D0[];
 extern char lbl_8055E5D4;
+/* Lazy initializer of the static input-binding table at lbl_803342D0
+ * (NUM_INPUT_BINDINGS entries of InputBinding, filled in at link time with the
+ * control names, ids, types and key codes).  The first time it is called it
+ * also gives the 38 keyboard bindings (entries 73..110) their keyFlag, asking
+ * the screenshot-subsystem helper fn_802E47F8 about the entry's HID key code --
+ * that helper is a stub returning 0 in this build, so every flag ends up clear.
+ * Either way it then publishes the table through gInputBindingTable /
+ * gInputBindingCount; callers use it as "make sure the table is ready". */
 #pragma push
 #pragma scheduling invalid_target
 void fn_801A7628(void) {
