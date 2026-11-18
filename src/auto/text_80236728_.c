@@ -335,6 +335,7 @@ void fn_80236A5C(void *arg0, int arg1) {
     int trailCount;
     int trailKeyCount;
     int stringIndex;
+    int checkResult;
     float trailDefaults[5];
 
     if (lbl_80498664[0] == 0)
@@ -375,7 +376,6 @@ mode_done:
         if (parser != 0) {
             index = 0;
             while ((node = ((void *(*)(void *, int))(*(void * volatile **)parser)[3])(parser, index)) != 0) {
-                
                 if (stricmp(((char *(*)(void *))(*(void * volatile **)node)[2])(node), lbl_8055BA80) == 0)
                     manager->count++;
                 index++;
@@ -388,7 +388,6 @@ mode_done:
             manager->count = 0;
             index = 0;
             while ((node = ((void *(*)(void *, int))(*(void * volatile **)parser)[3])(parser, index)) != 0) {
-                
                 if (stricmp(((char *(*)(void *))(*(void * volatile **)node)[2])(node), lbl_8055BA70) == 0) {
                     if (((void *(*)(void *, const char *))(*(void * volatile **)node)[0x5C / 4])(node, lbl_8055BA38) != 0) {
                         detailList = ((void *(*)(void *, const char *))(*(void * volatile **)node)[0x5C / 4])(node, lbl_8055BA38);
@@ -398,7 +397,6 @@ mode_done:
                         if (detailList != 0) {
                             childIndex = 0;
                             while ((child = ((void *(*)(void *, int))(*(void * volatile **)detailList)[0x60 / 4])(detailList, childIndex)) != 0) {
-                                
                                 if (stricmp(((char *(*)(void *))(*(void * volatile **)child)[2])(child), lbl_8055BAAC) == 0)
                                     (entry->keyCount)++;
                                 childIndex++;
@@ -418,7 +416,6 @@ mode_done:
                                 defaults1[4] = defaultZero;
                                 childIndex = 0;
                                 while ((child = ((void *(*)(void *, int))(*(void * volatile **)detailList)[0x60 / 4])(detailList, childIndex)) != 0) {
-                                    
                                     if (stricmp(((char *(*)(void *))(*(void * volatile **)child)[2])(child), lbl_8055BAA4) == 0) {
                                         count = entry->keyCount;
                                         if (count > 0)
@@ -449,8 +446,7 @@ mode_done:
                             value = *(float *)((char *)entry->keys + count * 0x14 - 0x14);
                         else
                             value = lbl_805636E0;
-                        if (value < manager->duration)
-                            manager->duration = value;
+                        manager->duration = (manager->duration > value) ? manager->duration : value;
                         manager->count++;
                     }
                 }
@@ -473,7 +469,6 @@ mode_done:
         if (parser != 0) {
             index = 0;
         while ((node = ((void *(*)(void *, int))(*(void * volatile **)parser)[3])(parser, index)) != 0) {
-            
             if (stricmp(((char *(*)(void *))(*(void * volatile **)node)[2])(node), lbl_8055BA80) == 0)
                 manager->count++;
             index++;
@@ -486,7 +481,6 @@ mode_done:
             manager->count = 0;
             index = 0;
             while ((node = ((void *(*)(void *, int))(*(void * volatile **)parser)[3])(parser, index)) != 0) {
-                
                 if (stricmp(((char *(*)(void *))(*(void * volatile **)node)[2])(node), lbl_8055BA70) == 0) {
                     if (((void *(*)(void *, const char *))(*(void * volatile **)node)[0x5C / 4])(node, lbl_80340940) != 0) {
                         detailList = ((void *(*)(void *, const char *))(*(void * volatile **)node)[0x5C / 4])(node, lbl_80340940);
@@ -496,7 +490,6 @@ mode_done:
                         if (detailList != 0) {
                             childIndex = 0;
                             while ((child = ((void *(*)(void *, int))(*(void * volatile **)detailList)[0x60 / 4])(detailList, childIndex)) != 0) {
-                                
                                 if (stricmp(((char *(*)(void *))(*(void * volatile **)child)[2])(child), lbl_8055BAAC) == 0)
                                     (entry->keyCount)++;
                                 childIndex++;
@@ -516,7 +509,6 @@ mode_done:
                                 defaults2[4] = defaultZero;
                                 childIndex = 0;
                                 while ((child = ((void *(*)(void *, int))(*(void * volatile **)detailList)[0x60 / 4])(detailList, childIndex)) != 0) {
-                                    
                                     if (stricmp(((char *(*)(void *))(*(void * volatile **)child)[2])(child), lbl_8055BAA4) == 0) {
                                         count = entry->keyCount;
                                         if (count > 0)
@@ -546,8 +538,7 @@ mode_done:
                             value = *(float *)((char *)entry->keys + count * 0x14 - 0x14);
                         else
                             value = lbl_805636E0;
-                        if (value < manager->duration)
-                            manager->duration = value;
+                        manager->duration = (manager->duration > value) ? manager->duration : value;
                         manager->count++;
                     }
                 }
@@ -570,11 +561,9 @@ mode_done:
         if (parser != 0) {
             groupIndex = 0;
         while ((group = ((void *(*)(void *, int))(*(void * volatile **)parser)[3])(parser, groupIndex)) != 0) {
-            
             if (stricmp(((char *(*)(void *))(*(void * volatile **)group)[2])(group), lbl_8055BA68) == 0) {
                 trailIndex = 0;
                 while ((trail = ((void *(*)(void *, int))(*(void * volatile **)group)[0x60 / 4])(group, trailIndex)) != 0) {
-                    
                     if (stricmp(((char *(*)(void *))(*(void * volatile **)trail)[2])(trail), lbl_8055BA60) == 0)
                         trailMgr->count++;
                     trailIndex++;
@@ -590,11 +579,9 @@ mode_done:
             trailMgr->count = 0;
             groupIndex = 0;
             while ((group = ((void *(*)(void *, int))(*(void * volatile **)parser)[3])(parser, groupIndex)) != 0) {
-                
                 if (stricmp(((char *(*)(void *))(*(void * volatile **)group)[2])(group), lbl_8055BA50) == 0) {
                     trailIndex = 0;
-                    while ((trail = ((void *(*)(void *, int))(*(void * volatile **)group)[0x60 / 4])(group, trailIndex)) != 0) {
-                        
+                    while ((trail = ((void *(*)(void *, int))(*(void * volatile **)trail)[0x60 / 4])(trail, trailIndex)) != 0) {
                         if (stricmp(((char *(*)(void *))(*(void * volatile **)trail)[2])(trail), lbl_8055BA48) == 0) {
                             trailEntry = &trailMgr->entries[trailMgr->count];
                             trailEntry->flag2C =
@@ -619,7 +606,6 @@ mode_done:
                             trailKeyCount = 0;
                             keyCount = 0;
                             while ((trailKey = ((void *(*)(void *, int))(*(void * volatile **)trail)[0x60 / 4])(trail, keyCount)) != 0) {
-                                
                                 if (stricmp(((char *(*)(void *))(*(void * volatile **)trailKey)[2])(trailKey), lbl_8055BAAC) == 0)
                                     trailKeyCount++;
                                 keyCount++;
@@ -639,7 +625,6 @@ mode_done:
                                 trailDefaults[4] = defaultZero;
                                 keyCount = 0;
                                 while ((trailKey = ((void *(*)(void *, int))(*(void * volatile **)trail)[0x60 / 4])(trail, keyCount)) != 0) {
-                                    
                                     if (stricmp(((char *(*)(void *))(*(void * volatile **)trailKey)[2])(trailKey), lbl_8055BAA4) == 0) {
                                         count = trailEntry->keyCount;
                                         if (count > 0)
@@ -677,7 +662,6 @@ mode_done:
     lbl_8055F0B8 = (int)trailMgr;
     fn_80131818(parser);
     lbl_80498664[0] = 0;
-
 }
 
 extern void fn_80128670(int);
