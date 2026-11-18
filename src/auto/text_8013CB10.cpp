@@ -2311,123 +2311,141 @@ extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" u32 fn_80140F10(void *arg0, void *arg1) {
-    u8 *p=(u8 *)arg0, *input=(u8 *)arg1;
+/* One update of a row of the results overlay (the panel at owner+0x134) for the
+ * item record it shows.  It refreshes the row's text fields - the record's
+ * three bonus parts (+0x10, +0x14, +0x18) summed at +0x30, the time bonus at
+ * +0xb2 as a mm:ss time and its label at +0x58 (both blank when the row's
+ * no-bonus flag is set, otherwise the label is the localized
+ * "ResultsOverlay:TIME_BONU" message), the mode at +0x6c, the total score at
+ * +0x80, the score without the bonus at +0x9e, and the rank name the total
+ * falls into at +0x94 ("-" when it falls into none).  While the record still
+ * reports a bonus the shown value counts up from 0 to it over one second, the
+ * remaining bonus counting down beside it; the animation starts the first time
+ * the row is drawn.  The row's stage field then walks 0..4: show the bonus and
+ * label widgets and start the row's ArtAnim animation (0), pause that
+ * animation once it has begun (1), resume it with the ready widget (2) and
+ * pause it again when the record is done (3).  The animation manager is
+ * advanced afterwards, and the row reports whether it is still running. */
+extern "C" u32 fn_80140F10(void *panel, void *item) {
+    u8 *row = (u8 *)panel, *record = (u8 *)item;
     f32 startTime, gameTime, sinceStart, elapsed, progress;
-    if (*(s32 *)(p+0xc)==0) return 0;
-    s32 other=*(s32 *)(input+0x110);
-    s32 total=*(s32 *)(input+0x88);
-    s32 count=*(s32 *)(input+0x114);
-    s32 completed=0, remaining=count;
-    s32 _a=*(s32 *)(input+0x10);
-    s32 _b=*(s32 *)(input+0x14);
-    s32 _c=*(s32 *)(input+0x18);
-    s32 sum=_a+_b;
-    sum+=_c;
-    fn_801345D8(p+0x30,0x14,&lbl_80559D6C,sum);
-    if(count!=0) {
-        startTime=*(f32 *)(p+4);
-        if(*(f32 *)(p+4)>lbl_805614A4) {
+    if (*(s32 *)(row+0xc)==0) return 0; /* no animation manager: no row */
+    s32 mode=*(s32 *)(record+0x110);
+    s32 totalScore=*(s32 *)(record+0x88);
+    s32 timeBonus=*(s32 *)(record+0x114);
+    s32 counted=0, remaining=timeBonus;
+    s32 partA=*(s32 *)(record+0x10);
+    s32 partB=*(s32 *)(record+0x14);
+    s32 partC=*(s32 *)(record+0x18);
+    s32 parts=partA+partB;
+    parts+=partC;
+    fn_801345D8(row+0x30,0x14,&lbl_80559D6C,parts); /* "%d" */
+    if(timeBonus!=0) {
+        /* animate the bonus counting up over the second after the row started */
+        startTime=*(f32 *)(row+4);
+        if(*(f32 *)(row+4)>lbl_805614A4) { /* 0.0f: not started yet */
             gameTime=lbl_8055E3C8;
-            progress=lbl_805614AC;
+            progress=lbl_805614AC; /* 1.0f: the animation's length */
             sinceStart=gameTime-startTime;
             elapsed=sinceStart-lbl_805614A4;
             elapsed=elapsed/progress;
             progress=(progress<elapsed) ? progress : elapsed;
             progress=(progress>lbl_805614A4) ? progress : lbl_805614A4;
-            completed=(s32)(lbl_805614A4+progress*((lbl_80561498+(f32)count)-lbl_805614A4));
-            remaining=count-completed;
+            counted=(s32)(lbl_805614A4+progress*((lbl_80561498+(f32)timeBonus)-lbl_805614A4));
+            remaining=timeBonus-counted;
         }
     }
-    fn_801345D8(p+0x44,0x14,&lbl_80559D6C,completed);
-    if(p[0x10]) {
-        {char c; char *src=lbl_80559D80; long len=0x14; char *dst=(char*)p+0xb2;
+    fn_801345D8(row+0x44,0x14,&lbl_80559D6C,counted);
+    if(row[0x10]) {
+        /* no time bonus for this row: blank its value and its label */
+        {char c; char *src=lbl_80559D80; long len=0x14; char *dst=(char*)row+0xb2;
        goto copy0;
 check0: if (--len>0) goto copy0; dst[-1]=0; goto done0;
 copy0: c=*src++; *dst++=c; if ((signed char)c==0) goto done0; goto check0;
 done0:;}
-        {char c; char *src=lbl_80559D80; long len=0x14; char *dst=(char*)p+0x58;
+        {char c; char *src=lbl_80559D80; long len=0x14; char *dst=(char*)row+0x58;
        goto copy1;
 check1: if (--len>0) goto copy1; dst[-1]=0; goto done1;
 copy1: c=*src++; *dst++=c; if ((signed char)c==0) goto done1; goto check1;
 done1:;}
     } else {
         if(!lbl_8055E1C8){fn_801312EC(lbl_8042FB78,lbl_8032CA74);lbl_8055E1C8=1;}
-        fn_80130980(p+0xb2,0x14,2,(f32)remaining);
+        fn_80130980(row+0xb2,0x14,2,(f32)remaining); /* the bonus as mm:ss */
         if(*(u32 *)(lbl_8042FB78+8)!=lbl_8055E044)fn_80131318(lbl_8042FB78);
-        {char c; char *src=*(char **)(lbl_8042FB78+4); long len=0x14; char *dst=(char*)p+0x58;
+        {char c; char *src=*(char **)(lbl_8042FB78+4); long len=0x14; char *dst=(char*)row+0x58;
        goto copy2;
 check2: if (--len>0) goto copy2; dst[-1]=0; goto done2;
 copy2: c=*src++; *dst++=c; if ((signed char)c==0) goto done2; goto check2;
 done2:;}
     }
-    fn_801345D8(p+0x6c,0x14,&lbl_80559D6C,other);
-    fn_801308F4(p+0x80,0x14,total);
-    fn_801308F4(p+0x9e,0x14,total-count);
-    if(fn_801609C4(total)!=-1) {
-        {char c; char *src=(char *)__AXGetStackHead(); long len=10; char *dst=(char*)p+0x94;
+    fn_801345D8(row+0x6c,0x14,&lbl_80559D6C,mode);
+    fn_801308F4(row+0x80,0x14,totalScore);
+    fn_801308F4(row+0x9e,0x14,totalScore-timeBonus);
+    if(fn_801609C4(totalScore)!=-1) {
+        /* the rank name of the band fn_801609C4 just returned the index of */
+        {char c; char *src=(char *)__AXGetStackHead(); long len=10; char *dst=(char*)row+0x94;
        goto copy3;
 check3: if (--len>0) goto copy3; dst[-1]=0; goto done3;
 copy3: c=*src++; *dst++=c; if ((signed char)c==0) goto done3; goto check3;
 done3:;}
     } else {
-        {char c; char *src=&lbl_80559D84; long len=10; char *dst=(char*)p+0x94;
+        {char c; char *src=&lbl_80559D84; long len=10; char *dst=(char*)row+0x94; /* "-" */
        goto copy4;
 check4: if (--len>0) goto copy4; dst[-1]=0; goto done4;
 copy4: c=*src++; *dst++=c; if ((signed char)c==0) goto done4; goto check4;
 done4:;}
     }
-    if(*(s32 *)(p+0x10c))p[8]=0;
-    switch(*(s32 *)p) {
-    case 0:
-        fn_802ADFF4(*(s32 *)(p+0xc),*(s32 *)(p+0x108));
-        if(strlen((char *)p+0xee)) {
-            u8 *widget=*(u8 **)(p+0x2c);
+    if(*(s32 *)(row+0x10c))row[8]=0;
+    switch(*(s32 *)row) {
+    case 0: /* first frame: start the animation and show the row's widgets */
+        fn_802ADFF4(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
+        if(strlen((char *)row+0xee)) {
+            u8 *widget=*(u8 **)(row+0x2c);
                 if(widget && !widget[0x19]){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
         } else {
-            u8 *widget=*(u8 **)(p+0x28);
+            u8 *widget=*(u8 **)(row+0x28);
             if(widget && !widget[0x19]){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
         }
-        if(count>0) {
-            u8 *widget=*(u8 **)(p+0x14);
+        if(timeBonus>0) {
+            u8 *widget=*(u8 **)(row+0x14);
             if(widget){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
         } else {
-            u8 *widget=*(u8 **)(p+0x18);
+            u8 *widget=*(u8 **)(row+0x18);
             if(widget){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
         }
-        *(s32 *)p=1;
+        *(s32 *)row=1;
         break;
     case 1:
-        if(*(s32 *)(p+0x110) && *(f32 *)(p+4)<lbl_805614A4) *(f32 *)(p+4)=lbl_8055E3C8;
-        if(*(s32 *)(p+0x110)==2 && !p[0x20]) {
-            u8 *widget=*(u8 **)(p+0x1c);
-            p[0x20]=1;
+        if(*(s32 *)(row+0x110) && *(f32 *)(row+4)<lbl_805614A4) *(f32 *)(row+4)=lbl_8055E3C8;
+        if(*(s32 *)(row+0x110)==2 && !row[0x20]) {
+            u8 *widget=*(u8 **)(row+0x1c);
+            row[0x20]=1;
             if(widget){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
         }
-        if(*(s32 *)(p+0x114)) {
-            fn_802AE02C(*(s32 *)(p+0xc),*(s32 *)(p+0x108));
-            *(s32 *)p=2;
+        if(*(s32 *)(row+0x114)) {
+            fn_802AE02C(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
+            *(s32 *)row=2;
         }
         break;
     case 2:
-        if(p[9]) {
-            fn_802AE0B8(*(s32 *)(p+0xc),*(s32 *)(p+0x108));
-            u8 *widget=*(u8 **)(p+0x24);
+        if(row[9]) {
+            fn_802AE0B8(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
+            u8 *widget=*(u8 **)(row+0x24);
             if(widget){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
-            *(s32 *)p=3;
+            *(s32 *)row=3;
         }
         break;
     case 3:
-        if(*(s32 *)(p+0x118)) {
-            fn_802AE02C(*(s32 *)(p+0xc),*(s32 *)(p+0x108));
-            *(s32 *)p=4;
+        if(*(s32 *)(row+0x118)) {
+            fn_802AE02C(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
+            *(s32 *)row=4;
         }
         break;
     case 4:
         break;
     }
-    fn_802AE168(*(s32 *)(p+0xc));
-    return *(s32 *)p!=4;
+    fn_802AE168(*(s32 *)(row+0xc));
+    return *(s32 *)row!=4;
 }
 #pragma pop
 
