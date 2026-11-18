@@ -1054,7 +1054,7 @@ extern "C" void fn_8021095C(void) {
     fn_802C9904();
 }
 #pragma cplusplus reset
-extern long fn_8020FEF0(long);
+
 extern long fn_802100AC(void);
 extern long fn_80012158(void);
 #pragma scheduling invalid_target
