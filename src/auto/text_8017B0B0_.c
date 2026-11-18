@@ -366,7 +366,7 @@ extern double cos(double);
 extern void fn_801ADB44(void *, void *);
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling 750
 #pragma use_lmw_stmw off
 #pragma ppc_psq_save off
 void fn_8017B81C(void *arg0) {
@@ -552,7 +552,7 @@ void fn_8017B81C(void *arg0) {
         temp_f0_3 = (*(float *)((char *)(arg0) + 0x13C));
         temp_f7 = (*(float *)((char *)(arg0) + 0x144));
         (*(float *)((char *)(arg0) + 0x178)) = (float) ((temp_f7 * (*(float *)((char *)(arg0) + 0x160))) + ((temp_f0_3 * (*(float *)((char *)(arg0) + 0x148))) + (temp_f6_4 * (*(float *)((char *)(arg0) + 0x154)))));
-        (*(float *)((char *)(arg0) + 0x17C)) = (float) ((temp_f7 * (*(float *)((char *)(arg0) + 0x164))) + ((temp_f0_3 * (*(float *)((char *)(arg0) + 0x14C))) + (temp_f6_4 * (*(float *)((char *)(arg0) + 0x158)))));
+        (*(float *)((char *)(arg0) + 0x17C)) = (float) ((temp_f7 * (*(float *)((char *)(arg0) + 0x164))) + ((temp_f0_4 * (*(float *)((char *)(arg0) + 0x14C))) + (temp_f6_4 * (*(float *)((char *)(arg0) + 0x158)))));
         (*(float *)((char *)(arg0) + 0x180)) = (float) ((temp_f7 * (*(float *)((char *)(arg0) + 0x168))) + ((temp_f0_3 * (*(float *)((char *)(arg0) + 0x150))) + (temp_f6_4 * (*(float *)((char *)(arg0) + 0x15C)))));
     } else {
         temp_f6_5 = (*(float *)((char *)(arg0) + 0x140));
