@@ -28,6 +28,7 @@ enum {
 };
 
 extern "C" f64 lbl_805634B8;
+#define F32_MAGIC(x) ((f32)((f64)(u32)((x) ^ 0x80000000) + 0x1p52 - lbl_805634B8))
 extern "C" char lbl_8033DAD8[];
 extern "C" s32 fn_80129D90(s32, s32, s32);
 extern "C" s32 fn_80131234(void *);
@@ -1371,7 +1372,7 @@ extern "C" void fn_80219F14(void *arg0) {
     }
 }
 
-#pragma opt_common_subs off
+#pragma opt_common_subs reset
 extern "C" void fn_80219FE0(void *arg0) {
     u8 *self = (u8 *)arg0;
     f32 time = fn_8023659C();
@@ -1479,7 +1480,6 @@ extern "C" void fn_80219FE0(void *arg0) {
     }
     }
 }
-#pragma opt_common_subs reset
 extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" u8 lbl_8033F3B0[];
 extern "C" u8 lbl_8033F434[];
@@ -2253,13 +2253,13 @@ extern "C" s32 fn_8022D850(void *, s32, s32, s32 *);
 extern f32 lbl_805634FC;
   #pragma push
  #pragma scheduling invalid_target
- extern "C" void fn_8021BC20(void *arg0, void *arg1) {
+extern "C" void fn_8021BC20(void *arg0, void *arg1) {
     s32 sp18;
     f32 sp14;
     f32 sp10;
     s32 sp8;
     void *temp_r4_2;
-    void *temp_r4;
+    s32 temp_r4;
     s32 temp_r5;
     s32 temp_r28;
     s32 var_r27;
@@ -2272,14 +2272,14 @@ extern f32 lbl_805634FC;
     temp_r28 = *(s32 *)((u8 *)arg0 + 4);
     temp_r5 = *(s32 *)((u8 *)temp_r4_2 + 0x10);
     temp_r30 = *(s32 *)((u8 *)temp_r4_2 + 0x20);
-    temp_r4 = *(void **)((u8 *)temp_r4_2 + 8);
+    temp_r4 = *(s32 *)((u8 *)temp_r4_2 + 8);
     var_r26 = temp_r30 * temp_r5;
     var_r27 = *(s32 *)((u8 *)arg0 + 8);
     var_r29 = var_r26 + temp_r5;
-    if ((s32)temp_r4 >= var_r29) {
+    if (temp_r4 >= var_r29) {
         return;
     }
-    var_r29 = (s32)temp_r4;
+    var_r29 = temp_r4;
     temp_r30 = 0;
 
     for (; var_r26 < var_r29;
@@ -7389,12 +7389,12 @@ extern f32 lbl_805634E0;
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void *fn_8022553C(void *arg0, void *arg1, void *arg2) {
-u8 *obj = (u8 *)arg0;
-u8 *ctx = (u8 *)arg2;
+register u8 *obj = (u8 *)arg0;
+register u8 *ctx = (u8 *)arg2;
 s32 count;
-s32 offset;
-s32 row;
-s32 frame;
+register s32 offset;
+register s32 row;
+register s32 frame;
 f32 half;
 f32 value;
 f32 temp_f4;
