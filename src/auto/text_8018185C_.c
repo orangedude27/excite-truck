@@ -2767,8 +2767,6 @@ void fn_8018A174(void *truck) {
     *(float *)((unsigned char *)truck + 0x2650) = lbl_80561D2C;
 }
 
-#pragma push
-#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, float a5, float a6, float a7, float a8, float a9, float a10, float a11) {
     class Driver {
@@ -2819,7 +2817,6 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
     fn_801D1540((char *)lbl_8055E918 + *(int *)((char *)arg0 + 0x1EC) * 0x9C, *(int *)((char *)arg0 + 0x1EC));
 }
 #pragma cplusplus reset
-#pragma pop
 void fn_8018A2BC(void) {
 
 }
