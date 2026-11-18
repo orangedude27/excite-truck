@@ -2721,8 +2721,8 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                      goto loop_36_check;
                  loop_36_body:
                      if ((s32) (&texMatrices[0])[(u8)var_r23_2] != 0) {
-                         fn_800D7C54((int *)matrix, temp_r21 + (var_r23_2 * 0x14));
-                         GXLoadTexMtxImm((int *)matrix, (((var_r23_2 * 4) & 0x3FC) - var_r23_2) + 0x1E, 1);
+                         fn_800D7C54((int *)matrix, temp_r21 + ((u8)var_r23_2 * 0x14));
+                         GXLoadTexMtxImm((int *)matrix, ((((u8)var_r23_2 * 4) & 0x3FC) - (u8)var_r23_2) + 0x1E, 1);
                      }
                      var_r23_2 += 1;
                  loop_36_check:
