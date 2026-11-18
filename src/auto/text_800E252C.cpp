@@ -1318,7 +1318,6 @@ extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
     OSRestoreInterrupts(level);
 }
 #pragma use_lmw_stmw reset
-#pragma scheduling 750
 extern "C" void fn_800E41EC(void) {
     if ((s8)lbl_8055DE18 == 0) {
         fn_800E279C(&lbl_80407F6C);
