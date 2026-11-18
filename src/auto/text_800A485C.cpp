@@ -4897,12 +4897,17 @@ done:
 
 s32 fn_800AEBA0(void *, u32, u32 *);
 s32 fn_800B5324(void *, void *, u16, s32, u32 *, s32);
+static inline s32 fn_800AC4AC_norm(s32 code) {
+    return code & (s32)(-(u32)code | (u32)code) >> 31;
+}
+#pragma push
+#pragma opt_propagation off
 extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     u8 *vol;
     u32 a, b, p44, c;
     u32 spC, sp8;
-    s32 cnt, r, rv, sw;
+    s32 cnt, r, rv;
     u32 prev, rem, clus, sec;
     cnt = *(s32 *)self;
     if (cnt == 0) return 0;
@@ -4937,33 +4942,34 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
         *(u16 *)(self + 0x48) = (*(u32 *)self & *(u16 *)(self + 0x4A)) << 5;
         return 0;
     }
-    rv = 0;
-    if ((u32)cnt != prev || *(u32 *)(self + 0x44) != 0xFFFFFFFF || arg1 == 0) {
-        *(s32 *)self = prev;
-        rv = ((s32 (*)(void *, s32))fn_800AB378)(arg0, arg1);
-        if (rv != 0) {
-            *(s32 *)self = cnt;
-            ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
-        } else {
-            sec = *(u32 *)(self + 0x44);
-            if (sec == 0xFFFFFFFF) {
-                r = 0x10;
-            } else {
-                rv = ((s32 (*)(void *, u8 *, u32, u32, u32, u32 *, s32))fn_800B5324)(*(void **)(self + 4), self + 0x4C, sec, *(u16 *)(self + 0x48), 0x20, &sp8, 0);
-                r = 0x11;
-                if (sp8 == 0x20) r = rv;
-            }
-            rv = r & ((-r | r) >> 31);
-            sw = rv;
-            switch (sw) {
-            case 0: rv = 0; break;
-            default: break;
-            }
-        }
+    if ((u32)cnt == prev && *(u32 *)(self + 0x44) + 0x10000 == 0xFFFF && arg1 != 0)
+        goto zero;
+    *(s32 *)self = prev;
+    rv = ((s32 (*)(void *, s32))fn_800AB378)(arg0, arg1);
+    if (rv != 0) {
+        *(s32 *)self = cnt;
+        ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
+        goto done;
     }
+    sec = *(u32 *)(self + 0x44);
+    if (sec == 0xFFFFFFFF) {
+        r = 0x10;
+    } else {
+        rv = ((s32 (*)(void *, u8 *, u32, u32, u32, u32 *, s32))fn_800B5324)(*(void **)(self + 4), self + 0x4C, sec, *(u16 *)(self + 0x48), 0x20, &sp8, 0);
+        r = 0x11;
+        if (sp8 == 0x20) r = rv;
+    }
+    rv = r & ((-r | r) >> 31);
+    switch (rv) {
+    case 0: goto zero;
+    default: goto done;
+    }
+zero:
+    rv = 0;
+done:
     return rv;
 }
-
+#pragma pop
 extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 /* Step a directory-entry iterator to the next entry and read it into its buffer. */
@@ -22120,10 +22126,10 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     void **textureResources;
 
     if (*(void **)(self + 0x14) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A6, file + 0x14);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1A6, file + 0x14);
     }
     if (*(void **)(self + 0x18) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A7, file + 0x40);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1A7, file + 0x40);
     }
 
     *(const void **)(self + 0xC) = resource;
