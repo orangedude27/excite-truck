@@ -507,7 +507,7 @@ extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
     char sp10[128];
     s32 spC;
     u8 sp8;
-    register u8 *messages = (u8 *)lbl_8032A630;
+    u8 *messages = (u8 *)lbl_8032A630;
     char *var_r4;
     s32 var_r5;
     char *var_r6;
@@ -522,6 +522,8 @@ extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
     u32 temp_r4_11;
     u8 *temp_r3_3;
     u8 *temp_r26, *var_r25_2, *var_r31;
+    char *dot;
+    u32 headerValue, objectValue;
     if (lbl_8055DFFC == 0) fn_802E317C((const char *)(messages + 0x1D0), arg0);
     var_r4 = (char *)arg0; var_r6 = sp10; var_r5 = 0x80;
     goto loop_5_copy;
@@ -535,7 +537,11 @@ loop_5_copy:
     *var_r6++ = temp_r3;
     if ((s8)temp_r3 != 0) goto loop_5_limit;
 loop_5_done:
-    if ((s8)*fn_80029004(sp10, 0x2E) != 0) *fn_80029004(sp10, 0x2E) = 0;
+    dot = fn_80029004(sp10, 0x2E);
+    if ((s8)*dot != 0) {
+        dot = fn_80029004(sp10, 0x2E);
+        *dot = 0;
+    }
     var_r6_2 = sp10; var_r5_2 = 0x80;
     goto loop_10_test;
 loop_10_step:
@@ -571,7 +577,7 @@ loop_10_done:
         temp_r4_10 = temp_r3_3[0x11]; temp_r3_3[0x11] = temp_r3_3[0x12]; temp_r3_3[0x12] = temp_r4_10;
         temp_r4_11 = *(u32 *)temp_r3_3;
         if (temp_r4_11 != 0 || *(u32 *)(temp_r3_3 + 4) != 0x14)
-            fn_802E317C(lbl_8032AE60, 0, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
+            fn_802E317C(lbl_8032AE60, temp_r4_11, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
         var_r25_2 = temp_r3_3 + 0x14; var_r26 = 0;
         goto loop_23_test;
 loop_23:
@@ -581,11 +587,17 @@ loop_23_test:
         if (var_r26 < *(u32 *)(temp_r3_3 + 0xC)) goto loop_23;
     }
     if (temp_r3_3 == 0) fn_802E317C((const char *)(messages + 0x200), arg0);
-    if (*(u32 *)((u8 *)arg0 + 0x7C) != *(u32 *)(temp_r3_3 + 8))
+    headerValue = *(u32 *)(temp_r3_3 + 8);
+    objectValue = *(u32 *)((u8 *)arg0 + 0x7C);
+    if (headerValue != objectValue)
         fn_802E317C((const char *)(messages + 0x228), arg0);
-    if (*(u32 *)((u8 *)arg0 + 0x88) != *(u32 *)(temp_r3_3 + 0xC))
+    headerValue = *(u32 *)(temp_r3_3 + 0xC);
+    objectValue = *(u32 *)((u8 *)arg0 + 0x88);
+    if (headerValue != objectValue)
         fn_802E317C((const char *)(messages + 0x258), arg0);
-    if (*(u32 *)((u8 *)arg0 + 0x8C) != *(u32 *)(temp_r3_3 + 0x10))
+    headerValue = *(u32 *)(temp_r3_3 + 0x10);
+    objectValue = *(u32 *)((u8 *)arg0 + 0x8C);
+    if (headerValue != objectValue)
         fn_802E317C((const char *)(messages + 0x288), arg0);
     temp_r26 = temp_r3_3 + 0x14; var_r31 = temp_r26; var_r25 = 1; var_r24 = 0;
     goto loop_37_test;
@@ -1145,7 +1157,7 @@ extern "C" void fn_8012BB20(s32 arg0, void *arg1) {
             entry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
             flags = *(u32 *)(entry + 0x34);
             if ((flags & 4) != 0) {
-                fn_802E317C(lbl_8032AE20);
+                fn_802E317C(lbl_8032AE20, entry);
             }
             i++;
             entry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
@@ -1235,13 +1247,11 @@ extern "C" const char lbl_8032AB58[];
 extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
     void *p;
     s32 tries;
-    s32 zero;
     p = fn_8012BD3C(*arg1, arg0);
     if (p == 0) {
         tries = 0;
-        zero = 0;
         do {
-            lbl_8055DFF9 = (u8)zero;
+            lbl_8055DFF9 = 0;
             p = fn_8012B32C(arg0);
             if (p != 0) {
                 *(void **)((char *)p + 0xA8) = *arg1;
@@ -1252,10 +1262,10 @@ extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
             }
             if (lbl_8055DFF9 != 0 && p == 0) ++tries;
             else break;
-        } while (tries < 0x0a);
+        } while (tries < 10);
         if (p == 0) {
             fn_802E30C8(lbl_8032AB58, arg0);
-            fn_8012748C(0x02);
+            fn_8012748C(2);
         }
     } else ++*(s32 *)((char *)p + 0x9C);
     return p;
@@ -1471,7 +1481,7 @@ extern "C" void fn_8012CC20(void) {
 #pragma dont_inline on
 extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
     u8 *self = (u8 *)arg0;
-    s32 result, sum, count, value, temp, handle, size, done;
+    s32 sum, count, value, result, temp, handle, size, done;
     s32 *record;
     u8 *destination, *source, byte;
     void *parser;
@@ -3373,7 +3383,8 @@ extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
                 fields[5] = 0;
                 fields[0] = 0x19AFEE2A;
                 fields[1] = (s32)entry;
-                fields[2] = (s32)manager, result = (s32)allocation;
+                result = (s32)allocation;
+                fields[2] = (s32)manager;
             }
         } else {
             u8 queryText[5];
