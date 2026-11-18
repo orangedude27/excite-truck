@@ -405,9 +405,7 @@ extern "C" void fn_802B5F24(s32 arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-__declspec(section ".sdata") extern double lbl_80564C68;
 void fn_802B5F98(void) {
-#pragma scheduling invalid_target
     register char *base = lbl_8034A598;
     s32 index, i, j;
     s32 handle;
@@ -446,10 +444,6 @@ void fn_802B5F98(void) {
     fn_802E3AD0(handle, lbl_8055CE60);
     fn_802E3734(&handle);
 }
-#pragma pop
-
-#pragma push
-#pragma small_data off
 #pragma pop
 /* Re-selects the material set the "tedash.val" debug viewer is on, then toggles
  * the memory-allocation subsystem's disable flag (clears it, then sets it). */
