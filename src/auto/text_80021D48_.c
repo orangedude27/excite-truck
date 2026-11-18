@@ -16,16 +16,15 @@ static inline Block* Pool_expand(Block** list, unsigned int size) {
     Block* b;
     char* sb;
     char* end;
-    unsigned int flags, link, remain;
+    unsigned int flags, remain;
     if (total < 0x10000) total = 0x10000;
     b = (Block*)__sys_alloc(total);
     if (b == 0) return 0;
     flags = total | 3;
-    remain = total - 0x18;
     b->size_flags = flags;
     *(unsigned int*)((char*)b + total - 8) = flags;
-    link = (unsigned int)b | 1;
-    b->sb_link = link;
+    b->sb_link = (unsigned int)b | 1;
+    remain = total - 0x18;
     b->sb_size = remain;
     sb = (char*)b + 0x10;
     *(unsigned int*)(total + (unsigned int)sb - 0x1c) = remain;
@@ -57,12 +56,7 @@ int fn_80021D48(Block** arg0, int arg1, int* arg2) {
     size = (arg1 + 15) & ~7;
     if (size < 0x50) size = 0x50;
     node = *arg0;
-    if (node == 0) {
-        node = Pool_expand(arg0, size);
-    } else {
-        goto check;
-    }
-check:
+    node = (node == 0) ? Pool_expand(arg0, size) : node;
     if (node == 0) return 0;
     for (;;) {
         if (size <= node->max_size) {
