@@ -447,6 +447,7 @@ int fn_802C7040(int);
 void fn_802C7A50(void);
 #pragma push
 #pragma scheduling on
+#pragma processor 750
 void fn_80202AD4(float *arg0) {
     float c, b, a;
     a = arg0[0];
