@@ -642,43 +642,50 @@ test:;
     } while (i < fn_80287B14());
 }
 #pragma pop
-extern "C" void fn_80298DE0(void *arg0, void *arg1, int arg2) {
-    int off = (int)arg1 << 5;
-    char *e1 = *(char **)arg0 + off;
-    if ((unsigned)arg2 != (unsigned)(unsigned char)e1[0x19]) {
-        if (arg2 != 0) {
+extern "C" void fn_80298DE0(void *container, void *entryIndex, int enabled) {
+#define kActiveFlag 0x19 /* entry is emitting while set */
+#define kStartTime  0x1C /* when the entry was switched on */
+    int byteOffset = (int)entryIndex << 5;
+    char *entry = *(char **)container + byteOffset;
+    if ((unsigned)enabled != (unsigned)(unsigned char)entry[kActiveFlag]) {
+        if (enabled != 0) {
             float now = fn_801E7E18();
-            char *e2 = *(char **)arg0 + off;
-            *(float *)(e2 + 0x1C) = now;
-            float *mat = (float *)((void *(*)(int, void *))fn_80287B24)((int)arg1, (void *)e2);
-            float *in = (float *)(*(char **)arg0 + off);
-            float tmp[3];
-            if (tmp == in) {
+            char *stamped = *(char **)container + byteOffset;
+            *(float *)(stamped + kStartTime) = now;
+            float *pose = (float *)((void *(*)(int, void *))fn_80287B24)((int)entryIndex, (void *)stamped);
+            float *local = (float *)(*(char **)container + byteOffset);
+            float world[3];
+            /* The rotation below is the game's shared pose transform, which copes
+             * with source and destination being the same buffer.  The destination
+             * here is this scratch array, so the plain path is the one taken. */
+            if (world == local) {
                 float x, y, z;
                 float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-                m10 = mat[3]; m11 = mat[4]; m12 = mat[5];
-                m00 = mat[0]; m01 = mat[1]; m02 = mat[2];
-                m20 = mat[6]; m21 = mat[7]; m22 = mat[8];
-                x = in[0]; y = in[1]; z = in[2];
-                tmp[0] = z * m20 + (x * m00 + y * m10);
-                tmp[1] = z * m21 + (x * m01 + y * m11);
-                tmp[2] = z * m22 + (x * m02 + y * m12);
+                m10 = pose[3]; m11 = pose[4]; m12 = pose[5];
+                m00 = pose[0]; m01 = pose[1]; m02 = pose[2];
+                m20 = pose[6]; m21 = pose[7]; m22 = pose[8];
+                x = local[0]; y = local[1]; z = local[2];
+                world[0] = z * m20 + (x * m00 + y * m10);
+                world[1] = z * m21 + (x * m01 + y * m11);
+                world[2] = z * m22 + (x * m02 + y * m12);
             } else {
                 float m00, m01, m02, m10, m11, m12, m20, m21, m22;
-                m10 = mat[3]; m00 = mat[0]; m20 = mat[6];
-                tmp[0] = in[2] * m20 + (in[0] * m00 + in[1] * m10);
-                m11 = mat[4]; m01 = mat[1]; m21 = mat[7];
-                tmp[1] = in[2] * m21 + (in[0] * m01 + in[1] * m11);
-                m12 = mat[5]; m02 = mat[2]; m22 = mat[8];
-                tmp[2] = in[2] * m22 + (in[0] * m02 + in[1] * m12);
+                m10 = pose[3]; m00 = pose[0]; m20 = pose[6];
+                world[0] = local[2] * m20 + (local[0] * m00 + local[1] * m10);
+                m11 = pose[4]; m01 = pose[1]; m21 = pose[7];
+                world[1] = local[2] * m21 + (local[0] * m01 + local[1] * m11);
+                m12 = pose[5]; m02 = pose[2]; m22 = pose[8];
+                world[2] = local[2] * m22 + (local[0] * m02 + local[1] * m12);
             }
-            tmp[0] += mat[9];
-            tmp[1] += mat[10];
-            tmp[2] += mat[11];
+            world[0] += pose[9];
+            world[1] += pose[10];
+            world[2] += pose[11];
         }
-        char *e4 = *(char **)arg0 + off;
-        e4[0x19] = (char)arg2;
+        char *target = *(char **)container + byteOffset;
+        target[kActiveFlag] = (char)enabled;
     }
+#undef kActiveFlag
+#undef kStartTime
 }
 
 #pragma push
