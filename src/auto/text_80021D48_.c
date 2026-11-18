@@ -28,7 +28,7 @@ static inline Block* Pool_expand(Block** list, unsigned int size) {
     b->sb_link = link;
     b->sb_size = remain;
     sb = (char*)b + 0x10;
-    *(unsigned int*)(sb + total - 0x1c) = remain;
+    *(unsigned int*)(total + sb - 0x1c) = remain;
     b->max_size = remain;
     end = (char*)b + (b->size_flags & ~7);
     *(unsigned int*)(end - 4) = 0;
@@ -57,12 +57,8 @@ int fn_80021D48(Block** arg0, int arg1, int* arg2) {
     size = (arg1 + 15) & ~7;
     if (size < 0x50) size = 0x50;
     node = *arg0;
-    if (node == 0) goto do_expand;
-    goto loop;
-do_expand:
-    node = Pool_expand(arg0, size);
+    if (node == 0) node = Pool_expand(arg0, size);
     if (node == 0) return 0;
-loop:
     for (;;) {
         if (size <= node->max_size) {
             result = fn_8002194C(node, size, arg2);
