@@ -630,6 +630,7 @@ void fn_802473A4(void) {
     goto check_a;
     for (;;) {
         int code, old, flag;
+    loop_top:
         fn_80019708();
         again = 1;
         do {
@@ -657,7 +658,7 @@ void fn_802473A4(void) {
         case 8: fn_802E6FBC(); break;
         case 9:
             old=lbl_8055D430; flag=old&1; lbl_8055D430=old|1;
-            fn_8000DC70(0); fn_800169F8(0); fn_80137C78(1);
+            fn_800169F8(fn_8000DC70(0), 0); fn_80137C78(1);
             prior=fn_8000DA10(); fn_80137C84(fn_802E4A10(), prior);
             fn_80129AEC(fn_802E4A10()); fn_8023BCEC(); lbl_8055D430=(lbl_8055D430&~1)|flag; break;
         case 10: fn_8025812C(); break;
@@ -670,9 +671,12 @@ void fn_802473A4(void) {
         default: fn_802E317C(base + 0x168); break;
         }
         } while (again);
-        if (fn_8024CF54()) continue;
-check_a:
-        if (!fn_80246AE8()) break;
+        do {
+            if (fn_8024CF54()) goto loop_top;
+    check_a:
+            ;
+        } while (fn_80246AE8());
+        break;
     }
     lbl_8055F260=0;
 }
