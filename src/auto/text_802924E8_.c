@@ -152,11 +152,9 @@ extern "C" void fn_80292698(void) {
     };
     register int i;
     register unsigned char *p;
-    float threshold;
-    register float angle;
+    float angle;
 
     angle = fn_801E7E18();
-    threshold = lbl_805644E4;
     p = lbl_804B4030;
     i = 0;
     for (; i < 6; ++i, p += 0x34) {
@@ -168,7 +166,7 @@ extern "C" void fn_80292698(void) {
         axis[1] = *(float *)(p + 0x4) * scale;
         axis[2] = *(float *)(p + 0x8) * scale;
         magnitude = PSVECMag(axis);
-        if (magnitude > threshold) {
+        if (magnitude > 0.0001f) {
             float inverse = 1.0f / magnitude;
             x = inverse * axis[0];
             y = inverse * axis[1];
@@ -277,31 +275,37 @@ extern void *fn_80293034(void *, void *, int);
 extern void *fn_80293A00(void *, void *, int, int, int);
 extern void *fn_80294254(void *, void *, int, int, int);
 #pragma cplusplus on
-int fn_802928D4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
-    char *str = lbl_80349170;
+extern "C" int fn_802928D4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
+    struct ChunkSys {
+        char car[0x10];
+        char ter[0x10];
+        char wood[0x10];
+        char invalid[0x20];
+    };
+    struct ChunkSys *sys = (struct ChunkSys *)lbl_80349170;
     void *ptr;
 
     switch (arg1) {
     case 1:
-        ptr = fn_801284F8(0x2FF0, str);
+        ptr = fn_801284F8(0x2FF0, &sys->car);
         if (ptr != 0) {
             return (int)fn_80293034(ptr, (void *)arg0, arg2);
         }
         break;
     case 2:
-        ptr = fn_801284F8(0x4C30, str + 0x10);
+        ptr = fn_801284F8(0x4C30, &sys->ter);
         if (ptr != 0) {
             return (int)fn_80293A00(ptr, (void *)arg0, arg2, arg3, arg4);
         }
         break;
     case 3:
-        ptr = fn_801284F8(0x2230, str + 0x20);
+        ptr = fn_801284F8(0x2230, &sys->wood);
         if (ptr != 0) {
             return (int)fn_80294254(ptr, (void *)arg0, arg2, arg3, arg4);
         }
         break;
     default:
-        fn_802E317C(str + 0x30);
+        fn_802E317C((const char *)&sys->invalid);
         return 0;
     }
     return (int)ptr;
@@ -372,19 +376,17 @@ extern float PSVECDotProduct(void *, void *);
 extern float lbl_805644D8, lbl_805644E8;
 extern double fabs(double);
 extern double __fabs(double);
-#pragma processor 750
+#pragma scheduling on
 int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
     float delta[3];
-    register float y = arg2[1];
-    register float x = arg2[0];
-    register float t0 = arg0[0] - x;
-    register float z = arg2[2];
-    register float t1;
-    register float t2;
+    float y = arg2[1];
+    float x = arg2[0];
+    float t0 = arg0[0] - x;
+    float z = arg2[2];
+    float t1;
+    float t2;
     register float firstDot, secondDot;
-    register float s1, nx, ay, az, abs2, k;
-    register float s2;
-    register float a0, a1, a2;
+    register float ay, az, nx, s1, k, abs2, s2;
     delta[0] = t0;
     t1 = arg0[1] - y;
     delta[1] = t1;
@@ -399,12 +401,9 @@ int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
         az = arg3[2];
         abs2 = (float)__fabs((double)secondDot);
         k = lbl_805644E8;
-        a0 = arg0[0];
-        arg0[0] = a0 + nx * s1;
-        a1 = arg0[1];
-        arg0[1] = a1 + ay * s1;
-        a2 = arg0[2];
-        arg0[2] = a2 + az * s1;
+        arg0[0] += nx * s1;
+        arg0[1] += ay * s1;
+        arg0[2] += az * s1;
         s2 = k * abs2 - secondDot;
         arg1[0] += nx * s2;
         arg1[1] += ay * s2;
@@ -413,7 +412,6 @@ int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
     }
     return 0;
 }
-#pragma processor reset
 extern void *fn_802C6B44(void);
 extern void fn_802C6C20(void *);
 extern int fn_802C7888(void *, int);
@@ -700,7 +698,7 @@ void fn_80293178(void *arg0, int unused) {
     fn_802C9950(savedState9950);
 }
 
-void fn_80293230(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
+void fn_80293230(void *arg0, float *arg1, float *arg2, short arg3, signed char arg4) {
     int count;
     int index;
     int offset;
@@ -713,9 +711,7 @@ void fn_80293230(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
     object = (u8 *)arg0;
     count = *(s32 *)(object + 0x2FAC);
     if (count >= 0xA0) return;
-    if (*(s32 *)(object + 0x28) != 0) goto cont;
-    return;
-cont:
+    if (*(s32 *)(object + 0x28) == 0) return;
     record = object + count * 0x4C;
     index = fn_80129D18(0, 6);
     offset = index * 0x34;
@@ -727,7 +723,6 @@ cont:
     template = lbl_804B4030 + offset;
     a = arg2[0];
     *(float *)(record + 0x58) = z;
-    arg1 = (float *)index;
     b = arg2[1];
     firstWord = *(unsigned int *)(template + 0x10);
     secondWord = *(unsigned int *)(template + 0x14);
@@ -749,28 +744,27 @@ cont:
     c = arg2[2];
     *(float *)(record + 0x64) = c;
     *(float *)(record + 0x68) = lbl_805644D8;
-    *(short *)(record + 0x6C) = (short)arg3;
+    *(short *)(record + 0x6C) = arg3;
     mode = 3;
     if (fn_80287B5C(3, (void *)firstWord, c, b, a) != 0)
         mode = 2;
     *(int *)(record + 0x70) = mode;
     *(unsigned char *)(record + 0x74) = ((int (*)(int))fn_80287B5C)(*(int *)(object + 0x28));
-    *(unsigned char *)(record + 0x75) = (unsigned char)arg1;
+    *(unsigned char *)(record + 0x75) = (unsigned char)index;
     *(unsigned char *)(record + 0x76) = (unsigned char)arg4;
     count = *(int *)(object + 0x2FAC);
     *(int *)(object + 0x2FAC) = count + 1;
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 /* Loads the car chunk effect's chunk models: the MODL resources
  * "<base>1.mod" .. "<base>8.mod" (lbl_80349250 is "%s%d.mod"), stopping at the
  * first name the resource system does not have, and leaving the slots no model
  * was found for at -1.  The car one takes no instance and remaps no texture;
  * fn_80293CD0 and fn_80294530 do the "ter" and "wood" ones. */
 int fn_80293374(void *object, void *modelBase) {
-    int count;
     char name[0x20];
+    int count;
     ChunkSys *chunkSys = (ChunkSys *)object;
     chunkSys->modelCount = 0;
     goto check;
@@ -780,20 +774,13 @@ loop:
         chunkSys->modelCount + 1);
     if (fn_8012C33C(name) == 0) goto padding;
     chunkSys->models[chunkSys->modelCount] = fn_802C6FC0(name, 0, 0);
-    count = chunkSys->modelCount;
-    count++;
-    chunkSys->modelCount = count;
+    chunkSys->modelCount++;
 check:
     if (chunkSys->modelCount < 8) goto loop;
 padding:
-    {
-        s32 *models = (s32 *)chunkSys;  /* models[2 + i] is model handle i */
-        count = chunkSys->modelCount;
-        for (; count < 8; count++)
-            models[count + 2] = -1;
-    }
+    for (count = chunkSys->modelCount; count < 8; count++)
+        ((s32 *)object)[count + 2] = -1;
 }
-#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
@@ -809,10 +796,11 @@ void fn_80293530(void* arg0) {
     }
 }
 
-void *fn_802935A0(void *arg0) {
+#pragma scheduling invalid_target
+void *fn_802935A0(void *__restrict arg0) {
     register u8 *out = (u8 *)arg0;
     register unsigned int *table = lbl_80488648;
-    float scale = lbl_805644EC;
+    register float scale = lbl_805644EC;
     unsigned int color;
     unsigned int checkValue;
     unsigned int count = 0;
@@ -850,23 +838,21 @@ check_loop:
     if (checkValue != 0) goto body;
     return out;
 }
-
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802936C4(void *arg0) {
+#pragma use_lmw_stmw off
     struct Rec {
         unsigned int copy[9];
         float x, y, z;
         float vx, vy, vz;
         float age;
-        unsigned char b40;
         short idx;
-        unsigned char p[2];
+        unsigned char pad0[2];
         int mode;
+        unsigned char b48;
         unsigned char type;
-        unsigned char b49;
         unsigned char b4a;
-        unsigned char pad[1];
+        unsigned char pad1;
     };
     struct Tpl {
         unsigned int pad[4];
@@ -887,6 +873,8 @@ void fn_802936C4(void *arg0) {
     extern unsigned char lbl_804B4030[];
     float dt;
     float scale;
+    float scale2;
+    float gravTerm;
     float tmp_vx;
     float tmp_vy;
     float tmp_vz;
@@ -917,8 +905,9 @@ void fn_802936C4(void *arg0) {
     int r0;
     dt = fn_801E7E24(arg0);
     scale = lbl_805644F8 * dt;
+    scale2 = lbl_805644D4 - scale;
     fn_801E9DD4(lbl_8055C958, lbl_8055C964, scale, lbl_805644F8);
-    scale = lbl_805644D4 - scale;
+    scale = scale2;
     zeroF = lbl_805644D8;
     oneF = lbl_805644D4;
     gravF = lbl_80564500;
@@ -939,10 +928,11 @@ body:
         if (age >= outer) goto next;
 do_work:
         ageDt = age + dt;
+        gravTerm = (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
         tmp_vx = cur->vx * scale;
         tmp_vy = cur->vy * scale;
         tmp_vz = cur->vz * scale;
-        tmp_vy = tmp_vy - (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
+        tmp_vy = tmp_vy - gravTerm;
         tmp_nx = cur->x + tmp_vx * dt;
         tmp_ny = cur->y + tmp_vy * dt;
         tmp_nz = cur->z + tmp_vz * dt;
@@ -957,7 +947,7 @@ do_work:
         tmp_vx2 = cur->vx * scale;
         tmp[6] = tmp_vx2;
         tmp_vy2 = cur->vy * scale;
-        tmp_vy2 = tmp_vy2 - (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
+        tmp_vy2 = tmp_vy2 - gravTerm;
         tmp[7] = tmp_vy2;
         tmp_vz2 = cur->vz * scale;
         tmp[8] = tmp_vz2;
@@ -1036,7 +1026,7 @@ write_out:
         out->age = ageDt;
         out->idx = entry;
         out->mode = mode;
-        out->b40 = cur->b40;
+        out->b48 = cur->b48;
         out->type = type;
         out->b4a = cur->b4a;
         out++;
@@ -1145,9 +1135,9 @@ void fn_80293BB4(void *arg0, float *arg1, float *arg2, short arg3) {
     int index;
     int offset;
     int flags, zero;
-    u8 *record;
-    u8 *template;
-    u8 *object;
+    register u8 *record;
+    register u8 *object;
+    register u8 *tmpl;
     float x, y, z, a, b;
     unsigned int secondWord, firstWord;
     object = (u8 *)arg0;
@@ -1161,28 +1151,28 @@ void fn_80293BB4(void *arg0, float *arg1, float *arg2, short arg3) {
     *(float *)(record + 0x50) = x;
     z = arg1[2];
     *(float *)(record + 0x54) = y;
-    template = lbl_804B4030 + offset;
+    tmpl = (u8 *)lbl_804B4030 + offset;
     a = arg2[0];
     *(float *)(record + 0x58) = z;
     arg1 = (float *)index;
     b = arg2[1];
-    firstWord = *(unsigned int *)(template + 0x10);
+    firstWord = *(unsigned int *)(tmpl + 0x10);
     flags = 2;
-    secondWord = *(unsigned int *)(template + 0x14);
+    secondWord = *(unsigned int *)(tmpl + 0x14);
     zero = 0;
     *(unsigned int *)(record + 0x2C) = firstWord;
     *(unsigned int *)(record + 0x30) = secondWord;
-    *(unsigned int *)(record + 0x34) = *(unsigned int *)(template + 0x18);
-    firstWord = *(unsigned int *)(template + 0x1C);
-    secondWord = *(unsigned int *)(template + 0x20);
+    *(unsigned int *)(record + 0x34) = *(unsigned int *)(tmpl + 0x18);
+    firstWord = *(unsigned int *)(tmpl + 0x1C);
+    secondWord = *(unsigned int *)(tmpl + 0x20);
     *(unsigned int *)(record + 0x38) = firstWord;
     *(unsigned int *)(record + 0x3C) = secondWord;
-    *(unsigned int *)(record + 0x40) = *(unsigned int *)(template + 0x24);
-    firstWord = *(unsigned int *)(template + 0x28);
-    secondWord = *(unsigned int *)(template + 0x2C);
+    *(unsigned int *)(record + 0x40) = *(unsigned int *)(tmpl + 0x24);
+    firstWord = *(unsigned int *)(tmpl + 0x28);
+    secondWord = *(unsigned int *)(tmpl + 0x2C);
     *(unsigned int *)(record + 0x44) = firstWord;
     *(unsigned int *)(record + 0x48) = secondWord;
-    *(unsigned int *)(record + 0x4C) = *(unsigned int *)(template + 0x30);
+    *(unsigned int *)(record + 0x4C) = *(unsigned int *)(tmpl + 0x30);
     *(float *)(record + 0x5C) = a;
     *(float *)(record + 0x60) = b;
     *(float *)(record + 0x64) = arg2[2];
@@ -1531,18 +1521,18 @@ check:
 extern int fn_80287B5C(int, void *, float, float, float);
 void fn_80294408(void *arg0, float *arg1, float *arg2) {
     int count;
-    int index;
     int offset;
-    register u8 *object;
-    register float *first;
-    register u8 *record;
-    register float *second;
+    u8 *second;
+    u8 *record;
+    u8 *object;
+    float *first;
+    int index;
     u8 *template;
     float x, y, z, a, b, c;
     unsigned int secondWord, firstWord;
+    second = (u8 *)arg2;
     object = (u8 *)arg0;
     first = arg1;
-    second = arg2;
     count = *(s32 *)(object + 0x222C);
     if (count >= 0x80) goto done;
     if (*(s32 *)(object + 0x28) != 0) goto body;
@@ -1557,10 +1547,10 @@ body:
     z = first[2];
     *(float *)(record + 0x54) = y;
     template = lbl_804B4030 + offset;
-    a = second[0];
+    a = *(float *)second;
     *(float *)(record + 0x58) = z;
     first = (float *)index;
-    b = second[1];
+    b = *(float *)(second + 4);
     firstWord = *(unsigned int *)(template + 0x10);
     secondWord = *(unsigned int *)(template + 0x14);
     *(unsigned int *)(record + 0x2C) = firstWord;
@@ -1578,7 +1568,7 @@ body:
     *(unsigned int *)(record + 0x4C) = *(unsigned int *)(template + 0x30);
     *(float *)(record + 0x5C) = a;
     *(float *)(record + 0x60) = b;
-    c = second[2];
+    c = *(float *)(second + 8);
     *(float *)(record + 0x64) = c;
     *(float *)(record + 0x68) = lbl_805644D8;
     *(unsigned char *)(record + 0x6C) = fn_80287B5C(*(int *)(object + 0x28), template, c, b, a);
@@ -1649,7 +1639,7 @@ void fn_80294710(void *object) {
 #pragma pop
 extern float lbl_80564510, lbl_805644D4, lbl_80564500, lbl_805644FC, lbl_805644D8;
 extern unsigned char lbl_804B4030[];
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80294780(void *arg0)
 {
   struct W3
@@ -1687,11 +1677,13 @@ void fn_80294780(void *arg0)
   register struct Particle *cur;
   register struct Particle *out;
   register int i;
+  float gravity;
   float dt = fn_801E7E24(arg0);
-  double gravity = lbl_80564500;
-  float maxAge = lbl_805644FC;
-  float minAge = lbl_805644D8;
-  float scale = (lbl_805644D4 - (lbl_80564510 * dt));
+  float maxAge, minAge, scale;
+  gravity = lbl_80564500;
+  maxAge = lbl_805644FC;
+  minAge = lbl_805644D8;
+  scale = lbl_805644D4 - (lbl_80564510 * dt);
   cur = (struct Particle *)(((unsigned char *)arg0) + 0x2C);
   out = cur;
   for (i = 0; i < (*((int *)(((unsigned char *)arg0) + 0x222C))); ++i, ++cur)
@@ -1707,7 +1699,7 @@ void fn_80294780(void *arg0)
     v.y = cur->vy * scale;
     v.z = cur->vz * scale;
     v.x = cur->vx * scale;
-    v.y -= ((float)gravity * dt) * (*((float *)(((unsigned char *)arg0) + 4)));
+    v.y -= (gravity * dt) * (*((float *)(((unsigned char *)arg0) + 4)));
     out->x = cur->x + (v.x * dt);
     out->y = cur->y + (v.y * dt);
     out->z = cur->z + (v.z * dt);
@@ -1725,4 +1717,3 @@ void fn_80294780(void *arg0)
   }
   *((int *)(((unsigned char *)arg0) + 0x222C)) = (((int)out) - (((int)arg0) + 0x2C)) / 0x44;
 }
-#pragma scheduling on
