@@ -903,6 +903,7 @@ void fn_801CC8FC(void *object) {
     *(int *)((char *)object + 4) = 0;
 }
 
+#ifndef STAT_HANDLER_LAYOUT_MOVED_UP
 /* The award stat handler kept in lbl_8055E884 (its heap name strings at
  * lbl_80337AC8 read "StatHandler::Create: ..." and "award_int"/"award_real").
  * fn_801CC470 allocates the 0x618 bytes, fn_801CC594 initialises them and
@@ -936,6 +937,7 @@ typedef struct {
     /* 0x2DC */ u8 pad2DC[0x29C];
     /* 0x578 */ f32 floats[10][4]; // reset to {1,0,0,0}
 } StatHandler;
+#endif // STAT_HANDLER_LAYOUT_MOVED_UP
 
 #pragma scheduling invalid_target
 /* Resets the award stat handler in lbl_8055E884 between races: hands every entry
