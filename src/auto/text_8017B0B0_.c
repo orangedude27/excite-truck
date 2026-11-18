@@ -400,6 +400,7 @@ void fn_8017B81C(void *arg0) {
     void *temp_r3_5; void *temp_r3_6; void *temp_r3_7; void *temp_r7;
     void *temp_r8; void *temp_r9; void *var_r29_2; void *var_r4;
     void *var_r5;
+    float scale;
 
     temp_f0 = (*(float *)((char *)(arg0) + 0xD4));
     temp_f1 = (*(float *)((char *)(arg0) + 0x130));
