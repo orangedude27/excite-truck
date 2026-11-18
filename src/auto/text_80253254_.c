@@ -38,21 +38,25 @@ extern char lbl_803449D4[];
 
 #pragma always_inline on
 static inline void removeDeadEntry(void) {
-    void **cursor = lbl_80498E08;
-    s32 index = 0;
-    void **slot;
-    for (; index < lbl_8055F33C; cursor++, index++) {
-        if ((unsigned int)__cntlzw((unsigned int)fn_8012D838(*(s32 *)((u8 *)*cursor + 0x20))) >> 5) {
-            slot = &lbl_80498E08[index];
-            cursor = (void **)*slot;
-            if (cursor != 0) {
-                fn_8012D8A8(*(s32 *)((u8 *)cursor + 0x20));
-                ((s32 (*)(void *))fn_80128668)(cursor);
+    s32 index;
+    void **cursor;
+    cursor = lbl_80498E08;
+    index = 0;
+    while (index < lbl_8055F33C) {
+        if (((unsigned int)__cntlzw((unsigned int)fn_8012D838(*(s32 *)((u8 *)*cursor + 0x20))) >> 5)) {
+            void *obj;
+            void **slot = &lbl_80498E08[index];
+            obj = *slot;
+            if (obj) {
+                fn_8012D8A8(*(s32 *)((u8 *)obj + 0x20));
+                ((s32 (*)(void *))fn_80128668)(obj);
             }
             lbl_8055F33C--;
             memmove(slot, slot + 1, (lbl_8055F33C - index) * 4);
             return;
         }
+        cursor++;
+        index++;
     }
     fn_802E317C(lbl_803449D4);
 }
