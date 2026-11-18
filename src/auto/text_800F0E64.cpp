@@ -806,12 +806,19 @@ extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8SeqTrackFPQ46nw4hbm3sn
         virtual void f30(); virtual void f31(); virtual void f32(); virtual void f33(); virtual void f34(); virtual void f35(); virtual void f36(); virtual void f37(); virtual void f38(); virtual void f39();
         virtual void f40(); virtual void f41(); virtual void f42(); virtual void f43(void *);
     };
+    struct Strings {
+        char file[0xA0];
+        char s1[0x30];
+        char s2[0x28];
+        char s3[0x2C];
+        char s4[1];
+    };
     register u32 token;
-    register const char *file = lbl_80324390;
+    register Strings *file = (Strings *)lbl_80324390;
     if (channel == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x209, file + 0xA0);
+        Panic__Q26nw4hbm2dbFPCciPCce(file->file, 0x209, file->s1);
     if (track == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x20A, file + 0xD0);
+        Panic__Q26nw4hbm2dbFPCciPCce(file->file, 0x20A, file->s2);
     switch (status) {
     case 0:
     case 2:
@@ -833,18 +840,17 @@ extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8SeqTrackFPQ46nw4hbm3sn
         return;
     }
     if (node == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x220, file + 0xF8);
-    void *next = *(void **)((u8 *)node + 0xE4);
-    while (next != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file->file, 0x220, file->s3);
+    void *next;
+    while ((next = *(void **)((u8 *)node + 0xE4)) != 0) {
         if (next == channel) {
             *(void **)((u8 *)node + 0xE4) = *(void **)((u8 *)channel + 0xE4);
             OSRestoreInterrupts(token);
             return;
         }
         node = next;
-        next = *(void **)((u8 *)node + 0xE4);
     }
-    Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u32)file + 0), 0x229, file + 0x124);
+    Panic__Q26nw4hbm2dbFPCciPCce(file->file, 0x229, file->s4);
     OSRestoreInterrupts(token);
 }
 #pragma pop
@@ -1059,9 +1065,9 @@ extern "C" void *fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
  u8 *p=(u8*)a; void *c;
  s32 valid=0;
  if(key>=0 && key<=127) valid=1;
- if(!valid) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u32)file+0),0x30a,file+0x268,key,0,127);
+ if(!valid) Panic__Q26nw4hbm2dbFPCciPCce(file+0,0x30a,file+0x268,key,0,127);
  valid=0; if(vel>=0 && vel<=127) valid=1;
- if(!valid) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((u32)file+0),0x30b,file+0x2a0,vel,0,127);
+ if(!valid) Panic__Q26nw4hbm2dbFPCciPCce(file+0,0x30b,file+0x2a0,vel,0,127);
  void *owner = *(void**)(p+0xb4);
  c=0;
  if(reuse && (c=*(void**)(p+0xb8))) {
@@ -1070,9 +1076,9 @@ extern "C" void *fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
  }
  if(!c) {
   Fn800F2330Args block = *(Fn800F2330Args*)lbl_802F4DB8;
-  block.values[0]=*(s32*)(p+0x64); block.values[1]=key; block.values[2]=vel; s32 duration=-1; if(!reuse) duration=arg3; block.values[3]=duration;
+  block.values[0]=*(s32*)(p+0x64); block.values[1]=key; block.values[2]=vel; block.values[3]=reuse?-1:arg3;
   block.values[4]=(s8)p[0x85]; block.values[5]=*(u8*)((u8*)owner+0x91)+p[0x88];
-  block.values[6]=*(s32*)((u8*)owner+0x8c); block.values[8]=(s32)p;
+  block.values[6]=*(s32*)((u8*)*(void**)(p+0xb4)+0x8c); block.values[8]=(s32)p;
   c=fn_800F0728(*(void**)(p+0xb4),*(s32*)(p+0x60),block.values); if(!c)return 0;
   u32 t=OSDisableInterrupts(); *(void**)((u8*)c+0xe4)=*(void**)(p+0xb8); *(void**)(p+0xb8)=c; OSRestoreInterrupts(t);
  }
@@ -1086,7 +1092,8 @@ extern "C" void *fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
  p[0x89]=(u8)key;
  u16 cur, total; total=*(u16*)((u8*)c+0xc6); cur=*(u16*)((u8*)c+0xc8); u32 enabled=p[0x5d]!=0; u8 val;
  if(cur>=total) val=*((u8*)c+0xc5); else {u8 st=*((u8*)c+0xc4); val=st+(cur*(*((u8*)c+0xc5)-st))/total;}
- *((u8*)c+0xc4)=val; *((u8*)c+0xc5)=enabled?0:255; *(u16*)((u8*)c+0xc6)=0; *(u16*)((u8*)c+0xc8)=0;
+ u8 *q=(u8*)c;
+ q[0xc4]=val; q[0xc5]=enabled?0:255; *(u16*)(q+0xc6)=0; *(u16*)(q+0xc8)=0;
  return c;
 }
 
@@ -1986,35 +1993,36 @@ extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ
     extern const char lbl_80324C2C[];
     extern const char lbl_80324C58[];
     extern const char lbl_80324C00[];
-    u8 *ref = *(u8 **)((u8 *)arg0 + 0x28);
-    u32 *table;
+    register const void *reader = arg0;
+    register u8 *file = *(u8 **)((u8 *)reader + 0x28);
+    u8 *table;
     u8 *entry;
-    u32 *group;
-    if (ref[0x19] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559898, 0x6F, lbl_80324C84);
-    table = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0x18], *(u32 *)(ref + 0x1C), ref);
+    u8 *group;
+    if (file[0x19] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559898, 0x6F, lbl_80324C84);
+    table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(file[0x18], *(u32 *)(file + 0x1C), file);
     if (table == 0) return 0;
-    if (arg1 >= *table) return 0;
+    if (arg1 >= *(u32 *)table) return 0;
     {
         u32 off = arg1 * 8;
-        ref = *(u8 **)((u8 *)arg0 + 0x28);
-        if (*((u8 *)table + off + 5) != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559888, 0x6F, lbl_80324C2C);
-        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)table + off + 4), *(u32 *)((u8 *)table + off + 8), ref);
+        file = *(u8 **)((u8 *)reader + 0x28);
+        if ((table + off)[5] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559888, 0x6F, lbl_80324C2C);
+        entry = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv((table + off)[4], *(u32 *)(table + off + 8), file);
     }
     if (entry == 0) return 0;
-    ref = *(u8 **)((u8 *)arg0 + 0x28);
+    file = *(u8 **)((u8 *)reader + 0x28);
     if (entry[0x15] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559890, 0x6F, lbl_80324C58);
-    group = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[0x14], *(u32 *)(entry + 0x18), ref);
+    group = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[0x14], *(u32 *)(entry + 0x18), file);
     if (group == 0) return 0;
-    if (arg2 >= *group) return 0;
+    if (arg2 >= *(u32 *)group) return 0;
     {
         u32 off = arg2 * 8;
-        ref = *(u8 **)((u8 *)arg0 + 0x28);
-        if (*((u8 *)group + off + 5) != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559880, 0x6F, lbl_80324C00);
-        table = (u32 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)group + off + 4), *(u32 *)((u8 *)group + off + 8), ref);
+        u8 *file2 = *(u8 **)((u8 *)reader + 0x28);
+        if ((group + off)[5] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559880, 0x6F, lbl_80324C00);
+        table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv((group + off)[4], *(u32 *)(group + off + 8), file2);
     }
     if (table == 0) return 0;
-    *(u32 *)arg3 = table[0];
-    *(u32 *)((u8 *)arg3 + 4) = table[1];
+    *(u32 *)arg3 = *(u32 *)table;
+    *(u32 *)((u8 *)arg3 + 4) = *(u32 *)(table + 4);
     return 1;
 }
 extern "C" int strcmp(const char *, const char *);
