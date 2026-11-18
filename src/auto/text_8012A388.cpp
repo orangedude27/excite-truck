@@ -3271,10 +3271,10 @@ extern "C" void fn_8012F06C(void *arg0) {
             if (entry != 0) {
                 s32 state = fn_8012D838(*(s32 *)((u8 *)entry + 0x4C));
                 switch (state) {
-                case 2:
+                case 0:
                     fn_8012E40C((void *)*(s32 *)((u8 *)entry + 0x4C), (s32)((u8 *)entry + 0xC));
                     break;
-                case 0: {
+                case 2: {
                     void *node = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
                     *(s32 *)((u8 *)node + 0x9C) = *(s32 *)((u8 *)entry + 8);
                     *(u8 *)((u8 *)node + 0xAD) = (u8)one;
