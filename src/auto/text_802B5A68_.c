@@ -1851,7 +1851,7 @@ s32 fn_802B8310(s32 arg0) {
         float *values;
     } result;
     register f32 lower;
-    register f32 bound = lbl_80564C9C;
+    register f32 bound = 10.0f;
     register float *values;
     register s32 changed;
     f32 value;
