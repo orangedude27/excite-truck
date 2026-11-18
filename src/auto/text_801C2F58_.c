@@ -951,6 +951,7 @@ void fn_801C56AC(void) {
     float cAC;
     float cB4;
     float c70;
+    float var_f23;
     float c78;
     float cBC;
     if ((u8)lbl_8055E7E2 == 0) return;
@@ -962,11 +963,11 @@ void fn_801C56AC(void) {
     cAC = lbl_805629AC;
     cB4 = lbl_805629B4;
     c70 = lbl_80562970;
+    var_f23 = 0;
     c78 = lbl_80562978;
     cBC = lbl_805629BC;
     i = 0;
     for (;;) {
-        float var_f23;
         obj = fn_8017960C(i);
         if (obj == 0) return;
         var_f23 = *(float *)(cfg + 8);
@@ -2199,25 +2200,22 @@ static inline void fn_801C7FE4_copyVec(Vec *dst, const Vec *src) {
 
 #pragma push
 #pragma opt_propagation off
+#pragma cplusplus on
 void fn_801C7FE4(void) {
     extern char lbl_80336FB0[];
     Unk_80437D88 *base = &lbl_80437D88;
-    char *obj;
-    f32 *src;
-    f32 *dst;
+    void *obj;
     lbl_8055E83A = 0;
     obj = fn_801C3C80();
-    *(s32 *)(obj + 8) = 6;
-    *(s32 *)(obj + 0xC) = lbl_8055E850;
-    strcpy(obj + 0x14, (char *)base + 0x4F8);
-    strcpy(obj + 0x114, (char *)base + 0x5F8);
-    *(s32 *)(obj + 0x10) = fn_801C3954((s32)obj + 0x14);
-    *(s32 *)(obj + 0x10) &= ~fn_801C3954((s32)obj + 0x114);
-    src = (f32 *)((char *)base + 0x4E0);
-    dst = (f32 *)(obj + 0x214);
-    *dst++ = *src++;
-    *dst++ = *src++;
-    *dst = *src;
+    *(s32 *)((char *)obj + 8) = 6;
+    *(s32 *)((char *)obj + 0xC) = lbl_8055E850;
+    strcpy((char *)obj + 0x14, (char *)base + 0x4F8);
+    strcpy((char *)obj + 0x114, (char *)base + 0x5F8);
+    *(s32 *)((char *)obj + 0x10) = fn_801C3954((s32)obj + 0x14);
+    *(s32 *)((char *)obj + 0x10) &= ~fn_801C3954((s32)obj + 0x114);
+    *(f32 *)((char *)obj + 0x214) = *(f32 *)((char *)base + 0x4E0);
+    *(f32 *)((char *)obj + 0x218) = *(f32 *)((char *)base + 0x4E4);
+    *(f32 *)((char *)obj + 0x21C) = *(f32 *)((char *)base + 0x4E8);
     sprintf((char *)base + 0x238, lbl_80336FB0, *(f32 *)obj);
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
@@ -3166,9 +3164,6 @@ void fn_801C96E4(void) {
     sTimelinePage = sTimelineSelection / 10;
 }
 
-#pragma scheduling invalid_target
-#pragma push
-#pragma dont_inline off
 s32 fn_801C9708(s32 arg0) {
     switch (arg0) {
     case 0xD:
@@ -3191,13 +3186,16 @@ s32 fn_801C9708(s32 arg0) {
             (arg0 >= 0x30 && arg0 <= 0x39) ||
             arg0 == 0x3A || arg0 == 0x2E ||
             arg0 == 0x20 || arg0 == 0x2D) {
-            fn_801C9708_append(lbl_804380F0, arg0);
+            u32 length = strlen(lbl_804380F0);
+            if (length < 0xFF) {
+                lbl_804380F0[length] = (char)arg0;
+                *(char*)(length + (u32)lbl_804380F0 + 1) = 0;
+            }
         }
         break;
     }
     return 1;
 }
-#pragma pop
 void fn_801C9830(void) {
     return;
 }
