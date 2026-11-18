@@ -622,55 +622,76 @@ s32 fn_80246AE8(void) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802473A4(void) {
-    char *base = lbl_80343270;
+#define gMessages       lbl_80343270 /* this file's strings, "pop_warn.lyt" first */
+#define gDemoRunning    lbl_8055F260 /* fn_80247624 reports it */
+#define gMenuFlag       lbl_8055D430 /* bit 0: the menu owns the screens */
+#define gWarnLine1      lbl_80498980 /* the warning pop-up's two message entries */
+#define gWarnLine2      lbl_8049898C
+#define gWarnLine1Shown lbl_8055F269 /* their text has been asked for once */
+#define gWarnLine2Shown lbl_8055F26A
+#define gMessageStamp   lbl_8055E044 /* message-table generation stamp */
+    char *messages = gMessages;
     int again;
-    int prior;
-    lbl_8055F260 = 1;
-    fn_8020A600(); fn_802ECEC4();
+    int priorSlot;
+
+    gDemoRunning = 1;
+    fn_8020A600();  /* let the music play */
+    fn_802ECEC4();  /* and show the "uisingle" movie on its own */
     goto check_a;
     for (;;) {
-        int code, old, flag;
+        int action, saved, menuFlag;
     loop_top:
-        fn_80019708();
+        fn_80019708(); /* forget a quit/reset an action may have asked for */
         again = 1;
         do {
-        fn_80129AEC(0);
-        code = fn_80247C18();
-        switch (code) {
-        case -1: fn_8024CF60(); break;
-        case 0: fn_8024CFB4(); break;
-        case 1: fn_8027DDCC(0); break;
-        case 2: fn_8027DDCC(1); break;
-        case 3: fn_8027DDCC(2); break;
-        case 4: fn_80260954(0); break;
-        case 5: fn_80260954(1); break;
-        case 6:
-            old=lbl_8055D430; flag=old&1; lbl_8055D430=old|1; fn_8023BEA8();
-            if (fn_802411D4()==0) {
-                if (!lbl_8055F269) { fn_801312EC(lbl_80498980,base+0x114); lbl_8055F269=1; }
-                if (!lbl_8055F26A) { fn_801312EC(lbl_8049898C,base+0x13c); lbl_8055F26A=1; }
-                if (*(unsigned int *)(lbl_80498980+8)!=lbl_8055E044) fn_80131318(lbl_80498980);
-                if (*(unsigned int *)(lbl_8049898C+8)!=lbl_8055E044) fn_80131318(lbl_8049898C);
-                fn_80214FD8(*(void **)(lbl_80498980+4),*(void **)(lbl_8049898C+4));
+            fn_80129AEC(0);
+            /* the attract menu's choice, from fn_80247C18's entry table */
+            action = fn_80247C18();
+            switch (action) {
+            case -1: fn_8024CF60(); break;   /* make a new profile */
+            case 0: fn_8024CFB4(); break;    /* use an existing profile */
+            case 1: fn_8027DDCC(0); break;   /* the three career screens */
+            case 2: fn_8027DDCC(1); break;
+            case 3: fn_8027DDCC(2); break;
+            case 4: fn_80260954(0); break;   /* the two challenge screens */
+            case 5: fn_80260954(1); break;
+            case 6: /* head-to-head, then the warning pop-up if a pad is missing */
+                saved = gMenuFlag; menuFlag = saved & 1; gMenuFlag = saved | 1;
+                fn_8023BEA8();
+                if (fn_802411D4() == 0) {
+                    /* both lines of the pop-up are filled in lazily: ask for the
+                     * text once, and re-resolve it whenever the message table has
+                     * moved on since it was last read */
+                    if (!gWarnLine1Shown) { fn_801312EC(gWarnLine1, messages + 0x114); gWarnLine1Shown = 1; }
+                    if (!gWarnLine2Shown) { fn_801312EC(gWarnLine2, messages + 0x13c); gWarnLine2Shown = 1; }
+                    if (*(unsigned int *)(gWarnLine1 + 8) != gMessageStamp) fn_80131318(gWarnLine1);
+                    if (*(unsigned int *)(gWarnLine2 + 8) != gMessageStamp) fn_80131318(gWarnLine2);
+                    fn_80214FD8(*(void **)(gWarnLine1 + 4), *(void **)(gWarnLine2 + 4));
+                }
+                gMenuFlag = (gMenuFlag & ~1) | menuFlag; break;
+            case 7: /* a profile screen: save and leave the demo once the current
+                     * profile slot reports itself unloaded */
+                fn_80239F74(); fn_8000DA10();
+                if (fn_8000DBAC()) { fn_802E6FBC(); again = 0; } break;
+            case 8: fn_802E6FBC(); break;    /* write the memory-card save */
+            case 9: /* hand the current profile slot over to player 1 */
+                saved = gMenuFlag; menuFlag = saved & 1; gMenuFlag = saved | 1;
+                fn_800169F8(fn_8000DC70(0), 0); fn_80137C78(1);
+                priorSlot = fn_8000DA10(); fn_80137C84(fn_802E4A10(), priorSlot);
+                fn_80129AEC(fn_802E4A10()); fn_8023BCEC(); gMenuFlag = (gMenuFlag & ~1) | menuFlag; break;
+            case 10: fn_8025812C(); break;
+            case 11: fn_8025C054(); break;
+            case 12: fn_800196FC(); break;   /* ask for a quit/reset */
+            case 13: fn_80161DE4(); fn_8027DE6C(); break;
+            case 14: fn_80263F30(1,1,1); break;
+            case 15: again = 0; break;       /* back out to the attract screen */
+            case 16: case 17: break;         /* nothing bound to these entries */
+            default: fn_802E317C(messages + 0x168); break;
             }
-            lbl_8055D430=(lbl_8055D430&~1)|flag; break;
-        case 7: fn_80239F74(); fn_8000DA10(); if(fn_8000DBAC()){fn_802E6FBC();again=0;} break;
-        case 8: fn_802E6FBC(); break;
-        case 9:
-            old=lbl_8055D430; flag=old&1; lbl_8055D430=old|1;
-            fn_800169F8(fn_8000DC70(0), 0); fn_80137C78(1);
-            prior=fn_8000DA10(); fn_80137C84(fn_802E4A10(), prior);
-            fn_80129AEC(fn_802E4A10()); fn_8023BCEC(); lbl_8055D430=(lbl_8055D430&~1)|flag; break;
-        case 10: fn_8025812C(); break;
-        case 11: fn_8025C054(); break;
-        case 12: fn_800196FC(); break;
-        case 13: fn_80161DE4(); fn_8027DE6C(); break;
-        case 14: fn_80263F30(1,1,1); break;
-        case 15: again=0; break;
-        case 16: case 17: break;
-        default: fn_802E317C(base + 0x168); break;
-        }
         } while (again);
+        /* The attract screen runs until the profile dialog fn_8024CF54 reports
+         * that the menu should come back; fn_80246AE8 always says it is still
+         * running, so this only leaves through that goto. */
         do {
             if (fn_8024CF54()) goto loop_top;
     check_a:
@@ -678,7 +699,15 @@ void fn_802473A4(void) {
         } while (fn_80246AE8());
         break;
     }
-    lbl_8055F260=0;
+    gDemoRunning = 0;
+#undef gMessages
+#undef gDemoRunning
+#undef gMenuFlag
+#undef gWarnLine1
+#undef gWarnLine2
+#undef gWarnLine1Shown
+#undef gWarnLine2Shown
+#undef gMessageStamp
 }
 #pragma pop
 char fn_80247624(void) {
@@ -1525,6 +1554,8 @@ void fn_80248CD8(void *effect)
   fn_802C942C((alpha << 24) | 0xFFFFFF);
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_80248E30(void *arg0) {
     extern float lbl_805638DC;
     extern char lbl_803438A0[];
@@ -1534,8 +1565,6 @@ void fn_80248E30(void *arg0) {
     register s32 now;
     s32 duration;
     register s32 elapsed;
-    float factor;
-    float value;
 
     if (*(s32 *)((char *)arg0 + 0x20) == 0 &&
         *(s32 *)((char *)arg0 + 0x18) == 1)
@@ -1548,17 +1577,17 @@ void fn_80248E30(void *arg0) {
         elapsed = now - *(s32 *)((char *)arg0 + 0x1C);
         duration = *(s32 *)((char *)arg0 + 0x20);
         if (elapsed > duration - 0x190) {
-            factor = lbl_80563898;
-            value = (float)(duration - elapsed) / lbl_805638DC;
-            factor = factor < value ? value : factor;
-            factor = factor > lbl_805638B0 ? lbl_805638B0 : factor;
+            float factor = lbl_80563898;
+            float value = (float)(duration - elapsed) / lbl_805638DC;
+            factor = factor < value ? factor : value;
+            factor = factor > lbl_805638B0 ? factor : lbl_805638B0;
             fn_80246CAC(factor);
         }
     }
 
     if (now > *(s32 *)((char *)arg0 + 0x1C) +
               *(s32 *)((char *)arg0 + 0x20)) {
-        switch (*(s32 *)((char *)arg0 + 0x18)) {
+        switch (duration = *(s32 *)((char *)arg0 + 0x18)) {
         case 1: fn_80221F94(arg0, -0xEA); break;
         case 4: fn_80221F94(arg0, -1); break;
         case 2: fn_80221F94(arg0, -2); break;
@@ -1572,8 +1601,7 @@ void fn_80248E30(void *arg0) {
         }
     }
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 s32 fn_80248FB0(void *stunt, s32 button) {
     s32 nowMs, startMs, durationMs;
     /* Timed input window for a stunt tracker (+0x18 state, +0x1C start ms,
