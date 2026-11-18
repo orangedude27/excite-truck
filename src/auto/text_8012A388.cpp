@@ -3582,7 +3582,7 @@ extern "C" void *fn_8012CB44(void *arg0, s32 arg1) {
                 base = *(void **)((char *)arg0 + 0x60);
                 entry = (char *)base + offset;
                 flags = *(u32 *)((char *)entry + 0x34);
-                if ((flags & 4) != 0) fn_802E317C(lbl_8032AE20);
+                if ((flags & 4) != 0) fn_802E317C(lbl_8032AE20, entry);
                 base = *(void **)((char *)arg0 + 0x60);
                 entry = (char *)base + offset;
                 flags = *(u32 *)((char *)entry + 0x34);
