@@ -162,32 +162,30 @@ void fn_801A6558(void *arg0) {
     float zero;
     float one;
     void *tmp;
-    char *p = (char *)arg0;
-    *(int *)(p + 0x2778) = 4;
+    void *buffer;
+    *(int *)((char *)arg0 + 0x2778) = 4;
     tmp = fn_802E2C20();
     zero = lbl_80562430;
     one = lbl_8056242C;
-    *(void **)(p + 0x277C) = tmp;
-    *(float *)(p + 0x273C) = one;
-    *(float *)(p + 0x2738) = one;
-    *(int *)(p + 0x2704) = 0;
-    *(float *)(p + 0x272C) = zero;
-    *(float *)(p + 0x2730) = zero;
-    *(float *)(p + 0x2734) = zero;
-    *(float *)(p + 0x2708) = zero;
-    *(float *)(p + 0x270C) = zero;
-    *(float *)(p + 0x2710) = zero;
-    *(float *)(p + 0x2714) = zero;
-    *(float *)(p + 0x2718) = zero;
-    *(float *)(p + 0x271C) = zero;
-    *(float *)(p + 0x2720) = zero;
-    *(float *)(p + 0x2724) = zero;
-    *(float *)(p + 0x2728) = zero;
-    {
-        int n = 0xE7;
-        memset(*(void **)(p + 0x2700), 0, n);
-    }
-    if (*(unsigned char *)(p + 0x2740))
+    *(void **)((char *)arg0 + 0x277C) = tmp;
+    buffer = *(void **)((char *)arg0 + 0x2700);
+    *(float *)((char *)arg0 + 0x273C) = one;
+    *(float *)((char *)arg0 + 0x2738) = one;
+    *(int *)((char *)arg0 + 0x2704) = 0;
+    *(float *)((char *)arg0 + 0x272C) = zero;
+    *(float *)((char *)arg0 + 0x2730) = zero;
+    *(float *)((char *)arg0 + 0x2734) = zero;
+    *(float *)((char *)arg0 + 0x2708) = zero;
+    *(float *)((char *)arg0 + 0x270C) = zero;
+    *(float *)((char *)arg0 + 0x2710) = zero;
+    *(float *)((char *)arg0 + 0x2714) = zero;
+    *(float *)((char *)arg0 + 0x2718) = zero;
+    *(float *)((char *)arg0 + 0x271C) = zero;
+    *(float *)((char *)arg0 + 0x2720) = zero;
+    *(float *)((char *)arg0 + 0x2724) = zero;
+    *(float *)((char *)arg0 + 0x2728) = zero;
+    memset(buffer, 0, 0xE7);
+    if (*(unsigned char *)((char *)arg0 + 0x2740))
         fn_801A67B0(arg0);
 }
 #pragma scheduling on
@@ -372,55 +370,72 @@ extern double lbl_80562440;
 #pragma ppc_psq_save off
 #pragma cplusplus on
 extern "C" void fn_8017A580(void *);
-extern "C" void fn_801A69F4(void *arg0, float *arg1) {
-    char *p = (char *)arg0;
-    int k = lbl_8055E3C4;
-    float t[3];
-    float out0[3], outA[3], outB[3];
-    float a0;
-    double a, b, c, d, x, y, z;
-    double ab, ak, dk, da, xden, xnum, ka, kb, ynum, znum, yden;
-
-    a0 = fn_801A63C4(k, *(int *)(*(char **)(p + 0x2700) + 4));
-    t[0] = fn_801A6370(*(float *)(*(char **)(p + 0x2700) + 0x1e), *(float *)(p + 0x2708), *(float *)(p + 0x272c), a0);
-    t[1] = fn_801A6370(*(float *)(*(char **)(p + 0x2700) + 0x22), *(float *)(p + 0x270c), *(float *)(p + 0x2730), a0);
-    t[2] = fn_801A6370(*(float *)(*(char **)(p + 0x2700) + 0x26), *(float *)(p + 0x2710), *(float *)(p + 0x2734), a0);
-
-    a = fn_801A63C4(*(int *)(*(char **)(p + 0x2700) + 0x51), *(int *)(*(char **)(p + 0x2700) + 0x9e));
-    b = fn_801A63C4(*(int *)(*(char **)(p + 0x2700) + 4), *(int *)(*(char **)(p + 0x2700) + 0x9e));
-    c = fn_801A63C4(k, *(int *)(*(char **)(p + 0x2700) + 0x9e));
-    d = c + c;
-    ab = a - b;
-    ak = a - lbl_80562440;
-    dk = d - lbl_80562440;
-    da = d - a;
-    xden = ak * ab;
-    xnum = dk - b;
-    ka = lbl_80562440 - a;
-    kb = lbl_80562440 - b;
-    ynum = da - b;
-    znum = dk - a;
-    yden = ka * kb;
-    x = xnum / xden;
-    y = ynum / yden;
-    z = znum / ((b - lbl_80562440) * (b - a));
-    {
-        char *data = *(char **)(p + 0x2700);
-        out0[0] = *(float *)(data + 0x6b) * x + *(float *)(data + 0xb8) * y + *(float *)(data + 0x1e) * z;
-        data = *(char **)(p + 0x2700);
-        out0[1] = *(float *)(data + 0x6f) * x + *(float *)(data + 0xbc) * y + *(float *)(data + 0x22) * z;
-        data = *(char **)(p + 0x2700);
-        out0[2] = *(float *)(data + 0x73) * x + *(float *)(data + 0xc0) * y + *(float *)(data + 0x26) * z;
-    }
-    fn_801A63F4(outA, p + 0x60, t, arg1 + 1);
-    *(float *)(p + 0x60) = outA[0];
-    *(float *)(p + 0x64) = outA[1];
-    *(float *)(p + 0x68) = outA[2];
-    fn_8017A580(arg0);
-    fn_801A63F4(outB, p + 0x118, out0, arg1 + 1);
-    *(float *)(p + 0x118) = outB[0];
-    *(float *)(p + 0x11c) = outB[1];
-    *(float *)(p + 0x120) = outB[2];
+extern "C" void fn_801A69F4(void *arg0, float *arg1)
+{
+  char *p = (char *) arg0;
+  int k = lbl_8055E3C4;
+  float t[3];
+  float out0[3];
+  float outA[3];
+  float outB[3];
+  float a0;
+  double a;
+  double b;
+  double c;
+  double d;
+  double x;
+  double z;
+  double ab;
+  double ak;
+  double dk;
+  double y;
+  double da;
+  double xden;
+  double xnum;
+  double ka;
+  double kb;
+  double ynum;
+  double znum;
+  double yden;
+  a0 = fn_801A63C4(k, *((int *) ((*((char **) (p + 0x2700))) + 4)));
+  t[0] = fn_801A6370(*((float *) ((*((char **) (p + 0x2700))) + 0x1e)), *((float *) (p + 0x2708)), *((float *) (p + 0x272c)), a0);
+  t[1] = fn_801A6370(*((float *) ((*((char **) (p + 0x2700))) + 0x22)), *((float *) (p + 0x270c)), *((float *) (p + 0x2730)), a0);
+  t[2] = fn_801A6370(*((float *) ((*((char **) (p + 0x2700))) + 0x26)), *((float *) (p + 0x2710)), *((float *) (p + 0x2734)), a0);
+  a = fn_801A63C4(*((int *) ((*((char **) (p + 0x2700))) + 0x51)), *((int *) ((*((char **) (p + 0x2700))) + 0x9e)));
+  b = fn_801A63C4(*((int *) ((*((char **) (p + 0x2700))) + 4)), *((int *) ((*((char **) (p + 0x2700))) + 0x9e)));
+  c = fn_801A63C4(k, *((int *) ((*((char **) (p + 0x2700))) + 0x9e)));
+  d = c + c;
+  ab = a - b;
+  ak = a - lbl_80562440;
+  dk = d - lbl_80562440;
+  da = d - a;
+  xden = ak * ab;
+  xnum = dk - b;
+  ka = lbl_80562440 - a;
+  kb = lbl_80562440 - b;
+  ynum = da - b;
+  znum = dk - a;
+  yden = ka * kb;
+  x = xnum / xden;
+  y = ynum / yden;
+  z = znum / ((b - lbl_80562440) * (b - a));
+  {
+    char *data = *((char **) (p + 0x2700));
+    out0[0] = (((*((float *) (data + 0x6b))) * x) + ((*((float *) (data + 0xb8))) * y)) + ((*((float *) (data + 0x1e))) * z);
+    data = *((char **) (p + 0x2700));
+    out0[1] = (((*((float *) (data + 0x6f))) * x) + ((*((float *) (data + 0xbc))) * y)) + ((*((float *) (data + 0x22))) * z);
+    data = *((char **) (p + 0x2700));
+    out0[2] = (((*((float *) (data + 0x73))) * x) + ((*((float *) (data + 0xc0))) * y)) + ((*((float *) (data + 0x26))) * z);
+  }
+  fn_801A63F4(outA, p + 0x60, t, arg1 + 1);
+  *((float *) (p + 0x60)) = outA[0];
+  *((float *) (p + 0x64)) = outA[1];
+  *((float *) (p + 0x68)) = outA[2];
+  fn_8017A580(arg0);
+  fn_801A63F4(outB, p + 0x118, out0, arg1 + 1);
+  *((float *) (p + 0x118)) = outB[0];
+  *((float *) (p + 0x11c)) = outB[1];
+  *((float *) (p + 0x120)) = outB[2];
 }
 #pragma ppc_psq_save reset
 #pragma cplusplus reset
@@ -433,55 +448,15 @@ extern "C" void fn_801A6C14(void *arg0) {
     float *matrix;
     unsigned char temp_b2, temp_b1;
     float one, zero;
-    int sp50;
-    float sp4C;
-    float sp48;
-    float sp44;
-    float sp40;
-    float sp3C;
-    float sp38;
-    float sp34;
-    float sp30;
-    float sp2C;
-    float sp28;
-    float sp24;
-    float sp20;
-    float sp1C;
-    float sp18;
-    float sp14;
-    float temp_f10;
-    float temp_f10_2;
-    float temp_f11;
-    float temp_f12;
-    float temp_f1;
-    float temp_f1_2;
-    float temp_f1_3;
-    float temp_f2;
-    float temp_f2_2;
-    float temp_f3;
-    float temp_f3_2;
-    float temp_f4;
-    float temp_f4_2;
-    float temp_f5;
-    float temp_f5_2;
-    float temp_f6;
-    float temp_f6_2;
-    float temp_f7;
-    float temp_f7_2;
-    float temp_f8;
-    float temp_f9;
-    float temp_f9_2;
-    void *temp_r3;
-    void *temp_r4;
-    void *temp_r4_2;
-    void *temp_r4_3;
-    void *temp_r4_4;
-    void *temp_r4_5;
+    float temp_f10, temp_f10_2, temp_f11, temp_f12, temp_f1, temp_f1_2, temp_f1_3;
+    float temp_f2, temp_f2_2, temp_f3, temp_f3_2, temp_f4, temp_f4_2, temp_f5, temp_f5_2;
+    float temp_f6, temp_f6_2, temp_f7, temp_f7_2, temp_f8, temp_f9, temp_f9_2;
+    void *temp_r3, *temp_r4, *temp_r4_2, *temp_r4_3, *temp_r4_4, *temp_r4_5;
 
-    matrix = data.matrix;
     one = lbl_8056242C;
-    data.tag = -1;
     zero = lbl_80562430;
+    matrix = data.matrix;
+    data.tag = -1;
     temp_r4 = M2C_FIELD(arg0, void **, 0x2700);
     temp_f8 = M2C_FIELD(temp_r4, float *, 0x2A);
     temp_f2 = M2C_FIELD(temp_r4, float *, 0x2E);
@@ -686,10 +661,14 @@ extern "C" void fn_801A6C14(void *arg0) {
 #pragma scheduling reset
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 float fn_801A70EC(int arg0, void *arg1, void *arg2, int arg3) {
     float ratio;
-    ratio = fn_801A63C4(arg3, ((int *)arg1)[1]) / fn_801A63C4(((int *)arg2)[1], ((int *)arg1)[1]);
+    float denominator;
+    int a;
+    denominator = fn_801A63C4((a = *(int *)((char *)arg1 + 4), *(int *)((char *)arg2 + 4)), a);
+    ratio = fn_801A63C4(arg3, *(int *)((char *)arg1 + 4));
+    ratio /= denominator;
     fn_8012F57C(arg0, (char *)arg1 + 0x2A, (char *)arg2 + 0x2A, ratio);
     return ratio;
 }
