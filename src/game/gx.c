@@ -1426,7 +1426,8 @@ void fn_802D0610(int arg0) {
 
 #pragma push
 #pragma optimize_for_size on
-#pragma scheduling invalid_target
+#pragma peephole on
+#pragma scheduling on
 void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
     extern int lbl_8055D0BC;
@@ -1434,8 +1435,7 @@ void fn_802D07E4(char* arg0, int arg1) {
     extern signed char lbl_8055FD90;
     extern unsigned char lbl_804C9830[];
     extern int lbl_804C9760[];
-    extern char lbl_8034C0EC[];
-    extern const char lbl_8034C108[];
+    extern char lbl_8034C0EC[], lbl_8034C108[];
     extern void fn_802E30C8(const char*, ...);
     unsigned char *src = (unsigned char *)arg0;
     register unsigned char c;
