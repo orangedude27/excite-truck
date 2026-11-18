@@ -441,20 +441,16 @@ extern "C" void fn_80211690(s32 arg0) {
 extern "C" void fn_80211D24(int arg0) {
 #pragma scheduling invalid_target
     struct Obj { virtual ~Obj(); };
-    int v;
-    s32 *pp, *p;
+    struct Row { char pad[8]; Obj *objs[4]; };
     int j;
-    int flag;
-    Obj **q;
-    unsigned char *row;
+    bool flag;
     int i;
+    int v;
     fn_802ECC18(0);
     flag = (arg0 == 0);
-    row = lbl_80490558;
-    for (i = 0; i < 8; i++, row += 0x18) {
-        q = (Obj **)row;
-        for (j = 0; j < 4; j++, q++) {
-            Obj *o = q[2];
+    for (i = 0; i < 8; i++) {
+        for (j = 0; j < 4; j++) {
+            Obj *o = ((Row *)lbl_80490558)[i].objs[j];
             if (o != 0) delete o;
         }
     }
@@ -467,17 +463,15 @@ extern "C" void fn_80211D24(int arg0) {
     fn_8021676C();
     fn_8022A7D0();
     fn_8020A550();
-    if (flag == 0) {
+    if (!flag) {
         if (lbl_8055EF1C != 0) fn_80235380(lbl_8055EF1C);
         lbl_8055EF1C = 0;
         if (lbl_8055EF20 != 0) fn_80235380(lbl_8055EF20);
         lbl_8055EF20 = 0;
-        p = lbl_80490528;
-        for (i = 0; i < 3; i++, p += 4) {
-            pp = p;
-            for (j = 0; j < 4; j++, pp++) {
-                fn_802C519C(*pp);
-                *pp = 0;
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 4; j++) {
+                fn_802C519C(((s32 (*)[4])lbl_80490528)[i][j]);
+                ((s32 (*)[4])lbl_80490528)[i][j] = 0;
             }
         }
         fn_80238920();
@@ -489,7 +483,7 @@ extern "C" void fn_80211D24(int arg0) {
         lbl_80490528[9] = 0;
     }
     v = fn_80128314(0);
-    if (v != lbl_8055EF18) fn_802E30C8(lbl_8033CD88, v);
+    if (v != lbl_8055EF18) fn_802E30C8(lbl_8033CD88, v, lbl_8055EF18);
     fn_802E1058();
 }
 #pragma use_lmw_stmw reset
