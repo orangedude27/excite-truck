@@ -942,6 +942,8 @@ void fn_8023B368(void) {}
 /* Constant predicate (returns 0 / false); likely a virtual getter reached through a dispatch table. */
 s32 fn_8023B36C(void) { return 0; }
 
+#pragma push
+#pragma cplusplus on
 void fn_8023B374(void *arg0) {
     void **base = (void **)arg0;
     s32 mode = fn_80210570();
@@ -960,6 +962,8 @@ void fn_8023B374(void *arg0) {
     tbl = *(s32 (***)(void *, s32))((char *)obj + 0xC);
     tbl[13](obj, mode);
 }
+#pragma cplusplus reset
+#pragma pop
 
 void fn_8023B400(void) {}
 
