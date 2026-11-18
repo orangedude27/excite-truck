@@ -458,31 +458,53 @@ extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* arg4, f32 farg0) {
-    Vec proj, d, a, b, p;
+/* The slip a contact has to rub off.  For the two shapes that touch, it takes
+ * the velocity each one has at the contact point (fn_8017B6D4; a shape with no
+ * rigid body at +0x04 counts as still), takes their difference and drops the
+ * part of it along the contact normal, leaving how the two surfaces slide over
+ * each other.  That tangential slip is turned around and scaled by kSlipScale,
+ * then shortened to at most half the two shapes' radii added times `scale`, and
+ * written to `out`. */
+extern "C" void fn_801996BC(Vec* out, s32 contactPoint, Vec* normal, void* shapeA, void* shapeB, f32 scale) {
+    #define kZero      lbl_805622D0 /* 0.0f */
+    #define kSlipScale lbl_805622E4 /* -1000.0f */
+    #define kHalf      lbl_805622E8 /* 0.5f */
+    /* The two shapes of a contact, as fn_80199894 hands them over. */
+    struct Collider {
+        u8  pad00[0x04];
+        s32 body;      /* +0x04: rigid body moving the shape, 0 when it cannot move */
+        u8  pad08[0x08];
+        f32 push;      /* +0x10: how hard the shape pushes, used by the caller */
+        f32 radius;    /* +0x14: how far the contact may move it */
+    };
+    Vec proj, rel, velA, velB, slip;
     f32 dot, mag, limit;
-    s32 pa = *(s32*)((u8*)arg3+4);
-    s32 pb = *(s32*)((u8*)arg4+4);
-    if (pa) fn_8017B6D4(pa, &a, arg1);
-    else { a.x=lbl_805622D0; a.y=lbl_805622D0; a.z=lbl_805622D0; }
-    if (pb) fn_8017B6D4(pb, &b, arg1);
-    else { b.x=lbl_805622D0; b.y=lbl_805622D0; b.z=lbl_805622D0; }
-    d.x=a.x-b.x; d.y=a.y-b.y; d.z=a.z-b.z;
-    dot=PSVECDotProduct(arg2,&d);
-    proj.x=arg2->x*dot; proj.y=arg2->y*dot; proj.z=arg2->z*dot;
-    d.x-=proj.x; d.y-=proj.y; d.z-=proj.z;
-    p.x=d.x*lbl_805622E4; p.y=d.y*lbl_805622E4; p.z=d.z*lbl_805622E4;
-    mag=PSVECMag(&p);
+    s32 bodyA = ((Collider *)shapeA)->body;
+    s32 bodyB = ((Collider *)shapeB)->body;
+    if (bodyA) fn_8017B6D4(bodyA, &velA, contactPoint);
+    else { velA.x=kZero; velA.y=kZero; velA.z=kZero; }
+    if (bodyB) fn_8017B6D4(bodyB, &velB, contactPoint);
+    else { velB.x=kZero; velB.y=kZero; velB.z=kZero; }
+    rel.x=velA.x-velB.x; rel.y=velA.y-velB.y; rel.z=velA.z-velB.z;
+    dot=PSVECDotProduct(normal,&rel);
+    proj.x=normal->x*dot; proj.y=normal->y*dot; proj.z=normal->z*dot;
+    rel.x-=proj.x; rel.y-=proj.y; rel.z-=proj.z;
+    slip.x=rel.x*kSlipScale; slip.y=rel.y*kSlipScale; slip.z=rel.z*kSlipScale;
+    mag=PSVECMag(&slip);
     {
-        f32 k = lbl_805622E8 * farg0;
-        f32 rB = *(f32*)((u8*)arg4+0x14);
-        f32 rA = *(f32*)((u8*)arg3+0x14);
-        limit = k * (rA + rB);
+        f32 k = kHalf * scale;
+        f32 radiusB = ((Collider *)shapeB)->radius;
+        f32 radiusA = ((Collider *)shapeA)->radius;
+        limit = k * (radiusA + radiusB);
     }
-    if (mag>limit) { f32 s=limit/mag; p.x*=s; p.y*=s; p.z*=s; }
-    arg0->x = p.x;
-    arg0->y = p.y;
-    arg0->z = p.z;
+    if (mag>limit) { f32 s=limit/mag; slip.x*=s; slip.y*=s; slip.z*=s; }
+    out->x = slip.x;
+    out->y = slip.y;
+    out->z = slip.z;
+
+    #undef kZero
+    #undef kSlipScale
+    #undef kHalf
 }
 #pragma pop
 extern "C" void fn_80199870(void* car, u32 key = 0) {
