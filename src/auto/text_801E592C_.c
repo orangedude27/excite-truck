@@ -10,6 +10,8 @@ struct Rec14 { s32 v[14]; };
 struct Rec8 { s32 v[8][14]; };
 typedef union { struct Rec14 r; s32 w[14]; } U14;
 struct SrcHdr { s32 unk[2]; s32 count; s32 unk2; struct Rec14 data[1]; };
+typedef struct { s32 v[12]; } Words12;
+typedef struct { s32 pad; s32 v[9]; } Words9;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -57,6 +59,7 @@ void fn_801E5998(struct SrcHdr *src, struct Rec14 *dst, s32 *outCount) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 s32 fn_801E5E24(s32 arg0, void *arg1, s32 arg2, void *arg3) {
+    register float ONE = 1.0f, ZERO = 0.0f, NEG = -1.0f;
     float m00, m01, m02, m10, m11, m12, m20, m21, m22;
     float qx, qy, qz, qw;
     float xx2, yy2, zz2, wx2, wy2, wz2, xy2, xz2, yz2;
@@ -93,24 +96,24 @@ s32 fn_801E5E24(s32 arg0, void *arg1, s32 arg2, void *arg3) {
         wx2 = qw * (qx + qx);
         wy2 = qw * (qy + qy);
         wz2 = qw * (qz + qz);
-        m00 = 1.0f - (yy2 + zz2);
+        m00 = ONE - (yy2 + zz2);
         m01 = xy2 - wz2;
         m02 = xz2 + wy2;
         m10 = xy2 + wz2;
-        m11 = 1.0f - (xx2 + zz2);
+        m11 = ONE - (xx2 + zz2);
         m12 = yz2 - wx2;
         m20 = xz2 - wy2;
         m21 = yz2 + wx2;
-        m22 = 1.0f - (xx2 + yy2);
+        m22 = ONE - (xx2 + yy2);
         idx = ((s32 *)curRec)[12];
         a00 = curRec[0]; a01 = curRec[1]; a02 = curRec[2];
         a10 = curRec[3]; a11 = curRec[4]; a12 = curRec[5];
         a20 = curRec[6]; a21 = curRec[7]; a22 = curRec[8];
         b00 = curRec[9]; b01 = curRec[10]; b02 = curRec[11];
         if (idx < 1) {
-            c00 = 1.0f; c01 = 0.0f; c02 = 0.0f;
-            c10 = 0.0f; c11 = 1.0f; c12 = 0.0f;
-            c20 = 0.0f; c21 = 0.0f; c22 = 1.0f;
+            c00 = ONE; c01 = ZERO; c02 = ZERO;
+            c10 = ZERO; c11 = ONE; c12 = ZERO;
+            c20 = ZERO; c21 = ZERO; c22 = ONE;
         } else {
             float *src = (float *)((u8 *)bufB + idx * 0x30);
             c00 = src[0]; c01 = src[1]; c02 = src[2];
@@ -132,7 +135,7 @@ s32 fn_801E5E24(s32 arg0, void *arg1, s32 arg2, void *arg3) {
         tmpV[0] = (b02 * v2) + ((b00 * t0) + (b01 * s0));
         tmpV[1] = (b02 * s2) + ((b00 * t1) + (b01 * s1));
         tmpV[2] = (b02 * v2) + ((b00 * v0) + (b01 * v1));
-        tmpV[0] *= -1.0f; tmpV[1] *= -1.0f; tmpV[2] *= -1.0f;
+        tmpV[0] *= NEG; tmpV[1] *= NEG; tmpV[2] *= NEG;
         fn_801BFD34(tmpM, tmpV, tmpR);
         fn_80015B20(tmpV, tmpR, tmpR);
         fn_801BFD34((void *)((u8 *)curDst + 0x24), tmpM, tmpR);
