@@ -37,7 +37,6 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *a
     register const unsigned char *file = (const unsigned char *)arg1;
     register char *strings = lbl_803276F0;
     register unsigned short temp_r0;
-    register unsigned short temp_r4;
     register unsigned int var_r0;
     *(unsigned int *)self = 0;
     *(unsigned int *)((char *)self + 4) = 0;
@@ -57,8 +56,7 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv_800FFECC(void *a
         } else {
             if (temp_r0 > 0x102)
                 Panic__Q26nw4hbm2dbFPCciPCce(strings + 0, 0x45, strings + 0x5C);
-            temp_r4 = *(const unsigned short *)(file + 6);
-            var_r0 = (unsigned int)(~(temp_r4 & ~0x102U) - ((0x102U - temp_r4) >> 1)) >> 31;
+            var_r0 = (*(const unsigned short *)(file + 6) <= 0x102);
         }
     }
     if ((int)var_r0 == 0)
@@ -83,6 +81,7 @@ extern "C" char lbl_80327904[];
 extern "C" char lbl_80559918;
 extern "C" char lbl_80559920;
 #pragma use_lmw_stmw off
+#pragma scheduling 750
 extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail13WaveSoundInfoi(void* arg0, void* arg1, int arg2) {
     register unsigned char* base = (unsigned char*)*(void**)((char*)arg0 + 4);
     register unsigned char* data = base + 8;
@@ -175,6 +174,7 @@ extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46n
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(void* arg0, unsigned int arg1, void* arg2, const void* arg3) {
     struct Hdr { char pad[6]; unsigned short ver; };
@@ -591,13 +591,12 @@ extern "C" void fn_80101130(void) {
     char *strings = lbl_80327930;
     char *node = *(char **)(lbl_8041D4C4 + 4);
     char *end = lbl_8041D4C4 + 4;
-    unsigned char *entry, *track;
     while (node != end) {
-        entry = (unsigned char *)node;
+        unsigned char *entry = (unsigned char *)node;
         node = *(char **)node;
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327C7C, 0x23D, lbl_80327C58);
-        track = entry - 0x14;
+        unsigned char *track = entry - 0x14;
         if (entry[9] == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x216, strings + 0x148);
         if (track[0x1F] == 0)
@@ -658,21 +657,23 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) 
         virtual void Dummy1();
         virtual void Stop();
     };
-    void* pList;
-    void* pHead;
+    void* pList = (void*)&lbl_8041D4C4[0x04];
+    void* pHead = *(void**)pList;
     void* pPlayer;
-    pList = (void*)&lbl_8041D4C4[0x04];
-    pHead = *(void* volatile*)pList;
+
     while (pHead != pList) {
         pPlayer = pHead;
-        pHead = *(void* volatile*)pPlayer;
+        pHead = *(void**)pPlayer;
         if (pPlayer == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327C7C, 0x23D, (const char*)lbl_80327C58);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327C7C, 0x23D,
+                                         (const char*)lbl_80327C58);
         }
         ((PlayerVTable*)((char*)pPlayer - 0x14))->Stop();
     }
+
     if (*(int*)&lbl_8041D4C4[0] != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327930, 0x24D, (const char*)lbl_80327AC4);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327930, 0x24D,
+                                     (const char*)lbl_80327AC4);
     }
 }
 #pragma pop
