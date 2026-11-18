@@ -36,7 +36,6 @@ extern float lbl_805626E0, lbl_805626E4, lbl_805626E8, lbl_805626EC, lbl_805626F
 extern void *memset(void *, int, unsigned long);
 
 #pragma push
-#pragma scheduling invalid_target
 void fn_801B6670(void) {
     UnkEntry *table;
     unsigned char *base = (unsigned char*)&lbl_80335F70;
