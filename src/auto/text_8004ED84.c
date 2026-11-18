@@ -66,6 +66,7 @@ extern char *ParseStringS(int, char *, int **, int *);
 extern void *ParseStringW(int, void *, int *, int *, int);
 extern int IOS_IoctlvReboot(int, int, int, int, void *);
 int IOS_Ioctlv(int, int, int, int, void *, int);
+#pragma opt_propagation off
 int _ES_GetTicketViews(int *fd, int unused, int inputA, int inputB, void *views, int *outCount) {
     struct Frame {
         int vec[6];
@@ -75,16 +76,16 @@ int _ES_GetTicketViews(int *fd, int unused, int inputA, int inputB, void *views,
         int output;
         char pad2[0xDC];
     } __attribute__((aligned(32))) frame;
+    int zero;
     int *vec = &frame.vec[0];
     int *args = &frame.args[0];
     int *outp = &frame.output;
     int result;
-    if (*fd < 0) return -0x3F9;
-    if (outCount == (int *)0) return -0x3F9;
+    if (*fd < 0 || (zero = 0, outCount == (int *)zero)) return -0x3F9;
     if (((unsigned int)views & 0x1F) != 0) return -0x3F9;
     frame.args[1] = inputB;
     frame.args[0] = inputA;
-    if (views == (void *)0) {
+    if (views == (void *)zero) {
         vec[0] = (int)args;
         vec[1] = 8;
         vec[2] = (int)outp;
@@ -94,16 +95,16 @@ int _ES_GetTicketViews(int *fd, int unused, int inputA, int inputB, void *views,
         return result;
     }
     if (*outCount == 0) return -0x3F9;
-    vec[1] = 8;
-    vec[0] = (int)args;
-    vec[3] = 4;
-    vec[2] = (int)outp;
-    vec[4] = (int)views;
     frame.output = *outCount;
+    vec[0] = (int)args;
+    vec[1] = 8;
+    vec[2] = (int)outp;
+    vec[3] = 4;
+    vec[4] = (int)views;
     vec[5] = *outCount * 0xD8;
     return ((int (*)(int, int, int, int, void *))IOS_Ioctlv)(*fd, 0x13, 2, 1, vec);
 }
-
+#pragma opt_propagation reset
 int _ES_LaunchTitle(int *fd, int unused, int tidHigh, int tidLow, void *views)
 {
     struct Vector {
