@@ -763,6 +763,7 @@ extern "C" void fn_801D52A4(void *arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 void fn_801D5328(int arg0, int arg1) {
  struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual int state(); virtual void v6(); virtual int apply(int); };
