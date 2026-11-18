@@ -209,13 +209,15 @@ extern "C" void fn_802A1120(float *arg0, float *arg1) {
     Search search;
     void *manager;
     void *entry;
+    void *data;
     register float end;
     register float increment;
     register float baseline;
     register float step;
     manager = ((Dummy *)fn_80156A40())->getFirst(0);
-    arg1[0] = *(float *)(*(char **)((char *)manager + 0x1C) + 8);
-    arg1[1] = *(float *)(*(char **)((char *)manager + 0x1C) + 0xC);
+    data = *(void **)((char *)manager + 0x1C);
+    arg1[0] = *(float *)((char *)data + 8);
+    arg1[1] = *(float *)((char *)data + 0xC);
     fn_801352B8(work);
     entry = ((Dummy *)fn_80156A40())->getSecond(0);
     fn_80135D60(work, (s32)entry);
