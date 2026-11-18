@@ -1491,6 +1491,12 @@ static inline BOOL CheckCancel(u32 resume) {
     return FALSE;
 }
 
+/* Log a cover-closed error and re-read the disk ID through fn_800373E0. */
+static inline void StateCoverClosed(void) {
+    fn_800356F4(0x10, 0, 0);
+    fn_8003AF1C(0, 0, (void *)fn_800373E0);
+}
+
 #pragma dont_inline off
 void fn_80035E6C(u32 arg0) {
     s32 taskType;
@@ -1595,7 +1601,19 @@ void fn_80035E6C(u32 arg0) {
     }
     if (kind == 0) {
         if ((u32)(taskType - 0x00050000) == 0x3000) {
-            fn_800356F4(0x10, 0, 0);
+            s32 enabled;
+            u8 *info;
+            enabled = OSDisableInterrupts();
+            if (*(volatile u32 *)&lbl_8055D848 >= 5)
+                *(volatile u32 *)&lbl_8055D848 = 0;
+            info = (u8 *)__ErrorInfo;
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x10;
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+            tick = OSGetTick();
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
+            *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+            OSRestoreInterrupts(enabled);
             fn_8003AF1C(0, 0, (void *)fn_800373E0);
             return;
         }
@@ -1604,7 +1622,6 @@ void fn_80035E6C(u32 arg0) {
     }
     fn_8003A1A0(0x1234567, fn_80035C64);
 }
-
 extern void fn_80036550(u32);
 void fn_80036370(u32 arg0) {
     register u32 errorCode = arg0;
