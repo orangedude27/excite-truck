@@ -1902,19 +1902,25 @@ extern "C" void fn_8021B134(void *arg0) {
     start = *(s32 *)((u8 *)arg0 + 0x258);
     end = *(s32 *)((u8 *)arg0 + 0x25C);
     *p = value + increment;
+    u32 t = __cntlzw(end - start - 2);
     s32 *check = *(s32 **)((u8 *)arg0 + 0x254);
-    int flag = end - start - 2 == 0;
-    if (*check >= *(s32 *)((u8 *)arg0 + 0x25C)) {
+    s32 end2 = *(s32 *)((u8 *)arg0 + 0x25C);
+    int flag = t >> 5;
+    if (*check >= end2) {
         if (flag)
             *check = *(s32 *)((u8 *)arg0 + 0x258);
         else
-            *check = *(s32 *)((u8 *)arg0 + 0x25C) - 1;
+            *check = end2 - 1;
     }
-    if (*(*(s32 **)((u8 *)arg0 + 0x254)) < *(s32 *)((u8 *)arg0 + 0x258)) {
-        if (flag)
-            *(*(s32 **)((u8 *)arg0 + (u32)0x254)) = *(s32 *)((u8 *)arg0 + 0x25C) - 1;
-        else
-            *(*(s32 **)((u8 *)arg0 + 0x254)) = *(s32 *)((u8 *)arg0 + 0x258);
+    {
+        s32 *check2 = *(s32 **)((u8 *)arg0 + 0x254);
+        s32 start2 = *(s32 *)((u8 *)arg0 + 0x258);
+        if (*check2 < start2) {
+            if (flag)
+                *check2 = *(s32 *)((u8 *)arg0 + 0x25C) - 1;
+            else
+                *check2 = start2;
+        }
     }
 }
 #pragma scheduling on
