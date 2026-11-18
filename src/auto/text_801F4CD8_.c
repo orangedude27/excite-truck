@@ -929,7 +929,6 @@ void fn_801F6778(float *out, int count, float *angles, float offset, float scale
     a1 = angles[1];
     a2 = angles[2];
     i = 0;
-    d0 = d0;
     f6 = m * scale;
     f4 = d1 * f6;
     f31 = d0 * f6;
