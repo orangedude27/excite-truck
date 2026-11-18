@@ -794,7 +794,7 @@ void fn_8027BCC8(long root, long outSum, long outTotal) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-#pragma scheduling invalid_target
+#pragma peephole off
 extern "C" void fn_8027BCD0(void *arg0, long arg1) {
     class Obj {
     public:
@@ -850,17 +850,11 @@ extern "C" void fn_8027BCD0(void *arg0, long arg1) {
                 long off;
                 char *rec;
                 long flag;
-                idx = 0;
-                off = 0;
-                while (idx < *(long *)((int)a0 + 4)) {
+                for (idx = 0, off = 0; idx < *(long *)((int)a0 + 4); off += 0x18, idx++) {
                     long elem = *(long *)(*(char **)a0 + off);
-                    if (elem == key) {
-                        goto found;
-                    } else {
-                        off += 0x18;
-                        idx++;
+                    if (elem != key)
                         continue;
-                    }
+                    goto found;
                 }
                 idx = -1;
             found:
