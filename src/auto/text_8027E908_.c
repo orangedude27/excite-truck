@@ -148,20 +148,6 @@ extern char lbl_80348798[];
 extern unsigned int lbl_8055F688;
 struct Fn8027F834List { void **items; int count; int pad[2]; };
 extern struct Fn8027F834List lbl_804B3048;
-static inline void fn_8027F958_append(struct Fn8027F834List *l, void *w) {
-    l->items[l->count] = w;
-    l->count = l->count + 1;
-}
-static inline void fn_8027F958_remove(struct Fn8027F834List *l, void *w) {
-    int i, n;
-    for (i = 0; i < l->count; ++i)
-        if (l->items[i] == w) break;
-    if (i < l->count) {
-        n = l->count - 1;
-        if (i != n) l->items[i] = l->items[n];
-        l->count = n;
-    }
-}
 
 /* One entry of the ebi UI's record list: it shows the record its +0x60 child points at
    and carries the flags the list walks to move the selection (lbl_8055F698) over it.
