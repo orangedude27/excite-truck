@@ -33,7 +33,7 @@ struct LoopItem_80207E70 {
 extern void fn_80208408();
 extern void fn_80208858(void *, signed long, signed long);
 extern signed long fn_80128668(void);
-extern signed long fn_802090B4(void);
+extern void* fn_802090B4(void);
 extern signed long fn_802E317C(const char*, ...);
 extern signed long fn_8026A344(signed long);
 extern signed long fn_80206570(signed long);
@@ -529,7 +529,7 @@ extern "C" signed long fn_8020815C(void *arg0) {
     register signed long i;
     void *entry;
     void *owner;
-    limit = ((SlotLimits *)lbl_802F9DC8)[(signed long)fn_802090B4()].total;
+    limit = *(signed long *)((char *)lbl_802F9DC8 + (signed long)fn_802090B4() * 0x2C);
     matches = 0;
     i = 0;
     offset = 0;
