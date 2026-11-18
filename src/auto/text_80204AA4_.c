@@ -194,6 +194,8 @@ public:
     virtual void unused2();
     virtual int get(void *);
 };
+#pragma push
+#pragma scheduling invalid_target
 extern "C" int fn_80204EA0(const char *arg0) {
     char buf[0x64];
     int result = 0;
