@@ -1004,6 +1004,15 @@ extern "C" void fn_8019A788(void *first, void *second, void *param3,
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8019A820(void* arg0, void* arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0) {
+    struct VtblObj {
+        virtual void unused0() {}
+        virtual void unused1() {}
+        virtual void unused2() {}
+        virtual void unused3() {}
+        virtual void unused4() {}
+        virtual void slot7(Vec *, s32, s32, s32) {}
+        virtual void slot8(s32, Vec *, s32, s32, s32, s32, f32) {}
+    };
     Vec d, dir, v20, delta, v8;
     f32 mag, rem, var4, ret, k, dx, dy, dz;
     s32 obj;
@@ -1028,13 +1037,13 @@ extern "C" s32 fn_8019A820(void* arg0, void* arg1, s32 arg2, s32 arg3, s32 arg4,
         delta.x = dir.x * k;
         delta.y = dir.y * k;
         delta.z = dir.z * k;
-        ((void (*)(void*, Vec*, s32, s32, s32))(*(void***)arg0)[7])(arg0, &delta, arg2, arg3, 0);
+        ((VtblObj *)arg0)->slot7(&delta, arg2, arg3, 0);
         ret = fn_8019DF88((void*)(obj + 0x60), (f32*)&v20, (void*)(obj + 0x148), (f32*)arg2, (f32*)&dir, *(f32*)(obj + 0xD4), lbl_80562314);
         if (ret > lbl_805622D0) {
             v8.x = dir.x * ret; v8.y = dir.y * ret; v8.z = dir.z * ret;
             var4 = lbl_805622D4;
-            var4 = (var4 > rem) ? rem : var4;
-            ((void (*)(void*, s32, Vec*, s32, s32, s32, s32, f32))(*(void***)arg0)[8])(arg0, arg4, &v8, arg2, arg3, 0, 0, var4);
+            var4 = (var4 > rem) ? var4 : rem;
+            ((VtblObj *)arg0)->slot8(arg4, &v8, arg2, arg3, 0, 0, var4);
             fn_801B34DC(arg0, 0, (Vec*)arg2, &v8, &dir, arg3);
         }
         return 1;
@@ -2006,47 +2015,54 @@ ret1:
 }
 
 #pragma scheduling invalid_target
-extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32 f1, f32 f2) {
-    Vec origin, direction;
-    f32 minimum, maximum;
-    f32 *matrix = (f32 *)arg3;
-
-    f32 m1 = matrix[1];
-    f32 m4 = matrix[4];
-    f32 m3 = matrix[3];
-    f32 m6 = matrix[6];
-    f32 m7 = matrix[7];
-    f32 m2 = matrix[2];
-    f32 m5 = matrix[5];
-    f32 m8 = matrix[8];
-    f32 *p = (f32 *)arg0;
-    f32 *v = (f32 *)arg1;
-    register f32 y = p[1] - matrix[10];
-    register f32 x = p[0] - matrix[9];
-    register f32 z = p[2] - matrix[11];
-    origin.x = z * m2 + (x * matrix[0] + y * m1);
-    origin.y = z * m5 + (x * m3 + y * m4);
-    origin.z = z * m8 + (x * m6 + y * m7);
-    if ((f32 *)&direction == v) {
-        f32 vx = v[0], vy = v[1], vz = v[2];
-        direction.x = vz * m2 + (vy * m1 + vx * matrix[0]);
-        direction.y = vz * m5 + (vy * m4 + vx * m3);
-        direction.z = vz * m8 + (vy * m7 + vx * m6);
-    } else {
-        direction.x = v[2] * m2 + (v[1] * m1 + v[0] * matrix[0]);
-        direction.y = v[2] * m5 + (v[1] * m4 + v[0] * m3);
-        direction.z = v[2] * m8 + (v[1] * m7 + v[0] * m6);
-    }
-    minimum = lbl_80562364;
-    maximum = lbl_80562368;
-    if (fn_8019E1F4(&minimum, &maximum, origin.x, direction.x, f0) &&
-        fn_8019E1F4(&minimum, &maximum, origin.y, direction.y, f1) &&
-        fn_8019E1F4(&minimum, &maximum, origin.z, direction.z, f2) &&
-        minimum < *(f32 *)arg2) {
-        *(f32 *)arg2 = minimum;
-        return 1;
-    }
-    return 0;
+extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32 f1, f32 f2)
+{
+  Vec origin;
+  Vec direction;
+  f32 minimum;
+  f32 new_var;
+  f32 maximum;
+  f32 *matrix = (f32 *) arg3;
+  f32 m1 = matrix[1];
+  f32 m4 = matrix[4];
+  f32 m3 = matrix[3];
+  f32 m6 = matrix[6];
+  f32 m7 = matrix[7];
+  f32 m2 = matrix[2];
+  f32 m5 = matrix[5];
+  f32 m8 = matrix[8];
+  f32 *p = (f32 *) arg0;
+  f32 *v = (f32 *) arg1;
+  f32 y = p[1] - matrix[10];
+  f32 x = p[0] - matrix[9];
+  f32 z = p[2] - matrix[11];
+  origin.x = (z * m2) + ((x * matrix[0]) + (y * m1));
+  origin.y = (z * m5) + ((x * m3) + (y * m4));
+  origin.z = (z * m8) + ((x * m6) + (y * m7));
+  if (((f32 *) (&direction)) == v)
+  {
+    f32 vx = v[0];
+    f32 vy = v[1];
+    f32 vz = v[2];
+    new_var = m1;
+    direction.x = (vz * m2) + ((vy * new_var) + (vx * matrix[0]));
+    direction.y = (vz * m5) + ((vy * m4) + (vx * m3));
+    direction.z = (vz * m8) + ((vy * m7) + (vx * m6));
+  }
+  else
+  {
+    direction.x = (v[2] * m2) + ((v[1] * new_var) + (v[0] * matrix[0]));
+    direction.y = (v[2] * m5) + ((v[1] * m4) + (v[0] * m3));
+    direction.z = (v[2] * m8) + ((v[1] * m7) + (v[0] * m6));
+  }
+  minimum = lbl_80562364;
+  maximum = lbl_80562368;
+  if (((fn_8019E1F4(&minimum, &maximum, origin.x, direction.x, f0) && fn_8019E1F4(&minimum, &maximum, origin.y, direction.y, f1)) && fn_8019E1F4(&minimum, &maximum, origin.z, direction.z, f2)) && (minimum < (*((f32 *) arg2))))
+  {
+    *((f32 *) arg2) = minimum;
+    return 1;
+  }
+  return 0;
 }
 #pragma scheduling reset
 
@@ -2342,57 +2358,59 @@ extern "C" void fn_8019ECC4(void* shape, s32 owner, s32 swapBytes) {
 
 #pragma scheduling invalid_target
 extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
-    u32 self = (u32)arg0;
-    u32 copyFlag = (u32)arg2;
+    void *self = arg0;
+    s32 copyFlag = arg2;
+    void *result;
     u8 second, first, opposite, other;
     ((void(*)(void*,s32,s32))fn_8019ECC4)(arg0, (s32)arg1, arg2);
     *(void**)self = &lbl_80333B48;
     if (copyFlag != 0) {
-        first = *(volatile u8*)(self + 0x24);
-        opposite = *(volatile u8*)(self + 0x27);
-        second = *(volatile u8*)(self + 0x25);
-        other = *(volatile u8*)(self + 0x26);
-        *(volatile u8*)(self + 0x24) = opposite;
-        *(volatile u8*)(self + 0x27) = first;
-        *(volatile u8*)(self + 0x25) = other;
-        *(volatile u8*)(self + 0x26) = second;
-        opposite = *(volatile u8*)(self + 0x28);
-        other = *(volatile u8*)(self + 0x2b);
-        *(volatile u8*)(self + 0x28) = other;
-        *(volatile u8*)(self + 0x2b) = opposite;
-        opposite = *(volatile u8*)(self + 0x29);
-        other = *(volatile u8*)(self + 0x2a);
-        *(volatile u8*)(self + 0x29) = other;
-        *(volatile u8*)(self + 0x2a) = opposite;
-        opposite = *(volatile u8*)(self + 0x2c);
-        other = *(volatile u8*)(self + 0x2f);
-        *(volatile u8*)(self + 0x2c) = other;
-        *(volatile u8*)(self + 0x2f) = opposite;
-        opposite = *(volatile u8*)(self + 0x2d);
-        other = *(volatile u8*)(self + 0x2e);
-        *(volatile u8*)(self + 0x2d) = other;
-        *(volatile u8*)(self + 0x2e) = opposite;
-        opposite = *(volatile u8*)(self + 0x30);
-        other = *(volatile u8*)(self + 0x33);
-        *(volatile u8*)(self + 0x30) = other;
-        *(volatile u8*)(self + 0x33) = opposite;
-        opposite = *(volatile u8*)(self + 0x31);
-        other = *(volatile u8*)(self + 0x32);
-        *(volatile u8*)(self + 0x31) = other;
-        *(volatile u8*)(self + 0x32) = opposite;
-        if (*(volatile s32*)(self + 0x20) == 0x3eb)
-            *(f32*)(self + 0x24) += lbl_80562370;
+        first = *(volatile u8*)((u8*)self + 0x24);
+        opposite = *(volatile u8*)((u8*)self + 0x27);
+        second = *(volatile u8*)((u8*)self + 0x25);
+        other = *(volatile u8*)((u8*)self + 0x26);
+        *(volatile u8*)((u8*)self + 0x24) = opposite;
+        *(volatile u8*)((u8*)self + 0x27) = first;
+        *(volatile u8*)((u8*)self + 0x25) = other;
+        *(volatile u8*)((u8*)self + 0x26) = second;
+        opposite = *(volatile u8*)((u8*)self + 0x28);
+        other = *(volatile u8*)((u8*)self + 0x2b);
+        *(volatile u8*)((u8*)self + 0x28) = other;
+        *(volatile u8*)((u8*)self + 0x2b) = opposite;
+        opposite = *(volatile u8*)((u8*)self + 0x29);
+        other = *(volatile u8*)((u8*)self + 0x2a);
+        *(volatile u8*)((u8*)self + 0x29) = other;
+        *(volatile u8*)((u8*)self + 0x2a) = opposite;
+        opposite = *(volatile u8*)((u8*)self + 0x2c);
+        other = *(volatile u8*)((u8*)self + 0x2f);
+        *(volatile u8*)((u8*)self + 0x2c) = other;
+        *(volatile u8*)((u8*)self + 0x2f) = opposite;
+        opposite = *(volatile u8*)((u8*)self + 0x2d);
+        other = *(volatile u8*)((u8*)self + 0x2e);
+        *(volatile u8*)((u8*)self + 0x2d) = other;
+        *(volatile u8*)((u8*)self + 0x2e) = opposite;
+        opposite = *(volatile u8*)((u8*)self + 0x30);
+        other = *(volatile u8*)((u8*)self + 0x33);
+        *(volatile u8*)((u8*)self + 0x30) = other;
+        *(volatile u8*)((u8*)self + 0x33) = opposite;
+        opposite = *(volatile u8*)((u8*)self + 0x31);
+        other = *(volatile u8*)((u8*)self + 0x32);
+        *(volatile u8*)((u8*)self + 0x31) = other;
+        *(volatile u8*)((u8*)self + 0x32) = opposite;
+        if (*(volatile s32*)((u8*)self + 0x20) == 0x3eb)
+            *(f32*)((u8*)self + 0x24) += lbl_80562370;
     }
     f32 zero = lbl_805622D0;
-    *(volatile u8*)(self + 0x4c) = 0;
-    *(f32*)(self + 0x34) = zero;
-    *(f32*)(self + 0x38) = zero;
-    *(f32*)(self + 0x3c) = zero;
-    *(f32*)(self + 0x40) = zero;
-    *(f32*)(self + 0x44) = zero;
-    *(f32*)(self + 0x48) = zero;
-    *(f32*)(self + 0x50) = zero;
-    return (void*)self;
+    result = self;
+    *(volatile u8*)((u8*)self + 0x4c) = 0;
+    *(f32*)((u8*)self + 0x34) = zero;
+    *(f32*)((u8*)self + 0x38) = zero;
+    *(f32*)((u8*)self + 0x3c) = zero;
+    *(f32*)((u8*)self + 0x40) = zero;
+    *(f32*)((u8*)self + 0x44) = zero;
+    *(f32*)((u8*)self + 0x48) = zero;
+    *(f32*)((u8*)self + 0x50) = zero;
+    return result;
 }
 #pragma scheduling on
 /* Add the translation vector held in source (+0x30) into the destination Vec,
@@ -3011,9 +3029,7 @@ extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
     second[2] = z1;
 }
 
-#pragma processor 750
-#pragma optimization_level 2
-#pragma scheduling reset
+#pragma optimization_level reset
 extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 farg2) {
     struct Object {
         void *vtable; s32 field4; s32 field8; s32 fieldC; f32 field10; f32 field14;
@@ -3050,9 +3066,6 @@ extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 fa
     }
     fn_801A0378(arg0, object);
 }
-#pragma scheduling on
-#pragma processor reset
-#pragma optimization_level reset
 
 /* Store an effect in the manager, dispatch its setup callback, and expand the bounding radius. */
 extern "C" void fn_801A0378(void* arg0, void* arg1) {
@@ -3163,8 +3176,8 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
         f32 r = *(f32 *)(self + 0x178) + *(f32 *)(other + 0x178);
         if (dist2 < r * r) {
             ((void (*)(void *))fn_801A0160)(other);
-            u8 *ent = other;
             s32 i = 0;
+            u8 *ent = other;
             while (i < *(s32 *)(other + 0x174)) {
                 fn_8019BD54(*(void **)(ent + 0x24), *(void **)(self + 0x17C), 0, 0);
                 ent += 4;
