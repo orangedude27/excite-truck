@@ -33,7 +33,7 @@ struct LoopItem_80207E70 {
 extern void fn_80208408();
 extern void fn_80208858(void *, signed long, signed long);
 extern signed long fn_80128668(void);
-extern void* fn_802090B4(void);
+extern signed long fn_802090B4(void);
 extern signed long fn_802E317C(const char*, ...);
 extern signed long fn_8026A344(signed long);
 extern signed long fn_80206570(signed long);
@@ -529,7 +529,7 @@ extern "C" signed long fn_8020815C(void *arg0) {
     register signed long i;
     void *entry;
     void *owner;
-    limit = *(signed long *)((char *)lbl_802F9DC8 + (signed long)fn_802090B4() * 0x2C);
+    limit = ((SlotLimits *)lbl_802F9DC8)[(signed long)fn_802090B4()].total;
     matches = 0;
     i = 0;
     offset = 0;
@@ -678,6 +678,9 @@ void fn_80208408(void *arg0, void *arg1) {
     void *entry;
     void **list;
     char *adjust;
+    int flagA;
+    int flagB;
+    int flagC;
 
     index = *(signed long *)((char *)arg1 + 0x44);
     entry = (char *)arg0 + index * 8;
@@ -687,27 +690,37 @@ void fn_80208408(void *arg0, void *arg1) {
             (signed long)((char *)list - *(char **)((char *)arg0 + 0xC)) / 4) * 4);
     nextIndex = index + 1;
     if (nextIndex < 9) {
-        loops = (unsigned long)(8 - nextIndex) >> 3;
-        adjust = (char *)arg0 + nextIndex * 8;
-        if (nextIndex < 1) {
-            do {
-                *(volatile signed long *)(adjust + 0x14) += 4;
-                *(volatile signed long *)(adjust + 0x1C) += 4;
-                *(volatile signed long *)(adjust + 0x24) += 4;
-                *(volatile signed long *)(adjust + 0x2C) += 4;
-                *(volatile signed long *)(adjust + 0x34) += 4;
-                *(volatile signed long *)(adjust + 0x3C) += 4;
-                *(volatile signed long *)(adjust + 0x44) += 4;
-                *(volatile signed long *)(adjust + 0x4C) += 4;
-                adjust = adjust + 0x40;
-                nextIndex += 8;
-            } while (--loops != 0);
+        flagA = (nextIndex > 0x7FFFFFFE || nextIndex > 9) ? 0 : 1;
+        if (flagA != 0) {
+            flagB = ((unsigned long)(index + 1) + 0x80000000 == 0) ? 0 : 1;
+            if (flagB != 0) {
+                flagC = ((unsigned long)(-(index + 1)) >= 0x80000000 ||
+                         (unsigned long)(9 - (index + 1)) < 0x80000000) ? 1 : 0;
+                if (flagC != 0) {
+                    loops = (unsigned long)(8 - nextIndex) >> 3;
+                    adjust = (char *)arg0 + nextIndex * 8;
+                    if (nextIndex < 1) {
+                        do {
+                            *(volatile signed long *)(adjust + 0x14) += 4;
+                            *(volatile signed long *)(adjust + 0x1C) += 4;
+                            *(volatile signed long *)(adjust + 0x24) += 4;
+                            *(volatile signed long *)(adjust + 0x2C) += 4;
+                            *(volatile signed long *)(adjust + 0x34) += 4;
+                            *(volatile signed long *)(adjust + 0x3C) += 4;
+                            *(volatile signed long *)(adjust + 0x44) += 4;
+                            *(volatile signed long *)(adjust + 0x4C) += 4;
+                            adjust += 0x40;
+                            nextIndex += 8;
+                        } while (--loops != 0);
+                    }
+                }
+            }
         }
         adjust = (char *)arg0 + nextIndex * 8 + 0x14;
         if (nextIndex < 9) {
             do {
                 *(volatile signed long *)adjust += 4;
-                adjust = adjust + 8;
+                adjust += 8;
                 nextIndex++;
             } while (nextIndex < 9);
         }
@@ -792,6 +805,8 @@ signed long fn_802085F0(void* soundMgr, signed long sndClass) {
 }
 
 extern char lbl_8033BE80[];
+#pragma push
+#pragma scheduling invalid_target
 void fn_80208620(void* arg0, void* arg1) {
     typedef struct { int *ptr; int count; } Ent;
     typedef struct { char pad0[0xc]; int *base; int total; Ent ents[9]; } Hdr;
@@ -810,14 +825,14 @@ void fn_80208620(void* arg0, void* arg1) {
         h->total -= 1;
         h->ents[idx].count -= 1;
         memmove(found, found + 1, (h->total - (found - h->base)) * 4);
-        for (j = idx + 1; j < 9; ++j) {
+        for (j = idx + 1; j < 9; j++) {
             h->ents[j].ptr--;
         }
     } else {
         fn_802E317C(lbl_8033BE80, (char*)arg1 + 0x37);
     }
 }
-
+#pragma pop
 /* The sound device (mixer) this manager plays on lives at +0x90: it is the
  * object fn_80207990 was handed, one of the devices of the mixer list
  * (src/game/mixer.c).  Its vtable is +0x08 destroy, +0x0C getName,
