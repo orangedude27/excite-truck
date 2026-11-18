@@ -293,7 +293,7 @@ void nw4hbm::ut::List_Append(nw4hbm::ut::List* list, void* item) {
 }
 
 void nw4hbm::ut::List_Remove(nw4hbm::ut::List* list, void* item) {
-    const char* file = lbl_80328828;
+    register const char* file = lbl_80328828;
     if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xcb, file + 0xc);
     if (item == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xcc, file + 0x34);
     unsigned short offset = *(unsigned short*)((char*)list + 0xa);
@@ -379,7 +379,7 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
     if ((v8 == 0) && ((p & 0xFF800000U) != 0xC1000000U)) v7 = 0;
     if ((v7 == 0) && ((p & 0xF8000000U) != 0xD0000000U)) v6 = 0;
     if ((v6 == 0) && ((p & 0xFFFFC000U) != 0xE0000000U)) v5 = 0;
-    if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x61, file + 0x10, (void*)this);
+    if (v5 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x61, file + 0x10, (void*)this);
     u32 q = (u32)resource;
     s32 v4b = 1, v5b = 1, v6b = 1, v7b = 1, v8b = 1, v9b = 1;
     u32 t10 = q & 0xFF000000;
@@ -389,11 +389,11 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
     if ((v7b == 0) && ((q & 0xFF800000U) != 0xC1000000U)) v6b = 0;
     if ((v6b == 0) && ((q & 0xF8000000U) != 0xD0000000U)) v5b = 0;
     if ((v5b == 0) && ((q & 0xFFFFC000U) != 0xE0000000U)) v4b = 0;
-    if (v4b == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x62, file + 0x48, (void*)resource);
-    if (q & 0x1F) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x63, file + 0x80, (void*)resource);
+    if (v4b == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x62, file + 0x48, (void*)resource);
+    if (q & 0x1F) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x63, file + 0x80, (void*)resource);
     s32 existing = *(s32*)((u8*)this + 0x10);
     void* info = 0;
-    if (existing != 0) { Warning__Q26nw4hbm2dbFPCciPCce(&file[0], 0x6B, file + 0xCC); return false; }
+    if (existing != 0) { Warning__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x6B, file + 0xCC); return false; }
     if (*(u32*)resource == 0x52464E55) {
         u8* block = (u8*)resource + *(u16*)((u8*)resource + 0xC);
         s32 i = 0;
@@ -406,15 +406,15 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
             if ((d == 0) && ((r & 0xFF800000U) != 0xC1000000U)) c = 0;
             if ((c == 0) && ((r & 0xF8000000U) != 0xD0000000U)) b = 0;
             if ((b == 0) && ((r & 0xFFFFC000U) != 0xE0000000U)) a = 0;
-            if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x7C, file + 0xEC, (void*)block);
+            if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x7C, file + 0xEC, (void*)block);
             if (*(u32*)block == 0x46494E46) { info = block + 8; break; }
             ++i; block += *(u32*)(block + 4);
         }
     } else {
         u16 version = *(u16*)((u8*)resource + 6);
         if (version == 0x104) {
-            if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x104, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(&file[0], 0x96, file + 0x128); return false; }
-        } else if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x102, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce(&file[0], 0xA0, file + 0x128); return false; }
+            if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x104, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0x96, file + 0x128); return false; }
+        } else if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(resource, 0x52464E54, 0x102, 2) == 0) { Warning__Q26nw4hbm2dbFPCciPCce((const char*)((unsigned int)file + 0), 0xA0, file + 0x128); return false; }
         info = Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(resource);
     }
     if (info == 0) return false;
@@ -971,7 +971,7 @@ s32 nw4hbm::ut::detail::ResFontBase::GetLineFeed() const {
     return ((const FontInformation *)*(u32 *)((char *)this + 0x14))->line_feed;
 }
 
-s32 nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
+DWRet nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
     const char* file=lbl_80329140;
     u32 value=(u32)this;
     int a=1,b=1,c=1,d=1,e=1,f=1;
@@ -1208,7 +1208,7 @@ extern "C" u32 GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs(void *self, u
     const char *file = lbl_80329140;
     u32 value = (u32)self;
     u32 t;
-    int a, b, c, d, e, f, ok;
+    int a, b, c, d, e, f;
     u8 *info, *map, *width, *entry;
     u16 g;
     u16 glyph;
@@ -1237,11 +1237,12 @@ extern "C" u32 GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs(void *self, u
         if (g == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1E3, file + 0x128);
     }
 
-    ok = 0;
-    if (t == 0x80000000U || (value & 0xFF800000U) == 0x81000000U || (value & 0xF8000000U) == 0x90000000U
-        || t == 0xC0000000U || (value & 0xFF800000U) == 0xC1000000U || (value & 0xF8000000U) == 0xD0000000U
-        || (value & 0xFFFFC000U) == 0xE0000000U) ok = 1;
-    if (ok == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F6, file + 0xF0, self);
+    {
+        register int valid = (t == 0x80000000U || (value & 0xFF800000U) == 0x81000000U || (value & 0xF8000000U) == 0x90000000U
+            || t == 0xC0000000U || (value & 0xFF800000U) == 0xC1000000U || (value & 0xF8000000U) == 0xD0000000U
+            || (value & 0xFFFFC000U) == 0xE0000000U);
+        if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F6, file + 0xF0, self);
+    }
 
     {
         int g = 1, h = 1;
@@ -1273,11 +1274,12 @@ haveGlyph:
         glyph = *(u16 *)(*(u8 **)((char *)self + 0x14) + 2);
     }
 
-    ok = 0;
-    if (t == 0x80000000U || (value & 0xFF800000U) == 0x81000000U || (value & 0xF8000000U) == 0x90000000U
-        || t == 0xC0000000U || (value & 0xFF800000U) == 0xC1000000U || (value & 0xF8000000U) == 0xD0000000U
-        || (value & 0xFFFFC000U) == 0xE0000000U) ok = 1;
-    if (ok == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x267, file + 0xF0, self);
+    {
+        register int valid = (t == 0x80000000U || (value & 0xFF800000U) == 0x81000000U || (value & 0xF8000000U) == 0x90000000U
+            || t == 0xC0000000U || (value & 0xFF800000U) == 0xC1000000U || (value & 0xF8000000U) == 0xD0000000U
+            || (value & 0xFFFFC000U) == 0xE0000000U);
+        if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x267, file + 0xF0, self);
+    }
 
     {
         int g = 1, h = 1;
@@ -1295,25 +1297,19 @@ haveGlyph:
 
     info = *(u8 **)((char *)self + 0x14);
     width = *(u8 **)(info + 0xC);
+    entry = info + 4;
     while (width) {
         if (*(u16 *)width <= glyph && glyph <= *(u16 *)(width + 2)) {
-            int g = 1, h = 1;
             u32 w = (u32)width;
-            int i = 1, j = 1, k = 1, l = 1;
-            u32 tw = w & 0xFF000000U;
-            if (tw != 0x80000000U && (w & 0xFF800000U) != 0x81000000U) l = 0;
-            if (l == 0 && (w & 0xF8000000U) != 0x90000000U) k = 0;
-            if (k == 0 && tw != 0xC0000000U) j = 0;
-            if (j == 0 && (w & 0xFF800000U) != 0xC1000000U) i = 0;
-            if (i == 0 && (w & 0xF8000000U) != 0xD0000000U) h = 0;
-            if (h == 0 && (w & 0xFFFFC000U) != 0xE0000000U) g = 0;
-            if (g == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x28B, file + 0x1E4, width);
+            register int valid = ((w & 0xFF000000U) == 0x80000000U || (w & 0xFF800000U) == 0x81000000U || (w & 0xF8000000U) == 0x90000000U
+                || (w & 0xFF000000U) == 0xC0000000U || (w & 0xFF800000U) == 0xC1000000U || (w & 0xF8000000U) == 0xD0000000U
+                || (w & 0xFFFFC000U) == 0xE0000000U);
+            if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x28B, file + 0x1E4, width);
             entry = width + 8 + 3 * (glyph - *(u16 *)width);
             goto haveEntry;
         }
         width = *(u8 **)(width + 4);
     }
-    entry = info + 4;
 haveEntry:
     return ((u32)entry[2] << 8) | ((u32)*(u16 *)entry << 16);
 }
