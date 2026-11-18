@@ -222,49 +222,54 @@ void fn_802E1A9C(void *desc, int *outCombinedWidth, int *outCombinedPlusHeight, 
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-int fn_802E1BB4(void *arg0, int arg1) {
+int fn_802E1BB4(void *obj, int unused) {
+    /* Build an image bank's textures: ask fn_802E1A9C how the four images of one
+     * slot lay out, take the whole run of slots from the allocator in one block,
+     * then make a GX texture object for every image the slot actually uses and
+     * remember where its data went.  Anything failing gives the block back. */
     typedef void (*Calc)(void *, int *, int *, int *, int *, int *, int *, int *);
-    int sp20, sp1C, sp18, sp14, sp10, spC, sp8;
-    int temp;
+    int combinedWidth, combinedPlusHeight, alignedWidthA, rowBytes, totalBytes, widthA, widthB;
+    int handle;
     char *slot;
-    char *dest;
-    unsigned char *p;
+    char *texObjs;
+    unsigned char *image;
     int i;
-    (void)arg1;
-    ((Calc)fn_802E1A9C)((char *)arg0 + 0x100, &sp20, &sp1C, &sp18, &sp14, &sp10, &spC, &sp8);
-    temp = fn_8011FFC4(sp10 + sp14 * *(int *)((char *)arg0 + 0x100) + 0x7F, sp14);
-    if (temp == 0) goto fail;
-    *(int *)((char *)arg0 + 0x178) = temp;
-    p = (unsigned char *)(((unsigned int)temp + 0x7F) & ~0x7F);
-    slot = (char *)arg0;
-    dest = (char *)arg0;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x100); i++, p += sp14, slot += 0x30, dest += 0x80) {
-        if (*(int *)(slot + 0x118) != 0) {
-            *(int *)(slot + 0x11C) = (int)p;
-            *(int *)(slot + 0x120) = spC;
-            if (!fn_802E18D4(spC, *(int *)((char *)arg0 + 0x108), 1, 0, dest, (int)p)) goto fail;
+    (void)unused;
+    ((Calc)fn_802E1A9C)((char *)obj + 0x100, &combinedWidth, &combinedPlusHeight, &alignedWidthA, &rowBytes, &totalBytes, &widthA, &widthB);
+    /* one rowBytes-aligned row of image data per slot, plus the alignment slack */
+    handle = fn_8011FFC4(totalBytes + rowBytes * *(int *)((char *)obj + 0x100) + 0x7F, rowBytes);
+    if (handle == 0) goto fail;
+    *(int *)((char *)obj + 0x178) = handle;
+    image = (unsigned char *)(((unsigned int)handle + 0x7F) & ~0x7F);
+    slot = (char *)obj;    /* the slot's own record starts at +0x118 */
+    texObjs = (char *)obj; /* and its four GXTexObj at +0x00 */
+    for (i = 0; i < *(int *)((char *)obj + 0x100); i++, image += rowBytes, slot += 0x30, texObjs += 0x80) {
+        if (*(int *)(slot + 0x118) != 0) {           /* first image */
+            *(int *)(slot + 0x11C) = (int)image;     /* where its data went */
+            *(int *)(slot + 0x120) = widthA;         /* and its width */
+            if (!fn_802E18D4(widthA, *(int *)((char *)obj + 0x108), 1, 0, texObjs, (int)image)) goto fail;
         }
-        if (*(int *)(slot + 0x124) != 0) {
-            *(int *)(slot + 0x128) = (int)p + sp20;
-            *(int *)(slot + 0x12C) = sp8;
-            if (!fn_802E18D4(sp8, *(int *)((char *)arg0 + 0x110), 1, 0, dest + 0x20, (int)p + sp20)) goto fail;
+        if (*(int *)(slot + 0x124) != 0) {           /* second, at combinedWidth */
+            *(int *)(slot + 0x128) = (int)image + combinedWidth;
+            *(int *)(slot + 0x12C) = widthB;
+            if (!fn_802E18D4(widthB, *(int *)((char *)obj + 0x110), 1, 0, texObjs + 0x20, (int)image + combinedWidth)) goto fail;
         }
-        if (*(int *)(slot + 0x130) != 0) {
-            *(int *)(slot + 0x134) = (int)p + sp1C;
-            *(int *)(slot + 0x138) = sp8;
-            if (!fn_802E18D4(sp8, *(int *)((char *)arg0 + 0x110), 1, 0, dest + 0x40, (int)p + sp1C)) goto fail;
+        if (*(int *)(slot + 0x130) != 0) {           /* third, at combinedPlusHeight */
+            *(int *)(slot + 0x134) = (int)image + combinedPlusHeight;
+            *(int *)(slot + 0x138) = widthB;
+            if (!fn_802E18D4(widthB, *(int *)((char *)obj + 0x110), 1, 0, texObjs + 0x40, (int)image + combinedPlusHeight)) goto fail;
         }
-        if (*(int *)(slot + 0x13C) != 0) {
-            *(int *)(slot + 0x140) = (int)p + sp18;
-            *(int *)(slot + 0x144) = spC;
-            if (!fn_802E18D4(spC, *(int *)((char *)arg0 + 0x108), 1, 0, dest + 0x60, (int)p + sp18)) goto fail;
+        if (*(int *)(slot + 0x13C) != 0) {           /* fourth, at alignedWidthA */
+            *(int *)(slot + 0x140) = (int)image + alignedWidthA;
+            *(int *)(slot + 0x144) = widthA;
+            if (!fn_802E18D4(widthA, *(int *)((char *)obj + 0x108), 1, 0, texObjs + 0x60, (int)image + alignedWidthA)) goto fail;
         }
     }
-    *(int *)((char *)arg0 + 0x17C) = sp14;
-    fn_802E1A38(arg0, (int)p);
+    *(int *)((char *)obj + 0x17C) = rowBytes;
+    fn_802E1A38(obj, (int)image);                    /* the two lookup textures after the slots */
     return 1;
 fail:
-    fn_802E1728(arg0);
+    fn_802E1728(obj);
     return 0;
 }
 #pragma pop
