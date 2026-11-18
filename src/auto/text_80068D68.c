@@ -11283,12 +11283,12 @@ static inline void btm_pm_cont_rswitch_inl(u8 *link, u8 *conn, u16 handle, u8 st
 }
 
 #pragma opt_propagation off
-#pragma opt_lifetimes off
 void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
     extern char lbl_80316530[];
     extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
     u8 *acl, *pm, *reg, *dev, *addr, *link;
-    int offset, index, i;
+    u32 offset;
+    int index, i;
     index = (u8)btm_handle_to_acl_index(handle);
     if (index >= 4) return;
     offset = index * 0x11c;
@@ -11338,7 +11338,6 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
         }
     }
 }
-#pragma opt_lifetimes reset
 #pragma opt_propagation reset
 void fn_8007D4C4(void) {
     struct S16 {
@@ -15249,7 +15248,7 @@ typedef struct {
     u8 disc_succ[0x28];
     u8 rem_name[1];
 } GapTraceStrings;
-extern void gap_connect_cfm(u32, s32), gap_config_ind(u16, void *), gap_config_cfm(u32, u16 *), gap_disconnect_ind(u16, BOOLEAN), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
+extern void gap_connect_cfm(), gap_config_ind(u16, void *), gap_config_cfm(u32, u16 *), gap_disconnect_ind(u16, BOOLEAN), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
 void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status);
 /* Registers GAP's L2CAP application callbacks in the GAP control block (lbl_803C3740). */
 void fn_800826D4(void) {
@@ -15305,31 +15304,32 @@ void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status) {
     L2CA_ConfigReq(cid, (tL2CAP_CFG_INFO *)&ccb->my_cfg);
 }
 
-#pragma optimization_level 3
+#pragma optimization_level 4
 void gap_connect_cfm(u32 cid, s32 result) {
-    u8 *entry = lbl_803C3740 + 0xAC;
+    u8 *conn = lbl_803C3740 + 0xAC;
     u8 i;
     u16 psm;
-    for (i = 0; i < 8; i++, entry += 0x60) {
-        if (entry[0] == 0) continue;
-        if (*(u16 *)(entry + 6) != cid) continue;
-        goto found;
+    for (i = 0; i < 8; i++, conn += 0x60) {
+        if (conn[0] != 0) {
+            if (*(u16 *)(conn + 6) == cid)
+                goto found;
+        }
     }
-    entry = 0;
+    conn = 0;
 found:
-    if (entry == 0)
+    if (conn == 0)
         return;
-    if (result == 0 && entry[0] == 2) {
-        entry[0] = 3;
-        L2CA_ConfigReq((u16)cid, (tL2CAP_CFG_INFO *)(entry + 0x24));
+    if (result == 0 && conn[0] == 2) {
+        conn[0] = 3;
+        L2CA_ConfigReq((u16)cid, (tL2CAP_CFG_INFO *)(conn + 0x24));
         return;
     }
-    if (*(void **)(entry + 0x20) != 0)
-        ((void (*)(u16, u16))*(void **)(entry + 0x20))(*(u16 *)(entry + 4), 0x101);
-    psm = *(u16 *)(entry + 0x10);
-    while (*(u32 *)(entry + 0x14) != 0)
-        GKI_freebuf(GKI_dequeue((BUFFER_Q *)(entry + 0x14)));
-    entry[0] = 0;
+    if (*(void **)(conn + 0x20) != 0)
+        ((void (*)(u16, u16))*(void **)(conn + 0x20))(*(u16 *)(conn + 4), 0x101);
+    psm = *(u16 *)(conn + 0x10);
+    while (*(u32 *)(conn + 0x14) != 0)
+        GKI_freebuf(GKI_dequeue((BUFFER_Q *)(conn + 0x14)));
+    conn[0] = 0;
     {
         u8 *p = lbl_803C3740 + 0xAC;
         for (i = 0; i < 8; i++, p += 0x60) {
@@ -15339,7 +15339,6 @@ found:
     }
     L2CA_Deregister(psm);
 }
-#pragma optimization_level reset
 void gap_config_ind(u16 cid, void *p_cfg) {
     u8 *conn = lbl_803C3740 + 0xAC;
     u32 outer = 2;
