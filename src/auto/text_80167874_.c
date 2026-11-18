@@ -612,8 +612,10 @@ group_check:
     }
 }
 
-#pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
+#pragma push
+#pragma opt_common_subs off
 void fn_80168104(void) {
     extern void *fn_802C86DC(void);
     extern double fn_8002F234(float);
@@ -646,7 +648,7 @@ void fn_80168104(void) {
                     unsigned int token = obj ? *(unsigned int *)(obj + 8) : (unsigned int)-1;
                     unsigned int a = fn_802C9994(token);
                     unsigned int b = fn_802C9950((((token >> 25) & 0x7F) << 24) | (((token >> 17) & 0x7F) << 16) | (((token >> 9) & 0x7F) << 8) | ((token >> 1) & 0x7F));
-                    fn_802C9900(((float)(token >> 24) - (float)lbl_80561948) / scale);
+                    fn_802C9900((float)(token >> 24) / scale);
                     {
                         unsigned char *out = lbl_8042FF60 + ((*(int *)record / 12) & 0xF) * 0x30;
                         *(float *)(out + 0x24) = *(float *)(record + 4);
@@ -668,9 +670,9 @@ void fn_80168328(void) {
     extern void fn_801678D8(void);
     s32 *root;
     s32 i, offset, j, count;
-    s32 *records;
+    s32 *slot;
     u8 *entry;
-    root = &lbl_8055E354;
+    root = (s32 *)lbl_8055E354;
     fn_801678D8();
     i = 0;
     offset = 0;
@@ -680,16 +682,14 @@ void fn_80168328(void) {
             entry[0x1D] = 1;
             count = *(s32 *)(entry + 0x18);
             j = 0;
-            while (count > 0) {
-                records = *(s32 **)root;
-                if (*(s32 *)((u8 *)records + (*(s32 *)(entry + 0x14) + j) * 0x18) == 0 ||
-                    *((u8 *)*(s32 *)((u8 *)records + (*(s32 *)(entry + 0x14) + j) * 0x18) + 0x14) != 0) {
-                    j++;
-                    count--;
-                    continue;
-                }
+            while (count-- > 0) {
+                slot = (s32 *)((u8 *)*(s32 **)root + (*(s32 *)(entry + 0x14) + j) * 0x18);
+                if (*slot == 0) goto next;
+                if (*((u8 *)slot + 0x14) != 0) goto next;
                 entry[0x1D] = 0;
                 break;
+            next:
+                j++;
             }
         }
         offset += 0x20;
@@ -713,7 +713,7 @@ void fn_801683F4(void *arg0, s32 arg1) {
     s32 j;
     s32 offset;
     s32 index;
-    s32 *indexEntry;
+    s32 tableIndex;
     void *object;
     void *bounds;
     void *resource;
@@ -735,8 +735,8 @@ void fn_801683F4(void *arg0, s32 arg1) {
     f32 radius;
     memset(counts, 0, 0x18);
     object = fn_8017960C(arg1);
-    indexEntry = (s32 *)((u8 *)lbl_80430260 + arg1 * 0x10);
-    if (indexEntry[0] == lbl_8055E3C4 - 1) {
+    tableIndex = arg1 * 4;
+    if (lbl_80430260[tableIndex] == lbl_8055E3C4 - 1) {
         num = 0;
         x = *(f32 *)((u8 *)object + 0x60);
         z = *(f32 *)((u8 *)object + 0x68);
@@ -748,9 +748,9 @@ void fn_801683F4(void *arg0, s32 arg1) {
         radius = lbl_80561924;
         bounds = *(s32 *)((u8 *)object + 0x24) > 0 ? *(void **)((u8 *)object + 0x14) : 0;
         if (bounds != 0) {
-            dx = *(f32 *)((u8 *)indexEntry + 4) - x;
-            dy = *(f32 *)((u8 *)indexEntry + 8) - *(f32 *)((u8 *)object + 0x64);
-            dz = *(f32 *)((u8 *)indexEntry + 0xC) - z;
+            dx = *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 4) - x;
+            dy = *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 8) - *(f32 *)((u8 *)object + 0x64);
+            dz = *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 0xC) - z;
             tx = dz * *(f32 *)((u8 *)object + 0x44)
                + (dx * *(f32 *)((u8 *)object + 0x3C)
                + dy * *(f32 *)((u8 *)object + 0x40));
@@ -820,10 +820,10 @@ void fn_801683F4(void *arg0, s32 arg1) {
             i++;
         }
     }
-    *(f32 *)((u8 *)indexEntry + 4) = *(f32 *)((u8 *)object + 0x60);
-    *(f32 *)((u8 *)indexEntry + 8) = *(f32 *)((u8 *)object + 0x64);
-    *(f32 *)((u8 *)indexEntry + 0xC) = *(f32 *)((u8 *)object + 0x68);
-    indexEntry[0] = lbl_8055E3C4;
+    *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 4) = *(f32 *)((u8 *)object + 0x60);
+    *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 8) = *(f32 *)((u8 *)object + 0x64);
+    *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 0xC) = *(f32 *)((u8 *)object + 0x68);
+    lbl_80430260[tableIndex] = lbl_8055E3C4;
     ((s32 *)arg0)[0] = counts[0];
     ((s32 *)arg0)[1] = counts[1];
     ((s32 *)arg0)[2] = counts[2];
@@ -1162,17 +1162,17 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
         return 0;
     }
     cursor = (f32 *)values;
-    diffs[0] = cursor[2] - cursor[4];
     diffs[1] = cursor[3] - cursor[5];
+    diffs[0] = cursor[2] - cursor[4];
     dist[0] = (f32)fn_8002F234(diffs[0] * diffs[0] + diffs[1] * diffs[1]);
-    diffs[2] = cursor[6] - cursor[4];
     diffs[3] = cursor[7] - cursor[5];
+    diffs[2] = cursor[6] - cursor[4];
     dist[1] = (f32)fn_8002F234(diffs[2] * diffs[2] + diffs[3] * diffs[3]);
-    diffs[4] = cursor[6] - cursor[8];
     diffs[5] = cursor[7] - cursor[9];
+    diffs[4] = cursor[6] - cursor[8];
     dist[2] = (f32)fn_8002F234(diffs[4] * diffs[4] + diffs[5] * diffs[5]);
-    diffs[6] = cursor[2] - cursor[8];
     diffs[7] = cursor[3] - cursor[9];
+    diffs[6] = cursor[2] - cursor[8];
     dist[3] = (f32)fn_8002F234(diffs[6] * diffs[6] + diffs[7] * diffs[7]);
     off = (dist[0] + dist[2] <= dist[1] + dist[3]);
     total = lbl_80561938 * (dist[off] + dist[(off + 2) % 4]);
@@ -1301,6 +1301,7 @@ s32 fn_801698B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 s32 fn_80169928(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    #pragma scheduling invalid_target
     if (arg1 > arg3 - arg1)
         arg1 = arg3 - arg1;
     if (arg0 > arg2 - arg0)
@@ -1310,7 +1311,6 @@ s32 fn_80169928(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (arg0 > 2)
         return 3;
     switch (arg0) {
-    case 0:
     case 1:
         return 1;
     default:
@@ -1462,6 +1462,7 @@ s32 fn_80169D64(s32 unused, s32 name) {
     return (u32)__cntlzw(cmp) >> 5;
 }
 #pragma push
+#pragma scheduling on
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
@@ -1470,7 +1471,7 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     DummyItem *item = 0;
     s32 id = 0;
     s32 i;
-    f32 zero = lbl_80561924;
+    f32 zero;
 
     sscanf(arg1->getName(), lbl_8055A1C0, &sp8);
     id = sp8;
@@ -1478,6 +1479,7 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         DummyEntry *entry = &arg2->entries[arg2->entryCount++];
         entry->byte1C = 0;
         i = 0;
+        zero = lbl_80561924;
         entry->f8 = zero;
         entry->fC = zero;
         entry->f10 = zero;
@@ -1492,9 +1494,8 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     for (; (item = arg1->getItem(i)) != 0; i++) {
         f32 hit = item->getHit(lbl_8055A1C8);
         DummyVec2 loc = item->getLoc(lbl_8055A1CC);
-        s32 count = arg2->recordCount;
-        arg2->recordCount = count + 1;
-        DummyRecord *rec = &arg2->records[count];
+        DummyRecord *rec = &arg2->records[arg2->recordCount++];
+        f32 sum;
         rec->obj = 0;
         rec->obj = (DummyRecordObj *)fn_80167874(1);
         rec->x = loc.x;
@@ -1502,7 +1503,8 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         rec->z = loc.y;
         rec->hit = hit;
         fn_801E9E30(0, &rec->x);
-        rec->y = (rec->y + rec->obj->f18) + rec->hit;
+        sum = rec->y + rec->obj->f18;
+        rec->y = sum + rec->hit;
         rec->flag = 0;
         fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
         *(s32 *)((u8 *)fn_80167874(1) + 0x1C) += 1;
