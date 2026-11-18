@@ -159,31 +159,51 @@ extern char lbl_80341328[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-void fn_8023B9EC(s32 c0, s32 c1, s32 c2, s32 c3, s32 c4) {
-    struct Context { u8 pad[0x3E4]; s32 value; s32 unk; s32 arg3; s32 zero; s32 flags; u8 trailing[0x50]; };
-    struct Frame { const char *resource; s32 resource0; s32 resource1; s32 resource2; struct Context context; } frame;
-    s32 active; s32 zero; const char *resource;
-    active = fn_802ECEEC();
+void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    struct Context {
+        u8 pad[0x3E4];
+        s32 value;
+        s32 unk;
+        s32 arg3;
+        s32 zero;
+        s32 flags;
+        u8 trailing[0x50];
+    };
+    struct Frame {
+        const char *resource;
+        s32 resource0;
+        s32 resource1;
+        s32 resource2;
+        struct Context context;
+    } frame;
+    const char *resource;
+    s32 zero;
+    s32 active = fn_802ECEEC();
     if (active != 0) {
         fn_802ECEC0();
         resource = lbl_80341314;
         zero = 0;
         frame.resource = resource;
-        frame.resource0 = fn_80128314(zero);
+        frame.resource0 = fn_80128314(0);
         frame.resource1 = fn_80128314(1);
         frame.resource2 = fn_80265D58();
-        if (fn_80204024() != 0) fn_8012BF28();
+        if (fn_80204024() != 0)
+            fn_8012BF28();
         do {
             fn_801E952C(&frame.context);
-            fn_8023B7EC(&frame.context, c0, c1, c3);
-            frame.context.arg3 = c3;
+            fn_8023B7EC(&frame.context, arg0, arg1, arg3);
+            frame.context.arg3 = arg3;
             frame.context.zero = zero;
-            if (fn_8023B764(c3, frame.context.value) != 0) { fn_802E30C8(resource + 0x14); frame.context.flags |= 2; }
-            fn_8023B904(&frame.context, (void *)c2, c4);
+            if (fn_8023B764(arg3, frame.context.value) != 0) {
+                fn_802E30C8(resource + 0x14);
+                frame.context.flags |= 2;
+            }
+            fn_8023B904(&frame.context, (void *)arg2, arg4);
             fn_8023B8AC((s32)&frame.context);
         } while (fn_80204024() != 0);
         fn_80129AEC(0);
-        if (active != 0) fn_802ECEC4();
+        if (active != 0)
+            fn_802ECEC4();
     }
 }
 #pragma dont_inline reset
@@ -283,15 +303,16 @@ void fn_8023BCEC(void) {
     sp10 = 0;
     spC = 0;
     sp8 = 0;
-    do {
-        while (((int (*)(s32 *, s32 *, s32 *, s32))fn_8023BC24)(&sp1C, &sp18, &sp14, 0) == 0) { (void)0; }
-        temp_r31 = lbl_8055F291;
-        fn_8000DA10();
-        fn_800169F8(fn_8000DB34(), 0);
-        fn_80016970(0, sp1C, sp18, sp14);
-        fn_8023B9EC(sp10, spC, (s32)sp20, sp8, temp_r31);
-        fn_80137C80(0);
-    } while (fn_8024A4C4((s32)&sp10, (s32)&spC, (s32)&sp8) != 0);
+    while (fn_8024A4C4((s32)&sp10, (s32)&spC, (s32)&sp8) != 0) {
+        if (((int (*)(s32 *, s32 *, s32 *, s32))fn_8023BC24)(&sp1C, &sp18, &sp14, 0) != 0) {
+            temp_r31 = lbl_8055F291;
+            fn_8000DA10();
+            fn_800169F8(fn_8000DB34(), 0);
+            fn_80016970(0, sp1C, sp18, sp14);
+            fn_8023B9EC(sp10, spC, (s32)sp20, sp8, temp_r31);
+            fn_80137C80(0);
+        }
+    }
 }
 #pragma opt_propagation reset
 extern int fn_80128668(void);
