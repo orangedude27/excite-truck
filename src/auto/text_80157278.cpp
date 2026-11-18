@@ -681,14 +681,17 @@ struct ValueObject {
     virtual ValueObject *getEntry(s32 index);                         /* 0x60 */
 };
 
-struct Rec157560 {
-    s32 a;
-    s32 b;
-    s32 c;
-    f32 d;
-    f32 e;
-    s32 f;
-    char name[32];
+/* One 0x38-byte stunt record of a bonus tracker's table: fn_80157560 loads it
+   from a stunt value entry, fn_80158824 / fn_80158A84 clear it again, and
+   fn_801589A8 reads the points back out of it. */
+struct StuntRecord {
+    s32 counter0;    /* 0x00: the three counters a played record keeps */
+    s32 counter4;    /* 0x04 */
+    s32 counter8;    /* 0x08 */
+    f32 reached;     /* 0x0C: 0.0f while the record has not played */
+    f32 points;      /* 0x10: the entry's "pts" value */
+    s32 thresh;      /* 0x14: the entry's "thresh" value */
+    char name[0x20]; /* 0x18: the entry's "adj" text, written as "%s " */
 };
 #pragma scheduling invalid_target
 #pragma processor 750
