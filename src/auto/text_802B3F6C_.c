@@ -666,6 +666,7 @@ record_test:
 #pragma use_lmw_stmw on
 #pragma scheduling on
 #pragma pop
+#pragma dont_inline on
 void *fn_802B4F10(void *out, int x, int y, int a, int b) {
     int result = 0;
     int r = fn_802B40B0(a, b);
