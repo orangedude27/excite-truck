@@ -686,6 +686,9 @@ void GXSetFieldMask(s32 even, s32 odd);
 void GXSetFieldMode(s32 mode, s32 field);
 void GXSetDispCopySrc(s32 left, s32 top, s32 width, s32 height);
 void GXSetDispCopyDst();
+static inline void GXStoreDispCopyDstReg(u32 reg) {
+    __GXData[0x238 / 4] = reg;
+}
 unsigned int GXSetDispCopyYScale(f32 yScale);
 void GXSetCopyClamp(s32 value);
 void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg3);
