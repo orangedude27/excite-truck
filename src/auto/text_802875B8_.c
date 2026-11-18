@@ -76,7 +76,6 @@ extern const char lbl_80348A4C[];
 struct Vec3i_80287F90 {
     s32 x, y, z;
     Vec3i_80287F90() {}
-    Vec3i_80287F90(const Vec3i_80287F90 &o) { x = o.x; y = o.y; z = o.z; }
 };
 #pragma cplusplus reset
 extern s32 fn_801E7DF0(s32);
