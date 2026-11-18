@@ -296,6 +296,7 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
     pos.x = q[0] + dir.x * s;
     pos.y = q[1] + dir.y * s;
     pos.z = q[2] + dir.z * s;
+    
     Vec d;
     d.x = q1[0] - pos.x;
     d.y = q1[1] - pos.y;
@@ -328,24 +329,28 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
     if (count < *(int*)(*(char**)(a + 4) + 0x310)) {
         item = *(char**)(a + 4) + (count << 5);
         float* q2 = (float*)(item + 0x10);
+        float t2;
         Vec v;
         v.x = q2[0] - q1[0];
         v.y = q2[1] - q1[1];
         v.z = q2[2] - q1[2];
-        float t = inv * ((float (*)(const void *, const void *))PSQUATMultiply)(a + 0x30, q0);
+        t2 = inv * ((float (*)(const void *, const void *))PSQUATMultiply)(a + 0x30, q0);
         float* p = (float*)(a + 0xC);
         Vec up;
-        float ux = q1[3] - q0[3];
         float uz = q1[5] - q0[5];
         float uy = q1[4] - q0[4];
-        up.z = q0[5] + t * uz;
-        up.y = q0[4] + t * uy;
-        up.x = q0[3] + t * ux;
+        float ux = q1[3] - q0[3];
+        up.x = q0[3] + t2 * ux;
+        up.y = q0[4] + t2 * uy;
+        up.z = q0[5] + t2 * uz;
         *(Vec*)p = up;
+        float nz = dir.z + t2 * (v.z - dir.z);
+        float ny = dir.y + t2 * (v.y - dir.y);
+        float nx = dir.x + t2 * (v.x - dir.x);
         Vec n;
-        n.z = dir.z + t * (v.z - dir.z);
-        n.y = dir.y + t * (v.y - dir.y);
-        n.x = dir.x + t * (v.x - dir.x);
+        n.x = nx;
+        n.y = ny;
+        n.z = nz;
         *(Vec*)(a + 0x24) = n;
         PSVECNormalize((Vec*)(a + 0x24), (Vec*)(a + 0x24));
     } else {
@@ -1137,7 +1142,6 @@ extern "C" void fn_801FE77C(void* container) {
     }
 }
 
-#pragma scheduling invalid_target
 extern "C" void fn_801FE7E8(void* arg0) {
     float threshold = lbl_80563034;
     char* item = (char*)arg0 + 4;
