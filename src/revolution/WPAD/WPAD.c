@@ -649,9 +649,6 @@ _end:
 
 void fn_8005E298(void) {
     WPADManageFrame frame;
-    register s32 zero asm("r31");
-    register s32 sixteen asm("r23");
-    register s32 one asm("r24");
     register WPADCB **var_r28 asm("r28");
     register u8 *var_r27 asm("r27");
     register s32 var_r26 asm("r26");
@@ -659,6 +656,9 @@ void fn_8005E298(void) {
     register WPADCB *temp_r30 asm("r30");
     register s8 var_r29 asm("r29");
     register s8 var_r22 asm("r22");
+    register s32 zero asm("r31");
+    register s32 sixteen asm("r23");
+    register s32 one asm("r24");
     s32 temp_r25;
     s32 temp_r25_2;
     s32 temp_r30_2;
@@ -686,6 +686,7 @@ void fn_8005E298(void) {
     WPADCB *temp_r29;
     WPADCB *temp_r29_2;
     WPADCB *temp_r5_3;
+    u16 limit;
 
     if (fn_8006A940() == 3) {
         var_r26 = 0;
@@ -867,7 +868,8 @@ block_done:
         lbl_8055DBFA = (lbl_8055DBFA + 1) & ~((s32) ~((lbl_8055DBFA - 0xA) | (0xA - lbl_8055DBFA)) >> 0x1F);
         lbl_8055DBFC = (lbl_8055DBFC + 1) & ~((s32) ~((lbl_8055DBFC - 5) | (5 - lbl_8055DBFC)) >> 0x1F);
         lbl_8055DBFD = (lbl_8055DBFD + 1) & ~((s32) ~((lbl_8055DBFD - 5) | (5 - lbl_8055DBFD)) >> 0x1F);
-        lbl_8055DBFE = (lbl_8055DBFE + 1) & ~((s32) ~((lbl_8055DBFE - 0xEA60) | (0xEA60 - lbl_8055DBFE)) >> 0x1F);
+        limit = 0xEA60;
+        lbl_8055DBFE = (lbl_8055DBFE + 1) & ~((s32) ~((lbl_8055DBFE - limit) | (limit - lbl_8055DBFE)) >> 0x1F);
         if (((s32) lbl_8055DC11 != 0) && (SCCheckStatus() == 0) && (SCSetBtDeviceInfoArray(&_scArray) == 1)) {
             SCFlushAsync(0);
             lbl_8055DC11 = 0;
@@ -4629,11 +4631,12 @@ extern u8 lbl_802EE8C8[];
 s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
     u8 frame[0x420] ALIGN(8);
     register s32 channel asm("r31") = chan;
-    register WPADCallback callback asm("r28") = arg2;
-    register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
     register u32 value778 asm("r26");
-    register s32 status asm("r25");
     register u32 value81C asm("r30");
+    register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
+    register s32 arg asm("r27") = arg1;
+    register WPADCallback callback asm("r28") = arg2;
+    register s32 status asm("r25");
     BOOL outerEnabled;
     BOOL enabled;
     BOOL nestedEnabled;
@@ -4653,7 +4656,7 @@ s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
         status = -2;
         goto finish;
     }
-    if (arg1 != 0) goto extended;
+    if (arg != 0) goto extended;
     if (value778 == 0) {
         status = 0;
         goto finish;
@@ -5041,7 +5044,7 @@ queue_eight:
     {
         u32 addr = 0x04B00033;
         u8 firstByte = 1;
-        u8 secondByte = (u8)arg1;
+        u8 secondByte = (u8)arg;
         WPADCommand* cmd = (WPADCommand*)(frame + 0x90);
         WPADCommand* copy = (WPADCommand*)(frame + 0x60);
         *(u32*)cmd = 0x16;
