@@ -361,6 +361,7 @@ void fn_801B6670(void) {
     table[46].unk_0x10 = 0;
     table[46].unk_0x14 = 0;
     table[46].value = (float) lbl_805626F8;
+    table[46].scale = (float) lbl_805626DC;
     table[47].id = 0x30;
     table[47].name = (const char *) (base + 0x56C);
     table[47].description = (const char *) (base + 0x558);
