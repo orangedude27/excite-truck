@@ -1189,6 +1189,19 @@ extern "C" f32 fn_8023293C(s32, s32, f32);
 extern "C" s32 fn_8023512C(s32);
 extern "C" void fn_80235380(void *);
 extern char lbl_8033D8B8[];
+
+/* The fields fn_80219AB4 sets up below the 0x244-byte base widget, which the
+ * drawer fn_80219FE0 and the destructor fn_80219E44 read back:
+ *   0x244 kind: what the label draws (2,4,5 text; 3,6,8,9 a picture)
+ *   0x248 the loaded resource: a gText font (text) or an ArtSet (picture)
+ *   0x24C the font file name, or the value the label follows (3,6)
+ *   0x250 value shown while nothing is being followed (layout field 9C)
+ *   0x254 text style handed to the draw call (layout field A0)
+ *   0x258 the string as handed in, and 0x25C the label's own 32-byte copy
+ *   0x27C the scale the string is drawn at (f32)
+ *   0x280 draw the glyphs at their own size (layout field A4)
+ * The base widget holds its box at 0x08/0x10 (bottom - top is its height) and
+ * answers its width through vtable slot 0x70 (VfObj::vf28). */
 #pragma push
 #pragma processor 750
 extern "C" void fn_80219AB4(void *widget, s32 kind, s32 text, s32 idleValue, s32 watched, s32 style, s32 ownSize) {
