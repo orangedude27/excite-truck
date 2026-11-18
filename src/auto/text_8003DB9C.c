@@ -736,7 +736,6 @@ void __GXInitGX(void) {
     register u32 i;
     f32 mtx[3][4];
     unsigned int texObj[8];
-    u32 zero = 0;
 
     base = lbl_803034A0;
     clearColor.r = lbl_80560B24; clearColor.g = lbl_80560B25;
@@ -793,12 +792,12 @@ void __GXInitGX(void) {
     GXSetScissorBoxOffset(0, 0);
     GXSetNumChans(0);
     GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
-    ambBlack4 = zero;
+    ambBlack4 = 0;
     GXSetChanAmbColor_Internal(4, &ambBlack4);
     matTmp4 = *(u32 *)&matColor;
     GXSetChanMatColor_Internal(4, &matTmp4);
     GXSetChanCtrl(5, 0, 0, 1, 0, 0, 2);
-    ambBlack5 = zero;
+    ambBlack5 = 0;
     GXSetChanAmbColor_Internal(5, &ambBlack5);
     matTmp5 = *(u32 *)&matColor;
     GXSetChanMatColor_Internal(5, &matTmp5);
@@ -845,7 +844,7 @@ void __GXInitGX(void) {
     GXSetIndTexCoordScale(1, 0, 0);
     GXSetIndTexCoordScale(2, 0, 0);
     GXSetIndTexCoordScale(3, 0, 0);
-    *(u32 *)&fogColor = zero;
+    *(u32 *)&fogColor = 0;
     GXSetFog(0, fogColor, 0.0f, lbl_80560B2C, lbl_80560B30, lbl_80560B2C);
     GXSetFogRangeAdj(0, 0, 0);
     GXSetBlendMode(0, 4, 5, 0);
@@ -857,13 +856,12 @@ void __GXInitGX(void) {
     GXSetDstAlpha(0, 0);
     GXSetPixelFmt(0, 0);
     GXSetFieldMask(1, 1);
-    {
-        int fieldMode;
-        if (2 * mode->xfbHeight == mode->viHeight) fieldMode = 1; else fieldMode = 0;
-        GXSetFieldMode(mode->fieldMode, fieldMode);
-    }
+    if (2 * mode->xfbHeight == mode->viHeight)
+        GXSetFieldMode(mode->fieldMode, 1);
+    else
+        GXSetFieldMode(mode->fieldMode, 0);
     GXSetDispCopySrc(0, 0, mode->fbWidth, mode->efbHeight);
-    GXSetDispCopyDst(mode->fbWidth);
+    GXSetDispCopyDst(mode->fbWidth, mode->efbHeight);
     GXSetDispCopyYScale((f32)mode->xfbHeight / (f32)mode->efbHeight);
     GXSetCopyClamp(3);
     GXSetCopyFilter(mode->filter, mode->samples, 1, mode->vfilter);
@@ -3402,7 +3400,7 @@ void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
     int tilesX;
     int tilesY;
     int compressed;
-    register int fmt;
+    int fmt;
     unsigned int *gx = __GXData;
     unsigned int *gx2;
     CopyControlReg *reg;
@@ -3549,12 +3547,13 @@ f32 GXGetYScaleFactor(u32 efbHeight, u32 xfbHeight) {
 
 extern f32 lbl_80560B40;
 unsigned int GXSetDispCopyYScale(f32 yScale) {
-    unsigned int scale = (unsigned int)(lbl_80560B40 / yScale);
+    unsigned int scale = (unsigned int)(256.0f / yScale);
+    unsigned int height = scale & 0x1FF;
     unsigned int width;
     unsigned int result;
     unsigned int value;
     unsigned int tmp;
-    unsigned int height;
+    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
     union {
         unsigned int value;
         struct {
@@ -3571,13 +3570,12 @@ unsigned int GXSetDispCopyYScale(f32 yScale) {
             unsigned int other : 10;
         } fields;
     } copyState;
-    height = scale & 0x1FF;
 
-    *(volatile unsigned char *)0xCC008000 = 0x61;
     packet.value = 0;
     packet.fields.scale = scale;
     packet.fields.tag = 0x4E;
-    *(volatile unsigned int *)0xCC008000 = packet.value;
+    *(volatile unsigned char *)fifo = 0x61;
+    *fifo = packet.value;
     ((volatile unsigned short *)__GXData)[1] = 0;
     tmp = (0x100 - height) | (height - 0x100);
     copyState.value = __GXData[0x23C / 4];
@@ -5621,9 +5619,9 @@ void GXSetFog(int type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
     u32 a_bits, c_bits;
 
     u32 fogColorReg = 0;
-    u32 fogParamReg0 = 0;
-    u32 fogParamReg1 = 0;
-    u32 fogParamReg2 = 0;
+    register u32 fogParamReg0 = 0;
+    register u32 fogParamReg1 = 0;
+    register u32 fogParamReg2 = 0;
     u32 fogParamReg3 = 0;
 
     u32 fsel = GX_FOG_GET_FSEL(type);
