@@ -1302,54 +1302,42 @@ typedef struct RadiatorSmokeTrack {
 #define kAttrDir      ((const char *)&lbl_8055C898)
 #pragma push
 #pragma scheduling invalid_target
-int fn_8028A1A4(int out) {
-    struct Vec3 { float x; float y; float z; };
-    struct Item {
-        virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0;
-        virtual void v3() = 0; virtual void v4() = 0; virtual void v5() = 0;
-        virtual void v6() = 0; virtual void v7() = 0; virtual void v8() = 0;
-        virtual void v9() = 0; virtual void v10() = 0;
-        virtual Vec3 value(void *) = 0;
-    };
-    struct Object {
-        virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0;
-        virtual void v3() = 0; virtual void v4() = 0;
-        virtual int count(void *) = 0;
-        virtual void v6() = 0; virtual void v7() = 0; virtual void v8() = 0;
-        virtual void v9() = 0; virtual void v10() = 0; virtual void v11() = 0;
-        virtual void v12() = 0; virtual void v13() = 0; virtual void v14() = 0;
-        virtual void v15() = 0; virtual void v16() = 0; virtual void v17() = 0;
-        virtual void v18() = 0; virtual void v19() = 0; virtual void v20() = 0;
-        virtual void v21() = 0;
-        virtual Item *item(int) = 0;
-    };
-    char *obj;
+int fn_8028A1A4(int smokeMan) {
+    /* Build the "smoke car tab" table the radiator smoke man keeps at +0: one
+     * RadiatorSmokeTrack row per slot of the per-car effect table (fn_80287B14
+     * counts the slots, fn_80288208 gives the i-th).  A slot whose object
+     * answers to the name "radiator" contributes its smoke nozzles: how many it
+     * has (its "count" attribute) and, for each child object, the "arm"
+     * position and "dir" direction it sits at.  A slot holding anything else
+     * gets an empty row. */
+    RadiatorArm *cursor;
     int i;
-    char *entry;
-    Object *castObj;
+    RadiatorSmokeTrack *track;
+    SceneObject *radiator;
     int j;
-    Item *item;
-    *(void **)out = fn_8028A1A4_newArray(fn_80287B14());
+    SceneItem *nozzle;
+
+    *(void **)smokeMan = fn_8028A1A4_newArray(fn_80287B14());
     for (i = 0; i < fn_80287B14(); i++) {
-        obj = (char *)fn_80288208(i);
-        entry = (char *)*(void **)out + i * 0x68;
-        if (fn_80287E20((Object *)obj, lbl_80348B8C)) {
-            castObj = (Object *)fn_80287E80((int)obj, lbl_80348B8C);
-            *(int *)(entry + 0x60) = castObj->count(&lbl_8055C890);
-            obj = entry;
-            for (j = 0; j < *(int *)(entry + 0x60); j++, obj += 0x18) {
-                item = castObj->item(j);
-                const Vec3 &a = item->value(&lbl_8055C88C);
-                *(float *)(obj + 0x0) = a.x;
-                *(float *)(obj + 0x4) = a.y;
-                *(float *)(obj + 0x8) = a.z;
-                const Vec3 &b = item->value(&lbl_8055C898);
-                *(float *)(obj + 0xC) = b.x;
-                *(float *)(obj + 0x10) = b.y;
-                *(float *)(obj + 0x14) = b.z;
+        cursor = (RadiatorArm *)fn_80288208(i); /* the i-th car-effect slot */
+        track = (RadiatorSmokeTrack *)((char *)*(void **)smokeMan + i * 0x68);
+        if (fn_80287E20(cursor, kNameRadiator)) {
+            radiator = (SceneObject *)fn_80287E80((int)cursor, kNameRadiator);
+            track->armCount = radiator->intAttribute(kAttrCount);
+            cursor = (RadiatorArm *)track; /* same register: now the arm cursor */
+            for (j = 0; j < track->armCount; j++, cursor++) {
+                nozzle = radiator->child(j);
+                const Vec3 &armPos = nozzle->vec3Attribute(kAttrArm);
+                cursor->arm.x = armPos.x;
+                cursor->arm.y = armPos.y;
+                cursor->arm.z = armPos.z;
+                const Vec3 &armDir = nozzle->vec3Attribute(kAttrDir);
+                cursor->dir.x = armDir.x;
+                cursor->dir.y = armDir.y;
+                cursor->dir.z = armDir.z;
             }
         } else {
-            *(int *)(entry + 0x60) = 0;
+            track->armCount = 0;
         }
     }
 }
