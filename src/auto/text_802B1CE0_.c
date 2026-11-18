@@ -442,6 +442,7 @@ extern void fn_802B257C(void *);
 #pragma dont_inline on
 #pragma opt_common_subs off
 #pragma opt_loop_invariants off
+#pragma opt_unroll_loops off
 extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
     class Obj {
     public:
@@ -748,16 +749,17 @@ int fn_802B2E08(int arg0) {
     float stack[28];
     double conversion;
     float scaleX, scaleY, scaleZ, normal, vertical;
-    float angle, cosine, sine, radial, radius, c, x, x2, yz, x3;
-    float product0, product1, product2;
+    float angle, radial, radius, x, x2, yz, x3;
+    float product0, product1;
+    double cosine, sine, negSine;
     float phase, phase2, scale;
     register int arrayOffset, j, index;
     int zero, eight, row, byteOffset, n;
     unsigned char *data, *record;
     unsigned short selector;
 
-    base = (char *)arg0;
     conversion = lbl_80564C28;
+    base = (char *)arg0;
     scaleX = lbl_80564C0C;
     index = 0;
     scaleY = lbl_80564C10;
@@ -788,25 +790,23 @@ outer_body:
                     0, lbl_80564C00, lbl_80564C08);
                 cosine = (float)cos(angle);
                 sine = (float)sin(angle);
+                negSine = -sine;
                 x = entry[9];
-                c = cosine;
                 j++;
                 product1 = radial * x;
-                product0 = c * x;
-                product2 = -sine;
-                product2 = product2 * x;
+                product0 = (float)cosine * x;
                 entry[0] = product0;
                 entry[1] = product1;
-                entry[2] = product2;
+                entry[2] = (float)negSine * x;
                 x2 = entry[9];
                 yz = radial * x2;
                 entry[3] = yz;
                 entry[4] = vertical * x2;
                 entry[5] = yz;
                 x3 = entry[9];
-                entry[6] = sine * x3;
+                entry[6] = (float)sine * x3;
                 entry[7] = radial * x3;
-                entry[8] = c * x3;
+                entry[8] = (float)cosine * x3;
                 entry += 10;
             } while ((unsigned int)j < 16u);
             *(unsigned char *)(obj + 0x2A0) = (unsigned char)zero;
@@ -855,12 +855,12 @@ outer_body:
                 angle = (float)fn_8002EFB4(
                     (scaleX * (float)j) / scaleY + phase, lbl_80564C18);
                 sine = (float)sin(angle);
-                entry[3] = *(float *)(obj + 8) * sine;
+                entry[3] = *(float *)(obj + 8) * (float)sine;
                 angle = (float)fn_8002EFB4(
                     (scaleX * (float)j) / scaleY + phase2, lbl_80564C18);
                 cosine = (float)cos(angle);
                 j++;
-                entry[5] = *(float *)(obj + 8) * cosine;
+                entry[5] = *(float *)(obj + 8) * (float)cosine;
                 entry += 10;
             } while ((unsigned int)j < 16u);
         }
