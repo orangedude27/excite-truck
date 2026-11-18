@@ -1351,8 +1351,8 @@ extern "C" s32 fn_801D5E94(void *arg0) {
             scale = *(f32 *)(self + 0x60) + scale * (*(f32 *)(self + 0x64) - *(f32 *)(self + 0x60));
             vec.x = zero; vec.y = zero; vec.z = zero;
             mag = PSVECDotProduct(&pos, &pos);
-            if ((float)__fabs(mag) <= lbl_80558DC4 ||
-                (float)__fabs(scale) <= lbl_80558DC4) {
+            mag = (float)__fabs(mag);
+            if (mag <= lbl_80558DC4 || (mag = (float)__fabs(scale)) <= lbl_80558DC4) {
                 Obj *obj = *(Obj **)(*(char **)(self + 0x70) + offset);
                 obj->v8(1);
             } else {
