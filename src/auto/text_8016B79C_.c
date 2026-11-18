@@ -228,7 +228,7 @@ void *fn_8016B8CC(void *obj, s32 shouldDelete) {
 
 #pragma cplusplus on
 extern "C" s32 strlen(const char *);
-extern "C" void fn_801308F4(void *, s32, s32);
+extern "C" void fn_801308F4(void *, ...);
 extern "C" void fn_80130980(void *, s32, s32, f32);
 extern "C" void fn_801312EC(void *, void *);
 extern "C" void fn_80131318();
