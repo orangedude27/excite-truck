@@ -86,17 +86,15 @@ void fn_8029C22C(void) {
 }
 
 void fn_8029C25C(void) {
+    int *p;
+    int i;
     float v = fn_801E7E24();
     if (!((float)__fabs((double)v) <= lbl_80558DC4)) {
-        register int *p = (int *)&lbl_804B5010;
-        int i = 0;
-        goto check;
-    loop:
-        fn_8029D574(*p);
-        p++;
-        i++;
-    check:
-        if (i < lbl_8055F7F0) goto loop;
+        p = (int *)&lbl_804B5010;
+        for (i = 0; i < lbl_8055F7F0; i++) {
+            fn_8029D574(*p);
+            p++;
+        }
     }
 }
 
@@ -878,18 +876,17 @@ extern void fn_8029DDB8(void *);
 #pragma push
 #pragma processor 750
 void fn_8029D574(int arg0) {
-    extern float lbl_80564658;
     extern float fn_80287BC8(float, float);
     extern void fn_8029DF64(void *, int, int, float);
     float value;
     int y;
     char *p = (char *)arg0;
-    if (*(float *)(p + 0x34) >= *(const float *)&lbl_80564658 - lbl_80558DC4) {
+    if (*(float *)(p + 0x34) >= 1.0f - lbl_80558DC4) {
         float range = *(float *)(p + 0x28);
         value = fn_80287BC8(-range, range);
         y = fn_80287B94(1, *(int *)(p + 0x10) - 2);
         fn_8029DF64(p, fn_80287B94(1, *(int *)(p + 0xC) - 2), y, value);
-        *(float *)(p + 0x34) += *(float *)(p + 0x24) - *(const float *)&lbl_80564658;
+        *(float *)(p + 0x34) += *(float *)(p + 0x24) - 1.0f;
     } else {
         *(float *)(p + 0x34) += *(float *)(p + 0x24);
     }
