@@ -212,59 +212,39 @@ extern s32 lbl_8055D6C0, lbl_8055D6C4, lbl_8055D6C8, lbl_8055D6CC;
 extern s32 lbl_8055D6D0, lbl_8055D6D4;
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling 750
 void TRKInitializeNub(void) {
     s64 now = 0;
     s32 state = 0;
     s64 duration = 0;
     s64 start = 0;
-    s64 elapsed = 0;
     s64 deadline = 0;
-    u32 status = 0;
-    u32 control = 0;
-    u32 tmp = 0;
+    s64 limit;
     goto continuation;
 measure:
-    control = *(volatile u32 *)0xCD006C00;
-    control = (control & ~0x20) | 0x20;
-    *(volatile u32 *)0xCD006C00 = control;
-    control = *(volatile u32 *)0xCD006C00;
-    *(volatile u32 *)0xCD006C00 = control & ~2U;
-    control = *(volatile u32 *)0xCD006C00;
-    *(volatile u32 *)0xCD006C00 = (control & ~1U) | 1U;
-    do {
-        tmp = *(volatile u32 *)0xCD006C08;
-        status = tmp & 0x7FFFFFFFU;
-        tmp = *(volatile u32 *)0xCD006C08;
-        control = tmp & 0x7FFFFFFFU;
-    } while (status == control);
+    *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~0x20U) | 0x20U;
+    *(volatile u32 *)0xCD006C00 = *(volatile u32 *)0xCD006C00 & ~2U;
+    *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~1U) | 1U;
+    while ((*(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU) ==
+           (*(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU)) {
+    }
     start = (s64)OSGetTime();
-    control = *(volatile u32 *)0xCD006C00;
-    *(volatile u32 *)0xCD006C00 = (control & ~2U) | 2U;
-    control = *(volatile u32 *)0xCD006C00;
-    *(volatile u32 *)0xCD006C00 = (control & ~1U) | 1U;
-    do {
-        status = *(volatile u32 *)0xCD006C08;
-        status &= 0x7FFFFFFFU;
-        control = *(volatile u32 *)0xCD006C08;
-        control &= 0x7FFFFFFFU;
-    } while (status == control);
+    *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~2U) | 2U;
+    *(volatile u32 *)0xCD006C00 = (*(volatile u32 *)0xCD006C00 & ~1U) | 1U;
+    while ((*(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU) ==
+           (*(volatile u32 *)0xCD006C08 & 0x7FFFFFFFU)) {
+    }
     now = (s64)OSGetTime();
-    control = *(volatile u32 *)0xCD006C00;
-    elapsed = now - start;
-    *(volatile u32 *)0xCD006C00 = control & ~2U;
-    control = *(volatile u32 *)0xCD006C00;
-    *(volatile u32 *)0xCD006C00 = control & ~1U;
-    if (elapsed > (s64)((((u64)(u32)lbl_8055D6D0 << 32) | (u32)lbl_8055D6D4) -
-                       (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4))) {
+    *(volatile u32 *)0xCD006C00 = *(volatile u32 *)0xCD006C00 & ~2U;
+    *(volatile u32 *)0xCD006C00 = *(volatile u32 *)0xCD006C00 & ~1U;
+    limit = (s64)(*(u64 *)&lbl_8055D6D0 - *(u64 *)&lbl_8055D6B0);
+    if (limit > now - start) {
         duration = (s64)(((u64)(u32)lbl_8055D6C0 << 32) | (u32)lbl_8055D6C4);
         state = 1;
         goto continuation;
     }
-    if (elapsed <= (s64)((((u64)(u32)lbl_8055D6D0 << 32) | (u32)lbl_8055D6D4) +
-                         (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4)) &&
-        elapsed > (s64)((((u64)(u32)lbl_8055D6C8 << 32) | (u32)lbl_8055D6CC) -
-                       (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4))) {
+    if ((s64)(*(u64 *)&lbl_8055D6D0 + *(u64 *)&lbl_8055D6B0) >= now - start &&
+        (s64)(*(u64 *)&lbl_8055D6C8 - *(u64 *)&lbl_8055D6B0) > now - start) {
         duration = (s64)(((u64)(u32)lbl_8055D6B8 << 32) | (u32)lbl_8055D6BC);
         state = 1;
         goto continuation;
@@ -742,19 +722,20 @@ void InitMetroTRKCommTable(void) {
     void *b[4];
     void *d[3];
     void *e[3];
+    struct TRKBases { u8 *b0; u8 *b1; u8 *b2; };
+    struct TRKBases bs;
     u8 *base = lbl_8035BFA0;
     s32 i8 = lbl_8055D6F8 * 0x480;
     s32 i4 = lbl_8055D6F4 * 0x480;
-    {
-        u8 *b2 = base + 0x1B00;
-        u8 *b1 = base + 0xD80;
-        lbl_8055D710 = base + i8;
-        lbl_8055D70C = base + i4;
-        lbl_8055D708 = b1 + i8;
-        lbl_8055D704 = b1 + i4;
-        lbl_8055D700 = b2 + i8;
-        lbl_8055D6FC = b2 + i4;
-    }
+    bs.b0 = lbl_8035BFA0;
+    bs.b1 = bs.b0 + 0xD80;
+    bs.b2 = bs.b0 + 0x1B00;
+    lbl_8055D710 = bs.b0 + i8;
+    lbl_8055D70C = bs.b0 + i4;
+    lbl_8055D708 = bs.b1 + i8;
+    lbl_8055D704 = bs.b1 + i4;
+    lbl_8055D700 = bs.b2 + i8;
+    lbl_8055D6FC = bs.b2 + i4;
     if (lbl_8055D728 != 0) {
         u8 *b2 = base + 0x1B00;
         if ((u32)lbl_8055D740 == 2) {
