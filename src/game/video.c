@@ -69,6 +69,7 @@ typedef struct SimpleHeap {
     /* +0x0C */ SimpleHeapBlock *allocList;       /* blocks handed out */
 } SimpleHeap;
 
+#pragma scheduling invalid_target
 void fn_802DEAC4(void) {
     GXSetTexCoordGen2(0, 1, 0, 33, 0, 125);
     GXSetTexCoordGen2(1, 1, 0, 36, 0, 125);
