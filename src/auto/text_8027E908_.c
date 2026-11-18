@@ -149,8 +149,7 @@ extern char lbl_80348798[];
 extern unsigned int lbl_8055F688;
  struct Fn8027F834List { void **items; int count; int pad[2]; };
  extern struct Fn8027F834List lbl_804B3048;
- struct Fn8027F958State { char pad[0x50]; struct Fn8027F834List list; };
-typedef struct Fn8027F958State Fn8027F958State;
+ 
 
 /* One entry of the ebi UI's record list: it shows the record its +0x60 child points at
    and carries the flags the list walks to move the selection (lbl_8055F698) over it.
