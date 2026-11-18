@@ -649,16 +649,16 @@ _end:
 
 void fn_8005E298(void) {
     WPADManageFrame frame;
+    register s32 zero asm("r31");
+    register s32 sixteen asm("r23");
+    register s32 one asm("r24");
     register WPADCB **var_r28 asm("r28");
     register u8 *var_r27 asm("r27");
     register s32 var_r26 asm("r26");
     register s32 var_r25 asm("r25");
+    register WPADCB *temp_r30 asm("r30");
     register s8 var_r29 asm("r29");
     register s8 var_r22 asm("r22");
-    register WPADCB *temp_r30 asm("r30");
-    register s32 zero asm("r31") = 0;
-    register s32 sixteen asm("r23") = 0x10;
-    register s32 one asm("r24") = 1;
     s32 temp_r25;
     s32 temp_r25_2;
     s32 temp_r30_2;
@@ -691,6 +691,9 @@ void fn_8005E298(void) {
         var_r26 = 0;
         var_r28 = _wpdcb;
         var_r27 = lbl_8055DC00;
+        zero = 0;
+        sixteen = 0x10;
+        one = 1;
         do {
             var_r25 = 0;
             if ((u8) lbl_8055DBFD == 5) {
@@ -4626,12 +4629,12 @@ extern u8 lbl_802EE8C8[];
 s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
     u8 frame[0x420] ALIGN(8);
     register s32 channel asm("r31") = chan;
-    register u32 value778 asm("r26");
-    register u32 value81C asm("r30");
-    register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
     register s32 arg asm("r27") = arg1;
     register WPADCallback callback asm("r28") = arg2;
+    register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
+    register u32 value778 asm("r26");
     register s32 status asm("r25");
+    register u32 value81C asm("r30");
     BOOL outerEnabled;
     BOOL enabled;
     BOOL nestedEnabled;
