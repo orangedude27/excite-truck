@@ -1078,6 +1078,14 @@ extern "C" void *fn_80016BC8(void *, s32);
 extern "C" void *fn_80018A8C(void *, s32, s32 *, s32);
 extern "C" s32 fn_80255918(void *, void *);
 extern "C" char lbl_8034287C[];
+static inline void copyStr_80241EF0(char *dst, const char *src, s32 n) {
+    while ((*dst++ = *src++) != 0) {
+        if (--n <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+    }
+}
 static inline void updateCtx_80241EF0(CtxObj_80241EF0 *ctx, void *record) {
     if (ctx->record != 0) {
         s32 savedIdx = ctx->idx;
@@ -1085,8 +1093,11 @@ static inline void updateCtx_80241EF0(CtxObj_80241EF0 *ctx, void *record) {
         *(s32 *)((u8 *)sub + 4) = savedIdx;
     }
     ctx->record = record;
-    s32 maxIdx = *(s32 *)((u8 *)record + 0x98) - 1;
-    ctx->idx = maxIdx < ctx->idx ? maxIdx : ctx->idx;
+    s32 curIdx = ctx->idx;
+    if (*(s32 *)((u8 *)record + 0x98) - 1 < curIdx) {
+        curIdx = *(s32 *)((u8 *)record + 0x98) - 1;
+    }
+    ctx->idx = curIdx;
 
     s32 idx = *(s32 *)((u8 *)fn_80016BC8(ctx->record, ctx->field3C) + 4);
     ctx->idx = idx;
@@ -1098,17 +1109,7 @@ static inline void updateCtx_80241EF0(CtxObj_80241EF0 *ctx, void *record) {
         ((int (*)(void *, int, void *, ...))fn_801345D8)(
             ctx->name5C, 0x40, lbl_8034287C,
             ctx->idx + 1);
-        {
-            char *src = (char *)fn_80131234((s32 *)ctx->name5C);
-            char *dst = ctx->name5C;
-            s32 n = 0x40;
-            while ((*dst++ = *src++) != 0) {
-                if (--n <= 0) {
-                    dst[-1] = 0;
-                    break;
-                }
-            }
-        }
+        copyStr_80241EF0(ctx->name5C, (char *)fn_80131234((s32 *)ctx->name5C), 0x40);
     }
 
     *ctx->field30 = ctx->idx;
@@ -1147,71 +1148,18 @@ static inline void updateInfoDst_80241EF0(InfoDstObj_80241EF0 *infoDst, char *na
     }
 }
 extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
-    struct Pair8 {
-        s32 a, b;
-    };
-    struct Info2C {
-        s32 header;
-        Pair8 pairs[5];
-    };
-    struct Collection {
-        virtual s32 f0() = 0;
-        virtual s32 f1() = 0;
-        virtual s32 f2() = 0;
-        virtual s32 getCount() = 0;
-        virtual void *getItem(s32) = 0;
-        virtual s32 getResult(s32) = 0;
-        virtual void f8() = 0;
-        virtual void f9() = 0;
-        virtual void f10() = 0;
-        virtual void f11() = 0;
-        virtual void f12() = 0;
-        virtual void f13() = 0;
-        virtual void f14() = 0;
-        virtual void f15() = 0;
-        virtual void f16() = 0;
-        virtual void f17() = 0;
-        virtual void f18() = 0;
-        virtual void f19() = 0;
-        virtual void f20() = 0;
-        virtual void f21() = 0;
-        virtual void f22() = 0;
-        virtual void f23() = 0;
-        virtual void draw(s32, void *, void *) = 0;
-    };
     struct SelfObj {
         u8 pad00[0x10];
         s32 *field10;
         s32 *field14;
-        struct CtxObj *ctx;
-        struct InfoDstObj *infoDst;
+        CtxObj_80241EF0 *ctx;
+        InfoDstObj_80241EF0 *infoDst;
         u8 *field20;
-        Collection *col;
+        Collection_80241EF0 *col;
         s32 index;
         char name2C[0x20];
         char name4C[0x20];
         s32 result;
-    };
-    struct CtxObj {
-        u8 pad00[0x28];
-        void *record;
-        s32 idx;
-        s32 *field30;
-        void **field34;
-        void *field38;
-        s32 field3C;
-        u8 pad40[8];
-        s32 field48;
-        float field4C;
-        float field50;
-        u8 pad54[8];
-        char name5C[0x40];
-    };
-    struct InfoDstObj {
-        Info2C info;
-        u8 widgets[5][0x28];
-        char texts[5][0x64];
-        u8 tail2E8[4];
     };
     SelfObj *self = (SelfObj *)arg0;
 
@@ -1253,77 +1201,8 @@ extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
     self->result = self->col->getResult(self->index);
     *(bool *)(self->field20 + 0xDD) = (self->result == 0);
 
-    {
-        void *subObj = self->ctx;
-        CtxObj *ctx = (CtxObj *)subObj;
-        if (ctx->record != 0) {
-            s32 savedIdx = ctx->idx;
-            void *sub = fn_80016BC8(ctx->record, ctx->field3C);
-            *(s32 *)((u8 *)sub + 4) = savedIdx;
-        }
-        ctx->record = record;
-        s32 maxIdx = *(s32 *)((u8 *)record + 0x98) - 1;
-        ctx->idx = maxIdx < ctx->idx ? maxIdx : ctx->idx;
-
-        s32 idx = *(s32 *)((u8 *)fn_80016BC8(ctx->record, ctx->field3C) + 4);
-        ctx->idx = idx;
-        ctx->name5C[0] = 0;
-        if (idx >= 0 && idx < *(s32 *)((u8 *)ctx->record + 0x98)) {
-            void *val = *(void **)((u8 *)ctx->record + 0x64 + idx * 4);
-            *ctx->field34 = val;
-            fn_80255918(ctx->field38, val);
-            ((int (*)(void *, int, void *, ...))fn_801345D8)(
-                ctx->name5C, 0x40, lbl_8034287C,
-                ctx->idx + 1);
-            {
-                char *src = (char *)fn_80131234(ctx->name5C);
-                char *dst = ctx->name5C;
-                s32 n = 0x40;
-                while ((*dst++ = *src++) != 0) {
-                    if (--n <= 0) {
-                        dst[-1] = 0;
-                        break;
-                    }
-                }
-            }
-        }
-
-        *ctx->field30 = ctx->idx;
-        ctx->field48 = -0xFA;
-        ctx->field4C = (float)ctx->idx;
-        ctx->field50 = (float)ctx->idx;
-
-        subObj = self->infoDst;
-        InfoDstObj *infoDst = (InfoDstObj *)subObj;
-        void *info = ((void *(*)(void *))fn_80018A8C)(self->name2C);
-        if (info != 0) {
-            infoDst->info = *(Info2C *)info;
-
-            for (s32 i = 0; i < 5; i++) {
-                char *src = (char *)infoDst->info.pairs[i].a;
-                if (src != 0) {
-                    char *dst = infoDst->texts[i];
-                    s32 n = 0x64;
-                    while ((*dst++ = *src++) != 0) {
-                        if (--n <= 0) {
-                            dst[-1] = 0;
-                            break;
-                        }
-                    }
-                } else {
-                    infoDst->texts[i][0] = 0;
-                }
-                ((Collection *)infoDst->widgets[i])->draw(i, &infoDst->info.pairs[i].b, infoDst->tail2E8);
-            }
-        } else {
-            memset(infoDst, 0, 0x2C);
-            infoDst->texts[0][0] = 0;
-            infoDst->texts[1][0] = 0;
-            infoDst->texts[2][0] = 0;
-            infoDst->texts[3][0] = 0;
-            infoDst->texts[4][0] = 0;
-        }
-    }
+    updateCtx_80241EF0(self->ctx, record);
+    updateInfoDst_80241EF0(self->infoDst, self->name2C);
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
