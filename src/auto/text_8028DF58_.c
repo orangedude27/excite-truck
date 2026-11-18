@@ -210,10 +210,10 @@ test:
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8028DF58(void) {
-    char *base = (char *)&lbl_804B34B0;
-    fn_8028ED74(base + '\0');
-    fn_8028ED74(base + 0x104);
-    fn_8028EE1C(base + 0x208);
+    EfList *lists = (EfList *)&lbl_804B34B0;
+    fn_8028ED74(&lists[0]);
+    fn_8028ED74(&lists[1]);
+    fn_8028EE1C(&lists[2]);
     lbl_8055F740 = 0;
     lbl_8055F744 = 1;
     lbl_8055F748 = 0;
@@ -1234,7 +1234,7 @@ void fn_8028FC40(void *arg0, int arg1, float *arg2, float farg0) {
     float sp8[3];
     float temp_f2;
     int result = 0;
-    if (*(float *)((char *)arg0 + 0x9C) >= lbl_80564424 - lbl_80558DC4 &&
+    if (*(float *)((char *)arg0 + 0x9C) >= 1.0f - lbl_80558DC4 &&
         *(int *)((char *)arg0 + 0x90) != *(int *)((char *)arg0 + 0x94)) {
         result = 1;
     }
