@@ -1315,6 +1315,10 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
     return result;
 }
 
+/* True when |x| is at most the near-zero epsilon. */
+static inline int fn_801D5E94_IsTiny(f32 x) {
+    return (f32)__fabs(x) <= lbl_80558DC4;
+}
 extern "C" s32 fn_801D5E94(void *arg0) {
     struct Vec { f32 x, y, z; };
     struct Obj {
@@ -1335,6 +1339,7 @@ extern "C" s32 fn_801D5E94(void *arg0) {
         i = 0;
         offset = 0;
         while (i < *(s32 *)(self + 0x74)) {
+            f32 mag;
             scale = fn_80129DC4(4, lbl_80562ADC, lbl_80562AE0);
             amount = fn_80129DC4(4, lbl_80562ADC, lbl_80562AE0);
             t50 = *(f32 *)(self + 0x50);
@@ -1349,19 +1354,17 @@ extern "C" s32 fn_801D5E94(void *arg0) {
             pos.x = d0; pos.y = d1; pos.z = d2;
             scale = *(f32 *)(self + 0x60) + scale * (*(f32 *)(self + 0x64) - *(f32 *)(self + 0x60));
             vec.x = zero; vec.y = zero; vec.z = zero;
-            {
-                register f32 dot = (float)fabs(PSVECDotProduct(&pos, &pos));
-                register f32 eps = lbl_80558DC4;
-                if (dot <= eps || (float)fabs(scale) <= eps) {
-                    Obj *obj = *(Obj **)(*(char **)(self + 0x70) + offset);
-                    obj->v8(1);
-                } else {
-                    Obj *obj;
-                    PSVECNormalize(&pos, &pos);
-                    vec.x = pos.x * scale; vec.y = pos.y * scale; vec.z = pos.z * scale;
-                    obj = *(Obj **)(*(char **)(self + 0x70) + offset);
-                    obj->v9(&vec, self + 0x54);
-                }
+            mag = PSVECDotProduct(&pos, &pos);
+            if ((float)__fabs(mag) <= lbl_80558DC4 ||
+                (float)__fabs(scale) <= lbl_80558DC4) {
+                Obj *obj = *(Obj **)(*(char **)(self + 0x70) + offset);
+                obj->v8(1);
+            } else {
+                Obj *obj;
+                PSVECNormalize(&pos, &pos);
+                vec.x = pos.x * scale; vec.y = pos.y * scale; vec.z = pos.z * scale;
+                obj = *(Obj **)(*(char **)(self + 0x70) + offset);
+                obj->v9(&vec, self + 0x54);
             }
             offset += 4;
             i += 1;
