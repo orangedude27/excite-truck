@@ -709,25 +709,25 @@ int fn_8027F958(int *selection, void *collection) {
     typedef unsigned char (*GetByte)(void *);
     typedef char *(*GetString)(void *);
     Fn8027F958Stack stack;
-    register void *object, *item;
-    register Fn8027F958Widget *widget;
-    register void **items, **storage;
-    register char *constants = (char *)&lbl_802FA848;
-    register char *state = (char *)&lbl_804B2FF8;
-    register char *strings = lbl_80347E50;
-    register float defaultValue;
-    register float defaultScale;
-    register void *widgetVtable;
-    register char *src, *dst;
-    register int i, j, index, remaining, result, mode, count, reported;
-    register float *value;
+    void *object, *item;
+    Fn8027F958Widget *widget;
+    void **items, **storage;
+    char *constants = (char *)&lbl_802FA848;
+    char *state = (char *)&lbl_804B2FF8;
+    char *strings = lbl_80347E50;
+    float defaultValue;
+    float defaultScale;
+    void *widgetVtable;
+    char *src, *dst;
+    int i, j, index, remaining, result, mode, count, reported;
+    float *value;
     object = ((GetItem)(*(void ***)collection)[4])(collection, 0);
     mode = ((GetInt)(*(void ***)object)[5])(object);
     defaultScale = lbl_805641F8;
     defaultValue = lbl_805641FC;
     widgetVtable = lbl_80348798;
-    index = ((struct Fn8027F958State *)state)->list.count;
-    storage = ((struct Fn8027F958State *)state)->list.items;
+    index = lbl_804B3048.count;
+    storage = lbl_804B3048.items;
     stack.widgets[0].unk14 = 0;
     stack.widgets[0].unk38 = defaultScale;
     stack.widgets[0].unk40 = 2;
@@ -743,12 +743,12 @@ int fn_8027F958(int *selection, void *collection) {
     stack.widgets[0].unk64 = 0;
     stack.widgets[0].unk70 = 0;
     stack.widgets[0].unk74 = 0;
-    ((struct Fn8027F958State *)state)->list.count = index + 1;
+    lbl_804B3048.count = index + 1;
     storage[index] = &stack.widgets[0];
     stack.widgets[0].unk7E = 0;
     stack.widgets[0].unkB0 = 0;
-    index = ((struct Fn8027F958State *)state)->list.count;
-    storage = ((struct Fn8027F958State *)state)->list.items;
+    index = lbl_804B3048.count;
+    storage = lbl_804B3048.items;
     stack.widgets[1].unk14 = 0;
     stack.widgets[1].unk38 = defaultScale;
     stack.widgets[1].unk40 = 2;
@@ -764,12 +764,12 @@ int fn_8027F958(int *selection, void *collection) {
     stack.widgets[1].unk64 = 0;
     stack.widgets[1].unk70 = 0;
     stack.widgets[1].unk74 = 0;
-    ((struct Fn8027F958State *)state)->list.count = index + 1;
+    lbl_804B3048.count = index + 1;
     storage[index] = &stack.widgets[1];
     stack.widgets[1].unk7E = 0;
     stack.widgets[1].unkB0 = 0;
-    index = ((struct Fn8027F958State *)state)->list.count;
-    storage = ((struct Fn8027F958State *)state)->list.items;
+    index = lbl_804B3048.count;
+    storage = lbl_804B3048.items;
     stack.widgets[2].unk14 = 0;
     stack.widgets[2].unk38 = defaultScale;
     stack.widgets[2].unk40 = 2;
@@ -785,12 +785,12 @@ int fn_8027F958(int *selection, void *collection) {
     stack.widgets[2].unk64 = 0;
     stack.widgets[2].unk70 = 0;
     stack.widgets[2].unk74 = 0;
-    ((struct Fn8027F958State *)state)->list.count = index + 1;
+    lbl_804B3048.count = index + 1;
     storage[index] = &stack.widgets[2];
     stack.widgets[2].unk7E = 0;
     stack.widgets[2].unkB0 = 0;
-    index = ((struct Fn8027F958State *)state)->list.count;
-    storage = ((struct Fn8027F958State *)state)->list.items;
+    index = lbl_804B3048.count;
+    storage = lbl_804B3048.items;
     stack.widgets[3].unk14 = 0;
     stack.widgets[3].unk38 = defaultScale;
     stack.widgets[3].unk40 = 2;
@@ -806,12 +806,12 @@ int fn_8027F958(int *selection, void *collection) {
     stack.widgets[3].unk64 = 0;
     stack.widgets[3].unk70 = 0;
     stack.widgets[3].unk74 = 0;
-    ((struct Fn8027F958State *)state)->list.count = index + 1;
+    lbl_804B3048.count = index + 1;
     storage[index] = &stack.widgets[3];
     stack.widgets[3].unk7E = 0;
     stack.widgets[3].unkB0 = 0;
-    index = ((struct Fn8027F958State *)state)->list.count;
-    storage = ((struct Fn8027F958State *)state)->list.items;
+    index = lbl_804B3048.count;
+    storage = lbl_804B3048.items;
     stack.widgets[4].unk14 = 0;
     stack.widgets[4].unk38 = defaultScale;
     stack.widgets[4].unk40 = 2;
@@ -827,7 +827,7 @@ int fn_8027F958(int *selection, void *collection) {
     stack.widgets[4].unk64 = 0;
     stack.widgets[4].unk70 = 0;
     stack.widgets[4].unk74 = 0;
-    ((struct Fn8027F958State *)state)->list.count = index + 1;
+    lbl_804B3048.count = index + 1;
     storage[index] = &stack.widgets[4];
     stack.widgets[4].unk7E = 0;
     stack.widgets[4].unkB0 = 0;
@@ -1034,8 +1034,8 @@ int fn_8027F958(int *selection, void *collection) {
         lbl_8055F6A0 = 0;
     *(char *)(state + 0x70) = 0;
     index = *selection;
-    if (index >= 0 && index < ((struct Fn8027F958State *)state)->list.count) {
-        object = ((struct Fn8027F958State *)state)->list.items[index];
+    if (index >= 0 && index < lbl_804B3048.count) {
+        object = lbl_804B3048.items[index];
         lbl_8055F688 = (unsigned int)object;
         if (object != 0 && ((Fn8027F958Widget *)object)->object != 0) {
             item = ((Fn8027F958Widget *)object)->object;
@@ -1059,8 +1059,8 @@ int fn_8027F958(int *selection, void *collection) {
   else {
     *(char *)(state + 0x70) = 0;
     index = *selection;
-    if (index >= 0 && index < ((struct Fn8027F958State *)state)->list.count) {
-        object = ((struct Fn8027F958State *)state)->list.items[index];
+    if (index >= 0 && index < lbl_804B3048.count) {
+        object = lbl_804B3048.items[index];
         lbl_8055F688 = (unsigned int)object;
         if (object != 0 && ((Fn8027F958Widget *)object)->object != 0) {
             item = ((Fn8027F958Widget *)object)->object;
@@ -1078,12 +1078,12 @@ int fn_8027F958(int *selection, void *collection) {
     }
     result = (((int (*)(int *, int, int, int))fn_802146BC)(stack.menu.header, -999, -999, 1) + 2) == 0;
     if (result) {
-        for (i = 0; i < ((struct Fn8027F958State *)state)->list.count; ++i)
-            if ((unsigned int)((struct Fn8027F958State *)state)->list.items[i] == lbl_8055F688) break;
-        *selection = i < ((struct Fn8027F958State *)state)->list.count ? i : -1;
+        for (i = 0; i < lbl_804B3048.count; ++i)
+            if ((unsigned int)lbl_804B3048.items[i] == lbl_8055F688) break;
+        *selection = i < lbl_804B3048.count ? i : -1;
     }
     lbl_8055F688 = 0;
-    ((struct Fn8027F958State *)state)->list.count = 0;
+    lbl_804B3048.count = 0;
     lbl_8055F68C = 0;
     lbl_8055F690 = 0;
     *(char *)(state + 0x70) = 0;
@@ -1091,16 +1091,16 @@ int fn_8027F958(int *selection, void *collection) {
     widget = &stack.widgets[4];
     widget->vtable = widgetVtable;
     if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
-    items = ((struct Fn8027F958State *)state)->list.items;
-    count = ((struct Fn8027F958State *)state)->list.count;
+    items = lbl_804B3048.items;
+    count = lbl_804B3048.count;
     for (index = 0; index < count; ++items, ++index) {
         if (*items == widget) break;
     }
     if (index == count) index = -1;
-    if (index != -1 && index >= 0 && index < ((struct Fn8027F958State *)state)->list.count) {
-        count = ((struct Fn8027F958State *)state)->list.count - 1;
-        if (index != count) ((struct Fn8027F958State *)state)->list.items[index] = ((struct Fn8027F958State *)state)->list.items[count];
-        ((struct Fn8027F958State *)state)->list.count = ((struct Fn8027F958State *)state)->list.count - 1;
+    if (index != -1 && index >= 0 && index < lbl_804B3048.count) {
+        count = lbl_804B3048.count - 1;
+        if (index != count) lbl_804B3048.items[index] = lbl_804B3048.items[count];
+        lbl_804B3048.count = lbl_804B3048.count - 1;
     }
     widget->unk18 = 0;
     widget->unk50 = 0;
@@ -1111,16 +1111,16 @@ int fn_8027F958(int *selection, void *collection) {
     widget = &stack.widgets[3];
     widget->vtable = widgetVtable;
     if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
-    items = ((struct Fn8027F958State *)state)->list.items;
-    count = ((struct Fn8027F958State *)state)->list.count;
+    items = lbl_804B3048.items;
+    count = lbl_804B3048.count;
     for (index = 0; index < count; ++items, ++index) {
         if (*items == widget) break;
     }
     if (index == count) index = -1;
-    if (index != -1 && index >= 0 && index < ((struct Fn8027F958State *)state)->list.count) {
-        count = ((struct Fn8027F958State *)state)->list.count - 1;
-        if (index != count) ((struct Fn8027F958State *)state)->list.items[index] = ((struct Fn8027F958State *)state)->list.items[count];
-        ((struct Fn8027F958State *)state)->list.count = ((struct Fn8027F958State *)state)->list.count - 1;
+    if (index != -1 && index >= 0 && index < lbl_804B3048.count) {
+        count = lbl_804B3048.count - 1;
+        if (index != count) lbl_804B3048.items[index] = lbl_804B3048.items[count];
+        lbl_804B3048.count = lbl_804B3048.count - 1;
     }
     widget->unk18 = 0;
     widget->unk50 = 0;
@@ -1131,16 +1131,16 @@ int fn_8027F958(int *selection, void *collection) {
     widget = &stack.widgets[2];
     widget->vtable = widgetVtable;
     if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
-    items = ((struct Fn8027F958State *)state)->list.items;
-    count = ((struct Fn8027F958State *)state)->list.count;
+    items = lbl_804B3048.items;
+    count = lbl_804B3048.count;
     for (index = 0; index < count; ++items, ++index) {
         if (*items == widget) break;
     }
     if (index == count) index = -1;
-    if (index != -1 && index >= 0 && index < ((struct Fn8027F958State *)state)->list.count) {
-        count = ((struct Fn8027F958State *)state)->list.count - 1;
-        if (index != count) ((struct Fn8027F958State *)state)->list.items[index] = ((struct Fn8027F958State *)state)->list.items[count];
-        ((struct Fn8027F958State *)state)->list.count = ((struct Fn8027F958State *)state)->list.count - 1;
+    if (index != -1 && index >= 0 && index < lbl_804B3048.count) {
+        count = lbl_804B3048.count - 1;
+        if (index != count) lbl_804B3048.items[index] = lbl_804B3048.items[count];
+        lbl_804B3048.count = lbl_804B3048.count - 1;
     }
     widget->unk18 = 0;
     widget->unk50 = 0;
@@ -1151,16 +1151,16 @@ int fn_8027F958(int *selection, void *collection) {
     widget = &stack.widgets[1];
     widget->vtable = widgetVtable;
     if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
-    items = ((struct Fn8027F958State *)state)->list.items;
-    count = ((struct Fn8027F958State *)state)->list.count;
+    items = lbl_804B3048.items;
+    count = lbl_804B3048.count;
     for (index = 0; index < count; ++items, ++index) {
         if (*items == widget) break;
     }
     if (index == count) index = -1;
-    if (index != -1 && index >= 0 && index < ((struct Fn8027F958State *)state)->list.count) {
-        count = ((struct Fn8027F958State *)state)->list.count - 1;
-        if (index != count) ((struct Fn8027F958State *)state)->list.items[index] = ((struct Fn8027F958State *)state)->list.items[count];
-        ((struct Fn8027F958State *)state)->list.count = ((struct Fn8027F958State *)state)->list.count - 1;
+    if (index != -1 && index >= 0 && index < lbl_804B3048.count) {
+        count = lbl_804B3048.count - 1;
+        if (index != count) lbl_804B3048.items[index] = lbl_804B3048.items[count];
+        lbl_804B3048.count = lbl_804B3048.count - 1;
     }
     widget->unk18 = 0;
     widget->unk50 = 0;
@@ -1171,16 +1171,16 @@ int fn_8027F958(int *selection, void *collection) {
     widget = &stack.widgets[0];
     widget->vtable = widgetVtable;
     if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
-    items = ((struct Fn8027F958State *)state)->list.items;
-    count = ((struct Fn8027F958State *)state)->list.count;
+    items = lbl_804B3048.items;
+    count = lbl_804B3048.count;
     for (index = 0; index < count; ++items, ++index) {
         if (*items == widget) break;
     }
     if (index == count) index = -1;
-    if (index != -1 && index >= 0 && index < ((struct Fn8027F958State *)state)->list.count) {
-        count = ((struct Fn8027F958State *)state)->list.count - 1;
-        if (index != count) ((struct Fn8027F958State *)state)->list.items[index] = ((struct Fn8027F958State *)state)->list.items[count];
-        ((struct Fn8027F958State *)state)->list.count = ((struct Fn8027F958State *)state)->list.count - 1;
+    if (index != -1 && index >= 0 && index < lbl_804B3048.count) {
+        count = lbl_804B3048.count - 1;
+        if (index != count) lbl_804B3048.items[index] = lbl_804B3048.items[count];
+        lbl_804B3048.count = lbl_804B3048.count - 1;
     }
     widget->unk18 = 0;
     widget->unk50 = 0;
@@ -1190,6 +1190,7 @@ int fn_8027F958(int *selection, void *collection) {
     widget->unk44 = 0;
     return result;
 }
+#undef lbl_804B3048
 #pragma scheduling invalid_target
 
 extern int fn_80216D28(void);
