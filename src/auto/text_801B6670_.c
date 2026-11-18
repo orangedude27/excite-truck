@@ -45,8 +45,14 @@ void fn_801B6670(void) {
     void *temp_r9;
 
     fn_8000D838(&lbl_8055E728);
+    ((UnkEntry*)lbl_80435EE8)->id = 1;
     table = (UnkEntry*)lbl_80435EE8;
-    InitEntry(&table[0], 1, (const char *) (base + 0x1C), (const char*)&lbl_8055A8D8, lbl_805626D8, lbl_805626DC);
+    table[0].name = (const char *) (base + 0x1C);
+    table[0].description = (const char*)&lbl_8055A8D8;
+    table[0].unk_0x10 = 0;
+    table[0].unk_0x14 = 0;
+    table[0].value = lbl_805626D8;
+    table[0].scale = lbl_805626DC;
     InitEntry(&table[1], 2, (const char *) (base + 0x40), (const char *) (base + 0x34), lbl_805626D8, lbl_805626DC);
     table[2].id = 3;
     table[2].name = (const char *) (base + 0x60);
