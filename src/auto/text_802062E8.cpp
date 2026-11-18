@@ -677,7 +677,6 @@ extern "C" void fn_80206D3C(void *self, void *list, int count) {
     }
 }
 
-#pragma scheduling 750
 extern "C" void fn_80206EE4(void *arg0, void *arg1, int arg2) {
     struct Hnd {
         virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3();
