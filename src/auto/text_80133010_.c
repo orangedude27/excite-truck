@@ -317,17 +317,16 @@ int fn_8013358C(int section, int key, char *valueStr) {
 #pragma scheduling invalid_target
 int fn_8013365C(int arg0, int arg1) {
     typedef struct { int a; int b; } Pair;
-    Pair *p = (Pair *)lbl_8042F718;
+    int *p = lbl_8042F718;
     int i = 0;
     int count;
     for (count = 8; count != 0; count--) {
-        if (p->b == 0) {
-            Pair *q = &((Pair *)lbl_8042F718)[i];
-            q->b = arg1;
-            q->a = arg0;
+        if (p[1] == 0) {
+            ((Pair *)lbl_8042F718)[i].b = arg1;
+            ((Pair *)lbl_8042F718)[i].a = arg0;
             return i;
         }
-        p++;
+        p += 2;
         i++;
     }
     fn_802E317C(lbl_8032B920, arg0);
