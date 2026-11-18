@@ -60,6 +60,7 @@ void* __dt__Q28PSSystem7SeqHeapFv_8025CC14(void* self, int shouldDelete) {
     return self;
 }
 
+#define DECL_ZERO register int zero asm("r23")
 extern void fn_80230C30(float*, float*, int, int);
 extern void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
 extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
@@ -149,7 +150,11 @@ void fn_8025C054(void) {
     menu.entries[5].flags = -1;
     menu.entries[5].id = 0x1B;
 
-    menu.footer = lbl_80498EB8;
+    menu.footer.v[0] = lbl_80498EB8.v[0];
+    menu.footer.v[1] = lbl_80498EB8.v[1];
+    menu.footer.v[2] = lbl_80498EB8.v[2];
+    menu.footer.v[3] = lbl_80498EB8.v[3];
+    menu.footer.v[4] = lbl_80498EB8.v[4];
     menu.header = lbl_802FA650;
     menu.header.v[1] = (int)menu.entries;
 
@@ -165,6 +170,7 @@ void fn_8025C054(void) {
         case 2:
             fn_8025E034();
             break;
+        case -1:
         default:
             running = 0;
             break;
