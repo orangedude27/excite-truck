@@ -378,6 +378,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     Method18 *method18Obj;
     Method0C1 *method0C1Obj;
     Method0C2 *method0C2Obj;
+
     *(s32 *)((u8 *)arg0 + 0x28) = *(u8 *)((u8 *)arg1 + 0x260) & 3;
     temp_r3 = fn_801284F8(0x24, &lbl_8055A478);
     if (temp_r3 != 0) {
@@ -405,7 +406,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     }
     *(void **)((u8 *)arg0 + 4) = temp_r3;
     *(void **)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0x38) = temp_r3;
-    *(u8 *)((u8 *)arg0 + 0x25) = __rlwinm(__cntlzw(*(u32 *)((u8 *)arg2 + 0x5C)), 27, 5, 31);
+    *(u8 *)((u8 *)arg0 + 0x25) = (u32)__cntlzw(*(u32 *)((u8 *)arg2 + 0x5C)) >> 5;
     {
         s32 value = *(s32 *)((u8 *)arg2 + 0x5C);
         s32 negative = -value;
@@ -1383,12 +1384,15 @@ extern "C" void fn_801912D8(void *arg0) {
     };
     unsigned char *self = (unsigned char *)arg0;
     char *base = lbl_80332E70;
-    unsigned int enabled;
-    unsigned int mask;
+    int enabled;
+    int mask;
+    unsigned int flags;
+    float first;
     unsigned char spA, sp9, sp8;
     *(unsigned char *)(*(unsigned char **)(self + 0x34) + 0x2680) = (*(Obj **)(self + 0x38))->getFlag();
+    first = lbl_80562090;
     *(int *)(*(unsigned char **)(self + 0x34) + 0x267C) = 0;
-    *(float *)(*(unsigned char **)(self + 0x34) + 0x5F0) = lbl_80562090;
+    *(float *)(*(unsigned char **)(self + 0x34) + 0x5F0) = first;
     enabled = 1;
     self[4] = 1;
     fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0x7C, self + 4);
@@ -1414,7 +1418,8 @@ extern "C" void fn_801912D8(void *arg0) {
     fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0xAC, &sp9);
     fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0xC0, &sp8);
     mask = 0;
-    if ((lbl_8055D430 & 1) && (lbl_8055D430 & 4)) {
+    flags = lbl_8055D430;
+    if ((flags & 1) && (flags & 4)) {
         mask = 1;
     }
     if (mask != 0) {
@@ -1692,7 +1697,7 @@ void *fn_801916AC(void *obj, int doDestroy) {
 }
 
 #pragma cplusplus on
-#pragma scheduling on
+#pragma scheduling 750
 extern "C" void fn_801916F4(void *arg0) {
     struct Obj {
         virtual void f0();
@@ -1788,18 +1793,20 @@ extern "C" void fn_80191860(void *arg0, void *arg1) {
     extern int lbl_802F9550[];
     int buf[9];
     int v;
-    int *p = lbl_802F9550;
-    int a0p4 = (int)((char *)arg0 + 4);
-    int a0p5 = (int)((char *)arg0 + 5);
-    buf[0] = *p++;
-    buf[1] = *p++;
-    buf[2] = *p++;
-    buf[3] = *p++;
-    buf[4] = *p++;
-    buf[5] = *p++;
-    buf[6] = *p++;
-    buf[7] = *p++;
-    buf[8] = *p;
+    int *p;
+    int a0p4, a0p5;
+    a0p4 = (int)((char *)arg0 + 4);
+    a0p5 = (int)((char *)arg0 + 5);
+    p = lbl_802F9550;
+    *(volatile int *)&buf[0] = *p++;
+    *(volatile int *)&buf[3] = p[2];
+    buf[1] = p[0];
+    buf[2] = p[1];
+    buf[4] = p[3];
+    buf[5] = p[4];
+    buf[6] = p[5];
+    buf[7] = p[6];
+    buf[8] = p[7];
     buf[0] = a0p4;
     buf[3] = a0p5;
     v = ((int (*)(int, int, int, int, int, int, int, int))fn_8018B06C)(*(int *)((char *)arg0 + 0x34), lbl_802F9550[8], a0p4, lbl_802F9550[7], lbl_802F9550[6], lbl_802F9550[5], lbl_802F9550[4], lbl_802F9550[2]);
