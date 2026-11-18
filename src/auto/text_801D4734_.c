@@ -1315,10 +1315,6 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
     return result;
 }
 
-/* True when |x| is at most the near-zero epsilon. */
-static inline int fn_801D5E94_IsTiny(f32 x) {
-    return (f32)__fabs(x) <= lbl_80558DC4;
-}
 extern "C" s32 fn_801D5E94(void *arg0) {
     struct Vec { f32 x, y, z; };
     struct Obj {
