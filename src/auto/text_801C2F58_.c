@@ -1589,14 +1589,13 @@ s32 fn_801C5B68(char *arg0, s32 arg1) {
 }
 #pragma pop
 s32 fn_801C6C28(Vec *arg0) {
-    float threshold = lbl_805629CC;
+    register float threshold = 2.25f;
     s32 result = -1;
     s32 i = 0;
-    Vec *target = arg0;
 
     goto check;
 body:
-    if (PSVECSquareDistance((Vec *)(fn_8017960C(i) + 0x60), target) < threshold) {
+    if (PSVECSquareDistance((Vec *)(fn_8017960C(i) + 0x60), arg0) < threshold) {
         result = i;
         goto done;
     }
