@@ -8432,6 +8432,28 @@ extern "C" void *fn_80227D64(void *self, s32 deleteFlag) {
     return self;
 }
 
+#pragma scheduling reset
+extern "C" void fn_80227DE8(void *arg0) {
+    class LocalObject {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual s32 At78();
+        virtual void v29(); virtual void v30(); virtual void v31();
+        virtual s32 At88(s32);
+    };
+    f32 spC;
+    f32 sp8;
+    fn_80230C30(&spC, &sp8, *(s32 *)((char *)arg0 + 4), *(s32 *)((char *)arg0 + 8));
+    fn_80227C9C(*(s32 *)((char *)arg0 + 0x244), spC, sp8,
+                (f32)((LocalObject *)arg0)->At78(),
+                (f32)(*(s32 *)((char *)arg0 + 0x10) - *(s32 *)((char *)arg0 + 8)));
+}
 extern "C" void *fn_80227E84(void *self, s32 arg1, void *arg2, s32 arg3) {
     /* Initialize this UI widget: run base setup, store vtable/config fields, load resources and log on failure. */
     char *base = lbl_8033D878;
