@@ -393,6 +393,7 @@ char *fn_801337E4(char *str) {
         p++;
     return p;
 }
+#pragma dont_inline on
 int fn_80133844(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
     int invalid = 0;
@@ -416,7 +417,7 @@ check_invalid:
         return atoi(p) != 0;
     return stricmp(p, lbl_80559B64) == 0;
 }
-#pragma dont_inline on
+#pragma dont_inline reset
 
 int fn_801338D8(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
@@ -424,17 +425,17 @@ int fn_801338D8(const char *arg0) {
     int isnum = 0;
     int c = (signed char)b;
     int table;
-    if (c < 0)
-        isnum = 0;
-    else if (c < 0x100) {
-        table = *(int *)(lbl_802FE850 + 0x38);
-        isnum = (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 8) != 0;
-    } else
-        isnum = 1;
-    if (isnum != 0)
-        return atoi(p);
-    if (c != '-')
+    if (c >= 0) {
+        if (c < 0x100) {
+            table = *(int *)(lbl_802FE850 + 0x38);
+            isnum = (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 8) ? 1 : 0;
+        } else
+            isnum = 1;
+    }
+    if (isnum == 0) {
+        if ((signed char)b == '-') return atoi(p);
         return fn_80133844(p);
+    }
     return atoi(p);
 }
 
@@ -444,27 +445,30 @@ extern double atof(const char *);
 #pragma dont_inline on
 float fn_80133960(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
-    unsigned char c = *p;
-    register int ch = (signed char)c;
-    int invalid = 0;
+    register int c = (signed char)*p;
+    register int value = 0;
 
-    if (ch < 0)
+    if (c < 0)
         goto set_invalid;
-    if (ch < 0x100)
+    if (c < 0x100)
         goto check_invalid;
 set_invalid:
-    invalid = 1;
+    value = 1;
 check_invalid:
-    if (invalid != 0) {
-        ch = 0;
+    switch (value) {
+    case 0:
+        goto lookup;
+    default:
+        value = 0;
         goto test_char;
     }
+lookup:
     {
         int table = *(int *)((char *)&lbl_802FE850 + 0x38);
-        ch = *(unsigned short *)(*(int *)(table + 8) + ch * 2) & 8;
+        value = *(unsigned short *)(*(int *)(table + 8) + c * 2) & 8;
     }
 test_char:
-    if (ch || (unsigned char)(c - 0x2d) <= 1)
+    if (value || (unsigned char)(*p - 0x2d) <= 1)
         return (float)atof(p);
     return (float)(unsigned int)fn_80133844(p);
 }
@@ -691,10 +695,14 @@ check:
 }
 #pragma pop
 int fn_80133F3C(int arg0) {
-    int offset = 0;
-    int i = 0;
-    int *p;
+    register int offset;
+    register int i;
+    register int *p;
+
+    offset = 0;
+    i = 0;
     goto check;
+
 loop:
     offset = i * 0x38;
     if (arg0 == *(int *)((char *)p + offset + 0xC)) {
@@ -706,6 +714,7 @@ loop:
         i--;
     }
     i++;
+
 check:
     p = (int *)lbl_8055E07C;
     if (i < p[1]) goto loop;
