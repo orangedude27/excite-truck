@@ -289,11 +289,10 @@ typedef struct CrushRoundState8016B964 {
     int counters[4];
 } CrushRoundState8016B964;
 #pragma scheduling invalid_target
-extern "C" void fn_8016B964(void *arg0, s32 totalScore, s32 bonusScore, s32 timeBonus) {
-    f32 f2, f4;
+extern "C" void fn_8016B964(CrushRoundState8016B964 *round, s32 totalScore, s32 bonusScore, s32 timeBonus) {
     f32 startTime, gameTime, sinceStart, elapsed, progress;
-    s32 var_r28, var_r6, state;
-    u8 c;
+    s32 left, counted, state;
+    u8 byte;
     u8 *emptySrc;
     int timeRoom;
     u8 *timeDst;
@@ -310,12 +309,12 @@ extern "C" void fn_8016B964(void *arg0, s32 totalScore, s32 bonusScore, s32 time
     int dashRoom;
     u8 *dashDst;
 
-    if (*(s32 *)((u8 *)arg0 + 0xC) == 0) return;
-    ((void (*)(void *, s32))fn_801308F4)((u8 *)arg0 + 0x30, 0x14);
-    var_r28 = timeBonus;
-    var_r6 = 0;
+    if (round->animPlayer == 0) return;
+    ((void (*)(void *, s32))fn_801308F4)(round->bonusText, 0x14);
+    left = timeBonus;
+    counted = 0;
     if (timeBonus != 0) {
-        startTime = *(f32 *)((u8 *)arg0 + 4);
+        startTime = round->time;
         if (startTime > lbl_80561980) {
             gameTime = lbl_8055E3C8;
             progress = lbl_80561984;
@@ -324,125 +323,125 @@ extern "C" void fn_8016B964(void *arg0, s32 totalScore, s32 bonusScore, s32 time
             elapsed = elapsed / progress;
             progress = (progress < elapsed) ? progress : elapsed;
             progress = (progress > lbl_80561980) ? progress : lbl_80561980;
-            var_r6 = (s32)(lbl_80561980 + (progress * ((lbl_80561988 + (f32)timeBonus) - lbl_80561980)));
-            var_r28 = timeBonus - var_r6;
+            counted = (s32)(lbl_80561980 + (progress * ((lbl_80561988 + (f32)timeBonus) - lbl_80561980)));
+            left = timeBonus - counted;
         }
     }
-    ((void (*)(void *, s32, const void *, ...))fn_801345D8)((u8 *)arg0 + 0x44, 0x14, &lbl_8055A208, var_r6);
+    ((void (*)(void *, s32, const void *, ...))fn_801345D8)(round->countText, 0x14, &lbl_8055A208, counted);
     if ((s8)lbl_8055E374 == 0) {
         fn_801312EC(lbl_8043036C, lbl_803306D0);
         lbl_8055E374 = 1;
     }
-    if (*(u8 *)((u8 *)arg0 + 0x10) != 0) {
-        timeDst = (u8 *)arg0 + 0x9E; emptySrc = &lbl_8055A20C; timeRoom = 0x14;
+    if (round->flag10 != 0) {
+        timeDst = (u8 *)round->timeText; emptySrc = &lbl_8055A20C; timeRoom = 0x14;
         goto clearTime;
         for (;;) {
             if (--timeRoom <= 0) { timeDst[-1] = 0; break; }
         clearTime:
-            c = *emptySrc++;
-            *timeDst++ = c;
-            if ((s8)c == 0) break;
+            byte = *emptySrc++;
+            *timeDst++ = byte;
+            if ((s8)byte == 0) break;
         }
-        captionDst = (u8 *)arg0 + 0x58; emptySrc2 = &lbl_8055A20C; captionRoom = 0x14;
+        captionDst = (u8 *)round->captionText; emptySrc2 = &lbl_8055A20C; captionRoom = 0x14;
         goto clearCaption;
         for (;;) {
             if (--captionRoom <= 0) { captionDst[-1] = 0; break; }
         clearCaption:
-            c = *emptySrc2++;
-            *captionDst++ = c;
-            if ((s8)c == 0) break;
+            byte = *emptySrc2++;
+            *captionDst++ = byte;
+            if ((s8)byte == 0) break;
         }
     } else {
-        fn_80130980((u8 *)arg0 + 0x9E, 0x14, 2, (f32)var_r28);
-        if (*(u32 *)(lbl_8043036C + 8) != lbl_8055E044) ((void (*)(void *))fn_80131318)(lbl_8043036C);
-        captionMsg = *(u8 **)(lbl_8043036C + 4);
-        captionDst2 = (u8 *)arg0 + 0x58; captionRoom2 = 0x14;
+        fn_80130980(round->timeText, 0x14, 2, (f32)left);
+        if (((CachedMessage8016B964 *)lbl_8043036C)->tag != lbl_8055E044) ((void (*)(void *))fn_80131318)(lbl_8043036C);
+        captionMsg = (u8 *)((CachedMessage8016B964 *)lbl_8043036C)->text;
+        captionDst2 = (u8 *)round->captionText; captionRoom2 = 0x14;
         goto copyCaption;
         for (;;) {
             if (--captionRoom2 <= 0) { captionDst2[-1] = 0; break; }
         copyCaption:
-            c = *captionMsg++;
-            *captionDst2++ = c;
-            if ((s8)c == 0) break;
+            byte = *captionMsg++;
+            *captionDst2++ = byte;
+            if ((s8)byte == 0) break;
         }
     }
-    fn_801308F4((u8 *)arg0 + 0x6C, 0x14, totalScore);
-    fn_801308F4((u8 *)arg0 + 0x8A, 0x14, totalScore - timeBonus);
+    fn_801308F4(round->totalText, 0x14, totalScore);
+    fn_801308F4(round->scoreText, 0x14, totalScore - timeBonus);
     if (fn_801609C4(totalScore) != -1) {
         rankText = __AXGetStackHead();
-        rankDst = (u8 *)arg0 + 0x80; rankRoom = 0xA;
+        rankDst = (u8 *)round->rankText; rankRoom = 0xA;
         goto copyRank;
         for (;;) {
             if (--rankRoom <= 0) { rankDst[-1] = 0; break; }
         copyRank:
-            c = *rankText++;
-            *rankDst++ = c;
-            if ((s8)c == 0) break;
+            byte = *rankText++;
+            *rankDst++ = byte;
+            if ((s8)byte == 0) break;
         }
     } else {
-        dashDst = (u8 *)arg0 + 0x80; dashSrc = &lbl_8055A210; dashRoom = 0xA;
+        dashDst = (u8 *)round->rankText; dashSrc = &lbl_8055A210; dashRoom = 0xA;
         goto noRank;
         for (;;) {
             if (--dashRoom <= 0) { dashDst[-1] = 0; break; }
         noRank:
-            c = *dashSrc++;
-            *dashDst++ = c;
-            if ((s8)c == 0) break;
+            byte = *dashSrc++;
+            *dashDst++ = byte;
+            if ((s8)byte == 0) break;
         }
     }
-    if (*(s32 *)((u8 *)arg0 + 0xF8) != 0) *((u8 *)arg0 + 8) = 0;
-    state = *(s32 *)arg0;
+    if (round->counters[0] != 0) round->active = 0;
+    state = round->state;
     switch (state) {
     case 4:
         break;
     case 0:
-        fn_802ADFF4(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4));
-        if (strlen((const char *)arg0 + 0xDA) != 0) {
-            void *p = *(void **)((u8 *)arg0 + 0x2C);
-            if (p != 0 && *((u8 *)p + 0x19) == 0) {
-                *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0;
+        fn_802ADFF4((s32)round->animPlayer, round->animIndex);
+        if (strlen(round->textDA) != 0) {
+            Sound8016B964 *sound = round->sound2C;
+            if (sound != 0 && sound->active == 0) {
+                sound->play = 1; sound->loop = 0; sound->stop = 0;
             }
         } else {
-            void *p = *(void **)((u8 *)arg0 + 0x28);
-            if (p != 0 && *((u8 *)p + 0x19) == 0) {
-                *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0;
+            Sound8016B964 *sound = round->sound28;
+            if (sound != 0 && sound->active == 0) {
+                sound->play = 1; sound->loop = 0; sound->stop = 0;
             }
         }
         if (timeBonus > 0) {
-            void *p = *(void **)((u8 *)arg0 + 0x14);
-            if (p != 0) { *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0; }
+            Sound8016B964 *sound = round->sound14;
+            if (sound != 0) { sound->play = 1; sound->loop = 0; sound->stop = 0; }
         } else {
-            void *p = *(void **)((u8 *)arg0 + 0x18);
-            if (p != 0) { *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0; }
+            Sound8016B964 *sound = round->sound18;
+            if (sound != 0) { sound->play = 1; sound->loop = 0; sound->stop = 0; }
         }
-        *(s32 *)arg0 = 1;
+        round->state = 1;
         break;
     case 1:
-        if (*(s32 *)((u8 *)arg0 + 0xFC) != 0 && *(f32 *)((u8 *)arg0 + 4) < lbl_80561980)
-            *(f32 *)((u8 *)arg0 + 4) = lbl_8055E3C8;
-        if (*(s32 *)((u8 *)arg0 + 0xFC) == 2 && *(u8 *)((u8 *)arg0 + 0x20) == 0) {
-            void *p = *(void **)((u8 *)arg0 + 0x1C); *(u8 *)((u8 *)arg0 + 0x20) = 1;
-            if (p != 0) { *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0; }
+        if (round->counters[1] != 0 && round->time < lbl_80561980)
+            round->time = lbl_8055E3C8;
+        if (round->counters[1] == 2 && round->flag20 == 0) {
+            Sound8016B964 *sound = round->sound1C; round->flag20 = 1;
+            if (sound != 0) { sound->play = 1; sound->loop = 0; sound->stop = 0; }
         }
-        if (*(s32 *)((u8 *)arg0 + 0x100) != 0) {
-            fn_802AE02C(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4)); *(s32 *)arg0 = 2;
+        if (round->counters[2] != 0) {
+            fn_802AE02C((s32)round->animPlayer, round->animIndex); round->state = 2;
         }
         break;
     case 2:
-        if (*(u8 *)((u8 *)arg0 + 9) != 0) {
-            fn_802AE0B8(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4));
-            void *p = *(void **)((u8 *)arg0 + 0x24);
-            if (p != 0) { *((u8 *)p + 0x49) = 1; *((u8 *)p + 0x4B) = 0; *((u8 *)p + 0x4A) = 0; }
-            *(s32 *)arg0 = 3;
+        if (round->flag9 != 0) {
+            fn_802AE0B8((s32)round->animPlayer, round->animIndex);
+            Sound8016B964 *sound = round->sound24;
+            if (sound != 0) { sound->play = 1; sound->loop = 0; sound->stop = 0; }
+            round->state = 3;
         }
         break;
     case 3:
-        if (*(s32 *)((u8 *)arg0 + 0x104) != 0) {
-            fn_802AE02C(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4)); *(s32 *)arg0 = 4;
+        if (round->counters[3] != 0) {
+            fn_802AE02C((s32)round->animPlayer, round->animIndex); round->state = 4;
         }
         break;
     }
-    fn_802AE168(*(s32 *)((u8 *)arg0 + 0xC));
+    fn_802AE168((s32)round->animPlayer);
 }
 #pragma scheduling on
 
