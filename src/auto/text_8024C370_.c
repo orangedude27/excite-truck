@@ -580,7 +580,7 @@ int fn_8024CC54(void *out, void *arg1, int arg2) {
 }
 extern char lbl_80343FC4[];
 extern char lbl_80343FF0[];
-#pragma scheduling off
+#pragma scheduling reset
 int fn_8024CEF0(void) {
     if (((int (*)(void))fn_8000DBAC)() != 0)
         return 1;
