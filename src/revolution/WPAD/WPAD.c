@@ -4772,12 +4772,12 @@ s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
             OSRestoreInterrupts(enabled);
         }
 
-    status = 0;
-    goto finish;
+    OSRestoreInterrupts(outerEnabled);
+    return 0;
 
 queue_three_fail:
-    status = 0;
-    OSRestoreInterrupts(enabled);
+    status = -2;
+    OSRestoreInterrupts(outerEnabled);
     goto finish;
 
 extended:
