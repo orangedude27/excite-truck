@@ -3244,14 +3244,16 @@ extern "C" void fn_800DB1E8(void *obj, void *unused, s32 flag) {
 extern "C" u16 GXGetTexObjWrapS(void *);
 extern "C" u16 GXGetTexObjWrapT(void *);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+#pragma opt_propagation off
 extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *out, void *material, u8 index) {
+    struct GetTextureSizeMsgBlock_800D58C4 { char file[0x42C]; char msg1[0x2C]; char msg2[0x2C]; };
+    const GetTextureSizeMsgBlock_800D58C4& messages = *(const GetTextureSizeMsgBlock_800D58C4 *)&lbl_8031F990[0];
     u32 texObj[8];
     u32 count;
     u32 word7, word6, word5, word4, word3, word2, word1, word0;
     f32 defaultValue;
     f32 wrapT;
     u16 wrapS;
-    const char *file = (const char *)&lbl_8031F990;
 
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
@@ -3262,12 +3264,12 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
     }
 
     if ((void *)texObj == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((char *)file + ((u32)index & 0), 0x3DC, file + 0x42C);
+        Panic__Q26nw4hbm2dbFPCciPCce(messages.file, 0x3DC, messages.msg1);
     }
 
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
-        Panic__Q26nw4hbm2dbFPCciPCce((char *)file + ((u32)index & 0), 0x3DD, file + 0x458);
+        Panic__Q26nw4hbm2dbFPCciPCce(messages.file, 0x3DD, messages.msg2);
     }
 
     u32 *base = (u32 *)*(void **)((u8 *)material + 0x58);
@@ -3295,7 +3297,7 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
     out[1] = wrapT;
     out[0] = (f32)wrapS;
 }
-
+#pragma opt_propagation reset
 extern "C" s32 fn_80128668();
 extern "C" void fn_800D4F98(void*);
 extern "C" s32 fn_800DB398(s32 object, s32 deleteFlag) {
@@ -3555,21 +3557,25 @@ extern "C" void* FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const c
         virtual void f12(); virtual void f13();
         virtual void* find(const char*, bool);
     };
-    unsigned char* pane = (unsigned char*)self;
-    unsigned int data = *(unsigned int*)(pane + 0x28);
-    if (data != 0 && ((int (*)(const char*, const char*))fn_800D58F0)((const char*)(data + 4), name))
-        return *(void**)(pane + 0x28);
+    void* data = *(void**)((u8*)self + 0x28);
+    if (data != 0 && ((int (*)(const char*, const char*))fn_800D58F0)((const char*)((u8*)data + 4), name))
+        return *(void**)((u8*)self + 0x28);
     if (recursive) {
-        register unsigned int node = *(unsigned int*)(pane + 0x14);
-        register unsigned int end = (unsigned int)(pane + 0x14);
+        u8* pane = (u8*)self;
+        struct { void *node; } cursor;
+        cursor.node = *(void**)(pane + 0x14);
+        void *&node = cursor.node;
+        struct { void *end; } sentinel;
+        sentinel.end = pane + 0x14;
+        void *&end = sentinel.end;
         while (node != end) {
-            if (node == 0)
+            if (!node)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            V* object = (V*)(node - 4);
+            V* object = (V*)((u8*)node - 4);
             void* result = object->find(name, true);
             if (result != 0)
                 return result;
-            node = *(unsigned int*)node;
+            node = *(void**)node;
         }
     }
     return 0;
