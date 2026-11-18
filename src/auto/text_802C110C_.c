@@ -111,26 +111,16 @@ void fn_802C1180(void *node) {
     ((int **)lbl_8055FB30)[src[0]] = (int *)src[1];
     src[1] = 0;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void *fn_802C120C(void) {
-    unsigned int oldIndex;
-    unsigned int nextIndex;
-    unsigned int leftPart;
-    unsigned int rightPart;
-    unsigned int value;
+    int oldIndex;
     void *entry;
     oldIndex = lbl_8055FB34;
     entry = (char *)&lbl_804C0E10 + oldIndex * 0x48;
-    nextIndex = oldIndex + 1;
-    leftPart = nextIndex << 29;
-    rightPart = nextIndex >> 31;
-    value = leftPart - rightPart;
-    value = ((value << 3) | (value >> 29)) + rightPart;
-    lbl_8055FB34 = value;
+    lbl_8055FB34 = (oldIndex + 1) % 8;
     fn_802C1180(entry);
     return entry;
 }
-#pragma scheduling invalid_target
 void fn_802C126C(void) {
     /* RealName: none yet; what it does is InitTreeHit().  Start the treehit
      * subsystem for a new level: take the tree-handle block off the scratch
@@ -303,14 +293,14 @@ extern "C" int fn_802C143C(void *modelObject) {
     } while (i < 8);
     return index;
 }
-int fn_802C1500(int arg0, int arg1) {
+#pragma scheduling on
+extern "C" int fn_802C1500(int arg0, int arg1) {
     struct Entry {
         int first;
         int second;
         char padding[0x58];
     };
-    int index = lbl_8055FB2C;
-    lbl_8055FB2C = index + 1;
+    int index = lbl_8055FB2C++;
     ((int *)lbl_8055FB30)[index] = arg0;
     if (((struct Entry *)lbl_804C0810)[arg1].first < 0) {
         ((struct Entry *)lbl_804C0810)[arg1].first = index;
@@ -320,8 +310,7 @@ int fn_802C1500(int arg0, int arg1) {
     }
     return lbl_8055CFA0 + index;
 }
-#pragma scheduling on
-#pragma optimization_level reset
+#pragma scheduling invalid_target
 extern char lbl_8034AED0[];
 extern f32 lbl_80564E54, lbl_80564E50, lbl_80564E58;
 extern char lbl_8055CFA4[], lbl_8055CFAC[], lbl_8055CFB8[], lbl_8055CFC0[];
@@ -336,8 +325,8 @@ extern void fn_801FA7F4(int, f32 *, void *);
 #pragma paired off
 extern "C" void fn_802C1550(void) {
     struct Dispatch {
-        virtual void u0();
         virtual void u1();
+        virtual void u0();
         virtual void u2();
         virtual char *getResource(const char *);
         virtual void u4();
@@ -350,76 +339,75 @@ extern "C" void fn_802C1550(void) {
         virtual void u11();
         virtual void u12();
         virtual void u13();
-        virtual void u14();
         virtual void u15();
+        virtual void u14();
         virtual void u16();
         virtual void u17();
-        virtual void u18();
         virtual void u19();
+        virtual void u18();
         virtual void u20();
         virtual Dispatch *find(const char *);
     };
-    char *strings = lbl_8034AED0;
-    char *entry = lbl_804C0810;
+    register char *entry = lbl_804C0810;
     int outer = 0;
-    int zero = 0;
+    register unsigned long zero = 0;
     register f32 depth;
-    register f32 blank;
+    f32 blank;
     register f32 diagonal;
     f32 pos[12];
     diagonal = lbl_80564E54;
     blank = lbl_80564E50;
     depth = lbl_80564E58;
     while (outer < lbl_8055FB28) {
-        Dispatch *obj;
-        int count;
+        void *obj;
         char *index;
         char *name;
-        entry[0x28] = ((Dispatch *)*(void **)(entry + 0x30))->hasFlag(strings + 0x54, zero) == zero;
-        obj = ((Dispatch *)*(void **)(entry + 0x30))->find(strings + 0x60);
+        entry[0x28] = ((Dispatch *)*(void **)(entry + (int)0x30))->hasFlag(lbl_8034AED0 + 0x54, zero) == zero;
+        obj = ((Dispatch *)*(void **)(entry + 0x30))->find(lbl_8034AED0 + 0x60);
         if (obj != 0) {
-            *(f32 *)(entry + 0x2c) = obj->getValue(strings + 0x6c);
-            index = obj->getResource(lbl_8055CFA4);
-            count = obj->getCount(lbl_8055CFAC);
-            *(int *)(entry + 0x38) = count;
+            *(f32 *)(entry + 0x2c) = ((Dispatch *)obj)->getValue(lbl_8034AED0 + 0x6c);
+            index = ((Dispatch *)obj)->getResource(lbl_8055CFA4);
+            obj = (void *)((Dispatch *)obj)->getCount(lbl_8055CFAC);
+            *(int *)(entry + 0x38) = (int)obj;
             *(int *)(entry + 0x3c) = zero;
             {
-                void *buffer = (void *)fn_8012850C(count * 4, lbl_8055CFB8);
-                *(void **)(entry + 0x34) = buffer;
+                register void *buffer = (void *)fn_8012850C((int)obj * 4, lbl_8055CFB8);
+                *(void **)(entry + (unsigned)0x34) = buffer;
                 memset(buffer, zero, *(int *)(entry + 0x38) * 4);
             }
             name = ((Dispatch *)*(void **)(entry + 0x30))->getResource(lbl_8055CFC0);
             {
                 char *source = name;
-                char *destination = entry + 8;
-                int remaining = 0x20;
                 char c;
-                for (;;) {
-                    remaining--;
-                    if (remaining == 0) {
-                        destination[-1] = zero;
-                        break;
-                    }
-                    c = *source++;
-                    *destination++ = c;
-                    if ((signed char)c == 0)
-                        break;
-                }
+                int remaining = 0x20;
+                char *destination = entry + 8;
+                goto copy_body;
+            copy_check:
+                remaining -= 1;
+                if (remaining > 0)
+                    goto copy_body;
+                destination[-1] = zero;
+                goto copy_done;
+            copy_body:
+                c = *source++;
+                *destination++ = c;
+                if ((signed char)c != 0)
+                    goto copy_check;
+            copy_done:;
             }
-            if (count <= 0)
-                goto next_entry;
             {
                 int item = 0;
-                do {
+                if (0 >= (int)obj)
+                    goto next_entry;
+                for (; item < (int)obj; item++) {
                     pos[0] = diagonal;
                     pos[1] = blank; pos[2] = blank;
                     pos[3] = blank; pos[4] = diagonal;
                     pos[5] = blank; pos[6] = blank;
                     pos[7] = blank; pos[8] = diagonal;
-                    pos[9] = blank; pos[10] = depth; pos[11] = blank;
+                    pos[9] = blank; pos[11] = blank; pos[10] = depth;
                     fn_801FA7F4((int)index, pos, *(void **)(entry + 0x30));
-                    item++;
-                } while (item < count);
+                }
             }
         }
     next_entry:
@@ -436,7 +424,7 @@ extern f32 lbl_80564E64, lbl_80564E68, lbl_80564E6C;
 #pragma push
 #pragma processor 750
 #pragma paired_single off
-void fn_802C173C(float time)
+extern "C" void fn_802C173C(float time)
 {
   struct Scratch
   {
@@ -489,8 +477,8 @@ void fn_802C173C(float time)
         f32 scaledSin;
         f32 delta;
         f32 z;
-        f32 y;
         f32 product;
+        f32 y;
         f32 sn;
         f32 clamped;
         d0 = *((volatile int *) (record + 8));
@@ -522,7 +510,6 @@ void fn_802C173C(float time)
         x = *((volatile f32 *) (record + 0x38));
         product = age * slope;
         y = *((volatile f32 *) (record + 0x3C));
-        ;
         delta = base - product;
         scaledSin = scaleBase;
         scaledSin = scaledSin * sn;
@@ -541,24 +528,6 @@ void fn_802C173C(float time)
           dst[0] = out0;
           dst[1] = out1;
           out0 = scratch.data[2];
-          if (1)
-          {
-          }
-          if (1)
-          {
-          }
-          if (1)
-          {
-          }
-          if (1)
-          {
-          }
-          if (1)
-          {
-          }
-          if (1)
-          {
-          }
           out1 = (0, scratch.data[3]);
           dst[2] = out0;
           dst[3] = out1;
