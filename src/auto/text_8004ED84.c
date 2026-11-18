@@ -419,38 +419,49 @@ u32 GetFontCode(u16 encode, u16 code) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void Decode(unsigned char *src, unsigned char *dst) {
+/* 'Yay0' decompression (see YAGCD sections 16.1.1 and 16.1.2), as OSLoadFont
+ * unpacks the shared font.  The stream's header holds the decompressed size at
+ * +4, the offset of the 16-bit link table at +8 and the offset of the literal
+ * chunk data at +0xC; from +0x10 come 32-bit mask words whose bits, high bit
+ * first, say whether the next item is one literal byte or a back-reference.
+ * A link's low 12 bits are how far back to copy from and its top 4 bits the
+ * length minus 2 -- 0 meaning the real length follows in a chunk byte, +0x12. */
+void Decode(u8 *src, u8 *dst) {
     int j;
-    int linkOfs;
-    int chunkPos;
+    s32 linkOfs;
+    s32 chunkPos;
     int i;
-    int chunksOfs;
-    unsigned int maskTblPos;
-    int expandSize;
-    int linkTblOfs;
-    int count;
-    unsigned int maskBits;
-    unsigned int mask;
+    s32 chunksOfs;
+    u32 maskTblPos;
+    s32 expandSize;
+    s32 linkTblOfs;
+    s32 count;
+    u32 maskBits;
+    u32 mask;
 
-    expandSize = *(int *)(src + 0x4);
-    linkTblOfs = *(int *)(src + 0x8);
-    chunksOfs = *(int *)(src + 0xC);
+    expandSize = *(s32 *)(src + 0x4);
+    linkTblOfs = *(s32 *)(src + 0x8);
+    chunksOfs = *(s32 *)(src + 0xC);
 
     i = 0;
     maskBits = 0;
     maskTblPos = 16;
 
     do {
+        /* get the next mask word, most significant bit first */
         if (maskBits == 0) {
-            mask = *(unsigned int *)(src + maskTblPos);
-            maskTblPos += sizeof(unsigned int);
-            maskBits = sizeof(unsigned int) * 8;
+            mask = *(u32 *)(src + maskTblPos);
+            maskTblPos += sizeof(u32);
+            maskBits = sizeof(u32) * 8;
         }
+
         if (mask & 0x80000000) {
+            /* non-linked chunk: one literal byte */
             dst[i++] = src[chunksOfs++];
         } else {
+            /* linked chunk: a (length, distance) pair from the link table */
             linkOfs = src[linkTblOfs] << 8 | src[linkTblOfs + 1];
-            linkTblOfs += sizeof(unsigned short);
+            linkTblOfs += sizeof(u16);
             chunkPos = i - (linkOfs & 0x0FFF);
             count = linkOfs >> 12;
             if (count == 0) {
@@ -458,10 +469,13 @@ void Decode(unsigned char *src, unsigned char *dst) {
             } else {
                 count += 2;
             }
+            /* copy it back, one byte at a time: runs may overlap themselves */
             for (j = 0; j < count; j++, i++, chunkPos++) {
                 dst[i] = dst[chunkPos - 1];
             }
         }
+
+        /* prepare the next mask bit */
         mask <<= 1;
         maskBits--;
     } while (i < expandSize);
