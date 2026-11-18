@@ -501,6 +501,7 @@ extern int fn_8012C33C();
 extern int fn_80012AB4();
 extern void fn_80012B50();
 #pragma cplusplus on
+#pragma optimize_for_size on
 extern "C" void fn_8001335C(int a0, int arg1) {
     struct Dummy {
         virtual char *name();
@@ -509,12 +510,11 @@ extern "C" void fn_8001335C(int a0, int arg1) {
         virtual char *get(char *);
         virtual void set(char *, int);
     };
-    Dummy *arg0 = (Dummy *)a0;
-    Dummy *obj;
     int i;
-    char *base = lbl_802FC610;
-    if (arg0 != 0) {
-        for (i = 0; (obj = (Dummy *)arg0->child(i)) != 0; i++) {
+    Dummy *obj;
+    char *const base = lbl_802FC610;
+    if (a0 != 0) {
+        for (i = 0; (obj = (Dummy *)((Dummy *)a0)->child(i)) != 0; i++) {
             if (stricmp(obj->name(), lbl_80558B68) == 0) {
                 if (fn_8012C33C(obj->get(lbl_80558B1C)) == 0)
                     fn_802E317C(base + 0x488, obj->get(lbl_80558B1C));
