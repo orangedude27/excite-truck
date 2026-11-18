@@ -12,9 +12,10 @@ extern float lbl_80564AB0;
 extern double atof(const char *);
 extern int fn_802E2C20(void);
 extern int sscanf(const char *, const char *, ...);
+#pragma scheduling invalid_target
 void *fn_802AC0E8(void *arg0, const char *arg1, int arg2) {
+    register int key = arg2;
     char *node = (char *)arg0;
-    int key = arg2;
     const char *name = arg1;
     if (node == 0)
         return 0;
@@ -25,8 +26,7 @@ void *fn_802AC0E8(void *arg0, const char *arg1, int arg2) {
     }
     return 0;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 /* RealName: ParseHexColorCode (parses a "#%x" hex string into an integer, or -1 on failure). */
 int fn_802AC174(const char *hexString) {
     int value;
@@ -192,8 +192,8 @@ int fn_802AC4A8(const char *name, int table)
     typedef float (*FltDefFn)(void *, const char *, float);
     typedef LVec3 (*Vec3Fn)(void *, const char *);
     typedef LVec3 (*Vec3DefFn)(void *, const char *, LVec3);
-    typedef unsigned long long (*Vec2Fn)(void *, const char *);
-    typedef unsigned long long (*Vec2DefFn)(void *, const char *, LVec2);
+    typedef LVec2 (*Vec2Fn)(void *, const char *);
+    typedef LVec2 (*Vec2DefFn)(void *, const char *, LVec2);
     typedef int (*LookupFn)(void *, const char *, const char *);
     extern void *fn_801284F8(int, void *, void *);
     extern void *fn_8012850C(int, void *);
@@ -287,8 +287,7 @@ copied:
         memset(rec, 0, 0x28);
         if (strcmp(type, lbl_8055CCE0) == 0) {
             LVec3 def3, v3;
-            LVec2 def2, p;
-            unsigned long long t;
+            LVec2 def2, p, t;
             char *sub;
             int model;
             rec->type = 2;
@@ -307,8 +306,7 @@ copied:
             rec->w[3].f = v3.z;
             def2.x = zero;
             def2.y = zero;
-            t = ((Vec2DefFn)(*(void ***)e)[16])(e, lbl_8055CCF8, def2);
-            p = *(LVec2 *)&t;
+            p = ((Vec2DefFn)(*(void ***)e)[16])(e, lbl_8055CCF8, def2);
             rec->w[1].f += p.x;
             rec->w[2].f -= p.y;
             rec->w[4].i = ((IntDefFn)(*(void ***)e)[8])(e, lbl_8055CCFC, -1);
@@ -370,7 +368,6 @@ copied:
     for (k = 0; k < numGroups; k++) {
         LGroup *grp;
         LVec2 def2;
-        unsigned long long t;
         LVec2 origin;
         float base;
         int numSegs;
@@ -380,8 +377,7 @@ copied:
         grp->id = ((IntFn)(*(void ***)e)[7])(e, str + 0xC4);
         def2.x = zero;
         def2.y = zero;
-        t = ((Vec2DefFn)(*(void ***)e)[16])(e, lbl_8055CCF8, def2);
-        origin = *(LVec2 *)&t;
+        origin = ((Vec2DefFn)(*(void ***)e)[16])(e, lbl_8055CCF8, def2);
         base = fn_802AC344(e, root, 0);
         numSegs = 0;
         {
@@ -430,10 +426,8 @@ copied:
                     fn_802E317C(str + 0x104, q, name);
             }
             if (((HasFn)(*(void ***)s)[3])(s, lbl_8055CCF8)) {
-                unsigned long long t2;
                 LVec2 v;
-                t2 = ((Vec2Fn)(*(void ***)s)[15])(s, lbl_8055CCF8);
-                v = *(LVec2 *)&t2;
+                v = ((Vec2Fn)(*(void ***)s)[15])(s, lbl_8055CCF8);
                 v.x += ox;
                 v.y += oy;
                 seg->pos.x = v.x - cx;
@@ -497,10 +491,8 @@ copied:
         LVec3 off;
         float sc, sa;
         if (((HasFn)(*(void ***)g)[3])(g, lbl_8055CCF8)) {
-            unsigned long long t2;
             LVec2 v;
-            t2 = ((Vec2Fn)(*(void ***)g)[15])(g, lbl_8055CCF8);
-            v = *(LVec2 *)&t2;
+            v = ((Vec2Fn)(*(void ***)g)[15])(g, lbl_8055CCF8);
             off.z = lbl_80564AB0;
             off.x = v.x;
             off.y = -v.y;
