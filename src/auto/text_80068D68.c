@@ -2558,6 +2558,7 @@ void fn_8006B044(tBTM_VSC_CMPL *arg0) {
     extern void fn_8006B26C(tBTM_VSC_CMPL *);
     u8 buf[0x100];
     u8 packet[0x100];
+    u8 *p;
     s32 i;
     s32 length;
     s32 count;
@@ -2582,10 +2583,8 @@ void fn_8006B044(tBTM_VSC_CMPL *arg0) {
         length = (u32)length < 0xFB ? length : 0xFB;
         length = (u8)length;
         header = lbl_8055DC3C + lbl_8055DC40;
-        packet[0] = (u8)header;
-        packet[1] = (u8)(header >> 8);
-        packet[2] = (u8)(header >> 16);
-        packet[3] = (u8)(header >> 24);
+        p = packet;
+        UINT32_TO_STREAM(p, header);
         for (i = 0; i < length; i++)
             packet[i + 4] = lbl_803135C0[lbl_8055DC40 + i + 8];
         lbl_8055DC40 += length;
@@ -8258,28 +8257,22 @@ void fn_80077C94(s16 linkPolicy) {
 
 BOOLEAN BTM_IsAclConnectionUp(BD_ADDR remote_bda) {
     extern char lbl_80315E80[];
-    u32 i;
-    u8 *entry;
+    u16 xx;
+    u8 *p;
 
     if (lbl_803C0F78[0x27C0] >= 3) {
         fn_800709CC(0xD0002, lbl_80315E80,
                     remote_bda[0], remote_bda[1], remote_bda[2],
                     remote_bda[3], remote_bda[4], remote_bda[5]);
     }
-    i = 0;
-    entry = lbl_803C0F78 + 0x34;
-loop:
-    if (entry[0x119] != 0) {
-        if (memcmp(entry + 8, remote_bda, 6) == 0)
+    p = lbl_803C0F78 + 0x34;
+    for (xx = 0; xx < 4; xx++, p += 0x11C) {
+        if (p[0x119] != 0 && !memcmp(p + 8, remote_bda, 6))
             goto found;
     }
-    i++;
-    entry += 0x11C;
-    if (i < 4)
-        goto loop;
-    entry = NULL;
+    p = NULL;
 found:
-    if (entry != NULL)
+    if (p != NULL)
         return TRUE;
     return FALSE;
 }
@@ -11304,14 +11297,14 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
 }
 #pragma opt_propagation reset
 void fn_8007D4C4(void) {
-    extern u32 lbl_802EEBF8[];
+    struct S16 {
+        u32 w[4];
+    };
+    extern const struct S16 lbl_802EEBF8;
     extern u8 lbl_803C0F78[];
-    u32 *src = lbl_802EEBF8;
+
     *(u16 *)(lbl_803C0F78 + 0x18F6) = 0xFFFF;
-    *(u32 *)(lbl_803C0F78 + 0x18F8) = *src++;
-    *(u32 *)(lbl_803C0F78 + 0x18FC) = *src++;
-    *(u32 *)(lbl_803C0F78 + 0x1900) = *src++;
-    *(u32 *)(lbl_803C0F78 + 0x1904) = *src++;
+    *(struct S16 *)(lbl_803C0F78 + 0x18F8) = lbl_802EEBF8;
     lbl_803C0F78[0x1909] = 2;
 }
 
