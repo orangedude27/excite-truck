@@ -737,9 +737,10 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
 }
 #pragma pop
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
+// Iterate by reference into single-member structs (see fn_800DB098): MWCC keeps
+// the node/end pair in the top callee-saved registers this way.
 #pragma push
 #pragma use_lmw_stmw off
-#pragma opt_lifetimes off
 extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     extern const char lbl_8031E764[];
     extern const char lbl_8031E740[];
@@ -781,12 +782,12 @@ extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     struct GroupContainerDispatch { virtual void Destroy(s32); };
     struct GroupContainerObject : GroupContainerDispatch, GroupListNode {};
     if (arg0 != 0) {
-        GroupListNode* node = *(GroupListNode**)((char*)arg0 + 4);
         void* end = (char*)arg0 + 4;
+        void* node = *(void**)((char*)arg0 + 4);
         while (node != end) {
-            GroupListNode* current = node;
+            GroupListNode* current = (GroupListNode*)node;
             void* slot;
-            node = node->next;
+            node = current->next;
             slot = current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(arg0, &slot);
             if (current == 0)
@@ -2191,10 +2192,10 @@ extern "C" s32 fn_800D938C(void* arg0) {
     u32 high = (bits >> 0x18) & 0xF;
     u32 mid = (bits >> 0x12) & 0x3C;
     u32 scaled = high * 0x14;
-    u32 low = (bits >> 0x06) & 4;
     u32 top = (bits >> 0x17) & 0x1E0;
+    u32 low = (bits >> 0x06) & 4;
     s32 past = base + (mid + top);
-    return past + (scaled + low);
+    return (scaled + low) + past;
 }
 
 extern "C" s32 fn_800D93BC(void *arg0) {
@@ -2320,34 +2321,22 @@ extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void *arg0, u8 arg1) {
 
 extern "C" const char lbl_8031F990[];
 extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigned char count) {
+    struct MatBits { u32 a : 8; u32 num : 4; u32 b : 20; };
     u32 *p = (u32 *)self;
-    const char *msg = lbl_8031F990;
+    const u32 *msgw = (const u32 *)lbl_8031F990;
     if (count > ((p[0x4C / 4] >> 20) & 15))
-        Panic__Q26nw4hbm2dbFPCciPCce(msg + 0, 0x39c, msg + 0x38c);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(msgw + 0), 0x39c, (const char *)msgw + 0x38c);
     if (count != 0) {
         if (p[0x58 / 4] == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(msg + 0, 0x39f, msg + 0x360);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)(msgw + 0), 0x39f, (const char *)msgw + 0x360);
         u32 raw = p[0x4C / 4];
-        u8 *base = (u8 *)p[0x58 / 4] + ((raw >> 23) & 0x1E0) + ((raw >> 24) & 15) * 20;
+        u8 *base = (u8 *)p[0x58 / 4] + ((raw >> 24) & 15) * 20 + ((raw >> 23) & 0x1E0);
         u32 old = (p[0x50 / 4] >> 20) & 15;
-        if (old < count) {
-            u32 limit = count - 8;
-            if (count - old > 8) {
-                while (old < limit) {
-                    u8 *q = base + old * 4;
-                    for (u32 j = 0; j < 8; j++) {
-                        q[j * 4] = 1; q[j * 4 + 1] = 4; q[j * 4 + 2] = 0x3C; q[j * 4 + 3] = 0;
-                    }
-                    old += 8;
-                }
-            }
-            while (old < count) {
-                u8 *t = base + old * 4;
-                t[0] = 1; t[1] = 4; t[2] = 0x3C; t[3] = 0;
-                old++;
-            }
+        for (; old < count; old++) {
+            u8 *t = base + old * 4;
+            t[0] = 1; t[1] = 4; t[2] = 0x3C; t[3] = 0;
         }
-        p[0x50 / 4] = (p[0x50 / 4] & ~0x00F00000) | ((u32)count << 20);
+        ((MatBits *)&p[0x50 / 4])->num = count;
     }
 }
 
