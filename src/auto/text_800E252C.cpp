@@ -1317,6 +1317,8 @@ extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
     }
     OSRestoreInterrupts(level);
 }
+#pragma cplusplus on
+#pragma cplusplus reset
 #pragma use_lmw_stmw reset
 extern "C" void fn_800E41EC(void) {
     if ((s8)lbl_8055DE18 == 0) {
