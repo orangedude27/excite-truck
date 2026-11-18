@@ -2570,7 +2570,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           u32 temp_r9;
                           u32 temp_r9_3;
                           u32 temp_r9_4;
-               register u32 var_r23;
+                register u32 var_r23;
                           register u32 var_r23_6;
                           register u32 var_r23_7;
                           register u32 var_r24_2;
@@ -2609,8 +2609,8 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           register u8 *var_r21_4;
                           register u8 *var_r21_5;
                           register u8 *var_r22;
-               register u32 var_r27;
-          Fn800DA094TexObj *var_r28;
+                register u32 var_r27;
+           Fn800DA094TexObj *var_r28;
 
                           var_r26 = 1;
                           var_r21 = 0;
@@ -2664,13 +2664,11 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                               channelColor[2] = alphaColor[2];
                               channelColor[3] = alphaColor[3];
                               ((int (*)(int, u8 *))GXSetChanMatColor_Internal)(4, &channelColor[0]);
-                            if (var_r25 != 0) {
-                                var_r25 = 0;
-                                goto alpha_done;
-                            }
-                            if ((u32)((u32)sp30 + 0x10000) == 0xFFFFU) goto alpha_done;
-                            var_r25 = 1;
-                        alpha_done:;
+                              if (var_r25 != 0) {
+                                  var_r25 = 0;
+                              } else if ((u32)((u32)sp30 + 0x10000) != 0xFFFFU) {
+                                  var_r25 = 1;
+                              }
                           }
                           var_r24 = 0;
                           texMatrices[0] = 0;
@@ -2985,9 +2983,9 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                                       indirectMatrix[4] = temp_f31 * M2C_FIELD(var_r21_4, f32 *, 0x10);
                                       indirectMatrix[5] = M2C_FIELD(var_r21_4, f32 *, 4);
                                       #pragma push
-                     #pragma dont_inline on
-                                   fn_800D7D5C((void *)(var_r23_6 + 1), &indirectMatrix[0]);
-                     #pragma pop
+                      #pragma dont_inline on
+                                    fn_800D7D5C((void *)(var_r23_6 + 1), &indirectMatrix[0]);
+                      #pragma pop
                                   }
                                   var_r28_3 += 1;
                                   var_r21_4 += 0x14;
@@ -3030,8 +3028,9 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           } else {
                               ((void (*)(u32, u32, u32, u32))GXSetBlendMode)(1U, 4U, 5U, 0xFU);
                           }
-       return (var_r25 != 0) && (var_r26 != 0);
-                      }
+                  return (var_r25 != 0) && (var_r26 != 0);
+                          }
+#pragma scheduling on
  extern "C" void fn_800DAFA8(void *arg, void *obj) {
     /* C-callable thunk: invoke the virtual method at vtable slot 3 on obj, passing arg. */
     struct Dispatch {
