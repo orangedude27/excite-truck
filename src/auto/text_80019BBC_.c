@@ -25,7 +25,7 @@ extern void fn_80019BBC(void);
 extern void fn_8001B7BC(void*);
 extern double fn_8002EFB0(float, float);
 extern void *memset(void*, int, unsigned long);
-char lbl_802FD618[0xA8] = "sfmarker\0\0\0\0trackmap.val\0\0\0\0TrackMap\0\0\0\0tex_size\0\0\0\0min_speed\0\0\0max_speed\0\0\0line_wid\0\0\0\0icon_scale\0\0mapline.tex\0mapline2.tex\0\0\0\0truckdraw\0\0\0mapback.tex\0mapfront.tex";
+extern char lbl_802FD618[];
 extern char lbl_802FD6CC[];
 extern char lbl_802FD6C0[];
 extern char lbl_80358508[];
