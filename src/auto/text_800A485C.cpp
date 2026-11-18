@@ -3864,9 +3864,10 @@ struct LfnBufHdr {
 #pragma scheduling on
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     extern s32 fn_800A4C14(u16 *, s32);
-    u32 raw = *(volatile u8 *)&((u8 *)arg1)[0];
+    struct LfnBufHdr *h = (struct LfnBufHdr *)arg1;
+    u32 raw = h->ord;
     u32 count = raw & 0xFFFFFFBF;
-    u32 tag = *(volatile u8 *)&((u8 *)arg1)[0xD];
+    u32 tag = h->chk;
     u8 *dst = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     u32 index;
@@ -9125,12 +9126,20 @@ extern "C" s32 fn_800B23F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma optimization_level 4
 extern "C" u8 lbl_802EEEE0[];
 static inline u32 Fn800B25CCWide2(u16 *w) {
+    u32 r;
     if (*w >= 0xFF41U && *w <= 0xFF5AU) {
+        r = 1;
         *w -= 0x20;
-        M2C_FIELD(&lbl_803D2140, void (**)(u16 *, u16 *), 0x4C)(w, w);
-        return 1;
+    } else {
+        r = 0;
     }
-    return 0;
+    if (r == 1) {
+        M2C_FIELD(&lbl_803D2140, void (**)(u16 *, u16 *), 0x4C)(w, w);
+        r = 1;
+    } else {
+        r = 0;
+    }
+    return r;
 }
 #pragma push
 #pragma opt_propagation off
@@ -9140,7 +9149,7 @@ u16 fn_800B25CC(void *arg0, s32 arg1) {
     u32 var_r3;
     u32 var_r3_2;
     u32 var_r3_3;
-    u32 var_r3_4;
+    u16 var_r3_4;
     u8 *temp_r3;
     u8 *temp_r5;
     u8 temp_r4;
