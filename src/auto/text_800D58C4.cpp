@@ -741,6 +741,7 @@ extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 // the node/end pair in the top callee-saved registers this way.
 #pragma push
 #pragma use_lmw_stmw off
+#pragma opt_lifetimes off
 extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
     extern const char lbl_8031E764[];
     extern const char lbl_8031E740[];
