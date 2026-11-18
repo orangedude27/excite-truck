@@ -10700,7 +10700,6 @@ static inline UINT8 *btm_inq_db_find_80068D68(UINT8 *base, UINT8 *bda)
     }
     return 0;
 }
-#pragma pop
 
 void btm_process_inq_results(UINT8 *p, UINT8 mode)
 {
@@ -10762,6 +10761,7 @@ found:
         }
     }
 }
+#pragma pop
 
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
     u8 *cleanup_base;
