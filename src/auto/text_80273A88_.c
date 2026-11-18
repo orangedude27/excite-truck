@@ -709,7 +709,7 @@ void fn_80274EA8(void *object) {
     fn_80274730(object, lbl_80563FA8, lbl_80564014, lbl_80564018, lbl_8056401C);
 }
 
-static inline void helper_80274F74(void *arg0, void *arg1, float angle) {
+static inline void helper_80274F74(void *arg0, void *arg1) {
     float magnitude;
     float scale;
     float cosine;
@@ -768,12 +768,12 @@ static inline void helper_80274F74(void *arg0, void *arg1, float angle) {
         *(float *)((char *)arg0 + 0x74) = f0;
         *(float *)((char *)arg0 + 0x78) = f1;
     }
-    *(float *)((char *)arg0 + 0xBC) = angle;
 }
 
 #pragma scheduling invalid_target
 void fn_80274F74(void *arg0, void *arg1, float angle) {
-    helper_80274F74(arg0, arg1, angle);
+    helper_80274F74(arg0, arg1);
+    *(float *)((char *)arg0 + 0xBC) = angle;
 }
 
 extern float PSVECDotProduct(float *, float *);
