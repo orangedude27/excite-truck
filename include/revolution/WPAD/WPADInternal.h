@@ -199,9 +199,10 @@ typedef struct WPADCB {
                               union {
                     u8 UNK_0x800; // at 0x800
                     /* Set when __SendData puts a STATUS_REQUEST report on the
-                     * wire (and by the 0xFF delay report path through +0x850),
-                     * cleared again once the next input report is decoded.
-                     * While it is set a send is refused with WPAD_ERR_BUSY. */
+                     * wire, cleared again once the next input report has been
+                     * decoded.  While it is set a new report is refused with
+                     * WPAD_ERR_BUSY, and the command callback (+0x7DC) is only
+                     * run when it is set. */
                     u8 statusReqPending;
                 };
               u8 UNK_0x801; // extension kind: 1 = FS, 2 = CL, 0xfb/0xfc/0xfd = none
