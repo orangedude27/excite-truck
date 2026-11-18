@@ -2176,14 +2176,14 @@ extern "C" s32 fn_8019E834(s32 object, s32 shouldDestroy) {
 
 #pragma push
 #pragma scheduling on
-extern "C" void* fn_8019E874(void* arg0, void** arg1, void* arg2, f32 f1, f32 f2, f32 f3, f32 f4) {
+extern "C" s32 fn_8019E874(void* arg0, void** arg1, void* arg2, f32 f1, f32 f2, f32 f3, f32 f4) {
     s32 kind = *(s32*)((u8*)arg0 + 0x20);
     Vec p;
     Vec d;
     if (kind == 0x73) goto dispatch;
     if (kind != 0x74) goto main;
 dispatch:
-    return (void*)fn_8019E500(arg0, arg1);
+    return fn_8019E500(arg0, arg1);
 main:
     Fn8019E874Xf b = *((Fn8019E874Obj*)arg1)->GetXf();
     Fn8019E874Xf *src = *(Fn8019E874Xf**)((u8*)arg0 + 0xC);
@@ -2206,10 +2206,10 @@ main:
     p.x += a.m[6] * lim;
     p.y += a.m[7] * lim;
     p.z += a.m[8] * lim;
-    return (void*)fn_8019B4D8(arg0, arg1, &p, 0, *(f32*)((u8*)arg0 + 0x24));
+    return fn_8019B4D8(arg0, arg1, &p, 0, *(f32*)((u8*)arg0 + 0x24));
 }
 #pragma pop
-extern "C" void* fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
+extern "C" s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
 extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
 extern void fn_8019A820(void*, s32, s32, s32, f32);
 #pragma use_lmw_stmw off
@@ -2231,7 +2231,7 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     sp[6] = temp_f4;
     sp[1] = temp_f2;
     sp[5] = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
-    return (s32)(void*)fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
+    return (s32)fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
 }
 #pragma use_lmw_stmw on
 extern "C" void fn_8019EB14(s32 baseRaw, s32 index) {
