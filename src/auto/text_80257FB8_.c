@@ -7,6 +7,7 @@ extern void fn_80161E40(int);
 extern int fn_8016208C(void);
 #pragma push
 #pragma scheduling invalid_target
+#pragma dont_inline on
 int fn_80257FB8(void) {
     /* Return the tutorial contest index at which the running total of "challenge"
      * elements reaches the configured tutorial level, or 0 if it never does. */
