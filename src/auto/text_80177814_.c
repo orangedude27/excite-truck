@@ -94,6 +94,7 @@ extern "C" void fn_801778C0(void) {
         }
     }
 }
+#pragma dont_inline off
 #pragma cplusplus off
 /* Constant "return false" predicate, paired with fn_80177988 (always true);
  * serves as a default boolean callback. */
