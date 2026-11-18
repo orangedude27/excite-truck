@@ -44,7 +44,6 @@ extern const float lbl_8056499C, lbl_805649A0, lbl_805649A4, lbl_805649A8, lbl_8
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling 750
 void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
     void *camB;
     void *camC;
