@@ -229,7 +229,6 @@ void fn_802E9CF0(void) {
         fn_802E317C(strings + 0x170);
     lbl_80560061 = ((volatile unsigned char *)(base + 0xB8))[9] >> 4 & 1;
 }
-#pragma opt_propagation reset
 
 #pragma dont_inline on
 void fn_802E9DDC(void) {
