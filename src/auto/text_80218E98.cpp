@@ -4816,12 +4816,8 @@ extern "C" s32 fn_802205AC(void *arg0, s32 arg1) {
     f32 result;
     s32 temp;
     p = *(s32 **)((u8 *)arg0 + 0x258);
-    if (p == 0)
-        goto dispatch;
-    if (*p == *(s32 *)((u8 *)arg0 + 0x25C))
-        goto dispatch;
-    return 0;
-dispatch:
+    if (p == 0 || *p != *(s32 *)((u8 *)arg0 + 0x25C))
+        return 0;
     temp = 1;
     switch (arg1) {
     case 0x127:
