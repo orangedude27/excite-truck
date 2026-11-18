@@ -206,39 +206,29 @@ unsigned char fn_802798F0(u32 from, u32 to, f32 weight) {
 #pragma opt_propagation reset
 extern unsigned char fn_802798F0(unsigned int, unsigned int, float);
 extern float lbl_80564100, lbl_80564104;
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
+#pragma dont_inline on
+#pragma processor 603
+#pragma scheduling invalid_target
 void fn_802799EC(void *arg0, float amount) {
     unsigned char *p;
     unsigned char *base;
-    float selected;
     float current;
-    register float remaining;
     float end;
-    register float factor;
-    register float limit;
-    register int i;
+    float remaining;
+    float factor;
+    int i;
+
     base = (unsigned char *)arg0 + 4;
     end = *(float *)((unsigned char *)arg0 + 0x294);
     current = *(float *)((unsigned char *)arg0 + 0x298);
     remaining = end - amount;
-    selected = current;
-    if (current > remaining) {
-        selected = current;
-    } else {
-        selected = remaining;
-    }
-    if (end > lbl_80564100) {
-        limit = lbl_80564100;
-    } else {
-        limit = end;
-    }
-    factor = lbl_80564104 - selected / limit;
-    *(float *)(base + 0x290) = selected;
-    *(int *)((short)base + (u32)0x298) = 0;
+    current = current > remaining ? current : remaining;
+    end = end > lbl_80564100 ? end : lbl_80564100;
+    factor = lbl_80564104 - current / end;
+    *(float *)(base + 0x290) = current;
     p = base;
-    for (i = 0; i < 0xA4; ++i, p += 4) {
+    *(int *)(base + 0x298) = 0;
+    for (i = 0; i < 0xA4; i++, p += 4) {
         p[0] = fn_802798F0(p[0], 0x80, factor);
         p[1] = fn_802798F0(p[1], 0x80, factor);
         p[2] = fn_802798F0(p[2], 0x80, factor);
@@ -263,7 +253,9 @@ void fn_802799EC(void *arg0, float amount) {
     base[0x2B0] = 0;
     base[0x2B1] = 0;
 }
-#pragma optimize_for_size on
+#pragma scheduling on
+#pragma processor reset
+#pragma dont_inline reset
 void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
     unsigned char *target = arg1 - 1;
     unsigned char *source = arg0 + 3;
