@@ -616,12 +616,15 @@ void fn_801ECFE0(void *arg0) {
     extern float lbl_80562E94, lbl_80562E98;
     extern unsigned char lbl_8055E614;
     extern long lbl_8055EBC0;
+    struct PartElem { char e[12]; };
+    struct PartTable { char pad[0x2E0]; struct PartElem list[1]; };
     Unk_801ECFE0 first, second;
     long params[2];
     float scale;
     long *entry;
     long cached, offset, flag, i, mask, handle, j;
     char *part;
+    char *data;
     char *self = arg0;
     if (!(*(float *)(*(char **)(self+0x3C)+0x22C) < lbl_80562E94)) {
         fn_801ECC70(self);
@@ -635,10 +638,11 @@ void fn_801ECFE0(void *arg0) {
             params[1] = cached;
             if ((float)__fabs((double)*(float *)(*(char **)(self+0x3C)+0x28C)) <= *(float *)&lbl_80558DC4)
                 fn_802DAC54();
-            handle = fn_802C7A40(1, *(char **)(self+0x3C)+(entry[0]+1)*12+0x2E0, entry[1]-entry[0], 1, params, 2);
+            handle = fn_802C7A40(1, (void *)&((struct PartTable *)*(char **)(self+0x3C))->list[entry[0] + 1], entry[1]-entry[0], 1, params, 2);
             for (j=0, offset=0; j<*(long *)(*(char **)(self+0x3C)+0xA78); offset+=0x34, j++) {
-                part = *(char **)(self+0x3C)+offset+0xA7C;
-                if (*(long *)(part+0x30) & mask) {
+                data = *(char **)(self+0x3C)+offset;
+                part = data+0xA7C;
+                if (*(long *)(data+0xAAC) & mask) {
                     if (flag) {
                         *(Unk_801ECFE0Head *)&first = *(Unk_801ECFE0Head *)part;
                         *(Unk_801ECFE0Tail *)((char *)&first+0x24) = *(Unk_801ECFE0Tail *)(part+0x24);
@@ -647,7 +651,7 @@ void fn_801ECFE0(void *arg0) {
                         first.values[2] *= scale;
                         fn_802C70AC((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], &first, handle, *(long *)(part+0x30));
                     } else {
-                        fn_802C70AC((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], part, handle, *(long *)(part+0x30));
+                        fn_802C70AC((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], part, handle, *(long *)(data+0xAAC));
                     }
                     mask &= ~*(long *)(part+0x30);
                 }
