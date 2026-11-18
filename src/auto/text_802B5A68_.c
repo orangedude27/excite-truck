@@ -1392,89 +1392,137 @@ extern "C" void fn_802B7884(void *arg0) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_802B7918(void) {
-    class Dummy {
+    /* Refresh the brush column of the "tedash.val" debug panel.
+     *
+     * lbl_8055FA48 is the panel root; virtual +0x04 looks a pane up by name and
+     * +0x0C looks a data object up by name.  Used here:
+     *   "matmap_col" - object whose +0x14 float is one row's vertical step
+     *   kBrushColumn - the column whose own 0x20-byte row is the template that
+     *                  fn_802B6568()/fn_80147230() write each line into
+     *   kBrushDropdown - the drop-down whose caption is set to "Brushes"
+     * lbl_804BE7D8 is the brush list { entries; count; capacity }; every entry is
+     * 0x128 bytes and starts with the file name fn_802B6AC0() read off disk.
+     * lbl_8055FA10 is a pair of seconds: [1] a base stamp and [0] the reference
+     * time fn_802B6228() stores.  While (now - [1]) is still under [0] the panel
+     * rescans with fn_802B6AC0() and lists every brush of the current folder
+     * ("kRowFormat" plus the entry name), each pushed down one more row step --
+     * or the "none" text when the folder has none.  Past that window only the
+     * brush the drop-down selected (lbl_8055FA2C) is shown. */
+    class DebugUi {
     public:
         virtual void v0();
-        virtual void *call(const char *);
+        virtual void *findPane(const char *name);   /* vtable +0x04 */
         virtual void v2();
-        virtual void *get(const char *);
+        virtual void *findObject(const char *name); /* vtable +0x0C */
     };
-    typedef struct {
-        void *name;
-        s32 value;
-        s32 unk8;
-        s32 unkC;
-        f32 time;
-        s32 unk14;
-        s32 unk18;
-        s32 unk1C;
-    } Record;
-    s32 *state;
+    typedef struct {                /* a debug text row, copied from the column */
+        void *name;                 /* +0x00 row name, matched by fn_802B6568 */
+        s32 value;                  /* +0x04 */
+        s32 unk8;                   /* +0x08 f32 row position */
+        s32 unkC;                   /* +0x0C */
+        f32 time;                   /* +0x10 */
+        s32 unk14;                  /* +0x14 */
+        s32 unk18;                  /* +0x18 text colour, set by fn_802B6568 */
+        s32 unk1C;                  /* +0x1C */
+    } DebugRow;
+
+#define kMatmapCol      (base + 0x2A0) /* "matmap_col": +0x14 is one row's step */
+#define kBrushColumn    (base + 0x2AC) /* column holding the row template */
+#define kBrushDropdown  (base + 0xC8)  /* drop-down relabelled "Brushes" */
+#define kRowFormat      (base + 0x2B8) /* "%d" label put on each row */
+#define kNoBrushes      (base + 0x2C4) /* shown when the list is empty */
+#define kNoSelection    (base + 0x2D0) /* shown when the index is out of range */
+#define kBrushesCaption lbl_8055CEA8   /* "Brushes" */
+#define kFormatS        lbl_8055CE70   /* "%s" */
+#define kPanelRoot      lbl_8055FA48   /* the "tedash.val" debug panel */
+#define kBrushList      lbl_804BE7D8   /* { entries; count; capacity }, 0x128 each */
+#define kSelectedBrush  lbl_8055FA2C   /* brush picked from the drop-down */
+#define kRefSeconds     lbl_8055FA10   /* reference time, fn_802B6228() */
+#define kBaseSeconds    ((f32 *)&lbl_8055FA10)[1] /* base stamp */
+#define kMsPerSecond    lbl_80564C70   /* 1000.0f */
+
     char *base = lbl_8034A598;
-    s32 offset;
+    s32 rowOffset;
     s32 i;
-    s32 count;
-    Dummy *obj = (Dummy *)lbl_8055FA48;
-    void *result;
-    volatile const u8 *source;
-    f32 step;
+    s32 brushCount;
+    DebugUi *uiRoot = (DebugUi *)kPanelRoot;
+    void *object;
+    volatile const u8 *rowBytes;
+    f32 rowStep;
     f32 elapsed;
-    s32 early;
-    s32 unknown;
-    s32 value;
+    s32 withinWindow;
+    s32 rowBits;
+    s32 rowValue;
     s32 index;
     void *selected;
-    Record record;
-    char buf[0x20];
+    DebugRow row;
+    char label[0x20];
 
-    result = obj->get(base + 0x2A0);
-    step = *(f32 *)((u8 *)result + 0x14);
-    obj = (Dummy *)lbl_8055FA48;
-    result = obj->call(base + 0x2AC);
-    source = (const u8 *)result;
-    record.name = *(void * volatile *)(source + 0);
-    value = *(volatile const s32 *)(source + 4);
-    unknown = *(volatile const s32 *)(source + 8);
-    record.value = value;
-    record.unk8 = unknown;
-    record.unkC = *(volatile const s32 *)(source + 0xC);
-    record.time = *(volatile const f32 *)(source + 0x10);
-    record.unk14 = *(volatile const s32 *)(source + 0x14);
-    record.unk18 = *(volatile const s32 *)(source + 0x18);
-    record.unk1C = *(volatile const s32 *)(source + 0x1C);
-    obj = (Dummy *)lbl_8055FA48;
-    result = obj->call(base + 0xC8);
-    fn_802B6568(result, lbl_8055CEA8);
-    elapsed = (f32)fn_802E2C20() / lbl_80564C70 -
-              ((f32 *)&lbl_8055FA10)[1];
-    early = elapsed < lbl_8055FA10;
-    if (early != 0) {
+    object = uiRoot->findObject(kMatmapCol);
+    rowStep = *(f32 *)((u8 *)object + 0x14);
+    uiRoot = (DebugUi *)kPanelRoot;
+    object = uiRoot->findPane(kBrushColumn);
+    rowBytes = (volatile const u8 *)object;
+    row.name = *(void * volatile *)(rowBytes + 0);
+    rowValue = *(volatile const s32 *)(rowBytes + 4);
+    rowBits = *(volatile const s32 *)(rowBytes + 8);
+    row.value = rowValue;
+    row.unk8 = rowBits;
+    row.unkC = *(volatile const s32 *)(rowBytes + 0xC);
+    row.time = *(volatile const f32 *)(rowBytes + 0x10);
+    row.unk14 = *(volatile const s32 *)(rowBytes + 0x14);
+    row.unk18 = *(volatile const s32 *)(rowBytes + 0x18);
+    row.unk1C = *(volatile const s32 *)(rowBytes + 0x1C);
+    uiRoot = (DebugUi *)kPanelRoot;
+    object = uiRoot->findPane(kBrushDropdown);
+    fn_802B6568(object, kBrushesCaption);
+    elapsed = (f32)fn_802E2C20() / kMsPerSecond -
+              kBaseSeconds;
+    withinWindow = elapsed < kRefSeconds;
+    if (withinWindow != 0) {
+        /* Still inside the window: rescan, then list every brush of the folder. */
         fn_802B6AC0();
-        count = ((s32 *)&lbl_804BE7D8)[1];
-        if (count > 0) {
+        brushCount = ((s32 *)&kBrushList)[1];
+        if (brushCount > 0) {
             i = 0;
-            offset = 0;
-            while (i < ((s32 *)&lbl_804BE7D8)[1]) {
+            rowOffset = 0;
+            while (i < ((s32 *)&kBrushList)[1]) {
                 ((void (*)(char *, s32, const char *, ...))fn_801345D8)(
-                    buf, 0x20, base + 0x2B8, i);
-                record.name = buf;
-                fn_802B6568(&record, lbl_8055CE70,
-                            (void *)(*(u32 *)&lbl_804BE7D8 + offset));
-                *(f32 *)((u8 *)&record + 8) += step;
-                offset += 0x128;
+                    label, 0x20, kRowFormat, i);
+                row.name = label;
+                fn_802B6568(&row, kFormatS,
+                            (void *)(*(u32 *)&kBrushList + rowOffset));
+                *(f32 *)((u8 *)&row + 8) += rowStep;
+                rowOffset += 0x128;
                 i++;
             }
         } else {
-            fn_80147230(&record, base + 0x2C4);
+            fn_80147230(&row, kNoBrushes);
         }
     } else {
-        index = lbl_8055FA2C;
-        selected = base + 0x2D0;
-        if (index >= 0 && index < *(s32 *)((u8 *)&lbl_804BE7D8 + 4)) {
-            selected = (void *)(*(u32 *)&lbl_804BE7D8 + index * 0x128);
+        /* Settled: only the brush the drop-down selected. */
+        index = kSelectedBrush;
+        selected = kNoSelection;
+        if (index >= 0 && index < *(s32 *)((u8 *)&kBrushList + 4)) {
+            selected = (void *)(*(u32 *)&kBrushList + index * 0x128);
         }
-        fn_80147230(&record, lbl_8055CE70, selected);
+        fn_80147230(&row, kFormatS, selected);
     }
+
+#undef kMatmapCol
+#undef kBrushColumn
+#undef kBrushDropdown
+#undef kRowFormat
+#undef kNoBrushes
+#undef kNoSelection
+#undef kBrushesCaption
+#undef kFormatS
+#undef kPanelRoot
+#undef kBrushList
+#undef kSelectedBrush
+#undef kRefSeconds
+#undef kBaseSeconds
+#undef kMsPerSecond
 }
 #pragma use_lmw_stmw reset
 #pragma cplusplus reset
