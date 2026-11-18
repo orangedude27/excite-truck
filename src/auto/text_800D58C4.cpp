@@ -445,10 +445,10 @@ extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void* out, 
         a1 = s[1];
         a2 = s[2];
         a3 = s[3];
-        d[3] = a3;
         d[0] = a0;
         d[1] = a1;
         d[2] = a2;
+        d[3] = a3;
     }
     if (alpha != 0xFF) {
         u8 v = s[3];
@@ -2566,9 +2566,9 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           s32 temp_r6;
                           s32 temp_r8_2;
                           register s32 var_r23_3;
-                          s32 var_r23_5;
-                          s32 var_r24;
-                          register s32 var_r25;
+                                                     s32 var_r23_5;
+                           register s32 var_r24;
+                           register s32 var_r25;
                           s32 var_r27_2;
                           s32 var_r3;
                           s32 var_r3_2;
@@ -2629,7 +2629,7 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           register u8 *var_r21_5;
                           register u8 *var_r22;
                 register u32 var_r27;
-           register Fn800DA094TexObj *var_r28;
+           Fn800DA094TexObj *var_r28;
 
                           var_r26 = 1;
                           var_r21 = 0;
@@ -2683,11 +2683,13 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                               channelColor[2] = alphaColor[2];
                               channelColor[3] = alphaColor[3];
                               ((int (*)(int, u8 *))GXSetChanMatColor_Internal)(4, &channelColor[0]);
-                              if (var_r25 != 0) {
-                                  var_r25 = 0;
-                              } else if ((u32)((u32)sp30 + 0x10000) != 0xFFFFU) {
-                                  var_r25 = 1;
-                              }
+                            if (var_r25 != 0) {
+                                var_r25 = 0;
+                                goto alpha_done;
+                            }
+                            if ((u32)((u32)sp30 + 0x10000) == 0xFFFFU) goto alpha_done;
+                            var_r25 = 1;
+                        alpha_done:;
                           }
                           var_r24 = 0;
                           texMatrices[0] = 0;
@@ -3002,9 +3004,9 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                                       indirectMatrix[4] = temp_f31 * M2C_FIELD(var_r21_4, f32 *, 0x10);
                                       indirectMatrix[5] = M2C_FIELD(var_r21_4, f32 *, 4);
                                       #pragma push
-                      #pragma dont_inline on
-                                    fn_800D7D5C((void *)(var_r23_6 + 1), &indirectMatrix[0]);
-                      #pragma pop
+                     #pragma dont_inline on
+                                   fn_800D7D5C((void *)(var_r23_6 + 1), &indirectMatrix[0]);
+                     #pragma pop
                                   }
                                   var_r28_3 += 1;
                                   var_r21_4 += 0x14;
@@ -3047,8 +3049,8 @@ extern "C" s32 fn_800DA094(void *arg0, register s32 arg1, register u8 arg2) {
                           } else {
                               ((void (*)(u32, u32, u32, u32))GXSetBlendMode)(1U, 4U, 5U, 0xFU);
                           }
-        return (var_r25 != 0) && (var_r26 != 0);
-                        }
+       return (var_r25 != 0) && (var_r26 != 0);
+                       }
  extern "C" void fn_800DAFA8(void *arg, void *obj) {
     /* C-callable thunk: invoke the virtual method at vtable slot 3 on obj, passing arg. */
     struct Dispatch {
