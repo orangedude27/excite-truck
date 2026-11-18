@@ -2033,25 +2033,26 @@ extern "C" s32 fn_800A76A0(void *object) {
     return 0;
 }
 
+#pragma push
+#pragma optimization_level 3
 extern "C" void fn_800A76B4(void *arg0, s32 arg1) {
-    struct View { unsigned char pad[0x61C]; s32 flags; void *key; unsigned char pad2[0x18]; void (*cb1)(void); void (*cb0)(void); };
     u16 index;
 
     for (index = 0; index < 0x1A; index++) {
-        View *entry = (View *)((u8 *)lbl_803D1640 + index * 0x28);
-        s32 flags = entry->flags;
+        u8 *entry = (u8 *)lbl_803D1640 + index * 0x28;
+        s32 flags = *(s32 *)(entry + 0x61C);
 
-        if ((flags & 1) != 0 && entry->key == arg0) {
-            entry->flags = flags | 2;
-            if (arg1 == 0 && entry->cb0 != 0) {
-                entry->cb0();
-            } else if (entry->cb1 != 0) {
-                entry->cb1();
+        if ((flags & 1) != 0 && *(void **)(entry + 0x620) == arg0) {
+            *(s32 *)(entry + 0x61C) = flags | 2;
+            if (arg1 == 0 && *(void (**)(void))(entry + 0x640) != 0) {
+                (*(void (**)(void))(entry + 0x640))();
+            } else if (*(void (**)(void))(entry + 0x63C) != 0) {
+                (*(void (**)(void))(entry + 0x63C))();
             }
         }
     }
 }
-
+#pragma pop
 extern "C" s32 fn_800A7774(void *a, void *out, void *base, void *data, u16 count, void *sizearg, s32 flag) {
     u8 *b = (u8 *)base;
     u32 d, stride, i, advance, rem, last;
@@ -2478,8 +2479,9 @@ extern "C" s32 VFiPFCACHE_DoReadPage(void *volume, s32 listAddr, s32 sector, s32
  * (fn_800A7B34), and one that will not go to disk is not handed out at all
  * (*outPage = 0).
  *
- * VFiPFCACHE_DoReadPage (fn_800A7E44) is the same read without the claiming: it
- * never writes a cached page back and never gives a new one an owner.
+ * VFiPFCACHE_DoReadPage (fn_800A7E44) is the same read without the write-back:
+ * a page the list already had is handed out untouched, and only a page it had
+ * to read in itself gets cleared of CHANGED and claimed (or unclaimed).
  */
 extern "C" s32 fn_800A8050(void *volume, s32 listAddr, s32 sector, s32 outPageAddr, s32 claim) {
     u32 sectorsRead;
