@@ -1799,12 +1799,12 @@ extern "C" void fn_80162A14(void *arg0) {
     extern void fn_802A95A8(f32 *, f32 *, f32, f32);
     extern void fn_802A95AC(s32);
     register s32 i;
-    register s32 firstOffset;
     register s32 secondOffset;
-    s32 clearOffset;
+    char *self;
+    unsigned int clearOffset;
     s32 clearIndex;
     float resetValue;
-    char *self;
+    register s32 firstOffset;
 
     resetValue = -1000.0f;
     *(s32 *)((char *)arg0 + 8) = 0;
@@ -2811,6 +2811,8 @@ extern char lbl_8032FB90[];
 extern const char lbl_8055A110, lbl_8055A118;
 
 #pragma cplusplus on
+/* The scene's named parameter list: hasName (vtable slot 1) says whether a name
+   is in it, getValue (slot 3) hands back the object stored under it. */
 struct NameList_8016464C {
     virtual void slot0();
     virtual s32 hasName(const char *);
@@ -2820,6 +2822,15 @@ struct NameList_8016464C {
 struct Iterator_8016464C {
     virtual s32 next(void *);
 };
+/* The "tutcmd.val" table fn_80131810 parses.  Its first virtual turns one of
+   the parameter list's value objects into the collection of items that value
+   names; fn_80146C2C builds a value object out of such a collection for the
+   screen that asked. */
+struct ValueTable_8016464C {
+    virtual void *getCollection(void *value);
+};
+/* fn_8016464C's object: the parameter list its names are read out of, and the
+   (description, value) table it builds from them. */
 struct State_8016464C {
     u8 pad0[4];
     void *list;
@@ -2827,6 +2838,8 @@ struct State_8016464C {
     void *entries;
     s32 entryCount;
 };
+/* One entry of that table: the "desc<N>" object, and the value object its
+   "lyt<N>" name resolves to (0 when it has none). */
 struct Entry_8016464C {
     void *object;
     s32 value;
