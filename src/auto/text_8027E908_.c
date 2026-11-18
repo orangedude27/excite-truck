@@ -720,9 +720,9 @@ int fn_8027F958(int *selection, void *collection) {
     register float defaultScale;
     register void *widgetVtable;
     register char *src, *dst;
-         register int i, j, index, remaining, result, mode, count, reported;
-     register float *value;
-     object = ((GetItem)(*(void ***)collection)[4])(collection, 0);
+    register int i, j, index, remaining, result, mode, count, reported;
+    register float *value;
+    object = ((GetItem)(*(void ***)collection)[4])(collection, 0);
     mode = ((GetInt)(*(void ***)object)[5])(object);
     defaultScale = lbl_805641F8;
     defaultValue = lbl_805641FC;
@@ -1187,10 +1187,11 @@ int fn_8027F958(int *selection, void *collection) {
     widget->unk50 = 0;
     widget->unk5C = 0;
     widget->unk24 = 1;
-         widget->unk20 = 0;
-     widget->unk44 = 0;
-     return result;
- }
+    widget->unk20 = 0;
+    widget->unk44 = 0;
+    return result;
+}
+#undef lbl_804B3048
  #pragma scheduling invalid_target
 
 extern int fn_80216D28(void);
