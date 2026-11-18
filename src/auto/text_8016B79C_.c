@@ -288,7 +288,7 @@ typedef struct CrushRoundState8016B964 {
     int animIndex;
     int counters[4];
 } CrushRoundState8016B964;
-
+#pragma scheduling invalid_target
 extern "C" void fn_8016B964(void *arg0, s32 totalScore, s32 bonusScore, s32 timeBonus) {
     f32 f2, f4;
     f32 startTime, gameTime, sinceStart, elapsed, progress;
