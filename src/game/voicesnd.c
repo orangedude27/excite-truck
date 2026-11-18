@@ -170,7 +170,7 @@ int fn_8020A878(void *arg0) {
     #undef gActiveVoiceMixer
     #undef kVoiceWorkBufferSize
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8020A8E8(void *arg0) {
     int off;
     int i;
@@ -370,7 +370,7 @@ void fn_8020AC2C(void *arg0) {
     if (lbl_8055EE00 > 200U) lbl_8055EE00 = 200;
     high = lbl_805632B4;
     low = lbl_805632B0;
-    (*(int *)((char *)(arg0) + (8))) = now;
+    (*(volatile int *)((char *)(arg0) + (8))) = now;
     for (i = 0; i < 512; i++) {
         p = (*(void ***)((char *)(arg0) + (4)))[i];
         if (p) {
