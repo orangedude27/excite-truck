@@ -166,7 +166,7 @@ extern f32 lbl_80563680;
 extern f32 lbl_80563684;
 extern f32 lbl_80563688;
 extern f32 lbl_8056368C;
-extern const f64 lbl_80563698;
+const f64 lbl_80563698 = 4503599627370496.0;
 extern f32 fn_8023400C(s32);
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern s32 fn_802C8DBC(s32);
@@ -981,11 +981,11 @@ char_body:
         for (tokenIndex = 0, tokenOffset = 0; tokenIndex < *(s32 *)recordCount; tokenOffset += 0x1C, tokenIndex++) {
             token = *(const char **)(*(u8 **)lbl_80497F14 + tokenOffset);
             if (fn_8002B1D8((const char *)character, token, strlen(token)) == 0) {
-                entry = *(u8 **)lbl_80497F14 + tokenIndex * 0x1C;
+                entry = *(u8 **)lbl_80497F14 + (u32)tokenIndex * 0x1C;
                 if (*(s32 *)(entry + 0xC) != 0) {
                     escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10));
-                    escapeWidth = *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
-                                + *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
+                    escapeWidth = *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale)
+                                + *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)));
                 } else {
                     escapeWidth = escapeScale * *(f32 *)(entry + 4);
                 }
