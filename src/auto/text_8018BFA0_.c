@@ -33,7 +33,7 @@ static inline void matVecCopy_8018(Vec_8018 *dest, const float *m, Vec_8018 *src
     dest->y = m[1] * dest->x + m[4] * dest->y + m[7] * dest->z;
     dest->z = m[2] * dest->x + m[5] * dest->y + m[8] * dest->z;
 }
-static inline void matVecAlias_8018(Vec_8018 *dest, const float *m, const volatile Vec_8018 *src) {
+static inline void matVecAlias_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
     if (dest == src) {
         float tx = m[0] * src->x + m[3] * src->y + m[6] * src->z;
         float ty = m[1] * src->x + m[4] * src->y + m[7] * src->z;
