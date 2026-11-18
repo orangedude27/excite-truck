@@ -296,13 +296,12 @@ void fn_8029C664(void) {
     extern void fn_802E317C(const char *, ...);
     float a[3], b[3], radiusA, radiusB;
     float margin;
-    register int *base, *p, *q;
-    register int i, j;
+    int *base, *p, *q;
+    int i, j;
     margin = lbl_80564648;
     p = lbl_804B5010;
     base = p;
-    i = 0;
-    for (; i<lbl_8055F7F0; ++p, ++i) {
+    for (i=0; i<lbl_8055F7F0; ++p, ++i) {
         fn_8029D550((void *)*p, a, &radiusA);
         j=i+1;
         q=base+j;
