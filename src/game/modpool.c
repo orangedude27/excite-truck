@@ -172,12 +172,10 @@ extern int fn_80134424(int, void *, int, int *, void *, void *, int, int);
 #pragma scheduling invalid_target
 void fn_802CE744(void *arg0) {
     void *resource = *(void **)((char *)arg0 + 4);
-    int value = *(int *)((char *)resource + 0x10);
     int result;
     int sp8;
 
-    *(int *)((char *)arg0 + 0x3C) = value;
-    *(int *)((char *)resource + 0x10) = value + 1;
+    *(int *)((char *)arg0 + 0x3C) = (*(int *)((char *)resource + 0x10))++;
     if (*(int *)((char *)arg0 + 0x38) == 0) {
         sp8 = 0;
         result = fn_80134424(
@@ -191,7 +189,7 @@ void fn_802CE744(void *arg0) {
             -1);
         if (result >= 0) {
             *(int *)((char *)arg0 + 0x2C) = result;
-            *(int *)((char *)arg0 + 0x38) = 1;
+            *(int *)((char*)arg0 + 0x38) = 1;
         }
     }
 }
