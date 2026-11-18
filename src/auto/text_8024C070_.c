@@ -47,6 +47,7 @@ typedef struct {
 void fn_8024C070(void) {
     Fn8024C070Frame frame;
     int value;
+    const char *bab8 = &lbl_8055BAB8;
 
     /* Fix note: model the stack data as one frame and pass its argument table through config. */
     frame.flag = 0;
@@ -99,7 +100,7 @@ void fn_8024C070(void) {
     frame.config[3] = lbl_802FA520[3];
     frame.config[4] = lbl_802FA520[4];
     ((int (*)(int *, int, int, int))fn_802146BC)(frame.config, -999, -999, 1);
-    frame.flag = !(frame.value - 1);
+    frame.flag = (frame.value == 1);
     fn_80133460(5, &lbl_8055C010, frame.flag);
 }
 #pragma scheduling on
