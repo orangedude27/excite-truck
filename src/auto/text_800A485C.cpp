@@ -4335,20 +4335,17 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
     u32 sp8;
     s8 *name = arg1;
     s8 *p = name + 1;
-    s8 *q;
     s8 c;
     s8 d;
     u32 index = 1;
-    u32 tail;
     while ((c = *p) != 0x7E && c != 0 && index < 7) {
         index++;
         p++;
     }
     if (index < 7 && c == 0x7E) {
-        tail = index + 1;
-        q = name + tail + 1;
-        while ((d = *q) >= '0' && d <= '9') {
-            q++;
+        index++;
+        while ((d = name[index]) >= '0' && d <= '9') {
+            index++;
         }
         if (d == '.' || d == 0) {
             s32 result = VFiPFENT_findEmptyTailSFN(arg0, name, &sp8);
@@ -10891,20 +10888,17 @@ extern "C" s32 fn_800B5B94(void *arg0, s32 arg1) {
     }
     if (tmp == 0 || (arg1 & 1)) {
         VFiPFCACHE_FreeAllCaches(arg0);
-        do {
-            res = fn_800A5788(arg0, arg1);
-            if (res != 0) {
-                break;
-            }
+        res = fn_800A5788(arg0, arg1);
+        if (res == 0) {
             if (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) {
                 *(s32 *)((u8 *)arg0 + 0x1654) = 0;
                 *(s32 *)((u8 *)arg0 + 0x189C) = 0;
                 *(s32 *)((u8 *)arg0 + 0x1AE4) = 0;
                 *(s32 *)((u8 *)arg0 + 0x1D2C) = 0;
             }
-            *(u16 *)((u8 *)arg0 + 0x1F8C) &= ~8;
             res = 0;
-        } while (0);
+            *(u16 *)((u8 *)arg0 + 0x1F8C) &= ~8;
+        }
         if (res != 0 && err == 0) {
             err = res;
         }
@@ -23204,7 +23198,8 @@ extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
     s32 i, j;
     u8 *self = (u8 *)arg0;
     void *pane;
-    for (i = 0; i < 4; i++, cursor += 4, state += 4, info += 0x18) {
+    s32 n;
+    for (i = 0; i < 4; i++, state += 4, cursor += 4, info += 0x18) {
         if (*state) {
             if (*(s32 *)(*(u8 **)(self + 4) + 0x20) == 0) {
                 pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(cursor + 0x1E4) + 0x10))->find(lbl_80559718, 1);
@@ -23228,10 +23223,10 @@ extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
             self[0x7C + i] = 0;
         }
     }
-    for (i = 0; i < 4; i++) {
-        s32 *ids = lbl_8031E370 + i * 4;
-        for (j = 0; j < 4; j++) {
-            pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->find(ids[j], 1);
+    for (n = 0; n < 4; n++) {
+        s32 *ids = lbl_8031E370 + n * 4;
+        for (j = 0; j < 4; j++, ids++) {
+            pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->find(*ids, 1);
             ((u8 *)pane)[0xCF] = ((u8 *)pane)[0xCF] & 0xFE;
         }
     }
