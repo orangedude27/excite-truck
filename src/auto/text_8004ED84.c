@@ -462,7 +462,7 @@ void Decode(unsigned char *src, unsigned char *dst) {
     } while (output < outputSize);
 }
 #pragma pop
-extern int IOS_IoctlvReboot(int,int,int,int,void*,int);
+
 #pragma opt_propagation off
 /* The character encoding the OS font routines use (0 = ANSI, 1 = SJIS; the
  * wider encodings 3-5 can only be asked for with OSSetFontEncode()), worked
