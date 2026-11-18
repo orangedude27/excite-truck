@@ -15630,8 +15630,11 @@ extern "C" void fn_800BEDE0(VFiPFCard *card, void *info) {
     *(s32 *)((u8 *)info + 0xC) = card->unkED70;
 }
 
-extern "C" s16 fn_800BDD7C(s32, s32, s32 *);
-extern "C" s16 fn_800BDE18(s32, s32, s32, s32 *);
+extern "C" s16 fn_800BDD7C(s32, s32, s32 *); /* scan a bit stream for its 0xFFF sync word */
+extern "C" s16 fn_800BDE18(s32, s32, s32, s32 *); /* read bits from a bit stream, advancing the bit position */
+/* Stream sizes indexed by [sampling frequency (unk1c)][bitrate index from the
+ * header]; entries 0 and 15 are unused.  The first table is for a full-rate
+ * stream, the second for the half-rate one (unk4). */
 extern s16 lbl_802F3418[];
 extern s16 lbl_802F3478[];
 #pragma opt_propagation off
