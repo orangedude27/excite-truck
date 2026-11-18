@@ -188,7 +188,6 @@ void fn_80264098(void *item, int type) {
 
 #pragma dont_inline on
 #pragma dont_inline off
-#pragma scheduling invalid_target
 void fn_802640A0(void *arg0)
 {
   volatile int *new_var2;
@@ -202,7 +201,6 @@ void fn_802640A0(void *arg0)
   *((volatile int *) (p + new_var)) = 0x7b;
   *((volatile int *) (p + 0x10)) = 0;
 }
-#pragma scheduling on
 
 #pragma push
 #pragma processor 750
