@@ -6,6 +6,8 @@ struct V9_8013FAC4 { virtual void d0(); virtual void d1(); virtual void m0(); vi
 struct V10_8013FAC4 { virtual void d0(); virtual void d1(); virtual void *v10(void *); };
 struct VC_8013FAC4 { virtual void d0(); virtual void vC(void *); };
 extern "C" void *memset(void *, s32, u32);
+static inline f32 fnMax_80141FA8(f32 a, f32 b) { return a < b ? b : a; }
+static inline f32 fnMin_80141FA8(f32 a, f32 b) { return a > b ? b : a; }
 extern "C" f32 fn_801B306C(void);
 extern "C" s32 fn_80009C84(void);
 extern "C" s32 fn_80179630(s32);
@@ -1540,6 +1542,7 @@ extern "C" void fn_8013EB30(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_dead_assignments off
 extern "C" void fn_8013ED74(void *arg0) {
     struct Entry {
         u8 *item;
@@ -1872,8 +1875,8 @@ extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
     u8 *other = (u8 *)arg2;
     char *labels = (char *)lbl_8032C530;
     f32 diff, ratio, opacity;
-    s32 active, i;
     void *item, *icon;
+    s32 active, i;
     TextStyle text;
     DrawStyle draw;
     Lookup *lookup;
@@ -1883,8 +1886,8 @@ extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
         if (diff >= lbl_805614A4 && diff < *(f32 *)(self + 0x74)) active = 1;
         if (active) {
             ratio = (fn_8001DAF0((f32 *)(self + 0x74)) - lbl_80561538) / lbl_8056154C;
-            ratio = ratio > lbl_805614AC ? ratio : lbl_805614AC;
-            ratio = ratio > lbl_805614A4 ? lbl_805614A4 : ratio;
+            ratio = ratio > lbl_805614AC ? lbl_805614AC : ratio;
+            ratio = ratio > lbl_805614A4 ? ratio : lbl_805614A4;
             opacity = lbl_805614A4 + ratio * lbl_805614AC;
             lookup = *(Lookup **)(self + 0x54);
             item = lookup->find(labels + 0x3FC);
@@ -1910,8 +1913,8 @@ extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
             if (diff >= lbl_805614A4 && diff < *(f32 *)(self + 0x6C)) active = 1;
             if (active) {
                 ratio = (fn_8001DAF0((f32 *)(self + 0x6C)) - lbl_80561538) / lbl_8056154C;
-                ratio = ratio > lbl_805614AC ? ratio : lbl_805614AC;
-                ratio = ratio > lbl_805614A4 ? lbl_805614A4 : ratio;
+                ratio = ratio > lbl_805614AC ? lbl_805614AC : ratio;
+                ratio = ratio > lbl_805614A4 ? ratio : lbl_805614A4;
                 opacity = lbl_805614A4 + ratio * lbl_805614AC;
                 item = (*(Lookup **)(self + 0x54))->find(labels + 0x3FC);
                 if (item) {
@@ -2977,35 +2980,39 @@ extern "C" void fn_8001DAE8_2(void *, f32);
 extern "C" s32 fn_80141FA8(void *arg0, f32 arg1) {
     s32 result = 1;
     if (lbl_8055E1BC != 0) {
-        f32 old = *(f32 *)((u8 *)arg0 + 0x94);
-        f32 step = arg1 / lbl_8056149C;
-        f32 v = old + step;
-        v = v < lbl_805614AC ? lbl_805614AC : v;
-        v = v > lbl_805614A4 ? lbl_805614A4 : v;
-        f32 r = v;
-        *(f32 *)((u8 *)arg0 + 0x94) = v;
-        if (old < r) {
-            *(f32 *)((u8 *)arg0 + 0xEC) = r - old;
-        } else {
-                    s32 close = (f32)__fabs((f64)r) <= *(f32 *)&lbl_80558DC4;
-        if (close != 0) {
-            if ((f32)__fabs((f64)old) <= *(f32 *)&lbl_80558DC4) {
-                    s32 n = *(volatile s32 *)((u8 *)arg0 + 0xE4);
-                    if (n > 0) {
-                        *(s32 *)((u8 *)arg0 + 0xF4) = n;
-                        *(f32 *)((u8 *)arg0 + 0xF0) = fn_8013CB3C();
-                    }
-                    *(volatile s32 *)((u8 *)arg0 + 0xE4) = 0;
-                    n = *(volatile s32 *)((u8 *)arg0 + 0x100);
-                    if (n > 0) *(f32 *)((u8 *)arg0 + 0xD4) = fn_8001DAE8((u8 *)arg0 + 0xD0);
-                    *(volatile s32 *)((u8 *)arg0 + 0x100) = 0;
-                    *(f32 *)((u8 *)arg0 + 0xAC) = fn_8001DAE8((u8 *)arg0 + 0xA8);
-                    if (lbl_8055E1BC == 0) *(u8 *)((u8 *)arg0 + 0xF8) = 1;
-                    result = 0;
-                }
+        u8 *p = (u8 *)arg0;
+        f32 old = *(f32 *)(p + 0x94);
+        f32 var = lbl_805614AC;
+        var = var < (old + arg1 / lbl_8056149C) ? (old + arg1 / lbl_8056149C) : var;
+        var = lbl_805614A4 < var ? lbl_805614A4 : var;
+        *(f32 *)(p + 0x94) = var;
+        if (old < (f32)(f64)var) {
+            *(f32 *)(p + 0xEC) = (f32)(f64)var - old;
+            goto done;
+        }
+        var = (f32)__fabs((f64)(f32)(f64)var);
+        {
+            s32 close = var <= *(f32 *)&lbl_80558DC4;
+            if (close == 0) goto done;
+        }
+        old = (f32)__fabs((f64)old);
+        if (old <= *(f32 *)&lbl_80558DC4) goto done;
+        {
+            s32 n = *(volatile s32 *)(p + 0xE4);
+            if (n > 0) {
+                *(s32 *)(p + 0xF4) = n;
+                *(f32 *)(p + 0xF0) = fn_8013CB3C();
             }
+            *(volatile s32 *)(p + 0xE4) = 0;
+            n = *(volatile s32 *)(p + 0x100);
+            if (n > 0) *(f32 *)(p + 0xD4) = fn_8001DAE8(p + 0xD0);
+            *(volatile s32 *)(p + 0x100) = 0;
+            *(f32 *)(p + 0xAC) = fn_8001DAE8(p + 0xA8);
+            if (lbl_8055E1BC == 0) *(u8 *)(p + 0xF8) = 1;
+            result = 0;
         }
     }
+done:
     return result;
 }
 extern "C" s32 fn_801420D4(void *entity) {
@@ -3139,7 +3146,7 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
     row = fn_801421C0(a);
     if (lbl_8055E1BC) {
         f32 x = *(f32 *)(b + 0x94);
-        f32 f = *(f32 *)(row + 8) / lbl_8056149C + x;
+        f32 f = x + *(f32 *)(row + 8) / lbl_8056149C;
         f = f < lbl_805614AC ? f : lbl_805614AC;
         f = f > lbl_805614A4 ? f : lbl_805614A4;
         f64 r = f;
