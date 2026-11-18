@@ -196,58 +196,64 @@ found_outer:
 
 #pragma push
 #pragma processor 750
+/* Initialise a heap head: record its magic, range and options, give it an empty
+   child-heap list and its own mutex, then file it in the child list of the
+   innermost existing heap whose [start, end) range holds the head itself - the
+   root heap list when none does.  The registry search the SDK keeps in
+   FindListContainHeap_/FindContainHeap_ is inlined here, and runs with the
+   root-list mutex held. */
 void MEMiInitHeapHead(MEMiHeapHead *heap, u32 magic, void *start, void *end, u16 opt) {
-    MEMiHeapHead *child;
-    MEMiHeapHead *outer;
-    MEMiHeapHead *block;
-    MEMiHeapHead *res;
+    MEMiHeapHead *childHeap;
+    MEMiHeapHead *rootHeap;
+    MEMiHeapHead *blockHeap;
+    MEMiHeapHead *container;
     MEMList *list;
     heap->magic = magic;
     heap->start = start;
     heap->end = end;
     heap->attribute = 0;
     SetOptForHeap(heap, opt);
-    MEMInitList(&heap->list, 4);
-    if (lbl_8055D9B8 == 0) {
-        MEMInitList((MEMList *)lbl_8037D808, 4);
-        OSInitMutex((OSMutex *)lbl_8037D818);
-        lbl_8055D9B8 = 1;
+    MEMInitList(&heap->list, 4); /* offsetof(MEMiHeapHead, link) */
+    if (sRootListInitialized == 0) {
+        MEMInitList(sRootList, 4);
+        OSInitMutex(sRootMutex);
+        sRootListInitialized = 1;
     }
     OSInitMutex(&heap->mutex);
-    OSLockMutex((OSMutex *)lbl_8037D818);
-    list = (MEMList *)lbl_8037D808;
-    outer = 0;
-    while ((outer = (MEMiHeapHead *)MEMGetNextListObject((MEMList *)lbl_8037D808, outer)) != 0) {
-        if ((u32)outer->start <= (u32)heap && (u32)heap < (u32)outer->end) {
-            child = 0;
-            while ((child = (MEMiHeapHead *)MEMGetNextListObject(&outer->list, child)) != 0) {
-                if ((u32)child->start <= (u32)heap && (u32)heap < (u32)child->end) {
-                    block = 0;
-                    while ((block = (MEMiHeapHead *)MEMGetNextListObject(&child->list, block)) != 0) {
-                        if ((u32)block->start <= (u32)heap && (u32)heap < (u32)block->end) {
-                            res = (MEMiHeapHead *)FindContainHeap_(&block->list, (u32)heap);
-                            switch ((u32)res) { case 0: res = block; break; default: break; }
+    OSLockMutex(sRootMutex);
+    list = sRootList;
+    rootHeap = 0;
+    while ((rootHeap = (MEMiHeapHead *)MEMGetNextListObject(sRootList, rootHeap)) != 0) {
+        if ((u32)rootHeap->start <= (u32)heap && (u32)heap < (u32)rootHeap->end) {
+            childHeap = 0;
+            while ((childHeap = (MEMiHeapHead *)MEMGetNextListObject(&rootHeap->list, childHeap)) != 0) {
+                if ((u32)childHeap->start <= (u32)heap && (u32)heap < (u32)childHeap->end) {
+                    blockHeap = 0;
+                    while ((blockHeap = (MEMiHeapHead *)MEMGetNextListObject(&childHeap->list, blockHeap)) != 0) {
+                        if ((u32)blockHeap->start <= (u32)heap && (u32)heap < (u32)blockHeap->end) {
+                            container = (MEMiHeapHead *)FindContainHeap_(&blockHeap->list, (u32)heap);
+                            switch ((u32)container) { case 0: container = blockHeap; break; default: break; }
                             goto found_inner;
                         }
                     }
-                    res = 0;
+                    container = 0;
                 found_inner:
-                    switch ((u32)res) { case 0: res = child; break; default: break; }
+                    switch ((u32)container) { case 0: container = childHeap; break; default: break; }
                     goto found_middle;
                 }
             }
-            res = 0;
+            container = 0;
         found_middle:
-            switch ((u32)res) { case 0: res = outer; break; default: break; }
+            switch ((u32)container) { case 0: container = rootHeap; break; default: break; }
             goto found_outer;
         }
     }
-    res = 0;
+    container = 0;
 found_outer:
-    if (res != 0)
-        list = &res->list;
+    if (container != 0)
+        list = &container->list;
     MEMAppendListObject(list, heap);
-    OSUnlockMutex((OSMutex *)lbl_8037D818);
+    OSUnlockMutex(sRootMutex);
 }
 #pragma pop
 extern char lbl_8037D808[];
