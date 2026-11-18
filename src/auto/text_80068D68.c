@@ -398,7 +398,7 @@ extern char lbl_80316464[];
 extern void fn_8007093C(u32, void *);
 extern s32 btsnd_hcic_link_key_neg_reply_800843D8(u8 *);
 extern BOOLEAN l2c_link_hci_conn_comp(UINT8 status, UINT16 handle, UINT8 *p_bda);
-static inline u8 *btm_bda_to_acl_inl(u8 *bda) {
+static __inline u8 *btm_bda_to_acl_inl(u8 *bda) {
     u8 *q = lbl_803C0F78 + 0x34;
     u32 j = 0;
     for (; j < 4; j++, q += 0x11C) {
@@ -7959,10 +7959,7 @@ tBTM_STATUS BTM_SwitchRole(BD_ADDR remote_bd_addr, UINT8 new_role, tBTM_CMPL_CB 
     if ((lbl_803C0F78[0x640] & 0x20) == 0) return 4;
     entry = lbl_803C0F78 + 0x34; i = 0;
 loop:
-    if (entry[0x119] == 0) goto next;
-    if (memcmp(entry + 8, remote_bd_addr, 6) != 0) goto next;
-    else goto found;
-next:
+    if (entry[0x119] != 0 && memcmp(entry + 8, remote_bd_addr, 6) == 0) goto found;
     i++; entry += 0x11C;
     if (i < 4) goto loop;
     entry = 0;
@@ -18358,7 +18355,7 @@ UINT16 L2CA_Register(UINT16 psm, tL2CAP_APPL_INFO *info) {
     struct Callback10 { u32 f[10]; };
     u8 *messages = lbl_80317C20;
     void *entry;
-    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, lbl_80317C20 + 0, psm);
+    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, messages - 0, psm);
     if (*(u32 *)((u8 *)info + 0x10) == 0 ||
         *(u32 *)((u8 *)info + 0xC) == 0 ||
         *(u32 *)((u8 *)info + 0x20) == 0 ||
@@ -19920,14 +19917,17 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     extern char lbl_80318DE0[];
     extern char lbl_80318E00[];
     extern void fn_8007093C(u32, void *);
-    u16 pkt_type;
+    u8 *p;
     u16 handle;
     u16 hci_len;
-    u8 *p;
+    u16 pkt_type;
+    BT_HDR *p_cur;
     u8 *p_lcb;
     BT_HDR *p_return_buf;
-    p = (u8 *)p_cur_buf + p_cur_buf->offset;
-    p_cur_buf->layer_specific = 0;
+
+    p_cur = p_cur_buf;
+    p = (u8 *)p_cur + p_cur->offset;
+    p_cur->layer_specific = 0;
     handle = p[8] + (p[9] << 8);
     hci_len = p[10] + (p[11] << 8);
     pkt_type = (handle >> 12) & 3;
@@ -19935,38 +19935,40 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     *(void **)(lbl_803C4040 + 0x7BC) = 0;
     p_lcb = (u8 *)l2cu_find_lcb_by_handle(handle);
     if (p_lcb == 0)
-        return p_cur_buf;
+        return p_cur;
+
     if (pkt_type == 2) {
         if (*(void **)(p_lcb + 0x50) != 0) {
             if (lbl_803C4040[0] >= 2)
                 fn_8007093C(0x80001, lbl_80318DE0);
             GKI_freebuf(*(void **)(p_lcb + 0x50));
         }
-        p_return_buf = p_cur_buf;
+        p_return_buf = p_cur;
         *(BT_HDR **)(p_lcb + 0x50) = p_return_buf;
         *(void **)(lbl_803C4040 + 0x7BC) = p_lcb;
     } else if (*(void **)(p_lcb + 0x50) != 0) {
         u16 total_len;
         BT_HDR *p_base_buf = *(BT_HDR **)(p_lcb + 0x50);
         u8 *p_f = (u8 *)p_base_buf + p_base_buf->offset;
+
         total_len = p_f[10] + (p_f[11] << 8);
         if (total_len + hci_len <= 0x69F) {
             p_return_buf = *(BT_HDR **)(p_lcb + 0x50);
             *(void **)(lbl_803C4040 + 0x7BC) = p_lcb;
-            if (p_cur_buf->len > 4) {
-                u16 cur_len = p_cur_buf->len;
+            if (p_cur->len > 4) {
+                u16 cur_len = p_cur->len;
                 u16 base_offset = p_return_buf->offset;
                 s32 copy_len = cur_len - 4;
-                u16 cur_offset = p_cur_buf->offset;
+                u16 cur_offset = p_cur->offset;
                 u8 *p_dst = (u8 *)p_return_buf + base_offset;
                 u16 base_len = p_return_buf->len;
-                u8 *p_data = (u8 *)p_cur_buf + cur_offset;
+                u8 *p_data = (u8 *)p_cur + cur_offset;
                 p_dst += base_len + 8;
                 p_data += 0xC;
                 memcpy(p_dst, p_data, copy_len);
-                p_return_buf->len += p_cur_buf->len - 4;
+                p_return_buf->len += p_cur->len - 4;
             }
-            GKI_freebuf(p_cur_buf);
+            GKI_freebuf(p_cur);
             total_len += hci_len;
             p_f[10] = (u8)total_len;
             p_f[11] = (u8)(total_len >> 8);
@@ -19980,8 +19982,9 @@ BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *p_cur_buf) {
     } else {
         p_return_buf = 0;
     }
+
     if (p_return_buf == 0)
-        GKI_freebuf(p_cur_buf);
+        GKI_freebuf(p_cur);
     return p_return_buf;
 }
 
