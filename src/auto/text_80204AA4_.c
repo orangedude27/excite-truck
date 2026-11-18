@@ -142,7 +142,7 @@ extern double atof(const char *);
 __declspec(section ".sdata") extern const char lbl_8055B4AC[];
 extern const char lbl_8033BBF4[];
 #pragma cplusplus on
-extern "C" int fn_801345D8(void *, int, const char *, const char *);
+extern "C" int fn_801345D8(void *, int, const char *, ...);
 extern "C" double atof(const char *);
 extern "C" void fn_802E317C(const char *, ...);
 extern "C" float fn_80204CFC(const char *arg0) {
