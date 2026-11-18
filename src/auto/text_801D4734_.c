@@ -427,7 +427,7 @@ extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
         virtual void v5();
         virtual int getInt(char *, int);
         virtual void v7();
-        virtual float value(char *, float);
+        virtual float value(float, char *);
         virtual void v9();
         virtual unsigned char flag(char *, int);
         virtual void v11();
@@ -507,7 +507,7 @@ loop_test:
     node = obj->child(i);
     if (node != 0) goto loop_body;
     out->b20 = obj->flag(base + 0xC8, 0);
-    { float def = lbl_80562B00; char *key = base + 0xD4; out->f1c = obj->value(key, def); }
+    out->f1c = obj->value(*(volatile float *)&lbl_80562B00, base + 0xD4);
     out->b21 = obj->flag(base + 0xE0, 1);
     out->b22 = obj->flag(base + 0xF0, 1);
     out->i24 = obj->getInt(base + 0xFC, -1);
@@ -1328,10 +1328,10 @@ extern "C" s32 fn_801D5E94(void *arg0) {
     f32 b3c, b48, b40, b44, t50, t4c;
     f32 d0, d1, d2;
     f32 scale, amount;
-    f32 zero = lbl_80562ADC;
     s32 offset, i;
 
     if (*(s32 *)(self + 8) == 1) {
+        f32 zero = lbl_80562ADC;
         i = 0;
         offset = 0;
         while (i < *(s32 *)(self + 0x74)) {
@@ -1349,16 +1349,19 @@ extern "C" s32 fn_801D5E94(void *arg0) {
             pos.x = d0; pos.y = d1; pos.z = d2;
             scale = *(f32 *)(self + 0x60) + scale * (*(f32 *)(self + 0x64) - *(f32 *)(self + 0x60));
             vec.x = zero; vec.y = zero; vec.z = zero;
-            if (lbl_80558DC4 >= (float)fabs(PSVECDotProduct(&pos, &pos)) ||
-                lbl_80558DC4 >= (float)fabs(scale)) {
-                Obj *obj = *(Obj **)(*(char **)(self + 0x70) + offset);
-                obj->v8(1);
-            } else {
-                Obj *obj;
-                PSVECNormalize(&pos, &pos);
-                vec.x = pos.x * scale; vec.y = pos.y * scale; vec.z = pos.z * scale;
-                obj = *(Obj **)(*(char **)(self + 0x70) + offset);
-                obj->v9(&vec, self + 0x54);
+            {
+                register f32 dot = (float)fabs(PSVECDotProduct(&pos, &pos));
+                register f32 eps = lbl_80558DC4;
+                if (dot <= eps || (float)fabs(scale) <= eps) {
+                    Obj *obj = *(Obj **)(*(char **)(self + 0x70) + offset);
+                    obj->v8(1);
+                } else {
+                    Obj *obj;
+                    PSVECNormalize(&pos, &pos);
+                    vec.x = pos.x * scale; vec.y = pos.y * scale; vec.z = pos.z * scale;
+                    obj = *(Obj **)(*(char **)(self + 0x70) + offset);
+                    obj->v9(&vec, self + 0x54);
+                }
             }
             offset += 4;
             i += 1;
@@ -3329,17 +3332,15 @@ extern "C" int fn_801D8424(void *arg0, void *arg1) {
         virtual void v7();
         virtual float get(char *, float);
     };
-    extern float lbl_80562ADC;
-    extern float lbl_80562B0C;
     extern char lbl_8055ACB0;
     extern char lbl_8055ACB8;
     extern char lbl_8055AD48;
     extern int fn_8029F3BC(void);
     Dummy *obj = (Dummy *)arg1;
-    float first = obj->get(&lbl_8055ACB0, lbl_80562ADC);
-    float second = obj->get(&lbl_8055ACB8, lbl_80562ADC);
-    float scaledFirst = lbl_80562B0C * first;
-    float scaledSecond = lbl_80562B0C * second;
+    float first = obj->get(&lbl_8055ACB0, 0.0f);
+    float second = obj->get(&lbl_8055ACB8, 0.0f);
+    float scaledFirst = 59.94f * first;
+    float scaledSecond = 59.94f * second;
     int resultFirst = (int)scaledFirst;
     int resultSecond = (int)scaledSecond;
     *(int *)((char *)arg0 + 8) = resultFirst;
