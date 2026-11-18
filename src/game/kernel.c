@@ -267,6 +267,7 @@ fail:
     fn_802E1728(arg0);
     return 0;
 }
+#pragma pop
 
 #pragma processor 750
 #pragma use_lmw_stmw off
