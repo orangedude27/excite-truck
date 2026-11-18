@@ -493,64 +493,77 @@ extern f32 lbl_805603B0;
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_800148A0(void *arg0) {
+    struct Info {
+        u8 pad0[0x10];
+        s32 unk10;
+        f32 unk14;
+        f32 unk18;
+        f32 unk1C;
+        u8 pad20[4];
+        s32 unk24;
+    };
+    struct Other {
+        s32 unk0;
+        s32 unk4;
+        s32 unk8;
+    };
+    struct Root {
+        s32 unk0;
+        s32 mode;
+        s32 unk8;
+        struct Other *other;
+        u8 pad10[0x20];
+        struct Info *info;
+    };
     char name[0x40];
     char first[0x40];
     char second[0x40];
-    void *info;
-    void *other;
     f32 value1;
     f32 value2;
     u8 *base;
     s32 mode;
     u8 *ap = (u8 *)arg0;
-    value1 = lbl_80560360;
+    value1 = 0.0f;
     value2 = value1;
     base = lbl_802FCB98;
     mode = 1;
     first[0] = 0;
     second[0] = 0;
-    if (*(s32 *)((u8 *)lbl_8055D350 + 4) != 1) {
+    if (((struct Root *)lbl_8055D350)->mode != 1) {
         strcpy(name, (char *)base + 0x194);
-        info = *(void **)((u8 *)lbl_8055D350 + 0x30);
-        if (*(f32 *)((u8 *)info + 0x18) > lbl_805603B0) {
+        if (((struct Root *)lbl_8055D350)->info->unk18 > 0.1f) {
             strcpy(first, (char *)&lbl_80558B88);
-            info = *(void **)((u8 *)lbl_8055D350 + 0x30);
-            value1 = *(f32 *)((u8 *)info + 0x18);
+            value1 = ((struct Root *)lbl_8055D350)->info->unk18;
         }
     }
-    info = *(void **)((u8 *)lbl_8055D350 + 0x30);
-    if (*(f32 *)((u8 *)info + 0x1C) > lbl_805603B0 &&
-        (*(s32 *)((u8 *)lbl_8055D350 + 4) != 1 ||
-         *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0xC) + 8) > 1)) {
+    if (((struct Root *)lbl_8055D350)->info->unk1C > 0.1f &&
+        (((struct Root *)lbl_8055D350)->mode != 1 ||
+         ((struct Root *)lbl_8055D350)->other->unk8 > 1)) {
         strcpy(second, (char *)&lbl_80558B90);
-        info = *(void **)((u8 *)lbl_8055D350 + 0x30);
-        value2 = *(f32 *)((u8 *)info + 0x1C);
+        value2 = ((struct Root *)lbl_8055D350)->info->unk1C;
     }
-    if (*(s32 *)((u8 *)info + 0x24) == 3) {
-        if (*(s32 *)((u8 *)lbl_8055D350 + 4) != 1) {
+    if (((struct Root *)lbl_8055D350)->info->unk24 == 3) {
+        if (((struct Root *)lbl_8055D350)->mode != 1) {
             strcpy(name, (char *)base + 0x1A0);
         } else {
             strcpy(name, (char *)base + 0x1AC);
             strcpy(first, (char *)base + 0x1B8);
-            info = *(void **)((u8 *)lbl_8055D350 + 0x30);
-            value1 = *(f32 *)((u8 *)info + 0x18);
+            value1 = ((struct Root *)lbl_8055D350)->info->unk18;
         }
-    } else if (*(s32 *)((u8 *)lbl_8055D350 + 4) == 1) {
+    } else if (((struct Root *)lbl_8055D350)->mode == 1) {
         strcpy(name, (char *)&lbl_80558B98);
     } else {
-        other = *(void **)((u8 *)lbl_8055D350 + 0xC);
-        if (*(s32 *)((u8 *)info + 0x10) == *(s32 *)((u8 *)other + 8) ||
-            *(s32 *)other >= *(s32 *)((u8 *)other + 8)) {
+        if (((struct Root *)lbl_8055D350)->info->unk10 == ((struct Root *)lbl_8055D350)->other->unk8 ||
+            ((struct Root *)lbl_8055D350)->other->unk0 >= ((struct Root *)lbl_8055D350)->other->unk8) {
             strcpy(name, (char *)base + 0x1C8);
             mode = 0;
         }
     }
     if (((s32 (*)(void *))fn_80014ADC)(arg0) != 0) {
-        info = *(void **)((u8 *)lbl_8055D350 + 0x30);
-        if (*(s32 *)((u8 *)info + 0x24) == 3)
-            value1 = *(f32 *)((u8 *)info + 0x1C);
+        if (((struct Root *)lbl_8055D350)->info->unk24 == 3)
+            value1 = ((struct Root *)lbl_8055D350)->info->unk1C;
         else
-            value1 = *(f32 *)((u8 *)info + 0x14);
+            value1 = ((struct Root *)lbl_8055D350)->info->unk14;
         strcpy(first, (char *)base + 0x1D4);
     }
     ((void (*)(void *, void *, s32, void *, void *, f32, f32, f32))fn_80013EDC)(
