@@ -73,7 +73,7 @@ s16 lbl_8055DB5C;
 s16 lbl_8055DB5E;
 u32 lbl_8055DB60;
 u32 lbl_8055DB64;
-u64 lbl_8055DB68;
+volatile u64 lbl_8055DB68;
 u32 lbl_8055DB70;
 u32 lbl_8055DB74;
 u64 lbl_8055DB78;
@@ -1143,17 +1143,13 @@ static void setHorizontalRegs(VITiming *tm, u16 dispPosX, u16 dispSizeX)
 extern char lbl_803116F0[];
 void VIConfigure(const GXRenderModeObj *rm)
 {
-    register char *msgBase asm("r28") = lbl_803116F0;
+    char *msgBase = lbl_803116F0;
     VITiming *tm;
     u32 reg;
     int enabled;
     u32 newNonInter;
     s32 tvInBootrom;
     u32 tvInGame;
-    u16 hct;
-    u16 vct;
-    u16 borrow;
-    u16 bbVal;
     enabled = OSDisableInterrupts();
     newNonInter = rm->tvInfo & 3;
     if (HorVer.nonInter != newNonInter) {
@@ -1213,19 +1209,7 @@ void VIConfigure(const GXRenderModeObj *rm)
     tm = (VITiming*)fn_80059234(HorVer.tv * 4 + HorVer.nonInter);
     HorVer.timing = tm;
     AdjustPosition(tm->acv);
-    vct = tm->nhlines / 2;
-    borrow = tm->nhlines % 2;
-    if (borrow != 0) {
-        hct = tm->hlw;
-    } else {
-        hct = 0;
-    }
-    vct++;
-    hct++;
-    shdwRegs[25] = (u16)(u32)hct;
-    MARK_CHANGED(25);
-    shdwRegs[24] = vct | 0x1000;
-    MARK_CHANGED(24);
+    setInterruptRegs(tm);
     {
         u32 var_r5_2;
         u16 var_r10;
@@ -1248,18 +1232,7 @@ void VIConfigure(const GXRenderModeObj *rm)
     }
     setScalingRegs(HorVer.PanSizeX, HorVer.DispSizeX, HorVer.threeD);
     setHorizontalRegs(tm, HorVer.AdjustedDispPosX, HorVer.DispSizeX);
-    bbVal = tm->bs1 | (tm->be1 << 5);
-    shdwRegs[11] = bbVal;
-    MARK_CHANGED(11);
-    bbVal = tm->bs3 | (tm->be3 << 5);
-    shdwRegs[10] = bbVal;
-    MARK_CHANGED(10);
-    bbVal = tm->bs2 | (tm->be2 << 5);
-    shdwRegs[13] = bbVal;
-    MARK_CHANGED(13);
-    bbVal = tm->bs4 | (tm->be4 << 5);
-    shdwRegs[12] = bbVal;
-    MARK_CHANGED(12);
+    setBBIntervalRegs(tm);
     setPicConfig(HorVer.FBSizeX, HorVer.FBMode, HorVer.PanPosX, HorVer.PanSizeX, &HorVer.wordPerLine, &HorVer.std, &HorVer.wpl, &HorVer.xof);
     if (FBSet != 0) {
         fn_80059AD8(&HorVer, &HorVer.tfbb, &HorVer.bfbb, &HorVer.rtfbb, &HorVer.rbfbb);
