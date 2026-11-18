@@ -1065,6 +1065,7 @@ void fn_802CFF10(void) {
     lbl_8055FDAC = zero;
     lbl_8055FE39 = zero;
 }
+#pragma pop
 extern void *lbl_8055FD20;
 #pragma push
 #pragma dont_inline on
