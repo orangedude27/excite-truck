@@ -322,13 +322,14 @@ void fn_801D490C(void) {
 #pragma dont_inline on
 #pragma push
 #pragma scheduling invalid_target
-void* fn_801D4B34(void* arg0) {
-    *(void**)arg0 = lbl_80338D80;
-    *(int*)((char*)arg0 + 4) = 0;
-    *(void**)((char*)arg0 + 0x30) = (char*)arg0 + 0x3C;
-    *(int*)((char*)arg0 + 0x38) = 0x40;
-    *(int*)((char*)arg0 + 0x34) = 0;
-    return arg0;
+void *fn_801D4B34(void *object) {
+    /* Initialize an ActionSequence: clear state, set inline element storage, and mark it ready with space for 16 elements. */
+    *(void **)object = lbl_80338D80;
+    *(int *)((char *)object + 4) = 0;
+    *(void **)((char *)object + 0x30) = (char *)object + 0x3C;
+    *(int *)((char *)object + 0x38) = 0x40;
+    *(int *)((char *)object + 0x34) = 0;
+    return object;
 }
 #pragma pop
 #pragma dont_inline reset
