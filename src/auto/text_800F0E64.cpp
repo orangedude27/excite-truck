@@ -1899,7 +1899,8 @@ extern "C" s32 ReadGroupItemInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
     return 1;
 }
 #pragma scheduling on
-extern "C" s32 ReadSoundArchivePlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPQ46nw4hbm3snd12SoundArchive22SoundArchivePlayerInfo(const void *arg0, void *arg1) {
+extern "C" s32 ReadSoundArchivePlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPQ46nw4hbm3snd12SoundArchive22SoundArchivePlayerInfo(const void *reader, void *playerInfo) {
+    /* Read the archive player info block and copy its 7 u16 fields into playerInfo as u32 values. */
     extern const char lbl_80324D08[];
     extern char lbl_805598B0;
     struct Header {
@@ -1909,19 +1910,19 @@ extern "C" s32 ReadSoundArchivePlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFil
         u8 pad2[2];
         u32 offset;
     };
-    Header *ref = *(Header * const *)((const u8 *)arg0 + 0x28);
+    Header *fileInfo = *(Header * const *)((const u8 *)reader + 0x28);
     const u16 *data;
-    if (ref->dataType != 0)
+    if (fileInfo->dataType != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598B0, 0x6f, lbl_80324D08);
-    data = (const u16 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref->refType, ref->offset, ref);
-    if (arg1 == 0) return 0;
-    ((u32 *)arg1)[0] = data[0];
-    ((u32 *)arg1)[1] = data[1];
-    ((u32 *)arg1)[2] = data[2];
-    ((u32 *)arg1)[3] = data[3];
-    ((u32 *)arg1)[4] = data[4];
-    ((u32 *)arg1)[5] = data[5];
-    ((u32 *)arg1)[6] = data[6];
+    data = (const u16 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(fileInfo->refType, fileInfo->offset, fileInfo);
+    if (playerInfo == 0) return 0;
+    ((u32 *)playerInfo)[0] = data[0];
+    ((u32 *)playerInfo)[1] = data[1];
+    ((u32 *)playerInfo)[2] = data[2];
+    ((u32 *)playerInfo)[3] = data[3];
+    ((u32 *)playerInfo)[4] = data[4];
+    ((u32 *)playerInfo)[5] = data[5];
+    ((u32 *)playerInfo)[6] = data[6];
     return 1;
 }
 extern "C" const char lbl_80324CDC[];
