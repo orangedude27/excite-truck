@@ -166,7 +166,7 @@ long __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(long this_, long shouldDelete) 
 void fn_801E353C(long, float);
 void fn_801E34E4(void *, long);
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_801EC4A8(void *arg0, long arg1) {
     char *p;
     long object;
@@ -289,7 +289,6 @@ extern void fn_801EE0E0(void *, char *, int, int, char *);
 void *fn_801EC750(char *a0, char *a1, char *a2) {
     char sp48[0x40];
     char sp8[0x40];
-    int idx;
     int var;
     int t;
     char c;
@@ -360,14 +359,16 @@ done2:
     fn_8012E81C(sp48);
     *(int *)(a0 + 0x188) = fn_802792E4(a2 + 0x44);
     fn_801EA59C(*(int *)(a1 + 0xE0), 0, a2);
-    idx = *(int *)(a2 + 0x68);
-    *(void **)(a0 + 0x16C) = a0 + 0x84;
-    *(void **)(a0 + 0x170) = a0 + 0xC8;
-    *(void **)(a0 + 0x174) = a0 + 0x148;
-    if (idx >= 0)
-        var = *(int *)(a1 + 0xE0);
-    else
-        var = 0;
+    {
+        int idx = *(int *)(a2 + 0x68);
+        *(void **)(a0 + 0x16C) = a0 + 0x84;
+        *(void **)(a0 + 0x170) = a0 + 0xC8;
+        *(void **)(a0 + 0x174) = a0 + 0x148;
+        if (idx >= 0)
+            var = *(int *)(a1 + 0xE0);
+        else
+            var = 0;
+    }
     fn_801345D8(sp8, 0x40, lbl_8055AFF4, a2 + 0x44);
     fn_801EE0E0(a0, a2 + 0x44, *(int *)(a2 + 0x6C), var, sp8);
     fn_801EE974(a0, a1);
@@ -1248,7 +1249,7 @@ void fn_801EEC68(void *object) {
     }
 }
 
-#pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801EECAC(long arg0, long arg1) {
     extern void fn_801EAB10(int, int);
@@ -1259,21 +1260,12 @@ extern "C" void fn_801EECAC(long arg0, long arg1) {
     extern float lbl_80562ECC;
     extern float lbl_80562ED0;
     extern float lbl_80562ED4;
-    extern char lbl_8033A060[];
     struct Property {
         virtual int get(int);
     };
     int value;
     void *object;
     long next;
-    char *n1 = lbl_8033A060 + 0x1E4;
-    char *n2 = lbl_8033A060 + 0x1F0;
-    char *n3 = lbl_8033A060 + 0x1FC;
-    char *n4 = lbl_8033A060 + 0x20C;
-    char *n5 = lbl_8033A060 + 0x218;
-    char *n6 = lbl_8033A060 + 0x22C;
-    char *n7 = lbl_8033A060 + 0x23C;
-    char *n8 = lbl_8033A060 + 0x250;
 
     next = arg1 + *(long *)((char *)arg0 + 0x34);
     *(long *)((char *)arg0 + 0x3C) = next;
@@ -1283,41 +1275,39 @@ extern "C" void fn_801EECAC(long arg0, long arg1) {
     value = ((Property *)object)->get((int)&lbl_8055B090);
 
     fn_801EC214((void *)(arg0 + 0x384), (void *)value,
-                *(int *)((char *)arg0 + 0x178), n1,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x1E4,
                 (int)&lbl_8055B088, lbl_80562E90, lbl_80562E88);
     fn_801EC214((void *)(arg0 + 0x18C), (void *)value,
-                *(int *)((char *)arg0 + 0x178), n2,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x1F0,
                 *(int *)((char *)arg0 + 0x3C) + 0x4C, lbl_80562ECC, lbl_80562E88);
     fn_801EC59C((void *)(arg0 + 0x3D8), (void *)value,
-                (int)n3,
+                (int)(lbl_8033A060 + 0x1FC),
                 *(int *)((char *)arg0 + 0x3C) + 0x4C,
                 lbl_80562ECC, lbl_80562E88);
     fn_801EC214((void *)(arg0 + 0x1E0), (void *)value,
-                *(int *)((char *)arg0 + 0x178), n4,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x20C,
                 *(int *)((char *)arg0 + 0x3C) + 0x34, lbl_80562E90, lbl_80562E88);
     fn_801EC214((void *)(arg0 + 0x234), (void *)value,
-                *(int *)((char *)arg0 + 0x178), n5,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x218,
                 *(int *)((char *)arg0 + 0x3C) + 0x2B0, lbl_80562E90, lbl_80562E88);
     fn_801EC214((void *)(arg0 + 0x288), (void *)value,
-                *(int *)((char *)arg0 + 0x178), n6,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x22C,
                 *(int *)((char *)arg0 + 0x3C) + 0x2AC, lbl_80562ED0, lbl_80562ED4);
     fn_801EC214((void *)(arg0 + 0x2DC), (void *)value,
-                *(int *)((char *)arg0 + 0x178), n7,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x23C,
                 *(int *)((char *)arg0 + 0x3C) + 0x2A0, lbl_80562ED0, lbl_80562ED4);
     fn_801EC214((void *)(arg0 + 0x330), (void *)value,
-                *(int *)((char *)arg0 + 0x178), n8,
+                *(int *)((char *)arg0 + 0x178), lbl_8033A060 + 0x250,
                 *(int *)((char *)arg0 + 0x3C) + 0x2B8, lbl_80562E90, lbl_80562E88);
 }
 #pragma cplusplus reset
-#pragma pop
+#pragma scheduling on
 
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 long fn_801EEE38(void) {
     long *entries;
     long context;
-    unsigned long i;
+    unsigned int i;
     long value;
 
     context = fn_80179CB0();
@@ -1329,7 +1319,7 @@ loop:
     fn_801EECAC(value, context);
     entries++;
     i++;
-    if (i < 8) {
+    if (i < 8u) {
         goto check;
     }
     return 0;
@@ -1341,7 +1331,6 @@ check:
     }
     return value;
 }
-#pragma pop
 extern void *fn_801EC750();
 extern int lbl_8033A2D4[64];
 #pragma scheduling off
