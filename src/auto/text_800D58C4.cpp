@@ -860,6 +860,15 @@ extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* contai
     return 0;
 }
 
+#pragma push
+#pragma inline_depth(8)
+extern "C" void fn_800D6CA0(s32, s32);
+static inline void VisitChild2_800D6CA0(u8 *child, s32 value) { fn_800D6CA0((s32)child, value); }
+static inline void VisitChild_800D6CA0(u8 *child, s32 value) { VisitChild2_800D6CA0(child, value); }
+static inline StateNode_800D6CA0 *TypeInfo_800D6CA0() { return (StateNode_800D6CA0 *)&lbl_8055DE08; }
+static inline u8 *DynCast_800D6CA0(u8 *obj) {
+    return HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1(), TypeInfo_800D6CA0()) ? obj : 0;
+}
 extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = (u8 *)arg0;
