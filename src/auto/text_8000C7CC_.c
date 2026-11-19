@@ -269,7 +269,8 @@ extern "C" void fn_8000D1DC(void) {
     f32 baseVal, scale, factor, selectedVal;
     f32 temp_f0, temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, temp_f7;
     s32 temp_r8;
-    register s32 i, selected;
+    register s32 i;
+    s32 selected;
     register u8 *base = lbl_802FC058;
     register s32 *obj;
     if (lbl_8055D405 != 0) {
@@ -311,11 +312,11 @@ extern "C" void fn_8000D1DC(void) {
                     if (((s32 (*)(s32))fn_8000C840)(i) == 0) obj[6] = (obj[6] & 0xFFFFFF) | 0x80000000;
                     ((void (*)(void *, void *, const char *, s32))fn_80147940)(lbl_8055D414, obj, (const char *)base + 0xA4, ((-selected | selected) >> 31) + 2);
                     if (selected != 0) {
-                        out.value = obj[0]; out.x = obj[1]; out.y = obj[2]; out.flags = obj[3]; out.z = ((f32 *)obj)[4];
+                        out.value = obj[0]; out.x = obj[1]; out.y = obj[2]; out.flags = obj[3]; out.z = ((f32 *)obj)[4]; out.w = ((f32 *)obj)[5];
                         temp_f0 = baseVal + selectedVal;
                         temp_f2 = *(f32 *)&out.y;
                         temp_f1 = out.z;
-                        temp_f7 = ((f32 *)obj)[5];
+                        temp_f7 = out.w;
                         temp_f5 = scale * temp_f1 * selectedVal;
                         temp_r8 = obj[6];
                         temp_f4 = *(f32 *)&out.x - temp_f5;
@@ -423,10 +424,11 @@ s32 fn_8000C7CC(void) {
 u32 fn_8000C7F4(s32 arg0) {
     switch (fn_8000C7CC()) {
         case 0:
-            return 1;
+            break;
         default:
-            return (u32)((2 - arg0) | (arg0 - 2)) >> 31;
+            return 1;
     }
+    return (u32)((2 - arg0) | (arg0 - 2)) >> 31;
 }
 #pragma scheduling on
 #pragma dont_inline off
@@ -497,7 +499,7 @@ s32 temp_r8, drawMode;
 register s32 *obj;
 register s32 selected, i;
 register s32 *labelp;
-u8 *base = lbl_802FC058;
+register u8 *base = lbl_802FC058;
 fn_80230B5C(matrix);
 fn_802C8638(matrix);
 fn_802C974C(lbl_80560218, lbl_8056021C, lbl_80560220);
@@ -513,7 +515,7 @@ scale = lbl_80560238;
 i = 0;
 baseVal = lbl_80560218;
 do {
-fn_801345D8(name0, 0x20, (const char *)base + 0x94, i + 1);
+fn_801345D8(name0, 0x20, (const char *)lbl_802FC058 + 0x94, i + 1);
 fn_801345D8(name1, 0x20, lbl_80558A74, i + 1);
 obj = ((Dummy *)lbl_8055D414)->get3(name1);
 selected = 0;
@@ -528,7 +530,7 @@ obj = ((Dummy *)lbl_8055D414)->get5(name0);
 if (obj != 0) {
 if (((s32 (*)(s32))fn_8000C840)(i) == 0) obj[6] = (obj[6] & 0xFFFFFF) | 0x80000000;
 drawMode = ((-selected | selected) >> 31) + 2;
-((void (*)(void *, void *, const char *, s32))fn_80147940)(lbl_8055D414, obj, (const char *)base + 0xA4, drawMode);
+((void (*)(void *, void *, const char *, s32))fn_80147940)(lbl_8055D414, obj, (const char *)lbl_802FC058 + 0xA4, drawMode);
 if (selected != 0) {
 out.value = obj[0]; out.x = obj[1]; out.y = obj[2]; out.flags = obj[3]; out.z = ((f32 *)obj)[4];
 temp_f0 = baseVal + selectedVal;
@@ -545,7 +547,7 @@ temp_f1_2 = temp_f2 - temp_f3;
 *(f32 *)&out.y = temp_f1_2;
 out.w = temp_f7 * temp_f0;
 out.color = (temp_r8 & 0x00FF0000) | ((u32)alpha << 24) | (temp_r8 & 0xFFFF);
-((void (*)(void *, void *, const char *, s32, u8, s32, f32, f32, f32, f32, f32, f32, f32))fn_80147940)(lbl_8055D414, &out, (const char *)base + 0xA4, 1, alpha, temp_r8, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, selectedVal, temp_f7);
+((void (*)(void *, void *, const char *, s32, u8, s32, f32, f32, f32, f32, f32, f32, f32))fn_80147940)(lbl_8055D414, &out, (const char *)lbl_802FC058 + 0xA4, 1, alpha, temp_r8, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, selectedVal, temp_f7);
 }
 }
 fn_80147230(&item, lbl_80558A70, (const char *)fn_80131234(*labelp));
