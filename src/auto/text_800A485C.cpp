@@ -21062,20 +21062,22 @@ extern "C" void fn_800D1204(void* control, f32 value) { *(f32*)((u8*)control + 4
 extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *, long, int, signed char);
 extern "C" OSTime OSGetTime(void);
 extern "C" s32 fn_80060C7C(void *);
-extern "C" void fn_800D120C(void *arg0, void *arg1, s32 arg2) {
-    (void)arg1;
-    if (((u8 *)arg0)[0x41] == 0) {
-        f32 value = *(f32 *)((u8 *)arg0 + 4);
-        Play__Q210homebutton9RemoteSpkFliSc(*(void **)((u8 *)arg0 + 0x24), *(s32 *)arg0, arg2,
-            (signed char)(lbl_80560E40 * value));
-        if (fn_80060C7C(*(void **)arg0) != 0) {
-            if (((u8 *)arg0)[0x42] == 0) {
-                OSTime time = OSGetTime();
-                *(u32 *)((u8 *)arg0 + 0x34) = (u32)time;
-                *(u32 *)((u8 *)arg0 + 0x30) = (u32)(time >> 32);
+extern "C" void fn_800D120C(void *spk, void *unused, s32 soundId) {
+    /* Play a sound on the Wii Remote speaker if not disabled, scaling volume and
+     * recording the playback start time once the speaker connection is active. */
+    (void)unused;
+    if (((u8 *)spk)[0x41] == 0) {
+        f32 volume = *(f32 *)((u8 *)spk + 4);
+        Play__Q210homebutton9RemoteSpkFliSc(*(void **)((u8 *)spk + 0x24), *(s32 *)spk, soundId,
+            (signed char)(lbl_80560E40 * volume));
+        if (fn_80060C7C(*(void **)spk) != 0) {
+            if (((u8 *)spk)[0x42] == 0) {
+                OSTime now = OSGetTime();
+                *(u32 *)((u8 *)spk + 0x34) = (u32)now;
+                *(u32 *)((u8 *)spk + 0x30) = (u32)(now >> 32);
             }
-            ((u8 *)arg0)[0x42] = 1;
-            ((u8 *)arg0)[0x43] = 0;
+            ((u8 *)spk)[0x42] = 1;
+            ((u8 *)spk)[0x43] = 0;
         }
     }
 }
