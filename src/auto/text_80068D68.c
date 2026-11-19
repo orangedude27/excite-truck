@@ -25287,10 +25287,11 @@ u16 arg0;
 u8 *arg1;
 u8 arg2;
 {
+    /* Check that the CRC-8 of arg1[arg0] bytes plus arg2 yields 0xCF. */
     u32 crc = 0xFF;
     u8 *ptr = arg1;
-    u16 len = arg0;
-    while (len-- != 0) {
+    u16 length = arg0;
+    while (length-- != 0) {
         crc = lbl_802EEC40[crc ^ *ptr];
         ptr++;
     }
