@@ -56,8 +56,8 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
     u8 flag;
     Unk131588 *r;
     u8 *b;
-    int i, j;
-    int off1, off2;
+    s32 i, j;
+    s32 off1, off2;
     u8 t;
 
     r = fn_8012C370(arg0, 0x56414C54, &type, 0, 0, &flag);
@@ -82,7 +82,7 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
                 for (i = 0; i < r->count; i++) {
                     char *s = ((Unk131588Elem *)((char *)r->elems + off1))->str;
                     if (s != NULL && *s != 0) {
-                        int found = 0;
+                        s32 found = 0;
                         off2 = 0;
                         for (j = 0; j < r->count; j++) {
                             char *nm = ((Unk131588Elem *)((char *)r->elems + off2))->name;
@@ -202,6 +202,7 @@ s32 fn_80131920(s32 object, s32 deleteFlag) {
 
 extern char lbl_8032B5E0[];
 extern s32 fn_80131234(char *);
+#pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_80131960(void *arg0, void *arg1)
@@ -241,6 +242,7 @@ void *fn_80131960(void *arg0, void *arg1)
   obj[4] = t7;
   new_var2 = obj;
   obj[7] = t29;
+  *((u32 *) (obj + 0x10)) += (u32) base;
   t30 = new_var2[8];
   obj[5] = new_var2[6];
   t24 = new_var;
@@ -248,7 +250,6 @@ void *fn_80131960(void *arg0, void *arg1)
   v4 = *((u32 *) (obj + 4));
   *((u32 *) (new_var2 + 0x14)) = 0;
   *((void **) new_var2) = lbl_8032B5E0;
-  *((u32 *) (obj + 0x10)) += (u32) base;
   obj[0xC] = new_var2[0xF];
   obj[0xF] = t26;
   obj[0xD] = new_var2[0xE];
@@ -285,29 +286,18 @@ void *fn_80131960(void *arg0, void *arg1)
     *((u32 *) entry) += (u32) base;
     new_var3 = *((u32 *) (entry + 4));
     *((u32 *) (entry + 4)) += (u32) base;
-    t30 = t30;
     if (((s8) (*((u8 *) (base + new_var3)))) == 0x7C)
     {
-      if (base)
-      {
-        *((u32 *) (entry + 4)) = (u32) fn_80131234(((char *) (base + new_var3)) + 1);
-      }
-      else
-      {
-        if (1)
-        {
-        }
-        *((u32 *) (entry + 4)) = (u32) fn_80131234(((char *) (base + new_var3)) + 1);
-      }
+      *((u32 *) (entry + 4)) = (u32) fn_80131234(((char *) (base + new_var3)) + 1);
     }
-    else
-      if (((s8) (*((u8 *) (base + new_var3)))) == 0x7E)
+    else if (((s8) (*((u8 *) (base + new_var3)))) == 0x7E)
     {
       *((u8 *) (base + new_var3)) = one;
     }
   }
   return arg0;
 }
+#pragma pop
 s32 fn_80131B10(s32 object, s32 deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) {
@@ -318,17 +308,18 @@ s32 fn_80131B10(s32 object, s32 deleteFlag) {
 
 s32 fn_80131B50(void *arg0) {
     s32 count = *(s32 *)((char *)arg0 + 0xC);
-    char *base = *(char **)((char *)arg0 + 0x10);
-    s32 hash = 0xBABBA;
-    s32 off = 0;
-    s32 i;
+    s32 off, hash, i;
+    hash = 0xBABBA;
+    off = 0;
     for (i = 0; i < count; i++) {
-        char *s = *(char **)(base + off);
+        char *base = *(char * volatile *)((char *)arg0 + 0x10);
+        char *entry = base + off;
+        char *s = *(char **)entry;
         while (*s != 0) {
             hash += (s8)*s + 0xBAF;
             s++;
         }
-        s = *(char **)(base + off + 4);
+        s = *(char **)(entry + 4);
         while (*s != 0) {
             hash += (s8)*s;
             hash += (s32)0xFAC0000;
@@ -657,22 +648,22 @@ extern unsigned long strlen(const char*);
 extern char lbl_8032B790[];
 #pragma push
 #pragma scheduling invalid_target
-extern "C" s32 fn_80132290(void* arg0, const char* arg1, const char* arg2) {
-    class Node {
+extern "C" s32 fn_80132290(void* valueNode, const char* fieldName, const char* enumStrings) {
+    class ValueNode {
     public:
-        virtual char *getFirst();
+        virtual char *GetContextName();
         virtual void v1();
         virtual void v2();
-        virtual char *getString();
+        virtual char *GetStringValue();
     };
-    const char *value = ((Node *)arg0)->getString();
+    const char *value = ((ValueNode *)valueNode)->GetStringValue();
     s32 index = 0;
-    while ((s8)*arg2 != 0) {
-        if (stricmp(arg2, value) == 0) return index;
-        arg2 += strlen(arg2) + 1;
+    while ((s8)*enumStrings != 0) {
+        if (stricmp(enumStrings, value) == 0) return index;
+        enumStrings += strlen(enumStrings) + 1;
         index++;
     }
-    fn_802E317C(lbl_8032B790, value, arg1, ((Node *)arg0)->getFirst());
+    fn_802E317C(lbl_8032B790, value, fieldName, ((ValueNode *)valueNode)->GetContextName());
     return -1;
 }
 #pragma processor 750
@@ -737,8 +728,8 @@ extern "C" Vec2 fn_801324E0(void *node, s32 index) {
 void fn_80132584(void *arg0, void *arg1, const char *arg2) {
     typedef struct { float x, y, z; } Vec3;
     Vec3 v1, v2, v3, v4;
-    void *obj = arg1;
     void *out = arg0;
+    void *obj = arg1;
     const char *value = ((const char *(**)(void *, const char *))(*(void **)obj))[5](obj, arg2);
     if (fn_8012F9E8(out, 0x30, value) != 0) {
         u8 *p = (u8 *)out;
@@ -872,13 +863,24 @@ struct Unk80132968Vector { s32 x, y, z; };
 extern "C" struct Unk80132968Vector fn_80132968(void *arg1, s32 arg2, struct Unk80132968Vector *arg3) {
     class A {
     public:
-        virtual void f0(); virtual s32 f1(s32); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void v0();
+        virtual s32 hasEntry(s32 key);
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual struct Unk80132968Vector getVector(s32 key);
     };
     struct Unk80132968Vector copy;
     struct Unk80132968Vector value;
     struct Unk80132968Vector result;
-    if (((A *)arg1)->f1(arg2)) {
-        ((void (**)(struct Unk80132968Vector *, void *, s32))*(void **)arg1)[13](&value, arg1, arg2);
+    if (((A *)arg1)->hasEntry(arg2)) {
+        value = ((A *)arg1)->getVector(arg2);
         result = value;
     } else {
         result = *arg3;
