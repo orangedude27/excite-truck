@@ -12,7 +12,6 @@ extern char lbl_80339200[];
 extern char lbl_80339218[];
 #define SWAP2(q, a, b) do { u8 t = (q)[a]; (q)[a] = (q)[b]; (q)[b] = t; } while (0)
 #define SWAP4(q, o) do { SWAP2(q, (o), (o) + 3); SWAP2(q, (o) + 1, (o) + 2); } while (0)
-#define SWAP4T(q, o) do { t = (q)[o]; (q)[o] = (q)[o+3]; (q)[o+3] = t; t = (q)[o+1]; (q)[o+1] = (q)[o+2]; (q)[o+2] = t; } while (0)
 
 #pragma opt_propagation off
 #pragma scheduling invalid_target
