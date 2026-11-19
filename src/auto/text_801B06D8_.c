@@ -504,13 +504,16 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
         u8 data[0x40];
         s16 marker;
     };
-    Item *item = (Item *)((u8 *)lbl_8055E684 + (arg0 << 7));
-    void *result = item->getPayload((void *)arg1);
+    register s32 failed;
+    register s32 isResource;
+    register void *result;
+    register Item *item;
     State state;
     u32 scratch[3];
     Request request;
-    s32 isResource = *(u32 *)((u8 *)result + 0x10) == 0x50434152;
-    s32 failed;
+    item = (Item *)((u8 *)lbl_8055E684 + (arg0 << 7));
+    result = item->getPayload((void *)arg1);
+    isResource = *(u32 *)((u8 *)result + 0x10) == 0x50434152;
 
     state.head = 0;
     state.weight = lbl_805625BC;
@@ -786,7 +789,7 @@ extern void fn_801CB360(s32);
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling 750
 extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
     struct Progress {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -2054,10 +2057,6 @@ f32 fn_801B2F90(s32 arg0, s32 arg1) {
     void *first;
     void *second;
     s32 difference;
-    u32 keyFirst;
-    u32 keySecond;
-    s32 valueSecond;
-    s32 valueFirst;
 
     if (*(s32 *)((u8 *)obj0 + 8) - 1 < *(s32 *)((u8 *)obj1 + 8) - 1) {
         first = obj0;
@@ -2066,11 +2065,10 @@ f32 fn_801B2F90(s32 arg0, s32 arg1) {
         first = obj1;
         second = obj0;
     }
-    keyFirst = *(u32 *)((u8 *)first + 0x74);
-    keySecond = *(u32 *)((u8 *)second + 0x74);
-    valueSecond = *(s32 *)((u8 *)second + 0x14);
-    valueFirst = *(s32 *)((u8 *)first + 0x14);
-    difference = valueFirst - valueSecond - (keyFirst < keySecond);
+    difference = (*(s32 *)((u8 *)first + 0x14) -
+                  *(s32 *)((u8 *)second + 0x14)) -
+                 ((u32)*(u32 *)((u8 *)first + 0x74) <
+                  (u32)*(u32 *)((u8 *)second + 0x74));
     if (difference != 0)
         return lbl_8056261C * (f32)difference;
     {
