@@ -398,9 +398,8 @@ void fn_802788E0(float farg0) {
 #pragma scheduling invalid_target
 int fn_80278924(float *arg0, float *arg1) {
     int result = 0;
-    float scale = lbl_805640B8;
-    *arg0 = scale * (float)lbl_8055F5C0;
-    *arg1 = scale * (float)lbl_8055F5BC;
+    *arg0 = 0.016683366149663925f * (float)lbl_8055F5C0;
+    *arg1 = 0.016683366149663925f * (float)lbl_8055F5BC;
     if (lbl_8055F5C0 >= 0 && lbl_8055F5BC >= lbl_8055F5C0) result = 1;
     return result;
 }
