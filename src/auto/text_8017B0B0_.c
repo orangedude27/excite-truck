@@ -1174,8 +1174,8 @@ void fn_8017D2CC(int arg0) {
                           fn_8017D330, 0, 0x28, arg0);
 }
 
+/* No-op pool object destructor/constructor callback (empty). */
 void fn_8017D330(void) {
-
 }
 
 /**
