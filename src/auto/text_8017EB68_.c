@@ -1921,9 +1921,7 @@ void fn_80181480(void *tracker, int value) {
 #pragma processor 750
 #pragma paired_single off
 #pragma scheduling invalid_target
-#pragma opt_propagation off
 #pragma opt_dead_assignments off
-#pragma opt_lifetimes off
 extern "C" float fn_80181498(void *arg0) {
     class Callback {
     public:
