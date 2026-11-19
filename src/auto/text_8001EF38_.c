@@ -494,6 +494,23 @@ void fn_8001F76C(void) {
 #undef sPendingAchievementsBlock
 }
 
+void fn_8001F7E4(s32 arg0, s32 arg1) {
+    s32 limit;
+    s32 adjusted;
+
+    if (fn_8001FD24()) {
+        if (arg0 == 0 && *(u8 *)&lbl_8055D614 != 0) {
+            limit = lbl_8055D618 - fn_8001F89C(arg0, fn_8000DA10());
+            adjusted = arg1;
+            if (limit < arg1)
+                adjusted = limit;
+            fn_802E30C8(lbl_802FE060, arg1, adjusted);
+            arg1 = adjusted;
+        }
+        *(s32 *)(lbl_8035AF38 + arg0 * 4) += arg1;
+    }
+}
+
 #pragma scheduling invalid_target
 void fn_8001F7E4_tmp(s32 arg0, s32 arg1) {
     s32 limit;
