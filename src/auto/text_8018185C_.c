@@ -222,7 +222,7 @@ struct BA54CallObj {
 #pragma scheduling invalid_target
 void fn_8018185C(void *arg0, const float *arg1) {
     float *out = (float *)arg0;
-    register float slope1;
+    register float slope1 asm("f31");
     float x;
     float y;
     float delta;
@@ -235,31 +235,31 @@ void fn_8018185C(void *arg0, const float *arg1) {
     x = arg1[1];
     out[7] = x;
     out[10] = arg1[3];
-    out[6] = lbl_80561CA0 * arg1[5];
-    x = (x > lbl_80561CA4) ? x : lbl_80561CA4;
-    y = (lbl_80561CA8 * arg1[0]) / x;
-    out[9] = lbl_80561CAC;
+    out[6] = 1.35152f * arg1[5];
+    x = (x > 1e-05f) ? x : 1e-05f;
+    y = (5252.0f * arg1[0]) / x;
+    out[9] = 0.0f;
     delta = out[7] - arg1[3];
-    first = lbl_80561CA0 * arg1[2];
-    y = lbl_80561CA0 * y;
+    first = 1.35152f * arg1[2];
+    y = 1.35152f * y;
     denom = delta * delta;
-    denom = (denom > lbl_80561CA4) ? denom : lbl_80561CA4;
+    denom = (denom > 1e-05f) ? denom : 1e-05f;
     slope1 = (y - first) / denom;
-    out[8] = y / lbl_80561CB4;
+    out[8] = y / 8000.0f;
     out[0] = slope1;
-    out[1] = out[6] + (lbl_80561CB0 * slope1) * arg1[3];
+    out[1] = out[6] + (-2.0f * slope1) * arg1[3];
     out[2] = first + slope1 * (arg1[3] * arg1[3]);
     x2 = arg1[4] - out[10];
     y2 = x2 * x2;
-    second = lbl_80561CA0 * (lbl_80561CB8 * arg1[2]);
-    t = lbl_80561CA0 * arg1[2];
-    y2 = (y2 > lbl_80561CBC) ? y2 : lbl_80561CBC;
+    second = 1.35152f * (0.3f * arg1[2]);
+    t = 1.35152f * arg1[2];
+    y2 = (y2 > 0.0001f) ? y2 : 0.0001f;
     second = (second - t) / y2;
     out[3] = second;
     out[5] = t + second * (out[10] * out[10]);
-    out[4] = out[6] + (lbl_80561CB0 * second) * out[10];
+    out[4] = out[6] + (-2.0f * second) * out[10];
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 
 void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, float farg2) {
     float a, b, c, d;
