@@ -977,34 +977,35 @@ void fn_80194AF4(void *unused, float *out, float *a, float *b, float t) {
 extern double fn_8002EFB4(float, float);
 extern float lbl_80562140, lbl_80562144, lbl_8056215C, lbl_805621A4, lbl_805621D0, lbl_805621D4;
 #pragma processor 750
-float fn_80194B60(float a, float b, float c, float d) {
+/* Smooth ping-pong interpolation from start to end over a period at the given phase. */
+float fn_80194B60(float start, float end, float period, float phase) {
     float ratio;
-    float curve;
-    d = (float)fn_8002EFB4(d, c);
-    if (d > c * lbl_8056215C) {
-        d = c - d;
+    float eased;
+    phase = (float)fn_8002EFB4(phase, period);
+    if (phase > period * lbl_8056215C) {
+        phase = period - phase;
     }
-    ratio = d / (c * lbl_8056215C);
+    ratio = phase / (period * lbl_8056215C);
     if (ratio < lbl_805621A4) {
-        curve = lbl_805621A4;
+        eased = lbl_805621A4;
     } else if (ratio > lbl_80562140) {
-        curve = lbl_80562140;
+        eased = lbl_80562140;
     } else if (ratio > lbl_80562144) {
-        curve = lbl_805621D0 * ratio;
-        d = lbl_805621D4 * ratio;
-        curve *= ratio;
-        d *= ratio;
-        curve = ratio * curve;
-        curve = curve + d;
+        eased = lbl_805621D0 * ratio;
+        phase = lbl_805621D4 * ratio;
+        eased *= ratio;
+        phase *= ratio;
+        eased = ratio * eased;
+        eased = eased + phase;
     } else {
-        curve = lbl_805621D0 * ratio;
-        d = lbl_805621D4 * ratio;
-        curve *= ratio;
-        d *= ratio;
-        curve = ratio * curve;
-        curve = curve - d;
+        eased = lbl_805621D0 * ratio;
+        phase = lbl_805621D4 * ratio;
+        eased *= ratio;
+        phase *= ratio;
+        eased = ratio * eased;
+        eased = eased - phase;
     }
-    return a + curve * (b - a);
+    return start + eased * (end - start);
 }
 
 extern float fn_80134C1C(void);
