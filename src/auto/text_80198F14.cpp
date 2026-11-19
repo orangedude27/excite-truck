@@ -2903,17 +2903,6 @@ extern "C" void fn_8019FF8C(void* object) {
 }
 
 #pragma small_data off
-struct Init8019FFD8 {
-    void *vtable;
-    s32 f04, f08, f0C;
-    f32 f10, f14;
-    s32 f18, f1C, f20;
-    char pad[0x144];
-    f32 f168, f16C, f170;
-    s32 f174;
-    f32 f178;
-    s32 f17C, f180;
-};
 extern "C" void fn_8019FFD8(void* arg0, s32 arg1, s32 arg2) {
     f32 zeroFloat = lbl_805622D0;
     s32 zero = 0;
