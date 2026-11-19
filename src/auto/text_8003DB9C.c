@@ -2266,8 +2266,8 @@ void GXInvalidateVtxCache(void) {
     #undef GX_CP_CMD_INVALIDATE_VTX_CACHE
 }
 
-/* Configure texture coordinate generation for a tex coord in GX state. */
-void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned int nrm, unsigned int normalize, int postmtx) {
+/* Configure texture coordinate generation parameters for the given GX tex coord. */
+void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int srcParam, unsigned int mtx, unsigned int normalize, int postmtx) {
     typedef union {
         u32 val;
         struct { u32 p : 20; u32 n : 6; u32 q : 6; } s6;
@@ -2280,45 +2280,45 @@ void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned
         u32 val;
         struct { u32 pad : 30; u32 one : 1; u32 zero : 1; } f;
     } Bit1;
-    u32 source;
-    u32 normFlag;
-    u32 v;
+    u32 tgSrc;
+    u32 projection;
+    u32 reg;
 
-    v = 0;
-    normFlag = 0;
-    source = 5;
-    switch (line) {
-    case 0: source = 0; normFlag = 1; break;
-    case 1: source = 1; normFlag = 1; break;
-    case 2: source = 3; normFlag = 1; break;
-    case 3: source = 4; normFlag = 1; break;
-    case 19: source = 2; break;
-    case 20: source = 2; break;
-    case 4: source = 5; break;
-    case 5: source = 6; break;
-    case 6: source = 7; break;
-    case 7: source = 8; break;
-    case 8: source = 9; break;
-    case 9: source = 10; break;
-    case 10: source = 11; break;
-    case 11: source = 12; break;
+    reg = 0;
+    projection = 0;
+    tgSrc = 5;
+    switch (srcParam) {
+    case 0: tgSrc = 0; projection = 1; break;
+    case 1: tgSrc = 1; projection = 1; break;
+    case 2: tgSrc = 3; projection = 1; break;
+    case 3: tgSrc = 4; projection = 1; break;
+    case 19: tgSrc = 2; break;
+    case 20: tgSrc = 2; break;
+    case 4: tgSrc = 5; break;
+    case 5: tgSrc = 6; break;
+    case 6: tgSrc = 7; break;
+    case 7: tgSrc = 8; break;
+    case 8: tgSrc = 9; break;
+    case 9: tgSrc = 10; break;
+    case 10: tgSrc = 11; break;
+    case 11: tgSrc = 12; break;
     default: break;
     }
 
     switch (func) {
     case 1:
-        v = __rlwimi(v, normFlag, 2, 29, 29);
-        v = __rlwimi(v, source, 7, 20, 24);
+        reg = __rlwimi(reg, projection, 2, 29, 29);
+        reg = __rlwimi(reg, tgSrc, 7, 20, 24);
         break;
     case 0:
         {
             Bit1 t;
             t.val = 0;
             t.f.one = 1;
-            v = t.val;
+            reg = t.val;
         }
-        v = __rlwimi(v, normFlag, 2, 29, 29);
-        v = __rlwimi(v, source, 7, 20, 24);
+        reg = __rlwimi(reg, projection, 2, 29, 29);
+        reg = __rlwimi(reg, tgSrc, 7, 20, 24);
         break;
     case 2:
     case 3:
@@ -2328,41 +2328,41 @@ void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned
     case 7:
     case 8:
     case 9:
-        v = __rlwimi(v, normFlag, 2, 29, 29);
-        v = __rlwimi(v, 1, 4, 25, 27);
-        v = __rlwimi(v, source, 7, 20, 24);
-        v = __rlwimi(v, line - 0xC, 12, 17, 19);
-        v = __rlwimi(v, func - 2, 15, 14, 16);
+        reg = __rlwimi(reg, projection, 2, 29, 29);
+        reg = __rlwimi(reg, 1, 4, 25, 27);
+        reg = __rlwimi(reg, tgSrc, 7, 20, 24);
+        reg = __rlwimi(reg, srcParam - 0xC, 12, 17, 19);
+        reg = __rlwimi(reg, func - 2, 15, 14, 16);
         break;
     case 10:
-        v = __rlwimi(v, normFlag, 2, 29, 29);
-        if ((int)line == 0x13)
-            v = __rlwimi(v, 2, 4, 25, 27);
+        reg = __rlwimi(reg, projection, 2, 29, 29);
+        if ((int)srcParam == 0x13)
+            reg = __rlwimi(reg, 2, 4, 25, 27);
         else
-            v = __rlwimi(v, 3, 4, 25, 27);
-        v = __rlwimi(v, 2, 7, 20, 24);
+            reg = __rlwimi(reg, 3, 4, 25, 27);
+        reg = __rlwimi(reg, 2, 7, 20, 24);
         break;
     default:
         break;
     }
 
-    *(u32 *)((char *)__GXData + coord * 4 + 0xC8) = v;
+    *(u32 *)((char *)__GXData + coord * 4 + 0xC8) = reg;
     __GXData[0x5FC / 4] |= 0x10000 << coord;
     {
-        u32 pm = __rlwimi(0, postmtx - 0x40, 0, 26, 31);
-        pm = __rlwimi(pm, normalize & 1, 8, 23, 23);
-        *(u32 *)((char *)__GXData + coord * 4 + 0xE8) = pm;
+        u32 postMtxReg = __rlwimi(0, postmtx - 0x40, 0, 26, 31);
+        postMtxReg = __rlwimi(postMtxReg, normalize & 1, 8, 23, 23);
+        *(u32 *)((char *)__GXData + coord * 4 + 0xE8) = postMtxReg;
     }
 
     switch (coord) {
-    case 0: ((NrmVal *)&__GXData[0x80/4])->s6.n = nrm; break;
-    case 1: ((NrmVal *)&__GXData[0x80/4])->s12.n = nrm; break;
-    case 2: ((NrmVal *)&__GXData[0x80/4])->s18.n = nrm; break;
-    case 3: ((NrmVal *)&__GXData[0x80/4])->s24.n = nrm; break;
-    case 4: ((NrmVal *)&__GXData[0x84/4])->s0.n = nrm; break;
-    case 5: ((NrmVal *)&__GXData[0x84/4])->s6.n = nrm; break;
-    case 6: ((NrmVal *)&__GXData[0x84/4])->s12.n = nrm; break;
-    default: ((NrmVal *)&__GXData[0x84/4])->s18.n = nrm; break;
+    case 0: ((NrmVal *)&__GXData[0x80/4])->s6.n = mtx; break;
+    case 1: ((NrmVal *)&__GXData[0x80/4])->s12.n = mtx; break;
+    case 2: ((NrmVal *)&__GXData[0x80/4])->s18.n = mtx; break;
+    case 3: ((NrmVal *)&__GXData[0x80/4])->s24.n = mtx; break;
+    case 4: ((NrmVal *)&__GXData[0x84/4])->s0.n = mtx; break;
+    case 5: ((NrmVal *)&__GXData[0x84/4])->s6.n = mtx; break;
+    case 6: ((NrmVal *)&__GXData[0x84/4])->s12.n = mtx; break;
+    default: ((NrmVal *)&__GXData[0x84/4])->s18.n = mtx; break;
     }
     __GXData[0x5FC / 4] |= 0x4000000;
 }
