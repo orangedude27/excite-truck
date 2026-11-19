@@ -110,6 +110,7 @@ void fn_80239AB8(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling off
 void fn_80239AC0(void)
 {
     s32 args[5];
@@ -139,20 +140,25 @@ void fn_80239AC0(void)
     while (1) {
         r = fn_802146BC(args, -999, -999, 1);
         switch (r + 2) {
-        case 0: fn_8000DA10(); break;
-        case 1: fn_8023FCFC(); break;
+        case 17: fn_8000DA10(); fn_8023FCFC(); break;
         case 2: fn_8023D1C0(); break;
-        case 3: fn_8023C958(); break;
-        case 4: fn_8000DA80(); done = 1; break;
-        case 5: fn_8023C94C(); break;
-        case 6: fn_802E4A10(); fn_8023D4B8(); break;
-        case 7: fn_8023C3D4(); break;
-        case 8: fn_80278A24(); break;
-        case 9: fn_802449A0(); break;
-        case 10: fn_8024C070(); break;
-        case 11: fn_8024C370(); break;
-        case 12: fn_80257284(); break;
-        case 13: done = 1; break;
+        case 6: fn_8023C958(); break;
+        case 8: fn_8000DA80(); done = 1; break;
+        case 7: fn_8023C94C(); break;
+        case 5: fn_802E4A10(); fn_8023D4B8(); break;
+        case 10: fn_8023C3D4(); break;
+        case 18: fn_80278A24(); break;
+        case 11: fn_802449A0(); break;
+        case 14: fn_8024C070(); break;
+        case 13: fn_8024C370(); break;
+        case 15: fn_80257284(); break;
+        case 0:
+        case 1: done = 1; break;
+        case 3:
+        case 4:
+        case 9:
+        case 12:
+        case 16: break;
         default: fn_802E317C(base + 0x6c); break;
         }
         if (done) break;
