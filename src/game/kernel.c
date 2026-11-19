@@ -709,14 +709,7 @@ extern void OSPanic(const char *, int, const char *, ...);
 extern char lbl_8034CD8C[];
 __declspec(section ".sdata") extern char lbl_8055D174[];
 int main(void) {
-    int local[0x41];
-    int i = 0x20;
-    int *p = local - 1;
-    do {
-        p[1] = 0;
-        p[2] = 0;
-        p += 2;
-    } while (--i);
+    int local[0x40] = {0};
     if (fn_80004D64(local) != 0) {
         if (fn_802E2A5C() != 0) {
             fn_80004E20();
