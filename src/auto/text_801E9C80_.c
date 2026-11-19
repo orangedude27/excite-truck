@@ -67,6 +67,7 @@ f32 fn_801E9DD0(void) {
     return ((f32 (*)(void))fn_801E9DDC)();
 }
 
+/* No-op stub. */
 void fn_801E9DD4(void) {
 
 }
