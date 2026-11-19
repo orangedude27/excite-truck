@@ -3711,28 +3711,32 @@ extern "C" s32 PrepareSeqImpl__Q36nw4hbm3snd18SoundArchivePlayerFPQ46nw4hbm3snd6
     u8 reader[8];
     u8 streamBuffer[0x200];
     void *fileData;
-    void *stream;
+    void *mutex;
     void *memory;
     u32 fileSize;
-    s32 status;
+    void *stream;
+    register s32 status;
     void *base;
+    void *tmp;
 
     if (seqSoundInfo == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x469, lbl_80325334);
 
-    fileData = (void *)detail_GetFileAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl(player, *(u32 *)soundInfo);
+    tmp = (void *)detail_GetFileAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl(player, *(u32 *)soundInfo);
+    fileData = tmp;
     if (fileData == 0) {
         memory = *(void **)((u8 *)seqSound + 4);
         if (memory == 0)
             return 4;
 
         stream = detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((u8 *)player + 0x10), *(u32 *)soundInfo, streamBuffer, 0x200);
-        OSLockMutex((u8 *)memory + 4);
+        mutex = (u8 *)memory + 4;
+        OSLockMutex(mutex);
         fileSize = fn_800EC56C((void **)((u8 *)memory + 0x1C));
-        OSUnlockMutex((u8 *)memory + 4);
+        OSUnlockMutex(mutex);
 
         if (fileSize < ((StreamProxy *)stream)->getSize()) {
-            if (stream != 0)
+            if (stream)
                 ((StreamProxy *)stream)->close();
             return 5;
         }
@@ -6009,13 +6013,14 @@ extern "C" const char lbl_80326354[];
 #pragma opt_propagation off
 extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer(void *self, int priority, void *external) {
     int limit;
-    (void)lbl_803263A8;
-    (void)lbl_80326384;
     if (*(u16 *)((u8 *)self + 0x24) == 0)
         return 0;
     while (*(s32 *)self >= *(u16 *)((u8 *)self + 0x24)) {
-        if (*(s32 *)((u8 *)self + 0xC) == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
+        if (*(s32 *)((u8 *)self + 0xC) == 0) {
+            const char *const f = lbl_803263A8;
+            const char *const l = lbl_80326384;
+            Panic__Q26nw4hbm2dbFPCciPCce(f, 0x1F1, l);
+        }
         u8 *sound = *(u8 **)((u8 *)self + 0x10);
         if (sound == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
@@ -6559,6 +6564,7 @@ extern "C" void *Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(void *arg0) {
     u32 interruptState = OSDisableInterrupts();
     s32 capacity = pool->capacity;
     s32 used = pool->used;
+    u8 *slot;
     u8 value;
     if (used >= capacity) {
         OSRestoreInterrupts(interruptState);
@@ -6566,15 +6572,16 @@ extern "C" void *Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(void *arg0) {
     }
     s32 numBytes = ((capacity + 7) & ~7) / 8;
     for (s32 i = 0; i < numBytes; ++i) {
-        value = pool->bits[i];
+        slot = &pool->bits[i];
+        value = *slot;
         if (value != 0xFF) {
             u8 mask = 1;
             for (s32 bit = 0; bit < 8; ++bit) {
                 if ((value & mask) == 0) {
-                    pool->bits[i] |= mask;
-                    s32 index = bit + (i << 3);
+                    *slot |= mask;
                     pool->used++;
-                    void *result = (void *)(pool->stride * index + (u32)pool->buffer);
+                    u32 offset = pool->stride * (bit + (i << 3));
+                    void *result = (void *)(offset + (u32)pool->buffer);
                     OSRestoreInterrupts(interruptState);
                     return result;
                 }
@@ -7556,11 +7563,11 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490(void
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) {
-    LinkListIter end;
     LinkListIter begin;
     begin.node = *(void**)&lbl_8041506C[0x04];
-    LinkListIter it = begin;
+    LinkListIter end;
     end.node = (void*)&lbl_8041506C[0x04];
+    LinkListIter it = begin;
 
     while (it.node != end.node) {
         void* node = it.node;
@@ -8089,22 +8096,19 @@ extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *player, 
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 void FreeChannels__Q46nw4hbm3snd6detail10StrmPlayerFv(void *self) {
-    s32 irqState;
-    s32 zero;
-    u8 *player;
-    s32 index;
-
-    irqState = (s32)OSDisableInterrupts();
-    player = (u8 *)self;
-    index = 0;
-    zero = 0;
+    struct { u32 irq; } irqHolder;
+    irqHolder.irq = OSDisableInterrupts();
+    u32 &irq = irqHolder.irq;
+    s32 zero = 0;
+    u8 *player = (u8 *)self;
+    s32 index = 0;
 
     while (index < *(s32 *)((u8 *)self + 0x4A0)) {
         void *buffer = *(void **)(player + 0x4A8);
         if (buffer != 0) {
             Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)self + 0x42C), buffer);
-            *(void **)(player + 0x4A8) = (void *)zero;
-            *(void **)(player + 0x4AC) = (void *)zero;
+            *(s32 *)(player + 0x4A8) = zero;
+            *(s32 *)(player + 0x4AC) = zero;
         }
         player += 0x38;
         index += 1;
@@ -8113,9 +8117,9 @@ void FreeChannels__Q46nw4hbm3snd6detail10StrmPlayerFv(void *self) {
     *(s32 *)((u8 *)self + 0x4A0) = zero;
     if (*(void **)((u8 *)self + 0x438) != 0) {
         Free__Q46nw4hbm3snd6detail7AxVoiceFv(*(void **)((u8 *)self + 0x438));
-        *(void **)((u8 *)self + 0x438) = (void *)zero;
+        *(s32 *)((u8 *)self + 0x438) = zero;
     }
-    OSRestoreInterrupts((u32)irqState);
+    OSRestoreInterrupts(irq);
 }
 extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void*);
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void*, void*);
