@@ -103,10 +103,6 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
     u8 *data;
     u8 *m;
     u32 matRes;
-    int i;
-    int off;
-    int *p;
-    u8 *entry;
     f32 f0, f1, f2, f3;
     int w0, w1, w2, w3;
     int set8;
@@ -162,12 +158,13 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
             u8 *a = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, (u8)numMat << 3);
             *(u8 **)(self + 0xFC) = a;
             if (a != 0) {
-                i = 0;
-                off = 0;
+                int i;
+                int off;
+                int *p;
                 *(u8 *)(self + 0x100) = res[0x5C];
                 p = (int *)(res + *(int *)(res + 0x64));
-                while (i < *(u8 *)(self + 0x100)) {
-                    entry = res + *p;
+                for (i = 0, off = 0; i < *(u8 *)(self + 0x100); i++, off += 8, p++) {
+                    u8 *entry = res + *p;
                     *(u8 *)(*(u8 **)(self + 0xFC) + off) = entry[2];
                     *(int *)(*(u8 **)(self + 0xFC) + off + 4) = 0;
                     m = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0, 0x5C);
@@ -178,9 +175,6 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
                         }
                         *(u8 **)(*(u8 **)(self + 0xFC) + off + 4) = m;
                     }
-                    p++;
-                    off += 8;
-                    i++;
                 }
             }
         }
@@ -231,6 +225,7 @@ extern "C" void* __dt__Q36nw4hbm3lyt6WindowFv(void* self, int shouldDelete) {
 
 #pragma use_lmw_stmw off
 void* nw4hbm::lyt::Window::FindMaterialByName(const char* name, bool searchChildren) {
+    /* Find a material by 0x14-byte name: check this window's material, then its frame materials, then child panes if requested. */
     struct Pane {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -262,9 +257,9 @@ void* nw4hbm::lyt::Window::FindMaterialByName(const char* name, bool searchChild
         while (node != end) {
             if (node == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            void* value = ((Pane*)((u8*)node - 4))->FindMaterialByName(name, true);
-            if (value != 0)
-                return value;
+            void* result = ((Pane*)((u8*)node - 4))->FindMaterialByName(name, true);
+            if (result != 0)
+                return result;
             node = *(void**)node;
         }
     }
@@ -468,8 +463,8 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     register f32 temp_f0;
     register f32 temp_f1;
     register f32 temp_f2;
-    register f32 temp_f3;
     register f32 temp_f4;
+    register f32 temp_f3;
     register f32 temp_f5;
     register f32 temp_f6;
     s32 texture;
