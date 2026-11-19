@@ -78,23 +78,24 @@ void fn_80148134(f32 *, f32 *, s32, f32, f32);
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma pool_strings off
-extern "C" void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+/* Update the lap counter display elements on a race overlay. */
+extern "C" void fn_80013BD0(void *raceOverlay, s32 currentLap, s32 totalLaps, s32 showDenominator) {
     class Obj {
     public:
         virtual void v0();
         virtual void v1(void *);
     };
-    char first[20];
-    char second[20];
-    ((Obj *)arg0)->v1("lap_title");
+    char currentLapText[20];
+    char totalLapText[20];
+    ((Obj *)raceOverlay)->v1("lap_title");
     fn_801476C4();
-    ((Obj *)arg0)->v1("lap_fwd_slash");
+    ((Obj *)raceOverlay)->v1("lap_fwd_slash");
     fn_801476C4();
-    fn_80130FCC(first, 20, arg1);
-    fn_801473F8(arg0, "lap_numerator\0\0\0\0", first);
-    if (arg3) {
-        fn_80130FCC(second, 20, arg2);
-        fn_801473F8(arg0, "lap_denominator", second);
+    fn_80130FCC(currentLapText, 20, currentLap);
+    fn_801473F8(raceOverlay, "lap_numerator\0\0\0\0", currentLapText);
+    if (showDenominator) {
+        fn_80130FCC(totalLapText, 20, totalLaps);
+        fn_801473F8(raceOverlay, "lap_denominator", totalLapText);
     }
 }
 #pragma pop
@@ -638,9 +639,10 @@ s32 fn_80014AE4(void) {
     if ((var_r8 != 0) && (*(f32 *)((u8 *)temp_r11 + 0x14) < lbl_805603B4)) {
         var_r7 = 1;
     }
-    if ((var_r7 == 0) && (*(s32 *)((u8 *)temp_r11 + 0x10) <= *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0xC) + 8))) {
-        return 0;
-    }
+    if (var_r7 != 0) goto ret_one;
+    if (*(s32 *)((u8 *)temp_r11 + 0x10) > *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0xC) + 8)) goto ret_one;
+    return 0;
+ret_one:
     return 1;
 }
 
@@ -1265,8 +1267,7 @@ void fn_80015AA0(void *arg0, f32 angle) {
     m[7] = zero;
     m[8] = one;
 }
-#pragma push
-#pragma scheduling invalid_target
+#pragma opt_common_subs off
 void fn_80015B20(void *arg0, void *arg1, void *arg2) {
     f32 *out = (f32 *)arg0;
     f32 *a = (f32 *)arg1;
@@ -1277,8 +1278,8 @@ void fn_80015B20(void *arg0, void *arg1, void *arg2) {
         register f32 temp_f11, temp_f18, temp_f7, temp_f6, temp_f1_2, temp_f0_2, temp_f2;
         register f32 temp_f4, temp_f5, temp_f8;
 
-        temp_f10 = a[1]; temp_f1 = b[3]; temp_f19 = a[4]; temp_f12 = b[4];
-        temp_f3 = a[7]; temp_f9 = a[0]; temp_f0 = b[0]; temp_f20 = a[3];
+        temp_f10 = a[1]; temp_f1 = b[3]; temp_f19 = a[4]; temp_f3 = a[7];
+        temp_f12 = b[4]; temp_f9 = a[0]; temp_f0 = b[0]; temp_f20 = a[3];
         temp_f11 = b[1]; temp_f18 = a[6]; temp_f7 = b[5]; temp_f6 = b[2];
         temp_f1_2 = a[2]; temp_f0_2 = b[6]; temp_f2 = a[5]; temp_f4 = a[8];
         temp_f5 = b[7]; temp_f8 = b[8];
@@ -1304,7 +1305,6 @@ void fn_80015B20(void *arg0, void *arg1, void *arg2) {
         out[8] = (b[8] * a[8]) + ((b[2] * a[6]) + (b[5] * a[7]));
     }
 }
-#pragma scheduling on
 void fn_80015E30(void *arg0, f32 angle) {
     f32 neg;
     f32 zero;
@@ -1366,38 +1366,42 @@ extern "C" void fn_80015F30(void* arg0) {
  virtual void v0(); virtual Desc* get(void*); virtual void v2(); virtual Desc* find(void*);
  };
  struct Copy copy;
- f32 x,y;
+ f32 y,x;
  f32 value;
  f32 low;
  f32 high;
- f64 period=lbl_80560400;
+ f64 period=1.0;
  u8* base=lbl_802FCB98;
- low=lbl_805603F8;
- high=lbl_805603FC;
+ low=3.92699075f;
+ high=0.785398185f;
  void* mgr=*(void**)((u8*)lbl_8055D350+0x2c);
  f32 speed=*(f32*)((u8*)lbl_8055D350+0x10);
  value=*(f32*)((u8*)mgr+0x2a8);
- s32 positive=(f32)((f64(*)(void*,f32,f64))fn_8002EFB4)(mgr,speed,period)>lbl_805603BC;
+ s32 positive=(f32)((f64(*)(void*,f32,f64))fn_8002EFB4)(mgr,speed,period)>0.5f;
  s32 flag=0;
  void* obj;
  struct Desc* desc;
- if(value>lbl_80560408 && positive) flag=1;
+ if(value>0.66f && positive) flag=1;
  fn_801478E0(*(void**)((u8*)arg0+0x50),base+0x228,*(s32*)((u8*)arg0+0x40),3);
  obj=*(void**)((u8*)arg0+0x50);
  desc=((Obj*)obj)->find(base+0x234);
  if(desc) {
-  if(flag || *(f32*)((u8*)*(void**)((u8*)lbl_8055D350+0x2c)+0x2c4)>lbl_80560360) {
+  if(flag || *(f32*)((u8*)*(void**)((u8*)lbl_8055D350+0x2c)+0x2c4)>0.0f) {
    f32 a=lbl_8056040C*value;
    f32 b;
-   if(a<lbl_80560360) b=a-lbl_805603BC; else b=lbl_805603BC+a;
+   s32 rounded;
+   if(a<0.0f) b=a-0.5f; else b=0.5f+a;
+   rounded=(s32)b;
    f32 scale=(high-low)/lbl_8056040C;
-   ((void(*)(f32,f32,f32,f32,s32,s32,s32,f32,f32,f32,f32,f32,f32))fn_80147F30)(desc->x,desc->y,desc->w,desc->h,desc->g,(s32)b,*(s32*)((u8*)arg0+0x44),low,scale,lbl_805603BC,lbl_80560360,lbl_80560410,lbl_80560414);
+   ((void(*)(f32,f32,f32,f32,s32,s32,s32,f32,f32,f32,f32,f32,f32))fn_80147F30)(desc->x,desc->y,desc->w,desc->h,desc->g,rounded,*(s32*)((u8*)arg0+0x44),low,scale,0.5f,0.0f,lbl_80560410,lbl_80560414);
   } else {
    f32 a=lbl_8056040C*value;
    f32 b;
-   if(a<lbl_80560360) b=a-lbl_805603BC; else b=lbl_805603BC+a;
+   s32 rounded;
+   if(a<0.0f) b=a-0.5f; else b=0.5f+a;
+   rounded=(s32)b;
    f32 scale=(high-low)/lbl_8056040C;
-   ((void(*)(f32,f32,f32,f32,s32,s32,s32,f32,f32,f32,f32,f32,f32))fn_80147F30)(desc->x,desc->y,desc->w,desc->h,desc->g,(s32)b,*(s32*)((u8*)arg0+0x44),low,scale,lbl_80560360,lbl_80560360,lbl_80560414,lbl_80560414);
+   ((void(*)(f32,f32,f32,f32,s32,s32,s32,f32,f32,f32,f32,f32,f32))fn_80147F30)(desc->x,desc->y,desc->w,desc->h,desc->g,rounded,*(s32*)((u8*)arg0+0x44),low,scale,0.0f,0.0f,lbl_80560414,lbl_80560414);
   }
  }
  fn_801478E0(*(void**)((u8*)arg0+0x50),base+0x240,*(s32*)((u8*)arg0+0x40),0);
