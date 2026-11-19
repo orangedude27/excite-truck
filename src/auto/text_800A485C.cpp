@@ -18958,22 +18958,25 @@ extern "C" void fn_800C5508(void *sumBlock, void *diffBlock, void *scales) {
     }
 }
 
-extern "C" void fn_800C55D8(void *arg0, void *arg1, s32 *arg2) {
-    s32 scale = *arg2;
-    s32 *dst = (s32 *)arg0;
-    s32 *src = (s32 *)arg1;
+extern "C" void fn_800C55D8(void *sumBlock, void *diffBlock, s32 *scalePtr) {
+    s32 scale = *scalePtr;
+    s32 *sum = (s32 *)sumBlock;
+    s32 *diff = (s32 *)diffBlock;
+    /* Apply a 4-iteration butterfly step over two 32-int blocks: for selected
+     * lane pairs compute sum/difference, store the sum, and write back the
+     * difference scaled by a fixed-point factor (>> 24). */
     for (s32 i = 0; i < 4; i++) {
         s32 b, a, d;
-        b = src[0]; a = dst[0]; d = a - b;
-        dst[0] = a + b; src[0] = (s32)(((s64)d * scale) >> 24);
-        b = src[2]; a = dst[2]; d = a - b;
-        dst[2] = a + b; src[2] = (s32)(((s64)d * scale) >> 24);
-        b = src[4]; a = dst[4]; d = a - b;
-        a += b; dst[4] = a; src[4] = (s32)(((s64)d * scale) >> 24);
-        b = src[6]; a = dst[6]; d = a - b;
-        dst[6] = a + b; src[6] = (s32)(((s64)d * scale) >> 24);
-        dst += 8;
-        src += 8;
+        b = diff[0]; a = sum[0]; d = a - b;
+        sum[0] = a + b; diff[0] = (s32)(((s64)d * scale) >> 24);
+        b = diff[2]; a = sum[2]; d = a - b;
+        sum[2] = a + b; diff[2] = (s32)(((s64)d * scale) >> 24);
+        b = diff[4]; a = sum[4]; d = a - b;
+        a += b; sum[4] = a; diff[4] = (s32)(((s64)d * scale) >> 24);
+        b = diff[6]; a = sum[6]; d = a - b;
+        sum[6] = a + b; diff[6] = (s32)(((s64)d * scale) >> 24);
+        sum += 8;
+        diff += 8;
     }
 }
 
@@ -26909,33 +26912,12 @@ extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHe
 }
 
 extern "C" void fn_800D272C(void *arg0, void *arg1) {
-    s32 var_ctr_2;
-    s32 var_r10;
-    s32 var_r11;
-    s32 var_r9;
-    s32 var_r3;
-    s32 var_r4;
-    s32 var_r5;
-    u16 temp_r10;
-    u16 temp_r10_2;
-    u16 temp_r11_2;
-    u16 temp_r7;
-    u16 temp_r7_5;
-    u16 temp_r7_6;
-    u16 temp_r9;
-    u16 temp_r9_2;
-    u16 temp_r9_4;
-    u16 temp_r9_5;
-    u32 temp_r7_2;
-    u32 var_ctr;
-    u8 *var_r12;
-    u8 *var_r29;
-    u8 *var_r31;
-    u8 *var_r8;
-    u8 temp_r11;
-    u8 temp_r7_3;
-    u8 temp_r7_4;
-    u8 temp_r9_3;
+    s32 var_ctr_2, var_r10, var_r11, var_r9, var_r4, var_r5;
+    u32 var_r3;
+    u16 temp_r10, temp_r10_2, temp_r11_2, temp_r7, temp_r7_5, temp_r7_6, temp_r9, temp_r9_2, temp_r9_4, temp_r9_5;
+    u32 temp_r7_2, var_ctr;
+    u8 *var_r12, *var_r29, *var_r31, *var_r8;
+    u8 temp_r11, temp_r7_3, temp_r7_4, temp_r9_3;
 
     var_r31 = (u8 *)arg1;
     var_r29 = (u8 *)lbl_8031EA80;
