@@ -882,19 +882,21 @@ extern void fn_8029DDB8(void *);
 void fn_8029D574(int arg0) {
     extern float fn_80287BC8(float, float);
     extern void fn_8029DF64(void *, int, int, float);
-    float value;
+    float disturbance;
     int y;
-    char *p = (char *)arg0;
-    if (*(float *)(p + 0x34) >= 1.0f - lbl_80558DC4) {
-        float range = *(float *)(p + 0x28);
-        value = fn_80287BC8(-range, range);
-        y = fn_80287B94(1, *(int *)(p + 0x10) - 2);
-        fn_8029DF64(p, fn_80287B94(1, *(int *)(p + 0xC) - 2), y, value);
-        *(float *)(p + 0x34) += *(float *)(p + 0x24) - 1.0f;
+    char *pool = (char *)arg0;
+    /* Advance the water pool's disturbance timer and, when it crosses 1.0,
+     * spawn a random ripple within the grid and step the simulation. */
+    if (*(float *)(pool + 0x34) >= 1.0f - lbl_80558DC4) {
+        float range = *(float *)(pool + 0x28);
+        disturbance = fn_80287BC8(-range, range);
+        y = fn_80287B94(1, *(int *)(pool + 0x10) - 2);
+        fn_8029DF64(pool, fn_80287B94(1, *(int *)(pool + 0xC) - 2), y, disturbance);
+        *(float *)(pool + 0x34) += *(float *)(pool + 0x24) - 1.0f;
     } else {
-        *(float *)(p + 0x34) += *(float *)(p + 0x24);
+        *(float *)(pool + 0x34) += *(float *)(pool + 0x24);
     }
-    fn_8029DDB8(p);
+    fn_8029DDB8(pool);
 }
 #pragma pop
 void fn_8029D644(void *arg0);
