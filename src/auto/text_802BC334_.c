@@ -171,7 +171,7 @@ if ((u32)sp8 == (u32)((char *)arg4 + 0x34)) {
 float x0 = arg0[0], x1 = arg0[1], x2 = arg0[2];
 float x3 = arg0[3], x4 = arg0[4], x5 = arg0[5];
 float x6 = arg0[6], x7 = arg0[7], x8 = arg0[8];
-float a = arg4[13], b = arg4[14], c = arg4[15];
+register float a = arg4[13], b = arg4[14], c = arg4[15];
 sp8[0] = a * x0 + b * x3 + c * x6;
 sp8[1] = a * x1 + b * x4 + c * x7;
 sp8[2] = a * x2 + b * x5 + c * x8;
@@ -258,23 +258,38 @@ arg0[7] *= scale;
 arg0[8] *= scale;
 }
 }
-#pragma pop
-#pragma push
+#pragma cplusplus on
 #pragma processor 750
 #pragma use_lmw_stmw off
-void *fn_802BC9B0(void *arg0, int arg1, float scale) {
+extern "C" void *fn_802BC9B0(void *arg0, int arg1, float scale) {
+    class Dummy {
+    public:
+        virtual void m0() = 0;
+        virtual void m1() = 0;
+        virtual void m2() = 0;
+        virtual void m3() = 0;
+        virtual void m4() = 0;
+        virtual void m5() = 0;
+        virtual void m6() = 0;
+        virtual void m7() = 0;
+        virtual void m8() = 0;
+        virtual void m9() = 0;
+        virtual void m10() = 0;
+        virtual void m11() = 0;
+        virtual void m12() = 0;
+        virtual void m13() = 0;
+        virtual void m14(int) = 0;
+    };
     extern void *fn_801284F8(int, int);
-    extern float lbl_80564D1C, lbl_80564D20;
+    extern float lbl_80564D20;
     extern int lbl_8034AB54[], lbl_80333918[];
-    float bInput = *(float *)((char *)arg0 + 0x1C);
-    float aInput = *(float *)((char *)arg0 + 0x18);
-    float value = lbl_80564D1C;
-    float b = bInput * scale;
-    float a = aInput * scale;
-    char *obj = fn_801284F8(0x2C, (int)&lbl_8034AB54);
+    float value = 50000.0f;
+    float b = *(float *)((char *)arg0 + 0x1C) * scale;
+    float a = *(float *)((char *)arg0 + 0x18) * scale;
+    char *obj = (char *)fn_801284F8(0x2C, (int)&lbl_8034AB54);
     if (obj != 0) {
-        float initial = lbl_80564D20;
         *(int *)(obj + 0xC) = 0;
+        float initial = lbl_80564D20;
         *(int *)(obj + 4) = 0;
         *(int *)(obj + 8) = 0;
         *(int *)(obj + 0x18) = 0x54554245;
@@ -286,10 +301,10 @@ void *fn_802BC9B0(void *arg0, int arg1, float scale) {
         *(float *)(obj + 0x28) = a;
         *(void **)obj = &lbl_80333918;
     }
-    ((void (*)(void *, int))(*(void (**)(void *, int))((char *)*(void **)obj + 0x40)))(obj, arg1);
+    ((Dummy *)obj)->m14(arg1);
     return obj;
 }
-#pragma pop
+#pragma cplusplus reset
 
 struct CurveData {
     int w0, w1, w2, w3, w4, w5;
@@ -495,7 +510,7 @@ extern "C" void fn_802BCF04(void) {
     }
     *(int *)((char *)&lbl_804C00D4 + 4) = 0;
     if (lbl_8055FAB4 != 0) {
-        fn_80131818();
+        fn_80131818(lbl_8055FAB4);
         lbl_8055FAB4 = 0;
     }
 }
@@ -709,22 +724,12 @@ void fn_802BD4DC(void *arg0, int arg1) {
     char *entry;
     int offset;
     unsigned int i;
-    unsigned char b6, b2, b3, b0, b1, b4, b5;
-    b4 = p[4];
-    b5 = p[5];
-    b6 = p[6];
-    p[4] = p[7];
-    b0 = p[0];
-    b3 = p[3];
-    p[7] = b4;
-    b1 = p[1];
-    b2 = p[2];
-    p[5] = b6;
-    p[6] = b5;
-    p[0] = b3;
-    p[3] = b0;
-    p[1] = b2;
-    p[2] = b1;
+    unsigned char b7, b2, b3, b0, b1, b4, b5;
+    b4 = p[4]; b5 = p[5];
+    b7 = p[7];
+    p[4] = b7; b0 = p[0]; b3 = p[3]; p[7] = b4;
+    b1 = p[1]; b2 = p[2]; p[5] = p[6]; p[6] = b5;
+    p[0] = b3; p[3] = b0; p[1] = b2; p[2] = b1;
     *(int *)(p + 4) = fn_802BD5A8(*(int *)(p + 4), arg1);
     i = 0;
     offset = 0;
@@ -782,35 +787,38 @@ int fn_802BD694(int value, int delta) { return value + delta; }
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802BD69C(void *arg0, int arg1) {
+    extern int fn_802BD80C(int, int);
     unsigned char *p = arg0;
     unsigned char *entry;
-    unsigned int i;
-    int offset;
-    unsigned char b5, b4, b1, b0, b3, b2, b6, b7;
-    b4=p[4]; b7=p[7]; b5=p[5]; b6=p[6];
-    p[4]=b7; b0=p[0]; b3=p[3]; p[7]=b4;
-    b1=p[1]; b2=p[2]; p[5]=b6; p[6]=b5;
-    p[0]=b3; p[3]=b0; p[1]=b2; p[2]=b1;
-    *(int *)(p+4)=fn_802BD80C(*(int *)(p+4),arg1);
-    i=0; offset=0;
+    register int offset;
+    register unsigned int i;
+    unsigned char b7, b2, b3, b0, b1, b4, b5;
+    unsigned char tmp;
+    b4 = p[4]; b5 = p[5];
+    b7 = p[7];
+    p[4] = b7; b0 = p[0]; b3 = p[3]; p[7] = b4;
+    b1 = p[1]; b2 = p[2]; p[5] = p[6]; p[6] = b5;
+    p[0] = b3; p[3] = b0; p[1] = b2; p[2] = b1;
+    *(int *)(p + 4) = fn_802BD80C(*(int *)(p + 4), arg1);
+    i = 0; offset = 0;
     while (i < *(unsigned int *)p) {
         int j;
-        entry=*(unsigned char **)(p+4)+offset+0xC;
-        for (j=0;j<2;j++,entry+=0x18) {
-            b4=entry[0]; b7=entry[3]; entry[0]=b7; entry[3]=b4;
-            b4=entry[1]; b7=entry[2]; entry[1]=b7; entry[2]=b4;
-            b4=entry[4]; b7=entry[7]; entry[4]=b7; entry[7]=b4;
-            b4=entry[5]; b7=entry[6]; entry[5]=b7; entry[6]=b4;
-            b4=entry[8]; b7=entry[11]; entry[8]=b7; entry[11]=b4;
-            b4=entry[9]; b7=entry[10]; entry[9]=b7; entry[10]=b4;
-            b4=entry[12]; b7=entry[15]; entry[12]=b7; entry[15]=b4;
-            b4=entry[13]; b7=entry[14]; entry[13]=b7; entry[14]=b4;
-            b4=entry[16]; b7=entry[19]; entry[16]=b7; entry[19]=b4;
-            b4=entry[17]; b7=entry[18]; entry[17]=b7; entry[18]=b4;
-            b4=entry[20]; b7=entry[23]; entry[20]=b7; entry[23]=b4;
-            b4=entry[21]; b7=entry[22]; entry[21]=b7; entry[22]=b4;
+        entry = *(unsigned char **)(p + 4) + offset + 0xC;
+        for (j = 0; j < 2; j++, entry += 0x18) {
+            tmp = entry[0]; entry[0] = entry[3]; entry[3] = tmp;
+            tmp = entry[1]; entry[1] = entry[2]; entry[2] = tmp;
+            tmp = entry[4]; entry[4] = entry[7]; entry[7] = tmp;
+            tmp = entry[5]; entry[5] = entry[6]; entry[6] = tmp;
+            tmp = entry[8]; entry[8] = entry[0xB]; entry[0xB] = tmp;
+            tmp = entry[9]; entry[9] = entry[0xA]; entry[0xA] = tmp;
+            tmp = entry[0xC]; entry[0xC] = entry[0xF]; entry[0xF] = tmp;
+            tmp = entry[0xD]; entry[0xD] = entry[0xE]; entry[0xE] = tmp;
+            tmp = entry[0x10]; entry[0x10] = entry[0x13]; entry[0x13] = tmp;
+            tmp = entry[0x11]; entry[0x11] = entry[0x12]; entry[0x12] = tmp;
+            tmp = entry[0x14]; entry[0x14] = entry[0x17]; entry[0x17] = tmp;
+            tmp = entry[0x15]; entry[0x15] = entry[0x16]; entry[0x16] = tmp;
         }
-        offset+=0x44; i++;
+        offset += 0x44; i++;
     }
 }
 #pragma scheduling on
