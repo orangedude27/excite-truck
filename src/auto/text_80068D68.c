@@ -22541,7 +22541,6 @@ void port_rfc_closed(struct t_port_info *p_port, u8 reason) {
 extern char lbl_80319570[];
 #pragma push
 #pragma opt_propagation off
-#pragma peephole off
 void port_select_mtu(void *arg0) {
     #pragma opt_propagation reset
     register char *messages = lbl_80319570;
