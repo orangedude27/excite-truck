@@ -476,7 +476,7 @@ extern "C" void fn_801E0300(void *manager) {
     char *vehicle;
     char *zone;
     int *vehicles;
-    struct SlipEntry *entry;
+    struct SlipRecord *entry;
     int i, j, changed, muted;
     float fadeStep, chargeMin, chargeDecay, fullCharge, chargeMax, chargeStep, zero,
           slipScale, spinLimit, speedLimit, frameTime, time, sinceSlip, slipLimit,
@@ -484,7 +484,7 @@ extern "C" void fn_801E0300(void *manager) {
     if ((((int *)__AXFXGetLfoSinTable_801769CC())[1] & 0x4000) != 0) return;   /* session flags */
     vehicles = lbl_804348E8;
     zero = lbl_80562C1C; chargeStep = lbl_80562C4C; chargeMax = lbl_80562C68;
-    entry = (struct SlipEntry *)((char *)manager + 4);
+    entry = (struct SlipRecord *)((char *)manager + 4);
     chargeDecay = lbl_80562C6C; chargeMin = lbl_80562C3C;
     i = 0;
     frameTime = lbl_80562C58; speedLimit = lbl_80562C60; slipScale = lbl_80562C5C; spinLimit = lbl_80562C64;
