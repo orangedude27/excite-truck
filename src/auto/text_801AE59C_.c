@@ -17,7 +17,7 @@ void fn_801AE5AC(void) {
 
 }
 
+/* No-op stub (empty function). */
 void fn_801AE5A8(void) {
-
 }
 
