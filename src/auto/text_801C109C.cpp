@@ -954,9 +954,9 @@ extern "C" void fn_801E41D8(float *, float *, int, float);
 struct Vec3f { float x, y, z; };
 static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
     if (dst == src) {
-        float x = m[6] * src->z + (m[3] * src->y + m[0] * src->x);
-        float y = m[7] * src->z + (m[4] * src->y + m[1] * src->x);
-        float z = m[8] * src->z + (m[5] * src->y + m[2] * src->x);
+        float x = src->z * m[6] + (src->y * m[3] + src->x * m[0]);
+        float y = src->z * m[7] + (src->y * m[4] + src->x * m[1]);
+        float z = src->z * m[8] + (src->y * m[5] + src->x * m[2]);
         dst->x = x;
         dst->y = y;
         dst->z = z;
@@ -964,9 +964,9 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
         float sx = src->x;
         float sy = src->y;
         float sz = src->z;
-        float x = m[6] * sz + (m[0] * sx + m[3] * sy);
-        float y = m[7] * sz + (m[1] * sx + m[4] * sy);
-        float z = m[8] * sz + (m[2] * sx + m[5] * sy);
+        float x = sz * m[6] + (sx * m[0] + sy * m[3]);
+        float y = sz * m[7] + (sx * m[1] + sy * m[4]);
+        float z = sz * m[8] + (sx * m[2] + sy * m[5]);
         dst->x = x;
         dst->y = y;
         dst->z = z;
