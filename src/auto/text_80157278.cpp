@@ -2698,6 +2698,14 @@ extern "C" void fn_8015B340(Unk801577F0* self) {
 
 #pragma push
 #pragma processor 750
+static inline BOOL isSlotMoving_8015B404(s32 i) {
+    u8* o = (u8*)fn_8017960C(i);
+    if (o != 0) {
+        return !((f32)__fabs(*(f32*)(o + 0x2690)) <= lbl_80558DC4[0]);
+    }
+    return FALSE;
+}
+
 extern "C" f32 fn_8015B404(void* arg0) {
     Fn8015B404Obj* self = (Fn8015B404Obj*)arg0;
     u8* base = (u8*)arg0;
@@ -2715,20 +2723,19 @@ extern "C" f32 fn_8015B404(void* arg0) {
             f32 b = *(f32*)(base + 0x28C);
             b = (b > a) ? b : a;
             *(f32*)(base + 0x28C) = b;
-            s32 still = *(f32*)(p + 0x24C) > lbl_80558DC4[0];
-            if (still) {
+            active = *(f32*)(p + 0x24C) > lbl_80558DC4[0];
+            if (active) {
                 f32 t = *(volatile f32*)(p + 0x24C);
                 *(f32*)(p + 0x24C) = t - one;
             }
             u8* o = (u8*)fn_8017960C(i);
             s32 flag;
-            s32 more;
             if (o != 0) {
                 flag = !((f32)__fabs(*(f32*)(o + 0x2690)) <= lbl_80558DC4[0]);
             } else {
                 flag = 0;
             }
-            if (flag != 0 || (more = *(f32*)(p + 0x24C) > lbl_80558DC4[0]) == 0) {
+            if (flag != 0 || (active = *(f32*)(p + 0x24C) > lbl_80558DC4[0]) == 0) {
                 *(f32*)(p + 0x24C) = zero;
                 *(u8*)(base + 0x294) = flag;
                 f32 d = *(f32*)(p + 0x250);
