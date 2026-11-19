@@ -2034,8 +2034,8 @@ extern "C" s32 fn_800D8A04(s32 base, s32 offset) {
 #pragma scheduling on
 extern "C" void Init__Q34nw4r3lyt8MaterialFv(void *arg0) {
     volatile short *defaults = (volatile short *)&lbl_80565230;
-    unsigned int v50 = *(unsigned int *)((char *)arg0 + 0x50);
-    unsigned int v4c = *(unsigned int *)((char *)arg0 + 0x4c);
+    int v50 = *(int *)((char *)arg0 + 0x50);
+    int v4c = *(int *)((char *)arg0 + 0x4c);
     short c0 = defaults[0];
     short c1 = defaults[1];
     short c2 = defaults[2];
@@ -2054,10 +2054,10 @@ extern "C" void Init__Q34nw4r3lyt8MaterialFv(void *arg0) {
     *(short *)((char *)arg0 + 0x36) = 0xff;
     *(short *)((char *)arg0 + 0x38) = 0xff;
     *(short *)((char *)arg0 + 0x3a) = 0xff;
-    *(unsigned int *)((char *)arg0 + 0x4c) = v4c;
-    *(unsigned int *)((char *)arg0 + 0x50) = v50;
+    *(int *)((char *)arg0 + 0x4c) = v4c;
+    *(int *)((char *)arg0 + 0x50) = v50;
     *(unsigned char *)((char *)arg0 + 0x54) = 0;
-    *(unsigned int *)((char *)arg0 + 0x58) = 0;
+    *(int *)((char *)arg0 + 0x58) = 0;
 }
 extern "C" void fn_8002F634(void *, void *, s32, s32);
 extern "C" void fn_800D2DD4(void);
@@ -3430,22 +3430,30 @@ extern "C" u8 GetColorElement__Q36nw4hbm3lyt4PaneCFUl(void* self, u32 index) {
     }
 }
 
+/* nw4hbm::lyt::Pane::SetColorElement(u32 idx, u8 value) from lyt_pane.cpp:
+ * set one of this pane's animation-target colour elements. An out-of-range
+ * index trips the assert; the last element (index 0x10) is the pane's own
+ * byte at +0xCD, and indices 0..0xF are delegated to the subclass hook in
+ * vtable slot 0x38 (the base Pane hook fn_800DB960 stores nothing). */
 extern "C" void SetColorElement__Q36nw4hbm3lyt4PaneFUlUc(void* self, u32 index, u8 color) {
-    extern const char lbl_8031FF90[];
-    extern const char lbl_80320090[];
-    if (index >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x14E, lbl_80320090);
-    struct Obj {
+    extern const char lbl_8031FF90[]; /* "lyt_pane.cpp" */
+    extern const char lbl_80320090[]; /* "NW4HBM:Failed assertion idx < ANIMTARGET_PANE_COLOR_MAX" */
+    #define sAssertFile_pane     lbl_8031FF90
+    #define sAssertIdxPaneColor  lbl_80320090
+    enum { ANIMTARGET_PANE_COLOR_MAX = 0x11 };
+    if (index >= ANIMTARGET_PANE_COLOR_MAX) Panic__Q26nw4hbm2dbFPCciPCce(sAssertFile_pane, 0x14E, sAssertIdxPaneColor);
+    struct Pane {
         virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
         virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
         virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11();
-        virtual void v12(u32, u8);
+        virtual void setColorElement(u32, u8);
     };
     switch (index) {
-    case 0x10:
-        *((u8*)self + 0xCD) = color;
+    case ANIMTARGET_PANE_COLOR_MAX - 1:
+        *((u8*)self + 0xCD) = color; /* the pane's own colour element */
         break;
     default:
-        ((Obj*)self)->v12(index, color);
+        ((Pane*)self)->setColorElement(index, color);
         break;
     }
 }
