@@ -3277,54 +3277,75 @@ u8 fn_80062458(void) {
 // fn_8005D0DC: WUD initialization helper
 #pragma push
 #pragma opt_propagation off
-s32 fn_8005D0DC(s32 final, s32 event) {
+/* WPAD's registered shutdown handler (the OSShutdownFunctionInfo at
+ * lbl_80312130, priority 0x7f).  OS calls every registered handler once with
+ * final == FALSE and then again with final == TRUE; returning TRUE means
+ * "nothing of mine is left to wait for", so the final pass always returns it.
+ * On the first pass, once the WUD library is up (status 2 or 3), a fatal
+ * error, shutdown or reset (events 0, 2, 3) runs the full WPAD reset: hide
+ * the devices, wipe the four controller slots out of the System Config
+ * Bluetooth array, cancel the manager alarm, clear the HID receive callback
+ * and shut WUD down.  A restart, return-to-menu or app launch (events 1, 4,
+ * 5, 6) only asks the Bluetooth device manager to stop before the same alarm,
+ * callback and WUD shutdown.  Both paths run at most once (_reset). */
+BOOL fn_8005D0DC(BOOL final, s32 event) {
+    #define WUDGetStatus          fn_8006A940 /* library status, WUD block +0x688 */
+    #define WUDSetHidRecvCallback fn_8006ADC4 /* debug-prints its own name */
+    #define WUDShutdown           fn_8006A81C /* idem; re-arms the WUD alarm */
+    #define BtaDmStop             fn_80073EA4 /* post the BTA DM request event */
     s32 i;
-    u8 *pDev;
-    s32 status;
+    void *pDev;
+    WUDLibStatus status;
     BOOL ret = FALSE;
 
-    status = fn_8006A940();
+    status = WUDGetStatus();
     if (final == 0) {
-        if (status == 2 || status == 3) {
+        if (status == WUD_LIB_STATUS_2 || status == WUD_LIB_STATUS_3) {
             switch (event) {
-            case 0:
-            case 2:
-            case 3:
+            case OS_SD_EVENT_FATAL:
+            case OS_SD_EVENT_SHUTDOWN:
+            case OS_SD_EVENT_3:
                 if (_reset == 0) {
                     _reset = 1;
-                    WUDSetVisibility(0, 0);
-                    for (i = 10, pDev = lbl_80393058 + 0x2bd; i < 14; i++, pDev += 0x46) {
-                        memset(pDev, 0, 0x46);
+                    WUDSetVisibility(FALSE, FALSE);
+                    for (i = WUD_MAX_DEV_ENTRY_FOR_STD, pDev = &_scArray.devices[WUD_MAX_DEV_ENTRY_FOR_STD];
+                         i < WUD_MAX_DEV_ENTRY_FOR_STD + WPAD_MAX_CONTROLLERS;
+                         i++, pDev = (void *)((u8 *)pDev + sizeof(SCBtDeviceInfo))) {
+                        memset(pDev, 0, sizeof(SCBtDeviceInfo));
                     }
-                    OSCancelAlarm(&lbl_8038F4C0);
-                    fn_8006ADC4(NULL);
-                    fn_8006A81C();
+                    OSCancelAlarm(&_managerAlarm);
+                    WUDSetHidRecvCallback(NULL);
+                    WUDShutdown();
                 }
                 ret = FALSE;
                 break;
-            case 1:
-            case 4:
-            case 5:
-            case 6:
+            case OS_SD_EVENT_1:
+            case OS_SD_EVENT_RESTART:
+            case OS_SD_EVENT_RETURN_TO_MENU:
+            case OS_SD_EVENT_LAUNCH_APP:
                 if (_reset == 0) {
                     _reset = 1;
-                    fn_80073EA4();
-                    OSCancelAlarm(&lbl_8038F4C0);
-                    fn_8006ADC4(NULL);
-                    fn_8006A81C();
+                    BtaDmStop();
+                    OSCancelAlarm(&_managerAlarm);
+                    WUDSetHidRecvCallback(NULL);
+                    WUDShutdown();
                 }
                 ret = FALSE;
                 break;
             }
-        } else if (status == 4 || status == 1) {
+        } else if (status == WUD_LIB_STATUS_4 || status == WUD_LIB_STATUS_1) {
             ret = FALSE;
-        } else if (status == 0) {
+        } else if (status == WUD_LIB_STATUS_0) {
             ret = TRUE;
         }
     } else {
         ret = TRUE;
     }
     return ret;
+    #undef WUDGetStatus
+    #undef WUDSetHidRecvCallback
+    #undef WUDShutdown
+    #undef BtaDmStop
 }
 #pragma pop
 
