@@ -203,7 +203,7 @@ int fn_80171DE4(void *point) {
     return hit;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_80171E3C(void *__restrict arg0) {
     extern int fn_802B04D4(float *);
     extern int fn_80139EC4(int, float, float);
@@ -219,7 +219,7 @@ int fn_80171E3C(void *__restrict arg0) {
     if (lbl_8055E3A4 && fn_80139EC4(lbl_8055E3A4, *(float *)arg0, *(float *)((char *)arg0 + 4))) return 0;
     return 1;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 
 /* Return whether the car in the given slot is the player's truck: its resource
  * (fn_8017960C, with the slot index forwarded in r3) has the 'PCAR' magic at +0x10. */
@@ -335,6 +335,7 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
     int r;
     int i;
 
+    scale = lbl_80561A4C * arg2;
     L.v1[0] = lbl_80561A44;
     L.v1[1] = lbl_80561A50;
     L.v1[2] = lbl_80561A44;
@@ -344,7 +345,6 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
     L.v3[0] = lbl_80561A44;
     L.v3[1] = lbl_80561A44;
     L.v3[2] = lbl_80561A40;
-    scale = lbl_80561A4C * arg2;
     mag = PSVECMag(L.v1);
     if (!((float)__fabs(mag) <= lbl_80558DC4[0])) {
         k = -arg2 / mag;
@@ -397,7 +397,7 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
     L.s[3] = lbl_802F9520[3];
     L.s[4] = lbl_802F9520[4];
     L.s[5] = lbl_802F9520[5];
-    fn_802C8BD0(lbl_8055E3A8);
+    fn_802C8BD0(*(int *)&lbl_8055E3A8);
     fn_802C8DB8(L.e, 5, L.s, 6);
     fn_802C8D74();
     L.e[0].w &= 0x3FFFFFFF;
@@ -448,11 +448,11 @@ void fn_8017248C(int arg0) {
     }
 
     temp_f31 = lbl_80561A70 + (clamp * lbl_80561A70);
-    sp[0] = *(float *)((char *)state + 0x60);
+    sp[0] = *((float *)state + 0x18);
     temp_f30 = lbl_80561A74;
-    sp[1] = *(float *)((char *)state + 0x64);
+    sp[1] = *((float *)state + 0x19);
     temp_f29 = lbl_80561A78;
-    sp[2] = *(float *)((char *)state + 0x68);
+    sp[2] = *((float *)state + 0x1A);
 
     wave = (float)fn_8002EFB4(
         (lbl_80561A7C * (lbl_80561A80 * (float)arg0)) + lbl_8055E3C8,
@@ -1382,8 +1382,8 @@ extern "C" void fn_80173ACC(void *arg0) {
                 }
                 {
                     unsigned char *d = (unsigned char *)(p + 0x286);
-                    const unsigned char *s = (const unsigned char *)&lbl_8055A2A4;
                     int c3n = 0x14, c3c;
+                    const unsigned char *s = (const unsigned char *)&lbl_8055A2A4;
                     goto c3body;
                 c3decr:
                     if (--c3n <= 0) { *(signed char *)(d - 1) = 0; goto c3end; }
@@ -1400,7 +1400,7 @@ extern "C" void fn_80173ACC(void *arg0) {
             n = 0;
             e = p;
             for (i = 0; i < *(int *)(p + 0x170); i++, e += 0x1C) {
-                if (*(unsigned char *)(e + 0x91) == 0 && *(unsigned char *)(e + 0x90) != 0) n++;
+                if (*(unsigned char *)(e + 0x91) == 0 && *(unsigned char *)(e + 0x90) != 0) n += 1;
             }
             if (n > 0) {
                 {
@@ -1417,8 +1417,8 @@ extern "C" void fn_80173ACC(void *arg0) {
                 }
                 {
                     unsigned char *d = (unsigned char *)(p + 0x25E);
+                    register int c5n = 0x14, c5c;
                     const unsigned char *s = (const unsigned char *)&lbl_8055A2A4;
-                    int c5n = 0x14, c5c;
                     goto c5body;
                 c5decr:
                     if (--c5n <= 0) { *(signed char *)(d - 1) = 0; goto c5end; }
@@ -1429,8 +1429,8 @@ extern "C" void fn_80173ACC(void *arg0) {
                 }
                 {
                     unsigned char *d = (unsigned char *)(p + 0x272);
-                    const unsigned char *s = (const unsigned char *)&lbl_8055A2A4;
                     int c6n = 0x14, c6c;
+                    const unsigned char *s = (const unsigned char *)&lbl_8055A2A4;
                     goto c6body;
                 c6decr:
                     if (--c6n <= 0) { *(signed char *)(d - 1) = 0; goto c6end; }
@@ -1634,11 +1634,13 @@ void fn_8017431C(int arg0, int arg1) {
             if (fn_802B04D4(p) != 0 && fn_80171DE4(sp38) == 0) inside = 1;
             if (inside != 0) {
                 float s = lbl_80561A74;
-                float k = lbl_80561A40 / s;
-                dir[1] = (tgt[1] - p[1]) * k + lbl_80561ACC * s;
-                dir[0] = (tgt[0] - p[0]) * k;
-                dir[2] = (tgt[2] - p[2]) * k;
+                float dy = tgt[1] - p[1];
+                float dx2 = tgt[0] - p[0];
+                float dz = tgt[2] - p[2];
                 cam.pos.a[0] = p[0];
+                dir[0] = dx2 * (lbl_80561A40 / s);
+                dir[2] = dz * (lbl_80561A40 / s);
+                dir[1] = dy * (lbl_80561A40 / s) + lbl_80561ACC * s;
                 cam.pos.a[1] = p[1];
                 cam.pos.a[2] = p[2];
                 cam.m.a[3] = lbl_80561A44; cam.m.a[4] = lbl_80561A40; cam.m.a[5] = lbl_80561A44;
@@ -2038,24 +2040,26 @@ extern "C" int fn_80175238(void *arg0, int arg1) {
      ((void (*)(int, int))fn_8001DF08)(fn_801E866C(arg1),0);
      if (one && two && panel && detail) {
        value=lbl_80561A50;
-       if (blend < value) goto ease1_done;
-       value=lbl_80561A40;
-       if (blend > value) goto ease1_done;
-       if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-       else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
-ease1_done:
+if (blend < value) {} else {
+ value=lbl_80561A40;
+ if (blend > value) {} else {
+  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
+  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
+ }
+}
        fn_801479A8(one,two,fn_80131234(base+0x610),value);
        fn_80160A74(); fn_801308F4(frame.text1,0x14,fn_80160998());
        frame.rect1.a=*(int *)panel;
        { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
        frame.rect1.b-=lbl_80561A54*fn_80147204(&frame.rect1,frame.text1);
        value=lbl_80561A50;
-       if (blend < value) goto ease2_done;
-       value=lbl_80561A40;
-       if (blend > value) goto ease2_done;
-       if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-       else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
-ease2_done:
+if (blend < value) {} else {
+ value=lbl_80561A40;
+ if (blend > value) {} else {
+  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
+  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
+ }
+}
        fn_801479A8(&frame.rect1,detail,frame.text1,value);
      }
    }
@@ -2071,12 +2075,13 @@ ease2_done:
      detail=mgr->get(lbl_8055A2E4);
      if (one && two && panel && detail) {
        value=lbl_80561A50;
-       if (blend < value) goto ease3_done;
-       value=lbl_80561A40;
-       if (blend > value) goto ease3_done;
-       if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-       else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
-ease3_done:
+if (blend < value) {} else {
+ value=lbl_80561A40;
+ if (blend > value) {} else {
+  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
+  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
+ }
+}
        fn_801479A8(one,two,fn_80131234(base+0x638),value);
        t=*(float *)((char *)arg0+0x19c)-fn_801E7E18();
        value=lbl_80561A44; value = value > t ? value : t;
@@ -2085,12 +2090,13 @@ ease3_done:
        { int bword=*(int *)((char *)panel+4), cword=*(int *)((char *)panel+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
        frame.rect2.b+=lbl_80561A54*fn_80147204(&frame.rect2,frame.text2);
        value=lbl_80561A50;
-       if (blend < value) goto ease4_done;
-       value=lbl_80561A40;
-       if (blend > value) goto ease4_done;
-       if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
-       else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
-ease4_done:
+if (blend < value) {} else {
+ value=lbl_80561A40;
+ if (blend > value) {} else {
+  if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
+  else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
+ }
+}
        fn_801479A8(&frame.rect2,detail,frame.text2,value);
      }
    }
@@ -2231,44 +2237,42 @@ extern void *fn_8017960C();
 extern float lbl_80561AF0;
 extern float lbl_80561AF4;
 extern void *fn_8017960C(int);
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_80175A68(void *unused, float *arg0, float *arg1, int arg2, void *unused2, int *arg3) {
-    float *p = (float *)fn_8017960C(arg2);
-    float first = p[0x54 / 4];
-    float scale = lbl_80561AF0;
-    float x = first * scale + p[0x60 / 4];
-    float y = p[0x5C / 4] * scale + p[0x68 / 4];
-    float z = p[0x58 / 4] * scale + p[0x64 / 4];
-    float stack[3];
-    arg0[0] = x;
-    arg0[1] = y;
+    float *p;
+    float first, s, af4;
+    Fn8017431CV3 v;
+    p = (float *)fn_8017960C(arg2);
+    first = p[0x54 / 4];
+    s = lbl_80561AF0;
+    af4 = lbl_80561AF4;
+    v.a[0] = first * s + p[0x60 / 4];
+    v.a[1] = p[0x58 / 4] * s + p[0x64 / 4];
+    v.a[2] = p[0x5C / 4] * s + p[0x68 / 4];
+    arg0[0] = v.a[0];
+    arg0[1] = v.a[2];
     *arg3 = 0x21F;
-    *arg1 = lbl_80561AF4;
-    stack[0] = x;
-    stack[1] = z;
-    stack[2] = y;
+    *arg1 = af4;
     return 1;
 }
 extern int fn_801B3050(int);
 extern float fn_801725C8(float);
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
+#pragma paired_single off
 void fn_80175B0C(char *arg0) {
-    register float k = lbl_80561B04;
-    register float step = lbl_80561A38;
-    register float shrink = lbl_80561B08;
-    register float min26 = lbl_80561A80;
-    register float min25 = lbl_80561B0C;
-    register float shrink24 = lbl_80561ABC;
-    register float min24 = lbl_80561A78;
-    int i = 0;
+    float k = lbl_80561B04;
+    float a, b, f24, f25, f26;
+    float d[2], v[2], w[2];
+    int n;
+    char *obj;
     char *out = arg0;
+    int i = 0;
+    float step = lbl_80561A38;
+    float shrink = lbl_80561B08;
+    float min26 = lbl_80561A80;
+    float min25 = lbl_80561B0C;
+    float shrink24 = lbl_80561ABC;
+    float min24 = lbl_80561A78;
     for (; i < *(int *)(arg0 + 0x124); i++, out += 0x24) {
-        float a, b, f24, f25, f26;
-        float d[2], v[2], w[2];
-        int n;
-        char *obj;
         if (fn_801B3050(i) & 1) {
             a = lbl_80561AF8;
             b = lbl_80561A44;
@@ -2281,7 +2285,8 @@ void fn_80175B0C(char *arg0) {
         f24 = lbl_80561B00;
         n = 0x13;
         do {
-            float len, rad, c, s, dx, dy;
+            float len, c, s, dx, dy;
+            double rad;
             obj = (char *)fn_8017960C(i);
             v[0] = *(float *)(obj + 0x60);
             v[1] = *(float *)(obj + 0x68);
@@ -2322,7 +2327,6 @@ void fn_80175B0C(char *arg0) {
         *(int *)(out + 0x14) = -1;
     }
 }
-#pragma pop
 
 #pragma cplusplus on
 extern "C" void fn_80175D40(void *arg0) {
@@ -2340,8 +2344,7 @@ extern "C" void fn_80175D40(void *arg0) {
  float decay=lbl_80561B08, minTime=lbl_80561A80,minValue=lbl_80561B0C;
  float grow=lbl_80561ABC,minScale=lbl_80561A78,radius=lbl_80561AB4,fallback=lbl_80561AC8;
  float left,right,value,time,distance;
- char *entry=(char *)arg0+4;
- int i,tries;void *p,*obj;
+ int i,tries;void *p,*obj;char *entry=(char *)arg0+4;
  for(i=0;i<(*(int *)((char *)(arg0)+(0x124)));i++,entry+=0x24) {
  obj=(*(void * *)((char *)(arg0)+(0x128)));
  if(((ObjView*)obj)->active(i)==0)continue;
@@ -2445,7 +2448,7 @@ void fn_80176040(char *self, int a, int b) {
         *(float *)(o + 0x180) = fn_8001DAE8(o + 0x17C, ent);
         ent2 = o + a * 0x1C;
         k = *(int *)(ent2 + 0x98);
-        *(unsigned char *)(ent2 + k + 0xA0) = (n == 2);
+        *(unsigned char *)(ent2 + k + 0xA0) = !(n ^ 2);
         *(int *)(ent2 + 0x98) = k + 1;
         if (n == 2) *(int *)(ent2 + 0x9C) = *(int *)(ent2 + 0x9C) + 1;
         cnt = 0;
@@ -2457,7 +2460,7 @@ void fn_80176040(char *self, int a, int b) {
         if (cnt == 0) {
             f = lbl_80561A44;
             g = *(float *)(o + 0x19C) - f31;
-            if (!(f > g)) f = g;
+            if (f <= g) f = g;
             f = lbl_80561A54 + f;
             if (f < lbl_80561A44) g = f - lbl_80561A54;
             else g = lbl_80561A54 + f;
@@ -2497,6 +2500,7 @@ void fn_80176040(char *self, int a, int b) {
     }
 }
 
+/* No-op placeholder. */
 void fn_80176400(void) {
 }
 
