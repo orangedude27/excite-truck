@@ -1806,6 +1806,9 @@ extern "C" void* __dt__10SHMainMenuFv_801FFA68(void* thisPtr, int shouldDelete) 
  * fn_801FEFC8 (the object is the 8-byte "LinearDroneTMH" built by fn_801FC94C).
  * The sibling HermiteDroneTMH leaves the same slot of its vtable lbl_8033B700
  * empty as well (fn_801FF118), so neither drone path type does anything here. */
+/* Empty complete destructor (vtable lbl_8033B730, slot 0xC) of the drone-holder
+ * class: nothing to tear down; the deleting destructor fn_801FEFC8 (slot 0x8)
+ * resets the vptr and frees the block. */
 extern "C" void fn_801FEFC4(void) {
 
 }
