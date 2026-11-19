@@ -1763,6 +1763,7 @@ extern "C" s32 fn_8010D0F0(s32 object, s32 deleteFlag) {
     return object;
 }
 
+#pragma opt_propagation off
 extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
     extern const char lbl_80329458[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
@@ -1775,7 +1776,7 @@ extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
     extern s32 IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(s32);
     extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32, f32, f32);
     extern void SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32, f32);
-    register const char *file = lbl_80329458;
+    const char *file = lbl_80329458;
     s32 p;
     s32 hi;
     s32 r4, r5, r6, r7, r8, r9;
