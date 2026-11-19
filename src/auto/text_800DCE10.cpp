@@ -510,7 +510,6 @@ extern "C" void fn_800DD70C(register u8 *self) {
     __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(&w, -1);
     }
 }
-#pragma cplusplus on
 
 extern "C" s32 fn_800DDDF4(f32 *arg0_ptr, void *arg1_ptr, const u16 *arg2_ptr, s32 arg3, u8 *arg4, f32 farg0) {
 
