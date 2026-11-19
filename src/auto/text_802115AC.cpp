@@ -2003,39 +2003,41 @@ extern "C" f32 fn_80214D48(void) {
 }
 
 #pragma use_lmw_stmw off
-extern "C" void fn_80214D50(s32 arg0) {
+extern "C" void fn_80214D50(s32 groupIndex) {
     #pragma opt_common_subs off
     struct Entry {
         s32 unk0;
-        f32 scale;
+        f32 baseScale;
         void *objects[4];
     };
-    s32 index;
+    s32 slotIndex;
     struct Entry *table;
-    s32 offset;
-    void *obj;
-    f32 value;
+    s32 entryOffset;
+    void *object;
+    f32 targetScale;
+    /* Advance the rotating slot for the given group and apply the current
+     * scaled value to that slot's object, if present. */
     if (fn_80206430() == 0)
         return;
-    index = lbl_8055EF5C + 1;
-    lbl_8055EF5C = index;
-    if (index >= 4) {
-        index = 0;
+    slotIndex = lbl_8055EF5C + 1;
+    lbl_8055EF5C = slotIndex;
+    if (slotIndex >= 4) {
+        slotIndex = 0;
         lbl_8055EF5C = 0;
     }
-    offset = arg0 * 0x18;
+    entryOffset = groupIndex * 0x18;
     table = (struct Entry *)lbl_80490558;
-    obj = table[arg0].objects[index];
-    if (obj == 0)
+    object = table[groupIndex].objects[slotIndex];
+    if (object == 0)
         return;
-    value = *(f32 *)((u8 *)table + offset + 4) * fn_80209028();
-    if (value != *(f32 *)((char *)obj + 8)) {
-        *((u8 *)obj + 0x4D) = 1;
-        *(f32 *)((char *)obj + 8) = value;
+    targetScale = *(f32 *)((u8 *)table + entryOffset + 4) * fn_80209028();
+    if (targetScale != *(f32 *)((char *)object + 8)) {
+        *((u8 *)object + 0x4D) = 1;
+        *(f32 *)((char *)object + 8) = targetScale;
     }
-    *((u8 *)obj + 0x49) = 1;
-    *((u8 *)obj + 0x4B) = 0;
-    *((u8 *)obj + 0x4A) = 0;
+    *((u8 *)object + 0x49) = 1;
+    *((u8 *)object + 0x4B) = 0;
+    *((u8 *)object + 0x4A) = 0;
 }
 
 #pragma push
@@ -2155,11 +2157,7 @@ extern "C" char lbl_8055B824;
 extern "C" char lbl_8055B830;
 extern "C" char lbl_8055B838;
 extern "C" char lbl_8055B83C;
-#pragma push
-#pragma dont_inline on
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
-#pragma small_data on
+#pragma optimization off
 extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 stack[47];
     s32 *ctx, *values;
@@ -2175,9 +2173,6 @@ extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(u8 *)((u8 *)stack + 0x2C) = (u8)arg3;
     ctx = lbl_802F9ECC;
     ctx2 = ctx[2];
-    ctx0 = ctx[0];
-    ctx3 = ctx[3];
-    ctx4 = ctx[4];
     stack[2] = ctx2;
     values = lbl_80490510;
     value0 = values[0];
@@ -2230,6 +2225,9 @@ extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     stack[44] = value2;
     stack[45] = value3;
     stack[46] = value4;
+    ctx0 = ctx[0];
+    ctx3 = ctx[3];
+    ctx4 = ctx[4];
     stack[0] = ctx0;
     stack[3] = ctx3;
     stack[4] = ctx4;
@@ -2243,11 +2241,7 @@ extern "C" s32 fn_80214FE0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
     return result;
 }
-#pragma small_data off
-#pragma scheduling on
-#pragma use_lmw_stmw reset
-#pragma dont_inline reset
-#pragma pop
+#pragma optimization on
 
 /* CodeWarrior deleting-destructor helper: free the object with MemFree when
  * deleting (flag > 0), then return the object pointer. */
