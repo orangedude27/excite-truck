@@ -187,6 +187,7 @@ check:
     return;
 }
 #pragma cplusplus reset
+/* Empty stub with no implementation. */
 void fn_80179EE4(void) {
 
 }
@@ -482,8 +483,9 @@ void fn_8017AD08(void *dst, void *src) {
     unsigned char *srcBytes = (unsigned char *)src;
     unsigned char *dstBytes = (unsigned char *)dst;
     void *obj;
-    int zero = 0;
+    void *dstArg, *objArg;
     int box = 0x424F5820;
+    int zero = 0;
     float x, y, z;
 
     ((void (*)(void *))fn_80179D94)(dst);
@@ -497,7 +499,8 @@ void fn_8017AD08(void *dst, void *src) {
     *(int *)(dstBytes + 0x68) = *(int *)(srcBytes + 0x34);
 
     fn_8017A580(dst);
-    if (*(int *)(srcBytes + 0x38) == 0) {
+    switch (*(int *)(srcBytes + 0x38)) {
+    case 0:
         obj = fn_801284F8(0x38, (void *)lbl_80331BF8);
         if (obj != 0) {
             z = *(float *)(srcBytes + 0x44);
@@ -505,23 +508,28 @@ void fn_8017AD08(void *dst, void *src) {
             x = *(float *)(srcBytes + 0x3C);
             *(void **)obj = (void *)lbl_80333B98;
             *(void **)((unsigned char *)obj + 0xC) = dstBytes + 0x3C;
-            *(float *)((unsigned char *)obj + 0x10) = lbl_80561BA0;
-            *(float *)((unsigned char *)obj + 0x14) = lbl_80561BA4;
-            *(int *)((unsigned char *)obj + 0x18) = box;
-            *(int *)((unsigned char *)obj + 0x20) = 100;
             *(int *)((unsigned char *)obj + 4) = zero;
             *(int *)((unsigned char *)obj + 8) = zero;
+            *(int *)((unsigned char *)obj + 0x18) = box;
+            *(float *)((unsigned char *)obj + 0x10) = 50000.0f;
+            *(float *)((unsigned char *)obj + 0x14) = 0.2f;
+            *(int *)((unsigned char *)obj + 0x20) = 100;
             *(int *)((unsigned char *)obj + 0x1C) = zero;
             *(void **)obj = (void *)lbl_803338C0;
             *(float *)((unsigned char *)obj + 0x24) = x;
             *(float *)((unsigned char *)obj + 0x28) = y;
             *(float *)((unsigned char *)obj + 0x2C) = z;
             *(int *)((unsigned char *)obj + 0x34) = zero;
-            *(float *)((unsigned char *)obj + 0x30) = lbl_80561BA4 +
+            *(float *)((unsigned char *)obj + 0x30) = 0.2f +
                 (float)((double (*)(float))fn_8002F234)(x * x + y * y + z * z);
-            fn_80179F94(dst, obj);
+            dstArg = dst;
+            objArg = obj;
+            fn_80179F94(dstArg, objArg);
             return;
         }
+        break;
+    default:
+        break;
     }
     fn_802E30C8(lbl_80331C04);
 }
