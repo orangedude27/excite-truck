@@ -176,7 +176,6 @@ void fn_801AFDCC(void *arg0, void *arg1) {
     }
 }
 
-#pragma scheduling invalid_target
 void fn_801AFF64(void *arg0, int arg1) {
     struct WordPair { unsigned int a, b; };
     unsigned char *src = (unsigned char *)arg0;
