@@ -67,41 +67,42 @@ extern void *ParseStringW(int, void *, int *, int *, int);
 extern int IOS_IoctlvReboot(int, int, int, int, void *);
 int IOS_Ioctlv(int, int, int, int, void *, int);
 #pragma opt_propagation off
-int _ES_GetTicketViews(int *fd, int unused, int inputA, int inputB, void *views, int *outCount) {
-    struct Frame {
+// Retrieve ticket views for a title via IOS ES; if views is NULL, query the required view count.
+int _ES_GetTicketViews(int *fd, int unused, int titleIdHi, int titleIdLo, void *views, int *viewCount) {
+    struct IoctlvFrame {
         int vec[6];
         char pad0[8];
-        int args[2];
+        int titleId[2];
         char pad1[0x18];
-        int output;
+        int count;
         char pad2[0xDC];
     } __attribute__((aligned(32))) frame;
     int zero;
     int *vec = &frame.vec[0];
-    int *args = &frame.args[0];
-    int *outp = &frame.output;
+    int *titleId = &frame.titleId[0];
+    int *countPtr = &frame.count;
     int result;
-    if (*fd < 0 || (zero = 0, outCount == (int *)zero)) return -0x3F9;
+    if (*fd < 0 || (zero = 0, viewCount == (int *)zero)) return -0x3F9;
     if (((unsigned int)views & 0x1F) != 0) return -0x3F9;
-    frame.args[1] = inputB;
-    frame.args[0] = inputA;
+    frame.titleId[1] = titleIdLo;
+    frame.titleId[0] = titleIdHi;
     if (views == (void *)zero) {
-        vec[0] = (int)args;
+        vec[0] = (int)titleId;
         vec[1] = 8;
-        vec[2] = (int)outp;
+        vec[2] = (int)countPtr;
         vec[3] = 4;
         result = ((int (*)(int, int, int, int, void *))IOS_Ioctlv)(*fd, 0x12, 1, 1, vec);
-        if (result == 0) *outCount = frame.output;
+        if (result == 0) *viewCount = frame.count;
         return result;
     }
-    if (*outCount == 0) return -0x3F9;
-    frame.output = *outCount;
-    vec[0] = (int)args;
+    if (*viewCount == 0) return -0x3F9;
+    frame.count = *viewCount;
+    vec[0] = (int)titleId;
     vec[1] = 8;
-    vec[2] = (int)outp;
+    vec[2] = (int)countPtr;
     vec[3] = 4;
     vec[4] = (int)views;
-    vec[5] = *outCount * 0xD8;
+    vec[5] = *viewCount * 0xD8;
     return ((int (*)(int, int, int, int, void *))IOS_Ioctlv)(*fd, 0x13, 2, 1, vec);
 }
 #pragma opt_propagation reset
