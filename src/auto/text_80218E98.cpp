@@ -8491,8 +8491,8 @@ extern "C" void *fn_80227D64(void *self, s32 deleteFlag) {
 
 #pragma scheduling reset
 extern "C" void fn_80227DE8(void *self) {
-    /* Computes a draw rect from this object's grid position and range, then
-     * draws its filled background and border. */
+    /* Computes draw coordinates from this object's position/range and draws its
+     * filled background and border. */
     class LocalObject {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
