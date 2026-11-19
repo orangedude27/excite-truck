@@ -88,10 +88,8 @@ void fn_802BB958(short arg0, int arg1, unsigned char *arg2, unsigned char *arg3)
             if (temp_r4 != *arg3) {
                 unsigned int packed = ((unsigned int)temp_r4 << 24) | ((unsigned int)temp_r4 << 16) |
                                       ((unsigned int)temp_r4 << 8) | temp_r4;
-                int a3 = temp_r29;
-                int a2 = temp_r30;
-                void *a1 = (void *)value;
-                ((void (*)(void *, int, int, unsigned int))fn_802D9628)(a1, a2, a3, packed);
+                ((void (*)(void *, int, int, unsigned int))fn_802D9628)(
+                    (void *)value, temp_r30, temp_r29, packed);
             }
         }
         var_r28 += 1;
