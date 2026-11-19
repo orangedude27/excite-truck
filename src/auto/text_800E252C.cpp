@@ -479,6 +479,7 @@ typedef signed short s16;
 #pragma small_data off
 extern float lbl_80320E38[];
 #pragma pop
+typedef struct { f32 s; f32 c; f32 sd; f32 cd; } SinFIdxEntry;
 extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
     f32 index = __fabsf(angle);
     while (index >= 65536.0f) index -= 65536.0f;
@@ -487,10 +488,10 @@ extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
     u32 off = ((q * 0x10) & 0xFF0);
     f32 frac = index - whole;
     f32 *base = (f32 *)lbl_80320E38;
-    f32 v0 = *(f32 *)((char *)base + off);
     f32 v1 = *(f32 *)((char *)base + off + 8);
+    f32 v0 = *(f32 *)((char *)base + off);
     f32 value = v0 + frac * v1;
-    if (angle < 0.0f) value = -value;
+    if (angle < lbl_80560F04) value = -value;
     return value;
 }
 
