@@ -610,7 +610,12 @@ void fn_80209404(void) {
 
 }
 
-void fn_80209408(void) { /* +0x58 (voice: fn_8020BCB0, also empty) */
+/* "Null Sound" (the null mixer backend's Sound object, vtable lbl_8033C0E8),
+ * vtable slot +0x58: the Sound interface method between Set3D (+0x54) and
+ * setParam (+0x5C).  No recovered game code calls it through a sound, and the
+ * voice backend's SndVoice leaves the same slot empty as well (fn_8020BCB0),
+ * so the null sound has nothing to do here either. */
+void fn_80209408(void) {
 
 }
 
