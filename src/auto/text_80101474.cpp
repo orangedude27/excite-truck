@@ -117,12 +117,6 @@ struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virt
 struct SetupGXFontType { virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3(); virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7(); virtual int f8(); virtual int f9(); virtual int GetType(); };
 namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: CharWriter(); enum GradationMode { GRADATION_SOLID, GRADATION_VERTICAL, GRADATION_HORIZONTAL }; void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); void SetGradationMode(GradationMode); void SetFontSize(float, float); void SetupGX(); }; }}
 #pragma cplusplus reset
-// Color(u32) as the CharWriter constructor builds its default colours (0x00000000 / 0xFFFFFFFF).
-static inline nw4hbm::ut::Color CW_MakeColor(unsigned int rgba) {
-    nw4hbm::ut::Color color;
-    *(unsigned int *)&color = rgba;
-    return color;
-}
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
 class WsdTrack { public: struct WsdCallback { virtual int f0() const; virtual int GetWave(void *, void *, void *, int, int, int, unsigned long) const; }; static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); void Close(); int ParseNextTick(const WsdCallback *, unsigned long, bool); int Parse(const WsdCallback *, unsigned long, bool); };
