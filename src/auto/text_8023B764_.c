@@ -283,29 +283,30 @@ int fn_8023BCAC(int object, int deleteFlag) {
 extern u8 lbl_8055F291;
 #pragma opt_propagation off
 void fn_8023BCEC(void) {
-    s32 sp20[0x2C];
-    s32 sp1C;
-    s32 sp18;
-    s32 sp14;
-    s32 sp10;
-    s32 spC;
-    s32 sp8;
-    u8 temp_r31;
+    /* Run the single-player menu/event selection loop for player 0 and execute the chosen event. */
+    s32 eventParamBuf[0x2C];
+    s32 driverId;
+    s32 vehicleParam;
+    s32 trackParam;
+    s32 selA;
+    s32 selB;
+    s32 selC;
+    u8 savedFlag;
     fn_80137C78(1);
     fn_80137C84(fn_802E4A10(), 0);
-    sp1C = *(s32 *)((u8 *)fn_80016464(0) + 4);
-    sp18 = *(s32 *)((u8 *)fn_80016510(*(s32 *)((u8 *)fn_80016464(0) + 0x4C)) + 4);
-    sp14 = *(s32 *)((u8 *)fn_80016464(0) + 0x50);
-    sp10 = 0;
-    spC = 0;
-    sp8 = 0;
-    while (fn_8024A4C4((s32)&sp10, (s32)&spC, (s32)&sp8) != 0) {
-        if (((int (*)(s32 *, s32 *, s32 *, s32))fn_8023BC24)(&sp1C, &sp18, &sp14, 0) != 0) {
-            temp_r31 = lbl_8055F291;
+    driverId = *(s32 *)((u8 *)fn_80016464(0) + 4);
+    vehicleParam = *(s32 *)((u8 *)fn_80016510(*(s32 *)((u8 *)fn_80016464(0) + 0x4C)) + 4);
+    trackParam = *(s32 *)((u8 *)fn_80016464(0) + 0x50);
+    selA = 0;
+    selB = 0;
+    selC = 0;
+    while (fn_8024A4C4((s32)&selA, (s32)&selB, (s32)&selC) != 0) {
+        if (((int (*)(s32 *, s32 *, s32 *, s32))fn_8023BC24)(&driverId, &vehicleParam, &trackParam, 0) != 0) {
+            savedFlag = lbl_8055F291;
             fn_8000DA10();
             fn_800169F8(fn_8000DB34(), 0);
-            fn_80016970(0, sp1C, sp18, sp14);
-            fn_8023B9EC(sp10, spC, (s32)sp20, sp8, temp_r31);
+            fn_80016970(0, driverId, vehicleParam, trackParam);
+            fn_8023B9EC(selA, selB, (s32)eventParamBuf, selC, savedFlag);
             fn_80137C80(0);
         }
     }
