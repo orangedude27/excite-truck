@@ -1342,7 +1342,6 @@ extern void fn_8000E874(s32);
 extern void fn_8000EF74(s32);
 #pragma push
 #pragma processor 750
-#pragma use_lmw_stmw off
 void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
     s32 idx;
     Unk80350F88 *base;
