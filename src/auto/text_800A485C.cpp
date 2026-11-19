@@ -1029,7 +1029,6 @@ extern "C" s32 fn_800A5AE4(void *arg0, void *arg1)
 {
   u16 var_r3_4;
   u16 var_r3_6;
-  s32 var_r30 = 0;
   u16 temp;
   u16 var_r3;
   u16 var_r3_2;
@@ -1047,6 +1046,8 @@ extern "C" s32 fn_800A5AE4(void *arg0, void *arg1)
   void **new_var;
   u32 temp_r4_3;
   s32 temp_r0_6;
+  s32 var_r30;
+  var_r30 = 0;
   new_var = &arg1;
   if (fn_800A6A40(*new_var) == 0)
   {
@@ -2960,11 +2961,15 @@ loop_2:
                     ((*(u32 *)((u8 *)var_r30 + 0x14) - 1) << *(u8 *)((u8 *)arg0 + 0x20));
             } else if ((temp_r7 > arg3) && (temp_r7 < temp_r31) &&
                        ((u32)(temp_r7 + *(u32 *)((u8 *)var_r30 + 0x14)) >= temp_r31)) {
-                u32 temp_r4_3 = temp_r7 + (arg4 + arg3) - temp_r7;
+                u32 temp_r4_3;
                 temp_r5_4 = *(u8 *)((u8 *)arg0 + 0x20);
                 VFipf_memcpy(*(void **)((u8 *)var_r30 + 4),
                              (u8 *)arg2 + ((temp_r7 - arg3) << temp_r5_4),
                              (temp_r31 - temp_r7) << temp_r5_4);
+#pragma push
+#pragma opt_common_subs off
+                temp_r4_3 = arg4 + arg3;
+#pragma pop
                 temp_r4_4 = temp_r4_3 - *(u32 *)((u8 *)var_r30 + 0x18);
                 *arg5 += temp_r4_4;
                 var_r29 -= temp_r4_4;
@@ -3331,48 +3336,71 @@ extern "C" s32 VFiPFCACHE_FlushAllCaches(void *volume) {
     return result & ((s32)(-result | result) >> 31);
 }
 
-extern "C" void VFiPFCACHE_FreeAllCaches(void *volume) {
-    void *h1;
-    void *page1;
-    void *page2;
+extern "C" void VFiPFCACHE_FreeAllCaches(void *arg0) {
+    struct VFPage {
+        volatile u16 flags;
+        u16 unk2;
+        u8 *buffer;
+        u8 *data;
+        u32 changedFrom;
+        u32 changedTo;
+        u32 sectors;
+        u32 first;
+        u32 owner;
+        VFPage *next;
+        VFPage *prev;
+    };
+    struct VFVol {
+        u8 pad[0x1630];
+        VFPage *fatHead;
+        VFPage *dataHead;
+    };
+    VFVol *volume = (VFVol *)arg0;
+    VFPage *head = volume->fatHead;
+    VFPage *page1;
+    VFPage *page2;
 
-    while (*(volatile u16 *)(page1 = *(void **)((u8 *)volume + 0x1630)) & VF_PAGE_IN_USE) {
-        if (page1 == 0) continue;
-        *(volatile u16 *)page1 = (u16)(*(volatile u16 *)page1 & ~(VF_PAGE_IN_USE | VF_PAGE_CHANGED));
-        VF_PAGE_CHANGED_FROM(page1) = 0;
-        VF_PAGE_CHANGED_TO(page1) = 0;
-        VF_PAGE_FIRST(page1) = -1;
-        VF_PAGE_OWNER(page1) = 0;
-        if (page1 == *(void **)((u8 *)volume + 0x1630)) {
-            *(void **)((u8 *)volume + 0x1630) = VF_PAGE_NEXT(page1);
-        } else if (page1 != VF_PAGE_PREV(*(void **)((u8 *)volume + 0x1630))) {
-            VF_PAGE_NEXT(VF_PAGE_PREV(page1)) = VF_PAGE_NEXT(page1);
-            VF_PAGE_PREV(VF_PAGE_NEXT(page1)) = VF_PAGE_PREV(page1);
-            h1 = *(void **)((u8 *)volume + 0x1630);
-            VF_PAGE_NEXT(page1) = h1;
-            VF_PAGE_PREV(page1) = VF_PAGE_PREV(*(void **)((u8 *)volume + 0x1630));
-            VF_PAGE_PREV(h1) = page1;
-            VF_PAGE_NEXT(VF_PAGE_PREV(page1)) = page1;
+    while (page1 = volume->fatHead, page1->flags & 1) {
+        if (page1 != 0) {
+            page1->flags &= ~3;
+            page1->changedFrom = 0;
+            page1->changedTo = 0;
+            page1->first = -1;
+            page1->owner = 0;
+            head = volume->fatHead;
+            if (page1 == head) {
+                volume->fatHead = page1->next;
+            } else if (page1 != head->prev) {
+                page1->prev->next = page1->next;
+                page1->next->prev = page1->prev;
+                head = volume->fatHead;
+                page1->next = head;
+                page1->prev = volume->fatHead->prev;
+                head->prev = page1;
+                page1->prev->next = page1;
+            }
         }
     }
 
-    while (*(volatile u16 *)(page2 = *(void **)((u8 *)volume + 0x1634)) & VF_PAGE_IN_USE) {
-        if (page2 == 0) continue;
-        *(volatile u16 *)page2 = (u16)(*(volatile u16 *)page2 & ~(VF_PAGE_IN_USE | VF_PAGE_CHANGED));
-        VF_PAGE_CHANGED_FROM(page2) = 0;
-        VF_PAGE_CHANGED_TO(page2) = 0;
-        VF_PAGE_FIRST(page2) = -1;
-        VF_PAGE_OWNER(page2) = 0;
-        if (page2 == *(void **)((u8 *)volume + 0x1634)) {
-            *(void **)((u8 *)volume + 0x1634) = VF_PAGE_NEXT(page2);
-        } else if (page2 != VF_PAGE_PREV(*(void **)((u8 *)volume + 0x1634))) {
-            VF_PAGE_NEXT(VF_PAGE_PREV(page2)) = VF_PAGE_NEXT(page2);
-            VF_PAGE_PREV(VF_PAGE_NEXT(page2)) = VF_PAGE_PREV(page2);
-            h1 = *(void **)((u8 *)volume + 0x1634);
-            VF_PAGE_NEXT(page2) = h1;
-            VF_PAGE_PREV(page2) = VF_PAGE_PREV(*(void **)((u8 *)volume + 0x1634));
-            VF_PAGE_PREV(h1) = page2;
-            VF_PAGE_NEXT(VF_PAGE_PREV(page2)) = page2;
+    while (page2 = volume->dataHead, page2->flags & 1) {
+        if (page2 != 0) {
+            page2->flags &= ~3;
+            page2->changedFrom = 0;
+            page2->changedTo = 0;
+            page2->first = -1;
+            page2->owner = 0;
+            head = volume->dataHead;
+            if (page2 == head) {
+                volume->dataHead = page2->next;
+            } else if (page2 != head->prev) {
+                page2->prev->next = page2->next;
+                page2->next->prev = page2->prev;
+                head = volume->dataHead;
+                page2->next = head;
+                page2->prev = volume->dataHead->prev;
+                head->prev = page2;
+                page2->prev->next = page2;
+            }
         }
     }
 }
@@ -5014,16 +5042,17 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     s32 temp_r30;
     s32 temp_r3;
     s32 temp_r4;
-    int temp_r7;
+    u8 temp_r7;
     void *temp_r5;
-
+    u32 one;
     temp_r5 = *(void **)((u8 *)arg0 + 0x3C);
+    one = ((u32)temp_r5 & 0) + 1;
     temp_r30 = *(s32 *)arg0;
     *(void **)((u8 *)arg0 + 4) = temp_r5;
-    temp_r7 = (u8)(*(u8 *)((u8 *)temp_r5 + 0x20) - 5);
+    temp_r7 = *(u8 *)((u8 *)temp_r5 + 0x20) - 5;
     *(s32 *)arg0 = arg1;
-    *(u8 *)((u8 *)arg0 + 0x6C) = (u8)temp_r7;
-    *(u16 *)((u8 *)arg0 + 0x4A) = (u16)((1 << temp_r7) - 1);
+    *(u8 *)((u8 *)arg0 + 0x6C) = temp_r7;
+    *(u16 *)((u8 *)arg0 + 0x4A) = (one << temp_r7) - 1;
     *(s32 *)((u8 *)arg0 + 0x40) = -1;
     temp_r3 = ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
     var_r31 = temp_r3;
@@ -7811,22 +7840,20 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
         if (result) return result;
         *(u32 *)(ctx + 0x18) = block;
     }
-    {
-        u8 *buffer = *(u8 **)(ctx + 8);
-        u32 data = *(u32 *)(buffer + offset);
-        u32 upper = __rlwinm(data, 8, 8, 15);
-        u32 lower = __rlwinm(data, 24, 16, 23);
-        upper = __rlwimi(upper, data, 24, 0, 7);
-        lower = __rlwimi(lower, data, 8, 24, 31);
-        u32 swapped = upper | lower;
-        swapped &= 0xF0000000;
-        swapped = __rlwimi(swapped, arg2, 0, 4, 31);
-        upper = __rlwinm(swapped, 8, 8, 15);
-        lower = __rlwinm(swapped, 24, 16, 23);
-        upper = __rlwimi(upper, swapped, 24, 0, 7);
-        lower = __rlwimi(lower, swapped, 8, 24, 31);
-        *(u32 *)(buffer + offset) = upper | lower;
-    }
+    register u8 *buffer = (u8 *)*(u32 *)(ctx + 8);
+    register u32 data = *(u32 *)(buffer + offset);
+    u32 upper = __rlwinm(data, 8, 8, 15);
+    u32 lower = __rlwinm(data, 24, 16, 23);
+    upper = __rlwimi(upper, data, 24, 0, 7);
+    lower = __rlwimi(lower, data, 8, 24, 31);
+    u32 swapped = upper | lower;
+    swapped &= 0xF0000000;
+    swapped = __rlwimi(swapped, arg2, 0, 4, 31);
+    upper = __rlwinm(swapped, 8, 8, 15);
+    lower = __rlwinm(swapped, 24, 16, 23);
+    upper = __rlwimi(upper, swapped, 24, 0, 7);
+    lower = __rlwimi(lower, swapped, 8, 24, 31);
+    *(u32 *)(buffer + offset) = upper | lower;
     if (result) saved = result;
     return saved;
 }
@@ -10607,7 +10634,7 @@ extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
 }
 #pragma pop
 extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1) {
-    u8 *p = (u8 *)((s32)arg0 + 7);
+    s8 *p = arg0 + 7;
     u32 digits = 7;
     u32 divisor = 10;
     u32 place = 1;
@@ -10997,15 +11024,19 @@ extern "C" s32 fn_800B5B94(void *arg0, s32 arg1) {
     if (tmp == 0 || (arg1 & 1)) {
         VFiPFCACHE_FreeAllCaches(arg0);
         res = fn_800A5788(arg0, arg1);
-        if (res == 0) {
+        switch (res) {
+        case 0:
             if (*(u16 *)((u8 *)arg0 + 0x1F8C) & 8) {
                 *(s32 *)((u8 *)arg0 + 0x1654) = 0;
                 *(s32 *)((u8 *)arg0 + 0x189C) = 0;
                 *(s32 *)((u8 *)arg0 + 0x1AE4) = 0;
                 *(s32 *)((u8 *)arg0 + 0x1D2C) = 0;
             }
-            res = 0;
             *(u16 *)((u8 *)arg0 + 0x1F8C) &= ~8;
+            res = 0;
+            break;
+        default:
+            break;
         }
         if (res != 0 && err == 0) {
             err = res;
@@ -11781,7 +11812,7 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32 arg0, u32 *arg1) {
     code = (hi << 8) + lo;
     if (code >= 0xff61 && code <= 0xff9f) {
         sjis = code - 0x10000;
-        out[0] = sjis + 0x140;
+        out[0] = (u8)(sjis + 0x140);
         out[1] = 0;
         return fn_800A4BE8(1, 2);
     }
@@ -20185,9 +20216,12 @@ check:
 #pragma push
 #pragma small_data on
 void homebutton::gui::PaneManager::setAllBoundingBoxComponentTriggerTarget(bool arg0) {
+    register void *entry;
+    void *list;
+    void *component;
+    const void *typeId;
+    u32 index;
     u8 *self = (u8 *)this;
-    void *list = self + 8;
-    u32 index = 0;
     struct ParentDispatch { virtual void v0(); virtual void *parent(); };
     struct TriggerDispatch {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -20196,13 +20230,15 @@ void homebutton::gui::PaneManager::setAllBoundingBoxComponentTriggerTarget(bool 
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
         virtual void v16(); virtual void v17(); virtual void setTarget(bool);
     };
+    list = self + 8;
+    index = 0;
     goto loop_check;
 loop_body:
     {
-        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(self + 0x18, (u16)index);
-        void *component = *(void **)item;
+        entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(self + 0x18, (u16)index);
+        component = *(void **)entry;
+        typeId = &lbl_8055DDE0;
         void *node = ((ParentDispatch *)component)->parent();
-        const void *typeId = &lbl_8055DDE0;
         u32 found;
         goto node_check;
 node_compare:
@@ -20217,7 +20253,7 @@ node_check:
 type_done:
         component = found ? component : 0;
         if (component != 0) {
-            ((TriggerDispatch *)*(void **)((u8 *)item + 4))->setTarget(arg0);
+            ((TriggerDispatch *)*(void **)((u8 *)entry + 4))->setTarget(arg0);
         }
     }
     ++index;
@@ -22065,10 +22101,10 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     void **textureResources;
 
     if (*(void **)(self + 0x14) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1A6, file + 0x14);
+        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A6, file + 0x14);
     }
     if (*(void **)(self + 0x18) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1A7, file + 0x40);
+        Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x1A7, file + 0x40);
     }
 
     *(const void **)(self + 0xC) = resource;
@@ -27249,22 +27285,25 @@ extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *tem
     s8 shortName[16];
     char local0[16];
     struct Iter iter;
-    void *context = *(void **)((u8 *)arg0 + 0x34);
+    struct { void *p; } selfBox; void *&self = selfBox.p;
+    struct { void *p; } ctxBox; void *&context = ctxBox.p;
     u32 tilde, end, digits, i, index;
     s8 ch, terminal;
-    register s32 state;
+    s32 state;
     u32 mask;
     u32 *dst = iter.sub;
     u32 a, b;
 
+    self = arg0;
+    context = *(void **)((u8 *)self + 0x34);
     fn_800A499C((const char *)bitmap, 0, *(u32 *)((u8 *)context + 0x1F74) * 4);
-    b = ((u32 *)arg0)[0]; a = ((u32 *)arg0)[1]; dst[0] = b; dst[1] = a;
-    a = ((u32 *)arg0)[2]; b = ((u32 *)arg0)[3]; dst[2] = a; dst[3] = b;
-    a = ((u32 *)arg0)[4]; b = ((u32 *)arg0)[5]; dst[4] = a; dst[5] = b;
-    a = ((u32 *)arg0)[6]; b = ((u32 *)arg0)[7]; dst[6] = a; dst[7] = b;
-    a = ((u32 *)arg0)[8]; b = ((u32 *)arg0)[9]; dst[8] = a; dst[9] = b;
-    a = ((volatile u32 *)arg0)[10]; b = ((volatile u32 *)arg0)[11]; dst[10] = a; dst[11] = b;
-    a = ((volatile u32 *)arg0)[12]; b = ((volatile u32 *)arg0)[13]; dst[12] = a; dst[13] = b;
+    b = ((u32 *)self)[0]; a = ((u32 *)self)[1]; dst[0] = b; dst[1] = a;
+    a = ((u32 *)self)[2]; b = ((u32 *)self)[3]; dst[2] = a; dst[3] = b;
+    a = ((u32 *)self)[4]; b = ((u32 *)self)[5]; dst[4] = a; dst[5] = b;
+    a = ((u32 *)self)[6]; b = ((u32 *)self)[7]; dst[6] = a; dst[7] = b;
+    a = ((u32 *)self)[8]; b = ((u32 *)self)[9]; dst[8] = a; dst[9] = b;
+    a = ((volatile u32 *)self)[10]; b = ((volatile u32 *)self)[11]; dst[10] = a; dst[11] = b;
+    a = ((volatile u32 *)self)[12]; b = ((volatile u32 *)self)[13]; dst[12] = a; dst[13] = b;
     state = fn_800AC1B4(&iter, 0);
     mask = 1;
     while (VFiPFENT_ITER_IsAtLogicalEnd(&iter) == 0) {
