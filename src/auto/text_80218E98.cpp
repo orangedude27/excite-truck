@@ -3889,11 +3889,10 @@ extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
         s32 lim = limitPtr[2] - 1;
         s32 rg1 = rangePtr[1];
         s32 st = *statePtr;
-        register s32 sum = st + rg1;
-        if (lim < sum) {
+        s32 sum = st + rg1;
+        if (lim < sum)
             sum = lim;
-            *statePtr = sum;
-        }
+        *statePtr = sum;
         {
             s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
             range[2] += range[1];
