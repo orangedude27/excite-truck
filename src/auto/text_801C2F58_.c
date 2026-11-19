@@ -191,7 +191,7 @@ static inline void mtx_to_quat(float m[3][3], float *q) {
         q0 = inv * (m[j][k] - m[k][j]);
         q1 = inv * (m[i][j] + m[j][i]);
         q2 = inv * (m[i][k] + m[k][i]);
-        q[i] = q3; q[3] = q0; q[j] = q1; q[k] = q2;
+        dst[i] = q3; dst[3] = q0; dst[j] = q1; dst[k] = q2;
     }
 }
 #pragma scheduling invalid_target
