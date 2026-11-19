@@ -1245,10 +1245,10 @@ void fn_801E8E38(void) {
 
     data.tag = 0x4D555450;
     data.size = 0x18;
-    data.a = lbl_80562DB0;
-    data.d = lbl_80562DA8;
-    data.c = lbl_80562DA8;
-    data.b = lbl_80562DA8;
+    data.a = 100.0f;
+    data.d = 1000.0f;
+    data.c = 1000.0f;
+    data.b = 1000.0f;
     object = ((void *(*)(int, void *))fn_801284F8)(0x7C, &lbl_80339CB4);
     if (object != 0) fn_801EAD6C(object, (long)&data);
     ((void (*)(void))fn_801E87D4)();
