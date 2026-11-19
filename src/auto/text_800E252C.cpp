@@ -4234,33 +4234,34 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *sound
 }
 
 #pragma scheduling on
-extern "C" void SetVolume__Q46nw4hbm3snd6detail10BasicSoundFfi(void *this_, float volume, int arg2) {
+/* Set the target volume, preserving the current interpolated volume as the fade starting point. */
+extern "C" void SetVolume__Q46nw4hbm3snd6detail10BasicSoundFfi(void *this_, float volume, int fadeFrames) {
     struct SoundFields {
         char pad[0x7C];
-        float current;
-        float target;
-        int total;
-        int elapsed;
+        float currentVolume;
+        float targetVolume;
+        int fadeDuration;
+        int fadeTime;
     };
-    float current;
+    float currentVolume;
 
     if (!(volume >= 0.0f)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x225, lbl_80322830);
     }
     SoundFields *sound = (SoundFields *)this_;
-    s32 total = sound->total;
-    s32 elapsed = sound->elapsed;
-    if (elapsed >= total) {
-        current = sound->target;
+    s32 fadeDuration = sound->fadeDuration;
+    s32 fadeTime = sound->fadeTime;
+    if (fadeTime >= fadeDuration) {
+        currentVolume = sound->targetVolume;
     } else {
-        current = sound->current +
-                  ((float)elapsed * (sound->target - sound->current)) /
-                      (float)total;
+        currentVolume = sound->currentVolume +
+                        ((float)fadeTime * (sound->targetVolume - sound->currentVolume)) /
+                            (float)fadeDuration;
     }
-    sound->current = current;
-    sound->target = volume;
-    sound->total = arg2;
-    sound->elapsed = 0;
+    sound->currentVolume = currentVolume;
+    sound->targetVolume = volume;
+    sound->fadeDuration = fadeFrames;
+    sound->fadeTime = 0;
 }
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *sound, float volume) {
     /* Sets the initial volume at +0x98, asserting that volume is non-negative. */
