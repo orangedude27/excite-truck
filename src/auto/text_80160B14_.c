@@ -7,6 +7,7 @@ extern double fn_8002F234(float);
 
 void fn_80128658(void);
 
+/* Tail-call wrapper to fn_80128658. */
 void fn_80160B14(void) {
 	fn_80128658();
 }
