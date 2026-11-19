@@ -1113,12 +1113,11 @@ int fn_8003BB48(void) {
 int fn_8003BB58(void *arg0) {
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
-    unsigned char *entry;
-    unsigned char *base;
+    DVDLowContext *ctx;
+    DVDLowContext *base;
+    unsigned int busy;
     int slot;
-    unsigned char busy;
     unsigned char *callbackEntry;
-    unsigned int offset;
     unsigned int one;
     int next;
     int result;
@@ -1131,23 +1130,22 @@ int fn_8003BB58(void *arg0) {
     lbl_8055D8FC[index * 0x20] = 0x7A;
     one = 1;
     lbl_8055D8E0 = one;
-    base = lbl_8037B820;
+    base = (DVDLowContext *)lbl_8037B820;
     slot = lbl_8055D8E8;
-    offset = slot * 0x20;
-    entry = base + offset;
-    busy = entry[8];
+    ctx = &base[slot];
+    busy = ctx->inUse;
     if (((busy | (0U - busy)) >> 31) == 1) {
         OSReport(msg + 0x218);
         OSReport(msg + 0x250);
         for (;;) {}
     }
-    if ((*(unsigned int *)(entry + 0xC) + 0x01150000U) != 0xDAEDU) {
+    if ((ctx->magic + 0x01150000U) != 0xDAEDU) {
         OSReport(msg + 0x280);
         for (;;) {}
     }
     ((unsigned int *)base)[slot * 8] = (unsigned int)arg0;
-    *(unsigned int *)(entry + 4) = one;
-    entry[8] = one;
+    ctx->WORD_0x4 = one;
+    ctx->inUse = one;
     next = slot + 1;
     lbl_8055D8E8 = next;
     if (next >= 4) {
@@ -1177,16 +1175,16 @@ unsigned int DVDLowUnmaskStatusInterrupts(void) { return 1; }
 /* DVD low-level: mask the cover interrupt. On Broadway this is a no-op stub that always reports success (TRUE). */
 unsigned int DVDLowMaskCoverInterrupt(void) { return 1; }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_8003BCDC(void *arg0) {
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
-    unsigned char *base;
+    DVDLowContext *ctx;
+    DVDLowContext *base;
     int slot;
-    unsigned char *entry;
+    unsigned int busy;
     unsigned char *callbackEntry;
-    unsigned char busy;
-    unsigned int one = 1;
+    unsigned int one;
     int next;
     int result;
 
@@ -1196,30 +1194,31 @@ int fn_8003BCDC(void *arg0) {
         lbl_8055D8E4 = 0;
     }
     lbl_8055D8FC[index * 0x20] = 0x86;
+    one = 1;
     lbl_8055D8E0 = one;
-    base = lbl_8037B820;
+    base = (DVDLowContext *)lbl_8037B820;
     slot = lbl_8055D8E8;
-    entry = base + slot * 0x20;
-    busy = entry[8];
+    ctx = &base[slot];
+    busy = ctx->inUse;
     if (((busy | (0U - busy)) >> 31) == 1) {
         OSReport(msg + 0x218);
         OSReport(msg + 0x250);
         for (;;) {}
     }
-    if ((*(unsigned int *)(entry + 0xC) + 0x01150000U) != 0xDAEDU) {
+    if ((ctx->magic + 0x01150000U) != 0xDAEDU) {
         OSReport(msg + 0x280);
         for (;;) {}
     }
     ((unsigned int *)base)[slot * 8] = (unsigned int)arg0;
-    *(unsigned int *)(entry + 4) = one;
-    entry[8] = one;
+    ctx->WORD_0x4 = one;
+    ctx->inUse = one;
     next = slot + 1;
     lbl_8055D8E8 = next;
     if (next >= 4) {
         next = 0;
         lbl_8055D8E8 = 0;
     }
-    callbackEntry = base + slot * 0x20;
+    callbackEntry = (unsigned char *)lbl_8037B820 + slot * 0x20;
     result = IOS_IoctlAsync(lbl_80558E18, 0x86, lbl_8055D8FC + lbl_8055D8E4 * 0x20, 0x20, 0, 0, (void (*)(int, void *))doTransactionCallback, callbackEntry);
     if (result != 0) {
         OSReport(msg + 0xB74, result);
