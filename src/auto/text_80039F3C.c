@@ -563,9 +563,9 @@ int fn_8003AC24(void *arg0) {
     unsigned char *entry;
     unsigned char *callbackEntry;
     unsigned char busy;
-    unsigned int one = 1;
     int next;
     int result;
+    unsigned int one = 1;
 
     lbl_8055D8E4 = index;
     if (index >= 4) {
@@ -1009,7 +1009,7 @@ int fn_8003B81C(void *arg0, int arg1, int arg2, void (*arg3)(int, void *)) {
     p = base + slot;
     *(volatile unsigned char *)&lbl_8055D8E0 = one;
     flag = p->inUse;
-    if (((flag | -flag) >> 31) == 1U) {
+    if ((((0U - flag) | flag) >> 31) == 1U) {
         OSReport(msg + 0x218, slot);
         OSReport(msg + 0x250);
         for (;;) {}
@@ -1019,7 +1019,7 @@ int fn_8003B81C(void *arg0, int arg1, int arg2, void (*arg3)(int, void *)) {
         for (;;) {}
     }
 
-    base[slot].callback = (void *)arg3;
+    ((unsigned int *)base)[slot * 8] = (unsigned int)arg3;
     next = slot + 1;
     p->WORD_0x4 = one;
     p->inUse = one;
@@ -1175,7 +1175,7 @@ unsigned int DVDLowUnmaskStatusInterrupts(void) { return 1; }
 /* DVD low-level: mask the cover interrupt. On Broadway this is a no-op stub that always reports success (TRUE). */
 unsigned int DVDLowMaskCoverInterrupt(void) { return 1; }
 
-#pragma scheduling invalid_target
+#pragma scheduling 750
 int fn_8003BCDC(void *arg0) {
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
