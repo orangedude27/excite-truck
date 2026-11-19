@@ -167,6 +167,7 @@ extern double fn_8002F234(float);
 extern void fn_8012F57C(float *, float *, float *, float);
 extern f32 lbl_8056296C, lbl_80562974;
 static inline void mtx_to_quat(float m[3][3], float *q) {
+    register float *dst asm("r31") = q;
     float sum = m[0][0] + m[1][1] + m[2][2];
     float sn, q3, q0, q1, q2, inv;
     int i, j, k;
@@ -211,7 +212,7 @@ f32 fn_801C2F58(s32 count, f32 factor) {
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 void fn_801C2FF4(float *out, float *a, float *b, float weight) {
-    float q[4], av[4], bv[4];
+    float av[4], bv[4], q[4];
     mtx_to_quat((float (*)[3])a, av);
     mtx_to_quat((float (*)[3])b, bv);
     fn_8012F57C(q, av, bv, weight);
