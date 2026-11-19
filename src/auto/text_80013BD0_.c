@@ -121,36 +121,37 @@ void fn_80013CFC(f32 *valuePtr) {
     }
 }
 
+/* Clamp x to [-1, 1] and evaluate the cubic smoothstep polynomial 3*x^2 - 2*|x|^3 (odd extension) outside the endpoints. */
 f32 fn_80013D60(f32 x) {
-    f32 c4, cc;
-    f32 y;
+    f32 cubicCoeff, quadraticCoeff;
+    f32 result;
     if (lbl_80560360 == x || lbl_80560368 == x)
         return x;
-    y = lbl_8056036C;
-    if (x < y)
-        y = lbl_8056036C;
+    result = lbl_8056036C;
+    if (x < result)
+        result = lbl_8056036C;
     else if (x > lbl_80560368) {
-        y = lbl_80560368;
+        result = lbl_80560368;
     } else if (x > lbl_80560360) {
-        c4 = lbl_80560374;
-        cc = lbl_80560370;
-        cc *= x;
-        c4 *= x;
-        cc *= x;
-        c4 *= x;
-        x *= cc;
-        y = x + c4;
+        cubicCoeff = lbl_80560374;
+        quadraticCoeff = lbl_80560370;
+        quadraticCoeff *= x;
+        cubicCoeff *= x;
+        quadraticCoeff *= x;
+        cubicCoeff *= x;
+        x *= quadraticCoeff;
+        result = x + cubicCoeff;
     } else {
-        c4 = lbl_80560374;
-        cc = lbl_80560370;
-        cc *= x;
-        c4 *= x;
-        cc *= x;
-        c4 *= x;
-        x *= cc;
-        y = x - c4;
+        cubicCoeff = lbl_80560374;
+        quadraticCoeff = lbl_80560370;
+        quadraticCoeff *= x;
+        cubicCoeff *= x;
+        quadraticCoeff *= x;
+        cubicCoeff *= x;
+        x *= quadraticCoeff;
+        result = x - cubicCoeff;
     }
-    return y;
+    return result;
 }
 
 #pragma scheduling invalid_target
