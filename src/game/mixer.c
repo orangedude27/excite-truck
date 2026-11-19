@@ -583,7 +583,11 @@ void fn_802093F0(void) {
 
 }
 
-void fn_802093F4(void) { /* +0x40 set surround pan (voice: fn_8020BC70, VoiceSnd+0x28) */
+/* Null Sound method, slot +0x40 of the "Null Sound" vtable (lbl_8033C0E8): set the
+ * sound's surround pan.  The voice backend's slot +0x40 (fn_8020BC70) stores it in
+ * VoiceSnd+0x28, which its mixer tick hands to the voice's surround-pan setter; a
+ * null sound has no voice to hand it to, so it ignores the value. */
+void fn_802093F4(void) {
 
 }
 
