@@ -6279,35 +6279,36 @@ void BTA_DmPinReply(u8 *bd_addr, u8 accept, u8 pin_len, u8 *pin_code) {
     }
 }
 
+/* Add a device to the security database, translating the BTA trusted-service mask into a BTM service mask when marked trusted. */
 u8 BTA_DmAddDevice(u8 *bd_addr, u8 *link_key, u32 trusted_mask, u8 is_trusted) {
-    u32 service_mask[2];
-    u32 bit;
-    u32 mapped;
-    u32 offset;
-    u32 bit_index;
-    u8 index = 0;
-    u8 result;
+    u32 serviceMask[2];
+    u32 serviceBit;
+    u32 btmServiceId;
+    u32 maskWordOffset;
+    u32 maskBitIndex;
+    u8 trustedIndex = 0;
+    u8 secResult;
 
-    memset(service_mask, 0, sizeof(service_mask));
+    memset(serviceMask, 0, sizeof(serviceMask));
     if (is_trusted != 0) {
-        while (trusted_mask != 0 && index < 0x17) {
-            bit = 1u << index;
-            if ((trusted_mask & bit) != 0u) {
-                trusted_mask &= ~bit;
-                mapped = lbl_802EE9C0[index];
-                offset = (mapped >> 3) & 0x3FCu;
-                bit_index = mapped - (mapped & 0x1FE0u);
-                *(u32 *)((u8 *)service_mask + offset) |= 1u << bit_index;
+        while (trusted_mask != 0 && trustedIndex < 0x17) {
+            serviceBit = 1u << trustedIndex;
+            if ((trusted_mask & serviceBit) != 0u) {
+                trusted_mask &= ~serviceBit;
+                btmServiceId = lbl_802EE9C0[trustedIndex];
+                maskWordOffset = (btmServiceId >> 3) & 0x3FCu;
+                maskBitIndex = btmServiceId - (btmServiceId & 0x1FE0u);
+                *(u32 *)((u8 *)serviceMask + maskWordOffset) |= 1u << maskBitIndex;
             }
-            index++;
+            trustedIndex++;
         }
     }
     fn_8006EAD0();
-    result = ((BOOLEAN (*)(BD_ADDR, DEV_CLASS, BD_NAME, BD_FEATURES,
+    secResult = ((BOOLEAN (*)(BD_ADDR, DEV_CLASS, BD_NAME, BD_FEATURES,
                            UINT32 *, LINK_KEY))BTM_SecAddDevice)(
-        bd_addr, 0, 0, 0, service_mask, link_key);
+        bd_addr, 0, 0, 0, serviceMask, link_key);
     fn_8006EAD4();
-    return result == 0;
+    return secResult == 0;
 }
 
 /* Delete a BTM security device record by BD address under the BTE lock. */
