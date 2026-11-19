@@ -456,30 +456,32 @@ void fn_8020C920(s32 arg0) {
     const char *base = lbl_8033C5D8;
     s32 i = 0;
     s32 j = 0;
-    char *dst = (char *)&lbl_80489BE0;
     fn_801345D8((char *)&lbl_80489C50, 0x20, base + 0x34, arg0);
     fn_8012DDA8(&lbl_80489C50);
     fn_8012DDA8(lbl_8055B5D0);
     fn_8012DDA8(lbl_8055B5D4);
-    do {
-        switch (i) {
-        case 0:
-            if (j != 1)
-                fn_801345D8(dst, 0x20, base + 0x40, arg0, &lbl_8055B5DC);
-            else
-                fn_801345D8(dst, 0x20, base + 0x40, arg0, &lbl_8055B5D8);
-            break;
-        case 1:
-            fn_801345D8(dst, 0x20, base + 0x50, arg0);
-            break;
-        case 2:
-            fn_801345D8(dst, 0x20, base + 0x60, arg0);
-            break;
-        default:
-            break;
-        }
-        i++;
-        dst += 0x24;
-    } while (i < 3);
+    {
+        char *dst = (char *)&lbl_80489BE0;
+        do {
+            switch (i) {
+            case 0:
+                if (j != 1)
+                    fn_801345D8(dst, 0x20, base + 0x40, arg0, &lbl_8055B5DC);
+                else
+                    fn_801345D8(dst, 0x20, base + 0x40, arg0, &lbl_8055B5D8);
+                break;
+            case 1:
+                fn_801345D8(dst, 0x20, base + 0x50, arg0);
+                break;
+            case 2:
+                fn_801345D8(dst, 0x20, base + 0x60, arg0);
+                break;
+            default:
+                break;
+            }
+            i++;
+            dst += 0x24;
+        } while (i < 3);
+    }
 }
 #pragma pop
