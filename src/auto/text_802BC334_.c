@@ -706,16 +706,16 @@ void fn_802BD414(int arg0, volatile int *arg1)
 #pragma scheduling on
 void fn_802BD478(int arg0, volatile int *arg1)
 {
-    volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
-    if (result == 0)
-        return;
-    {
-        int first = arg1[0];
-        result[0] = arg1[1];
-        result[2] = first;
-        result[1] = 0;
-        result[1] = result[1] + arg1[0];
-    }
+  volatile int *result = (volatile int *) fn_801284F8(0xC, arg0);
+  if (result != 0)
+  {
+    int first = arg1[0];
+    result[0] = arg1[1];
+    result[2] = first;
+    result[1] = 0;
+    result[1] = result[1] + arg1[0];
+  }
+  return;
 }
 void fn_802BD4DC(void *arg0, int arg1) {
     extern void fn_802BD69C(void *, int);
@@ -1276,6 +1276,9 @@ void fn_802BDFF4(void *node, int value) {
 }
 
 #pragma scheduling invalid_target
+static inline char *fn_802BE008_item(char *list) {
+    return *(char **)(list + 8);
+}
 void *fn_802BE008(void *arg0) {
     int count = *(int *)((char *)&lbl_804C00D4 + 4);
     int found;
