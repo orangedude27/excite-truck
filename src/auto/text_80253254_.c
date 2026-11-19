@@ -1678,6 +1678,7 @@ scan58_test:
     }
 }
 #pragma cplusplus off
+#pragma pop
 
 #pragma push
 #pragma processor 750
