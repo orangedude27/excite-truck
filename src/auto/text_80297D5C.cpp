@@ -1397,43 +1397,50 @@ extern "C" int lbl_80488648[];     /* up to 8 live vehicle render objects, by ve
 extern "C" float lbl_80564608;     /* 20.0f: life a freshly reserved shadow slot is given */
 #pragma dont_inline off
 #pragma auto_inline off
-extern "C" void fn_8029A4B4(void *arg0, int arg1) {
-    register void *dest = arg0;
-    register int index = arg1;
-    register void *data;
-    float a[3], b[3], c[3], home[3], screen[6];
-    int selector, handle;
-    float h2, h0;
+extern "C" void fn_8029A4B4(void *shadow, int vehicleIdx) {
+    /* Attach the shadow record `shadow` to the vehicle with index `vehicleIdx`.
+     * Copies the vehicle's 3x3 orientation and its translation/anchor pair, then
+     * replaces the anchor with the model's bounding-box min corner (the point of
+     * the model the shadow is hung from) and remembers the vehicle index. Finally
+     * works out the world-space quad that lies under the vehicle - its centre plus
+     * two edge vectors - and reserves a slot for it in the shadow pool
+     * (lbl_8055F7C0), keeping that slot number (or -1) at +0x40. */
+    register void *dest = shadow;
+    register int index = vehicleIdx;
+    register void *vehicle;
+    float centre[3], xEdge[3], zEdge[3], anchor[3], bounds[6];
+    int renderObj, model;
+    float minZ, minX;
 
-    data = (void *)fn_80287B24(index);
+    vehicle = (void *)fn_80287B24(index);
     if ((unsigned int)index < 8U)
-        selector = lbl_80488648[index];
+        renderObj = lbl_80488648[index];
     else
-        selector = 0;
-    handle = fn_801EE0C8(selector);
-    fn_802C77F0(handle, screen);
+        renderObj = 0;
+    model = fn_801EE0C8(renderObj);
+    fn_802C77F0(model, bounds);
 
-    *(Fn80299A88Matrix *)dest = *(Fn80299A88Matrix *)data;
-    *(Fn8029A4B4Vec *)((char *)dest + 0x24) = *(Fn8029A4B4Vec *)((char *)data + 0x24);
+    *(Fn80299A88Matrix *)dest = *(Fn80299A88Matrix *)vehicle;
+    *(Fn8029A4B4Vec *)((char *)dest + 0x24) = *(Fn8029A4B4Vec *)((char *)vehicle + 0x24);
 
-    h2 = screen[4];
-    home[1] = screen[2];
-    h0 = screen[0];
-    *(float *)((char *)dest + 0x30) = h0;
-    *(float *)((char *)dest + 0x34) = home[1];
-    *(float *)((char *)dest + 0x38) = h2;
+    minZ = bounds[4];
+    anchor[1] = bounds[2];
+    minX = bounds[0];
+    *(float *)((char *)dest + 0x30) = minX;
+    *(float *)((char *)dest + 0x34) = anchor[1];
+    *(float *)((char *)dest + 0x38) = minZ;
     *(unsigned int *)((char *)dest + 0x3C) = (unsigned int)index;
-    home[0] = h0;
-    home[2] = h2;
+    anchor[0] = minX;
+    anchor[2] = minZ;
 
-    a[0] = 0.0f; a[1] = 0.0f; a[2] = 0.0f;
-    b[0] = 0.0f; b[1] = 0.0f; b[2] = 0.0f;
-    c[0] = 0.0f; c[1] = 0.0f; c[2] = 0.0f;
+    centre[0] = 0.0f; centre[1] = 0.0f; centre[2] = 0.0f;
+    xEdge[0] = 0.0f; xEdge[1] = 0.0f; xEdge[2] = 0.0f;
+    zEdge[0] = 0.0f; zEdge[1] = 0.0f; zEdge[2] = 0.0f;
     ((void (*)(void *, float *, float *, float *, float, float, float))fn_8029A318)
-        (dest, a, b, c, home[0], home[1], home[2]);
+        (dest, centre, xEdge, zEdge, anchor[0], anchor[1], anchor[2]);
     *(int *)((char *)dest + 0x40) =
         ((int (*)(void *, void *, void *, void *, short, float))fn_8029833C)
-        (lbl_8055F7C0, a, b, c, *(short *)((char *)data + 0x30), lbl_80564608);
+        (lbl_8055F7C0, centre, xEdge, zEdge, *(short *)((char *)vehicle + 0x30), lbl_80564608);
 }
 extern "C" void fn_8029A318(float*, float*, float*, float*, float, float, float);
 #pragma dont_inline on
