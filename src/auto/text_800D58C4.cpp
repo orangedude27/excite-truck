@@ -862,6 +862,7 @@ extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* contai
 
 #pragma push
 #pragma inline_depth(5)
+#pragma opt_common_subs off
 extern "C" void fn_800D6CA0(s32, s32);
 static inline void VisitChild_800D6CA0(u8 *child, s32 value) { fn_800D6CA0((s32)child, value); }
 extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
