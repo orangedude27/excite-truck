@@ -982,7 +982,8 @@ void fn_8023B400(void) {}
 s32 fn_8023B404(void) { return 0; }
 
 #pragma cplusplus on
-extern "C" void fn_8023B40C(void *arg0) {
+/* Update the race-music option state, toggling the related UI control and syncing the selected track when availability changes. */
+extern "C" void fn_8023B40C(void *widget) {
     class Base { public: char pad[0xC]; };
     class Obj : public Base {
     public:
@@ -999,36 +1000,36 @@ extern "C" void fn_8023B40C(void *arg0) {
         virtual void setA(s32);
         virtual void setB(s32);
     };
-    s32 s;
-    void *o;
-    s32 r;
-    s = fn_802104D0();
-    if ((unsigned int)s == 1) {
+    s32 musicState;
+    void *optionObject;
+    s32 selectedTrack;
+    musicState = fn_802104D0();
+    if ((unsigned int)musicState == 1) {
         fn_80214B94(3);
     } else {
-        o = *(void **)((char *)arg0 + 0x1C);
-        ((Obj *)o)->setB(0);
+        optionObject = *(void **)((char *)widget + 0x1C);
+        ((Obj *)optionObject)->setB(0);
         if (fn_80214D04() == 2) fn_80214CB4((void *)1);
         fn_80214B44(3);
     }
-    if (s == 0) {
-        *(s32 *)((char *)arg0 + 0x18) = 4;
+    if (musicState == 0) {
+        *(s32 *)((char *)widget + 0x18) = 4;
     } else {
         switch (fn_80214D04()) {
         case 2:
-            *(s32 *)((char *)arg0 + 0x18) = 1;
+            *(s32 *)((char *)widget + 0x18) = 1;
             break;
         default:
-            *(s32 *)((char *)arg0 + 0x18) = 0;
+            *(s32 *)((char *)widget + 0x18) = 0;
             break;
         }
     }
-    if (*(unsigned char *)((char *)arg0 + 0x20) != (unsigned int)s && s != 0) {
-        r = fn_80210570();
-        o = *(void **)((char *)arg0 + 0x1C);
-        ((Obj *)o)->setB(r);
+    if (*(unsigned char *)((char *)widget + 0x20) != (unsigned int)musicState && musicState != 0) {
+        selectedTrack = fn_80210570();
+        optionObject = *(void **)((char *)widget + 0x1C);
+        ((Obj *)optionObject)->setB(selectedTrack);
     }
-    *(unsigned char *)((char *)arg0 + 0x20) = s;
+    *(unsigned char *)((char *)widget + 0x20) = musicState;
 }
 #pragma cplusplus reset
 extern s32 lbl_80341228[];
