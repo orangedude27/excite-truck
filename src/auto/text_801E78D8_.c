@@ -501,6 +501,7 @@ void fn_801E7E48(void) {
     t1 = (long)(((long long (*)())fn_802E2C9C)());
     lbl_8055EB28 = (float)(t1 - t0) / lbl_80562DA8;
 }
+/* No-op stub. */
 void fn_801E8144(void) {
 
 }
