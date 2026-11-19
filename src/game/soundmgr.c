@@ -759,6 +759,11 @@ void fn_80208994(void) {
 	((void (*)(void))fn_80208858)();
 }
 
+/* Second trampoline for the sound-play helper fn_80208858 (plays a sound on the
+ * manager's device and hands back the created sound): tail-calls it with no
+ * adaptation.  The sound-object initializer fn_80207218 in text_802062E8.cpp
+ * calls this stub and keeps the returned handle at object+0xC; fn_80208994 is
+ * the identical stub the other initializer uses. */
 void fn_80208998(void) {
 	((void (*)(void))fn_80208858)();
 }
