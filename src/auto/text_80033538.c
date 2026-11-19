@@ -217,6 +217,7 @@ void fn_80033B74(void *vpb, short on, short yn1) {
     OSRestoreInterrupts(state);
 }
 
+#pragma scheduling invalid_target
 void AXGetLpfCoefs(unsigned int arg0, short *arg1, short *arg2) {
     float input = (float)arg0;
     float angle = (lbl_80560AF0 * input) / lbl_80560AF4;
