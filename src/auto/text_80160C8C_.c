@@ -419,6 +419,7 @@ s32 fn_80160CE4(void) {
 }
 
 #pragma cplusplus on
+#pragma processor 750
 #pragma ppc_psq_save off
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
