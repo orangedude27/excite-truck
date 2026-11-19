@@ -3,6 +3,16 @@
 extern float lbl_80563490;
 extern void fn_802E30C8(const char *, ...);
 struct Rec80216 { int w[12]; float f[3]; };
+#define CPYREC80216(DD, SS, SF) \
+    ((unsigned long long *)(DD))[0] = ((unsigned long long *)(SS))[0]; \
+    ((unsigned long long *)(DD))[1] = ((unsigned long long *)(SS))[1]; \
+    ((unsigned long long *)(DD))[2] = ((unsigned long long *)(SS))[2]; \
+    ((unsigned long long *)(DD))[3] = ((unsigned long long *)(SS))[3]; \
+    ((unsigned long long *)(DD))[4] = ((unsigned long long *)(SS))[4]; \
+    ((unsigned long long *)(DD))[5] = ((unsigned long long *)(SS))[5]; \
+    ((float *)(DD))[12] = (SF)[12]; \
+    ((float *)(DD))[13] = (SF)[13]; \
+    ((float *)(DD))[14] = (SF)[14];
 struct UiRenderMatrix { int w[12]; };
 extern int fn_802182F0(void *, void *);
 extern int fn_802368B4(int);
