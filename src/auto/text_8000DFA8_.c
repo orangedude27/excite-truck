@@ -1562,11 +1562,11 @@ extern void fn_801E4FF4(void);
 extern f32 lbl_8056025C, lbl_80560264, lbl_80560280, lbl_805602E0, lbl_805602E4;
 extern f32 lbl_805602E0;
 extern f32 lbl_805602E4;
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
                  register f32 farg0, register f32 farg1, register f32 farg2, register f32 farg3,
                  register f32 farg4, register f32 farg5, register f32 farg6, register f32 farg7,
-                 f32 arg_sp8, f32 arg_spC) {
+                 register f32 arg_sp8, register f32 arg_spC) {
     volatile f32 sp14, sp10, spC, sp8;
     f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4;
     f32 temp_f1_2, temp_f22, temp_f23, temp_f23_2;
@@ -1577,7 +1577,6 @@ void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
     f32 var_f5, var_f5_2;
     f64 temp_f1;
     s32 var_r31;
-
     if (arg1 > 0) {
         fn_802C8B98(arg2, fn_8022EDC4());
         fn_801E4F20(arg1 * 4);
@@ -1600,9 +1599,7 @@ void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
         var_f3 = (var_f3 < temp_f0_2) ? var_f3 : temp_f0_2;
         var_f3 = (var_f3 > lbl_80560280) ? var_f3 : lbl_80560280;
         temp_f0_2 = var_f3 * (arg_spC - farg7);
-        fn_801E4F3C(arg0, 0, farg0 + sp8, farg1 + spC, lbl_80560280,
-                    temp_f29,
-                    farg7 + temp_f0_2);
+        fn_801E4F3C(arg0, 0, farg0 + sp8, farg1 + spC, lbl_80560280, temp_f29, farg7 + temp_f0_2);
         var_f4 = lbl_80560264;
         temp_f0_3 = ((temp_f22 * sp10) - lbl_805602E0) * lbl_8056025C;
         var_f4 = (var_f4 < temp_f0_3) ? var_f4 : temp_f0_3;
@@ -1613,10 +1610,7 @@ void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
         var_f5_2 = (var_f5_2 < temp_f0_4) ? var_f5_2 : temp_f0_4;
         var_f5_2 = (var_f5_2 > lbl_80560280) ? var_f5_2 : lbl_80560280;
         temp_f0_2 = var_f5_2 * (arg_spC - farg7);
-        fn_801E4F3C(arg0, 0, farg0 + (temp_f22 * sp8),
-                    farg1 + (temp_f22 * spC), lbl_80560280,
-                    temp_f29,
-                    farg7 + temp_f0_2);
+        fn_801E4F3C(arg0, 0, farg0 + (temp_f22 * sp8), farg1 + (temp_f22 * spC), lbl_80560280, temp_f29, farg7 + temp_f0_2);
         temp_f29 = arg_sp8 - farg6;
         temp_f25_2 = lbl_80560264;
         temp_f31 = arg_spC - farg7;
@@ -1643,37 +1637,30 @@ void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
             sp10 = temp_f2_2;
             sp14 = temp_f1_2;
             var_f1 = (temp_f2_2 - temp_f26) * temp_f27;
-            if (temp_f25_2 < var_f1)
-                var_f1 = temp_f25_2;
+            if (temp_f25_2 < var_f1) var_f1 = temp_f25_2;
             var_f1 = (var_f1 > temp_f28) ? var_f1 : temp_f28;
             temp_f4_2 = farg6 + (var_f1 * temp_f29);
             var_f0 = (sp14 - temp_f25_2) / temp_f30;
-            if (temp_f25_2 < var_f0)
-                var_f0 = temp_f25_2;
+            if (temp_f25_2 < var_f0) var_f0 = temp_f25_2;
             var_f0 = (var_f0 > temp_f28) ? var_f0 : temp_f28;
             temp_f0_2 = var_f0 * temp_f31;
-            fn_801E4F3C(arg0, 1, farg0 + sp8, farg1 + spC, lbl_80560280,
-                        temp_f4_2, farg7 + temp_f0_2);
+            fn_801E4F3C(arg0, 1, farg0 + sp8, farg1 + spC, lbl_80560280, temp_f4_2, farg7 + temp_f0_2);
             var_f1_2 = ((temp_f22 * sp10) - temp_f26) * temp_f27;
-            if (temp_f25_2 < var_f1_2)
-                var_f1_2 = temp_f25_2;
+            if (temp_f25_2 < var_f1_2) var_f1_2 = temp_f25_2;
             var_f1_2 = (var_f1_2 > temp_f28) ? var_f1_2 : temp_f28;
             temp_f4_2 = farg6 + (var_f1_2 * temp_f29);
             var_f0_2 = ((temp_f22 * sp14) - temp_f25_2) / temp_f30;
-            if (temp_f25_2 < var_f0_2)
-                var_f0_2 = temp_f25_2;
+            if (temp_f25_2 < var_f0_2) var_f0_2 = temp_f25_2;
             var_f0_2 = (var_f0_2 > temp_f28) ? var_f0_2 : temp_f28;
             temp_f0_2 = var_f0_2 * temp_f31;
-            fn_801E4F3C(arg0, 1, farg0 + (temp_f22 * sp8),
-                        farg1 + (temp_f22 * spC), lbl_80560280,
-                        temp_f4_2, farg7 + temp_f0_2);
+            fn_801E4F3C(arg0, 1, farg0 + (temp_f22 * sp8), farg1 + (temp_f22 * spC), lbl_80560280, temp_f4_2, farg7 + temp_f0_2);
             var_r31++;
         } while (var_r31 < arg1);
         fn_801E4FF4();
         fn_802C8D74();
     }
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 /* Draw everything queued for this frame: fn_80010BEC replays the quads buffered in
  * lbl_8034F6B0 through fn_80010A50 and empties that queue, then fn_802346C8 draws
  * the text strings queued in the font object and empties its own.  Neither reads a
@@ -1920,6 +1907,17 @@ f32 fn_80011EDC(void) {
 }
 #pragma pop
 
+/* Build the dashboard sound player (fn_800120BC tears it down again): a
+ * 0x1C-byte block, kept in gDashSoundPlayer, holding the round-robin slot the
+ * dashboard sounds play from (+0x00) and two groups of three sounds -- the
+ * "rd_press.sfx" button sounds at +0x04..+0x0C and the "rd_accept.sfx" ones at
+ * +0x10..+0x18, each loaded by fn_80207848 (0 when it will not load).  fn_80012158
+ * and fn_800121A4 play the next slot of either group and wrap the index at
+ * three.  The block is allocated under the "DashSoundPlayer" pool tag, then the
+ * saved "effects_volume" option (defaulting to, and being written back as, full
+ * volume) is handed to every sound that loaded: a sound whose volume differs
+ * gets the new value and its volumeDirty byte set so it passes the volume on to
+ * its voice. */
 void fn_80011F64(void) {
     extern s32 *fn_801284F8(s32, const char *);
     extern s32 fn_80207848(void *, s32);
@@ -1929,53 +1927,72 @@ void fn_80011F64(void) {
     extern char lbl_802FC570[];
     extern char lbl_802FC580[];
     extern s32 *lbl_8055D4AC;
-    f32 sp8;
-    f32 value;
-    s32 *temp_r3;
-    s32 var_r29;
-    s32 j;
-    s32 *var_r28;
-    s32 *var_r28_2;
-    s32 var_r29_2;
-    void *temp_r4;
+    #define STR_DASH_SOUND_PLAYER lbl_802FC550 /* "DashSoundPlayer": pool tag of the block */
+    #define STR_SFX_ACCEPT        lbl_802FC560 /* "rd_accept.sfx" */
+    #define STR_SFX_PRESS         lbl_802FC570 /* "rd_press.sfx" */
+    #define STR_EFFECTS_VOLUME    lbl_802FC580 /* "effects_volume" */
+    #define FULL_VOLUME           lbl_80560264 /* 1.0f */
+    #define OPTIONS_SECTION_SOUND 4            /* the [SOUND] options section */
+    #define DASH_SLOTS            3            /* sounds in each group */
+    #define SOUND_VOLUME          0x08         /* f32: a Sound's volume */
+    #define SOUND_VOLUME_DIRTY    0x4D         /* byte: hand that volume to the sound */
 
-    temp_r3 = fn_801284F8(0x1C, lbl_802FC550);
-    if (temp_r3 != 0) {
-        *temp_r3 = 0;
-        var_r28 = temp_r3;
-        var_r29 = 0;
-        do {
-            temp_r4 = (void *)fn_80207848(lbl_802FC570, 0);
-            var_r29++;
-            var_r28[1] = (s32)temp_r4;
-            var_r28++;
-        } while (var_r29 < 3);
-        var_r28_2 = temp_r3;
-        var_r29_2 = 0;
-        do {
-            temp_r4 = (void *)fn_80207848(lbl_802FC560, 0);
-            var_r29_2++;
-            var_r28_2[4] = (s32)temp_r4;
-            var_r28_2++;
-        } while (var_r29_2 < 3);
-        sp8 = lbl_80560264;
-        fn_801331C4(4, (void *)lbl_802FC580, &sp8);
-        var_r28 = temp_r3;
-        for (var_r29 = 0; var_r29 < 2; var_r29++) {
+    f32 volume;
+    f32 value;
+    s32 *block;
+    s32 i;
+    s32 j;
+    s32 *slot;
+    s32 *slot2;
+    s32 n;
+    void *sound;
+
+    block = fn_801284F8(0x1C, STR_DASH_SOUND_PLAYER);
+    if (block != 0) {
+        *block = 0; /* the slot the next press/accept plays from */
+        slot = block;
+        i = 0;
+        do { /* three button-press sounds at +0x04, +0x08, +0x0C */
+            sound = (void *)fn_80207848(STR_SFX_PRESS, 0);
+            i++;
+            slot[1] = (s32)sound;
+            slot++;
+        } while (i < DASH_SLOTS);
+        slot2 = block;
+        n = 0;
+        do { /* three accept sounds at +0x10, +0x14, +0x18 */
+            sound = (void *)fn_80207848(STR_SFX_ACCEPT, 0);
+            n++;
+            slot2[4] = (s32)sound;
+            slot2++;
+        } while (n < DASH_SLOTS);
+        volume = FULL_VOLUME;
+        fn_801331C4(OPTIONS_SECTION_SOUND, (void *)STR_EFFECTS_VOLUME, &volume);
+        slot = block;
+        for (i = 0; i < 2; i++) { /* both groups */
             for (j = 1; j < 4; j++) {
-                temp_r4 = (void *)var_r28[j];
-                if (temp_r4 != 0) {
-                    value = sp8;
-                    if (value != *(f32 *)((char *)temp_r4 + 8)) {
-                        *((u8 *)temp_r4 + 0x4D) = 1;
-                        *(f32 *)((char *)temp_r4 + 8) = value;
+                sound = (void *)slot[j];
+                if (sound != 0) {
+                    value = volume;
+                    if (value != *(f32 *)((char *)sound + SOUND_VOLUME)) {
+                        *((u8 *)sound + SOUND_VOLUME_DIRTY) = 1;
+                        *(f32 *)((char *)sound + SOUND_VOLUME) = value;
                     }
                 }
             }
-            var_r28 += 3;
+            slot += DASH_SLOTS;
         }
     }
-    lbl_8055D4AC = temp_r3;
+    lbl_8055D4AC = block;
+    #undef STR_DASH_SOUND_PLAYER
+    #undef STR_SFX_ACCEPT
+    #undef STR_SFX_PRESS
+    #undef STR_EFFECTS_VOLUME
+    #undef FULL_VOLUME
+    #undef OPTIONS_SECTION_SOUND
+    #undef DASH_SLOTS
+    #undef SOUND_VOLUME
+    #undef SOUND_VOLUME_DIRTY
 }
 
 extern s32 *lbl_8055D4AC;
@@ -2360,6 +2377,7 @@ extern s32 lbl_8055CFF0, lbl_8055D48C;
 extern f32 lbl_80560288, lbl_80560290, lbl_805602A0, lbl_805602A4, lbl_805602A8, lbl_805602AC, lbl_805602B0, lbl_805602B4;
 extern f64 lbl_80560298;
 extern char lbl_80558AAC, lbl_80558AB8, lbl_80558ABC, lbl_80558AC4;
+#pragma opt_common_subs off
 void fn_8000E874(s32 arg0) {
     char buf[16];
     char *base;
@@ -2450,7 +2468,7 @@ void fn_8000E874(s32 arg0) {
     fn_80235EF0(lbl_80351214, b);
     fn_80235F64(lbl_80351214, a);
 }
-
+#pragma opt_common_subs reset
 /* get_center_item_scale: the draw scale of a DCIT center item of the given kind.
  * With more than two racers every center item draws at 1.0; kinds 12 and 14 use
  * 1.5, kind 13 uses 1.8 and kind 11 uses 1.0.  Any other kind is a fatal error. */
