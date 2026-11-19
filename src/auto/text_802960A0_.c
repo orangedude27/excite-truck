@@ -219,7 +219,7 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
         virtual int getInt(const char *);
         virtual void v6();
         virtual float getFloat(const char *);
-        virtual float getFloatDefault(float, const char *);
+        virtual float getFloatDefault(const char *, float);
         virtual void v9();
         virtual void v10();
         virtual void v11();
@@ -230,11 +230,11 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
     float *dst = (float *)arg0;
     int *word = (int *)((char *)arg0 + 0x14);
 
-    dst[0] = ((Node *)node)->getFloatDefault(src[0], lbl_8055C9EC);
-    dst[1] = ((Node *)node)->getFloatDefault(src[1], lbl_8055C9F0);
-    dst[2] = ((Node *)node)->getFloatDefault(src[2], lbl_8055C9F4);
-    dst[3] = ((Node *)node)->getFloatDefault(src[3], lbl_8055C9F8);
-    dst[4] = ((Node *)node)->getFloatDefault(src[4], lbl_8055C9FC);
+    dst[0] = ((Node *)node)->getFloatDefault(lbl_8055C9EC, src[0]);
+    dst[1] = ((Node *)node)->getFloatDefault(lbl_8055C9F0, src[1]);
+    dst[2] = ((Node *)node)->getFloatDefault(lbl_8055C9F4, src[2]);
+    dst[3] = ((Node *)node)->getFloatDefault(lbl_8055C9F8, src[3]);
+    dst[4] = ((Node *)node)->getFloatDefault(lbl_8055C9FC, src[4]);
     *word = fn_80296344(node, lbl_8055C9D4, *(int *)((char *)arg2 + 0x14));
 
     if (((Node *)node)->has(lbl_8055CA00)) {
@@ -271,8 +271,8 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
     dst[9] = result.y;
     dst[10] = result.z;
     *(int *)((char *)arg0 + 0x2C) = fn_802963F0(node, *(int *)((char *)arg2 + 0x2C));
-         return 1;
- }
+    return 1;
+}
 
  #pragma cplusplus reset
 #pragma pop
@@ -516,6 +516,8 @@ struct KF { float dur; float a[4]; unsigned int col; int p18; float h; float v[3
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 int fn_80296D2C(void *arg0, float *arg1, float farg0) {
     struct KF *kf[2];
     struct KF *base;
