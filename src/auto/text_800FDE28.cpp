@@ -14,7 +14,8 @@ extern "C" s32 fn_80128668(void *);
 extern "C" void *fn_800FDE60(void);
 #define FN800FE1D0_ARG void
 #define FN800FE1D0_USED_ARG ((void *)0)
-#define FN800FE1D0_CALL fn_800FDE60()
+#define FN800FE1D0_SEPARATE_CALL fn_800FDE60()
+#define FN800FE1D0_CALL /* empty */
 extern "C" void fn_800FE1D0(FN800FE1D0_ARG);
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0(void *, s32);
 extern u8 lbl_8055DE80;
@@ -306,9 +307,9 @@ void nw4hbm::snd::detail::TaskManager::AppendTask(
 }
 
 #pragma dont_inline on
-extern "C" void fn_800FE1D0(void) {
+extern "C" void fn_800FE1D0(FN800FE1D0_ARG) {
     do {
-    } while (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv((void *)0) != 0);
+    } while (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(FN800FE1D0_USED_ARG) != 0);
 }
 
 /* Run one queued sound task: take the first task of the highest-priority
