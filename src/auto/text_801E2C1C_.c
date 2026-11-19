@@ -107,7 +107,8 @@ int fn_801E2CCC(void *archiveCtx, const char *requestedName, void **outValue) {
 #pragma push
 #pragma small_data on
 #pragma use_lmw_stmw off
-s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
+s32 fn_801E2DEC(s32 archiveCtx, s32 itemName, s32 valueOut) {
+    /* Find an "MRJT" group item by name in the sound archive and optionally copy its value text. */
     struct Group {
         int magic;
         int pad;
@@ -142,9 +143,9 @@ s32 fn_801E2DEC(s32 arg0, s32 arg1, s32 arg2) {
                 valueBuf[0] = zero; valueBuf[1] = zero; valueBuf[2] = zero; valueBuf[3] = zero;
                 valueBuf[4] = zero; valueBuf[5] = zero; valueBuf[6] = zero; valueBuf[7] = zero;
                 if (sscanf(item, (const char *)&lbl_8055AEB4, name, (char *)(void *)valueBuf) >= 1 &&
-                    stricmp(name, (const char *)arg1) == 0) {
-                    if (arg2 != 0) {
-                        strcpy((char *)arg2, (char *)(void *)valueBuf);
+                    stricmp(name, (const char *)itemName) == 0) {
+                    if (valueOut != 0) {
+                        strcpy((char *)valueOut, (char *)(void *)valueBuf);
                     }
                     return (s32)group + index * 0x50 + 0xC;
                 }
@@ -302,7 +303,7 @@ void fn_801E323C(s32 *handle) {
     fn_8012A364((s32)lbl_8055EA50, handle);
 }
 
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 void fn_801E3284(void *out, void *in, s32 arg2) {
     struct Pair { s32 x[2]; };
     struct Locals {
@@ -350,7 +351,7 @@ void fn_801E3284(void *out, void *in, s32 arg2) {
     *(struct Pair *)((u8 *)out + 0x24) = *(struct Pair *)((u8 *)local.result.sp8 + 0x24);
     ((s32 *)out)[11] = local.result.sp8[11];
 }
-#pragma scheduling on
+#pragma use_lmw_stmw reset
 void fn_801E33E4(void *outTransform, void *node) {
     /* Compute a node's world transform from the identity matrix (3x3 rotation + translation). */
     f32 identity[12];
