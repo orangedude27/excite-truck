@@ -1044,17 +1044,18 @@ extern "C" void *fn_80146310(void *collection, const char *wantedName, s32 unuse
 #pragma dont_inline reset
 #pragma pop
 
-extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *arg0, s32 arg1) {
-    if (arg0 != NULL) {
-        void *v = *(void **)((u8 *)arg0 + 8);
-        if (v != NULL) {
-            ((void (*)(void *))fn_80235380)(v);
+extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *cacheTable, s32 shouldDelete) {
+    /* Destroy J3DUMtxAnmCacheTableBase: release its cached matrix-animation data at +8 and optionally delete the object. */
+    if (cacheTable != NULL) {
+        void *mtxAnmCache = *(void **)((u8 *)cacheTable + 8);
+        if (mtxAnmCache != NULL) {
+            ((void (*)(void *))fn_80235380)(mtxAnmCache);
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (shouldDelete > 0) {
+            fn_80128668(cacheTable);
         }
     }
-    return arg0;
+    return cacheTable;
 }
 
 extern "C" void fn_8014647C(void *);
