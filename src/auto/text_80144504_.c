@@ -4,7 +4,7 @@
 #include <types.h>
 
 // This file's float constants, all in .sdata2 (read_data shows their values).
-extern const f32 lbl_805615B8;  //  1.0f
+extern f32 lbl_805615B8;  //  1.0f
 extern f32 lbl_805615BC;  //  0.0f
 extern f32 lbl_805615C0;  //  0.5f
 extern f32 lbl_805615C4;  //  3.0f
