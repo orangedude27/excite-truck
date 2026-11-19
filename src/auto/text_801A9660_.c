@@ -1992,10 +1992,11 @@ void fn_801AD750(void *arg0, void *arg1) {
 }
 #pragma pop
 extern void fn_801D0A24(void *arg0, void *arg1);
-void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
-    if (arg3 >= 8) return;
-    if (arg0 != 0) arg0 = (char *)arg0 + 0x23C;
-    fn_801D0A24(arg0, arg2);
+void fn_801AD7A4(void *object, void *unused, void *eventData, int slotIndex) {
+    /* Forward an event notification to listeners for slot indices below 8, using the object's subobject at +0x23C when present. */
+    if (slotIndex >= 8) return;
+    if (object != 0) object = (char *)object + 0x23C;
+    fn_801D0A24(object, eventData);
 }
 /* Forward the event to fn_801AC0A0; if the target is a vehicle object (fourcc CAR/PCAR/ACAR/NCAR),
  * notify the embedded listener at +0x23C with the vehicle's record index at +0x1EC. */
