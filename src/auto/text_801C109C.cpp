@@ -464,7 +464,7 @@ extern "C" void fn_801C1C7C(int object) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *arg4, int arg5, void *arg6) {
     register float zero = 0.0f;
     char *base = (char *)arg0;
