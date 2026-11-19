@@ -2097,6 +2097,7 @@ void fn_8026A2CC(int *arg0, int arg1, float arg2) {
     dst[11] = b;
     *(float *)(dst + 12) = arg2;
 }
+#pragma scheduling on
 #pragma cplusplus reset
 /* Return the index of the object the given camera is following (Camera.subject). */
 int fn_8026A344(int cameraIndex) {
