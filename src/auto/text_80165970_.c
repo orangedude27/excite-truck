@@ -624,7 +624,7 @@ void fn_80166814(void) {
 extern float lbl_805618A0, lbl_805618D0, lbl_805618E4, lbl_805618E8;
 extern void *memset(void *, int, unsigned int);
 #pragma push
-#pragma processor 750
+#pragma processor generic
 #pragma scheduling invalid_target
 void fn_80166898(void) {
     register float scale;
