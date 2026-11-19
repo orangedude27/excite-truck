@@ -6304,14 +6304,13 @@ extern "C" void fn_80223280(void *arg0, s32 arg1) {
     register f32 temp_f6;
     register f32 temp_f28_2;
     register f32 temp_f27_2;
-    scratch[0] = 0x43300000;
-    scratch[1] = *(s32 *)((u8 *)arg0 + 8) ^ 0x80000000;
     temp_f30 = *(f32 *)((u8 *)arg0 + 0x408);
     temp_f29 = temp_f30;
     var_r28 = 0;
     temp_f27 = lbl_805634EC;
     temp_f28 = lbl_805634C4;
-    temp_f31 = lbl_805634F4 - (f32)(*(f64 *)scratch - lbl_805634B8);
+    temp_f31 = lbl_805634F4 - (f32)*(s32 *)((u8 *)arg0 + 8);
+    scratch[0] = 0x43300000;
     scratch[2] = 0x43300000;
     goto loop_test;
 loop_body:
@@ -7259,6 +7258,13 @@ extern "C" void *fn_80224D40(void *obj, s32 deleteFlags) {
     }
     return obj;
 }
+#pragma always_inline on
+static inline void ScaleVec80224DDC(f32 *dst, f32 c, f32 x, f32 y, f32 z) {
+    dst[0] = c * x;
+    dst[1] = c * y;
+    dst[2] = c * z;
+}
+#pragma always_inline reset
 #pragma scheduling invalid_target
 extern "C" void fn_80224DDC(void *arg0, f32 x, f32 y, f32 z) {
     f32 result[11];
@@ -8135,21 +8141,21 @@ extern "C" void fn_80226F94(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-extern "C" void fn_80227044(void *arg0, float x, float y, float z) {
-    float result[11];
-    float scaled[3];
-    *(unsigned char *)((char *)arg0 + 0x260) = 1;
+extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
+    f32 result[11];
+    f32 scaled[3];
+    *(u8 *)((u8 *)arg0 + 0x260) = 1;
     void *tmp = fn_8022EE9C();
-    float k = lbl_805634F8;
-    *(void **)((char *)arg0 + 0x25C) = tmp;
-    float sz = k * z;
-    float sy = k * y;
-    float sx = k * x;
+    f32 k = lbl_805634F8;
+    *(void **)((u8 *)arg0 + 0x25C) = tmp;
+    f32 sx = k * x;
+    f32 sy = k * y;
+    f32 sz = k * z;
     scaled[0] = sx;
     scaled[1] = sy;
     scaled[2] = sz;
-    void *handle = *(void **)((char *)arg0 + 0x25C);
-    ((void (*)(void *, void *, float, float))fn_80015A20)(&result[0], &scaled[0], sx, sy);
+    void *handle = *(void **)((u8 *)arg0 + 0x25C);
+    ((void (*)(void *, void *, f32, f32))fn_80015A20)(&result[0], &scaled[0], sx, sy);
     fn_80015B20(handle, &result[0], handle);
 }
 #pragma pop
