@@ -523,6 +523,7 @@ int fn_801DCA60(void) {
 #pragma opt_propagation reset
 
 void fn_801DCD24(void) {
+    /* Thunk: calls the shared free/deallocate helper. */
     fn_80128668();
 }
 
