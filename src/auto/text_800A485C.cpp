@@ -26451,38 +26451,35 @@ extern "C" s32 fn_800A4D74(void *pathName, u32 selector) {
     return ((s32 *)pathName)[2];
 }
 
-extern "C" void VFiPFSTR_MoveStrPos(void *cursor, s16 charCount, s32 unused) {
-    /* Advance the string cursor's position by charCount characters. In mode 1
-       each character is at least one byte and lead bytes add an extra byte;
-       otherwise each character occupies a variable number of 2-byte units and
-       the cursor advances by that encoded length. */
+/* Advance the string position cursor by a number of characters. */
+extern "C" void VFiPFSTR_MoveStrPos(void *strPos, s16 charCount, s32 unused) {
     struct StringCursor { u8 *pos; u8 *secondary; u32 unk; u32 mode; };
-    struct CharEncoding { u8 pad[0x54]; s32 (*isLeadByte)(s8, s32); s32 (*charLength)(u8 *); };
-    StringCursor *state = (StringCursor *)cursor;
-    CharEncoding *encoding;
-    u8 *scan;
+    struct CodePageFuncs { u8 pad[0x54]; s32 (*isMultiByteLead)(s8, s32); s32 (*getCharWidth)(u8 *); };
+    StringCursor *cursor = (StringCursor *)strPos;
+    CodePageFuncs *codePage;
+    u8 *p;
     s16 byteOffset = 0;
-    if (state->mode == 1) {
-        scan = state->pos;
-        encoding = (CharEncoding *)lbl_803D2140;
+    if (cursor->mode == 1) {
+        p = cursor->pos;
+        codePage = (CodePageFuncs *)lbl_803D2140;
         while (charCount != 0) {
-            if (encoding->isLeadByte((s8)*scan, 1) != 0)
+            if (codePage->isMultiByteLead((s8)*p, 1) != 0)
                 byteOffset = (s16)(byteOffset + 1);
             byteOffset++;
             charCount--;
         }
     } else {
-        s16 index = 0;
-        u8 *wideScan = state->pos;
-        encoding = (CharEncoding *)lbl_803D2140;
-        while (index < charCount) {
-            s32 length = encoding->charLength(wideScan);
-            wideScan += length * 2;
-            index++;
-            byteOffset += (s16)length;
+        s16 i = 0;
+        u8 *p2 = cursor->pos;
+        codePage = (CodePageFuncs *)lbl_803D2140;
+        while (i < charCount) {
+            s32 charWidth = codePage->getCharWidth(p2);
+            p2 += charWidth * 2;
+            i++;
+            byteOffset += (s16)charWidth;
         }
     }
-    state->pos += byteOffset;
+    cursor->pos += byteOffset;
 }
 
 /* Initialize a path/string range object with begin/end pointers for a byte (1)
