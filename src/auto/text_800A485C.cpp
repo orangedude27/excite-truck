@@ -17970,7 +17970,6 @@ extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
 }
 
 extern "C" const s32 lbl_8031D790[];
-#define KVAL(k, i) (*(volatile s32 *)((k) + (i)))
 extern "C" void fn_800C3088(volatile s32 *out, const volatile s32 *a, const volatile s32 *b, const volatile s32 *c) {
     s32 term1;
     s32 term2;
