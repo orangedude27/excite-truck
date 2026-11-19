@@ -6894,7 +6894,7 @@ extern "C" s32 fn_800AE7A8(void *walk, s32 firstCluster, s32 chainPos, s32 bytes
     return 0;
 }
 
-extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
+s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *, void *);
 extern "C" s32 fn_800B00E8(void *, s32, u32 *, void *);
 extern "C" s32 fn_800B05C8(void *, s32, u32 *, void *);
