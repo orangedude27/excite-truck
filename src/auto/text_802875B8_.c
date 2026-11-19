@@ -220,9 +220,6 @@ void fn_802877D0(void) {
 void fn_80287800(s32 arg0) {
 #pragma scheduling invalid_target
     s32 a;
-    s32 b;
-    s32 c;
-    s32 d;
     ((void (*)(void))fn_8028777C)();
     fn_80288218(arg0);
     fn_802880F4();
@@ -245,11 +242,8 @@ void fn_80287800(s32 arg0) {
     fn_802AB21C();
     fn_8028DFB0();
     a = fn_801E7DF0(0);
-    b = a ^ 1;
-    d = b & a;
-    c = b >> 1;
-    lbl_8055F6BC = (signed char)(((unsigned long)(c - d) >> 31));
-    ((void (*)(s32, s32))fn_80288868)(0, b);
+    lbl_8055F6BC = (a > 1);
+    fn_80288868(0);
 }
 #pragma pop
 void fn_802878A8(void) {
@@ -510,24 +504,24 @@ void fn_80287CE8(int effectSlot, void *carName, int effectId, int flags) {
 void fn_80287D70(void *arg0, int arg1, int arg2) {
     char name[0x20];
     const char *format = lbl_80348A40;
+    const char **formatp = &format;
 
     if ((arg2 & 0x100000) != 0) {
-        format = lbl_80348A30;
+        *formatp = lbl_80348A30;
         *(volatile int *)((char *)arg0 + 0x24) = 0;
-        return;
+    } else {
+        do {
+            sprintf(name, *formatp, arg2 + 1);
+            if (((int (*)(int, char *, int *))fn_801E2CCC)(
+                    arg1, name,
+                    (int *)((char *)arg0 +
+                            (*(volatile int *)((char *)arg0 + 0x24) << 2) + 4)) == 0) {
+                return;
+            }
+            ++*(volatile int *)((char *)arg0 + 0x24);
+            arg2 = *(volatile int *)((char *)arg0 + 0x24);
+        } while (arg2 < 8);
     }
-
-    do {
-        sprintf(name, format, arg2 + 1);
-        if (((int (*)(int, char *, int *))fn_801E2CCC)(
-                arg1, name,
-                (int *)((char *)arg0 +
-                        (*(volatile int *)((char *)arg0 + 0x24) << 2) + 4)) == 0) {
-            return;
-        }
-        ++*(volatile int *)((char *)arg0 + 0x24);
-        arg2 = *(volatile int *)((char *)arg0 + 0x24);
-    } while (arg2 < 8);
 }
 #pragma scheduling on
 
@@ -573,11 +567,11 @@ extern "C" void fn_80287ED0(void *arg0, void **arg1, s32 arg2, s32 arg3) {
         virtual void f10();
         virtual void f11(void *, s32);
     };
-    Ifc *check = *(Ifc **)arg1;
-    if (check == 0 || check->f0(arg2) == 0) {
+    Ifc *obj = *(Ifc **)arg1;
+    if (obj == 0 || obj->f0(arg2) == 0) {
         fn_802E317C(lbl_80348A4C, arg2);
     }
-    Ifc *obj = *(Ifc **)arg1;
+    obj = *(Ifc **)arg1;
     obj = (Ifc *)obj->f0(arg2);
     ((Ifc *)arg0)->f11(obj, arg3);
 }
@@ -855,7 +849,13 @@ extern f32 PSVECSquareDistance(void *, void *);
 extern u8 lbl_804B3160[];
 extern s32 fn_802885C4(void *, void *);
 extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
-#pragma scheduling reset
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma ppc_psq_save off
+#pragma opt_loop_invariants off
+#pragma opt_common_subs off
+#pragma scheduling invalid_target
 void fn_802885F0(void) {
     struct Pair { s32 a; s32 b; };
     struct Entry {
@@ -864,24 +864,24 @@ void fn_802885F0(void) {
         struct Pair vecpair;
         s32 last;
     } local[4];
+    s32 j;
+    s32 flag;
+    u8 *currentVector;
+    s32 i;
     struct Entry *entry;
+    s32 *id;
+    u8 *result;
+    s32 count;
+    u8 *current;
     struct Entry *source;
     struct Entry *other;
     s32 ids[4];
-    s32 *id;
     s32 *otherId;
-    s32 count;
-    s32 i;
-    u8 *current;
-    u8 *currentVector;
-    s32 j;
-    s32 flag;
     f32 scale;
     f32 scaleSquared;
     f32 best;
     f32 distance;
     f32 candidate;
-    u8 *result;
 
     count = fn_801E85A4();
     entry = local;
@@ -914,7 +914,7 @@ void fn_802885F0(void) {
             other = &local[1];
             otherId = ids + 1;
             j = 1;
-            do {
+            while (flag != 0 && j < count) {
                 scale = fn_801E88F0(j);
                 scaleSquared = scale * scale;
                 distance = PSVECSquareDistance(currentVector, &other->vecpair);
@@ -925,7 +925,7 @@ void fn_802885F0(void) {
                 other++;
                 otherId++;
                 j++;
-            } while (flag != 0 && j < count);
+            }
         }
         if (flag != 0) {
             *(s32 *)result = (s32)current;
@@ -937,6 +937,11 @@ void fn_802885F0(void) {
     }
     qsort(lbl_804B3160, *(s32 *)(lbl_804B3150 + 4), 0x10, (int (*)(const void *, const void *))fn_802885C4);
 }
+#pragma scheduling on
+#pragma opt_common_subs on
+#pragma opt_loop_invariants on
+#pragma ppc_psq_save on
+#pragma pop
 void fn_802887EC(void) {
     u8 *base = lbl_804B3150;
     void (**callback)(void *, s32) = (void (**)(void *, s32))(base + 0x90);
