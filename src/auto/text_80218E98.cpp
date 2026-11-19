@@ -8155,46 +8155,81 @@ extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
     fn_80015B20(handle, &result[0], handle);
 }
 #pragma pop
-extern "C" void *fn_802270DC(void *arg0, void *arg1) {
-    u8 *obj = (u8 *)arg0;
-    u8 *context = (u8 *)arg1;
+/* Constructor of a ColorBackground widget - the flat textured panel the menus
+ * draw behind their items (its own error string names the class).
+ * Runs the base widget constructor, installs this class's vtable and caches the
+ * widget box (+4/+8/+0xC/+0x10 = left/top/right/bottom) as a screen-centre
+ * position and a size:
+ *   +0x244,+0x248  f32  box top-left, relative to the screen centre
+ *   +0x24C         f32  width  (the base class's virtual getter, vtable +0x78)
+ *   +0x250         f32  height (bottom - top)
+ *   +0x254         s32  texture handle loaded from the descriptor's name at +0x40
+ *   +0x258         f32  fade time in seconds: the descriptor's count at +0x9C / 10
+ *   +0x25C         f32  time of this construction (the draw handler's "last frame")
+ *   +0x260         ptr  identity UI matrix the panel is drawn through
+ *   +0x264         u8   1 while the panel is fading in
+ *   +0x268         f32  alpha, 0..1
+ *   +0x26C         f32  texture scroll offset
+ *   +0x270         u8   scroll direction, from the descriptor's flag at +0xB0
+ * fn_802272D4 is the draw/update handler that animates these. */
+extern "C" void *fn_802270DC(void *widgetMem, void *descriptor) {
+#define Widget_ctor              fn_80218F80
+#define ColorBackground_vtable   lbl_8033DFB4
+#define Screen_toCentre          fn_80230C30
+#define LoadTexture              fn_802CAC28
+#define ReportError              fn_802E30C8
+#define NoTextureMsg             lbl_8033DC20 /* "Widget: ColorBackground can't find texture" */
+#define FadeTime_divisor         lbl_805634C8 /* 10.0f: descriptor count -> seconds */
+#define Time_inSeconds           fn_8023659C
+#define UiMatrix_identity        fn_8022EE9C
+    u8 *self = (u8 *)widgetMem;
+    u8 *desc = (u8 *)descriptor;
 
-    ((void (*)(void *, void *))fn_80218F80)(arg0, arg1);
-    *(void **)obj = lbl_8033DFB4;
+    ((void (*)(void *, void *))Widget_ctor)(widgetMem, descriptor);
+    *(void **)self = ColorBackground_vtable;
 
-    fn_80230C30((f32 *)(obj + 0x244), (f32 *)(obj + 0x248),
-                *(s32 *)(obj + 4), *(s32 *)(obj + 8));
-    *(f32 *)(obj + 0x250) =
-        (f32)(*(s32 *)(obj + 0x10) - *(s32 *)(obj + 8));
+    Screen_toCentre((f32 *)(self + 0x244), (f32 *)(self + 0x248),
+                    *(s32 *)(self + 4), *(s32 *)(self + 8));
+    *(f32 *)(self + 0x250) =
+        (f32)(*(s32 *)(self + 0x10) - *(s32 *)(self + 8));
 
-    *(f32 *)(obj + 0x24c) = (f32)((VfObj *)obj)->vf28();
+    *(f32 *)(self + 0x24c) = (f32)((VfObj *)self)->vf28();
 
-    *(s32 *)(obj + 0x254) = -1;
-    if (context + 0x40 != 0)
-        *(s32 *)(obj + 0x254) = fn_802CAC28((void *)(context + 0x40), 0);
+    *(s32 *)(self + 0x254) = -1;
+    if (desc + 0x40 != 0)
+        *(s32 *)(self + 0x254) = LoadTexture((void *)(desc + 0x40), 0);
 
-    s32 handle = *(s32 *)(obj + 0x254);
-    if (handle == -2)
+    s32 texture = *(s32 *)(self + 0x254);
+    if (texture == -2)
         goto report;
-    if (handle == -1)
+    if (texture == -1)
         goto report;
     goto next;
 report:
-    fn_802E30C8(lbl_8033DC20);
+    ReportError(NoTextureMsg);
 next:
-    u32 count = *(u32 *)(context + 0x9c);
-    *(f32 *)(obj + 0x258) = (f32)count / lbl_805634C8;
-    *(f32 *)(obj + 0x25c) = fn_8023659C();
-    *(void **)(obj + 0x260) = fn_8022EE9C();
-    *(u8 *)(obj + 0x264) = 1;
+    u32 count = *(u32 *)(desc + 0x9c);
+    *(f32 *)(self + 0x258) = (f32)count / FadeTime_divisor;
+    *(f32 *)(self + 0x25c) = Time_inSeconds();
+    *(void **)(self + 0x260) = UiMatrix_identity();
+    *(u8 *)(self + 0x264) = 1;
     register f32 zero = 0.0f;
-    *(f32 *)(obj + 0x268) = zero;
-    *(f32 *)(obj + 0x26c) = zero;
-    if (*(s32 *)(context + 0xb0) != 0)
-        *(u8 *)(obj + 0x270) = 1;
+    *(f32 *)(self + 0x268) = zero;
+    *(f32 *)(self + 0x26c) = zero;
+    if (*(s32 *)(desc + 0xb0) != 0)
+        *(u8 *)(self + 0x270) = 1;
     else
-        *(u8 *)(obj + 0x270) = 0;
-    return obj;
+        *(u8 *)(self + 0x270) = 0;
+    return self;
+#undef Widget_ctor
+#undef ColorBackground_vtable
+#undef Screen_toCentre
+#undef LoadTexture
+#undef ReportError
+#undef NoTextureMsg
+#undef FadeTime_divisor
+#undef Time_inSeconds
+#undef UiMatrix_identity
 }
 #pragma scheduling on
 
@@ -10029,11 +10064,13 @@ extern "C" f32 lbl_80563584;
 
 #pragma push
 #pragma processor 750
+#pragma opt_propagation off
 extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
     register s32 width = arg3; register void *obj = arg0; register s32 height = arg4;
     f32 scratch[24];
     register f32 temp_f31, var_f30, var_f2, temp_f0, temp_f0_2, temp_f11, temp_f12;
     register f32 axisValue, axisZero, deltaY, deltaX, deltaZ;
+    volatile u8 *dst;
     u32 *source; u32 second, first; s32 matrixValue;
     if (*(s32 *)((u8 *)obj + 4) == -1) return;
     *(f32 *)((u8 *)obj + 0x38) += *(f32 *)((u8 *)obj + 0x3C) * arg5;
@@ -10058,7 +10095,8 @@ extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     matrixValue = (s32)second;
     scratch[4] = axisZero; scratch[5] = axisValue; scratch[6] = axisZero;
     ((void (*)(void *, f32 *, s32, f32))fn_80015A20)(&scratch[16], &scratch[4], matrixValue, scratch[5]);
-    fn_80015B20((u8 *)obj + 8, &scratch[16], (u8 *)obj + 8);
+    dst = (u8 *)obj + 8;
+    fn_80015B20((void *)dst, &scratch[16], (void *)dst);
     fn_802C77F0(*(s32 *)((u8 *)obj + 4), &scratch[10]);
     deltaY = scratch[13] - scratch[12];
     deltaX = scratch[11] - scratch[10];
