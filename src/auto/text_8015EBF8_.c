@@ -258,10 +258,12 @@ extern "C" void fn_8015EF84(void **arg0) {
         virtual void unused08(); virtual void unused09(); virtual void unused10(); virtual void unused11();
         virtual void unused12(); virtual u64 getPacked(const char *);
     };
-    void *obj;
-    int found = 0;
     int index;
-    if (arg0 == 0)
+    int found = 0;
+    void **root;
+    void *obj;
+    root = arg0;
+    if (root == 0)
         goto report;
     index = 0;
     goto fetch;
@@ -292,26 +294,25 @@ process:
             differences[1] = dy;
             f32 dx2 = dx * dx;
             differences[0] = dx;
-            if (dx2 + dy2 >= radius2)
-                goto advance;
-            if (i >= 0 && i < table[1]) {
-                int count = table[1];
-                int last = count - 1;
-                if (i != last) {
-                    int lastOffset = last * 16;
-                    char *from = array + lastOffset;
-                    *(u16 *)(entry + 0) = *(u16 *)(from + 0);
-                    *(s16 *)(entry + 2) = *(s16 *)(from + 2);
-                    *(int *)(entry + 4) = *(int *)(from + 4);
-                    *(int *)(entry + 8) = *(int *)(from + 8);
-                    *(f32 *)(entry + 12) = *(f32 *)(from + 12);
+            if (dx2 + dy2 < radius2) {
+                if (i >= 0 && i < table[1]) {
+                    int count = table[1];
+                    int last = count - 1;
+                    if (i != last) {
+                        int lastOffset = last * 16;
+                        char *from = array + lastOffset;
+                        *(u16 *)(entry + 0) = *(u16 *)(from + 0);
+                        *(s16 *)(entry + 2) = *(s16 *)(from + 2);
+                        *(int *)(entry + 4) = *(int *)(from + 4);
+                        *(int *)(entry + 8) = *(int *)(from + 8);
+                        *(f32 *)(entry + 12) = *(f32 *)(from + 12);
+                    }
+                    table[1] = count - 1;
                 }
-                table[1] = count - 1;
+            } else {
+                offset += 16;
+                i++;
             }
-            goto inner;
-        advance:
-            offset += 16;
-            i++;
             table = (volatile int *)lbl_8055E29C;
             if (i < table[1])
                 goto inner;
@@ -319,7 +320,7 @@ process:
     }
     index++;
 fetch:
-    obj = ((Root *)arg0)->getAt(index);
+    obj = ((Root *)root)->getAt(index);
     if (obj != 0)
         goto process;
 report:
@@ -1217,6 +1218,11 @@ float fn_80160588(void * __restrict arg0, void * __restrict arg1, void * __restr
 }
 
 #pragma scheduling reset
+static inline void fn_801605C8_spill(f32 a, f32 b) {
+    volatile f32 p[2];
+    p[0] = a;
+    p[1] = b;
+}
 f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     f32 result2;
     f32 result1;
@@ -1224,16 +1230,15 @@ f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     f32 dx;
     f32 y;
     f32 negX;
-    f32 sp8;
-    f32 spC;
+    volatile f32 sp[2];
     negX = -*(f32 *)arg0;
+    y = *(f32 *)((u8 *)arg0 + 4);
     dx = *(f32 *)arg1 - *(f32 *)arg2;
     dy = *(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4);
-    y = *(f32 *)((u8 *)arg0 + 4);
     result1 = y * dx;
-    *(volatile f32 *)&spC = dx;
+    sp[0] = dx;
     result2 = negX * dy;
-    *(volatile f32 *)&sp8 = dy;
+    sp[1] = dy;
     return result1 + result2;
 }
 void *fn_8016060C(void *arg0, void *arg1) {
