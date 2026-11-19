@@ -20216,8 +20216,7 @@ check:
 #pragma push
 #pragma small_data on
 void homebutton::gui::PaneManager::setAllBoundingBoxComponentTriggerTarget(bool arg0) {
-    register void *entry;
-    void *list;
+    void *item;
     void *component;
     const void *typeId;
     u32 index;
@@ -20230,13 +20229,12 @@ void homebutton::gui::PaneManager::setAllBoundingBoxComponentTriggerTarget(bool 
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
         virtual void v16(); virtual void v17(); virtual void setTarget(bool);
     };
-    list = self + 8;
     index = 0;
     goto loop_check;
 loop_body:
     {
-        entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(self + 0x18, (u16)index);
-        component = *(void **)entry;
+        item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(self + 0x18, (u16)index);
+        component = *(void **)item;
         typeId = &lbl_8055DDE0;
         void *node = ((ParentDispatch *)component)->parent();
         u32 found;
@@ -20253,12 +20251,12 @@ node_check:
 type_done:
         component = found ? component : 0;
         if (component != 0) {
-            ((TriggerDispatch *)*(void **)((u8 *)entry + 4))->setTarget(arg0);
+            ((TriggerDispatch *)*(void **)((u8 *)item + 4))->setTarget(arg0);
         }
     }
     ++index;
 loop_check:
-    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    if ((void *)(self + 8) == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
     if (index < *(u16 *)(self + 0x10)) goto loop_body;
 }
 #pragma pop
@@ -27273,8 +27271,7 @@ extern "C" s32 fn_800BB2C4(void *arg0) {
 }
 
 extern "C" s32 fn_800B3304(void *, void *);
-#pragma push
-#pragma use_lmw_stmw off
+#pragma scheduling on
 extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *templateArg, s32 *bitmap) {
     struct Iter {
         u32 pad[2];
@@ -27285,25 +27282,23 @@ extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *tem
     s8 shortName[16];
     char local0[16];
     struct Iter iter;
-    struct { void *p; } selfBox; void *&self = selfBox.p;
-    struct { void *p; } ctxBox; void *&context = ctxBox.p;
+    void *context = *(void **)((u8 *)arg0 + 0x34);
     u32 tilde, end, digits, i, index;
     s8 ch, terminal;
     s32 state;
     u32 mask;
-    u32 *dst = iter.sub;
+    u32 *dst;
     u32 a, b;
 
-    self = arg0;
-    context = *(void **)((u8 *)self + 0x34);
+    dst = iter.sub;
     fn_800A499C((const char *)bitmap, 0, *(u32 *)((u8 *)context + 0x1F74) * 4);
-    b = ((u32 *)self)[0]; a = ((u32 *)self)[1]; dst[0] = b; dst[1] = a;
-    a = ((u32 *)self)[2]; b = ((u32 *)self)[3]; dst[2] = a; dst[3] = b;
-    a = ((u32 *)self)[4]; b = ((u32 *)self)[5]; dst[4] = a; dst[5] = b;
-    a = ((u32 *)self)[6]; b = ((u32 *)self)[7]; dst[6] = a; dst[7] = b;
-    a = ((u32 *)self)[8]; b = ((u32 *)self)[9]; dst[8] = a; dst[9] = b;
-    a = ((volatile u32 *)self)[10]; b = ((volatile u32 *)self)[11]; dst[10] = a; dst[11] = b;
-    a = ((volatile u32 *)self)[12]; b = ((volatile u32 *)self)[13]; dst[12] = a; dst[13] = b;
+    b = ((u32 *)arg0)[0]; a = ((u32 *)arg0)[1]; dst[0] = b; dst[1] = a;
+    a = ((u32 *)arg0)[2]; b = ((u32 *)arg0)[3]; dst[2] = a; dst[3] = b;
+    a = ((u32 *)arg0)[4]; b = ((u32 *)arg0)[5]; dst[4] = a; dst[5] = b;
+    a = ((u32 *)arg0)[6]; b = ((u32 *)arg0)[7]; dst[6] = a; dst[7] = b;
+    a = ((u32 *)arg0)[8]; b = ((u32 *)arg0)[9]; dst[8] = a; dst[9] = b;
+    a = ((volatile u32 *)arg0)[10]; b = ((volatile u32 *)arg0)[11]; dst[10] = a; dst[11] = b;
+    a = ((volatile u32 *)arg0)[12]; b = ((volatile u32 *)arg0)[13]; dst[12] = a; dst[13] = b;
     state = fn_800AC1B4(&iter, 0);
     mask = 1;
     while (VFiPFENT_ITER_IsAtLogicalEnd(&iter) == 0) {
@@ -27341,7 +27336,6 @@ extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *tem
     }
     return 0;
 }
-#pragma pop
 extern "C" void VFiPFSTR_ToUpperNStr(s32 srcStr, u16 maxChars, u8 *dst) {
     u8 *srcPtr;
     u8 *dstPtr;
