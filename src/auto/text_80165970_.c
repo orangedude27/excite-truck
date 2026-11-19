@@ -180,8 +180,8 @@ extern "C" void fn_80165A30(void *arg0, int arg1) {
         virtual void d4(); virtual void d5(); virtual void d6();
         virtual float getValue(const char *);
     };
+    float scaleX = lbl_80561898, scaleY = lbl_805618A0;
     float y, x, z;
-    float scaleY = lbl_805618A0, scaleX = lbl_80561898;
     void *entry = 0;
     Entry *item = 0;
     int j, count, minusOne;
@@ -952,13 +952,16 @@ extern int fn_801B8570(void);
 extern void *fn_80166040(int);
 extern float lbl_805618A0, lbl_805618DC, lbl_805618E0, lbl_805618E4;
 extern "C" void fn_8016707C(void *arg0, register void **arg1) {
+    /* Update this effect entry's active slot and schedule its next event times:
+       release and randomize when inactive, or claim a free slot (when allowed)
+       and randomize its times. */
     Entry8016707C *entry = (Entry8016707C *)arg0;
-    void *cur;
-    float f1;
-    float f2;
-    float ret1;
-    float res;
-    float ret2;
+    void *slot;
+    float randMin;
+    float randMax;
+    float randValue;
+    float scheduledTime;
+    float nextRandValue;
 
     if (entry->unk4 != 0) {
         return;
@@ -966,18 +969,18 @@ extern "C" void fn_8016707C(void *arg0, register void **arg1) {
 
     fn_80179630(-1);
     if (fn_801B8570() == 0) {
-        cur = entry->unk58;
-        if (cur != 0) {
-            *(int *)((char *)cur + 0x10) = -1;
+        slot = entry->unk58;
+        if (slot != 0) {
+            *(int *)((char *)slot + 0x10) = -1;
         }
         entry->unk58 = (void *)0;
-        ret1 = ((float (*)(int, float, float))fn_80129DC4)(3, 2.0f, 5.0f);
-        f2 = lbl_805618E0;
-        res = lbl_8055E318 + ret1;
-        f1 = lbl_805618DC;
-        entry->unk1C = res;
-        ret2 = ((float (*)(int, float, float))fn_80129DC4)(3, f1, f2);
-        entry->unk20 = lbl_8055E318 + ret2;
+        randValue = ((float (*)(int, float, float))fn_80129DC4)(3, 2.0f, 5.0f);
+        randMax = lbl_805618E0;
+        scheduledTime = lbl_8055E318 + randValue;
+        randMin = lbl_805618DC;
+        entry->unk1C = scheduledTime;
+        nextRandValue = ((float (*)(int, float, float))fn_80129DC4)(3, randMin, randMax);
+        entry->unk20 = lbl_8055E318 + nextRandValue;
         return;
     }
 
@@ -989,21 +992,21 @@ extern "C" void fn_8016707C(void *arg0, register void **arg1) {
         return;
     }
 
-    cur = fn_80166040(entry->unk0);
+    slot = fn_80166040(entry->unk0);
     {
-        void *old = entry->unk58;
-        if (old != 0) {
-            *(int *)((char *)old + 0x10) = -1;
+        void *oldSlot = entry->unk58;
+        if (oldSlot != 0) {
+            *(int *)((char *)oldSlot + 0x10) = -1;
         }
     }
-    entry->unk58 = cur;
-    ret1 = ((float (*)(int, float, float))fn_80129DC4)(3, lbl_805618A0, lbl_805618E4);
-    f2 = lbl_805618E0;
-    res = lbl_8055E318 + ret1;
-    f1 = lbl_805618DC;
-    entry->unk1C = res;
-    ret2 = ((float (*)(int, float, float))fn_80129DC4)(3, f1, f2);
-    entry->unk20 = lbl_8055E318 + ret2;
+    entry->unk58 = slot;
+    randValue = ((float (*)(int, float, float))fn_80129DC4)(3, lbl_805618A0, lbl_805618E4);
+    randMax = lbl_805618E0;
+    scheduledTime = lbl_8055E318 + randValue;
+    randMin = lbl_805618DC;
+    entry->unk1C = scheduledTime;
+    nextRandValue = ((float (*)(int, float, float))fn_80129DC4)(3, randMin, randMax);
+    entry->unk20 = lbl_8055E318 + nextRandValue;
 }
 
 #pragma pop
