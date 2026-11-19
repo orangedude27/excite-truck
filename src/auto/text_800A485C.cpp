@@ -20928,7 +20928,7 @@ extern "C" void fn_800D0F78(void *controller) {
     homebutton::Controller *self = (homebutton::Controller *)controller;
     s32 deviceType;
     s32 probeResult;
-    self->m_prevConnectCb = (void *)WPADSetSamplingCallback(self->m_channel, (void *)&wpadConnectCallback__Q210homebutton10ControllerFll);
+    self->m_prevConnectCb = (void *)WPADSetSamplingCallback(self->m_channel, (void *)&homebutton::Controller::wpadConnectCallback);
     probeResult = WPADProbe(self->m_channel, &deviceType);
     if (probeResult == 0) goto installExtension;
     if (probeResult >= 0) goto done;
