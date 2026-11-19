@@ -19,7 +19,7 @@ extern u32 lbl_80559968;
 extern char lbl_8032A430[];
 extern char lbl_8032A01C[];
 extern u8 lbl_8055DF80;
-extern s32 lbl_8055DF84;
+extern volatile s32 lbl_8055DF84;
 extern s32 lbl_8055DF98;
 extern char lbl_8041E140[];
 extern s32 lbl_8041E140_s32[];
@@ -709,7 +709,7 @@ extern int strcmp(const char *, const char *);
 extern char lbl_80559970, lbl_80559974;
 #pragma push
 #pragma use_lmw_stmw off
-void fn_80128C5C(register void *arg0, int arg1, int arg2) {
+void fn_80128C5C(void *arg0, int arg1, int arg2) {
     register char *text = lbl_8032A000;
     int used;
     int count;
