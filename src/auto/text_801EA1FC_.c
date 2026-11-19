@@ -68,7 +68,7 @@ void fn_801EA2E8(void) {
     fn_802C974C(lbl_80562E40, lbl_80562E48, lbl_80562E4C);
 }
 void fn_801EA318(void) {
-
+    /* Empty stub (returns immediately). */
 }
 
 extern s32 fn_80012954(s32);
