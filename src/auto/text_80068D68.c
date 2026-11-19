@@ -1811,6 +1811,9 @@ void fn_80069408(void) {
         base[0xC] = 3;
         return;
     }
+    case 0xD:
+    case 0x1A:
+        break;
     default:
         DBPrintf_8006CFA8((const char *)(lbl_803130C8 + 0x280));
         return;
@@ -9412,24 +9415,34 @@ void btm_read_hci_buf_size_complete(UINT8 *p, UINT16 evt_len) {
 }
 
 void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
+    typedef struct {
+        u8 pad[0x636];
+        u8 f636;
+        u16 f638;
+        u8 f63A;
+        u16 f63C;
+        u16 f63E;
+        u8 pad2[0xE];
+        u8 f64E, f64F;
+    } Ctrl;
+    register Ctrl *base = (Ctrl *)lbl_803C0F78;
     UINT8 status = p[0];
-    register UINT8 *base = lbl_803C0F78;
     if (status == 0) {
-        base[0x636] = p[1];
-        *(u16 *)(base + 0x638) = (p[3] << 8) + p[2];
-        base[0x63A] = p[4];
-        *(u16 *)(base + 0x63C) = (p[6] << 8) + p[5];
-        *(u16 *)(base + 0x63E) = (p[8] << 8) + p[7];
-        lbl_803C0F78[0x64E] = 4;
-        lbl_803C0F78[0x64F] = 4;
+        base->f636 = p[1];
+        base->f638 = (p[3] << 8) + p[2];
+        base->f63A = p[4];
+        base->f63C = (p[6] << 8) + p[5];
+        base->f63E = (p[8] << 8) + p[7];
+        base->f64E = 4;
+        base->f64F = 4;
     } else {
-        lbl_803C0F78[0x64F] = status;
-        lbl_803C0F78[0x64E] = status;
-        btu_start_timer(base + 0x574, 1, 1);
+        base->f64F = status;
+        base->f64E = status;
+        btu_start_timer((u8 *)base + 0x574, 1, 1);
         ((void (*)(void))btsnd_hcic_reset)();
         return;
     }
-    btu_start_timer(lbl_803C0F78 + 0x574, 1, 1);
+    btu_start_timer((u8 *)base + 0x574, 1, 1);
     btsnd_hcic_reset_800857CC();
 }
 
@@ -12303,49 +12316,53 @@ void bta_dm_inq_cmpl(void *p_data) {
 }
 
 void bta_dm_rmt_name(s32 arg0) {
-    extern unsigned char lbl_803C0B98[];
-    extern unsigned char lbl_803C0F78[];
+#pragma optimization_level 3
     extern void bta_dm_remname_cback(u8 *);
-    unsigned char info[0x104];
-    s32 retry = 1;
-    void *entry;
-    void *buf;
-    void (*callback)(s32, void *);
-    for (;;) {
-        entry = *(void **)(lbl_803C0B98 + 4);
-        if (entry == 0 || *((u8 *)entry + 0x10) == 0)
+    BtaDmSearch info;
+    tBTM_INQ_INFO *p_inq_info;
+    u8 *peer_addr;
+    void *p_msg;
+    int search_complete = 1;
+
+    goto check_entry;
+    do {
+        p_inq_info = (tBTM_INQ_INFO *)DM_SCB_P_INQ_INFO;
+        if (INQ_INFO_KNOWS_REM_NAME(p_inq_info) != 0) {
+            bdcpy(info.disc_res.bd_addr, INQ_INFO_BD_ADDR(p_inq_info));
+            info.disc_res.bd_name[0] = 0;
+            info.disc_res.db_search_time = 0;
+            DM_SCB_P_SEARCH_CBACK(BTA_DM_DISC_RES_EVT, &info);
+        } else {
+            if (BTM_CB_PAGE_TIMEOUT < 0x7530)
+                bta_sys_start_timer((s32)DM_SCB_SDP_DB_TIMER, BTA_DM_REMT_NAME_TOUT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
+            if (BTM_ReadRemoteDeviceName(INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO), (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
+                bta_sys_stop_timer((s32)DM_SCB_SDP_DB_TIMER);
+                peer_addr = INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO);
+                p_msg = GKI_getbuf(BTA_DM_MSG_SIZE);
+                if (p_msg != 0) {
+                    bdcpy(DM_MSG_BD_ADDR(p_msg), peer_addr);
+                    DM_MSG_BD_NAME(p_msg)[0] = 0;
+                    DM_MSG_EVENT(p_msg) = BTA_DM_REMT_NAME_EVT;
+                    bta_sys_sendmsg(p_msg);
+                }
+            }
+            search_complete = 0;
             break;
-        fn_80070FA4(info, (u8 *)entry + 2);
-        info[6] = 0;
-        *(u32 *)(info + 0x100) = 0;
-        callback = *(void (**)(s32, void *))lbl_803C0B98;
-        callback(2, info);
-    }
-    if (*(u16 *)(lbl_803C0F78 + 0x64C) < 0x7530)
-        fn_8007146C((s32)(lbl_803C0B98 + 0x58), 0x205,
-                    *(u16 *)(lbl_803C0F78 + 0x64C) + 0x64);
-    if (BTM_ReadRemoteDeviceName((u8 *)*(void **)(lbl_803C0B98 + 4) + 2,
-                                (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
-        fn_8007148C((s32)(lbl_803C0B98 + 0x58));
-        buf = GKI_getbuf(0x110);
-        if (buf != 0) {
-            fn_80070FA4((u8 *)buf + 8,
-                        (u8 *)*(void **)(lbl_803C0B98 + 4) + 2);
-            *((u8 *)buf + 0xE) = 0;
-            *(u16 *)buf = 0x204;
-            fn_80071450(buf);
         }
-        retry = 0;
-    }
-    if (retry != 0) {
-        buf = GKI_getbuf(0x110);
-        if (buf != 0) {
-            *(u16 *)buf = 0x207;
-            fn_80071450(buf);
+        DM_SCB_P_INQ_INFO = BTM_InqDbNext(*(tBTM_INQ_INFO **)(bta_dm_search_cb + 4));
+    check_entry:
+        p_inq_info = (tBTM_INQ_INFO *)*(u8 **)(bta_dm_search_cb + 4);
+    } while (p_inq_info != 0);
+
+    if (search_complete) {
+        p_msg = GKI_getbuf(BTA_DM_MSG_SIZE);
+        if (p_msg != 0) {
+            DM_MSG_EVENT(p_msg) = 0x207;
+            bta_sys_sendmsg(p_msg);
         }
     }
-    callback = *(void (**)(s32, void *))lbl_803C0B98;
-    callback(2, (void *)(arg0 + 8));
+    DM_SCB_P_SEARCH_CBACK(2, (void *)(arg0 + 8));
+#pragma optimization_level 4
 }
 
 /* Handle a remote name discovery request by posting a "name done/none" result and reporting it to the search callback. */
@@ -24747,10 +24764,10 @@ void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
 #pragma scheduling reset
 void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
     BT_HDR *p_buf;
-    u8 *p_data;
     u8 signals;
     u8 break_duration;
     u8 len;
+    u8 *p_data;
     signals = p_pars[0];
     break_duration = p_pars[1];
     if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == NULL)
