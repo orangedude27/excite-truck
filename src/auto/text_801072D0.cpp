@@ -78,6 +78,7 @@ public:
 } // namespace ut
 } // namespace nw4hbm
 
+#pragma opt_common_subs off
 void nw4hbm::ut::Font::InitReaderFunc(nw4hbm::ut::FontEncoding encoding) {
     struct Row { u32 a, b, c; };
     char *format = lbl_80328540;
@@ -96,36 +97,33 @@ void nw4hbm::ut::Font::InitReaderFunc(nw4hbm::ut::FontEncoding encoding) {
     Row *dst = (Row *)((char *)this + 4);
     switch (encoding) {
     case 0: {
-        Row *row = (Row *)(format + 0x00);
-        dst->a = *(u32 *)(format + 0x00);
-        dst->b = row->b;
-        dst->c = row->c;
+        u32 first = *(u32 *)(format + 0x00);
+        u32 *p = (u32 *)(format + 0x00);
+        dst->a = first; dst->b = p[1]; dst->c = p[2];
         break;
     }
     case 1: {
-        Row *row = (Row *)(format + 0x0C);
-        dst->a = *(u32 *)(format + 0x0C);
-        dst->b = row->b;
-        dst->c = row->c;
+        u32 first = *(u32 *)(format + 0x0C);
+        u32 *p = (u32 *)(format + 0x0C);
+        dst->a = first; dst->b = p[1]; dst->c = p[2];
         break;
     }
     case 2: {
-        Row *row = (Row *)(format + 0x18);
-        dst->a = *(u32 *)(format + 0x18);
-        dst->b = row->b;
-        dst->c = row->c;
+        u32 first = *(u32 *)(format + 0x18);
+        u32 *p = (u32 *)(format + 0x18);
+        dst->a = first; dst->b = p[1]; dst->c = p[2];
         break;
     }
+    case 3:
     default: {
-        Row *row = (Row *)(format + 0x24);
-        dst->a = *(u32 *)(format + 0x24);
-        dst->b = row->b;
-        dst->c = row->c;
+        u32 first = *(u32 *)(format + 0x24);
+        u32 *p = (u32 *)(format + 0x24);
+        dst->a = first; dst->b = p[1]; dst->c = p[2];
         break;
     }
     }
 }
-
+#pragma opt_common_subs on
 /* nw4hbm::ut::IOStream::Read(void*, u32) -- ut_IOStream.cpp line 41.
    Reads `size` bytes into `buf` through the stream's virtual read (vtable 0x2C);
    a stream that reports failure does not support reading, which is fatal. */
@@ -143,17 +141,14 @@ extern "C" u32 Read__Q36nw4hbm2ut8IOStreamFPvUl(nw4hbm::ut::IOStreamAsync* strea
 }
 
 extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv_801074E8(nw4hbm::ut::FileStream2* this_) {
-    struct Helper {
-        static void panic(const char *b, int l, int o) {
-            Panic__Q26nw4hbm2dbFPCciPCce(b + 0, l, b + o);
-        }
-    };
-    const char *file = lbl_803285B8;
+    static char sFile[] = "ut_IOStream.cpp";
+    static char sRead[] = "Stream don't support READ function\n";
+    static char sAsync[] = "Stream don't support ASYNC function\n";
     if (this_->Wait() == 0) {
-        Helper::panic(file, 0x3E, 0x10);
+        Panic__Q26nw4hbm2dbFPCciPCce(sFile, 0x3E, sRead);
     }
     if (this_->Cancel() == 0) {
-        Helper::panic(file, 0x3F, 0x34);
+        Panic__Q26nw4hbm2dbFPCciPCce(sFile, 0x3F, sAsync);
     }
     return 0;
 }
