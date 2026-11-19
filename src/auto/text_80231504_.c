@@ -179,11 +179,17 @@ static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *
         f32 xx0 = x * matrix[0];
         f32 xx1 = x * matrix[1];
         f32 yy4 = y * matrix[4];
+        f32 sum0 = xx0 + xy3;
         f32 xx2 = x * matrix[2];
         f32 yy5 = y * matrix[5];
-        f32 outX = (xx0 + xy3) + z * matrix[6];
-        f32 outY = (xx1 + yy4) + z * matrix[7];
-        f32 outZ = (xx2 + yy5) + z * matrix[8];
+        f32 sum1 = xx1 + yy4;
+        f32 sum2 = xx2 + yy5;
+        f32 q0 = z * matrix[6];
+        f32 q1 = z * matrix[7];
+        f32 q2 = z * matrix[8];
+        f32 outX = sum0 + q0;
+        f32 outY = sum1 + q1;
+        f32 outZ = sum2 + q2;
         dst[0] = outX;
         dst[1] = outY;
         dst[2] = outZ;
@@ -468,7 +474,7 @@ loop_body:
         spC = y;
         sp10 = z;
         if (arg0 != 0) {
-            transform_vec_reordered(x, y, z, (f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8);
+            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, x, y, z);
         }
         {
             f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
