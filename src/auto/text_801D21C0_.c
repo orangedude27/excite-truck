@@ -122,6 +122,7 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     register s32 index;
     register f32 z, y, x;
     f32 p2, p1, p0;
+    s32 storedId;
     p0 = vec[0];
     p1 = vec[1];
     p2 = vec[2];
@@ -135,7 +136,8 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
     active = 1;
     for (; i < *(s32 *)((u8 *)arg0 + 0x28); entry += 8, i++) {
         if (*(s32 *)(entry + 8) < 0) {
-            temp.id = id;
+            storedId = id;
+            temp.id = storedId;
             fn_801796CC(10, (f32 *)&temp, 0x20);
             {
                 s32 isType = 0;
@@ -284,14 +286,15 @@ typedef struct { u8 first[0x14]; u8 second[0x10]; u8 third[4]; } Blk801D21C0;
 #pragma dont_inline on
 #pragma opt_propagation off
 void fn_801D21C0(void) {
-    u8 *const base = lbl_803382A8;
+    Blk801D21C0 *const blk = (Blk801D21C0 *)lbl_803382A8;
     lbl_8055E930 = 0;
-    fn_801D2AD4(base + 0);
-    fn_801D2AD4(base + 0x14);
-    fn_801D2AD4(base + 0x24);
+    fn_801D2AD4(blk->first);
+    fn_801D2AD4(blk->second);
+    fn_801D2AD4(blk->third);
     fn_801D2C04();
 }
 #pragma pop
+/* Finalize the soevent system. */
 void fn_801D2210(void) {
     fn_801D2B94();
 }
@@ -553,18 +556,16 @@ void fn_801D25BC(void *arg0, void *arg1) {
         virtual void f20();
         virtual void *fn5C(u32);
     };
-    struct Info { char pad[8]; s32 first; char pad2[0x1c]; s32 count; };
-    struct Info *info = (struct Info *)arg0;
     char name[0x20];
     Dummy *item;
     s32 index;
     f32 value;
     s32 i;
     if (((s32 (*)(void))fn_801D2550)() != 0) {
-        info->first = -1;
         i = 0;
-        info->count = i + 1;
-        while (info->count < 4) {
+        *(s32 *)((char *)arg0 + 8) = -1;
+        *(s32 *)((char *)arg0 + 0x28) = i + 1;
+        while (*(s32 *)((char *)arg0 + 0x28) < 4) {
             fn_801345D8(name, 0x20, lbl_8033830C);
             item = (Dummy *)((Dummy *)arg1)->fn5C((u32)name);
             if (item == 0) {
@@ -572,10 +573,10 @@ void fn_801D25BC(void *arg0, void *arg1) {
             }
             index = item->fn1C((u32)&lbl_8055ABE0);
             value = lbl_80562A90;
-            *(s32 *)((char *)arg0 + info->count * 8 + 8) = index;
+            *(s32 *)((char *)arg0 + *(s32 *)((char *)arg0 + 0x28) * 8 + 8) = index;
             value = item->fn28((void *)&lbl_8055ABE4, value);
-            *(f32 *)((char *)arg0 + info->count * 8 + 0xC) = value;
-            info->count = info->count + 1;
+            *(f32 *)((char *)arg0 + *(s32 *)((char *)arg0 + 0x28) * 8 + 0xC) = value;
+            *(s32 *)((char *)arg0 + 0x28) = *(s32 *)((char *)arg0 + 0x28) + 1;
         }
     }
 }
@@ -583,6 +584,7 @@ void fn_801D25BC(void *arg0, void *arg1) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling on
 void fn_801D26C8(void *arg0, void *arg1) {
     typedef struct ScnVtx {
         char pad0[8];
@@ -609,19 +611,25 @@ void fn_801D26C8(void *arg0, void *arg1) {
     Vec def2;
     Vec init2;
     unsigned char *base = lbl_803382A8;
+    Vec *pDef1;
+    Vec *pDef2;
     float zero;
     unsigned char *self = (unsigned char *)arg0;
     ScnObj *obj = (ScnObj *)arg1;
     ScnObj *child;
     unsigned char *entry;
-    if (fn_801D2550(arg0, arg1)) {
+    int minusOne = -1;
+    int one = 1;
+    if (((s32 (*)(void *, void *))fn_801D2550)(arg0, arg1)) {
         if ((obj->vt->fn0C)(obj, (const char *)(base + 0x70)))
             fn_801D3610(self + 8, (obj->vt->fn14)(obj, (const char *)(base + 0x70)));
         else
             fn_801D334C(self + 8, obj);
-        *(int *)(self + 0x2C) = (obj->vt->fn20)(obj, (const char *)(base + 0x7C), -1);
+        *(int *)(self + 0x2C) = (obj->vt->fn20)(obj, (const char *)(base + 0x7C), minusOne);
         *(int *)(self + 0x3C) = fn_802C6FC0((obj->vt->fn14)(obj, (const char *)lbl_8055ABE8), 0, 0);
         zero = lbl_80562A90;
+        pDef1 = &def1;
+        pDef2 = &def2;
         *(int *)(self + 0x490) = 0;
         while (*(int *)(self + 0x490) < 12) {
             fn_801345D8(name, 32, (const char *)lbl_8055ABF0, *(int *)(self + 0x490) + 1);
@@ -631,23 +639,23 @@ void fn_801D26C8(void *arg0, void *arg1) {
             entry = self + *(int *)(self + 0x490) * 0x5C;
             init1.x = init1.y = init1.z = zero;
             def1 = init1;
-            (child->vt->fn38)(&ret1, child, (const char *)lbl_8055ABF8, &def1);
+            (child->vt->fn38)(&ret1, child, (const char *)lbl_8055ABF8, pDef1);
             *(float *)(entry + 0x78) = ret1.x;
             *(float *)(entry + 0x7C) = ret1.y;
             *(float *)(entry + 0x80) = ret1.z;
             init2.x = init2.y = init2.z = zero;
             def2 = init2;
-            (child->vt->fn38)(&ret2, child, (const char *)lbl_8055AC00, &def2);
+            (child->vt->fn38)(&ret2, child, (const char *)lbl_8055AC00, pDef2);
             *(float *)(entry + 0x84) = ret2.x;
             *(float *)(entry + 0x88) = ret2.y;
             *(float *)(entry + 0x8C) = ret2.z;
             if ((child->vt->fn0C)(child, (const char *)lbl_8055AC08))
                 *(int *)(entry + 0x98) = fn_802C7830((child->vt->fn14)(child, (const char *)lbl_8055AC08));
             else
-                *(int *)(entry + 0x98) = -1;
+                *(int *)(entry + 0x98) = minusOne;
             if ((unsigned char)(child->vt->fn5C)(child, (const char *)(base + 0x70)) != 0) {
                 fn_801D334C(entry + 0x44, (child->vt->fn5C)(child, (const char *)(base + 0x70)));
-                entry[0x40] = 1;
+                entry[0x40] = one;
             } else
                 entry[0x40] = 0;
             *(float *)(entry + 0x90) = (child->vt->fn28)(child, (const char *)lbl_8055AC10, lbl_80562A94);
@@ -655,14 +663,14 @@ void fn_801D26C8(void *arg0, void *arg1) {
             ++*(int *)(self + 0x490);
         }
         if (*(int *)(self + 0x490) < 1) {
-            *(int *)(self + 0x98) = -1;
+            *(int *)(self + 0x98) = minusOne;
             *(float *)(self + 0x78) = lbl_80562A90;
             *(float *)(self + 0x7C) = lbl_80562A90;
             *(float *)(self + 0x80) = lbl_80562A90;
-            *(int *)(self + 0x490) = 1;
+            *(int *)(self + 0x490) = one;
         }
     } else {
-        *(int *)(self + 0x3C) = -1;
+        *(int *)(self + 0x3C) = minusOne;
         *(int *)(self + 0x490) = 0;
     }
 }
