@@ -15,7 +15,6 @@ extern char lbl_8032BECC[];
 extern int lbl_80559C04;
 extern int lbl_80559C08;
 extern int lbl_80559C10;
-#pragma scheduling off
 char *fn_80137950(int arg0) {
     switch (arg0) {
     case 3:
