@@ -27,7 +27,6 @@ extern float lbl_8055FCE0;
 extern float lbl_80564F60;
 extern int fn_802CAFF0(int);
 extern int stricmp(const char *, const char *);
-typedef struct { int pad[4]; int key; } MlistKey;
 #pragma cplusplus on
 struct Dummy {
     virtual void method0(int);
