@@ -666,12 +666,12 @@ extern "C" int stricmp(const char *, const char *);
 #pragma small_data on
 #pragma small_data off
 extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
-    s32 id = arg2;
     char *name = arg1;
+    s32 id = arg2;
     void *entry = arg0;
     char buf[0x100];
-    if (name[0] == '#') {
-        name = name + 1;
+    if (arg1[0] == '#') {
+        name = arg1 + 1;
     }
     sprintf(buf, lbl_8055B750, name);
     while (*(s32 *)((char *)entry + 4) != 0x7B) {
@@ -2463,7 +2463,15 @@ extern "C" void fn_8021546C(void) {
 
 }
 
-extern "C" void fn_80215470(void) {
+/* Base widget class (vtable lbl_8033FB38) default for vtable slot 0x48 (vf16):
+ * the "you have just been turned off" notice, paired with slot 0x44 (vf15) on
+ * the way in.  The layout wrapper dispatches it when disabling the widget held
+ * at +0x244: its slot 0x5C handler fn_80215A2C clears that widget's enable
+ * flag at +0x18 and then calls its slot 0x48.  No widget class gives this hook
+ * a body -- lbl_8033FA28, lbl_8033F4B8, lbl_8033F768, lbl_8033F880,
+ * lbl_8033EBA0, lbl_8033ED44, lbl_8033EF68 and lbl_8033ECB8 all still point
+ * here -- so the default is to do nothing. */
+extern "C" void fn_80215470(void *widget) {
 
 }
 
