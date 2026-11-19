@@ -1566,7 +1566,7 @@ void fn_80069408(void) {
     case 4: {
         u8 result = 1;
         if (lbl_8055DC49 != 0) {
-            if (memcmp(base + 0xB60 + 6, lbl_803130C8 + 0x1A0, 0x10) == 0 && (s8)lbl_8055DC48 > (s8)base[0x68B]) {
+            if (memcmp(base + 0xB60 + 6, strings + 0x1A0, 0x10) == 0 && (s8)lbl_8055DC48 > (s8)base[0x68B]) {
                 result = 5;
             }
         } else {
