@@ -104,5 +104,5 @@ void fn_801EF0AC(unsigned char *script) {
 #pragma pop
 #pragma scheduling on
 void fn_801EF184(void) {
-
+    /* Empty stub (returns immediately). */
 }
