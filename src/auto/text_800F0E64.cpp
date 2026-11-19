@@ -4924,12 +4924,16 @@ void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10B
 #pragma push
 #pragma opt_common_subs off
 extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *self, void *sound) {
-    register void *node = *(void **)((char *)self + 0x10);
-    register void *head = (char *)self + 0x10;
+    struct { u32 v; } nodeHolder;
+    struct { u32 v; } headHolder;
+    nodeHolder.v = *(u32 *)((char *)self + 0x10);
+    headHolder.v = (u32)self + 0x10;
+    u32 &node = nodeHolder.v;
+    u32 &head = headHolder.v;
     while (node != head) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326348, 0x23D, (const char *)lbl_80326324);
-        int raw = *(unsigned char *)((char *)node - 0x54) + *(int *)((char *)node - 0x88);
+        int raw = *(unsigned char *)(node - 0x54) + *(int *)(node - 0x88);
         int priority;
         if (raw > 127) {
             priority = 127;
@@ -4945,11 +4949,11 @@ extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm
         }
         if (soundPriority < priority)
             break;
-        node = *(void **)node;
+        node = *(u32 *)node;
     }
     if (sound == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
-    void *iterator = node;
+    void *iterator = (void *)node;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self + 0xC, &iterator, (char *)sound + 0xC8);
 }
 #pragma pop
