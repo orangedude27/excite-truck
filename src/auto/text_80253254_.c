@@ -433,7 +433,7 @@ __declspec(section ".sdata") extern char lbl_8055C150[], lbl_8055C158[], lbl_805
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma opt_common_subs off
+#pragma opt_lifetimes off
 void fn_80253890(void *arg0, void *arg1) {
     struct Keys { int v[4]; };
     extern float lbl_80563A04;
