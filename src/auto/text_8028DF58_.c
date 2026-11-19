@@ -1636,6 +1636,7 @@ void fn_80290224(void *arg0, void *arg1, int arg2) {
         count = 0;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
