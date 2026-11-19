@@ -772,8 +772,10 @@ void fn_802E2CFC(void *arg0) {
     now->msec = calendar.msec;
 }
 #pragma scheduling invalid_target
-void fn_802E2D74(int arg0) {
-    long long limit = (long long)arg0 * 1000;
+/* Busy-wait for the given number of milliseconds (in microsecond ticks from fn_802E2C9C),
+ * also breaking out if the timer appears to go backwards. */
+void fn_802E2D74(int milliseconds) {
+    long long limit = (long long)milliseconds * 1000;
     u64 start = fn_802E2C9C();
     u64 now;
     for (;;) {
