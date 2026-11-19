@@ -444,16 +444,6 @@ extern void *fn_801284F8(int, const char *);
 extern void *fn_8012850C(int, const char *);
 extern void *memset(void *, int, unsigned int);
 extern double fn_8002F234(double);
-extern double lbl_80562BB0;
-static inline float m2c_i2f(int x) {
-    union {
-        double d;
-        struct { unsigned int hi, lo; } s;
-    } u;
-    u.s.hi = 0x43300000u;
-    u.s.lo = (unsigned int)x ^ 0x80000000u;
-    return (float)(u.d - lbl_80562BB0);
-}
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
