@@ -15290,10 +15290,12 @@ extern "C" u8 lbl_80559268;
                  var_r19_3 += 0x900;
              } while (var_r15_3 < 3);
          }
-         var_r18_2 += 4;
-         var_r27_3 += 1;
-     }
- }
+                 var_r18_2 += 4;
+        var_r27_3 += 1;
+    }
+}
+#pragma pop
+
 
 extern s32 lbl_802F3238[];
 extern "C" void fn_800BD710(void *arg0, s16 arg1, s16 arg2, void *arg3, void *arg4) {
