@@ -3730,7 +3730,6 @@ void fn_8011BEC8(void *tick, void *node, s32 checkFn, s32 tickFn) {
 }
 
 void fn_8011C364(s32);
-extern s32 fn_8011BF4C();
 #pragma opt_propagation off
 s32 fn_8011BF4C(void *arg0, void *arg1, s32 arg2) {
     s32 ret = 0;
