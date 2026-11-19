@@ -2632,8 +2632,6 @@ u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     volatile u32 *offset = (volatile u32 *)((u8 *)arg0 + 0x90);
     volatile u32 *base = (volatile u32 *)((u8 *)arg0 + 0xB4);
     volatile u32 *capacityPtr = (volatile u32 *)((u8 *)arg0 + 0x40);
-    s32 a2 = arg2;
-    u32 a3 = arg3;
     u32 result;
     u32 current;
     u32 end;
@@ -2644,8 +2642,8 @@ u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     if (*offset == (u32)arg1) goto return_arg3;
     *offset = (u32)arg1;
     current = *offset;
-    result = fn_8011A240((u8 *)arg0 + 0x54, current + *base, a2, a3);
-    if (result != a3) {
+    result = fn_8011A240((u8 *)arg0 + 0x54, current + *base, arg2, arg3);
+    if (result != arg3) {
         *(s32 *)((u8 *)arg0 + 0x20) = 1;
         fn_8011A330(arg0);
     }
@@ -2657,13 +2655,13 @@ u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     capacity = *capacityPtr;
     remaining = end - current;
     *(u32 *)((u8 *)arg0 + 0x98) = current;
-    if (remaining < capacity) {
+    if (capacity <= remaining) {
         *(u32 *)((u8 *)arg0 + 0x48) = *capacityPtr;
     }
-    fn_8011A1A0((u32 *)a2, result);
+    fn_8011A1A0((u32 *)arg2, result);
     return result;
 return_arg3:
-    return a3;
+    return arg3;
 }
 
 #pragma unroll reset
@@ -5465,6 +5463,7 @@ void fn_8012023C(s32 n, s32 isgn, f32 *a, s32 ip, s32 w) {
     }
 }
 
+extern f64 lbl_80561228;
 void fn_80120834(s32 n, s32 *info, f32 *table) {
     register s32 i;
     register s32 stage;
