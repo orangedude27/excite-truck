@@ -3,6 +3,15 @@
 extern float lbl_80563490;
 extern void fn_802E30C8(const char *, ...);
 struct Rec80216 { int w[12]; float f[3]; };
+#define ZERO32(O) \
+    *(char *)(O + 0x00) = 0; *(char *)(O + 0x01) = 0; *(char *)(O + 0x02) = 0; *(char *)(O + 0x03) = 0; \
+    *(char *)(O + 0x04) = 0; *(char *)(O + 0x05) = 0; *(char *)(O + 0x06) = 0; *(char *)(O + 0x07) = 0; \
+    *(char *)(O + 0x08) = 0; *(char *)(O + 0x09) = 0; *(char *)(O + 0x0a) = 0; *(char *)(O + 0x0b) = 0; \
+    *(char *)(O + 0x0c) = 0; *(char *)(O + 0x0d) = 0; *(char *)(O + 0x0e) = 0; *(char *)(O + 0x0f) = 0; \
+    *(char *)(O + 0x10) = 0; *(char *)(O + 0x11) = 0; *(char *)(O + 0x12) = 0; *(char *)(O + 0x13) = 0; \
+    *(char *)(O + 0x14) = 0; *(char *)(O + 0x15) = 0; *(char *)(O + 0x16) = 0; *(char *)(O + 0x17) = 0; \
+    *(char *)(O + 0x18) = 0; *(char *)(O + 0x19) = 0; *(char *)(O + 0x1a) = 0; *(char *)(O + 0x1b) = 0; \
+    *(char *)(O + 0x1c) = 0; *(char *)(O + 0x1d) = 0; *(char *)(O + 0x1e) = 0; *(char *)(O + 0x1f) = 0;
 #define CPYREC80216(DD, SS, SF) \
     ((unsigned long long *)(DD))[0] = ((unsigned long long *)(SS))[0]; \
     ((unsigned long long *)(DD))[1] = ((unsigned long long *)(SS))[1]; \
