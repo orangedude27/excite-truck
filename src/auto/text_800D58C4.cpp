@@ -920,7 +920,7 @@ static inline void SetTagProcessorImpl_800D6CA0(u8 *pane, s32 arg1) {
     }
 }
 #pragma push
-#pragma inline_depth(8)
+#pragma inline_depth(4)
 extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
