@@ -786,6 +786,10 @@ static inline void mr_swap4(unsigned char *q) {
     unsigned char t = q[0]; q[0] = q[3]; q[3] = t;
     t = q[1]; q[1] = q[2]; q[2] = t;
 }
+#define SW4(p, o) do { \
+    unsigned char t = (p)[o]; (p)[o] = (p)[(o)+3]; (p)[(o)+3] = t; \
+    t = (p)[(o)+1]; (p)[(o)+1] = (p)[(o)+2]; (p)[(o)+2] = t; \
+} while (0)
 void fn_802C61BC(void *arg0, int arg1) {
     unsigned char *p = (unsigned char *)arg0;
     unsigned char *base;
@@ -1139,9 +1143,9 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
         float scalar;
         float vector[3];
     } local;
-    float *rot;
+    const float *rot;
     float *out;
-    float *input;
+    const float *input;
     void *manager;
     void *groupHeader;
     int previousMask;
@@ -1153,30 +1157,33 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
     lbl_8055D008 = arg3;
     manager = fn_802C5390(arg0);
     groupHeader = *(void **)((char *)manager + 4);
-    rot = (float *)((char *)groupHeader + 0x20);
+    rot = (const float *)((char *)groupHeader + 0x20);
     out = local.vector;
-    input = (float *)arg1;
+    input = (const float *)arg1;
     if (out == rot) {
-        float y = input[3];
-        float y0 = rot[1] * y;
-        float y1 = rot[1] * input[4];
-        float y2 = rot[1] * input[5];
-        float x = input[0];
-        float x0 = rot[0] * x;
-        float x1 = rot[0] * input[1];
-        float x2 = rot[0] * input[2];
-        float z = input[6];
-        float z0 = rot[2] * z;
-        float z1 = rot[2] * input[7];
-        float z2 = rot[2] * input[8];
-
+        float a = input[3], b = input[4];
+        float d = input[0], e = input[1], f = input[2];
+        float c = input[5];
+        float g = input[6], h = input[7], i = input[8];
+        float y0 = rot[1] * a;
+        float y1 = rot[1] * b;
+        float x0 = rot[0] * d;
+        float x1 = rot[0] * e;
+        float x2 = rot[0] * f;
+        float y2 = rot[1] * c;
+        float z0 = rot[2] * g;
+        float z1 = rot[2] * h;
+        float z2 = rot[2] * i;
         out[0] = (x0 + y0) + z0;
         out[1] = (x1 + y1) + z1;
         out[2] = (x2 + y2) + z2;
     } else {
-        out[0] = (rot[1] * input[3] + rot[0] * input[0]) + rot[2] * input[6];
-        out[1] = (rot[1] * input[4] + rot[0] * input[1]) + rot[2] * input[7];
-        out[2] = (rot[1] * input[5] + rot[0] * input[2]) + rot[2] * input[8];
+        float a0 = input[3], a1 = input[0], a2 = input[6];
+        float b0 = input[4], b1 = input[1], b2 = input[7];
+        float c0 = input[5], c1 = input[2], c2 = input[8];
+        out[0] = (rot[1] * a0 + rot[0] * a1) + rot[2] * a2;
+        out[1] = (rot[1] * b0 + rot[0] * b1) + rot[2] * b2;
+        out[2] = (rot[1] * c0 + rot[0] * c1) + rot[2] * c2;
     }
     {
         float tx = out[0] + input[9];
@@ -1322,6 +1329,7 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
     float *rot;
     float *out;
     float *input;
+    int a2 = arg2;
     void *a1 = arg1;
     void *inst = fn_802C5390(arg0);
     rot = (float *)((char *)*(void **)((char *)inst + 4) + 0x20);
@@ -1367,14 +1375,14 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
     }
     if (fn_802C94A0(out, &local.status, &local.scalar, rot[-1])) {
         if ((u8)lbl_8055FC20 != 0) {
-            node = fn_802C5EFC(arg2);
+            node = fn_802C5EFC(a2);
             a1 = (void *)fn_802D0514(a1);
             for (i = 0; i < *(int *)entry; i++) {
                 char *item = *(char **)((char *)entry + 4) + i * 0x10;
                 fn_802C53C4(item, node, (int)a1, -1, local.status);
             }
         } else {
-            fn_802C8B98(arg2, a1);
+            fn_802C8B98(a2, a1);
             fn_802DB2BC(local.status);
             for (i = 0; i < *(int *)entry; i++) {
                 char *item = *(char **)((char *)entry + 4) + i * 0x10;
