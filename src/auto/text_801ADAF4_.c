@@ -348,16 +348,18 @@ void fn_801AE4C4(void) {
 }
 
 #pragma scheduling off
+/* Frees all nodes in the singly linked list whose head is stored in lbl_8055E604,
+ * then frees the list head and clears the global pointer. */
 void fn_801AE50C(void) {
-    struct { void *head; void *next; void *cur; } locals;
-    locals.head = lbl_8055E604;
-    if (locals.head != 0) {
-        while ((locals.cur = *(void *volatile *)locals.head) != 0) {
-            locals.next = *(void **)locals.cur;
-            fn_80128668(locals.cur);
-            *(void *volatile *)locals.head = locals.next;
+    struct { void *listHead; void *nextNode; void *node; } locals;
+    locals.listHead = lbl_8055E604;
+    if (locals.listHead != 0) {
+        while ((locals.node = *(void *volatile *)locals.listHead) != 0) {
+            locals.nextNode = *(void **)locals.node;
+            fn_80128668(locals.node);
+            *(void *volatile *)locals.listHead = locals.nextNode;
         }
-        fn_80128668(locals.head);
+        fn_80128668(locals.listHead);
     }
     lbl_8055E604 = 0;
 }
