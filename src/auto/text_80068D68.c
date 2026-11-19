@@ -1304,6 +1304,22 @@ void fn_80068F80(void) {
 }
 
 extern u8 lbl_80393028[];
+
+/* Interrupt-protected reads of the WUD control block state bytes. */
+static inline u8 WUDGetState665(void) {
+    BOOL interrupts = OSDisableInterrupts();
+    u8 state = lbl_80392960[0x665];
+    OSRestoreInterrupts(interrupts);
+    return state;
+}
+
+static inline u8 WUDGetState664(void) {
+    BOOL interrupts = OSDisableInterrupts();
+    u8 state = lbl_80392960[0x664];
+    OSRestoreInterrupts(interrupts);
+    return state;
+}
+
 #pragma use_lmw_stmw off
 u8 fn_80068F94(void) {
     BOOL interrupts;
@@ -1322,41 +1338,41 @@ u8 fn_80068F94(void) {
         if (state2 == 4) return 0xE;
     }
     if (base[0x667] != 0) {
-        register u8 *scan_base;
-        register u8 *record;
-        register s32 i;
-        register s32 offset;
+        u8 *scan_base;
+        u8 *record;
+        u8 *i;
+        s32 offset;
         offset = 0;
         record = lbl_80392960;
-        i = 0;
-    loop:
-        interrupts = OSDisableInterrupts();
-        if (offset < 0) goto high_record;
-        if (offset >= 0xA) goto high_record;
-        scan_base = (u8 *)((u32)record + (u32)i + 0x64);
-        goto selected_record;
-    high_record:
-        scan_base = (u8 *)((u32)record + ((u32)(offset - 0xA) * 0x60u) + 0x424);
-    selected_record:
-        OSRestoreInterrupts(interrupts);
-        if (scan_base[0x59] == 9) {
-            tBTM_PM_PWR_MD mode;
-            mode.mode = 0;
-            mode.max = 0;
-            mode.min = 0;
-            mode.attempt = 1;
-            mode.timeout = 0;
-            BTM_SetPowerMode(lbl_80392960[0x68A], scan_base + 0x40, &mode);
-            return 1;
+        i = (u8 *)0;
+        while (offset < 0x10) {
+            interrupts = OSDisableInterrupts();
+            if (offset < 0) goto high_record;
+            if (offset >= 0xA) goto high_record;
+            scan_base = (u8 *)((u32)record + ((u32)i * 1u) + 0x64);
+            goto selected_record;
+        high_record:
+            scan_base = (u8 *)((u32)record + ((u32)(offset - 0xA) * 0x60u) + 0x424);
+        selected_record:
+            OSRestoreInterrupts(interrupts);
+            if (scan_base[0x59] == 9) {
+                tBTM_PM_PWR_MD mode;
+                mode.mode = 0;
+                mode.max = 0;
+                mode.min = 0;
+                mode.attempt = 1;
+                mode.timeout = 0;
+                BTM_SetPowerMode(lbl_80392960[0x68A], scan_base + 0x40, &mode);
+                return 1;
+            }
+            offset++;
+            i += 0x60;
         }
-        offset++;
-        i += 0x60;
-        if (offset < 0x10) goto loop;
     }
     if ((s8)base[0x668] > 0) base[0x668]--;
     if ((s8)base[0x668] == -1) {
-        u8 timer_state;
-        s32 interval;
+        register u8 timer_state;
+        register s32 interval;
         ((s8 *)base)[0x668] = -2;
         interrupts = OSDisableInterrupts();
         timer_state = lbl_80392960[0x665];
@@ -6490,7 +6506,7 @@ void bta_dm_pm_set_mode(u8 *peer_addr, u8 timed_out) {
     u8 mode;
     u8 i;
     u8 j;
-    int off;
+    u32 off;
     u8 *act_base;
     tBTM_PM_MODE read_mode;
     tBTM_PM_PWR_MD pwr_md;
@@ -15534,23 +15550,20 @@ found:
 extern char lbl_803173A8[];
 void gap_congestion_ind(u16 cid, u16 congest) {
     u8 *p;
-    int ctr;
+    u16 i;
 
     if (lbl_803C3740[0x28] >= 4) {
         fn_8007096C(0xE0003, lbl_803173A8, congest, cid);
     }
     p = lbl_803C3740 + 0xAC;
-    ctr = 2;
-loop:
-    if (p[0] != 0 && *(u16 *)(p + 6) == cid) {
-    } else if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) {
-    } else if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) {
-    } else if ((p += 0x60)[0] != 0 && *(u16 *)(p + 6) == cid) {
-    } else {
-        p += 0x60;
-        if (--ctr != 0) goto loop;
-        p = NULL;
+    for (i = 0; i < 8; i++, p += 0x60) {
+        if (p[0] != 0) {
+            if (*(u16 *)(p + 6) == cid)
+                goto found;
+        }
     }
+    p = NULL;
+found:
     if (p != NULL) {
         ((void (*)(u16, u16))*(void **)(p + 0x20))(
             *(u16 *)(p + 4), (u16)(0x104 + ((-(s32)congest | (s32)congest) >> 31)));
@@ -17478,9 +17491,9 @@ scan_done:
 #pragma use_lmw_stmw off
 u8 HID_HostRemoveDev(u32 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
-    u8 *deviceEntry;
     register u8 *devices = lbl_803C3C38;
-    u32 entryOffset;
+    register u8 *deviceEntry;
+    register u32 entryOffset;
     u8 disconnecting = 1;
     u8 cleared = 0;
     u8 isRegistered = devices[0x400];
@@ -17489,7 +17502,7 @@ u8 HID_HostRemoveDev(u32 dev_handle) {
     if (isRegistered == 0)
         return 1;
     if (dev_handle > 0x10)
-        return 5;
+        goto clear_entry;
     entryOffset = dev_handle * 0x34;
     deviceEntry = devices + entryOffset;
     isInUse = devices[entryOffset];
@@ -17505,7 +17518,7 @@ u8 HID_HostRemoveDev(u32 dev_handle) {
     hidh_conn_disconnect(dev_handle);
 clear_entry:
     deviceEntry[0] = cleared;
-    devices[entryOffset + 0x10] = cleared;
+    lbl_803C3C38[entryOffset + 0x10] = cleared;
     *(u16 *)(devices + entryOffset + 0x16) = 0;
     *(u16 *)(devices + entryOffset + 0x14) = 0;
     return 0;
@@ -28959,9 +28972,9 @@ s32 __InitParams(void *arg0) {
     u8 *cfg;
     void *temp_r3, *temp_r4_2, *temp_r5, *temp_r7, *var_r26, *var_r28;
 
-    temp_r4 = *(u32 *)((u8 *)arg0 + 0x110);
-    base = lbl_8031ABD8;
     cfg = arg0;
+    base = lbl_8031ABD8;
+    temp_r4 = *(u32 *)(cfg + 0x110);
     if (temp_r4 >= 8U) return 0;
     temp_f4 = *(f32 *)(cfg + 0x118);
     if (temp_f4 < lbl_80560D5C || temp_f4 > *(f32 *)(cfg + 0x114)) return 0;
