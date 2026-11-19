@@ -198,6 +198,8 @@ f32 fn_802A4AD4(void) {
 
 #pragma cplusplus on
 extern "C" void fn_802A4ADC(void) {
+    /* Initialize weather presentation resources: set up the weather effect,
+     * load the snow quad texture and resolve/load the snow model. */
     struct Dummy {
         virtual void f0();
         virtual void f1();
@@ -205,17 +207,17 @@ extern "C" void fn_802A4ADC(void) {
         virtual void f3();
         virtual s32 f4(void *, void *);
     };
-    u8 *base = lbl_80349BF0;
-    s32 callResult = (s32)fn_801E1F44();
-    if (fn_800167F4() == 1) fn_802A5384(callResult);
+    u8 *stringBase = lbl_80349BF0;
+    s32 playerData = (s32)fn_801E1F44();
+    if (fn_800167F4() == 1) fn_802A5384(playerData);
     fn_80287B38((void *)fn_802A53B0);
     fn_802A5878();
-    lbl_8055F89C = fn_802CAC28((char *)base + 0x28, 0);
+    lbl_8055F89C = fn_802CAC28((char *)stringBase + 0x28, 0);
     {
-        s32 arg2 = (s32)((char *)base + 0x38);
-        struct Dummy *p = (struct Dummy *)fn_802AE414(&lbl_8055CBC8);
-        if (p != 0) arg2 = p->f4((void *)((char *)base + 0x48), (void *)arg2);
-        lbl_8055F898 = fn_802C6FC0((void *)arg2, 0, 0);
+        s32 modelPath = (s32)((char *)stringBase + 0x38);
+        struct Dummy *weatherManager = (struct Dummy *)fn_802AE414(&lbl_8055CBC8);
+        if (weatherManager != 0) modelPath = weatherManager->f4((void *)((char *)stringBase + 0x48), (void *)modelPath);
+        lbl_8055F898 = fn_802C6FC0((void *)modelPath, 0, 0);
     }
 }
 #pragma cplusplus reset
