@@ -121,8 +121,9 @@ void fn_80129508(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
-void fn_8012960C(void *arg0) {
-    u8 *p = (u8 *)arg0;
+/* Update an input state's auto-repeat timer and repeat count. */
+void fn_8012960C(void *state) {
+    u8 *p = (u8 *)state;
     s32 now = fn_802E2C20();
     s32 count;
     s32 old;
