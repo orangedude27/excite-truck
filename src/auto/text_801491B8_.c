@@ -5099,6 +5099,7 @@ void fn_80156100(void) {
 
 }
 
+/* Empty stub; does nothing. */
 void fn_80156104(void) {
 
 }
