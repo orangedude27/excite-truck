@@ -319,6 +319,12 @@ void fn_80204A1C(int label, int valuePtr)
   *((int *) (entry + 8)) = valuePtr;
 }
 #pragma pop
+/* Restart the Tune Dash tuning screen's timer: this is the module's outside
+ * entry point for it, and it only tail-calls the timestamp stamper
+ * fn_80204330, which stores the current time (fn_802E2C20, milliseconds) in
+ * the screen's timestamp; fn_80204354 then counts up from 0 again. */
 void fn_80204A50(void) {
-    fn_80204330();
+#define StampGuiTimestamp fn_80204330
+    StampGuiTimestamp();
+#undef StampGuiTimestamp
 }
