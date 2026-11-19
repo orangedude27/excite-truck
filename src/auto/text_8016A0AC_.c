@@ -531,6 +531,7 @@ void* fn_8016AC24(void* self, s32 shouldDelete) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 s32 fn_8016AC90(s32 unused) {
     typedef struct AEntry { u8 flag; u8 pad1[3]; void *ptr4; void *ptr8; float data[11]; u8 b3c; u8 b3d; u8 pad3e[2]; float f40; float f44; } AEntry;
     typedef struct BEntry { u8 flag; char name[31]; s32 first; s32 count; u8 last; } BEntry;
