@@ -1172,7 +1172,7 @@ void fn_801F34C4(void *dest, int sourceIndex) {
 #pragma push
 #pragma processor 750
 void fn_801F3514(void *arg0) {
-    extern float lbl_80562F74, lbl_80562F78, lbl_80562F7C, lbl_80562F80, lbl_80562F84, lbl_80562F88, lbl_80562F8C, lbl_80562F64, lbl_8055EC04, lbl_80562F48;
+    extern float lbl_80562F74, lbl_80562F78, lbl_80562F7C, lbl_80562F80, lbl_80562F84, lbl_80562F88, lbl_80562F8C, lbl_80562F64, lbl_8055EC04, lbl_80562F48, lbl_80562F40, lbl_80562F44;
     extern char lbl_8033ABC4[], lbl_8033ABF0[], lbl_8033AC18[];
     extern int *fn_801E1F44(void);
     extern int fn_802C9994();
@@ -1211,7 +1211,7 @@ void fn_801F3514(void *arg0) {
     v[2] = *(float *)(p + 0xC) * lbl_80562F48;
     PSVECNormalize(v, v);
     sq = v[2] * v[2];
-    f30 = (float)fn_8002F234(v[0] * v[0] + sq);
+    f30 = (float)fn_8002F234(sq + v[0] * v[0]);
     f31 = -v[1];
     if ((float)atan(f31 / f30) < lbl_8055EC04) {
         fn_802E30C8(lbl_8033AC18, (lbl_80562F84 * (float)atan(f31 / f30)) / lbl_80562F88, (lbl_80562F84 * lbl_8055EC04) / lbl_80562F88);
@@ -1351,8 +1351,10 @@ void fn_801F398C(void *unused, int arg1) {
 void fn_801F3A30(void *arg0, int arg1) {
     extern int *fn_801F1CE8(int);
     extern float lbl_80562F90;
+    unsigned int byte;
     float value;
-    value = (float)(unsigned char)*fn_801F1CE8(arg1);
+    byte = (unsigned char)*fn_801F1CE8(arg1);
+    value = (float)byte;
     *(unsigned char *)((char *)arg0 + 4) = 1;
     *(float *)((char *)arg0 + 8) = value / lbl_80562F90;
 }
@@ -1534,6 +1536,7 @@ void fn_801F3D34(void *arg0, int arg1, void *arg2) {
     (*(int *)((char *)temp_r31 + 8))++;
 }
 #pragma pop
+/* Empty stub. */
 void fn_801F3E60(void) {
 
 }
@@ -1665,7 +1668,7 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     if (count >= 0x30) fn_802E317C(lbl_8033AB18);
     count = pool->count;
     entry = (struct Record *)((char *)pool + count * 0x1C);
-    fn_802C77F0(config->kind, v);
+    fn_802C77F0(config->kind, (float *)v);
     hi = v[1];
     lo = v[0];
     hi = hi - lo;
@@ -1699,7 +1702,7 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
     entry->kind = kind;
     entry->rate = hi;
     entry->end = end;
-    ((int *)((char *)pool + pool->count * 0x1C))[7] = arg3;
+    ((volatile int *)((char *)pool + pool->count * 0x1C))[7] = arg3;
     pool->count = pool->count + 1;
 }
 /* Byte-reverses five contiguous 4-byte fields at offsets 0x2C-0x3F in place. */
@@ -1802,14 +1805,17 @@ extern "C" void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3, int arg4
         virtual void v16() = 0;
         virtual float get(int) = 0;
     };
-    void *path = (char *)arg2 + 0x2C;
-    void *obj = *(void **)((char *)arg0 + 4);
+    void *path;
+    void *obj;
     void *newobj;
     void *entry;
     void *item;
     float f;
     int count;
     int value;
+
+    obj = *(void **)((char *)arg0 + 4);
+    path = (char *)arg2 + 0x2C;
     if (obj == 0) {
         newobj = fn_801284F8(0x108, (void *)&lbl_8033AAA8);
         if (newobj != 0) {
@@ -2020,24 +2026,21 @@ void fn_801F49F4(void) {
 
 void fn_801F49F8(void *arg0, int arg1) {
     void *selected[0x30];
-    char *next;
     char *entry;
+    char *next;
     unsigned int offset;
     int count;
     int i;
     float minimum;
     float maximum;
     float value;
-    next = (char *)arg0 + 4;
     entry = (char *)arg0;
+    next = (char *)arg0 + 4;
     count = 0;
-    offset = 0;
     i = 0;
     while (i < *(int *)((char *)arg0 + 0x544)) {
-        if (fn_802CDB20(arg1, *(int *)(entry + 0x1C)) != 0) {
-            selected[offset >> 2] = next;
-            count++;
-            offset += 4;
+        if (fn_802CDB20(arg1, *(int *)((char *)entry + 0x1C)) != 0) {
+            selected[count++] = next;
         }
         entry += 0x1C;
         next += 0x1C;
