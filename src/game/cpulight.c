@@ -534,20 +534,24 @@ void fn_802DC134(void) {
     fn_802DBDD8();
 }
 
-void fn_802DC138(int verts, int count, unsigned short *__restrict list, int size) {
+/* Submit indexed GX triangle-fan primitives (mode 0): apply the mode 0 CPU-light
+   state, set up the position array, then for each run in the index list read a
+   vertex count, begin a triangle fan with that many indices, and write each index
+   to the GP FIFO until the list is consumed. */
+void fn_802DC138(int positionArray, int vertexCount, unsigned short *__restrict indexList, int indexListSize) {
     int n;
     int i;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
     fn_802DB778(0);
-    fn_802DBCFC(verts, count);
-    while (size > 0) {
-        n = *list;
-        list++;
+    fn_802DBCFC(positionArray, vertexCount);
+    while (indexListSize > 0) {
+        n = *indexList;
+        indexList++;
         GXBegin(0xA0, 0, n);
-        size -= n + 1;
+        indexListSize -= n + 1;
         #pragma unroll 8
-        for (i = 0; i < n; i++, list++) {
-            *fifo = *list;
+        for (i = 0; i < n; i++, indexList++) {
+            *fifo = *indexList;
         }
     }
 }
