@@ -3688,48 +3688,49 @@ int fn_801D873C(int object) {
 #pragma cplusplus on
 #pragma push
 #pragma scheduling invalid_target
+/* Frame update of a SurfaceChange_ASE action (fn_801D873C puts it into state 2):
+ * once "delay" seconds have gone by since it started, hand its surface type to
+ * every target of the +0x24 list - each target gets the override its record
+ * holds with it - and mark the action applied; once "holdTime" seconds more have
+ * gone by, give every target the surface type its record saved with the
+ * override cleared again and put the action back to idle.
+ * Proposed name: SurfaceChangeAse_update */
 extern "C" void fn_801D875C(void *arg0) {
-    struct Dummy {
+    /* A target of the action; the two leading virtual slots are the destructor
+     * pair, so the effect's two entries are the 6th (surface type) and the 9th
+     * (surface override, -1 for none) declared method. */
+    struct SurfaceTarget {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void first(int); virtual void v6(); virtual void second_pad();
-        virtual void second(int);
+        virtual void v4(); virtual void setSurfaceType(int type); virtual void v6();
+        virtual void v7(); virtual void setOverride(int value);
     };
-    struct Entry {
-        Dummy *item;
-        int arg4;
-        int arg8;
-        void start(int p) { item->first(p); item->second(arg8); }
-        void stop() { item->first(arg4); item->second(-1); }
+    /* One 12-byte record of the +0x24 list (fn_801D89C0 appends it): a target
+     * and the surface type / override it had before the action took it over. */
+    struct SurfaceTargetEntry {
+        SurfaceTarget *target;
+        int savedSurfaceType;
+        int savedOverride;
+        void apply(int type) { target->setSurfaceType(type); target->setOverride(savedOverride); }
+        void revert() { target->setSurfaceType(savedSurfaceType); target->setOverride(-1); }
     };
-    struct Self {
-        char pad[0xC];
-        float delay;
-        float start;
-        float duration;
-        int state;
-        int param;
-        int started;
-        Entry *entries;
-        int count;
-    };
-    Self *self = (Self *)arg0;
+    SurfaceChangeAse *action = (SurfaceChangeAse *)arg0;
     int i;
     float time;
-    if (self->state != 2) return;
+    if (action->state != TIMED_EFFECT_RUNNING) return;
     time = lbl_8055E3C8;
-    if (self->started == 0) {
-        if (time - self->start > self->delay) {
-            for (i = 0; i < self->count; i++) {
-                self->entries[i].start(self->param);
+    if (action->applied == 0) {
+        if (time - action->startTime > action->delay) {
+            for (i = 0; i < action->targetCount; i++) {
+                ((SurfaceTargetEntry *)action->targets)[i].apply(action->surfaceType);
             }
-            self->started = 1;
+            action->applied = 1;
         }
     } else {
-        if (time - self->start - self->delay > self->duration) {
-            for (i = 0; i < self->count; i++) {
-                self->entries[i].stop();
+        if (time - action->startTime - action->delay > action->holdTime) {
+            for (i = 0; i < action->targetCount; i++) {
+                ((SurfaceTargetEntry *)action->targets)[i].revert();
             }
-            self->state = 1;
+            action->state = TIMED_EFFECT_READY;
         }
     }
 }
