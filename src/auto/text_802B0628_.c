@@ -78,8 +78,8 @@ void fn_802B0690(int *handleSlot) {
 }
 
 void fn_802B06D4(void) {
-    void *obj = fn_802B59CC();
-    void **vt = *(void ***)obj;
+    int *obj = (int *)fn_802B59CC();
+    int *vt = (int *)obj[0];
     ((void (*)(void *, void *, int))vt[12])(obj, lbl_8034A078, 0);
 }
 
@@ -90,28 +90,31 @@ extern void fn_802B0860(void *);
 extern char lbl_8034A0A8[];
 extern char lbl_8034A27C[];
 extern int lbl_8055CD88;
+#pragma push
+#pragma scheduling 750
 void fn_802B0710(void) {
     void *obj;
     int *fields;
-    int n = 0x54;
     register int i;
     register int offset;
-    int *entry;
     obj = fn_801284F8(0x14, lbl_8034A0A8);
     if (obj != 0) {
         fields = (int *)fn_8002F37C(fn_8012850C(0x550, &lbl_8055CD88),
-            fn_802B0860, fn_802B0808, 0x10, n);
+            fn_802B0860, fn_802B0808, 0x10, 0x54);
         ((int **)obj)[1] = fields;
-        ((int *)obj)[3] = n;
+        ((int *)obj)[3] = 0x54;
         ((int *)obj)[2] = 0;
         ((int **)obj)[4] = fields;
         ((void **)obj)[0] = fn_8012850C(((int *)obj)[3] << 10, lbl_8034A27C);
-        i = 0;
         offset = 0;
+        i = 0;
         while (i < ((int *)obj)[3]) {
-            entry = (int *)((char *)((int *)obj)[1] + ((int *)obj)[2] * 0x10);
-            ((int *)obj)[2] = ((int *)obj)[2] + 1;
-            *entry = (int)((char *)((int *)obj)[0] + offset);
+            int idx = ((int *)obj)[2];
+            char *base = (char *)((void **)obj)[0];
+            int *flds = (int *)((void **)obj)[1];
+            int *entry = flds + idx * 4;
+            ((int *)obj)[2] = idx + 1;
+            flds[idx * 4] = (int)(base + offset);
             offset += 0x400;
             entry[2] = 0x200;
             entry[1] = 0;
@@ -121,7 +124,7 @@ void fn_802B0710(void) {
     }
     lbl_8055F9A0 = obj;
 }
-
+#pragma pop
 /* Reset the object's three 32-bit fields to 0, then free it when
  * shouldDelete > 0 (deleting-destructor style helper). */
 void *fn_802B0808(void *object, int shouldDelete) {
@@ -740,6 +743,7 @@ void fn_802B1758(void *arg0) {
     float y;
     float x;
     unsigned short values[14];
+    unsigned short *p;
 
     node = *(void **)((char *)arg0 + 0x934);
     if (node != 0 && *(int *)((char *)arg0 + 4) != -2) {
@@ -823,20 +827,21 @@ void fn_802B1758(void *arg0) {
                 point += 3;
             }
 
-            values[1] = lbl_802FAAB0[1];
-            values[0] = lbl_802FAAB0[0];
-            values[2] = lbl_802FAAB0[2];
-            values[3] = lbl_802FAAB0[3];
-            values[4] = lbl_802FAAB0[4];
-            values[5] = lbl_802FAAB0[5];
-            values[6] = lbl_802FAAB0[6];
-            values[7] = lbl_802FAAB0[7];
-            values[8] = lbl_802FAAB0[8];
-            values[9] = lbl_802FAAB0[9];
-            values[10] = lbl_802FAAB0[10];
-            values[11] = lbl_802FAAB0[11];
-            values[12] = lbl_802FAAB0[12];
-            values[13] = lbl_802FAAB0[13];
+            p = (unsigned short *)lbl_802FAAB0;
+            values[0] = *p++;
+            values[1] = *p++;
+            values[2] = *p++;
+            values[3] = *p++;
+            values[4] = *p++;
+            values[5] = *p++;
+            values[6] = *p++;
+            values[7] = *p++;
+            values[8] = *p++;
+            values[9] = *p++;
+            values[10] = *p++;
+            values[11] = *p++;
+            values[12] = *p++;
+            values[13] = *p++;
             fn_802DC464(lbl_804BE190, 8, values, 0xE);
             fn_802DC440();
             fn_802C8D74();
@@ -889,19 +894,22 @@ extern int fn_802DA704(int, void *, int);
 extern void fn_802DAA18(void);
 void fn_802B1B60(void *arg0) {
     float sp8[3];
-    float val = lbl_80564BF8;
-    char *list = *(char **)((char *)arg0 + 0xC);
-    float *out = sp8;
-    int count = 0;
-    int offset = 0;
+    register char *list;
+    register int offset;
+    register float *out;
+    register int count;
+    list = *(char **)((char *)arg0 + 0xC);
+    out = sp8;
+    count = 0;
+    offset = 0;
     while (count < *(int *)(list + 8)) {
         char *base = *(char **)(list + 4);
         *out = *(float *)(base + offset + 4);
         out[1] = *(float *)(*(char **)(list + 4) + offset + 8);
-        out[2] = val;
-        count++;
-        offset += 0x10;
+        out[2] = 0.00048828125f;
         out += 3;
+        offset += 0x10;
+        count++;
     }
     fn_802DA704(1, sp8, 2);
     fn_802DAA18();
