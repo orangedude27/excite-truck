@@ -140,10 +140,12 @@ extern "C" u32 Read__Q36nw4hbm2ut8IOStreamFPvUl(nw4hbm::ut::IOStreamAsync* strea
     return 0;
 }
 
+static char sFile[] = "ut_IOStream.cpp";
+static char sRead[] = "Stream don't support READ function\n";
+static char sAsync[] = "Stream don't support ASYNC function\n";
+static char sWrite[] = "Stream don't support WRITE function\n";
+
 extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv_801074E8(nw4hbm::ut::FileStream2* this_) {
-    static char sFile[] = "ut_IOStream.cpp";
-    static char sRead[] = "Stream don't support READ function\n";
-    static char sAsync[] = "Stream don't support ASYNC function\n";
     if (this_->Wait() == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(sFile, 0x3E, sRead);
     }
