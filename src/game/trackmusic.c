@@ -195,8 +195,9 @@ loop:
     if (--i != 0) goto loop;
     return 0;
 }
+#pragma opt_unroll_loops reset
 #pragma dont_inline reset
- 
+
 void fn_8020F6E0(long contextIndex, long event) {
     /* Broadcast callback: when the clear-context event (0) is signalled, zero and
        reinitialise the track-music data block for this context index. */
