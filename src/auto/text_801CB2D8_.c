@@ -1229,10 +1229,12 @@ if (var_r0_2 == 0) {
 var_r30 = 0;
 var_r29 = 0;
 for (; var_r30 < *(s32 *)((unsigned char *)temp_r31 + 0x1C); ) {
-if (fn_801CB900(*(int **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r29 / 4), arg0) != 0)
-goto after_search;
+if (fn_801CB900(*(int **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r29 / 4), arg0) == 0) {
 var_r29 += 4;
 var_r30 += 1;
+} else {
+goto after_search;
+}
 }
 var_r30 = -1;
 after_search:
@@ -2021,6 +2023,7 @@ void fn_801CE698(void) {
 
 }
 
+/* No-op stub. */
 void fn_801CE69C(void) {
 
 }
