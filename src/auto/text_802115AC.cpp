@@ -666,16 +666,15 @@ extern "C" int stricmp(const char *, const char *);
 #pragma small_data on
 #pragma small_data off
 extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
-    void *entry = arg0;
-    char *name = arg1;
     s32 id = arg2;
-    char first = *arg1;
+    char *name = arg1;
+    void *entry = arg0;
     char buf[0x100];
-    if (first == '#') {
-        name = arg1 + 1;
-        sprintf(buf, lbl_8055B750, name);
+    if (name[0] == '#') {
+        name = name + 1;
     }
-    for (;;) {
+    sprintf(buf, lbl_8055B750, name);
+    while (*(s32 *)((char *)entry + 4) != 0x7B) {
         if (*(s32 *)((char *)entry + 4) == id &&
             *(char **)entry != 0 &&
             (stricmp(*(char **)entry, name) == 0 ||
@@ -683,10 +682,8 @@ extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
             return entry;
         }
         entry = (char *)entry + 0x14;
-        if (*(s32 *)((char *)entry + 4) == 0x7B) {
-            return 0;
-        }
     }
+    return 0;
 }
 // Default no-op callback used by the layout builder when a node has no handler: returns 0.
 extern "C" s32 fn_80212338(void) { return 0; }
@@ -2449,7 +2446,16 @@ extern "C" void fn_80215464(void *widget, s32 x, s32 y) {
 
 }
 
-extern "C" void fn_80215468(void) {
+/* Base widget class (vtable lbl_8033FB38) default for vtable slot 0x40 (vf14):
+ * the "the pointer was released on me" hook, right after the press hook at
+ * slot 0x3C.  The base widget ignores the release.  Widgets that track a press
+ * override it to finish theirs, each clearing the flag its slot-0x3C press
+ * handler raised: the slider's fn_8021CEAC runs its update virtual (slot 0x4C)
+ * and clears its pending flag at +0x244, and fn_80229640 runs its update
+ * (slot 0x84), clears its busy flag at +0x254 and notifies the value through
+ * its callback at +0x258.  The layout wrapper forwards its own slot 0x48 to
+ * the widget held at +0x244 (fn_802159C0). */
+extern "C" void fn_80215468(void *widget) {
 
 }
 
