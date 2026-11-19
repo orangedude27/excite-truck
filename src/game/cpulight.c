@@ -559,9 +559,13 @@ void fn_802DC27C(void) { fn_802DBDD8(); }
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802DC280(int verts, int count, unsigned short *__restrict list, int size) {
+    /* Submit indexed GX triangle-fan primitives (mode 1): set up the position array,
+       then for each run in `list` read a vertex count, begin a fan with that many
+       indices, and write each index to the GP FIFO until `size` entries are consumed. */
     int n;
     int i;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
+
     fn_802DB778(1);
     fn_802DBC70(verts, count);
     while (size > 0) {
