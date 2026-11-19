@@ -1462,8 +1462,8 @@ extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     };
     float height;
     int result;
-    float init = lbl_80563F48;
-    *arg2 = init;
+
+    *arg2 = lbl_80563F48;
     if (*(int *)((char *)*(void **)arg0 + 0x58) == 0) return 0;
     if (arg3 != -1 && arg3 != *(int *)((char *)*(void **)arg0 + 0x5C)) return 0;
     result = 1;
@@ -1514,7 +1514,7 @@ extern "C" float lbl_80563F50;
 #pragma processor gekko
 extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
     int a, b, c, d;
-    unsigned char flags;
+    int flags;
     char *name = lbl_80346B00;
     Parser2 *p = arg1;
     char *o = (char *)arg0;
@@ -1592,10 +1592,21 @@ extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
 #pragma pop
 #pragma cplusplus reset
 
-#pragma scheduling on
+static inline void setupRegionAndCall(unsigned char *ptr, int a, int b, int c) {
+    *(int *)(ptr + 0x1C) = c;
+    *(int *)(ptr + 0x18) = 0;
+    *(int *)(ptr + 0x2C) = c;
+    *(int *)(ptr + 0x30) = c;
+    *(int *)(ptr + 0x40) = b;
+    *(int *)(ptr + 0x44) = a;
+    *(int *)(ptr + 0x54) = 5;
+    *(int *)(ptr + 0x58) = a;
+    ((void (*)(int, int, int, void *))fn_8027156C)(a, b, c, ptr);
+}
+
+#pragma scheduling invalid_target
 void fn_80273354(void) {
     unsigned char *ptr = lbl_8049A258;
-    void (*fp)(int, int, int, unsigned char *) = (void (*)(int, int, int, unsigned char *))fn_8027156C;
     memset(ptr, 0, 0x64);
     *(int *)(ptr + 0x1C) = 1;
     *(int *)(ptr + 0x18) = 0;
@@ -1605,7 +1616,7 @@ void fn_80273354(void) {
     *(int *)(ptr + 0x44) = 3;
     *(int *)(ptr + 0x54) = 5;
     *(int *)(ptr + 0x58) = 3;
-    fp(3, 2, 1, ptr);
+    ((void (*)(int, int, int, void *))fn_8027156C)(3, 2, 1, ptr);
 }
 extern int lbl_8055F54C;
 /* The CamType the last camera update applied: fn_80271624 compares it with the camera
