@@ -527,6 +527,13 @@ extern "C" void fn_80206B08(void) {
 	return;
 }
 
+/* Sound module: an entry point whose implementation is empty in this build --
+ * calling it does nothing.  It is one of three adjacent no-op stubs (with
+ * fn_80206B08 and fn_80206B10) sitting between the Sound3D mix-value flush
+ * fn_80206A5C and the base Sound3D::update fn_80206B14; no decompiled code
+ * calls them and none of this module's sound vtables (lbl_8033BD78,
+ * lbl_8033BD90, lbl_8033BDA8, lbl_8033BDC0 -- four slots each) points at them,
+ * so they are hooks the original source left without a body. */
 extern "C" void fn_80206B0C(void) {
 	return;
 }
