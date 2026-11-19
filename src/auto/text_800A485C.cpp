@@ -20943,6 +20943,7 @@ extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
             self + 0x1A0, q, (u32)(time >> 32), (u32)time, 0, interval, (void *)&fn_800D16C4);
     }
 }
+#pragma pop
 
 extern "C" void fn_800D1AE4(OSAlarm *spk) {
     /* Stop the remote speaker: cancel the periodic alarm embedded at +0x1A0 of the RemoteSpk object. */
