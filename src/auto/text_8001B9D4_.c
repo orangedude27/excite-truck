@@ -689,26 +689,26 @@ extern const char lbl_802FD8C4[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    register char *record;
-    register char *name = (char *)arg1;
-    char *freeEntry;
-    char *p;
-    char *out;
+    u8 *name = (u8 *)arg1;
+    u8 *record;
+    u8 *freeEntry;
+    u8 *p;
+    u8 *out;
     s32 i;
     s32 room;
     s8 c;
     s32 *descriptor;
     if (arg0 < 0) {
-        record = (char *)(lbl_8055D5CC + 0x36B10);
+        record = lbl_8055D5CC + 0x36B10;
     } else {
-        record = (char *)(lbl_8055D5CC + arg0 * 0xDAC4 + 0x6E04);
+        record = lbl_8055D5CC + arg0 * 0xDAC4 + 0x6E04;
     }
     freeEntry = 0;
     i = 0;
     do {
         if (*(u8 *)(record + 0x70) == 0) {
             freeEntry = record;
-        } else if (*(s32 *)(record + 4) == arg2 && *(s32 *)record != 0 && stricmp(name, *(const char **)record) == 0) {
+        } else if (*(s32 *)(record + 4) == arg2 && *(s32 *)record != 0 && stricmp((const char *)name, *(const char **)record) == 0) {
             return record;
         }
         i++;
@@ -717,17 +717,17 @@ void *fn_8001C540(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (arg3 == 0) {
         return 0;
     }
-    fn_802E30C8(lbl_802FD894, name);
+    fn_802E30C8(lbl_802FD894, (const char *)name);
     if (freeEntry == 0) {
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD8C4, name);
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD8C4, (const char *)name);
     }
     memset(freeEntry, 0, 0x74);
     descriptor = lbl_8055D5D0;
     *((u8 *)descriptor + 8) = 0;
-    p = *(char **)descriptor;
+    p = *(u8 **)descriptor;
     goto loop_top;
 loop_top:
-    if (stricmp(p, name) == 0) {
+    if (stricmp((const char *)p, (const char *)name) == 0) {
         goto loop_done;
     }
     while (*(s8 *)p != 0) {
@@ -735,7 +735,7 @@ loop_top:
     }
     p++;
     if (*(s8 *)p == 0) {
-        room = descriptor[1] - (p - *(char **)descriptor) - 1;
+        room = descriptor[1] - (p - *(u8 **)descriptor) - 1;
         if (room <= 0) {
             p[-1] = 0;
         } else {
@@ -749,7 +749,7 @@ loop_top:
     }
     goto loop_top;
 loop_done:
-    *(char **)freeEntry = p;
+    *(u8 **)freeEntry = p;
     *(s32 *)(freeEntry + 4) = arg2;
     *(u8 *)(freeEntry + 0x70) = 1;
     return freeEntry;
@@ -1157,8 +1157,12 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
             cursor = *(char **)pool;
             while (*(s8 *)cursor != 0 &&
                    cursor - *(char **)pool < *(s32 *)((u8 *)pool + 4)) {
-                if (stricmp(cursor, arg3) != 0) goto skip_name;
-                goto name_ready;
+                switch (stricmp(cursor, arg3)) {
+                case 0:
+                    goto name_ready;
+                default:
+                    goto skip_name;
+                }
             skip_name:
                 while (*(s8 *)cursor != 0) cursor++;
                 cursor++;
@@ -1324,21 +1328,22 @@ s32 fn_8001D474(s32 pointer) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_8001D484(void *arg0, s32 arg1, s32 (*arg2)(s32), s32 arg3) {
-    u8 *ptr = (u8 *)arg0;
-    u8 *p;
+void fn_8001D484(void *entries, s32 count, s32 (*transform)(s32), s32 unused) {
+    /* Apply a transform callback to each active 0x74-byte entry's base value and to each of its 0x14-byte subentries. */
+    u8 *entry = (u8 *)entries;
+    u8 *subentry;
     s32 i;
     s32 j;
-    for (i = 0; i < arg1; i++) {
-        if (*(u8 *)(ptr + 0x70) != 0) {
-            *(s32 *)ptr = arg2(*(s32 *)ptr);
-            p = ptr;
-            for (j = 0; j < *(s32 *)(ptr + 0x6C); j++) {
-                *(s32 *)(p + 8) = arg2(*(s32 *)(p + 8));
-                p += 0x14;
+    for (i = 0; i < count; i++) {
+        if (*(u8 *)(entry + 0x70) != 0) {
+            *(s32 *)entry = transform(*(s32 *)entry);
+            subentry = entry;
+            for (j = 0; j < *(s32 *)(entry + 0x6C); j++) {
+                *(s32 *)(subentry + 8) = transform(*(s32 *)(subentry + 8));
+                subentry += 0x14;
             }
         }
-        ptr += 0x74;
+        entry += 0x74;
     }
 }
 #pragma scheduling invalid_target
