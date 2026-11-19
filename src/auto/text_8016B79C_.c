@@ -245,7 +245,7 @@ extern "C" u8 lbl_8055A20C, lbl_8055A210; /* "" and "-" */
 extern "C" u32 lbl_8055E044;              /* message table stamp */
 extern "C" u8 lbl_8055E374;               /* the time-bonus caption key has been cached */
 extern "C" f32 lbl_8055E3C8, lbl_80561984, lbl_80561988; /* game time, 1.0f (count-up length), 0.5f */
-extern "C" const f64 lbl_80561990;        /* 4503599627370496.0: float->int conversion bias */
+extern "C" f64 lbl_80561990;              /* 4503599627370496.0: float->int conversion bias */
 extern "C" u8 lbl_8043036C[];             /* the CachedMessage8016B964 holding the caption */
 
 /* A Sound object (created by fn_80207848). Its update (fn_80206824) acts on the
