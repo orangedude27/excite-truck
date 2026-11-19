@@ -309,7 +309,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     fn_80255758(m.work, -1);
     fn_80018B24();
     fn_8013C8B8();
-    *out = *(slots[4] ? (s32 *)(slots + idx * 16 + 0x10) : (s32 *)(slots + idx * 16 + 0x8));
+    *out = *pB;
     return result != -1;
 }
 
