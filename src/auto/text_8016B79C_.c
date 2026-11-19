@@ -2265,8 +2265,14 @@ outer_body: {
         temp_f14 = M2C_FIELD(fn_8016DE10(M2C_FIELD(arg0, s32 **, 0x4C), var_r25), f32 *, 8);
         temp_f23 = fn_8016FD58() - temp_f14;
         temp_r0 = M2C_FIELD(arg0, s32 *, 0x5C);
-        s8.y += (f32) var_r20;
-        s28.y += (f32) var_r20;
+        {
+            double d;
+            *(u32 *)&d = 0x43300000;
+            *((u32 *)&d + 1) = (u32)var_r20 ^ 0x80000000;
+            s8.y += (f32)(d - lbl_80561990);
+            *((u32 *)&d + 1) = (u32)var_r20 ^ 0x80000000;
+            s28.y += (f32)(d - lbl_80561990);
+        }
         if (var_r25 > temp_r0) {
             s8.color = 0x66FFFFFF;
         }
@@ -3267,6 +3273,8 @@ loop_80:
 extern f64 fn_8002F234(f32, f32, f32, f32, f32);
 #pragma use_lmw_stmw off
 void fn_80170DA8(void *arg0, void *arg1) {
+    f32 distance;
+    f32 threshold;
     u8 *base;
     u8 *item;
     s32 index;
@@ -3276,8 +3284,6 @@ void fn_80170DA8(void *arg0, void *arg1) {
     f32 y;
     f32 dx;
     f32 dy;
-    register f32 distance;
-    register f32 threshold;
     index = *(s32 *)((u8 *)arg0 + 0x10);
     next = index + 1;
     if (next < *(s32 *)(*(u8 **)((u8 *)arg0 + 4) + 4)) {
