@@ -1589,24 +1589,25 @@ s32 fn_801C5B68(char *arg0, s32 arg1) {
     return 1;
 }
 #pragma pop
+/* Return the index of the active player/object (0 <= i < lbl_8055E804, gNumPlayers) whose position vector at +0x60 is within squared distance 2.25 of arg0, or -1 if none. */
 s32 fn_801C6C28(Vec *arg0) {
-    register float threshold = 2.25f;
-    s32 result = -1;
-    s32 i = 0;
+    register float distanceThresholdSq = 2.25f;
+    s32 foundIndex = -1;
+    s32 playerIndex = 0;
 
     goto check;
 body:
-    if (PSVECSquareDistance((Vec *)(fn_8017960C(i) + 0x60), arg0) < threshold) {
-        result = i;
+    if (PSVECSquareDistance((Vec *)(fn_8017960C(playerIndex) + 0x60), arg0) < distanceThresholdSq) {
+        foundIndex = playerIndex;
         goto done;
     }
-    i++;
+    playerIndex++;
 check:
-    if (i < lbl_8055E804) {
+    if (playerIndex < lbl_8055E804) {
         goto body;
     }
 done:
-    return result;
+    return foundIndex;
 }
 #pragma paired_single reset
 #pragma paired reset
