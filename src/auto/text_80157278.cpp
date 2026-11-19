@@ -3257,8 +3257,9 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
                 }
                 {
                     f32 f50;
-                    register f32 f250 = *(f32*)((char*)arg0 + 0x250);
-                    temp_r0 = *(s32*)((char*)arg0 + 0x26C) + var_r4;
+                    s32 base = *(s32*)((char*)arg0 + 0x26C);
+                    f32 f250 = *(f32*)((char*)arg0 + 0x250);
+                    temp_r0 = base + var_r4;
                     f50 = lbl_80561750;
                     *(s32*)((char*)arg0 + 0x264) = temp_r0;
                     *(s32*)((char*)arg0 + 0x260) = temp_r0;
@@ -3597,15 +3598,15 @@ extern "C" void fn_8015CF00(Unk801577F0* arg0) {
     void* target = *(void**)((u8*)arg0 + 0x278);
     arg0->m26c = 0;
     *(s32*)((u8*)arg0 + 0x270) = 0;
-    if ((int)target != 0) {
+    if (target != 0) {
         *(u8*)((u8*)target + 0x4A) = 1;
         *(u8*)((u8*)target + 0x4C) = 0;
-        s32 result = fn_80009C84();
-        s32 mode = 2;
-        if (result != 0) mode = 0;
-        if (*(void**)((u8*)arg0 + 0x278) != 0)
-            fn_80206750(*(void**)((u8*)arg0 + 0x278), *(s32*)((u8*)arg0 + 0x274), mode);
     }
+    s32 result = fn_80009C84();
+    s32 mode = 2;
+    if (result != 0) mode = 0;
+    if (*(void**)((u8*)arg0 + 0x278) != 0)
+        fn_80206750(*(void**)((u8*)arg0 + 0x278), *(s32*)((u8*)arg0 + 0x274), mode);
 }
 
 // The dash bonus tracker.  Like the other bonus trackers it owns a table of
