@@ -1612,6 +1612,7 @@ done:
 #pragma paired_single reset
 #pragma paired reset
 #pragma scheduling reset
+/* No operation. */
 void fn_801C6CB0(void) {
     return;
 }
@@ -3146,13 +3147,11 @@ void fn_801C95EC(f32 arg0) {
     struct Entry *entry;
     s32 id;
     s32 prev;
-    s32 sel;
 
     strcpy(lbl_80437FC0, lbl_8055AA44);
     entry = &(*(struct Entry **)((char *)lbl_8055E86C + lbl_8055E81C * 0x10))[lbl_8055E820];
     entry->callback(entry);
-    sel = lbl_8055E820;
-    id = *(s32 *)(*(u32 *)((u32)lbl_8055E86C + (lbl_8055E81C << 4)) + (sel << 4) + 8);
+    id = *(s32 *)(*(u32 *)((u32)lbl_8055E86C + (lbl_8055E81C << 4)) + (lbl_8055E820 << 4) + 8);
     if (id == 0x22) {
         lbl_8055E81C = lbl_8055E870;
     } else {
