@@ -3132,6 +3132,7 @@ void fn_80164D58(void) {
 
 }
 
+/* Empty stub (no-op placeholder among the popup/menu helpers). */
 void fn_80164D5C(void) {
 }
 
