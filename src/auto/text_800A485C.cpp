@@ -10943,7 +10943,6 @@ extern "C" s32 fn_800B5988(void *arg0) {
     u8 *slot;
     u16 hdr;
     s32 n;
-    CacheEnt *g;
     *(s32 *)((u8 *)arg0 + 0x1F80) = 0;
     *(s32 *)((u8 *)arg0 + 0x1F84) = 0;
     r = fn_800A5530(arg0);
@@ -10969,13 +10968,13 @@ extern "C" s32 fn_800B5988(void *arg0) {
                 e[0x88 / 8].flag &= 1;
                 if (e[0x88 / 8].flag && key == e[0x88 / 8].key) hit = 1;
                 else {
-                    g = e + 2;
+                    CacheEnt *g = e + 2;
                     g[0x80 / 8].flag &= 1;
                     if (g[0x80 / 8].flag && key == g[0x80 / 8].key) hit = 1;
                     else {
                         g[0x88 / 8].flag &= 1;
                         if (g[0x88 / 8].flag && key == g[0x88 / 8].key) hit = 1;
-                        else hit = 0;
+                        else hit = (g[0].flag & 0);
                     }
                 }
             }
@@ -21947,8 +21946,6 @@ extern "C" s32 fn_800D3F94(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(u8 *)arg2 = 0;
     return 0;
 }
-
-#pragma opt_tail_call on
 extern "C" s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *unused3, void *unused4) {
     void *node = (void *)lbl_8055DDD4;
     s32 savedArg2 = arg2;
