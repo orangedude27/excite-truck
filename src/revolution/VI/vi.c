@@ -696,59 +696,60 @@ u32 fn_80059234(u32 index)
 
 void __VIInit(VITVMode mode)
 {
-    VITiming *tm;
-    u32 nonInter;
-    s32 tv;
-    s32 tvForReg;
-    volatile u32 a;
-    u32 temp;
+    /* Program the VI hardware timing registers for the given TV mode. */
+    VITiming *timing;
+    u32 scanMode;
+    s32 tvFormat;
+    s32 formatForReg;
+    volatile u32 i;
+    u32 diCount;
 
-    nonInter = mode & 3;
-    tv = (u32)mode >> 2;
-    *(u32 *)0x800000CC = tv;
-    tm = (VITiming *)fn_80059234(mode);
+    scanMode = mode & 3;
+    tvFormat = (u32)mode >> 2;
+    *(u32 *)0x800000CC = tvFormat;
+    timing = (VITiming *)fn_80059234(mode);
     __VIRegs[1] = 2;
-    for (a = 0; a < 1000; a++) {
+    for (i = 0; i < 1000; i++) {
     }
     __VIRegs[1] = 0;
-    __VIRegs[3] = tm->hlw;
-    __VIRegs[2] = (tm->hce << 8) | tm->hcs;
-    __VIRegs[5] = tm->hbe640 | (tm->hsy << 7);
-    __VIRegs[4] = (u16)(tm->hbs640 << 1);
+    __VIRegs[3] = timing->hlw;
+    __VIRegs[2] = (timing->hce << 8) | timing->hcs;
+    __VIRegs[5] = timing->hbe640 | (timing->hsy << 7);
+    __VIRegs[4] = (u16)(timing->hbs640 << 1);
     if (lbl_8055DBA4 == 0) {
-        __VIRegs[0x39] = tm->hbeCCIR656 | 0x8000;
-        __VIRegs[0x3A] = tm->hbsCCIR656;
+        __VIRegs[0x39] = timing->hbeCCIR656 | 0x8000;
+        __VIRegs[0x3A] = timing->hbsCCIR656;
     }
-    __VIRegs[0] = tm->equ;
-    __VIRegs[7] = tm->prbOdd + tm->acv * 2 - 2;
-    __VIRegs[6] = tm->psbOdd + 2;
-    __VIRegs[9] = tm->prbEven + tm->acv * 2 - 2;
-    __VIRegs[8] = tm->psbEven + 2;
-    __VIRegs[11] = tm->bs1 | (tm->be1 << 5);
-    __VIRegs[10] = tm->bs3 | (tm->be3 << 5);
-    __VIRegs[13] = tm->bs2 | (tm->be2 << 5);
-    __VIRegs[12] = tm->bs4 | (tm->be4 << 5);
+    __VIRegs[0] = timing->equ;
+    __VIRegs[7] = timing->prbOdd + timing->acv * 2 - 2;
+    __VIRegs[6] = timing->psbOdd + 2;
+    __VIRegs[9] = timing->prbEven + timing->acv * 2 - 2;
+    __VIRegs[8] = timing->psbEven + 2;
+    __VIRegs[11] = timing->bs1 | (timing->be1 << 5);
+    __VIRegs[10] = timing->bs3 | (timing->be3 << 5);
+    __VIRegs[13] = timing->bs2 | (timing->be2 << 5);
+    __VIRegs[12] = timing->bs4 | (timing->be4 << 5);
     __VIRegs[36] = 0x2828;
     __VIRegs[27] = 1;
     __VIRegs[26] = 0x1001;
-    temp = (u16)(((u32)tm->nhlines >> 1) + 1);
-    __VIRegs[25] = tm->hlw + 1;
-    __VIRegs[24] = temp | 0x1000;
-    switch (tv) {
+    diCount = (u16)(((u32)timing->nhlines >> 1) + 1);
+    __VIRegs[25] = timing->hlw + 1;
+    __VIRegs[24] = diCount | 0x1000;
+    switch (tvFormat) {
     case 1:
     case 2:
     case 3:
-        tvForReg = tv;
+        formatForReg = tvFormat;
         break;
     default:
-        tvForReg = 0;
+        formatForReg = 0;
         break;
     }
-    if (nonInter <= 1) {
-        __VIRegs[1] = (tvForReg << 8) | ((nonInter & 1) << 2) | 1;
+    if (scanMode <= 1) {
+        __VIRegs[1] = (formatForReg << 8) | ((scanMode & 1) << 2) | 1;
         __VIRegs[54] = 0;
     } else {
-        __VIRegs[1] = (tvForReg << 8) | 5;
+        __VIRegs[1] = (formatForReg << 8) | 5;
         __VIRegs[54] = 1;
     }
 }
