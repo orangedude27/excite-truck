@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-struct Fn8029Pair { float x, y; } __attribute__((aligned(8)));
+union Fn8029Pair { double d; struct { float x, y; }; } __attribute__((aligned(8)));
 struct Fn8029Vec { float x, y, z; };
 extern float lbl_805646B8;
 extern float lbl_805646BC;
@@ -489,11 +489,11 @@ extern "C" void fn_8029F658(void *arg0) {
     table = lbl_80349810;
     record = lbl_804B5070 + lbl_8055F81C * 0x78;
     obj = (Obj *)arg0;
-    defaultVec.x = lbl_805646B4;
-    defaultVec.y = lbl_805646B4;
-    defaultVec.z = lbl_805646B4;
-    pairDefault.x = lbl_805646B4;
-    pairDefault.y = lbl_805646B4;
+    defaultVec.x = 0.0f;
+    defaultVec.y = 0.0f;
+    defaultVec.z = 0.0f;
+    pairDefault.x = 0.0f;
+    pairDefault.y = 0.0f;
     *(int *)record = obj->getId(lbl_8055CAF0);
     str = obj->name();
     src = (char *)str + strlen(&table[0x44]);
@@ -839,8 +839,7 @@ extern float lbl_805646BC;
 #pragma optimization_level 2
 extern "C" void fn_802A0098(Result_802A0098 *out, const float *arg0, const Unk802A0794Params *arg1) {
     float span = arg0[1] * PSVECMag(&arg1->values[3]);
-    float width = lbl_805646BC;
-    width = (width < span) ? width : span;
+    float width = (lbl_805646BC < span) ? lbl_805646BC : span;
 
     out->count = (int)(arg0[2] + arg0[3] * width);
     out->data[0] = arg1->values[0] + arg0[12];
@@ -875,7 +874,7 @@ void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
     float b[3];
     float a0, a1, a2;
     float b0, b1, b2;
-    unsigned char flag;
+    int flag;
     int i;
 
     fn_802A0098(&out, arg0, params);
@@ -964,9 +963,8 @@ void fn_802A042C(void *arg0, Unk802A0794Params *arg1) {
     float bias, scale, upper, lower;
     float vec[6];
     void *obj;
-    int offset;
-    float radius2;
     int i;
+    float radius2;
     Unk802A0794Params *pos;
 
     lower = lbl_805646BC;
@@ -976,28 +974,27 @@ void fn_802A042C(void *arg0, Unk802A0794Params *arg1) {
     scale = lbl_805646C0;
     bias = lbl_805646C8;
     i = 0;
-    offset = 0;
 
     goto test;
 body:
     {
-        float pointX, pointY, pointZ, dx, dy, dz, dot;
+        float dx, dy, dz, pointX, pointY, pointZ, dot;
         struct Entry *entry = (struct Entry *)fn_801E8718(i);
         float radius;
         copy = *entry;
         pointX = pos->values[0] + *(float *)((char *)obj + 0x30);
+        pointY = pos->values[1] + *(float *)((char *)obj + 0x34);
+        pointZ = pos->values[2] + *(float *)((char *)obj + 0x38);
         radius = *(float *)((char *)obj + 0x44);
         radius2 = radius * radius;
         dx = pointX - *(float *)&copy.words[9];
-        pointY = pos->values[1] + *(float *)((char *)obj + 0x34);
         dy = pointY - *(float *)&copy.words[10];
-        pointZ = pos->values[2] + *(float *)((char *)obj + 0x38);
         dz = pointZ - *(float *)&copy.words[11];
-        vec[5] = pointZ;
         vec[3] = pointX;
         vec[4] = pointY;
-        vec[1] = dy;
+        vec[5] = pointZ;
         vec[0] = dx;
+        vec[1] = dy;
         vec[2] = dz;
         dot = PSVECDotProduct(vec, vec);
         if (dot < radius2) {
@@ -1010,23 +1007,22 @@ body:
             unsigned int old;
             register unsigned int objectColor;
             long output;
-            if (amount < lower) amount = lower;
-            if (amount > upper) amount = upper;
+            if (lower < amount) amount = lower;
+            amount = (amount > upper) ? amount : upper;
             base = scale * *(float *)((char *)obj + 0x48);
             next = base + amount * (upper - base);
             if (next < upper) next -= bias;
             else next += bias;
             colors = (unsigned int *)lbl_8055F820;
-            old = colors[offset / 4];
+            old = colors[i];
             alpha = (int)next + (int)(old >> 24);
             alpha = alpha & ((-alpha & ~alpha) >> 31);
             clamped = 255;
             if (255 > alpha) clamped = alpha;
             objectColor = *(unsigned int *)((char *)obj + 0x4C);
             output = (objectColor & 0x00FF0000) | ((unsigned int)clamped << 24) | (objectColor & 0x0000FFFF);
-            colors[offset / 4] = output;
+            colors[i] = output;
         }
-        offset += 4;
         i++;
     }
 test:
