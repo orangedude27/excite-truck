@@ -861,7 +861,7 @@ extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* contai
 }
 
 #pragma push
-#pragma inline_depth(2)
+#pragma inline_depth(3)
 extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = (u8 *)arg0;
