@@ -1665,7 +1665,9 @@ extern f32 lbl_80561500;
 extern "C" void fn_8001DAE0(void *, f32);
 /* Returns lbl_80561514 (240.0f) minus value: the reflected distance fed to the
    HUD gauge/text drawing path (the counterpart of fn_8013EFB0's 320.0f offset). */
+#pragma dont_inline on
 extern "C" f32 fn_8013EFBC(f32 value) { return lbl_80561514 - value; }
+#pragma dont_inline reset
 
 #pragma scheduling invalid_target
 extern "C" unsigned int fn_8013EFC8(void *arg0) {
