@@ -251,9 +251,9 @@ extern "C" void fn_8029C570(void) {
     struct Dummy {
         virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3();
         virtual void p4(); virtual void p5(); virtual void p6(); virtual void p7();
-        virtual void p8(); virtual void p9(); virtual void p10(); virtual void p11();
-        virtual void p12(); virtual void p13(); virtual void p14(); virtual void p15();
-        virtual void p16();
+        virtual void p8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16();
         virtual float get(void *);
     };
     register float a = 2.0f;
@@ -263,6 +263,9 @@ extern "C" void fn_8029C570(void) {
     char *q = base + 0x7C;
     int result;
     void *obj;
+    /* Load the water config: open the resource at base+0x7C if present, look up
+     * the interface at base+0x70 to read "period" and "amplitude" parameters
+     * (defaults 2.0/0.025), then apply them. */
     if (fn_8012C33C(q)) result = fn_802C6FC0(q, 0, 0); else result = -1;
     lbl_8055CAA8 = result;
     obj = fn_802AE414(p);
