@@ -194,9 +194,9 @@ struct CreditsItemInit {
     int b;
 };
 static inline void initCreditsItem(struct CreditsItemInit *item, void *name, int type, void *data) {
-    item->name = name;
-    item->type = type;
     item->data = data;
+    item->type = type;
+    item->name = name;
     item->a = 0;
     item->b = 0;
 }
@@ -204,19 +204,7 @@ static inline void initCreditsItem(struct CreditsItemInit *item, void *name, int
 #pragma push
 #pragma scheduling invalid_target
 void fn_802640A0(void *arg0) {
-    struct CreditsMenuItem {
-        void *name;
-        int type;
-        void *data;
-        int a;
-        int b;
-    };
-    struct CreditsMenuItem *item = (struct CreditsMenuItem *)arg0;
-    item->name = &lbl_8055C458;
-    item->type = 0x7b;
-    item->data = 0;
-    item->a = 0;
-    item->b = 0;
+    initCreditsItem((struct CreditsItemInit *)arg0, &lbl_8055C458, 0x7b, 0);
 }
 #pragma pop
 
