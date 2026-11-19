@@ -176,7 +176,7 @@ void fn_802C2FC4(void) {
 }
 
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4) {
     s32 var_r0;
     s32 var_r10;
