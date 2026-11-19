@@ -1851,13 +1851,14 @@ finish:
   extern void fn_80136EA4(int, int);
   extern void fn_80136E8C(int, int, int);
 #pragma scheduling invalid_target
-void fn_80196328(void *arg0) {
-    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), 1.0f);
-    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), 0.0f);
-    fn_8018ADAC(*(void **)((char *)arg0 + 0x294), 0.0f);
-    fn_8018AE24(*(int *)((char *)arg0 + 0x294), 0);
-    fn_80136EA4(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290));
-    fn_80136E8C(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 0);
+/* Clear truck control fields and deactivate its proximity-table row for an inactive racer controller. */
+void fn_80196328(void *controller) {
+    fn_8018ADBC(*(int *)((char *)controller + 0x294), 1.0f);
+    fn_8018ADB4(*(int *)((char *)controller + 0x294), 0.0f);
+    fn_8018ADAC(*(void **)((char *)controller + 0x294), 0.0f);
+    fn_8018AE24(*(int *)((char *)controller + 0x294), 0);
+    fn_80136EA4(lbl_8055E0D0, *(int *)((char *)controller + 0x290));
+    fn_80136E8C(lbl_8055E0D0, *(int *)((char *)controller + 0x290), 0);
 }
       extern int fn_801B2F24(void);
     extern void fn_801B2F40(int);
