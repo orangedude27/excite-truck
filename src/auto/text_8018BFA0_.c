@@ -92,6 +92,7 @@ void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5
 }
 #pragma pop
 
+/* Empty stub (no operation). */
 void fn_8018C50C(void) {
 
 }
