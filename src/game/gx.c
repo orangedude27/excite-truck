@@ -1191,7 +1191,7 @@ void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     p[6] = c;
     p[0x5C] = 1;
 }
-#pragma pop
+#pragma scheduling invalid_target
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
@@ -1201,8 +1201,6 @@ void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     p[0x5C] = 1;
     lbl_804C97D0 = a;
 }
-#pragma push
-#pragma scheduling invalid_target
 void fn_802D01B0(float *p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
@@ -1246,19 +1244,20 @@ void fn_802D01E0(int viewportX, int viewportY, int viewportWidth, int viewportHe
 #pragma scheduling on
 void fn_802D02F8(int arg0, signed char arg1) {
     extern unsigned char lbl_804C9778[];
-    volatile unsigned char scratch[4];
+    volatile unsigned char s0, s1, s2, s3;
     unsigned int value;
+    unsigned char t;
     lbl_804C9778[0x2d] = arg1;
     lbl_804C9778[0x2c] = 1;
     value = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
     lbl_804C9778[0x31] = value;
-    scratch[0] = (unsigned char)(value >> 24);
-    scratch[1] = (unsigned char)(value >> 16);
-    lbl_804C9778[0x2e] = scratch[0];
-    lbl_804C9778[0x2f] = scratch[1];
-    lbl_804C9778[0x30] = (unsigned char)(value >> 8);
-    scratch[3] = (unsigned char)value;
-    scratch[2] = (unsigned char)(value >> 8);
+    t = (unsigned char)(value >> 24); s3 = t;
+    t = (unsigned char)(value >> 16); s2 = t;
+    t = (unsigned char)(value >> 8); s1 = t;
+    lbl_804C9778[0x2e] = s3;
+    lbl_804C9778[0x2f] = s2;
+    lbl_804C9778[0x30] = s1;
+    s0 = (unsigned char)value;
 }
 
 #pragma push
@@ -2244,7 +2243,7 @@ extern unsigned char lbl_8055FD19;
 extern Mtx24_802D1C04 lbl_802FAC90;
 extern float lbl_80564F90, lbl_80564FD8, lbl_80564F88;
 #pragma push
-#pragma dont_inline on
+#pragma dont_inline off
 void fn_802D1C04(void) {
     unsigned char *base = (unsigned char *)lbl_804C5650;
     if (*(unsigned char *)&lbl_8055FD70 != 0) {
