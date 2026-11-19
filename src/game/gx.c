@@ -3177,28 +3177,25 @@ extern char lbl_8034C1E4[];
 extern float lbl_80564F88;
 #pragma processor 7400
 void *fn_802D39A4(float value) {
-    unsigned char *p;
+    ZQuery *query = (ZQuery *)lbl_804C9984;
+    ZQuery *found = 0;
     int index = 0;
-    unsigned char *found = 0;
     int count;
-    float initialValue;
 
-    p = (unsigned char *)lbl_804C9984;
     for (count = 0; count < 0x40; ++count) {
-        if (p[0xC] == 0) {
-            found = (unsigned char *)lbl_804C9984 + index * 0x18;
+        if (query->used == 0) {
+            found = (ZQuery *)((char *)lbl_804C9984 + index * 0x18);
             break;
         }
-        p += 0x18;
+        query++;
         index++;
     }
     if (found == 0)
         fn_802E317C(lbl_8034C1E4);
-    initialValue = lbl_80564F88;
-    found[0xC] = 1;
-    found[0xD] = 0;
-    *(float *)(found + 0x10) = value;
-    *(float *)(found + 0x14) = initialValue;
+    found->used = 1;
+    found->visible = 0;
+    found->step = value;
+    found->fade = 0.0f;
     return found;
 }
 #pragma processor gekko
