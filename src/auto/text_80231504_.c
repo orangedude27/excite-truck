@@ -336,8 +336,6 @@ s32 fn_802315FC(s32 arg0) {
     s32 offset = arg0 * 0xC;
     u8 *entry = lbl_8055F068 + offset;
     u8 *base;
-    u8 *destination;
-    u8 *source;
     s32 last;
     s32 lastOffset;
 
@@ -346,12 +344,10 @@ s32 fn_802315FC(s32 arg0) {
         fn_8012C4D8(*(void **)entry);
         fn_80128670(*(void **)(entry + 4));
         base = lbl_8055F068;
-        destination = base + offset;
         last = *(s32 *)(base + 0x168) - 1;
         lastOffset = last * 0xC;
         *(s32 *)(base + 0x168) = last;
-        source = base + lastOffset;
-        *(s32 *)destination = *(s32 *)source;
+        *(s32 *)(base + offset) = *(s32 *)(base + lastOffset);
         *(s32 *)(base + offset + 4) = *(s32 *)(base + lastOffset + 4);
         *(s32 *)(base + offset + 8) = *(s32 *)(base + lastOffset + 8);
         return 1;
