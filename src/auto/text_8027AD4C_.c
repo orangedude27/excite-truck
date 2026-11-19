@@ -10,6 +10,11 @@ extern void fn_8027CD80(long, long, long, long);
 __declspec(section ".rodata") extern long lbl_80347B4C;
 __declspec(section ".rodata") extern long lbl_80347B5C;
 long fn_8000D984(long);
+/* 8-byte member pair copied as a unit in fn_8027AFA0's entry assignment. */
+typedef struct EntryWordPair {
+    long a;
+    long b;
+} EntryWordPair;
 long fn_8027B8E4(void *, long);
 void *fn_8027B834(void *);
 long fn_8027B984(void *, long);
@@ -243,16 +248,16 @@ extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
                                 b[0x11] = s[0x11];
                                 b[0x12] = s[0x12];
                                 {
-                                    long w14 = *(long *)(s + 0x14);
                                     long w18 = *(long *)(s + 0x18);
-                                    *(volatile long *)(b + 0x14) = w14;
-                                    *(volatile long *)(b + 0x18) = w18;
+                                    long w14 = *(long *)(s + 0x14);
+                                    *(long *)(b + 0x14) = w14;
+                                    *(long *)(b + 0x18) = w18;
                                 }
                                 {
-                                    long w1c = *(long *)(s + 0x1C);
                                     long w20 = *(long *)(s + 0x20);
-                                    *(volatile long *)(b + 0x1C) = w1c;
-                                    *(volatile long *)(b + 0x20) = w20;
+                                    long w1c = *(long *)(s + 0x1C);
+                                    *(long *)(b + 0x1C) = w1c;
+                                    *(long *)(b + 0x20) = w20;
                                 }
                                 *(long *)(b + 0x24) = *(long *)(s + 0x24);
                                 *(long *)(b + 0x28) = *(long *)(s + 0x28);
