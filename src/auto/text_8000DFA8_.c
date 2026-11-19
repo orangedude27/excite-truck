@@ -1888,24 +1888,25 @@ extern int sprintf(char *, const char *, ...);
 #pragma processor 750
 #pragma scheduling on
 #pragma dont_inline on
+/* Returns the maximum scaled width among digit glyphs '0' through '9' for the font/UI object. */
 f32 fn_80011EDC(void) {
-    char buffer[0x10];
-    f32 scale = 0.73333335f;
-    f32 best = 0.0f;
-    f32 value;
-    s32 i = 0;
+    char digitText[0x10];
+    f32 widthScale = 0.73333335f;
+    f32 maxWidth = 0.0f;
+    f32 glyphWidth;
+    s32 digit = 0;
 
     do {
-        sprintf(buffer, lbl_80558ACC, (char)(i + 0x30));
-        value = scale * ((f32 (*)(s32, char *, f32))fn_8023293C)(
-            lbl_8055D490, buffer, lbl_80560264);
-        if (value > best) {
-            best = value;
+        sprintf(digitText, lbl_80558ACC, (char)(digit + 0x30));
+        glyphWidth = widthScale * ((f32 (*)(s32, char *, f32))fn_8023293C)(
+            lbl_8055D490, digitText, lbl_80560264);
+        if (glyphWidth > maxWidth) {
+            maxWidth = glyphWidth;
         }
-        i++;
-    } while (i < 10);
+        digit++;
+    } while (digit < 10);
 
-    return best;
+    return maxWidth;
 }
 #pragma pop
 
