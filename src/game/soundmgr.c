@@ -673,8 +673,13 @@ signed long fn_8020835C(void *soundMgr) {
 #pragma pop
 
 #pragma pop
+/* SoundManager list-change hook.  fn_80208408 calls this right after inserting a
+ * sound object into its soundclass list, alongside bumping the list count; the
+ * constructor hook fn_80207960 is the same kind of callback.  The shipped build
+ * has no body for either: whatever they did was compiled out, leaving an empty
+ * function the call still reaches. */
 void fn_80208404(void) {
-
+	return;
 }
 
 #pragma push
