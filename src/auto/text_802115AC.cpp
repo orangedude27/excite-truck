@@ -3013,7 +3013,14 @@ extern "C" void fn_80215CDC(void *controller) {
 
 }
 
-extern "C" void fn_80215CE0(void) {
+/* Base default for vtable slot 0x50 of the timed UI-group controller class
+ * (base vtable lbl_8033D618; the instances registered by fn_80262EF8 and
+ * fn_802874C8 use the derived vtables lbl_80345F70 and lbl_803489C0), the
+ * first of the two message slots 0x50/0x54 that sit just before the
+ * still-running test at slot 0x58.  The class implements only the timer start
+ * (slot 0xC), the expiry tick (slot 0x1C) and that test, so no vtable of the
+ * family overrides this slot and the default does nothing. */
+extern "C" void fn_80215CE0(void *controller) {
 
 }
 
