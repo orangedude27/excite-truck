@@ -57,17 +57,18 @@ extern double sin(double);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80019BBC(void) {
-    register float step = 0.314159f;
-    register float initial;
+    /* Initialize lbl_803582C0 with 20 (cos, sin, 0) samples around a circle and a final zero vector. */
+    register float angleStep = 0.314159f;
+    register float zValue;
     register float angle = 0.0f;
-    float *p = (float *)lbl_803582C0;
+    float *out = (float *)lbl_803582C0;
     int i = 0;
-    initial = angle;
+    zValue = angle;
     do {
-        *p++ = (float)cos(angle);
-        *p++ = (float)sin(angle);
-        *p++ = initial;
-        angle += step;
+        *out++ = (float)cos(angle);
+        *out++ = (float)sin(angle);
+        *out++ = zValue;
+        angle += angleStep;
         i++;
     } while (i < 20);
     ((float *)lbl_803582C0)[60] = 0.0f;
