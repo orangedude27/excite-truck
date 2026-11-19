@@ -72,6 +72,7 @@ void fn_801BD694(int count) {
     lbl_8055E7A8 = 1;
 }
 #pragma pop
+/* Empty constructor callback for ccList (0x190-byte wheel record) pool elements. */
 void fn_801BD784(void) {
 
 }
@@ -327,17 +328,15 @@ extern signed char lbl_8055E7A8;
 void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
     extern int lbl_8055E794;
     struct V4 { float x, y, z, w; };
+    float m00 = m[0][0], m11 = m[1][1], m22 = m[2][2];
     float t, out[4], q, inv;
     struct V4 pos, quat, la, lb;
     int j, k, i;
     float *o, *dst;
+    t = m00 + m11 + m22;
     dst = (float *)(lbl_8055E794 + index * 0xB0);
-    t = m[0][0] + m[1][1] + m[2][2];
     pos.x = m[3][0]; pos.y = m[3][1]; pos.z = m[3][2];
-    dst[0] = pos.x;
-    dst[1] = pos.y;
-    dst[2] = pos.z;
-    dst[3] = pos.w;
+    dst[0] = pos.x; dst[1] = pos.y; dst[2] = pos.z; dst[3] = pos.w;
     if (t > lbl_80562838) {
         q = fn_8002F234(lbl_8056283C + t);
         inv = lbl_80562854 / q;
@@ -349,16 +348,16 @@ void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
         o = out;
         i = 0; if (m[1][1] > m[0][0]) i = 1; if (m[2][2] > m[i][i]) i = 2;
         j = (i + 1) % 3; k = (j + 1) % 3;
-        q = fn_8002F234(lbl_8056283C + m[i][i] - (m[k][k] + m[j][j]));
+        q = fn_8002F234(lbl_8056283C + (m[i][i] - (m[k][k] + m[j][j])));
         inv = lbl_80562854 / q;
         o[i] = lbl_80562854 * q;
         o[3] = inv * (m[j][k] - m[k][j]);
         o[j] = inv * (m[i][j] + m[j][i]);
         o[k] = inv * (m[i][k] + m[k][i]);
     }
-    quat.x = -out[0]; quat.y = -out[1]; quat.z = -out[2]; quat.w = out[3];
-    la.x = a[0]; la.y = a[1]; la.z = a[2];
     lb.x = b[0]; lb.y = b[1]; lb.z = b[2];
+    la.x = a[0]; la.y = a[1]; la.z = a[2];
+    quat.x = -out[0]; quat.y = -out[1]; quat.z = -out[2]; quat.w = out[3];
     dst[16] = quat.x; dst[17] = quat.y; dst[18] = quat.z; dst[19] = quat.w;
     dst[20] = la.x; dst[21] = la.y; dst[22] = la.z; dst[23] = la.w;
     dst[24] = lb.x; dst[25] = lb.y; dst[26] = lb.z; dst[27] = lb.w;
