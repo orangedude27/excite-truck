@@ -2091,7 +2091,7 @@ void fn_801C7BA0(void) {
 }
 
 #pragma push
-#pragma scheduling off
+#pragma scheduling on
 void fn_801C7C04(void) {
     extern f32 lbl_805629D4, lbl_8055E84C;
     extern char lbl_80336F4C[], lbl_80336F88[];
