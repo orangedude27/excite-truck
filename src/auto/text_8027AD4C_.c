@@ -1793,7 +1793,7 @@ extern "C" void fn_8027D158(long arg0, char *arg1, long arg2) {
     long pathType = *result;
     switch (pathType) {
     case 0:
-        fn_8027C8B8((long)result, arg1, arg2);
+        fn_8027C8B8(result, (unsigned char *)arg1, arg2);
         break;
     case 1:
         fn_8027CBF8((long)result, arg1, arg2);
