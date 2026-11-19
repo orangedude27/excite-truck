@@ -1808,18 +1808,21 @@ extern "C" long fn_8027D0E0(long bracketName) {
     }
 }
 #pragma opt_propagation off
-extern "C" void fn_8027D158(long arg0, char *arg1, long arg2) {
-    long *result = fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
-    long pathType = *result;
+/* Look up the named event/contest path entry and copy its display text into outText.
+ * Dispatches on the entry's type (0: formatted goal status, 1: completion/challenge string);
+ * panics on an unknown type. */
+extern "C" void fn_8027D158(long contestName, char *outText, long maxLen) {
+    long *entry = fn_8027C26C((void *)lbl_8055F654, (const char *)contestName);
+    long pathType = *entry;
     switch (pathType) {
     case 0:
-        fn_8027C8B8(result, (unsigned char *)arg1, arg2);
+        fn_8027C8B8(entry, (unsigned char *)outText, maxLen);
         break;
     case 1:
-        fn_8027CBF8((long)result, arg1, arg2);
+        fn_8027CBF8((long)entry, outText, maxLen);
         break;
     default:
-        ((void (*)(char *, ...))fn_802E317C)(lbl_80347C38, arg0, pathType);
+        ((void (*)(char *, ...))fn_802E317C)(lbl_80347C38, contestName, pathType);
         break;
     }
 }
