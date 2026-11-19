@@ -743,10 +743,11 @@ void fn_80217C4C(void *arg0) {
     char *entry;
     int count;
     float threshold;
-    int i;
+    int eligible;
+    char *item;
     int last;
     int matches;
-    int eligible;
+    int i;
     count = *(int *)(base + 0x494);
     if (1 > count) return;
     threshold = lbl_80563490;
@@ -754,8 +755,7 @@ void fn_80217C4C(void *arg0) {
     last = -1;
     matches = 0;
     i = 0;
-    for (; i < count; i++, entry += 8) {
-        char *item;
+    for (; i < count; entry += 8, i++) {
         float value;
         if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
         item = *(char **)(entry + 0x4A4);
