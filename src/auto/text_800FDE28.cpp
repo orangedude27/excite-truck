@@ -276,29 +276,30 @@ struct TaskManager {
 void nw4hbm::snd::detail::TaskManager::AppendTask(
     nw4hbm::snd::detail::Task *task,
     nw4hbm::snd::detail::TaskManager::TaskPriority priority) {
+    /* Append a task to the end of the queue for the given priority. */
     struct TaskList {
         u32 count;
         u8 end[8];
     };
-    u32 level;
-    void *it;
-    TaskList *list;
-    s32 valid;
+    u32 savedInterrupts;
+    void *endIterator;
+    TaskList *taskQueue;
+    s32 isValidPriority;
 
-    valid = 0;
-    if (priority >= 0 && priority < 3) valid = 1;
-    if (valid == 0) {
+    isValidPriority = 0;
+    if (priority >= 0 && priority < 3) isValidPriority = 1;
+    if (isValidPriority == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x7D, (const char *)lbl_80326ED0, priority, 0, 3);
     }
-    level = OSDisableInterrupts();
-    list = &((TaskList *)((u8 *)this + 0x20))[priority];
-    it = list->end;
+    savedInterrupts = OSDisableInterrupts();
+    taskQueue = &((TaskList *)((u8 *)this + 0x20))[priority];
+    endIterator = taskQueue->end;
     if (task == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326FC8, 0x233, (const char *)lbl_80326FA4);
     }
-    void *itCopy = it;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &itCopy, (u8 *)task + 4);
-    OSRestoreInterrupts(level);
+    void *iterator = endIterator;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(taskQueue, &iterator, (u8 *)task + 4);
+    OSRestoreInterrupts(savedInterrupts);
 }
 
 #pragma dont_inline on
