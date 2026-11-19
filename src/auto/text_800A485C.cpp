@@ -10627,6 +10627,7 @@ extern "C" s32 fn_800B5260(void *volume, void *dst, u32 sector, u32 offset, s32 
 
 struct CacheSlotData { u8 b[0x240]; };
 struct CacheSlot { u32 flag; s32 key; CacheSlotData data; };
+typedef struct { u64 b[0x48]; } U64Copy;
 #pragma opt_unroll_loops off
 static inline void CopyCacheSlotData(void *dst, const void *src) {
     u32 *d = (u32 *)((u8 *)dst - 4);
