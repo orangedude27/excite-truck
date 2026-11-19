@@ -738,29 +738,31 @@ void fn_802B9B68(void) {
         int count;
         void *allocation;
     };
-    char *base = lbl_8034A990;
     struct Manager *manager;
     void *memory;
     void *pool;
     void *records;
+    void *entry;
     int i;
     int offset;
     int index;
+    int count;
 
-    fn_802B8AE0(base + 0xC, &lbl_8055FA6C);
-    fn_802B8AE0(base + 0x18, &lbl_8055FA70);
+    fn_802B8AE0(lbl_8034A990 + 0xC, &lbl_8055FA6C);
+    fn_802B8AE0(lbl_8034A990 + 0x18, &lbl_8055FA70);
     memset(lbl_804C0088, 0, 0x10);
-    manager = fn_801284F8(0x14, base + 0x24);
+    manager = fn_801284F8(0x14, lbl_8034A990 + 0x24);
     if (manager != 0) {
+        count = 0x500;
         memory = ((void *(*)(int, void *))fn_8012850C)(0x5010, &lbl_8055CEF0);
         manager->records = ((void *(*)(void *, void (*)(void *),
                           void *(*)(void *, s32), int, int))fn_8002F37C)(
-            memory, fn_802B9CF4, fn_802B9C9C, 0x10, 0x500);
-        manager->count = 0x500;
+            memory, fn_802B9CF4, fn_802B9C9C, 0x10, count);
+        manager->count = count;
         manager->index = 0;
         manager->allocation = manager->records;
         manager->pool = ((void *(*)(int, void *))fn_8012850C)(
-            manager->count * 0x10, lbl_8034AA1C);
+            count * 0x10, lbl_8034AA1C);
         i = 0;
         offset = 0;
         while (i < manager->count) {
@@ -769,10 +771,11 @@ void fn_802B9B68(void) {
             pool = manager->pool;
             records = manager->records;
             manager->index = index + 1;
-            *(void **)((char *)records + index * 0x10) = (char *)pool + offset;
+            entry = (char *)records + index * 0x10;
+            *(void **)entry = (char *)pool + offset;
             offset += 0x10;
-            *(int *)((char *)records + index * 0x10 + 8) = 4;
-            *(int *)((char *)records + index * 0x10 + 4) = 0;
+            *(int *)((char *)entry + 8) = 4;
+            *(int *)((char *)entry + 4) = 0;
         }
         manager->index = 0;
     }
@@ -1465,16 +1468,18 @@ found:
 
 #pragma push
 #pragma processor 750
-void fn_802BAD0C(void *arg0, float angle) {
-    float c;
+void fn_802BAD0C(void *vec, float angle) {
+    float cosAngle;
     register float x;
-    float s;
-    float *p = (float *)arg0;
-    x = p[0];
-    c = (float)cos(angle);
-    s = (float)sin(angle);
-    p[0] = p[0] * c - p[1] * s;
-    p[1] = x * s + p[1] * c;
+    float sinAngle;
+    float *coords = (float *)vec;
+
+    /* Rotate the 2D vector in place by angle (radians): (x, y) -> (x*c - y*s, x*s + y*c). */
+    x = coords[0];
+    cosAngle = (float)cos(angle);
+    sinAngle = (float)sin(angle);
+    coords[0] = coords[0] * cosAngle - coords[1] * sinAngle;
+    coords[1] = x * sinAngle + coords[1] * cosAngle;
 }
 #pragma pop
 int fn_80128668(void *);
