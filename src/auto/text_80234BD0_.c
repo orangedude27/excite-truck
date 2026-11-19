@@ -22,7 +22,7 @@ void __register_global_object(void *, void (*)(void), void *);
 #pragma scheduling invalid_target
 void fn_80234BD0(void) {
     register unsigned int *base asm("r29") = (unsigned int *)lbl_80497F08;
-    register StaticObj *obj asm("r3");
+    StaticObj *obj;
     fn_8000D838(lbl_8055F038);
     obj = (StaticObj *)(base + 3);
     obj->next = (char *)obj + 0xC;
