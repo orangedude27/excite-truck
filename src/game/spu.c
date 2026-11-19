@@ -208,25 +208,26 @@ void fn_802E4F98(void) {
 extern float lbl_80565130;
 extern float lbl_80565134;
 #pragma dont_inline fn_802E5168
-unsigned short fn_802E5168(float arg0) {
-    float value = 32768.0f * arg0;
-    float adjusted;
-    int converted;
-    int result;
-    int limit;
-    if (value < 0.0f) {
-        adjusted = value - 0.5f;
+/* Convert a normalized value to an unsigned 16-bit sample value by scaling to 32768, rounding to nearest, and clamping to [0, 0x8000]. */
+unsigned short fn_802E5168(float value) {
+    float scaled = 32768.0f * value;
+    float rounded;
+    int truncated;
+    int clampedLow;
+    int clampedHigh;
+    if (scaled < 0.0f) {
+        rounded = scaled - 0.5f;
     } else {
-        adjusted = 0.5f + value;
+        rounded = 0.5f + scaled;
     }
-    converted = (int)adjusted;
-    result = converted & ((-converted & ~converted) >> 31);
-    if (result < 0x8000) {
-        limit = result;
+    truncated = (int)rounded;
+    clampedLow = truncated & ((-truncated & ~truncated) >> 31);
+    if (clampedLow < 0x8000) {
+        clampedHigh = clampedLow;
     } else {
-        limit = 0x8000;
+        clampedHigh = 0x8000;
     }
-    return (unsigned short)limit;
+    return (unsigned short)clampedHigh;
 }
 
 /* One Wii remote speaker stream per Wii remote channel, 0x2C bytes each in the
