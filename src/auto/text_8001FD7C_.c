@@ -876,6 +876,7 @@ g2done:
         }
     }
 }
+#pragma ppc_psq_save reset
 
 #pragma pop
 
