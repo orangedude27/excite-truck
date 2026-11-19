@@ -203,7 +203,7 @@ void fn_80297AFC(void) {
     void *camera;
     int offset;
     int i;
-    StaticShadow *record;
+    char *record;
     float speed;
     float minimum;
     float maximum;
@@ -223,14 +223,14 @@ void fn_80297AFC(void) {
     for (; i < lbl_8055F7AC; offset += 0x40, i++) {
         float cur;
         float tmp;
-        record = (StaticShadow *)((char *)gStaticShadowRecords + offset);
+        record = (char *)lbl_8055F7A8 + offset;
         speed = fn_801E88F0(-1);
         speed = speed * speed;
-        if (PSVECSquareDistance(cameraPosition, record->matrix + 9) * speed >
-            record->range * record->range) {
+        if (PSVECSquareDistance(cameraPosition, record + 0x2C) * speed >
+            *(float *)(record + 0x3C) * *(float *)(record + 0x3C)) {
             tmp = (float)fn_8002F234();
-            cur = record->fade;
-            value = tmp - record->range;
+            cur = *(float *)(record + 0x38);
+            value = tmp - *(float *)(record + 0x3C);
             value = (value - maximum) / divisor;
             if (value < minimum) {
                 value = minimum;
@@ -240,57 +240,60 @@ void fn_80297AFC(void) {
             }
             value = cur + value * (maximum - cur);
         } else {
-            value = record->fade;
+            value = *(float *)(record + 0x38);
         }
 
         if (!((float)__fabs((double)value) <= *(float *)lbl_80558DC4)) {
-            fn_802C7AE0((int)record->model, record->matrix, record->groupMask);
+            fn_802C7AE0(*(int *)record, record + 8, *(int *)(record + 4));
         }
     }
 }
 #pragma pop
 extern void *fn_802C6FC0(void *, int, int);
-void fn_80297C3C(void *unused, void *arg1, int arg2, float farg0, float farg1) {
-    unsigned int t0 = 0;
+/* Appends a static shadow record (model instance, group mask, transform, fade, and cull
+ * range) to the global list by copying the transform from sourceMatrix; does nothing if
+ * the list is full. */
+void fn_80297C3C(void *modelSource, void *sourceMatrix, int groupMask, float fade, float cullRange) {
+    unsigned int nextWord = 0;
     int count;
     unsigned int *record;
     unsigned int *source;
-    unsigned int t1;
+    unsigned int word;
 
-    count = lbl_8055F7AC;
+    count = gStaticShadowCount;
     if (0x80 <= count)
         return;
 
-    record = (unsigned int *)lbl_8055F7A8 + count * 0x10;
-    source = (unsigned int *)arg1;
-    record[0] = (unsigned int)fn_802C6FC0(unused, 0, 0);
-    t1 = source[0];
-    record[1] = (unsigned int)arg2;
-    t0 = source[1];
-    record[2] = t1;
-    t1 = source[2];
-    record[3] = t0;
-    t0 = source[3];
-    record[4] = t1;
-    t1 = source[4];
-    record[5] = t0;
-    t0 = source[5];
-    record[6] = t1;
-    t1 = source[6];
-    record[7] = t0;
-    t0 = source[7];
-    record[8] = t1;
-    t1 = source[8];
-    record[9] = t0;
-    t0 = source[9];
-    record[10] = t1;
-    t1 = source[10];
-    record[11] = t0;
-    t0 = source[11];
-    record[12] = t1;
-    record[13] = t0;
-    *(float *)&record[14] = farg0;
-    *(float *)&record[15] = farg1;
-    lbl_8055F7AC += 1;
+    record = (unsigned int *)gStaticShadowRecords + count * 0x10;
+    source = (unsigned int *)sourceMatrix;
+    record[0] = (unsigned int)fn_802C6FC0(modelSource, 0, 0);
+    word = source[0];
+    record[1] = (unsigned int)groupMask;
+    nextWord = source[1];
+    record[2] = word;
+    word = source[2];
+    record[3] = nextWord;
+    nextWord = source[3];
+    record[4] = word;
+    word = source[4];
+    record[5] = nextWord;
+    nextWord = source[5];
+    record[6] = word;
+    word = source[6];
+    record[7] = nextWord;
+    nextWord = source[7];
+    record[8] = word;
+    word = source[8];
+    record[9] = nextWord;
+    nextWord = source[9];
+    record[10] = word;
+    word = source[10];
+    record[11] = nextWord;
+    nextWord = source[11];
+    record[12] = word;
+    record[13] = nextWord;
+    *(float *)&record[14] = fade;
+    *(float *)&record[15] = cullRange;
+    gStaticShadowCount += 1;
 }
 
