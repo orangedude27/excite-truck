@@ -666,11 +666,11 @@ void fn_80168104(void) {
 void fn_80168328(void) {
     extern s32 lbl_8055E354;
     extern void fn_801678D8(void);
-    register s32 *root;
-    register s32 i, offset, j, count;
-    register s32 *slot;
-    register u8 *entry;
-    register s32 flag;
+    s32 *root;
+    s32 i, offset, j, count;
+    s32 *slot;
+    u8 *entry;
+    s32 flag;
     root = (s32 *)lbl_8055E354;
     fn_801678D8();
     i = 0;
@@ -1281,6 +1281,8 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
 
 s32 fn_801698B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 var_r3, var_r4, var_r5;
+    s32 mid;
+    s32 ret;
     var_r3 = arg0;
     var_r4 = arg1;
     if (var_r3 > arg2 - var_r3)
@@ -1292,12 +1294,11 @@ s32 fn_801698B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         var_r5 = var_r4;
     if (var_r4 > var_r3)
         var_r3 = var_r4;
-    if (var_r3 + var_r5 / 2 >= 3) {
-        if (var_r3 + var_r5 / 2 >= 5)
-            return 1;
-        return 2;
-    }
-    return 3;
+    mid = var_r3 + var_r5 / 2;
+    if (mid < 3) return 3;
+    ret = 1;
+    if (mid < 5) ret = 2;
+    return ret;
 }
 
 s32 fn_80169928(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
