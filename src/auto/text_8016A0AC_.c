@@ -99,6 +99,7 @@ extern f32 lbl_80561974;
 extern f32 lbl_80561978;
 extern f32 lbl_8056197C;
 
+/* Empty stub. */
 void fn_8016A0AC(void) {
 }
 
