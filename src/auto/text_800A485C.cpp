@@ -5230,6 +5230,8 @@ extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 
     extern s32 VFiPFENT_loadEntryNumericFieldsFromBuf(void *, void *);
     register u8 *iter;
     s32 status;
+    s32 result;
+    u32 old;
     register s32 zero;
     u8 spC[13];
     u8 flags;
@@ -5312,9 +5314,10 @@ status_check:
     *arg3 = 1;
     return 0;
 advance:
-    status = *(u32 *)iter;
-    *(u32 *)iter = status + 1;
-    status = VFiPFENT_ITER_MaskNonZero(VFiPFENT_ITER_MoveNextAndReadOld(iter, status));
+    old = *(u32 *)iter;
+    *(u32 *)iter = old + 1;
+    result = VFiPFENT_ITER_MoveNextAndReadOld(iter, old);
+    status = VFiPFENT_ITER_MaskNonZero(result);
 check_end:
     if (VFiPFENT_ITER_IsAtLogicalEnd((void *)iter) == 0) goto status_check;
     return 0;
@@ -26580,6 +26583,7 @@ extern "C" void fn_800A52A0(void *volume, const void *name) {
 }
 
 #pragma opt_propagation off
+#pragma opt_dead_assignments off
 extern "C" void fn_800A52DC(u32 arg0) {
     u8 *base = (u8 *)lbl_803D2140;
     u8 *ptr = base + 0xA0;
@@ -26598,6 +26602,7 @@ extern "C" void fn_800A52DC(u32 arg0) {
         ptr += 0x3F90;
     }
 }
+#pragma opt_dead_assignments reset
 #pragma opt_propagation reset
 extern "C" void fn_800A535C(u32 arg0) {
     u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
