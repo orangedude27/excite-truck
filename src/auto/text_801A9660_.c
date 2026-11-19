@@ -1388,7 +1388,6 @@ extern float lbl_805624AC, lbl_805624F0, lbl_805624F4, lbl_805624F8;
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_801AC544(void *arg0) {
-    #pragma opt_loop_invariants off
     struct Point { float x,y,z,a,b; };
     struct Link { int a,b; float distance, value; };
     struct Anchor { int index; void *matrix; int unused; };
@@ -1952,30 +1951,33 @@ extern void fn_801D08C0(void *);
 extern void fn_801D0934(void *);
 #pragma push
 #pragma opt_propagation off
-void *fn_801AD6B0(void *arg0, int arg1) {
-    void *initArg;
-    if (arg0 != 0) {
-        *(void **)arg0 = &lbl_80335744;
-        initArg = arg0;
-        *(void **)((u8 *)arg0 + 0x23C) = (char *)&lbl_80335744 + 0x54;
-        if (initArg != 0) {
-            initArg = (u8 *)initArg + 0x23C;
+void *fn_801AD6B0(void *self, int shouldDelete) {
+    void *notifier;
+    /* Destructor: sets the main and +0x23C embedded vtables, notifies listeners
+     * for the embedded notifier, clears +0x240 and lbl_8055E5E4, destroys the
+     * base, and frees when shouldDelete > 0. */
+    if (self != 0) {
+        *(void **)self = &lbl_80335744;
+        notifier = self;
+        *(void **)((u8 *)self + 0x23C) = (char *)&lbl_80335744 + 0x54;
+        if (notifier != 0) {
+            notifier = (u8 *)notifier + 0x23C;
         }
-        fn_801D0934(initArg);
-        *(int *)((u8 *)arg0 + 0x240) = 0;
-        if (arg0 != 0) {
+        fn_801D0934(notifier);
+        *(int *)((u8 *)self + 0x240) = 0;
+        if (self != 0) {
             lbl_8055E5E4 = 0;
-            if (arg0 != 0) {
-                if (arg0 != 0) {
-                    fn_80179EE8(arg0, 0);
+            if (self != 0) {
+                if (self != 0) {
+                    fn_80179EE8(self, 0);
                 }
             }
         }
-        if (arg1 > 0) {
-            ((void (*)(void *))fn_80128668)(arg0);
+        if (shouldDelete > 0) {
+            ((void (*)(void *))fn_80128668)(self);
         }
     }
-    return arg0;
+    return self;
 }
 #pragma push
 #pragma opt_propagation off
