@@ -163,6 +163,11 @@ void fn_80204048(f32 *corner0, f32 *corner1, f32 farGridX) {
 
 }
 
+/* "tedash.val" terrain debug viewer, view mode 5: close the world-space overlay
+ * fn_80204048() opened for one brush pass.  fn_802B6F34() calls it once every
+ * sampled cell of the brush area has been reported to fn_80204044(), so this is
+ * where the overlay would be flushed to the screen -- and, like the other two
+ * hooks of that pass, it draws nothing in this build. */
 void fn_8020404C(void) {
 
 }
