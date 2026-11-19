@@ -108,6 +108,8 @@ void fn_80239AB8(void) {
 #undef SetMenuIndex
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80239AC0(void)
 {
     s32 args[5];
