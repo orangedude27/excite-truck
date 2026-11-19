@@ -709,13 +709,16 @@ extern void OSPanic(const char *, int, const char *, ...);
 extern char lbl_8034CD8C[];
 __declspec(section ".sdata") extern char lbl_8055D174[];
 int main(void) {
-    int local[0x40] = {0};
-    if (fn_80004D64(local) != 0) {
+    int bootArgs[0x40] = {0};
+
+    /* Initialize from boot arguments, run the main loop, then shut down; panic if it returns. */
+    if (fn_80004D64(bootArgs) != 0) {
         if (fn_802E2A5C() != 0) {
             fn_80004E20();
             fn_802E2B34();
         }
     }
+
     OSPanic(lbl_8034CD8C, 0xD2, lbl_8055D174);
     return 0;
 }
