@@ -141,17 +141,6 @@ static struct Fn80283E28Obj *fn_80283E28_get(struct Fn80283E28List *l, int i) {
     if (i >= 0 && i < l->count && l->items[i]->sub != 0) return l->items[i];
     return 0;
 }
-static inline int fn_80283E28_find(struct Fn80283E28Obj **items, int count, unsigned int value) {
-    struct Fn80283E28Obj **p = items;
-    int i;
-    for (i = 0; i < count; ++i) {
-        if ((unsigned int)*p != value) goto increment;
-        return i;
-    increment:
-        ++p;
-    }
-    return -1;
-}
 extern char lbl_8034862C[];
 extern int lbl_8055C7E0;
 extern int fn_80128668();
