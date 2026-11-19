@@ -121,7 +121,27 @@ void fn_801DF6FC(void) {
     }
 }
 #pragma use_lmw_stmw on
-int fn_801DF93C(int arg0) { (void)arg0; return 1; }
+int fn_801DF93C(int arg0) {
+    extern char lbl_8055AE58[];
+    extern int fn_8014AEC8(void);
+    extern int fn_80141F7C(void);
+    extern int fn_801E85A4(void);
+    extern void fn_8014C72C(void *, void *);
+    void *mgr = lbl_8055EA04;
+    int subject;
+    (void)arg0;
+    subject = fn_801E866C(0);
+    fn_801DFF08();
+    fn_8014AEC8();
+    if (fn_80141F7C() != 0) {
+        return 0;
+    }
+    if (fn_801E85A4() > 1) {
+        fn_8014C72C(*(void **)((char *)mgr + 0xE4), lbl_8055AE58);
+        return 1;
+    }
+    return 1;
+}
 
 void fn_801476D8(int, int);
 void fn_801DFE44(int object, int value) { ((void (*)(int, int, int))fn_801476D8)(object, -1, value); }
@@ -327,6 +347,7 @@ void fn_801E02A8(void) {
 
 }
 
+/* No-op stub. */
 void fn_801E02AC(void) {
 
 }
