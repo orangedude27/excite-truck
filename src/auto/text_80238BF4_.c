@@ -32,6 +32,12 @@ extern void fn_802E317C(const char *, ...);
 extern char lbl_80340AD0[];
 extern char lbl_80340B00[];
 
+static inline s32 clamp255(s32 x) {
+    if (x <= 0) return 0;
+    if (x >= 255) return 255;
+    return x;
+}
+
 #define SWF_DATA(obj) (*(u8 **)((u8 *)(obj) + 0x14))
 
 #define SWAP32_FIELD(base, off) do { \
@@ -72,6 +78,7 @@ static inline s32 clampHigh_80238BF4(s32 v) {
 }
 #pragma scheduling invalid_target
 void fn_80238BF4(void *arg0, u8 *arg1) {
+#pragma optimization_level 3
     struct LocalFrame {
         u16 indices3[3];
         u8 pad06[2];
@@ -88,28 +95,34 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
     u32 packed;
     s32 pointOffset;
     s32 recordOffset;
+    s32 count;
     s32 c0, c1, c2, c3;
     s32 state;
-    s32 count;
     record = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + entryIndex * 0x28;
     color = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20) + colorIndex * 8;
     pointOffset = 0;
     recordOffset = 0;
-    for (count = 0; count < record[2]; count++) {
+    count = 0;
+    while (count < record[2]) {
         u8 *vertex = record + recordOffset;
         f32 xScale = *(f32 *)(arg1 + 4);
         f32 x = *(f32 *)(vertex + 8);
         volatile f32 *dest = (volatile f32 *)((u8 *)frame.points + pointOffset);
         f32 y = *(f32 *)(vertex + 0xC);
-        f32 yScale = *(f32 *)(arg1 + 8);
-        f32 xAdd = *(f32 *)(arg1 + 0xC);
-        f32 xx = x * xScale;
-        f32 yy = x * yScale;
+        f32 yScale;
+        f32 xAdd;
+        f32 xx;
+        f32 yy;
         f32 xy;
         f32 yAdd;
         f32 yx;
         f32 xOrigin;
         f32 yOrigin;
+        count++;
+        yScale = *(f32 *)(arg1 + 8);
+        xAdd = *(f32 *)(arg1 + 0xC);
+        xx = x * xScale;
+        yy = x * yScale;
         recordOffset += 8;
         xy = y * xAdd;
         yAdd = *(f32 *)(arg1 + 0x10);
@@ -160,6 +173,7 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
         fn_802C8DB8(&frame.outputs[0], 3, &frame.indices3[0], 3);
     }
     fn_802C8D74();
+#pragma optimization_level 4
 }
 void fn_80238FCC(u32 arg0, u32 arg1) {
     u32 a1 = arg1;
@@ -186,6 +200,8 @@ void fn_8023905C(void *state) {
     *(int *)((char *)state + 0x10) = 0;
     *(int *)((char *)state + 0xC) = 0;
 }
+#pragma scheduling on
+#pragma peephole on
 void fn_802390B4(void *arg0, s32 arg1) {
     s32 unused;
     u32 version;
@@ -223,9 +239,9 @@ void fn_802390B4(void *arg0, s32 arg1) {
         SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x24);
 
         {
+            s32 j;
             u32 offset;
             u32 i;
-            s32 j;
 
             ptr = *(u8 **)((u8 *)arg0 + 0x14);
             *(u32 *)(ptr + 0x18) = (u32)(data + *(u32 *)(ptr + 0x18));
@@ -286,8 +302,6 @@ void fn_802390B4(void *arg0, s32 arg1) {
         }
     }
 }
-
-#pragma dont_inline off
 
 #pragma scheduling on
 s32 fn_8023964C(s32 state) {
