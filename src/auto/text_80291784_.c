@@ -119,9 +119,9 @@ extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
     register Manager_802917C0 *manager = (Manager_802917C0 *)arg1;
     register int zero = 0;
     register float initial = lbl_80564484;
+    register float scale = lbl_8056449C;
     register float result2;
     register float best = lbl_80564484;
-    register float scale = lbl_8056449C;
     register float result1;
     register float result3;
     *(int *)((char *)base + 0x120) = zero;
@@ -223,6 +223,7 @@ void fn_80291B14(void *worldPos, float depth)
   }
       *((unsigned char *) (lbl_804B4010 + 0x14)) = visible;
   }
+#pragma scheduling on
 #pragma opt_common_subs off
 void fn_80291B9C(void *arg0, float *arg1, float arg2) {
     float c, b, a;
@@ -256,7 +257,6 @@ void fn_80291B9C(void *arg0, float *arg1, float arg2) {
         }
     }
 }
-#pragma pop
 extern double fabs(double);
 extern double sin(double);
 extern double cos(double);
@@ -524,26 +524,27 @@ void fn_802923C4(int color) {
 extern float lbl_8056449C;
 extern double lbl_805644C8;
 __declspec(section ".data") extern int lbl_804B3EC0;
-void fn_802923EC(float arg0) {
-    register int *settings;
-    register int amount;
-    register int *entry;
-    register int i;
-    register unsigned int packed;
-    register float value;
+void fn_802923EC(float scale) {
+    /* When enabled, clamp scale to [0,1] and update packed alpha bytes for settings and all entries. */
+    register int *settingsPtr;
+    register int scaledAlpha;
+    register int *entryPtr;
+    register int entryIndex;
+    register unsigned int packedWord;
+    register float clampedScale;
     if (lbl_8055F75C != 0) {
-        value = lbl_80564480 < arg0 ? lbl_80564480 : arg0;
-        value = value > lbl_80564484 ? value : lbl_80564484;
-        settings = (int *)&lbl_804B4010;
-        packed = (unsigned int)settings[6];
-        packed &= 0xFFFFFFu;
-        amount = (int)(lbl_8056449C * value);
-        settings[6] = (int)(((unsigned int)amount << 24) | packed);
-        entry = (int *)&lbl_804B3EC0;
-        for (i = 0; i < (&lbl_804B3EC0)[0x48]; i++) {
-            packed = (unsigned int)entry[6];
-            entry[6] = (int)(((unsigned int)(int)(value * (float)(packed >> 24)) << 24) | (packed & 0xFFFFFFu));
-            entry = (int *)((char *)entry + 0x24);
+        clampedScale = lbl_80564480 < scale ? lbl_80564480 : scale;
+        clampedScale = clampedScale > lbl_80564484 ? clampedScale : lbl_80564484;
+        settingsPtr = (int *)&lbl_804B4010;
+        packedWord = (unsigned int)settingsPtr[6];
+        packedWord &= 0xFFFFFFu;
+        scaledAlpha = (int)(lbl_8056449C * clampedScale);
+        settingsPtr[6] = (int)(((unsigned int)scaledAlpha << 24) | packedWord);
+        entryPtr = (int *)&lbl_804B3EC0;
+        for (entryIndex = 0; entryIndex < (&lbl_804B3EC0)[0x48]; entryIndex++) {
+            packedWord = (unsigned int)entryPtr[6];
+            entryPtr[6] = (int)(((unsigned int)(int)(clampedScale * (float)(packedWord >> 24)) << 24) | (packedWord & 0xFFFFFFu));
+            entryPtr = (int *)((char *)entryPtr + 0x24);
         }
     }
 }
