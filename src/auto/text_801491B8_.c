@@ -4647,10 +4647,8 @@ extern s32 fn_80161BB8(void);
 extern s32 lbl_80559EC0;
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 void fn_8015536C(void *arg0, void *arg1, s32 index) {
-    s32 idx=index;
-    s32 offset=idx*0xC0;
+    s32 offset=index*0xC0;
     u8 *p=(u8*)arg0+0xa8c+offset;
     s32 state=*(s32 *)((u8 *)(p)-0xa4);
     s32 count,positive,id,i,j,flag;
@@ -4666,15 +4664,15 @@ void fn_8015536C(void *arg0, void *arg1, s32 index) {
             if(id==((s32(*)(void*,void*))(*(void***)arg1)[9])(arg1,entry)){
                 entry=(*(u8***)((u8*)arg0+0x14))[i];
                 if(lbl_80558DC4[0]>=(f32)__fabs(*(f32 *)((u8 *)(entry)+0x34))){
-                    if(lbl_80558DC4[0]>=(f32)__fabs(*(f32 *)((u8 *)(lbl_804348E8[idx])+0x2690)) && fn_80161BB8()==0)
-                        entry[idx+0xC4]=1;
+                    if(lbl_80558DC4[0]>=(f32)__fabs(*(f32 *)((u8 *)(lbl_804348E8[index])+0x2690)) && fn_80161BB8()==0)
+                        entry[index+0xC4]=1;
                 }
             }
             i++;
         }
     }
     if(((s32(*)(void*))(*(void***)arg1)[8])(arg1)==0x73){
-        positive=*(f32 *)((u8 *)(lbl_804348E8[idx])+0x25BC)>lbl_80558DC4[0];
+        positive=*(f32 *)((u8 *)(lbl_804348E8[index])+0x25BC)>lbl_80558DC4[0];
         p=(u8*)arg0+0xa8c+offset;
         flags=p+0x0;
         if(*flags){
