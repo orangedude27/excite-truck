@@ -5201,97 +5201,88 @@ extern "C" void fn_80220F90(void *arg0, s32 arg1, s32 arg2) {
         virtual void a24() = 0; virtual void a25() = 0; virtual void a26() = 0; virtual void a27() = 0;
         virtual s32 get(void *) = 0;
     };
-    void *child;
+    u8 *p = (u8 *)arg0;
+    s32 *child;
+    f32 scale;
+    f32 factor;
+    f32 adjusted;
+    s32 begin;
+    s32 end;
+    s32 size;
+    s32 limit;
 
-    *(s8 *)((u8 *)arg0 + 0x250) = 1;
-    if (*(s32 *)((u8 *)arg0 + 0x254) == 0) {
-        f32 scale;
-        s32 begin;
-        s32 end;
-        s32 size;
-        s32 limit;
-        child = *(void **)((u8 *)arg0 + 0x244);
-        scale = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8)) / (f32)*(s32 *)child;
-        begin = *(s32 *)((u8 *)arg0 + 8) + (s32)(scale * (f32)(*(s32 *)((u8 *)child + 8))) + 5;
-        end = *(s32 *)((u8 *)arg0 + 8) + (s32)(scale * (f32)((*(s32 *)((u8 *)child + 8)) + *(s32 *)((u8 *)child + 4))) - 5;
+    *(s8 *)(p + 0x250) = 1;
+    if (*(s32 *)(p + 0x254) == 0) {
+        child = *(s32 **)(p + 0x244);
+        scale = (f32)(*(s32 *)(p + 0x10) - *(s32 *)(p + 8)) / (f32)child[0];
+        begin = *(s32 *)(p + 8) + (s32)(scale * (f32)child[2]) + 5;
+        end = *(s32 *)(p + 8) + (s32)(scale * (f32)(child[2] + child[1])) - 5;
         if (arg2 >= begin && arg2 <= end) {
-            *(s32 *)((u8 *)arg0 + 0x25C) = (s32)(scale * (f32)(*(s32 *)((u8 *)child + 8))) - arg2;
+            *(s32 *)(p + 0x25C) = (s32)(scale * (f32)child[2]) - arg2;
             return;
         }
         if (arg2 < begin) {
-            size = (s32)((f32)(*(s32 *)((u8 *)child + 8)) - ((lbl_805634A4 / scale) * (f32)((end - begin) + 5)));
-            *(s32 *)((u8 *)child + 8) = size;
-            limit = *(s32 *)child - *(s32 *)((u8 *)child + 4);
+            size = (s32)((f32)child[2] - (lbl_805634A4 / scale) * (f32)((end - begin) + 5));
+            child[2] = size;
+            limit = child[0] - child[1];
             if (size > limit) {
-                *(s32 *)((u8 *)child + 8) = limit;
+                child[2] = limit;
             }
-            if (*(s32 *)((u8 *)child + 8) < 0) {
-                *(s32 *)((u8 *)child + 8) = 0;
+            if (child[2] < 0) {
+                child[2] = 0;
             }
         } else {
-            f32 factor = lbl_805634A4 / scale;
-            f32 distance = (f32)((end - begin) + 5);
-            f32 adjusted = distance * factor;
-            size = (s32)(adjusted + (f32)(*(s32 *)((u8 *)child + 8)));
-            *(s32 *)((u8 *)child + 8) = size;
-            limit = *(s32 *)child - *(s32 *)((u8 *)child + 4);
+            factor = lbl_805634A4 / scale;
+            adjusted = factor * (f32)((end - begin) + 5);
+            size = (s32)(adjusted + (f32)child[2]);
+            child[2] = size;
+            limit = child[0] - child[1];
             if (size > limit) {
-                *(s32 *)((u8 *)child + 8) = limit;
+                child[2] = limit;
             }
-            if (*(s32 *)((u8 *)child + 8) < 0) {
-                *(s32 *)((u8 *)child + 8) = 0;
+            if (child[2] < 0) {
+                child[2] = 0;
             }
         }
-        *(s8 *)((u8 *)arg0 + 0x250) = 0;
+        *(s8 *)(p + 0x250) = 0;
         return;
     }
-
     {
-        f32 scale2;
-        s32 begin2;
-        s32 end3;
-        s32 size2;
-        s32 end4;
-        s32 childBase;
-        void *child2;
-        child2 = *(void **)((u8 *)arg0 + 0x244);
-        childBase = *(s32 *)child2;
-        scale2 = (f32)((Vf78Arg *)arg0)->get(child2) / (f32)childBase;
-        child = *(void * volatile *)((u8 *)arg0 + 0x244);
-        begin2 = *(s32 *)((u8 *)arg0 + 4) + (s32)(scale2 * (f32)*(s32 *)((u8 *)child + 8)) + 5;
-        end3 = *(s32 *)((u8 *)arg0 + 4) + (s32)(scale2 * (f32)(*(s32 *)((u8 *)child + 8) + *(s32 *)((u8 *)child + 4))) - 5;
-        if (arg1 >= begin2 && arg1 <= end3) {
-            *(s32 *)((u8 *)arg0 + 0x258) = (s32)(scale2 * (f32)*(s32 *)((u8 *)child + 8)) - arg1;
+        s32 total = **(s32 **)(p + 0x244);
+        scale = (f32)((Vf78Arg *)arg0)->get(*(void **)(p + 0x244)) / (f32)total;
+        child = *(s32 * volatile *)(p + 0x244);
+        begin = *(s32 *)(p + 4) + (s32)(scale * (f32)child[2]) + 5;
+        end = *(s32 *)(p + 4) + (s32)(scale * (f32)(child[2] + child[1])) - 5;
+        if (arg1 >= begin && arg1 <= end) {
+            *(s32 *)(p + 0x258) = (s32)(scale * (f32)child[2]) - arg1;
             return;
         }
-        if (arg1 < begin2) {
-            size2 = (s32)((f32)*(s32 *)((u8 *)child + 8) - ((lbl_805634A4 / scale2) * (f32)((end3 - begin2) + 5)));
-            *(s32 *)((u8 *)child + 8) = size2;
-            end4 = *(s32 *)child - *(s32 *)((u8 *)child + 4);
-            if (size2 > end4) {
-                *(s32 *)((u8 *)child + 8) = end4;
+        if (arg1 < begin) {
+            size = (s32)((f32)child[2] - (lbl_805634A4 / scale) * (f32)((end - begin) + 5));
+            child[2] = size;
+            limit = child[0] - child[1];
+            if (size > limit) {
+                child[2] = limit;
             }
-            if (*(s32 *)((u8 *)child + 8) < 0) {
-                *(s32 *)((u8 *)child + 8) = 0;
+            if (child[2] < 0) {
+                child[2] = 0;
             }
         } else {
-            f32 factor2 = lbl_805634A4 / scale2;
-            f32 distance2 = (f32)((end3 - begin2) + 5);
-            f32 adjusted2 = distance2 * factor2;
-            size2 = (s32)(adjusted2 + (f32)*(s32 *)((u8 *)child + 8));
-            *(s32 *)((u8 *)child + 8) = size2;
-            end4 = *(s32 *)child - *(s32 *)((u8 *)child + 4);
-            if (size2 > end4) {
-                *(s32 *)((u8 *)child + 8) = end4;
+            factor = lbl_805634A4 / scale;
+            adjusted = factor * (f32)((end - begin) + 5);
+            size = (s32)(adjusted + (f32)child[2]);
+            child[2] = size;
+            limit = child[0] - child[1];
+            if (size > limit) {
+                child[2] = limit;
             }
-            if (*(s32 *)((u8 *)child + 8) < 0) {
-                *(s32 *)((u8 *)child + 8) = 0;
+            if (child[2] < 0) {
+                child[2] = 0;
             }
         }
-        *(s8 *)((u8 *)arg0 + 0x250) = 0;
+        *(s8 *)(p + 0x250) = 0;
     }
 }
-#pragma scheduling on
 extern "C" void fn_802213A4(void *scrollBar, s32 pointerX, s32 pointerY) {
     /* While dragging a scroll bar, turn the pointer position into a content
      * offset using the track length and clamp it to [0, total - page size]. */
@@ -6184,8 +6175,8 @@ outer_test:
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 extern "C" void *fn_802230A4(void *self, s32 arg1, s32 arg2, void *arg3, s32 arg4) {
-    register u8 *obj = (u8 *)self;
-    register u8 *input = (u8 *)arg3;
+    u8 *obj = (u8 *)self;
+    u8 *input = (u8 *)arg3;
     register s32 data = arg4;
     register s32 i;
     register u8 *row;
@@ -6609,8 +6600,7 @@ extern "C" void fn_80223A58(MenuSoundList *list) {
  * lbl_8033E4DC, so it overrides a later slot or is used as a plain callback. */
 extern "C" u32 fn_80223AAC(void) { return 1; }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma fp_contract on
 extern "C" void *fn_80223AB4(void *arg0, void *arg1, s32 arg2) {
     fn_80218F80();
     *(void **)arg0 = lbl_8033E3D4;
@@ -6631,7 +6621,7 @@ extern "C" void *fn_80223AB4(void *arg0, void *arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0x264) = arg2;
     return arg0;
 }
-#pragma pop
+#pragma fp_contract off
 extern "C" void *lbl_8033E3D4[];
 /* Destructor-like cleanup: reset vtable, release owned resources/children, run
  * base cleanup, and optionally delete the object. */
