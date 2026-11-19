@@ -877,7 +877,7 @@ done:
 /* Child-list iterator (ut::LinkList style): node pointer wrapped in a struct. */
 struct ChildIter_800D77DC { StateNode_800D6CA0 *node; };
 static inline ChildIter_800D77DC ChildBegin_800D77DC(u8 *self) {
-    ChildIter_800D77DC it; it.node = *(StateNode_800D6CA0 **)(self + 0x14); return it;
+    ChildIter_800D77DC it; it.node = ((StateNode_800D6CA0 *)(self + 0x14))->next; return it;
 }
 static inline ChildIter_800D77DC ChildEnd_800D77DC(u8 *self) {
     ChildIter_800D77DC it; it.node = (StateNode_800D6CA0 *)(self + 0x14); return it;
@@ -919,8 +919,7 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
     for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
-        ChildIter_800D77DC cur = it;
-        SetTagProcessorChild_800D6CA0(ChildPane_800D77DC(cur), arg1);
+        SetTagProcessorPane_800D6CA0((s32)ChildPane_800D77DC(it), arg1);
     }
 }
 #pragma pop
