@@ -830,7 +830,6 @@ s32 fn_802A5B8C(s32 arg0, s32 arg1) {
     return arg0;
 }
 #pragma opt_propagation off
-#pragma scheduling off
 void fn_802A5C1C(void *arg0) {
     register float zero = 0.0f;
     register float a = 1.0f;
