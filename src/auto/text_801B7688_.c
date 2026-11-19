@@ -259,6 +259,7 @@ int fn_801E9E30(void *, float *);
 void fn_801E9E78(void *, float *, float *, int *);
 void fn_801B7BA8(float *, float *, float *);
 extern float lbl_80562710, lbl_80562724, lbl_80562728, lbl_8056272C;
+#pragma use_lmw_stmw on
 void fn_801B7C8C(int arg0, float *arg1, float *arg2) {
 #pragma opt_common_subs off
     struct XF { float m[9]; float p[3]; } xf;
@@ -372,10 +373,9 @@ void fn_801B8054(int obj, int source, float offset, float interp) {
 
 #pragma scheduling on
 void fn_801B8060(int arg0, void *arg1) {
+    float x, y, sum, xPos, yPos, length, scale;
     float position[2];
     float direction[2];
-    float x, y, sum, xPos, yPos, length, scale;
-
     x = *(float *)((char *)arg1 + 0x18);
     y = *(float *)((char *)arg1 + 0x20);
     sum = x * x + y * y;
@@ -385,8 +385,7 @@ void fn_801B8060(int arg0, void *arg1) {
     position[1] = yPos;
     direction[0] = x;
     direction[1] = y;
-    length = (float)((double (*)(float, float, float, float, float))fn_8002F234)(
-        sum, y, x, yPos, xPos);
+    length = (float)((double (*)(float, float, float, float, float))fn_8002F234)(sum, y, x, yPos, xPos);
     scale = (lbl_80562738 > length) ? lbl_80562738 : length;
     scale = lbl_80562704 / scale;
     direction[0] *= scale;
