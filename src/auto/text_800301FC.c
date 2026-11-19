@@ -344,21 +344,13 @@ void TRKAppendBuffer_ui32(void) {
 
 void TRKAppendBuffer1_ui64(void) {
     u32 zero = 0;
-    u32 *a = lbl_8035BF20;
-    u32 *b = (u32 *)lbl_8035BEA0;
-    s32 i = 2;
+    u32 *const a = lbl_8035BF20;
+    u32 *const b = (u32 *)lbl_8035BEA0;
+    int i;
     lbl_8055D6E8 = zero;
-    do {
-        a[0] = zero; b[0] = zero; a[1] = zero; b[1] = zero;
-        a[2] = zero; b[2] = zero; a[3] = zero; b[3] = zero;
-        a[4] = zero; b[4] = zero; a[5] = zero; b[5] = zero;
-        a[6] = zero; b[6] = zero; a[7] = zero; b[7] = zero;
-        a[8] = zero; b[8] = zero; a[9] = zero; b[9] = zero;
-        a[10] = zero; b[10] = zero; a[11] = zero; b[11] = zero;
-        a[12] = zero; b[12] = zero; a[13] = zero; b[13] = zero;
-        a[14] = zero; b[14] = zero; a[15] = zero; b[15] = zero;
-        a += 16; b += 16;
-    } while (--i);
+    for (i = 0; i < 32; i++) {
+        a[i] = zero; b[i] = zero;
+    }
 }
 
 #pragma pop
@@ -539,20 +531,24 @@ void TRKProcessInput(void *buffer, s32 queueId) {
     OSRestoreInterrupts(interrupts);
 }
 
+#pragma push
+#pragma optimization_level 3
 void TRKGetInput(void) {
     extern u8 lbl_8035BFA0[];
     extern s32 lbl_8055D6F8;
     extern s32 lbl_8055D6F4;
     extern s32 lbl_8055D6F0;
+    u8 *base;
     u32 *first;
     u32 *second;
     u32 *third;
     int i;
 
     lbl_8055D728 = 0;
-    first = (u32 *)lbl_8035BFA0;
-    second = (u32 *)(lbl_8035BFA0 + 0xD80);
-    third = (u32 *)(lbl_8035BFA0 + 0x1B00);
+    base = lbl_8035BFA0;
+    first = (u32 *)base;
+    second = (u32 *)(base + 0xD80);
+    third = (u32 *)(base + 0x1B00);
     lbl_8055D724 = 0;
     lbl_8055D720 = 0;
     lbl_8055D71C = 0;
@@ -593,8 +589,7 @@ void TRKGetInput(void) {
         second += 9;
         third[8] = 0;
         third += 9;
-        i--;
-    } while (i != 0);
+    } while (--i != 0);
 }
 
 /* Disable serial input by clearing the three AX aux input callbacks (A/B/C). */
@@ -1463,7 +1458,6 @@ extern u32 fn_8003010C(u32);
 extern void AIStartDMA(void);
 extern s32 lbl_8055D768;
 void fn_800320E8(s32 arg0) {
-    u32 zero = 0;
     u8 *base;
     u8 *ring;
     u8 *dma;
@@ -1471,30 +1465,26 @@ void fn_800320E8(s32 arg0) {
     u32 i;
     void *buffers[4];
 
-    lbl_8055D788 = zero;
-    lbl_8055D784 = zero;
+    lbl_8055D788 = 0;
+    lbl_8055D784 = 0;
     lbl_8055D75C = arg0;
-    lbl_8055D768 = zero;
+    lbl_8055D768 = 0;
 
     base = (u8 *)lbl_8035EE20;
-#pragma ctrloop on
-#pragma unroll off
     p = (s32 *)(base + 0x8E0);
     i = 0x20;
     do {
-        p[0] = zero; p[1] = zero; p[2] = zero; p[3] = zero;
-        p[4] = zero; p[5] = zero; p[6] = zero; p[7] = zero;
-        p[8] = zero;
+        p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0; p[4] = 0;
+        p[5] = 0; p[6] = 0; p[7] = 0; p[8] = 0;
         p += 9;
     } while (--i != 0);
-
     DCFlushRange(base + 0x8E0, 0x480);
 
     p = (s32 *)(base + 0x5E0);
     i = 0x18;
     do {
-        p[0] = zero; p[1] = zero; p[2] = zero; p[3] = zero;
-        p[4] = zero; p[5] = zero; p[6] = zero; p[7] = zero;
+        p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0;
+        p[4] = 0; p[5] = 0; p[6] = 0; p[7] = 0;
         p += 8;
     } while (--i != 0);
     DCFlushRange(base + 0x5E0, 0x300);
@@ -1502,14 +1492,11 @@ void fn_800320E8(s32 arg0) {
     p = (s32 *)(base + 0x40);
     i = 0x24;
     do {
-        p[0] = zero; p[1] = zero; p[2] = zero; p[3] = zero;
-        p[4] = zero; p[5] = zero; p[6] = zero; p[7] = zero;
-        p[8] = zero; p[9] = zero;
+        p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0; p[4] = 0;
+        p[5] = 0; p[6] = 0; p[7] = 0; p[8] = 0; p[9] = 0;
         p += 10;
     } while (--i != 0);
     DCFlushRange(base + 0x40, 0x5A0);
-#pragma ctrloop reset
-#pragma unroll reset
 
     fn_80032004();
     fn_8003010C((u32)fn_80031ED4);
@@ -1523,6 +1510,7 @@ void fn_800320E8(s32 arg0) {
     lbl_8055D754 = 0x12;
     lbl_8055D758 = 0xB4;
 
+#pragma opt_common_subs off
     if (lbl_8055D75C == 1) {
         dma = base + 0x8E0;
         CircleBufferReadBytes((u32)(base + 0x5E0), (u32)(dma + 0x300), buffers);
@@ -1532,7 +1520,7 @@ void fn_800320E8(s32 arg0) {
     }
 
     lbl_8055D780 = 1;
-    lbl_8055D774 = zero;
+    lbl_8055D774 = 0;
     if (lbl_8055D75C == 1) {
         dma = base + 0x8E0;
         AIInitDMA(dma + lbl_8055D784 * 0x180, 0x180);
@@ -1543,6 +1531,7 @@ void fn_800320E8(s32 arg0) {
         AIInitDMA(dma + lbl_8055D788 * 0x180, 0x180);
     }
     AIStartDMA();
+#pragma opt_common_subs reset
 }
 
 #pragma scheduling reset
@@ -1592,7 +1581,7 @@ s32 AXRmtGetSamplesLeft(void) {
 
 extern u8 lbl_8035EE60[];
 extern void DCInvalidateRange(void *, u32);
-s32 AXRmtGetSamples(register s32 arg0, s16 *arg1, s32 arg2) {
+s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
     s32 count;
     s32 index;
     s32 i;
