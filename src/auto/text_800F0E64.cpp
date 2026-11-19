@@ -364,7 +364,7 @@ extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(void *
 }
 
 extern "C" f32 lbl_80561078;
-extern "C" void fn_800EC890(void *, u8, u8, u8, u8, f32);
+extern "C" void fn_800EC890(void *, int, int, int, int, f32);
 #pragma opt_propagation off
 extern "C" void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     u8 *p = (u8 *)arg0;
