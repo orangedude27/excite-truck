@@ -455,7 +455,7 @@ extern s32 lbl_8055B5DC;
 void fn_8020C920(s32 arg0) {
     const char *base = lbl_8033C5D8;
     s32 i = 0;
-    register s32 j = 0;
+    s32 j = 0;
     char *dst = (char *)&lbl_80489BE0;
     fn_801345D8((char *)&lbl_80489C50, 0x20, base + 0x34, arg0);
     fn_8012DDA8(&lbl_80489C50);
