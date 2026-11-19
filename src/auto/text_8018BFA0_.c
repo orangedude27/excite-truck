@@ -35,16 +35,16 @@ static inline void matVecCopy_8018(Vec_8018 *dest, const float *m, Vec_8018 *src
 }
 static inline void matVecAlias_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
     if (dest == src) {
-        float tx = m[0] * src->x + m[3] * src->y + m[6] * src->z;
-        float ty = m[1] * src->x + m[4] * src->y + m[7] * src->z;
-        float tz = m[2] * src->x + m[5] * src->y + m[8] * src->z;
+        float tx = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        float ty = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
+        float tz = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
         dest->x = tx;
         dest->y = ty;
         dest->z = tz;
     } else {
-        dest->x = m[0] * src->x + m[3] * src->y + m[6] * src->z;
-        dest->y = m[1] * src->x + m[4] * src->y + m[7] * src->z;
-        dest->z = m[2] * src->x + m[5] * src->y + m[8] * src->z;
+        dest->x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        dest->y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
+        dest->z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
     }
 }
 
