@@ -1475,9 +1475,16 @@ extern "C" void fn_800F2D28(void *object) {
 #pragma use_lmw_stmw off
 extern "C" void Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv(void *self, const void *arg) {
     typedef void (*PanicCall)(const char *, s32, const char *, ...);
+    struct BinHeader {
+        u32 signature;
+        u16 byteOrder;
+        u16 version;
+        u32 fileSize;
+        u16 headerSize;
+        u16 dataBlocks;
+    };
     struct FileHeader {
-        s64 field00;
-        s64 field08;
+        BinHeader fileHeader;
         u32 field10;
         u32 field14;
         u32 field18;
@@ -1485,15 +1492,16 @@ extern "C" void Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv(void *sel
         u32 field20;
         u32 field24;
     };
+    struct FileMsgs { char file[0x1C]; char msg1[0x34]; char msg2[0x54]; char msg3[1]; };
     const u8 *src = (const u8 *)arg;
     u8 *dst = (u8 *)self;
-    register const char *base = lbl_80324868;
+    const FileMsgs *base = (const FileMsgs *)lbl_80324868;
     u32 version;
     u32 valid;
     if (src == 0)
-        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x32, base + 0x1C);
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file, 0x32, base->msg1);
     if (*(const u32 *)src - 0x52530000U != 0x4152U)
-        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x48, base + 0x50);
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file, 0x48, base->msg2);
     if (*(const u32 *)src - 0x52530000U == 0x4152U)
         goto valid_magic;
     valid = 0;
@@ -1501,7 +1509,7 @@ extern "C" void Init__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCv(void *sel
 valid_magic:
     version = *(const u16 *)(src + 6);
     if (version < 0x100)
-        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x50, base + 0xA4);
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file, 0x50, base->msg3);
     version = *(const u16 *)(src + 6);
     if (version >= 0x100)
         goto valid_version_min;
@@ -1509,7 +1517,7 @@ valid_magic:
     goto copy_if_valid;
 valid_version_min:
     if (version > 0x101)
-        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base + 0, 0x56, base + 0xA4);
+        ((PanicCall)Panic__Q26nw4hbm2dbFPCciPCce)(base->file, 0x56, base->msg3);
     version = *(const u16 *)(src + 6);
     valid = (version <= 0x101);
 copy_if_valid:
@@ -6364,22 +6372,28 @@ extern "C" void Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self) {
 }
 
 extern "C" void fn_800FA6E8(void) {
-    if ((s8)lbl_8055DE68 == 0) {
-        volatile u32* base = (volatile u32*)lbl_80412CC8;
-        u32* self = (u32*)&lbl_80412CC8[0x2388];
-        base[0x2388 / 4] = 0;
-        u32* ptr = (u32*)&base[0x2388 / 4];
-        base[0x238c / 4] = 0;
-        base[0x2378 / 4] = 0;
-        base[0x237c / 4] = 0;
-        base[0x2384 / 4] = 0;
-        base[0x2388 / 4] = (u32)ptr;
-        base[0x238c / 4] = (u32)ptr;
-        ((volatile u8*)base)[0x2394] = 0;
-        __register_global_object(self, (void*)&__dt__10TitleSceneFv,
-                                 (void*)&lbl_80412CB8, self);
-        lbl_8055DE68 = 1;
+    void *object;
+    s8 isInitialized;
+
+    isInitialized = (s8)lbl_8055DE68;
+    if (isInitialized != 0) {
+        goto skip_init;
     }
+
+    object = (void *)&lbl_80412CC8[0x2388];
+    *(volatile u32 *)&lbl_80412CC8[0x2388] = 0;
+    *(volatile u32 *)&lbl_80412CC8[0x238c] = 0;
+    *(u32 *)&lbl_80412CC8[0x2378] = 0;
+    *(u32 *)&lbl_80412CC8[0x237c] = 0;
+    *(u32 *)&lbl_80412CC8[0x2384] = 0;
+    *(void **)&lbl_80412CC8[0x2388] = object;
+    *(void **)&lbl_80412CC8[0x238c] = object;
+    *(u8 *)&lbl_80412CC8[0x2394] = 0;
+    __register_global_object((void *)lbl_80412CC8, (void *)&__dt__10TitleSceneFv,
+                             (void *)&lbl_80412CB8, object);
+    lbl_8055DE68 = 1;
+
+skip_init:
     OSSendMessage((void*)&lbl_80412CC8[0x2338], (void*)1, 0);
     detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv();
     UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv();
