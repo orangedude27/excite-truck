@@ -5006,7 +5006,6 @@ done:
     return ret;
 }
 
-static inline u8 *uusb_close_base(void) { return (u8 *)&lbl_803BD1E0; }
 void UUSB_Close(void *arg0) {
     extern s32 IUSB_CloseDeviceAsync(s32, void (*)(void), void *);
     fn_8006EBAC();
