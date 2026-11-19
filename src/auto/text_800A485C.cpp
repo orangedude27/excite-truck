@@ -20930,15 +20930,16 @@ extern "C" void *fn_800D19F8(void *self, s32 shouldDelete) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling off
 extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
     register u8 *self = (u8 *)this_ptr;
     if (self[0x1EC] != 0) {
         OSCreateAlarm((OSAlarm *)(self + 0x1A0));
         OSTime time = OSGetTime();
         u32 ticks = *(volatile u32 *)0x800000F8;
-        u32 q = (ticks >> 2) / 125000;
-        u32 interval = (q * 0x0065B9AB) / 8000;
+        u32 q = (ticks >> 2) / 125000U;
+        u32 period = q * 0x0065B9ABU;
+        u32 interval = period / 8000U;
         ((void (*)(void *, u32, u32, u32, u32, u32, void *))OSSetPeriodicAlarm)(
             self + 0x1A0, q, (u32)(time >> 32), (u32)time, 0, interval, (void *)&fn_800D16C4);
     }
