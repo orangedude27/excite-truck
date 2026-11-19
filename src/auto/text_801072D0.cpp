@@ -145,6 +145,10 @@ static char sRead[] = "Stream don't support READ function\n";
 static char sAsync[] = "Stream don't support ASYNC function\n";
 static char sWrite[] = "Stream don't support WRITE function\n";
 
+/* nw4hbm::ut::FileStream::CancelAsync(long (*)(IOStream*, void*), void*) --
+ * ut_IOStream.cpp line 0x3E.  Cancels a pending asynchronous READ: first Wait()s
+ * for the running operation, panicking if the stream supports no READ, then
+ * Cancel()s it, panicking if it supports no ASYNC operation.  Returns 0. */
 extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv_801074E8(nw4hbm::ut::FileStream2* this_) {
     if (this_->Wait() == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(sFile, 0x3E, sRead);
