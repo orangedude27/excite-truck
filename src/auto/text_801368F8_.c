@@ -646,44 +646,46 @@ void fn_80137788(void *pair, s32 carIndex, void *out) {
     }
 }
 
-void fn_801377EC(void *arg0, s32 arg1, void *arg2) {
+/* Write a proximity pair's speed/velocity deltas into out, flipping the sign when the
+ * pair points away from carIndex (that car's row flag inverts the test). */
+void fn_801377EC(void *pair, s32 carIndex, void *out) {
     extern f32 lbl_8056136C;
-    s32 state;
-    s32 stride;
-    s32 entries;
-    s32 difference;
-    s32 id;
-    s32 entry;
-    register s32 equal;
-    unsigned char flag;
-    f32 x;
-    f32 y;
+    s32 proxer;
+    s32 rowStride;
+    s32 rows;
+    s32 indexDiff;
+    s32 pairIndexB;
+    s32 row;
+    register s32 isPairB;
+    unsigned char rowFlag;
+    f32 dSpeed;
+    f32 dVelocity;
 
-    state = lbl_8055E0D0;
-    stride = *(s32 *)((char *)state + 0xC);
-    id = *(s32 *)((char *)arg0 + 0x14);
-    difference = id - arg1;
-    entries = *(s32 *)((char *)state + 0x10);
-    entry = entries + arg1 * stride;
-    flag = *(unsigned char *)((char *)entry + 0x14);
-    equal = difference == 0;
-    if ((equal ^ flag) != 0) {
+    proxer = lbl_8055E0D0;
+    rowStride = *(s32 *)((char *)proxer + 0xC);
+    pairIndexB = *(s32 *)((char *)pair + 0x14);
+    indexDiff = pairIndexB - carIndex;
+    rows = *(s32 *)((char *)proxer + 0x10);
+    row = rows + carIndex * rowStride;
+    rowFlag = *(unsigned char *)((char *)row + 0x14);
+    isPairB = indexDiff == 0;
+    if ((isPairB ^ rowFlag) != 0) {
         f32 flip;
-        x = *(f32 *)((char *)arg0 + 0x24);
+        dSpeed = *(f32 *)((char *)pair + 0x24);
         flip = lbl_8056136C;
-        x = x * flip;
-        y = *(f32 *)((char *)arg0 + 0x28) * flip;
-        *(f32 *)arg2 = x;
-        *(f32 *)((char *)arg2 + 4) = y;
+        dSpeed = dSpeed * flip;
+        dVelocity = *(f32 *)((char *)pair + 0x28) * flip;
+        *(f32 *)out = dSpeed;
+        *(f32 *)((char *)out + 4) = dVelocity;
         return;
     }
     {
-        f32 copyY;
-        f32 copyX;
-        copyX = *(f32 *)((char *)arg0 + 0x24);
-        copyY = *(f32 *)((char *)arg0 + 0x28);
-        *(f32 *)arg2 = copyX;
-        *(f32 *)((char *)arg2 + 4) = copyY;
+        f32 copyDVelocity;
+        f32 copyDSpeed;
+        copyDSpeed = *(f32 *)((char *)pair + 0x24);
+        copyDVelocity = *(f32 *)((char *)pair + 0x28);
+        *(f32 *)out = copyDSpeed;
+        *(f32 *)((char *)out + 4) = copyDVelocity;
     }
 }
 
