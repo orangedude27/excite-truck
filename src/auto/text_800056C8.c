@@ -713,13 +713,14 @@ s32 fn_8000624C(void) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80006254(s32 arg0, s32 arg1) {
-    bool flag;
-    f32 threshold = 0.0f;
-    f32 f2 = *(f32 *)((s8 *)arg0 + ((s32 *)lbl_8055D350)[7] * 4 + 4);
-    flag = f2 >= threshold && ((f32 *)lbl_8055D350)[4] - f2 > threshold;
-    if (flag && fn_80005564()) {
-        struct Dummy {
+/* When the current player's value is within the session time window and the arena overlay is active, notify the global master (v22). */
+extern "C" void fn_80006254(s32 playerData, s32 eventParam) {
+    bool inWindow;
+    f32 zero = 0.0f;
+    f32 playerValue = *(f32 *)((s8 *)playerData + ((s32 *)lbl_8055D350)[7] * 4 + 4);
+    inWindow = playerValue >= zero && ((f32 *)lbl_8055D350)[4] - playerValue > zero;
+    if (inWindow && fn_80005564()) {
+        struct MasterVTable {
             virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
             virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
             virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
@@ -727,8 +728,8 @@ extern "C" void fn_80006254(s32 arg0, s32 arg1) {
             virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
             virtual void f20(); virtual void f21(); virtual void f22(s32);
         };
-        void *obj = fn_801B83A0();
-        ((Dummy *)obj)->f22(arg1);
+        void *master = fn_801B83A0();
+        ((MasterVTable *)master)->f22(eventParam);
     }
 }
 #pragma cplusplus reset
