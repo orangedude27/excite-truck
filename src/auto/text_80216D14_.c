@@ -795,64 +795,75 @@ void fn_80217C4C(void *arg0) {
  * count eligible enabled ones, then searches backward for another eligible enabled
  * entry; if found before the current selection or if more than three are eligible,
  * updates the selected key to that entry. */
-void fn_80217D84(void *menuGroup) {
-    char *base = (char *)menuGroup;
-    char *entry;
+void fn_80217D84(void *arg0) {
+    /* RealName: UiMenuGroup_SelectPreviousEntry.  Step the menu group's selection
+       (its entry list's selected key, +0x498) one place back through the sorted
+       entry list at +0x4A0.  An entry can be selected while its widget is shown
+       (`shown`, or its off-timer has not run down yet) and is offered only while
+       `enabled`.  The first pass walks the list from the last entry down to the
+       first, noting the index of the selected entry and how many entries are
+       offered; the second walks back from it, wrapping round, to the first offered
+       entry.  That entry becomes the selection only when it really lies before the
+       old one, or when more than three entries are offered (so a nearly-empty list
+       keeps its selection across a wrap). */
+    struct UiMenuGroup *group = (struct UiMenuGroup *)arg0;
+    char *base = (char *)arg0; /* entry cursor base: the list is at base + 0x4A0 */
+    char *cursor;              /* base + index * 8, walked back from the last entry */
     int eligible;
-    char *widget;
-    int count = *(int *)(base + 0x494);
+    struct UiWidget *widget;
+    int count = group->entryCount;
     float threshold;
     int selectedIndex;
-    int eligibleCount;
+    int selectableCount;
     int i;
-    float timerValue;
+    float entryTimer;
     if (1 > count) return;
-    threshold = lbl_80563490;
-    entry = base + count * 8;
+    threshold = lbl_80563490; /* 0.0f */
+    cursor = base + count * 8;
     selectedIndex = -1;
-    eligibleCount = 0;
+    selectableCount = 0;
     i = count;
     goto first_test;
 first_body:
-    if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) selectedIndex = i;
-    widget = *(char **)(entry + 0x4A4);
+    if (group->selectedKey == *(int *)(cursor + 0x4A0)) selectedIndex = i;
+    widget = *(struct UiWidget **)(cursor + 0x4A4);
     eligible = 0;
-    if (*(unsigned char *)(widget + 0x1A) != 0) goto first_yes;
-    timerValue = *(float *)(widget + 0x20);
-    if (timerValue >= threshold) goto first_yes;
+    if (widget->shown != 0) goto first_yes;
+    entryTimer = widget->offTimer;
+    if (entryTimer >= threshold) goto first_yes;
     goto first_check;
 first_yes:
     eligible = 1;
 first_check:
-    if (eligible != 0 && *(unsigned char *)(widget + 0x1B) != 0) eligibleCount += 1;
+    if (eligible != 0 && widget->enabled != 0) selectableCount += 1;
 first_test:
-    entry -= 8;
+    cursor -= 8;
     if (i-- > 0) goto first_body;
     {
-        int foundIndex = -1;
+        int prevIndex = -1;
         int step;
-        threshold = lbl_80563490;
+        threshold = lbl_80563490; /* 0.0f */
         for (step = 1; step < count; step++) {
-            int candidateIndex = (selectedIndex + count - step) % count;
-            char *candidateEntry = base + candidateIndex * 8;
-            char *candidateWidget;
+            int scanIndex = (selectedIndex + count - step) % count;
+            char *scan = base + scanIndex * 8;
+            struct UiWidget *candidate;
             float candidateTimer;
-            candidateWidget = *(char **)(candidateEntry + 0x4A4);
+            candidate = *(struct UiWidget **)(scan + 0x4A4);
             eligible = 0;
-            if (*(unsigned char *)(candidateWidget + 0x1A) != 0) goto second_yes;
-            candidateTimer = *(float *)(candidateWidget + 0x20);
+            if (candidate->shown != 0) goto second_yes;
+            candidateTimer = candidate->offTimer;
             if (candidateTimer >= threshold) goto second_yes;
             goto second_check;
-second_yes:
+        second_yes:
             eligible = 1;
-second_check:
-            if (eligible != 0 && *(unsigned char *)(candidateWidget + 0x1B) != 0) {
-                foundIndex = candidateIndex;
+        second_check:
+            if (eligible != 0 && candidate->enabled != 0) {
+                prevIndex = scanIndex;
                 break;
             }
         }
-        if (foundIndex >= 0 && (foundIndex < selectedIndex || eligibleCount > 3)) {
-            *(int *)(base + 0x498) = *(int *)(base + foundIndex * 8 + 0x4A0);
+        if (prevIndex >= 0 && (prevIndex < selectedIndex || selectableCount > 3)) {
+            group->selectedKey = group->entries[prevIndex].key;
         }
     }
 }
