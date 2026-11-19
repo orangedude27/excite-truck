@@ -419,7 +419,9 @@ s32 fn_80160CE4(void) {
 }
 
 #pragma cplusplus on
+#pragma processor 750
 #pragma ppc_psq_save off
+#pragma use_lmw_stmw on
 #pragma scheduling invalid_target
 extern "C" char lbl_8032F790[];
 extern "C" void fn_80158558(void *);
