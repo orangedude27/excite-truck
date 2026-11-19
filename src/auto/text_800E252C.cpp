@@ -1307,11 +1307,15 @@ extern "C" void fn_800E4064(void *arg0, void *arg1) {
 }
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
-    if (this_ == this_ && 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
-    unsigned int level = OSDisableInterrupts();
-    void *iterator = *(void **)((char *)this_ + 0x18);
-    void *end = (char *)this_ + 0x18;
+    struct { unsigned int irq; } irqHolder;
+    unsigned int &level = irqHolder.irq;
+    struct { void *head; } cursor;
+    void *&iterator = cursor.head;
+    struct { void *end; } sentinelHolder;
+    void *&end = sentinelHolder.end;
+    level = OSDisableInterrupts();
+    iterator = *(void **)((char *)this_ + 0x18);
+    end = (char *)this_ + 0x18;
     while (iterator != end) {
         void *node = iterator;
         iterator = *(void **)iterator;
