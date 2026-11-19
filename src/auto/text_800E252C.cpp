@@ -3722,7 +3722,7 @@ extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
         return arg1;
     case 2:
         base = *(unsigned int *)((char *)arg0 + 4) + 8;
-        if (type != 2) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559820, 0x71, lbl_80322708);
+        if (type != 2) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559820, 0x71, lbl_80322708);
         address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
         data = (unsigned char *)address;
         if (!data) return 0;
@@ -3740,7 +3740,7 @@ extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
         goto inc;
     case 3:
         base = *(unsigned int *)((char *)arg0 + 4) + 8;
-        if (type != 3) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559828, 0x72, lbl_80322734);
+        if (type != 3) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559828, 0x72, lbl_80322734);
         address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
         data = (unsigned char *)address;
         if (!data) return 0;
@@ -3834,32 +3834,33 @@ extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
     *(int *)((char *)arg0 + 0xD4) = zero;
 }
 
-extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
+extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *sound) {
+    // Initialize BasicSound runtime parameters and fade/volume state to defaults.
     register int zero = 0;
     float base = 0.0f;
     float initialTarget = 1.0f;
-    *((unsigned char *)self + 0x67) = zero;
-    *((unsigned char *)self + 0x68) = zero;
-    *((unsigned char *)self + 0x64) = zero;
-    *((unsigned char *)self + 0x65) = zero;
-    *((unsigned char *)self + 0x66) = zero;
-    *((unsigned char *)self + 0x69) = zero;
-    *(int *)((char *)self + 0x6c) = zero;
-    *(int *)((char *)self + 0x70) = zero;
-    *(float *)((char *)self + 0x44) = base;
-    *(float *)((char *)self + 0x48) = base;
-    *(int *)((char *)self + 0x4c) = zero;
-    *(int *)((char *)self + 0x50) = zero;
-    *(float *)((char *)self + 0x54) = initialTarget;
-    *(float *)((char *)self + 0x58) = initialTarget;
-    *(int *)((char *)self + 0x5c) = zero;
-    *(int *)((char *)self + 0x60) = zero;
-    int current = *(int *)((char *)self + 0x50);
-    int total = *(int *)((char *)self + 0x4c);
+    *((unsigned char *)sound + 0x67) = zero;
+    *((unsigned char *)sound + 0x68) = zero;
+    *((unsigned char *)sound + 0x64) = zero;
+    *((unsigned char *)sound + 0x65) = zero;
+    *((unsigned char *)sound + 0x66) = zero;
+    *((unsigned char *)sound + 0x69) = zero;
+    *(int *)((char *)sound + 0x6c) = zero;
+    *(int *)((char *)sound + 0x70) = zero;
+    *(float *)((char *)sound + 0x44) = base;
+    *(float *)((char *)sound + 0x48) = base;
+    *(int *)((char *)sound + 0x4c) = zero;
+    *(int *)((char *)sound + 0x50) = zero;
+    *(float *)((char *)sound + 0x54) = initialTarget;
+    *(float *)((char *)sound + 0x58) = initialTarget;
+    *(int *)((char *)sound + 0x5c) = zero;
+    *(int *)((char *)sound + 0x60) = zero;
+    int current = *(int *)((char *)sound + 0x50);
+    int total = *(int *)((char *)sound + 0x4c);
     if (current >= total) {
-        base = *(float *)((char *)self + 0x44);
+        base = *(float *)((char *)sound + 0x44);
     } else {
-        base += (float)current * (*(float *)((char *)self + 0x48) - *(float *)((char *)self + 0x44)) / (float)total;
+        base += (float)current * (*(float *)((char *)sound + 0x48) - *(float *)((char *)sound + 0x44)) / (float)total;
     }
     float baseAgain;
     float finalTarget;
@@ -3868,32 +3869,32 @@ extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
     zero = 0;
     baseAgain = 0.0f;
     one = 1;
-    *(float *)((char *)self + 0x44) = base;
-    *(float *)((char *)self + 0x48) = finalTarget;
-    *(int *)((char *)self + 0x4c) = one;
-    *(int *)((char *)self + 0x50) = zero;
-    *(float *)((char *)self + 0x8c) = finalTarget;
-    *(float *)((char *)self + 0x98) = finalTarget;
-    *(float *)((char *)self + 0x90) = baseAgain;
-    *(float *)((char *)self + 0x94) = baseAgain;
-    *(float *)((char *)self + 0x7c) = finalTarget;
-    *(float *)((char *)self + 0x80) = finalTarget;
-    *(int *)((char *)self + 0x84) = zero;
-    *(int *)((char *)self + 0x88) = zero;
-    *(int *)((char *)self + 0xa0) = one;
-    *((unsigned char *)self + 0x9c) = zero;
-    *(float *)((char *)self + 0xa4) = finalTarget;
-    *(float *)((char *)self + 0xa8) = finalTarget;
-    *(float *)((char *)self + 0xac) = finalTarget;
-    *(float *)((char *)self + 0xb0) = finalTarget;
-    *(float *)((char *)self + 0xb4) = finalTarget;
-    *(float *)((char *)self + 0x28) = finalTarget;
-    *(float *)((char *)self + 0x2c) = finalTarget;
-    *(float *)((char *)self + 0x30) = baseAgain;
-    *(float *)((char *)self + 0x34) = baseAgain;
-    *(float *)((char *)self + 0x38) = baseAgain;
-    *(float *)((char *)self + 0x3c) = baseAgain;
-    *(int *)((char *)self + 0x40) = zero;
+    *(float *)((char *)sound + 0x44) = base;
+    *(float *)((char *)sound + 0x48) = finalTarget;
+    *(int *)((char *)sound + 0x4c) = one;
+    *(int *)((char *)sound + 0x50) = zero;
+    *(float *)((char *)sound + 0x8c) = finalTarget;
+    *(float *)((char *)sound + 0x98) = finalTarget;
+    *(float *)((char *)sound + 0x90) = baseAgain;
+    *(float *)((char *)sound + 0x94) = baseAgain;
+    *(float *)((char *)sound + 0x7c) = finalTarget;
+    *(float *)((char *)sound + 0x80) = finalTarget;
+    *(int *)((char *)sound + 0x84) = zero;
+    *(int *)((char *)sound + 0x88) = zero;
+    *(int *)((char *)sound + 0xa0) = one;
+    *((unsigned char *)sound + 0x9c) = zero;
+    *(float *)((char *)sound + 0xa4) = finalTarget;
+    *(float *)((char *)sound + 0xa8) = finalTarget;
+    *(float *)((char *)sound + 0xac) = finalTarget;
+    *(float *)((char *)sound + 0xb0) = finalTarget;
+    *(float *)((char *)sound + 0xb4) = finalTarget;
+    *(float *)((char *)sound + 0x28) = finalTarget;
+    *(float *)((char *)sound + 0x2c) = finalTarget;
+    *(float *)((char *)sound + 0x30) = baseAgain;
+    *(float *)((char *)sound + 0x34) = baseAgain;
+    *(float *)((char *)sound + 0x38) = baseAgain;
+    *(float *)((char *)sound + 0x3c) = baseAgain;
+    *(int *)((char *)sound + 0x40) = zero;
 }
 
 extern "C" void fn_800E8ADC(void *sound) {
