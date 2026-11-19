@@ -983,14 +983,14 @@ extern float lbl_80563B70;
 extern float lbl_80563B74;
 extern float lbl_80563B78;
 extern double lbl_80563B80;
-extern void fn_80230C30(float *, float *, int, int);
-extern void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
-extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
+extern "C" void fn_80230C30(float *, float *, int, int);
+extern "C" void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
+extern "C" void fn_80231220(int, int, float, float, float, float, float, float, float, float);
 extern float lbl_80563B70, lbl_80563B74, lbl_80563B78;
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma paired_single off
-void fn_8025FC8C(void* p, int arg1) {
+extern "C" void fn_8025FC8C(void* p, int arg1) {
     float spC, sp8, outC, out8, f29, f28, f27, f26, f25, f24;
     float tmpA, tmpB;
     unsigned int color, packed;
