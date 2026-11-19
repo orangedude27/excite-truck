@@ -257,21 +257,29 @@ extern const char lbl_8055C120;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_80252F50(f32 arg0) {
+/* Run the vehicle simulation in fixed steps.  The frame time, scaled by
+ * kSimTimeScale, is banked in gSimTimeOwed and one step (fn_80252C90, which
+ * advances every vehicle and refreshes the camera table from it) is run for
+ * every kSimStep still owed.  Should that come to more than kSimMaxSteps, the
+ * game is running too slowly to keep up: the "minworld: loop timeout!" warning
+ * is logged once and the backlog is dropped instead of spiralling further
+ * behind.  Called from the minworld update with the frame delta (or a fixed
+ * 0.02 s while a replay-style mode is active). */
+void fn_80252F50(f32 dt) {
     f32 threshold = 0.0f;
-    f32 step = 0.0192f;
-    s32 count = 0;
-    lbl_8055F30C += 1.5f * arg0;
-    while (lbl_8055F30C > threshold) {
+    f32 step = kSimStep;
+    s32 steps = 0;
+    gSimTimeOwed += kSimTimeScale * dt;
+    while (gSimTimeOwed > threshold) {
         fn_80252C90();
-        count++;
-        lbl_8055F30C -= step;
-        if (count > 10) {
-            if (!lbl_8055F310) {
-                lbl_8055F310 = 1;
-                ((void (*)(const char *, const char *, ...))fn_802E30C8)((const char *)&lbl_8055C120, lbl_803447A8);
+        steps++;
+        gSimTimeOwed -= step;
+        if (steps > kSimMaxSteps) {
+            if (!gSimTimeoutWarned) {
+                gSimTimeoutWarned = 1;
+                ((void (*)(const char *, const char *, ...))fn_802E30C8)((const char *)&kLogFormat, kSimTimeoutMsg);
             }
-            lbl_8055F30C = 0.0f;
+            gSimTimeOwed = 0.0f;
             break;
         }
     }
