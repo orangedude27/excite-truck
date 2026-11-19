@@ -1817,7 +1817,7 @@ void fn_80069408(void) {
     case 0x1A:
         break;
     default:
-        DBPrintf_8006CFA8((const char *)(lbl_803130C8 + 0x280));
+        DBPrintf_8006CFA8((const char *)(strings + 0x280));
         return;
     }
 }
