@@ -37,36 +37,36 @@ extern "C" char lbl_80336AF0[];
 extern "C" float lbl_80562908;
 extern "C" int fn_801C109C(int arg0, int arg1, int arg2, int arg3, int arg4) {
     int *base = (int *)arg0;
-    unsigned int size1 = (unsigned int)arg2 * 0x14;
+    int size1 = arg2 * 0x14;
     base[2] = arg2;
     base[1] = arg1;
-    unsigned int size2 = (unsigned int)arg3 * 0x18;
+    int size2 = arg3 * 0x18;
     base[3] = arg3;
-    unsigned int size3 = (unsigned int)arg4 * 0x1C;
+    int size3 = arg4 * 0x1C;
     base[4] = arg4;
-    unsigned int size4 = (unsigned int)arg1 * 0x30;
-    unsigned int total = size3 + size4;
-    unsigned int size = size2 + size1;
-    int memory = fn_8012850C((int)(total + size), lbl_80336AF0);
+    int size4 = arg1 * 0x30;
+    int total = size3 + size4;
+    int size = size2 + size1;
+    int memory = fn_8012850C(total + size, lbl_80336AF0);
     int step12 = arg1 * 0xC;
     base[0] = memory;
     base[9] = memory;
     int p = memory + step12;
     base[10] = p;
     p += step12;
-    int step4 = arg1 * 4;
     base[11] = p;
     p += step12;
     base[12] = p;
+    int step4 = arg1 * 4;
     p += step4;
     base[13] = p;
     p += step4;
     base[14] = p;
     p += step4;
     base[18] = p;
-    p += (int)size1;
+    p += size1;
     base[19] = p;
-    p += (int)size2;
+    p += size2;
     if (arg4 > 0) base[20] = p;
     else base[20] = 0;
     register float a = lbl_8056290C;
@@ -106,20 +106,21 @@ extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int sel
 }
 #pragma dont_inline reset
 extern float lbl_80562910, lbl_80562914;
+#pragma opt_common_subs off
 void fn_801C1218(void *arg0) {
     char *base = (char *)arg0;
     int offset;
     int count;
     count = 0;
-    float factor0 = lbl_80562910;
+    register float factor0 = lbl_80562910;
     offset = 0;
-    float factor1 = lbl_80562914;
+    register float factor1 = lbl_80562914;
     char *p0;
     char *p1;
     char *p2;
-    float x;
-    float y;
     float z;
+    float y;
+    float x;
     float scale;
     unsigned int savedZ;
     unsigned int savedY;
@@ -161,9 +162,7 @@ check:
     if (count < *(int *)(base + 0x14))
         goto loop;
 }
-
-#pragma dont_inline on
-#pragma scheduling invalid_target
+#pragma opt_common_subs reset
 void fn_801C1320(void *arg0) {
     /* Fill all output vectors (+0x2C array, count +0x14, stride 12) with vec3 at +0x3C. */
     #define outCount (*(int *)((char *)arg0 + 0x14))
@@ -480,6 +479,7 @@ extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *ar
         char *dst;
         if (count != 0) {
             do {
+#pragma unroll 2
                 for (int pairIter = 0; pairIter < 2; pairIter++) {
                     index = *(int *)(base + 0x14);
                     dst = *(char **)(base + 0x24) + index * 12;
@@ -620,7 +620,7 @@ extern "C" void fn_801C2170(void *arg0, void *arg1, float *m) {
     *(int *)(a + 0x1c) = 0;
     *(int *)(a + 0x20) = 0;
     if (count > 0) {
-    zero = lbl_80562904;
+    zero = 0.0f;
     for (i = 0; i < *(int *)(b + 0x10); i++) {
         p = *(char **)b + i * 0x14;
         v = (float *)p;
@@ -754,6 +754,9 @@ extern "C" void fn_801C2694(void *arg0, float *arg1, int *arg2, float *arg3, flo
     register float f5 = arg5[0] * lbl_80562930;
     register float f4 = arg5[2] * lbl_80562930;
     register float f0 = arg5[1] * lbl_80562930;
+    register float r5 = (float)((double)f5);
+    register float r4 = (float)((double)f4);
+    register float r0 = (float)((double)f0);
     float b2 = arg4[2];
     float b1 = arg4[1];
     float b0 = arg4[0];
@@ -779,10 +782,10 @@ extern "C" void fn_801C2694(void *arg0, float *arg1, int *arg2, float *arg3, flo
 loop1:
     p = (float *)(*(char **)((char *)arg0 + 0x2C) + off);
     ++i;
-    p[0] += f5;
+    p[0] += r5;
     off += 0xC;
-    p[1] += f0;
-    p[2] += f4;
+    p[1] += r0;
+    p[2] += r4;
 check1:
     if (i < *(int *)((char *)arg0 + 0x14))
         goto loop1;
@@ -811,9 +814,10 @@ extern float lbl_80562930;
 extern float lbl_80562928;
 extern "C" float PSQUATMultiply(void *, void *, void *);
 extern "C" void fn_801C27D8(void *arg0, float *arg1, float *arg2, float *arg3) {
+#pragma scheduling invalid_target
     float f5 = arg3[0] * lbl_80562930;
-    float f4 = arg3[1] * lbl_80562930;
     float f0 = arg3[2] * lbl_80562930;
+    float f4 = arg3[1] * lbl_80562930;
     float a0 = arg1[0];
     float a1 = arg1[1];
     float a2 = arg1[2];
@@ -822,7 +826,6 @@ extern "C" void fn_801C27D8(void *arg0, float *arg1, float *arg2, float *arg3) {
     float b2 = arg2[2];
     int i = 0;
     int off = 0;
-
     *(float *)((char *)arg0 + 0x58) = a0;
     *(float *)((char *)arg0 + 0x5C) = a1;
     *(float *)((char *)arg0 + 0x60) = a2;
@@ -852,6 +855,7 @@ extern "C" void fn_801C28A8(void *arg0, int arg1, float *arg2, void *arg3, int a
     float v5C[3], v50[3], v44[3], v38[3], v2C[3], v20[3], v14[3], v8[3];
     int limit, idx, off, i;
     float f31, f30, f29, f28, f27, f26, f25, f24, f23, f22;
+
     limit = arg6;
     if (arg6 < 0)
         limit = *(int *)((char *)arg0 + 0x14);
@@ -894,7 +898,10 @@ extern "C" void fn_801C28A8(void *arg0, int arg1, float *arg2, void *arg3, int a
             if (!(fn_8017F70C(v2C[2]) < f24))
                 continue;
             if (fn_8017F70C(v38[0]) > f25 + f22) {
-                f22 = (v2C[0] >= f26) ? -f22 : f22;
+                do {
+                    if (!(v2C[0] >= f26)) break;
+                    f22 = -f22;
+                } while (0);
                 v2C[0] = f22;
             }
             if (fn_8017F70C(v38[1]) >= f25 + f23) {
@@ -947,9 +954,9 @@ extern "C" void fn_801E41D8(float *, float *, int, float);
 struct Vec3f { float x, y, z; };
 static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
     if (dst == src) {
-        float x = src->z * m[6] + (src->y * m[3] + src->x * m[0]);
-        float y = src->z * m[7] + (src->y * m[4] + src->x * m[1]);
-        float z = src->z * m[8] + (src->y * m[5] + src->x * m[2]);
+        float x = m[6] * src->z + (m[3] * src->y + m[0] * src->x);
+        float y = m[7] * src->z + (m[4] * src->y + m[1] * src->x);
+        float z = m[8] * src->z + (m[5] * src->y + m[2] * src->x);
         dst->x = x;
         dst->y = y;
         dst->z = z;
@@ -957,9 +964,9 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
         float sx = src->x;
         float sy = src->y;
         float sz = src->z;
-        float x = sz * m[6] + (sx * m[0] + sy * m[3]);
-        float y = sz * m[7] + (sx * m[1] + sy * m[4]);
-        float z = sz * m[8] + (sx * m[2] + sy * m[5]);
+        float x = m[6] * sz + (m[0] * sx + m[3] * sy);
+        float y = m[7] * sz + (m[1] * sx + m[4] * sy);
+        float z = m[8] * sz + (m[2] * sx + m[5] * sy);
         dst->x = x;
         dst->y = y;
         dst->z = z;
