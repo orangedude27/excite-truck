@@ -2091,7 +2091,7 @@ void fn_801C7BA0(void) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling off
 void fn_801C7C04(void) {
     extern f32 lbl_805629D4, lbl_8055E84C;
     extern char lbl_80336F4C[], lbl_80336F88[];
@@ -2101,7 +2101,7 @@ void fn_801C7C04(void) {
     f32 *sp = (f32 *)(base + 0x6F8), *mp = (f32 *)(base + 0x704), *ep = (f32 *)(base + 0x710);
     f32 a[2], b[2], c[2], d[2], e[2], f[2], g[2], h[2], i[2];
     f32 *q, *p;
-    f32 x, y, len, scale;
+    f32 len, scale;
     lbl_8055E84C = lbl_805629D4 * (f32)atof(base + 0x368);
     fn_801C957C(0);
     obj = fn_801C3C80();
@@ -2123,7 +2123,7 @@ void fn_801C7C04(void) {
         *(f32 *)(obj + 0x218) = c[0]; *(f32 *)(obj + 0x21C) = c[1];
         g[0] = lbl_80562970; g[1] = lbl_8056296C;
         d[0] = *(f32 *)(base + 0x710); d[1] = ep[2];
-        *(f32 *)(obj + 0x224) = d[0] - (f32)*(f32 *)(base + 0x6F8);
+        *(f32 *)(obj + 0x224) = d[0] - (f32)(f64)*(f32 *)(base + 0x6F8);
         *(f32 *)(obj + 0x228) = d[1] - *(f32 *)(obj + 0x21C);
         f[1] = sp[2]; e[1] = mp[2];
         f[0] = *(f32 *)(base + 0x6F8); e[0] = *(f32 *)(base + 0x704);
@@ -2135,7 +2135,7 @@ void fn_801C7C04(void) {
             scale = lbl_8056296C / (f32)fn_8002F234(len);
             i[0] *= scale; i[1] *= scale; p = i;
         }
-        len = g[0]*g[0] + g[1]*g[1];
+        len = g[1]*g[1] + g[0]*g[0];
         if (!((f32)__fabs((f64)(len-lbl_8056296C)) <= lbl_80558DC4[0])) {
             h[0] = g[0]; h[1] = g[1];
             scale = lbl_8056296C / (f32)fn_8002F234(len);
