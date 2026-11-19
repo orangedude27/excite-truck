@@ -106,7 +106,7 @@ void fn_8013BD30(void *arg0) {
 #pragma dont_inline reset
 
 extern void fn_8013BD30(void *);
-extern char lbl_8032C3D8[][12];
+extern char lbl_8032C3D8[];
 __declspec(section ".sdata") extern const char lbl_80559CE0[];
 __declspec(section ".sdata") extern const char lbl_80559CE8[];
 __declspec(section ".sdata") extern const char lbl_80559CF0[];
