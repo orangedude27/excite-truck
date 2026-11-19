@@ -2948,6 +2948,10 @@ static inline void fn_80252320_copy(char *src, s32 count, char *dst) {
     }
 }
 
+/* Append an entry (0x48 bytes) to the table at arg0: copy name `arg1` into
+ * name[0x20], store `arg2`/`arg3` flags, set name2 from `arg1`'s path component
+ * (or empty when `arg3` is 0), bump the table's generation at +0x14 if stale,
+ * and record the current value (+0x18) at +0x44. */
 void fn_80252320(void *arg0, u8 *arg1, signed char arg2, int arg3) {
     struct Entry {
         char name[0x20];
