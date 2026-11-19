@@ -1592,18 +1592,6 @@ extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
 #pragma pop
 #pragma cplusplus reset
 
-static inline void setupRegionAndCall(unsigned char *ptr, int a, int b, int c) {
-    *(int *)(ptr + 0x1C) = c;
-    *(int *)(ptr + 0x18) = 0;
-    *(int *)(ptr + 0x2C) = c;
-    *(int *)(ptr + 0x30) = c;
-    *(int *)(ptr + 0x40) = b;
-    *(int *)(ptr + 0x44) = a;
-    *(int *)(ptr + 0x54) = 5;
-    *(int *)(ptr + 0x58) = a;
-    ((void (*)(int, int, int, void *))fn_8027156C)(a, b, c, ptr);
-}
-
 #pragma scheduling invalid_target
 void fn_80273354(void) {
     unsigned char *ptr = lbl_8049A258;
