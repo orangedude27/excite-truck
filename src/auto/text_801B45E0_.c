@@ -435,6 +435,13 @@ float fn_801B4D10(int queue, int tick) {
 }
 
 extern float lbl_80562668, lbl_8056266C, lbl_80562670, lbl_80562674, lbl_80562678, lbl_8056267C, lbl_80562680;
+extern double lbl_80562688;
+static float fn_801B4D80_u16f(unsigned short x) {
+    union { double d; unsigned int u[2]; } t;
+    t.u[0] = 0x43300000;
+    t.u[1] = x;
+    return (float)(t.d - lbl_80562688);
+}
 int fn_801B4D80(void *arg0, int p1, int p2, float arg3) {
     void *arg1=(void *)p1, *arg2=(void *)p2;
     float a,b,c,d,e,f,t;
