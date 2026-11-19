@@ -128,22 +128,22 @@ check:
 void fn_802797A8(s32 *arg0, s32 arg1) {
     s32 offset;
     s32 i;
-    CarStateEntry *entry;
+    char *entry;
+    s32 value;
 
     lbl_8055F61C = arg1;
     lbl_8055F618 = fn_8012850C(arg1 * 0x2B8, lbl_80347818);
     i = 0;
     offset = 0;
-    goto check;
-loop:
-    entry = (CarStateEntry *)((char *)lbl_8055F618 + offset);
-    memset(entry, 0, sizeof(CarStateEntry));
-    entry->vehicleId = *arg0;
-    arg0++;
-    i++;
-    offset += sizeof(CarStateEntry);
-check:
-    if (i < lbl_8055F61C) goto loop;
+    while (i < lbl_8055F61C) {
+        entry = (char *)lbl_8055F618 + offset;
+        memset(entry, 0, 0x2B8);
+        value = *(volatile s32 *)arg0;
+        i++;
+        offset += 0x2B8;
+        *(s32 *)entry = value;
+        arg0++;
+    }
     fn_8027974C();
 }
 #pragma pop
@@ -357,48 +357,63 @@ void fn_80279C00(unsigned char *dst, unsigned char *src) {
     *(s32 *)(dst + 0x29C) = *(s32 *)(src + 0x298);
     *(s32 *)(dst + 0x2A0) = *(s32 *)(src + 0x29C);
     {
-        unsigned char a, b;
-        a = src[0x2A0]; b = src[0x2A1];
-        dst[0x2A4] = a; dst[0x2A5] = b;
+        volatile unsigned char *p = src;
+        unsigned char even = p[0x2A0];
+        unsigned char odd = p[0x2A1];
+        dst[0x2A4] = even;
+        dst[0x2A5] = odd;
     }
     {
-        unsigned char a, b;
-        a = src[0x2A2]; b = src[0x2A3];
-        dst[0x2A6] = a; dst[0x2A7] = b;
+        volatile unsigned char *p = src;
+        unsigned char even = p[0x2A2];
+        unsigned char odd = p[0x2A3];
+        dst[0x2A6] = even;
+        dst[0x2A7] = odd;
     }
     {
-        unsigned char a, b;
-        a = src[0x2A4]; b = src[0x2A5];
-        dst[0x2A8] = a; dst[0x2A9] = b;
+        volatile unsigned char *p = src;
+        unsigned char even = p[0x2A4];
+        unsigned char odd = p[0x2A5];
+        dst[0x2A8] = even;
+        dst[0x2A9] = odd;
     }
     {
-        unsigned char a, b;
-        a = src[0x2A6]; b = src[0x2A7];
-        dst[0x2AA] = a; dst[0x2AB] = b;
+        volatile unsigned char *p = src;
+        unsigned char even = p[0x2A6];
+        unsigned char odd = p[0x2A7];
+        dst[0x2AA] = even;
+        dst[0x2AB] = odd;
     }
     {
-        unsigned char a, b;
-        a = src[0x2A8]; b = src[0x2A9];
-        dst[0x2AC] = a; dst[0x2AD] = b;
+        volatile unsigned char *p = src;
+        unsigned char even = p[0x2A8];
+        unsigned char odd = p[0x2A9];
+        dst[0x2AC] = even;
+        dst[0x2AD] = odd;
     }
     {
-        unsigned char a, b;
-        a = src[0x2AA]; b = src[0x2AB];
-        dst[0x2AE] = a; dst[0x2AF] = b;
+        volatile unsigned char *p = src;
+        unsigned char even = p[0x2AA];
+        unsigned char odd = p[0x2AB];
+        dst[0x2AE] = even;
+        dst[0x2AF] = odd;
     }
     {
-        unsigned char a, b;
-        a = src[0x2AC]; b = src[0x2AD];
-        dst[0x2B0] = a; dst[0x2B1] = b;
+        volatile unsigned char *p = src;
+        unsigned char even = p[0x2AC];
+        unsigned char odd = p[0x2AD];
+        dst[0x2B0] = even;
+        dst[0x2B1] = odd;
     }
     {
-        unsigned char a, b;
-        a = src[0x2AE]; b = src[0x2AF];
-        dst[0x2B2] = a; dst[0x2B3] = b;
+        volatile unsigned char *p = src;
+        unsigned char even = p[0x2AE];
+        unsigned char odd = p[0x2AF];
+        dst[0x2B2] = even;
+        dst[0x2B3] = odd;
     }
     dst[0x2B4] = src[0x2B0];
     dst[0x2B5] = src[0x2B1];
 }
-#pragma opt_unroll_loops reset
 void fn_80279CD8(void) { fn_802795E8(); }
 
