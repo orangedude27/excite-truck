@@ -16,7 +16,14 @@ void *fn_80171698(void) {
     extern void fn_801777CC(void *);
     extern char lbl_80330EC8[];
     extern char lbl_80330ED8[];
-    void *obj;
+    struct Object {
+        void *vtable;
+        void *vtable2;
+        void *base;
+        s32 zero;
+        s32 count;
+    };
+    volatile struct Object *obj;
     u32 start;
     u32 end;
     s32 valid;
@@ -27,18 +34,17 @@ void *fn_80171698(void) {
     s32 check;
     s32 hi;
 
-    obj = fn_801284F8(0xA1C, lbl_80330EC8);
+    obj = (volatile struct Object *)fn_801284F8(0xA1C, lbl_80330EC8);
     if (obj != 0) {
-        *(void **)obj = lbl_80330ED8;
-        *(void **)((char *)obj + 4) = lbl_80330ED8 + 0x10;
-        *(void **)((char *)obj + 8) = (char *)obj + 0x14;
-
         start = (u32)obj + 0x3C;
         end = (u32)obj + 0xA14;
+        obj->vtable = lbl_80330ED8;
+        obj->vtable2 = lbl_80330ED8 + 0x10;
+        obj->base = (char *)obj + 0x14;
         valid = start < end;
 
-        *(int *)((char *)obj + 0x10) = 0x40;
-        *(int *)((char *)obj + 0xC) = 0;
+        obj->count = 0x40;
+        obj->zero = 0;
         if (valid) {
             diff = (s32)(end - start);
             n = (diff + 0x27) / 40;
@@ -65,7 +71,7 @@ void *fn_80171698(void) {
     }
     if (obj != 0)
         fn_801777CC((char *)obj + 4);
-    return obj;
+    return (void *)obj;
 }
 
 #pragma push
@@ -220,6 +226,7 @@ __declspec(section ".sdata") extern char lbl_8055A288[];
 __declspec(section ".sdata") extern char lbl_8055A290[];
 __declspec(section ".sdata") extern char lbl_8055A294[];
 extern f32 lbl_80561A34;
+#pragma ppc_psq_save off
 extern "C" void fn_80171A80(void *arg0) {
     class Node {
     public:
