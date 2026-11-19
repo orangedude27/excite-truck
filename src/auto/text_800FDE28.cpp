@@ -307,9 +307,13 @@ void nw4hbm::snd::detail::TaskManager::AppendTask(
 }
 
 #pragma dont_inline on
-extern "C" void fn_800FE1D0(FN800FE1D0_ARG) {
+extern "C" void fn_800FE1D0(void *taskManager) {
+    /* nw4hbm::snd::detail::TaskManager::Execute(): drain the manager's task
+       queues -- run tasks one at a time with ExecuteSingle() until every
+       priority queue is empty.  The sound thread calls this when it is woken
+       with the "work" message (fn_800FE814). */
     do {
-    } while (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(FN800FE1D0_USED_ARG) != 0);
+    } while (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(taskManager) != 0);
 }
 
 /* Run one queued sound task: take the first task of the highest-priority
