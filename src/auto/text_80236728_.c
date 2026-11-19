@@ -280,7 +280,7 @@ void fn_802369A8(char *dst, int size, int index) {
 extern void *memset(void *, int, unsigned long);
 extern char *strcpy(char *, const char *);
   #pragma scheduling invalid_target
- void fn_80236A5C(void *arg0, int arg1) {
+void fn_80236A5C(void *arg0, int arg1) {
     extern char lbl_80498664[];
     extern char lbl_8055BA18[], lbl_8055BA1C[], lbl_8055BA24[], lbl_8055BA2C[];
     extern char lbl_8055BA38[], lbl_8055BA70[], lbl_8055BA78[], lbl_8055BA80[], lbl_8055BAAC[];
@@ -300,12 +300,12 @@ extern char *strcpy(char *, const char *);
     extern void *fn_80237968(void *, int);
     extern void fn_80131818(void *);
     extern void fn_802E30C8(const char *, ...);
-    register void *parser;
     register int mode;
-    register float defaultZero, defaultOne;
+    register void *parser;
     register void *list;
     register int index;
     register char *filename = (char *)arg1;
+    register float defaultZero, defaultOne;
     char *elementName;
     char *elementText;
     AnimMgr *manager;
@@ -408,8 +408,8 @@ mode_done:
                                     fn_8012850C(keyCount * 0x14 + 0x10, lbl_80340AA4),
                                     (void (*)(void *))fn_80237A04, 0, 0x14, keyCount);
                                 entry->keyCount = 0;
-                                defaultZero = lbl_805636E0;
-                                defaultOne = lbl_805636E4;
+                                defaultZero = 0.0f;
+                                defaultOne = 1.0f;
                                 defaults1[0] = defaultZero;
                                 defaults1[2] = defaultOne;
                                 defaults1[1] = defaultOne;
@@ -437,17 +437,18 @@ mode_done:
                                     }
                                     childIndex++;
                                 }
+                            } else {
+                                fn_802E30C8(lbl_80340A74, entry->object);
                             }
+                        } else {
+                            fn_802E30C8(lbl_80340A50, entry->object);
                         }
-                        if (detailList == 0)
-                            fn_802E30C8(lbl_80340A74, entry->object);
-                        fn_802E30C8(lbl_80340A50, entry->object);
                         count = entry->keyCount;
                         if (count > 0)
                             value = *(float *)((char *)entry->keys + count * 0x14 - 0x14);
                         else
                             value = lbl_805636E0;
-                        manager->duration = (manager->duration > value) ? manager->duration : value;
+                        manager->duration = (value > manager->duration) ? value : manager->duration;
                         manager->count++;
                     }
                 }
@@ -502,8 +503,8 @@ mode_done:
                                     fn_8012850C(keyCount * 0x14 + 0x10, lbl_80340AA4),
                                     (void (*)(void *))fn_80237A04, 0, 0x14, keyCount);
                                 entry->keyCount = 0;
-                                defaultZero = lbl_805636E0;
-                                defaultOne = lbl_805636E4;
+                                defaultZero = 0.0f;
+                                defaultOne = 1.0f;
                                 defaults2[0] = defaultZero;
                                 defaults2[2] = defaultOne;
                                 defaults2[1] = defaultOne;
@@ -530,17 +531,18 @@ mode_done:
                                     }
                                     childIndex++;
                                 }
+                            } else {
+                                fn_802E30C8(lbl_80340A74, entry->object);
                             }
+                        } else {
+                            fn_802E30C8(lbl_80340A50, entry->object);
                         }
-                        if (detailList == 0)
-                            fn_802E30C8(lbl_80340A74, entry->object);
-                        fn_802E30C8(lbl_80340A50, entry->object);
                         count = entry->keyCount;
                         if (count > 0)
                             value = *(float *)((char *)entry->keys + count * 0x14 - 0x14);
                         else
                             value = lbl_805636E0;
-                        manager->duration = (manager->duration > value) ? manager->duration : value;
+                        manager->duration = (value > manager->duration) ? value : manager->duration;
                         manager->count++;
                     }
                 }
@@ -589,14 +591,20 @@ mode_done:
                             trailEntry->flag2C =
                                 ((unsigned char (*)(void *, const char *, int))(*(void * volatile **)trail)[0x30 / 4])(trail, lbl_803409E8, 0);
                             trailText = ((char *(*)(void *, const char *))(*(void * volatile **)trail)[0x14 / 4])(trail, lbl_8055BA40);
-                            memset((char *)trailEntry, 0, 0x1E);
                             {
                                 char *copyDest = (char *)trailEntry;
                                 char *copySrc = trailText;
                                 char ch;
+                                int remaining = 0x1E;
                                 do {
                                     ch = *copySrc++;
                                     *copyDest++ = ch;
+                                    if (ch != 0) {
+                                        if (--remaining <= 0) {
+                                            copyDest[-1] = 0;
+                                            break;
+                                        }
+                                    }
                                 } while (ch != 0);
                             }
                             trailEntry->active = 0;
@@ -605,48 +613,52 @@ mode_done:
                             trailEntry->keyCount = 0;
                             trailIndex = trailIndex;
                             if (trail != 0) {
-                            trailKeyCount = 0;
-                            keyCount = 0;
-                            while ((trailKey = ((void *(*)(void *, int))(*(void * volatile **)trail)[0x60 / 4])(trail, keyCount)) != 0) {
-                                if (stricmp(((char *(*)(void *))(*(void * volatile **)trailKey)[2])(trailKey), lbl_8055BAAC) == 0)
-                                    trailKeyCount++;
-                                keyCount++;
-                            }
-                            trailEntry->keyCount = trailKeyCount;
-                            if (trailKeyCount > 0) {
-                                trailEntry->keys = fn_8002F37C(
-                                    fn_8012850C(trailKeyCount * 0x14 + 0x10, lbl_80340AA4),
-                                    (void (*)(void *))fn_80237A04, 0, 0x14, trailKeyCount);
-                                trailEntry->keyCount = 0;
-                                defaultZero = lbl_805636E0;
-                                defaultOne = lbl_805636E4;
-                                trailDefaults[0] = defaultZero;
-                                trailDefaults[2] = defaultOne;
-                                trailDefaults[1] = defaultOne;
-                                trailDefaults[3] = defaultZero;
-                                trailDefaults[4] = defaultZero;
+                                trailKeyCount = 0;
                                 keyCount = 0;
                                 while ((trailKey = ((void *(*)(void *, int))(*(void * volatile **)trail)[0x60 / 4])(trail, keyCount)) != 0) {
-                                    if (stricmp(((char *(*)(void *))(*(void * volatile **)trailKey)[2])(trailKey), lbl_8055BAA4) == 0) {
-                                        count = trailEntry->keyCount;
-                                        if (count > 0)
-                                            previous = (char *)trailEntry->keys + (count - 1) * 0x14;
-                                        else
-                                            previous = trailDefaults;
-                                        keyOut = (char *)trailEntry->keys + count * 0x14;
-                                        (trailEntry->keyCount)++;
-                                        *(float *)keyOut = ((float (*)(void *, const char *))(*(void * volatile **)trailKey)[0x24 / 4])(trailKey, lbl_8055BAA0);
-                                        *(float *)((char *)keyOut + 8) = ((float (*)(void *, const char *, float))(*(void * volatile **)trailKey)[0x28 / 4])(trailKey, lbl_8055BA98, *(float *)((char *)previous + 8));
-                                        *(float *)((char *)keyOut + 4) = ((float (*)(void *, const char *, float))(*(void * volatile **)trailKey)[0x28 / 4])(trailKey, lbl_8055BA90, *(float *)((char *)previous + 4));
-                                        pairDefaults3[0] = *(float *)((char *)previous + 0xC);
-                                        pairDefaults3[1] = *(float *)((char *)previous + 0x10);
-                                        pairBits3 = ((unsigned long long (*)(void *, const char *, float *))(*(void * volatile **)trailKey)[0x40 / 4])(trailKey, lbl_8055BA88, pairDefaults3);
-                                        *(float *)((char *)keyOut + 0xC) = *(float *)&pairBits3;
-                                        *(float *)((char *)keyOut + 0x10) = *((float *)&pairBits3 + 1);
-                                    }
+                                    if (stricmp(((char *(*)(void *))(*(void * volatile **)trailKey)[2])(trailKey), lbl_8055BAAC) == 0)
+                                        trailKeyCount++;
                                     keyCount++;
                                 }
-                            }
+                                trailEntry->keyCount = trailKeyCount;
+                                if (trailKeyCount > 0) {
+                                    trailEntry->keys = fn_8002F37C(
+                                        fn_8012850C(trailKeyCount * 0x14 + 0x10, lbl_80340AA4),
+                                        (void (*)(void *))fn_80237A04, 0, 0x14, trailKeyCount);
+                                    trailEntry->keyCount = 0;
+                                    defaultZero = 0.0f;
+                                    defaultOne = 1.0f;
+                                    trailDefaults[0] = defaultZero;
+                                    trailDefaults[2] = defaultOne;
+                                    trailDefaults[1] = defaultOne;
+                                    trailDefaults[3] = defaultZero;
+                                    trailDefaults[4] = defaultZero;
+                                    keyCount = 0;
+                                    while ((trailKey = ((void *(*)(void *, int))(*(void * volatile **)trail)[0x60 / 4])(trail, keyCount)) != 0) {
+                                        if (stricmp(((char *(*)(void *))(*(void * volatile **)trailKey)[2])(trailKey), lbl_8055BAA4) == 0) {
+                                            count = trailEntry->keyCount;
+                                            if (count > 0)
+                                                previous = (char *)trailEntry->keys + (count - 1) * 0x14;
+                                            else
+                                                previous = trailDefaults;
+                                            keyOut = (char *)trailEntry->keys + count * 0x14;
+                                            (trailEntry->keyCount)++;
+                                            *(float *)keyOut = ((float (*)(void *, const char *))(*(void * volatile **)trailKey)[0x24 / 4])(trailKey, lbl_8055BAA0);
+                                            *(float *)((char *)keyOut + 8) = ((float (*)(void *, const char *, float))(*(void * volatile **)trailKey)[0x28 / 4])(trailKey, lbl_8055BA98, *(float *)((char *)previous + 8));
+                                            *(float *)((char *)keyOut + 4) = ((float (*)(void *, const char *, float))(*(void * volatile **)trailKey)[0x28 / 4])(trailKey, lbl_8055BA90, *(float *)((char *)previous + 4));
+                                            pairDefaults3[0] = *(float *)((char *)previous + 0xC);
+                                            pairDefaults3[1] = *(float *)((char *)previous + 0x10);
+                                            pairBits3 = ((unsigned long long (*)(void *, const char *, float *))(*(void * volatile **)trailKey)[0x40 / 4])(trailKey, lbl_8055BA88, pairDefaults3);
+                                            *(float *)((char *)keyOut + 0xC) = *(float *)&pairBits3;
+                                            *(float *)((char *)keyOut + 0x10) = *((float *)&pairBits3 + 1);
+                                        }
+                                        keyCount++;
+                                    }
+                                } else {
+                                    fn_802E30C8(lbl_80340A74, trailEntry->field20);
+                                }
+                            } else {
+                                fn_802E30C8(lbl_80340A50, trailEntry->field20);
                             }
                             trailMgr->count++;
                         }
@@ -664,7 +676,7 @@ mode_done:
     lbl_8055F0B8 = (int)trailMgr;
     fn_80131818(parser);
     lbl_80498664[0] = 0;
- }
+}
  
  extern void fn_80128670(int);
 /* Destroys an object with an owned buffer at +0x24 and optionally frees the object. */
@@ -738,6 +750,14 @@ void fn_80237A9C(void) {
 }
 
 extern float lbl_805636E4;
+typedef struct UiTail_37AA0 {
+    char pad0[0x21];
+    unsigned char flag21;
+    char pad1[0x6];
+    void *cb28;
+    void *cb2C;
+    void *cb30;
+} UiTail_37AA0;
 #pragma push
 #pragma cplusplus on
 class SObjV_37AA0 { public: virtual void _d0(); virtual float get(); virtual void set(float); };
@@ -1073,7 +1093,7 @@ void fn_802383FC(TrailMgr *mgr) {
     extern void fn_8022EE98(void *);
     extern void fn_80214C54(void *, void *);
     extern float lbl_805636E0, lbl_805636E4, lbl_805636E8;
-    float mtx[3][12];
+    float mtxA[12], mtxB[12], mtxC[12];
     float f29 = fn_8023659C();
     float f30 = lbl_805636E0;
     float f31 = lbl_805636E4;
@@ -1094,23 +1114,23 @@ void fn_802383FC(TrailMgr *mgr) {
                 }
                 if (idx == -1) {
                     TrailKey *k = e->keys;
-                    mtx[0][9] = k->fc;
-                    mtx[0][10] = k->f10;
-                    mtx[0][11] = f30;
-                    mtx[0][0] = f31; mtx[0][1] = f30; mtx[0][2] = f30; mtx[0][3] = f30;
-                    mtx[0][4] = f31; mtx[0][5] = f30; mtx[0][6] = f30; mtx[0][7] = f30;
-                    mtx[0][8] = f31;
-                    obj = fn_8022EDE4(mtx[0], k->f4);
+                    mtxA[9] = k->fc;
+                    mtxA[10] = k->f10;
+                    mtxA[11] = f30;
+                    mtxA[0] = f31; mtxA[1] = f30; mtxA[2] = f30; mtxA[3] = f30;
+                    mtxA[4] = f31; mtxA[5] = f30; mtxA[6] = f30; mtxA[7] = f30;
+                    mtxA[8] = f31;
+                    obj = fn_8022EDE4(mtxA, k->f4);
                     *(float *)((char *)obj + 0x38) = k->f8;
                 } else if (idx == e->keyCount - 1) {
                     TrailKey *k = &e->keys[e->keyCount - 1];
-                    mtx[1][9] = k->fc;
-                    mtx[1][10] = k->f10;
-                    mtx[1][11] = f30;
-                    mtx[1][0] = f31; mtx[1][1] = f30; mtx[1][2] = f30; mtx[1][3] = f30;
-                    mtx[1][4] = f31; mtx[1][5] = f30; mtx[1][6] = f30; mtx[1][7] = f30;
-                    mtx[1][8] = f31;
-                    obj = fn_8022EDE4(mtx[1], k->f4);
+                    mtxB[9] = k->fc;
+                    mtxB[10] = k->f10;
+                    mtxB[11] = f30;
+                    mtxB[0] = f31; mtxB[1] = f30; mtxB[2] = f30; mtxB[3] = f30;
+                    mtxB[4] = f31; mtxB[5] = f30; mtxB[6] = f30; mtxB[7] = f30;
+                    mtxB[8] = f31;
+                    obj = fn_8022EDE4(mtxB, k->f4);
                     *(float *)((char *)obj + 0x38) = k->f8;
                 } else {
                     TrailKey *c = &e->keys[idx];
@@ -1119,13 +1139,13 @@ void fn_802383FC(TrailMgr *mgr) {
                     float tt;
                     if (denom <= f27) denom = f27;
                     tt = (t - c->time) / denom;
-                    mtx[2][11] = f30;
-                    mtx[2][0] = f31; mtx[2][1] = f30; mtx[2][2] = f30; mtx[2][3] = f30;
-                    mtx[2][4] = f31; mtx[2][5] = f30; mtx[2][6] = f30; mtx[2][7] = f30;
-                    mtx[2][8] = f31;
-                    mtx[2][9] = c->fc + tt * (n->fc - c->fc);
-                    mtx[2][10] = c->f10 + tt * (n->f10 - c->f10);
-                    obj = fn_8022EDE4(mtx[2], c->f4 + tt * (n->f4 - c->f4));
+                    mtxC[11] = f30;
+                    mtxC[0] = f31; mtxC[1] = f30; mtxC[2] = f30; mtxC[3] = f30;
+                    mtxC[4] = f31; mtxC[5] = f30; mtxC[6] = f30; mtxC[7] = f30;
+                    mtxC[8] = f31;
+                    mtxC[9] = c->fc + tt * (n->fc - c->fc);
+                    mtxC[10] = c->f10 + tt * (n->f10 - c->f10);
+                    obj = fn_8022EDE4(mtxC, c->f4 + tt * (n->f4 - c->f4));
                     *(float *)((char *)obj + 0x38) = c->f8 + tt * (n->f8 - c->f8);
                 }
             } else {
