@@ -1136,6 +1136,9 @@ void PSMTXRotRad(Mtx m, f32 x, f32 y, f32 z) {
     m[0][0] = one;
 }
 #pragma pop
+#pragma push
+#pragma paired on
+#pragma paired_single on
 void PSMTXRotTrig(register Mtx m, register Mtx r, register f32 sx, register f32 sy, register f32 sz) {
     register f32 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
     a0 = *(f32 *)&m[0][0];
