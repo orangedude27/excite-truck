@@ -1417,6 +1417,7 @@ void fn_80162170(void) {
 
 }
 
+/* Empty stub. */
 void fn_80162174(void) {
 }
 
