@@ -1260,7 +1260,14 @@ extern "C" void fn_80299FE0(void *unused, void *arg1, float unusedTime) {
         *(float *)((char *)arg1 + 0x98) = time + lbl_80564594;
     }
 }
-/* Initialize a 0x44-byte transform/state block to identity-like floats and invalid indices (-1). */
+/* The 0x44-byte shadow record shared by the functions below (fn_8029A114,
+ * fn_8029A17C, fn_8029A208, fn_8029A4B4, fn_8029A60C):
+ *   +0x00 9 floats  the vehicle's 3x3 orientation, copied from its object record
+ *   +0x24 3 floats  the object record's translation (fn_8029A318's a[9..11])
+ *   +0x30 3 floats  anchor point: the model's bounding-box min corner (a[12..14])
+ *   +0x3C int       vehicle index this shadow follows, -1 when free
+ *   +0x40 int       the shadow-pool (lbl_8055F7C0) slot it holds, -1 when none
+ * Initialize a 0x44-byte transform/state block to identity-like floats and invalid indices (-1). */
 extern "C" void fn_8029A114(void* state) {
     float zero = lbl_8056459C;
     float one = lbl_80564590;
