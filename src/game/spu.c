@@ -747,6 +747,7 @@ void fn_802E5A54(void) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_strength_reduction off
 void *fn_802E5AE8(char *arg0) {
     extern char lbl_8034D210[];
     extern float lbl_80565138, lbl_8056513C;
@@ -797,10 +798,10 @@ void *fn_802E5AE8(char *arg0) {
     if (res == 0) return 0;
     res->unkC = 0xCFFE;
     if (res->unkC != 0xCFFE) fn_802E317C(msg + 0x2C4, arg0);
-    f31 = spu_u32_to_f32(res->size >> 1) / lbl_80565138;
+    f31 = (float)(res->size >> 1) / lbl_80565138;
     aligned = (res->size + 0x3F) & ~0x3F;
     if (res->unk9 == 1) f31 = f31 * lbl_8056513C;
-    f30 = spu_u32_to_f32(res->unk10) / lbl_80565138;
+    f30 = (float)res->unk10 / lbl_80565138;
     slot = (char *)lbl_8055FF90 + freeIdx * 0xB0;
     memset(slot, 0, 0xB0);
     unk4 = res->unk4;
@@ -909,30 +910,31 @@ extern int OSDisableInterrupts(void);
 extern int OSEnableInterrupts(int);
 __declspec(section ".sdata") extern unsigned char *lbl_8055FF94;
 #pragma scheduling invalid_target
-void *fn_802E6058(void *arg0) {
-    unsigned char *entry;
+/* Allocate a free SPU voice channel for the given sample and initialize it for playback. */
+void *fn_802E6058(void *sample) {
+    struct SpuChannel *channel;
     int i;
 
     for (i = 0; i < 32; i++) {
-        entry = lbl_8055FF94 + (i % 32) * 0x2C;
-        if (entry[0x20] == 0) {
+        channel = (struct SpuChannel *)(lbl_8055FF94 + (i % 32) * 0x2C);
+        if (channel->active == 0) {
             OSDisableInterrupts();
-            entry[0x20] = 1;
-            *(void **)(entry + 0x1C) = arg0;
-            *(float *)(entry + 8) = 1.0f;
-            *(float *)(entry + 0xC) = 0.0f;
-            *(float *)(entry + 0x14) = 1.0f;
-            *(int *)(entry + 0x18) = 0;
-            *(float *)(entry + 0x10) = *(float *)((char *)arg0 + 0xA8);
-            entry[0x23] = 0;
-            entry[0x25] = 0;
-            *(int *)((char *)arg0 + 0x98) += 1;
-            entry[0x21] = 1;
-            entry[0x22] = 0;
-            *(int *)(entry + 0x28) = 0;
+            channel->active = 1;
+            channel->sample = (struct SpuSample *)sample;
+            channel->volume = 1.0f;
+            channel->pan = 0.0f;
+            channel->surroundPan = 1.0f;
+            channel->auxFlags = 0;
+            channel->rate = ((struct SpuSample *)sample)->fA8;
+            channel->wantPlay = 0;
+            channel->adpcm = 0;
+            ((struct SpuSample *)sample)->unk98 += 1;
+            channel->playing = 1;
+            channel->started = 0;
+            channel->playPos = 0;
             ((void (*)(void))OSEnableInterrupts)();
             ++lbl_8055FF98;
-            return entry;
+            return channel;
         }
     }
     return 0;
