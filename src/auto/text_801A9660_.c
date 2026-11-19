@@ -1997,23 +1997,25 @@ void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
     if (arg0 != 0) arg0 = (char *)arg0 + 0x23C;
     fn_801D0A24(arg0, arg2);
 }
+/* Forward the event to fn_801AC0A0; if the target object is a vehicle (CAR/PCAR/ACAR/NCAR),
+ * notify the embedded listener at +0x23C with the object's field at +0x1EC. */
 void fn_801AD7C4(void *arg0, float *arg1, float *arg2, int arg3, void *arg4) {
-    void *obj = arg4;
-    fn_801AC0A0(arg0, arg1, arg2, arg3, (int)obj);
-    if (obj != 0) {
+    void *object = arg4;
+    fn_801AC0A0(arg0, arg1, arg2, arg3, (int)object);
+    if (object != 0) {
         s32 isCar;
-        s32 tag = *(s32 *)((char *)obj + 0x10);
+        s32 fourcc = *(s32 *)((char *)object + 0x10);
         isCar = 0;
-        if ((u32)(tag + 0xBCBF0000) == 0x5220U ||
-            (u32)(tag + 0xAFBD0000) == 0x4152U ||
-            (u32)(tag + 0xBEBD0000) == 0x4152U ||
-            (u32)(tag + 0xB1BD0000) == 0x4152U) {
+        if ((u32)(fourcc + 0xBCBF0000) == 0x5220U ||
+            (u32)(fourcc + 0xAFBD0000) == 0x4152U ||
+            (u32)(fourcc + 0xBEBD0000) == 0x4152U ||
+            (u32)(fourcc + 0xB1BD0000) == 0x4152U) {
             isCar = 1;
         }
         if (isCar != 0) {
-            s32 extra = *(s32 *)((char *)obj + 0x1EC);
+            s32 recordIndex = *(s32 *)((char *)object + 0x1EC);
             if (arg0 != 0) arg0 = (char *)arg0 + 0x23C;
-            fn_801D09A8(arg0, extra);
+            fn_801D09A8(arg0, recordIndex);
         }
     }
 }
