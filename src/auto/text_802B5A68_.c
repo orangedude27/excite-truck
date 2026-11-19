@@ -364,7 +364,7 @@ void fn_802B5EE8(void) {
     lbl_8055FA18 = lbl_80564C5C;
     v %= 4;
     lbl_8055FA38 = v;
-    ((s32 *)&lbl_804BE7D8)[1] = 0;
+    *(volatile s32 *)((u8 *)&lbl_804BE7D8 + 4) = 0;
 }
 extern s32 lbl_8055FA38;
 extern float lbl_8055FA18;
@@ -812,53 +812,59 @@ extern "C" void fn_802B6804(void) {
         step = *(f32 *)((u8 *)timing + 0x14);
     }
 
-    for (i = 0, offset = 0; i < ((s32 *)&lbl_804BFA70)[1]; offset += 0x28, i++) {
-        f32 y;
-        item = (Item *)((u8 *)*(u32 *)&lbl_804BFA70 + offset);
-        best = *item->currentPtr;
-        if ((u32)item->current < (u32)best)
-            item->current = best;
+    i = 0;
+    offset = 0;
+    goto loop_test;
+loop_body:
+    item = (Item *)((u8 *)*(u32 *)&lbl_804BFA70 + offset);
+    best = *item->currentPtr;
+    if ((u32)item->current < (u32)best)
+        item->current = best;
 
-        source = (volatile const u8 *)recordA;
-        first.name = *(void * volatile *)(source + 0);
-        s32 bitsA;
-        s32 valueA;
-        valueA = *(volatile const s32 *)(source + 4);
-        bitsA = *(volatile const s32 *)(source + 8);
-        first.value = bitsA;
-        first.timeBits = valueA;
-        first.unkC = *(volatile const s32 *)(source + 0xC);
-        f32 time10A = *(volatile const f32 *)(source + 0x10);
-        first.time10 = time10A;
-        first.unk14 = *(volatile const s32 *)(source + 0x14);
-        first.unk18 = *(volatile const s32 *)(source + 0x18);
-        first.unk1C = *(volatile const s32 *)(source + 0x1C);
-        y = (f32)i;
-        *(f32 *)((u8 *)&first + 8) += step * y;
+    source = (volatile const u8 *)recordA;
+    first.name = *(void * volatile *)(source + 0);
+    s32 bitsA;
+    s32 valueA;
+    valueA = *(volatile const s32 *)(source + 4);
+    bitsA = *(volatile const s32 *)(source + 8);
+    first.value = bitsA;
+    first.timeBits = valueA;
+    first.unkC = *(volatile const s32 *)(source + 0xC);
+    f32 time10A = *(volatile const f32 *)(source + 0x10);
+    first.time10 = time10A;
+    first.unk14 = *(volatile const s32 *)(source + 0x14);
+    first.unk18 = *(volatile const s32 *)(source + 0x18);
+    first.unk1C = *(volatile const s32 *)(source + 0x1C);
+    *(f32 *)((u8 *)&first + 8) += step * (f32)i;
 
-        if (lbl_8055FA30)
-            selected = item->current;
-        else
-            selected = *item->currentPtr;
-        fn_80147230(&first, lbl_8055CE74, selected);
+    if (lbl_8055FA30)
+        selected = item->current;
+    else
+        selected = *item->currentPtr;
+    fn_80147230(&first, lbl_8055CE74, selected);
 
-        source = (volatile const u8 *)recordB;
-        second.name = *(void * volatile *)(source + 0);
-        s32 bitsB;
-        s32 valueB;
-        valueB = *(volatile const s32 *)(source + 4);
-        bitsB = *(volatile const s32 *)(source + 8);
-        second.value = bitsB;
-        second.timeBits = valueB;
-        second.unkC = *(volatile const s32 *)(source + 0xC);
-        f32 time10B = *(volatile const f32 *)(source + 0x10);
-        second.time10 = time10B;
-        second.unk14 = *(volatile const s32 *)(source + 0x14);
-        second.unk18 = *(volatile const s32 *)(source + 0x18);
-        second.unk1C = *(volatile const s32 *)(source + 0x1C);
-        *(f32 *)((u8 *)&second + 8) += step * (f32)i;
-        fn_80147230(&second, lbl_8055CE70, item);
-    }
+    source = (volatile const u8 *)recordB;
+    second.name = *(void * volatile *)(source + 0);
+    s32 bitsB;
+    s32 valueB;
+    valueB = *(volatile const s32 *)(source + 4);
+    bitsB = *(volatile const s32 *)(source + 8);
+    second.value = bitsB;
+    second.timeBits = valueB;
+    second.unkC = *(volatile const s32 *)(source + 0xC);
+    f32 time10B = *(volatile const f32 *)(source + 0x10);
+    second.time10 = time10B;
+    second.unk14 = *(volatile const s32 *)(source + 0x14);
+    second.unk18 = *(volatile const s32 *)(source + 0x18);
+    second.unk1C = *(volatile const s32 *)(source + 0x1C);
+    *(f32 *)((u8 *)&second + 8) += step * (f32)i;
+    fn_80147230(&second, lbl_8055CE70, item);
+
+    offset += 0x28;
+    i++;
+loop_test:
+    if (i < ((s32 *)&lbl_804BFA70)[1])
+        goto loop_body;
 }
 #pragma use_lmw_stmw reset
 #pragma cplusplus reset
@@ -1370,11 +1376,11 @@ s32 fn_802B7694(void) {
     return triggered;
 }
 
-#pragma scheduling invalid_target
+#pragma optimization_level 2
 void fn_802B773C(void) {
     f32 sp8[3];
-    s32 *state = lbl_804BFF80;
-    u8 previous = lbl_8055FA58;
+    register s32 *state = lbl_804BFF80;
+    register u8 previous = lbl_8055FA58;
 
     lbl_8055FA58 = 0;
     if (*(s8 *)((u8 *)state + 0x34) != 0)
@@ -1406,6 +1412,7 @@ void fn_802B773C(void) {
                     (void (*)(s16, s16, u8))fn_802B7420);
     }
 }
+#pragma optimization_level reset
 extern s32 fn_802B6270(void);
 #pragma cplusplus on
 extern "C" void fn_802B7884(void *arg0) {
@@ -1726,21 +1733,21 @@ extern "C" void fn_802B7D4C(void) {
     s32 *entry;
 
     if (lbl_8055FA40 == 6) {
+
         fn_802B6568(((Dummy *)lbl_8055FA48)->call(lbl_8055CE68), base + 0x32C);
         return;
     }
     object = ((void *(*)(void))fn_802B5B6C)();
-    {
-        s32 *p = &workspace[3];
-        workspace[1] = 0;
-        state = 0;
-        workspace[2] = 16;
-        workspace[0] = (s32)p;
-    }
+    workspace[1] = 0;
+    state = 0;
+    workspace[2] = 16;
+    workspace[0] = (s32)&workspace[3];
     fn_802B321C((s32)workspace, (void **)&state, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
     status = base + 0x338;
     if (*state != 0) status = lbl_8055CEB8;
+
     fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x118), lbl_8055CE70, status);
+
     object = ((Dummy *)lbl_8055FA48)->call(base + 0x344);
     first.name = *(void **)object;
     ((s32 *)&first)[1] = ((s32 *)object)[1];
@@ -1750,6 +1757,7 @@ extern "C" void fn_802B7D4C(void) {
     first.unk14 = ((s32 *)object)[5];
     first.unk18 = ((s32 *)object)[6];
     first.unk1C = ((s32 *)object)[7];
+
     object = ((Dummy *)lbl_8055FA48)->call(base + 0x354);
     second.name = *(void **)object;
     ((s32 *)&second)[1] = ((s32 *)object)[1];
@@ -1759,6 +1767,7 @@ extern "C" void fn_802B7D4C(void) {
     second.unk14 = ((s32 *)object)[5];
     second.unk18 = ((s32 *)object)[6];
     second.unk1C = ((s32 *)object)[7];
+
     step = *(f32 *)((u8 *)((Dummy *)lbl_8055FA48)->get(base + 0x238) + 0x14);
     i = 0;
     offset = 0;
@@ -1787,11 +1796,15 @@ extern "C" void fn_802B7D4C(void) {
     }
     if (fn_802B5B74(selected)) {
         fn_802B67C8((s32)(base + 0x36C));
+
         fn_801476C4(((Dummy *)lbl_8055FA48)->call(base + 0x378));
         fn_801473F8(lbl_8055FA48, base + 0x384, lbl_8055CE70, selected[0]);
+
         fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x390), lbl_8055CEC0, ((f32 *)selected[2])[0]);
+
         fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x3A0), lbl_8055CEC0, ((f32 *)selected[2])[1]);
     }
+
     fn_802B6568(((Dummy *)lbl_8055FA48)->call(lbl_8055CE68), base + 0x3B0, lbl_8055FA40 + 1);
     workspace[0] = 0;
     workspace[1] = 0;
@@ -1890,25 +1903,27 @@ s32 fn_802B825C(s32 arg0) {
 
 #pragma processor 750
 #pragma scheduling 750
-s32 fn_802B8310(s32 arg0) {
+/* Adjust the selected item's upper value by the step for deltaIndex, clamping it
+ * between the item's lower value and 10.0f, and mark it dirty if it changes. */
+s32 fn_802B8310(s32 deltaIndex) {
     struct Result {
         s32 pad[2];
         float *values;
     } result;
-    register f32 lower;
-    register f32 bound = 10.0f;
+    register f32 lowerBound;
+    register f32 clampedValue = 10.0f;
     register float *values;
     register s32 changed;
-    f32 value;
+    f32 adjustedValue;
     changed = 0;
     if (fn_802B5B74(&result) != 0) {
         values = result.values;
-        lower = values[0];
-        value = values[1] + fn_802B822C(arg0);
-        bound = (bound < value) ? bound : value;
-        bound = (bound > lower) ? bound : lower;
-        if (bound != values[1]) {
-            values[1] = bound;
+        lowerBound = values[0];
+        adjustedValue = values[1] + fn_802B822C(deltaIndex);
+        clampedValue = (clampedValue < adjustedValue) ? clampedValue : adjustedValue;
+        clampedValue = (clampedValue > lowerBound) ? clampedValue : lowerBound;
+        if (clampedValue != values[1]) {
+            values[1] = clampedValue;
             *(volatile u8 *)((u8 *)result.values + 8) = 1;
             changed = 1;
         }
