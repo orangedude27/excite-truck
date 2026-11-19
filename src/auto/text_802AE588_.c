@@ -1510,24 +1510,20 @@ s32 fn_802B03C0(void *arg0) {
     return v31;
 }
 #pragma dont_inline reset
-static inline s32 GetWaterLayer(void) {
-    return (s32)lbl_8055CD78;
-}
+#pragma dont_inline off
 s32 fn_802B04D4(void *arg0) {
     f32 temp_f0;
     f32 temp_f0_2;
     f32 temp_f1;
     f32 temp_f2;
     s32 var_r0;
-    s32 mode;
     s16 intX;
     s16 intZ;
 
     if ((u8)lbl_8055F981 != 0) {
         return fn_801EA0E8(*(f32 *)arg0, *(f32 *)((char *)arg0 + 8)) < lbl_80564BB0;
     }
-    mode = (s32)lbl_8055CD78;
-    if (mode >= 0) {
+    if (GetWaterLayer() >= 0) {
         var_r0 = 0;
         temp_f2 = lbl_80564B84;
         temp_f0 = lbl_80564AF0;
@@ -1549,9 +1545,8 @@ s32 fn_802B04D4(void *arg0) {
         }
         return 1;
     }
-    return mode & 0;
+    return 0;
 }
-
 extern void fn_802C10C8(void);
 void fn_802B05D8(void) { fn_802C10C8(); }
 
