@@ -252,18 +252,19 @@ static inline void swap32_802CA57C(unsigned char *p) {
 }
 #pragma push
 #pragma auto_inline off
+/* Byte-swaps and relocates a resource header in place once, then builds a context and processes it. */
 void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
-    unsigned char *base = (unsigned char *)arg0;
-    char sp8[0x34];
-    if ((base[5] & 0x80) == 0) {
-        swap32_802CA57C(base + 0x14);
-        swap16_802CA57C(base + 0);
-        swap16_802CA57C(base + 2);
-        swap16_802CA57C(base + 0xC);
-        *(int *)(base + 0x14) = (int)((unsigned char *)arg0 + *(int *)(base + 0x14));
-        fn_802CA3F4(sp8, (int)arg0, 0, arg2, arg3);
-        fn_802D8DCC(sp8, arg1);
-        base[5] |= 0x80;
+    unsigned char *data = (unsigned char *)arg0;
+    char context[0x34];
+    if ((data[5] & 0x80) == 0) {
+        swap32_802CA57C(data + 0x14);
+        swap16_802CA57C(data + 0);
+        swap16_802CA57C(data + 2);
+        swap16_802CA57C(data + 0xC);
+        *(int *)(data + 0x14) = (int)((unsigned char *)arg0 + *(int *)(data + 0x14));
+        fn_802CA3F4(context, (int)arg0, 0, arg2, arg3);
+        fn_802D8DCC(context, arg1);
+        data[5] |= 0x80;
     }
 }
 #pragma pop
@@ -1474,6 +1475,7 @@ int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
     char *joined;
     int pageSize;
     int mergeCandidate;
+    int merged;
 
     node = *(char **)((char *)arg0 + 0x10);
     if (node != 0) {
@@ -1503,11 +1505,9 @@ int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
         *mergeLink = node;
         do {
             scanLink = (char **)(pool + 8);
-            result = 0;
+            merged = 0;
             other = *scanLink;
             while (other != 0) {
-                char *joined;
-                int pageSize;
                 joined = *mergeLink;
                 pageSize = *(int *)(pool + 4);
                 mergeCandidate = 1;
@@ -1525,7 +1525,7 @@ int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
                     }
                     joined = *link;
                     mergeLink = link;
-                    result = 1;
+                    merged = 1;
                     *(int *)(joined + 4) =
                         (((pageSize + 0x10) & ~pageSize) +
                          (*(int *)(joined + 4) + *(int *)(*scanLink + 4)));
@@ -1536,7 +1536,7 @@ int fn_802CC10C(void *arg0, int arg1, int arg2, int arg3) {
                 }
                 other = *scanLink;
             }
-        } while (result != 0);
+        } while (merged != 0);
         *(int *)(table + 0x44) = 0;
         result = 1;
         ((void (*)(void *, void *))fn_802CB3F8)(table + 4, &lbl_8034BA98);
@@ -1766,8 +1766,17 @@ char fn_802CC744(void) {
 }
 
 #pragma push
-#pragma peephole off
-int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
+#pragma optimization_level 2
+int fn_802CC74C(void) {
+    int result = 0;
+    char *p = *(char **)lbl_8055FCBC;
+    if (p != 0) {
+        if (*(int *)(p + 4) != 0) {
+            result = 1;
+        }
+    }
+    return result;
+}
 #pragma pop
 extern float lbl_80564F4C;
 extern float lbl_80564F50;
