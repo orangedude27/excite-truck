@@ -3071,6 +3071,7 @@ void fn_801C9444(void) {
 }
 
 #pragma scheduling invalid_target
+/* Tail-call wrapper that forwards to fn_80238A74. */
 void fn_801C94B8(void) {
     fn_80238A74();
 }
