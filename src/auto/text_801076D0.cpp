@@ -248,6 +248,23 @@ extern "C" void* Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkLis
     return next;
 }
 #pragma use_lmw_stmw reset
+/* nw4hbm::ut (ut_list.cpp): the intrusive doubly linked list.  Every element
+ * carries a ListLink (prev, next) pair at `nodeOffset` bytes inside itself, so
+ * the list header only holds the first and last elements, how many there are
+ * and where that link sits in an element. */
+namespace nw4hbm { namespace ut {
+struct ListLink {
+    /* 0x00 */ void *prev;
+    /* 0x04 */ void *next;
+};
+struct List {
+    /* 0x00 */ void *head;
+    /* 0x04 */ void *tail;
+    /* 0x08 */ u16 count;
+    /* 0x0A */ u16 nodeOffset; /* where an element's ListLink sits */
+};
+} }
+
 /* Initializes an intrusive list with the given link-node offset in each element. */
 void nw4hbm::ut::List_Init(nw4hbm::ut::List *list, unsigned short linkOffset) {
     if (list == 0)
