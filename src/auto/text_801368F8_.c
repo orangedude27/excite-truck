@@ -347,10 +347,9 @@ s32 fn_8013705C(f32 valueA, f32 valueB) {
 
 extern float PSVECDotProduct(const void *, const void *);
 #pragma push
-#pragma cplusplus on
 #pragma processor 750
 #pragma scheduling on
-extern "C" s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
+s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
     f32 sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
     f32 temp_f10, temp_f11, temp_f1, temp_f2, temp_f3, temp_f4, temp_f5;
     f32 temp_f6, temp_f7, temp_f8, temp_f9;
