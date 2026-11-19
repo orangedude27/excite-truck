@@ -27,6 +27,7 @@ extern signed char lbl_8055E635;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+struct Pair8 { float a; float b; };
 extern float lbl_80435740[];
 extern const char lbl_80335980[];
 extern const char lbl_80335990[];
@@ -211,16 +212,18 @@ void fn_801AE874(unsigned short *flags, int extra) {
 
 #pragma scheduling invalid_target
 void fn_801AE894(void *arg0) {
-    short count;
-    float s;
-    float v;
-    count = *(short *)((char *)arg0 + 0x18);
-    if (count > 0) {
-        s = *(float *)arg0;
-        if (s > lbl_8056255C) {
-            v = (lbl_8055E630 * (float)count) / s;
-            *(float *)((char *)arg0 + 4) = v;
-            *(float *)((char *)arg0 + 4) = v * ((float)count / (float)lbl_8055E62C);
+    float temp_f2;
+    float temp_f4;
+    short temp_r0;
+
+    temp_r0 = *(short *)((char *)arg0 + 0x18);
+    if (temp_r0 > 0) {
+        temp_f4 = *(float *)arg0;
+        if (temp_f4 > lbl_8056255C) {
+            temp_f2 = (lbl_8055E630 * (float)temp_r0) / temp_f4;
+            *(float *)((char *)arg0 + 4) = temp_f2;
+            *(float *)((char *)arg0 + 4) =
+                temp_f2 * ((float)temp_r0 / (float)lbl_8055E62C);
             return;
         }
     }
@@ -352,11 +355,11 @@ int fn_801AEB58(const void *a, const void *b) {
 
 #pragma scheduling invalid_target
 void fn_801AEBD0(void) {
-    int value = lbl_8055E62C;
-    int count = lbl_80435780[0x3C0 / 4];
-    int i;
-    int share;
-    int remainder;
+    register int value = lbl_8055E62C;
+    register int count = lbl_80435780[0x3C0 / 4];
+    register int i;
+    register int share;
+    register int remainder;
 
     for (i = 0; i < count; i++) {
         short *item = (short *)(*lbl_8055E624 + i * 0x1C);
@@ -381,7 +384,6 @@ void fn_801AEBD0(void) {
         }
     }
 }
-#pragma scheduling on
 void fn_801AED54(void) {
 
 }
