@@ -3272,6 +3272,7 @@ void fn_801C9834(void) {
     lbl_8055E838 = 0;
 }
 #pragma scheduling on
+/* Tail-call wrapper that forwards to fn_801C9444. */
 void fn_801C98F0(void) {
     fn_801C9444();
 }
