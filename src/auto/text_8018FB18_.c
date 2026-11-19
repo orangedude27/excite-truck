@@ -321,7 +321,7 @@ int fn_8018FF84(int object, int deleteFlag) {
 }
 
 #pragma use_lmw_stmw off
-#pragma scheduling off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     class ResultMethods {
