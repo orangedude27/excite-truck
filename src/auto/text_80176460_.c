@@ -808,7 +808,7 @@ void fn_80176BAC(void) {
     lbl_8055E3FC = now;
 }
 #pragma pop
-#pragma scheduling invalid_target
+#pragma scheduling full
 s32 *fn_80176C0C(register s32 *arg0, s32 *arg1) {
     s32 length = *arg1++;
     *arg0 = length;
