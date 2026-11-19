@@ -19862,6 +19862,13 @@ extern "C" s32 fn_800CF2B0(s32 object, s32 deleteFlag) {
 
 #pragma push
 #pragma optimize_for_size on
+/*
+ * Advances this group animation controller when it is active and propagates the
+ * current animation state to each linked component. While active, the controller
+ * updates its animation and copies its current time/frame value (+0xC) into the
+ * animation target at +0x24. Each component in the list at +0x20 then has its
+ * apply callback invoked with the animation target and the active flag.
+ */
 void homebutton::GroupAnmController::do_calc() {
     class ComponentDispatch {
     public:
@@ -19874,26 +19881,26 @@ void homebutton::GroupAnmController::do_calc() {
     };
     struct Node { Node *next; u32 pad; void *object; };
     struct List { u8 pad[0x10]; Node *head; };
-    s32 active;
+    s32 isActive;
     if (*(s32 *)((u8 *)this + 0x14) == 1) {
         calc();
-        active = 1;
+        isActive = 1;
         *(f32 *)((u8 *)*(void **)((u8 *)this + 0x24) + 0x10) = *(f32 *)((u8 *)this + 0xC);
     } else {
-        active = 0;
+        isActive = 0;
     }
-    List *list = *(List **)((u8 *)this + 0x20);
+    List *componentList = *(List **)((u8 *)this + 0x20);
     struct { Node *node; } cursor;
-    cursor.node = list->head;
+    cursor.node = componentList->head;
     Node *&node = cursor.node;
     struct { Node *end; } sentinel;
-    sentinel.end = (Node *)((u8 *)list + 0x10);
+    sentinel.end = (Node *)((u8 *)componentList + 0x10);
     Node *&end = sentinel.end;
     while (node != end) {
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E764, 0x23D, lbl_8031E740);
         }
-        ((ComponentDispatch *)node->object)->apply(*(void **)((u8 *)this + 0x24), active, 0);
+        ((ComponentDispatch *)node->object)->apply(*(void **)((u8 *)this + 0x24), isActive, 0);
         node = node->next;
     }
 }
@@ -21879,7 +21886,7 @@ extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
         v -= 100;
 
     idx = v / 5;
-    rem = v % 5;
+    rem = v - idx * 5;
     off = rem * 6;
 
     pal = (u32 *)(lbl_802F4958 + (((idx << 3) - idx) << 2));
