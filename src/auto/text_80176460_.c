@@ -926,6 +926,7 @@ void fn_80176EC0(void) {
 }
 
 #pragma scheduling on
+/* Apply the pending physics command immediately. */
 void fn_80176F24(void) {
     fn_80176EC0();
 }
