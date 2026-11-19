@@ -470,10 +470,12 @@ int fn_801E0ED4(int minValue, int value) {
 
 #pragma scheduling invalid_target
 float fn_801E0EE4(void *arg0, void *arg1) {
-    float delta[2];
-    delta[1] = *(float *)((char *)arg0 + 4) - *(float *)((char *)arg1 + 4);
-    delta[0] = *(float *)arg0 - *(float *)arg1;
-    return (float)fn_8002F234(delta[0] * delta[0] + delta[1] * delta[1]);
+    Vec2_801E *a = (Vec2_801E *)arg0;
+    Vec2_801E *b = (Vec2_801E *)arg1;
+    Vec2_801E d;
+    d.y = a->y - b->y;
+    d.x = a->x - b->x;
+    return (float)((double (*)(double))fn_8002F234)(d.x * d.x + d.y * d.y);
 }
 #pragma scheduling on
 /* Allocates a small block from the "arenabnd" arena sized for `count` 8-byte
