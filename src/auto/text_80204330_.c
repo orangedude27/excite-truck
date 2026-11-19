@@ -242,7 +242,7 @@ int fn_80204870(int arg0) {
     edit_record:
         index = lbl_8055ED40;
         if (index < 0 || index >= lbl_8055ED3C)
-            goto return_zero;
+            goto update;
         rec = (struct Entry *)lbl_80488BD0 + index;
         switch (rec->type) {
         case 1:
@@ -255,10 +255,10 @@ int fn_80204870(int arg0) {
             }
             goto update;
         case 0:
-            *(unsigned char *)rec->value = !*(unsigned char *)rec->value;
+            *(signed char *)rec->value = !*(unsigned char *)rec->value;
             goto update;
         default:
-            goto return_zero;
+            goto update;
         }
     return_zero:
         return 0;
