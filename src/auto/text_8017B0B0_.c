@@ -1157,8 +1157,9 @@ int fn_8017D274(void *self, void *record) {
 }
 
 #pragma dont_inline on
-void fn_8017D2C8(void *arg0, float *arg1, float *arg2) {
-    fn_8017B3A8(arg0, arg1, arg2);
+/* Non-inlined wrapper that applies a force at a world point to a body. */
+void fn_8017D2C8(void *body, float *force, float *point) {
+    fn_8017B3A8(body, force, point);
 }
 #pragma dont_inline reset
 
