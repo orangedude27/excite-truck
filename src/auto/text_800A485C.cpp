@@ -106,7 +106,7 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  u32 b,a;
  s32 len;
  u16 hiSwap, loSwap;
- u16 *d0,*d1,*d2,*d3,*d4;
+ u8 *d0,*d1,*d2,*d3,*d4;
  if (((s32 (*)(u8 *,u8 *,s32,s32,u32,s32,s32 *))fn_800A9BB4)((u8 *)object,it+0x4c,arg2,flags,arg3,arg4,arg5)==1) {
   if ((flags&15)==15) {
    if (VFiPFENT_LoadLFNEntryFieldsFromBuf(object,it+0x4c)) { ((u8 *)object)[0x20a]=0; *(u16 *)object=0; }
@@ -123,11 +123,11 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
   ((u8 *)object)[0x20c]=sum;
   ((u8 *)object)[0x20b]=1;
  }
- d0=(u16 *)((u8 *)object+0x21e);
- d1=(u16 *)((u8 *)object+0x220);
- d2=(u16 *)((u8 *)object+0x222);
- d3=(u16 *)((u8 *)object+0x224);
- d4=(u16 *)((u8 *)object+0x226);
+ d0=(u8 *)object+0x21e;
+ d1=(u8 *)object+0x220;
+ d2=(u8 *)object+0x222;
+ d3=(u8 *)object+0x224;
+ d4=(u8 *)object+0x226;
  attr=it[0x57];
  ((u8 *)object)[0x21c]=(u8)attr;
  if (attr & 0x10) attr = 0x10; else attr = 0;
@@ -17970,6 +17970,7 @@ extern "C" void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
 }
 
 extern "C" const s32 lbl_8031D790[];
+#define KVAL(k, i) (*(volatile s32 *)((k) + (i)))
 extern "C" void fn_800C3088(volatile s32 *out, const volatile s32 *a, const volatile s32 *b, const volatile s32 *c) {
     s32 term1;
     s32 term2;
@@ -20855,14 +20856,14 @@ extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext
 }
 
 extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
+    s32 zero = 0;
     u8 *base = lbl_80407600;
     s32 temp_r30;
-    s32 zero = 0;
 
     *(s32 *)((u8 *)arg0 + 0x20) = zero;
     *(s32 *)arg0 = arg1;
     *((u8 *)arg0 + 0x1C) = zero;
-    *(f32 *)((u8 *)arg0 + 4) = lbl_80560E38;
+    *(f32 *)((u8 *)arg0 + 4) = 1.0f;
     *(s32 *)((u8 *)arg0 + 0x24) = arg2;
     *(s32 *)((u8 *)arg0 + 0x28) = zero;
     *(s32 *)((u8 *)arg0 + 0x2C) = zero;
