@@ -893,15 +893,18 @@ extern "C" void *fn_80207428(void *object, int arg1, int arg2, int soundIndex, i
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_80207490(Obj80207490 *obj, const Rec80207490 *arr, int n) {
-    obj->flag6e = false;
-    int i = 0;
-    if (n > 0) {
-        for (; i < n; i++) {
-            obj->flag6e = (obj->flag6e | (obj->key == arr[i].v)) != 0;
+/* Check whether a sound's key appears in a record list and update its flags:
+ * set flag6e when any record's value matches the key, then clear flag18 unless
+ * flag6e is set. */
+extern "C" void fn_80207490(Obj80207490 *sound, const Rec80207490 *entries, int count) {
+    sound->flag6e = false;
+    int index = 0;
+    if (count > 0) {
+        for (; index < count; index++) {
+            sound->flag6e = (sound->flag6e | (sound->key == entries[index].v)) != 0;
         }
     }
-    obj->flag18 = (obj->flag18 & obj->flag6e) != 0;
+    sound->flag18 = (sound->flag18 & sound->flag6e) != 0;
 }
 extern "C" void fn_8020769C(void* arg0, int arg1, int arg2) {
 	fn_802073A4(arg0, arg1, arg2);
