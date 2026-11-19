@@ -230,9 +230,13 @@ static inline void *fn_801EC59C_parent_get(void *parent, int index) {
 static inline void fn_801EC59C_property_get(void *out, void *property, char *label) {
     *(Vec3 *)out = ((Property *)property)->getVector(label);
 }
-static inline Vec3 fn_801EC59C_vector(void *property, char *label) {
-    return ((Property *)property)->getVector(label);
 }
+typedef union { struct { float x, y, z; } f; unsigned int u[3]; } Vec3C;
+static inline Vec3C fn_801EC59C_getv(void *property, char *label) {
+    Vec3C r;
+    void **vt = *(void ***)property;
+    ((void (*)(Vec3C *, void *, char *))vt[13])(&r, property, label);
+    return r;
 }
 #pragma cplusplus reset
 void fn_801EC59C(void *out, void *parent, int index, int value, float scale, float bias) {
@@ -240,26 +244,30 @@ void fn_801EC59C(void *out, void *parent, int index, int value, float scale, flo
     extern float lbl_80562E88, lbl_80562E8C;
     typedef union { struct { float x, y, z; } f; unsigned int u[3]; } Vec3;
     register void *result;
-    Vec3 first, second;
-    float dx, dy, slopeX, slopeY, x0, x1, y0, y1;
+    Vec3 tmp1, tmp2, first, second;
+    float dx, dy, slopeX, slopeY;
 
     *(volatile int *)out = value;
     result = fn_801EC59C_parent_get(parent, index);
     if (result != 0) {
-        fn_801EC59C_property_get(&first, result, &lbl_8055AFDC);
-        fn_801EC59C_property_get(&second, result, &lbl_8055AFE4);
-        x0 = first.f.x * scale - bias;
-        x1 = second.f.x * scale - bias;
-        y0 = first.f.y * lbl_80562E8C;
-        y1 = second.f.y * lbl_80562E8C;
-        dx = x1 - x0;
-        dy = second.f.z * lbl_80562E8C - first.f.z * lbl_80562E8C;
-        slopeX = (y1 - y0) / dx;
+        fn_801EC59C_property_get(&tmp1, result, &lbl_8055AFDC);
+        first = tmp1;
+        fn_801EC59C_property_get(&tmp2, result, &lbl_8055AFE4);
+        second = tmp2;
+        first.f.x = first.f.x * scale - bias;
+        second.f.x = second.f.x * scale - bias;
+        first.f.y = first.f.y * lbl_80562E8C;
+        second.f.y = second.f.y * lbl_80562E8C;
+        first.f.z = first.f.z * lbl_80562E8C;
+        second.f.z = second.f.z * lbl_80562E8C;
+        dx = second.f.x - first.f.x;
+        dy = second.f.z - first.f.z;
+        slopeX = (second.f.y - first.f.y) / dx;
         slopeY = dy / dx;
         *(float *)((char *)out + 4) = slopeX;
         *(float *)((char *)out + 0xC) = slopeY;
-        *(float *)((char *)out + 8) = y0 - slopeX * x0;
-        *(float *)((char *)out + 0x10) = first.f.z * lbl_80562E8C - slopeY * x0;
+        *(float *)((char *)out + 8) = first.f.y - slopeX * first.f.x;
+        *(float *)((char *)out + 0x10) = first.f.z - slopeY * first.f.x;
     } else {
         *(float *)((char *)out + 0x10) = lbl_80562E88;
         *(float *)((char *)out + 0xC) = lbl_80562E88;
