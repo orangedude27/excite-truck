@@ -3488,6 +3488,10 @@ extern f32 lbl_80561A20;
 extern f32 lbl_80561A24;
 #pragma push
 #pragma opt_common_subs off
+/* Compute/update output transform (arg2) from this object's active sub-record:
+   clear the selected item's flags, validate the current entry/record, copy base
+   transform via fn_801B8060, scale its position (x/y/z by 26.666666) and adjust
+   Y offset (+7.625); returns 1 on success, 0 if no valid record. */
 s32 fn_80171210(void *arg0, s32 arg1, void *arg2) {
     s32 count;
     register void *item;
