@@ -239,7 +239,13 @@ int fn_80270D1C(int sourceType) {
     }
 }
 
-#pragma peephole off
+static float *fn_80270D4C_value(void *node) {
+    if (*((unsigned char *)node + 4) != 0) {
+        return (float *)(*(char **)node + 0xC);
+    }
+    return (float *)(*(char **)node + 4);
+}
+#pragma peephole on
 int fn_80270D4C(void *arg0, void *arg1) {
     float *right;
     float *left;
@@ -255,7 +261,6 @@ int fn_80270D4C(void *arg0, void *arg1) {
     }
     return (int)(*left - *right);
 }
-#pragma peephole reset
 extern float lbl_80563F40;
 #pragma scheduling invalid_target
 void fn_80270DB0(void *arg0, void *arg1, float delta) {
@@ -762,7 +767,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
                 if (idx != *(int *)(o + 0x150)) {
                     Rec *rec;
                     *(int *)(o + 0x150) = idx;
-                    rec = &tbl->recs[idx];
+                    rec = (Rec *)((char *)tbl + 0x4b70) + idx;
                     changed = 1;
                     *(int *)(o + 0x148) = rec->choice[fn_80129D90(6, 0, rec->count)];
                 }
@@ -771,10 +776,10 @@ extern "C" void fn_80271624(int mode, void *arg1)
             idx = -1;
         }
         if (idx >= 0) {
-            e = &tbl->ents[*(int *)(o + 0x148)];
+            e = (Ent *)((char *)tbl + 0x70) + *(int *)(o + 0x148);
             if (e->active != 0) {
                 if (lbl_8055F564 != 0) {
-                    Zone *z = &tbl->zones[idx];
+                    Zone *z = (Zone *)((char *)tbl + 0x5780) + idx;
                     float a = z->a0;
                     float b = z->b0;
                     float t = lbl_80563F48;
@@ -957,7 +962,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
             m[8] = lbl_80563F48;
             fn_801BFD34(o + 0x7C, a, o + 0xC0);
             fn_80015B20(o + 0x58, m, o + 0xC0);
-            *(struct W12 { int w[12]; } *)lbl_80499050 = *(W12 *)(o + 0x58);
+            *(W12 *)lbl_80499050 = *(W12 *)(o + 0x58);
         }
     } else {
         float k = lbl_80563F70;
@@ -970,10 +975,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
             *(float *)(o + 0x80) = fn_801E9DDC(o + 0x1EC, *(float *)(o + 0xE4), *(float *)(o + 0xEC));
         *(float *)(o + 0x80) += lbl_80563F78;
         fn_80274E94(o);
-        {
-            struct W12b { int w[12]; };
-            *(W12b *)lbl_80499050 = *(W12b *)(o + 0x58);
-        }
+        *(W12 *)lbl_80499050 = *(W12 *)(o + 0x58);
     }
 }
 #pragma cplusplus reset
@@ -1002,15 +1004,15 @@ extern "C" int fn_80272028(void *arg0, Parser72028 *arg1, int arg_sp0) {
     char *path;
     int hash;
     char buffer[0x10];
+    register char *name;
+    register Parser72028 *parser;
+    register void *output;
     int index;
     int count;
     unsigned char bit;
-    void *output;
-    Parser72028 *parser;
-    const char *name;
-    output = arg0;
-    parser = arg1;
     name = lbl_80346B00;
+    parser = arg1;
+    output = arg0;
     fn_80272354(arg0);
     if (parser->has(name + 0x424) == 0) {
         DBPrintf_80270B00(name + 0x430, name + 0x424);
