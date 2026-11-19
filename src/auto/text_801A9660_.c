@@ -1489,42 +1489,46 @@ void fn_801AC544(void *arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_801ACA48(void *arg0) {
+void fn_801ACA48(void *self) {
+    /* Run the base object update, then when the active flag at +0x220 is set:
+       scale the vector at +0x124 by lbl_805624CC and clear +0x118, add a cross
+       product of +0x48 and +0x1F8 (scaled by lbl_8056250C) into +0x124 when
+       +0x4C is below lbl_80562508, and copy the position at +0x210 to +0x60. */
     extern void fn_801ABC28(void *);
     extern float lbl_8056247C, lbl_805624CC, lbl_80562508, lbl_8056250C;
-    float x, y, z;
-    float scale, zero, input;
-    float copyZ, copyY, copyX;
-    char *p = arg0;
-    fn_801ABC28(arg0);
+    float scaledX, scaledY, scaledZ;
+    float scale, zero, velX;
+    float posZ, posY, posX;
+    char *p = self;
+    fn_801ABC28(self);
     if (*(unsigned char *)(p + 0x220)) {
         Vec cross;
-        input = *(float *)(p + 0x124);
+        velX = *(float *)(p + 0x124);
         scale = lbl_805624CC;
-        x = input * scale;
-        y = *(float *)(p + 0x128) * scale;
-        z = *(float *)(p + 0x12C) * scale;
+        scaledX = velX * scale;
+        scaledY = *(float *)(p + 0x128) * scale;
+        scaledZ = *(float *)(p + 0x12C) * scale;
         zero = lbl_8056247C;
         *(float *)(p + 0x118) = zero;
         *(float *)(p + 0x11C) = zero;
         *(float *)(p + 0x120) = zero;
-        *(float *)(p + 0x124) = x;
-        *(float *)(p + 0x128) = y;
-        *(float *)(p + 0x12C) = z;
+        *(float *)(p + 0x124) = scaledX;
+        *(float *)(p + 0x128) = scaledY;
+        *(float *)(p + 0x12C) = scaledZ;
         PSVECCrossProduct((Vec *)(p + 0x48), (Vec *)(p + 0x1F8), &cross);
         if (*(float *)(p + 0x4C) < lbl_80562508) {
-            float cxx = cross.x;
-            float factor = lbl_8056250C;
-            *(float *)(p + 0x124) = *(float *)(p + 0x124) + cxx * factor;
-            *(float *)(p + 0x128) = *(float *)(p + 0x128) + cross.y * factor;
-            *(float *)(p + 0x12C) = *(float *)(p + 0x12C) + cross.z * factor;
+            float crossX = cross.x;
+            float nudge = lbl_8056250C;
+            *(float *)(p + 0x124) = *(float *)(p + 0x124) + crossX * nudge;
+            *(float *)(p + 0x128) = *(float *)(p + 0x128) + cross.y * nudge;
+            *(float *)(p + 0x12C) = *(float *)(p + 0x12C) + cross.z * nudge;
         }
-        copyX = *(float *)(p + 0x210);
-        copyY = *(float *)(p + 0x214);
-        copyZ = *(float *)(p + 0x218);
-        *(float *)(p + 0x60) = copyX;
-        *(float *)(p + 0x64) = copyY;
-        *(float *)(p + 0x68) = copyZ;
+        posX = *(float *)(p + 0x210);
+        posY = *(float *)(p + 0x214);
+        posZ = *(float *)(p + 0x218);
+        *(float *)(p + 0x60) = posX;
+        *(float *)(p + 0x64) = posY;
+        *(float *)(p + 0x68) = posZ;
     }
 }
 #pragma pop
