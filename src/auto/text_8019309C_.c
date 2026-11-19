@@ -1128,6 +1128,7 @@ void fn_80194F70(void * __restrict axis, float * __restrict point, float * __res
     PSVECDotProduct(axis, delta);
 }
 
+/* Empty stub (no operation). */
 void fn_80194FC4(void) {
 
 }
