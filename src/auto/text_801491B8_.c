@@ -5084,6 +5084,7 @@ void fn_80156064(void *arg0, const char *fmt, ...) {
     vsprintf((char *)arg0 + 0xA4, fmt, args);
 }
 
+/* Empty stub. */
 void fn_801560F4(void) {
 
 }
