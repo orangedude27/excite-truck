@@ -117,7 +117,7 @@ int fn_801AE620(void *entry) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma push
-#pragma opt_lifetimes off
+#pragma opt_common_subs off
 void fn_801AE628(int arg0) {
     struct {
         int count;
