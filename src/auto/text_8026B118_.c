@@ -254,7 +254,7 @@ void fn_8026B644(void) {
 #define heartSfx lbl_8055F4D0
 #define whoshSfx lbl_8055F4CC
     /* JumpCam startup: load the jump file, read the effects-volume option and load the two feedback SFX. */
-    T8026B644 *cfg = (T8026B644 *)lbl_80346988;
+    T8026B644 *cfg = (T8026B644 *)&lbl_80346988;
     fn_8026B260();
     fn_801331C4(4, cfg->b, &effectsVolume);
     fn_8026B11C((void **)&heartSfx, cfg->c);
