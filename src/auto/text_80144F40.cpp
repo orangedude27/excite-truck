@@ -235,7 +235,7 @@ done:
 #pragma push
 #pragma processor 750
 extern "C" f32 fn_801451DC(s32 arg0, f32 farg0) {
-    f32 var_f31 = farg0 - lbl_805615E0;
+    f32 var_f31 = farg0 - 320.0f;
     s32 var_r31 = arg0;
     if ((fn_802C9A58() != 0) || (fn_802C9A60() != 0)) {
         if (var_r31 == 0) {
@@ -253,6 +253,8 @@ extern "C" f32 fn_801451DC(s32 arg0, f32 farg0) {
             break;
         case 1:
             var_f31 += lbl_805615EC;
+            break;
+        case 3:
             break;
         default:
             break;
@@ -837,9 +839,7 @@ extern "C" void fn_80145E70(s32 arg0) {
         if (((Config *)*(void **)(object + 0x28))->has(lbl_80559E20) != 0) {
             void *properties = ((Config *)*(void **)(object + 0x28))->getObject(lbl_80559E20);
             s32 value = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
-            s32 shifted = value >> 1;
-            s32 bit = value & 1;
-            value = shifted - bit;
+            value = -((value & 1) - (value >> 1));
             lbl_8055E208 = (s8)((u32)value >> 31);
         }
         *(s32 *)(object + 0x2C) = (s32)((void *(*)(void *, const char *))fn_80145FEC)(*(void **)(object + 0x28), lbl_80559E30);
@@ -1300,8 +1300,8 @@ extern "C" void fn_80146824(void *arg0) {
         data->capacity = total;
         data->count = 0;
         data->recordsAgain = data->records;
-        owner->data = data;
     }
+    owner->data = data;
     Proxy *proxy = (Proxy *)fn_801284F8(0x18, lbl_8032D124);
     if (proxy != 0) {
         Data *parent = owner->data;
@@ -1310,50 +1310,50 @@ extern "C" void fn_80146824(void *arg0) {
         proxy->data = parent;
         owner->proxy = proxy;
     }
-    for (s32 i = 0, offset = 0; i < owner->block2C->count; i++, offset += 0x28) {
+    for (s32 i = 0; i < owner->block2C->count; i++) {
         Record *r = (Record *)((Data *)owner->proxy->data)->records +
             ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 0);
-        r->value = owner->block2C->base + offset;
+        r->value = owner->block2C->base + i * 0x28;
         r->label = lbl_8055E20C;
         r = (Record *)((Data *)owner->proxy->data)->records +
             ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 1);
-        r->value = owner->block2C->base + offset;
+        r->value = owner->block2C->base + i * 0x28;
         r->label = lbl_8055E210;
     }
-    for (s32 i = 0, offset = 0; i < owner->block30->count; i++, offset += 0x20) {
+    for (s32 i = 0; i < owner->block30->count; i++) {
         Record *r = (Record *)((Data *)owner->proxy->data)->records +
             ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 0);
-        r->value = owner->block30->base + offset;
+        r->value = owner->block30->base + i * 0x20;
         r->label = lbl_8055E20C;
         r = (Record *)((Data *)owner->proxy->data)->records +
             ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 1);
-        r->value = owner->block30->base + offset;
+        r->value = owner->block30->base + i * 0x20;
         r->label = lbl_8055E214;
         r = (Record *)((Data *)owner->proxy->data)->records +
             ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 2);
-        r->value = owner->block30->base + offset;
+        r->value = owner->block30->base + i * 0x20;
         r->label = lbl_8055E218;
     }
-    for (s32 i = 0, offset = 0; i < owner->block34->count; i++, offset += 0x1C) {
+    for (s32 i = 0; i < owner->block34->count; i++) {
         Record *r = (Record *)((Data *)owner->proxy->data)->records +
             ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 0);
-        r->value = owner->block34->base + offset;
+        r->value = owner->block34->base + i * 0x1C;
         r->label = lbl_8055E20C;
         r = (Record *)((Data *)owner->proxy->data)->records +
             ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 1);
-        r->value = owner->block34->base + offset;
+        r->value = owner->block34->base + i * 0x1C;
         r->label = lbl_8055E210;
         r = (Record *)((Data *)owner->proxy->data)->records +
             ((Data *)owner->proxy->data)->count++;
         fn_80145B50(r, 2);
-        r->value = owner->block34->base + offset;
+        r->value = owner->block34->base + i * 0x1C;
         r->label = lbl_8055E220;
     }
     register f32 third;
@@ -1460,8 +1460,9 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         void *end;
     };
     extern s32 fn_801454E8(void *, const char *);
-    s32 count;
     s32 i;
+    s32 count;
+    Result *result;
     Object *object = (Object *)fn_801284F8(0x18, (char *)lbl_8032CEC8 + 0x26C);
     if (object != 0) {
         char *base = lbl_8032CEC8;
@@ -1480,37 +1481,37 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
                 void *item = ((Collection *)arg1)->get(i);
                 if (item == 0)
                     break;
-                const char *name = ((Item *)item)->name();
-                if (stricmp(name, search0) == 0)
+                const char *text = ((Item *)item)->name();
+                if (stricmp(text, search0) == 0)
                     count++;
                 i++;
             }
 
-            Result *result0 = (Result *)fn_801284F8(0x10, base + 0x28C);
-            if (result0 != 0) {
+            result = (Result *)fn_801284F8(0x10, base + 0x28C);
+            if (result != 0) {
                 void *data = fn_8012850C(count * 8, lbl_80559E48);
-                result0->data = data;
-                result0->size = count;
-                result0->count = 0;
-                result0->end = data;
+                result->data = data;
+                result->size = count;
+                result->count = 0;
+                result->end = data;
             }
             i = 0;
             while (1) {
                 void *item = ((Collection *)arg1)->get(i);
                 if (item == 0)
                     break;
-                const char *name = ((Item *)item)->name();
-                if (stricmp(name, search0) == 0) {
-                    s32 index = result0->count;
-                    void **data = (void **)result0->data;
+                const char *text = ((Item *)item)->name();
+                if (stricmp(text, search0) == 0) {
+                    s32 index = result->count;
+                    void **data = (void **)result->data;
                     void **record = (void **)((u8 *)data + index * 8);
-                    result0->count = index + 1;
+                    result->count = index + 1;
                     record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
                     record[1] = ((ItemShort *)item)->get(lbl_80559E34);
                 }
                 i++;
             }
-            object->list0 = result0;
+            object->list0 = result;
         }
 
         {
@@ -1521,38 +1522,38 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
                 void *item = ((Collection *)arg1)->get(i);
                 if (item == 0)
                     break;
-                const char *name = ((Item *)item)->name();
-                if (stricmp(name, name1) == 0)
+                const char *text = ((Item *)item)->name();
+                if (stricmp(text, name1) == 0)
                     count++;
                 i++;
             }
 
-            Result *result1 = (Result *)fn_801284F8(0x10, base + 0x28C);
-            if (result1 != 0) {
+            result = (Result *)fn_801284F8(0x10, base + 0x28C);
+            if (result != 0) {
                 void *data = fn_8012850C(count * 12, lbl_80559E48);
-                result1->data = data;
-                result1->size = count;
-                result1->count = 0;
-                result1->end = data;
+                result->data = data;
+                result->size = count;
+                result->count = 0;
+                result->end = data;
             }
             i = 0;
             while (1) {
                 void *item = ((Collection *)arg1)->get(i);
                 if (item == 0)
                     break;
-                const char *name = ((Item *)item)->name();
-                if (stricmp(name, name1) == 0) {
-                    s32 index = result1->count;
-                    void **data = (void **)result1->data;
+                const char *text = ((Item *)item)->name();
+                if (stricmp(text, name1) == 0) {
+                    s32 index = result->count;
+                    void **data = (void **)result->data;
                     void **record = (void **)((u8 *)data + index * 12);
-                    result1->count = index + 1;
+                    result->count = index + 1;
                     record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
                     record[1] = ((ItemShort *)item)->get(lbl_80559E30);
                     record[2] = ((Item *)item)->get2(lbl_80559E58);
                 }
                 i++;
             }
-            object->list1 = result1;
+            object->list1 = result;
         }
 
         {
@@ -1563,38 +1564,38 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
                 void *item = ((Collection *)arg1)->get(i);
                 if (item == 0)
                     break;
-                const char *name = ((Item *)item)->name();
-                if (stricmp(name, name2) == 0)
+                const char *text = ((Item *)item)->name();
+                if (stricmp(text, name2) == 0)
                     count++;
                 i++;
             }
 
-            Result *result2 = (Result *)fn_801284F8(0x10, base + 0x28C);
-            if (result2 != 0) {
+            result = (Result *)fn_801284F8(0x10, base + 0x28C);
+            if (result != 0) {
                 void *data = fn_8012850C(count * 12, lbl_80559E48);
-                result2->data = data;
-                result2->size = count;
-                result2->count = 0;
-                result2->end = data;
+                result->data = data;
+                result->size = count;
+                result->count = 0;
+                result->end = data;
             }
             i = 0;
             while (1) {
                 void *item = ((Collection *)arg1)->get(i);
                 if (item == 0)
                     break;
-                const char *name = ((Item *)item)->name();
-                if (stricmp(name, name2) == 0) {
-                    s32 index = result2->count;
-                    void **data = (void **)result2->data;
+                const char *text = ((Item *)item)->name();
+                if (stricmp(text, name2) == 0) {
+                    s32 index = result->count;
+                    void **data = (void **)result->data;
                     void **record = (void **)((u8 *)data + index * 12);
-                    result2->count = index + 1;
+                    result->count = index + 1;
                     record[0] = ((Item *)item)->get(lbl_80559E50, index, data);
                     record[1] = ((ItemShort *)item)->get(lbl_80559E30);
                     record[2] = (void *)fn_801454E8(item, lbl_80559DFC);
                 }
                 i++;
             }
-            object->list2 = result2;
+            object->list2 = result;
         }
     }
     return object;
@@ -1776,40 +1777,57 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern f32 fn_801452A0(s32, f32);
     f32 tx;
     f32 angle;
-    f32 x;
     if (arg0 != 0) {
         fn_802C8BD0(arg2);
         if (fn_802C8DBC(4) != 0) {
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-            x = *(f32 *)((u8 *)arg0 + 4);
-            tx = ((f32 (*)(s32, f32))fn_801451DC)(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
+            {
+                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            }
             fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x18),
                         *(f32 *)((u8 *)arg0 + 0x1C));
 
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-            x = *(f32 *)((u8 *)arg0 + 0x10);
-            tx = fn_801452A0(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
-            x = *(f32 *)((u8 *)arg0 + 4);
-            tx += ((f32 (*)(s32, f32))fn_801451DC)(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
+            {
+                f32 scaleInput = *(volatile f32 *)((u8 *)arg0 + 0x10);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx = fn_801452A0(mode, scaleInput);
+            }
+            {
+                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            }
             fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x20),
                         *(f32 *)((u8 *)arg0 + 0x1C));
 
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8) +
                                 *(f32 *)((u8 *)arg0 + 0x14));
-            x = *(f32 *)((u8 *)arg0 + 4);
-            tx = ((f32 (*)(s32, f32))fn_801451DC)(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
+            {
+                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            }
             fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x18),
                         *(f32 *)((u8 *)arg0 + 0x24));
 
             angle = fn_801452B4(*(f32 *)((u8 *)arg0 + 8) +
                                 *(f32 *)((u8 *)arg0 + 0x14));
-            x = *(f32 *)((u8 *)arg0 + 0x10);
-            tx = fn_801452A0(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
-            x = *(f32 *)((u8 *)arg0 + 4);
-            tx += ((f32 (*)(s32, f32))fn_801451DC)(*(volatile s32 *)((u8 *)arg0 + 0xC), x);
+            {
+                f32 scaleInput = *(volatile f32 *)((u8 *)arg0 + 0x10);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx = fn_801452A0(mode, scaleInput);
+            }
+            {
+                f32 x = *(volatile f32 *)((u8 *)arg0 + 4);
+                s32 mode = *(volatile s32 *)((u8 *)arg0 + 0xC);
+                tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            }
             fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x20),
                         *(f32 *)((u8 *)arg0 + 0x24));
