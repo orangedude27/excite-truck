@@ -1289,13 +1289,8 @@ static inline void SetTagProcessorLevel3_800D77DC(u8 *self, s32 arg1) {
 }
 static inline void SetTagProcessorLevel2_800D77DC(u8 *self, s32 arg1) {
     if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
-    struct { ChildIter_800D77DC it; } ends;
-    ChildIter_800D77DC &end = ends.it;
-    ChildIter_800D77DC it = ChildBegin_800D77DC(self);
-    end = ChildEnd_800D77DC(self);
-    while (ChildNotEqual_800D77DC(it, end)) {
+    for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
         SetTagProcessorLevel3_800D77DC(ChildPane_800D77DC(it), arg1);
-        ChildNext_800D77DC(it);
     }
 }
 static inline void SetTagProcessorLevel1_800D77DC(u8 *self, s32 arg1) {
