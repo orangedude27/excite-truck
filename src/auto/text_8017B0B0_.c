@@ -751,6 +751,7 @@ void fn_8017C7C0(void) {
 
 }
 
+/* Empty stub. */
 void fn_8017C7C4(void) {
 
 }
