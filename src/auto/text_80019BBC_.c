@@ -664,13 +664,14 @@ struct EntryData {
     float y;
     unsigned char occupied;
 };
+#pragma processor gekko
 int fn_8001B308(void *arg0, int arg1, int arg2) {
-    int group;
-    int status;
+    unsigned char one = 1;
     unsigned char *base;
     int index;
+    int status;
+    int group;
 
-    status = 0;
     base = (unsigned char *)&lbl_803583C8;
     index = 0;
     for (group = 0; group < 4; group++) {
@@ -686,7 +687,7 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
                     *(float *)(base + 0xC) = second;
                 }
             }
-            base[0x10] = 1;
+            base[0x10] = one;
         } else {
             status = 0;
         }
@@ -705,7 +706,7 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
                     *(float *)(base + 0x20) = second;
                 }
             }
-            base[0x24] = 1;
+            base[0x24] = one;
         } else {
             status = 0;
         }
@@ -724,7 +725,7 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
                     *(float *)(base + 0x34) = second;
                 }
             }
-            base[0x38] = 1;
+            base[0x38] = one;
         } else {
             status = 0;
         }
@@ -743,7 +744,7 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
                     *(float *)(base + 0x48) = second;
                 }
             }
-            base[0x4C] = 1;
+            base[0x4C] = one;
         } else {
             status = 0;
         }
@@ -753,7 +754,6 @@ int fn_8001B308(void *arg0, int arg1, int arg2) {
     }
     return -1;
 }
-
 #define gMapMarkerRecords lbl_803583C8 /* the 16-entry array of 0x14-byte ring-challenge map markers */
 /* Release a map-marker record: clear its active flag (+0x10) and reset its id fields (+0, +4) to the free state. */
 void fn_8001B450(int index) {
@@ -773,6 +773,7 @@ extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma push
+#pragma scheduling invalid_target
 void fn_8001B478(int arg0, float farg0) {
     unsigned char sp20[0x38];
     int n, result, i;
