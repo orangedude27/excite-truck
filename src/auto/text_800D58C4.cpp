@@ -2245,6 +2245,7 @@ extern "C" s32 fn_800D947C(void* arg0) {
     return low4 + top;
 }
 
+namespace nw4hbm { namespace lyt { struct GxBitsMaterial { s32 memberGet(); }; }}
 extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *arg0) {
     register u32 x = *(u32*)((u8*)arg0 + 0x4C);
     register s32 base = *(s32*)((u8*)arg0 + 0x58);
@@ -3232,7 +3233,9 @@ extern "C" s32 fn_800DB398(s32 object, s32 deleteFlag) {
 
 void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *src) {
     u32 zero = 0;
+    void *vtable = lbl_8032012C;
     void *list14 = (u8 *)dst + 0x14;
+    f32 defaultValue = 0.0f;
     void *list20 = (u8 *)dst + 0x20;
     *(volatile u32 *)((u8 *)dst + 0x14) = zero;
     *(volatile u32 *)((u8 *)dst + 0x18) = zero;
@@ -3240,15 +3243,15 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
     *(volatile u32 *)((u8 *)dst + 0x24) = zero;
     *(volatile u32 *)((u8 *)dst + 4) = zero;
     *(volatile u32 *)((u8 *)dst + 8) = zero;
-    *(void **)dst = lbl_8032012C;
+    *(void **)dst = vtable;
     *(u32 *)((u8 *)dst + 0x10) = zero;
     *(void **)((u8 *)dst + 0x14) = list14;
     *(void **)((u8 *)dst + 0x18) = list14;
     *(u32 *)((u8 *)dst + 0x1C) = zero;
     *(void **)((u8 *)dst + 0x20) = list20;
     *(void **)((u8 *)dst + 0x24) = list20;
-    *(f32 *)((u8 *)dst + 0x4C) = 0.0f;
-    *(f32 *)((u8 *)dst + 0x50) = 0.0f;
+    *(f32 *)((u8 *)dst + 0x4C) = defaultValue;
+    *(f32 *)((u8 *)dst + 0x50) = defaultValue;
     *(u32 *)((u8 *)dst + 0xC) = zero;
     *(u32 *)((u8 *)dst + 0x28) = zero;
     *((u8 *)dst + 0xD0) = (u8)zero;
