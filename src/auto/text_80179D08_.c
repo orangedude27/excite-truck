@@ -248,6 +248,7 @@ extern "C" void fn_80179F94(void *container, void *child) {
 }
 #pragma cplusplus reset
 #pragma pop
+/* Empty stub. */
 void fn_8017A004(void) {
 
 }
