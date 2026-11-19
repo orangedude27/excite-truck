@@ -3839,6 +3839,7 @@ void fn_8005F248(s32 chan, s32 result) {
 }
 
 static inline void fn_8005F3E8_enqueue(WPADCB *cb, WPADCommand *cmd) {
+    WPADCommand copy = *cmd;
     BOOL intr, intr2;
     s8 count;
     u8 back;
@@ -3865,13 +3866,63 @@ static inline void fn_8005F3E8_enqueue(WPADCB *cb, WPADCommand *cmd) {
 void fn_8005F3E8(s32 chan, s32 arg1) {
     WPADCB *cb;
     BOOL intr;
+    WPADCommand cmd;
+    s32 v;
+    s32 r31;
 
-    if (arg1 == -1) return;
     cb = _wpdcb[chan];
+    if (arg1 == -1) return;
     intr = OSDisableInterrupts();
-    cb->UNK_0x820 = (arg1 >= 0) ? 1 : 0;
+    cb->UNK_0x820 = (arg1 == 0) ? 1 : 0;
     cb->readStatus = 0;
     OSRestoreInterrupts(intr);
+    r31 = (arg1 == 0) ? 0x14 : 0x2a;
+    v = (arg1 == 0) ? 0x176c : 0;
+    DBPrintf_80068D68(lbl_80312164, (v != 0) ? lbl_80558FE4 : lbl_8031219C);
+    fn_80063564(&cb->stdCmdQueue, 0, 0);
+
+    memset(&cmd, 0, 0x30);
+    cmd.reportID = 0x1a;
+    cmd.dataLength = 1;
+    fn_8005F3E8_enqueue(cb, &cmd);
+
+    memset(&cmd, 0, 0x30);
+    cmd.reportID = 0x11;
+    cmd.dataBuf[0] = (u8)(((1 << chan) * 0x10) & 0xf0);
+    cmd.dataLength = 1;
+    fn_8005F3E8_enqueue(cb, &cmd);
+
+    memset(&cmd, 0, 0x30);
+    cmd.dataBuf[0] = 0x2a; cmd.dataBuf[1] = 0x38; cmd.dataBuf[2] = 0x17; cmd.dataBuf[3] = 6;
+    cmd.reportID = 0x2a;
+    cmd.dataLength = 0x38;
+    cmd.dstBuf = (void *)((u8 *)cb + 0x874);
+    cmd.readLength = 6;
+    cmd.cmdCB = (WPADCallback)fn_8005F0A8;
+    fn_8005F3E8_enqueue(cb, &cmd);
+
+    memset(&cmd, 0, 0x30);
+    cmd.dataBuf[0] = 0x62; cmd.dataBuf[1] = 0x38; cmd.dataBuf[2] = 0x17; cmd.dataBuf[3] = 6;
+    cmd.reportID = 0x62;
+    cmd.dataLength = 0x38;
+    cmd.dstBuf = (void *)((u8 *)cb + 0x874);
+    cmd.readLength = 6;
+    cmd.cmdCB = (WPADCallback)fn_8005F248;
+    fn_8005F3E8_enqueue(cb, &cmd);
+
+    memset(&cmd, 0, 0x30);
+    cmd.dataBuf[0] = (u8)r31; cmd.dataBuf[1] = 0x38; cmd.dataBuf[2] = 0x17; cmd.dataBuf[3] = 6;
+    cmd.reportID = r31;
+    cmd.dataLength = 0x38;
+    cmd.dstBuf = (void *)((u8 *)cb + 0x874);
+    cmd.readLength = 6;
+    cmd.cmdCB = (WPADCallback)fn_8005EEC4;
+    fn_8005F3E8_enqueue(cb, &cmd);
+
+    memset(&cmd, 0, 0x30);
+    cmd.reportID = 0x15;
+    cmd.dataLength = 1;
+    fn_8005F3E8_enqueue(cb, &cmd);
 }
 
 s32 fn_8005FBCC(u8 devHandle) {
