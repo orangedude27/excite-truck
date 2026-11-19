@@ -1258,47 +1258,6 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 }
 
 extern "C" void fn_800D6CA0(s32, s32);
-/* ut::DynamicCast: the target type info is taken before the virtual GetRuntimeTypeInfo call. */
-static inline u8 *DynCast_800D77DC(u8 *obj) {
-    StateNode_800D6CA0 *typeInfo = (StateNode_800D6CA0 *)&lbl_8055DE08;
-    if (HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)obj)->v1(), typeInfo)) return obj;
-    return 0;
-}
-/* Inline levels of the recursive tag-processor walk (fn_800D6CA0) as expanded into fn_800D77DC. */
-/* Child-list iterator (ut::LinkList style): node pointer wrapped in a struct. */
-struct ChildIter_800D77DC { StateNode_800D6CA0 *node; };
-static inline ChildIter_800D77DC ChildBegin_800D77DC(u8 *self) {
-    ChildIter_800D77DC it; it.node = *(StateNode_800D6CA0 **)(self + 0x14); return it;
-}
-static inline ChildIter_800D77DC ChildEnd_800D77DC(u8 *self) {
-    ChildIter_800D77DC it; it.node = (StateNode_800D6CA0 *)(self + 0x14); return it;
-}
-static inline u8 *ChildPane_800D77DC(const ChildIter_800D77DC &it) {
-    if (!it.node) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-    u8 *p = (u8 *)it.node - 4;
-    if (!p) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-    return p;
-}
-static inline bool ChildNotEqual_800D77DC(const ChildIter_800D77DC &a, const ChildIter_800D77DC &b) { return a.node != b.node; }
-static inline void ChildNext_800D77DC(ChildIter_800D77DC &it) { it.node = it.node->next; }
-static inline void SetTagProcessorLevel3_800D77DC(u8 *self, s32 arg1) {
-    if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
-    for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
-        fn_800D6CA0((s32)ChildPane_800D77DC(it), arg1);
-    }
-}
-static inline void SetTagProcessorLevel2_800D77DC(u8 *self, s32 arg1) {
-    if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
-    for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
-        SetTagProcessorLevel3_800D77DC(ChildPane_800D77DC(it), arg1);
-    }
-}
-static inline void SetTagProcessorLevel1_800D77DC(u8 *self, s32 arg1) {
-    if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
-    for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
-        SetTagProcessorLevel2_800D77DC(ChildPane_800D77DC(it), arg1);
-    }
-}
 #pragma push
 #pragma opt_common_subs off
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
