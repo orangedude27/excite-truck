@@ -415,8 +415,8 @@ Obj_802470D4 *fn_802470D4(Obj_802470D4 *self, s32 deleteFlag) {
 #pragma push
 #pragma processor 750
 void fn_80247174(void) {
-    register float divisor = lbl_805638A8;
-    register float base = lbl_80563898;
+    register float base = 1.0f;
+    register float divisor = 49.0f;
     s32 i = 0;
     do {
         fn_80246CAC(base - (float)i / divisor);
@@ -572,10 +572,7 @@ extern s32 lbl_8055B860;
 extern s32 fn_8023512C(void *);
 extern s32 fn_80246938(void);
 
-#pragma push
-#pragma use_lmw_stmw off
-#pragma optimization_level 3
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 s32 fn_80246AE8(void) {
     s32 args[5];
     s32 text[6];
@@ -617,7 +614,7 @@ s32 fn_80246AE8(void) {
     fn_80235380(result);
     return 1;
 }
-#pragma pop
+#pragma opt_propagation reset
 
 /* The attract/demo main loop, which fn_8023B640 runs when the game comes up in
  * demo main mode: it turns the music on, puts the "uisingle" movie on screen and
@@ -837,25 +834,18 @@ void fn_80247880(void) {
 void fn_802478A4(void) {
     extern s32 lbl_802FA3F0[];
     extern s32 lbl_8055BAC0, lbl_8055BABC, lbl_8055B860;
-    struct Desc {
-        s32 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
-        s32 b0, b1, b2, b3, b4, b5, b6, b7, b8, b9;
-        s32 c0, c1, c2, c3, c4, c5, c6, c7, c8, c9;
-        s32 d0, d1, d2, d3, d4, d5, d6, d7, d8, d9;
-    } *data = (struct Desc *)((void *)0);
-    struct Desc local;
+    s32 data[40];
     volatile s32 *q = (volatile s32 *)lbl_804988F0;
     volatile s32 *p = (volatile s32 *)lbl_802FA3F0;
     s32 b0 = lbl_804988F0[0];
     s32 b1, b2, b3, b4;
     s32 a0, a2, a3, a4;
     s32 stringBase;
-    (void)data;
 
     b1 = q[1];
-    local.a6 = 8;
+    data[6] = 8;
     b2 = q[2];
-    local.b1 = 8;
+    data[11] = 8;
     a0 = *p++;
     stringBase = (s32)lbl_80343270;
     b3 = q[3];
@@ -863,47 +853,48 @@ void fn_802478A4(void) {
     b4 = q[4];
     a3 = p[2];
     a4 = p[3];
-    local.a7 = (s32)fn_8024778C;
-    local.b2 = (s32)fn_80247880;
-    local.a5 = (s32)&lbl_8055BAC0;
-    local.b0 = (s32)&lbl_8055BABC;
-    local.b3 = 1;
-    local.a8 = 0;
-    local.a9 = 0;
-    local.b4 = 0;
-    local.b5 = stringBase + 0x2A0;
-    local.b6 = 0;
-    local.b7 = 0;
-    local.b8 = 3;
-    local.b9 = 0;
-    local.c0 = stringBase + 0x2AC;
-    local.c1 = 0;
-    local.c2 = 0;
-    local.c3 = 4;
-    local.c4 = 0;
-    local.c5 = stringBase + 0x2B8;
-    local.c6 = 0;
-    local.c7 = 0;
-    local.c8 = 5;
-    local.c9 = 0;
-    local.d0 = (s32)&lbl_8055B860;
-    local.d1 = 6;
-    local.d2 = 0;
-    local.d3 = -1;
-    local.d4 = 0x1B;
-    local.d5 = b0;
-    local.d6 = b1;
-    local.d7 = b2;
-    local.d8 = b3;
-    local.d9 = b4;
-    local.a0 = a0;
-    local.a2 = a2;
-    local.a3 = a3;
-    local.a4 = a4;
-    local.a1 = (s32)&local.a5;
+
+    data[7] = (s32)fn_8024778C;
+    data[12] = (s32)fn_80247880;
+    data[5] = (s32)&lbl_8055BAC0;
+    data[10] = (s32)&lbl_8055BABC;
+    data[13] = 1;
+    data[8] = 0;
+    data[9] = 0;
+    data[14] = 0;
+    data[15] = stringBase + 0x2A0;
+    data[16] = 0;
+    data[17] = 0;
+    data[18] = 3;
+    data[19] = 0;
+    data[20] = stringBase + 0x2AC;
+    data[21] = 0;
+    data[22] = 0;
+    data[23] = 4;
+    data[24] = 0;
+    data[25] = stringBase + 0x2B8;
+    data[26] = 0;
+    data[27] = 0;
+    data[28] = 5;
+    data[29] = 0;
+    data[30] = (s32)&lbl_8055B860;
+    data[31] = 6;
+    data[32] = 0;
+    data[33] = -1;
+    data[34] = 0x1B;
+    data[35] = b0;
+    data[36] = b1;
+    data[37] = b2;
+    data[38] = b3;
+    data[39] = b4;
+    data[0] = a0;
+    data[2] = a2;
+    data[3] = a3;
+    data[4] = a4;
+    data[1] = (s32)&data[5];
     ((void (*)(s32 *, s32, s32, s32, s32, s32, s32, s32))fn_802146BC)(
-        (s32 *)&local, -999, -999, 1, stringBase + 0x2A0,
-        stringBase + 0x2AC, stringBase + 0x2B8, (s32)&local.a5);
+        data, -999, -999, 1, stringBase + 0x2A0,
+        stringBase + 0x2AC, stringBase + 0x2B8, (s32)&data[5]);
 }
 
 
@@ -925,7 +916,7 @@ void fn_80247A0C(void) {
     s32 var_r31;
     s32 a;
     s32 b;
-    a = lbl_8055BEBC;
+    a = *(volatile s32 *)&lbl_8055BEBC;
     b = lbl_8055BEA8;
     if (a != b) {
         lbl_8055BEBC = b;
@@ -1471,8 +1462,8 @@ void fn_80248AF0(void *arg0) {
 
 #pragma scheduling invalid_target
 void fn_80248BD0(void *arg0) {
+    *(float *)((char *)arg0 + 0x20) = 2.0f;
     *(unsigned char *)((char *)arg0 + 0x1C) = fn_802E8690(*(s32 *)((char *)arg0 + 0x18));
-    *(float *)((char *)arg0 + 0x20) = lbl_805638CC;
 }
 #pragma scheduling on
 void fn_80248C0C(void *obj) {
@@ -1717,11 +1708,11 @@ void fn_802491A8(void *arg0) {
     int obj;
     int i = 0;
     int selected;
-    float scale = lbl_805638E0;
-    float sub = lbl_805638E4;
-    float origin = lbl_805638E8;
-    float xOrigin = lbl_805638EC;
     float yOrigin = lbl_805638F8;
+    float xOrigin = lbl_805638EC;
+    float origin = lbl_805638E8;
+    float sub = lbl_805638E4;
+    float scale = lbl_805638E0;
     for (; i < *(int *)(base + 0x24); i++) {
         float fi = (float)i;
         float offset;
