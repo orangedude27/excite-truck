@@ -61,6 +61,10 @@ struct UiMenuGroup {
     void *current;     /* 0x450: the widget the menu is on (fn_80218198) */
     int originX;       /* 0x454: where the group is drawn; pointer coords are relative to it */
     int originY;       /* 0x458 */
+    unsigned char gap4[0x38];
+    int entryCount;    /* 0x494: entries in the selection list below */
+    int selectedKey;   /* 0x498: key of the selected entry, -1 for none (fn_8021818C) */
+    struct UiMenuEntry entries[1]; /* 0x4A0: entryCount (key, widget) pairs, sorted by key */
 };
 
 struct Fn8021832CObj {
