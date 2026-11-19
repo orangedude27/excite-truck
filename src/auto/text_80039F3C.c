@@ -152,7 +152,7 @@ int DVDCompareDiskID(const DVDDiskID *id1, const DVDDiskID *id2) {
 #pragma scheduling invalid_target
 void __DVDShowFatalMessage(void) {
     unsigned char color[4];
-    int zero = 0;
+    register int zero = 0;
     int foreground;
     int background;
     const char *message;
@@ -219,6 +219,7 @@ int doTransactionCallback(int arg0, void *arg1) {
 }
 
 #pragma scheduling 750
+/* DVD low-level cover-register callback: validates the context, updates flags, and invokes the registered callback. */
 int doPrepareCoverRegisterCallback(int arg0, void *arg1) {
     int result = arg0;
 
@@ -807,23 +808,24 @@ int fn_8003B380(int value) {
     return 1;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_8003B38C(void *arg0) {
-    unsigned int slot = lbl_8055D8E8;
+    unsigned char *p;
     unsigned char *base = lbl_8037B820;
     const char *msg = lbl_80302848;
-    unsigned int offset = slot << 5;
-    unsigned int busy;
-    unsigned char *p = base + offset;
-    unsigned char *entry;
+    unsigned int flag;
+    int offset;
+    int slot = lbl_8055D8E8;
     unsigned int one = 1;
-    int next;
+    unsigned char *entry;
     int index;
     int result;
 
+    offset = slot << 5;
     lbl_8055D8E0 = one;
-    busy = p[8];
-    if (((busy | (0U - busy)) >> 31) == 1U) {
+    p = base + offset;
+    flag = p[8];
+    if ((((0U - flag) | flag) >> 31) == 1U) {
         OSReport(msg + 0x218);
         OSReport(msg + 0x250);
         for (;;) {}
@@ -832,17 +834,17 @@ int fn_8003B38C(void *arg0) {
         OSReport(msg + 0x280);
         for (;;) {}
     }
-    ((unsigned int *)base)[slot * 8] = (unsigned int)arg0;
-    next = slot + 1;
+    ((void **)base)[slot * 8] = arg0;
+    index = slot + 1;
     *(unsigned int *)(p + 4) = one;
     p[8] = one;
-    lbl_8055D8E8 = next;
-    if (next >= 4) {
+    lbl_8055D8E8 = index;
+    if (index >= 4) {
         lbl_8055D8E8 = 0;
     }
     index = lbl_8055D8E4 + 1;
     lbl_8055D8E4 = index;
-    entry = base + offset;
+    entry = lbl_8037B820 + slot * 0x20;
     if (index >= 4) {
         index = 0;
         lbl_8055D8E4 = 0;
@@ -859,8 +861,6 @@ int fn_8003B38C(void *arg0) {
     }
     return 1;
 }
-#pragma scheduling reset
-#pragma opt_propagation off
 int fn_8003B508(int arg0, int arg1, int arg2)
 {
   const char *msg = lbl_80302848;
@@ -1182,7 +1182,6 @@ int fn_8003BCDC(void *arg0) {
     DVDLowContext *ctx;
     DVDLowContext *base;
     int slot;
-    unsigned int busy;
     unsigned char *callbackEntry;
     unsigned int one;
     int next;
@@ -1199,8 +1198,7 @@ int fn_8003BCDC(void *arg0) {
     base = (DVDLowContext *)lbl_8037B820;
     slot = lbl_8055D8E8;
     ctx = &base[slot];
-    busy = ctx->inUse;
-    if (((busy | (0U - busy)) >> 31) == 1) {
+    if (((ctx->inUse | (0U - ctx->inUse)) >> 31) == 1) {
         OSReport(msg + 0x218);
         OSReport(msg + 0x250);
         for (;;) {}
