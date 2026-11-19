@@ -15,11 +15,11 @@ struct SelfVtable8020 {
     virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
     virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
     virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+    virtual void v16(); virtual void v17();
     virtual void destroy(s32);
 };
 struct ChildVtable8020 {
-    virtual void v00(); virtual void v01(); virtual void destroy(s32);
+    virtual void destroy(s32);
 };
 
 namespace nw4hbm {
@@ -3363,12 +3363,10 @@ extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
                 MEMFreeToAllocator(lbl_8055DDF0, p);
             }
         }
-        void** vt0 = *(void***)self;
-        ((void (*)(void*, s32))vt0[0x50 / 4])(self, 0);
+        ((SelfVtable8020*)self)->destroy(0);
         void* child = *(void**)((char*)self + 0x28);
         if (child != 0 && *(u8*)((char*)child + 0x54) == 0) {
-            void** cvt = *(void***)child;
-            ((void (*)(void*, s32))cvt[2])(child, -1);
+            ((ChildVtable8020*)child)->destroy(-1);
             MEMFreeToAllocator(lbl_8055DDF0, *(void**)((char*)self + 0x28));
         }
         if (&pane->secondList != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&pane->secondList, 0);
