@@ -158,6 +158,7 @@ void fn_80239AC0(void)
         if (done) break;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma small_data off
