@@ -1363,6 +1363,7 @@ void fn_802682B0(void *object) {
 #pragma push
 #pragma processor 750
 #pragma ppc_psq_save off
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80268358(void *arg0) {
     struct Obj {
