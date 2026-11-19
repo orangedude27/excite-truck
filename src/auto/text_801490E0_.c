@@ -4,7 +4,7 @@
 
 extern void fn_8000D838(void *);
 extern void fn_801491B8(void *, s32);
-extern void __register_global_object(void *, void *, void *);
+extern void __register_global_object(void *, void *, void *, void *, void *, void *, void *, int);
 extern char lbl_8032D2C8[];
 extern char lbl_8032D2E4[];
 extern char lbl_8032D300[];
@@ -26,6 +26,7 @@ extern s32 lbl_8055E220;
 void fn_801490E0(void) {
     register s32 *base asm("r31") = (s32 *)lbl_8042FBA0;
     s32 *sub;
+    s32 *tail;
     s32 *p218;
     s32 *p220;
     s32 v7f = 0x7F000000;
@@ -47,9 +48,10 @@ void fn_801490E0(void) {
     lbl_8055E220 = (s32)lbl_8032D2C8;
     p218[1] = 0;
     p220[1] = 0;
-    sub[0] = (s32)(sub + 3);
+    tail = sub + 3;
+    sub[0] = (s32)tail;
     sub[2] = 0x28;
     sub[1] = 0;
-    __register_global_object(sub, fn_801491B8, base + 5);
+    __register_global_object(sub, fn_801491B8, base + 5, tail, &lbl_8055E220, &lbl_8032D2C8, &lbl_8055E218, 0x7F000000);
 }
 #pragma pop
