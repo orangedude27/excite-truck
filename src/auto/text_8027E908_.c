@@ -60,7 +60,7 @@ struct Fn8027F288Obj {
     virtual void v5();
     virtual void v6();
     virtual void v7();
-    virtual void v8();
+    virtual int v8();
     virtual void v9();
     virtual int v10();
     virtual void v11();
@@ -635,12 +635,14 @@ extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
     extern char lbl_80347E50[];
     char buf[0x64];
     int frame[60];
-    int r = fn_802168E4();
     if (arg1 != 0) {
-        fn_801345D8(buf, 0x64, lbl_80347E50 + 0x46C, arg1->getName());
+        fn_801345D8(buf, 0x64, lbl_80347E50 + 0x46C, arg0->getName());
+    } else if (arg0 != 0 && arg0->v10() != 0) {
+        fn_801345D8(buf, 0x64, lbl_80347E50 + 0x488, arg0->getName());
     } else {
         fn_801345D8(buf, 0x64, lbl_80347E50 + 0x4B0, arg0->getName());
     }
+    int r = fn_802168E4();
     if (r != 0) fn_80214A9C(0x1F);
     frame[0] = 0;
     fn_802146BC(frame, -999, -999, 1, 0, 0, 0, 0);
