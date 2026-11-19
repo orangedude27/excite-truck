@@ -1652,26 +1652,24 @@ int fn_8029EB54(void *arg0, void *arg1)
 }
 
 #pragma push
-#pragma processor 750
+#pragma scheduling off
 void fn_8029EC64(void *area, void *arg1, int arg2) {
     struct Locals { float sp8, spC, sp10, sp14, sp18, sp1C; } s;
     float *f = (float *)arg1;
+    float *m = (float *)((char *)arg1 + arg2 * 0x3C + 0x70);
     float temp_f1, temp_f2, temp_f3, temp_f0_2;
     float var_f1, var_f31, var_f5;
-    register unsigned char *temp_r31, *temp_r5;
-    temp_r5 = (unsigned char *)arg1 + arg2 * 0x3C;
-    temp_r31 = temp_r5 + 0x70;
-    if ((unsigned char *)&s.sp14 == temp_r31) {
+    if ((unsigned char *)&s.sp14 == (unsigned char *)m) {
+        float m10, m00, m20;
         float a3, a4, a5, a0, a1, a2, a6, a7, a8;
-        float m00, m10, m20;
         a3 = f[3];
-        m10 = *(float *)(temp_r31 + 4);
+        m10 = m[1];
         a4 = f[4]; a5 = f[5];
         a0 = f[0];
-        m00 = *(float *)temp_r31;
+        m00 = m[0];
         a1 = f[1]; a2 = f[2];
         a6 = f[6];
-        m20 = *(float *)(temp_r31 + 8);
+        m20 = m[2];
         a7 = f[7]; a8 = f[8];
         s.sp14 = m20 * a6 + (m00 * a0 + m10 * a3);
         s.sp18 = m20 * a7 + (m00 * a1 + m10 * a4);
@@ -1679,9 +1677,9 @@ void fn_8029EC64(void *area, void *arg1, int arg2) {
     } else {
         float b3, m10, m00, m20;
         b3 = f[3];
-        m10 = *(float *)(temp_r31 + 4);
-        m00 = *(float *)temp_r31;
-        m20 = *(float *)(temp_r31 + 8);
+        m10 = m[1];
+        m00 = m[0];
+        m20 = m[2];
         s.sp14 = m20 * f[6] + (m00 * f[0] + m10 * b3);
         s.sp18 = m20 * f[7] + (m00 * f[1] + m10 * f[4]);
         s.sp1C = m20 * f[8] + (m00 * f[2] + m10 * f[5]);
@@ -1692,7 +1690,7 @@ void fn_8029EC64(void *area, void *arg1, int arg2) {
     s.sp1C = temp_f1 + f[11];
     if (fn_8029EB54(area, &s.sp14)) {
         s.sp18 += lbl_8056465C;
-        if (*(float *)temp_r31 > lbl_80564628) var_f1 = lbl_80564658; else var_f1 = lbl_80564660;
+        if (*(float *)m > lbl_80564628) var_f1 = lbl_80564658; else var_f1 = lbl_80564660;
         var_f5 = lbl_80564668;
         temp_f3 = lbl_80564664 + lbl_80564634 * (f[20] * var_f1);
         s.sp8 = f[13] + f[0] * temp_f3;
@@ -1703,7 +1701,7 @@ void fn_8029EC64(void *area, void *arg1, int arg2) {
         s.sp8 += f[3] * var_f5;
         s.spC += f[4] * var_f5;
         s.sp10 += f[5] * var_f5;
-        if (*(float *)temp_r31 > lbl_80564628) var_f31 = lbl_80564658; else var_f31 = lbl_80564660;
+        if (*(float *)m > lbl_80564628) var_f31 = lbl_80564658; else var_f31 = lbl_80564660;
         fn_8028E590(lbl_8055F7F8, &s.sp14, &s.sp8, -var_f31 * fn_80287BC8(lbl_80564628, lbl_80564674));
     }
 }
