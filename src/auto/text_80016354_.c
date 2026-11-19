@@ -29,17 +29,21 @@ extern void fn_80128670(void *);
 extern void fn_80131818(void);
 #pragma scheduling invalid_target
 void fn_80016354(void) {
-    int i;
+    /* Initialize driver and vehicle data tables and register the vehicle-slot refresh callback. */
+    int slotIndex;
+
     lbl_8055D538 = (void *)fn_80131808(&lbl_802FCEA8[0xC]);
     lbl_8055D540 = (void *)fn_8012850C(0x11F8, &lbl_802FCEA8[0x18]);
     lbl_8055D544 = (void *)fn_8012850C(0x20D0, &lbl_802FCEA8[0x28]);
     fn_80016C1C();
     lbl_8055D554 = 0;
-    i = 0;
+
+    slotIndex = 0;
     do {
-        fn_8001766C(i);
-        i++;
-    } while (i < 4);
+        fn_8001766C(slotIndex);
+        slotIndex++;
+    } while (slotIndex < 4);
+
     fn_8000D884(0x44727672, 1, &lbl_8055D548, 0x960, fn_800177B8);
 }
 #pragma scheduling reset
