@@ -2195,6 +2195,7 @@ void fn_801B3208(s32 entryIndex, s32 id, f32 qualifyValue) {
 /* Constant predicate (returns 0 / false); likely a virtual getter reached through a dispatch table. */
 s32 fn_801B327C(void) { return 0; }
 
+/* No operation. */
 void fn_801B3284(void) {
 
 }
