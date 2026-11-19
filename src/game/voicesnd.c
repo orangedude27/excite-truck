@@ -622,6 +622,11 @@ void fn_8020B340(void) {
     fn_802E5824();
 }
 
+/* "Voice Mixer" device method, slot +0x44 of the voice backend's device vtable
+ * (lbl_8033C458): the next device method, likewise only forwarding to the SPU
+ * voice layer's routine at 0x802E5828 and dropping the device pointer.  That
+ * routine is empty in this build too, and the "Null Mixer" device answers the
+ * slot with an empty function of its own (fn_80207C4C). */
 void fn_8020B344(void) {
     fn_802E5828();
 }
