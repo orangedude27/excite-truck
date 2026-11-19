@@ -48,13 +48,18 @@ void fn_802DD4FC(void) {
             h = lbl_8055FED4;
             w = lbl_8055FED0;
             *(unsigned char *)((char *)obj + 0x4C) = 1;
-            *(volatile int *)((char *)obj + 0x44) = w / 2;
-            *(volatile int *)((char *)obj + 0x48) = h / 2;
-            goto skip;
-            *(volatile int *)((char *)obj + 0x44) = w;
-            *(volatile int *)((char *)obj + 0x48) = h;
-        skip:
-            *(int *)((char *)obj + 0x40) = fn_8012850C(*(volatile int *)((char *)obj + 0x48) * (*(volatile int *)((char *)obj + 0x44) * 2), lbl_8034CB5C);
+            if (*(unsigned char *)((char *)obj + 0x4C)) {
+                *(volatile int *)((char *)obj + 0x44) = w / 2;
+                *(volatile int *)((char *)obj + 0x48) = h / 2;
+            } else {
+                *(volatile int *)((char *)obj + 0x44) = w;
+                *(volatile int *)((char *)obj + 0x48) = h;
+            }
+            {
+                int tw = *(volatile int *)((char *)obj + 0x44);
+                int th = *(volatile int *)((char *)obj + 0x48);
+                *(int *)((char *)obj + 0x40) = fn_8012850C(th * (tw * 2), lbl_8034CB5C);
+            }
             GXInitTexObj(obj, *(void **)((char *)obj + 0x40), *(int *)((char *)obj + 0x44), *(int *)((char *)obj + 0x48), 4, 0, 0, 0);
             GXInitTexObjFilter(obj, 1, 1);
             *(unsigned char *)((char *)obj + 0x4D) = 0;
@@ -133,8 +138,8 @@ void fn_802DEA6C();
 #pragma use_lmw_stmw off
 void fn_802DD754(void)
 {
-  float *entry;
   register int i;
+  float *entry;
   register int j;
   register int one;
   register void *texObj;
