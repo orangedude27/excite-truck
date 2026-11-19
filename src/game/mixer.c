@@ -567,43 +567,46 @@ int fn_802093A4(void *arg0) {
 #undef state
 }
 
-/* No-op placeholder hook; one of a run of adjacent empty stubs
- * (fn_802093EC, fn_802093F0, fn_802093F4, ...) in the mixer subsystem
- * that intentionally do nothing. */
-void fn_802093EC(void) {
+/* The rest of the "Null Sound" vtable (lbl_8033C0E8): the sound's control methods.
+ * A null sound is bookkeeping only -- a state word and a timer -- so every control
+ * the voice backend (vtable lbl_8033C3F4) implements on its VoiceSnd does nothing
+ * here.  Each stub below is marked with its vtable slot and the voice backend's
+ * method for that slot. */
+void fn_802093EC(void) { /* +0x30 set rate    (voice: fn_8020BC50, VoiceSnd+0x24) */
 
 }
 
-/* Null Sound method, slot +0x3C of the "Null Sound" vtable (lbl_8033C0E8): set the
- * sound's pan.  The voice backend's slot +0x3C (fn_8020BC68) stores the value in
- * the VoiceSnd's pan field (+0x20), which its mixer tick then splits between the
- * two channels; a null sound has no channels to place, so it ignores the value. */
+/* +0x3C set pan: the voice backend (fn_8020BC68) stores it in VoiceSnd+0x20, which
+ * its mixer tick then splits between the two channels; a null sound has no
+ * channels to place, so it ignores the value. */
 void fn_802093F0(void) {
 
 }
 
-void fn_802093F4(void) {
+void fn_802093F4(void) { /* +0x40 set surround pan (voice: fn_8020BC70, VoiceSnd+0x28) */
 
 }
 
-void fn_802093F8(void) {
+void fn_802093F8(void) { /* +0x34 set volume  (voice: fn_8020BC58, VoiceSnd+0x1C) */
 
 }
 
-/* Trivial mixer helper: always reports 0 (boolean false / no-op result). */
+/* +0x38 a sound query the voice backend answers "no" to as well (fn_8020BC60). */
 int fn_802093FC(void) {
     return 0;
 }
 
+/* +0x54 Set3D: the voice backend has no implementation either and just reports
+ * "SndVoice::Set3D" (fn_8020BC98); the null backend does not even report. */
 void fn_80209404(void) {
 
 }
 
-void fn_80209408(void) {
+void fn_80209408(void) { /* +0x58 (voice: fn_8020BCB0, also empty) */
 
 }
 
-void fn_8020940C(void) {
+void fn_8020940C(void) { /* +0x5C (voice: fn_8020BCB4, also empty) */
 
 }
 extern void *fn_801284F8(int, void *);
