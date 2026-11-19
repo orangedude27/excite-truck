@@ -1460,6 +1460,20 @@ void fn_80248AF0(void *arg0) {
 }
 #pragma pop
 
+/* UI element that waits for a controller to become ready: a countdown it restarts
+ * from 2 seconds (fn_80248BD0) and holds while that controller is ready, then runs
+ * down -- showing UI group 0x1E -- until it closes the screen through fn_80221F94
+ * (per-frame update fn_80248C0C, confirm handler fn_80248C94). */
+typedef struct ControllerWait {
+    char pad0[0x18];
+    s32 controllerIndex;      /* +0x18: rjoy controller slot to watch */
+    unsigned char ready;      /* +0x1C: that controller's ready flag */
+    char pad1D[3];
+    float timer;              /* +0x20: countdown, in seconds */
+} ControllerWait;
+
+#define COUNTDOWN_SECONDS 2.0f /* the countdown every restart begins from */
+
 #pragma scheduling invalid_target
 void fn_80248BD0(void *arg0) {
     *(float *)((char *)arg0 + 0x20) = 2.0f;
