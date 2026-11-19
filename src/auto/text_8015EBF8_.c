@@ -237,7 +237,8 @@ extern "C" void fn_8015EE14(void **collection, void *stream) {
 extern int fn_8015ED54(void **);
 extern void fn_802E30C8(const char *, int, const char *, ...);
 extern char lbl_8032F488[];
-extern char lbl_8055A080[], lbl_8055A090[], lbl_8055A08C[], lbl_8055A094[];
+extern char lbl_8055A080[], lbl_8055A090[], lbl_8055A08C[];
+__declspec(section ".sdata") extern char lbl_8055A094[];
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_8015EF84(void **arg0) {
