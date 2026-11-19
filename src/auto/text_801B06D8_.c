@@ -789,7 +789,7 @@ extern void fn_801CB360(s32);
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
-#pragma scheduling 750
+#pragma scheduling invalid_target
 extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
     struct Progress {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
