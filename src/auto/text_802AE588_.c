@@ -1510,21 +1510,8 @@ s32 fn_802B03C0(void *arg0) {
     return v31;
 }
 #pragma dont_inline reset
-static inline s32 IsInWaveArea(void *pos) {
-    f32 bound;
-    f32 neg_bound;
-    f32 v;
-    s32 inside = 0;
-    bound = lbl_80564B84 * lbl_80564AF0 * lbl_80564B6C;
-    neg_bound = -bound;
-    v = *(f32 *)pos;
-    if ((v > neg_bound) && (v < bound)) {
-        v = *(f32 *)((char *)pos + 8);
-        if ((v > neg_bound) && (v < bound)) {
-            inside = 1;
-        }
-    }
-    return inside;
+static inline s32 GetWaterLayer(void) {
+    return (s32)lbl_8055CD78;
 }
 s32 fn_802B04D4(void *arg0) {
     f32 temp_f0;
