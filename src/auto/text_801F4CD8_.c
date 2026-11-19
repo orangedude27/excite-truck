@@ -1658,6 +1658,7 @@ int fn_801F79F0(void) {
 /* Constant getter (returns 3); likely a virtual method reached through a dispatch table. */
 int fn_801F79F8(void) { return 3; }
 
+/* No-op stub. */
 void fn_801F7A00(void) {
 
 }
