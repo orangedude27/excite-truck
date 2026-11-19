@@ -112,14 +112,15 @@ void fn_802C1180(void *node) {
     src[1] = 0;
 }
 #pragma scheduling invalid_target
+/* Return the next tree hit record slot, initializing it before use. */
 void *fn_802C120C(void) {
-    int oldIndex;
-    void *entry;
-    oldIndex = lbl_8055FB34;
-    entry = (char *)&lbl_804C0E10 + oldIndex * 0x48;
-    lbl_8055FB34 = (oldIndex + 1) % 8;
-    fn_802C1180(entry);
-    return entry;
+    int slotIndex;
+    void *record;
+    slotIndex = lbl_8055FB34;
+    record = (char *)&lbl_804C0E10 + slotIndex * 0x48;
+    lbl_8055FB34 = (slotIndex + 1) % 8;
+    fn_802C1180(record);
+    return record;
 }
 void fn_802C126C(void) {
     /* RealName: none yet; what it does is InitTreeHit().  Start the treehit
