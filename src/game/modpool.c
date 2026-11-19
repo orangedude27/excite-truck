@@ -125,17 +125,18 @@ void fn_802CE4F4(void *arg0, int arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
-void *fn_802CE630(void *arg0, const char *arg1, int arg2) {
-    int count = *(int *)((char *)arg0 + 8);
+void *fn_802CE630(void *pool, const char *name, int value) {
+    /* Find a free 0x40-byte pool entry, initialize it with name/value, and return it (or NULL if full). */
+    int count = *(int *)((char *)pool + 8);
     int offset = 0;
     unsigned char *entry;
     while (count > 0) {
-        entry = (unsigned char *)*(char **)arg0 + offset;
+        entry = (unsigned char *)*(char **)pool + offset;
         if (*entry == 0 && *(int *)(entry + 0x38) == 0) {
             entry[0] = 1;
-            *(void **)(entry + 4) = arg0;
-            strcpy((char *)entry + 8, arg1);
-            *(int *)(entry + 0x28) = arg2;
+            *(void **)(entry + 4) = pool;
+            strcpy((char *)entry + 8, name);
+            *(int *)(entry + 0x28) = value;
             goto done;
         }
         offset += 0x40;
