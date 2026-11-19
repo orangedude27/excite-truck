@@ -1679,6 +1679,7 @@ extern char lbl_8055CBF8, lbl_8055CBFC, lbl_8055CC04, lbl_8055CC0C, lbl_8055CC10
 extern double fn_8002F208(float);
 extern s32 fn_801EA140(void *);
 #pragma push
+#pragma processor 750
 #pragma cplusplus on
 extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
     struct Vec3 {
