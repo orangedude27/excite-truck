@@ -718,17 +718,19 @@ void fn_802670A0(int *cellRect, int index) {
 }
 
 #pragma opt_propagation off
-void fn_80267130(void *arg0) {
-    float value;
-    float clamp;
-    clamp = lbl_80563C2C;
-    value = (*(float *)((char *)arg0 + 0x30) - 0.3926991f) / 0.78539812f;
-    clamp = clamp < value ? clamp : value;
-    clamp = clamp > lbl_80563C20 ? clamp : lbl_80563C20;
-    *(float *)((char *)arg0 + 0x48) = lbl_80563C34 + clamp * lbl_80563C4C;
-    if (fn_80178CA4() == 1) value = lbl_80563C2C;
-    else value = lbl_80563C50;
-    *(float *)((char *)arg0 + 0x4C) = lbl_8055F484 * value;
+void fn_80267130(void *camera) {
+    /* Clamp a pitch-derived factor from the camera up vector and update two scale fields. */
+    float normalized;
+    float clamped;
+
+    clamped = FLOAT_ONE;
+    normalized = (*(float *)((char *)camera + 0x30) - 0.3926991f) / 0.78539812f;
+    clamped = clamped < normalized ? clamped : normalized;
+    clamped = clamped > FLOAT_ZERO ? clamped : FLOAT_ZERO;
+    *(float *)((char *)camera + 0x48) = FLOAT_THREE + clamped * lbl_80563C4C;
+    if (fn_80178CA4() == 1) normalized = FLOAT_ONE;
+    else normalized = lbl_80563C50;
+    *(float *)((char *)camera + 0x4C) = lbl_8055F484 * normalized;
 }
 #pragma opt_propagation reset
 extern float lbl_8055D020;
@@ -738,22 +740,12 @@ extern float fn_801EA0E8(float, float);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802671CC(void *arg0, int arg1) {
-    struct Scratch {
-        float output[3];
-        float input[3];
-    } scratch;
+    struct Scratch { float output[3]; float input[3]; } scratch;
     float *in = scratch.input;
     float *out = scratch.output;
     float *matrix;
-    float z;
-    float delta;
-    float xstep;
-    float widthValue;
-    float heightValue;
-    float ystep;
-    float best;
+    float z, delta, xstep, widthValue, heightValue, ystep, best;
     int i;
-
     matrix = (float *)arg0;
     z = *(float *)((char *)arg0 + 0x48);
     delta = z * *(float *)((char *)arg0 + 0x34);
@@ -763,20 +755,11 @@ void fn_802671CC(void *arg0, int arg1) {
     ystep = widthValue * delta / heightValue;
     best = lbl_80563C20;
     i = 0;
-
     for (; i < 4; i++) {
-        float x;
-        float y;
-        float heightDiff;
-
-        if ((i & 1) != 0) x = xstep;
-        else x = -xstep;
-        if ((i & 2) != 0) y = ystep;
-        else y = -ystep;
-
-        in[0] = x;
-        in[1] = y;
-        in[2] = z;
+        float x, y, heightDiff;
+        if ((i & 1) != 0) x = xstep; else x = -xstep;
+        if ((i & 2) != 0) y = ystep; else y = -ystep;
+        in[0] = x; in[1] = y; in[2] = z;
         if (out == in) {
             out[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
             out[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
@@ -786,13 +769,10 @@ void fn_802671CC(void *arg0, int arg1) {
             out[1] = in[0] * matrix[1] + in[1] * matrix[4] + in[2] * matrix[7];
             out[2] = in[0] * matrix[2] + in[1] * matrix[5] + in[2] * matrix[8];
         }
-        out[0] += matrix[9];
-        out[1] += matrix[10];
-        out[2] += matrix[11];
+        out[0] += matrix[9]; out[1] += matrix[10]; out[2] += matrix[11];
         heightDiff = fn_801EA0E8(out[0], out[2]) - out[1];
         if (best > heightDiff) best = heightDiff;
     }
-
     if (*(int *)((char *)arg0 + 0x58) != 0x11 &&
         *(int *)((char *)arg0 + 0x58) != 0x15) {
         *(float *)((char *)arg0 + 0x28) += best;
@@ -2069,7 +2049,7 @@ void fn_8026A2C8(void) {
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8026A2CC(int *arg0, int arg1, float arg2) {
-    int e, d, c, b, a;
+    int a, b, c, d, e;
     int *dst;
     a = arg0[0];
     b = arg0[1];
