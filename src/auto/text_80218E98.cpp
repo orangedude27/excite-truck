@@ -4492,7 +4492,6 @@ extern "C" void fn_8021F7EC(void *object) {
 }
 
 extern "C" f32 lbl_80563518;
-extern "C" f64 lbl_805634B8;
 #pragma push
 #pragma opt_common_subs off
 extern "C" s32 fn_8021F848(void *arg0, s32 arg1) {
