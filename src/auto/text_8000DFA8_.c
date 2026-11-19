@@ -350,6 +350,7 @@ extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern f32 lbl_805602CC, lbl_805602D0, lbl_805602D4;
 #pragma push
 #pragma processor 750
+#pragma opt_common_subs off
 void fn_8000F4F0(void) {
     char *strBase;
     char text[32];
