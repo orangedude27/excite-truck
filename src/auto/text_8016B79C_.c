@@ -1490,86 +1490,90 @@ extern void fn_8016E15C();
 #pragma opt_loop_invariants off
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
-void fn_8016DA0C(void *arg0) {
+void fn_8016DA0C(void *obj) {
+    /* Reset this object's ring/set collections, sub-state and UI/sound handles to
+       their initial values (clear per-entry fields, rebuild/reinit the active set,
+       clear the 0x10-byte status entries, reset flags/timers and release/prime the
+       handle slots). */
     s32 i, j, n;
     void *p;
 
-    for (i = 0; i < M2C_FIELD(arg0, s32 *, 8); i++) {
-        p = ((void **) M2C_FIELD(arg0, void **, 4))[i];
+    for (i = 0; i < M2C_FIELD(obj, s32 *, 8); i++) {
+        p = ((void **) M2C_FIELD(obj, void **, 4))[i];
         M2C_FIELD(p, s32 *, 0) = 0;
         M2C_FIELD(p, s8 *, 8) = 0;
         M2C_FIELD(p, f32 *, 0xC) = 0.0f;
     }
     fn_8016A0D4();
-    if (M2C_FIELD(arg0, s32 *, 0x70) == 0) {
-        M2C_FIELD(arg0, s32 *, 0x74) = 0;
+    if (M2C_FIELD(obj, s32 *, 0x70) == 0) {
+        M2C_FIELD(obj, s32 *, 0x74) = 0;
     } else {
-        M2C_FIELD(arg0, s32 *, 0x74) = 2;
+        M2C_FIELD(obj, s32 *, 0x74) = 2;
     }
-    M2C_FIELD(arg0, s32 *, 0x5C) = 0;
-    M2C_FIELD(arg0, s32 *, 0x64) = 0;
-    M2C_FIELD(arg0, s32 *, 0x60) = 0;
-    M2C_FIELD(arg0, s8 *, 0x78) = 0;
-    M2C_FIELD(arg0, s8 *, 0x79) = 0;
-    M2C_FIELD(arg0, s8 *, 0x7A) = 1;
-    M2C_FIELD(arg0, f32 *, 0x58) = 0.0f;
-    if (M2C_FIELD(arg0, s32 *, 0x6C) < M2C_FIELD(arg0, s32 *, 0x68))
+    M2C_FIELD(obj, s32 *, 0x5C) = 0;
+    M2C_FIELD(obj, s32 *, 0x64) = 0;
+    M2C_FIELD(obj, s32 *, 0x60) = 0;
+    M2C_FIELD(obj, s8 *, 0x78) = 0;
+    M2C_FIELD(obj, s8 *, 0x79) = 0;
+    M2C_FIELD(obj, s8 *, 0x7A) = 1;
+    M2C_FIELD(obj, f32 *, 0x58) = 0.0f;
+    if (M2C_FIELD(obj, s32 *, 0x6C) < M2C_FIELD(obj, s32 *, 0x68))
         fn_802E30C8(lbl_80330AA4);
-    fn_8016E314((u8 *) arg0 + 0x38);
-    for (j = 0; j < M2C_FIELD(arg0, s32 *, 0x68); j++)
-        fn_8016E1B4((u8 *) arg0 + 0x30, j);
-    for (j = 0; j < M2C_FIELD(arg0, s32 *, 0x6C); j++)
-        fn_8016E15C((void *) fn_8016E1A4((s32 *) M2C_FIELD(arg0, s32 *, 0x48), j));
-    fn_8016E118((u8 *) arg0 + 0x30);
-    i = M2C_FIELD(arg0, s32 *, 0x5C);
-    if (i >= 0 && i < M2C_FIELD(arg0, s32 *, 0x68)) {
-        fn_8016E06C((u8 *) arg0 + 0x30);
-        fn_8016DFB8((u8 *) arg0 + 0x30);
-        fn_8016DE20((u8 *) arg0 + 0x30);
+    fn_8016E314((u8 *) obj + 0x38);
+    for (j = 0; j < M2C_FIELD(obj, s32 *, 0x68); j++)
+        fn_8016E1B4((u8 *) obj + 0x30, j);
+    for (j = 0; j < M2C_FIELD(obj, s32 *, 0x6C); j++)
+        fn_8016E15C((void *) fn_8016E1A4((s32 *) M2C_FIELD(obj, s32 *, 0x48), j));
+    fn_8016E118((u8 *) obj + 0x30);
+    i = M2C_FIELD(obj, s32 *, 0x5C);
+    if (i >= 0 && i < M2C_FIELD(obj, s32 *, 0x68)) {
+        fn_8016E06C((u8 *) obj + 0x30);
+        fn_8016DFB8((u8 *) obj + 0x30);
+        fn_8016DE20((u8 *) obj + 0x30);
     }
-    for (j = 0; j < fn_8016DE08(M2C_FIELD(arg0, void **, 0x4C)); j++) {
-        *(s8 *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j) = 0;
-        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j), s32 *, 4) = -1;
-        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j), f32 *, 8) = -100.0f;
-        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j), f32 *, 0xC) = -100.0f;
+    for (j = 0; j < fn_8016DE08(M2C_FIELD(obj, void **, 0x4C)); j++) {
+        *(s8 *) fn_8016DE10((s32 *) M2C_FIELD(obj, void **, 0x4C), j) = 0;
+        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(obj, void **, 0x4C), j), s32 *, 4) = -1;
+        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(obj, void **, 0x4C), j), f32 *, 8) = -100.0f;
+        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(obj, void **, 0x4C), j), f32 *, 0xC) = -100.0f;
     }
-    n = fn_8016DD98((u8 *) arg0 + 0x30);
-    M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), M2C_FIELD(arg0, s32 *, 0x5C)), s32 *, 4) = n;
-    if (M2C_FIELD(arg0, s32 *, 0x7C)) fn_80144C54(M2C_FIELD(arg0, s32 *, 0x7C));
-    if (M2C_FIELD(arg0, s32 *, 0x84)) fn_80144C54(M2C_FIELD(arg0, s32 *, 0x84));
-    if (M2C_FIELD(arg0, s32 *, 0x88)) fn_80144C54(M2C_FIELD(arg0, s32 *, 0x88));
-    if (M2C_FIELD(arg0, s32 *, 0x80)) fn_80144C54(M2C_FIELD(arg0, s32 *, 0x80));
-    if (M2C_FIELD(arg0, s32 *, 0x8C)) fn_80144C54(M2C_FIELD(arg0, s32 *, 0x8C));
-    if (M2C_FIELD(arg0, s32 *, 0x90)) fn_80144C54(M2C_FIELD(arg0, s32 *, 0x90));
-    if (M2C_FIELD(arg0, s32 *, 0x94)) fn_80144C54(M2C_FIELD(arg0, s32 *, 0x94));
-    M2C_FIELD(arg0, s8 *, 0x9C) = 1;
-    M2C_FIELD(arg0, f32 *, 0xA0) = -100.0f;
-    M2C_FIELD(arg0, s32 *, 0xAC) = 0;
-    M2C_FIELD(arg0, f32 *, 0xB0) = -1.0f;
-    M2C_FIELD(arg0, s8 *, 0xB4) = 1;
-    M2C_FIELD(arg0, s8 *, 0xB5) = 0;
-    M2C_FIELD(arg0, s8 *, 0xBC) = 0;
-    M2C_FIELD(arg0, s32 *, 0x1A4) = 0;
-    M2C_FIELD(arg0, s32 *, 0x1A8) = 0;
-    M2C_FIELD(arg0, s32 *, 0x1AC) = 0;
-    M2C_FIELD(arg0, s32 *, 0x1B0) = 0;
-    if (M2C_FIELD(arg0, s32 *, 0xB8)) fn_802AE0E0(M2C_FIELD(arg0, s32 *, 0xB8));
-    p = M2C_FIELD(arg0, void **, 0xC0);
+    n = fn_8016DD98((u8 *) obj + 0x30);
+    M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(obj, void **, 0x4C), M2C_FIELD(obj, s32 *, 0x5C)), s32 *, 4) = n;
+    if (M2C_FIELD(obj, s32 *, 0x7C)) fn_80144C54(M2C_FIELD(obj, s32 *, 0x7C));
+    if (M2C_FIELD(obj, s32 *, 0x84)) fn_80144C54(M2C_FIELD(obj, s32 *, 0x84));
+    if (M2C_FIELD(obj, s32 *, 0x88)) fn_80144C54(M2C_FIELD(obj, s32 *, 0x88));
+    if (M2C_FIELD(obj, s32 *, 0x80)) fn_80144C54(M2C_FIELD(obj, s32 *, 0x80));
+    if (M2C_FIELD(obj, s32 *, 0x8C)) fn_80144C54(M2C_FIELD(obj, s32 *, 0x8C));
+    if (M2C_FIELD(obj, s32 *, 0x90)) fn_80144C54(M2C_FIELD(obj, s32 *, 0x90));
+    if (M2C_FIELD(obj, s32 *, 0x94)) fn_80144C54(M2C_FIELD(obj, s32 *, 0x94));
+    M2C_FIELD(obj, s8 *, 0x9C) = 1;
+    M2C_FIELD(obj, f32 *, 0xA0) = -100.0f;
+    M2C_FIELD(obj, s32 *, 0xAC) = 0;
+    M2C_FIELD(obj, f32 *, 0xB0) = -1.0f;
+    M2C_FIELD(obj, s8 *, 0xB4) = 1;
+    M2C_FIELD(obj, s8 *, 0xB5) = 0;
+    M2C_FIELD(obj, s8 *, 0xBC) = 0;
+    M2C_FIELD(obj, s32 *, 0x1A4) = 0;
+    M2C_FIELD(obj, s32 *, 0x1A8) = 0;
+    M2C_FIELD(obj, s32 *, 0x1AC) = 0;
+    M2C_FIELD(obj, s32 *, 0x1B0) = 0;
+    if (M2C_FIELD(obj, s32 *, 0xB8)) fn_802AE0E0(M2C_FIELD(obj, s32 *, 0xB8));
+    p = M2C_FIELD(obj, void **, 0xC0);
     if (p) { M2C_FIELD(p, s8 *, 0x4A) = 1; M2C_FIELD(p, s8 *, 0x4C) = 0; }
-    p = M2C_FIELD(arg0, void **, 0xC4);
+    p = M2C_FIELD(obj, void **, 0xC4);
     if (p) { M2C_FIELD(p, s8 *, 0x4A) = 1; M2C_FIELD(p, s8 *, 0x4C) = 0; }
-    p = M2C_FIELD(arg0, void **, 0xC8);
+    p = M2C_FIELD(obj, void **, 0xC8);
     if (p) { M2C_FIELD(p, s8 *, 0x4A) = 1; M2C_FIELD(p, s8 *, 0x4C) = 0; }
-    p = M2C_FIELD(arg0, void **, 0xD0);
-    M2C_FIELD(arg0, s8 *, 0xCC) = 0;
+    p = M2C_FIELD(obj, void **, 0xD0);
+    M2C_FIELD(obj, s8 *, 0xCC) = 0;
     if (p) { M2C_FIELD(p, s8 *, 0x4A) = 1; M2C_FIELD(p, s8 *, 0x4C) = 0; }
-    p = M2C_FIELD(arg0, void **, 0xD4);
+    p = M2C_FIELD(obj, void **, 0xD4);
     if (p) { M2C_FIELD(p, s8 *, 0x4A) = 1; M2C_FIELD(p, s8 *, 0x4C) = 0; }
-    p = M2C_FIELD(arg0, void **, 0xD8);
+    p = M2C_FIELD(obj, void **, 0xD8);
     if (p) { M2C_FIELD(p, s8 *, 0x4A) = 1; M2C_FIELD(p, s8 *, 0x4C) = 0; }
-    p = M2C_FIELD(arg0, void **, 0xA4);
+    p = M2C_FIELD(obj, void **, 0xA4);
     if (p) { M2C_FIELD(p, s8 *, 0x4A) = 1; M2C_FIELD(p, s8 *, 0x4C) = 0; }
-    M2C_FIELD(arg0, s8 *, 0xA8) = 0;
+    M2C_FIELD(obj, s8 *, 0xA8) = 0;
 }
 #pragma scheduling on
 #pragma opt_common_subs on
