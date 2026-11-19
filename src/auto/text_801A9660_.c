@@ -1178,14 +1178,17 @@ void fn_801AC0A0(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
  struct { void *v; float a[3], b[3]; int c,d; } event;
  float value, scale, squared;
  float z2,y2,x2,z,y,x;
+ void *vptr;
  if(arg3>=100 && *((unsigned char *)arg0+0x220)==0) {
  value=*(float *)((char *)arg0+0xD4);
  scale=lbl_805624E8 * value;
  squared=scale*scale;
  if(PSVECDotProduct((Vec *)arg1,(Vec *)arg1)>squared) {
- x=arg1[0]; y=arg1[1]; z=arg1[2];
+ x=arg1[0];
+ vptr = lbl_803357F0;
+ y=arg1[1]; z=arg1[2];
  x2=arg2[0]; y2=arg2[1]; z2=arg2[2];
- event.v=lbl_803357F0;
+ event.v=vptr;
  event.a[0]=x; event.a[1]=y; event.a[2]=z;
  event.b[0]=x2; event.b[1]=y2; event.b[2]=z2;
  event.c=arg3; event.d=arg4;
@@ -1540,6 +1543,7 @@ static inline void transform_801ACB30(const float *m, const float *src, float *d
     }
     dst[0] += m[9]; dst[1] += m[10]; dst[2] += m[11];
 }
+__declspec(section ".data") extern float lbl_80558DC4;
 void fn_801ACB30(void *arg0, int arg1) {
     char *p = (char *)arg0;
     float *out = (float *)(arg1 + *(int *)(p + 8));
