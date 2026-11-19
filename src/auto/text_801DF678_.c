@@ -211,20 +211,32 @@ struct SlipSlot {
     struct SlipRecord record; /* 0x04 */
 };
 
-void fn_801DFF1C(int arg0) {
-    int index = arg0;
-    char* entry = (char*)lbl_8055EA04 + index * 0x1C;
-    void* vec = ((void**)lbl_804348E8)[index];
-    float x = -100.0f;
-    float y = 0.0f;
-    float z = 0.15f;
-    *(float*)(entry + 4) = z;
-    *(float*)(entry + 0x10) = y;
-    *(float*)(entry + 8) = x;
-    *(char*)(entry + 0xC) = 0;
-    *(float*)(entry + 0x14) = lbl_80562C44 * (lbl_8055AE30 * PSVECMag((char*)vec + 0x118)) / lbl_80562C48;
-    *(char*)(entry + 0x18) = 0;
-    *(int*)(entry + 0x1C) = -1;
+/* Start one vehicle's slip/skid record in the manager at lbl_8055EA04: the
+ * effect begins at its minimum charge, unraised and inactive, its timers and
+ * sound zone cleared, and its slip is seeded from the speed the vehicle already
+ * has (20 * 2 * speed / 53.3333) so that a vehicle which is already sliding
+ * reaches the sound zones fn_801E0300 tests without waiting for it to build up. */
+void fn_801DFF1C(int index) {
+    #define SLIP_SEED_SCALE lbl_80562C44 /* 20.0 */
+    #define SLIP_SPEED_SCALE lbl_8055AE30 /* 2.0 */
+    #define SLIP_SEED_LIMIT lbl_80562C48 /* 53.3333 */
+    struct SlipSlot *slot = (struct SlipSlot *)((char *)lbl_8055EA04 + index * 0x1C);
+    void *vehicle = ((void **)lbl_804348E8)[index];
+    float longAgo = -100.0f;
+    float zero = 0.0f;
+    float minCharge = 0.15f;
+
+    slot->record.charge = minCharge;
+    slot->record.elapsed = zero;
+    slot->record.timer = longAgo;
+    slot->record.active = 0;
+    slot->record.slip =
+        SLIP_SEED_SCALE * (SLIP_SPEED_SCALE * PSVECMag((char *)vehicle + 0x118)) / SLIP_SEED_LIMIT;
+    slot->record.started = 0;
+    slot->record.zone = -1;
+    #undef SLIP_SEED_SCALE
+    #undef SLIP_SPEED_SCALE
+    #undef SLIP_SEED_LIMIT
 }
 
 extern float lbl_8055AE40, lbl_80562C18, lbl_80562C4C, lbl_80562C1C;
