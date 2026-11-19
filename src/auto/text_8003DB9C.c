@@ -5539,38 +5539,39 @@ void GXSetAlphaCompare(s32 comp0, s32 ref0, s32 op, s32 comp1, s32 ref1) {
     ((GXDrawData *)__GXData)->lastWriteWasXF = FALSE;
 }
 
+/* Set Z-texture operation, format, and bias by writing BP registers 0xF4 and 0xF5, then clear bpSentNot. */
 void GXSetZTexture(s32 op, s32 format, s32 bias) {
-    u32 zenv0;
-    u32 zenv1;
-    u32 type;
+    u32 zTexBiasReg;
+    u32 zTexOpReg;
+    u32 zTexFmt;
 
-    zenv0 = 0;
-    zenv0 = GX_BITSET(zenv0, 8, 24, bias);
-    zenv0 = GX_BITSET(zenv0, 0, 8, 0xF4);
+    zTexBiasReg = 0;
+    zTexBiasReg = GX_BITSET(zTexBiasReg, 8, 24, bias);
+    zTexBiasReg = GX_BITSET(zTexBiasReg, 0, 8, 0xF4);
 
-    zenv1 = 0;
+    zTexOpReg = 0;
     switch (format) {
     case 0x11:
-        type = 0;
+        zTexFmt = 0;
         break;
     case 0x13:
-        type = 1;
+        zTexFmt = 1;
         break;
     case 0x16:
-        type = 2;
+        zTexFmt = 2;
         break;
     default:
-        type = 2;
+        zTexFmt = 2;
         break;
     }
-    zenv1 = GX_BITSET(zenv1, 30, 2, type);
-    zenv1 = GX_BITSET(zenv1, 28, 2, op);
-    zenv1 = GX_BITSET(zenv1, 0, 8, 0xF5);
+    zTexOpReg = GX_BITSET(zTexOpReg, 30, 2, zTexFmt);
+    zTexOpReg = GX_BITSET(zTexOpReg, 28, 2, op);
+    zTexOpReg = GX_BITSET(zTexOpReg, 0, 8, 0xF5);
 
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = zenv0;
+    *(volatile unsigned int *)0xCC008000 = zTexBiasReg;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = zenv1;
+    *(volatile unsigned int *)0xCC008000 = zTexOpReg;
     *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
