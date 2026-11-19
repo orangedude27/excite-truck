@@ -110,7 +110,6 @@ void fn_80239AB8(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling off
 void fn_80239AC0(void)
 {
     s32 args[5];
