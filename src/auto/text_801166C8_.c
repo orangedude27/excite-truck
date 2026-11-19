@@ -1898,6 +1898,11 @@ s32 fn_80119300(void *buffer, s32 offset, s32 count) {
     }
 }
 extern void AXSetVoiceState(void *, s32);
+static inline void SetVoiceStateIfValid(void *voice, s32 state) {
+    if (voice != 0) {
+        AXSetVoiceState(voice, state);
+    }
+}
 s32 fn_8011943C(void *arg0, s32 arg1) {
     s32 temp_r0;
     s32 temp_r3;
