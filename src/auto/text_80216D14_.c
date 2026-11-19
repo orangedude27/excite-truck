@@ -36,6 +36,14 @@ struct UiWidget {
     float offTimer;        /* 0x20: runs down while `shown` is clear */
 };
 
+/* One entry of a menu group's selection list.  fn_80217BD8 appends a pair and
+   qsorts the list by `key`, so the entries walk in the order the widgets are
+   laid out; +0x498 of the group names the selected one by its key. */
+struct UiMenuEntry {
+    int key;          /* 0x0: sort key, and the id the group's selection holds */
+    UiWidget *widget; /* 0x4: the widget this entry selects */
+};
+
 /* The UI menu group most of this file's functions take as their first argument
    (built by fn_80216D40).  Widgets are added to the array at +0x30. */
 struct UiMenuGroup {
