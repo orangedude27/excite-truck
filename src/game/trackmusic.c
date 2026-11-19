@@ -152,47 +152,48 @@ void *fn_8020F5F0(long trackIndex) {
 #pragma dont_inline reset
 extern void *memset(void *, int, unsigned long);
 #pragma dont_inline on
-#pragma opt_unroll_loops off
+#pragma ctrloop on
 long fn_8020F608(long arg0, long arg1) {
-    long i = 2;
     char *ptr;
+    long i;
     ptr = (char *)fn_8020F5F0(arg1);
     memset(ptr, 0, 0x1900);
-loop:
-    *(long *)(ptr + 0x000) = arg0;
-    *(long *)(ptr + 0x064) = arg0;
-    *(long *)(ptr + 0x0C8) = arg0;
-    *(long *)(ptr + 0x12C) = arg0;
-    *(long *)(ptr + 0x190) = arg0;
-    *(long *)(ptr + 0x1F4) = arg0;
-    *(long *)(ptr + 0x258) = arg0;
-    *(long *)(ptr + 0x2BC) = arg0;
-    *(long *)(ptr + 0x320) = arg0;
-    *(long *)(ptr + 0x384) = arg0;
-    *(long *)(ptr + 0x3E8) = arg0;
-    *(long *)(ptr + 0x44C) = arg0;
-    *(long *)(ptr + 0x4B0) = arg0;
-    *(long *)(ptr + 0x514) = arg0;
-    *(long *)(ptr + 0x578) = arg0;
-    *(long *)(ptr + 0x5DC) = arg0;
-    *(long *)(ptr + 0x640) = arg0;
-    *(long *)(ptr + 0x6A4) = arg0;
-    *(long *)(ptr + 0x708) = arg0;
-    *(long *)(ptr + 0x76C) = arg0;
-    *(long *)(ptr + 0x7D0) = arg0;
-    *(long *)(ptr + 0x834) = arg0;
-    *(long *)(ptr + 0x898) = arg0;
-    *(long *)(ptr + 0x8FC) = arg0;
-    *(long *)(ptr + 0x960) = arg0;
-    *(long *)(ptr + 0x9C4) = arg0;
-    *(long *)(ptr + 0xA28) = arg0;
-    *(long *)(ptr + 0xA8C) = arg0;
-    *(long *)(ptr + 0xAF0) = arg0;
-    *(long *)(ptr + 0xB54) = arg0;
-    *(long *)(ptr + 0xBB8) = arg0;
-    *(long *)(ptr + 0xC1C) = arg0;
-    ptr += 0xC80;
-    if (--i != 0) goto loop;
+    i = 2;
+    do {
+        *(long *)(ptr + 0x000) = arg0;
+        *(long *)(ptr + 0x064) = arg0;
+        *(long *)(ptr + 0x0C8) = arg0;
+        *(long *)(ptr + 0x12C) = arg0;
+        *(long *)(ptr + 0x190) = arg0;
+        *(long *)(ptr + 0x1F4) = arg0;
+        *(long *)(ptr + 0x258) = arg0;
+        *(long *)(ptr + 0x2BC) = arg0;
+        *(long *)(ptr + 0x320) = arg0;
+        *(long *)(ptr + 0x384) = arg0;
+        *(long *)(ptr + 0x3E8) = arg0;
+        *(long *)(ptr + 0x44C) = arg0;
+        *(long *)(ptr + 0x4B0) = arg0;
+        *(long *)(ptr + 0x514) = arg0;
+        *(long *)(ptr + 0x578) = arg0;
+        *(long *)(ptr + 0x5DC) = arg0;
+        *(long *)(ptr + 0x640) = arg0;
+        *(long *)(ptr + 0x6A4) = arg0;
+        *(long *)(ptr + 0x708) = arg0;
+        *(long *)(ptr + 0x76C) = arg0;
+        *(long *)(ptr + 0x7D0) = arg0;
+        *(long *)(ptr + 0x834) = arg0;
+        *(long *)(ptr + 0x898) = arg0;
+        *(long *)(ptr + 0x8FC) = arg0;
+        *(long *)(ptr + 0x960) = arg0;
+        *(long *)(ptr + 0x9C4) = arg0;
+        *(long *)(ptr + 0xA28) = arg0;
+        *(long *)(ptr + 0xA8C) = arg0;
+        *(long *)(ptr + 0xAF0) = arg0;
+        *(long *)(ptr + 0xB54) = arg0;
+        *(long *)(ptr + 0xBB8) = arg0;
+        *(long *)(ptr + 0xC1C) = arg0;
+        ptr += 0xC80;
+    } while (--i);
     return 0;
 }
 #pragma opt_unroll_loops reset
