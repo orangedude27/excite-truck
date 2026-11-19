@@ -8,7 +8,6 @@ extern void fn_8002F53C(void *, void *, void *, int, int);
 extern void fn_801312EC(void *, void *);
 extern void fn_8022D98C(void *, void *, float, float, float, float, float);
 extern void fn_80215EA8(void), fn_80215EC4(void), fn_80215F04(void), fn_80215F1C(void), fn_80215F5C(void);
-typedef struct Obj80215CF4 { int f00, f04, f08, f0c, f10; } Obj80215CF4;
 extern char lbl_8033D678[], lbl_8033D684[], lbl_8033D6F0[], lbl_80490510[];
 extern int lbl_8055B840, lbl_8055B848, lbl_8055B850, lbl_8055B858, lbl_8055EEF8;
 extern int lbl_8055EF00, lbl_8055EF04;
