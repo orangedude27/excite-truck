@@ -1218,11 +1218,8 @@ float fn_80160588(void * __restrict arg0, void * __restrict arg1, void * __restr
 }
 
 #pragma scheduling reset
-static inline void fn_801605C8_spill(f32 a, f32 b) {
-    volatile f32 p[2];
-    p[0] = a;
-    p[1] = b;
-}
+#pragma push
+#pragma optimization_level 3
 f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     f32 result2;
     f32 result1;
@@ -1230,15 +1227,13 @@ f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     f32 dx;
     f32 y;
     f32 negX;
-    volatile f32 sp[2];
     negX = -*(f32 *)arg0;
-    y = *(f32 *)((u8 *)arg0 + 4);
     dx = *(f32 *)arg1 - *(f32 *)arg2;
     dy = *(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4);
+    y = *(f32 *)((u8 *)arg0 + 4);
     result1 = y * dx;
-    sp[0] = dx;
+    fn_801605C8_spill(dx, dy);
     result2 = negX * dy;
-    sp[1] = dy;
     return result1 + result2;
 }
 void *fn_8016060C(void *arg0, void *arg1) {
