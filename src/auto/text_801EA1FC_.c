@@ -124,6 +124,7 @@ void fn_801EA3B8(void) {
 #undef uiActive
 }
 
+/* Thunk: update all active scene objects in the context. */
 void fn_801EA400(void) {
     fn_801EBCAC();
 }
