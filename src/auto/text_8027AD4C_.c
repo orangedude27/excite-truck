@@ -111,7 +111,7 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
 
     *(void **)(a0 + 8) = arg1;
     *(unsigned char *)(a0 + 4) = 1;
-    if (stricmp(((First *)arg1)->m0(), (char *)((unsigned long)base + 0)) == 0) {
+    if (stricmp(((First *)arg1)->m0(), base) == 0) {
         name = ((First *)arg1)->m3(base + 0xC);
         *(long *)(a0 + 0x30) = fn_8027D1F4();
         found = 0;
@@ -1073,11 +1073,12 @@ long fn_8027C1C8(void *arg0, const char *arg1) {
     long offset = 0;
     while (index < table->count) {
         unsigned int equal = (unsigned int)__cntlzw((unsigned int)stricmp(arg1, *(char **)(table->entries + offset + 4))) >> 5;
-        if (equal) {
-            goto found;
+        if (!equal) {
+            offset += 0xC;
+            index++;
+            continue;
         }
-        offset += 0xC;
-        index++;
+        goto found;
     }
     index = -1;
 found:
@@ -1374,7 +1375,12 @@ fetch:
 #pragma push
 #pragma scheduling invalid_target
 long fn_8027C850(void *arg0) {
-    long index = fn_8027C1C8((void *)lbl_8055F654, *(char **)((char *)arg0 + 4));
+    void *oracle;
+    char *name;
+    long index;
+    oracle = (void *)lbl_8055F654;
+    name = *(char *volatile *)((char *)arg0 + 4);
+    index = fn_8027C1C8(oracle, name);
     if (index == 0)
         return 1;
     return fn_8027C788(fn_8027C26C((void *)lbl_8055F654,
@@ -1784,7 +1790,8 @@ void fn_8027C8B8(long, char *, long);
 #pragma opt_propagation off
 extern "C" void fn_8027D158(long arg0, char *arg1, long arg2) {
     long *result = fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
-    switch (*(unsigned long *)result) {
+    long pathType = *result;
+    switch (pathType) {
     case 0:
         fn_8027C8B8((long)result, arg1, arg2);
         break;
@@ -1792,7 +1799,7 @@ extern "C" void fn_8027D158(long arg0, char *arg1, long arg2) {
         fn_8027CBF8((long)result, arg1, arg2);
         break;
     default:
-        ((void (*)(char *, ...))fn_802E317C)(lbl_80347C38, arg0);
+        ((void (*)(char *, ...))fn_802E317C)(lbl_80347C38, arg0, pathType);
         break;
     }
 }
