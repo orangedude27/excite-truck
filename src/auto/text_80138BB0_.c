@@ -5,10 +5,6 @@ extern char lbl_8055E0E8[8];
 extern int fn_8000D838(void*);
 extern unsigned int lbl_8055E0F0;
 extern unsigned int lbl_8055E0F4;
-
-static inline void fn_80138BB0_setDefault(unsigned int *dst, unsigned int value) {
-    *dst = value;
-}
 void fn_80138BB0(void) {
     unsigned int *p = &lbl_8055E0F0;
     fn_8000D838(&lbl_8055E0E8);
