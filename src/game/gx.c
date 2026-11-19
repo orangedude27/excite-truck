@@ -1327,21 +1327,22 @@ void fn_802D050C(void* stateBlock) {
 
 int fn_802D0514(void *source) {
     extern unsigned long lbl_8055FDAC;
-    int index;
-    unsigned char *aux;
-    unsigned long next;
+    extern void *lbl_8055FDB0;
+    unsigned long tmp;
+    int next;
     unsigned int *src;
     unsigned char *dst;
     unsigned int a;
     unsigned int b;
     unsigned int c;
-    index = (int)lbl_8055FDAC;
-    if (index >= 0x800) return 0;
+    unsigned char *aux;
+    tmp = lbl_8055FDAC;
+    if ((int)tmp >= 0x800) return 0;
     src = (unsigned int *)source;
-    dst = (unsigned char *)lbl_8055FDB0 + index * 0x4C;
+    dst = (unsigned char *)lbl_8055FDB0 + tmp * 0x4C;
     a = src[0];
     b = src[1];
-    next = index + 1;
+    next = (int)tmp + 1;
     lbl_8055FDAC = next;
     *(unsigned int *)(dst + 0) = a;
     c = src[2];
@@ -1365,7 +1366,8 @@ int fn_802D0514(void *source) {
     c = src[11];
     *(unsigned int *)(dst + 40) = b;
     *(unsigned int *)(dst + 44) = c;
-    aux = (unsigned char *)&lbl_804C97D0 - 1;
+    tmp = (unsigned long)((unsigned char *)&lbl_804C97D0 - 1);
+    aux = (unsigned char *)tmp;
     dst[0x30] = *++aux;
     dst[0x31] = aux[1];
     dst[0x32] = aux[2];
@@ -2059,8 +2061,9 @@ extern double lbl_80564FA0;
 void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float scale) {
     unsigned char rgba[4];
     float vec[3];
-    float x, y, z, mag, k;
-    rgba[0]=color[0]; rgba[1]=color[1]; rgba[2]=color[2]; rgba[3]=color[3];
+    float x, y, k, z, mag;
+    float bx, by, bz;
+    rgba[1]=color[1]; rgba[0]=color[0]; rgba[2]=color[2]; rgba[3]=color[3];
     GXInitLightColor(light, rgba);
     x=a[0]+b[0];
     y=a[1]+b[1];
@@ -2068,9 +2071,11 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
     vec[0]=x; vec[1]=y; vec[2]=z;
     mag=PSVECMag(vec);
     mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
+    bx=b[0]; by=b[1]; bz=-b[2];
     k=lbl_80564F90/mag;
-    x=vec[0]*k; y=vec[1]*k; z=vec[2]*k;
-    GXGetLightDir_Internal(light,b[0],b[1],-b[2],x,y,-z);
+    z=vec[2]*k; x=vec[0]*k; y=vec[1]*k;
+    vec[0]=x; vec[1]=y; vec[2]=z;
+    GXGetLightDir_Internal(light,bx,by,bz,x,y,-z);
     {
         float v=scale*lbl_80564F94;
         GXInitLightAttn(light,lbl_80564F88,lbl_80564F88,lbl_80564F8C,v,lbl_80564F88,lbl_80564F8C-v);
@@ -3178,7 +3183,9 @@ void fn_802D3900(void) {
 extern char lbl_8034C1E4[];
 extern float lbl_80564F88;
 #pragma processor 7400
-void *fn_802D39A4(float value) {
+/* Allocate a free depth query from the pool and initialize it with the given fade
+ * step. Panics if the pool has no free query. */
+void *fn_802D39A4(float step) {
     ZQuery *query = (ZQuery *)lbl_804C9984;
     ZQuery *found = 0;
     int index = 0;
@@ -3196,7 +3203,7 @@ void *fn_802D39A4(float value) {
         fn_802E317C(lbl_8034C1E4);
     found->used = 1;
     found->visible = 0;
-    found->step = value;
+    found->step = step;
     found->fade = 0.0f;
     return found;
 }
