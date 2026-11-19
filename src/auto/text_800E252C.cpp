@@ -495,7 +495,7 @@ extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
 }
 
 extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
-    f32 index = __fabsf(angle);
+    register f32 index = __fabsf(angle);
     while (index >= lbl_80560F00) index -= lbl_80560F00;
     u16 q = __OSf32tou16(index);
     f32 whole = __OSu16tof32(&q);
@@ -4219,7 +4219,7 @@ extern "C" void SetVolume__Q46nw4hbm3snd6detail10BasicSoundFfi(void *this_, floa
     };
     float current;
 
-    if (!(volume >= lbl_80560FB0)) {
+    if (!(volume >= 0.0f)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x225, lbl_80322830);
     }
     SoundFields *sound = (SoundFields *)this_;
