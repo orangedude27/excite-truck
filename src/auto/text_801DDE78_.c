@@ -214,6 +214,7 @@ void fn_801DE12C(void) {
     lastEditMs = (void*)GetTimeMs();
 }
 
+/* Empty stub / no-op placeholder. */
 void fn_801DE150(void) {
 
 }
