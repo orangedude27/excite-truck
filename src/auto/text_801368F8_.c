@@ -148,10 +148,10 @@ s32 fn_80136A18(s32 self, s32 deleteFlag) {
 
 #pragma scheduling reset
 void fn_80136AA8(void *g) {
-    int i, j;
+    int i = 0, j;
+    int zero = i;
     int k = 0;
-    int zero = 0;
-    for (i = 0; i < I(g, 0); i++) {
+    for (; i < I(g, 0); i++) {
         short si = i;
         B(I(g, 0x10) + i * I(g, 0xC), 0x15) = 1;
         I(i * I(g, 0xC) + (i * 4 + I(g, 0x10)), 0x18) = zero;
@@ -346,7 +346,7 @@ s32 fn_8013705C(f32 valueA, f32 valueB) {
 }
 
 extern float PSVECDotProduct(const void *, const void *);
-#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
     f32 sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
     f32 temp_f10, temp_f11, temp_f1, temp_f2, temp_f3, temp_f4, temp_f5;
