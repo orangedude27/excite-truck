@@ -105,7 +105,7 @@ int fn_802CCD0C(void *arg0, void *arg1) {
 #pragma processor 750
 #pragma scheduling on
 #pragma cplusplus on
-extern "C" int fn_802CCDC4(void ***arg0, void ***arg1) {
+extern "C" int fn_802CCDC4(void *** __restrict arg0, void *** __restrict arg1) {
     struct Local {
         virtual void v0();
         virtual void v1();
