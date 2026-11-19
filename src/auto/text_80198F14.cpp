@@ -97,8 +97,8 @@ extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
 #pragma always_inline on
 static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
     if (dst == src) {
-        f32 p0 = m[3] * src[1], p1 = m[4] * src[1], p5 = m[5] * src[1];
-        f32 p2 = m[0] * src[0], p3 = m[1] * src[0], p4 = m[2] * src[0];
+        f32 p0 = m[3] * src[1], p1 = m[4] * src[1], p2 = m[0] * src[0];
+        f32 p3 = m[1] * src[0], p4 = m[2] * src[0], p5 = m[5] * src[1];
         f32 p6 = m[6] * src[2], p7 = m[7] * src[2], p8 = m[8] * src[2];
         f32 x = p6 + (p2 + p0), y = p7 + (p3 + p1), z = p8 + (p4 + p5);
         dst[0] = x; dst[1] = y; dst[2] = z;
@@ -1960,8 +1960,8 @@ extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *ar
     Vec velocity, delta, normalCopy, normal, cross, rotated, result;
     f32 *m = (f32 *)arg2;
     f32 *p = (f32 *)arg0;
-    u32 ny = ((u32 *)arg4)[1];
     f32 dx = arg3[0] - p[0];
+    u32 ny = ((u32 *)arg4)[1];
     f32 dy = arg3[1] - p[1];
     f32 dz = arg3[2] - p[2];
     f32 vz = arg1[2], vy = arg1[1], vx = arg1[0];
