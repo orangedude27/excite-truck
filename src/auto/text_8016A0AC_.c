@@ -228,56 +228,59 @@ extern f32 lbl_80561960;
 #pragma processor 750
 s32 fn_8016A30C(void)
 {
-  f32 a;
-  f32 b;
-  s32 c;
-  s32 d;
-  u8 *p;
-  s32 h;
-  s32 g;
-  s32 f;
-  s32 e;
-  f32 *new_var;
+  /* Activate nearby entries in lbl_80430318 for the current player object:
+     mark each unvisited active entry within radius as visited, record the time,
+     and return how many were activated this call. */
+  f32 radiusBonus;
+  f32 radius;
+  s32 player;
+  s32 activated;
+  u8 *entry;
+  s32 candidate;
+  s32 offset;
+  s32 activatedCount;
+  s32 index;
+  f32 *radiusBonusPtr;
 
-  c = fn_8017960C();
-  new_var = &a;
-  if (c)
+  player = fn_8017960C();
+  radiusBonusPtr = &radiusBonus;
+  if (player)
   {
-    a = lbl_80561960;
-    f = 0;
-    e = 0;
-    g = 0;
-    while (e < *(s32 *)(lbl_80430318 + 4))
+    radiusBonus = lbl_80561960;
+    activatedCount = 0;
+    index = 0;
+    offset = 0;
+    while (index < *(s32 *)(lbl_80430318 + 4))
     {
-      d = 0;
-      h = 0;
-      p = (u8 *)(*(s32 *)lbl_80430318 + g);
-      if (p[0x3c] && !p[0x3d])
+      activated = 0;
+      candidate = 0;
+      entry = (u8 *)(*(s32 *)lbl_80430318 + offset);
+      if (entry[0x3c] && !entry[0x3d])
       {
-        h = 1;
+        candidate = 1;
       }
-      if (h)
+      if (candidate)
       {
-        b = (f32)(*(s32 *)(p + 4));
+        radius = (f32)(*(s32 *)(entry + 4));
         if (lbl_8055E364)
         {
-          b += *new_var;
+          radius += *radiusBonusPtr;
         }
-        if (PSVECSquareDistance((void *)(c + 0x60), p + 0x30) < (b * b))
+        if (PSVECSquareDistance((void *)(player + 0x60), entry + 0x30) < (radius * radius))
         {
-          p[0x3d] = 1;
-          d = 1;
-          *(f32 *)(p + 0x40) = lbl_8055E3C8;
+          entry[0x3d] = 1;
+          activated = 1;
+          *(f32 *)(entry + 0x40) = lbl_8055E3C8;
         }
       }
-      if (d)
+      if (activated)
       {
-        f++;
+        activatedCount++;
       }
-      g += 0x48;
-      e++;
+      offset += 0x48;
+      index++;
     }
-    return f;
+    return activatedCount;
   }
   return 0;
 }
@@ -285,18 +288,19 @@ s32 fn_8016A30C(void)
 #pragma processor 750
 void fn_8016A438(void) {
     Blk8016A438 blk;
+    s32 i;
     char *rec;
     char *ent;
     s32 j;
-    s32 i;
+    f32 c78;
+    f32 c74 = lbl_80561974;
+    f32 c70 = lbl_80561970;
+    f32 c60 = lbl_80561960;
     f32 now;
     f32 t;
     f32 scale;
-    f32 c70 = lbl_80561970;
-    f32 c60 = lbl_80561960;
-    f32 c74 = lbl_80561974;
-    f32 c78 = lbl_80561978;
     f32 c7c = lbl_8056197C;
+    c78 = lbl_80561978;
     for (i = 0; i < lbl_80430340.unk_0x4; i++) {
         ent = lbl_80430340.unk_0x0 + i * 0x2C;
         j = *(s32 *)(ent + 0x24);
@@ -308,11 +312,9 @@ void fn_8016A438(void) {
             t = ((now - *(f32 *)(rec + 0x44)) - c70) / c74;
             if (c60 < t)
                 t = c60;
-            if (t <= c70)
-                t = c70;
+            t = (t > c70) ? t : c70;
             scale = c70 + t * c60;
-            if (*(u8 *)(rec + 0x3C) == 0)
-                scale = c60 - scale;
+            scale = (*(u8 *)(rec + 0x3C) != 0) ? scale : (c60 - scale);
             if (scale > c78) {
                 fn_802C9900(scale);
                 blk = *(Blk8016A438 *)(rec + 0xC);
@@ -441,19 +443,20 @@ s32 fn_8016A878(const char* name) {
     return matchCount;
 }
 
-s32 fn_8016A8F8(void* alarm) {
+#pragma cplusplus on
+extern "C" s32 fn_8016A8F8(void* alarm) {
     void* obj;
     Entry28* entry;
     volatile Ctr804302F0* vc;
     u8* d;
     u8* s;
     s32 sj;
-    register s32 cur;
+    s32 cur;
     s32 i;
     s32 n;
     s32 var24;
     obj = *(void**)((char*)fn_8000AC38() + 0x20);
-    lbl_8055E364 = ((s32(*)(void*, void*, s32))((*(void***)obj)[0xC]))(obj, &lbl_80330460, 0);
+    lbl_8055E364 = ((ObjVt*)obj)->f(&lbl_80330460, 0);
     if (lbl_804302F0.ptr10 != 0) {
         fn_8002F6AC(lbl_804302F0.ptr10, fn_8016AC24);
         lbl_804302F0.ptr10 = 0;
@@ -467,8 +470,7 @@ s32 fn_8016A8F8(void* alarm) {
     lbl_804302F0.data = lbl_804302F0.ptr10;
     lbl_804302F0.limit = lbl_804302F0.cap;
     lbl_804302F0.count = 0;
-    var24 = 1;
-    while (lbl_804302F0.count + 1 <= lbl_804302F0.limit && var24 < 0x64) {
+    for (var24 = 1; lbl_804302F0.count + 1 <= lbl_804302F0.limit && var24 < 0x64; var24++) {
         cur = ((volatile Ctr804302F0 *)&lbl_804302F0)->count;
         entry = &lbl_804302F0.data[cur];
         lbl_804302F0.count = cur + 1;
@@ -509,11 +511,9 @@ s32 fn_8016A8F8(void* alarm) {
                 }
             }
         }
-        var24++;
     }
 }
-
-#pragma use_lmw_stmw on
+#pragma cplusplus off
 /* Pool element init callback: clear the byte flag at +0 of a 0x28-byte entry. */
 void fn_8016AC18(u8* entry) { *entry = 0; }
 
@@ -727,32 +727,26 @@ void *fn_8016B550(void *object, s32 shouldFree) {
     return object;
 }
 
+#pragma optimize_for_size on
 int fn_8016B598(void) {
-    register char *first;
-    register char *second;
-
-    first = (char *)&lbl_80430340;
-    if (*(void **)(first + 0x10) != 0) {
-        fn_8002F6AC(*(void **)(first + 0x10), (void *(*)(void *, s32))fn_8016B4FC);
-        *(s32 *)(first + 0x10) = 0;
-        *(s32 *)(first + 0x14) = 0;
+    if (*(void **)((char *)&lbl_80430340 + 0x10) != 0) {
+        fn_8002F6AC(*(void **)((char *)&lbl_80430340 + 0x10), (void *(*)(void *, s32))fn_8016B4FC);
+        *(s32 *)((char *)&lbl_80430340 + 0x10) = 0;
+        *(s32 *)((char *)&lbl_80430340 + 0x14) = 0;
         lbl_80430340.unk_0x0 = 0;
-        *(s32 *)(first + 4) = 0;
-        *(s32 *)(first + 8) = 0;
+        *(s32 *)((char *)&lbl_80430340 + 4) = 0;
+        *(s32 *)((char *)&lbl_80430340 + 8) = 0;
     }
-    second = lbl_80430318;
-    if (*(void **)(second + 0x10) != 0) {
-        fn_8002F6AC(*(void **)(second + 0x10), fn_8016B550);
-        *(s32 *)(second + 0x10) = 0;
-        *(s32 *)(second + 0x14) = 0;
-        *(s32 *)second = 0;
-        *(s32 *)(second + 4) = 0;
-        *(s32 *)(second + 8) = 0;
+    if (*(void **)(lbl_80430318 + 0x10) != 0) {
+        fn_8002F6AC(*(void **)(lbl_80430318 + 0x10), fn_8016B550);
+        *(s32 *)(lbl_80430318 + 0x10) = 0;
+        *(s32 *)(lbl_80430318 + 0x14) = 0;
+        *(s32 *)lbl_80430318 = 0;
+        *(s32 *)(lbl_80430318 + 4) = 0;
+        *(s32 *)(lbl_80430318 + 8) = 0;
     }
 }
-
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma optimize_for_size reset
 void fn_8016B634(s32 arg0) {
     register void *entry;
     register s32 offset;
