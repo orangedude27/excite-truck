@@ -6,6 +6,7 @@ void fn_801B06C8(void) {
 
 }
 
+/* No-op callback (empty stub). */
 void fn_801B06CC(void) {
 
 }
