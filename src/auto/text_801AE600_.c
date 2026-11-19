@@ -116,6 +116,8 @@ int fn_801AE620(void *entry) {
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma push
+#pragma opt_lifetimes off
 void fn_801AE628(int arg0) {
     struct {
         int count;
@@ -161,6 +163,7 @@ void fn_801AE628(int arg0) {
         }
     }
 }
+#pragma pop
 /* Return the placement state (low 2 bits of byte 0x70) of a race competitor; 0 means still unplaced. */
 int fn_801AE790(void *entry) {
     return ((Ent78 *)entry)->f70 & 3;
@@ -684,7 +687,7 @@ extern void fn_801B3208(int, int, float);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_801AF6FC(void) {
-    register Pair8 *pairs = (Pair8 *)lbl_80435740;
+    register CompetitorTable *tbl = (CompetitorTable *)((char *)lbl_80435740 + 0x40);
     register int mode;
     register unsigned int notTwo;
     register float *value;
@@ -695,7 +698,6 @@ void fn_801AF6FC(void) {
     register int *sorted;
     register int finalIndex;
     register int *finalSorted;
-    register int (*compare)(const void *, const void *);
     mode = fn_801769B8();
     notTwo = (unsigned int)((2 - mode) | (mode - 2)) >> 31;
     if (notTwo == 0) {
@@ -712,21 +714,18 @@ void fn_801AF6FC(void) {
         ((void (*)(int, int, int))fn_801AFAB4)(lbl_8055E628, lbl_8055E624[0], lbl_8055E624[1]);
     }
     if (mode == 1) {
-        register CompetitorTable *tbl = (CompetitorTable *)&pairs[8];
-        value = (float *)pairs;
+        value = (float *)lbl_80435740;
         for (dataIndex = 0; dataIndex < tbl->count; dataIndex++, value += 2) {
             value[0] = fn_801AE9E0(dataIndex, value + 1);
         }
     }
     {
-        register CompetitorTable *tbl = (CompetitorTable *)&pairs[8];
-        sorted = (int *)((char *)tbl + 0x3C8);
+        sorted = (int *)tbl->order;
         qsort(sorted, tbl->count, 4, (mode == 1) ? fn_801AEB58 : fn_801AEAA4);
     }
     {
-        register CompetitorTable *tbl = (CompetitorTable *)&pairs[8];
         rank = 0;
-        sorted = (int *)((char *)tbl + 0x3C8);
+        sorted = (int *)tbl->order;
         for (; rank < tbl->count; rank++, sorted++) {
             int index = *sorted;
             short rankValue = rank + 1;
@@ -740,8 +739,7 @@ void fn_801AF6FC(void) {
     }
     fn_801AE79C(mode);
     if (mode == 1) {
-        register CompetitorTable *tbl = (CompetitorTable *)&pairs[8];
-        finalSorted = (int *)((char *)tbl + 0x3C8);
+        finalSorted = (int *)tbl->order;
         for (finalIndex = 0; finalIndex < tbl->count; finalSorted++, finalIndex++) {
             int index = *finalSorted;
             float itemValue = fn_801AF9EC(index, 0);
