@@ -231,7 +231,7 @@ void fn_80202F58(void *arg0, void *arg1, void *arg2) {
     f32 scale, zero, one;
     u32 copy0, copy1;
 
-    if (__fabsf(*(f32 *)((u8 *)arg1 + 0x1C)) < lbl_805630F0) {
+    if ((f32)__fabs((double)(*(f32 *)((u8 *)arg1 + 0x1C))) < lbl_805630F0) {
         temp_f6 = (*(f32 *)((u8 *)arg0 + 0)) - (*(f32 *)((u8 *)arg1 + 0x24));
         temp_f3 = (*(f32 *)((u8 *)arg0 + 8)) - (*(f32 *)((u8 *)arg1 + 0x2C));
         temp_f5 = (*(f32 *)((u8 *)arg0 + 4));
