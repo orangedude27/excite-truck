@@ -816,6 +816,7 @@ int fn_801B8ADC(void) { return 1; }
  * The "null_amaster" has no event data, so it reports a zero/false status. */
 int fn_801B8AE4(void) { return 0; }
 
+/* Null arena-event master virtual method (vtable lbl_8033678C): no-op. */
 void fn_801B8AEC(void) {
 
 }
