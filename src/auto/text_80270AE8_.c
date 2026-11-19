@@ -698,6 +698,7 @@ extern "C" void fn_802E317C(const char *, ...);
 extern "C" void fn_801BFD34(void *, float *, void *);
 extern "C" void fn_80015B20(void *, float *, void *);
 extern "C" float PSVECDotProduct(const float *, const float *);
+struct W12 { int w[12]; };
 extern "C" void fn_80271624(int mode, void *arg1)
 {
     struct Ent {
@@ -726,8 +727,8 @@ extern "C" void fn_80271624(int mode, void *arg1)
         char pad5770[0x10];
         Zone zones[1];
     };
-    char *o = (char *)arg1;
     Table *tbl = (Table *)lbl_8049A258;
+    char *o = (char *)arg1;
     char *cam;
     Ent *e;
     int arg;
