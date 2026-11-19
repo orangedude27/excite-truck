@@ -155,7 +155,8 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
         p[16] = 0; p[14] = 0; p[17] = 2; p[15] = 2;
     }
     slots = g + 0x18;
-    slots[4] = ((s32 (*)(void *))(*(void ***)obj)[5])(obj) == 1;
+    flagVal = ((s32 (*)(void *))(*(void ***)obj)[5])(obj) == 1;
+    slots[4] = flagVal;
     fn_8013C804();
     fn_8001880C();
     result = -1;
