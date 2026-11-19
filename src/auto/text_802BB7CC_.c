@@ -72,31 +72,34 @@ extern int fn_802D9628(short, short, unsigned int);
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802BB958(short arg0, int arg1, unsigned char *arg2, unsigned char *arg3) {
-    int *var_r31;
-    short temp_r30;
-    int temp_r29;
-    int var_r28;
-    temp_r30 = fn_802BB928(arg0);
-    temp_r29 = fn_802BB93C(arg1);
-    var_r31 = lbl_804C00B0;
-    var_r28 = 0;
+/* For each of the six material-map layer textures, if its byte at (worldX, worldY)
+ * changes between oldValues and newValues, write the new byte (replicated to all
+ * four nibbles) into that layer's texture. */
+void fn_802BB958(short worldX, int worldY, unsigned char *newValues, unsigned char *oldValues) {
+    int *layerTexture;
+    short texX;
+    int texY;
+    int layerIndex;
+    texX = fn_802BB928(worldX);
+    texY = fn_802BB93C(worldY);
+    layerTexture = lbl_804C00B0;
+    layerIndex = 0;
     do {
-        int value = *var_r31;
-        if (value != 0) {
-            unsigned char temp_r4 = *arg2;
-            if (temp_r4 != *arg3) {
-                unsigned int packed = ((unsigned int)temp_r4 << 24) | ((unsigned int)temp_r4 << 16) |
-                                      ((unsigned int)temp_r4 << 8) | temp_r4;
+        int texture = *layerTexture;
+        if (texture != 0) {
+            unsigned char newValue = *newValues;
+            if (newValue != *oldValues) {
+                unsigned int packedValue = ((unsigned int)newValue << 24) | ((unsigned int)newValue << 16) |
+                                      ((unsigned int)newValue << 8) | newValue;
                 ((void (*)(void *, int, int, unsigned int))fn_802D9628)(
-                    (void *)value, temp_r30, temp_r29, packed);
+                    (void *)texture, texX, texY, packedValue);
             }
         }
-        var_r28 += 1;
-        var_r31 += 1;
-        arg3++;
-        arg2++;
-    } while (var_r28 < 6);
+        layerIndex += 1;
+        layerTexture += 1;
+        oldValues++;
+        newValues++;
+    } while (layerIndex < 6);
 }
 
 extern void *fn_802B51E4(int, int);
@@ -527,23 +530,23 @@ int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
                 s = sp10;
                 {
                     int hi = *(int *)&lbl_80564D08;
+                    float zero = lbl_80564D00;
+                    float half = lbl_80564D04;
                     float f, a, b;
                     double ds, dd;
                     for (k = 0; k < 3; k++) {
-                        float zero = lbl_80564D00;
-                        float half = lbl_80564D04;
                         ((int *)&dd)[0] = hi; ((int *)&dd)[1] = d[0];
-                        b = (float)(dd - lbl_80564D08);
+                        b = dd - lbl_80564D08;
                         ((int *)&ds)[0] = hi; ((int *)&ds)[1] = s[0];
-                        a = (float)(ds - lbl_80564D08);
+                        a = ds - lbl_80564D08;
                         f = a + farg0 * (b - a);
                         if (f < zero) f = f - half;
                         else f = half + f;
                         d[0] = (unsigned char)(int)f;
                         ((int *)&dd)[0] = hi; ((int *)&dd)[1] = d[1];
-                        b = (float)(dd - lbl_80564D08);
+                        b = dd - lbl_80564D08;
                         ((int *)&ds)[0] = hi; ((int *)&ds)[1] = s[1];
-                        a = (float)(ds - lbl_80564D08);
+                        a = ds - lbl_80564D08;
                         f = a + farg0 * (b - a);
                         if (f < zero) f = f - half;
                         else f = half + f;
