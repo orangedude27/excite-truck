@@ -595,66 +595,76 @@ void fn_801771A8(void) {
 #pragma pop
 #pragma push
 #pragma opt_common_subs off
+/* Step the phys-fader ramp once -- exactly as fn_801771A8 does, but without
+ * finishing the fade or running its callback -- and return where the fade
+ * stands: `alpha` while fading out (mode FADE_MODE_OUT/DONE), its inverse
+ * while idle or fading back in, so 0 is fully shown and FADE_FULL fully
+ * faded.  The mixer volume handle the physics module opened is set to the
+ * inverse of that level, and fn_80176A70 stores the level in the physics
+ * object it returns. */
 s32 fn_801773E4(void) {
-    f32 f;
-    s32 d, t, v;
-    u8 r;
-    if (*(u32 *)(lbl_80430558 + 0xC) - 1 <= 1U) {
+    f32 speed;
+    s32 elapsed, ramp, value;
+    u8 fade;
+    if ((u32)fader.mode - 1 <= 1U) {
         if (fn_802ECC10() != 0) {
-            if (*(s32 *)(lbl_80430558 + 0xC) == 2) {
-                s32 c = lbl_80430558[0x14];
-                *(s32 *)(lbl_80430558 + 8) = 7;
-                c = c < 0xFA ? c : 0xFA;
-                lbl_80430558[0x14] = c;
+            /* Wii Home menu open: hold an outgoing fade just short of its end. */
+            if (fader.mode == FADE_MODE_OUT) {
+                s32 alpha = fader.alpha;
+                fader.hold = HOME_MENU_HOLD;
+                alpha = alpha < FADE_FROZEN ? alpha : FADE_FROZEN;
+                fader.alpha = alpha;
             }
-        } else if ((u8)lbl_8055E3BD == 0) {
-            s32 n, cur, q, tick, last;
+        } else if ((u8)sPhysicsFlag == 0) {
+            /* Physics not up yet: ramp by frames, scaled by the game's time scale. */
+            s32 n, cur, step, frame, last;
             if ((s32)fn_80176A1C() == 2) {
-                f = fn_80176A2C();
+                speed = fn_80176A2C();
             } else {
-                f = lbl_80561B1C;
+                speed = TIME_SCALE_NONE;
             }
-            f = (f > lbl_80561B30) ? f : lbl_80561B30;
-            q = (s32)(lbl_80561B40 / f);
-            last = *(s32 *)lbl_80430558;
-            tick = lbl_8055E3C4;
-            cur = lbl_80430558[0x14];
-            d = tick - last;
-            n = (d > 2) ? 2 : d;
-            t = cur + ((n << 8) - n) / q;
-            t = t & ((-t & ~t) >> 31);
-            v = 0xFF;
-            if (t < 0xFF) {
-                v = t;
+            speed = (speed > TIME_SCALE_MIN) ? speed : TIME_SCALE_MIN;
+            step = (s32)(RAMP_PER_FRAME / speed);
+            last = fader.lastTime;
+            frame = sFrameCount;
+            cur = fader.alpha;
+            elapsed = frame - last;
+            n = (elapsed > RAMP_FRAMES_MAX) ? RAMP_FRAMES_MAX : elapsed;
+            ramp = cur + ((n << 8) - n) / step; /* + n * 255 / step */
+            ramp = ramp & ((-ramp & ~ramp) >> 31); /* 0 once the ramp overflowed */
+            value = FADE_FULL;
+            if (ramp < FADE_FULL) {
+                value = ramp;
             }
-            *(s32 *)lbl_80430558 = tick;
-            lbl_80430558[0x14] = v;
+            fader.lastTime = frame;
+            fader.alpha = value;
         } else {
-            s32 now = fn_802E2C20();
-            s32 n = 0x21;
+            /* Physics up: ramp by real time, RAMP_MS for the full ramp. */
+            s32 now = fn_802E2C20(); /* milliseconds */
+            s32 n = RAMP_MS_MAX;
             s32 cur;
-            d = now - *(s32 *)(lbl_80430558 + 4);
-            cur = lbl_80430558[0x14];
-            if (d <= 0x21) {
-                n = d;
+            elapsed = now - fader.lastTick;
+            cur = fader.alpha;
+            if (elapsed <= RAMP_MS_MAX) {
+                n = elapsed;
             }
-            t = cur + ((n << 8) - n) / 750;
-            t = t & ((-t & ~t) >> 31);
-            v = 0xFF;
-            if (t < 0xFF) {
-                v = t;
+            ramp = cur + ((n << 8) - n) / RAMP_MS;
+            ramp = ramp & ((-ramp & ~ramp) >> 31);
+            value = FADE_FULL;
+            if (ramp < FADE_FULL) {
+                value = ramp;
             }
-            lbl_80430558[0x14] = v;
-            *(s32 *)(lbl_80430558 + 4) = now;
+            fader.alpha = value;
+            fader.lastTick = now;
         }
     }
-    if (*(u32 *)(lbl_80430558 + 0xC) <= 1U) {
-        r = 0xFF - lbl_80430558[0x14];
+    if ((u32)fader.mode <= 1U) {
+        fade = FADE_FULL - fader.alpha;
     } else {
-        r = lbl_80430558[0x14];
+        fade = fader.alpha;
     }
-    fn_80209190(lbl_8055E3F0, (f32)(0xFF - r) / lbl_80561B44);
-    return r;
+    fn_80209190(sFaderVolume, (f32)(FADE_FULL - fade) / FADE_TO_VOLUME);
+    return fade;
 }
 #pragma pop
 
