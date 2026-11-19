@@ -1240,16 +1240,29 @@ void fn_801E8DD4(void) {
 }
 #pragma scheduling on
 void fn_801E8E38(void) {
-    struct InitData { long tag; long size; float a; float b; float c; float d; } data;
+    /* Builds one of the track's 0x40 mutable parts: fills its 'MUTP' creation
+     * record (tag, record size and four float parameters), allocates the
+     * 0x7C-byte object from the "MutableWob" pool and has fn_801EAD6C construct
+     * it from that record (which appends the record to the object's parameter
+     * stream); the object then goes onto the world object list (fn_801E87D4,
+     * which takes it in r3, where the constructor call above leaves it). */
+    struct MutableWobInitRec {
+        long tag;   /* 'MUTP' */
+        long size;  /* byte size of this record */
+        float p08;
+        float p0C;
+        float p10;
+        float p14;
+    } data;
     void *object;
 
-    data.tag = 0x4D555450;
+    data.tag = 0x4D555450; /* 'MUTP' */
     data.size = 0x18;
-    data.a = 100.0f;
-    data.d = 1000.0f;
-    data.c = 1000.0f;
-    data.b = 1000.0f;
-    object = ((void *(*)(int, void *))fn_801284F8)(0x7C, &lbl_80339CB4);
+    data.p08 = 100.0f;
+    data.p14 = 1000.0f;
+    data.p10 = 1000.0f;
+    data.p0C = 1000.0f;
+    object = ((void *(*)(int, void *))fn_801284F8)(0x7C, &lbl_80339CB4 /* "MutableWob" pool */);
     if (object != 0) fn_801EAD6C(object, (long)&data);
     ((void (*)(void))fn_801E87D4)();
 }
