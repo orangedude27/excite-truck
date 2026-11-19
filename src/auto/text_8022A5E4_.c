@@ -100,6 +100,7 @@ extern char lbl_8033FF98[];
 extern int stricmp(const char *, const char *);
 extern void fn_8022CAA8();
 extern float lbl_80563588;
+extern double lbl_80563590;
 extern char *strncpy(char *, const char *, unsigned int);
 extern void fn_8023293C(void *, char *, float);
 extern int fn_800241CC(int);
@@ -385,7 +386,7 @@ void fn_8022AC1C(int unused0, char *unused1, int screenX, int screenY, int *outL
 #pragma use_lmw_stmw off
 void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *outMaxX, float *outMaxY, float x0, float y0) {
     int n;
-    float wid, hgt, one;
+    float wid, hgt, one, dl;
     char *p = fn_8022CA2C(unused);
     float minX = x0, minY = y0, maxX = x0, maxY = y0;
     int h = *(int *)(p + 0x64);
@@ -411,7 +412,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
         maxY = (y0 > t) ? maxY : t;
     }
     if (str != 0) {
-        float w = lbl_8056358C, ax, ay, d;
+        float w = lbl_8056358C, ax, ay, dw;
         int i, g;
         n = fn_8022AB94(str, 10) + 1;
         if (*(int *)(p + 4) != 0) {
@@ -422,8 +423,8 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
             if (*(float *)(p + 0x34) < lbl_80563588) {
                 w = (float)n * (float)fn_80232B70(g);
             } else {
-                d = (float)fn_80232B70(g);
-                w = (*(float *)(p + 0x34) * (float)(n * fn_80232B70(g))) / d;
+                dw = (float)fn_80232B70(g);
+                w = (*(float *)(p + 0x34) * (float)(n * fn_80232B70(g))) / dw;
             }
         }
         hgt = w;
@@ -443,8 +444,8 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
                     v = ((float (*)(void *, char *, int))fn_8022ABC8)(*(void **)(p + 8), str, len);
                     wid = (wid > v) ? wid : v;
                 } else {
-                    d = (float)fn_80232B70(*(int *)(p + 8));
-                    v = (*(float *)(p + 0x34) * ((float (*)(void *, char *, int))fn_8022ABC8)(*(void **)(p + 8), str, len)) / d;
+                    dl = (float)fn_80232B70(*(int *)(p + 8));
+                    v = (*(float *)(p + 0x34) * ((float (*)(void *, char *, int))fn_8022ABC8)(*(void **)(p + 8), str, len)) / dl;
                     wid = (wid > v) ? wid : v;
                 }
             }
@@ -564,7 +565,7 @@ void fn_8022B390(const char *unusedLabel, const char *text, int maxChars, int *o
 #pragma processor 750
 int fn_8022B498(int unused, const char *arg1)
 {
-    register int max;
+    int max;
     register void *ctx;
     int value;
 
@@ -619,7 +620,10 @@ int fn_8022B498(int unused, const char *arg1)
         }
 
         value = (height + value) - width;
-        return (max > value) ? max : value;
+        if (max > value) {
+            value = max;
+        }
+        return value;
     }
 
     return max;
@@ -857,7 +861,8 @@ void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
 }
 #pragma pop
 extern double lbl_805635A0;
-#pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
 unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
     float e = (float)(unsigned char)arg1;
     float a = (float)(unsigned char)arg0;
@@ -874,7 +879,6 @@ unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
     return ((r3 & 0xFF) << 24) | ((r2 & 0xFF) << 16) |
            ((r1 & 0xFF) << 8) | (r0 & 0xFF);
 }
-#pragma scheduling on
 extern double fn_8002EFB4(float arg0, double arg1);
 extern float fn_8023659C(void);
 extern float fn_80235EF0(int arg0, int arg1);
