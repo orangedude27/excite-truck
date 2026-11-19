@@ -1447,6 +1447,12 @@ extern "C" void fn_801FEFBC(void) {
 
 }
 
+/* No-op virtual method (vtable lbl_8033B730, slot 0x10: the first virtual after
+ * the deleting destructor fn_801FEFC8 and the empty complete destructor
+ * fn_801FEFC4) of the drone-holder class that owns the DroneManager entry point
+ * fn_801FEEC0.  The sibling holder class implements this slot as its path-entry
+ * adder (fn_801FE708, vtable lbl_8033B760 slot 0x10); this variant takes no
+ * entries, so the handler does nothing. */
 extern "C" void fn_801FEFC0(void) {
 
 }
