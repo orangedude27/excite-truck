@@ -5729,21 +5729,22 @@ extern "C" void *fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 #pragma pop
 
 #pragma scheduling invalid_target
-extern "C" RET_802223C4 fn_802223C4(void *arg0, s32 arg1) {
-    s32 value;
-    if (arg0 != 0) {
-        value = *(s32 *)((u8 *)arg0 + 0x244);
-        *(void **)arg0 = lbl_8033F90C;
-        if (value != 0) {
+extern "C" RET_802223C4 fn_802223C4(void *self, s32 shouldDelete) {
+    /* Destroy this widget: release its owned child object, run the base destructor, and optionally free it. */
+    s32 ownedChild;
+    if (self != 0) {
+        ownedChild = *(s32 *)((u8 *)self + 0x244);
+        *(void **)self = lbl_8033F90C;
+        if (ownedChild != 0) {
             struct Dispatch { virtual void call(s32); };
-            ((Dispatch *)value)->call(1);
+            ((Dispatch *)ownedChild)->call(1);
         }
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        fn_8021915C(self, 0);
+        if (shouldDelete > 0) {
+            fn_80128668(self);
         }
     }
-    return (RET_802223C4)arg0;
+    return (RET_802223C4)self;
 }
 #pragma scheduling on
 extern "C" void fn_80222450(void *widget) {
