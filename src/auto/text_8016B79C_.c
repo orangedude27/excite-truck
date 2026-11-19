@@ -3239,16 +3239,12 @@ loop_80:
                     if (var_f30 != lbl_80561980) {
                         var_f4 = lbl_80561984;
                         temp_f0_3 = ((lbl_8055E3C8 - *(f32 *)((u8 *)*M2C_FIELD(arg0, s32 **, 0x4C) + temp_r22_2 + 8)) - lbl_80561980) / (var_f29 - lbl_80561980);
-                        if (var_f4 < temp_f0_3) {
-
-                        } else {
-                            var_f4 = temp_f0_3;
-                        }
-                        if (var_f4 > lbl_80561980) {
-
-                        } else {
-                            var_f4 = lbl_80561980;
-                        }
+                                                  if (var_f4 < temp_f0_3) {
+                              var_f4 = temp_f0_3;
+                          }
+                          if (var_f4 > lbl_80561980) {
+                              var_f4 = lbl_80561980;
+                          }
                         temp_r3_13 = M2C_FIELD(arg0, void **, 0x84);
                         temp_f1_3 = var_f30 + (var_f4 * (lbl_80561980 - var_f30));
                         if (temp_f1_3 != M2C_FIELD(temp_r3_13, f32 *, 8)) {
