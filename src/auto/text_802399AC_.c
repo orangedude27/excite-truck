@@ -946,7 +946,7 @@ s32 fn_8023B36C(void) { return 0; }
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_8023B374(void *arg0) {
+extern "C" void fn_8023B374(void *widget) {
     class Base { public: char pad[0xC]; };
     class Obj : public Base {
     public:
@@ -963,14 +963,17 @@ extern "C" void fn_8023B374(void *arg0) {
         virtual void setA(s32);
         virtual void setB(s32);
     };
-    void **base = (void **)arg0;
-    s32 mode = fn_80210570();
-    if (mode == 2) {
-        ((Obj *)base[7])->setA(3);
+    void **widgetFields = (void **)widget;
+    s32 trackMusicMode = fn_80210570();
+
+    /* Sync the race-music option child (+0x1C) with the current track-music mode:
+       select state 3 for custom track mode (2), otherwise 2, and store the mode. */
+    if (trackMusicMode == 2) {
+        ((Obj *)widgetFields[7])->setA(3);
     } else {
-        ((Obj *)base[7])->setA(2);
+        ((Obj *)widgetFields[7])->setA(2);
     }
-    ((Obj *)base[7])->setB(mode);
+    ((Obj *)widgetFields[7])->setB(trackMusicMode);
 }
 #pragma cplusplus reset
 #pragma pop
