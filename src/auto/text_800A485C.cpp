@@ -22871,23 +22871,24 @@ extern "C" s32 fn_800D5640(void *list, s32 arg1, s32 arg2, s32 arg3) {
     return 0;
 }
 #pragma pop
-extern "C" s32 fn_800D56FC(void *obj, const char *name) {
-    u8 *base = (u8 *)obj;
-    struct { u32 node; } cursor;
-    cursor.node = *(u32 *)(base + 0x14);
-    u32 &entry = cursor.node;
-    struct { u32 end; } sentinel;
-    sentinel.end = (u32)base + 0x14;
-    u32 &end = sentinel.end;
-    while (entry != end) {
-        if (entry == 0)
+extern "C" s32 fn_800D56FC(void *container, const char *name) {
+    /* Find an entry by name in the intrusive list rooted at container+0x14 and return its value at offset 0x88, or 0 if not found. */
+    u8 *base = (u8 *)container;
+    struct { u32 node; } nodeCursor;
+    nodeCursor.node = *(u32 *)(base + 0x14);
+    u32 &node = nodeCursor.node;
+    struct { u32 end; } headCursor;
+    headCursor.end = (u32)base + 0x14;
+    u32 &head = headCursor.end;
+    while (node != head) {
+        if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
-        if (strcmp(name, (char *)(entry + 8)) == 0) {
-            if (entry == 0)
+        if (strcmp(name, (char *)(node + 8)) == 0) {
+            if (node == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
-            return *(s32 *)(entry + 0x88);
+            return *(s32 *)(node + 0x88);
         }
-        entry = *(u32 *)entry;
+        node = *(u32 *)node;
     }
     return 0;
 }
