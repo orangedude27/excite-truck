@@ -623,7 +623,12 @@ void fn_80209408(void) {
 
 }
 
-void fn_8020940C(void) { /* +0x5C (voice: fn_8020BCB4, also empty) */
+/* "Null Sound" (the null mixer backend's Sound object, vtable lbl_8033C0E8),
+ * vtable slot +0x5C setParam: take the parameter block a Sound3D queued at
+ * Sound3D+0x50.  Sound3D::update (fn_80206824) hands it over once and clears
+ * the queue.  A null sound has no mix parameters to receive, and the voice
+ * backend's SndVoice slot +0x5C (fn_8020BCB4) ignores the block as well. */
+void fn_8020940C(void *paramBlock) {
 
 }
 extern void *fn_801284F8(int, void *);
