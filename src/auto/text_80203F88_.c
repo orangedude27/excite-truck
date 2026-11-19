@@ -242,6 +242,13 @@ s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, 
         return noHit == 0;
     }
 }
+/* Empty scratch hook of this unit -- the stage/terrain module that owns the
+ * screen-ray ground probe fn_80204054.  Its neighbours here are the no-op
+ * handlers this module supplies where a caller expects a function: fn_80204014
+ * (the scratch handler the resource loader forwards to), fn_80204018 (empty
+ * stage-object handler) and fn_80204044 (debug world-point draw, empty in this
+ * build).  No function in the game calls fn_80204004, so this one is never even
+ * reached; it does nothing either way. */
 void fn_80204004(void) {
 
 }
