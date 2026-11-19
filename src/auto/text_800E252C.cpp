@@ -512,9 +512,10 @@ extern float lbl_80321E48[];
 #pragma pop
 extern "C" float Atan2FIdx__Q24nw4r4mathFff(float y, float x) {
     if (0.0f == x && 0.0f == y) return 0.0f;
-    float f4 = lbl_80560F04;
     float f3;
+    float f4;
     int mode;
+    f4 = lbl_80560F04;
     if (x >= lbl_80560F04) {
         if (y >= lbl_80560F04) {
             if (x >= y) { f3 = x; mode = 0; }
@@ -2638,36 +2639,45 @@ public:
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline off
-extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
+/* Queue the loop start of channel `channelIndex` at `sampleCount` samples into the
+ * stream that starts at `address` (snd_AxVoice.cpp:561).
+ * The address is first converted to the DSP-visible form, then to the unit the
+ * voice's loop-address register counts in for the stream's format (+0x118):
+ * 0 ADPCM - 4-bit units, a 14-sample frame being 16 of them plus a 2-unit header;
+ * 25 - 8-bit samples, one unit each; 10 - 16-bit samples, one unit per two bytes.
+ * Every AX voice of the channel gets the new loop start, split into its 16-bit
+ * halves, and AX_PBSYNC_LOOP_ADDR (0x2000) is queued for the next __AXSyncPBs
+ * unless the voice is already resyncing its address group (AX_PBSYNC_ADDR). */
+extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *self, int channelIndex, const void *address, unsigned long sampleCount) {
     nw4hbm::ut::AutoInterruptLock lock;
-    int format = *(int *)((char *)arg0 + 0x118);
-    unsigned int value = (unsigned int)arg2;
-    unsigned int start;
-    if (arg2 != 0) value += 0x80000000;
-    start = 0;
+    int format = *(int *)((char *)self + 0x118);
+    unsigned int dspAddress = (unsigned int)address;
+    unsigned int loopAddress;
+    if (address != 0) dspAddress += 0x80000000;
+    loopAddress = 0;
     switch (format) {
     case 0:
-        start = arg3 % 14 + value * 2 + (arg3 / 14) * 16 + 2;
+        loopAddress = sampleCount % 14 + dspAddress * 2 + (sampleCount / 14) * 16 + 2;
         break;
     case 25:
-        start = value + arg3;
+        loopAddress = dspAddress + sampleCount;
         break;
     case 10:
-        start = (value >> 1) + arg3;
+        loopAddress = (dspAddress >> 1) + sampleCount;
         break;
     default:
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438);
         break;
     }
-    unsigned int *voice = (unsigned int *)((char *)arg0 + arg1 * 0x10);
+    unsigned int *voice = (unsigned int *)((char *)self + channelIndex * 0x10);
     unsigned int ch;
-    unsigned int hi = start >> 16;
-    unsigned int lo = start & 0xFFFF;
-    for (int i = 0; i < *(int *)((char *)arg0 + 0x108); voice++, i++) {
+    unsigned int loopHi = loopAddress >> 16;
+    unsigned int loopLo = loopAddress & 0xFFFF;
+    for (int i = 0; i < *(int *)((char *)self + 0x108); voice++, i++) {
         ch = voice[3];
         unsigned int inner = OSDisableInterrupts();
-        *(unsigned short *)(ch + 0x1B4) = hi;
-        *(unsigned short *)(ch + 0x1B6) = lo;
+        *(unsigned short *)(ch + 0x1B4) = loopHi;
+        *(unsigned short *)(ch + 0x1B6) = loopLo;
         if (!(*(unsigned int *)(ch + 0x1C) & 0x800)) *(unsigned int *)(ch + 0x1C) |= 0x2000;
         OSRestoreInterrupts(inner);
     }
