@@ -739,11 +739,7 @@ void fn_8025F46C(void *arg0) {
             p = (char *)p16;
             q = src;
             k = 0x20;
-            while (--k > 0) {
-                char c = *q++;
-                *p++ = c;
-                if (c == 0) break;
-            }
+            while (--k > 0 && (*p++ = *q++) != 0) {}
             p[-1] = 0;
             *(int *)(p17 + 0x38) = (i18 == *(int *)(base + 0x10)) ? 6 : 7;
             p16 += 0x24;
@@ -751,7 +747,7 @@ void fn_8025F46C(void *arg0) {
             i18++;
             cnt = ((int (*)(void *))(*(void ***)obj)[3])(obj);
             n = (cnt >= 6) ? 6 : cnt;
-            if (n >= 6) break;
+            if (cnt >= 6) break;
             if (i18 >= n) break;
         }
     }
@@ -792,22 +788,14 @@ void fn_8025F46C(void *arg0) {
         p = (char *)dest1;
         q = src;
         k = 0x20;
-        while (--k > 0) {
-            char c = *q++;
-            *p++ = c;
-            if (c == 0) break;
-        }
+        while (--k > 0 && (*p++ = *q++) != 0) {}
         p[-1] = 0;
         obj2 = ((void *(*)(void *, int))(*(void ***)o1)[7])(o1, i);
         src = ((char *(*)(void *))(*(void ***)obj2)[3])(obj2);
         p = (char *)dest2;
         q = src;
         k = 0x20;
-        while (--k > 0) {
-            char c = *q++;
-            *p++ = c;
-            if (c == 0) break;
-        }
+        while (--k > 0 && (*p++ = *q++) != 0) {}
         p[-1] = 0;
         {
             void *tmp = ((void *(*)(void *))(*(void ***)o1)[8])(o1);
@@ -878,7 +866,7 @@ next_iter:
         dest1 += 0x58; dest2 += 0x58; base += 4; dest3 += 0x58; recPtr += 0x58;
         cnt = ((int (*)(void *))(*(void ***)item)[6])(item);
         n = (cnt >= 6) ? 6 : cnt;
-        if (n >= 6) break;
+        if (cnt >= 6) break;
         if (i + 1 >= n) break;
     }
 }
@@ -999,6 +987,7 @@ extern void fn_80230C30(float *, float *, int, int);
 extern void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
 extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
 extern float lbl_80563B70, lbl_80563B74, lbl_80563B78;
+#pragma scheduling invalid_target
 #pragma processor 750
 #pragma paired_single off
 void fn_8025FC8C(void* p, int arg1) {
