@@ -58,6 +58,15 @@ void fn_801FC904(void) {
 }
 
 void fn_801FC908(void) {
-    fn_801EBDCC();
+#define StepEBScene fn_801EBDCC
+    /* Per-frame scene step for the loaded-context case: tail-call fn_801EBDCC,
+     * which runs the engine update sequence while the EB scene context
+     * (gEBContext, lbl_8055EBA0) exists -- subsystem refresh, the projection
+     * setup picked by the camera-mode flag (fn_801EA470) and the scene object
+     * tick -- or, with no context loaded, the menu-side update fn_802B01A8.
+     * fn_801EA404 calls it after its sibling step for the empty case,
+     * fn_801FC904. */
+    StepEBScene();
+#undef StepEBScene
 }
 
