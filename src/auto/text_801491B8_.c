@@ -3582,6 +3582,7 @@ extern "C" void *fn_801E87A8(void);
 #pragma cplusplus off
 extern s32 lbl_80559ED4, lbl_80559ED8;
 extern f32 lbl_8056163C, lbl_80561648, lbl_8056164C, lbl_805616B8;
+#pragma dont_inline reset
 void fn_801533E8(void *arg0, f32 *arg1) {
     Matrix801533E8 values, mat;
     f32 bounds[6], center[3], out[3];
