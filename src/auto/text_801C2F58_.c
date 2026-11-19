@@ -3076,6 +3076,7 @@ void fn_801C94B8(void) {
     fn_80238A74();
 }
 
+/* Tail-call thunk that forwards to fn_80238B44. */
 void fn_801C94BC(void) {
     fn_80238B44();
 }
