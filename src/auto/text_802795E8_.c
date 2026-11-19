@@ -207,6 +207,11 @@ extern float lbl_80564100, lbl_80564104;
 #pragma dont_inline on
 #pragma processor 603
 #pragma scheduling invalid_target
+/* Fade a car-state color block by `amount`, clamping the stored level (+0x298)
+ * to [end - amount, end] (end at +0x294, floored to 0.001).  Each RGBA byte of
+ * the 0xA4-entry table at +4 is interpolated toward 0x80/0x80/0x80/0 by the
+ * resulting factor and the updated level is written to +0x294, with +0x298 and
+ * the trailing bytes at +0x2A0 cleared. */
 void fn_802799EC(void *arg0, float amount) {
     unsigned char *p;
     unsigned char *base;
@@ -333,9 +338,10 @@ void fn_80279B28(unsigned char *arg0, unsigned char *arg1) {
 #pragma opt_unroll_loops off
 void fn_80279C00(unsigned char *dst, unsigned char *src) {
     unsigned char second, first;
-    unsigned char *target = dst + 3;
-    unsigned char *source = src - 1;
+    unsigned char *source, *target;
     int i;
+    target = dst + 3;
+    source = src - 1;
 
     for (i = 0; i < 0x148; i++) {
         first = source[1];
@@ -349,42 +355,42 @@ void fn_80279C00(unsigned char *dst, unsigned char *src) {
     *(s32 *)(dst + 0x29C) = *(s32 *)(src + 0x298);
     *(s32 *)(dst + 0x2A0) = *(s32 *)(src + 0x29C);
     {
-        unsigned char b, a;
+        unsigned char a, b;
         a = src[0x2A0]; b = src[0x2A1];
         dst[0x2A4] = a; dst[0x2A5] = b;
     }
     {
-        unsigned char b, a;
+        unsigned char a, b;
         a = src[0x2A2]; b = src[0x2A3];
         dst[0x2A6] = a; dst[0x2A7] = b;
     }
     {
-        unsigned char b, a;
+        unsigned char a, b;
         a = src[0x2A4]; b = src[0x2A5];
         dst[0x2A8] = a; dst[0x2A9] = b;
     }
     {
-        unsigned char b, a;
+        unsigned char a, b;
         a = src[0x2A6]; b = src[0x2A7];
         dst[0x2AA] = a; dst[0x2AB] = b;
     }
     {
-        unsigned char b, a;
+        unsigned char a, b;
         a = src[0x2A8]; b = src[0x2A9];
         dst[0x2AC] = a; dst[0x2AD] = b;
     }
     {
-        unsigned char b, a;
+        unsigned char a, b;
         a = src[0x2AA]; b = src[0x2AB];
         dst[0x2AE] = a; dst[0x2AF] = b;
     }
     {
-        unsigned char b, a;
+        unsigned char a, b;
         a = src[0x2AC]; b = src[0x2AD];
         dst[0x2B0] = a; dst[0x2B1] = b;
     }
     {
-        unsigned char b, a;
+        unsigned char a, b;
         a = src[0x2AE]; b = src[0x2AF];
         dst[0x2B2] = a; dst[0x2B3] = b;
     }
