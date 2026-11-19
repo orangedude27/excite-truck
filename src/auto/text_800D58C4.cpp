@@ -10,6 +10,17 @@
 #include "revolution/GX/GXVert.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
 struct GetVtxPosResult { f32 x; f32 y; };
+struct SelfVtable8020 {
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
+    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
+    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+    virtual void destroy(s32);
+};
+struct ChildVtable8020 {
+    virtual void v00(); virtual void v01(); virtual void destroy(s32);
+};
 
 namespace nw4hbm {
 namespace math {
@@ -1288,8 +1299,8 @@ extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
     struct { StateNode_800D6CA0 *node; } cur1;
-    struct { StateNode_800D6CA0 *node; } cur2;
     struct { StateNode_800D6CA0 *end; } end1s;
+    struct { StateNode_800D6CA0 *node; } cur2;
     struct { StateNode_800D6CA0 *end; } end2s;
     struct { StateNode_800D6CA0 *node; } cur3;
     struct { u8 *ptr; } pp1;
@@ -2239,9 +2250,20 @@ extern "C" s32 fn_800D93BC(void *arg0) {
 
 #pragma scheduling off
 extern "C" s32 fn_800D93F4(void *arg0) {
-    MatGXBits_800D8B28 *c = (MatGXBits_800D8B28 *)((u8 *)arg0 + 0x4C);
-    u8 *base = *(u8 **)((u8 *)arg0 + 0x58);
-    return (s32)((c->srt * 0x14 + (c->gen * 4 + c->tex * 32)) + (base + (c->f * 4 + c->i * 4 + c->h * 4)));
+    volatile u32 *pCap = (volatile u32 *)((u8 *)arg0 + 0x4C);
+    u32 x = *pCap;
+    s32 y = *(s32 *)((u8 *)arg0 + 0x58);
+    u32 a = (x >> 0xC) & 4;
+    u32 b = (x >> 5) & 4;
+    u32 c = (x >> 6) & 4;
+    u32 flags = (a + b) + c;
+    u32 srt = ((x >> 0x18) & 0xF) * 0x14;
+    u32 gen = (x >> 0x12) & 0x3C;
+    u32 tex = (x >> 0x17) & 0x1E0;
+    u32 gt = gen + tex;
+    u32 tail = (u32)y + flags;
+    u32 head = srt + gt;
+    return (s32)(tail + head);
 }
 #pragma scheduling on
 
@@ -3303,6 +3325,8 @@ void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *s
 
 extern "C" const char lbl_8031E908[];
 extern "C" const char lbl_8031E92C[];
+#pragma push
+#pragma opt_common_subs off
 extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
     struct PaneDispatch { virtual void Destroy(s32); };
     struct PaneObject : PaneDispatch, GroupListNode {};
@@ -3314,12 +3338,14 @@ extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
         PaneList secondList;
     };
     PaneLayout* pane = (PaneLayout*)self;
-    GroupListNode* node;
-    GroupListNode* end;
+    struct { GroupListNode *v; } nodeH;
+    struct { GroupListNode *v; } endH;
+    GroupListNode *&node = nodeH.v;
+    GroupListNode *&end = endH.v;
     GroupListNode* current;
     if (pane != 0) {
-        node = pane->childList.first;
-        end = (GroupListNode*)&pane->childList.first;
+        nodeH.v = pane->childList.first;
+        endH.v = (GroupListNode*)&pane->childList.first;
         pane->vtable = lbl_8032012C;
         while (node != end) {
             current = node;
@@ -3351,7 +3377,7 @@ extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
     if (del > 0) ((void (*)(void*))fn_80128668)(self);
     return self;
 }
-
+#pragma pop
 extern "C" const char lbl_8031FF90[];
 extern "C" const char lbl_80320250[];
 extern "C" const char lbl_8032022C[];
@@ -3379,7 +3405,7 @@ extern "C" void fn_800DB76C(f32 *out, void *self, f32 *arg2) {
         f32 x;
         f32 y;
     };
-    f32 c = lbl_80560EA8;
+    f32 c = 0.0f;
     out[0] = c;
     out[1] = c;
     out[2] = c;
@@ -3387,20 +3413,20 @@ extern "C" void fn_800DB76C(f32 *out, void *self, f32 *arg2) {
     VR2 pos;
     VR2 returned = ((VR2 (*)(void *))GetVtxPos__Q34nw4r3lyt4PaneCFv)(self);
     *(volatile f64 *)&pos = *(volatile f64 *)&returned;
-    f32 w = arg2[0x10];
     f32 h = arg2[0xE];
+    f32 w = arg2[0x10];
     f32 diff = w - h;
-    f32 x = pos.x;
-    f32 y = pos.y;
     f32 sw = *(f32 *)((u8 *)self + 0x4C);
     f32 sh = *(f32 *)((u8 *)self + 0x50);
+    f32 x = pos.x;
+    f32 y = pos.y;
     f32 nx = x + sw;
     f32 ny = y + sh;
     out[0] = x;
     out[1] = y;
     out[2] = nx;
     out[3] = ny;
-    BOOL flip = diff < lbl_80560EA8;
+    BOOL flip = diff < 0.0f;
     if (flip) {
         out[1] = -y;
         out[3] = -ny;
