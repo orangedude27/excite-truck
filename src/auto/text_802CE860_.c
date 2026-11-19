@@ -15,8 +15,8 @@ extern float lbl_802FAC60[];
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
-void fn_802CE86C(void *arg0, int arg1, float scale, double x0, double y0, double z0) {
+#pragma scheduling on
+void fn_802CE86C(void *arg0, int arg1, float scale, float x0, float y0, float z0) {
     struct SignTable { float v[3]; };
     struct Locals { volatile float output[3]; float signs[3]; volatile float homes[3]; };
     struct Locals local;
@@ -34,12 +34,12 @@ void fn_802CE86C(void *arg0, int arg1, float scale, double x0, double y0, double
     a = (float *)fn_802C86DC();
     b = (float *)fn_802C86DC();
     *(struct SignTable *)local.signs = *(struct SignTable *)lbl_802FAC60;
-    xBase = (float)x0;
-    yBase = (float)y0;
-    zBase = (float)z0;
-    local.homes[0] = xBase;
-    local.homes[1] = yBase;
-    local.homes[2] = zBase;
+    xBase = (float)(double)x0;
+    yBase = (float)(double)y0;
+    zBase = (float)(double)z0;
+    local.homes[0] = x0;
+    local.homes[1] = y0;
+    local.homes[2] = z0;
     x = local.signs[arg1 & 1];
     y = local.signs[arg1 & 2];
     coeff0 = lbl_80564F78;
