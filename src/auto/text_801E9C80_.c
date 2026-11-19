@@ -8,7 +8,7 @@ f32 fn_801E9DDC(void *, f32, f32);
 void fn_801DCEF4(void);
 
 void fn_801E9C80(void) {
-
+    /* Empty stub (returns immediately). */
 }
 
 extern s32 fn_801DCE14(void *, void *, s32, s32, s32, s32);
@@ -22,12 +22,14 @@ s32 fn_801E9C84(f32 *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, s32 arg5,
     s32 original[3];
     f32 normal[3];
     f32 delta[3];
-    s32 first = ((s32 *)arg0)[0];
-    s32 last = ((s32 *)arg0)[2];
+    register s32 first;
+    register s32 last;
     f32 diffX;
     f32 diffY;
     f32 diffZ;
     f32 dot;
+    first = ((s32 *)arg0)[0];
+    last = ((s32 *)arg0)[2];
     original[0] = first;
     original[1] = ((s32 *)arg0)[1];
     original[2] = last;
@@ -41,9 +43,9 @@ s32 fn_801E9C84(f32 *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, s32 arg5,
     delta[2] = diffZ;
     dot = PSVECDotProduct(normal, delta);
     if ((f32)__fabs((double)dot) < farg0) {
-        register f32 valueZ = ((f32 *)arg1)[2];
-        register f32 valueY = ((f32 *)arg1)[1];
-        register f32 valueX = ((f32 *)arg1)[0];
+        f32 valueZ = ((f32 *)arg1)[2];
+        f32 valueY = ((f32 *)arg1)[1];
+        f32 valueX = ((f32 *)arg1)[0];
         f32 ndot = -dot;
         ((f32 *)arg2)[0] = valueX + normal[0] * ndot;
         ((f32 *)arg2)[1] = valueY + normal[1] * ndot;
@@ -125,14 +127,12 @@ extern f32 lbl_80562E30;
 s32 fn_801E9F08(void *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, f32 farg0) {
     f32 data[4];
     f32 temp2, temp1, temp0;
-    f32 offset;
-    temp1 = *((f32 *)arg1 + 1);
     temp0 = *(f32 *)arg1;
+    temp1 = *((f32 *)arg1 + 1);
     temp2 = *((f32 *)arg1 + 2);
-    offset = lbl_80562E30 + farg0;
     data[0] = temp0;
     data[2] = temp2;
-    data[1] = temp1 - offset;
+    data[1] = temp1 - (lbl_80562E30 + farg0);
     if (fn_801E9C84(data, arg1, arg2, arg3, (s32)arg0, 0, farg0) != 0) {
         data[0] = *(f32 *)arg2;
         data[1] = *((f32 *)arg2 + 1);
@@ -148,20 +148,25 @@ f32 fn_801E9FDC(s16 *arg0, f32 farg0, f32 farg1) {
     s16 index = *arg0;
     f32 data[3];
     f32 out[3];
+    f32 *p;
     data[0] = farg0;
-    data[1] = lbl_80562E2C;
+    p = data;
+    data[1] = 0.0f;
     data[2] = farg1;
-    if (((s32 (*)(void *, void *, void *, s32, s32))fn_801DCE14)(&index, data, out, 0, 0) != 0)
+    if (((s32 (*)(void *, void *, void *, s32, s32))fn_801DCE14)(&index, p, out, 0, 0) != 0)
         return out[1];
-    return lbl_80562E2C;
+    return 0.0f;
 }
 
 #pragma scheduling invalid_target
 void fn_801EA03C(s16 *arg0, void *arg1) {
+    register f32 v = 0.0f;
     s16 index = *arg0;
     struct V { s32 a, b, c; } data = *(struct V *)arg1;
-    *(f32 *)((char *)arg1 + 4) = lbl_80562E2C;
-    ((s32 (*)(s16 *, struct V *, void *, s32, s32))fn_801DCE14)(&index, &data, arg1, 0, 0);
+    s32 z0 = 0;
+    s32 z1 = 0;
+    *(f32 *)((char *)arg1 + 4) = v;
+    ((s32 (*)(s16 *, struct V *, void *, s32, s32))fn_801DCE14)(&index, &data, arg1, z0, z1);
 }
 /* RealName: QueryGroundPosAtXZ
  * Builds an XZ query position using the caller's X/Z and the input position's Y,
