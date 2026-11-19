@@ -57,8 +57,6 @@ extern s32 lbl_8055EE38;
 #pragma scheduling invalid_target
 #pragma push
 #pragma processor 750
-#pragma opt_unroll_loops off
-#pragma ctrloop on
 void fn_8020C140(void) {
     f32 factor;
     f32 v1;
