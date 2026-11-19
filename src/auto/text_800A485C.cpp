@@ -26604,17 +26604,6 @@ extern "C" void fn_800A52DC(u32 arg0) {
     }
 }
 #pragma opt_propagation reset
-struct A535CEntry {
-    u8 pad1[0x1F8C];
-    u16 f1;
-    u8 pad2[0x2E];
-    u32 id1;
-    u8 pad3[0x1F94];
-    u16 f2;
-    u8 pad4[0x2E];
-    u32 id2;
-    u8 pad5[8];
-};
 extern "C" void fn_800A535C(u32 arg0) {
     u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
     s32 i, n;
