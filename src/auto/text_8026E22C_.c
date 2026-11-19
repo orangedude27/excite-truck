@@ -11,33 +11,28 @@ extern double fn_8002F234(double);
 extern void fn_8012F57C(float *, float *, float *, float);
 
 static inline void mtx_to_quat(float m[3][3], float *q) {
-    float *p = (float *)m;
-    float sum = p[0] + p[4] + p[8];
+    float sum = m[0][0] + m[1][1] + m[2][2];
     float sn, inv;
     int i, j, k;
     if (sum > lbl_80563E20) {
         sn = (float)fn_8002F234(lbl_80563E24 + sum);
         inv = lbl_80563E28 / sn;
         q[3] = lbl_80563E28 * sn;
-        q[0] = inv * (p[5] - p[7]);
-        q[1] = inv * (p[6] - p[2]);
-        q[2] = inv * (p[1] - p[3]);
+        q[0] = inv * (m[1][2] - m[2][1]);
+        q[1] = inv * (m[2][0] - m[0][2]);
+        q[2] = inv * (m[0][1] - m[1][0]);
     } else {
-        int io, jo, ko;
         i = 0;
-        if (p[4] > p[0]) i = 1;
-        if (p[8] > p[i * 3]) i = 2;
+        if (m[1][1] > m[0][0]) i = 1;
+        if (m[2][2] > m[0][i]) i = 2;
         j = (i + 1) % 3;
         k = (j + 1) % 3;
-        io = i * 12 + i * 4;
-        jo = j * 12 + j * 4;
-        ko = k * 12 + k * 4;
-        sn = (float)fn_8002F234(lbl_80563E24 + (*(float *)((char *)p + io) - (*(float *)((char *)p + jo) + *(float *)((char *)p + ko))));
+        sn = (float)fn_8002F234(lbl_80563E24 + (m[i][i] - (m[j][j] + m[k][k])));
         inv = lbl_80563E28 / sn;
         q[i] = lbl_80563E28 * sn;
-        q[3] = inv * (*(float *)((char *)p + j * 12 + k * 4) - *(float *)((char *)p + k * 12 + j * 4));
-        q[j] = inv * (*(float *)((char *)p + i * 12 + j * 4) + *(float *)((char *)p + j * 12 + i * 4));
-        q[k] = inv * (*(float *)((char *)p + i * 12 + k * 4) + *(float *)((char *)p + k * 12 + i * 4));
+        q[3] = inv * (m[j][k] - m[k][j]);
+        q[j] = inv * (m[i][j] + m[j][i]);
+        q[k] = inv * (m[i][k] + m[k][i]);
     }
 }
 extern float __fabsf(float);
