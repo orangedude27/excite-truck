@@ -467,6 +467,7 @@ extern "C" void fn_801C1C7C(int object) {
 #pragma scheduling invalid_target
 extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *arg4, int arg5, void *arg6) {
     register float zero = 0.0f;
+    register int one = 1;
     char *base = (char *)arg0;
     char *src = (char *)arg2;
     *(int *)(base + 0x14) = 0;
@@ -498,30 +499,34 @@ extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *ar
                 p[index - 1][2] = zero;
                 (*(float **)(base + 0x30))[index - 1] = *(float *)(src + 0x10);
                 (*(float **)(base + 0x34))[index - 1] = *(float *)(src + 0xC);
-                (*(int **)(base + 0x38))[index - 1] = 1;
+                (*(int **)(base + 0x38))[index - 1] = one;
                 src += 0x14;
             }
         }
-        if (((unsigned int)arg1 & 1) != 0) {
-            float (*p)[3];
-            index = *(int *)(base + 0x14);
-            index++;
-            *(int *)(base + 0x14) = index;
-            p = (float (*)[3])*(char **)(base + 0x24);
-            p[index - 1][0] = x = *(float *)(src + 0);
-            p[index - 1][1] = y = *(float *)(src + 4);
-            p[index - 1][2] = z = *(float *)(src + 8);
-            p = (float (*)[3])*(char **)(base + 0x28);
-            p[index - 1][0] = x;
-            p[index - 1][1] = y;
-            p[index - 1][2] = z;
-            p = (float (*)[3])*(char **)(base + 0x2C);
-            p[index - 1][0] = zero;
-            p[index - 1][1] = zero;
-            p[index - 1][2] = zero;
-            (*(float **)(base + 0x30))[index - 1] = *(float *)(src + 0x10);
-            (*(float **)(base + 0x34))[index - 1] = *(float *)(src + 0xC);
-            (*(int **)(base + 0x38))[index - 1] = 1;
+        int odd = arg1 & 1;
+        if (odd != 0) {
+            do {
+                float (*p)[3];
+                index = *(int *)(base + 0x14);
+                index++;
+                *(int *)(base + 0x14) = index;
+                p = (float (*)[3])*(char **)(base + 0x24);
+                p[index - 1][0] = x = *(float *)(src + 0);
+                p[index - 1][1] = y = *(float *)(src + 4);
+                p[index - 1][2] = z = *(float *)(src + 8);
+                p = (float (*)[3])*(char **)(base + 0x28);
+                p[index - 1][0] = x;
+                p[index - 1][1] = y;
+                p[index - 1][2] = z;
+                p = (float (*)[3])*(char **)(base + 0x2C);
+                p[index - 1][0] = zero;
+                p[index - 1][1] = zero;
+                p[index - 1][2] = zero;
+                (*(float **)(base + 0x30))[index - 1] = *(float *)(src + 0x10);
+                (*(float **)(base + 0x34))[index - 1] = *(float *)(src + 0xC);
+                (*(int **)(base + 0x38))[index - 1] = one;
+                odd--;
+            } while (odd != 0);
         }
     }
     {
@@ -534,7 +539,7 @@ extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *ar
             char *q;
             int idx, first, second;
             factor = *(float *)(p + 0xC);
-            if ((float)__fabs(factor) == lbl_80558DC4[0])
+            if ((float)__fabs(factor) <= lbl_80558DC4[0])
                 factor = 1.0f;
             idx = *(int *)(base + 0x18);
             first = *(int *)p;
@@ -556,37 +561,46 @@ extern "C" void fn_801C1CBC(void *arg0, int arg1, void *arg2, int arg3, void *ar
         int i;
         for (i = 0; i < arg5; i++) {
             int first = *(int *)rec;
-            char *transform = *(char **)(rec + 4);
             char *object = *(char **)(rec + 8);
-            float *mat;
-            float dx, dy, dz;
             int index;
             char *q;
-            float x, y, z;
+            float dx, dy, dz, x, y, z;
             if (object != 0) {
-                mat = (float *)object;
-                dx = mat[0] - mat[9];
-                dy = mat[1] - mat[10];
-                dz = mat[2] - mat[11];
+                float *mat = (float *)*(int *)(rec + 4);
+                index = *(int *)(base + 0x1C);
+                q = *(char **)(base + 0x4C) + index * 0x18;
+                dx = *(float *)object - mat[9];
+                dy = *((float *)object + 1) - mat[10];
+                dz = *((float *)object + 2) - mat[11];
+                x = dz * mat[6] + (dx * mat[0] + dy * mat[3]);
+                y = dz * mat[7] + (dx * mat[1] + dy * mat[4]);
+                z = dz * mat[8] + (dx * mat[2] + dy * mat[5]);
+                *(int *)(base + 0x1C) = index + 1;
+                *(unsigned char *)(q + 0x14) = 1;
+                *(int *)q = first;
+                *(float **)(q + 4) = mat;
+                *(float *)(q + 8) = x;
+                *(float *)(q + 0xC) = y;
+                *(float *)(q + 0x10) = z;
             } else {
+                float *mat = (float *)*(int *)(rec + 4);
                 char *points = *(char **)(base + 0x24) + first * 12;
-                mat = (float *)transform;
-                dx = *(float *)points - *(float *)(transform + 0x24);
-                dy = *(float *)(points + 4) - *(float *)(transform + 0x28);
-                dz = *(float *)(points + 8) - *(float *)(transform + 0x2C);
+                index = *(int *)(base + 0x1C);
+                q = *(char **)(base + 0x4C) + index * 0x18;
+                dx = *(float *)points - mat[9];
+                dy = *((float *)points + 1) - mat[10];
+                dz = *((float *)points + 2) - mat[11];
+                x = dz * mat[6] + (dx * mat[0] + dy * mat[3]);
+                y = dz * mat[7] + (dx * mat[1] + dy * mat[4]);
+                z = dz * mat[8] + (dx * mat[2] + dy * mat[5]);
+                *(int *)(base + 0x1C) = index + 1;
+                *(unsigned char *)(q + 0x14) = 1;
+                *(int *)q = first;
+                *(float **)(q + 4) = mat;
+                *(float *)(q + 8) = x;
+                *(float *)(q + 0xC) = y;
+                *(float *)(q + 0x10) = z;
             }
-            x = dz * mat[6] + (dx * mat[0] + dy * mat[3]);
-            y = dz * mat[7] + (dx * mat[1] + dy * mat[4]);
-            z = dz * mat[8] + (dx * mat[2] + dy * mat[5]);
-            index = *(int *)(base + 0x1C);
-            *(int *)(base + 0x1C) = index + 1;
-            q = *(char **)(base + 0x4C) + index * 0x18;
-            *(unsigned char *)(q + 0x14) = 1;
-            *(int *)q = first;
-            *(float **)(q + 4) = (float *)transform;
-            *(float *)(q + 8) = x;
-            *(float *)(q + 0xC) = y;
-            *(float *)(q + 0x10) = z;
             (*(int **)(base + 0x38))[first] = 0;
             rec += 12;
         }
@@ -882,10 +896,11 @@ extern "C" void fn_801C28A8(void *arg0, int arg1, float *arg2, void *arg3, int a
             if (!(fn_8017F70C(v2C[2]) < f24))
                 continue;
             if (fn_8017F70C(v38[0]) > f25 + f22) {
-                do {
-                    if (!(v2C[0] >= f26)) break;
+                if (v2C[0] >= f26) {
+                    f22 = f22;
+                } else {
                     f22 = -f22;
-                } while (0);
+                }
                 v2C[0] = f22;
             }
             if (fn_8017F70C(v38[1]) >= f25 + f23) {
