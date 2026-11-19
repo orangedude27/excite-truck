@@ -1206,6 +1206,7 @@ unsigned int fn_8017D364(void) {
     return 1;
 }
 
+/* Empty no-op stub (no operation). */
 void fn_8017D36C(void) {
 
 }
