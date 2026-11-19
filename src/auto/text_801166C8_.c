@@ -9249,6 +9249,7 @@ void fn_80126018(void *arg0, BitReader8011 *arg1) {
     }
 }
 
+#define CHKSTORE8011(S) do { if (var_r30 == arg2) { var_r30 += 1; S; goto done; } var_r30 += 1; S; } while (0)
 #define RB8011(out) do { \
     if (var_r27 == 0) { \
         (out) = *(const u32 *)var_r29; \
@@ -9265,19 +9266,19 @@ void fn_80126018(void *arg0, BitReader8011 *arg1) {
 #pragma scheduling on
 void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
     u8 buf[0xC0];
-    u32 var_r31;
-    u32 var_r30;
-    const u8 *var_r29;
-    u32 var_r28;
-    u32 var_r27;
-    u8 *var_r26;
-    u32 var_r24;
-    s32 var_r25;
-    s32 var_r12;
-    s32 var_r8;
-    u8 *var_r9;
-    u8 *var_r10;
-    u32 var_r11;
+    register u32 var_r31;
+    register u32 var_r30;
+    register const u8 *var_r29;
+    register u32 var_r28;
+    register u32 var_r27;
+    register u8 *var_r26;
+    register u32 var_r24;
+    register s32 var_r25;
+    register s32 var_r12;
+    register s32 var_r8;
+    register u8 *var_r9;
+    register u8 *var_r10;
+    register u32 var_r11;
     u8 temp_r25;
     u32 temp_r7, temp_shift;
     u32 temp_r26, temp_r26_2, temp_r26_3, var_r26_2;
@@ -9310,7 +9311,7 @@ void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
     buf[0x86] = 0xb0;
     buf[0x87] = 2;
     while (var_r8 != 0) {
-        u8 *var_r11_2;
+        register u8 *var_r11_2;
         temp_r7_2 = -var_r12;
         var_r26 = buf;
         for (var_ctr = var_r31; var_ctr != 0; var_ctr--) {
