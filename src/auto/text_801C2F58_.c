@@ -205,6 +205,8 @@ f32 fn_801C2F58(s32 count, f32 factor) {
     return result;
 }
 #pragma scheduling on
+#pragma push
+#pragma ppc_psq_save off
 void fn_801C2FF4(float *out, float *a, float *b, float weight) {
     float q[4], av[4], bv[4];
     mtx_to_quat((float (*)[3])a, av);
@@ -212,21 +214,22 @@ void fn_801C2FF4(float *out, float *a, float *b, float weight) {
     fn_8012F57C(q, av, bv, weight);
     {
         float x = q[0], y = q[1], z = q[2], w = q[3];
-        float xx = x * (2 * x), yy = y * (2 * y), zz = z * (2 * z);
-        float xy = x * (2 * y), xz = x * (2 * z), yz = y * (2 * z);
-        float wx = w * (2 * x), wy = w * (2 * y), wz = w * (2 * z);
-        out[11] = a[11] + weight * (b[11] - a[11]);
-        out[0] = 1.0f - (yy + zz);
-        out[4] = 1.0f - (xx + zz);
-        out[7] = yz - wx;
-        out[2] = xz - wy;
-        out[6] = xz + wy;
-        out[5] = yz + wx;
-        out[3] = xy - wz;
-        out[1] = xy + wz;
-        out[8] = 1.0f - (xx + yy);
-        out[9] = a[9] + weight * (b[9] - a[9]);
-        out[10] = a[10] + weight * (b[10] - a[10]);
+        float x2 = 2 * x, y2 = 2 * y, z2 = 2 * z;
+        float tz = a[11] + weight * (b[11] - a[11]);
+        float tx = a[9] + weight * (b[9] - a[9]);
+        float ty = a[10] + weight * (b[10] - a[10]);
+        out[11] = tz;
+        out[0] = 1.0f - (y * y2 + z * z2);
+        out[4] = 1.0f - (x * x2 + z * z2);
+        out[7] = y * z2 - w * x2;
+        out[2] = x * z2 - w * y2;
+        out[6] = x * z2 + w * y2;
+        out[5] = y * z2 + w * x2;
+        out[3] = x * y2 - w * z2;
+        out[1] = x * y2 + w * z2;
+        out[8] = 1.0f - (x * x2 + y * y2);
+        out[9] = tx;
+        out[10] = ty;
     }
 }
 
