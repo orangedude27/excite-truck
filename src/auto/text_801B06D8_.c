@@ -2208,6 +2208,7 @@ u32 fn_801B3290(void) {
     return 1;
 }
 
+/* No operation. */
 void fn_801B3298(void) {
 
 }
