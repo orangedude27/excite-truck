@@ -118,33 +118,34 @@ extern f32 lbl_8056195C;
 extern f32 lbl_8055E3C8;
 #pragma small_data off
 #pragma scheduling invalid_target
+/* Clears active flags in both object/record tables and resets each record's per-entry state and timer values. */
 void fn_8016A0D4(void) {
-    s32 i;
-    for (i = 0; i < lbl_80430340.unk_0x4; i++) {
-        ((u8 *)lbl_80430340.unk_0x0)[i * 0x2C + 0x28] = 0;
+    s32 entryIndex;
+    for (entryIndex = 0; entryIndex < lbl_80430340.unk_0x4; entryIndex++) {
+        ((u8 *)lbl_80430340.unk_0x0)[entryIndex * 0x2C + 0x28] = 0;
     }
     {
-        register u8 *entry;
+        register u8 *record;
         register s32 recordOffset;
-        register s32 count;
-        register f32 value1;
-        register f32 value2;
-        value2 = lbl_80561958;
-        value1 = lbl_8056195C;
-        count = 0;
+        register s32 recordIndex;
+        register f32 resetValue1;
+        register f32 resetValue2;
+        resetValue2 = lbl_80561958;
+        resetValue1 = lbl_8056195C;
+        recordIndex = 0;
         recordOffset = 0;
-        goto check_second;
-    second_loop:
-        count++;
-        entry = (u8 *)(*(s32 *)lbl_80430318) + recordOffset;
-        entry[0x3C] = 0;
+        goto check_record;
+    next_record:
+        recordIndex++;
+        record = (u8 *)(*(s32 *)lbl_80430318) + recordOffset;
+        record[0x3C] = 0;
         recordOffset += 0x48;
-        entry[0x3D] = 0;
-        *(f32 *)(entry + 0x40) = value2;
-        *(f32 *)(entry + 0x44) = value1;
-    check_second:
-        if (count < *(s32 *)(lbl_80430318 + 4))
-            goto second_loop;
+        record[0x3D] = 0;
+        *(f32 *)(record + 0x40) = resetValue2;
+        *(f32 *)(record + 0x44) = resetValue1;
+    check_record:
+        if (recordIndex < *(s32 *)(lbl_80430318 + 4))
+            goto next_record;
     }
 }
 
