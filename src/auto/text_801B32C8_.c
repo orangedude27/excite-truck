@@ -197,14 +197,11 @@ s32 fn_801B3398(void* src) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_801B3448(void) {
-    void *p;
-    void *cb;
-    p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
+    void *p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
     if (p == NULL) return;
     p = fn_801B3B70(p);
-    cb = (void *)fn_801B3390;
-    *(volatile s32 *)&lbl_8055E6C0 = (s32)p;
-    fn_801B5364(1, cb);
+    lbl_8055E6C0 = (s32)p;
+    fn_801B5364(1, fn_801B3390);
     fn_801B5364(0xF, fn_801B3398);
 }
 #pragma pop
@@ -560,34 +557,33 @@ extern s32 fn_801B4428(u32 *, u32 *);
 extern void *fn_801B447C(void *, void *, s32);
 extern void qsort(void *, u32, u32, s32 (*)(u32 *, u32 *));
 void fn_801B4204(void *arg0) {
-    typedef struct { s32 key, ptr, z0, z1; } Rec;
     s32 i;
     s32 *src;
-    Rec *dst;
+    u8 *dst;
     s32 a;
     s32 b;
     s32 key;
     s32 n;
 
     src = lbl_802F96CC;
-    dst = (Rec *)((u8 *)arg0 + 0x48);
+    dst = (u8 *)arg0 + 0x48;
     for (i = 0; i < 0x2B; i++) {
         a = src[1];
         b = src[2];
         if (a < 0 || b < 0) {
             key = -1;
         } else if (a >= b) {
-            key = (a & 0xFFFF) | (b << 16);
+            key = (a & 0xFFFF) | (b & 0xFFFF0000);
         } else {
-            key = (b & 0xFFFF) | (a << 16);
+            key = (b & 0xFFFF) | (a & 0xFFFF0000);
         }
         n = src[0];
-        dst->key = key;
-        dst->ptr = (s32)arg0 + n * 0xC;
-        dst->z0 = 0;
-        dst->z1 = 0;
+        *(s32 *)(dst + 0) = key;
+        *(s32 *)(dst + 4) = (s32)arg0 + n * 0xC;
+        *(s32 *)(dst + 8) = 0;
+        *(s32 *)(dst + 0xC) = 0;
         src += 3;
-        dst++;
+        dst += 0x10;
     }
     qsort((u8 *)arg0 + 0x48, 0x2B, 0x10, fn_801B4428);
     *(void **)((u8 *)arg0 + 0x2F8) = fn_801B447C(arg0, (u8 *)arg0 + 0x48, 0x2B);
@@ -681,16 +677,24 @@ void *fn_801B4528(void *tree, u32 *node, u32 key) {
     return node;
 }
 #pragma scheduling invalid_target
-void* fn_801B4570(void* arg0, u32 arg1) {
+/* Next collision-row pick for an object pair: search the balanced tree built at
+ * +0x2F8 (fn_801B447C over the sorted pair nodes of fn_801B4204) for the node
+ * with this packed pair key, take its cursor (stored at node+4) and return the
+ * row the cursor points at, advancing the cursor round-robin
+ * (index = (index + 1) % count) so repeated collisions between the same pair
+ * walk through the pair's rows.  With no node for the key the object's own
+ * header cursor is used.  fn_801B3E24 scales the collision sound by the
+ * returned row's value. */
+void* fn_801B4570(void* collide, u32 key) {
     Cursor801B4570 *cursor;
     void *found;
     Row801B4570 *rows;
     s32 index;
     Row801B4570 *row;
-    cursor = (Cursor801B4570*)arg0;
-    found = fn_801B4528(arg0, *(void**)((u8*)arg0 + 0x2F8), arg1);
+    cursor = (Cursor801B4570*)collide;
+    found = fn_801B4528(collide, *(void**)((u8*)collide + 0x2F8), key);
     if (found != NULL) {
-        cursor = *(Cursor801B4570**)((u8*)found + 4);
+        cursor = *(Cursor801B4570**)((u8*)found + 4); /* the pair's own cursor */
     }
     index = cursor->index;
     rows = cursor->rows;
