@@ -3365,19 +3365,20 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 }
 
 #pragma scheduling on
-void GXSetDispCopyDst(s32 wd, s32 ht) {
-    union DispStride {
+/* Set the display copy destination stride register for the given framebuffer width. */
+void GXSetDispCopyDst(s32 width, s32 height) {
+    union DispCopyStride {
         u32 reg;
         struct {
             u32 constant : 8;
             u32 pad : 14;
-            u32 arg : 10;
+            u32 stride : 10;
         } fields;
-    } *stride = (union DispStride *)&__GXData[0x238 / 4];
+    } *dispCopyDst = (union DispCopyStride *)&__GXData[0x238 / 4];
 
-    stride->reg = 0;
-    stride->fields.arg = ((wd << 1) & 0xFFFE) >> 5;
-    stride->fields.constant = 0x4D;
+    dispCopyDst->reg = 0;
+    dispCopyDst->fields.stride = ((width << 1) & 0xFFFE) >> 5;
+    dispCopyDst->fields.constant = 0x4D;
 }
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
 void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
