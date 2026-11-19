@@ -101,9 +101,6 @@ int fn_802CCD0C(void *arg0, void *arg1) {
     return stricmp((char *)arg0, (char *)arg1);
 }
 
-#pragma push
-#pragma processor 750
-#pragma scheduling on
 #pragma cplusplus on
 extern "C" int fn_802CCDC4(void *** __restrict arg0, void *** __restrict arg1) {
     struct Local {
@@ -116,7 +113,6 @@ extern "C" int fn_802CCDC4(void *** __restrict arg0, void *** __restrict arg1) {
     return obj0->v2() - obj1->v2();
 }
 #pragma cplusplus reset
-#pragma pop
 extern int fn_802CAC28(void *, int);
 extern void fn_802E317C(const char *, ...);
 extern void *memset(void *, int, unsigned int);
