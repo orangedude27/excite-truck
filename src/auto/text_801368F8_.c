@@ -202,8 +202,7 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
     void *entry = (char*)base + arg1 * stride;
     void *obj = ((Dummy*)fn_801B2ED0(arg1))->v4();
     if (*(unsigned char*)((char*)entry + 0x15) != 0) {
-        volatile unsigned char cond = 0;
-        *(unsigned char*)((char*)entry + 0x14) = 0;
+        *(volatile unsigned char*)((char*)entry + 0x14) = 0;
         void *r5 = *(void**)((char*)obj + 4);
         float f2 = *(float*)((char*)obj + 8);
         void *r4 = *(void**)((char*)r5 + 0x14);
@@ -213,7 +212,7 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
         f0 = (f0 - f1) * f2 + f1;
         f2 = f3 + f0;
         f1 = *(float*)((char*)obj + 0x48) + *(float*)((char*)r5 + 0x30);
-        if (cond != 0) {
+        if (*(unsigned char*)((char*)entry + 0x14) != 0) {
             f1 = *(float*)((char*)arg0 + 0x14) - f1;
         }
         *(float*)((char*)entry + 8) = *(float*)((char*)obj + 0x44);
@@ -247,6 +246,7 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
     }
 }
 #pragma pop
+#pragma optimization_level reset
 
 void fn_80136E8C(void *proxer, s32 carIndex, signed char active) {
     /* Set the ProxRow.active flag (+0x15) of car carIndex's row in the proxer table. */
@@ -554,7 +554,7 @@ s32 fn_8002F768(void *, s32, s32);
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    struct CompareObject { s32 compare(s32, s32); };
+    struct CompareObject { s32 length; s32 sortIndex; s32 compare(s32, s32); };
     typedef s32 (CompareObject::*CompareMethod)(s32, s32);
     s32 *item;
     s32 flag;
@@ -564,10 +564,8 @@ extern "C" void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) 
     s32 index;
     s32 temp;
     CompareMethod *method;
-    *(s32 *)(arg0 + 4) = arg3;
-#pragma scheduling off
-    length = *(s32 *)arg0;
-#pragma scheduling invalid_target
+    ((CompareObject *)arg0)->sortIndex = arg3;
+    length = ((CompareObject *)arg0)->length;
     method = (CompareMethod *)arg2;
     start = 0;
     do {
