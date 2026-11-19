@@ -3837,6 +3837,30 @@ void fn_8005F248(s32 chan, s32 result) {
     OSRestoreInterrupts(enabled);
 }
 
+static inline void fn_8005F3E8_enqueue(WPADCB *cb, WPADCommand *cmd) {
+    BOOL intr, intr2;
+    s8 count;
+    u8 back;
+    s32 t4;
+    intr = OSDisableInterrupts();
+    intr2 = OSDisableInterrupts();
+    count = (s8)(cb->stdCmdQueue.back - cb->stdCmdQueue.front);
+    if (count < 0) count += cb->stdCmdQueue.capacity;
+    OSRestoreInterrupts(intr2);
+    if ((u32)(cb->stdCmdQueue.capacity - 1) == (u32)count) {
+        OSRestoreInterrupts(intr);
+        return;
+    }
+    memset((u8 *)cb->stdCmdQueue.buffer + (s8)cb->stdCmdQueue.back * 0x30, 0, 0x30);
+    memcpy((u8 *)cb->stdCmdQueue.buffer + (s8)cb->stdCmdQueue.back * 0x30, cmd, 0x30);
+    back = cb->stdCmdQueue.back;
+    t4 = cb->stdCmdQueue.capacity - 1;
+    count = (s8)back - t4;
+    count = (s32)~(count | (t4 - (s8)back)) >> 0x1F;
+    cb->stdCmdQueue.back = (u8)(((s8)back + 1) & ~count);
+    OSRestoreInterrupts(intr);
+}
+
 void fn_8005F3E8(s32 chan, s32 arg1) {
     WPADCB *cb;
     BOOL intr;
@@ -5510,6 +5534,8 @@ void WPADiClearQueue_80063BD4(WPADCommandQueue* pQueue) {
 
 void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
 {
+    WPADStatus* st = status;
+    u8* d = data;
     const char* messages = (const char*)lbl_80312338;
     u8* p = (u8*)lbl_8038F4F0[chan];
     u16 valueCC8 = lbl_80560CC8;
@@ -5525,25 +5551,23 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
     s32 offset, i;
     u32 sum;
     u8* src;
-    s16 lo;
-    u16 hi;
 
-    *(u16*)&status->obj[0].x = valueCC8;
-    *(u16*)&status->obj[0].y = valueCD0;
-    status->obj[0].size = *(u16*)(p + 0x804);
-    status->obj[0].traceId = 0;
-    *(u16*)&status->obj[1].x = valueCCA;
-    *(u16*)&status->obj[1].y = valueCD2;
-    status->obj[1].size = *(u16*)(p + 0x804);
-    status->obj[1].traceId = 1;
-    *(u16*)&status->obj[2].x = valueCCC;
-    *(u16*)&status->obj[2].y = valueCD4;
-    status->obj[2].size = *(u16*)(p + 0x804);
-    status->obj[2].traceId = 2;
-    *(u16*)&status->obj[3].x = valueCCE;
-    *(u16*)&status->obj[3].y = valueCD6;
-    status->obj[3].size = *(u16*)(p + 0x804);
-    status->obj[3].traceId = 3;
+    *(u16*)&st->obj[0].x = valueCC8;
+    *(u16*)&st->obj[0].y = valueCD0;
+    st->obj[0].size = *(u16*)(p + 0x804);
+    st->obj[0].traceId = 0;
+    *(u16*)&st->obj[1].x = valueCCA;
+    *(u16*)&st->obj[1].y = valueCD2;
+    st->obj[1].size = *(u16*)(p + 0x804);
+    st->obj[1].traceId = 1;
+    *(u16*)&st->obj[2].x = valueCCC;
+    *(u16*)&st->obj[2].y = valueCD4;
+    st->obj[2].size = *(u16*)(p + 0x804);
+    st->obj[2].traceId = 2;
+    *(u16*)&st->obj[3].x = valueCCE;
+    *(u16*)&st->obj[3].y = valueCD6;
+    st->obj[3].size = *(u16*)(p + 0x804);
+    st->obj[3].traceId = 3;
     *(s16*)(p + 0x7b4) = 0x212;
     *(s16*)(p + 0x7b6) = 0x212;
     *(s16*)(p + 0x7b8) = 0x212;
@@ -5562,31 +5586,23 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
                 }
                 if ((u8)(sum + 0x55) == config[offset + 10]) {
                     DBPrintf_80068D68(messages + 0x98);
-                    src = data + offset;
-                    lo = (s16)src[0]; hi = (src[2] & 48) << 4;
-                    status->obj[0].x = lo | hi;
-                    lo = (s16)src[1]; hi = (src[2] & 192) << 2;
-                    status->obj[0].y = 0x2FF - (s16)(lo | hi);
-                    status->obj[0].size = *(u16*)(p + 0x804);
-                    status->obj[0].traceId = 0;
-                    lo = (s16)src[3]; hi = (src[2] & 3) << 8;
-                    status->obj[1].x = lo | hi;
-                    lo = (s16)src[4]; hi = (src[2] & 12) << 6;
-                    status->obj[1].y = 0x2FF - (s16)(lo | hi);
-                    status->obj[1].size = *(u16*)(p + 0x804);
-                    status->obj[1].traceId = 1;
-                    lo = (s16)src[5]; hi = (src[7] & 48) << 4;
-                    status->obj[2].x = lo | hi;
-                    lo = (s16)src[6]; hi = (src[7] & 192) << 2;
-                    status->obj[2].y = 0x2FF - (s16)(lo | hi);
-                    status->obj[2].size = *(u16*)(p + 0x804);
-                    status->obj[2].traceId = 2;
-                    lo = (s16)src[8]; hi = (src[7] & 12) << 8;
-                    status->obj[3].x = lo | hi;
-                    lo = (s16)src[9]; hi = (src[7] & 12) << 6;
-                    status->obj[3].y = 0x2FF - (s16)(lo | hi);
-                    status->obj[3].size = *(u16*)(p + 0x804);
-                    status->obj[3].traceId = 3;
+                    src = d + offset;
+                    st->obj[0].x = (s16)src[0] | ((src[2] & 48) << 4);
+                    st->obj[0].y = 0x2FF - (s16)((s16)src[1] | ((src[2] & 192) << 2));
+                    st->obj[0].size = *(u16*)(p + 0x804);
+                    st->obj[0].traceId = 0;
+                    st->obj[1].x = (s16)src[3] | ((src[2] & 3) << 8);
+                    st->obj[1].y = 0x2FF - (s16)((s16)src[4] | ((src[2] & 12) << 6));
+                    st->obj[1].size = *(u16*)(p + 0x804);
+                    st->obj[1].traceId = 1;
+                    st->obj[2].x = (s16)src[5] | ((src[7] & 48) << 4);
+                    st->obj[2].y = 0x2FF - (s16)((s16)src[6] | ((src[7] & 192) << 2));
+                    st->obj[2].size = *(u16*)(p + 0x804);
+                    st->obj[2].traceId = 2;
+                    st->obj[3].x = (s16)src[8] | ((src[7] & 12) << 8);
+                    st->obj[3].y = 0x2FF - (s16)((s16)src[9] | ((src[7] & 12) << 6));
+                    st->obj[3].size = *(u16*)(p + 0x804);
+                    st->obj[3].traceId = 3;
                     break;
                 }
                 DBPrintf_80068D68(messages + 0xB0);
@@ -6327,9 +6343,9 @@ void fn_800660E8(s32 chan, u8* data)
     }
     *(u8*)(pBuf + 0x28) = *(u8*)((u8*)pCB + 0x801);
     *(s32*)((u8*)pCB + 0x788) = (s32)((s32)(p[1] & 0x80) >> 7);
-    *(s16*)(pBuf + 2) = (s16)((s16)((s16)((s16)(p[3] * 4) & 0xFFFFFFFC) | ((((s8*)p)[1] >> 5) & 3)) - *(s16*)((u8*)pCB + 0x7B4));
-    *(s16*)(pBuf + 4) = (s16)((s16)((s16)((s16)(p[4] * 4) & 0xFFFFFFFC) | (s16)((((s8*)p)[2] >> 4) & 2)) - *(s16*)((u8*)pCB + 0x7B6));
-    *(s16*)(pBuf + 6) = (s16)((s16)((s16)((s16)(p[5] * 4) & 0xFFFFFFFC) | (s16)((((s8*)p)[2] >> 5) & 2)) - *(s16*)((u8*)pCB + 0x7B8));
+    *(s16*)(pBuf + 2) = (s16)((s16)((s16)((s16)(p[3] * 4) & 0xFFFFFFFC) | (((s8)p[1] >> 5) & 3)) - *(s16*)((u8*)pCB + 0x7B4));
+    *(s16*)(pBuf + 4) = (s16)((s16)((s16)((s16)(p[4] * 4) & 0xFFFFFFFC) | (s16)(((s8)p[2] >> 4) & 2)) - *(s16*)((u8*)pCB + 0x7B6));
+    *(s16*)(pBuf + 6) = (s16)((s16)((s16)((s16)(p[5] * 4) & 0xFFFFFFFC) | (s16)(((s8)p[2] >> 5) & 2)) - *(s16*)((u8*)pCB + 0x7B8));
 
     v = (s16)p[6];
     *(s16*)(pBuf + 0x8) = v | (s16)((p[8] << 4) & 0x300);
@@ -6928,7 +6944,8 @@ void fn_800678DC(s32 chan, u8 *data) {
 // fn_80067ECC: WPAD data processing
 void fn_80067ECC(s32 chan, u8 *data) {
     WPADCB *cb = lbl_8038F4F0[(u8)chan];
-    u8 *buf = (u8*)cb + ((u8*)cb)[0x806] * 0x60 + 0xA0;
+    u8 *base = (u8*)cb + ((u8*)cb)[0x806] * 0x60;
+    u8 *buf = base + 0xA0;
     s32 i;
     s16 v;
     u16 u;
@@ -6943,7 +6960,7 @@ void fn_80067ECC(s32 chan, u8 *data) {
     if (cb->readFormat == 0 || cb->readFormat == 1 || cb->readFormat == 9) {
         buf[0x29] = cb->readStatus;
     } else if (cb->readStatus == 0) {
-        buf[0x29] = -4;
+        *(s8*)(buf + 0x29) = -4;
     }
     buf[0x28] = *(u8*)((u8*)cb + 0x801);
     *(u32*)((u8*)cb + 0x788) = 0;
