@@ -322,11 +322,11 @@ static void WPADiRadioSensitivity(s32 chan) {
     }
 }
 
-static u8 IsButtonChanged(u16 lhs, u16 rhs) {
+static inline u8 IsButtonChanged(u16 lhs, u16 rhs) {
     return lhs != rhs ? TRUE : FALSE;
 }
 
-static u8 IsAnalogChanged(s32 lhs, s32 rhs, s32 threshold) {
+static inline u8 IsAnalogChanged(s32 lhs, s32 rhs, s32 threshold) {
     s32 diff = lhs - rhs < 0 ? rhs - lhs : lhs - rhs;
     return diff > threshold ? TRUE : FALSE;
 }
@@ -6680,7 +6680,6 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
     u8 *temp_r4;
     u8 *temp_r4_2;
     u8 *temp_r4_3;
-    s16 s_val;
 
     temp_r31 = lbl_8038F4F0[(u8)channel];
     temp_r5 = (u8*)temp_r31 + ((*(u8 *)((s8*)(temp_r31) + (0x806))) * 0x60);
@@ -6700,8 +6699,7 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
     (*(s16 *)((s8*)(temp_r30) + (4))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (4))) * 4) & 0xFFFFFFFC) | (s16) (((s8) (*(u8 *)((s8*)(arg1) + (2))) >> 4) & 2)) - (*(s16 *)((s8*)(temp_r31) + (0x7B6))));
     (*(s16 *)((s8*)(temp_r30) + (6))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (5))) * 4) & 0xFFFFFFFC) | (s16) (((s8) (*(u8 *)((s8*)(arg1) + (2))) >> 5) & 2)) - (*(s16 *)((s8*)(temp_r31) + (0x7B8))));
     
-    s_val = (s16)arg1[6];
-    temp_r0 = s_val | (s16)((arg1[8] << 4) & 0x300);
+    temp_r0 = (s16)arg1[6] | (s16)((arg1[8] << 4) & 0x300);
     (*(s16 *)((s8*)(temp_r30) + (8))) = temp_r0;
     (*(s16 *)((s8*)(temp_r30) + (0xA))) = (s16) (0x2FF - (s16) ((s16)arg1[7] | (s16)((arg1[8] << 2) & 0x300)));
     if ((temp_r0 == 0x3FF) || ((s16) (*(s16 *)((s8*)(temp_r30) + (0xA))) == 0x2FF)) {
@@ -6770,14 +6768,14 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
             temp_r5_8 = (*(u8 *)((s8*)(temp_r3) + (0xD0))) - (u8) (*(s16 *)((s8*)(temp_r31) + (0x7C2)));
             temp_r0_7 = (*(u8 *)((s8*)(temp_r3) + (0xD1))) - (u8) (*(s16 *)((s8*)(temp_r31) + (0x7C8)));
             if (temp_r5_8 < -0x80) {
-                (*(u8 *)((s8*)(temp_r3) + (0xD0))) = -0x80U;
+                (*(s8 *)((s8*)(temp_r3) + (0xD0))) = -0x80;
             } else if (temp_r5_8 > 0x7F) {
                 (*(u8 *)((s8*)(temp_r3) + (0xD0))) = 0x7FU;
             } else {
                 (*(u8 *)((s8*)(temp_r3) + (0xD0))) = (u8) temp_r5_8;
             }
             if (temp_r0_7 < -0x80) {
-                (*(u8 *)((s8*)(temp_r3) + (0xD1))) = -0x80U;
+                (*(s8 *)((s8*)(temp_r3) + (0xD1))) = -0x80;
             } else if (temp_r0_7 > 0x7F) {
                 (*(u8 *)((s8*)(temp_r3) + (0xD1))) = 0x7FU;
             } else {
