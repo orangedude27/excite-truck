@@ -96,28 +96,28 @@ void fn_802022A0(int *handle) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 int fn_802022E4(const Vec *arg0) {
-    register float bestDist;
-    register int offset;
-    register int best;
-    register int i;
-    register float d;
-    bestDist = lbl_805630A0;
-    offset = 0;
-    best = 0;
-    i = 0;
+    f32 temp_f1;
+    f32 var_f31;
+    s32 var_r31;
+    s32 var_r30;
+    s32 var_r29;
+    var_f31 = 1e8f;
+    var_r31 = 0;
+    var_r30 = 0;
+    var_r29 = 0;
     goto test;
 loop:
-    d = PSVECSquareDistance(arg0, (const Vec *)((char *)lbl_8055ECC4 + offset));
-    if (d < bestDist) {
-        bestDist = d;
-        best = i;
+    temp_f1 = PSVECSquareDistance(arg0, (const Vec *)((char *)lbl_8055ECC4 + var_r31));
+    if (temp_f1 < var_f31) {
+        var_f31 = temp_f1;
+        var_r30 = var_r29;
     }
-    offset += 0x10;
-    i += 1;
+    var_r31 += 0x10;
+    var_r29 += 1;
 test:
-    if (i < lbl_8055ECC0)
+    if (var_r29 < lbl_8055ECC0)
         goto loop;
-    return best;
+    return var_r30;
 }
 #pragma pop
 
@@ -290,18 +290,15 @@ void fn_80202718(int arg0) {
     extern void fn_801DCEF0(void);
     extern int fn_802CE728(int);
     extern void fn_802C7458(int, int);
-    register int i, base, dir;
-    int center, result, count;
+    int dir, base, i, result, center, count;
     int *data;
     float x, y, z;
     float *o;
     Vec local;
     lbl_804888E0[0x20] = 0;
     if (lbl_8055ECD8) {
-        int v;
         fn_801E86F8(-1);
-        v = *(short *)(*(int *)((char *)fn_801EA9A0() + 8) + 0x30);
-        if (v >= 0) fn_801DCEF0();
+        if (*(short *)(*(int *)((char *)fn_801EA9A0() + 8) + 0x30) >= 0) fn_801DCEF0();
         return;
     }
     if (lbl_8055ECC0 == 0) {
@@ -312,9 +309,12 @@ void fn_80202718(int arg0) {
     center = fn_802022E4((Vec *)(o + 9));
     lbl_804888D0[fn_801E85B4()] = center;
     data = (int *)(lbl_8055ECC4 + (((center + 1) % lbl_8055ECC0) * 16));
-    x = ((float *)data)[0] - o[9];
-    y = ((float *)data)[1] - o[10];
-    z = ((float *)data)[2] - o[11];
+    x = ((float *)data)[0];
+    y = ((float *)data)[1];
+    z = ((float *)data)[2];
+    x -= o[9];
+    y -= o[10];
+    z -= o[11];
     dir = 1;
     local.x = z * o[2] + (x * o[0] + y * o[1]);
     local.y = z * o[5] + (x * o[3] + y * o[4]);
