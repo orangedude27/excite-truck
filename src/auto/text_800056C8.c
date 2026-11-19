@@ -714,13 +714,10 @@ s32 fn_8000624C(void) {
 
 #pragma cplusplus on
 extern "C" void fn_80006254(s32 arg0, s32 arg1) {
-    f32 threshold = lbl_8056011C;
-    unsigned char flag = 0;
+    bool flag;
+    f32 threshold = 0.0f;
     f32 f2 = *(f32 *)((s8 *)arg0 + ((s32 *)lbl_8055D350)[7] * 4 + 4);
-    if (f2 >= threshold) {
-        f32 f0 = ((f32 *)lbl_8055D350)[4] - f2;
-        if (f0 > threshold) flag = 1;
-    }
+    flag = f2 >= threshold && ((f32 *)lbl_8055D350)[4] - f2 > threshold;
     if (flag && fn_80005564()) {
         struct Dummy {
             virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
