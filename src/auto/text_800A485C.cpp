@@ -3890,6 +3890,8 @@ extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
     }
 }
 #pragma pop
+#pragma push
+#pragma scheduling on
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
     u32 h14;
     u32 word;
