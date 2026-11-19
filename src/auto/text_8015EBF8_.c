@@ -55,7 +55,7 @@ int fn_8015ECC0(void *arg0) {
     }
     if (test != 0) {
         if ((float)fabs(((float *)((void **)arg0)[3])[7]) > lbl_805617D0) {
-            result = test;
+            result = test | 1;
         }
     }
     return result;
@@ -257,9 +257,9 @@ extern "C" void fn_8015EF84(void **arg0) {
         virtual void unused08(); virtual void unused09(); virtual void unused10(); virtual void unused11();
         virtual void unused12(); virtual u64 getPacked(const char *);
     };
+    void *obj;
     int found = 0;
     int index;
-    void *obj;
     if (arg0 == 0)
         goto report;
     index = 0;
@@ -460,6 +460,8 @@ extern void fn_80265DCC(void *, int, int, void *);
 extern int fn_8015F3EC(unsigned short *, unsigned short *);
 extern char lbl_8032F4A0[];
 extern int lbl_8055A098, lbl_8055E29C, lbl_8055E2A0;
+#pragma push
+#pragma scheduling on
 void fn_8015F3FC(void *arg0) {
     register int max;
     register int offset;
@@ -485,11 +487,10 @@ void fn_8015F3FC(void *arg0) {
         index = 0;
         offset = 0;
         max = *(volatile int *)(lbl_8055E29C + 4) - 1;
-        do {
+        while (index < max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
             offset += 0x10;
             index++;
-            if (index >= max) break;
-        } while (*(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i);
+        }
         max = *(volatile int *)(lbl_8055E29C + 4) - 1;
         if (index == max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
             src = (int *)*(int *)lbl_8055E29C;
@@ -508,7 +509,6 @@ void fn_8015F3FC(void *arg0) {
         }
     }
 }
-
 #pragma pop
 void fn_8015F554(void) {
 }
@@ -1113,85 +1113,128 @@ extern float lbl_8055E2A4, lbl_805617D4, lbl_805617DC, lbl_805617E8, lbl_8056180
 #pragma push
 #pragma processor 750
 #pragma opt_common_subs off
-void fn_801602D4(void *arg0_, int *arg1_, void *arg2_, unsigned char arg3_, float arg4_) {
-    struct Hit *arg0 = (struct Hit *)arg0_;
-    void *arg1 = (void *)arg1_;
-    void *arg2 = arg2_;
-    float arg3 = arg4_;
-    char *desc4 = (char *)arg1 + 4;
-    float dist, low, high, height, pos, t;
-    s16 type;
-    int first, last, i;
-    dist = fn_80160588(arg2, desc4, (char *)arg2 + 0x10) - *(float *)((char *)arg1 + 0xC);
-    if (dist > lbl_805617D4 && dist < arg3) {
-        pos = fn_801605C8(arg2, desc4, (char *)arg2 + 0x10);
-        height = *(float *)((char *)arg1 + 0xC);
-        low = -lbl_80561800 * lbl_805617DC;
-        if (pos + height > low) {
-            high = lbl_80561800 * lbl_805617DC;
-            if (pos - height < high) {
-                type = *(s16 *)((char *)arg1 + 2);
-                switch (type) {
-                case 0:
-                    t = (pos - height - low) / (high - low);
-                    t = t > lbl_805617E8 ? t : lbl_805617E8;
-                    t = t < lbl_805617D4 ? t : lbl_805617D4;
-                    first = (int)(lbl_805617D4 + t * lbl_80561828);
-                    t = ((lbl_8055E2A4 + (pos + *(float *)((char *)arg1 + 0xC))) - (-lbl_80561800 * lbl_805617DC)) / ((lbl_80561800 * lbl_805617DC) - (-lbl_80561800 * lbl_805617DC));
-                    t = t > lbl_805617E8 ? t : lbl_805617E8;
-                    t = t < lbl_805617D4 ? t : lbl_805617D4;
-                    last = (int)(lbl_805617D4 + t * lbl_80561828);
-                    break;
-                case 2:
-                    first = 0;
-                    t = (pos + lbl_8055E2A4 - low) / (high - low);
-                    t = t > lbl_805617E8 ? t : lbl_805617E8;
-                    t = t < lbl_805617D4 ? t : lbl_805617D4;
-                    last = (int)(lbl_805617D4 + t * lbl_80561828);
-                    break;
-                case 1:
-                    t = (pos - low) / (high - low);
-                    t = t > lbl_805617E8 ? t : lbl_805617E8;
-                    t = t < lbl_805617D4 ? t : lbl_805617D4;
-                    first = (int)(lbl_805617D4 + t * lbl_80561828);
-                    last = 0x40;
-                    break;
-                default:
-                    first = last = 0;
-                    break;
-                }
-                for (i = first; i < last; i++) {
-                    if (dist < arg0[i].x) {
-                        arg0[i].x = dist;
-                        arg0[i].y = *(s16 *)((char *)arg1 + 2);
-                    }
-                }
-            }
+void fn_801602D4(void *arg0_, int *arg1_, void *arg2_, unsigned char arg3_, float arg4_)
+{
+  struct Hit *arg0 = (struct Hit *) arg0_;
+  void *arg1 = (void *) arg1_;
+  void *arg2 = arg2_;
+  float new_var;
+  float arg3 = arg4_;
+  float dist;
+  char *desc4 = ((char *) arg1) + 4;
+  char *new_var2;
+  float low;
+  float high;
+  float height;
+  float pos;
+  float t;
+  s16 type;
+  int first;
+  int i;
+  int last;
+  dist = fn_80160588(arg2, desc4, ((char *) arg2) + 0x10) - (*((float *) (((char *) arg1) + 0xC)));
+  if ((dist > lbl_805617D4) && (dist < arg3))
+  {
+    pos = fn_801605C8(arg2, desc4, ((char *) arg2) + 0x10);
+    height = *((float *) (((char *) arg1) + 0xC));
+    low = (-lbl_80561800) * lbl_805617DC;
+    if ((pos + height) > low)
+    {
+      high = lbl_80561800 * ((double) lbl_805617DC);
+      if ((pos - height) < high)
+      {
+        type = *((s16 *) (((char *) arg1) + 2));
+        switch (type)
+        {
+          case 0:
+            t = low;
+            t = pos - height;
+            t = (t - low) / (high - t);
+            new_var2 = ((char *) arg1) + 0xC;
+            t = (t > lbl_805617E8) ? (t) : (lbl_805617E8);
+            t = (t < lbl_805617D4) ? (t) : (lbl_805617D4);
+            first = (int) (lbl_805617D4 + (t * lbl_80561828));
+            t = ((lbl_8055E2A4 + (pos + (*((float *) new_var2)))) - ((-lbl_80561800) * lbl_805617DC)) / ((lbl_80561800 * lbl_805617DC) - ((-lbl_80561800) * lbl_805617DC));
+            new_var = lbl_805617E8;
+            t = (t > new_var) ? (t) : (lbl_805617E8);
+            t = (t < lbl_805617D4) ? (t) : (lbl_805617D4);
+            last = (int) (lbl_805617D4 + (t * lbl_80561828));
+            break;
+
+          case 2:
+            first = 0;
+            t = ((pos + lbl_8055E2A4) - low) / (high - low);
+            t = (t > lbl_805617E8) ? (t) : (lbl_805617E8);
+            t = (t < lbl_805617D4) ? (t) : (lbl_805617D4);
+            last = (int) (lbl_805617D4 + (t * lbl_80561828));
+            break;
+
+          case 1:
+            t = (pos - low) / (high - low);
+            t = (t > lbl_805617E8) ? (t) : (lbl_805617E8);
+            t = (t < lbl_805617D4) ? (t) : (lbl_805617D4);
+            first = (int) (lbl_805617D4 + (t * lbl_80561828));
+            last = 0x40;
+            break;
+
+          default:
+            first = (last = 0);
+            break;
+
         }
+
+        for (i = first; i < last; i++)
+        {
+          if (dist < arg0[i].x)
+          {
+            arg0[i].x = dist;
+            arg0[i].y = *((s16 *) (((char *) arg1) + 2));
+          }
+        }
+
+      }
     }
+  }
 }
-#pragma scheduling invalid_target
+
+float fn_80160588(void * __restrict arg0, void * __restrict arg1, void * __restrict arg2) {
+    volatile f32 d[2];
+    f32 *a = (f32 *)arg0;
+    f32 *b = (f32 *)arg1;
+    f32 *c = (f32 *)arg2;
+    f32 dx, dy, t0, t1, r;
+    dx = b[0] - c[0];
+    dy = b[1] - c[1];
+    t0 = a[0] * dx;
+    t1 = a[1] * dy;
+    d[0] = dx;
+    r = t0 + t1;
+    d[1] = dy;
+    return r;
+}
+
+#pragma scheduling reset
 f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     f32 result2;
     f32 result1;
-    f32 y;
-    f32 negX;
     f32 dy;
     f32 dx;
-    f32 spC;
+    f32 y;
+    f32 negX;
     f32 sp8;
+    f32 spC;
+    negX = -*(f32 *)arg0;
     dx = *(f32 *)arg1 - *(f32 *)arg2;
     dy = *(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4);
-    negX = -*(f32 *)arg0;
     y = *(f32 *)((u8 *)arg0 + 4);
-    *(volatile f32 *)&spC = dx;
-    *(volatile f32 *)&sp8 = dy;
     result1 = y * dx;
+    *(volatile f32 *)&spC = dx;
     result2 = negX * dy;
+    *(volatile f32 *)&sp8 = dy;
     return result1 + result2;
 }
-#pragma scheduling on
 void *fn_8016060C(void *arg0, void *arg1) {
+#pragma scheduling invalid_target
     f32 *dst = (f32 *)arg0;
     f32 *src = (f32 *)arg1;
     f32 x = src[6];
