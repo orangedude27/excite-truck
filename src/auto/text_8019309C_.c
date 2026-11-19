@@ -638,41 +638,42 @@ static inline int fn_801941A8_signbit(float x) { /* MSL __signbitf() */
     return (int)(*(int *)&x & 0x80000000);
 }
 #pragma scheduling invalid_target
-void fn_801941A8(void *arg0, float arg1) {
-    float *posField = (float *)((char *)arg0 + 0x23C);
-    float *velField = (float *)((char *)arg0 + 0x248);
+void fn_801941A8(void *driver, float target) {
+    /* Smooths and clamps the driver's steering value toward target, updates its response rate, and forwards it to the vehicle. */
+    float *steerValue = (float *)((char *)driver + 0x23C);
+    float *steerRate = (float *)((char *)driver + 0x248);
     float velocity;
     float pos;
     float change = 0.2f;
-    float delta = arg1 - posField[0];
+    float delta = target - steerValue[0];
     float product;
     float one;
 
     change = change < delta ? change : delta;
     change = change > -0.2f ? change : -0.2f;
-    pos = posField[0];
-    velocity = velField[0];
+    pos = steerValue[0];
+    velocity = steerRate[0];
     pos += change;
-    posField[0] = pos;
+    steerValue[0] = pos;
     if (velocity < 2.0f) {
-        void *obj = *(void **)((char *)arg0 + 0x294);
-        if (fn_801941A8_signbit(*(float *)((char *)obj + 0x25F0)) != fn_801941A8_signbit(pos)) {
-            velField[0] += 0.1f;
+        void *vehicle = *(void **)((char *)driver + 0x294);
+        if (fn_801941A8_signbit(*(float *)((char *)vehicle + 0x25F0)) != fn_801941A8_signbit(pos)) {
+            steerRate[0] += 0.1f;
         }
     }
-    velocity = velField[0];
+    velocity = steerRate[0];
     {
         float minimum = 1.0f;
         minimum = minimum < velocity ? minimum : velocity;
         minimum = minimum > 0.0f ? minimum : 0.0f;
         one = 1.0f;
-        product = posField[0] * (one - minimum);
+        product = steerValue[0] * (one - minimum);
     }
-    posField[0] = product;
+    steerValue[0] = product;
     product = one < product ? one : product;
     product = product > -1.0f ? product : -1.0f;
-    posField[0] = product;
-    fn_8018ADAC(*(void **)((char *)arg0 + 0x294), (float)(double)product);
+    steerValue[0] = product;
+    fn_8018ADAC(*(void **)((char *)driver + 0x294), (float)(double)product);
 }
 #pragma scheduling on
 void fn_801942B8(void *obj, float input) {
