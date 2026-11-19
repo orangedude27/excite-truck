@@ -396,21 +396,23 @@ void fn_80193870(void *driver) {
     ((void (*)(void *, const char *))fn_801945F8)(driver, lbl_8055A4B8);
 }
 
-void fn_80193878(void *arg0) {
+void fn_80193878(void *driver) {
     register float zero = 0.0f;
-    float a[3], b[3], low[3];
-    void *obj;
-    a[0] = zero;
-    a[1] = zero;
-    a[2] = 13350.0f;
-    low[0] = 10.0f;
-    low[1] = zero;
-    low[2] = zero;
-    obj = *(void **)((unsigned char *)arg0 + 0x294);
-    b[0] = *(float *)((unsigned char *)obj + 0x94) + low[0];
-    b[1] = *(float *)((unsigned char *)obj + 0x98) + low[1];
-    b[2] = *(float *)((unsigned char *)obj + 0x9C) + low[1];
-    fn_8017B4E0(*(void **)((unsigned char *)arg0 + 0x294), a, b, 1.0f);
+    float accel[3], targetPos[3], offset[3];
+    void *vehicle;
+
+    /* Apply a fixed acceleration impulse toward a point offset from the driver's vehicle position. */
+    accel[0] = zero;
+    accel[1] = zero;
+    accel[2] = 13350.0f;
+    offset[0] = 10.0f;
+    offset[1] = zero;
+    offset[2] = zero;
+    vehicle = *(void **)((unsigned char *)driver + 0x294);
+    targetPos[0] = *(float *)((unsigned char *)vehicle + 0x94) + offset[0];
+    targetPos[1] = *(float *)((unsigned char *)vehicle + 0x98) + offset[1];
+    targetPos[2] = *(float *)((unsigned char *)vehicle + 0x9C) + offset[1];
+    fn_8017B4E0(*(void **)((unsigned char *)driver + 0x294), accel, targetPos, 1.0f);
 }
 
 #pragma cplusplus on
