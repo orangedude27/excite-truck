@@ -194,15 +194,18 @@ extern "C" s32 Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(void *arg0)
     u32 temp_r31;
     const char *base = (const char *)lbl_80326E08;
     s32 var_r29;
+    int line;
 
     if (*(s32 *)((u8 *)arg0 + 0x18) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((char *)base), 0x45, base + 0x68);
+        line = 0x45;
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[line - 0x45], line, base + 0x68);
     }
     temp_r31 = OSDisableInterrupts();
     var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
     while (var_r29 == 0) {
         if (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(arg0) == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)((char *)base), 0x4C, base + 0xA8);
+            line = 0x4C;
+            Panic__Q26nw4hbm2dbFPCciPCce(&base[line - 0x4C], line, base + 0xA8);
         }
         var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
     }
@@ -273,9 +276,13 @@ struct TaskManager {
 void nw4hbm::snd::detail::TaskManager::AppendTask(
     nw4hbm::snd::detail::Task *task,
     nw4hbm::snd::detail::TaskManager::TaskPriority priority) {
+    struct TaskList {
+        u32 count;
+        u8 end[8];
+    };
     u32 level;
     void *it;
-    void *list;
+    TaskList *list;
     s32 valid;
 
     valid = 0;
@@ -284,9 +291,8 @@ void nw4hbm::snd::detail::TaskManager::AppendTask(
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x7D, (const char *)lbl_80326ED0, priority, 0, 3);
     }
     level = OSDisableInterrupts();
-    register u8 *p = (u8 *)this + priority * 0xC;
-    list = p + 0x20;
-    it = (u8 *)list + 4;
+    list = &((TaskList *)((u8 *)this + 0x20))[priority];
+    it = list->end;
     if (task == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326FC8, 0x233, (const char *)lbl_80326FA4);
     }
