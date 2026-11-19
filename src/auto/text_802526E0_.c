@@ -5,28 +5,6 @@ extern f32 lbl_80558DC4[];
 extern f32 fn_8002F234(f32);
 extern f32 PSVECDotProduct(void *, void *);
 typedef struct { f32 x, y, z, w; } Vec4_80252;
-
-typedef struct {
-    f32 unk0, unk4;
-    f32 fwdSaveX, fwdSaveZ;
-    f32 perpX, perpY;
-    f32 unitX, unitY;
-    f32 dirX, dirY;
-    f32 unk28;
-    f32 upY;
-    f32 unk30, unk34, unk38, upZ;
-    f32 resX, resY, resZ, resW;
-    f32 latX, latY, latZ, latW;
-    f32 tmpX, tmpY, tmpZ, tmpW;
-    Vec normal;
-    Vec right;
-    f32 upX;
-    f32 unk8C, unk90;
-    Vec forward;
-    Vec velocity;
-    Vec latTemp;
-    f32 posX, posY, posZ;
-} Scratch8025280C;
 extern f32 lbl_805639C8, lbl_805639D0, lbl_805639D4, lbl_805639D8;
 extern f32 fn_80129DC4(s32, f32, f32);
 extern f64 cos(void);
