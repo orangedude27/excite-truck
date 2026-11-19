@@ -609,19 +609,20 @@ void fn_801B42D0(void *owner) {
     *(s32 *)((u8 *)owner + 0x5BC) = 0;
 }
 #pragma pop
+/* Clear the 16 recent-collision records at +0x31C: object, key, and play time (-5.0f = never). */
 void fn_801B435C(void *arg0) {
-    struct Entry {
-        s32 a;
-        s32 b;
-        f32 c;
+    struct CollisionRecord {
+        s32 object;
+        s32 key;
+        f32 time;
         u8 pad[0x20];
-    } *e = (struct Entry *)((u8 *)arg0 + 0x31C);
+    } *record = (struct CollisionRecord *)((u8 *)arg0 + 0x31C);
     int i;
 
     for (i = 0; i < 16; i++) {
-        e[i].a = 0;
-        e[i].b = 0;
-        e[i].c = -5.0f;
+        record[i].object = 0;
+        record[i].key = 0;
+        record[i].time = -5.0f;
     }
 }
 
