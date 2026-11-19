@@ -1723,8 +1723,8 @@ void fn_80069408(void) {
             base[0xC] = 7;
         } else {
             void *info = WUDiGetDevInfo(base + 0xC68 + 0x40);
-            DBPrintf_8006CFA8((const char *)(lbl_803130C8 + 0x1B4));
-            DBPrintf_8006CFA8((const char *)(lbl_803130C8 + 0x1CC), ((u8 *)info)[0x40], ((u8 *)info)[0x41], ((u8 *)info)[0x42], ((u8 *)info)[0x43], ((u8 *)info)[0x44], ((u8 *)info)[0x45]);
+                    DBPrintf_8006CFA8((const char *)(strings + 0x1B4));
+        DBPrintf_8006CFA8((const char *)(strings + 0x1CC), ((u8 *)info)[0x40], ((u8 *)info)[0x41], ((u8 *)info)[0x42], ((u8 *)info)[0x43], ((u8 *)info)[0x44], ((u8 *)info)[0x45]);
             sp8 = ((u8 *)info)[0x4D];
             spC = ((u8 *)info)[0x4E];
             sp10 = ((u8 *)info)[0x4F];
