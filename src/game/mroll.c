@@ -30,6 +30,7 @@ extern void *fn_80241098(void *);
 extern void fn_802E317C(char *, ...);
 typedef struct Fn241820VT { int pad[3]; int (*isActive)(void *); } Fn241820VT;
 typedef struct Fn241820Obj { char pad[0xc]; Fn241820VT *vt; } Fn241820Obj;
+typedef int (*Fn241820IsActive)(void *);
 /* Clear the player-info table (lbl_80498828): set the id word of each of its
  * two 0x10-byte slots to -1, marking both slots empty. */
 void fn_8023FE20(void) {
@@ -338,7 +339,6 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
     void *item, *record, *ctx, *info, *vtable, *infoDst;
     register void *self = arg0;
     register void *desired = arg2;
-    register s32 zero = 0;
     char *src, *dst, *entries, *output, *zeroBase, *textItem, *object;
     char c;
     struct Collection {
@@ -368,9 +368,9 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
     };
 
     *(s32 *)((u8 *)self + 0x10) = arg1;
-    *(u8 *)((u8 *)self + 0x0) = zero;
+    *(u8 *)((u8 *)self + 0x0) = 0;
     *(s32 *)((u8 *)self + 0x4) = -1;
-    *(u8 *)((u8 *)self + 0x8) = zero;
+    *(u8 *)((u8 *)self + 0x8) = 0;
     *(void **)((u8 *)self + 0x0C) = lbl_80342618;
     *(void **)((u8 *)self + 0x14) = desired;
     *(void **)((u8 *)self + 0x18) = arg3;
@@ -378,7 +378,7 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
     *(void **)((u8 *)self + 0x20) = arg5;
     *(void **)((u8 *)self + 0x24) = fn_8027DB40(6);
     *(u8 *)((u8 *)self + 0x8) = 1;
-    *(s32 *)((u8 *)self + 0x28) = zero;
+    *(s32 *)((u8 *)self + 0x28) = 0;
 
     j = 0;
     count = ((Collection *)*(void **)((u8 *)self + 0x24))->getCount();
@@ -427,7 +427,7 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
 
     result = ((Collection *)*(void **)((u8 *)self + 0x24))->getResult(*(s32 *)((u8 *)self + 0x28));
     *(s32 *)((u8 *)self + 0x6C) = result;
-    *(u8 *)((u8 *)*(void **)((u8 *)self + 0x20) + 0xDD) = (result == 0);
+    *(signed char *)((u8 *)*(void **)((u8 *)self + 0x20) + 0xDD) = (result == 0);
 
     ctx = *(void **)((u8 *)self + 0x18);
     if (*(void **)((u8 *)ctx + 0x28) != 0) {
@@ -773,9 +773,9 @@ copy_done_forward:
         *animation = *(int *)(base + 0x2C);
         frame = (int)(fn_8023659C(animation) * lbl_80563768);
         temp = (float)(frame - *(int *)(base + 0x48)) / lbl_8056376C;
-        if (temp < lbl_80563764) t = lbl_80563764;
-        else if (temp > lbl_80563758) t = lbl_80563758;
-        else t = temp;
+        t = lbl_80563764;
+        if (temp < t) t = temp;
+        t = (t > lbl_80563758) ? t : lbl_80563758;
         curve = lbl_80563770;
         if (t >= lbl_80563770) {
             if (t > lbl_80563764) {
@@ -814,7 +814,7 @@ copy_done_forward:
         }
         index = *(int *)(base + 0x2C);
         *(signed char *)(base + 0x5C) = 0;
-        if (index >= 0 && index < *(int *)((char *)(char *)*(void **)(base + 0x28) + 0x98)) {
+        if (index >= 0 && index < *(int *)((char *)*(void **)(base + 0x28) + 0x98)) {
             child = *(void **)((char *)*(void **)(base + 0x28) + 0x64 + index * 4);
             **(void ***)(base + 0x34) = child;
             fn_80255918(*(void **)(base + 0x38), child);
@@ -839,9 +839,9 @@ copy_done_backward:
         *animation = *(int *)(base + 0x2C);
         frame = (int)(fn_8023659C(animation) * lbl_80563768);
         temp = (float)(frame - *(int *)(base + 0x48)) / lbl_8056376C;
-        if (temp < lbl_80563764) t = lbl_80563764;
-        else if (temp > lbl_80563758) t = lbl_80563758;
-        else t = temp;
+        t = lbl_80563764;
+        if (temp < t) t = temp;
+        t = (t > lbl_80563758) ? t : lbl_80563758;
         curve = lbl_80563770;
         if (t >= lbl_80563770) {
             if (t > lbl_80563764) {
@@ -885,8 +885,8 @@ void fn_80241820(void *arg0) {
     char *self = (char *)arg0;
     float sx, sy;
     if (*(int *)(self + 0x28) != 0 && ((Fn241820Obj *)self)->vt->isActive(self) != 0) {
-        float w, h, cw, t, c, v;
-        float base;
+        float k255, k03, k07, zero, one, half, w, h, cw, base;
+        float t, c, f4c;
         int i;
         fn_80230C30(&sx, &sy, *(int *)(self + 0x14), *(int *)(self + 0x18));
         w = (float)*(int *)(self + 0x1c);
@@ -896,18 +896,26 @@ void fn_80241820(void *arg0) {
         t = (lbl_80563764 < t) ? lbl_80563764 : t;
         t = (t > lbl_80563758) ? t : lbl_80563758;
         c = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (t * (lbl_80563774 * t * t) + lbl_80563778 * t * t) : (t * (lbl_80563774 * t * t) - lbl_80563778 * t * t)));
-        base = ((sx + w * lbl_80563784) - cw * lbl_80563784) - cw * (*(float *)(self + 0x4c) + c * (*(float *)(self + 0x50) - *(float *)(self + 0x4c)));
+        f4c = *(float *)(self + 0x4c);
+        half = lbl_80563784;
+        zero = lbl_80563758;
+        one = lbl_80563764;
+        k07 = lbl_8056378C;
+        k03 = lbl_80563788;
+        k255 = lbl_80563790;
+        base = ((sx + w * half) - cw * half) - cw * (f4c + c * (*(float *)(self + 0x50) - f4c));
         for (i = 0; i < *(int *)(*(char **)(self + 0x28) + 0x98); i++) {
             float x = base + (float)i * cw;
             if (x + cw > sx && x < sx + w) {
                 unsigned col, white;
                 int a;
-                v = (x + cw * lbl_80563784) - sx;
-                if (v > w * lbl_80563784) v = w - v;
-                v = (v - lbl_80563758) / (w * lbl_80563784 - lbl_80563758);
-                if (lbl_80563764 < v) v = lbl_80563764;
-                v = (v > lbl_80563758) ? v : lbl_80563758;
-                a = (int)(lbl_80563790 * (lbl_80563788 + v * lbl_8056378C));
+                float v;
+                v = (x + cw * half) - sx;
+                if (v > w * half) v = w - v;
+                v = (v - zero) / (w * half - zero);
+                if (one < v) v = one;
+                v = (v > zero) ? v : zero;
+                a = (int)(k255 * (k03 + v * k07));
                 col = *(unsigned *)(*(char **)(self + 0x28) + i * 4 + 0x64);
                 white = (a << 24) | 0xFFFFFF;
                 col = (col & 0xFFFFFF) | (a << 24);
@@ -1904,16 +1912,8 @@ off_child_check:
 s32 fn_80242F68(void *arg0, s32 arg1) {
     u8 *base = (u8 *)arg0;
     s32 channel = fn_802E4A10();
-    s32 active;
-    s32 selected;
-    s32 i;
+    s32 active, selected, i, state0, pp, eq, cond, modeB, mode, cntSel;
     u8 *slot;
-    s32 state0;
-    s32 pp;
-    s32 eq;
-    s32 cond;
-    s32 modeB, mode;
-    s32 cntSel;
     if (channel >= 2) return 0;
     slot = base + channel * 0x20;
     state0 = *(s32 *)(slot + 0x34);
@@ -1929,13 +1929,8 @@ s32 fn_80242F68(void *arg0, s32 arg1) {
             slot = base + active * 0x20;
             *(s32 *)(slot + 0x34) -= 1;
             if (*(s32 *)(slot + 0x34) == 1) {
-                if (active == 0) {
-                    lbl_8055F1FC = 1;
-                    lbl_8055F200 = 0;
-                } else {
-                    fn_80216D28();
-                    fn_80214D50(1);
-                }
+                if (active == 0) { lbl_8055F1FC = 1; lbl_8055F200 = 0; }
+                else { fn_80216D28(); fn_80214D50(1); }
                 *(s32 *)(slot + 0x34) = 2;
             }
             {
@@ -1956,40 +1951,28 @@ upd_body0:
 upd_check0:
                 if (i < *(s32 *)(obj + 0x2C)) goto upd_body0;
             }
-        } else {
-            lbl_8055F1FC = 1;
-            lbl_8055F200 = 0;
-        }
+        } else { lbl_8055F1FC = 1; lbl_8055F200 = 0; }
         return 1;
     case 0xD:
         {
-            s32 v0;
-            v0 = *(s32 *)((u8 *)arg0 + 0x34);
-            cntSel = 0;
-            mode = 0;
+            s32 v0 = *(s32 *)((u8 *)arg0 + 0x34);
+            cntSel = 0; mode = 0;
             if (v0 <= 1) goto mode_a_ok;
             if (v0 == 4) goto mode_a_ok;
-            mode = 0;
-            goto mode_done;
+            mode = 0; goto mode_done;
 mode_a_ok:
             if (v0 == 4) cntSel = 1;
             modeB = *(s32 *)((u8 *)arg0 + 0x54);
             if (modeB <= 1) goto mode_b_ok;
             if (modeB == 4) goto mode_b_ok;
-            mode = 0;
-            goto mode_done;
+            mode = 0; goto mode_done;
 mode_b_ok:
             if (modeB == 4) cntSel++;
             mode = cntSel >= 2;
 mode_done:;
             if (mode != 0) {
-                if (channel == 0) {
-                    lbl_8055F1FC = 1;
-                    lbl_8055F200 = 2;
-                } else {
-                    fn_80216D28();
-                    fn_80214D50(1);
-                }
+                if (channel == 0) { lbl_8055F1FC = 1; lbl_8055F200 = 2; }
+                else { fn_80216D28(); fn_80214D50(1); }
                 return 1;
             }
         }
@@ -2002,77 +1985,63 @@ mode_done:;
             if (*(s32 *)(slot + 0x34) > 1) {
                 u8 *obj = *(u8 **)(slot + 0x18);
                 if (*(u8 *)(obj + 0x38)) {
-                    {
-                        u8 *cur2 = obj;
-                        s32 idx = 0;
-                        s32 done = 0;
-                        while (idx < *(s32 *)(obj + 0x2C)) {
-                            u8 *ee = *(u8 **)(cur2 + 0x18);
-                            s32 (*fn)(void *) = ((s32 (**)(void *))(*(void **)((u8 *)ee + 0xC)))[5];
-                            if (fn((void *)ee) == 0) { done = *(u8 *)(obj + 0x38); goto scan_done; }
-                            cur2 += 4; idx++;
-                        }
-                        done = *(u8 *)(obj + 0x38);
+                    u8 *cur2 = obj;
+                    s32 idx = 0, done = 0;
+                    while (idx < *(s32 *)(obj + 0x2C)) {
+                        u8 *ee = *(u8 **)(cur2 + 0x18);
+                        s32 (*fn)(void *) = ((s32 (**)(void *))(*(void **)((u8 *)ee + 0xC)))[5];
+                        if (fn((void *)ee) == 0) { done = *(u8 *)(obj + 0x38); goto scan_done; }
+                        cur2 += 4; idx++;
+                    }
+                    done = *(u8 *)(obj + 0x38);
 scan_done:
-                        if (done != 0) {
-                            s32 ns = *(s32 *)(slot + 0x34) + 1;
-                            u8 *cur3 = obj;
-                            *(s32 *)(slot + 0x34) = ns;
-                            *(s32 *)(obj + 0x30) = (ns != 2);
-                            i = 0;
-                            goto upd_check1;
+                    if (done != 0) {
+                        s32 ns = *(s32 *)(slot + 0x34) + 1;
+                        u8 *cur3 = obj;
+                        *(s32 *)(slot + 0x34) = ns;
+                        *(s32 *)(obj + 0x30) = (ns != 2);
+                        i = 0;
+                        goto upd_check1;
 upd_body1:
-                            {
-                                s32 v = **(s32 **)(obj + 0x34);
-                                s32 sel = (*(u8 *)(obj + 0x38) != 0 && i == *(s32 *)(obj + 0x30)) ? 1 : 0;
-                                void *e = *(void **)(cur3 + 0x18);
-                                cur3 += 4; i++;
-                                *(u8 *)e = (u8)sel;
-                                *(s32 *)((u8 *)e + 4) = v;
-                            }
-upd_check1:
-                            if (i < *(s32 *)(obj + 0x2C)) goto upd_body1;
+                        {
+                            s32 v = **(s32 **)(obj + 0x34);
+                            s32 sel = (*(u8 *)(obj + 0x38) != 0 && i == *(s32 *)(obj + 0x30)) ? 1 : 0;
+                            void *e = *(void **)(cur3 + 0x18);
+                            cur3 += 4; i++;
+                            *(u8 *)e = (u8)sel;
+                            *(s32 *)((u8 *)e + 4) = v;
                         }
+upd_check1:
+                        if (i < *(s32 *)(obj + 0x2C)) goto upd_body1;
                     }
                 }
             }
         } else if (selected >= 0) {
             s32 off = selected << 5;
             u8 *obj = *(u8 **)((u8 *)arg0 + off + 0x18);
-            u8 *dst;
-            u8 *src;
+            u8 *dst, *src;
             s32 n;
             signed char c;
             **(s32 **)(obj + 0x34) = channel;
             *(s32 *)(*(u8 **)(obj + 0x28) + 0xD8) = **(s32 **)(obj + 0x34);
             if (**(s32 **)(obj + 0x34) < 0) {
-                src = (u8 *)&lbl_8055BD60;
-                dst = obj + 0x39;
-                n = 0x20;
+                src = (u8 *)&lbl_8055BD60; dst = obj + 0x39; n = 0x20;
                 goto copy_check0;
 copy_loop0:
-                --n;
-                if (n > 0) goto copy_check0;
-                dst[-1] = 0;
-                goto copy_done0;
+                --n; if (n > 0) goto copy_check0;
+                dst[-1] = 0; goto copy_done0;
 copy_check0:
-                c = *src++;
-                *dst++ = (u8)c;
+                c = *src++; *dst++ = (u8)c;
                 if (c != 0) goto copy_loop0;
 copy_done0:;
             } else {
-                src = fn_802E85B8(**(s32 **)(obj + 0x34));
-                dst = obj + 0x39;
-                n = 0x20;
+                src = fn_802E85B8(**(s32 **)(obj + 0x34)); dst = obj + 0x39; n = 0x20;
                 goto copy_check1;
 copy_loop1:
-                --n;
-                if (n > 0) goto copy_check1;
-                dst[-1] = 0;
-                goto copy_done1;
+                --n; if (n > 0) goto copy_check1;
+                dst[-1] = 0; goto copy_done1;
 copy_check1:
-                c = *src++;
-                *dst++ = (u8)c;
+                c = *src++; *dst++ = (u8)c;
                 if (c != 0) goto copy_loop1;
 copy_done1:;
             }
@@ -2095,9 +2064,7 @@ upd_check2:
             *(s32 *)((u8 *)arg0 + off + 0x34) = 2;
         }
         return 1;
-    case 0x6F:
-        return 1;
-    default:
-        return 0;
+    case 0x6F: return 1;
+    default: return 0;
     }
 }
