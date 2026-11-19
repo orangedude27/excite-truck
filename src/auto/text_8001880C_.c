@@ -116,19 +116,20 @@ extern "C" void fn_8001880C(void)
 
 #pragma cplusplus reset
 #pragma scheduling invalid_target
-s32 fn_80018A8C(const char *arg0) {
+/* Look up a car-stats record by chassis name (stricmp) in lbl_8055D578; panic and
+ * return 0 if not found. */
+s32 fn_80018A8C(const char *chassisName) {
     s32 offset = 0;
-    s32 i = 0;
-    while (i < lbl_8055D57C) {
-        if (stricmp(*(char **)((char *)lbl_8055D578 + offset), arg0) == 0)
-            return (s32)((char *)lbl_8055D578 + i * 0x2C);
+    s32 index = 0;
+    while (index < lbl_8055D57C) {
+        if (stricmp(*(char **)((char *)lbl_8055D578 + offset), chassisName) == 0)
+            return (s32)((char *)lbl_8055D578 + index * 0x2C);
         offset += 0x2C;
-        i++;
+        index++;
     }
-    fn_802E317C(lbl_802FD270, arg0);
+    fn_802E317C(lbl_802FD270, chassisName);
     return 0;
 }
-
 /* RealName: CarStats_Shutdown (see the comment in the body). */
 #pragma cplusplus reset
 
