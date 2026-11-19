@@ -179,31 +179,32 @@ void fn_8017B2D0(void *arg0, float a, float b, float c, float d) {
 }
 
 #pragma opt_propagation off
-void fn_8017B3A8(void *arg0, const float *arg1, const float *arg2) {
+void fn_8017B3A8(void *body, const float *force, const float *point) {
+    /* Apply a force at a world point to the body's linear/angular accumulators if the force is non-zero. */
     float delta[3];
-    float output[3];
+    float torque[3];
 
-    if (!((float)__fabs(PSVECDotProduct(arg1, arg1)) <= lbl_80558DC4[0])) {
-        float a2_0, a2_1, a2_2, d0;
+    if (!((float)__fabs(PSVECDotProduct(force, force)) <= lbl_80558DC4[0])) {
+        float pointX, pointY, pointZ, dx;
         float x, y, z;
 
-        a2_0 = arg2[0];
-        a2_1 = arg2[1];
-        d0 = a2_0 - *(float *)((char *)arg0 + 0x60);
-        a2_2 = arg2[2];
-        delta[0] = d0;
-        delta[1] = a2_1 - *(float *)((char *)arg0 + 0x64);
-        delta[2] = a2_2 - *(float *)((char *)arg0 + 0x68);
-        PSVECCrossProduct(delta, arg1, output);
-        x = *(float *)((char *)arg0 + 0x130) + arg1[0];
-        y = *(float *)((char *)arg0 + 0x134) + arg1[1];
-        z = *(float *)((char *)arg0 + 0x138) + arg1[2];
-        *(float *)((char *)arg0 + 0x130) = x;
-        *(float *)((char *)arg0 + 0x134) = y;
-        *(float *)((char *)arg0 + 0x138) = z;
-        *(float *)((char *)arg0 + 0x13C) += output[0];
-        *(float *)((char *)arg0 + 0x140) += output[1];
-        *(float *)((char *)arg0 + 0x144) += output[2];
+        pointX = point[0];
+        pointY = point[1];
+        dx = pointX - *(float *)((char *)body + 0x60);
+        pointZ = point[2];
+        delta[0] = dx;
+        delta[1] = pointY - *(float *)((char *)body + 0x64);
+        delta[2] = pointZ - *(float *)((char *)body + 0x68);
+        PSVECCrossProduct(delta, force, torque);
+        x = *(float *)((char *)body + 0x130) + force[0];
+        y = *(float *)((char *)body + 0x134) + force[1];
+        z = *(float *)((char *)body + 0x138) + force[2];
+        *(float *)((char *)body + 0x130) = x;
+        *(float *)((char *)body + 0x134) = y;
+        *(float *)((char *)body + 0x138) = z;
+        *(float *)((char *)body + 0x13C) += torque[0];
+        *(float *)((char *)body + 0x140) += torque[1];
+        *(float *)((char *)body + 0x144) += torque[2];
     }
 }
 #pragma opt_propagation reset
