@@ -140,20 +140,19 @@ extern "C" void fn_802B1E28(void) {
         void *storage;
     } Pool;
     typedef void *(*AllocArray)(void *, void (*)(void *), void *(*)(void *, int), int, int);
-    register char *table = lbl_8034A288;
     Pool *pool;
     void *storage;
     void *nodes;
     void *data;
     void *entry;
+    int i;
+    int offset;
     int count;
     int size;
-    int offset;
-    int i;
     int index;
-    fn_802B8AE0(table + 0xC, &lbl_8055F9B4);
-    fn_802B8AE0(table + 0x18, &lbl_8055F9B0);
-    pool = (Pool *)fn_801284F8(0x14, table + 0x28);
+    fn_802B8AE0(lbl_8034A288 + 0xC, &lbl_8055F9B4);
+    fn_802B8AE0(lbl_8034A288 + 0x18, &lbl_8055F9B0);
+    pool = (Pool *)fn_801284F8(0x14, lbl_8034A288 + 0x28);
     if (pool != 0) {
         storage = fn_8012850C(0x610, (const char *)&lbl_8055CDC0);
         nodes = ((AllocArray)fn_8002F37C)(storage, fn_802B1FC0, fn_802B1F68, 0x10, 0x60);
@@ -521,6 +520,8 @@ void fn_802B2504(int *dst, int count) {
 #pragma pop
 void fn_802B28BC(int *, int);
 void *memset(void *, int, unsigned int);
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802B257C(void *arg0) {
     int count = *(int *)((char *)arg0 + 0x40C);
     int **list = *(int ***)((char *)arg0 + 0x408);
