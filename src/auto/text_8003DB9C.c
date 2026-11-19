@@ -2266,6 +2266,7 @@ void GXInvalidateVtxCache(void) {
     #undef GX_CP_CMD_INVALIDATE_VTX_CACHE
 }
 
+/* Configure texture coordinate generation for a tex coord in GX state. */
 void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned int nrm, unsigned int normalize, int postmtx) {
     typedef union {
         u32 val;
