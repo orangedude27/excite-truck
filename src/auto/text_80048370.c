@@ -1002,11 +1002,16 @@ void *MEMGetNextListObject(MEMList *list, void *object) {
 void PSMTXConcat(const Mtx a, const Mtx b, Mtx out) {
 #pragma paired on
 #pragma paired_single on
-    int i;
+    int i, j;
     for (i = 0; i < 3; i++) {
-        out[i][0] = a[i][0] * b[0][0] + a[i][1] * b[1][0] + a[i][2] * b[2][0];
-        out[i][1] = a[i][0] * b[0][1] + a[i][1] * b[1][1] + a[i][2] * b[2][1];
-        out[i][2] = a[i][0] * b[0][2] + a[i][1] * b[1][2] + a[i][2] * b[2][2];
+        for (j = 0; j < 2; j++) {
+            f32 b00 = b[0][2*j], b01 = b[0][2*j+1];
+            f32 b10 = b[1][2*j], b11 = b[1][2*j+1];
+            f32 b20 = b[2][2*j], b21 = b[2][2*j+1];
+            f32 a0 = a[i][0], a1 = a[i][1], a2 = a[i][2];
+            out[i][2*j]   = a0 * b00 + a1 * b10 + a2 * b20;
+            out[i][2*j+1] = a0 * b01 + a1 * b11 + a2 * b21;
+        }
         out[i][3] = a[i][0] * b[0][3] + a[i][1] * b[1][3] + a[i][2] * b[2][3] + a[i][3];
     }
 }
@@ -1136,9 +1141,6 @@ void PSMTXRotRad(Mtx m, f32 x, f32 y, f32 z) {
     m[0][0] = one;
 }
 #pragma pop
-#pragma push
-#pragma paired on
-#pragma paired_single on
 void PSMTXRotTrig(register Mtx m, register Mtx r, register f32 sx, register f32 sy, register f32 sz) {
     register f32 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
     a0 = *(f32 *)&m[0][0];
@@ -1162,7 +1164,6 @@ void PSMTXRotTrig(register Mtx m, register Mtx r, register f32 sx, register f32 
     *(f32 *)&r[2][0] = a8;
     *(f32 *)&r[2][1] = a9;
 }
-#pragma pop
 
 #pragma paired on
 #pragma paired_single on
