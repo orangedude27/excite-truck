@@ -666,12 +666,12 @@ extern "C" int stricmp(const char *, const char *);
 #pragma small_data on
 #pragma small_data off
 extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
-    char *name = arg1;
-    s32 id = arg2;
-    void *entry = arg0;
+    register s32 id = arg2;
+    register char *name = arg1;
+    register void *entry = arg0;
     char buf[0x100];
-    if (arg1[0] == '#') {
-        name = arg1 + 1;
+    if (name[0] == '#') {
+        name = name + 1;
     }
     sprintf(buf, lbl_8055B750, name);
     while (*(s32 *)((char *)entry + 4) != 0x7B) {
@@ -2459,6 +2459,11 @@ extern "C" void fn_80215468(void *widget) {
 
 }
 
+/* Empty default of the base widget class (vtable lbl_8033FB38) at vtable slot
+ * 0x44 (VfObj::vf15): the base widget's no-op enable hook, dispatched by the
+ * layout wrapper's enable forwarder (fn_80215A10, which sets the +0x18 flag) on
+ * the wrapped widget.  A subclass that wants behaviour on enable overrides it;
+ * the base widget has nothing to do, so the default does nothing. */
 extern "C" void fn_8021546C(void) {
 
 }
