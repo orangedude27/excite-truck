@@ -672,29 +672,39 @@ static inline int fn_8027F834_find(void **p, void *value, int count) {
     return -1;
 }
 
-void *fn_8027F834(void *arg0, int arg1) {
+#define WIDGET_VTABLE lbl_80348798
+#define WIDGET_LIST lbl_804B3048
+#define SELECTED_WIDGET lbl_8055F688
+/* Destructor of an ebi list widget (this is slot 0 of the vtable at lbl_80348798):
+   restore the plain widget vtable, drop the widget from the live-widget list, clear
+   the selection when it was the selected widget, mark it destroyed (state24 = 1)
+   and, when the flag is above 0, hand its memory back to the allocator. */
+void *fn_8027F834(struct EbiListItem *widget, int freeMemory) {
     int index, count;
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_80348798;
-        if (lbl_8055F688 == (unsigned int)arg0) lbl_8055F688 = 0;
-        index = fn_8027F834_find(lbl_804B3048.items, arg0, lbl_804B3048.count);
-        if (index != -1 && index >= 0 && index < (count = *(volatile int *)&lbl_804B3048.count)) {
+    if (widget != 0) {
+        widget->vtable = WIDGET_VTABLE;
+        if (SELECTED_WIDGET == (unsigned int)widget) SELECTED_WIDGET = 0;
+        index = fn_8027F834_find(WIDGET_LIST.items, widget, WIDGET_LIST.count);
+        if (index != -1 && index >= 0 && index < (count = *(volatile int *)&WIDGET_LIST.count)) {
             if (index != count - 1)
-                lbl_804B3048.items[index] = lbl_804B3048.items[count - 1];
-            *(volatile int *)&lbl_804B3048.count = *(volatile int *)&lbl_804B3048.count - 1;
+                WIDGET_LIST.items[index] = WIDGET_LIST.items[count - 1];
+            *(volatile int *)&WIDGET_LIST.count = *(volatile int *)&WIDGET_LIST.count - 1;
         }
-        if (arg0 != 0) {
-            *((unsigned char *)arg0 + 0x18) = 0;
-            *((unsigned char *)arg0 + 0x50) = 0;
-            *((unsigned char *)arg0 + 0x5C) = 0;
-            *(int *)((char *)arg0 + 0x24) = 1;
-            *(int *)((char *)arg0 + 0x20) = 0;
-            *((unsigned char *)arg0 + 0x44) = 0;
+        if (widget != 0) {
+            widget->flag18 = 0;
+            widget->flag50 = 0;
+            widget->flag5C = 0;
+            widget->state24 = 1;
+            widget->unk20 = 0;
+            widget->flag44 = 0;
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (freeMemory > 0) fn_80128668((int)widget);
     }
-    return arg0;
+    return widget;
 }
+#undef SELECTED_WIDGET
+#undef WIDGET_LIST
+#undef WIDGET_VTABLE
 
 #pragma scheduling on
 int fn_8027F958(int *selection, void *collection) {
