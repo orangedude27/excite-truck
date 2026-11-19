@@ -89,6 +89,7 @@ extern void fn_8017B164(void *);
 void fn_801D32C8(void) {
 }
 
+/* Empty stub / no-op placeholder. */
 void fn_801D32CC(void) {
 
 }
