@@ -231,11 +231,15 @@ extern "C" int fn_801D36E8(void) {
         virtual void f14();
         virtual int check();
     };
-    float bestValue = lbl_80562AB8;
-    void **entry = lbl_804421D8;
-    void *best = 0;
-    int index = 0;
+    float bestValue;
+    void **entry;
+    void *best;
+    int index;
 
+    bestValue = 0.0f;
+    entry = lbl_804421D8;
+    best = 0;
+    index = 0;
     goto check_loop;
 loop:
     if (((struct Dummy *)*entry)->check() == 0)
