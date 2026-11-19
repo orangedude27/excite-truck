@@ -230,20 +230,16 @@ static inline void *fn_801EC59C_parent_get(void *parent, int index) {
 static inline void fn_801EC59C_property_get(void *out, void *property, char *label) {
     *(Vec3 *)out = ((Property *)property)->getVector(label);
 }
+static inline Vec3 fn_801EC59C_getv(void *property, char *label) {
+    return ((Property *)property)->getVector(label);
 }
-typedef union { struct { float x, y, z; } f; unsigned int u[3]; } Vec3C;
-static inline Vec3C fn_801EC59C_getv(void *property, char *label) {
-    Vec3C r;
-    void **vt = *(void ***)property;
-    ((void (*)(Vec3C *, void *, char *))vt[13])(&r, property, label);
-    return r;
 }
 #pragma cplusplus reset
 void fn_801EC59C(void *out, void *parent, int index, int value, float scale, float bias) {
     extern char lbl_8055AFDC, lbl_8055AFE4;
     extern float lbl_80562E88, lbl_80562E8C;
     register void *result;
-    Vec3C first, second;
+    Vec3 first, second;
     float dx, dy, slopeX, slopeY;
 
     *(volatile int *)out = value;
