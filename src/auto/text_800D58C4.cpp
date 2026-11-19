@@ -918,8 +918,8 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
     for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
-        u8 *child = ChildPane_800D77DC(it);
-        SetTagProcessorChild_800D6CA0(child, arg1);
+        ChildIter_800D77DC cur = it;
+        SetTagProcessorChild_800D6CA0(ChildPane_800D77DC(cur), arg1);
     }
 }
 #pragma pop
@@ -1276,6 +1276,7 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 extern "C" void fn_800D6CA0(s32, s32);
 #pragma push
 #pragma opt_common_subs off
+#pragma inline_depth(6)
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
