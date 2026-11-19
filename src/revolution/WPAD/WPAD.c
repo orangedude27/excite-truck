@@ -556,93 +556,97 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 }
 
 void fn_8005E09C(s32 port) {
-    WPADCB* p;
-    s32 enabled;
-    u8 devMode;
+    register WPADCB **cbs asm("r30");
+    register s32 enabled asm("r25");
+    register s32 changed asm("r31");
+    s32 idx;
+    WPADCB *p2;
+    WPADCB *p;
+    s32 flag;
     s32 offset;
-    u16 filterDiff;
-    u16 filterSame;
+    s32 filterSame;
     s32 devHandle;
-    s32 timeDiff;
-    s32 timeout;
+    s64 currentTime, lastTime;
+    s32 timeDiff, timeout;
 
+    cbs = lbl_8038F4F0;
+    idx = port * 4;
+    flag = 0;
     p = lbl_8038F4F0[port];
 
-    if (*(s32*)((u8*)p + 0x7FC) == -1) {
+    if (p->readStatus == -1) {
         goto _end;
     }
 
     enabled = OSDisableInterrupts();
-
-    devMode = *(u8*)((u8*)p + 0x806);
-    offset = devMode * 0x60;
-
-    if (IsControllerDataChanged(p, (void*)((u8*)p + 0x40 + offset + 0x60), (void*)((u8*)p + 0x40))) {
-        memcpy((void*)((u8*)p + 0x40), (void*)((u8*)p + 0x40 + offset + 0x60), 0x60);
-
+    offset = (u8)(p->rxBufSel == 0) * 0x60;
+    changed = IsControllerDataChanged(p, (void*)((u8*)p + 0xA0 + offset), (void*)p->rxBufMain);
+    if (changed) {
+        memcpy(p->rxBufMain, (void*)((u8*)p + 0xA0 + offset), 0x60);
         if (*(s8*)((u8*)p + 0x69) != 0) {
-            memset((void*)((u8*)p + 0x40), 0, 0x60);
+            memset(p->rxBufMain, 0, 0x60);
         }
     }
-
     OSRestoreInterrupts(enabled);
 
+    p2 = lbl_8038F4F0[port];
     enabled = OSDisableInterrupts();
-
-    filterDiff = *(u16*)((u8*)p + 0x852);
-    if (*(u16*)((u8*)p + 0xA0 + offset) == 0x1C10) {
+    offset = (u8)(p2->rxBufSel == 0) * 0x60;
+    filterSame = 0;
+    if (*(u16*)((u8*)p2 + 0xA0 + offset) == 0x1C10) {
         filterSame = 1;
-    } else if (*(s32*)((u8*)p + 0x7F8) - 6 <= 2 && *(u16*)((u8*)p + 0xCA + offset) == 0x1450) {
+    } else if (p2->readFormat - 6 <= 2 && *(u16*)((u8*)p2 + 0xCA + offset) == 0x1450) {
         filterSame = 1;
-    } else {
-        filterSame = 0;
     }
-
     if (filterSame != 0) {
-        filterDiff++;
+        *(u16*)((u8*)p2 + 0x852) += 1;
     } else {
-        filterDiff = 0;
+        *(u16*)((u8*)p2 + 0x852) = 0;
     }
-    *(u16*)((u8*)p + 0x852) = filterDiff;
     OSRestoreInterrupts(enabled);
 
-    if (filterDiff > 600) {
+    if (*(u16*)((u8*)p2 + 0x852) > 600) {
+        p2 = lbl_8038F4F0[port];
         enabled = OSDisableInterrupts();
-        *(u8*)((u8*)p + 0x851) = 0;
+        *(u8*)((u8*)p2 + 0x851) = 0;
         OSRestoreInterrupts(enabled);
     }
 
-    if (*(s32*)((u8*)p + 0x7FC) == -1) {
-        goto _end;
-    }
-
-    enabled = OSDisableInterrupts();
-    if (lbl_8055DC1A != 0) {
-        s64 currentTime = __OSGetSystemTime();
-        s64 lastTime = *(s64*)((u8*)p + 0x830);
-
-        timeDiff = (s32)(currentTime - lastTime);
-        timeout = lbl_8055DC1A * 60;
-
-        if (timeDiff > timeout) {
-            devHandle = *(s32*)((u8*)p + 0x7FC);
-            OSRestoreInterrupts(enabled);
-
-            if (devHandle != -1) {
-                enabled = OSDisableInterrupts();
-                if (*(u8*)((u8*)p + 0x8C6) == 0) {
-                    *(u8*)((u8*)p + 0x8C6) = 1;
-                    OSRestoreInterrupts(enabled);
-                    BTA_HhClose(*(u8*)((u8*)p + 0x803));
-                } else {
-                    OSRestoreInterrupts(enabled);
+    if (changed) {
+        flag = 1;
+        currentTime = __OSGetSystemTime();
+        *(s64*)((u8*)p + 0x830) = currentTime;
+    } else {
+        enabled = OSDisableInterrupts();
+        if (lbl_8055DC1A != 0) {
+            currentTime = __OSGetSystemTime();
+            lastTime = *(s64*)((u8*)p + 0x830);
+            timeDiff = OS_TICKS_TO_SEC(currentTime - lastTime);
+            timeout = lbl_8055DC1A * 60;
+            if (timeDiff > timeout) {
+                devHandle = p->readStatus;
+                OSRestoreInterrupts(enabled);
+                if (devHandle != -1) {
+                    p = lbl_8038F4F0[port];
+                    enabled = OSDisableInterrupts();
+                    if (*(u8*)((u8*)p + 0x8C6) == 0) {
+                        *(u8*)((u8*)p + 0x8C6) = 1;
+                        OSRestoreInterrupts(enabled);
+                        BTA_HhClose(p->extDevHandle);
+                    } else {
+                        OSRestoreInterrupts(enabled);
+                    }
                 }
+            } else {
+                OSRestoreInterrupts(enabled);
             }
         } else {
             OSRestoreInterrupts(enabled);
         }
-    } else {
-        OSRestoreInterrupts(enabled);
+    }
+
+    if (flag != 0) {
+        fn_8005B00C();
     }
 
 _end:
@@ -3648,6 +3652,9 @@ u8 fn_8005EE80(s32 chan)
     return deviceHandle;
 }
 
+static inline u32 fn_8005EEC4_mask(u32 v) {
+    return ((s32)(-(s32)v | (s32)v) >> 31) & 0x176c;
+}
 void fn_8005EEC4(s32 chan, s32 result) {
     u16 val16;
     u32 val32;
@@ -5880,6 +5887,7 @@ void fn_80064A80(s32 chan, s32 param_2) {
 void fn_80064B1C(s32 chan, void* data) {
     register const char* strBase asm("r31") = (const char*)lbl_80312338;
     register s32 channel asm("r26") = chan;
+    register void* report asm("r27") = data;
     register u8* p asm("r29");
     register s32 enabled asm("r30");
     register u8* buf asm("r28");
@@ -5889,7 +5897,7 @@ void fn_80064B1C(s32 chan, void* data) {
     s32 old;
     s32 oldReport;
     u32 v;
-    s8 sign;
+    s32 signBit;
     DBPrintf_80068D68(strBase + 0x328);
     enabled = OSDisableInterrupts();
     p = (u8*)lbl_8038F4F0[(u8)channel];
@@ -5901,17 +5909,17 @@ void fn_80064B1C(s32 chan, void* data) {
     buf = p + 0xA0 + p[0x806] * 0x60;
     for (i = 0; i < 96; i++) buf[i] = 0;
     oldReport = *(s32*)(p + 0x780);
-    *(u16*)buf = (u16)((((u8*)data)[1] | (((u8*)data)[2] << 8)) & 0x9f1f);
-    sign = (s8)((u8*)data)[1];
-    *(s32*)(p + 0x788) = sign >> 7;
-    *(s32*)(p + 0x778) = (((u8*)data)[3] >> 3) & 1;
-    *(s32*)(p + 0x77C) = (((u8*)data)[3] >> 2) & 1;
-    *(s32*)(p + 0x780) = (((u8*)data)[3] >> 1) & 1;
-    *(s32*)(p + 0x784) = ((u8*)data)[3] & 1;
-    p[0x78D] = (u8)(((u32)((u8*)data)[3] >> 4) & 0xF);
+    *(u16*)buf = (u16)((((u8*)report)[1] | (((u8*)report)[2] << 8)) & 0x9f1f);
+    signBit = ((u32)((u8*)report)[1] & 0x80) << 17;
+    *(s32*)(p + 0x788) = signBit >> 7;
+    *(s32*)(p + 0x778) = (((u8*)report)[3] >> 3) & 1;
+    *(s32*)(p + 0x77C) = (((u8*)report)[3] >> 2) & 1;
+    *(s32*)(p + 0x780) = (((u8*)report)[3] >> 1) & 1;
+    *(s32*)(p + 0x784) = ((u8*)report)[3] & 1;
+    p[0x78D] = (u8)(((u32)((u8*)report)[3] >> 4) & 0xF);
     p[0x78E] = 0;
-    p[0x78F] = ((u8*)data)[5] & 0xf0;
-    v = ((u8*)data)[6];
+    p[0x78F] = ((u8*)report)[5] & 0xf0;
+    v = ((u8*)report)[6];
     if (v >= 0x55) p[0x78C] = 4;
     else if (v >= 0x44) p[0x78C] = 3;
     else if (v >= 0x33) p[0x78C] = 2;
@@ -5938,8 +5946,9 @@ void fn_80064B1C(s32 chan, void* data) {
             DBPrintf_80068D68(strBase + 0x354);
         }
     } else {
-        p[0x801] = 0;
-        p[0x802] = 0;
+        register s32 zero asm("r3") = 0;
+        p[0x801] = zero;
+        p[0x802] = zero;
         if (oldReport != 0) {
             WPADiClearQueue_80063BD4((WPADCommandQueue*)(p + 0x5ec));
             fn_80063564((WPADCommandQueue*)(p + 0x160), *(s32*)(p + 0x7f8), (void*)0);
@@ -5949,7 +5958,7 @@ void fn_80064B1C(s32 chan, void* data) {
             DBPrintf_80068D68(strBase + 0x36c);
             if (*(void**)(p + 0x790) != ((void*)0)) {
                 memcpy(*(void**)(p + 0x790), p + 0x778, 0x18);
-                *(void**)(p + 0x790) = ((void*)0);
+                *(void**)(p + 0x790) = (void *)zero;
             }
             if (*(void**)(p + 0x7dc) != ((void*)0) && p[0x800]) {
                 ((WPADCallback)*(void**)(p + 0x7dc))(channel, 0);
@@ -6887,7 +6896,7 @@ void fn_800678DC(s32 chan, u8 *data) {
     if (cb->readFormat == 0 || cb->readFormat == 1 || cb->readFormat == 9) {
         buf[0x29] = cb->readStatus;
     } else if (cb->readStatus == 0) {
-        buf[0x29] = -4;
+        *(s8*)(buf + 0x29) = -4;
     }
     buf[0x28] = *(u8*)((u8*)cb + 0x801);
     *(u32*)((u8*)cb + 0x788) = 0;
@@ -7084,7 +7093,7 @@ void fn_800684D0(s32 chan) {
     u8 q[8];
     u8 tmp;
     u32 a, b;
-    int i;
+    int i, ctr;
     u8 *dst;
     u32 en;
     int off;
@@ -7102,25 +7111,22 @@ void fn_800684D0(s32 chan) {
     lbl_8055DC29 = tmp;
     i = 0;
     b = (tmp + a) % 255;
-    off = ((tmp + a) % 255) % 7;
+    off = (int)(u8)((tmp + a) % 255) % 7;
     off = off * 6;
-    {
-        int ctr = 2;
-        do {
-            int base = i;
-            i += 5;
-            dst = &s[base];
-            b = (tmp + b * lbl_8055DC2A) % 255;
-            dst[0] = lbl_803127C8[b];
-            b = (tmp + b * lbl_8055DC2A) % 255;
-            dst[1] = lbl_803127C8[b];
-            b = (tmp + b * lbl_8055DC2A) % 255;
-            dst[2] = lbl_803127C8[b];
-            b = (tmp + b * lbl_8055DC2A) % 255;
-            dst[3] = lbl_803127C8[b];
-            b = (tmp + b * lbl_8055DC2A) % 255;
-            dst[4] = lbl_803127C8[b];
-        } while (--ctr != 0);
+    for (ctr = 0; ctr < 2; ctr++) {
+        int base = i;
+        i += 5;
+        dst = &s[base];
+        b = (tmp + b * lbl_8055DC2A) % 255;
+        dst[0] = lbl_803127C8[b];
+        b = (tmp + b * lbl_8055DC2A) % 255;
+        dst[1] = lbl_803127C8[b];
+        b = (tmp + b * lbl_8055DC2A) % 255;
+        dst[2] = lbl_803127C8[b];
+        b = (tmp + b * lbl_8055DC2A) % 255;
+        dst[3] = lbl_803127C8[b];
+        b = (tmp + b * lbl_8055DC2A) % 255;
+        dst[4] = lbl_803127C8[b];
     }
     lbl_8055DC2B = (u8)b;
     en = OSDisableInterrupts();
@@ -7263,9 +7269,10 @@ void __a1_22_ack(u8 chan, u8* pReport)
     if (*(u8*)((u8*)pCB + 0x8C7) == type) {
         WPADCallback callback = pCB->readCB;
         if (callback) {
+            u8 *cbA = (u8*)pCB;
             callback(chan, status);
-            *(volatile WPADCallback*)((u8*)pCB + 0x7DC) = 0;
-            *(volatile s32*)((u8*)pCB + 0x7FC) = 0;
+            *(WPADCallback*)(cbA + 0x7DC) = 0;
+            *(s32*)(cbA + 0x7FC) = (s32)ext - (s32)ext;
         }
     } else {
         DBPrintf_80068D68(strBase + 0x44C);
