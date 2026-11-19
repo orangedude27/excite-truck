@@ -1231,7 +1231,9 @@ extern char lbl_80333448[];
 extern "C" s32 fn_8019B4D8(void *arg0, void *arg1, void *arg2, s32 arg3, f32 farg0) {
     f32 *matrix = (f32 *)((VTab1A1E7C *)arg1)->Call();
     f32 m[12];
-    for (s32 i = 0; i < 12; i++) m[i] = matrix[i];
+    m[0] = matrix[0]; m[1] = matrix[1]; m[2] = matrix[2]; m[3] = matrix[3];
+    m[4] = matrix[4]; m[5] = matrix[5]; m[6] = matrix[6]; m[7] = matrix[7];
+    m[8] = matrix[8]; m[9] = matrix[9]; m[10] = matrix[10]; m[11] = matrix[11];
     f32 dx = *(f32 *)arg2 - m[9];
     f32 dy = *(f32 *)((u8 *)arg2 + 4) - m[10];
     f32 dz = *(f32 *)((u8 *)arg2 + 8) - m[11];
@@ -2086,6 +2088,11 @@ static inline void Fn801A4548Swap2(u8* q) {
 }
 static inline void Fn801A4548Swap4(u8* q) {
     u8 t;
+    t=q[0]; q[0]=q[3]; q[3]=t;
+    t=q[1]; q[1]=q[2]; q[2]=t;
+}
+static inline void Fn801A4548Swap4Hdr(u8* q) {
+    int t;
     t=q[0]; q[0]=q[3]; q[3]=t;
     t=q[1]; q[1]=q[2]; q[2]=t;
 }
@@ -3844,9 +3851,9 @@ extern "C" void fn_801A18D4(void* arg0, f32* arg1, f32* arg2) {
     *(volatile f32*)&local[12] = lo2;
     *(volatile f32*)&local[13] = lo4;
     *(volatile f32*)&local[14] = lo0;
-    lo0 = (lo0 >= lo1) ? lo1 : lo0;
-    lo4 = (lo4 >= lo5) ? lo5 : lo4;
-    lo2 = (lo2 >= lo3) ? lo3 : lo2;
+    lo0 = (lo0 < lo1) ? lo0 : lo1;
+    lo4 = (lo4 < lo5) ? lo4 : lo5;
+    lo2 = (lo2 < lo3) ? lo2 : lo3;
     arg1[0] = lo2; arg1[1] = lo4; arg1[2] = lo0;
     *(volatile f32*)&local[0] = j+x;
     *(volatile f32*)&local[1] = l+x;
@@ -3857,9 +3864,9 @@ extern "C" void fn_801A18D4(void* arg0, f32* arg1, f32* arg2) {
     f32 M0 = *(volatile f32*)&local[0], M1 = *(volatile f32*)&local[1];
     f32 M2 = *(volatile f32*)&local[2], M3 = *(volatile f32*)&local[3];
     f32 M4 = *(volatile f32*)&local[4], M5 = *(volatile f32*)&local[5];
-    M0 = (M0 <= M3) ? M3 : M0;
-    M1 = (M1 <= M4) ? M4 : M1;
-    M2 = (M2 <= M5) ? M5 : M2;
+    M0 = (M0 > M3) ? M0 : M3;
+    M1 = (M1 > M4) ? M1 : M4;
+    M2 = (M2 > M5) ? M2 : M5;
     arg2[0] = M2; arg2[1] = M1; arg2[2] = M0;
 }
 
@@ -4729,8 +4736,8 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
     u8 *dst = (u8*)arg0;
     u8 *src = (u8*)arg2;
     for (s32 i = 0; i < *(s32*)((u8*)arg0 + 0xBC); i++) {
-        u32 t1 = *(s32*)(src + 4);
-        s32 t0 = *(s32*)src;
+        s32 t0 = *(volatile s32*)src;
+        u32 t1 = *(volatile s32*)(src + 4);
         *(s32*)(dst + 0x3C) = t0;
         register unsigned int t2 = *(s32*)(src + 8);
         *(s32*)(dst + 0x40) = t1;
@@ -5083,27 +5090,21 @@ extern "C" void fn_801A3BE0(void *arg0, void *arg1)
     }
     else
     {
-      float m00, m10, m20;
-      float x, y, z;
-      m10 = m[3];
-      m00 = m[0];
-      m20 = m[6];
-      x = v[0];
-      y = v[1];
-      z = v[2];
+      float m10 = m[3];
+      float m00 = m[0];
+      float m20 = m[6];
+      float x = v[0];
+      float y = v[1];
+      float z = v[2];
       out[0] = (z * m20) + ((x * m00) + (y * m10));
-      {
-        float m11 = m[4];
-        float m01 = m[1];
-        float m21 = m[7];
-        out[1] = (z * m21) + ((x * m01) + (y * m11));
-      }
-      {
-        float m12 = m[5];
-        float m02 = m[2];
-        float m22 = m[8];
-        out[2] = (z * m22) + ((x * m02) + (y * m12));
-      }
+      float m11 = m[4];
+      float m01 = m[1];
+      float m21 = m[7];
+      out[1] = (z * m21) + ((x * m01) + (y * m11));
+      float m12 = m[5];
+      float m02 = m[2];
+      float m22 = m[8];
+      out[2] = (z * m22) + ((x * m02) + (y * m12));
     }
     out[0] += m[9];
     out[1] += m[10];
