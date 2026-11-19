@@ -33,11 +33,6 @@ struct Dummy {
     virtual void method1();
     virtual void method2(int);
 };
-struct MListLocal {
-    virtual void v0();
-    virtual void v1();
-    virtual int v2();
-};
 #pragma cplusplus reset
 void fn_802CCBC0(void) {}
 
