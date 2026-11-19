@@ -963,9 +963,9 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
         float p6 = m[6] * src->z;
         float p7 = m[7] * src->z;
         float p8 = m[8] * src->z;
-        float x = p6 + (p0 + p2);
-        float y = p7 + (p1 + p3);
-        float z = p8 + (p5 + p4);
+        float x = p6 + (p2 + p0);
+        float y = p7 + (p3 + p1);
+        float z = p8 + (p4 + p5);
         dst->x = x;
         dst->y = y;
         dst->z = z;
@@ -979,9 +979,9 @@ static inline void Mtx43MultVec(const float *m, const Vec3f *src, Vec3f *dst) {
         float p6 = m[6] * src->z;
         float p7 = m[7] * src->z;
         float p8 = m[8] * src->z;
-        float x = p6 + (p0 + p2);
-        float y = p7 + (p1 + p3);
-        float z = p8 + (p5 + p4);
+        float x = p6 + (p2 + p0);
+        float y = p7 + (p3 + p1);
+        float z = p8 + (p4 + p5);
         dst->x = x;
         dst->y = y;
         dst->z = z;
