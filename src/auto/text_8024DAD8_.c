@@ -143,6 +143,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     void **owned;
     u8 *e;
     s32 *pA, *pB;
+    s32 flagVal;
 
     v = fn_8000DA10();
     if (*(s32 *)(g + 0x18) != v) {
