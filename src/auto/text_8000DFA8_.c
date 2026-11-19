@@ -1177,7 +1177,7 @@ extern u32 lbl_802ED7A0[];
 extern s32 lbl_8055D484;
 extern s32 lbl_8055D488;
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_80010D88(f64 farg0, f64 farg1, f64 farg2) {
     u32 word;
     volatile s32 sp34, sp30;
