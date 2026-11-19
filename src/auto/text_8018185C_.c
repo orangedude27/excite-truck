@@ -331,6 +331,7 @@ float fn_80181AEC(void) { return lbl_80434930[3]; }
 #pragma processor 750
 #pragma opt_propagation off
 void fn_80181AFC(void) {
+typedef struct { float f[16]; } Block20;
 register char *base = (char *)lbl_804348E8;
 register char *names = lbl_803322B0;
 char *temp_r31;
@@ -342,21 +343,21 @@ int temp_r3;
 char *temp_r31_2;
 char *temp_r3_2;
 register float *temp_r4;
-register float *temp_r5;
+register Block20 *temp_r5;
 
 register int initialize = lbl_8055A3B5;
 if (initialize != 0) {
-temp_r5 = (float *)((char *)base + 0x20);
+temp_r5 = (Block20 *)((char *)base + 0x20);
 temp_r4 = (float *)((char *)base + 0x48);
 (*(float *)((char *)(base) + (0x20))) = (float) lbl_80561CD4;
-temp_r5[1] = (float) lbl_80561CD8;
-temp_r5[2] = (float) lbl_80561CDC;
-temp_r5[3] = (float) lbl_80561CD0;
-temp_r5[6] = (float) lbl_80561CD8;
-temp_r5[7] = (float) lbl_80561CE0;
-temp_r5[8] = (float) lbl_80561CE4;
-temp_r5[4] = (float) lbl_80561CE8;
-temp_r5[5] = (float) lbl_80561CE8;
+temp_r5->f[1] = (float) lbl_80561CD8;
+temp_r5->f[2] = (float) lbl_80561CDC;
+temp_r5->f[3] = (float) lbl_80561CD0;
+temp_r5->f[6] = (float) lbl_80561CD8;
+temp_r5->f[7] = (float) lbl_80561CE0;
+temp_r5->f[8] = (float) lbl_80561CE4;
+temp_r5->f[4] = (float) lbl_80561CE8;
+temp_r5->f[5] = (float) lbl_80561CE8;
 (*(float *)((char *)(base) + (0x48))) = (float) lbl_80561CEC;
 temp_r4[1] = (float) lbl_80561CD0;
 temp_r4[2] = (float) lbl_80561CD8;
@@ -448,8 +449,8 @@ extern void fn_802799EC(int, float);
 #pragma processor 750
 #pragma dont_inline on
 void fn_80181EAC(int arg0) {
-    float minA = lbl_80561D38;
-    float maxA = lbl_80561D3C;
+    float minA = 0.6f;
+    float maxA = 0.85f;
     float temp_f1;
     float temp_f30;
     float temp_f31;
@@ -3020,8 +3021,8 @@ void fn_8018A8A8(void *arg0) {
     float angle;
     float value;
     float calculated;
-    float temp_f31;
-    float temp_f30;
+    register float temp_f31;
+    register float temp_f30;
     sp38[0] = lbl_80561CAC;
     sp38[1] = lbl_80561DBC;
     sp38[2] = lbl_80561CAC;
@@ -3659,10 +3660,10 @@ static inline float BA54_Clamp(float lo, float x) {
 }
 
 extern "C" int fn_8018BA54(void *arg0, void *arg1) {
+    float var_f2;
     float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f3;
     float color, value3, second_offset, second_scale, scaled1, middle1, output1;
     float var_f0, var_f0_2, var_f0_3, var_f0_4;
-    register float var_f2;
     float var_f3, var_f3_2, var_f4;
     float loop_y_scale, loop_x_scale, loop_x, loop_height_scale, loop_height;
     float loop_scale, loop_base, loop_max, loop_min;
