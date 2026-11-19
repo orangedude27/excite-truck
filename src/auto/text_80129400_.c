@@ -5,7 +5,7 @@
 
 extern u8 lbl_80422180[0x200];
 extern u8 lbl_804223A0[0x20];
-void fn_80129690(void *arg0, s32 arg1, void *arg2);
+void fn_80129690();
 s32 fn_802E8504(s32);
 
 void *fn_801298E8(void *arg0, int arg1);
@@ -144,23 +144,25 @@ void fn_8012960C(void *state) {
 }
 
 extern void fn_80129508(void *, s32, void *);
-#pragma dont_inline fn_801294FC
+#pragma use_lmw_stmw off
 void fn_80129690(void *arg0, s32 arg1, void *arg2) {
-    u8 *dst = (u8 *)arg0;
-    u8 *params = (u8 *)arg2;
-    s32 *entries;
-    s32 offset;
-    s32 i;
-    s32 active;
-    u8 value;
     u16 type;
+    u8 value;
+    s32 active;
+    s32 offset;
+    s32 *entries;
+    s32 i;
+    u8 *params;
+    u8 *dst;
+    dst = (u8 *)arg0;
+    params = (u8 *)arg2;
     active = 0;
     if (params[2] != 0 && (s32)lbl_8055DFD4 != -1 && (s32)lbl_8055DFD4 == arg1) {
         active = 1;
     }
     dst[8] = 0;
     if (active != 0) {
-        fn_80129508(arg0, arg1, arg2);
+        fn_80129508(dst, arg1, params);
     }
     entries = (s32 *)lbl_804223C0;
     i = 0;
@@ -180,7 +182,7 @@ void fn_80129690(void *arg0, s32 arg1, void *arg2) {
         entries++;
         params += 2;
     } while (i < 0xE);
-    fn_8012960C(arg0);
+    ((void (*)(void *))fn_8012960C)(dst);
 }
 /* Initializes audio/session state, registers fn_80129400, resets the 0x38-byte
  * buffer at lbl_804223C0 to -1, and passes it to fn_802E830C. */
