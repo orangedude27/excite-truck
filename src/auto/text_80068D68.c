@@ -12902,11 +12902,13 @@ BOOLEAN btm_is_sco_active_by_bdaddr(BD_ADDR remoteBda) {
     return FALSE;
 }
 
-BOOLEAN BTM_SecRegister(tBTM_APPL_INFO *arg0) {
+/* Registers the application's BTM security callbacks and traces the registration. */
+BOOLEAN BTM_SecRegister(tBTM_APPL_INFO *p_cb_info) {
     struct Copy24 { u32 w[6]; };
-    u8 *p = lbl_803C0F78;
-    *(struct Copy24 *)(p + 0x190C) = *(struct Copy24 *)arg0;
-    if (p[0x27C0] >= 4)
+    u8 *btm_cb_bytes = lbl_803C0F78;
+
+    *(struct Copy24 *)(btm_cb_bytes + 0x190C) = *(struct Copy24 *)p_cb_info;
+    if (btm_cb_bytes[0x27C0] >= 4)
         fn_8007093C(0xD0003, lbl_80316870);
     return TRUE;
 }
