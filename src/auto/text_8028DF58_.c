@@ -233,18 +233,20 @@ extern void fn_8028F8C4(int);
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8028E138(void) {
-    register int i;
-    int *entries = (int *)&lbl_804B34B0;
-    struct Table { int entries[64]; int count; } *base = (struct Table *)&lbl_804B34B0;
-    lbl_8055F738 = lbl_80564420;
+    struct Table { int entries[64]; int count; } *list;
+    int *emitter;
+    int i;
+    emitter = (int *)&lbl_804B34B0;
+    list = (struct Table *)emitter;
+    lbl_8055F738 = 0.0f;
     i = 0;
     goto test;
 body:
-    fn_8028F8C4(*entries);
-    entries++;
+    fn_8028F8C4(*emitter);
+    emitter++;
     i++;
 test:
-    if (i < base->count) goto body;
+    if (i < list->count) goto body;
 }
 #pragma pop
 
@@ -797,10 +799,10 @@ int fn_8028F0C0(int *lists, int index, int excludeTexId) {
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_8028F114(register int *arg0, register int arg1, register int arg2) {
+void fn_8028F114(int *arg0, int arg1, int arg2) {
     register int n1 = 0;
-    register int n2 = 0;
     register int n3 = 0;
+    register int n2 = 0;
     void *tmp[64];
 
     memset(tmp, 0, 0x100);
@@ -853,20 +855,14 @@ void fn_8028F114(register int *arg0, register int arg1, register int arg2) {
             int id = *(int *)((char *)item + 0xA4);
             if (id != arg1 && id != arg2) {
                 int *search = (int *)(tmp + n1);
-                int j = 0;
                 int equal = 0;
-            search_loop:
-                {
+                int j = 0;
+                while (!equal && j < n3) {
                     void *q = *(void **)search;
                     search++;
                     j++;
                     equal = (*(int *)((char *)q + 0xA4) == id);
                 }
-                if (equal != 0)
-                    goto search_done;
-                if (j < n3)
-                    goto search_loop;
-            search_done:
                 if (equal == 0) {
                     tmp[n1 + n3] = item;
                     n3++;
@@ -1471,10 +1467,16 @@ typedef struct { float x, y, z; unsigned int color; float u, v; } EfVtx;
 typedef struct { float m[9]; } EfMtx3;
 #pragma scheduling off
 void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0) {
-    float a, b, c, d, e, f, g, h, i, j, k, l, m, n;
-    float o, p, q, r, s, t, u, v, w, x, y, z;
-    float aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, an;
-    volatile float spill10, spill8, spillC;
+    float a, h, n, w, ac, al;
+    float b, i, p, v;
+    float f, m, r, aa;
+    float e, o, t, z, ak;
+    float g, l, x, ah;
+    float j, s, ag, aj, am, an;
+    float d, q, u, af, ai;
+    float c, ad;
+    float k, ae, y, ab;
+    volatile float spill10, spillC, spill8;
 
     a = *(volatile float *)&lbl_8056444C;
     b = *(volatile float *)((char *)arg0 + 0xa0);
