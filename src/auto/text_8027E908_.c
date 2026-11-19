@@ -2408,10 +2408,10 @@ typedef struct fn_80283AC8_List {
     void **items;
     int count;
 } fn_80283AC8_List;
-static inline int fn_80283AC8_find(fn_80283AC8_List *list, unsigned int value) {
-    int i = 0;
-    void **p = list->items;
-    for (; i < list->count; ++i) {
+static inline int fn_80283AC8_find(void **items, int count, unsigned int value) {
+    void **p = items;
+    int i;
+    for (i = 0; i < count; ++i) {
         if (*p != (void *)value) goto increment;
         return i;
 increment:
