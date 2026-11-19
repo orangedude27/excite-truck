@@ -1227,15 +1227,19 @@ f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     f32 dx;
     f32 y;
     f32 negX;
+    f32 sp8;
+    f32 spC;
     negX = -*(f32 *)arg0;
     dx = *(f32 *)arg1 - *(f32 *)arg2;
     dy = *(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4);
     y = *(f32 *)((u8 *)arg0 + 4);
     result1 = y * dx;
-    fn_801605C8_spill(dx, dy);
+    *(volatile f32 *)&spC = dx;
     result2 = negX * dy;
+    *(volatile f32 *)&sp8 = dy;
     return result1 + result2;
 }
+#pragma pop
 void *fn_8016060C(void *arg0, void *arg1) {
 #pragma scheduling invalid_target
     f32 *dst = (f32 *)arg0;
