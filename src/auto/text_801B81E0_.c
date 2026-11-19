@@ -171,7 +171,8 @@ int fn_801B81E0(void *__restrict arg0) {
     extern int fn_80172C28(void);
     extern void fn_802E317C(const char *, ...);
     extern char lbl_80336740[];
-    switch (*(int *)((char *)arg0 + 0x3E8)) {
+    int value = *(int *)((char *)arg0 + 0x3E8);
+    switch (value) {
     case 0x180201:
         return fn_8014145C();
     case 0x180303:
@@ -191,8 +192,8 @@ int fn_801B81E0(void *__restrict arg0) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void fn_801B826C(void *arg0) {
-    volatile int *p = (volatile int *)((char *)arg0 + 0x3E8);
-    int value = *p;
+    int value = *(int *)((char *)arg0 + 0x3E8);
+    char *base = (char *)arg0;
     void *object;
     void *manager;
     lbl_8055E74C = value;
@@ -205,7 +206,7 @@ extern "C" void fn_801B826C(void *arg0) {
         }
         lbl_8055E744 = object;
     }
-    manager = fn_8001285C(*(int *)((char *)arg0 + 0x3E4));
+    manager = fn_8001285C(*(int *)(base + 0x3E4));
     object = *(void **)((char *)manager + 0x20);
     lbl_8055A910 = ((Dummy_801B826C *)object)->d10(lbl_8033677C, lbl_80562740);
     lbl_8055E748 = 0;
@@ -288,6 +289,7 @@ extern "C" void fn_801B83A8(void) {
     #undef RunGlobalUpdate
 }
 #pragma cplusplus off
+/* No operation. */
 void fn_801B8418(void) {
 
 }
