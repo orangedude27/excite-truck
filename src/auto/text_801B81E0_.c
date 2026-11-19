@@ -804,7 +804,7 @@ void fn_801B8AD4(void) {
 }
 
 void fn_801B8AD8(void) {
-
+    /* No-op stub. */
 }
 
 /* Null arena-event master virtual method (lbl_8033678C slot +0x20): reports true (1). */
