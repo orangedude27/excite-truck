@@ -1136,7 +1136,7 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
             raw = (f32)fn_802B6E7C(xBase, width - 1, width);
             sp[1] = temp;
             sp[0] = lbl_80564C58 * raw;
-            fn_80204048(&sp[2], &sp[0], raw);
+            beginSampleOverlay(&sp[2], &sp[0], raw);
         }
 
         for (row = 0; row < width; row++) {
