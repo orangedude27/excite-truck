@@ -13,7 +13,7 @@ extern "C" char lbl_80328614[];
 
 namespace nw4hbm {
 namespace ut {
-enum FontEncoding { FontEncodingDefault };
+enum FontEncoding { FontEncodingDefault, FontEncodingUTF8, FontEncodingSJIS };
 class Font { public: void InitReaderFunc(int); void InitReaderFunc(FontEncoding); };
 // nw4hbm::ut::IOStream: the abstract stream interface.  Only the virtuals this unit's
 // wrappers call are named; the offset each one is reached through is on its line.
