@@ -1150,6 +1150,17 @@ static inline void MatrixMul801FD5E8(float* dst, const float* left, const float*
         dst[8] = fn_80144514(left[2], right[6], left[5], right[7], left[8], right[8]);
     }
 }
+static inline void AddScaled80299A88(float* dst, const float* base, const float* dir, float s) {
+    float x = base[0];
+    float y = base[1];
+    float z = base[2];
+    x += dir[0] * s;
+    dst[0] = x;
+    y += dir[1] * s;
+    dst[1] = y;
+    z += dir[2] * s;
+    dst[2] = z;
+}
 extern "C" char lbl_803494F0[];
  extern float lbl_805645E4, lbl_805645E8, lbl_805645EC, lbl_805645F4;
  extern const float lbl_805645F0;
@@ -1179,8 +1190,8 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     init[0xe8/4] = lbl_80564590; *(int *)&init[0xec/4] = 0x40; ((unsigned char*)init)[0xf0]=1;
     *(int *)&init[0xac/4] = 2; ((unsigned char*)init)[0xf1]=1;
     void *res = fn_8028E2F8(&init[0x68/4], lbl_803494F0, lbl_8055CA80);
-    count = (int)(lbl_805645F0 * scale) < 12 ? (int)(lbl_805645F0 * scale) : 12;
     *(void**)out = res;
+    count = (int)(lbl_805645F0 * scale) < 12 ? (int)(lbl_805645F0 * scale) : 12;
     count = count > 1 ? count : 1;
     q = frame.rotation.v;
     float c = (float)cos((double)(lbl_805645F4 / (float)count));
