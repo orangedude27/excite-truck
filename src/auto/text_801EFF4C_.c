@@ -566,27 +566,46 @@ extern int fn_8012850C(int, void *);
 extern char lbl_8033A4D4[];
 extern float lbl_80562F2C;
 #pragma scheduling invalid_target
+static inline void fn_801F0AA0_init(int *p, int count, float value) {
+    *(char *)p = 0;
+    p[4] = count;
+    p[5] = count + 1;
+    p[10] = -1; p[12] = -1; p[11] = -1; p[13] = -1;
+    *(float *)((char *)p + 0x38) = value; *(char *)((char *)p + 0x3C) = 0;
+    p[16] = -1; p[18] = -1; p[17] = -1; p[19] = -1;
+    *(float *)((char *)p + 0x50) = value; *(char *)((char *)p + 0x54) = 0;
+    p[22] = -1; p[24] = -1; p[23] = -1; p[25] = -1;
+    *(float *)((char *)p + 0x68) = value; *(char *)((char *)p + 0x6C) = 0;
+    p[28] = -1; p[30] = -1; p[29] = -1; p[31] = -1;
+    *(float *)((char *)p + 0x80) = value; *(char *)((char *)p + 0x84) = 0;
+    p[34] = -1; p[36] = -1; p[35] = -1; p[37] = -1;
+    *(float *)((char *)p + 0x98) = value; *(char *)((char *)p + 0x9C) = 0;
+    p[40] = -1; p[42] = -1; p[41] = -1; p[43] = -1;
+    *(float *)((char *)p + 0xB0) = value; *(char *)((char *)p + 0xB4) = 0;
+    p[46] = -1; p[48] = -1; p[47] = -1; p[49] = -1;
+    *(float *)((char *)p + 0xC8) = value; *(char *)((char *)p + 0xCC) = 0;
+    p[52] = -1; p[54] = -1; p[53] = -1; p[55] = -1;
+    *(float *)((char *)p + 0xE0) = value; *(char *)((char *)p + 0xE4) = 0;
+    p[58] = 0;
+    p[75] = 0;
+}
 int fn_801F0AA0(void) {
     int *p;
-    int off1;
-    int off2;
-    int count;
-    int i;
+    int off1, off2, count, i;
     float value;
 
     lbl_8055EBEC = fn_8012850C(0x9C0, lbl_8033A4D4);
     lbl_8055EBF0 = 0;
     value = lbl_80562F2C;
     off1 = 0;
-    count = 0;
 
     for (i = 0; i < 4; i++) {
+        count = i * 2;
         p = (int *)(lbl_8055EBEC + off1);
         *(char *)p = 0;
         off2 = off1 + 0x138;
         p[4] = count;
         p[5] = count + 1;
-        count += 2;
         p[10] = -1; p[12] = -1; p[11] = -1; p[13] = -1;
         *(float *)((char *)p + 0x38) = value; *(char *)((char *)p + 0x3C) = 0;
         p[16] = -1; p[18] = -1; p[17] = -1; p[19] = -1;
@@ -609,9 +628,8 @@ int fn_801F0AA0(void) {
         p = (int *)(lbl_8055EBEC + off2);
         *(char *)p = 0;
         off1 = off2 + 0x138;
-        p[4] = count;
-        p[5] = count + 1;
-        count += 2;
+        p[4] = count + 2;
+        p[5] = count + 3;
         p[10] = -1; p[12] = -1; p[11] = -1; p[13] = -1;
         *(float *)((char *)p + 0x38) = value; *(char *)((char *)p + 0x3C) = 0;
         p[16] = -1; p[18] = -1; p[17] = -1; p[19] = -1;
@@ -1083,7 +1101,8 @@ extern char lbl_8033A5B0[];
 #pragma scheduling invalid_target
 int fn_801F1978(int arg) {
     int result = -1;
-    switch (arg & ~0x10) {
+    arg &= ~0x10;
+    switch (arg) {
     case 0:
         result = 1;
         result |= 0x100;
