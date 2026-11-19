@@ -1258,6 +1258,37 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 }
 
 extern "C" void fn_800D6CA0(s32, s32);
+/* Inline levels of the recursive tag-processor walk (fn_800D6CA0) as expanded into fn_800D77DC. */
+static inline void SetTagProcessorLevel3_800D77DC(u8 *self, s32 arg1) {
+    u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? self : 0;
+    if (cast) *(s32 *)(cast + 0xF4) = arg1;
+    for (StateNode_800D6CA0 *n = *(StateNode_800D6CA0 **)(self + 0x14); n != (StateNode_800D6CA0 *)(self + 0x14); n = n->next) {
+        if (!n) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+        u8 *p = (u8 *)n - 4;
+        if (!p) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+        fn_800D6CA0((s32)p, arg1);
+    }
+}
+static inline void SetTagProcessorLevel2_800D77DC(u8 *self, s32 arg1) {
+    u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? self : 0;
+    if (cast) *(s32 *)(cast + 0xF4) = arg1;
+    for (StateNode_800D6CA0 *n = *(StateNode_800D6CA0 **)(self + 0x14); n != (StateNode_800D6CA0 *)(self + 0x14); n = n->next) {
+        if (!n) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+        u8 *p = (u8 *)n - 4;
+        if (!p) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+        SetTagProcessorLevel3_800D77DC(p, arg1);
+    }
+}
+static inline void SetTagProcessorLevel1_800D77DC(u8 *self, s32 arg1) {
+    u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? self : 0;
+    if (cast) *(s32 *)(cast + 0xF4) = arg1;
+    for (StateNode_800D6CA0 *n = *(StateNode_800D6CA0 **)(self + 0x14); n != (StateNode_800D6CA0 *)(self + 0x14); n = n->next) {
+        if (!n) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+        u8 *p = (u8 *)n - 4;
+        if (!p) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+        SetTagProcessorLevel2_800D77DC(p, arg1);
+    }
+}
 #pragma push
 #pragma opt_common_subs off
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
