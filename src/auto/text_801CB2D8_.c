@@ -361,6 +361,7 @@ void fn_801CB8C0(void) {
 }
 
 void fn_801CB8FC(void) {
+    /* Check whether a stat context/index is currently available (wrapper around stat access check). */
     fn_801CE8CC();
 }
 
