@@ -2124,35 +2124,39 @@ extern "C" u64 lbl_8055DE50;
 extern "C" u64 lbl_8055DE54;
 #pragma push
 #pragma scheduling on
-u64 nw4hbm::snd::detail::SoundArchiveFileReader::impl_GetSoundInfoOffset(u32 idx) const {
-    register u8 *ref = *(u8 **)((u8 *)this + 0x28);
-    register u32 index = idx;
-    register u8 *base;
-    u8 *entry;
-    u8 *data;
-    if (ref[1] != 0)
+/* Resolve the sound-info offset for a sound id.  Returns the 64-bit offset stored in the
+   resolved sound data (archive format >= 0x101), or a packed {type, ext, offset+0x1C}
+   reference for legacy entries.  Returns the invalid sentinel when the sound table is
+   absent or the index is out of range. */
+u64 nw4hbm::snd::detail::SoundArchiveFileReader::impl_GetSoundInfoOffset(u32 soundId) const {
+    register u8 *archiveRef = *(u8 **)((u8 *)this + 0x28);
+    register u32 index = soundId;
+    register u8 *soundTable;
+    u8 *soundEntry;
+    u8 *soundData;
+    if (archiveRef[1] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
-    base = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(u32 *)(ref + 4), ref);
-    if (base == 0)
+    soundTable = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(archiveRef[0], *(u32 *)(archiveRef + 4), archiveRef);
+    if (soundTable == 0)
         return lbl_8055DE50;
-    if (index >= *(u32 *)base)
+    if (index >= *(u32 *)soundTable)
         return lbl_8055DE50;
     if (*(u16 *)((u8 *)this + 6) >= 0x101) {
         index <<= 3;
-        ref = *(u8 **)((u8 *)this + 0x28);
-        if (base[index + 5] != 0)
+        archiveRef = *(u8 **)((u8 *)this + 0x28);
+        if (soundTable[index + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
-        entry = base + index;
-        data = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[4], *(u32 *)(entry + 8), ref);
-        if (data == 0)
+        soundEntry = soundTable + index;
+        soundData = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(soundEntry[4], *(u32 *)(soundEntry + 8), archiveRef);
+        if (soundData == 0)
             return lbl_8055DE50;
-        return *(u64 *)(data + 0x18);
+        return *(u64 *)(soundData + 0x18);
     }
-    entry = base + index * 8;
+    soundEntry = soundTable + index * 8;
     struct Result { u8 type; u8 ext; u16 pad; u32 offset; } result;
-    result.type = entry[4];
-    result.ext = entry[5];
-    result.offset = *(u32 *)(entry + 8) + 0x1C;
+    result.type = soundEntry[4];
+    result.ext = soundEntry[5];
+    result.offset = *(u32 *)(soundEntry + 8) + 0x1C;
     return *(u64 *)&result;
 }
 #pragma pop
