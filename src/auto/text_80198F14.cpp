@@ -2091,11 +2091,6 @@ static inline void Fn801A4548Swap4(u8* q) {
     t=q[0]; q[0]=q[3]; q[3]=t;
     t=q[1]; q[1]=q[2]; q[2]=t;
 }
-static inline void Fn801A4548Swap4Hdr(u8* q) {
-    int t;
-    t=q[0]; q[0]=q[3]; q[3]=t;
-    t=q[1]; q[1]=q[2]; q[2]=t;
-}
 class Fn8019E874Obj {
 public:
     virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
@@ -5445,21 +5440,27 @@ extern "C" void fn_801A4538(void*);
 extern "C" void* fn_801A4548(s32 arg0) {
     s32 size;
     u8 ok = 0;
+    u8 ht;
+    s32* lp;
     Fn801A4548Hdr* h = (Fn801A4548Hdr*)((s32 (*)(s32, s32, s32*, s32, s32, s32))fn_8012C370)(arg0, 0x534F424C, &size, 0, 0, (s32)&ok);
     if (h && ok) {
-        s32 base = (s32)h;
-        s32* lp = (s32*)&h->list;
-        Fn801A4548Swap4((u8*)h);
+        ht = ((u8*)h)[0];
+        lp = (s32*)&h->list;
+        ((u8*)h)[0] = ((u8*)h)[3];
+        ((u8*)h)[3] = ht;
+        ht = ((u8*)h)[1];
+        ((u8*)h)[1] = ((u8*)h)[2];
+        ((u8*)h)[2] = ht;
         Fn801A4548Swap4((u8*)h+8);
         Fn801A4548Swap4((u8*)lp);
         Fn801A4548Swap4((u8*)h+12);
         Fn801A4548Swap4((u8*)h+16);
-        fn_801A4768(lp, base);
-        fn_801A4780((s32*)&h->unk10, base);
-        fn_801A4798((s32*)&h->shorts, base);
+        fn_801A4768(lp, (s32)h);
+        fn_801A4780((s32*)&h->unk10, (s32)h);
+        fn_801A4798((s32*)&h->shorts, (s32)h);
         for (s32 i=0; i<h->count; i++) {
             Fn801A4548Swap4(h->list+i*4);
-            fn_801A47B0((s32*)(h->list+i*4), base);
+            fn_801A47B0((s32*)(h->list+i*4), (s32)h);
         }
         for (s32 i=0; i<h->count2; i++) {
             Fn801A4548Swap2(h->shorts+i*2);
