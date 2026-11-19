@@ -1561,9 +1561,7 @@ void fn_80255A84(void *arg0) {
     }
 }
 #pragma scheduling on
-#pragma cplusplus on
-extern "C" int stricmp(const char *, const char *);
-extern "C" void fn_80255B5C(void *arg0) {
+void fn_80255B5C(void *arg0) {
     typedef struct {
         char name[0x20];
         s32 id;
