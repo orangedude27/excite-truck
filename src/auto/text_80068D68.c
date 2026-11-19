@@ -8962,12 +8962,13 @@ BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
 
 #pragma push
 #pragma dont_inline off
+/* Return the stored device name for bd_addr, or NULL if the device is not found. */
 char *BTM_SecReadDevName(BD_ADDR bd_addr) {
-    char *p_name = NULL;
-    u8 *p_rec = btm_find_dev_entry(bd_addr);
-    if (p_rec != NULL)
-        p_name = (char *)p_rec + 0x35;
-    return p_name;
+    char *dev_name = NULL;
+    u8 *dev_rec = btm_find_dev_entry(bd_addr);
+    if (dev_rec != NULL)
+        dev_name = (char *)dev_rec + 0x35;
+    return dev_name;
 }
 #pragma pop
 tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR bd_addr) {
