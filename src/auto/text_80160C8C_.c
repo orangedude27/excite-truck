@@ -3474,6 +3474,7 @@ void fn_801657DC(void) {
     fn_8000C630(0x15, -1);
 }
 
+/* Empty stub. */
 void fn_80165820(void) {
 }
 
