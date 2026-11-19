@@ -251,14 +251,16 @@ void fn_802A86A4(void) {
         sp.a[2] = *(f32 *)(entry + 0x50);
         scale = *(f32 *)(entry + 0x48) * half;
         while (j < *(s32 *)(entry + 0x70)) {
+            f32 p0, p1, p2;
             v = (f32 *)(*(u32 *)(entry + 0x6c) + suboffset);
             z = fn_80287BC8(-scale, scale);
             y = fn_80287BC8(-scale, scale);
             x = fn_80287BC8(-scale, scale);
+            p0 = ((f32 *)entry)[0] + (f32)x;
+            p1 = ((f32 *)entry)[1] + (f32)y;
+            p2 = ((f32 *)entry)[2] + (f32)z;
             sp.v[0] = x; sp.v[1] = y; sp.v[2] = z;
-            sp.p[0] = ((f32 *)entry)[0] + (f32)x;
-            sp.p[1] = ((f32 *)entry)[1] + (f32)y;
-            sp.p[2] = ((f32 *)entry)[2] + (f32)z;
+            sp.p[0] = p0; sp.p[1] = p1; sp.p[2] = p2;
             memcpy(v + 6, &sp, 0x10);
             v[0] = sp.p[0]; v[1] = sp.p[1]; v[2] = sp.p[2];
             y = fn_80287BC8(lbl_80564944, lbl_80564948);
@@ -276,7 +278,6 @@ void fn_802A86A4(void) {
 #pragma pop
 
 void fn_802A8978(void) {
-    s32* base;
     u8* entry;
     s32 j;
     s32 offset;
@@ -289,20 +290,12 @@ void fn_802A8978(void) {
         lbl_8055F8D4 = lbl_80564954;
     }
     lbl_8055F8D8 = temp;
-    base = (s32*)&lbl_804BD6C4;
-    i = 0;
-    offset = 0;
-    while (i < base[1]) {
+    for (i = 0, offset = 0; i < ((s32*)&lbl_804BD6C4)[1]; offset += 4, i++) {
         entry = *(u8**)((u32)lbl_804BD6C4[0] + offset);
         fn_802A8A4C((s32)entry, (s32)(entry + 0x60));
-        j = 0;
-        while (j < fn_802A8A34((void*)(entry + 0x6c))) {
-            /* Apply fn_802A8A4C's transform to each of this group's extra sub-records in place. */
+        for (j = 0; j < fn_802A8A34((void*)(entry + 0x6c)); j++) {
             fn_802A8A4C(fn_802A8A3C((s32 *)(entry + 0x6c), j), (s32)entry);
-            j++;
         }
-        offset += 4;
-        i++;
     }
 }
 
@@ -322,7 +315,7 @@ extern f64 lbl_80564960;
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
-#pragma opt_propagation off
+#pragma opt_strength_reduction off
 void fn_802A8A4C(s32 arg0, s32 arg1) {
     f32 m[9], v[2], d[2], p[2], q[2];
     f32 *a = (f32 *)arg0, *b = (f32 *)arg1;
@@ -385,9 +378,9 @@ void fn_802A8DE8(void) {
     f32 fx;
     f32 fy;
     register s32 i;
-    s32 *table;
+    register s32 *table;
     register s32 offset;
-    register s32 vec;
+    register u8 *vec;
     register void *entry;
     register s32 j;
 
@@ -399,9 +392,9 @@ void fn_802A8DE8(void) {
     while (i < table[1]) {
         entry = *(void **)((u32)lbl_804BD6C4[0] + offset);
         j = 0;
-        vec = 0;
+        vec = (u8 *)0;
         while (j < *(s32 *)((u8 *)entry + 0x70)) {
-            f32 *src = (f32 *)(*(u32 *)((u8 *)entry + 0x6C) + vec);
+            f32 *src = (f32 *)(*(u32 *)((u8 *)entry + 0x6C) + (u32)vec);
             vecData[3] = src[0];
             vecData[4] = src[1];
             vecData[5] = src[2];
@@ -419,7 +412,7 @@ void fn_802A8DE8(void) {
             crossIn[2] = fy;
             PSVECCrossProduct(crossIn, &vecData[0], crossOut);
             fn_802C744C(*(s32 *)(*(u32 *)((u8 *)entry + 0x28) + ((j % *(s32 *)((u8 *)entry + 0x2C)) * 4)), crossOut);
-            vec += 0x28;
+            vec = (u8 *)((u32)vec + 0x28);
             j++;
         }
         offset += 4;
