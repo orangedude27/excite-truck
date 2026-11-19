@@ -947,6 +947,7 @@ extern "C" void fn_801EC130(s32 unused, void *arg1, s32 arg2) {
 }
 #pragma cplusplus reset
 #pragma pop
+/* Empty stub. */
 void fn_801EC19C(void) {
 
 }
