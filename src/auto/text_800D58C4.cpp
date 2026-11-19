@@ -911,53 +911,14 @@ static inline void SetTagProcessorLevel1_800D77DC(u8 *self, s32 arg1) {
 }
 
 static inline void SetTagProcessorChild_800D6CA0(u8 *child, s32 arg1) { fn_800D6CA0((s32)child, arg1); }
+static inline void SetTagProcessorIter_800D6CA0(const ChildIter_800D77DC &it, s32 arg1) { fn_800D6CA0((s32)ChildPane_800D77DC(it), arg1); }
 #pragma push
 #pragma inline_depth(5)
 extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
-    StateNode_800D6CA0 *sentinel = (StateNode_800D6CA0 *)&lbl_8055DE08;
     u8 *self = (u8 *)arg0;
-    struct { u8 *ptr; } pp3;
-    struct { StateNode_800D6CA0 *node; } cur1;
-    struct { StateNode_800D6CA0 *node; } cur2;
-    struct { StateNode_800D6CA0 *end; } end1s;
-    struct { StateNode_800D6CA0 *end; } end2s;
-    struct { StateNode_800D6CA0 *node; } cur3;
-    struct { u8 *ptr; } pp1;
-    struct { u8 *ptr; } pp2;
-    StateNode_800D6CA0 *&n1 = cur1.node;
-    StateNode_800D6CA0 *&n2 = cur2.node;
-    StateNode_800D6CA0 *&end1 = end1s.end;
-    StateNode_800D6CA0 *&end2 = end2s.end;
-    StateNode_800D6CA0 *&n3 = cur3.node;
-    u8 *&p1 = pp1.ptr;
-    u8 *&p2 = pp2.ptr;
-    u8 *&p3 = pp3.ptr;
-    { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1(), sentinel) ? self : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-    cur1.node = *(StateNode_800D6CA0 **)(self + 0x14);
-    end1s.end = (StateNode_800D6CA0 *)(self + 0x14);
-    while (n1 != end1) {
-        if (!n1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-        p1 = (u8 *)n1 - 4;
-        if (!p1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-        { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-        cur2.node = *(StateNode_800D6CA0 **)(p1 + 0x14);
-        end2s.end = (StateNode_800D6CA0 *)(p1 + 0x14);
-        while (n2 != end2) {
-            if (!n2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            p2 = (u8 *)n2 - 4;
-            if (!p2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-            { u8 *cast = HasState_800D6CA0((StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1(), (StateNode_800D6CA0 *)&lbl_8055DE08) ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
-            cur3.node = *(StateNode_800D6CA0 **)(p2 + 0x14);
-            while (n3 != (StateNode_800D6CA0 *)(p2 + 0x14)) {
-                if (!n3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-                p3 = (u8 *)n3 - 4;
-                if (!p3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-                fn_800D6CA0((s32)p3, arg1);
-                n3 = n3->next;
-            }
-            n2 = n2->next;
-        }
-        n1 = n1->next;
+    if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
+    for (ChildIter_800D77DC it = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it)) {
+        SetTagProcessorChild_800D6CA0(ChildPane_800D77DC(it), arg1);
     }
 }
 #pragma pop
