@@ -92,7 +92,7 @@ int fn_80245264(struct MenuTextContext *context) {
 
 extern int lbl_8055CFF0, lbl_8055CFF4, lbl_8055FB9C, lbl_8055FBA0;
 extern const float lbl_80563834, lbl_80563838, lbl_8056383C, lbl_80563840, lbl_80563844, lbl_80563848, lbl_8056384C, lbl_80563850, lbl_80563854, lbl_80563858, lbl_8056385C, lbl_80563860, lbl_80563864, lbl_80563868, lbl_8056386C, lbl_80563870, lbl_80563874, lbl_80563878, lbl_8056387C, lbl_80563888, lbl_8056388C, lbl_80563890;
-extern double lbl_80563880;
+extern const double lbl_80563880;
 extern char lbl_80343080[];
 extern char lbl_8055BE50, lbl_8055BE58, lbl_8055BE5C;
 extern int fn_80129AFC(void);
@@ -174,6 +174,7 @@ int fn_80245360(int *a, struct Menu *b) {
     register float temp_f19 = lbl_80563854;
     register float temp_f20 = lbl_8056384C;
     register float temp_f21 = lbl_8056385C;
+    register double temp_f22 = lbl_80563880;
     register float temp_f23 = lbl_80563864;
     register float temp_f24 = lbl_80563838;
     register float temp_f25 = lbl_80563870;
@@ -199,6 +200,7 @@ int fn_80245360(int *a, struct Menu *b) {
         h = (float)(lbl_8055FBA0 + 1);
         fw = (float)lbl_8055FB9C;
         fh = (float)lbl_8055FBA0;
+        (void)temp_f22;
         x0 = temp_f16 * fw * temp_f28 - temp_f17;
         x1 = temp_f17 + fh * temp_f28;
         if (a[1] != 0) {
