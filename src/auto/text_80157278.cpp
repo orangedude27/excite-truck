@@ -3491,6 +3491,7 @@ extern "C" f32 fn_8015CD10(Unk801577F0* tracker) {
     *(f32*)((u8*)tracker + 0x250) = lbl_805617C8;
     return score;
 }
+/* Empty stub; does nothing. */
 extern "C" void fn_8015CDD8(void) {
 }
 
