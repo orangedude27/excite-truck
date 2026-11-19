@@ -3230,7 +3230,6 @@ extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
     *(f32*)((u8*)arg0 + 0x27c) = tail;
 }
 #pragma pop
-#pragma scheduling off
 extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
     f32 var_f31 = lbl_80561754;
     s32 var_r28 = 0;
