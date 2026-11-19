@@ -965,6 +965,7 @@ void fn_8029D7D0(int arg0, void **__restrict arg1) {
     char **st = (char **)arg1;
     char *info = st[0];
     float sp[3];
+    float p0, p1, p2, p3, p4, p5, p6, p7, p8;
     float r = *(float *)(o + 0x60);
     float dz = *(float *)(info + 0x2C) - *(float *)(o + 0x5C);
     float dx = *(float *)(info + 0x24) - *(float *)(o + 0x54);
@@ -987,18 +988,18 @@ void fn_8029D7D0(int arg0, void **__restrict arg1) {
     v = (float *)fn_802C6C34();
     m = (float *)st[0];
     if (sp == v + 8) {
-        float b = v[9];
-        float a = v[8];
-        float c = v[10];
-        float t0 = m[3] * b + m[0] * a;
-        float t1 = m[4] * b + m[1] * a;
-        float t2 = m[5] * b + m[2] * a;
-        t0 += m[6] * c;
-        t1 += m[7] * c;
-        t2 += m[8] * c;
-        sp[0] = t0;
-        sp[1] = t1;
-        sp[2] = t2;
+        p0 = m[3] * v[9];
+        p1 = m[4] * v[9];
+        p2 = m[0] * v[8];
+        p3 = m[1] * v[8];
+        p4 = m[2] * v[8];
+        p5 = m[5] * v[9];
+        p6 = m[6] * v[10];
+        p7 = m[7] * v[10];
+        p8 = m[8] * v[10];
+        sp[0] = p6 + (p2 + p0);
+        sp[1] = p7 + (p3 + p1);
+        sp[2] = p8 + (p4 + p5);
     } else {
         sp[0] = m[3] * v[9] + m[0] * v[8] + m[6] * v[10];
         sp[1] = m[4] * v[9] + m[1] * v[8] + m[7] * v[10];
@@ -1262,14 +1263,14 @@ void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
  extern double fn_8002F234(float);
  extern float fn_80287BC8(float,float);
  extern void fn_8028E584(int,float *,float *);
- extern float lbl_80564628,lbl_80564634,lbl_80564640,lbl_8056464C,lbl_80564658,lbl_8056465C,lbl_8056466C,lbl_80564670,lbl_80564698,lbl_805646A4;
+ extern float lbl_80564628,lbl_80564640,lbl_8056464C,lbl_80564658,lbl_8056465C,lbl_8056466C,lbl_80564670,lbl_80564698,lbl_805646A4;
  float origin[3], outpos[3], outvel[3], delta[2], direction[2], hit[2], perpendicular[2];
  float factor, cap, lift;
  float height, reach, length, inv, scale, x, z, spread, vertical;
  int ix, iz, count, i;
  char *obj = arg0;
  height = *(float *)(obj+0x3c);
- if (pos[1]-radius > height-lbl_80564634) return;
+ if (pos[1]-radius > height-0.1f) return;
  delta[1]=pos[2]-*(float *)(obj+0x40);
  direction[1]=vel[2]; direction[0]=vel[0];
  delta[0]=pos[0]-*(float *)(obj+0x38);
@@ -1299,7 +1300,7 @@ void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
  x=lbl_80564670*length;
  if (spread < x) spread=x;
  count=(int)(lbl_8056464C*length)<10 ? (int)(lbl_8056464C*length):10;
- vertical=lbl_80564634*length;
+ vertical=0.1f*length;
  factor=lbl_80564698; cap=lbl_805646A4; lift=lbl_80564640;
  for(i=0;i<count;i++) {
    z=origin[2]+perpendicular[1]*fn_80287BC8(lbl_8056466C,lbl_8056465C);
@@ -1547,75 +1548,79 @@ int fn_8029EAE8(void *arg0) {
     }
     return result;
 }
+/* Tests whether a point lies within the XZ bounds of a region and below its Y threshold.
+ * The region's X range is [min(a[0],a[9]), max(a[0],a[9])] and Z range is
+ * [min(a[2],a[11]), max(a[2],a[11])], each expanded by lbl_80558DC4. Returns 1 if the
+ * point is inside those bounds and its Y is less than a[1] - lbl_80564634. */
 int fn_8029EB54(void *arg0, void *arg1)
 {
-  float *a = (float *) arg0;
-  float *b = (float *) arg1;
-  float point;
+  float *region = (float *) arg0;
+  float *point = (float *) arg1;
+  float testCoord;
   float maxX;
   float minX;
-  float maxY;
-  float minY;
-  int x_ok;
+  float maxZ;
+  float minZ;
+  int inXRange;
   int result = 0;
-  int flag = 0;
-  float t = a[9];
-  if (a[0] > t)
+  int inXZBounds = 0;
+  float bound = region[9];
+  if (region[0] > bound)
   {
-    maxX = a[0];
+    maxX = region[0];
   }
   else
   {
-    maxX = t;
+    maxX = bound;
   }
-  t = a[9];
-  if (a[0] < t)
+  bound = region[9];
+  if (region[0] < bound)
   {
-    minX = a[0];
+    minX = region[0];
   }
   else
   {
-    minX = t;
+    minX = bound;
   }
-  point = b[0];
-  x_ok = 0;
-  if ((point >= (minX - lbl_80558DC4)) && (point <= (maxX + lbl_80558DC4)))
+  testCoord = point[0];
+  inXRange = 0;
+  if ((testCoord >= (minX - lbl_80558DC4)) && (testCoord <= (maxX + lbl_80558DC4)))
   {
-    x_ok = 1;
+    inXRange = 1;
   }
-  if (x_ok)
+  if (inXRange)
   {
-    int y_ok;
-    t = a[11];
-    if (a[2] > t)
+    int inZRange;
+    bound = region[11];
+    if (region[2] > bound)
     {
-      maxY = a[2];
+      maxZ = region[2];
     }
     else
     {
-      maxY = t;
+      maxZ = bound;
     }
-    t = a[11];
-    if (a[2] < t)
+    bound = region[11];
+    if (region[2] < bound)
     {
-      minY = a[2];
+      minZ = region[2];
     }
     else
     {
-      minY = t;
+      minZ = bound;
     }
-    point = b[2];
-    y_ok = 0;
-    if ((point >= (minY - lbl_80558DC4)) && (point <= (maxY + lbl_80558DC4)))
+    testCoord = point[2];
+    inZRange = 0;
+    if ((testCoord >= (minZ - lbl_80558DC4)) && (testCoord <= (maxZ + lbl_80558DC4)))
     {
-      y_ok = 1;
+      inZRange = 1;
     }
-    if (y_ok)
+    if (inZRange)
     {
-      flag = 1;
+      inXZBounds = 1;
     }
   }
-  if (flag && (b[1] < (a[1] - lbl_80564634)))
+  if (inXZBounds && (point[1] < (region[1] - lbl_80564634)))
   {
     result = 1;
   }
