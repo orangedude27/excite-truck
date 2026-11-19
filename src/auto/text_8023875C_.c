@@ -33,6 +33,8 @@ extern int lbl_8056370C;
 extern int fn_80232BA4(int, int, int, int, int, float, float, float, float, float);
 extern int fn_802344CC(int, int, int, int, float, float, float);
 #pragma scheduling invalid_target
+/* Draw text centered at (x, y): queue via fn_802344CC for short strings when
+   the text queue is ready, otherwise draw directly via fn_80232BA4. */
 void fn_8023875C(int x, int y, const char *text, int arg3, int arg4)
 {
   int halfWidth;
