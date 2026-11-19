@@ -6,13 +6,6 @@ typedef struct {
     unsigned int unk4;
     unsigned int unk8;
 } StaticObj;
-typedef struct {
-    StaticObj link1;
-    StaticObj obj1;
-    char pad[0x540];
-    StaticObj link2;
-    StaticObj obj2;
-} Big;
 extern char lbl_80497F08[];
 extern __declspec(section ".sdata") char lbl_8055F038[];
 extern __declspec(section ".sdata") unsigned short lbl_8055F040;
