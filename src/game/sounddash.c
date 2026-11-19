@@ -18,6 +18,82 @@ extern void fn_802E6B38(int, char *);
 extern char lbl_8055B5C8;
 extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
+extern char lbl_8033C530[];
+extern int fn_802E3D68(const char *);
+extern void fn_802E3AD0(int, const char *, ...);
+extern void fn_802E3734(int *);
+#pragma push
+#pragma pool_strings off
+#pragma readonly_strings on
+void fn_8020BCE4(void) {
+    int handle;
+    int i;
+    void *item;
+    handle = fn_802E3D68("sounds.txt\0");
+    if (handle != -1) {
+        fn_802E3AD0(handle, "tabular samples\r\n\0\0");
+        fn_802E3AD0(handle, "\tname\t\t\tvolume\r\n\0\0\0");
+        fn_802E3AD0(handle, ";\t----\t\t\t------\r\n\0\0");
+        for (i = 0; i < fn_8020A76C(); i++) {
+            item = fn_8020A774(i);
+            fn_802E3AD0(handle, "\t%s\t\t%1.2f\r\n\0\0\0", item, *(float *)((char *)item + 0x20));
+        }
+        fn_802E3AD0(handle, "end\r\n\r\nend\r\n\0\0\0");
+        fn_802E3734(&handle);
+    } else {
+        fn_802E30C8("can't write to sounds.txt\0\0");
+    }
+}
+#pragma pop
+int fn_8020BDB8(int arg0) {
+    int index;
+    void *item;
+    float value;
+    switch (arg0) {
+    case 0x6D:
+        lbl_8055EE24 = !lbl_8055EE24;
+        return 1;
+    case 0x128:
+        if (lbl_8055EE24 != 0) break;
+        index = fn_8020A76C() - 1;
+        if (index < lbl_8055EE28 + 1) lbl_8055EE28 = index;
+        return 1;
+    case 0x126:
+        if (lbl_8055EE24 != 0) break;
+        index = lbl_8055EE28 - 1;
+        lbl_8055EE28 = index & ~(index >> 31);
+        return 1;
+    case 0x125:
+        if (lbl_8055EE24 != 0) break;
+        index = lbl_8055EE28;
+        if (index < fn_8020A76C()) {
+            item = fn_8020A774(index);
+            value = *(float *)((char *)item + 0x20) - lbl_805632C8;
+            if (value > lbl_805632CC) value = lbl_805632CC; else value = value;
+            *(float *)((char *)item + 0x20) = value;
+            return 1;
+        }
+        break;
+    case 0x127:
+        if (lbl_8055EE24 != 0) break;
+        index = lbl_8055EE28;
+        if (index < fn_8020A76C()) {
+            item = fn_8020A774(index);
+            value = lbl_805632C8 + *(float *)((char *)item + 0x20);
+            if (value < lbl_805632D0) value = lbl_805632D0; else value = value;
+            *(float *)((char *)item + 0x20) = value;
+            return 1;
+        }
+        break;
+    case 0x53:
+        if (lbl_8055EE24 != 0) break;
+        fn_802E30C8(lbl_8033C5B4);
+        fn_8020BCE4();
+        return 1;
+    }
+    return 0;
+}
+
 void fn_8020BF58(void) {
     struct { char sp8[64]; char sp48[64]; char padding[0xD0]; } scratch;
     int var_r29;
