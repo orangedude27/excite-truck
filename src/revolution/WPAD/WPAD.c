@@ -3652,9 +3652,6 @@ u8 fn_8005EE80(s32 chan)
     return deviceHandle;
 }
 
-static inline u32 fn_8005EEC4_mask(u32 v) {
-    return ((s32)(-(s32)v | (s32)v) >> 31) & 0x176c;
-}
 void fn_8005EEC4(s32 chan, s32 result) {
     u16 val16;
     u32 val32;
