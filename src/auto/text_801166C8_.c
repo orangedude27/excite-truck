@@ -8613,6 +8613,7 @@ void fn_80124AD8(void *arg0, void *arg1) {
     ((f32 *)arg0)[15] = (f32) (temp_f5_3 - temp_f6_4);
 }
 
+#define ASMKW a##sm
 void fn_80124CE8(void *arg0, void *arg1) {
     f32 v0, v1, v5, v4, v19, v20, v21, v22, v23, v24, v25, v26, v27, v28;
     f32 v29, v30, v31, v2, v3, v6, v9, v7, v10, v8, v11, v12, v13;
@@ -8930,28 +8931,16 @@ void fn_801252D8(s32 n, f32 *a, s32 m, f32 *w) {
 }
 
 void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
-    f32 *tw;
-    f32 *out;
-    s32 i;
-    s32 j;
-    s32 step;
-    s32 half;
-    u32 count;
+    f32 *tw = arg3;
+    f32 *out = arg1 + 1;
+    s32 n = arg0;
+    s32 i = 1;
+    s32 j = 0;
+    s32 step = arg2 / n;
+    s32 half = n >> 1;
+    u32 count = (u32)(half - 1);
     u32 pairs;
-    f32 a;
-    f32 b;
-    f32 c;
-    f32 d;
-    f32 e;
-    f32 f;
-
-    tw = arg3;
-    out = arg1 + 1;
-    i = 1;
-    j = 0;
-    step = arg2 / arg0;
-    half = arg0 >> 1;
-    count = (u32)(half - 1);
+    f32 a, b, c, d, e, f;
     if (half <= 1) goto finish;
     pairs = count >> 1;
     for (; pairs != 0; pairs--) {
@@ -8961,9 +8950,9 @@ void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
         e = b - a;
         f = b + a;
         c = out[0];
-        d = arg1[arg0 - i];
+        d = arg1[n - i];
         out[0] = e * c + f * d;
-        arg1[arg0 - i] = f * c - e * d;
+        arg1[n - i] = f * c - e * d;
         i++;
 
         j += step;
@@ -8972,9 +8961,9 @@ void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
         e = b - a;
         f = b + a;
         c = out[1];
-        d = arg1[arg0 - i];
+        d = arg1[n - i];
         out[1] = e * c + f * d;
-        arg1[arg0 - i] = f * c - e * d;
+        arg1[n - i] = f * c - e * d;
         i++;
         out += 2;
     }
@@ -8985,9 +8974,9 @@ void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
         e = b - a;
         f = b + a;
         c = *out;
-        d = arg1[arg0 - i];
+        d = arg1[n - i];
         *out = e * c + f * d;
-        arg1[arg0 - i] = f * c - e * d;
+        arg1[n - i] = f * c - e * d;
         out++;
         i++;
     }
