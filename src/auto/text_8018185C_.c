@@ -3769,29 +3769,30 @@ extern float __fabsf(float);
 #pragma small_data off
 __declspec(section ".data") extern float lbl_80558DC4;
 extern void fn_801A1474(void *, float);
-void fn_8018BE54(void *arg0, float farg0) {
+/* Update the object's scale factor and recompute cached values derived from it when the new scale differs significantly. */
+void fn_8018BE54(void *arg0, float newScale) {
     char *p = (char *)arg0;
-    double d = __fabsf(*(float *)(p + 0x5E4) - farg0);
+    double d = __fabsf(*(float *)(p + 0x5E4) - newScale);
     float diff = (float)d;
     if (!(diff <= lbl_80558DC4)) {
-        double df = farg0;
-        float s;
-        float s2;
-        *(float *)(p + 0x5E4) = farg0;
-        fn_801A1474((void *)*(int *)(p + 0x268), (float)df);
-        s = *(float *)(p + 0x5E4);
-        s2 = s * s;
-        *(float *)(p + 0x330) = *(float *)(p + 0x468) * s2;
-        *(float *)(p + 0x334) = *(float *)(p + 0x46C) * s2;
-        *(float *)(p + 0x338) = *(float *)(p + 0x470) * s2;
-        *(float *)(p + 0x344) = *(float *)(p + 0x47C) * s;
-        *(float *)(p + 0x33C) = *(float *)(p + 0x474) * s;
-        *(float *)(p + 0x340) = *(float *)(p + 0x478) * s;
-        *(float *)(p + 0x34C) = *(float *)(p + 0x484) * s;
-        *(float *)(p + 0x3AC) = s * *(float *)(p + 0x4E4);
-        *(float *)(p + 0x3D0) = s * *(float *)(p + 0x508);
-        *(float *)(p + 0x3F4) = s * *(float *)(p + 0x52C);
-        *(float *)(p + 0x418) = s * *(float *)(p + 0x550);
+        double scaleDouble = newScale;
+        float scale;
+        float scaleSquared;
+        *(float *)(p + 0x5E4) = newScale;
+        fn_801A1474((void *)*(int *)(p + 0x268), (float)scaleDouble);
+        scale = *(float *)(p + 0x5E4);
+        scaleSquared = scale * scale;
+        *(float *)(p + 0x330) = *(float *)(p + 0x468) * scaleSquared;
+        *(float *)(p + 0x334) = *(float *)(p + 0x46C) * scaleSquared;
+        *(float *)(p + 0x338) = *(float *)(p + 0x470) * scaleSquared;
+        *(float *)(p + 0x344) = *(float *)(p + 0x47C) * scale;
+        *(float *)(p + 0x33C) = *(float *)(p + 0x474) * scale;
+        *(float *)(p + 0x340) = *(float *)(p + 0x478) * scale;
+        *(float *)(p + 0x34C) = *(float *)(p + 0x484) * scale;
+        *(float *)(p + 0x3AC) = scale * *(float *)(p + 0x4E4);
+        *(float *)(p + 0x3D0) = scale * *(float *)(p + 0x508);
+        *(float *)(p + 0x3F4) = scale * *(float *)(p + 0x52C);
+        *(float *)(p + 0x418) = scale * *(float *)(p + 0x550);
         ((void (*)(void *))fn_8018A180)(arg0);
     }
 }
