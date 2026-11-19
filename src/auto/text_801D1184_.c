@@ -20,6 +20,7 @@ void fn_801D1184(void) {
         *(void **)object = &lbl_80338214[0];
     }
 }
+/* Tail-call trampoline into fn_801D11D8. */
 void fn_801D11D4(void) {
     fn_801D11D8();
 }
