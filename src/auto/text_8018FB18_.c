@@ -321,54 +321,31 @@ int fn_8018FF84(int object, int deleteFlag) {
 }
 
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling off
 #pragma cplusplus on
 extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     class ResultMethods {
     public:
-        virtual u8 f0();
-        virtual u8 f1();
-        virtual u8 f2();
-        virtual u8 f3();
-        virtual u8 f4();
-        virtual u8 f5();
-        virtual u8 f6();
-        virtual u8 f7();
-        virtual u8 f8();
-        virtual u8 f9();
-        virtual u8 f10();
-        virtual u8 f11();
-        virtual u8 f12();
-        virtual u8 f13();
-        virtual u8 f14();
-        virtual u8 f15();
-        virtual u8 f16();
-        virtual u8 f17();
-        virtual u8 f18();
-        virtual u8 f19();
+        virtual u8 f0(); virtual u8 f1(); virtual u8 f2(); virtual u8 f3();
+        virtual u8 f4(); virtual u8 f5(); virtual u8 f6(); virtual u8 f7();
+        virtual u8 f8(); virtual u8 f9(); virtual u8 f10(); virtual u8 f11();
+        virtual u8 f12(); virtual u8 f13(); virtual u8 f14(); virtual u8 f15();
+        virtual u8 f16(); virtual u8 f17(); virtual u8 f18(); virtual u8 f19();
         virtual u8 f20();
-        virtual u8 get5c();
-        virtual u8 get60();
-        virtual u8 get64();
-        virtual u8 get68();
+        virtual u8 get5c(); virtual u8 get60(); virtual u8 get64(); virtual u8 get68();
     };
     class Method18 {
     public:
-        virtual s32 f0();
-        virtual s32 f1();
-        virtual s32 f2();
-        virtual s32 f3();
+        virtual s32 f0(); virtual s32 f1(); virtual s32 f2(); virtual s32 f3();
         virtual s32 get18();
     };
     class Method0C1 {
     public:
-        virtual void f0();
-        virtual void call(void *, void *);
+        virtual void f0(); virtual void call(void *, void *);
     };
     class Method0C2 {
     public:
-        virtual void f0();
-        virtual void call(void *, void *);
+        virtual void f0(); virtual void call(void *, void *);
     };
     s32 temp_r0;
     s32 temp_r27;
@@ -378,6 +355,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     Method18 *method18Obj;
     Method0C1 *method0C1Obj;
     Method0C2 *method0C2Obj;
+    u32 zeroFlag;
 
     *(s32 *)((u8 *)arg0 + 0x28) = *(u8 *)((u8 *)arg1 + 0x260) & 3;
     temp_r3 = fn_801284F8(0x24, &lbl_8055A478);
@@ -406,7 +384,8 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     }
     *(void **)((u8 *)arg0 + 4) = temp_r3;
     *(void **)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0x38) = temp_r3;
-    *(u8 *)((u8 *)arg0 + 0x25) = (u32)__cntlzw(*(u32 *)((u8 *)arg2 + 0x5C)) >> 5;
+    zeroFlag = __rlwinm(__cntlzw(*(u32 *)((u8 *)arg2 + 0x5C)), 27, 5, 31);
+    *(u8 *)((u8 *)arg0 + 0x25) = (u8)zeroFlag;
     {
         s32 value = *(s32 *)((u8 *)arg2 + 0x5C);
         s32 negative = -value;
