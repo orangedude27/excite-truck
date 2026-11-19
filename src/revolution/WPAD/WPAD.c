@@ -6882,6 +6882,7 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
     (*(u8 *)((s8*)(temp_r31) + (0x806))) = (u8) ((*(u8 *)((s8*)(temp_r31) + (0x806))) == 0);
     OSRestoreInterrupts(enabled);
 }
+#pragma peephole reset
 
 // Empty placeholder: this WPAD function has no body in the original.
 void fn_800678D8(void) {
@@ -7241,11 +7242,9 @@ void WPADiDecode(s32 chan, u8* data, WPAD_DECODE_LEN_T len, s32 seed) {
     u8* base = (u8*)cb;
     u16 i;
 
-    if (len != 0) {
-        for (i = 0; i < (u16)len; i++) {
-            u8 idx = (seed + i) % 8;
-            data[i] = base[0x864 + idx] + (data[i] ^ base[0x86C + idx]);
-        }
+    for (i = 0; i < len; i++) {
+        u8 idx = (seed + i) % 8;
+        data[i] = base[0x864 + idx] + (data[i] ^ base[0x86C + idx]);
     }
 }
 
