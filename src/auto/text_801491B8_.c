@@ -138,18 +138,18 @@ extern void fn_801796EC(s32, void *, s32);
 extern void fn_8018A120(void *);
 extern void fn_80161A38(s32, s32, s32);
 extern void fn_80206750(void *, s32, s32);
-#define Transform801533E8(dst, src, m) do {                                   \
-    if ((dst) == (src)) {                                                     \
-        f32 _x = (src)[2] * (m)[6] + ((src)[0] * (m)[0] + (src)[1] * (m)[3]); \
-        f32 _y = (src)[2] * (m)[7] + ((src)[0] * (m)[1] + (src)[1] * (m)[4]); \
-        f32 _z = (src)[2] * (m)[8] + ((src)[0] * (m)[2] + (src)[1] * (m)[5]); \
-        (dst)[0] = _x; (dst)[1] = _y; (dst)[2] = _z;                          \
-    } else {                                                                  \
-        (dst)[0] = (src)[2] * (m)[6] + ((src)[0] * (m)[0] + (src)[1] * (m)[3]); \
-        (dst)[1] = (src)[2] * (m)[7] + ((src)[0] * (m)[1] + (src)[1] * (m)[4]); \
-        (dst)[2] = (src)[2] * (m)[8] + ((src)[0] * (m)[2] + (src)[1] * (m)[5]); \
-    }                                                                         \
-} while (0)
+static inline void Transform801533E8(f32 *dst, const f32 *src, const f32 *m) {
+    if (dst == src) {
+        f32 x = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        f32 y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        f32 z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+        dst[0] = x; dst[1] = y; dst[2] = z;
+    } else {
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+    }
+}
 
 extern s32 lbl_8032E1A0[];
 extern f32 lbl_80561648;
