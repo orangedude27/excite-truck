@@ -1177,7 +1177,7 @@ unsigned int DVDLowUnmaskStatusInterrupts(void) { return 1; }
 /* DVD low-level: mask the cover interrupt. On Broadway this is a no-op stub that always reports success (TRUE). */
 unsigned int DVDLowMaskCoverInterrupt(void) { return 1; }
 
-#pragma scheduling invalid_target
+#pragma scheduling reset
 int fn_8003BCDC(void *arg0) {
     const char *msg = lbl_80302848;
     int index = lbl_8055D8E4 + 1;
