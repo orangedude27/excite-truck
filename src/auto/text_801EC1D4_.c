@@ -203,11 +203,11 @@ void fn_801EC4A8(void *curve, long param) {
     }
 }
 
-#pragma cplusplus on
-union Vec3 {
+typedef union {
     struct { float x, y, z; } f;
     unsigned int u[3];
-};
+} Vec3;
+#pragma cplusplus on
 struct Parent {
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
     virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
@@ -242,18 +242,15 @@ static inline Vec3C fn_801EC59C_getv(void *property, char *label) {
 void fn_801EC59C(void *out, void *parent, int index, int value, float scale, float bias) {
     extern char lbl_8055AFDC, lbl_8055AFE4;
     extern float lbl_80562E88, lbl_80562E8C;
-    typedef union { struct { float x, y, z; } f; unsigned int u[3]; } Vec3;
     register void *result;
-    Vec3 tmp1, tmp2, first, second;
+    Vec3C first, second;
     float dx, dy, slopeX, slopeY;
 
     *(volatile int *)out = value;
     result = fn_801EC59C_parent_get(parent, index);
     if (result != 0) {
-        fn_801EC59C_property_get(&tmp1, result, &lbl_8055AFDC);
-        first = tmp1;
-        fn_801EC59C_property_get(&tmp2, result, &lbl_8055AFE4);
-        second = tmp2;
+        first = fn_801EC59C_getv(result, &lbl_8055AFDC);
+        second = fn_801EC59C_getv(result, &lbl_8055AFE4);
         first.f.x = first.f.x * scale - bias;
         second.f.x = second.f.x * scale - bias;
         first.f.y = first.f.y * lbl_80562E8C;
