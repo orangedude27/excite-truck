@@ -747,6 +747,7 @@ void fn_8017C7BC(void) {
 
 }
 
+/* No-op callback (empty stub). */
 void fn_8017C7C0(void) {
 
 }
