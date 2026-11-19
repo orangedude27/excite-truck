@@ -21,14 +21,6 @@ extern s32 fn_802328D4(s32);
 extern const u8 lbl_80346324[];
 extern const u8 lbl_80346120[];
 extern f32 lbl_80563BD4;
-static inline void draw_row_80263D18(u8 *o, const u8 *name, s32 style, s32 w, s32 yoff, s32 index, int xoff) {
-    s32 a = *(s32 *)(o + 0x10);
-    s32 b = *(s32 *)(o + 0xC);
-    s32 c = *(s32 *)(o + 8);
-    s32 d = *(s32 *)(o + 4);
-    s32 e = fn_80131234(name);
-    fn_8022BAD0(style, d + xoff, c + yoff, w, b, a, e, index, 0, 1.0f);
-}
 s32 fn_80262F8C(s32 ptr, s32 count) {
     /* Free ptr via the mode-3 pool allocator when it is non-null and count is positive; return ptr unchanged. */
     if (ptr != 0 && count > 0) {
