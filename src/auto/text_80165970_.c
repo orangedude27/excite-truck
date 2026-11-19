@@ -908,42 +908,44 @@ extern float lbl_805618A0, lbl_805618F4, lbl_805618F8, lbl_805618FC;
 #pragma push
 #pragma optimization_level 2
 #pragma scheduling on
-float fn_80166F90(float * __restrict arg0) {
-    float prod = 2.0f * arg0[2];
-    float diff = lbl_8055E318 - arg0[3];
-    float x;
-    float value;
+float fn_80166F90(float * __restrict params) {
+    /* Compute a smooth ping-pong interpolation between params[0] and params[1]
+     * over time, using params[2] as the half-period and params[3] as the phase offset. */
+    float period = 2.0f * params[2];
+    float elapsed = lbl_8055E318 - params[3];
+    float phase;
+    float eased;
     float start;
     float end;
     float term1;
     float term2;
-    x = (float)fn_8002EFB4(diff, prod, 2.0f);
-    if (x > arg0[2]) {
-        x = 2.0f * arg0[2] - x;
+    phase = (float)fn_8002EFB4(elapsed, period, 2.0f);
+    if (phase > params[2]) {
+        phase = 2.0f * params[2] - phase;
     }
-    x /= arg0[2];
-    if (x < lbl_805618F4) {
-        value = lbl_805618F4;
-    } else if (x > lbl_805618D0) {
-        value = lbl_805618D0;
-    } else if (x > lbl_8056189C) {
-        term1 = lbl_805618F8 * x;
-        term2 = lbl_805618FC * x;
-        term1 *= x;
-        term2 *= x;
-        term1 = x * term1;
-        value = term1 + term2;
+    phase /= params[2];
+    if (phase < lbl_805618F4) {
+        eased = lbl_805618F4;
+    } else if (phase > lbl_805618D0) {
+        eased = lbl_805618D0;
+    } else if (phase > lbl_8056189C) {
+        term1 = lbl_805618F8 * phase;
+        term2 = lbl_805618FC * phase;
+        term1 *= phase;
+        term2 *= phase;
+        term1 = phase * term1;
+        eased = term1 + term2;
     } else {
-        term1 = lbl_805618F8 * x;
-        term2 = lbl_805618FC * x;
-        term1 *= x;
-        term2 *= x;
-        term1 = x * term1;
-        value = term1 - term2;
+        term1 = lbl_805618F8 * phase;
+        term2 = lbl_805618FC * phase;
+        term1 *= phase;
+        term2 *= phase;
+        term1 = phase * term1;
+        eased = term1 - term2;
     }
-    end = arg0[1];
-    start = arg0[0];
-    return start + value * (end - start);
+    end = params[1];
+    start = params[0];
+    return start + eased * (end - start);
 }
 
 #pragma push
