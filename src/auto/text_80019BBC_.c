@@ -843,6 +843,7 @@ void fn_8001B478(int arg0, float farg0) {
     fn_802C8E48();
     fn_8013530C(sp20, -1);
 }
+#pragma scheduling on
 #pragma pop
 #pragma push
 #pragma cplusplus on
