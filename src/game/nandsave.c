@@ -901,6 +901,7 @@ int fn_802E967C(char *fileName, void *src, int size) {
 }
 
 __declspec(section ".data") extern int lbl_80507288;
+#pragma opt_propagation off
 void fn_802E97B4(void) {
     if (lbl_80560035 == 0) {
         switch (fn_802ECC10()) {
@@ -911,7 +912,7 @@ void fn_802E97B4(void) {
         }
         lbl_80560035 = 1;
         if (lbl_80507288 == 1) {
-            switch (*(int *)((char *)&lbl_80507288 + 0x25C)) {
+            switch (*(volatile int *)((char *)&lbl_80507288 + 0x25C)) {
             case 0:
                 break;
             case -9:
