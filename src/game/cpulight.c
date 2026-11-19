@@ -1,4 +1,4 @@
-// cpulight — cpu lighting ("I only cpu-light from 8888 textures").
+// cpulight - cpu lighting ("I only cpu-light from 8888 textures").
 // Recovered TU window 0x802DB2D4..0x802DD430+thunk (see docs/attribution_analysis.md).
 // Static-init thunk fn_802DD430 (+ .ctors slot 0x802ED5DC) remains in
 // auto/text_802DD430_.c pending a promotion pass.
