@@ -167,10 +167,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     m.names[2][0] = 0;
     m.names[3][0] = 0;
     m.names[4][0] = 0;
-    fn_8024F17C(m.screen, obj,
-                slots[4] ? (s32 *)(slots + idx * 16 + 0x14) : (s32 *)(slots + idx * 16 + 0xc),
-                slots[4] ? (s32 *)(slots + idx * 16 + 0x10) : (s32 *)(slots + idx * 16 + 0x8),
-                m.opts, m.work);
+    fn_8024F17C(m.screen, obj, pA, pB, m.opts, m.work);
     *(void **)m.screen = lbl_80344474;
     lbl_8055F2EC = (unsigned int)m.screen;
     pA = slots[4] ? (s32 *)(slots + idx * 16 + 0x14) : (s32 *)(slots + idx * 16 + 0xc);
