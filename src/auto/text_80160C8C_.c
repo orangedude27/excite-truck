@@ -419,7 +419,6 @@ s32 fn_80160CE4(void) {
 }
 
 #pragma cplusplus on
-#pragma processor 750
 #pragma ppc_psq_save off
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
@@ -457,18 +456,23 @@ extern "C" void fn_80160CF4(void) {
         virtual Node *child(s32);
     };
     struct Root { s32 pad[8]; Node *node; };
-    char *text = (char *)lbl_8032F588;
-    Root *root = (Root *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
+    Root *root;
+    Node *n, *c;
     s32 idx;
     f32 f31;
-    Node *n, *c;
     s32 i;
     void *obj;
+    s32 lst;
+    char *text;
+    text = (char *)lbl_8032F588;
+    root = (Root *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
     lbl_8055E300 = 0;
     obj = fn_801284F8(0xC, text + 0x48);
     if (obj != 0) *(s32 *)obj = (s32)lbl_8032F790;
     idx = 1;
-    *(s32 *)(*(s32 *)lbl_8042FDEC + (*(s32 *)(lbl_8042FDEC + 4))++ * 4) = (s32)obj;
+    lst = *(s32 *)(lbl_8042FDEC + 4);
+    *(s32 *)(lbl_8042FDEC + 4) = lst + 1;
+    *(s32 *)(*(s32 *)lbl_8042FDEC + lst * 4) = (s32)obj;
     n = root->node->child(0);
     f31 = lbl_8056183C;
     for (; n != 0; n = root->node->child(idx++)) {
@@ -498,13 +502,14 @@ extern "C" void fn_80160CF4(void) {
                         if (start <= end) {
                             flag = 1;
                             if ((diff & (s32)0x80000000) == 0 && ((diff + 0x47) & (s32)0x80000000) != 0) flag = 0;
-                            if (flag != 0) {
-                                hi = nn & (s32)0x80000000; flag = 1;
-                                if (hi == 0 && hi != (mm & (s32)0x80000000)) flag = 0;
-                            }
-                            check = flag;
+                            if (flag != 0) check = 1;
                         }
-                        if (check != 0) fn_80160CF4_clear(o + 0x134);
+                        if (check != 0) {
+                            hi = nn & (s32)0x80000000;
+                            if (hi == 0 && hi != (mm & (s32)0x80000000)) {
+                                fn_80160CF4_clear(o + 0x134);
+                            }
+                        }
                     }
                 }
                 *(s32 *)(o + 0x80) = 0;
@@ -516,23 +521,32 @@ extern "C" void fn_80160CF4(void) {
                 *(s32 *)(o + 0x578) = 4;
                 *(s32 *)(o + 0x574) = 0;
                 *(u8 *)(o + 0x5B0) = (u8)n->attrB(text + 0x7C, 0);
-                for (i = 0; (c = n->child(i)) != 0; i++) {
+                i = 0;
+                c = n->child(i);
+                while (c != 0) {
                     if (stricmp(c->name(), (const char *)&lbl_8055A0CC) == 0) {
-                        s32 *ent = (s32 *)(*(s32 *)(o + 0x570) + *(s32 *)(o + 0x574) * 0xC);
+                        s32 *ent;
                         const char *a;
-                        cnt = *(s32 *)(o + 0x574); ent[0] = -1; *(s32 *)(o + 0x574) = cnt + 1;
-                        a = c->attr((const char *)&lbl_8055A0C4);
+                        cnt = *(s32 *)(o + 0x574);
+                        ent = (s32 *)(*(s32 *)(o + 0x570) + cnt * 0xC);
                         names[0] = lbl_802F94A8[0]; names[1] = lbl_802F94A8[1];
                         names[2] = lbl_802F94A8[2]; names[3] = lbl_802F94A8[3];
+                        *(s32 *)(o + 0x574) = cnt + 1;
+                        a = c->attr((const char *)&lbl_8055A0C4);
+                        ent[0] = -1;
                         for (j = 0; j < 4; j++) if (stricmp(a, names[j]) == 0) ent[0] = j + 0x10;
                         if (ent[0] == -1) ent[0] = fn_80158618((s32)a);
                         ent[1] = c->attrInt((const char *)&lbl_8055A0D4);
                     }
+                    i++;
+                    c = n->child(i);
                 }
                 *(f32 *)(o + 0x5B8) = n->attrF(text + 0x88, lbl_80561840);
-                fn_80158558(o + 0x56C);
+                fn_80158558(o != 0 ? o + 0x56C : o);
             }
-            *(s32 *)(*(s32 *)lbl_8042FDEC + (*(s32 *)(lbl_8042FDEC + 4))++ * 4) = (s32)o;
+            lst = *(s32 *)(lbl_8042FDEC + 4);
+            *(s32 *)(lbl_8042FDEC + 4) = lst + 1;
+            *(s32 *)(*(s32 *)lbl_8042FDEC + lst * 4) = (s32)o;
         } else if (stricmp(kind, text + 0x98) == 0) {
             char *o2 = (char *)fn_801284F8(0x578, text + 0xA4);
             if (o2 != 0) {
@@ -555,13 +569,14 @@ extern "C" void fn_80160CF4(void) {
                         if (start <= end) {
                             flag = 1;
                             if ((diff & (s32)0x80000000) == 0 && ((diff + 0x47) & (s32)0x80000000) != 0) flag = 0;
-                            if (flag != 0) {
-                                hi = nn & (s32)0x80000000; flag = 1;
-                                if (hi == 0 && hi != (mm & (s32)0x80000000)) flag = 0;
-                            }
-                            check = flag;
+                            if (flag != 0) check = 1;
                         }
-                        if (check != 0) fn_80160CF4_clear(o2 + 0x134);
+                        if (check != 0) {
+                            hi = nn & (s32)0x80000000;
+                            if (hi == 0 && hi != (mm & (s32)0x80000000)) {
+                                fn_80160CF4_clear(o2 + 0x134);
+                            }
+                        }
                     }
                 }
                 *(s32 *)(o2 + 0x80) = 0;
@@ -573,7 +588,9 @@ extern "C" void fn_80160CF4(void) {
                     if (stricmp(c->name(), (const char *)&lbl_8055A0CC) == 0) *(s32 *)(o2 + 0x570) = c->attrInt(text + 0xB8);
                 }
             }
-            *(s32 *)(*(s32 *)lbl_8042FDEC + (*(s32 *)(lbl_8042FDEC + 4))++ * 4) = (s32)o2;
+            lst = *(s32 *)(lbl_8042FDEC + 4);
+            *(s32 *)(lbl_8042FDEC + 4) = lst + 1;
+            *(s32 *)(*(s32 *)lbl_8042FDEC + lst * 4) = (s32)o2;
         }
     }
 }
