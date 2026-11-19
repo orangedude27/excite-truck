@@ -18935,23 +18935,26 @@ void fn_800C5430(s32 *a, s32 *b, s32 *coeff) {
     }
 }
 
-extern "C" void fn_800C5508(void *arg0, void *arg1, void *arg2) {
-    s32 scale0 = ((s32 *)arg2)[0];
-    s32 scale1 = ((s32 *)arg2)[1];
-    s32 *dst = (s32 *)arg0;
-    s32 *src = (s32 *)arg1;
+extern "C" void fn_800C5508(void *sumBlock, void *diffBlock, void *scales) {
+    s32 scale0 = ((s32 *)scales)[0];
+    s32 scale1 = ((s32 *)scales)[1];
+    s32 *sum = (s32 *)sumBlock;
+    s32 *diff = (s32 *)diffBlock;
+    /* Apply a 4-iteration butterfly step over two 32-int blocks: for selected
+     * lane pairs compute sum/difference, store the sum, and write back the
+     * difference scaled by alternating fixed-point factors (>> 24). */
     for (s32 i = 0; i < 4; i++) {
         s32 b, a, d;
-        b = src[0]; a = dst[0]; d = a - b;
-        dst[0] = a + b; src[0] = (s32)(((s64)d * scale0) >> 24);
-        b = src[1]; a = dst[1]; d = a - b;
-        dst[1] = a + b; src[1] = (s32)(((s64)d * scale1) >> 24);
-        b = src[4]; a = dst[4]; d = a - b;
-        a += b; dst[4] = a; src[4] = (s32)(((s64)d * scale0) >> 24);
-        b = src[5]; a = dst[5]; d = a - b;
-        dst[5] = a + b; src[5] = (s32)(((s64)d * scale1) >> 24);
-        dst += 8;
-        src += 8;
+        b = diff[0]; a = sum[0]; d = a - b;
+        sum[0] = a + b; diff[0] = (s32)(((s64)d * scale0) >> 24);
+        b = diff[1]; a = sum[1]; d = a - b;
+        sum[1] = a + b; diff[1] = (s32)(((s64)d * scale1) >> 24);
+        b = diff[4]; a = sum[4]; d = a - b;
+        a += b; sum[4] = a; diff[4] = (s32)(((s64)d * scale0) >> 24);
+        b = diff[5]; a = sum[5]; d = a - b;
+        sum[5] = a + b; diff[5] = (s32)(((s64)d * scale1) >> 24);
+        sum += 8;
+        diff += 8;
     }
 }
 
