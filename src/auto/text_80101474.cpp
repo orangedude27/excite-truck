@@ -389,25 +389,18 @@ extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveD
 int nw4hbm::snd::detail::WsdTrack::Parse(const nw4hbm::snd::detail::WsdTrack::WsdCallback *callback, unsigned long arg2, bool arg3) {
     unsigned char sp8[0x10];
     unsigned char sp18[0x90];
-    struct { unsigned long scratch; } scratchBox;
-    scratchBox.scratch = arg2;
-    unsigned long &scratch = scratchBox.scratch;
-    struct { const nw4hbm::snd::detail::WsdTrack::WsdCallback *cb; } cbBox;
-    cbBox.cb = callback;
-    const nw4hbm::snd::detail::WsdTrack::WsdCallback *&cb = cbBox.cb;
     if (*(void **)((char *)this + 0x2C) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0x189, lbl_80327CCC);
     if (*(int *)((char *)this + 8) == 0) {
-        void *owner = *(void **)((char *)this + 0x2C);
-        int pitch = *((unsigned char *)this + 0x1D) + *(unsigned char *)((char *)owner + 0x90);
-        if (!cb->GetWave((char *)this + 0x20, sp8, sp18,
-                         *(int *)this, *(int *)((char *)this + 4), 0, scratch))
+        int pitch = *((unsigned char *)this + 0x1D) + *(unsigned char *)(*(char **)((char *)this + 0x2C) + 0x90);
+        if (!callback->GetWave((char *)this + 0x20, sp8, sp18,
+                         *(int *)this, *(int *)((char *)this + 4), 0, arg2))
             return -1;
-        owner = *(void **)((char *)this + 0x2C);
+        void *owner = *(void **)((char *)this + 0x2C);
         int maxVoices = *(int *)((char *)owner + 0x8C);
         int count = (int)sp18[2];
         int voices = count > 2 ? 2 : count;
-        register void *channel = AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(
+        void *channel = AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(
             voices, maxVoices, pitch,
             ChannelCallbackFunc__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl,
             this);
@@ -500,7 +493,7 @@ extern "C" int IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderU
 
 #pragma opt_peephole off
 extern "C" unsigned short ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
-    void *base=(void *)lbl_80328030;
+    const char *base=lbl_80328030;
     unsigned int value=(unsigned int)arg0;
     int a=1,b=1,c=1,d=1,e=1,f=1;
     unsigned int t=value&0xFF000000U;
@@ -510,7 +503,7 @@ extern "C" unsigned short ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
     if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
     if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
-    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce((const char *)base,0x4C,(const char *)base+0x18,arg0);
+    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4C,base+0x18,arg0);
     int g=1,h=1;
     unsigned int v=*(unsigned int *)arg0;
     int i=1,j=1,k=1,l=1;
@@ -521,9 +514,9 @@ extern "C" unsigned short ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
     if(i==0&&(v&0xF8000000U)!=0x90000000U+0x40000000U)h=0;
     if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
-    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce((const char *)base,0x4D,(const char *)base+0x50);
+    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4D,base+0x50);
     unsigned char * volatile *pp=(unsigned char * volatile *)arg0;
-    if((**pp&0xC0)==0x80)Panic__Q26nw4hbm2dbFPCciPCce((const char *)base,0x4F,(const char *)base+0x8C);
+    if((**pp&0xC0)==0x80)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4F,base+0x8C);
     unsigned char *ptr=*pp;
     unsigned char first=*ptr;
     if(!(first&0x80)){*pp=*pp+1;return first;}
@@ -532,11 +525,10 @@ extern "C" unsigned short ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void 
         *pp=*pp+2;
         return r;
     }
-    if((first&0xF0)!=0xE0)Panic__Q26nw4hbm2dbFPCciPCce((const char *)base,0x64,(const char *)base+0xC4);
+    if((first&0xF0)!=0xE0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x64,base+0xC4);
     unsigned char *q=*pp;
-    unsigned char *n=*pp;
     unsigned short r=((q[0]&0x1F)<<12)|((q[1]&0x3F)<<6)|(q[2]&0x3F);
-    *pp=n+3;
+    *pp=*pp+3;
     return r;
 }
 extern "C" unsigned short ReadNextCharUTF16__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
@@ -611,7 +603,6 @@ static inline bool IsSJISLeadByte(unsigned char c) {
 }
 
 extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
-    #pragma opt_algebraic off
     const char *file = lbl_80328030;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = (unsigned int)arg0 & 0xFF000000U;
@@ -621,7 +612,8 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if (r8 == 0 && ((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U) r7 = 0;
     if (r7 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && ((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) { void *s = arg0; Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xB4, file + 0x18, s); }
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0xB4, &file[0x18], arg0);
+
     int f4 = 1, f5 = 1;
     unsigned int value = *(unsigned int *)arg0;
     int f7 = 1, f8 = 1, f9 = 1, f10 = 1;
@@ -632,7 +624,8 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if (f8 == 0 && (value & 0xFF800000U) != 0xC1000000U) f7 = 0;
     if (f7 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
     if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xB5, file + 0x50);
+    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0xB5, file + 0x50);
+
     const unsigned char *s = *(const unsigned char **)arg0;
     unsigned char c = *s;
     if (IsSJISLeadByte(c)) {
@@ -721,6 +714,7 @@ extern "C" s32 fn_801033F0(s32 object, s32 deleteFlag) {
 
 extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(void *arg0, void *arg1) {
 #pragma opt_propagation off
+#pragma opt_peephole off
     const char *base = lbl_80328178;
     void *font = arg1;
     void *writer = arg0;
@@ -1723,21 +1717,22 @@ extern "C" unsigned char lbl_8055DE90;
 extern "C" unsigned char lbl_8055DE94, lbl_8055DE95, lbl_8055DE96, lbl_8055DE97;
 extern "C" float lbl_80561150;
 extern "C" unsigned char lbl_8041D4D0[];
-#pragma opt_propagation off
+#pragma opt_propagation reset
 extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(unsigned int arg0, unsigned int arg1) {
     unsigned char sp10[4], spc[4], sp8[4];
     unsigned char r, g, b, a;
-    unsigned char f0, f1, f2, f3;
-    int fogType;
+    unsigned char f1, f2, f3;
     unsigned char *p0 = (unsigned char *)arg0;
     unsigned char *p1 = (unsigned char *)arg1;
+    int fogType;
     if ((signed char)lbl_8055DE90 == 0) {
         *(int *)&lbl_8055DE94 = 0;
         __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
         lbl_8055DE90 = 1;
     }
-    f3=lbl_8055DE97; f2=lbl_8055DE96; f1=lbl_8055DE95; f0=lbl_8055DE94;
-    sp8[0]=f0; sp8[1]=f1; sp8[2]=f2; sp8[3]=f3;
+    fogType = lbl_8055DE94;
+    f3=lbl_8055DE97; f2=lbl_8055DE96; f1=lbl_8055DE95;
+    sp8[0]=fogType; sp8[1]=f1; sp8[2]=f2; sp8[3]=f3;
     fogType = 0;
     GXSetFog(fogType, sp8, f2, f1, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
     GXSetTevSwapModeTable(0,0,1,2,3); GXSetZTexture(0,0x11,0); GXSetNumChans(1);
@@ -1756,5 +1751,4 @@ extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5C
     GXSetVtxAttrFmt(0,9,1,4,0); GXSetVtxAttrFmt(0,0xb,1,5,0); GXSetVtxAttrFmt(0,0xd,1,2,0xf);
     GXClearVtxDesc(); GXSetVtxDesc(9,1); GXSetVtxDesc(0xb,1); GXSetVtxDesc(0xd,1);
 }
-#pragma opt_propagation reset
 namespace nw4hbm { namespace ut { struct Glyph { unsigned char pad[0x14]; unsigned short x; unsigned char pad16[2]; unsigned char y; unsigned char pad19[7]; unsigned short width; unsigned short height; unsigned char pad20[0x20]; }; }}
