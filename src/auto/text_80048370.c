@@ -330,7 +330,7 @@ static inline MEMiExpHeapMBlock *InsertAfterMBlock_(MEMiExpHeapMBlockList *list,
 
 void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk, void *mem, u32 size, u16 direction) {
     MEMiExpHeapMBlock *usedStart;
-    u8 *after = (u8 *)mem + size;
+    u8 *after = (u8 *)(size + (u32)mem);
     MEMiExpHeapMBlock *newBlk = (MEMiExpHeapMBlock *)((u8 *)mem - sizeof(MEMiExpHeapMBlock));
     MEMiExpHeapMBlock *prev = blk->prev;
     u8 *start = (u8 *)blk - blk->align;
@@ -779,6 +779,19 @@ u32 MEMGetAllocatableSizeForFrmHeapEx(MEMiHeapHead *heap, s32 align) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
+/* RealName: MEMCreateUnitHeap (rename_symbol unavailable).  The name below is
+   the map's, taken from the frame-heap routine of the same name that is really
+   in src/revolution/MEM/mem_frameHeap.c:172; this one is the OS library's unit
+   heap creator, and its only caller (src/auto/text_800FDE28.cpp:132) opens a
+   pool of 0x40-byte blocks with it.
+   Build a unit heap -- a heap of same-sized blocks -- in the `size` bytes at
+   `start`: the base MEMiHeapHead sits at the 4-aligned start and the unit
+   heap's own head right after it (+0x3C); `unitSize` is rounded up to `align`,
+   the first block starts at the `align`-ed address past that head, and as many
+   whole blocks as fit are chained onto the free list (a free block's first
+   word is the next free block, the last block's is 0).  The heap is registered
+   under the 'UNTH' magic.  Returns the new heap, or 0 when the space, the
+   alignment or the unit size leaves room for fewer than one block. */
 MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 align, u16 opt) {
     void *startAddr = (void *)(((u32)start + 3) & ~3);
     void *heapEnd = (void *)((size + (u32)start) & ~3);
@@ -786,34 +799,34 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 
         return 0;
     }
     {
-        u32 *untHead;
-        void *mblk;
+        MEMiUnitHeapHead *untHead;
+        void *memBlock;
         u32 elementNum;
         u32 mask = ~((align - 1) | (align - 1));
-        untHead = (u32 *)((u8 *)startAddr + 0x3C);
+        untHead = (MEMiUnitHeapHead *)((u8 *)startAddr + 0x3C);
         unitSize = mask & (align + unitSize - 1);
-        mblk = (void *)(mask & ((u32)untHead + align + 7));
-        if ((s32)((u32)mblk - (u32)heapEnd) > 0) {
+        memBlock = (void *)(mask & ((u32)untHead + align + 7));
+        if ((s32)((u32)memBlock - (u32)heapEnd) > 0) {
             return 0;
         }
-        elementNum = ((u32)heapEnd - (u32)mblk) / unitSize;
+        elementNum = ((u32)heapEnd - (u32)memBlock) / unitSize;
         if (elementNum == 0) {
             return 0;
         }
         {
             u32 total = elementNum * unitSize;
-            heapEnd = (void *)(total + (u32)mblk);
+            heapEnd = (void *)(total + (u32)memBlock);
         }
-        MEMiInitHeapHead((MEMiHeapHead *)startAddr, 0x554E5448, mblk, heapEnd, opt);
-        untHead[0] = (u32)mblk;
-        untHead[1] = unitSize;
+        MEMiInitHeapHead((MEMiHeapHead *)startAddr, 0x554E5448 /* 'UNTH' */, memBlock, heapEnd, opt);
+        untHead->freeBlock = (MEMUnitHeapFreeBlock *)memBlock;
+        untHead->blockSize = unitSize;
         {
-            u32 *blk = (u32 *)untHead[0];
+            MEMUnitHeapFreeBlock *blk = untHead->freeBlock;
             u32 i;
-            for (i = 0; i < elementNum - 1; ++i, blk = (u32 *)*blk) {
-                *blk = unitSize + (u32)blk;
+            for (i = 0; i < elementNum - 1; ++i, blk = blk->next) {
+                blk->next = (MEMUnitHeapFreeBlock *)(unitSize + (u32)blk);
             }
-            *blk = 0;
+            blk->next = 0;
         }
         return (MEMiHeapHead *)startAddr;
     }
@@ -1105,6 +1118,8 @@ z_axis:
 #pragma pop
 extern f32 lbl_80560C48;
 extern f32 lbl_80560C4C;
+#pragma push
+#pragma paired on
 #pragma paired_single on
 void PSMTXRotRad(Mtx m, f32 x, f32 y, f32 z) {
     register f32 zero = lbl_80560C4C;
@@ -1120,6 +1135,7 @@ void PSMTXRotRad(Mtx m, f32 x, f32 y, f32 z) {
     m[2][3] = z;
     m[0][0] = one;
 }
+#pragma pop
 void PSMTXRotTrig(register Mtx m, register Mtx r, register f32 sx, register f32 sy, register f32 sz) {
     register f32 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
     a0 = *(f32 *)&m[0][0];
