@@ -903,21 +903,40 @@ s32 fn_8028BB14(s32 payload) {
 __declspec(section ".sdata") extern char lbl_8055C8BC[];
 #pragma cplusplus on
 extern "C" void fn_8028BC18(void);
-void *fn_8028BB68(void *arg0, s32 arg1, f32 farg0) {
-    extern char lbl_80348C28[];
-    extern f64 lbl_805643B0;
-    s32 count = arg1;
-    s32 size = arg1 * 0x1C;
-    s32 memory = fn_8012850C(size + 0x10, lbl_8055C8BC, size);
-    void *array = ((void *(*)(s32, void *, s32, s32, s32))fn_8002F37C)(memory, (void *)fn_8028BC18, 0, 0x1C, count);
-    ((void **)arg0)[0] = array;
-    ((s32 *)arg0)[1] = 0;
-    ((s32 *)arg0)[2] = count;
-    ((f32 *)arg0)[3] = farg0;
-    ((f32 *)arg0)[4] = 1.0f / farg0;
-    ((s32 *)arg0)[5] = fn_802CAC28((void *)lbl_80348C28, 0);
-    ((f32 *)arg0)[6] = (f32)fn_8002F208(lbl_805643B0);
-    return arg0;
+/* Build one of the two spark emitters fn_8028A664 creates: take the
+ * 0xDC-byte emitter object the caller allocated, carve a pool of `count`
+ * sparks from the heap under the "sparks" tag, run the element constructor
+ * over it, and fill in the emitter's header -- pool pointer, empty spawn
+ * count, pool size, spark lifetime and its reciprocal, the texture handle
+ * for "spark.tex" and a fixed log2 scale.  Returns the emitter. */
+void *fn_8028BB68(void *emitter, s32 count, f32 life) {
+    extern char lbl_80348C28[]; /* "spark.tex" */
+    extern f64 lbl_805643B0;    /* 40/3 */
+    #define sparkPoolTag    lbl_8055C8BC /* "sparks", the heap tag of the pool */
+    #define MemAllocPool    fn_8012850C  /* "new[]" heap allocation */
+    #define ArrayConstruct  fn_8002F37C  /* runtime: construct `count` elements */
+    #define SparkCtor       fn_8028BC18  /* per-spark constructor, does nothing */
+    #define TextureRegister fn_802CAC28
+    #define Log2            fn_8002F208
+    struct SparkSystem *sys = (struct SparkSystem *)emitter;
+    s32 poolSize = count;
+    s32 bytes = count * sizeof(struct Spark);
+    s32 memory = MemAllocPool(bytes + 0x10, sparkPoolTag, bytes);
+    void *array = ((void *(*)(s32, void *, s32, s32, s32))ArrayConstruct)(memory, (void *)SparkCtor, 0, sizeof(struct Spark), poolSize);
+    sys->spark = (struct Spark *)array;
+    sys->spawned = 0;
+    sys->live = poolSize;
+    sys->life = life;
+    sys->invLife = 1.0f / life;
+    sys->texture = TextureRegister((void *)lbl_80348C28, 0);
+    sys->log2Value = (f32)Log2(lbl_805643B0);
+    return emitter;
+    #undef sparkPoolTag
+    #undef MemAllocPool
+    #undef ArrayConstruct
+    #undef SparkCtor
+    #undef TextureRegister
+    #undef Log2
 }
 #pragma cplusplus off
 void fn_8028BC18(void) {
