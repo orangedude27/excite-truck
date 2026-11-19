@@ -573,6 +573,12 @@ extern "C" void fn_80206B14(void *arg0, int arg1, int arg2) {
 }
 #pragma scheduling on
 #pragma dont_inline reset
+/* Sound module: empty entry point that does nothing.  It sits just ahead of
+ * the Sound3D object-pool helpers -- fn_80206BF8 lazily builds the pool and
+ * takes an object from it, fn_80206C70 hands one back and tears the pool down
+ * when its use count lbl_8055ED8C reaches zero -- so it is the third slot of
+ * that little allocator interface (an "initialize"/"reserve" step) left
+ * without a body in this build; no decompiled code calls it. */
 extern "C" void fn_80206BF4(void) {
 	return;
 }
