@@ -78,6 +78,12 @@ enum SndClass {
 };
 
 #pragma dont_inline on
+/* SoundManager construction hook.  The constructor fn_80207990 calls this between
+ * clearing the manager's nine soundclass lists (+0x14) and allocating the
+ * "SoundManager::snd_tab" array (+0x0C) the sounds are kept in; fn_80208404, called
+ * where a soundclass list changes, is the same kind of hook.  The shipped build has
+ * no body for either: whatever they did was compiled out, leaving an empty function
+ * the call still reaches. */
 void fn_80207960(void) {
 	return;
 }
