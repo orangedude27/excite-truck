@@ -2019,6 +2019,7 @@ void fn_801CE670(Struct_801CE670 *out, s32 value1, s32 value2) {
     *out = node;
 }
 
+/* No-op stub. */
 void fn_801CE698(void) {
 
 }
