@@ -1244,12 +1244,13 @@ extern s32 fn_80012854();
 extern const char lbl_8032F738[];
 
 #pragma dont_inline on
+/* Compute the total data size for all valid tutorial levels and store it in the "tutorial_level" setting. */
 void fn_80161DE4(void) {
-    s32 total;
-    total = fn_801615B4(fn_80161ECC() - 1);
+    s32 dataSize;
+    dataSize = fn_801615B4(fn_80161ECC() - 1);
     fn_80161E40(fn_80161ECC() - 1);
-    total = (s32)((char *)fn_8016208C() + total);
-    fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, total + 1);
+    dataSize = (s32)((char *)fn_8016208C() + dataSize);
+    fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, dataSize + 1);
 }
 
 s32 fn_80161E40(s32 targetValue) {
