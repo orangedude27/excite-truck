@@ -109,13 +109,14 @@ extern "C" void fn_802BEDFC(void) {
     Resource *resource;
     Resource *style;
     u32 baseE000 = 0xE0000000u;
-    float scale = 0.7f;
-    lbl_8055FAE0 = scale;
-    lbl_8055FAE4 = baseE000 + 0x5030;
+    u32 hi1 = baseE000 + 0x5030;
+    u32 hi2 = baseE000 + 0x1040;
+    lbl_8055FAE4 = hi1;
     lbl_8055FAEC = 0x202040;
+    lbl_8055FAE0 = 0.7f;
     lbl_8055FAE8 = 0xE0FFFFFF;
-    lbl_8055FAF0 = baseE000 + 0x1040;
-    resource = (Resource *)fn_80131808(strings + 0x2C, 0xE0FFFFFF, baseE000);
+    lbl_8055FAF0 = hi2;
+    resource = (Resource *)fn_80131808(strings + 0x2C, 0xE0FFFFFF, 0xE0000000);
     if (resource != 0) {
         if (resource->hasStyle(strings + 0x38) != 0)
             style = (Resource *)resource->getStyle(strings + 0x38);
@@ -255,7 +256,7 @@ void fn_802BF160(void) {
         f0 = f2 - f30;
         f2 = f0 * f29;
         if (f31 < f2) f2 = f31;
-        if (f28 > f2) f2 = f28;
+        f2 = (f2 > f28) ? f2 : f28;
         f3 = point[0];
         f0 = f1 - f28;
         m3 = table[3];
@@ -277,12 +278,12 @@ void fn_802BF160(void) {
         f3 = f4 + f3;
         f4 = f0 * f4;
         scratch[7] = m7;
-        f0 = f28 - f3;
+        f0 = f31 - f3;
         scratch[0] = m0;
         scratch[1] = m1;
         f0 = f5 * f0;
         scratch[2] = m2;
-        f0 = f28 + f0;
+        f0 = f31 + f0;
         scratch[4] = m4;
         f0 = f0 - f4;
         scratch[6] = m6;
@@ -821,7 +822,7 @@ extern "C" void fn_802BFB70(void *arg0, float *worldMtx, float angle) {
 
 #pragma cplusplus reset
 extern float lbl_80564DCC, lbl_80564DD0, lbl_80564DD4;
-extern unsigned short lbl_802FAC20;
+extern const unsigned short lbl_802FAC20[6];
 extern void fn_80015A20(void *, float *);
 extern void fn_80015B20(float *, void *, float *);
 extern void fn_802C8B98(int, float *);
@@ -909,10 +910,10 @@ void *fn_802C0138(void *arg0) {
     register char *resourceA = lbl_8034ACA0 + 0x134;
     void *vtable = lbl_8034AE08;
     float initial = lbl_80564DF0;
-    short *out;
-    register int row;
-    register int rowBase;
     int innerBase;
+    register int row;
+    int rowBase;
+    short *out;
 
     *(unsigned char *)((char *)arg0 + 0x2C5C) = 0;
     *(void **)arg0 = vtable;
