@@ -5103,6 +5103,7 @@ void fn_80156104(void) {
 
 }
 
+/* Empty stub; does nothing. */
 void fn_80156108(void) {
 
 }
