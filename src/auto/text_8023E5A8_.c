@@ -39,20 +39,21 @@ extern unsigned char lbl_8055F1BC;
 extern unsigned char lbl_80341CE4[], lbl_80341CF0[];
 #pragma cplusplus on
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     class Obj {
     public:
         virtual void f0();
         virtual char *f1();
     };
-    int values[36];
-    int now;
-    int length;
     int handle;
+    int length;
+    int now;
     int i;
     int *base;
     void *second;
     Obj *object;
+    int values[36];
 
     now = fn_802E2C20();
     lbl_8055F1B0 = arg0;
