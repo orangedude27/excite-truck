@@ -39,6 +39,13 @@ void* fn_8015EBF8(void* arg0, s32 arg1) {
     return arg0;
 }
 
+static inline int fn_8015ECC0_isValid(void *obj) {
+    if (((int *)obj)[8] < 1000 && ((unsigned int *)obj)[6] == 0x54554245) {
+        return 1;
+    }
+    return 0;
+}
+
 #pragma dont_inline on
 /* Convert a sample offset from a stream position into frames (1/60 s) relative to the stream base. */
 void fn_8015EC50(unsigned short *out, void *stream) {
@@ -47,18 +54,22 @@ void fn_8015EC50(unsigned short *out, void *stream) {
     *out = (sample - ((int *)((void **)stream)[11])[7]) / 60;
 }
 
-int fn_8015ECC0(void *arg0) {
-    register int result = 0;
-    register int test = 0;
-    if (((int *)arg0)[8] < 1000 && ((unsigned int *)arg0)[6] == 0x54554245) {
-        test = 1;
+int fn_8015ECC0(void *arg0)
+{
+  register int result = 0;
+  register int test = 0;
+  if ((((int *) arg0)[8] < 1000) && (((unsigned int *) arg0)[6] == 0x54554245))
+  {
+    test = 1;
+  }
+  if (test != 0)
+  {
+    if (((float) fabs(((float *) ((void **) arg0)[test = 3])[7])) > lbl_805617D0)
+    {
+      result = test | 1;
     }
-    if (test != 0) {
-        if ((float)fabs(((float *)((void **)arg0)[3])[7]) > lbl_805617D0) {
-            result = test | 1;
-        }
-    }
-    return result;
+  }
+  return result;
 }
 #pragma dont_inline reset
 
