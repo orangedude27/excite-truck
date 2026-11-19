@@ -1513,9 +1513,9 @@ s32 fn_800692D0(void) {
 }
 
 void fn_80069408(void) {
+    const u8 *strings = lbl_803130C8;
     u8 *base = lbl_80392960;
     u8 *state = base;
-    const u8 *strings = lbl_803130C8;
     s32 sp8;
     s32 spC;
     s32 sp10;
