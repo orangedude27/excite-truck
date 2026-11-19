@@ -2,15 +2,19 @@ extern void fn_8021889C(void);
 
 #include <types.h>
 static inline void fn_80216244_rotate(const f32 *m, f32 *out, const f32 *v) {
+    f32 vx = (f32)v[0];
+    f32 vy = v[1];
+    f32 vz = v[2];
+    f32 x, y, z;
     if (out == v) {
-        f32 x = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
-        f32 y = v[2]*m[7] + (v[0]*m[1] + v[1]*m[4]);
-        f32 z = v[2]*m[8] + (v[0]*m[2] + v[1]*m[5]);
+        x = vz*m[6] + (vx*m[0] + vy*m[3]);
+        y = vz*m[7] + (vx*m[1] + vy*m[4]);
+        z = vz*m[8] + (vx*m[2] + vy*m[5]);
         out[0] = x; out[1] = y; out[2] = z;
     } else {
-        out[0] = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
-        out[1] = v[2]*m[7] + (v[0]*m[1] + v[1]*m[4]);
-        out[2] = v[2]*m[8] + (v[0]*m[2] + v[1]*m[5]);
+        out[0] = vz*m[6] + (vx*m[0] + vy*m[3]);
+        out[1] = vz*m[7] + (vx*m[1] + vy*m[4]);
+        out[2] = vz*m[8] + (vx*m[2] + vy*m[5]);
     }
 }
 
@@ -273,13 +277,12 @@ s32 fn_802161CC(s32 arg0) {
 #pragma use_lmw_stmw off
 #pragma dont_inline reset
 s32 fn_80216244(void) {
-    s32 i;
+    s32 i, j;
     u32 *p;
     u8 *obj;
+    f32 x, y;
     f32 matrix[12];
     f32 vec[3], pos[3];
-    f32 x, y;
-    register f32 z;
     f64 d;
     u32 raw;
     void (*callback)(void);
@@ -291,8 +294,7 @@ s32 fn_80216244(void) {
     fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(2);
     p = lbl_804908C8;
-    z = lbl_80563458;
-    for (i = 0; i < 16; i++, p++) {
+    for (j = 0; j < 16; j++, p++) {
         if (*p != 0) {
             obj = (u8 *)*p;
             fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
@@ -302,7 +304,7 @@ s32 fn_80216244(void) {
             x = -(f32)(s32)raw;
             raw = *(u32 *)(obj + 0x458);
             y = (f32)(s32)raw;
-            vec[0] = x; vec[1] = y; vec[2] = z;
+            vec[0] = x; vec[1] = y; vec[2] = 0.0f;
             fn_80216244_rotate(matrix, pos, vec);
             matrix[9] += pos[0];
             matrix[10] += pos[1];
