@@ -752,7 +752,7 @@ int fn_801787B4(void *arg0)
     s32 *p = (s32 *)arg0;
     s32 r28;
     float f31;
-    u64 now;
+    s64 now;
     s32 delta;
     s32 w;
     float scale;
@@ -776,7 +776,7 @@ int fn_801787B4(void *arg0)
         float limit;
         f31 = fn_80176A2C();
         now = fn_802E2C9C();
-        delta = (s32)(now - *(u64 *)(p + 6));
+        delta = (s32)(now - *(s64 *)(p + 6));
         delta = delta > 0 ? delta : 0;
         w = delta < 0xC350 ? delta : 0xC350;
         scale = lbl_80561B68;
@@ -842,13 +842,14 @@ int fn_801787B4(void *arg0)
                     if (result < -16) {
                         s64 t2;
                         s64 t3;
-                        s32 diff;
+                        u32 diff;
                         s64 sum;
                         fn_802E30C8(tbl + 0x14C, result);
                         t2 = fn_80178BBC(p);
                         fn_802E30C8(tbl + 0x178, (s32)t2, (s32)(t2 >> 32), (s32)t2);
-                        sum = *(s64 *)(p + 2) + (s64)(diff = lbl_8055E3C4 - p[0]) * 0x412B;
-                        fn_802E30C8(tbl + 0x19C, diff * 0x412B, (s32)(sum >> 32), (s32)sum);
+                        diff = lbl_8055E3C4 - p[0];
+                        sum = *(s64 *)(p + 2) + (s64)(s32)diff * 0x412B;
+                        fn_802E30C8(tbl + 0x19C, (s32)diff * 0x412B, (s32)(sum >> 32), (s32)sum);
                         t3 = fn_802E2C9C();
                         fn_802E30C8(tbl + 0x1C0, (s32)t3, (s32)(t3 >> 32), (s32)t3);
                     }
@@ -925,13 +926,13 @@ void fn_80178CAC(void *a, void *b)
   int t30;
   int t29;
   int t28;
+  int *p;
+  int i;
   void *x;
   void *new_var;
   void *y;
   int t25;
   int t24;
-  int *p;
-  int i;
   p = lbl_80430590;
   for (i = 0; i < 4; i++, p++)
   {
