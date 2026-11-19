@@ -8490,7 +8490,9 @@ extern "C" void *fn_80227D64(void *self, s32 deleteFlag) {
 }
 
 #pragma scheduling reset
-extern "C" void fn_80227DE8(void *arg0) {
+extern "C" void fn_80227DE8(void *self) {
+    /* Computes a draw rect from this object's grid position and range, then
+     * draws its filled background and border. */
     class LocalObject {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -8504,12 +8506,12 @@ extern "C" void fn_80227DE8(void *arg0) {
         virtual void v29(); virtual void v30(); virtual void v31();
         virtual s32 At88(s32);
     };
-    f32 spC;
-    f32 sp8;
-    fn_80230C30(&spC, &sp8, *(s32 *)((char *)arg0 + 4), *(s32 *)((char *)arg0 + 8));
-    fn_80227C9C(*(s32 *)((char *)arg0 + 0x244), spC, sp8,
-                (f32)((LocalObject *)arg0)->At78(),
-                (f32)(*(s32 *)((char *)arg0 + 0x10) - *(s32 *)((char *)arg0 + 8)));
+    f32 drawX;
+    f32 drawY;
+    fn_80230C30(&drawX, &drawY, *(s32 *)((char *)self + 4), *(s32 *)((char *)self + 8));
+    fn_80227C9C(*(s32 *)((char *)self + 0x244), drawX, drawY,
+                (f32)((LocalObject *)self)->At78(),
+                (f32)(*(s32 *)((char *)self + 0x10) - *(s32 *)((char *)self + 8)));
 }
 extern "C" void *fn_80227E84(void *self, s32 arg1, void *arg2, s32 arg3) {
     /* Initialize this UI widget: run base setup, store vtable/config fields, load resources and log on failure. */
