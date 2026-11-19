@@ -1817,6 +1817,7 @@ extern "C" s32 fn_8013F438(f32 x) {
     v = (v > lbl_805614A4) ? v : lbl_805614A4;
     return (s32)(lbl_8056153C + v * lbl_80561540);
 }
+#pragma dont_inline reset
 #pragma pop
 extern float lbl_805614A4, lbl_805614AC, lbl_805614F8, lbl_80561518, lbl_80561544, lbl_80561548;
 #pragma scheduling on
