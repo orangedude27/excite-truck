@@ -95,18 +95,19 @@ float fn_802A0F7C(void *arg0, void *arg1, void *arg2) {
 #pragma cplusplus on
 #pragma dont_inline on
 #pragma scheduling invalid_target
+/* Return whether the ground surface line debug overlay should be shown. */
 extern "C" s32 fn_802A0FBC(void) {
     struct V30 {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
         virtual void d8(); virtual void d9(); virtual s32 v30(char *, s32);
     };
-    char *self = (char *)fn_8000AC38();
-    V30 *obj = *(V30 **)(self + 0x20);
-    s32 status = obj->v30((char *)&lbl_80349900, 1);
-    u32 type = *(u32 *)(self + 8);
+    char *root = (char *)fn_8000AC38();
+    V30 *obj = *(V30 **)(root + 0x20);
+    s32 enabled = obj->v30((char *)&lbl_80349900, 1);
+    u32 type = *(u32 *)(root + 8);
     s32 result = 0;
-    if (status == 0) goto done;
+    if (enabled == 0) goto done;
     if (type == 0x180304) goto done;
     if ((type & 0x100) == 0) goto done;
     if (fn_80161C38() != 0) goto done;
