@@ -315,6 +315,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     fn_8013C8B8();
     *out = *pB;
     return result != -1;
+#undef lbl_80344170
 }
 
 #pragma push
