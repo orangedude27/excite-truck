@@ -3064,18 +3064,26 @@ extern "C" s32 VFiPFCACHE_InitCaches(void *context) {
 }
 
 extern "C" s32 fn_800A7C20(void *arg0, void **arg1, u32 arg2, void **arg3, s32 *arg4);
-#pragma scheduling off
+#pragma scheduling on
 extern "C" s32 fn_800A8C90(void *arg0, s32 arg1, void **arg2, s32 *arg3) {
-    if (*(s32 *)((u8 *)arg0 + 0x1630) == 0) {
-        *(s32 *)(*(u8 **)((u8 *)arg0 + 0x162C) + 4) = *(s32 *)((u8 *)arg0 + 0x1638);
-        *(s32 *)(*(u8 **)((u8 *)arg0 + 0x162C) + 8) = *(s32 *)((u8 *)arg0 + 0x1638);
-        *arg2 = *(void **)((u8 *)arg0 + 0x162C);
+    struct VolumeCacheInfo {
+        u8 pad0[0x162C];
+        void *cacheObject;
+        s32 fatPageList;
+        s32 dataPageList;
+        void *cacheBuffer;
+    };
+    struct VolumeCacheInfo *vol = (struct VolumeCacheInfo *)arg0;
+    s32 result;
+    if (vol->fatPageList == 0) {
+        *(s32 *)((u8 *)vol->cacheObject + 4) = (s32)vol->cacheBuffer;
+        *(s32 *)((u8 *)vol->cacheObject + 8) = (s32)vol->cacheBuffer;
+        *arg2 = vol->cacheObject;
         return 0;
     }
-    s32 r = fn_800A7C20(arg0, (void **)((u32 *)arg0 + 0x58C), (u32)arg1, arg2, arg3);
-    return r & (((-r) | r) >> 31);
+    result = fn_800A7C20(arg0, (void **)&vol->fatPageList, (u32)arg1, arg2, arg3);
+    return result & ((s32)(-result | result) >> 31);
 }
-#pragma scheduling on
 extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
 /* Returns a page from the volume's data-page cache for the requested sector. If the
  * volume has no data-page list, it initializes the base cache object from the cache
