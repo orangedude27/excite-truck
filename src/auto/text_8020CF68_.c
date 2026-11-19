@@ -84,6 +84,12 @@ public:
 };
 #pragma cplusplus off
 
+extern long fn_802104D0(void); /* trackmusic.c: true when at least one track-music song was found */
+
+/* Menu wrapper for the track-music check fn_802104D0: nonzero once the dash has
+ * found at least one song (its song count is > 0).  The options menu stepper
+ * fn_8020D0CC calls it when the selection lands on entry 2 and steps past that
+ * entry again when no song is available. */
 int fn_8020CF68(void) {
     return fn_802104D0();
 }
@@ -182,16 +188,14 @@ void fn_8020D06C(void) {
 }
 
 void fn_8020D0CC(int arg0) {
-    int s;
-    int u;
-    int value;
-    s = lbl_8055EE78;
-    s += arg0;
-    u = 3 + s;
-    value = u % 3;
-    lbl_8055EE78 = value;
-    if (value == 2 && ((int (*)(void))fn_8020CF68)() == 0)
-        lbl_8055EE78 = (lbl_8055EE78 + arg0 + 3) % 3;
+    int n = lbl_8055EE78;
+    int m = arg0 + n;
+    int k = m + 3;
+    int r = k % 3;
+    lbl_8055EE78 = r;
+    if (r == 2 && (((int (*)(void))fn_8020CF68)() == 0)) {
+        lbl_8055EE78 = (arg0 + lbl_8055EE78 + 3) % 3;
+    }
     fn_80230E90(1);
     lbl_8055EE9C = lbl_80563320;
     lbl_8055EE98 = lbl_80563320;
@@ -303,17 +307,16 @@ void fn_8020D29C(void) {
 extern "C" void fn_8020D2D4(void)
 {
     char buf130[0x30];
-    char buf110[32] = {0};
+    char buf110[32];
     char bufF0[32];
     char bufD0[32];
     char buf58[32];
     Item8020D2D4 spB0, sp94, sp78, sp38, sp1C;
-    Names8020D2D4 names;
     unsigned char sp8;
     float spC;
     float f21, f22, f23, f24, f25, f26, f27, f28, f29, f30, f31;
     unsigned int i;
-    Dummy_8020D2D4 *obj;
+    char *fmt = lbl_8033C690;
 
     if (lbl_8055EE80 != 0) ((void (*)(void))lbl_8055EE80)();
     fn_80230B5C(buf130);
@@ -322,8 +325,7 @@ extern "C" void fn_8020D2D4(void)
     f21 = lbl_8056332C * (float)fn_802E2C20();
     fn_800109E4(0x7F000000, lbl_80563330, lbl_80563334, lbl_80563338, lbl_8056333C);
     if (lbl_8055EEA0 != 0)
-        fn_801473F8(lbl_8055EEA0, lbl_8055B630, lbl_8055B638, fn_80131234(lbl_8033C690 + 0x68));
-    names = lbl_802F9E58;
+        fn_801473F8(lbl_8055EEA0, lbl_8055B630, lbl_8055B638, fn_80131234(fmt + 0x68));
     if (lbl_8055EEA0 != 0) {
         f24 = lbl_80563320;
         f25 = lbl_8056331C;
@@ -338,21 +340,20 @@ extern "C" void fn_8020D2D4(void)
         for (i = 0; i < 3; i++) {
             int isSel;
             char *name;
-            obj = (Dummy_8020D2D4 *)lbl_8055EEA0;
             {
                 int z;
-                for (z = 0; z < 32; z++) buf110[z] = 0;
+                for (z = 0; z < 8; z++) ((unsigned int*)buf110)[z] = 0;
             }
-            name = fn_80131234(names.s[i]);
+            name = fn_80131234(lbl_802F9E58.s[i]);
             switch (i) {
             case 0:
-                fn_801345D8(buf110, 0x20, lbl_8033C690 + 0x78, name, (int)(f23 + f22 * lbl_8055EE8C));
+                fn_801345D8(buf110, 0x20, fmt + 0x78, name, (int)(f23 + f22 * lbl_8055EE8C));
                 break;
             case 1:
-                fn_801345D8(buf110, 0x20, lbl_8033C690 + 0x78, name, (int)(f23 + f22 * lbl_8055EE90));
+                fn_801345D8(buf110, 0x20, fmt + 0x78, name, (int)(f23 + f22 * lbl_8055EE90));
                 break;
             case 4:
-                fn_801345D8(buf110, 0x20, lbl_8033C690 + 0x84, fn_8000C69C());
+                fn_801345D8(buf110, 0x20, fmt + 0x84, fn_8000C69C());
                 break;
             default: {
                 char *d = buf110;
@@ -366,11 +367,11 @@ extern "C" void fn_8020D2D4(void)
                 break;
             }
             }
-            fn_801345D8(bufF0, 0x20, lbl_8033C690 + 0x90, i);
+            fn_801345D8(bufF0, 0x20, fmt + 0x90, i);
             fn_801345D8(bufD0, 0x20, lbl_8055B63C, i);
             isSel = (i == lbl_8055EE78);
             {
-                Item8020D2D4 *it = obj->m3(bufD0);
+                Item8020D2D4 *it = ((Dummy_8020D2D4 *)lbl_8055EEA0)->m3(bufD0);
                 spB0.h = it->h;
                 spB0.e = it->e;
                 spB0.f = it->f;
@@ -380,7 +381,7 @@ extern "C" void fn_8020D2D4(void)
             spC = f24;
             if (isSel) fn_80230F78(&sp8, &spC, &spB0.color, 1);
             {
-                Item8020D2D4 *it = obj->m3(bufF0);
+                Item8020D2D4 *it = ((Dummy_8020D2D4 *)lbl_8055EEA0)->m3(bufF0);
                 if (it != 0) {
                     sp94.h = it->h;
                     sp94.e = it->e;
@@ -388,7 +389,7 @@ extern "C" void fn_8020D2D4(void)
                     sp94.color = it->color;
                     if (i == 2 && fn_8020CF68() == 0)
                         sp94.color = (sp94.color & 0x00FF0000) | ((sp94.color >> 1) & 0x7F000000) | (sp94.color & 0xFFFF);
-                    fn_80147940(lbl_8055EEA0, &sp94, lbl_8033C690 + 0xA0, ((-isSel | isSel) >> 31) + 2);
+                    fn_80147940(lbl_8055EEA0, &sp94, fmt + 0xA0, ((-isSel | isSel) >> 31) + 2);
                     if (isSel) {
                         sp78.h = it->h;
                         sp78.e = it->e;
@@ -398,7 +399,7 @@ extern "C" void fn_8020D2D4(void)
                         sp78.e = sp78.e * (f25 + spC);
                         sp78.f = sp78.f * (f25 + spC);
                         sp78.color = (it->color & 0x00FF0000) | (sp8 << 24) | (it->color & 0xFFFF);
-                        fn_80147940(lbl_8055EEA0, &sp78, lbl_8033C690 + 0xA0, 1, sp8);
+                        fn_80147940(lbl_8055EEA0, &sp78, fmt + 0xA0, 1, sp8);
                     }
                 }
             }
@@ -433,9 +434,9 @@ extern "C" void fn_8020D2D4(void)
                     if (!(f > f24)) f = f24;
                     c24 = ((int)(f28 + f * f27) << 24) | 0xFFFFFF;
                 }
-                fn_801345D8(buf58, 0x20, lbl_8033C690 + 0xAC, bufD0);
+                fn_801345D8(buf58, 0x20, fmt + 0xAC, bufD0);
                 {
-                    Item8020D2D4 *it = obj->m3(buf58);
+                    Item8020D2D4 *it = ((Dummy_8020D2D4 *)lbl_8055EEA0)->m3(buf58);
                     if (it != 0) {
                         float f;
                         sp38.h = it->h;
@@ -447,12 +448,12 @@ extern "C" void fn_8020D2D4(void)
                         if (!(f > f24)) f = f24;
                         sp38.color = c30;
                         sp38.h.b = sp38.h.b - (f24 + f * f31);
-                        fn_80147940(lbl_8055EEA0, &sp38, lbl_8033C690 + 0xBC, 1);
+                        fn_80147940(lbl_8055EEA0, &sp38, fmt + 0xBC, 1);
                     }
                 }
-                fn_801345D8(buf58, 0x20, lbl_8033C690 + 0xCC, bufD0);
+                fn_801345D8(buf58, 0x20, fmt + 0xCC, bufD0);
                 {
-                    Item8020D2D4 *it = obj->m3(buf58);
+                    Item8020D2D4 *it = ((Dummy_8020D2D4 *)lbl_8055EEA0)->m3(buf58);
                     if (it != 0) {
                         float f;
                         sp1C.h = it->h;
@@ -464,7 +465,7 @@ extern "C" void fn_8020D2D4(void)
                         if (!(f > f24)) f = f24;
                         sp1C.color = c24;
                         sp1C.h.b = sp1C.h.b + (f24 + f * f31);
-                        fn_80147940(lbl_8055EEA0, &sp1C, lbl_8033C690 + 0xE0, 1);
+                        fn_80147940(lbl_8055EEA0, &sp1C, fmt + 0xE0, 1);
                     }
                 }
             }
@@ -472,10 +473,10 @@ extern "C" void fn_8020D2D4(void)
                 spB0.color = (spB0.color & 0x00FF0000) | ((spB0.color >> 1) & 0x7F000000) | (spB0.color & 0xFFFF);
             fn_80147230(&spB0, lbl_8055B638, buf110);
         }
-        ((Dummy_8020D2D4 *)lbl_8055EEA0)->m1(lbl_8033C690 + 0xF0);
+        ((Dummy_8020D2D4 *)lbl_8055EEA0)->m1(fmt + 0xF0);
         fn_801476C4();
         if (lbl_8055EE78 == 2) {
-            ((Dummy_8020D2D4 *)lbl_8055EEA0)->m1(lbl_8033C690 + 0x100);
+            ((Dummy_8020D2D4 *)lbl_8055EEA0)->m1(fmt + 0x100);
             fn_801476C4();
         }
     }
@@ -505,9 +506,10 @@ void fn_8020DABC(void) {
 #pragma push
 #pragma processor 750
 int fn_8020DB0C(int arg0) {
-    register int var_r31 = 1;
+    int var_r31 = 1;
+    int param = arg0;
 
-    switch (arg0) {
+    switch (param) {
     case 0x126:
         fn_8020D0CC(-1);
         break;
@@ -567,14 +569,14 @@ int fn_8020DB0C(int arg0) {
     case 0x58:
     case 0xD:
         if (lbl_8055EE7C != 0 && lbl_8055EE78 == 2) {
-            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, arg0);
+            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, param);
             fn_8020D06C();
             break;
         }
         return 0;
     case 0x53:
         if (lbl_8055EE7C != 0) {
-            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, arg0);
+            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, param);
             fn_8020D06C();
         }
         break;
