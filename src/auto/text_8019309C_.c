@@ -383,8 +383,9 @@ void fn_80193604(void *arg0, void *arg1, void *unused, int arg2, void *arg3) {
     if (code == 0x6D) *(u8 *)(obj + 0x2FE) = 0;
 }
 #pragma pop
-void fn_8019386C(void *arg0) {
-    fn_80193CE0(arg0);
+/* Tail-call wrapper for fn_80193CE0. */
+void fn_8019386C(void *object) {
+    fn_80193CE0(object);
 }
 
 /* Single-argument entry point (callback shape) for fn_801945F8, the routine that
