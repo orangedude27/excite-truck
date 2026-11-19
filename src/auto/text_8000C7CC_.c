@@ -421,14 +421,25 @@ s32 fn_8000C7CC(void) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
-u32 fn_8000C7F4(s32 arg0) {
-    switch (fn_8000C7CC()) {
+u32 fn_8000C7F4(s32 slot) {
+    /* Whether the menu may offer the queried slot (the four slots are drawn and
+     * cycled through with this test, and fn_8000C840's own check).  With the
+     * usual boot option -- bit 0x400 clear, which fn_8000C7CC reports as 1 --
+     * every slot is offered.  With that option set, slot 2 is hidden: the
+     * (2-slot)|(slot-2) pair is zero only for slot 2, so its sign bit shifted
+     * down gives 0 there and 1 for every other slot. */
+#define BootOptionOffersAllSlots fn_8000C7CC /* 1 when boot option bit 0x400 is clear */
+#define HiddenSlot 2
+
+    switch (BootOptionOffersAllSlots()) {
         case 0:
             break;
         default:
             return 1;
     }
-    return (u32)((2 - arg0) | (arg0 - 2)) >> 31;
+    return (u32)((HiddenSlot - slot) | (slot - HiddenSlot)) >> 31;
+#undef BootOptionOffersAllSlots
+#undef HiddenSlot
 }
 #pragma scheduling on
 #pragma dont_inline off
