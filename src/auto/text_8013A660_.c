@@ -251,7 +251,7 @@ extern char lbl_8032C264[];
 float fn_8013AA68(void *, void *, void *, void *);
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_8013AC2C(int *arg0) {
+extern "C" void fn_8013AC2C(int *__restrict arg0) {
     struct Target {
         virtual void f0();
         virtual void f1();
@@ -263,7 +263,8 @@ extern "C" void fn_8013AC2C(int *arg0) {
         virtual void f7();
         virtual void f8(char *, float);
     };
-    void *tmp = fn_8001285C(*arg0);
+    int id = *arg0;
+    void *tmp = fn_8001285C(id);
     void *parent = fn_80012820(*(int *)((char *)tmp + 4));
     Target *object = *(Target **)((char *)parent + 0x80);
     object->f8(lbl_8032C264, lbl_80561440);
