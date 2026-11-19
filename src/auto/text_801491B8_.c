@@ -485,7 +485,7 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
     u8 buf[0x32];
     u8 *tbl = lbl_8032D358;
     s32 id, s30, s26, s25;
-    f32 f4, t;
+    f32 t, f4;
     int i;
     u8 *p;
     u8 *dst1, *dst2, *srcp;
@@ -1678,11 +1678,11 @@ extern "C" void fn_8014D840(void *__restrict arg0, void *arg1) {
     u8 *manager;
     s32 i;
     s32 best;
-    s32 *entry;
+    u8 *entry;
     s32 count;
     manager = *(u8 **)((u8 *)arg0 + 0x68);
     best = -1;
-    entry = (s32 *)(manager + 0x9E4);
+    entry = manager + 0x9E4;
     count = *(s32 *)(manager + 0xFE4);
     i = 0;
     while (count > 0) {
@@ -1691,18 +1691,18 @@ extern "C" void fn_8014D840(void *__restrict arg0, void *arg1) {
         } else {
             u8 *current = manager + best * 0xC0;
             s32 value = *(s32 *)(current + 0xA74);
-            s32 threshold = entry[0x90 / 4];
+            s32 threshold = *(s32 *)(entry + 0x90);
             if (value < threshold) {
                 best = i;
             } else if (value == threshold) {
                 s32 tieValue = *(s32 *)(current + 0xA54);
-                s32 tieThreshold = entry[0x70 / 4];
+                s32 tieThreshold = *(s32 *)(entry + 0x70);
                 if (tieValue > tieThreshold) {
                     best = i;
                 }
             }
         }
-        entry += 0xC0 / 4;
+        entry += 0xC0;
         i++;
         count--;
     }
@@ -1727,7 +1727,7 @@ extern "C" void fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
     Rec *b, *a;
     void *obj;
     char storage[0x64];
-    f32 t, time, rate, x;
+    f32 t, time, rate;
     Rec v;
     char *strs = (char *)lbl_8032D358;
     obj = *(void **)((u8 *)arg0 + 0x68);
@@ -1745,20 +1745,17 @@ extern "C" void fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
     if (a != 0 && b != 0) {
         time = (f32)fn_8002EFB4(rate, lbl_805616A0);
         if (time < lbl_8056163C) {
-            x = (time - lbl_80561648) / lbl_805616C8;
+            f32 x = (time - lbl_80561648) / lbl_805616C8;
             v = *a;
             x = (lbl_8056164C < x) ? lbl_8056164C : x;
             x = (lbl_80561648 > x) ? lbl_80561648 : x;
             v.w6 = ((s32 (*)(s32, s32, f32))fn_80147C50)(v.w6 & 0xFFFFFF, v.w6, lbl_80561648 + x * lbl_8056164C);
         } else {
             f32 *pa = (f32 *)a, *pb = (f32 *)b, *pv = (f32 *)&v;
+            f32 x = lbl_80561670 * time - lbl_8056164C;
             f32 y = lbl_8056164C - x;
             f32 w = x * x;
             f32 h = lbl_8056164C - y * y;
-            x = lbl_80561670 * time - lbl_8056164C;
-            y = lbl_8056164C - x;
-            w = x * x;
-            h = lbl_8056164C - y * y;
             v = *a;
             pv[1] = pa[1] + h * (pb[1] - pa[1]);
             pv[2] = pa[2] + w * (pb[2] - pa[2]);
@@ -1803,18 +1800,18 @@ extern "C" void fn_8014DC08(void *arg0) {
     extern void fn_801CB5DC(void *, int, int);
     extern char lbl_8032D704[];
     extern float lbl_8055E3C8;
-    float total;
-    Lists *list;
-    Node *node;
-    Node *next;
-    Node *pending;
-    float diff;
+    struct { Node *p; } pending_holder;
+    Node *&pending = pending_holder.p;
+    struct { Lists *p; } list_holder;
+    Lists *&list = list_holder.p;
+    Node *node, *next, *p;
+    float total, diff;
     int a, b;
     void *obj;
     ((Callback *)*(void **)((char *)arg0 + 0x10))->call();
     list = *(Lists **)((char *)arg0 + 8);
-    pending = list->pending;
     total = lbl_80561648;
+    pending = list->pending;
     if (pending) {
         int duration = pending->duration;
         pending->next = 0;
@@ -1830,8 +1827,10 @@ extern "C" void fn_8014DC08(void *arg0) {
     while (node) {
         if (!node->flag) {
             if (node->timed) total += (float)node->duration;
-            if (node->prev) node->prev->next = node->next; else list->active = node->next;
-            if (node->next) node->next->prev = node->prev; else list->activeLast = node->prev;
+            p = node->prev;
+            if (p) p->next = node->next; else list->active = node->next;
+            p = node->next;
+            if (p) p->prev = node->prev; else list->activeLast = node->prev;
             node->prev = 0;
             node->next = 0;
             node->prev = list->last;
@@ -2628,8 +2627,6 @@ s32 *fn_801500F8(void *vec, s32 *__restrict pValue) {
 extern "C" void *fn_8015011C(void *arg0, void *arg1) {
     class Entry {
     public:
-        virtual void d0();
-        virtual void d1();
         virtual s32 m8();
         virtual s32 has(void *);
         virtual s32 m14(void *);
@@ -3022,9 +3019,11 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
         virtual void m2();
     };
     u8 *entry;
+    u8 *head;
     u8 *owner;
     u8 *cur;
     u8 *next;
+    u8 *link;
     u8 *obj;
     f32 factor;
     f32 delta;
@@ -3040,36 +3039,34 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
         *(volatile f32 *)(entry + 0x3C) = delta;
         *(f32 *)(entry + 0x1C) = factor * *(f32 *)(entry + 0x1C);
         *(s32 *)(entry + 0xA4) = zeroInt;
-        owner = *(u8 **)(entry + 8);
-        cur = *(u8 **)(owner + 0x124C);
+        head = *(u8 **)(entry + 8);
+        cur = *(u8 **)(head + 0x124C);
         next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
-        {
-            u8 *link;
-            while (cur != 0) {
-                if (*(u8 *)(cur + 4) != 0) {
-                    link = *(u8 **)(cur + 0x120);
-                    if (link != 0)
-                        *(u8 **)(link + 0x11C) = *(u8 **)(cur + 0x11C);
-                    else
-                        *(u8 **)(owner + 0x124C) = *(u8 **)(cur + 0x11C);
-                    link = *(u8 **)(cur + 0x11C);
-                    if (link != 0)
-                        *(u8 **)(link + 0x120) = *(u8 **)(cur + 0x120);
-                    else
-                        *(u8 **)(owner + 0x1250) = *(u8 **)(cur + 0x120);
-                    *(u8 **)(cur + 0x120) = 0;
-                    *(u8 **)(cur + 0x11C) = 0;
-                    *(u8 **)(cur + 0x120) = *(u8 **)(owner + 0x1248);
-                    link = *(u8 **)(owner + 0x1248);
-                    if (link != 0)
-                        *(u8 **)(link + 0x11C) = cur;
-                    *(u8 **)(owner + 0x1248) = cur;
-                    if (*(u8 **)(owner + 0x1244) == 0)
-                        *(u8 **)(owner + 0x1244) = cur;
-                }
-                cur = next;
-                next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
+        owner = head;
+        while (cur != 0) {
+            if (*(u8 *)(cur + 4) != 0) {
+                link = *(u8 **)(cur + 0x120);
+                if (link != 0)
+                    *(u8 **)(link + 0x11C) = *(u8 **)(cur + 0x11C);
+                else
+                    *(u8 **)(owner + 0x124C) = *(u8 **)(cur + 0x11C);
+                link = *(u8 **)(cur + 0x11C);
+                if (link != 0)
+                    *(u8 **)(link + 0x120) = *(u8 **)(cur + 0x120);
+                else
+                    *(u8 **)(owner + 0x1250) = *(u8 **)(cur + 0x120);
+                *(u8 **)(cur + 0x120) = 0;
+                *(u8 **)(cur + 0x11C) = 0;
+                *(u8 **)(cur + 0x120) = *(u8 **)(owner + 0x1248);
+                link = *(u8 **)(owner + 0x1248);
+                if (link != 0)
+                    *(u8 **)(link + 0x11C) = cur;
+                *(u8 **)(owner + 0x1248) = cur;
+                if (*(u8 **)(owner + 0x1244) == 0)
+                    *(u8 **)(owner + 0x1244) = cur;
             }
+            cur = next;
+            next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
         }
         *(f32 *)(entry + 0x14) += delta;
         obj = *(u8 **)(entry + 0x10);
@@ -3240,6 +3237,7 @@ extern "C" void fn_80151B48(void *arg0) {
     register void *entry;
     void *p;
     void *obj;
+    s32 offset;
     s32 index;
     s32 i;
     f32 f;
@@ -3257,18 +3255,17 @@ extern "C" void fn_80151B48(void *arg0) {
         flag = (f32)__fabs((f64)(*(f32 *)(addr + 0x1C) - lbl_8056164C)) <= lbl_80558DC4[0];
     }
     i = 0;
-    index = 0;
+    offset = 0;
     while (i < *(s32 *)((s32)self + 0x18)) {
-        entry = *(void **)(*(s32 *)((s32)self + 0x14) + index);
+        entry = *(void **)(*(s32 *)((s32)self + 0x14) + offset);
         f = *(f32 *)((u8 *)entry + 0x34);
         if (fn_80141F7C(f) != 0 && flag != 0 && ((u8 *)entry)[0xCC] != 0) {
             f = ((f32 (*)(void))fn_80149650)();
             obj = fn_801538E4(entry);
             p = fn_801538E4(entry);
-            fn_801537CC(*(s32 *)((char *)p + 4), *(s32 *)obj, f);
-            fn_80151C98(entry, (s32)obj);
+            fn_80151C98(entry, fn_801537CC(*(s32 *)((char *)p + 4), *(s32 *)obj, f));
         }
-        index += 4;
+        offset += 4;
         i += 1;
     }
 done:
@@ -5149,9 +5146,25 @@ void fn_8014F108(void *owner) {
 }
 
 void fn_8014F194(void *arg0) {
+    int tbl[120];
+    int *q = tbl;
+    int k;
+    int flags;
     (void)arg0;
-    (void)fn_80179650();
+    flags = fn_80179650();
+    {
+        int r0 = flags ^ 1;
+        int r4 = r0 >> 1;
+        r0 = r0 & flags;
+        r0 = r4 - r0;
+        (void)(r0 >> 31);
+    }
     fn_802C9A58();
+    for (k = 0; k < 0x3C; k++) {
+        q[1] = 0;
+        q[2] = 0;
+        q += 2;
+    }
 }
 
 #pragma cplusplus on
