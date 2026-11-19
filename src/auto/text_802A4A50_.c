@@ -119,8 +119,8 @@ static inline void Mtx33MultVec_802A6470(const f32 *m, const f32 *src, f32 *dst)
         f32 s0 = x * m[0];
         f32 t1 = y * m[4];
         f32 s1 = x * m[3];
-        f32 t2 = y * m[7];
         f32 s2 = x * m[6];
+        f32 t2 = y * m[7];
         f32 z0 = z * m[2];
         f32 z1 = z * m[5];
         f32 z2 = z * m[8];
