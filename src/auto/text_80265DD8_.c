@@ -1,4 +1,5 @@
 extern char lbl_80499080[];
+const double lbl_80563C38_test = 4503599627370496.0 + 2147483648.0;
 typedef struct { int w[0x8A]; } Rec_80269BB0;
 typedef struct {
     int w0, w4; float f8, fc;
@@ -1981,10 +1982,53 @@ void fn_802693F4(char *p, unsigned char *flag, int arg) {
 }
 
 void fn_80269BB0(int idx, unsigned int sel, int *out, float *outf) {
+#pragma use_lmw_stmw off
+#pragma scheduling on
     Rec2_80269BB0 r;
     Rec2_80269BB0 *p = (Rec2_80269BB0 *)lbl_80499080 + idx;
-    r.w0 = p->w0; r.w4 = p->w4; r.f8 = p->f8; r.fc = p->fc;
-    r = *p;
+    COPYF(w0); COPYF(w4); COPYF(f8); COPYF(fc);
+    COPYF(w10); COPYF(w14); COPYF(w18); COPYF(w1c);
+    COPYF(w20); COPYF(w24); COPYF(w28); COPYF(w2c);
+    COPYF(w30); COPYF(w34); COPYF(w38); COPYF(w3c);
+    COPYF(w40); COPYF(w44); COPYF(w48); COPYF(w4c);
+    COPYF(w50); COPYF(w54); COPYF(w58); COPYF(w5c);
+    COPYF(w60); COPYF(w64); COPYF(w68); COPYF(w6c);
+    COPYF(w70); COPYF(w74); COPYF(w78);
+    COPYF(w7c); COPYF(w80); COPYF(w84); COPYF(w88);
+    COPYF(w8c); COPYF(w90); COPYF(w94); COPYF(w98);
+    COPYF(w9c); COPYF(wa0); COPYF(wa4); COPYF(wa8);
+    COPYF(wac); COPYF(wb0); COPYF(wb4); COPYF(wb8);
+    COPYF(fbc);
+    COPYF(wc0); COPYF(wc4); COPYF(wc8); COPYF(wcc);
+    COPYF(wd0); COPYF(wd4); COPYF(wd8); COPYF(wdc);
+    COPYF(we0); COPYF(we4); COPYF(we8); COPYF(wec);
+    COPYF(wf0); COPYF(wf4); COPYF(wf8); COPYF(wfc);
+    COPYF(w100); COPYF(w104); COPYF(w108); COPYF(w10c);
+    COPYF(w110); COPYF(w114); COPYF(w118); COPYF(w11c);
+    COPYF(w120); COPYF(w124); COPYF(w128); COPYF(w12c);
+    COPYF(w130); COPYF(w134);
+    COPYF(b138); COPYF(b139);
+    COPYF(f13c);
+    COPYF(w140); COPYF(w144); COPYF(w148); COPYF(w14c);
+    COPYF(w150);
+    COPYF(f154); COPYF(f158); COPYF(f15c);
+    COPYF(w160); COPYF(w164); COPYF(w168);
+    COPYF(f16c); COPYF(f170); COPYF(f174);
+    COPYF(w178); COPYF(w17c);
+    COPYF(f180); COPYF(f184); COPYF(pad188);
+    COPYF(f18c); COPYF(f190); COPYF(f194);
+    COPYF(f198); COPYF(f19c); COPYF(f1a0);
+    COPYF(w1a4); COPYF(w1a8); COPYF(w1ac); COPYF(w1b0);
+    COPYF(w1b4); COPYF(w1b8); COPYF(w1bc); COPYF(w1c0);
+    COPYF(w1c4); COPYF(w1c8); COPYF(w1cc); COPYF(w1d0);
+    COPYF(f1d4);
+    COPYF(w1d8); COPYF(w1dc); COPYF(w1e0); COPYF(w1e4);
+    COPYF(w1e8);
+    COPYF(h1ec);
+    COPYF(f1f0); COPYF(f1f4);
+    COPYF(w1f8); COPYF(w1fc); COPYF(w200); COPYF(w204);
+    COPYF(w208); COPYF(w20c); COPYF(w210); COPYF(w214);
+    COPYF(w218); COPYF(w21c); COPYF(w220); COPYF(w224);
     r.w4 = 0x15;
     r.w10 = sel;
     r.b138 = 1;
