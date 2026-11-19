@@ -3454,34 +3454,48 @@ struct EmbeddedTrackEffectAse {
 #pragma opt_propagation off
 #pragma cplusplus on
 extern "C" int fn_801D8424(void *arg0, void *arg1) {
+    /* RealName: EmbeddedTrackEffectAse::Read.  The "EmbeddedTrackEffect_ASE"
+       cue's read method (vtable +0xC): take its "length" and "delay" in seconds
+       out of the action-sequence value table and keep them as tick counts at
+       59.94 ticks per second, then ask that table for the effect its "effect"
+       key names (with the length in ticks) and look the name up in the sound
+       system's emitter name table -- an unknown name (-1) refuses the cue.
+       The cue is left ready (state 1): fn_801D8518 starts it and fn_801D8544
+       fires that emitter id every frame from the delay until the length ends. */
+    /* The action-sequence value table (actseq.val) an element reads itself
+     * from; the two leading vtable entries are the destructor pair, so the
+     * first method declared here sits at +0x8. */
     struct ValueTable {
-        virtual void v0();                     /* 0x08 */
-        virtual void v1();                     /* 0x0C */
-        virtual void v2();                     /* 0x10 */
-        virtual char *getEntry(char *, int);   /* 0x14 */
+        virtual void v0();                        /* 0x08 */
+        virtual void v1();                        /* 0x0C */
+        virtual void v2();                        /* 0x10 */
+        virtual char *getEffectName(char *, int); /* 0x14: the name the key holds,
+                                                   * asked with the length in ticks */
         virtual void v4();   virtual void v5();
         virtual void v6();   virtual void v7();
-        virtual float getFloat(float, char *); /* 0x28: default in f1, key in r4 */
+        virtual float getFloat(float, char *);    /* 0x28: default in f1, key in r4 */
     };
-    extern char lbl_8055ACB0;
-    extern char lbl_8055ACB8;
-    extern char lbl_8055AD48;
-    extern int fn_8029F3BC(char *);
+    extern char lbl_8055ACB0; /* "length" */
+    extern char lbl_8055ACB8; /* "delay" */
+    extern char lbl_8055AD48; /* "effect" */
+    extern int fn_8029F3BC(char *); /* an emitter name's id, -1 when the table has none */
+#define TICKS_PER_SECOND 59.94f /* the value files' seconds-to-ticks scale */
     EmbeddedTrackEffectAse *effect = (EmbeddedTrackEffectAse *)arg0;
     ValueTable *table = (ValueTable *)arg1;
     float lengthSeconds = table->getFloat(0.0f, &lbl_8055ACB0);
     float delaySeconds = table->getFloat(0.0f, &lbl_8055ACB8);
-    float lengthTicks = 59.94f * lengthSeconds;
-    float delayTicks = 59.94f * delaySeconds;
+    float lengthTicks = TICKS_PER_SECOND * lengthSeconds;
+    float delayTicks = TICKS_PER_SECOND * delaySeconds;
     int lengthFrames = (int)lengthTicks;
     int delayFrames = (int)delayTicks;
     effect->length = lengthFrames;
     effect->delay = delayFrames;
-    int effectId = fn_8029F3BC(table->getEntry(&lbl_8055AD48, lengthFrames));
+    int effectId = fn_8029F3BC(table->getEffectName(&lbl_8055AD48, lengthFrames));
     effect->effectId = effectId;
     if (effectId < 0) return 0;
     effect->state = TIMED_EFFECT_READY;
     return 1;
+#undef TICKS_PER_SECOND
 }
 #pragma pop
 
