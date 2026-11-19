@@ -17091,7 +17091,7 @@ outputIndex += 2;
 }
 
 if (spC == 0) {
-    fn_800C08A8(arg0, *(s16*)((u8*)arg0 + 0x288), (s32)arg1, (s16*)arg2, outputIndex, arg8, arg10);
+fn_800C08A8(arg0, *(s16*)((u8*)arg0 + 0x288), (s32)arg1, (s16*)arg2, outputIndex, arg8, arg10);
 } else {
 fn_800C0B68((struct Fn800C0B68Context*)arg0, *(s16*)((u8*)arg0 + 0x288), (s32)arg1, (s16*)arg2, outputIndex, arg8, arg10);
 }
@@ -22378,26 +22378,20 @@ extern "C" f32 fn_800D4220(const void *arg0, u32 arg1, f32 farg0) {
         }
         return *(f32 *)(right + 4);
     }
-    f32 d = farg0 - *(f32 *)left;
-    f32 one = lbl_80560E50;
-    f32 dx = *(f32 *)right;
-    dx -= *(f32 *)left;
-    f32 k54 = lbl_80560E54;
-    f32 k58 = lbl_80560E58;
-    f32 scale = one / dx;
-    f32 k5c = lbl_80560E5C;
-    f32 ly = *(f32 *)(left + 4);
-    f32 ry = *(f32 *)(right + 4);
-    f32 lz = *(f32 *)(left + 8);
-    f32 rz = *(f32 *)(right + 8);
-    f32 a = scale * (d * d);
-    f32 b = a * scale;
-    f32 c = d * b;
-    f32 q = c * scale;
-    return rz * (c - a) +
-        (lz * (d + (c - k54 * a)) +
-        (ly * (one + (k54 * q - k58 * b)) +
-        ry * (k5c * q + k58 * b)));
+    f32 t1 = farg0 - *(f32 *)left;
+    f32 t2 = lbl_80560E50 / (*(f32 *)right - *(f32 *)left);
+    f32 v0 = *(f32 *)(left + 4);
+    f32 v1 = *(f32 *)(right + 4);
+    f32 s0 = *(f32 *)(left + 8);
+    f32 s1 = *(f32 *)(right + 8);
+    f32 a = t1 * t1 * t2;
+    f32 b = a * t2;
+    f32 c = t1 * b;
+    f32 q = c * t2;
+    return v0 * (lbl_80560E54 * q - lbl_80560E58 * b + lbl_80560E50)
+         + v1 * (lbl_80560E5C * q + lbl_80560E58 * b)
+         + s0 * (c - lbl_80560E54 * a + t1)
+         + s1 * (c - a);
 }
 
 /* CodeWarrior deleting-destructor helper: free the object with MemFree when
@@ -26529,9 +26523,12 @@ extern "C" s32 VFiPFSTR_StrCmp(void *arg0, s32 arg1) {
     register s32 code = arg1;
     u16 current;
 
-    if (*(u32 *)((u8 *)arg0 + 0xC) == 1)
+    switch (*(u32 *)((u8 *)arg0 + 0xC)) {
+    case 1:
         return fn_800A4AD0(*(u8 **)arg0, (u8 *)arg1);
-
+    default:
+        break;
+    }
     table = (u8 *)lbl_803D2140;
     cursor = *(u16 **)arg0;
 loop:
