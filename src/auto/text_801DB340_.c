@@ -564,6 +564,7 @@ void fn_801DCE0C(void) {
     ((void (*)(void))fn_801DCD28)();
 }
 
+/* No-op stub. */
 void fn_801DCE10(void) {
 
 }
