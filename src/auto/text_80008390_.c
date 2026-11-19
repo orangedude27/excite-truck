@@ -157,6 +157,12 @@ static inline void IdList_Add(s32 *src) {
     lbl_8034F3D0.count = n + 1;
     data[n] = value;
 }
+static inline void push4(s32 *p) {
+    IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3);
+}
+static inline void push5(s32 *p) {
+    IdList_Add(p); IdList_Add(p + 1); IdList_Add(p + 2); IdList_Add(p + 3); IdList_Add(p + 4);
+}
 #define ID_PUSH(v) { s32 n_ = ID_LIST->count; ID_LIST->count = n_ + 1; ID_LIST->data[n_] = (v); }
 #pragma scheduling invalid_target
 void fn_80008390(void) {
@@ -508,10 +514,10 @@ void fn_80008F98(void) {
     float spC;
     float sp8;
     char *p27;
-    int var_r24;
     int var_r26;
-    int var_r31;
     unsigned int var_r25;
+    int var_r24;
+    int var_r31;
     float var_f31;
     float var_f30;
     float var_f29;
@@ -577,8 +583,9 @@ void fn_80008F98(void) {
             if (fn_80278358() == 0) {
                 fn_80010188((int)0xFF8040FF, 10, p27 + 0x1C0, lbl_805601B8, var_f25, var_f24, spC);
             }
+            var_f24 += var_f31;
             if (fn_80278358() == 0) {
-                fn_80010188((int)0xFF4080FF, 10, p27 + 0x1CC, lbl_805601B8, var_f25, var_f24 + var_f31, sp8);
+                fn_80010188((int)0xFF4080FF, 10, p27 + 0x1CC, lbl_805601B8, var_f25, var_f24, sp8);
             }
         }
         fn_802C855C();
@@ -590,9 +597,10 @@ void fn_80008F98(void) {
             __AXDSPInitCallback_801769E0();
         }
         if (fn_802E47B8() != 0) {
-            unsigned short code = (unsigned short)fn_802E46F0();
-            switch (code) {
+            int code = fn_802E46F0();
+            switch ((unsigned short)code) {
             case 0x1B: var_r26 = 1; break;
+            case 0x2C: case 0x2E: case 0x33: break;
             case 0x31: fn_8027889C(var_f1); fn_802E30C8((void *)(p27 + 0x1D8)); break;
             case 0x32: fn_802788E0(var_f1); fn_802E30C8((void *)(p27 + 0x1EC)); break;
             case 0x2B: fn_802E30C8((void *)(p27 + 0x200)); fn_802787E4(); break;
@@ -600,7 +608,7 @@ void fn_80008F98(void) {
                 fn_80278318();
                 __AXDSPInitCallback_801769E0();
                 fn_80176734();
-                if (code == 0x30) {
+                if ((code & 0xFFFF) == 0x30) {
                     int v = lbl_8055D398;
                     lbl_8055D398 = v + 1;
                     sprintf(buf, lbl_805589FC, v);
