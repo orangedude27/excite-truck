@@ -468,7 +468,7 @@ int fn_801E0ED4(int minValue, int value) {
     return value > minValue ? value : minValue;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 float fn_801E0EE4(void *arg0, void *arg1) {
     Vec2_801E *a = (Vec2_801E *)arg0;
     Vec2_801E *b = (Vec2_801E *)arg1;
