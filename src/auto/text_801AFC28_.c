@@ -176,12 +176,13 @@ void fn_801AFDCC(void *arg0, void *arg1) {
     }
 }
 
+#pragma opt_common_subs off
 void fn_801AFF64(void *arg0, int arg1) {
     struct WordPair { unsigned int a, b; };
     unsigned char *src = (unsigned char *)arg0;
     unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
-    float c = 1.0f;
     float t = lbl_8055E460;
+    float c = 1.0f;
     float delta = t - c;
     if ((float)fabs(delta) <= lbl_80558DC4[0]) {
         struct WordPair *s = (struct WordPair *)(src + 0x70);
