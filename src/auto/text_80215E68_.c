@@ -2,19 +2,15 @@ extern void fn_8021889C(void);
 
 #include <types.h>
 static inline void fn_80216244_rotate(const f32 *m, f32 *out, const f32 *v) {
-    f32 vx = (f32)v[0];
-    f32 vy = v[1];
-    f32 vz = v[2];
-    f32 x, y, z;
     if (out == v) {
-        x = vz*m[6] + (vx*m[0] + vy*m[3]);
-        y = vz*m[7] + (vx*m[1] + vy*m[4]);
-        z = vz*m[8] + (vx*m[2] + vy*m[5]);
+        f32 x = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
+        f32 y = v[2]*m[7] + (v[0]*m[1] + v[1]*m[4]);
+        f32 z = v[2]*m[8] + (v[0]*m[2] + v[1]*m[5]);
         out[0] = x; out[1] = y; out[2] = z;
     } else {
-        out[0] = vz*m[6] + (vx*m[0] + vy*m[3]);
-        out[1] = vz*m[7] + (vx*m[1] + vy*m[4]);
-        out[2] = vz*m[8] + (vx*m[2] + vy*m[5]);
+        out[0] = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
+        out[1] = v[2]*m[7] + (v[0]*m[1] + v[1]*m[4]);
+        out[2] = v[2]*m[8] + (v[0]*m[2] + v[1]*m[5]);
     }
 }
 
