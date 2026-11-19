@@ -4622,12 +4622,12 @@ s32 fn_801552D8(s32 object, s32 deleteFlag) {
 extern s32 lbl_8032E1A0[];
 extern f32 lbl_8056171C;
 void fn_80155318(void *arg0) {
-    f32 f0 = lbl_80561648;
+    f32 f0 = 0.0f;
+    f32 f1 = 1000.0f;
     s32 zero = 0;
-    s32 *vtable = lbl_8032E1A0;
-    f32 f1 = lbl_8056171C;
+    long *vtable = lbl_8032E1A0;
     s32 neg1 = -1;
-    *(s32 **)arg0 = vtable;
+    *(s32 **)arg0 = (s32 *)vtable;
     *(s32 *)((u8 *)arg0 + 0x120) = zero;
     *(s32 *)((u8 *)arg0 + 0x11C) = zero;
     *((u8 *)arg0 + 4) = (u8)zero;
