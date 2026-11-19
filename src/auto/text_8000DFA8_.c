@@ -351,7 +351,6 @@ extern f32 lbl_805602CC, lbl_805602D0, lbl_805602D4;
 #pragma push
 #pragma processor 750
 #pragma opt_common_subs off
-#pragma scheduling invalid_target
 void fn_8000F4F0(void) {
     char *strBase;
     char text[32];
