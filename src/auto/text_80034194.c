@@ -1042,11 +1042,9 @@ s32 DVDClose(void) {
     return 1;
 }
 
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
-#pragma dont_inline on
+#pragma scheduling reset
 u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
+    u32 pos;
     u8 *parentTable;
     u8 *strings;
     u8 *fst;
@@ -1054,14 +1052,13 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     u32 parentIndex;
     u32 nextParent;
     u32 n;
-    u32 pos;
     u32 start;
+    char *dst;
     u32 left;
     u32 initialLeft;
     char *parentName;
     char *name;
     char *grandparentName;
-    char *dst;
     char *src;
 
     if (entry == 0) return 0;
@@ -1135,8 +1132,6 @@ append_name:
     }
     return pos;
 }
-#pragma scheduling on
-#pragma pop
 extern void OSPanic(const char *, s32, const char *);
 extern s32 DVDReadAbsAsyncPrio(void *, void *, s32, s32, void *, s32);
 extern void cbForCancelSync(void);
@@ -1203,10 +1198,11 @@ void fn_800357A8(void) {
      * and DVDInit, it has no work to do and simply returns. */
 }
 
+/* Initialize the DVD driver and file system once on first use. */
 void DVDInit(void) {
-    s32 bootMagic;
+    s32 gameCode;
     s32 one = 1;
-    u8 *disk;
+    u8 *bootInfoBytes;
     if (DVDInitialized_8055D888 == 0) {
         OSRegisterVersion(__DVDVersion);
         DVDInitialized_8055D888 = one;
@@ -1219,15 +1215,15 @@ void DVDInit(void) {
         OSInitThreadQueue(__DVDThreadQueue);
         DVDLowUnmaskStatusInterrupts();
         DVDLowMaskCoverInterrupt();
-        bootMagic = *(s32 *)((u8 *)bootInfo_8055D8C0 + 0x20);
-        if (((u32)(bootMagic + 0x1AE00000) != 0x7C22) && ((u32)(bootMagic - 0x0D150000) != 0xEA5E)) {
+        gameCode = *(s32 *)((u8 *)bootInfo_8055D8C0 + 0x20);
+        if (((u32)(gameCode + 0x1AE00000) != 0x7C22) && ((u32)(gameCode - 0x0D150000) != 0xEA5E)) {
             FirstTimeInBootrom_8055D868 = one;
         }
         memset(__ErrorInfo, 0, 0x80);
-        disk = (u8 *)0x80000000;
-        memcpy(__ErrorInfo, disk, 4);
-        __ErrorInfo[4] = disk[6];
-        __ErrorInfo[5] = disk[7];
+        bootInfoBytes = (u8 *)0x80000000;
+        memcpy(__ErrorInfo, bootInfoBytes, 4);
+        __ErrorInfo[4] = bootInfoBytes[6];
+        __ErrorInfo[5] = bootInfoBytes[7];
         __DVDLayoutFormat = 0;
         ((BOOL (*)(BOOL))DVDSetAutoFatalMessaging)(1);
     }
@@ -2795,6 +2791,7 @@ void fn_80038870(u32 arg0) {
     char *block;
     void *cbp;
     s32 flag;
+    s32 cmd_valid;
     s32 interrupts;
     u32 tlow;
     u64 now, start;
@@ -2822,12 +2819,12 @@ void fn_80038870(u32 arg0) {
             fn_8003A1A0(0x01234567, &fn_80035C64);
             return;
         }
-        lbl_8055D860 = 0;
+        *(volatile u32 *)&lbl_8055D860 = 0;
         if (CMD == 0xF) lbl_8055D8AC = 1;
         if (lbl_8055D858 != 0) {
             block = (char *)executing_8055D8C8;
-            lbl_8055D85C = 7;
-            lbl_8055D858 = 0;
+            *(volatile u32 *)&lbl_8055D85C = 7;
+            *(volatile u32 *)&lbl_8055D858 = 0;
             executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
             *(s32 *)(block + 0xC) = 0xA;
             cbp = *(void **)(block + 0x28);
@@ -2850,7 +2847,10 @@ void fn_80038870(u32 arg0) {
             }
         }
     } else {
-        if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE || CMDN == lbl_80558E14) {
+        cmd_valid = 0;
+        if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE) cmd_valid = 1;
+        else if (CMDN == lbl_80558E14) cmd_valid = 1;
+        if (cmd_valid) {
             s32 add = (arg0 & 9) ? *(s32 *)((char *)executing_8055D8C8 + 0x1C) : 0;
             *(s32 *)((char *)executing_8055D8C8 + 0x20) += add;
         }
@@ -2867,7 +2867,7 @@ void fn_80038870(u32 arg0) {
             return;
         }
         if (arg0 & 1) {
-            lbl_8055D860 = 0;
+            *(volatile u32 *)&lbl_8055D860 = 0;
             if (CMD == 0x10) {
                 block = (char *)executing_8055D8C8;
                 MotorState_8055D8A8 = (*(s32 *)(block + 0x10) != 0) + 1;
@@ -2882,7 +2882,7 @@ void fn_80038870(u32 arg0) {
                 block = (char *)executing_8055D8C8;
                 now = __OSGetSystemTime();
                 lbl_8055D8A4 = (u32)now;
-                lbl_8055D8A0 = (s32)now;
+                lbl_8055D8A0 = (u32)(now >> 32);
                 lbl_8055D8AC = 0;
                 lbl_8055D85C = 0;
                 executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
@@ -2908,8 +2908,8 @@ void fn_80038870(u32 arg0) {
                 if (CMD == 0x26) {
                     result = fn_8003BB48();
                     now = __OSGetSystemTime();
-                    start = ((u64)(u32)lbl_8055D8A4 << 32) | (u32)lbl_8055D8A0;
-                    tlow = (*(u32 *)0x800000F8 / 4) * 100;
+                    start = ((u64)(u32)lbl_8055D8A0 << 32) | (u32)lbl_8055D8A4;
+                    tlow = ((*(u32 *)0x800000F8 >> 2) / 1000) * 100;
                     diff = (s64)(now - start) - tlow;
                     if (diff >= 0) flag = 0; else flag = -(s32)(result & 1) + 2;
                     block = (char *)executing_8055D8C8;
