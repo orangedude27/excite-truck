@@ -11237,7 +11237,7 @@ static inline s32 CacheKeyFind(s32 key) {
     return 0;
 }
 #pragma dont_inline reset
-#pragma unroll off
+#pragma unroll 1
 extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
     s32 key;
     s32 i, j, found;
