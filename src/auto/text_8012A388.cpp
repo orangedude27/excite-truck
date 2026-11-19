@@ -3575,29 +3575,33 @@ extern "C" s32 fn_8012CAA0(s32 requestedSize, void *source) {
 
 extern "C" const char lbl_8032AE20[];
 #pragma scheduling invalid_target
-extern "C" void *fn_8012CB44(void *arg0, s32 arg1) {
-    s32 i, offset;
+extern "C" void *fn_8012CB44(void *resourceSet, s32 shouldFree) {
+    s32 entryIndex, entryOffset;
     u32 flags;
     void *base, *entry;
-    if (arg0 != 0) {
-        if (*(u8 *)((char *)arg0 + 0xAC) != 0) {
-            for (i = 0, offset = 0; i < *(s32 *)((char *)arg0 + 0x88); i++, offset += 0x44) {
-                base = *(void **)((char *)arg0 + 0x60);
-                entry = (char *)base + offset;
+    /* Tear down a resource-set object: warn about entries still marked
+     * allocated (flag 4), clear each entry's low flag nibble, release the
+     * loaded header/data buffers at +0x64 and +0xA0, mark it unloaded, and
+     * optionally free the object. */
+    if (resourceSet != 0) {
+        if (*(u8 *)((char *)resourceSet + 0xAC) != 0) {
+            for (entryIndex = 0, entryOffset = 0; entryIndex < *(s32 *)((char *)resourceSet + 0x88); entryIndex++, entryOffset += 0x44) {
+                base = *(void **)((char *)resourceSet + 0x60);
+                entry = (char *)base + entryOffset;
                 flags = *(u32 *)((char *)entry + 0x34);
                 if ((flags & 4) != 0) fn_802E317C(lbl_8032AE20, entry);
-                base = *(void **)((char *)arg0 + 0x60);
-                entry = (char *)base + offset;
+                base = *(void **)((char *)resourceSet + 0x60);
+                entry = (char *)base + entryOffset;
                 flags = *(u32 *)((char *)entry + 0x34);
                 *(u32 *)((char *)entry + 0x34) = flags & 0xFFFFFFF0;
             }
-            base = *(void **)((char *)arg0 + 0x64);
+            base = *(void **)((char *)resourceSet + 0x64);
             if (base != 0) fn_8012C4D8(base);
-            base = *(void **)((char *)arg0 + 0xA0);
+            base = *(void **)((char *)resourceSet + 0xA0);
             if (base != 0) fn_80128660((s32)base);
-            *(u8 *)((char *)arg0 + 0xAC) = 0;
+            *(u8 *)((char *)resourceSet + 0xAC) = 0;
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldFree > 0) fn_80128668(resourceSet);
     }
-    return arg0;
+    return resourceSet;
 }
