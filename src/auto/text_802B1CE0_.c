@@ -572,6 +572,7 @@ void fn_802B257C(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 4) == 0)
         fn_802B28BC((int *)((char *)arg0 + 0x208), 0x80);
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
