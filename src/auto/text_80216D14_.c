@@ -778,64 +778,68 @@ void fn_80217C4C(void *arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80217D84(void *arg0) {
-    char *base = (char *)arg0;
+/* Scans menu entries backward to locate the currently selected eligible entry and
+ * count eligible enabled ones, then searches backward for another eligible enabled
+ * entry; if found before the current selection or if more than three are eligible,
+ * updates the selected key to that entry. */
+void fn_80217D84(void *menuGroup) {
+    char *base = (char *)menuGroup;
     char *entry;
     int eligible;
-    char *item;
+    char *widget;
     int count = *(int *)(base + 0x494);
     float threshold;
-    int last;
-    int matches;
+    int selectedIndex;
+    int eligibleCount;
     int i;
-    float value;
+    float timerValue;
     if (1 > count) return;
     threshold = lbl_80563490;
     entry = base + count * 8;
-    last = -1;
-    matches = 0;
+    selectedIndex = -1;
+    eligibleCount = 0;
     i = count;
     goto first_test;
 first_body:
-    if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
-    item = *(char **)(entry + 0x4A4);
+    if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) selectedIndex = i;
+    widget = *(char **)(entry + 0x4A4);
     eligible = 0;
-    if (*(unsigned char *)(item + 0x1A) != 0) goto first_yes;
-    value = *(float *)(item + 0x20);
-    if (value >= threshold) goto first_yes;
+    if (*(unsigned char *)(widget + 0x1A) != 0) goto first_yes;
+    timerValue = *(float *)(widget + 0x20);
+    if (timerValue >= threshold) goto first_yes;
     goto first_check;
 first_yes:
     eligible = 1;
 first_check:
-    if (eligible != 0 && *(unsigned char *)(item + 0x1B) != 0) matches += 1;
+    if (eligible != 0 && *(unsigned char *)(widget + 0x1B) != 0) eligibleCount += 1;
 first_test:
     entry -= 8;
     if (i-- > 0) goto first_body;
     {
-        int found = -1;
+        int foundIndex = -1;
         int step;
         threshold = lbl_80563490;
         for (step = 1; step < count; step++) {
-            int idx = (last + count - step) % count;
-            char *current = base + idx * 8;
-            char *item2;
-            float v2;
-            item2 = *(char **)(current + 0x4A4);
+            int candidateIndex = (selectedIndex + count - step) % count;
+            char *candidateEntry = base + candidateIndex * 8;
+            char *candidateWidget;
+            float candidateTimer;
+            candidateWidget = *(char **)(candidateEntry + 0x4A4);
             eligible = 0;
-            if (*(unsigned char *)(item2 + 0x1A) != 0) goto second_yes;
-            v2 = *(float *)(item2 + 0x20);
-            if (v2 >= threshold) goto second_yes;
+            if (*(unsigned char *)(candidateWidget + 0x1A) != 0) goto second_yes;
+            candidateTimer = *(float *)(candidateWidget + 0x20);
+            if (candidateTimer >= threshold) goto second_yes;
             goto second_check;
 second_yes:
             eligible = 1;
 second_check:
-            if (eligible != 0 && *(unsigned char *)(item2 + 0x1B) != 0) {
-                found = idx;
+            if (eligible != 0 && *(unsigned char *)(candidateWidget + 0x1B) != 0) {
+                foundIndex = candidateIndex;
                 break;
             }
         }
-        if (found >= 0 && (found < last || matches > 3)) {
-            *(int *)(base + 0x498) = *(int *)(base + found * 8 + 0x4A0);
+        if (foundIndex >= 0 && (foundIndex < selectedIndex || eligibleCount > 3)) {
+            *(int *)(base + 0x498) = *(int *)(base + foundIndex * 8 + 0x4A0);
         }
     }
 }
