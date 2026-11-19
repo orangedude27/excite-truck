@@ -47,18 +47,17 @@ static inline void matVecAlias_8018(Vec_8018 *dest, const float *m, const Vec_80
         dest->z = m[2] * src->x + m[5] * src->y + m[8] * src->z;
     }
 }
-static inline void matVecAliasF_8018(float *dest, const float *m, const float *v) {
-    if (dest == v) {
-        float tx = v[2] * m[6] + (v[0] * m[0] + v[1] * m[3]);
-        float ty = v[2] * m[7] + (v[0] * m[1] + v[1] * m[4]);
-        float tz = v[2] * m[8] + (v[0] * m[2] + v[1] * m[5]);
-        dest[0] = tx;
-        dest[1] = ty;
-        dest[2] = tz;
+static inline void matVecAliasF_8018(const float *m, const Vec_8018 *src, Vec_8018 *dest) {
+    if (src == dest) {
+        Vec_8018 t;
+        t.x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        t.y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
+        t.z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
+        *dest = t;
     } else {
-        dest[0] = v[2] * m[6] + (v[0] * m[0] + v[1] * m[3]);
-        dest[1] = v[2] * m[7] + (v[0] * m[1] + v[1] * m[4]);
-        dest[2] = v[2] * m[8] + (v[0] * m[2] + v[1] * m[5]);
+        dest->x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        dest->y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
+        dest->z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
     }
 }
 
