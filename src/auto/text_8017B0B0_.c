@@ -742,6 +742,7 @@ void fn_8017B81C(void *arg0) {
 }
 #pragma pop
 #pragma ppc_psq_save reset
+/* Empty stub. */
 void fn_8017C7BC(void) {
 
 }
