@@ -470,7 +470,16 @@ void fn_8020C918(s32 muteRequested) {
 
 }
 
-void fn_8020C91C(void) {
+/* Pre-race music module entry point, empty in this build.  The kiosk/demo
+ * selection fn_80247210 calls it with the "song_id" resource index of the
+ * demo it picked (found through the demo node's find(), see lbl_8055BE98),
+ * just before stopping the global music with fn_8020A634 and entering that
+ * demo, and again with the -1 "no song" sentinel once the demo is running.
+ * The retail module ignores both calls, like fn_8020C8F4, fn_8020C8F8,
+ * fn_8020C8FC and fn_8020C918; its live entry points are fn_8020C900
+ * (audio-active flag), fn_8020C908 (master volume) and fn_8020C910 (fade
+ * target). */
+void fn_8020C91C(s32 songId) {
 
 }
 
