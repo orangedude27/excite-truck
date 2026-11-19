@@ -1051,15 +1051,12 @@ void fn_801E89F4(void *phase) {
 void fn_801E89FC(void) {
     extern float fn_80129DC4(long, float, float);
     extern float lbl_804881D8[];
-    extern float lbl_80562DBC, lbl_80562DC0, lbl_80562DD4, lbl_80562DD8;
-    extern float lbl_80562DDC, lbl_80562DE0;
     extern void PSVECNormalize(float *, float *);
-    long zero = 0;
-    lbl_804881D8[0] = fn_80129DC4(zero, lbl_80562DC0, lbl_80562DD4);
-    lbl_804881D8[1] = fn_80129DC4(0, lbl_80562DD8, lbl_80562DDC);
-    lbl_804881D8[2] = fn_80129DC4(0, lbl_80562DC0, lbl_80562DD4);
+    lbl_804881D8[0] = fn_80129DC4(0, -1.0f, 1.0f);
+    lbl_804881D8[1] = fn_80129DC4(0, -0.33f, 0.33f);
+    lbl_804881D8[2] = fn_80129DC4(0, -1.0f, 1.0f);
     PSVECNormalize(lbl_804881D8, lbl_804881D8);
-    lbl_804881D8[3] = fn_80129DC4(0, lbl_80562DBC, lbl_80562DE0);
+    lbl_804881D8[3] = fn_80129DC4(0, 0.0f, 3.0f);
 }
 #pragma opt_propagation reset
 /* Advances the global wind one step of its random walk.  gWind holds the unit
