@@ -3836,8 +3836,9 @@ test:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Appends a target request to a SurfaceChange_ASE when its object matches the action's group id. */
 extern "C" void fn_801D89C0(void *arg0, void *arg1) {
-    extern char lbl_803385D0[];
+    extern char lbl_803385D0[]; /* "group_id" */
     struct NameObject {
         virtual void *v0();
         virtual void *v1();
@@ -3845,7 +3846,7 @@ extern "C" void fn_801D89C0(void *arg0, void *arg1) {
         virtual void *v3();
         virtual void *v4();
         virtual void *v5();
-        virtual int find(char *, int);
+        virtual int find(char *name, int index);
     };
     struct Request {
         virtual void *getObject();
@@ -3856,26 +3857,26 @@ extern "C" void fn_801D89C0(void *arg0, void *arg1) {
         virtual void *v5();
         virtual int getFirst();
         virtual int getSecond();
-        virtual void finish(int, int, int, int);
+        virtual void finish(int status, int recordPtr, int count, int recordsPtr);
     };
     struct Record { void *object; int first; int second; };
     struct Tmp { int pad; volatile int first; int second; };
     Request *request = (Request *)arg1;
-    int *output = (int *)arg0;
-    NameObject *object = (NameObject *)request->getObject();
-    if (object == 0) return;
-    int found = object->find(lbl_803385D0, -1);
-    int expected = output[2];
-    if (found != expected) return;
-    Tmp tmp;
-    tmp.first = request->getFirst();
-    tmp.second = request->getSecond();
-    int count = output[0x28 / 4];
-    Record *records = (Record *)output[0x24 / 4];
-    output[0x28 / 4] = count + 1;
+    int *action = (int *)arg0;
+    NameObject *groupObject = (NameObject *)request->getObject();
+    if (groupObject == 0) return;
+    int foundGroupId = groupObject->find(lbl_803385D0, -1);
+    int actionGroupId = action[2];
+    if (foundGroupId != actionGroupId) return;
+    Tmp values;
+    values.first = request->getFirst();
+    values.second = request->getSecond();
+    int count = action[0x28 / 4];
+    Record *records = (Record *)action[0x24 / 4];
+    action[0x28 / 4] = count + 1;
     records[count].object = request;
-    records[count].first = tmp.first;
-    records[count].second = tmp.second;
+    records[count].first = values.first;
+    records[count].second = values.second;
     request->finish(-1, (int)&records[count], count + 1, (int)records);
 }
 #pragma cplusplus reset
