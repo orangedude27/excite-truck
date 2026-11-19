@@ -469,9 +469,9 @@ int fn_801E0ED4(int minValue, int value) {
 }
 
 #pragma scheduling on
-float fn_801E0EE4(void *arg0, void *arg1) {
-    Vec2_801E *a = (Vec2_801E *)arg0;
-    Vec2_801E *b = (Vec2_801E *)arg1;
+float fn_801E0EE4(const void *arg0, const void *arg1) {
+    const Vec2_801E *a = (const Vec2_801E *)arg0;
+    const Vec2_801E *b = (const Vec2_801E *)arg1;
     Vec2_801E d;
     d.y = a->y - b->y;
     d.x = a->x - b->x;
