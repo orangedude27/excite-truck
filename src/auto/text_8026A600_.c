@@ -32,6 +32,7 @@ float fn_8026A63C(const float *point, const float *origin, const float *directio
     diff[2] = point[2] - origin[2];
     return PSVECDotProduct(diff, direction);
 }
+
 extern float lbl_80558DC4;
 extern int lbl_8055E3C4;
 extern float lbl_80563D18;
