@@ -12,6 +12,10 @@ void fn_801B6650(void) {
     /* No-op stub. */
 }
 
+/* Stubbed notification hook.  fn_8018FE8C (the lbl_80333018 object's destructor)
+ * calls it while tearing the object down, but only when the query fn_801B6668
+ * reports the feature enabled -- which it never does in this build, so this
+ * no-op is dead. */
 void fn_801B6654(void) {
 
 }
