@@ -1734,6 +1734,7 @@ extern "C" s32 fn_800A6A40(void *arg0) {
 extern "C" s32 fn_800A6520(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5);
 extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2);
 extern "C" s32 fn_800A6B74(void *arg0) {
+#pragma scheduling off
     s32 flag;
     s32 outLen;
     u32 B[4];
@@ -1820,6 +1821,7 @@ extern "C" s32 fn_800A6B74(void *arg0) {
         *(u32 *)((u8 *)arg0 + 0xC) = count;
         *(u32 *)((u8 *)arg0 + 0x10) = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x18);
     }
+#pragma scheduling on
     return 0;
 }
 
@@ -3883,14 +3885,14 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling 750
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
     extern s32 fn_800A4C14(u16 *, s32);
-    u8 *dst = (u8 *)arg0;
-    u8 *src = (u8 *)arg1;
-    u32 raw = src[0];
-    u32 count = raw & 0xFFFFFFBF;
-    u32 tag = src[0xD];
+    register u8 *dst = (u8 *)arg0;
+    register u8 *src = (u8 *)arg1;
+    register u32 raw = src[0];
+    register u32 count = raw & 0xFFFFFFBF;
+    register u32 tag = src[0xD];
     u32 index;
     u8 *entry;
     s32 first;
@@ -4513,15 +4515,17 @@ extern "C" s32 fn_800AB528(void *arg0, void *arg1, s32 arg2, u8 arg3, s32 arg4, 
     extern s32 fn_800B3754(s32, s32 *, s32);
     extern s32 fn_800B5070(s32, s32 *);
     extern s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
+    extern const char lbl_805591F0[];
+    extern const char lbl_805591F4[];
     u8 nameBuf[16];
     s32 sp14;
     u32 sp10;
     u32 spC;
     u32 sp8;
     u8* self = (u8*)arg0;
-    s32 result2;
+    register s32 result2;
     s32 result3 = 0;
-    s32 res = 0;
+    register s32 res = 0;
 
     *arg5 = 0;
     if ((VFiPFSTR_StrCmp((void *)arg2, (s32)lbl_805591F0) == 0) && (((u8 *)arg1)[0x21C] & 0x10) && (*(u32 *)((u8 *)arg1 + 0x234) == 1)) {
