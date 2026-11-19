@@ -27191,7 +27191,7 @@ void sdp_conn_timeout(tCONN_CB *p_ccb) {
 
 extern void process_service_search(tCONN_CB *, UINT16, UINT16, UINT8 *);
 static void process_service_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
-typedef struct { UINT8 pad0[0x26]; UINT8 data[0x450]; UINT16 cont_off; } tCCB_CONT_VIEW;
+typedef struct { UINT8 pad0[0x26]; UINT8 data[0x450]; volatile UINT16 cont_off; } tCCB_CONT_VIEW;
 static void process_service_search_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
 /* Dispatch an incoming SDP server request PDU and route it to the appropriate handler. */
 void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
