@@ -92,6 +92,13 @@ void fn_8020401C(void *stageContext) {
 
 }
 
+/* Terrain/solid module's stage-shutdown hook: empty in this build, and the
+ * counterpart of the init hook fn_8020401C.  The SolBuilder/StaticGOB subsystem
+ * shutdown (fn_801F9F08) calls it first, right after unregistering the GOB-flag
+ * event handler fn_801F9CF8 and before it drops the "SolBuilder" handle, frees
+ * the sorted "StaticGOB tab" (lbl_8055EC54) and clears the two static-object
+ * lists (lbl_8055EC4C / lbl_8055EC50) -- i.e. where the stage's terrain solids
+ * would be released. */
 void fn_80204020(void) {
 
 }
