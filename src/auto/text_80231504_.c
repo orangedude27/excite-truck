@@ -331,6 +331,7 @@ void fn_8023158C(GTexBlock *block, const char *name) {
 
 #pragma push
 #pragma scheduling invalid_target
+#pragma dont_inline on
 s32 fn_802315FC(s32 arg0) {
     s32 offset = arg0 * 0xC;
     u8 *entry = lbl_8055F068 + offset;
@@ -340,21 +341,19 @@ s32 fn_802315FC(s32 arg0) {
     s32 last;
     s32 lastOffset;
 
-    /* Decrement the entry reference count; replace its slot after releasing an expired entry. */
     if ((*(s32 *)(entry + 8) -= 1) < 1) {
         fn_802CAC54(*(void **)*(void **)entry);
         fn_8012C4D8(*(void **)entry);
         fn_80128670(*(void **)(entry + 4));
         base = lbl_8055F068;
         destination = base + offset;
-        last = *(s32 *)(base + 0x168);
-        last -= 1;
+        last = *(s32 *)(base + 0x168) - 1;
         lastOffset = last * 0xC;
         *(s32 *)(base + 0x168) = last;
         source = base + lastOffset;
         *(s32 *)destination = *(s32 *)source;
-        *(s32 *)(destination + 4) = *(s32 *)(source + 4);
-        *(s32 *)(destination + 8) = *(s32 *)(source + 8);
+        *(s32 *)(base + offset + 4) = *(s32 *)(base + lastOffset + 4);
+        *(s32 *)(base + offset + 8) = *(s32 *)(base + lastOffset + 8);
         return 1;
     }
     return 0;
@@ -648,7 +647,7 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     register s32 var_r31;
     register s32 temp_r30;
     register u8 *var_r29;
-    register s32 var_r5;
+    s32 var_r5;
     f32 tmpRate;
     sp8 = (s32)arg0;
     spC = farg0;
