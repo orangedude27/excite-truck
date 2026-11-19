@@ -658,6 +658,7 @@ static inline void CW_ResetColorMapping(void *writer) {
     *(int *)&max = -1;
     SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(writer, &min, &max);
 }
+/* Initialize a CharWriter with default font/colors, cursor, scale, and line-feed settings. */
 nw4hbm::ut::CharWriter::CharWriter() {
     unsigned char *self = (unsigned char *)this;
     unsigned char *gradSrc1, *gradSrc2, *gradSrc3;
