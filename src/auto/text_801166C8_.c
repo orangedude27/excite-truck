@@ -3731,15 +3731,15 @@ void fn_8011BEC8(void *tick, void *node, s32 checkFn, s32 tickFn) {
 
 void fn_8011C364(s32);
 #pragma opt_propagation off
-s32 fn_8011BF4C(void *arg0, void *arg1, s32 arg2) {
+s32 fn_8011BF4C(s32 arg0, s32 arg1, s32 arg2) {
     s32 ret = 0;
     s32 save;
-    if (arg0 != 0 && arg1 != 0 && *(s32 *)((char *)arg1 + 0x18) != 0 && *(s32 *)((char *)arg1 + 0x14) != 0) {
+    if (arg0 != 0 && arg1 != 0 && *(s32 *)(arg1 + 0x18) != 0 && *(s32 *)(arg1 + 0x14) != 0) {
         save = OSDisableInterrupts();
-        if (fn_8011BC4C(arg0, arg1) != 0) {
-            *(s32 *)((char *)arg0 + 0x38) -= 1;
-            if ((arg2 & 1) != 0 && *(s32 *)((char *)arg0 + 0x30) == 0) {
-                fn_8011C364((s32)arg0);
+        if (fn_8011BC4C((void *)arg0, (void *)arg1) != 0) {
+            *(s32 *)(arg0 + 0x38) -= 1;
+            if ((arg2 & 1) != 0 && *(s32 *)(arg0 + 0x30) == 0) {
+                fn_8011C364(arg0);
                 ret = 1;
             }
         }
@@ -3751,8 +3751,8 @@ s32 fn_8011BF4C(void *arg0, void *arg1, s32 arg2) {
 s32 fn_8011BFFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     /* Combines two fn_8011BF4C results into a 2-bit status: bit 0 from
        (arg0, arg1, arg4) and bit 1 from (arg2, arg3, arg4). */
-    s32 temp = fn_8011BF4C((void *)arg2, (void *)arg3, arg4) << 1;
-    s32 result = fn_8011BF4C((void *)arg0, (void *)arg1, arg4);
+    s32 temp = fn_8011BF4C(arg2, arg3, arg4) << 1;
+    s32 result = fn_8011BF4C(arg0, arg1, arg4);
     return result | temp;
 }
 
