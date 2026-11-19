@@ -3315,6 +3315,7 @@ float fn_8018AE7C(void *object) {
     return lbl_80561CDC;
 }
 
+/* Empty stub (no operation). */
 void fn_8018AF00(void) {
 
 }
