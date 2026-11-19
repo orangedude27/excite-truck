@@ -2069,47 +2069,48 @@ __declspec(section ".data") extern char lbl_802FC580[];
 #pragma unroll off
 #pragma optimize_for_size on
 #pragma scheduling invalid_target
+/* Reload the saved "effects_volume" setting and apply it to all loaded sounds in
+ * the dashboard sound player block (lbl_8055D4AC). Both groups of three sound
+ * slots are updated; a sound whose volume differs is given the new value and has
+ * its volume-dirty flag set so the change reaches its voice. */
 void fn_800121F0(void) {
-    f32 sp8 = 1.0f;
-    s32 *var_r3;
-    s32 i;
-    register f32 value;
-    void *temp_r4;
-    void *temp_r4_2;
-    void *temp_r4_3;
-    var_r3 = (s32 *)lbl_8055D4AC;
-    fn_801331C4(4, (void *)lbl_802FC580, &sp8);
-    for (i = 0; i < 2; i++) {
-        temp_r4 = (void *)var_r3[1];
-        if (temp_r4 != 0) {
-            value = sp8;
-            if (value != *(f32 *)((u8 *)temp_r4 + 8)) {
-                *((u8 *)temp_r4 + 0x4D) = 1;
-                *(f32 *)((u8 *)temp_r4 + 8) = value;
+    f32 volume = 1.0f;
+    s32 *soundGroup;
+    s32 groupIndex;
+    register f32 soundVolume;
+    void *sound0;
+    void *sound1;
+    void *sound2;
+    soundGroup = (s32 *)lbl_8055D4AC;
+    fn_801331C4(4, (void *)lbl_802FC580, &volume);
+    for (groupIndex = 0; groupIndex < 2; groupIndex++) {
+        sound0 = (void *)soundGroup[1];
+        if (sound0 != 0) {
+            soundVolume = volume;
+            if (soundVolume != *(f32 *)((u8 *)sound0 + 8)) {
+                *((u8 *)sound0 + 0x4D) = 1;
+                *(f32 *)((u8 *)sound0 + 8) = soundVolume;
             }
         }
-        temp_r4_2 = (void *)var_r3[2];
-        if (temp_r4_2 != 0) {
-            value = sp8;
-            if (value != *(f32 *)((u8 *)temp_r4_2 + 8)) {
-                *((u8 *)temp_r4_2 + 0x4D) = 1;
-                *(f32 *)((u8 *)temp_r4_2 + 8) = value;
+        sound1 = (void *)soundGroup[2];
+        if (sound1 != 0) {
+            soundVolume = volume;
+            if (soundVolume != *(f32 *)((u8 *)sound1 + 8)) {
+                *((u8 *)sound1 + 0x4D) = 1;
+                *(f32 *)((u8 *)sound1 + 8) = soundVolume;
             }
         }
-        temp_r4_3 = (void *)var_r3[3];
-        if (temp_r4_3 != 0) {
-            value = sp8;
-            if (value != *(f32 *)((u8 *)temp_r4_3 + 8)) {
-                *((u8 *)temp_r4_3 + 0x4D) = 1;
-                *(f32 *)((u8 *)temp_r4_3 + 8) = value;
+        sound2 = (void *)soundGroup[3];
+        if (sound2 != 0) {
+            soundVolume = volume;
+            if (soundVolume != *(f32 *)((u8 *)sound2 + 8)) {
+                *((u8 *)sound2 + 0x4D) = 1;
+                *(f32 *)((u8 *)sound2 + 8) = soundVolume;
             }
         }
-        var_r3 += 3;
+        soundGroup += 3;
     }
 }
-#pragma scheduling on
-#pragma optimize_for_size reset
-#pragma unroll reset
 // Formats the ordinal string for number into outBuffer and returns outBuffer.
 s32 fn_800122B4(s32 number, s32 outBuffer) {
     struct { char sp8[0x14]; volatile s32 sp1C; } frame;
