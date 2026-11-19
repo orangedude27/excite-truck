@@ -22331,19 +22331,14 @@ extern u8 lbl_8031F43C[];
 #pragma small_data off
 #pragma pop
 extern "C" void* __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(void *this_) {
-    volatile u32 *p = (volatile u32 *)this_;
-    u32 v = (u32)&lbl_8031F43C;
-    u32 zero = 0;
-    u32 tail;
     fn_800DCE50(this_);
-    tail = (u32)this_ + 0x28;
-    p[0x28 >> 2] = zero;
-    p[0x2C >> 2] = zero;
-    p[0] = v;
-    p[0x20 >> 2] = zero;
-    p[0x24 >> 2] = zero;
-    p[0x28 >> 2] = tail;
-    p[0x2C >> 2] = tail;
+    ((u32*)this_)[0x28 >> 2] = 0;
+    ((u32*)this_)[0x2C >> 2] = 0;
+    ((u32*)this_)[0x00 >> 2] = (u32)&lbl_8031F43C;
+    ((u32*)this_)[0x20 >> 2] = 0;
+    ((u32*)this_)[0x24 >> 2] = 0;
+    ((u32*)this_)[0x28 >> 2] = (u32)&((u8*)this_)[0x28];
+    ((u32*)this_)[0x2C >> 2] = (u32)&((u8*)this_)[0x28];
     return this_;
 }
 extern "C" const char lbl_8031F2C8[];
