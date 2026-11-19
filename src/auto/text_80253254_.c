@@ -1673,7 +1673,6 @@ scan58_test:
             fn_8025567C();
     }
 }
-#pragma cplusplus off
 
 #pragma push
 #pragma processor 750
