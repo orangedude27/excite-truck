@@ -301,8 +301,8 @@ extern "C" void fn_80211690(s32 arg0) {
     char buf38[0x20];
     char buf18[0x20];
     s32 sp8;
-    s32 isZero;
     s32 notZero;
+    s32 isZero;
     s32 i, j;
     Ent18 *e;
     const char *r25;
@@ -1543,7 +1543,7 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
     *arg0 = out;
     {
         u8 *p = *(u8 **)((u8 *)node + 0x64);
-        while (*(volatile s32 *)p != 0)
+        while (*(s32 *)p != 0)
             p = p + 0x134;
     }
     if ((s8)((u8 *)node)[0x24] != 0) {
@@ -1551,7 +1551,7 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         *(void **)((u8 *)arg1 + 0x10) = top;
         {
             u8 *p = *(u8 **)((u8 *)top + 0x64);
-            while (*(volatile s32 *)p != 0)
+            while (*(s32 *)p != 0)
                 p = p + 0x134;
         }
     }
@@ -1590,14 +1590,14 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         do {
             fn_802123B8(out, it, head);
             it = it + 0x134;
-        } while (*(volatile s32 *)it != 0);
+        } while (*(s32 *)it != 0);
     }
     {
         u8 *it2 = *(u8 **)((u8 *)node + 0x64);
         do {
             fn_802123B8(out, it2, head);
             it2 = it2 + 0x134;
-        } while (*(volatile s32 *)it2 != 0);
+        } while (*(s32 *)it2 != 0);
     }
     {
         u8 *q = (u8 *)head;
@@ -2373,6 +2373,8 @@ extern "C" s32 fn_802153AC(void *obj, u32 expectedId) {
     return 0;
 }
 
+/* Default (empty) virtual hook in the VfWidget method group: does nothing, so a
+ * subclass that doesn't override it simply gets no behaviour. */
 extern "C" void fn_80215414(void) {
 
 }
