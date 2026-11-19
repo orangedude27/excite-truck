@@ -1899,9 +1899,10 @@ void fn_801963A0(void *state) {
     fn_80195CA8(state);
 }
 #pragma dont_inline reset
-  void fn_80196414(void *arg0) {
-      fn_80196DC4(arg0);
-  }
+void fn_80196414(void *arg0) {
+    /* Tail-call wrapper for fn_80196DC4. */
+    fn_80196DC4(arg0);
+}
 
 #pragma dont_inline on
 /* Normalize the controller's XY vector (fn_80195830), but only while its state is 0. */
