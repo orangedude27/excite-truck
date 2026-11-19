@@ -4621,6 +4621,9 @@ s32 fn_801552D8(s32 object, s32 deleteFlag) {
 
 extern s32 lbl_8032E1A0[];
 extern f32 lbl_8056171C;
+/* Initialize a race-state object: set its vtable (lbl_8032E1A0), clear
+   pointers/flags, set initial time/value fields (1000.0f, 0.0f), and store -1
+   in the index/status field at +0x10C. */
 void fn_80155318(void *arg0) {
     f32 f0 = 0.0f;
     f32 f1 = 1000.0f;
