@@ -277,24 +277,25 @@ void fn_802A86A4(void) {
 }
 #pragma pop
 
+/* Updates the global frame delta from the current time and runs per-object and child updates for all entries in lbl_804BD6C4. */
 void fn_802A8978(void) {
-    u8* entry;
-    s32 j;
-    s32 offset;
-    s32 i;
-    f32 temp;
+    u8 *object;
+    s32 childIndex;
+    s32 objectOffset;
+    s32 objectIndex;
+    f32 currentTime;
 
-    temp = lbl_8055E3C8;
-    lbl_8055F8D4 = temp - lbl_8055F8D8;
-    if (temp < lbl_8055F8D8) {
+    currentTime = lbl_8055E3C8;
+    lbl_8055F8D4 = currentTime - lbl_8055F8D8;
+    if (currentTime < lbl_8055F8D8) {
         lbl_8055F8D4 = lbl_80564954;
     }
-    lbl_8055F8D8 = temp;
-    for (i = 0, offset = 0; i < ((s32*)&lbl_804BD6C4)[1]; offset += 4, i++) {
-        entry = *(u8**)((u32)lbl_804BD6C4[0] + offset);
-        fn_802A8A4C((s32)entry, (s32)(entry + 0x60));
-        for (j = 0; j < fn_802A8A34((void*)(entry + 0x6c)); j++) {
-            fn_802A8A4C(fn_802A8A3C((s32 *)(entry + 0x6c), j), (s32)entry);
+    lbl_8055F8D8 = currentTime;
+    for (objectIndex = 0, objectOffset = 0; objectIndex < ((s32 *)&lbl_804BD6C4)[1]; objectOffset += 4, objectIndex++) {
+        object = *(u8 **)((u32)lbl_804BD6C4[0] + objectOffset);
+        fn_802A8A4C((s32)object, (s32)(object + 0x60));
+        for (childIndex = 0; childIndex < fn_802A8A34((void *)(object + 0x6c)); childIndex++) {
+            fn_802A8A4C(fn_802A8A3C((s32 *)(object + 0x6c), childIndex), (s32)object);
         }
     }
 }
