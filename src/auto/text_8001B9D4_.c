@@ -1216,6 +1216,7 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     }
     return 0;
 }
+#pragma processor reset
 u32 fn_8001D220(u32 entryIndex, u32 valueIndex, u32 flag) {
     /* Pack an EntryRef (entry index, value index, flag) into the low three bytes
        of one word; fn_8001D234 decodes it. */
