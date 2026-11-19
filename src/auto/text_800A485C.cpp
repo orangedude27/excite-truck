@@ -7772,75 +7772,94 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
     return saved;
 }
 
-extern "C" s32 fn_800B05C8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
-    struct SSector { u32 v; } sectorStorage;
-    struct SScaled { u32 v; } scaledStorage;
-    u32 &sector = sectorStorage.v;
+/* VFiPFFAT_GetEntry32: the 28-bit FAT32 entry of `cluster`, read through the
+ * cache page the caller already holds for the FAT.
+ *
+ * The page covers a run of sectors; when it is held on another sector than the
+ * entry needs, the page is moved onto it.  A page whose write-back flag is set
+ * first has its changed sector written out to every FAT copy the volume keeps.
+ * The read then goes through VFiPFCACHE_ReadPage; a transient device error
+ * (0x1000) runs the volume's retry handler, which may ask for the next FAT copy
+ * instead, up to the number of copies.  The entry is byte-swapped out of the
+ * FAT's little-endian order and masked to its 28 cluster bits. */
+extern "C" s32 fn_800B05C8(void *volume, s32 cluster, u32 *outEntry, void *page) {
+    /* sector and scaled are taken through one-word cells: the compiler has to
+     * keep them in memory, as the retry loop rewrites sector and jumps back. */
+    struct SectorCell { u32 v; } sectorCell;
+    struct ScaledCell { u32 v; } scaledCell;
+    u32 &sector = sectorCell.v;
     u32 retry;
     s32 status;
-    void *object = arg0;
-    u32 *output = arg2;
-    void *context = arg3;
-    u16 flags = *(u16 *)((u8 *)object + 0x18);
-    u32 &scaled = scaledStorage.v;
-    scaled = (u32)arg1 * 4;
-    sector = (u16)(*(u32 *)((u8 *)object + 0x28) +
-                       (scaled >> *(u8 *)((u8 *)object + 0x20)));
+    void *vol = volume;
+    u32 *entryOut = outEntry;
+    void *fatPage = page;
+    /* volume + 0x18: 0x80 = this volume retries device errors, bits 0-2 say how
+     * many times at most (the retry handler counts up from 1). */
+    u16 flags = *(u16 *)((u8 *)vol + 0x18);
+    u32 &scaled = scaledCell.v;
+    scaled = (u32)cluster * 4;                    /* the entry's byte in the FAT */
+    sector = (u16)(VF_VOL_FAT_FIRST_SECTOR(vol) +
+                       (scaled >> VF_VOL_SECTOR_SHIFT(vol)));
     retry = 1;
     if (flags & 0x80)
         retry = flags & 7;
 
-    if (*(u32 *)((u8 *)context + 0x18) != sector) {
-        if (*(u16 *)((u8 *)context + 2) == 1) {
+    if (VF_PAGE_FIRST(fatPage) != sector) {
+        if (*(u16 *)((u8 *)fatPage + 2) == 1) {   /* VF_PAGE_WRITE_BACK */
+            /* The page was written to: give every FAT copy its changed sector
+             * back before the page moves on. */
             for (status = 0;
-                 (u16)status < *(u8 *)((u8 *)object + 0x22);
+                 (u16)status < VF_VOL_FAT_COUNT(vol);
                  status++) {
-                fn_800B5618(object,
-                            *(void **)((u8 *)context + 8),
-                            *(u32 *)((u8 *)context + 0x18) +
-                                (u32)(u16)status * *(u32 *)((u8 *)object + 0xC),
-                            0, *(u16 *)object);
+                VFiPFCACHE_WritePage(vol,
+                            VF_PAGE_DATA(fatPage),
+                            VF_PAGE_FIRST(fatPage) +
+                                (u32)(u16)status * VF_VOL_FAT_SECTOR_STEP(vol),
+                            0, VF_VOL_SECTOR_SIZE(vol));
             }
         }
 
 fetch:
-        status = fn_800B5260(object,
-                             *(void **)((u8 *)context + 8),
-                             sector, 0, *(u16 *)object);
-        if (status == 0x1000) {
-            s32 (*callback)(void *) =
-                *(s32 (**)(void *))((u8 *)object + 0x1FC0);
-            if (callback != 0) {
+        status = VFiPFCACHE_ReadPage(vol,
+                             VF_PAGE_DATA(fatPage),
+                             sector, 0, VF_VOL_SECTOR_SIZE(vol));
+        if (status == 0x1000) {                   /* VF_ERR_DEVICE_RETRY */
+            s32 (*retryCallback)(void *) =
+                *(s32 (**)(void *))((u8 *)vol + 0x1FC0);
+            if (retryCallback != 0) {
                 s32 callbackResult =
-                    callback(*(void **)((u8 *)object + 0x1F84));
+                    retryCallback(*(void **)((u8 *)vol + 0x1F84));
                 if (callbackResult == 0)
                     goto check_result;
                 if (callbackResult == 1 &&
-                    *(u8 *)((u8 *)object + 0x22) >= 2 &&
-                    retry < *(u8 *)((u8 *)object + 0x22)) {
+                    VF_VOL_FAT_COUNT(vol) >= 2 &&
+                    retry < VF_VOL_FAT_COUNT(vol)) {
+                    /* the handler says try again: go to the next FAT copy */
                     retry++;
-                    sector += *(u32 *)((u8 *)object + 0xC);
+                    sector += VF_VOL_FAT_SECTOR_STEP(vol);
                     goto check_result;
                 }
             }
         }
         if (status != 0)
             return status;
-        *(u32 *)((u8 *)context + 0x18) = sector;
+        VF_PAGE_FIRST(fatPage) = sector;          /* the page now covers it */
     check_result:
         if (status != 0)
             goto fetch;
     }
 
     {
-        u8 *buf = *(u8 **)((u8 *)context + 8);
-        u32 blockSize = *(volatile u16 *)object;
+        /* The entry sits at (byte & (sector size - 1)) of the page's data; the
+         * four __rlw*mi steps are the little-endian byte swap. */
+        u8 *buf = VF_PAGE_DATA(fatPage);
+        u32 blockSize = *(volatile u16 *)vol;
         u32 value = *(u32 *)(buf + (scaled & (blockSize - 1)));
         u32 upper = __rlwinm(value, 8, 8, 15);
         u32 lower = __rlwinm(value, 24, 16, 23);
         upper = __rlwimi(upper, value, 24, 0, 7);
         lower = __rlwimi(lower, value, 8, 24, 31);
-        *output = (upper | lower) & 0x0FFFFFFF;
+        *entryOut = (upper | lower) & VF_FAT32_CLUSTER_MASK;
     }
     return 0;
 }
@@ -10783,7 +10802,7 @@ extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u
     if ((u32)arg2 >= M2C_FIELD(arg0, u32 *, 8) || arg3 >= (limit = M2C_FIELD(arg0, u16 *, 0)) || (arg3 + arg4) > limit) {
         if (arg3 != 0) return 10;
     }
-    if (arg3 != 0 || arg4 < M2C_FIELD(arg0, u16 *, 0)) {
+    if (arg3 != 0 || arg4 < (u32)M2C_FIELD(arg0, u16 *, 0)) {
         result = ((s32 (*)(void *, s32, s32, s32))fn_800A8F28)((void *)arg0, arg2, (s32)&page, arg6);
         if (result != 0) return result;
         VFipf_memcpy(M2C_FIELD(page, u8 **, 8) + arg3, arg1, arg4);
@@ -13002,24 +13021,23 @@ extern "C" s32 fn_800B94D4(void *object, s32 value) {
 }
 
 extern "C" s32 fn_800B94EC(s32 arg0, s32 arg1) {
-    register s32 a0 = arg0;
-    register s32 a1 = arg1;
-    register u8 *base = (u8 *)lbl_80405D18;
-    register u32 i;
-    register u32 offset;
-    register u8 *entry;
+    u8 *base = (u8 *)lbl_80405D18;
+    u8 *entries;
     u32 initCount;
+    u32 i;
+    struct InitControl { u32 a, b, c; };
+    volatile struct InitControl *control;
 
-    if ((u32)fn_800A4A8C(a0) >= 0x4C)
+    if ((u32)fn_800A4A8C(arg0) >= 0x4C)
         return -0x14;
     if (lbl_8055DD28 == 0) {
         fn_800A499C((const char *)(base + 0x40), 0, 0x1590);
-        volatile u32 *control = (volatile u32 *)(base + 0x15D0);
+        control = (volatile struct InitControl *)(base + 0x15D0);
         initCount = lbl_8055DD28 + 1;
-        *(s32 *)(base + 0x15D0) = 1;
+        control->a = 1;
         lbl_8055DD28 = initCount;
-        control[1] = 1;
-        control[2] = (u32)(base + 0x15DC);
+        control->b = 1;
+        control->c = (u32)(base + 0x15DC);
         typedef s32 (*InitFn)(void *, s32, s32);
         s32 result = ((InitFn)fn_800B7F28)((void *)control, 1, initCount);
         lbl_8055DD30 = result;
@@ -13027,23 +13045,22 @@ extern "C" s32 fn_800B94EC(s32 arg0, s32 arg1) {
             return -0x15;
     }
 
-    base += 0x40;
+    entries = base + 0x40;
     i = 0;
 loop_6:
-    offset = (u32)(u16)i * 0xF0;
-    entry = base + offset;
-    if (fn_800A4AD0(entry + 4, (u8 *)a0) == 0)
+    u8 *entry = entries + (u32)(u16)i * 0xF0;
+    if (fn_800A4AD0(entry + 4, (u8 *)arg0) == 0)
         return 0;
     if (*(s32 *)entry == 0) {
-        fn_800A4AAC((char *)(entry + 4), (char *)a0);
-        *(s32 *)(entry + 0x54) = a1;
+        fn_800A4AAC((char *)(entry + 4), (char *)arg0);
+        *(s32 *)(entry + 0x54) = arg1;
         goto block_11;
     }
     ++i;
     if (i < 0x17)
         goto loop_6;
 block_11:
-    return -0x16 & ((s32)~(((s32)(u16)i - 0x17) | (0x17 - (s32)(u16)i)) >> 31);
+    return ((s32)~(((s32)(u16)i - 0x17) | (0x17 - (s32)(u16)i)) >> 31) & -0x16;
 }
 
 /* One entry of the prfile2 file-state table: 0x17 slots of 0xF0 bytes at
@@ -22565,7 +22582,7 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::P
     u8 *blockOffsets = block + 0x18;
     u8 *offsetEntry = blockOffsets;
     s32 blockIndex = 0;
-    register f32 half = lbl_80560E64;
+    f32 half = lbl_80560E64;
     while (blockIndex < block[0x14]) {
         u8 *record = block + *(s32 *)offsetEntry;
         s32 type = *(s32 *)record;
@@ -22610,8 +22627,7 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::P
                 u8 *item = record + *(s32 *)itemOffsets;
                 if (item[1] >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xED, file + 0x138);
                 if (item[2] != 2) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xEE, file + 0xB0);
-                u8 value = (u8)(fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
-                ((PaneAnimationDispatch *)arg2)->setVertexColor(item[1], value);
+                ((PaneAnimationDispatch *)arg2)->setVertexColor(item[1], fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
                 itemOffsets += 4;
                 itemIndex++;
             }
