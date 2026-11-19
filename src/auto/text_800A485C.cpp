@@ -14650,10 +14650,18 @@ extern "C" u8 lbl_80559250;
 extern "C" u8 lbl_80559258;
 extern "C" u8 lbl_80559260;
 extern "C" u8 lbl_80559268;
+static inline void fn_800BC538_setShort(Fn800BC538Obj *obj, s16 *thr, u8 *val) {
+    s32 k;
+    for (k = 0; k < 12; k++) {
+        obj->shortThr[k] = thr[k];
+        obj->shortVal[k] = val[k];
+    }
+}
 #pragma push
 #pragma use_lmw_stmw on
-extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
-    u8 *tbl = &lbl_8031BFA8;
+ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s16 *arg5, s16 *arg6, u8 *arg7, s16 arg_sp8) {
+    Fn800BC538Obj *obj = (Fn800BC538Obj *)arg0;
+    Fn800BC538Tbl *tbl = (Fn800BC538Tbl *)&lbl_8031BFA8;
     u8 *p;
     u8 *a;
     u8 *b;
@@ -14663,26 +14671,25 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
     s32 i, j, k;
     s32 lim;
     s32 sel;
-    s32 top;
 
     if (arg3 & 7) {
-        if (*(s32 *)(arg0 + 0x9E0) == 0) {
-            *(s32 *)(arg0 + 0x9E0) = 1;
+        if (obj->longInit == 0) {
+            obj->longInit = 1;
             for (k = 0; k < 21; k++)
-                *(s16 *)(arg0 + 0xA2C + k * 2) = ((s16 *)arg2)[k];
-            *(s16 *)(arg0 + 0xA2A) = 0;
+                obj->longThr[k + 1] = ((s16 *)arg2)[k];
+            obj->longThr[0] = 0;
         }
         p = arg4;
         band = arg1;
         b = arg4 + 0x3F00;
         a = arg4 + 0x1B00;
-        for (i = 0; i < *(s32 *)(arg0 + 0x9BC); i++) {
+        for (i = 0; i < obj->longCount; i++) {
             if (*(s32 *)(p + 0x1B00) == 0) {
                 *(s32 *)(p + 0x3F00) = 0;
             } else {
                 for (k = 20; k >= 0; k--) {
-                    if (arg_sp8 > *(s16 *)(arg0 + k * 2 + 0xA2A)) {
-                        lim = *(s16 *)(arg0 + k * 2 + 0xA2C);
+                    if (arg_sp8 > obj->longThr[k]) {
+                        lim = obj->longThr[k + 1];
                         break;
                     }
                 }
@@ -14697,43 +14704,43 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
         return;
     }
     if (arg3 & 0x10) {
-        if (*(s32 *)(arg0 + 0x9E4) == 0) {
-            s32 mode = *(s32 *)(arg0 + 4);
-            *(s32 *)(arg0 + 0x9E4) = 1;
-            if (mode == 0 && *(s16 *)(arg0 + 0x1C) == 0) {
-                ts = (s16 *)tbl; tv = tbl + 0x18;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
-            } else if (mode == 0 && *(s16 *)(arg0 + 0x1C) == 1) {
-                ts = (s16 *)(tbl + 0x28); tv = tbl + 0x40;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
-            } else if (mode == 0 && *(s16 *)(arg0 + 0x1C) == 2) {
-                ts = (s16 *)(tbl + 0x50); tv = tbl + 0x68;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
-            } else if (mode == 1 && *(s16 *)(arg0 + 0x1C) == 0) {
-                ts = (s16 *)(tbl + 0x78); tv = tbl + 0x90;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
-            } else if (mode == 1 && *(s16 *)(arg0 + 0x1C) == 1) {
-                ts = (s16 *)(tbl + 0xA0); tv = tbl + 0xB8;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
+        if (obj->shortInit == 0) {
+            s32 mode = obj->mode;
+            obj->shortInit = 1;
+            if (mode == 0 && obj->sub == 0) {
+                ts = tbl[0].thr; tv = tbl[0].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+            } else if (mode == 0 && obj->sub == 1) {
+                ts = tbl[1].thr; tv = tbl[1].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+            } else if (mode == 0 && obj->sub == 2) {
+                ts = tbl[2].thr; tv = tbl[2].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+            } else if (mode == 1 && obj->sub == 0) {
+                ts = tbl[3].thr; tv = tbl[3].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
+            } else if (mode == 1 && obj->sub == 1) {
+                ts = tbl[4].thr; tv = tbl[4].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
             } else {
-                ts = (s16 *)(tbl + 0xC8); tv = tbl + 0xE0;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
+                ts = tbl[5].thr; tv = tbl[5].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
             }
         }
         p = arg4;
-        for (i = 0; i < *(s32 *)(arg0 + 0x9C0); i++) {
+        for (i = 0; i < obj->shortCount; i++) {
             if (*(s32 *)(p + 0x1B00) == 0) {
                 *(s32 *)(p + 0x3F00) = 0;
             } else {
                 for (k = 0; k < 12; k++) {
-                    if (arg_sp8 > *(s16 *)(arg0 + 0xA56 + k * 2)) {
-                        lim = arg0[0x9EC + k];
+                    if (arg_sp8 > obj->shortThr[k]) {
+                        lim = obj->shortVal[k];
                         break;
                     }
                 }
                 if (i >= lim) {
                     for (k = 11; k >= 0; k--) {
-                        if (i < arg0[0x9EC + k]) {
+                        if (i < obj->shortVal[k]) {
                             sel = 11 - k;
                             break;
                         }
@@ -14746,39 +14753,39 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
         }
         return;
     }
-    if (*(s32 *)(arg0 + 0x9DC) == 0) {
-        *(s32 *)(arg0 + 0x9DC) = 1;
-        if (*(s32 *)(arg0 + 4) == 0) {
-            s16 sub = *(s16 *)(arg0 + 0x1C);
+    if (obj->mixedInit == 0) {
+        obj->mixedInit = 1;
+        if (obj->mode == 0) {
+            s16 sub = obj->sub;
             for (k = 0; k < 8; k++) {
-                arg0[0xA00 + k] = (&lbl_80559250)[k];
-                arg0[0x9F8 + k] = (&lbl_80559258)[k];
+                obj->mixThr[k] = (&lbl_80559250)[k];
+                obj->mixVal[k] = (&lbl_80559258)[k];
             }
             if (sub == 0) {
-                ts = (s16 *)tbl; tv = tbl + 0x18;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
+                ts = tbl[0].thr; tv = tbl[0].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
             } else if (sub == 1) {
-                ts = (s16 *)(tbl + 0x28); tv = tbl + 0x40;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
+                ts = tbl[1].thr; tv = tbl[1].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
             } else {
-                ts = (s16 *)(tbl + 0x50); tv = tbl + 0x68;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
+                ts = tbl[2].thr; tv = tbl[2].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
             }
         } else {
-            s16 sub = *(s16 *)(arg0 + 0x1C);
+            s16 sub = obj->sub;
             for (k = 0; k < 6; k++) {
-                arg0[0xA00 + k] = (&lbl_80559260)[k];
-                arg0[0x9F8 + k] = (&lbl_80559268)[k];
+                obj->mixThr[k] = (&lbl_80559260)[k];
+                obj->mixVal[k] = (&lbl_80559268)[k];
             }
             if (sub == 0) {
-                ts = (s16 *)(tbl + 0x78); tv = tbl + 0x90;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
+                ts = tbl[3].thr; tv = tbl[3].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
             } else if (sub == 1) {
-                ts = (s16 *)(tbl + 0xA0); tv = tbl + 0xB8;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
+                ts = tbl[4].thr; tv = tbl[4].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
             } else {
-                ts = (s16 *)(tbl + 0xC8); tv = tbl + 0xE0;
-                for (k = 0; k < 12; k++) { *(s16 *)(arg0 + 0xA56 + k * 2) = ts[k]; arg0[0x9EC + k] = tv[k]; }
+                ts = tbl[5].thr; tv = tbl[5].val;
+                for (k = 0; k < 12; k++) { obj->shortThr[k] = ts[k]; obj->shortVal[k] = tv[k]; }
             }
         }
     }
@@ -14786,15 +14793,14 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
     a = arg4 + 0x1B00;
     for (i = 0; i < 36; i++) {
         for (k = 0; k < 8; k++) {
-            if (arg_sp8 > arg0[0xA00 + k]) {
-                lim = arg0[0x9F8 + k];
+            if (arg_sp8 > obj->mixThr[k]) {
+                lim = obj->mixVal[k];
                 break;
             }
         }
         if (i >= lim) {
-            top = 7;
-            for (k = 0; k <= top; k++) {
-                if (i < arg0[0x9F8 + top - k]) {
+            for (k = 0; k < 8; k++) {
+                if (i < obj->mixVal[7 - k]) {
                     sel = k;
                     break;
                 }
@@ -14804,16 +14810,16 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s1
         a += 4;
         b += 4;
     }
-    for (i = 12; i < *(s32 *)(arg0 + 0x9C0); i++) {
+    for (i = 12; i < obj->shortCount; i++) {
         for (k = 0; k < 10; k++) {
-            if (arg_sp8 > *(s16 *)(arg0 + 0xA56 + k * 2)) {
-                lim = arg0[0x9EC + k];
+            if (arg_sp8 > obj->shortThr[k]) {
+                lim = obj->shortVal[k];
                 break;
             }
         }
         if (i >= lim) {
             for (k = 8; k >= 0; k--) {
-                if (i < arg0[0x9EC + k]) {
+                if (i < obj->shortVal[k]) {
                     sel = 11 - k;
                     break;
                 }
