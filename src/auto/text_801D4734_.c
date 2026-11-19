@@ -3434,6 +3434,19 @@ int fn_801D83DC(int object, int shouldFree) {
     return object;
 }
 
+/* One "EmbeddedTrackEffect_ASE" action-sequence cue (its name comes back from
+ * fn_801D8504): fn_801D8424 reads its parameters out of the action-sequence
+ * value table, fn_801D8518 starts it and fn_801D8544 fires the effect id once
+ * its delay has run out, until its length does. */
+struct EmbeddedTrackEffectAse {
+    void *typeInfo; /* 0x00 the class's type/vtable table */
+    int state;      /* 0x04, enum TimedEffectState; 1 once read */
+    int length;     /* 0x08 the value file's "length" in ticks: seconds * 59.94 */
+    int delay;      /* 0x0C the value file's "delay" in ticks */
+    int startTime;  /* 0x10 the tick fn_801D8518 started the cue at */
+    int effectId;   /* 0x14 the id of the value file's "effect" name */
+};
+
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
