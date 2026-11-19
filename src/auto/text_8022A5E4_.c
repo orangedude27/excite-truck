@@ -109,8 +109,9 @@ void fn_8022A5E4(void) {
     extern unsigned char lbl_80497D68[];
     extern void *memset(void *, int, unsigned int);
     extern void fn_8022C520(void);
-    struct Record74 *src, *out;
+    struct Record74 *out, *src;
     unsigned char b0;
+    volatile unsigned int s1C, s18, s14, s10, sC, s30, s2C, s28, s24, s20;
     unsigned int v4, v8, vC, v10, v14, v18, v1C, v20, v24, v28, v2C, v30;
     unsigned int v3C, v40, v44, v48, v4C, v50, v54, v58;
     unsigned int v64, v68, v6C, v70;
@@ -119,35 +120,17 @@ void fn_8022A5E4(void) {
 
     memset(lbl_80497D68, 0, 0x74);
     src = (struct Record74 *)lbl_80497D68;
-    out = (struct Record74 *)lbl_80490968;
     b0 = lbl_80497D68[0];
-    vC = src->wC;
-    v10 = src->w10;
-    v14 = src->w14;
-    v18 = src->w18;
-    v1C = src->w1C;
-    v20 = src->w20;
-    v24 = src->w24;
-    v28 = src->w28;
-    v2C = src->w2C;
-    v30 = src->w30;
-    v4 = src->w4;
-    v8 = src->w8;
-    v3C = src->w3C;
-    v40 = src->w40;
-    v44 = src->w44;
-    v48 = src->w48;
-    v4C = src->w4C;
-    v50 = src->w50;
-    v54 = src->w54;
-    v58 = src->w58;
-    v64 = src->w64;
-    v68 = src->w68;
-    v6C = src->w6C;
-    v70 = src->w70;
-    v60 = src->f60;
-    v5C = src->f5C;
-    v34 = src->f34;
+    sC = src->wC; s10 = src->w10; s14 = src->w14; s18 = src->w18; s1C = src->w1C;
+    s20 = src->w20; s24 = src->w24; s28 = src->w28; s2C = src->w2C; s30 = src->w30;
+    out = (struct Record74 *)lbl_80490968;
+    vC = src->wC; v10 = src->w10; v14 = src->w14; v18 = src->w18; v1C = src->w1C;
+    v20 = src->w20; v24 = src->w24; v28 = src->w28; v2C = src->w2C; v30 = src->w30;
+    v4 = src->w4; v8 = src->w8;
+    v3C = src->w3C; v40 = src->w40; v44 = src->w44; v48 = src->w48;
+    v4C = src->w4C; v50 = src->w50; v54 = src->w54; v58 = src->w58;
+    v64 = src->w64; v68 = src->w68; v6C = src->w6C; v70 = src->w70;
+    v60 = src->f60; v5C = src->f5C; v34 = src->f34;
     src->w38 = 9;
     for (i = 0; i < 0x80; i++) {
         out[0].b0 = b0;
@@ -256,11 +239,11 @@ void fn_8022A8E4(int arg0) {
     extern void fn_802C519C(void *);
     extern void fn_80235380(void *);
     unsigned long offset;
-    float f0, f1;
     register unsigned char *entry;
     register const unsigned int *source;
     register unsigned int *destination;
     register unsigned int b, a;
+    float f0, f1;
 
     offset = arg0 * 0x74;
     entry = (unsigned char *)lbl_80490968 + offset;
@@ -494,7 +477,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
             maxX = (maxX > t) ? maxX : t;
         }
         {
-            int lo, hi;
+            int hi, lo;
             float t;
             lo = *(int *)(p + 0x48);
             hi = *(int *)(p + 0x50);
@@ -636,10 +619,7 @@ int fn_8022B498(int unused, const char *arg1)
         }
 
         value = (height + value) - width;
-        if (max > value) {
-            value = max;
-        }
-        return value;
+        return (max > value) ? max : value;
     }
 
     return max;
@@ -876,7 +856,7 @@ void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
     *arg1 -= farg1 - (float)(int)farg1;
 }
 #pragma pop
-extern double lbl_805635A0;
+__declspec(section ".sdata2") const double lbl_805635A0 = 4503599627370496.0;
 #pragma scheduling invalid_target
 unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
     float e = (float)(unsigned char)arg1;
@@ -944,7 +924,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     int i24;
     int i25;
     int i28;
-    register int i20;
+    int i20;
     int i26;
     int i30;
     int fl;
@@ -955,7 +935,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     int lenarg;
     int tret;
     void *base;
-    register char *i19;
+    char *i19;
     char *found;
     char *entry;
     (void)arg0;
@@ -1147,20 +1127,19 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
 }
 #pragma pop
 void fn_8022C520(void) {
-    char* base;
+    char *base;
     Cfg58 tmpl;
     Cfg58 work;
-    void* list;
-    void* entry;
+    void *list;
+    void *entry;
     int i;
     int value;
-    int flag1;
-    int flag2;
-    char* s;
-    char* listPath;
+    unsigned flag1;
+    unsigned flag2;
+    char *s;
 
     base = lbl_8033FBE8;
-    tmpl = *(Cfg58*)&lbl_802F9F58;
+    tmpl = *(Cfg58 *)&lbl_802F9F58;
     tmpl.w[3] = 0xffd6003c;
     tmpl.w[4] = 0xffd6003c;
     tmpl.w[5] = 0xff2dc82d;
@@ -1169,35 +1148,34 @@ void fn_8022C520(void) {
     tmpl.w[11] = 0xff2d2dc8;
     tmpl.w[12] = 0xffd6003c;
     tmpl.w[13] = 0xffd6003c;
-    listPath = base + 0x64;
-    list = fn_80131810(listPath, 0xff2dc82d, 0xffd6003c);
+    list = fn_80131810(base + 0x64, 0xff2dc82d, 0xffd6003c);
     if (list) {
-        for (i = 0; (entry = ((void* (*)(void*, int))(*(void***)list)[3])(list, i)) != 0; i++) {
-            if (stricmp(((char* (*)(void*))(*(void***)entry)[2])(entry), lbl_8055B8C4) != 0) {
+        for (i = 0; (entry = ((void *(*)(void *, int))(*(void ***)list)[3])(list, i)) != 0; i++) {
+            if (stricmp(((char *(*)(void *))(*(void ***)entry)[2])(entry), lbl_8055B8C4) != 0) {
                 continue;
             }
-            if (((int (*)(void*, const char*))(*(void***)entry)[3])(entry, base + 0x70) != 0) {
-                value = ((int (*)(void*, const char*))(*(void***)entry)[7])(entry, base + 0x70);
+            if (((int (*)(void *, const char *))(*(void ***)entry)[3])(entry, base + 0x70) != 0) {
+                value = ((int (*)(void *, const char *))(*(void ***)entry)[7])(entry, base + 0x70);
             } else {
-                if (((int (*)(void*, const char*))(*(void***)entry)[3])(entry, base + 0x7c) == 0) {
+                if (((int (*)(void *, const char *))(*(void ***)entry)[3])(entry, base + 0x7c) == 0) {
                     fn_802E30C8(base + 0x88);
                     continue;
                 } else {
-                    s = ((char* (*)(void*, const char*))(*(void***)entry)[5])(entry, base + 0x7c);
+                    s = ((char *(*)(void *, const char *))(*(void ***)entry)[5])(entry, base + 0x7c);
                     value = fn_8022CC8C(s);
                 }
             }
             if (value < 0 || value >= 0x100) {
                 fn_802E30C8(base + 0xb4,
-                    ((int (*)(void*, const char*, int))(*(void***)entry)[6])(entry, base + 0x7c, (int)(base + 0xe4)));
+                            ((int (*)(void *, const char *, int))(*(void ***)entry)[6])(entry, base + 0x7c, (int)(base + 0xe4)));
                 continue;
             }
             work = tmpl;
-            work.w[0] = ((int (*)(void*, const char*, int))(*(void***)entry)[6])(entry, base + 0xf0, work.w[0]);
-            *(float*)&work.w[1] = ((float (*)(void*, const char*, float))(*(void***)entry)[10])(entry, base + 0xfc, *(float*)&work.w[1]);
+            work.w[0] = ((int (*)(void *, const char *, int))(*(void ***)entry)[6])(entry, base + 0xf0, work.w[0]);
+            *(float *)&work.w[1] = ((float (*)(void *, const char *, float))(*(void ***)entry)[10])(entry, base + 0xfc, *(float *)&work.w[1]);
             flag1 = 1;
-            if (((int (*)(void*, const char*))(*(void***)entry)[3])(entry, base + 0x108) != 0) {
-                s = ((char* (*)(void*, const char*))(*(void***)entry)[5])(entry, base + 0x108);
+            if (((int (*)(void *, const char *))(*(void ***)entry)[3])(entry, base + 0x108) != 0) {
+                s = ((char *(*)(void *, const char *))(*(void ***)entry)[5])(entry, base + 0x108);
                 if (stricmp(s, lbl_8055B8CC) == 0) {
                     flag1 = 1;
                 } else if (stricmp(s, lbl_8055B8D4) == 0) {
@@ -1209,8 +1187,8 @@ void fn_8022C520(void) {
                 }
             }
             flag2 = 8;
-            if (((int (*)(void*, const char*))(*(void***)entry)[3])(entry, base + 0x154) != 0) {
-                s = ((char* (*)(void*, const char*))(*(void***)entry)[5])(entry, base + 0x154);
+            if (((int (*)(void *, const char *))(*(void ***)entry)[3])(entry, base + 0x154) != 0) {
+                s = ((char *(*)(void *, const char *))(*(void ***)entry)[5])(entry, base + 0x154);
                 if (stricmp(s, lbl_8055B8E4) == 0) {
                     flag2 = 8;
                 } else if (stricmp(s, lbl_8055B8E8) == 0) {
@@ -1224,16 +1202,16 @@ void fn_8022C520(void) {
                 }
             }
             work.w[2] = flag1 | flag2;
-            fn_8022CDE4((int*)&work.w[3], ((void* (*)(void*, const char*))(*(void***)entry)[23])(entry, lbl_8055B8F8));
-            fn_8022CDE4((int*)&work.w[10], ((void* (*)(void*, const char*))(*(void***)entry)[23])(entry, lbl_8055B8FC));
-            if (((int (*)(void*, const char*))(*(void***)entry)[3])(entry, lbl_8055B900) != 0) {
-                work.w[17] = (int)((char* (*)(void*, const char*))(*(void***)entry)[5])(entry, lbl_8055B900);
+            fn_8022CDE4((int *)&work.w[3], ((void *(*)(void *, const char *))(*(void ***)entry)[23])(entry, lbl_8055B8F8));
+            fn_8022CDE4((int *)&work.w[10], ((void *(*)(void *, const char *))(*(void ***)entry)[23])(entry, lbl_8055B8FC));
+            if (((int (*)(void *, const char *))(*(void ***)entry)[3])(entry, lbl_8055B900) != 0) {
+                work.w[17] = (int)((char *(*)(void *, const char *))(*(void ***)entry)[5])(entry, lbl_8055B900);
             }
-            work.w[21] = ((int (*)(void*, const char*, int))(*(void***)entry)[8])(entry, lbl_8055B908, work.w[21]);
-            work.w[18] = ((int (*)(void*, const char*, int))(*(void***)entry)[8])(entry, lbl_8055B910, work.w[18]);
-            *(float*)&work.w[19] = ((float (*)(void*, const char*, float))(*(void***)entry)[10])(entry, base + 0x1a8, *(float*)&work.w[19]);
-            *(float*)&work.w[20] = ((float (*)(void*, const char*, float))(*(void***)entry)[10])(entry, base + 0x1b4, *(float*)&work.w[20]);
-            ((void (*)(int, void*))fn_8022A858)(value, &work);
+            work.w[21] = ((int (*)(void *, const char *, int))(*(void ***)entry)[8])(entry, lbl_8055B908, work.w[21]);
+            work.w[18] = ((int (*)(void *, const char *, int))(*(void ***)entry)[8])(entry, lbl_8055B910, work.w[18]);
+            *(float *)&work.w[19] = ((float (*)(void *, const char *, float))(*(void ***)entry)[10])(entry, base + 0x1a8, *(float *)&work.w[19]);
+            *(float *)&work.w[20] = ((float (*)(void *, const char *, float))(*(void ***)entry)[10])(entry, base + 0x1b4, *(float *)&work.w[20]);
+            ((void (*)(int, void *))fn_8022A858)(value, &work);
         }
         fn_80131818(list);
     }
@@ -1391,8 +1369,10 @@ int fn_8022CD0C(char *arg0) {
 
     result = sscanf(arg0, lbl_80340070, &sp14, &sp10, &spC, &sp8);
     if (result == 3) {
-        high = (sp14 & 0xFF) << 16;
-        low = (unsigned)((sp10 & 0xFF) << 8);
+        high = sp14;
+        low = (unsigned)sp10;
+        high = (high & 0xFF) << 16;
+        low = (low & 0xFF) << 8;
         low = (unsigned)__rlwimi((int)low, spC, 0, 24, 31);
         high |= 0xFF000000;
         result = (int)(low | (unsigned)high);
@@ -1415,11 +1395,10 @@ __declspec(section ".sdata") extern char lbl_8055B940[];
 __declspec(section ".sdata") extern char lbl_8055B948[];
 __declspec(section ".sdata") extern char lbl_8055B950[];
 extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
-#pragma dont_inline(fn_8022CD0C)
+#pragma optimization_level 2
 void fn_8022CDE4(int *d, void *o) {
-#pragma opt_common_subs off
-    const char *base = lbl_8033FBE8;
-    char *s;
+    register const char *base = lbl_8033FBE8;
+    register char *s;
     if (!o)
         return;
     if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, base + 0x498) != 0)
@@ -1449,6 +1428,5 @@ void fn_8022CDE4(int *d, void *o) {
     }
     if (((XmlObj2 *)o)->vt->has((XmlObj2 *)o, lbl_8055B948) != 0)
         sscanf(((XmlObj2 *)o)->vt->get((XmlObj2 *)o, lbl_8055B948), lbl_8055B950, &d[5], &d[6]);
-#pragma opt_common_subs reset
 }
-#pragma dont_inline reset
+#pragma optimization_level reset
