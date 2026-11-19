@@ -365,6 +365,7 @@ void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
     dst[20] = la.x; dst[21] = la.y; dst[22] = la.z; dst[23] = la.w;
     dst[24] = lb.x; dst[25] = lb.y; dst[26] = lb.z; dst[27] = lb.w;
 }
+extern float lbl_805628A4;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -444,6 +445,7 @@ extern float lbl_80562838, lbl_8056283C, lbl_805628A8, lbl_805628AC, lbl_805628B
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
 void fn_801BEB44(int i, int j, float *target, float *velocity) {
+#pragma use_lmw_stmw on
     unsigned char *base = (unsigned char *)lbl_8055E798 + i * 0x1F0;
     int off = j * 16;
     unsigned char *p = base + off;
