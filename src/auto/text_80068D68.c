@@ -9361,9 +9361,10 @@ void btm_read_hci_buf_size_complete(UINT8 *p, UINT16 evt_len) {
         lbl_803C0F78[0x64E] = 3;
         lbl_803C0F78[0x64F] = 4;
     } else {
-        lbl_803C0F78[0x64F] = status;
-        lbl_803C0F78[0x64E] = status;
-        btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 1);
+        UINT8 *q = lbl_803C0F78;
+        q[0x64F] = status;
+        q[0x64E] = status;
+        btu_start_timer((TIMER_LIST_ENT *)(q + 0x574), 1, 1);
         ((void (*)(void))btsnd_hcic_reset)();
         return;
     }
@@ -21780,34 +21781,26 @@ void *l2cu_find_lcb_by_state(s32 state) {
 }
 
 u8 l2cu_lcb_disconnecting(void) {
-    register u8 result = 0;
-    u8 *base = lbl_803C4040;
-    u8 *entry = base + 8;
-    register u32 i = 0;
+    u8 *p_lcb = lbl_803C4040 + 8;
+    u16 i;
+    u8 status = 0;
 
-    for (; i < 4; i++) {
-        if (entry[0] != 0) {
-            u8 *link = *(u8 **)(entry + 8);
-            if (link == 0 || (s32)*(u32 *)(entry + 4) == 5)
-                return 1;
-            if (link == *(u8 **)(entry + 0xC) &&
-                link[0] != 0 &&
-                (u32)(*(u32 *)(link + 4) - 7) <= 1)
-                return 1;
+    for (i = 0; i < 4; i++, p_lcb += 0x5C) {
+        if (*p_lcb != 0) {
+            u8 *p_first_ccb = *(u8 **)(p_lcb + 8);
+            if (p_first_ccb == 0 || *(s32 *)(p_lcb + 4) == 5) {
+                status = 1;
+                break;
+            } else if (p_first_ccb == *(u8 **)(p_lcb + 0xC)) {
+                if (*p_first_ccb != 0 &&
+                    (*(u32 *)(p_first_ccb + 4) == 7 || *(u32 *)(p_first_ccb + 4) == 8)) {
+                    status = 1;
+                    break;
+                }
+            }
         }
-        i++;
-        if (entry[0x5C] != 0) {
-            u8 *link = *(u8 **)(entry + 0x64);
-            if (link == 0 || (s32)*(u32 *)(entry + 0x60) == 5)
-                return 1;
-            if (link == *(u8 **)(entry + 0x68) &&
-                link[0] != 0 &&
-                (u32)(*(u32 *)(link + 4) - 7) <= 1)
-                return 1;
-        }
-        entry += 0xB8;
     }
-    return result;
+    return status;
 }
 
 /* Initialize the RFCOMM control block: clear it, set default state fields, and
