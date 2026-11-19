@@ -5333,22 +5333,23 @@ void GXSetTevColorOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5)
     *(volatile unsigned short *)((unsigned char *)__GXData + 2) = 0;
 }
 
-void GXSetTevAlphaOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    unsigned int v;
-    v = __GXData[arg0 + 0x1C0 / 4];
-    v = __rlwimi(v, arg1, 18, 13, 13);
-    if (arg1 <= 1) {
-        v = __rlwimi(v, arg3, 20, 10, 11);
-        v = __rlwimi(v, arg2, 16, 14, 15);
+/* Set the alpha combiner operation for a TEV stage. */
+void GXSetTevAlphaOp(s32 stage, s32 op, s32 bias, s32 scale, s32 clamp, s32 outReg) {
+    unsigned int reg;
+    reg = __GXData[stage + 0x1C0 / 4];
+    reg = __rlwimi(reg, op, 18, 13, 13);
+    if (op <= 1) {
+        reg = __rlwimi(reg, scale, 20, 10, 11);
+        reg = __rlwimi(reg, bias, 16, 14, 15);
     } else {
-        v = __rlwimi(v, arg1, 19, 10, 11);
-        v |= 0x30000;
+        reg = __rlwimi(reg, op, 19, 10, 11);
+        reg |= 0x30000;
     }
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    v = __rlwimi(v, arg4, 19, 12, 12);
-    v = __rlwimi(v, arg5, 22, 8, 9);
-    *(volatile unsigned int *)0xCC008000 = v;
-    __GXData[arg0 + 0x1C0 / 4] = v;
+    reg = __rlwimi(reg, clamp, 19, 12, 12);
+    reg = __rlwimi(reg, outReg, 22, 8, 9);
+    *(volatile unsigned int *)0xCC008000 = reg;
+    __GXData[stage + 0x1C0 / 4] = reg;
     *(volatile unsigned short *)((unsigned char *)__GXData + 2) = 0;
 }
 
