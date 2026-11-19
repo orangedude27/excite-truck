@@ -1162,15 +1162,15 @@ int fn_802D972C(register void *arg0, register int arg1, register int arg2) {
     if (mip == 6) {
         char *p;
         tile = arg1 / 4 + (arg2 / 4) * (wrap / 4);
-        pixel += tile << 6;
+        base += tile << 6;
         ysign = (unsigned int)arg2 >> 31;
         yoff = (arg2 << 30) - ysign;
         xoff = arg1 << 30;
         xsign = (unsigned int)arg1 >> 31;
         xoff -= xsign;
-        base = (int)((((xoff << 2) | (xoff >> 30)) + xsign + ((((yoff << 2) | (yoff >> 30)) + ysign) * 4)) * 0x10) / 8;
-        p = (char *)base;
-        p += pixel;
+        pixel = (int)((((xoff << 2) | (xoff >> 30)) + xsign + ((((yoff << 2) | (yoff >> 30)) + ysign) * 4)) * 0x10) / 8;
+        p = (char *)pixel;
+        p += base;
         value = *(unsigned short *)p;
         return (*(unsigned short *)(p + 0x20) & ~0xFFFF0000) | (value << 16);
     }
