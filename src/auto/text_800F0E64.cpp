@@ -6208,6 +6208,8 @@ extern "C" void fn_800FA350(void) {
 #pragma push
 #pragma scheduling on
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
+    /* Return the singleton SoundThread instance, lazily initializing its state
+     * and registering it for global destruction on first access. */
     void *object;
     s8 isInitialized;
 
