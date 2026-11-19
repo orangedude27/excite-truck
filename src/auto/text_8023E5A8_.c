@@ -110,6 +110,7 @@ extern "C" void fn_8023E5B4(void *arg0, int arg1) {
     fn_802146BC(values, -999, -999, 1);
     fn_8022D2BC(handle, 1);
 }
+#pragma scheduling on
 #pragma use_lmw_stmw on
 #pragma use_lmw_stmw on
 #pragma cplusplus reset
