@@ -1035,20 +1035,22 @@ void fn_8028F608(float *out0, float *out1, float (*matrix)[3], float angle) {
 #pragma scheduling on
 #pragma pop
 int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
+    register EfEffect *params;
+    EfEffect *self;
     int count;
-    volatile int *countp;
     void *buffer;
     void *result;
 
-    countp = (volatile int *)((char *)arg1 + 4);
+    self = (EfEffect *)arg0;
+    params = (EfEffect *)arg1;
     ((int (*)(void *))fn_8028E61C)(arg0);
     ((void (*)(void *, void *))fn_8028FD00)(arg0, arg1);
-    count = *countp;
+    count = params->emitterCount;
     buffer = fn_8012850C(count * 0x28 + 0x10, &lbl_80348FC4);
     result = fn_8002F37C(buffer, (void *)fn_8028F854, 0, 0x28, count);
-    *(void **)((char *)arg0 + 0x8c) = result;
-    *(int *)((char *)arg0 + 0x98) = count;
-    *(void **)((char *)arg0 + 0xa4) = (void *)fn_802CAC28(arg2, 0);
+    self->particles = result;
+    self->poolCount = count;
+    self->texHandle = fn_802CAC28(arg2, 0);
     return (int)arg0;
 }
 #pragma pop
@@ -1225,22 +1227,23 @@ extern float fn_80287BC8(float, float);
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_8028FC40(void *arg0, int arg1, float *arg2, float farg0) {
+/* Emits an effect at a computed position when the emitter is active and its index has changed. */
+void fn_8028FC40(void *emitter, int param, float *basePos, float angleOffset) {
     extern void fn_8028FEE4(void *, int, float *, float, float);
-    float sp8[3];
-    float temp_f2;
-    int result = 0;
-    if (*(float *)((char *)arg0 + 0x9C) >= 1.0f - lbl_80558DC4 &&
-        *(int *)((char *)arg0 + 0x90) != *(int *)((char *)arg0 + 0x94)) {
-        result = 1;
+    float pos[3];
+    float range;
+    int shouldEmit = 0;
+    if (*(float *)((char *)emitter + 0x9C) >= 1.0f - lbl_80558DC4 &&
+        *(int *)((char *)emitter + 0x90) != *(int *)((char *)emitter + 0x94)) {
+        shouldEmit = 1;
     }
-    if (result != 0) {
-        fn_8028F444(sp8, arg2, (float *)((char *)arg0 + 0x10),
-                    (float *)((char *)arg0 + 0x1C),
-                    *(float *)((char *)arg0 + 0x28), lbl_80564424);
-        temp_f2 = *(float *)((char *)arg0 + 0x2C);
-        fn_8028FEE4(arg0, arg1, sp8,
-                    farg0 + fn_80287BC8(-temp_f2, temp_f2),
+    if (shouldEmit != 0) {
+        fn_8028F444(pos, basePos, (float *)((char *)emitter + 0x10),
+                    (float *)((char *)emitter + 0x1C),
+                    *(float *)((char *)emitter + 0x28), lbl_80564424);
+        range = *(float *)((char *)emitter + 0x2C);
+        fn_8028FEE4(emitter, param, pos,
+                    angleOffset + fn_80287BC8(-range, range),
                     lbl_80564424);
     }
 }
