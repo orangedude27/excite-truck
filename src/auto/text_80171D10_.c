@@ -1478,11 +1478,12 @@ void fn_801740D4(void *arg0) {
     unsigned char *self = (unsigned char *)arg0;
     float copied = *(float *)(self + 0x1A4);
     int zero = 0;
-    float one = lbl_80561A50;
+    float one = -1.0f;
     unsigned char *cursor = self;
     unsigned char *entry = self + 0x90;
     int i;
     int enabled = 1;
+    void *handle;
     *(unsigned char *)(self + 0x194) = zero;
     *(float *)(self + 0x19C) = copied;
     *(float *)(self + 0x1A0) = one;
@@ -1500,26 +1501,25 @@ void fn_801740D4(void *arg0) {
     }
     {
         float high;
-        int enabled2;
         float low;
-        low = lbl_80561AC0;
-        enabled2 = 1;
-        high = lbl_80561A50;
+        low = -999.0f;
+        high = -1.0f;
         *(float *)(self + 0x180) = low;
         *(float *)(self + 0x188) = low;
         *(float *)(self + 0x190) = low;
         *(float *)(self + 0x178) = low;
         *(int *)(self + 0x1AC) = 0;
         *(float *)(self + 0x1B0) = high;
-        *(unsigned char *)(self + 0x1B4) = enabled2;
+        *(unsigned char *)(self + 0x1B4) = 1;
         *(unsigned char *)(self + 0x1B5) = 0;
         *(unsigned char *)(self + 0x1BC) = 0;
         *(int *)(self + 0x2A4) = 0;
         *(int *)(self + 0x2A8) = 0;
         *(int *)(self + 0x2AC) = 0;
         *(int *)(self + 0x2B0) = 0;
-        if (*(int *)(self + 0x1B8) != 0)
-            fn_802AE0E0();
+        handle = *(void **)(self + 0x1B8);
+        if (handle != 0)
+            ((void (*)(void *))fn_802AE0E0)(handle);
     }
     {
         void *obj = *(void **)(self + 0x1C0);
