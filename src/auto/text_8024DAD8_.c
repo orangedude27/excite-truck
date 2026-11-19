@@ -1511,6 +1511,7 @@ void fn_80250108(void *arg0) {
 extern double fn_8002EFB4(double, double);
 extern double fabs(double);
 extern double lbl_80563978;
+__declspec(section ".data") extern f32 lbl_80558DC4;
 #pragma push
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw on
