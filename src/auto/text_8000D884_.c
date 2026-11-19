@@ -239,17 +239,6 @@ int fn_8000DC70(int identIndex) {
     return (int)((char *)lbl_8055D46C + identIndex * 0x12 + 0x64);
 }
 
-static inline void setIdentFields(int value) {
-    int *p = lbl_8055D46C;
-    if (p[1] != 0) p[1] = value;
-    p = lbl_8055D46C;
-    if (p[7] != 0) p[7] = value;
-    p = lbl_8055D46C;
-    if (p[13] != 0) p[13] = value;
-    p = lbl_8055D46C;
-    if (p[19] != 0) p[19] = value;
-}
-
 #pragma push
 #pragma optimization_level reset
 #pragma dont_inline on
