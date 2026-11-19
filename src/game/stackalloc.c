@@ -452,11 +452,14 @@ void fn_802DA1F4(int arg0, void *arg1, int arg2) {
     lbl_8055FE58 = 1;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802DA2F4(void) {
     void *object;
     void *buffer;
     float *matrix;
     int count;
+    int i;
     float value1;
     float value0;
     float *last;
@@ -477,7 +480,7 @@ void fn_802DA2F4(void) {
     value1 = lbl_80565034;
     matrix = lbl_804DAC48;
     count = 0xB;
-    do {
+    for (i = 0; i < count; i++) {
         matrix[0] = value0;
         matrix[1] = value1;
         matrix[2] = value1;
@@ -503,7 +506,7 @@ void fn_802DA2F4(void) {
         matrix[22] = value1;
         matrix[23] = value1;
         matrix += 24;
-    } while (--count != 0);
+    }
     value1 = lbl_80565030;
     value0 = lbl_80565034;
     last = lbl_804DB434;
@@ -517,8 +520,7 @@ void fn_802DA2F4(void) {
     *last++ = value0;
     *last = value1;
 }
-
-#pragma scheduling on
+#pragma pop
 /* Destructor-like cleanup for the stack allocator object: installs its vtable, frees the owned buffer, and optionally deletes the object. */
 void *fn_802DA450(void *object, int shouldDelete) {
     if (object) {
@@ -810,7 +812,7 @@ void fn_802DAA18(void *arg0) {
     struct StackAlloc *ctx = (struct StackAlloc *)lbl_8055FE5C;
     struct StackAllocRecord *entry;
     struct StackAllocRecord *var_r29;
-    unsigned char *allocPtr;
+    int *allocPtr;
     char *format;
     void *name;
     int size;
@@ -829,9 +831,9 @@ void fn_802DAA18(void *arg0) {
                 fn_802E317C(format, name, 0x3D8, size / 0x400);
                 var_r29 = 0;
             } else {
-                allocPtr = ctx->buffer + ctx->used;
-                *(int *)allocPtr = (int)var_r31;
-                var_r29 = (struct StackAllocRecord *)(allocPtr + 4);
+                allocPtr = (int *)(ctx->buffer + ctx->used);
+                *allocPtr++ = (int)var_r31;
+                var_r29 = (struct StackAllocRecord *)allocPtr;
                 *(int *)(ctx->buffer + ctx->used + 0x3DC) = 0x3D8;
                 ctx->used += 0x3E0;
             }
